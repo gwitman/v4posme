@@ -1,0 +1,357 @@
+---------------------------------------
+instalador:
+---------------------------------------
+---------------------------------------
+---------------------------------------
+		Configurar los Roles y los Usuarios, en la aplicacion de desarrollo, para el nuevo comercio.
+		
+		instalar any desk en la computadora.
+		
+		crear una carpeta llamada		
+		C:\TeamDS-Importacion
+		c:\TeamDS-ChartViwerNavicate
+		
+		pasar a la carpeta los siguientes archivos:			
+			xampp-win32-1.8.3-2-VC11-installer.exe
+			XamppTemp
+			AdbeRdr1011_es_ES.exe
+			Driver Para Printer 80 - HING.rar
+			npp.6.5.3.Installer.exe			
+			instalar chrome						
+			mysql-conector-net-6.9.8.msi
+			mysql-conector-odbc-5.3.4.win32.msi
+			mysql-conector-odbc-5.3.4.win64.msi
+			mysql-conector-net-6.9.8.msi
+			instalar navicate view chart
+			Trasladar La ultima version del sistema
+			Trasladar la ultima version de la bd
+			teamviewer
+			
+			
+		C:\Users\Usuario\Documents\Navicat\MySQL\profiles\Inventario.ncharts
+		a la carpeta RecienCreada
+			
+			
+		instalar el programa  npp.6.5.3.Installer.exe
+		
+		instalar el programa de AdbeRdr1011_es_ES.exe
+		
+		instalar el programa de Driver Para Printer 80-Hing
+		para serie 80
+		instalar el programa xampp-wind-32
+		
+		instalar view chart navicate
+		
+		instalar chrome.exe descargarlo de la web.
+		
+		dentro de la carpeta C\xampp
+		crear el siguiente directorio: C\xampp\teamds2\nsSystem\
+		
+		
+		es esa nueva capreta dejar caer las carptas del sitema
+		
+		en la carpeta C\xampp\tmp
+		dejar caer la informacion de la capreta :
+		C:\TeamDS-Importacion\XamppTemp
+		
+		
+		a la carpeta C\xampp 
+		agregar los permisos para todos los usuarios. 
+		todos los permisos.
+		trasalardar el siguiente archivo
+		C:\xampp\htdocs\core_test_payment.php a la misma direccion
+		
+		
+		
+acceder a phpMyAdmin 
+		root@localhost		root1.2Blandon
+		
+modificar los siguientes archivos:
+		Modificar las credenciales de la siguiente ruta:
+		C:\xampp\phpMyAdmin\config.inc.php
+				
+acceder a phpmyadmin
+		crear usuarios:				
+		root@localhost		root1.2Blandon
+		root@127.0.0.1		root1.2Blandon
+		root@::1			root1.2Blandon
+		root@%				root1.2Blandon
+		
+		posme@localhost		root1.2Blandon
+		posme@127.0.0.1		root1.2Blandon
+		posme@::1			root1.2Blandon
+		posme@%				root1.2Blandon
+		
+acceder a pypmyadmin		
+		crear base de datos:posme
+
+modificar el archivo		
+	C:/xampp/teamds2/nsSystem/v4posme/.env
+	CI_ENVIRONMENT = production
+
+crear la carpeta
+		xampp/ca/cacert.pem
+		
+		
+modificar los siguientes archivos:
+		configurar el tiempo de phpMyAdmin.
+		xampp\phpMyAdmin\libraries\config.default.php
+		Look for : $cfg['ExecTimeLimit'] = 600;		
+		
+		
+		Aumentar el tamaño de los archivos, para importar data
+		C:\xampp\php\php.ini
+		post_max_size=80M
+		upload_max_filesize=80M
+		
+		
+		; http://php.net/date.timezone
+		; date.timezone=Europe/Berlin
+		date.timezone=America/Managua
+		
+		
+		[Curl]
+		curl.cainfo = "C:\xampp\ca\cacert.pem"
+		
+		; SMTP = localhost
+		; smtp_port = 25
+		SMTP = smtp.gmail.com
+		smtp_port = 465
+		
+		;sendmail_from = example@localhost
+		sendmail_from = posme2022@gmail.com
+		
+		sendmail_path="C:\xampp\mailtodisk\mailtodisk.exe"
+		sendmail_path = "\"C:\xampp\sendmail\sendmail.exe\" -t"
+		
+		session.gc_maxlifetime 		= 86400  	1440
+		session.cache_expire 		= 1440		180
+		session.cookie_lifetime 	= 0 		
+		max_input_vars 				= 10000
+		
+		CodeIntegerV4:	
+			php.ini 
+				extension=intl
+				extension=gd
+				extension=soap
+				extension=imap
+		
+		
+modificar los siguientes archivos: 
+		C:\xampp\sendmail\sendmail.ini
+		
+		;smtp_server=mail.mydomain.com
+		smtp_server=smtp.gmail.com
+		
+		;smtp_port=25
+		smtp_port=465
+		
+		;auth_username=
+		auth_username=posme2022@gmail.com
+		;auth_password=
+		auth_password=PosmeSoftware2022
+		
+		;force_sender=
+		force_sender=posme2022@gmail.com
+
+		
+modificar los siguientes archivos:		
+		apache\config\httpd.confg:  ó   apache/conf/extra/httpd-xampp.conf
+			#posMe-v2
+			Alias /posme-adm "C:/xampp/teamds2/nsSystem/fidlocal-produccion-adm/"
+			<Directory "C:/xampp/teamds2/nsSystem/fidlocal-produccion-adm">
+				Options Indexes FollowSymLinks Includes ExecCGI
+				AllowOverride All
+				Require all granted
+			</Directory>
+			
+			#posMe-admv2
+			Alias /posme "C:/xampp/teamds2/nsSystem/fidlocal-produccion-app/"
+			<Directory "C:/xampp/teamds2/nsSystem/fidlocal-produccion-app">
+				Options Indexes FollowSymLinks Includes ExecCGI
+				AllowOverride All
+				Require all granted
+			</Directory>
+			
+			#posMe v4 desarrollo
+			Alias /posmev4 "C:/xampp/teamds2/nsSystem/v4posme/public/"
+			<Directory "C:/xampp/teamds2/nsSystem/v4posme/public">
+				Options Indexes FollowSymLinks Includes ExecCGI
+				AllowOverride All
+				Require all granted
+			</Directory>
+			
+			#posMe v4 posMe
+			Alias /posmev4-fidlocal "C:/xampp/teamds2/nsSystem/v4posme_fidlocal/public/"
+			<Directory "C:/xampp/teamds2/nsSystem/v4posme_fidlocal/public">
+				Options Indexes FollowSymLinks Includes ExecCGI
+				AllowOverride All
+				Require all granted
+			</Directory>
+			
+			#posMe v4 fidlocal
+			Alias /posmev4-posme "C:/xampp/teamds2/nsSystem/v4posme_posme/public"
+			<Directory "C:/xampp/teamds2/nsSystem/v4posme_posme/public">
+				Options Indexes FollowSymLinks Includes ExecCGI
+				AllowOverride All
+				Require all granted
+			</Directory>
+			
+	
+modificar los siguientes archivos: acceder a xampp de manera remota.
+agregar al final del archivo si no existe
+apache/conf/extra/httpd-xampp.conf
+	#
+	# New XAMPP security concept
+	#
+	<LocationMatch "^/(?i:(?:xampp|security|licenses|phpmyadmin|webalizer|server-status|server-info))">
+		Order deny,allow
+		Deny from all
+		Allow from ::1 127.0.0.0/8 \
+		Allow from 192.168.1.0/8 \
+
+		#Allow from ::1 127.0.0.0/8 \
+		#	fc00::/7 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 \
+		#	fe80::/10 169.254.0.0/16
+
+		ErrorDocument 403 /error/XAMPP_FORBIDDEN.html.var
+	</LocationMatch>
+		
+	
+			
+modificar los siguientes archivos:	
+		reiniciar el servidor xampp
+		
+		
+acceder a phpmy admin		
+		importar la base de datos.
+		
+Crear acceso directo de app
+
+Crear xampp como servicio
+
+Agregar Logo Tipo
+		C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\
+		img\logo-micro-finanza.jpg
+		
+		
+Ejecutar el Script de Limpieza e Inicializacion de Base de Datos
+		password:	root1.2Blandon
+		C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\file_sql\clear_importar_data_base.sql		
+
+Configurar parametros usando o creando el script
+		C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\file_sql\actualizar_parametros_[cliente].sql
+
+Probar la configuracion de pago
+	http://localhost/core_test_payment.php
+	
+Probar la configuracion de pago
+	http://localhost/posmev4/
+	
+	
+Crear la tarea programada para enviar reportes diarios
+	//Enviar Reportes
+	Nombre: posme_job_send_report_daly
+	Hora:	17:00:00
+	Ruta: 	C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_job\send_report_daly.bat
+	
+	
+	//Respaldo de datos
+	Nombre: posme_job_backup_daly
+	Hora:	16:00:00
+	Ruta: 	C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_job\backup_posmev4.bat
+	
+	//Actualizar Aplicacion
+	Nombre: posme_upgrade_daly
+	Hora:	15:00:00
+	Ruta: 	C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_job\upgrade_posmev4.bat
+	
+	
+Habilitar el uso compartida de la impresora
+	
+Habilitar firewall
+	panel de control >>> firewall de window defender  >>>> 
+	permitir una aplicacion >>> cambiar la configuracion >>>>
+	permitir otra aplicacion >>> examinar >>> 
+	xampp/apache/bin/httpd.exe >>> aceptar >>> private and public
+
+
+Encrptar los siguientes archivos
+	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\system\libraries\Email.php
+	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\application\config\constants.php
+	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\application\config\database.php
+	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\application\config\config.php
+	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\application\libraries\.....
+	
+
+---------------------------------------
+actualizacion:
+---------------------------------------
+---------------------------------------
+---------------------------------------
+	tener a mano, el disco duro.
+	
+	crear copia de la base de datatos de desarrollo.
+	
+	crear copia de la base de datos del cliente
+	
+	descargar base de datos del cliente 
+	
+	renombrar archivo del cliente 
+	
+	levantar base de datos del cliente
+	
+	merge de la base de datos del cliente posme >>> posme_merge
+	
+	ejecutar el script de actualizacion en la base de daots del cliente 
+	C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_sql\actualizar_parametros_[cliente].sql
+	
+	crear copia de la base de datos merge
+	
+	enviar copia merge al cliente 
+	
+	renombrar base de datos en el cliente 
+	
+	levantar base de datos del cliente 	
+	
+	guardar la copia en el disco duro de la base de datos del cliente
+	E:\Witman_BDMySQL\posme_2022_09_18_0000_000.sql
+	
+	
+	mandar la siguiente carpeta
+	C:\xampp\teamds2\nsSystem\v4posme\app
+	C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_customer
+	C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_job
+	C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_upgrade
+	
+	
+	
+	
+		
+---------------------------------------
+certificado vencido:
+---------------------------------------
+---------------------------------------
+---------------------------------------		
+	pega los archivos en la siguienre ruta:
+	xampp/apache/bin/
+	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\certif\cert.conf
+	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\certif\make-cert.bat
+			
+	abrir el siguiente programa
+	xampp/apache/bin/openssl.exe
+	
+	ejecutar el siguiente comando	
+	openssl.exe req -config cert.conf -new -sha256 -newkey rsa:2048 -nodes -keyout  localhost_server.key -x509 -days 3650 -out localhost_server.crt
+	
+	modifica el siguiente archivo
+	xampp/apache/conf/ssl.crt por los nuevos
+	xampp/apache/conf/ssl.key por los nuevos
+	
+	instala el certificado en window.
+	
+	reinicia el xampp
+	
+	limpia la cheche si es posible
+	
+	
