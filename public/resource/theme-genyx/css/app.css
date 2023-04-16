@@ -3025,7 +3025,7 @@ html.errorPage {
 
 /* ------------------Responsive buttons --------------------*/
 #resBtn {margin-top: 7px; margin-left: 20px; margin-right: 5px; float: left;position: absolute;}
-#resBtnSearch {margin-top: 7px; margin-left: 10px;margin-right: 5px; float: left;position: absolute;left: 75px;}
+/*#resBtnSearch {margin-top: 7px; margin-left: 10px;margin-right: 5px; float: left;position: absolute;left: 75px;}*/
 .navbar-toggle {
 	padding: 7px 10px;
 	margin-top: 7px;
@@ -3329,7 +3329,7 @@ html.fixedWidth .main.isCollapse #sidebarbg {width: 38px;}
 
 	/* ------------------ Responisve buttons--------------------*/
 	#resBtn {position: absolute;top: 50px;left: 0;margin-left: 15px;}
-	#resBtnSearch {position: absolute;left: 70px;top: 50px;}
+	/*#resBtnSearch {position: absolute;left: 70px;top: 50px;}*/
 	.navbar-toggle {position: absolute;right: 0;top: 50px;}
 	/* ------------------ Calendar --------------------*/
 	.fc-header-title {text-align: center;}

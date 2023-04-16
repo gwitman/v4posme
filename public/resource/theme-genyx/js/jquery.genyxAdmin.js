@@ -609,19 +609,20 @@
 
         //create responsive search button
         function resBtnSearch () {
-            $('#top-search').addClass('hide');
-            $('#header .navbar').prepend('<a href="#" id="resBtnSearch" class="btn btn-danger"><i class="icon16 i-search-3"></i></a>');
-            resBtnSearchClick();
+            //$('#top-search').addClass('hide');
+            //$('#header .navbar').prepend('<a href="#" id="resBtnSearch" class="btn btn-danger"><i class="icon16 i-search-3"></i></a>');
+            //resBtnSearchClick();
         }
         //Destroy responsive search button
         function resBtnSearchRestore () {
-            $('#header #resBtnSearch').remove();
-            $('#top-search').removeClass('hide');
+            //$('#header #resBtnSearch').remove();
+            //$('#top-search').removeClass('hide');
         }
 
         //create offcanvas menu button
         function resBtn () {
-            $('#header .navbar').prepend('<a href="#" id="resBtn" class="btn btn-danger"><i class="icon16 i-menu-6"></i></a>');
+            //$('#header .navbar').prepend('<a href="#" id="resBtn" class="btn btn-danger" rel="no-refresh" ><i class="icon16 i-menu-6"></i></a>');
+			$('#header .navbar').prepend('<button type="button" id="resBtn" class="btn btn-danger" ><i class="icon16 i-menu-6"></i></button>');
             resBtnClick();
         }
         //destroy responsive button
@@ -650,21 +651,27 @@
         }
         //handle the resBtnClick
         function resBtnClick () {
-            $("#resBtn").on("click", function(){
+            $("#resBtn").on("click", function(e,o){
+				
                 //$("#content").toggleClass('hided offCanvas');
-                $("#content").toggleClass('hided offCanvas');
-                $("#sidebar").toggleClass('hided');
+                //$("#content").toggleClass('hided offCanvas');
+				$("#content").toggleClass('hidden');
+                
+				
+				$("#sidebar").toggleClass('hided');
                 $("#collapse-nav").toggleClass('hided');
                 if(settings.fixedWidth || localStorage.getItem('fixedWidth')){
                     $('#sidebarbg').toggleClass('hided');
                 }
+				
+				 
             });
         }
         //handle the resBtnSearch click
         function resBtnSearchClick () {
-            $("#resBtnSearch").on("click", function(){
-                $("#top-search").toggleClass('hide shown');
-            });
+            //$("#resBtnSearch").on("click", function(){
+            //    $("#top-search").toggleClass('hide shown');
+            //});
         }
         //responsive tables
         function responsiveTables() {

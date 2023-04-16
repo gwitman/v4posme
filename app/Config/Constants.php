@@ -119,7 +119,7 @@ define("APP_USERADMIN","2");
 define("URL_SUFFIX_OLD",".aspx");
 define("URL_SUFFIX_NEW","");
 define("URL_SUFFIX","");
-define('APP_IP_SERVER',"localhost");
+define('APP_IP_SERVER',"192.168.1.5");
 
 
 //Tipos de Menu

@@ -606,7 +606,7 @@ WHERE
 	
 /*--Facturacion		*/		
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "editv2"  /*-,editv2*/
+	tb_company_parameter.value = "-"  /*-,editv2*/
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_PANTALLA_FACTURACION";## PANTALLA PARA LA FACTUACION
@@ -619,7 +619,7 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
+	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_AUTOAPPLY_CASH";## Auto aplicar las facturas de contados 

@@ -69,7 +69,7 @@
 		<script src="<?php echo base_url(); ?>/resource/theme-genyx/js/conditionizr.min.js"></script>  
 		<script src="<?php echo base_url(); ?>/resource/theme-genyx/js/plugins/core/nicescroll/jquery.nicescroll.min.js"></script>
 		<script src="<?php echo base_url(); ?>/resource/theme-genyx/js/plugins/core/jrespond/jRespond.min.js"></script>
-		<script src="<?php echo base_url(); ?>/resource/theme-genyx/js/jquery.genyxAdmin.js"></script>
+		<script src="<?php echo base_url(); ?>/resource/theme-genyx/js/jquery.genyxAdmin.js?v7"></script>
 		<script src="<?php echo base_url(); ?>/resource/theme-genyx/js/plugins/ui/animated-progress-bar/jquery.progressbar.js"></script>
 		
 		<script src="<?php echo base_url(); ?>/resource/theme-genyx/js/plugins/forms/switch/bootstrapSwitch.js"></script>
@@ -91,15 +91,15 @@
 	<body> 
 		
 		<header id="header">
-		
-		
         <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+		
             <a class="navbar-brand" href="#" style="color:#fff"><?php echo $company->name; ?></a>
             
             <button type="button" class="navbar-toggle btn-danger" data-toggle="collapse" data-target="#navbar-to-collapse">
                 <span class="sr-only">Toggle Derecho Menu</span>
                 <i class="icon16 i-arrow-8"></i>
-            </button>          
+            </button>    
+			
             <div class="collapse navbar-collapse" id="navbar-to-collapse">				
                 <ul class="nav navbar-nav pull-right">
 					<?php echo $notification;?>

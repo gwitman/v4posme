@@ -40,7 +40,7 @@
 	var objListaProductosStoreSku	= localStorage.getItem("objListaProductosSku");		
 	objListaProductosSku 			= JSON.parse(objListaProductosStoreSku);	
 	
-	
+	objListaProductosStore = null;
 	if(objListaProductosStore == null ){
 		fnObtenerListadoProductos();
 		fnObtenerListadoProductos2();
@@ -107,6 +107,7 @@
 						},
 						{
 							"aTargets"		: [ 5 ],//Sku
+							"sWidth"		: "180px",
 							"mRender"		: function ( data, type, full ) {
 								
 								var objListaSkuByProducto 	= jLinq.from(objListaProductosSku).where(function(obj){ return obj.itemID == full[2]; }).select();
@@ -1541,7 +1542,7 @@
 						},
 						{
 							"aTargets"		: [ 4 ],//Cantidad
-							"bVisible"		: false,
+							"bVisible"		: true,
 							"bSearchable"	: false,
 							//"mData":		'Cantidad',
 							"mRender"		: function ( data, type, full ) {								
