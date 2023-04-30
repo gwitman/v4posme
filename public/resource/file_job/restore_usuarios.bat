@@ -1,5 +1,6 @@
 @echo off
 
+echo "Nueva password: root1.2Blandon"
 "C:\xampp\mysql\bin\mysql.exe" -u root -p -h localhost -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root1.2Blandon';"
 
 "C:\xampp\mysql\bin\mysql.exe" -u root -p -h localhost -e "CREATE USER 'root'@'127.0.0.1' IDENTIFIED BY 'root1.2Blandon';"

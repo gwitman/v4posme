@@ -253,7 +253,7 @@ class app_accounting_journal extends _BaseController {
 				//ejecutar procedimiento.
 				
 				$query 					= "CALL pr_accounting_templated_to_journal(?,?,?,?,?,@resultTransaction);";
-				$resultTransaction		= $this->Bd_Mode->executeRender(
+				$resultTransaction		= $this->Bd_Model->executeRender(
 					$query,[$companyID,$branchID,$loginID,$app,$journalEntryIDTemplated]
 				);
 			

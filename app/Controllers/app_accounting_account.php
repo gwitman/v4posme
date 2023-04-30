@@ -161,13 +161,14 @@ class app_accounting_account extends _BaseController {
 			
 			
 			
-			$query					= "CALL pr_accounting_checkaccount_to_delete(?,?,?,?,?,@resultProcessMessage,@resultProcessCode);";
-			$resultProcess			= $this->Bd_Mode->executeRender(
+			$query					  = "CALL pr_accounting_checkaccount_to_delete(?,?,?,?,?,@resultProcessMessage,@resultProcessCode);";			
+			$resultProcess			= $this->Bd_Model->executeRender(
 				$query,[$companyID,$branchID,$loginID,$accountID,$app]
 			);	
 			
-			$query					.= "SELECT @resultProcessMessage as message,@resultProcessCode as codigo;";
-			$resultProcess			 = $this->Bd_Model->executeRender($query,null);	
+			
+			$query					 = "SELECT @resultProcessMessage as message,@resultProcessCode as codigo;";
+			$resultProcess			 = $this->Bd_Model->executeRender($query,null);				
 			$resultProcess			 = $resultProcess[0];
 			
 			

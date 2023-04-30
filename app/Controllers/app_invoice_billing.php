@@ -101,6 +101,8 @@ class app_invoice_billing extends _BaseController {
 			
 			
 			//Tipo de Factura
+			$agent 												= $this->request->getUserAgent();			
+			$dataView["isMobile"]								= helper_RequestGetValue($agent->isMobile(),"0");
 			$dataView["urlPrinterDocument"]						= $urlPrinterDocument->value;
 			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
@@ -815,7 +817,7 @@ class app_invoice_billing extends _BaseController {
 						$this->Transaction_Master_Detail_Credit_Model->insert_app_posme($objTMDC);
 						
 						//Actualizar el Precio
-						if($objUpdatePrice)
+						if($objUpdatePrice == "true" )
 						{							
 							$typePriceID					= $typePriceID;
 							$dataUpdatePrice["price"] 		= $price;
@@ -872,7 +874,7 @@ class app_invoice_billing extends _BaseController {
 						$this->Transaction_Master_Detail_Credit_Model->update_app_posme($transactionMasterDetailID,$objTMDC);
 						
 						//Actualizar el Precio
-						if($objUpdatePrice)
+						if($objUpdatePrice == "true" )
 						{
 							
 							$typePriceID					= $typePriceID;
@@ -1103,11 +1105,14 @@ class app_invoice_billing extends _BaseController {
 			$dateOn 								= date("Y-m-d");
 			$dateOn 								= date_format(date_create($dateOn),"Y-m-d");
 			$exchangeRate 							= $this->core_web_currency->getRatio($companyID,$dateOn,1,$objCurrencyDolares->currencyID,$objCurrencyCordoba->currencyID);
-			
+		
 			
 			
 			if($this->core_web_accounting->cycleIsCloseByDate($dataSession["user"]->companyID,/*inicio get post*/ $this->request->getPost("txtDate")))
 			throw new \Exception("EL DOCUMENTO NO PUEDE INGRESAR, EL CICLO CONTABLE ESTA CERRADO");
+			
+			
+			
 			
 			$this->core_web_permission->getValueLicense($dataSession["user"]->companyID,get_class($this)."/"."index");
 			$objParameterInvoiceBillingQuantityZero		= $this->core_web_parameter->getParameter("INVOICE_BILLING_QUANTITY_ZERO",$companyID);
@@ -1124,6 +1129,7 @@ class app_invoice_billing extends _BaseController {
 			$objParameterUrlPrinterDirect			= $objParameterUrlPrinterDirect->value;
 			$objParameterImprimirPorCadaFactura		= $this->core_web_parameter->getParameter("INVOICE_PRINT_BY_INVOICE",$companyID);
 			$objParameterImprimirPorCadaFactura		= $objParameterImprimirPorCadaFactura->value;
+			
 			
 			
 			
@@ -1150,6 +1156,7 @@ class app_invoice_billing extends _BaseController {
 			else {
 				$statusID = /*inicio get post*/ $this->request->getPost("txtStatusID");
 			}
+			
 			
 			
 			$objTM["companyID"] 					= $dataSession["user"]->companyID;
@@ -1323,7 +1330,7 @@ class app_invoice_billing extends _BaseController {
 					$this->Transaction_Master_Detail_Credit_Model->insert_app_posme($objTMDC);
 					
 					//Actualizar tipo de precio
-					if($objUpdatePrice)
+					if($objUpdatePrice == "true")
 					{ 
 						
 						$typePriceID					= $typePriceID;																				
@@ -1421,7 +1428,7 @@ class app_invoice_billing extends _BaseController {
 		    $resultSend02 = $this->email->printDebugger();
 		    
 		    
-		    return $resultView;
+		    echo $resultView;
 			
 		}	
 	}
@@ -1756,7 +1763,7 @@ class app_invoice_billing extends _BaseController {
 					
 					
 					//Precio
-					if($objUpdatePrice)
+					if($objUpdatePrice == "true" )
 					{							
 						$typePriceID					= $typePriceID;
 						$dataUpdatePrice["price"] 		= $price;
@@ -1981,6 +1988,7 @@ class app_invoice_billing extends _BaseController {
 			
 			//Guardar o Editar Registro						
 			if($mode == "new"){
+				
 				$this->insertElement($dataSession);
 			}
 			else if ($mode == "edit"){
@@ -2106,6 +2114,8 @@ class app_invoice_billing extends _BaseController {
 			
 			
 			//Tipo de Factura
+			$agent 											= $this->request->getUserAgent();						
+			$dataView["isMobile"]							= helper_RequestGetValue($agent->isMobile(),"0");
 			$dataView["companyID"]							= $dataSession["user"]->companyID;
 			$dataView["userID"]								= $dataSession["user"]->userID;
 			$dataView["userName"]							= $dataSession["user"]->nickname;

@@ -42,7 +42,7 @@ class Account_Level_Model extends Model  {
 		$builder->where("isActive",1);
 		$builder->where("companyID",$companyID);
 		$builder->where("accountLevelID",$accountLevelID);				
-   		return $builder->selectCount("accountLevelID")->getRow()->accountLevelID;
+   		return $builder->countAllResults();
    }
    function getByCompany($companyID){
 		$db 		= db_connect();

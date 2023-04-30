@@ -151,7 +151,7 @@ class app_accounting_process extends _BaseController {
 			$branchID 				= $dataSession["user"]->branchID;
 			$loginID				= $dataSession["user"]->userID;
 			$transactionID			= /*inicio get post*/ $this->request->getPost("transactionID");			
-			$objListTransaction		= $this->transaction_model->getTransactionContabilizable($companyID);
+			$objListTransaction		= $this->Transaction_Model->getTransactionContabilizable($companyID);
 			$app					= "CONTABILIZATE";
 			$logDB					= NULL;
 			
@@ -161,7 +161,7 @@ class app_accounting_process extends _BaseController {
 				{
 					$transactionID			= $item->transactionID;
 					$query					= "CALL pr_accounting_transaction_to_journal(?,?,?,?,?,@resultTransaction);";
-					$resultTransaction		= $this->Bd_Mode->executeRender(
+					$resultTransaction		= $this->Bd_Model->executeRender(
 						$query,
 						[$companyID,$branchID,$loginID,$transactionID,$app]
 					);							
@@ -170,7 +170,7 @@ class app_accounting_process extends _BaseController {
 			}					
 			else {
 				$query					= "CALL pr_accounting_transaction_to_journal(?,?,?,?,?,@resultTransaction);";
-				$resultTransaction		= $this->Bd_Mode->executeRender(
+				$resultTransaction		= $this->Bd_Model->executeRender(
 					$query,
 					[$companyID,$branchID,$loginID,$transactionID,$app]
 				);							
@@ -385,7 +385,7 @@ class app_accounting_process extends _BaseController {
 			CALL pr_accounting_mayorizate_cycle(?,?,?,?,?,@resultMayorization);
 			";
 			
-			$resultMayorizate	= $this->Bd_Mode->executeRender(
+			$resultMayorizate	= $this->Bd_Model->executeRender(
 				$query,
 				[$companyID,$branchID,$loginID,$componentPeriodID,$componentCycleID]
 			);	
@@ -439,7 +439,7 @@ class app_accounting_process extends _BaseController {
 			$query				= "			
 			CALL pr_accounting_closed_cycle(?,?,?,?,?,?,?,@resultCode,@resultMessage);			
 			";			
-			$resultClosed		= $this->Bd_Mode->executeRender(
+			$resultClosed		= $this->Bd_Model->executeRender(
 				$query,
 				[$companyID,$branchID,$loginID,$createdIn,$tocken,$componentPeriodID,$componentCycleID]
 			);	

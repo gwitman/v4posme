@@ -1,0 +1,49 @@
+INFO - 2023-04-21 09:48:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2023-04-21 09:49:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2023-04-21 09:49:00 --> Email: sendWithSmtp throwed ErrorException: fsockopen(): php_network_getaddresses: getaddrinfo failed: Host desconocido.  in C:\xampp\teamds2\nsSystem\v4posme\system\Email\Email.php:1868
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'fsockopen(): ph...', 'C:\\xampp\\teamds...', 1868)
+#1 C:\xampp\teamds2\nsSystem\v4posme\system\Email\Email.php(1868): fsockopen('tls://smtp.gmai...', 465, NULL, NULL, 60)
+#2 C:\xampp\teamds2\nsSystem\v4posme\system\Email\Email.php(1782): CodeIgniter\Email\Email->SMTPConnect()
+#3 C:\xampp\teamds2\nsSystem\v4posme\system\Email\Email.php(1667): CodeIgniter\Email\Email->sendWithSmtp()
+#4 C:\xampp\teamds2\nsSystem\v4posme\system\Email\Email.php(1565): CodeIgniter\Email\Email->spoolEmail()
+#5 C:\xampp\teamds2\nsSystem\v4posme\app\Controllers\core_acount.php(128): CodeIgniter\Email\Email->send()
+#6 C:\xampp\teamds2\nsSystem\v4posme\system\CodeIgniter.php(934): App\Controllers\core_acount->login()
+#7 C:\xampp\teamds2\nsSystem\v4posme\system\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\core_acount))
+#8 C:\xampp\teamds2\nsSystem\v4posme\system\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#9 C:\xampp\teamds2\nsSystem\v4posme\public\index.php(67): CodeIgniter\CodeIgniter->run()
+#10 {main}
+ERROR - 2023-04-21 09:49:00 --> Email: Unable to send email using SMTP. Your server might not be configured to send mail using this method.
+ERROR - 2023-04-21 09:49:00 --> 
+INFO - 2023-04-21 09:49:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2023-04-21 09:49:01 --> Call to undefined function App\Controllers\show_error()
+in APPPATH\Controllers\core_dashboards.php on line 85.
+ 1 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\core_dashboards->index()
+ 2 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\core_dashboards))
+ 3 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2023-04-21 09:49:07 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2023-04-21 09:49:07 --> Call to undefined function App\Controllers\show_error()
+in APPPATH\Controllers\core_dashboards.php on line 85.
+ 1 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\core_dashboards->index()
+ 2 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\core_dashboards))
+ 3 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2023-04-21 09:49:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2023-04-21 09:49:19 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2023-04-21 09:49:19 --> Email: sendWithSmtp throwed ErrorException: fsockopen(): php_network_getaddresses: getaddrinfo failed: Host desconocido.  in C:\xampp\teamds2\nsSystem\v4posme\system\Email\Email.php:1868
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'fsockopen(): ph...', 'C:\\xampp\\teamds...', 1868)
+#1 C:\xampp\teamds2\nsSystem\v4posme\system\Email\Email.php(1868): fsockopen('tls://smtp.gmai...', 465, NULL, NULL, 60)
+#2 C:\xampp\teamds2\nsSystem\v4posme\system\Email\Email.php(1782): CodeIgniter\Email\Email->SMTPConnect()
+#3 C:\xampp\teamds2\nsSystem\v4posme\system\Email\Email.php(1667): CodeIgniter\Email\Email->sendWithSmtp()
+#4 C:\xampp\teamds2\nsSystem\v4posme\system\Email\Email.php(1565): CodeIgniter\Email\Email->spoolEmail()
+#5 C:\xampp\teamds2\nsSystem\v4posme\app\Controllers\core_acount.php(128): CodeIgniter\Email\Email->send()
+#6 C:\xampp\teamds2\nsSystem\v4posme\system\CodeIgniter.php(934): App\Controllers\core_acount->login()
+#7 C:\xampp\teamds2\nsSystem\v4posme\system\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\core_acount))
+#8 C:\xampp\teamds2\nsSystem\v4posme\system\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#9 C:\xampp\teamds2\nsSystem\v4posme\public\index.php(67): CodeIgniter\CodeIgniter->run()
+#10 {main}
+ERROR - 2023-04-21 09:49:19 --> Email: Unable to send email using SMTP. Your server might not be configured to send mail using this method.
+ERROR - 2023-04-21 09:49:19 --> 
+INFO - 2023-04-21 09:49:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.

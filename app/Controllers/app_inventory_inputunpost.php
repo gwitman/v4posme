@@ -636,6 +636,7 @@ class app_inventory_inputunpost extends _BaseController {
 					foreach($arrayListItemID as $key => $value){
 						$transactionMasterDetailID				= $listTMD_ID[$key];	
 						$objItem 								= $this->Item_Model->get_rowByPK($objTM->companyID,$value);
+						
 						$itemID 								= $value;
 						$quantity 								= helper_StringToNumber($arrayListQuantity[$key]);
 						$cost 									= helper_StringToNumber($arrayListCost[$key]);
@@ -647,6 +648,7 @@ class app_inventory_inputunpost extends _BaseController {
 						
 						//Actualizar tipo de precio 1 ---> 154 ---->PUBLICO
 						if($unitaryPrice > 0){
+							
 							$typePriceID					= 154;
 							$dataUpdatePrice["price"] 		= $unitaryPrice;
 							$dataUpdatePrice["percentage"] 	= 

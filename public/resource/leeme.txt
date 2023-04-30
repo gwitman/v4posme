@@ -3,103 +3,59 @@ instalador:
 ---------------------------------------
 ---------------------------------------
 ---------------------------------------
-		Configurar los Roles y los Usuarios, en la aplicacion de desarrollo, para el nuevo comercio.
+		nota:	dimenciones de pantalla table:  1080 x 600 inspeccionar.
+		nota:	android aplicacion para imprimir: ESC POS Print Services	
 		
-		instalar any desk en la computadora.
 		
 		crear una carpeta llamada		
 		C:\TeamDS-Importacion
 		c:\TeamDS-ChartViwerNavicate
 		
-		pasar a la carpeta los siguientes archivos:			
-			xampp-win32-1.8.3-2-VC11-installer.exe
-			XamppTemp
-			AdbeRdr1011_es_ES.exe
-			Driver Para Printer 80 - HING.rar
-			npp.6.5.3.Installer.exe			
-			instalar chrome						
-			mysql-conector-net-6.9.8.msi
-			mysql-conector-odbc-5.3.4.win32.msi
-			mysql-conector-odbc-5.3.4.win64.msi
-			mysql-conector-net-6.9.8.msi
-			instalar navicate view chart
-			Trasladar La ultima version del sistema
-			Trasladar la ultima version de la bd
-			teamviewer
-			
-			
-		C:\Users\Usuario\Documents\Navicat\MySQL\profiles\Inventario.ncharts
-		a la carpeta RecienCreada
-			
-			
-		instalar el programa  npp.6.5.3.Installer.exe
+		pasar a la carpeta: C:\TeamDS-Importacion todos los driver
 		
-		instalar el programa de AdbeRdr1011_es_ES.exe
+		pasar a la carpeta: C:\TeamDS-Importacion copia de base de datos
 		
-		instalar el programa de Driver Para Printer 80-Hing
-		para serie 80
-		instalar el programa xampp-wind-32
-		
+		instalar Adoberd1011_es_ES
+		instalar HeidiSQL
+		instalar npp++
+		instalar teamviewer
 		instalar view chart navicate
-		
-		instalar chrome.exe descargarlo de la web.
-		
-		dentro de la carpeta C\xampp
-		crear el siguiente directorio: C\xampp\teamds2\nsSystem\
+		instalar xampp-windows-x64-8.0.25-0-VS16-installer
 		
 		
-		es esa nueva capreta dejar caer las carptas del sitema
+		pasar a la carpeta C:/xampp/ la capreta : teamds2
+		pasar a la carpeta C:/xampp/teamds2/nsSystem/ la capreta : v4posme
 		
-		en la carpeta C\xampp\tmp
-		dejar caer la informacion de la capreta :
-		C:\TeamDS-Importacion\XamppTemp
+		pasar el archivo: Inventario.ncharts a la carpeta c:\TeamDS-ChartViwerNavicate 
+		
+		borrar de la carpeta: C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_job
+		backup_posmev4_fidlocal
+		backup_posmev4_merge
+		backup_posmev4_posme
+		restore_backup_posmev4_fidlocal
+		restore_backup_posmev4_merge
+		restore_backup_posmev4_posme
+		scaner_routes
+		
+		inicializar xampp 
+		
+		ejecutar en la carpeta C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_job
+		restore_usuarios	: root1.2Blandon
 		
 		
-		a la carpeta C\xampp 
-		agregar los permisos para todos los usuarios. 
-		todos los permisos.
-		trasalardar el siguiente archivo
-		C:\xampp\htdocs\core_test_payment.php a la misma direccion
+modificar los siguientes archivos:		
+		C:\xampp\phpMyAdmin\config.inc.php : password: root1.2Blandon
 		
-		
-		
-acceder a phpMyAdmin 
-		root@localhost		root1.2Blandon
-		
-modificar los siguientes archivos:
-		Modificar las credenciales de la siguiente ruta:
-		C:\xampp\phpMyAdmin\config.inc.php
-				
-acceder a phpmyadmin
-		crear usuarios:				
-		root@localhost		root1.2Blandon
-		root@127.0.0.1		root1.2Blandon
-		root@::1			root1.2Blandon
-		root@%				root1.2Blandon
-		
-		posme@localhost		root1.2Blandon
-		posme@127.0.0.1		root1.2Blandon
-		posme@::1			root1.2Blandon
-		posme@%				root1.2Blandon
-		
-acceder a pypmyadmin		
-		crear base de datos:posme
-
 modificar el archivo		
-	C:/xampp/teamds2/nsSystem/v4posme/.env
-	CI_ENVIRONMENT = production
-
-crear la carpeta
-		xampp/ca/cacert.pem
+		C:/xampp/teamds2/nsSystem/v4posme/.env
+		CI_ENVIRONMENT = production
 		
-		
-modificar los siguientes archivos:
-		configurar el tiempo de phpMyAdmin.
+modificar los siguientes archivos:		
 		xampp\phpMyAdmin\libraries\config.default.php
 		Look for : $cfg['ExecTimeLimit'] = 600;		
 		
 		
-		Aumentar el tamaño de los archivos, para importar data
+modificar el siguiente archivo
 		C:\xampp\php\php.ini
 		post_max_size=80M
 		upload_max_filesize=80M
@@ -109,9 +65,6 @@ modificar los siguientes archivos:
 		; date.timezone=Europe/Berlin
 		date.timezone=America/Managua
 		
-		
-		[Curl]
-		curl.cainfo = "C:\xampp\ca\cacert.pem"
 		
 		; SMTP = localhost
 		; smtp_port = 25
@@ -157,21 +110,7 @@ modificar los siguientes archivos:
 		
 modificar los siguientes archivos:		
 		apache\config\httpd.confg:  ó   apache/conf/extra/httpd-xampp.conf
-			#posMe-v2
-			Alias /posme-adm "C:/xampp/teamds2/nsSystem/fidlocal-produccion-adm/"
-			<Directory "C:/xampp/teamds2/nsSystem/fidlocal-produccion-adm">
-				Options Indexes FollowSymLinks Includes ExecCGI
-				AllowOverride All
-				Require all granted
-			</Directory>
 			
-			#posMe-admv2
-			Alias /posme "C:/xampp/teamds2/nsSystem/fidlocal-produccion-app/"
-			<Directory "C:/xampp/teamds2/nsSystem/fidlocal-produccion-app">
-				Options Indexes FollowSymLinks Includes ExecCGI
-				AllowOverride All
-				Require all granted
-			</Directory>
 			
 			#posMe v4 desarrollo
 			Alias /posmev4 "C:/xampp/teamds2/nsSystem/v4posme/public/"
@@ -220,34 +159,28 @@ apache/conf/extra/httpd-xampp.conf
 	
 			
 modificar los siguientes archivos:	
-		reiniciar el servidor xampp
+		reiniciar el servidor xampp  como administrador, y 
+		poner como servicio
 		
-		
-acceder a phpmy admin		
-		importar la base de datos.
-		
-Crear acceso directo de app
+Crear acceso directo de app:
+		http://localhost/posmev4/
 
-Crear xampp como servicio
+
 
 Agregar Logo Tipo
-		C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\
-		img\logo-micro-finanza.jpg
+		C:\xampp\teamds2\nsSystem\v4posme\public\resource\img\logos
+		logo-micro-finanza.jpg
+		
+		
 		
 		
 Ejecutar el Script de Limpieza e Inicializacion de Base de Datos
 		password:	root1.2Blandon
-		C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\file_sql\clear_importar_data_base.sql		
+		C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_sql
+		script_start_clear_base.sql
 
 Configurar parametros usando o creando el script
-		C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\file_sql\actualizar_parametros_[cliente].sql
-
-Probar la configuracion de pago
-	http://localhost/core_test_payment.php
-	
-Probar la configuracion de pago
-	http://localhost/posmev4/
-	
+		C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_sql
 	
 Crear la tarea programada para enviar reportes diarios
 	//Enviar Reportes
@@ -269,12 +202,15 @@ Crear la tarea programada para enviar reportes diarios
 	
 Habilitar el uso compartida de la impresora
 	
+	
 Habilitar firewall
 	panel de control >>> firewall de window defender  >>>> 
 	permitir una aplicacion >>> cambiar la configuracion >>>>
 	permitir otra aplicacion >>> examinar >>> 
 	xampp/apache/bin/httpd.exe >>> aceptar >>> private and public
 
+Probar la configuracion de pago
+	http://localhost/posmev4/
 
 Encrptar los siguientes archivos
 	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\system\libraries\Email.php
@@ -284,6 +220,7 @@ Encrptar los siguientes archivos
 	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\application\libraries\.....
 	
 
+	
 ---------------------------------------
 actualizacion:
 ---------------------------------------
@@ -315,14 +252,16 @@ actualizacion:
 	levantar base de datos del cliente 	
 	
 	guardar la copia en el disco duro de la base de datos del cliente
-	E:\Witman_BDMySQL\posme_2022_09_18_0000_000.sql
-	
+	E:\Witman_BDMySQL\posme_2022_09_18_0000_000.sql	
 	
 	mandar la siguiente carpeta
 	C:\xampp\teamds2\nsSystem\v4posme\app
 	C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_customer
 	C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_job
 	C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_upgrade
+	C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_sql
+	C:\xampp\teamds2\nsSystem\v4posme\public\resource\js
+	C:\xampp\teamds2\nsSystem\v4posme\public\resource\css
 	
 	
 	

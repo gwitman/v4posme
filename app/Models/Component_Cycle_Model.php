@@ -183,7 +183,7 @@ class Component_Cycle_Model extends Model  {
 		
 		
 		//Ejecutar Consulta
-		return $db->query($sql)->getResult();
+		return $builder->get()->getResult();
 		
 		
    }

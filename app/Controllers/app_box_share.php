@@ -588,7 +588,9 @@ class app_box_share extends _BaseController {
 			$transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
 			
 			//Crear la Carpeta para almacenar los Archivos del Documento			
-			mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID, 0777,true);
+			$filterPath = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID;
+			if (!file_exists($filterPath))			
+			mkdir($filterPath, 0777,true);
 			
 			//Ingresar Informacion Adicional
 			$objTMInfo["companyID"]					= $objTM["companyID"];

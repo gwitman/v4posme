@@ -34,7 +34,7 @@ class app_inventory_api extends _BaseController {
 			
 						
 			$query									= "CALL pr_inventory_create_transaction_output_by_formulated(?,?,?,?,?,@resultMayorization);";
-			$resultMayorizate						= $this->Bd_Mode->executeRender(
+			$resultMayorizate						= $this->Bd_Model->executeRender(
 				$query,[$companyID,$branchID,$loginID,$componentPeriodID,$componentCycleID]
 			);	
 			

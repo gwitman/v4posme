@@ -222,7 +222,7 @@ class app_accounting_period extends _BaseController {
 					//Ingresar Periodo
 					if($continue){
 						$db=db_connect();
-			$db->transStart();
+						$db->transStart();
 						$obj["companyID"]		= $dataSession["user"]->companyID;
 						$obj["componentID"]		= $objComponentAccounting->componentID;
 						$obj["number"]			= date("YmdHis");
@@ -323,7 +323,7 @@ class app_accounting_period extends _BaseController {
 					
 					if($continue){
 						$db=db_connect();
-			$db->transStart();					
+						$db->transStart();					
 						
 						if(!$this->core_web_workflow->validateWorkflowStage("tb_accounting_period","statusID",$objOld->statusID,COMMAND_EDITABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
 						{
@@ -347,7 +347,7 @@ class app_accounting_period extends _BaseController {
 							//Actualizar Periodo
 							$result 					= $this->Component_Period_Model->update_app_posme($companyID,$componentID,$componentPeriodID,$obj);
 							
-													
+							
 							//Ingresar los Ciclos
 							$objListCycleID 		= /*inicio get post*/ $this->request->getPost("txtComponentCycleID"); 
 							$objListCycleStartOn 	= /*inicio get post*/ $this->request->getPost("txtCycleStartOn");
@@ -369,6 +369,7 @@ class app_accounting_period extends _BaseController {
 								
 							}
 							
+												
 							//Eliminar los Ciclos que fueron eliminados por el usuario
 							$this->Component_Cycle_Model->deleteNotInArray($companyID,$componentID,$componentPeriodID,$objListCycleID);
 							

@@ -14,6 +14,7 @@
 	var objRowTableProductosSearch 			= null;	
 	var varStatusInvoiceAplicado			= 67; //Estado Aplicada
 	var varStatusInvoiceAnular				= 68; //Anular
+	var varIsMobile							= '<?php echo $isMobile; ?>';
 	var varPermitirFacturarProductosEnZero	= '<?php echo $objParameterInvoiceBillingQuantityZero; ?>';
 	var varParameterShowComandoDeCocina 	= <?php echo $objParameterShowComandoDeCocina; ?>;
 	var varParameterImprimirPorCadaFactura 	= '<?php echo $objParameterImprimirPorCadaFactura; ?>';
@@ -88,6 +89,7 @@
 		fnObtenerListadoProdcutosSku();
 		fnGetCustomerClient(<?php echo $objTransactionMaster->entityID; ?>);
 		setTimeout( function() { fnWaitClose(); }, 1000);
+		setTimeout( function() { onCompletePantalla(); }, 3000);
 	}
 	//No actualizar datos
 	else{		
@@ -98,7 +100,9 @@
 
 	
 	//Incializar Focos
+	if(varIsMobile != "1")
 	document.getElementById("txtScanerCodigo").focus();	
+
 	$(document).ready(function(){					
 		 $('#txtDate').datepicker({format:"yyyy-mm-dd"});						 
 		 $("#txtDate").datepicker("update");
@@ -186,12 +190,19 @@
 			"aoColumnDefs": [ 
 						{
 							"aTargets"		: [ 0 ],//checked
+							"sWidth"		: "50px",
 							"mRender"		: function ( data, type, full ) {
+								
 								if (data == false)
 								return '<input type="checkbox"  class="classCheckedDetail"  value="0" ></span>';
 								else
 								return '<input type="checkbox"  class="classCheckedDetail" checked="checked" value="0" ></span>';
 							}
+							//,
+							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//{
+							//	  $(td).css("display","block");
+							//}
 						},
 						{
 							"aTargets"		: [ 1 ],//transactionMasterDetailID
@@ -201,6 +212,11 @@
 							"mRender"		: function ( data, type, full ) {
 								return '<input type="hidden" value="'+data+'" name="txtTransactionMasterDetailID[]" />';
 							}
+							//,
+							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//{
+							//	  $(td).css("display","block");
+							//}
 						},
 						{
 							"aTargets"		: [ 2 ],//itemID
@@ -210,31 +226,56 @@
 							"mRender"		: function ( data, type, full ) {
 								return '<input type="hidden" value="'+data+'" name="txtItemID[]" />';
 							}
+							//,
+							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//{
+							//	  $(td).css("display","block");
+							//}
+						},
+						{
+							"aTargets"		: [ 3 ],//itemNumber
+							"sWidth"		: "250px",
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12" style="text-align:left" value="'+data+'" readonly="true" />';
+							}
+							//,
+							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//{
+							//	  $(td).css("display","block");
+							//}
 						},
 						{
 							"aTargets"		: [ 4 ],//descripcion
-							"sWidth" 		: "40%"
+							"sWidth"		: "250px",
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12" style="text-align:left" value="'+data+'" readonly="true" />';
+							}
+							//,
+							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//{
+							//	  $(td).css("display","block");
+							//}
 						},
 						{
 							"aTargets"		: [ 5 ],//Sku
-							"sWidth"		: "180px",
+							"sWidth"		: "250px",
 							"mRender"		: function ( data, type, full ) {
 								
 								var objListaSkuByProducto 	= jLinq.from(objListaProductosSku).where(function(obj){ return obj.itemID == full[2]; }).select();
 								var sel 					= '';
-								sel 						= '<select name="txtSku[]" id="txtSku'+full[2]+'" class="txtSku" >';									
+								sel 						= '<select name="txtSku[]" id="txtSku'+full[2]+'" class="txtSku col-lg-12" >';									
 								
 								if(objListaSkuByProducto.length == 0)
 								{
-									sel = sel + '<option value="0" data-skuv="1" data-skupriceunitary="'+full[11]+'" selected style="font-size:200%" >UNIDAD</option>';
+									sel = sel + '<option value="0" data-skuv="1" data-skupriceunitary="'+full[11]+'" selected style="font-size:200%" >UNIDAD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>';
 								}
 								else{
 									for(var ix = 0 ; ix < objListaSkuByProducto.length ; ix++)
 									{
 										if(objListaSkuByProducto[ix].catalogItemID == data)
-											sel = sel + '<option value="'+objListaSkuByProducto[ix].catalogItemID+'" data-skuv="'+objListaSkuByProducto[ix].Valor+'" data-skupriceunitary="'+ (full[11]) +'"  style="font-size:200%" selected >'+objListaSkuByProducto[ix].Sku+'</option>';
+											sel = sel + '<option value="'+objListaSkuByProducto[ix].catalogItemID+'" data-skuv="'+objListaSkuByProducto[ix].Valor+'" data-skupriceunitary="'+ (full[11]) +'"  style="font-size:200%" selected >'+objListaSkuByProducto[ix].Sku+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>';
 										else
-											sel = sel + '<option value="'+objListaSkuByProducto[ix].catalogItemID+'" data-skuv="'+objListaSkuByProducto[ix].Valor+'" data-skupriceunitary="'+ (full[11]) +'"  style="font-size:200%"  >'+objListaSkuByProducto[ix].Sku+'</option>';
+											sel = sel + '<option value="'+objListaSkuByProducto[ix].catalogItemID+'" data-skuv="'+objListaSkuByProducto[ix].Valor+'" data-skupriceunitary="'+ (full[11]) +'"  style="font-size:200%"  >'+objListaSkuByProducto[ix].Sku+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>';
 									}																				
 								}
 								
@@ -242,24 +283,47 @@
 								return sel;
 										
 							}
+							//,
+							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//{
+							//	  $(td).css("display","block");
+							//}
 						},
 						{
 							"aTargets"		: [ 6 ],//Cantidad
+							"sWidth"		: "250px",
 							"mRender"		: function ( data, type, full ) {
 								return '<input type="text" class="col-lg-12 txtQuantity" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right" />';
 							}
+							//,
+							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//{
+							//	  $(td).css("display","block");
+							//}
 						},
 						{
 							"aTargets"		: [ 7 ],//Precio
+							"sWidth"		: "250px",
 							"mRender"		: function ( data, type, full ) {									
 								return '<input type="text" class="col-lg-12 txtPrice" '+PriceStatus+'  id="txtPriceRow'+full[2]+'"    value="'+ data +'" name="txtPrice[]" style="text-align:right" />';
 							}
+							//,
+							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//{
+							//	  $(td).css("display","block");
+							//}
 						},
 						{
 							"aTargets"		: [ 8 ],//Total
+							"sWidth"		: "250px",
 							"mRender"		: function ( data, type, full ) {
 								return '<input type="text" class="col-lg-12 txtSubTotal" readonly value="'+data+'" name="txtSubTotal[]" style="text-align:right" />';
 							}
+							//,
+							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//{
+							//	  $(td).css("display","block");
+							//}
 						},
 						{
 							"aTargets"		: [ 9 ],//Iva
@@ -269,6 +333,11 @@
 							"mRender"		: function ( data, type, full ) {
 								return '<input type="text" class="col-lg-12 txtIva" value="'+data+'" name="txtIva[]" style="text-align:right" />';
 							}
+							//,
+							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//{
+							//	  $(td).css("display","block");
+							//}
 						},
 						{
 							"aTargets"		: [ 10 ],//skuQuantityBySku
@@ -278,6 +347,11 @@
 							"mRender"		: function ( data, type, full ) {
 								return '<input type="text" class="col-lg-12 skuQuantityBySku" value="'+data+'" name="skuQuantityBySku[]" style="text-align:right" />';
 							}
+							//,
+							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//{
+							//	  $(td).css("display","block");
+							//}
 						},
 						{
 							"aTargets"		: [ 11 ],//unitaryPriceInvidual
@@ -287,9 +361,17 @@
 							"mRender"		: function ( data, type, full ) {
 								return '<input type="text" class="col-lg-12 unitaryPriceInvidual" value="'+data+'" name="unitaryPriceInvidual[]" style="text-align:right" />';
 							}
+							//,
+							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//{
+							//	  $(td).css("display","block");
+							//}
 						}
 			]						
-		});			
+		});		
+
+
+	 
 
 		refreschChecked();
 		fnRecalculateDetail(false,"");		
@@ -525,7 +607,10 @@
 			 
 			 
 		$('#mi_modal').on('hidden.bs.modal', function (e) {
+			
+			if(varIsMobile != "1")
 			document.getElementById("txtScanerCodigo").focus();	
+		
 		});
 		
 		
@@ -688,7 +773,8 @@
 		});
 		
 		//Evento Agregar el Usuario
-		$(document).on("click",".btnAcept",function(){
+		$(document).on("click",".btnAcept",function(e){
+				e.preventDefault();
 				var valueWorkflow = $(this).data("valueworkflow");
 				$("#txtStatusID").val(valueWorkflow);			
 				fnEnviarFactura();
@@ -700,7 +786,7 @@
 		
 		//Eliminar Documento
 		$(document).on("click","#btnDelete",function(){	
-			debugger;
+			
 			fnShowConfirm("Confirmar..","Desea eliminar este Registro...",function(){
 				
 				fnWaitOpen();
@@ -827,7 +913,20 @@
 			$("#txtChangeAmount").val(resultTotal);	
 			
 		});
+		
+		
 	});
+	
+	function onCompletePantalla(){
+		$(".btn-comando-factura").removeClass("hidden");
+		
+		if(varIsMobile == "1" ){
+		   $("#tb_transaction_master_detail th").css("display","none");
+		   $("#tb_transaction_master_detail td").css("display","block");
+	    }
+	   
+	   
+	}
 	
 	//Seleccionar Checke 
 	$(document).on("click",".classCheckedDetail",function(){
@@ -1176,7 +1275,7 @@
 
 
 	function fnRecalculateDetail(clearRecibo,sourceEvent){
-		debugger;
+		
 		var typePriceID 			= $("#txtTypePriceID").val();
 		var cantidad 				= 0;
 		var iva 					= 0;

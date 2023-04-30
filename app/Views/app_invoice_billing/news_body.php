@@ -400,7 +400,7 @@
 				<div class="row">
 					<div class="col-lg-12">
 						<h3>Detalle:</h3>
-						<table id="tb_transaction_master_detail" class="table table-bordered">
+						<table id="tb_transaction_master_detail" class="table table-bordered"  >
 							<thead>
 							  <tr>
 								<th></th>
@@ -438,68 +438,118 @@
 				
 				<br/>
 				
-				<div class="row">
-					<div class="col col-lg-2">
-						<a href="#" class="btn btn-flat btn-info  btn-block" id="btnNewItem" ><i class="icon16 i-print"></i> AGREGAR PRO</a>
-					</div>
-					<div class="col col-lg-2">
-						<a href="#" class="btn btn-flat btn-danger  btn-block" id="btnDeleteItem" ><i class="icon16 i-print"></i> ELIMINAR PRO</a>					
-					</div>
-					<div class="col col-lg-2">
-						<div class="btn-group  btn-block">
-							<button type="button" class="btn btn-flat btn-success dropdown-toggle  btn-block" data-toggle="dropdown"><i class="icon16 i-print"></i> PRODUCTO <span class="caret"></span></button>
-							<ul class="dropdown-menu">
-									<li><a href="#" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>						
-									<li><a href="#" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>
-							</ul>
+				<?php
+				if($isMobile != "1")
+				{
+					?>
+						<div class="row">
+							<div class="col col-lg-2">
+								<a href="#" class="btn btn-flat btn-info   btn-block hidden btn-comando-factura" id="btnNewItem" ><i class="icon16 i-print"></i> AGREGAR PRO</a>
+							</div>
+							<div class="col col-lg-2">
+								<a href="#" class="btn btn-flat btn-danger  btn-block hidden btn-comando-factura" id="btnDeleteItem" ><i class="icon16 i-print"></i> ELIMINAR PRO</a>					
+							</div>
+							<div class="col col-lg-2">
+								<div class="btn-group  btn-block">
+									<button type="button" class="btn btn-flat btn-success dropdown-toggle  btn-block hidden btn-comando-factura" data-toggle="dropdown"><i class="icon16 i-print"></i> PRODUCTO <span class="caret"></span></button>
+									<ul class="dropdown-menu">
+											<li><a href="#" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>						
+											<li><a href="#" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>
+									</ul>
+								</div>
+							</div>
+							<div class="col col-lg-2">
+								<a href="<?php echo base_url(); ?>/app_invoice_billing/index" id="btnBack" class="btn btn-inverse  btn-block hidden btn-comando-factura" ><i class="icon16 i-rotate"></i> REGRESAR</a>
+							</div>
 						</div>
-					</div>
-					<div class="col col-lg-2">
-						<a href="<?php echo base_url(); ?>/app_invoice_billing/index" id="btnBack" class="btn btn-inverse  btn-block" ><i class="icon16 i-rotate"></i> REGRESAR</a>
-					</div>
-				</div>
-				<br/>
-				
-				<div class="row">
-				
-					<div class="col col-lg-2">
-						<a href="<?php echo base_url(); ?>/app_invoice_billing/add" class="btn btn-flat btn-info btn-block" id="btnNew"><i class="icon16 i-checkmark-4"></i> NUEVA FAC</a>
-					</div>
-					
-					<div class="col col-lg-2">
-							
-							<?php 
-							if ($objParameterInvoiceAutoApply == "true"){
-								?>
-								<a href="#" class="btn btn-warning  btn-block" id="btnAcept"><i class="icon16 i-checkmark-4"></i> 
-								APLICAR
-								</a>
-								<?php
-							}
-							else{
-								?>
-								<a href="#" class="btn btn-warning  btn-block" id="btnAcept"><i class="icon16 i-checkmark-4"></i> 
-								REGISTRAR
-								</a>
-								<?php 
-							}
-							?>
 						
+						<br/>
+						
+						<div class="row">
+						
+							<div class="col col-lg-2">
+								<a href="<?php echo base_url(); ?>/app_invoice_billing/add" class="btn btn-flat btn-info btn-block hidden btn-comando-factura" id="btnNew"><i class="icon16 i-checkmark-4"></i> NUEVA FAC</a>
+							</div>
+							
+							<div class="col col-lg-2">
+									
+									<?php 
+									if ($objParameterInvoiceAutoApply == "true"){
+										?>
+										<a href="#" class="btn btn-warning  btn-block hidden btn-comando-factura" id="btnAcept"><i class="icon16 i-checkmark-4"></i> 
+										APLICAR
+										</a>
+										<?php
+									}
+									else{
+										?>
+										<a href="#" class="btn btn-warning  btn-block hidden btn-comando-factura" id="btnAcept"><i class="icon16 i-checkmark-4"></i> 
+										REGISTRAR
+										</a>
+										<?php 
+									}
+									?>
+								
+							</div>
+						</div>
+
+						
+
+					<?php
+				}
+				else{
+					?>
+					<div class="row">
+							<div class="col col-lg-2">
+								<div class="btn-group  btn-block hidden btn-comando-factura">
+									<button type="button" class="btn btn-flat btn-success dropdown-toggle  btn-block" data-toggle="dropdown"><i class="icon16 i-print"></i> COMANDOS <span class="caret"></span></button>
+									<ul class="dropdown-menu">
+											<li><a href="#" id="btnNewItem" >AGREGAR PRO</a></li>
+											<li><a href="#" id="btnDeleteItem" >ELIMINAR PRO</a></li>
+											<li><a href="#" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>						
+											<li><a href="#" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>
+											<li><a href="<?php echo base_url(); ?>/app_invoice_billing/index" id="btnBack" >REGRESAR</a></li>
+											<li><a href="<?php echo base_url(); ?>/app_invoice_billing/add" id="btnNew">NUEVA FAC</a></li>
+											
+											<?php 
+												if ($objParameterInvoiceAutoApply == "true"){
+													?>
+													<li>
+													<a href="#" id="btnAcept">
+													APLICAR
+													</a>
+													</li>
+													<?php
+												}
+												else{
+													?>
+													<li>
+													<a href="#" id="btnAcept">
+													REGISTRAR
+													</a>
+													</li>
+													<?php 
+												}
+											?>
+											
+											
+									</ul>
+								</div>
+							</div>
 					</div>
-				</div>
-
+					<?php
+				}
+				?>
 				
-
 				
 				
 				<br/>
 				<br/>
 				<input class="form-control"  type="text"  name="txtScanerCodigo" id="txtScanerCodigo" value="" >
 				
-														
-				
 
 				<div class="row">
+					
 					<div class="col-lg-4">
 						<div class="page-header">
 							<h3>Ref.</h4>
@@ -514,6 +564,7 @@
 						</ul>
 
 					</div>
+					
 					<div class="col-lg-4">
 						<div class="page-header">
 							<h3>Pago</h3>
@@ -521,27 +572,28 @@
 						<table class="table table-bordered">
 							<tbody>
 								<tr>
-									<th>INGRESO Cordoba</th>
+									<th style="width:200px">INGRESO Cordoba</th>
 									<td >
-										<input type="text" id="txtReceiptAmount" name="txtReceiptAmount"  class="col-lg-12" value="" style="text-align:right"/>
+										<input type="text" id="txtReceiptAmount" name="txtReceiptAmount"  class="col-lg-12" value="" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
 								</tr>
 								
 								<tr>
 									<th>INGRESO Dolares</th>
 									<td >
-										<input type="text" id="txtReceiptAmountDol" name="txtReceiptAmountDol"  class="col-lg-12" value="" style="text-align:right"/>
+										<input type="text" id="txtReceiptAmountDol" name="txtReceiptAmountDol"  class="col-lg-12" value="" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
 								</tr>
 								<tr>
 									<th>CAMBIO Cordoba</th>
 									<td >
-										<input type="text" id="txtChangeAmount" name="txtChangeAmount" readonly class="col-lg-12" value="" style="text-align:right"/>
+										<input type="text" id="txtChangeAmount" name="txtChangeAmount" readonly class="col-lg-12" value="" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
+					
 					<div class="col-lg-4">
 						<div class="page-header">
 							<h3>Resumen</h3>
@@ -549,26 +601,27 @@
 						<table class="table table-bordered">
 							<tbody>
 								<tr>
-									<th>SUB TOTAL</th>
+									<th style="width:200px" >SUB TOTAL</th>
 									<td >
-										<input type="text" id="txtSubTotal" name="txtSubTotal" readonly class="col-lg-12" value="" style="text-align:right"/>
+										<input type="text" id="txtSubTotal" name="txtSubTotal" readonly class="col-lg-12" value="" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
 								</tr>
 								<tr>
 									<th>IVA</th>
 									<td >
-										<input type="text" id="txtIva" name="txtIva" readonly class="col-lg-12" value="" style="text-align:right"/>
+										<input type="text" id="txtIva" name="txtIva" readonly class="col-lg-12" value="" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
 								</tr>
 								<tr>
 									<th>TOTAL</th>
 									<td >
-										<input type="text" id="txtTotal" name="txtTotal" readonly class="col-lg-12" value="" style="text-align:right"/>
+										<input type="text" id="txtTotal" name="txtTotal" readonly class="col-lg-12" value="" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
 								</tr>
 							</tbody>
 						</table>
-					</div><!-- End .col-lg-6  --> 
+					</div>
+					
 				</div><!-- End .row-fluid  -->                                       
 			</div>
 			</form>

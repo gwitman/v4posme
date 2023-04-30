@@ -1,0 +1,40 @@
+INFO - 2023-04-22 10:14:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2023-04-22 10:14:21 --> Undefined variable $dataSession
+in APPPATH\Controllers\app_invoice_billing.php on line 2246.
+ 1 APPPATH\Controllers\app_invoice_billing.php(2246): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $dataSession', 'APPPATH\\Controllers\\app_invoice_billing.php', 2246)
+ 2 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\app_invoice_billing->index()
+ 3 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\app_invoice_billing))
+ 4 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2023-04-22 10:15:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2023-04-22 10:15:24 --> Undefined variable $dataSession
+in APPPATH\Controllers\app_invoice_billing.php on line 2246.
+ 1 APPPATH\Controllers\app_invoice_billing.php(2246): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $dataSession', 'APPPATH\\Controllers\\app_invoice_billing.php', 2246)
+ 2 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\app_invoice_billing->index()
+ 3 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\app_invoice_billing))
+ 4 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2023-04-22 10:16:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2023-04-22 10:16:27 --> Undefined variable $dataSession
+in APPPATH\Controllers\app_invoice_billing.php on line 2246.
+ 1 APPPATH\Controllers\app_invoice_billing.php(2246): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $dataSession', 'APPPATH\\Controllers\\app_invoice_billing.php', 2246)
+ 2 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\app_invoice_billing->index()
+ 3 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\app_invoice_billing))
+ 4 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2023-04-22 11:00:02 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2023-04-22 11:00:02 --> Undefined variable $dataSession
+in APPPATH\Controllers\app_invoice_billing.php on line 2246.
+ 1 APPPATH\Controllers\app_invoice_billing.php(2246): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $dataSession', 'APPPATH\\Controllers\\app_invoice_billing.php', 2246)
+ 2 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\app_invoice_billing->index()
+ 3 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\app_invoice_billing))
+ 4 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2023-04-22 11:02:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2023-04-22 11:02:36 --> Undefined variable $dataSession
+in APPPATH\Controllers\app_invoice_billing.php on line 2246.
+ 1 APPPATH\Controllers\app_invoice_billing.php(2246): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $dataSession', 'APPPATH\\Controllers\\app_invoice_billing.php', 2246)
+ 2 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\app_invoice_billing->index()
+ 3 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\app_invoice_billing))
+ 4 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()

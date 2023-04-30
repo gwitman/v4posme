@@ -164,8 +164,8 @@ class app_accounting_level extends _BaseController {
 			
 			//Validar Formulario						
 			$this->validation->setRule("txtName","Nombre","required");    			
-			$this->validation->setRule("txtLengthTotal","Longitud Total","callback_number_check");
-			$this->validation->setRule("txtLengthGroup","Longitud del Grupo","callback_number_check");
+			$this->validation->setRule("txtLengthTotal","Longitud Total","required");
+			$this->validation->setRule("txtLengthGroup","Longitud del Grupo","required");
 			
 			 
 			//Nuevo Registro			
@@ -188,7 +188,7 @@ class app_accounting_level extends _BaseController {
 					//Ingresar Cuenta
 					if($continue){
 						$db=db_connect();
-			$db->transStart();
+						$db->transStart();
 						//Crear Cuenta
 						$obj["companyID"]			= $dataSession["user"]->companyID;
 						$obj["name"] 				= /*inicio get post*/ $this->request->getPost("txtName");
@@ -245,7 +245,7 @@ class app_accounting_level extends _BaseController {
 					
 					if($continue){
 						$db=db_connect();
-			$db->transStart();
+						$db->transStart();
 						
 						//Actualizar Rol
 						$companyID 			= /*inicio get post*/ $this->request->getPost("txtCompanyID");

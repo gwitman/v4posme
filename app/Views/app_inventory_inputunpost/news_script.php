@@ -169,6 +169,20 @@
 				
 		});	
 		
+		$(document).on("focus",".txt-numeric",function(){
+			if ( fnFormatFloat( $(this).val()  ) == 0)
+			{
+				$(this).val("");
+			}			
+		});
+		$(document).on("blur",".txt-numeric",function(){
+			if( $(this).val()   == "")
+			{
+				$(this).val("0.00");
+			}			
+		});
+		
+		
 		//Agregar Item al Detalle
 		$(document).on("click","#btnNewDetailTransaction",function(){
 			var timerNotification 	= 15000;
@@ -367,7 +381,9 @@
 		objRow.masinfor,objRow.precio1,objRow.precio2
 		]);
 		refreschChecked();
-		$("#txtSubTotal").focus();
+		var lastRow 	= $(".txtDetailQuantity").length ;
+		lastRow 		= lastRow - 1;
+		$($(".txtDetailQuantity")[lastRow]).focus();
 		
 	}
 	//Refresh

@@ -450,70 +450,124 @@
 				
 				<br/>
 				
-				<div class="row">
-					<div class="col col-lg-2">
-						<a href="#" class="btn btn-flat btn-info btn-block" id="btnNewItem" ><i class="icon16 i-print"></i> AGREGAR PRO</a>
-					</div>
-					<div class="col col-lg-2">
-						<a href="#" class="btn btn-flat btn-danger btn-block" id="btnDeleteItem" ><i class="icon16 i-print"></i> ELIMINAR PRO</a>	
-					</div>
-					<div class="col col-lg-2">
-						<div class="btn-group btn-block">
-							<button  type="button" class="btn btn-flat btn-success dropdown-toggle btn-block" data-toggle="dropdown"><i class="icon16 i-print"></i> PRODUCTO <span class="caret"></span></button>
-							<ul class="dropdown-menu">
-									<li><a href="#" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>						
-									<li><a href="#" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>
-							</ul>
+				<?php
+				if($isMobile != "1")
+				{
+					?>
+					<div class="row">
+						<div class="col col-lg-2">
+							<a href="#" class="btn btn-flat btn-info btn-block hidden btn-comando-factura" id="btnNewItem" ><i class="icon16 i-print"></i> AGREGAR PRO</a>
+						</div>
+						<div class="col col-lg-2">
+							<a href="#" class="btn btn-flat btn-danger btn-block hidden btn-comando-factura" id="btnDeleteItem" ><i class="icon16 i-print"></i> ELIMINAR PRO</a>	
+						</div>
+						<div class="col col-lg-2">
+							<div class="btn-group btn-block  hidden btn-comando-factura ">
+								<button  type="button" class="btn btn-flat btn-success dropdown-toggle btn-block" data-toggle="dropdown"><i class="icon16 i-print"></i> PRODUCTO <span class="caret"></span></button>
+								<ul class="dropdown-menu">
+										<li><a href="#" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>						
+										<li><a href="#" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>
+								</ul>
+							</div>
+						</div>
+						<div class="col col-lg-2">
+							<a href="<?php echo base_url(); ?>/app_invoice_billing/index" id="btnBack" class="btn btn-flat btn-inverse btn-block hidden btn-comando-factura" ><i class="icon16 i-rotate"></i> REGRESAR</a>    				
 						</div>
 					</div>
-					<div class="col col-lg-2">
-						<a href="<?php echo base_url(); ?>/app_invoice_billing/index" id="btnBack" class="btn btn-flat btn-inverse btn-block" ><i class="icon16 i-rotate"></i> REGRESAR</a>    				
-					</div>
-				</div>
-				<br/>
-				<div class="row">
-					<div class="col col-lg-2">
-						<a href="<?php echo base_url(); ?>/app_invoice_billing/add" class="btn btn-flat btn-info btn-block" id="btnNew"><i class="icon16 i-checkmark-4"></i> NUEVA FAC</a>
-					</div>
-					<div class="col col-lg-2">
-						<a href="#" class="btn btn-flat btn-danger btn-block" id="btnDelete"><i class="icon16 i-remove "></i> ELIMINAR FAC</a>	
-					</div>
-					<div class="col col-lg-2">
-						<a href="#" class="btn btn-flat btn-primary btn-block" id="btnPrinter"><i class="icon16 i-print "></i> IMPRIMIR</a>
-					</div>
-					
-					<?php 
-					if($objParameterShowComandoDeCocina == 'true' ){
-						?>
-							<div class="col col-lg-2">
-								<a href="#" class="btn btn-flat btn-primary btn-block" id="btnFooter"><i class="icon16 i-print "></i> COCINA</a>
-							</div>
+					<br/>
+					<div class="row">
+						<div class="col col-lg-2">
+							<a href="<?php echo base_url(); ?>/app_invoice_billing/add" class="btn btn-flat btn-info btn-block hidden btn-comando-factura" id="btnNew"><i class="icon16 i-checkmark-4"></i> NUEVA FAC</a>
+						</div>
+						<div class="col col-lg-2">
+							<a href="#" class="btn btn-flat btn-danger btn-block hidden btn-comando-factura" id="btnDelete"><i class="icon16 i-remove "></i> ELIMINAR FAC</a>	
+						</div>
+						<div class="col col-lg-2">
+							<a href="#" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnPrinter"><i class="icon16 i-print "></i> IMPRIMIR</a>
+						</div>
+						
 						<?php 
-					}
-					?>
-					
-				</div>
-				<br/>
-				<div class="row">
+						if($objParameterShowComandoDeCocina == 'true' ){
+							?>
+								<div class="col col-lg-2">
+									<a href="#" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnFooter"><i class="icon16 i-print "></i> COCINA</a>
+								</div>
+							<?php 
+						}
+						?>
+						
+					</div>
+					<br/>
+					<div class="row">
+						<?php
+						$counter = 0;
+						if($objListWorkflowStage)
+						foreach($objListWorkflowStage as $ws){					
+							$counter++;
+							if($counter == 1){
+							echo '<div class="col col-lg-2">';
+							echo "<a href='#' class='btn btn-flat btn-warning btnAcept btn-block hidden btn-comando-factura'  data-valueworkflow='".$ws->workflowStageID."'   > <i class='icon16 i-checkmark-4'></i>  ".$ws->name."</a> ";							
+							echo '</div>';
+							}
+							else{
+							echo '<div class="col col-lg-2">';
+							echo "<a href='#' class='btn btn-flat btn-warning btnAcept btnAceptAplicar btn-block hidden btn-comando-factura' data-valueworkflow='".$ws->workflowStageID."'  > <i class='icon16 i-checkmark-4'></i>  ".$ws->name."</a> ";
+							echo '</div>';
+							}
+						}
+						?>
+						
+					</div>
+				
 					<?php
-					$counter = 0;
-					if($objListWorkflowStage)
-					foreach($objListWorkflowStage as $ws){					
-						$counter++;
-						if($counter == 1){
-						echo '<div class="col col-lg-2">';
-						echo "<a href='#' class='btn btn-flat btn-warning btnAcept btn-block'  data-valueworkflow='".$ws->workflowStageID."'   > <i class='icon16 i-checkmark-4'></i>  ".$ws->name."</a> ";							
-						echo '</div>';
-						}
-						else{
-						echo '<div class="col col-lg-2">';
-						echo "<a href='#' class='btn btn-flat btn-warning btnAcept btnAceptAplicar btn-block' data-valueworkflow='".$ws->workflowStageID."'  > <i class='icon16 i-checkmark-4'></i>  ".$ws->name."</a> ";
-						echo '</div>';
-						}
-					}
+				}
+				else{
 					?>
-					
-				</div>
+					<div class="row">
+							<div class="col col-lg-2">
+								<div class="btn-group  btn-block hidden btn-comando-factura">
+									<button type="button" class="btn btn-flat btn-success dropdown-toggle  btn-block" data-toggle="dropdown"><i class="icon16 i-print"></i> COMANDOS <span class="caret"></span></button>
+									<ul class="dropdown-menu">
+											<li><a href="#" id="btnNewItem" >AGREGAR PRO</a></li>
+											<li><a href="#" id="btnDeleteItem" >ELIMINAR PRO</a></li>
+											<li><a href="#" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>						
+											<li><a href="#" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>
+											<li><a href="<?php echo base_url(); ?>/app_invoice_billing/index" id="btnBack" >REGRESAR</a></li>
+											<li><a href="<?php echo base_url(); ?>/app_invoice_billing/add" id="btnNew">NUEVA FAC</a></li>
+											<li><a href="#" id="btnDelete">ELIMINAR FAC</a></li>				
+											<li><a href="#" id="btnPrinter">IMPRIMIR</a></li>
+											<?php 
+											if($objParameterShowComandoDeCocina == 'true' ){
+												?>
+													<li><a href="#"  id="btnFooter">COCINA</a></li>
+												<?php 
+											}
+											?>
+											
+											<?php											
+											$counter = 0;
+											if($objListWorkflowStage)
+											foreach($objListWorkflowStage as $ws){					
+												$counter++;
+												if($counter == 1){
+												echo "<li><a href='#' class='btnAcept'  data-valueworkflow='".$ws->workflowStageID."'   > ".$ws->name."</a></li>";
+												}
+												else{												
+												echo "<li><a href='#' class='btnAcept btnAceptAplicar' data-valueworkflow='".$ws->workflowStageID."'  >  ".$ws->name."</a> </li>";
+												}
+											}
+											?>
+											
+											
+											
+											
+									</ul>
+								</div>
+							</div>
+					</div>
+					<?php
+				}
+				?>
 				
 				
 				
@@ -550,20 +604,20 @@
 								<tr>
 									<th>INGRESO Cordoba</th>
 									<td >
-										<input type="text" id="txtReceiptAmount" name="txtReceiptAmount"  class="col-lg-12" value="<?php echo number_format($objTransactionMasterInfo->receiptAmount,2); ?>" style="text-align:right"/>
+										<input type="text" id="txtReceiptAmount" name="txtReceiptAmount"  class="col-lg-12" value="<?php echo number_format($objTransactionMasterInfo->receiptAmount,2); ?>" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
 								</tr>
 								
 								<tr>
 									<th>INGRESO Dolares</th>
 									<td>
-										<input type="text" id="txtReceiptAmountDol" name="txtReceiptAmountDol"  class="col-lg-12" value="<?php echo number_format($objTransactionMasterInfo->receiptAmountDol,2); ?>" style="text-align:right"/>
+										<input type="text" id="txtReceiptAmountDol" name="txtReceiptAmountDol"  class="col-lg-12" value="<?php echo number_format($objTransactionMasterInfo->receiptAmountDol,2); ?>" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
 								</tr>
 								<tr>
 									<th>CAMBIO Cordoba</th>
 									<td >
-										<input type="text" id="txtChangeAmount" name="txtChangeAmount" readonly class="col-lg-12" value="" style="text-align:right"/>
+										<input type="text" id="txtChangeAmount" name="txtChangeAmount" readonly class="col-lg-12" value="" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
 								</tr>
 							</tbody>
@@ -578,19 +632,19 @@
 								<tr>
 									<th>SUB TOTAL</th>
 									<td >
-										<input type="text" id="txtSubTotal" name="txtSubTotal" readonly class="col-lg-12" value="" style="text-align:right"/>
+										<input type="text" id="txtSubTotal" name="txtSubTotal" readonly class="col-lg-12" value="" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
 								</tr>
 								<tr>
 									<th>IVA</th>
 									<td >
-										<input type="text" id="txtIva" name="txtIva" readonly class="col-lg-12" value="" style="text-align:right"/>
+										<input type="text" id="txtIva" name="txtIva" readonly class="col-lg-12" value="" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
 								</tr>
 								<tr>
 									<th>TOTAL</th>
 									<td >
-										<input type="text" id="txtTotal" name="txtTotal" readonly class="col-lg-12" value="" style="text-align:right"/>
+										<input type="text" id="txtTotal" name="txtTotal" readonly class="col-lg-12" value="" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
 								</tr>
 							</tbody>

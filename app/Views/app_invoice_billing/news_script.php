@@ -11,6 +11,7 @@
 	var warehouseID 						= $("#txtWarehouseID").val();
 	var objTableProductosSearch 			= null;
 	var objRowTableProductosSearch 			= null;	
+	var varIsMobile							= '<?php echo $isMobile; ?>';
 	var varAutoAPlicar						= '<?php echo $objParameterInvoiceAutoApply; ?>';
 	var varPermitirFacturarProductosEnZero	= '<?php echo $objParameterInvoiceBillingQuantityZero; ?>';
 	var varParameterImprimirPorCadaFactura	= '<?php echo $objParameterImprimirPorCadaFactura; ?>';
@@ -22,6 +23,7 @@
 	var PriceStatus = varPermisosEsPermitidoModificarPrecio == true ? "":"readonly";
 		
 	//Incializar Focos
+	if(varIsMobile != "1")
 	document.getElementById("txtScanerCodigo").focus();
 	
 	
@@ -48,6 +50,8 @@
 		fnObtenerListadoProdcutosSku();
 		fnGetCustomerClient();
 		setTimeout( function() { fnWaitClose(); }, 1000);
+		setTimeout( function() { onCompletePantalla(); }, 3000);
+		
 	}
 	//No actualizar datos
 	else{		
@@ -76,6 +80,7 @@
 			"aoColumnDefs": [ 
 						{
 							"aTargets"		: [ 0 ],//checked
+							"sWidth"		: "50px",
 							"mRender"		: function ( data, type, full ) {
 								if (data == false)
 								return '<input type="checkbox"  class="classCheckedDetail"  value="0" ></span>';
@@ -102,29 +107,39 @@
 							}
 						},
 						{
+							"aTargets"		: [ 3 ],//itemNumber
+							"sWidth"		: "250px",
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12" style="text-align:left" value="'+data+'" readonly="true" />';
+							}
+						},
+						{
 							"aTargets"		: [ 4 ],//descripcion
-							"sWidth" 		: "40%"
+							"sWidth"		: "250px",
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12" style="text-align:left" value="'+data+'" readonly="true" />';
+							}
 						},
 						{
 							"aTargets"		: [ 5 ],//Sku
-							"sWidth"		: "180px",
+							"sWidth"		: "250px",
 							"mRender"		: function ( data, type, full ) {
 								
 								var objListaSkuByProducto 	= jLinq.from(objListaProductosSku).where(function(obj){ return obj.itemID == full[2]; }).select();
 								var sel 					= '';
-								sel 						= '<select name="txtSku[]" id="txtSku'+full[2]+'" class="txtSku" >';									
+								sel 						= '<select name="txtSku[]" id="txtSku'+full[2]+'" class="txtSku col-lg-12"  >';									
 								
 								if(objListaSkuByProducto.length == 0)
 								{
-									sel = sel + '<option value="0" data-skuv="1" data-skupriceunitary="'+full[7]+'"   selected style="font-size:200%" >UNIDAD</option>';
+									sel = sel + '<option value="0" data-skuv="1" data-skupriceunitary="'+full[7]+'"   selected style="font-size:200%" >UNIDAD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>';
 								}
 								else{
 									for(var ix = 0 ; ix < objListaSkuByProducto.length ; ix++)
 									{
 										if(objListaSkuByProducto[ix].catalogItemID == data)
-											sel = sel + '<option value="'+objListaSkuByProducto[ix].catalogItemID+'" data-skuv="'+objListaSkuByProducto[ix].Valor+'" data-skupriceunitary="'+full[7]+'"  style="font-size:200%" selected >'+objListaSkuByProducto[ix].Sku+'</option>';
+											sel = sel + '<option value="'+objListaSkuByProducto[ix].catalogItemID+'" data-skuv="'+objListaSkuByProducto[ix].Valor+'" data-skupriceunitary="'+full[7]+'"  style="font-size:200%" selected >'+objListaSkuByProducto[ix].Sku+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>';
 										else
-											sel = sel + '<option value="'+objListaSkuByProducto[ix].catalogItemID+'" data-skuv="'+objListaSkuByProducto[ix].Valor+'" data-skupriceunitary="'+full[7]+'"  style="font-size:200%"  >'+objListaSkuByProducto[ix].Sku+'</option>';
+											sel = sel + '<option value="'+objListaSkuByProducto[ix].catalogItemID+'" data-skuv="'+objListaSkuByProducto[ix].Valor+'" data-skupriceunitary="'+full[7]+'"  style="font-size:200%"  >'+objListaSkuByProducto[ix].Sku+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>';
 									}																				
 								}
 								
@@ -135,18 +150,21 @@
 						},
 						{
 							"aTargets"		: [ 6 ],//Cantidad
+							"sWidth"		: "250px",
 							"mRender"		: function ( data, type, full ) {
 								return '<input type="text" class="col-lg-12 txtQuantity" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right" />';
 							}
 						},
 						{
 							"aTargets"		: [ 7 ],//Precio
+							"sWidth"		: "250px",
 							"mRender"		: function ( data, type, full ) {
 								return '<input type="text" class="col-lg-12 txtPrice"   id="txtPriceRow'+full[2]+'"   '+PriceStatus+'  value="'+data+'" name="txtPrice[]" style="text-align:right" />';
 							}
 						},
 						{
 							"aTargets"		: [ 8 ],//Total
+							"sWidth"		: "250px",
 							"mRender"		: function ( data, type, full ) {
 								return '<input type="text" class="col-lg-12 txtSubTotal" readonly value="'+data+'" name="txtSubTotal[]" style="text-align:right" />';
 							}
@@ -397,6 +415,8 @@
 			 
 			 
 		$('#mi_modal').on('hidden.bs.modal', function (e) {
+			
+			if(varIsMobile != "1")
 			document.getElementById("txtScanerCodigo").focus();	
 		});
 		
@@ -609,7 +629,8 @@
 		});
 		
 		//Evento Agregar el Usuario
-		$(document).on("click","#btnAcept",function(){
+		$(document).on("click","#btnAcept",function(e){
+				e.preventDefault();
 				fnEnviarFactura();
 		});
 		
@@ -753,6 +774,9 @@
 		});
 		}
 		
+	
+
+		
 	});
 	
 	//Seleccionar Checke 
@@ -764,6 +788,15 @@
 		refreschChecked();
 	});
 	
+	function onCompletePantalla(){
+		$(".btn-comando-factura").removeClass("hidden");
+		
+		if(varIsMobile == "1" ){
+		   $("#tb_transaction_master_detail th").css("display","none");
+		   $("#tb_transaction_master_detail td").css("display","block");
+	    }
+		
+	}
 	
 	function onCompleteCustomer(objResponse){
 		console.info("CALL onCompleteCustomer");

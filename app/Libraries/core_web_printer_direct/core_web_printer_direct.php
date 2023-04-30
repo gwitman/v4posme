@@ -239,10 +239,8 @@ class core_web_printer_direct {
 
 		$this->printer->feed();
 		$this->printer->setTextSize(1, 1);
-		$this->printer->text("Chicarrones");
-		$this->printer->text("\n");
-		$this->printer->text("Carazeños");
-		$this->printer->text("\n");
+		$this->printer->text( $dataSetValores["objCompany"]->name);
+		$this->printer->text("\n");		
 		$this->printer->setTextSize(1, 1);		
 		$this->printer->text("\nRUC:".$dataSetValores["Identifier"]->value);
 		$this->printer->setTextSize(1, 1);
@@ -254,7 +252,7 @@ class core_web_printer_direct {
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\nEstado: ".$dataSetValores["objStage"][0]->display);
 		$this->printer->setTextSize(1, 1);
-		$this->printer->text("\nAtiende: "."Rosita");
+		$this->printer->text("\nAtiende: ". substr( $dataSetValores["objUser"]->nickname,0,10) );
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\nTipo: ".$dataSetValores["objTipo"]->name);
 		$this->printer->setTextSize(1, 1);
@@ -321,8 +319,8 @@ class core_web_printer_direct {
 		$this->printer->text("\nNegocio: ".$dataSetValores["objParameterPhoneProperty"]->value);
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\n".$dataSetValores["objCompany"]->address);
-		//$this->printer->setTextSize(1, 1);
-		//$this->printer->text("\nSistema:+(505) 8712-5827");
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nSistema:+(505) 8712-5827");
 
 		$this->printer->setTextSize(2, 1);
 		$this->printer->feed(8);

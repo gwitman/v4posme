@@ -77,7 +77,7 @@
                    
                   
                   </div>
-                  <p class="text-center px-3 mb-0"><?php echo $exception->getMessage();?></p>
+                  <p class="text-center px-3 mb-0"><?php echo $exception->getLine();?> <?php echo $exception->getMessage();?></p>
                 </div>
                 <!-- /Help Center Header -->
 
