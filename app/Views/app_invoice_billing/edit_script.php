@@ -1,6 +1,6 @@
 <!-- ./ page heading -->
 <script>	
-	fnWaitOpen();	
+	//fnWaitOpen();	
 	var objTableDetail 			= {};		
 	var tmpData 				= [];
 	var objListaProductos		= {};
@@ -88,13 +88,13 @@
 		fnObtenerListadoProductos3();
 		fnObtenerListadoProdcutosSku();
 		fnGetCustomerClient(<?php echo $objTransactionMaster->entityID; ?>);
-		setTimeout( function() { fnWaitClose(); }, 1000);
+		//setTimeout( function() { fnWaitClose(); }, 1000);
 		setTimeout( function() { onCompletePantalla(); }, 3000);
 	}
 	//No actualizar datos
 	else{		
 		fnGetCustomerClient(<?php echo $objTransactionMaster->entityID; ?>); 
-		setTimeout( function() { fnWaitClose(); }, 20);
+		//setTimeout( function() { fnWaitClose(); }, 20);
 	}
 
 
@@ -111,7 +111,10 @@
 		$("#txtDateFirst").datepicker("update");
 		var objectParameterButtoms = {};
 		var objectParameterButtomsCocina = {};
-		$("html, body").animate({scrollTop:  $("body").height()  +"px"});
+		
+		if(varIsMobile != "1"){
+			$("html, body").animate({scrollTop:  $("body").height()  +"px"});
+		}
 		
 		
 		
@@ -263,19 +266,24 @@
 								
 								var objListaSkuByProducto 	= jLinq.from(objListaProductosSku).where(function(obj){ return obj.itemID == full[2]; }).select();
 								var sel 					= '';
-								sel 						= '<select name="txtSku[]" id="txtSku'+full[2]+'" class="txtSku col-lg-12" >';									
+								var espacio					=  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";								
+								sel 						= '<select name="txtSku[]" id="txtSku'+full[2]+'" class="txtSku col-lg-12" >';	
+								
+								if(varIsMobile == "1")
+									espacio = "";							
+								
 								
 								if(objListaSkuByProducto.length == 0)
 								{
-									sel = sel + '<option value="0" data-skuv="1" data-skupriceunitary="'+full[11]+'" selected style="font-size:200%" >UNIDAD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>';
+									sel = sel + '<option value="0" data-skuv="1" data-skupriceunitary="'+full[11]+'" selected style="font-size:200%" >UNIDAD'+espacio+'</option>';
 								}
 								else{
 									for(var ix = 0 ; ix < objListaSkuByProducto.length ; ix++)
 									{
 										if(objListaSkuByProducto[ix].catalogItemID == data)
-											sel = sel + '<option value="'+objListaSkuByProducto[ix].catalogItemID+'" data-skuv="'+objListaSkuByProducto[ix].Valor+'" data-skupriceunitary="'+ (full[11]) +'"  style="font-size:200%" selected >'+objListaSkuByProducto[ix].Sku+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>';
+											sel = sel + '<option value="'+objListaSkuByProducto[ix].catalogItemID+'" data-skuv="'+objListaSkuByProducto[ix].Valor+'" data-skupriceunitary="'+ (full[11]) +'"  style="font-size:200%" selected >'+objListaSkuByProducto[ix].Sku+espacio+'</option>';
 										else
-											sel = sel + '<option value="'+objListaSkuByProducto[ix].catalogItemID+'" data-skuv="'+objListaSkuByProducto[ix].Valor+'" data-skupriceunitary="'+ (full[11]) +'"  style="font-size:200%"  >'+objListaSkuByProducto[ix].Sku+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>';
+											sel = sel + '<option value="'+objListaSkuByProducto[ix].catalogItemID+'" data-skuv="'+objListaSkuByProducto[ix].Valor+'" data-skupriceunitary="'+ (full[11]) +'"  style="font-size:200%"  >'+objListaSkuByProducto[ix].Sku+espacio+'</option>';
 									}																				
 								}
 								
@@ -918,14 +926,33 @@
 	});
 	
 	function onCompletePantalla(){
+		
 		$(".btn-comando-factura").removeClass("hidden");
 		
+		
 		if(varIsMobile == "1" ){
+		   
+		   $(".elementMovilOculto").addClass("hidden");
+		   
+		   
+		   
+		   $("#table-resumen").css("width", ( $( window ).width() )+"px");
+		   $("#table-resumen th").css("display","block");
+		   $("#table-resumen td").css("display","block");
+		   
+		   
+		   $("#table-resumen-pago").css("width", ( $( window ).width() )+"px");
+		   $("#table-resumen-pago th").css("display","block");
+		   $("#table-resumen-pago td").css("display","block");
+		   
+	
+		   
 		   $("#tb_transaction_master_detail th").css("display","none");
 		   $("#tb_transaction_master_detail td").css("display","block");
+		   
 	    }
 	   
-	   
+	    $("#divLoandingCustom").remove();
 	}
 	
 	//Seleccionar Checke 
@@ -956,6 +983,7 @@
 	
 	//Nuevo Producto
 	function onCompleteNewItem(objResponse,suma){
+		
 		console.info("CALL onCompleteNewItem");
 		var objRow 							= {};
 		objRow.checked 						= false;						
@@ -988,13 +1016,19 @@
 			objTableDetail.fnUpdate( fnFormatNumber(newCantidad,2)  , objind_, 6 );
 			
 			
-			$("#body_tb_transaction_master_detail tr")[objind_].animate({ 
-			backgroundColor : "#4eacc8" },500);
-			$("#body_tb_transaction_master_detail tr")[objind_].animate({ 
-			backgroundColor : "" },500);
+			
+			if(varIsMobile != "1"){
+				$("#body_tb_transaction_master_detail tr")[objind_].animate({ 
+				backgroundColor : "#4eacc8" },500);
+				
+				$("#body_tb_transaction_master_detail tr")[objind_].animate({ 
+				backgroundColor : "" },500);
+			}
+			
 			
 		}
-		else{		
+		else
+		{		
 			objTableDetail.fnAddData([
 				objRow.checked,
 				objRow.transactionMasterDetailID,
@@ -1010,18 +1044,23 @@
 				0
 			]);
 			
-				
-			$("#body_tb_transaction_master_detail tr")[objTableDetail.fnGetData().length - 1].animate({ 
-			backgroundColor : "#4eacc8" },500);
-			$("#body_tb_transaction_master_detail tr")[objTableDetail.fnGetData().length - 1].animate({ 
-			backgroundColor : "" },500);
+			if(varIsMobile != "1"){
+				$("#body_tb_transaction_master_detail tr")[objTableDetail.fnGetData().length - 1].animate({ 
+				backgroundColor : "#4eacc8" },500);
+				$("#body_tb_transaction_master_detail tr")[objTableDetail.fnGetData().length - 1].animate({ 
+				backgroundColor : "" },500);
+			}
 			
 		}
+		
 		
 		fnGetConcept(objRow.itemID,"IVA");						
 		refreschChecked();		
 		document.getElementById("txtScanerCodigo").focus();		
-		$("html, body").animate({scrollTop:  $("body").height()  +"px"});
+		
+		if(varIsMobile != "1"){		
+			$("html, body").animate({scrollTop:  $("body").height()  +"px"});
+		}
 		
 	}
 	
@@ -1259,7 +1298,12 @@
 	
 	
 	function refreschChecked(){
-		$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();						
+		$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();		
+		
+		if(varIsMobile == "1"){
+			$("#tb_transaction_master_detail td").css("display","block");
+		}
+		
 	}
 
 	function fnClearData(){
@@ -1823,4 +1867,6 @@
 	
 	
 </script>
-<script>  (function(g,u,i,d,e,s){g[e]=g[e]||[];var f=u.getElementsByTagName(i)[0];var k=u.createElement(i);k.async=true;k.src='https://static.userguiding.com/media/user-guiding-'+s+'-embedded.js';f.parentNode.insertBefore(k,f);if(g[d])return;var ug=g[d]={q:[]};ug.c=function(n){return function(){ug.q.push([n,arguments])};};var m=['previewGuide','finishPreview','track','identify','triggerNps','hideChecklist','launchChecklist'];for(var j=0;j<m.length;j+=1){ug[m[j]]=ug.c(m[j]);}})(window,document,'script','userGuiding','userGuidingLayer','744100086ID'); </script>
+<script> 
+	//(function(g,u,i,d,e,s){g[e]=g[e]||[];var f=u.getElementsByTagName(i)[0];var k=u.createElement(i);k.async=true;k.src='https://static.userguiding.com/media/user-guiding-'+s+'-embedded.js';f.parentNode.insertBefore(k,f);if(g[d])return;var ug=g[d]={q:[]};ug.c=function(n){return function(){ug.q.push([n,arguments])};};var m=['previewGuide','finishPreview','track','identify','triggerNps','hideChecklist','launchChecklist'];for(var j=0;j<m.length;j+=1){ug[m[j]]=ug.c(m[j]);}})(window,document,'script','userGuiding','userGuidingLayer','744100086ID'); 
+</script>

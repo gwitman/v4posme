@@ -1,3 +1,14 @@
+<div 
+	class="isloading-overlay"
+	id="divLoandingCustom"
+	style="position:fixed; left:0; top:0; z-index: 10000; background: rgba(0,0,0,0.9); width: 100%; height: 1090px;"	
+>
+	<span class="isloading-wrapper  isloading-show  isloading-overlay">espere un momento ...  
+		<i class="icon-refresh icon-spin">
+		</i>
+	</span>
+</div>
+
 <div class="row"> 
 	<div id="email" class="col-lg-12">
 	
@@ -35,14 +46,14 @@
 					<li class="active">
 						<a href="#home" data-toggle="tab">Informacion</a>
 					</li>
-					<li>
+					<li class="elementMovilOculto">
 						<a href="#profile" data-toggle="tab">Referencias.</a>
 					</li>
 					
 					<li>
 						<a href="#credit" data-toggle="tab">Info de Credito.</a>
 					</li>
-					<li class="dropdown">
+					<li class="dropdown elementMovilOculto">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas <b class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<li><a href="#dropdown" data-toggle="tab">Comentario</a></li>
@@ -569,7 +580,7 @@
 						<div class="page-header">
 							<h3>Pago</h3>
 						</div>
-						<table class="table table-bordered">
+						<table class="<?php echo $isMobile == "1" ? "" : "table table-bordered  "  ?>" id="table-resumen" >
 							<tbody>
 								<tr>
 									<th style="width:200px">INGRESO Cordoba</th>
@@ -598,7 +609,7 @@
 						<div class="page-header">
 							<h3>Resumen</h3>
 						</div>
-						<table class="table table-bordered">
+						<table class="<?php echo $isMobile == "1" ? "" : "table table-bordered "  ?>" id="table-resumen-pago" >
 							<tbody>
 								<tr>
 									<th style="width:200px" >SUB TOTAL</th>
