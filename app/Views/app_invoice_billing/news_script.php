@@ -10,11 +10,13 @@
 	var objWindowSearchProduct				= {};
 	var warehouseID 						= $("#txtWarehouseID").val();
 	var objTableProductosSearch 			= null;
+	var objTableProductosSearchDetalle		= null;
 	var objRowTableProductosSearch 			= null;	
 	var varIsMobile							= '<?php echo $isMobile; ?>';
 	var varAutoAPlicar						= '<?php echo $objParameterInvoiceAutoApply; ?>';
 	var varPermitirFacturarProductosEnZero	= '<?php echo $objParameterInvoiceBillingQuantityZero; ?>';
-	var varParameterImprimirPorCadaFactura	= '<?php echo $objParameterImprimirPorCadaFactura; ?>';
+	var varParameterImprimirPorCadaFactura			= '<?php echo $objParameterImprimirPorCadaFactura; ?>';
+	var varParameterRegresarAListaDespuesDeGuardar	= '<?php echo $objParameterRegresarAListaDespuesDeGuardar; ?>';
 	var varPermisos							= JSON.parse('<?php echo json_encode($objListaPermisos); ?>');
 	var varPermisosEsPermitidoModificarPrecio = 
 		jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_MODIFICAR_PRECIO_EN_FACTURACION"}).select().length > 0 ?
@@ -42,21 +44,20 @@
 	var objListaProductosStoreSku	= localStorage.getItem("objListaProductosSku");		
 	objListaProductosSku 			= JSON.parse(objListaProductosStoreSku);	
 	
-	objListaProductosStore = null;
+	//No actualizar datos
 	if(objListaProductosStore == null ){
 		fnObtenerListadoProductos();
 		fnObtenerListadoProductos2();
 		fnObtenerListadoProductos3();
 		fnObtenerListadoProdcutosSku();
-		fnGetCustomerClient();
-		//setTimeout( function() { fnWaitClose(); }, 1000);
+		fnGetCustomerClient();		
 		setTimeout( function() { onCompletePantalla(); }, 3000);
 		
 	}
 	//No actualizar datos
 	else{		
-		fnGetCustomerClient(); 
-		//setTimeout( function() { fnWaitClose(); }, 20);
+		fnGetCustomerClient(); 		
+		setTimeout( function() { onCompletePantalla(); }, 1000);
 	}
 
 
@@ -207,7 +208,19 @@
 		});
 		
 		
-		
+		$(document).on("click","#btnViewDetailProductos",function(){
+			
+			var ventana_ancho = $(window).width()-50;
+			var ventana_alto = $(window).height();
+			$("#div-modal-dialog-lista-productos-para-revisar").css("width",ventana_ancho+"px");
+			
+			fnCreateTableSearchProductosDetalle();
+			$("#mi_modal_para_revisar").modal();			
+			setTimeout(function() { $($("#table_list_productos_para_revisar_filter").find("input")[0]).focus(); }, 500);								
+			return;
+				
+			
+		});
 			
 		$(document).on("click","#btnAddProductoOnLine",function(){
 				
@@ -645,19 +658,7 @@
 			
 			var ventana_ancho = $(window).width()-50;
 			var ventana_alto = $(window).height();
-			$("#div-modal-dialog-lista-productos").css("width",ventana_ancho+"px");
-			//$("#div-modal-dialog-lista-productos").css("height",ventana_alto+"px");
-  
-			//if(openedSearchWindow 				== false){
-			//	openedSearchWindow 			= true;
-			//	var url_request 			= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING/false/"+encodeURI("{\"warehouseID\"|\""+  $("#txtWarehouseID").val()    +"\"{}\"listPriceID\"|\"<?php echo $objListPrice->listPriceID; ?>\"{}\"typePriceID\"|\""+ $("#txtTypePriceID").val() + "\"}");				
-			//	objWindowSearchProduct 		= window.open(url_request,"MsgWindow","width=900,height=450");				
-			//	window.onCompleteNewItem 	= onCompleteNewItem; 
-			//}
-			//else{
-			//	objWindowSearchProduct.focus();
-			//}
-			
+			$("#div-modal-dialog-lista-productos").css("width",ventana_ancho+"px");			
 			fnCreateTableSearchProductos();
 			$("#mi_modal").modal();
 		
@@ -733,8 +734,9 @@
 		});
 
 		
-		if (varAutoAPlicar == "true"){
+		if (varAutoAPlicar == "true" || varParameterRegresarAListaDespuesDeGuardar == "true"){
 		$( "#form-new-invoice" ).submit(function(e){
+				  debugger;
 				  e.preventDefault(e);
 
 				  var formData = new FormData(this);
@@ -774,9 +776,14 @@
 						  console.log("error form data")
 						}
 				  });
+				  debugger;
+				  if(varParameterRegresarAListaDespuesDeGuardar == "true"){
+					window.location	= "<?php echo base_url(); ?>/app_invoice_billing/index";
+				  }
+			      if(varParameterRegresarAListaDespuesDeGuardar != "true"){
+					window.location	= "<?php echo base_url(); ?>/app_invoice_billing/add";
+				  }
 				  
-				  
-				  window.location	= "<?php echo base_url(); ?>/app_invoice_billing/add";
 				  fnWaitClose();
 		});
 		}
@@ -917,6 +924,7 @@
 	}
 	
 	function validateFormAndSubmit(){
+		debugger;
 		var result 				= true;		
 		var timerNotification 	= 15000;
 		var switchDesembolso	= !$("#txtLabelIsDesembolsoEfectivo").parent().find(".switch.has-switch").children().hasClass("switch-off");
@@ -1085,6 +1093,7 @@
 		
 		if(varPermitirFacturarProductosEnZero == "true" && result )
 		{			
+			debugger;
 			$("#form-new-invoice" ).submit();
 			return;
 		}
@@ -1101,6 +1110,7 @@
 					success		: function(result){						
 													
 							if(result.resultValidate.length == 0){
+								debugger;
 								$( "#form-new-invoice" ).submit();
 							}
 							else{
@@ -1523,7 +1533,7 @@
 		
 	}
 	
-	function fnCreateTableSearchProductos(){
+	function fnCreateTableSearchProductosDetalle(){
 		//Filtrar Datos
 		var typePriceID 	= $("#txtTypePriceID").val();		
 		var filterResult 	= {};
@@ -1562,10 +1572,10 @@
 		
 		
 		
-		if( objTableProductosSearch != null)
-		objTableProductosSearch.fnDestroy();
-		
-		$('#table_list_productos').dataTable({
+		if( objTableProductosSearchDetalle != null)
+		objTableProductosSearchDetalle.fnDestroy();
+		debugger;
+		$('#table_list_productos_para_revisar').dataTable({
 			//"bPaginate"		: false,
 			//"bFilter"			: false,
 			//"bSort"			: false,
@@ -1651,8 +1661,141 @@
 			
 		});
 					
-		objTableProductosSearch = $('#table_list_productos').dataTable(); 
+		objTableProductosSearchDetalle = $('#table_list_productos_para_revisar').dataTable(); 		
+		$('.dataTables_length select').uniform();
+		$('.dataTables_paginate > ul').addClass('pagination');				
+		$('#table_list_productos_para_revisar').css('display','table');
+	}
+	
+	function fnCreateTableSearchProductos(){
+		//Filtrar Datos
+		var typePriceID 	= $("#txtTypePriceID").val();		
+		var filterResult 	= {};
 		
+		//precio 1 ---> 154 --> precio publico
+		if(typePriceID == 154){
+			filterResult = objListaProductos;
+		}
+		//precio 2 ---> 155 --> precio mayorista
+		if(typePriceID == 155){
+			filterResult = objListaProductos2;			
+		}
+		//precio 3 ---> 156 --> precio credito
+		if(typePriceID == 156){
+			filterResult = objListaProductos3;
+		}
+			
+
+				
+		var dataSourceProductos = [];
+		for(var i = 0 ; i < filterResult.length;i++){
+			dataSourceProductos.push(
+				[
+					filterResult[i].itemID,
+					filterResult[i].Codigo,
+					"'"+filterResult[i].Nombre+"'",
+					filterResult[i].Medida,
+					filterResult[i].Cantidad,
+					filterResult[i].Precio,
+					filterResult[i].Barra,
+					
+				]
+			);
+		}
+		
+		
+		
+		
+		if( objTableProductosSearch != null)
+		objTableProductosSearch.fnDestroy();
+		debugger;
+		$('#table_list_productos').dataTable({
+			//"bPaginate"		: false,
+			//"bFilter"			: false,
+			//"bSort"			: false,
+			//"bInfo"			: false,
+			//"bAutoWidth"		: false,
+			
+			'Dom'				: "<'row'<'col-lg-6'l><'col-lg-6'f>r>t<'row'<'col-lg-6'i><'col-lg-6'p>>",
+			"aaData"			: dataSourceProductos,
+			 "aoColumnDefs": [ 
+						{
+							"aTargets"		: [ 0 ],//itemID
+							"bVisible"		: false,
+							"bSearchable"	: false,
+							//"mData":		'itemID',
+							//"mRender"		: function ( data, type, full ) {
+							//}
+						},
+						{
+							"aTargets"		: [ 1 ],//Codigo
+							"bVisible"  	: true,
+							//"sClass" 		: "hidden",
+							"bSearchable"	: true,
+							//"mData":		'Codigo',
+							//"mRender"		: function ( data, type, full ) {
+							//}
+						},
+						{
+							"aTargets"		: [ 2 ],//Descripcion
+							"bVisible"		: true,
+							//"sClass" 		: "hidden",
+							"bSearchable"	: true,
+							//"mData":		'Nombre',
+							//"mRender"		: function ( data, type, full ) {
+							//	
+							//}
+						},
+						{
+							"aTargets"		: [ 3 ],//Unidad
+							"bVisible"		: false,
+							"bSearchable"	: false,
+							//"mData":		'Medida',
+							//"sWidth" 		: "40%"
+						},
+						{
+							"aTargets"		: [ 4 ],//Cantidad
+							"bVisible"		: false,
+							"bSearchable"	: false,
+							//"mData":		'Cantidad',
+							"mRender"		: function ( data, type, full ) {								
+								return "<span class='red' style='text-align:right;display:block' >"+fnFormatNumber(data,2)+"</span>";
+							}
+						},
+						{
+							"aTargets"		: [ 5 ],//Precio
+							"bVisible"		: true,
+							//"mData":		'Precio',
+							"mRender"		: function ( data, type, full ) {
+								return "<span class='green' style='text-align:right;display:block' >"+fnFormatNumber(data,2) +"</span>";
+							}
+						},
+						{
+							"aTargets"		: [ 6 ],//Barra
+							"bVisible"		: true,
+							//"mData":		'Precio',
+							//"mRender"		: function ( data, type, full ) {
+							//	
+							//}
+						}
+			],
+			
+			'sPaginationType'	: 'bootstrap',
+			'bJQueryUI'			: false,
+			'bAutoWidth'		: false,							
+			'iDisplayLength'	: 5,
+			'oLanguage'	: {
+				'sSearch'		: '<span>Filtro:</span> _INPUT_ <p>+ para agregar</p>',
+				/*'sLengthMenu'	: '<span>_MENU_ elementos</span>',*/
+				'sLengthMenu'	: '',
+				/*'oPaginate'		: { 'sFirst': 'First', 'sLast': 'Last' }*/
+				'oPaginate'		: { 'sFirst': 'Primera', 'sLast': 'Ultima','sNext':'Siguiente','sPrevious':'Atras' },
+				'sInfo'			:'_START_ de _END_ total _TOTAL_'
+			}
+			
+		});
+					
+		objTableProductosSearch = $('#table_list_productos').dataTable(); 		
 		$('.dataTables_length select').uniform();
 		$('.dataTables_paginate > ul').addClass('pagination');		
 		
@@ -1668,22 +1811,4 @@
 	
 
 </script>
-<script>  
-	
-	//(function(g,u,i,d,e,s){g[e]=g[e]||[];var f=u.getElementsByTagName(i)[0];var k=u.createElement(i);k.async=true;k.src='https://static.userguiding.com/media/user-guiding-'+s+'-embedded.js';f.parentNode.insertBefore(k,f);if(g[d])return;var ug=g[d]={q:[]};ug.c=function(n){return function(){ug.q.push([n,arguments])};};var m=['previewGuide','finishPreview','track','identify','triggerNps','hideChecklist','launchChecklist'];for(var j=0;j<m.length;j+=1){ug[m[j]]=ug.c(m[j]);}})(window,document,'script','userGuiding','userGuidingLayer','744100086ID'); 
-	
-</script>
-<script>
-	//window.userGuiding.identify(userId*, attributes)
-	  
-	// example with attributes
-	
-	//window.userGuiding.identify('<?php echo get_cookie("email"); ?>', {
-	//  email: '<?php echo get_cookie("email"); ?>',
-	//  name: '<?php echo get_cookie("email"); ?>',
-	//  created_at: 1644403436643,
-	//});
-	
-	// or just send userId without attributes
-	//window.userGuiding.identify('1Ax69i57j0j69i60l4')
-</script>
+

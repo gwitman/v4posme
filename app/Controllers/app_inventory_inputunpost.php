@@ -694,7 +694,7 @@ class app_inventory_inputunpost extends _BaseController {
 							$objTMD["cost"] 						= $objTMD["quantity"] * $objTMD["unitaryCost"];
 							
 							$objTMD["unitaryAmount"]				= $unitaryPrice;
-							$objTMD["amount"] 						= 0;										
+							$objTMD["amount"] 						= $objTMD["unitaryCost"] * $objTMD["quantity"];
 							$objTMD["discount"]						= 0;
 							$objTMD["unitaryPrice"]					= $unitaryPrice;
 							$objTMD["promotionID"] 					= 0;
@@ -720,6 +720,7 @@ class app_inventory_inputunpost extends _BaseController {
 							$objTMDNew["quantity"] 						= $quantity;
 							$objTMDNew["unitaryCost"]					= $cost;
 							$objTMDNew["unitaryPrice"]					= $unitaryPrice;
+							$objTMDNew["amount"] 						= $cost * $quantity;
 							$objTMDNew["reference3"]					= $unitaryPrice2."|".$unitaryPrice3;
 							
 							$objTMDNew["unitaryAmount"]					= $unitaryPrice;

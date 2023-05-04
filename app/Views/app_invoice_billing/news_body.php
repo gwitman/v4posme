@@ -466,6 +466,7 @@
 									<ul class="dropdown-menu">
 											<li><a href="#" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>						
 											<li><a href="#" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>
+											<li><a href="#" id="btnViewDetailProductos" >VER DETALLES</a></li>
 									</ul>
 								</div>
 							</div>
@@ -519,6 +520,7 @@
 											<li><a href="#" id="btnDeleteItem" >ELIMINAR PRO</a></li>
 											<li><a href="#" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>						
 											<li><a href="#" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>
+											<li><a href="#" id="btnViewDetailProductos" >VER DETALLES</a></li>
 											<li><a href="<?php echo base_url(); ?>/app_invoice_billing/index" id="btnBack" >REGRESAR</a></li>
 											<li><a href="<?php echo base_url(); ?>/app_invoice_billing/add" id="btnNew">NUEVA FAC</a></li>
 											
@@ -663,7 +665,7 @@
 
  
 
- <!-- Modal-->
+  <!-- Modal para facturar-->
   <div class="modal fade" id="mi_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog"  id="div-modal-dialog-lista-productos">
       <div class="modal-content">
@@ -701,6 +703,48 @@
         <div class="modal-footer">
           <!--<button type="button" class="btn btn-default" data-dismiss="modal" >Aceptar</button>-->
 		  <button type="button" class="btn btn-primary" id="btnAddProductoOnLine"  >Agregar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal Para ver cantidades-->
+  <div class="modal fade" id="mi_modal_para_revisar" tabindex="-1" role="dialog" aria-labelledby="myModalLabelParaRevisar" aria-hidden="true">
+    <div class="modal-dialog"  id="div-modal-dialog-lista-productos-para-revisar">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabelParaRevisar">REVISAR</h4>
+        </div>
+		
+        <div class="modal-body" >
+         
+			<table id="table_list_productos_para_revisar" style="width:100%" class="table table-bordered">
+			
+					<thead>
+					  <tr>
+						<th>itemID</th>
+						<th>Codigo</th>						
+						<th>Descripcion</th>
+						<th>Unidad de Medida</th>
+						<th>Cantidad</th>
+						<th>Precio</th>
+						<th>Barra</th>
+					  </tr>
+					</thead>
+					<tbody id="table_list_productos_detail_para_revisar">
+					</tbody>
+					
+			</table>
+		 
+			<br/>
+		 
+		 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" >Cerrar</button>		  
         </div>
       </div>
     </div>

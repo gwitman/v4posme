@@ -507,11 +507,20 @@ class app_notification extends _BaseController {
 		
 		$parameterBalance = $this->core_web_parameter->getParameter("CORE_CUST_PRICE_BALANCE",APP_COMPANY);
 		$parameterBalance = $parameterBalance->value;
+		
+		$parameterDaySleep					= $this->core_web_parameter->getParameter("INVOICE_BILLING_DAY_SLEEP",$companyID);
+		$parameterDaySleep					= $parameterDaySleep->value;
 			
-		$fechaNow  		= \DateTime::createFromFormat('Y-m-d',date("Y-m-d"));  			//ahora
-		$fechaNow		= $fechaNow->format("Y-m-d 00:00:00");		
+		$fechaNow  		= \DateTime::createFromFormat('Y-m-d',date("Y-m-d"));  			//ahora		
+		$fechaNow		= $fechaNow->modify('-'.$parameterDaySleep.' day');		
+		$fechaNow		= $fechaNow->format("Y-m-d 00:00:00");	
+		$fechaNow		= "2023-01-01";
+		
 		$fechaBefore  	= \DateTime::createFromFormat('Y-m-d',date("Y-m-d"));  			//ayer
+		$fechaBefore	= $fechaBefore->modify('-'.$parameterDaySleep.' day');	
 		$fechaBefore	= $fechaBefore->format("Y-m-d 23:59:59");
+		$fechaBefore	= "2023-05-01";
+		
 		$tocken			= '';
 		//Obtener compania
 		$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
@@ -568,6 +577,75 @@ class app_notification extends _BaseController {
 		//vista
 		$subject 			= $params_["message"];
 		$body  				= /*--inicio view*/ view('app_sales_report/sales_detail/view_a_disemp_email',$params_);//--finview
+		$body2 				= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview
+		
+		
+		//enviar al propietario del negocio
+		$this->email->setFrom(EMAIL_APP);
+		$this->email->setTo($parameterEmail);
+		$this->email->setSubject($subject);			
+		$this->email->setMessage($body); 
+		$resultSend01 = $this->email->send();
+		$resultSend02 = $this->email->printDebugger();
+		
+		//enviar al administrador de posme
+		$this->email->setFrom(EMAIL_APP);
+		$this->email->setTo(EMAIL_APP_COPY);
+		$this->email->setSubject($subject);			
+		$this->email->setMessage($body); 		
+		$resultSend01 = $this->email->send();
+		$resultSend02 = $this->email->printDebugger();
+		
+		//Reporte de Buy
+		//
+		//////////////////////////////////////////////////
+		//////////////////////////////////////////////////
+		//Obtener Resument por transaccin
+		$query			= "CALL pr_notification_buy(?,?,?,?,?);";
+		$objData		= $this->Bd_Model->executeRender(
+			$query,
+			[APP_COMPANY,$tocken,APP_USERADMIN,$fechaNow,$fechaBefore]
+		);			
+		
+		
+		if(isset($objData)){
+			$objDataResultBy["objDetail"]				= $objData;
+		}
+		else{
+			$objDataResultBy["objDetail"]				= $objData;
+		}
+				
+		
+		
+		//parametros de reportes
+		$params_["objCompany"]			= $objCompany;
+		$params_["objStartOn"]			= str_replace(" 00:00:00","",$fechaNow);		
+		$params_["objEndOn"]			= str_replace(" 00:00:00","",$fechaBefore);				
+		$params_["objDetail"]			= $objDataResultBy["objDetail"];		
+		
+		$params_["message"]			= "RESUMEN POR TRANSACCION: ".$objCompany->name." Del ".str_replace(" 00:00:00","",$fechaNow);
+		$params_["title1"]			= "Reporte diario: 002";
+		$params_["title2"]			= "Reporte diario: 003";
+		$params_["titleParrafo"]	= "Reporte diario: 005";
+		$params_["cuerpo"]			= "Reporte diario: 005";
+		
+		$params_["sumaryLeft1"]		= "Reporte diario: 005";
+		$params_["sumaryLeft2"]		= "Reporte diario: 005";
+		$params_["sumaryRight1"]	= "Reporte diario: 005";
+		$params_["sumaryRight2"]	= "Reporte diario: 005";
+		
+		$params_["sumaryLine001"]	= "Reporte diario: 005";
+		$params_["sumaryLine002"]	= "Reporte diario: 004";
+		$params_["sumaryLine003"]	= "Reporte diario: 003";
+		$params_["sumaryLine004"]	= "Reporte diario: 002";
+		$params_["sumaryLine005"]	= "Reporte diario: 001";
+		$params_["sumaryLine006"]	= "Reporte diario: 006";
+		$params_["objFirma"] 					= "{companyID:" .  ",branchID:" .  ",userID:" . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_sales_get_report_sales_detail" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . ",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
+		$params_["objFirmaEncription"] 			= md5 ($params_["objFirma"]);
+		
+		//vista
+		$subject 			= $params_["message"];
+		$body  				= /*--inicio view*/ view('app_notification/report_buy/view_a_disemp_email',$params_);//--finview
 		$body2 				= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview
 		
 		

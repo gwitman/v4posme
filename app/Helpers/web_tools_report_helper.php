@@ -487,6 +487,81 @@ function helper_reporteGeneralCreateTableVertical($objDetail,$configColumn,$maxC
 	return $table;
 }
 
+function helper_generateTableParaPdf($confiDetalle,$arrayDetalle){
+	$cuerpo = "";
+    $colun  = 0;
+	$rowin  = 0;
+    foreach($arrayDetalle as $row){
+		
+            $colun  		= 0;
+			$colunCantidad 	= count($row);
+			$nuevaFila		= 0;
+            foreach ($row as $col => $key){				
+			
+			    //encabezado
+				if($rowin == 0){
+					
+					//Mostrar los productos en una sola fila
+					if($colun == 0){
+						$cuerpo 		= $cuerpo."<tr >";							
+					}	
+						
+					$cuerpo = $cuerpo."<td style=".$confiDetalle[$colun]["style"]." colspan='".$confiDetalle[$colun]["colspan"]."' >";
+					$cuerpo = $cuerpo." ".$key;
+					$cuerpo = $cuerpo."</td>";
+						
+					if($colun == $colunCantidad ){
+						$cuerpo 	   = $cuerpo."</tr >";
+					}
+					
+				}
+				//datos
+				else{
+					
+					if( $confiDetalle[$colun]["nueva_fila_row_data"] ==  1 ){
+						$cuerpo 		= $cuerpo."<tr >";							
+						
+						$cuerpo = $cuerpo."<td style=".$confiDetalle[$colun]["style_row_data"]." colspan='".$confiDetalle[$colun]["colspan_row_data"]."' >";
+						$cuerpo = $cuerpo.$confiDetalle[$colun]["prefix_row_data"]." ".$key;
+						$cuerpo = $cuerpo."</td>";
+						
+						$cuerpo 		= $cuerpo."</tr >";	
+						$nuevaFila		= 1;						
+					}	
+					else{
+							
+						
+						if($nuevaFila == 1)
+							$cuerpo 	= $cuerpo."<tr >";								
+						
+						if($rowin > 0 && $colun == 0)
+							$cuerpo 	= $cuerpo."<tr >";								
+						
+						$cuerpo = $cuerpo."<td style=".$confiDetalle[$colun]["style_row_data"]." colspan='".$confiDetalle[$colun]["colspan_row_data"]."' >";
+						$cuerpo = $cuerpo.$confiDetalle[$colun]["prefix_row_data"]." ".$key;
+						$cuerpo = $cuerpo."</td>";								
+						
+						if($colun == $colunCantidad)
+							$cuerpo 	= $cuerpo."</tr >";								
+						
+						$nuevaFila = 0;
+							
+					}
+						
+				
+				}
+				
+                
+				
+                $colun++;
+            }
+			
+			$rowin++;
+            
+    }
+	
+	return $cuerpo;
+}
 function helper_reporte80mmTransactionMaster(
     $titulo,
     $objCompany,

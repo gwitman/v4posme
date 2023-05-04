@@ -1,0 +1,2562 @@
+a:3:{s:4:"time";i:1683159174;s:3:"ttl";i:60;s:4:"data";s:93731:"a:2:{s:7:"headers";a:2:{s:13:"Cache-control";s:29:"no-store, max-age=0, no-cache";s:12:"Content-Type";s:24:"text/html; charset=UTF-8";}s:6:"output";s:93571:"<!-- DEBUG-VIEW START 4 APPPATH\Views\core_masterpage\default_popup.php -->
+<!--vista del sistema para los popup-->
+<!--la diferencia con la principal es que no muestra el menu izquierdo-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>posMe</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		
+		<link href='http://localhost/posmev4/resource/theme-genyx/css/family_open_sans_400_800_700.css' rel='stylesheet' type='text/css'>		
+		<link href='http://localhost/posmev4/resource/theme-genyx/css/family_droid_sans_400_700.css' rel='stylesheet' type='text/css' />
+
+		 <!--[if lt IE 9]>
+		<link href="http://localhost/posmev4/resource/theme-genyx/css/family_open_sans_400.css"  rel="stylesheet" type="text/css" />
+		<link href="http://localhost/posmev4/resource/theme-genyx/css/family_open_sans_700.css"  rel="stylesheet" type="text/css" />
+		<link href="http://localhost/posmev4/resource/theme-genyx/css/family_open_sans_800.css"  rel="stylesheet" type="text/css" />
+		<link href="http://localhost/posmev4/resource/theme-genyx/css/family_droid_sans_400.css" rel="stylesheet" type="text/css" />
+		<link href="http://localhost/posmev4/resource/theme-genyx/css/family_droid_sans_700.css" rel="stylesheet" type="text/css" />
+		<![endif]-->
+
+		<!-- Core stylesheets do not remove -->
+		<link href="http://localhost/posmev4/resource/theme-genyx/css/bootstrap/bootstrap.css" 		rel="stylesheet" />
+		<link href="http://localhost/posmev4/resource/theme-genyx/css/bootstrap/bootstrap-theme.css" rel="stylesheet" />
+		<link href="http://localhost/posmev4/resource/theme-genyx/css/icons.css" 					rel="stylesheet" />
+
+		<!-- Plugins stylesheets -->
+		<link href="http://localhost/posmev4/resource/theme-genyx/js/plugins/forms/uniform/uniform.default.css" rel="stylesheet" /> 
+		<link href="http://localhost/posmev4/resource/theme-genyx/js/plugins/tables/datatables/jquery.dataTables.css" rel="stylesheet" />
+		<link href="http://localhost/posmev4/resource/theme-genyx/js/plugins/forms/switch/bootstrapSwitch.css" rel="stylesheet" /> 
+		<link href="http://localhost/posmev4/resource/theme-genyx/js/plugins/forms/select2/select2.css" rel="stylesheet" />
+		<link href="http://localhost/posmev4/resource/theme-genyx/js/plugins/ui/jgrowl/jquery.jgrowl.css" rel="stylesheet" /> 
+		<link href="http://localhost/posmev4/resource/theme-genyx/css/genyx-theme/jquery.ui.progressbar.css" rel="stylesheet" /> 
+		<link href="http://localhost/posmev4/resource/theme-genyx/css/genyx-theme/jquery.ui.genyx.css" rel="stylesheet" />
+		<link href="http://localhost/posmev4/resource/js/is-loading-master/style.css" rel="stylesheet" /> 
+		<link href="http://localhost/posmev4/resource/theme-genyx/css/app.css" 																		rel="stylesheet" /> 
+		<link href="http://localhost/posmev4/resource/theme-genyx/css/custom.css" 																	rel="stylesheet" /> 
+		<link href="http://localhost/posmev4/resource/css/genyx-app.css" 																			rel="stylesheet" /> 
+		
+		<!--[if IE 8]><link href="http://localhost/posmev4/resource/theme-genyx/css/ie8.css" rel="stylesheet" type="text/css" /><![endif]-->
+
+		<!-- Force IE9 to render in normal mode -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+		<!--[if lt IE 9]>
+		  <script src="http://localhost/posmev4/resource/theme-genyx/js/html5shiv.js"></script>
+		  <script src="http://localhost/posmev4/resource/theme-genyx/js/respond.min.js"></script>
+		<![endif]-->
+
+		<!-- Fav and touch icons -->
+		<link rel="apple-touch-icon-precomposed" sizes="144x144" 	href="http://localhost/posmev4/resource/theme-genyx/images/ico/apple-touch-icon-144-precomposed.png">
+		<link rel="apple-touch-icon-precomposed" sizes="114x114" 	href="http://localhost/posmev4/resource/theme-genyx/images/ico/apple-touch-icon-114-precomposed.png">
+		<link rel="apple-touch-icon-precomposed" sizes="72x72" 		href="http://localhost/posmev4/resource/theme-genyx/images/ico/apple-touch-icon-72-precomposed.png">
+		<link rel="apple-touch-icon-precomposed" 					href="http://localhost/posmev4/resource/theme-genyx/images/ico/apple-touch-icon-57-precomposed.png">
+		<link rel="shortcut icon" 									href="http://localhost/posmev4/resource/theme-genyx/images/ico/favicon.ico">
+
+		<!-- Le javascript
+		================================================== -->
+		<!-- Important plugins put in all pages -->
+		<script src="http://localhost/posmev4/resource/theme-genyx/js/jquery-1-9-1.min.js"></script>
+		<script src="http://localhost/posmev4/resource/theme-genyx/js/jquery-migrate-1.2.1.js"></script>
+		<script src="http://localhost/posmev4/resource/theme-genyx/js/jquery-ui-1-10-2.min.js"></script>
+		<script src="http://localhost/posmev4/resource/theme-genyx/js/bootstrap/bootstrap.js"></script>  		
+  
+		<script src="http://localhost/posmev4/resource/theme-genyx/js/conditionizr.min.js"></script>  
+		<script src="http://localhost/posmev4/resource/theme-genyx/js/plugins/core/nicescroll/jquery.nicescroll.min.js"></script>
+		<script src="http://localhost/posmev4/resource/theme-genyx/js/plugins/core/jrespond/jRespond.min.js"></script>
+		<script src="http://localhost/posmev4/resource/theme-genyx/js/jquery.genyxAdmin.js"></script>
+		<script src="http://localhost/posmev4/resource/theme-genyx/js/plugins/ui/animated-progress-bar/jquery.progressbar.js"></script>
+		<script src="http://localhost/posmev4/resource/theme-genyx/js/plugins/forms/switch/bootstrapSwitch.js"></script>
+		<script src="http://localhost/posmev4/resource/theme-genyx/js/jquery.tmpl.js"></script>
+		<script src="http://localhost/posmev4/resource/theme-genyx/js/plugins/ui/jgrowl/jquery.jgrowl.min.js"></script>
+		<script src="http://localhost/posmev4/resource/theme-genyx/js/plugins/forms/mask/jquery.mask.min.js"></script>
+		<!-- Form plugins --> 
+		<script src="http://localhost/posmev4/resource/theme-genyx/js/plugins/forms/uniform/jquery.uniform.min.js"></script>
+		<script src="http://localhost/posmev4/resource/theme-genyx/js/plugins/tables/datatables/jquery.dataTables.min.js"></script>
+		<script src="http://localhost/posmev4/resource/theme-genyx/js/plugins/forms/select2/select2.js"></script> 
+
+		<!-- Init plugins -->
+		<script src="http://localhost/posmev4/resource/theme-genyx/js/app.js"></script><!-- Core js functions -->
+		<script src="http://localhost/posmev4/resource/theme-genyx/js/pages/domready.js"></script><!-- Init plugins only for page -->
+		
+	
+		<script src="http://localhost/posmev4/resource/js/genyx-utilis.js"></script>  
+		<script src="http://localhost/posmev4/resource/js/genyx-fn.js"></script>  
+		<script src="http://localhost/posmev4/resource/js/genyx-app-init.js"></script>  
+	
+		<script src="http://localhost/posmev4/resource/js/is-loading-master/jquery.isloading.min.js"></script>  
+	
+		
+		
+
+	
+	</head>
+	<body>
+				<div style="background:#fff">
+										
+					<!-- DEBUG-VIEW START 1 APPPATH\Views\app_invoice_billing\news_head.php -->
+				<link href="http://localhost/posmev4/resource/theme-genyx/js/plugins/forms/datepicker/datepicker.css" rel="stylesheet" /> 
+				<script src="http://localhost/posmev4/resource/theme-genyx/js/plugins/forms/datepicker/bootstrap-datepicker.js"></script>
+				<script src="http://localhost/posmev4/resource/theme-genyx/js/moment.min.js"></script>
+				<script src="http://localhost/posmev4/resource/theme-genyx/js/plugins/forms/mask/jquery.mask.min.js"></script>
+				<script src="http://localhost/posmev4/resource/js/jLinq-2.2.1.js"></script>
+				
+				<style>					
+					input:focus {
+						
+					  color:black;					  
+					  font-weight: bold;
+					  background: 	#00cb72;
+					  
+					  /*width: 100%;*/
+					  /*padding: 0px 50px;*/
+					  /*margin: 8px 0;*/
+					  /*box-sizing: border-box;*/
+					  
+					}
+				</style>
+				
+				<div id="heading" class="page-header">
+							<h1><i class="icon20  i-bag-2"></i> Agregar Factura</h1>
+				</div> 
+<!-- DEBUG-VIEW ENDED 1 APPPATH\Views\app_invoice_billing\news_head.php -->
+					
+					<!-- DEBUG-VIEW START 2 APPPATH\Views\app_invoice_billing\news_body.php -->
+<div 
+	class="isloading-overlay"
+	id="divLoandingCustom"
+	style="position:fixed; left:0; top:0; z-index: 10000; background: rgba(0,0,0,0.9); width: 100%; height: 1090px;"	
+>
+	<span class="isloading-wrapper  isloading-show  isloading-overlay">espere un momento ...  
+		<i class="icon-refresh icon-spin">
+		</i>
+	</span>
+</div>
+
+<div class="row"> 
+	<div id="email" class="col-lg-12">
+	
+		<!-- botonera -->
+		<!--
+		<div class="email-bar" style="border-left:1px solid #c9c9c9">                                
+			<div class="btn-group pull-right">                                    
+				<a href="http://localhost/posmev4/app_invoice_billing/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>                                    
+				<a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
+			</div>
+		</div> 
+		-->
+		<!-- /botonera -->
+	</div>
+	<!-- End #email  -->
+</div>
+<!-- End .row-fluid  -->
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+					
+			<!-- titulo de comprobante-->
+			<div class="panel-heading">
+					<div class="icon"><i class="icon20 i-file"></i></div> 
+					<h4>FACTURA:#<span class="invoice-num">00000000</span></h4>
+			</div>
+			<!-- /titulo de comprobante-->
+			
+			<!-- body -->	
+			<form id="form-new-invoice" name="form-new-invoice" class="form-horizontal" role="form">
+			<div class="panel-body printArea"> 
+			
+				<ul id="myTab" class="nav nav-tabs">
+					<li class="active">
+						<a href="#home" data-toggle="tab">Informacion</a>
+					</li>
+					<li class="elementMovilOculto">
+						<a href="#profile" data-toggle="tab">Referencias.</a>
+					</li>
+					
+					<li>
+						<a href="#credit" data-toggle="tab">Info de Credito.</a>
+					</li>
+					<li class="dropdown elementMovilOculto">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="#dropdown" data-toggle="tab">Comentario</a></li>
+							<li><a href="#dropdown-file" data-toggle="tab">Archivos</a></li>
+						 </ul>
+					</li>
+				</ul>
+				
+				<div class="tab-content">
+					<div class="tab-pane fade in active" id="home">	
+						<div class="row">										
+						<div class="col-lg-6">
+							
+								<div class="form-group">
+									<label class="col-lg-4 control-label" for="datepicker">Fecha</label>
+									<div class="col-lg-8">
+										<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
+											<input size="16"  class="form-control" type="text" name="txtDate" id="txtDate" >
+											<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+										</div>
+									</div>
+								</div>
+								
+							
+								<div class="form-group">
+										<label class="col-lg-4 control-label" for="normal">Cambio</label>
+										<div class="col-lg-8">
+											<input class="form-control"   type="text" disabled="disabled" name="txtExchangeRate" id="txtExchangeRate" value="36.2924">
+										</div>
+								</div>
+								
+								
+								<div class="form-group">
+									<label class="col-lg-4 control-label" for="normal">Descripcion</label>
+									<div class="col-lg-8">										
+										<input class="form-control"   type="text" name="txtNote" id="txtNote" value="">
+									</div>
+								</div>
+							
+						</div>
+						<div class="col-lg-6">
+						
+								<div class="form-group">
+									<label class="col-lg-4 control-label" for="buttons">Cliente</label>
+									<div class="col-lg-8">
+										<div class="input-group">
+											<input type="hidden" id="txtCustomerID" name="txtCustomerID" value="13">
+											<input class="form-control" readonly id="txtCustomerDescription" type="txtCustomerDescription" value="CLI00000000 CLIENTE GENERICO DEFAULT">
+											
+											<span class="input-group-btn">
+												<button class="btn btn-danger" type="button" id="btnClearCustomer">
+													<i aria-hidden="true" class="i-undo-2"></i>
+													clear
+												</button>
+											</span>
+											<span class="input-group-btn">
+												<button class="btn btn-primary" type="button" id="btnSearchCustomer">
+													<i aria-hidden="true" class="i-search-5"></i>
+													buscar
+												</button>
+											</span>
+											<!--
+											<span class="input-group-btn">
+												<button class="btn btn-success" type="button" id="btnSearchCustomerNew">
+													<i aria-hidden="true" class="i-plus"></i>
+													nuevo
+												</button>
+											</span>
+											-->
+											
+										</div>
+									</div>
+								</div>
+								
+								
+							
+								
+								
+								
+								<div class="form-group">
+										<label class="col-lg-4 control-label" for="normal">Cliente</label>
+										<div class="col-lg-8">
+											<input class="form-control"   type="text" name="txtReferenceClientName" id="txtReferenceClientName" value="">
+										</div>
+								</div>
+								
+								<div class="form-group">
+										<label class="col-lg-4 control-label" for="normal">Cedula</label>
+										<div class="col-lg-8">
+											<input class="form-control"   type="text" name="txtReferenceClientIdentifier" id="txtReferenceClientIdentifier" value="">
+										</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-lg-4 control-label" for="selectFilter">Tipo</label>
+									<div class="col-lg-8">
+										<select name="txtCausalID" id="txtCausalID" class="select2">
+												<option value='21' selected >CONTADO</option><option value='22'  >CREDITO</option>										</select>
+									</div>
+								</div>
+
+
+								<div class="form-group hidden" id="divLineaCredit">
+									<label class="col-lg-4 control-label" for="selectFilter">Línea de Crédito</label>
+									<div class="col-lg-8">
+										<select name="txtCustomerCreditLineID" id="txtCustomerCreditLineID" class="select2">
+										</select>
+									</div>
+								</div>
+								
+							
+						</div>
+						</div>
+						
+					</div>
+					<div class="tab-pane fade" id="profile">
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label class="col-lg-4 control-label" for="selectFilter">Zona</label>
+									<div class="col-lg-8">
+										<select name="txtZoneID" id="txtZoneID" class="select2">
+												<option></option>																
+												<option value='157' selected >PANCASAN</option><option value='158'  >CAYETANO SANCHEZ</option><option value='375'  >ERASMO CUADRA</option><option value='376'  >JARDINES</option>										</select>
+									</div>
+								</div>
+								
+									
+								<div class="form-group">
+									<label class="col-lg-4 control-label" for="selectFilter">Precio</label>
+									<div class="col-lg-8">
+										<select name="txtTypePriceID" id="txtTypePriceID" class="select2">
+												<option></option>																
+												<option value='154' selected >PUBLICO</option><option value='155'  >POR MAYOR</option><option value='156'  >CREDITO</option><option value='477'  >CREDITO POR MAYOR</option><option value='478'  >ESPECIAL</option>										</select>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-lg-4 control-label" for="selectFilter">Bodega</label>
+									<div class="col-lg-8">
+										<select name="txtWarehouseID" id="txtWarehouseID" class="select2">
+												<option></option>																
+												<option value='1'  >Bodega Principal.</option><option value='4' selected >Bodega de Despacho</option><option value='5'  >Bodega Transito</option>										</select>
+									</div>
+								</div>
+			
+							</div>
+							<div class="col-lg-6">
+								
+								<div class="form-group">
+										<label class="col-lg-4 control-label" for="normal">Referencia2</label>
+										<div class="col-lg-8">
+											<input class="form-control"  type="text"  name="txtReference2" id="txtReference2" value="">												
+										</div>
+								</div>	
+								
+								<div class="form-group">
+										<label class="col-lg-4 control-label" for="normal">Referencia3</label>
+										<div class="col-lg-8">
+											<input class="form-control"  type="text"  name="txtReference3" id="txtReference3" value="">												
+										</div>
+								</div>											
+								<div class="form-group">
+									<label class="col-lg-4 control-label" for="selectFilter">Moneda</label>
+									<div class="col-lg-8">
+										<select name="txtCurrencyID" id="txtCurrencyID" class="select2">
+												<option value='1' selected >Cordoba</option><option value='2'  >Dolar</option>										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="tab-pane fade" id="credit">
+						<div class="row">
+								<div class="col-lg-6">
+									<div class="form-group">
+											<label class="col-lg-4 control-label" for="normal">Proveedor de Credito</label>
+											<div class="col-lg-8">
+												<!--
+												<input class="form-control"  type="text"  name="txtReference1" id="txtReference1" value="">												
+												-->
+												<select name="txtReference1" id="txtReference1" class="select2">
+														<option value="0"></option>		
+														<option value='293' selected >Predeterminado Predeterminado</option><option value='311' >Mariano Luis Lopez Mendoza</option><option value='314' >Jose Armando Paredes Laguna</option><option value='528' >Roberto Salvador Gonzalez Castillo</option>												</select>
+											</div>
+									</div>
+									
+								</div>
+								<div class="col-lg-6">
+								
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="datepicker">Primer Pago</label>
+										<div class="col-lg-8">
+											<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
+												<input size="16"  class="form-control" type="text" name="txtDateFirst" id="txtDateFirst" value="" >
+												<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+											</div>
+										</div>
+									</div>
+									
+									
+								</div>
+						</div>
+						
+						<div class="row">
+							<div class="col-lg-6">
+							
+							
+								
+								<div class="form-group">
+										<label class="col-lg-4 control-label" for="normal"></label>
+										<div class="col-lg-8">
+											 <label class="label-change-switch" id="txtLabelIsDesembolsoEfectivo">Es un desembolso en efectivo?</label>
+											 <br/>
+											 <div class="switch" data-on="success" data-off="warning">
+												<input class="toggle"controls-row type="checkbox" checked id="txtCheckDeEfectivo" />
+											</div>																
+										</div>
+								</div>
+								
+								<div class="form-group">
+										<label class="col-lg-4 control-label" for="normal"></label>
+										<div class="col-lg-8">
+											
+											<label class="label-change-switch" id="txtLabelIsReportSinRiesgo">Reportar a SinRiesgo</label>
+											<br/>
+											
+											<div class="switch" data-on="success" data-off="warning">												
+												<input class="toggle"controls-row type="checkbox" checked id="txtCheckReportSinRiesgo" name="txtCheckReportSinRiesgo" value="1"  />
+											</div>																
+										</div>
+										
+								</div>
+								
+								
+								
+							</div>
+							<div class="col-lg-6">
+							
+								<div class="form-group ">
+										<label class="col-lg-4 control-label" for="normal">% De Gasto.</label>
+										<div class="col-lg-8">
+											<input class="form-control"   type="text" name="txtFixedExpenses" id="txtFixedExpenses" value="0">
+											
+											<a href="#" class="btn btn-primary  gap-right10" data-toggle="popover" data-placement="bottom" 
+											data-content="Ejemplo: Del Interese de cada cuota, se multiplica por este % para saber de cuanto es la comision para FID-Local, este numero debe ser #0 o mayor que #1" title="" data-original-title="% de Gastos Fijo:">Ayuda:</a>
+										</div>
+								</div>
+								
+								<div class="form-group">
+										<label class="col-lg-4 control-label" for="normal">Aplicado</label>
+										<div class="col-lg-8">
+											<input type="checkbox" disabled   name="txtIsApplied" id="txtIsApplied" value="1" >
+										</div>
+								</div>
+								
+								
+								<div class="form-group hide">
+										<label class="col-lg-4 control-label" for="normal">Primer Linea del Protocolo.</label>
+										<div class="col-lg-8">
+											<input class="form-control"   type="text" name="txtLayFirstLineProtocolo" id="txtLayFirstLineProtocolo" value="">
+											
+											<a href="#" class="btn btn-primary  gap-right10" data-toggle="popover" data-placement="bottom" 
+											data-content="Ejemplo:  5" title="" 
+											data-original-title="Tenor:">Ayuda:</a>
+											
+											
+										</div>
+								</div>
+								
+								
+							</div>
+						</div>
+					</div>
+					
+					
+					<div class="tab-pane fade" id="dropdown">
+						
+					</div>
+					<div class="tab-pane fade" id="dropdown-file">
+						
+					</div>
+				</div>    
+
+		
+				<br/>
+				
+				<div class="row">
+					<div class="col-lg-12">
+						<h3>Detalle:</h3>
+						<table id="tb_transaction_master_detail" class="table table-bordered"  >
+							<thead>
+							  <tr>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th>Codigo</th>
+								<th>Descripcion</th>
+								<th>U/M</th>
+								<th>Cantidad</th>													
+								<th>Precio</th>
+								<th>Total</th>
+								<th></th>
+								<th>skuQuantityBySku</th>
+								<th>unitaryPriceInvidual</th>
+							  </tr>
+							</thead>
+							<tbody id="body_tb_transaction_master_detail">
+							</tbody>
+						</table>
+						
+					</div><!-- End .col-lg-12  --> 
+				</div><!-- End .row-fluid  -->
+								
+				<input class="form-control"  type="hidden"  name="txtStatusID" id="txtStatusID" value="66" >
+				
+				<br/>
+				
+										<div class="row">
+							<div class="col col-lg-2">
+								<a href="#" class="btn btn-flat btn-info   btn-block hidden btn-comando-factura" id="btnNewItem" ><i class="icon16 i-print"></i> AGREGAR PRO</a>
+							</div>
+							<div class="col col-lg-2">
+								<a href="#" class="btn btn-flat btn-danger  btn-block hidden btn-comando-factura" id="btnDeleteItem" ><i class="icon16 i-print"></i> ELIMINAR PRO</a>					
+							</div>
+							<div class="col col-lg-2">
+								<div class="btn-group  btn-block">
+									<button type="button" class="btn btn-flat btn-success dropdown-toggle  btn-block hidden btn-comando-factura" data-toggle="dropdown"><i class="icon16 i-print"></i> PRODUCTO <span class="caret"></span></button>
+									<ul class="dropdown-menu">
+											<li><a href="#" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>						
+											<li><a href="#" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>
+											<li><a href="#" id="btnViewDetailProductos" >VER DETALLES</a></li>
+									</ul>
+								</div>
+							</div>
+							<div class="col col-lg-2">
+								<a href="http://localhost/posmev4/app_invoice_billing/index" id="btnBack" class="btn btn-inverse  btn-block hidden btn-comando-factura" ><i class="icon16 i-rotate"></i> REGRESAR</a>
+							</div>
+						</div>
+						
+						<br/>
+						
+						<div class="row">
+						
+							<div class="col col-lg-2">
+								<a href="http://localhost/posmev4/app_invoice_billing/add" class="btn btn-flat btn-info btn-block hidden btn-comando-factura" id="btnNew"><i class="icon16 i-checkmark-4"></i> NUEVA FAC</a>
+							</div>
+							
+							<div class="col col-lg-2">
+									
+																			<a href="#" class="btn btn-warning  btn-block hidden btn-comando-factura" id="btnAcept"><i class="icon16 i-checkmark-4"></i> 
+										REGISTRAR
+										</a>
+																		
+							</div>
+						</div>
+
+						
+
+									
+				
+				
+				<br/>
+				<br/>
+				<input class="form-control"  type="text"  name="txtScanerCodigo" id="txtScanerCodigo" value="" >
+				
+
+				<div class="row">
+					
+					<div class="col-lg-4">
+						<div class="page-header">
+							<h3>Ref.</h4>
+						</div>
+						<ul class="list-unstyled">
+							<li><h3>CC: <span class="red-smooth">*</span></h3></li>
+							<li><i class="icon16 i-arrow-right-3"></i>Resumen de la factura</li>
+							<li><i class="icon16 i-arrow-right-3"></i>Scaner: Control + k = Nuevo</li>
+							<li><i class="icon16 i-arrow-right-3"></i>Scaner: Control + i = Abrir caja</li>
+							<li><i class="icon16 i-arrow-right-3"></i>Ingreso Dolares: Control + b = Subir</li>
+							
+						</ul>
+
+					</div>
+					
+					<div class="col-lg-4">
+						<div class="page-header">
+							<h3>Pago</h3>
+						</div>
+						<table class="table table-bordered  " id="table-resumen" >
+							<tbody>
+								<tr>
+									<th style="width:200px">INGRESO Cordoba</th>
+									<td >
+										<input type="text" id="txtReceiptAmount" name="txtReceiptAmount"  class="col-lg-12" value="" style="text-align:"/>
+									</td>
+								</tr>
+								
+								<tr>
+									<th>INGRESO Dolares</th>
+									<td >
+										<input type="text" id="txtReceiptAmountDol" name="txtReceiptAmountDol"  class="col-lg-12" value="" style="text-align:"/>
+									</td>
+								</tr>
+								<tr>
+									<th>CAMBIO Cordoba</th>
+									<td >
+										<input type="text" id="txtChangeAmount" name="txtChangeAmount" readonly class="col-lg-12" value="" style="text-align:"/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					
+					<div class="col-lg-4">
+						<div class="page-header">
+							<h3>Resumen</h3>
+						</div>
+						<table class="table table-bordered " id="table-resumen-pago" >
+							<tbody>
+								<tr>
+									<th style="width:200px" >SUB TOTAL</th>
+									<td >
+										<input type="text" id="txtSubTotal" name="txtSubTotal" readonly class="col-lg-12" value="" style="text-align:"/>
+									</td>
+								</tr>
+								<tr>
+									<th>IVA</th>
+									<td >
+										<input type="text" id="txtIva" name="txtIva" readonly class="col-lg-12" value="" style="text-align:"/>
+									</td>
+								</tr>
+								<tr>
+									<th>TOTAL</th>
+									<td >
+										<input type="text" id="txtTotal" name="txtTotal" readonly class="col-lg-12" value="" style="text-align:"/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					
+				</div><!-- End .row-fluid  -->                                       
+			</div>
+			</form>
+			<!-- /body -->
+		</div>
+	</div>
+</div>
+
+<div class="row"> 
+	<div id="email" class="col-lg-12">
+	
+		<!-- botonera -->
+		<!--
+		<div class="email-bar" style="border-left:1px solid #c9c9c9">                                
+			<div class="btn-group pull-right">                                    
+				<a href="http://localhost/posmev4/app_invoice_billing/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>                                    
+				<a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
+			</div>
+		</div> 
+		-->
+		<!-- /botonera -->
+	</div>
+	<!-- End #email  -->
+</div>
+<!-- End .row-fluid  -->
+
+
+
+ 
+
+  <!-- Modal para facturar-->
+  <div class="modal fade" id="mi_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog"  id="div-modal-dialog-lista-productos">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel">LISTA DE PRODUCTOS</h4>
+        </div>
+		
+        <div class="modal-body" >
+         
+			<table id="table_list_productos" style="width:100%" class="table table-bordered">
+			
+					<thead>
+					  <tr>
+						<th>itemID</th>
+						<th>Codigo</th>						
+						<th>Descripcion</th>
+						<th>Unidad de Medida</th>
+						<th>Cantidad</th>
+						<th>Precio</th>
+						<th>Barra</th>
+					  </tr>
+					</thead>
+					<tbody id="table_list_productos_detail">
+					</tbody>
+					
+			</table>
+		 
+			<br/>
+		 
+		 
+        </div>
+        <div class="modal-footer">
+          <!--<button type="button" class="btn btn-default" data-dismiss="modal" >Aceptar</button>-->
+		  <button type="button" class="btn btn-primary" id="btnAddProductoOnLine"  >Agregar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal Para ver cantidades-->
+  <div class="modal fade" id="mi_modal_para_revisar" tabindex="-1" role="dialog" aria-labelledby="myModalLabelParaRevisar" aria-hidden="true">
+    <div class="modal-dialog"  id="div-modal-dialog-lista-productos-para-revisar">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabelParaRevisar">REVISAR</h4>
+        </div>
+		
+        <div class="modal-body" >
+         
+			<table id="table_list_productos_para_revisar" style="width:100%" class="table table-bordered">
+			
+					<thead>
+					  <tr>
+						<th>itemID</th>
+						<th>Codigo</th>						
+						<th>Descripcion</th>
+						<th>Unidad de Medida</th>
+						<th>Cantidad</th>
+						<th>Precio</th>
+						<th>Barra</th>
+					  </tr>
+					</thead>
+					<tbody id="table_list_productos_detail_para_revisar">
+					</tbody>
+					
+			</table>
+		 
+			<br/>
+		 
+		 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" >Cerrar</button>		  
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- DEBUG-VIEW ENDED 2 APPPATH\Views\app_invoice_billing\news_body.php -->
+				</div>			
+	</body>
+	<!-- DEBUG-VIEW START 3 APPPATH\Views\app_invoice_billing\news_script.php -->
+<!-- ./ page heading -->
+<script>					
+	//fnWaitOpen();
+	var objTableDetail 						= {};	
+	var objListaProductos					= {};
+	var objListaProductos2					= {};
+	var objListaProductos3					= {};
+	var objListaProductosSku				= {};
+	var openedSearchWindow					= false;
+	var objWindowSearchProduct				= {};
+	var warehouseID 						= $("#txtWarehouseID").val();
+	var objTableProductosSearch 			= null;
+	var objTableProductosSearchDetalle		= null;
+	var objRowTableProductosSearch 			= null;	
+	var varIsMobile							= '0';
+	var varAutoAPlicar						= 'false';
+	var varPermitirFacturarProductosEnZero	= 'true';
+	var varParameterImprimirPorCadaFactura			= 'false';
+	var varParameterRegresarAListaDespuesDeGuardar	= 'false';
+	var varPermisos							= JSON.parse('[{"companyID":"2","elementID":"57","menuElementID":"35","parentMenuElementID":"6","display":"CURRENCY_CORE_FUNCTION","address":"app_accounting_currency\/currency_core_function.aspx","orden":"0002.0003.0012.0000.0000","icon":"","template":"","nivel":"0"},{"companyID":"2","elementID":"58","menuElementID":"36","parentMenuElementID":"6","display":"ACCOUNTING_API","address":"app_accounting_api\/index.aspx","orden":"0002.0003.0013.0000.0000","icon":"","template":"","nivel":"0"},{"companyID":"2","elementID":"105","menuElementID":"71","parentMenuElementID":"43","display":"INVENTORY_API","address":"app_inventory_api\/index.aspx","orden":"0002.0005.0012.0000.0000","icon":"","template":"","nivel":"0"},{"companyID":"2","elementID":"106","menuElementID":"72","parentMenuElementID":"44","display":"PURCHASE_API","address":"app_purchase_api\/index.aspx","orden":"0002.0006.0001.0000.0000","icon":"","template":"","nivel":"0"},{"companyID":"2","elementID":"120","menuElementID":"80","parentMenuElementID":"46","display":"INVOICE_API","address":"app_invoice_api\/index.aspx","orden":"0002.0008.0007.0000.0000","icon":"","template":"","nivel":"0"},{"companyID":"2","elementID":"121","menuElementID":"81","parentMenuElementID":"46","display":"ITEM_CONCEPT_API","address":"core_concept_api\/index.aspx","orden":"0002.0008.0008.0000.0000","icon":"","template":"","nivel":"0"},{"companyID":"2","elementID":"205","menuElementID":"138","parentMenuElementID":"46","display":"ES_PERMITIDO_MODIFICAR_PRECIO_EN_FACTURACION","address":"es_permitido_modificar_precio_en_facturacion\/index.aspx","orden":"0002.0008.0009.0000.0000","icon":"","template":"","nivel":"0"},{"companyID":"2","elementID":"167","menuElementID":"110","parentMenuElementID":"47","display":"CXC_API","address":"app_cxc_api\/index.aspx","orden":"0002.0009.0007.0000.0000","icon":"","template":"","nivel":"0"},{"companyID":"2","elementID":"201","menuElementID":"135","parentMenuElementID":"47","display":"CONSULTA_INDIVIDUAL_AL_BURO","address":"app_cxc_report\/consulta_sin_riesgo.aspx","orden":"0002.0009.0009.0000.0000","icon":"","template":"","nivel":"0"},{"companyID":"2","elementID":"148","menuElementID":"94","parentMenuElementID":"92","display":"BOX_API","address":"app_box_api\/index.aspx","orden":"0002.0015.0012.0000.0000","icon":"","template":"","nivel":"0"},{"companyID":"2","elementID":"213","menuElementID":"144","parentMenuElementID":"92","display":"ES_PERMITIDO_MOSTRAR_INFO_DE_2_DAY_IN_app_box_report_share","address":"ES_PERMITIDO_MOSTRAR_INFO_DE_2_DAY_IN_app_box_report_share","orden":"0002.0015.0015.0000.0000","icon":"","template":"","nivel":"0"},{"companyID":"2","elementID":"54","menuElementID":"31","parentMenuElementID":null,"display":"POPUP","address":"","orden":"0003.0000.0000.0000.0000","icon":"","template":"","nivel":"0"},{"companyID":"2","elementID":"53","menuElementID":"32","parentMenuElementID":"31","display":"ELFINDER_SHOW","address":"core_elfinder\/show.aspx","orden":"0003.0001.0000.0000.0000","icon":"","template":"","nivel":"0"},{"companyID":"2","elementID":"55","menuElementID":"33","parentMenuElementID":"31","display":"ELFINDER_LOADER","address":"core_elfinder\/loader.aspx","orden":"0003.0002.0000.0000.0000","icon":"","template":"","nivel":"0"},{"companyID":"2","elementID":"56","menuElementID":"34","parentMenuElementID":"31","display":"ELFINDER_UPLOAD","address":"core_elfinder\/upload.aspx","orden":"0003.0003.0000.0000.0000","icon":"","template":"","nivel":"0"},{"companyID":"2","elementID":"159","menuElementID":"105","parentMenuElementID":"31","display":"NOTIFICACIONES","address":"core_notification\/index.aspx","orden":"0003.0004.0000.0000.0000","icon":"","template":"","nivel":"0"},{"companyID":"2","elementID":"212","menuElementID":"142","parentMenuElementID":"31","display":"REPORTE DE CODIGOS DE BARRA","address":"app_inventory_itemmasive\/popup_add_prinercode.aspx","orden":"0003.0005.0000.0000.0000","icon":"","template":"","nivel":"0"},{"companyID":"2","elementID":"211","menuElementID":"143","parentMenuElementID":"31","display":"RENDER CODIGO DE BARRA","address":"app_inventory_item\/popup_add_renderimg.aspx","orden":"0003.0006.0000.0000.0000","icon":"","template":"","nivel":"0"}]');
+	var varPermisosEsPermitidoModificarPrecio = 
+		jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_MODIFICAR_PRECIO_EN_FACTURACION"}).select().length > 0 ?
+		true:
+		false;
+	var PriceStatus = varPermisosEsPermitidoModificarPrecio == true ? "":"readonly";
+		
+	//Incializar Focos
+	if(varIsMobile != "1")
+	document.getElementById("txtScanerCodigo").focus();
+	
+	
+	
+		
+	//crear la cache intervalo 
+	var objListaProductosStore 	= localStorage.getItem("objListaProductos");		
+	objListaProductos 			= JSON.parse(objListaProductosStore);
+	
+	var objListaProductosStore2 	= localStorage.getItem("objListaProductos2");		
+	objListaProductos2 				= JSON.parse(objListaProductosStore2);
+	
+	var objListaProductosStore3 	= localStorage.getItem("objListaProductos3");		
+	objListaProductos3	 			= JSON.parse(objListaProductosStore3);
+	
+	var objListaProductosStoreSku	= localStorage.getItem("objListaProductosSku");		
+	objListaProductosSku 			= JSON.parse(objListaProductosStoreSku);	
+	
+	//No actualizar datos
+	if(objListaProductosStore == null ){
+		fnObtenerListadoProductos();
+		fnObtenerListadoProductos2();
+		fnObtenerListadoProductos3();
+		fnObtenerListadoProdcutosSku();
+		fnGetCustomerClient();		
+		setTimeout( function() { onCompletePantalla(); }, 3000);
+		
+	}
+	//No actualizar datos
+	else{		
+		fnGetCustomerClient(); 		
+		setTimeout( function() { onCompletePantalla(); }, 1000);
+	}
+
+
+	
+
+	$(document).ready(function(){			 
+		 $('#txtDate').datepicker({format:"yyyy-mm-dd"});
+		 $('#txtDate').val(moment().format("YYYY-MM-DD"));	
+		 $("#txtDate").datepicker("update");
+		 $('#txtDateFirst').datepicker({format:"yyyy-mm-dd"});						 
+		 $('#txtDateFirst').val(moment().add('days', 15).format("YYYY-MM-DD"));			 
+		 $("#txtDateFirst").datepicker("update");
+		 
+		 if(varIsMobile != "1"){
+			$("html, body").animate({scrollTop:  $("body").height()  +"px"});
+		 }
+		 
+		objTableDetail = $("#tb_transaction_master_detail").dataTable({
+			"bPaginate"		: false,
+			"bFilter"		: false,
+			"bSort"			: false,
+			"bInfo"			: false,
+			"bAutoWidth"	: false,
+			"aoColumnDefs": [ 
+						{
+							"aTargets"		: [ 0 ],//checked
+							"sWidth"		: "50px",
+							"mRender"		: function ( data, type, full ) {
+								if (data == false)
+								return '<input type="checkbox"  class="classCheckedDetail"  value="0" ></span>';
+								else
+								return '<input type="checkbox"  class="classCheckedDetail" checked="checked" value="0" ></span>';
+							}
+						},
+						{
+							"aTargets"		: [ 1 ],//transactionMasterDetailID
+							"bVisible"  	: true,
+							"sClass" 		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="hidden" value="'+data+'" name="txtTransactionMasterDetailID[]" />';
+							}
+						},
+						{
+							"aTargets"		: [ 2 ],//itemID
+							"bVisible"		: true,
+							"sClass" 		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="hidden" value="'+data+'" name="txtItemID[]" />';
+							}
+						},
+						{
+							"aTargets"		: [ 3 ],//itemNumber
+							"sWidth"		: "250px",
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12" style="text-align:left" value="'+data+'" readonly="true" />';
+							}
+						},
+						{
+							"aTargets"		: [ 4 ],//descripcion
+							"sWidth"		: "250px",
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12" style="text-align:left" value="'+data+'" readonly="true" />';
+							}
+						},
+						{
+							"aTargets"		: [ 5 ],//Sku
+							"sWidth"		: "250px",
+							"mRender"		: function ( data, type, full ) {
+								
+								var objListaSkuByProducto 	= jLinq.from(objListaProductosSku).where(function(obj){ return obj.itemID == full[2]; }).select();
+								var sel 					= '';
+								var espacio					=  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";								
+								sel 						= '<select name="txtSku[]" id="txtSku'+full[2]+'" class="txtSku col-lg-12"  >';									
+								
+								if(varIsMobile == "1")
+									espacio = "";		
+								
+								if(objListaSkuByProducto.length == 0)
+								{
+									sel = sel + '<option value="0" data-skuv="1" data-skupriceunitary="'+full[7]+'"   selected style="font-size:200%" >UNIDAD'+espacio+'</option>';
+								}
+								else{
+									for(var ix = 0 ; ix < objListaSkuByProducto.length ; ix++)
+									{
+										if(objListaSkuByProducto[ix].catalogItemID == data)
+											sel = sel + '<option value="'+objListaSkuByProducto[ix].catalogItemID+'" data-skuv="'+objListaSkuByProducto[ix].Valor+'" data-skupriceunitary="'+full[7]+'"  style="font-size:200%" selected >'+objListaSkuByProducto[ix].Sku+espacio+'</option>';
+										else
+											sel = sel + '<option value="'+objListaSkuByProducto[ix].catalogItemID+'" data-skuv="'+objListaSkuByProducto[ix].Valor+'" data-skupriceunitary="'+full[7]+'"  style="font-size:200%"  >'+objListaSkuByProducto[ix].Sku+espacio+'</option>';
+									}																				
+								}
+								
+								sel = sel + '</select>';					
+								return sel;
+										
+							}
+						},
+						{
+							"aTargets"		: [ 6 ],//Cantidad
+							"sWidth"		: "250px",
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12 txtQuantity" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right" />';
+							}
+						},
+						{
+							"aTargets"		: [ 7 ],//Precio
+							"sWidth"		: "250px",
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12 txtPrice"   id="txtPriceRow'+full[2]+'"   '+PriceStatus+'  value="'+data+'" name="txtPrice[]" style="text-align:right" />';
+							}
+						},
+						{
+							"aTargets"		: [ 8 ],//Total
+							"sWidth"		: "250px",
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12 txtSubTotal" readonly value="'+data+'" name="txtSubTotal[]" style="text-align:right" />';
+							}
+						},
+						{
+							"aTargets"		: [ 9 ],//Iva
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12 txtIva" value="'+data+'" name="txtIva[]" style="text-align:right" />';
+							}
+						},
+						{
+							"aTargets"		: [ 10 ],//skuQuantityBySku
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12 skuQuantityBySku" value="'+data+'" name="skuQuantityBySku[]" style="text-align:right" />';
+							}
+						},
+						{
+							"aTargets"		: [ 11 ],//unitaryPriceInvidual
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12 unitaryPriceInvidual" value="'+data+'" name="unitaryPriceInvidual[]" style="text-align:right" />';
+							}
+						}
+			]							
+		});
+		
+		
+		$(document).on("click","#btnViewDetailProductos",function(){
+			
+			var ventana_ancho = $(window).width()-50;
+			var ventana_alto = $(window).height();
+			$("#div-modal-dialog-lista-productos-para-revisar").css("width",ventana_ancho+"px");
+			
+			fnCreateTableSearchProductosDetalle();
+			$("#mi_modal_para_revisar").modal();			
+			setTimeout(function() { $($("#table_list_productos_para_revisar_filter").find("input")[0]).focus(); }, 500);								
+			return;
+				
+			
+		});
+			
+		$(document).on("click","#btnAddProductoOnLine",function(){
+				
+				
+				/*
+				var objRow 							= {};		
+				objRow.checked 						= false;						
+				objRow.transactionMasterDetailID 	= 0;
+				objRow.itemID						= objResponse[5];
+				objRow.codigo						= objResponse[17];
+				objRow.description					= objResponse[18].toLowerCase();
+				objRow.um							= objResponse[20];
+				objRow.quantity 					= fnFormatNumber(1,2);
+				objRow.bquantity 					= fnFormatNumber(objResponse[21],2);
+				objRow.price 						= fnFormatNumber(objResponse[22],2);
+				objRow.total 						= fnFormatNumber(objRow.quantity * objRow.price,2);						
+				objRow.iva 							= 0;
+				objRow.lote 						= "";
+				objRow.vencimiento					= "";				
+				*/
+				
+				/*
+				filterResult[i].itemID,
+				filterResult[i].Codigo,
+				"'"+filterResult[i].Nombre+"'",
+				filterResult[i].Medida,
+				filterResult[i].Cantidad,
+				filterResult[i].Precio,
+				filterResult[i].Barra,
+				*/
+				
+				var data		 = {};					
+				var dataResponse = [];
+				data			 = objTableProductosSearch.fnGetData(objRowTableProductosSearch);				
+				dataResponse[0] = data[0];
+				dataResponse[1] = data[0];
+				dataResponse[2] = data[0];
+				dataResponse[3] = data[0];
+				dataResponse[4] = data[0];
+				dataResponse[5] = data[0]; //itemID
+				dataResponse[6] = data[0];
+				dataResponse[7] = data[0];
+				dataResponse[8] = data[0];
+				dataResponse[9] = data[0];
+				dataResponse[10] = data[0];
+				dataResponse[11] = data[0];
+				dataResponse[12] = data[0];
+				dataResponse[13] = data[0];
+				dataResponse[14] = data[0];
+				dataResponse[15] = data[0];
+				dataResponse[16] = data[0];
+				dataResponse[17] = data[1];//Codigo
+				dataResponse[18] = data[2];//Nombre
+				dataResponse[19] = data[0];
+				dataResponse[20] = data[3];//Unidad de medida
+				dataResponse[21] = data[4];//Cantidad
+				dataResponse[22] = data[5];//Precio
+				dataResponse[23] = data[0];
+				dataResponse[24] = data[0];
+				dataResponse[25] = data[0];
+				dataResponse[26] = data[0];
+				
+				onCompleteNewItem(dataResponse,true);
+
+				
+		});						
+	
+	
+		
+		
+		
+		$(document).on("keypress",'#txtReceiptAmount', function(e) {	
+			var code = e.keyCode || e.which;
+			 if(code != 13) { 
+			   	 return;
+			 }		 
+			 
+			document.getElementById("txtReceiptAmountDol").focus();
+			return;
+				
+		});
+		
+		
+		$(document).on("keypress",'#txtReceiptAmountDol', function(e) {		
+		
+			var code = e.keyCode || e.which;			
+			if(code != 13) { 
+			   	 return;
+			}					 
+			fnEnviarFactura();
+			return;
+			 
+		});
+		$(document).on("keydown",'#txtReceiptAmountDol', function(e) {		
+		
+			var code = e.keyCode || e.which;			
+			//Enviar Factura
+			if(e.key === "a"  && e.ctrlKey) { 													
+			   	fnEnviarFactura();				 
+			}		
+			
+			//Regresar al scaner
+			if(e.key === "b"  && e.ctrlKey) { 		
+				document.getElementById("txtScanerCodigo").focus();				
+			}		
+			
+			
+			//e.preventDefault();
+			//e.stopPropagation();
+			return;
+		});
+		
+		
+		
+		
+		$(document).on("keypress","#table_list_productos_filter > label > input[type='text']", function(e) {	
+			 
+			 
+			 //buscar el primer rgistro que se encuetre
+			 var element 		= $("#table_list_productos_filter > label > input[type='text']").val();		
+			 
+			 var code = e.keyCode || e.which;
+			 
+			 /*si la tecla precionada no es +, agregar los caracteres al control*/
+			 if(code != 43) { 
+				$("#table_list_productos_detail tr.row-selected").removeClass("row-selected");
+			   	 return;
+			 }	
+			 
+			 
+			 //buscar
+			 var elementr 		= $("#table_list_productos_filter > label > input[type='text']").val("");
+			 
+			 //Obtener el primer reigstro y agregar
+			 var elementoTr 	= $("#table_list_productos_detail tr.row-selected")[0];
+			 objRowTableProductosSearch = elementoTr; 
+			 fnTableSelectedRow(this,event);
+			 
+			 
+			 var data		 	= {};					
+			 var dataResponse 	= [];
+			 data			 	= objTableProductosSearch.fnGetData(objRowTableProductosSearch);				
+			 dataResponse[0] = data[0];
+			 dataResponse[1] = data[0];
+			 dataResponse[2] = data[0];
+			 dataResponse[3] = data[0];
+			 dataResponse[4] = data[0];
+			 dataResponse[5] = data[0]; //itemID
+			 dataResponse[6] = data[0];
+			 dataResponse[7] = data[0];
+			 dataResponse[8] = data[0];
+			 dataResponse[9] = data[0];
+			 dataResponse[10] = data[0];
+			 dataResponse[11] = data[0];
+			 dataResponse[12] = data[0];
+			 dataResponse[13] = data[0];
+			 dataResponse[14] = data[0];
+			 dataResponse[15] = data[0];
+			 dataResponse[16] = data[0];
+			 dataResponse[17] = data[1];//Codigo
+			 dataResponse[18] = data[2];//Nombre
+			 dataResponse[19] = data[0];
+			 dataResponse[20] = data[3];//Unidad de medida
+			 dataResponse[21] = data[4];//Cantidad
+			 dataResponse[22] = data[5];//Precio
+			 dataResponse[23] = data[0];
+			 dataResponse[24] = data[0];
+			 dataResponse[25] = data[0];
+			 dataResponse[26] = data[0];
+			 
+			 onCompleteNewItem(dataResponse,true);
+			 $(this).focus();
+			 $(this).val("");
+			 e.preventDefault();
+			 
+		});
+		$(document).on("keydown","#table_list_productos_filter > label > input[type='text']", function(e) {	
+			 
+			 
+			 //Obtener la tabla
+			 var element 		= $("#table_list_productos_detail");			 
+			 var code 			= e.keyCode || e.which;
+			 var selecte 		= element.find("tr.row-selected").length;
+			 var rowselected 	= element.find("tr.row-selected")[0];
+			 var firstrow		= element.children('tr:first');
+			 var lastrow		= element.children('tr:last');
+			 
+			 
+			 if(selecte == 0){
+				 firstrow.addClass("row-selected");
+				 return;
+			 }
+			 
+			 //hacia abajo
+			 if(code == 40) { 
+			    $(rowselected).removeClass("row-selected");
+				$(rowselected).next().addClass("row-selected");
+			   	 return;
+			 }	
+			 
+			 //hacia arriba
+			 if(code == 38) { 
+				$(rowselected).removeClass("row-selected");
+				$(rowselected).prev().addClass("row-selected");
+			   	return;
+			 }	
+			 
+			 //Obtener el registro seleccionado
+			 var rowselected 	= element.find("tr.row-selected")[0];
+			 
+		});
+			 
+			 
+		$('#mi_modal').on('hidden.bs.modal', function (e) {
+			
+			if(varIsMobile != "1")
+			document.getElementById("txtScanerCodigo").focus();	
+		});
+		
+
+		$(document).on("keydown",'#txtScanerCodigo', function(e) {
+			
+			
+			var code = e.keyCode || e.which;						
+			
+			//Nueva
+			if(e.key === "k" && e.ctrlKey) { 		
+				e.preventDefault();
+				e.stopPropagation();			
+			   	window.location = "http://localhost/posmev4/app_invoice_billing/add";			 
+			}
+			
+			//Abrir Caja
+			if(e.key === "i" && e.ctrlKey) 
+			{ 		
+
+				$.ajax({									
+					cache       : false,
+					dataType    : 'json',
+					type        : 'POST',
+					url  		: "http://localhost/posmev4/app_invoice_billing/viewPrinterOpen",
+					data 		: {companyID : 2 },
+					success:function(data){
+						console.info("complete delete success");
+						fnWaitClose();
+						if(data.error){
+							fnShowNotification(data.message,"error");
+						}
+						else{
+							window.location = "http://localhost/posmev4/app_invoice_billing/index";
+						}
+					},
+					error:function(xhr,data){	
+						console.info("complete delete error");									
+						fnWaitClose();
+						fnShowNotification("Error 505","error");
+					}
+				});
+				e.preventDefault();
+				e.stopPropagation();
+			}
+
+			
+			
+			
+		});
+		
+		
+		$(document).on("keypress",'#txtScanerCodigo', function(e) {
+			
+			var code = e.keyCode || e.which;
+			 if(code != 13) { 
+			   	 return;
+			 }		 
+			
+			
+			var codigoABuscar = $("#txtScanerCodigo").val();
+			$("#txtScanerCodigo").val("");
+			
+			
+			
+			
+			//++Abrir popup de productos
+			if(codigoABuscar == "++"){
+				
+				var ventana_ancho = $(window).width()-50;
+				var ventana_alto = $(window).height();
+				$("#div-modal-dialog-lista-productos").css("width",ventana_ancho+"px");
+			
+				fnCreateTableSearchProductos();
+				$("#mi_modal").modal();			
+				setTimeout(function() { $($("#table_list_productos_filter").find("input")[0]).focus(); }, 500);								
+				return;
+			}
+			
+			//Mover a ingreso de dinero Cordoba
+			if(codigoABuscar == ""){
+				document.getElementById("txtReceiptAmount").focus();
+				$("#txtReceiptAmount").val("");
+				return;
+			}
+			
+			
+			
+			//buscar el producto y agregar
+			var filterResult = {};
+			
+			//buscar producto por codigo de barra autimatico
+			//precio 1 ---> 154 --> precio publico
+			if($("#txtTypePriceID").val() == 154){
+				filterResult = jLinq.from(objListaProductos).where(function(obj){ return obj["Barra"] == codigoABuscar}).select();
+			}
+			//precio 2 ---> 155 --> precio mayorista
+			if($("#txtTypePriceID").val() == 155){
+				filterResult = jLinq.from(objListaProductos2).where(function(obj){ return obj["Barra"] == codigoABuscar}).select();
+			}
+			//precio 3 ---> 156 --> precio credito
+			if($("#txtTypePriceID").val() == 156){
+				filterResult = jLinq.from(objListaProductos3).where(function(obj){ return obj["Barra"] == codigoABuscar}).select();
+			}
+			
+			
+			
+			//buscar producto por codigo de barra escrito
+			if(filterResult.length == 0)
+			{
+				
+				codigoABuscar =  "BITT" + ("00000000"+codigoABuscar).substr(("00000000"+codigoABuscar).length - 8 ,8);				
+				//precio 1 ---> 154 --> precio publico
+				if($("#txtTypePriceID").val() == 154){
+					filterResult = jLinq.from(objListaProductos).where(function(obj){ return obj["Barra"] == codigoABuscar}).select();
+				}
+				//precio 2 ---> 155 --> precio mayorista
+				if($("#txtTypePriceID").val() == 155){
+					filterResult = jLinq.from(objListaProductos2).where(function(obj){ return obj["Barra"] == codigoABuscar}).select();
+				}
+				//precio 3 ---> 156 --> precio credito
+				if($("#txtTypePriceID").val() == 156){
+					filterResult = jLinq.from(objListaProductos3).where(function(obj){ return obj["Barra"] == codigoABuscar}).select();
+				}
+			}
+			
+			
+			//Buscar producto por codigo de sistema		
+			var sumar  = true;
+			if(filterResult.length == 0)
+			{
+				//Agregar Cantidad
+				if(codigoABuscar.indexOf("+")  >= 0 ){				
+					sumar  = true;
+					codigoABuscar =  codigoABuscar.replace("BITT","").replace("+","");
+					codigoABuscar =  "ITT" + ("00000000"+codigoABuscar).substr(("00000000"+codigoABuscar).length - 8 ,8);				
+				}
+				if(codigoABuscar.indexOf("-")  >= 0 ){				
+					sumar  = false;
+					codigoABuscar =  codigoABuscar.replace("BITT","").replace("-","");
+					codigoABuscar =  "ITT" + ("00000000"+codigoABuscar).substr(("00000000"+codigoABuscar).length - 8 ,8);				
+				}
+				
+				//precio 1 ---> 154 --> precio publico
+				if($("#txtTypePriceID").val() == 154){
+					filterResult = jLinq.from(objListaProductos).where(function(obj){ return obj["Codigo"] == codigoABuscar}).select();
+				}
+				//precio 2 ---> 155 --> precio mayorista
+				if($("#txtTypePriceID").val() == 155){
+					filterResult = jLinq.from(objListaProductos2).where(function(obj){ return obj["Codigo"] == codigoABuscar}).select();
+				}
+				//precio 3 ---> 156 --> precio credito
+				if($("#txtTypePriceID").val() == 156){
+					filterResult = jLinq.from(objListaProductos3).where(function(obj){ return obj["Codigo"] == codigoABuscar}).select();
+				}
+			}
+			
+			//No se encontro
+			if(filterResult.length == 0)
+			{
+				return;
+			}
+			
+			
+			filterResult 			= filterResult[0];
+			var filterResultArray 	= [];
+			filterResultArray[5] 	= filterResult.itemID;
+			filterResultArray[17] 	= filterResult.Codigo;
+			filterResultArray[18] 	= filterResult.Nombre;
+			filterResultArray[20] 	= filterResult.Medida;
+			filterResultArray[21] 	= filterResult.Cantidad;
+			filterResultArray[22] 	= filterResult.Precio;
+			//Agregar el Item a la Fila
+			onCompleteNewItem(filterResultArray,sumar); 
+			 
+		});
+		
+		//Buscar el Cliente
+		$(document).on("click","#btnSearchCustomer",function(){
+			var url_request = "http://localhost/posmev4/core_view/showviewbyname/36/onCompleteCustomer/SELECCIONAR_CLIENTES_BILLING/true/empty";
+			window.open(url_request,"MsgWindow","width=900,height=450");
+			window.onCompleteCustomer = onCompleteCustomer; 
+		});						
+	
+		//Eliminar Cliente
+		$(document).on("click","#btnClearCustomer",function(){
+					$("#txtCustomerID").val("");
+					$("#txtCustomerDescription").val("");
+		});
+		
+		$(document).on("change","#txtCausalID,#txtCustomerCreditLineID",function(){
+			fnClearData();
+		});
+		
+		$(document).on("change","#txtTypePriceID",function(){
+			fnActualizarPrecio();
+		});
+		
+
+
+		$(document).on("change","#txtCausalID",function(){
+			fnRenderLineaCreditoDiv();
+		});
+		
+		
+		
+		//Regresar a la lista
+		$(document).on("click","#btnBack",function(){
+				fnWaitOpen();
+		});
+		
+		//Evento Agregar el Usuario
+		$(document).on("click","#btnAcept",function(e){
+				e.preventDefault();
+				fnEnviarFactura();
+		});
+		
+		$(document).on("click","#btnNewItem",function(){
+			
+			var ventana_ancho = $(window).width()-50;
+			var ventana_alto = $(window).height();
+			$("#div-modal-dialog-lista-productos").css("width",ventana_ancho+"px");			
+			fnCreateTableSearchProductos();
+			$("#mi_modal").modal();
+		
+		});
+
+		$(document).on("click","#btnNewItemCatalog",function(){
+			
+			var url_request 			= "http://localhost/posmev4/app_inventory_item/add/callback/fnObtenerListadoProductos";
+			window.open(url_request,"MsgWindow","width=700,height=600");
+			window.fnObtenerListadoProductos = fnObtenerListadoProductos; 			
+		});
+
+		$(document).on("click","#btnRefreshDataCatalogo",function(){
+			fnWaitOpen();
+			setTimeout( function() { fnObtenerListadoProductos(); }, 10);			
+			setTimeout( function() { fnObtenerListadoProductos2(); }, 10);			
+			setTimeout( function() { fnObtenerListadoProductos3(); }, 10);			
+			setTimeout( function() { fnObtenerListadoProdcutosSku(); }, 10);	
+			setTimeout( function() { fnWaitClose(); }, 10000);
+		});
+
+
+		$(document).on("click","#btnSearchCustomerNew",function(){
+			var url_request 				 = "http://localhost/posmev4/app_cxc_customer/add/callback/fnCustomerNewCompleted";
+			window.open(url_request,"mozillaWindow","width=700,height=600");
+			window.fnCustomerNewCompleted = fnCustomerNewCompleted; 	
+		});
+		
+		
+		$(document).on("click","#btnDeleteItem",function(){
+				var listRow = objTableDetail.fnGetData();							
+				var length 	= listRow.length;
+				var i 		= 0;
+				var itemid 	= 0;
+				while (i< length ){
+					if(listRow[i][0] == true){
+						itemid = listRow[i][2];
+						objTableDetail.fnDeleteRow(i);
+					}
+					i++;
+				}
+				fnRecalculateDetail(true,"");									
+		});
+		$(document).on("change","input.txtQuantity",function(){			
+			fnRecalculateDetail(true,"");		
+		});
+		$(document).on("change","input.txtPrice",function(){
+			fnRecalculateDetail(true,"txtPrice");		
+		});
+		$(document).on("change","select.txtSku",function(){
+			fnRecalculateDetail(true,"");		
+		});
+		$(document).on("change","input#txtReceiptAmount",function(){							
+			var ingreso 	= fnFormatFloat($("#txtReceiptAmount").val());
+			var ingresoDol 	= fnFormatFloat($("#txtReceiptAmountDol").val());
+			var tipoCambio 	= fnFormatFloat($("#txtExchangeRate").val()); 			
+			var total 		= fnFormatFloat($("#txtTotal").val());				
+			var resultTotal =  (ingreso + (ingresoDol * tipoCambio)) - total;
+			var resultTotal = fnFormatNumber(resultTotal,2);
+			$("#txtChangeAmount").val(resultTotal);	
+			
+		});
+		$(document).on("change","input#txtReceiptAmountDol",function(){							
+			var ingreso 	= fnFormatFloat($("#txtReceiptAmount").val());
+			var ingresoDol 	= fnFormatFloat($("#txtReceiptAmountDol").val());
+			var tipoCambio 	= fnFormatFloat($("#txtExchangeRate").val()); 			
+			var total 		= fnFormatFloat($("#txtTotal").val());			
+			
+			var resultTotal =  (ingreso + (ingresoDol * tipoCambio)) - total;
+			var resultTotal = fnFormatNumber(resultTotal,2);
+			$("#txtChangeAmount").val(resultTotal);	
+			
+		});
+
+		
+		if (varAutoAPlicar == "true" || varParameterRegresarAListaDespuesDeGuardar == "true"){
+		$( "#form-new-invoice" ).submit(function(e){
+				  debugger;
+				  e.preventDefault(e);
+
+				  var formData = new FormData(this);
+
+				  //Mandar la factura
+				  //Interna mente, se se guarda y se imprimie
+				  $.ajax({
+						async: 		true,
+						type: 		$( "#form-new-invoice" ).attr('method'),
+						url: 		$( "#form-new-invoice" ).attr('action'),
+						data: 		formData,
+						cache: 		false,
+						processData:false,
+						contentType:false,				  
+						success: 	function (data) {
+						  console.log("success form data")
+						},
+						error: 		function(request, status, error) {
+						  console.log("error form data")
+						}
+				  });
+				  
+				  
+				  //Mandar abrir la caja de efectivo
+				  $.ajax({
+						async: 		true,
+						type: 		"GET",
+						url: 		"http://localhost/posmev4/app_invoice_billing/viewPrinterOpen",
+						data: 		formData,
+						cache: 		false,
+						processData:false,
+						contentType:false,				  
+						success: 	function (data) {
+						  console.log("success form data")
+						},
+						error: 		function(request, status, error) {
+						  console.log("error form data")
+						}
+				  });
+				  debugger;
+				  if(varParameterRegresarAListaDespuesDeGuardar == "true"){
+					window.location	= "http://localhost/posmev4/app_invoice_billing/index";
+				  }
+			      if(varParameterRegresarAListaDespuesDeGuardar != "true"){
+					window.location	= "http://localhost/posmev4/app_invoice_billing/add";
+				  }
+				  
+				  fnWaitClose();
+		});
+		}
+		
+	
+
+		
+	});
+	
+	//Seleccionar Checke 
+	$(document).on("click",".classCheckedDetail",function(){
+		var objrow_ = $(this).parent().parent().parent().parent()[0];
+		var objind_ = objTableDetail.fnGetPosition(objrow_);
+		var objdat_ = objTableDetail.fnGetData(objind_);								
+		objTableDetail.fnUpdate( !objdat_[0], objind_, 0 );
+		refreschChecked();
+	});
+	
+	function onCompletePantalla(){
+		$(".btn-comando-factura").removeClass("hidden");
+		
+		if(varIsMobile == "1" ){
+		   
+		   $(".elementMovilOculto").addClass("hidden");
+		   
+		   
+		   
+		   $("#table-resumen").css("width", ( $( window ).width() )+"px");
+		   $("#table-resumen th").css("display","block");
+		   $("#table-resumen td").css("display","block");
+		   
+		   
+		   $("#table-resumen-pago").css("width", ( $( window ).width() )+"px");
+		   $("#table-resumen-pago th").css("display","block");
+		   $("#table-resumen-pago td").css("display","block");
+		   
+	
+		   
+		   $("#tb_transaction_master_detail th").css("display","none");
+		   $("#tb_transaction_master_detail td").css("display","block");
+		   
+	    }
+	   
+	    $("#divLoandingCustom").remove();
+		
+	}
+	
+	function onCompleteCustomer(objResponse){
+		console.info("CALL onCompleteCustomer");
+	
+		var entityID = objResponse[1];
+		$("#txtCustomerID").val(objResponse[1]);
+		$("#txtCustomerDescription").val(objResponse[2] + " " + objResponse[3] + " / " + objResponse[4]);	
+		fnClearData();
+		
+		
+		fnGetCustomerClient();
+		
+	}
+	
+	function onCompleteNewItem(objResponse,suma){
+		console.info("CALL onCompleteNewItem");
+
+		
+		var objRow 							= {};		
+		objRow.checked 						= false;						
+		objRow.transactionMasterDetailID 	= 0;
+		objRow.itemID						= objResponse[5];
+		objRow.codigo						= objResponse[17];
+		objRow.description					= objResponse[18].toLowerCase();
+		objRow.um							= objResponse[20];
+		objRow.quantity 					= fnFormatNumber(1,2);
+		objRow.bquantity 					= fnFormatNumber(objResponse[21],2);
+		objRow.price 						= fnFormatNumber(objResponse[22],2);
+		objRow.total 						= fnFormatNumber(objRow.quantity * objRow.price,2);						
+		objRow.iva 							= 0;
+		objRow.lote 						= "";
+		objRow.vencimiento					= "";
+		
+		
+		//Actualizar
+		if(jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[2] == objRow.itemID;}).select().length > 0 ){
+			
+			var x_ 			=  jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[2] == objRow.itemID;}).select();
+			var newCantidad =  0;
+			
+			if (suma == true)
+			newCantidad =  parseFloat(fnFormatNumber(x_[0][6],2)) + 1;
+			else
+			newCantidad =  parseFloat(fnFormatNumber(x_[0][6],2)) - 1;
+			
+			var objind_ 	= fnGetPosition(x_,objTableDetail.fnGetData());
+			objTableDetail.fnUpdate( fnFormatNumber(newCantidad,2)  , objind_, 6 );
+			
+			if(varIsMobile != "1"){
+				$("#body_tb_transaction_master_detail tr")[objind_].animate({ 
+				backgroundColor : "#4eacc8" },500);
+				$("#body_tb_transaction_master_detail tr")[objind_].animate({ 
+				backgroundColor : "" },500);
+			}
+			
+		}
+		//Agregar
+		else{
+			objTableDetail.fnAddData([
+				objRow.checked,
+				objRow.transactionMasterDetailID,
+				objRow.itemID,
+				objRow.codigo,
+				objRow.description,
+				objRow.um,
+				objRow.quantity,
+				objRow.price,
+				objRow.total,
+				objRow.iva,
+				0,
+				0
+			]);
+			
+			if(varIsMobile != "1"){
+				$("#body_tb_transaction_master_detail tr")[objTableDetail.fnGetData().length - 1].animate({ 
+				backgroundColor : "#4eacc8" },500);
+				$("#body_tb_transaction_master_detail tr")[objTableDetail.fnGetData().length - 1].animate({ 
+				backgroundColor : "" },500);
+			}
+		}
+		
+		
+		
+		fnGetConcept(objRow.itemID,"IVA");						
+		refreschChecked();
+		document.getElementById("txtScanerCodigo").focus();	
+		
+		if(varIsMobile != "1"){
+			$("html, body").animate({scrollTop:  $("body").height()  +"px"});		
+		}
+		
+	}
+	
+	function validateFormAndSubmit(){
+		debugger;
+		var result 				= true;		
+		var timerNotification 	= 15000;
+		var switchDesembolso	= !$("#txtLabelIsDesembolsoEfectivo").parent().find(".switch.has-switch").children().hasClass("switch-off");
+		
+		//Validar bodega de despacho
+		if($("#txtWarehouseID").val() == ""){
+			fnShowNotification("Seleccionar bodega de desapcho","error",timerNotification);			
+			result = false;	
+			fnWaitClose();
+		}
+		
+		
+		//Validar Fecha		
+		if($("#txtDate").val() == ""){
+			fnShowNotification("Establecer Fecha al Documento","error",timerNotification);
+			result = false;
+			fnWaitClose();
+		}
+		
+		//Validar Cliente		
+		if($("#txtCustomerID").val() == ""){
+			fnShowNotification("Seleccionar el Cliente","error",timerNotification);
+			result = false;
+			fnWaitClose();
+		}
+		//Validar Proveedor de Credito
+		if($("#txtReference1").val() == "0" && switchDesembolso){
+			fnShowNotification("Seleccionar el Proveedor de Credito","error",timerNotification);
+			result = false;
+			fnWaitClose();
+		}
+		//Validar Zona
+		if($("#txtZoneID").val() == "" && switchDesembolso){
+			fnShowNotification("Seleccionar la Zona de la Factura","error",timerNotification);
+			result = false;
+			fnWaitClose();
+		}
+		
+		
+		
+		
+		
+		//Validar Detalle
+		//
+		///////////////////////////////////////////////		
+		var cantidadTotalesEnZero = jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[8] == 0;}).select().length ;
+		if(cantidadTotalesEnZero > 0){
+			fnShowNotification("No pueden haber totales en 0","error",timerNotification);
+			result = false;
+			fnWaitClose();
+		};		
+		
+		var cantidadTotalesEnZero = jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[6] == 0;}).select().length ;
+		if(cantidadTotalesEnZero > 0){
+			fnShowNotification("No pueden haber cantidades en 0","error",timerNotification);
+			result = false;
+			fnWaitClose();
+		};		
+		
+		
+		if(varAutoAPlicar == "true" && objTableDetail.fnGetData().length == 0){
+			fnShowNotification("La factura no puede estar vacia","error",timerNotification);
+			result = false;
+			fnWaitClose();
+		}
+		
+		var listItemIDToValid 	= "-1";
+		var listQntity 			= "-1"
+		for(var i = 0; i < objTableDetail.fnGetData().length; i++){
+			
+			var rowTable 				= objTableDetail.fnGetData()[i];
+			var rowTableItemID 		 	= rowTable[2];
+			var rowTableItemQuantity 	= rowTable[6];
+			var rowTableItemNombre 		= rowTable[4];			
+			var objProducto 			= jLinq.from(objListaProductos).where(function(obj){ return obj.itemID == rowTableItemID}).select();
+			
+			
+			if(objProducto.length == 0){
+				fnShowNotification("Producto no se encuentra en inventario","error",timerNotification);
+				result = false;	
+				fnWaitClose();
+			}
+			listItemIDToValid = listItemIDToValid+ ","+rowTableItemID;
+			listQntity = listQntity+ ","+rowTableItemQuantity;
+			
+			
+			
+		}	 
+		
+		
+		//Si es de credito que la factura no supere la linea de credito
+		var causalSelect 				= $("#txtCausalID").val();
+		var customerCreditLineID 		= $("#txtCustomerCreditLineID").val();
+		var objCustomerCreditLine 		= jLinq.from(tmpInfoClient.objListCustomerCreditLine).where(function(obj){ return obj.customerCreditLineID == customerCreditLineID; }).select();
+		var causalCredit 				= tmpInfoClient.objCausalTypeCredit.value.split(",");
+		var invoiceTypeCredit 			= false;
+		
+		
+		//Obtener si la factura es al credito						
+		for(var i=0;i<causalCredit.length;i++){
+			if(causalCredit[i] == causalSelect){
+				invoiceTypeCredit = true;
+			}
+		}
+		
+		
+		//Validaciones si la factura es al credito.
+		if(invoiceTypeCredit){
+			
+			
+			//Validar Fecha del Primer Pago si es de Credito
+			if($("#txtDateFirst").val() == "" && switchDesembolso){
+				fnShowNotification("Seleccionar la Fecha del Primer Pago","error",timerNotification);
+				result = false;
+				fnWaitClose();
+			}
+			
+			
+			//Validar Notas
+			if($("#txtNote").val() == "" && switchDesembolso){
+				fnShowNotification("Asignarle una nota al documento","error",timerNotification);
+				result = false;
+				fnWaitClose();
+			}
+			
+			//Validar Escritura Publica
+			if($("#txtFixedExpenses").val() == "" && switchDesembolso){
+				fnShowNotification("Ingresar el Porcentaje de Gastos Fijo por Desembolso","error",timerNotification);
+				result = false;
+				fnWaitClose();
+			}
+			
+			
+			
+			var montoTotalInvoice 	= fnFormatFloat(fnFormatNumber($("#txtTotal").val(),"4"));
+			var balanceCredit 		= 0;
+			
+			if(tmpInfoClient.objCurrencyCordoba.currencyID == objCustomerCreditLine[0].currencyID)
+				balanceCredit =  fnFormatFloat(fnFormatNumber(objCustomerCreditLine[0].balance,"4"));
+			else{
+				balanceCredit = (
+									fnFormatFloat(fnFormatNumber(objCustomerCreditLine[0].balance,"4")) * 
+									fnFormatFloat(fnFormatNumber(objCustomerCreditLine[0].objExchangeRate,"4")) 
+								);
+			}
+			
+			//Validar Limite
+			if(balanceCredit < montoTotalInvoice){
+				fnShowNotification("La factura no puede ser facturada al credito. Balance del cliente: " + balanceCredit,"error",timerNotification);
+				result = false;
+				fnWaitClose();
+			}
+			
+			
+		}
+		else{			
+			//Validar Pago
+			if( parseFloat( $("#txtChangeAmount").val() )  < 0 ){
+				fnShowNotification("El cambio de la factura no puede ser menor a 0","error",timerNotification);
+				result = false;
+				fnWaitClose();
+			}
+		}
+		
+		
+		
+		if(varPermitirFacturarProductosEnZero == "true" && result )
+		{			
+			debugger;
+			$("#form-new-invoice" ).submit();
+			return;
+		}
+		
+		//Validar en el servidor	
+		if(result){			
+			$.ajax(
+				{									
+					cache       : false,
+					dataType    : 'json',
+					async		: false,
+					type        : 'GET',																	
+					url  		: "http://localhost/posmev4/app_invoice_api/getValidExistencia/warehouseID/"+$("#txtWarehouseID").val() +'/itemID/'+listItemIDToValid+"/quantity/"+listQntity,
+					success		: function(result){						
+													
+							if(result.resultValidate.length == 0){
+								debugger;
+								$( "#form-new-invoice" ).submit();
+							}
+							else{
+								fnWaitClose();	
+								for(var ie = 0 ; ie < result.resultValidate.length ; ie++){								
+									fnShowNotification(
+										result.resultValidate[ie].Codigo + " " + 
+										result.resultValidate[ie].Nombre + " " + 
+										result.resultValidate[ie].QuantityInWarehouse +  " " + 
+										result.resultValidate[ie].Mensaje,
+										"error"
+									);
+								}
+							}
+							
+							
+					},
+					error: function(result){							
+						fnWaitClose();
+					}
+				}
+			);
+		}
+		
+		
+	}
+	
+	function fnGetConcept(conceptItemID,nameConcept){
+		fnWaitOpen();
+		$.ajax({									
+			cache       : false,
+			dataType    : 'json',
+			type        : 'POST',
+			url  		: "http://localhost/posmev4/core_concept_api/index",
+			data 		: {companyID : 2, componentID : 33, componentItemID : conceptItemID, name : nameConcept  },
+			success:function(data){
+				console.info("complete concept success");
+				fnWaitClose();
+				if(data.error){
+					fnShowNotification(data.message,"error");
+					fnRecalculateDetail(true,"");		
+					return;
+				}								
+				
+				if(data.data != null){
+					var x_		= jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[2] == data.data.componentItemID;}).select();									
+					var objind_ = fnGetPosition(x_,objTableDetail.fnGetData());
+					objTableDetail.fnUpdate( fnFormatNumber(data.data.valueOut,2), objind_, 9 );
+				}
+				fnRecalculateDetail(true,"");		
+			},
+			error:function(xhr,data){	
+				console.info("complete concept error");									
+				fnWaitClose();
+				fnShowNotification("Error 505","error");
+				fnRecalculateDetail(true,"");		
+			}
+		});								
+	}
+	
+	function refreschChecked(){
+		$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();						
+		
+		if(varIsMobile == "1"){
+			$("#tb_transaction_master_detail td").css("display","block");
+		}
+		
+	}
+	
+	function fnClearData(){
+			console.info("fnClearData");
+			objTableDetail.fnClearTable();
+			$("#txtReceiptAmount").val("0");
+			$("#txtReceiptAmountDol").val("0");
+			$("#txtChangeAmount").val("0");
+			$("#txtSubTotal").val("0");
+			$("#txtIva").val("0");
+			$("#txtTotal").val("0");
+	}
+	
+	function fnRecalculateDetail(clearRecibo,sourceEvent){
+		
+		var typePriceID 			= $("#txtTypePriceID").val();
+		var cantidad 				= 0;
+		var iva 					= 0;
+		var precio					= 0;		
+		var subtotal 				= 0;		
+		var total 					= 0;
+		
+		var cantidadGeneral 				= 0;
+		var ivaGeneral 						= 0;
+		var precioGeneral					= 0;		
+		var subtotalGeneral 				= 0;		
+		var totalGeneral 					= 0;
+		
+		var priceTemporal		= 0;
+		var cantidadTemporal	= 0;
+		
+		
+		var NSSystemDetailInvoice	= objTableDetail.fnGetData();		
+		for(var i = 0; i < NSSystemDetailInvoice.length; i++){
+			
+			var skuSelecte 			= $($(".txtSku")[i]);
+			var skuCatalogItemID 	= skuSelecte.val();
+			var skuSelecteOption	= $($(".txtSku")[i]).find("option[value='"+skuCatalogItemID+"']").first();						
+			var skuValue 			= skuSelecteOption.data("skuv");
+			var skuValuePrimceUnit	= skuSelecteOption.data("skupriceunitary");
+			
+			cantidadTemporal 	=  $(".txtQuantity")[i].value;
+			priceTemporal  		=  $(".txtPrice")[i].value;
+			
+			
+			if(sourceEvent != "txtPrice"){
+				priceTemporal  		=   skuValue * skuValuePrimceUnit;				
+			}
+			
+			objTableDetail.fnUpdate( cantidadTemporal, i, 6 );
+			objTableDetail.fnUpdate( priceTemporal, i, 7 );
+		
+			cantidad 	= parseFloat(NSSystemDetailInvoice[i][6]);
+			precio 		= parseFloat(NSSystemDetailInvoice[i][7]);
+			iva 		= parseFloat(NSSystemDetailInvoice[i][9]);
+			
+			
+			
+			subtotal    = precio * cantidad;
+			iva 		= (precio * cantidad) * iva;
+			total 		= iva + subtotal;
+			
+			
+			cantidadGeneral 	= cantidadGeneral + cantidad;
+			precioGeneral 		= precioGeneral + precio;
+			ivaGeneral 			= ivaGeneral + iva;			
+			subtotalGeneral 	= subtotalGeneral + subtotal;
+			totalGeneral 		= totalGeneral + total;
+			
+			
+			objTableDetail.fnUpdate( fnFormatNumber(subtotal,2), i, 8 );
+		}						
+		$("#txtSubTotal").val(fnFormatNumber(subtotalGeneral,2));
+		$("#txtIva").val(fnFormatNumber(ivaGeneral,2));
+		$("#txtTotal").val(fnFormatNumber(totalGeneral,2));
+		
+		$("#txtReceiptAmount").val(fnFormatNumber(totalGeneral,2));
+		$("#txtReceiptAmountDol").val("0.00");
+		$("#txtChangeAmount").val("0.00");
+			
+	}
+	
+	function fnFillListaProductos(data)
+	{		
+
+		
+		console.info("complete success data");
+		objListaProductos 			= data.objGridView;
+		var objListaProductosStore 	= localStorage.getItem("objListaProductos");		
+		localStorage.setItem("objListaProductos",JSON.stringify(objListaProductos));
+
+	
+	}
+	function fnFillListaProductos2(data)
+	{		
+
+		
+		console.info("complete success data");
+		objListaProductos2 			= data.objGridView;
+		var objListaProductosStore2 	= localStorage.getItem("objListaProductos2");		
+		localStorage.setItem("objListaProductos2",JSON.stringify(objListaProductos2));
+
+	
+	}
+	function fnFillListaProductos3(data)
+	{		
+
+		
+		console.info("complete success data");
+		objListaProductos3 						= data.objGridView;
+		var objListaProductosStore3 			= localStorage.getItem("objListaProductos3");		
+		localStorage.setItem("objListaProductos3",JSON.stringify(objListaProductos3));
+
+	
+	}
+	function fnFillListaProductosSku(data)
+	{		
+		console.info("complete success data");
+		objListaProductosSku					= data.objGridView;
+		var objListaProductosStoreSku 			= localStorage.getItem("objListaProductosSku");		
+		localStorage.setItem("objListaProductosSku",JSON.stringify(objListaProductosSku));
+	
+	}
+	
+	function fnCompleteGetCustomerCreditLine (data)
+	{
+		
+		console.info("complete success data credit line");		
+		tmpInfoClient = data;
+		console.info(tmpInfoClient);
+		
+		//Renderizar Line Credit
+		$("#txtCustomerCreditLineID").html("");
+		$("#txtCustomerCreditLineID").val("");
+		if(tmpInfoClient.objListCustomerCreditLine != null)
+		for(var i = 0; i< tmpInfoClient.objListCustomerCreditLine.length;i++){
+			if(i==0){
+				$("#txtCustomerCreditLineID").append("<option value='"+tmpInfoClient.objListCustomerCreditLine[i].customerCreditLineID+"' selected>"+ tmpInfoClient.objListCustomerCreditLine[i].accountNumber + " " +tmpInfoClient.objListCustomerCreditLine[i].line  +"</option>");
+				$("#txtCustomerCreditLineID").val(tmpInfoClient.objListCustomerCreditLine[i].customerCreditLineID);
+			}
+			else
+				$("#txtCustomerCreditLineID").append("<option  value='"+tmpInfoClient.objListCustomerCreditLine[i].customerCreditLineID+"'>"+ tmpInfoClient.objListCustomerCreditLine[i].accountNumber + " " +tmpInfoClient.objListCustomerCreditLine[i].line  + "</option>");
+		}
+		
+		//Habilitar la compra al contado o al credito
+		$("#txtCausalID option").removeAttr("disabled");
+		$("#txtCausalID").val("");
+		
+		var listArrayCausalCredit = tmpInfoClient.objCausalTypeCredit.value.split(",");
+		$.each( $("#txtCausalID option"),function(index,obj){
+			for(var i=0;i<listArrayCausalCredit.length;i++){
+				var causalIDCredit = listArrayCausalCredit[i];
+				
+				if( ($(obj).attr("value") == causalIDCredit) && (tmpInfoClient.objListCustomerCreditLine != null))
+					$("#txtCausalID option[value="+causalIDCredit+"]").removeAttr("disabled");
+				else if( ($(obj).attr("value") == causalIDCredit) && (tmpInfoClient.objListCustomerCreditLine == null))
+					$("#txtCausalID option[value="+causalIDCredit+"]").attr("disabled","true");
+				else
+					$("#txtCausalID option[value="+causalIDCredit+"]").removeAttr("disabled");
+			}
+		});
+		
+		
+		//Refresh Control
+		$("#txtCustomerCreditLineID").select2();
+		$("#txtCausalID").select2();
+		refreschChecked();
+		//fnWaitClose();
+	}
+	
+	function fnGetPosition(item,data){
+		
+		var i = 0;
+		for(i = 0 ; i < data.length; i++){			
+			if(data[i][2] == item[0][2])
+			return i;							
+		}
+		
+		return i;
+	}
+	
+					
+	function fnEnviarFactura(){
+		fnWaitOpen();
+		$( "#form-new-invoice" ).attr("method","POST");
+		$( "#form-new-invoice" ).attr("action","http://localhost/posmev4/app_invoice_billing/save/new");
+		validateFormAndSubmit();
+	}		
+	
+	function fnRenderLineaCreditoDiv(){
+			//Si es de credito que la factura no supere la linea de credito
+			var causalSelect 				= $("#txtCausalID").val();
+			var customerCreditLineID 		= $("#txtCustomerCreditLineID").val();
+			var objCustomerCreditLine 		= jLinq.from(tmpInfoClient.objListCustomerCreditLine).where(function(obj){ return obj.customerCreditLineID == customerCreditLineID; }).select();
+			var causalCredit 				= tmpInfoClient.objCausalTypeCredit.value.split(",");
+			var invoiceTypeCredit 			= false;
+		
+		
+			//Obtener si la factura es al credito						
+			for(var i=0;i<causalCredit.length;i++){
+				if(causalCredit[i] == causalSelect){
+					invoiceTypeCredit = true;
+				}
+			}
+			
+
+			if(invoiceTypeCredit ){
+				$("#divLineaCredit").removeClass("hidden");
+			}
+			else{
+				$("#divLineaCredit").addClass("hidden");				
+			}
+			
+			
+
+	}	
+	
+	
+	//obtener informacion de los productos	
+	async function fnObtenerListadoProductos(){		
+
+
+		const resultAjax2 = await $.ajax(
+		{									
+			cache       : false,
+			dataType    : 'json',
+			type        : 'GET',																	
+			//url  		: "http://localhost/posmev4/app_invoice_api/getViewApi/33/onCompleteNewItem/SELECCIONAR_ITEM_BILLING/"+encodeURI('{"warehouseID"|"4"{}"listPriceID"|"12"{}"typePriceID"|"'+$("#txtTypePriceID").val() +'"}'),		
+			url  		: "http://localhost/posmev4/app_invoice_api/getViewApi/33/onCompleteNewItem/SELECCIONAR_ITEM_BILLING/"+encodeURI('{"warehouseID"|"'+ $("#txtWarehouseID").val() +'"{}"listPriceID"|"12"{}"typePriceID"|"'+154+'"}'),		/*TIPO PRECIO 1 --> 154 --> PUBLICO*/
+			success		: fnFillListaProductos,
+			error:function(xhr,data)
+			{	
+				console.info("complete data error");	
+				fnShowNotification("Error 505","error");
+			}
+		});
+		
+		
+		return resultAjax2;
+	}
+	async function fnObtenerListadoProductos2(){		
+
+
+		const resultAjax2 = await $.ajax(
+		{									
+			cache       : false,
+			dataType    : 'json',
+			type        : 'GET',																	
+			//url  		: "http://localhost/posmev4/app_invoice_api/getViewApi/33/onCompleteNewItem/SELECCIONAR_ITEM_BILLING/"+encodeURI('{"warehouseID"|"4"{}"listPriceID"|"12"{}"typePriceID"|"'+$("#txtTypePriceID").val() +'"}'),		
+			url  		: "http://localhost/posmev4/app_invoice_api/getViewApi/33/onCompleteNewItem/SELECCIONAR_ITEM_BILLING/"+encodeURI('{"warehouseID"|"'+ $("#txtWarehouseID").val() +'"{}"listPriceID"|"12"{}"typePriceID"|"'+155+'"}'),		/*TIPO PRECIO 2 --> 155 --> POR MAYOR*/
+			success		: fnFillListaProductos2,
+			error:function(xhr,data)
+			{	
+				console.info("complete data error");	
+				fnShowNotification("Error 505","error");
+			}
+		});
+		
+		
+		return resultAjax2;
+	}
+	async function fnObtenerListadoProductos3(){		
+
+
+		const resultAjax2 = await $.ajax(
+		{									
+			cache       : false,
+			dataType    : 'json',
+			type        : 'GET',																	
+			//url  		: "http://localhost/posmev4/app_invoice_api/getViewApi/33/onCompleteNewItem/SELECCIONAR_ITEM_BILLING/"+encodeURI('{"warehouseID"|"4"{}"listPriceID"|"12"{}"typePriceID"|"'+$("#txtTypePriceID").val() +'"}'),		
+			url  		: "http://localhost/posmev4/app_invoice_api/getViewApi/33/onCompleteNewItem/SELECCIONAR_ITEM_BILLING/"+encodeURI('{"warehouseID"|"'+ $("#txtWarehouseID").val() +'"{}"listPriceID"|"12"{}"typePriceID"|"'+156+'"}'),		/*TIPO PRECIO 3 --> 156 --> CREDITO*/
+			success		: fnFillListaProductos3,
+			error:function(xhr,data)
+			{	
+				console.info("complete data error");	
+				fnShowNotification("Error 505","error");
+			}
+		});
+		
+		
+		return resultAjax2;
+	}
+	async function fnObtenerListadoProdcutosSku(){	
+
+		const resultAjax2 = await $.ajax(
+		{									
+			cache       : false,
+			dataType    : 'json',
+			type        : 'GET',
+			url  		: "http://localhost/posmev4/app_invoice_api/getViewApi/33/onCompleteNewItem/SELECCIONAR_ITEM_SKU/0",
+			success		: fnFillListaProductosSku,
+			error:function(xhr,data)
+			{	
+				console.info("complete data error");	
+				fnShowNotification("Error 505","error");
+			}
+		});
+		
+		
+		return resultAjax2;
+	}
+	
+	function fnActualizarPrecio()
+	{
+		
+		var typePriceID 			= $("#txtTypePriceID").val();
+		var NSSystemDetailInvoice	= objTableDetail.fnGetData();	
+		for(var i = 0; i < NSSystemDetailInvoice.length; i++)
+		{			
+			var itemID 			= NSSystemDetailInvoice[i][2];
+			var filterResult 	= {};
+			
+			//precio 1 ---> 154 --> precio publico
+			if(typePriceID == 154){
+				filterResult = jLinq.from(objListaProductos).where(function(obj){ return obj["itemID"] == itemID}).select();
+			}
+			//precio 2 ---> 155 --> precio mayorista
+			if(typePriceID == 155){
+				filterResult = jLinq.from(objListaProductos2).where(function(obj){ return obj["itemID"] == itemID}).select();
+			}
+			//precio 3 ---> 156 --> precio credito
+			if(typePriceID == 156){
+				filterResult = jLinq.from(objListaProductos3).where(function(obj){ return obj["itemID"] == itemID}).select();
+			}
+			
+			//Actualizar Precio
+			objTableDetail.fnUpdate(fnFormatNumber( filterResult[0].Precio,2) , i, 7 );
+	
+		}
+	}
+	
+	
+	function fnCustomerNewCompleted(){
+		console.info("cliente completado");
+	}
+	
+	async function fnGetCustomerClient(){
+		const resultAjax = await $.ajax({									
+			cache       : false,
+			dataType    : 'json',
+			type        : 'POST',
+			url  		: "http://localhost/posmev4/app_invoice_api/getLineByCustomer",
+			data 		: {entityID : $("#txtCustomerID").val()  },
+			success		: fnCompleteGetCustomerCreditLine,
+			error:function(xhr,data){	
+				console.info("complete data error");													
+				fnShowNotification("Error 505","error");
+			}
+		});
+		
+		
+		return resultAjax;
+		
+	}
+	
+	function fnCreateTableSearchProductosDetalle(){
+		//Filtrar Datos
+		var typePriceID 	= $("#txtTypePriceID").val();		
+		var filterResult 	= {};
+		
+		//precio 1 ---> 154 --> precio publico
+		if(typePriceID == 154){
+			filterResult = objListaProductos;
+		}
+		//precio 2 ---> 155 --> precio mayorista
+		if(typePriceID == 155){
+			filterResult = objListaProductos2;			
+		}
+		//precio 3 ---> 156 --> precio credito
+		if(typePriceID == 156){
+			filterResult = objListaProductos3;
+		}
+			
+
+				
+		var dataSourceProductos = [];
+		for(var i = 0 ; i < filterResult.length;i++){
+			dataSourceProductos.push(
+				[
+					filterResult[i].itemID,
+					filterResult[i].Codigo,
+					"'"+filterResult[i].Nombre+"'",
+					filterResult[i].Medida,
+					filterResult[i].Cantidad,
+					filterResult[i].Precio,
+					filterResult[i].Barra,
+					
+				]
+			);
+		}
+		
+		
+		
+		
+		if( objTableProductosSearchDetalle != null)
+		objTableProductosSearchDetalle.fnDestroy();
+		debugger;
+		$('#table_list_productos_para_revisar').dataTable({
+			//"bPaginate"		: false,
+			//"bFilter"			: false,
+			//"bSort"			: false,
+			//"bInfo"			: false,
+			//"bAutoWidth"		: false,
+			
+			'Dom'				: "<'row'<'col-lg-6'l><'col-lg-6'f>r>t<'row'<'col-lg-6'i><'col-lg-6'p>>",
+			"aaData"			: dataSourceProductos,
+			 "aoColumnDefs": [ 
+						{
+							"aTargets"		: [ 0 ],//itemID
+							"bVisible"		: false,
+							"bSearchable"	: false,
+							//"mData":		'itemID',
+							//"mRender"		: function ( data, type, full ) {
+							//}
+						},
+						{
+							"aTargets"		: [ 1 ],//Codigo
+							"bVisible"  	: true,
+							//"sClass" 		: "hidden",
+							"bSearchable"	: true,
+							//"mData":		'Codigo',
+							//"mRender"		: function ( data, type, full ) {
+							//}
+						},
+						{
+							"aTargets"		: [ 2 ],//Descripcion
+							"bVisible"		: true,
+							//"sClass" 		: "hidden",
+							"bSearchable"	: true,
+							//"mData":		'Nombre',
+							//"mRender"		: function ( data, type, full ) {
+							//	
+							//}
+						},
+						{
+							"aTargets"		: [ 3 ],//Unidad
+							"bVisible"		: false,
+							"bSearchable"	: false,
+							//"mData":		'Medida',
+							//"sWidth" 		: "40%"
+						},
+						{
+							"aTargets"		: [ 4 ],//Cantidad
+							"bVisible"		: true,
+							"bSearchable"	: false,
+							//"mData":		'Cantidad',
+							"mRender"		: function ( data, type, full ) {								
+								return "<span class='red' style='text-align:right;display:block' >"+fnFormatNumber(data,2)+"</span>";
+							}
+						},
+						{
+							"aTargets"		: [ 5 ],//Precio
+							"bVisible"		: true,
+							//"mData":		'Precio',
+							"mRender"		: function ( data, type, full ) {
+								return "<span class='green' style='text-align:right;display:block' >"+fnFormatNumber(data,2) +"</span>";
+							}
+						},
+						{
+							"aTargets"		: [ 6 ],//Barra
+							"bVisible"		: true,
+							//"mData":		'Precio',
+							//"mRender"		: function ( data, type, full ) {
+							//	
+							//}
+						}
+			],
+			
+			'sPaginationType'	: 'bootstrap',
+			'bJQueryUI'			: false,
+			'bAutoWidth'		: false,							
+			'iDisplayLength'	: 5,
+			'oLanguage'	: {
+				'sSearch'		: '<span>Filtro:</span> _INPUT_ <p>+ para agregar</p>',
+				/*'sLengthMenu'	: '<span>_MENU_ elementos</span>',*/
+				'sLengthMenu'	: '',
+				/*'oPaginate'		: { 'sFirst': 'First', 'sLast': 'Last' }*/
+				'oPaginate'		: { 'sFirst': 'Primera', 'sLast': 'Ultima','sNext':'Siguiente','sPrevious':'Atras' },
+				'sInfo'			:'_START_ de _END_ total _TOTAL_'
+			}
+			
+		});
+					
+		objTableProductosSearchDetalle = $('#table_list_productos_para_revisar').dataTable(); 		
+		$('.dataTables_length select').uniform();
+		$('.dataTables_paginate > ul').addClass('pagination');				
+		$('#table_list_productos_para_revisar').css('display','table');
+	}
+	
+	function fnCreateTableSearchProductos(){
+		//Filtrar Datos
+		var typePriceID 	= $("#txtTypePriceID").val();		
+		var filterResult 	= {};
+		
+		//precio 1 ---> 154 --> precio publico
+		if(typePriceID == 154){
+			filterResult = objListaProductos;
+		}
+		//precio 2 ---> 155 --> precio mayorista
+		if(typePriceID == 155){
+			filterResult = objListaProductos2;			
+		}
+		//precio 3 ---> 156 --> precio credito
+		if(typePriceID == 156){
+			filterResult = objListaProductos3;
+		}
+			
+
+				
+		var dataSourceProductos = [];
+		for(var i = 0 ; i < filterResult.length;i++){
+			dataSourceProductos.push(
+				[
+					filterResult[i].itemID,
+					filterResult[i].Codigo,
+					"'"+filterResult[i].Nombre+"'",
+					filterResult[i].Medida,
+					filterResult[i].Cantidad,
+					filterResult[i].Precio,
+					filterResult[i].Barra,
+					
+				]
+			);
+		}
+		
+		
+		
+		
+		if( objTableProductosSearch != null)
+		objTableProductosSearch.fnDestroy();
+		debugger;
+		$('#table_list_productos').dataTable({
+			//"bPaginate"		: false,
+			//"bFilter"			: false,
+			//"bSort"			: false,
+			//"bInfo"			: false,
+			//"bAutoWidth"		: false,
+			
+			'Dom'				: "<'row'<'col-lg-6'l><'col-lg-6'f>r>t<'row'<'col-lg-6'i><'col-lg-6'p>>",
+			"aaData"			: dataSourceProductos,
+			 "aoColumnDefs": [ 
+						{
+							"aTargets"		: [ 0 ],//itemID
+							"bVisible"		: false,
+							"bSearchable"	: false,
+							//"mData":		'itemID',
+							//"mRender"		: function ( data, type, full ) {
+							//}
+						},
+						{
+							"aTargets"		: [ 1 ],//Codigo
+							"bVisible"  	: true,
+							//"sClass" 		: "hidden",
+							"bSearchable"	: true,
+							//"mData":		'Codigo',
+							//"mRender"		: function ( data, type, full ) {
+							//}
+						},
+						{
+							"aTargets"		: [ 2 ],//Descripcion
+							"bVisible"		: true,
+							//"sClass" 		: "hidden",
+							"bSearchable"	: true,
+							//"mData":		'Nombre',
+							//"mRender"		: function ( data, type, full ) {
+							//	
+							//}
+						},
+						{
+							"aTargets"		: [ 3 ],//Unidad
+							"bVisible"		: false,
+							"bSearchable"	: false,
+							//"mData":		'Medida',
+							//"sWidth" 		: "40%"
+						},
+						{
+							"aTargets"		: [ 4 ],//Cantidad
+							"bVisible"		: false,
+							"bSearchable"	: false,
+							//"mData":		'Cantidad',
+							"mRender"		: function ( data, type, full ) {								
+								return "<span class='red' style='text-align:right;display:block' >"+fnFormatNumber(data,2)+"</span>";
+							}
+						},
+						{
+							"aTargets"		: [ 5 ],//Precio
+							"bVisible"		: true,
+							//"mData":		'Precio',
+							"mRender"		: function ( data, type, full ) {
+								return "<span class='green' style='text-align:right;display:block' >"+fnFormatNumber(data,2) +"</span>";
+							}
+						},
+						{
+							"aTargets"		: [ 6 ],//Barra
+							"bVisible"		: true,
+							//"mData":		'Precio',
+							//"mRender"		: function ( data, type, full ) {
+							//	
+							//}
+						}
+			],
+			
+			'sPaginationType'	: 'bootstrap',
+			'bJQueryUI'			: false,
+			'bAutoWidth'		: false,							
+			'iDisplayLength'	: 5,
+			'oLanguage'	: {
+				'sSearch'		: '<span>Filtro:</span> _INPUT_ <p>+ para agregar</p>',
+				/*'sLengthMenu'	: '<span>_MENU_ elementos</span>',*/
+				'sLengthMenu'	: '',
+				/*'oPaginate'		: { 'sFirst': 'First', 'sLast': 'Last' }*/
+				'oPaginate'		: { 'sFirst': 'Primera', 'sLast': 'Ultima','sNext':'Siguiente','sPrevious':'Atras' },
+				'sInfo'			:'_START_ de _END_ total _TOTAL_'
+			}
+			
+		});
+					
+		objTableProductosSearch = $('#table_list_productos').dataTable(); 		
+		$('.dataTables_length select').uniform();
+		$('.dataTables_paginate > ul').addClass('pagination');		
+		
+					
+										
+		$(document).on('click','#table_list_productos tr',function(event){ 			
+			objRowTableProductosSearch = this; 
+			fnTableSelectedRow(this,event);
+		});  
+			
+		$('#table_list_productos').css('display','table');
+	}
+	
+
+</script>
+
+
+<!-- DEBUG-VIEW ENDED 3 APPPATH\Views\app_invoice_billing\news_script.php -->
+	
+</html>
+<!-- DEBUG-VIEW ENDED 4 APPPATH\Views\core_masterpage\default_popup.php -->
+";}";}

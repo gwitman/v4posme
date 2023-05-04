@@ -583,21 +583,21 @@ WHERE
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "ACCOUNTING_CURRENCY_NAME_FUNCTION";## Símbolo de la Moneda Funcional 
 			
---Imprimir cancelacion de factura
+/*--Imprimir cancelacion de factura*/
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "app_box_canceldocument/viewRegisterFormatoPaginaTicket" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "BOX_CANCELDOCUMENT_URL_PRINTER";## URL PARA LA IMPRESION DE CANCELACION 
 				
---Imprimir abonos al capital				
+/*--Imprimir abonos al capital		*/		
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "app_box_sharecapital/viewRegisterFormatoPaginaTicket" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "BOX_SHARECAPITAL_URL_PRINTER";## URL PARA LA IMPRESION DE ABONOS AL CAPITAL 
 				
---Imprimir abonos				
+/*--Imprimir abonos				*/
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "app_box_share/viewRegisterFormatoPaginaTicket" 
 WHERE 
@@ -605,7 +605,7 @@ WHERE
 	tb_parameter.name = "BOX_SHARE_URL_PRINTER";## URL PARA LA IMPRESION DE ABONOS 
 	
 	
---Facturacion				
+/*--Facturacion				*/
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "-"  /*-,editv2*/
 WHERE 
@@ -619,7 +619,7 @@ WHERE
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT";## Imprimir directo en la impresora 
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "58mm" 
+	tb_company_parameter.value = "58mmv2" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT";## Nombre de la impresora por defecto 	
@@ -639,7 +639,7 @@ WHERE
 
 			
 			
---Cocina
+/*--Cocina*/
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
 WHERE 
@@ -772,3 +772,16 @@ UPDATE tb_company SET
 	NAME = 'Chicharrones Caraseños' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' 
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
+
+
+
+/*
+Eliminar o desactivar usuarios
+*/
+update tb_user set isActive = 0;
+update tb_user set isActive = 1 WHERE userID in (
+ 2, 	/*administrador*/
+ 167,  	/*supervisor*/
+ 166, 	/*facturador*/
+ 165 	/*administrador*/
+);

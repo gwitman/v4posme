@@ -38,13 +38,103 @@ class app_inventory_otheroutput extends _BaseController {
 			//Get Logo
 			$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
 			//Get Company
-			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);			
-			//Get Documento					
+			$objCompany 			= $this->Company_Model->get_rowByPK($companyID);	
+			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);			
+			//Get Documento				
 			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
-			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
-			$datView["objWarehouse"] 				= $this->Warehouse_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->sourceWarehouseID);
-			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
+			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");						
+			$datView["objWarehouse"]				= $this->Warehouse_Model->get_rowByPK($companyID,$datView["objTM"]->sourceWarehouseID);
+			$datView["objTipo"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$datView["objTM"]->transactionID,$datView["objTM"]->transactionCausalID);
+			$datView["objCustumer"]					= null;
+			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
+			$datView["objCustumer"]					= null;
+			$datView["objNatural"]					= null;
+			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
+			
+			
+			
+			//Configurar Detalle
+			$confiDetalle = array();
+			$row = array(
+			    "style"=>"text-align:left;width:auto",
+			    "colspan"=>'1',
+			    "prefix"=>'',
+			    
+			    "style_row_data"		=>"text-align:left;width:auto",
+			    "colspan_row_data"		=>'3',
+			    "prefix_row_data"		=>'',
+			    "nueva_fila_row_data"	=>1
+			    
+			);
+			array_push($confiDetalle,$row);
+			$row = array(
+			    "style"=>"text-align:left;width:50px",
+			    "colspan"=>'1',
+			    "prefix"=>'',
+			    
+			    "style_row_data"		=>"text-align:right;width:auto",
+			    "colspan_row_data"		=>'2',
+			    "prefix_row_data"		=>'',
+			    "nueva_fila_row_data"	=>0
+			    
+			);
+			array_push($confiDetalle,$row);
+			$row = array(
+			    "style"=>"text-align:right;width:90px",
+			    "colspan"=>'1',
+			    "prefix"=>"",
+			    
+			    "style_row_data"		=>"text-align:right;width:90px",
+			    "colspan_row_data"		=>'1',
+			    "prefix_row_data"		=>"",
+			    "nueva_fila_row_data"	=>0
+			    
+			);
+			array_push($confiDetalle,$row);
+			
+		    
+		    $detalle = array();		    
+		    $row = array("PRODUCTO", 'CANT.', "");
+		    array_push($detalle,$row);
+		    
+		    
+			foreach($datView["objTMD"] as $detail_){
+			    $row = array(
+			        $detail_->itemName,  
+			        sprintf("%.2f",round($detail_->quantity,2)), 
+			        ""
+			        
+			    );
+			    array_push($detalle,$row);
+			}
+			
+			
+			
+			$html = helper_reporte80mmTransactionMasterInputUnpost(
+			    "SALIDA",
+			    $objCompany,
+			    $objParameter,
+			    $datView["objTM"],
+			    $datView["objNatural"],
+			    $datView["objCustumer"],
+			    $datView["tipoCambio"],
+			    $datView["objCurrency"],
+			    $datView["objTMI"],
+			    $confiDetalle,
+			    $detalle,
+			    $objParameterTelefono
+		   );
+				
+			$this->dompdf->loadHTML($html);
+			
+			
+			$this->dompdf->render();
+			
+			//visualizar
+			$this->dompdf->stream("file.pdf", ['Attachment' => false]);
+			
 			
 			
 			

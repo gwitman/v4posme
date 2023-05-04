@@ -30,11 +30,11 @@ select 'Procesando...Productos' as processsx;
 delete from tb_item_data_sheet_detail;
 delete from tb_item_data_sheet;
 delete from tb_kardex;
-delete from tb_item_sku where itemID not in (4,5,598);
-delete from tb_item_warehouse where itemID not in (4,5,598);
-delete from tb_price where itemID not in (4,5,598);
-delete from tb_provider_item where itemID not in (4,5,598);
-delete from tb_item where itemID not in (4,5,598);
+delete from tb_item_sku where itemID not in (4,5,598,11760);
+delete from tb_item_warehouse where itemID not in (4,5,598,11760;
+delete from tb_price where itemID not in (4,5,598,11760);
+delete from tb_provider_item where itemID not in (4,5,598,11760);
+delete from tb_item where itemID not in (4,5,598,11760);
 
 
 delete from tb_component_audit;

@@ -278,11 +278,6 @@ class app_box_report extends _BaseController {
 			
 			
 			//Cargar Libreria
-				
-			
-			
-				
-			
 			if(!($viewReport && $startOn && $endOn )){
 				
 				//Obtener lista de usuarios
@@ -365,7 +360,24 @@ class app_box_report extends _BaseController {
 				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_customer_credit" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
 				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
 				//
-				return view("app_box_report/share_summary/view_a_disemp",$objDataResult);//--finview-r
+				$html = view("app_box_report/share_summary/view_a_disemp",$objDataResult);//--finview-r
+				
+				$this->dompdf->loadHTML($html);
+			
+				//1cm = 29.34666puntos
+				//a4: 210 ancho x 297
+				//a4: 21cm x 29.7cm
+				//a4: 595.28puntos x 841.59puntos
+				
+				//$this->dompdf->setPaper('A4','portrait');
+				//$this->dompdf->setPaper(array(0,0,234.76,6000));
+				
+				$this->dompdf->render();
+				
+				//visualizar
+				
+				$this->dompdf->stream("file.pdf", ['Attachment' => false]);
+				
 			}
 		}
 		catch(\Exception $ex){

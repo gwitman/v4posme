@@ -7,17 +7,56 @@
 		<meta name="application-name" 	content="dsemp" /> 
 		
 		<style>
-			body , html {
-				margin:25px;
+			 @page {       
+                          size: 2.7in 60in;                  
+                          margin-top:0px;
+                          margin-left:0px;
+                          margin-right:15px;
+			}
+			table
+			{
+			  font-size: x-small;
+			  font-weight: bold;
+			  font-family: Consolas, monaco, monospace;
 			}
 		</style>
-		<?php 
-		echo helper_reporteGeneralCreateStyle();
-		?>
 		
 	</head>
 	<body style="font-family:monospace;font-size:smaller;margin:0px 0px 0px 0px"> 
 		
+		<?php
+		$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objLogo->value;
+    
+		$type    = pathinfo($path, PATHINFO_EXTENSION);
+		$data    = file_get_contents($path);
+		$base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);	
+		?>
+		
+		<table style='width:100%'>
+			<tr>
+			  <td colspan='3' style='text-align:center'>
+				<img  src='<?php echo $base64; ?>' width='110'  >
+			  </td>
+			</tr>
+			<tr>
+			  <td colspan='3' style='text-align:center'>
+				RESUMEN DE CAJA
+			  </td>
+			</tr>
+			<tr>
+			  <td colspan='3' style='text-align:center'>
+				<?php echo $objCompany->name; ?>
+			  </td>
+			</tr>
+			<tr>
+			  <td colspan='3' style='text-align:center'>
+				del <?php echo $startOn; ?> al  <?php echo $endOn; ?>
+			  </td>
+			</tr>
+		</table>
+		
+		
+	    <br/><br/>
 		
 		<?php
 		$totalCordoba 							= 0;
@@ -683,24 +722,7 @@
 		
 
 
-		<?php 
-		$widthX 	= "230px";
-		$columnX 	= 2;
 		
-		
-		
-		echo helper_reporteGeneralCreateEncabezado(
-			'MOVIMIENTOS DE CAJA',
-			$objCompany->name,
-			$columnX,
-			'DEL '.$startOn.' AL '.$endOn,
-			"",
-			"",
-			$widthX ,
-			true
-		);
-		
-		?>
 		<br/>			
 		
 		<?php 		
@@ -835,6 +857,8 @@
 	
 	
 		<?php 		
+		$widthX 	= "230px";
+-		$columnX 	= 2;
 		$configTotalesColumns[0]["Titulo"] 		= "Total Cordobas";
 		$configTotalesColumns[0]["FiledSouce"] 	= "total";
 		$configTotalesColumns[0]["Formato"] 	= "Number";
@@ -1055,14 +1079,13 @@
 		<br/>
 		
 		
-		<?php 
-		echo helper_reporteGeneralCreateFirma(	
-			$objFirmaEncription,
-			$columnX,
-			$widthX 
-		);
-		?>
-		
+		<table style='width:100%'>
+			<tr>
+			  <td colspan='3' style='text-align:center'>
+				<?php echo $objFirmaEncription; ?>
+			  </td>
+			</tr>			
+		</table>
 		
 	</body>	
 </html>

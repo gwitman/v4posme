@@ -198,7 +198,10 @@ Crear la tarea programada para enviar reportes diarios
 	Nombre: posme_upgrade_daly
 	Hora:	15:00:00
 	Ruta: 	C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_job\upgrade_posmev4.bat
-	
+
+Configurar Zona Horaria y Formato de Hora
+
+Probar Jobs Configurados	
 	
 Habilitar el uso compartida de la impresora
 	

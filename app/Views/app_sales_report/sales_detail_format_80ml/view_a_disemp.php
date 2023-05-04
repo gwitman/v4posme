@@ -1,88 +1,153 @@
-<!DOCTYPE html>
-<html lang="en">
+ <!DOCTYPE html>
+<html lang='en'>
+
 	<head>
-		<meta charset="utf-8">
-		<title><?php echo $objFirmaEncription; ?></title>
-		<meta name="viewport" 			content="width=device-width, initial-scale=1.0">
-		<meta name="application-name" 	content="dsemp" /> 
-		
+		<meta charset='UTF-8' />
+		<meta name='viewport' content='width=device-width, initial-scale=1.0' />
+				
 		<style>
-			body , html {
-				margin:10px;
+			 @page {       
+                          size: 2.7in 60in;                  
+                          margin-top:0px;
+                          margin-left:0px;
+                          margin-right:15px;
+			}
+			table
+			{
+			  font-size: x-small;
+			  font-weight: bold;
+			  font-family: Consolas, monaco, monospace;
 			}
 		</style>
-		<?php 
-		echo helper_reporteGeneralCreateStyle();
-		?>
+	
 		
 	</head>
-	<body style="font-family:monospace;font-size:smaller;margin:0px 0px 0px 0px"> 
+	<body > 
 		
 		
 		
 		<?php
-		$configColumn["0"]["Titulo"] 		= "Factura";				
-		$configColumn["1"]["Titulo"] 		= "Cant.";
-		$configColumn["2"]["Titulo"] 		= "Total";				
-		$configColumn["3"]["Titulo"] 		= "Producto";
-
-		$configColumn["0"]["FiledSouce"] 		= "transactionNumber";				
-		$configColumn["1"]["FiledSouce"] 		= "quantity";				
-		$configColumn["2"]["FiledSouce"] 		= "amount";		
-		$configColumn["3"]["FiledSouce"] 		= "itemName";	
-
-		$configColumn["0"]["Formato"] 		= "";				
-		$configColumn["1"]["Formato"] 		= "Number";
-		$configColumn["2"]["Formato"] 		= "Number";		
-		$configColumn["3"]["Formato"] 		= "";	
-		
-		$configColumn["0"]["Width"] 		= "80px";					
-		$configColumn["1"]["Width"] 		= "50px";				
-		$configColumn["2"]["Width"] 		= "50px";			
-		$configColumn["3"]["Width"] 		= "130px";	
-		
-		
-		$configColumn["0"]["Total"] 		= False;						
-		$configColumn["1"]["Total"] 		= False;				
-		$configColumn["2"]["Total"] 		= True;		
-		$configColumn["3"]["Total"] 		= False;	
-		
-		$resultado 	= helper_reporteGeneralCreateTable($objDetail,$configColumn,'0px',NULL,NULL);
+		$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objLogo->value;
+    
+		$type    = pathinfo($path, PATHINFO_EXTENSION);
+		$data    = file_get_contents($path);
+		$base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);	
 		?>
 		
+	    <table style='width:100%'>
+			<tr>
+			  <td colspan='3' style='text-align:center'>
+				<img  src='<?php echo $base64; ?>' width='110'  >
+			  </td>
+			</tr>
+			<tr>
+			  <td colspan='3' style='text-align:center'>
+				DETALLE DE VENTA 80MM
+			  </td>
+			</tr>
+			<tr>
+			  <td colspan='3' style='text-align:center'>
+				<?php echo $objCompany->name; ?>
+			  </td>
+			</tr>
+			<tr>
+			  <td colspan='3' style='text-align:center'>
+				del <?php echo $objStartOn; ?> al  <?php echo $objEndOn; ?>
+			  </td>
+			</tr>
+		</table>
 		
 		
+	    <br/><br/>
+        <table>               
+		<?php 	
 		
-		<?php 
-		echo helper_reporteGeneralCreateEncabezado(
-			'DETALLE DE VENTA F80MM',
-			$objCompany->name,
-			$resultado["columnas"],
-			'VENTAS DEL '.$objStartOn.' AL '.$objEndOn,
-			"",
-			"",
-			$resultado["width"],
-			true
+		$confiDetalleHeader = array();
+		$row = array(
+			"style"		=>"text-align:left;width:auto",
+			"colspan"	=>'1',
+			"prefix"	=>'',
+			
+			
+			"style_row_data"		=>"text-align:left;width:auto",
+			"colspan_row_data"		=>'3',
+			"prefix_row_data"		=>'',
+			"nueva_fila_row_data"	=>1
 		);
-		?>
-		
-		
-		<br/>	
-		
-		<?php 
-		echo $resultado["table"];
-		?>
-		<br/>	
-		
-		
-		<?php 
-		echo helper_reporteGeneralCreateFirma(	
-			$objFirmaEncription,
-			$resultado["columnas"],
-			$resultado["width"]
+		array_push($confiDetalleHeader,$row);
+			
+		$row = array(
+			"style"		=>"text-align:left;width:60px",
+			"colspan"	=>'1',
+			"prefix"	=>'',
+			
+			"style_row_data"		=>"text-align:right;width:60px",
+			"colspan_row_data"		=>'1',
+			"prefix_row_data"		=>'',
+			"nueva_fila_row_data"	=>0
 		);
-		?>
+		array_push($confiDetalleHeader,$row);
+			
+		$row = array(
+			"style"		=>"text-align:right;width:90px",
+			"colspan"	=>'1',
+			"prefix"	=>'',
+			
+			"style_row_data"		=>"text-align:right;width:90px",
+			"colspan_row_data"		=>'1',
+			"prefix_row_data"		=>'',
+			"nueva_fila_row_data"	=>0
+		);
+		array_push($confiDetalleHeader,$row);
 		
+		$row = array(
+			"style"		=>"text-align:right;width:auto",
+			"colspan"	=>'1',
+			"prefix"	=>'',
+			
+			"style_row_data"		=>"text-align:right;width:auto",
+			"colspan_row_data"		=>'1',
+			"prefix_row_data"		=>'',
+			"nueva_fila_row_data"	=>0
+		);
+		array_push($confiDetalleHeader,$row);
+			
+			
+		//Titutlo
+		$objDetailCurrent = array();		    
+		$row = array("","","", "");
+		array_push($objDetailCurrent,$row);
+		
+		//Registro		
+		$total = 0;
+		foreach($objDetail as $detail_)
+		{
+			$row = array(
+				$detail_["itemName"],
+				sprintf("%01.2f",round($detail_["quantity"],2)), 
+				sprintf("%01.2f",round($detail_["amount"],2)),
+				$detail_["transactionNumber"]
+			);
+			array_push($objDetailCurrent,$row);
+			$total = $total + $detail_["amount"];
+			
+		}
+		
+		$row = array("","Total:",sprintf("%01.2f",round($total,2)), "");
+		array_push($objDetailCurrent,$row);
+		
+		
+		echo helper_generateTableParaPdf($confiDetalleHeader,$objDetailCurrent);
+		?>
+		</table>
+		<br/><br/>
+		<table style='width:100%'>
+			<tr>
+			  <td colspan='3' style='text-align:center'>
+				<?php echo $objFirmaEncription; ?>
+			  </td>
+			</tr>			
+		</table>
 		
 		
 	</body>	

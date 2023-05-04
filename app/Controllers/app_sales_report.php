@@ -188,10 +188,10 @@ class app_sales_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?);";
+				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?);";
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn]
+					[$companyID,$tocken,$userID,$startOn,$endOn,0]
 				);			
 				
 				
@@ -294,7 +294,24 @@ class app_sales_report extends _BaseController {
 				$objDataResult["objLogo"] 					= $objParameter;
 				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_sales_get_report_sales_detail" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
 				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);				
-				return view("app_sales_report/sales_detail_format_80ml/view_a_disemp",$objDataResult);//--finview-r
+				$html =	view("app_sales_report/sales_detail_format_80ml/view_a_disemp",$objDataResult);//--finview-r
+							
+				
+				$this->dompdf->loadHTML($html);
+			
+				//1cm = 29.34666puntos
+				//a4: 210 ancho x 297
+				//a4: 21cm x 29.7cm
+				//a4: 595.28puntos x 841.59puntos
+				
+				//$this->dompdf->setPaper('A4','portrait');
+				//$this->dompdf->setPaper(array(0,0,234.76,6000));
+				
+				$this->dompdf->render();
+				
+				//visualizar
+				
+				$this->dompdf->stream("file.pdf", ['Attachment' => false]);
 				
 			}
 		}

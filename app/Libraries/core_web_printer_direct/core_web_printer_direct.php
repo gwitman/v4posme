@@ -148,7 +148,7 @@ class core_web_printer_direct {
 						$this->addSpaces($dataSetValores["prefixCurrency"].sprintf("%01.2f",number_format(round($row->unitaryPrice,2),2,'.',',')), 25). 
 						$this->addSpaces($dataSetValores["prefixCurrency"].sprintf("%01.2f",number_format(round($row->amount,2),2,'.',',')), 0)
 				);
-
+				$this->printer->text("\n");
 				$iva		= $iva + ($row->tax1 * $row->quantity);
 				$total		= $total + $row->amount;
 				$subtotal	= $total - $iva;

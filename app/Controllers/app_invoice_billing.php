@@ -97,7 +97,8 @@ class app_invoice_billing extends _BaseController {
 			$dataView["urlPrinterDocumentCocinaDirect"]					= $urlPrinterDocumentCocinaDirect->value;
 			$objParameterImprimirPorCadaFactura							= $this->core_web_parameter->getParameter("INVOICE_PRINT_BY_INVOICE",$companyID);
 			$dataView["objParameterImprimirPorCadaFactura"]				= $objParameterImprimirPorCadaFactura->value;
-			
+			$objParameterRegresarAListaDespuesDeGuardar					= $this->core_web_parameter->getParameter("INVOICE_BILLING_SAVE_AFTER_TO_LIST",$companyID);
+			$dataView["objParameterRegresarAListaDespuesDeGuardar"]		= $objParameterRegresarAListaDespuesDeGuardar->value;
 			
 			
 			//Tipo de Factura
@@ -2031,7 +2032,7 @@ class app_invoice_billing extends _BaseController {
 		try{ 
 			
 			
-			//$this->cachePage(60);			
+			$this->cachePage(TIME_CACHE_APP);			
 			
 			//AUTENTICADO
 			if(!$this->core_web_authentication->isAuthenticated())
@@ -2144,6 +2145,8 @@ class app_invoice_billing extends _BaseController {
 			
 			$objParameterInvoiceBillingQuantityZero					= $this->core_web_parameter->getParameter("INVOICE_BILLING_QUANTITY_ZERO",$companyID);
 			$dataView["objParameterInvoiceBillingQuantityZero"]		= $objParameterInvoiceBillingQuantityZero->value;
+			$objParameterRegresarAListaDespuesDeGuardar					= $this->core_web_parameter->getParameter("INVOICE_BILLING_SAVE_AFTER_TO_LIST",$companyID);
+			$dataView["objParameterRegresarAListaDespuesDeGuardar"]		= $objParameterRegresarAListaDespuesDeGuardar->value;
 			
 						
 			if(!$dataView["objCustomerDefault"])
