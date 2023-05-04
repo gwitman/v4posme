@@ -95,7 +95,7 @@
 	//No actualizar datos
 	else{		
 		fnGetCustomerClient(<?php echo $objTransactionMaster->entityID; ?>); 
-		setTimeout( function() { fnWaitClose(); }, 1000);
+		setTimeout( function() { onCompletePantalla(); }, 1000);
 	}
 
 
@@ -1284,7 +1284,8 @@
 		}
 		
 		if(varPermitirFacturarProductosEnZero == "true" && result )
-		{			
+		{	
+			debugger;
 			$("#form-new-invoice" ).submit();
 			return;
 		}
@@ -1301,6 +1302,7 @@
 					success		: function(result){
 													
 						if(result.resultValidate.length == 0){
+							debugger;
 							$( "#form-new-invoice" ).submit();							
 						}
 						else{
