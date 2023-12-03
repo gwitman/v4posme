@@ -1,0 +1,387 @@
+---------------------------------------
+instalador:
+---------------------------------------
+---------------------------------------
+---------------------------------------
+		nota:	dimenciones de pantalla table:  1080 x 600 inspeccionar.
+		nota:	android aplicacion para imprimir: ESC POS Print Services	
+		
+		
+		crear una carpeta llamada		
+		C:\TeamDS-Importacion
+		c:\TeamDS-ChartViwerNavicate
+		
+		pasar a la carpeta: C:\TeamDS-Importacion todos los driver
+		
+		pasar a la carpeta: C:\TeamDS-Importacion copia de base de datos
+		
+		instalar Adoberd1011_es_ES
+		instalar HeidiSQL
+		instalar npp++
+		instalar teamviewer
+		instalar view chart navicate
+		instalar xampp-windows-x64-8.0.25-0-VS16-installer
+		
+		
+		pasar a la carpeta C:/xampp/ la capreta : teamds2
+		pasar a la carpeta C:/xampp/teamds2/nsSystem/ la capreta : v4posme
+		
+		pasar el archivo: Inventario.ncharts a la carpeta c:\TeamDS-ChartViwerNavicate 
+		
+		borrar de la carpeta: C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_job
+		backup_posmev4_fidlocal
+		backup_posmev4_merge
+		backup_posmev4_posme
+		restore_backup_posmev4_fidlocal
+		restore_backup_posmev4_merge
+		restore_backup_posmev4_posme
+		scaner_routes
+		
+		inicializar xampp 
+		
+		ejecutar en la carpeta C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_job
+		restore_usuarios	: root1.2Blandon
+		pin					: 180388	PC-POSME-HP
+		
+		
+modificar los siguientes archivos:		
+		C:\xampp\phpMyAdmin\config.inc.php : password: root1.2Blandon
+		
+modificar el archivo		
+		C:/xampp/teamds2/nsSystem/v4posme/.env
+		CI_ENVIRONMENT = production
+		
+		
+		
+			
+		
+modificar los siguientes archivos:		
+		xampp\phpMyAdmin\libraries\config.default.php
+		Look for : $cfg['ExecTimeLimit'] = 600;		
+		
+crear una cuenta de gmail del cliente
+		usuario:	nombre_del_negocio@gmail.com
+		password:	root1.2Blandon
+		
+configurar las constantes de la apliacion, con la cuenta
+de gmail.
+
+modificar el siguiente archivo
+		C:\xampp\php\php.ini
+		post_max_size=80M
+		upload_max_filesize=80M
+		
+		
+		; http://php.net/date.timezone
+		; date.timezone=Europe/Berlin
+		date.timezone=America/Managua
+		
+		
+		; SMTP = localhost
+		; smtp_port = 25
+		SMTP = smtp.gmail.com
+		smtp_port = 465
+		
+		;sendmail_from = example@localhost
+		sendmail_from = posme2022@gmail.com
+		
+		sendmail_path="C:\xampp\mailtodisk\mailtodisk.exe"
+		sendmail_path=/usr/sbin/sendmail		
+		sendmail_path = "\"C:\xampp\sendmail\sendmail.exe\" -t"
+		
+		session.gc_maxlifetime 		= 86400  	1440
+		session.cache_expire 		= 1440		180
+		session.cookie_lifetime 	= 0 		
+		max_input_vars 				= 10000
+		max_execution_time			= 0
+		
+		CodeIntegerV4:	
+			php.ini 
+				extension=intl
+				extension=gd
+				extension=soap
+				extension=imap
+		
+		
+modificar los siguientes archivos: 
+		C:\xampp\sendmail\sendmail.ini
+		
+		;smtp_server=mail.mydomain.com
+		smtp_server=smtp.gmail.com
+		
+		;smtp_port=25
+		smtp_port=465
+		
+		;auth_username=
+		auth_username=posme2022@gmail.com
+		;auth_password=
+		auth_password=PosmeSoftware2022
+		
+		;force_sender=
+		force_sender=posme2022@gmail.com
+
+		
+modificar los siguientes archivos:		
+		apache\config\httpd.confg:  ó   apache/conf/extra/httpd-xampp.conf
+			
+			
+			#posMe v4 desarrollo
+			Alias /posmev4 "C:/xampp/teamds2/nsSystem/v4posme/public/"
+			<Directory "C:/xampp/teamds2/nsSystem/v4posme/public">
+				Options Indexes FollowSymLinks Includes ExecCGI
+				AllowOverride All
+				Require all granted
+			</Directory>
+			
+			#posMe v4 posMe
+			Alias /posmev4-fidlocal "C:/xampp/teamds2/nsSystem/v4posme_fidlocal/public/"
+			<Directory "C:/xampp/teamds2/nsSystem/v4posme_fidlocal/public">
+				Options Indexes FollowSymLinks Includes ExecCGI
+				AllowOverride All
+				Require all granted
+			</Directory>
+			
+			#posMe v4 fidlocal
+			Alias /posmev4-posme "C:/xampp/teamds2/nsSystem/v4posme_posme/public"
+			<Directory "C:/xampp/teamds2/nsSystem/v4posme_posme/public">
+				Options Indexes FollowSymLinks Includes ExecCGI
+				AllowOverride All
+				Require all granted
+			</Directory>
+			
+	
+modificar los siguientes archivos: acceder a xampp de manera remota.
+agregar al final del archivo si no existe
+apache/conf/extra/httpd-xampp.conf
+	#
+	# New XAMPP security concept
+	#
+	<LocationMatch "^/(?i:(?:xampp|security|licenses|phpmyadmin|webalizer|server-status|server-info))">
+		Order deny,allow
+		Deny from all
+		Allow from ::1 127.0.0.0/8 \
+		Allow from 192.168.1.0/8 \
+
+		#Allow from ::1 127.0.0.0/8 \
+		#	fc00::/7 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 \
+		#	fe80::/10 169.254.0.0/16
+
+		ErrorDocument 403 /error/XAMPP_FORBIDDEN.html.var
+	</LocationMatch>
+		
+	
+			
+modificar los siguientes archivos:	
+		reiniciar el servidor xampp  como administrador, y 
+		poner como servicio
+		
+Crear acceso directo de app:
+		http://localhost/posmev4/
+
+
+
+Agregar Logo Tipo
+		C:\xampp\teamds2\nsSystem\v4posme\public\resource\img\logos
+		logo-micro-finanza.jpg
+		
+		
+		
+		
+Ejecutar el Script de Limpieza e Inicializacion de Base de Datos
+		password:	root1.2Blandon
+		C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_sql
+		script_start_clear_base.sql
+
+Configurar parametros usando o creando el script
+		C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_sql
+	
+Configurar Lector de Huella
+	http://localhost/posmev4/app_api_fingerprint/
+	llRnk81687411555823
+
+Configurar Zona Horaria y Formato de Hora
+
+Configurar la Suspencion de la energia en las PC
+
+Crear la tarea programada para enviar reportes diarios
+	//Respaldo de datos
+	Nombre: posme_job_backup_daly
+	Hora:	10:00:00	
+	cmd.exe	/c start /min C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_job\backup_posmev4.bat ^& exit
+	
+	//Actualizar Aplicacion
+	Nombre: posme_job_upgrade_posmev4
+	Hora:	10:00:00
+	cmd.exe	/c start /min C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_job\job_upgrade_posmev4.bat ^& exit
+	
+	//Pasar a la siguiente fecha de filtrado de reporte
+	Nombre:	posme_job_next_date
+	Hora:	11:00:00
+	cmd.exe	/c start /min C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_job\job_next_date.bat ^& exit
+	
+	//Enviar Cierre de Caja
+	Nombre: posme_job_send_report_daly_reprote_de_caja
+	Hora:	10:00:00
+	cmd.exe	/c start /min C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_job\job_send_report_daly_reprote_de_caja.bat ^& exit
+	
+	
+	
+	
+	//Monitores de Monto en Caja
+	Nombre: posme_job_monitory_cash_box
+	Hora:	10:00:00
+	cmd.exe	/c start /min C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_job\job_monitory_box_cash.bat ^& exit
+	
+	
+	//job o proceso que me permite cancelar las facturas con balances 0 a 0.2
+	Nombre: posme_job_process_customer_credit_document_to_cancel
+	Hora:	15:00:00
+	cmd.exe	/c start /min C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_job\job_process_customer_credit_document_to_cancel.bat ^& exit
+	
+	//job de crear las notificaciones en sistema tipo siguiente visita
+	Nombre: posme_job_create_notification_in_system_tipe_next_visit
+	Hora:	15:00:00
+	cmd.exe	/c start /min C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_job\job_create_notification_in_system_tipe_next_visit.bat ^& exit
+	
+	
+	//ejecutar notificaciones de sistema
+	Nombre: posme_job_send_notification_systema
+	Hora:	15:00:00
+	cmd.exe	/c start /min C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_job\job_send_notification_systema.bat ^& exit
+	
+
+Probar Jobs Configurados	
+	
+Habilitar el uso compartida de la impresora
+	
+	
+Habilitar firewall
+	panel de control >>> firewall de window defender  >>>> 
+	permitir una aplicacion >>> cambiar la configuracion >>>>
+	permitir otra aplicacion >>> examinar >>> 
+	xampp/apache/bin/httpd.exe >>> aceptar >>> private and public
+
+Probar la configuracion de pago
+	http://localhost/posmev4/
+
+Encrptar los siguientes archivos
+	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\system\libraries\Email.php
+	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\application\config\constants.php
+	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\application\config\database.php
+	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\application\config\config.php
+	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\application\libraries\.....
+	
+
+	
+
+	
+---------------------------------------
+posMe Calendar:
+---------------------------------------
+---------------------------------------
+---------------------------------------
+	1) crear el usuario en el sistema
+	2) sincronizar con el servidor
+	3) agregar el usuario a gmail api
+	4) compartir la url
+	
+	
+---------------------------------------
+actualizacion:
+---------------------------------------
+---------------------------------------
+---------------------------------------
+	tener a mano, el disco duro.
+	
+	crear copia de la base de datatos de desarrollo.
+	
+	crear copia de la base de datos del cliente
+	
+	descargar base de datos del cliente 
+	
+	renombrar archivo del cliente 
+	
+	levantar base de datos del cliente
+	
+	merge de la base de datos del cliente posme >>> posme_merge
+	
+	ejecutar el script de actualizacion en la base de daots del cliente 
+	C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_sql\actualizar_parametros_[cliente].sql
+	
+	crear copia de la base de datos merge
+	
+	enviar copia merge al cliente 
+	
+	renombrar base de datos en el cliente 
+	
+	levantar base de datos del cliente 	
+	
+	guardar la copia en el disco duro de la base de datos del cliente
+	E:\Witman_BDMySQL\posme_2022_09_18_0000_000.sql	
+	
+	mandar la siguiente carpeta
+	C:\xampp\teamds2\nsSystem\v4posme\app
+	C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_customer
+	C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_job
+	C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_upgrade
+	C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_sql
+	C:\xampp\teamds2\nsSystem\v4posme\public\resource\js
+	C:\xampp\teamds2\nsSystem\v4posme\public\resource\css
+	
+	
+	
+	
+		
+---------------------------------------
+certificado vencido:
+---------------------------------------
+---------------------------------------
+---------------------------------------		
+	pega los archivos en la siguienre ruta:
+	xampp/apache/bin/
+	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\certif\cert.conf
+	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\certif\make-cert.bat
+			
+	abrir el siguiente programa
+	xampp/apache/bin/openssl.exe
+	
+	ejecutar el siguiente comando	
+	openssl.exe req -config cert.conf -new -sha256 -newkey rsa:2048 -nodes -keyout  localhost_server.key -x509 -days 3650 -out localhost_server.crt
+	
+	modifica el siguiente archivo
+	xampp/apache/conf/ssl.crt por los nuevos
+	xampp/apache/conf/ssl.key por los nuevos
+	
+	instala el certificado en window.
+	
+	reinicia el xampp
+	
+	limpia la cheche si es posible
+	
+	
+---------------------------------------
+Servidor Siteground:
+---------------------------------------
+---------------------------------------
+---------------------------------------		
+
+#C:/xampp/teamds2/nsSystem/v4posme/public/.htaccess
+	# Checks to see if the user is attempting to access a valid file,
+	# such as an image or css document, if this isn't true it sends the
+	# request to the front controller, index.php
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule ^([\s\S]*)$ index.php/$1 [L,NC,QSA]
+	
+	
+	# Checks to see if the user is attempting to access a valid file,
+	# such as an image or css document, if this isn't true it sends the
+	# request to the front controller, index.php
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule ^([\s\S]*)$ index.php?/$1 [L,NC,QSA]
+
+Ejemplo de constantes en servidor
+		define('PATH_FILE_OF_APP','./resource/file_company');
+		define('PATH_FILE_OF_APP_ROOT','./resource');
+		define('PATH_FILE_OF_APP_SYSTEM','./');

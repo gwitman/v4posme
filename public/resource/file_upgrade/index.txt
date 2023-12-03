@@ -1,0 +1,3 @@
+TipoDeArchivo->Ruta->Archivo
+.sql->app/Controllers/->sql_execute.txt
+.sql->app/Controllers/->sql_execute002.txt

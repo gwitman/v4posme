@@ -1,0 +1,661 @@
+__ci_last_regenerate|i:1675912232;_ci_previous_url|s:55:"http://localhost/posmev4/index.php/app_cxc_report/index";company|O:8:"stdClass":4:{s:9:"companyID";s:1:"2";s:4:"name";s:22:"Distribuidora Gonzalez";s:9:"createdOn";s:19:"2013-11-22 13:00:35";s:7:"address";s:29:"Terminal de Buses Malpaisillo";}branch|O:8:"stdClass":5:{s:9:"companyID";s:1:"2";s:8:"branchID";s:1:"2";s:4:"name";s:11:"casa matriz";s:9:"createdOn";s:19:"2013-11-22 13:01:10";s:8:"isActive";s:1:"1";}role|O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:8:"branchID";s:1:"2";s:6:"roleID";s:1:"3";s:4:"name";s:10:"SUPE ADMIN";s:11:"description";s:13:"ADMINISTRADOR";s:7:"isAdmin";s:1:"1";s:9:"createdOn";s:19:"2014-07-06 22:17:12";s:8:"isActive";s:1:"1";s:10:"urlDefault";s:15:"core_dashboards";s:9:"createdBy";s:1:"0";}user|O:8:"stdClass":9:{s:9:"companyID";s:1:"2";s:8:"branchID";s:1:"2";s:6:"userID";s:1:"2";s:8:"nickname";s:10:"superadmin";s:8:"password";s:5:"jose.";s:5:"email";s:13:"gjosias@posme";s:9:"createdOn";s:19:"2013-11-22 13:02:20";s:9:"createdBy";s:1:"0";s:10:"employeeID";s:3:"313";}menuTop|a:6:{i:0;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"29";s:13:"menuElementID";s:1:"3";s:19:"parentMenuElementID";N;s:7:"display";s:9:"SEGURIDAD";s:7:"address";s:8:"SECURITY";s:5:"orden";s:24:"0002.0002.0000.0000.0000";s:4:"icon";s:8:"i-github";s:8:"template";s:17:"menu_nivel_role_0";s:5:"nivel";s:1:"0";}i:1;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:1:"1";s:13:"menuElementID";s:1:"4";s:19:"parentMenuElementID";s:1:"3";s:7:"display";s:5:"ROLES";s:7:"address";s:20:"core_role/index.aspx";s:5:"orden";s:24:"0002.0002.0001.0000.0000";s:4:"icon";s:7:"i-key-3";s:8:"template";s:17:"menu_nivel_role_1";s:5:"nivel";s:1:"1";}i:2;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"26";s:13:"menuElementID";s:1:"5";s:19:"parentMenuElementID";s:1:"3";s:7:"display";s:8:"USUARIOS";s:7:"address";s:20:"core_user/index.aspx";s:5:"orden";s:24:"0002.0002.0002.0000.0000";s:4:"icon";s:8:"i-user-4";s:8:"template";s:17:"menu_nivel_role_1";s:5:"nivel";s:1:"1";}i:3;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"33";s:13:"menuElementID";s:1:"9";s:19:"parentMenuElementID";s:1:"3";s:7:"display";s:13:"EDITAR PERFIL";s:7:"address";s:21:"core_acount/edit.aspx";s:5:"orden";s:24:"0002.0002.0003.0000.0000";s:4:"icon";s:7:"i-tag-3";s:8:"template";s:17:"menu_nivel_role_1";s:5:"nivel";s:1:"1";}i:4;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"196";s:13:"menuElementID";s:3:"132";s:19:"parentMenuElementID";s:1:"3";s:7:"display";s:12:"CONFIG. NOTI";s:7:"address";s:26:"app_config_noti/index.aspx";s:5:"orden";s:24:"0002.0002.0004.0000.0000";s:4:"icon";s:13:"i-certificate";s:8:"template";s:17:"menu_nivel_role_1";s:5:"nivel";s:1:"1";}i:5;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"34";s:13:"menuElementID";s:2:"10";s:19:"parentMenuElementID";s:1:"3";s:7:"display";s:5:"SALIR";s:7:"address";s:18:"core_acount/logout";s:5:"orden";s:24:"0002.0002.0005.0000.0000";s:4:"icon";s:9:"i-enter-2";s:8:"template";s:17:"menu_nivel_role_1";s:5:"nivel";s:1:"1";}}menuLeft|a:72:{i:0;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"32";s:13:"menuElementID";s:1:"8";s:19:"parentMenuElementID";N;s:7:"display";s:6:"INICIO";s:7:"address";s:26:"core_dashboards/index.aspx";s:5:"orden";s:24:"0002.0001.0000.0000.0000";s:4:"icon";s:8:"i-home-6";s:8:"template";s:12:"menu_nivel_0";s:5:"nivel";s:1:"0";}i:1;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"31";s:13:"menuElementID";s:1:"6";s:19:"parentMenuElementID";N;s:7:"display";s:12:"CONTABILIDAD";s:7:"address";s:10:"ACCOUNTING";s:5:"orden";s:24:"0002.0003.0000.0000.0000";s:4:"icon";s:6:"i-coin";s:8:"template";s:12:"menu_nivel_1";s:5:"nivel";s:1:"0";}i:2;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"104";s:13:"menuElementID";s:2:"70";s:19:"parentMenuElementID";s:1:"6";s:7:"display";s:6:"INICIO";s:7:"address";s:36:"app_accounting_dashboards/index.aspx";s:5:"orden";s:24:"0002.0003.0001.0000.0000";s:4:"icon";s:11:"i-dashboard";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:3;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"30";s:13:"menuElementID";s:1:"7";s:19:"parentMenuElementID";s:1:"6";s:7:"display";s:7:"CUENTAS";s:7:"address";s:33:"app_accounting_account/index.aspx";s:5:"orden";s:24:"0002.0003.0002.0000.0000";s:4:"icon";s:7:"i-books";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:4;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"38";s:13:"menuElementID";s:2:"19";s:19:"parentMenuElementID";s:1:"6";s:7:"display";s:15:"NIVEL DE CUENTA";s:7:"address";s:31:"app_accounting_level/index.aspx";s:5:"orden";s:24:"0002.0003.0003.0000.0000";s:4:"icon";s:8:"i-stairs";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:5;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"39";s:13:"menuElementID";s:2:"20";s:19:"parentMenuElementID";s:1:"6";s:7:"display";s:10:"NATURALEZA";s:7:"address";s:30:"app_accounting_type/index.aspx";s:5:"orden";s:24:"0002.0003.0004.0000.0000";s:4:"icon";s:15:"i-screwdriver-2";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:6;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"40";s:13:"menuElementID";s:2:"21";s:19:"parentMenuElementID";s:1:"6";s:7:"display";s:8:"PERIODOS";s:7:"address";s:32:"app_accounting_period/index.aspx";s:5:"orden";s:24:"0002.0003.0005.0000.0000";s:4:"icon";s:12:"i-calendar-2";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:7;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"43";s:13:"menuElementID";s:2:"22";s:19:"parentMenuElementID";s:1:"6";s:7:"display";s:15:"CENTRO DE COSTO";s:7:"address";s:31:"app_accounting_class/index.aspx";s:5:"orden";s:24:"0002.0003.0006.0000.0000";s:4:"icon";s:11:"i-direction";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:8;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"44";s:13:"menuElementID";s:2:"23";s:19:"parentMenuElementID";s:1:"6";s:7:"display";s:7:"MONEDAS";s:7:"address";s:34:"app_accounting_currency/index.aspx";s:5:"orden";s:24:"0002.0003.0007.0000.0000";s:4:"icon";s:7:"i-coins";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:9;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"45";s:13:"menuElementID";s:2:"24";s:19:"parentMenuElementID";s:1:"6";s:7:"display";s:12:"COMPROBANTES";s:7:"address";s:33:"app_accounting_journal/index.aspx";s:5:"orden";s:24:"0002.0003.0008.0000.0000";s:4:"icon";s:10:"i-drawer-2";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:10;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"47";s:13:"menuElementID";s:2:"26";s:19:"parentMenuElementID";s:1:"6";s:7:"display";s:8:"PROCESOS";s:7:"address";s:33:"app_accounting_process/index.aspx";s:5:"orden";s:24:"0002.0003.0009.0000.0000";s:4:"icon";s:8:"i-hammer";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:11;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"46";s:13:"menuElementID";s:2:"25";s:19:"parentMenuElementID";s:1:"6";s:7:"display";s:10:"PARAMETROS";s:7:"address";s:36:"app_accounting_parameters/index.aspx";s:5:"orden";s:24:"0002.0003.0010.0000.0000";s:4:"icon";s:7:"i-tools";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:12;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"48";s:13:"menuElementID";s:2:"27";s:19:"parentMenuElementID";s:1:"6";s:7:"display";s:8:"REPORTES";s:7:"address";s:32:"app_accounting_report/index.aspx";s:5:"orden";s:24:"0002.0003.0011.0000.0000";s:4:"icon";s:7:"i-stack";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:13;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"63";s:13:"menuElementID";s:2:"41";s:19:"parentMenuElementID";N;s:7:"display";s:6:"TRANSA";s:7:"address";s:11:"TRANSACTION";s:5:"orden";s:24:"0002.0004.0000.0000.0000";s:4:"icon";s:10:"i-puzzle-2";s:8:"template";s:12:"menu_nivel_1";s:5:"nivel";s:1:"0";}i:14;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"64";s:13:"menuElementID";s:2:"42";s:19:"parentMenuElementID";s:2:"41";s:7:"display";s:10:"DOCUMENTOS";s:7:"address";s:33:"app_transaction_config/index.aspx";s:5:"orden";s:24:"0002.0004.0001.0000.0000";s:4:"icon";s:6:"i-file";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:15;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"66";s:13:"menuElementID";s:2:"43";s:19:"parentMenuElementID";N;s:7:"display";s:10:"INVENTARIO";s:7:"address";s:10:"INVENTARIO";s:5:"orden";s:24:"0002.0005.0000.0000.0000";s:4:"icon";s:11:"i-storage-2";s:8:"template";s:12:"menu_nivel_1";s:5:"nivel";s:1:"0";}i:16;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"103";s:13:"menuElementID";s:2:"69";s:19:"parentMenuElementID";s:2:"43";s:7:"display";s:6:"INICIO";s:7:"address";s:35:"app_inventory_dashboards/index.aspx";s:5:"orden";s:24:"0002.0005.0001.0000.0000";s:4:"icon";s:11:"i-dashboard";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:17;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"76";s:13:"menuElementID";s:2:"53";s:19:"parentMenuElementID";s:2:"43";s:7:"display";s:7:"BODEGAS";s:7:"address";s:34:"app_inventory_warehouse/index.aspx";s:5:"orden";s:24:"0002.0005.0002.0000.0000";s:4:"icon";s:8:"i-office";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:18;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"78";s:13:"menuElementID";s:2:"54";s:19:"parentMenuElementID";s:2:"43";s:7:"display";s:9:"CATEGORIA";s:7:"address";s:33:"app_inventory_category/index.aspx";s:5:"orden";s:24:"0002.0005.0003.0000.0000";s:4:"icon";s:6:"i-dice";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:19;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"80";s:13:"menuElementID";s:2:"55";s:19:"parentMenuElementID";s:2:"43";s:7:"display";s:8:"PRODUCTO";s:7:"address";s:29:"app_inventory_item/index.aspx";s:5:"orden";s:24:"0002.0005.0004.0000.0000";s:4:"icon";s:8:"i-cube-3";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:20;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"98";s:13:"menuElementID";s:2:"66";s:19:"parentMenuElementID";s:2:"43";s:7:"display";s:9:"SOLICITUD";s:7:"address";s:39:"app_inventory_requestgeneral/index.aspx";s:5:"orden";s:24:"0002.0005.0005.0000.0000";s:4:"icon";s:7:"i-cloud";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:21;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"82";s:13:"menuElementID";s:2:"56";s:19:"parentMenuElementID";s:2:"43";s:7:"display";s:11:"O. ENTRADAS";s:7:"address";s:35:"app_inventory_otherinput/index.aspx";s:5:"orden";s:24:"0002.0005.0006.0000.0000";s:4:"icon";s:14:"i-arrow-left-9";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:22;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"85";s:13:"menuElementID";s:2:"57";s:19:"parentMenuElementID";s:2:"43";s:7:"display";s:10:"O. SALIDAS";s:7:"address";s:36:"app_inventory_otheroutput/index.aspx";s:5:"orden";s:24:"0002.0005.0007.0000.0000";s:4:"icon";s:16:"i-arrow-right-10";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:23;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"100";s:13:"menuElementID";s:2:"67";s:19:"parentMenuElementID";s:2:"43";s:7:"display";s:10:"T. ENTRADA";s:7:"address";s:38:"app_inventory_transferinput/index.aspx";s:5:"orden";s:24:"0002.0005.0008.0000.0000";s:4:"icon";s:12:"i-download-6";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:24;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"99";s:13:"menuElementID";s:2:"68";s:19:"parentMenuElementID";s:2:"43";s:7:"display";s:9:"T. SALIDA";s:7:"address";s:39:"app_inventory_transferoutput/index.aspx";s:5:"orden";s:24:"0002.0005.0009.0000.0000";s:4:"icon";s:11:" i-upload-6";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:25;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"139";s:13:"menuElementID";s:2:"90";s:19:"parentMenuElementID";s:2:"43";s:7:"display";s:6:"COMPRA";s:7:"address";s:36:"app_inventory_inputunpost/index.aspx";s:5:"orden";s:24:"0002.0005.0010.0000.0000";s:4:"icon";s:6:"i-last";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:26;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"86";s:13:"menuElementID";s:2:"58";s:19:"parentMenuElementID";s:2:"43";s:7:"display";s:8:"REPORTES";s:7:"address";s:31:"app_inventory_report/index.aspx";s:5:"orden";s:24:"0002.0005.0011.0000.0000";s:4:"icon";s:7:"i-stack";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:27;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"164";s:13:"menuElementID";s:3:"108";s:19:"parentMenuElementID";s:2:"43";s:7:"display";s:6:"RECETA";s:7:"address";s:34:"app_inventory_datasheet/index.aspx";s:5:"orden";s:24:"0002.0005.0013.0000.0000";s:4:"icon";s:9:"i-pushpin";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:28;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"210";s:13:"menuElementID";s:3:"141";s:19:"parentMenuElementID";s:2:"43";s:7:"display";s:11:"OPERACIONES";s:7:"address";s:35:"app_inventory_itemmasive/index.aspx";s:5:"orden";s:24:"0002.0005.0014.0000.0000";s:4:"icon";s:9:"i-pushpin";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:29;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"214";s:13:"menuElementID";s:3:"145";s:19:"parentMenuElementID";s:2:"43";s:7:"display";s:8:"PROCESOS";s:7:"address";s:32:"app_inventory_process/index.aspx";s:5:"orden";s:24:"0002.0005.0015.0000.0000";s:4:"icon";s:8:"i-hammer";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:30;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"67";s:13:"menuElementID";s:2:"44";s:19:"parentMenuElementID";N;s:7:"display";s:7:"COMPRAS";s:7:"address";s:7:"COMPRAS";s:5:"orden";s:24:"0002.0006.0000.0000.0000";s:4:"icon";s:8:"i-cart-7";s:8:"template";s:12:"menu_nivel_1";s:5:"nivel";s:1:"0";}i:31;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"107";s:13:"menuElementID";s:2:"73";s:19:"parentMenuElementID";s:2:"44";s:7:"display";s:6:"INICIO";s:7:"address";s:34:"app_purchase_dashboards/index.aspx";s:5:"orden";s:24:"0002.0006.0002.0000.0000";s:4:"icon";s:11:"i-dashboard";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:32;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"108";s:13:"menuElementID";s:2:"74";s:19:"parentMenuElementID";s:2:"44";s:7:"display";s:9:"SOLICITUD";s:7:"address";s:47:"app_purchase_internalpurchaserequest/index.aspx";s:5:"orden";s:24:"0002.0006.0003.0000.0000";s:4:"icon";s:8:"i-cart-3";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:33;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"110";s:13:"menuElementID";s:2:"75";s:19:"parentMenuElementID";s:2:"44";s:7:"display";s:11:"ORD. COMPRA";s:7:"address";s:37:"app_purchase_purchaseorden/index.aspx";s:5:"orden";s:24:"0002.0006.0004.0000.0000";s:4:"icon";s:8:"i-basket";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:34;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"131";s:13:"menuElementID";s:2:"85";s:19:"parentMenuElementID";s:2:"44";s:7:"display";s:11:"DEV. COMPRA";s:7:"address";s:39:"app_purchase_returnsprovider/index.aspx";s:5:"orden";s:24:"0002.0006.0005.0000.0000";s:4:"icon";s:13:"i-cart-remove";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:35;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"134";s:13:"menuElementID";s:2:"87";s:19:"parentMenuElementID";s:2:"44";s:7:"display";s:8:"REPORTES";s:7:"address";s:30:"app_purchase_report/index.aspx";s:5:"orden";s:24:"0002.0006.0007.0000.0000";s:4:"icon";s:7:"i-stack";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:36;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"68";s:13:"menuElementID";s:2:"45";s:19:"parentMenuElementID";N;s:7:"display";s:6:"VENTAS";s:7:"address";s:6:"VENTAS";s:5:"orden";s:24:"0002.0007.0000.0000.0000";s:4:"icon";s:9:"i-barcode";s:8:"template";s:12:"menu_nivel_1";s:5:"nivel";s:1:"0";}i:37;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"153";s:13:"menuElementID";s:2:"99";s:19:"parentMenuElementID";s:2:"45";s:7:"display";s:8:"REPORTES";s:7:"address";s:27:"app_sales_report/index.aspx";s:5:"orden";s:24:"0002.0007.0005.0000.0000";s:4:"icon";s:7:"i-stack";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:38;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"69";s:13:"menuElementID";s:2:"46";s:19:"parentMenuElementID";N;s:7:"display";s:11:"FACTURACION";s:7:"address";s:11:"FACTURACION";s:5:"orden";s:24:"0002.0008.0000.0000.0000";s:4:"icon";s:11:"i-calculate";s:8:"template";s:12:"menu_nivel_1";s:5:"nivel";s:1:"0";}i:39;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"118";s:13:"menuElementID";s:2:"79";s:19:"parentMenuElementID";s:2:"46";s:7:"display";s:6:"INICIO";s:7:"address";s:33:"app_invoice_dashboards/index.aspx";s:5:"orden";s:24:"0002.0008.0001.0000.0000";s:4:"icon";s:11:"i-dashboard";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:40;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"113";s:13:"menuElementID";s:2:"76";s:19:"parentMenuElementID";s:2:"46";s:7:"display";s:7:"PRECIOS";s:7:"address";s:28:"app_invoice_price/index.aspx";s:5:"orden";s:24:"0002.0008.0002.0000.0000";s:4:"icon";s:7:"i-coins";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:41;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"114";s:13:"menuElementID";s:2:"77";s:19:"parentMenuElementID";s:2:"46";s:7:"display";s:8:"FACTURAR";s:7:"address";s:30:"app_invoice_billing/index.aspx";s:5:"orden";s:24:"0002.0008.0003.0000.0000";s:4:"icon";s:7:"i-bag-2";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:42;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"115";s:13:"menuElementID";s:2:"78";s:19:"parentMenuElementID";s:2:"46";s:7:"display";s:8:"REPORTES";s:7:"address";s:29:"app_invoice_report/index.aspx";s:5:"orden";s:24:"0002.0008.0006.0000.0000";s:4:"icon";s:7:"i-stack";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:43;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"70";s:13:"menuElementID";s:2:"47";s:19:"parentMenuElementID";N;s:7:"display";s:3:"CXC";s:7:"address";s:3:"CXC";s:5:"orden";s:24:"0002.0009.0000.0000.0000";s:4:"icon";s:8:"i-undo-2";s:8:"template";s:12:"menu_nivel_1";s:5:"nivel";s:1:"0";}i:44;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"91";s:13:"menuElementID";s:2:"62";s:19:"parentMenuElementID";s:2:"47";s:7:"display";s:8:"CLIENTES";s:7:"address";s:27:"app_cxc_customer/index.aspx";s:5:"orden";s:24:"0002.0009.0001.0000.0000";s:4:"icon";s:14:"i-address-book";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:45;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"130";s:13:"menuElementID";s:2:"82";s:19:"parentMenuElementID";s:2:"47";s:7:"display";s:16:"LINEA D. CREDITO";s:7:"address";s:29:"app_cxc_creditline/index.aspx";s:5:"orden";s:24:"0002.0009.0002.0000.0000";s:4:"icon";s:8:"i-rating";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:46;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"135";s:13:"menuElementID";s:2:"88";s:19:"parentMenuElementID";s:2:"47";s:7:"display";s:8:"REPORTES";s:7:"address";s:25:"app_cxc_report/index.aspx";s:5:"orden";s:24:"0002.0009.0005.0000.0000";s:4:"icon";s:7:"i-stack";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:47;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"166";s:13:"menuElementID";s:3:"109";s:19:"parentMenuElementID";s:2:"47";s:7:"display";s:9:"SIMULADOR";s:7:"address";s:29:"app_cxc_simulation/index.aspx";s:5:"orden";s:24:"0002.0009.0006.0000.0000";s:4:"icon";s:9:"i-spinner";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:48;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"199";s:13:"menuElementID";s:3:"133";s:19:"parentMenuElementID";s:2:"47";s:7:"display";s:12:"BURO CREDITO";s:7:"address";s:25:"app_cxc_record/index.aspx";s:5:"orden";s:24:"0002.0009.0007.0000.0000";s:4:"icon";s:11:"i-library-2";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:49;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"202";s:13:"menuElementID";s:3:"136";s:19:"parentMenuElementID";s:2:"47";s:7:"display";s:8:"PROCESOS";s:7:"address";s:26:"app_cxc_process/index.aspx";s:5:"orden";s:24:"0002.0009.0008.0000.0000";s:4:"icon";s:8:"i-hammer";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:50;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"71";s:13:"menuElementID";s:2:"48";s:19:"parentMenuElementID";N;s:7:"display";s:3:"CXP";s:7:"address";s:3:"CXP";s:5:"orden";s:24:"0002.0010.0000.0000.0000";s:4:"icon";s:8:"i-redo-2";s:8:"template";s:12:"menu_nivel_1";s:5:"nivel";s:1:"0";}i:51;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"93";s:13:"menuElementID";s:2:"63";s:19:"parentMenuElementID";s:2:"48";s:7:"display";s:11:"PROVEEDORES";s:7:"address";s:27:"app_cxp_provider/index.aspx";s:5:"orden";s:24:"0002.0010.0001.0000.0000";s:4:"icon";s:5:"i-bus";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:52;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"136";s:13:"menuElementID";s:2:"89";s:19:"parentMenuElementID";s:2:"48";s:7:"display";s:8:"REPORTES";s:7:"address";s:25:"app_cxp_report/index.aspx";s:5:"orden";s:24:"0002.0010.0007.0000.0000";s:4:"icon";s:7:"i-stack";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:53;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"72";s:13:"menuElementID";s:2:"49";s:19:"parentMenuElementID";N;s:7:"display";s:4:"RRHH";s:7:"address";s:4:"RRHH";s:5:"orden";s:24:"0002.0011.0000.0000.0000";s:4:"icon";s:9:"i-users-4";s:8:"template";s:12:"menu_nivel_1";s:5:"nivel";s:1:"0";}i:54;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"95";s:13:"menuElementID";s:2:"64";s:19:"parentMenuElementID";s:2:"49";s:7:"display";s:13:"COLABORADORES";s:7:"address";s:28:"app_rrhh_employee/index.aspx";s:5:"orden";s:24:"0002.0011.0001.0000.0000";s:4:"icon";s:7:"i-vcard";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:55;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"73";s:13:"menuElementID";s:2:"50";s:19:"parentMenuElementID";N;s:7:"display";s:8:"PLANILLA";s:7:"address";s:8:"PLANILLA";s:5:"orden";s:24:"0002.0012.0000.0000.0000";s:4:"icon";s:9:"i-users-5";s:8:"template";s:12:"menu_nivel_1";s:5:"nivel";s:1:"0";}i:56;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"191";s:13:"menuElementID";s:3:"130";s:19:"parentMenuElementID";s:2:"50";s:7:"display";s:11:"P. PLANILLA";s:7:"address";s:36:"app_planilla_employee_pay/index.aspx";s:5:"orden";s:24:"0002.0012.0001.0000.0000";s:4:"icon";s:6:"i-cone";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:57;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"193";s:13:"menuElementID";s:3:"131";s:19:"parentMenuElementID";s:2:"50";s:7:"display";s:9:"ADELANTOS";s:7:"address";s:33:"app_planilla_adelantos/index.aspx";s:5:"orden";s:24:"0002.0012.0002.0000.0000";s:4:"icon";s:9:"i-clock-5";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:58;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"74";s:13:"menuElementID";s:2:"51";s:19:"parentMenuElementID";N;s:7:"display";s:5:"BANCO";s:7:"address";s:5:"BANCO";s:5:"orden";s:24:"0002.0013.0000.0000.0000";s:4:"icon";s:11:"i-library-2";s:8:"template";s:12:"menu_nivel_1";s:5:"nivel";s:1:"0";}i:59;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"75";s:13:"menuElementID";s:2:"52";s:19:"parentMenuElementID";N;s:7:"display";s:13:"ACTIVOS FIJOS";s:7:"address";s:13:"ACTIVOS_FIJOS";s:5:"orden";s:24:"0002.0014.0000.0000.0000";s:4:"icon";s:9:"i-factory";s:8:"template";s:12:"menu_nivel_1";s:5:"nivel";s:1:"0";}i:60;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"75";s:13:"menuElementID";s:2:"65";s:19:"parentMenuElementID";s:2:"52";s:7:"display";s:10:"ACTIVOS F.";s:7:"address";s:30:"app_afx_fixedassent/index.aspx";s:5:"orden";s:24:"0002.0014.0001.0000.0000";s:4:"icon";s:5:"i-car";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:61;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"146";s:13:"menuElementID";s:2:"92";s:19:"parentMenuElementID";N;s:7:"display";s:4:"CAJA";s:7:"address";s:4:"CAJA";s:5:"orden";s:24:"0002.0015.0000.0000.0000";s:4:"icon";s:5:"i-box";s:8:"template";s:12:"menu_nivel_1";s:5:"nivel";s:1:"0";}i:62;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"129";s:13:"menuElementID";s:2:"93";s:19:"parentMenuElementID";s:2:"92";s:7:"display";s:5:"ABONO";s:7:"address";s:24:"app_box_share/index.aspx";s:5:"orden";s:24:"0002.0015.0002.0000.0000";s:4:"icon";s:7:"i-tag-4";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:63;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"160";s:13:"menuElementID";s:3:"106";s:19:"parentMenuElementID";s:2:"92";s:7:"display";s:8:"CANC FAC";s:7:"address";s:33:"app_box_canceldocument/index.aspx";s:5:"orden";s:24:"0002.0015.0003.0000.0000";s:4:"icon";s:8:"i-ticket";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:64;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"163";s:13:"menuElementID";s:3:"107";s:19:"parentMenuElementID";s:2:"92";s:7:"display";s:9:"ABONO CAP";s:7:"address";s:31:"app_box_sharecapital/index.aspx";s:5:"orden";s:24:"0002.0015.0004.0000.0000";s:4:"icon";s:11:"i-storage-2";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:65;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"172";s:13:"menuElementID";s:3:"115";s:19:"parentMenuElementID";s:2:"92";s:7:"display";s:8:"REPORTES";s:7:"address";s:25:"app_box_report/index.aspx";s:5:"orden";s:24:"0002.0015.0005.0000.0000";s:4:"icon";s:7:"i-stack";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:66;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"186";s:13:"menuElementID";s:3:"128";s:19:"parentMenuElementID";s:2:"92";s:7:"display";s:9:"PROVISION";s:7:"address";s:30:"app_box_provisioned/index.aspx";s:5:"orden";s:24:"0002.0015.0006.0000.0000";s:4:"icon";s:10:"i-folder-3";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:67;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"206";s:13:"menuElementID";s:3:"139";s:19:"parentMenuElementID";s:2:"92";s:7:"display";s:10:"ING A CAJA";s:7:"address";s:28:"app_box_inputcash/index.aspx";s:5:"orden";s:24:"0002.0015.0013.0000.0000";s:4:"icon";s:7:"i-tag-4";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:68;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"207";s:13:"menuElementID";s:3:"140";s:19:"parentMenuElementID";s:2:"92";s:7:"display";s:10:"EGS A CAJA";s:7:"address";s:26:"app_box_outcash/index.aspx";s:5:"orden";s:24:"0002.0015.0014.0000.0000";s:4:"icon";s:7:"i-tag-4";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:69;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"178";s:13:"menuElementID";s:3:"121";s:19:"parentMenuElementID";N;s:7:"display";s:8:"COBRANZA";s:7:"address";s:8:"COBRANZA";s:5:"orden";s:24:"0002.0016.0000.0000.0000";s:4:"icon";s:9:"i-podcast";s:8:"template";s:12:"menu_nivel_1";s:5:"nivel";s:1:"0";}i:70;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"179";s:13:"menuElementID";s:3:"122";s:19:"parentMenuElementID";s:3:"121";s:7:"display";s:8:"GESTORES";s:7:"address";s:33:"app_collection_manager/index.aspx";s:5:"orden";s:24:"0002.0016.0002.0000.0000";s:4:"icon";s:6:"i-pawn";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}i:71;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"180";s:13:"menuElementID";s:3:"123";s:19:"parentMenuElementID";s:3:"121";s:7:"display";s:8:"REPORTES";s:7:"address";s:32:"app_collection_report/index.aspx";s:5:"orden";s:24:"0002.0016.0003.0000.0000";s:4:"icon";s:7:"i-stack";s:8:"template";s:12:"menu_nivel_2";s:5:"nivel";s:1:"1";}}menuBodyTop|N;menuBodyReport|a:35:{i:0;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"51";s:13:"menuElementID";s:2:"29";s:19:"parentMenuElementID";s:2:"27";s:7:"display";s:15:"BALANCE GENERAL";s:7:"address";s:37:"app_accounting_report/balance_general";s:5:"orden";s:24:"0002.0003.0011.0001.0000";s:4:"icon";s:3:"red";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:1;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"52";s:13:"menuElementID";s:2:"30";s:19:"parentMenuElementID";s:2:"27";s:7:"display";s:19:"ESTADO DE RESULTADO";s:7:"address";s:41:"app_accounting_report/estado_de_resultado";s:5:"orden";s:24:"0002.0003.0011.0002.0000";s:4:"icon";s:4:"blue";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:2;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"59";s:13:"menuElementID";s:2:"37";s:19:"parentMenuElementID";s:2:"27";s:7:"display";s:23:"BALANZA DE COMPROBACION";s:7:"address";s:42:"app_accounting_report/balanza_comprobacion";s:5:"orden";s:24:"0002.0003.0011.0003.0000";s:4:"icon";s:6:"yellow";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:3;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"60";s:13:"menuElementID";s:2:"38";s:19:"parentMenuElementID";s:2:"27";s:7:"display";s:18:"AUXILIAR DE CUENTA";s:7:"address";s:40:"app_accounting_report/auxiliar_de_cuenta";s:5:"orden";s:24:"0002.0003.0011.0004.0000";s:4:"icon";s:5:"green";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:4;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"61";s:13:"menuElementID";s:2:"39";s:19:"parentMenuElementID";s:2:"27";s:7:"display";s:19:"CATALOGO DE CUENTAS";s:7:"address";s:41:"app_accounting_report/catalogo_de_cuentas";s:5:"orden";s:24:"0002.0003.0011.0005.0000";s:4:"icon";s:6:"orange";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:5;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"62";s:13:"menuElementID";s:2:"40";s:19:"parentMenuElementID";s:2:"27";s:7:"display";s:48:"AUXILIAR DE MOVIMIENTOS POR TIPO DE COMPROBANTES";s:7:"address";s:57:"app_accounting_report/auxiliar_mov_x_tipo_de_comprobantes";s:5:"orden";s:24:"0002.0003.0011.0006.0000";s:4:"icon";s:4:"gray";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:6;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"177";s:13:"menuElementID";s:3:"120";s:19:"parentMenuElementID";s:2:"27";s:7:"display";s:19:"RAZONES FINANCIERAS";s:7:"address";s:37:"app_accounting_report/razon_financial";s:5:"orden";s:24:"0002.0003.0011.0007.0000";s:4:"icon";s:3:"red";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:7;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"183";s:13:"menuElementID";s:3:"126";s:19:"parentMenuElementID";s:2:"27";s:7:"display";s:13:"FLUJO DE CAJA";s:7:"address";s:31:"app_accounting_report/cash_flow";s:5:"orden";s:24:"0002.0003.0011.0008.0000";s:4:"icon";s:4:"blue";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:8;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"187";s:13:"menuElementID";s:3:"129";s:19:"parentMenuElementID";s:2:"27";s:7:"display";s:19:"PRESUPUESTO MENSUAL";s:7:"address";s:35:"app_accounting_report/presupuestory";s:5:"orden";s:24:"0002.0003.0011.0009.0000";s:4:"icon";s:6:"yellow";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:9;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"87";s:13:"menuElementID";s:2:"59";s:19:"parentMenuElementID";s:2:"58";s:7:"display";s:22:"MOVIMIENTOS POR BODEGA";s:7:"address";s:42:"app_inventory_report/movement_by_warehouse";s:5:"orden";s:24:"0002.0005.0011.0001.0000";s:4:"icon";s:3:"red";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:10;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"88";s:13:"menuElementID";s:2:"60";s:19:"parentMenuElementID";s:2:"58";s:7:"display";s:11:"MOVIMIENTOS";s:7:"address";s:29:"app_inventory_report/movement";s:5:"orden";s:24:"0002.0005.0011.0002.0000";s:4:"icon";s:4:"blue";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:11;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"149";s:13:"menuElementID";s:2:"95";s:19:"parentMenuElementID";s:2:"58";s:7:"display";s:13:"MASTER KARDEX";s:7:"address";s:34:"app_inventory_report/master_kardex";s:5:"orden";s:24:"0002.0005.0011.0003.0000";s:4:"icon";s:6:"yellow";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:12;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"156";s:13:"menuElementID";s:3:"102";s:19:"parentMenuElementID";s:2:"58";s:7:"display";s:13:"LISTA DE ITEM";s:7:"address";s:30:"app_inventory_report/list_item";s:5:"orden";s:24:"0002.0005.0011.0004.0000";s:4:"icon";s:5:"green";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:13;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"216";s:13:"menuElementID";s:3:"146";s:19:"parentMenuElementID";s:2:"58";s:7:"display";s:20:"LISTA DE VENCIMIENTO";s:7:"address";s:38:"app_inventory_report/list_item_expired";s:5:"orden";s:24:"0002.0005.0011.0005.0000";s:4:"icon";s:5:"green";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:14;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"154";s:13:"menuElementID";s:3:"100";s:19:"parentMenuElementID";s:2:"99";s:7:"display";s:17:"DETALLE DE VENTAS";s:7:"address";s:34:"app_sales_report/sales_detail.aspx";s:5:"orden";s:24:"0002.0007.0005.0001.0000";s:4:"icon";s:6:"yellow";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:15;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"155";s:13:"menuElementID";s:3:"101";s:19:"parentMenuElementID";s:2:"99";s:7:"display";s:17:"RESUMEN DE VENTAS";s:7:"address";s:35:"app_sales_report/sales_summary.aspx";s:5:"orden";s:24:"0002.0007.0005.0002.0000";s:4:"icon";s:3:"red";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:16;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"218";s:13:"menuElementID";s:3:"148";s:19:"parentMenuElementID";s:2:"99";s:7:"display";s:32:"DETALLE DE VENTA FORMATO DE 80MM";s:7:"address";s:46:"app_sales_report/sales_detail_format_80ml.aspx";s:5:"orden";s:24:"0002.0007.0005.0003.0000";s:4:"icon";s:5:"green";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:17;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"150";s:13:"menuElementID";s:2:"96";s:19:"parentMenuElementID";s:2:"88";s:7:"display";s:18:"CARTERA DE CREDITO";s:7:"address";s:35:"app_cxc_report/customer_credit.aspx";s:5:"orden";s:24:"0002.0009.0005.0001.0000";s:4:"icon";s:6:"yellow";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:18;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"151";s:13:"menuElementID";s:2:"97";s:19:"parentMenuElementID";s:2:"88";s:7:"display";s:16:"ESTADO DE CUENTA";s:7:"address";s:35:"app_cxc_report/customer_status.aspx";s:5:"orden";s:24:"0002.0009.0005.0002.0000";s:4:"icon";s:4:"blue";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:19;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"152";s:13:"menuElementID";s:2:"98";s:19:"parentMenuElementID";s:2:"88";s:7:"display";s:20:"DOCUMENTO DE CREDITO";s:7:"address";s:35:"app_cxc_report/document_credit.aspx";s:5:"orden";s:24:"0002.0009.0005.0003.0000";s:4:"icon";s:3:"red";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:20;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"157";s:13:"menuElementID";s:3:"103";s:19:"parentMenuElementID";s:2:"88";s:7:"display";s:17:"LISTA DE CLIENTES";s:7:"address";s:33:"app_cxc_report/customer_list.aspx";s:5:"orden";s:24:"0002.0009.0005.0004.0000";s:4:"icon";s:5:"green";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:21;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"158";s:13:"menuElementID";s:3:"104";s:19:"parentMenuElementID";s:2:"88";s:7:"display";s:19:"INTERES POR PERIODO";s:7:"address";s:35:"app_cxc_report/interes_periodo.aspx";s:5:"orden";s:24:"0002.0009.0005.0005.0000";s:4:"icon";s:6:"orange";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:22;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"168";s:13:"menuElementID";s:3:"111";s:19:"parentMenuElementID";s:2:"88";s:7:"display";s:17:"PAGOS POR CLIENTE";s:7:"address";s:23:"app_cxc_report/pay.aspx";s:5:"orden";s:24:"0002.0009.0005.0006.0000";s:4:"icon";s:4:"gray";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:23;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"170";s:13:"menuElementID";s:3:"113";s:19:"parentMenuElementID";s:2:"88";s:7:"display";s:10:"PROYECCION";s:7:"address";s:30:"app_cxc_report/proyection.aspx";s:5:"orden";s:24:"0002.0009.0005.0008.0000";s:4:"icon";s:4:"blue";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:24;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"171";s:13:"menuElementID";s:3:"114";s:19:"parentMenuElementID";s:2:"88";s:7:"display";s:21:"CONTRATO X DESEMBOLSO";s:7:"address";s:37:"app_cxc_report/document_contract.aspx";s:5:"orden";s:24:"0002.0009.0005.0009.0000";s:4:"icon";s:3:"red";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:25;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"175";s:13:"menuElementID";s:3:"117";s:19:"parentMenuElementID";s:2:"88";s:7:"display";s:14:"TIPO DE CAMBIO";s:7:"address";s:33:"app_cxc_report/exchange_rate.aspx";s:5:"orden";s:24:"0002.0009.0005.0010.0000";s:4:"icon";s:5:"green";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:26;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"174";s:13:"menuElementID";s:3:"118";s:19:"parentMenuElementID";s:2:"88";s:7:"display";s:16:"GESTOR X CLIENTE";s:7:"address";s:38:"app_cxc_report/collection_manager.aspx";s:5:"orden";s:24:"0002.0009.0005.0011.0000";s:4:"icon";s:6:"orange";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:27;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"176";s:13:"menuElementID";s:3:"119";s:19:"parentMenuElementID";s:2:"88";s:7:"display";s:11:"RESUMEN CXC";s:7:"address";s:34:"app_cxc_report/summary_credit.aspx";s:5:"orden";s:24:"0002.0009.0005.0012.0000";s:4:"icon";s:4:"gray";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:28;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"200";s:13:"menuElementID";s:3:"134";s:19:"parentMenuElementID";s:2:"88";s:7:"display";s:29:"CONSULTAS AL BURO DE CRÉDITO";s:7:"address";s:44:"app_cxc_report/consulta_sin_riesgo_list.aspx";s:5:"orden";s:24:"0002.0009.0005.0013.0000";s:4:"icon";s:4:"blue";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:29;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"173";s:13:"menuElementID";s:3:"116";s:19:"parentMenuElementID";s:3:"115";s:7:"display";s:8:"INGRESOS";s:7:"address";s:25:"app_box_report/share.aspx";s:5:"orden";s:24:"0002.0015.0005.0001.0000";s:4:"icon";s:6:"yellow";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:30;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"217";s:13:"menuElementID";s:3:"147";s:19:"parentMenuElementID";s:3:"115";s:7:"display";s:16:"INGRESOS RESUMEN";s:7:"address";s:33:"app_box_report/share_summary.aspx";s:5:"orden";s:24:"0002.0015.0005.0002.0000";s:4:"icon";s:3:"red";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:31;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"181";s:13:"menuElementID";s:3:"124";s:19:"parentMenuElementID";s:3:"123";s:7:"display";s:8:"CLIENTES";s:7:"address";s:35:"app_collection_report/customer.aspx";s:5:"orden";s:24:"0002.0016.0003.0001.0000";s:4:"icon";s:6:"yellow";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:32;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"182";s:13:"menuElementID";s:3:"125";s:19:"parentMenuElementID";s:3:"123";s:7:"display";s:7:"FACTURA";s:7:"address";s:42:"app_collection_report/document_credit.aspx";s:5:"orden";s:24:"0002.0016.0003.0002.0000";s:4:"icon";s:3:"red";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:33;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"184";s:13:"menuElementID";s:3:"127";s:19:"parentMenuElementID";s:3:"123";s:7:"display";s:19:"COMISIONES X GESTOR";s:7:"address";s:37:"app_collection_report/commission.aspx";s:5:"orden";s:24:"0002.0016.0003.0003.0000";s:4:"icon";s:4:"blue";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}i:34;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"203";s:13:"menuElementID";s:3:"137";s:19:"parentMenuElementID";s:3:"123";s:7:"display";s:20:"COMISIONES X ACREDOR";s:7:"address";s:46:"app_collection_report/commission_provider.aspx";s:5:"orden";s:24:"0002.0016.0003.0004.0000";s:4:"icon";s:5:"green";s:8:"template";s:24:"menu_nivel_body_report_0";s:5:"nivel";s:1:"1";}}menuHiddenPopup|a:18:{i:0;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"57";s:13:"menuElementID";s:2:"35";s:19:"parentMenuElementID";s:1:"6";s:7:"display";s:22:"CURRENCY_CORE_FUNCTION";s:7:"address";s:51:"app_accounting_currency/currency_core_function.aspx";s:5:"orden";s:24:"0002.0003.0012.0000.0000";s:4:"icon";s:0:"";s:8:"template";s:0:"";s:5:"nivel";s:1:"0";}i:1;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"58";s:13:"menuElementID";s:2:"36";s:19:"parentMenuElementID";s:1:"6";s:7:"display";s:14:"ACCOUNTING_API";s:7:"address";s:29:"app_accounting_api/index.aspx";s:5:"orden";s:24:"0002.0003.0013.0000.0000";s:4:"icon";s:0:"";s:8:"template";s:0:"";s:5:"nivel";s:1:"0";}i:2;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"105";s:13:"menuElementID";s:2:"71";s:19:"parentMenuElementID";s:2:"43";s:7:"display";s:13:"INVENTORY_API";s:7:"address";s:28:"app_inventory_api/index.aspx";s:5:"orden";s:24:"0002.0005.0012.0000.0000";s:4:"icon";s:0:"";s:8:"template";s:0:"";s:5:"nivel";s:1:"0";}i:3;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"106";s:13:"menuElementID";s:2:"72";s:19:"parentMenuElementID";s:2:"44";s:7:"display";s:12:"PURCHASE_API";s:7:"address";s:27:"app_purchase_api/index.aspx";s:5:"orden";s:24:"0002.0006.0001.0000.0000";s:4:"icon";s:0:"";s:8:"template";s:0:"";s:5:"nivel";s:1:"0";}i:4;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"120";s:13:"menuElementID";s:2:"80";s:19:"parentMenuElementID";s:2:"46";s:7:"display";s:11:"INVOICE_API";s:7:"address";s:26:"app_invoice_api/index.aspx";s:5:"orden";s:24:"0002.0008.0007.0000.0000";s:4:"icon";s:0:"";s:8:"template";s:0:"";s:5:"nivel";s:1:"0";}i:5;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"121";s:13:"menuElementID";s:2:"81";s:19:"parentMenuElementID";s:2:"46";s:7:"display";s:16:"ITEM_CONCEPT_API";s:7:"address";s:27:"core_concept_api/index.aspx";s:5:"orden";s:24:"0002.0008.0008.0000.0000";s:4:"icon";s:0:"";s:8:"template";s:0:"";s:5:"nivel";s:1:"0";}i:6;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"205";s:13:"menuElementID";s:3:"138";s:19:"parentMenuElementID";s:2:"46";s:7:"display";s:44:"ES_PERMITIDO_MODIFICAR_PRECIO_EN_FACTURACION";s:7:"address";s:55:"es_permitido_modificar_precio_en_facturacion/index.aspx";s:5:"orden";s:24:"0002.0008.0009.0000.0000";s:4:"icon";s:0:"";s:8:"template";s:0:"";s:5:"nivel";s:1:"0";}i:7;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"167";s:13:"menuElementID";s:3:"110";s:19:"parentMenuElementID";s:2:"47";s:7:"display";s:7:"CXC_API";s:7:"address";s:22:"app_cxc_api/index.aspx";s:5:"orden";s:24:"0002.0009.0007.0000.0000";s:4:"icon";s:0:"";s:8:"template";s:0:"";s:5:"nivel";s:1:"0";}i:8;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"201";s:13:"menuElementID";s:3:"135";s:19:"parentMenuElementID";s:2:"47";s:7:"display";s:27:"CONSULTA_INDIVIDUAL_AL_BURO";s:7:"address";s:39:"app_cxc_report/consulta_sin_riesgo.aspx";s:5:"orden";s:24:"0002.0009.0009.0000.0000";s:4:"icon";s:0:"";s:8:"template";s:0:"";s:5:"nivel";s:1:"0";}i:9;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"148";s:13:"menuElementID";s:2:"94";s:19:"parentMenuElementID";s:2:"92";s:7:"display";s:7:"BOX_API";s:7:"address";s:22:"app_box_api/index.aspx";s:5:"orden";s:24:"0002.0015.0012.0000.0000";s:4:"icon";s:0:"";s:8:"template";s:0:"";s:5:"nivel";s:1:"0";}i:10;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"213";s:13:"menuElementID";s:3:"144";s:19:"parentMenuElementID";s:2:"92";s:7:"display";s:58:"ES_PERMITIDO_MOSTRAR_INFO_DE_2_DAY_IN_app_box_report_share";s:7:"address";s:58:"ES_PERMITIDO_MOSTRAR_INFO_DE_2_DAY_IN_app_box_report_share";s:5:"orden";s:24:"0002.0015.0015.0000.0000";s:4:"icon";s:0:"";s:8:"template";s:0:"";s:5:"nivel";s:1:"0";}i:11;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"54";s:13:"menuElementID";s:2:"31";s:19:"parentMenuElementID";N;s:7:"display";s:5:"POPUP";s:7:"address";s:0:"";s:5:"orden";s:24:"0003.0000.0000.0000.0000";s:4:"icon";s:0:"";s:8:"template";s:0:"";s:5:"nivel";s:1:"0";}i:12;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"53";s:13:"menuElementID";s:2:"32";s:19:"parentMenuElementID";s:2:"31";s:7:"display";s:13:"ELFINDER_SHOW";s:7:"address";s:23:"core_elfinder/show.aspx";s:5:"orden";s:24:"0003.0001.0000.0000.0000";s:4:"icon";s:0:"";s:8:"template";s:0:"";s:5:"nivel";s:1:"0";}i:13;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"55";s:13:"menuElementID";s:2:"33";s:19:"parentMenuElementID";s:2:"31";s:7:"display";s:15:"ELFINDER_LOADER";s:7:"address";s:25:"core_elfinder/loader.aspx";s:5:"orden";s:24:"0003.0002.0000.0000.0000";s:4:"icon";s:0:"";s:8:"template";s:0:"";s:5:"nivel";s:1:"0";}i:14;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:2:"56";s:13:"menuElementID";s:2:"34";s:19:"parentMenuElementID";s:2:"31";s:7:"display";s:15:"ELFINDER_UPLOAD";s:7:"address";s:25:"core_elfinder/upload.aspx";s:5:"orden";s:24:"0003.0003.0000.0000.0000";s:4:"icon";s:0:"";s:8:"template";s:0:"";s:5:"nivel";s:1:"0";}i:15;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"159";s:13:"menuElementID";s:3:"105";s:19:"parentMenuElementID";s:2:"31";s:7:"display";s:14:"NOTIFICACIONES";s:7:"address";s:28:"core_notification/index.aspx";s:5:"orden";s:24:"0003.0004.0000.0000.0000";s:4:"icon";s:0:"";s:8:"template";s:0:"";s:5:"nivel";s:1:"0";}i:16;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"212";s:13:"menuElementID";s:3:"142";s:19:"parentMenuElementID";s:2:"31";s:7:"display";s:27:"REPORTE DE CODIGOS DE BARRA";s:7:"address";s:50:"app_inventory_itemmasive/popup_add_prinercode.aspx";s:5:"orden";s:24:"0003.0005.0000.0000.0000";s:4:"icon";s:0:"";s:8:"template";s:0:"";s:5:"nivel";s:1:"0";}i:17;O:8:"stdClass":10:{s:9:"companyID";s:1:"2";s:9:"elementID";s:3:"211";s:13:"menuElementID";s:3:"143";s:19:"parentMenuElementID";s:2:"31";s:7:"display";s:22:"RENDER CODIGO DE BARRA";s:7:"address";s:43:"app_inventory_item/popup_add_renderimg.aspx";s:5:"orden";s:24:"0003.0006.0000.0000.0000";s:4:"icon";s:0:"";s:8:"template";s:0:"";s:5:"nivel";s:1:"0";}}menuRenderTop|s:2157:"<!-- DEBUG-VIEW START 6 APPPATH\Views\core_template\menu_nivel_role_0.php -->
+					<li class="divider-vertical"></li>					
+					<li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="icon24 i-github"></i>
+                        </a>
+                        <ul class="dropdown-menu" role="menu">
+							<!-- DEBUG-VIEW START 1 APPPATH\Views\core_template\menu_nivel_role_1.php -->
+<li role="presentation">
+	<a href="http://localhost/posmev4/core_role/index" class="">
+		<i class="icon16  i-key-3"></i>ROLES	</a>
+</li>
+<!-- DEBUG-VIEW ENDED 1 APPPATH\Views\core_template\menu_nivel_role_1.php -->
+<!-- DEBUG-VIEW START 2 APPPATH\Views\core_template\menu_nivel_role_1.php -->
+<li role="presentation">
+	<a href="http://localhost/posmev4/core_user/index" class="">
+		<i class="icon16  i-user-4"></i>USUARIOS	</a>
+</li>
+<!-- DEBUG-VIEW ENDED 2 APPPATH\Views\core_template\menu_nivel_role_1.php -->
+<!-- DEBUG-VIEW START 3 APPPATH\Views\core_template\menu_nivel_role_1.php -->
+<li role="presentation">
+	<a href="http://localhost/posmev4/core_acount/edit" class="">
+		<i class="icon16  i-tag-3"></i>EDITAR PERFIL	</a>
+</li>
+<!-- DEBUG-VIEW ENDED 3 APPPATH\Views\core_template\menu_nivel_role_1.php -->
+<!-- DEBUG-VIEW START 4 APPPATH\Views\core_template\menu_nivel_role_1.php -->
+<li role="presentation">
+	<a href="http://localhost/posmev4/app_config_noti/index" class="">
+		<i class="icon16  i-certificate"></i>CONFIG. NOTI	</a>
+</li>
+<!-- DEBUG-VIEW ENDED 4 APPPATH\Views\core_template\menu_nivel_role_1.php -->
+<!-- DEBUG-VIEW START 5 APPPATH\Views\core_template\menu_nivel_role_1.php -->
+<li role="presentation">
+	<a href="http://localhost/posmev4/core_acount/logout" class="">
+		<i class="icon16  i-enter-2"></i>SALIR	</a>
+</li>
+<!-- DEBUG-VIEW ENDED 5 APPPATH\Views\core_template\menu_nivel_role_1.php -->
+                            
+                        </ul>  
+                    </li>
+                    <li class="divider-vertical"></li>
+<!-- DEBUG-VIEW ENDED 6 APPPATH\Views\core_template\menu_nivel_role_0.php -->
+";menuRenderLeft|s:27426:"<!-- DEBUG-VIEW START 7 APPPATH\Views\core_template\menu_nivel_0.php -->
+				<li>
+					<a href="http://localhost/posmev4/core_dashboards/index">
+						<span class="icon"><i class="icon20 i-home-6"></i></span>
+						<span class="txt">INICIO</span>
+					</a>
+				</li>
+<!-- DEBUG-VIEW ENDED 7 APPPATH\Views\core_template\menu_nivel_0.php -->
+<!-- DEBUG-VIEW START 19 APPPATH\Views\core_template\menu_nivel_1.php -->
+				<li>
+								<a href="#">
+									<span class="icon"><i class="icon20 i-coin"></i></span>
+									<span class="txt">CONTABILIDAD</span>
+								</a>
+								<ul class="sub">
+										<!-- DEBUG-VIEW START 8 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_accounting_dashboards/index">
+											<span class="icon"><i class="icon20 i-dashboard"></i></span>
+											<span class="txt">INICIO</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 8 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 9 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_accounting_account/index">
+											<span class="icon"><i class="icon20 i-books"></i></span>
+											<span class="txt">CUENTAS</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 9 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 10 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_accounting_level/index">
+											<span class="icon"><i class="icon20 i-stairs"></i></span>
+											<span class="txt">NIVEL DE CUENTA</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 10 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 11 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_accounting_type/index">
+											<span class="icon"><i class="icon20 i-screwdriver-2"></i></span>
+											<span class="txt">NATURALEZA</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 11 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 12 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_accounting_period/index">
+											<span class="icon"><i class="icon20 i-calendar-2"></i></span>
+											<span class="txt">PERIODOS</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 12 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 13 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_accounting_class/index">
+											<span class="icon"><i class="icon20 i-direction"></i></span>
+											<span class="txt">CENTRO DE COSTO</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 13 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 14 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_accounting_currency/index">
+											<span class="icon"><i class="icon20 i-coins"></i></span>
+											<span class="txt">MONEDAS</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 14 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 15 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_accounting_journal/index">
+											<span class="icon"><i class="icon20 i-drawer-2"></i></span>
+											<span class="txt">COMPROBANTES</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 15 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 16 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_accounting_process/index">
+											<span class="icon"><i class="icon20 i-hammer"></i></span>
+											<span class="txt">PROCESOS</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 16 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 17 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_accounting_parameters/index">
+											<span class="icon"><i class="icon20 i-tools"></i></span>
+											<span class="txt">PARAMETROS</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 17 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 18 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_accounting_report/index">
+											<span class="icon"><i class="icon20 i-stack"></i></span>
+											<span class="txt">REPORTES</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 18 APPPATH\Views\core_template\menu_nivel_2.php -->
+ 
+								</ul>
+				</li>
+<!-- DEBUG-VIEW ENDED 19 APPPATH\Views\core_template\menu_nivel_1.php -->
+<!-- DEBUG-VIEW START 21 APPPATH\Views\core_template\menu_nivel_1.php -->
+				<li>
+								<a href="#">
+									<span class="icon"><i class="icon20 i-puzzle-2"></i></span>
+									<span class="txt">TRANSA</span>
+								</a>
+								<ul class="sub">
+										<!-- DEBUG-VIEW START 20 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_transaction_config/index">
+											<span class="icon"><i class="icon20 i-file"></i></span>
+											<span class="txt">DOCUMENTOS</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 20 APPPATH\Views\core_template\menu_nivel_2.php -->
+ 
+								</ul>
+				</li>
+<!-- DEBUG-VIEW ENDED 21 APPPATH\Views\core_template\menu_nivel_1.php -->
+<!-- DEBUG-VIEW START 36 APPPATH\Views\core_template\menu_nivel_1.php -->
+				<li>
+								<a href="#">
+									<span class="icon"><i class="icon20 i-storage-2"></i></span>
+									<span class="txt">INVENTARIO</span>
+								</a>
+								<ul class="sub">
+										<!-- DEBUG-VIEW START 22 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_inventory_dashboards/index">
+											<span class="icon"><i class="icon20 i-dashboard"></i></span>
+											<span class="txt">INICIO</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 22 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 23 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_inventory_warehouse/index">
+											<span class="icon"><i class="icon20 i-office"></i></span>
+											<span class="txt">BODEGAS</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 23 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 24 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_inventory_category/index">
+											<span class="icon"><i class="icon20 i-dice"></i></span>
+											<span class="txt">CATEGORIA</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 24 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 25 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_inventory_item/index">
+											<span class="icon"><i class="icon20 i-cube-3"></i></span>
+											<span class="txt">PRODUCTO</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 25 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 26 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_inventory_requestgeneral/index">
+											<span class="icon"><i class="icon20 i-cloud"></i></span>
+											<span class="txt">SOLICITUD</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 26 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 27 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_inventory_otherinput/index">
+											<span class="icon"><i class="icon20 i-arrow-left-9"></i></span>
+											<span class="txt">O. ENTRADAS</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 27 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 28 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_inventory_otheroutput/index">
+											<span class="icon"><i class="icon20 i-arrow-right-10"></i></span>
+											<span class="txt">O. SALIDAS</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 28 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 29 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_inventory_transferinput/index">
+											<span class="icon"><i class="icon20 i-download-6"></i></span>
+											<span class="txt">T. ENTRADA</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 29 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 30 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_inventory_transferoutput/index">
+											<span class="icon"><i class="icon20  i-upload-6"></i></span>
+											<span class="txt">T. SALIDA</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 30 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 31 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_inventory_inputunpost/index">
+											<span class="icon"><i class="icon20 i-last"></i></span>
+											<span class="txt">COMPRA</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 31 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 32 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_inventory_report/index">
+											<span class="icon"><i class="icon20 i-stack"></i></span>
+											<span class="txt">REPORTES</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 32 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 33 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_inventory_datasheet/index">
+											<span class="icon"><i class="icon20 i-pushpin"></i></span>
+											<span class="txt">RECETA</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 33 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 34 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_inventory_itemmasive/index">
+											<span class="icon"><i class="icon20 i-pushpin"></i></span>
+											<span class="txt">OPERACIONES</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 34 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 35 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_inventory_process/index">
+											<span class="icon"><i class="icon20 i-hammer"></i></span>
+											<span class="txt">PROCESOS</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 35 APPPATH\Views\core_template\menu_nivel_2.php -->
+ 
+								</ul>
+				</li>
+<!-- DEBUG-VIEW ENDED 36 APPPATH\Views\core_template\menu_nivel_1.php -->
+<!-- DEBUG-VIEW START 42 APPPATH\Views\core_template\menu_nivel_1.php -->
+				<li>
+								<a href="#">
+									<span class="icon"><i class="icon20 i-cart-7"></i></span>
+									<span class="txt">COMPRAS</span>
+								</a>
+								<ul class="sub">
+										<!-- DEBUG-VIEW START 37 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_purchase_dashboards/index">
+											<span class="icon"><i class="icon20 i-dashboard"></i></span>
+											<span class="txt">INICIO</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 37 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 38 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_purchase_internalpurchaserequest/index">
+											<span class="icon"><i class="icon20 i-cart-3"></i></span>
+											<span class="txt">SOLICITUD</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 38 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 39 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_purchase_purchaseorden/index">
+											<span class="icon"><i class="icon20 i-basket"></i></span>
+											<span class="txt">ORD. COMPRA</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 39 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 40 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_purchase_returnsprovider/index">
+											<span class="icon"><i class="icon20 i-cart-remove"></i></span>
+											<span class="txt">DEV. COMPRA</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 40 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 41 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_purchase_report/index">
+											<span class="icon"><i class="icon20 i-stack"></i></span>
+											<span class="txt">REPORTES</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 41 APPPATH\Views\core_template\menu_nivel_2.php -->
+ 
+								</ul>
+				</li>
+<!-- DEBUG-VIEW ENDED 42 APPPATH\Views\core_template\menu_nivel_1.php -->
+<!-- DEBUG-VIEW START 44 APPPATH\Views\core_template\menu_nivel_1.php -->
+				<li>
+								<a href="#">
+									<span class="icon"><i class="icon20 i-barcode"></i></span>
+									<span class="txt">VENTAS</span>
+								</a>
+								<ul class="sub">
+										<!-- DEBUG-VIEW START 43 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_sales_report/index">
+											<span class="icon"><i class="icon20 i-stack"></i></span>
+											<span class="txt">REPORTES</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 43 APPPATH\Views\core_template\menu_nivel_2.php -->
+ 
+								</ul>
+				</li>
+<!-- DEBUG-VIEW ENDED 44 APPPATH\Views\core_template\menu_nivel_1.php -->
+<!-- DEBUG-VIEW START 49 APPPATH\Views\core_template\menu_nivel_1.php -->
+				<li>
+								<a href="#">
+									<span class="icon"><i class="icon20 i-calculate"></i></span>
+									<span class="txt">FACTURACION</span>
+								</a>
+								<ul class="sub">
+										<!-- DEBUG-VIEW START 45 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_invoice_dashboards/index">
+											<span class="icon"><i class="icon20 i-dashboard"></i></span>
+											<span class="txt">INICIO</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 45 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 46 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_invoice_price/index">
+											<span class="icon"><i class="icon20 i-coins"></i></span>
+											<span class="txt">PRECIOS</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 46 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 47 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_invoice_billing/index">
+											<span class="icon"><i class="icon20 i-bag-2"></i></span>
+											<span class="txt">FACTURAR</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 47 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 48 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_invoice_report/index">
+											<span class="icon"><i class="icon20 i-stack"></i></span>
+											<span class="txt">REPORTES</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 48 APPPATH\Views\core_template\menu_nivel_2.php -->
+ 
+								</ul>
+				</li>
+<!-- DEBUG-VIEW ENDED 49 APPPATH\Views\core_template\menu_nivel_1.php -->
+<!-- DEBUG-VIEW START 56 APPPATH\Views\core_template\menu_nivel_1.php -->
+				<li>
+								<a href="#">
+									<span class="icon"><i class="icon20 i-undo-2"></i></span>
+									<span class="txt">CXC</span>
+								</a>
+								<ul class="sub">
+										<!-- DEBUG-VIEW START 50 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_cxc_customer/index">
+											<span class="icon"><i class="icon20 i-address-book"></i></span>
+											<span class="txt">CLIENTES</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 50 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 51 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_cxc_creditline/index">
+											<span class="icon"><i class="icon20 i-rating"></i></span>
+											<span class="txt">LINEA D. CREDITO</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 51 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 52 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_cxc_report/index">
+											<span class="icon"><i class="icon20 i-stack"></i></span>
+											<span class="txt">REPORTES</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 52 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 53 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_cxc_simulation/index">
+											<span class="icon"><i class="icon20 i-spinner"></i></span>
+											<span class="txt">SIMULADOR</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 53 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 54 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_cxc_record/index">
+											<span class="icon"><i class="icon20 i-library-2"></i></span>
+											<span class="txt">BURO CREDITO</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 54 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 55 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_cxc_process/index">
+											<span class="icon"><i class="icon20 i-hammer"></i></span>
+											<span class="txt">PROCESOS</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 55 APPPATH\Views\core_template\menu_nivel_2.php -->
+ 
+								</ul>
+				</li>
+<!-- DEBUG-VIEW ENDED 56 APPPATH\Views\core_template\menu_nivel_1.php -->
+<!-- DEBUG-VIEW START 59 APPPATH\Views\core_template\menu_nivel_1.php -->
+				<li>
+								<a href="#">
+									<span class="icon"><i class="icon20 i-redo-2"></i></span>
+									<span class="txt">CXP</span>
+								</a>
+								<ul class="sub">
+										<!-- DEBUG-VIEW START 57 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_cxp_provider/index">
+											<span class="icon"><i class="icon20 i-bus"></i></span>
+											<span class="txt">PROVEEDORES</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 57 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 58 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_cxp_report/index">
+											<span class="icon"><i class="icon20 i-stack"></i></span>
+											<span class="txt">REPORTES</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 58 APPPATH\Views\core_template\menu_nivel_2.php -->
+ 
+								</ul>
+				</li>
+<!-- DEBUG-VIEW ENDED 59 APPPATH\Views\core_template\menu_nivel_1.php -->
+<!-- DEBUG-VIEW START 61 APPPATH\Views\core_template\menu_nivel_1.php -->
+				<li>
+								<a href="#">
+									<span class="icon"><i class="icon20 i-users-4"></i></span>
+									<span class="txt">RRHH</span>
+								</a>
+								<ul class="sub">
+										<!-- DEBUG-VIEW START 60 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_rrhh_employee/index">
+											<span class="icon"><i class="icon20 i-vcard"></i></span>
+											<span class="txt">COLABORADORES</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 60 APPPATH\Views\core_template\menu_nivel_2.php -->
+ 
+								</ul>
+				</li>
+<!-- DEBUG-VIEW ENDED 61 APPPATH\Views\core_template\menu_nivel_1.php -->
+<!-- DEBUG-VIEW START 64 APPPATH\Views\core_template\menu_nivel_1.php -->
+				<li>
+								<a href="#">
+									<span class="icon"><i class="icon20 i-users-5"></i></span>
+									<span class="txt">PLANILLA</span>
+								</a>
+								<ul class="sub">
+										<!-- DEBUG-VIEW START 62 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_planilla_employee_pay/index">
+											<span class="icon"><i class="icon20 i-cone"></i></span>
+											<span class="txt">P. PLANILLA</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 62 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 63 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_planilla_adelantos/index">
+											<span class="icon"><i class="icon20 i-clock-5"></i></span>
+											<span class="txt">ADELANTOS</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 63 APPPATH\Views\core_template\menu_nivel_2.php -->
+ 
+								</ul>
+				</li>
+<!-- DEBUG-VIEW ENDED 64 APPPATH\Views\core_template\menu_nivel_1.php -->
+<!-- DEBUG-VIEW START 65 APPPATH\Views\core_template\menu_nivel_1.php -->
+				<li>
+								<a href="#">
+									<span class="icon"><i class="icon20 i-library-2"></i></span>
+									<span class="txt">BANCO</span>
+								</a>
+								<ul class="sub">
+										 
+								</ul>
+				</li>
+<!-- DEBUG-VIEW ENDED 65 APPPATH\Views\core_template\menu_nivel_1.php -->
+<!-- DEBUG-VIEW START 67 APPPATH\Views\core_template\menu_nivel_1.php -->
+				<li>
+								<a href="#">
+									<span class="icon"><i class="icon20 i-factory"></i></span>
+									<span class="txt">ACTIVOS FIJOS</span>
+								</a>
+								<ul class="sub">
+										<!-- DEBUG-VIEW START 66 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_afx_fixedassent/index">
+											<span class="icon"><i class="icon20 i-car"></i></span>
+											<span class="txt">ACTIVOS F.</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 66 APPPATH\Views\core_template\menu_nivel_2.php -->
+ 
+								</ul>
+				</li>
+<!-- DEBUG-VIEW ENDED 67 APPPATH\Views\core_template\menu_nivel_1.php -->
+<!-- DEBUG-VIEW START 75 APPPATH\Views\core_template\menu_nivel_1.php -->
+				<li>
+								<a href="#">
+									<span class="icon"><i class="icon20 i-box"></i></span>
+									<span class="txt">CAJA</span>
+								</a>
+								<ul class="sub">
+										<!-- DEBUG-VIEW START 68 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_box_share/index">
+											<span class="icon"><i class="icon20 i-tag-4"></i></span>
+											<span class="txt">ABONO</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 68 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 69 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_box_canceldocument/index">
+											<span class="icon"><i class="icon20 i-ticket"></i></span>
+											<span class="txt">CANC FAC</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 69 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 70 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_box_sharecapital/index">
+											<span class="icon"><i class="icon20 i-storage-2"></i></span>
+											<span class="txt">ABONO CAP</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 70 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 71 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_box_report/index">
+											<span class="icon"><i class="icon20 i-stack"></i></span>
+											<span class="txt">REPORTES</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 71 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 72 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_box_provisioned/index">
+											<span class="icon"><i class="icon20 i-folder-3"></i></span>
+											<span class="txt">PROVISION</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 72 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 73 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_box_inputcash/index">
+											<span class="icon"><i class="icon20 i-tag-4"></i></span>
+											<span class="txt">ING A CAJA</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 73 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 74 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_box_outcash/index">
+											<span class="icon"><i class="icon20 i-tag-4"></i></span>
+											<span class="txt">EGS A CAJA</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 74 APPPATH\Views\core_template\menu_nivel_2.php -->
+ 
+								</ul>
+				</li>
+<!-- DEBUG-VIEW ENDED 75 APPPATH\Views\core_template\menu_nivel_1.php -->
+<!-- DEBUG-VIEW START 78 APPPATH\Views\core_template\menu_nivel_1.php -->
+				<li>
+								<a href="#">
+									<span class="icon"><i class="icon20 i-podcast"></i></span>
+									<span class="txt">COBRANZA</span>
+								</a>
+								<ul class="sub">
+										<!-- DEBUG-VIEW START 76 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_collection_manager/index">
+											<span class="icon"><i class="icon20 i-pawn"></i></span>
+											<span class="txt">GESTORES</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 76 APPPATH\Views\core_template\menu_nivel_2.php -->
+<!-- DEBUG-VIEW START 77 APPPATH\Views\core_template\menu_nivel_2.php -->
+						<li>
+										<a href="http://localhost/posmev4/app_collection_report/index">
+											<span class="icon"><i class="icon20 i-stack"></i></span>
+											<span class="txt">REPORTES</span>
+										</a>
+						</li>
+<!-- DEBUG-VIEW ENDED 77 APPPATH\Views\core_template\menu_nivel_2.php -->
+ 
+								</ul>
+				</li>
+<!-- DEBUG-VIEW ENDED 78 APPPATH\Views\core_template\menu_nivel_1.php -->
+";showMessage|b:0;
