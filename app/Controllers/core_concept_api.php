@@ -58,5 +58,42 @@ class core_concept_api extends _BaseController {
 		}
 	}
 	
+	function getConceptAllProduct(){
+		try{  
+		
+		
+			
+			//Validar Authentication
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get(); 
+		
+			$objComponent		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponent)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+		
+			$viewname 					= "LIST_CONCEPT_ITEMS";
+			$parameter["{companyID}"]	= $this->session->get('user')->companyID;
+			$dataViewData				= $this->core_web_view->getViewByName(	
+												$this->session->get('user'),
+												$objComponent->componentID,
+												$viewname,
+												CALLERID_SEARCH,null,$parameter
+										  );
+			
+			//Obtener Resultados.			
+			return $this->response->setJSON(array(
+				'error'   => false,
+				'message' => SUCCESS,			
+				'objGridView'	 => $dataViewData["view_data"]
+			));//--finjson			
+			
+		}
+		catch(\Exception $ex){
+			echo $ex->getMessage();
+		}
+	}
+	
+	
 }
 ?>

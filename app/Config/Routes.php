@@ -740,6 +740,8 @@ $routes->match(['get','post'],'app_invoice_api/getTransactionMaster','app_invoic
 $routes->match(['get','post'],'app_invoice_api/getTransactionMaster/(:any)','app_invoice_api::getTransactionMaster');
 $routes->match(['get','post'],'app_invoice_api/getLastMovement','app_invoice_api::getLastMovement');
 $routes->match(['get','post'],'app_invoice_api/getLastMovement/(:any)','app_invoice_api::getLastMovement');
+$routes->match(['get','post'],'app_invoice_api/getLineByCustomerAll','app_invoice_api::getLineByCustomerAll');
+$routes->match(['get','post'],'app_invoice_api/getLineByCustomerAll/(:any)','app_invoice_api::getLineByCustomerAll');
 $routes->match(['get','post'],'app_invoice_billing/edit','app_invoice_billing::edit');
 $routes->match(['get','post'],'app_invoice_billing/edit/(:any)','app_invoice_billing::edit');
 $routes->match(['get','post'],'app_invoice_billing/editv2','app_invoice_billing::editv2');
@@ -983,6 +985,8 @@ $routes->match(['get','post'],'core_acount/paymentBack','core_acount::paymentBac
 $routes->match(['get','post'],'core_acount/paymentBack/(:any)','core_acount::paymentBack');
 $routes->match(['get','post'],'core_concept_api/index','core_concept_api::index');
 $routes->match(['get','post'],'core_concept_api/index/(:any)','core_concept_api::index');
+$routes->match(['get','post'],'core_concept_api/getConceptAllProduct','core_concept_api::getConceptAllProduct');
+$routes->match(['get','post'],'core_concept_api/getConceptAllProduct/(:any)','core_concept_api::getConceptAllProduct');
 $routes->match(['get','post'],'core_testunitary/index','core_testunitary::index');
 $routes->match(['get','post'],'core_elfinder/index','core_elfinder::index');
 $routes->match(['get','post'],'core_elfinder/index/(:any)','core_elfinder::index');

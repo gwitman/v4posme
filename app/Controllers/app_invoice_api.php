@@ -335,6 +335,66 @@ class app_invoice_api extends _BaseController {
 		}
 		
 	}
+	function getLineByCustomerAll()
+	{
+		try{ 
+			
+			//AUTENTICACION
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();			
+			
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+				$permited = false;
+				$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				
+				if(!$permited)
+				throw new \Exception(NOT_ACCESS_CONTROL." ".get_class($this));		
+			}			
+			
+		
+			
+			//Obtener Parametros			
+			$companyID 		= $dataSession["user"]->companyID;
+			$branchID 		= $dataSession["user"]->branchID;
+			
+			//Obtener tasa de cambio
+			date_default_timezone_set(APP_TIMEZONE); 
+			$objCurrencyDolares						= $this->core_web_currency->getCurrencyExternal($companyID);
+			$objCurrencyCordoba						= $this->core_web_currency->getCurrencyDefault($companyID);
+			$dateOn 								= date("Y-m-d");
+			$dateOn 								= date_format(date_create($dateOn),"Y-m-d");
+			$exchangeRate 							= $this->core_web_currency->getRatio($companyID,$dateOn,1,$objCurrencyDolares->currencyID,$objCurrencyCordoba->currencyID);
+			$parameterCausalTypeCredit 				= $this->core_web_parameter->getParameter("INVOICE_BILLING_CREDIT",$companyID);
+			
+			
+			//Obtener Lineas de Credito
+			$objListCustomerCreditLine 				= $this->Customer_Credit_Line_Model->get_rowByBranchID($companyID,$branchID);
+			
+			
+			//Obtener Resultados.			
+			return $this->response->setJSON(array(
+				'error'   => false,
+				'message' => SUCCESS,							
+				'objListCustomerCreditLine'	  		=> $objListCustomerCreditLine,
+				'objExchangeRate'					=> $exchangeRate,
+				'objCausalTypeCredit'				=> $parameterCausalTypeCredit,
+				'objCurrencyDolares' 				=> $objCurrencyDolares,
+				'objCurrencyCordoba' 				=> $objCurrencyCordoba				
+			));//--finjson			
+			
+		}
+		catch(\Exception $ex){
+			
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));//--finjson			
+			
+			
+		}
+	}
 	function getLineByCustomer(){
 		try{ 
 			

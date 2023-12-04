@@ -22,6 +22,8 @@
 	var objListaProductos2					= {};
 	var objListaProductos3					= {};
 	var objListaProductosSku				= {};
+	var objListaItemConcept					= {};
+	var objListaCustomerCreditLine			= {};
 	var scrollPosition						= 0;
 	var warehouseID 						= $("#txtWarehouseID").val();
 	var isAdmin								= '<?php echo $isAdmin; ?>';
@@ -121,13 +123,19 @@
 	var objListaProductosStoreSku	= localStorage.getItem("objListaProductosSku");		
 	objListaProductosSku 			= JSON.parse(objListaProductosStoreSku);	
 
-
+	var objListaStoreItemConcept	= localStorage.getItem("objListaItemConcept");		
+	objListaItemConcept 			= JSON.parse(objListaStoreItemConcept);	
+	
+	var objListaStoreCustomerCreditLine	= localStorage.getItem("objListaCustomerCreditLine");		
+	objListaCustomerCreditLine 			= JSON.parse(objListaStoreCustomerCreditLine);	
 	
 	if(objListaProductosStore == null ){		
 		fnObtenerListadoProductos();
 		fnObtenerListadoProductos2();
 		fnObtenerListadoProductos3();
 		fnObtenerListadoProdcutosSku();
+		fnObtenerListadoItemConcept();
+		fnObtenerListadoCustomerCreditLine();
 		fnGetCustomerClient(<?php echo $objTransactionMaster->entityID; ?>);		
 		setTimeout( function() { onCompletePantalla(); }, 3000);
 	}
@@ -1302,6 +1310,8 @@
 			setTimeout( function() { fnObtenerListadoProductos2(); }, 0);			
 			setTimeout( function() { fnObtenerListadoProductos3(); }, 0);			
 			setTimeout( function() { fnObtenerListadoProdcutosSku(); }, 0);	
+			setTimeout( function() { fnObtenerListadoItemConcept(); }, 0);	
+			setTimeout( function() { fnObtenerListadoCustomerCreditLine(); }, 0);	
 			
 			setTimeout( function() { 		
 				
@@ -1342,6 +1352,8 @@
 			setTimeout( function() { fnObtenerListadoProductos2(); }, 10);			
 			setTimeout( function() { fnObtenerListadoProductos3(); }, 10);		
 			setTimeout( function() { fnObtenerListadoProdcutosSku(); }, 10);	
+			setTimeout( function() { fnObtenerListadoItemConcept(); }, 10);	
+			setTimeout( function() { fnObtenerListadoCustomerCreditLine(); }, 10);	
 			setTimeout( function() { fnWaitClose(); }, 3000);
 		});
 		$(document).on("click","#btnSearchCustomerNew",function(){
@@ -1928,36 +1940,51 @@
 		return result;
 	}
 	function fnGetConcept(conceptItemID,nameConcept){
-		fnWaitOpen();
-		$.ajax({									
-			cache       : false,
-			dataType    : 'json',
-			type        : 'POST',
-			url  		: "<?php echo base_url(); ?>/core_concept_api/index",
-			data 		: {companyID : <?php echo $companyID;?>, componentID : <?php echo $objComponentItem->componentID;?>, componentItemID : conceptItemID, name : nameConcept  },
-			success:function(data){
-				console.info("complete concept success");
-				fnWaitClose();
-				if(data.error){
-					fnShowNotification(data.message,"error");
-					fnRecalculateDetail(true,"");		
-					return;
-				}								
-				
-				if(data.data != null){
-					var x_		= jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[2] == data.data.componentItemID;}).select();									
-					var objind_ = fnGetPosition(x_,objTableDetail.fnGetData());
-					objTableDetail.fnUpdate( fnFormatNumber(data.data.valueOut,2), objind_, 9 );
-				}
-				fnRecalculateDetail(true,"");		
-			},
-			error:function(xhr,data){	
-				console.info("complete concept error");									
-				fnWaitClose();
-				fnShowNotification("Error 505","error");
-				fnRecalculateDetail(true,"");		
-			}
-		});								
+		
+		//Recalcula el concepto via AJAX 2023-12-04. Fin
+		//fnWaitOpen();
+		//$.ajax({									
+		//	cache       : false,
+		//	dataType    : 'json',
+		//	type        : 'POST',
+		//	url  		: "<?php echo base_url(); ?>/core_concept_api/index",
+		//	data 		: {companyID : <?php echo $companyID;?>, componentID : <?php echo $objComponentItem->componentID;?>, componentItemID : conceptItemID, name : nameConcept  },
+		//	success:function(data){
+		//		console.info("complete concept success");
+		//		fnWaitClose();
+		//		if(data.error){
+		//			fnShowNotification(data.message,"error");
+		//			fnRecalculateDetail(true,"");		
+		//			return;
+		//		}								
+		//		
+		//		if(data.data != null){
+		//			var x_		= jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[2] == data.data.componentItemID;}).select();									
+		//			var objind_ = fnGetPosition(x_,objTableDetail.fnGetData());
+		//			objTableDetail.fnUpdate( fnFormatNumber(data.data.valueOut,2), objind_, 9 );
+		//		}
+		//		fnRecalculateDetail(true,"");		
+		//	},
+		//	error:function(xhr,data){	
+		//		console.info("complete concept error");									
+		//		fnWaitClose();
+		//		fnShowNotification("Error 505","error");
+		//		fnRecalculateDetail(true,"");		
+		//	}
+		//});
+		
+		//Recalculoa el concepto via AJAX 2023-12-05 Inicio		
+		var x_			= jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[2] == conceptItemID ;}).select();									
+		var objind_ 	= fnGetPosition(x_,objTableDetail.fnGetData());
+		var objConcepto = jLinq.from(objListaItemConcept).where( function(obj){ return obj.componentItemID == conceptItemID; }).select();
+		
+		if( objConcepto.length > 0 )
+		{
+			objTableDetail.fnUpdate( fnFormatNumber(objConcepto[0].valueOut,2), objind_, 9 );
+			fnRecalculateDetail(true,"");
+		}
+		
+		
 	}
 	
 	
@@ -2098,6 +2125,27 @@
 		localStorage.setItem("objListaProductosSku",JSON.stringify(objListaProductosSku));
 	
 	}
+	
+	
+	function fnFillListaItemConcept(data)
+	{		
+		console.info("complete success data");
+		objListaItemConcept						= data.objGridView;
+		var objListaStoreItemConcept 			= localStorage.getItem("objListaItemConcept");		
+		localStorage.setItem("objListaItemConcept",JSON.stringify(objListaItemConcept));
+	
+	}
+	
+	function fnFillListaCreditLine(data)
+	{		
+		console.info("complete success data");
+		objListaCustomerCreditLine					= data;
+		var objListaStoreCustomerCreditLine 		= localStorage.getItem("objListaCustomerCreditLine");		
+		localStorage.setItem("objListaCustomerCreditLine",JSON.stringify(objListaCustomerCreditLine));
+	
+	}
+	
+	
 
 	
 	function fnCompleteGetCustomerCreditLine (data)
@@ -2268,6 +2316,46 @@
 			type        : 'GET',
 			url  		: "<?php echo base_url(); ?>/app_invoice_api/getViewApi/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_SKU",
 			success		: fnFillListaProductosSku,
+			error:function(xhr,data)
+			{	
+				console.info("complete data error");	
+				fnShowNotification("Error 505","error");
+			}
+		});
+		
+		
+		return resultAjax2;
+	}
+	
+	async function fnObtenerListadoItemConcept(){	
+
+		const resultAjax2 = await $.ajax(
+		{									
+			cache       : false,
+			dataType    : 'json',
+			type        : 'GET',
+			url  		: "<?php echo base_url(); ?>/core_concept_api/getConceptAllProduct",
+			success		: fnFillListaItemConcept,
+			error:function(xhr,data)
+			{	
+				console.info("complete data error");	
+				fnShowNotification("Error 505","error");
+			}
+		});
+		
+		
+		return resultAjax2;
+	}
+	
+	async function fnObtenerListadoCustomerCreditLine(){	
+
+		const resultAjax2 = await $.ajax(
+		{									
+			cache       : false,
+			dataType    : 'json',
+			type        : 'GET',
+			url  		: "<?php echo base_url(); ?>/app_invoice_api/getLineByCustomerAll",
+			success		: fnFillListaCreditLine,
 			error:function(xhr,data)
 			{	
 				console.info("complete data error");	
