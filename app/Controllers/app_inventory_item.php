@@ -328,6 +328,9 @@ class app_inventory_item extends _BaseController {
 					$objItem["familyID"] 					= /*inicio get post*/ $this->request->getPost("txtFamilyID");
 					$objItem["itemNumber"] 					= $this->core_web_counter->goNextNumber($companyID,$branchID,"tb_item",0);
 					$objItem["barCode"] 					= /*inicio get post*/ $this->request->getPost("txtBarCode") == "" ? "B".$objItem["itemNumber"].""  : /*inicio get post*/ $this->request->getPost("txtBarCode");					
+					$objItem["barCode"]						= str_replace(PHP_EOL,",",ltrim(rtrim($objItem["barCode"])));
+					$objItem["barCode"]						= str_replace(",,",",",$objItem["barCode"]);
+					$objItem["barCode"]						= str_replace(["\n\r", "\n", "\r"],"",$objItem["barCode"]);					 
 					$objItemValidBarCode 					= $this->Item_Model->get_rowByCodeBarra($companyID , $objItem["barCode"]  );
 					
 					if($objItemValidBarCode)
@@ -528,7 +531,11 @@ class app_inventory_item extends _BaseController {
 					$pathFileCodeBarra = PATH_FILE_OF_APP."/company_".$companyID.
 					"/component_".$objComponent->componentID."/component_item_".$itemID."/barcode.jpg";
 					
-					$this->core_web_barcode->generate( $pathFileCodeBarra, $objItem["barCode"], "80", "horizontal", "code128", false, 1 );					
+					if(	strpos($objItem["barCode"],",") > 0  ){
+					}
+					else{
+						$this->core_web_barcode->generate( $pathFileCodeBarra, $objItem["barCode"], "80", "horizontal", "code128", false, 1 );					
+					}
 					
 					
 					//Fin				
@@ -545,11 +552,27 @@ class app_inventory_item extends _BaseController {
 						$costo 		= /*inicio get post*/ $this->request->getPost("txtCost");
 						$precio     = $arrayListPrecioValue[0];
 						
-						$cache->save(
-							'app_inventory_item_add_producto_al_detalle_compra', 
-							"0|".$itemID."|".$costo."|".$precio."|0|0|".$objItem["itemNumber"]."|".$objItem["name"]."|". $dataView["objUnitMeasure"] ."|".$cantidad."|".$objItem["barCode"]."|add_cantidad", 
-							TIME_CACHE_APP
-						);
+						
+						if(	strpos($objItem["barCode"],",") > 0  )
+						{
+							
+							$barCodeParse = explode(",",$objItem["barCode"]);
+							$barCodeParse = $barCodeParse[0];
+							$cache->save(
+								'app_inventory_item_add_producto_al_detalle_compra', 
+								"0|".$itemID."|".$costo."|".$precio."|0|0|".$objItem["itemNumber"]."|".$objItem["name"]."|". $dataView["objUnitMeasure"] ."|".$cantidad."|".  $barCodeParse  ."|add_cantidad", 
+								TIME_CACHE_APP
+							);
+						}
+						else{
+							$cache->save(
+								'app_inventory_item_add_producto_al_detalle_compra', 
+								"0|".$itemID."|".$costo."|".$precio."|0|0|".$objItem["itemNumber"]."|".$objItem["name"]."|". $dataView["objUnitMeasure"] ."|".$cantidad."|".$objItem["barCode"]."|add_cantidad", 
+								TIME_CACHE_APP
+							);
+						}
+						
+						
 						
 						$this->response->redirect(base_url()."/".'app_inventory_item/add/callback/'.$callback.'/comando/'.$comando);	
 					}
@@ -605,7 +628,10 @@ class app_inventory_item extends _BaseController {
 						//Actualizar Cuenta								
 						$objNewItem["inventoryCategoryID"] 			= /*inicio get post*/ $this->request->getPost("txtInventoryCategoryID");
 						$objNewItem["familyID"] 					= /*inicio get post*/ $this->request->getPost("txtFamilyID");												
-						$objNewItem["barCode"] 						= /*inicio get post*/ $this->request->getPost("txtBarCode") == "" ? "B".$objOldItem->itemNumber  : /*inicio get post*/ $this->request->getPost("txtBarCode");
+						$objNewItem["barCode"] 						= /*inicio get post*/ $this->request->getPost("txtBarCode") == "" ? "B".$objOldItem->itemNumber  : /*inicio get post*/ $this->request->getPost("txtBarCode");						
+						$objNewItem["barCode"]						= str_replace(PHP_EOL,",",ltrim(rtrim($objNewItem["barCode"])));
+						$objNewItem["barCode"]						= str_replace(",,",",",$objNewItem["barCode"]);		
+						$objNewItem["barCode"]						= str_replace(["\n\r", "\n", "\r"],"",$objNewItem["barCode"]);
 						$objNewItem["name"] 						= /*inicio get post*/ rtrim(ltrim(str_replace("\\","",str_replace("'", "", $this->request->getPost("txtName") ))));  
 						$objNewItem["name"]							= str_replace('"',"",$objNewItem["name"]);
 						$objNewItem["description"] 					= /*inicio get post*/ $this->request->getPost("txtDescription");
@@ -759,8 +785,13 @@ class app_inventory_item extends _BaseController {
 					$pathFileCodeBarra = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$itemID."/barcode.jpg";
 					
 					
+						
+					if(	strpos($objNewItem["barCode"],",") > 0  ){
+					}
+					else{
+						$this->core_web_barcode->generate( $pathFileCodeBarra, $objNewItem["barCode"], "40", "horizontal", "code128", false, 3 );					
+					}
 					
-					$this->core_web_barcode->generate( $pathFileCodeBarra, $objNewItem["barCode"], "40", "horizontal", "code128", false, 3 );
 					
 					
 					
@@ -779,7 +810,18 @@ class app_inventory_item extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-			exit($ex->getMessage());
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+		    
+		    
+		    
+		    return $resultView;
+			
 		}		
 			
 	}

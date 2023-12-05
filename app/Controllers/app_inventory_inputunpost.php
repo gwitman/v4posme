@@ -895,7 +895,7 @@ class app_inventory_inputunpost extends _BaseController {
 					$objTMD["lote"]							= $lote;
 					$objTMD["expirationDate"]				= $vencimiento == "" ? NULL:  $vencimiento;
 					$objTMD["reference3"]					= ltrim(rtrim($unitaryPrice2))."|".ltrim(rtrim($unitaryPrice3));
-					$objTMD["reference4"]					= $barCodeExtende;
+					$objTMD["reference4"]					= str_replace(",,",",", str_replace(PHP_EOL,",",  ltrim(rtrim($barCodeExtende)) ));
 					$objTMD["catalogStatusID"]				= 0;
 					$objTMD["inventoryStatusID"]			= 0;
 					$objTMD["isActive"]						= 1;
@@ -1289,7 +1289,7 @@ class app_inventory_inputunpost extends _BaseController {
 							if(strpos($objItem->barCode,$barCodeExtende) === false)
 							{
 								$dataNewItem 			= null;
-								$dataNewItem["barCode"] = $objItem->barCode.",".$barCodeExtende;
+								$dataNewItem["barCode"] = $objItem->barCode.",". str_replace(",,",",", str_replace(PHP_EOL,",",  ltrim(rtrim($barCodeExtende)) )) 	;
 								$this->Item_Model->update_app_posme($objItem->companyID,$objItem->itemID,$dataNewItem);
 							}
 						}
@@ -1360,7 +1360,7 @@ class app_inventory_inputunpost extends _BaseController {
 							$objTMD["lote"]							= $lote;
 							$objTMD["expirationDate"]				= $vencimiento == "" ? NULL:  $vencimiento;
 							$objTMD["reference3"]					= $unitaryPrice2."|".$unitaryPrice3;
-							$objTMD["reference4"]					= $barCodeExtende; //expacion de codigo
+							$objTMD["reference4"]					= str_replace(",,",",", str_replace(PHP_EOL,",",  ltrim(rtrim($barCodeExtende)) ));
 							$objTMD["catalogStatusID"]				= 0;
 							$objTMD["inventoryStatusID"]			= 0;
 							$objTMD["isActive"]						= 1;
@@ -1381,7 +1381,7 @@ class app_inventory_inputunpost extends _BaseController {
 							$objTMDNew["unitaryPrice"]					= $unitaryPrice;
 							$objTMDNew["amount"] 						= $cost * $quantity;
 							$objTMDNew["reference3"]					= $unitaryPrice2."|".$unitaryPrice3;
-							$objTMDNew["reference4"]					= $barCodeExtende;//valores para exandir codigo de barra
+							$objTMDNew["reference4"]					= str_replace(",,",",", str_replace(PHP_EOL,",",  ltrim(rtrim($barCodeExtende)) ));
 							
 							
 							$objTMDNew["unitaryAmount"]					= $unitaryPrice;
