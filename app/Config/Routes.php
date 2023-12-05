@@ -782,6 +782,8 @@ $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNorm
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mm/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mm');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmGlobalPro','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmGlobalPro');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmGlobalPro/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmGlobalPro');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmBpn','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmBpn');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmBpn/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmBpn');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Axceso','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1Axceso');

@@ -49,6 +49,14 @@ function getBehavio($type_company,$key_controller,$key_element)
 		",
 		
 		/*GlobalPro*/
+		strtolower('globalpro_comand_traducir_Conceptos')			 				=> "IVA",
+		strtolower('globalpro_comand_traducir_PUBLICO')			 					=> "PRECIO OFERTA",
+		strtolower('globalpro_comand_traducir_POR MAYOR')			 				=> "REGULAR",
+		strtolower('globalpro_comand_traducir_CREDITO')			 					=> "POR MAYOR",
+		strtolower('globalpro_comand_traducir_CREDITO POR MAYOR')			 		=> "LIQUIDACION",
+		strtolower('globalpro_comand_traducir_ESPECIAL')			 				=> "ESPECIAL",
+		
+		
 		strtolower('globalpro_default_masterpage_backgroundImage')			 		=> "style='background-image: url(".  base_url()."/resource/img/logos/fondo_globalpro.jpg"   .");'",
 		
 		strtolower('globalpro_core_dashboards_divPanelCuadroMembresia')				=> "hidden",
@@ -164,18 +172,34 @@ function getBehavio($type_company,$key_controller,$key_element)
 	
 	if($key_controller != "comand_traducir")
 	{
+		//comportamiento
+		//buscar comportamiento de la empresa
 		$key = strtolower($type_company)."_".strtolower($key_controller)."_".strtolower($key_element);
 		if(!array_key_exists( $key, $divs) )
 		{
-			return "";
+			
+			//buscar comportamiento de la empresa
+			$key = strtolower("default")."_".strtolower($key_controller)."_".strtolower($key_element);
+			if(!array_key_exists( $key, $divs) )
+			{	
+				return "";
+			}
+			else 
+			{
+				return $divs[$key];
+			}
+			
 		}
 		else 
 		{
 			return $divs[$key];
 		}
+		
 	}
 	else 
 	{
+		//lenguaje
+		//buscar traduccion de la empresa
 		$key = strtolower($type_company)."_".strtolower($key_controller)."_".strtolower($key_element);
 		if(!array_key_exists( $key, $divs) )
 		{

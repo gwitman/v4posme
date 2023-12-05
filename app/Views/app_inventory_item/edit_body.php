@@ -45,7 +45,11 @@
 					<li><a href="#profile" data-toggle="tab">Referencias</a></li>
 					<li><a href="#warehouse" data-toggle="tab">Bodegas</a></li>
 					<li><a href="#provider" data-toggle="tab">Proveedores</a></li>
-					<li><a href="#concepts" data-toggle="tab"><?php echo lang('Posme.'.strtoupper($company->type).'_'.'Conceptos'); ?></a></li>
+					<li>
+						<a href="#concepts" data-toggle="tab">						
+						<?php echo getBehavio($company->type,"comand_traducir","Conceptos"); ?> 
+						</a>
+					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas<b class="caret"></b></a>
 						<ul class="dropdown-menu">
@@ -530,8 +534,8 @@
 												<tr class="row_price">
 													<td>
 														<input type="hidden" class="txtDetailListPriceID" name="txtDetailListPriceID[]" value="<?php echo $ws->listPriceID; ?>"></input>
-														<input type="hidden" class="txtDetailTypePriceID" name="txtDetailTypePriceID[]" value="<?php echo $ws->typePriceID; ?>"></input>
-														<?php echo lang('Posme.'.strtoupper($company->type).'_'.$ws->nameTypePrice); ?>
+														<input type="hidden" class="txtDetailTypePriceID" name="txtDetailTypePriceID[]" value="<?php echo $ws->typePriceID; ?>"></input>														
+														<?php echo getBehavio($company->type,"comand_traducir",$ws->nameTypePrice); ?> 
 													</td>																		
 													<td>
 														<input class="form-control"  type="text" id="txtDetailTypePriceValue" name="txtDetailTypePriceValue[]" value="<?php echo $ws->price; ?>">

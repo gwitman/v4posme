@@ -17,9 +17,7 @@
 				 
 				<div id="heading" class="page-header">
 							<h1><i class="icon20 i-dashboard"></i> 
-								Dashboard
-								<?php //echo getBehavio($company->type,"core_account","idtest"); ?> 
-								<?php //echo lang('Posme.'.strtoupper($company->type).'_'.'CLIENTE'); ?> 
+								Dashboard								
 							</h1>
 				</div>
 				

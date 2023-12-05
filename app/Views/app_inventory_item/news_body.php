@@ -527,7 +527,7 @@
 																		<td>
 																			<input type="hidden" class="txtDetailListPriceID" name="txtDetailListPriceID[]" value="<?php echo $objParameterListPreiceDefault; ?>"></input>
 																			<input type="hidden" class="txtDetailTypePriceID" name="txtDetailTypePriceID[]" value="<?php echo $ws->catalogItemID; ?>"></input>																			
-																			<?php echo lang('Posme.'.strtoupper($company->type).'_'.$ws->name); ?>
+																			<?php echo getBehavio($company->type,"comand_traducir",$ws->name); ?> 
 																		</td>																		
 																		<td>
 																			<input class="form-control"  type="text" id="txtDetailTypePriceValue" name="txtDetailTypePriceValue[]" value="0">

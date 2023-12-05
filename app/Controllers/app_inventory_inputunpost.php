@@ -867,8 +867,8 @@ class app_inventory_inputunpost extends _BaseController {
 				{	
 					$itemID 								= $value;
 					$objItem 								= $this->Item_Model->get_rowByPK($objTM["companyID"],$value);
-					$quantity 								= helper_StringToNumber($arrayListQuantity[$key]);
-					$cost 									= helper_StringToNumber($arrayListCost[$key]);
+					$quantity 								= helper_StringToNumber(ltrim(rtrim($arrayListQuantity[$key])));
+					$cost 									= helper_StringToNumber(ltrim(rtrim($arrayListCost[$key])));
 					$barCodeExtende 						= $arrayReference4TransactionMasterDetail[$key];
 					
 					$lote 									= $arrayListLote[$key];
@@ -886,15 +886,15 @@ class app_inventory_inputunpost extends _BaseController {
 					$objTMD["unitaryCost"]					= $cost;
 					$objTMD["cost"] 						= $objTMD["quantity"] * $objTMD["unitaryCost"];
 					
-					$objTMD["unitaryAmount"]				= $unitaryPrice;
+					$objTMD["unitaryAmount"]				= ltrim(rtrim($unitaryPrice));
 					$objTMD["amount"] 						= 0;										
 					$objTMD["discount"]						= 0;
-					$objTMD["unitaryPrice"]					= $unitaryPrice;
+					$objTMD["unitaryPrice"]					= ltrim(rtrim($unitaryPrice));
 					$objTMD["promotionID"] 					= 0;
 					
 					$objTMD["lote"]							= $lote;
 					$objTMD["expirationDate"]				= $vencimiento == "" ? NULL:  $vencimiento;
-					$objTMD["reference3"]					= $unitaryPrice2."|".$unitaryPrice3;
+					$objTMD["reference3"]					= ltrim(rtrim($unitaryPrice2))."|".ltrim(rtrim($unitaryPrice3));
 					$objTMD["reference4"]					= $barCodeExtende;
 					$objTMD["catalogStatusID"]				= 0;
 					$objTMD["inventoryStatusID"]			= 0;
@@ -1124,11 +1124,11 @@ class app_inventory_inputunpost extends _BaseController {
 						$fila++;
 						$codigo 		= $row["Codigo"];
 						$description 	= $row["Nombre"];
-						$cantidad 		= $row["Cantidad"];
-						$costo 			= $row["Costo"];			
+						$cantidad 		= ltrim(rtrim($row["Cantidad"]));
+						$costo 			= ltrim(rtrim($row["Costo"]));			
 						$lote 			= $row["Lote"];
 						$vencimiento	= $row["Vencimiento"];
-						$precio			= $row["Precio"];
+						$precio			= ltrim(rtrim($row["Precio"]));
 						$objItem		= $this->Item_Model->get_rowByCode($companyID,$codigo);	
 						
 						if(!$objItem) {
@@ -1206,8 +1206,8 @@ class app_inventory_inputunpost extends _BaseController {
 							
 						$transactionMasterDetailID				= 0;					
 						$itemID 								= $objItem->itemID;
-						$quantity 								= helper_StringToNumber($cantidad);
-						$cost 									= helper_StringToNumber($costo);	
+						$quantity 								= helper_StringToNumber(ltrim(rtrim($cantidad)));
+						$cost 									= helper_StringToNumber(ltrim(rtrim($costo)));	
 						
 						//Ingrear al provedor si no existe. 
 						$objProviderItemModel = $this->Provideritem_Model->getByPK($companyID,$itemID,$objTMNew["entityID"]);						
@@ -1269,13 +1269,13 @@ class app_inventory_inputunpost extends _BaseController {
 						$objItemInactive						= $this->Item_Model->get_rowByPKAndInactive($objTM->companyID,$value);
 						
 						$itemID 								= $value;
-						$quantity 								= helper_StringToNumber($arrayListQuantity[$key]);
-						$cost 									= helper_StringToNumber($arrayListCost[$key]);
+						$quantity 								= helper_StringToNumber(ltrim(rtrim($arrayListQuantity[$key])));
+						$cost 									= helper_StringToNumber(ltrim(rtrim($arrayListCost[$key])));
 						$lote 									= $arrayListLote[$key];
 						$vencimiento							= $arrayListVencimiento[$key];
-						$unitaryPrice 							= $arrayPrice[$key];
-						$unitaryPrice2 							= helper_RequestGetValue($arrayPrice2[$key],0);
-						$unitaryPrice3 							= helper_RequestGetValue($arrayPrice3[$key],0);
+						$unitaryPrice 							= ltrim(rtrim($arrayPrice[$key]));
+						$unitaryPrice2 							= helper_RequestGetValue(ltrim(rtrim($arrayPrice2[$key])),0);
+						$unitaryPrice3 							= helper_RequestGetValue(ltrim(rtrim($arrayPrice3[$key])),0);
 						$barCodeExtende 						= $arrayReference4TransactionMasterDetail[$key];
 						 
 						if(!$objItem && $objItemInactive)
