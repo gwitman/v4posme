@@ -958,4 +958,4 @@ where
 	
 
 /*Base de datos:*/	
-/*BD:	dbzlgsiqodtyx6		dbs559plylajai	*/
+/*BD:	dbs559plylajai	*/

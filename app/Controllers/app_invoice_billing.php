@@ -840,7 +840,7 @@ class app_invoice_billing extends _BaseController {
 					$unitaryCost							= $this->core_web_transaction_master_detail->getCostCustomer($companyID,$itemID,$unitaryCost,$price);
 					
 					//Actualisar nombre 		
-					if($objParameterAll["INVOICE_UPDATENAME_IN_TRANSACTION_ONLY"] == "true")
+					if($objParameterAll["INVOICE_UPDATENAME_IN_TRANSACTION_ONLY"] == "false")
 					{
 						
 						$objItemNew 			= array();
