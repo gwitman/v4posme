@@ -1280,7 +1280,7 @@ class app_inventory_inputunpost extends _BaseController {
 						 
 						if(!$objItem && $objItemInactive)
 						{
-							throw new \Exception("Revisar el producto :" .$objItemInactive->itemNumber. " revisar configuracion no se encuentra en sistema...");
+							throw new \Exception("Revisar el producto :" .$objItemInactive->itemNumber. " bar code (".$objItemInactive->barCode.") revisar configuracion no se encuentra en sistema...");
 						}
 						
 						//Actualizar Codigo de barra
