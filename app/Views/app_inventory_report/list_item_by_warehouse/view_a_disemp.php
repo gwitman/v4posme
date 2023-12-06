@@ -77,7 +77,14 @@
 					<th  style="text-align:left;text-align:left;width:80px;"   colspan="1" class="border">Codigo</th>
 					<th  style="text-align:left;;width:350px;"  colspan="1" class="border">Nombre</th>						
 					<th  style="text-align:left;text-align:left;width:150px;"    colspan="1" class="border">Categoria</th>	
-					<th  style="text-align:right;width:8px;"  colspan="1"   class="border">Cantidad</th>
+					
+					<?php
+						foreach($objListWarehouse as $iele)
+						{
+							echo '<th  style="text-align:right;width:120px;"  colspan="1"   class="border">'.$iele->name.'</th>';
+						}
+					?>
+					
 					<th  style="text-align:left;width:80px;" class="border">Precio 1</th>
 					<th  style="text-align:left;width:80px;" class="border">Precio 2</th>
 					<th  style="text-align:left;width:80px;" class="border">Precio 3</th>						
@@ -88,32 +95,69 @@
 			<tbody>
 				<?php
 				$count 			= 0;
-				$costoTotal		= 0;
-				$precioTotal 	= 0;
-				
-				if($objDetail){
-					$category   = $objDetail[0]["categoryName"];
+				if($objListItem)
+				{
 					
-					foreach($objDetail as $i){
-						$count++;	
-						$costoTotal 	= $costoTotal +  ($i["cost"] * $i["quantity"] );
-						$precioTotal 	= $precioTotal +  ($i["price"] * $i["quantity"] );
+					foreach($objListItem as $ielement){
+						$count++;
 						
+						if(($count % 30) == 0 )
+						{
+							?>
+							<tr style="background-color:#00628e;color:white">
+								<!--812-->
+								<th  style="text-align:left;text-align:left;width:80px;"   colspan="1" class="border">Codigo</th>
+								<th  style="text-align:left;;width:350px;"  colspan="1" class="border">Nombre</th>						
+								<th  style="text-align:left;text-align:left;width:150px;"    colspan="1" class="border">Categoria</th>	
+								
+								<?php
+									foreach($objListWarehouse as $iele)
+									{
+										echo '<th  style="text-align:right;width:120px;"  colspan="1"   class="border">'.$iele->name.'</th>';
+									}
+								?>
+								
+								<th  style="text-align:left;width:80px;" class="border">Precio 1</th>
+								<th  style="text-align:left;width:80px;" class="border">Precio 2</th>
+								<th  style="text-align:left;width:80px;" class="border">Precio 3</th>						
+								
+							</tr>
+							<?php
+						}
 						
+						//obtener prodcuto:
+						$i =  	array_filter($objDetail,function($var) use ($ielement) {
+									if ( $var["itemNumber"] == $ielement)
+										return true;
+								});
+								
+						$i = reset($i);						
 						
 						echo "<tr >";
 							echo "<td style='text-align:left;'  colspan='1'  class='border' >";
-								echo (substr($i["itemNumber"],-15));
+								echo (substr($ielement,-15));
 							echo "</td>";
 							echo "<td style='text-align:left'  colspan='1'  class='border' >";
-								echo ($i["warehouseName"]."----".$i["itemName"]);
+								echo $i["itemName"];
 							echo "</td>";		
 							echo "<td style='text-align:left'  colspan='1' class='border' >";
 								echo ($i["categoryName"]);
 							echo "</td>";	
-							echo "<td style='text-align:right;' colspan='1'  class='border' >";
-								echo number_format($i["quantity"],2,'.',',');
-							echo "</td>";
+							
+							foreach($objListWarehouse as $iele)
+							{
+								$ieleName 	= 	$iele->name;
+								$w			=  	array_filter($objDetail,function($var) use ($ielement,$ieleName) {
+													if ( $var["itemNumber"] == $ielement && $var["warehouseName"] == $ieleName)
+														return true;
+												});								
+								$w 			= reset($w);
+						
+								echo "<td style='text-align:right;' colspan='1'  class='border' >";
+										echo number_format($w["quantity"],2,'.',',');
+								echo "</td>";
+							}
+							
 							echo "<td  style='text-align:right' class='border'>";
 								echo number_format( $i["price"],2,'.',',');
 							echo "</td>";
@@ -122,8 +166,11 @@
 							echo "</td>";
 							echo "<td style='text-align:right' class='border' >";
 								echo (number_format( $i["price3"],2,'.',','));
-							echo "</td>";												
+							echo "</td>";	
+						
+							
 						echo "</tr>";
+						
 						
 					}
 				}
@@ -134,8 +181,13 @@
 					<!--812-->
 					<th  style="text-align:left;text-align:left;"   colspan="1" class="border">Codigo</th>
 					<th  style="text-align:left;"  colspan="1" class="border">Nombre</th>						
-					<th  style="text-align:left;text-align:left;"    colspan="1" class="border">Categoria</th>	
-					<th  style="text-align:right;"  colspan="1"   class="border">Cantidad</th>
+					<th  style="text-align:left;text-align:left;"    colspan="1" class="border">Categoria</th>						
+					<?php
+						foreach($objListWarehouse as $iele)
+						{
+							echo '<th  style="text-align:right;width:120px;"  colspan="1"   class="border">'.$iele->name.'</th>';
+						}
+					?>
 					<th  style="text-align:left;" class="border">Precio 1</th>
 					<th  style="text-align:left;" class="border">Precio 2</th>
 					<th  style="text-align:left;" class="border">Precio 3</th>						

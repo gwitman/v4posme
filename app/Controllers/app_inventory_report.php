@@ -464,6 +464,9 @@ class app_inventory_report extends _BaseController {
 			}
 			else
 			{
+				
+				
+				
 				//Obtener el tipo de Comprobante
 				$companyID 		= $dataSession["user"]->companyID;
 				//Get Component
@@ -480,9 +483,27 @@ class app_inventory_report extends _BaseController {
 				);			
 				
 				if(isset($objData))
-				$objDataResult["objDetail"]					= $objData;
+				{
+					$objDataResult["objDetail"]					= $objData;					
+					$objDataResult["objListItem"] 				= array_unique(array_map(function($elem){
+																	return $elem["itemNumber"];
+																}, $objDataResult["objDetail"] ));
+					
+					
+				
+				}
 				else
-				$objDataResult["objDetail"]					= NULL;
+				{
+					$objDataResult["objDetail"]					= NULL;
+					$objDataResult["objListItem"] 				= NULL;
+				}
+			
+			
+				//Obtener lista de bodegas
+				$objDataResult["objListWarehouse"]			= $this->Warehouse_Model->getByCompany($companyID);
+				
+				
+
 				$objDataResult["objCompany"] 				= $objCompany;
 				$objDataResult["objLogo"] 					= $objParameter;
 				$objDataResult["objParameterTamanoLetra"] 	= $objParameterTamanoLetra;	

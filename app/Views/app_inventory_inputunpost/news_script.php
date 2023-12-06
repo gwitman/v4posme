@@ -55,6 +55,10 @@
 							"sWidth"	: "40%"
 						},
 						{
+							"aTargets"	: [5], //unidad
+							"sWidth"	: "130px"
+						},
+						{
 							"aTargets"	: [ 6 ],//cantidad
 							"mRender"	: function ( data, type, full ) {
 								return '<input type="text" class="col-lg-12 txtDetailQuantity txt-numeric" value="'+data+'" name="txtDetailQuantity[]" />';
@@ -378,12 +382,46 @@
 			for(var i = 0 ; i < objTableDetailTransaction.fnGetData().length ; i++)
 			{
 				var iElement = objTableDetailTransaction.fnGetData()[i];
-				var iElement = parseInt(iElement[6]);
-				if(iElement < 0)
+				
+				
+				if
+				( 
+					iElement[6] == "" || 
+					iElement[7] == "" || 
+					iElement[12] == "" || 
+					iElement[13] == ""
+				)
 				{
-					fnShowNotification("No puede haber cantidades en negativos","error",timerNotification);
+					fnShowNotification("No puede haber numeros mal formados , revisar producto " + iElement[3],"error",timerNotification);
 					result = false;
 				}
+				
+				if
+				( 
+					iElement[6] == "NaN" || 
+					iElement[7] == "NaN" || 
+					iElement[12] == "NaN" || 
+					iElement[13] == "NaN"
+				)
+				{
+					fnShowNotification("No puede haber numeros mal formados , revisar producto " + iElement[3],"error",timerNotification);
+					result = false;
+				}
+				
+				
+				
+				if(
+					parseInt(iElement[6])  < 0  || 
+					parseInt(iElement[7])  < 0  || 
+					parseInt(iElement[12]) < 0  || 
+					parseInt(iElement[13]) < 0
+				)
+				{
+					fnShowNotification("No puede haber cantidades en negativos " + iElement[3] ,"error",timerNotification);
+					result = false;
+				}
+					
+					
 			}
 		}
 		
