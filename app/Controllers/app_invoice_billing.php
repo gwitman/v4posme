@@ -1125,16 +1125,17 @@ class app_invoice_billing extends _BaseController {
 					if($objParameterAmortizationDuranteFactura == "true" &&  $objTMNew["currencyID"] == 2 /*dolares*/)
 					{
 						$objCustomerCreditDocument["term"] 					= $objTMNew["reference2"];
-						$objCustomerCreditDocument["amount"] 				=   $amountTotal - 
-																				round(($objTMInfoNew["receiptAmountPoint"] * $objTMNew["exchangeRate"]),2)  - 
+						$objCustomerCreditDocument["amount"] 				= 	$amountTotal - 
+																				$objTMInfoNew["receiptAmountPoint"] - 
 																				
-																				round(($objTMInfoNew["receiptAmount"] * $objTMNew["exchangeRate"]),2)  - 
-																				round(($objTMInfoNew["receiptAmountBank"] * $objTMNew["exchangeRate"]),2)  -  
-																				round(($objTMInfoNew["receiptAmountCard"] * $objTMNew["exchangeRate"]),2)  -  
+																				$objTMInfoNew["receiptAmount"] - 
+																				$objTMInfoNew["receiptAmountBank"] - 																				
+																				$objTMInfoNew["receiptAmountCard"] - 
 																				
-																				($objTMInfoNew["receiptAmountBankDol"]) - 
-																				($objTMInfoNew["receiptAmountCardDol"]) - 
-																				($objTMInfoNew["receiptAmountDol"]) ;
+																				round(($objTMInfoNew["receiptAmountBankDol"] / $objTMNew["exchangeRate"]),2) - 
+																				round(($objTMInfoNew["receiptAmountCardDol"] / $objTMNew["exchangeRate"]),2) - 																			
+																				round(($objTMInfoNew["receiptAmountDol"] / $objTMNew["exchangeRate"]),2)  ;
+																				
 						$objCustomerCreditDocument["balance"] 				= $objCustomerCreditDocument["amount"];
 					}
 					

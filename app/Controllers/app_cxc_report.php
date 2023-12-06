@@ -143,6 +143,8 @@ class app_cxc_report extends _BaseController {
 						return view("app_cxc_report/document_contract/view_a_disemp_producto",$objDataResult);//--finview-r
 					else if ($objCompany->flavorID == 380 /*cliente: gbt*/ )
 						return view("app_cxc_report/document_contract/view_a_disemp_gbt",$objDataResult);//--finview-r
+					else if ($objCompany->type == "loza" /*cliente: loza*/ )
+						return view("app_cxc_report/document_contract/view_a_disemp_loza",$objDataResult);//--finview-r
 					else
 						return view("app_cxc_report/document_contract/view_a_disemp",$objDataResult);//--finview-r
 				}

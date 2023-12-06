@@ -19,7 +19,11 @@ WHERE
 	tb_parameter.name = "CORE_TEMPORAL003";## Varible para realiar calculos 
 	
 	
-
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_UPDATENAME_IN_TRANSACTION_ONLY";## Actualiazar el nombre unicamente en la transaccion
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
@@ -607,7 +611,7 @@ WHERE
 	tb_parameter.name = "INVOICE_BILLING_QUANTITY_ZERO";## Permite facturar productos, aunque las existencias esten en 0 unidades 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BUTTOM_PRINTER_FIDLOCAL_PAYMENT_AND_AMORTIZACION";## Mostrar Calendario de Pago , al momento de imprimir una factura
@@ -925,15 +929,15 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Fabrica Drew State 1C.E y 1.5C.S" 
+	tb_company_parameter.value = "Manuel Loza Bienes Raices" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Lacteos Loza' , address = 'Fabrica Drew State 1C.E y 1.5C.S' ,
-	flavorID = 0 
+	NAME = 'Bienes Raices' , address = 'Manuel Loza Bienes Raices' ,
+	flavorID = 381 , type="loza"
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
@@ -974,3 +978,4 @@ update tb_exchange_rate set
 	ratio = 0.027777 
 where 
 	currencyID = 1
+	and targetCurrencyID = 2; 

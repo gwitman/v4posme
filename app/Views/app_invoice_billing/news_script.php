@@ -1202,21 +1202,21 @@
 			$("#txtChangeAmount").val(resultTotal);	
 		}
 		
-		if( $("#txtCurrencyID").val() == "2" /*Cordoba*/ )
+		if( $("#txtCurrencyID").val() == "2" /*dolares*/ )
 		{
 			var ingresoCordoba 	= fnFormatFloat($("#txtReceiptAmount").val());
 			var bancoCordoba 	= fnFormatFloat($("#txtReceiptAmountBank").val());
-			var puntoCordoba 	= fnFormatFloat($("#txtReceiptAmountPoint").val());
-			var ingresoDol 	= fnFormatFloat($("#txtReceiptAmountDol").val());	
+			var puntoCordoba 	= fnFormatFloat($("#txtReceiptAmountPoint").val());			
 
 			var tarjetaCordoba 	= fnFormatFloat($("#txtReceiptAmountTarjeta").val());
 			var tarejtaDolares 	= fnFormatFloat($("#txtReceiptAmountTarjetaDol").val());
 			var bancoDolares 	= fnFormatFloat($("#txtReceiptAmountBankDol").val());
 			
+			var ingresoDol 	= fnFormatFloat($("#txtReceiptAmountDol").val());	
 			var tipoCambio 	= fnFormatFloat($("#txtExchangeRate").val()); 		
-			var total 		= fnFormatFloat($("#txtTotal").val());				
+			var total 		= fnFormatFloat($("#txtTotal").val());							
 			
-			var resultTotal =  (  (tarjetaCordoba / tipoCambio ) +  (ingresoCordoba/tipoCambio) +  (bancoCordoba/tipoCambio) + (puntoCordoba/tipoCambio)  + (ingresoDol * 1 ) + tarejtaDolares + bancoDolares ) - total;
+			var resultTotal =  (ingresoCordoba +  bancoCordoba + puntoCordoba + tarjetaCordoba + ( bancoDolares * tipoCambio ) + ( tarejtaDolares * tipoCambio )   + (ingresoDol * tipoCambio)) - total;
 			var resultTotal = fnFormatNumber(resultTotal,2);
 			$("#txtChangeAmount").val(resultTotal);	
 		}
