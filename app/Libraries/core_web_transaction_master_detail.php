@@ -131,11 +131,12 @@ class core_web_transaction_master_detail {
 		if
 		(
 			$objCompany->type == "globalpro" &&
-			in_array($objItem->barCode , array('ITT00000217', 'ITT00000218', 'ITT00000219', 'ITT00000220','ITT00000221' ) ) 
+			in_array($objItem->barCode , array('ITT00000217', 'ITT00000218', 'ITT00000219', 'ITT00000220','ITT00000221'  ) ) 
 		)
 		{
-			$unitaryCost = $unitaryPrice * 0.35;
+			$unitaryCost = ($unitaryPrice) - ($unitaryPrice * 0.35);
 		}
+		
 		
 		return $unitaryCost;
 			

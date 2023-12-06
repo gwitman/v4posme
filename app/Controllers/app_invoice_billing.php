@@ -4010,8 +4010,16 @@ class app_invoice_billing extends _BaseController {
 			$fileNamePut = "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
 			$fileNamePdf = "FAC_".$datView["objTM"]->transactionNumber."_".str_replace(" ","_", $datView["objNatural"]->firstName).".pdf";
 			
-			$path        = "./resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".$fileNamePut;
-				
+			$path        	= "./resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".$fileNamePut;
+			$patdir         = "./resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID;	
+			
+			if (!file_exists($patdir))
+			{
+				mkdir($patdir, 0755);
+				chmod($patdir, 0755);
+			}
+			
+			
 			file_put_contents(
 				$path,
 				$this->dompdf->output()					
