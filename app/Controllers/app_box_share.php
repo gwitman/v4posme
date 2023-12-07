@@ -100,6 +100,8 @@ class app_box_share extends _BaseController {
 			$dataView["objLegalDefault"]					= $this->Legal_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
 			$dataView["objParameterShareInvoiceByInvoice"] 	= $this->core_web_parameter->getParameterValue("SHARE_INVOICE_BY_INVOICE",$companyID);
 			$dataView["company"]							= $dataSession["company"];
+			$dataView["objListCustomer"]					= $this->Customer_Model->get_rowByCompany($companyID);
+			$dataView["useMobile"]							= $dataSession["user"]->useMobile;
 			
 			$dataView["objEmployeeDefault"]				= $this->Employee_Model->get_rowByEntityID($companyID,helper_RequestGetValue($dataView["objTransactionMaster"]->reference3,0));
 			$dataView["objEmployeeNaturalDefault"]		= null;
@@ -869,6 +871,7 @@ class app_box_share extends _BaseController {
 			$dataView["roleName"]				= $dataSession["role"]->name;
 			$dataView["branchID"]				= $dataSession["branch"]->branchID;
 			$dataView["branchName"]				= $dataSession["branch"]->name;
+			$dataView["useMobile"]				= $dataSession["user"]->useMobile;
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
 			
 			$objParameterExchangePurchase		= $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_PURCHASE",$companyID);
@@ -882,6 +885,7 @@ class app_box_share extends _BaseController {
 			$dataView["objCaudal"]							= $this->Transaction_Causal_Model->getCausalByBranch($companyID,$transactionID,$branchID);			
 			$dataView["objListWorkflowStage"]				= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_share","statusID",$companyID,$branchID,$roleID);
 			$dataView["company"]							= $dataSession["company"];
+			$dataView["objListCustomer"]					= $this->Customer_Model->get_rowByCompany($companyID);
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);

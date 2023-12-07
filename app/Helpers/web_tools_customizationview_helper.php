@@ -21,7 +21,13 @@ function getBehavio($type_company,$key_controller,$key_element)
 		strtolower('default_app_box_share_new_script_validate_reference1')							=> "",
 		strtolower('default_app_box_share_javscriptVariable_varShareMountDefaultOfAmortization')	=> "true",
 		strtolower('default_app_box_share_javscriptVariable_varPrinterOnlyFormat')					=> "false",
-		strtolower('default_app_box_share_TableColumnDocumento')									=> "",
+		strtolower('default_app_box_share_TableColumnDocumento')									=> "",		
+		strtolower('default_app_box_share_divCustomerControlBuscar')								=> "",
+		strtolower('default_app_box_share_divCustomerControlSelected')								=> "hidden",
+		strtolower('default_app_box_share_divCobrador')												=> "",
+		
+		
+		
 		strtolower('default_app_box_share_btnVerMovimientos')										=> "",
 		strtolower('default_app_inventory_transferoutput_parameterValidarEnvioDestino')				=> "false",
 		strtolower('default_app_inventory_transferoutput_labelReference1')							=> "Referencia",
@@ -165,7 +171,10 @@ function getBehavio($type_company,$key_controller,$key_element)
 		strtolower('gbt_app_box_share_javscriptVariable_varShareMountDefaultOfAmortization')		=> "false",
 		strtolower('gbt_app_box_share_TableColumnDocumento')										=> "hidden",
 		strtolower('gbt_app_box_share_btnVerMovimientos')											=> "hidden",
-		strtolower('gbt_app_box_share_javscriptVariable_varPrinterOnlyFormat')						=> "true"
+		strtolower('gbt_app_box_share_javscriptVariable_varPrinterOnlyFormat')						=> "true",
+		strtolower('gbt_app_box_share_divCustomerControlBuscar')									=> "hidden",
+		strtolower('gbt_app_box_share_divCustomerControlSelected')									=> "",
+		strtolower('gbt_app_box_share_divCobrador')													=> "hidden"
 	);
 	
 	

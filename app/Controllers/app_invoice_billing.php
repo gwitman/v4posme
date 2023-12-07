@@ -154,6 +154,7 @@ class app_invoice_billing extends _BaseController {
 			$dataView["isAdmin"]				= $dataSession["role"]->isAdmin;
 			$dataView["branchID"]				= $dataSession["branch"]->branchID;
 			$dataView["branchName"]				= $dataSession["branch"]->name;
+			$dataView["useMobile"]				= $dataSession["user"]->useMobile;
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
 			$dataView["objCurrency"]			= $objCurrency;
 			$dataView["company"]				= $dataSession["company"];

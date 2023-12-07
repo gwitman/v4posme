@@ -1,6 +1,7 @@
 <!-- ./ page heading -->
 <script>		
 	var objListaCustomerCredit  			= {};
+	var varUseMobile						= '<?php echo $useMobile; ?>';
 	var varUrlPrinter						= '<?php echo $urlPrinterDocument; ?>';
 	var varShareInvoiceByInvoice 			= '<?php echo $objParameterShareInvoiceByInvoice; ?>';
 	var varShareMountDefaultOfAmortization 	= '<?php echo getBehavio($company->type,"app_box_share","javscriptVariable_varShareMountDefaultOfAmortization"); ?>';
@@ -10,7 +11,7 @@
 		 $('#txtDate').datepicker({format:"yyyy-mm-dd"});						 
 		 $("#txtDate").datepicker("update");
 		 $('.txt-numeric').mask('000,000.00', {reverse: true});
-		 
+		 onCompletePantalla();
 		 
 		//Buscar los Creditos del Cliente
 		fnWaitOpen();		
@@ -158,7 +159,38 @@
 		$(document).on("change","#txtReceiptAmount",function(){
 			updateCalculateChange();
 		});
-		
+		$(document).on("change","#txtMobileEntityID",function(){			
+			$("#txtCustomerID").val(	$(this).val()	);
+			$("#txtCustomerDescription").val(	$('#txtMobileEntityID').find(":selected").data("name")	);
+			
+			fnWaitOpen();		
+			$.ajax({									
+				cache       : false,
+				dataType    : 'json',
+				type        : 'POST',
+				url  		: "<?php echo base_url(); ?>/app_cxc_api/getCustomerBalance",
+				data 		: {customerID : $("#txtCustomerID").val()  },
+				success		: function(obj,index,event){
+					console.info("complete data success getCustomerBalance");
+					fnWaitClose();
+					console.info(obj);
+					objListaCustomerCredit 	= obj.array;
+					var saldoTotal 			= 0;				
+					objListaCustomerCredit.forEach(function(obj,inl){ saldoTotal = saldoTotal +  fnFormatFloat(obj.remaining,2);});
+					
+					saldoTotal = fnFormatNumber(saldoTotal,2);
+					$("#txtBalanceStart").val(saldoTotal);
+					
+					
+				},
+				error:function(xhr,data){	
+					console.info("complete data error getCustomerBalance");
+					fnWaitClose();
+					fnShowNotification("Error 505","error");
+				}
+			});
+			
+		});
 		$(document).on("click","#btnDelete",function(){							
 			fnShowConfirm("Confirmar..","Desea eliminar este Registro...",function(){
 				fnWaitOpen();
@@ -316,7 +348,7 @@
 		
 		updateSummary();
 		updateCalculateChange();
-		
+		onCompletePantalla();
 	}
 	function fnCompleteGetDocumentInfo(data){
 		console.info("fnCompleteGetDocumentInfo");
@@ -373,5 +405,13 @@
 		//$('.txtCredit').mask('000,000.00', {reverse: true});
 		$('.txt-numeric').mask('000,000.00', {reverse: true});
 	}
+	
+	function onCompletePantalla(){
+		if(varUseMobile == "1" ){		   
+		   $("#tb_transaction_master_detail th").css("display","none");
+		   $("#tb_transaction_master_detail td").css("display","block");		   
+	    }
+	}
+	
 	
 </script>

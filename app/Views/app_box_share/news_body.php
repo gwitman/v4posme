@@ -92,7 +92,24 @@
 												</div>
 												<div class="col-lg-6">
 												
-														<div class="form-group">
+														<div class="form-group <?php echo getBehavio($company->type,"app_box_share","divCustomerControlSelected"); ?> ">
+															<label class="col-lg-4 control-label" for="selectFilter">Cliente</label>
+															<div class="col-lg-8">
+																<select name="txtMobileEntityID" id="txtMobileEntityID">
+																		<option selected >Seleccionar</option>
+																		<?php
+																		if($objListCustomer)
+																		foreach($objListCustomer as $ws){
+																			echo "<option value='".$ws->entityID."' data-name='".$ws->firstName." ".$ws->lastName."' >".$ws->firstName." ".$ws->lastName."</option>";
+																		}
+																		?>
+																</select>
+															</div>
+														</div>
+														
+														
+														
+														<div class="form-group <?php echo getBehavio($company->type,"app_box_share","divCustomerControlBuscar"); ?> ">
 															<label class="col-lg-4 control-label" for="buttons">Cliente</label>
 															<div class="col-lg-8">
 																<div class="input-group">
@@ -232,7 +249,9 @@
 							
 									<div class="row">
                                         <div class="col-lg-12">
+											</br>
                                             <h3>Detalle:</h3>
+											</br>
                                             <table id="tb_transaction_master_detail" class="table table-bordered">
                                                 <thead>
                                                   <tr>
@@ -306,6 +325,22 @@
 						</div>
 					</div>
 					
+					<div class="row"> 
+                        <div id="email" class="col-lg-12">
+                        
+                        	<!-- botonera -->
+                            <div class="email-bar" style="border-left:1px solid #c9c9c9">                                
+                                <div class="btn-group pull-right">                                    
+									<a href="<?php echo base_url(); ?>/app_box_share/index" id="btnBack" class="btn btn-warning" ><i class="icon16 i-rotate"></i> Atras</a>                                    
+                                    <a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
+                                </div>
+                            </div> 
+                            <!-- /botonera -->
+                        </div>
+                        <!-- End #email  -->
+                    </div>
+                    <!-- End .row-fluid  -->
+					
 					
 					<script type="text/template"  id="tmpl_row_document">
 							<tr class="row_razon">
@@ -320,13 +355,35 @@
 									<input type="hidden" name="txtDetailBalanceFinish[]" id="txtDetailBalanceFinish" />
 									
 								</td>
-								<td class="<?php echo getBehavio($company->type,"app_box_share","TableColumnDocumento"); ?>" >
+								<td class="<?php echo getBehavio($company->type,"app_box_share","TableColumnDocumento"); ?>" >									
 									<text id="txtDocument"></text>
 								</td>
-								<td><text id="txtBalanceStartShare"></text></td>
 								<td>
+									<?php 
+										if($useMobile == "1")
+										{
+											echo '<span class="badge badge-inverse" >Saldo inicial</span></br>';
+										}
+									?>
+									<text id="txtBalanceStartShare"></text>
+								</td>
+								<td>
+									<?php 
+										if($useMobile == "1")
+										{
+											echo '<span class="badge badge-inverse" >Abono</span></br>';
+										}
+									?>
 									<input class="form-control txtDetailShare txt-numeric"  type="text" id="txtDetailShare"  name="txtDetailShare[]"  value="" />
 								</td>
-								<td><text id="txtBalanceFinishShare"></text></td>
+								<td>
+									<?php 
+										if($useMobile == "1")
+										{
+											echo '<span class="badge badge-inverse" >Saldo Final</span></br>';
+										}
+									?>
+									<text id="txtBalanceFinishShare"></text>
+								</td>
 							</tr>
 					</script>

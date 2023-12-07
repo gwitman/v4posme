@@ -22,6 +22,8 @@
 	</div>
 	<!-- End #email  -->
 </div>
+
+
 <!-- End .row-fluid  -->
 <div class="row">
 	<div class="col-lg-12">
@@ -110,7 +112,32 @@
 							</div>
 							<div class="col-lg-6">
 						
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_box_share","divCustomerControlSelected"); ?> ">
+									<label class="col-lg-4 control-label" for="selectFilter">Cliente</label>
+									<div class="col-lg-8">
+										<select name="txtMobileEntityID" id="txtMobileEntityID">
+												<option selected >Seleccionar</option>
+												<?php
+												if($objListCustomer)
+												foreach($objListCustomer as $ws){
+													
+													if(  $objTransactionMaster->entityID == $ws->entityID   )
+													{
+														echo "<option value='".$ws->entityID."' data-name='".$ws->firstName." ".$ws->lastName."' selected >".$ws->firstName." ".$ws->lastName."</option>";
+													}
+													else
+													{
+														echo "<option value='".$ws->entityID."' data-name='".$ws->firstName." ".$ws->lastName."' >".$ws->firstName." ".$ws->lastName."</option>";
+													}
+												}
+												?>
+										</select>
+									</div>
+								</div>
+								
+								
+								
+								<div class="form-group <?php echo getBehavio($company->type,"app_box_share","divCustomerControlBuscar"); ?>   ">
 									<label class="col-lg-4 control-label" for="buttons">Cliente</label>
 									<div class="col-lg-8">
 										<div class="input-group">
@@ -134,7 +161,7 @@
 									</div>
 								</div>
 								
-								<div class="form-group si_ferreteria_mateo">
+								<div class="form-group si_ferreteria_mateo <?php echo getBehavio($company->type,"app_box_share","divCobrador"); ?>  ">
 									<label class="col-lg-4 control-label" for="buttons">Cobrador</label>
 									<div class="col-lg-8">
 										<div class="input-group">
@@ -157,6 +184,7 @@
 										</div>
 									</div>
 								</div>
+								
 								<div class="form-group">
 									<label class="col-lg-4 control-label" for="normal">Saldo inicial</label>
 									<div class="col-lg-8">
@@ -271,7 +299,9 @@
 												
 				<div class="row">
 					<div class="col-lg-12">
+						</br>
 						<h3>Detalle:</h3>
+						</br>
 						<table id="tb_transaction_master_detail" class="table table-bordered">
 							<thead>
 								<tr>
@@ -307,11 +337,33 @@
 												<?php echo $value->reference1; ?>
 											</text>
 										</td>
-										<td><text id="txtBalanceStartShare" class="txtDetailShareReference2"><?php echo number_format($value->reference2,2); ?></text></td>
 										<td>
+											<?php 
+												if($useMobile == "1")
+												{
+													echo '<span class="badge badge-inverse" >Saldo Inicial</span></br>';
+												}
+											?>
+											<text id="txtBalanceStartShare" class="txtDetailShareReference2"><?php echo number_format($value->reference2,2); ?></text>
+										</td>
+										<td>
+											<?php 
+												if($useMobile == "1")
+												{
+													echo '<span class="badge badge-inverse" >Abono</span></br>';
+												}
+											?>
 											<input class="form-control txtDetailShare txt-numeric"  type="text" id="txtDetailShare"  name="txtDetailShare[]"  value="<?php echo  number_format($value->amount,2); ?>" />
 										</td>
-										<td><text id="txtBalanceFinishShare"><?php echo number_format($value->reference4,2); ?></text></td>
+										<td>
+											<?php 
+												if($useMobile == "1")
+												{
+													echo '<span class="badge badge-inverse" >Saldo Final</span></br>';
+												}
+											?>
+											<text id="txtBalanceFinishShare"><?php echo number_format($value->reference4,2); ?></text>
+										</td>
 									</tr>
 									<?php
 									}
@@ -382,6 +434,33 @@
 		</div>
 	</div>
 </div>
+
+<div class="row"> 
+	<div id="email" class="col-lg-12">
+	
+		<!-- botonera -->
+		<div class="email-bar" style="border-left:1px solid #c9c9c9">                                
+			<div class="btn-group pull-right">     
+				<a href="<?php echo base_url(); ?>/app_box_share/add" class="btn btn-success" id="btnNuevo"><i class="icon16 i-checkmark-4"></i>Nuevo</a>						
+				<a href="<?php echo base_url(); ?>/app_box_share/index" class="btn btn-warning"  id="btnBack" ><i class="icon16 i-rotate"></i> Atras</a>
+				<a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>			
+				
+				<?php 
+				
+					if($objWorkflowStage[0]->aplicable == 1)
+					echo '<a href="#" class="btn btn-primary" id="btnPrinter"><i class="icon16 i-print"></i> Imprimir</a>';
+				
+				?>
+				
+				<a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
+			</div>
+		</div> 
+		<!-- /botonera -->
+	</div>
+	<!-- End #email  -->
+</div>
+
+
 <script type="text/template"  id="tmpl_row_document">
 		<tr class="row_razon">
 			<td>
@@ -398,10 +477,32 @@
 			<td class="<?php echo getBehavio($company->type,"app_box_share","TableColumnDocumento"); ?>" >
 				<text id="txtDocument"></text>
 			</td>
-			<td><text id="txtBalanceStartShare" class="txtDetailShareReference2" ></text></td>
 			<td>
+				<?php 
+					if($useMobile == "1")
+					{
+						echo '<span class="badge badge-inverse" >Saldo inicial</span></br>';
+					}
+				?>
+				<text id="txtBalanceStartShare" class="txtDetailShareReference2" ></text>
+			</td>
+			<td>
+				<?php 
+					if($useMobile == "1")
+					{
+						echo '<span class="badge badge-inverse" >Abono</span></br>';
+					}
+				?>
 				<input class="form-control txtDetailShare txt-numeric"  type="text" id="txtDetailShare"  name="txtDetailShare[]"  value="" />
 			</td>
-			<td><text id="txtBalanceFinishShare"></text></td>
+			<td>
+				<?php 
+					if($useMobile == "1")
+					{
+						echo '<span class="badge badge-inverse" >Saldo Final</span></br>';
+					}
+				?>
+				<text id="txtBalanceFinishShare"></text>
+			</td>
 		</tr>
 </script>
