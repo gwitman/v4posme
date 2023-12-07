@@ -210,7 +210,7 @@
 								var str =  '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right" /> ';
 								
 								if (varUseMobile == "1")
-								str = str + " cantidad";
+								str = str + " <span class='badge badge-inverse' >Cantidad</span>";
 						
 								return str;
 							}
@@ -221,7 +221,7 @@
 							"mRender"		: function ( data, type, full ) {
 								var str =  '<input type="text" class="col-lg-12 txtPrice txt-numeric"   id="txtPriceRow'+full[2]+'"   '+PriceStatus+'  value="'+data+'" name="txtPrice[]" style="text-align:right" />';
 								if (varUseMobile == "1")
-								str = str + " precio";
+								str = str + " <span class='badge badge-inverse' >Precio</span>";
 								return str;
 							}
 						},
@@ -231,7 +231,7 @@
 							"mRender"		: function ( data, type, full ) {
 								var str = '<input type="text" class="col-lg-12 txtSubTotal" readonly value="'+data+'" name="txtSubTotal[]" style="text-align:right" />';
 								if (varUseMobile == "1")
-								str = str + " total";
+								str = str + " <span class='badge badge-inverse' >Total</span>";
 								return str;
 							}
 						},

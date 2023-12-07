@@ -194,7 +194,7 @@
 								<div class="form-group hidden" id="divLineaCredit">
 									<label class="col-lg-4 control-label" for="selectFilter">Línea de Crédito</label>
 									<div class="col-lg-8">
-										<select name="txtCustomerCreditLineID" id="txtCustomerCreditLineID" class="select2">
+										<select name="txtCustomerCreditLineID" id="txtCustomerCreditLineID" class="<?php echo ($useMobile == "1" ? "" : "select2");  ?>" >
 										</select>
 									</div>
 								</div>
@@ -721,7 +721,7 @@
 						<table class="<?php echo $isMobile == "1" ? "" : "table table-bordered "  ?>"  >
 							<tbody>
 								<tr>
-									<th style="width:200px;text-align:left;" >01) MONTO</th>
+									<th style="text-align:left;" >01) MONTO</th>
 									<td >
 										<input type="text" id="txtToolMontoConIva" name="txtToolMontoConIva"  class="col-lg-12" value="" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
@@ -772,7 +772,7 @@
 								</tr>
 								
 								<tr>
-									<th style="width:200px;text-align:left">02) MON.</th>
+									<th style="text-align:left">02) MON.</th>
 									<td>
 										<input type="text" id="txtReceiptAmount" name="txtReceiptAmount"  class="col-lg-12 txt-numeric" value="<?php echo number_format($objTransactionMasterInfo->receiptAmount,2); ?>" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
@@ -786,11 +786,11 @@
 								</tr>
 								
 								<tr>
-									<th style="width:25%;text-align:left">04) Tarjeta. Nac.</th>
-									<td style="width:25%">
+									<th style="text-align:left">04) Tarjeta. Nac.</th>
+									<td style="">
 										<input type="text" id="txtReceiptAmountTarjeta" name="txtReceiptAmountTarjeta"  class="col-lg-12 txt-numeric" value="<?php echo number_format($objTransactionMasterInfo->receiptAmountCard,2); ?>" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
-									<td style="width:25%">
+									<td style="">
 										<select name="txtReceiptAmountTarjeta_BankID" id="txtReceiptAmountTarjeta_BankID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
 												<?php
 												$count = 0;
@@ -805,7 +805,7 @@
 												?>
 										</select>
 									</td>
-									<td style="width:25%">
+									<td style="">
 										<input type="text" id="txtReceiptAmountTarjeta_Reference" name="txtReceiptAmountTarjeta_Reference"   class="col-lg-12" value="<?php echo $objTransactionMasterInfo->receiptAmountCardBankReference;  ?>" />
 									</td>
 								</tr>
@@ -814,7 +814,7 @@
 									<td >
 										<input type="text" id="txtReceiptAmountTarjetaDol" name="txtReceiptAmountTarjetaDol"  class="col-lg-12 txt-numeric" value="<?php echo number_format($objTransactionMasterInfo->receiptAmountCardDol,2); ?>" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
-									<td style="width:25%">
+									<td style="">
 										<select name="txtReceiptAmountTarjetaDol_BankID" id="txtReceiptAmountTarjetaDol_BankID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
 												<?php
 												$count = 0;
@@ -829,7 +829,7 @@
 												?>
 										</select>
 									</td>
-									<td style="width:25%">
+									<td style="">
 										<input type="text" id="txtReceiptAmountTarjetaDol_Reference" name="txtReceiptAmountTarjetaDol_Reference"   class="col-lg-12" value="<?php echo $objTransactionMasterInfo->receiptAmountCardBankDolReference;  ?>" />
 									</td>
 								</tr>
@@ -839,7 +839,7 @@
 									<td >
 										<input type="text" id="txtReceiptAmountBank" name="txtReceiptAmountBank"  class="col-lg-12 txt-numeric" value="<?php echo number_format($objTransactionMasterInfo->receiptAmountBank,2); ?>" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
-									<td style="width:25%">
+									<td style="">
 										<select name="txtReceiptAmountBank_BankID" id="txtReceiptAmountBank_BankID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
 												<?php
 												$count = 0;
@@ -854,7 +854,7 @@
 												?>
 										</select>
 									</td>
-									<td style="width:25%">
+									<td style="">
 										<input type="text" id="txtReceiptAmountBank_Reference" name="txtReceiptAmountBank_Reference"   class="col-lg-12" value="<?php echo $objTransactionMasterInfo->receiptAmountBankReference;  ?>" />
 									</td>
 								</tr>
@@ -863,7 +863,7 @@
 									<td >
 										<input type="text" id="txtReceiptAmountBankDol" name="txtReceiptAmountBankDol"  class="col-lg-12 txt-numeric" value="<?php echo number_format($objTransactionMasterInfo->receiptAmountBankDol,2); ?>" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
-									<td style="width:25%">
+									<td style="">
 										<select name="txtReceiptAmountBankDol_BankID" id="txtReceiptAmountBankDol_BankID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
 												<?php
 												$count = 0;
@@ -878,7 +878,7 @@
 												?>
 										</select>
 									</td>
-									<td style="width:25%">
+									<td style="">
 										<input type="text" id="txtReceiptAmountBankDol_Reference" name="txtReceiptAmountBankDol_Reference"   class="col-lg-12" value="<?php echo $objTransactionMasterInfo->receiptAmountBankDolReference;  ?>" />
 									</td>
 								</tr>

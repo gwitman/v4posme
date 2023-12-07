@@ -190,7 +190,7 @@
 								<div class="form-group hidden" id="divLineaCredit">
 									<label class="col-lg-4 control-label" for="selectFilter">Línea de Crédito</label>
 									<div class="col-lg-8">
-										<select name="txtCustomerCreditLineID" id="txtCustomerCreditLineID" class="select2">
+										<select name="txtCustomerCreditLineID" id="txtCustomerCreditLineID" class="<?php echo ($useMobile == "1" ? "" : "select2");  ?>" > 
 										</select>
 									</div>
 								</div>
@@ -694,7 +694,7 @@
 					
 					
 					
-					<div class="col-lg-3 <?php echo getBehavio($company->type,"app_invoice_billing","panelResumenFactura"); ?>   " id="panelResumenFactura" >
+					<div class="col-lg-3 col-sm-12 <?php echo getBehavio($company->type,"app_invoice_billing","panelResumenFactura"); ?>   " id="panelResumenFactura" >
 						<div class="page-header">
 							<h3 id="labelRef" >Ref.</h4>
 						</div>
@@ -709,22 +709,23 @@
 
 					</div>
 					
-					<div class="col-lg-5">
+					<div class="col-lg-5 col-sm-12">
 						<div class="page-header">
 							<h3>Pago</h3>
 						</div>
 						<table class="<?php echo $isMobile == "1" ? "" : "table table-bordered  "  ?>" id="table-resumen" >
 							<tbody>
+							
+							
+								
 								<tr>
 									<th style="text-align:left" >01) CAMBIO</th>
 									<td >
 										<input type="text" id="txtChangeAmount" name="txtChangeAmount" readonly class="col-lg-12" value="" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
-									
-								</tr>
-								
+								</tr>								
 								<tr>
-									<th style="width:200px;text-align:left">02) MON.</th>
+									<th style="text-align:left">02) MON.</th>
 									<td >
 										<input type="text" id="txtReceiptAmount" name="txtReceiptAmount"  class="col-lg-12 txt-numeric" value="" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
@@ -739,12 +740,13 @@
 									
 								</tr>
 								
+								
 								<tr>
-									<th style="width:25%;text-align:left">04) Tarjeta. Nac.</th>
-									<td style="width:25%">
+									<th style="text-align:left">04) Tarjeta. Nac.</th>
+									<td style="">
 										<input type="text" id="txtReceiptAmountTarjeta" name="txtReceiptAmountTarjeta"   class="col-lg-12 txt-numeric" value="" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
-									<td style="width:25%">
+									<td style="">
 										<select name="txtReceiptAmountTarjeta_BankID" id="txtReceiptAmountTarjeta_BankID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
 												<?php
 												$count = 0;
@@ -759,7 +761,7 @@
 												?>
 										</select>
 									</td>
-									<td style="width:25%">
+									<td style="">
 										<input type="text" id="txtReceiptAmountTarjeta_Reference" name="txtReceiptAmountTarjeta_Reference"   class="col-lg-12" value="" />
 									</td>
 								</tr>
@@ -841,22 +843,22 @@
 									<th style="text-align:left" >08) Pt</th>
 									<td >
 										<input type="text" id="txtReceiptAmountPoint" name="txtReceiptAmountPoint"  class="col-lg-12 txt-numeric" value="" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
-									</td>
-									
+									</td>								
 								</tr>
-							
+								
+								
 							</tbody>
 						</table>
 					</div>
 					
-					<div class="col-lg-4">
+					<div class="col-lg-4 col-sm-12 ">
 						<div class="page-header">
 							<h3>Resumen</h3>
 						</div>
 						<table class="<?php echo $isMobile == "1" ? "" : "table table-bordered "  ?>" id="table-resumen-pago" >
 							<tbody>
 								<tr>
-									<th style="width:200px;text-align:left;" >01) SUB TOTAL</th>
+									<th style="text-align:left;" >01) SUB TOTAL</th>
 									<td >
 										<input type="text" id="txtSubTotal" name="txtSubTotal" readonly class="col-lg-12" value="" style="text-align:<?php $isMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
