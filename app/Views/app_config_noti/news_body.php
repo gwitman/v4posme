@@ -46,7 +46,7 @@
 																		<?php
 																		if($objListPeriod)
 																		foreach($objListPeriod as $i){
-																			echo "<option value='".$i->catalogItemID."'>".$i->name."</option>";
+																			echo "<option value='".$i->catalogItemID."' selected >".$i->name."</option>";
 																		}
 																		?>																
 																</select>
@@ -56,7 +56,7 @@
 														<div class="form-group">
 																<label class="col-lg-2 control-label" for="normal">Dias</label>
 																<div class="col-lg-4">
-																	<input class="form-control"  type="text" name="txtDias" id="txtDias" value="">												
+																	<input class="form-control"  type="text" name="txtDias" id="txtDias" value="1">												
 																</div>
 														</div>
 														
@@ -65,19 +65,32 @@
 															<label class="col-lg-2 control-label" for="selectFilter">Estado</label>
 															<div class="col-lg-4">
 																<select name="txtStatusID" id="txtStatusID" class="select2">
-																		<option></option>
+																		<option value="0">Seleccionar</option>
 																		<?php
 																		if($objListWorkflowStage)
-																		foreach($objListWorkflowStage as $ws){
-																			if ($ws->workflowStageID == $objCustomer->statusID)
-																			echo "<option value='".$ws->workflowStageID."' selected>".$ws->name."</option>";
-																			else
-																			echo "<option value='".$ws->workflowStageID."' >".$ws->name."</option>";
+																		foreach($objListWorkflowStage as $ws){																			
+																			echo "<option value='".$ws->workflowStageID."' selected >".$ws->name."</option>";
 																		}
 																		?>													
 																</select>
 															</div>
 														</div>
+														
+														<div class="form-group">
+															<label class="col-lg-2 control-label" for="selectFilter">Tag</label>
+															<div class="col-lg-4">
+																<select name="txtTagID" id="txtTagID" class="select2">
+																		<option value="0">Seleccionar</option>
+																		<?php
+																		if($objListTag)
+																		foreach($objListTag as $ws){																			
+																			echo "<option value='".$ws->tagID."' selected >".$ws->name."</option>";
+																		}
+																		?>													
+																</select>
+															</div>
+														</div>
+														
 														
 														<div class="form-group">
 															<label class="col-lg-2 control-label" for="checkboxes">Temporal</label>													

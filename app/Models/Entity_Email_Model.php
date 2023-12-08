@@ -75,5 +75,20 @@ class Entity_Email_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
+   
+   function get_rowByCompany($companyID){
+		$db 	= db_connect();
+		$builder	= $db->table("tb_entity_email");    
+		$sql = "";
+		$sql = sprintf("select tm.companyID,tm.branchID,tm.entityID,tm.entityEmailID,tm.email,tm.isPrimary");
+		$sql = $sql.sprintf(" from tb_entity_email tm");				
+		$sql = $sql.sprintf(" where ");
+		$sql = $sql.sprintf(" ");
+		$sql = $sql.sprintf(" 	tm.companyID = $companyID");
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+   
 }
 ?>

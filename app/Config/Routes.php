@@ -835,9 +835,11 @@ $routes->match(['get','post'],'app_invoice_price/save/(:any)','app_invoice_price
 $routes->match(['get','post'],'app_invoice_price/add','app_invoice_price::add');
 $routes->match(['get','post'],'app_invoice_price/index','app_invoice_price::index');
 $routes->match(['get','post'],'app_invoice_price/index/(:any)','app_invoice_price::index');
-$routes->match(['get','post'],'app_notification/currentNotification','app_notification::currentNotification');
+$routes->match(['get','post'],'app_notification/fillCurrentNotification','app_notification::fillCurrentNotification');
 $routes->match(['get','post'],'app_notification/sendEmail','app_notification::sendEmail');
-$routes->match(['get','post'],'app_notification/sendWhatsapp','app_notification::sendWhatsapp');
+$routes->match(['get','post'],'app_notification/fillSendWhatsappCustomer','app_notification::fillSendWhatsappCustomer');
+$routes->match(['get','post'],'app_notification/sendWhatsappPosMeCalendar','app_notification::sendWhatsappPosMeCalendar');
+$routes->match(['get','post'],'app_notification/sendWhatsappPosMeSendMessage','app_notification::sendWhatsappPosMeSendMessage');
 $routes->match(['get','post'],'app_notification/fillTipoCambio','app_notification::fillTipoCambio');
 $routes->match(['get','post'],'app_notification/fillInventarioMinimo','app_notification::fillInventarioMinimo');
 $routes->match(['get','post'],'app_notification/fillInventarioFechaVencimiento','app_notification::fillInventarioFechaVencimiento');

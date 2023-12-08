@@ -144,6 +144,7 @@
 															<option value="fillCumpleayo"  >Cumpleaños</option>
 															<option value="fillCuotaAtrasada"  >Cuota Atrazadas</option>
 															<option value="nextVisit"  >Proxima Visita</option>
+															<option value="sendWhatsappCustomer"  >Enviar sms a cliente</option>
 													</select>
 												</div>
 											</div>

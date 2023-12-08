@@ -83,6 +83,28 @@ class Customer_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
    }
+   
+   function get_rowByCompany_phoneAndEmail($companyID)
+   {
+		$db 		= db_connect();
+		$builder	= $db->table("tb_customer");
+			
+		$sql = "";
+		$sql = sprintf("select 
+			i.companyID, i.branchID, i.entityID, i.customerNumber, i.identificationType, i.identification, i.countryID, i.stateID, i.cityID, 
+			i.location, i.address, i.currencyID, i.clasificationID, i.categoryID, i.subCategoryID, i.customerTypeID, i.birthDate, i.statusID, i.typePay, 
+			i.payConditionID, i.sexoID, i.reference1, i.reference2, i.createdIn, i.createdBy, i.createdOn, i.createdAt, i.isActive,
+			nat.firstName,nat.lastName,i.typeFirm,i.balancePoint,i.phoneNumber
+		");
+		$sql = $sql.sprintf(" from tb_customer i");
+		$sql = $sql.sprintf(" inner join  tb_naturales nat on nat.entityID = i.entityID");				
+		$sql = $sql.sprintf(" where i.companyID = $companyID");
+		$sql = $sql.sprintf(" and i.isActive= 1");		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+		
+   }
    function get_rowByCompany($companyID){
 		$db 	= db_connect();
 		$builder	= $db->table("tb_customer");

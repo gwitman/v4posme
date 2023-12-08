@@ -56,6 +56,32 @@ class Remember_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
 	}
+	function getNotificationCompanyByTagId($companyID,$tagID)
+	{
+		$db 	= db_connect();
+		$sql = "
+		select			
+			c.companyID, 
+			c.rememberID, 
+			c.lastNotificationOn,
+			c.day,
+			c.tagID
+		from 
+			tb_remember  c
+			inner join tb_catalog_item ci on 
+				c.period = ci.catalogItemID 
+			inner join tb_workflow_stage ws on 
+				c.statusID = ws.workflowStageID 
+		where 
+			c.isActive = 1 
+			and ws.vinculable = 1  
+			and c.companyID = $companyID  
+			and c.tagID = $tagID 
+		";
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+	}
 	function getNotificationCompany($companyID)
 	{
 		$db 	= db_connect();
@@ -91,22 +117,22 @@ class Remember_Model extends Model  {
 			
 			case 
 				when ci.sequence = 30 then 
-					dayofmonth(".$fechaProcess.") 
+					dayofmonth('".$fechaProcess."') 
 				when ci.sequence = 15 then 
 					case 
-						when dayofmonth(".$fechaProcess.") <= 15 then 
-							dayofmonth(".$fechaProcess.") 
+						when dayofmonth('".$fechaProcess."') <= 15 then 
+							dayofmonth('".$fechaProcess."') 
 						else 
-							dayofmonth(".$fechaProcess.") - 15
+							dayofmonth('".$fechaProcess."') - 15
 					end
 				when ci.sequence = 7 then 
-					dayofweek(".$fechaProcess.") 
+					dayofweek('".$fechaProcess."') 
 				when  ci.sequence = 365 then 
-					dayofyear(".$fechaProcess.") 
+					dayofyear('".$fechaProcess."') 
 				else 
 					0
 			end diaProcesado,
-			".$fechaProcess." as Fecha,
+			'".$fechaProcess."' as Fecha,
 			c.title,
 			c.description,
 			c.tagID

@@ -51,7 +51,7 @@ class app_config_noti extends _BaseController {
 			$datView["objRemember"]					= $this->Remember_Model->get_rowByPK($rememberID);			
 			$datView["objListPeriod"]				= $this->core_web_catalog->getCatalogAllItem("tb_remember","period",$companyID);
 			$datView["objListWorkflowStage"]		= $this->core_web_workflow->getWorkflowStageByStageInit("tb_remember","statusID",$datView["objRemember"]->statusID,$companyID,$branchID,$roleID);
-			
+			$datView["objListTag"]					= $this->Tag_Model->get_rows();
 			
 			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -289,10 +289,11 @@ class app_config_noti extends _BaseController {
 						//Crear Cuenta
 						$obj["companyID"]					= $dataSession["user"]->companyID;
 						$obj["title"] 						= /*inicio get post*/ $this->request->getPost("txtTitulo");
-						$obj["period"] 						= /*inicio get post*/ $this->request->getPost("txtPeriodID");
+						$obj["period"] 						= helper_RequestGetValue( /*inicio get post*/ $this->request->getPost("txtPeriodID"), 0 );
 						$obj["day"] 						= /*inicio get post*/ $this->request->getPost("txtDias");
 						$obj["statusID"] 					= /*inicio get post*/ $this->request->getPost("txtStatusID");
-						$obj["isTemporal"] 					= /*inicio get post*/ $this->request->getPost("txtIsTemporal");
+						$obj["isTemporal"] 					= helper_RequestGetValue( /*inicio get post*/ $this->request->getPost("txtIsTemporal"), 0) ;
+						$obj["tagID"] 						= /*inicio get post*/ $this->request->getPost("txtTagID");
 						$obj["description"] 				= /*inicio get post*/ $this->request->getPost("txtDescripcion");
 						$obj["lastNotificationOn"]			= date('Y-m-d');
 						$obj["isActive"]					= 1;
@@ -305,8 +306,10 @@ class app_config_noti extends _BaseController {
 							$this->response->redirect(base_url()."/".'app_config_noti/edit/rememberID/'.$rememberID);						
 						}
 						else{
-							$db->transRollback();						
-							$this->core_web_notification->set_message(true,$this->db->_error_message());
+							$db->transRollback();			
+							$errorCode 		= $db->error()["code"];
+							$errorMessage 	= $db->error()["message"];							
+							$this->core_web_notification->set_message(true,$errorMessage );
 							$this->response->redirect(base_url()."/".'app_config_noti/add');	
 						}
 					}
@@ -351,6 +354,7 @@ class app_config_noti extends _BaseController {
 						$obj["period"] 						= /*inicio get post*/ $this->request->getPost("txtPeriodID");
 						$obj["day"] 						= /*inicio get post*/ $this->request->getPost("txtDias");
 						$obj["statusID"] 					= /*inicio get post*/ $this->request->getPost("txtStatusID");
+						$obj["tagID"] 						= /*inicio get post*/ $this->request->getPost("txtTagID");
 						$obj["isTemporal"] 					= /*inicio get post*/ $this->request->getPost("txtIsTemporal");
 						$obj["description"] 				= /*inicio get post*/ $this->request->getPost("txtDescripcion");
 						$result 			= $this->Remember_Model->update_app_posme($rememberID,$obj);						
@@ -417,7 +421,7 @@ class app_config_noti extends _BaseController {
 			
 			$dataView["objListPeriod"]			= $this->core_web_catalog->getCatalogAllItem("tb_remember","period",$companyID);
 			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_remember","statusID",$companyID,$branchID,$roleID);
-			
+			$dataView["objListTag"]				= $this->Tag_Model->get_rows();
 			
 			$dataSession["notification"]		= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]				= $this->core_web_notification->get_message();

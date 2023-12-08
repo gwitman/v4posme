@@ -5,7 +5,7 @@ class app_notification extends _BaseController {
 	
     
 	//procesar las notificaciones
-	function currentNotification()
+	function fillCurrentNotification()
 	{
 			
 		$tagName		= "NOTIFICAR OBLIGACION";
@@ -116,6 +116,141 @@ class app_notification extends _BaseController {
 		
 	}
 	
+	function fillSendWhatsappCustomer()
+	{
+			
+		$tagName			= "ENVIAR WHATSAPP A CLIENTE";
+		$objListCompany 	= $this->Company_Model->get_rows();
+		$objTag				= $this->Tag_Model->get_rowByName($tagName);
+		$objListUsuario		= $this->User_Tag_Model->get_rowByPK($objTag->tagID);
+		$objListCustomer 	= $this->Customer_Model->get_rowByCompany_phoneAndEmail(APP_COMPANY); 
+		$objListEmail		= $this->Entity_Email_Model->get_rowByCompany(APP_COMPANY); 
+		
+		//Recorrer Empresas
+		if($objListCompany)
+		foreach($objListCompany as $i)
+		{
+			$objListItem		= $this->Remember_Model->getNotificationCompanyByTagId($i->companyID,$objTag->tagID );			
+			//Recorrer las Notificaciones
+			if($objListItem)
+			{				
+				foreach($objListItem as $noti)
+				{
+					$hoy_			= date_format(date_create(),"Y-m-d");
+					$lastNoti 		= date_format(date_create($noti->lastNotificationOn),"Y-m-d");
+					
+					
+					//Recorrer desde la ultima notificacion, hasta la fecha de hoy
+					while ($lastNoti <= $hoy_)
+					{				
+						
+						//Validar si Ya esta procesado el Dia.						
+						$objListItemDetail		= $this->Remember_Model->getProcessNotification($noti->rememberID,$lastNoti);	
+						
+						
+						if($objListItemDetail)
+						if($objListItemDetail->diaProcesado == $noti->day)
+						{
+	
+							
+							
+							$item 					= $objListItemDetail;
+							$mensaje				=  " ";
+							$mensaje				.= " ";
+							$mensaje				.= " => ".$item->description;
+							$mensaje				.= " ";
+							
+							//Ver si el mensaje ya existe para el administrador
+							$objError			= $this->Error_Model->get_rowByMessageUser(0,$mensaje);
+							$data				= null;
+							$errorID 			= 0;
+							
+							if(!$objError){
+								$data				= null;
+								$data["notificated"]= "mensaje al cliente";
+								$data["tagID"]		= $objTag->tagID;
+								$data["message"]	= $mensaje;
+								$data["isActive"]	= 1;
+								$data["createdOn"]	= date_format(date_create(),"Y-m-d H:i:s");
+								$errorID			= $this->Error_Model->insert_app_posme($data);
+							}
+							else 
+								$errorID 			= $objError->errorID;
+					
+							
+							//tag con notificacion
+							if($objTag->sendSMS == "1" )
+							{
+								
+								//Lista de Usuarios
+								if ($objListCustomer)
+								foreach($objListCustomer as $usuarioX){
+									
+									$objNotificationUser		= $this->Notification_Model->get_rowsByToMessage($usuarioX->phoneNumber,$mensaje);									
+									if(!$objNotificationUser){
+										$data						= null;
+										$data["errorID"]			= $errorID;
+										$data["from"]				= PHONE_POSME;
+										$data["to"]					= $usuarioX->firstName;
+										$data["phoneFrom"]			= PHONE_POSME;
+										$data["phoneTo"]			= $usuarioX->phoneNumber;
+										$data["programDate"]		= $hoy_;
+										$data["programHour"]		= "00:00:00";
+										$data["subject"]			= "notificacion";
+										$data["message"]			= $mensaje;
+										$data["summary"]			= "summary... ";
+										$data["title"]				= "title";
+										$data["tagID"]				= $objTag->tagID;
+										$data["createdOn"]			= date_format(date_create(),"Y-m-d H:i:s");
+										$data["isActive"]			= 1;
+										$this->Notification_Model->insert_app_posme($data);
+									}
+									
+								}
+							}
+							
+							
+							
+							//tag con correo
+							if($objTag->sendEmail == "1" )
+							{
+								if ($objListEmail)
+								foreach($objListEmail as $customerX){									
+									$objListCustomer		= $this->Notification_Model->get_rowsByToMessage($customerX->email,$mensaje);
+									if(!$objNotificationUser){
+										$data						= null;
+										$data["errorID"]			= $errorID;
+										$data["from"]				= EMAIL_APP;
+										$data["to"]					= $usuarioX->email;
+										$data["subject"]			= "notificar obligacion";
+										$data["message"]			= $mensaje;
+										$data["summary"]			= "notificar obligacion";
+										$data["title"]				= "notificar obligacion";
+										$data["tagID"]				= $objTag->tagID;
+										$data["createdOn"]			= date_format(date_create(),"Y-m-d H:i:s");
+										$data["isActive"]			= 1;
+										$this->Notification_Model->insert_app_posme($data);
+									}
+								}
+							}
+							
+							
+						}
+						
+						
+						//Actualizar Base de Datos
+						$dataRemember						= NULL;
+						$dataRemember["lastNotificationOn"]	= $lastNoti;
+						$this->Remember_Model->update_app_posme($noti->rememberID,$dataRemember);	
+						//Siguiente Fecha
+						$lastNoti = date_format(date_add(date_create($lastNoti),date_interval_create_from_date_string("1 days")),"Y-m-d");
+					}
+				}
+			}
+		}
+		
+	}
+	
 	//mandar las notificacioneds que estan guardadas, mandarlas por correo
 	function sendEmail(){
 		//Cargar Libreria
@@ -138,11 +273,53 @@ class app_notification extends _BaseController {
 		
 		echo "SUCCESS";
 	}
-	function sendWhatsapp(){
+	
+	function sendWhatsappPosMeSendMessage()
+	{
 		//Cargar Libreria
 		
 		//Obtener lista de email
-		$objListNotification = $this->Notification_Model->get_rowsWhatsapp(20);
+		$objListNotification = $this->Notification_Model->get_rowsWhatsappPosMeSendMessage(20);
+		if($objListNotification)
+		foreach($objListNotification as $i)
+		{
+			
+			
+			/////////////////////////////////////////////
+			/////////////////////////////////////////////
+			/////////////////////////////////////////////
+			//Enviar Whatsapp
+			/////////////////////////////////////////////
+			/////////////////////////////////////////////
+			/////////////////////////////////////////////
+			if($this->core_web_whatsap->validSendMessage(APP_COMPANY))
+			{
+				$this->core_web_whatsap->sendMessageUltramsg(
+					APP_COMPANY, 
+					"Hola ".$i->to." ".$i->message,
+					$i->phoneTo
+				);
+				
+				
+				$data["sendOn"]			= date_format(date_create(),"Y-m-d H:i:s");
+				$data["sendWhatsappOn"]	= date_format(date_create(),"Y-m-d H:i:s");
+				$this->Notification_Model->update_app_posme($i->notificationID,$data);
+				
+			}
+				
+				
+				
+		}
+		
+		echo "SUCCESS";
+		
+	}
+	
+	function sendWhatsappPosMeCalendar(){
+		//Cargar Libreria
+		
+		//Obtener lista de email
+		$objListNotification = $this->Notification_Model->get_rowsWhatsappPosMeCalendar(20);
 		if($objListNotification)
 		foreach($objListNotification as $i){
 			

@@ -213,7 +213,7 @@ class app_accounting_process extends _BaseController {
 			if ($notificationName == "currentNotification" || $notificationName == "TODAS")
 			{
 					$ex = curl_init();
-					curl_setopt($ex, CURLOPT_URL, base_url()."/app_notification/currentNotification");
+					curl_setopt($ex, CURLOPT_URL, base_url()."/app_notification/fillCurrentNotification");
 					curl_setopt($ex, CURLOPT_HEADER, 0);
 					$er = curl_exec($ex);
 					$er = curl_close($ex);
@@ -270,6 +270,14 @@ class app_accounting_process extends _BaseController {
 			{
 				$ex = curl_init();
 				curl_setopt($ex, CURLOPT_URL,  base_url()."/app_notification/nextVisit/".$companyID);
+				curl_setopt($ex, CURLOPT_HEADER, 0);
+				$er = curl_exec($ex);
+				$er = curl_close($ex);
+			}
+			if ($notificationName == "sendWhatsappCustomer" || $notificationName == "TODAS")
+			{
+				$ex = curl_init();
+				curl_setopt($ex, CURLOPT_URL,  base_url()."/app_notification/fillSendWhatsappCustomer/".$companyID);
 				curl_setopt($ex, CURLOPT_HEADER, 0);
 				$er = curl_exec($ex);
 				$er = curl_close($ex);

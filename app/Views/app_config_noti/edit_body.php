@@ -85,6 +85,24 @@
 														</div>
 														
 														<div class="form-group">
+															<label class="col-lg-2 control-label" for="selectFilter">Tag</label>
+															<div class="col-lg-4">
+																<select name="txtTagID" id="txtTagID" class="select2">
+																		<option value="0">Seleccionar</option>
+																		<?php
+																		if($objListTag)
+																		foreach($objListTag as $ws){
+																			if($ws->tagID == $objRemember->tagID)
+																			echo "<option value='".$ws->tagID."' selected >".$ws->name."</option>";
+																			else
+																			echo "<option value='".$ws->tagID."' >".$ws->name."</option>";
+																		}
+																		?>													
+																</select>
+															</div>
+														</div>
+														
+														<div class="form-group">
 															<label class="col-lg-2 control-label" for="checkboxes">Temporal</label>													
 															<label class="checkbox-inline">
 																<input type="checkbox" id="txtIsTemporal" name="txtIsTemporal" value="1" <?php if($objRemember->isTemporal){ echo "checked='checked'"; } ?> >

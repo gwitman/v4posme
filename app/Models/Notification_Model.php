@@ -133,7 +133,38 @@ class Notification_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
 	}
-    function get_rowsWhatsapp($top){
+	
+	function get_rowsWhatsappPosMeSendMessage($top){
+		$db 		= db_connect();
+		$builder	= $db->table("tb_notification");    
+   
+		$sql = "";
+		$sql = sprintf("select n.notificationID,n.errorID,n.`from`,n.`to`,n.`subject`,n.message,n.summary,n.title,n.tagID,n.createdOn,n.sendOn,n.isActive,n.phoneFrom,n.phoneTo,n.programDate,n.programHour,n.sendEmailOn,n.sendWhatsappOn,n.addedCalendarGoogle");
+		$sql = $sql.sprintf(" from tb_notification n");
+		$sql = $sql.sprintf(" inner join tb_tag t on n.tagID = t.tagID  ");
+		$sql = $sql.sprintf(" where n.isActive= 1");
+		$sql = $sql.sprintf(" and t.sendSMS = 1");
+		$sql = $sql.sprintf(" and n.sendWhatsappOn is null ");
+		$sql = $sql.sprintf(" and 
+									CAST(CONCAT(n.programDate,' ','00:00',':00') AS DATETIME) >= 
+									ADDTIME(ADDTIME(CURRENT_DATE(),'".APP_HOUR_DIFERENCE_MYSQL."') , '-00:00:00')   
+									
+							  and 
+									CAST(CONCAT(n.programDate,' ','00:00',':00') AS DATETIME) <= 
+									ADDTIME(ADDTIME(CURRENT_DATE(),'".APP_HOUR_DIFERENCE_MYSQL."') , '+23:59:59')   
+							");
+		
+			
+			
+		$sql = $sql.sprintf(" limit 0,$top ");
+		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+		
+   }
+   
+    function get_rowsWhatsappPosMeCalendar($top){
 		$db 		= db_connect();
 		$builder	= $db->table("tb_notification");    
    
@@ -144,11 +175,11 @@ class Notification_Model extends Model  {
 		$sql = $sql.sprintf(" and n.sendWhatsappOn is null");
 		$sql = $sql.sprintf(" and 
 									CAST(CONCAT(n.programDate,' ',n.programHour,':00') AS DATETIME) > 
-									ADDTIME(ADDTIME(now(),'".APP_HOUR_DIFERENCE."') , '-00:30:00')   
+									ADDTIME(ADDTIME(now(),'".APP_HOUR_DIFERENCE_MYSQL."') , '-00:30:00')   
 									
 							  and 
 									CAST(CONCAT(n.programDate,' ',n.programHour,':00') AS DATETIME) <= 
-									ADDTIME(ADDTIME(now(),'".APP_HOUR_DIFERENCE."') , '+00:30:00')   
+									ADDTIME(ADDTIME(now(),'".APP_HOUR_DIFERENCE_MYSQL."') , '+00:30:00')   
 							");
 		
 			
