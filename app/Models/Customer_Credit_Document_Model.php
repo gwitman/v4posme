@@ -59,7 +59,7 @@ class Customer_Credit_Document_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
-   function get_rowByEntityApplied($companyID,$entityID){
+   function get_rowByEntityApplied($companyID,$entityID,$currencyID ){
 		$db 	= db_connect();
 		$builder	= $db->table("tb_customer_credit_document");  
 		
@@ -75,10 +75,11 @@ class Customer_Credit_Document_Model extends Model  {
 			inner join tb_customer_credit_amoritization cc on cc.customerCreditDocumentID = i.customerCreditDocumentID
 			inner join tb_workflow_stage a on a.workflowStageID = i.statusID 
 		where 
-			i.companyID = $companyID and 
-			i.entityID = $entityID and 
-			i.isActive = 1 and 
-			a.aplicable= 1
+			i.companyID  = $companyID and 
+			i.entityID   = $entityID and 
+			i.isActive   = 1 and 
+			a.aplicable  = 1 and 
+			i.currencyID = $currencyID 
 		group by 
 			i.customerCreditDocumentID, i.companyID, i.entityID, i.customerCreditLineID,i.documentNumber, 
 			i.dateOn, i.amount, i.interes, i.term, i.exchangeRate, i.reference1, i.reference2, 
@@ -136,7 +137,7 @@ class Customer_Credit_Document_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
-   function get_rowByBalancePending($companyID,$entityID,$customerCreditDocumentID)
+   function get_rowByBalancePending($companyID,$entityID,$customerCreditDocumentID,$currencyID)
    {
 		$db 		= db_connect();
 		$builder	= $db->table("tb_customer_credit_document");    
@@ -173,7 +174,8 @@ class Customer_Credit_Document_Model extends Model  {
 				wsd.aplicable = 1 and 
 				a.remaining > 0 and 		
 				d.entityID = $entityID  and 
-				a.customerCreditDocumentID >= $customerCreditDocumentID
+				a.customerCreditDocumentID >= $customerCreditDocumentID and 
+				d.currencyID = $currencyID
 			group by 
 				d.entityID,
 				d.customerCreditDocumentID,

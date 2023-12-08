@@ -33,7 +33,8 @@ class app_cxc_api extends _BaseController {
 			//Redireccionar datos
 			
 			$customerID		= /*inicio get post*/ $this->request->getPost("customerID");			
-			$data 			= $this->Customer_Credit_Document_Model->get_rowByEntityApplied($companyID,$customerID);
+			$currencyID		= /*inicio get post*/ $this->request->getPost("currencyID");
+			$data 			= $this->Customer_Credit_Document_Model->get_rowByEntityApplied($companyID,$customerID,$currencyID);
 			
 			return $this->response->setJSON(array(
 				'error'   	=> false,

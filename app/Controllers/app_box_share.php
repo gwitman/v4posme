@@ -102,6 +102,8 @@ class app_box_share extends _BaseController {
 			$dataView["company"]							= $dataSession["company"];
 			$dataView["objListCustomer"]					= $this->Customer_Model->get_rowByCompany($companyID);
 			$dataView["useMobile"]							= $dataSession["user"]->useMobile;
+			$dataView["objListCurrency"]					= $this->Company_Currency_Model->getByCompany($companyID);
+			$dataView["objListCurrencyDefault"]				= $this->core_web_currency->getCurrencyDefault($companyID);
 			
 			$dataView["objEmployeeDefault"]				= $this->Employee_Model->get_rowByEntityID($companyID,helper_RequestGetValue($dataView["objTransactionMaster"]->reference3,0));
 			$dataView["objEmployeeNaturalDefault"]		= null;
@@ -274,6 +276,9 @@ class app_box_share extends _BaseController {
 			$objTMNew["descriptionReference"] 			= "reference1:input,reference2:input,reference3:Gestor de Cobro,reference4:Linea de credito del Cliente";
 			$objTMNew["statusID"] 						= /*inicio get post*/ $this->request->getPost("txtStatusID");
 			$objTMNew["amount"] 						= 0;
+			$objTMNew["currencyID"]						= /*inicio get post*/ $this->request->getPost("txtCurrencyID"); 
+			$objTMNew["currencyID2"]					= $this->core_web_currency->getTarget($companyID,$objTMNew["currencyID"]);
+			$objTMNew["exchangeRate"]					= $this->core_web_currency->getRatio($dataSession["user"]->companyID,date("Y-m-d"),1,$objTMNew["currencyID2"],$objTMNew["currencyID"]);
 			
 			//Ingresar Informacion Adicional
 			$objTMInfoNew["companyID"]					= $objTM->companyID;
@@ -285,8 +290,8 @@ class app_box_share extends _BaseController {
 			$objTMInfoNew["referenceClientIdentifier"]	= /*inicio get post*/ $this->request->getPost("txtReferenceClientIdentifier");
 			$objTMInfoNew["receiptAmount"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmount"));
 			$objTMInfoNew["changeAmount"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtChangeAmount"));
-			$objTMInfoNew["reference1"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtBalanceStart"));
-			$objTMInfoNew["reference2"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtBalanceFinish"));
+			$objTMInfoNew["reference1"]					= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtBalanceStart"));
+			$objTMInfoNew["reference2"]					= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtBalanceFinish"));
 			
 			$db=db_connect();
 			$db->transStart();
@@ -316,6 +321,8 @@ class app_box_share extends _BaseController {
 			$this->Transaction_Master_Detail_Model->deleteWhereIDNotIn($companyID,$transactionID,$transactionMasterID,$arrayListTransactionDetailID); 
 						
 			//Si este valor esta en true, se tiene que seleccionar una factura a la ves, par ir abonando una a una
+			//Si este valor es false, se puede seleccionar una sola factura, y el sistema va aplicado automaticamente, segun el monto.
+			//Si este valor es false, ingreas a la funcion 
 			if( 
 				$this->core_web_parameter->getParameterValue("SHARE_INVOICE_BY_INVOICE",$companyID)
 				== "false"
@@ -347,7 +354,7 @@ class app_box_share extends _BaseController {
 						$arrayListTransactionDetailFecha			= array();
 						$arrayListCustomerCreditAmortizationID		= array();
 						$arrayListShare	 							= array();								
-						$objListDocumentoAmortization				= $this->Customer_Credit_Document_Model->get_rowByBalancePending($companyID,$objTMNew["entityID"],$customerCreditDocumentIDMin);				
+						$objListDocumentoAmortization				= $this->Customer_Credit_Document_Model->get_rowByBalancePending($companyID,$objTMNew["entityID"],$customerCreditDocumentIDMin,$objTMNew["currencyID"]);
 						$objListDocumentoAmortizationBalanceTotal	= 0;
 						//Obtener el banace total pendietne
 						foreach($objListDocumentoAmortization as $it )
@@ -649,8 +656,8 @@ class app_box_share extends _BaseController {
 			$objTM["componentID"] 					= $objComponentShare->componentID;
 			$objTM["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");//--fin peticion get o post
 			$objTM["sign"] 							= $objT->signInventory;
-			$objTM["currencyID"]					= $this->core_web_currency->getCurrencyDefault($dataSession["user"]->companyID)->currencyID;
-			$objTM["currencyID2"]					= $this->core_web_currency->getCurrencyExternal($dataSession["user"]->companyID)->currencyID;
+			$objTM["currencyID"]					= /*inicio get post*/ $this->request->getPost("txtCurrencyID"); 
+			$objTM["currencyID2"]					= $this->core_web_currency->getTarget($companyID,$objTM["currencyID"]);
 			$objTM["exchangeRate"]					= $this->core_web_currency->getRatio($dataSession["user"]->companyID,date("Y-m-d"),1,$objTM["currencyID2"],$objTM["currencyID"]);
 			$objTM["reference1"] 					= /*inicio get post*/ $this->request->getPost("txtReference1");
 			$objTM["reference2"] 					= /*inicio get post*/ $this->request->getPost("txtReference2");
@@ -886,6 +893,8 @@ class app_box_share extends _BaseController {
 			$dataView["objListWorkflowStage"]				= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_share","statusID",$companyID,$branchID,$roleID);
 			$dataView["company"]							= $dataSession["company"];
 			$dataView["objListCustomer"]					= $this->Customer_Model->get_rowByCompany($companyID);
+			$dataView["objListCurrency"]					= $this->Company_Currency_Model->getByCompany($companyID);
+			$dataView["objListCurrencyDefault"]				= $this->core_web_currency->getCurrencyDefault($companyID);
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);

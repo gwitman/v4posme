@@ -20,7 +20,7 @@
 			dataType    : 'json',
 			type        : 'POST',
 			url  		: "<?php echo base_url(); ?>/app_cxc_api/getCustomerBalance",
-			data 		: {customerID : $("#txtCustomerID").val()  },
+			data 		: {customerID : $("#txtCustomerID").val(), currencyID : $("#txtCurrencyID").val()   },
 			success		: function(obj,index,event){
 				console.info("complete data success getCustomerBalance");
 				fnWaitClose();
@@ -37,6 +37,13 @@
 		
 		//Buscar el Cliente
 		$(document).on("click","#btnSearchCustomer",function(){
+				
+			if($("#txtCurrencyID").val() == ""){
+				fnShowNotification("Seleccione la moneda","error");
+				return;
+			}
+			
+			
 			var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCustomer->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_BILLING/true/empty/false/not_redirect_when_empty";
 			window.open(url_request,"MsgWindow","width=900,height=450");
 			window.onCompleteCustomer = onCompleteCustomer; 
@@ -137,7 +144,13 @@
 				return;
 			}
 			
-			var url_request 			= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCustomerCreditDocument->componentID; ?>/onCompleteNewShare/SELECCIONAR_DOCUMENTOS_DE_CREDITO/true/"+encodeURI("{\"entityID\"|\""+$("#txtCustomerID").val()+"\"}") + "/false/not_redirect_when_empty";
+			if($("#txtCurrencyID").val() == ""){
+				fnShowNotification("Seleccione la moneda","error");
+				return;
+			}
+			
+			
+			var url_request 			= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCustomerCreditDocument->componentID; ?>/onCompleteNewShare/SELECCIONAR_DOCUMENTOS_DE_CREDITO/true/"+encodeURI("{\"entityID\"|\""+ $("#txtCustomerID").val() +"\",\"currencyID\"|\""+ $("#txtCurrencyID").val() +"\"}") + "/false/not_redirect_when_empty";
 			window.open(url_request,"MsgWindow","width=1585,height=795");
 			window.onCompleteNewShare 	= onCompleteNewShare; 
 		});
@@ -169,7 +182,7 @@
 				dataType    : 'json',
 				type        : 'POST',
 				url  		: "<?php echo base_url(); ?>/app_cxc_api/getCustomerBalance",
-				data 		: {customerID : $("#txtCustomerID").val()  },
+				data 		: {customerID : $("#txtCustomerID").val() , currencyID : $("#txtCurrencyID").val()   },
 				success		: function(obj,index,event){
 					console.info("complete data success getCustomerBalance");
 					fnWaitClose();
@@ -246,13 +259,15 @@
 		$("#txtCustomerID").val(objResponse[1]);
 		$("#txtCustomerDescription").val(objResponse[2] + " " + objResponse[3] + " / " + objResponse[4]);
 		
+		
+			
 		fnWaitOpen();		
 		$.ajax({									
 			cache       : false,
 			dataType    : 'json',
 			type        : 'POST',
 			url  		: "<?php echo base_url(); ?>/app_cxc_api/getCustomerBalance",
-			data 		: {customerID : $("#txtCustomerID").val()  },
+			data 		: {customerID : $("#txtCustomerID").val() , currencyID : $("#txtCurrencyID").val()  },
 			success		: function(obj,index,event){
 				console.info("complete data success getCustomerBalance");
 				fnWaitClose();

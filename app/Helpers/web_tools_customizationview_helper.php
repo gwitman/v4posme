@@ -25,6 +25,7 @@ function getBehavio($type_company,$key_controller,$key_element)
 		strtolower('default_app_box_share_divCustomerControlBuscar')								=> "",
 		strtolower('default_app_box_share_divCustomerControlSelected')								=> "hidden",
 		strtolower('default_app_box_share_divCobrador')												=> "",
+		strtolower('default_app_box_share_divMoneda')												=> "",
 		
 		
 		
@@ -174,7 +175,8 @@ function getBehavio($type_company,$key_controller,$key_element)
 		strtolower('gbt_app_box_share_javscriptVariable_varPrinterOnlyFormat')						=> "true",
 		strtolower('gbt_app_box_share_divCustomerControlBuscar')									=> "hidden",
 		strtolower('gbt_app_box_share_divCustomerControlSelected')									=> "",
-		strtolower('gbt_app_box_share_divCobrador')													=> "hidden"
+		strtolower('gbt_app_box_share_divCobrador')													=> "hidden",
+		strtolower('gbt_app_box_share_divMoneda')													=> "hidden"
 	);
 	
 	

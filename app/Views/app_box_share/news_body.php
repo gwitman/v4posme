@@ -76,12 +76,32 @@
 														<div class="form-group">
 															<label class="col-lg-2 control-label" for="selectFilter">Estado</label>
 															<div class="col-lg-8">
-																<select name="txtStatusID" id="txtStatusID" class="<?php echo getBehavio($company->type,"app_box_share","comboStyle"); ?>  ">
+																<select name="txtStatusID" id="txtStatusID" class="<?php echo ( $useMobile == "1" ? "" : "select2"); ?>">
 																		<option></option>																
 																		<?php
 																		if($objListWorkflowStage)
 																		foreach($objListWorkflowStage as $ws){
 																			echo "<option value='".$ws->workflowStageID."' selected>".$ws->name."</option>";
+																		}
+																		?>
+																</select>
+															</div>
+														</div>
+														
+														<div class="form-group <?php echo getBehavio($company->type,"app_box_share","divMoneda"); ?>  ">
+															<label class="col-lg-2 control-label" for="selectFilter">Moneda</label>
+															<div class="col-lg-8">
+																<select name="txtCurrencyID" id="txtCurrencyID" class="<?php echo ( $useMobile == "1" ? "" : "select2"); ?>">
+																		<option></option>																
+																		<?php
+																		if($objListCurrency)
+																		foreach($objListCurrency as $ws){
+																			
+																			if( $ws->currencyID == $objListCurrencyDefault->currencyID )
+																				echo "<option value='".$ws->currencyID."' selected >".$ws->name."</option>";
+																			else 
+																				echo "<option value='".$ws->currencyID."' >".$ws->name."</option>";
+																			
 																		}
 																		?>
 																</select>
