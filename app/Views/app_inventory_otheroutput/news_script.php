@@ -250,7 +250,7 @@
 		objRow.itemNumber 				= objResponse[2];
 		objRow.itemName 				= objResponse[3];
 		objRow.itemUM 					= objResponse[4];
-		objRow.quantity 				= fnFormatNumber(objResponse[5],2);
+		objRow.quantity 				= 1; //fnFormatNumber(objResponse[5],2);
 		objRow.lote 					= "";
 		objRow.vencimiento				= "";
 		objRow.masinfor					= "";
