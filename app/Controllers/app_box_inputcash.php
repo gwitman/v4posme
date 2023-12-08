@@ -34,14 +34,6 @@ class app_box_inputcash extends _BaseController {
 			
 			
 			
-			
-			
-			
-			
-			
-			
-			
-			
 			//Redireccionar datos
 									
 			$companyID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"companyID");//--finuri
@@ -317,7 +309,7 @@ class app_box_inputcash extends _BaseController {
 			
 			$this->Transaction_Master_Detail_Model->deleteWhereIDNotIn($companyID,$transactionID,$transactionMasterID,$arrayListTransactionDetailID_); 
 			
-			//phpinfo();			
+					
 			if(!empty($arrayListTransactionDetailID)){				
 				$amount									= $amount + helper_StringToNumber($arrayListShare);
 				
@@ -390,6 +382,38 @@ class app_box_inputcash extends _BaseController {
 			$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMNew);
 						
 						
+			
+			//Abrir caja si el tipo es Apertura
+			$typeInputCash 			= $objTMNew["areaID"];
+			$objCatalogItem 		= $this->Catalog_Item_Model->get_rowByCatalogItemID($typeInputCash);
+			$objWorkflowStageApply 	= $this->core_web_workflow->getWorkflowStageApplyFirst( "tb_cash_box_session","statusID",$companyID,$branchID,$roleID );
+			$objWorkflowStageInit 	= $this->core_web_workflow->getWorkflowInitStage( "tb_cash_box_session","statusID",$companyID,$branchID,$roleID );
+			$objListCashUser	 	= $this->Cash_Box_User_Model->asObject()->where("companyID",$this->session->get('user')->companyID)->where("userID",$userID )->findAll();
+			$cashBoxID				= $objListCashUser ? $objListCashUser[0]->cashBoxID : 0;
+			
+			if( strtoupper($objCatalogItem->display) == strtoupper("Apertura") )
+			{
+				$objCashBoxSession	= $this->Cash_Box_Session_Model->asArray()->
+										where("userID",$userID)->
+										where("statusID",$objWorkflowStageInit[0]->workflowStageID)->
+										findAll();		
+
+				if(!$objCashBoxSession)
+				{
+					$objCashBoxSession					= null;
+					$objCashBoxSession["companyID"] 	= $companyID;
+					$objCashBoxSession["branchID"] 		= $branchID;
+					$objCashBoxSession["cashBoxID"]		= $cashBoxID;
+					$objCashBoxSession["userID"] 		= $userID;					
+					$objCashBoxSession["isActive"] 		= 1;
+					$objCashBoxSession["statusID"] 		= $objWorkflowStageInit[0]->workflowStageID;
+					$objCashBoxSession["startOn"] 		= date("Y-m-d H:i:s");
+					$objCashBoxSession["endOn"] 		= "0000-00-00";
+					$this->Cash_Box_Session_Model->insert($objCashBoxSession);
+				}
+			
+			}
+			
 			
 			
 			if($db->transStatus() !== false){

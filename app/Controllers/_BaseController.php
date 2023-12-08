@@ -134,6 +134,9 @@ use App\Models\Tag_Model;
 use App\Models\Transaction_Causal_Model;
 use App\Models\Public_Catalog_Model;
 use App\Models\Public_Catalog_Detail_Model;
+use App\Models\Cash_Box_User_Model;
+use App\Models\Cash_Box_Session_Model;
+use App\Models\Cash_Box_Model;
 
 use App\Models\Transaction_Master_Concept_Model;
 use App\Models\Transaction_Master_Detail_Credit_Model;
@@ -314,7 +317,10 @@ abstract class _BaseController extends Controller
 	protected $Tag_Model;
 	protected $Transaction_Causal_Model;	
 	protected $Public_Catalog_Model;
-	protected $Public_Catalog_Detail_Model;
+	protected $Public_Catalog_Detail_Model;	
+	protected $Cash_Box_User_Model;
+	protected $Cash_Box_Session_Model;
+	protected $Cash_Box_Model;
 
 	protected $Transaction_Master_Concept_Model;
 	protected $Transaction_Master_Detail_Credit_Model;
@@ -476,7 +482,11 @@ abstract class _BaseController extends Controller
 		$this->Tag_Model= new Tag_Model();
 		$this->Transaction_Causal_Model= new Transaction_Causal_Model();
 		$this->Public_Catalog_Model = new Public_Catalog_Model();
-		$this->Public_Catalog_Detail_Model = new Public_Catalog_Detail_Model();		
+		$this->Public_Catalog_Detail_Model = new Public_Catalog_Detail_Model();
+		$this->Cash_Box_User_Model = new Cash_Box_User_Model();
+		$this->Cash_Box_Session_Model = new Cash_Box_Session_Model();
+		$this->Cash_Box_Model = new Cash_Box_Model();
+	
 		$this->Transaction_Master_Concept_Model= new Transaction_Master_Concept_Model();
 		$this->Transaction_Master_Detail_Credit_Model= new Transaction_Master_Detail_Credit_Model();
 		$this->Transaction_Master_Detail_Model= new Transaction_Master_Detail_Model();

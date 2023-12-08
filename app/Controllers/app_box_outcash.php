@@ -305,17 +305,8 @@ class app_box_outcash extends _BaseController {
 			//phpinfo();			
 			if(!empty($arrayListTransactionDetailID)){				
 				
-								
-														
-				
-				$amount									= $amount + helper_StringToNumber($arrayListShare);
-				
+				$amount									= $amount + helper_StringToNumber($arrayListShare);				
 				$transactionDetailID					= $arrayListTransactionDetailID;
-									
-									
-									
-									
-				
 				
 				//Nuevo Detalle
 				if($transactionDetailID == 0){	
@@ -403,6 +394,30 @@ class app_box_outcash extends _BaseController {
 				
 			}
 			
+			//Cerrar caja si el tipo es Cierre
+			$typeOutputCash 		= $objTMNew["areaID"];
+			$objCatalogItem 		= $this->Catalog_Item_Model->get_rowByCatalogItemID($typeOutputCash);
+			$objWorkflowStageApply 	= $this->core_web_workflow->getWorkflowStageApplyFirst( "tb_cash_box_session","statusID",$companyID,$branchID,$roleID );
+			$objWorkflowStageInit 	= $this->core_web_workflow->getWorkflowInitStage( "tb_cash_box_session","statusID",$companyID,$branchID,$roleID );
+			$objListCashUser	 	= $this->Cash_Box_User_Model->asObject()->where("companyID",$this->session->get('user')->companyID)->where("userID",$userID )->findAll();
+			$cashBoxID				= $objListCashUser ? $objListCashUser[0]->cashBoxID : 0;
+			
+			if( strtoupper($objCatalogItem->display) == strtoupper("Cierre") )
+			{
+				$objCashBoxSession	= $this->Cash_Box_Session_Model->asArray()->
+										where("userID",$userID)->
+										where("statusID",$objWorkflowStageInit[0]->workflowStageID)->
+										findAll();		
+
+				if($objCashBoxSession)
+				{				
+					$objCashBoxSession 					= $objCashBoxSession[0];
+					$objCashBoxSession["statusID"] 		= $objWorkflowStageApply[0]->workflowStageID;					
+					$objCashBoxSession["endOn"] 		= date("Y-m-d H:i:s");
+					$this->Cash_Box_Session_Model->update($objCashBoxSession["cashBoxSessionID"],$objCashBoxSession);
+				}
+			
+			}
 			
 			
 			

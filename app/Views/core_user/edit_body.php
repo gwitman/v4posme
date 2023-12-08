@@ -76,6 +76,36 @@
 																		</select>
 																	</div>
 																</div>
+																
+																<div class="form-group">
+																	<label class="col-lg-2 control-label" for="selectFilter">Caja</label>
+																	<div class="col-lg-10">
+																		<select name="txtCashBoxID" id="txtCashBoxID" class="select2">
+																				<option></option>
+																				<?php
+																				foreach($objListCash as $i)
+																				{
+																					if($cashBoxID == $i->cashBoxID)
+																					{
+																						echo "<option value='".$i->cashBoxID."' selected >".$i->name."</option>";
+																					}
+																					else {																					
+																						echo "<option value='".$i->cashBoxID."'>".$i->name."</option>";
+																					}
+																				}
+																				?>																
+																		</select>
+																	</div>
+																</div>
+																
+																<div class="form-group">
+																		<label class="col-lg-2 control-label" for="normal">Mobile</label> 
+																		<div class="col-lg-10">
+																			<input type="checkbox"   name="txtIsMobile" id="txtIsMobile" value="1"  <?php echo ($objUser->useMobile == 1) ? "checked":""; ?>  >
+																		</div>
+																</div>
+																		
+																		
 																<div class="form-group">
 																			<label class="col-lg-2 control-label" for="buttons">ENTIDAD</label>
 																			<div class="col-lg-5">

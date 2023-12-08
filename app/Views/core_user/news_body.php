@@ -71,6 +71,28 @@
 																		</div>
 																		
 																		<div class="form-group">
+																			<label class="col-lg-2 control-label" for="selectFilter">Caja</label>
+																			<div class="col-lg-10">
+																				<select name="txtCashBoxID" id="txtCashBoxID" class="select2">
+																						<option></option>
+																						<?php
+																						foreach($objListCash as $i){
+																						echo "<option value='".$i->cashBoxID."'>".$i->name."</option>";
+																						}
+																						?>																
+																				</select>
+																			</div>
+																		</div>
+																		
+																		<div class="form-group">
+																				<label class="col-lg-2 control-label" for="normal">Mobile</label>
+																				<div class="col-lg-10">
+																					<input type="checkbox"   name="txtIsMobile" id="txtIsMobile" value="1"  >
+																				</div>
+																		</div>
+																		
+																		
+																		<div class="form-group">
 																			<label class="col-lg-2 control-label" for="buttons">ENTIDAD</label>
 																			<div class="col-lg-5">
 																				<div class="input-group">

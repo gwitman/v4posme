@@ -16,7 +16,8 @@ class core_user extends _BaseController {
 			$dataSession		= $this->session->get();
 			
 			//PERMISO SOBRE LA FUNCION
-			if(APP_NEED_AUTHENTICATION == true){
+			if(APP_NEED_AUTHENTICATION == true)
+			{
 				$permited = false;
 				$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
 				
@@ -25,7 +26,7 @@ class core_user extends _BaseController {
 				
 				$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"delete",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
 				if ($resultPermission 	== PERMISSION_NONE)
-				throw new \Exception(NOT_ALL_DELETE);			
+				throw new \Exception(NOT_ALL_DELETE);
 			}	
 			
 			
@@ -154,6 +155,7 @@ class core_user extends _BaseController {
 						$obj["nickname"] 			= /*inicio get post*/ $this->request->getPost("txtNickname");
 						$obj["password"] 			= /*inicio get post*/ $this->request->getPost("txtPassword");
 						$obj["email"] 				= /*inicio get post*/ $this->request->getPost("txtEmail");					
+						$obj["useMobile"]			= /*inicio get post*/ $this->request->getPost("txtIsMobile");
 						$obj["createdOn"]			= date("Y-m-d H:i:s");					
 						$obj["createdBy"]			= $dataSession["user"]->userID;
 						$obj["isActive"] 			= true;		
@@ -199,6 +201,20 @@ class core_user extends _BaseController {
 							$this->User_Tag_Model->insert_app_posme($objTag);
 						}
 						
+						//Agregar la caja
+						$cashBoxID = helper_RequestGetValue($this->request->getPost("txtCashBoxID"),0);
+						if($cashBoxID > 0)
+						{
+							$objCashBoxUser 				= NULL;					
+							$objCashBoxUser["companyID"] 	= $companyID;
+							$objCashBoxUser["branchID"] 	= $branchID;
+							$objCashBoxUser["userID"] 		= $userID;
+							$objCashBoxUser["cashBoxID"]	= $cashBoxID;
+							$objCashBoxUser["typeID"] 		= 0;							
+							
+							$this->Cash_Box_User_Model->insert($objCashBoxUser);
+							
+						}
 						
 						if($db->transStatus() !== false){
 							$db->transCommit();						
@@ -262,6 +278,7 @@ class core_user extends _BaseController {
 						$obj["nickname"] 			= /*inicio get post*/ $this->request->getPost("txtNickname");
 						$obj["password"] 			= /*inicio get post*/ $this->request->getPost("txtPassword");
 						$obj["email"] 				= /*inicio get post*/ $this->request->getPost("txtEmail");
+						$obj["useMobile"]			= /*inicio get post*/ $this->request->getPost("txtIsMobile");
 						$obj["employeeID"] 			= /*inicio get post*/ $this->request->getPost("txtEmployeeID");
 						$result 					= $this->User_Model->update_app_posme($companyID,$branchID,$userID,$obj);
 						$roleID 					= /*inicio get post*/ $this->request->getPost("txtRoleID");
@@ -300,6 +317,29 @@ class core_user extends _BaseController {
 							$objTag["tagID"] 			= $value;
 							$this->User_Tag_Model->insert_app_posme($objTag);
 						}
+						
+						//Modificar Caja
+						$cashBoxID = helper_RequestGetValue($this->request->getPost("txtCashBoxID"),0);
+						if($cashBoxID > 0)
+						{
+							$objCashBoxUser 				= NULL;					
+							$objCashBoxUser					= $this->Cash_Box_User_Model->asArray()->where("userID",$userID)->findAll();							
+							if( $objCashBoxUser )
+							{								
+								$objCashBoxUser[0]["cashBoxID"]	= $cashBoxID;								
+								$this->Cash_Box_User_Model->update($objCashBoxUser[0]["cashBoxUserID"],$objCashBoxUser[0]);
+							}
+							else 
+							{
+								$objCashBoxUser["companyID"] 	= $companyID;
+								$objCashBoxUser["branchID"] 	= $branchID;
+								$objCashBoxUser["userID"] 		= $userID;
+								$objCashBoxUser["cashBoxID"]	= $cashBoxID;
+								$objCashBoxUser["typeID"] 		= 0;							
+								$this->Cash_Box_User_Model->insert($objCashBoxUser);
+							}
+						}
+						
 						
 						if($db->transStatus() !== false){
 							$db->transCommit();
@@ -415,6 +455,12 @@ class core_user extends _BaseController {
 			//Obtener El Natural
 			$datView["objNatural"]				= $datView["objEntity"] == null ? null : $this->Natural_Model->get_rowByPK($datView["objEntity"]->companyID,$datView["objEntity"]->branchID,$datView["objEntity"]->entityID);
 			
+			
+			//Lista de cajas
+			$datView["objListCash"]	 				= $this->Cash_Box_Model->asObject()->where("companyID",$this->session->get('user')->companyID)->findAll();
+			$datView["objListCashUser"]	 			= $this->Cash_Box_User_Model->asObject()->where("companyID",$this->session->get('user')->companyID)->where("userID",$userID )->findAll();
+			$datView["cashBoxID"]					= $datView["objListCashUser"] ? $datView["objListCashUser"][0]->cashBoxID : 0;
+			
 			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
@@ -468,8 +514,10 @@ class core_user extends _BaseController {
 			//Obtener los Roles
 			$datView["objListRoles"] = $this->Role_Model->get_rowByCompanyIDyBranchID($this->session->get('user')->companyID,$this->session->get('user')->branchID);
 			$datView["objEmployee"]  = $objComponent;
-			$datView["objEntity"]  	 = $objComponentEntity;
+			$datView["objEntity"]  	 = $objComponentEntity;			
 			
+			//Lista de cajas
+			$datView["objListCash"]	 = $this->Cash_Box_Model->asObject()->where("companyID",$this->session->get('user')->companyID)->findAll();
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -1165,6 +1213,7 @@ class core_user extends _BaseController {
 			$obj["comercio"]			= str_replace('é',"e",$obj["comercio"]);
 			$obj["comercio"]			= str_replace('á',"a",$obj["comercio"]);
 			
+			
 			$obj["createdOn"]			= date("Y-m-d H:i:s");		
 			$obj["password"] 			= /*inicio get post*/ 123;
 			$obj["lastPayment"]			= helper_getDateMoreOneMonth();
@@ -1175,7 +1224,7 @@ class core_user extends _BaseController {
 			//validar Correo
 			$objUserTmp = $this->User_Model->get_rowByEmail(/*inicio get post*/ $this->request->getPost("txtEmail"));
 			if( $objUserTmp  )
-			throw new \Exception("Email ya existe llamar administracion.");
+			throw new \Exception("Email ya existe llamar a soporte 50587125827.");
 		
 			$objUserTmp = $this->User_Model->get_rowByComercio(/*inicio get post*/ $obj["comercio"]);
 			if( $objUserTmp  )

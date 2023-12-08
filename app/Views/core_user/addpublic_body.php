@@ -19,7 +19,7 @@
 				</div>
 				
 				
-				<img class="img-fluid" src="<?php echo base_url(); ?>/resource/file_company/company_2/component_76/component_item_0/success.png" alt="Card image cap" />
+				<img class="img-fluid" src="<?php echo base_url(); ?>/resource/img/logo_posme.jpg" alt="Card image cap" />
 				
 				<div class="card-body">
 				
