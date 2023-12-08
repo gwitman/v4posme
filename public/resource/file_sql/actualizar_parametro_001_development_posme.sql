@@ -4,14 +4,14 @@
 /******************************************************************/		
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://api.ultramsg.com/instance41967/messages/chat" 
+	tb_company_parameter.value = "https://api.ultramsg.com/instance65915/messages/chat" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WAHTSAP_URL_ENVIO_MENSAJE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "x0idbj9zz750zq5k" 
+	tb_company_parameter.value = "n5hb8n1wf0r6e27i" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema

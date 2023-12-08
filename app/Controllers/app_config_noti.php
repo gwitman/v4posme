@@ -236,6 +236,14 @@ class app_config_noti extends _BaseController {
 					//enviar al propietario del calendario, la url para autoriza, el evento					
 					$core_web_google = new core_web_google();
 					$url 			 = $core_web_google->getRequestPermission_Posme($txtBusiness);
+					
+					
+					$this->core_web_whatsap->sendMessageUltramsg(
+						APP_COMPANY, 
+						"".$data["title"]." agenda una cita con usted , pulse el siguiente link para agregar al calendario.",
+						$usuario->phone
+					);
+					
 					$this->core_web_whatsap->sendMessageUltramsg(
 						APP_COMPANY, 
 						$url,
@@ -443,7 +451,7 @@ class app_config_noti extends _BaseController {
 			$dataView["objListPeriod"]			= $this->core_web_catalog->getCatalogAllItem("tb_remember","period",APP_COMPANY);
 			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_remember","statusID",APP_COMPANY,APP_BRANCH,APP_ROL_SUPERADMIN);
 			$dataView["message"]				= $this->core_web_notification->get_message_alert();
-			$dataView["objListUser"]			= $this->User_Model->get_rowByComercio(/*inicio get post*/ $business );
+			$dataView["objListUser"]			= $this->User_Model->get_rowByFoto(/*inicio get post*/ $business );
 			$dataView["objItemUser"]			= $dataView["objListUser"][0];
 			
 			

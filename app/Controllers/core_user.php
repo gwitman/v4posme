@@ -1225,16 +1225,9 @@ class core_user extends _BaseController {
 			$objUserTmp = $this->User_Model->get_rowByEmail(/*inicio get post*/ $this->request->getPost("txtEmail"));
 			if( $objUserTmp  )
 			throw new \Exception("Email ya existe llamar a soporte 50587125827.");
-		
-			$objUserTmp = $this->User_Model->get_rowByComercio(/*inicio get post*/ $obj["comercio"]);
-			if( $objUserTmp  )
-			throw new \Exception("Comercio ya existe con un nombre similar.");
-			
+					
 						
-						
-						
-			$userID		 				= $this->User_Model->insert_app_posme($obj);					
-			
+			$userID		 				= $this->User_Model->insert_app_posme($obj);
 			//Crear carpeta de usuario			
 			$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_8/component_item_".$userID;
 			if (!file_exists($documentoPath))
@@ -1280,15 +1273,16 @@ class core_user extends _BaseController {
 			
 			
 			//Bienvenida
-			$url = "Bienvenido: ".$this->request->getPost("txtNombre")." link de cita ";
+			$url = "Bienvenido: ".$this->request->getPost("txtNombre")." el siguiente link usted debe compartir con sus clientes: ";
 			$this->core_web_whatsap->sendMessageUltramsg(
 				APP_COMPANY, 
 				$url,
 				$this->request->getPost("txtTelefono")
 			);
 			
+			
 			//Url de cita
-			$url = $this->core_web_parameter->getParameter("POSME_CALENDAR_URL_CITA",APP_COMPANY)->value."?txtBusiness=".$obj["comercio"];
+			$url = $this->core_web_parameter->getParameter("POSME_CALENDAR_URL_CITA",APP_COMPANY)->value."?txtBusiness=".$dataUpdateUser["foto"];
 			$this->core_web_whatsap->sendMessageUltramsg(
 				APP_COMPANY, 
 				$url,
@@ -1299,7 +1293,7 @@ class core_user extends _BaseController {
 			
 			if($db->transStatus() !== false){
 				$db->transCommit();						
-				$this->core_web_notification->set_message(false,SUCCESS);
+				$this->core_web_notification->set_message(false,"Exito informacion enviada a correo electronico o whatsapp");
 				$this->response->redirect(base_url()."/".'core_user/addpublic');
 			}
 			else{

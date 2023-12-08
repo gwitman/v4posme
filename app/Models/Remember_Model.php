@@ -36,7 +36,7 @@ class Remember_Model extends Model  {
 		$db 	= db_connect();
 		    
 		$sql = "";
-		$sql = sprintf("select companyID,rememberID,title,description,period,day,statusID,lastNotificationOn,isTemporal,createdBy,createdOn,createdIn,createdAt,isActive");
+		$sql = sprintf("select companyID,rememberID,title,description,period,day,statusID,lastNotificationOn,isTemporal,createdBy,createdOn,createdIn,createdAt,isActive,tagID");
 		$sql = $sql.sprintf(" from tb_remember");
 		$sql = $sql.sprintf(" where rememberID = $rememberID");
 		$sql = $sql.sprintf(" and isActive= 1");		
@@ -48,7 +48,7 @@ class Remember_Model extends Model  {
 		$db 	= db_connect();
 		
 		$sql = "";
-		$sql = sprintf("select companyID,rememberID,title,description,period,day,statusID,lastNotificationOn,isTemporal,createdBy,createdOn,createdIn,createdAt,isActive");
+		$sql = sprintf("select companyID,rememberID,title,description,period,day,statusID,lastNotificationOn,isTemporal,createdBy,createdOn,createdIn,createdAt,isActive,tagID");
 		$sql = $sql.sprintf(" from tb_remember");
 		$sql = $sql.sprintf(" where companyID = $companyID");
 		$sql = $sql.sprintf(" and isActive= 1");			
@@ -64,7 +64,8 @@ class Remember_Model extends Model  {
 			c.companyID, 
 			c.rememberID, 
 			c.lastNotificationOn,
-			c.day 
+			c.day,
+			c.tagID
 		from 
 			tb_remember  c
 			inner join tb_catalog_item ci on 
@@ -107,7 +108,8 @@ class Remember_Model extends Model  {
 			end diaProcesado,
 			".$fechaProcess." as Fecha,
 			c.title,
-			c.description
+			c.description,
+			c.tagID
 		from 
 			tb_remember c
 			inner join tb_catalog_item ci on 
