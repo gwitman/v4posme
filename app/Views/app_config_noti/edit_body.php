@@ -5,7 +5,8 @@
                             <div class="email-bar" style="border-left:1px solid #c9c9c9">                                
                                 <div class="btn-group pull-right">                                    
 									<a href="<?php echo base_url(); ?>/app_config_noti/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>
-									<a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>                                    
+									<a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>
+									<a href="#" class="btn btn-warning" id="btnUploadFile"><i class="icon16 i-card"></i> Subir archivo</a>
                                     <a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>                                    
                                 </div>
                             </div> 
@@ -106,6 +107,13 @@
 															<label class="col-lg-2 control-label" for="checkboxes">Temporal</label>													
 															<label class="checkbox-inline">
 																<input type="checkbox" id="txtIsTemporal" name="txtIsTemporal" value="1" <?php if($objRemember->isTemporal){ echo "checked='checked'"; } ?> >
+															</label>													
+														</div>
+														
+														<div class="form-group">
+															<label class="col-lg-2 control-label" for="checkboxes">Desde archivo</label>													
+															<label class="checkbox-inline">
+																<input type="checkbox" id="txtLeerFile" name="txtLeerFile" value="1" <?php if($objRemember->leerFile){ echo "checked='checked'"; } ?> >
 															</label>													
 														</div>
 														

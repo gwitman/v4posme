@@ -287,18 +287,43 @@ class app_config_noti extends _BaseController {
 						$db=db_connect();
 						$db->transStart();
 						//Crear Cuenta
+						$companyID 							= $dataSession["user"]->companyID;
 						$obj["companyID"]					= $dataSession["user"]->companyID;
 						$obj["title"] 						= /*inicio get post*/ $this->request->getPost("txtTitulo");
 						$obj["period"] 						= helper_RequestGetValue( /*inicio get post*/ $this->request->getPost("txtPeriodID"), 0 );
 						$obj["day"] 						= /*inicio get post*/ $this->request->getPost("txtDias");
 						$obj["statusID"] 					= /*inicio get post*/ $this->request->getPost("txtStatusID");
 						$obj["isTemporal"] 					= helper_RequestGetValue( /*inicio get post*/ $this->request->getPost("txtIsTemporal"), 0) ;
+						$obj["leerFile"] 					= helper_RequestGetValue( /*inicio get post*/ $this->request->getPost("txtLeerFile"), 0) ;
 						$obj["tagID"] 						= /*inicio get post*/ $this->request->getPost("txtTagID");
 						$obj["description"] 				= /*inicio get post*/ $this->request->getPost("txtDescripcion");
 						$obj["lastNotificationOn"]			= date('Y-m-d');
 						$obj["isActive"]					= 1;
 						$this->core_web_auditoria->setAuditCreated($obj,$dataSession,$this->request);
 						$rememberID							= $this->Remember_Model->insert_app_posme($obj);
+						
+						
+						//Crear la Carpeta para almacenar los Archivos del Documento
+						$path_ = PATH_FILE_OF_APP."/company_".$companyID."/component_76/component_item_".$rememberID;						
+						if(!file_exists ($path_)){
+							mkdir($path_, 0755);
+							chmod($path_, 0755);
+						}
+						
+						
+						//Generar un archivo template de ejemplo
+						date_default_timezone_set(APP_TIMEZONE);						
+						$objParameterCharacterSplite	= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT",$dataSession["user"]->companyID);
+						$characterSplie					= $objParameterCharacterSplite->value; 			
+						$date 				= date("Y_m_d_H_i_s");			
+						$pathTemplate 		= PATH_FILE_OF_APP."/company_".$companyID."/component_76/component_item_".$rememberID;
+						$pathTemplate 		= $pathTemplate.'/send.csv';
+						$fppathTemplate 	= fopen($pathTemplate, 'w');
+						$fieldTemplate 		= ["Destino","Mensaje"];
+						fputcsv($fppathTemplate, $fieldTemplate,$characterSplie);
+						fclose($fppathTemplate);
+						
+						
 						
 						if($db->transStatus() !== false){
 							$db->transCommit();
@@ -356,6 +381,7 @@ class app_config_noti extends _BaseController {
 						$obj["statusID"] 					= /*inicio get post*/ $this->request->getPost("txtStatusID");
 						$obj["tagID"] 						= /*inicio get post*/ $this->request->getPost("txtTagID");
 						$obj["isTemporal"] 					= /*inicio get post*/ $this->request->getPost("txtIsTemporal");
+						$obj["leerFile"] 					= helper_RequestGetValue( /*inicio get post*/ $this->request->getPost("txtLeerFile"), 0) ;
 						$obj["description"] 				= /*inicio get post*/ $this->request->getPost("txtDescripcion");
 						$result 			= $this->Remember_Model->update_app_posme($rememberID,$obj);						
 						

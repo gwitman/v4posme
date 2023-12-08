@@ -100,6 +100,14 @@
 														</div>
 														
 														<div class="form-group">
+															<label class="col-lg-2 control-label" for="checkboxes">Desde archivo</label>													
+															<label class="checkbox-inline">
+																<input type="checkbox" id="txtLeerFile" name="txtLeerFile" value="1" >
+															</label>													
+														</div>
+														
+														
+														<div class="form-group">
 															<label class="col-lg-2 control-label" for="normal">Descripcion</label>
 															<div class="col-lg-10">
 																<textarea class="form-control"  id="txtDescripcion" name="txtDescripcion" rows="6"></textarea>

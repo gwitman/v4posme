@@ -12,6 +12,10 @@
 								$( "#form-new-account-level" ).attr("action","<?php echo base_url(); ?>/app_config_noti/save/edit");
 								$( "#form-new-account-level" ).submit();
 						});
+						//Archivos
+						$(document).on("click","#btnUploadFile",function(){
+							window.open("<?php echo base_url()."/core_elfinder/index/componentID/76/componentItemID/".$objRemember->rememberID; ?>","blanck");
+						});
 						//Comando Eliminar
 						$(document).on("click","#btnDelete",function(){							
 							fnShowConfirm("Confirmar..","Desea eliminar este Registro...",function(){

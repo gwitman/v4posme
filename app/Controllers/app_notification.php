@@ -123,9 +123,11 @@ class app_notification extends _BaseController {
 		$objListCompany 	= $this->Company_Model->get_rows();
 		$objTag				= $this->Tag_Model->get_rowByName($tagName);
 		$objListUsuario		= $this->User_Tag_Model->get_rowByPK($objTag->tagID);
-		$objListCustomer 	= $this->Customer_Model->get_rowByCompany_phoneAndEmail(APP_COMPANY); 
+		$objListCustomer 	= $this->Customer_Model->get_rowByCompany_phoneAndEmail(APP_COMPANY); 		
 		$objListEmail		= $this->Entity_Email_Model->get_rowByCompany(APP_COMPANY); 
-		
+		$objParameter		= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT",$companyID);
+		$characterSplie 	= $objParameter->value;
+				
 		//Recorrer Empresas
 		if($objListCompany)
 		foreach($objListCompany as $i)
@@ -136,6 +138,50 @@ class app_notification extends _BaseController {
 			{				
 				foreach($objListItem as $noti)
 				{
+					//Leer archivo   que esta en remember
+					$path 	= PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_76/component_item_".$noti->rememberID;			
+					$path 	= $path.'/send.csv';
+					$table 			= null;
+					$fila 			= 0;
+						
+					if (file_exists($path))
+					{
+						$this->csvreader->separator = $characterSplie;
+						$table 			= $this->csvreader->parse_file($path); 
+						
+						if($table)
+						{					
+							if (count($table) >= 1)
+							{							
+								if(!array_key_exists("Destino",$table[0])){
+									$table = null;
+								}
+								if(!array_key_exists("Mensaje",$table[0])){
+									$table = null;
+								}
+								
+								if( !is_null($table) )
+								{
+									$objListCustomer = array();
+									foreach ($table as $row) 
+									{
+										$rowx 					= array();
+										$rowx["firstName"] 		= "";
+										$rowx["phoneNumber"] 	= $row["Destino"];
+										$rowx["mensaje"] 		= $row["Mensaje"];
+										array_push($objListCustomer, $rowx );
+									}
+								}
+							}
+						}
+						
+					}
+					
+					
+					
+					
+					
+					
 					$hoy_			= date_format(date_create(),"Y-m-d");
 					$lastNoti 		= date_format(date_create($noti->lastNotificationOn),"Y-m-d");
 					
@@ -150,9 +196,7 @@ class app_notification extends _BaseController {
 						
 						if($objListItemDetail)
 						if($objListItemDetail->diaProcesado == $noti->day)
-						{
-	
-							
+						{	
 							
 							$item 					= $objListItemDetail;
 							$mensaje				=  " ";
@@ -186,14 +230,17 @@ class app_notification extends _BaseController {
 								if ($objListCustomer)
 								foreach($objListCustomer as $usuarioX){
 									
-									$objNotificationUser		= $this->Notification_Model->get_rowsByToMessage($usuarioX->phoneNumber,$mensaje);									
+									$phoneNumber  	= $item->leerFile == 1 ? $usuarioX["phoneNumber"] : $usuarioX->phoneNumber;
+									$firstName  	= $item->leerFile == 1 ? $usuarioX["firstName"] : $usuarioX->firstName;
+									
+									$objNotificationUser		= $this->Notification_Model->get_rowsByToMessage($phoneNumber ,$mensaje);									
 									if(!$objNotificationUser){
 										$data						= null;
 										$data["errorID"]			= $errorID;
 										$data["from"]				= PHONE_POSME;
-										$data["to"]					= $usuarioX->firstName;
+										$data["to"]					= $firstName;
 										$data["phoneFrom"]			= PHONE_POSME;
-										$data["phoneTo"]			= $usuarioX->phoneNumber;
+										$data["phoneTo"]			= $phoneNumber;
 										$data["programDate"]		= $hoy_;
 										$data["programHour"]		= "00:00:00";
 										$data["subject"]			= "notificacion";

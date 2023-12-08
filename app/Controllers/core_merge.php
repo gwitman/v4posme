@@ -886,6 +886,13 @@ class core_merge extends _BaseController {
 			chmod($documentoPath, 0755);
 		}
 		
+		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_76";		
+		if (!file_exists($documentoPath))
+		{
+			mkdir($documentoPath, 0755);
+			chmod($documentoPath, 0755);
+		}
+		
 		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_77";		
 		if (!file_exists($documentoPath))
 		{
