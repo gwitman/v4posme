@@ -1,4 +1,4 @@
-a:3:{s:4:"time";i:1700717833;s:3:"ttl";i:100;s:4:"data";s:9393:"<!-- DEBUG-VIEW START 3 APPPATH\Views\core_masterpage\default_widgetchoose.php -->
+a:3:{s:4:"time";i:1702073609;s:3:"ttl";i:100;s:4:"data";s:10171:"<!-- DEBUG-VIEW START 3 APPPATH\Views\core_masterpage\default_widgetchoose.php -->
 <!--vista que se esta utilizando para las tablas-->
 <!--muestra un datatable con una lista de registros-->
 <!DOCTYPE html>
@@ -102,7 +102,7 @@ a:3:{s:4:"time";i:1700717833;s:3:"ttl";i:100;s:4:"data";s:9393:"<!-- DEBUG-VIEW 
 	</div> 
 <!-- DEBUG-VIEW ENDED 1 APPPATH\Views\core_view\choose_view_serch_head.php -->
 					
-					<table  id='ListView' cellpadding='0' cellspacing='0' border='0' class='table table-striped table-bordered table-hover' style='display:none' ><thead><tr><th>companyID</th><th>itemID</th><th>Codigo</th><th>Nombre</th><th>Medida</th><th>Cantidad</th><th>Barra</th></tr></thead><tbody></tbody></table>
+					<table  id='ListView' cellpadding='0' cellspacing='0' border='0' class='table table-striped table-bordered table-hover' style='display:none' ><thead><tr><th>companyID</th><th>itemID</th><th>Codigo</th><th>Nombre</th><th>Medida</th><th>Cantidad</th><th>Barra</th></tr></thead><tbody><tr><td>2</td><td>22013</td><td>KiokZJVqAV</td><td>no usado</td><td>FAMILIA 1</td><td>0.0000</td><td>AVW-2082,asdfaasdf,asdf</td></tr><tr><td>2</td><td>23023</td><td>ITT00000996</td><td>piedrin</td><td>UNIDAD</td><td>1.0000</td><td>BITT00000996</td></tr><tr><td>2</td><td>23025</td><td>ITT00000998</td><td>lamina de zic</td><td>UNIDAD</td><td>20.0000</td><td>BITT00000998</td></tr><tr><td>2</td><td>23026</td><td>ITT00000999</td><td>clavo de acero</td><td>UNIDAD</td><td>20.0000</td><td>BITT00000999</td></tr><tr><td>2</td><td>23028</td><td>ITT00001001</td><td>clavo de 2 pulgadas</td><td>UNIDAD</td><td>20.0000</td><td>BITT00001001</td></tr><tr><td>2</td><td>23029</td><td>ITT00001002</td><td>tornillo de 3 pulgadas</td><td>UNIDAD</td><td>10.0000</td><td>BITT00001002</td></tr></tbody></table>
 		<script>
 			var objTableListView;
 			var objRowTableListView;	
