@@ -464,21 +464,7 @@ class app_invoice_billing extends _BaseController {
 			
 			}	
 			
-			//Load Modelos
-			//
-			////////////////////////////////////////
-			////////////////////////////////////////
-			////////////////////////////////////////
-			
-				
-				
-				
-				
-				
-			
-			
-			
-			
+		
 			//Nuevo Registro
 			$companyID 				= /*inicio get post*/ $this->request->getPost("companyID");
 			$transactionID 			= /*inicio get post*/ $this->request->getPost("transactionID");				
@@ -489,16 +475,47 @@ class app_invoice_billing extends _BaseController {
 					throw new \Exception(NOT_PARAMETER);								 
 			} 
 			
-			$objTM	 				= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);			
+			$objTM	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);			
+			$objCustomerCredotDocument	= $this->Customer_Credit_Document_Model->get_rowByDocument($objTM->companyID,$objTM->entityID,$objTM->transactionNumber);
+			
 			if ($resultPermission 	== PERMISSION_ME && ($objTM->createdBy != $dataSession["user"]->userID))
 			throw new \Exception(NOT_DELETE);
 			
 			if($this->core_web_accounting->cycleIsCloseByDate($companyID,$objTM->transactionOn))
-			throw new \Exception("EL DOCUMENTO NO PUEDE ELIMINARSE, EL CICLO CONTABLE ESTA CERRADO");
+			throw new \Exception("EL DOCUMENTO NO PUEDE SE ELIMINADO, EL CICLO CONTABLE ESTA CERRADO");
 				
 			//Validar si el estado permite editar
 			if(!$this->core_web_workflow->validateWorkflowStage("tb_transaction_master_billing","statusID",$objTM->statusID,COMMAND_ELIMINABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
-			throw new \Exception(NOT_WORKFLOW_DELETE); 					
+			throw new \Exception(NOT_WORKFLOW_DELETE);
+		
+			//Validar si la factura es de credito y esta aplicada y tiene abono			
+			$parameterCausalTypeCredit 				= $this->core_web_parameter->getParameter("INVOICE_BILLING_CREDIT",$companyID);
+			$causalIDTypeCredit 					= explode(",", $parameterCausalTypeCredit->value);
+			$exisCausalInCredit						= null;
+			$exisCausalInCredit						= array_search($objTM->transactionCausalID ,$causalIDTypeCredit);				
+			if( 
+				$this->core_web_workflow->validateWorkflowStage
+				(
+					"tb_transaction_master_billing","statusID",$objTM->statusID,COMMAND_APLICABLE,
+					$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID
+				)
+				and 
+				(
+					$exisCausalInCredit || $exisCausalInCredit === 0
+				)
+				and 
+				(
+					$objCustomerCredotDocument->amount != $objCustomerCredotDocument->balance
+				)
+				and 
+				(
+					$objCustomerCredotDocument->balance > 1
+				)
+			)
+			{
+				throw new \Exception("Factura con abonos y balance mayor que 1");
+			}
+			
 				
 			//Si el documento esta aplicado crear el contra documento
 			if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_billing","statusID",$objTM->statusID,COMMAND_APLICABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
@@ -513,13 +530,9 @@ class app_invoice_billing extends _BaseController {
 				$transactionIDRevert = $transactionIDRevert->value;
 				$result = $this->core_web_transaction->createInverseDocumentByTransaccion($companyID,$transactionID,$transactionMasterID,$transactionIDRevert,0);
 				
-				//Si la factura es de credito
-				$parameterCausalTypeCredit 				= $this->core_web_parameter->getParameter("INVOICE_BILLING_CREDIT",$companyID);
-				$causalIDTypeCredit 					= explode(",", $parameterCausalTypeCredit->value);
-				$exisCausalInCredit						= null;
-				$exisCausalInCredit						= array_search($objTM->transactionCausalID ,$causalIDTypeCredit);
 				
-				if($exisCausalInCredit || $exisCausalInCredit === 0){
+				if($exisCausalInCredit || $exisCausalInCredit === 0)
+				{
 				
 					//Valores de tasa de cambio
 					date_default_timezone_set(APP_TIMEZONE); 
@@ -529,13 +542,12 @@ class app_invoice_billing extends _BaseController {
 					$dateOn 								= date_format(date_create($dateOn),"Y-m-d");
 					$exchangeRate 							= $this->core_web_currency->getRatio($companyID,$dateOn,1,$objCurrencyDolares->currencyID,$objCurrencyCordoba->currencyID);
 						
-					//cancelar el documento de credito
-					$objCustomerCredotDocument					= $this->Customer_Credit_Document_Model->get_rowByDocument($objTM->companyID,$objTM->entityID,$objTM->transactionNumber);
+					//cancelar el documento de credito					
 					$objCustomerCredotDocumentNew["statusID"]	= $this->core_web_parameter->getParameter("SHARE_DOCUMENT_ANULADO",$companyID)->value;
 					$this->Customer_Credit_Document_Model->update_app_posme($objCustomerCredotDocument->customerCreditDocumentID,$objCustomerCredotDocumentNew);
 					
-					$amountDol									= $objCustomerCredotDocument->amount / $exchangeRate;
-					$amountCor									= $objCustomerCredotDocument->amount;
+					$amountDol									= $objCustomerCredotDocument->balance / $exchangeRate;
+					$amountCor									= $objCustomerCredotDocument->balance;
 					
 					//aumentar el blance de la linea
 					$objCustomerCreditLine						= $this->Customer_Credit_Line_Model->get_rowByPK($objCustomerCredotDocument->customerCreditLineID);
@@ -547,8 +559,18 @@ class app_invoice_billing extends _BaseController {
 					$objCustomerCredit							= $this->Customer_Credit_Model->get_rowByPK($objTM->companyID,$objCustomer->branchID,$objTM->entityID);
 					$objCustomerCreditNew["balanceDol"]			= $objCustomerCredit->balanceDol + $amountDol;
 					$this->Customer_Credit_Model->update_app_posme($objTM->companyID,$objCustomer->branchID,$objTM->entityID,$objCustomerCreditNew);
-										
+					
+					return $this->response->setJSON(array(
+							'error'   => false,
+							'message' => SUCCESS." Factura anulada"
+					));//--finjson				
+				
 				}
+				
+				return $this->response->setJSON(array(
+							'error'   => false,
+							'message' => SUCCESS." Factura anulada"
+				));//--finjson				
 				
 				
 			}
@@ -556,15 +578,14 @@ class app_invoice_billing extends _BaseController {
 			{	
 				//Eliminar el Registro			
 				$this->Transaction_Master_Model->delete_app_posme($companyID,$transactionID,$transactionMasterID);
-				$this->Transaction_Master_Detail_Model->deleteWhereTM($companyID,$transactionID,$transactionMasterID);			
+				$this->Transaction_Master_Detail_Model->deleteWhereTM($companyID,$transactionID,$transactionMasterID);	
+
+				return $this->response->setJSON(array(
+							'error'   => false,
+							'message' => SUCCESS." Factura anulada"
+				));//--finjson				
+				
 			}
-			
-			
-			return $this->response->setJSON(array(
-				'error'   => false,
-				'message' => SUCCESS
-			));//--finjson
-			
 			
 			
 		}
