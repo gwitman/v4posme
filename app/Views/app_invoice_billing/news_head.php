@@ -21,6 +21,6 @@
 					}
 				</style>
 				
-				<div id="heading" class="page-header">
+				<div id="heading" class="page-header"  >
 							<h1><i class="icon20  i-bag-2"></i> Agregar Factura</h1>
 				</div> 

@@ -18,7 +18,7 @@
 	var objRowTableProductosSearch 			= null;	
 	var varBaseUrl							= '<?php echo base_url(); ?>';
 	var varCurrencyDefaultSimbol			= '<?php echo $objCurrency->simbol; ?>';
-	var varIsMobile							= '<?php echo $isMobile; ?>';
+	var varIsMobile							= '<?php echo $useMobile; ?>';
 	var varUseMobile						= '<?php echo $useMobile; ?>';
 	var varParameterCustomPopupFacturacion	= '<?php echo $objParameterCustomPopupFacturacion; ?>';	
 	var varParameterScanerProducto			= '<?php echo $objParameterScanerProducto; ?>';
@@ -287,8 +287,11 @@
 								//credito
 								objProductoPrecio3 = fnFormatFloat(objProductoPrecio3);
 								
-								
-								var str = "";								
+								var styleButtom = "";
+								if(varUseMobile == "1")
+								styleButtom = "style='text-align:right'";
+							
+								var str = "<div "+styleButtom+" >";
 								
 								str    	= str + '' + 
 								'<button type="button" class="btn btn-primary btnMenus"><span class="icon16 i-minus"></span> </button>';
@@ -316,6 +319,8 @@
 											
 										str = 	str+'</ul>';
 								str		= str+'</div>';
+								str		= str+'</div>';
+								
 								
 								return str;
 							}
@@ -340,10 +345,10 @@
 		
 		$(document).on("click",".btnPlus",function(){
 			
-			var quantity = $(this).parent().parent().find(".txtQuantity").val();
+			var quantity = $(this).parent().parent().parent().find(".txtQuantity").val();
 			quantity 	 = fnFormatFloat(quantity);
 			quantity	 = quantity + 1;
-			$(this).parent().parent().find(".txtQuantity").val(quantity);
+			$(this).parent().parent().parent().find(".txtQuantity").val(quantity);
 			fnRecalculateDetail(true,"");				
 		});
 		
@@ -366,10 +371,10 @@
 		
 		$(document).on("click",".btnMenus",function(){
 			
-			var quantity = $(this).parent().parent().find(".txtQuantity").val();
+			var quantity = $(this).parent().parent().parent().find(".txtQuantity").val();
 			quantity 	 = fnFormatFloat(quantity);
 			quantity	 = quantity - 1;
-			$(this).parent().parent().find(".txtQuantity").val(quantity);
+			$(this).parent().parent().parent().find(".txtQuantity").val(quantity);
 			fnRecalculateDetail(true,"");				
 		});
 		$(document).on("click",".btnPrecioRecomendado",function(){					

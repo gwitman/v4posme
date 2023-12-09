@@ -1178,6 +1178,7 @@ Eliminar o desactivar usuarios
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2, 	/*administrador*/
+ 5,		/*administrador*/
  191,  	/*supervisor*/
  190, 	/*facturador*/
  189 	/*administrador*/
