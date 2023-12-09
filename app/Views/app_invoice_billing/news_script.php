@@ -18,7 +18,7 @@
 	var objRowTableProductosSearch 			= null;	
 	var varBaseUrl							= '<?php echo base_url(); ?>';
 	var varCurrencyDefaultSimbol			= '<?php echo $objCurrency->simbol; ?>';
-	var varIsMobile							= '<?php echo $useMobile; ?>';
+	var varIsMobile							= '<?php echo $isMobile; ?>';
 	var varUseMobile						= '<?php echo $useMobile; ?>';
 	var varParameterCustomPopupFacturacion	= '<?php echo $objParameterCustomPopupFacturacion; ?>';	
 	var varParameterScanerProducto			= '<?php echo $objParameterScanerProducto; ?>';
@@ -181,7 +181,7 @@
 								var espacio					=  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";								
 								sel 						= '<select name="txtSku[]" id="txtSku'+full[2]+'" class="txtSku col-lg-12"  >';									
 								
-								if(varIsMobile == "1")
+								if(varUseMobile == "1")
 									espacio = "";		
 								
 								if(objListaSkuByProducto.length == 0)
@@ -334,7 +334,7 @@
 								return '<input type="text" class="col-lg-12 skuFormatoDescription" value="'+data+'" name="skuFormatoDescription[]" style="text-align:right" />';
 							}
 							//,
-							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
 							//{
 							//	  $(td).css("display","block");
 							//}
@@ -680,10 +680,12 @@
 			 
 		$('#mi_modal').on('hidden.bs.modal', function (e) {
 			
-			if(varParameterScanerProducto != "false"){
+			if(varParameterScanerProducto != "false")
+			{
 				document.getElementById("txtScanerCodigo").focus();	
 				scrollPosition =  $(document).scrollTop();
 			}
+			
 		});
 		
 
@@ -773,8 +775,7 @@
 			//++Abrir popup de productos
 			if(codigoABuscar == "++"){
 				
-				var ventana_ancho = $(window).width()-50;
-				var ventana_alto = $(window).height();
+				var ventana_ancho = $(window).width()-50;				
 				$("#div-modal-dialog-lista-productos").css("width",ventana_ancho+"px");
 			
 				fnCreateTableSearchProductos();
@@ -786,6 +787,7 @@
 						//$("#table_list_productos_filter").remove();	
 						$("#table_list_productos_info").remove();	
 						$("#mi_modal > .modal-dialog > .modal-content > .modal-footer").remove();
+						$("#table_list_productos_wrapper").find(".dataTables_paginate").remove();
 					}
 					else
 					{
@@ -1005,17 +1007,22 @@
 			setTimeout( function() { fnObtenerListadoCustomerCreditLine(); }, 0);	
 			
 			setTimeout( function() { 
+				
 				var ventana_ancho = $(window).width()-50;
-				var ventana_alto = $(window).height();
+				
+				
 				$("#div-modal-dialog-lista-productos").css("width",ventana_ancho+"px");			
 				fnCreateTableSearchProductos();
 				$("#mi_modal").modal();
+				
 				setTimeout(function() { 
+					
 					if(varUseMobile == "1")
 					{
 						//$("#table_list_productos_filter").remove();	
 						$("#table_list_productos_info").remove();		
-						$("#mi_modal > .modal-dialog > .modal-content > .modal-footer").remove();						
+						$("#mi_modal > .modal-dialog > .modal-content > .modal-footer").remove();		
+						$("#table_list_productos_wrapper").find(".dataTables_paginate").remove();						
 					}
 					else
 					{
@@ -1023,6 +1030,7 @@
 					}
 				
 				}, 500 );		
+				
 				
 			}, 30 );
 			
@@ -1308,7 +1316,7 @@
 			var objind_ 	= fnGetPosition(x_,objTableDetail.fnGetData());
 			objTableDetail.fnUpdate( fnFormatNumber(newCantidad,2)  , objind_, 6 );
 			
-			if(varIsMobile != "1"){
+			if(varUseMobile != "1"){
 				$("#body_tb_transaction_master_detail tr")[objind_].animate({ 
 				backgroundColor : "#4eacc8" },500);
 				$("#body_tb_transaction_master_detail tr")[objind_].animate({ 
@@ -1335,7 +1343,7 @@
 				""
 			]);
 			
-			if(varIsMobile != "1"){
+			if(varUseMobile != "1"){
 				$("#body_tb_transaction_master_detail tr")[objTableDetail.fnGetData().length - 1].animate({ 
 				backgroundColor : "#4eacc8" },500);
 				$("#body_tb_transaction_master_detail tr")[objTableDetail.fnGetData().length - 1].animate({ 
@@ -1350,7 +1358,7 @@
 		document.getElementById("txtScanerCodigo").focus();	
 		
 		
-		if(varIsMobile != "1"){
+		if(varUseMobile != "1"){
 			$("html, body").animate({scrollTop: heigthTop  +"px"});		
 			scrollPosition =  $(document).scrollTop();
 		}
@@ -2327,7 +2335,7 @@
 						},
 						{
 							"aTargets"		: [ 1 ],//Codigo
-							"bVisible"  	: !varParameterHidenFiledItemNumber,
+							"bVisible"  	: !(varParameterHidenFiledItemNumber == true ? true : (varUseMobile == "1" ? true : false )),
 							//"sClass" 		: "hidden",
 							"bSearchable"	: true,
 							//"mData":		'Codigo',
@@ -2353,7 +2361,7 @@
 						},
 						{
 							"aTargets"		: [ 4 ],//Cantidad
-							"bVisible"		: (varParameterCustomPopupFacturacion == "mobile_ruta_pablo" ? false : true),
+							"bVisible"		: true, //(varParameterCustomPopupFacturacion == "mobile_ruta_pablo" ? false : true),
 							"bSearchable"	: false,
 							//"mData":		'Cantidad',
 							"mRender"		: function ( data, type, full ) {								
@@ -2370,7 +2378,7 @@
 						},
 						{
 							"aTargets"		: [ 6 ],//Barra
-							"bVisible"		: (varParameterCustomPopupFacturacion == "mobile_ruta_pablo" ? false : true),
+							"bVisible"		: (varUseMobile == "1" ? false : true),
 							//"mData":		'Precio',
 							"mRender"		: function ( data, type, full ) 
 							{
@@ -2387,7 +2395,7 @@
 						},
 						{
 							"aTargets"		: [ 7 ],//Descripcion
-							"bVisible"		: (varParameterCustomPopupFacturacion == "mobile_ruta_pablo" ? false : true),
+							"bVisible"		: (varUseMobile == "1" ? false : true),
 							//"mData":		'Precio',
 							"mRender"		: function ( data, type, full ) {
 								if(varParameterMostrarImagenEnSeleccion == "true")

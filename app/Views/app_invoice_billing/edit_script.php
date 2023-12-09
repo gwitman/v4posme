@@ -35,7 +35,7 @@
 	var varStatusInvoiceAplicado			= 67; //Estado Aplicada
 	var varStatusInvoiceAnular				= 68; //Anular
 	var varCurrencyDefaultSimbol			= '<?php echo $objCurrency->simbol; ?>';
-	var varIsMobile							= '<?php echo $useMobile; ?>';
+	var varIsMobile							= '<?php echo $isMobile; ?>';
 	var varUseMobile						= '<?php echo $useMobile; ?>';	
 	var varParameterTipoPrinterDownload		= <?php echo $objParameterTipoPrinterDonwload; ?>;	
 	var varParameterCustomPopupFacturacion	= '<?php echo $objParameterCustomPopupFacturacion; ?>';	
@@ -176,7 +176,7 @@
 			document.getElementById("txtScanerCodigo").focus();	
 		}
 		
-		if(varIsMobile != "1"){  			
+		if(varUseMobile != "1"){  			
 			$("html, body").animate({scrollTop:  heigthTop  +"px"});
 			scrollPosition =  $(document).scrollTop();
 		}
@@ -339,7 +339,7 @@
 								return '<input type="checkbox"  class="classCheckedDetail" checked="checked" value="0" ></span>';
 							}
 							//,
-							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
 							//{
 							//	  $(td).css("display","block");
 							//}
@@ -353,7 +353,7 @@
 								return '<input type="hidden" value="'+data+'" name="txtTransactionMasterDetailID[]" />';
 							}
 							//,
-							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
 							//{
 							//	  $(td).css("display","block");
 							//}
@@ -367,7 +367,7 @@
 								return '<input type="hidden" value="'+data+'" name="txtItemID[]" />';
 							}
 							//,
-							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
 							//{
 							//	  $(td).css("display","block");
 							//}
@@ -379,7 +379,7 @@
 								return '<input type="text" class="col-lg-12" style="text-align:left" value="'+data+'" readonly="true" />';
 							}
 							//,
-							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
 							//{
 							//	  $(td).css("display","block");
 							//}
@@ -391,7 +391,7 @@
 								return '<input type="text" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"   class="col-lg-12" style="text-align:left" value="'+data+'" '+PriceStatus+' />';
 							}
 							//,
-							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
 							//{
 							//	  $(td).css("display","block");
 							//}
@@ -406,7 +406,7 @@
 								var espacio					=  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";								
 								sel 						= '<select name="txtSku[]" id="txtSku'+full[2]+'" class="txtSku col-lg-12" >';	
 								
-								if(varIsMobile == "1")
+								if(varUseMobile == "1")
 									espacio = "";							
 								
 								
@@ -429,7 +429,7 @@
 										
 							}
 							//,
-							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
 							//{
 							//	  $(td).css("display","block");
 							//}
@@ -446,7 +446,7 @@
 								return str;
 							}
 							//,
-							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
 							//{
 							//	  $(td).css("display","block");
 							//}
@@ -463,7 +463,7 @@
 								return str;
 							}
 							//,
-							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
 							//{
 							//	  $(td).css("display","block");
 							//}
@@ -480,7 +480,7 @@
 								return str;
 							}
 							//,
-							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
 							//{
 							//	  $(td).css("display","block");
 							//}
@@ -494,7 +494,7 @@
 								return '<input type="text" class="col-lg-12 txtIva" value="'+data+'" name="txtIva[]" style="text-align:right" />';
 							}
 							//,
-							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
 							//{
 							//	  $(td).css("display","block");
 							//}
@@ -508,7 +508,7 @@
 								return '<input type="text" class="col-lg-12 skuQuantityBySku" value="'+data+'" name="skuQuantityBySku[]" style="text-align:right" />';
 							}
 							//,
-							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
 							//{
 							//	  $(td).css("display","block");
 							//}
@@ -522,7 +522,7 @@
 								return '<input type="text" class="col-lg-12 unitaryPriceInvidual" value="'+data+'" name="unitaryPriceInvidual[]" style="text-align:right" />';
 							}
 							//,
-							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
 							//{
 							//	  $(td).css("display","block");
 							//}
@@ -593,7 +593,7 @@
 								return '<input type="text" class="col-lg-12 skuFormatoDescription" value="'+data+'" name="skuFormatoDescription[]" style="text-align:right" />';
 							}
 							//,
-							//"fnCreatedCell": varIsMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
 							//{
 							//	  $(td).css("display","block");
 							//}
@@ -1042,8 +1042,7 @@
 			//++Abrir popup de productos
 			if(codigoABuscar == "++"){
 				
-				var ventana_ancho = $(window).width()-50;
-				var ventana_alto = $(window).height();
+				var ventana_ancho = $(window).width()-50;				
 				$("#div-modal-dialog-lista-productos").css("width",ventana_ancho+"px");
 			
 				fnCreateTableSearchProductos();
@@ -1055,6 +1054,8 @@
 						//$("#table_list_productos_filter").remove();	
 						$("#table_list_productos_info").remove();							
 						$("#mi_modal > .modal-dialog > .modal-content > .modal-footer").remove();
+						$("#table_list_productos_wrapper").find(".dataTables_paginate").remove();
+						
 					}
 					else
 					{
@@ -1302,8 +1303,7 @@
 		//Nuevo Producto
 		$(document).on("click","#btnNewItem",function(){
 			
-			//var ventana_ancho = $(window).width()-50;
-			//var ventana_alto = $(window).height();
+			//var ventana_ancho = $(window).width()-50;			
 			//$("#div-modal-dialog-lista-productos").css("width",ventana_ancho+"px");
 			//
 			//
@@ -1320,8 +1320,8 @@
 			
 			setTimeout( function() { 		
 				
-				var ventana_ancho = $(window).width()-50;
-				var ventana_alto = $(window).height();
+				
+				var ventana_ancho = $(window).width()-50;				
 				$("#div-modal-dialog-lista-productos").css("width",ventana_ancho+"px");			
 				fnCreateTableSearchProductos();
 				$("#mi_modal").modal();
@@ -1331,7 +1331,8 @@
 					{
 						//$("#table_list_productos_filter").remove();	
 						$("#table_list_productos_info").remove();	
-						$("#mi_modal > .modal-dialog > .modal-content > .modal-footer").remove();						
+						$("#mi_modal > .modal-dialog > .modal-content > .modal-footer").remove();
+						$("#table_list_productos_wrapper").find(".dataTables_paginate").remove();						
 					}
 					else
 					{
@@ -1546,7 +1547,7 @@
 		$(".btn-comando-factura").removeClass("hidden");
 		
 		
-		if(varIsMobile == "1" ){
+		if(varUseMobile == "1" ){
 		   
 		   $(".elementMovilOculto").addClass("hidden");
 		   
@@ -1633,7 +1634,7 @@
 			
 			
 			
-			if(varIsMobile != "1"){
+			if(varUseMobile != "1"){
 				$("#body_tb_transaction_master_detail tr")[objind_].animate({ 
 				backgroundColor : "#4eacc8" },500);
 				
@@ -1662,7 +1663,7 @@
 				""
 			]);
 			
-			if(varIsMobile != "1"){
+			if(varUseMobile != "1"){
 				$("#body_tb_transaction_master_detail tr")[objTableDetail.fnGetData().length - 1].animate({ 
 				backgroundColor : "#4eacc8" },500);
 				$("#body_tb_transaction_master_detail tr")[objTableDetail.fnGetData().length - 1].animate({ 
@@ -1677,7 +1678,7 @@
 		document.getElementById("txtScanerCodigo").focus();		
 		
 		
-		if(varIsMobile != "1"){		
+		if(varUseMobile != "1"){		
 			$("html, body").animate({scrollTop:  heigthTop  +"px"});
 			scrollPosition =  $(document).scrollTop();
 		}
@@ -2766,7 +2767,7 @@
 						},
 						{
 							"aTargets"		: [ 1 ],//Codigo
-							"bVisible"  	: !varParameterHidenFiledItemNumber,
+							"bVisible"  	: !(varParameterHidenFiledItemNumber == true ? true : (varUseMobile == "1" ? true : false )),
 							//"sClass" 		: "hidden",
 							"bSearchable"	: true,
 							//"mData":		'Codigo',
@@ -2792,7 +2793,7 @@
 						},
 						{
 							"aTargets"		: [ 4 ],//Cantidad
-							"bVisible"		: (varParameterCustomPopupFacturacion == "mobile_ruta_pablo" ? false : true),
+							"bVisible"		: true; //(varParameterCustomPopupFacturacion == "mobile_ruta_pablo" ? false : true),
 							"bSearchable"	: false,
 							//"mData":		'Cantidad',
 							"mRender"		: function ( data, type, full ) {								
@@ -2809,7 +2810,7 @@
 						},
 						{
 							"aTargets"		: [ 6 ],//Barra
-							"bVisible"		: (varParameterCustomPopupFacturacion == "mobile_ruta_pablo" ? false : true),
+							"bVisible"		: (varUseMobile == "1" ? false : true),
 							//"mData":		'barCode',
 							"mRender"		: function ( data, type, full ) {
 								var indexSearch = data.indexOf(",");
@@ -2825,7 +2826,7 @@
 						},
 						{
 							"aTargets"		: [ 7 ],//Descripcion
-							"bVisible"		: (varParameterCustomPopupFacturacion == "mobile_ruta_pablo" ? false : true),
+							"bVisible"		: (varUseMobile == "1" ? false : true),
 							//"mData":		'Precio',
 							"mRender"		: function ( data, type, full ) {
 								if(varParameterMostrarImagenEnSeleccion == "true")
