@@ -2793,7 +2793,7 @@
 						},
 						{
 							"aTargets"		: [ 4 ],//Cantidad
-							"bVisible"		: true; //(varParameterCustomPopupFacturacion == "mobile_ruta_pablo" ? false : true),
+							"bVisible"		: true, //(varParameterCustomPopupFacturacion == "mobile_ruta_pablo" ? false : true),
 							"bSearchable"	: false,
 							//"mData":		'Cantidad',
 							"mRender"		: function ( data, type, full ) {								

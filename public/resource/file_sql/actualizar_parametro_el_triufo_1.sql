@@ -761,7 +761,7 @@ where
 	and targetCurrencyID = 2; 
 	
 	
-/*BD: dbgdvbin9wgcqw		dbhz5oouggf86f */
+/*BD: dbhz5oouggf86f */
 /*********************************************/
 /*
 revision

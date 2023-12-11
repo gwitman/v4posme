@@ -912,4 +912,4 @@ where
 	and targetCurrencyID = 2; 
 	
 	
-/*BD:	dbtwqengg6w1kn  	dbfiocgnuappfa		*/
+/*BD:	dbfiocgnuappfa		*/

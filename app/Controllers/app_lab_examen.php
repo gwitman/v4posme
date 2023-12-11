@@ -374,32 +374,32 @@ class app_lab_examen extends _BaseController
             }
             
             //Obtener valores por defecto de catalogo	
-			$objPublicCatalogEdades 	= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_examen_lab.edades")->find();
+			$objPublicCatalogEdades 	= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_examen_lab.edades")->where("isActive",1)->find();
 			if(!$objPublicCatalogEdades)
 			{
 				throw new \Exception("CONFIGURAR EL CATALOGO DE EDADES tb_transaction_master_examen_lab.edades");
 			}
 			
-			$objPublicCatalogSexo 	= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_examen_lab.sexo")->find();
+			$objPublicCatalogSexo 	= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_examen_lab.sexo")->where("isActive",1)->find();
 			if(!$objPublicCatalogSexo)
 			{
 				throw new \Exception("CONFIGURAR EL CATALOGO DE SEXO tb_transaction_master_examen_lab.sexo");
 			}
 			
-			$objPublicCatalogMuestra 	= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_examen_lab.muestra")->find();
+			$objPublicCatalogMuestra 	= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_examen_lab.muestra")->where("isActive",1)->find();
 			if(!$objPublicCatalogMuestra)
 			{
 				throw new \Exception("CONFIGURAR EL CATALOGO DE MUESTRA tb_transaction_master_examen_lab.muestra");
 			}
 			
 			
-			$objPublicCatalogExamen 	= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_examen_lab.examen")->find();
+			$objPublicCatalogExamen 	= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_examen_lab.examen")->where("isActive",1)->find();
 			if(!$objPublicCatalogExamen)
 			{
 				throw new \Exception("CONFIGURAR EL CATALOGO DE EDAMEN tb_transaction_master_examen_lab.examen");
 			}
 			
-			$objPublicCatalogIndicadores 	= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_examen_lab.indicadores")->find();
+			$objPublicCatalogIndicadores 	= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_examen_lab.indicadores")->where("isActive",1)->find();
 			if(!$objPublicCatalogIndicadores)
 			{
 				throw new \Exception("CONFIGURAR EL CATALOGO DE INDICADORES tb_transaction_master_examen_lab.indicadores");
