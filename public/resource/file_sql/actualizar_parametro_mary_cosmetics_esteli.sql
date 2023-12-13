@@ -911,7 +911,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Marys + By Maria Zeledon' , address = 'Optica matamoro 10v.e' ,
+	NAME = 'Marys Cosmetic By Maria Zeledon' , address = 'Optica matamoro 10v.e' ,
 	flavorID = 0 
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

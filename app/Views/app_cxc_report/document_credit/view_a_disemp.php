@@ -15,7 +15,7 @@
 				<table>
 					<thead>
 						<tr>
-							<th colspan="6">TABLA DE AMORTIZACION DEL DOCUMENTO DE CREDITO</th>
+							<th colspan="6">TABLA DE AMORTIZACION DEL DOCUMENTO DE CREDITO.</th>
 						</tr>
 						<tr>
 							<th colspan="6"><?php echo strtoupper($objCompany->name); ?></th>
@@ -219,8 +219,7 @@
 					<tbody>
 						<tr>
 							<td colspan="6">
-								<span style="color: red;font-weight: bold;font-style: inherit;font-size: initial;">C$ BAC: 361-727-506</span><br/>
-								<span style="color: forestgreen;font-weight: bold;font-style: inherit;font-size: initial;">C$ BANPRO: 100-2000-0118-404</span><br/>
+								<span style="color: red;font-weight: bold;font-style: inherit;font-size: initial;"><?php echo $objParameterBank->value; ?></span><br/>								
 								<span style="color: blue;font-weight: bold;font-style: inherit;font-size: initial;"><?php echo date("Y-m-d H:i:s");  ?> <?php echo $objFirmaEncription; ?></span><br/>
 							</td>
 						</tr>

@@ -269,7 +269,7 @@ class app_accounting_process extends _BaseController {
 			if ($notificationName == "nextVisit" || $notificationName == "TODAS")
 			{
 				$ex = curl_init();
-				curl_setopt($ex, CURLOPT_URL,  base_url()."/app_notification/nextVisit/".$companyID);
+				curl_setopt($ex, CURLOPT_URL,  base_url()."/app_notification/fillNextVisit/".$companyID);
 				curl_setopt($ex, CURLOPT_HEADER, 0);
 				$er = curl_exec($ex);
 				$er = curl_close($ex);

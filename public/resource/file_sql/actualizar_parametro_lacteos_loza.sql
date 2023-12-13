@@ -1,4 +1,11 @@
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "BANPRO DOLARES  100-212-105-860-16 " 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_ACCOUNT_BANK";	
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "154" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 

@@ -122,7 +122,7 @@ define("URL_SUFFIX_OLD",".aspx");
 define("URL_SUFFIX_NEW","");
 define("URL_SUFFIX","");
 define("TIME_CACHE_APP","300");
-define('APP_IP_SERVER',"192.168.1.5");
+define('APP_IP_SERVER',"localhost");
 define('APP_BRANCH','2');
 define('APP_PROVIDER','293');
 define('APP_EMPLOYEE','614');
@@ -130,8 +130,8 @@ define('APP_CUSTOMER01','13');
 define('APP_CUSTOMER02','309');
 define('APP_HOUR_DIFERENCE_MYSQL','00:00:00');
 define('APP_HOUR_DIFERENCE_PHP','+0 minutes');
-define('APP_URL_RESOURCE_CSS_JS','http://192.168.1.5/posmev4');
-define('URL_REDIRECT_CALENDAR_POSME','http://192.168.1.5/posmev4/app_config_noti/eventgooglecalendaradded');
+define('APP_URL_RESOURCE_CSS_JS','http://localhost/posmev4');
+define('URL_REDIRECT_CALENDAR_POSME','http://localhost/posmev4/app_config_noti/eventgooglecalendaradded');
 define('APP_URL_WOOCOMERCE','https://posme.net');
 
 //BD

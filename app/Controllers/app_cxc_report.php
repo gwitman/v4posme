@@ -228,6 +228,7 @@ class app_cxc_report extends _BaseController {
 				$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
 				//Get Logo
 				$objParameter			= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+				$objParameterBank		= $this->core_web_parameter->getParameter("CXC_ACCOUNT_BANK",$companyID);
 				$objPropietaryName		= $this->core_web_parameter->getParameter("CORE_PROPIETARY_NAME",$companyID);
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
@@ -255,6 +256,7 @@ class app_cxc_report extends _BaseController {
 				
 				$objDataResult["objCompany"] 				= $objCompany;
 				$objDataResult["objLogo"] 					= $objParameter;
+				$objDataResult["objParameterBank"] 			= $objParameterBank;				
 				$objDataResult["objPropietaryName"] 		= $objPropietaryName;
 				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_document_credit" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
 				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);

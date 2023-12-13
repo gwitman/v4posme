@@ -3862,12 +3862,6 @@ function helper_reporte80mmTransactionMasterMarysCosmetic(
                           </td>
                         </tr>
 
-
-                        <tr>
-                          <td colspan='3' style='text-align:center' >
-                            sistema 505-8712-5827
-                          </td>
-                        </tr>
                                 
                         
 

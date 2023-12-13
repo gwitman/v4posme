@@ -29,7 +29,6 @@ class core_acount extends _BaseController {
 		$parameterLabelSistem = $parameterLabelSistem->value;		
 		
 		
-		
 		//C:\xampp\teamds2\nsSystem\v4posme\system\Database\MySQLi
 		//execute
 		//echo "<h1 style='color: wheat;' >uso de la variable ENVIRONMENT:".print_r(ENVIRONMENT ,true)."</h1>";		

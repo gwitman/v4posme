@@ -39,6 +39,7 @@ use App\Libraries\core_web_pagadito\core_web_pagadito;
 
 
 use App\Libraries\core_web_barcode\core_web_barcode;
+use App\Libraries\core_web_qr\core_web_qr;
 use App\Libraries\core_web_csv\csvreader;
 use App\Libraries\core_web_printer_direct\core_web_printer_direct;
 use Dompdf\Dompdf;
@@ -223,6 +224,7 @@ abstract class _BaseController extends Controller
 	
 	protected $financial_amort;
 	protected $core_web_barcode;
+	protected $core_web_qr;	
 	protected $csvreader;
 	protected $core_web_printer_direct;
 	protected $dompdf;
@@ -382,6 +384,7 @@ abstract class _BaseController extends Controller
 		
 		$this->financial_amort = new financial_amort();
 		$this->core_web_barcode = new core_web_barcode();
+		$this->core_web_qr = new core_web_qr();
 		$this->csvreader = new csvreader();
 		$this->core_web_printer_direct = new core_web_printer_direct();
 		

@@ -1283,6 +1283,12 @@ class core_user extends _BaseController {
 			
 			//Url de cita
 			$url = $this->core_web_parameter->getParameter("POSME_CALENDAR_URL_CITA",APP_COMPANY)->value."?txtBusiness=".$dataUpdateUser["foto"];
+			
+			//Guardar Codigo de Barra			
+			$this->core_web_qr->generate($url,$documentoPath."/qrcode.png","M","10");
+		
+		
+			//Mandar QR
 			$this->core_web_whatsap->sendMessageUltramsg(
 				APP_COMPANY, 
 				$url,
