@@ -11,13 +11,13 @@ WHERE
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_DEFAULT_TYPE_PRICE";## Tipo de precio por defecto
 
-
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_SHOW_PREVIEW_INLIST";## Dia de defase del reporte
 	
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
 WHERE 
@@ -136,28 +136,28 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_box_canceldocument/viewRegisterFidLocal" 
+	tb_company_parameter.value = "app_box_canceldocument/viewRegisterFormatoPaginaNormal" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "BOX_CANCELDOCUMENT_URL_PRINTER";## URL PARA LA IMPRESION DE CANCELACION 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_box_sharecapital/viewRegisterFidLocal" 
+	tb_company_parameter.value = "app_box_sharecapital/viewRegisterFormatoPaginaNormal" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "BOX_SHARECAPITAL_URL_PRINTER";## URL PARA LA IMPRESION DE ABONOS AL CAPITAL 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_box_share/viewRegisterFidLocal" 
+	tb_company_parameter.value = "app_box_share/viewRegisterFormatoPaginaTicket" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "BOX_SHARE_URL_PRINTER";## URL PARA LA IMPRESION DE ABONOS 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewRegisterFidLocal" 
+	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormal80mm" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_URL_PRINTER";## URLs PARA LA IMPRESION DE FACTURA 
@@ -206,7 +206,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "8476-6457" 
+	tb_company_parameter.value = "8712-5827" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -220,7 +220,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "2023-12-31" 
+	tb_company_parameter.value = "2024-12-31" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CUST_PRICE_LICENCES_EXPIRED";## Fecha de expiracion de la licencia 
@@ -241,7 +241,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
+	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BUTTOM_PRINTER_FIDLOCAL_PAYMENT_AND_AMORTIZACION";## Mostrar Calendario de Pago , al momento de imprimir una factura
@@ -304,7 +304,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "00001" 
+	tb_company_parameter.value = "00002" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVENTORY_ITEM_WAREHOUSE_DEFAULT";## Bodega por defecto 
@@ -325,14 +325,14 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://www.sinriesgos.com.ni/wsactualizar/servicios.asmx?wsdl" 
+	tb_company_parameter.value = "https://www.sinriesgos.com.ni/ServiceFacade/servicios.asmx?wsdl" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CXC_WSDL_SIN_RIESGO_UPLOAD";## Urls para cargar la informacio de los deudores a ala sin riesgo 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "flc-wgonzalez" 
+	tb_company_parameter.value = "flc_witman_posme" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CXC_WSDL_SIN_RIESGO_USUARIO";## Usuario para conectarse a la sin riesgo 
@@ -486,7 +486,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Frente a union fenosa" 
+	tb_company_parameter.value = "Multicentro las america, Managua Nicaragua" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
@@ -528,7 +528,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "8476-6457" 
+	tb_company_parameter.value = "8712-5827" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
@@ -689,7 +689,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Cordoba" 
+	tb_company_parameter.value = "Dolar" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "ACCOUNTING_CURRENCY_NAME_REPORT";## Moneda de Reporte para Presentar los Estados Financieros 
@@ -717,7 +717,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Cordoba" 
+	tb_company_parameter.value = "Dolar" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "ACCOUNTING_CURRENCY_NAME_FUNCTION";## Símbolo de la Moneda Funcional 
@@ -731,9 +731,10 @@ WHERE
 
 
 UPDATE tb_company SET 
-	NAME = 'Fid Local' , address = 'Frente a union fenosa' ,flavorID = 0
+	NAME = 'posMe' , address = 'Multicentro las america, Managua Nicaragua'   ,flavorID = 0
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
+	
 	
 /*tipo de cambio de dolares a cordoba*/
 update tb_exchange_rate set 
@@ -750,4 +751,4 @@ where
 	currencyID = 1
 	and targetCurrencyID = 2; 
 	
-/*BD	dbejsigav9rp6v  */
+/*BD	dbkeeaegwuu7eb  */

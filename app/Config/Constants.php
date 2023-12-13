@@ -135,13 +135,17 @@ define('URL_REDIRECT_CALENDAR_POSME','http://localhost/posmev4/app_config_noti/e
 define('APP_URL_WOOCOMERCE','https://posme.net');
 
 //BD
-define("DB_PASSWORD","root1.2Blandon");
-define("DB_USER","root");
-define('DB_BDNAME',"posme");
+//define("DB_PASSWORD","root1.2Blandon");
+//define("DB_USER","root");
+//define('DB_BDNAME',"posme");
+//define('DB_BDNAME_MERGE',"posme_merge");
+//define('DB_SERVER',"localhost");
+
+define("DB_PASSWORD","2@24)7h$15#e");
+define("DB_USER","u8u2cdhdwfmmy");
+define('DB_BDNAME',"dbkroqnguhldo1");
 define('DB_BDNAME_MERGE',"posme_merge");
-define('DB_SERVER',"localhost");
-
-
+define('DB_SERVER',"posme.net");
 
 //Tipos de Menu
 define("MENU_TOP",4);

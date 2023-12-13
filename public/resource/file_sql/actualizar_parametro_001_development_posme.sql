@@ -1219,10 +1219,11 @@ where
 	
 	
 	
-/*BD:*/
+/*BD: dbkroqnguhldo1 */
 /*********************************************/
 /*
 revision
 	tb_item.currencyID = 1;
 	tb_item.isInvoiceable = 1;
 */
+

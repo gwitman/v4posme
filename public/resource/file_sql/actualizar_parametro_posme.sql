@@ -750,3 +750,5 @@ update tb_exchange_rate set
 where 
 	currencyID = 1
 	and targetCurrencyID = 2; 
+	
+/*BD	dbs3obkhhc1pgu  */
