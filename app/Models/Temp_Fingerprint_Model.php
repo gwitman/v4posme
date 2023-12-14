@@ -48,10 +48,10 @@ class Temp_Fingerprint_Model extends Model  {
 		$db 		= db_connect("biometric");	
 		
 		$sql = "";
-		$sql = $sql.sprintf(" select id,token_pc,image,updated_at,user_id,name, option,finger_name  ");
+		$sql = $sql.sprintf(" select id,token_pc,image,updated_at,user_id,`name`, `option`,finger_name  ");
 		$sql = $sql.sprintf(" from temp_fingerprint ");
 		$sql = $sql.sprintf(" where token_pc = '" . $tokenPc . "' ");
-		$sql = $sql.sprintf(" and option = 'read'  ORDER BY updated_at DESC LIMIT 1");
+		$sql = $sql.sprintf(" and `option` = 'read'  ORDER BY updated_at DESC LIMIT 1");
 		
    		return $db->query($sql)->getRow();
    }
@@ -61,7 +61,7 @@ class Temp_Fingerprint_Model extends Model  {
 		$db 		= db_connect("biometric");	
 		
 		$sql = "";
-		$sql = $sql.sprintf(" select id,token_pc,image,updated_at,user_id,name, option,finger_name  ");
+		$sql = $sql.sprintf(" select id,token_pc,image,updated_at,user_id,`name`, `option`,finger_name  ");
 		$sql = $sql.sprintf(" from temp_fingerprint ");
 		$sql = $sql.sprintf(" where token_pc = '" . $tokenPc . "' ");
 		$sql = $sql.sprintf("   ORDER BY updated_at DESC LIMIT 1");
@@ -74,10 +74,10 @@ class Temp_Fingerprint_Model extends Model  {
 		$db 		= db_connect("biometric");	
 		
 		$sql = "";
-		$sql = $sql.sprintf(" select id,token_pc,image,updated_at,user_id,name, option,created_at,finger_name  ");
+		$sql = $sql.sprintf(" select id,token_pc,image,updated_at,user_id,`name`, `option`,created_at,finger_name  ");
 		$sql = $sql.sprintf(" from temp_fingerprint ");
 		$sql = $sql.sprintf(" where token_pc = '" . $tokenPc . "' ");
-		$sql = $sql.sprintf(" and option is not null  ORDER BY id DESC LIMIT 1");
+		$sql = $sql.sprintf(" and `option` is not null  ORDER BY id DESC LIMIT 1");
 		
    		return $db->query($sql)->getRow();
    }
