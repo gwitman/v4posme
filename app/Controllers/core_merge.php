@@ -1043,14 +1043,17 @@ class core_merge extends _BaseController {
 			}
 		}
 		
-		//Eliminar archivos de: company_2/*.sql *.pdf		
+		//Eliminar archivos de: company_2/*.sql *.pdf *.doc *.zip *.etc 
+		//-------------------------------------------------
+		//-------------------------------------------------
 		$dir 	= opendir(PATH_FILE_OF_APP."/company_".APP_COMPANY);
 		$files 	= array();
 		while ($current = readdir($dir))
 		{
 			if( $current != "." && $current != "..") {
-				//componente 
 				
+				
+				//componente 				
 				if(is_dir(PATH_FILE_OF_APP."/company_".APP_COMPANY."/".$current)) 
 				{
 					
@@ -1065,6 +1068,7 @@ class core_merge extends _BaseController {
 							{
 								
 								//archivos
+								//recorrer archivo
 								$dir3 	= opendir(PATH_FILE_OF_APP."/company_".APP_COMPANY."/".$current."/".$current2."/");
 								while ($current3 = readdir($dir3))
 								{
@@ -1209,13 +1213,60 @@ class core_merge extends _BaseController {
 											
 									}
 								}
+								//fin while archivos de component item 
+								
+								//eliminar directorio								
+								$pathDirectoryComponentItem = PATH_FILE_OF_APP."/company_".APP_COMPANY."/".$current."/".$current2;
+								$pathDirectoryComponent 	= $current;
+								if
+								(								
+									 $pathDirectoryComponent == "component_34"  /*tb_transaction_master_otherinput*/ ||  
+									 $pathDirectoryComponent == "component_35"  /*tb_transaction_master_otheroutput*/ ||  
+									 $pathDirectoryComponent == "component_41"  /*tb_transaction_master_requestgeneral*/ ||  
+									 $pathDirectoryComponent == "component_42"  /*tb_transaction_master_transferoutput*/ ||  
+									 $pathDirectoryComponent == "component_43"  /*tb_transaction_master_transferinput*/ ||  
+									 $pathDirectoryComponent == "component_44"  /*tb_transaction_master_internalpurchaserequest*/ ||  
+									 $pathDirectoryComponent == "component_45"  /*tb_transaction_master_purchaseorden*/ ||  
+									 $pathDirectoryComponent == "component_46"  /*tb_transaction_master_purchase*/ ||  
+									 $pathDirectoryComponent == "component_48"  /*tb_transaction_master_billing*/ ||  
+									 $pathDirectoryComponent == "component_49"  /*tb_transaction_master_billing_revertion*/ ||  
+									 $pathDirectoryComponent == "component_50"  /*tb_transaction_master_info_billing*/ ||  
+									 $pathDirectoryComponent == "component_51"  /*tb_transaction_master_client_note_debito*/ ||  
+									 $pathDirectoryComponent == "component_52"  /*tb_transaction_master_client_note_credito*/ ||  
+									 $pathDirectoryComponent == "component_53"  /*tb_transaction_master_returns_provider*/ ||  
+									 $pathDirectoryComponent == "component_55"  /*tb_transaction_master_pay_billing*/ ||  
+									 $pathDirectoryComponent == "component_56"  /*tb_transaction_master_inputunpost*/ ||  
+									 $pathDirectoryComponent == "component_60"  /*tb_transaction_master_detail_returns_provider*/ ||  
+									 $pathDirectoryComponent == "component_64"  /*tb_transaction_master_share*/ ||  
+									 $pathDirectoryComponent == "component_65"  /*tb_transaction_master_cancel_invoice*/ ||  
+									 $pathDirectoryComponent == "component_66"  /*tb_transaction_master_share_capital*/ ||  
+									 $pathDirectoryComponent == "component_71"  /*tb_transaction_master_provisioned*/ ||  
+									 $pathDirectoryComponent == "component_74"  /*tb_transaction_master_rrhh_adelantos*/ ||  
+									 $pathDirectoryComponent == "component_75"  /*tb_transaction_master_rrhh_payroll*/ ||  
+									 $pathDirectoryComponent == "component_80"  /*tb_transaction_master_inputcash*/ ||  
+									 $pathDirectoryComponent == "component_81"  /*tb_transaction_master_outputcash*/ ||  
+									 $pathDirectoryComponent == "component_83"  /*tb_transaction_master_examen_lab*/ ||  
+									 $pathDirectoryComponent == "component_84"  /*tb_transaction_master_attendance*/ ||  
+									 $pathDirectoryComponent == "component_85"  /*tb_transaction_master_denomination*/ ||  
+									 $pathDirectoryComponent == "component_86"  /*tb_transaction_master_inventory_ajust*/ ||  
+									 $pathDirectoryComponent == "component_87"  /*tb_transaction_master_rrhh_asistencia*/ ||  
+									 $pathDirectoryComponent == "component_88"  /*tb_transaction_master_med_asistencia*/ ||  
+									 $pathDirectoryComponent == "component_91"  /*tb_transaction_master_proforma*/  
+									
+								)
+								{
+									deleteDir($pathDirectoryComponentItem);
+								}
+									
 							}
 						}
 					}
+					//fin while component item 
 					
 				}
 			}
 		}
+		//fin while component
 		
 		echo "SUCCESS";
 		

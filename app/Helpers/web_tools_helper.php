@@ -533,3 +533,39 @@ function helper_GetNumberLetras($xcifra,$moneda,$centavos)
     } // ENDFOR ($xz)
     return trim($xcadena);
 }
+
+
+
+function emptyDir($dir) {
+    if (is_dir($dir)) {
+        $scn = scandir($dir);
+        foreach ($scn as $files) {
+            if ($files !== '.') {
+                if ($files !== '..') {
+                    if (!is_dir($dir . '/' . $files)) {
+                        unlink($dir . '/' . $files);
+                    } else {
+                        emptyDir($dir . '/' . $files);
+                        rmdir($dir . '/' . $files);
+                    }
+                }
+            }
+        }
+    }
+}
+
+function deleteDir($dir) {
+
+    foreach(glob($dir . '/' . '*') as $file) {
+        if(is_dir($file)){
+
+
+            deleteDir($file);
+        } else {
+
+          unlink($file);
+        }
+    }
+    emptyDir($dir);
+    rmdir($dir);
+}
