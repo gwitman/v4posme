@@ -1219,21 +1219,31 @@ class core_merge extends _BaseController {
 								$pathDirectoryComponentItem = PATH_FILE_OF_APP."/company_".APP_COMPANY."/".$current."/".$current2;
 								$pathDirectoryComponent 	= $current;
 								if
-								(								
+								(	
+									 
+									 $pathDirectoryComponent == "component_16"  /*tb_journal_entry*/ || 
+									 $pathDirectoryComponent == "component_33"  /*tb_item*/ ||  
 									 $pathDirectoryComponent == "component_34"  /*tb_transaction_master_otherinput*/ ||  
 									 $pathDirectoryComponent == "component_35"  /*tb_transaction_master_otheroutput*/ ||  
+									 $pathDirectoryComponent == "component_36"  /*tb_customer*/ || 
+									 $pathDirectoryComponent == "component_37"  /*tb_entity_phone*/ || 	
+									 $pathDirectoryComponent == "component_38"  /*tb_provider*/ || 	
+									 $pathDirectoryComponent == "component_39"  /*tb_employee*/ || 	
+									 $pathDirectoryComponent == "component_40"  /*tb_fixed_assent*/ || 	
 									 $pathDirectoryComponent == "component_41"  /*tb_transaction_master_requestgeneral*/ ||  
 									 $pathDirectoryComponent == "component_42"  /*tb_transaction_master_transferoutput*/ ||  
 									 $pathDirectoryComponent == "component_43"  /*tb_transaction_master_transferinput*/ ||  
 									 $pathDirectoryComponent == "component_44"  /*tb_transaction_master_internalpurchaserequest*/ ||  
 									 $pathDirectoryComponent == "component_45"  /*tb_transaction_master_purchaseorden*/ ||  
 									 $pathDirectoryComponent == "component_46"  /*tb_transaction_master_purchase*/ ||  
+									 $pathDirectoryComponent == "component_47"  /*tb_list_price*/ ||  									 
 									 $pathDirectoryComponent == "component_48"  /*tb_transaction_master_billing*/ ||  
 									 $pathDirectoryComponent == "component_49"  /*tb_transaction_master_billing_revertion*/ ||  
 									 $pathDirectoryComponent == "component_50"  /*tb_transaction_master_info_billing*/ ||  
 									 $pathDirectoryComponent == "component_51"  /*tb_transaction_master_client_note_debito*/ ||  
 									 $pathDirectoryComponent == "component_52"  /*tb_transaction_master_client_note_credito*/ ||  
 									 $pathDirectoryComponent == "component_53"  /*tb_transaction_master_returns_provider*/ ||  
+									 $pathDirectoryComponent == "component_54"  /*tb_credit_line*/ ||  
 									 $pathDirectoryComponent == "component_55"  /*tb_transaction_master_pay_billing*/ ||  
 									 $pathDirectoryComponent == "component_56"  /*tb_transaction_master_inputunpost*/ ||  
 									 $pathDirectoryComponent == "component_60"  /*tb_transaction_master_detail_returns_provider*/ ||  
@@ -1241,10 +1251,13 @@ class core_merge extends _BaseController {
 									 $pathDirectoryComponent == "component_65"  /*tb_transaction_master_cancel_invoice*/ ||  
 									 $pathDirectoryComponent == "component_66"  /*tb_transaction_master_share_capital*/ ||  
 									 $pathDirectoryComponent == "component_71"  /*tb_transaction_master_provisioned*/ ||  
+									 $pathDirectoryComponent == "component_72"  /*tb_employee_calendar_pay*/ ||  									 
 									 $pathDirectoryComponent == "component_74"  /*tb_transaction_master_rrhh_adelantos*/ ||  
 									 $pathDirectoryComponent == "component_75"  /*tb_transaction_master_rrhh_payroll*/ ||  
+									 $pathDirectoryComponent == "component_78"  /*tb_customer_consultas_sin_riesgo*/ ||  
 									 $pathDirectoryComponent == "component_80"  /*tb_transaction_master_inputcash*/ ||  
 									 $pathDirectoryComponent == "component_81"  /*tb_transaction_master_outputcash*/ ||  
+									 $pathDirectoryComponent == "component_82"  /*tb_item_masive*/ ||  									 
 									 $pathDirectoryComponent == "component_83"  /*tb_transaction_master_examen_lab*/ ||  
 									 $pathDirectoryComponent == "component_84"  /*tb_transaction_master_attendance*/ ||  
 									 $pathDirectoryComponent == "component_85"  /*tb_transaction_master_denomination*/ ||  
@@ -1255,6 +1268,7 @@ class core_merge extends _BaseController {
 									
 								)
 								{
+									echo "Limpiando el siguiente componente: ".$pathDirectoryComponentItem."</br>";
 									deleteDir($pathDirectoryComponentItem);
 								}
 									
