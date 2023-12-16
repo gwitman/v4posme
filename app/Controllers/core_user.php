@@ -1183,52 +1183,81 @@ class core_user extends _BaseController {
 			if(!$this->request->getPost("txtTelefono"))
 			throw new \Exception("Telefono obligatorio.");
 		
-			$img = $this->request->getFile('formFilePortada');			
-			if($img->getSizeByUnit()  == 0 ){				
-				throw new \Exception("Portada obligatorio.");
-			}
 			
 			$db=db_connect();
 			$db->transStart();
 			
 			
-			//Crear Usuario
-			$obj["companyID"]		= APP_COMPANY;				
-			$obj["branchID"] 		= APP_BRANCH;				
+			$comando					= "new"; //update
+			$objUserTmp 				= $this->User_Model->get_rowByEmail(/*inicio get post*/ $this->request->getPost("txtEmail"));
+			if($objUserTmp)
+			{
+				$comando 					= "update";
+				//Crear Usuario
+				$obj["companyID"]			= APP_COMPANY;				
+				$obj["branchID"] 			= APP_BRANCH;				
+				
+				
+				$obj["nickname"] 			= /*inicio get post*/ $this->request->getPost("txtNombre");			
+				$obj["email"] 				= $objUserTmp->email;
+				$obj["phone"] 				= /*inicio get post*/ $this->request->getPost("txtTelefono");						
+				$obj["comercio"]			= /*inicio get post*/ $this->request->getPost("txtComercio");			
+				$obj["comercio"]			= str_replace(" ","",$obj["comercio"]);
+				$obj["comercio"]			= str_replace(".","",$obj["comercio"]);
+				$obj["comercio"]			= str_replace("'","",$obj["comercio"]);
+				$obj["comercio"]			= str_replace("/","",$obj["comercio"]);
+				$obj["comercio"]			= str_replace('"',"",$obj["comercio"]);			
+				$obj["comercio"]			= str_replace('í',"i",$obj["comercio"]);
+				$obj["comercio"]			= str_replace('ó',"o",$obj["comercio"]);
+				$obj["comercio"]			= str_replace('ú',"u",$obj["comercio"]);
+				$obj["comercio"]			= str_replace('ñ',"n",$obj["comercio"]);
+				$obj["comercio"]			= str_replace('Ñ',"N",$obj["comercio"]);
+				$obj["comercio"]			= str_replace('é',"e",$obj["comercio"]);
+				$obj["comercio"]			= str_replace('á',"a",$obj["comercio"]);
+				$obj["isActive"] 			= true;		
+				$obj["employeeID"] 			= 0;				
+				$userID						= $objUserTmp->userID;
+				$this->User_Model->update_app_posme(APP_COMPANY,APP_BRANCH,$userID,$obj);
+				
+				
+			}
+			else 
+			{
+				$comando 					= "new";
+				//Crear Usuario
+				$obj["companyID"]			= APP_COMPANY;				
+				$obj["branchID"] 			= APP_BRANCH;				
+				
+				$obj["nickname"] 			= /*inicio get post*/ $this->request->getPost("txtNombre");			
+				$obj["email"] 				= /*inicio get post*/ $this->request->getPost("txtEmail");
+				$obj["phone"] 				= /*inicio get post*/ $this->request->getPost("txtTelefono");						
+				$obj["comercio"]			= /*inicio get post*/ $this->request->getPost("txtComercio");			
+				$obj["comercio"]			= str_replace(" ","",$obj["comercio"]);
+				$obj["comercio"]			= str_replace(".","",$obj["comercio"]);
+				$obj["comercio"]			= str_replace("'","",$obj["comercio"]);
+				$obj["comercio"]			= str_replace("/","",$obj["comercio"]);
+				$obj["comercio"]			= str_replace('"',"",$obj["comercio"]);			
+				$obj["comercio"]			= str_replace('í',"i",$obj["comercio"]);
+				$obj["comercio"]			= str_replace('ó',"o",$obj["comercio"]);
+				$obj["comercio"]			= str_replace('ú',"u",$obj["comercio"]);
+				$obj["comercio"]			= str_replace('ñ',"n",$obj["comercio"]);
+				$obj["comercio"]			= str_replace('Ñ',"N",$obj["comercio"]);
+				$obj["comercio"]			= str_replace('é',"e",$obj["comercio"]);
+				$obj["comercio"]			= str_replace('á',"a",$obj["comercio"]);
+				
+				
+				$obj["createdOn"]			= date("Y-m-d H:i:s");		
+				$obj["password"] 			= /*inicio get post*/ 123;
+				$obj["lastPayment"]			= helper_getDateMoreOneMonth();
+				$obj["createdBy"]			= APP_USERADMIN;
+				$obj["isActive"] 			= true;		
+				$obj["employeeID"] 			= 0;
+				
+				$userID		 				= $this->User_Model->insert_app_posme($obj);
+			}
 			
-			$obj["nickname"] 			= /*inicio get post*/ $this->request->getPost("txtNombre");			
-			$obj["email"] 				= /*inicio get post*/ $this->request->getPost("txtEmail");
-			$obj["phone"] 				= /*inicio get post*/ $this->request->getPost("txtTelefono");						
-			$obj["comercio"]			= /*inicio get post*/ $this->request->getPost("txtComercio");			
-			$obj["comercio"]			= str_replace(" ","",$obj["comercio"]);
-			$obj["comercio"]			= str_replace(".","",$obj["comercio"]);
-			$obj["comercio"]			= str_replace("'","",$obj["comercio"]);
-			$obj["comercio"]			= str_replace("/","",$obj["comercio"]);
-			$obj["comercio"]			= str_replace('"',"",$obj["comercio"]);			
-			$obj["comercio"]			= str_replace('í',"i",$obj["comercio"]);
-			$obj["comercio"]			= str_replace('ó',"o",$obj["comercio"]);
-			$obj["comercio"]			= str_replace('ú',"u",$obj["comercio"]);
-			$obj["comercio"]			= str_replace('ñ',"n",$obj["comercio"]);
-			$obj["comercio"]			= str_replace('Ñ',"N",$obj["comercio"]);
-			$obj["comercio"]			= str_replace('é',"e",$obj["comercio"]);
-			$obj["comercio"]			= str_replace('á',"a",$obj["comercio"]);
 			
-			
-			$obj["createdOn"]			= date("Y-m-d H:i:s");		
-			$obj["password"] 			= /*inicio get post*/ 123;
-			$obj["lastPayment"]			= helper_getDateMoreOneMonth();
-			$obj["createdBy"]			= APP_USERADMIN;
-			$obj["isActive"] 			= true;		
-			$obj["employeeID"] 			= 0;
-			
-			//validar Correo
-			$objUserTmp = $this->User_Model->get_rowByEmail(/*inicio get post*/ $this->request->getPost("txtEmail"));
-			if( $objUserTmp  )
-			throw new \Exception("Email ya existe llamar a soporte 50587125827.");
-					
-						
-			$userID		 				= $this->User_Model->insert_app_posme($obj);
-			//Crear carpeta de usuario			
+			//Crear carpeta de usuario		
 			$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_8/component_item_".$userID;
 			if (!file_exists($documentoPath))
 			{
@@ -1236,43 +1265,58 @@ class core_user extends _BaseController {
 				chmod($documentoPath, 0755);
 			}
 			
-			//Guardar el archivo en la carpeta writable
-			$filepath 	= $img->store();			
-			$name 		= $img->getName();		
-			$filePathSource 		=  PATH_FILE_OF_UPLOAD_WRITE."/".$filepath;			
-			$filePathDetination 	=  $documentoPath."/".$name;
-			copy($filePathSource,$filePathDetination);
-			unlink($filePathSource);
 			
-			//Actualizar Usuario
-			$dataUpdateUser["foto"] = $name;
-			$this->User_Model->update_app_posme(APP_COMPANY,APP_BRANCH,$userID,$dataUpdateUser);
-            
-			
-			//Asociar rol
-			$companyID 					= $obj["companyID"];
-			$branchID 					= $obj["branchID"];			 
-			$roleID 					= $this->core_web_parameter->getParameter("POSME_CALENDAR_ROLE_DEFAULT",APP_COMPANY)->value;
-			$result 					= $this->Membership_Model->delete_app_posme($companyID,$branchID,$userID);
-			 
-			//Nuevo Membership
-			$objMembership["companyID"] = $companyID;
-			$objMembership["branchID"] 	= $branchID;
-			$objMembership["userID"] 	= $userID;
-			$objMembership["roleID"] 	= $roleID;
-			$result 					= $this->Membership_Model->insert_app_posme($objMembership);
+			//Guardar el archivo en la carpeta writable			
+			$img 			= $this->request->getFile('formFilePortada');	
+			$dataUpdateUser = array();
+			if($img->getSizeByUnit()  != 0 )
+			{
+				$filepath 	= $img->store();			
+				$name 		= $img->getName();		
+				$filePathSource 		=  PATH_FILE_OF_UPLOAD_WRITE."/".$filepath;			
+				$filePathDetination 	=  $documentoPath."/".$name;
+				copy($filePathSource,$filePathDetination);
+				unlink($filePathSource);
+				
+				//Actualizar Usuario
+				$dataUpdateUser["foto"] = $name;
+				$this->User_Model->update_app_posme(APP_COMPANY,APP_BRANCH,$userID,$dataUpdateUser);
+					
+			}
+			else 
+			{
+				$dataUpdateUser["foto"] = "lmn.jpg";
+			}
 			
 			
-			//Agregar Notificaciones
-			$this->User_Tag_Model->deleteByUser($userID);
-			$objTag["companyID"] 		= $companyID;
-			$objTag["branchID"] 		= $branchID;
-			$objTag["userID"] 			= $userID;
-			$objTag["tagID"] 			= $this->core_web_parameter->getParameter("POSME_CALENDAR_TAG_DEFAULT",APP_COMPANY)->value;
-			$this->User_Tag_Model->insert_app_posme($objTag);
+			
+			if($comando == "new")
+			{
+				//Asociar rol
+				$companyID 					= $obj["companyID"];
+				$branchID 					= $obj["branchID"];			 
+				$roleID 					= $this->core_web_parameter->getParameter("POSME_CALENDAR_ROLE_DEFAULT",APP_COMPANY)->value;
+				$result 					= $this->Membership_Model->delete_app_posme($companyID,$branchID,$userID);
+				 
+				//Nuevo Membership
+				$objMembership["companyID"] = $companyID;
+				$objMembership["branchID"] 	= $branchID;
+				$objMembership["userID"] 	= $userID;
+				$objMembership["roleID"] 	= $roleID;
+				$result 					= $this->Membership_Model->insert_app_posme($objMembership);
+				
+				
+				//Agregar Notificaciones
+				$this->User_Tag_Model->deleteByUser($userID);
+				$objTag["companyID"] 		= $companyID;
+				$objTag["branchID"] 		= $branchID;
+				$objTag["userID"] 			= $userID;
+				$objTag["tagID"] 			= $this->core_web_parameter->getParameter("POSME_CALENDAR_TAG_DEFAULT",APP_COMPANY)->value;
+				$this->User_Tag_Model->insert_app_posme($objTag);
+			}
 			
 			
-			//Bienvenida
+			//Enviar mensaje de bienvenida
 			$url = "Bienvenido: ".$this->request->getPost("txtNombre")." el siguiente link usted debe compartir con sus clientes: ";
 			$this->core_web_whatsap->sendMessageUltramsg(
 				APP_COMPANY, 
@@ -1282,21 +1326,31 @@ class core_user extends _BaseController {
 			
 			
 			//Url de cita
-			$url = $this->core_web_parameter->getParameter("POSME_CALENDAR_URL_CITA",APP_COMPANY)->value."?txtBusiness=".$dataUpdateUser["foto"];
+			$url 				= $this->core_web_parameter->getParameter("POSME_CALENDAR_URL_CITA",APP_COMPANY)->value."?txtBusiness=".$dataUpdateUser["foto"];
+			$urlImagen 		 	= base_url()."/resource/file_company/company_".APP_COMPANY."/component_8/component_item_".$userID."/qrcode.png";
 			
-			//Guardar Codigo de Barra			
-			$this->core_web_qr->generate($url,$documentoPath."/qrcode.png","M","10");
+			//Guardar Codigo QR 			
+			$this->core_web_qr->generate($url,$documentoPath."/qrcode.png","M","10");	
+			
 		
-		
-			//Mandar QR
+			//Enviar mensaje de link de acceso
 			$this->core_web_whatsap->sendMessageUltramsg(
 				APP_COMPANY, 
 				$url,
 				$this->request->getPost("txtTelefono")
 			);
 			
+			//Enviar mensaje de imagen de qr para el acceso			
+			$this->core_web_whatsap->sendMessageTypeImagUltramsg(
+				APP_COMPANY, 
+				$urlImagen,
+				"comparte y agenda",
+				$this->request->getPost("txtTelefono")
+			);
 			
 			
+			
+			//Return
 			if($db->transStatus() !== false){
 				$db->transCommit();						
 				$this->core_web_notification->set_message(false,"Exito informacion enviada a correo electronico o whatsapp");
