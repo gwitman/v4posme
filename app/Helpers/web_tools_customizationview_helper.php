@@ -159,7 +159,17 @@ function getBehavio($type_company,$key_controller,$key_element)
 		
 		/*Exceso*/
 		strtolower('exceso_app_inventory_item_labelBarCode')										=> "Barra / IMAI",
-		
+		strtolower('exceso_app_inventory_item_divTxtCapacidad') 			 						=> "hidden",
+		strtolower('exceso_app_inventory_item_divTxtCantidadMinima') 								=> "hidden",
+		strtolower('exceso_app_inventory_item_divTxtCantidadMaxima') 								=> "hidden",
+		strtolower('exceso_app_inventory_item_divTxtSKUCompras') 			 						=> "hidden",
+		strtolower('exceso_app_inventory_item_divTxtSKUProduccion') 								=> "hidden",
+		strtolower('exceso_app_inventory_item_divTxtEstado') 			 							=> "hidden",
+		strtolower('exceso_app_inventory_item_divTxtFamilia') 			 							=> "hidden",
+		strtolower('exceso_app_inventory_item_divTxtUM') 			 								=> "hidden",
+		strtolower('exceso_app_inventory_item_divTxtPresentacion') 			 						=> "hidden",
+		strtolower('exceso_app_inventory_item_divTxtPresentacionUM') 								=> "hidden",
+		strtolower('exceso_app_inventory_item_divTxtUM') 			 								=> "hidden",
 		
 		
 		/*GBT*/
