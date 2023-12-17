@@ -7,6 +7,15 @@ class Notification_Model extends Model  {
    function __construct(){	
       parent::__construct();
    }
+   
+   function update_app_posme_by_sumary($summary,$data){
+		$db 		= db_connect();
+		$builder	= $db->table("tb_notification");
+		
+		$builder->where("summary",$summary);
+		return $builder->update($data);
+		
+   }
    function update_app_posme($notificationID,$data){
 		$db 		= db_connect();
 		$builder	= $db->table("tb_notification");
@@ -28,13 +37,13 @@ class Notification_Model extends Model  {
 		$db 		= db_connect();
 		$builder	= $db->table("tb_notification");
 		$result		= $builder->insert($data);
-		return $result;
+		return $db->insertID();		
    }
    function get_rowByPK($notificationID){
 		$db 	= db_connect();
 		$builder	= $db->table("tb_notification");    
 		$sql = "";
-		$sql = sprintf("select notificationID,errorID,`from`,`to`,`subject`,message,summary,title,tagID,createdOn,sendOn,isActive,phoneFrom,phoneTo,programDate,programHour,sendEmailOn,sendWhatsappOn,addedCalendarGoogle");
+		$sql = sprintf("select notificationID,errorID,`from`,`to`,`subject`,message,summary,title,tagID,createdOn,sendOn,isActive,phoneFrom,phoneTo,programDate,programHour,sendEmailOn,sendWhatsappOn,addedCalendarGoogle,quantityOcupation,quantityDisponible,googleCalendarEventID");
 		$sql = $sql.sprintf(" from tb_notification n");
 		$sql = $sql.sprintf(" where n.isActive= 1");		
 		$sql = $sql.sprintf(" and n.notificationID = $notificationID");		
@@ -47,7 +56,7 @@ class Notification_Model extends Model  {
 		$builder	= $db->table("tb_notification");    
    
 		$sql = "";
-		$sql = sprintf("select notificationID,errorID,`from`,`to`,`subject`,message,summary,title,tagID,createdOn,sendOn,isActive,phoneFrom,phoneTo,programDate,programHour,sendEmailOn,sendWhatsappOn,addedCalendarGoogle");
+		$sql = sprintf("select notificationID,errorID,`from`,`to`,`subject`,message,summary,title,tagID,createdOn,sendOn,isActive,phoneFrom,phoneTo,programDate,programHour,sendEmailOn,sendWhatsappOn,addedCalendarGoogle,quantityOcupation,quantityDisponible,googleCalendarEventID");
 		$sql = $sql.sprintf(" from tb_notification n");
 		$sql = $sql.sprintf(" where n.isActive= 1");
 		$sql = $sql.sprintf(" and n.sendOn is null");
@@ -64,7 +73,7 @@ class Notification_Model extends Model  {
 		$builder	= $db->table("tb_notification");    
    
 		$sql = "";
-		$sql = sprintf("select notificationID,errorID,`from`,`to`,`subject`,message,summary,title,tagID,createdOn,sendOn,isActive,phoneFrom,phoneTo,programDate,programHour,sendEmailOn,sendWhatsappOn,addedCalendarGoogle");
+		$sql = sprintf("select notificationID,errorID,`from`,`to`,`subject`,message,summary,title,tagID,createdOn,sendOn,isActive,phoneFrom,phoneTo,programDate,programHour,sendEmailOn,sendWhatsappOn,addedCalendarGoogle,quantityOcupation,quantityDisponible,googleCalendarEventID");
 		$sql = $sql.sprintf(" from tb_notification n");
 		$sql = $sql.sprintf(" where n.isActive= 1");
 		$sql = $sql.sprintf(" and n.sendEmailOn is null");
@@ -85,7 +94,7 @@ class Notification_Model extends Model  {
 		$builder	= $db->table("tb_notification");    
    
 		$sql = "";
-		$sql = sprintf("select notificationID,errorID,`from`,`to`,`subject`,message,summary,title,tagID,createdOn,sendOn,isActive,phoneFrom,phoneTo,programDate,programHour,sendEmailOn,sendWhatsappOn,addedCalendarGoogle");
+		$sql = sprintf("select notificationID,errorID,`from`,`to`,`subject`,message,summary,title,tagID,createdOn,sendOn,isActive,phoneFrom,phoneTo,programDate,programHour,sendEmailOn,sendWhatsappOn,addedCalendarGoogle,quantityOcupation,quantityDisponible,googleCalendarEventID");
 		$sql = $sql.sprintf(" from tb_notification n");
 		$sql = $sql.sprintf(" where n.isActive = 1 ");
 		$sql = $sql.sprintf(" and   n.summary = '$business' ");
@@ -124,7 +133,7 @@ class Notification_Model extends Model  {
 		$builder	= $db->table("tb_notification");    
    
 		$sql = "";
-		$sql = sprintf("select notificationID,errorID,`from`,`to`,`subject`,message,summary,title,tagID,createdOn,sendOn,isActive,phoneFrom,phoneTo,programDate,programHour,sendEmailOn,sendWhatsappOn,addedCalendarGoogle");
+		$sql = sprintf("select notificationID,errorID,`from`,`to`,`subject`,message,summary,title,tagID,createdOn,sendOn,isActive,phoneFrom,phoneTo,programDate,programHour,sendEmailOn,sendWhatsappOn,addedCalendarGoogle,quantityOcupation,quantityDisponible,googleCalendarEventID");
 		$sql = $sql.sprintf(" from tb_notification n");
 		$sql = $sql.sprintf(" where n.isActive= 1");
 		$sql = $sql.sprintf(" and n.addedCalendarGoogle = 0 and n.tagID = ".$tagID);
@@ -139,7 +148,7 @@ class Notification_Model extends Model  {
 		$builder	= $db->table("tb_notification");    
    
 		$sql = "";
-		$sql = sprintf("select n.notificationID,n.errorID,n.`from`,n.`to`,n.`subject`,n.message,n.summary,n.title,n.tagID,n.createdOn,n.sendOn,n.isActive,n.phoneFrom,n.phoneTo,n.programDate,n.programHour,n.sendEmailOn,n.sendWhatsappOn,n.addedCalendarGoogle");
+		$sql = sprintf("select n.notificationID,n.errorID,n.`from`,n.`to`,n.`subject`,n.message,n.summary,n.title,n.tagID,n.createdOn,n.sendOn,n.isActive,n.phoneFrom,n.phoneTo,n.programDate,n.programHour,n.sendEmailOn,n.sendWhatsappOn,n.addedCalendarGoogle,quantityOcupation,quantityDisponible,googleCalendarEventID");
 		$sql = $sql.sprintf(" from tb_notification n");
 		$sql = $sql.sprintf(" inner join tb_tag t on n.tagID = t.tagID  ");
 		$sql = $sql.sprintf(" where n.isActive= 1");
@@ -169,7 +178,7 @@ class Notification_Model extends Model  {
 		$builder	= $db->table("tb_notification");    
    
 		$sql = "";
-		$sql = sprintf("select notificationID,errorID,`from`,`to`,`subject`,message,summary,title,tagID,createdOn,sendOn,isActive,phoneFrom,phoneTo,programDate,programHour,sendEmailOn,sendWhatsappOn,addedCalendarGoogle");
+		$sql = sprintf("select notificationID,errorID,`from`,`to`,`subject`,message,summary,title,tagID,createdOn,sendOn,isActive,phoneFrom,phoneTo,programDate,programHour,sendEmailOn,sendWhatsappOn,addedCalendarGoogle,quantityOcupation,quantityDisponible,googleCalendarEventID");
 		$sql = $sql.sprintf(" from tb_notification n");
 		$sql = $sql.sprintf(" where n.isActive= 1");
 		$sql = $sql.sprintf(" and n.sendWhatsappOn is null");
@@ -195,7 +204,7 @@ class Notification_Model extends Model  {
 		$db 	= db_connect();
 		    
 		$sql = "";
-		$sql = sprintf("select notificationID,errorID,`from`,`to`,`subject`,message,summary,title,tagID,createdOn,sendOn,isActive,phoneFrom,phoneTo,programDate,programHour,sendEmailOn,sendWhatsappOn,addedCalendarGoogle");
+		$sql = sprintf("select notificationID,errorID,`from`,`to`,`subject`,message,summary,title,tagID,createdOn,sendOn,isActive,phoneFrom,phoneTo,programDate,programHour,sendEmailOn,sendWhatsappOn,addedCalendarGoogle,quantityOcupation,quantityDisponible,googleCalendarEventID");
 		$sql = $sql.sprintf(" from tb_notification n");
 		$sql = $sql.sprintf(" where n.isActive= 1");
 		$sql = $sql.sprintf(" and n.to = '$to' ");

@@ -131,7 +131,7 @@ define('APP_CUSTOMER02','309');
 define('APP_HOUR_DIFERENCE_MYSQL','00:00:00');
 define('APP_HOUR_DIFERENCE_PHP','+0 minutes');
 define('APP_URL_RESOURCE_CSS_JS','http://localhost/posmev4');
-define('URL_REDIRECT_CALENDAR_POSME','http://localhost/posmev4/app_config_noti/eventgooglecalendaradded');
+define('URL_REDIRECT_CALENDAR_POSME','http://localhost/posmev4/core_user/savepublicgooglereturn');
 define('APP_URL_WOOCOMERCE','https://posme.net');
 
 //BD

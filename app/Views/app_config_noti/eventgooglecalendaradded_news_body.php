@@ -15,7 +15,7 @@
 			  <div class="card h-100">
 				<div class="card-body">
 				  <h5 class="card-title">posMe</h5>
-				  <h6 class="card-subtitle text-muted">Evento agregado a su calendario</h6>
+				  <h6 class="card-subtitle text-muted">Cliente actualizado</h6>
 				</div>
 				
 				<img class="img-fluid" src="<?php echo base_url(); ?>/resource/img/logo_posme.jpg" alt="Card image cap" />

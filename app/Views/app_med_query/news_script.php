@@ -54,18 +54,6 @@
 						$("#txtCustomerDescription").val(objResponse[2] + " " + objResponse[4] + " / " + objResponse[5]);	
 						
 						
-						$.ajax({									
-							cache       : false,
-							dataType    : 'json',
-							type        : 'POST',
-							url  		: "<?php echo base_url(); ?>/app_invoice_api/getLineByCustomer",
-							data 		: {entityID : $("#txtCustomerID").val()  },
-							success		: fnCompleteGetCustomerCreditLine,
-							error:function(xhr,data){	
-								console.info("complete data error");													
-								fnShowNotification("Error 505","error");
-							}
-						});			
 						
 						
 						
@@ -90,7 +78,7 @@
 						if( $("#txtCustomerID").val() == "0" ||  $("#txtCustomerID").val() == "13" ){
 							fnShowNotification("Seleccione el cliente","error",timerNotification);
 							result = false;
-						}					
+						}		
 						
 						return result;
 					}

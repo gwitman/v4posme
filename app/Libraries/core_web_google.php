@@ -261,6 +261,38 @@ class core_web_google
 			return "evento agregado:".$data['id']; 
 			 
    }
+   
+   public function removeEvent_Posme($access_token,$eventID)
+   {        
+            $calendar_id 	= 'primary';			
+			$apiURL 		= self::posme_calendarUrl. $calendar_id . '/events/'.$eventID; 
+         
+			
+			$ch = curl_init();         
+			curl_setopt($ch, CURLOPT_URL, $apiURL);         
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);         
+			curl_setopt($ch, CURLOPT_POST, 0);    
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");    			
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); 
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer '. $access_token, 'Content-Type: application/json'));     
+			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($curlPost));     
+			$data 		= json_decode(curl_exec($ch), true); 
+			$http_code 	= curl_getinfo($ch,CURLINFO_HTTP_CODE);         
+			 
+			 
+			if ($http_code != 200) 
+			{ 
+				$error_msg = 'Failed to create event'; 
+				if (curl_errno($ch)) { 
+					$error_msg = curl_error($ch); 
+				} 
+				throw new \Exception('Error '.$http_code.': '.$error_msg); 
+			} 
+	 
+			return $eventID;
+			 
+   }
+   
   
 }
 ?>

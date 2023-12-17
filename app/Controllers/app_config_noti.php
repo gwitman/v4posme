@@ -170,26 +170,26 @@ class app_config_noti extends _BaseController {
 					
 				
 				
-					//Validar hora disponible para el negocio en especifico
-					//Valier  por negocio
-					$datetime		 			= $this->request->getPost("txtDate")." ".$this->request->getPost("txtHora").":00";
-					$objNotification 			= $this->Notification_Model->get_rowsWhatsappPrimerEmployeerOcupado($datetime,$txtBusiness);					
-					if($objNotification)
-					{	
-												
-						for($i = 0 ; $i < 43200 ; $i++)
-						{
-							
-							$datetime 					= \DateTime::createFromFormat('Y-m-d H:i:s',$datetime);										
-							$datetime					= date_add($datetime,date_interval_create_from_date_string('1 minutes'));								
-							$datetime  					= date_format($datetime,"Y-m-d H:i:s");
-							$objNotificationSugerida 	= $this->Notification_Model->get_rowsWhatsappPrimerEmployeerOcupado($datetime,$txtBusiness);		
-							if(!$objNotificationSugerida)
-							break;
-						}
-						
-						throw new \Exception("No disponible en este horario </br> Hasta ".$datetime);	
-					}
+					//wgonzalez-no aplicar-validacion-aun-//Validar hora disponible para el negocio en especifico
+					//wgonzalez-no aplicar-validacion-aun-//Valier  por negocio
+					//wgonzalez-no aplicar-validacion-aun-$datetime		 			= $this->request->getPost("txtDate")." ".$this->request->getPost("txtHora").":00";
+					//wgonzalez-no aplicar-validacion-aun-$objNotification 			= $this->Notification_Model->get_rowsWhatsappPrimerEmployeerOcupado($datetime,$txtBusiness);					
+					//wgonzalez-no aplicar-validacion-aun-if($objNotification)
+					//wgonzalez-no aplicar-validacion-aun-{	
+					//wgonzalez-no aplicar-validacion-aun-							
+					//wgonzalez-no aplicar-validacion-aun-	for($i = 0 ; $i < 43200 ; $i++)
+					//wgonzalez-no aplicar-validacion-aun-	{
+					//wgonzalez-no aplicar-validacion-aun-		
+					//wgonzalez-no aplicar-validacion-aun-		$datetime 					= \DateTime::createFromFormat('Y-m-d H:i:s',$datetime);										
+					//wgonzalez-no aplicar-validacion-aun-		$datetime					= date_add($datetime,date_interval_create_from_date_string('1 minutes'));								
+					//wgonzalez-no aplicar-validacion-aun-		$datetime  					= date_format($datetime,"Y-m-d H:i:s");
+					//wgonzalez-no aplicar-validacion-aun-		$objNotificationSugerida 	= $this->Notification_Model->get_rowsWhatsappPrimerEmployeerOcupado($datetime,$txtBusiness);		
+					//wgonzalez-no aplicar-validacion-aun-		if(!$objNotificationSugerida)
+					//wgonzalez-no aplicar-validacion-aun-		break;
+					//wgonzalez-no aplicar-validacion-aun-	}
+					//wgonzalez-no aplicar-validacion-aun-	
+					//wgonzalez-no aplicar-validacion-aun-	throw new \Exception("No disponible en este horario </br> Hasta ".$datetime);	
+					//wgonzalez-no aplicar-validacion-aun-}
 					
 					
 					
@@ -228,27 +228,34 @@ class app_config_noti extends _BaseController {
 					$data["tagID"]					= $objTag->tagID;
 					$data["createdOn"]				= date_format(date_create(),"Y-m-d H:i:s");
 					$data["isActive"]				= 1;
-					$data["addedCalendarGoogle"] 	= 0;
-					$this->Notification_Model->insert_app_posme($data);
+					$data["addedCalendarGoogle"] 	= 1;
+					$data["quantityOcupation"] 		= 0;
+					$data["quantityDisponible"] 	= 0;
+					$notificationID 				= $this->Notification_Model->insert_app_posme($data);
 					
 					
 					
-					//enviar al propietario del calendario, la url para autoriza, el evento					
+					//Agregar evento al calendario
 					$core_web_google = new core_web_google();
-					$url 			 = $core_web_google->getRequestPermission_Posme($txtBusiness);
-					
+					$objUsuario		 = $this->User_Model->get_rowByFoto($txtBusiness);
+					$resultEventID	 = $core_web_google->setEvent_Posme(
+						$objUsuario[0]->token_google_calendar,
+						$data["title"],
+						$data["message"],
+						$data["programDate"],
+						$data["programHour"].":00",
+						$data["programHour"].":00"
+					);
+								
+					$dataNewNotification["googleCalendarEventID"]	= $resultEventID;
+					$this->Notification_Model->update_app_posme($notificationID,$dataNewNotification);
 					
 					$this->core_web_whatsap->sendMessageUltramsg(
 						APP_COMPANY, 
-						"".$data["title"]." agenda una cita con usted , pulse el siguiente link para agregar al calendario.",
+						"".$data["title"]." cita agregada.",
 						$usuario->phone
 					);
 					
-					$this->core_web_whatsap->sendMessageUltramsg(
-						APP_COMPANY, 
-						$url,
-						$usuario->phone
-					);
 					
 					
 					$this->core_web_notification->set_message(false,"Cita agendada: P- ".$errorID);
@@ -464,94 +471,7 @@ class app_config_noti extends _BaseController {
 			
     }
 	
-	function eventgoogleadd()
-	{
-		
-			//Obtener el componente Para mostrar la lista de CompanyCurrency
-			$objComponent					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_remember");
-			if(!$objComponent)
-			throw new \Exception("00409 EL COMPONENTE 'tb_remember' NO EXISTE...");
-			$dataView["component"]			= $objComponent;
-			
-			$business							= /*inicio get post*/ $this->request->getVar("txtBusiness");
-			$business							= $business ? $business : "default";
-			
-			
-			$dataView["business"] 				= $business;
-			$dataView["objListPeriod"]			= $this->core_web_catalog->getCatalogAllItem("tb_remember","period",APP_COMPANY);
-			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_remember","statusID",APP_COMPANY,APP_BRANCH,APP_ROL_SUPERADMIN);
-			$dataView["message"]				= $this->core_web_notification->get_message_alert();
-			$dataView["objListUser"]			= $this->User_Model->get_rowByFoto(/*inicio get post*/ $business );
-			$dataView["objItemUser"]			= $dataView["objListUser"][0];
-			
-			
-			$dataSession["head"]				= /*--inicio view*/ view('app_config_noti/public_news_head',$dataView);//--finview
-			$dataSession["body"]				= /*--inicio view*/ view('app_config_noti/public_news_body',$dataView);//--finview
-			$dataSession["script"]				= /*--inicio view*/ view('app_config_noti/public_news_script',$dataView);//--finview
-			$dataSession["footer"]				= "";
-			return view("core_masterpage/default_masterpage_public",$dataSession);//--finview-r
-		
-	}
 	
-	function eventgooglecalendaradded()
-	{
-		
-		//ya medio los permisos
-		$code 		= $this->request->getGet("code");		
-		$state 		= $this->request->getGet("state");	
-		$business	= $state;
-		if($code)
-		{
-			
-			$core_web_google = new core_web_google();
-			$tocket			 = $core_web_google->getRequestToket_Posme($code);
-			
-			//Obtener el tag que se agregara al calendario
-			$objTag			= $this->Tag_Model->get_rowByName("PROXIMA VISITA");
-			$objListNoti	= $this->Notification_Model->get_rowsToAddedGoogleCalendar($objTag->tagID,$business);
-			if($objListNoti)
-			{
-				foreach($objListNoti as $notiElement)
-				{
-					$business 							 = $notiElement->summary;
-					$dataUpdate["addedCalendarGoogle"]   = 1;
-					$this->Notification_Model->update_app_posme($notiElement->notificationID,$dataUpdate);
-					
-					$resultEventID	 = $core_web_google->setEvent_Posme(
-						$tocket,
-						$notiElement->title,
-						$notiElement->message,
-						$notiElement->programDate,
-						$notiElement->programHour.":00",
-						$notiElement->programHour.":00"
-					);
-			
-					
-				}
-			}
-			
-		}
-		
-		
-		//Obtener el componente Para mostrar la lista de CompanyCurrency
-		$objComponent					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_remember");
-		if(!$objComponent)
-		throw new \Exception("00409 EL COMPONENTE 'tb_remember' NO EXISTE...");
-		$dataView["component"]			= $objComponent;
-			
-		$dataView["business"]				= $business;
-		$dataView["objListPeriod"]			= $this->core_web_catalog->getCatalogAllItem("tb_remember","period",APP_COMPANY);
-		$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_remember","statusID",APP_COMPANY,APP_BRANCH,APP_ROL_SUPERADMIN);
-		$dataView["message"]				= $this->core_web_notification->get_message_alert();
-		$dataView["objListUser"]			= $this->User_Model->get_All(APP_COMPANY);
-		
-		$dataSession["head"]				= /*--inicio view*/ view('app_config_noti/eventgooglecalendaradded_news_head',$dataView);//--finview
-		$dataSession["body"]				= /*--inicio view*/ view('app_config_noti/eventgooglecalendaradded_news_body',$dataView);//--finview
-		$dataSession["script"]				= /*--inicio view*/ view('app_config_noti/eventgooglecalendaradded_news_script',$dataView);//--finview
-		$dataSession["footer"]				= "";
-		return view("core_masterpage/default_masterpage_public",$dataSession);//--finview-r
-		
-	}
 	
 	
 	
@@ -614,6 +534,37 @@ class app_config_noti extends _BaseController {
 			exit($ex->getMessage());
 		}
 	}	
+	
+	function eventgoogleadd()
+	{
+		
+			//Obtener el componente Para mostrar la lista de CompanyCurrency
+			$objComponent					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_remember");
+			if(!$objComponent)
+			throw new \Exception("00409 EL COMPONENTE 'tb_remember' NO EXISTE...");
+			$dataView["component"]			= $objComponent;
+			
+			$business							= /*inicio get post*/ $this->request->getVar("txtBusiness");
+			$business							= $business ? $business : "default";
+			
+			
+			$dataView["business"] 				= $business;
+			$dataView["objListPeriod"]			= $this->core_web_catalog->getCatalogAllItem("tb_remember","period",APP_COMPANY);
+			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_remember","statusID",APP_COMPANY,APP_BRANCH,APP_ROL_SUPERADMIN);
+			$dataView["message"]				= $this->core_web_notification->get_message_alert();
+			$dataView["objListUser"]			= $this->User_Model->get_rowByFoto(/*inicio get post*/ $business );
+			$dataView["objItemUser"]			= $dataView["objListUser"][0];
+			
+			
+			$dataSession["head"]				= /*--inicio view*/ view('app_config_noti/public_news_head',$dataView);//--finview
+			$dataSession["body"]				= /*--inicio view*/ view('app_config_noti/public_news_body',$dataView);//--finview
+			$dataSession["script"]				= /*--inicio view*/ view('app_config_noti/public_news_script',$dataView);//--finview
+			$dataSession["footer"]				= "";
+			return view("core_masterpage/default_masterpage_public",$dataSession);//--finview-r
+		
+	}
+	
+	
 	
 }
 ?>

@@ -125,7 +125,12 @@
 										</div>
 									</div>
 								
-								
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="buttons">Observacion</label>
+										<div class="col-lg-8">
+											<textarea class="form-control" type="text"  name="txtNote" id="txtNote" ><?php echo $objTransactionMaster->note;  ?></textarea>
+										</div>
+									</div>
 								
 								
 								

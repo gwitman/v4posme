@@ -1,7 +1,7 @@
 <?php
 //posme:2023-02-27
 namespace App\Controllers;
-class app_med_query extends _BaseController {
+class app_calendar_citas extends _BaseController {
 	
     
     function edit(){ 
@@ -124,47 +124,38 @@ class app_med_query extends _BaseController {
 			
 			}	
 			
-			//Load Modelos
-			//
-			////////////////////////////////////////
-			////////////////////////////////////////
-			////////////////////////////////////////
-			
-				
-			
-			//Nuevo Registro
-			$companyID 				= /*inicio get post*/ $this->request->getPost("companyID");
-			$transactionID 			= /*inicio get post*/ $this->request->getPost("transactionID");				
-			$transactionMasterID 	= /*inicio get post*/ $this->request->getPost("transactionMasterID");				
+			$notificationID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"notificationID");//--finuri
+			$branchID 				= $dataSession["user"]->branchID;
+			$roleID 				= $dataSession["role"]->roleID;			
+			$userID					= $dataSession["user"]->userID;
 			
 			
-			if((!$companyID && !$transactionID && !$transactionMasterID)){
-					throw new \Exception(NOT_PARAMETER);								 
-			} 
-			
-			$objTM	 				= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);			
-			if ($resultPermission 	== PERMISSION_ME && ($objTM->createdBy != $dataSession["user"]->userID))
-			throw new \Exception(NOT_DELETE);
-			
-			if($this->core_web_accounting->cycleIsCloseByDate($companyID,$objTM->transactionOn))
-			throw new \Exception("EL DOCUMENTO NO PUEDE ELIMINARSE, EL CICLO CONTABLE ESTA CERRADO");
-				
-				
-			//Si el documento esta aplicado crear el contra documento
-			if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_med_asistencia","statusID",$objTM->statusID,COMMAND_ELIMINABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
-			throw new \Exception(NOT_WORKFLOW_DELETE);
-			
-			//Eliminar el Registro			
-			$this->Transaction_Master_Model->delete_app_posme($companyID,$transactionID,$transactionMasterID);
-			$this->Transaction_Master_Detail_Model->deleteWhereTM($companyID,$transactionID,$transactionMasterID);			
+			//Obtener notification 			
+			$objNotification	= $this->Notification_Model->get_rowByPK($notificationID);
 			
 			
-			return $this->response->setJSON(array(
-				'error'   => false,
-				'message' => SUCCESS
-			));//--finjson
+			//Eliminar la notificacion
+			$this->Notification_Model->delete_app_posme($notificationID);
+			
+			//Eliminar evento del calendario 
+			$core_web_google 	= new core_web_google();
+			$objUsuario		 	= $this->User_Model->get_rowByFoto($objNotification->summary);
+			$ressz	 			= $core_web_google->removeEvent_Posme(
+				$objUsuario[0]->token_google_calendar,
+				$objNotification->googleCalendarEventID
+			);
 			
 			
+			//Enviar whatsapp al cliente	
+			$this->core_web_whatsap->sendMessageUltramsg(
+				APP_COMPANY, 
+				"La cita fue removida, en :".$dataSession["company"]->name,
+				$objNotification->phoneFrom
+			);
+			
+			
+			//Redirigir al listado 
+			$this->response->redirect(base_url()."/".'app_calendar_citas/index');	
 			
 		}
 		catch(\Exception $ex){
@@ -530,235 +521,52 @@ class app_med_query extends _BaseController {
 						throw new \Exception(NOT_ACCESS_FUNCTION);			
 			
 			}	
+			
 			//Obtener el componente Para mostrar la lista de AccountType
-			$objComponent		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_med_asistencia");
+			$objComponent		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_notification_citas");
 			if(!$objComponent)
-			throw new \Exception("00409 EL COMPONENTE 'tb_transaction_master_med_asistencia' NO EXISTE...");
+			throw new \Exception("00409 EL COMPONENTE 'tb_notification_citas' NO EXISTE...");
 			
 			
 			//Vista por defecto PC
 			if($dataViewID == null and  !$this->request->getUserAgent()->isMobile() ){				
 				$targetComponentID			= 0;	
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
-				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$parameter["{foto}"]		= $this->session->get('user')->foto;
+				$parameter["{dif_hora}"]	= APP_HOUR_DIFERENCE_MYSQL;				
+				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);							
 			}		
 			//Vista por defecto MOBILE
 			else if( $this->request->getUserAgent()->isMobile() ){
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
-				$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$objComponent->componentID,"DEFAULT_MOBILE_LISTA_EGRESOS_A_CAJA",CALLERID_LIST,$resultPermission,$parameter); 			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$parameter["{foto}"]		= $this->session->get('user')->foto;
+				$parameter["{dif_hora}"]	= APP_HOUR_DIFERENCE_MYSQL;
+				$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$objComponent->componentID,"DEFAULT_MOBILE_LISTA_EGRESOS_A_CAJA",CALLERID_LIST,$resultPermission,$parameter);				
 			} 
 			//Vista Por Id
 			else 
 			{
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
-				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$parameter["{foto}"]		= $this->session->get('user')->foto;
+				$parameter["{dif_hora}"]	= APP_HOUR_DIFERENCE_MYSQL;
+				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter);				
 			}
 			
 			//Renderizar Resultado
+			$dataSession["dataViewData"]	= $dataViewData;
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
-			$dataSession["head"]			= /*--inicio view*/ view('app_med_query/list_head');//--finview
-			$dataSession["footer"]			= /*--inicio view*/ view('app_med_query/list_footer');//--finview
-			$dataSession["body"]			= $dataViewRender; 
-			$dataSession["script"]			= /*--inicio view*/ view('app_med_query/list_script');//--finview
-			$dataSession["script"]			= $dataSession["script"].$this->core_web_javascript->createVar("componentID",$objComponent->componentID);   
-			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r	
+			$dataSession["head"]			= /*--inicio view*/ view('app_calendar_citas/index_head',$dataSession);//--finview
+			$dataSession["body"]			= /*--inicio view*/ view('app_calendar_citas/index_body',$dataSession);//--finview
+			$dataSession["footer"]			= /*--inicio view*/ view('app_calendar_citas/index_footer',$dataSession);//--finview			
+			$dataSession["script"]			= /*--inicio view*/ view('app_calendar_citas/index_script',$dataSession);//--finview			
+			return view("core_masterpage/default_masterpage_public",$dataSession);//--finview-r	
 		}
 		catch(\Exception $ex){
 			exit($ex->getMessage());
 		}
 	}	
-	function searchTransactionMaster(){
-		try{ 
-			//AUTENTICADO
-			if(!$this->core_web_authentication->isAuthenticated())
-			throw new \Exception(USER_NOT_AUTENTICATED);
-			$dataSession		= $this->session->get();
-			
-			//PERMISO SOBRE LA FUNCTION
-			if(APP_NEED_AUTHENTICATION == true){
-						$permited = false;
-						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-						
-						if(!$permited)
-						throw new \Exception(NOT_ACCESS_CONTROL);
-						
-						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"index",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-						if ($resultPermission 	== PERMISSION_NONE)
-						throw new \Exception(NOT_ACCESS_FUNCTION);			
-			
-			}	
-			
-			//Load Modelos
-			//
-			////////////////////////////////////////
-			////////////////////////////////////////
-			////////////////////////////////////////
-			  
-			
-			//Nuevo Registro
-			$transactionNumber 	= /*inicio get post*/ $this->request->getPost("transactionNumber");
-			
-			
-			if(!$transactionNumber){
-					throw new \Exception(NOT_PARAMETER);			
-			} 			
-			$objTM 	= $this->Transaction_Master_Model->get_rowByTransactionNumber($dataSession["user"]->companyID,$transactionNumber);	
-			
-			if(!$objTM)
-			throw new \Exception("NO SE ENCONTRO EL DOCUMENTO");	
-			
-			
-			
-			return $this->response->setJSON(array(
-				'error'   				=> false,
-				'message' 				=> SUCCESS,
-				'companyID' 			=> $objTM->companyID,
-				'transactionID'			=> $objTM->transactionID,
-				'transactionMasterID'	=> $objTM->transactionMasterID
-			));//--finjson
-			
-		}
-		catch(\Exception $ex){
-			
-			return $this->response->setJSON(array(
-				'error'   => true,
-				'message' => $ex->getLine()." ".$ex->getMessage()
-			));//--finjson
-		}
-	}
 	
-	
-	//facturacion estandar, horizontal tamaña a4
-	function viewRegisterFormatoPaginaNormalA4LabGenerico(){
-		try{ 
-			//AUTENTICADO
-			if(!$this->core_web_authentication->isAuthenticated())
-			throw new \Exception(USER_NOT_AUTENTICATED);
-			$dataSession		= $this->session->get();
-			
-			//PERMISO SOBRE LA FUNCION
-			if(APP_NEED_AUTHENTICATION == true){
-						$permited = false;
-						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-						
-						if(!$permited)
-						throw new \Exception(NOT_ACCESS_CONTROL);
-						
-							
-						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-						if ($resultPermission 	== PERMISSION_NONE)
-						throw new \Exception(NOT_ALL_EDIT);		
-			}	 
-			
-			
-			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri			
-			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri				
-			$companyID 					= $dataSession["user"]->companyID;		
-			$branchID 					= $dataSession["user"]->branchID;		
-			$roleID 					= $dataSession["role"]->roleID;		
-			
-			
-			//Get Component
-			$objComponent	        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
-			$objParameter	        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
-			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
-			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);			
-			
-			$objComponentCatalog	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_catalog");
-            if(!$objComponentCatalog)
-            throw new \Exception("EL COMPONENTE 'tb_catalog' NO EXISTE...");
-		
-			//Get Documento					
-			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
-			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
-			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID,$transactionID,$transactionMasterID,$objComponentCatalog->componentID);
-			
-			$datView["objTC"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$datView["objTM"]->transactionCausalID);
-			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
-			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
-			$datView["Identifier"]					= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
-			$datView["objBranch"]					= $this->Branch_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->branchID);
-			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_examen_lab","statusID",$datView["objTM"]->statusID,$companyID,$branchID,$roleID);
-			$datView["objTipo"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$datView["objTM"]->transactionID,$datView["objTM"]->transactionCausalID);
-			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
-			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
-			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
-			$datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
-			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
-			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 
-			
-			
-			
-		    
-			
-			
-			//Generar Reporte
-			$html = helper_reporteA4TransactionMasterExamenLab(
-			    "EXAMEN",
-			    $objCompany,
-			    $objParameter,
-			    $datView["objTM"],
-			    $datView["objNatural"],
-			    $datView["objCustumer"], 
-			    $datView["tipoCambio"],
-			    $datView["objCurrency"],
-			    $datView["objTMI"],	
-				$datView["objTMD"],
-			    $objParameterTelefono, /*telefono*/
-				$datView["objStage"][0]->display, /*estado*/
-				$datView["objTC"]->name /*causal*/
-			);
-			
-			
-			$this->dompdf->loadHTML($html);
-			
-			//1cm = 29.34666puntos
-			//a4: 210 ancho x 297
-			//a4: 21cm x 29.7cm
-			//a4: 595.28puntos x 841.59puntos
-			
-			//$this->dompdf->setPaper('A4','portrait');
-			//$this->dompdf->setPaper(array(0,0,234.76,6000));
-			
-			$this->dompdf->render();
-			
-			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
-			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
-			
-			
-			//visualizar
-			$this->dompdf->stream("file.pdf", ['Attachment' => !$objParameterShowLinkDownload ]);
-			
-			//descargar
-			//$this->dompdf->stream();
-			
-			
-		}
-		catch(\Exception $ex){
-		    
-		    $data["session"]   = $dataSession;
-		    $data["exception"] = $ex;
-		    $data["urlLogin"]  = base_url();
-		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    $resultView        = view("core_template/email_error_general",$data);
-		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
-		    
-		    
-		    return $resultView;
-		}
-	}
 	
 }
 ?>

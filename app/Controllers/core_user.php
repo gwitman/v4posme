@@ -2,7 +2,7 @@
 //posme:2023-02-27
 namespace App\Controllers;
 use CodeIgniter\Files\File;
-
+use App\Libraries\core_web_google;
 
 class core_user extends _BaseController {
 	
@@ -1164,6 +1164,48 @@ class core_user extends _BaseController {
 		
 	}
 	
+	function savepublicgooglereturn()
+	{
+		
+		//ya medio los permisos
+		$code 		= $this->request->getGet("code");		
+		$state 		= $this->request->getGet("state");	
+		$business	= $state;
+		if($code)
+		{
+			
+			$core_web_google = new core_web_google();
+			$tocket			 = $core_web_google->getRequestToket_Posme($code);
+			
+			//Obtener el usuario
+			$objUsuario		 					= $this->User_Model->get_rowByFoto($business);
+			$dataUser["token_google_calendar"] 	= $tocket;
+			$this->User_Model->update_app_posme($objUsuario[0]->companyID,$objUsuario[0]->branchID,$objUsuario[0]->userID,$dataUser);
+			
+		}
+		
+		
+		//Obtener el componente Para mostrar la lista de CompanyCurrency
+		$objComponent					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_remember");
+		if(!$objComponent)
+		throw new \Exception("00409 EL COMPONENTE 'tb_remember' NO EXISTE...");
+		$dataView["component"]			= $objComponent;
+			
+		$dataView["business"]				= $business;
+		$dataView["objListPeriod"]			= $this->core_web_catalog->getCatalogAllItem("tb_remember","period",APP_COMPANY);
+		$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_remember","statusID",APP_COMPANY,APP_BRANCH,APP_ROL_SUPERADMIN);
+		$dataView["message"]				= $this->core_web_notification->get_message_alert();
+		$dataView["objListUser"]			= $this->User_Model->get_All(APP_COMPANY);
+		
+		$dataSession["head"]				= /*--inicio view*/ view('app_config_noti/eventgooglecalendaradded_news_head',$dataView);//--finview
+		$dataSession["body"]				= /*--inicio view*/ view('app_config_noti/eventgooglecalendaradded_news_body',$dataView);//--finview
+		$dataSession["script"]				= /*--inicio view*/ view('app_config_noti/eventgooglecalendaradded_news_script',$dataView);//--finview
+		$dataSession["footer"]				= "";
+		return view("core_masterpage/default_masterpage_public",$dataSession);//--finview-r
+		
+	}
+	
+	
 	
 	function savepublic(){
 		 try{ 			
@@ -1183,8 +1225,9 @@ class core_user extends _BaseController {
 			if(!$this->request->getPost("txtTelefono"))
 			throw new \Exception("Telefono obligatorio.");
 		
-			
-			$db=db_connect();
+			$img 			= $this->request->getFile('formFilePortada');	
+			$dataUpdateUser = array();			
+			$db				= db_connect();
 			$db->transStart();
 			
 			
@@ -1223,6 +1266,12 @@ class core_user extends _BaseController {
 			}
 			else 
 			{
+				
+				if($img->getSizeByUnit() == 0 )
+				{
+					throw new \Exception("Imagen obligatoria.");
+				}
+				
 				$comando 					= "new";
 				//Crear Usuario
 				$obj["companyID"]			= APP_COMPANY;				
@@ -1266,26 +1315,44 @@ class core_user extends _BaseController {
 			}
 			
 			
+			
+			//Crear imagen de identificacion
 			//Guardar el archivo en la carpeta writable			
-			$img 			= $this->request->getFile('formFilePortada');	
-			$dataUpdateUser = array();
-			if($img->getSizeByUnit()  != 0 )
+			if($img->getSizeByUnit()  == 0 && $comando == "update")
+			{
+				$dataUpdateUser["foto"] = $objUserTmp->foto;
+			}
+			if($img->getSizeByUnit()  != 0 && $comando == "update" )
 			{
 				$filepath 	= $img->store();			
 				$name 		= $img->getName();		
 				$filePathSource 		=  PATH_FILE_OF_UPLOAD_WRITE."/".$filepath;			
 				$filePathDetination 	=  $documentoPath."/".$name;
 				copy($filePathSource,$filePathDetination);
-				unlink($filePathSource);
+				unlink($filePathSource);				
 				
-				//Actualizar Usuario
+				
+				//Actualizar las notifiaciones con la nueva etiqueta de foto
+				$objDataNotification["summary"] 	= $name;
+				$this->Notification_Model->update_app_posme_by_sumary($objUserTmp->foto,$objDataNotification);				
+				
+				$dataUpdateUser["foto"] 			= $name;
+				$this->User_Model->update_app_posme(APP_COMPANY,APP_BRANCH,$userID,$dataUpdateUser);
+				
+					
+			}
+			if($img->getSizeByUnit()  != 0 && $comando == "new" )
+			{
+				$filepath 	= $img->store();			
+				$name 		= $img->getName();		
+				$filePathSource 		=  PATH_FILE_OF_UPLOAD_WRITE."/".$filepath;			
+				$filePathDetination 	=  $documentoPath."/".$name;
+				copy($filePathSource,$filePathDetination);
+				unlink($filePathSource);				
+				
 				$dataUpdateUser["foto"] = $name;
 				$this->User_Model->update_app_posme(APP_COMPANY,APP_BRANCH,$userID,$dataUpdateUser);
 					
-			}
-			else 
-			{
-				$dataUpdateUser["foto"] = "lmn.jpg";
 			}
 			
 			
@@ -1325,9 +1392,11 @@ class core_user extends _BaseController {
 			);
 			
 			
-			//Url de cita
-			$url 				= $this->core_web_parameter->getParameter("POSME_CALENDAR_URL_CITA",APP_COMPANY)->value."?txtBusiness=".$dataUpdateUser["foto"];
-			$urlImagen 		 	= base_url()."/resource/file_company/company_".APP_COMPANY."/component_8/component_item_".$userID."/qrcode.png";
+			//Url
+			$core_web_google 		= new core_web_google();
+			$urlGoogle 			 	= $core_web_google->getRequestPermission_Posme($dataUpdateUser["foto"]);
+			$url 					= $this->core_web_parameter->getParameter("POSME_CALENDAR_URL_CITA",APP_COMPANY)->value."?txtBusiness=".$dataUpdateUser["foto"];
+			$urlImagen 		 		= base_url()."/resource/file_company/company_".APP_COMPANY."/component_8/component_item_".$userID."/qrcode.png";
 			
 			//Guardar Codigo QR 			
 			$this->core_web_qr->generate($url,$documentoPath."/qrcode.png","M","10");	
@@ -1340,6 +1409,14 @@ class core_user extends _BaseController {
 				$this->request->getPost("txtTelefono")
 			);
 			
+			//Enviar Permiso
+			$this->core_web_whatsap->sendMessageUltramsg(
+				APP_COMPANY, 
+				$urlGoogle,
+				$this->request->getPost("txtTelefono")
+			);
+			
+			
 			//Enviar mensaje de imagen de qr para el acceso			
 			$this->core_web_whatsap->sendMessageTypeImagUltramsg(
 				APP_COMPANY, 
@@ -1347,7 +1424,6 @@ class core_user extends _BaseController {
 				"comparte y agenda",
 				$this->request->getPost("txtTelefono")
 			);
-			
 			
 			
 			//Return
