@@ -1,3 +1,5 @@
+use dbgtgkg1s2qzrv;
+
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -1098,31 +1100,6 @@ WHERE
 	companyID = 2; ##Actualizar el nombre de la compania
 
 
-
-/*
-Eliminar o desactivar usuarios
-*/
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/
- 307,  	/*supervisor*/
- 308, 	/*facturador*/
- 309, 	/*administrador*/
- 
- 316, 	/*administrador*/
- 317, 	/*administrador*/
- 318, 	/*administrador*/
- 319, 	/*administrador*/
- 320 	/*administrador*/
-);
-
-update tb_role set isActive = 0; 
-update tb_role set isActive = 1 where roleID in (
-	3,
-	296,
-	295,
-	294	
-);
 
 
 
