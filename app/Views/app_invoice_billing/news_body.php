@@ -742,11 +742,11 @@
 								
 								
 								<tr>
-									<th style="text-align:left">04) Tarjeta. Nac.</th>
+									<th style="text-align:left;width:30%">04) Tarjeta. Nac.</th>
 									<td style="">
 										<input type="text" id="txtReceiptAmountTarjeta" name="txtReceiptAmountTarjeta"   class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
-									<td style="">
+									<td style="width:30%">
 										<select name="txtReceiptAmountTarjeta_BankID" id="txtReceiptAmountTarjeta_BankID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
 												<?php
 												$count = 0;
