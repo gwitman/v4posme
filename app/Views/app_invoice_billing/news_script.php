@@ -194,6 +194,7 @@
 								//dataResponse[25] = data[0];
 								//dataResponse[26] = data[0];	
 								
+								
 								var classHiddenTex 		= "";
 								var classHiddenSelect 	= "";
 								if(varParameterINVOICE_BILLING_SELECTITEM == "true")									
@@ -211,7 +212,7 @@
 								var strFiled 		= '<input type="text" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"  class="col-lg-12 '+classHiddenTex+'" style="text-align:left" value="'+data+'" '+NameStatus+' />';
 								
 								var productos 		= fnGetProductosFilterd();
-								var strFiledSelecte = "<select  name='txtItemSelected' class='<?php echo ($useMobile == "1" ? "" : "select2"); ?> txtItemSelected' "+classHiddenSelect+" >";
+								var strFiledSelecte = "<select  name='txtItemSelected' class='<?php echo ($useMobile == "1" ? "" : "select2"); ?> txtItemSelected "+classHiddenSelect+" ' >";
 								strFiledSelecte		= strFiledSelecte+"<option value='"+full[2]+"' selected data-itemid='"+full[2]+"' data-codigo='"+full[3]+"' data-name='"+full[4].replace("'","").replace("'","") +"' data-unidadmedida='"+full[5]+"' data-cantidad='"+full[6]+"' data-precio='"+full[7]+"' data-barra='"+full[3]+"'  data-description='"+full[4].replace("'","").replace("'","") + "'    >"+ full[4].replace("'","").replace("'","")  +"</option>";
 								for(var i = 0 ; i < productos.length; i++)
 								{
@@ -2260,7 +2261,9 @@
 		objTableDetail.fnUpdate( name, rowss, 4 );
 		objTableDetail.fnUpdate( unidad, rowss, 5 );
 		objTableDetail.fnUpdate( fnFormatNumber(precio,2) , rowss, 7 );
+		fnRecalculateDetail(true,"");
 		refreschChecked();
+		
 	}
 	
 	function fnActualizarPrecio()

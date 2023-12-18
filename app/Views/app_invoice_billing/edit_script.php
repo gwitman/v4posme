@@ -2557,6 +2557,7 @@
 		objTableDetail.fnUpdate( name, rowss, 4 );
 		objTableDetail.fnUpdate( unidad, rowss, 5 );
 		objTableDetail.fnUpdate( fnFormatNumber(precio,2) , rowss, 7 );
+		fnRecalculateDetail(true,"");
 		refreschChecked();
 	}
 	
