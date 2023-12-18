@@ -73,13 +73,29 @@
 		fnObtenerListadoItemConcept();
 		fnObtenerListadoCustomerCreditLine();
 		fnGetCustomerClient();		
-		setTimeout( function() { fnAddRowSelected(); onCompletePantalla(); }, 3000);
+		setTimeout( function() { 
+		
+			if(varParameterINVOICE_BILLING_SELECTITEM == "true")
+			{
+				fnAddRowSelected(); 
+			}
+			
+			onCompletePantalla(); 
+		}, 3000);
 		
 	}
 	//No actualizar datos
 	else{		
 		fnGetCustomerClient(); 		
-		setTimeout( function() { fnAddRowSelected(); onCompletePantalla(); }, 1000);
+		setTimeout( function() { 
+			
+			if(varParameterINVOICE_BILLING_SELECTITEM == "true")
+			{
+				fnAddRowSelected(); 
+			}
+			
+			onCompletePantalla(); 
+		}, 1000);
 	}
 
 	//setInterval('fnObtenerListadoProductos()',5000);
