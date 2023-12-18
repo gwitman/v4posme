@@ -49,6 +49,7 @@
 	var varParameterRegresarAListaDespuesDeGuardar	= '<?php echo $objParameterRegresarAListaDespuesDeGuardar; ?>';	
 	var varParameterAlturaDelModalDeSeleccionProducto	= '<?php echo $objParameterAlturaDelModalDeSeleccionProducto; ?>';
 	var varParameterScrollDelModalDeSeleccionProducto	= '<?php echo $objParameterScrollDelModalDeSeleccionProducto; ?>';	
+	var varParameterINVOICE_BILLING_SELECTITEM			= '<?php echo $objParameterINVOICE_BILLING_SELECTITEM; ?>';
 	var varParameterMostrarImagenEnSeleccion = '<?php echo $objParameterMostrarImagenEnSeleccion; ?>';
 	var varUrlPrinter			= '<?php echo $urlPrinterDocument; ?>';
 	var varUrlPrinterCocina		= '<?php echo $urlPrinterDocumentCocina; ?>'; 
@@ -176,10 +177,7 @@
 			document.getElementById("txtScanerCodigo").focus();	
 		}
 		
-		if(varUseMobile != "1"){  			
-			$("html, body").animate({scrollTop:  heigthTop  +"px"});
-			scrollPosition =  $(document).scrollTop();
-		}
+		
 		
 
 		if(varParameterScrollDelModalDeSeleccionProducto == "true"){
@@ -388,7 +386,63 @@
 							"aTargets"		: [ 4 ],//descripcion
 							"sWidth"		: "250px",
 							"mRender"		: function ( data, type, full ) {
-								return '<input type="text" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"   class="col-lg-12" style="text-align:left" value="'+data+'" '+PriceStatus+' />';
+								
+								//dataResponse[0] = data[0];
+								//dataResponse[1] = data[0];
+								//dataResponse[2] = data[0];
+								//dataResponse[3] = data[0];
+								//dataResponse[4] = data[0];
+								//dataResponse[5] = data[0]; //itemID
+								//dataResponse[6] = data[0];
+								//dataResponse[7] = data[0];
+								//dataResponse[8] = data[0];
+								//dataResponse[9] = data[0];
+								//dataResponse[10] = data[0];
+								//dataResponse[11] = data[0];
+								//dataResponse[12] = data[0];
+								//dataResponse[13] = data[0];
+								//dataResponse[14] = data[0];
+								//dataResponse[15] = data[0];
+								//dataResponse[16] = data[0];
+								//dataResponse[17] = data[1];//Codigo
+								//dataResponse[18] = data[2];//Nombre
+								//dataResponse[19] = data[0];
+								//dataResponse[20] = data[3];//Unidad de medida
+								//dataResponse[21] = data[4];//Cantidad
+								//dataResponse[22] = data[5];//Precio
+								//dataResponse[23] = data[6];//Barra 
+								//dataResponse[24] = data[7];//Descripcion
+								//dataResponse[25] = data[0];
+								//dataResponse[26] = data[0];	
+								
+								var classHiddenTex 		= "";
+								var classHiddenSelect 	= "";
+								if(varParameterINVOICE_BILLING_SELECTITEM == "true")									
+								{
+									classHiddenTex = "hidden";
+									classHiddenSelect 	= "";
+								}
+								else 
+								{
+									classHiddenTex = "";
+									classHiddenSelect 	= "hidden";
+								}	
+								
+								var  strFiled		= '<input type="text" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"   class="col-lg-12 '+classHiddenTex+' " style="text-align:left" value="'+data+'" '+PriceStatus+' />';
+								
+								var productos 		= fnGetProductosFilterd();
+								var strFiledSelecte = "<select name='txtItemSelected' class='<?php echo ($useMobile == "1" ? "" : "select2"); ?> txtItemSelected "+classHiddenSelect+"  ' >";
+								strFiledSelecte		= strFiledSelecte+"<option value='"+full[2]+"' selected data-itemid='"+full[2]+"' data-codigo='"+full[3]+"' data-name='"+full[4].replace("'","").replace("'","") +"' data-unidadmedida='"+full[5]+"' data-cantidad='"+full[6]+"' data-precio='"+full[7]+"' data-barra='"+full[3]+"'  data-description='"+full[4].replace("'","").replace("'","") + "'    >"+ full[4].replace("'","").replace("'","")  +"</option>";
+								for(var i = 0 ; i < productos.length; i++)
+								{
+									strFiledSelecte		= strFiledSelecte+"<option value='"+productos[i][0]+"' data-itemid='"+productos[i][0]+"' data-codigo='"+productos[i][1]+"'  data-name='"+ productos[i][2].replace("'","").replace("'","")  +"'   data-unidadmedida='"+productos[i][3]+"' data-cantidad='"+productos[i][4]+"' data-precio='"+productos[i][5]+"' data-barra='"+productos[i][6]+"'  data-description='"+productos[i][7]+"'    >"+ productos[i][2].replace("'","").replace("'","")  +"</option>";
+								}
+								strFiledSelecte		= strFiledSelecte+"</select>";
+								
+								strFiledSelecte 	=  strFiled + strFiledSelecte ;								
+								return strFiledSelecte;
+								
+								
 							}
 							//,
 							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
@@ -553,6 +607,14 @@
 							
 								var str = "<div "+styleButtom+" >";
 								
+								
+								if(varParameterINVOICE_BILLING_SELECTITEM == "true")
+								{
+									str    	= str + '' + 
+									'<button type="button" class="btn btn-warning btnAddSelectedItem"><span class="icon16 i-archive"></span> </button>';
+								}								
+								
+								
 								str    	= str + '' + 
 								'<button type="button" class="btn btn-primary btnMenus"><span class="icon16 i-minus"></span> </button>';
 								
@@ -651,6 +713,9 @@
 			$("#modalDialogOpenPrimterClave").dialog("open");
 		});
 		
+		$(document).on("click",".btnAddSelectedItem",function(){
+			fnAddRowSelected();			
+		});
 		
 		$(document).on("click",".btnMenus",function(){
 		
@@ -845,8 +910,7 @@
 			
 			//Regresar al scaner
 			if(e.key === "b"  && e.ctrlKey) { 		
-				document.getElementById("txtScanerCodigo").focus();
-				scrollPosition =  $(document).scrollTop();
+				document.getElementById("txtScanerCodigo").focus();				
 			}		
 			
 			
@@ -898,23 +962,7 @@
 				e.stopPropagation();
 			}
 			
-			if(e.key == "ArrowUp")
-			{
-				
-				scrollPosition = scrollPosition - 100;
-				$("html, body").animate({
-					scrollTop: scrollPosition
-				}, 0);
-			}
 			
-			if(e.key == "ArrowDown")
-			{
-				
-				scrollPosition = scrollPosition + 100;
-				$("html, body").animate({
-					scrollTop: scrollPosition
-				}, 0);
-			}
 				
 			
 			
@@ -1020,8 +1068,7 @@
 		$('#mi_modal').on('hidden.bs.modal', function (e) {
 			
 			if(varParameterScanerProducto != "false"){
-				document.getElementById("txtScanerCodigo").focus();	
-				scrollPosition =  $(document).scrollTop();
+				document.getElementById("txtScanerCodigo").focus();					
 			}
 		
 		});
@@ -1242,6 +1289,10 @@
 			fnClearData();
 		});
 
+		$(document).on("change",".txtItemSelected",function(e,o){
+			fnActualizarProducto(this);
+		});
+		
 		$(document).on("change","#txtTypePriceID",function(){
 			fnActualizarPrecio();
 		});
@@ -1678,10 +1729,7 @@
 		document.getElementById("txtScanerCodigo").focus();		
 		
 		
-		if(varUseMobile != "1"){		
-			$("html, body").animate({scrollTop:  heigthTop  +"px"});
-			scrollPosition =  $(document).scrollTop();
-		}
+		
 		
 	}
 	
@@ -1807,8 +1855,7 @@
 		
 		
 		
-		//Si es de credito que la factura no supere la linea de credito
-		debugger;
+		//Si es de credito que la factura no supere la linea de credito		
 		var objCustomerCreditLine		= [];
 		var invoiceTypeCredit 			= false;
 		var causalSelect 				= $("#txtCausalID").val();
@@ -1994,7 +2041,21 @@
 	}
 	
 	
-	function refreschChecked(){
+	function refreschChecked()
+	{
+	
+		if(varUseMobile == "0")
+		{
+			var cantidaRow = $(".txtItemSelected").length;
+			for(var i = 0 ; i < cantidaRow; i++)
+			{
+				var x = $($(".txtItemSelected")[i]).find("a").length;
+				if(x == 0 )
+					$($(".txtItemSelected")[i]).select2();
+			}
+		}
+		
+		
 		$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();		
 		
 		if(varUseMobile == "1")
@@ -2463,6 +2524,42 @@
 		
 	}
 	
+	function fnActualizarProducto(obj)
+	{
+		var index 		= $(".select2.txtItemSelected.select2-offscreen").length;
+		var selectes    = $(".select2.txtItemSelected.select2-offscreen");
+		var rowss      	= 0;
+		for(var i = 0 ; i < index ; i++)
+		{
+			var itemselected = $(selectes[i]).val();			
+			if(itemselected == $(obj).val())
+			{
+				break;
+			}
+			else {
+				rowss++;
+			}
+		}
+		
+		
+		
+		var itemid 		= $(obj).val();
+		var codigo 		= $($(obj).find("option:selected")[0]).data("codigo");
+		var name 		= $($(obj).find("option:selected")[0]).data("name");
+		var cantidad 	= $($(obj).find("option:selected")[0]).data("cantidad");
+		var precio 		= $($(obj).find("option:selected")[0]).data("precio");
+		var unidad 		= $($(obj).find("option:selected")[0]).data("unidadmedida");
+		var description = $($(obj).find("option:selected")[0]).data("description");
+		var barra  		= $($(obj).find("option:selected")[0]).data("barra");
+		
+		objTableDetail.fnUpdate( itemid, rowss, 2 );
+		objTableDetail.fnUpdate( codigo, rowss, 3 );
+		objTableDetail.fnUpdate( name, rowss, 4 );
+		objTableDetail.fnUpdate( unidad, rowss, 5 );
+		objTableDetail.fnUpdate( fnFormatNumber(precio,2) , rowss, 7 );
+		refreschChecked();
+	}
+	
 	function fnActualizarPrecio()
 	{
 		
@@ -2679,8 +2776,64 @@
 		
 	}
 	
+	function fnAddRowSelected()
+	{
+		var data		 = {};	
+		var length2		 = objTableDetail.fnGetData().length;
+		var data2		 = objTableDetail.fnGetData();
+		
+		var length		 = fnGetProductosFilterd().length;
+		var data		 = fnGetProductosFilterd();		
+		var index		 = 0;
+		
+		for(var i = 0 ; i < length; i++ )
+		{		
+			var objDatItem 			= data[i];
+			var existe 				= jLinq.from(data2).where(function(obj){   return obj[2] == objDatItem[0]; }).select().length;			
+			if(existe == 0)
+				break;
+			
+			index++;
+			
+		}	
+		
+		
+		var dataResponse = [];
+		data			= data[index];				
+		dataResponse[0] = data[0];
+		dataResponse[1] = data[0];
+		dataResponse[2] = data[0];
+		dataResponse[3] = data[0];
+		dataResponse[4] = data[0];
+		dataResponse[5] = data[0]; //itemID
+		dataResponse[6] = data[0];
+		dataResponse[7] = data[0];
+		dataResponse[8] = data[0];
+		dataResponse[9] = data[0];
+		dataResponse[10] = data[0];
+		dataResponse[11] = data[0];
+		dataResponse[12] = data[0];
+		dataResponse[13] = data[0];
+		dataResponse[14] = data[0];
+		dataResponse[15] = data[0];
+		dataResponse[16] = data[0];
+		dataResponse[17] = data[1];//Codigo
+		dataResponse[18] = data[2];//Nombre
+		dataResponse[19] = data[0];
+		dataResponse[20] = data[3];//Unidad de medida
+		dataResponse[21] = data[4];//Cantidad
+		dataResponse[22] = data[5];//Precio
+		dataResponse[23] = data[6];//Barra
+		dataResponse[24] = data[7];//Descripcion
+		dataResponse[25] = data[0];
+		dataResponse[26] = data[0];		
+		onCompleteNewItem(dataResponse,true);
+	}
 	
-	function fnCreateTableSearchProductos(){
+	
+	
+	function fnGetProductosFilterd()
+	{
 		//Filtrar Datos
 		var typePriceID 	= $("#txtTypePriceID").val();		
 		var currencyID 		= $("#txtCurrencyID").val();
@@ -2688,23 +2841,21 @@
 		var encontrado		= false;
 		
 		//precio 1 ---> 154 --> precio publico
-		if(  ( ( /*typePriceID == 154  &&*/  varPermisosEsPermitidoSeleccionarPrecioPublico == true)   || isAdmin == "1" )  && encontrado == false  ){
+		if( (( /*typePriceID == 154  &&*/ varPermisosEsPermitidoSeleccionarPrecioPublico == true)   || isAdmin == "1" )  && encontrado == false   ){
 			filterResult = objListaProductos;
 			encontrado = true;
 		}
 		//precio 2 ---> 155 --> precio mayorista
-		if(  ( ( /*typePriceID == 155  &&*/  varPermisosEsPermitidoSeleccionarPrecioPormayor == true)  || isAdmin == "1" ) && encontrado == false   ){
+		if( (( /*typePriceID == 155  &&*/  varPermisosEsPermitidoSeleccionarPrecioPormayor == true)  || isAdmin == "1" ) && encontrado == false  ){
 			filterResult = objListaProductos2;			
 			encontrado = true;
 		}
 		//precio 3 ---> 156 --> precio credito
-		if(  ( ( /*typePriceID == 156  &&*/  varPermisosEsPermitidoSeleccionarPrecioCredito == true)   || isAdmin == "1" ) && encontrado == false   ){
+		if( (( /*typePriceID == 156  &&*/  varPermisosEsPermitidoSeleccionarPrecioCredito == true)   || isAdmin == "1" ) && encontrado == false   ){
 			filterResult = objListaProductos3;
 			encontrado = true;
 		}
-			
-
-				
+		
 		var dataSourceProductos = [];
 		for(var i = 0 ; i < filterResult.length;i++){
 			
@@ -2726,8 +2877,14 @@
 		}
 		
 		
+		return dataSourceProductos;
+	}
+	
+	
+	function fnCreateTableSearchProductos()
+	{
 		
-		
+		var dataSourceProductos  = fnGetProductosFilterd();	
 		if( objTableProductosSearch != null)
 		objTableProductosSearch.fnDestroy();
 		
