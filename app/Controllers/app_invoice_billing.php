@@ -188,6 +188,7 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objParameterINVOICE_BILLING_PRINTER_DIRECT_URL_BAR"]							= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_PRINTER_DIRECT_URL_BAR",$companyID);
 			$dataView["objParameterINVOICE_BILLING_PRINTER_URL_BAR"]								= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_PRINTER_URL_BAR",$companyID);			
 			$dataView["objListParameterJavaScript"]													= $this->core_web_parameter->getParameterAllToJavaScript($companyID);
+			$dataView["objParameterINVOICE_BILLING_SELECTITEM"]										= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_SELECTITEM",$companyID);
 			
 			if(!$dataView["objCustomerDefault"])
 			throw new \Exception("NO EXISTE EL CLIENTE POR DEFECTO");
@@ -2522,7 +2523,7 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objParameterobjParameterINVOICE_BILLING_PRINTER_URL_BAR"]					= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_PRINTER_URL_BAR",$companyID);			
 			$dataView["objListParameterJavaScript"]													= $this->core_web_parameter->getParameterAllToJavaScript($companyID);
 			$dataView["objListParameterAll"]														= $this->core_web_parameter->getParameterAll($companyID);
-			
+			$dataView["objParameterINVOICE_BILLING_SELECTITEM"]										= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_SELECTITEM",$companyID);
 			
 			
 			
