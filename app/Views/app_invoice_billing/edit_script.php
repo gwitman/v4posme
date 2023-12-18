@@ -2824,8 +2824,8 @@
 		dataResponse[20] = data[3];//Unidad de medida
 		dataResponse[21] = data[4];//Cantidad
 		dataResponse[22] = data[5];//Precio
-		dataResponse[23] = data[6];//Barra
-		dataResponse[24] = data[7];//Descripcion
+		dataResponse[23] = data[0];//6:Barra
+		dataResponse[24] = data[0];//7:Descripcion
 		dataResponse[25] = data[0];
 		dataResponse[26] = data[0];		
 		onCompleteNewItem(dataResponse,true);
