@@ -772,3 +772,20 @@ UPDATE tb_company SET
 	NAME = 'Clinica Larreynaga' , address = 'Frente al antigua estacion del ferrocarril' 
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
+
+
+
+/*tipo de cambio de dolares a cordoba*/
+update tb_exchange_rate set 
+	ratio = 36 
+where 
+	currencyID = 2
+	and targetCurrencyID = 1; 
+	
+	
+/*tipo de cambio de dolares a cordoba*/
+update tb_exchange_rate set 
+	ratio = 0.027777 
+where 
+	currencyID = 1
+	and targetCurrencyID = 2; 

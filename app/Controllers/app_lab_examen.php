@@ -693,7 +693,7 @@ class app_lab_examen extends _BaseController
             throw new \Exception("EL COMPONENTE 'tb_public_catalog' NO EXISTE...");
 		
 			//Get Documento					
-			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);			
 			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID,$transactionID,$transactionMasterID,$objComponentPublicCatalog->componentID);
 			

@@ -7041,8 +7041,8 @@ function helper_reporteA4TransactionMasterExamenLab(
 				$html	= $html."
 						<table style='width:100%' >							
 							<tr>
-							  <td  style='text-align:left;width: 25px;' >Paciente</td>
-							  <td  style='text-align:left;width: auto;' >".$objEntidadNatural->firstName."</td>
+							  <td  style='text-align:left;width: 25px;' >Paciente:</td>
+							  <td  style='text-align:left;width: auto;' >".$objEntidadNatural->firstName." ".$objEntidadNatural->lastName."</td>							  
 							  <td  style='text-align:left;width: 25px;' >Fecha:</td>
 							  <td  style='text-align:left;width: 160px;' >".$objTransactionMastser->statusIDChangeOn."</td>
 							  <td  style='text-align:left;width: 25px;' >Edad:</td>
@@ -7050,6 +7050,14 @@ function helper_reporteA4TransactionMasterExamenLab(
 							  <td  style='text-align:left;width: 25px;' >Sexo:</td>
 							  <td  style='text-align:left;width: 25px;' >".$objSexo->name."</td>
 							</tr
+							<tr>
+								<td colspan='1' style='text-align:left;width: 25px;' >
+									Examen:
+								</td>
+								<td colspan='7' >
+									".$objTipoExamen->name."
+								</td>
+							</tr>
 							<tr><td colspan='8' >&nbsp; &nbsp; </td></tr>
 						</table>";
 			
@@ -7071,9 +7079,12 @@ function helper_reporteA4TransactionMasterExamenLab(
 				$columnas	 	= array_unique($columnas);
 				$cant			= count($columnas);
 				
+				//Inicio de tabla de los grupos
 				$html = $html."<table style='width:100%;border-collapse: collapse'>";
 				$html = $html."<tr style='background-color: blanchedalmond;' ><td colspan='".($cant * 1)."' style='text-align:center;font-weight:bold'  >".strtoupper($fila)."</td></tr>";				
 				$html = $html."<tr>";
+				
+				//Foreach de las una columna o dos columnas o tres columnas de los sub grupos
 				foreach($columnas as $columna)
 				{
 					
@@ -7084,19 +7095,60 @@ function helper_reporteA4TransactionMasterExamenLab(
 					});
 					$html = $html."<table style='width:100%;border-collapse: collapse' >";					
 					$html = $html."<tr style='background-color: blanchedalmond;' ><td colspan='3' style='text-align:left;;font-weight:bold' >".strtoupper($columna)."</td></tr>";
-					foreach($valores as $valor)
-					{
-						$valor->display = strpos($valor->display,"****")  ?  str_replace("****","</br>",$valor->display) : $valor->display."</br>&nbsp;"   ;
-						
-						$valor->display = strlen($valor->display) > 20 ? substr($valor->display,0,strpos($valor->display," "))."</br>".substr($valor->display,strpos($valor->display," "),strlen($valor->display)) : $valor->display;  
-						$valor->display = substr_count($valor->display,"</br>") > 1 ? str_replace("</br>&nbsp;","",$valor->display) : $valor->display; 
-						$valor->name 	= strlen($valor->name) > 20 ? substr($valor->name,0,strpos($valor->name," "))."</br>".substr($valor->name,strpos($valor->name," "),strlen($valor->name)) : $valor->name;  
+					
+					//Encavezado
+					if($cant == 1)
+					{						
 						
 						$html = $html."<tr  >";
-							$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse; '>".$valor->name."</td>";
-							$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;'>".$valor->reference3."</td>";
-							$html = $html."<td style='text-align:right;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;color:blue'>".$valor->display."</td>";
+							$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;width:33% '>Análisis</td>";
+							$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;width:33%'>Resultado</td>";
+							$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;color:blue;width:33%'>Valores esperados</td>";
 						$html = $html."</tr>";
+
+					}					
+					else 
+					{
+												
+						$html = $html."<tr  >";
+							$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse; '>Análisis</td>";
+							$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;'>Resultado</td>";
+							$html = $html."<td style='text-align:right;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;color:blue'>Valores esperados</td>";
+						$html = $html."</tr>";
+					}
+					
+						
+					
+					//foreach de los indicadores de cada columna
+					foreach($valores as $valor)
+					{
+						$valor->display	= str_replace("****","</br>",$valor->display);
+						$valor->display	= str_replace("|","</br>",$valor->display);
+						$valor->display	= str_replace(",","</br>",$valor->display);
+						
+						//si el examen solo tiene una columna mostrar el indicador de la siguiente manera						
+						if($cant == 1)
+						{
+							
+							
+							$html = $html."<tr  >";
+								$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;width:33% '>".$valor->name."</td>";
+								$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;width:33%'>".$valor->reference3."</td>";
+								$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;color:blue;width:33%'>".$valor->display."</td>";
+							$html = $html."</tr>";
+
+						}
+						//si el indicador tiene 2 columnas
+						//mostrar el indicador de la siguiente manera
+						else 
+						{
+													
+							$html = $html."<tr  >";
+								$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse; '>".$valor->name."</td>";
+								$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;'>".$valor->reference3."</td>";
+								$html = $html."<td style='text-align:right;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;color:blue'>".$valor->display."</td>";
+							$html = $html."</tr>";
+						}
 					}
 					$html = $html."</table>";					
 					$html = $html."</td>";
