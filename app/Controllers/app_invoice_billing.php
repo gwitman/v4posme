@@ -3629,7 +3629,8 @@ class app_invoice_billing extends _BaseController {
 			
 			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
-			$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+			$dataView["objTransactionMasterDetail2"]			= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+			$dataView["objTransactionMasterDetail"]				= array();
 			$dataView["objTransactionMasterDetailWarehouse"]	= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterDetailConcept"]		= $this->Transaction_Master_Concept_Model->get_rowByTransactionMasterConcept($companyID,$transactionID,$transactionMasterID,$objComponentItem->componentID);
 			
@@ -3652,9 +3653,24 @@ class app_invoice_billing extends _BaseController {
 			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_COCINA",$companyID);
 			$objParameterPrinterName = $objParameterPrinterName->value;
 								
+			//Filtrar productos			
+			$itemID = explode(",",$itemID);			
+			foreach($dataView["objTransactionMasterDetail2"] as $tmd)
+			{
+				foreach($itemID as $itemIDx)
+				{
+					if ($itemIDx == $tmd->componentItemID)
+					{
+						array_push($dataView["objTransactionMasterDetail"],$tmd);
+					}
+				}				
+			}	
+			
 			
 			$this->core_web_printer_direct->configurationPrinter($objParameterPrinterName);
 			$this->core_web_printer_direct->executePrinter80mmCommandaCocina($dataView);
+			
+			
 		}
 		catch(\Exception $ex){
 		    
