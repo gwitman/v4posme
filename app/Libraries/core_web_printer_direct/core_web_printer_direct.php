@@ -124,7 +124,13 @@ class core_web_printer_direct {
 		$this->printer->text("\nCliente: ".$dataSetValores["cedulaCliente"]);
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\nNombre: ".$dataSetValores["nombreCliente"]);
-		$this->printer->text("\n");
+		
+		if("sin comentarios." != $dataSetValores["objTransactionMaster"]->note )
+		{
+			$this->printer->setTextSize(1, 1);
+			$this->printer->text("\nComentario: ".$dataSetValores["objTransactionMaster"]->note);
+		}
+		
 		$this->printer->text("\n");
 		//Detalle
 		$data1		= array();			
