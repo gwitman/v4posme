@@ -461,7 +461,7 @@
 		});
 		$(document).on("click",".btnPrecioRecomendado",function(){					
 			var precioRecomendado = $(this).data("precio");
-			$(this).parent().parent().parent().parent().parent().find(".txtPrice").val(precioRecomendado);
+			$(this).parent().parent().parent().parent().parent().parent().find(".txtPrice").val(precioRecomendado);			
 			fnRecalculateDetail(true,"txtPrice");				
 		});
 		

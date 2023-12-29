@@ -1,4 +1,4 @@
-set @nameCompany        := 'POSME_PUBLIC';
+set @nameCompany        := 'FERR_JYM';
 set @domainDestino 			:= CONCAT('@',LOWER( @nameCompany));
 
 

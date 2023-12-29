@@ -40,7 +40,7 @@ delete from tb_item where itemID not between 22010 AND 23010 ;
 #delete from tb_item_data_sheet where itemID > 22010 ;
 #delete from tb_kardex where itemID > 22010 ;
 #delete from tb_item_sku where itemID > 22010 ;
-#delete from tb_item_warehouse itemID > 22010 ;
+#delete from tb_item_warehouse where itemID > 22010 ;
 #delete from tb_price where itemID > 22010 ;
 #delete from tb_provider_item where itemID > 22010 ;
 #delete from tb_item where itemID > 22010 ;
