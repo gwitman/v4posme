@@ -142,7 +142,7 @@ class core_web_printer_direct {
 			{	
 
 
-				$this->printer->text($this->addSpaces(substr($row->itemNumber,4,7), 10) . $this->addSpaces(strtolower(substr($row->itemName,0,15)), 20));
+				$this->printer->text($this->addSpaces(substr($row->itemNumber,4,7), 10) . $this->addSpaces(strtolower(substr($row->itemName,0,35)), 20));
 				$this->printer->text("\n");				
 				
 				$this->printer->text(						
@@ -264,11 +264,6 @@ class core_web_printer_direct {
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\nNombre: ".$dataSetValores["nombreCliente"]);
 		
-		if ( "sin comentarios." != $dataSetValores["objTransactionMaster"]->note )
-		{
-			$this->printer->setTextSize(1, 1);
-			$this->printer->text("\nComentario: ".$dataSetValores["objTransactionMaster"]->note);
-		}
 		
 		$this->printer->text("\n");
 		//Detalle
@@ -288,7 +283,7 @@ class core_web_printer_direct {
 			{	
 
 
-				$this->printer->text($this->addSpaces(substr($row->itemNumber,4,7), 10) . $this->addSpaces(strtolower(substr($row->itemName,0,15)), 20));
+				$this->printer->text($this->addSpaces(substr($row->itemNumber,4,7), 10) . $this->addSpaces(strtolower(substr($row->itemName,0,35)), 20));
 				$this->printer->text("\n");				
 				
 				$this->printer->text(						
@@ -2496,7 +2491,7 @@ class core_web_printer_direct {
 				$this->printer->text(
 						" ".
 						$this->addSpaces(number_format(round(1.0,2),2,'.',','), 17).
-						$this->addSpaces(strtolower(substr($row->itemName,0,15)), 20)	
+						$this->addSpaces(strtolower(substr($row->itemName,0,50)), 20)	
 				); 
 				$this->printer->text("\n");				
 
