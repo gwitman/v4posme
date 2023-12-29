@@ -1707,9 +1707,10 @@
 		
 		if( objConcepto.length > 0 )
 		{
-			objTableDetail.fnUpdate( fnFormatNumber(objConcepto[0].valueOut,2), objind_, 9 );
-			fnRecalculateDetail(true,"");
+			objTableDetail.fnUpdate( fnFormatNumber(objConcepto[0].valueOut,2), objind_, 9 );			
 		}
+		
+		fnRecalculateDetail(true,"");
 		
 		
 	}
