@@ -218,7 +218,15 @@ UPDATE  tb_company_parameter,tb_parameter SET
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVENTORY_TRANSFEROUTPUT_RELATION_TRANSFERINPUT";## La relación entre la transferencia por salida (16) y su transacción automática es con la entrada por transferencia (15) 
-				
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_inventory_inputunpost/viewRegisterFormato80mm" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_URL_PRINTER_INPUTUNPOST";## URL PARA LA IMPRESION DE ORDEN DE COMPRA
+	
+	
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "36" 
@@ -730,7 +738,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "2024-05-03" 
+	tb_company_parameter.value = "2050-05-03" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CUST_PRICE_LICENCES_EXPIRED";## Fecha de expiracion de la licencia 
@@ -834,10 +842,19 @@ update tb_role set isActive = 1 where roleID in (
 
 
 
+/*tipo de cambio de dolares a cordoba*/
 update tb_exchange_rate set 
-	ratio = 35.50
+	ratio = 36 
 where 
-	currencyID = 2 
-	and targetCurrencyID = 1;
+	currencyID = 2
+	and targetCurrencyID = 1; 
+	
+	
+/*tipo de cambio de dolares a cordoba*/
+update tb_exchange_rate set 
+	ratio = 0.027777 
+where 
+	currencyID = 1
+	and targetCurrencyID = 2; 
 	
 	

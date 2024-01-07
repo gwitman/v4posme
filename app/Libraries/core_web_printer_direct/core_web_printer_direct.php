@@ -467,7 +467,7 @@ class core_web_printer_direct {
 	{    
 		echo print_r($dataSetValores,true);
 		$this->printer->setJustification(Printer::JUSTIFY_CENTER);
-		$pathImg = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$dataSetValores["objParameterLogo"]->value;
+		$pathImg = PATH_FILE_OF_APP_ROOT.'/img/logos/'.$dataSetValores["objParameterLogo"]->value;
 		echo $pathImg;
 
 		//--wgonzalez
@@ -1086,7 +1086,7 @@ class core_web_printer_direct {
 	{    
 		echo print_r($dataSetValores,true);
 		$this->printer->setJustification(Printer::JUSTIFY_CENTER);
-		$pathImg = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$dataSetValores["objParameterLogo"]->value;
+		$pathImg = PATH_FILE_OF_APP_ROOT.'/img/logos/'.$dataSetValores["objParameterLogo"]->value;
 		echo $pathImg;
 
 		//--wgonzalez
