@@ -385,7 +385,7 @@ class app_box_outcash extends _BaseController {
 			{
 				
 				//Validar registro de caja
-				$objListTMRegister 	= $this->Transaction_Master_Model->get_rowInStatusRegister($companyID);
+				$objListTMRegister 	= $this->Transaction_Master_Model->get_rowInStatusRegister($companyID,$transactionMasterID);
 				if($objListTMRegister)
 				{
 					$continue			= false;

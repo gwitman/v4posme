@@ -98,7 +98,7 @@ class Transaction_Master_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
-   function get_rowInStatusRegister($companyID)
+   function get_rowInStatusRegister($companyID,$transactionMasterID)
    {
 	   	$db 		= db_connect();
 		$builder	= $db->table("tb_transaction_master");    
@@ -117,7 +117,8 @@ class Transaction_Master_Model extends Model  {
 			where 
 				tm.isActive = 1 and 
 				tm.companyID = $companyID and 
-				ws.editableTotal = 1 ; 
+				ws.editableTotal = 1 and 
+				tm.transactionMasterID != $transactionMasterID 
 		");
 		
 	

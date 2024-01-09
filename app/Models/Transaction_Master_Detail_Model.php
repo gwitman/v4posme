@@ -226,7 +226,7 @@ class Transaction_Master_Detail_Model extends Model  {
 		$sql = sprintf("
 			 select	
 				ifnull(nat.firstName,'ND') as firtsName,
-				sum(td.amount	) as monto 
+				sum(td.unitaryPrice	) as monto 
 			from 
 				tb_transaction_master t 
 				inner join tb_workflow_stage ws on 
@@ -266,7 +266,7 @@ class Transaction_Master_Detail_Model extends Model  {
 		$sql = sprintf("
 			 select	
 				REPLACE(ifnull(i.name,'ND'),'Reparacion de Laptop','') as firtsName,
-				sum(td.amount	) as monto 
+				sum(td.unitaryPrice	) as monto 
 			from 
 				tb_transaction_master t 
 				inner join tb_workflow_stage ws on 
@@ -305,7 +305,7 @@ class Transaction_Master_Detail_Model extends Model  {
 		$sql = sprintf("
 		 select	
 				month(t.transactionOn) as firtsName,
-				sum(t.amount) as monto 
+				sum(t.subAmount) as monto 
 			from 
 				tb_transaction_master t 
 				inner join tb_workflow_stage ws on 
@@ -338,7 +338,7 @@ class Transaction_Master_Detail_Model extends Model  {
 		$sql = sprintf("
 			 select	
 				day(t.transactionOn) as firtsName,
-				sum(t.amount	) as monto 
+				sum(t.subAmount	) as monto 
 			from 
 				tb_transaction_master t 
 				inner join tb_workflow_stage ws on 
