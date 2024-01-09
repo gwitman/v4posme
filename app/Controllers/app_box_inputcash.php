@@ -310,7 +310,8 @@ class app_box_inputcash extends _BaseController {
 			$this->Transaction_Master_Detail_Model->deleteWhereIDNotIn($companyID,$transactionID,$transactionMasterID,$arrayListTransactionDetailID_); 
 			
 					
-			if(!empty($arrayListTransactionDetailID)){				
+			if(!empty($arrayListTransactionDetailID))
+			{				
 				$amount									= $amount + helper_StringToNumber($arrayListShare);
 				
 				$transactionDetailID					= $arrayListTransactionDetailID;
@@ -393,13 +394,15 @@ class app_box_inputcash extends _BaseController {
 			
 			if( strtoupper($objCatalogItem->display) == strtoupper("Apertura") )
 			{
+										
 				$objCashBoxSession	= $this->Cash_Box_Session_Model->asArray()->
 										where("userID",$userID)->
 										where("statusID",$objWorkflowStageInit[0]->workflowStageID)->
 										findAll();		
-
+				
 				if(!$objCashBoxSession)
 				{
+				
 					$objCashBoxSession					= null;
 					$objCashBoxSession["companyID"] 	= $companyID;
 					$objCashBoxSession["branchID"] 		= $branchID;

@@ -38,7 +38,7 @@ function getBehavio($type_company,$key_controller,$key_element)
 		
 		
 		/*Ferreteria Mateo*/
-		strtolower('ferreteria_mateo_app_invoice_billing_bodyListInvoice')	 		=> "height: 350px; overflow: scroll;",
+		strtolower('ferreteria_mateo_app_invoice_billing_bodyListInvoice')	 		=> "height: 550px; overflow: scroll;",
 		strtolower('ferreteria_mateo_app_box_share_stylePage')	 					=> "
 			/*posMe stylePage*/
 			#content .row{
@@ -186,7 +186,25 @@ function getBehavio($type_company,$key_controller,$key_element)
 		strtolower('gbt_app_box_share_divCustomerControlBuscar')									=> "hidden",
 		strtolower('gbt_app_box_share_divCustomerControlSelected')									=> "",
 		strtolower('gbt_app_box_share_divCobrador')													=> "hidden",
-		strtolower('gbt_app_box_share_divMoneda')													=> "hidden"
+		strtolower('gbt_app_box_share_divMoneda')													=> "hidden",
+		
+		
+		/*KHADASH*/
+		strtolower('khadash_app_box_share_divResumenAbono')			 									=> "hidden",
+		strtolower('khadash_app_box_share_divStart')			 										=> "hidden",
+		strtolower('khadash_app_box_share_divFecha')			 										=> "hidden",
+		strtolower('khadash_app_box_share_divAplicado')			 										=> "hidden",
+		strtolower('khadash_app_box_share_divCambio')			 										=> "hidden",
+		strtolower('khadash_app_box_share_comboStyle')			 										=> "",
+		strtolower('khadash_app_box_share_javscriptVariable_varShareMountDefaultOfAmortization')		=> "false",
+		strtolower('khadash_app_box_share_TableColumnDocumento')										=> "hidden",
+		strtolower('khadash_app_box_share_btnVerMovimientos')											=> "hidden",
+		strtolower('khadash_app_box_share_javscriptVariable_varPrinterOnlyFormat')						=> "true",
+		strtolower('khadash_app_box_share_divCustomerControlBuscar')									=> "",
+		strtolower('khadash_app_box_share_divCustomerControlSelected')									=> "hidden",
+		strtolower('khadash_app_box_share_divCobrador')													=> "hidden",
+		strtolower('khadash_app_box_share_divMoneda')													=> "hidden"
+		
 	);
 	
 	

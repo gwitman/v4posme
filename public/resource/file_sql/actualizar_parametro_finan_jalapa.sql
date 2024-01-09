@@ -861,7 +861,7 @@ WHERE
 	
 /*--Imprimir abonos	*/			
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_box_share/viewRegisterFormatoPaginaTicket" 
+	tb_company_parameter.value = "app_box_share/viewRegisterFormatoPaginaTicketKhadash" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "BOX_SHARE_URL_PRINTER";## URL PARA LA IMPRESION DE ABONOS 
@@ -1086,7 +1086,7 @@ WHERE
 /***************************************************************/
 		
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Eusebia Del Carmen Dumas Ruiz" 
+	tb_company_parameter.value = "Norman David Molina Gómez" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_NAME";## Witman José González Rostran 
@@ -1114,28 +1114,28 @@ WHERE
 	tb_parameter.name = "WHATSAP_CURRENT_PROPIETARY_COMMERSE";## WHATSAPP DEL PRIPIETARIO
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "047-160483-0000C" 
+	tb_company_parameter.value = "321-030274-0000A" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "047-160483-0000C" 
+	tb_company_parameter.value = "321-030274-0000A" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8505-7109" 
+	tb_company_parameter.value = "TEL: 84088680 - 87425174" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8505-7109" 
+	tb_company_parameter.value = "TEL: 84088680 - 87425174" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1143,15 +1143,15 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Donde fue aserrio santa fe, 2c abajo 15v.sur" 
+	tb_company_parameter.value = "Prudencio Serrano, costado este escuela Emmanuel Mongalo 2c.e." 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Finan Halapa' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 380,type='gbt'
+	NAME = 'Soluciones KHADASH' , address = 'Prudencio Serrano, costado este escuela Emmanuel Mongalo 2c.e.' ,
+	flavorID = 407,type='khadash'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
