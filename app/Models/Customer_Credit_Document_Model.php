@@ -111,7 +111,20 @@ class Customer_Credit_Document_Model extends Model  {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_customer_credit_document");
 	    $sql = "";
-		$sql = sprintf("select customerCreditDocumentID, companyID, entityID, customerCreditLineID,documentNumber, dateOn, amount, interes, term,exchangeRate, reference1, reference2, reference3, statusID, isActive,balance,i.currencyID,i.reportSinRiesgo");
+		$sql = sprintf("select 
+							customerCreditDocumentID, companyID, entityID, customerCreditLineID,documentNumber, dateOn, 
+							amount, interes, term,exchangeRate, reference1, reference2, reference3, statusID,
+							isActive,balance,i.currencyID,i.reportSinRiesgo,
+							(
+								select max(tccda.dateApply) 
+								from 
+									tb_customer_credit_document tccd 
+									inner join tb_customer_credit_amoritization tccda on 
+										tccd.customerCreditDocumentID = tccda.customerCreditDocumentID 
+								where 
+									tccd.customerCreditDocumentID = i.customerCreditDocumentID
+							)  as dateFinish
+					  ");
 		$sql = $sql.sprintf(" from tb_customer_credit_document i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
 		$sql = $sql.sprintf(" and i.entityID = $entityID");

@@ -353,6 +353,8 @@ $routes->match(['get','post'],'app_box_report/share','app_box_report::share');
 $routes->match(['get','post'],'app_box_report/share/(:any)','app_box_report::share');
 $routes->match(['get','post'],'app_box_report/share_summary','app_box_report::share_summary');
 $routes->match(['get','post'],'app_box_report/share_summary/(:any)','app_box_report::share_summary');
+$routes->match(['get','post'],'app_box_report/share_summary_80mm_prestatario','app_box_report::share_summary_80mm_prestatario');
+$routes->match(['get','post'],'app_box_report/share_summary_80mm_prestatario/(:any)','app_box_report::share_summary_80mm_prestatario');
 $routes->match(['get','post'],'app_box_report/share_summary_80mm_direct','app_box_report::share_summary_80mm_direct');
 $routes->match(['get','post'],'app_box_report/share_summary_80mm_direct/(:any)','app_box_report::share_summary_80mm_direct');
 $routes->match(['get','post'],'app_box_report/share_summary_80mm_general','app_box_report::share_summary_80mm_general');

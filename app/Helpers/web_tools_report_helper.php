@@ -3635,6 +3635,7 @@ function helper_reporte80mmTransactionMasterAbonoKhadash(
     $arrayDetalle, /**/
     $objParameterTelefono, /*telefono*/
 	$objUser,
+	$objCustomerCreditDocument, /*documento de credito*/
     $statusName = "", /*estado*/
     $causalName = "", /*causal*/
 	$userNickName = "", /*vendedor*/
@@ -3831,31 +3832,34 @@ function helper_reporte80mmTransactionMasterAbonoKhadash(
                           </td>
                         </tr>
                              
-                        <tr>
+                        
+						
+						<tr>
                           <td colspan='2'>
-                            TOTAL
+                            DESEMBOLSO
                           </td>
                           <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount)."
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objCustomerCreditDocument->amount)."
                           </td>
                         </tr>
    
                         <tr>
                           <td colspan='2'>
-                            RECIBIDO
+                            FECHA INICIAL
                           </td>
                           <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount + $objTransactionMasterInfo->changeAmount)."
+                            ".$objCustomerCreditDocument->dateOn."
                           </td>
                         </tr>
                          <tr>
                           <td colspan='2'>
-                            CAMBIO
+                            FECHA FINAL
                           </td>
                           <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f", ($objTransactionMasterInfo->changeAmount)  )."
+                            ".$objCustomerCreditDocument->dateFinish."
                           </td>
                         </tr>
+						
 
                          <tr>
                           <td colspan='3' style='text-align:center'>

@@ -1747,7 +1747,8 @@ class app_box_share extends _BaseController {
 			//Obtener Datos
 			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$datView["objUser"]						= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->branchID,$datView["objTM"]->createdBy);
-			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID,$transactionID,$transactionMasterID);			
+			$datView["objCCD"] 						= $this->Customer_Credit_Document_Model->get_rowByDocument($datView["objTM"]->companyID,$datView["objTM"]->entityID,$datView["objTMD"][0]->reference1);						
 			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
 			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
@@ -1822,7 +1823,7 @@ class app_box_share extends _BaseController {
 					array_push($detalle,$row);
 				}
 				
-				$row = array("SALDO FINAL", '', sprintf('%.2f', $saldoFinal) );
+				$row = array("SALDO PENDIENTE", '', sprintf('%.2f', $saldoFinal) );
 				array_push($detalle,$row);
 			}
 			
@@ -1844,6 +1845,7 @@ class app_box_share extends _BaseController {
 			    $detalle,
 			    $objParameterTelefono,
 				$datView["objUser"],
+				$datView["objCCD"],
 				$datView["objStage"][0]->display,
 				"",
 				""				

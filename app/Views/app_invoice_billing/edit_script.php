@@ -130,7 +130,9 @@
 	var objListaStoreCustomerCreditLine	= localStorage.getItem("objListaCustomerCreditLine");		
 	objListaCustomerCreditLine 			= JSON.parse(objListaStoreCustomerCreditLine);	
 	
-	if(objListaProductosStore == null ){		
+	//si es una edicion siempre actualizar el catalogo
+	if( objListaProductosStore == null  )
+	{		
 		fnObtenerListadoProductos();
 		fnObtenerListadoProductos2();
 		fnObtenerListadoProductos3();
@@ -591,8 +593,19 @@
 								var objProductoPrecio2 	= jLinq.from(objListaProductos2).where(function(obj){ return obj.itemID == full[2]; }).select();
 								var objProductoPrecio3 	= jLinq.from(objListaProductos3).where(function(obj){ return obj.itemID == full[2]; }).select();
 								
+								if(objProductoPrecio1.length == 0)
+								objProductoPrecio1 = "0.00";
+								else
 								objProductoPrecio1 = objProductoPrecio1[0].Precio;
+							
+								if(objProductoPrecio2.length == 0)
+								objProductoPrecio2 = "0.00";
+								else
 								objProductoPrecio2 = objProductoPrecio2[0].Precio;
+							
+								if(objProductoPrecio3.length == 0)
+								objProductoPrecio3 = "0.00";
+								else
 								objProductoPrecio3 = objProductoPrecio3[0].Precio;
 								
 								objProductoPrecio1 = fnFormatFloat(objProductoPrecio1);
