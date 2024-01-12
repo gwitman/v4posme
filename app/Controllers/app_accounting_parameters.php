@@ -4,7 +4,7 @@ namespace App\Controllers;
 class app_accounting_parameters extends _BaseController {
 	
    
-	
+	 
 	function save(){
 		
 		try{  
