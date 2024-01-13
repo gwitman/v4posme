@@ -300,13 +300,18 @@ class app_cxc_customer extends _BaseController {
 				$objCustomer["identificationType"]	= /*inicio get post*/ $this->request->getPost('txtIdentificationTypeID');//--fin peticion get o post
 				$objCustomer["identification"]		= /*inicio get post*/ $this->request->getPost('txtIdentification');//--fin peticion get o post
 				
-				//Validar que ya existe el cliente
-				$objCustomerOld						= $this->Customer_Model->get_rowByIdentification($companyID,$objCustomer["identification"]);
-				if($objCustomerOld)
-				{
-					if($objCustomerOld->entityID != $entityID_ )
+				$validarCedula 				= $this->core_web_parameter->getParameterValue("CXC_VALIDAR_CEDULA_REPETIDA",$companyID);
+				
+				//validar que se permita la omision de la cedula
+				if(strcmp($validarCedula,"true") == 0){
+					//Validar que ya existe el cliente
+					$objCustomerOld						= $this->Customer_Model->get_rowByIdentification($companyID,$objCustomer["identification"]);
+					if($objCustomerOld)
 					{
-						throw new \Exception("Error identificacion del cliente ya existe.");
+						if($objCustomerOld->entityID != $entityID_ )
+						{
+							throw new \Exception("Error identificacion del cliente ya existe.");
+						}
 					}
 				}
 				
@@ -582,6 +587,7 @@ class app_cxc_customer extends _BaseController {
 			$typeAmortizationDefault 	= $this->core_web_parameter->getParameterValue("CXC_TYPE_AMORTIZATION",$companyID);
 			$frecuencyDefault 			= $this->core_web_parameter->getParameterValue("CXC_FRECUENCIA_PAY_DEFAULT",$companyID);
 			$creditLineDefault 			= $this->core_web_parameter->getParameterValue("CXC_CREDIT_LINE_DEFAULT",$companyID);
+			$validarCedula 				= $this->core_web_parameter->getParameterValue("CXC_VALIDAR_CEDULA_REPETIDA",$companyID);
 			
 			
 			$paisID = empty (/*inicio get post*/ $this->request->getPost('txtCountryID') /*//--fin peticion get o post*/ ) ?  $paisDefault : /*inicio get post*/ $this->request->getPost('txtCountryID');  /*//--fin peticion get o post*/
@@ -596,12 +602,17 @@ class app_cxc_customer extends _BaseController {
 			$objCustomer["identificationType"]	= /*inicio get post*/ $this->request->getPost('txtIdentificationTypeID');//--fin peticion get o post
 			$objCustomer["identification"]		= /*inicio get post*/ $this->request->getPost('txtIdentification');//--fin peticion get o post
 			
-			//Validar que ya existe el cliente
-			$objCustomerOld						= $this->Customer_Model->get_rowByIdentification($companyID,$objCustomer["identification"]);
-			if($objCustomerOld)
+
+			//validar que se permita la omision de la cedula
+			if(strcmp($validarCedula,"true") == 0)
 			{
-				throw new \Exception("Error identificacion del cliente ya existe.");
-			}
+				//Validar que ya existe el cliente
+				$objCustomerOld					= $this->Customer_Model->get_rowByIdentification($companyID,$objCustomer["identification"]);
+				if($objCustomerOld)
+				{
+					throw new \Exception("Error identificacion del cliente ya existe.");
+				}
+			} 
 				
 			
 			$objCustomer["countryID"]			= $paisID;
@@ -1183,6 +1194,7 @@ class app_cxc_customer extends _BaseController {
 			$dataSession["script"]		= /*--inicio view*/ view('app_cxc_customer/popup_addphone_script');//--finview
 			return view("core_masterpage/default_popup",$dataSession);//--finview-r
 	}
+
 	
 }
 ?>
