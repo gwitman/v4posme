@@ -243,6 +243,7 @@ class app_invoice_api extends _BaseController {
 			$parameter 					= array_merge($parameter,$result);
 			
 			
+			log_message("error","*****>query que visualiza la vista por nombre:".$viewname);
 			$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname,CALLERID_SEARCH,null,$parameter); 			
 			
 			//Obtener Resultados.			
