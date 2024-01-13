@@ -11,12 +11,6 @@ WHERE
 	tb_parameter.name = "INVOICE_BILLING_SELECTITEM";	## SI este valor esta en true, los produyctos se seleccionar a traves de un selecte item
 	
 
-UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
-WHERE 
-	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "CXC_VALIDAR_CEDULA_REPETIDA";	## Parametro para validar si se repite una cedula o no.
-	
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
@@ -1190,7 +1184,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Distribuidora Gonzalez' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
+	NAME = 'Farmacia Narvaez' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
 	flavorID = 0,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
@@ -1202,19 +1196,18 @@ Eliminar o desactivar usuarios
 */
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/
- 5,		/*administrador*/
- 191,  	/*supervisor*/
- 190, 	/*facturador*/
- 189 	/*administrador*/
+ 2, 	/*administrador*/ 
+ 427,  	/*supervisor*/
+ 426, 	/*facturador*/
+ 425 	/*administrador*/
 );
 
 update tb_role set isActive = 0; 
 update tb_role set isActive = 1 where roleID in (
 	3,
-	201,
-	202,
-	203	
+	356,
+	355,
+	354	
 );
 
 
