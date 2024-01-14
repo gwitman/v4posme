@@ -1,6 +1,6 @@
-set @componentName   					:= 'tb_transaction_master_rrhh_asistencia';
-set @subelementoName					:= 'priorityID';
-set @catalogName						:= 'TIPO-Asistencias';
+set @componentName   					:= 'tb_transaction_master_accounting_expenses';
+set @subelementoName					:= 'areaID';
+set @catalogName						:= 'CATEGORIA-Gastos';
 set @catalogID							:= 0;
 set @elementID							:= 0;
 
@@ -61,4 +61,17 @@ where
    not exists (select * from tb_subelement u where u.elementID = @elementID and u.`name` = @subelementoName );
 	
 	
+select 
+	* 
+from 
+	tb_transaction_master limit 10;
 	
+	
+select 
+	*
+from 
+	tb_catalog_item x 
+where 
+	x.catalogID = @catalogID;
+	
+select 'success' as mensaje;

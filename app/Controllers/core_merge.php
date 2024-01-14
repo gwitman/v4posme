@@ -1011,6 +1011,42 @@ class core_merge extends _BaseController {
 			mkdir($documentoPath, 0755);
 			chmod($documentoPath, 0755);
 		}
+		
+		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_92";		
+		if (!file_exists($documentoPath))
+		{
+			mkdir($documentoPath, 0755);
+			chmod($documentoPath, 0755);
+		}
+		
+		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_93";		
+		if (!file_exists($documentoPath))
+		{
+			mkdir($documentoPath, 0755);
+			chmod($documentoPath, 0755);
+		}
+		
+		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_94";		
+		if (!file_exists($documentoPath))
+		{
+			mkdir($documentoPath, 0755);
+			chmod($documentoPath, 0755);
+		}
+		
+		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_95";		
+		if (!file_exists($documentoPath))
+		{
+			mkdir($documentoPath, 0755);
+			chmod($documentoPath, 0755);
+		}
+		
+		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_96";		
+		if (!file_exists($documentoPath))
+		{
+			mkdir($documentoPath, 0755);
+			chmod($documentoPath, 0755);
+		}
+		
 			
 		//Eliminar archivos de writable/logs
 		$dir 	= opendir(PATH_FILE_OF_APP."/../../../writable/logs");
@@ -1197,7 +1233,13 @@ class core_merge extends _BaseController {
 													$current == "component_40" /*tb_fixed_assent*/  ||
 													$current == "component_64" /*tb_transaction_master_share*/  ||
 													$current == "component_66" /*tb_transaction_master_share_capital*/ ||  
-													$current == "component_76" /*tb_remember*/  
+													$current == "component_76" /*tb_remember*/   ||
+													$current == "component_91" /*tb_transaction_master_proforma*/  ||
+													$current == "component_92" /*tb_public_catalog*/  ||
+													$current == "component_93" /*tb_cash_box_session*/  ||
+													$current == "component_94" /*0-CALENDARIO*/  ||
+													$current == "component_95" /*tb_notification_citas*/  || 
+													$current == "component_96" /*tb_transaction_master_accounting_expenses*/  
 													
 												)
 											)

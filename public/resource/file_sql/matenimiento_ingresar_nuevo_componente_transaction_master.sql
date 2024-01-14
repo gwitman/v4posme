@@ -1,7 +1,7 @@
-set @componentName   					:= 'tb_transaction_master_rrhh_asistencia';
-set @workflowName   					:= 'ESTADO DE LAS ASISTENCIAS COLABORADOR';
-set @transactionName 					:= 'ASISTSENCIAS MEDICA';
-set @serieName							:= 'AMC';
+set @componentName   					:= 'tb_transaction_master_accounting_expenses';
+set @workflowName   					:= 'ESTADO DE LOS GASTOS CONTABLES';
+set @transactionName 					:= 'GASTOS';
+set @serieName							:= 'ING';
 set @componentID					    := 0;
 set @elementID							:= 0;
 set @workflowID							:= 0;
@@ -246,7 +246,7 @@ from
 			1 as isActive 
 	) as t 
 where 
-	t.transactionID not in (select u.transactionID from tb_transaction_causal u )
+	t.transactionID not in (select u.transactionID from tb_transaction_causal u );
 
 
 

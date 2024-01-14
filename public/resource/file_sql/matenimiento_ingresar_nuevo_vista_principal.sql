@@ -1,6 +1,6 @@
 
-set @viewName := 'LISTA DE ASISTENCIAS COLABORADOR';
-set @componentName := 'tb_transaction_master_rrhh_asistencia';
+set @viewName := 'LISTA DE GASTOS';
+set @componentName := 'tb_transaction_master_accounting_expenses';
 
 
 set @viewScript := "
@@ -100,4 +100,7 @@ UPDATE tb_company_dataview set
 	nonVisibleColumns = @viewColumnNoVisible
 WHERE
 	dataViewID = @viewID; 
+	
+	
+select 'success' as mensaje;
 	

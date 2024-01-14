@@ -28,16 +28,16 @@ ORDER BY
 
 
 
-set @menuComponentPrincipal 			:= '0-FACTURACION';	
-set @menuElementParent					:= 'FACTURACION'; 	
+set @menuComponentPrincipal 				:= '0-TRANSACCIONES';	
+set @menuElementParent						:= 'REPORTES'; 	
 
-set @menuElement 						:= 'ES_PERMITIDO_SELECCIONAR_PRECIO_CREDITO';
-set @menuElementAddress 				:= 'es_permitido_seleccionar_precio_credito/index.aspx';
-set @menuElementOrden 					:= '0002.0008.0013.0000.0000';
-set @menuIcono							:= '';
-set @menuThemplate							:= '';
-set @menuType								:= '8';
-set @menuNivel								:= '0';
+set @menuElement 							:= 'GARAFICO DE GASTOS';
+set @menuElementAddress 					:= 'app_transa_report/expenses_chart.aspx';
+set @menuElementOrden 						:= '0002.0004.0007.0002.0000';
+set @menuIcono								:= 'red';
+set @menuThemplate							:= 'menu_nivel_body_report_0';
+set @menuType								:= '6';
+set @menuNivel								:= '1';
 
 set @menuComponentPrincipalID 			:= IFNULL((select u.componentID from tb_component u where u.name = @menuComponentPrincipal),0);
 set @menuElementID 				      	:= IFNULL((select u.elementID from tb_element u where u.name = @menuElement),0);
@@ -93,3 +93,6 @@ from
 	) as tempx 
 where
 	tempx.elementID not in (select u.elementID from tb_menu_element u);
+
+
+SELECT 'success' as mensaje;
