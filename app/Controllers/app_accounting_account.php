@@ -1,10 +1,10 @@
 <?php
 //posme:2023-02-27
 namespace App\Controllers;
-class app_accounting_account extends _BaseController {
+class app_accounting_account extends _BaseController {   
 	
 
-	public function isValidAccountNumber($accountNumber="",$companyID="",$accountLevelID=""){
+	public function isValidAccountNumber($accountNumber="",$companyID="",$accountLevelID=""){ 
 		//false numero incorrecto
 		//true numero correcto
 		$accountNumber = helper_SegmentsByIndex($this->uri->getSegments(),1,$accountNumber);	
