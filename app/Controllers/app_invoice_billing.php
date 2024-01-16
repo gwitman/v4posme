@@ -848,10 +848,17 @@ class app_invoice_billing extends _BaseController {
 					$objCompanyComponentConcept 			= $this->Company_Component_Concept_Model->get_rowByPK($companyID,$objComponentItem->componentID,$itemID,"IVA");
 					$skuCatalogItemID						= $arrayListSku[$key];
 					$itemNameDetail							= str_replace('"',"",str_replace("'","",$arrayListItemName[$key]));
+					
+					log_message("error",">>>>>>>>>");
+					log_message("error",print_r($itemID,true));
+					log_message("error",print_r($skuCatalogItemID,true));
+					
 					$objItemSku								= $this->Item_Sku_Model->getByPK($itemID,$skuCatalogItemID);
 					
 					//$price 								= $objItem->cost * ( 1 + ($objPrice->percentage/100));
-					//$price 								= $arrayListPrice[$key];					
+					//$price 								= $arrayListPrice[$key];	
+					log_message("error",">>>>>>>>>");
+					log_message("error",print_r($objItemSku,true));
 					$price 									= $arrayListPrice[$key] / ($objItemSku->value) ;
 					$skuFormatoDescription					= $arrayListSkuFormatoDescription[$key];
 					$ivaPercentage							= ($objCompanyComponentConcept != null ? $objCompanyComponentConcept->valueOut : 0 );					
