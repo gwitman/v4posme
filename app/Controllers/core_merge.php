@@ -1047,6 +1047,27 @@ class core_merge extends _BaseController {
 			chmod($documentoPath, 0755);
 		}
 		
+		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_97";		
+		if (!file_exists($documentoPath))
+		{
+			mkdir($documentoPath, 0755);
+			chmod($documentoPath, 0755);
+		}
+		
+		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_98";		
+		if (!file_exists($documentoPath))
+		{
+			mkdir($documentoPath, 0755);
+			chmod($documentoPath, 0755);
+		}
+		
+		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_99";		
+		if (!file_exists($documentoPath))
+		{
+			mkdir($documentoPath, 0755);
+			chmod($documentoPath, 0755);
+		}
+		
 			
 		//Eliminar archivos de writable/logs
 		$dir 	= opendir(PATH_FILE_OF_APP."/../../../writable/logs");
@@ -1239,7 +1260,10 @@ class core_merge extends _BaseController {
 													$current == "component_93" /*tb_cash_box_session*/  ||
 													$current == "component_94" /*0-CALENDARIO*/  ||
 													$current == "component_95" /*tb_notification_citas*/  || 
-													$current == "component_96" /*tb_transaction_master_accounting_expenses*/  
+													$current == "component_96" /*tb_transaction_master_accounting_expenses*/  ||
+													$current == "component_97" /*tb_transaction_master_workshop_pedido*/  ||
+													$current == "component_98" /*tb_transaction_master_workshop_taller*/  ||
+													$current == "component_99" /*tb_transaction_master_workshop_garantias*/  
 													
 												)
 											)

@@ -1523,9 +1523,19 @@
 					   .objectStore(varTable)
 					   .getAll();
 
-		request.onsuccess = ()=> {					
-			objListaProductos = JSON.parse( request.result[0].name );		
+		request.onsuccess = ()=> {
+
+			try
+			{
+				objListaProductos = JSON.parse( request.result[0].name );		
+			}
+			catch(ex)
+			{
+				
+			}
+			
 			obtenerDataDBProducto2("objListaProductos2");
+			
 		}
 
 		request.onerror = (err)=> {
@@ -1540,7 +1550,16 @@
 					   .getAll();
 
 		request.onsuccess = ()=> {			
-			objListaProductos2 = JSON.parse( request.result[0].name );			
+		
+			try
+			{
+				objListaProductos2 = JSON.parse( request.result[0].name );			
+			}
+			catch(ex)
+			{
+				
+			}
+			
 			obtenerDataDBProducto3("objListaProductos3");
 		}
 
@@ -1555,9 +1574,18 @@
 					   .objectStore(varTable)
 					   .getAll();
 
-		request.onsuccess = ()=> {			
-			objListaProductos3 = JSON.parse( request.result[0].name );			
+		request.onsuccess = ()=> {	
+			try
+			{
+				objListaProductos3 = JSON.parse( request.result[0].name );			
+			}
+			catch(ex)
+			{
+			
+			}
+			
 			obtenerDataDBProductoSku("objListaProductosSku");
+			
 		}
 
 		request.onerror = (err)=> {
@@ -1571,8 +1599,14 @@
 					   .objectStore(varTable)
 					   .getAll();
 
-		request.onsuccess = ()=> {			
-			objListaProductosSku = JSON.parse( request.result[0].name );		
+		request.onsuccess = ()=> {		
+
+			try{
+				objListaProductosSku = JSON.parse( request.result[0].name );		
+			}catch(e)
+			{
+			}
+			
 			obtenerDataDBProductoConcepto("objListaItemConcept");
 		}
 
@@ -1588,7 +1622,15 @@
 					   .getAll();
 
 		request.onsuccess = ()=> {			
-			objListaItemConcept = JSON.parse( request.result[0].name );			
+			try
+			{
+				objListaItemConcept = JSON.parse( request.result[0].name );			
+			}
+			catch(ex)
+			{
+				
+			}
+			
 			obtenerDataDBCustomerCreditLine("objListaCustomerCreditLine");
 		}
 
@@ -1604,8 +1646,17 @@
 					   .objectStore(varTable)
 					   .getAll();
 
-		request.onsuccess = ()=> {			
-			objListaCustomerCreditLine = JSON.parse( request.result[0].name );
+		request.onsuccess = ()=> 
+		{		
+			try
+			{
+				objListaCustomerCreditLine = JSON.parse( request.result[0].name );
+			}
+			catch(ex)
+			{
+				
+			}
+			
 			fnGetCustomerClient(); 		
 			
 		}
@@ -1618,7 +1669,7 @@
 	function fnObtenerInformacionDeLaBaseDeDatos()
 	{
 		try{
-		obtenerDataDBProducto("objListaProductos");
+			obtenerDataDBProducto("objListaProductos");
 		}catch(exception){}
 	}
 	
