@@ -1,6 +1,6 @@
-set @componentName   					:= 'tb_transaction_master_accounting_expenses';
+set @componentName   					:= 'tb_transaction_master_workshop_garantias';
 set @subelementoName					:= 'areaID';
-set @catalogName						:= 'CATEGORIA-Gastos';
+set @catalogName						:= 'Articulo';
 set @catalogID							:= 0;
 set @elementID							:= 0;
 

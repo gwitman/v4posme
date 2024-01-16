@@ -1,7 +1,7 @@
-set @componentName   					:= 'tb_transaction_master_accounting_expenses';
-set @workflowName   					:= 'ESTADO DE LOS GASTOS CONTABLES';
-set @transactionName 					:= 'GASTOS';
-set @serieName							:= 'ING';
+set @componentName   					:= 'tb_transaction_master_workshop_garantias';
+set @workflowName   					:= 'ESTADO DE GARANTIAS';
+set @transactionName 					:= 'GARANTIA';
+set @serieName							:= 'IDG';
 set @componentID					    := 0;
 set @elementID							:= 0;
 set @workflowID							:= 0;

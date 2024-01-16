@@ -1,6 +1,6 @@
 
-set @viewName := 'LISTA DE GASTOS';
-set @componentName := 'tb_transaction_master_accounting_expenses';
+set @viewName := 'LISTA DE GARANTIAS';
+set @componentName := 'tb_transaction_master_workshop_garantias';
 
 
 set @viewScript := "

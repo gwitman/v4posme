@@ -112,26 +112,161 @@
 
 		
 	//crear la cache intervalo 		
-	var objListaProductosStore 	= localStorage.getItem("objListaProductos");		
-	objListaProductos 			= JSON.parse(objListaProductosStore);
+	var objListaProductosStore_Parte1 	= localStorage.getItem("objListaProductos_Parte1");		
+	var objListaProductosStore_Parte2 	= localStorage.getItem("objListaProductos_Parte2");		
+	var objListaProductosStore_Parte3 	= localStorage.getItem("objListaProductos_Parte3");			
+	var objListaProductosStore_Parte4 	= localStorage.getItem("objListaProductos_Parte4");
+	var objListaProductosStore_Parte5 	= localStorage.getItem("objListaProductos_Parte5");
+	var objListaProductosStore_Parte6 	= localStorage.getItem("objListaProductos_Parte6");
+	var objListaProductosStore_Parte7 	= localStorage.getItem("objListaProductos_Parte7");
 	
-	var objListaProductosStore2 	= localStorage.getItem("objListaProductos2");		
-	objListaProductos2 				= JSON.parse(objListaProductosStore2);
+	try {
+		objListaProductos 					= JSON.parse(
+			(objListaProductosStore_Parte1 || "") + 
+			(objListaProductosStore_Parte2 || "") + 
+			(objListaProductosStore_Parte3 || "") +
+			(objListaProductosStore_Parte4 || "") +
+			(objListaProductosStore_Parte5 || "") +
+			(objListaProductosStore_Parte6 || "") +
+			(objListaProductosStore_Parte7 || "") 
+		);
+	} 
+	catch (error) 
+	{
+		objListaProductos					= [];
+	}
 	
-	var objListaProductosStore3 	= localStorage.getItem("objListaProductos3");		
-	objListaProductos3	 			= JSON.parse(objListaProductosStore3);
 	
-	var objListaProductosStoreSku	= localStorage.getItem("objListaProductosSku");		
-	objListaProductosSku 			= JSON.parse(objListaProductosStoreSku);	
-
-	var objListaStoreItemConcept	= localStorage.getItem("objListaItemConcept");		
-	objListaItemConcept 			= JSON.parse(objListaStoreItemConcept);	
 	
-	var objListaStoreCustomerCreditLine	= localStorage.getItem("objListaCustomerCreditLine");		
-	objListaCustomerCreditLine 			= JSON.parse(objListaStoreCustomerCreditLine);	
+	var objListaProductosStore2_Parte1 	= localStorage.getItem("objListaProductos2_Parte1");		
+	var objListaProductosStore2_Parte2 	= localStorage.getItem("objListaProductos2_Parte2");
+	var objListaProductosStore2_Parte3 	= localStorage.getItem("objListaProductos2_Parte3");
+	var objListaProductosStore2_Parte4 	= localStorage.getItem("objListaProductos2_Parte4");
+	var objListaProductosStore2_Parte5 	= localStorage.getItem("objListaProductos2_Parte5");
+	var objListaProductosStore2_Parte6 	= localStorage.getItem("objListaProductos2_Parte6");
+	var objListaProductosStore2_Parte7 	= localStorage.getItem("objListaProductos2_Parte7");
+	
+	try{
+		objListaProductos2 				= JSON.parse( 
+			(objListaProductosStore2_Parte1 || "") + 
+			(objListaProductosStore2_Parte2 || "") +  
+			(objListaProductosStore2_Parte3 || "") + 
+			(objListaProductosStore2_Parte4 || "") + 
+			(objListaProductosStore2_Parte5 || "") + 
+			(objListaProductosStore2_Parte6 || "") + 
+			(objListaProductosStore2_Parte7 || "") 
+		);
+	}
+	catch(error)
+	{
+		objListaProductos2				= [];
+	}
+	
+	
+	var objListaProductosStore3_Parte1 	= localStorage.getItem("objListaProductos3_Parte1");		
+	var objListaProductosStore3_Parte2 	= localStorage.getItem("objListaProductos3_Parte2");
+	var objListaProductosStore3_Parte3 	= localStorage.getItem("objListaProductos3_Parte3");
+	var objListaProductosStore3_Parte4 	= localStorage.getItem("objListaProductos3_Parte4");
+	var objListaProductosStore3_Parte5 	= localStorage.getItem("objListaProductos3_Parte5");
+	var objListaProductosStore3_Parte6 	= localStorage.getItem("objListaProductos3_Parte6");
+	var objListaProductosStore3_Parte7 	= localStorage.getItem("objListaProductos3_Parte7");
+	
+	try
+	{
+		objListaProductos3	 			= JSON.parse( 
+			(objListaProductosStore3_Parte1 || "" ) + 
+			(objListaProductosStore3_Parte2 || "" ) + 
+			(objListaProductosStore3_Parte3 || "" ) + 
+			(objListaProductosStore3_Parte4 || "" ) + 
+			(objListaProductosStore3_Parte5 || "" ) + 
+			(objListaProductosStore3_Parte6 || "" ) + 
+			(objListaProductosStore3_Parte7 || "" ) 
+		);
+	}
+	catch(error)
+	{
+		objListaProductos3 = [];
+	}
+	
+	var objListaProductosStoreSku_Parte1	= localStorage.getItem("objListaProductosSku_Parte1");
+	var objListaProductosStoreSku_Parte2	= localStorage.getItem("objListaProductosSku_Parte2");
+	var objListaProductosStoreSku_Parte3	= localStorage.getItem("objListaProductosSku_Parte3");
+	var objListaProductosStoreSku_Parte4	= localStorage.getItem("objListaProductosSku_Parte4");
+	var objListaProductosStoreSku_Parte5	= localStorage.getItem("objListaProductosSku_Parte5");
+	var objListaProductosStoreSku_Parte6	= localStorage.getItem("objListaProductosSku_Parte6");
+	var objListaProductosStoreSku_Parte7	= localStorage.getItem("objListaProductosSku_Parte7");
+	
+	try{
+		objListaProductosSku 			= JSON.parse( 
+				(objListaProductosStoreSku_Parte1 || "")  + 
+				(objListaProductosStoreSku_Parte2 || "")  + 
+				(objListaProductosStoreSku_Parte3 || "")  + 
+				(objListaProductosStoreSku_Parte4 || "")  +
+				(objListaProductosStoreSku_Parte5 || "")  +
+				(objListaProductosStoreSku_Parte6 || "")  +
+				(objListaProductosStoreSku_Parte7 || "") 
+		);	
+	}
+	catch(error)
+	{
+		objListaProductosSku = [];
+	}
+	
+	var objListaStoreItemConcept_Parte1	= localStorage.getItem("objListaItemConcept_Parte1");
+	var objListaStoreItemConcept_Parte2	= localStorage.getItem("objListaItemConcept_Parte2");
+	var objListaStoreItemConcept_Parte3	= localStorage.getItem("objListaItemConcept_Parte3");
+	var objListaStoreItemConcept_Parte4	= localStorage.getItem("objListaItemConcept_Parte4");
+	var objListaStoreItemConcept_Parte5	= localStorage.getItem("objListaItemConcept_Parte5");
+	var objListaStoreItemConcept_Parte6	= localStorage.getItem("objListaItemConcept_Parte6");
+	var objListaStoreItemConcept_Parte7	= localStorage.getItem("objListaItemConcept_Parte7");
+	
+	try{
+		objListaItemConcept 			= JSON.parse(
+					(objListaStoreItemConcept_Parte1 || "") + 
+					(objListaStoreItemConcept_Parte2 || "") + 
+					(objListaStoreItemConcept_Parte3 || "") + 
+					(objListaStoreItemConcept_Parte4 || "") +
+					(objListaStoreItemConcept_Parte5 || "") +
+					(objListaStoreItemConcept_Parte6 || "") +
+					(objListaStoreItemConcept_Parte7 || "") 
+		);	
+	}
+	catch(error)
+	{
+		objListaItemConcept				= [];
+	}
+	
+	
+	var objListaStoreCustomerCreditLine_Parte1	= localStorage.getItem("objListaCustomerCreditLine_Parte1");
+	var objListaStoreCustomerCreditLine_Parte2	= localStorage.getItem("objListaCustomerCreditLine_Parte2");
+	var objListaStoreCustomerCreditLine_Parte3	= localStorage.getItem("objListaCustomerCreditLine_Parte3");
+	var objListaStoreCustomerCreditLine_Parte4	= localStorage.getItem("objListaCustomerCreditLine_Parte4");
+	var objListaStoreCustomerCreditLine_Parte5	= localStorage.getItem("objListaCustomerCreditLine_Parte5");
+	var objListaStoreCustomerCreditLine_Parte6	= localStorage.getItem("objListaCustomerCreditLine_Parte6");
+	var objListaStoreCustomerCreditLine_Parte7	= localStorage.getItem("objListaCustomerCreditLine_Parte7");
+	try
+	{
+		objListaCustomerCreditLine 			= JSON.parse(
+				(objListaStoreCustomerCreditLine_Parte1 || "") + 
+				(objListaStoreCustomerCreditLine_Parte2 || "") + 
+				(objListaStoreCustomerCreditLine_Parte3 || "") + 
+				(objListaStoreCustomerCreditLine_Parte4 || "") + 
+				(objListaStoreCustomerCreditLine_Parte5 || "") + 
+				(objListaStoreCustomerCreditLine_Parte6 || "") + 
+				(objListaStoreCustomerCreditLine_Parte7 || "") 
+		);	
+	}
+	catch(error)
+	{
+		objListaCustomerCreditLine			= [];
+	}
+	
+	
+	
+	
 	
 	//si es una edicion siempre actualizar el catalogo
-	if( objListaProductosStore == null  )
+	if( objListaProductosStore_Parte1 == null  )
 	{		
 		fnObtenerListadoProductos();
 		fnObtenerListadoProductos2();
@@ -2180,49 +2315,161 @@
 	function fnFillListaProductos(data){
 		
 		console.info("complete success data");
-		objListaProductos 			= data.objGridView;
-		var objListaProductosStore 	= localStorage.getItem("objListaProductos");		
-		localStorage.setItem("objListaProductos",JSON.stringify(objListaProductos));		
+		objListaProductos 			= data.objGridView;		
+		var  objListaProductos 		= JSON.stringify(objListaProductos);	
+		
+		
+		var total 					= objListaProductos.length ;
+		var lng 					= parseInt(objListaProductos.length / 7);
+		var init 					= 0;		
+		
+		localStorage.setItem("objListaProductos_Parte1", objListaProductos.substr(0,lng) );		
+		init 						= init + lng; 
+		localStorage.setItem("objListaProductos_Parte2", objListaProductos.substr(init,lng)  );		
+		init 						= init + lng;
+		localStorage.setItem("objListaProductos_Parte3", objListaProductos.substr(init,lng)  );		
+		init 						= init + lng;
+		localStorage.setItem("objListaProductos_Parte4", objListaProductos.substr(init,lng)  );		
+		init 						= init + lng;
+		localStorage.setItem("objListaProductos_Parte5", objListaProductos.substr(init,lng)  );		
+		init 						= init + lng;
+		localStorage.setItem("objListaProductos_Parte6", objListaProductos.substr(init,lng)  );		
+		init 						= init + lng;		
+		localStorage.setItem("objListaProductos_Parte7", objListaProductos.substr(init,total-init)  );		
+		
 	}
 	function fnFillListaProductos2(data){
 		console.info("complete success data");
-		objListaProductos2 			= data.objGridView;
-		var objListaProductosStore2 	= localStorage.getItem("objListaProductos2");		
-		localStorage.setItem("objListaProductos2",JSON.stringify(objListaProductos2));		
+		objListaProductos2 				= data.objGridView;
+		var  objListaProductos2 		= JSON.stringify(objListaProductos2);	
+		
+		var total 					= objListaProductos2.length ;
+		var lng 					= parseInt(objListaProductos2.length / 7);
+		var init 					= 0;		
+		
+		localStorage.setItem("objListaProductos2_Parte1", objListaProductos2.substr(0,lng) );		
+		init 						= init + lng; 
+		localStorage.setItem("objListaProductos2_Parte2", objListaProductos2.substr(init,lng)  );		
+		init 						= init + lng;
+		localStorage.setItem("objListaProductos2_Parte3", objListaProductos2.substr(init,lng)  );		
+		init 						= init + lng;
+		localStorage.setItem("objListaProductos2_Parte4", objListaProductos2.substr(init,lng)  );		
+		init 						= init + lng;
+		localStorage.setItem("objListaProductos2_Parte5", objListaProductos2.substr(init,lng)  );		
+		init 						= init + lng;
+		localStorage.setItem("objListaProductos2_Parte6", objListaProductos2.substr(init,lng)  );		
+		init 						= init + lng;		
+		localStorage.setItem("objListaProductos2_Parte7", objListaProductos2.substr(init,total-init)  );	
 	}
 
 	function fnFillListaProductos3(data){
+		
 		console.info("complete success data");
-		objListaProductos3 							= data.objGridView;
-		var objListaProductosStore3 				= localStorage.getItem("objListaProductos3");		
-		localStorage.setItem("objListaProductos3",JSON.stringify(objListaProductos3));		
+		objListaProductos3 				= data.objGridView;
+		var  objListaProductos3 		= JSON.stringify(objListaProductos3);	
+		
+		var total 					= objListaProductos3.length ;
+		var lng 					= parseInt(objListaProductos3.length / 7);
+		var init 					= 0;		
+		
+		localStorage.setItem("objListaProductos3_Parte1", objListaProductos3.substr(0,lng) );		
+		init 						= init + lng; 
+		localStorage.setItem("objListaProductos3_Parte2", objListaProductos3.substr(init,lng)  );		
+		init 						= init + lng;
+		localStorage.setItem("objListaProductos3_Parte3", objListaProductos3.substr(init,lng)  );		
+		init 						= init + lng;
+		localStorage.setItem("objListaProductos3_Parte4", objListaProductos3.substr(init,lng)  );		
+		init 						= init + lng;
+		localStorage.setItem("objListaProductos3_Parte5", objListaProductos3.substr(init,lng)  );		
+		init 						= init + lng;
+		localStorage.setItem("objListaProductos3_Parte6", objListaProductos3.substr(init,lng)  );		
+		init 						= init + lng;		
+		localStorage.setItem("objListaProductos3_Parte7", objListaProductos3.substr(init,total-init)  );	
+		
+		
 	}
 	
 	function fnFillListaProductosSku(data)
 	{		
 		console.info("complete success data");
-		objListaProductosSku					= data.objGridView;
-		var objListaProductosStoreSku 			= localStorage.getItem("objListaProductosSku");		
-		localStorage.setItem("objListaProductosSku",JSON.stringify(objListaProductosSku));
+		objListaProductosSku 				= data.objGridView;
+		var  objListaProductosSku 			= JSON.stringify(objListaProductosSku);	
+		
+		var total 					= objListaProductosSku.length ;
+		var lng 					= parseInt(objListaProductosSku.length / 7);
+		var init 					= 0;		
+		
+		localStorage.setItem("objListaProductosSku_Parte1", objListaProductosSku.substr(0,lng) );		
+		init 						= init + lng; 
+		localStorage.setItem("objListaProductosSku_Parte2", objListaProductosSku.substr(init,lng)  );		
+		init 						= init + lng; 
+		localStorage.setItem("objListaProductosSku_Parte3", objListaProductosSku.substr(init,lng)  );		
+		init 						= init + lng; 
+		localStorage.setItem("objListaProductosSku_Parte4", objListaProductosSku.substr(init,lng)  );		
+		init 						= init + lng; 
+		localStorage.setItem("objListaProductosSku_Parte5", objListaProductosSku.substr(init,lng)  );		
+		init 						= init + lng; 
+		localStorage.setItem("objListaProductosSku_Parte6", objListaProductosSku.substr(init,lng)  );		
+		init 						= init + lng; 
+		localStorage.setItem("objListaProductosSku_Parte7", objListaProductosSku.substr(init,total-init)  );	
 	
 	}
 	
 	
 	function fnFillListaItemConcept(data)
 	{		
+		
 		console.info("complete success data");
-		objListaItemConcept						= data.objGridView;
-		var objListaStoreItemConcept 			= localStorage.getItem("objListaItemConcept");		
-		localStorage.setItem("objListaItemConcept",JSON.stringify(objListaItemConcept));
+		objListaItemConcept 				= data.objGridView;
+		var  objListaItemConcept 			= JSON.stringify(objListaItemConcept);	
+		
+		var total 					= objListaItemConcept.length ;
+		var lng 					= parseInt(objListaItemConcept.length / 7);
+		var init 					= 0;		
+		
+		localStorage.setItem("objListaItemConcept_Parte1", objListaItemConcept.substr(0,lng) );		
+		init 						= init + lng; 
+		localStorage.setItem("objListaItemConcept_Parte2", objListaItemConcept.substr(init,lng)  );		
+		init 						= init + lng;
+		localStorage.setItem("objListaItemConcept_Parte3", objListaItemConcept.substr(init,lng)  );		
+		init 						= init + lng;
+		localStorage.setItem("objListaItemConcept_Parte4", objListaItemConcept.substr(init,lng)  );		
+		init 						= init + lng;
+		localStorage.setItem("objListaItemConcept_Parte5", objListaItemConcept.substr(init,lng)  );		
+		init 						= init + lng;
+		localStorage.setItem("objListaItemConcept_Parte6", objListaItemConcept.substr(init,lng)  );		
+		init 						= init + lng;		
+		localStorage.setItem("objListaItemConcept_Parte7", objListaItemConcept.substr(init,total-init)  );	
+		
 	
 	}
 	
 	function fnFillListaCreditLine(data)
 	{		
+		
+		
 		console.info("complete success data");
-		objListaCustomerCreditLine					= data;
-		var objListaStoreCustomerCreditLine 		= localStorage.getItem("objListaCustomerCreditLine");		
-		localStorage.setItem("objListaCustomerCreditLine",JSON.stringify(objListaCustomerCreditLine));
+		objListaCustomerCreditLine 				= data;
+		var  objListaCustomerCreditLine 			= JSON.stringify(objListaCustomerCreditLine);	
+		
+		var total 					= objListaCustomerCreditLine.length ;
+		var lng 					= parseInt(objListaCustomerCreditLine.length / 7);
+		var init 					= 0;		
+		
+		localStorage.setItem("objListaCustomerCreditLine_Parte1", objListaCustomerCreditLine.substr(0,lng) );		
+		init 						= init + lng; 
+		localStorage.setItem("objListaCustomerCreditLine_Parte2", objListaCustomerCreditLine.substr(init,lng)  );		
+		init 						= init + lng; 
+		localStorage.setItem("objListaCustomerCreditLine_Parte3", objListaCustomerCreditLine.substr(init,lng)  );		
+		init 						= init + lng; 
+		localStorage.setItem("objListaCustomerCreditLine_Parte4", objListaCustomerCreditLine.substr(init,lng)  );		
+		init 						= init + lng; 
+		localStorage.setItem("objListaCustomerCreditLine_Parte5", objListaCustomerCreditLine.substr(init,lng)  );		
+		init 						= init + lng; 
+		localStorage.setItem("objListaCustomerCreditLine_Parte6", objListaCustomerCreditLine.substr(init,lng)  );		
+		init 						= init + lng; 
+		localStorage.setItem("objListaCustomerCreditLine_Parte7", objListaCustomerCreditLine.substr(init,total-init)  );	
+		
 	
 	}
 	
