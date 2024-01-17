@@ -560,7 +560,7 @@ class app_purchase_pedidos extends _BaseController {
 			exit($ex->getMessage());
 		}
 	}	
-	
+
 	function viewPrinterFormatoA4(){
 		try{ 
 			//AUTENTICADO
@@ -597,7 +597,9 @@ class app_purchase_pedidos extends _BaseController {
 			//Get Company
 			$objCompany 			= $this->Company_Model->get_rowByPK($companyID);	
 			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);			
+			
 			//Get Documento				
+
 			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);			
 			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
