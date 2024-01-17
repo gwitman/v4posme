@@ -391,6 +391,8 @@ $routes->match(['get','post'],'app_cxp_expenses/edit','app_cxp_expenses::edit');
 $routes->match(['get','post'],'app_cxp_expenses/edit/(:any)','app_cxp_expenses::edit');
 $routes->match(['get','post'],'app_cxp_expenses/delete','app_cxp_expenses::delete');
 $routes->match(['get','post'],'app_cxp_expenses/delete/(:any)','app_cxp_expenses::delete');
+$routes->match(['get','post'],'app_cxp_expenses/viewPrinterFormatoA4','app_cxp_expenses::viewPrinterFormatoA4');
+$routes->match(['get','post'],'app_cxp_expenses/viewPrinterFormatoA4/(:any)','app_cxp_expenses::viewPrinterFormatoA4');
 $routes->match(['get','post'],'app_med_query/edit','app_med_query::edit');
 $routes->match(['get','post'],'app_med_query/edit/(:any)','app_med_query::edit');
 $routes->match(['get','post'],'app_med_query/delete','app_med_query::delete');

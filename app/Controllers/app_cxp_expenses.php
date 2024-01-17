@@ -3,7 +3,6 @@
 namespace App\Controllers;
 class app_cxp_expenses extends _BaseController {
 	
-    
     function edit(){ 
 		 try{ 
 			//AUTENTICADO
@@ -49,10 +48,6 @@ class app_cxp_expenses extends _BaseController {
 			} 		
 			
 			
-		
-		
-		
-			
 			//Componente de facturacion
 			$objComponentTransactionShare	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_accounting_expenses");
 			if(!$objComponentTransactionShare)
@@ -81,10 +76,9 @@ class app_cxp_expenses extends _BaseController {
 			$dataView["objListCatalogoTipoGastos"]				= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_accounting_expenses","priorityID",$companyID);//--Tipo de Gastos			
 			$dataView["objListCatalogoCategoriaGastos"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_accounting_expenses","areaID",$companyID);//--Categoria de Gastos
 			
-			$objParameterUrlPrinter 				= $this->core_web_parameter->getParameter("BOX_INPUTCASH_URL_PRINTER",$companyID);
+			$objParameterUrlPrinter 				= $this->core_web_parameter->getParameter("CXP_URL_PRINTER_GASTO",$companyID);
 			$objParameterUrlPrinter 				= $objParameterUrlPrinter->value;
 			$dataView["objParameterUrlPrinter"]	 	= $objParameterUrlPrinter;
-			
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -559,6 +553,105 @@ class app_cxp_expenses extends _BaseController {
 			exit($ex->getMessage());
 		}
 	}	
+
+	function viewPrinterFormatoA4(){
+		try{ 
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+						$permited = false;
+						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						
+						if(!$permited)
+						throw new \Exception(NOT_ACCESS_CONTROL);
+						
+							
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						if ($resultPermission 	== PERMISSION_NONE)
+						throw new \Exception(NOT_ALL_EDIT);		
+			}	 
+			
+			
+			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri			
+			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri				
+			$companyID 					= $dataSession["user"]->companyID;		
+			$branchID 					= $dataSession["user"]->branchID;		
+			$roleID 					= $dataSession["role"]->roleID;		
+			$employeeID					= $dataSession["user"]->employeeID;		
+			
+			//Get Component
+			$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			//Get Logo
+			$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			//Get Company
+			$objCompany 			= $this->Company_Model->get_rowByPK($companyID);	
+			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);			
+			//Get Documento				
+			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);			
+			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
+			$datView["objTC"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$datView["objTM"]->transactionCausalID);
+			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
+			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_accounting_expenses","statusID",$datView["objTM"]->statusID,$companyID,$datView["objTM"]->branchID,APP_ROL_SUPERADMIN);
+			
+			
+			
+			//Generar Reporte
+			$html = helper_reporteA4mmTransactionMasterGastosGlobalPro(
+			    "TALLER",
+			    $objCompany,
+			    $objParameter,
+			    $datView["objTM"],
+			    $datView["tipoCambio"],
+			    $datView["objCurrency"],
+			    $datView["objTMI"],				
+			    $objParameterTelefono,				
+				$datView["objStage"][0]->display, /*estado*/
+				$datView["objTC"]->name /*causal*/
+			);
+			
+			$this->dompdf->loadHTML($html);
+			
+			
+			$this->dompdf->render();
+			
+			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+			
+			if($objParameterShowLinkDownload == "true")
+			{
+				$fileNamePut = "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
+				$path        = "./resource/file_company/company_".$companyID."/component_98/component_item_".$transactionMasterID."/".$fileNamePut;
+				
+				file_put_contents(
+					$path , 
+					$this->dompdf->output()
+				);								
+				
+				chmod($path, 644);
+				
+				echo "<a 
+					href='".base_url()."/resource/file_company/company_".$companyID."/component_98/component_item_".$transactionMasterID."/".
+					$fileNamePut."'>download compra</a>
+				"; 				
+
+			}
+			else{			
+				//visualizar
+				$this->dompdf->stream("file.pdf ", ['Attachment' =>  true ]);
+			}
+			
+			
+		}
+		catch(\Exception $ex){
+			exit($ex->getMessage());
+		}
+	}
 	function searchTransactionMaster(){
 		try{ 
 			//AUTENTICADO
