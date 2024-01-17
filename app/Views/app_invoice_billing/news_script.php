@@ -2425,7 +2425,7 @@
 		}catch(exception){}
 	}
 	
-		
+		 
 	
 	openDataBaseAndCreate();	
 	$(document).ready(function(){
