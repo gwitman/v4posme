@@ -13,7 +13,7 @@ class app_invoice_billing extends _BaseController {
 			throw new \Exception(USER_NOT_AUTENTICATED);
 			$dataSession		= $this->session->get();
 			
-			//PERMISO SOBRE LA FUNCTION
+			//PERMISO SOBRE LA FUNCTION  aa
 			if(APP_NEED_AUTHENTICATION == true){
 						$permited = false;
 						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
