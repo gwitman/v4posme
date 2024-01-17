@@ -59,6 +59,24 @@ class Item_Sku_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
    }
+   
+   function get_rowByTransactionMasterID($companyID,$transactionMasterID)
+   {
+		$db 		= db_connect();
+		$builder	= $db->table("tb_item_sku");
+		$sql = "";
+		$sql = sprintf("select i.skuID, i.itemID,i.catalogItemID,i.value as Valor ,w.display as Sku ");
+		$sql = $sql.sprintf(" from tb_transaction_master tm ");
+		$sql = $sql.sprintf(" inner join tb_transaction_master_detail tmd on tm.transactionMasterID = tmd.transactionMasterID ");
+		$sql = $sql.sprintf(" inner join  tb_item_sku i on i.itemID = tmd.componentItemID ");
+		$sql = $sql.sprintf(" inner join  tb_catalog_item w on i.catalogItemID = w.catalogItemID");		
+		$sql = $sql.sprintf(" where tm.transactionMasterID = $transactionMasterID");		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+   
+   
   
 }
 ?>

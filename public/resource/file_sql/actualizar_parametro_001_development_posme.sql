@@ -17,7 +17,12 @@ WHERE
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CXC_VALIDAR_CEDULA_REPETIDA";	## Parametro para validar si se repite una cedula o no.
 	
-
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_MUCHOS_PRODUCTOS";	## Parametro que define si la tienea tiene muchos productos y no es viable mostrala en un combobox
+	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "" 

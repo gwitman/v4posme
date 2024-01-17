@@ -2405,7 +2405,6 @@
 			try
 			{
 				objListaCustomerCreditLine = JSON.parse( request.result[0].name );
-				fnDataReady();
 			}
 			catch(ex)
 			{
@@ -2429,397 +2428,391 @@
 		
 	
 	openDataBaseAndCreate();	
+	$(document).ready(function(){
 	
+		 $('#txtDate').datepicker({format:"yyyy-mm-dd"});
+		 $('#txtDate').val(moment().format("YYYY-MM-DD"));	
+		 $("#txtDate").datepicker("update");
+		 $('#txtNextVisit').datepicker({format:"yyyy-mm-dd"});
+		 $('#txtDateFirst').datepicker({format:"yyyy-mm-dd"});						 
+		 $('#txtDateFirst').val(moment().add('days', 0).format("YYYY-MM-DD"));			 
+		 $("#txtDateFirst").datepicker("update");
+		 heigthTop							= 300;
+		 
+		 
 	
-	function fnDataReady()
-	{
+		 
+		 //Incializar Focos en el codigo de barra
+		if(varParameterScanerProducto != "false")
+		{
+			document.getElementById("txtScanerCodigo").focus();			
+		}
 		
-		$(document).ready(function(){	
 		
-				 $('#txtDate').datepicker({format:"yyyy-mm-dd"});
-				 $('#txtDate').val(moment().format("YYYY-MM-DD"));	
-				 $("#txtDate").datepicker("update");
-				 $('#txtNextVisit').datepicker({format:"yyyy-mm-dd"});
-				 $('#txtDateFirst').datepicker({format:"yyyy-mm-dd"});						 
-				 $('#txtDateFirst').val(moment().add('days', 0).format("YYYY-MM-DD"));			 
-				 $("#txtDateFirst").datepicker("update");
-				 heigthTop							= 300;
-				 
-				 
-			
-				 
-				 //Incializar Focos en el codigo de barra
-				if(varParameterScanerProducto != "false")
-				{
-					document.getElementById("txtScanerCodigo").focus();			
-				}
-				
-				
-				
-				
-				if(varParameterScrollDelModalDeSeleccionProducto == "true"){
-					$("#modal_body_popup_productos").css("overflow","auto");
-					$("#modal_body_popup_productos").css("height",varParameterAlturaDelModalDeSeleccionProducto);
-				}
-				
-				
-				if (varAutoAPlicar == "true" || varParameterRegresarAListaDespuesDeGuardar == "true")
-				{
-					$( "#form-new-invoice" ).submit(function(e){
-							  
-							  e.preventDefault(e);
+		
+		
+		if(varParameterScrollDelModalDeSeleccionProducto == "true"){
+			$("#modal_body_popup_productos").css("overflow","auto");
+			$("#modal_body_popup_productos").css("height",varParameterAlturaDelModalDeSeleccionProducto);
+		}
+		
+		
+		if (varAutoAPlicar == "true" || varParameterRegresarAListaDespuesDeGuardar == "true")
+		{
+			$( "#form-new-invoice" ).submit(function(e){
+					  
+					  e.preventDefault(e);
 
-							  var formData = new FormData(this);
+					  var formData = new FormData(this);
 
-							  //Mandar la factura
-							  //Interna mente, se se guarda y se imprimie
-							  $.ajax({
-									async: 		true,
-									type: 		$( "#form-new-invoice" ).attr('method'),
-									url: 		$( "#form-new-invoice" ).attr('action'),
-									data: 		formData,
-									cache: 		false,
-									processData:false,
-									contentType:false,				  
-									success: 	function (data) {
-									  console.log("success form data")
-									},
-									error: 		function(request, status, error) {
-									  console.log("error form data")
-									}
-							  });
-							  
-							  
-							  //Mandar abrir la caja de efectivo
-							  $.ajax({
-									async: 		true,
-									type: 		"GET",
-									url: 		"<?php echo base_url(); ?>/app_invoice_billing/viewPrinterOpen",
-									data: 		formData,
-									cache: 		false,
-									processData:false,
-									contentType:false,				  
-									success: 	function (data) {
-									  console.log("success form data")
-									},
-									error: 		function(request, status, error) {
-									  console.log("error form data")
-									}
-							  });
-							  
-							  if(varParameterRegresarAListaDespuesDeGuardar == "true"){
-								window.location	= "<?php echo base_url(); ?>/app_invoice_billing/index";
-							  }
-							  if(varParameterRegresarAListaDespuesDeGuardar != "true"){
-								window.location	= "<?php echo base_url(); ?>/app_invoice_billing/add";
-							  }
-							  
-							  fnWaitClose();
-					});
-				}
-				
-				
-				
-				
-			
-				objTableDetail = $("#tb_transaction_master_detail").dataTable({
-					"bPaginate"		: false,
-					"bFilter"		: false,
-					"bSort"			: false,
-					"bInfo"			: false,
-					"bAutoWidth"	: false,
-					"aoColumnDefs": [ 
-								{
-									"aTargets"		: [ 0 ],//checked
-									"sWidth"		: "50px",
-									"mRender"		: function ( data, type, full ) {
-										if (data == false)
-										return '<input type="checkbox"  class="classCheckedDetail"  value="0" ></span>';
-										else
-										return '<input type="checkbox"  class="classCheckedDetail" checked="checked" value="0" ></span>';
-									}
-								},
-								{
-									"aTargets"		: [ 1 ],//transactionMasterDetailID
-									"bVisible"  	: true,
-									"sClass" 		: "hidden",
-									"bSearchable"	: false,
-									"mRender"		: function ( data, type, full ) {
-										return '<input type="hidden" value="'+data+'" name="txtTransactionMasterDetailID[]" />';
-									}
-								},
-								{
-									"aTargets"		: [ 2 ],//itemID
-									"bVisible"		: true,
-									"sClass" 		: "hidden",
-									"bSearchable"	: false,
-									"mRender"		: function ( data, type, full ) {
-										return '<input type="hidden" value="'+data+'" name="txtItemID[]" />';
-									}
-								},
-								{
-									"aTargets"		: [ 3 ],//itemNumber
-									"sWidth"		: "250px",
-									"mRender"		: function ( data, type, full ) {
-										return '<input type="text"  class="col-lg-12" style="text-align:left" value="'+data+'" readonly="true" />';
-									}
-								},
-								{
-									"aTargets"		: [ 4 ],//descripcion
-									"sWidth"		: "250px",
-									"mRender"		: function ( data, type, full ) 
-									{
-									
-										
-										//dataResponse[0] = data[0];
-										//dataResponse[1] = data[0];
-										//dataResponse[2] = data[0];
-										//dataResponse[3] = data[0];
-										//dataResponse[4] = data[0];
-										//dataResponse[5] = data[0]; //itemID
-										//dataResponse[6] = data[0];
-										//dataResponse[7] = data[0];
-										//dataResponse[8] = data[0];
-										//dataResponse[9] = data[0];
-										//dataResponse[10] = data[0];
-										//dataResponse[11] = data[0];
-										//dataResponse[12] = data[0];
-										//dataResponse[13] = data[0];
-										//dataResponse[14] = data[0];
-										//dataResponse[15] = data[0];
-										//dataResponse[16] = data[0];
-										//dataResponse[17] = data[1];//Codigo
-										//dataResponse[18] = data[2];//Nombre
-										//dataResponse[19] = data[0];
-										//dataResponse[20] = data[3];//Unidad de medida
-										//dataResponse[21] = data[4];//Cantidad
-										//dataResponse[22] = data[5];//Precio
-										//dataResponse[23] = data[6];//Barra 
-										//dataResponse[24] = data[7];//Descripcion
-										//dataResponse[25] = data[0];
-										//dataResponse[26] = data[0];	
-										
-										
-										var classHiddenTex 		= "";
-										var classHiddenSelect 	= "";
-										if(varParameterINVOICE_BILLING_SELECTITEM == "true")									
-										{
-											classHiddenTex = "hidden";
-											classHiddenSelect 	= "";
-										}
-										else 
-										{
-											classHiddenTex = "";
-											classHiddenSelect 	= "hidden";
-										}	
-										
-										
-										var strFiled 		= '<input type="text" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"  class="col-lg-12 '+classHiddenTex+'" style="text-align:left" value="'+data+'" '+NameStatus+' />';
-										
-										var productos 		= fnGetProductosFilterd();
-										var strFiledSelecte = "<select  name='txtItemSelected' class='<?php echo ($useMobile == "1" ? "" : "select2"); ?> txtItemSelected "+classHiddenSelect+" ' >";
-										strFiledSelecte		= strFiledSelecte+"<option value='"+full[2]+"' selected data-itemid='"+full[2]+"' data-codigo='"+full[3]+"' data-name='"+full[4].replace("'","").replace("'","") +"' data-unidadmedida='"+full[5]+"' data-cantidad='"+full[6]+"' data-precio='"+full[7]+"' data-barra='"+full[3]+"'  data-description='"+full[4].replace("'","").replace("'","") + "'    >"+ full[4].replace("'","").replace("'","")  +"</option>";
-										for(var i = 0 ; i < productos.length; i++)
-										{
-											strFiledSelecte		= strFiledSelecte+"<option value='"+productos[i][0]+"' data-itemid='"+productos[i][0]+"' data-codigo='"+productos[i][1]+"'  data-name='"+ productos[i][2].replace("'","").replace("'","")  +"'   data-unidadmedida='"+productos[i][3]+"' data-cantidad='"+productos[i][4]+"' data-precio='"+productos[i][5]+"' data-barra='"+productos[i][6]+"'  data-description='"+productos[i][7]+"'    >"+ productos[i][2].replace("'","").replace("'","")  +"</option>";
-										}
-										strFiledSelecte		= strFiledSelecte+"</select>";
-										
-										
-										strFiledSelecte 	=  strFiled + strFiledSelecte ;
-										return strFiledSelecte;
-										
-										
-									}
-								},
-								{
-									"aTargets"		: [ 5 ],//Sku
-									"sWidth"		: "250px",
-									"mRender"		: function ( data, type, full ) {
-										
-										var objListaSkuByProducto 	= jLinq.from(objListaProductosSku).where(function(obj){ return obj.itemID == full[2]; }).select();
-										var sel 					= '';
-										var espacio					=  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";								
-										sel 						= '<select name="txtSku[]" id="txtSku'+full[2]+'" class="txtSku col-lg-12"  >';									
-										
-										if(varUseMobile == "1")
-											espacio = "";		
-										
-										if(objListaSkuByProducto.length == 0)
-										{
-											sel = sel + '<option value="0" data-skuv="1" data-skupriceunitary="'+full[7]+'"   selected style="font-size:200%" data-description="UNIDAD" >UNIDAD'+espacio+'</option>';
-										}
-										else{
-											for(var ix = 0 ; ix < objListaSkuByProducto.length ; ix++)
-											{
-												if(objListaSkuByProducto[ix].catalogItemID == data)
-													sel = sel + '<option value="'+objListaSkuByProducto[ix].catalogItemID+'" data-skuv="'+objListaSkuByProducto[ix].Valor+'" data-skupriceunitary="'+full[7]+'"  style="font-size:200%" selected data-description="'+objListaSkuByProducto[ix].Sku+'" >'+objListaSkuByProducto[ix].Sku+espacio+'</option>';
-												else
-													sel = sel + '<option value="'+objListaSkuByProducto[ix].catalogItemID+'" data-skuv="'+objListaSkuByProducto[ix].Valor+'" data-skupriceunitary="'+full[7]+'"  style="font-size:200%"  data-description="'+objListaSkuByProducto[ix].Sku+'"  >'+objListaSkuByProducto[ix].Sku+espacio+'</option>';
-											}																				
-										}
-										
-										sel = sel + '</select>';					
-										return sel;
-												
-									}
-								},
-								{
-									"aTargets"		: [ 6 ],//Cantidad
-									"sWidth"		: "250px",
-									"mRender"		: function ( data, type, full ) {
-										var str =  '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right" /> ';
-										
-										if (varUseMobile == "1")
-										str = str + " <span class='badge badge-inverse' >Cantidad</span>";
-								
-										return str;
-									}
-								},
-								{
-									"aTargets"		: [ 7 ],//Precio
-									"sWidth"		: "250px",
-									"mRender"		: function ( data, type, full ) {
-										var str =  '<input type="text" class="col-lg-12 txtPrice txt-numeric"   id="txtPriceRow'+full[2]+'"   '+PriceStatus+'  value="'+data+'" name="txtPrice[]" style="text-align:right" />';
-										if (varUseMobile == "1")
-										str = str + " <span class='badge badge-inverse' >Precio</span>";
-										return str;
-									}
-								},
-								{
-									"aTargets"		: [ 8 ],//Total
-									"sWidth"		: "250px",
-									"mRender"		: function ( data, type, full ) {
-										var str = '<input type="text" class="col-lg-12 txtSubTotal" readonly value="'+data+'" name="txtSubTotal[]" style="text-align:right" />';
-										if (varUseMobile == "1")
-										str = str + " <span class='badge badge-inverse' >Total</span>";
-										return str;
-									}
-								},
-								{
-									"aTargets"		: [ 9 ],//Iva
-									"bVisible"		: true,
-									"sClass"		: "hidden",
-									"bSearchable"	: false,
-									"mRender"		: function ( data, type, full ) {
-										return '<input type="text" class="col-lg-12 txtIva" value="'+data+'" name="txtIva[]" style="text-align:right" />';
-									}
-								},
-								{
-									"aTargets"		: [ 10 ],//skuQuantityBySku
-									"bVisible"		: true,
-									"sClass"		: "hidden",
-									"bSearchable"	: false,
-									"mRender"		: function ( data, type, full ) {
-										return '<input type="text" class="col-lg-12 skuQuantityBySku" value="'+data+'" name="skuQuantityBySku[]" style="text-align:right" />';
-									}
-								},
-								{
-									"aTargets"		: [ 11 ],//unitaryPriceInvidual
-									"bVisible"		: true,
-									"sClass"		: "hidden",
-									"bSearchable"	: false,
-									"mRender"		: function ( data, type, full ) {
-										return '<input type="text" class="col-lg-12 unitaryPriceInvidual" value="'+data+'" name="unitaryPriceInvidual[]" style="text-align:right" />';
-									}
-								},
-								{
-									"aTargets"		: [ 12 ],//PlusDimus	
-									"sWidth"		: "250px",							
-									"mRender"		: function ( data, type, full ) {														
-										//publico
-										var objProductoPrecio1 	= jLinq.from(objListaProductos).where(function(obj){ return obj.itemID == full[2]; }).select();
-										//por mayor
-										var objProductoPrecio2 	= jLinq.from(objListaProductos2).where(function(obj){ return obj.itemID == full[2]; }).select();
-										//credito
-										var objProductoPrecio3 	= jLinq.from(objListaProductos3).where(function(obj){ return obj.itemID == full[2]; }).select();
-										
-										//publico
-										objProductoPrecio1 = objProductoPrecio1[0].Precio;
-										//por mayor
-										objProductoPrecio2 = objProductoPrecio2[0].Precio;
-										//credito
-										objProductoPrecio3 = objProductoPrecio3[0].Precio;
-										
-										//publico
-										objProductoPrecio1 = fnFormatFloat(objProductoPrecio1);
-										//por mayor
-										objProductoPrecio2 = fnFormatFloat(objProductoPrecio2);
-										//credito
-										objProductoPrecio3 = fnFormatFloat(objProductoPrecio3);
-										
-										var styleButtom = "";
-										if(varUseMobile == "1")
-										styleButtom = "style='text-align:right'";
-									
-										var str = "<div "+styleButtom+" >";
-										
-										if(varParameterINVOICE_BILLING_SELECTITEM == "true")
-										{
-											str    	= str + '' + 
-											'<button type="button" class="btn btn-warning btnAddSelectedItem"><span class="icon16 i-archive"></span> </button>';
-										}
-										
-										str    	= str + '' + 
-										'<button type="button" class="btn btn-primary btnMenus"><span class="icon16 i-minus"></span> </button>';
-										
-										str    	= str + '' + 
-										'<button type="button" class="btn btn-primary btnPlus"><span class="icon16 i-plus"></span> </button>';
-										
-										
-										
-										
-										str		= str+'<div class="btn-group">';
-												str = 	str+'<button type="button" class="btn btn-success dropdown-toggle  " data-toggle="dropdown"><i class="icon16 i-bookmark"></i>  <span class="caret"></span> </button>';
-												str =	str+'<ul class="dropdown-menu">';
-													//publico											
-													if( (objProductoPrecio1 > 0 && varPermisosEsPermitidoSeleccionarPrecioPublico == true  )   || isAdmin == "1" )
-														str = str+'<li><a href="#" data-precio="'+objProductoPrecio1+'" class="btnPrecioRecomendado" >'+varCurrencyDefaultSimbol+" "+$.number(objProductoPrecio1,2)+'</a></li>';
-													
-													//por mayor
-													if( ( objProductoPrecio2 > 0 && fnValidateSiAplicaPrecioPublico() && varPermisosEsPermitidoSeleccionarPrecioPormayor == true  ) || isAdmin == "1" ) 
-														str = str+'<li><a href="#" data-precio="'+objProductoPrecio2+'" class="btnPrecioRecomendado" >'+varCurrencyDefaultSimbol+" "+$.number(objProductoPrecio2,2)+'</a></li>';
-													
-													//credito 
-													if( (objProductoPrecio3 > 0 && varPermisosEsPermitidoSeleccionarPrecioCredito == true ) || isAdmin == "1"   )
-														str = str+'<li><a href="#" data-precio="'+objProductoPrecio3+'" class="btnPrecioRecomendado"  >'+varCurrencyDefaultSimbol+" "+$.number(objProductoPrecio3,2)+'</a></li>';
-													
-												str = 	str+'</ul>';
-										str		= str+'</div>';
-										str		= str+'</div>';
-										
-										
-										return str;
-									}
-								},
-								{
-									"aTargets"		: [ 13 ],//skuFormatoDescription
-									"bVisible"		: true,
-									"sClass"		: "hidden",
-									"bSearchable"	: false,
-									"mRender"		: function ( data, type, full ) {
-										return '<input type="text" class="col-lg-12 skuFormatoDescription" value="'+data+'" name="skuFormatoDescription[]" style="text-align:right" />';
-									}
-									//,
-									//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
-									//{
-									//	  $(td).css("display","block");
-									//}
-								}
-
-					]							
-				});
-				
-				
-				//Renderizar combobox de las lineas de credito			
-				fnRenderLineaCredit(objListCustomerCreditLine,objCausalTypeCredit);	
-
-				
+					  //Mandar la factura
+					  //Interna mente, se se guarda y se imprimie
+					  $.ajax({
+							async: 		true,
+							type: 		$( "#form-new-invoice" ).attr('method'),
+							url: 		$( "#form-new-invoice" ).attr('action'),
+							data: 		formData,
+							cache: 		false,
+							processData:false,
+							contentType:false,				  
+							success: 	function (data) {
+							  console.log("success form data")
+							},
+							error: 		function(request, status, error) {
+							  console.log("error form data")
+							}
+					  });
+					  
+					  
+					  //Mandar abrir la caja de efectivo
+					  $.ajax({
+							async: 		true,
+							type: 		"GET",
+							url: 		"<?php echo base_url(); ?>/app_invoice_billing/viewPrinterOpen",
+							data: 		formData,
+							cache: 		false,
+							processData:false,
+							contentType:false,				  
+							success: 	function (data) {
+							  console.log("success form data")
+							},
+							error: 		function(request, status, error) {
+							  console.log("error form data")
+							}
+					  });
+					  
+					  if(varParameterRegresarAListaDespuesDeGuardar == "true"){
+						window.location	= "<?php echo base_url(); ?>/app_invoice_billing/index";
+					  }
+					  if(varParameterRegresarAListaDespuesDeGuardar != "true"){
+						window.location	= "<?php echo base_url(); ?>/app_invoice_billing/add";
+					  }
+					  
+					  fnWaitClose();
 			});
+		}
+		
+		
+		
+		
+	
+		objTableDetail = $("#tb_transaction_master_detail").dataTable({
+			"bPaginate"		: false,
+			"bFilter"		: false,
+			"bSort"			: false,
+			"bInfo"			: false,
+			"bAutoWidth"	: false,
+			"aoColumnDefs": [ 
+						{
+							"aTargets"		: [ 0 ],//checked
+							"sWidth"		: "50px",
+							"mRender"		: function ( data, type, full ) {
+								if (data == false)
+								return '<input type="checkbox"  class="classCheckedDetail"  value="0" ></span>';
+								else
+								return '<input type="checkbox"  class="classCheckedDetail" checked="checked" value="0" ></span>';
+							}
+						},
+						{
+							"aTargets"		: [ 1 ],//transactionMasterDetailID
+							"bVisible"  	: true,
+							"sClass" 		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="hidden" value="'+data+'" name="txtTransactionMasterDetailID[]" />';
+							}
+						},
+						{
+							"aTargets"		: [ 2 ],//itemID
+							"bVisible"		: true,
+							"sClass" 		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="hidden" value="'+data+'" name="txtItemID[]" />';
+							}
+						},
+						{
+							"aTargets"		: [ 3 ],//itemNumber
+							"sWidth"		: "250px",
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text"  class="col-lg-12" style="text-align:left" value="'+data+'" readonly="true" />';
+							}
+						},
+						{
+							"aTargets"		: [ 4 ],//descripcion
+							"sWidth"		: "250px",
+							"mRender"		: function ( data, type, full ) 
+							{
+							
+								
+								//dataResponse[0] = data[0];
+								//dataResponse[1] = data[0];
+								//dataResponse[2] = data[0];
+								//dataResponse[3] = data[0];
+								//dataResponse[4] = data[0];
+								//dataResponse[5] = data[0]; //itemID
+								//dataResponse[6] = data[0];
+								//dataResponse[7] = data[0];
+								//dataResponse[8] = data[0];
+								//dataResponse[9] = data[0];
+								//dataResponse[10] = data[0];
+								//dataResponse[11] = data[0];
+								//dataResponse[12] = data[0];
+								//dataResponse[13] = data[0];
+								//dataResponse[14] = data[0];
+								//dataResponse[15] = data[0];
+								//dataResponse[16] = data[0];
+								//dataResponse[17] = data[1];//Codigo
+								//dataResponse[18] = data[2];//Nombre
+								//dataResponse[19] = data[0];
+								//dataResponse[20] = data[3];//Unidad de medida
+								//dataResponse[21] = data[4];//Cantidad
+								//dataResponse[22] = data[5];//Precio
+								//dataResponse[23] = data[6];//Barra 
+								//dataResponse[24] = data[7];//Descripcion
+								//dataResponse[25] = data[0];
+								//dataResponse[26] = data[0];	
+								
+								
+								var classHiddenTex 		= "";
+								var classHiddenSelect 	= "";
+								if(varParameterINVOICE_BILLING_SELECTITEM == "true")									
+								{
+									classHiddenTex = "hidden";
+									classHiddenSelect 	= "";
+								}
+								else 
+								{
+									classHiddenTex = "";
+									classHiddenSelect 	= "hidden";
+								}	
+								
+								
+								var strFiled 		= '<input type="text" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"  class="col-lg-12 '+classHiddenTex+'" style="text-align:left" value="'+data+'" '+NameStatus+' />';
+								
+								var productos 		= fnGetProductosFilterd();
+								var strFiledSelecte = "<select  name='txtItemSelected' class='<?php echo ($useMobile == "1" ? "" : "select2"); ?> txtItemSelected "+classHiddenSelect+" ' >";
+								strFiledSelecte		= strFiledSelecte+"<option value='"+full[2]+"' selected data-itemid='"+full[2]+"' data-codigo='"+full[3]+"' data-name='"+full[4].replace("'","").replace("'","") +"' data-unidadmedida='"+full[5]+"' data-cantidad='"+full[6]+"' data-precio='"+full[7]+"' data-barra='"+full[3]+"'  data-description='"+full[4].replace("'","").replace("'","") + "'    >"+ full[4].replace("'","").replace("'","")  +"</option>";
+								for(var i = 0 ; i < productos.length; i++)
+								{
+									strFiledSelecte		= strFiledSelecte+"<option value='"+productos[i][0]+"' data-itemid='"+productos[i][0]+"' data-codigo='"+productos[i][1]+"'  data-name='"+ productos[i][2].replace("'","").replace("'","")  +"'   data-unidadmedida='"+productos[i][3]+"' data-cantidad='"+productos[i][4]+"' data-precio='"+productos[i][5]+"' data-barra='"+productos[i][6]+"'  data-description='"+productos[i][7]+"'    >"+ productos[i][2].replace("'","").replace("'","")  +"</option>";
+								}
+								strFiledSelecte		= strFiledSelecte+"</select>";
+								
+								
+								strFiledSelecte 	=  strFiled + strFiledSelecte ;
+								return strFiledSelecte;
+								
+								
+							}
+						},
+						{
+							"aTargets"		: [ 5 ],//Sku
+							"sWidth"		: "250px",
+							"mRender"		: function ( data, type, full ) {
+								
+								var objListaSkuByProducto 	= jLinq.from(objListaProductosSku).where(function(obj){ return obj.itemID == full[2]; }).select();
+								var sel 					= '';
+								var espacio					=  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";								
+								sel 						= '<select name="txtSku[]" id="txtSku'+full[2]+'" class="txtSku col-lg-12"  >';									
+								
+								if(varUseMobile == "1")
+									espacio = "";		
+								
+								if(objListaSkuByProducto.length == 0)
+								{
+									sel = sel + '<option value="0" data-skuv="1" data-skupriceunitary="'+full[7]+'"   selected style="font-size:200%" data-description="UNIDAD" >UNIDAD'+espacio+'</option>';
+								}
+								else{
+									for(var ix = 0 ; ix < objListaSkuByProducto.length ; ix++)
+									{
+										if(objListaSkuByProducto[ix].catalogItemID == data)
+											sel = sel + '<option value="'+objListaSkuByProducto[ix].catalogItemID+'" data-skuv="'+objListaSkuByProducto[ix].Valor+'" data-skupriceunitary="'+full[7]+'"  style="font-size:200%" selected data-description="'+objListaSkuByProducto[ix].Sku+'" >'+objListaSkuByProducto[ix].Sku+espacio+'</option>';
+										else
+											sel = sel + '<option value="'+objListaSkuByProducto[ix].catalogItemID+'" data-skuv="'+objListaSkuByProducto[ix].Valor+'" data-skupriceunitary="'+full[7]+'"  style="font-size:200%"  data-description="'+objListaSkuByProducto[ix].Sku+'"  >'+objListaSkuByProducto[ix].Sku+espacio+'</option>';
+									}																				
+								}
+								
+								sel = sel + '</select>';					
+								return sel;
+										
+							}
+						},
+						{
+							"aTargets"		: [ 6 ],//Cantidad
+							"sWidth"		: "250px",
+							"mRender"		: function ( data, type, full ) {
+								var str =  '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right" /> ';
+								
+								if (varUseMobile == "1")
+								str = str + " <span class='badge badge-inverse' >Cantidad</span>";
+						
+								return str;
+							}
+						},
+						{
+							"aTargets"		: [ 7 ],//Precio
+							"sWidth"		: "250px",
+							"mRender"		: function ( data, type, full ) {
+								var str =  '<input type="text" class="col-lg-12 txtPrice txt-numeric"   id="txtPriceRow'+full[2]+'"   '+PriceStatus+'  value="'+data+'" name="txtPrice[]" style="text-align:right" />';
+								if (varUseMobile == "1")
+								str = str + " <span class='badge badge-inverse' >Precio</span>";
+								return str;
+							}
+						},
+						{
+							"aTargets"		: [ 8 ],//Total
+							"sWidth"		: "250px",
+							"mRender"		: function ( data, type, full ) {
+								var str = '<input type="text" class="col-lg-12 txtSubTotal" readonly value="'+data+'" name="txtSubTotal[]" style="text-align:right" />';
+								if (varUseMobile == "1")
+								str = str + " <span class='badge badge-inverse' >Total</span>";
+								return str;
+							}
+						},
+						{
+							"aTargets"		: [ 9 ],//Iva
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12 txtIva" value="'+data+'" name="txtIva[]" style="text-align:right" />';
+							}
+						},
+						{
+							"aTargets"		: [ 10 ],//skuQuantityBySku
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12 skuQuantityBySku" value="'+data+'" name="skuQuantityBySku[]" style="text-align:right" />';
+							}
+						},
+						{
+							"aTargets"		: [ 11 ],//unitaryPriceInvidual
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12 unitaryPriceInvidual" value="'+data+'" name="unitaryPriceInvidual[]" style="text-align:right" />';
+							}
+						},
+						{
+							"aTargets"		: [ 12 ],//PlusDimus	
+							"sWidth"		: "250px",							
+							"mRender"		: function ( data, type, full ) {														
+								//publico
+								var objProductoPrecio1 	= jLinq.from(objListaProductos).where(function(obj){ return obj.itemID == full[2]; }).select();
+								//por mayor
+								var objProductoPrecio2 	= jLinq.from(objListaProductos2).where(function(obj){ return obj.itemID == full[2]; }).select();
+								//credito
+								var objProductoPrecio3 	= jLinq.from(objListaProductos3).where(function(obj){ return obj.itemID == full[2]; }).select();
+								
+								//publico
+								objProductoPrecio1 = objProductoPrecio1[0].Precio;
+								//por mayor
+								objProductoPrecio2 = objProductoPrecio2[0].Precio;
+								//credito
+								objProductoPrecio3 = objProductoPrecio3[0].Precio;
+								
+								//publico
+								objProductoPrecio1 = fnFormatFloat(objProductoPrecio1);
+								//por mayor
+								objProductoPrecio2 = fnFormatFloat(objProductoPrecio2);
+								//credito
+								objProductoPrecio3 = fnFormatFloat(objProductoPrecio3);
+								
+								var styleButtom = "";
+								if(varUseMobile == "1")
+								styleButtom = "style='text-align:right'";
+							
+								var str = "<div "+styleButtom+" >";
+								
+								if(varParameterINVOICE_BILLING_SELECTITEM == "true")
+								{
+									str    	= str + '' + 
+									'<button type="button" class="btn btn-warning btnAddSelectedItem"><span class="icon16 i-archive"></span> </button>';
+								}
+								
+								str    	= str + '' + 
+								'<button type="button" class="btn btn-primary btnMenus"><span class="icon16 i-minus"></span> </button>';
+								
+								str    	= str + '' + 
+								'<button type="button" class="btn btn-primary btnPlus"><span class="icon16 i-plus"></span> </button>';
+								
+								
+								
+								
+								str		= str+'<div class="btn-group">';
+										str = 	str+'<button type="button" class="btn btn-success dropdown-toggle  " data-toggle="dropdown"><i class="icon16 i-bookmark"></i>  <span class="caret"></span> </button>';
+										str =	str+'<ul class="dropdown-menu">';
+											//publico											
+											if( (objProductoPrecio1 > 0 && varPermisosEsPermitidoSeleccionarPrecioPublico == true  )   || isAdmin == "1" )
+												str = str+'<li><a href="#" data-precio="'+objProductoPrecio1+'" class="btnPrecioRecomendado" >'+varCurrencyDefaultSimbol+" "+$.number(objProductoPrecio1,2)+'</a></li>';
+											
+											//por mayor
+											if( ( objProductoPrecio2 > 0 && fnValidateSiAplicaPrecioPublico() && varPermisosEsPermitidoSeleccionarPrecioPormayor == true  ) || isAdmin == "1" ) 
+												str = str+'<li><a href="#" data-precio="'+objProductoPrecio2+'" class="btnPrecioRecomendado" >'+varCurrencyDefaultSimbol+" "+$.number(objProductoPrecio2,2)+'</a></li>';
+											
+											//credito 
+											if( (objProductoPrecio3 > 0 && varPermisosEsPermitidoSeleccionarPrecioCredito == true ) || isAdmin == "1"   )
+												str = str+'<li><a href="#" data-precio="'+objProductoPrecio3+'" class="btnPrecioRecomendado"  >'+varCurrencyDefaultSimbol+" "+$.number(objProductoPrecio3,2)+'</a></li>';
+											
+										str = 	str+'</ul>';
+								str		= str+'</div>';
+								str		= str+'</div>';
+								
+								
+								return str;
+							}
+						},
+						{
+							"aTargets"		: [ 13 ],//skuFormatoDescription
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12 skuFormatoDescription" value="'+data+'" name="skuFormatoDescription[]" style="text-align:right" />';
+							}
+							//,
+							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//{
+							//	  $(td).css("display","block");
+							//}
+						}
+
+			]							
+		});
+		
+		
+		//Renderizar combobox de las lineas de credito			
+		fnRenderLineaCredit(objListCustomerCreditLine,objCausalTypeCredit);	
+
+		
+	});
 
 
 		
-	}
 		
 
 </script>

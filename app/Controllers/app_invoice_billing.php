@@ -143,6 +143,7 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterDetailWarehouse"]	= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterDetailConcept"]		= $this->Transaction_Master_Concept_Model->get_rowByTransactionMasterConcept($companyID,$transactionID,$transactionMasterID,$objComponentItem->componentID);
+			
 			$dataView["objTransactionMaster"]->transactionOn 	= date_format(date_create($dataView["objTransactionMaster"]->transactionOn),"Y-m-d");
 			$dataView["objTransactionMaster"]->transactionOn2 	= date_format(date_create($dataView["objTransactionMaster"]->transactionOn2),"Y-m-d");
 			$dataView["objTransactionMasterDetailCredit"]		= null;	
@@ -190,6 +191,7 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objListParameterJavaScript"]													= $this->core_web_parameter->getParameterAllToJavaScript($companyID);
 			$dataView["objParameterINVOICE_BILLING_SELECTITEM"]										= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_SELECTITEM",$companyID);
 			
+			
 			if(!$dataView["objCustomerDefault"])
 			throw new \Exception("NO EXISTE EL CLIENTE POR DEFECTO");
 			
@@ -220,6 +222,10 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objCurrencyCordoba"] 				=  $objCurrencyCordoba;
 			$dataView["objCustomerCreditAmoritizationAll"] 	=  $objCustomerCreditAmoritizationAll;
 			
+			//Obtener los datos de precio, sku y conceptos de la transaccoin
+			$dataView["objTransactionMasterItemPrice"]			= $this->Price_Model->get_rowByTransactionMasterID($companyID,$objListPrice->listPriceID, $dataView["objTransactionMaster"]->transactionMasterID );
+			$dataView["objTransactionMasterItemConcepto"]		= $this->Company_Component_Concept_Model->get_rowByTransactionMasterID($companyID,$objComponentItem->componentID, $dataView["objTransactionMaster"]->transactionMasterID );
+			$dataView["objTransactionMasterItemSku"]			= $this->Item_Sku_Model->get_rowByTransactionMasterID($companyID, $dataView["objTransactionMaster"]->transactionMasterID );
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);

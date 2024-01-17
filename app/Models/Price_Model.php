@@ -65,6 +65,21 @@ class Price_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
    }
+    function get_rowByTransactionMasterID($companyID,$listPriceID,$transactionMasterID){
+		$db 	= db_connect();
+		$builder	= $db->table("tb_price");    
+		$sql = "";
+		$sql = sprintf("select i.companyID,i.listPriceID,i.itemID,i.priceID,i.typePriceID,i.percentage,i.price,i.percentageCommision");
+		$sql = $sql.sprintf(" from tb_transaction_master tm ");		
+		$sql = $sql.sprintf(" inner join tb_transaction_master_detail  tmd on tm.transactionMasterID = tmd.transactionMasterID  ");	
+		$sql = $sql.sprintf(" inner join tb_price   i on tmd.componentItemID = i.itemID  ");	
+		$sql = $sql.sprintf(" where i.companyID = $companyID");
+		$sql = $sql.sprintf(" and i.listPriceID = $listPriceID and tm.transactionMasterID = $transactionMasterID  ");		
+		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
    function get_rowByItemIDAndAmount($companyID,$listPriceID,$itemID,$amount)
    {
 		$db 		= db_connect();

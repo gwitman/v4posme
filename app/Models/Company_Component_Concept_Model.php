@@ -53,6 +53,26 @@ class Company_Component_Concept_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
+   
+   
+   function get_rowByTransactionMasterID($companyID,$componentID,$transactionMasterID)
+   {
+	   $db 		= db_connect();
+		
+		
+		$sql = "";
+		$sql = sprintf("select td.companyID, td.componentID, td.componentItemID, td.name, td.valueIn, td.valueOut ");
+		$sql = $sql.sprintf(" from tb_transaction_master tm ");
+		$sql = $sql.sprintf(" inner join tb_transaction_master_detail tmd on  tm.transactionMasterID = tmd.transactionMasterID ");
+		$sql = $sql.sprintf(" inner join tb_company_component_concept td on td.componentItemID = tmd.componentItemID ");
+		$sql = $sql.sprintf(" where td.companyID = $companyID");
+		$sql = $sql.sprintf(" and td.componentID = $componentID");		
+		$sql = $sql.sprintf(" and tm.transactionMasterID = $transactionMasterID");		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+   
    function deleteWhereComponentItemID($companyID,$componentID,$componentItemID){
 		$db 		= db_connect();
 		$builder	= $db->table("tb_company_component_concept");
