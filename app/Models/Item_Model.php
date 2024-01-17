@@ -138,5 +138,35 @@ class Item_Model extends Model  {
 		
    		return $db->query($sql)->getRow()->counter;
    }
+   function get_rowByTransactionMasterID($transactionMasterID)
+   {
+		$db 		= db_connect();
+		$builder	= $db->table("tb_item");    
+		$sql = "";
+		$sql = sprintf("select 
+				i.companyID, 
+				i.branchID, 
+				i.inventoryCategoryID, 
+				i.itemID, i.familyID, i.itemNumber, i.barCode, i.name, i.description, i.unitMeasureID, 
+				i.displayID, i.capacity, i.displayUnitMeasureID, i.defaultWarehouseID, 
+				i.quantity, i.quantityMax, i.quantityMin, i.cost, i.reference1, 
+				i.reference2, i.statusID, i.isPerishable, i.factorBox, 
+				i.factorProgram, i.createdIn, i.createdAt, i.createdBy, 
+				i.createdOn, i.isActive,i.isInvoiceQuantityZero,
+				i.isServices,i.currencyID,i.isInvoice,i.reference3,
+				unit.name as unitMeasureName,
+				td.itemNameLog 
+			");
+		$sql = $sql.sprintf(" from tb_transaction_master tm ");		
+		$sql = $sql.sprintf(" inner join tb_transaction_master_detail td on  tm.transactionMasterID = td.transactionMasterID ");		
+		$sql = $sql.sprintf(" inner join tb_item i on td.componentItemID = i.itemID ");		
+		$sql = $sql.sprintf(" inner join tb_catalog_item unit on unit.catalogItemID  = i.unitMeasureID ");		
+		$sql = $sql.sprintf(" where ");
+		$sql = $sql.sprintf("   i.isActive= 1 and tm.transactionMasterID = $transactionMasterID ");		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+   
 }
 ?>

@@ -3,6 +3,15 @@
 /*****Personalizar pantalla**********/
 /******************************************************************/		
 
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_SHOW_IMAGE_IN_DETAIL_SELECTION";## Mostrar la imagen al momento de seleccionar el producto
+	
+	
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "Interes anual" 
 WHERE 

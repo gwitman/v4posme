@@ -88,6 +88,7 @@
 	var objTransactionMasterItemPrice 			= JSON.parse('<?php echo json_encode($objTransactionMasterItemPrice); ?>');
 	var objTransactionMasterItemConcepto 		= JSON.parse('<?php echo json_encode($objTransactionMasterItemConcepto); ?>');
 	var objTransactionMasterItemSku 			= JSON.parse('<?php echo json_encode($objTransactionMasterItemSku); ?>');
+	var objTransactionMasterItem 				= JSON.parse('<?php echo json_encode($objTransactionMasterItem); ?>');	
 	var objRenderInit							= true;
 	
 	
@@ -2947,7 +2948,7 @@
 								//dataResponse[24] = data[7];//Descripcion
 								//dataResponse[25] = data[0];
 								//dataResponse[26] = data[0];	
-								debugger;
+								
 								var classHiddenTex 		= "";
 								var classHiddenSelect 	= "";
 								if(varParameterINVOICE_BILLING_SELECTITEM == "true")									
@@ -2963,16 +2964,29 @@
 								
 								var  strFiledSelecte 	= "";
 								var  strFiled			= '<input type="text" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"   class="col-lg-12 '+classHiddenTex+' " style="text-align:left" value="'+data+'" '+PriceStatus+' />';
+								var strFiledSelecte 	= "<select name='txtItemSelected' class='<?php echo ($useMobile == "1" ? "" : "select2"); ?> txtItemSelected "+classHiddenSelect+"  ' >";
+								strFiledSelecte			= strFiledSelecte+"<option value='"+full[2]+"' selected data-itemid='"+full[2]+"' data-codigo='"+full[3]+"' data-name='"+full[4].replace("'","").replace("'","") +"' data-unidadmedida='"+full[5]+"' data-cantidad='"+full[6]+"' data-precio='"+full[7]+"' data-barra='"+full[3]+"'  data-description='"+full[4].replace("'","").replace("'","") + "'    >"+ full[4].replace("'","").replace("'","")  +"</option>";
 								
-								var productos 		= fnGetProductosFilterd();
-								var strFiledSelecte = "<select name='txtItemSelected' class='<?php echo ($useMobile == "1" ? "" : "select2"); ?> txtItemSelected "+classHiddenSelect+"  ' >";
-								strFiledSelecte		= strFiledSelecte+"<option value='"+full[2]+"' selected data-itemid='"+full[2]+"' data-codigo='"+full[3]+"' data-name='"+full[4].replace("'","").replace("'","") +"' data-unidadmedida='"+full[5]+"' data-cantidad='"+full[6]+"' data-precio='"+full[7]+"' data-barra='"+full[3]+"'  data-description='"+full[4].replace("'","").replace("'","") + "'    >"+ full[4].replace("'","").replace("'","")  +"</option>";
-								for(var i = 0 ; i < productos.length; i++)
-								{
-									strFiledSelecte		= strFiledSelecte+"<option value='"+productos[i][0]+"' data-itemid='"+productos[i][0]+"' data-codigo='"+productos[i][1]+"'  data-name='"+ productos[i][2].replace("'","").replace("'","")  +"'   data-unidadmedida='"+productos[i][3]+"' data-cantidad='"+productos[i][4]+"' data-precio='"+productos[i][5]+"' data-barra='"+productos[i][6]+"'  data-description='"+productos[i][7]+"'    >"+ productos[i][2].replace("'","").replace("'","")  +"</option>";
+								var productos;								
+								if(objListaProductos.length == undefined)
+								{									
+									productos 		= objTransactionMasterItem;
+									for(var i = 0 ; i < productos.length; i++)
+									{
+										strFiledSelecte		= strFiledSelecte+"<option value='"+productos[i].itemID+"' data-itemid='"+productos[i].itemID+"' data-codigo='"+productos[i].itemNumber+"'  data-name='"+ productos[i].name.replace("'","").replace("'","")  +"'   data-unidadmedida='"+productos[i].unitMeasureName+"' data-cantidad='"+productos[i].quantity+"' data-precio='0' data-barra='"+productos[i].barCode+"'  data-description='"+productos[i].itemNameLog+"'    >"+ productos[i].name.replace("'","").replace("'","")  +"</option>";
+									}
 								}
-								strFiledSelecte		= strFiledSelecte+"</select>";
+								else 
+								{
+									
+									productos 		= fnGetProductosFilterd();
+									for(var i = 0 ; i < productos.length; i++)
+									{
+										strFiledSelecte		= strFiledSelecte+"<option value='"+productos[i][0]+"' data-itemid='"+productos[i][0]+"' data-codigo='"+productos[i][1]+"'  data-name='"+ productos[i][2].replace("'","").replace("'","")  +"'   data-unidadmedida='"+productos[i][3]+"' data-cantidad='"+productos[i][4]+"' data-precio='"+productos[i][5]+"' data-barra='"+productos[i][6]+"'  data-description='"+productos[i][7]+"'    >"+ productos[i][2].replace("'","").replace("'","")  +"</option>";
+									}
+								}
 								
+								strFiledSelecte		= strFiledSelecte+"</select>";								
 								strFiledSelecte 	=  strFiled + strFiledSelecte ;								
 								return strFiledSelecte;
 								
@@ -2988,8 +3002,17 @@
 							"aTargets"		: [ 5 ],//Sku
 							"sWidth"		: "250px",
 							"mRender"		: function ( data, type, full ) {
-								debugger;
-								var objListaSkuByProducto 	= jLinq.from(objListaProductosSku).where(function(obj){ return obj.itemID == full[2]; }).select();
+								
+								var objListaSkuByProducto;								
+								if(objListaProductosSku.length == undefined)
+								{
+									objListaSkuByProducto 	= jLinq.from(objTransactionMasterItemSku).where(function(obj){ return obj.itemID == full[2]; }).select();
+								}
+								else
+								{
+									objListaSkuByProducto 	= jLinq.from(objListaProductosSku).where(function(obj){ return obj.itemID == full[2]; }).select();
+								}
+								
 								var sel 					= '';
 								var espacio					=  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";								
 								sel 						= '<select name="txtSku[]" id="txtSku'+full[2]+'" class="txtSku col-lg-12" >';	
@@ -3121,10 +3144,29 @@
 							"mRender"		: function ( data, type, full ) 
 							{	
 							
-								debugger;
-								var objProductoPrecio1 	= jLinq.from(objListaProductos).where(function(obj){ return obj.itemID == full[2]; }).select();
-								var objProductoPrecio2 	= jLinq.from(objListaProductos2).where(function(obj){ return obj.itemID == full[2]; }).select();
-								var objProductoPrecio3 	= jLinq.from(objListaProductos3).where(function(obj){ return obj.itemID == full[2]; }).select();
+															
+								var objProductoPrecio1;
+								var objProductoPrecio2;
+								var objProductoPrecio3;
+								
+								if(objListaProductos.length  == undefined)
+								{
+									//precio 1 ---> 154 --> precio publico
+									objProductoPrecio1 	= jLinq.from(objTransactionMasterItemPrice).where(function(obj){ return (obj.itemID == full[2] && obj.typePriceID == "154"); }).select();
+									////precio 2 ---> 155 --> precio mayorista
+									objProductoPrecio2 	= jLinq.from(objTransactionMasterItemPrice).where(function(obj){ return (obj.itemID == full[2] && obj.typePriceID == "155"); }).select();
+									////precio 3 ---> 156 --> precio credito
+									objProductoPrecio3 	= jLinq.from(objTransactionMasterItemPrice).where(function(obj){ return (obj.itemID == full[2] && obj.typePriceID == "156"); }).select();
+								}
+								else
+								{
+									objProductoPrecio1 	= jLinq.from(objListaProductos).where(function(obj){ return obj.itemID == full[2]; }).select();
+									objProductoPrecio2 	= jLinq.from(objListaProductos2).where(function(obj){ return obj.itemID == full[2]; }).select();
+									objProductoPrecio3 	= jLinq.from(objListaProductos3).where(function(obj){ return obj.itemID == full[2]; }).select();
+								
+								}
+								
+								
 								
 								if(objProductoPrecio1.length == 0)
 								objProductoPrecio1 = "0.00";

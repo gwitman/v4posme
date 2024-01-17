@@ -69,7 +69,7 @@ class Price_Model extends Model  {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_price");    
 		$sql = "";
-		$sql = sprintf("select i.companyID,i.listPriceID,i.itemID,i.priceID,i.typePriceID,i.percentage,i.price,i.percentageCommision");
+		$sql = sprintf("select i.companyID,i.listPriceID,i.itemID,i.priceID,i.typePriceID,i.percentage,i.price,i.percentageCommision,i.price as Precio");
 		$sql = $sql.sprintf(" from tb_transaction_master tm ");		
 		$sql = $sql.sprintf(" inner join tb_transaction_master_detail  tmd on tm.transactionMasterID = tmd.transactionMasterID  ");	
 		$sql = $sql.sprintf(" inner join tb_price   i on tmd.componentItemID = i.itemID  ");	

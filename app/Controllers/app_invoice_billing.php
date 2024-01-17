@@ -226,6 +226,7 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objTransactionMasterItemPrice"]			= $this->Price_Model->get_rowByTransactionMasterID($companyID,$objListPrice->listPriceID, $dataView["objTransactionMaster"]->transactionMasterID );
 			$dataView["objTransactionMasterItemConcepto"]		= $this->Company_Component_Concept_Model->get_rowByTransactionMasterID($companyID,$objComponentItem->componentID, $dataView["objTransactionMaster"]->transactionMasterID );
 			$dataView["objTransactionMasterItemSku"]			= $this->Item_Sku_Model->get_rowByTransactionMasterID($companyID, $dataView["objTransactionMaster"]->transactionMasterID );
+			$dataView["objTransactionMasterItem"]				= $this->Item_Model->get_rowByTransactionMasterID( $dataView["objTransactionMaster"]->transactionMasterID  );
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
