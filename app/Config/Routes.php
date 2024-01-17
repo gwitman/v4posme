@@ -343,6 +343,8 @@ $routes->match(['get','post'],'app_purchase_pedidos/edit','app_purchase_pedidos:
 $routes->match(['get','post'],'app_purchase_pedidos/edit/(:any)','app_purchase_pedidos::edit');
 $routes->match(['get','post'],'app_purchase_pedidos/delete','app_purchase_pedidos::delete');
 $routes->match(['get','post'],'app_purchase_pedidos/delete/(:any)','app_purchase_pedidos::delete');
+$routes->match(['get','post'],'app_purchase_pedidos/viewPrinterFormatoA4','app_purchase_pedidos::viewPrinterFormatoA4');
+$routes->match(['get','post'],'app_purchase_pedidos/viewPrinterFormatoA4/(:any)','app_purchase_pedidos::viewPrinterFormatoA4');
 $routes->match(['get','post'],'app_purchase_garantia/index','app_purchase_garantia::index');
 $routes->match(['get','post'],'app_purchase_garantia/index/(:any)','app_purchase_garantia::index');
 $routes->match(['get','post'],'app_purchase_garantia/add','app_purchase_garantia::add');
