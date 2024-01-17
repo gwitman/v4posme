@@ -204,6 +204,23 @@ class app_invoice_billing extends _BaseController {
 				$dataView["objTransactionMasterDetailCredit"]			= $this->Transaction_Master_Detail_Credit_Model->get_rowByPK($value->transactionMasterDetailID);
 			}
 			
+			
+			
+			//Obtener la linea de credito del cliente por defecto
+			$objCurrencyDolares						= $this->core_web_currency->getCurrencyExternal($companyID);
+			$objCurrencyCordoba						= $this->core_web_currency->getCurrencyDefault($companyID);			
+			$parameterCausalTypeCredit 				= $this->core_web_parameter->getParameter("INVOICE_BILLING_CREDIT",$companyID);			
+			$objCustomerCreditAmoritizationAll		= $this->Customer_Credit_Amortization_Model->get_rowByCustomerID( $dataView["objTransactionMaster"]->entityID );
+			$objListCustomerCreditLine 				= $this->Customer_Credit_Line_Model->get_rowByEntityBalanceMayorCero($companyID,$dataSession["user"]->branchID,$dataView["objTransactionMaster"]->entityID);			
+			
+			
+			$dataView["objListCustomerCreditLine"]	  		=  $objListCustomerCreditLine;				
+			$dataView["objCausalTypeCredit"]				=  $parameterCausalTypeCredit;
+			$dataView["objCurrencyDolares"] 				=  $objCurrencyDolares;
+			$dataView["objCurrencyCordoba"] 				=  $objCurrencyCordoba;
+			$dataView["objCustomerCreditAmoritizationAll"] 	=  $objCustomerCreditAmoritizationAll;
+			
+			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
@@ -2549,6 +2566,22 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objNaturalDefault"]		= $this->Natural_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
 			$dataView["objLegalDefault"]		= $this->Legal_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
 			$dataView["objEmployeeNatural"]		= $this->Natural_Model->get_rowByPK($companyID,$dataSession["user"]->branchID,$dataSession["user"]->employeeID);
+			
+			
+			//Obtener la linea de credito del cliente por defecto
+			$objCurrencyDolares						= $this->core_web_currency->getCurrencyExternal($companyID);
+			$objCurrencyCordoba						= $this->core_web_currency->getCurrencyDefault($companyID);			
+			$parameterCausalTypeCredit 				= $this->core_web_parameter->getParameter("INVOICE_BILLING_CREDIT",$companyID);			
+			$objCustomerCreditAmoritizationAll		= $this->Customer_Credit_Amortization_Model->get_rowByCustomerID($dataView["objCustomerDefault"]->entityID);
+			$objListCustomerCreditLine 				= $this->Customer_Credit_Line_Model->get_rowByEntityBalanceMayorCero($companyID,$dataSession["user"]->branchID,$dataView["objCustomerDefault"]->entityID);			
+			
+			
+			$dataView["objListCustomerCreditLine"]	  		=  $objListCustomerCreditLine;				
+			$dataView["objCausalTypeCredit"]				=  $parameterCausalTypeCredit;
+			$dataView["objCurrencyDolares"] 				=  $objCurrencyDolares;
+			$dataView["objCurrencyCordoba"] 				=  $objCurrencyCordoba;
+			$dataView["objCustomerCreditAmoritizationAll"] 	=  $objCustomerCreditAmoritizationAll;
+			
 			
 			
 			//Renderizar Resultado 

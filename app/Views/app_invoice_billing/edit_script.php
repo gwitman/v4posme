@@ -1,6 +1,7 @@
 <!-- ./ https://fontawesome.com/v3/icon/print -->
 <!-- ./ page heading -->
 <script>	
+
 	//fnWaitOpen();	
 	
 	/*
@@ -111,9 +112,7 @@
 
 
 		
-	//crear la cache intervalo 		
-	let  db;
-	createDatabase();	
+	
 	
 	
 	
@@ -192,6 +191,809 @@
 	   
 	    $("#divLoandingCustom").remove();
 	}
+	
+	$(document).on("click",".btnPlus",function(){
+		
+		var quantity = $(this).parent().parent().parent().find(".txtQuantity").val();
+		quantity 	 = fnFormatFloat(quantity);
+		quantity	 = quantity + 1;
+		$(this).parent().parent().parent().find(".txtQuantity").val(quantity);
+		fnRecalculateDetail(true,"");				
+	});
+	
+	$(document).on("click","#txtToolCalcular",function(){
+		
+		var valor 	= $("#txtToolMontoConIva").val();
+		valor 		= fnFormatNumber(valor / 1.15,2);
+		$("#txtToolMontoSinIva").val(valor);
+		
+		//copiar texto al portapapeles
+		navigator.clipboard.writeText(valor)
+		.then(() => {
+			console.log('Texto copiado al portapapeles')
+		})
+		.catch(err => {
+			console.error('Error al copiar al portapapeles:', err)
+		});
+		
+	});
+	
+	
+	$(document).on("click","#btnAbrirCaja",function(){
+		$("#txtClaveValidToOpenCash").val("");
+		$("#modalDialogOpenPrimterClave").dialog("open");
+	});
+	
+	$(document).on("click",".btnAddSelectedItem",function(){
+		fnAddRowSelected();			
+	});
+	
+	$(document).on("click",".btnMenus",function(){
+	
+		var quantity = $(this).parent().parent().parent().find(".txtQuantity").val();
+		quantity 	 = fnFormatFloat(quantity);
+		quantity	 = quantity - 1;
+		$(this).parent().parent().parent().find(".txtQuantity").val(quantity);
+		fnRecalculateDetail(true,"");				
+	});
+	$(document).on("click",".btnPrecioRecomendado",function(){					
+		var precioRecomendado = $(this).data("precio");
+		$(this).parent().parent().parent().parent().parent().parent().find(".txtPrice").val(precioRecomendado);						
+		fnRecalculateDetail(true,"txtPrice");				
+	});
+	$(document).on("focus",".txt-numeric",function(){
+		if ( fnFormatFloat( $(this).val()  ) == 0)
+		{
+			$(this).val("");
+		}			
+	});
+	$(document).on("blur",".txt-numeric",function(){
+		if( $(this).val()   == "")
+		{
+			$(this).val("0.00");
+		}			
+	});
+	
+	$(document).on("click",".img_row",function(){				
+			window.open($(this).data("src"), '_blank');
+	});
+	
+
+	$(document).on("dblclick","#table_list_productos_detail > tr",function(){
+			/*
+			var objRow 							= {};		
+			objRow.checked 						= false;						
+			objRow.transactionMasterDetailID 	= 0;
+			objRow.itemID						= objResponse[5];
+			objRow.codigo						= objResponse[17];
+			objRow.description					= objResponse[18].toLowerCase();
+			objRow.um							= objResponse[20];
+			objRow.quantity 					= fnFormatNumber(1,2);
+			objRow.bquantity 					= fnFormatNumber(objResponse[21],2);
+			objRow.price 						= fnFormatNumber(objResponse[22],2);
+			objRow.total 						= fnFormatNumber(objRow.quantity * objRow.price,2);						
+			objRow.iva 							= 0;
+			objRow.lote 						= "";
+			objRow.vencimiento					= "";				
+			*/
+			
+			/*
+			filterResult[i].itemID,
+			filterResult[i].Codigo,
+			"'"+filterResult[i].Nombre+"'",
+			filterResult[i].Medida,
+			filterResult[i].Cantidad,
+			filterResult[i].Precio,
+			filterResult[i].Barra,
+			*/
+			
+			var data		 = {};					
+			var dataResponse = [];
+			data			 = objTableProductosSearch.fnGetData(objRowTableProductosSearch);				
+			dataResponse[0] = data[0];
+			dataResponse[1] = data[0];
+			dataResponse[2] = data[0];
+			dataResponse[3] = data[0];
+			dataResponse[4] = data[0];
+			dataResponse[5] = data[0]; //itemID
+			dataResponse[6] = data[0];
+			dataResponse[7] = data[0];
+			dataResponse[8] = data[0];
+			dataResponse[9] = data[0];
+			dataResponse[10] = data[0];
+			dataResponse[11] = data[0];
+			dataResponse[12] = data[0];
+			dataResponse[13] = data[0];
+			dataResponse[14] = data[0];
+			dataResponse[15] = data[0];
+			dataResponse[16] = data[0];
+			dataResponse[17] = data[1];//Codigo
+			dataResponse[18] = data[2];//Nombre
+			dataResponse[19] = data[0];
+			dataResponse[20] = data[3];//Unidad de medida
+			dataResponse[21] = data[4];//Cantidad
+			dataResponse[22] = data[5];//Precio
+			dataResponse[23] = data[0];
+			dataResponse[24] = data[0];
+			dataResponse[25] = data[0];
+			dataResponse[26] = data[0];
+			
+			onCompleteNewItem(dataResponse,true);
+	});
+	$(document).on("click","#btnAddProductoOnLine",function(){
+			
+			/*
+			var objRow 							= {};		
+			objRow.checked 						= false;						
+			objRow.transactionMasterDetailID 	= 0;
+			objRow.itemID						= objResponse[5];
+			objRow.codigo						= objResponse[17];
+			objRow.description					= objResponse[18].toLowerCase();
+			objRow.um							= objResponse[20];
+			objRow.quantity 					= fnFormatNumber(1,2);
+			objRow.bquantity 					= fnFormatNumber(objResponse[21],2);
+			objRow.price 						= fnFormatNumber(objResponse[22],2);
+			objRow.total 						= fnFormatNumber(objRow.quantity * objRow.price,2);						
+			objRow.iva 							= 0;
+			objRow.lote 						= "";
+			objRow.vencimiento					= "";				
+			*/
+			
+			/*
+			filterResult[i].itemID,
+			filterResult[i].Codigo,
+			"'"+filterResult[i].Nombre+"'",
+			filterResult[i].Medida,
+			filterResult[i].Cantidad,
+			filterResult[i].Precio,
+			filterResult[i].Barra,
+			*/
+			
+			var data		 = {};					
+			var dataResponse = [];
+			data			 = objTableProductosSearch.fnGetData(objRowTableProductosSearch);				
+			dataResponse[0] = data[0];
+			dataResponse[1] = data[0];
+			dataResponse[2] = data[0];
+			dataResponse[3] = data[0];
+			dataResponse[4] = data[0];
+			dataResponse[5] = data[0]; //itemID
+			dataResponse[6] = data[0];
+			dataResponse[7] = data[0];
+			dataResponse[8] = data[0];
+			dataResponse[9] = data[0];
+			dataResponse[10] = data[0];
+			dataResponse[11] = data[0];
+			dataResponse[12] = data[0];
+			dataResponse[13] = data[0];
+			dataResponse[14] = data[0];
+			dataResponse[15] = data[0];
+			dataResponse[16] = data[0];
+			dataResponse[17] = data[1];//Codigo
+			dataResponse[18] = data[2];//Nombre
+			dataResponse[19] = data[0];
+			dataResponse[20] = data[3];//Unidad de medida
+			dataResponse[21] = data[4];//Cantidad
+			dataResponse[22] = data[5];//Precio
+			dataResponse[23] = data[0];
+			dataResponse[24] = data[0];
+			dataResponse[25] = data[0];
+			dataResponse[26] = data[0];
+			
+			onCompleteNewItem(dataResponse,true);
+
+			
+	});						
+
+
+
+	$(document).on("keypress",'#txtReceiptAmount', function(e) {	
+		
+		var code = e.keyCode || e.which;
+		 if(code != 13) { 
+			 return;
+		 }		 
+		 
+		document.getElementById("txtReceiptAmountDol").focus();
+		return;
+			
+	});
+	
+	$(document).on("keypress",'#txtReceiptAmountDol', function(e) {		
+	
+		var code = e.keyCode || e.which;			
+		if(code != 13) { 
+			 return;
+		}					 
+		fnEnviarFactura();
+		return;
+		 
+	});
+	$(document).on("keydown",'#txtReceiptAmountDol', function(e) {		
+	
+		var code = e.keyCode || e.which;			
+		//Aplicar
+		if(e.key === "a"  && e.ctrlKey) { 							
+			var valueWorkflow = $(".btnAceptAplicar").data("valueworkflow");
+			$("#txtStatusID").val(valueWorkflow);			
+			fnEnviarFactura();				 
+		}		
+		
+		//Regresar al scaner
+		if(e.key === "b"  && e.ctrlKey) { 		
+			document.getElementById("txtScanerCodigo").focus();				
+		}		
+		
+		
+		//e.preventDefault();
+		//e.stopPropagation();
+		
+	});
+	$(document).on("keydown",'#txtScanerCodigo', function(e) {
+		
+		
+		var code = e.keyCode || e.which;						
+		//Imprimir
+		if(e.key === "m" && e.ctrlKey) { 
+			fnImprimir();			 
+		}
+		//Nueva
+		if(e.key === "k" && e.ctrlKey) { 		
+			e.preventDefault();
+			e.stopPropagation();			
+			window.location = "<?php echo base_url(); ?>/app_invoice_billing/add";			 
+		}	
+		//Abrir Caja
+		if(e.key === "i" && e.ctrlKey) 
+		{ 		
+
+			$.ajax({									
+				cache       : false,
+				dataType    : 'json',
+				type        : 'POST',
+				url  		: "<?php echo base_url(); ?>/app_invoice_billing/viewPrinterOpen",
+				data 		: {companyID : 2 },
+				success:function(data){
+					console.info("complete delete success");
+					fnWaitClose();
+					if(data.error){
+						fnShowNotification(data.message,"error");
+					}
+					else{
+						window.location = "<?php echo base_url(); ?>/app_invoice_billing/index";
+					}
+				},
+				error:function(xhr,data){	
+					console.info("complete delete error");									
+					fnWaitClose();
+					fnShowNotification("Error 505","error");
+				}
+			});
+			e.preventDefault();
+			e.stopPropagation();
+		}
+		
+		
+			
+		
+		
+	});
+	
+	$(document).on("keypress","#table_list_productos_filter > label > input[type='text']", function(e) {	
+		 
+		 
+		 //buscar el primer rgistro que se encuetre
+		 var element 		= $("#table_list_productos_filter > label > input[type='text']").val();		
+		 
+		 var code = e.keyCode || e.which;
+		 /*tecla +*/
+		 if(code != 43) { 
+			 return;
+		 }	
+		
+		 
+		 //buscar
+		 var elementr 		= $("#table_list_productos_filter > label > input[type='text']").val("");
+		 
+		 //Obtener el primer reigstro y agregar
+		 var elementoTr 	= $("#table_list_productos_detail tr.row-selected")[0];
+		 objRowTableProductosSearch = elementoTr; 
+		 fnTableSelectedRow(this,event);
+		 
+		 
+		 var data		 	= {};					
+		 var dataResponse 	= [];
+		 data			 	= objTableProductosSearch.fnGetData(objRowTableProductosSearch);				
+		 dataResponse[0] = data[0];
+		 dataResponse[1] = data[0];
+		 dataResponse[2] = data[0];
+		 dataResponse[3] = data[0];
+		 dataResponse[4] = data[0];
+		 dataResponse[5] = data[0]; //itemID
+		 dataResponse[6] = data[0];
+		 dataResponse[7] = data[0];
+		 dataResponse[8] = data[0];
+		 dataResponse[9] = data[0];
+		 dataResponse[10] = data[0];
+		 dataResponse[11] = data[0];
+		 dataResponse[12] = data[0];
+		 dataResponse[13] = data[0];
+		 dataResponse[14] = data[0];
+		 dataResponse[15] = data[0];
+		 dataResponse[16] = data[0];
+		 dataResponse[17] = data[1];//Codigo
+		 dataResponse[18] = data[2];//Nombre
+		 dataResponse[19] = data[0];
+		 dataResponse[20] = data[3];//Unidad de medida
+		 dataResponse[21] = data[4];//Cantidad
+		 dataResponse[22] = data[5];//Precio
+		 dataResponse[23] = data[0];
+		 dataResponse[24] = data[0];
+		 dataResponse[25] = data[0];
+		 dataResponse[26] = data[0];
+		 
+		 onCompleteNewItem(dataResponse,true);
+		 $(this).focus();
+		 $(this).val("");
+		 e.preventDefault();
+		 
+	});
+		 
+	$(document).on("keydown","#table_list_productos_filter > label > input[type='text']", function(e) {	
+		 
+		 
+		 //Obtener la tabla
+		 var element 		= $("#table_list_productos_detail");			 
+		 var code 			= e.keyCode || e.which;
+		 var selecte 		= element.find("tr.row-selected").length;
+		 var rowselected 	= element.find("tr.row-selected")[0];
+		 var firstrow		= element.children('tr:first');
+		 var lastrow		= element.children('tr:last');
+		 
+		 
+		 if(selecte == 0){
+			 firstrow.addClass("row-selected");
+			 return;
+		 }
+		 
+		 //hacia abajo
+		 if(code == 40) { 
+			$(rowselected).removeClass("row-selected");
+			$(rowselected).next().addClass("row-selected");
+			 return;
+		 }	
+		 
+		 //hacia arriba
+		 if(code == 38) { 
+			$(rowselected).removeClass("row-selected");
+			$(rowselected).prev().addClass("row-selected");
+			return;
+		 }	
+		 
+		 //Obtener el registro seleccionado
+		 var rowselected 	= element.find("tr.row-selected")[0];
+		 
+	});
+		 
+		 
+	$('#mi_modal').on('hidden.bs.modal', function (e) {
+		
+		if(varParameterScanerProducto != "false"){
+			document.getElementById("txtScanerCodigo").focus();					
+		}
+	
+	});
+	
+	
+	$(document).on("keypress",'#txtScanerCodigo', function(e) {
+		var code = e.keyCode || e.which;
+		 if(code != 13) { 
+			 return;
+		 }		 
+		 
+		 
+		var currencyID 		= $("#txtCurrencyID").val();
+		var codigoABuscar 	= $("#txtScanerCodigo").val();			
+		codigoABuscar 		= codigoABuscar.toUpperCase();
+		$("#txtScanerCodigo").val("");
+		
+		//++Abrir popup de productos
+		if(codigoABuscar == "++"){
+			
+			var ventana_ancho = $(window).width()-50;				
+			$("#div-modal-dialog-lista-productos").css("width",ventana_ancho+"px");
+		
+			fnCreateTableSearchProductos();
+			$("#mi_modal").modal();		
+			setTimeout(function() { 
+				
+				if(varUseMobile == "1")
+				{
+					//$("#table_list_productos_filter").remove();	
+					$("#table_list_productos_info").remove();							
+					$("#mi_modal > .modal-dialog > .modal-content > .modal-footer").remove();
+					$("#table_list_productos_wrapper").find(".dataTables_paginate").remove();
+					
+				}
+				else
+				{
+					$($("#table_list_productos_filter").find("input")[0]).focus(); 
+				}
+				
+				
+			}, 500);				
+			return;
+		}
+		
+		//Mover a ingreso de dinero Cordoba
+		if(codigoABuscar == ""){
+			document.getElementById("txtReceiptAmount").focus();
+			return;
+		}
+		
+		//buscar el producto y agregar
+		var filterResult = {};			
+		
+		//buscar producto por codigo de barra autimatico
+		//precio 1 ---> 154 --> precio publico
+		if($("#txtTypePriceID").val() == 154){
+			filterResult = jLinq.from(objListaProductos).where(function(obj)
+			{ 
+					var listCodigTmp 	= obj["Barra"].split(",");
+					var encontrado		= false;
+					
+					for(var i = 0 ; i < listCodigTmp.length; i++)
+					{
+							if( fnDeleteCerosIzquierdos(listCodigTmp[i]) == fnDeleteCerosIzquierdos(codigoABuscar) && currencyID == obj["currencyID"]   )
+							{
+								encontrado = true;
+							}
+					}
+					
+					return encontrado;
+					
+			}).select();
+		}
+		//precio 2 ---> 155 --> precio mayorista
+		if($("#txtTypePriceID").val() == 155){
+			filterResult = jLinq.from(objListaProductos2).where(function(obj)
+			{ 
+					var listCodigTmp 	= obj["Barra"].split(",");
+					var encontrado		= false;
+					
+					for(var i = 0 ; i < listCodigTmp.length; i++)
+					{
+							if( fnDeleteCerosIzquierdos(listCodigTmp[i]) == fnDeleteCerosIzquierdos(codigoABuscar) && currencyID == obj["currencyID"]  )
+							{
+								encontrado = true;
+							}
+					}
+					
+					return encontrado;
+					
+			}).select();
+		}
+		//precio 3 ---> 156 --> precio credito
+		if($("#txtTypePriceID").val() == 156){
+			filterResult = jLinq.from(objListaProductos3).where(function(obj)
+			{ 
+					var listCodigTmp 	= obj["Barra"].split(",");
+					var encontrado		= false;
+					
+					for(var i = 0 ; i < listCodigTmp.length; i++)
+					{
+							if( fnDeleteCerosIzquierdos(listCodigTmp[i]) == fnDeleteCerosIzquierdos(codigoABuscar) && currencyID == obj["currencyID"]  )
+							{
+								encontrado = true;
+							}
+					}
+					
+					return encontrado;
+					
+			}).select();
+		}
+		
+		
+		//buscar producto por codigo de barra escrito
+		if(filterResult.length == 0)
+		{
+			
+			codigoABuscar =  "BITT" + ("00000000"+codigoABuscar).substr(("00000000"+codigoABuscar).length - 8 ,8);				
+			//precio 1 ---> 154 --> precio publico
+			if($("#txtTypePriceID").val() == 154){
+				filterResult = jLinq.from(objListaProductos).where(function(obj){ return fnDeleteCerosIzquierdos(obj["Barra"]) == fnDeleteCerosIzquierdos(codigoABuscar) && currencyID == obj["currencyID"]  }).select();
+			}
+			//precio 2 ---> 155 --> precio mayorista
+			if($("#txtTypePriceID").val() == 155){
+				filterResult = jLinq.from(objListaProductos2).where(function(obj){ return fnDeleteCerosIzquierdos(obj["Barra"]) == fnDeleteCerosIzquierdos(codigoABuscar) && currencyID == obj["currencyID"]  }).select();
+			}
+			//precio 3 ---> 156 --> precio credito
+			if($("#txtTypePriceID").val() == 156){
+				filterResult = jLinq.from(objListaProductos3).where(function(obj){ return fnDeleteCerosIzquierdos(obj["Barra"]) == fnDeleteCerosIzquierdos(codigoABuscar) && currencyID == obj["currencyID"]  }).select();
+			}
+		}
+		
+		//Buscar producto por codigo de sistema		
+		var sumar  = true;
+		if(filterResult.length == 0)
+		{
+			//Agregar Cantidad
+			if(codigoABuscar.indexOf("+")  >= 0 ){				
+				sumar  = true;
+				codigoABuscar =  codigoABuscar.replace("BITT","").replace("+","");
+				codigoABuscar =  "ITT" + ("00000000"+codigoABuscar).substr(("00000000"+codigoABuscar).length - 8 ,8);				
+			}
+			if(codigoABuscar.indexOf("-")  >= 0 ){				
+				sumar  = false;
+				codigoABuscar =  codigoABuscar.replace("BITT","").replace("-","");
+				codigoABuscar =  "ITT" + ("00000000"+codigoABuscar).substr(("00000000"+codigoABuscar).length - 8 ,8);				
+			}
+			
+			//precio 1 ---> 154 --> precio publico
+			if($("#txtTypePriceID").val() == 154){
+				filterResult = jLinq.from(objListaProductos).where(function(obj){ return obj["Codigo"] == codigoABuscar && currencyID == obj["currencyID"]  }).select();
+			}
+			//precio 2 ---> 155 --> precio mayorista
+			if($("#txtTypePriceID").val() == 155){
+				filterResult = jLinq.from(objListaProductos2).where(function(obj){ return obj["Codigo"] == codigoABuscar && currencyID == obj["currencyID"]  }).select();
+			}
+			//precio 3 ---> 156 --> precio credito
+			if($("#txtTypePriceID").val() == 156){
+				filterResult = jLinq.from(objListaProductos3).where(function(obj){ return obj["Codigo"] == codigoABuscar && currencyID == obj["currencyID"]  }).select();
+			}
+		}
+		
+		
+		
+		if(filterResult.length == 0)
+		{
+			return;
+		}
+		
+		
+		filterResult = filterResult[0];
+		var filterResultArray = [];
+		filterResultArray[5] = filterResult.itemID;
+		filterResultArray[17] = filterResult.Codigo;
+		filterResultArray[18] = filterResult.Nombre;
+		filterResultArray[20] = "N/A"
+		filterResultArray[21] = filterResult.Cantidad;
+		filterResultArray[22] = filterResult.Precio;
+		//Agregar el Item a la Fila
+		 onCompleteNewItem(filterResultArray,sumar); 
+		 
+	});
+	
+	//Buscar el Cliente
+	$(document).on("click","#btnSearchCustomer",function(){
+		
+		
+		//Ocultar Boton de Contado
+		$("#divTipoFactura").addClass("hidden");			
+		
+		
+		var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCustomer->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_BILLING/true/empty/false/not_redirect_when_empty";
+		window.open(url_request,"MsgWindow","width=900,height=450");
+		window.onCompleteCustomer = onCompleteCustomer; 
+	});						
+
+	//Eliminar Cliente
+	$(document).on("click","#btnClearCustomer",function(){
+				$("#txtCustomerID").val("");
+				$("#txtCustomerDescription").val("");
+	});
+	
+	
+	//Imprimir Documento
+	$(document).on("click","#btnPrinter",function(){	
+		fnImprimir();
+	});
+	$(document).on("click","#btnFooter",function(){	
+		fnImprimirCocina();
+	});
+	$(document).on("click","#btnBar",function(){	
+		fnImprimirBar();
+	});
+	
+	//Cambios
+	$(document).on("change","#txtCausalID,#txtCustomerCreditLineID,#txtCurrencyID",function(){
+		fnClearData();
+	});
+
+	$(document).on("change",".txtItemSelected",function(e,o){
+		fnActualizarProducto(this);
+	});
+	
+	$(document).on("change","#txtTypePriceID",function(){
+		fnActualizarPrecio();
+	});
+	
+	$(document).on("change","#txtCausalID",function(){
+		fnRenderLineaCreditoDiv();
+	});
+
+	//Regresar a la lista
+	$(document).on("click","#btnBack",function(){
+			fnWaitOpen();
+	});
+	
+	//Evento Agregar el Usuario
+	$(document).on("click",".btnAcept",function(e){
+			e.preventDefault();
+			var valueWorkflow = $(this).data("valueworkflow");
+			$("#txtStatusID").val(valueWorkflow);			
+			fnEnviarFactura();
+		
+	});
+
+	
+	
+	
+	//Eliminar Documento
+	$(document).on("click","#btnDelete",function(){	
+		
+		fnShowConfirm("Confirmar..","Desea eliminar este Registro...",function(){
+			
+			fnWaitOpen();
+			$.ajax({									
+				cache       : false,
+				dataType    : 'json',
+				type        : 'POST',
+				url  		: "<?php echo base_url(); ?>/app_invoice_billing/delete",
+				data 		: {companyID : <?php echo $objTransactionMaster->companyID;?>, transactionID : <?php echo $objTransactionMaster->transactionID;?>,transactionMasterID : <?php echo $objTransactionMaster->transactionMasterID; ?>  },
+				success:function(data){
+					console.info("complete delete success");
+					fnWaitClose();
+					if(data.error){
+						fnShowNotification(data.message,"error");
+					}
+					else{
+						window.location = "<?php echo base_url(); ?>/app_invoice_billing/add";
+					}
+				},
+				error:function(xhr,data){	
+					console.info("complete delete error");									
+					fnWaitClose();
+					fnShowNotification("Error 505","error");
+				}
+			});
+			
+			
+		});
+	});
+	
+	//Nuevo Producto
+	$(document).on("click","#btnNewItem",function(){
+		
+		//var ventana_ancho = $(window).width()-50;			
+		//$("#div-modal-dialog-lista-productos").css("width",ventana_ancho+"px");
+		//
+		//
+		//fnCreateTableSearchProductos();
+		//$("#mi_modal").modal();
+		//setTimeout(function() { $($("#table_list_productos_filter").find("input")[0]).focus(); }, 500);		
+		
+		
+		
+		setTimeout( function() { 		
+			
+			
+			var ventana_ancho = $(window).width()-50;				
+			$("#div-modal-dialog-lista-productos").css("width",ventana_ancho+"px");			
+			fnCreateTableSearchProductos();
+			$("#mi_modal").modal();
+			setTimeout(function() { 
+				
+				if(varUseMobile == "1")
+				{
+					//$("#table_list_productos_filter").remove();	
+					$("#table_list_productos_info").remove();	
+					$("#mi_modal > .modal-dialog > .modal-content > .modal-footer").remove();
+					$("#table_list_productos_wrapper").find(".dataTables_paginate").remove();						
+				}
+				else
+				{
+					$($("#table_list_productos_filter").find("input")[0]).focus(); 
+				}
+				
+			}, 500);		
+			
+		}, 30 );
+		
+		
+		
+		
+	});
+	$(document).on("click","#btnNewItemCatalog",function(){
+		var url_request 				 = "<?php echo base_url(); ?>/app_inventory_item/add";
+		window.open(url_request,"MsgWindow","width=700,height=600");			
+		window.fnObtenerListadoProductos = fnObtenerListadoProductos; 
+	});
+	$(document).on("click","#btnRefreshDataCatalogo",function(){
+		fnWaitOpen();			
+		setTimeout( function() { fnObtenerListadoProductos(); }, 10);			
+		setTimeout( function() { fnObtenerListadoProductos2(); }, 10);			
+		setTimeout( function() { fnObtenerListadoProductos3(); }, 10);		
+		setTimeout( function() { fnObtenerListadoProdcutosSku(); }, 10);	
+		setTimeout( function() { fnObtenerListadoItemConcept(); }, 10);	
+		setTimeout( function() { fnObtenerListadoCustomerCreditLine(); }, 10);	
+		setTimeout( function() { fnWaitClose(); }, 3000);
+	});
+	$(document).on("click","#btnSearchCustomerNew",function(){
+		var url_request 				 = "<?php echo base_url(); ?>/app_cxc_customer/add/callback/fnCustomerNewCompleted";
+		window.open(url_request,"MsgWindow","width=700,height=600");
+		window.fnCustomerNewCompleted = fnCustomerNewCompleted; 	
+	});
+
+	//Eliminar Item
+	$(document).on("click","#btnDeleteItem",function(){
+			var listRow = objTableDetail.fnGetData();							
+			var length 	= listRow.length;
+			var i 		= 0;
+			var itemid 	= 0;
+			while (i< length ){
+				if(listRow[i][0] == true){
+					itemid = listRow[i][2];
+					objTableDetail.fnDeleteRow(i);
+				}
+				i++;
+			}
+			fnRecalculateDetail(true,"");		
+			
+	});
+	$(document).on("change","input.txtQuantity",function(){
+		fnRecalculateDetail(true,"");		
+	});
+	$(document).on("change","input.txtPrice",function(){
+		
+		//obtener el nuevo valor
+		//obtener el precio 1
+		//obtener el precio 2
+		//obtener el precio 3
+		
+		//si el nuevo precio es menor a todos los precios 
+		//dejar como nuevo precio el menos de los 3 precios
+		
+		//si el nuevo precio no es menor a los tres presos
+		//respetar el valor escribo por el usuario
+	
+	
+	
+		fnRecalculateDetail(true,"txtPrice");		
+	});
+	$(document).on("change","select.txtSku",function(){
+		fnRecalculateDetail(true,"");		
+	});
+	
+	
+	//Ir a archivos
+	$(document).on("click","#btnClickArchivo",function(){
+		window.open("<?php echo base_url()."core_elfinder/index/componentID/".$objComponentBilling->componentID."/componentItemID/".$objTransactionMaster->transactionMasterID; ?>","blanck");
+	});
+	//Cambio en los recibido
+	$(document).on("change","input#txtReceiptAmount",function(){	
+			fnCalculateAmountPay();			
+	});
+	$(document).on("change","input#txtReceiptAmountDol",function(){							
+			fnCalculateAmountPay();			
+	});
+	$(document).on("change","input#txtReceiptAmountBank",function(){	
+			fnCalculateAmountPay();			
+	});
+	$(document).on("change","input#txtReceiptAmountPoint",function(){							
+			fnCalculateAmountPay();			
+	});
+	$(document).on("change","input#txtReceiptAmountTarjeta",function(){							
+			fnCalculateAmountPay();			
+	});
+	$(document).on("change","input#txtReceiptAmountTarjetaDol",function(){							
+			fnCalculateAmountPay();			
+	});
+	$(document).on("change","input#txtReceiptAmountBankDol",function(){							
+			fnCalculateAmountPay();			
+	});
+	
+	
 	
 	//Seleccionar Checke 
 	$(document).on("click",".classCheckedDetail",function(){
@@ -1979,7 +2781,60 @@
 					buttons: objectParameterButtomsBar
 			});
 			
-			  
+			if ( varParameterRegresarAListaDespuesDeGuardar == "true" )
+			{
+				$( "#form-new-invoice" ).submit(function(e){
+						  
+						  e.preventDefault(e);
+						  var formData = new FormData(this);
+
+						  //Mandar la factura
+						  //Interna mente, se se guarda y se imprimie
+						  $.ajax({
+								async: 		true,
+								type: 		$( "#form-new-invoice" ).attr('method'),
+								url: 		$( "#form-new-invoice" ).attr('action'),
+								data: 		formData,
+								cache: 		false,
+								processData:false,
+								contentType:false,				  
+								success: 	function (data) {
+								  console.log("success form data")
+								},
+								error: 		function(request, status, error) {
+								  console.log("error form data")
+								}
+						  });
+						  
+						  
+						  //Mandar abrir la caja de efectivo
+						  $.ajax({
+								async: 		true,
+								type: 		"GET",
+								url: 		"<?php echo base_url(); ?>/app_invoice_billing/viewPrinterOpen",
+								data: 		formData,
+								cache: 		false,
+								processData:false,
+								contentType:false,				  
+								success: 	function (data) {
+								  console.log("success form data")
+								},
+								error: 		function(request, status, error) {
+								  console.log("error form data")
+								}
+						  });
+						
+						  if(varParameterRegresarAListaDespuesDeGuardar == "true"){
+							window.location	= "<?php echo base_url(); ?>/app_invoice_billing/index";
+						  }
+						  if(varParameterRegresarAListaDespuesDeGuardar != "true"){
+							window.location	= "<?php echo base_url(); ?>/app_invoice_billing/add";
+						  }
+						  
+						  fnWaitClose();
+				});
+			}
+			
 			
 			objTableDetail = $("#tb_transaction_master_detail").dataTable({
 				"bPaginate"		: false,
@@ -2335,9 +3190,7 @@
 								//}
 							}
 				]						
-			});		
-
-
+			});	
 		 
 
 			refreschChecked();
@@ -2348,876 +3201,17 @@
 			$("#txtReceiptAmountPoint").val("<?php echo number_format($objTransactionMasterInfo->receiptAmountPoint,2); ?>");
 			$("#txtReceiptAmountTarjeta").val("<?php echo number_format($objTransactionMasterInfo->receiptAmountCard,2); ?>");
 			$("#txtReceiptAmountTarjetaDol").val("<?php echo number_format($objTransactionMasterInfo->receiptAmountCardDol,2); ?>");
-			$("#txtReceiptAmountBankDol").val("<?php echo number_format($objTransactionMasterInfo->receiptAmountBankDol,2); ?>");
-			
+			$("#txtReceiptAmountBankDol").val("<?php echo number_format($objTransactionMasterInfo->receiptAmountBankDol,2); ?>");			
 			$("#txtChangeAmount").val("<?php echo number_format($objTransactionMasterInfo->changeAmount,2); ?>");
-			
-			
-			
-			
-			$(document).on("click",".btnPlus",function(){
-				
-				var quantity = $(this).parent().parent().parent().find(".txtQuantity").val();
-				quantity 	 = fnFormatFloat(quantity);
-				quantity	 = quantity + 1;
-				$(this).parent().parent().parent().find(".txtQuantity").val(quantity);
-				fnRecalculateDetail(true,"");				
-			});
-			
-			$(document).on("click","#txtToolCalcular",function(){
-				
-				var valor 	= $("#txtToolMontoConIva").val();
-				valor 		= fnFormatNumber(valor / 1.15,2);
-				$("#txtToolMontoSinIva").val(valor);
-				
-				//copiar texto al portapapeles
-				navigator.clipboard.writeText(valor)
-				.then(() => {
-					console.log('Texto copiado al portapapeles')
-				})
-				.catch(err => {
-					console.error('Error al copiar al portapapeles:', err)
-				});
-				
-			});
-			
-			
-			$(document).on("click","#btnAbrirCaja",function(){
-				$("#txtClaveValidToOpenCash").val("");
-				$("#modalDialogOpenPrimterClave").dialog("open");
-			});
-			
-			$(document).on("click",".btnAddSelectedItem",function(){
-				fnAddRowSelected();			
-			});
-			
-			$(document).on("click",".btnMenus",function(){
-			
-				var quantity = $(this).parent().parent().parent().find(".txtQuantity").val();
-				quantity 	 = fnFormatFloat(quantity);
-				quantity	 = quantity - 1;
-				$(this).parent().parent().parent().find(".txtQuantity").val(quantity);
-				fnRecalculateDetail(true,"");				
-			});
-			$(document).on("click",".btnPrecioRecomendado",function(){					
-				var precioRecomendado = $(this).data("precio");
-				$(this).parent().parent().parent().parent().parent().parent().find(".txtPrice").val(precioRecomendado);						
-				fnRecalculateDetail(true,"txtPrice");				
-			});
-			$(document).on("focus",".txt-numeric",function(){
-				if ( fnFormatFloat( $(this).val()  ) == 0)
-				{
-					$(this).val("");
-				}			
-			});
-			$(document).on("blur",".txt-numeric",function(){
-				if( $(this).val()   == "")
-				{
-					$(this).val("0.00");
-				}			
-			});
-			
-			$(document).on("click",".img_row",function(){				
-					window.open($(this).data("src"), '_blank');
-			});
-			
-
-			$(document).on("dblclick","#table_list_productos_detail > tr",function(){
-					/*
-					var objRow 							= {};		
-					objRow.checked 						= false;						
-					objRow.transactionMasterDetailID 	= 0;
-					objRow.itemID						= objResponse[5];
-					objRow.codigo						= objResponse[17];
-					objRow.description					= objResponse[18].toLowerCase();
-					objRow.um							= objResponse[20];
-					objRow.quantity 					= fnFormatNumber(1,2);
-					objRow.bquantity 					= fnFormatNumber(objResponse[21],2);
-					objRow.price 						= fnFormatNumber(objResponse[22],2);
-					objRow.total 						= fnFormatNumber(objRow.quantity * objRow.price,2);						
-					objRow.iva 							= 0;
-					objRow.lote 						= "";
-					objRow.vencimiento					= "";				
-					*/
-					
-					/*
-					filterResult[i].itemID,
-					filterResult[i].Codigo,
-					"'"+filterResult[i].Nombre+"'",
-					filterResult[i].Medida,
-					filterResult[i].Cantidad,
-					filterResult[i].Precio,
-					filterResult[i].Barra,
-					*/
-					
-					var data		 = {};					
-					var dataResponse = [];
-					data			 = objTableProductosSearch.fnGetData(objRowTableProductosSearch);				
-					dataResponse[0] = data[0];
-					dataResponse[1] = data[0];
-					dataResponse[2] = data[0];
-					dataResponse[3] = data[0];
-					dataResponse[4] = data[0];
-					dataResponse[5] = data[0]; //itemID
-					dataResponse[6] = data[0];
-					dataResponse[7] = data[0];
-					dataResponse[8] = data[0];
-					dataResponse[9] = data[0];
-					dataResponse[10] = data[0];
-					dataResponse[11] = data[0];
-					dataResponse[12] = data[0];
-					dataResponse[13] = data[0];
-					dataResponse[14] = data[0];
-					dataResponse[15] = data[0];
-					dataResponse[16] = data[0];
-					dataResponse[17] = data[1];//Codigo
-					dataResponse[18] = data[2];//Nombre
-					dataResponse[19] = data[0];
-					dataResponse[20] = data[3];//Unidad de medida
-					dataResponse[21] = data[4];//Cantidad
-					dataResponse[22] = data[5];//Precio
-					dataResponse[23] = data[0];
-					dataResponse[24] = data[0];
-					dataResponse[25] = data[0];
-					dataResponse[26] = data[0];
-					
-					onCompleteNewItem(dataResponse,true);
-			});
-			$(document).on("click","#btnAddProductoOnLine",function(){
-					
-					/*
-					var objRow 							= {};		
-					objRow.checked 						= false;						
-					objRow.transactionMasterDetailID 	= 0;
-					objRow.itemID						= objResponse[5];
-					objRow.codigo						= objResponse[17];
-					objRow.description					= objResponse[18].toLowerCase();
-					objRow.um							= objResponse[20];
-					objRow.quantity 					= fnFormatNumber(1,2);
-					objRow.bquantity 					= fnFormatNumber(objResponse[21],2);
-					objRow.price 						= fnFormatNumber(objResponse[22],2);
-					objRow.total 						= fnFormatNumber(objRow.quantity * objRow.price,2);						
-					objRow.iva 							= 0;
-					objRow.lote 						= "";
-					objRow.vencimiento					= "";				
-					*/
-					
-					/*
-					filterResult[i].itemID,
-					filterResult[i].Codigo,
-					"'"+filterResult[i].Nombre+"'",
-					filterResult[i].Medida,
-					filterResult[i].Cantidad,
-					filterResult[i].Precio,
-					filterResult[i].Barra,
-					*/
-					
-					var data		 = {};					
-					var dataResponse = [];
-					data			 = objTableProductosSearch.fnGetData(objRowTableProductosSearch);				
-					dataResponse[0] = data[0];
-					dataResponse[1] = data[0];
-					dataResponse[2] = data[0];
-					dataResponse[3] = data[0];
-					dataResponse[4] = data[0];
-					dataResponse[5] = data[0]; //itemID
-					dataResponse[6] = data[0];
-					dataResponse[7] = data[0];
-					dataResponse[8] = data[0];
-					dataResponse[9] = data[0];
-					dataResponse[10] = data[0];
-					dataResponse[11] = data[0];
-					dataResponse[12] = data[0];
-					dataResponse[13] = data[0];
-					dataResponse[14] = data[0];
-					dataResponse[15] = data[0];
-					dataResponse[16] = data[0];
-					dataResponse[17] = data[1];//Codigo
-					dataResponse[18] = data[2];//Nombre
-					dataResponse[19] = data[0];
-					dataResponse[20] = data[3];//Unidad de medida
-					dataResponse[21] = data[4];//Cantidad
-					dataResponse[22] = data[5];//Precio
-					dataResponse[23] = data[0];
-					dataResponse[24] = data[0];
-					dataResponse[25] = data[0];
-					dataResponse[26] = data[0];
-					
-					onCompleteNewItem(dataResponse,true);
-
-					
-			});						
-		
-		
-		
-			$(document).on("keypress",'#txtReceiptAmount', function(e) {	
-				
-				var code = e.keyCode || e.which;
-				 if(code != 13) { 
-					 return;
-				 }		 
-				 
-				document.getElementById("txtReceiptAmountDol").focus();
-				return;
-					
-			});
-			
-			$(document).on("keypress",'#txtReceiptAmountDol', function(e) {		
-			
-				var code = e.keyCode || e.which;			
-				if(code != 13) { 
-					 return;
-				}					 
-				fnEnviarFactura();
-				return;
-				 
-			});
-			$(document).on("keydown",'#txtReceiptAmountDol', function(e) {		
-			
-				var code = e.keyCode || e.which;			
-				//Aplicar
-				if(e.key === "a"  && e.ctrlKey) { 							
-					var valueWorkflow = $(".btnAceptAplicar").data("valueworkflow");
-					$("#txtStatusID").val(valueWorkflow);			
-					fnEnviarFactura();				 
-				}		
-				
-				//Regresar al scaner
-				if(e.key === "b"  && e.ctrlKey) { 		
-					document.getElementById("txtScanerCodigo").focus();				
-				}		
-				
-				
-				//e.preventDefault();
-				//e.stopPropagation();
-				
-			});
-			$(document).on("keydown",'#txtScanerCodigo', function(e) {
-				
-				
-				var code = e.keyCode || e.which;						
-				//Imprimir
-				if(e.key === "m" && e.ctrlKey) { 
-					fnImprimir();			 
-				}
-				//Nueva
-				if(e.key === "k" && e.ctrlKey) { 		
-					e.preventDefault();
-					e.stopPropagation();			
-					window.location = "<?php echo base_url(); ?>/app_invoice_billing/add";			 
-				}	
-				//Abrir Caja
-				if(e.key === "i" && e.ctrlKey) 
-				{ 		
-
-					$.ajax({									
-						cache       : false,
-						dataType    : 'json',
-						type        : 'POST',
-						url  		: "<?php echo base_url(); ?>/app_invoice_billing/viewPrinterOpen",
-						data 		: {companyID : 2 },
-						success:function(data){
-							console.info("complete delete success");
-							fnWaitClose();
-							if(data.error){
-								fnShowNotification(data.message,"error");
-							}
-							else{
-								window.location = "<?php echo base_url(); ?>/app_invoice_billing/index";
-							}
-						},
-						error:function(xhr,data){	
-							console.info("complete delete error");									
-							fnWaitClose();
-							fnShowNotification("Error 505","error");
-						}
-					});
-					e.preventDefault();
-					e.stopPropagation();
-				}
-				
-				
-					
-				
-				
-			});
-			
-			$(document).on("keypress","#table_list_productos_filter > label > input[type='text']", function(e) {	
-				 
-				 
-				 //buscar el primer rgistro que se encuetre
-				 var element 		= $("#table_list_productos_filter > label > input[type='text']").val();		
-				 
-				 var code = e.keyCode || e.which;
-				 /*tecla +*/
-				 if(code != 43) { 
-					 return;
-				 }	
-				
-				 
-				 //buscar
-				 var elementr 		= $("#table_list_productos_filter > label > input[type='text']").val("");
-				 
-				 //Obtener el primer reigstro y agregar
-				 var elementoTr 	= $("#table_list_productos_detail tr.row-selected")[0];
-				 objRowTableProductosSearch = elementoTr; 
-				 fnTableSelectedRow(this,event);
-				 
-				 
-				 var data		 	= {};					
-				 var dataResponse 	= [];
-				 data			 	= objTableProductosSearch.fnGetData(objRowTableProductosSearch);				
-				 dataResponse[0] = data[0];
-				 dataResponse[1] = data[0];
-				 dataResponse[2] = data[0];
-				 dataResponse[3] = data[0];
-				 dataResponse[4] = data[0];
-				 dataResponse[5] = data[0]; //itemID
-				 dataResponse[6] = data[0];
-				 dataResponse[7] = data[0];
-				 dataResponse[8] = data[0];
-				 dataResponse[9] = data[0];
-				 dataResponse[10] = data[0];
-				 dataResponse[11] = data[0];
-				 dataResponse[12] = data[0];
-				 dataResponse[13] = data[0];
-				 dataResponse[14] = data[0];
-				 dataResponse[15] = data[0];
-				 dataResponse[16] = data[0];
-				 dataResponse[17] = data[1];//Codigo
-				 dataResponse[18] = data[2];//Nombre
-				 dataResponse[19] = data[0];
-				 dataResponse[20] = data[3];//Unidad de medida
-				 dataResponse[21] = data[4];//Cantidad
-				 dataResponse[22] = data[5];//Precio
-				 dataResponse[23] = data[0];
-				 dataResponse[24] = data[0];
-				 dataResponse[25] = data[0];
-				 dataResponse[26] = data[0];
-				 
-				 onCompleteNewItem(dataResponse,true);
-				 $(this).focus();
-				 $(this).val("");
-				 e.preventDefault();
-				 
-			});
-				 
-			$(document).on("keydown","#table_list_productos_filter > label > input[type='text']", function(e) {	
-				 
-				 
-				 //Obtener la tabla
-				 var element 		= $("#table_list_productos_detail");			 
-				 var code 			= e.keyCode || e.which;
-				 var selecte 		= element.find("tr.row-selected").length;
-				 var rowselected 	= element.find("tr.row-selected")[0];
-				 var firstrow		= element.children('tr:first');
-				 var lastrow		= element.children('tr:last');
-				 
-				 
-				 if(selecte == 0){
-					 firstrow.addClass("row-selected");
-					 return;
-				 }
-				 
-				 //hacia abajo
-				 if(code == 40) { 
-					$(rowselected).removeClass("row-selected");
-					$(rowselected).next().addClass("row-selected");
-					 return;
-				 }	
-				 
-				 //hacia arriba
-				 if(code == 38) { 
-					$(rowselected).removeClass("row-selected");
-					$(rowselected).prev().addClass("row-selected");
-					return;
-				 }	
-				 
-				 //Obtener el registro seleccionado
-				 var rowselected 	= element.find("tr.row-selected")[0];
-				 
-			});
-				 
-				 
-			$('#mi_modal').on('hidden.bs.modal', function (e) {
-				
-				if(varParameterScanerProducto != "false"){
-					document.getElementById("txtScanerCodigo").focus();					
-				}
-			
-			});
-			
-			
-			$(document).on("keypress",'#txtScanerCodigo', function(e) {
-				var code = e.keyCode || e.which;
-				 if(code != 13) { 
-					 return;
-				 }		 
-				 
-				 
-				var currencyID 		= $("#txtCurrencyID").val();
-				var codigoABuscar 	= $("#txtScanerCodigo").val();			
-				codigoABuscar 		= codigoABuscar.toUpperCase();
-				$("#txtScanerCodigo").val("");
-				
-				//++Abrir popup de productos
-				if(codigoABuscar == "++"){
-					
-					var ventana_ancho = $(window).width()-50;				
-					$("#div-modal-dialog-lista-productos").css("width",ventana_ancho+"px");
-				
-					fnCreateTableSearchProductos();
-					$("#mi_modal").modal();		
-					setTimeout(function() { 
-						
-						if(varUseMobile == "1")
-						{
-							//$("#table_list_productos_filter").remove();	
-							$("#table_list_productos_info").remove();							
-							$("#mi_modal > .modal-dialog > .modal-content > .modal-footer").remove();
-							$("#table_list_productos_wrapper").find(".dataTables_paginate").remove();
-							
-						}
-						else
-						{
-							$($("#table_list_productos_filter").find("input")[0]).focus(); 
-						}
-						
-						
-					}, 500);				
-					return;
-				}
-				
-				//Mover a ingreso de dinero Cordoba
-				if(codigoABuscar == ""){
-					document.getElementById("txtReceiptAmount").focus();
-					return;
-				}
-				
-				//buscar el producto y agregar
-				var filterResult = {};			
-				
-				//buscar producto por codigo de barra autimatico
-				//precio 1 ---> 154 --> precio publico
-				if($("#txtTypePriceID").val() == 154){
-					filterResult = jLinq.from(objListaProductos).where(function(obj)
-					{ 
-							var listCodigTmp 	= obj["Barra"].split(",");
-							var encontrado		= false;
-							
-							for(var i = 0 ; i < listCodigTmp.length; i++)
-							{
-									if( fnDeleteCerosIzquierdos(listCodigTmp[i]) == fnDeleteCerosIzquierdos(codigoABuscar) && currencyID == obj["currencyID"]   )
-									{
-										encontrado = true;
-									}
-							}
-							
-							return encontrado;
-							
-					}).select();
-				}
-				//precio 2 ---> 155 --> precio mayorista
-				if($("#txtTypePriceID").val() == 155){
-					filterResult = jLinq.from(objListaProductos2).where(function(obj)
-					{ 
-							var listCodigTmp 	= obj["Barra"].split(",");
-							var encontrado		= false;
-							
-							for(var i = 0 ; i < listCodigTmp.length; i++)
-							{
-									if( fnDeleteCerosIzquierdos(listCodigTmp[i]) == fnDeleteCerosIzquierdos(codigoABuscar) && currencyID == obj["currencyID"]  )
-									{
-										encontrado = true;
-									}
-							}
-							
-							return encontrado;
-							
-					}).select();
-				}
-				//precio 3 ---> 156 --> precio credito
-				if($("#txtTypePriceID").val() == 156){
-					filterResult = jLinq.from(objListaProductos3).where(function(obj)
-					{ 
-							var listCodigTmp 	= obj["Barra"].split(",");
-							var encontrado		= false;
-							
-							for(var i = 0 ; i < listCodigTmp.length; i++)
-							{
-									if( fnDeleteCerosIzquierdos(listCodigTmp[i]) == fnDeleteCerosIzquierdos(codigoABuscar) && currencyID == obj["currencyID"]  )
-									{
-										encontrado = true;
-									}
-							}
-							
-							return encontrado;
-							
-					}).select();
-				}
-				
-				
-				//buscar producto por codigo de barra escrito
-				if(filterResult.length == 0)
-				{
-					
-					codigoABuscar =  "BITT" + ("00000000"+codigoABuscar).substr(("00000000"+codigoABuscar).length - 8 ,8);				
-					//precio 1 ---> 154 --> precio publico
-					if($("#txtTypePriceID").val() == 154){
-						filterResult = jLinq.from(objListaProductos).where(function(obj){ return fnDeleteCerosIzquierdos(obj["Barra"]) == fnDeleteCerosIzquierdos(codigoABuscar) && currencyID == obj["currencyID"]  }).select();
-					}
-					//precio 2 ---> 155 --> precio mayorista
-					if($("#txtTypePriceID").val() == 155){
-						filterResult = jLinq.from(objListaProductos2).where(function(obj){ return fnDeleteCerosIzquierdos(obj["Barra"]) == fnDeleteCerosIzquierdos(codigoABuscar) && currencyID == obj["currencyID"]  }).select();
-					}
-					//precio 3 ---> 156 --> precio credito
-					if($("#txtTypePriceID").val() == 156){
-						filterResult = jLinq.from(objListaProductos3).where(function(obj){ return fnDeleteCerosIzquierdos(obj["Barra"]) == fnDeleteCerosIzquierdos(codigoABuscar) && currencyID == obj["currencyID"]  }).select();
-					}
-				}
-				
-				//Buscar producto por codigo de sistema		
-				var sumar  = true;
-				if(filterResult.length == 0)
-				{
-					//Agregar Cantidad
-					if(codigoABuscar.indexOf("+")  >= 0 ){				
-						sumar  = true;
-						codigoABuscar =  codigoABuscar.replace("BITT","").replace("+","");
-						codigoABuscar =  "ITT" + ("00000000"+codigoABuscar).substr(("00000000"+codigoABuscar).length - 8 ,8);				
-					}
-					if(codigoABuscar.indexOf("-")  >= 0 ){				
-						sumar  = false;
-						codigoABuscar =  codigoABuscar.replace("BITT","").replace("-","");
-						codigoABuscar =  "ITT" + ("00000000"+codigoABuscar).substr(("00000000"+codigoABuscar).length - 8 ,8);				
-					}
-					
-					//precio 1 ---> 154 --> precio publico
-					if($("#txtTypePriceID").val() == 154){
-						filterResult = jLinq.from(objListaProductos).where(function(obj){ return obj["Codigo"] == codigoABuscar && currencyID == obj["currencyID"]  }).select();
-					}
-					//precio 2 ---> 155 --> precio mayorista
-					if($("#txtTypePriceID").val() == 155){
-						filterResult = jLinq.from(objListaProductos2).where(function(obj){ return obj["Codigo"] == codigoABuscar && currencyID == obj["currencyID"]  }).select();
-					}
-					//precio 3 ---> 156 --> precio credito
-					if($("#txtTypePriceID").val() == 156){
-						filterResult = jLinq.from(objListaProductos3).where(function(obj){ return obj["Codigo"] == codigoABuscar && currencyID == obj["currencyID"]  }).select();
-					}
-				}
-				
-				
-				
-				if(filterResult.length == 0)
-				{
-					return;
-				}
-				
-				
-				filterResult = filterResult[0];
-				var filterResultArray = [];
-				filterResultArray[5] = filterResult.itemID;
-				filterResultArray[17] = filterResult.Codigo;
-				filterResultArray[18] = filterResult.Nombre;
-				filterResultArray[20] = "N/A"
-				filterResultArray[21] = filterResult.Cantidad;
-				filterResultArray[22] = filterResult.Precio;
-				//Agregar el Item a la Fila
-				 onCompleteNewItem(filterResultArray,sumar); 
-				 
-			});
-			
-			//Buscar el Cliente
-			$(document).on("click","#btnSearchCustomer",function(){
-				
-				
-				//Ocultar Boton de Contado
-				$("#divTipoFactura").addClass("hidden");			
-				
-				
-				var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCustomer->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_BILLING/true/empty/false/not_redirect_when_empty";
-				window.open(url_request,"MsgWindow","width=900,height=450");
-				window.onCompleteCustomer = onCompleteCustomer; 
-			});						
-		
-			//Eliminar Cliente
-			$(document).on("click","#btnClearCustomer",function(){
-						$("#txtCustomerID").val("");
-						$("#txtCustomerDescription").val("");
-			});
-			
-			
-			//Imprimir Documento
-			$(document).on("click","#btnPrinter",function(){	
-				fnImprimir();
-			});
-			$(document).on("click","#btnFooter",function(){	
-				fnImprimirCocina();
-			});
-			$(document).on("click","#btnBar",function(){	
-				fnImprimirBar();
-			});
-			
-			//Cambios
-			$(document).on("change","#txtCausalID,#txtCustomerCreditLineID,#txtCurrencyID",function(){
-				fnClearData();
-			});
-
-			$(document).on("change",".txtItemSelected",function(e,o){
-				fnActualizarProducto(this);
-			});
-			
-			$(document).on("change","#txtTypePriceID",function(){
-				fnActualizarPrecio();
-			});
-			
-			$(document).on("change","#txtCausalID",function(){
-				fnRenderLineaCreditoDiv();
-			});
-
-			//Regresar a la lista
-			$(document).on("click","#btnBack",function(){
-					fnWaitOpen();
-			});
-			
-			//Evento Agregar el Usuario
-			$(document).on("click",".btnAcept",function(e){
-					e.preventDefault();
-					var valueWorkflow = $(this).data("valueworkflow");
-					$("#txtStatusID").val(valueWorkflow);			
-					fnEnviarFactura();
-				
-			});
-
-			
-			
-			
-			//Eliminar Documento
-			$(document).on("click","#btnDelete",function(){	
-				
-				fnShowConfirm("Confirmar..","Desea eliminar este Registro...",function(){
-					
-					fnWaitOpen();
-					$.ajax({									
-						cache       : false,
-						dataType    : 'json',
-						type        : 'POST',
-						url  		: "<?php echo base_url(); ?>/app_invoice_billing/delete",
-						data 		: {companyID : <?php echo $objTransactionMaster->companyID;?>, transactionID : <?php echo $objTransactionMaster->transactionID;?>,transactionMasterID : <?php echo $objTransactionMaster->transactionMasterID; ?>  },
-						success:function(data){
-							console.info("complete delete success");
-							fnWaitClose();
-							if(data.error){
-								fnShowNotification(data.message,"error");
-							}
-							else{
-								window.location = "<?php echo base_url(); ?>/app_invoice_billing/add";
-							}
-						},
-						error:function(xhr,data){	
-							console.info("complete delete error");									
-							fnWaitClose();
-							fnShowNotification("Error 505","error");
-						}
-					});
-					
-					
-				});
-			});
-			
-			//Nuevo Producto
-			$(document).on("click","#btnNewItem",function(){
-				
-				//var ventana_ancho = $(window).width()-50;			
-				//$("#div-modal-dialog-lista-productos").css("width",ventana_ancho+"px");
-				//
-				//
-				//fnCreateTableSearchProductos();
-				//$("#mi_modal").modal();
-				//setTimeout(function() { $($("#table_list_productos_filter").find("input")[0]).focus(); }, 500);		
-				
-				
-				
-				setTimeout( function() { 		
-					
-					
-					var ventana_ancho = $(window).width()-50;				
-					$("#div-modal-dialog-lista-productos").css("width",ventana_ancho+"px");			
-					fnCreateTableSearchProductos();
-					$("#mi_modal").modal();
-					setTimeout(function() { 
-						
-						if(varUseMobile == "1")
-						{
-							//$("#table_list_productos_filter").remove();	
-							$("#table_list_productos_info").remove();	
-							$("#mi_modal > .modal-dialog > .modal-content > .modal-footer").remove();
-							$("#table_list_productos_wrapper").find(".dataTables_paginate").remove();						
-						}
-						else
-						{
-							$($("#table_list_productos_filter").find("input")[0]).focus(); 
-						}
-						
-					}, 500);		
-					
-				}, 30 );
-				
-				
-				
-				
-			});
-			$(document).on("click","#btnNewItemCatalog",function(){
-				var url_request 				 = "<?php echo base_url(); ?>/app_inventory_item/add";
-				window.open(url_request,"MsgWindow","width=700,height=600");			
-				window.fnObtenerListadoProductos = fnObtenerListadoProductos; 
-			});
-			$(document).on("click","#btnRefreshDataCatalogo",function(){
-				fnWaitOpen();			
-				setTimeout( function() { fnObtenerListadoProductos(); }, 10);			
-				setTimeout( function() { fnObtenerListadoProductos2(); }, 10);			
-				setTimeout( function() { fnObtenerListadoProductos3(); }, 10);		
-				setTimeout( function() { fnObtenerListadoProdcutosSku(); }, 10);	
-				setTimeout( function() { fnObtenerListadoItemConcept(); }, 10);	
-				setTimeout( function() { fnObtenerListadoCustomerCreditLine(); }, 10);	
-				setTimeout( function() { fnWaitClose(); }, 3000);
-			});
-			$(document).on("click","#btnSearchCustomerNew",function(){
-				var url_request 				 = "<?php echo base_url(); ?>/app_cxc_customer/add/callback/fnCustomerNewCompleted";
-				window.open(url_request,"MsgWindow","width=700,height=600");
-				window.fnCustomerNewCompleted = fnCustomerNewCompleted; 	
-			});
-
-			//Eliminar Item
-			$(document).on("click","#btnDeleteItem",function(){
-					var listRow = objTableDetail.fnGetData();							
-					var length 	= listRow.length;
-					var i 		= 0;
-					var itemid 	= 0;
-					while (i< length ){
-						if(listRow[i][0] == true){
-							itemid = listRow[i][2];
-							objTableDetail.fnDeleteRow(i);
-						}
-						i++;
-					}
-					fnRecalculateDetail(true,"");		
-					
-			});
-			$(document).on("change","input.txtQuantity",function(){
-				fnRecalculateDetail(true,"");		
-			});
-			$(document).on("change","input.txtPrice",function(){
-				
-				//obtener el nuevo valor
-				//obtener el precio 1
-				//obtener el precio 2
-				//obtener el precio 3
-				
-				//si el nuevo precio es menor a todos los precios 
-				//dejar como nuevo precio el menos de los 3 precios
-				
-				//si el nuevo precio no es menor a los tres presos
-				//respetar el valor escribo por el usuario
-			
-			
-			
-				fnRecalculateDetail(true,"txtPrice");		
-			});
-			$(document).on("change","select.txtSku",function(){
-				fnRecalculateDetail(true,"");		
-			});
-			
-			
-			//Ir a archivos
-			$(document).on("click","#btnClickArchivo",function(){
-				window.open("<?php echo base_url()."core_elfinder/index/componentID/".$objComponentBilling->componentID."/componentItemID/".$objTransactionMaster->transactionMasterID; ?>","blanck");
-			});
-			//Cambio en los recibido
-			$(document).on("change","input#txtReceiptAmount",function(){	
-					fnCalculateAmountPay();			
-			});
-			$(document).on("change","input#txtReceiptAmountDol",function(){							
-					fnCalculateAmountPay();			
-			});
-			$(document).on("change","input#txtReceiptAmountBank",function(){	
-					fnCalculateAmountPay();			
-			});
-			$(document).on("change","input#txtReceiptAmountPoint",function(){							
-					fnCalculateAmountPay();			
-			});
-			$(document).on("change","input#txtReceiptAmountTarjeta",function(){							
-					fnCalculateAmountPay();			
-			});
-			$(document).on("change","input#txtReceiptAmountTarjetaDol",function(){							
-					fnCalculateAmountPay();			
-			});
-			$(document).on("change","input#txtReceiptAmountBankDol",function(){							
-					fnCalculateAmountPay();			
-			});
-			
-			
-			if (varParameterRegresarAListaDespuesDeGuardar == "true")
-			{
-				$( "#form-new-invoice" ).submit(function(e){
-						  
-						  e.preventDefault(e);
-
-						  var formData = new FormData(this);
-
-						  //Mandar la factura
-						  //Interna mente, se se guarda y se imprimie
-						  $.ajax({
-								async: 		true,
-								type: 		$( "#form-new-invoice" ).attr('method'),
-								url: 		$( "#form-new-invoice" ).attr('action'),
-								data: 		formData,
-								cache: 		false,
-								processData:false,
-								contentType:false,				  
-								success: 	function (data) {
-								  console.log("success form data")
-								},
-								error: 		function(request, status, error) {
-								  console.log("error form data")
-								}
-						  });
-						  
-						  
-						  //Mandar abrir la caja de efectivo
-						  $.ajax({
-								async: 		true,
-								type: 		"GET",
-								url: 		"<?php echo base_url(); ?>/app_invoice_billing/viewPrinterOpen",
-								data: 		formData,
-								cache: 		false,
-								processData:false,
-								contentType:false,				  
-								success: 	function (data) {
-								  console.log("success form data")
-								},
-								error: 		function(request, status, error) {
-								  console.log("error form data")
-								}
-						  });
-						
-						  if(varParameterRegresarAListaDespuesDeGuardar == "true"){
-							window.location	= "<?php echo base_url(); ?>/app_invoice_billing/index";
-						  }
-						  if(varParameterRegresarAListaDespuesDeGuardar != "true"){
-							window.location	= "<?php echo base_url(); ?>/app_invoice_billing/add";
-						  }
-						  
-						  fnWaitClose();
-				});
-			}
-			
-			
 			
 			
 		});
 		
 	}
+	
+	//crear la cache intervalo 		
+	let  db;
+	createDatabase();	
 	
 	
 </script>
