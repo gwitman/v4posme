@@ -603,7 +603,7 @@ class app_cxp_expenses extends _BaseController {
 			
 			//Generar Reporte
 			$html = helper_reporteA4mmTransactionMasterGastosGlobalPro(
-			    "TALLER",
+			    "GASTOS",
 			    $objCompany,
 			    $objParameter,
 			    $datView["objTM"],

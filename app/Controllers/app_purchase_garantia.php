@@ -630,7 +630,7 @@ class app_purchase_garantia extends _BaseController {
 			
 			//Generar Reporte
 			$html = helper_reporteA4mmTransactionMasterGarantiasGlobalPro(
-			    "TALLER",
+			    "GARANTIA",
 			    $objCompany,
 			    $objParameter,
 			    $datView["objTM"],
