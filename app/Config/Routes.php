@@ -1050,6 +1050,8 @@ $routes->match(['get','post'],'core_elfinder/load_elfinder','core_elfinder::load
 $routes->match(['get','post'],'core_elfinder/load_elfinder/(:any)','core_elfinder::load_elfinder');
 $routes->match(['get','post'],'core_elfinder/upload_elfinder','core_elfinder::upload_elfinder');
 $routes->match(['get','post'],'core_elfinder/upload_elfinder/(:any)','core_elfinder::upload_elfinder');
+$routes->match(['get','post'],'core_elfinder/createFolder','core_elfinder::createFolder');
+$routes->match(['get','post'],'core_elfinder/createFolder/(:any)','core_elfinder::createFolder');
 $routes->match(['get','post'],'core_notification/save','core_notification::save');
 $routes->match(['get','post'],'core_notification/save/(:any)','core_notification::save');
 $routes->match(['get','post'],'core_notification/index','core_notification::index');
