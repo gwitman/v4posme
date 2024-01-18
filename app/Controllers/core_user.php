@@ -155,7 +155,7 @@ class core_user extends _BaseController {
 						$obj["nickname"] 			= /*inicio get post*/ $this->request->getPost("txtNickname");
 						$obj["password"] 			= /*inicio get post*/ $this->request->getPost("txtPassword");
 						$obj["email"] 				= /*inicio get post*/ $this->request->getPost("txtEmail");					
-						$obj["useMobile"]			= /*inicio get post*/ $this->request->getPost("txtIsMobile");
+						$obj["useMobile"]			= /*inicio get post*/ $this->request->getPost("txtIsMobile") == null ? 0 : /*inicio get post*/ $this->request->getPost("txtIsMobile");
 						$obj["createdOn"]			= date("Y-m-d H:i:s");					
 						$obj["createdBy"]			= $dataSession["user"]->userID;
 						$obj["isActive"] 			= true;		
@@ -222,8 +222,12 @@ class core_user extends _BaseController {
 							$this->response->redirect(base_url()."/".'core_user/edit/companyID/'.$companyID."/branchID/".$branchID."/userID/".$userID);						
 						}
 						else{
-							$db->transRollback();						
-							$this->core_web_notification->set_message(true,$this->db->_error_message());
+							$db->transRollback();	
+
+							$errorCode 		= $db->error()["code"];
+							$errorMessage 	= $db->error()["message"];
+				
+							$this->core_web_notification->set_message(true,$errorMessage);
 							$this->response->redirect(base_url()."/".'core_user/add');	
 						}
 					}
