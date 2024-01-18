@@ -71,7 +71,7 @@
 						});
 						
 						$(document).on("click","#btnClickArchivo",function(){
-							window.open("<?php echo base_url()."core_elfinder/index/componentID/".$objComponentShare->componentID."/componentItemID/".$objTransactionMaster->transactionMasterID; ?>","blanck");
+							window.open("<?php echo $objParameterUrlServerFile."/core_elfinder/index/componentID/".$objComponentShare->componentID."/componentItemID/".$objTransactionMaster->transactionMasterID; ?>","blanck");
 						});
 						
 					});

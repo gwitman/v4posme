@@ -676,7 +676,7 @@ function helper_reporteA4TransactionMasterInvoiceGlobalPro(
 										</tr>
 										<tr>
 										  <td style='text-align:center'>
-											&nbsp;
+											Teléfono: 2223-2314
 										  </td>
 										</tr>
 										<tr>
@@ -4223,7 +4223,7 @@ function helper_reporteA4mmTransactionMasterShareGlobalPro(
 										</tr>
 										<tr>
 										  <td style='text-align:center'>
-											&nbsp;
+											Teléfono: 2223-2314
 										  </td>
 										</tr>
 										<tr>
@@ -4256,9 +4256,26 @@ function helper_reporteA4mmTransactionMasterShareGlobalPro(
 	$f_html = $f_html."
 				<table style='width:98%' >
 					<tr>
-						<td></td>
-						<td style='text-align:center;".$border_bottom.";width:160px' >Monto : C$ ".number_format($objTransactionMastser->amount,2,'.',',')."</td>
-						<td></td>
+						<td style='text-align:center;".$border_bottom.";width:160px' >
+							".$objDetail[0]->reference1."
+						</td>
+						<td style='text-align:center;".$border_bottom.";width:160px' >
+							C$ ".number_format($objTransactionMastser->amount,2,'.',',')."
+						</td>
+						<td style='text-align:center;".$border_bottom.";width:160px' >
+							".$objTransactionMastser->transactionOn."
+						</td>
+					</tr>
+					<tr>
+						<td style='text-align:center;width:160px'>
+							FACTURA
+						</td>
+						<td style='text-align:center;width:160px' >
+							MONTO
+						</td>
+						<td style='text-align:center;width:160px'>
+							FECHA
+						</td>
 					</tr>
 				</table>
 			";

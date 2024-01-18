@@ -771,7 +771,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Rancho Pura Vida' , address = 'Costado sur del cementerio Lareynaga' ,
-	flavorID = 0 ,type='default' 
+	flavorID = 145 ,type='default' 
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

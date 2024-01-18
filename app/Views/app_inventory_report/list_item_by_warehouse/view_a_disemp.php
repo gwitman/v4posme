@@ -150,10 +150,17 @@
 								$w			=  	array_filter($objDetail,function($var) use ($ielement,$ieleName) {
 													if ( $var["itemNumber"] == $ielement && $var["warehouseName"] == $ieleName)
 														return true;
-												});								
+												});	
+								
+
+								
 								$w 			= reset($w);
-						
+								
+								
 								echo "<td style='text-align:right;' colspan='1'  class='border' >";
+										if($w === false)
+										echo number_format(0,2,'.',',');
+										else 
 										echo number_format($w["quantity"],2,'.',',');
 								echo "</td>";
 							}

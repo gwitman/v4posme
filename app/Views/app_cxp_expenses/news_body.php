@@ -123,7 +123,11 @@
 																		<?php
 																		if($objListCurrency)
 																		foreach($objListCurrency as $ws){
-																			echo "<option value='".$ws->currencyID."' selected>".$ws->simb."</option>";
+																			
+																			if($ws->currencyID == $objCurrency->currencyID)
+																			echo "<option value='".$ws->currencyID."' selected>".$ws->simb."</option>";	
+																			else
+																			echo "<option value='".$ws->currencyID."' >".$ws->simb."</option>";
 																		}
 																		?>
 																</select>

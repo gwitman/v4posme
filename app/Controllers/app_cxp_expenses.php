@@ -80,6 +80,11 @@ class app_cxp_expenses extends _BaseController {
 			$objParameterUrlPrinter 				= $objParameterUrlPrinter->value;
 			$dataView["objParameterUrlPrinter"]	 	= $objParameterUrlPrinter;
 			
+			$objParameterUrlServerFile 				= $this->core_web_parameter->getParameter("CORE_FILE_SERVER",$companyID);
+			$objParameterUrlServerFile 				= $objParameterUrlServerFile->value;
+			$dataView["objParameterUrlServerFile"]	 = $objParameterUrlServerFile;
+			
+			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
@@ -459,7 +464,7 @@ class app_cxp_expenses extends _BaseController {
 			$dataView["branchID"]				= $dataSession["branch"]->branchID;
 			$dataView["branchName"]				= $dataSession["branch"]->name;
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
-			
+			$dataView["objCurrency"]			= $objCurrency;
 			$objParameterExchangePurchase		= $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_PURCHASE",$companyID);
 			$dataView["exchangeRatePurchase"]	= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID) - $objParameterExchangePurchase->value;			
 			$objParameterExchangeSales			= $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID);
