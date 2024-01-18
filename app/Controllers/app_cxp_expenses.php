@@ -346,14 +346,36 @@ class app_cxp_expenses extends _BaseController {
 			$transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
 			
 			
-			
+			$objParameterUrlServerFile 					= $this->core_web_parameter->getParameter("CORE_FILE_SERVER",$companyID);
+			$objParameterUrlServerFile 					= $objParameterUrlServerFile->value;
+			$dataView["objParameterUrlServerFile"]	 	= $objParameterUrlServerFile;
 			
 			
 			//Crear la Carpeta para almacenar los Archivos del Documento
-			$pathDocument = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID;
-			if(!file_exists ($pathDocument))
+			if ($dataView["objParameterUrlServerFile"] == "")
 			{
-				mkdir( $pathDocument,0700);
+				$pathDocument = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID;
+				if(!file_exists ($pathDocument))
+				{
+					mkdir( $pathDocument,0700);
+				}
+			}
+			else 
+			{
+				//Crear carpeta en servidor remoto
+				$ch 				= curl_init();
+				$urlCreateFolder 	= $dataView["objParameterUrlServerFile"]."/core_elfinder/createFolder/companyID/".$companyID."/componentID/".$objTM["componentID"]."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID;
+				
+				
+				// set URL and other appropriate options
+				curl_setopt($ch, CURLOPT_URL, $urlCreateFolder);
+				curl_setopt($ch, CURLOPT_HEADER, 0);
+				
+				// grab URL and pass it to the browser
+				curl_exec($ch);
+				
+				// close cURL resource, and free up system resources
+				curl_close($ch);
 			}
 			
 			
