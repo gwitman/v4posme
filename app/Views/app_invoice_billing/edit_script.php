@@ -1558,6 +1558,9 @@
 		removeDataDB("objListaProductos");		
 		addDataDB("objListaProductos",objListaProductos_);
 		
+		removeDataDB("objListaProductosX001");		
+		addDataDBArray("objListaProductosX001",objListaProductos);
+		
 	}
 	function fnFillListaProductos2(data)
 	{
@@ -1566,6 +1569,9 @@
 		var  objListaProductos2_ 		= JSON.stringify(objListaProductos2);	
 		removeDataDB("objListaProductos2");		
 		addDataDB("objListaProductos2",objListaProductos2_);
+		
+		removeDataDB("objListaProductosX002");		
+		addDataDBArray("objListaProductosX002",objListaProductos2);
 		
 	}
 
@@ -1577,6 +1583,9 @@
 		removeDataDB("objListaProductos3");		
 		addDataDB("objListaProductos3",objListaProductos3_);
 		
+		removeDataDB("objListaProductosX003");		
+		addDataDBArray("objListaProductosX003",objListaProductos3);
+		
 		
 	}
 	
@@ -1587,6 +1596,9 @@
 		var  objListaProductosSku_ 			= JSON.stringify(objListaProductosSku);	
 		removeDataDB("objListaProductosSku");		
 		addDataDB("objListaProductosSku",objListaProductosSku_);
+		
+		removeDataDB("objListaProductosSkuX001");		
+		addDataDBArray("objListaProductosSkuX001",objListaProductosSku);
 	
 	}
 	
@@ -1600,6 +1612,9 @@
 		removeDataDB("objListaItemConcept");		
 		addDataDB("objListaItemConcept",objListaItemConcept_);
 		
+		removeDataDB("objListaProductosConceptosX001");		
+		addDataDBArray("objListaProductosConceptosX001",objListaItemConcept);
+		
 	
 	}
 	
@@ -1611,6 +1626,8 @@
 		removeDataDB("objListaCustomerCreditLine");		
 		addDataDB("objListaCustomerCreditLine",objListaCustomerCreditLine_);
 		
+		removeDataDB("objListaCustomerCreditLineX001");		
+		addDataDBArray("objListaCustomerCreditLineX001",objListaCustomerCreditLine.objListCustomerCreditLine);
 	
 	}
 	
@@ -2448,20 +2465,145 @@
 			const db = request.result;
 			//...
 			
+			const objectStoreX001  = db.createObjectStore('objListaProductosX001' , { keyPath : 'id',autoIncrement: true } );
+			objectStoreX001.createIndex("BPrecio", "BPrecio", { unique: false });
+			objectStoreX001.createIndex("Barra", "Barra", { unique: false });
+			objectStoreX001.createIndex("Cantidad", "Cantidad", { unique: false });
+			objectStoreX001.createIndex("Codigo", "Codigo", { unique: false });
+			objectStoreX001.createIndex("Descripcion", "Descripcion", { unique: false });
+			objectStoreX001.createIndex("Medida", "Medida", { unique: false });
+			objectStoreX001.createIndex("Precio", "Precio", { unique: false });
+			objectStoreX001.createIndex("cost", "cost", { unique: false });
+			objectStoreX001.createIndex("currencyID", "currencyID", { unique: false });
+			objectStoreX001.createIndex("display", "display", { unique: false });
+			objectStoreX001.createIndex("endOn", "endOn", { unique: false });
+			objectStoreX001.createIndex("isInvoice", "isInvoice", { unique: false });
+			objectStoreX001.createIndex("isInvoiceQuantityZero", "isInvoiceQuantityZero", { unique: false });
+			objectStoreX001.createIndex("itemID", "itemID", { unique: false });
+			objectStoreX001.createIndex("iwCost", "iwCost", { unique: false });
+			objectStoreX001.createIndex("iwQuantityMax", "iwQuantityMax", { unique: false });
+			objectStoreX001.createIndex("iwQuantityMin", "iwQuantityMin", { unique: false });
+			objectStoreX001.createIndex("listPriceID", "listPriceID", { unique: false });
+			objectStoreX001.createIndex("percentage", "percentage", { unique: false });
+			objectStoreX001.createIndex("quantity", "quantity", { unique: false });
+			objectStoreX001.createIndex("quantityMax", "quantityMax", { unique: false });
+			objectStoreX001.createIndex("quantityMin", "quantityMin", { unique: false });
+			objectStoreX001.createIndex("startOn", "startOn", { unique: false });
+			objectStoreX001.createIndex("typePriceID", "typePriceID", { unique: false });
+			objectStoreX001.createIndex("unitMeasureID", "unitMeasureID", { unique: false });
+			
 			const objectStore  = db.createObjectStore('objListaProductos' , { keyPath : 'id',autoIncrement: true } );
 			objectStore.createIndex("name", "name", { unique: false });
+			
+			
+			const objectStoreX002  = db.createObjectStore('objListaProductosX002' , { keyPath : 'id',autoIncrement: true } );
+			objectStoreX002.createIndex("BPrecio", "BPrecio", { unique: false });
+			objectStoreX002.createIndex("Barra", "Barra", { unique: false });
+			objectStoreX002.createIndex("Cantidad", "Cantidad", { unique: false });
+			objectStoreX002.createIndex("Codigo", "Codigo", { unique: false });
+			objectStoreX002.createIndex("Descripcion", "Descripcion", { unique: false });
+			objectStoreX002.createIndex("Medida", "Medida", { unique: false });
+			objectStoreX002.createIndex("Precio", "Precio", { unique: false });
+			objectStoreX002.createIndex("cost", "cost", { unique: false });
+			objectStoreX002.createIndex("currencyID", "currencyID", { unique: false });
+			objectStoreX002.createIndex("display", "display", { unique: false });
+			objectStoreX002.createIndex("endOn", "endOn", { unique: false });
+			objectStoreX002.createIndex("isInvoice", "isInvoice", { unique: false });
+			objectStoreX002.createIndex("isInvoiceQuantityZero", "isInvoiceQuantityZero", { unique: false });
+			objectStoreX002.createIndex("itemID", "itemID", { unique: false });
+			objectStoreX002.createIndex("iwCost", "iwCost", { unique: false });
+			objectStoreX002.createIndex("iwQuantityMax", "iwQuantityMax", { unique: false });
+			objectStoreX002.createIndex("iwQuantityMin", "iwQuantityMin", { unique: false });
+			objectStoreX002.createIndex("listPriceID", "listPriceID", { unique: false });
+			objectStoreX002.createIndex("percentage", "percentage", { unique: false });
+			objectStoreX002.createIndex("quantity", "quantity", { unique: false });
+			objectStoreX002.createIndex("quantityMax", "quantityMax", { unique: false });
+			objectStoreX002.createIndex("quantityMin", "quantityMin", { unique: false });
+			objectStoreX002.createIndex("startOn", "startOn", { unique: false });
+			objectStoreX002.createIndex("typePriceID", "typePriceID", { unique: false });
+			objectStoreX002.createIndex("unitMeasureID", "unitMeasureID", { unique: false });
 			
 			const objectStore2  = db.createObjectStore('objListaProductos2' , { keyPath : 'id',autoIncrement: true } );
 			objectStore2.createIndex("name", "name", { unique: false });
 			
+			const objectStoreX003  = db.createObjectStore('objListaProductosX003' , { keyPath : 'id',autoIncrement: true } );
+			objectStoreX003.createIndex("BPrecio", "BPrecio", { unique: false });
+			objectStoreX003.createIndex("Barra", "Barra", { unique: false });
+			objectStoreX003.createIndex("Cantidad", "Cantidad", { unique: false });
+			objectStoreX003.createIndex("Codigo", "Codigo", { unique: false });
+			objectStoreX003.createIndex("Descripcion", "Descripcion", { unique: false });
+			objectStoreX003.createIndex("Medida", "Medida", { unique: false });
+			objectStoreX003.createIndex("Precio", "Precio", { unique: false });
+			objectStoreX003.createIndex("cost", "cost", { unique: false });
+			objectStoreX003.createIndex("currencyID", "currencyID", { unique: false });
+			objectStoreX003.createIndex("display", "display", { unique: false });
+			objectStoreX003.createIndex("endOn", "endOn", { unique: false });
+			objectStoreX003.createIndex("isInvoice", "isInvoice", { unique: false });
+			objectStoreX003.createIndex("isInvoiceQuantityZero", "isInvoiceQuantityZero", { unique: false });
+			objectStoreX003.createIndex("itemID", "itemID", { unique: false });
+			objectStoreX003.createIndex("iwCost", "iwCost", { unique: false });
+			objectStoreX003.createIndex("iwQuantityMax", "iwQuantityMax", { unique: false });
+			objectStoreX003.createIndex("iwQuantityMin", "iwQuantityMin", { unique: false });
+			objectStoreX003.createIndex("listPriceID", "listPriceID", { unique: false });
+			objectStoreX003.createIndex("percentage", "percentage", { unique: false });
+			objectStoreX003.createIndex("quantity", "quantity", { unique: false });
+			objectStoreX003.createIndex("quantityMax", "quantityMax", { unique: false });
+			objectStoreX003.createIndex("quantityMin", "quantityMin", { unique: false });
+			objectStoreX003.createIndex("startOn", "startOn", { unique: false });
+			objectStoreX003.createIndex("typePriceID", "typePriceID", { unique: false });
+			objectStoreX003.createIndex("unitMeasureID", "unitMeasureID", { unique: false });
+			
 			const objectStore3  = db.createObjectStore('objListaProductos3' , { keyPath : 'id',autoIncrement: true } );
 			objectStore3.createIndex("name", "name", { unique: false });
+			
+			const objectStoreSkuX001  = db.createObjectStore('objListaProductosSkuX001' , { keyPath : 'id',autoIncrement: true } );
+			objectStoreSkuX001.createIndex("Producto", "Producto", { unique: false });
+			objectStoreSkuX001.createIndex("Sku", "Sku", { unique: false });
+			objectStoreSkuX001.createIndex("Valor", "Valor", { unique: false });
+			objectStoreSkuX001.createIndex("catalogItemID", "catalogItemID", { unique: false });
+			objectStoreSkuX001.createIndex("itemID", "itemID", { unique: false });			
+			
 			
 			const objectStore4  = db.createObjectStore('objListaProductosSku' , { keyPath : 'id',autoIncrement: true } );
 			objectStore4.createIndex("name", "name", { unique: false });
 			
+			const objectStoreConceptX001  = db.createObjectStore('objListaProductosConceptosX001' , { keyPath : 'id',autoIncrement: true } );
+			objectStoreConceptX001.createIndex("Producto", "Producto", { unique: false });
+			objectStoreConceptX001.createIndex("Sku", "Sku", { unique: false });
+			objectStoreConceptX001.createIndex("Valor", "Valor", { unique: false });
+			objectStoreConceptX001.createIndex("catalogItemID", "catalogItemID", { unique: false });
+			objectStoreConceptX001.createIndex("itemID", "itemID", { unique: false });	
+			
 			const objectStore5  = db.createObjectStore('objListaItemConcept' , { keyPath : 'id',autoIncrement: true } );
 			objectStore5.createIndex("name", "name", { unique: false });
+			
+			const objectStoreCustomerCreditLineX001  = db.createObjectStore('objListaCustomerCreditLineX001' , { keyPath : 'id',autoIncrement: true } );
+			objectStoreCustomerCreditLineX001.createIndex("accountNumber","accountNumber", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("balance","balance", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("branchID","branchID", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("companyID","companyID", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("creditLineID","creditLineID", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("currencyID","currencyID", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("currencyName","currencyName", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("customerCreditLineID","customerCreditLineID", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("dateLastPay","dateLastPay", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("dateOpen","dateOpen", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("entityID","entityID", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("interestPay","interestPay", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("interestYear","interestYear", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("isActive","isActive", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("limitCredit","limitCredit", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("line","line", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("note","note", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("periodPay","periodPay", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("periodPayLabel","periodPayLabel", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("statusID","statusID", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("statusName","statusName", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("term","term", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("totalDefeated","totalDefeated", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("totalPay","totalPay", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("typeAmortization","typeAmortization", { unique: false });		
+			objectStoreCustomerCreditLineX001.createIndex("typeAmortizationLabel","typeAmortizationLabel", { unique: false });	
 			
 			const objectStore6  = db.createObjectStore('objListaCustomerCreditLine' , { keyPath : 'id',autoIncrement: true } );
 			objectStore6.createIndex("name", "name", { unique: false });
@@ -2471,6 +2613,61 @@
 		};
 		
 		//...
+	}
+	
+	function addDataDBArray(varTable,varDatos){
+		const transaction = db.transaction(varTable, 'readwrite');
+		
+		
+		
+		const objectStore = transaction.objectStore(varTable);
+		
+		// Se agrega un nuevo estudiante		
+		for ( var intx = 0 ; intx < varDatos.length ; intx++)
+		{
+		objectStore.add(varDatos[intx]);
+        }
+		
+		transaction.oncomplete = function(event) {
+			//...
+		};
+		
+		transaction.onerror = function(event) {
+		  //...
+		};
+			
+		//request.onsuccess = ()=> {			
+		//	console.log('success');
+		//}
+		//
+		//request.onerror = (err)=> {
+		//	console.log('error');
+		//}
+	}
+	
+	function obtenerDataDBProductoArray(varTable,varColumn,varValue,varFunction){
+		
+		const requestStore 	= db.transaction(varTable, 'readwrite')
+							.objectStore(varTable);
+							
+		var  varIndex 		= requestStore.index(varColumn);
+		let request 		= varIndex.getAll(varValue);
+		request.onsuccess = ()=> {
+
+			try
+			{
+				 varFunction(request.result);
+			}
+			catch(ex)
+			{
+				
+			}
+			
+		}
+
+		request.onerror = (err)=> {
+			console.info("error");
+		}
 	}
 	
 	function addDataDB(varTable,varDatos){
