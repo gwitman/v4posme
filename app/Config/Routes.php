@@ -395,6 +395,10 @@ $routes->match(['get','post'],'app_cxp_expenses/viewPrinterFormatoA4','app_cxp_e
 $routes->match(['get','post'],'app_cxp_expenses/viewPrinterFormatoA4/(:any)','app_cxp_expenses::viewPrinterFormatoA4');
 $routes->match(['get','post'],'app_cxp_report/index','app_cxp_report::index');
 $routes->match(['get','post'],'app_cxp_report/index/(:any)','app_cxp_report::index');
+$routes->match(['get','post'],'app_cxp_report/expenses','app_cxp_report::expenses');
+$routes->match(['get','post'],'app_cxp_report/expenses/(:any)','app_cxp_report::expenses');
+$routes->match(['get','post'],'app_cxp_report/expenses_chart','app_cxp_report::expenses_chart');
+$routes->match(['get','post'],'app_cxp_report/expenses_chart/(:any)','app_cxp_report::expenses_chart');
 $routes->match(['get','post'],'app_med_query/edit','app_med_query::edit');
 $routes->match(['get','post'],'app_med_query/edit/(:any)','app_med_query::edit');
 $routes->match(['get','post'],'app_med_query/delete','app_med_query::delete');

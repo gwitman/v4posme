@@ -268,7 +268,7 @@ class app_cxp_expenses extends _BaseController {
 			}
 			else{
 				$db->transRollback();	
-				$this->core_web_notification->set_message(true,$this->db->_error_message());
+				$this->core_web_notification->set_message(true,$this->$db->_error_message());
 				$this->response->redirect(base_url()."/".'app_cxp_expenses/add');	
 			}
 			
@@ -386,7 +386,7 @@ class app_cxp_expenses extends _BaseController {
 			}
 			else{
 				$db->transRollback();						
-				$this->core_web_notification->set_message(true,$this->db->_error_message());
+				$this->core_web_notification->set_message(true,$this->$db->_error_message());
 				$this->response->redirect(base_url()."/".'app_cxp_expenses/add');	
 			}
 			
