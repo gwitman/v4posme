@@ -147,7 +147,10 @@ class Item_Model extends Model  {
 				i.companyID, 
 				i.branchID, 
 				i.inventoryCategoryID, 
-				i.itemID, i.familyID, i.itemNumber, i.barCode, i.name, i.description, i.unitMeasureID, 
+				i.itemID, i.familyID, i.itemNumber, i.barCode, 
+				replace(i.name,'\"','') as name,
+				replace(i.description,'\"','') as description,
+				i.unitMeasureID, 
 				i.displayID, i.capacity, i.displayUnitMeasureID, i.defaultWarehouseID, 
 				i.quantity, i.quantityMax, i.quantityMin, i.cost, i.reference1, 
 				i.reference2, i.statusID, i.isPerishable, i.factorBox, 
@@ -155,7 +158,7 @@ class Item_Model extends Model  {
 				i.createdOn, i.isActive,i.isInvoiceQuantityZero,
 				i.isServices,i.currencyID,i.isInvoice,i.reference3,
 				unit.name as unitMeasureName,
-				td.itemNameLog 
+				replace(td.itemNameLog ,'\"','') as itemNameLog
 			");
 		$sql = $sql.sprintf(" from tb_transaction_master tm ");		
 		$sql = $sql.sprintf(" inner join tb_transaction_master_detail td on  tm.transactionMasterID = td.transactionMasterID ");		

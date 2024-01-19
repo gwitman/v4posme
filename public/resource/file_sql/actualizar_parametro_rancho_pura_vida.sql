@@ -578,7 +578,7 @@ WHERE
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT";## Nombre de la impresora por defecto 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "POS-80-Series-Cocin" 
+	tb_company_parameter.value = "POS-80-Series" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_COCINA";## Símbolo de la Moneda Funcional 

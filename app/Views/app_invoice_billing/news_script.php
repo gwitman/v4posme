@@ -1268,7 +1268,7 @@
 		//Obtener el concepto de la base de datos del navegador y calcular nuevamente
 		obtenerDataDBProductoArray(
 			"objListaProductosConceptosX001",
-			"componentItemID",conceptItemID,{},
+			"componentItemID",conceptItemID,"none",{},
 			function(e){ 
 				console.info(e);
 					
@@ -2407,18 +2407,71 @@
 		//}
 	}
 	
-	function obtenerDataDBProductoArray(varTable,varColumn,varValue,varDataExt,varFunction){
+	function obtenerDataDBProductoArrayUniByItemID(varItemID,varFunctionI)
+	{
+		obtenerDataDBProductoArray(
+			"objListaProductosX001",
+			"itemID",
+			varItemID,
+			"producto1",
+			varFunctionI,
+			function(e){    
+				obtenerDataDBProductoArray(
+					"objListaProductosX002",
+					"itemID",
+					e.itemID,
+					"producto2",
+					e,
+					function(e){ 
+						
+						obtenerDataDBProductoArray(
+							"objListaProductosX003",
+							"itemID",
+							e.itemID,
+							"producto3",
+							e,
+							function(e){ 
+								e.callback(e);				
+							}  
+						)
+					}  
+				)     
+			}
+		)
+	}
+
+	function obtenerDataDBProductoArray(varTable,varColumn,varValue,valueComando,varDataExt,varFunction){
 		
 		const requestStore 	= db.transaction(varTable, 'readwrite')
 							.objectStore(varTable);
 							
-		var  varIndex 		= requestStore.index(varColumn);
-		let request 		= varIndex.getAll(varValue);
+		let request;
+		var varIndex;
+		
+		if(varColumn == "all")
+		{
+			request 		= requestStore.getAll();
+		}
+		else 
+		{
+			varIndex 		= requestStore.index(varColumn);
+			request 		= varIndex.getAll(varValue);
+		}
+		
 		request.onsuccess = ()=> {
 
 			try
 			{
-				 varFunction(request.result,varDataExt);
+				
+				if(valueComando != "none")
+				{					
+					varDataExt[valueComando] = request.result;
+					varFunction(varDataExt,varDataExt);
+				}
+				else
+				{
+					varFunction(request.result,varDataExt);
+				}
 			}
 			catch(ex)
 			{
@@ -2785,7 +2838,7 @@
 									//Obtener los sku de la base de datos
 									obtenerDataDBProductoArray(
 										"objListaProductosSkuX001",
-										"itemID",full[2],full,
+										"itemID",full[2],"none",full,
 										function(e,full){ 
 											console.info(e);
 												
