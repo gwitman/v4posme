@@ -1638,6 +1638,7 @@ class app_inventory_inputunpost extends _BaseController {
 			$dataView["objComponentOrdenCompra"]	= $objComponentOrdenCompra;
 			$dataView["objListCurrency"]			= $this->Company_Currency_Model->getByCompany($companyID);
 			$dataView["objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE"]	= $this->core_web_parameter->getParameterValue("CORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE",$companyID);
+			$dataView["company"]					= $dataSession["company"];
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]		= $this->core_web_error->get_error($dataSession["user"]->userID);

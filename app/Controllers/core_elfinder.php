@@ -19,24 +19,24 @@ class core_elfinder extends _BaseController {
     {
 		try{ 
 		
-			//AUTENTICADO
-			if(!$this->core_web_authentication->isAuthenticated())
-			throw new \Exception(USER_NOT_AUTENTICATED);
-			$dataSession		= $this->session->get();			
+			////AUTENTICADO
+			//if(!$this->core_web_authentication->isAuthenticated())
+			//throw new \Exception(USER_NOT_AUTENTICATED);
+			//$dataSession		= $this->session->get();			
+			//
+			//
+			////PERMISO SOBRE LA FUNCTION
+			//if(APP_NEED_AUTHENTICATION == true){								
+			//			$permited = false;
+			//			$permited = $this->core_web_permission->urlPermited(get_class($this),"show",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+			//			
+			//			if(!$permited)
+			//			throw new \Exception(NOT_ACCESS_CONTROL);
+			//			
+			//}	
 			
 			
-			//PERMISO SOBRE LA FUNCTION
-			if(APP_NEED_AUTHENTICATION == true){								
-						$permited = false;
-						$permited = $this->core_web_permission->urlPermited(get_class($this),"show",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-						
-						if(!$permited)
-						throw new \Exception(NOT_ACCESS_CONTROL);
-						
-			}	
-			
-			
-			$data["companyID"]			= $dataSession["user"]->companyID;
+			$data["companyID"]			= APP_COMPANY;
 			$data["componentID"]		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"componentID");//--finuri
 			$data["componentItemID"]	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"componentItemID");//--finuri		
 			//Renderizar Resultado
@@ -89,23 +89,24 @@ class core_elfinder extends _BaseController {
 	
     public function load_elfinder()
     {
-		//AUTENTICADO
-		if(!$this->core_web_authentication->isAuthenticated())
-		throw new \Exception(USER_NOT_AUTENTICATED);
-		$dataSession		= $this->session->get();
-		
-		//PERMISO SOBRE LA FUNCTION
-		if(APP_NEED_AUTHENTICATION == true){								
-					$permited = false;
-					$permited = $this->core_web_permission->urlPermited(get_class($this),"loader",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-					
-					if(!$permited)
-					throw new \Exception(NOT_ACCESS_CONTROL);	
-													
-		}	
+		////AUTENTICADO
+		//if(!$this->core_web_authentication->isAuthenticated())
+		//throw new \Exception(USER_NOT_AUTENTICATED);
+		//$dataSession		= $this->session->get();
+		//
+		////PERMISO SOBRE LA FUNCTION
+		//if(APP_NEED_AUTHENTICATION == true){								
+		//			$permited = false;
+		//			$permited = $this->core_web_permission->urlPermited(get_class($this),"loader",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+		//			
+		//			if(!$permited)
+		//			throw new \Exception(NOT_ACCESS_CONTROL);	
+		//											
+		//}	
 			
 		
-		$companyID			= $dataSession["user"]->companyID;
+		//$companyID			= $dataSession["user"]->companyID;
+		$companyID			= APP_COMPANY;		
 		$componentID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"componentID");//--finuri
 		$componentItemID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"componentItemID");//--finuri		
 		$pathDocument       = PATH_FILE_OF_APP."/company_".$companyID."/component_".$componentID."/component_item_".$componentItemID;
@@ -150,23 +151,24 @@ class core_elfinder extends _BaseController {
 	
 	public function upload_elfinder(){		
 		
-		//AUTENTICADO
-		if(!$this->core_web_authentication->isAuthenticated())
-		throw new \Exception(USER_NOT_AUTENTICATED);
-		$dataSession		= $this->session->get();
-		
-		//PERMISO SOBRE LA FUNCTION
-		if(APP_NEED_AUTHENTICATION == true){								
-					$permited = false;
-					$permited = $this->core_web_permission->urlPermited(get_class($this),"upload",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-					
-					if(!$permited)
-					throw new \Exception(NOT_ACCESS_CONTROL);	
-													
-		}	
+		////AUTENTICADO
+		//if(!$this->core_web_authentication->isAuthenticated())
+		//throw new \Exception(USER_NOT_AUTENTICATED);
+		//$dataSession		= $this->session->get();
+		//
+		////PERMISO SOBRE LA FUNCTION
+		//if(APP_NEED_AUTHENTICATION == true){								
+		//			$permited = false;
+		//			$permited = $this->core_web_permission->urlPermited(get_class($this),"upload",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+		//			
+		//			if(!$permited)
+		//			throw new \Exception(NOT_ACCESS_CONTROL);	
+		//											
+		//}	
 			
 		
-		$companyID			= $dataSession["user"]->companyID;
+		//$companyID			= $dataSession["user"]->companyID;
+		$companyID			= APP_COMPANY;
 		$componentID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"componentID");//--finuri
 		$componentItemID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"componentItemID");//--finuri
 		

@@ -425,6 +425,8 @@
 			}
 		}
 		
+		
+		<?php echo getBehavio($company->type,"app_inventory_inputunpost","new_script_validate_reference1"); ?>
 	
 		return result;
 	}

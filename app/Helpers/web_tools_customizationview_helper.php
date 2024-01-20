@@ -151,6 +151,13 @@ function getBehavio($type_company,$key_controller,$key_element)
 				result = false;
 			}
 		",		
+		strtolower('globalpro_app_inventory_inputunpost_new_script_validate_reference1')			=> "
+			//Validar Referecia 1
+			if($('#txtReference1').val() == ''){
+				fnShowNotification('Escriba Referencia 1 es obligatoria','error',timerNotification);
+				result = false;
+			}
+		",
 		strtolower('globalpro_comand_traducir_O. SALIDAS')			 								=> "AJUSTE SALIDA",
 		strtolower('globalpro_comand_traducir_O. ENTRADAS')			 								=> "AJUSTE ENTRADA",
 		strtolower('globalpro_app_inventory_transferoutput_parameterValidarEnvioDestino')			=> "true",
