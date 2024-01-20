@@ -73,8 +73,13 @@ class app_cxp_expenses extends _BaseController {
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
 			$dataView["objComponentShare"]		= $objComponentTransactionShare;					
 			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_accounting_expenses","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
-			$dataView["objListCatalogoTipoGastos"]				= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_accounting_expenses","priorityID",$companyID);//--Tipo de Gastos			
-			$dataView["objListCatalogoCategoriaGastos"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_accounting_expenses","areaID",$companyID);//--Categoria de Gastos
+			
+			
+			$objPublicCatalogTipoGastos 						= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_accounting_expenses.tipos_gastos")->where("isActive",1)->find();			
+			$objPublicCatalogCategoriaGastos 					= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_accounting_expenses.categoria_gastos")->where("isActive",1)->find();
+			$dataView["objListCatalogoTipoGastos"]				= $this->Public_Catalog_Detail_Model->asObject()->where("publicCatalogID",$objPublicCatalogTipoGastos[0]->publicCatalogID)->where( "isActive",1)->findAll();
+			$dataView["objListCatalogoCategoriaGastos"]			= $this->Public_Catalog_Detail_Model->asObject()->where("publicCatalogID",$objPublicCatalogCategoriaGastos[0]->publicCatalogID)->where( "isActive",1)->findAll();
+			
 			
 			$objParameterUrlPrinter 				= $this->core_web_parameter->getParameter("CXP_URL_PRINTER_GASTO",$companyID);
 			$objParameterUrlPrinter 				= $objParameterUrlPrinter->value;
@@ -495,8 +500,22 @@ class app_cxp_expenses extends _BaseController {
 		
 			$dataView["objCaudal"]				= $this->Transaction_Causal_Model->getCausalByBranch($companyID,$transactionID,$branchID);			
 			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_accounting_expenses","statusID",$companyID,$branchID,$roleID);
-			$dataView["objListCatalogoTipoGastos"]				= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_accounting_expenses","priorityID",$companyID);//--Tipo de Gastos			
-			$dataView["objListCatalogoCategoriaGastos"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_accounting_expenses","areaID",$companyID);//--Categoria de Gastos
+			
+			$objPublicCatalogTipoGastos 	= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_accounting_expenses.tipos_gastos")->where("isActive",1)->find();
+			if(!$objPublicCatalogTipoGastos)
+			{
+				throw new \Exception("CONFIGURAR EL CATALOGO DE TIPOS DE GASTOS tb_transaction_master_accounting_expenses.tipos_gastos");
+			}
+			
+			$objPublicCatalogCategoriaGastos 	= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_accounting_expenses.categoria_gastos")->where("isActive",1)->find();
+			if(!$objPublicCatalogCategoriaGastos)
+			{
+				throw new \Exception("CONFIGURAR EL CATALOGO DE CATEGORIA DE GASTOS tb_transaction_master_accounting_expenses.categoria_gastos");
+			}
+			
+			
+			$dataView["objListCatalogoTipoGastos"]				= $this->Public_Catalog_Detail_Model->asObject()->where("publicCatalogID",$objPublicCatalogTipoGastos[0]->publicCatalogID)->where( "isActive",1)->findAll();
+			$dataView["objListCatalogoCategoriaGastos"]			= $this->Public_Catalog_Detail_Model->asObject()->where("publicCatalogID",$objPublicCatalogCategoriaGastos[0]->publicCatalogID)->where( "isActive",1)->findAll();
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);

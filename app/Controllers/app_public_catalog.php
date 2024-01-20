@@ -284,7 +284,9 @@ class app_public_catalog extends _BaseController {
 			$objTM["isActive"]						= 1;
 			$objTM["statusID"]						= /*inicio get post*/ $this->request->getPost("txtStatusID");
 			$objTM["orden"] 						= 1;
-			$objTM["description"] 					= /*inicio get post*/ $this->request->getPost("txtName");		
+			$objTM["description"] 					= /*inicio get post*/ $this->request->getPost("txtName");	
+			$objTM["flavorID"] 						= $dataSession["company"]->flavorID;
+			
 			
 			
 			$db=db_connect();
@@ -500,12 +502,14 @@ class app_public_catalog extends _BaseController {
 			if($dataViewID == null and  !$this->request->getUserAgent()->isMobile() ){				
 				$targetComponentID			= 0;	
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
+				$parameter["{flavorID}"]	= $this->session->get('company')->flavorID;
 				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
 				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			}		
 			//Vista por defecto MOBILE
 			else if( $this->request->getUserAgent()->isMobile() ){
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
+				$parameter["{flavorID}"]	= $this->session->get('company')->flavorID;
 				$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$objComponent->componentID,"DEFAULT_MOBILE_LISTA_ABONOS",CALLERID_LIST,$resultPermission,$parameter); 			
 				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			} 
@@ -513,6 +517,7 @@ class app_public_catalog extends _BaseController {
 			else 
 			{
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
+				$parameter["{flavorID}"]	= $this->session->get('company')->flavorID;
 				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 			
 				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			}

@@ -154,10 +154,10 @@
 												$counter = 0;
 												if($objListCatalogoTipoGastos)
 												foreach($objListCatalogoTipoGastos as $ws){
-													if($ws->catalogItemID == $objTransactionMaster->priorityID)
-														echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+													if($ws->publicCatalogDetailID == $objTransactionMaster->priorityID)
+														echo "<option value='".$ws->publicCatalogDetailID."' selected >".$ws->name."</option>";
 													else 
-														echo "<option value='".$ws->catalogItemID."' >".$ws->name."</option>";
+														echo "<option value='".$ws->publicCatalogDetailID."' >".$ws->name."</option>";
 													
 													$counter++;
 														
@@ -177,10 +177,10 @@
 												$counter = 0;
 												if($objListCatalogoCategoriaGastos)
 												foreach($objListCatalogoCategoriaGastos as $ws){
-													if($ws->catalogItemID == $objTransactionMaster->areaID)
-														echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+													if($ws->publicCatalogDetailID == $objTransactionMaster->areaID)
+														echo "<option value='".$ws->publicCatalogDetailID."' selected >".$ws->name."</option>";
 													else 
-														echo "<option value='".$ws->catalogItemID."' >".$ws->name."</option>";
+														echo "<option value='".$ws->publicCatalogDetailID."' >".$ws->name."</option>";
 													
 													$counter++;
 														

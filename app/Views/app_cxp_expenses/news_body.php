@@ -142,12 +142,13 @@
 																<select name="txtPriorityID" id="txtPriorityID" class="select2">																									
 																		<?php
 																		$counter = 0;
+																		
 																		if($objListCatalogoTipoGastos)
 																		foreach($objListCatalogoTipoGastos as $ws){
 																			if($counter == 0)
-																				echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+																				echo "<option value='".$ws->publicCatalogDetailID."' selected >".$ws->name."</option>";
 																			else 
-																				echo "<option value='".$ws->catalogItemID."' >".$ws->name."</option>";
+																				echo "<option value='".$ws->publicCatalogDetailID."' >".$ws->name."</option>";
 																			
 																			$counter++;
 																				
@@ -166,9 +167,9 @@
 																		if($objListCatalogoCategoriaGastos)
 																		foreach($objListCatalogoCategoriaGastos as $ws){
 																			if($counter == 0)
-																				echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+																				echo "<option value='".$ws->publicCatalogDetailID."' selected >".$ws->name."</option>";
 																			else 
-																				echo "<option value='".$ws->catalogItemID."' >".$ws->name."</option>";
+																				echo "<option value='".$ws->publicCatalogDetailID."' >".$ws->name."</option>";
 																			
 																			$counter++;
 																				

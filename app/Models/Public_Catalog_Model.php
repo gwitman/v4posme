@@ -14,7 +14,7 @@ class Public_Catalog_Model extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = false;
 
-    protected $allowedFields = ['publicCatalogID', 'name','systemName','statusID','orden','description','isActive'];
+    protected $allowedFields = ['publicCatalogID', 'name','systemName','statusID','orden','description','isActive','flavorID'];
 
     // Dates
     protected $useTimestamps = false;
