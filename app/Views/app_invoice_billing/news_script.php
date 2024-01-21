@@ -3,9 +3,7 @@
 	//fnWaitOpen();
 	var heigthTop							= 0;
 	var objTableDetail 						= {};	
-	var objListaProductos					= {};
-	var objListaProductos2					= {};
-	var objListaProductos3					= {};
+	
 
 	
 	var scrollPosition						= 0;
@@ -117,32 +115,7 @@
 
 	$(document).on("dblclick","#table_list_productos_detail > tr",function(){
 		
-			/*
-			var objRow 							= {};		
-			objRow.checked 						= false;						
-			objRow.transactionMasterDetailID 	= 0;
-			objRow.itemID						= objResponse[5];
-			objRow.codigo						= objResponse[17];
-			objRow.description					= objResponse[18].toLowerCase();
-			objRow.um							= objResponse[20];
-			objRow.quantity 					= fnFormatNumber(1,2);
-			objRow.bquantity 					= fnFormatNumber(objResponse[21],2);
-			objRow.price 						= fnFormatNumber(objResponse[22],2);
-			objRow.total 						= fnFormatNumber(objRow.quantity * objRow.price,2);						
-			objRow.iva 							= 0;
-			objRow.lote 						= "";
-			objRow.vencimiento					= "";				
-			*/
 			
-			/*
-			filterResult[i].itemID,
-			filterResult[i].Codigo,
-			"'"+filterResult[i].Nombre+"'",
-			filterResult[i].Medida,
-			filterResult[i].Cantidad,
-			filterResult[i].Precio,
-			filterResult[i].Barra,
-			*/
 			
 			var data		 = {};					
 			var dataResponse = [];
@@ -180,33 +153,6 @@
 	});
 	$(document).on("click","#btnAddProductoOnLine",function(){
 			
-			
-			/*
-			var objRow 							= {};		
-			objRow.checked 						= false;						
-			objRow.transactionMasterDetailID 	= 0;
-			objRow.itemID						= objResponse[5];
-			objRow.codigo						= objResponse[17];
-			objRow.description					= objResponse[18].toLowerCase();
-			objRow.um							= objResponse[20];
-			objRow.quantity 					= fnFormatNumber(1,2);
-			objRow.bquantity 					= fnFormatNumber(objResponse[21],2);
-			objRow.price 						= fnFormatNumber(objResponse[22],2);
-			objRow.total 						= fnFormatNumber(objRow.quantity * objRow.price,2);						
-			objRow.iva 							= 0;
-			objRow.lote 						= "";
-			objRow.vencimiento					= "";				
-			*/
-			
-			/*
-			filterResult[i].itemID,
-			filterResult[i].Codigo,
-			"'"+filterResult[i].Nombre+"'",
-			filterResult[i].Medida,
-			filterResult[i].Cantidad,
-			filterResult[i].Precio,
-			filterResult[i].Barra,
-			*/
 			
 			var data		 = {};					
 			var dataResponse = [];
@@ -503,141 +449,78 @@
 		
 		
 		//buscar el producto y agregar por codigo de barra
-		var filterResult = {};
-		
-		//buscar producto por codigo de barra autimatico
-		//precio 1 ---> 154 --> precio publico
-		if($("#txtTypePriceID").val() == 154)
-		{
-			filterResult = jLinq.from(objListaProductos).where(function(obj)
-			{ 
+		obtenerDataDBProductoArray(
+			"objListaProductosX001",
+			"all",
+			0,
+			"all",
+			{"codigoABuscar":codigoABuscar},
+			function(e){    
 				
-					
-					var listCodigTmp 	= obj["Barra"].split(",");
-					var encontrado		= false;
-					
-					for(var i = 0 ; i < listCodigTmp.length; i++)
-					{
-							if( fnDeleteCerosIzquierdos(listCodigTmp[i]) == fnDeleteCerosIzquierdos(codigoABuscar)  && currencyID == obj["currencyID"] )
-							{
-								encontrado = true;
-							}
-					}
-					
-					return encontrado;
-					
 				
-			
-			}).select();
-		}
-		//precio 2 ---> 155 --> precio mayorista
-		if($("#txtTypePriceID").val() == 155){
-			filterResult = jLinq.from(objListaProductos2).where(function(obj)
-			{ 
-					var listCodigTmp 	= obj["Barra"].split(",");
-					var encontrado		= false;
+				//buscar el producto y agregar						
+				var codigoABuscar 	= e.codigoABuscar;
+				e 					= e.all;
+				var encontrado		= false;
+				for(var i = 0 ; i < e.length ; i++)
+				{
 					
-					for(var i = 0 ; i < listCodigTmp.length; i++)
+					//buscar por codigo de sistema					
+					var currencyTemp	= e[i].currencyID;
+					var currencyID 		= $("#txtCurrencyID").val();
+					if(  currencyID == currencyTemp && fnDeleteCerosIzquierdos(codigoABuscar) == fnDeleteCerosIzquierdos(e[i].Codigo.replace("BITT","").replace("ITT",""))  )
 					{
-							if( fnDeleteCerosIzquierdos(listCodigTmp[i]) == fnDeleteCerosIzquierdos(codigoABuscar) && currencyID == obj["currencyID"]   )
-							{
-								encontrado = true;
-							}
+						encontrado = true;
+						break;
 					}
 					
-					return encontrado;						
 					
-			}).select();
-		}
-		//precio 3 ---> 156 --> precio credito
-		if($("#txtTypePriceID").val() == 156){
-			filterResult = jLinq.from(objListaProductos3).where(function(obj)
-			{ 
-					var listCodigTmp 	= obj["Barra"].split(",");
-					var encontrado		= false;
-					
-					for(var i = 0 ; i < listCodigTmp.length; i++)
+					//buscar por codigo de barra
+					var listCodigTmp 	= e[i].Barra.split(",");
+					currencyTemp		= e[i].currencyID;
+					currencyID 			= $("#txtCurrencyID").val();
+					encontrado			= false;
+							
+					if(encontrado == false )
 					{
-							if( fnDeleteCerosIzquierdos(listCodigTmp[i]) == fnDeleteCerosIzquierdos(codigoABuscar) && currencyID == obj["currencyID"]   )
+						for(var ii = 0 ; ii < listCodigTmp.length; ii++)
+						{
+							if( fnDeleteCerosIzquierdos(listCodigTmp[ii]) == fnDeleteCerosIzquierdos(codigoABuscar) && currencyID == currencyTemp  )
 							{
 								encontrado = true;
+								break;
 							}
+						}
 					}
 					
-					return encontrado;
 					
-			}).select();
-		}
-		
-		
-		
-		//buscar producto por codigo de barra escrito
-		if(filterResult.length == 0)
-		{
-			
-			codigoABuscar =  "BITT" + ("00000000"+codigoABuscar).substr(("00000000"+codigoABuscar).length - 8 ,8);				
-			//precio 1 ---> 154 --> precio publico
-			if($("#txtTypePriceID").val() == 154){
-				filterResult = jLinq.from(objListaProductos).where(function(obj){ return fnDeleteCerosIzquierdos(obj["Barra"]) == fnDeleteCerosIzquierdos(codigoABuscar) && currencyID == obj["currencyID"]  }).select();
-			}
-			//precio 2 ---> 155 --> precio mayorista
-			if($("#txtTypePriceID").val() == 155){
-				filterResult = jLinq.from(objListaProductos2).where(function(obj){ return fnDeleteCerosIzquierdos(obj["Barra"]) == fnDeleteCerosIzquierdos(codigoABuscar) && currencyID == obj["currencyID"]  }).select();
-			}
-			//precio 3 ---> 156 --> precio credito
-			if($("#txtTypePriceID").val() == 156){
-				filterResult = jLinq.from(objListaProductos3).where(function(obj){ return fnDeleteCerosIzquierdos(obj["Barra"]) == fnDeleteCerosIzquierdos(codigoABuscar) && currencyID == obj["currencyID"]  }).select();
-			}
-		}
-		
-		
-		//Buscar producto por codigo de sistema		
-		var sumar  = true;
-		if(filterResult.length == 0)
-		{
-			//Agregar Cantidad
-			if(codigoABuscar.indexOf("+")  >= 0 ){				
-				sumar  = true;
-				codigoABuscar =  codigoABuscar.replace("BITT","").replace("+","");
-				codigoABuscar =  "ITT" + ("00000000"+codigoABuscar).substr(("00000000"+codigoABuscar).length - 8 ,8);				
-			}
-			if(codigoABuscar.indexOf("-")  >= 0 ){				
-				sumar  = false;
-				codigoABuscar =  codigoABuscar.replace("BITT","").replace("-","");
-				codigoABuscar =  "ITT" + ("00000000"+codigoABuscar).substr(("00000000"+codigoABuscar).length - 8 ,8);				
+					
+				}
+				
+				if(encontrado == true)
+				{
+					var sumar				= true;
+					var filterResult 		= e[i];						
+					var filterResultArray 	= [];
+					filterResultArray[5]  	= filterResult.itemID;
+					filterResultArray[17] 	= filterResult.Codigo;
+					filterResultArray[18] 	= filterResult.Nombre;
+					filterResultArray[20] 	= "N/A"
+					filterResultArray[21] 	= filterResult.Cantidad;
+					filterResultArray[22] 	= filterResult.Precio;
+					//Agregar el Item a la Fila
+					
+					onCompleteNewItem(filterResultArray,sumar); 
+				}
+				 
 			}
 			
-			//precio 1 ---> 154 --> precio publico
-			if($("#txtTypePriceID").val() == 154){
-				filterResult = jLinq.from(objListaProductos).where(function(obj){ return obj["Codigo"] == codigoABuscar && currencyID == obj["currencyID"]  }).select();
-			}
-			//precio 2 ---> 155 --> precio mayorista
-			if($("#txtTypePriceID").val() == 155){
-				filterResult = jLinq.from(objListaProductos2).where(function(obj){ return obj["Codigo"] == codigoABuscar && currencyID == obj["currencyID"]  }).select();
-			}
-			//precio 3 ---> 156 --> precio credito
-			if($("#txtTypePriceID").val() == 156){
-				filterResult = jLinq.from(objListaProductos3).where(function(obj){ return obj["Codigo"] == codigoABuscar && currencyID == obj["currencyID"]  }).select();
-			}
-		}
-		
-		//No se encontro
-		if(filterResult.length == 0)
-		{
-			return;
-		}
+		);
+		 
+		 
+		 
 		
 		
-		filterResult 			= filterResult[0];
-		var filterResultArray 	= [];
-		filterResultArray[5] 	= filterResult.itemID;
-		filterResultArray[17] 	= filterResult.Codigo;
-		filterResultArray[18] 	= filterResult.Nombre;
-		filterResultArray[20] 	= filterResult.Medida;
-		filterResultArray[21] 	= filterResult.Cantidad;
-		filterResultArray[22] 	= filterResult.Precio;
-		//Agregar el Item a la Fila
-		onCompleteNewItem(filterResultArray,sumar); 
 		 
 	});
 	
@@ -943,11 +826,12 @@
 			var objind_ 	= fnGetPosition(x_,objTableDetail.fnGetData());
 			objTableDetail.fnUpdate( fnFormatNumber(newCantidad,2)  , objind_, 6 );
 			
+			debugger;
 			if(varUseMobile != "1"){
 				$("#body_tb_transaction_master_detail tr")[objind_].animate({ 
-				backgroundColor : "#4eacc8" },500);
+				backgroundColor : "#4eacc8" },100);
 				$("#body_tb_transaction_master_detail tr")[objind_].animate({ 
-				backgroundColor : "" },500);
+				backgroundColor : "" },100);
 			}
 			
 		}
@@ -970,11 +854,12 @@
 				""
 			]);
 			
+			debugger;
 			if(varUseMobile != "1"){
 				$("#body_tb_transaction_master_detail tr")[objTableDetail.fnGetData().length - 1].animate({ 
-				backgroundColor : "#4eacc8" },500);
+				backgroundColor : "#4eacc8" },100);
 				$("#body_tb_transaction_master_detail tr")[objTableDetail.fnGetData().length - 1].animate({ 
-				backgroundColor : "" },500);
+				backgroundColor : "" },100);
 			}
 		}
 		
@@ -1072,14 +957,8 @@
 			var rowTableItemID 		 	= rowTable[2];
 			var rowTableItemQuantity 	= rowTable[6];
 			var rowTableItemNombre 		= rowTable[4];			
-			var objProducto 			= jLinq.from(objListaProductos).where(function(obj){ return obj.itemID == rowTableItemID}).select();
 			
 			
-			if(objProducto.length == 0){
-				fnShowNotification("Producto no se encuentra en inventario","error",timerNotification);
-				result = false;	
-				fnWaitClose();
-			}
 			listItemIDToValid = listItemIDToValid+ ","+rowTableItemID;
 			listQntity = listQntity+ ","+rowTableItemQuantity;
 			
@@ -1227,38 +1106,6 @@
 	
 	function fnGetConcept(conceptItemID,nameConcept){
 		
-		
-		//Recalcula el concepto via AJAX 2023-12-04. Fin
-		//$.ajax({									
-		//	cache       : false,
-		//	dataType    : 'json',
-		//	type        : 'POST',
-		//	url  		: "<?php echo base_url(); ?>/core_concept_api/index",
-		//	data 		: {companyID : <?php echo $companyID;?>, componentID : <?php echo $objComponentItem->componentID;?>, componentItemID : conceptItemID, name : nameConcept  },
-		//	success:function(data){
-		//		console.info("complete concept success");
-		//		fnWaitClose();
-		//		if(data.error){
-		//			fnShowNotification(data.message,"error");
-		//			fnRecalculateDetail(true,"");		
-		//			return;
-		//		}								
-		//		
-		//		if(data.data != null){
-		//			var x_		= jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[2] == data.data.componentItemID;}).select();									
-		//			var objind_ = fnGetPosition(x_,objTableDetail.fnGetData());
-		//			objTableDetail.fnUpdate( fnFormatNumber(data.data.valueOut,2), objind_, 9 );
-		//		}
-		//		fnRecalculateDetail(true,"");
-		//	},
-		//	error:function(xhr,data)
-		//	{	
-		//		console.info("complete concept error");									
-		//		fnWaitClose();
-		//		fnShowNotification("Error 505","error");
-		//		fnRecalculateDetail(true,"");		
-		//	}
-		//});
 		
 		//Recalculoa el concepto via AJAX 2023-12-05 Inicio		
 		var x_			= jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[2] == conceptItemID ;}).select();									
@@ -1440,10 +1287,8 @@
 	{			
 		
 		console.info("complete success data");
-		objListaProductos 			= data.objGridView;		
-		var  objListaProductos_ 		= JSON.stringify(objListaProductos);	
-		removeDataDB("objListaProductos");		
-		addDataDB("objListaProductos",objListaProductos_);
+		var objListaProductos 			= data.objGridView;		
+		
 		
 		removeDataDB("objListaProductosX001");		
 		addDataDBArray("objListaProductosX001",objListaProductos);
@@ -1453,10 +1298,8 @@
 	{		
 		
 		console.info("complete success data");
-		objListaProductos2 				= data.objGridView;
-		var  objListaProductos2_ 		= JSON.stringify(objListaProductos2);	
-		removeDataDB("objListaProductos2");		
-		addDataDB("objListaProductos2",objListaProductos2_);
+		var objListaProductos2 				= data.objGridView;
+		
 		
 		removeDataDB("objListaProductosX002");		
 		addDataDBArray("objListaProductosX002",objListaProductos2);
@@ -1465,10 +1308,8 @@
 	function fnFillListaProductos3(data)
 	{		
 		console.info("complete success data");
-		objListaProductos3 				= data.objGridView;
-		var  objListaProductos3_ 		= JSON.stringify(objListaProductos3);			
-		removeDataDB("objListaProductos3");		
-		addDataDB("objListaProductos3",objListaProductos3_);
+		var objListaProductos3 				= data.objGridView;
+		
 		
 		removeDataDB("objListaProductosX003");		
 		addDataDBArray("objListaProductosX003",objListaProductos3);
@@ -1809,24 +1650,37 @@
 		var NSSystemDetailInvoice	= objTableDetail.fnGetData();	
 		for(var i = 0; i < NSSystemDetailInvoice.length; i++)
 		{			
-			var itemID 			= NSSystemDetailInvoice[i][2];
-			var filterResult 	= {};
+			var itemID 			= NSSystemDetailInvoice[i][2];			
+			obtenerDataDBProductoArrayUniByItemID(
+				itemID,
+				{
+					"all":itemID,
+					"index":i,
+					"callback":function(e){ 
+						
+						
+						var filterResult 	= {};
+						
+						//precio 1 ---> 154 --> precio publico
+						if(typePriceID == 154){
+							filterResult = e.producto1;
+						}
+						//precio 2 ---> 155 --> precio mayorista
+						if(typePriceID == 155){
+							filterResult = e.producto2;
+						}
+						//precio 3 ---> 156 --> precio credito
+						if(typePriceID == 156){
+							filterResult = e.producto2;
+						}
+						
+						//Actualizar Precio
+						objTableDetail.fnUpdate(fnFormatNumber( filterResult[0].Precio,2) , e.index, 7 );
+						
+					}
+				}
+			);
 			
-			//precio 1 ---> 154 --> precio publico
-			if(typePriceID == 154){
-				filterResult = jLinq.from(objListaProductos).where(function(obj){ return obj["itemID"] == itemID}).select();
-			}
-			//precio 2 ---> 155 --> precio mayorista
-			if(typePriceID == 155){
-				filterResult = jLinq.from(objListaProductos2).where(function(obj){ return obj["itemID"] == itemID}).select();
-			}
-			//precio 3 ---> 156 --> precio credito
-			if(typePriceID == 156){
-				filterResult = jLinq.from(objListaProductos3).where(function(obj){ return obj["itemID"] == itemID}).select();
-			}
-			
-			//Actualizar Precio
-			objTableDetail.fnUpdate(fnFormatNumber( filterResult[0].Precio,2) , i, 7 );
 	
 		}
 	}
@@ -1882,249 +1736,244 @@
 	function fnAddRowSelected()
 	{
 		
-		var data		 = {};	
-		var length2		 = objTableDetail.fnGetData().length;
-		var data2		 = objTableDetail.fnGetData();
+		obtenerDataDBProductoArray(
+			"objListaProductosX001",
+			"all",
+			0,
+			"none",
+			{},
+			function(e){    
+				
+				debugger;
+				var data		 = {};	
+				var length2		 = objTableDetail.fnGetData().length;
+				var data2		 = objTableDetail.fnGetData();
+				
+				var length		 = e.producto1.length;
+				var data		 = e.producto1;
+				var index		 = 0;
+				
+				for(var i = 0 ; i < length; i++ )
+				{		
+					var objDatItem 			= data[i];
+					var existe 				= jLinq.from(data2).where(function(obj){   return obj[2] == objDatItem[0]; }).select().length;			
+					if(existe == 0)
+						break;
+					
+					index++;
+					
+				}
+				
+				
+				var dataResponse = [];
+				data			= data[index];				
+				dataResponse[0] = data[0];
+				dataResponse[1] = data[0];
+				dataResponse[2] = data[0];
+				dataResponse[3] = data[0];
+				dataResponse[4] = data[0];
+				dataResponse[5] = data[0]; //itemID
+				dataResponse[6] = data[0];
+				dataResponse[7] = data[0];
+				dataResponse[8] = data[0];
+				dataResponse[9] = data[0];
+				dataResponse[10] = data[0];
+				dataResponse[11] = data[0];
+				dataResponse[12] = data[0];
+				dataResponse[13] = data[0];
+				dataResponse[14] = data[0];
+				dataResponse[15] = data[0];
+				dataResponse[16] = data[0];
+				dataResponse[17] = data[1];//Codigo
+				dataResponse[18] = data[2];//Nombre
+				dataResponse[19] = data[0];
+				dataResponse[20] = data[3];//Unidad de medida
+				dataResponse[21] = data[4];//Cantidad
+				dataResponse[22] = data[5];//Precio
+				dataResponse[23] = data[0];//6:Barra 
+				dataResponse[24] = data[0];//7:Descripcion
+				dataResponse[25] = data[0];
+				dataResponse[26] = data[0];		
+				onCompleteNewItem(dataResponse,true);
+			}
+		);
 		
-		var length		 = fnGetProductosFilterd().length;
-		var data		 = fnGetProductosFilterd();		
-		var index		 = 0;
 		
-		for(var i = 0 ; i < length; i++ )
-		{		
-			var objDatItem 			= data[i];
-			var existe 				= jLinq.from(data2).where(function(obj){   return obj[2] == objDatItem[0]; }).select().length;			
-			if(existe == 0)
-				break;
-			
-			index++;
-			
-		}
-		
-		
-			
-		
-		
-		var dataResponse = [];
-		data			= data[index];				
-		dataResponse[0] = data[0];
-		dataResponse[1] = data[0];
-		dataResponse[2] = data[0];
-		dataResponse[3] = data[0];
-		dataResponse[4] = data[0];
-		dataResponse[5] = data[0]; //itemID
-		dataResponse[6] = data[0];
-		dataResponse[7] = data[0];
-		dataResponse[8] = data[0];
-		dataResponse[9] = data[0];
-		dataResponse[10] = data[0];
-		dataResponse[11] = data[0];
-		dataResponse[12] = data[0];
-		dataResponse[13] = data[0];
-		dataResponse[14] = data[0];
-		dataResponse[15] = data[0];
-		dataResponse[16] = data[0];
-		dataResponse[17] = data[1];//Codigo
-		dataResponse[18] = data[2];//Nombre
-		dataResponse[19] = data[0];
-		dataResponse[20] = data[3];//Unidad de medida
-		dataResponse[21] = data[4];//Cantidad
-		dataResponse[22] = data[5];//Precio
-		dataResponse[23] = data[0];//6:Barra 
-		dataResponse[24] = data[0];//7:Descripcion
-		dataResponse[25] = data[0];
-		dataResponse[26] = data[0];		
-		onCompleteNewItem(dataResponse,true);
 	}
 	
-	function fnGetProductosFilterd()
-	{
-		
-		//Filtrar Datos
-		var typePriceID 	= $("#txtTypePriceID").val();		
-		var currencyID 		= $("#txtCurrencyID").val();
-		var filterResult 	= {};
-		var encontrado		= false;
-		
-		//precio 1 ---> 154 --> precio publico
-		if( (( /*typePriceID == 154  &&*/ varPermisosEsPermitidoSeleccionarPrecioPublico == true)   || isAdmin == "1" )  && encontrado == false   ){
-			filterResult = objListaProductos;
-			encontrado = true;
-		}
-		//precio 2 ---> 155 --> precio mayorista
-		if( (( /*typePriceID == 155  &&*/  varPermisosEsPermitidoSeleccionarPrecioPormayor == true)  || isAdmin == "1" ) && encontrado == false  ){
-			filterResult = objListaProductos2;			
-			encontrado = true;
-		}
-		//precio 3 ---> 156 --> precio credito
-		if( (( /*typePriceID == 156  &&*/  varPermisosEsPermitidoSeleccionarPrecioCredito == true)   || isAdmin == "1" ) && encontrado == false   ){
-			filterResult = objListaProductos3;
-			encontrado = true;
-		}
-		
-		var dataSourceProductos = [];
-		for(var i = 0 ; i < filterResult.length;i++){
-			
-			if( filterResult[i].currencyID == currencyID  && filterResult[i].isInvoice == "1"  )
-			{
-				dataSourceProductos.push(
-					[
-						filterResult[i].itemID,
-						filterResult[i].Codigo,
-						"'"+filterResult[i].Nombre+"'",
-						filterResult[i].Medida,
-						filterResult[i].Cantidad,
-						filterResult[i].Precio,
-						filterResult[i].Barra,
-						filterResult[i].Descripcion,
-					]
-				);
-			}
-		}
-		
-		return dataSourceProductos;
-		
-	}
+	
 	
 	function fnCreateTableSearchProductos(){
 			
 		
-		var dataSourceProductos = fnGetProductosFilterd();
-		if( objTableProductosSearch != null)
-		objTableProductosSearch.fnDestroy();
-		
-		$('#table_list_productos').dataTable({
-			
-			
-			"bPaginate"			: varParameterScrollDelModalDeSeleccionProducto == "false" ? true : false,
-			//"bFilter"			: false,
-			//"bSort"			: false,
-			//"bInfo"			: false,
-			//"bAutoWidth"		: false,
-			
-			
-			'Dom'				: "<'row'<'col-lg-6'l><'col-lg-6'f>r>t<'row'<'col-lg-6'i><'col-lg-6'p>>",
-			'sPaginationType'	: 'bootstrap',
-			'bJQueryUI'			: false,
-			'bAutoWidth'		: false,							
-			'iDisplayLength'	: varParameterCantidadItemPoup, //esta linea proboca que el boton siguiente no funcione...
-			'oLanguage'	: {
-				'sSearch'		: '<span>Filtro:</span> _INPUT_ <p>+ para agregar</p>',
-				//'sLengthMenu'	: '<span>_MENU_ elementos</span>',
-				'sLengthMenu'	: '',
-				//'oPaginate'		: { 'sFirst': 'First', 'sLast': 'Last' }
-				'oPaginate'		: { 'sFirst': 'Primera', 'sLast': 'Ultima','sNext':'Siguiente','sPrevious':'Atras' },
-				'sInfo'			:'_START_ de _END_ total _TOTAL_'
-			},
-			
-			
-			"aaData"			: dataSourceProductos,
-			"aoColumnDefs": [ 
-						{
-							"aTargets"		: [ 0 ],//itemID
-							"bVisible"		: false,
-							"bSearchable"	: false,
-							//"mData":		'itemID',
-							//"mRender"		: function ( data, type, full ) {
-							//}
-						},
-						{
-							"aTargets"		: [ 1 ],//Codigo
-							"bVisible"  	: !(varParameterHidenFiledItemNumber == true ? true : (varUseMobile == "1" ? true : false )),
-							//"sClass" 		: "hidden",
-							"bSearchable"	: true,
-							//"mData":		'Codigo',
-							//"mRender"		: function ( data, type, full ) {
-							//}
-						},
-						{
-							"aTargets"		: [ 2 ],//Descripcion
-							"bVisible"		: true,
-							//"sClass" 		: "hidden",
-							"bSearchable"	: true,
-							//"mData":		'Nombre',
-							//"mRender"		: function ( data, type, full ) {
-							//	
-							//}
-						},
-						{
-							"aTargets"		: [ 3 ],//Unidad
-							"bVisible"		: false,
-							"bSearchable"	: false,
-							//"mData":		'Medida',
-							//"sWidth" 		: "40%"
-						},
-						{
-							"aTargets"		: [ 4 ],//Cantidad
-							"bVisible"		: true, //(varParameterCustomPopupFacturacion == "mobile_ruta_pablo" ? false : true),
-							"bSearchable"	: false,
-							//"mData":		'Cantidad',
-							"mRender"		: function ( data, type, full ) {								
-								return "<span class='red' style='text-align:right;display:block' >"+fnFormatNumber(data,2)+"</span>";
-							}
-						},
-						{
-							"aTargets"		: [ 5 ],//Precio
-							"bVisible"		: true,
-							//"mData":		'Precio',
-							"mRender"		: function ( data, type, full ) {
-								return "<span class='green' style='text-align:right;display:block' >"+fnFormatNumber(data,2) +"</span>";
-							}
-						},
-						{
-							"aTargets"		: [ 6 ],//Barra
-							"bVisible"		: (varUseMobile == "1" ? false : true),
-							//"mData":		'Precio',
-							"mRender"		: function ( data, type, full ) 
-							{
-								var indexSearch = data.indexOf(",");
-								if(indexSearch > 1 )
-								{
-									return "<!--Barra oculta:  "+data+" --> "+data.split(',')[0];
-								}
-								else 
-								{
-									return ""+data;
-								}
-							}
-						},
-						{
-							"aTargets"		: [ 7 ],//Descripcion
-							"bVisible"		: (varUseMobile == "1" ? false : true),
-							//"mData":		'Precio',
-							"mRender"		: function ( data, type, full ) {
-								if(varParameterMostrarImagenEnSeleccion == "true")
-								{
-									var src = varBaseUrl+"/resource/file_company/company_2/component_33/component_item_"+full[0]+"/preventa.jpg";
-									return ""+
-										" <button type='button' class='btn btn-primary img_row' data-src='"+src+"'>Ver imagen</button><br>"+
-										"<img class='img-thumbnail ' style='width:225px;height:120px' src='"+src+"' />"+
-										"";
-								}
-								else
-								{
-									return ""+data;
-								}
-							}
-						}
-			]
-			
-			
-			
-		});
+		obtenerDataDBProductoArray(
+			"objListaProductosX001",
+			"all",
+			0,
+			"none",
+			{},
+			function(e){    
+				
+				
+				var dataSourceProductos = [];
+				for(var i =0 ; i < e.length; i++)
+				{
+					dataSourceProductos.push(
+						[
+							e[i].itemID,
+							e[i].Codigo,
+							e[i].Nombre,
+							e[i].Medida,
+							e[i].Cantidad,
+							e[i].Precio,
+							e[i].Barra,
+							e[i].Descripcion
+						]
+					);
+				}
+				
+				
+				if( objTableProductosSearch != null)
+				objTableProductosSearch.fnDestroy();
+				
+				$('#table_list_productos').dataTable({
 					
-		objTableProductosSearch = $('#table_list_productos').dataTable(); 		
-		$('.dataTables_length select').uniform();
-		$('.dataTables_paginate > ul').addClass('pagination');		
-		
 					
-										
-		$(document).on('click','#table_list_productos tr',function(event){ 			
-			objRowTableProductosSearch = this; 
-			fnTableSelectedRow(this,event);
-		});  
+					"bPaginate"			: varParameterScrollDelModalDeSeleccionProducto == "false" ? true : false,
+					//"bFilter"			: false,
+					//"bSort"			: false,
+					//"bInfo"			: false,
+					//"bAutoWidth"		: false,
+					
+					
+					'Dom'				: "<'row'<'col-lg-6'l><'col-lg-6'f>r>t<'row'<'col-lg-6'i><'col-lg-6'p>>",
+					'sPaginationType'	: 'bootstrap',
+					'bJQueryUI'			: false,
+					'bAutoWidth'		: false,							
+					'iDisplayLength'	: varParameterCantidadItemPoup, //esta linea proboca que el boton siguiente no funcione...
+					'oLanguage'	: {
+						'sSearch'		: '<span>Filtro:</span> _INPUT_ <p>+ para agregar</p>',
+						//'sLengthMenu'	: '<span>_MENU_ elementos</span>',
+						'sLengthMenu'	: '',
+						//'oPaginate'		: { 'sFirst': 'First', 'sLast': 'Last' }
+						'oPaginate'		: { 'sFirst': 'Primera', 'sLast': 'Ultima','sNext':'Siguiente','sPrevious':'Atras' },
+						'sInfo'			:'_START_ de _END_ total _TOTAL_'
+					},
+					
+					
+					"aaData"			: dataSourceProductos,
+					"aoColumnDefs": [ 
+								{
+									"aTargets"		: [ 0 ],//itemID
+									"bVisible"		: false,
+									"bSearchable"	: false,
+									//"mData":		'itemID',
+									//"mRender"		: function ( data, type, full ) {
+									//}
+								},
+								{
+									"aTargets"		: [ 1 ],//Codigo
+									"bVisible"  	: !(varParameterHidenFiledItemNumber == true ? true : (varUseMobile == "1" ? true : false )),
+									//"sClass" 		: "hidden",
+									"bSearchable"	: true,
+									//"mData":		'Codigo',
+									//"mRender"		: function ( data, type, full ) {
+									//}
+								},
+								{
+									"aTargets"		: [ 2 ],//Descripcion
+									"bVisible"		: true,
+									//"sClass" 		: "hidden",
+									"bSearchable"	: true,
+									//"mData":		'Nombre',
+									//"mRender"		: function ( data, type, full ) {
+									//	
+									//}
+								},
+								{
+									"aTargets"		: [ 3 ],//Unidad
+									"bVisible"		: false,
+									"bSearchable"	: false,
+									//"mData":		'Medida',
+									//"sWidth" 		: "40%"
+								},
+								{
+									"aTargets"		: [ 4 ],//Cantidad
+									"bVisible"		: true, //(varParameterCustomPopupFacturacion == "mobile_ruta_pablo" ? false : true),
+									"bSearchable"	: false,
+									//"mData":		'Cantidad',
+									"mRender"		: function ( data, type, full ) {								
+										return "<span class='red' style='text-align:right;display:block' >"+fnFormatNumber(data,2)+"</span>";
+									}
+								},
+								{
+									"aTargets"		: [ 5 ],//Precio
+									"bVisible"		: true,
+									//"mData":		'Precio',
+									"mRender"		: function ( data, type, full ) {
+										return "<span class='green' style='text-align:right;display:block' >"+fnFormatNumber(data,2) +"</span>";
+									}
+								},
+								{
+									"aTargets"		: [ 6 ],//Barra
+									"bVisible"		: (varUseMobile == "1" ? false : true),
+									//"mData":		'Precio',
+									"mRender"		: function ( data, type, full ) 
+									{
+										var indexSearch = data.indexOf(",");
+										if(indexSearch > 1 )
+										{
+											return "<!--Barra oculta:  "+data+" --> "+data.split(',')[0];
+										}
+										else 
+										{
+											return ""+data;
+										}
+									}
+								},
+								{
+									"aTargets"		: [ 7 ],//Descripcion
+									"bVisible"		: (varUseMobile == "1" ? false : true),
+									//"mData":		'Precio',
+									"mRender"		: function ( data, type, full ) {
+										if(varParameterMostrarImagenEnSeleccion == "true")
+										{
+											var src = varBaseUrl+"/resource/file_company/company_2/component_33/component_item_"+full[0]+"/preventa.jpg";
+											return ""+
+												" <button type='button' class='btn btn-primary img_row' data-src='"+src+"'>Ver imagen</button><br>"+
+												"<img class='img-thumbnail ' style='width:225px;height:120px' src='"+src+"' />"+
+												"";
+										}
+										else
+										{
+											return ""+data;
+										}
+									}
+								}
+					]
+					
+					
+					
+				});
+							
+				objTableProductosSearch = $('#table_list_productos').dataTable(); 		
+				$('.dataTables_length select').uniform();
+				$('.dataTables_paginate > ul').addClass('pagination');		
+				
+							
+												
+				$(document).on('click','#table_list_productos tr',function(event){ 			
+					objRowTableProductosSearch = this; 
+					fnTableSelectedRow(this,event);
+				});  
+					
+				$('#table_list_productos').css('display','table');
+				
+				
+			}
+		);
 			
-		$('#table_list_productos').css('display','table');
+			
 	}
 	
 	function fnRenderLineaCredit(objListCustomerCreditLine,objCausalTypeCredit)
@@ -2203,9 +2052,24 @@
 			console.info('Database success');		
 			
 			if(bInicializar)
-			fnReady();
-		
-			fnObtenerInformacionDeLaBaseDeDatos(obtenerRegistroDelServer);
+			{
+				fnReady();
+				setTimeout(function() { fnWaitClose(); fnWaitClose(); }, 1000);		
+			}
+			
+			if(obtenerRegistroDelServer)
+			{
+				fnObtenerListadoProductos();
+				fnObtenerListadoProductos2();
+				fnObtenerListadoProductos3();
+				fnObtenerListadoProdcutosSku();
+				fnObtenerListadoItemConcept();
+				fnObtenerListadoCustomerCreditLine();
+				setTimeout(function() { fnWaitClose(); fnWaitClose(); }, 4000);		
+				
+			}
+			
+			
 		};
 		
 		request.onupgradeneeded  = (e) => {
@@ -2241,8 +2105,7 @@
 			objectStoreX001.createIndex("typePriceID", "typePriceID", { unique: false });
 			objectStoreX001.createIndex("unitMeasureID", "unitMeasureID", { unique: false });
 			
-			const objectStore  = db.createObjectStore('objListaProductos' , { keyPath : 'id',autoIncrement: true } );
-			objectStore.createIndex("name", "name", { unique: false });
+			
 			
 			
 			
@@ -2274,9 +2137,6 @@
 			objectStoreX002.createIndex("unitMeasureID", "unitMeasureID", { unique: false });
 			
 			
-			const objectStore2  = db.createObjectStore('objListaProductos2' , { keyPath : 'id',autoIncrement: true } );
-			objectStore2.createIndex("name", "name", { unique: false });
-			
 			
 			
 			const objectStoreX003  = db.createObjectStore('objListaProductosX003' , { keyPath : 'id',autoIncrement: true } );
@@ -2306,9 +2166,7 @@
 			objectStoreX003.createIndex("typePriceID", "typePriceID", { unique: false });
 			objectStoreX003.createIndex("unitMeasureID", "unitMeasureID", { unique: false });
 			
-			const objectStore3  = db.createObjectStore('objListaProductos3' , { keyPath : 'id',autoIncrement: true } );
-			objectStore3.createIndex("name", "name", { unique: false });
-			
+		
 			
 			
 			const objectStoreSkuX001  = db.createObjectStore('objListaProductosSkuX001' , { keyPath : 'id',autoIncrement: true } );
@@ -2365,15 +2223,6 @@
 		};
 		
 		//...
-	}
-	
-	function fnObtenerInformacionDeLaBaseDeDatos(obtenerRegistroDelServer)
-	{
-		try{
-			
-			obtenerDataDBProducto("objListaProductos",obtenerRegistroDelServer);
-			
-		}catch(exception){}
 	}
 	
 	
@@ -2528,100 +2377,6 @@
 	}
 	
 	
-	function obtenerDataDBProducto(varTable,obtenerRegistroDelServer){
-		
-		const request = db.transaction(varTable, 'readwrite')
-					   .objectStore(varTable)
-					   .getAll();
-
-		request.onsuccess = ()=> {
-
-			try
-			{
-				objListaProductos = JSON.parse( request.result[0].name );		
-			}
-			catch(ex)
-			{
-				
-			}
-			
-			obtenerDataDBProducto2("objListaProductos2",obtenerRegistroDelServer);
-			
-		}
-
-		request.onerror = (err)=> {
-			console.info("error");
-		}
-	}
-	
-	function obtenerDataDBProducto2(varTable,obtenerRegistroDelServer){
-		
-		const request = db.transaction(varTable, 'readwrite')
-					   .objectStore(varTable)
-					   .getAll();
-
-		request.onsuccess = ()=> {			
-		
-			try
-			{
-				objListaProductos2 = JSON.parse( request.result[0].name );			
-			}
-			catch(ex)
-			{
-				
-			}
-			
-			obtenerDataDBProducto3("objListaProductos3",obtenerRegistroDelServer);
-		}
-
-		request.onerror = (err)=> {
-			console.info("error");
-		}
-	}
-	
-	function obtenerDataDBProducto3(varTable,obtenerRegistroDelServer){
-		
-		const request = db.transaction(varTable, 'readwrite')
-					   .objectStore(varTable)
-					   .getAll();
-
-		request.onsuccess = ()=> {	
-			try
-			{
-				objListaProductos3 = JSON.parse( request.result[0].name );	
-				
-			}
-			catch(ex)
-			{
-			
-			}
-
-			
-			if(obtenerRegistroDelServer)
-			{
-				fnObtenerListadoProductos();
-				fnObtenerListadoProductos2();
-				fnObtenerListadoProductos3();
-				fnObtenerListadoProdcutosSku();
-				fnObtenerListadoItemConcept();
-				fnObtenerListadoCustomerCreditLine(); 
-				fnWaitClose();
-				fnWaitClose();
-				
-			}			
-			else {
-				fnWaitClose();
-				fnWaitClose();
-			}
-			
-			
-		}
-
-		request.onerror = (err)=> {
-			console.info("error");
-		}
-	}
-	
 	
 	
 	
@@ -2768,63 +2523,52 @@
 								{
 								
 									
-									//dataResponse[0] = data[0];
-									//dataResponse[1] = data[0];
-									//dataResponse[2] = data[0];
-									//dataResponse[3] = data[0];
-									//dataResponse[4] = data[0];
-									//dataResponse[5] = data[0]; //itemID
-									//dataResponse[6] = data[0];
-									//dataResponse[7] = data[0];
-									//dataResponse[8] = data[0];
-									//dataResponse[9] = data[0];
-									//dataResponse[10] = data[0];
-									//dataResponse[11] = data[0];
-									//dataResponse[12] = data[0];
-									//dataResponse[13] = data[0];
-									//dataResponse[14] = data[0];
-									//dataResponse[15] = data[0];
-									//dataResponse[16] = data[0];
-									//dataResponse[17] = data[1];//Codigo
-									//dataResponse[18] = data[2];//Nombre
-									//dataResponse[19] = data[0];
-									//dataResponse[20] = data[3];//Unidad de medida
-									//dataResponse[21] = data[4];//Cantidad
-									//dataResponse[22] = data[5];//Precio
-									//dataResponse[23] = data[6];//Barra 
-									//dataResponse[24] = data[7];//Descripcion
-									//dataResponse[25] = data[0];
-									//dataResponse[26] = data[0];	
+																	
+									obtenerDataDBProductoArray(
+										"objListaProductosX001",
+										"all",
+										0,
+										"all",
+										{"row" : full },
+										function(e){    
+											
+											
+											var classHiddenTex 		= "";
+											var classHiddenSelect 	= "";
+											if(varParameterINVOICE_BILLING_SELECTITEM == "true")									
+											{
+												classHiddenTex = "hidden";
+												classHiddenSelect 	= "";
+											}
+											else 
+											{
+												classHiddenTex = "";
+												classHiddenSelect 	= "hidden";
+											}	
+											
+											
+											var full 			= e.row
+											var productos 		= e.all;
+											var strFiled 		= '<input type="text" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"  class="col-lg-12 '+classHiddenTex+'" style="text-align:left" value="'+full[4]+'" '+NameStatus+' />';
+											
+											var strFiledSelecte = "<select  name='txtItemSelected' class='<?php echo ($useMobile == "1" ? "" : "select2"); ?> txtItemSelected "+classHiddenSelect+" ' >";
+											strFiledSelecte		= strFiledSelecte+"<option value='"+full[2]+"' selected data-itemid='"+full[2]+"' data-codigo='"+full[3]+"' data-name='"+full[4].replace("'","").replace("'","") +"' data-unidadmedida='"+full[5]+"' data-cantidad='"+full[6]+"' data-precio='"+full[7]+"' data-barra='"+full[3]+"'  data-description='"+full[4].replace("'","").replace("'","") + "'    >"+ full[4].replace("'","").replace("'","")  +"</option>";
+											for(var i = 0 ; i < productos.length; i++)
+											{
+												strFiledSelecte		= strFiledSelecte+"<option value='"+productos[i].itemID+"' data-itemid='"+productos[i].itemID+"' data-codigo='"+productos[i].Codigo+"'  data-name='"+ productos[i].Nombre.replace("'","").replace("'","")  +"'   data-unidadmedida='"+productos[i].Medida+"' data-cantidad='"+productos[i].quantity+"' data-precio='"+productos[i].Precio+"' data-barra='"+productos[i].Barra+"'  data-description='"+productos[i].Nombre+"'    >"+ productos[i].Nombre.replace("'","").replace("'","")  +"</option>";
+											}
+											strFiledSelecte		= strFiledSelecte+"</select>";
+											
+											
+											strFiledSelecte 	=  strFiled + strFiledSelecte ;
+											$("#divRowDescription"+full[2]).parent().html( strFiledSelecte );
+											
+											
+										}
+									);
+										
+									return "<div id='divRowDescription"+full[2]+"'></div>";
 									
-									
-									var classHiddenTex 		= "";
-									var classHiddenSelect 	= "";
-									if(varParameterINVOICE_BILLING_SELECTITEM == "true")									
-									{
-										classHiddenTex = "hidden";
-										classHiddenSelect 	= "";
-									}
-									else 
-									{
-										classHiddenTex = "";
-										classHiddenSelect 	= "hidden";
-									}	
-									
-									
-									var strFiled 		= '<input type="text" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"  class="col-lg-12 '+classHiddenTex+'" style="text-align:left" value="'+data+'" '+NameStatus+' />';
-									
-									var productos 		= fnGetProductosFilterd();
-									var strFiledSelecte = "<select  name='txtItemSelected' class='<?php echo ($useMobile == "1" ? "" : "select2"); ?> txtItemSelected "+classHiddenSelect+" ' >";
-									strFiledSelecte		= strFiledSelecte+"<option value='"+full[2]+"' selected data-itemid='"+full[2]+"' data-codigo='"+full[3]+"' data-name='"+full[4].replace("'","").replace("'","") +"' data-unidadmedida='"+full[5]+"' data-cantidad='"+full[6]+"' data-precio='"+full[7]+"' data-barra='"+full[3]+"'  data-description='"+full[4].replace("'","").replace("'","") + "'    >"+ full[4].replace("'","").replace("'","")  +"</option>";
-									for(var i = 0 ; i < productos.length; i++)
-									{
-										strFiledSelecte		= strFiledSelecte+"<option value='"+productos[i][0]+"' data-itemid='"+productos[i][0]+"' data-codigo='"+productos[i][1]+"'  data-name='"+ productos[i][2].replace("'","").replace("'","")  +"'   data-unidadmedida='"+productos[i][3]+"' data-cantidad='"+productos[i][4]+"' data-precio='"+productos[i][5]+"' data-barra='"+productos[i][6]+"'  data-description='"+productos[i][7]+"'    >"+ productos[i][2].replace("'","").replace("'","")  +"</option>";
-									}
-									strFiledSelecte		= strFiledSelecte+"</select>";
-									
-									
-									strFiledSelecte 	=  strFiled + strFiledSelecte ;
-									return strFiledSelecte;
 									
 									
 								}
@@ -2875,30 +2619,6 @@
 									
 									
 									
-									//var objListaSkuByProducto 	= jLinq.from(objListaProductosSku).where(function(obj){ return obj.itemID == full[2]; }).select();
-									//var sel 					= '';
-									//var espacio					=  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";								
-									//sel 						= '<select name="txtSku[]" id="txtSku'+full[2]+'" class="txtSku col-lg-12"  >';									
-									//
-									//if(varUseMobile == "1")
-									//	espacio = "";		
-									//
-									//if(objListaSkuByProducto.length == 0)
-									//{
-									//	sel = sel + '<option value="0" data-skuv="1" data-skupriceunitary="'+full[7]+'"   selected style="font-size:200%" data-description="UNIDAD" >UNIDAD'+espacio+'</option>';
-									//}
-									//else{
-									//	for(var ix = 0 ; ix < objListaSkuByProducto.length ; ix++)
-									//	{
-									//		if(objListaSkuByProducto[ix].catalogItemID == data)
-									//			sel = sel + '<option value="'+objListaSkuByProducto[ix].catalogItemID+'" data-skuv="'+objListaSkuByProducto[ix].Valor+'" data-skupriceunitary="'+full[7]+'"  style="font-size:200%" selected data-description="'+objListaSkuByProducto[ix].Sku+'" >'+objListaSkuByProducto[ix].Sku+espacio+'</option>';
-									//		else
-									//			sel = sel + '<option value="'+objListaSkuByProducto[ix].catalogItemID+'" data-skuv="'+objListaSkuByProducto[ix].Valor+'" data-skupriceunitary="'+full[7]+'"  style="font-size:200%"  data-description="'+objListaSkuByProducto[ix].Sku+'"  >'+objListaSkuByProducto[ix].Sku+espacio+'</option>';
-									//	}																				
-									//}
-									//
-									//sel = sel + '</select>';					
-									//return sel;
 											
 								}
 							},
@@ -2964,70 +2684,86 @@
 							{
 								"aTargets"		: [ 12 ],//PlusDimus	
 								"sWidth"		: "250px",							
-								"mRender"		: function ( data, type, full ) {														
-									//publico
-									var objProductoPrecio1 	= jLinq.from(objListaProductos).where(function(obj){ return obj.itemID == full[2]; }).select();
-									//por mayor
-									var objProductoPrecio2 	= jLinq.from(objListaProductos2).where(function(obj){ return obj.itemID == full[2]; }).select();
-									//credito
-									var objProductoPrecio3 	= jLinq.from(objListaProductos3).where(function(obj){ return obj.itemID == full[2]; }).select();
-									
-									//publico
-									objProductoPrecio1 = objProductoPrecio1[0].Precio;
-									//por mayor
-									objProductoPrecio2 = objProductoPrecio2[0].Precio;
-									//credito
-									objProductoPrecio3 = objProductoPrecio3[0].Precio;
-									
-									//publico
-									objProductoPrecio1 = fnFormatFloat(objProductoPrecio1);
-									//por mayor
-									objProductoPrecio2 = fnFormatFloat(objProductoPrecio2);
-									//credito
-									objProductoPrecio3 = fnFormatFloat(objProductoPrecio3);
-									
-									var styleButtom = "";
-									if(varUseMobile == "1")
-									styleButtom = "style='text-align:right'";
-								
-									var str = "<div "+styleButtom+" >";
-									
-									if(varParameterINVOICE_BILLING_SELECTITEM == "true")
-									{
-										str    	= str + '' + 
-										'<button type="button" class="btn btn-warning btnAddSelectedItem"><span class="icon16 i-archive"></span> </button>';
-									}
-									
-									str    	= str + '' + 
-									'<button type="button" class="btn btn-primary btnMenus"><span class="icon16 i-minus"></span> </button>';
-									
-									str    	= str + '' + 
-									'<button type="button" class="btn btn-primary btnPlus"><span class="icon16 i-plus"></span> </button>';
-									
-									
-									
-									
-									str		= str+'<div class="btn-group">';
-											str = 	str+'<button type="button" class="btn btn-success dropdown-toggle  " data-toggle="dropdown"><i class="icon16 i-bookmark"></i>  <span class="caret"></span> </button>';
-											str =	str+'<ul class="dropdown-menu">';
-												//publico											
-												if( (objProductoPrecio1 > 0 && varPermisosEsPermitidoSeleccionarPrecioPublico == true  )   || isAdmin == "1" )
-													str = str+'<li><a href="#" data-precio="'+objProductoPrecio1+'" class="btnPrecioRecomendado" >'+varCurrencyDefaultSimbol+" "+$.number(objProductoPrecio1,2)+'</a></li>';
+								"mRender"		: function ( data, type, full ) {	
+
+									obtenerDataDBProductoArrayUniByItemID(
+										full[2],
+										{
+											"all":full[2],
+											"callback":function(e){ 
 												
+												
+												
+												//publico
+												var objProductoPrecio1 	= e.producto1;
 												//por mayor
-												if( ( objProductoPrecio2 > 0 && fnValidateSiAplicaPrecioPublico() && varPermisosEsPermitidoSeleccionarPrecioPormayor == true  ) || isAdmin == "1" ) 
-													str = str+'<li><a href="#" data-precio="'+objProductoPrecio2+'" class="btnPrecioRecomendado" >'+varCurrencyDefaultSimbol+" "+$.number(objProductoPrecio2,2)+'</a></li>';
+												var objProductoPrecio2 	= e.producto2;
+												//credito
+												var objProductoPrecio3 	= e.producto3;
 												
-												//credito 
-												if( (objProductoPrecio3 > 0 && varPermisosEsPermitidoSeleccionarPrecioCredito == true ) || isAdmin == "1"   )
-													str = str+'<li><a href="#" data-precio="'+objProductoPrecio3+'" class="btnPrecioRecomendado"  >'+varCurrencyDefaultSimbol+" "+$.number(objProductoPrecio3,2)+'</a></li>';
+												//publico
+												objProductoPrecio1 = objProductoPrecio1[0].Precio;
+												//por mayor
+												objProductoPrecio2 = objProductoPrecio2[0].Precio;
+												//credito
+												objProductoPrecio3 = objProductoPrecio3[0].Precio;
 												
-											str = 	str+'</ul>';
-									str		= str+'</div>';
-									str		= str+'</div>';
+												//publico
+												objProductoPrecio1 = fnFormatFloat(objProductoPrecio1);
+												//por mayor
+												objProductoPrecio2 = fnFormatFloat(objProductoPrecio2);
+												//credito
+												objProductoPrecio3 = fnFormatFloat(objProductoPrecio3);
+												
+												var styleButtom = "";
+												if(varUseMobile == "1")
+												styleButtom = "style='text-align:right'";
+											
+												var str = "<div "+styleButtom+" >";
+												
+												if(varParameterINVOICE_BILLING_SELECTITEM == "true")
+												{
+													str    	= str + '' + 
+													'<button type="button" class="btn btn-warning btnAddSelectedItem"><span class="icon16 i-archive"></span> </button>';
+												}
+												
+												str    	= str + '' + 
+												'<button type="button" class="btn btn-primary btnMenus"><span class="icon16 i-minus"></span> </button>';
+												
+												str    	= str + '' + 
+												'<button type="button" class="btn btn-primary btnPlus"><span class="icon16 i-plus"></span> </button>';
+												
+												
+												
+												
+												str		= str+'<div class="btn-group">';
+														str = 	str+'<button type="button" class="btn btn-success dropdown-toggle  " data-toggle="dropdown"><i class="icon16 i-bookmark"></i>  <span class="caret"></span> </button>';
+														str =	str+'<ul class="dropdown-menu">';
+															//publico											
+															if( (objProductoPrecio1 > 0 && varPermisosEsPermitidoSeleccionarPrecioPublico == true  )   || isAdmin == "1" )
+																str = str+'<li><a href="#" data-precio="'+objProductoPrecio1+'" class="btnPrecioRecomendado" >'+varCurrencyDefaultSimbol+" "+$.number(objProductoPrecio1,2)+'</a></li>';
+															
+															//por mayor
+															if( ( objProductoPrecio2 > 0 && fnValidateSiAplicaPrecioPublico() && varPermisosEsPermitidoSeleccionarPrecioPormayor == true  ) || isAdmin == "1" ) 
+																str = str+'<li><a href="#" data-precio="'+objProductoPrecio2+'" class="btnPrecioRecomendado" >'+varCurrencyDefaultSimbol+" "+$.number(objProductoPrecio2,2)+'</a></li>';
+															
+															//credito 
+															if( (objProductoPrecio3 > 0 && varPermisosEsPermitidoSeleccionarPrecioCredito == true ) || isAdmin == "1"   )
+																str = str+'<li><a href="#" data-precio="'+objProductoPrecio3+'" class="btnPrecioRecomendado"  >'+varCurrencyDefaultSimbol+" "+$.number(objProductoPrecio3,2)+'</a></li>';
+															
+														str = 	str+'</ul>';
+												str		= str+'</div>';
+												str		= str+'</div>';
+												
+												
+												
+												$("#divRowPrice"+e.all).parent().html( str );
+												
+											}
+										}
+									);
 									
-									
-									return str;
+									return "<div id='divRowPrice"+full[2]+"'></div>";
 								}
 							},
 							{
