@@ -74,13 +74,57 @@
 		</div><!-- End .main  -->
 		
 		<script>
+			var urlRootElFinder 		= '<?php echo APP_URL_RESOURCE_CSS_JS; ?>/core_elfinder/load_elfinder/componentID/<?php echo $componentID; ?>/componentItemID/<?php echo $componentItemID; ?>';
+			var urlRootComponentFolder 	= '<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/file_company/company_<?php echo $companyID; ?>/component_<?php echo $componentID; ?>/component_item_<?php echo $componentItemID; ?>';
 			function initReady()
 			{
 				$(document).ready(function() {
 					//------------- Elfinder file manager  -------------//
 					var elf = $('#elfinder').elfinder({	
 						lang: 'es',		
-						url : '<?php echo APP_URL_RESOURCE_CSS_JS; ?>/core_elfinder/load_elfinder/componentID/<?php echo $componentID; ?>/componentItemID/<?php echo $componentItemID; ?>'  // connector URL (REQUIRED)
+						url : urlRootElFinder,  // connector URL (REQUIRED)
+						
+						
+						handlers: {
+							dblclick: function (event, elfinderInstance) 
+							{
+								
+								fileInfo = elfinderInstance.file(event.data.file);
+
+								if (fileInfo.mime != "directory") 
+								{
+									var imgURL 					= elfinderInstance.url(event.data.file);
+									var imgUrlFolderElFinder 	= urlRootElFinder+"/"+fileInfo.name;
+									var imgUrlFolderComponent 	= urlRootComponentFolder+"/"+fileInfo.name;
+									
+									
+									
+									window.open(imgUrlFolderComponent, '_blank');
+									return false ;
+									
+									//No borrar este codigo puede ser util mas adelante
+									//$("#page_image").val(imgURL);
+									//
+									//var imgPath = '<img src="'+imgURL+'" id="append-image" style="width:280px;height:auto;background-size:contain;margin-bottom:.9em;background-repeat:no-repeat"/>';
+									//$("#elfinder_image").append(imgPath); //add the image to a div so you can see the selected images
+									//
+									//$("#remove_image").show();
+									//$("#set_image").hide();
+									//
+									//elfinderInstance.destroy();
+									//return false; // stop elfinder
+								};
+							},
+							destroy: function () 
+							{
+								debugger;
+								elfinder.dialog("close");
+
+							}
+						}
+						
+					
+					
 					}).elfinder('instance');
 					//-------------  Plupload uploader -------------//
 					$("#uploader").pluploadQueue({
@@ -89,7 +133,7 @@
 						url 			: '<?php echo APP_URL_RESOURCE_CSS_JS; ?>/core_elfinder/upload_elfinder/componentID/<?php echo $componentID; ?>/componentItemID/<?php echo $componentItemID; ?>',
 						max_file_size 	: '10mb',
 						max_file_count	: 15, // user can add no more then 15 files at a time
-						chunk_size 		: '1mb',
+						chunk_size 		: '10mb',
 						unique_names 	: true,
 						multiple_queues : true,
 						// Resize images on clientside if we can
