@@ -78,9 +78,21 @@ class app_cxp_expenses extends _BaseController {
 			$objPublicCatalogTipoGastos 						= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_accounting_expenses.tipos_gastos")->where("isActive",1)->find();			
 			$objPublicCatalogCategoriaGastos 					= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_accounting_expenses.categoria_gastos")->where("isActive",1)->find();
 			$dataView["objListCatalogoTipoGastos"]				= $this->Public_Catalog_Detail_Model->asObject()->where("publicCatalogID",$objPublicCatalogTipoGastos[0]->publicCatalogID)->where( "isActive",1)->findAll();
-			$dataView["objListCatalogoCategoriaGastos"]			= $this->Public_Catalog_Detail_Model->asObject()->where("publicCatalogID",$objPublicCatalogCategoriaGastos[0]->publicCatalogID)->where( "isActive",1)->findAll();
 			
 			
+			$dataView["objTipoGasto"]							= $this->Public_Catalog_Detail_Model->
+																	asObject()->
+																	where("publicCatalogDetailID",$dataView["objTransactionMaster"]->priorityID)->
+																	findAll();
+																	
+			$dataView["objListCatalogoCategoriaGastos"]			= $this->Public_Catalog_Detail_Model->
+																	asObject()->
+																	where("publicCatalogID",$objPublicCatalogCategoriaGastos[0]->publicCatalogID)->
+																	where("isActive",1)->
+																	where("parentName",$dataView["objTipoGasto"][0]->name)->
+																	findAll();
+																	
+																	
 			$objParameterUrlPrinter 				= $this->core_web_parameter->getParameter("CXP_URL_PRINTER_GASTO",$companyID);
 			$objParameterUrlPrinter 				= $objParameterUrlPrinter->value;
 			$dataView["objParameterUrlPrinter"]	 	= $objParameterUrlPrinter;
@@ -515,7 +527,12 @@ class app_cxp_expenses extends _BaseController {
 			
 			
 			$dataView["objListCatalogoTipoGastos"]				= $this->Public_Catalog_Detail_Model->asObject()->where("publicCatalogID",$objPublicCatalogTipoGastos[0]->publicCatalogID)->where( "isActive",1)->findAll();
-			$dataView["objListCatalogoCategoriaGastos"]			= $this->Public_Catalog_Detail_Model->asObject()->where("publicCatalogID",$objPublicCatalogCategoriaGastos[0]->publicCatalogID)->where( "isActive",1)->findAll();
+			$dataView["objListCatalogoCategoriaGastos"]			= $this->Public_Catalog_Detail_Model->
+																	asObject()->
+																	where("publicCatalogID",$objPublicCatalogCategoriaGastos[0]->publicCatalogID)->
+																	where("isActive",1)->
+																	where("parentName",$dataView["objListCatalogoTipoGastos"][0]->name)->
+																	findAll();
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);

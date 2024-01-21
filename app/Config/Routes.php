@@ -1073,6 +1073,8 @@ $routes->match(['get','post'],'core_concept_api/index','core_concept_api::index'
 $routes->match(['get','post'],'core_concept_api/index/(:any)','core_concept_api::index');
 $routes->match(['get','post'],'core_concept_api/getConceptAllProduct','core_concept_api::getConceptAllProduct');
 $routes->match(['get','post'],'core_concept_api/getConceptAllProduct/(:any)','core_concept_api::getConceptAllProduct');
+$routes->match(['get','post'],'app_public_catalog_api/getPublicCatalogDetail','app_public_catalog_api::getPublicCatalogDetail');
+$routes->match(['get','post'],'app_public_catalog_api/getPublicCatalogDetail/(:any)','app_public_catalog_api::getPublicCatalogDetail');
 $routes->match(['get','post'],'core_testunitary/index','core_testunitary::index');
 $routes->match(['get','post'],'core_elfinder/index','core_elfinder::index');
 $routes->match(['get','post'],'core_elfinder/index/(:any)','core_elfinder::index');
