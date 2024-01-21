@@ -2124,6 +2124,15 @@
 			function(e){    
 				
 				
+				
+				
+				if( objTableProductosSearch != null)
+				{
+					//objTableProductosSearch.fnDestroy();
+					return;
+				}
+				
+				
 				var dataSourceProductos = [];
 				for(var i =0 ; i < e.length; i++)
 				{
@@ -2141,9 +2150,6 @@
 					);
 				}
 				
-				
-				if( objTableProductosSearch != null)
-				objTableProductosSearch.fnDestroy();
 				
 				$('#table_list_productos').dataTable({
 					
