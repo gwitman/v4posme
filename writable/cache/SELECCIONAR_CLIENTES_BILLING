@@ -1,4 +1,4 @@
-a:3:{s:4:"time";i:1705548199;s:3:"ttl";i:100;s:4:"data";s:9632:"<!-- DEBUG-VIEW START 3 APPPATH\Views\core_masterpage\default_widgetchoose.php -->
+a:3:{s:4:"time";i:1706052576;s:3:"ttl";i:100;s:4:"data";s:10411:"<!-- DEBUG-VIEW START 3 APPPATH\Views\core_masterpage\default_widgetchoose.php -->
 <!--vista que se esta utilizando para las tablas-->
 <!--muestra un datatable con una lista de registros-->
 <!DOCTYPE html>
@@ -102,7 +102,7 @@ a:3:{s:4:"time";i:1705548199;s:3:"ttl";i:100;s:4:"data";s:9632:"<!-- DEBUG-VIEW 
 	</div> 
 <!-- DEBUG-VIEW ENDED 1 APPPATH\Views\core_view\choose_view_serch_head.php -->
 					
-					<table  id='ListView' cellpadding='0' cellspacing='0' border='0' class='table table-striped table-bordered table-hover' style='display:none' ><thead><tr><th>companyID</th><th>entityID</th><th>Codigo</th><th>Nombre</th><th>Identificacion</th><th>Telefono</th></tr></thead><tbody><tr><td>2</td><td>309</td><td>CLI00000020</td><td>Credito y Contado</td><td>000-000000-0000C</td><td>50584766457</td></tr><tr><td>2</td><td>13</td><td>CLI00000000</td><td>DEFAULT</td><td>000-000000-0000A</td><td>50584766457</td></tr></tbody></table>
+					<table  id='ListView' cellpadding='0' cellspacing='0' border='0' class='table table-striped table-bordered table-hover' style='display:none' ><thead><tr><th>companyID</th><th>entityID</th><th>Codigo</th><th>Nombre</th><th>Apellidos</th><th>Comercial</th></tr></thead><tbody><tr><td>2</td><td>653</td><td>CLI00000343</td><td>Witman Jose Gonzalez Rostran</td><td>Witman Jose Gonzalez Rostran</td><td>Witman Jose Gonzalez Rostran</td></tr><tr><td>2</td><td>652</td><td>CLI00000342</td><td>WTA</td><td>WTA</td><td>WTA</td></tr><tr><td>2</td><td>651</td><td>CLI00000341</td><td>1</td><td>1</td><td>1</td></tr><tr><td>2</td><td>650</td><td>CLI00000340</td><td>1</td><td>1</td><td>1</td></tr><tr><td>2</td><td>649</td><td>CLI00000339</td><td>Witman Jose</td><td>Witman Jose</td><td>Witman Jose</td></tr><tr><td>2</td><td>648</td><td>CLI00000338</td><td>abc</td><td>abc</td><td>abc</td></tr><tr><td>2</td><td>646</td><td>CLI00000336</td><td>ad</td><td>ad</td><td>ad</td></tr><tr><td>2</td><td>645</td><td>CLI00000335</td><td>abc</td><td>abc</td><td>abc</td></tr><tr><td>2</td><td>309</td><td>CLI00000020</td><td>Credito y Contado</td><td>Credito y Contado</td><td>Credito y Contado</td></tr><tr><td>2</td><td>13</td><td>CLI00000000</td><td>CLIENTE GENERICO</td><td>DEFAULT</td><td>DEFAULT</td></tr></tbody></table>
 		<script>
 			var objTableListView;
 			var objRowTableListView;	

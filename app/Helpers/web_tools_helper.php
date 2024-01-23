@@ -390,6 +390,21 @@ function GetLetrasSufix($xx)
     return $xsub;
 }
  
+function helper_GetFechaNacimiento($fechaString) 
+{
+    // Convertir la cadena a un objeto de fecha
+    $fechaNacimiento = DateTime::createFromFormat('Y-m-d', $fechaString);
+
+    // Obtener la fecha actual
+    $fechaActual = new DateTime();
+
+    // Calcular la diferencia en años
+    $diferencia = $fechaActual->diff($fechaNacimiento);
+
+    // Devolver la fecha de nacimiento
+    return $diferencia->y;
+}
+
 //END FUNCTION
 function helper_GetNumberLetras($xcifra,$moneda,$centavos)
 {

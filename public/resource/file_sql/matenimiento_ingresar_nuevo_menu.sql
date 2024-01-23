@@ -28,12 +28,12 @@ ORDER BY
 
 
 
-set @menuComponentPrincipal 				:= '0-TRANSACCIONES';	
+set @menuComponentPrincipal 				:= '0-INVENTARIO';	
 set @menuElementParent						:= 'REPORTES'; 	
 
-set @menuElement 							:= 'GARAFICO DE GASTOS';
-set @menuElementAddress 					:= 'app_transa_report/expenses_chart.aspx';
-set @menuElementOrden 						:= '0002.0004.0007.0002.0000';
+set @menuElement 							:= 'LISTA DE ITEM CON EXISTENCIAS';
+set @menuElementAddress 					:= 'app_inventory_report/list_item_width_exist';
+set @menuElementOrden 						:= '0002.0005.0011.0007.0000';
 set @menuIcono								:= 'red';
 set @menuThemplate							:= 'menu_nivel_body_report_0';
 set @menuType								:= '6';

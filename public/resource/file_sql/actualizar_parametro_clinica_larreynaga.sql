@@ -769,9 +769,32 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Clinica Larreynaga' , address = 'Frente al antigua estacion del ferrocarril' 
+	NAME = 'Clinica Larreynaga' , address = 'Frente al antigua estacion del ferrocarril' ,
+	flavorID = 178,
+	type = 'clinicalarreynaga'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
+
+
+
+/*
+Eliminar o desactivar usuarios
+*/
+update tb_user set isActive = 0;
+update tb_user set isActive = 1 WHERE userID in (
+ 2, 	/*administrador*/ 
+ 177,  	/*supervisor*/
+ 179, 	/*facturador*/
+ 178 	/*administrador*/
+);
+
+update tb_role set isActive = 0; 
+update tb_role set isActive = 1 where roleID in (
+	3,
+	182,
+	181,
+	180	
+);
 
 
 

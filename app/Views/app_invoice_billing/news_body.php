@@ -160,6 +160,10 @@
 										</div>
 								</div>
 								
+								<div id="divTxtElementoDisponibleParaMover1" class="hidden" >
+									
+								</div>
+								
 								<div class="form-group   <?php echo getBehavio($company->type,"app_invoice_billing","divTxtCedula2"); ?> "  id="divCedula"  >
 										<label class="col-lg-4 control-label" for="normal">Cedula</label>
 										<div class="col-lg-8">
@@ -203,7 +207,7 @@
 					<div class="tab-pane fade" id="profile">
 						<div class="row">
 							<div class="col-lg-6">
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divTxtZone"); ?>" id="divZone"  >
 									<label class="col-lg-4 control-label" for="selectFilter">Zona</label>
 									<div class="col-lg-8">
 										<select name="txtZoneID" id="txtZoneID" class="select2">

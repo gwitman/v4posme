@@ -409,6 +409,82 @@ class app_inventory_report extends _BaseController {
 			exit($ex->getMessage());
 		}
 	}
+	function list_item_width_exist(){
+		try{ 
+		
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+		
+			//PERMISOS SOBRE LAS FUNCIONES
+			if(APP_NEED_AUTHENTICATION == true){				
+				
+				$permited = false;
+				$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				
+				if(!$permited)
+				throw new \Exception(NOT_ACCESS_CONTROL);
+				
+				$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"index",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				if ($resultPermission 	== PERMISSION_NONE)
+				throw new \Exception(NOT_ACCESS_FUNCTION);			
+			}	
+			
+								
+			$viewReport			= false;
+			$companyID			= $dataSession["user"]->companyID;
+			$branchID			= $dataSession["user"]->branchID;
+			$userID				= $dataSession["user"]->userID;
+			$tocken				= '';
+			 
+			
+			//Cargar Libreria
+			$objParameterTamanoLetra	= $this->core_web_parameter->getParameter("CORE_VIEW_CUSTOM_REPORT_IN_LIST_ITEM_SIZE_LATTER",$companyID);
+			$objParameterTamanoLetra	= $objParameterTamanoLetra->value;	
+			$objParameterAltoDeLaFila	= $this->core_web_parameter->getParameter("CORE_VIEW_CUSTOM_REPORT_IN_LIST_ITEM_ALTO_FILA",$companyID);
+			$objParameterAltoDeLaFila	= $objParameterAltoDeLaFila->value;				
+			
+				
+				
+			//Obtener el tipo de Comprobante
+			$companyID 		= $dataSession["user"]->companyID;
+			//Get Component
+			$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			//Get Logo
+			$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			//Get Company
+			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
+			//Get Datos
+			$query			= "CALL pr_inventory_get_report_list_item_width_exists(?,?,?);";
+			$objData		= $this->Bd_Model->executeRender(
+				$query,
+				[$userID,$tocken,$companyID]
+			);			
+			
+			if(isset($objData))
+			$objDataResult["objDetail"]					= $objData;
+			else
+			$objDataResult["objDetail"]					= NULL;
+			$objDataResult["objCompany"] 				= $objCompany;
+			$objDataResult["objLogo"] 					= $objParameter;
+			$objDataResult["objParameterTamanoLetra"] 	= $objParameterTamanoLetra;	
+			$objDataResult["objParameterAltoDeLaFila"] 	= $objParameterAltoDeLaFila;				
+			$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_inventory_get_report_list_item" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
+			$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
+			
+			
+			
+			if( /*$objCompany->type == "default" */ true )
+				return view("app_inventory_report/list_item_width_exist/view_a_disemp",$objDataResult);//--finview-r
+			else 
+				return view("app_inventory_report/list_item_width_exist/view_a_disemp_".$objCompany->type,$objDataResult);//--finview-r
+			
+		}
+		catch(\Exception $ex){
+			exit($ex->getMessage());
+		}
+	}
 	function list_item_by_warehouse(){
 		try{ 
 		

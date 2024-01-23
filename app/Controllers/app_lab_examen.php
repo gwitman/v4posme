@@ -686,7 +686,7 @@ class app_lab_examen extends _BaseController
 			$objComponent	        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
 			$objParameter	        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
 			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
-			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);			
+			$objCompany 			= $this->Company_Model->get_rowByPK($companyID);			
 			
 			$objComponentPublicCatalog	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_public_catalog");
             if(!$objComponentPublicCatalog)

@@ -727,6 +727,8 @@ $routes->match(['get','post'],'app_inventory_report/list_item','app_inventory_re
 $routes->match(['get','post'],'app_inventory_report/list_item_expired','app_inventory_report::list_item_expired');
 $routes->match(['get','post'],'app_inventory_report/list_item_by_warehouse','app_inventory_report::list_item_by_warehouse');
 $routes->match(['get','post'],'app_inventory_report/list_item_by_warehouse/(:any)','app_inventory_report::list_item_by_warehouse');
+$routes->match(['get','post'],'app_inventory_report/list_item_width_exist','app_inventory_report::list_item_width_exist');
+$routes->match(['get','post'],'app_inventory_report/list_item_width_exist/(:any)','app_inventory_report::list_item_width_exist');
 $routes->match(['get','post'],'app_inventory_requestgeneral/getInfoImport','app_inventory_requestGeneral::getInfoImport');
 $routes->match(['get','post'],'app_inventory_requestgeneral/viewRegister','app_inventory_requestGeneral::viewRegister');
 $routes->match(['get','post'],'app_inventory_requestgeneral/viewRegister/(:any)','app_inventory_requestGeneral::viewRegister');
@@ -1055,6 +1057,8 @@ $routes->match(['get','post'],'app_sales_report/sales_detail_format_chart','app_
 $routes->match(['get','post'],'app_sales_report/sales_detail_format_chart/(:any)','app_sales_report::sales_detail_format_chart');
 $routes->match(['get','post'],'app_sales_report/sales_detail_item_sales_globalpro','app_sales_report::sales_detail_item_sales_globalpro');
 $routes->match(['get','post'],'app_sales_report/sales_detail_item_sales_globalpro/(:any)','app_sales_report::sales_detail_item_sales_globalpro');
+$routes->match(['get','post'],'app_sales_report/company_utitlity','app_sales_report::company_utitlity');
+$routes->match(['get','post'],'app_sales_report/company_utitlity/(:any)','app_sales_report::company_utitlity');
 $routes->match(['get','post'],'app_purchase_report/index','app_purchase_report::index');
 $routes->match(['get','post'],'app_purchase_report/index/(:any)','app_purchase_report::index');
 $routes->match(['get','post'],'app_purchase_report/purchase_detail','app_purchase_report::purchase_detail');

@@ -8576,15 +8576,31 @@ function helper_reporteA4TransactionMasterExamenLab(
 				$html	= $html."
 						<table style='width:100%' >							
 							<tr>
-							  <td  style='text-align:left;width: 25px;' >Paciente:</td>
-							  <td  style='text-align:left;width: auto;' >".$objEntidadNatural->firstName." ".$objEntidadNatural->lastName."</td>							  
+							  <td  style='text-align:left;width: 35px;' >Paciente:</td>
+							  <td  style='text-align:left;width: auto;' >".$objEntidadNatural->firstName."</td>							  
 							  <td  style='text-align:left;width: 25px;' >Fecha:</td>
 							  <td  style='text-align:left;width: 160px;' >".$objTransactionMastser->statusIDChangeOn."</td>
-							  <td  style='text-align:left;width: 25px;' >Edad:</td>
+							  <td  style='text-align:left;width: 25px;' >".getBehavio($objCompany->type,"comand_traducir","Edad").":</td>
 							  <td  style='text-align:left;width: 25px;' >".$objEdad->name."</td>
-							  <td  style='text-align:left;width: 25px;' >Sexo:</td>
+							  <td  style='text-align:left;width: 25px;' >".getBehavio($objCompany->type,"comand_traducir","Sexo").":</td>
 							  <td  style='text-align:left;width: 25px;' >".$objSexo->name."</td>
-							</tr
+							</tr>
+							<tr>
+								<td colspan='2' style='text-align:left;width: 25px;' >
+									Fecha de nacimineto:".$objEntidadCustomer->birthDate."
+								</td>
+								<td colspan='6' >
+									
+								</td>
+							</tr>
+							<tr>
+								<td colspan='1' style='text-align:left;width: 25px;' >
+									Edad:
+								</td>
+								<td colspan='7' >
+									".helper_GetFechaNacimiento($objEntidadCustomer->birthDate)." años
+								</td>
+							</tr>
 							<tr>
 								<td colspan='1' style='text-align:left;width: 25px;' >
 									Examen:
@@ -8710,6 +8726,12 @@ function helper_reporteA4TransactionMasterExamenLab(
 							<tr><td style='text-align:left;' >Sello</td><td style='text-align:left;' >Firma</td></td></tr>
 						</table>
                      
+						<table style='width:100%' >
+							<tr><td style='text-align:left;'>&nbsp;</td></tr>							
+							<tr><td style='text-align:left;'>&nbsp;</td></tr>							
+							<tr><td style='text-align:center;'>Servicio y Calidad</td></tr>
+						</table>
+						
 					</body>     
                     </html>
             ";

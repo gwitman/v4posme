@@ -168,6 +168,54 @@ function getBehavio($type_company,$key_controller,$key_element)
 		strtolower('globalpro_comand_traducir_Referencia 2')										=> "Factura",
 		strtolower('globalpro_comand_traducir_Referencia 3')										=> "Proveedor",
 		
+		/*Clinica larreynaga*/
+		strtolower('clinicalarreynaga_comand_traducir_Edad') 										=> "Genero",		
+		strtolower('clinicalarreynaga_app_cxc_customer_divTxtNombres') 								=> "hidden",
+		strtolower('clinicalarreynaga_app_cxc_customer_divTxtApellidos') 			 				=> "hidden",		
+		strtolower('clinicalarreynaga_app_cxc_customer_divTxtNombreComercial') 			 			=> "hidden",
+		strtolower('clinicalarreynaga_app_cxc_customer_divTxtEstado') 								=> "hidden",
+		strtolower('clinicalarreynaga_app_cxc_customer_divTxtClasificacion') 						=> "hidden",
+		strtolower('clinicalarreynaga_app_cxc_customer_divTxtTipo') 			 					=> "hidden",
+		strtolower('clinicalarreynaga_app_cxc_customer_divTxtCategoria') 							=> "hidden",
+		strtolower('clinicalarreynaga_app_cxc_customer_divTxtSubCategoria') 			 			=> "hidden",
+		strtolower('clinicalarreynaga_app_cxc_customer_divTxtEstadoCivil') 			 				=> "hidden",
+		strtolower('clinicalarreynaga_app_cxc_customer_divTxtProfesionUFicio') 			 			=> "hidden",
+		strtolower('clinicalarreynaga_app_cxc_customer_divScriptCustom') 							=> "
+				<script>
+					$(document).ready(function(){
+							
+						
+							$(document).on('focusout','#txtLegalName',function(){
+									
+									var varLegalName 	= $('#txtLegalName').val();
+									$('#txtFirstName').val(  varLegalName  );
+									$('#txtLastName').val(  varLegalName  );
+									$('#txtCommercialName').val(  varLegalName  );
+									$('#txtIdentification').val(  'ND'  );
+									
+							});
+							
+					});
+				</script>
+		",
+		
+		
+		/*Chec extensiones*/
+		strtolower('chicextensiones_app_invoice_billing_divTxtCedula2') 							=> "hidden",		
+		strtolower('chicextensiones_app_invoice_billing_divTraslateElement') 						=> "
+				<script>
+					$(document).ready(function()
+					{
+							//quitar el atributo de oculto
+							$('#divTxtElementoDisponibleParaMover1').removeClass('hidden');
+							
+							//pasar divZone pasar a divTxtElementoDisponibleParaMover1
+							$('#divZone').appendTo('#divTxtElementoDisponibleParaMover1');
+							
+					});
+				</script>
+		",
+		
 		
 		/*Exceso*/
 		strtolower('exceso_app_inventory_item_labelBarCode')										=> "Barra / IMAI",
