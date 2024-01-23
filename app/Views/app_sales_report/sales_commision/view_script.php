@@ -11,12 +11,11 @@
 						$(document).on("click","#print-btn-report",function(){
 							var startOn					=	$("#txtStartOn").val();	
 							var endOn					=	$("#txtEndOn").val();
-							var inventoryCategoryID		=	$("#txtInventoryCategoryID").val();	
-							var warehouseID				=	$("#txtWarehouseID").val();	
+							
 							
 							if(!( startOn == "" || endOn == "" ) ){
 								fnWaitOpen();
-								window.location	= "<?php echo base_url(); ?>/app_sales_report/sales_commision/viewReport/true/startOn/"+startOn+"/endOn/"+endOn+"/inventoryCategoryID/"+inventoryCategoryID+"/warehouseID/"+warehouseID;
+								window.location	= "<?php echo base_url(); ?>/app_sales_report/sales_commision/viewReport/true/startOn/"+startOn+"/endOn/"+endOn;
 							}
 							else{
 								fnShowNotification("Completar los Parametros","error");

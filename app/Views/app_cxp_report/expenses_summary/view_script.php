@@ -11,12 +11,11 @@
 						$(document).on("click","#print-btn-report",function(){
 							var startOn					=	$("#txtStartOn").val();	
 							var endOn					=	$("#txtEndOn").val();
-							var txtTiposID					=	$("#txtTiposID").val();	
-							var txtCategoriaID				=	$("#txtCategoriaID").val();	
+							
 							
 							if(!( startOn == "" || endOn == "" ) ){
 								fnWaitOpen();
-								window.location	= "<?php echo base_url(); ?>/app_cxp_report/expenses_summary/viewReport/true/startOn/"+startOn+"/endOn/"+endOn+"/txtTiposID/"+txtTiposID+"/txtCategoriaID/"+txtCategoriaID;
+								window.location	= "<?php echo base_url(); ?>/app_cxp_report/expenses_summary/viewReport/true/startOn/"+startOn+"/endOn/"+endOn;
 							}
 							else{
 								fnShowNotification("Completar los Parametros","error");

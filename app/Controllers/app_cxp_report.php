@@ -175,8 +175,7 @@ class app_cxp_report extends _BaseController {
 			$viewReport				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"viewReport");//--finuri
 			$startOn				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"startOn");//--finuri
 			$endOn					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri
-			$txtTiposID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"txtTiposID");//--finuri
-			$txtCategoriaID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"txtCategoriaID");//--finuri			
+			
 
 			
 			if(!($viewReport && $startOn && $endOn  )){
@@ -210,7 +209,7 @@ class app_cxp_report extends _BaseController {
 				$query			= "CALL pr_cxp_get_report_expenses_summary(?,?,?,?,?,?,?);";				
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$txtTiposID,$txtCategoriaID]
+					[$companyID,$tocken,$userID,$startOn,$endOn,0,0]
 				);
 				
 				

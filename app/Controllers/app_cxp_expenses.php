@@ -62,6 +62,7 @@ class app_cxp_expenses extends _BaseController {
 			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);									
 			$dataView["objTransactionMaster"]->transactionOn 	= date_format(date_create($dataView["objTransactionMaster"]->transactionOn),"Y-m-d");			
 			
+			$dataView["company"]				= $dataSession["company"];
 			$dataView["objListCurrency"]		= $objListCurrency;
 			$dataView["companyID"]				= $dataSession["user"]->companyID;
 			$dataView["userID"]					= $dataSession["user"]->userID;
@@ -494,6 +495,7 @@ class app_cxp_expenses extends _BaseController {
 			$objListCurrency					= $this->Company_Currency_Model->getByCompany($companyID);
 			
 			//Tipo de Factura
+			$dataView["company"]				= $dataSession["company"];
 			$dataView["objListCurrency"]		= $objListCurrency;
 			$dataView["companyID"]				= $dataSession["user"]->companyID;
 			$dataView["userID"]					= $dataSession["user"]->userID;

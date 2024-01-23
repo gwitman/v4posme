@@ -5,6 +5,14 @@ use dbjznvjrsdpypf;
 /*****Personalizar pantalla**********/
 /******************************************************************/		
 
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_VALIDAR_CEDULA_REPETIDA";	## True, no permite cedula repetidas, False, permite cecedula repetidas
+	
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "https://facturacion.globalpronic.com/posme/v4posme/public" 
 WHERE 

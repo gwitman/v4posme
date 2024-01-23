@@ -164,6 +164,11 @@ function getBehavio($type_company,$key_controller,$key_element)
 		strtolower('globalpro_app_inventory_transferoutput_labelReference1')						=> "Orden / Cliente",
 		
 		
+		strtolower('globalpro_comand_traducir_Referencia 1')										=> "Descripcion",
+		strtolower('globalpro_comand_traducir_Referencia 2')										=> "Factura",
+		strtolower('globalpro_comand_traducir_Referencia 3')										=> "Proveedor",
+		
+		
 		/*Exceso*/
 		strtolower('exceso_app_inventory_item_labelBarCode')										=> "Barra / IMAI",
 		strtolower('exceso_app_inventory_item_divTxtCapacidad') 			 						=> "hidden",

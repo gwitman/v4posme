@@ -15,52 +15,21 @@
 		
 		
 		
-		<?php
-		$configColumn["0"]["Titulo"] 		= "Factura";		
-		$configColumn["1"]["Titulo"] 		= "Tipo";		
-		$configColumn["2"]["Titulo"] 		= "Fecha";				
-		$configColumn["11"]["Titulo"] 		= "Codigo Producto";
-		$configColumn["12"]["Titulo"] 		= "Producto";
-		$configColumn["13"]["Titulo"] 		= "Categoria";
+		<?php		
 		$configColumn["14"]["Titulo"] 		= "Vendedor";
 		$configColumn["17"]["Titulo"] 		= "Comision";
-
-		$configColumn["0"]["FiledSouce"] 		= "transactionNumber";		
-		$configColumn["1"]["FiledSouce"] 		= "tipo";		
-		$configColumn["2"]["FiledSouce"] 		= "transactionOn";				
-		$configColumn["11"]["FiledSouce"] 		= "itemNumber";
-		$configColumn["12"]["FiledSouce"] 		= "itemName";	
-		$configColumn["13"]["FiledSouce"] 		= "nameCategory";
+		
 		$configColumn["14"]["FiledSouce"] 		= "employerName";		
 		$configColumn["17"]["FiledSouce"] 		= "amountCommision";
 
-		$configColumn["0"]["Formato"] 		= "";		
-		$configColumn["1"]["Formato"] 		= "";		
-		$configColumn["2"]["Formato"] 		= "Date";				
-		$configColumn["11"]["Formato"] 		= "";
-		$configColumn["12"]["Formato"] 		= "";	
-		$configColumn["13"]["Formato"] 		= "";	
 		$configColumn["14"]["Formato"] 		= "";		
 		$configColumn["17"]["Formato"] 		= "Number";
-		
-		$configColumn["0"]["Width"] 		= "80px";
-		$configColumn["1"]["Width"] 		= "80px";		
-		$configColumn["2"]["Width"] 		= "80px";				
-		$configColumn["11"]["Width"] 		= "100px";
-		$configColumn["12"]["Width"] 		= "220px";	
-		$configColumn["13"]["Width"] 		= "220px";	
-		$configColumn["14"]["Width"] 		= "250px";
+				
+		$configColumn["14"]["Width"] 		= "350px";
 		$configColumn["17"]["Width"] 		= "100px";
-		
-		$configColumn["0"]["Total"] 		= False;		
-		$configColumn["1"]["Total"] 		= False;		
-		$configColumn["2"]["Total"] 		= False;
-		$configColumn["11"]["Total"] 		= False;
-		$configColumn["12"]["Total"] 		= False;	
-		$configColumn["13"]["Total"] 		= False;	
+				
 		$configColumn["14"]["Total"] 		= False;
-		$configColumn["17"]["Total"] 		= True;
-		
+		$configColumn["17"]["Total"] 		= True;		
 		$resultado 	= helper_reporteGeneralCreateTable($objDetail,$configColumn,'0px',NULL,NULL);
 		?>
 		

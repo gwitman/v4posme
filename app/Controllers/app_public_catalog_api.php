@@ -29,8 +29,7 @@ class app_public_catalog_api extends _BaseController {
 											where("publicCatalogDetailID",$publicCatalogDetailID)->
 											find();
 			$objPCDResult 			= $this->Public_Catalog_Detail_Model->asObject()->
-											where("isActive",1)->
-											where("flavorID",$dataSession["company"]->flavorID)->
+											where("isActive",1)->											
 											where("parentName",$objPCD[0]->name)->
 											find();
 		

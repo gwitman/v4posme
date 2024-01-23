@@ -14,71 +14,97 @@
 	<body style="font-family:monospace;font-size:smaller;margin:0px 0px 0px 0px"> 
 		
 		
+		<table style="
+			width:100%;border-spacing: 10px;			
+		">
+			<thead>
+				<tr>
+					<th colspan="3" rowspan="5" style="text-align:left;width:130px">
+						<img width="120" height="110" 						
+							style="
+								width: 120px;
+								height: 110px;
+							"
+							
+							src="<?php echo base_url(); ?>/resource/img/logos/logo-micro-finanza.jpg" 
+						/>
+					</th>
+					<th colspan="6" style="
+						text-align:right;background-color:#00628e;color:white;
+						width:80%
+					">COMPARATIVO MENSUAL DE GASTO</th>
+				</tr>
+				<tr>
+					<th colspan="6" style="
+						text-align:right;background-color:#00628e;color:white;
+					"><?php echo strtoupper($objCompany->name); ?></th>
+				</tr>
+				<tr>
+					<th colspan="6" style="
+						text-align:right;background-color:#00628e;color:white;
+					">INFORMACION DE <?php echo $objStartOn; ?> AL <?php echo $objEndOn; ?></th>
+				</tr>
+				<tr>
+					<th colspan="6" style="
+						text-align:right;background-color:#00628e;color:white;
+					"></th>
+				</tr>
+				<tr>
+					<th colspan="6" style="
+						text-align:right;background-color:#00628e;color:white;
+					"></th>
+				</tr>				
+				<tr>
+					<th colspan="9" style="text-align:left">
+						&nbsp;
+					</th>
+				</tr>
+			</thead>
+		</table>
 		
-		<?php
-			
-		$configColumn["1"]["Titulo"] 		= "Fecha";					
-		$configColumn["2"]["Titulo"] 		= "Tipo";		
-		$configColumn["3"]["Titulo"] 		= "Categoria";		
-		$configColumn["4"]["Titulo"] 		= "Monto";	
+		
+		
+		<br/>
+		
+		
+		<br/>
+		
+		<table style="width:100%;order-spacing: 10px;">
+			<thead>
+				<tr style="background-color:#00628e;color:white;">									
 
+					<?php
+					$count 		= 0;
+					if($objDetail)
+					foreach($objDetail[0] as $i => $value)
+					{	
+					
+						echo '<th style="text-align:left;width:80px;"   colspan="1" class="border">'.$i.'</th>';
+						
+					}
+					?>
+				
+				</tr>
+			</thead>				
+			<tbody>
+				<?php				
+				if($objDetail)
+				foreach($objDetail as $i)
+				{		
+					echo "<tr>";						
+					foreach($i as $key => $ii)
+					{					
+						echo "<td style='text-align:left'  colspan='1' class='border' >";
+							echo ($ii);
+						echo "</td>";																											
+					}
+					echo "</tr>";
+				}
+				?>
+			</tbody>
 		
-		$configColumn["1"]["FiledSouce"] 		= "createdOn";					
-		$configColumn["2"]["FiledSouce"] 		= "Tipo";		
-		$configColumn["3"]["FiledSouce"] 		= "Categoria";		
-		$configColumn["4"]["FiledSouce"] 		= "amount";	
-
+		</table>
 		
-		$configColumn["1"]["Formato"] 		= "Date";		
-		$configColumn["2"]["Formato"] 		= "";		
-		$configColumn["3"]["Formato"] 		= "";		
-		$configColumn["4"]["Formato"] 		= "Number";	
-		
-		$configColumn["1"]["Width"] 		= "80px";		
-		$configColumn["2"]["Width"] 		= "80px";		
-		$configColumn["3"]["Width"] 		= "80px";		
-		$configColumn["4"]["Width"] 		= "80px";		
-		
-		
-		$configColumn["1"]["Total"] 		= False;		
-		$configColumn["2"]["Total"] 		= False;		
-		$configColumn["3"]["Total"] 		= False;		
-		$configColumn["4"]["Total"] 		= False;	
-		
-		$resultado 	= helper_reporteGeneralCreateTable($objDetail,$configColumn,'0px',NULL,NULL);
-		?>
-		
-		
-		
-		
-		<?php 
-		echo helper_reporteGeneralCreateEncabezado(
-			'DETALLE DE GASTOS',
-			$objCompany->name,
-			$resultado["columnas"],
-			'GASTOS DEL '.$objStartOn.' AL '.$objEndOn,
-			"",
-			"",
-			$resultado["width"]
-		);
-		?>
-		
-		
-		<br/>	
-		
-		<?php 
-		echo $resultado["table"];
-		?>
-		<br/>	
-		
-		
-		<?php 
-		echo helper_reporteGeneralCreateFirma(	
-			$objFirmaEncription,
-			$resultado["columnas"],
-			$resultado["width"]
-		);
-		?>
 		
 		
 		

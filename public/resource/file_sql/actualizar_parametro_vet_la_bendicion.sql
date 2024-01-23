@@ -25,7 +25,7 @@ UPDATE  tb_company_parameter,tb_parameter SET
 	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "CXC_VALIDAR_CEDULA_REPETIDA";	## True, no permite repetir la cedula, false, permite repetir la cedula
+	tb_parameter.name = "CXC_VALIDAR_CEDULA_REPETIDA";	## Parametro para validar si se repite una cedula o no.
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
@@ -1183,14 +1183,14 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8505-7109" 
+	tb_company_parameter.value = "TEL: 8888-8888" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8505-7109" 
+	tb_company_parameter.value = "TEL: 8888-8888" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1198,14 +1198,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Donde fue aserrio santa fe, 2c abajo 15v.sur" 
+	tb_company_parameter.value = "Centro recreativo 1/2 abajo" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Distribuidora Gonzalez' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
+	NAME = 'Vet la Bendicion' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
 	flavorID = 0,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
@@ -1219,17 +1219,17 @@ update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2, 	/*administrador*/
  5,		/*administrador*/
- 191,  	/*supervisor*/
- 190, 	/*facturador*/
- 189 	/*administrador*/
+ 433,  	/*supervisor*/
+ 432, 	/*facturador*/
+ 431 	/*administrador*/
 );
 
 update tb_role set isActive = 0; 
 update tb_role set isActive = 1 where roleID in (
 	3,
-	201,
-	202,
-	203	
+	259,
+	258,
+	257	
 );
 
 

@@ -31,43 +31,7 @@
 												</div>
 											</div>
 											
-											<div class="form-group">
-												<label class="col-lg-6 control-label" for="selectFilter">Tipos</label>
-												<div class="col-lg-6"> 
-													<div class="col-lg-6">
-													</div>
-													<div class="col-lg-6">
-														<select name="txtTiposID" id="txtTiposID" class="select2">
-																<option value="0">TODOS</option>
-																<?php
-																if($objListCatalogoTipoGastos)
-																foreach($objListCatalogoTipoGastos as $i){
-																	echo "<option value='".$i->publicCatalogDetailID."'>".$i->name."</option>";
-																}
-																?>
-														</select>
-													</div>													
-												</div>
-											</div>
 											
-											<div class="form-group">
-												<label class="col-lg-6 control-label" for="selectFilter">Categoria</label>
-												<div class="col-lg-6"> 
-													<div class="col-lg-6">
-													</div>
-													<div class="col-lg-6">
-														<select name="txtCategoriaID" id="txtCategoriaID" class="select2">
-																<option value="0">TODAS</option>
-																<?php
-																if($objListCatalogoCategoriaGastos)
-																foreach($objListCatalogoCategoriaGastos as $i){
-																	echo "<option value='".$i->publicCatalogDetailID."'>".$i->name."</option>";
-																}
-																?>
-														</select>
-													</div>													
-												</div>
-											</div>
 											
 											
                                         </form>
