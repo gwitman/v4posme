@@ -19,46 +19,58 @@
 		">
 			<thead>
 				<tr>
-					<th colspan="3" rowspan="5" style="text-align:left;width:130px">
-						<img width="120" height="110" 						
-							style="
-								width: 120px;
-								height: 110px;
-							"
+					<th   style="text-align:left;width:130px">
+						<table>
+							<tr>
+								<td>
+									<img width="120" height="110" 						
+										style="
+											width: 120px;
+											height: 110px;
+										"
+										src="<?php echo base_url(); ?>/resource/img/logos/logo-micro-finanza.jpg" 
+									/>
+								</td>
+							</tr>
+						</table>
+					</th>
+					<th style="vertical-align:top" >
+						<table style="width:100%">
 							
-							src="<?php echo base_url(); ?>/resource/img/logos/logo-micro-finanza.jpg" 
-						/>
+							<tr  style="
+								text-align:right;background-color:#00628e;color:white;
+								width:80%
+							">
+								<th>COMPARATIVO MENSUAL DE GASTO</th>
+							</tr>
+							<tr>
+								<th  style="
+									text-align:right;background-color:#00628e;color:white;
+								"><?php echo strtoupper($objCompany->name); ?></th>
+							</tr>
+							<tr>
+								<th  style="
+									text-align:right;background-color:#00628e;color:white;
+								">INFORMACION DE <?php echo $objStartOn; ?> AL <?php echo $objEndOn; ?></th>
+							</tr>
+							<tr>
+								<th style="
+									text-align:right;background-color:#00628e;color:white;
+								"></th>
+							</tr>
+							<tr>
+								<th style="
+									text-align:right;background-color:#00628e;color:white;
+								"></th>
+							</tr>				
+							<tr>
+								<th  style="text-align:left">
+									&nbsp;
+								</th>
+							</tr>
+						</table>
 					</th>
-					<th colspan="6" style="
-						text-align:right;background-color:#00628e;color:white;
-						width:80%
-					">COMPARATIVO MENSUAL DE GASTO</th>
-				</tr>
-				<tr>
-					<th colspan="6" style="
-						text-align:right;background-color:#00628e;color:white;
-					"><?php echo strtoupper($objCompany->name); ?></th>
-				</tr>
-				<tr>
-					<th colspan="6" style="
-						text-align:right;background-color:#00628e;color:white;
-					">INFORMACION DE <?php echo $objStartOn; ?> AL <?php echo $objEndOn; ?></th>
-				</tr>
-				<tr>
-					<th colspan="6" style="
-						text-align:right;background-color:#00628e;color:white;
-					"></th>
-				</tr>
-				<tr>
-					<th colspan="6" style="
-						text-align:right;background-color:#00628e;color:white;
-					"></th>
 				</tr>				
-				<tr>
-					<th colspan="9" style="text-align:left">
-						&nbsp;
-					</th>
-				</tr>
 			</thead>
 		</table>
 		

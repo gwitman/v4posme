@@ -598,7 +598,7 @@
 			{"codigoABuscar":codigoABuscar},
 			function(e){    
 				
-				debugger;
+				
 				//buscar el producto y agregar						
 				var codigoABuscar 	= e.codigoABuscar;
 				e 					= e.all;
@@ -1407,7 +1407,7 @@
 
 	function fnFillListaProductos(data)
 	{		
-		console.info("complete success data");
+		console.info("fnFillListaProductos success data");
 		var objListaProductos 				= data.objGridView;			
 		
 		
@@ -1417,7 +1417,7 @@
 	}
 	function fnFillListaProductos2(data)
 	{
-		console.info("complete success data");
+		console.info("fnFillListaProductos2 success data");
 		var objListaProductos2 				= data.objGridView;
 		
 		
@@ -1428,7 +1428,7 @@
 
 	function fnFillListaProductos3(data){
 		
-		console.info("complete success data");
+		console.info("fnFillListaProductos3 success data");
 		var objListaProductos3 				= data.objGridView;
 		
 		
@@ -1440,7 +1440,7 @@
 	
 	function fnFillListaProductosSku(data)
 	{		
-		console.info("complete success data");
+		console.info("fnFillListaProductosSku success data");
 		removeDataDB("objListaProductosSkuX001");		
 		addDataDBArray("objListaProductosSkuX001",data.objGridView);
 	
@@ -1450,7 +1450,7 @@
 	function fnFillListaItemConcept(data)
 	{		
 		
-		console.info("complete success data");
+		console.info("fnFillListaItemConcept success data");
 		removeDataDB("objListaProductosConceptosX001");		
 		addDataDBArray("objListaProductosConceptosX001",data.objGridView);
 		
@@ -1459,7 +1459,7 @@
 	
 	function fnFillListaCreditLine(data)
 	{		
-		console.info("complete success data");
+		console.info("fnFillListaCreditLine success data");
 		removeDataDB("objListaCustomerCreditLineX001");		
 		addDataDBArray("objListaCustomerCreditLineX001",data.objListCustomerCreditLine);
 	
@@ -1597,7 +1597,7 @@
 			url  		: "<?php echo base_url(); ?>/app_invoice_api/getViewApi/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING/"+encodeURI('{"warehouseID"|"'+  $("#txtWarehouseID").val()   +'"{}"listPriceID"|"<?php echo $objListPrice->listPriceID; ?>"{}"typePriceID"|"'+154+'"}'),		/*TIPO PRECIO 1 --> 154 --> PUBLICO*/
 			success		: fnFillListaProductos,
 			error:function(xhr,data){	
-				console.info("complete data error");		
+				console.info("fnObtenerListadoProductos data error");		
 				fnShowNotification("Error 505","error");
 			}
 		});	
@@ -1612,7 +1612,7 @@
 			url  		: "<?php echo base_url(); ?>/app_invoice_api/getViewApi/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING/"+encodeURI('{"warehouseID"|"'+  $("#txtWarehouseID").val()   +'"{}"listPriceID"|"<?php echo $objListPrice->listPriceID; ?>"{}"typePriceID"|"'+155+'"}'),		/*TIPO PRECIO 2 --> 155 --> POR MAYOR*/		
 			success		: fnFillListaProductos2,
 			error:function(xhr,data){	
-				console.info("complete data error");		
+				console.info("fnObtenerListadoProductos2 data error");		
 				fnShowNotification("Error 505","error");
 			}
 		});	
@@ -1627,7 +1627,7 @@
 			url  		: "<?php echo base_url(); ?>/app_invoice_api/getViewApi/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING/"+encodeURI('{"warehouseID"|"'+  $("#txtWarehouseID").val()   +'"{}"listPriceID"|"<?php echo $objListPrice->listPriceID; ?>"{}"typePriceID"|"'+156+'"}'),	/*TIPO PRECIO 3 --> 156 --> CREDITO*/
 			success		: fnFillListaProductos3,
 			error:function(xhr,data){	
-				console.info("complete data error");		
+				console.info("fnObtenerListadoProductos3 data error");		
 				fnShowNotification("Error 505","error");
 			}
 		});	
@@ -1645,7 +1645,7 @@
 			success		: fnFillListaProductosSku,
 			error:function(xhr,data)
 			{	
-				console.info("complete data error");	
+				console.info("fnObtenerListadoProdcutosSku data error");	
 				fnShowNotification("Error 505","error");
 			}
 		});
@@ -1663,7 +1663,7 @@
 			success		: fnFillListaItemConcept,
 			error:function(xhr,data)
 			{	
-				console.info("complete data error");	
+				console.info("fnObtenerListadoItemConcept data error");	
 				fnShowNotification("Error 505","error");
 			}
 		});
@@ -1682,7 +1682,7 @@
 			success		: fnFillListaCreditLine,
 			error:function(xhr,data)
 			{	
-				console.info("complete data error");	
+				console.info("fnObtenerListadoCustomerCreditLine data error");	
 				fnShowNotification("Error 505","error");
 			}
 		});
@@ -2054,7 +2054,7 @@
 			{},
 			function(e){    
 				
-				debugger;
+				
 				var data		 = {};	
 				var length2		 = objTableDetail.fnGetData().length;
 				var data2		 = objTableDetail.fnGetData();

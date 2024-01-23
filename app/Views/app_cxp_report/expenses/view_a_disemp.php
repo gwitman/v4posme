@@ -39,14 +39,14 @@
 		
 		$configColumn["0"]["Width"] 		= "80px";		
 		$configColumn["1"]["Width"] 		= "80px";		
-		$configColumn["2"]["Width"] 		= "80px";		
-		$configColumn["3"]["Width"] 		= "80px";		
+		$configColumn["2"]["Width"] 		= "120px";		
+		$configColumn["3"]["Width"] 		= "120px";		
 		$configColumn["4"]["Width"] 		= "250px";		
-		$configColumn["5"]["Width"] 		= "100px";
+		$configColumn["5"]["Width"] 		= "300px";
 		
 		$configColumn["0"]["Total"] 		= False;		
 		$configColumn["1"]["Total"] 		= False;		
-		$configColumn["2"]["Total"] 		= False;		
+		$configColumn["2"]["Total"] 		= True;		
 		$configColumn["3"]["Total"] 		= False;		
 		$configColumn["4"]["Total"] 		= False;		
 		$configColumn["5"]["Total"] 		= False;
