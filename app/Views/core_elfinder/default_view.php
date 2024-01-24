@@ -117,7 +117,7 @@
 							},
 							destroy: function () 
 							{
-								debugger;
+								
 								elfinder.dialog("close");
 
 							}

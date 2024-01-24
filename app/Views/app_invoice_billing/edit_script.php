@@ -1602,8 +1602,7 @@
 		$.ajax({									
 			cache       : false,
 			dataType    : 'json',
-			type        : 'GET',
-			//url  		: "<?php echo base_url(); ?>/app_invoice_api/getViewApi/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING/"+encodeURI('{"warehouseID"|"<?php echo $warehouseID ?>"{}"listPriceID"|"<?php echo $objListPrice->listPriceID; ?>"{}"typePriceID"|"'+$("#txtTypePriceID").val() +'"}'),		
+			type        : 'GET',			
 			url  		: "<?php echo base_url(); ?>/app_invoice_api/getViewApi/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING/"+encodeURI('{"warehouseID"|"'+  $("#txtWarehouseID").val()   +'"{}"listPriceID"|"<?php echo $objListPrice->listPriceID; ?>"{}"typePriceID"|"'+154+'"}'),		/*TIPO PRECIO 1 --> 154 --> PUBLICO*/
 			success		: fnFillListaProductos,
 			error:function(xhr,data){	
@@ -1617,8 +1616,7 @@
 		$.ajax({									
 			cache       : false,
 			dataType    : 'json',
-			type        : 'GET',
-			//url  		: "<?php echo base_url(); ?>/app_invoice_api/getViewApi/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING/"+encodeURI('{"warehouseID"|"<?php echo $warehouseID ?>"{}"listPriceID"|"<?php echo $objListPrice->listPriceID; ?>"{}"typePriceID"|"'+$("#txtTypePriceID").val() +'"}'),		
+			type        : 'GET',			
 			url  		: "<?php echo base_url(); ?>/app_invoice_api/getViewApi/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING/"+encodeURI('{"warehouseID"|"'+  $("#txtWarehouseID").val()   +'"{}"listPriceID"|"<?php echo $objListPrice->listPriceID; ?>"{}"typePriceID"|"'+155+'"}'),		/*TIPO PRECIO 2 --> 155 --> POR MAYOR*/		
 			success		: fnFillListaProductos2,
 			error:function(xhr,data){	
@@ -1632,8 +1630,7 @@
 		$.ajax({									
 			cache       : false,
 			dataType    : 'json',
-			type        : 'GET',
-			//url  		: "<?php echo base_url(); ?>/app_invoice_api/getViewApi/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING/"+encodeURI('{"warehouseID"|"<?php echo $warehouseID ?>"{}"listPriceID"|"<?php echo $objListPrice->listPriceID; ?>"{}"typePriceID"|"'+$("#txtTypePriceID").val() +'"}'),		
+			type        : 'GET',			
 			url  		: "<?php echo base_url(); ?>/app_invoice_api/getViewApi/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING/"+encodeURI('{"warehouseID"|"'+  $("#txtWarehouseID").val()   +'"{}"listPriceID"|"<?php echo $objListPrice->listPriceID; ?>"{}"typePriceID"|"'+156+'"}'),	/*TIPO PRECIO 3 --> 156 --> CREDITO*/
 			success		: fnFillListaProductos3,
 			error:function(xhr,data){	
@@ -2134,17 +2131,16 @@
 			{},
 			function(e){    
 				
-				
-				
-				
 				if( objTableProductosSearch != null)
 				{
-					//objTableProductosSearch.fnDestroy();
-					return;
+					objTableProductosSearch.fnDestroy();			
 				}
 				
 				
 				var dataSourceProductos = [];
+				var varCurrencyID 	= $("#txtCurrencyID").val();
+				e					= jLinq.from(e).where(function(obj){ return obj.currencyID == varCurrencyID }).select();
+				
 				for(var i =0 ; i < e.length; i++)
 				{
 					dataSourceProductos.push(

@@ -260,7 +260,7 @@
 						var result 				= true;
 						var timerNotification 	= 15000;
 						
-						debugger;
+						
 						
 						//Validar Fecha						
 						if($("#txtDate").val() == ""){

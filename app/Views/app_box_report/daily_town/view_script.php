@@ -18,7 +18,7 @@
 							var filterConcept			=   "-1";
 							var categoryItem			=   "-1";
 							
-							debugger;
+							
 							for( var i = 0 ; i < $("input[type=checkbox].areas").length ; i ++)
 							{
 								if( $($("input[type=checkbox].areas")[i]).is(':checked')    )

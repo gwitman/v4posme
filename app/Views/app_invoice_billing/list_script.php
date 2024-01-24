@@ -35,32 +35,6 @@
 			$("#iframeWork"+transactionMasterID).css("display","block");
 			
 			
-			
-			//--wgonzalez//solicitar la factura
-			//--wgonzalez$.ajax({									
-			//--wgonzalez	cache       : false,
-			//--wgonzalez	dataType    : 'json',
-			//--wgonzalez	type        : 'POST',
-			//--wgonzalez	url  		: "<?php echo base_url(); ?>/app_invoice_billing/getTransactionMaster",
-			//--wgonzalez	data 		: {companyID : 2 , transactionID : 19 , transactionMasterID : transactionMasterID  },
-			//--wgonzalez	success:function(data){
-			//--wgonzalez		console.info("complete delete success");
-			//--wgonzalez		fnWaitClose();
-			//--wgonzalez		if(data.error){
-			//--wgonzalez			fnShowNotification(data.message,"error");
-			//--wgonzalez		}
-			//--wgonzalez		debugger;
-			//--wgonzalez		
-			//--wgonzalez		
-			//--wgonzalez	},
-			//--wgonzalez	error:function(xhr,data){	
-			//--wgonzalez		console.info("complete delete error");									
-			//--wgonzalez		fnWaitClose();
-			//--wgonzalez		fnShowNotification("Error 505","error");
-			//--wgonzalez	}
-			//--wgonzalez});
-			
-			
 		});	
 		
 		$(document).on("click","#btnEdit",function(){

@@ -184,7 +184,7 @@
 					function onCompleteItem(objResponse){
 						console.info("CALL onCompleteItem");
 						var objRow 						= {};
-						debugger;
+						
 						objRow.checked 					= false;						
 						objRow.itemDataSheetID			= 0;
 						objRow.itemID 					= objResponse[0];

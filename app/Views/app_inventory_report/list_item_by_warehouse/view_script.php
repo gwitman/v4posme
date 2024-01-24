@@ -4,7 +4,6 @@
 						$(document).on("click","#print-btn-report",function(){								
 							var warehouseID		=	$("#warehouseID").val();		
 
-							debugger;
 							
 							if(warehouseID != null)							
 							{

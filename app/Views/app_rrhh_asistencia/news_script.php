@@ -133,7 +133,7 @@
 					function onCompleteCustomer(objResponse){
 						
 						console.info("CALL onCompleteCustomer");
-						debugger;
+						
 						
 						
 						var entityID = objResponse[2];
@@ -162,7 +162,7 @@
 						var result 				= true;
 						var timerNotification 	= 15000;
 						
-						debugger;
+						
 						
 						//Validar Fecha						
 						if($("#txtDate").val() == ""){

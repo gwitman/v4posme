@@ -88,6 +88,18 @@
 		$configColumn["5"]["Width"]			= "100px";
 		$configColumn["5"]["AutoIncrement"]	= False;
 		
+		$configColumn["11"]["Titulo"] 		= "Moneda";
+		$configColumn["11"]["TituloFoot"]	= "";
+		$configColumn["11"]["FiledSouce"]	= "Moneda";
+		$configColumn["11"]["Colspan"] 		= "1";
+		$configColumn["11"]["Formato"] 		= "";
+		$configColumn["11"]["Total"] 		= False;
+		$configColumn["11"]["Alineacion"] 	= "Left";
+		$configColumn["11"]["TotalValor"] 	= 0;
+		$configColumn["11"]["FiledSoucePrefix"]	= "";
+		$configColumn["11"]["Width"]			= "100px";
+		$configColumn["11"]["AutoIncrement"]	= False;
+		
 		$configColumn["6"]["Titulo"] 		= "Balance";
 		$configColumn["6"]["TituloFoot"]	= "";
 		$configColumn["6"]["FiledSouce"]	= "balanceTotal";

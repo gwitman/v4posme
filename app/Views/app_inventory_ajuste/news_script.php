@@ -250,7 +250,7 @@
 		
 		//Eliminar Item del Detalle
 		$(document).on("click","#btnDeleteDetailTransaction",function(){
-			debugger;
+			
 			var listRow = objTableDetailTransaction.fnGetData();							
 			var length 	= listRow.length;
 			var i 		= 0;
@@ -297,7 +297,7 @@
 		
 		//Seleccionar Checke 
 		$(document).on("click",".classCheckedDetail",function(){
-			debugger;
+			
 			var objrow_ = $(this).parent().parent()[0];
 			var objind_ = objTableDetailTransaction.fnGetPosition(objrow_);
 			var objdat_ = objTableDetailTransaction.fnGetData(objind_);								

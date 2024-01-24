@@ -814,7 +814,8 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Agencia Freddy' , address = 'Costado este terminal de buses' 
+	NAME = 'Agencia Freddy' , address = 'Costado este terminal de buses' ,
+	flavorID = 212,type='agencia_freddy'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

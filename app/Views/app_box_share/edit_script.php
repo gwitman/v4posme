@@ -301,7 +301,7 @@
 	}
 	function onCompleteNewShare(objResponse){
 		console.info("CALL onCompleteNewShare");	
-		debugger;
+		
 		var objBalancesDocument = 
 		jLinq.from(objListaCustomerCredit).where(function(obj){ return obj.documentNumber == objResponse[4]}).select()[0];
 		objBalancesDocument.balance = fnFormatNumber(objBalancesDocument.balance,2);

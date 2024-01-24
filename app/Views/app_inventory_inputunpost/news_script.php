@@ -454,7 +454,7 @@
 		{
 			
 			console.info("CALL onCompleteItem");
-			debugger;
+			
 			
 			var cantidad = 1;
 			if(objResponse[i].length >= 11)

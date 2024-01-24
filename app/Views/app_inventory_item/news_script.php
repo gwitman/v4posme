@@ -9,7 +9,7 @@
 	//agregar producto al listado de compra
 	if(objCallback != 'false' && app_inventory_item_add_producto_al_detalle_compra != '')
 	{
-		debugger;
+		
 		var dataProductoNew 	= [];
 		var dataProductoItem 	= [];
 		dataProductoItem 		= app_inventory_item_add_producto_al_detalle_compra.split("|");

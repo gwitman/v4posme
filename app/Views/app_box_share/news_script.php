@@ -187,7 +187,7 @@
 	}
 	function onCompleteNewShare(objResponse){
 		console.info("CALL onCompleteNewShare");	
-		debugger;
+		
 		var objBalancesDocument = 
 		jLinq.from(objListaCustomerCredit).where(function(obj){ return obj.documentNumber == objResponse[4]}).select()[0];
 		objBalancesDocument.balance = fnFormatNumber(objBalancesDocument.remaining,2);
@@ -202,7 +202,7 @@
 		objRow.doc 						= objResponse[4];	/*Doc*/						
 		objRow.docMonto 				= 0;
 		objRow.abonoFecha 				= objResponse[5];	/*AbonoFecha*/
-		objRow.abonoCuota 				= fnFormatNumber(fnFormatFloat(objResponse[6]),2);			/*AbonoCuota*/
+		objRow.abonoCuota 				= fnFormatNumber(fnFormatFloat(objResponse[6]),2);							/*AbonoCuota*/
 		
 		if(varShareMountDefaultOfAmortization == "true")
 		{
