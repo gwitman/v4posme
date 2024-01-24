@@ -577,7 +577,7 @@
 							</div>
 						</div>
 						<div class="col col-lg-2">
-							<a href="<?php echo base_url(); ?>/app_invoice_billing/index" id="btnBack" class="btn btn-flat btn-inverse btn-block hidden btn-comando-factura" ><i class="icon16 i-rotate"></i> REGRESAR</a>    				
+							<a href="#" id="btnBack" class="btn btn-flat btn-inverse btn-block hidden btn-comando-factura" ><i class="icon16 i-rotate"></i> REGRESAR</a>    				
 						</div>
 					</div>
 					<br/>
@@ -937,6 +937,11 @@
 			<div id="modalDialogOpenPrimterCocina" title="Formato de Impresion" class="dialog">
 				<p>Seleccione el formato que desea imprimir la factura</p>
 			</div>
+			
+			<div id="modalDialogBackList" title="Regresar a la lista" class="dialog">
+				<p>Seguro que desea regresa a la lista</p>
+			</div>
+			
 			<div id="modalDialogOpenPrimterBar" title="Formato de Impresion" class="dialog">
 				<p>Seleccione el formato que desea imprimir la factura</p>
 			</div>

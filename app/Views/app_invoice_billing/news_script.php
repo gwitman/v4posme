@@ -567,7 +567,17 @@
 	
 	//Regresar a la lista
 	$(document).on("click","#btnBack",function(){
-			fnWaitOpen();
+			var listRow = objTableDetail.fnGetData();							
+			var length 	= listRow.length;
+			if(length > 0)
+			{
+				$("#modalDialogBackList").dialog("open");
+			}
+			else 
+			{
+				fnWaitOpen();
+				window.location.href = '<?php echo base_url(); ?>/app_invoice_billing/index'; 				
+			}
 	});
 	
 	//Evento Agregar el Usuario
@@ -2388,8 +2398,10 @@
 	
 	function fnReady()
 	{
-		$(document).ready(function(){
+		$(document).ready(function()
+		{
 		
+			var objectParameterButtomsBack		= {};
 			 $('#txtDate').datepicker({format:"yyyy-mm-dd"});
 			 $('#txtDate').val(moment().format("YYYY-MM-DD"));	
 			 $("#txtDate").datepicker("update");
@@ -2415,6 +2427,23 @@
 				$("#modal_body_popup_productos").css("overflow","auto");
 				$("#modal_body_popup_productos").css("height",varParameterAlturaDelModalDeSeleccionProducto);
 			}
+			
+			objectParameterButtomsBack.Aceptar=function()
+			{
+				$(this).dialog("close");				
+				fnWaitOpen();
+				window.location.href = '<?php echo base_url(); ?>/app_invoice_billing/index'; 				
+			}
+			
+			
+			$("#modalDialogBackList").dialog({
+					autoOpen: false,
+					modal: true,
+					width:520,
+					dialogClass: "dialog",
+					buttons: objectParameterButtomsBack
+			});
+			
 			
 			
 			if (varAutoAPlicar == "true" || varParameterRegresarAListaDespuesDeGuardar == "true")

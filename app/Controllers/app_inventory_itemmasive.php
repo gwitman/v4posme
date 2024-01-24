@@ -214,6 +214,14 @@ class app_inventory_itemmasive extends _BaseController {
 			
 				
 			
+			
+			$objTypePriceValue					= $this->core_web_parameter->getParameter("INVOICE_DEFAULT_TYPE_PRICE",$companyID);
+			$objTypePriceValue					= $objTypePriceValue->value;
+			
+			$objTypeListPriceValue				= $this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID);
+			$objTypeListPriceValue				= $objTypeListPriceValue->value;
+			
+			
 			//Actualizar lso codigos de barra
 			$objListaItemPrinter = array();			
 			foreach($listItem as $itemWitCantidad)
@@ -251,7 +259,8 @@ class app_inventory_itemmasive extends _BaseController {
 					}
 					
 					for($i = 0; $i < $cantidad ; $i++){
-						$objItemTempory = $this->Item_Model->get_rowByPK($companyID,$itemID);
+						$objItemTempory 			= $this->Item_Model->get_rowByPK($companyID,$itemID);
+						$objItemTempory->itemPrice 	= $this->Price_Model->get_rowByPK($companyID, $objTypeListPriceValue, $itemID, $objTypePriceValue /*Precio publico*/)->price;
 						array_push($objListaItemPrinter,$objItemTempory);
 					}
 				}
@@ -265,7 +274,8 @@ class app_inventory_itemmasive extends _BaseController {
 			$dataView["objListItemID"]				= array_column($objListaItemPrinter,"itemID");
 			$dataView["objListItemIDDistinct"]		= array_unique($dataView["objListItemID"]);
 			
-		
+			
+			
 			//obtener nombre de impresora por defecto
 			if($dataView["objListaItem"])
 			{
@@ -324,6 +334,7 @@ class app_inventory_itemmasive extends _BaseController {
 				$itemNumber		= $itemWitCantidadTmp[2];			
 				$name			= $itemWitCantidadTmp[3];			
 				$itemBarCode	= $itemWitCantidadTmp[4];			
+				$itemPrice		= $itemWitCantidadTmp[5];			
 				
 				//Obtener Lista de Productos		
 				$directory				=  PATH_FILE_OF_APP."/company_".$companyID."/component_".$componentItemID."/component_item_".$itemID;
@@ -348,6 +359,7 @@ class app_inventory_itemmasive extends _BaseController {
 					$objItemTempory["itemNumber"] 	= $itemNumber;
 					$objItemTempory["name"] 		= $name;
 					$objItemTempory["itemBarCode"] 	= $itemBarCode;
+					$objItemTempory["itemPrice"] 	= $itemPrice;
 					array_push($objListaItemPrinter,$objItemTempory);
 				}
 				

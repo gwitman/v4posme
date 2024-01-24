@@ -711,7 +711,17 @@
 
 	//Regresar a la lista
 	$(document).on("click","#btnBack",function(){
-			fnWaitOpen();
+				var listRow = objTableDetail.fnGetData();							
+			var length 	= listRow.length;
+			if(length > 0)
+			{
+				$("#modalDialogBackList").dialog("open");
+			}
+			else 
+			{
+				fnWaitOpen();
+				window.location.href = '<?php echo base_url(); ?>/app_invoice_billing/index'; 				
+			}
 	});
 	
 	//Evento Agregar el Usuario
@@ -2639,6 +2649,7 @@
 			
 			var objectParameterButtoms 			= {};
 			var objectParameterButtomsClave 	= {};
+			var objectParameterButtomsBack		= {};
 			var objectParameterButtomsCocina 	= {};
 			var objectParameterButtomsBar 		= {};
 			heigthTop							= 300;
@@ -2701,6 +2712,13 @@
 				}
 			};	
 			
+			objectParameterButtomsBack.Aceptar=function()
+			{
+				$(this).dialog("close");				
+				fnWaitOpen();
+				window.location.href = '<?php echo base_url(); ?>/app_invoice_billing/index'; 	
+			}
+			
 			$("#modalDialogOpenPrimter").dialog({
 					autoOpen: false,
 					modal: true,
@@ -2716,6 +2734,15 @@
 					dialogClass: "dialog",
 					buttons: objectParameterButtomsClave
 			});
+			
+			$("#modalDialogBackList").dialog({
+					autoOpen: false,
+					modal: true,
+					width:520,
+					dialogClass: "dialog",
+					buttons: objectParameterButtomsBack
+			});
+			
 			
 			
 			objectParameterButtomsCocina.Imprimir=function(){

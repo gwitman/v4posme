@@ -5,7 +5,7 @@
 		$(document).on("click","#btnPrinter",function(){
 			
 			var listaValores 				= objTableListView.fnGetData();	
-			var listeProductos 				= "0-0-0-0-0";
+			var listeProductos 				= "0-0-0-0-0-0";
 			$("#ListView input").each(function(i,o) {
 				if($( this ).val() == 0 || $( this ).val() == "")
 				{}
@@ -13,11 +13,11 @@
 					
 					//console.info($( this ).val());
 					//console.info($( this ).data("codigo"));
-					listeProductos = listeProductos + "|"+ $(this).data("itemid") + "-" + $( this ).val() +"-"+ $(this).data("codigo") +"-"+ $(this).data("name").replaceAll("/",".") +"-"+$(this).data("barcode");
+					listeProductos = listeProductos + "|"+ $(this).data("itemid") + "-" + $( this ).val() +"-"+ $(this).data("codigo") +"-"+ $(this).data("name").replaceAll("/",".") +"-"+$(this).data("barcode")+"-"+$(this).data("price");
 				}
   				
 			});
-			if(listeProductos == "0-0-0-0-0"){
+			if(listeProductos == "0-0-0-0-0-0"){
 				fnShowNotification("Seleccionar el Registro...","error");
 				return;
 			}

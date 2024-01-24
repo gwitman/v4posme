@@ -576,7 +576,7 @@
 								</div>
 							</div>
 							<div class="col col-lg-2">
-								<a href="<?php echo base_url(); ?>/app_invoice_billing/index" id="btnBack" class="btn btn-inverse  btn-block hidden btn-comando-factura" ><i class="icon16 i-rotate"></i> REGRESAR</a>
+								<a href="#" id="btnBack" class="btn btn-inverse  btn-block hidden btn-comando-factura" ><i class="icon16 i-rotate"></i> REGRESAR</a>
 							</div>
 						</div>
 						
@@ -887,6 +887,14 @@
 			</div>
 			</form>
 			<!-- /body -->
+			
+			
+			<div id="modalDialogBackList" title="Regresar a la lista" class="dialog">
+				<p>Seguro que desea regresa a la lista</p>
+			</div>
+			
+			
+			
 		</div>
 	</div>
 </div>
