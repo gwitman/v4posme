@@ -99,14 +99,20 @@
 				</tr>
 			</thead>				
 			<tbody>
-				<?php				
+				<?php
+				$columnx = 0;
 				if($objDetail)
 				foreach($objDetail as $i)
 				{		
-					echo "<tr>";						
+					$columnx = 0;
+					echo "<tr>";								
 					foreach($i as $key => $ii)
-					{					
+					{			
+						$columnx++;
 						echo "<td style='text-align:left'  colspan='1' class='border' >";
+							if($columnx > 1)
+							echo (number_format($ii,2,'.',','));
+							else 
 							echo ($ii);
 						echo "</td>";																											
 					}

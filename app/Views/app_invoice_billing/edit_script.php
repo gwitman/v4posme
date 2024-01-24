@@ -1964,8 +1964,9 @@
 	
 	function fnImprimirCocina(){
 		
-		var listRow = objTableDetail.fnGetData();							
-		var length 	= listRow.length;
+		var listRow 	= objTableDetail.fnGetData();							
+		var length 		= listRow.length;
+		var comentario 	= $("#txtNote").val();
 		
 		var i 		= 0;
 		var itemid 	= "-1";
@@ -1985,7 +1986,7 @@
 			"/companyID/"+"<?php echo $objTransactionMaster->companyID; ?>" + 
 			"/transactionID/"+"<?php echo $objTransactionMaster->transactionID; ?>"+
 			"/transactionMasterID/"+"<?php echo $objTransactionMaster->transactionMasterID; ?>"+
-			"/itemID/"+itemid;
+			"/itemID/"+itemid+"/transactionMasterComment/"+comentario;
 			
 			fnWaitOpen();	
 			$.ajax({									

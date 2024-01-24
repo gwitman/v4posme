@@ -327,6 +327,9 @@ class app_inventory_report extends _BaseController {
 				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "auxiliar_mov_x_tipo_de_comprobantes" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
 				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
 				
+				if($objCompany->type == "casetafreddy")
+				return view("app_inventory_report/master_kardex/view_a_disemp_caseta_freddy",$objDataResult);//--finview-r
+				else
 				return view("app_inventory_report/master_kardex/view_a_disemp",$objDataResult);//--finview-r
 				
 			}

@@ -2477,6 +2477,9 @@ class core_web_printer_direct {
 		$this->printer->text("\n Mesa:            ".substr($dataSetValores["objTransactionMasterInfo"]->mesaName,0,15));
 		$this->printer->text("\n");
 		$this->printer->text("\n");
+		$this->printer->text("\n Comentario:      ".substr($dataSetValores["objComentario"],0,120));
+		$this->printer->text("\n");
+		$this->printer->text("\n");
 		//Detalle
 		$data1		= array();			
 		$subtotal 	= 0;

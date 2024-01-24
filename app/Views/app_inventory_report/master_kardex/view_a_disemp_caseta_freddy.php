@@ -76,20 +76,11 @@
 			width:100%;order-spacing: 10px;
 		" >
 			<thead>
-				<tr style='background-color:#00628e;color:white'>
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Codigo</td>
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Nombre</td>
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Categoria</td>					
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Cant Ini</td>
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Cost Ini</td>
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Cant Ent</td>
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Cost Ent</td>						
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Cant Sal</td>
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Cost Sal</td>
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Cant Fin</td>
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Cost Fin</td>						
-				</tr>
-			
+				
+				<tr style="background-color:#00628e;color:white;">					
+					<th style="text-align:left;width:805px;"   colspan="8" class="border">Codigo--->Categoria--->Nombre</th>
+				<tr>				
+				
 			</thead>				
 			<tbody>
 				<?php
@@ -107,41 +98,31 @@
 					$count++;	
 					$costoinicial	= $costoinicial +  	$i["costInicial"];
 					$costoentrada	= $costoentrada +  	$i["costInput"];
-					$costosalida	= $costosalida  +  	$i["costOutput"];	
-					$costofinal		= ($costoinicial   +  $costoentrada) - $costosalida;
+					$costosalida	= $costosalida +  	$i["costOutput"];	
 					
+					echo "<tr>";
+						echo "<td style='text-align:left;border-top:0px;border-bottom:0px'  colspan='8' class='border' >";
+							echo ($i["itemNumber"])."--->".($i["itemCategoryName"])."--->".($i["itemName"]);
+						echo "</td>";						
+					echo "</tr>";
 					
 					
 					if($count % $modulo == 0 || $count == 1  )
 					{
 						echo '
-						<tr>
-							<td style="text-align:left;width:100px;" class="border">Codigo</td>
-							<td style="text-align:left;width:100px;" class="border">Nombre</td>
-							<td style="text-align:left;width:100px;" class="border">Categoria</td>
-							
-							<td style="text-align:left;width:100px;" class="border">Cant Ini</td>
-							<td style="text-align:left;width:100px;" class="border">Cost Ini</td>
-							<td style="text-align:left;width:100px;" class="border">Cant Ent</td>
-							<td style="text-align:left;width:100px;" class="border">Cost Ent</td>						
-							<td style="text-align:left;width:100px;border-left: 0px;" class="border">Cant Sal</td>
-							<td style="text-align:left;width:100px;" class="border">Cost Sal</td>
-							<td style="text-align:left;width:100px;" class="border">Cant Fin</td>
-							<td style="text-align:left;width:100px;"  class="border">Cost Fin</td>						
+						</tr>						
+							<td style="text-align:left;width:100px;border-top:0px;border-bottom:0px" class="border">Cant Ini</td>
+							<td style="text-align:left;width:100px;border-top:0px;border-bottom:0px" class="border">Cost Ini</td>
+							<td style="text-align:left;width:100px;border-top:0px;border-bottom:0px" class="border">Cant Ent</td>
+							<td style="text-align:left;width:100px;border-top:0px;border-bottom:0px" class="border">Cost Ent</td>						
+							<td style="text-align:left;width:100px;border-top:0px;border-bottom:0px;border-left: 0px;" class="border">Cant Sal</td>
+							<td style="text-align:left;width:100px;border-top:0px;border-bottom:0px" class="border">Cost Sal</td>
+							<td style="text-align:left;width:100px;border-top:0px;border-bottom:0px" class="border">Cant Fin</td>
+							<td style="text-align:left;width:100px;border-top:0px;border-bottom:0px"  class="border">Cost Fin</td>						
 						</tr>';					
 					}
 					
 					echo "<tr>";
-						echo "<td style='text-align:right;border-top: 0px'  class='border'>";
-							echo ($i["itemNumber"]);
-						echo "</td>";
-						echo "<td style='text-align:right;border-top: 0px'  class='border'>";
-							echo ($i["itemCategoryName"]);
-						echo "</td>";
-						echo "<td style='text-align:right;border-top: 0px'  class='border'>";
-							echo ($i["itemName"]);
-						echo "</td>";
-						
 						echo "<td style='text-align:right;border-top: 0px'  class='border'>";
 							echo (number_format($i["quantityInicial"],2,'.',','));
 						echo "</td>";
@@ -165,7 +146,7 @@
 							echo (number_format($i["quantityInicial"] + $i["quantityInput"] - $i["quantityOutput"],2,'.',','));
 						echo "</td>";
 						echo "<td style='text-align:right;border-top: 0px' class='border'>";
-							echo (number_format($i["costInicial"] + $i["costInput"] - $i["costOutput"],2,'.',','));
+							echo (number_format($i["costInicial"],2,'.',','));
 						echo "</td>";
 					echo "</tr>";
 				}
@@ -181,11 +162,7 @@
 				-->
 				
 				
-				<tr>
-					<th style="text-align:left;" class="border">Codigo</th>
-					<th style="text-align:left;" class="border">Nombre</th>
-					<th style="text-align:left;" class="border">Categoria</th>
-					
+				</tr>
 					<th style="text-align:left;" class="border">Cant. Inicial</th>
 					<th style="text-align:right;" class="border"><?php echo number_format($costoinicial,2,'.',',');  ?></th>
 					<th style="text-align:left;" class="border">Cant. Entrada</th>
@@ -196,7 +173,7 @@
 					<th style="text-align:right;" class="border"><?php echo number_format($costofinal,2,'.',',');  ?></th>
 				</tr>
 				
-				
+				</tr>
 			</tfoot>
 		</table>
 		
