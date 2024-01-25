@@ -465,6 +465,12 @@
 				for(var i = 0 ; i < e.length ; i++)
 				{
 					
+					if(encontrado == true)
+					{
+						i--;
+						break;
+					}
+					
 					//buscar por codigo de sistema					
 					var currencyTemp	= e[i].currencyID;
 					var currencyID 		= $("#txtCurrencyID").val();

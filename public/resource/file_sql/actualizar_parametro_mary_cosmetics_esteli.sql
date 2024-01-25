@@ -1,4 +1,11 @@
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_EMPLOYEE_DEFAULT";## Variable para poner por defecto al vendedor
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
@@ -912,7 +919,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Marys Cosmetic By Maria Zeledon' , address = 'Optica matamoro 10v.e' ,
-	flavorID = 0 
+	flavorID = 0 , type='maryscosmeticesteli'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

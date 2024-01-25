@@ -2494,8 +2494,8 @@ class app_box_share extends _BaseController {
 			//Get Component
 			$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
 			//Get Logo
-			$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
-			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+			$objParameter					= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);			
+			$objParameterTelefono			= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
 			//Get Company
 			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);			
 			//Get Documento				
@@ -2527,6 +2527,20 @@ class app_box_share extends _BaseController {
 			$datView["saldoFinal"]		= $saldoFinal;
 			$datView["saldoAbonado"]	= $saldoAbonado;
 				
+									
+				
+			
+			$datView["Identifier"]						= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);									
+			$datView["prefixCurrency"]					= $datView["objCurrency"]->simbol." ";
+			$datView["cedulaCliente"] 					= $datView["objCustumer"]->customerNumber;
+			$datView["nombreCliente"] 					= $datView["objCustumer"]->firstName ;			
+			
+			
+			$datView["objTransactionMaster"]			= $datView["objTM"];
+			$datView["objParameterLogo"]				= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$datView["objParameterPhoneProperty"]		= $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE",$companyID);
+			$datView["objCompany"] 						= $this->Company_Model->get_rowByPK($companyID);			
+			
 			
 			//obtener nombre de impresora por defecto
 			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT",$companyID);

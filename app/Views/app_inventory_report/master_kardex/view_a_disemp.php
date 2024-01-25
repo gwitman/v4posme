@@ -78,8 +78,8 @@
 			<thead>
 				<tr style='background-color:#00628e;color:white'>
 					<td style="text-align:left;width:100px;font-weight:bold" class="border">Codigo</td>
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Nombre</td>
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Categoria</td>					
+					<td style="text-align:left;width:100px;font-weight:bold" class="border">Categoria</td>
+					<td style="text-align:left;width:220px;font-weight:bold" class="border">Nombre</td>					
 					<td style="text-align:left;width:100px;font-weight:bold" class="border">Cant Ini</td>
 					<td style="text-align:left;width:100px;font-weight:bold" class="border">Cost Ini</td>
 					<td style="text-align:left;width:100px;font-weight:bold" class="border">Cant Ent</td>
@@ -112,24 +112,24 @@
 					
 					
 					
-					if($count % $modulo == 0 || $count == 1  )
-					{
-						echo '
-						<tr>
-							<td style="text-align:left;width:100px;" class="border">Codigo</td>
-							<td style="text-align:left;width:100px;" class="border">Nombre</td>
-							<td style="text-align:left;width:100px;" class="border">Categoria</td>
-							
-							<td style="text-align:left;width:100px;" class="border">Cant Ini</td>
-							<td style="text-align:left;width:100px;" class="border">Cost Ini</td>
-							<td style="text-align:left;width:100px;" class="border">Cant Ent</td>
-							<td style="text-align:left;width:100px;" class="border">Cost Ent</td>						
-							<td style="text-align:left;width:100px;border-left: 0px;" class="border">Cant Sal</td>
-							<td style="text-align:left;width:100px;" class="border">Cost Sal</td>
-							<td style="text-align:left;width:100px;" class="border">Cant Fin</td>
-							<td style="text-align:left;width:100px;"  class="border">Cost Fin</td>						
-						</tr>';					
-					}
+					//if($count % $modulo == 0 || $count == 1  )
+					//{
+					//	echo '
+					//	<tr>
+					//		<td style="text-align:left;width:100px;" class="border">Codigo</td>
+					//		<td style="text-align:left;width:100px;" class="border">Nombre</td>
+					//		<td style="text-align:left;width:100px;" class="border">Categoria</td>
+					//		
+					//		<td style="text-align:left;width:100px;" class="border">Cant Ini</td>
+					//		<td style="text-align:left;width:100px;" class="border">Cost Ini</td>
+					//		<td style="text-align:left;width:100px;" class="border">Cant Ent</td>
+					//		<td style="text-align:left;width:100px;" class="border">Cost Ent</td>						
+					//		<td style="text-align:left;width:100px;border-left: 0px;" class="border">Cant Sal</td>
+					//		<td style="text-align:left;width:100px;" class="border">Cost Sal</td>
+					//		<td style="text-align:left;width:100px;" class="border">Cant Fin</td>
+					//		<td style="text-align:left;width:100px;"  class="border">Cost Fin</td>						
+					//	</tr>';					
+					//}
 					
 					echo "<tr>";
 						echo "<td style='text-align:right;border-top: 0px'  class='border'>";
@@ -183,8 +183,8 @@
 				
 				<tr>
 					<th style="text-align:left;" class="border">Codigo</th>
-					<th style="text-align:left;" class="border">Nombre</th>
 					<th style="text-align:left;" class="border">Categoria</th>
+					<th style="text-align:left;" class="border">Nombre</th>
 					
 					<th style="text-align:left;" class="border">Cant. Inicial</th>
 					<th style="text-align:right;" class="border"><?php echo number_format($costoinicial,2,'.',',');  ?></th>

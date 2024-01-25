@@ -1,3 +1,12 @@
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_SHOW_PREVIEW_INLIST";## Dia de defase del reporte
+	
+	
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "154" 
 WHERE 
@@ -653,7 +662,7 @@ WHERE
 	tb_parameter.name = "INVOICE_PRINT_BY_INVOICE";## Imprimir por cada factura
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "POS-58-Series" 
+	tb_company_parameter.value = "POS-80-Series" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT";## Nombre de la impresora por defecto 	
@@ -809,7 +818,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'El Patio' , address = 'Alcaldia 50vs este' ,flavorID = 2
+	NAME = 'El Patio' , address = 'Alcaldia 50vs este' ,flavorID = 0, type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
