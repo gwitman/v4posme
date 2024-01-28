@@ -58,10 +58,41 @@ class app_purchase_taller extends _BaseController {
 			$targetCurrency						= $this->core_web_currency->getCurrencyExternal($companyID);			
 			$objListCurrency					= $this->Company_Currency_Model->getByCompany($companyID);
 			
+			
+			$objComponentCustomer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
+			if(!$objComponentCustomer)
+			throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
+		
+			$objComponentEmployer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
+			if(!$objComponentEmployer)
+			throw new \Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
+		
+			$objComponentBilling	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_billing");
+			if(!$objComponentBilling)
+			throw new \Exception("EL COMPONENTE 'tb_transaction_master_billing' NO EXISTE...");
+		
+		
 			//Tipo de Factura			
+			$dataView["objComponentBilling"]					= $objComponentBilling;
+			$dataView["objComponentCustomer"]					= $objComponentCustomer;
+			$dataView["objComponentEmployer"]					= $objComponentEmployer;
 			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);									
 			$dataView["objTransactionMaster"]->transactionOn 	= date_format(date_create($dataView["objTransactionMaster"]->transactionOn),"Y-m-d");
 			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			
+			//Obtener al cliente
+			$dataView["objCustomer"]				= $this->Customer_Model->get_rowByEntity($companyID,$dataView["objTransactionMaster"]->entityID);
+			$dataView["objCustomerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$dataView["objCustomer"]->entityID);
+			$dataView["objCustomerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$dataView["objCustomer"]->entityID);
+
+			//Obtener colaborador
+			$dataView["objEmployer"]				= $this->Employee_Model->get_rowByEntityID($companyID,$dataView["objTransactionMaster"]->entityIDSecondary);
+			$dataView["objEmployerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID);
+			$dataView["objEmployerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID);
+			
+			//Obtener Factura
+			$dataView["objBilling"]					= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,$dataView["objTransactionMaster"]->note);
+			
 			
 			$dataView["objListCurrency"]		= $objListCurrency;
 			$dataView["companyID"]				= $dataSession["user"]->companyID;
@@ -226,8 +257,7 @@ class app_purchase_taller extends _BaseController {
 			
 			//Actualizar Maestro			
 			$objTMNew["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
-			$objTMNew["statusIDChangeOn"]				= date("Y-m-d H:m:s");
-			$objTMNew["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");//--fin peticion get o post
+			$objTMNew["statusIDChangeOn"]				= date("Y-m-d H:m:s");			
 			$objTMNew["currencyID"] 					= /*inicio get post*/ $this->request->getPost("txtCurrencyID");//--fin peticion get o post			
 			$objTMNew["exchangeRate"]					= $this->core_web_currency->getRatio($dataSession["user"]->companyID,date("Y-m-d"),1,$objTM->currencyID2,$objTMNew["currencyID"]);
 			$objTMNew["areaID"] 						= /*inicio get post*/ $this->request->getPost("txtAreaID");
@@ -235,12 +265,16 @@ class app_purchase_taller extends _BaseController {
 			$objTMNew["reference1"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference1");
 			$objTMNew["reference2"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference2");
 			$objTMNew["reference3"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference3");			
+			$objTMNew["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtReference4");
+			
 			//$objTMNew["reference3"] 					= /*inicio get post*/ $this->request->getPost("txtEmployeeID");//--fin peticion get o post
 			//$objTMNew["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtCustomerCreditLineID");//--fin peticion get o post
 			//$objTMNew["descriptionReference"] 		= "reference1:input,reference2:input,reference3:Gestor de Cobro,reference4:Linea de credito del Cliente";
 			$objTMNew["statusID"] 						= /*inicio get post*/ $this->request->getPost("txtStatusID");
 			$objTMNew["amount"] 						= /*inicio get post*/ $this->request->getPost("txtDetailAmount");	
-			
+			$objTMNew["entityID"]						= /*inicio get post*/ $this->request->getPost("txtCustomerID");
+			$objTMNew["entityIDSecondary"]				= /*inicio get post*/ $this->request->getPost("txtEmployerID");
+			$objTMNew["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");
 			
 			$db=db_connect();
 			$db->transStart();
@@ -262,9 +296,55 @@ class app_purchase_taller extends _BaseController {
 			{
 				$objTMI["routeID"]						= /*inicio get post*/ $this->request->getPost("txtRouteID");
 				$objTMI["zoneID"]						= /*inicio get post*/ $this->request->getPost("txtZoneID");				
+				$objTMI["reference2"]					= /*inicio get post*/ $this->request->getPost("txtInfoReference2");
 				$this->Transaction_Master_Info_Model-> update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMI);
 				
 			}
+			
+			
+			//Obtener plantilla de whatsapp
+			if($this->core_web_whatsap->validSendMessage(APP_COMPANY))
+			{
+				$objPC_PlantillaWhatsapp 	= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_workshop_taller.templates_whatsapp")->where("isActive",1)->find();				
+				$objPCD_PlantillaWhatsapp   = false;			
+				if($objPC_PlantillaWhatsapp)
+				{
+					$objPCD_PlantillaWhatsapp	= $this->Public_Catalog_Detail_Model->asObject()->where("publicCatalogID",$objPC_PlantillaWhatsapp[0]->publicCatalogID)->where( "isActive",1)->findAll();					
+					$themplate 					= "";
+					if($objPCD_PlantillaWhatsapp)
+					{
+						$themplate 				= $objPCD_PlantillaWhatsapp[0]->description;																	
+						if($themplate != "")
+						{
+							
+							//Obtener al cliente
+							$dataView["objCustomer"]				= $this->Customer_Model->get_rowByEntity($companyID,$objTMNew["objTransactionMaster"]->entityID);
+							$dataView["objCustomerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$dataView["objCustomer"]->entityID);
+							$dataView["objCustomerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$dataView["objCustomer"]->entityID);
+
+							//Obtener colaborador
+							$dataView["objEmployer"]				= $this->Employee_Model->get_rowByEntityID($companyID,$objTMNew["objTransactionMaster"]->entityIDSecondary);
+							$dataView["objEmployerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID);
+							$dataView["objEmployerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID);
+							$dataView["objEmployerPhone"]			= $this->Entity_Phone_Model->get_rowByEntity( $dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID );
+							
+							//Obtener Factura
+							$dataView["objBilling"]					= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,$objTMNew["objTransactionMaster"]->note);
+							
+							
+							
+							$themplate = str_replace("{key}","value",$themplate);
+							$this->core_web_whatsap->sendMessageUltramsg(
+								APP_COMPANY, 
+								$themplate,
+								$dataView["objCustomer"]->phoneNumber
+							);
+							
+						}
+					}
+				}				
+			}
+			
 			
 			
 			if($db->transStatus() !== false)
@@ -327,8 +407,7 @@ class app_purchase_taller extends _BaseController {
 			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($dataSession["user"]->companyID,$transactionID);			
 			$objTM["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
 			$objTM["statusIDChangeOn"]				= date("Y-m-d H:m:s");
-			$objTM["componentID"] 					= $objComponentShare->componentID;
-			$objTM["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");//--fin peticion get o post
+			$objTM["componentID"] 					= $objComponentShare->componentID;			
 			$objTM["sign"] 							= $objT->signInventory;
 			$objTM["currencyID"]					= /*inicio get post*/ $this->request->getPost("txtCurrencyID");//--fin peticion get o post
 			$objTM["currencyID2"]					= $this->core_web_currency->getCurrencyExternal($dataSession["user"]->companyID)->currencyID;
@@ -336,17 +415,22 @@ class app_purchase_taller extends _BaseController {
 			$objTM["reference1"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference1");
 			$objTM["reference2"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference2");
 			$objTM["reference3"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference3");
-			$objTM["reference4"] 					= '';
+			$objTM["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtReference4");
 			$objTM["statusID"] 						= /*inicio get post*/ $this->request->getPost("txtStatusID");
 			$objTM["amount"] 						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost('txtDetailAmount'));
 			$objTM["isApplied"] 					= 0;
 			$objTM["journalEntryID"] 				= 0;
 			$objTM["classID"] 						= NULL;
 			$objTM["areaID"] 						= /*inicio get post*/ $this->request->getPost("txtAreaID");
-			$objTM["priorityID"] 					= /*inicio get post*/ $this->request->getPost("txtPriorityID");			
+			$objTM["priorityID"] 					= /*inicio get post*/ $this->request->getPost("txtPriorityID");				
 			$objTM["sourceWarehouseID"]				= NULL;
 			$objTM["targetWarehouseID"]				= NULL;
 			$objTM["isActive"]						= 1;
+			$objTM["entityID"]						= /*inicio get post*/ $this->request->getPost("txtCustomerID");
+			$objTM["entityIDSecondary"]				= /*inicio get post*/ $this->request->getPost("txtEmployerID");
+			$objTM["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");
+			
+			
 			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);			
 			
 			$db=db_connect();
@@ -359,15 +443,21 @@ class app_purchase_taller extends _BaseController {
 			$objTMI["transactionMasterID"]			= $transactionMasterID ;			
 			$objTMI["routeID"]						= /*inicio get post*/ $this->request->getPost("txtRouteID");
 			$objTMI["zoneID"]						= /*inicio get post*/ $this->request->getPost("txtZoneID");
+			$objTMI["reference2"]					= /*inicio get post*/ $this->request->getPost("txtInfoReference2");
 			$this->Transaction_Master_Info_Model->insert_app_posme($objTMI);
 
 
+			//
 			//Crear la Carpeta para almacenar los Archivos del Documento
 			$pathDocument = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID;
 			if(!file_exists ($pathDocument))
 			{
 				mkdir( $pathDocument,0700);
 			}
+			
+			
+		
+			
 			
 			if($db->transStatus() !== false){
 				$db->transCommit();						
@@ -468,7 +558,28 @@ class app_purchase_taller extends _BaseController {
 			$targetCurrency						= $this->core_web_currency->getCurrencyExternal($companyID);			
 			$objListCurrency					= $this->Company_Currency_Model->getByCompany($companyID);
 			
+			
+			$objComponentCustomer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
+			if(!$objComponentCustomer)
+			throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
+		
+			$objComponentEmployer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
+			if(!$objComponentEmployer)
+			throw new \Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
+		
+		
+			$objComponentBilling	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_billing");
+			if(!$objComponentBilling)
+			throw new \Exception("EL COMPONENTE 'tb_transaction_master_billing' NO EXISTE...");
+		
+		
+			
+			
+			
 			//Tipo de Factura
+			$dataView["objComponentBilling"]	= $objComponentBilling;
+			$dataView["objComponentCustomer"]	= $objComponentCustomer;
+			$dataView["objComponentEmployer"]	= $objComponentEmployer;
 			$dataView["objListCurrency"]		= $objListCurrency;
 			$dataView["companyID"]				= $dataSession["user"]->companyID;
 			$dataView["userID"]					= $dataSession["user"]->userID;
@@ -576,6 +687,68 @@ class app_purchase_taller extends _BaseController {
 		}
 	}	
 
+	
+	function searchTransactionMaster(){
+		try{ 
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCTION
+			if(APP_NEED_AUTHENTICATION == true){
+						$permited = false;
+						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						
+						if(!$permited)
+						throw new \Exception(NOT_ACCESS_CONTROL);
+						
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"index",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						if ($resultPermission 	== PERMISSION_NONE)
+						throw new \Exception(NOT_ACCESS_FUNCTION);			
+			
+			}	
+			
+			//Load Modelos
+			//
+			////////////////////////////////////////
+			////////////////////////////////////////
+			////////////////////////////////////////
+			  
+			
+			//Nuevo Registro
+			$transactionNumber 	= /*inicio get post*/ $this->request->getPost("transactionNumber");
+			
+			
+			if(!$transactionNumber){
+					throw new \Exception(NOT_PARAMETER);			
+			} 			
+			$objTM 	= $this->Transaction_Master_Model->get_rowByTransactionNumber($dataSession["user"]->companyID,$transactionNumber);	
+			
+			if(!$objTM)
+			throw new \Exception("NO SE ENCONTRO EL DOCUMENTO");	
+			
+			
+			
+			return $this->response->setJSON(array(
+				'error'   				=> false,
+				'message' 				=> SUCCESS,
+				'companyID' 			=> $objTM->companyID,
+				'transactionID'			=> $objTM->transactionID,
+				'transactionMasterID'	=> $objTM->transactionMasterID
+			));//--finjson
+			
+		}
+		catch(\Exception $ex){
+			
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));//--finjson
+		}
+	}
+	
+	
 	function viewPrinterFormatoA4(){
 		try{ 
 			//AUTENTICADO
@@ -667,396 +840,6 @@ class app_purchase_taller extends _BaseController {
 				//visualizar
 				$this->dompdf->stream("file.pdf ", ['Attachment' =>  true ]);
 			}
-			
-			
-		}
-		catch(\Exception $ex){
-			exit($ex->getMessage());
-		}
-	}
-	function searchTransactionMaster(){
-		try{ 
-			//AUTENTICADO
-			if(!$this->core_web_authentication->isAuthenticated())
-			throw new \Exception(USER_NOT_AUTENTICATED);
-			$dataSession		= $this->session->get();
-			
-			//PERMISO SOBRE LA FUNCTION
-			if(APP_NEED_AUTHENTICATION == true){
-						$permited = false;
-						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-						
-						if(!$permited)
-						throw new \Exception(NOT_ACCESS_CONTROL);
-						
-						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"index",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-						if ($resultPermission 	== PERMISSION_NONE)
-						throw new \Exception(NOT_ACCESS_FUNCTION);			
-			
-			}	
-			
-			//Load Modelos
-			//
-			////////////////////////////////////////
-			////////////////////////////////////////
-			////////////////////////////////////////
-			  
-			
-			//Nuevo Registro
-			$transactionNumber 	= /*inicio get post*/ $this->request->getPost("transactionNumber");
-			
-			
-			if(!$transactionNumber){
-					throw new \Exception(NOT_PARAMETER);			
-			} 			
-			$objTM 	= $this->Transaction_Master_Model->get_rowByTransactionNumber($dataSession["user"]->companyID,$transactionNumber);	
-			
-			if(!$objTM)
-			throw new \Exception("NO SE ENCONTRO EL DOCUMENTO");	
-			
-			
-			
-			return $this->response->setJSON(array(
-				'error'   				=> false,
-				'message' 				=> SUCCESS,
-				'companyID' 			=> $objTM->companyID,
-				'transactionID'			=> $objTM->transactionID,
-				'transactionMasterID'	=> $objTM->transactionMasterID
-			));//--finjson
-			
-		}
-		catch(\Exception $ex){
-			
-			return $this->response->setJSON(array(
-				'error'   => true,
-				'message' => $ex->getLine()." ".$ex->getMessage()
-			));//--finjson
-		}
-	}
-	
-	//factura en imppresora de ticket de 80mm
-	function viewRegisterFormatoPaginaTicket(){
-		//Factura en Impresora Termica 
-		//O impresora de ticket, con ancho de 3.2 pulgadas
-		//O equivalente a 8 centimetro
-		//Formato de papel rollo.
-		
-		
-		try{ 
-		
-			
-			
-			//AUTENTICADO
-			if(!$this->core_web_authentication->isAuthenticated())
-			throw new \Exception(USER_NOT_AUTENTICATED);
-			$dataSession		= $this->session->get();
-			
-			//PERMISO SOBRE LA FUNCION
-			if(APP_NEED_AUTHENTICATION == true){
-						$permited = false;
-						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-						
-						if(!$permited)
-						throw new \Exception(NOT_ACCESS_CONTROL);
-						
-							
-						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-						if ($resultPermission 	== PERMISSION_NONE)
-						throw new \Exception(NOT_ALL_EDIT);		
-			}	 
-			
-			
-			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri			
-			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri				
-			$companyID 					= $dataSession["user"]->companyID;		
-			$branchID 					= $dataSession["user"]->branchID;		
-			$roleID 					= $dataSession["role"]->roleID;		
-			
-			//Cargar Libreria
-					
-			
-			
-			//Get Component
-			$objComponent		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
-			$objParameter		= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
-			$objParameterPhone	= $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE",$companyID);
-			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
-			$objCompany 		= $this->Company_Model->get_rowByPK($companyID);			
-			$spacing 			= 0.5;
-			
-			//Get Documento					
-			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
-			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
-			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
-			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
-			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
-			$datView["Identifier"]					= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
-			$datView["objBranch"]					= $this->Branch_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->branchID);
-			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_workshop_taller","statusID",$datView["objTM"]->statusID,$companyID,$branchID,$roleID);
-			$datView["objTipo"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$datView["objTM"]->transactionID,$datView["objTM"]->transactionCausalID);
-			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,is_null($datView["objTM"]->entityID) == true ? 0 : $datView["objTM"]->entityID );
-			$datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objTM"]->createdAt,is_null($datView["objTM"]->entityID) == true ? 0 : $datView["objTM"]->entityID );
-			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
-			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
-			$prefixCurrency 						= $datView["objCurrency"]->simbol." ";
-			
-			
-			
-			//Set Nombre del Reporte
-			$reportName		= "DOC_INVOICE";
-			$facturaTipo   = $datView["objTipo"]->name;
-			$facturaEstado = $datView["objStage"][0]->display;
-			
-			
-			
-			
-			//Configurar Detalle			
-			$confiDetalle = array();
-			
-				$row = array(
-					"style"		=>"text-align:left;width:50%",
-					"colspan"	=>'1',
-					"prefix"	=>'',
-					
-					
-					"style_row_data"		=>"text-align:left;width:50%",
-					"colspan_row_data"		=>'1',
-					"prefix_row_data"		=>'',
-					"nueva_fila_row_data"	=>0
-				);
-				array_push($confiDetalle,$row);
-				
-				$row = array(
-					"style"		=>"text-align:left;width:10%",
-					"colspan"	=>'1',
-					"prefix"	=>'',
-					
-					"style_row_data"		=>"text-align:left;width:10%",
-					"colspan_row_data"		=>'1',
-					"prefix_row_data"		=>'',
-					"nueva_fila_row_data"	=>0
-				);
-				array_push($confiDetalle,$row);
-				
-				$row = array(
-					"style"		=>"text-align:right",
-					"colspan"	=>'1',
-					"prefix"	=>$datView["objCurrency"]->simbol,
-					
-					"style_row_data"		=>"text-align:right",
-					"colspan_row_data"		=>'1',
-					"prefix_row_data"		=>$datView["objCurrency"]->simbol,
-					"nueva_fila_row_data"	=>0
-				);
-				array_push($confiDetalle,$row);
-			
-			
-			//Inicializar Detalle
-			/*Calculo de saldos generales*/			
-			$detalle = array();
-			$row = array("MONTO", '', $datView["objCurrency"]->simbol.sprintf('%.2f', $datView["objTM"]->amount ) );
-			array_push($detalle,$row);
-			
-			
-			
-			
-			//Generar Reporte
-			$html = helper_reporte80mmTransactionMasterInputOutPutCash(
-			    "INGRESO DE CAJA",
-			    $objCompany,
-			    $objParameter,
-			    $datView["objTM"],
-			    $datView["objNatural"],
-			    $datView["objCustumer"],
-			    $datView["tipoCambio"],
-			    $datView["objCurrency"],
-			    $datView["objTMI"],
-			    $confiDetalle,
-			    $detalle,
-			    $objParameterTelefono,
-				$datView["objStage"][0]->display,
-				"",
-				""
-			);
-			$this->dompdf->loadHTML($html);
-			
-			//1cm = 29.34666puntos
-			//a4: 210 ancho x 297
-			//a4: 21cm x 29.7cm
-			//a4: 595.28puntos x 841.59puntos
-			
-			//$this->dompdf->setPaper('A4','portrait');
-			//$this->dompdf->setPaper(array(0,0,234.76,6000));
-			
-			$this->dompdf->render();
-			
-			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
-			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
-			
-			//visualizar
-			$this->dompdf->stream("file.pdf", ['Attachment' => !$objParameterShowLinkDownload]);
-			
-			//descargar
-			//$this->dompdf->stream();
-			
-			
-			
-			
-			
-		}
-		catch(\Exception $ex){
-			exit($ex->getMessage());
-		}
-	}
-	//factura en imppresora de ticket de 80mm
-	function viewRegisterFormatoPaginaTicketTermica(){
-		//Factura en Impresora Termica 
-		//O impresora de ticket, con ancho de 3.2 pulgadas
-		//O equivalente a 8 centimetro
-		//Formato de papel rollo.
-		
-		
-		try{ 
-		
-			
-			
-			//AUTENTICADO
-			if(!$this->core_web_authentication->isAuthenticated())
-			throw new \Exception(USER_NOT_AUTENTICATED);
-			$dataSession		= $this->session->get();
-			
-			//PERMISO SOBRE LA FUNCION
-			if(APP_NEED_AUTHENTICATION == true){
-						$permited = false;
-						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-						
-						if(!$permited)
-						throw new \Exception(NOT_ACCESS_CONTROL);
-						
-							
-						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-						if ($resultPermission 	== PERMISSION_NONE)
-						throw new \Exception(NOT_ALL_EDIT);		
-			}	 
-			
-			
-			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri			
-			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri				
-			$companyID 					= $dataSession["user"]->companyID;		
-			$branchID 					= $dataSession["user"]->branchID;		
-			$roleID 					= $dataSession["role"]->roleID;		
-			
-			
-			
-			//Get Component
-			$objComponent		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
-			$objParameter		= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
-			$objParameterPhone	= $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE",$companyID);
-			$objCompany 		= $this->Company_Model->get_rowByPK($companyID);			
-			$spacing 			= 0.5;
-			
-			//Get Documento					
-			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
-			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
-			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
-			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
-			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
-			$datView["Identifier"]					= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
-			$datView["objBranch"]					= $this->Branch_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->branchID);
-			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_workshop_taller","statusID",$datView["objTM"]->statusID,$companyID,$branchID,$roleID);
-			$datView["objTipo"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$datView["objTM"]->transactionID,$datView["objTM"]->transactionCausalID);
-			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
-			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
-			$prefixCurrency 						= $datView["objCurrency"]->simbol." ";
-			
-			
-			
-			
-			
-			$facturaTipo   = $datView["objTipo"]->name;
-			$facturaEstado = $datView["objStage"][0]->display;
-			
-			
-			
-		}
-		catch(\Exception $ex){
-			exit($ex->getMessage());
-		}
-	}
-	
-	//factura en imppresora de ticket de 80mm
-	function viewPrinterDirect80mmShareRustikGrill(){
-		//Factura en Impresora Termica 
-		//O impresora de ticket, con ancho de 3.2 pulgadas
-		//O equivalente a 8 centimetro
-		//Formato de papel rollo.
-		
-		
-		try{ 
-		
-			
-			
-			//AUTENTICADO
-			if(!$this->core_web_authentication->isAuthenticated())
-			throw new \Exception(USER_NOT_AUTENTICATED);
-			$dataSession		= $this->session->get();
-			
-			//PERMISO SOBRE LA FUNCION
-			if(APP_NEED_AUTHENTICATION == true){
-						$permited = false;
-						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-						
-						if(!$permited)
-						throw new \Exception(NOT_ACCESS_CONTROL);
-						
-							
-						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-						if ($resultPermission 	== PERMISSION_NONE)
-						throw new \Exception(NOT_ALL_EDIT);		
-			}	 
-			
-			
-			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri			
-			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri				
-			$companyID 					= $dataSession["user"]->companyID;		
-			$branchID 					= $dataSession["user"]->branchID;		
-			$roleID 					= $dataSession["role"]->roleID;		
-			
-			
-			//Get Component
-			$objComponent		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
-			$objParameter		= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
-			$objParameterPhone	= $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE",$companyID);
-			$objCompany 		= $this->Company_Model->get_rowByPK($companyID);			
-			$spacing 			= 0.5;
-			
-			//Get Documento					
-			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
-			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
-			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
-			$datView["objTMDD"]						= $this->Transaction_Master_Denomination_Model->get_rowByTransactionMaster($companyID,$transactionID,$transactionMasterID);
-			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
-			$datView["objUsuario"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
-			$datView["Identifier"]					= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
-			$datView["objBranch"]					= $this->Branch_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->branchID);
-			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_outputcash","statusID",$datView["objTM"]->statusID,$companyID,$branchID,$roleID);
-			$datView["objTipo"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$datView["objTM"]->transactionID,$datView["objTM"]->transactionCausalID);			
-			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
-			$prefixCurrency 						= $datView["objCurrency"]->simbol." ";
-			$datView["objParameterLogo"]			= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
-			$datView["objCompany"] 					= $this->Company_Model->get_rowByPK($companyID);			
-			
-			$facturaTipo   = $datView["objTipo"]->name;
-			$facturaEstado = $datView["objStage"][0]->display;
-			
-			
-			
-			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT",$companyID);
-			$objParameterPrinterName = $objParameterPrinterName->value;
-								
-			
-			$this->core_web_printer_direct->configurationPrinter($objParameterPrinterName);
-			$this->core_web_printer_direct->executePrinter80mmReportCashInputRustik($datView);
 			
 			
 		}

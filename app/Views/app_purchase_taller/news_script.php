@@ -32,9 +32,83 @@
 								
 						});
 						
+						//Buscar el Cliente
+						$(document).on("click","#btnSearchCustomer",function(){
+							
+							
+							//Redireccion pantalla
+							var url_redirect		= "__app_cxc_customer__add__callback__onCompleteCustomer__comando__pantalla_abierta_desde_taller";			
+							url_redirect 			= encodeURIComponent(url_redirect);
+							
+							
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCustomer->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_BILLING/true/empty/false/"+url_redirect;
+							window.open(url_request,"MsgWindow","width=900,height=450");
+							window.onCompleteCustomer = onCompleteCustomer; 
+						});	
+
+						//Eliminar Cliente
+						$(document).on("click","#btnClearCustomer",function(){
+									$("#txtCustomerID").val("");
+									$("#txtCustomerDescription").val("");
+						});						
+						
+						
+						//Buscar Colagorador
+						$(document).on("click","#btnSearchEmployer",function(){
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentEmployer->componentID; ?>/onCompleteEmployee/SELECCIONAR_EMPLOYEE/true/empty/false/not_redirect_when_empty";
+							window.open(url_request,"MsgWindow","width=900,height=450");
+							window.onCompleteEmployee = onCompleteEmployee; 
+						});
+						//Eliminar Colaborador
+						$(document).on("click","#btnClearEmployer",function(){
+									$("#txtEmployerID").val("");
+									$("#txtEmployerDescription").val("");
+						});
+						
+						//Buscar Factura
+						$(document).on("click","#btnSearchNote",function(){
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentBilling->componentID; ?>/onCompleteEmployee/SELECCIONAR_FACTURA/true/empty/false/not_redirect_when_empty";
+							window.open(url_request,"MsgWindow","width=900,height=450");
+							window.onCompleteEmployee = onCompleteBilling; 
+						});
+						//Eliminar Factura
+						$(document).on("click","#btnClearNote",function(){
+									$("#txtNote").val("");
+									$("#txtNoteDescription").val("");
+						});
+						
+						
+						
+						
 					});
 					
+					function onCompleteBilling(objResponse)
+					{							
+							
+							$("#txtNote").val(objResponse[1]);
+							$("#txtNoteDescription").val(objResponse[1]);
+							
+					}
 					
+					function onCompleteEmployee(objResponse)
+					{							
+							
+							$("#txtEmployerID").val(objResponse[2]);
+							$("#txtEmployerDescription").val(objResponse[3] + " / " + objResponse[4]);
+							
+					}
+						
+					
+					function onCompleteCustomer(objResponse)
+					{
+						if(objResponse != undefined)
+						{
+							var entityID = objResponse[1];
+							$("#txtCustomerID").val(objResponse[1]);
+							$("#txtCustomerDescription").val(objResponse[2] + " " + objResponse[3] + " / " + objResponse[4]);								
+						}
+						
+					}
 					
 					function validateForm(){
 						var result 				= true;
@@ -49,6 +123,21 @@
 						//Validar Monto
 						if($("#txtDetailAmount").val() == "0"){
 							fnShowNotification("El monto no puede ser 0","error",timerNotification);
+							result = false;
+						}
+						
+						if($("#txtNote").val() == ""){
+							fnShowNotification("Seleccionar factura","error",timerNotification);
+							result = false;
+						}
+						
+						if($("#txtCustomerID").val() == ""){
+							fnShowNotification("Seleccionar cliente","error",timerNotification);
+							result = false;
+						}
+						
+						if($("#txtEmployerID").val() == ""){
+							fnShowNotification("Seleccionar tecnico","error",timerNotification);
 							result = false;
 						}
 						

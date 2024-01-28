@@ -1,4 +1,4 @@
-a:3:{s:4:"time";i:1701532668;s:3:"ttl";i:100;s:4:"data";s:9581:"<!-- DEBUG-VIEW START 3 APPPATH\Views\core_masterpage\default_widgetchoose.php -->
+a:3:{s:4:"time";i:1706443986;s:3:"ttl";i:100;s:4:"data";s:9569:"<!-- DEBUG-VIEW START 3 APPPATH\Views\core_masterpage\default_widgetchoose.php -->
 <!--vista que se esta utilizando para las tablas-->
 <!--muestra un datatable con una lista de registros-->
 <!DOCTYPE html>
@@ -164,9 +164,9 @@ a:3:{s:4:"time";i:1701532668;s:3:"ttl";i:100;s:4:"data";s:9581:"<!-- DEBUG-VIEW 
 					}
 					
 					if(objRowTableListView == undefined)
-					window.opener.onCompleteEmployeeTarget(undefined); 
+					window.opener.onCompleteEmployee(undefined); 
 					else
-					window.opener.onCompleteEmployeeTarget(data); 
+					window.opener.onCompleteEmployee(data); 
 
 					
 					if(autoclose == true){
