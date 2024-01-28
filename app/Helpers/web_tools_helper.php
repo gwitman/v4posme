@@ -75,6 +75,17 @@ function helper_RequestGetValueObjet($obj,$field,$default){
     if(empty($obj))
         return $default;            
         
+		
+	if(is_null($obj->$field))
+		return $default;
+	
+	if(!isset($obj->$field))
+		return $default;
+	
+	if(empty($obj->$field))
+        return $default;
+	
+	
     return $obj->$field;
 }
 

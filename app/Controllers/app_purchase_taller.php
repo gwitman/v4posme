@@ -313,7 +313,7 @@ class app_purchase_taller extends _BaseController {
 					$themplate 					= "";
 					if($objPCD_PlantillaWhatsapp)
 					{
-						$themplate 				= $objPCD_PlantillaWhatsapp[0]->description;																	
+						$themplate 				= helper_RequestGetValueObjet($objPCD_PlantillaWhatsapp[0],"description","");
 						if($themplate != "")
 						{
 							
@@ -327,18 +327,28 @@ class app_purchase_taller extends _BaseController {
 							$dataView["objEmployerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID);
 							$dataView["objEmployerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID);
 							$dataView["objEmployerPhone"]			= $this->Entity_Phone_Model->get_rowByEntity( $dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID );
+							$dataView["objEmployerPhoneNumber"]		= $dataView["objEmployerPhone"] ? $dataView["objEmployerPhone"][0]->number : "N/D";
 							
 							//Obtener Factura
-							$dataView["objBilling"]					= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,$objTMNew["objTransactionMaster"]->note);
+							$dataView["objBilling"]					= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,$objTMNew["objTransactionMaster"]->note);							
+							$dataView["objCatalogItemAreaID"] 		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","areaID",$companyID,$objTMNew["areaID"]);
 							
 							
+							$themplate = str_replace("{customer_name}",helper_RequestGetValueObjet($dataView["objCustomerNatural"],"firstName",""),$themplate);
+							$themplate = str_replace("{employeer_name}",helper_RequestGetValueObjet($dataView["objEmployerNatural"],"firstName",""),$themplate);
+							$themplate = str_replace("{employeer_phone}",$dataView["objEmployerPhoneNumber"],$themplate);
+							$themplate = str_replace("{status_name}",helper_RequestGetValueObjet($dataView["objCatalogItemAreaID"],"name",""),$themplate);
+							$themplate = str_replace("{transaction_number}",helper_RequestGetValueObjet($dataView["objBilling"],"transactionNumber",""),$themplate);
+							$themplate = str_replace("{amount}",helper_RequestGetValueObjet($objTMNew,"amount",""),$themplate);
+							$themplate = str_replace("{text}",helper_RequestGetValueObjet($objTMNew,"reference1",""),$themplate);
 							
-							$themplate = str_replace("{key}","value",$themplate);
 							$this->core_web_whatsap->sendMessageUltramsg(
 								APP_COMPANY, 
 								$themplate,
 								$dataView["objCustomer"]->phoneNumber
 							);
+							
+							
 							
 						}
 					}
