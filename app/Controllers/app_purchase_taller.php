@@ -71,6 +71,9 @@ class app_purchase_taller extends _BaseController {
 			if(!$objComponentBilling)
 			throw new \Exception("EL COMPONENTE 'tb_transaction_master_billing' NO EXISTE...");
 		
+			$objComponentFile	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_file");
+			if(!$objComponentFile)
+			throw new \Exception("EL COMPONENTE 'tb_file' NO EXISTE...");
 		
 			//Tipo de Factura			
 			$dataView["objComponentBilling"]					= $objComponentBilling;
@@ -79,6 +82,7 @@ class app_purchase_taller extends _BaseController {
 			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);									
 			$dataView["objTransactionMaster"]->transactionOn 	= date_format(date_create($dataView["objTransactionMaster"]->transactionOn),"Y-m-d");
 			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$dataView["objTransactionMasterDetailDocument"]		= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID,$transactionID,$transactionMasterID,$objComponentFile->componentID);
 			
 			//Obtener al cliente
 			$dataView["objCustomer"]				= $this->Customer_Model->get_rowByEntity($companyID,$dataView["objTransactionMaster"]->entityID);
@@ -109,10 +113,16 @@ class app_purchase_taller extends _BaseController {
 			$dataView["objListAccesorios"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","priorityID",$companyID);
 			$dataView["objListMarca"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","zoneID",$companyID);
 			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","routeID",$companyID);
+			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","mesaID",$companyID);
 			
 			$objParameterUrlPrinter 				= $this->core_web_parameter->getParameter("WORKSHOW_URL_PRINTER_TALLER",$companyID);
 			$objParameterUrlPrinter 				= $objParameterUrlPrinter->value;
 			$dataView["objParameterUrlPrinter"]	 	= $objParameterUrlPrinter;
+			
+			
+			$objParameterUrlServerFile 					= $this->core_web_parameter->getParameter("CORE_FILE_SERVER",$companyID);
+			$objParameterUrlServerFile 					= $objParameterUrlServerFile->value;
+			$dataView["objParameterUrlServerFile"]	 	= $objParameterUrlServerFile == "" ? base_url() : $objParameterUrlServerFile;
 			
 			
 			//Renderizar Resultado 
@@ -223,6 +233,9 @@ class app_purchase_taller extends _BaseController {
 			if(!$objComponentShare)
 			throw new \Exception("EL COMPONENTE 'tb_transaction_master_workshop_taller' NO EXISTE...");
 			
+			$objComponentFile			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_file");
+			if(!$objComponentFile)
+			throw new \Exception("EL COMPONENTE 'tb_file' NO EXISTE...");
 			
 			
 			$branchID 								= $dataSession["user"]->branchID;
@@ -300,6 +313,87 @@ class app_purchase_taller extends _BaseController {
 				$this->Transaction_Master_Info_Model-> update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMI);
 				
 			}
+			
+			
+			//Actualizar Imagenes
+			if($actualizarTransaccionPermtida == true)
+			{
+				
+				$dataFileID							=  $this->request->getPost("txtFileID");
+				$dataFileTypeID						=  $this->request->getPost("txtFileTypeID");
+				$dataFileDocument					=  $this->request->getFiles('txtFileDocument');
+				
+				$objParameterUrlServerFile 					= $this->core_web_parameter->getParameter("CORE_FILE_SERVER",$companyID);
+				$objParameterUrlServerFile 					= $objParameterUrlServerFile->value;
+				$dataView["objParameterUrlServerFile"]	 	= $objParameterUrlServerFile;
+				
+				if(!empty($dataFileTypeID))
+				{
+					foreach($dataFileTypeID as $key => $fileID)
+					{
+						//Crear las careptas
+						$transactionMasterDetailID 	= $dataFileID[$key];
+						$fileTypeID 				= $dataFileTypeID[$key];
+						$pathDocument				= "";
+						$pathDocument 				= PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID;
+						$urlCreateFolder 			= $dataView["objParameterUrlServerFile"]."/core_elfinder/createFolder/companyID/".$companyID."/componentID/".$objComponentShare->componentID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID;
+							
+						
+						
+						
+						//Ingresar en transaccion master detail
+						$file									= $dataFileDocument["txtFileDocument"][$key];					
+						$filePath								= "";
+						$fileName								= "";
+						$filePathDetination						= "";
+						
+						if($file->getSizeByUnit() != 0 )
+						{
+								$filePath 				= $file->store();			
+								$fileName 				= $file->getName();		
+								$filePathSource 		=  PATH_FILE_OF_UPLOAD_WRITE."/".$filePath;			
+								$filePathDetination 	=  $pathDocument."/".$fileName;
+								copy($filePathSource,$filePathDetination);
+								unlink($filePathSource);		
+
+									
+								$objTMD 								= NULL;												
+								$objTMD["reference1"]					= "";
+								$objTMD["reference2"]					= $filePathDetination;
+								$objTMD["reference3"]					= $fileName;
+								$transactionMasterDetailID				= $this->Transaction_Master_Detail_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$transactionMasterDetailID,$objTMD);								
+								
+								//Mandar la Imagen al server remoto
+								if ($dataView["objParameterUrlServerFile"] != "")
+								{
+									//Crear carpeta en servidor remoto
+									$ch 				= curl_init();								
+									
+									// set URL and other appropriate options
+									curl_setopt($ch, CURLOPT_URL, $urlCreateFolder);
+									curl_setopt($ch, CURLOPT_HEADER, 0);
+									curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+									curl_setopt($ch, CURLOPT_POSTFIELDS, array('txtFileDocument' =>  '@'.$filePathDetination));
+									
+									
+									// grab URL and pass it to the browser
+									curl_exec($ch);
+									
+									// close cURL resource, and free up system resources
+									curl_close($ch);
+									unlink($filePathDetination);		
+								}
+								
+								
+						}
+						
+					}
+				}	
+			}
+			
+			
+			
+			
 			
 			
 			//Obtener plantilla de whatsapp
@@ -400,6 +494,10 @@ class app_purchase_taller extends _BaseController {
 			$objComponentShare			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_workshop_taller");
 			if(!$objComponentShare)
 			throw new \Exception("EL COMPONENTE 'tb_transaction_master_workshop_taller' NO EXISTE...");
+		
+			$objComponentFile			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_file");
+			if(!$objComponentFile)
+			throw new \Exception("EL COMPONENTE 'tb_file' NO EXISTE...");
 			
 			
 			if($this->core_web_accounting->cycleIsCloseByDate($dataSession["user"]->companyID,/*inicio get post*/ $this->request->getPost("txtDate")))
@@ -457,16 +555,107 @@ class app_purchase_taller extends _BaseController {
 			$this->Transaction_Master_Info_Model->insert_app_posme($objTMI);
 
 
-			//
-			//Crear la Carpeta para almacenar los Archivos del Documento
-			$pathDocument = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID;
-			if(!file_exists ($pathDocument))
+			
+			
+			//Crear la Carepta en servidor remoto y guardar archivos
+			$dataFileID							=  $this->request->getPost("txtFileID");
+			$dataFileTypeID						=  $this->request->getPost("txtFileTypeID");
+			$dataFileDocument					=  $this->request->getFiles('txtFileDocument');
+			
+			$objParameterUrlServerFile 					= $this->core_web_parameter->getParameter("CORE_FILE_SERVER",$companyID);
+			$objParameterUrlServerFile 					= $objParameterUrlServerFile->value;
+			$dataView["objParameterUrlServerFile"]	 	= $objParameterUrlServerFile;
+			
+			if(!empty($dataFileTypeID))
 			{
-				mkdir( $pathDocument,0700);
+				foreach($dataFileTypeID as $key => $fileID)
+				{
+					//Crear las careptas
+					$fileTypeID 		= $dataFileTypeID[$key];
+					$pathDocument		= "";
+					$pathDocument 		= PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID;
+					$urlCreateFolder 	= $dataView["objParameterUrlServerFile"]."/core_elfinder/createFolder/companyID/".$companyID."/componentID/".$objComponentShare->componentID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID;						
+					
+					if(!file_exists ($pathDocument))
+					{
+						mkdir( $pathDocument,0700);
+					}	
+					
+					//crear carpeta server
+					if ($dataView["objParameterUrlServerFile"] != "")
+					{
+						
+						$ch 				= curl_init();
+						
+						curl_setopt($ch, CURLOPT_URL, $urlCreateFolder);
+						curl_setopt($ch, CURLOPT_HEADER, 0);
+						
+						// grab URL and pass it to the browser
+						curl_exec($ch);
+						
+						// close cURL resource, and free up system resources
+						curl_close($ch);
+					}
+					
+					
+					//Ingresar en transaccion master detail
+					$file									= $dataFileDocument["txtFileDocument"][$key];					
+					$filePath								= "";
+					$fileName								= "";
+					$filePathDetination						= "";
+					
+					if($file->getSizeByUnit() != 0 )
+					{
+							$filePath 				= $file->store();			
+							$fileName 				= $file->getName();		
+							$filePathSource 		=  PATH_FILE_OF_UPLOAD_WRITE."/".$filePath;			
+							$filePathDetination 	=  $pathDocument."/".$fileName;
+							copy($filePathSource,$filePathDetination);
+							unlink($filePathSource);		
+
+							//Mandar la Imagen al server remoto
+							if ($dataView["objParameterUrlServerFile"] != "")
+							{
+								//Crear carpeta en servidor remoto
+								$ch 				= curl_init();
+								// set URL and other appropriate options
+								curl_setopt($ch, CURLOPT_URL, $urlCreateFolder);
+								curl_setopt($ch, CURLOPT_HEADER, 0);
+								curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+								curl_setopt($ch, CURLOPT_POSTFIELDS, array('txtFileDocument' =>  '@'.$filePathDetination));
+									
+									
+								// grab URL and pass it to the browser
+								curl_exec($ch);
+								
+								// close cURL resource, and free up system resources
+								curl_close($ch);
+								unlink($filePathDetination);		
+							}
+							
+							
+					}
+					
+					
+					
+					
+					$objTMD 								= NULL;
+					$objTMD["companyID"] 					= $objTM["companyID"];
+					$objTMD["transactionID"] 				= $objTM["transactionID"];
+					$objTMD["transactionMasterID"] 			= $transactionMasterID;
+					$objTMD["componentID"]					= $objComponentFile->componentID;
+					$objTMD["componentItemID"] 				= $fileTypeID;
+					$objTMD["reference1"]					= "";
+					$objTMD["reference2"]					= $filePathDetination;
+					$objTMD["reference3"]					= $fileName;
+					$objTMD["isActive"]						= 1;
+					$transactionMasterDetailID				= $this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
+					
+					
+					
+				}
 			}
-			
-			
-		
+					
 			
 			
 			if($db->transStatus() !== false){
@@ -612,6 +801,7 @@ class app_purchase_taller extends _BaseController {
 			$dataView["objListAccesorios"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","priorityID",$companyID);
 			$dataView["objListMarca"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","zoneID",$companyID);
 			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","routeID",$companyID);
+			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","mesaID",$companyID);
 			
 			
 			//Renderizar Resultado 

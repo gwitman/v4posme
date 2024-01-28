@@ -28,7 +28,7 @@
 			<!-- /titulo de comprobante-->
 			
 			<!-- body -->	
-			<form id="form-new-invoice" name="form-new-invoice" class="form-horizontal" role="form">
+			<form id="form-new-invoice" name="form-new-invoice" class="form-horizontal" role="form" enctype="multipart/form-data" >
 			<div class="panel-body printArea"> 
 			
 				<ul id="myTab" class="nav nav-tabs">
@@ -345,6 +345,50 @@
 						
 					</div>
 					<div class="tab-pane fade" id="dropdown-file">
+						
+						
+						<div class="row">
+							<div class="col-lg-12">
+								<table class="table table-bordered">
+									<thead>
+									  <tr>															
+										<th>Tipo</th>
+										<th>Archivo</th>
+									  </tr>
+									</thead>
+									<tbody id="body_detail_file">
+										<?php 
+										
+										if($objTransactionMasterDetailDocument)
+										foreach($objTransactionMasterDetailDocument as $ws)
+										{
+												?>
+												<tr>
+													<td>
+														<input type="hidden"  name="txtFileID[]" value="<?php echo $ws->transactionMasterDetailID; ?>">
+														<input type="hidden"  name="txtFileTypeID[]" value="<?php echo $ws->componentItemID; ?>">
+														<span class="badge badge-inverse" >
+															<?php echo $ws->tipoFile; ?>
+														</span>																			
+													</td>
+													<td>
+														<input type="file" name="txtFileDocument[]" value="<?php echo $ws->reference3; ?>" >
+														
+														<a class="btn btn-success"  href="<?php echo $objParameterUrlServerFile."/resource/file_company/company_2/component_98/component_item_".$objTransactionMaster->transactionMasterID."/".$ws->reference3; ?>" target="_blank" >
+															<?php echo $ws->reference3; ?>
+														</a>
+													
+													</td>
+												</tr>		
+												<?php 																
+										}
+										?>											
+									</tbody>
+								</table>
+								
+							</div><!-- End .col-lg-12  --> 
+						</div><!-- End .row-fluid  -->
+						
 						
 					</div>
 				</div>    

@@ -26,7 +26,7 @@
 								<!-- /titulo de comprobante-->
 								
 								<!-- body -->	
-								<form id="form-new-invoice" name="form-new-invoice" class="form-horizontal" role="form">
+								<form id="form-new-invoice" name="form-new-invoice" class="form-horizontal" role="form" enctype="multipart/form-data" >
 								<div class="panel-body printArea"> 
 								
 									<ul id="myTab" class="nav nav-tabs">
@@ -348,6 +348,48 @@
 											
 										</div>
 										<div class="tab-pane fade" id="dropdown-file">
+											
+											
+										
+											
+											<div class="row">
+												<div class="col-lg-12">
+													<table class="table table-bordered">
+														<thead>
+														  <tr>															
+															<th>Tipo</th>
+															<th>Archivo</th>
+														  </tr>
+														</thead>
+														<tbody id="body_detail_file">
+															<?php 
+															if($objListArchivos)
+															foreach($objListArchivos as $ws)
+															{
+																
+																	?>
+																	<tr>
+																		<td>
+																			<input type="hidden"  name="txtFileID[]" value="0">
+																			<input type="hidden"  name="txtFileTypeID[]" value="<?php echo $ws->catalogItemID; ?>">
+																			<span class="badge badge-inverse" >
+																				<?php echo $ws->name; ?>
+																			</span>																			
+																		</td>
+																		<td>
+																			<input type="file" name="txtFileDocument[]" >
+																		</td>
+																	</tr>		
+																	<?php 																
+															}
+															?>											
+														</tbody>
+													</table>
+													
+												</div><!-- End .col-lg-12  --> 
+											</div><!-- End .row-fluid  -->
+											
+											
 											
 										</div>
 									</div>    

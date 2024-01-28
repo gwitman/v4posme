@@ -56,6 +56,8 @@ class core_elfinder extends _BaseController {
 			$componentID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"componentID");//--finuri		
 			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri		
 			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri		
+			$file						=  $this->request->getFile('txtFileDocument');
+			
 		
 			$documentoPath = PATH_FILE_OF_APP."/company_".$companyID;		
 			if (!file_exists($documentoPath))
@@ -77,6 +79,19 @@ class core_elfinder extends _BaseController {
 				mkdir($documentoPath, 0755);
 				chmod($documentoPath, 0755);
 			}
+			
+			
+			if($file->getSizeByUnit() != 0 )
+			{
+					$filePath 				= $file->store();			
+					$fileName 				= $file->getName();		
+					$filePathSource 		=  PATH_FILE_OF_UPLOAD_WRITE."/".$filePath;			
+					$filePathDetination 	=  $documentoPath."/".$fileName;					
+					copy($filePathSource,$filePathDetination);
+					unlink($filePathSource);		
+					
+			}
+			
 			
 			
 			

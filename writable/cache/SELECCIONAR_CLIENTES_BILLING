@@ -1,4 +1,4 @@
-a:3:{s:4:"time";i:1706443982;s:3:"ttl";i:100;s:4:"data";s:10872:"<!-- DEBUG-VIEW START 3 APPPATH\Views\core_masterpage\default_widgetchoose.php -->
+a:3:{s:4:"time";i:1706481777;s:3:"ttl";i:100;s:4:"data";s:10872:"<!-- DEBUG-VIEW START 3 APPPATH\Views\core_masterpage\default_widgetchoose.php -->
 <!--vista que se esta utilizando para las tablas-->
 <!--muestra un datatable con una lista de registros-->
 <!DOCTYPE html>

@@ -174,6 +174,34 @@ class Transaction_Master_Detail_Model extends Model  {
 			
 		}
 		
+		if($componentID == 100 /*tb_file*/)
+		{
+			$sql = sprintf("select 
+								tm.companyID,
+								tm.transactionID,
+								tm.transactionMasterID,
+								
+								td.transactionMasterDetailID,
+								td.componentID,
+								td.componentItemID,								
+								td.reference1,
+								td.reference2,
+								td.reference3,
+								
+								tcom.name as tipoFile
+								
+							");
+			$sql = $sql.sprintf(" from tb_transaction_master tm");
+			$sql = $sql.sprintf(" inner join  tb_transaction_master_detail td on tm.companyID = td.companyID and tm.transactionID = td.transactionID and tm.transactionMasterID = td.transactionMasterID");
+			$sql = $sql.sprintf(" inner join  tb_catalog_item tcom on tcom.catalogItemID = td.componentItemID ");
+			$sql = $sql.sprintf(" where td.companyID = $companyID");
+			$sql = $sql.sprintf(" and td.transactionID = $transactionID");		
+			$sql = $sql.sprintf(" and td.transactionMasterID = $transactionMasterID");		
+			$sql = $sql.sprintf(" and td.isActive= 1");		
+			
+			
+		}
+		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
