@@ -835,6 +835,7 @@
 
 	//Eliminar Item
 	$(document).on("click","#btnDeleteItem",function(){
+			
 			var listRow = objTableDetail.fnGetData();							
 			var length 	= listRow.length;
 			var i 		= 0;
