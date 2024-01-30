@@ -6,9 +6,28 @@ use dbkroqnguhldo1;
 
 
 
-
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "http://localhost/posmev4" 
+	tb_company_parameter.value = "app_purchase_taller/viewPrinterFormatoA4Stiker" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WORKSHOW_URL_PRINTER_TALLER_STIKER";	## True, no permite cedula repetidas, False, permite cecedula repetidas
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_purchase_taller/viewPrinterFormatoA4Output" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WORKSHOW_URL_PRINTER_TALLER_OUTPUT";	## True, no permite cedula repetidas, False, permite cecedula repetidas
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_purchase_taller/viewPrinterFormatoA4" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WORKSHOW_URL_PRINTER_TALLER";	## True, no permite cedula repetidas, False, permite cecedula repetidas
+	
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_FILE_SERVER";	## Servidor de archivo

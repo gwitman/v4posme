@@ -7,7 +7,9 @@
 				<a href="<?php echo base_url(); ?>/app_purchase_taller/add" class="btn btn-success" id="btnNuevo"><i class="icon16 i-checkmark-4"></i>Nuevo</a>						
 				<a href="<?php echo base_url(); ?>/app_purchase_taller/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>                                    
 				<a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>									
-				<a href="#" class="btn btn-primary" id="btnPrinter"><i class="icon16 i-print"></i> Imprimir</a>
+				<a href="#" class="btn btn-primary" id="btnPrinter"><i class="icon16 i-print"></i> Imprimir E.</a>
+				<a href="#" class="btn btn-primary" id="btnPrinterOutput"><i class="icon16 i-print"></i> Imprimir S.</a>
+				<a href="#" class="btn btn-primary" id="btnPrinterStiker"><i class="icon16 i-print"></i> Imprimir Stiker.</a>
 				<a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
 			</div>
 		</div> 

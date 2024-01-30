@@ -359,10 +359,14 @@ $routes->match(['get','post'],'app_purchase_taller/edit','app_purchase_taller::e
 $routes->match(['get','post'],'app_purchase_taller/edit/(:any)','app_purchase_taller::edit');
 $routes->match(['get','post'],'app_purchase_taller/delete','app_purchase_taller::delete');
 $routes->match(['get','post'],'app_purchase_taller/delete/(:any)','app_purchase_taller::delete');
-$routes->match(['get','post'],'app_purchase_taller/viewPrinterFormatoA4','app_purchase_taller::viewPrinterFormatoA4');
-$routes->match(['get','post'],'app_purchase_taller/viewPrinterFormatoA4/(:any)','app_purchase_taller::viewPrinterFormatoA4');
 $routes->match(['get','post'],'app_purchase_taller/searchTransactionMaster','app_purchase_taller::searchTransactionMaster');
 $routes->match(['get','post'],'app_purchase_taller/searchTransactionMaster/(:any)','app_purchase_taller::searchTransactionMaster');
+$routes->match(['get','post'],'app_purchase_taller/viewPrinterFormatoA4','app_purchase_taller::viewPrinterFormatoA4');
+$routes->match(['get','post'],'app_purchase_taller/viewPrinterFormatoA4/(:any)','app_purchase_taller::viewPrinterFormatoA4');
+$routes->match(['get','post'],'app_purchase_taller/viewPrinterFormatoA4Output','app_purchase_taller::viewPrinterFormatoA4Output');
+$routes->match(['get','post'],'app_purchase_taller/viewPrinterFormatoA4Output/(:any)','app_purchase_taller::viewPrinterFormatoA4Output');
+$routes->match(['get','post'],'app_purchase_taller/viewPrinterFormatoA4Stiker','app_purchase_taller::viewPrinterFormatoA4Stiker');
+$routes->match(['get','post'],'app_purchase_taller/viewPrinterFormatoA4Stiker/(:any)','app_purchase_taller::viewPrinterFormatoA4Stiker');
 $routes->match(['get','post'],'app_purchase_garantia/index','app_purchase_garantia::index');
 $routes->match(['get','post'],'app_purchase_garantia/index/(:any)','app_purchase_garantia::index');
 $routes->match(['get','post'],'app_purchase_garantia/add','app_purchase_garantia::add');
