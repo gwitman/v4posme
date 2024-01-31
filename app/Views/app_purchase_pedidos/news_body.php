@@ -26,7 +26,7 @@
 								<!-- /titulo de comprobante-->
 								
 								<!-- body -->	
-								<form id="form-new-invoice" name="form-new-invoice" class="form-horizontal" role="form">
+								<form id="form-new-invoice" name="form-new-invoice" class="form-horizontal" role="form" enctype="multipart/form-data" >
 								<div class="panel-body printArea"> 
 								
 									<ul id="myTab" class="nav nav-tabs">
@@ -90,15 +90,88 @@
 														</div>
 														
 														<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal">Referencia 1</label>
-																<div class="col-lg-8">																	
-																	<input class="form-control"  type="text"  name="txtDetailReference1" id="txtDetailReference1" value="">												
+															<label class="col-lg-4 control-label" for="buttons">Cliente</label>
+															<div class="col-lg-8">
+																<div class="input-group">
+																	<input type="hidden" id="txtCustomerID" name="txtCustomerID" value="">
+																	<input class="form-control" readonly id="txtCustomerDescription" type="txtCustomerDescription" value="">
+																	
+																	<span class="input-group-btn">
+																		<button class="btn btn-danger" type="button" id="btnClearCustomer">
+																			<i aria-hidden="true" class="i-undo-2"></i>
+																			clear
+																		</button>
+																	</span>
+																	<span class="input-group-btn">
+																		<button class="btn btn-primary" type="button" id="btnSearchCustomer">
+																			<i aria-hidden="true" class="i-search-5"></i>
+																			buscar
+																		</button>
+																	</span>											
+																</div>
+															</div>
+														</div>
+														
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="buttons">Tecnico</label>
+															<div class="col-lg-8">
+																<div class="input-group">
+																	<input type="hidden" id="txtEmployerID" name="txtEmployerID" value="">
+																	<input class="form-control" readonly id="txtEmployerDescription" type="txtEmployerDescription" value="">
+																	
+																	<span class="input-group-btn">
+																		<button class="btn btn-danger" type="button" id="btnClearEmployer">
+																			<i aria-hidden="true" class="i-undo-2"></i>
+																			clear
+																		</button>
+																	</span>
+																	<span class="input-group-btn">
+																		<button class="btn btn-primary" type="button" id="btnSearchEmployer">
+																			<i aria-hidden="true" class="i-search-5"></i>
+																			buscar
+																		</button>
+																	</span>											
+																</div>
+															</div>
+														</div>
+														
+														
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="buttons">Factura</label>
+															<div class="col-lg-8">
+																<div class="input-group">
+																	<input type="hidden" id="txtNote" name="txtNote" value="">
+																	<input class="form-control" readonly id="txtNoteDescription" type="txtNoteDescription" value="">
+																	
+																	<span class="input-group-btn">
+																		<button class="btn btn-danger" type="button" id="btnClearNote">
+																			<i aria-hidden="true" class="i-undo-2"></i>
+																			clear
+																		</button>
+																	</span>
+																	<span class="input-group-btn">
+																		<button class="btn btn-primary" type="button" id="btnSearchNote">
+																			<i aria-hidden="true" class="i-search-5"></i>
+																			buscar
+																		</button>
+																	</span>											
+																</div>
+															</div>
+														</div>
+													
+													
+													
+														
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal">Informacion adicional</label>
+																<div class="col-lg-8">		
+																	<textarea class="form-control" type="text"  name="txtDetailReference1" id="txtDetailReference1" ></textarea>
 																</div>
 														</div>
 														
 															
 														<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal">Referencia 2</label>
+																<label class="col-lg-4 control-label" for="normal">Marca/Modelo</label>
 																<div class="col-lg-8">
 																	
 																	<input class="form-control"  type="text"  name="txtDetailReference2" id="txtDetailReference2" value="">												
@@ -106,7 +179,7 @@
 														</div>
 														
 														<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal">Referencia 3</label>
+																<label class="col-lg-4 control-label" for="normal">Numero de parte</label>
 																<div class="col-lg-8">																	
 																	<input class="form-control"  type="text"  name="txtDetailReference3" id="txtDetailReference3" value="">												
 																</div>
@@ -121,15 +194,27 @@
 															<div class="col-lg-8">
 																<select name="txtCurrencyID" id="txtCurrencyID" class="select2">																		>																
 																		<?php
+																		$count = 0;
 																		if($objListCurrency)
 																		foreach($objListCurrency as $ws){
+																			if($count == 0)
 																			echo "<option value='".$ws->currencyID."' selected>".$ws->simb."</option>";
+																			else 
+																			echo "<option value='".$ws->currencyID."' >".$ws->simb."</option>";
+																			$count++;
 																		}
 																		?>
 																</select>
 															</div>
 														</div>
 														
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal">Precio de venta</label>
+																<div class="col-lg-8">
+																	<input type="hidden" name="txtDetailTransactionDetailID" value="0">
+																	<input class="form-control"  type="text"  name="txtDetailAmount" id="txtDetailAmount" value="0">												
+																</div>
+														</div>
 														
 													
 														<div class="form-group">
@@ -175,12 +260,26 @@
 														</div>
 														
 														<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal">Monto</label>
-																<div class="col-lg-8">
-																	<input type="hidden" name="txtDetailTransactionDetailID" value="0">
-																	<input class="form-control"  type="text"  name="txtDetailAmount" id="txtDetailAmount" value="0">												
-																</div>
+															<label class="col-lg-4 control-label" for="selectFilter">Status de pedido</label>
+															<div class="col-lg-8">
+																<select name="txtZoneID" id="txtZoneID" class="select2">																									
+																		<?php
+																		$counter = 0;
+																		if($objListPedidoStatus)
+																		foreach($objListPedidoStatus as $ws){
+																			if($counter == 0)
+																				echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+																			else 
+																				echo "<option value='".$ws->catalogItemID."' >".$ws->name."</option>";
+																			
+																			$counter++;
+																				
+																		}
+																		?>
+																</select>
+															</div>
 														</div>
+														
 														
 														
 
@@ -202,16 +301,41 @@
 										</div>
 										<div class="tab-pane fade" id="dropdown">
 											
-												<div class="form-group">
-		                                            <label class="col-lg-2 control-label" for="normal">Descripcion</label>
-		                                            <div class="col-lg-6">
-		                                                <textarea class="form-control"  id="txtNote" name="txtNote" rows="6"></textarea>
-		                                            </div>
-		                                        </div>
+											
 											
 										</div>
 										<div class="tab-pane fade" id="dropdown-file">
-											
+													<table class="table table-bordered">
+														<thead>
+														  <tr>															
+															<th>Tipo</th>
+															<th>Archivo</th>
+														  </tr>
+														</thead>
+														<tbody id="body_detail_file">
+															<?php 
+															if($objListArchivos)
+															foreach($objListArchivos as $ws)
+															{
+																
+																	?>
+																	<tr>
+																		<td>
+																			<input type="hidden"  name="txtFileID[]" value="0">
+																			<input type="hidden"  name="txtFileTypeID[]" value="<?php echo $ws->catalogItemID; ?>">
+																			<span class="badge badge-inverse" >
+																				<?php echo $ws->name; ?>
+																			</span>																			
+																		</td>
+																		<td>
+																			<input type="file" name="txtFileDocument[]" >
+																		</td>
+																	</tr>		
+																	<?php 																
+															}
+															?>											
+														</tbody>
+													</table>
 										</div>
 									</div>    
 							
