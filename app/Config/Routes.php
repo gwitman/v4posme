@@ -479,6 +479,7 @@ $routes->match(['get','post'],'app_box_sharecapital/viewRegisterInstitutoLaVid',
 $routes->match(['get','post'],'app_box_sharecapital/viewRegisterInstitutoLaVid/(:any)','app_box_sharecapital::viewRegisterInstitutoLaVid');
 $routes->match(['get','post'],'app_catalog_api/getCatalogItemByState','app_catalog_api::getCatalogItemByState');
 $routes->match(['get','post'],'app_catalog_api/getCatalogItemByCity','app_catalog_api::getCatalogItemByCity');
+$routes->match(['get','post'],'app_catalog_api/getCatalogItemByParentCatalogItemID','app_catalog_api::getCatalogItemByParentCatalogItemID');
 $routes->match(['get','post'],'app_collection_manager/delete','app_collection_manager::delete');
 $routes->match(['get','post'],'app_collection_manager/save','app_collection_manager::save');
 $routes->match(['get','post'],'app_collection_manager/save/(:any)','app_collection_manager::save');

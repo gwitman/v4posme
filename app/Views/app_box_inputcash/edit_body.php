@@ -163,6 +163,27 @@
 								</div>
 								
 								<div class="form-group">
+									<label class="col-lg-4 control-label" for="selectFilter">Categoria</label>
+									<div class="col-lg-8">
+										<select name="txtPriorityID" id="txtPriorityID" class="select2">																									
+												<?php
+												$counter = 0;
+												if($objSubTipoMovement)
+												foreach($objSubTipoMovement as $ws){
+													if($ws->catalogItemID == $objTransactionMaster->priorityID)
+														echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+													else 
+														echo "<option value='".$ws->catalogItemID."' >".$ws->name."</option>";
+													
+													$counter++;
+														
+												}
+												?>
+										</select>
+									</div>
+								</div>
+								
+								<div class="form-group">
 										<label class="col-lg-4 control-label" for="normal">Monto</label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtDetailAmount" id="txtDetailAmount" value="<?php echo sprintf("%01.2f",$objTransactionMasterDetail[0]->amount); ?>">

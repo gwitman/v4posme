@@ -82,6 +82,7 @@ class app_box_inputcash extends _BaseController {
 			$dataView["objComponentShare"]		= $objComponentTransactionShare;					
 			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_inputcash","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
 			$dataView["objTipoMovement"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_inputcash","areaID",$companyID);
+			$dataView["objSubTipoMovement"]		= $this->core_web_catalog->getCatalogAllItem_Parent("tb_transaction_master_inputcash","priorityID",$companyID,$dataView["objTransactionMaster"]->areaID);
 			$dataView["objListDenomination"]	= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_denomination","catalogItemID",$companyID);
 			
 			$objParameterUrlPrinter 				= $this->core_web_parameter->getParameter("BOX_INPUTCASH_URL_PRINTER",$companyID);
@@ -247,6 +248,7 @@ class app_box_inputcash extends _BaseController {
 			$objTMNew["currencyID"] 					= /*inicio get post*/ $this->request->getPost("txtCurrencyID");//--fin peticion get o post			
 			$objTMNew["exchangeRate"]					= $this->core_web_currency->getRatio($dataSession["user"]->companyID,date("Y-m-d"),1,$objTM->currencyID2,$objTMNew["currencyID"]);
 			$objTMNew["areaID"] 						= /*inicio get post*/ $this->request->getPost("txtAreaID");
+			$objTMNew["priorityID"] 					= /*inicio get post*/ $this->request->getPost("txtPriorityID");
 			$objTMNew["reference1"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference1");
 			$objTMNew["reference2"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference2");
 			$objTMNew["reference3"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference3");			
@@ -509,6 +511,7 @@ class app_box_inputcash extends _BaseController {
 			$objTM["journalEntryID"] 				= 0;
 			$objTM["classID"] 						= NULL;
 			$objTM["areaID"] 						= /*inicio get post*/ $this->request->getPost("txtAreaID");
+			$objTM["priorityID"] 					= /*inicio get post*/ $this->request->getPost("txtPriorityID");
 			$objTM["sourceWarehouseID"]				= NULL;
 			$objTM["targetWarehouseID"]				= NULL;
 			$objTM["isActive"]						= 1;
@@ -733,6 +736,7 @@ class app_box_inputcash extends _BaseController {
 			$dataView["objCaudal"]				= $this->Transaction_Causal_Model->getCausalByBranch($companyID,$transactionID,$branchID);			
 			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_inputcash","statusID",$companyID,$branchID,$roleID);
 			$dataView["objTipoMovement"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_inputcash","areaID",$companyID);
+			$dataView["objSubTipoMovement"]		= $this->core_web_catalog->getCatalogAllItem_Parent("tb_transaction_master_inputcash","priorityID",$companyID,$dataView["objTipoMovement"][0]->catalogItemID);
 			$dataView["objListDenomination"]	= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_denomination","catalogItemID",$companyID);
 			
 			//Renderizar Resultado 

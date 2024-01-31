@@ -37,7 +37,51 @@
 								
 						});
 						
+						$(document).on("change","#txtAreaID",function(){
+							var TipoMovimiento = $(this).val();
+							
+							fnWaitOpen(); 
+							$.ajax({									
+								cache       : false,
+								dataType    : 'json',
+								type        : 'POST',
+								url  		: "<?php echo base_url(); ?>/app_catalog_api/getCatalogItemByParentCatalogItemID" ,
+								data		: {catalogItemID : TipoMovimiento, tableName : "tb_transaction_master_outputcash" , fieldName: "priorityID" },
+								success		: fnCompletCatalogDetail,
+								error:function(xhr,data){	
+									fnWaitClose(); 
+									console.info("complete data error");													
+									fnShowNotification("Error 505","error");
+								}
+							});
+							
+						});
+						
+						
 					});
+					
+					function fnCompletCatalogDetail(data)
+					{
+						
+						fnWaitClose();
+						data = data.catalogItems;
+						
+						
+						$("#txtPriorityID").html("");
+						$("#txtPriorityID").val("");
+						
+						for(var i = 0 ; i < data.length; i++)
+						{
+							if(i == 0)
+								$("#txtPriorityID").append("<option value='"+data[i].catalogItemID+"' selected>"+ data[i].name + "</option>");
+							else 
+								$("#txtPriorityID").append("<option value='"+data[i].catalogItemID+"'>"+ data[i].name + "</option>");
+							
+						}
+						
+						$("#txtPriorityID").select2();
+						
+					}
 					
 					function updateAmount()
 					{
