@@ -100,8 +100,82 @@
 										</div>
 									</div>
 									
+									
+									
 									<div class="form-group">
-											<label class="col-lg-4 control-label" for="normal">Referencia 1</label>
+										<label class="col-lg-4 control-label" for="buttons">Cliente</label>
+										<div class="col-lg-8">
+											<div class="input-group">
+												<input type="hidden" id="txtCustomerID" name="txtCustomerID" value="<?php echo $objCustomer->entityID;  ?>">
+												<input class="form-control" readonly id="txtCustomerDescription" type="txtCustomerDescription" value="<?php echo $objCustomerNatural != null ? strtoupper($objCustomer->customerNumber . " ". $objCustomerNatural->firstName . " ". $objCustomerNatural->lastName ) : strtoupper($objCustomer->customerNumber." ".$objCustomerLegal->comercialName); ?>">
+												
+												<span class="input-group-btn">
+													<button class="btn btn-danger" type="button" id="btnClearCustomer">
+														<i aria-hidden="true" class="i-undo-2"></i>
+														clear
+													</button>
+												</span>
+												<span class="input-group-btn">
+													<button class="btn btn-primary" type="button" id="btnSearchCustomer">
+														<i aria-hidden="true" class="i-search-5"></i>
+														buscar
+													</button>
+												</span>											
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="buttons">Tecnico</label>
+										<div class="col-lg-8">
+											<div class="input-group">
+												<input type="hidden" id="txtEmployerID" name="txtEmployerID" value="<?php echo $objEmployer->entityID;  ?>">
+												<input class="form-control" readonly id="txtEmployerDescription" type="txtEmployerDescription" value="<?php echo $objEmployerNatural != null ? strtoupper($objEmployer->employeNumber . " ". $objEmployerNatural->firstName . " ". $objEmployerNatural->lastName ) : strtoupper($objEmployer->employeNumber." ".$objEmployerLegal->comercialName); ?>">
+												
+												<span class="input-group-btn">
+													<button class="btn btn-danger" type="button" id="btnClearEmployer">
+														<i aria-hidden="true" class="i-undo-2"></i>
+														clear
+													</button>
+												</span>
+												<span class="input-group-btn">
+													<button class="btn btn-primary" type="button" id="btnSearchEmployer">
+														<i aria-hidden="true" class="i-search-5"></i>
+														buscar
+													</button>
+												</span>											
+											</div>
+										</div>
+									</div>
+									
+									
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="buttons">Factura</label>
+										<div class="col-lg-8">
+											<div class="input-group">
+												<input type="hidden" id="txtNote" name="txtNote" value="<?php echo $objBilling->transactionNumber;  ?>">
+												<input class="form-control" readonly id="txtNoteDescription" type="txtNoteDescription" value="<?php echo $objBilling->transactionNumber; ?>">
+												
+												<span class="input-group-btn">
+													<button class="btn btn-danger" type="button" id="btnClearNote">
+														<i aria-hidden="true" class="i-undo-2"></i>
+														clear
+													</button>
+												</span>
+												<span class="input-group-btn">
+													<button class="btn btn-primary" type="button" id="btnSearchNote">
+														<i aria-hidden="true" class="i-search-5"></i>
+														buscar
+													</button>
+												</span>											
+											</div>
+										</div>
+									</div>
+								
+								
+								
+									<div class="form-group">
+											<label class="col-lg-4 control-label" for="normal">Modelo</label>
 											<div class="col-lg-8">																	
 												<input class="form-control"  type="text"  name="txtDetailReference1" id="txtDetailReference1" value="<?php echo $objTransactionMaster->reference1; ?>">												
 											</div>
@@ -109,7 +183,7 @@
 									
 										
 									<div class="form-group">
-											<label class="col-lg-4 control-label" for="normal">Referencia 2</label>
+											<label class="col-lg-4 control-label" for="normal">Serie</label>
 											<div class="col-lg-8">
 												
 												<input class="form-control"  type="text"  name="txtDetailReference2" id="txtDetailReference2" value="<?php echo $objTransactionMaster->reference2; ?>">												
@@ -117,12 +191,18 @@
 									</div>
 									
 									<div class="form-group">
-											<label class="col-lg-4 control-label" for="normal">Referencia 3</label>
+											<label class="col-lg-4 control-label" for="normal">Problema</label>
 											<div class="col-lg-8">																	
 												<input class="form-control"  type="text"  name="txtDetailReference3" id="txtDetailReference3" value="<?php echo $objTransactionMaster->reference3; ?>">												
 											</div>
 									</div>
 									
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="normal">Solucion</label>
+										<div class="col-lg-8">
+											<textarea class="form-control"  id="txtDetailReference4" name="txtDetailReference4" rows="6"><?php echo $objTransactionMaster->reference4; ?></textarea>
+										</div>
+									</div>
 								
 							</div>
 							<div class="col-lg-6">
@@ -144,6 +224,14 @@
 									</div>
 								</div>
 								
+								
+								
+								<div class="form-group">
+										<label class="col-lg-4 control-label" for="normal">Monto</label>
+										<div class="col-lg-8">
+											<input class="form-control"  type="text"  name="txtDetailAmount" id="txtDetailAmount" value="<?php echo sprintf("%01.2f",$objTransactionMaster->amount); ?>">
+										</div>
+								</div>
 								
 								
 								<div class="form-group">
@@ -192,12 +280,12 @@
 								
 								
 								<div class="form-group">
-									<label class="col-lg-4 control-label" for="selectFilter">Articulo</label>
+									<label class="col-lg-4 control-label" for="selectFilter">Deja cargador</label>
 									<div class="col-lg-8">
 										<select name="txtAreaID" id="txtAreaID" class="select2">																									
 												<?php
-												if($objListCatalogoArticulos)
-												foreach($objListCatalogoArticulos as $ws){
+												if($objListCatalogoAccesorio)
+												foreach($objListCatalogoAccesorio as $ws){
 													if($ws->catalogItemID == $objTransactionMaster->areaID)
 														echo "<option value='".$ws->catalogItemID."' selected>".$ws->name."</option>";
 													else 
@@ -212,12 +300,21 @@
 								
 								
 								<div class="form-group">
-										<label class="col-lg-4 control-label" for="normal">Monto</label>
-										<div class="col-lg-8">
-											<input class="form-control"  type="text"  name="txtDetailAmount" id="txtDetailAmount" value="<?php echo sprintf("%01.2f",$objTransactionMaster->amount); ?>">
-										</div>
+									<label class="col-lg-4 control-label" for="selectFilter">Status de Grantia</label>
+									<div class="col-lg-8">
+										<select name="txtPriorityID" id="txtPriorityID" class="select2">																									
+												<?php
+												if($objListCatalogoStatusGarantia)
+												foreach($objListCatalogoStatusGarantia as $ws){
+													if($ws->catalogItemID == $objTransactionMaster->priorityID)
+														echo "<option value='".$ws->catalogItemID."' selected>".$ws->name."</option>";
+													else 
+														echo "<option value='".$ws->catalogItemID."' >".$ws->name."</option>";
+												}
+												?>
+										</select>
+									</div>
 								</div>
-								
 								
 								
 
@@ -242,12 +339,7 @@
 					</div>
 					<div class="tab-pane fade" id="dropdown">
 						
-							<div class="form-group">
-								<label class="col-lg-2 control-label" for="normal">Descripcion</label>
-								<div class="col-lg-6">
-									<textarea class="form-control"  id="txtNote" name="txtNote" rows="6"><?php echo $objTransactionMaster->note; ?></textarea>
-								</div>
-							</div>
+							
 						
 					</div>
 					<div class="tab-pane fade" id="dropdown-file">
