@@ -11,7 +11,7 @@
 		?>
 		
 	</head>
-	<body style="font-family:monospace;font-size:smaller;margin:0px 0px 0px 0px"> 
+	<body style="font-family:monospace;font-size:larger;margin:0px 0px 0px 0px"> 
 		
 		
 		
@@ -29,7 +29,7 @@
 		$configColumn["17"]["Width"] 		= "100px";
 				
 		$configColumn["14"]["Total"] 		= False;
-		$configColumn["17"]["Total"] 		= True;		
+		$configColumn["17"]["Total"] 		= False;		
 		$resultado 	= helper_reporteGeneralCreateTable($objDetail,$configColumn,'0px',NULL,NULL);
 		?>
 		
