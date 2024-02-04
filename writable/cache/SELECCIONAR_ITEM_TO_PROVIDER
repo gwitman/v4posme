@@ -1,4 +1,4 @@
-a:3:{s:4:"time";i:1706571681;s:3:"ttl";i:100;s:4:"data";s:10534:"<!-- DEBUG-VIEW START 3 APPPATH\Views\core_masterpage\default_widgetchoose.php -->
+a:3:{s:4:"time";i:1706978301;s:3:"ttl";i:100;s:4:"data";s:10538:"<!-- DEBUG-VIEW START 3 APPPATH\Views\core_masterpage\default_widgetchoose.php -->
 <!--vista que se esta utilizando para las tablas-->
 <!--muestra un datatable con una lista de registros-->
 <!DOCTYPE html>
@@ -103,7 +103,7 @@ a:3:{s:4:"time";i:1706571681;s:3:"ttl";i:100;s:4:"data";s:10534:"<!-- DEBUG-VIEW
 	</div> 
 <!-- DEBUG-VIEW ENDED 1 APPPATH\Views\core_view\choose_view_serch_head.php -->
 					
-					<table  id='ListView' cellpadding='0' cellspacing='0' border='0' class='table table-striped table-bordered table-hover' style='display:none' ><thead><tr><th>companyID</th><th>itemID</th><th>Costo</th><th>pricePublico</th><th>pricePorMayor</th><th>priceCredito</th><th>Codigo</th><th>Nombre</th><th>Medida</th><th>Cantidad</th><th>Barra</th><th>Descripcion</th></tr></thead><tbody><tr><td>2</td><td>22010</td><td>10.0000</td><td>250.00000000</td><td>0.00000000</td><td>0.00000000</td><td>ITT00000983</td><td>no usado</td><td>UNIDAD</td><td>745.0000</td><td>BITT00000983</td><td></td></tr><tr><td>2</td><td>23037</td><td>1.0000</td><td>1.00000000</td><td>0.00000000</td><td>0.00000000</td><td>ITT00001010</td><td>abcv</td><td>UNIDAD</td><td>500.0000</td><td>BITT00001010</td><td></td></tr><tr><td>2</td><td>23038</td><td>0.0000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td><td>ITT00001011</td><td>CLASES DE SAMBA MENSUAL</td><td>UNIDAD</td><td>0.0000</td><td>BITT00001011</td><td></td></tr></tbody></table>
+					<table  id='ListView' cellpadding='0' cellspacing='0' border='0' class='table table-striped table-bordered table-hover' style='display:none' ><thead><tr><th>companyID</th><th>itemID</th><th>Costo</th><th>pricePublico</th><th>pricePorMayor</th><th>priceCredito</th><th>Codigo</th><th>Nombre</th><th>Medida</th><th>Cantidad</th><th>Barra</th><th>Descripcion</th></tr></thead><tbody><tr><td>2</td><td>22010</td><td>10.0000</td><td>250.00000000</td><td>0.00000000</td><td>0.00000000</td><td>ITT00000983</td><td>no usado</td><td>UNIDAD</td><td>745.0000</td><td>BITT00000983</td><td></td></tr><tr><td>2</td><td>23037</td><td>1.0000</td><td>1.00000000</td><td>0.00000000</td><td>0.00000000</td><td>ITT00001010</td><td>abcv</td><td>UNIDAD</td><td>500.0000</td><td>BITT00001010</td><td></td></tr><tr><td>2</td><td>23038</td><td>0.0000</td><td>4200.00000000</td><td>0.00000000</td><td>0.00000000</td><td>ITT00001011</td><td>clases de samba mensual</td><td>UNIDAD</td><td>-1.0000</td><td>BITT00001011</td><td></td></tr></tbody></table>
 		<script>
 			var objTableListView;
 			var objRowTableListView;	

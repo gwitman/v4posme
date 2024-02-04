@@ -1283,7 +1283,7 @@
 			"objListaProductosConceptosX001",
 			"componentItemID",conceptItemID,"none",{},
 			function(e){ 
-				console.info(e);
+				
 					
 					var objConcepto = e;		
 					if( objConcepto.length > 0 )
@@ -1315,8 +1315,7 @@
 		}
 		
 		
-		$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();		
-		
+		$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect, .skuStyleNormal').uniform();		
 		if(varUseMobile == "1")
 		{
 			$("#tb_transaction_master_detail td").css("display","block");
@@ -2519,7 +2518,20 @@
 			varItemID,
 			"producto1",
 			varFunctionI,
-			function(e){    
+			function(e){   
+			
+				var valuex=0;
+				try
+				{
+					valuex = e.producto1[0].itemID;
+				}
+				catch(z)
+				{
+					valuex = 0;
+				}
+				e.itemID = valuex;
+				
+				
 				obtenerDataDBProductoArray(
 					"objListaProductosX002",
 					"itemID",
@@ -2528,6 +2540,18 @@
 					e,
 					function(e){ 
 						
+						var valuex=0;
+						try
+						{
+							valuex = e.producto1[0].itemID;
+						}
+						catch(z)
+						{
+							valuex = 0;
+						}
+						e.itemID = valuex;
+						
+						
 						obtenerDataDBProductoArray(
 							"objListaProductosX003",
 							"itemID",
@@ -2535,6 +2559,7 @@
 							"producto3",
 							e,
 							function(e){ 
+								
 								e.callback(e);
 							}  
 						)
@@ -3017,7 +3042,7 @@
 										"objListaProductosSkuX001",
 										"itemID",full[2],"none",full,
 										function(e,full){ 
-												console.info(e);
+												
 												
 												
 												var objListaSkuByProducto = e;								
@@ -3028,7 +3053,7 @@
 												
 												var sel 					= '';
 												var espacio					=  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";								
-												sel 						= '<select name="txtSku[]" id="txtSku'+full[2]+'" class="txtSku col-lg-12" >';	
+												sel 						= '<select name="txtSku[]" id="txtSku'+full[2]+'" class="txtSku col-lg-12 skuStyleNormal" >';	
 												
 												if(varUseMobile == "1")
 													espacio = "";							

@@ -1,3 +1,11 @@
+		
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_EMPLOYEE_DEFAULT";## Variable para poner por defecto al vendedor
+	
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "154" 
 WHERE 
@@ -600,7 +608,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaTicket" 
+	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_URL_PRINTER";## URLs PARA LA IMPRESION DE FACTURA 
@@ -675,7 +683,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "2024-01-31" 
+	tb_company_parameter.value = "2030-01-31" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CUST_PRICE_LICENCES_EXPIRED";## Fecha de expiracion de la licencia 
@@ -751,6 +759,24 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Repuestos guerrero' , address = 'Del instituto españa 2c al sur' 
+	NAME = 'Repuestos guerrero' , address = 'Del instituto españa 2c al sur' ,
+	flavorID = 0,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
+
+
+
+/*tipo de cambio de dolares a cordoba*/
+update tb_exchange_rate set 
+	ratio = 36 
+where 
+	currencyID = 2
+	and targetCurrencyID = 1; 
+	
+	
+/*tipo de cambio de dolares a cordoba*/
+update tb_exchange_rate set 
+	ratio = 0.027777 
+where 
+	currencyID = 1
+	and targetCurrencyID = 2; 
