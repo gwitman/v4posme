@@ -58,7 +58,7 @@ class core_elfinder extends _BaseController {
 			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri		
 			$file						=  $this->request->getFile('txtFileDocument');
 			
-		
+			
 			$documentoPath = PATH_FILE_OF_APP."/company_".$companyID;		
 			if (!file_exists($documentoPath))
 			{
@@ -81,13 +81,19 @@ class core_elfinder extends _BaseController {
 			}
 			
 			
+			
+			
 			if($file->getSizeByUnit() != 0 )
 			{
-					$filePath 				= $file->store();			
-					$fileName 				= $file->getName();		
-					$filePathSource 		=  PATH_FILE_OF_UPLOAD_WRITE."/".$filePath;			
-					$filePathDetination 	=  $documentoPath."/".$fileName;					
-					copy($filePathSource,$filePathDetination);
+					
+					var_dump($file);
+					$filePath 						= $file->store();			
+					$fileName 						= $file->getName();	
+					$fileNameOriginal				= $file->getClientName();
+					$filePathSource 				=  PATH_FILE_OF_UPLOAD_WRITE."/".$filePath;			
+					$filePathDetination 			=  $documentoPath."/".$fileName;					
+					$filePathDetinationOriginal 	=  $documentoPath."/".$fileNameOriginal;					
+					copy($filePathSource,$filePathDetinationOriginal);
 					unlink($filePathSource);		
 					
 			}

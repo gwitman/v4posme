@@ -378,10 +378,17 @@ class app_purchase_taller extends _BaseController {
 									$ch 				= curl_init();								
 									
 									// set URL and other appropriate options
+									//curl_setopt($ch, CURLOPT_URL, $urlCreateFolder);									
+									//curl_setopt($ch, CURLOPT_HEADER, 0);
+									//curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+									//curl_setopt($ch, CURLOPT_POSTFIELDS, array('txtFileDocument' =>  '@'.$filePathDetination));
+									
+									
+									// set URL and other appropriate options
 									curl_setopt($ch, CURLOPT_URL, $urlCreateFolder);
 									curl_setopt($ch, CURLOPT_HEADER, 0);
 									curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-									curl_setopt($ch, CURLOPT_POSTFIELDS, array('txtFileDocument' =>  '@'.$filePathDetination));
+									curl_setopt($ch, CURLOPT_POSTFIELDS, array('txtFileDocument' => curl_file_create($filePathDetination) ));
 									
 									
 									// grab URL and pass it to the browser
@@ -860,14 +867,14 @@ class app_purchase_taller extends _BaseController {
 			
 			
 			//Vista por defecto PC
-			if($dataViewID == null and  !$this->request->getUserAgent()->isMobile() ){				
+			if($dataViewID == null and   $dataSession["user"]->useMobile != 1 ){				
 				$targetComponentID			= 0;	
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
 				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			}		
 			//Vista por defecto MOBILE
-			else if( $this->request->getUserAgent()->isMobile() ){
+			else if( $dataSession["user"]->useMobile == 1 ){
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$objComponent->componentID,"DEFAULT_MOBILE_LISTA_INGRESO_A_CAJA",CALLERID_LIST,$resultPermission,$parameter); 			
 				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
