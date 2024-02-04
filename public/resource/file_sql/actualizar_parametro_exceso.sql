@@ -5,6 +5,13 @@ use dbgtgkg1s2qzrv;
 /*****Personalizar pantalla**********/
 /******************************************************************/		
 
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_SHOW_BARCODE_INNAME";	## Mostrar el codigo del producto scanerado al momento de facturar
+	
+
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "true" 

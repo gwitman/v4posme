@@ -351,9 +351,22 @@
 			$resultado["width"]
 		); 
 		
+		
+		
 		echo $resultado2; 
+		echo "<table style='width:100%;order-spacing: 10px;'>
+				<tbody>
+				<tr>
+					<td nowrap='' style='text-align:;width:167px;background-color:#00628e;color:white;' >Print</td>
+					<td nowrap='' style='text-align:Left;width:auto' >"."<a href='".base_url()."/".$objParameterUrlImpresion->value."/customerNumber/".$customerNumber."' target='_blank' >Imprimir saldo en impresora</a>"."</td>
+				</tr>
+				</tbody>
+			 </table>";
+		echo "<br/>";
 		?>
 		
+		<br/>
+		<br/>
 		<br/>
 		
 		<?php 

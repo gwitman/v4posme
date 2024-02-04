@@ -600,9 +600,9 @@
 				
 				
 				//buscar el producto y agregar						
-				var codigoABuscar 	= e.codigoABuscar;
+				var codigoABuscar 	= e.codigoABuscar.toUpperCase();
 				e 					= e.all;
-				var encontrado		= false;
+				var encontrado		= false;				
 				for(var i = 0 ; i < e.length ; i++)
 				{
 					
@@ -615,7 +615,7 @@
 					//buscar por codigo de sistema					
 					var currencyTemp	= e[i].currencyID;
 					var currencyID 		= $("#txtCurrencyID").val();
-					if(  currencyID == currencyTemp && fnDeleteCerosIzquierdos(codigoABuscar) == fnDeleteCerosIzquierdos(e[i].Codigo.replace("BITT","").replace("ITT",""))  )
+					if(  currencyID == currencyTemp && fnDeleteCerosIzquierdos(codigoABuscar) == fnDeleteCerosIzquierdos(e[i].Codigo.replace("BITT","").replace("ITT","").toUpperCase())  )
 					{
 						encontrado = true;
 						break;
@@ -632,7 +632,7 @@
 					{
 						for(var ii = 0 ; ii < listCodigTmp.length; ii++)
 						{
-							if( fnDeleteCerosIzquierdos(listCodigTmp[ii]) == fnDeleteCerosIzquierdos(codigoABuscar) && currencyID == currencyTemp  )
+							if( fnDeleteCerosIzquierdos(listCodigTmp[ii].toUpperCase()) == fnDeleteCerosIzquierdos(codigoABuscar) && currencyID == currencyTemp  )
 							{
 								encontrado = true;
 								break;
@@ -648,7 +648,7 @@
 				{
 					var sumar				= true;
 					var filterResult 		= e[i];						
-					var filterResultArray 	= [];
+					var filterResultArray 	= [];					
 					filterResultArray[5]  	= filterResult.itemID;
 					filterResultArray[17] 	= filterResult.Codigo;
 					filterResultArray[18] 	= filterResult.Nombre;

@@ -339,11 +339,13 @@ class app_cxc_report extends _BaseController {
 			else{				
 				
 				//Obtener el tipo de Comprobante
-				$companyID 		= $dataSession["user"]->companyID;
+				$companyID 					= $dataSession["user"]->companyID;
 				//Get Component
-				$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+				$objComponent				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
 				//Get Logo
-				$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+				$objParameter				= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+				//Url de impresion
+				$objParameterUrlImpresion	= $this->core_web_parameter->getParameter("CXC_URL_PRINT_BALANCE_CUSTOMER",$companyID);
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
@@ -366,6 +368,9 @@ class app_cxc_report extends _BaseController {
 					$objDataResult["objDocument"]			= NULL;
 					$objDataResult["objAmortization"]		= NULL;
 				}
+				
+				$objDataResult["objParameterUrlImpresion"] 	= $objParameterUrlImpresion;
+				$objDataResult["customerNumber"]			= $customerNumber;
 				$objDataResult["objCompany"] 				= $objCompany;
 				$objDataResult["objLogo"] 					= $objParameter;
 				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_customer_status" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;

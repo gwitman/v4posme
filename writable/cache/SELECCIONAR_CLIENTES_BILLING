@@ -1,4 +1,4 @@
-a:3:{s:4:"time";i:1706977819;s:3:"ttl";i:100;s:4:"data";s:11110:"<!-- DEBUG-VIEW START 3 APPPATH\Views\core_masterpage\default_widgetchoose.php -->
+a:3:{s:4:"time";i:1707063880;s:3:"ttl";i:100;s:4:"data";s:10879:"<!-- DEBUG-VIEW START 3 APPPATH\Views\core_masterpage\default_widgetchoose.php -->
 <!--vista que se esta utilizando para las tablas-->
 <!--muestra un datatable con una lista de registros-->
 <!DOCTYPE html>
@@ -94,8 +94,7 @@ a:3:{s:4:"time";i:1706977819;s:3:"ttl";i:100;s:4:"data";s:11110:"<!-- DEBUG-VIEW
 		<div id="email" class="col-lg-12">
 		<div class="email-bar" style="width:100%">				
 				<div class="btn-group pull-right">
-												<a href="http://localhost/posmev4/app_cxc_customer/add/callback/onCompleteCustomer/comando/pantalla_abierta_desde_la_factura" class="btn btn-success"  id="btnPopupNuevo"><i class="icon16 i-checkmark-4"></i>Nuevo</a>
-												<a href="#" class="btn btn-warning"  id="btnPopupCancelar"><i class="icon16 i-rotate"></i>Cancelar</a>
+										<a href="#" class="btn btn-warning"  id="btnPopupCancelar"><i class="icon16 i-rotate"></i>Cancelar</a>
 					<a href="#" class="btn btn-success" id="btnPopupAceptar"><i class="icon16 i-checkmark-4"></i>Aceptar</a>						
 				</div>
 			</div>

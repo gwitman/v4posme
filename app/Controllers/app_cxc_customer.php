@@ -1193,8 +1193,70 @@ class app_cxc_customer extends _BaseController {
 			$dataSession["body"]		= /*--inicio view*/ view('app_cxc_customer/popup_addphone_body',$data);//--finview
 			$dataSession["script"]		= /*--inicio view*/ view('app_cxc_customer/popup_addphone_script');//--finview
 			return view("core_masterpage/default_popup",$dataSession);//--finview-r
-	}
+	}	
+	function viewPrinterDirectBalance58mm(){
+		try{
+			
+			//Librerias		
+			//
+			////////////////////////////////////////
+			////////////////////////////////////////
+			////////////////////////////////////////
+			
+			//Obtener el componente de Item
+			$objComponentItem	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+			$dataSession		= $this->session->get();
+							
 
+			$companyID					= $dataSession["user"]->companyID;
+			$customerNumber				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"customerNumber");//--finuri
+			$dataView["objComponentCompany"]			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			$dataView["objParameterLogo"]				= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$dataView["objParameterPhoneProperty"]		= $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE",$companyID);
+			$dataView["objCompany"] 					= $this->Company_Model->get_rowByPK($companyID);						
+			$dataView["Identifier"]						= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+			$dataView["objCustumer"]					= $this->Customer_Model->get_rowByCode($companyID,$customerNumber);
+			$dataView["objNatural"]						= $this->Natural_Model->get_rowByPK($dataView["objCustumer"]->companyID,$dataView["objCustumer"]->branchID,$dataView["objCustumer"]->entityID);
+			
+			$objCurrency								= $this->core_web_currency->getCurrencyDefault($companyID);
+			$targetCurrency								= $this->core_web_currency->getCurrencyExternal($companyID);	
+			
+			$dataView["objBalanceNacional"]				= $this->Customer_Credit_Document_Model->get_rowByEntityApplied($companyID,$dataView["objCustumer"]->entityID,$objCurrency->currencyID);
+			$dataView["objBalanceExtranjero"]			= $this->Customer_Credit_Document_Model->get_rowByEntityApplied($companyID,$dataView["objCustumer"]->entityID,$targetCurrency->currencyID);
+
+			
+			//obtener nombre de impresora por defecto
+			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT",$companyID);
+			$objParameterPrinterName = $objParameterPrinterName->value;
+								
+			
+			$this->core_web_printer_direct->configurationPrinter($objParameterPrinterName);
+			$this->core_web_printer_direct->executePrinter58mmBalanceCustomer($dataView);
+		}
+		catch(\Exception $ex){
+		    
+		    $data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+		    
+		    $this->email->setFrom(EMAIL_APP);
+		    $this->email->setTo(EMAIL_APP_COPY);
+		    $this->email->setSubject("Error");
+		    $this->email->setMessage($resultView);
+		    
+		    $resultSend01 = $this->email->send();
+		    $resultSend02 = $this->email->printDebugger();
+		    
+		    
+		    return $resultView;
+		}	
+	}
+	
 	
 }
 ?>

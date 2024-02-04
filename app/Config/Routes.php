@@ -566,6 +566,8 @@ $routes->match(['get','post'],'app_cxc_customer/edit_credit_line/(:any)','app_cx
 $routes->match(['get','post'],'app_cxc_customer/add_credit_line','app_cxc_customer::add_credit_line');
 $routes->match(['get','post'],'app_cxc_customer/add_email','app_cxc_customer::add_email');
 $routes->match(['get','post'],'app_cxc_customer/add_phone','app_cxc_customer::add_phone');
+$routes->match(['get','post'],'app_cxc_customer/viewPrinterDirectBalance58mm','app_cxc_customer::viewPrinterDirectBalance58mm');
+$routes->match(['get','post'],'app_cxc_customer/viewPrinterDirectBalance58mm/(:any)','app_cxc_customer::viewPrinterDirectBalance58mm');
 $routes->match(['get','post'],'app_cxc_record/index','app_cxc_record::index');
 $routes->match(['get','post'],'app_cxc_record/GuardarArchivo','app_cxc_record::GuardarArchivo');
 $routes->match(['get','post'],'app_cxc_record/GuardarArchivo/(:any)','app_cxc_record::GuardarArchivo');

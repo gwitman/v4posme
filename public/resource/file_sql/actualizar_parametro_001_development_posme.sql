@@ -4,7 +4,24 @@ use dbkroqnguhldo1;
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_cxc_customer/viewPrinterDirectBalance58mm" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_URL_PRINT_BALANCE_CUSTOMER";	## Imprimir el precio en la etiqueta
 
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "ITEM_PRINTER_BARCODE_SHOWPRICE";	## Imprimir el precio en la etiqueta
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_SHOW_BARCODE_INNAME";	## Mostrar el codigo del producto scanerado al momento de facturar
+	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "app_purchase_taller/viewPrinterFormatoA4Stiker" 
