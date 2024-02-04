@@ -290,8 +290,13 @@ class app_inventory_itemmasive extends _BaseController {
 					
 					$objParameterPrinterName = $this->core_web_parameter->getParameter("INVENTORY_BARCODE_PRINTER_DIRECT_NAME_DEFAULT",$companyID);
 					$objParameterPrinterName = $objParameterPrinterName->value;					
+					
+					$objParameterPrinterShowPrice 				= $this->core_web_parameter->getParameter("ITEM_PRINTER_BARCODE_SHOWPRICE",$companyID);
+					$objParameterPrinterShowPrice 				= $objParameterPrinterShowPrice->value;		
+					$dataView["objParameterPrinterShowPrice"] 	= $objParameterPrinterShowPrice;					
+					
 					$this->core_web_printer_direct->configurationPrinter($objParameterPrinterName);
-					$this->core_web_printer_direct->executePrinter58mmBarCodeList($dataView["objComponentItem"],$listItemFilter);
+					$this->core_web_printer_direct->executePrinter58mmBarCodeList($dataView["objComponentItem"],$listItemFilter,$dataView);
 				}
 			}
 			
@@ -388,9 +393,14 @@ class app_inventory_itemmasive extends _BaseController {
 					
 					
 					$objParameterPrinterName = $this->core_web_parameter->getParameter("INVENTORY_BARCODE_PRINTER_DIRECT_NAME_DEFAULT",$companyID);
-					$objParameterPrinterName = $objParameterPrinterName->value;					
+					$objParameterPrinterName = $objParameterPrinterName->value;	
+
+					$objParameterPrinterShowPrice 				= $this->core_web_parameter->getParameter("ITEM_PRINTER_BARCODE_SHOWPRICE",$companyID);
+					$objParameterPrinterShowPrice 				= $objParameterPrinterShowPrice->value;		
+					$dataView["objParameterPrinterShowPrice"] 	= $objParameterPrinterShowPrice;	
+					
 					$this->core_web_printer_direct->configurationPrinter($objParameterPrinterName);
-					$this->core_web_printer_direct->executePrinter58mmBarCodeListLocalHost($dataView["objComponentItem"],$listItemFilter);
+					$this->core_web_printer_direct->executePrinter58mmBarCodeListLocalHost($dataView["objComponentItem"],$listItemFilter,$dataView);
 				}
 			}
 			

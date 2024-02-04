@@ -1645,7 +1645,7 @@ class core_web_printer_direct {
 	
 	
 	
-	function executePrinter58mmBarCodeList($objComponentItem,$dataSetValores)
+	function executePrinter58mmBarCodeList($objComponentItem,$dataSetValores,$dataView)
 	{   
 		
 	
@@ -1668,8 +1668,13 @@ class core_web_printer_direct {
 			$this->printer->text("\n");					
 			$this->printer->text( strtolower(substr($objItem->name,0,15 )) );
 			$this->printer->text("\n");	
-			$this->printer->text( strtolower(substr($objItem->itemPrice,0,15 )) );
-			$this->printer->text("\n");	
+			
+			if($dataView["objParameterPrinterShowPrice"] == "true")
+			{
+				$this->printer->text( strtolower(substr($objItem->itemPrice,0,15 )) );
+				$this->printer->text("\n");	
+			}
+			
 			$this->printer->bitImage($logo,0);	
 			
 			$this->printer->text("\n");		
@@ -1695,7 +1700,7 @@ class core_web_printer_direct {
 		$this->printer->close();
     }
 	
-	function executePrinter58mmBarCodeListLocalHost($objComponentItem,$dataSetValores)
+	function executePrinter58mmBarCodeListLocalHost($objComponentItem,$dataSetValores,$dataView)
 	{   
 		
 	
@@ -1718,8 +1723,13 @@ class core_web_printer_direct {
 			$this->printer->text("\n");					
 			$this->printer->text(strtolower(substr( $objItem["name"], 0 , 15  )) );
 			$this->printer->text("\n");		
-			$this->printer->text(strtolower(substr( $objItem["itemPrice"], 0 , 15  )) );
-			$this->printer->text("\n");		
+			
+			if($dataView["objParameterPrinterShowPrice"] == "true")
+			{
+				$this->printer->text(strtolower(substr( $objItem["itemPrice"], 0 , 15  )) );
+				$this->printer->text("\n");		
+			}
+			
 			$this->printer->bitImage($logo,0);	
 			
 			$this->printer->text("\n");		

@@ -30,6 +30,7 @@
 		$configColumnAbonos["9"]["Titulo"] 		= "Usuario";		
 		$configColumnAbonos["10"]["Titulo"] 	= "Nota";		
 		$configColumnAbonos["11"]["Titulo"] 	= "";		
+		$configColumnAbonos["12"]["Titulo"] 	= "Categoria";
 					 
 		$configColumnAbonos["0"]["FiledSouce"] 		= "customerNumber";		
 		$configColumnAbonos["1"]["FiledSouce"] 		= "firstName";		
@@ -43,6 +44,7 @@
 		$configColumnAbonos["9"]["FiledSouce"] 		= "nickname";		
 		$configColumnAbonos["10"]["FiledSouce"] 	= "note";	
 		$configColumnAbonos["11"]["FiledSouce"] 	= "conceptosName";	
+		$configColumnAbonos["12"]["FiledSouce"] 	= "conceptosSubName";	
 		
 		
 		
@@ -58,6 +60,7 @@
 		$configColumnAbonos["9"]["Formato"] 		= "";		
 		$configColumnAbonos["10"]["Formato"] 		= "";	
 		$configColumnAbonos["11"]["Formato"] 		= "";	
+		$configColumnAbonos["12"]["Formato"] 		= "";	
 		
 		
 		
@@ -73,6 +76,7 @@
 		$configColumnAbonos["9"]["Width"] 		= "120px";		
 		$configColumnAbonos["10"]["Width"] 		= "220px";	
 		$configColumnAbonos["11"]["Width"] 		= "80px";	
+		$configColumnAbonos["12"]["Width"] 		= "80px";
 		
 		$configColumnAbonos["0"]["Total"] 		= False;		
 		$configColumnAbonos["1"]["Total"] 		= False;		
@@ -86,6 +90,7 @@
 		$configColumnAbonos["9"]["Total"] 		= False;		
 		$configColumnAbonos["10"]["Total"] 		= False;	
 		$configColumnAbonos["11"]["Total"] 		= False;	
+		$configColumnAbonos["12"]["Total"] 		= False;	
 		
 		/********************************/
 		$configColumnAbonosDolares["0"]["Titulo"] 		= "Codigo";		
@@ -99,7 +104,8 @@
 		$configColumnAbonosDolares["8"]["Titulo"] 		= "Monto";		
 		$configColumnAbonosDolares["9"]["Titulo"] 		= "Usuario";		
 		$configColumnAbonosDolares["10"]["Titulo"] 		= "Nota";		
-		$configColumnAbonosDolares["11"][""] 			= "";
+		$configColumnAbonosDolares["11"]["Titulo"] 		= "";
+		$configColumnAbonosDolares["12"]["Titulo"] 		= "Categoria";
 						   
 		$configColumnAbonosDolares["0"]["FiledSouce"] 		= "customerNumber";		
 		$configColumnAbonosDolares["1"]["FiledSouce"] 		= "firstName";		
@@ -113,6 +119,7 @@
 		$configColumnAbonosDolares["9"]["FiledSouce"] 		= "nickname";		
 		$configColumnAbonosDolares["10"]["FiledSouce"] 		= "note";	
 		$configColumnAbonosDolares["11"]["FiledSouce"] 		= "conceptosName";	
+		$configColumnAbonosDolares["12"]["FiledSouce"] 		= "conceptosSubName";	
 						   
 		$configColumnAbonosDolares["0"]["Formato"] 		= "";		
 		$configColumnAbonosDolares["1"]["Formato"] 		= "";		
@@ -126,6 +133,7 @@
 		$configColumnAbonosDolares["9"]["Formato"] 		= "";		
 		$configColumnAbonosDolares["10"]["Formato"] 	= "";	
 		$configColumnAbonosDolares["11"]["Formato"] 	= "";	
+		$configColumnAbonosDolares["12"]["Formato"] 	= "";	
 						   
 		$configColumnAbonosDolares["0"]["Width"] 		= "80px";		
 		$configColumnAbonosDolares["1"]["Width"] 		= "220px";		
@@ -139,6 +147,7 @@
 		$configColumnAbonosDolares["9"]["Width"] 		= "120px";		
 		$configColumnAbonosDolares["10"]["Width"] 		= "220px";	
 		$configColumnAbonosDolares["11"]["Width"] 		= "80px";	
+		$configColumnAbonosDolares["12"]["Width"] 		= "80px";	
 						   
 		$configColumnAbonosDolares["0"]["Total"] 		= False;		
 		$configColumnAbonosDolares["1"]["Total"] 		= False;		
@@ -152,6 +161,7 @@
 		$configColumnAbonosDolares["9"]["Total"] 		= False;		
 		$configColumnAbonosDolares["10"]["Total"] 		= False;	
 		$configColumnAbonosDolares["11"]["Total"] 		= False;	
+		$configColumnAbonosDolares["12"]["Total"] 		= False;	
 		/*******************************/
 		
 		$objDetailDolar 	= $objDetail;
@@ -207,6 +217,7 @@
 		$configColumnVentaContado["9"]["Titulo"] 		= "Usuario";		
 		$configColumnVentaContado["10"]["Titulo"] 		= "Nota";	
 		$configColumnVentaContado["11"]["Titulo"] 		= "Categoria";	
+		$configColumnVentaContado["12"]["Titulo"] 		= "Sub Categoria";	
 		
 					 
 		$configColumnVentaContado["0"]["FiledSouce"] 		= "customerNumber";		
@@ -221,6 +232,7 @@
 		$configColumnVentaContado["9"]["FiledSouce"] 		= "nickname";		
 		$configColumnVentaContado["10"]["FiledSouce"] 		= "";	
 		$configColumnVentaContado["11"]["FiledSouce"] 		= "categoryName";	
+		$configColumnVentaContado["12"]["FiledSouce"] 		= "categorySubName";	
 		
 		$configColumnVentaContado["0"]["Formato"] 		= "";		
 		$configColumnVentaContado["1"]["Formato"] 		= "";		
@@ -234,6 +246,7 @@
 		$configColumnVentaContado["9"]["Formato"] 		= "";		
 		$configColumnVentaContado["10"]["Formato"] 		= "";		
 		$configColumnVentaContado["11"]["Formato"] 		= "";	
+		$configColumnVentaContado["12"]["Formato"] 		= "";	
 
 		$configColumnVentaContado["0"]["Width"] 		= "80px";		
 		$configColumnVentaContado["1"]["Width"] 		= "220px";		
@@ -247,6 +260,7 @@
 		$configColumnVentaContado["9"]["Width"] 		= "120px";		
 		$configColumnVentaContado["10"]["Width"] 		= "220px";			
 		$configColumnVentaContado["11"]["Width"] 		= "80px";			
+		$configColumnVentaContado["12"]["Width"] 		= "80px";	
 		
 		
 		$configColumnVentaContado["0"]["Total"] 		= False;		
@@ -261,7 +275,7 @@
 		$configColumnVentaContado["9"]["Total"] 		= False;		
 		$configColumnVentaContado["10"]["Total"] 		= False;	
 		$configColumnVentaContado["11"]["Total"] 		= False;	
-		
+		$configColumnVentaContado["12"]["Total"] 		= False;
 	
 		$configColumnVentaContadoDolares["0"]["Titulo"] 		= "Codigo";		
 		$configColumnVentaContadoDolares["1"]["Titulo"] 		= "Cliente";		
@@ -275,6 +289,7 @@
 		$configColumnVentaContadoDolares["9"]["Titulo"] 		= "Usuario";		
 		$configColumnVentaContadoDolares["10"]["Titulo"] 		= "Nota";		
 		$configColumnVentaContadoDolares["11"]["Titulo"] 		= "Categoria";		
+		$configColumnVentaContadoDolares["12"]["Titulo"] 		= "Sub Categoria";		
 								 
 		$configColumnVentaContadoDolares["0"]["FiledSouce"] 		= "customerNumber";		
 		$configColumnVentaContadoDolares["1"]["FiledSouce"] 		= "firstName";		
@@ -288,6 +303,7 @@
 		$configColumnVentaContadoDolares["9"]["FiledSouce"] 		= "nickname";		
 		$configColumnVentaContadoDolares["10"]["FiledSouce"] 		= "";	
 		$configColumnVentaContadoDolares["11"]["FiledSouce"] 		= "categoryName";		
+		$configColumnVentaContadoDolares["12"]["FiledSouce"] 		= "categorySubName";		
 								 
 		$configColumnVentaContadoDolares["0"]["Formato"] 		= "";		
 		$configColumnVentaContadoDolares["1"]["Formato"] 		= "";		
@@ -301,6 +317,7 @@
 		$configColumnVentaContadoDolares["9"]["Formato"] 		= "";		
 		$configColumnVentaContadoDolares["10"]["Formato"] 		= "";		
 		$configColumnVentaContadoDolares["11"]["Formato"] 		= "";		
+		$configColumnVentaContadoDolares["12"]["Formato"] 		= "";		
 								 
 		$configColumnVentaContadoDolares["0"]["Width"] 		= "80px";		
 		$configColumnVentaContadoDolares["1"]["Width"] 		= "220px";		
@@ -314,6 +331,7 @@
 		$configColumnVentaContadoDolares["9"]["Width"] 		= "120px";		
 		$configColumnVentaContadoDolares["10"]["Width"] 	= "220px";			
 		$configColumnVentaContadoDolares["11"]["Width"] 	= "80px";			
+		$configColumnVentaContadoDolares["12"]["Width"] 	= "80px";			
 								 
 								 
 		$configColumnVentaContadoDolares["0"]["Total"] 		= False;		
@@ -328,6 +346,7 @@
 		$configColumnVentaContadoDolares["9"]["Total"] 		= False;		
 		$configColumnVentaContadoDolares["10"]["Total"] 	= False;	
 		$configColumnVentaContadoDolares["11"]["Total"] 	= False;	
+		$configColumnVentaContadoDolares["12"]["Total"] 	= False;	
 		
 		
 		$objSalesDolar 		= $objSales;
@@ -388,6 +407,7 @@
 		$configColumnVentaCredito["9"]["Titulo"] 		= "Usuario";		
 		$configColumnVentaCredito["10"]["Titulo"] 		= "Nota";		
 		$configColumnVentaCredito["11"]["Titulo"] 		= "Categoria";
+		$configColumnVentaCredito["12"]["Titulo"] 		= "Sub Categoria";
 					 
 		$configColumnVentaCredito["0"]["FiledSouce"] 		= "customerNumber";		
 		$configColumnVentaCredito["1"]["FiledSouce"] 		= "firstName";		
@@ -401,6 +421,7 @@
 		$configColumnVentaCredito["9"]["FiledSouce"] 		= "nickname";		
 		$configColumnVentaCredito["10"]["FiledSouce"] 		= "";	
 		$configColumnVentaCredito["11"]["FiledSouce"] 		= "categoryName";	
+		$configColumnVentaCredito["12"]["FiledSouce"] 		= "categorySubName";	
 
 		$configColumnVentaCredito["0"]["Formato"] 		= "";		
 		$configColumnVentaCredito["1"]["Formato"] 		= "";		
@@ -414,6 +435,7 @@
 		$configColumnVentaCredito["9"]["Formato"] 		= "";		
 		$configColumnVentaCredito["10"]["Formato"] 		= "";	
 		$configColumnVentaCredito["11"]["Formato"] 		= "";			
+		$configColumnVentaCredito["12"]["Formato"] 		= "";			
 
 		$configColumnVentaCredito["0"]["Width"] 		= "80px";		
 		$configColumnVentaCredito["1"]["Width"] 		= "220px";		
@@ -427,6 +449,7 @@
 		$configColumnVentaCredito["9"]["Width"] 		= "120px";		
 		$configColumnVentaCredito["10"]["Width"] 		= "220px";	
 		$configColumnVentaCredito["11"]["Width"] 		= "80px";					
+		$configColumnVentaCredito["12"]["Width"] 		= "80px";					
 						  
 		$configColumnVentaCredito["0"]["Total"] 		= False;		
 		$configColumnVentaCredito["1"]["Total"] 		= False;		
@@ -440,6 +463,7 @@
 		$configColumnVentaCredito["9"]["Total"] 		= False;		
 		$configColumnVentaCredito["10"]["Total"] 		= False;	
 		$configColumnVentaCredito["11"]["Total"] 		= False;
+		$configColumnVentaCredito["12"]["Total"] 		= False;
 		
 	
 		$configColumnVentaCreditoDolares["0"]["Titulo"] 		= "Codigo";		
@@ -454,6 +478,7 @@
 		$configColumnVentaCreditoDolares["9"]["Titulo"] 		= "Usuario";		
 		$configColumnVentaCreditoDolares["10"]["Titulo"] 		= "Nota";		
 		$configColumnVentaCreditoDolares["11"]["Titulo"] 		= "Categoria";		
+		$configColumnVentaCreditoDolares["12"]["Titulo"] 		= "Sub Categoria";		
 							
 		$configColumnVentaCreditoDolares["0"]["FiledSouce"] 		= "customerNumber";		
 		$configColumnVentaCreditoDolares["1"]["FiledSouce"] 		= "firstName";		
@@ -467,6 +492,7 @@
 		$configColumnVentaCreditoDolares["9"]["FiledSouce"] 		= "nickname";		
 		$configColumnVentaCreditoDolares["10"]["FiledSouce"] 		= "";	
 		$configColumnVentaCreditoDolares["11"]["FiledSouce"] 		= "categoryName";		
+		$configColumnVentaCreditoDolares["12"]["FiledSouce"] 		= "categorySubName";		
 		
 		$configColumnVentaCreditoDolares["0"]["Formato"] 		= "";		
 		$configColumnVentaCreditoDolares["1"]["Formato"] 		= "";		
@@ -480,6 +506,7 @@
 		$configColumnVentaCreditoDolares["9"]["Formato"] 		= "";		
 		$configColumnVentaCreditoDolares["10"]["Formato"] 		= "";		
 		$configColumnVentaCreditoDolares["11"]["Formato"] 		= "";		
+		$configColumnVentaCreditoDolares["12"]["Formato"] 		= "";		
 							
 		$configColumnVentaCreditoDolares["0"]["Width"] 		= "80px";		
 		$configColumnVentaCreditoDolares["1"]["Width"] 		= "220px";		
@@ -493,6 +520,7 @@
 		$configColumnVentaCreditoDolares["9"]["Width"] 		= "120px";		
 		$configColumnVentaCreditoDolares["10"]["Width"] 	= "220px";	
 		$configColumnVentaCreditoDolares["11"]["Width"] 	= "80px";				
+		$configColumnVentaCreditoDolares["12"]["Width"] 	= "80px";				
 								 
 								 
 		$configColumnVentaCreditoDolares["0"]["Total"] 		= False;		
@@ -507,6 +535,7 @@
 		$configColumnVentaCreditoDolares["9"]["Total"] 		= False;		
 		$configColumnVentaCreditoDolares["10"]["Total"] 	= False;	
 		$configColumnVentaCreditoDolares["11"]["Total"] 	= False;	
+		$configColumnVentaCreditoDolares["12"]["Total"] 	= False;	
 	
 		
 		$objSalesCreditoDolar 		= $objSalesCredito;
@@ -566,6 +595,7 @@
 		$configColumnIngresoCaja["9"]["Titulo"] 		= "Usuario";		
 		$configColumnIngresoCaja["10"]["Titulo"] 		= "Nota";		
 		$configColumnIngresoCaja["11"]["Titulo"] 		= "Tipo";		
+		$configColumnIngresoCaja["12"]["Titulo"] 		= "Sub Tipo";		
 					 
 		$configColumnIngresoCaja["0"]["FiledSouce"] 		= "transactionNumber";		
 		$configColumnIngresoCaja["1"]["FiledSouce"] 		= "transactionNumber";		
@@ -579,6 +609,7 @@
 		$configColumnIngresoCaja["9"]["FiledSouce"] 		= "nickname";		
 		$configColumnIngresoCaja["10"]["FiledSouce"] 		= "note";	
 		$configColumnIngresoCaja["11"]["FiledSouce"] 		= "tipoEntrada";		
+		$configColumnIngresoCaja["12"]["FiledSouce"] 		= "tipoSubEntrada";		
 		
 		$configColumnIngresoCaja["0"]["Formato"] 		= "";		
 		$configColumnIngresoCaja["1"]["Formato"] 		= "";		
@@ -592,6 +623,7 @@
 		$configColumnIngresoCaja["9"]["Formato"] 		= "";		
 		$configColumnIngresoCaja["10"]["Formato"] 		= "";	
 		$configColumnIngresoCaja["11"]["Formato"] 		= "";		
+		$configColumnIngresoCaja["12"]["Formato"] 		= "";		
 
 		$configColumnIngresoCaja["0"]["Width"] 		= "80px";		
 		$configColumnIngresoCaja["1"]["Width"] 		= "220px";		
@@ -605,6 +637,7 @@
 		$configColumnIngresoCaja["9"]["Width"] 		= "120px";		
 		$configColumnIngresoCaja["10"]["Width"] 	= "220px";	
 		$configColumnIngresoCaja["11"]["Width"] 	= "80px";				
+		$configColumnIngresoCaja["12"]["Width"] 	= "80px";				
 		
 		$configColumnIngresoCaja["0"]["Total"] 		= False;		
 		$configColumnIngresoCaja["1"]["Total"] 		= False;		
@@ -618,6 +651,7 @@
 		$configColumnIngresoCaja["9"]["Total"] 		= False;		
 		$configColumnIngresoCaja["10"]["Total"] 	= False;	
 		$configColumnIngresoCaja["11"]["Total"] 	= False;				
+		$configColumnIngresoCaja["12"]["Total"] 	= False;				
 		
 		
 		
@@ -633,6 +667,7 @@
 		$configColumnIngresoCajaDolares["9"]["Titulo"] 		= "Usuario";		
 		$configColumnIngresoCajaDolares["10"]["Titulo"] 		= "Nota";		
 		$configColumnIngresoCajaDolares["11"]["Titulo"] 		= "Tipo";		
+		$configColumnIngresoCajaDolares["12"]["Titulo"] 		= "Sub Tipo";		
 								
 		$configColumnIngresoCajaDolares["0"]["FiledSouce"] 		= "transactionNumber";		
 		$configColumnIngresoCajaDolares["1"]["FiledSouce"] 		= "transactionNumber";		
@@ -646,6 +681,7 @@
 		$configColumnIngresoCajaDolares["9"]["FiledSouce"] 		= "nickname";		
 		$configColumnIngresoCajaDolares["10"]["FiledSouce"] 	= "note";	
 		$configColumnIngresoCajaDolares["11"]["FiledSouce"] 	= "tipoEntrada";								
+		$configColumnIngresoCajaDolares["12"]["FiledSouce"] 	= "tipoSubEntrada";								
 								
 		$configColumnIngresoCajaDolares["0"]["Formato"] 		= "";		
 		$configColumnIngresoCajaDolares["1"]["Formato"] 		= "";		
@@ -659,6 +695,7 @@
 		$configColumnIngresoCajaDolares["9"]["Formato"] 		= "";		
 		$configColumnIngresoCajaDolares["10"]["Formato"] 		= "";	
 		$configColumnIngresoCajaDolares["11"]["Formato"] 		= "";	
+		$configColumnIngresoCajaDolares["12"]["Formato"] 		= "";	
 								
 		$configColumnIngresoCajaDolares["0"]["Width"] 		= "80px";		
 		$configColumnIngresoCajaDolares["1"]["Width"] 		= "220px";		
@@ -672,6 +709,7 @@
 		$configColumnIngresoCajaDolares["9"]["Width"] 		= "120px";		
 		$configColumnIngresoCajaDolares["10"]["Width"] 		= "220px";		
 		$configColumnIngresoCajaDolares["11"]["Width"] 		= "80px";			
+		$configColumnIngresoCajaDolares["12"]["Width"] 		= "80px";			
 								
 		$configColumnIngresoCajaDolares["0"]["Total"] 		= False;		
 		$configColumnIngresoCajaDolares["1"]["Total"] 		= False;		
@@ -685,6 +723,7 @@
 		$configColumnIngresoCajaDolares["9"]["Total"] 		= False;		
 		$configColumnIngresoCajaDolares["10"]["Total"] 		= False;	
 		$configColumnIngresoCajaDolares["11"]["Total"] 		= False;			
+		$configColumnIngresoCajaDolares["12"]["Total"] 		= False;			
 		
 		
 		
@@ -740,6 +779,7 @@
 		$configColumnSalidaCaja["9"]["Titulo"] 		= "Usuario";		
 		$configColumnSalidaCaja["10"]["Titulo"] 	= "Nota";		
 		$configColumnSalidaCaja["11"]["Titulo"] 	= "Tipo";		
+		$configColumnSalidaCaja["12"]["Titulo"] 	= "Sub Tipo";		
 					 
 		$configColumnSalidaCaja["0"]["FiledSouce"] 		= "transactionNumber";		
 		$configColumnSalidaCaja["1"]["FiledSouce"] 		= "transactionNumber";		
@@ -753,6 +793,7 @@
 		$configColumnSalidaCaja["9"]["FiledSouce"] 		= "nickname";		
 		$configColumnSalidaCaja["10"]["FiledSouce"] 	= "note";	
 		$configColumnSalidaCaja["11"]["FiledSouce"] 	= "tipoSalida";		
+		$configColumnSalidaCaja["12"]["FiledSouce"] 	= "tipoSubSalida";		
 
 		$configColumnSalidaCaja["0"]["Formato"] 		= "";		
 		$configColumnSalidaCaja["1"]["Formato"] 		= "";		
@@ -766,6 +807,7 @@
 		$configColumnSalidaCaja["9"]["Formato"] 		= "";		
 		$configColumnSalidaCaja["10"]["Formato"] 		= "";	
 		$configColumnSalidaCaja["11"]["Formato"] 		= "";				
+		$configColumnSalidaCaja["12"]["Formato"] 		= "";				
 		
 		$configColumnSalidaCaja["0"]["Width"] 		= "80px";		
 		$configColumnSalidaCaja["1"]["Width"] 		= "220px";		
@@ -779,6 +821,7 @@
 		$configColumnSalidaCaja["9"]["Width"] 		= "120px";		
 		$configColumnSalidaCaja["10"]["Width"] 		= "220px";	
 		$configColumnSalidaCaja["11"]["Width"] 		= "80px";	
+		$configColumnSalidaCaja["12"]["Width"] 		= "80px";	
 		
 		$configColumnSalidaCaja["0"]["Total"] 		= False;		
 		$configColumnSalidaCaja["1"]["Total"] 		= False;		
@@ -792,6 +835,7 @@
 		$configColumnSalidaCaja["9"]["Total"] 		= False;		
 		$configColumnSalidaCaja["10"]["Total"] 		= False;	
 		$configColumnSalidaCaja["11"]["Total"] 		= False;	
+		$configColumnSalidaCaja["12"]["Total"] 		= False;	
 	
 		$configColumnSalidaCajaDolares["0"]["Titulo"] 		= "Codigo";		
 		$configColumnSalidaCajaDolares["1"]["Titulo"] 		= "Cliente";		
@@ -805,6 +849,7 @@
 		$configColumnSalidaCajaDolares["9"]["Titulo"] 		= "Usuario";		
 		$configColumnSalidaCajaDolares["10"]["Titulo"] 		= "Nota";		
 		$configColumnSalidaCajaDolares["11"]["Titulo"] 		= "Tipo";		
+		$configColumnSalidaCajaDolares["12"]["Titulo"] 		= "Sub Tipo";		
 							   
 		$configColumnSalidaCajaDolares["0"]["FiledSouce"] 		= "transactionNumber";		
 		$configColumnSalidaCajaDolares["1"]["FiledSouce"] 		= "transactionNumber";		
@@ -818,6 +863,7 @@
 		$configColumnSalidaCajaDolares["9"]["FiledSouce"] 		= "nickname";		
 		$configColumnSalidaCajaDolares["10"]["FiledSouce"] 		= "note";	
 		$configColumnSalidaCajaDolares["11"]["FiledSouce"] 		= "tipoSalida";	
+		$configColumnSalidaCajaDolares["12"]["FiledSouce"] 		= "tipoSubSalida";	
 							   
 		$configColumnSalidaCajaDolares["0"]["Formato"] 		= "";		
 		$configColumnSalidaCajaDolares["1"]["Formato"] 		= "";		
@@ -831,6 +877,7 @@
 		$configColumnSalidaCajaDolares["9"]["Formato"] 		= "";		
 		$configColumnSalidaCajaDolares["10"]["Formato"] 	= "";				
 		$configColumnSalidaCajaDolares["11"]["Formato"] 	= "";				
+		$configColumnSalidaCajaDolares["12"]["Formato"] 	= "";				
 							   
 		$configColumnSalidaCajaDolares["0"]["Width"] 		= "80px";		
 		$configColumnSalidaCajaDolares["1"]["Width"] 		= "220px";		
@@ -844,6 +891,7 @@
 		$configColumnSalidaCajaDolares["9"]["Width"] 		= "120px";		
 		$configColumnSalidaCajaDolares["10"]["Width"] 		= "220px";	
 		$configColumnSalidaCajaDolares["11"]["Width"] 		= "80px";	
+		$configColumnSalidaCajaDolares["12"]["Width"] 		= "80px";	
 							   
 		$configColumnSalidaCajaDolares["0"]["Total"] 		= False;		
 		$configColumnSalidaCajaDolares["1"]["Total"] 		= False;		
@@ -857,6 +905,7 @@
 		$configColumnSalidaCajaDolares["9"]["Total"] 		= False;		
 		$configColumnSalidaCajaDolares["10"]["Total"] 		= False;	
 		$configColumnSalidaCajaDolares["11"]["Total"] 		= False;	
+		$configColumnSalidaCajaDolares["12"]["Total"] 		= False;	
 		
 
 
