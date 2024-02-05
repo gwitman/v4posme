@@ -110,6 +110,7 @@ class app_purchase_pedidos extends _BaseController {
 			
 			
 			$dataView["objListCurrency"]		= $objListCurrency;
+			$dataView["company"]				= $dataSession["company"];
 			$dataView["companyID"]				= $dataSession["user"]->companyID;
 			$dataView["userID"]					= $dataSession["user"]->userID;
 			$dataView["userName"]				= $dataSession["user"]->nickname;
@@ -782,6 +783,7 @@ class app_purchase_pedidos extends _BaseController {
 		
 		
 			//Tipo de Factura
+			$dataView["company"]				= $dataSession["company"];
 			$dataView["objComponentBilling"]	= $objComponentBilling;
 			$dataView["objComponentCustomer"]	= $objComponentCustomer;
 			$dataView["objComponentEmployer"]	= $objComponentEmployer;

@@ -73,6 +73,7 @@ function getBehavio($type_company,$key_controller,$key_element)
 		strtolower('globalpro_core_dashboards_divPanelInfoPago')					=> "hidden",
 		strtolower('globalpro_core_dashboards_divPanelUsuario')						=> "hidden",
 		
+		
 		strtolower('globalpro_app_invoice_billing_panelResumenFacturaTool')			=> "",
 		strtolower('globalpro_app_invoice_billing_panelResumenFactura')				=> "hidden",
 		strtolower('globalpro_app_invoice_billing_divTxtCambio') 					=> "hidden",
@@ -167,6 +168,9 @@ function getBehavio($type_company,$key_controller,$key_element)
 		strtolower('globalpro_comand_traducir_Referencia 1')										=> "Descripcion",
 		strtolower('globalpro_comand_traducir_Referencia 2')										=> "Factura",
 		strtolower('globalpro_comand_traducir_Referencia 3')										=> "Proveedor",
+		
+		
+		strtolower('globalpro_app_purchase_pedidos_divDllEstado')									=> "hidden",
 		
 		/*Clinica larreynaga*/
 		strtolower('clinicalarreynaga_comand_traducir_Edad') 										=> "Genero",		

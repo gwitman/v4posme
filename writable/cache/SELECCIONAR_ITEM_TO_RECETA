@@ -1,4 +1,4 @@
-a:3:{s:4:"time";i:1700791244;s:3:"ttl";i:100;s:4:"data";s:9764:"<!-- DEBUG-VIEW START 3 APPPATH\Views\core_masterpage\default_widgetchoose.php -->
+a:3:{s:4:"time";i:1707102291;s:3:"ttl";i:100;s:4:"data";s:9765:"<!-- DEBUG-VIEW START 3 APPPATH\Views\core_masterpage\default_widgetchoose.php -->
 <!--vista que se esta utilizando para las tablas-->
 <!--muestra un datatable con una lista de registros-->
 <!DOCTYPE html>
@@ -102,7 +102,7 @@ a:3:{s:4:"time";i:1700791244;s:3:"ttl";i:100;s:4:"data";s:9764:"<!-- DEBUG-VIEW 
 	</div> 
 <!-- DEBUG-VIEW ENDED 1 APPPATH\Views\core_view\choose_view_serch_head.php -->
 					
-					<table  id='ListView' cellpadding='0' cellspacing='0' border='0' class='table table-striped table-bordered table-hover' style='display:none' ><thead><tr><th>itemID</th><th>Codigo</th><th>Nombre</th><th>Medida</th><th>Costo</th><th>Barra</th></tr></thead><tbody><tr><td>21993</td><td>ITT00000966</td><td>mouse</td><td>UNIDAD</td><td>0.0000</td><td>BITT00000966</td></tr><tr><td>21995</td><td>ITT00000968</td><td>papel</td><td>UNIDAD</td><td>2500.0000</td><td>BITT00000968</td></tr><tr><td>21996</td><td>ITT00000969</td><td>rojo</td><td>UNIDAD</td><td>28.4848</td><td>BITT00000969</td></tr><tr><td>21997</td><td>ITT00000970</td><td>casa</td><td>UNIDAD</td><td>0.0000</td><td>BITT00000970</td></tr></tbody></table>
+					<table  id='ListView' cellpadding='0' cellspacing='0' border='0' class='table table-striped table-bordered table-hover' style='display:none' ><thead><tr><th>itemID</th><th>Codigo</th><th>Nombre</th><th>Medida</th><th>Costo</th><th>Barra</th></tr></thead><tbody><tr><td>22010</td><td>ITT00000983</td><td>no usado</td><td>FAMILIA 1</td><td>0.0000</td><td>BITT00000983</td></tr><tr><td>23042</td><td>ITT00001015</td><td>plastico</td><td>UNIDAD</td><td>0.0000</td><td>BITT00001015</td></tr><tr><td>23041</td><td>ITT00001014</td><td>cable</td><td>UNIDAD</td><td>0.0000</td><td>BITT00001014</td></tr><tr><td>23040</td><td>ITT00001013</td><td>mouse</td><td>UNIDAD</td><td>0.0000</td><td>125478</td></tr></tbody></table>
 		<script>
 			var objTableListView;
 			var objRowTableListView;	

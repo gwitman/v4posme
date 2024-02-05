@@ -74,20 +74,29 @@
 																</div>
 														</div>
 														
+														
+														
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="selectFilter">Estado</label>
+															<label class="col-lg-4 control-label" for="selectFilter">Status de pedido</label>
 															<div class="col-lg-8">
-																<select name="txtStatusID" id="txtStatusID" class="select2">
-																		<option></option>																
+																<select name="txtZoneID" id="txtZoneID" class="select2">																									
 																		<?php
-																		if($objListWorkflowStage)
-																		foreach($objListWorkflowStage as $ws){
-																			echo "<option value='".$ws->workflowStageID."' selected>".$ws->name."</option>";
+																		$counter = 0;
+																		if($objListPedidoStatus)
+																		foreach($objListPedidoStatus as $ws){
+																			if($counter == 0)
+																				echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+																			else 
+																				echo "<option value='".$ws->catalogItemID."' >".$ws->name."</option>";
+																			
+																			$counter++;
+																				
 																		}
 																		?>
 																</select>
 															</div>
 														</div>
+														
 														
 														<div class="form-group">
 															<label class="col-lg-4 control-label" for="buttons">Cliente</label>
@@ -259,26 +268,24 @@
 															</div>
 														</div>
 														
-														<div class="form-group">
-															<label class="col-lg-4 control-label" for="selectFilter">Status de pedido</label>
+														
+														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_pedidos","divDllEstado"); ?> ">
+															<label class="col-lg-4 control-label" for="selectFilter">Estado</label>
 															<div class="col-lg-8">
-																<select name="txtZoneID" id="txtZoneID" class="select2">																									
+																<select name="txtStatusID" id="txtStatusID" class="select2">
+																		<option></option>																
 																		<?php
-																		$counter = 0;
-																		if($objListPedidoStatus)
-																		foreach($objListPedidoStatus as $ws){
-																			if($counter == 0)
-																				echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
-																			else 
-																				echo "<option value='".$ws->catalogItemID."' >".$ws->name."</option>";
-																			
-																			$counter++;
-																				
+																		if($objListWorkflowStage)
+																		foreach($objListWorkflowStage as $ws){
+																			echo "<option value='".$ws->workflowStageID."' selected>".$ws->name."</option>";
 																		}
 																		?>
 																</select>
 															</div>
 														</div>
+														
+														
+														
 														
 														
 														

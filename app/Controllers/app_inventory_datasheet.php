@@ -259,7 +259,12 @@ class app_inventory_datasheet extends _BaseController {
 					$itemDataSheetID						= $this->Item_Data_Sheet_Model->insert_app_posme($objItemDataSeet);
 					
 					//Crear la Carpeta para almacenar los Archivos del Item
-					mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentItemDataSheet->componentID."/component_item_".$itemDataSheetID, 0700);
+					$documentoPath = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentItemDataSheet->componentID."/component_item_".$itemDataSheetID;					
+					if (!file_exists($documentoPath))
+					{
+						mkdir($documentoPath, 0755);
+						chmod($documentoPath, 0755);
+					}
 					
 					if($db->transStatus() !== false){
 						$db->transCommit();						
