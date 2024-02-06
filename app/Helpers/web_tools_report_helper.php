@@ -1784,7 +1784,7 @@ function helper_reporteA4TransactionMasterOutherOutputGlobalPro(
 			$f_html = $f_html."			
 				<tr>
 					<td style='text-align:left;width:70px' >".$objDetail[$i]->itemNumber."</td>
-					<td style='text-align:left;' >".$objDetail[$i]->itemNameLog."</td>
+					<td style='text-align:left;' >".$objDetail[$i]->itemName."</td>
 					<td style='text-align:center;width:70px' >".number_format(round(0,2),2,".",",")."</td>
 					<td style='text-align:center;width:70px' >".number_format(round($objDetail[$i]->quantity,2),2,".",",")."</td>
 					<td style='text-align:center;width:70px' >"." 0.00</td>

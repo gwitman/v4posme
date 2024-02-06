@@ -40,7 +40,11 @@ class Customer_Model extends Model  {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_customer");
 	    $sql = "";
-		$sql = sprintf("select c.customerNumber,n.firstName,n.lastName,c.birthDate,c.balancePoint");
+		$sql = sprintf("select 
+			c.customerNumber,n.firstName,n.lastName,c.birthDate,c.balancePoint,
+			c.dateContract,c.entityContactID,
+			c.reference3,c.reference4,c.reference5,c.reference6 
+		");
 		$sql = $sql.sprintf(" from tb_customer c");
 		$sql = $sql.sprintf(" inner join  tb_naturales n on n.entityID = c.entityID");				
 		$sql = $sql.sprintf(" where c.companyID = $companyID");
@@ -56,7 +60,18 @@ class Customer_Model extends Model  {
 		$builder	= $db->table("tb_customer");
 		
 	    $sql = "";
-		$sql = sprintf("select companyID, branchID, entityID, customerNumber, identificationType, identification, countryID, stateID, cityID, location, address, currencyID, clasificationID, categoryID, subCategoryID, customerTypeID, birthDate, statusID, typePay, payConditionID, sexoID, reference1, reference2, createdIn, createdBy, createdOn, createdAt, isActive,typeFirm,i.balancePoint,i.phoneNumber");
+		$sql = sprintf("select 
+			companyID, branchID, entityID, customerNumber, 
+			identificationType, identification, countryID, 
+			stateID, cityID, location, address, currencyID, 
+			clasificationID, categoryID, subCategoryID, 
+			customerTypeID, birthDate, statusID, typePay,
+			payConditionID, sexoID, reference1, reference2, 
+			createdIn, createdBy, createdOn, createdAt,
+			isActive,typeFirm,i.balancePoint,i.phoneNumber,
+			i.dateContract,i.entityContactID,
+			i.reference3,i.reference4,i.reference5,i.reference6
+		");
 		$sql = $sql.sprintf(" from tb_customer i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
 		$sql = $sql.sprintf(" and i.customerNumber = '$customerCode' ");		
@@ -72,7 +87,16 @@ class Customer_Model extends Model  {
 		$builder	= $db->table("tb_customer");
 		
 	    $sql = "";
-		$sql = sprintf("select companyID, branchID, entityID, customerNumber, identificationType, identification, countryID, stateID, cityID, location, address, currencyID, clasificationID, categoryID, subCategoryID, customerTypeID, birthDate, statusID, typePay, payConditionID, sexoID, reference1, reference2, createdIn, createdBy, createdOn, createdAt, isActive,typeFirm,i.balancePoint,i.phoneNumber");
+		$sql = sprintf("select 
+			companyID, branchID, entityID, customerNumber, identificationType, 
+			identification, countryID, stateID, cityID, location, address, 
+			currencyID, clasificationID, categoryID, subCategoryID, 
+			customerTypeID, birthDate, statusID, typePay, payConditionID, 
+			sexoID, reference1, reference2, createdIn, createdBy, 
+			createdOn, createdAt, isActive,typeFirm,i.balancePoint,
+			i.phoneNumber,i.dateContract,i.entityContactID,
+			i.reference3,i.reference4,i.reference5,i.reference6
+		");
 		$sql = $sql.sprintf(" from tb_customer i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
 		$sql = $sql.sprintf(" and i.identification = '$identification' ");		
@@ -94,7 +118,8 @@ class Customer_Model extends Model  {
 			i.companyID, i.branchID, i.entityID, i.customerNumber, i.identificationType, i.identification, i.countryID, i.stateID, i.cityID, 
 			i.location, i.address, i.currencyID, i.clasificationID, i.categoryID, i.subCategoryID, i.customerTypeID, i.birthDate, i.statusID, i.typePay, 
 			i.payConditionID, i.sexoID, i.reference1, i.reference2, i.createdIn, i.createdBy, i.createdOn, i.createdAt, i.isActive,
-			nat.firstName,nat.lastName,i.typeFirm,i.balancePoint,i.phoneNumber
+			nat.firstName,nat.lastName,i.typeFirm,i.balancePoint,i.phoneNumber,i.dateContract,i.entityContactID,
+			i.reference3,i.reference4,i.reference5,i.reference6
 		");
 		$sql = $sql.sprintf(" from tb_customer i");
 		$sql = $sql.sprintf(" inner join  tb_naturales nat on nat.entityID = i.entityID");				
@@ -114,7 +139,8 @@ class Customer_Model extends Model  {
 		i.companyID, i.branchID, i.entityID, i.customerNumber, i.identificationType, i.identification, i.countryID, i.stateID, i.cityID, 
 		i.location, i.address, i.currencyID, i.clasificationID, i.categoryID, i.subCategoryID, i.customerTypeID, i.birthDate, i.statusID, i.typePay, 
 		i.payConditionID, i.sexoID, i.reference1, i.reference2, i.createdIn, i.createdBy, i.createdOn, i.createdAt, i.isActive,
-		nat.firstName,nat.lastName,i.typeFirm,i.balancePoint,i.phoneNumber
+		nat.firstName,nat.lastName,i.typeFirm,i.balancePoint,i.phoneNumber,i.dateContract,i.entityContactID,
+		i.reference3,i.reference4,i.reference5,i.reference6
 		");
 		$sql = $sql.sprintf(" from tb_customer i");
 		$sql = $sql.sprintf(" inner join  tb_naturales nat on nat.entityID = i.entityID");				
@@ -129,7 +155,19 @@ class Customer_Model extends Model  {
 		$builder	= $db->table("tb_customer");    
 		
 		$sql = "";
-		$sql = sprintf("select i.companyID, i.branchID, i.entityID, i.customerNumber, i.identificationType, i.identification, i.countryID, i.stateID, i.cityID, i.location, i.address, i.currencyID, i.clasificationID, i.categoryID, i.subCategoryID, i.customerTypeID, i.birthDate, i.statusID, i.typePay, i.payConditionID, i.sexoID, i.reference1, i.reference2, i.createdIn, i.createdBy, i.createdOn, i.createdAt, i.isActive, i.typeFirm, n.firstName,n.lastName,i.balancePoint,i.phoneNumber");
+		$sql = sprintf("select 
+			i.companyID, i.branchID, i.entityID, i.customerNumber, 
+			i.identificationType, i.identification, i.countryID, 
+			i.stateID, i.cityID, i.location, 
+			i.address, i.currencyID, i.clasificationID, 
+			i.categoryID, i.subCategoryID, i.customerTypeID,
+			i.birthDate, i.statusID, i.typePay, i.payConditionID, 
+			i.sexoID, i.reference1, i.reference2, i.createdIn, i.createdBy, 
+			i.createdOn, i.createdAt, i.isActive, i.typeFirm, 
+			n.firstName,n.lastName,i.balancePoint,i.phoneNumber,
+			i.dateContract,i.entityContactID,
+			i.reference3,i.reference4,i.reference5,i.reference6
+		");
 		$sql = $sql.sprintf(" from tb_customer i");	
 		$sql = $sql.sprintf(" inner join  tb_naturales n on n.entityID = i.entityID");				
 		$sql = $sql.sprintf(" where i.companyID = $companyID ");
@@ -143,7 +181,16 @@ class Customer_Model extends Model  {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_customer");    
 		$sql = "";
-		$sql = sprintf("select companyID, branchID, entityID, customerNumber, identificationType, identification, countryID, stateID, cityID, location, address, currencyID, clasificationID, categoryID, subCategoryID, customerTypeID, birthDate, statusID, typePay, payConditionID, sexoID, reference1, reference2, createdIn, createdBy, createdOn, createdAt, isActive,i.typeFirm,i.balancePoint,i.phoneNumber");
+		$sql = sprintf("select 
+				companyID, branchID, entityID, customerNumber, identificationType, 
+				identification, countryID, stateID, cityID, location, address, 
+				currencyID, clasificationID, categoryID, subCategoryID, 
+				customerTypeID, birthDate, statusID, typePay, payConditionID, 
+				sexoID, reference1, reference2, createdIn, createdBy, 
+				createdOn, createdAt, isActive,i.typeFirm,i.balancePoint,
+				i.phoneNumber,i.dateContract,i.entityContactID,
+				i.reference3,i.reference4,i.reference5,i.reference6
+			");
 		$sql = $sql.sprintf(" from tb_customer i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
 		$sql = $sql.sprintf(" and i.branchID = $branchID");

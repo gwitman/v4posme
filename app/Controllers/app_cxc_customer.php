@@ -62,12 +62,17 @@ class app_cxc_customer extends _BaseController {
 			if(!$objComponentAccount)
 			throw new \Exception("EL COMPONENTE 'tb_account' NO EXISTE...");
 			
+			$objComponentEmployer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
+			if(!$objComponentEmployer)
+			throw new \Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
+			
 			
 			$objListEntityAccount 						= $this->Entity_Account_Model->get_rowByEntity($companyID,$objComponent->componentID,$entityID);
 			$objFirstEntityAccount						= $objListEntityAccount[0];
 			$objAccount 								= $this->Account_Model->get_rowByPK($companyID,$objFirstEntityAccount->accountID);
 			
 			//Obtener Informacion
+			$datView["objComponentEmployer"]			= $objComponentEmployer;
 			$datView["objListWorkflowStage"]			= $this->core_web_workflow->getWorkflowStageByStageInit("tb_customer","statusID",$datView["objCustomer"]->statusID,$companyID,$branchIDUser,$roleID);
 			$datView["objListCurrency"]					= $this->Company_Currency_Model->getByCompany($companyID);			
 			$datView["objComponent"] 					= $objComponent;
@@ -94,6 +99,12 @@ class app_cxc_customer extends _BaseController {
 			$datView["objAccount"] 						= $objAccount;
 			$datView["useMobile"]						= $dataSession["user"]->useMobile;			
 			$datView["company"]							= $dataSession["company"];
+			
+			//Obtener colaborador
+			$datView["objEmployer"]					= $this->Employee_Model->get_rowByEntityID($companyID,$datView["objCustomer"]->entityContactID);
+			$entityEmployeerID						= helper_RequestGetValueObjet($datView["objEmployer"],"entityID",0);
+			$datView["objEmployerNatural"]			= $this->Natural_Model->get_rowByPK($datView["objCustomer"]->companyID,$datView["objCustomer"]->branchID,$entityEmployeerID);
+			$datView["objEmployerLegal"]			= $this->Legal_Model->get_rowByPK($datView["objCustomer"]->companyID,$datView["objCustomer"]->branchID,$entityEmployeerID);
 			
 			
 			//Renderizar Resultado
@@ -327,16 +338,21 @@ class app_cxc_customer extends _BaseController {
 				$objCustomer["subCategoryID"]		= /*inicio get post*/ $this->request->getPost('txtSubCategoryID');//--fin peticion get o post
 				$objCustomer["customerTypeID"]		= /*inicio get post*/ $this->request->getPost("txtCustomerTypeID");//--fin peticion get o post
 				$objCustomer["birthDate"]			= /*inicio get post*/ $this->request->getPost("txtBirthDate");//--fin peticion get o post
+				$objCustomer["dateContract"]		= /*inicio get post*/ $this->request->getPost("txtDateContract");//--fin peticion get o post
 				$objCustomer["statusID"]			= /*inicio get post*/ $this->request->getPost('txtStatusID');//--fin peticion get o post
 				$objCustomer["typePay"]				= /*inicio get post*/ $this->request->getPost('txtTypePayID');//--fin peticion get o post
 				$objCustomer["payConditionID"]		= /*inicio get post*/ $this->request->getPost('txtPayConditionID');//--fin peticion get o post
 				$objCustomer["sexoID"]				= /*inicio get post*/ $this->request->getPost('txtSexoID');//--fin peticion get o post
 				$objCustomer["reference1"]			= /*inicio get post*/ $this->request->getPost("txtReference1");//--fin peticion get o post
 				$objCustomer["reference2"]			= /*inicio get post*/ $this->request->getPost("txtReference2");//--fin peticion get o post
+				$objCustomer["reference3"]			= /*inicio get post*/ $this->request->getPost("txtReference3");//--fin peticion get o post
+				$objCustomer["reference4"]			= /*inicio get post*/ $this->request->getPost("txtReference4");//--fin peticion get o post
+				$objCustomer["reference5"]			= /*inicio get post*/ $this->request->getPost("txtReference5");//--fin peticion get o post
 				$objCustomer["balancePoint"]		= /*inicio get post*/ $this->request->getPost("txtBalancePoint");//--fin peticion get o post
 				$objCustomer["phoneNumber"]			= /*inicio get post*/ $this->request->getPost("txtPhoneNumber");//--fin peticion get o post
 				$objCustomer["typeFirm"]			= /*inicio get post*/ $this->request->getPost("txtTypeFirmID");//--fin peticion get o post
 				$objCustomer["isActive"]			= true;
+				$objCustomer["entityContactID"]		= /*inicio get post*/ $this->request->getPost("txtEmployerID");
 				$this->Customer_Model->update_app_posme($companyID_,$branchID_,$entityID_,$objCustomer);
 				
 				//Actualizar Customer Credit
@@ -626,16 +642,21 @@ class app_cxc_customer extends _BaseController {
 			$objCustomer["subCategoryID"]		= /*inicio get post*/ $this->request->getPost('txtSubCategoryID');//--fin peticion get o post
 			$objCustomer["customerTypeID"]		= /*inicio get post*/ $this->request->getPost("txtCustomerTypeID");//--fin peticion get o post
 			$objCustomer["birthDate"]			= /*inicio get post*/ $this->request->getPost("txtBirthDate");//--fin peticion get o post
+			$objCustomer["dateContract"]		= /*inicio get post*/ $this->request->getPost("txtDateContract");//--fin peticion get o post
 			$objCustomer["statusID"]			= /*inicio get post*/ $this->request->getPost('txtStatusID');//--fin peticion get o post
 			$objCustomer["typePay"]				= /*inicio get post*/ $this->request->getPost('txtTypePayID');//--fin peticion get o post
 			$objCustomer["payConditionID"]		= /*inicio get post*/ $this->request->getPost('txtPayConditionID');//--fin peticion get o post
 			$objCustomer["sexoID"]				= /*inicio get post*/ $this->request->getPost('txtSexoID');//--fin peticion get o post
 			$objCustomer["reference1"]			= /*inicio get post*/ $this->request->getPost("txtReference1");//--fin peticion get o post
 			$objCustomer["reference2"]			= /*inicio get post*/ $this->request->getPost("txtReference2");//--fin peticion get o post
+			$objCustomer["reference3"]			= /*inicio get post*/ $this->request->getPost("txtReference3");//--fin peticion get o post
+			$objCustomer["reference4"]			= /*inicio get post*/ $this->request->getPost("txtReference4");//--fin peticion get o post
+			$objCustomer["reference5"]			= /*inicio get post*/ $this->request->getPost("txtReference5");//--fin peticion get o post
 			$objCustomer["balancePoint"]		= /*inicio get post*/ $this->request->getPost("txtBalancePoint");//--fin peticion get o post
 			$objCustomer["phoneNumber"]			= /*inicio get post*/ $this->request->getPost("txtPhoneNumber");//--fin peticion get o post
 			$objCustomer["typeFirm"]			= /*inicio get post*/ $this->request->getPost("txtTypeFirmID");//--fin peticion get o post
 			$objCustomer["isActive"]			= true;
+			$objCustomer["entityContactID"]		= /*inicio get post*/ $this->request->getPost("txtEmployerID");
 			$this->core_web_auditoria->setAuditCreated($objCustomer,$dataSession,$this->request);
 			$result 							= $this->Customer_Model->insert_app_posme($objCustomer);
 			
@@ -903,6 +924,11 @@ class app_cxc_customer extends _BaseController {
 			$objComponentAccount				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_account");
 			if(!$objComponentAccount)
 			throw new \Exception("EL COMPONENTE 'tb_account' NO EXISTE...");
+		
+			$objComponentEmployer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
+			if(!$objComponentEmployer)
+			throw new \Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
+		
 			
 			$objParameterPais	= $this->core_web_parameter->getParameter("CXC_PAIS_DEFAULT",$companyID);			
 			$objParameterPais 	= $objParameterPais->value;
@@ -914,8 +940,8 @@ class app_cxc_customer extends _BaseController {
 			
 			$objParameterMunicipio	= $this->core_web_parameter->getParameter("CXC_MUNICIPIO_DEFAULT",$companyID);			
 			$objParameterMunicipio 	= $objParameterMunicipio->value;
-			$dataView["objParameterMunicipio"] = $objParameterMunicipio;		
-			
+			$dataView["objParameterMunicipio"] 			= $objParameterMunicipio;		
+			$dataView["objComponentEmployer"]			= $objComponentEmployer;
 			$dataView["objListWorkflowStage"]			= $this->core_web_workflow->getWorkflowInitStage("tb_customer","statusID",$companyID,$branchID,$roleID);
 			$dataView["objListIdentificationType"]		= $this->core_web_catalog->getCatalogAllItem("tb_customer","identificationType",$companyID);
 			$dataView["objListCountry"]					= $this->core_web_catalog->getCatalogAllItem("tb_customer","countryID",$companyID);

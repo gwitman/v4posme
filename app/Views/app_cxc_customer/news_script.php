@@ -23,6 +23,7 @@
 	$(document).ready(function(){	
 		//Inicializar DataPciker
 		$('#txtBirthDate').datepicker({format:"yyyy-mm-dd"});
+		$('#txtDateContract').datepicker({format:"yyyy-mm-dd"});
 		refreschChecked();
 		
 		
@@ -43,6 +44,20 @@
 				}
 				
 		});
+		
+		//Buscar Colagorador
+		$(document).on("click","#btnSearchEmployer",function(){
+			var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentEmployer->componentID; ?>/onCompleteEmployee/SELECCIONAR_EMPLOYEE/true/empty/false/not_redirect_when_empty";
+			window.open(url_request,"MsgWindow","width=900,height=450");
+			window.onCompleteEmployee = onCompleteEmployee; 
+		});
+		//Eliminar Colaborador
+		$(document).on("click","#btnClearEmployer",function(){
+					$("#txtEmployerID").val("");
+					$("#txtEmployerDescription").val("");
+		});
+		
+		
 		//Grid de Email
 		objTableEmail = $("#tb_detail_email").dataTable({
 			"bPaginate"		: false,
@@ -533,6 +548,15 @@
 			refreschChecked();
 		});
 	});
+	
+	function onCompleteEmployee(objResponse)
+	{							
+			
+			$("#txtEmployerID").val(objResponse[2]);
+			$("#txtEmployerDescription").val(objResponse[3] + " / " + objResponse[4]);
+			
+	}
+	
 	function validateForm(){
 		var result 				= true;
 		var timerNotification 	= 15000;

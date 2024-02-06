@@ -2593,7 +2593,7 @@
 				
 				if(valueComando != "none")
 				{					
-					varDataExt.valueComando = request.result;
+					varDataExt[valueComando] = request.result;
 					varFunction(varDataExt,varDataExt);
 				}
 				else

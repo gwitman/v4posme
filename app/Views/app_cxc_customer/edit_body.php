@@ -174,7 +174,7 @@
 														</div>
 													</div>
 													<div class="form-group  <?php echo getBehavio($company->type,"app_cxc_customer","divTxtClasificacion"); ?> ">
-														<label class="col-lg-4 control-label" for="selectFilter">Clasificacion</label>
+														<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"comand_traducir","Clasificacion"); ?></label>
 														<div class="col-lg-8">
 															<select name="txtClasificationID" id="txtClasificationID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"   >
 																	<option></option>																
@@ -212,7 +212,7 @@
 														</div>
 													</div>
 													<div class="form-group   <?php echo getBehavio($company->type,"app_cxc_customer","divTxtCategoria"); ?> ">
-														<label class="col-lg-4 control-label" for="selectFilter">Categoria</label>
+														<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"comand_traducir","Categoria"); ?></label>
 														<div class="col-lg-8">
 															<select name="txtCategoryID" id="txtCategoryID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"   >
 																	<option></option>																
@@ -577,18 +577,18 @@
 														</div>
 												</div>
 												<div class="col-lg-6">
+												
 													<div class="form-group">
-															<label class="col-lg-4 control-label" for="normal">Referencia1</label>
-															<div class="col-lg-8">
-																<input class="form-control"  type="text"  name="txtReference1" id="txtReference1" value="<?php echo $objCustomer->reference1; ?>">												
+														<label class="col-lg-4 control-label" for="datepicker">Contrato</label>
+														<div class="col-lg-8">
+															<div id="datepicker" class="input-group date" data-date="2014-01-30" data-date-format="yyyy-mm-dd">
+																<input size="16"  class="form-control" type="text" name="txtDateContract" id="txtDateContract" value="<?php echo $objCustomer->dateContract; ?>">
+																<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
 															</div>
-													</div>											
-													<div class="form-group">
-															<label class="col-lg-4 control-label" for="normal">Referencia2</label>
-															<div class="col-lg-8">
-																<input class="form-control"  type="text"  name="txtReference2" id="txtReference2" value="<?php echo $objCustomer->reference2; ?>">			
-															</div>
-													</div>	
+														</div>
+													</div>
+													
+													
 													<div class="form-group">
 														<label class="col-lg-4 control-label" for="selectFilter">Tipo de Firma</label>
 														<div class="col-lg-8">
@@ -608,6 +608,64 @@
 															</select>
 														</div>
 													</div>
+													
+													<div class="form-group">
+														<label class="col-lg-4 control-label" for="buttons">Tecnico</label>
+														<div class="col-lg-8">
+															<div class="input-group">
+																<input type="hidden" id="txtEmployerID" name="txtEmployerID" value="<?php echo $objEmployerNatural != NULL ?  $objEmployer->entityID : "";  ?>">
+																<input class="form-control" readonly id="txtEmployerDescription" type="txtEmployerDescription" value="<?php echo $objEmployerNatural != null ? strtoupper($objEmployer->employeNumber . " ". $objEmployerNatural->firstName . " ". $objEmployerNatural->lastName ) : ""; ?>">
+																
+																<span class="input-group-btn">
+																	<button class="btn btn-danger" type="button" id="btnClearEmployer">
+																		<i aria-hidden="true" class="i-undo-2"></i>
+																		clear
+																	</button>
+																</span>
+																<span class="input-group-btn">
+																	<button class="btn btn-primary" type="button" id="btnSearchEmployer">
+																		<i aria-hidden="true" class="i-search-5"></i>
+																		buscar
+																	</button>
+																</span>											
+															</div>
+														</div>
+													</div>
+													
+													<div class="form-group">
+															<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"comand_traducir","Referencia1"); ?></label>
+															<div class="col-lg-8">
+																<input class="form-control"  type="text"  name="txtReference1" id="txtReference1" value="<?php echo $objCustomer->reference1; ?>">												
+															</div>
+													</div>											
+													<div class="form-group">
+															<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"comand_traducir","Referencia2"); ?></label>
+															<div class="col-lg-8">
+																<input class="form-control"  type="text"  name="txtReference2" id="txtReference2" value="<?php echo $objCustomer->reference2; ?>">			
+															</div>
+													</div>	
+													<div class="form-group">
+															<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"comand_traducir","Referencia3"); ?></label>
+															<div class="col-lg-8">
+																<input class="form-control"  type="text"  name="txtReference3" id="txtReference3" value="<?php echo $objCustomer->reference3; ?>">			
+															</div>
+													</div>	
+													<div class="form-group">
+															<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"comand_traducir","Referencia4"); ?></label>
+															<div class="col-lg-8">
+																<input class="form-control"  type="text"  name="txtReference4" id="txtReference4" value="<?php echo $objCustomer->reference4; ?>">			
+															</div>
+													</div>	
+													<div class="form-group">
+															<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"comand_traducir","Referencia5"); ?></label>
+															<div class="col-lg-8">
+																<input class="form-control"  type="text"  name="txtReference5" id="txtReference5" value="<?php echo $objCustomer->reference5; ?>">			
+															</div>
+													</div>	
+													
+													
+													
+													
 													
 												</div>
 											</div>

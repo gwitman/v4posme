@@ -172,6 +172,15 @@ function getBehavio($type_company,$key_controller,$key_element)
 		
 		strtolower('globalpro_app_purchase_pedidos_divDllEstado')									=> "hidden",
 		
+		/*Santa lucia ral state*/
+		strtolower('luciaralstate_comand_traducir_Categoria') 										=> "Interes",
+		strtolower('luciaralstate_comand_traducir_Clasificacion')									=> "Propiedad",
+		strtolower('luciaralstate_comand_traducir_Referencia1')										=> "ID Encuentra 24",
+		strtolower('luciaralstate_comand_traducir_Referencia2')										=> "Mensaje",
+		strtolower('luciaralstate_comand_traducir_Referencia3')										=> "Comentario 1",
+		strtolower('luciaralstate_comand_traducir_Referencia4')										=> "Comentario 2",
+		strtolower('luciaralstate_comand_traducir_Referencia5')										=> "Inmueble",
+		
 		/*Clinica larreynaga*/
 		strtolower('clinicalarreynaga_comand_traducir_Edad') 										=> "Genero",		
 		strtolower('clinicalarreynaga_app_cxc_customer_divTxtNombres') 								=> "hidden",
