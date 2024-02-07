@@ -167,7 +167,7 @@
 														</div>
 													</div>
 													<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","divTxtClasificacion"); ?>  ">
-														<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"comand_traducir","Clasificacion"); ?></label>
+														<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_cxc_customer","Clasificacion"); ?></label>
 														<div class="col-lg-8">
 															<select name="txtClasificationID" id="txtClasificationID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"  >
 																	<option></option>																
@@ -205,7 +205,7 @@
 														</div>
 													</div>
 													<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","divTxtCategoria"); ?> ">
-														<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"comand_traducir","Categoria"); ?></label>
+														<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_cxc_customer","Categoria"); ?></label>
 														<div class="col-lg-8">
 															<select name="txtCategoryID" id="txtCategoryID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"  >
 																	<option></option>																
@@ -547,31 +547,31 @@
 													
 													
 													<div class="form-group">
-															<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"comand_traducir","Referencia1"); ?></label>
+															<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_cxc_customer","Referencia1"); ?></label>
 															<div class="col-lg-8">
 																<input class="form-control"  type="text"  name="txtReference1" id="txtReference1" value="">												
 															</div>
 													</div>											
 													<div class="form-group">
-															<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"comand_traducir","Referencia2"); ?></label>
+															<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_cxc_customer","Referencia2"); ?></label>
 															<div class="col-lg-8">
 																<input class="form-control"  type="text"  name="txtReference2" id="txtReference2" value="">												
 															</div>
 													</div>	
 													<div class="form-group">
-															<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"comand_traducir","Referencia3"); ?></label>
+															<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_cxc_customer","Referencia3"); ?></label>
 															<div class="col-lg-8">
 																<input class="form-control"  type="text"  name="txtReference3" id="txtReference3" value="">												
 															</div>
 													</div>	
 													<div class="form-group">
-															<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"comand_traducir","Referencia4"); ?></label>
+															<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_cxc_customer","Referencia4"); ?></label>
 															<div class="col-lg-8">
 																<input class="form-control"  type="text"  name="txtReference4" id="txtReference4" value="">												
 															</div>
 													</div>	
 													<div class="form-group">
-															<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"comand_traducir","Referencia5"); ?></label>
+															<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_cxc_customer","Referencia5"); ?></label>
 															<div class="col-lg-8">
 																<input class="form-control"  type="text"  name="txtReference5" id="txtReference5" value="">												
 															</div>

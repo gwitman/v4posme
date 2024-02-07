@@ -11,7 +11,8 @@ class Menu_Element_Model extends Model  {
 		$db 	= db_connect(); 	
 				
 		$sql = "";
-		$sql = sprintf("select x.companyID,x.elementID,x.menuElementID,x.parentMenuElementID,x.display,x.address,x.orden,x.icon,x.template,x.nivel");
+		$sql = sprintf("select x.companyID,x.elementID,x.menuElementID,x.parentMenuElementID,
+		x.display,x.address,x.orden,x.icon,x.template,x.nivel");
 		$sql = $sql.sprintf(" from tb_menu_element x");		
 		$sql = $sql.sprintf(" inner join  tb_element e on e.elementID = x.elementID");
 		$sql = $sql.sprintf(" inner join  tb_component_element ce on e.elementID = ce.elementID");
@@ -38,7 +39,9 @@ class Menu_Element_Model extends Model  {
    function get_rowByCompanyID($companyID){
 		$db 	= db_connect(); 	
 		$sql = "";
-		$sql = sprintf("select tb_menu_element.companyID,tb_menu_element.elementID,tb_menu_element.menuElementID,tb_menu_element.parentMenuElementID,tb_menu_element.display,tb_menu_element.address,tb_menu_element.orden,tb_menu_element.icon,tb_menu_element.template,tb_menu_element.nivel");
+		$sql = sprintf("select tb_menu_element.companyID,tb_menu_element.elementID,tb_menu_element.menuElementID,
+		tb_menu_element.parentMenuElementID,tb_menu_element.display,tb_menu_element.address,tb_menu_element.orden,
+		tb_menu_element.icon,tb_menu_element.template,tb_menu_element.nivel");
 		$sql = $sql.sprintf(" from tb_menu_element");
 		$sql = $sql.sprintf(" inner join  tb_element on tb_menu_element.elementID = tb_element.elementID");
 		$sql = $sql.sprintf(" where tb_menu_element.companyID = ".$companyID." ");

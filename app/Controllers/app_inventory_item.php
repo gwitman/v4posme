@@ -56,6 +56,15 @@ class app_inventory_item extends _BaseController {
 			if(!$objComponentProvider)
 			throw new \Exception("EL COMPONENTE 'tb_provider' NO EXISTE...");
 			
+			
+			$objComponentEmployer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
+			if(!$objComponentEmployer)
+			throw new \Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
+		
+		
+			
+			
+			
 			$objParameterTypePreiceDefault			= $this->core_web_parameter->getParameter("INVOICE_DEFAULT_TYPE_PRICE",$companyID);
 			$objParameterTypePreiceDefault			= $objParameterTypePreiceDefault->value;
 			$objParameterListPreiceDefault			= $this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID);
@@ -63,6 +72,7 @@ class app_inventory_item extends _BaseController {
 			$objParameterAll						= $this->core_web_parameter->getParameterAll($companyID);
 			
 			//Obtener Informacion
+			$dataView["objComponentEmployer"]		= $objComponentEmployer;
 			$dataView["objComponent"] 				= $objComponent;
 			$dataView["componentProviderID"]		= $objComponentProvider->componentID;
 			$dataView["objListConcept"]				= $this->Company_Component_Concept_Model->get_rowByComponentItemID($companyID,$objComponent->componentID,$itemID);
@@ -80,7 +90,7 @@ class app_inventory_item extends _BaseController {
 			$dataView["objListTypePreice"]			= $this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID);
 			$dataView["objListCurrency"]			= $this->Company_Currency_Model->getByCompany($companyID);
 			$dataView["company"]					= $dataSession["company"];
-			
+			$dataView["useMobile"]								= $dataSession["user"]->useMobile;			
 			$dataView["objParameterTypePreiceDefault"]			= $objParameterTypePreiceDefault;
 			$dataView["objParameterListPreiceDefault"]			= $objParameterListPreiceDefault;
 			$dataView["callback"]					= $callback;
@@ -91,6 +101,18 @@ class app_inventory_item extends _BaseController {
 			$objParameterMasive					= $objParameterMasive->value;	
 			$dataView["objParameterMasive"]		= $objParameterMasive;
 			
+			
+			
+			//Obtener colaborador
+			$dataView["objEmployer"]				= $this->Employee_Model->get_rowByEntityID($companyID,$dataView["objItem"]->realStateEmployerAgentID);
+			$entityEmployeerID						= helper_RequestGetValueObjet($dataView["objEmployer"],"entityID",0);
+			$dataView["objEmployerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$entityEmployeerID);
+			$dataView["objEmployerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$entityEmployeerID);
+			
+			//direccion
+			$dataView["objListCountry"]				= $this->core_web_catalog->getCatalogAllItem("tb_item","realStateCountryID",$companyID);
+			$dataView["objListState"]				= $this->core_web_catalog->getCatalogAllItem_Parent("tb_item","realStateStateID",$companyID,$dataView["objItem"]->realStateCountryID);
+			$dataView["objListCity"]				= $this->core_web_catalog->getCatalogAllItem_Parent("tb_item","realStateCityID",$companyID,$dataView["objItem"]->realStateStateID);
 			
 			
 			//Renderizar Resultado
@@ -301,6 +323,16 @@ class app_inventory_item extends _BaseController {
 					$branchID   = $method02 == "apinew" ? APP_BRANCH : $dataSession["user"]->branchID;
 					$this->core_web_permission->getValueLicense($companyID,get_class($this)."/"."index");
 					
+					$paisDefault 				= $this->core_web_parameter->getParameterValue("CXC_PAIS_DEFAULT",$companyID);
+					$departamentoDefault 		= $this->core_web_parameter->getParameterValue("CXC_DEPARTAMENTO_DEFAULT",$companyID);
+					$municipioDefault 			= $this->core_web_parameter->getParameterValue("CXC_MUNICIPIO_DEFAULT",$companyID);
+			
+			
+					$paisID 			= empty (/*inicio get post*/ $this->request->getPost('txtCountryID') /*//--fin peticion get o post*/ ) ?  $paisDefault : /*inicio get post*/ $this->request->getPost('txtCountryID');  /*//--fin peticion get o post*/
+					$departamentoId		= empty (/*inicio get post*/ $this->request->getPost('txtStateID') /*//--fin peticion get o post*/ ) ?  $departamentoDefault : /*inicio get post*/ $this->request->getPost('txtStateID');  /*//--fin peticion get o post*/
+					$municipioId		= empty (/*inicio get post*/ $this->request->getPost('txtCityID') /*//--fin peticion get o post*/ ) ?  $municipioDefault : /*inicio get post*/ $this->request->getPost('txtCityID');  /*//--fin peticion get o post*/
+			
+			
 					//Ingresar Cuenta					
 					$db=db_connect();
 			        $db->transStart();		
@@ -386,6 +418,29 @@ class app_inventory_item extends _BaseController {
 					$objItem["isActive"] 					= 1;
 					$objItem["currencyID"] 					= /*inicio get post*/ $this->request->getPost("txtCurrencyID");
 					
+					$objItem["realStateRoomBatchServices"] 				= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateRoomBatchServices") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateRoomBatchServices") ;
+					$objItem["realStateRoomServices"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateRoomServices") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateRoomServices") ;
+					$objItem["realStateWallInCloset"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateWallInCloset") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateWallInCloset") ;
+					$objItem["realStatePiscinaPrivate"] 				= is_null (/*inicio get post*/ $this->request->getPost("txtRealStatePiscinaPrivate") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStatePiscinaPrivate") ;
+					$objItem["realStateClubPiscina"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateClubPiscina") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateClubPiscina") ;
+					$objItem["realStateAceptanMascota"] 				= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateAceptanMascota") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateAceptanMascota") ;
+					$objItem["realStateContractCorrentaje"] 			= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateContractCorrentaje") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateContractCorrentaje") ;
+					$objItem["realStatePlanReference"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStatePlanReference") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStatePlanReference") ;
+					$objItem["realStateLinkYoutube"] 					= /*inicio get post*/ $this->request->getPost("txtRealStateLinkYoutube");
+					$objItem["realStateLinkPaginaWeb"] 					= /*inicio get post*/ $this->request->getPost("txtRealStateLinkPaginaWeb");
+					$objItem["realStateLinkPhontos"] 					= /*inicio get post*/ $this->request->getPost("txtRealStateLinkPhontos");
+					$objItem["realStateLinkGoogleMaps"] 				= /*inicio get post*/ $this->request->getPost("txtRealStateLinkGoogleMaps");
+					$objItem["realStateLinkOther"] 						= /*inicio get post*/ $this->request->getPost("txtRealStateLinkOther");
+					$objItem["realStateStyleKitchen"] 					= /*inicio get post*/ $this->request->getPost("txtRealStateStyleKitchen");
+					
+					$objItem["realStateReferenceUbicacion"] 				= /*inicio get post*/ $this->request->getPost("txtRealStateReferenceUbicacion");
+					$objItem["realStateReferenceCondominio"] 				= /*inicio get post*/ $this->request->getPost("txtRealStateReferenceCondominio");
+					$objItem["realStateReferenceZone"] 						= /*inicio get post*/ $this->request->getPost("txtRealStateReferenceZone");
+					
+					$objItem["realStateCountryID"]			= $paisID;
+					$objItem["realStateStateID"]			= $departamentoId;
+					$objItem["realStateCityID"]				= $municipioId;
+					$objItem["realStateEmployerAgentID"]	= /*inicio get post*/ $this->request->getPost("txtEmployerID");
 					
 					if($method02 != "apinew")
 					{						
@@ -619,6 +674,16 @@ class app_inventory_item extends _BaseController {
 					if(!file_exists($directoryItem))
 					mkdir( $directoryItem,0700);
 					
+					$paisDefault 				= $this->core_web_parameter->getParameterValue("CXC_PAIS_DEFAULT",$companyID);
+					$departamentoDefault 		= $this->core_web_parameter->getParameterValue("CXC_DEPARTAMENTO_DEFAULT",$companyID);
+					$municipioDefault 			= $this->core_web_parameter->getParameterValue("CXC_MUNICIPIO_DEFAULT",$companyID);
+			
+					$paisID 			= empty (/*inicio get post*/ $this->request->getPost('txtCountryID') /*//--fin peticion get o post*/ ) ?  $paisDefault : /*inicio get post*/ $this->request->getPost('txtCountryID');  /*//--fin peticion get o post*/
+					$departamentoId		= empty (/*inicio get post*/ $this->request->getPost('txtStateID') /*//--fin peticion get o post*/ ) ?  $departamentoDefault : /*inicio get post*/ $this->request->getPost('txtStateID');  /*//--fin peticion get o post*/
+					$municipioId		= empty (/*inicio get post*/ $this->request->getPost('txtCityID') /*//--fin peticion get o post*/ ) ?  $municipioDefault : /*inicio get post*/ $this->request->getPost('txtCityID');  /*//--fin peticion get o post*/
+			
+			
+			
 					$db=db_connect();
 					$db->transStart();	
 					$callback  	= /*inicio get post*/ $this->request->getPost("txtCallback"); 
@@ -653,6 +718,32 @@ class app_inventory_item extends _BaseController {
 						$objNewItem["factorBox"] 					= /*inicio get post*/ $this->request->getPost("txtFactorBox");
 						$objNewItem["factorProgram"] 				= /*inicio get post*/ $this->request->getPost("txtFactorProgram");
 						$objNewItem["currencyID"] 					= /*inicio get post*/ $this->request->getPost("txtCurrencyID");
+						
+						
+						$objNewItem["realStateRoomBatchServices"] 				= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateRoomBatchServices") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateRoomBatchServices") ;
+						$objNewItem["realStateRoomServices"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateRoomServices") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateRoomServices") ;
+						$objNewItem["realStateWallInCloset"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateWallInCloset") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateWallInCloset") ;
+						$objNewItem["realStatePiscinaPrivate"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStatePiscinaPrivate") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStatePiscinaPrivate") ;
+						$objNewItem["realStateClubPiscina"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateClubPiscina") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateClubPiscina") ;
+						$objNewItem["realStateAceptanMascota"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateAceptanMascota") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateAceptanMascota") ;
+						$objNewItem["realStateContractCorrentaje"] 				= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateContractCorrentaje") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateContractCorrentaje") ;
+						$objNewItem["realStatePlanReference"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStatePlanReference") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStatePlanReference") ;
+						$objNewItem["realStateLinkYoutube"] 					= /*inicio get post*/ $this->request->getPost("txtRealStateLinkYoutube");
+						$objNewItem["realStateLinkPaginaWeb"] 					= /*inicio get post*/ $this->request->getPost("txtRealStateLinkPaginaWeb");
+						$objNewItem["realStateLinkPhontos"] 					= /*inicio get post*/ $this->request->getPost("txtRealStateLinkPhontos");
+						$objNewItem["realStateLinkGoogleMaps"] 					= /*inicio get post*/ $this->request->getPost("txtRealStateLinkGoogleMaps");
+						$objNewItem["realStateLinkOther"] 						= /*inicio get post*/ $this->request->getPost("txtRealStateLinkOther");
+						$objNewItem["realStateStyleKitchen"] 					= /*inicio get post*/ $this->request->getPost("txtRealStateStyleKitchen");
+						
+						$objNewItem["realStateReferenceUbicacion"] 					= /*inicio get post*/ $this->request->getPost("txtRealStateReferenceUbicacion");
+						$objNewItem["realStateReferenceCondominio"] 				= /*inicio get post*/ $this->request->getPost("txtRealStateReferenceCondominio");
+						$objNewItem["realStateReferenceZone"] 						= /*inicio get post*/ $this->request->getPost("txtRealStateReferenceZone");
+					
+						$objNewItem["realStateCountryID"]			= $paisID;
+						$objNewItem["realStateStateID"]				= $departamentoId;
+						$objNewItem["realStateCityID"]				= $municipioId;
+						$objNewItem["realStateEmployerAgentID"]		= /*inicio get post*/ $this->request->getPost("txtEmployerID");
+						
 						//Actualizar Objeto
 						$row_affected 	= $this->Item_Model->update_app_posme($companyID,$itemID,$objNewItem);
 			
@@ -868,6 +959,13 @@ class app_inventory_item extends _BaseController {
 			$objParameterInvoiceBillingQuantityZero		= $objParameterInvoiceBillingQuantityZero->value;
 			$objParameterAll							= $this->core_web_parameter->getParameterAll($companyID);
 			
+			
+			$objComponentEmployer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
+			if(!$objComponentEmployer)
+			throw new \Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
+		
+			$dataView["objListCountry"]				= $this->core_web_catalog->getCatalogAllItem("tb_item","realStateCountryID",$companyID);		
+			$dataView["objComponentEmployer"]		= $objComponentEmployer;
 			$dataView["objListWarehouse"]			= $this->Warehouse_Model->getByCompany($companyID);
 			$dataView["objListInventoryCategory"]	= $this->Itemcategory_Model->getByCompany($companyID);
 			$dataView["objListWorkflowStage"]		= $this->core_web_workflow->getWorkflowInitStage("tb_item","statusID",$companyID,$branchID,$roleID);
@@ -891,7 +989,7 @@ class app_inventory_item extends _BaseController {
 			$dataView["callback"]									= $callback;
 			$dataView["comando"]									= $comando;
 			$dataView["objParameterAll"] 							= $objParameterAll;
-			
+			$dataView["useMobile"]									= $dataSession["user"]->useMobile;			
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);

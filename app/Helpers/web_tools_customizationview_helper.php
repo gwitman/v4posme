@@ -2,9 +2,17 @@
 function getBehavio($type_company,$key_controller,$key_element)
 {
 	$divs = array(
-		strtolower('default_comand_traducir_O. SALIDAS')			 								=> "O. SALIDAS",
-		strtolower('default_comand_traducir_O. ENTRADAS')			 								=> "O. ENTRADAS",
-		
+		strtolower('default_app_inventory_item_label_price_PUBLICO')			 					=> "PUBLICO",
+		strtolower('default_app_inventory_item_label_price_POR MAYOR')			 					=> "POR MAYOR",
+		strtolower('default_app_inventory_item_label_price_CREDITO')			 					=> "CREDITO",
+		strtolower('default_app_inventory_item_label_price_CREDITO POR MAYOR')			 			=> "CREDITO POR MAYOR",
+		strtolower('default_app_inventory_item_label_price_ESPECIAL')			 					=> "ESPECIAL",						
+		strtolower('default_core_web_menu_O. SALIDAS')			 									=> "O. SALIDAS",
+		strtolower('default_core_web_menu_O. ENTRADAS')			 									=> "O. ENTRADAS",
+		strtolower('default_app_cxp_expenses_Referencia 1')											=> "Referencia 1",
+		strtolower('default_app_cxp_expenses_Referencia 2')											=> "Referencia 2",
+		strtolower('default_app_cxp_expenses_Referencia 3')											=> "Referencia 3",		
+		strtolower('default_app_inventory_item_Conceptos')			 								=> "Conceptos",
 		strtolower('default_default_masterpage_backgroundImage')			 						=> "",
 		strtolower('default_core_account_idtest')													=> "hidden",
 		strtolower('default_app_invoice_billing_panelResumenFactura')								=> "",
@@ -25,14 +33,82 @@ function getBehavio($type_company,$key_controller,$key_element)
 		strtolower('default_app_box_share_divCustomerControlBuscar')								=> "",
 		strtolower('default_app_box_share_divCustomerControlSelected')								=> "hidden",
 		strtolower('default_app_box_share_divCobrador')												=> "",
-		strtolower('default_app_box_share_divMoneda')												=> "",
-		
-		
-		
+		strtolower('default_app_box_share_divMoneda')												=> "",		
 		strtolower('default_app_box_share_btnVerMovimientos')										=> "",
 		strtolower('default_app_inventory_transferoutput_parameterValidarEnvioDestino')				=> "false",
 		strtolower('default_app_inventory_transferoutput_labelReference1')							=> "Referencia",
 		strtolower('default_app_inventory_item_labelBarCode')										=> "Barra",
+		strtolower('default_app_inventory_item_divTxtPresentacionUM') 								=> "",
+		strtolower('default_app_inventory_item_divTxtPresentacion') 			 					=> "",
+		strtolower('default_app_inventory_item_divTxtUM') 			 								=> "",
+		strtolower('default_app_inventory_item_divTxtCapacidad') 			 						=> "",
+		strtolower('default_app_inventory_item_divTxtCantidadMinima') 								=> "",
+		strtolower('default_app_inventory_item_divTxtCantidadMaxima') 								=> "",
+		strtolower('default_app_inventory_item_divTxtSKUCompras') 			 						=> "",
+		strtolower('default_app_inventory_item_divTxtSKUProduccion') 								=> "",
+		strtolower('default_app_inventory_item_divTxtEstado') 			 							=> "",
+		strtolower('default_app_inventory_item_divTxtFamilia') 			 							=> "",
+		strtolower('default_app_invoice_billing_divTxtCedula2') 									=> "",		
+		strtolower('default_app_invoice_billing_divTraslateElement') 								=> "",
+		strtolower('default_app_cxc_customer_divTxtNombres') 										=> "",
+		strtolower('default_app_cxc_customer_divTxtApellidos') 			 							=> "",		
+		strtolower('default_app_cxc_customer_divTxtNombreComercial') 			 					=> "",
+		strtolower('default_app_cxc_customer_divTxtEstado') 										=> "",
+		strtolower('default_app_cxc_customer_divTxtClasificacion') 									=> "",
+		strtolower('default_app_cxc_customer_divTxtTipo') 			 								=> "",
+		strtolower('default_app_cxc_customer_divTxtCategoria') 										=> "",
+		strtolower('default_app_cxc_customer_divTxtSubCategoria') 			 						=> "",
+		strtolower('default_app_cxc_customer_divTxtEstadoCivil') 			 						=> "",
+		strtolower('default_app_cxc_customer_divTxtProfesionUFicio') 			 					=> "",
+		strtolower('default_app_cxc_customer_divScriptCustom') 										=> "",	
+		strtolower('default_core_dashboards_divPanelCuadroMembresia')								=> "",
+		strtolower('default_core_dashboards_divPanelBiblico')										=> "",
+		strtolower('default_core_dashboards_divPanelSoporteTenico')									=> "",
+		strtolower('default_core_dashboards_divPanelFormaPago')										=> "",
+		strtolower('default_core_dashboards_divPanelInfoPago')										=> "",
+		strtolower('default_core_dashboards_divPanelUsuario')										=> "",	
+		strtolower('default_app_invoice_billing_divTxtCambio') 										=> "",
+		strtolower('default_app_invoice_billing_divTxtMoneda') 			 							=> "",		
+		strtolower('default_app_invoice_billing_divTxtCliente2') 			 						=> "",		
+		strtolower('default_app_inventory_item_divTxtBarCode') 										=> "",
+		strtolower('default_app_inventory_item_divTxtPerecedero') 			 						=> "",	
+		strtolower('default_app_inventory_item_divTraslateElementTablePrecio') 						=> "",		
+		strtolower('default_app_cxc_customer_divTxtNombres') 										=> "",
+		strtolower('default_app_cxc_customer_divTxtApellidos') 			 							=> "",		
+		strtolower('default_app_cxc_customer_divTxtNombreComercial') 			 					=> "",
+		strtolower('default_app_cxc_customer_divTxtEstado') 										=> "",
+		strtolower('default_app_cxc_customer_divTxtClasificacion') 									=> "",
+		strtolower('default_app_cxc_customer_divTxtTipo') 			 								=> "",
+		strtolower('default_app_cxc_customer_divTxtCategoria') 										=> "",
+		strtolower('default_app_cxc_customer_divTxtSubCategoria') 			 						=> "",
+		strtolower('default_app_cxc_customer_divTxtEstadoCivil') 			 						=> "",
+		strtolower('default_app_cxc_customer_divTxtProfesionUFicio') 			 					=> "",			
+		strtolower('default_app_inventory_inputunpost_new_script_validate_reference1')				=> "",
+		strtolower('default_app_purchase_pedidos_divDllEstado')										=> "",
+		strtolower('default_web_tools_report_helper_Edad') 											=> "Edad", 		
+		strtolower('default_web_tools_report_helper_Sexo') 											=> "Sexo", 				
+		strtolower('default_app_cxc_customer_Clasificacion')										=> "Clasificacion",
+		strtolower('default_app_cxc_customer_Categoria')											=> "Categoria",
+		strtolower('default_app_cxc_customer_Referencia1')											=> "Referencia 1",
+		strtolower('default_app_cxc_customer_Referencia2')											=> "Referencia 2",
+		strtolower('default_app_cxc_customer_Referencia3')											=> "Referencia 3",
+		strtolower('default_app_cxc_customer_Referencia4')											=> "Referencia 4",
+		strtolower('default_app_cxc_customer_Referencia5')											=> "Referencia 5",
+		strtolower('default_app_inventory_item_Descripcion')			 							=> "Descripcion",
+		strtolower('default_app_inventory_item_*Familia')											=> "*Familia",
+		strtolower('default_app_inventory_item_*Presentacion')										=> "*Presentacion",
+		strtolower('default_app_inventory_item_Perecedero')											=> "Perecedero",
+		strtolower('default_app_inventory_item_*UM. Presentacion')									=> "*UM. Presentacion",
+		strtolower('default_app_inventory_item_*SKU Compras')										=> "* SKU Compras",
+		strtolower('default_app_inventory_item_*SKU Produccion')									=> "* SKU Produccion",
+		strtolower('default_app_inventory_item_*Cantidad Minima')									=> "* Cantidad Minima",
+		strtolower('default_app_inventory_item_*Cantidad Maxima')									=> "* Cantidad Maxima",
+		strtolower('default_app_inventory_item_Servicio')											=> "Servicio",		
+		strtolower('default_app_inventory_item_*Categoria')											=> "*Categoria",
+		strtolower('default_app_inventory_item_*Capacidad')											=> "*Capacidad",		
+		strtolower('default_app_inventory_item_Marca')												=> "Marca",
+		strtolower('default_app_inventory_item_Modelo')												=> "Modelo",
+		strtolower('default_app_inventory_item_Serie ó MAI')										=> "Serie o MAI",		
 		
 		
 		
@@ -55,17 +131,20 @@ function getBehavio($type_company,$key_controller,$key_element)
 			}
 		",
 		
+		
 		/*GlobalPro*/
-		strtolower('globalpro_comand_traducir_Conceptos')			 				=> "IVA",
-		strtolower('globalpro_comand_traducir_PUBLICO')			 					=> "PRECIO OFERTA",
-		strtolower('globalpro_comand_traducir_POR MAYOR')			 				=> "REGULAR",
-		strtolower('globalpro_comand_traducir_CREDITO')			 					=> "POR MAYOR",
-		strtolower('globalpro_comand_traducir_CREDITO POR MAYOR')			 		=> "LIQUIDACION",
-		strtolower('globalpro_comand_traducir_ESPECIAL')			 				=> "ESPECIAL",
-		
-		
-		strtolower('globalpro_default_masterpage_backgroundImage')			 		=> "style='background-image: url(".  base_url()."/resource/img/logos/fondo_globalpro.jpg"   .");'",
-		
+		strtolower('globalpro_core_web_menu_O. SALIDAS')			 				=> "AJUSTE SALIDA",
+		strtolower('globalpro_core_web_menu_O. ENTRADAS')			 				=> "AJUSTE ENTRADA",
+		strtolower('globalpro_app_inventory_item_label_price_PUBLICO')			 	=> "PRECIO OFERTA",
+		strtolower('globalpro_app_inventory_item_label_price_POR MAYOR')			=> "REGULAR",
+		strtolower('globalpro_app_inventory_item_label_price_CREDITO')			 	=> "POR MAYOR",
+		strtolower('globalpro_app_inventory_item_label_price_CREDITO POR MAYOR')	=> "LIQUIDACION",
+		strtolower('globalpro_app_inventory_item_label_price_ESPECIAL')			 	=> "ESPECIAL",		
+		strtolower('globalpro_app_cxp_expenses_Referencia 1')						=> "Descripcion",
+		strtolower('globalpro_app_cxp_expenses_Referencia 2')						=> "Factura",
+		strtolower('globalpro_app_cxp_expenses_Referencia 3')						=> "Proveedor",
+		strtolower('globalpro_app_inventory_item_Conceptos')			 			=> "IVA",
+		strtolower('globalpro_default_masterpage_backgroundImage')			 		=> "style='background-image: url(".  base_url()."/resource/img/logos/fondo_globalpro.jpg"   .");'",		
 		strtolower('globalpro_core_dashboards_divPanelCuadroMembresia')				=> "hidden",
 		strtolower('globalpro_core_dashboards_divPanelBiblico')						=> "hidden",
 		strtolower('globalpro_core_dashboards_divPanelSoporteTenico')				=> "hidden",
@@ -102,7 +181,7 @@ function getBehavio($type_company,$key_controller,$key_element)
 		strtolower('globalpro_app_inventory_item_divTxtUM') 			 			=> "hidden",
 		strtolower('globalpro_app_inventory_item_divTxtPresentacion') 			 	=> "hidden",
 		strtolower('globalpro_app_inventory_item_divTxtPresentacionUM') 			=> "hidden",
-		strtolower('globalpro_app_inventory_item_divTxtUM') 			 			=> "hidden",
+		strtolower('globalpro_app_inventory_item_divTxtUM') 			 			=> "hidden",		
 		strtolower('globalpro_app_inventory_item_divTraslateElementTablePrecio') 	=> "
 				<script>
 					$(document).ready(function(){
@@ -159,30 +238,15 @@ function getBehavio($type_company,$key_controller,$key_element)
 				result = false;
 			}
 		",
-		strtolower('globalpro_comand_traducir_O. SALIDAS')			 								=> "AJUSTE SALIDA",
-		strtolower('globalpro_comand_traducir_O. ENTRADAS')			 								=> "AJUSTE ENTRADA",
 		strtolower('globalpro_app_inventory_transferoutput_parameterValidarEnvioDestino')			=> "true",
 		strtolower('globalpro_app_inventory_transferoutput_labelReference1')						=> "Orden / Cliente",
-		
-		
-		strtolower('globalpro_comand_traducir_Referencia 1')										=> "Descripcion",
-		strtolower('globalpro_comand_traducir_Referencia 2')										=> "Factura",
-		strtolower('globalpro_comand_traducir_Referencia 3')										=> "Proveedor",
-		
-		
 		strtolower('globalpro_app_purchase_pedidos_divDllEstado')									=> "hidden",
 		
-		/*Santa lucia ral state*/
-		strtolower('luciaralstate_comand_traducir_Categoria') 										=> "Interes",
-		strtolower('luciaralstate_comand_traducir_Clasificacion')									=> "Propiedad",
-		strtolower('luciaralstate_comand_traducir_Referencia1')										=> "ID Encuentra 24",
-		strtolower('luciaralstate_comand_traducir_Referencia2')										=> "Mensaje",
-		strtolower('luciaralstate_comand_traducir_Referencia3')										=> "Comentario 1",
-		strtolower('luciaralstate_comand_traducir_Referencia4')										=> "Comentario 2",
-		strtolower('luciaralstate_comand_traducir_Referencia5')										=> "Inmueble",
+		
 		
 		/*Clinica larreynaga*/
-		strtolower('clinicalarreynaga_comand_traducir_Edad') 										=> "Genero",		
+		strtolower('clinicalarreynaga_web_tools_report_helper_Edad') 								=> "Genero", 		
+		strtolower('clinicalarreynaga_web_tools_report_helper_Sexo') 								=> "Sexo", 		
 		strtolower('clinicalarreynaga_app_cxc_customer_divTxtNombres') 								=> "hidden",
 		strtolower('clinicalarreynaga_app_cxc_customer_divTxtApellidos') 			 				=> "hidden",		
 		strtolower('clinicalarreynaga_app_cxc_customer_divTxtNombreComercial') 			 			=> "hidden",
@@ -213,8 +277,9 @@ function getBehavio($type_company,$key_controller,$key_element)
 		",
 		
 		
+		
 		/*Chec extensiones*/
-		strtolower('chicextensiones_app_invoice_billing_divTxtCedula2') 							=> "hidden",		
+		strtolower('chicextensiones_app_invoice_billing_divTxtCedula2') 							=> "hidden", 		
 		strtolower('chicextensiones_app_invoice_billing_divTraslateElement') 						=> "
 				<script>
 					$(document).ready(function()
@@ -227,70 +292,89 @@ function getBehavio($type_company,$key_controller,$key_element)
 							
 					});
 				</script>
-		",
+		", 
 		
 		
 		/*Exceso*/
-		strtolower('exceso_app_inventory_item_labelBarCode')										=> "Barra / IMAI",
-		strtolower('exceso_app_inventory_item_divTxtCapacidad') 			 						=> "hidden",
-		strtolower('exceso_app_inventory_item_divTxtCantidadMinima') 								=> "hidden",
-		strtolower('exceso_app_inventory_item_divTxtCantidadMaxima') 								=> "hidden",
-		strtolower('exceso_app_inventory_item_divTxtSKUCompras') 			 						=> "hidden",
-		strtolower('exceso_app_inventory_item_divTxtSKUProduccion') 								=> "hidden",
-		strtolower('exceso_app_inventory_item_divTxtEstado') 			 							=> "hidden",
-		strtolower('exceso_app_inventory_item_divTxtFamilia') 			 							=> "hidden",
-		strtolower('exceso_app_inventory_item_divTxtUM') 			 								=> "hidden",
-		strtolower('exceso_app_inventory_item_divTxtPresentacion') 			 						=> "hidden",
-		strtolower('exceso_app_inventory_item_divTxtPresentacionUM') 								=> "hidden",
-		strtolower('exceso_app_inventory_item_divTxtUM') 			 								=> "hidden",
+		strtolower('exceso_app_inventory_item_labelBarCode')										=> "Barra / IMAI", 
+		strtolower('exceso_app_inventory_item_divTxtCapacidad') 			 						=> "hidden", 
+		strtolower('exceso_app_inventory_item_divTxtCantidadMinima') 								=> "hidden", 
+		strtolower('exceso_app_inventory_item_divTxtCantidadMaxima') 								=> "hidden", 
+		strtolower('exceso_app_inventory_item_divTxtSKUCompras') 			 						=> "hidden", 
+		strtolower('exceso_app_inventory_item_divTxtSKUProduccion') 								=> "hidden", 
+		strtolower('exceso_app_inventory_item_divTxtEstado') 			 							=> "hidden", 
+		strtolower('exceso_app_inventory_item_divTxtFamilia') 			 							=> "hidden", 
+		strtolower('exceso_app_inventory_item_divTxtUM') 			 								=> "hidden", 
+		strtolower('exceso_app_inventory_item_divTxtPresentacion') 			 						=> "hidden", 
+		strtolower('exceso_app_inventory_item_divTxtPresentacionUM') 								=> "hidden", 
 		
 		
-		/*GBT*/
-		strtolower('gbt_app_box_share_divResumenAbono')			 									=> "hidden",
-		strtolower('gbt_app_box_share_divStart')			 										=> "hidden",
-		strtolower('gbt_app_box_share_divFecha')			 										=> "hidden",
-		strtolower('gbt_app_box_share_divAplicado')			 										=> "hidden",
-		strtolower('gbt_app_box_share_divCambio')			 										=> "hidden",
-		strtolower('gbt_app_box_share_comboStyle')			 										=> "",
-		strtolower('gbt_app_box_share_javscriptVariable_varShareMountDefaultOfAmortization')		=> "false",
-		strtolower('gbt_app_box_share_TableColumnDocumento')										=> "hidden",
-		strtolower('gbt_app_box_share_btnVerMovimientos')											=> "hidden",
-		strtolower('gbt_app_box_share_javscriptVariable_varPrinterOnlyFormat')						=> "true",
-		strtolower('gbt_app_box_share_divCustomerControlBuscar')									=> "hidden",
-		strtolower('gbt_app_box_share_divCustomerControlSelected')									=> "",
-		strtolower('gbt_app_box_share_divCobrador')													=> "hidden",
-		strtolower('gbt_app_box_share_divMoneda')													=> "hidden",
 		
 		
 		/*KHADASH*/
-		strtolower('khadash_app_box_share_divResumenAbono')			 									=> "hidden",
-		strtolower('khadash_app_box_share_divStart')			 										=> "hidden",
-		strtolower('khadash_app_box_share_divFecha')			 										=> "hidden",
-		strtolower('khadash_app_box_share_divAplicado')			 										=> "hidden",
-		strtolower('khadash_app_box_share_divCambio')			 										=> "hidden",
-		strtolower('khadash_app_box_share_comboStyle')			 										=> "",
-		strtolower('khadash_app_box_share_javscriptVariable_varShareMountDefaultOfAmortization')		=> "false",
-		strtolower('khadash_app_box_share_TableColumnDocumento')										=> "hidden",
-		strtolower('khadash_app_box_share_btnVerMovimientos')											=> "hidden",
-		strtolower('khadash_app_box_share_javscriptVariable_varPrinterOnlyFormat')						=> "true",
-		strtolower('khadash_app_box_share_divCustomerControlBuscar')									=> "",
-		strtolower('khadash_app_box_share_divCustomerControlSelected')									=> "hidden",
-		strtolower('khadash_app_box_share_divCobrador')													=> "hidden",
-		strtolower('khadash_app_box_share_divMoneda')													=> "hidden"
+		strtolower('khadash_app_box_share_divResumenAbono')			 									=> "hidden", 
+		strtolower('khadash_app_box_share_divStart')			 										=> "hidden", 
+		strtolower('khadash_app_box_share_divFecha')			 										=> "hidden", 
+		strtolower('khadash_app_box_share_divAplicado')			 										=> "hidden", 
+		strtolower('khadash_app_box_share_divCambio')			 										=> "hidden", 
+		strtolower('khadash_app_box_share_comboStyle')			 										=> "", 
+		strtolower('khadash_app_box_share_javscriptVariable_varShareMountDefaultOfAmortization')		=> "false", 
+		strtolower('khadash_app_box_share_TableColumnDocumento')										=> "hidden", 
+		strtolower('khadash_app_box_share_btnVerMovimientos')											=> "hidden", 
+		strtolower('khadash_app_box_share_javscriptVariable_varPrinterOnlyFormat')						=> "true", 
+		strtolower('khadash_app_box_share_divCustomerControlBuscar')									=> "", 
+		strtolower('khadash_app_box_share_divCustomerControlSelected')									=> "hidden", 
+		strtolower('khadash_app_box_share_divCobrador')													=> "hidden", 
+		strtolower('khadash_app_box_share_divMoneda')													=> "hidden", 
+		
+		
+		/*Santa lucia ral state*/		
+		strtolower('luciaralstate_app_cxc_customer_Clasificacion')										=> "Propiedad",
+		strtolower('luciaralstate_app_cxc_customer_Categoria')											=> "Interes",
+		strtolower('luciaralstate_app_cxc_customer_Referencia1')										=> "Id Encuentra 24",
+		strtolower('luciaralstate_app_cxc_customer_Referencia2')										=> "Mensaje",
+		strtolower('luciaralstate_app_cxc_customer_Referencia3')										=> "Comentario 1",
+		strtolower('luciaralstate_app_cxc_customer_Referencia4')										=> "Comentario 2",
+		strtolower('luciaralstate_app_cxc_customer_Referencia5')										=> "Inmueble",
+		strtolower('luciaralstate_app_inventory_item_*Familia')													=> "Tipo de propiedad",
+		strtolower('luciaralstate_app_inventory_item_*Presentacion')											=> "Proposito",
+		strtolower('luciaralstate_app_inventory_item_Perecedero')												=> "Amueblado",
+		strtolower('luciaralstate_app_inventory_item_*UM. Presentacion')										=> "Disponible",
+		strtolower('luciaralstate_app_inventory_item_*SKU Compras')												=> "Baños",
+		strtolower('luciaralstate_app_inventory_item_*SKU Produccion')											=> "Habitaciones",
+		strtolower('luciaralstate_app_inventory_item_*Cantidad Minima')											=> "Niveles",
+		strtolower('luciaralstate_app_inventory_item_*Cantidad Maxima')											=> "Horas antes de visita",
+		strtolower('luciaralstate_app_inventory_item_Servicio')													=> "Disponible",		
+		strtolower('luciaralstate_app_inventory_item_*Categoria')												=> "Diseño de propiedad",
+		strtolower('luciaralstate_app_inventory_item_*Capacidad')												=> "Aires",		
+		strtolower('luciaralstate_app_inventory_item_Marca')													=> "Area de Contruccion M2",
+		strtolower('luciaralstate_app_inventory_item_Modelo')													=> "Area de Terreno VR2",
+		strtolower('luciaralstate_app_inventory_item_Serie ó MAI')												=> "ID Encuentra 24",		
+		strtolower('luciaralstate_app_inventory_item_labelBarCode')												=> "Pagina Web",
+		strtolower('luciaralstate_app_inventory_item_Descripcion')			 									=> "Direccion",
+		strtolower('luciaralstate_app_inventory_item_label_price_PUBLICO')			 							=> "PRECIO DE VENTA",
+		strtolower('luciaralstate_app_inventory_item_label_price_POR MAYOR')			 						=> "PRECIO DE RENTA",
+		strtolower('luciaralstate_app_inventory_item_label_price_CREDITO')			 							=> "----",
+		strtolower('luciaralstate_app_inventory_item_label_price_CREDITO POR MAYOR')			 				=> "----",
+		strtolower('luciaralstate_app_inventory_item_label_price_ESPECIAL')			 							=> "----"
+		
+		
+		
+		
 		
 	);
 	
 	
-	
+	//Comanda traducir es para los menu
+	//comportamiento del controlador
+	//si el key no existe regresa valor vacio
 	if($key_controller != "comand_traducir")
-	{
-		//comportamiento
-		//buscar comportamiento de la empresa
+	{		
 		$key = strtolower($type_company)."_".strtolower($key_controller)."_".strtolower($key_element);
 		if(!array_key_exists( $key, $divs) )
 		{
 			
-			//buscar comportamiento de la empresa
+			//si el key no existe, buscar el key para la empresa por defecto
 			$key = strtolower("default")."_".strtolower($key_controller)."_".strtolower($key_element);
 			if(!array_key_exists( $key, $divs) )
 			{	
@@ -304,21 +388,25 @@ function getBehavio($type_company,$key_controller,$key_element)
 		}
 		else 
 		{
+			//si el key exite buscar el valor del key
 			return $divs[$key];
 		}
 		
 	}
+	//Lenguaje
+	//Si el key no existe regrea el mismo valor
 	else 
 	{
-		//lenguaje
-		//buscar traduccion de la empresa
+		//lenguaje		
 		$key = strtolower($type_company)."_".strtolower($key_controller)."_".strtolower($key_element);
 		if(!array_key_exists( $key, $divs) )
 		{
+			//si el key no existe regrear el elemento
 			return $key_element;
 		}
 		else 
 		{
+			//si el key existe , retornar valor
 			return $divs[$key];
 		}
 	}

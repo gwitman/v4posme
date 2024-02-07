@@ -93,7 +93,7 @@
 													
 													
 													<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtPerecedero"); ?>">
-															<label class="col-lg-4 control-label" for="normal">Perecedero</label>
+															<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Perecedero"); ?></label>
 															<div class="col-lg-8">
 																<input type="checkbox"   name="txtIsPerishable" id="txtIsPerishable" value="1" >
 															</div>
@@ -114,14 +114,14 @@
 													</div>
 
 													<div class="form-group">
-															<label class="col-lg-4 control-label" for="normal">Servicio</label>
+															<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Servicio"); ?></label>
 															<div class="col-lg-8">
 																<input type="checkbox"   name="txtIsServices" id="txtIsServices" value="1"  >
 															</div>
 													</div>
 													
 													<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtCapacidad"); ?>  ">
-															<label class="col-lg-4 control-label" for="normal">*Capacidad</label>
+															<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","*Capacidad"); ?></label>
 															<div class="col-lg-8">
 																<input class="form-control"  type="text"  name="txtCapacity" id="txtCapacity" value="1">												
 															</div>
@@ -152,16 +152,25 @@
 													</div>
 													
 													<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtCantidadMinima"); ?>  ">
-															<label class="col-lg-4 control-label" for="normal">*Cantidad Minima</label>
+															<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","*Cantidad Minima"); ?></label>
 															<div class="col-lg-8">
 																<input class="form-control"  type="text"  name="txtQuantityMin" id="txtQuantityMin" value="1">												
 															</div>
 													</div>
 													
 													<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtCantidadMaxima"); ?>  ">
-															<label class="col-lg-4 control-label" for="normal">*Cantidad Maxima</label>
+															<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","*Cantidad Maxima"); ?></label>
 															<div class="col-lg-8">
-																<input class="form-control"  type="text"  name="txtQuantityMax" id="txtQuantityMax" value="1000">												
+																<input class="form-control"  type="text"  name="txtQuantityMax" id="txtQuantityMax" value="<?php 
+																	if($company->type == "luciaralstate")
+																	{
+																		echo "24";
+																	}
+																	else 
+																	{
+																		echo "1000";
+																	}
+																?>">												
 															</div>
 													</div>
 													
@@ -193,14 +202,14 @@
 													</div>
 													
 													<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtSKUCompras"); ?> ">
-															<label class="col-lg-4 control-label" for="normal">*SKU Compras</label>
+															<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","*SKU Compras"); ?></label>
 															<div class="col-lg-8">
 																<input class="form-control"  type="text"  name="txtFactorBox" id="txtFactorBox" value="1">												
 															</div>
 													</div>
 													
 													<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtSKUProduccion"); ?> ">
-															<label class="col-lg-4 control-label" for="normal">*SKU Produccion</label>
+															<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","*SKU Produccion"); ?></label>
 															<div class="col-lg-8">
 																<input class="form-control"  type="text"  name="txtFactorProgram" id="txtFactorProgram" value="1">												
 															</div>
@@ -224,7 +233,7 @@
 														</div>
 													</div>
 													<div class="form-group">
-														<label class="col-lg-4 control-label text-primary" for="selectFilter">*Categoria</label>
+														<label class="col-lg-4 control-label text-primary" for="selectFilter"><?php echo getBehavio($company->type,"app_inventory_item","*Categoria"); ?></label>
 														<div class="col-lg-8">
 															<select name="txtInventoryCategoryID" id="txtInventoryCategoryID" class="select2">
 																	<option></option>																
@@ -255,7 +264,7 @@
 														</div>
 													</div>
 													<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtFamilia"); ?> ">
-														<label class="col-lg-4 control-label" for="selectFilter">*Familia</label>
+														<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_inventory_item","*Familia"); ?></label>
 														<div class="col-lg-8">
 															<select name="txtFamilyID" id="txtFamilyID" class="select2">
 																	<option></option>																
@@ -295,7 +304,7 @@
 													</div>
 													
 													<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtPresentacion"); ?> ">
-														<label class="col-lg-4 control-label" for="selectFilter">*Presentacion</label>
+														<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_inventory_item","*Presentacion"); ?></label>
 														<div class="col-lg-8">
 															<select name="txtDisplayID" id="txtDisplayID" class="select2">
 																	<option></option>
@@ -387,24 +396,210 @@
 										</div>
 										<div class="tab-pane fade" id="profile">
 										
-												<div class="form-group">
-														<label class="col-lg-2 control-label" for="normal">Marca</label>
-														<div class="col-lg-5">
-															<input class="form-control"  type="text"  name="txtReference1" id="txtReference1" value="">												
+												<div class="row">	
+													<div class="col-lg-6">
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Marca"); ?></label>
+																<div class="col-lg-8">
+																	<input class="form-control"  type="text"  name="txtReference1" id="txtReference1" value="">												
+																</div>
+														</div>											
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Modelo"); ?></label>
+																<div class="col-lg-8">
+																	<input class="form-control"  type="text"  name="txtReference2" id="txtReference2" value="">												
+																</div>
 														</div>
-												</div>											
-												<div class="form-group">
-														<label class="col-lg-2 control-label" for="normal">Modelo</label>
-														<div class="col-lg-5">
-															<input class="form-control"  type="text"  name="txtReference2" id="txtReference2" value="">												
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Serie ó MAI"); ?></label>
+																<div class="col-lg-8">
+																	<input class="form-control"  type="text"  name="txtReference3" id="txtReference3" value="">												
+																</div>
+														</div>	
+
+													
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="normal">Baño de Servicio</label>
+															<div class="col-lg-8">
+																<input type="checkbox"   name="txtRealStateRoomBatchServices" id="txtRealStateRoomBatchServices" value="1" checked >
+															</div>
 														</div>
+														
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="normal">Cuarto de Servicio</label>
+															<div class="col-lg-8">
+																<input type="checkbox"   name="txtRealStateRoomServices" id="txtRealStateRoomServices" value="1" checked >
+															</div>
+														</div>
+														
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="normal">Walk In Closet</label>
+															<div class="col-lg-8">
+																<input type="checkbox"   name="txtRealStateWallInCloset" id="txtRealStateWallInCloset" value="1" checked >
+															</div>
+														</div>
+														
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="normal">Piscina Privada</label>
+															<div class="col-lg-8">
+																<input type="checkbox"   name="txtRealStatePiscinaPrivate" id="txtRealStatePiscinaPrivate" value="1" checked >
+															</div>
+														</div>
+														
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="normal">Piscina Club</label>
+															<div class="col-lg-8">
+																<input type="checkbox"   name="txtRealStateClubPiscina" id="txtRealStateClubPiscina" value="1" checked >
+															</div>
+														</div>
+														
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="normal">Acepta Mascota</label>
+															<div class="col-lg-8">
+																<input type="checkbox"   name="txtRealStateAceptanMascota" id="txtRealStateAceptanMascota" value="1" checked >
+															</div>
+														</div>
+														
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="normal">Corretaje</label>
+															<div class="col-lg-8">
+																<input type="checkbox"   name="txtRealStateContractCorrentaje" id="txtRealStateContractCorrentaje" value="1" checked >
+															</div>
+														</div>
+														
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="normal">Plan de Referido</label>
+															<div class="col-lg-8">
+																<input type="checkbox"   name="txtRealStatePlanReference" id="txtRealStatePlanReference" value="1" checked >
+															</div>
+														</div>
+														
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal">Link Youbue</label>
+																<div class="col-lg-8">
+																	<input class="form-control"  type="text"  name="txtRealStateLinkYoutube" id="txtRealStateLinkYoutube" value="">												
+																</div>
+														</div>
+
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal">Pagina Web</label>
+																<div class="col-lg-8">
+																	<input class="form-control"  type="text"  name="txtRealStateLinkPaginaWeb" id="txtRealStateLinkPaginaWeb" value="">												
+																</div>
+														</div>
+
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal">Fotos</label>
+																<div class="col-lg-8">
+																	<input class="form-control"  type="text"  name="txtRealStateLinkPhontos" id="txtRealStateLinkPhontos" value="">												
+																</div>
+														</div>
+
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal">Google Maps</label>
+																<div class="col-lg-8">
+																	<input class="form-control"  type="text"  name="txtRealStateLinkGoogleMaps" id="txtRealStateLinkGoogleMaps" value="">												
+																</div>
+														</div>
+
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal">Otros Link</label>
+																<div class="col-lg-8">
+																	<input class="form-control"  type="text"  name="txtRealStateLinkOther" id="txtRealStateLinkOther" value="">												
+																</div>
+														</div>
+
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal">Estilo de cocina</label>
+																<div class="col-lg-8">
+																	<input class="form-control"  type="text"  name="txtRealStateStyleKitchen" id="txtRealStateStyleKitchen" value="">												
+																</div>
+														</div>		
+														
+													</div>
+													
+													<div class="col-lg-6">
+															<div class="form-group">
+																<label class="col-lg-4 control-label" for="selectFilter">Pais</label>
+																<div class="col-lg-8">
+																	<select name="txtCountryID" id="txtCountryID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"   >
+																			<option></option>																
+																			<?php
+																			$count = 0;
+																			if($objListCountry)
+																			foreach($objListCountry as $ws){
+																				echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+																			}
+																			?>
+																	</select>
+																</div>
+															</div>
+															<div class="form-group">
+																<label class="col-lg-4 control-label" for="selectFilter">Departamento</label>
+																<div class="col-lg-8">
+																	<select name="txtStateID" id="txtStateID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"   >
+																			<option></option>				
+																	</select>
+																</div>
+															</div>
+															<div class="form-group">
+																<label class="col-lg-4 control-label" for="selectFilter">Municipio</label>
+																<div class="col-lg-8">
+																	<select name="txtCityID" id="txtCityID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"   >
+																			<option></option>				
+																	</select>
+																</div>
+															</div>
+															
+															<div class="form-group">
+																	<label class="col-lg-4 control-label" for="normal">Ubicacion</label>
+																	<div class="col-lg-8">
+																		<input class="form-control"  type="text"  name="txtRealStateReferenceUbicacion" id="txtRealStateReferenceUbicacion" value="">												
+																	</div>
+															</div>
+															
+															<div class="form-group">
+																	<label class="col-lg-4 control-label" for="normal">Condominio</label>
+																	<div class="col-lg-8">
+																		<input class="form-control"  type="text"  name="txtRealStateReferenceCondominio" id="txtRealStateReferenceCondominio" value="">												
+																	</div>
+															</div>
+															
+															<div class="form-group">
+																	<label class="col-lg-4 control-label" for="normal">Zona</label>
+																	<div class="col-lg-8">
+																		<input class="form-control"  type="text"  name="txtRealStateReferenceZone" id="txtRealStateReferenceZone" value="">												
+																	</div>
+															</div>
+															
+															<div class="form-group">
+																<label class="col-lg-4 control-label" for="buttons">Agente</label>
+																<div class="col-lg-8">
+																	<div class="input-group">
+																		<input type="hidden" id="txtEmployerID" name="txtEmployerID" value="">
+																		<input class="form-control" readonly id="txtEmployerDescription" type="txtEmployerDescription" value="">
+																		
+																		<span class="input-group-btn">
+																			<button class="btn btn-danger" type="button" id="btnClearEmployer">
+																				<i aria-hidden="true" class="i-undo-2"></i>
+																				clear
+																			</button>
+																		</span>
+																		<span class="input-group-btn">
+																			<button class="btn btn-primary" type="button" id="btnSearchEmployer">
+																				<i aria-hidden="true" class="i-search-5"></i>
+																				buscar
+																			</button>
+																		</span>											
+																	</div>
+																</div>
+															</div>
+															
+															
+													</div>
+												
+												
 												</div>
-												<div class="form-group">
-														<label class="col-lg-2 control-label" for="normal">Serie ó MAI</label>
-														<div class="col-lg-5">
-															<input class="form-control"  type="text"  name="txtReference3" id="txtReference3" value="">												
-														</div>
-												</div>												
 										
 										</div>
 										<div class="tab-pane fade" id="warehouse">
@@ -497,7 +692,7 @@
 										<div class="tab-pane fade" id="dropdown">
 											
 												<div class="form-group">
-		                                            <label class="col-lg-2 control-label" for="normal">Descripcion</label>
+		                                            <label class="col-lg-2 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Descripcion"); ?></label>
 		                                            <div class="col-lg-6">
 		                                                <textarea class="form-control"  id="txtDescription" name="txtDescription" rows="6"></textarea>
 		                                            </div>
@@ -527,7 +722,7 @@
 																		<td>
 																			<input type="hidden" class="txtDetailListPriceID" name="txtDetailListPriceID[]" value="<?php echo $objParameterListPreiceDefault; ?>"></input>
 																			<input type="hidden" class="txtDetailTypePriceID" name="txtDetailTypePriceID[]" value="<?php echo $ws->catalogItemID; ?>"></input>																			
-																			<?php echo getBehavio($company->type,"comand_traducir",$ws->name); ?> 
+																			<?php echo getBehavio($company->type,"app_inventory_item_label_price",$ws->name); ?> 
 																		</td>																		
 																		<td>
 																			<input class="form-control"  type="text" id="txtDetailTypePriceValue" name="txtDetailTypePriceValue[]" value="0">

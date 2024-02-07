@@ -41,7 +41,18 @@
 					$( "#form-new-account-journal" ).submit();
 				}
 				
-		});						
+		});		
+		//Buscar Colagorador
+		$(document).on("click","#btnSearchEmployer",function(){
+			var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentEmployer->componentID; ?>/onCompleteEmployee/SELECCIONAR_EMPLOYEE/true/empty/false/not_redirect_when_empty";
+			window.open(url_request,"MsgWindow","width=900,height=450");
+			window.onCompleteEmployee = onCompleteEmployee; 
+		});
+		//Eliminar Colaborador
+		$(document).on("click","#btnClearEmployer",function(){
+					$("#txtEmployerID").val("");
+					$("#txtEmployerDescription").val("");
+		});				
 		$(document).on("click","#btnNewDetailWarehouse",function(){
 				var objData 					= {};
 				objData.warehouseID 		 	= $("#txtTempWarehouseID").val();								
@@ -97,8 +108,83 @@
 				objRowSku	 = this;
 				fnTableSelectedRow(this,event);
 		});
+		$("#txtCountryID").change(function(){
+			fnWaitOpen();
+			$.ajax({									
+				cache       : false,
+				dataType    : 'json',
+				type        : 'POST',
+				data 		: { catalogItemID : $(this).val() },
+				url  		: "<?php echo base_url(); ?>/app_catalog_api/getCatalogItemByState",
+				success:function(data){
+					console.info("call app_catalog_api/getCatalogItemByState")
+					fnWaitClose();
+					
+					
+					$("#txtStateID").html("");
+					$("#txtStateID").append("<option value=''>N/D</option>");
+					
+					if(userMobile != '1')
+					$("#txtStateID").select2();
+				
+					$("#txtCityID").html("");
+					
+					if(userMobile != '1')
+					$("#txtCityID").select2();
+					
+					
+					if(data.catalogItems == null)
+					return;
+					
+					$.each(data.catalogItems,function(i,obj){						
+						$("#txtStateID").append("<option value='"+obj.catalogItemID+"'>"+obj.name+"</option>");
+					});
+				},
+				error:function(xhr,data){									
+					fnShowNotification(data.message,"error");
+					fnWaitClose();
+				}
+			});
+		});
+		$("#txtStateID").change(function(){
+			fnWaitOpen();
+			$.ajax({									
+				cache       : false,
+				dataType    : 'json',
+				type        : 'POST',
+				data 		: { catalogItemID : $(this).val() },
+				url  		: "<?php echo base_url(); ?>/app_catalog_api/getCatalogItemByCity",
+				success:function(data){
+					console.info("call app_catalog_api/getCatalogItemByCity")
+					fnWaitClose();
+					$("#txtCityID").html("");
+					$("#txtCityID").append("<option value=''>N/D</option>");
+					
+					if(userMobile != '1')
+					$("#txtCityID").select2();
+					
+					if(data.catalogItems == null)
+					return;
+					
+					$.each(data.catalogItems,function(i,obj){
+						$("#txtCityID").append("<option value='"+obj.catalogItemID+"'>"+obj.name+"</option>");
+					});
+				},
+				error:function(xhr,data){									
+					fnShowNotification(data.message,"error");
+					fnWaitClose();
+				}
+			});
+		});
 	
 	});
+	
+	function onCompleteEmployee(objResponse)
+	{		
+			$("#txtEmployerID").val(objResponse[2]);
+			$("#txtEmployerDescription").val(objResponse[3] + " / " + objResponse[4]);			
+	}
+	
 	function validateForm(){
 		var result 				= true;
 		var timerNotification 	= 15000;

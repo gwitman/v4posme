@@ -38,7 +38,23 @@ class Item_Model extends Model  {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_item");
 		$sql = "";
-		$sql = sprintf("select i.companyID, i.branchID, i.inventoryCategoryID, i.itemID, i.familyID, i.itemNumber, i.barCode, i.name, i.description, i.unitMeasureID, i.displayID, i.capacity, i.displayUnitMeasureID, i.defaultWarehouseID, i.quantity, i.quantityMax, i.quantityMin, i.cost, i.reference1, i.reference2, i.statusID, i.isPerishable, i.factorBox, i.factorProgram, i.createdIn, i.createdAt, i.createdBy, i.createdOn, i.isActive,i.isInvoiceQuantityZero,i.isServices,i.currencyID,i.isInvoice,i.reference3 ");
+		$sql = sprintf("select 
+			i.companyID, i.branchID, i.inventoryCategoryID, i.itemID, 
+			i.familyID, i.itemNumber, i.barCode, i.name, i.description, 
+			i.unitMeasureID, i.displayID, i.capacity, i.displayUnitMeasureID, 
+			i.defaultWarehouseID, i.quantity, i.quantityMax, i.quantityMin, 
+			i.cost, i.reference1, i.reference2, i.statusID, i.isPerishable, 
+			i.factorBox, i.factorProgram, i.createdIn, i.createdAt, i.createdBy, 
+			i.createdOn, i.isActive,i.isInvoiceQuantityZero,i.isServices,
+			i.currencyID,i.isInvoice,i.reference3,
+			i.realStateWallInCloset,i.realStatePiscinaPrivate,i.realStateClubPiscina,
+			i.realStateAceptanMascota,i.realStateContractCorrentaje,i.realStatePlanReference,
+			i.realStateLinkYoutube,i.realStateLinkPaginaWeb,i.realStateLinkPhontos,
+			i.realStateLinkGoogleMaps,i.realStateLinkOther,i.realStateStyleKitchen ,
+			i.realStateRoomServices,i.realStateRoomBatchServices,
+			i.realStateCityID,i.realStateStateID,i.realStateCountryID,i.realStateEmployerAgentID,i.realStateReferenceCondominio,
+			i.realStateReferenceZone,i.realStateReferenceUbicacion
+		");
 		$sql = $sql.sprintf(" from tb_item i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
 		$sql = $sql.sprintf(" and i.itemNumber = '$itemNumber' ");
@@ -51,7 +67,24 @@ class Item_Model extends Model  {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_item");
 		$sql = "";
-		$sql = sprintf("select i.companyID, i.branchID, i.inventoryCategoryID, i.itemID, i.familyID, i.itemNumber, i.barCode, i.name, i.description, i.unitMeasureID, i.displayID, i.capacity, i.displayUnitMeasureID, i.defaultWarehouseID, i.quantity, i.quantityMax, i.quantityMin, i.cost, i.reference1, i.reference2, i.statusID, i.isPerishable, i.factorBox, i.factorProgram, i.createdIn, i.createdAt, i.createdBy, i.createdOn, i.isActive,i.isInvoiceQuantityZero,i.isServices,i.currencyID,i.isInvoice,i.reference3 ");
+		$sql = sprintf("select 
+			i.companyID, i.branchID, i.inventoryCategoryID, 
+			i.itemID, i.familyID, i.itemNumber, i.barCode, i.name, 
+			i.description, i.unitMeasureID, i.displayID, i.capacity, 
+			i.displayUnitMeasureID, i.defaultWarehouseID, i.quantity, 
+			i.quantityMax, i.quantityMin, i.cost, i.reference1, i.reference2, 
+			i.statusID, i.isPerishable, i.factorBox, i.factorProgram, i.createdIn, 
+			i.createdAt, i.createdBy, i.createdOn, i.isActive,
+			i.isInvoiceQuantityZero,i.isServices,i.currencyID,i.isInvoice,
+			i.reference3 ,
+			i.realStateWallInCloset,i.realStatePiscinaPrivate,i.realStateClubPiscina,
+			i.realStateAceptanMascota,i.realStateContractCorrentaje,i.realStatePlanReference,
+			i.realStateLinkYoutube,i.realStateLinkPaginaWeb,i.realStateLinkPhontos,
+			i.realStateLinkGoogleMaps,i.realStateLinkOther,i.realStateStyleKitchen ,
+			i.realStateRoomServices,i.realStateRoomBatchServices,
+			i.realStateCityID,i.realStateStateID,i.realStateCountryID,i.realStateEmployerAgentID,i.realStateReferenceCondominio,
+			i.realStateReferenceZone,i.realStateReferenceUbicacion
+		");
 		$sql = $sql.sprintf(" from tb_item i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
 		$sql = $sql.sprintf(" and i.barCode = '$itemNumber' ");
@@ -64,7 +97,25 @@ class Item_Model extends Model  {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_item");
 		$sql = "";
-		$sql = sprintf("select i.companyID, i.branchID, i.inventoryCategoryID, i.itemID, i.familyID, i.itemNumber, i.barCode, i.name, i.description, i.unitMeasureID, i.displayID, i.capacity, i.displayUnitMeasureID, i.defaultWarehouseID, i.quantity, i.quantityMax, i.quantityMin, i.cost, i.reference1, i.reference2, i.statusID, i.isPerishable, i.factorBox, i.factorProgram, i.createdIn, i.createdAt, i.createdBy, i.createdOn, i.isActive,i.isInvoiceQuantityZero,i.isServices,i.currencyID,i.isInvoice,i.reference3 ");
+		$sql = sprintf("
+		select 
+			i.companyID, i.branchID, i.inventoryCategoryID, 
+			i.itemID, i.familyID, i.itemNumber, i.barCode, i.name, 
+			i.description, i.unitMeasureID, i.displayID, i.capacity, 
+			i.displayUnitMeasureID, i.defaultWarehouseID, i.quantity, 
+			i.quantityMax, i.quantityMin, i.cost, i.reference1, 
+			i.reference2, i.statusID, i.isPerishable, i.factorBox, 
+			i.factorProgram, i.createdIn, i.createdAt, i.createdBy,
+			i.createdOn, i.isActive,i.isInvoiceQuantityZero,i.isServices,
+			i.currencyID,i.isInvoice,i.reference3 ,
+			i.realStateWallInCloset,i.realStatePiscinaPrivate,i.realStateClubPiscina,
+			i.realStateAceptanMascota,i.realStateContractCorrentaje,i.realStatePlanReference,
+			i.realStateLinkYoutube,i.realStateLinkPaginaWeb,i.realStateLinkPhontos,
+			i.realStateLinkGoogleMaps,i.realStateLinkOther,i.realStateStyleKitchen ,
+			i.realStateRoomServices,i.realStateRoomBatchServices,
+			i.realStateCityID,i.realStateStateID,i.realStateCountryID,i.realStateEmployerAgentID,i.realStateReferenceCondominio,
+			i.realStateReferenceZone,i.realStateReferenceUbicacion
+		");
 		$sql = $sql.sprintf(" from tb_item i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
 		$sql = $sql.sprintf(" and i.barCode like '%s' ","%$itemNumber%");
@@ -79,7 +130,23 @@ class Item_Model extends Model  {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_item");    
 		$sql = "";
-		$sql = sprintf("select i.companyID, i.branchID, i.inventoryCategoryID, i.itemID, i.familyID, i.itemNumber, i.barCode, i.name, i.description, i.unitMeasureID, i.displayID, i.capacity, i.displayUnitMeasureID, i.defaultWarehouseID, i.quantity, i.quantityMax, i.quantityMin, i.cost, i.reference1, i.reference2, i.statusID, i.isPerishable, i.factorBox, i.factorProgram, i.createdIn, i.createdAt, i.createdBy, i.createdOn, i.isActive,i.isInvoiceQuantityZero,i.isServices,i.currencyID,i.isInvoice,i.reference3 ");
+		$sql = sprintf("select 
+			i.companyID, i.branchID, i.inventoryCategoryID, i.itemID, 
+			i.familyID, i.itemNumber, i.barCode, i.name, i.description, 
+			i.unitMeasureID, i.displayID, i.capacity, i.displayUnitMeasureID, 
+			i.defaultWarehouseID, i.quantity, i.quantityMax, i.quantityMin, 
+			i.cost, i.reference1, i.reference2, i.statusID, i.isPerishable, 
+			i.factorBox, i.factorProgram, i.createdIn, i.createdAt, 
+			i.createdBy, i.createdOn, i.isActive,i.isInvoiceQuantityZero,
+			i.isServices,i.currencyID,i.isInvoice,i.reference3 ,
+			i.realStateWallInCloset,i.realStatePiscinaPrivate,i.realStateClubPiscina,
+			i.realStateAceptanMascota,i.realStateContractCorrentaje,i.realStatePlanReference,
+			i.realStateLinkYoutube,i.realStateLinkPaginaWeb,i.realStateLinkPhontos,
+			i.realStateLinkGoogleMaps,i.realStateLinkOther,i.realStateStyleKitchen ,
+			i.realStateRoomServices,i.realStateRoomBatchServices,
+			i.realStateCityID,i.realStateStateID,i.realStateCountryID,i.realStateEmployerAgentID,i.realStateReferenceCondominio,
+			i.realStateReferenceZone,i.realStateReferenceUbicacion
+		");
 		$sql = $sql.sprintf(" from tb_item i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
 		$sql = $sql.sprintf(" and i.itemID = $itemID");
@@ -93,7 +160,23 @@ class Item_Model extends Model  {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_item");    
 		$sql = "";
-		$sql = sprintf("select i.companyID, i.branchID, i.inventoryCategoryID, i.itemID, i.familyID, i.itemNumber, i.barCode, i.name, i.description, i.unitMeasureID, i.displayID, i.capacity, i.displayUnitMeasureID, i.defaultWarehouseID, i.quantity, i.quantityMax, i.quantityMin, i.cost, i.reference1, i.reference2, i.statusID, i.isPerishable, i.factorBox, i.factorProgram, i.createdIn, i.createdAt, i.createdBy, i.createdOn, i.isActive,i.isInvoiceQuantityZero,i.isServices,i.currencyID,i.isInvoice,i.reference3 ");
+		$sql = sprintf("select 
+				i.companyID, i.branchID, i.inventoryCategoryID, 
+				i.itemID, i.familyID, i.itemNumber, i.barCode, i.name, i.description, 
+				i.unitMeasureID, i.displayID, i.capacity, i.displayUnitMeasureID, 
+				i.defaultWarehouseID, i.quantity, i.quantityMax, i.quantityMin, 
+				i.cost, i.reference1, i.reference2, i.statusID, i.isPerishable, 
+				i.factorBox, i.factorProgram, i.createdIn, i.createdAt, 
+				i.createdBy, i.createdOn, i.isActive,i.isInvoiceQuantityZero,
+				i.isServices,i.currencyID,i.isInvoice,i.reference3 ,
+				i.realStateWallInCloset,i.realStatePiscinaPrivate,i.realStateClubPiscina,
+				i.realStateAceptanMascota,i.realStateContractCorrentaje,i.realStatePlanReference,
+				i.realStateLinkYoutube,i.realStateLinkPaginaWeb,i.realStateLinkPhontos,
+				i.realStateLinkGoogleMaps,i.realStateLinkOther,i.realStateStyleKitchen ,
+				i.realStateRoomServices,i.realStateRoomBatchServices,
+				i.realStateCityID,i.realStateStateID,i.realStateCountryID,i.realStateEmployerAgentID,i.realStateReferenceCondominio,
+				i.realStateReferenceZone,i.realStateReferenceUbicacion
+		");
 		$sql = $sql.sprintf(" from tb_item i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
 		$sql = $sql.sprintf(" and i.itemID = $itemID");		
@@ -106,7 +189,22 @@ class Item_Model extends Model  {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_item");    
 		
-		$builder->select("companyID, branchID, inventoryCategoryID, itemID, familyID, itemNumber, barCode, name, description, unitMeasureID, displayID, capacity, displayUnitMeasureID, defaultWarehouseID, quantity, quantityMax, quantityMin, cost, reference1, reference2, statusID, isPerishable, factorBox, factorProgram, createdIn, createdAt, createdBy, createdOn, isActive,isInvoiceQuantityZero,isServices,i.currencyID,i.isInvoice,i.reference3");		
+		$builder->select("
+			companyID, branchID, inventoryCategoryID, itemID, familyID, 
+			itemNumber, barCode, name, description, unitMeasureID, displayID, 
+			capacity, displayUnitMeasureID, defaultWarehouseID, quantity, 
+			quantityMax, quantityMin, cost, reference1, reference2, 
+			statusID, isPerishable, factorBox, factorProgram, createdIn, createdAt, createdBy, 
+			createdOn, isActive,isInvoiceQuantityZero,isServices,currencyID,isInvoice,
+			reference3,
+			realStateWallInCloset,realStatePiscinaPrivate,realStateClubPiscina,
+			realStateAceptanMascota,realStateContractCorrentaje,realStatePlanReference,
+			realStateLinkYoutube,realStateLinkPaginaWeb,realStateLinkPhontos,
+			realStateLinkGoogleMaps,realStateLinkOther,realStateStyleKitchen ,
+			realStateRoomServices,realStateRoomBatchServices,
+			realStateCityID,realStateStateID,realStateCountryID,realStateEmployerAgentID,realStateReferenceCondominio,
+			realStateReferenceZone,realStateReferenceUbicacion
+		");		
 		$builder->where("companyID",$companyID);
 		$builder->whereIn("itemID",$listItem);
 		$builder->where("isActive",1);		
@@ -118,7 +216,24 @@ class Item_Model extends Model  {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_item");    
 		$sql = "";
-		$sql = sprintf("select i.companyID, i.branchID, i.inventoryCategoryID, i.itemID, i.familyID, i.itemNumber, i.barCode, i.name, i.description, i.unitMeasureID, i.displayID, i.capacity, i.displayUnitMeasureID, i.defaultWarehouseID, i.quantity, i.quantityMax, i.quantityMin, i.cost, i.reference1, i.reference2, i.statusID, i.isPerishable, i.factorBox, i.factorProgram, i.createdIn, i.createdAt, i.createdBy, i.createdOn, i.isActive,i.isInvoiceQuantityZero,i.isServices,i.currencyID,i.isInvoice,i.reference3");
+		$sql = sprintf("select 
+				i.companyID, i.branchID, i.inventoryCategoryID, i.itemID, i.familyID, i.itemNumber, 
+				i.barCode, i.name, i.description, i.unitMeasureID, i.displayID, 
+				i.capacity, i.displayUnitMeasureID, i.defaultWarehouseID, 
+				i.quantity, i.quantityMax, i.quantityMin, i.cost, 
+				i.reference1, i.reference2, i.statusID, 
+				i.isPerishable, i.factorBox, i.factorProgram, i.createdIn, i.createdAt, 
+				i.createdBy, i.createdOn, i.isActive,i.isInvoiceQuantityZero,
+				i.isServices,i.currencyID,i.isInvoice,i.reference3,				
+				i.realStateWallInCloset,i.realStatePiscinaPrivate,i.realStateClubPiscina,
+				i.realStateAceptanMascota,i.realStateContractCorrentaje,i.realStatePlanReference,
+				i.realStateLinkYoutube,i.realStateLinkPaginaWeb,i.realStateLinkPhontos,
+				i.realStateLinkGoogleMaps,i.realStateLinkOther,i.realStateStyleKitchen,
+				i.realStateRoomServices,i.realStateRoomBatchServices,
+				i.realStateCityID,i.realStateStateID,i.realStateCountryID,i.realStateEmployerAgentID,i.realStateReferenceCondominio,
+				i.realStateReferenceZone,i.realStateReferenceUbicacion
+			
+		");
 		$sql = $sql.sprintf(" from tb_item i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
 		$sql = $sql.sprintf(" and i.isActive= 1");		

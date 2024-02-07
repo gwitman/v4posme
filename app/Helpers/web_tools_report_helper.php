@@ -1624,7 +1624,7 @@ function helper_reporteA4TransactionMasterOutherOutputGlobalPro(
     $type    		= pathinfo($path, PATHINFO_EXTENSION);
     $data    		= file_get_contents($path);
     $base64  		= 'data:image/' . $type . ';base64,' . base64_encode($data);
-    $numberDocument = strtoupper($objTransactionMastser->transactionNumber) ;
+    $numberDocument =  str_replace("OSS", "Ajuste de Salida ", strtoupper($objTransactionMastser->transactionNumber) ); ;
 	$tipoDocumento  = "SALIDA DE INVENTARIO";
 	
 	
@@ -9095,9 +9095,9 @@ function helper_reporteA4TransactionMasterExamenLab(
 							  <td  style='text-align:left;width: auto;' >".$objEntidadNatural->firstName."</td>							  
 							  <td  style='text-align:left;width: 25px;' >Fecha:</td>
 							  <td  style='text-align:left;width: 160px;' >".$objTransactionMastser->statusIDChangeOn."</td>
-							  <td  style='text-align:left;width: 25px;' >".getBehavio($objCompany->type,"comand_traducir","Edad").":</td>
+							  <td  style='text-align:left;width: 25px;' >".getBehavio($objCompany->type,"web_tools_report_helper","Edad").":</td>
 							  <td  style='text-align:left;width: 25px;' >".$objEdad->name."</td>
-							  <td  style='text-align:left;width: 25px;' >".getBehavio($objCompany->type,"comand_traducir","Sexo").":</td>
+							  <td  style='text-align:left;width: 25px;' >".getBehavio($objCompany->type,"web_tools_report_helper","Sexo").":</td>
 							  <td  style='text-align:left;width: 25px;' >".$objSexo->name."</td>
 							</tr>
 							<tr>
