@@ -71,9 +71,7 @@
                 <input type="checkbox" id="inputCheckbox" name="remember">
                 <label for="inputCheckbox">Recordarme</label>
               </div>
-              <a class="pull-xs-right" href="forgot-password.html">Reenviar Contraseña? 
-				<?php /*echo getBehavio("fidlocal","core_account","idtest");*/ ?> 
-				<?php /*echo lang('Posme'.strtoupper('_').'_'.'FACTURACIONT');*/ ?> 
+              <a class="pull-xs-right" href="forgot-password.html">Reenviar Contraseña? 				
 			  </a>
             </div>
             <div class="form-group clearfix">
