@@ -55,8 +55,7 @@ function getBehavio($type_company,$key_controller,$key_element)
 		strtolower('default_app_cxc_customer_divTxtNombreComercial') 			 					=> "",
 		strtolower('default_app_cxc_customer_divTxtEstado') 										=> "",
 		strtolower('default_app_cxc_customer_divTxtClasificacion') 									=> "",
-		strtolower('default_app_cxc_customer_divTxtTipo') 			 								=> "",
-		strtolower('default_app_cxc_customer_divTxtCategoria') 										=> "",
+		strtolower('default_app_cxc_customer_divTxtTipo') 			 								=> "",		
 		strtolower('default_app_cxc_customer_divTxtSubCategoria') 			 						=> "",
 		strtolower('default_app_cxc_customer_divTxtEstadoCivil') 			 						=> "",
 		strtolower('default_app_cxc_customer_divTxtProfesionUFicio') 			 					=> "",
@@ -72,17 +71,8 @@ function getBehavio($type_company,$key_controller,$key_element)
 		strtolower('default_app_invoice_billing_divTxtCliente2') 			 						=> "",		
 		strtolower('default_app_inventory_item_divTxtBarCode') 										=> "",
 		strtolower('default_app_inventory_item_divTxtPerecedero') 			 						=> "",	
-		strtolower('default_app_inventory_item_divTraslateElementTablePrecio') 						=> "",		
-		strtolower('default_app_cxc_customer_divTxtNombres') 										=> "",
-		strtolower('default_app_cxc_customer_divTxtApellidos') 			 							=> "",		
-		strtolower('default_app_cxc_customer_divTxtNombreComercial') 			 					=> "",
-		strtolower('default_app_cxc_customer_divTxtEstado') 										=> "",
-		strtolower('default_app_cxc_customer_divTxtClasificacion') 									=> "",
-		strtolower('default_app_cxc_customer_divTxtTipo') 			 								=> "",
-		strtolower('default_app_cxc_customer_divTxtCategoria') 										=> "",
-		strtolower('default_app_cxc_customer_divTxtSubCategoria') 			 						=> "",
-		strtolower('default_app_cxc_customer_divTxtEstadoCivil') 			 						=> "",
-		strtolower('default_app_cxc_customer_divTxtProfesionUFicio') 			 					=> "",			
+		strtolower('default_app_inventory_item_divTraslateElementTablePrecio') 						=> "",				
+		strtolower('default_app_cxc_customer_divTxtCategoria') 										=> "",		
 		strtolower('default_app_inventory_inputunpost_new_script_validate_reference1')				=> "",
 		strtolower('default_app_purchase_pedidos_divDllEstado')										=> "",
 		strtolower('default_web_tools_report_helper_Edad') 											=> "Edad", 		
@@ -110,27 +100,8 @@ function getBehavio($type_company,$key_controller,$key_element)
 		strtolower('default_app_inventory_item_Modelo')												=> "Modelo",
 		strtolower('default_app_inventory_item_Serie ó MAI')										=> "Serie o MAI",		
 		
-		
-		
-		
-		/*Ferreteria Mateo*/
-		strtolower('ferreteria_mateo_app_invoice_billing_bodyListInvoice')	 		=> "height: 550px; overflow: scroll;",
-		strtolower('ferreteria_mateo_app_box_share_stylePage')	 					=> "
-			/*posMe stylePage*/
-			#content .row{
-				margin-bottom:0px !important;
-			}
-			.email-bar{
-			    margin-bottom:0px !important;
-			}
-			.form-group{
-				margin-bottom:0px !important;
-			}
-			.si_ferreteria_mateo{
-				display:none !important;
-			}
-		",
-		
+	
+	
 		
 		/*GlobalPro*/
 		strtolower('globalpro_core_web_menu_O. SALIDAS')			 				=> "AJUSTE SALIDA",
@@ -159,14 +130,7 @@ function getBehavio($type_company,$key_controller,$key_element)
 		strtolower('globalpro_app_invoice_billing_divTxtMoneda') 			 		=> "hidden",		
 		strtolower('globalpro_app_invoice_billing_divTxtCliente2') 			 		=> "hidden",
 		strtolower('globalpro_app_invoice_billing_divTxtCedula2') 					=> "hidden",
-		strtolower('globalpro_app_invoice_billing_divTraslateElement') 	=> "
-				<script>
-					$(document).ready(function(){							
-							$('#divVendedor').appendTo('#divInformacionLeft');
-							$('#divBodega').appendTo('#divInformacionLeft');
-					});
-				</script>
-		",
+		
 		
 		
 		strtolower('globalpro_app_inventory_item_divTxtBarCode') 					=> "hidden",
@@ -181,68 +145,33 @@ function getBehavio($type_company,$key_controller,$key_element)
 		strtolower('globalpro_app_inventory_item_divTxtUM') 			 			=> "hidden",
 		strtolower('globalpro_app_inventory_item_divTxtPresentacion') 			 	=> "hidden",
 		strtolower('globalpro_app_inventory_item_divTxtPresentacionUM') 			=> "hidden",
-		strtolower('globalpro_app_inventory_item_divTxtUM') 			 			=> "hidden",		
-		strtolower('globalpro_app_inventory_item_divTraslateElementTablePrecio') 	=> "
-				<script>
-					$(document).ready(function(){
-							$('#btnPrice').parent().remove();
-							$('#tblPrecios').appendTo('#divContainerRowPersonalization');
-					});
-				</script>
-		",
+		strtolower('globalpro_app_inventory_item_divTxtUM') 			 			=> "hidden",	
 		
 		
-		
-		strtolower('globalpro_app_cxc_customer_divTxtNombres') 								=> "hidden",
-		strtolower('globalpro_app_cxc_customer_divTxtApellidos') 			 				=> "hidden",		
-		strtolower('globalpro_app_cxc_customer_divTxtNombreComercial') 			 			=> "hidden",
-		strtolower('globalpro_app_cxc_customer_divTxtEstado') 								=> "hidden",
-		strtolower('globalpro_app_cxc_customer_divTxtClasificacion') 						=> "hidden",
-		strtolower('globalpro_app_cxc_customer_divTxtTipo') 			 					=> "hidden",
-		strtolower('globalpro_app_cxc_customer_divTxtCategoria') 							=> "hidden",
-		strtolower('globalpro_app_cxc_customer_divTxtSubCategoria') 			 			=> "hidden",
-		strtolower('globalpro_app_cxc_customer_divTxtEstadoCivil') 			 				=> "hidden",
-		strtolower('globalpro_app_cxc_customer_divTxtProfesionUFicio') 			 			=> "hidden",
-		strtolower('globalpro_app_cxc_customer_divScriptCustom') 							=> "
-				<script>
-					$(document).ready(function(){
-							
-							$('#txtSexoID').val('');
-							$('#txtSexoID').trigger('change');
-							
-							$(document).on('focusout','#txtLegalName',function(){
-									
-									var varLegalName 	= $('#txtLegalName').val();
-									$('#txtFirstName').val(  varLegalName  );
-									$('#txtLastName').val(  varLegalName  );
-									$('#txtCommercialName').val(  varLegalName  );
-									
-							});
-							
-					});
-				</script>
-		",
-		
-		strtolower('globalpro_app_box_share_labelReference1')			 				=> "Atiende",
-		strtolower('globalpro_app_box_share_new_script_validate_reference1')			=> "
-			//Validar Atiende
-			if($('#txtReference1').val() == ''){
-				fnShowNotification('Escriba quien le atiende','error',timerNotification);
-				result = false;
-			}
-		",		
-		strtolower('globalpro_app_inventory_inputunpost_new_script_validate_reference1')			=> "
-			//Validar Referecia 1
-			if($('#txtReference1').val() == ''){
-				fnShowNotification('Escriba Referencia 1 es obligatoria','error',timerNotification);
-				result = false;
-			}
-		",
+		strtolower('globalpro_app_cxc_customer_divTxtNombres') 										=> "hidden",
+		strtolower('globalpro_app_cxc_customer_divTxtApellidos') 			 						=> "hidden",		
+		strtolower('globalpro_app_cxc_customer_divTxtNombreComercial') 			 					=> "hidden",
+		strtolower('globalpro_app_cxc_customer_divTxtEstado') 										=> "hidden",
+		strtolower('globalpro_app_cxc_customer_divTxtClasificacion') 								=> "hidden",
+		strtolower('globalpro_app_cxc_customer_divTxtTipo') 			 							=> "hidden",
+		strtolower('globalpro_app_cxc_customer_divTxtCategoria') 									=> "hidden",
+		strtolower('globalpro_app_cxc_customer_divTxtSubCategoria') 			 					=> "hidden",
+		strtolower('globalpro_app_cxc_customer_divTxtEstadoCivil') 			 						=> "hidden",
+		strtolower('globalpro_app_cxc_customer_divTxtProfesionUFicio') 			 					=> "hidden",
+		strtolower('globalpro_app_box_share_labelReference1')			 							=> "Atiende",		
 		strtolower('globalpro_app_inventory_transferoutput_parameterValidarEnvioDestino')			=> "true",
 		strtolower('globalpro_app_inventory_transferoutput_labelReference1')						=> "Orden / Cliente",
 		strtolower('globalpro_app_purchase_pedidos_divDllEstado')									=> "hidden",
+		strtolower('globalpro_app_cxc_customer_divScriptCustom') 									=> "<script>$(document).ready(function(){ 		$('#txtSexoID').val(''); $('#txtSexoID').trigger('change'); 							 $(document).on('focusout','#txtLegalName',function(){ 									 var varLegalName 	= $('#txtLegalName').val(); $('#txtFirstName').val(  varLegalName  ); $('#txtLastName').val(  varLegalName  ); $('#txtCommercialName').val(  varLegalName  ); 									 }); 							 }); </script> ",
+		strtolower('globalpro_app_inventory_item_divTraslateElementTablePrecio') 					=> "<script>$(document).ready(function(){$('#btnPrice').parent().remove();$('#tblPrecios').appendTo('#divContainerRowPersonalization');});</script>",
+		strtolower('globalpro_app_invoice_billing_divTraslateElement') 								=> "<script>$(document).ready(function(){		$('#divVendedor').appendTo('#divInformacionLeft');$('#divBodega').appendTo('#divInformacionLeft');});</script>",		
+		strtolower('globalpro_app_box_share_new_script_validate_reference1')						=> "/*Validar Atiende*/ if($('#txtReference1').val() == ''){fnShowNotification('Escriba quien le atiende','error',timerNotification);result = false;}",		
+		strtolower('globalpro_app_inventory_inputunpost_new_script_validate_reference1')			=> "/*Validar Referecia 1*/ if($('#txtReference1').val() == ''){fnShowNotification('Escriba Referencia 1 es obligatoria','error',timerNotification);result = false;}",
 		
 		
+		/*Ferreteria Mateo*/
+		strtolower('ferreteria_mateo_app_invoice_billing_bodyListInvoice')	 						=> "height: 550px; overflow: scroll;",
+		strtolower('ferreteria_mateo_app_box_share_stylePage')	 									=> "/*posMe stylePage*/ #content .row{ margin-bottom:0px !important; } .email-bar{ margin-bottom:0px !important; } .form-group{ margin-bottom:0px !important; } .si_ferreteria_mateo{ display:none !important; } ",
 		
 		/*Clinica larreynaga*/
 		strtolower('clinicalarreynaga_web_tools_report_helper_Edad') 								=> "Genero", 		
@@ -257,43 +186,13 @@ function getBehavio($type_company,$key_controller,$key_element)
 		strtolower('clinicalarreynaga_app_cxc_customer_divTxtSubCategoria') 			 			=> "hidden",
 		strtolower('clinicalarreynaga_app_cxc_customer_divTxtEstadoCivil') 			 				=> "hidden",
 		strtolower('clinicalarreynaga_app_cxc_customer_divTxtProfesionUFicio') 			 			=> "hidden",
-		strtolower('clinicalarreynaga_app_cxc_customer_divScriptCustom') 							=> "
-				<script>
-					$(document).ready(function(){
-							
-						
-							$(document).on('focusout','#txtLegalName',function(){
-									
-									var varLegalName 	= $('#txtLegalName').val();
-									$('#txtFirstName').val(  varLegalName  );
-									$('#txtLastName').val(  varLegalName  );
-									$('#txtCommercialName').val(  varLegalName  );
-									$('#txtIdentification').val(  'ND'  );
-									
-							});
-							
-					});
-				</script>
-		",
+		strtolower('clinicalarreynaga_app_cxc_customer_divScriptCustom') 							=> "<script> $(document).ready(function(){ $(document).on('focusout','#txtLegalName',function(){ var varLegalName 	= $('#txtLegalName').val(); $('#txtFirstName').val(  varLegalName  ); $('#txtLastName').val(  varLegalName  ); $('#txtCommercialName').val(  varLegalName  ); $('#txtIdentification').val(  'ND'  ); });});</script>",
 		
 		
 		
 		/*Chec extensiones*/
 		strtolower('chicextensiones_app_invoice_billing_divTxtCedula2') 							=> "hidden", 		
-		strtolower('chicextensiones_app_invoice_billing_divTraslateElement') 						=> "
-				<script>
-					$(document).ready(function()
-					{
-							//quitar el atributo de oculto
-							$('#divTxtElementoDisponibleParaMover1').removeClass('hidden');
-							
-							//pasar divZone pasar a divTxtElementoDisponibleParaMover1
-							$('#divZone').appendTo('#divTxtElementoDisponibleParaMover1');
-							
-					});
-				</script>
-		", 
-		
+		strtolower('chicextensiones_app_invoice_billing_divTraslateElement') 						=> "<script>$(document).ready(function(){ /*quitar el atributo de oculto*/  $('#divTxtElementoDisponibleParaMover1').removeClass('hidden'); /*pasar divZone pasar a divTxtElementoDisponibleParaMover1*/ $('#divZone').appendTo('#divTxtElementoDisponibleParaMover1');	}); </script> ", 		
 		
 		/*Exceso*/
 		strtolower('exceso_app_inventory_item_labelBarCode')										=> "Barra / IMAI", 
@@ -368,7 +267,7 @@ function getBehavio($type_company,$key_controller,$key_element)
 	//Comanda traducir es para los menu
 	//comportamiento del controlador
 	//si el key no existe regresa valor vacio
-	if($key_controller != "comand_traducir")
+	if($key_controller != "core_web_menu")
 	{		
 		$key = strtolower($type_company)."_".strtolower($key_controller)."_".strtolower($key_element);
 		if(!array_key_exists( $key, $divs) )
@@ -393,7 +292,7 @@ function getBehavio($type_company,$key_controller,$key_element)
 		}
 		
 	}
-	//Lenguaje
+	//Menu
 	//Si el key no existe regrea el mismo valor
 	else 
 	{
