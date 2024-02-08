@@ -367,7 +367,7 @@ class core_web_menu {
 				$x 					= self::render_item_left($company,$data,$obj->menuElementID);		
 				$data_["icon"]		= $obj->icon;				
 				$data_["address"]	= base_url()."/". str_replace(URL_SUFFIX_OLD,URL_SUFFIX_NEW,$obj->address);				
-				$data_["display"]	= getBehavio(strtoupper($company->type),"core_web_menu",$obj->display);
+				$data_["display"]	= getBehavio(strtoupper($company->type),"core_web_menu",$obj->display,"");
 				$data_["submenu"]	= $x;								
 				$template			= view("core_template/".$obj->template,$data_);								
 				$html				= $html . $template;

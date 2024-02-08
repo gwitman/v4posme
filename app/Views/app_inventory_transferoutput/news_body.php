@@ -198,7 +198,7 @@
 													<div class="col-lg-6">	
 													
 														<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_transferoutput","labelReference1"); ?></label>
+																<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_transferoutput","labelReference1",""); ?></label>
 																<div class="col-lg-8">
 																	<input class="form-control"  type="text" name="txtReference1" id="txtReference1" value="">
 																</div>

@@ -1,9 +1,10 @@
 <?php
-function getBehavio($type_company,$key_controller,$key_element)
+function getBehavio($type_company,$key_controller,$key_element,$default_value)
 {
 	$divs = array(		
 		strtolower('default_core_web_menu_O. SALIDAS')			 												=> "O. SALIDAS",
 		strtolower('default_core_web_menu_O. ENTRADAS')			 												=> "O. ENTRADAS",
+		strtolower('default_core_web_menu_PRODUCTO')			 												=> "PRODUCTO",
 		strtolower('default_app_cxp_expenses_Referencia 1')														=> "Referencia 1",
 		strtolower('default_app_cxp_expenses_Referencia 2')														=> "Referencia 2",
 		strtolower('default_app_cxp_expenses_Referencia 3')														=> "Referencia 3",				
@@ -102,7 +103,7 @@ function getBehavio($type_company,$key_controller,$key_element)
 		strtolower('default_app_inventory_item_Marca')															=> "Marca",
 		strtolower('default_app_inventory_item_Modelo')															=> "Modelo",
 		strtolower('default_app_inventory_item_Serie ó MAI')													=> "Serie o MAI",		
-		
+		strtolower('default_app_inventory_item_fieldInmobiliaria')												=> "",
 	
 	
 		
@@ -230,7 +231,8 @@ function getBehavio($type_company,$key_controller,$key_element)
 		strtolower('khadash_app_box_share_divMoneda')															=> "hidden", 
 				
 				
-		/*Santa lucia ral state*/				
+		/*Santa lucia ral state*/	
+		strtolower('luciaralstate_core_web_menu_PRODUCTO')			 											=> "INMOBILIARIO",		
 		strtolower('luciaralstate_app_cxc_customer_Clasificacion')												=> "Estilo de Propiedad",
 		strtolower('luciaralstate_app_cxc_customer_Categoria')													=> "Interes",
 		strtolower('luciaralstate_app_cxc_customer_Referencia1')												=> "Id Encuentra 24",
@@ -260,8 +262,8 @@ function getBehavio($type_company,$key_controller,$key_element)
 		strtolower('luciaralstate_app_inventory_item_label_price_POR MAYOR')			 						=> "PRECIO DE RENTA",
 		strtolower('luciaralstate_app_inventory_item_label_price_CREDITO')			 							=> "----",
 		strtolower('luciaralstate_app_inventory_item_label_price_CREDITO POR MAYOR')			 				=> "----",
-		strtolower('luciaralstate_app_inventory_item_label_price_ESPECIAL')			 							=> "----"
-		
+		strtolower('luciaralstate_app_inventory_item_label_price_ESPECIAL')			 							=> "----",
+		strtolower('luciaralstate_app_inventory_item_fieldInmobiliaria')										=> ""
 		
 		
 		
@@ -282,7 +284,7 @@ function getBehavio($type_company,$key_controller,$key_element)
 			$key = strtolower("default")."_".strtolower($key_controller)."_".strtolower($key_element);
 			if(!array_key_exists( $key, $divs) )
 			{	
-				return "";
+				return $default_value;
 			}
 			else 
 			{

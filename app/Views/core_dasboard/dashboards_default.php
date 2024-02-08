@@ -35,7 +35,7 @@
 							</div><!-- End .panel-body -->
 						</div><!-- End .widget -->		
 						
-						<div class="panel  <?php echo getBehavio($company->type,"core_dashboards","divPanelCuadroMembresia"); ?>  " style="margin-bottom:20px;">
+						<div class="panel  <?php echo getBehavio($company->type,"core_dashboards","divPanelCuadroMembresia",""); ?>  " style="margin-bottom:20px;">
 							<div class="panel-heading">
 								<div class="icon"><i class="icon20 i-quotes-left"></i></div> 
 								<h4>Plan activado</h4>
@@ -97,7 +97,7 @@
 								</table>
 							</div><!-- End .panel-body -->
 						</div><!-- End .widget -->	
-						<div class="panel <?php echo getBehavio($company->type,"core_dashboards","divPanelBiblico"); ?>  " style="margin-bottom:20px;">
+						<div class="panel <?php echo getBehavio($company->type,"core_dashboards","divPanelBiblico",""); ?>  " style="margin-bottom:20px;">
 							<div class="panel-heading">
 								<div class="icon"><i class="icon20 i-quotes-left"></i></div> 
 								<h4>Consejo bíblico</h4>
@@ -125,7 +125,7 @@
 					<div class="col-lg-6">	
 						
 						
-						<div class="panel <?php echo getBehavio($company->type,"core_dashboards","divPanelSoporteTenico"); ?> " style="margin-bottom:20px;">
+						<div class="panel <?php echo getBehavio($company->type,"core_dashboards","divPanelSoporteTenico",""); ?> " style="margin-bottom:20px;">
 							<div class="panel-heading">
 								<div class="icon"><i class="icon20 i-quotes-left"></i></div> 
 								<h4>Informacion de contacto</h4>
@@ -143,7 +143,7 @@
 							</div><!-- End .panel-body -->
 						</div><!-- End .widget -->	
 						
-						<div class="panel <?php echo getBehavio($company->type,"core_dashboards","divPanelFormaPago"); ?>" style="margin-bottom:20px;">
+						<div class="panel <?php echo getBehavio($company->type,"core_dashboards","divPanelFormaPago",""); ?>" style="margin-bottom:20px;">
 							<div class="panel-heading">
 								<div class="icon"><i class="icon20 i-quotes-left"></i></div> 
 								<h4>Pago con tarjeta</h4>
@@ -172,7 +172,7 @@
 								<img class="img-featured" style="width:200px;height:80px" src="<?php echo base_url();?>/resource/img/logos/posme.svg">
 							</div><!-- End .panel-body -->
 						</div><!-- End .widget -->	
-						<div class="panel  <?php echo getBehavio($company->type,"core_dashboards","divPanelInfoPago"); ?> " style="margin-bottom:20px;">
+						<div class="panel  <?php echo getBehavio($company->type,"core_dashboards","divPanelInfoPago",""); ?> " style="margin-bottom:20px;">
 							<div class="panel-heading">
 								<div class="icon"><i class="icon20 i-quotes-left"></i></div> 
 								<h4>Informacion de pago</h4>
@@ -198,7 +198,7 @@
 							</div>
 						</div>
 						-->
-						<div class="panel <?php echo getBehavio($company->type,"core_dashboards","divPanelUsuario"); ?> " style="margin-bottom:20px;">
+						<div class="panel <?php echo getBehavio($company->type,"core_dashboards","divPanelUsuario",""); ?> " style="margin-bottom:20px;">
 							<div class="panel-heading">
 								<div class="icon"><i class="icon20 i-quotes-left"></i></div> 
 								<h4>Usuario</h4>

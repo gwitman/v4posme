@@ -2,7 +2,7 @@
 <script>
 	var objListaCustomerCredit 				= {};	
 	var varUseMobile						= '<?php echo $useMobile; ?>';
-	var varShareMountDefaultOfAmortization 	= '<?php echo getBehavio($company->type,"app_box_share","javscriptVariable_varShareMountDefaultOfAmortization"); ?>';
+	var varShareMountDefaultOfAmortization 	= '<?php echo getBehavio($company->type,"app_box_share","javscriptVariable_varShareMountDefaultOfAmortization",""); ?>';
 	
 	$(document).ready(function(){						 
 		 $('#txtDate').datepicker({format:"yyyy-mm-dd"});
@@ -281,7 +281,7 @@
 		}
 		
 		
-		<?php echo getBehavio($company->type,"app_box_share","new_script_validate_reference1"); ?>
+		<?php echo getBehavio($company->type,"app_box_share","new_script_validate_reference1",""); ?>
 		
 		return result;
 	}

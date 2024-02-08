@@ -275,7 +275,7 @@
 			result = false;
 		}
 		
-		var validarEnvioDestino = '<?php echo getBehavio($company->type,"app_inventory_transferoutput","parameterValidarEnvioDestino"); ?>';
+		var validarEnvioDestino = '<?php echo getBehavio($company->type,"app_inventory_transferoutput","parameterValidarEnvioDestino",""); ?>';
 		if(validarEnvioDestino == "true")
 		{
 			//Quien envia

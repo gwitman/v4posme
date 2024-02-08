@@ -88,7 +88,7 @@
 		
 		
 	</head>
-	<body <?php echo getBehavio($company->type,"default_masterpage","backgroundImage"); ?>   > 
+	<body <?php echo getBehavio($company->type,"default_masterpage","backgroundImage",""); ?>   > 
 		
 		<header id="header">
         <nav class="navbar navbar-default navbar-fixed-top" role="navigation">

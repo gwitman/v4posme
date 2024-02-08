@@ -66,7 +66,7 @@
 									<input type="hidden" name="txtTransactionMasterID" value="<?php echo $objTransactionMaster->transactionMasterID; ?>">
 									
 									
-									<div class="form-group <?php echo getBehavio($company->type,"app_box_share","divFecha"); ?> ">
+									<div class="form-group <?php echo getBehavio($company->type,"app_box_share","divFecha",""); ?> ">
 										<label class="col-lg-2 control-label" for="datepicker">Fecha</label>
 										<div class="col-lg-8">
 											<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
@@ -76,13 +76,13 @@
 										</div>
 									</div>
 									
-									<div class="form-group si_ferreteria_mateo <?php echo getBehavio($company->type,"app_box_share","divAplicado"); ?>  ">
+									<div class="form-group si_ferreteria_mateo <?php echo getBehavio($company->type,"app_box_share","divAplicado",""); ?>  ">
 											<label class="col-lg-2 control-label" for="normal">Aplicado</label>
 											<div class="col-lg-5">
 												<input type="checkbox" disabled   name="txtIsApplied" id="txtIsApplied" value="1" <?php if($objTransactionMaster->isApplied) echo "checked"; ?> >
 											</div>
 									</div>
-									<div class="form-group si_ferreteria_mateo <?php echo getBehavio($company->type,"app_box_share","divCambio"); ?> ">
+									<div class="form-group si_ferreteria_mateo <?php echo getBehavio($company->type,"app_box_share","divCambio",""); ?> ">
 											<label class="col-lg-2 control-label" for="normal">Cambio</label>
 											<div class="col-lg-8">
 												<input class="form-control"   type="text" disabled="disabled" name="txtExchangeRate" id="txtExchangeRate" value="<?php echo $exchangeRate; ?>">
@@ -108,7 +108,7 @@
 										</div>
 									</div>
 									
-									<div class="form-group <?php echo getBehavio($company->type,"app_box_share","divMoneda"); ?> ">
+									<div class="form-group <?php echo getBehavio($company->type,"app_box_share","divMoneda",""); ?> ">
 										<label class="col-lg-2 control-label" for="selectFilter">Moneda</label>
 										<div class="col-lg-8">
 											<select name="txtCurrencyID" id="txtCurrencyID" class="<?php echo ( $useMobile == "1" ? "" : "select2"); ?>">
@@ -132,7 +132,7 @@
 							</div>
 							<div class="col-lg-6">
 						
-								<div class="form-group <?php echo getBehavio($company->type,"app_box_share","divCustomerControlSelected"); ?> ">
+								<div class="form-group <?php echo getBehavio($company->type,"app_box_share","divCustomerControlSelected",""); ?> ">
 									<label class="col-lg-4 control-label" for="selectFilter">Cliente</label>
 									<div class="col-lg-8">
 										<select name="txtMobileEntityID" id="txtMobileEntityID">
@@ -157,7 +157,7 @@
 								
 								
 								
-								<div class="form-group <?php echo getBehavio($company->type,"app_box_share","divCustomerControlBuscar"); ?>   ">
+								<div class="form-group <?php echo getBehavio($company->type,"app_box_share","divCustomerControlBuscar",""); ?>   ">
 									<label class="col-lg-4 control-label" for="buttons">Cliente</label>
 									<div class="col-lg-8">
 										<div class="input-group">
@@ -181,7 +181,7 @@
 									</div>
 								</div>
 								
-								<div class="form-group si_ferreteria_mateo <?php echo getBehavio($company->type,"app_box_share","divCobrador"); ?>  ">
+								<div class="form-group si_ferreteria_mateo <?php echo getBehavio($company->type,"app_box_share","divCobrador",""); ?>  ">
 									<label class="col-lg-4 control-label" for="buttons">Cobrador</label>
 									<div class="col-lg-8">
 										<div class="input-group">
@@ -219,7 +219,7 @@
 								</div>
 								
 								
-								<div class="vital-stats <?php echo getBehavio($company->type,"app_box_share","divStart"); ?> ">
+								<div class="vital-stats <?php echo getBehavio($company->type,"app_box_share","divStart",""); ?> ">
 									<ul>
 											<li class="si_ferreteria_mateo">
 												<a href="#">
@@ -277,7 +277,7 @@
 							<div class="col-lg-6">
 									
 								<div class="form-group">
-										<label class="col-lg-2 control-label" for="normal"><?php echo getBehavio($company->type,"app_box_share","labelReference1"); ?></label>
+										<label class="col-lg-2 control-label" for="normal"><?php echo getBehavio($company->type,"app_box_share","labelReference1",""); ?></label>
 										<div class="col-lg-5">
 											<input class="form-control"  type="text"  name="txtReference1" id="txtReference1" value="<?php echo $objTransactionMaster->reference1; ?>">												
 										</div>
@@ -311,7 +311,7 @@
 				<a href="#" class="btn btn-flat btn-info" id="btnNewShare" >Agregar</a>
 				<a href="#" class="btn btn-flat btn-danger" id="btnDeleteShare" >Eliminar</a>	
 
-				<a href="#" class="btn btn-flat btn-danger <?php echo getBehavio($company->type,"app_box_share","btnVerMovimientos"); ?> " id="btnVerMovement">
+				<a href="#" class="btn btn-flat btn-danger <?php echo getBehavio($company->type,"app_box_share","btnVerMovimientos",""); ?> " id="btnVerMovement">
 						<i class="i-print"></i>
 						<span class="percent">Ver</span>
 						<span class="txt">movimientos</span>
@@ -326,7 +326,7 @@
 							<thead>
 								<tr>
 								<th></th>
-								<th class="<?php echo getBehavio($company->type,"app_box_share","TableColumnDocumento"); ?>">
+								<th class="<?php echo getBehavio($company->type,"app_box_share","TableColumnDocumento",""); ?>">
 									Documento
 								</th>
 								<th>Saldo inicial</th>
@@ -352,7 +352,7 @@
 											<input type="hidden" name="txtDetailBalanceFinish[]" id="txtDetailBalanceFinish" value="<?php echo $value->reference4; ?>"/>
 											
 										</td>
-										<td class="<?php echo getBehavio($company->type,"app_box_share","TableColumnDocumento"); ?>" >
+										<td class="<?php echo getBehavio($company->type,"app_box_share","TableColumnDocumento",""); ?>" >
 											<text id="txtDocument">
 												<?php echo $value->reference1; ?>
 											</text>
@@ -394,7 +394,7 @@
 					</div><!-- End .col-lg-12  --> 
 				</div><!-- End .row-fluid  -->
 				
-				<div class="row <?php echo getBehavio($company->type,"app_box_share","divResumenAbono"); ?> ">
+				<div class="row <?php echo getBehavio($company->type,"app_box_share","divResumenAbono",""); ?> ">
 					<div class="col-lg-4">
 						<div class="page-header">
 							<h3>Ref.</h4>
@@ -494,7 +494,7 @@
 				<input type="hidden" name="txtDetailBalanceFinish[]" id="txtDetailBalanceFinish" />
 				
 			</td>
-			<td class="<?php echo getBehavio($company->type,"app_box_share","TableColumnDocumento"); ?>" >
+			<td class="<?php echo getBehavio($company->type,"app_box_share","TableColumnDocumento",""); ?>" >
 				<text id="txtDocument"></text>
 			</td>
 			<td>

@@ -101,7 +101,7 @@
 									</div>
 									
 									<div class="form-group">
-											<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_cxp_expenses","Referencia 1"); ?></label>
+											<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_cxp_expenses","Referencia 1",""); ?></label>
 											<div class="col-lg-8">																	
 												<input class="form-control"  type="text"  name="txtDetailReference1" id="txtDetailReference1" value="<?php echo $objTransactionMaster->reference1; ?>">												
 											</div>
@@ -109,7 +109,7 @@
 									
 										
 									<div class="form-group">
-											<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_cxp_expenses","Referencia 2"); ?></label>
+											<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_cxp_expenses","Referencia 2",""); ?></label>
 											<div class="col-lg-8">
 												
 												<input class="form-control"  type="text"  name="txtDetailReference2" id="txtDetailReference2" value="<?php echo $objTransactionMaster->reference2; ?>">												
@@ -117,7 +117,7 @@
 									</div>
 									
 									<div class="form-group">
-											<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_cxp_expenses","Referencia 3"); ?></label>
+											<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_cxp_expenses","Referencia 3",""); ?></label>
 											<div class="col-lg-8">																	
 												<input class="form-control"  type="text"  name="txtDetailReference3" id="txtDetailReference3" value="<?php echo $objTransactionMaster->reference3; ?>">												
 											</div>

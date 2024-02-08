@@ -47,7 +47,7 @@
 					<li><a href="#provider" data-toggle="tab">Proveedores</a></li>
 					<li>
 						<a href="#concepts" data-toggle="tab">						
-						<?php echo getBehavio($company->type,"app_inventory_item","Conceptos"); ?> 
+						<?php echo getBehavio($company->type,"app_inventory_item","Conceptos",""); ?> 
 						</a>
 					</li>
 					<li class="dropdown">
@@ -77,8 +77,8 @@
 										</div>
 								</div>
 								
-								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtBarCode"); ?>" id="divTxtBarCode" >
-										<label class="col-lg-4 control-label text-primary" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","labelBarCode"); ?></label>
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtBarCode",""); ?>" id="divTxtBarCode" >
+										<label class="col-lg-4 control-label text-primary" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","labelBarCode",""); ?></label>
 										<div class="col-lg-8">
 										
 											<?php 
@@ -104,8 +104,8 @@
 								</div>
 								
 								
-								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtPerecedero"); ?> ">
-										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Perecedero"); ?></label>
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtPerecedero",""); ?> ">
+										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Perecedero",""); ?></label>
 										<div class="col-lg-8">
 											<input type="checkbox"   name="txtIsPerishable" id="txtIsPerishable" value="1" <?php echo ($objItem->isPerishable == 1) ? "checked":""; ?> >
 										</div>
@@ -126,14 +126,14 @@
 								</div>
 								
 								<div class="form-group">
-										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Servicio"); ?></label> 
+										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Servicio",""); ?></label> 
 										<div class="col-lg-8">
 											<input type="checkbox"   name="txtIsServices" id="txtIsServices" value="1"  <?php echo ($objItem->isServices == 1) ? "checked":""; ?>  >
 										</div>
 								</div>
 								
-								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtCapacidad"); ?> ">
-										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","*Capacidad"); ?></label>
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtCapacidad",""); ?> ">
+										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","*Capacidad",""); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtCapacity" id="txtCapacity" value="<?php echo $objItem->capacity; ?>">												
 										</div>
@@ -146,15 +146,15 @@
 										</div>
 								</div>
 								
-								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtCantidadMinima"); ?>  ">
-										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","*Cantidad Minima"); ?></label>
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtCantidadMinima",""); ?>  ">
+										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","*Cantidad Minima",""); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtQuantityMin" id="txtQuantityMin" value="<?php echo $objItem->quantityMin; ?>">												
 										</div>
 								</div>
 								
-								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtCantidadMaxima"); ?>  ">
-										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","*Cantidad Maxima"); ?></label>
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtCantidadMaxima",""); ?>  ">
+										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","*Cantidad Maxima",""); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtQuantityMax" id="txtQuantityMax" value="<?php echo $objItem->quantityMax; ?>">												
 										</div>
@@ -167,15 +167,15 @@
 										</div>
 								</div>
 								
-								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtSKUCompras"); ?>">
-										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","*SKU Compras"); ?></label>
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtSKUCompras",""); ?>">
+										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","*SKU Compras",""); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtFactorBox" id="txtFactorBox" value="<?php echo $objItem->factorBox; ?>">												
 										</div>
 								</div>
 								
-								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtSKUProduccion"); ?>">
-										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","*SKU Produccion"); ?></label>
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtSKUProduccion",""); ?>">
+										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","*SKU Produccion",""); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtFactorProgram" id="txtFactorProgram" value="<?php echo $objItem->factorProgram; ?>">												
 										</div>
@@ -184,7 +184,7 @@
 						</div>
 						<div class="col-lg-6">
 						
-								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtEstado"); ?>">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtEstado",""); ?>">
 									<label class="col-lg-4 control-label" for="selectFilter">*Estado</label>
 									<div class="col-lg-8">
 										<select name="txtStatusID" id="txtStatusID" class="select2">
@@ -202,7 +202,7 @@
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_inventory_item","*Categoria"); ?></label>
+									<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_inventory_item","*Categoria",""); ?></label>
 									<div class="col-lg-8">
 										<select name="txtInventoryCategoryID" id="txtInventoryCategoryID" class="select2">
 												<option></option>																
@@ -219,8 +219,8 @@
 										</select>
 									</div>
 								</div>
-								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtFamilia"); ?> ">
-									<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_inventory_item","*Familia"); ?></label>
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtFamilia",""); ?> ">
+									<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_inventory_item","*Familia",""); ?></label>
 									<div class="col-lg-8">
 										<select name="txtFamilyID" id="txtFamilyID" class="select2">
 												<option></option>																
@@ -236,7 +236,7 @@
 										</select>
 									</div>
 								</div>
-								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtUM"); ?> ">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtUM",""); ?> ">
 									<label class="col-lg-4 control-label" for="selectFilter">*UM.</label>
 									<div class="col-lg-8">
 										<select name="txtUnitMeasureID" id="txtUnitMeasureID" class="select2">
@@ -254,8 +254,8 @@
 									</div>
 								</div>
 								
-								<div class="form-group  <?php echo getBehavio($company->type,"app_inventory_item","divTxtPresentacion"); ?> ">
-									<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_inventory_item","*Presentacion"); ?></label>
+								<div class="form-group  <?php echo getBehavio($company->type,"app_inventory_item","divTxtPresentacion",""); ?> ">
+									<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_inventory_item","*Presentacion",""); ?></label>
 									<div class="col-lg-8">
 										<select name="txtDisplayID" id="txtDisplayID" class="select2">
 												<option></option>
@@ -272,7 +272,7 @@
 									</div>
 								</div>
 								
-								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtPresentacionUM"); ?> ">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtPresentacionUM",""); ?> ">
 									<label class="col-lg-4 control-label" for="selectFilter">*UM. Presentacion</label>
 									<div class="col-lg-8">
 										<select name="txtDisplayUnitMeasureID" id="txtDisplayUnitMeasureID" class="select2">
@@ -343,7 +343,7 @@
 						</div>
 						<div class="row" >
 							<div class="col-lg-12" id="divContainerRowPersonalization" >
-								<?php echo getBehavio($company->type,"app_inventory_item","divTraslateElementTablePrecio"); ?>
+								<?php echo getBehavio($company->type,"app_inventory_item","divTraslateElementTablePrecio",""); ?>
 							</div>
 						</div>
 					</div>
@@ -352,75 +352,75 @@
 							<div class="col-lg-6">
 							
 								<div class="form-group">
-										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Marca"); ?></label>
+										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Marca",""); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtReference1" id="txtReference1" value="<?php echo $objItem->reference1; ?>">												
 										</div>
 								</div>											
 								<div class="form-group">
-										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Modelo"); ?></label>
+										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Modelo",""); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtReference2" id="txtReference2" value="<?php echo $objItem->reference2; ?>">												
 										</div>
 								</div>
 								<div class="form-group">
-										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Serie ó MAI"); ?></label>
+										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Serie ó MAI",""); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtReference3" id="txtReference3" value="<?php echo $objItem->reference3; ?>">												
 										</div>
 								</div>	
 
 								
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?> ">
 									<label class="col-lg-4 control-label" for="normal">Baño de Servicio</label>
 									<div class="col-lg-8">
 										<input type="checkbox"   name="txtRealStateRoomBatchServices" id="txtRealStateRoomBatchServices" value="1"  <?php echo ($objItem->realStateRoomBatchServices == 1) ? "checked":""; ?>  >
 									</div>
 								</div>	
 
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
 									<label class="col-lg-4 control-label" for="normal">Cuarto de Servicio</label>
 									<div class="col-lg-8">
 										<input type="checkbox"   name="txtRealStateRoomServices" id="txtRealStateRoomServices" value="1" <?php echo ($objItem->realStateRoomServices == 1) ? "checked":""; ?>  >
 									</div>
 								</div>
 								
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?> ">
 									<label class="col-lg-4 control-label" for="normal">Walk In Closet</label>
 									<div class="col-lg-8">
 										<input type="checkbox"   name="txtRealStateWallInCloset" id="txtRealStateWallInCloset" value="1" <?php echo ($objItem->realStateWallInCloset == 1) ? "checked":""; ?>  >
 									</div>
 								</div>
 								
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
 									<label class="col-lg-4 control-label" for="normal">Piscina Privada</label>
 									<div class="col-lg-8">
 										<input type="checkbox"   name="txtRealStatePiscinaPrivate" id="txtRealStatePiscinaPrivate" value="1" <?php echo ($objItem->realStatePiscinaPrivate == 1) ? "checked":""; ?>  >
 									</div>
 								</div>
 								
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
 									<label class="col-lg-4 control-label" for="normal">Piscina Club</label>
 									<div class="col-lg-8">
 										<input type="checkbox"   name="txtRealStateClubPiscina" id="txtRealStateClubPiscina" value="1" <?php echo ($objItem->realStateClubPiscina == 1) ? "checked":""; ?>  >
 									</div>
 								</div>
 								
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
 									<label class="col-lg-4 control-label" for="normal">Acepta Mascota</label>
 									<div class="col-lg-8">
 										<input type="checkbox"   name="txtRealStateAceptanMascota" id="txtRealStateAceptanMascota" value="1" <?php echo ($objItem->realStateAceptanMascota == 1) ? "checked":""; ?>  >
 									</div>
 								</div>
 								
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
 									<label class="col-lg-4 control-label" for="normal">Corretaje</label>
 									<div class="col-lg-8">
 										<input type="checkbox"   name="txtRealStateContractCorrentaje" id="txtRealStateContractCorrentaje" value="1" <?php echo ($objItem->realStateContractCorrentaje == 1) ? "checked":""; ?>  >
 									</div>
 								</div>
 								
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
 									<label class="col-lg-4 control-label" for="normal">Plan de Referido</label>
 									<div class="col-lg-8">
 										<input type="checkbox"   name="txtRealStatePlanReference" id="txtRealStatePlanReference" value="1" <?php echo ($objItem->realStatePlanReference == 1) ? "checked":""; ?>  >
@@ -428,45 +428,42 @@
 								</div>
 								
 								
-								
-								
-								
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
 										<label class="col-lg-4 control-label" for="normal">Link Youbue</label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtRealStateLinkYoutube" id="txtRealStateLinkYoutube" value="<?php echo $objItem->realStateLinkYoutube; ?>">												
 										</div>
 								</div>
 
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
 										<label class="col-lg-4 control-label" for="normal">Pagina Web</label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtRealStateLinkPaginaWeb" id="txtRealStateLinkPaginaWeb" value="<?php echo $objItem->realStateLinkPaginaWeb; ?>">												
 										</div>
 								</div>
 
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
 										<label class="col-lg-4 control-label" for="normal">Fotos</label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtRealStateLinkPhontos" id="txtRealStateLinkPhontos" value="<?php echo $objItem->realStateLinkPhontos; ?>">												
 										</div>
 								</div>
 
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
 										<label class="col-lg-4 control-label" for="normal">Google Maps</label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtRealStateLinkGoogleMaps" id="txtRealStateLinkGoogleMaps" value="<?php echo $objItem->realStateLinkGoogleMaps; ?>">												
 										</div>
 								</div>
 
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
 										<label class="col-lg-4 control-label" for="normal">Otros Link</label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtRealStateLinkOther" id="txtRealStateLinkOther" value="<?php echo $objItem->realStateLinkOther; ?>">												
 										</div>
 								</div>
 
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
 										<label class="col-lg-4 control-label" for="normal">Estilo de cocina</label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtRealStateStyleKitchen" id="txtRealStateStyleKitchen" value="<?php echo $objItem->realStateStyleKitchen; ?>">												
@@ -476,7 +473,7 @@
 							</div>
 							
 							<div class="col-lg-6">
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
 									<label class="col-lg-4 control-label text-primary" for="selectFilter">*Pais</label>
 									<div class="col-lg-8">
 										<select name="txtCountryID" id="txtCountryID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"   >
@@ -494,7 +491,7 @@
 										</select>
 									</div>
 								</div>
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
 									<label class="col-lg-4 control-label text-primary" for="selectFilter">*Departamento</label>
 									<div class="col-lg-8">
 										<select name="txtStateID" id="txtStateID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"   >
@@ -512,7 +509,7 @@
 										</select>
 									</div>
 								</div>
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
 									<label class="col-lg-4 control-label text-primary" for="selectFilter">*Municipio</label>
 									<div class="col-lg-8">
 										<select name="txtCityID" id="txtCityID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"   >
@@ -521,7 +518,7 @@
 												$count = 0;
 												if($objListCity)
 												foreach($objListCity as $ws){
-													if( $ws->catalogItemID == $objItem->realStageCityID)
+													if( $ws->catalogItemID == $objItem->realStateCityID)
 													echo "<option value='".$ws->catalogItemID."' selected  >".$ws->name."</option>";
 													else
 													echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
@@ -533,28 +530,28 @@
 								
 								
 								
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
 										<label class="col-lg-4 control-label" for="normal">Ubicacion</label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtRealStateReferenceUbicacion" id="txtRealStateReferenceUbicacion" value="<?php echo $objItem->realStateReferenceUbicacion; ?>">
 										</div>
 								</div>
 								
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
 										<label class="col-lg-4 control-label" for="normal">Condominio</label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtRealStateReferenceCondominio" id="txtRealStateReferenceCondominio" value="<?php echo $objItem->realStateReferenceUbicacion; ?>">												
 										</div>
 								</div>
 								
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
 										<label class="col-lg-4 control-label" for="normal">Zona</label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtRealStateReferenceZone" id="txtRealStateReferenceZone" value="<?php echo $objItem->realStateReferenceUbicacion; ?>">												
 										</div>
 								</div>
 								
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?> ">
 									<label class="col-lg-4 control-label" for="buttons">Agente</label>
 									<div class="col-lg-8">
 										<div class="input-group">
@@ -720,7 +717,7 @@
 					<div class="tab-pane fade" id="dropdown">
 						
 							<div class="form-group">
-								<label class="col-lg-2 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Descripcion"); ?></label>
+								<label class="col-lg-2 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Descripcion",""); ?></label>
 								<div class="col-lg-6">
 									<textarea class="form-control"  id="txtDescription" name="txtDescription" rows="6"><?php echo $objItem->description; ?></textarea>
 								</div>
@@ -750,7 +747,7 @@
 													<td>
 														<input type="hidden" class="txtDetailListPriceID" name="txtDetailListPriceID[]" value="<?php echo $ws->listPriceID; ?>"></input>
 														<input type="hidden" class="txtDetailTypePriceID" name="txtDetailTypePriceID[]" value="<?php echo $ws->typePriceID; ?>"></input>														
-														<?php echo getBehavio($company->type,"app_inventory_item_label_price",$ws->nameTypePrice); ?> 
+														<?php echo getBehavio($company->type,"app_inventory_item_label_price",$ws->nameTypePrice,""); ?> 
 													</td>																		
 													<td>
 														<input class="form-control"  type="text" id="txtDetailTypePriceValue" name="txtDetailTypePriceValue[]" value="<?php echo $ws->price; ?>">

@@ -6,6 +6,9 @@
 	var objRowSku 					= {};
 	var objTableDetailProvider 		= {};
 	var objTableDetailConcept 		= {};
+	var site_url 	  				= "<?php echo base_url(); ?>/";
+	var userMobile					= '<?php echo $useMobile; ?>';
+	
 	
 	//este evento es util cuando la pantalla se ejecuta desde la pantalla de facturacion
 	if(objCallback != 'false'){

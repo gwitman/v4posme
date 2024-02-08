@@ -78,7 +78,7 @@
 								</div>
 								
 							
-								<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divTxtCambio"); ?> ">
+								<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divTxtCambio",""); ?> ">
 										<label class="col-lg-4 control-label" for="normal">Cambio</label>
 										<div class="col-lg-8">
 											<input class="form-control"   type="text" disabled="disabled" name="txtExchangeRate" id="txtExchangeRate" value="<?php echo $exchangeRate; ?>">
@@ -93,7 +93,7 @@
 									</div>
 								</div>
 								
-								<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divTxtMoneda"); ?> " id="divMoneda" >
+								<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divTxtMoneda",""); ?> " id="divMoneda" >
 									<label class="col-lg-4 control-label" for="selectFilter">Moneda</label>
 									<div class="col-lg-8">
 										<select name="txtCurrencyID" id="txtCurrencyID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
@@ -153,7 +153,7 @@
 								
 								
 								
-								<div class="form-group  <?php echo getBehavio($company->type,"app_invoice_billing","divTxtCliente2"); ?>  ">
+								<div class="form-group  <?php echo getBehavio($company->type,"app_invoice_billing","divTxtCliente2",""); ?>  ">
 										<label class="col-lg-4 control-label" for="normal">Cliente</label>
 										<div class="col-lg-8">
 											<input class="form-control"   type="text" name="txtReferenceClientName" id="txtReferenceClientName" value="">
@@ -164,7 +164,7 @@
 									
 								</div>
 								
-								<div class="form-group   <?php echo getBehavio($company->type,"app_invoice_billing","divTxtCedula2"); ?> "  id="divCedula"  >
+								<div class="form-group   <?php echo getBehavio($company->type,"app_invoice_billing","divTxtCedula2",""); ?> "  id="divCedula"  >
 										<label class="col-lg-4 control-label" for="normal">Cedula</label>
 										<div class="col-lg-8">
 											<input class="form-control"   type="text" name="txtReferenceClientIdentifier" id="txtReferenceClientIdentifier" value="">
@@ -207,7 +207,7 @@
 					<div class="tab-pane fade" id="profile">
 						<div class="row">
 							<div class="col-lg-6">
-								<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divTxtZone"); ?>" id="divZone"  >
+								<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divTxtZone",""); ?>" id="divZone"  >
 									<label class="col-lg-4 control-label" for="selectFilter">Zona</label>
 									<div class="col-lg-8">
 										<select name="txtZoneID" id="txtZoneID" class="select2">
@@ -668,7 +668,7 @@
 
 				<div class="row">
 					
-					<div class="col-lg-3 <?php echo getBehavio($company->type,"app_invoice_billing","panelResumenFacturaTool"); ?>   " id="panelResumenFacturaTool" >
+					<div class="col-lg-3 <?php echo getBehavio($company->type,"app_invoice_billing","panelResumenFacturaTool",""); ?>   " id="panelResumenFacturaTool" >
 						<div class="page-header">
 							<h3>Tool Calcular Monto sin Iva</h3>
 						</div>
@@ -698,7 +698,7 @@
 					
 					
 					
-					<div class="col-lg-3 col-sm-12 <?php echo getBehavio($company->type,"app_invoice_billing","panelResumenFactura"); ?>   " id="panelResumenFactura" >
+					<div class="col-lg-3 col-sm-12 <?php echo getBehavio($company->type,"app_invoice_billing","panelResumenFactura",""); ?>   " id="panelResumenFactura" >
 						<div class="page-header">
 							<h3 id="labelRef" >Ref.</h4>
 						</div>
@@ -966,5 +966,5 @@
       </div>
     </div>
   </div>
-  <?php echo getBehavio($company->type,"app_invoice_billing","divTraslateElement"); ?>  
+  <?php echo getBehavio($company->type,"app_invoice_billing","divTraslateElement",""); ?>  
  

@@ -96,7 +96,8 @@ class app_inventory_item extends _BaseController {
 			$dataView["callback"]					= $callback;
 			$dataView["comando"]					= $comando;
 			$dataView["objListPriceItem"]			= $this->Price_Model->get_rowByItemID($companyID,$dataView["objParameterListPreiceDefault"],$itemID);
-					
+			
+			
 			$objParameterMasive					= $this->core_web_parameter->getParameter("ITEM_PRINTER_BARCODE_MASIVE",$companyID);
 			$objParameterMasive					= $objParameterMasive->value;	
 			$dataView["objParameterMasive"]		= $objParameterMasive;
@@ -106,8 +107,8 @@ class app_inventory_item extends _BaseController {
 			//Obtener colaborador
 			$dataView["objEmployer"]				= $this->Employee_Model->get_rowByEntityID($companyID,$dataView["objItem"]->realStateEmployerAgentID);
 			$entityEmployeerID						= helper_RequestGetValueObjet($dataView["objEmployer"],"entityID",0);
-			$dataView["objEmployerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$entityEmployeerID);
-			$dataView["objEmployerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$entityEmployeerID);
+			$dataView["objEmployerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objItem"]->companyID,$dataView["objItem"]->branchID,$entityEmployeerID);
+			$dataView["objEmployerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objItem"]->companyID,$dataView["objItem"]->branchID,$entityEmployeerID);
 			
 			//direccion
 			$dataView["objListCountry"]				= $this->core_web_catalog->getCatalogAllItem("tb_item","realStateCountryID",$companyID);

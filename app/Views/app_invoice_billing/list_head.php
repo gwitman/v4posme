@@ -52,7 +52,7 @@
 								<h4>...</h4>
 								<a href="#" class="minimize"></a>
 							</div>                            
-							<div class="panel-body" style="<?php echo getBehavio($company->type,"app_invoice_billing","bodyListInvoice"); ?>" >
+							<div class="panel-body" style="<?php echo getBehavio($company->type,"app_invoice_billing","bodyListInvoice",""); ?>" >
 							
                                     
 							

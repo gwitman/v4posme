@@ -5,7 +5,7 @@
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jLinq-2.2.1.js"></script>
 				
 				<style>
-					<?php echo getBehavio($company->type,"app_box_share","stylePage"); ?>
+					<?php echo getBehavio($company->type,"app_box_share","stylePage",""); ?>
 				</style>
 				
 				<div id="heading" class="page-header">

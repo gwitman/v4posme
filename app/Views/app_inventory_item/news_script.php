@@ -5,6 +5,9 @@
 	
 	var objRowWarehouse 		= {};
 	var objRowSku 				= {};
+	var site_url 	  			= "<?php echo base_url(); ?>/";	
+	var userMobile				= '<?php echo $useMobile; ?>';
+	
 	
 	//agregar producto al listado de compra
 	if(objCallback != 'false' && app_inventory_item_add_producto_al_detalle_compra != '')

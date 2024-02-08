@@ -4,8 +4,8 @@
 	var varUseMobile						= '<?php echo $useMobile; ?>';
 	var varUrlPrinter						= '<?php echo $urlPrinterDocument; ?>';
 	var varShareInvoiceByInvoice 			= '<?php echo $objParameterShareInvoiceByInvoice; ?>';
-	var varShareMountDefaultOfAmortization 	= '<?php echo getBehavio($company->type,"app_box_share","javscriptVariable_varShareMountDefaultOfAmortization"); ?>';
-	var varPrinterOnlyFormat				= '<?php echo getBehavio($company->type,"app_box_share","javscriptVariable_varPrinterOnlyFormat"); ?>';
+	var varShareMountDefaultOfAmortization 	= '<?php echo getBehavio($company->type,"app_box_share","javscriptVariable_varShareMountDefaultOfAmortization",""); ?>';
+	var varPrinterOnlyFormat				= '<?php echo getBehavio($company->type,"app_box_share","javscriptVariable_varPrinterOnlyFormat",""); ?>';
 	
 	$(document).ready(function(){					
 		 $('#txtDate').datepicker({format:"yyyy-mm-dd"});						 

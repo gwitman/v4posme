@@ -9095,9 +9095,9 @@ function helper_reporteA4TransactionMasterExamenLab(
 							  <td  style='text-align:left;width: auto;' >".$objEntidadNatural->firstName."</td>							  
 							  <td  style='text-align:left;width: 25px;' >Fecha:</td>
 							  <td  style='text-align:left;width: 160px;' >".$objTransactionMastser->statusIDChangeOn."</td>
-							  <td  style='text-align:left;width: 25px;' >".getBehavio($objCompany->type,"web_tools_report_helper","Edad").":</td>
+							  <td  style='text-align:left;width: 25px;' >".getBehavio($objCompany->type,"web_tools_report_helper","Edad","").":</td>
 							  <td  style='text-align:left;width: 25px;' >".$objEdad->name."</td>
-							  <td  style='text-align:left;width: 25px;' >".getBehavio($objCompany->type,"web_tools_report_helper","Sexo").":</td>
+							  <td  style='text-align:left;width: 25px;' >".getBehavio($objCompany->type,"web_tools_report_helper","Sexo","").":</td>
 							  <td  style='text-align:left;width: 25px;' >".$objSexo->name."</td>
 							</tr>
 							<tr>

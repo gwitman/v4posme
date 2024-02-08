@@ -263,7 +263,7 @@
 									</div>
 								</div>
 								
-								<div class="form-group <?php echo getBehavio($company->type,"app_purchase_pedidos","divDllEstado"); ?>  ">
+								<div class="form-group <?php echo getBehavio($company->type,"app_purchase_pedidos","divDllEstado",""); ?>  ">
 									<label class="col-lg-4 control-label " for="selectFilter">Estado</label>
 									<div class="col-lg-8">
 										<select name="txtStatusID" id="txtStatusID" class="select2">
