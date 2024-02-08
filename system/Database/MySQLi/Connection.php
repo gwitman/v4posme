@@ -293,12 +293,10 @@ class Connection extends BaseConnection
 
         try {			
 			
-			
-			if(ENVIRONMENT == "development")
-			{
-				log_message('info', $sql);
+			if(GENERAR_LOG_INFO_OF_DB)
+			log_message('info', $sql);
 				
-			}
+			
 		
             return $this->connID->query($this->prepQuery($sql), $this->resultMode);
 			

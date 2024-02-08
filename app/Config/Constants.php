@@ -224,3 +224,4 @@ define("DELETE_FILE_COMPONENT_8_tb_user","true");
 define('DB_BDNAME_BIOMETRIC',"biometric");
 define('DB_BDNAME_SHEMA',"information_schema");
 define('PHONE_POSME','50587125827');
+define('GENERAR_LOG_INFO_OF_DB',false);

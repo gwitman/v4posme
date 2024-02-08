@@ -2620,9 +2620,10 @@ function helper_reporteA4mmTransactionMasterTallerGlobalPro(
   $objCurrency,
   $objTransactionMasterInfo,    	
   $objParameterTelefono, /*telefono*/	
+  $objData,
   $statusName = "", /*estado*/
-  $causalName = "",
-  $objData
+  $causalName = ""
+  
 )
 {
 	$path    		= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
@@ -2963,9 +2964,10 @@ function helper_reporteA4mmTransactionMasterTallerOutputGlobalPro(
   $objCurrency,
   $objTransactionMasterInfo,    	
   $objParameterTelefono, /*telefono*/	
+  $objData,
   $statusName = "", /*estado*/
-  $causalName = "",
-  $objData
+  $causalName = ""
+  
 )
 {
 	$path    		= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
@@ -3307,9 +3309,10 @@ function helper_reporteA4mmTransactionMasterTallerStickerGlobalPro(
   $objCurrency,
   $objTransactionMasterInfo,    	
   $objParameterTelefono, /*telefono*/	
+  $objData,
   $statusName = "", /*estado*/
-  $causalName = "",
-  $objData
+  $causalName = ""
+  
 )
 {
 	$path    		= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;

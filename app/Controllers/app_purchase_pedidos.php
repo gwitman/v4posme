@@ -1080,9 +1080,10 @@ class app_purchase_pedidos extends _BaseController {
 			    $datView["objCurrency"],
 			    $datView["objTMI"],				
 			    $objParameterTelefono,				
+				$dataView ,
 				$datView["objStage"][0]->display, /*estado*/
-				$datView["objTC"]->name /*causal*/,
-				$dataView 
+				$datView["objTC"]->name /*causal*/
+				
 			);
 			
 			$this->dompdf->loadHTML($html);
@@ -1245,10 +1246,11 @@ class app_purchase_pedidos extends _BaseController {
 			    $datView["tipoCambio"],
 			    $datView["objCurrency"],
 			    $datView["objTMI"],				
-			    $objParameterTelefono,				
+			    $objParameterTelefono,	
+				$dataView ,
 				$datView["objStage"][0]->display, /*estado*/
-				$datView["objTC"]->name /*causal*/,
-				$dataView 
+				$datView["objTC"]->name /*causal*/
+				
 			);
 			
 			$this->dompdf->loadHTML($html);
@@ -1411,9 +1413,10 @@ class app_purchase_pedidos extends _BaseController {
 			    $datView["objCurrency"],
 			    $datView["objTMI"],				
 			    $objParameterTelefono,				
+				$dataView ,
 				$datView["objStage"][0]->display, /*estado*/
-				$datView["objTC"]->name /*causal*/,
-				$dataView 
+				$datView["objTC"]->name /*causal*/
+				
 			);
 			
 			$this->dompdf->loadHTML($html);
