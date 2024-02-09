@@ -425,6 +425,7 @@ class app_inventory_item extends _BaseController {
 					$objItem["realStatePiscinaPrivate"] 				= is_null (/*inicio get post*/ $this->request->getPost("txtRealStatePiscinaPrivate") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStatePiscinaPrivate") ;
 					$objItem["realStateClubPiscina"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateClubPiscina") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateClubPiscina") ;
 					$objItem["realStateAceptanMascota"] 				= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateAceptanMascota") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateAceptanMascota") ;
+					$objItem["realStateRooBatchVisit"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateRooBatchVisit") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateRooBatchVisit") ;
 					$objItem["realStateContractCorrentaje"] 			= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateContractCorrentaje") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateContractCorrentaje") ;
 					$objItem["realStatePlanReference"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStatePlanReference") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStatePlanReference") ;
 					$objItem["realStateLinkYoutube"] 					= /*inicio get post*/ $this->request->getPost("txtRealStateLinkYoutube");
@@ -441,6 +442,7 @@ class app_inventory_item extends _BaseController {
 					$objItem["realStateCountryID"]			= $paisID;
 					$objItem["realStateStateID"]			= $departamentoId;
 					$objItem["realStateCityID"]				= $municipioId;
+					$objItem["modifiedOn"]					= helper_getDateTime();
 					$objItem["realStateEmployerAgentID"]	= /*inicio get post*/ $this->request->getPost("txtEmployerID");
 					
 					if($method02 != "apinew")
@@ -727,6 +729,7 @@ class app_inventory_item extends _BaseController {
 						$objNewItem["realStatePiscinaPrivate"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStatePiscinaPrivate") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStatePiscinaPrivate") ;
 						$objNewItem["realStateClubPiscina"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateClubPiscina") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateClubPiscina") ;
 						$objNewItem["realStateAceptanMascota"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateAceptanMascota") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateAceptanMascota") ;
+						$objNewItem["realStateRooBatchVisit"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateRooBatchVisit") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateRooBatchVisit") ;
 						$objNewItem["realStateContractCorrentaje"] 				= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateContractCorrentaje") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateContractCorrentaje") ;
 						$objNewItem["realStatePlanReference"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStatePlanReference") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStatePlanReference") ;
 						$objNewItem["realStateLinkYoutube"] 					= /*inicio get post*/ $this->request->getPost("txtRealStateLinkYoutube");
@@ -743,6 +746,7 @@ class app_inventory_item extends _BaseController {
 						$objNewItem["realStateCountryID"]			= $paisID;
 						$objNewItem["realStateStateID"]				= $departamentoId;
 						$objNewItem["realStateCityID"]				= $municipioId;
+						$objNewItem["modifiedOn"]					= helper_getDateTime();
 						$objNewItem["realStateEmployerAgentID"]		= /*inicio get post*/ $this->request->getPost("txtEmployerID");
 						
 						//Actualizar Objeto

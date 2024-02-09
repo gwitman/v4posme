@@ -108,7 +108,17 @@ function helper_DateToSpanish($date_,$format){
 
 function helper_getDate()
 {
-	return date("Y-m-d 00:00:00");
+	
+	// Obtener la fecha actual
+    $fechaActual = new DateTime();
+
+    // Sumar o restar el intervalo de tiempo a la fecha actual
+    $fechaActual->modify(APP_HOUR_DIFERENCE_PHP);
+
+    // Devolver el objeto DateTime modificado
+    return $fechaActual->format('Y-m-d 00:00:00');
+	
+	
 }
 
 function helper_getDateMoreOneMonth()
@@ -122,7 +132,18 @@ function helper_getDateMoreOneMonth()
 
 function helper_getDateTime()
 {
-	return date("Y-m-d H:i:s");
+	
+	// Obtener la fecha actual
+    $fechaActual = new DateTime();
+
+    // Sumar o restar el intervalo de tiempo a la fecha actual
+    $fechaActual->modify(APP_HOUR_DIFERENCE_PHP);
+
+    // Devolver el objeto DateTime modificado
+    return $fechaActual->format('Y-m-d H:i:s');
+	
+	
+	
 }
 
 function helper_PrimerDiaDelMes()

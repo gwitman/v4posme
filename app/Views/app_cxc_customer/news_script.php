@@ -22,8 +22,11 @@
 	
 	$(document).ready(function(){	
 		//Inicializar DataPciker
+		
 		$('#txtBirthDate').datepicker({format:"yyyy-mm-dd"});
 		$('#txtDateContract').datepicker({format:"yyyy-mm-dd"});
+		
+		
 		refreschChecked();
 		
 		

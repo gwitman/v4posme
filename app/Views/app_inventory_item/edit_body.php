@@ -43,7 +43,7 @@
 				<ul id="myTab" class="nav nav-tabs">
 					<li class="active"><a href="#home" data-toggle="tab">Informacion</a></li>
 					<li><a href="#profile" data-toggle="tab">Referencias</a></li>
-					<li><a href="#warehouse" data-toggle="tab">Bodegas</a></li>
+					<li class="<?php echo getBehavio($company->type,"app_inventory_item","menuBodegaPestana",""); ?>" ><a href="#warehouse" data-toggle="tab">Bodegas</a></li>
 					<li><a href="#provider" data-toggle="tab">Proveedores</a></li>
 					<li>
 						<a href="#concepts" data-toggle="tab">						
@@ -111,14 +111,14 @@
 										</div>
 								</div>
 								
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtCantidadZero",""); ?> ">
 										<label class="col-lg-4 control-label" for="normal">Cantidad Zero</label> 
 										<div class="col-lg-8">
 											<input type="checkbox"   name="txtIsInvoiceQuantityZero" id="txtIsInvoiceQuantityZero" value="1"  <?php echo ($objItem->isInvoiceQuantityZero == 1) ? "checked":""; ?>  >
 										</div>
 								</div>
 
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtFacturable",""); ?> ">
 										<label class="col-lg-4 control-label" for="normal">Facturable</label>
 										<div class="col-lg-8">
 											<input type="checkbox"   name="txtIsInvoice" id="txtIsInvoice" value="1"  <?php echo ($objItem->isInvoice == 1) ? "checked":""; ?>  >
@@ -139,7 +139,7 @@
 										</div>
 								</div>
 								
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtCantidad",""); ?> ">
 										<label class="col-lg-4 control-label" for="normal">Cantidad</label>
 										<div class="col-lg-8">
 											<input class="form-control" disabled  type="text"  name="txtQuantity" id="txtQuantity" value="<?php echo $objItem->quantity; ?>">												
@@ -160,7 +160,7 @@
 										</div>
 								</div>
 								
-								<div class="form-group ">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtCosto",""); ?> ">
 										<label class="col-lg-4 control-label" for="normal">Costo</label>
 										<div class="col-lg-8">
 											<input class="form-control" disabled type="text"  name="txtCost" id="txtCost" value="<?php echo $objItem->cost; ?>">												
@@ -290,7 +290,7 @@
 									</div>
 								</div>
 							
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtBodega",""); ?> ">
 									<label class="col-lg-4 control-label" for="selectFilter">*Bodega</label>
 									<div class="col-lg-8">
 										<select name="txtDefaultWarehouseID" id="txtDefaultWarehouseID" class="select2">
@@ -326,6 +326,27 @@
 										</select>
 									</div>
 								</div>
+								
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divControlCreatedOn","hidden"); ?>" ">
+									<label class="col-lg-4 control-label" for="datepicker">Fecha alta</label>
+									<div class="col-lg-8">
+										<div id="datepicker" class="input-group date" data-date="2014-01-30" data-date-format="yyyy-mm-dd">
+											<input size="16"  class="form-control" type="text" name="txtCreatedOn" id="txtCreatedOn" value="<?php echo $objItem->createdOn; ?>" readonly="readonly" >
+											<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divControlModifiedOn","hidden"); ?>" ">
+									<label class="col-lg-4 control-label" for="datepicker">Ultima actualizacion</label>
+									<div class="col-lg-8">
+										<div id="datepicker" class="input-group date" data-date="2014-01-30" data-date-format="yyyy-mm-dd">
+											<input size="16"  class="form-control" type="text" name="txtModifiedOn" id="txtModifiedOn" value="<?php echo $objItem->modifiedOn; ?>" readonly="readonly" >
+											<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+										</div>
+									</div>
+								</div>
+								
 								
 								
 								
@@ -377,6 +398,13 @@
 										<input type="checkbox"   name="txtRealStateRoomBatchServices" id="txtRealStateRoomBatchServices" value="1"  <?php echo ($objItem->realStateRoomBatchServices == 1) ? "checked":""; ?>  >
 									</div>
 								</div>	
+								
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?> ">
+									<label class="col-lg-4 control-label" for="normal">Baño de Visita</label>
+									<div class="col-lg-8">
+										<input type="checkbox"   name="txtRealStateRooBatchVisit" id="txtRealStateRooBatchVisit" value="1"  <?php echo ($objItem->realStateRooBatchVisit == 1) ? "checked":""; ?>  >
+									</div>
+								</div>	
 
 								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
 									<label class="col-lg-4 control-label" for="normal">Cuarto de Servicio</label>
@@ -400,7 +428,7 @@
 								</div>
 								
 								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
-									<label class="col-lg-4 control-label" for="normal">Piscina Club</label>
+									<label class="col-lg-4 control-label" for="normal">Area club con piscina</label>
 									<div class="col-lg-8">
 										<input type="checkbox"   name="txtRealStateClubPiscina" id="txtRealStateClubPiscina" value="1" <?php echo ($objItem->realStateClubPiscina == 1) ? "checked":""; ?>  >
 									</div>
@@ -429,7 +457,7 @@
 								
 								
 								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
-										<label class="col-lg-4 control-label" for="normal">Link Youbue</label>
+										<label class="col-lg-4 control-label" for="normal">Link YouTube</label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtRealStateLinkYoutube" id="txtRealStateLinkYoutube" value="<?php echo $objItem->realStateLinkYoutube; ?>">												
 										</div>

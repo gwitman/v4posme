@@ -118,7 +118,7 @@
 															</select>
 														</div>
 													</div>
-													<div class="form-group">
+													<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","divTxtTypeIdentification",""); ?> ">
 														<label class="col-lg-4 control-label" for="selectFilter">Tipo Identificacion</label>
 														<div class="col-lg-8">
 															<select name="txtIdentificationTypeID" id="txtIdentificationTypeID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"   >
@@ -137,7 +137,7 @@
 															</select>
 														</div>
 													</div>
-													<div class="form-group">
+													<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","divTxtIdentification",""); ?> ">
 															<label class="col-lg-4 control-label text-primary" for="normal">*Identificacion</label>
 															<div class="col-lg-8">
 																<input class="form-control"  type="text"  name="txtIdentification" id="txtIdentification" value="<?php echo $objCustomer->identification; ?>">												
@@ -579,7 +579,7 @@
 												<div class="col-lg-6">
 												
 													<div class="form-group">
-														<label class="col-lg-4 control-label" for="datepicker">Contrato</label>
+														<label class="col-lg-4 control-label" for="datepicker">Fecha de Contacto</label>
 														<div class="col-lg-8">
 															<div id="datepicker" class="input-group date" data-date="2014-01-30" data-date-format="yyyy-mm-dd">
 																<input size="16"  class="form-control" type="text" name="txtDateContract" id="txtDateContract" value="<?php echo $objCustomer->dateContract; ?>">
@@ -589,7 +589,7 @@
 													</div>
 													
 													
-													<div class="form-group">
+													<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","divTxtTypeFirmID",""); ?> ">
 														<label class="col-lg-4 control-label" for="selectFilter">Tipo de Firma</label>
 														<div class="col-lg-8">
 															<select name="txtTypeFirmID" id="txtTypeFirmID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"   >

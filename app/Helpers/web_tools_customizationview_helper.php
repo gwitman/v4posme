@@ -256,14 +256,47 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('luciaralstate_app_inventory_item_Marca')													=> "Area de Contruccion M2",
 		strtolower('luciaralstate_app_inventory_item_Modelo')													=> "Area de Terreno VR2",
 		strtolower('luciaralstate_app_inventory_item_Serie ó MAI')												=> "ID Encuentra 24",		
-		strtolower('luciaralstate_app_inventory_item_labelBarCode')												=> "Pagina Web",
+		strtolower('luciaralstate_app_inventory_item_labelBarCode')												=> "ID página web",
 		strtolower('luciaralstate_app_inventory_item_Descripcion')			 									=> "Direccion",
 		strtolower('luciaralstate_app_inventory_item_label_price_PUBLICO')			 							=> "PRECIO DE VENTA",
 		strtolower('luciaralstate_app_inventory_item_label_price_POR MAYOR')			 						=> "PRECIO DE RENTA",
 		strtolower('luciaralstate_app_inventory_item_label_price_CREDITO')			 							=> "----",
 		strtolower('luciaralstate_app_inventory_item_label_price_CREDITO POR MAYOR')			 				=> "----",
 		strtolower('luciaralstate_app_inventory_item_label_price_ESPECIAL')			 							=> "----",
-		strtolower('luciaralstate_app_inventory_item_fieldInmobiliaria')										=> ""
+		strtolower('luciaralstate_app_cxc_customer_divTxtNombres')												=> "hidden",
+		strtolower('luciaralstate_app_cxc_customer_divTxtApellidos')											=> "hidden",
+		strtolower('luciaralstate_app_cxc_customer_divTxtNombreComercial')										=> "hidden",
+		strtolower('luciaralstate_app_cxc_customer_divTxtTypeIdentification')									=> "hidden",
+		strtolower('luciaralstate_app_cxc_customer_divTxtIdentification')										=> "hidden",
+		strtolower('luciaralstate_app_cxc_customer_divTxtSubCategoria')											=> "hidden",
+		strtolower('luciaralstate_app_cxc_customer_divTxtEstadoCivil')											=> "hidden",
+		strtolower('luciaralstate_app_cxc_customer_divTxtProfesionUFicio')										=> "hidden",
+		strtolower('luciaralstate_app_cxc_customer_divTxtTypeFirmID')											=> "hidden",
+		strtolower('luciaralstate_app_cxc_customer_divScriptCustom') 											=> "
+																														<script>
+																														$(document).ready(function(){ 
+																															$('#txtIdentification').val('0');				
+																															$(document).on('focusout','#txtLegalName',function(){ 									 
+																																var varLegalName 	= $('#txtLegalName').val(); 
+																																$('#txtFirstName').val(varLegalName  ); 
+																																$('#txtLastName').val(varLegalName  ); 
+																																$('#txtCommercialName').val(varLegalName); 	 
+																															}); 
+																														}); 
+																														</script> 
+																													",
+		strtolower('luciaralstate_app_inventory_item_divTxtEstado') 			 								=> "hidden",
+		strtolower('luciaralstate_app_inventory_item_divTxtUM') 			 									=> "hidden",
+		strtolower('luciaralstate_app_inventory_item_divTxtPresentacionUM')  									=> "hidden",
+		strtolower('luciaralstate_app_inventory_item_divTxtBodega') 		 									=> "hidden",
+		strtolower('luciaralstate_app_inventory_item_divTxtCantidad') 	 										=> "hidden",
+		strtolower('luciaralstate_app_inventory_item_divTxtCosto') 		 										=> "hidden",
+		strtolower('luciaralstate_app_inventory_item_divTxtCantidadZero')  										=> "hidden",
+		strtolower('luciaralstate_app_inventory_item_divTxtFacturable') 	 									=> "hidden",
+		strtolower('luciaralstate_app_inventory_item_menuBodegaPestana') 	 									=> "hidden",
+		strtolower('luciaralstate_app_inventory_item_menuBodegaPestana') 	 									=> "hidden",
+		strtolower('luciaralstate_app_inventory_item_divControlCreatedOn') 	 									=> "",
+		strtolower('luciaralstate_app_inventory_item_divControlModifiedOn') 	 								=> "",
 		
 		
 		
@@ -318,3 +351,5 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 	}
 		
 }
+
+?>
