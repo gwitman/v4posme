@@ -822,7 +822,7 @@
     
       <div class="form-group">
         <label for="txtLeadTipo">Tipo:</label>
-        <select class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"  id="txtLeadTipo">
+        <select class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"  id="txtLeadTipo" name="txtLeadTipo" >
 			<?php
 			if($objPCItemTypeLeads)
 			{
@@ -841,7 +841,7 @@
 	  
       <div class="form-group">
         <label for="txtLeadSubTipo">Sub Tipo:</label>
-        <select class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>" id="txtLeadSubTipo">
+        <select class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>" id="txtLeadSubTipo" name="txtLeadSubTipo" >
           <?php
 			if($objPCItemSubTypeLeads)
 			{
@@ -860,7 +860,7 @@
 	  
 	  <div class="form-group">
         <label for="txtLeadCategory">Categoria:</label>
-        <select class=" <?php echo ($useMobile == "1" ? "" : "select2"); ?>" id="txtLeadCategory">
+        <select class=" <?php echo ($useMobile == "1" ? "" : "select2"); ?>" id="txtLeadCategory" name="txtLeadCategory" >
           <?php
 			if($objPCItemCategoryLeads)
 			{
@@ -881,7 +881,7 @@
 	  
       <div class="form-group">
         <label for="comentario">Comentario:</label>
-        <textarea class="form-control" id="txtLeadComentario" rows="3"></textarea>
+        <textarea class="form-control" id="txtLeadComentario" rows="3" name="txtLeadComentario" ></textarea>
       </div>
 	  
 	  

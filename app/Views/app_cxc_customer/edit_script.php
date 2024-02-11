@@ -50,11 +50,38 @@
 		$(document).on("click","#cerrarLeads",function(){
 			var sidebar = $("#mySidebar");		
 			sidebar.css("width", "0");
+			
 			 
 		});
 		$(document).on("click","#saveLeads",function(){
 			var sidebar = $("#mySidebar");		
 			sidebar.css("width", "0");
+			
+			
+			$.ajax({									
+				cache       : false,
+				dataType    : 'json',
+				type        : 'POST',
+				url  		: "<?php echo base_url(); ?>/app_cxc_leads/save/new",
+				data 		: {
+						mode: "new",
+						txtLeadTipo: $("#txtLeadTipo").val(),
+						txtLeadSubTipo: $("#txtLeadSubTipo").val(),
+						txtLeadCategory: $("#txtLeadCategory").val(),
+						txtLeadComentario: $("#txtLeadComentario").val(),
+						txtCustomerID : $("#txtEntityID").val()
+				},
+				success		: function(data){
+					console.info(data);
+					fnShowNotification("Leads agregado!","success");
+				},
+				error:function(xhr,data){						
+					console.info("complete data error");													
+					fnShowNotification("Error 505","error");
+				}
+			});
+			
+			
 			 
 		});
 		
