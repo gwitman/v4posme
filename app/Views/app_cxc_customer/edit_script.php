@@ -41,6 +41,26 @@
 					$("#txtEmployerDescription").val("");
 		});
 		
+		//Traking
+		$(document).on("click","#btnLeads",function(){
+			$("#saveLeads").focus();
+			 $("#mySidebar").css("width","250px");
+			 
+		});
+		$(document).on("click","#cerrarLeads",function(){
+			var sidebar = $("#mySidebar");		
+			sidebar.css("width", "0");
+			 
+		});
+		$(document).on("click","#saveLeads",function(){
+			var sidebar = $("#mySidebar");		
+			sidebar.css("width", "0");
+			 
+		});
+		
+		
+		
+	
 		
 		//Eliminar el Documento
 		$(document).on("click","#btnDelete",function(){

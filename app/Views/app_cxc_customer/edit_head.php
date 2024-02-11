@@ -8,6 +8,8 @@
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/ui/range-slider/rangeslider.js"></script>
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/pages/ui-elements.js"></script>
 				
+			
+
 				<div id="heading" class="page-header">
 							<h1><i class="icon20 i-address-book"></i> Editar Cliente</h1>
 				</div> 
