@@ -47,17 +47,20 @@ class core_dashboards_santa_lucia_real_state extends _BaseController {
 			
 			$firstDate						= helper_PrimerDiaDelMes();
 			$lastDate						= helper_UltimoDiaDelMes();			
-			$objListVentas					= $this->Transaction_Master_Detail_Model->GlobalPro_get_rowBySalesByEmployeerMonthOnly_Sales($dataSession["user"]->companyID,$firstDate,$lastDate);
-			$objListTecnico					= $this->Transaction_Master_Detail_Model->GlobalPro_get_rowBySalesByEmployeerMonthOnly_Tenico($dataSession["user"]->companyID,$firstDate,$lastDate);
-			$objListVentaMensual			= $this->Transaction_Master_Detail_Model->GlobalPro_get_MonthOnly_Sales($dataSession["user"]->companyID,$firstDateYear,$lastDateYear);
-			$objListVentaDiaria				= $this->Transaction_Master_Detail_Model->GlobalPro_get_Day_Sales($dataSession["user"]->companyID,$firstDate,$lastDate);
+			$dataSession["RealState_get_ClienteFuenteDeContacto"]					= $this->Transaction_Master_Detail_Model->RealState_get_ClienteFuenteDeContacto($dataSession["user"]->companyID,$firstDate,$lastDate);
+			$dataSession["RealState_get_ClientesInteres"]							= $this->Transaction_Master_Detail_Model->RealState_get_ClientesInteres($dataSession["user"]->companyID,$firstDate,$lastDate);
+			$dataSession["RealState_get_ClientesTipoPropiedad"]						= $this->Transaction_Master_Detail_Model->RealState_get_ClientesTipoPropiedad($dataSession["user"]->companyID,$firstDate,$lastDate);
+			$dataSession["RealState_get_ClientesPorAgentes"]						= $this->Transaction_Master_Detail_Model->RealState_get_ClientesPorAgentes($dataSession["user"]->companyID,$firstDate,$lastDate);
+			$dataSession["RealState_get_ClientesClasificacionPorAgentes"]			= $this->Transaction_Master_Detail_Model->RealState_get_ClientesClasificacionPorAgentes($dataSession["user"]->companyID,$firstDate,$lastDate);
+			$dataSession["RealState_get_ClientesCerrados"]							= $this->Transaction_Master_Detail_Model->RealState_get_ClientesCerrados($dataSession["user"]->companyID,$firstDate,$lastDate);
+			$dataSession["RealState_get_AgenteEfectividad"]							= $this->Transaction_Master_Detail_Model->RealState_get_AgenteEfectividad($dataSession["user"]->companyID,$firstDate,$lastDate);
+			$dataSession["RealState_get_PropiedadesPorAgentes"]						= $this->Transaction_Master_Detail_Model->RealState_get_PropiedadesPorAgentes($dataSession["user"]->companyID,$firstDate,$lastDate);
+			$dataSession["RealState_get_PropiedadesPorAgentesMetas"]				= $this->Transaction_Master_Detail_Model->RealState_get_PropiedadesPorAgentesMetas($dataSession["user"]->companyID,$firstDate,$lastDate);
+			$dataSession["RealState_get_PropiedadesRendimientoAnualVentas"]			= $this->Transaction_Master_Detail_Model->RealState_get_PropiedadesRendimientoAnualVentas($dataSession["user"]->companyID,$firstDate,$lastDate);
+			$dataSession["RealState_get_PropiedadesRendimientoAnualEnlistamiento"]	= $this->Transaction_Master_Detail_Model->RealState_get_PropiedadesRendimientoAnualEnlistamiento($dataSession["user"]->companyID,$firstDate,$lastDate);
 			
 			
-			//Renderizar Resultado			
-			$dataSession["objListVentas"]		= $objListVentas;
-			$dataSession["objListTecnico"]		= $objListTecnico;
-			$dataSession["objListVentaMensual"]	= $objListVentaMensual;
-			$dataSession["objListVentaDiaria"]	= $objListVentaDiaria;
+			
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= "";
 			$dataSession["head"]			= "";

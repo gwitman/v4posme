@@ -41,24 +41,24 @@
 							<div class="panel" style="margin-bottom:20px;">
 								<div class="panel-heading">
 									<div class="icon"><i class="icon20 i-health"></i></div> 
-									<h4>Estadistica</h4>
+									<h4>Fuente de Contacto</h4>
 									<a href="#" class="minimize"></a>
 								</div><!-- End .panel-heading -->
 							
 								<div class="panel-body">								
-									<div id="grafico1" style="height:150px" ></div>
+									<div id="grafico1" style="height:300px" ></div>
 								</div><!-- End .panel-body -->
 							</div><!-- End .widget -->		
 							
 							<div class="panel" style="margin-bottom:20px;">
 								<div class="panel-heading">
 									<div class="icon"><i class="icon20 i-health"></i></div> 
-									<h4>Estadistica</h4>
+									<h4>Interés del Cliente</h4>
 									<a href="#" class="minimize"></a>
 								</div><!-- End .panel-heading -->
 							
 								<div class="panel-body">								
-									<div id="grafico2" style="height:150px" ></div>
+									<div id="grafico2" style="height:300px" ></div>
 								</div><!-- End .panel-body -->
 							</div><!-- End .widget -->		
 							
@@ -70,7 +70,7 @@
 							<div class="panel" style="margin-bottom:20px;">
 								<div class="panel-heading">
 									<div class="icon"><i class="icon20 i-health"></i></div> 
-									<h4>Estadistica</h4>
+									<h4>Tipo de propiedad</h4>
 									<a href="#" class="minimize"></a>
 								</div><!-- End .panel-heading -->
 							
@@ -83,7 +83,7 @@
 							<div class="panel" style="margin-bottom:20px;">
 								<div class="panel-heading">
 									<div class="icon"><i class="icon20 i-health"></i></div> 
-									<h4>Estadistica</h4>
+									<h4>Clientes asignados</h4>
 									<a href="#" class="minimize"></a>
 								</div><!-- End .panel-heading -->
 							
@@ -95,146 +95,423 @@
 				</div>
 				
 				
+				<div class="row"  >
+					 <div class="col-lg-6">		
+							<div class="panel" style="margin-bottom:20px;">
+								<div class="panel-heading">
+									<div class="icon"><i class="icon20 i-health"></i></div> 
+									<h4>Clasificacion de clientes</h4>
+									<a href="#" class="minimize"></a>
+								</div><!-- End .panel-heading -->
+							
+								<div class="panel-body">								
+									<div id="grafico5" style="height:300px" ></div>
+								</div><!-- End .panel-body -->
+							</div><!-- End .widget -->		
+					</div>
+					<div class="col-lg-6">	
+							<div class="panel" style="margin-bottom:20px;">
+								<div class="panel-heading">
+									<div class="icon"><i class="icon20 i-health"></i></div> 
+									<h4>Efectividad</h4>
+									<a href="#" class="minimize"></a>
+								</div><!-- End .panel-heading -->
+							
+								<div class="panel-body">								
+									<div id="grafico6" style="height:300px" ></div>
+								</div><!-- End .panel-body -->
+							</div><!-- End .widget -->		
+					</div>
+				</div>
 				
-				<script>	
-					//https://www.w3schools.com/js/js_graphics_google_chart.asp
-					
-					var objTransactionMaster 				 = JSON.parse('<?php echo json_encode($objListVentas); ?>');	
-					var objTransactionMasterTecnico			 = JSON.parse('<?php echo json_encode($objListTecnico); ?>');	
-					var objTransactionMasterMensuales		 = JSON.parse('<?php echo json_encode($objListVentaMensual); ?>');	
-					var objTransactionMasterDiarias			 = JSON.parse('<?php echo json_encode($objListVentaDiaria); ?>');	
-					var objDataSourceProductosMasVendidos	 = new Array();
-					var objDataSourceProductosMasTenicos	 = new Array();
-					var objDataSourceProductosMasMensuales	 = new Array();
-					var objDataSourceProductosMasDiarias	 = new Array();
-					
-					//Obtener los ultimos 10 elementos					
-					objDataSourceProductosMasMensuales.push(new Array("Mes","Venta"));
-					for(var i = 0 ; i < objTransactionMasterMensuales.length;i++)
-					{
-						objDataSourceProductosMasMensuales.push(
-							new Array(
-								objTransactionMasterMensuales[i].firtsName,
-								parseInt(objTransactionMasterMensuales[i].monto)
-							)
-						);	
-					}
-					
-					
-					//Obtener los ultimos 10 elementos					
-					objDataSourceProductosMasDiarias.push(new Array("Dia","Venta"));
-					for(var i = 0 ; i < objTransactionMasterDiarias.length;i++)
-					{
-						objDataSourceProductosMasDiarias.push(
-							new Array(
-								objTransactionMasterDiarias[i].firtsName,
-								parseInt(objTransactionMasterDiarias[i].monto)
-							)
-						);	
-					}
-					
-					
-					
-					//Obtener los ultimos 10 elementos					
-					objDataSourceProductosMasVendidos.push(new Array("Colaborador","Venta"));
-					for(var i = 0 ; i < objTransactionMaster.length;i++)
-					{
-						objDataSourceProductosMasVendidos.push(
-							new Array(
-								objTransactionMaster[i].firtsName,
-								parseInt(objTransactionMaster[i].monto)
-							)
-						);	
-					}
-					
-					//Obtener los ultimos 10 elementos					
-					objDataSourceProductosMasTenicos.push(new Array("Colaborador","Venta"));
-					for(var i = 0 ; i < objTransactionMasterTecnico.length;i++)
-					{
-						objDataSourceProductosMasTenicos.push(
-							new Array(
-								objTransactionMasterTecnico[i].firtsName,
-								parseInt(objTransactionMasterTecnico[i].monto)
-							)
-						);	
-					}
-					
-					
-					
+				<div class="row"  >
+					 <div class="col-lg-6">		
+							<div class="panel" style="margin-bottom:20px;">
+								<div class="panel-heading">
+									<div class="icon"><i class="icon20 i-health"></i></div> 
+									<h4>Cierre de clientes</h4>
+									<a href="#" class="minimize"></a>
+								</div><!-- End .panel-heading -->
+							
+								<div class="panel-body">								
+									<div id="grafico7" style="height:300px" ></div>
+								</div><!-- End .panel-body -->
+							</div><!-- End .widget -->		
+					</div>
+					<div class="col-lg-6">	
+							<div class="panel" style="margin-bottom:20px;">
+								<div class="panel-heading">
+									<div class="icon"><i class="icon20 i-health"></i></div> 
+									<h4>Enlistamiento de propiedades</h4>
+									<a href="#" class="minimize"></a>
+								</div><!-- End .panel-heading -->
+							
+								<div class="panel-body">								
+									<div id="grafico8" style="height:300px" ></div>
+								</div><!-- End .panel-body -->
+							</div><!-- End .widget -->		
+					</div>
+				</div>
+				
+				
+				<div class="row"  >
+					 <div class="col-lg-6">		
+							<div class="panel" style="margin-bottom:20px;">
+								<div class="panel-heading">
+									<div class="icon"><i class="icon20 i-health"></i></div> 
+									<h4>Enlistamiento de propiedad metas</h4>
+									<a href="#" class="minimize"></a>
+								</div><!-- End .panel-heading -->
+							
+								<div class="panel-body">								
+									<div id="grafico9" style="height:300px" ></div>
+								</div><!-- End .panel-body -->
+							</div><!-- End .widget -->		
+					</div>
+					<div class="col-lg-6">	
+							<div class="panel" style="margin-bottom:20px;">
+								<div class="panel-heading">
+									<div class="icon"><i class="icon20 i-health"></i></div> 
+									<h4>Rendimiento anual de venta</h4>
+									<a href="#" class="minimize"></a>
+								</div><!-- End .panel-heading -->
+							
+								<div class="panel-body">								
+									<div id="grafico10" style="height:300px" ></div>
+								</div><!-- End .panel-body -->
+							</div><!-- End .widget -->		
+					</div>
+				</div>
+				
+				
+				<div class="row"  >
+					 <div class="col-lg-6">		
+							<div class="panel" style="margin-bottom:20px;">
+								<div class="panel-heading">
+									<div class="icon"><i class="icon20 i-health"></i></div> 
+									<h4>Rendimiento anual de enlistamiento</h4>
+									<a href="#" class="minimize"></a>
+								</div><!-- End .panel-heading -->
+							
+								<div class="panel-body">								
+									<div id="grafico11" style="height:300px" ></div>
+								</div><!-- End .panel-body -->
+							</div><!-- End .widget -->		
+					</div>
+					<div class="col-lg-6">	
+							
+					</div>
+				</div>
+				
+				
+				
+				<script>						
 					
 					$(document).ready(function(){
-						google.charts.load('current',{packages:['corechart']});							
-						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasVendidos);		
-						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasTenicos);		
-						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasMensuales);		
-						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasDiarias);		
-					});		
-					
-					function drawChartBarraHorizontalProductosMasMensuales() {
-
-						var data = google.visualization.arrayToDataTable(
-							objDataSourceProductosMasMensuales
-						);
-
-						var options = {
-						  title: 'Ventas Mensuales',
-						  colors: ['#ff8000', '#ff8000', '#ff8000', '#ff8000', '#ff8000'],
-						  seriesType: 'bars',
-						};
-
-						var chart = new google.visualization.ComboChart(document.getElementById('grafico3'));
-						chart.draw(data, options);
-
-					}
-					
-					function drawChartBarraHorizontalProductosMasDiarias() {
-
-						var data = google.visualization.arrayToDataTable(
-							objDataSourceProductosMasDiarias
-						);
-
-						var options = {
-						  title: 'Ventas Diarias',
-						  colors: ['#ff0000', '#ff0000', '#ff0000', '#ff0000', '#ff0000'],
-						};
-
-						var chart = new google.visualization.ComboChart(document.getElementById('grafico4'));
-						chart.draw(data, options);
-
-					}
-					
-					function drawChartBarraHorizontalProductosMasTenicos() {
-
-						var data = google.visualization.arrayToDataTable(
-							objDataSourceProductosMasTenicos
-						);
-
-						var options = {
-						  title: 'Colaboradores vs Soporte',
-						  colors: ['#00C868', '#006E98', '#ec8f6e', '#f3b49f', '#f6c7b6'],
-						};
-
-						var chart = new google.visualization.BarChart(document.getElementById('grafico2'));
-						chart.draw(data, options);
-
-					}
+							//https://www.w3schools.com/js/js_graphics_google_chart.asp
+							google.charts.load('current',{packages:['corechart']});	
 							
 					
-					function drawChartBarraHorizontalProductosMasVendidos() {
+							//Clientes por Contactos
+							///
+							////////////////////////////////////////////////
+							var objDataSource1	 												= new Array();
+							var RealState_get_ClienteFuenteDeContacto 						 	= JSON.parse('<?php echo json_encode($RealState_get_ClienteFuenteDeContacto); ?>');												
+							objDataSource1.push(new Array("Forma","Cantidad"));
+							for(var i = 0 ; i < RealState_get_ClienteFuenteDeContacto.length;i++)
+							{
+								objDataSource1.push(
+									new Array(
+										RealState_get_ClienteFuenteDeContacto[i].Indicador,
+										parseInt(RealState_get_ClienteFuenteDeContacto[i].Cantidad)
+									)
+								);	
+							}
+							
+							google.charts.setOnLoadCallback(
+								function () {
 
-						var data = google.visualization.arrayToDataTable(
-							objDataSourceProductosMasVendidos
-						);
+									var data = google.visualization.arrayToDataTable(
+										objDataSource1
+									);
 
-						var options = {
-						  title: 'Colaboradores vs Venta',
-						  colors: ['#006E98', '#00C868', '#ec8f6e', '#f3b49f', '#f6c7b6'],
-						};
+									var options = {
+									  title: 'Formas de contacto',
+									  colors: ['#FF5733', '#FFC300', '#FF85A2', '#FF33FF', '#33FFBD'],
+									  seriesType: 'bars',
+									};
 
-						var chart = new google.visualization.BarChart(document.getElementById('grafico1'));
-						chart.draw(data, options);
+									var chart = new google.visualization.ComboChart(document.getElementById('grafico1'));
+									chart.draw(data, options);
 
-					}
+								}
+							);	
+							
+							
+							
+							//Clientes por Interes
+							///
+							////////////////////////////////////////////////							
+							var objDataSource2	 												= new Array();
+							var RealState_get_ClientesInteres			 						= JSON.parse('<?php echo json_encode($RealState_get_ClientesInteres); ?>');	
+							objDataSource2.push(new Array("Interes","Cantidad"));
+							for(var i = 0 ; i < RealState_get_ClientesInteres.length;i++)
+							{
+								objDataSource2.push(
+									new Array(
+										RealState_get_ClientesInteres[i].Indicador,
+										parseInt(RealState_get_ClientesInteres[i].Cantidad)
+									)
+								);	
+							}
+																		
+							google.charts.setOnLoadCallback(
+								function () {
+							
+									var data = google.visualization.arrayToDataTable(
+										objDataSource2
+									);
+							
+									var options = {
+									  title: 'Interes vs cliente',
+									  colors: ['#33A1FF', '#FF3366', '#FF3333', '#33FF33', '#33FFA8'],
+									};
+							
+									var chart = new google.visualization.BarChart(document.getElementById('grafico2'));
+									chart.draw(data, options);
+							
+								}
+							);	
+							
+							
+							//Clientes por Stilo de propiedad
+							///
+							////////////////////////////////////////////////	
+							var objDataSource3	 												= new Array();
+							var RealState_get_ClientesTipoPropiedad		 						= JSON.parse('<?php echo json_encode($RealState_get_ClientesTipoPropiedad); ?>');															
+							objDataSource3.push(new Array("Tipo","Cantidad"));
+							for(var i = 0 ; i < RealState_get_ClientesTipoPropiedad.length;i++)
+							{
+								objDataSource3.push(
+									new Array(
+										RealState_get_ClientesTipoPropiedad[i].Indicador,
+										parseInt(RealState_get_ClientesTipoPropiedad[i].Cantidad)
+									)
+								);	
+							}
+																		
+							google.charts.setOnLoadCallback(
+								function () {
+							
+									var data = google.visualization.arrayToDataTable(
+										objDataSource3
+									);
+							
+									var options = {
+									  title: 'Cliente VS Tipo de propiedad',
+									  colors: ['#3399FF', '#9966FF', '#FF33CC', '#FF6633', '#FFFF33'],
+									};
+							
+									var chart = new google.visualization.PieChart(document.getElementById('grafico3'));
+									chart.draw(data, options);
+							
+								}
+							);	
+							
+							
+							
+							//Clientes por Agente
+							///
+							////////////////////////////////////////////////	
+							var objDataSource4	 												= new Array();
+							var RealState_get_ClientesPorAgentes			 					= JSON.parse('<?php echo json_encode($RealState_get_ClientesPorAgentes); ?>');								
+							objDataSource4.push(new Array("Agente","Cantidad"));
+							for(var i = 0 ; i < RealState_get_ClientesPorAgentes.length;i++)
+							{
+								objDataSource4.push(
+									new Array(
+										RealState_get_ClientesPorAgentes[i].Indicador,
+										parseInt(RealState_get_ClientesPorAgentes[i].Cantidad)
+									)
+								);	
+							}
+																		
+							google.charts.setOnLoadCallback(
+								function () {
+							
+									var data = google.visualization.arrayToDataTable(
+										objDataSource4
+									);
+							
+									var options = {										
+									  title: 'Cliente VS Agente',
+									  colors: ['#FF33FF', '#66FF33', '#33FFFF', '#CC33FF', '#FFCC33'],
+									  pieHole: 0.4,
+									};
+							
+									var chart = new google.visualization.LineChart(document.getElementById('grafico4'));
+									chart.draw(data, options);
+							
+								}
+							);	
+							
+							
+							
+							//Clientes por Stilo de propiedad
+							///
+							////////////////////////////////////////////////	
+							var objDataSource5	 												= new Array();
+							var RealState_get_ClientesClasificacionPorAgentes 				 	= JSON.parse('<?php echo json_encode($RealState_get_ClientesClasificacionPorAgentes); ?>');	
+							var RealState_get_Clientes05Indicadores								= jLinq.from(jLinq.from(RealState_get_ClientesClasificacionPorAgentes).select(function(a){ return a.Indicador })).distinct();
+							var RealState_get_Clientes05AgenteEfectividad						= jLinq.from(jLinq.from(RealState_get_ClientesClasificacionPorAgentes).select(function(a){ return a.Agente })).distinct();
+							
+							var arrayTitle = new Array();
+							arrayTitle.push("Agente");
+							for(var i = 0 ; i < RealState_get_Clientes05Indicadores.length; i++)
+							{
+								arrayTitle.push(RealState_get_Clientes05Indicadores[i]);
+							}
+							
+							objDataSource5.push(arrayTitle);
+							for(var i = 0 ; i < RealState_get_Clientes05AgenteEfectividad.length;i++)
+							{
+								var arrayRow = new Array();
+								arrayRow.push(RealState_get_Clientes05AgenteEfectividad[i]);
+								for(var ix = 0 ; ix < RealState_get_Clientes05Indicadores.length;ix++)
+								{
+									var amountTotal =  jLinq.from(jLinq.from(RealState_get_ClientesClasificacionPorAgentes).where(function(a){ 
+																		return (
+																			a.Agente == RealState_get_Clientes05AgenteEfectividad[i] && 
+																			a.Indicador == RealState_get_Clientes05Indicadores[ix] 
+																		)
+																	}).select(function(a){ return parseFloat(a.Cantidad) })).sum().result;
+									arrayRow.push(amountTotal);
+									
+								}
+								objDataSource5.push(arrayRow);	
+							}
+							
+							google.charts.setOnLoadCallback(
+								function () {
+							
+									var data = google.visualization.arrayToDataTable(
+										objDataSource5
+									);
+							
+									var options = {										
+									  title: 'Cliente VS Clasificacion',
+									  colors: ['#00C868', '#006E98', '#ec8f6e', '#f3b49f', '#f6c7b6'],
+									  vAxis: {title: 'Clasificacion'},
+									  hAxis: {title: 'Agente'},
+									  seriesType: 'bars',
+									  series: {5: {type: 'line'}}
+		  
+		  
+									};
+							
+									var chart = new google.visualization.ComboChart(document.getElementById('grafico5'));
+									chart.draw(data, options);
+							
+								}
+							);	
+							
+							
+							//?????
+							var RealState_get_AgenteEfectividad		 							= JSON.parse('<?php echo json_encode($RealState_get_AgenteEfectividad); ?>');	
+							
+							
+							//Clientes por Stilo de propiedad
+							///
+							////////////////////////////////////////////////	
+							var objDataSource7	 												= new Array();
+							var RealState_get_ClientesCerrados			 						= JSON.parse('<?php echo json_encode($RealState_get_ClientesCerrados); ?>');
+							objDataSource7.push(new Array("Clasificacion","Cantidad"));
+							for(var i = 0 ; i < RealState_get_ClientesCerrados.length;i++)
+							{
+								objDataSource7.push(
+									new Array(
+										RealState_get_ClientesCerrados[i].Indicador,
+										parseInt(RealState_get_ClientesCerrados[i].Cantidad)
+									)
+								);	
+							}
+																		
+							google.charts.setOnLoadCallback(
+								function () {
+							
+									var data = google.visualization.arrayToDataTable(
+										objDataSource7
+									);
+							
+									var options = {										
+									  title: 'Cliente VS Clasificacion',
+									  colors: ['#00C868', '#006E98', '#ec8f6e', '#f3b49f', '#f6c7b6'],
+									  pieHole: 0.4,
+									};
+							
+									var chart = new google.visualization.PieChart(document.getElementById('grafico7'));
+									chart.draw(data, options);
+							
+								}
+							);	
+							
+							
+							
+							
+							
+							//Propiedades por Agente
+							///
+							////////////////////////////////////////////////	
+							var objDataSource8	 												= new Array();
+							var RealState_get_PropiedadesPorAgentes			 					= JSON.parse('<?php echo json_encode($RealState_get_PropiedadesPorAgentes); ?>');								
+							objDataSource8.push(new Array("Agente","Cantidad"));
+							for(var i = 0 ; i < RealState_get_PropiedadesPorAgentes.length;i++)
+							{
+								objDataSource8.push(
+									new Array(
+										RealState_get_PropiedadesPorAgentes[i].Indicador,
+										parseInt(RealState_get_PropiedadesPorAgentes[i].Cantidad)
+									)
+								);	
+							}
+							debugger;
+																		
+							google.charts.setOnLoadCallback(
+								function () {
+							
+									var data = google.visualization.arrayToDataTable(
+										objDataSource8
+									);
+							
+									var options2 = {										
+										title: 'Propiedades VS Agente',
+										colors: ['#00C868', '#006E98', '#ec8f6e', '#f3b49f', '#f6c7b6'],												
+									};
+							
+									var chart = new google.visualization.AreaChart(document.getElementById('grafico8'));
+									chart.draw(data, options2);
+							
+								}
+							);	
+							
+							
+							//?????
+							var RealState_get_PropiedadesPorAgentesMetas 				 		= JSON.parse('<?php echo json_encode($RealState_get_PropiedadesPorAgentesMetas); ?>');	
+							//?????
+							var RealState_get_PropiedadesRendimientoAnualVentas			 		= JSON.parse('<?php echo json_encode($RealState_get_PropiedadesRendimientoAnualVentas); ?>');	
+							//?????
+							var RealState_get_PropiedadesRendimientoAnualEnlistamiento		 	= JSON.parse('<?php echo json_encode($RealState_get_PropiedadesRendimientoAnualEnlistamiento); ?>');															
+								
+							
+						}
+					);		
+					
+					
+				
+					
+						
+					
+					
 											
 				</script>
 				

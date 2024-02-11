@@ -244,7 +244,49 @@ class Transaction_Master_Detail_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
-   function GlobalPro_get_rowBySalesByEmployeerMonthOnly_Sales($companyID,$dateFirst,$dateLast)
+  
+   
+   function get_rowByTransactionToShare($companyID,$transactionID,$transactionMasterID){
+		$db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+		$sql = "";
+		$sql = sprintf("select td.companyID, td.transactionID, td.transactionMasterID, td.transactionMasterDetailID, td.componentID, td.componentItemID, td.promotionID, td.amount, td.cost, td.quantity, td.discount, td.unitaryAmount, td.unitaryCost, td.unitaryPrice, td.reference1, td.reference2, td.reference3,td.reference4,td.reference5,td.reference6,td.reference7, td.catalogStatusID, td.inventoryStatusID, td.isActive, td.quantityStock, td.quantiryStockInTraffic, td.quantityStockUnaswared, td.remaingStock, td.expirationDate, td.inventoryWarehouseSourceID, td.inventoryWarehouseTargetID,td.descriptionReference,td.exchangeRateReference,td.lote,td.skuFormatoDescription,td.itemNameLog,td.amountCommision ");
+		$sql = $sql.sprintf(" from tb_transaction_master_detail td");
+		$sql = $sql.sprintf(" where td.companyID = $companyID");
+		$sql = $sql.sprintf(" and td.transactionID = $transactionID");		
+		$sql = $sql.sprintf(" and td.transactionMasterID = $transactionMasterID");		
+		$sql = $sql.sprintf(" and td.isActive= 1");		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+   function deleteWhereTM($companyID,$transactionID,$transactionMasterID){
+		$db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+		
+		$data["isActive"] = 0;
+		
+		$builder->where("companyID",$companyID);
+		$builder->where("transactionID",$transactionID);	
+		$builder->where("transactionMasterID",$transactionMasterID);
+		return $builder->update($data);
+		
+   }
+   function deleteWhereIDNotIn($companyID,$transactionID,$transactionMasterID,$listTMD_ID){
+		$db 		= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+		$data["isActive"] = 0;
+		
+		
+		$builder->where("companyID",$companyID);
+		$builder->where("transactionID",$transactionID);	
+		$builder->where("transactionMasterID",$transactionMasterID);			
+		$builder->whereNotIn("transactionMasterDetailID",$listTMD_ID);	
+		return $builder->update($data);
+		
+   }
+   
+    function GlobalPro_get_rowBySalesByEmployeerMonthOnly_Sales($companyID,$dateFirst,$dateLast)
    {
 	   
 	    $db 	= db_connect();
@@ -389,45 +431,312 @@ class Transaction_Master_Detail_Model extends Model  {
 			
    }
    
-   
-   function get_rowByTransactionToShare($companyID,$transactionID,$transactionMasterID){
-		$db 	= db_connect();
+   function RealState_get_ClienteFuenteDeContacto($companyID,$dateFirst,$dateLast)
+   {
+	   
+	    $db 	= db_connect();
 		$builder	= $db->table("tb_transaction_master_detail");
+	   		
 		$sql = "";
-		$sql = sprintf("select td.companyID, td.transactionID, td.transactionMasterID, td.transactionMasterDetailID, td.componentID, td.componentItemID, td.promotionID, td.amount, td.cost, td.quantity, td.discount, td.unitaryAmount, td.unitaryCost, td.unitaryPrice, td.reference1, td.reference2, td.reference3,td.reference4,td.reference5,td.reference6,td.reference7, td.catalogStatusID, td.inventoryStatusID, td.isActive, td.quantityStock, td.quantiryStockInTraffic, td.quantityStockUnaswared, td.remaingStock, td.expirationDate, td.inventoryWarehouseSourceID, td.inventoryWarehouseTargetID,td.descriptionReference,td.exchangeRateReference,td.lote,td.skuFormatoDescription,td.itemNameLog,td.amountCommision ");
-		$sql = $sql.sprintf(" from tb_transaction_master_detail td");
-		$sql = $sql.sprintf(" where td.companyID = $companyID");
-		$sql = $sql.sprintf(" and td.transactionID = $transactionID");		
-		$sql = $sql.sprintf(" and td.transactionMasterID = $transactionMasterID");		
-		$sql = $sql.sprintf(" and td.isActive= 1");		
-		
+		$sql = sprintf("
+			select 
+				ci.`name` as Indicador,
+				count(*) as Cantidad
+			from 
+				tb_transaction_master  tm 
+				inner join tb_public_catalog_detail ci on 
+					ci.publicCatalogDetailID = tm.priorityID 
+			WHERE	
+				tm.transactionID = 42 /*lead*/ and 
+				tm.createdOn between '$dateFirst' and '$dateLast'  				
+			group by  
+				1
+		");
+	
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
+			
    }
-   function deleteWhereTM($companyID,$transactionID,$transactionMasterID){
-		$db 	= db_connect();
+   function RealState_get_ClientesInteres($companyID,$dateFirst,$dateLast)
+   {
+	   
+	    $db 	= db_connect();
 		$builder	= $db->table("tb_transaction_master_detail");
-		
-		$data["isActive"] = 0;
-		
-		$builder->where("companyID",$companyID);
-		$builder->where("transactionID",$transactionID);	
-		$builder->where("transactionMasterID",$transactionMasterID);
-		return $builder->update($data);
-		
+	   		
+		$sql = "";
+		$sql = sprintf("
+			select 
+				ci.`name` as Indicador,
+				count(*) as Cantidad
+			from 
+				tb_customer  x 
+				inner join tb_catalog_item ci on 
+					x.categoryID = ci.catalogItemID 
+			where 
+				x.createdOn between '$dateFirst' and '$dateLast'  
+			group by  
+				1
+		");
+	
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+			
    }
-   function deleteWhereIDNotIn($companyID,$transactionID,$transactionMasterID,$listTMD_ID){
-		$db 		= db_connect();
+   function RealState_get_ClientesTipoPropiedad($companyID,$dateFirst,$dateLast)
+   {
+	   
+	    $db 	= db_connect();
 		$builder	= $db->table("tb_transaction_master_detail");
-		$data["isActive"] = 0;
-		
-		
-		$builder->where("companyID",$companyID);
-		$builder->where("transactionID",$transactionID);	
-		$builder->where("transactionMasterID",$transactionMasterID);			
-		$builder->whereNotIn("transactionMasterDetailID",$listTMD_ID);	
-		return $builder->update($data);
-		
+	   		
+		$sql = "";
+		$sql = sprintf("
+			select 
+				ci.`name` as Indicador,
+				count(*) as Cantidad
+			from 
+				tb_customer  x 
+				inner join tb_catalog_item ci on 
+					x.clasificationID = ci.catalogItemID 
+			where 
+				x.createdOn between '$dateFirst' and '$dateLast'  
+			group by  
+				1
+		");
+	
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+			
+   }
+   function RealState_get_ClientesPorAgentes($companyID,$dateFirst,$dateLast)
+   {
+	   
+	    $db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+	   		
+		$sql = "";
+		$sql = sprintf("
+			 select 
+				u.firstName as Indicador,
+				count(*) as Cantidad
+			from 
+				tb_customer  x 
+				inner join tb_naturales  u on 
+					x.entityContactID = u.entityID  
+			where 
+				x.createdOn between '$dateFirst' and '$dateLast'  
+			group by  
+				1
+		");
+	
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+			
+   }
+   function RealState_get_ClientesClasificacionPorAgentes($companyID,$dateFirst,$dateLast)
+   {
+	   
+	    $db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+	   		
+		$sql = "";
+		$sql = sprintf("
+			select 
+				ws.`name` as Indicador,
+				nat.firstName as Agente,
+				count(*) as Cantidad
+			from 
+				tb_customer  x 
+				inner join tb_workflow_stage ws on 
+					ws.workflowStageID = x.statusID 
+				inner join tb_naturales nat on 
+					nat.entityID = x.entityContactID 
+			where 
+				x.createdOn between '$dateFirst' and '$dateLast'  
+			group by  
+				1,2
+		");
+	
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+			
+   }
+   function RealState_get_ClientesCerrados($companyID,$dateFirst,$dateLast)
+   {
+	   
+	    $db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+	   		
+		$sql = "";
+		$sql = sprintf("
+			 select 
+				ws.`name` as Indicador,
+				count(*) as Cantidad
+			from 
+				tb_customer  x 
+				inner join tb_workflow_stage ws on 
+					ws.workflowStageID = x.statusID 
+			where 
+				x.createdOn between '$dateFirst' and '$dateLast'  
+			group by  
+				1
+		");
+	
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+			
+   }
+   function RealState_get_AgenteEfectividad($companyID,$dateFirst,$dateLast)
+   {
+	   
+	    $db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+	   		
+		$sql = "";
+		$sql = sprintf("
+			 select	
+				day(t.transactionOn) as firtsName,
+				sum(t.subAmount	) as monto 
+			from 
+				tb_transaction_master t 
+				inner join tb_workflow_stage ws on 
+					t.statusID = ws.workflowStageID
+				left join tb_naturales nat on 
+					nat.entityID = t.entityIDSecondary 
+			where 
+				t.transactionID in (19) and   
+				t.isActive = 1  and 
+				ws.aplicable = 1  and 
+				t.companyID = 2  and 
+				t.transactionOn between '$dateFirst' and '$dateLast' and 
+				ws.aplicable = 1 
+			group by  
+				1
+		");
+	
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+			
+   }
+   function RealState_get_PropiedadesPorAgentes($companyID,$dateFirst,$dateLast)
+   {
+	   
+	    $db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+	   		
+		$sql = "";
+		$sql = sprintf("
+			 select 
+				nat.firstName as Indicador,
+				count(*) as Cantidad 
+			from 
+				tb_item  i 
+				inner join tb_naturales nat on 
+					nat.entityID = i.realStateEmployerAgentID 
+			where 
+				i.createdOn between '$dateFirst' and '$dateLast'  
+			group by 
+				nat.firstName 
+		");
+	
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+			
+   }
+   function RealState_get_PropiedadesPorAgentesMetas($companyID,$dateFirst,$dateLast)
+   {
+	   
+	    $db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+	   		
+		$sql = "";
+		$sql = sprintf("
+			 select	
+				day(t.transactionOn) as firtsName,
+				sum(t.subAmount	) as monto 
+			from 
+				tb_transaction_master t 
+				inner join tb_workflow_stage ws on 
+					t.statusID = ws.workflowStageID
+				left join tb_naturales nat on 
+					nat.entityID = t.entityIDSecondary 
+			where 
+				t.transactionID in (19) and   
+				t.isActive = 1  and 
+				ws.aplicable = 1  and 
+				t.companyID = 2  and 
+				t.transactionOn between '$dateFirst' and '$dateLast' and 
+				ws.aplicable = 1 
+			group by  
+				1
+		");
+	
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+			
+   }
+   function RealState_get_PropiedadesRendimientoAnualVentas($companyID,$dateFirst,$dateLast)
+   {
+	   
+	    $db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+	   		
+		$sql = "";
+		$sql = sprintf("
+			 select	
+				day(t.transactionOn) as firtsName,
+				sum(t.subAmount	) as monto 
+			from 
+				tb_transaction_master t 
+				inner join tb_workflow_stage ws on 
+					t.statusID = ws.workflowStageID
+				left join tb_naturales nat on 
+					nat.entityID = t.entityIDSecondary 
+			where 
+				t.transactionID in (19) and   
+				t.isActive = 1  and 
+				ws.aplicable = 1  and 
+				t.companyID = 2  and 
+				t.transactionOn between '$dateFirst' and '$dateLast' and 
+				ws.aplicable = 1 
+			group by  
+				1
+		");
+	
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+			
+   }
+   function RealState_get_PropiedadesRendimientoAnualEnlistamiento($companyID,$dateFirst,$dateLast)
+   {
+	   
+	    $db 		= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+	   		
+		$sql = "";
+		$sql = sprintf("
+			 select	
+				day(t.transactionOn) as firtsName,
+				sum(t.subAmount	) as monto 
+			from 
+				tb_transaction_master t 
+				inner join tb_workflow_stage ws on 
+					t.statusID = ws.workflowStageID
+				left join tb_naturales nat on 
+					nat.entityID = t.entityIDSecondary 
+			where 
+				t.transactionID in (19) and   
+				t.isActive = 1  and 
+				ws.aplicable = 1  and 
+				t.companyID = 2  and 
+				t.transactionOn between '$dateFirst' and '$dateLast' and 
+				ws.aplicable = 1 
+			group by  
+				1
+		");
+	
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+			
    }
 }
 ?>
