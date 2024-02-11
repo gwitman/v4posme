@@ -400,7 +400,7 @@
 							
 									var options = {										
 									  title: 'Cliente VS Clasificacion',
-									  colors: ['#00C868', '#006E98', '#ec8f6e', '#f3b49f', '#f6c7b6'],
+									  colors: ['#FF5733', '#FFC300', '#FF85A2', '#FF33FF', '#33FFBD'],
 									  vAxis: {title: 'Clasificacion'},
 									  hAxis: {title: 'Agente'},
 									  seriesType: 'bars',
@@ -445,7 +445,7 @@
 							
 									var options = {										
 									  title: 'Cliente VS Clasificacion',
-									  colors: ['#00C868', '#006E98', '#ec8f6e', '#f3b49f', '#f6c7b6'],
+									  colors: ['#33A1FF', '#FF3366', '#FF3333', '#33FF33', '#33FFA8'],
 									  pieHole: 0.4,
 									};
 							
@@ -485,7 +485,7 @@
 							
 									var options2 = {										
 										title: 'Propiedades VS Agente',
-										colors: ['#00C868', '#006E98', '#ec8f6e', '#f3b49f', '#f6c7b6'],												
+										colors: ['#3399FF', '#9966FF', '#FF33CC', '#FF6633', '#FFFF33'],												
 									};
 							
 									var chart = new google.visualization.AreaChart(document.getElementById('grafico8'));
