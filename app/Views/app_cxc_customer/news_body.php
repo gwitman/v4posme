@@ -43,11 +43,11 @@
 									<ul id="myTab" class="nav nav-tabs">
 										<li class="active"><a href="#home" data-toggle="tab">Informacion</a></li>
 										<li><a href="#profile" data-toggle="tab">Referencias.</a></li>
-										<li><a href="#profile-phones" data-toggle="tab">Telefonos.</a></li>
+										<li class="<?php echo getBehavio($company->type,"app_cxc_customer","divPestanaTelefono",""); ?>" ><a href="#profile-phones" data-toggle="tab">Telefonos.</a></li>
 										<li><a href="#profile-email" data-toggle="tab">Email.</a></li>
-										<li><a href="#profile-cxc" data-toggle="tab">CXC.</a></li>
-										<li><a href="#profile-cxc-line" data-toggle="tab">CXC Lineas.</a></li>
-										<li class="dropdown">
+										<li class="<?php echo getBehavio($company->type,"app_cxc_customer","divPestanaCXC",""); ?>" ><a href="#profile-cxc" data-toggle="tab">CXC.</a></li>
+										<li class="<?php echo getBehavio($company->type,"app_cxc_customer","divPestanaCXCLineas",""); ?>" ><a href="#profile-cxc-line" data-toggle="tab">CXC Lineas.</a></li>
+										<li class="dropdown <?php echo getBehavio($company->type,"app_cxc_customer","divPestanaMas",""); ?>">
 											<a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas <b class="caret"></b></a>
 											<ul class="dropdown-menu">
 												<li><a href="#dropdown" data-toggle="tab">Direccion</a></li>
@@ -61,7 +61,7 @@
 											<div class="row">										
 											<div class="col-lg-6">
 												
-													<div class="form-group">
+													<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","divTxtFechaNacimiento",""); ?>" >
 														<label class="col-lg-4 control-label" for="datepicker">Nacimiento</label>
 														<div class="col-lg-8">
 															<div id="datepicker" class="input-group date" data-date="2014-01-30" data-date-format="yyyy-mm-dd">
@@ -71,6 +71,17 @@
 															</div>
 														</div>
 													</div>
+													
+													<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","divTxtFechaContacto","hidden"); ?>">
+														<label class="col-lg-4 control-label" for="datepicker">Fecha de Contacto</label>
+														<div class="col-lg-8">
+															<div id="datepicker" class="input-group date" data-date="2014-01-30" data-date-format="yyyy-mm-dd">
+																<input size="16"  class="form-control" type="text" name="txtDateContract" id="txtDateContract" value="2024-02-08">
+																<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+															</div>
+														</div>
+													</div>
+													
 													<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","divTxtNombres",""); ?>  ">
 															<label class="col-lg-4 control-label text-primary" for="normal">*Nombres</label>
 															<div class="col-lg-8">
@@ -451,7 +462,7 @@
 											<div class="row">		
 											
 												<div class="col-lg-6">
-														<div class="form-group">
+														<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","divTxtPais",""); ?> ">
 															<label class="col-lg-4 control-label" for="selectFilter">Pais</label>
 															<div class="col-lg-8">
 																<select name="txtCountryID" id="txtCountryID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"   >
@@ -466,7 +477,7 @@
 																</select>
 															</div>
 														</div>
-														<div class="form-group">
+														<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","divTxtDepartamento",""); ?> ">
 															<label class="col-lg-4 control-label" for="selectFilter">Departamento</label>
 															<div class="col-lg-8">
 																<select name="txtStateID" id="txtStateID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"   >
@@ -474,7 +485,7 @@
 																</select>
 															</div>
 														</div>
-														<div class="form-group">
+														<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","divTxtMunicipio",""); ?> ">
 															<label class="col-lg-4 control-label" for="selectFilter">Municipio</label>
 															<div class="col-lg-8">
 																<select name="txtCityID" id="txtCityID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"   >
@@ -483,23 +494,21 @@
 															</div>
 														</div>
 														<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal">Domicilio</label>
+																<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_cxc_customer","txtDomicilio","Domicilio"); ?></label>
 																<div class="col-lg-8">
 																	<input class="form-control"  type="text"  name="txtLocation" id="txtLocation" value="">												
+																</div>
+														</div>
+														<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","divTxtPresupuesto",""); ?>">
+																<label class="col-lg-4 control-label" for="normal">Presupuesto U$</label>
+																<div class="col-lg-8">
+																	<input class="form-control"  type="number"  name="txtBudget" id="txtBudget" value="">												
 																</div>
 														</div>
 												</div>
 												<div class="col-lg-6">
 													
-													<div class="form-group">
-														<label class="col-lg-4 control-label" for="datepicker">Fecha de Contacto</label>
-														<div class="col-lg-8">
-															<div id="datepicker" class="input-group date" data-date="2014-01-30" data-date-format="yyyy-mm-dd">
-																<input size="16"  class="form-control" type="text" name="txtDateContract" id="txtDateContract" value="2024-02-08">
-																<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
-															</div>
-														</div>
-													</div>
+													
 													
 													
 													<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","divTxtTypeFirmID",""); ?> ">

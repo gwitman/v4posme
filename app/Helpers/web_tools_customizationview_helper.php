@@ -239,8 +239,8 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('luciaralstate_app_cxc_customer_Referencia2')												=> "Mensaje",
 		strtolower('luciaralstate_app_cxc_customer_Referencia3')												=> "Comentario 1",
 		strtolower('luciaralstate_app_cxc_customer_Referencia4')												=> "Comentario 2",
-		strtolower('luciaralstate_app_cxc_customer_Referencia5')												=> "Inmueble",
-		
+		strtolower('luciaralstate_app_cxc_customer_Referencia5')												=> "Ubicacion",
+		strtolower('luciaralstate_app_cxc_customer_txtDomicilio')												=> "Ubicacion de interes",
 		
 		strtolower('luciaralstate_app_inventory_item_*Familia')													=> "Tipo de propiedad",
 		strtolower('luciaralstate_app_inventory_item_*Presentacion')											=> "Proposito",
@@ -272,6 +272,17 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('luciaralstate_app_cxc_customer_divTxtEstadoCivil')											=> "hidden",
 		strtolower('luciaralstate_app_cxc_customer_divTxtProfesionUFicio')										=> "hidden",
 		strtolower('luciaralstate_app_cxc_customer_divTxtTypeFirmID')											=> "hidden",
+		strtolower('luciaralstate_app_cxc_customer_divPestanaCXC') 	 											=> "hidden",
+		strtolower('luciaralstate_app_cxc_customer_divPestanaCXCLineas') 	 									=> "hidden",
+		strtolower('luciaralstate_app_cxc_customer_divTxtFechaContacto') 	 									=> "",
+		strtolower('luciaralstate_app_cxc_customer_divTxtFechaNacimiento') 	 									=> "hidden",
+		strtolower('luciaralstate_app_cxc_customer_divPestanaTelefono') 	 									=> "hidden",
+		strtolower('luciaralstate_app_cxc_customer_divTxtBuro') 	 											=> "hidden",
+		strtolower('luciaralstate_app_cxc_customer_divTxtHuella') 	 											=> "hidden",
+		strtolower('luciaralstate_app_cxc_customer_divPestanaMas') 	 											=> "hidden",		
+		strtolower('luciaralstate_app_cxc_customer_divTxtPais') 	 											=> "hidden",
+		strtolower('luciaralstate_app_cxc_customer_divTxtDepartamento') 	 									=> "hidden",
+		strtolower('luciaralstate_app_cxc_customer_divTxtMunicipio') 	 										=> "hidden",
 		strtolower('luciaralstate_app_cxc_customer_divScriptCustom') 											=> "
 																														<script>
 																														$(document).ready(function(){ 
@@ -296,10 +307,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('luciaralstate_app_inventory_item_menuBodegaPestana') 	 									=> "hidden",
 		strtolower('luciaralstate_app_inventory_item_menuBodegaPestana') 	 									=> "hidden",
 		strtolower('luciaralstate_app_inventory_item_divControlCreatedOn') 	 									=> "",
-		strtolower('luciaralstate_app_inventory_item_divControlModifiedOn') 	 								=> "",
-		
-		
-		
+		strtolower('luciaralstate_app_inventory_item_divControlModifiedOn') 	 								=> "",	
 		
 	);
 	

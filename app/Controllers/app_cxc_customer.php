@@ -391,6 +391,7 @@ class app_cxc_customer extends _BaseController {
 				$objCustomer["balancePoint"]		= /*inicio get post*/ $this->request->getPost("txtBalancePoint");//--fin peticion get o post
 				$objCustomer["phoneNumber"]			= /*inicio get post*/ $this->request->getPost("txtPhoneNumber");//--fin peticion get o post
 				$objCustomer["typeFirm"]			= /*inicio get post*/ $this->request->getPost("txtTypeFirmID");//--fin peticion get o post
+				$objCustomer["budget"]				= /*inicio get post*/ $this->request->getPost("txtBudget");//--fin peticion get o post
 				$objCustomer["isActive"]			= true;
 				$objCustomer["entityContactID"]		= /*inicio get post*/ $this->request->getPost("txtEmployerID");
 				$this->Customer_Model->update_app_posme($companyID_,$branchID_,$entityID_,$objCustomer);
@@ -695,6 +696,7 @@ class app_cxc_customer extends _BaseController {
 			$objCustomer["balancePoint"]		= /*inicio get post*/ $this->request->getPost("txtBalancePoint");//--fin peticion get o post
 			$objCustomer["phoneNumber"]			= /*inicio get post*/ $this->request->getPost("txtPhoneNumber");//--fin peticion get o post
 			$objCustomer["typeFirm"]			= /*inicio get post*/ $this->request->getPost("txtTypeFirmID");//--fin peticion get o post
+			$objCustomer["budget"]				= /*inicio get post*/ $this->request->getPost("txtBudget");//--fin peticion get o post
 			$objCustomer["isActive"]			= true;
 			$objCustomer["entityContactID"]		= /*inicio get post*/ $this->request->getPost("txtEmployerID");
 			$this->core_web_auditoria->setAuditCreated($objCustomer,$dataSession,$this->request);
