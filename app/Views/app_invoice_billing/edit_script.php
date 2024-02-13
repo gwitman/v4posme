@@ -2003,14 +2003,14 @@
 				var length2		 = objTableDetail.fnGetData().length;
 				var data2		 = objTableDetail.fnGetData();
 				
-				var length		 = e.producto1.length;
-				var data		 = e.producto1;
+				var length		 = e.length;
+				var data		 = e;
 				var index		 = 0;
 				
 				for(var i = 0 ; i < length; i++ )
 				{		
 					var objDatItem 			= data[i];
-					var existe 				= jLinq.from(data2).where(function(obj){   return obj[2] == objDatItem[0]; }).select().length;			
+					var existe 				= jLinq.from(data2).where(function(obj){   return obj[2] == objDatItem.itemID; }).select().length;			
 					if(existe == 0)
 						break;
 					
@@ -2019,14 +2019,15 @@
 				}
 				
 				
-				var dataResponse = [];
-				data			= data[index];				
+				var dataResponse = [];				
+				data			= data[index];		
+				
 				dataResponse[0] = data[0];
 				dataResponse[1] = data[0];
 				dataResponse[2] = data[0];
 				dataResponse[3] = data[0];
 				dataResponse[4] = data[0];
-				dataResponse[5] = data[0]; //itemID
+				dataResponse[5] = data.itemID; //itemID
 				dataResponse[6] = data[0];
 				dataResponse[7] = data[0];
 				dataResponse[8] = data[0];
@@ -2038,14 +2039,14 @@
 				dataResponse[14] = data[0];
 				dataResponse[15] = data[0];
 				dataResponse[16] = data[0];
-				dataResponse[17] = data[1];//Codigo
-				dataResponse[18] = data[2];//Nombre
+				dataResponse[17] = data.Codigo;//Codigo
+				dataResponse[18] = data.Nombre;//Nombre
 				dataResponse[19] = data[0];
-				dataResponse[20] = data[3];//Unidad de medida
-				dataResponse[21] = data[4];//Cantidad
-				dataResponse[22] = data[5];//Precio
-				dataResponse[23] = data[0];//6:Barra 
-				dataResponse[24] = data[0];//7:Descripcion
+				dataResponse[20] = data.Medida;//Unidad de medida
+				dataResponse[21] = data.Cantidad;//Cantidad
+				dataResponse[22] = data.Precio;//Precio
+				dataResponse[23] = data.unitMeasureID;//6:Barra 
+				dataResponse[24] = data.Descripcion;//7:Descripcion
 				dataResponse[25] = data[0];
 				dataResponse[26] = data[0];		
 				onCompleteNewItem(dataResponse,true);

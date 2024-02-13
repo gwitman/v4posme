@@ -35,18 +35,15 @@ class core_dashboards_santa_lucia_real_state extends _BaseController {
 			
 			$firstDateYear					= helper_PrimerDiaDelMes();
 			$lastDateYear					= helper_UltimoDiaDelMes();
+			$firstDate						= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"txtDateStart");//--finuri
+			$lastDate						= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"txtDateFinish");//--finuri			
+			$firstDate						= $firstDate == "" ? helper_PrimerDiaDelMes() : $firstDate ;
+			$lastDate						= $lastDate == "" ? explode(" ",helper_UltimoDiaDelMes())[0] : $lastDate ;			
 			
-			if(
-				$dataSession["role"]->name == "REAL_STATE@ADMINISTRADOR" ||
-				$dataSession["role"]->name == "SUPE ADMIN"
-			)
-			{
-				$firstDateYear					= helper_PrimerDiaDelYear();
-				$lastDateYear					= helper_UltimoDiaDelYear();
-			}
 			
-			$firstDate						= helper_PrimerDiaDelMes();
-			$lastDate						= helper_UltimoDiaDelMes();			
+			$dataSession["roleName"]												= $dataSession["role"]->name;
+			$dataSession["firstDate"]												= $firstDate;
+			$dataSession["lastDate"]												= $lastDate;
 			$dataSession["RealState_get_ClienteFuenteDeContacto"]					= $this->Transaction_Master_Detail_Model->RealState_get_ClienteFuenteDeContacto($dataSession["user"]->companyID,$firstDate,$lastDate);
 			$dataSession["RealState_get_ClientesInteres"]							= $this->Transaction_Master_Detail_Model->RealState_get_ClientesInteres($dataSession["user"]->companyID,$firstDate,$lastDate);
 			$dataSession["RealState_get_ClientesTipoPropiedad"]						= $this->Transaction_Master_Detail_Model->RealState_get_ClientesTipoPropiedad($dataSession["user"]->companyID,$firstDate,$lastDate);

@@ -1,5 +1,6 @@
 				<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/datepicker/datepicker.css" rel="stylesheet" /> 
 				
+				
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/charts/flot/jquery.flot.js"></script>
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/charts/flot/jquery.flot.pie.js"></script>
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/charts/flot/jquery.flot.resize.js"></script>
@@ -23,6 +24,7 @@
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jLinq-2.2.1.js"></script>
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jquery.number.min.js"></script>				
 				<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/is-loading-master/style.css" rel="stylesheet" /> 	
+				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/datepicker/bootstrap-datepicker.js"></script>				
 				
 				
 				
@@ -49,21 +51,66 @@
 									<div id="grafico1" style="height:300px" ></div>
 								</div><!-- End .panel-body -->
 							</div><!-- End .widget -->		
-							
-							<div class="panel" style="margin-bottom:20px;">
-								<div class="panel-heading">
-									<div class="icon"><i class="icon20 i-health"></i></div> 
-									<h4>Interés del Cliente</h4>
-									<a href="#" class="minimize"></a>
-								</div><!-- End .panel-heading -->
-							
-								<div class="panel-body">								
-									<div id="grafico2" style="height:300px" ></div>
-								</div><!-- End .panel-body -->
-							</div><!-- End .widget -->		
-							
 					</div>
 				</div>
+				
+				<div class="row"  >
+					 <div class="col-lg-6">		
+						<div class="panel" style="margin-bottom:20px;">
+							<div class="panel-heading">
+								<div class="icon"><i class="icon20 i-health"></i></div> 
+								<h4>Parametros</h4>
+								<a href="#" class="minimize"></a>
+							</div><!-- End .panel-heading -->
+						
+							<div class="panel-body">								
+								<div class="form-group">
+									<label class="col-lg-4 control-label" for="datepicker">Inicio</label>
+									<div class="col-lg-8">
+										<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
+											<input size="16"  class="form-control" type="text" name="txtDateStart" id="txtDateStart"  value="<?php echo $firstDate; ?>" >
+											<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-lg-4 control-label" for="datepicker">Fin</label>
+									<div class="col-lg-8">
+										<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
+											<input size="16"  class="form-control" type="text" name="txtDateFinish" id="txtDateFinish" value="<?php echo $lastDate; ?>" >
+											<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-lg-4 control-label" for="btnSalvarFiltro"></label>
+									<div class="col-lg-8">
+										<button type="button" id="btnSalvarFiltro" class="btn btn-success">Filtrar</button>    
+									</div>
+								</div>
+								
+								
+								
+							</div><!-- End .panel-body -->
+						</div><!-- End .widget -->									
+
+
+					</div>
+					<div class="col-lg-6">	
+						<div class="panel" style="margin-bottom:20px;">
+							<div class="panel-heading">
+								<div class="icon"><i class="icon20 i-health"></i></div> 
+								<h4>Interés del cliente</h4>
+								<a href="#" class="minimize"></a>
+							</div><!-- End .panel-heading -->
+						
+							<div class="panel-body">								
+								<div id="grafico2" style="height:300px" ></div>
+							</div><!-- End .panel-body -->
+						</div><!-- End .widget -->									
+					</div>
+				</div>			
 				
 				<div class="row"  >
 					 <div class="col-lg-6">		
@@ -308,7 +355,7 @@
 									);
 							
 									var options = {
-									  title: 'Cliente VS Tipo de propiedad',
+									  title: 'Cliente vs tipo de propiedad',
 									  colors: ['#3399FF', '#9966FF', '#FF33CC', '#FF6633', '#FFFF33'],
 									};
 							
@@ -399,7 +446,7 @@
 									);
 							
 									var options = {										
-									  title: 'Cliente VS Clasificacion',
+									  title: 'Cliente vs clasificacion',
 									  colors: ['#FF5733', '#FFC300', '#FF85A2', '#FF33FF', '#33FFBD'],
 									  vAxis: {title: 'Clasificacion'},
 									  hAxis: {title: 'Agente'},
@@ -444,7 +491,7 @@
 									);
 							
 									var options = {										
-									  title: 'Cliente VS Clasificacion',
+									  title: 'Cliente vs clasificacion',
 									  colors: ['#33A1FF', '#FF3366', '#FF3333', '#33FF33', '#33FFA8'],
 									  pieHole: 0.4,
 									};
@@ -474,7 +521,7 @@
 									)
 								);	
 							}
-							debugger;
+							
 																		
 							google.charts.setOnLoadCallback(
 								function () {
@@ -484,7 +531,7 @@
 									);
 							
 									var options2 = {										
-										title: 'Propiedades VS Agente',
+										title: 'Propiedades vs agente',
 										colors: ['#3399FF', '#9966FF', '#FF33CC', '#FF6633', '#FFFF33'],												
 									};
 							
@@ -502,6 +549,22 @@
 							//?????
 							var RealState_get_PropiedadesRendimientoAnualEnlistamiento		 	= JSON.parse('<?php echo json_encode($RealState_get_PropiedadesRendimientoAnualEnlistamiento); ?>');															
 								
+							
+							
+							
+							
+							$(document).on("click","#btnSalvarFiltro",function(){
+									var txtDateStart		=	$("#txtDateStart").val();	
+									var txtDateFinish		=	$("#txtDateFinish").val();
+									fnWaitOpen();
+									window.location	= "<?php echo base_url(); ?>/core_dashboards_santa_lucia_real_state/index/txtDateStart/"+txtDateStart+"/txtDateFinish/"+txtDateFinish;
+									
+							});
+							
+							$('#txtDateStart').datepicker({format:"yyyy-mm-dd"});
+							$('#txtDateFinish').datepicker({format:"yyyy-mm-dd"});							
+									
+							
 							
 						}
 					);		

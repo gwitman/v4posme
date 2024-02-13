@@ -1118,6 +1118,7 @@ $routes->match(['get','post'],'core_role/add_subelement','core_role::add_subelem
 $routes->match(['get','post'],'core_dashboards/index','core_dashboards::index');
 $routes->match(['get','post'],'core_dashboards_globalpro/index','core_dashboards_globalpro::index');
 $routes->match(['get','post'],'core_dashboards_santa_lucia_real_state/index','core_dashboards_santa_lucia_real_state::index');
+$routes->match(['get','post'],'core_dashboards_santa_lucia_real_state/index/(:any)','core_dashboards_santa_lucia_real_state::index');
 $routes->match(['get','post'],'core_user/delete','core_user::delete');
 $routes->match(['get','post'],'core_user/save','core_user::save');
 $routes->match(['get','post'],'core_user/edit','core_user::edit');
