@@ -254,11 +254,17 @@ class app_invoice_api extends _BaseController {
 			
 			
 			
-			$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname,CALLERID_SEARCH,null,$parameter); 						
+			$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname,CALLERID_SEARCH,null,$parameter); 				
+			$dataViewDataTotal			= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname."_TOTAL",CALLERID_SEARCH,null,$parameter); 				
+			$dataViewDataDiplay			= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname."_DISPLAY",CALLERID_SEARCH,null,$parameter); 				
+			$dataViewDataTotal 			= $dataViewDataTotal["view_data"][0]["itemID"];
+			$dataViewDataDiplay 		= $dataViewDataDiplay["view_data"][0]["itemID"];
+			
+			
 			$objetoAnonimo 				= (object) [
 				"sEcho" => $sEcho,
-				"iTotalRecords" 		=> 100,
-				"iTotalDisplayRecords" 	=> $iDisplayLength,
+				"iTotalRecords" 		=> $dataViewDataTotal,
+				"iTotalDisplayRecords" 	=> $dataViewDataDiplay,
 				'aaData' => $dataViewData["view_data"]
 			];
 			
