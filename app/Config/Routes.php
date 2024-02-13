@@ -824,6 +824,8 @@ $routes->match(['get','post'],'app_invoice_api/getValidExistencia','app_invoice_
 $routes->match(['get','post'],'app_invoice_api/getValidExistencia/(:any)','app_invoice_api::getValidExistencia');
 $routes->match(['get','post'],'app_invoice_api/getViewApi','app_invoice_api::getViewApi');
 $routes->match(['get','post'],'app_invoice_api/getViewApi/(:any)','app_invoice_api::getViewApi');
+$routes->match(['get','post'],'app_invoice_api/getViewApiJsonTable','app_invoice_api::getViewApiJsonTable');
+$routes->match(['get','post'],'app_invoice_api/getViewApiJsonTable/(:any)','app_invoice_api::getViewApiJsonTable');
 $routes->match(['get','post'],'app_invoice_api/getLineByCustomerOnly','app_invoice_api::getLineByCustomerOnly');
 $routes->match(['get','post'],'app_invoice_api/getLineByCustomer','app_invoice_api::getLineByCustomer');
 $routes->match(['get','post'],'app_invoice_api/getInforDashBoards','app_invoice_api::getInforDashBoards');

@@ -218,6 +218,58 @@ class app_invoice_api extends _BaseController {
 		}
 	}
 	
+	function getViewApiJsonTable($componentid = "",$fnCallback = "",$viewname = "",$filter=""){
+		try{  
+		
+			$componentid		= helper_SegmentsByIndex($this->uri->getSegments(),1,$componentid);
+			$fnCallback			= helper_SegmentsByIndex($this->uri->getSegments(),2,$fnCallback);
+			$viewname			= helper_SegmentsByIndex($this->uri->getSegments(),3,$viewname);			
+			$filter				= helper_SegmentsByIndex($this->uri->getSegments(),4,$filter);
+			
+			//Validar Authentication
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get(); 
+		
+			
+			$parameter["{companyID}"]	= $this->session->get('user')->companyID;
+			$viewname 					= urldecode($viewname);
+			
+			$filter 					= urldecode($filter);
+			
+			$result 					= $this->core_web_tools->formatParameter($filter);			
+			
+			if($result)
+			$parameter 					= array_merge($parameter,$result);
+			
+			
+			
+			$sEcho								= helper_RequestGetValue($this->request->getGetPost("sEcho"),1);
+			$iDisplayStart						= helper_RequestGetValue($this->request->getGetPost("iDisplayStart"),0);
+			$iDisplayLength						= helper_RequestGetValue($this->request->getGetPost("iDisplayLength"),10);
+			$sSearch							= helper_RequestGetValue($this->request->getGetPost("sSearch"),"");
+			$parameter["{iDisplayStart}"]		= $iDisplayStart;
+			$parameter["{iDisplayLength}"]		= $iDisplayLength;
+			$parameter["{sSearch}"]				= $sSearch;
+			
+			
+			
+			$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname,CALLERID_SEARCH,null,$parameter); 						
+			$objetoAnonimo 				= (object) [
+				"sEcho" => $sEcho,
+				"iTotalRecords" 		=> 100,
+				"iTotalDisplayRecords" 	=> $iDisplayLength,
+				'aaData' => $dataViewData["view_data"]
+			];
+			
+			//Obtener Resultados.			
+			return $this->response->setJSON( $objetoAnonimo );//--finjson			
+		}
+		catch(\Exception $ex){
+			echo $ex->getMessage();
+		}
+	}
+	
 	function getViewApi($componentid = "",$fnCallback = "",$viewname = "",$filter=""){
 		try{  
 		
@@ -243,7 +295,7 @@ class app_invoice_api extends _BaseController {
 			$parameter 					= array_merge($parameter,$result);
 			
 			
-			log_message("error","*****>query que visualiza la vista por nombre:".$viewname);
+			
 			$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname,CALLERID_SEARCH,null,$parameter); 			
 			
 			//Obtener Resultados.			
