@@ -87,6 +87,7 @@ class app_inventory_item extends _BaseController {
 			$dataView["objListUnitMeasure"]			= $this->core_web_catalog->getCatalogAllItem("tb_item","unitMeasureID",$companyID);
 			$dataView["objListDisplay"]				= $this->core_web_catalog->getCatalogAllItem("tb_item","displayID",$companyID);
 			$dataView["objListDisplayUnitMeasure"]	= $this->core_web_catalog->getCatalogAllItem("tb_item","displayUnitMeasureID",$companyID);
+			$dataView["objListDisplayGerenciaExcl"]	= $this->core_web_catalog->getCatalogAllItem("tb_item","realStateGerenciaExclusive",$companyID);
 			$dataView["objListTypePreice"]			= $this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID);
 			$dataView["objListCurrency"]			= $this->Company_Currency_Model->getByCompany($companyID);
 			$dataView["company"]					= $dataSession["company"];
@@ -438,7 +439,7 @@ class app_inventory_item extends _BaseController {
 					$objItem["realStateReferenceUbicacion"] 				= /*inicio get post*/ $this->request->getPost("txtRealStateReferenceUbicacion");
 					$objItem["realStateReferenceCondominio"] 				= /*inicio get post*/ $this->request->getPost("txtRealStateReferenceCondominio");
 					$objItem["realStateReferenceZone"] 						= /*inicio get post*/ $this->request->getPost("txtRealStateReferenceZone");
-					
+					$objItem["realStateGerenciaExclusive"] 					= /*inicio get post*/ $this->request->getPost("txtRealStateGerenciaExclusive");
 					$objItem["realStateCountryID"]			= $paisID;
 					$objItem["realStateStateID"]			= $departamentoId;
 					$objItem["realStateCityID"]				= $municipioId;
@@ -742,7 +743,7 @@ class app_inventory_item extends _BaseController {
 						$objNewItem["realStateReferenceUbicacion"] 					= /*inicio get post*/ $this->request->getPost("txtRealStateReferenceUbicacion");
 						$objNewItem["realStateReferenceCondominio"] 				= /*inicio get post*/ $this->request->getPost("txtRealStateReferenceCondominio");
 						$objNewItem["realStateReferenceZone"] 						= /*inicio get post*/ $this->request->getPost("txtRealStateReferenceZone");
-					
+						$objNewItem["realStateGerenciaExclusive"] 					= /*inicio get post*/ $this->request->getPost("txtRealStateGerenciaExclusive");
 						$objNewItem["realStateCountryID"]			= $paisID;
 						$objNewItem["realStateStateID"]				= $departamentoId;
 						$objNewItem["realStateCityID"]				= $municipioId;
@@ -978,6 +979,7 @@ class app_inventory_item extends _BaseController {
 			$dataView["objListUnitMeasure"]			= $this->core_web_catalog->getCatalogAllItem("tb_item","unitMeasureID",$companyID);
 			$dataView["objListDisplay"]				= $this->core_web_catalog->getCatalogAllItem("tb_item","displayID",$companyID);
 			$dataView["objListDisplayUnitMeasure"]	= $this->core_web_catalog->getCatalogAllItem("tb_item","displayUnitMeasureID",$companyID);
+			$dataView["objListDisplayGerenciaExcl"]	= $this->core_web_catalog->getCatalogAllItem("tb_item","realStateGerenciaExclusive",$companyID);
 			$dataView["objListTypePreice"]			= $this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID);
 			$dataView["objListCurrency"]			= $this->Company_Currency_Model->getByCompany($companyID);
 			$dataView["warehouseDefault"]			= $warehouseDefault;

@@ -54,7 +54,7 @@ class Item_Model extends Model  {
 			i.realStateRoomServices,i.realStateRoomBatchServices,
 			i.realStateCityID,i.realStateStateID,i.realStateCountryID,i.realStateEmployerAgentID,i.realStateReferenceCondominio,
 			i.realStateReferenceZone,i.realStateReferenceUbicacion,
-			i.realStateRooBatchVisit,i.modifiedOn
+			i.realStateRooBatchVisit,i.modifiedOn,i.realStateGerenciaExclusive
 		");
 		$sql = $sql.sprintf(" from tb_item i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
@@ -85,7 +85,7 @@ class Item_Model extends Model  {
 			i.realStateRoomServices,i.realStateRoomBatchServices,
 			i.realStateCityID,i.realStateStateID,i.realStateCountryID,i.realStateEmployerAgentID,i.realStateReferenceCondominio,
 			i.realStateReferenceZone,i.realStateReferenceUbicacion,
-			i.realStateRooBatchVisit,i.modifiedOn
+			i.realStateRooBatchVisit,i.modifiedOn,i.realStateGerenciaExclusive
 		");
 		$sql = $sql.sprintf(" from tb_item i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
@@ -117,7 +117,7 @@ class Item_Model extends Model  {
 			i.realStateRoomServices,i.realStateRoomBatchServices,
 			i.realStateCityID,i.realStateStateID,i.realStateCountryID,i.realStateEmployerAgentID,i.realStateReferenceCondominio,
 			i.realStateReferenceZone,i.realStateReferenceUbicacion,
-			i.realStateRooBatchVisit,i.modifiedOn
+			i.realStateRooBatchVisit,i.modifiedOn,i.realStateGerenciaExclusive
 		");
 		$sql = $sql.sprintf(" from tb_item i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
@@ -149,7 +149,7 @@ class Item_Model extends Model  {
 			i.realStateRoomServices,i.realStateRoomBatchServices,
 			i.realStateCityID,i.realStateStateID,i.realStateCountryID,i.realStateEmployerAgentID,i.realStateReferenceCondominio,
 			i.realStateReferenceZone,i.realStateReferenceUbicacion,
-			i.realStateRooBatchVisit,i.modifiedOn
+			i.realStateRooBatchVisit,i.modifiedOn,i.realStateGerenciaExclusive
 		");
 		$sql = $sql.sprintf(" from tb_item i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
@@ -180,7 +180,7 @@ class Item_Model extends Model  {
 				i.realStateRoomServices,i.realStateRoomBatchServices,
 				i.realStateCityID,i.realStateStateID,i.realStateCountryID,i.realStateEmployerAgentID,i.realStateReferenceCondominio,
 				i.realStateReferenceZone,i.realStateReferenceUbicacion,
-				i.realStateRooBatchVisit,i.modifiedOn
+				i.realStateRooBatchVisit,i.modifiedOn,i.realStateGerenciaExclusive
 		");
 		$sql = $sql.sprintf(" from tb_item i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
@@ -209,7 +209,7 @@ class Item_Model extends Model  {
 			realStateRoomServices,realStateRoomBatchServices,
 			realStateCityID,realStateStateID,realStateCountryID,realStateEmployerAgentID,realStateReferenceCondominio,
 			realStateReferenceZone,realStateReferenceUbicacion,
-			realStateRooBatchVisit,modifiedOn
+			realStateRooBatchVisit,modifiedOn,realStateGerenciaExclusive
 		");		
 		$builder->where("companyID",$companyID);
 		$builder->whereIn("itemID",$listItem);
@@ -238,7 +238,7 @@ class Item_Model extends Model  {
 				i.realStateRoomServices,i.realStateRoomBatchServices,
 				i.realStateCityID,i.realStateStateID,i.realStateCountryID,i.realStateEmployerAgentID,i.realStateReferenceCondominio,
 				i.realStateReferenceZone,i.realStateReferenceUbicacion,
-				i.realStateRooBatchVisit,i.modifiedOn
+				i.realStateRooBatchVisit,i.modifiedOn,i.realStateGerenciaExclusive
 			
 		");
 		$sql = $sql.sprintf(" from tb_item i");		

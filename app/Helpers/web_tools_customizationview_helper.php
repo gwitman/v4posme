@@ -233,9 +233,9 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 				
 		/*Santa lucia ral state*/	
 		strtolower('luciaralstate_core_web_menu_PRODUCTO')			 											=> "INMOBILIARIO",		
-		strtolower('luciaralstate_app_cxc_customer_Clasificacion')												=> "Estilo de Propiedad",
+		strtolower('luciaralstate_app_cxc_customer_Clasificacion')												=> "Estilo de propiedad",
 		strtolower('luciaralstate_app_cxc_customer_Categoria')													=> "Interes",
-		strtolower('luciaralstate_app_cxc_customer_Referencia1')												=> "Id Encuentra 24",
+		strtolower('luciaralstate_app_cxc_customer_Referencia1')												=> "Id encuentra 24",
 		strtolower('luciaralstate_app_cxc_customer_Referencia2')												=> "Mensaje",
 		strtolower('luciaralstate_app_cxc_customer_Referencia3')												=> "Comentario 1",
 		strtolower('luciaralstate_app_cxc_customer_Referencia4')												=> "Comentario 2",
@@ -253,9 +253,9 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('luciaralstate_app_inventory_item_Servicio')													=> "Disponible",		
 		strtolower('luciaralstate_app_inventory_item_*Categoria')												=> "Diseño de propiedad",
 		strtolower('luciaralstate_app_inventory_item_*Capacidad')												=> "Aires",		
-		strtolower('luciaralstate_app_inventory_item_Marca')													=> "Area de Contruccion M2",
-		strtolower('luciaralstate_app_inventory_item_Modelo')													=> "Area de Terreno VR2",
-		strtolower('luciaralstate_app_inventory_item_Serie ó MAI')												=> "ID Encuentra 24",		
+		strtolower('luciaralstate_app_inventory_item_Marca')													=> "Area de contruccion M2",
+		strtolower('luciaralstate_app_inventory_item_Modelo')													=> "Area de terreno VR2",
+		strtolower('luciaralstate_app_inventory_item_Serie ó MAI')												=> "ID encuentra 24",		
 		strtolower('luciaralstate_app_inventory_item_labelBarCode')												=> "ID página web",
 		strtolower('luciaralstate_app_inventory_item_Descripcion')			 									=> "Direccion",
 		strtolower('luciaralstate_app_inventory_item_label_price_PUBLICO')			 							=> "PRECIO DE VENTA",
@@ -308,6 +308,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('luciaralstate_app_inventory_item_menuBodegaPestana') 	 									=> "hidden",
 		strtolower('luciaralstate_app_inventory_item_divControlCreatedOn') 	 									=> "",
 		strtolower('luciaralstate_app_inventory_item_divControlModifiedOn') 	 								=> "",	
+		strtolower('luciaralstate_app_inventory_item_fieldExclusiveGerencia') 	 								=> "",	
 		
 	);
 	
