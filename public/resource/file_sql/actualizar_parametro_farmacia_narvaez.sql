@@ -1,4 +1,4 @@
-use dbkroqnguhldo1;
+
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -1184,8 +1184,8 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Farmacia Narvaez' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 0,type='default'
+	NAME = 'Narvaez' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
+	flavorID = 427,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
