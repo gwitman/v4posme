@@ -2060,149 +2060,162 @@
 	function fnCreateTableSearchProductos()
 	{
 		
-		if(objTableProductosSearch == null)
+		if(objTableProductosSearch != null)
 		{
-			$('#table_list_productos').dataTable({
+			
+			$('#table_list_productos').dataTable().fnClearTable();
+			$('#table_list_productos').dataTable().fnDestroy();
+		}
+		
+		
+		$('#table_list_productos').dataTable({
+			
+			
+			"bPaginate"			: varParameterScrollDelModalDeSeleccionProducto == "false" ? true : false,
+			//"bFilter"			: false,
+			//"bSort"			: false,
+			//"bInfo"			: false,
+			//"bAutoWidth"		: false,
+			
+			
+			'Dom'				: "<'row'<'col-lg-6'l><'col-lg-6'f>r>t<'row'<'col-lg-6'i><'col-lg-6'p>>",
+			'sPaginationType'	: 'bootstrap',
+			'bJQueryUI'			: false,
+			'bAutoWidth'		: false,							
+			'iDisplayLength'	: varParameterCantidadItemPoup, //esta linea proboca que el boton siguiente no funcione...
+			'oLanguage'	: {
+				'sSearch'		: '<span>Filtro:</span> _INPUT_ <p>+ para agregar</p>',
+				//'sLengthMenu'	: '<span>_MENU_ elementos</span>',
+				'sLengthMenu'	: '',
+				//'oPaginate'		: { 'sFirst': 'First', 'sLast': 'Last' }
+				'oPaginate'		: { 'sFirst': 'Primera', 'sLast': 'Ultima','sNext':'Siguiente','sPrevious':'Atras' },
+				'sInfo'			:'_START_ de _END_ total _TOTAL_'
+			},
+			
+			
+			//"aaData"			: dataSourceProductos,
+			
+			"sAjaxSource": 		"<?php echo base_url(); ?>/app_invoice_api/getViewApiJsonTable/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING_POPUP_INVOICE/"+encodeURI('{"warehouseID"|"'+  $("#txtWarehouseID").val()   +'"{}"listPriceID"|"<?php echo $objListPrice->listPriceID; ?>"{}"typePriceID"|"'+154+'"}'),
+			"fnServerParams": function ( aoData ) {
+							aoData.push( 
+								{ "name": "warehouseID", "value": $("#txtWarehouseID").val() }, 
+								{ "name": "typePriceID", "value": $("#txtTypePriceID").val() },
+								{ "name": "currencyID", "value": $("#txtCurrencyID").val() },
+							);
+			},
+			"bProcessing": true,					
+			"bServerSide": true,
+			
+			"fnDrawCallback": function( oSettings ) {
+					$(document).on('click','#table_list_productos tr',function(event){ 			
+						objRowTableProductosSearch = this; 
+						fnTableSelectedRow(this,event);
+					});  
+			},
 				
 				
-				"bPaginate"			: varParameterScrollDelModalDeSeleccionProducto == "false" ? true : false,
-				//"bFilter"			: false,
-				//"bSort"			: false,
-				//"bInfo"			: false,
-				//"bAutoWidth"		: false,
-				
-				
-				'Dom'				: "<'row'<'col-lg-6'l><'col-lg-6'f>r>t<'row'<'col-lg-6'i><'col-lg-6'p>>",
-				'sPaginationType'	: 'bootstrap',
-				'bJQueryUI'			: false,
-				'bAutoWidth'		: false,							
-				'iDisplayLength'	: varParameterCantidadItemPoup, //esta linea proboca que el boton siguiente no funcione...
-				'oLanguage'	: {
-					'sSearch'		: '<span>Filtro:</span> _INPUT_ <p>+ para agregar</p>',
-					//'sLengthMenu'	: '<span>_MENU_ elementos</span>',
-					'sLengthMenu'	: '',
-					//'oPaginate'		: { 'sFirst': 'First', 'sLast': 'Last' }
-					'oPaginate'		: { 'sFirst': 'Primera', 'sLast': 'Ultima','sNext':'Siguiente','sPrevious':'Atras' },
-					'sInfo'			:'_START_ de _END_ total _TOTAL_'
-				},
-				
-				
-				//"aaData"			: dataSourceProductos,
-				
-				"sAjaxSource": 		"<?php echo base_url(); ?>/app_invoice_api/getViewApiJsonTable/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING_POPUP_INVOICE/"+encodeURI('{"warehouseID"|"'+  $("#txtWarehouseID").val()   +'"{}"listPriceID"|"<?php echo $objListPrice->listPriceID; ?>"{}"typePriceID"|"'+154+'"}'),
-				"bProcessing": true,					
-				"bServerSide": true,
-				
-				"fnDrawCallback": function( oSettings ) {
-						$(document).on('click','#table_list_productos tr',function(event){ 			
-							objRowTableProductosSearch = this; 
-							fnTableSelectedRow(this,event);
-						});  
-				},
-					
-					
-				"aoColumnDefs": [ 
+			"aoColumnDefs": [ 
+						{
+							"aTargets"		: [ 0 ],//itemID
+							"bVisible"		: false,
+							"bSearchable"	: false,
+							"mData":		'itemID',
+							//"mRender"		: function ( data, type, full ) {
+							//}
+						},
+						{
+							"aTargets"		: [ 1 ],//Codigo
+							"bVisible"  	: !(varParameterHidenFiledItemNumber == true ? true : (varUseMobile == "1" ? true : false )),
+							//"sClass" 		: "hidden",
+							"bSearchable"	: true,
+							"mData":		'Codigo',
+							//"mRender"		: function ( data, type, full ) {
+							//}
+						},
+						{
+							"aTargets"		: [ 2 ],//Descripcion
+							"bVisible"		: true,
+							//"sClass" 		: "hidden",
+							"bSearchable"	: true,
+							"mData":		'Nombre',
+							//"mRender"		: function ( data, type, full ) {
+							//	
+							//}
+						},
+						{
+							"aTargets"		: [ 3 ],//Unidad
+							"bVisible"		: false,
+							"bSearchable"	: false,
+							"mData":		'Medida',
+							//"sWidth" 		: "40%"
+						},
+						{
+							"aTargets"		: [ 4 ],//Cantidad
+							"bVisible"		: true, //(varParameterCustomPopupFacturacion == "mobile_ruta_pablo" ? false : true),
+							"bSearchable"	: false,
+							"mData":		'Cantidad',
+							"mRender"		: function ( data, type, full ) {								
+								return "<span class='red' style='text-align:right;display:block' >"+fnFormatNumber(data,2)+"</span>";
+							}
+						},
+						{
+							"aTargets"		: [ 5 ],//Precio
+							"bVisible"		: true,
+							"mData":		'Precio',
+							"mRender"		: function ( data, type, full ) {
+								return "<span class='green' style='text-align:right;display:block' >"+fnFormatNumber(data,2) +"</span>";
+							}
+						},
+						{
+							"aTargets"		: [ 6 ],//Barra
+							"bVisible"		: (varUseMobile == "1" ? false : true),
+							"mData":		'Barra',
+							"mRender"		: function ( data, type, full ) 
 							{
-								"aTargets"		: [ 0 ],//itemID
-								"bVisible"		: false,
-								"bSearchable"	: false,
-								"mData":		'itemID',
-								//"mRender"		: function ( data, type, full ) {
-								//}
-							},
-							{
-								"aTargets"		: [ 1 ],//Codigo
-								"bVisible"  	: !(varParameterHidenFiledItemNumber == true ? true : (varUseMobile == "1" ? true : false )),
-								//"sClass" 		: "hidden",
-								"bSearchable"	: true,
-								"mData":		'Codigo',
-								//"mRender"		: function ( data, type, full ) {
-								//}
-							},
-							{
-								"aTargets"		: [ 2 ],//Descripcion
-								"bVisible"		: true,
-								//"sClass" 		: "hidden",
-								"bSearchable"	: true,
-								"mData":		'Nombre',
-								//"mRender"		: function ( data, type, full ) {
-								//	
-								//}
-							},
-							{
-								"aTargets"		: [ 3 ],//Unidad
-								"bVisible"		: false,
-								"bSearchable"	: false,
-								"mData":		'Medida',
-								//"sWidth" 		: "40%"
-							},
-							{
-								"aTargets"		: [ 4 ],//Cantidad
-								"bVisible"		: true, //(varParameterCustomPopupFacturacion == "mobile_ruta_pablo" ? false : true),
-								"bSearchable"	: false,
-								"mData":		'Cantidad',
-								"mRender"		: function ( data, type, full ) {								
-									return "<span class='red' style='text-align:right;display:block' >"+fnFormatNumber(data,2)+"</span>";
-								}
-							},
-							{
-								"aTargets"		: [ 5 ],//Precio
-								"bVisible"		: true,
-								"mData":		'Precio',
-								"mRender"		: function ( data, type, full ) {
-									return "<span class='green' style='text-align:right;display:block' >"+fnFormatNumber(data,2) +"</span>";
-								}
-							},
-							{
-								"aTargets"		: [ 6 ],//Barra
-								"bVisible"		: (varUseMobile == "1" ? false : true),
-								"mData":		'Barra',
-								"mRender"		: function ( data, type, full ) 
+								var indexSearch = data.indexOf(",");
+								if(indexSearch > 1 )
 								{
-									var indexSearch = data.indexOf(",");
-									if(indexSearch > 1 )
-									{
-										return "<!--Barra oculta:  "+data+" --> "+data.split(',')[0];
-									}
-									else 
-									{
-										return ""+data;
-									}
+									return "<!--Barra oculta:  "+data+" --> "+data.split(',')[0];
 								}
-							},
-							{
-								"aTargets"		: [ 7 ],//Descripcion
-								"bVisible"		: (varUseMobile == "1" ? false : true),
-								"mData":		'Descripcion',
-								"mRender"		: function ( data, type, full ) {
-									if(varParameterMostrarImagenEnSeleccion == "true")
-									{
-										var src = varBaseUrl+"/resource/file_company/company_2/component_33/component_item_"+full[0]+"/preventa.jpg";
-										return ""+
-											" <button type='button' class='btn btn-primary img_row' data-src='"+src+"'>Ver imagen</button><br>"+
-											"<img class='img-thumbnail ' style='width:225px;height:120px' src='"+src+"' />"+
-											"";
-									}
-									else
-									{
-										return ""+data;
-									}
+								else 
+								{
+									return ""+data;
 								}
-							},
-							{
-								"aTargets"		: [ 8 ],//MedidaID
-								"bVisible"		: false,
-								"bSearchable"	: false,
-								"mData":		'MedidaID',
-								//"mRender"		: function ( data, type, full ) {
-								//}
-							},
-				]
-				
-				
-				
-			});
-		}	
+							}
+						},
+						{
+							"aTargets"		: [ 7 ],//Descripcion
+							"bVisible"		: (varUseMobile == "1" ? false : true),
+							"mData":		'Descripcion',
+							"mRender"		: function ( data, type, full ) {
+								if(varParameterMostrarImagenEnSeleccion == "true")
+								{
+									var src = varBaseUrl+"/resource/file_company/company_2/component_33/component_item_"+full[0]+"/preventa.jpg";
+									return ""+
+										" <button type='button' class='btn btn-primary img_row' data-src='"+src+"'>Ver imagen</button><br>"+
+										"<img class='img-thumbnail ' style='width:225px;height:120px' src='"+src+"' />"+
+										"";
+								}
+								else
+								{
+									return ""+data;
+								}
+							}
+						},
+						{
+							"aTargets"		: [ 8 ],//MedidaID
+							"bVisible"		: false,
+							"bSearchable"	: false,
+							"mData":		'MedidaID',
+							//"mRender"		: function ( data, type, full ) {
+							//}
+						},
+			]
+			
+			
+			
+		});
+		
 		
 		objTableProductosSearch = $('#table_list_productos').dataTable(); 		
 		$('.dataTables_length select').uniform();

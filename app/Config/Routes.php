@@ -1072,6 +1072,8 @@ $routes->match(['get','post'],'app_sales_report/sales_detail_format_chart','app_
 $routes->match(['get','post'],'app_sales_report/sales_detail_format_chart/(:any)','app_sales_report::sales_detail_format_chart');
 $routes->match(['get','post'],'app_sales_report/sales_detail_item_sales_globalpro','app_sales_report::sales_detail_item_sales_globalpro');
 $routes->match(['get','post'],'app_sales_report/sales_detail_item_sales_globalpro/(:any)','app_sales_report::sales_detail_item_sales_globalpro');
+$routes->match(['get','post'],'app_sales_report/sales_detail_traking_globalpro','app_sales_report::sales_detail_traking_globalpro');
+$routes->match(['get','post'],'app_sales_report/sales_detail_traking_globalpro/(:any)','app_sales_report::sales_detail_traking_globalpro');
 $routes->match(['get','post'],'app_sales_report/company_utitlity','app_sales_report::company_utitlity');
 $routes->match(['get','post'],'app_sales_report/company_utitlity/(:any)','app_sales_report::company_utitlity');
 $routes->match(['get','post'],'app_purchase_report/index','app_purchase_report::index');

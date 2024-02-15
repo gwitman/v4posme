@@ -80,7 +80,7 @@ class Price_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
-   function get_rowByItemIDAndAmount($companyID,$listPriceID,$itemID,$amount)
+   function get_rowByItemIDAndAmountAndComission($companyID,$listPriceID,$itemID,$amount)
    {
 		$db 		= db_connect();
 		$builder	= $db->table("tb_price");    
@@ -90,6 +90,7 @@ class Price_Model extends Model  {
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
 		$sql = $sql.sprintf(" and i.listPriceID = $listPriceID");		
 		$sql = $sql.sprintf(" and i.itemID = $itemID");		
+		$sql = $sql.sprintf(" and i.percentageCommision > 0 ");		
 		$sql = $sql.sprintf(" and i.price >= '$amount' ");		
 		$sql = $sql.sprintf(" order by i.price asc		");		
 		$sql = $sql.sprintf(" limit 0,1 ");		

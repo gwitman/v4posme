@@ -248,9 +248,15 @@ class app_invoice_api extends _BaseController {
 			$iDisplayStart						= helper_RequestGetValue($this->request->getGetPost("iDisplayStart"),0);
 			$iDisplayLength						= helper_RequestGetValue($this->request->getGetPost("iDisplayLength"),10);
 			$sSearch							= helper_RequestGetValue($this->request->getGetPost("sSearch"),"");
-			$parameter["{iDisplayStart}"]		= $iDisplayStart;
-			$parameter["{iDisplayLength}"]		= $iDisplayLength;
-			$parameter["{sSearch}"]				= $sSearch;
+			$sWarehouseID							= helper_RequestGetValue($this->request->getGetPost("warehouseID"),"");
+			$sTypePriceID							= helper_RequestGetValue($this->request->getGetPost("typePriceID"),"");
+			$sCurrencyID							= helper_RequestGetValue($this->request->getGetPost("currencyID"),"");
+			$parameter["{iDisplayStart}"]			= $iDisplayStart;
+			$parameter["{iDisplayLength}"]			= $iDisplayLength;
+			$parameter["{sSearch}"]					= $sSearch;
+			$parameter["{warehouseID}"]				= $sWarehouseID;
+			$parameter["{typePriceID}"]				= $sTypePriceID;
+			$parameter["{currencyID}"]				= $sCurrencyID;
 			
 			
 			

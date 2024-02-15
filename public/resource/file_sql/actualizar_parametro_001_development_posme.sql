@@ -1286,6 +1286,10 @@ where
 	and targetCurrencyID = 2; 
 	
 	
+update tb_item set realStateEmployerAgentID = ifnull(realStateEmployerAgentID,0);
+update tb_item set realStateCityID = ifnull(realStateCityID,0);
+update tb_item set realStateCountryID = ifnull(realStateCountryID,0);
+update tb_item set realStateStateID = ifnull(realStateStateID,0);
 	
 	
 /*BD: dbkroqnguhldo1 */
@@ -1295,4 +1299,8 @@ revision
 	tb_item.currencyID = 1;
 	tb_item.isInvoiceable = 1;
 */
+
+
+
+
 

@@ -147,8 +147,8 @@ class core_web_transaction_master_detail {
 		$Company_Model				= new Company_Model();
 		
 		$objCompany					= $Company_Model->get_rowByPK($companyID);		
-		$objPriceToComision			= $Price_Model->get_rowByItemIDAndAmount($companyID,$listPriceID,$itemID,$price ); 
-		$objPriceToComisionZero		= $Price_Model->get_rowByItemIDAndAmount($companyID,$listPriceID,$itemID,0 ); 
+		$objPriceToComision			= $Price_Model->get_rowByItemIDAndAmountAndComission($companyID,$listPriceID,$itemID,$price ); 
+		$objPriceToComisionZero		= $Price_Model->get_rowByItemIDAndAmountAndComission($companyID,$listPriceID,$itemID,0 ); 
 		$comisionPorcentage			= 0;
 		
 		//Obtener el porcentaje de comision comportamiento nomral

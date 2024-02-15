@@ -28,13 +28,13 @@ ORDER BY
 
 
 
-set @menuComponentPrincipal 				:= '0-INVENTARIO';	
+set @menuComponentPrincipal 				:= '0-VENTAS';	
 set @menuElementParent						:= 'REPORTES'; 	
 
-set @menuElement 							:= 'LISTA DE ITEM CON EXISTENCIAS';
-set @menuElementAddress 					:= 'app_inventory_report/list_item_width_exist';
-set @menuElementOrden 						:= '0002.0005.0011.0007.0000';
-set @menuIcono								:= 'red';
+set @menuElement 							:= 'SEGUIMIENTO POSVENTA GLOBAL PRO';
+set @menuElementAddress 					:= 'app_sales_report/sales_detail_traking_globalpro.aspx';
+set @menuElementOrden 						:= '0002.0007.0005.0010.0000';
+set @menuIcono								:= 'yellow';
 set @menuThemplate							:= 'menu_nivel_body_report_0';
 set @menuType								:= '6';
 set @menuNivel								:= '1';
