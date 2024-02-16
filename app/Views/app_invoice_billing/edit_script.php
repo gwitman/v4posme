@@ -565,28 +565,19 @@
 		//++Abrir popup de productos
 		if(codigoABuscar == "++"){
 			
+			fnCreateTableSearchProductos();
 			var ventana_ancho = $(window).width()-50;				
 			$("#div-modal-dialog-lista-productos").css("width",ventana_ancho+"px");
-		
-			fnCreateTableSearchProductos();
 			$("#mi_modal").modal();		
-			setTimeout(function() { 
+			if(varUseMobile == "1")
+			{
+				//$("#table_list_productos_filter").remove();	
+				$("#table_list_productos_info").remove();							
+				$("#mi_modal > .modal-dialog > .modal-content > .modal-footer").remove();
+				$("#table_list_productos_wrapper").find(".dataTables_paginate").remove();
 				
-				if(varUseMobile == "1")
-				{
-					//$("#table_list_productos_filter").remove();	
-					$("#table_list_productos_info").remove();							
-					$("#mi_modal > .modal-dialog > .modal-content > .modal-footer").remove();
-					$("#table_list_productos_wrapper").find(".dataTables_paginate").remove();
-					
-				}
-				else
-				{
-					$($("#table_list_productos_filter").find("input")[0]).focus(); 
-				}
-				
-				
-			}, 500);				
+			}
+			
 			return;
 		}
 		
@@ -802,44 +793,21 @@
 	});
 	
 	//Nuevo Producto
-	$(document).on("click","#btnNewItem",function(){
+	$(document).on("click","#btnNewItem",function()
+	{
 		
-		//var ventana_ancho = $(window).width()-50;			
-		//$("#div-modal-dialog-lista-productos").css("width",ventana_ancho+"px");
-		//
-		//
-		//fnCreateTableSearchProductos();
-		//$("#mi_modal").modal();
-		//setTimeout(function() { $($("#table_list_productos_filter").find("input")[0]).focus(); }, 500);		
-		
-		
-		
-		setTimeout( function() { 		
+		fnCreateTableSearchProductos();
+		var ventana_ancho = $(window).width()-50;				
+		$("#div-modal-dialog-lista-productos").css("width",ventana_ancho+"px");						
+		$("#mi_modal").modal();		
 			
-			
-			var ventana_ancho = $(window).width()-50;				
-			$("#div-modal-dialog-lista-productos").css("width",ventana_ancho+"px");			
-			fnCreateTableSearchProductos();
-			$("#mi_modal").modal();
-			setTimeout(function() { 
-				
-				if(varUseMobile == "1")
-				{
-					//$("#table_list_productos_filter").remove();	
-					$("#table_list_productos_info").remove();	
-					$("#mi_modal > .modal-dialog > .modal-content > .modal-footer").remove();
-					$("#table_list_productos_wrapper").find(".dataTables_paginate").remove();						
-				}
-				else
-				{
-					$($("#table_list_productos_filter").find("input")[0]).focus(); 
-				}
-				
-			}, 500);		
-			
-		}, 30 );
-		
-		
+		if(varUseMobile == "1")
+		{
+			//$("#table_list_productos_filter").remove();	
+			$("#table_list_productos_info").remove();	
+			$("#mi_modal > .modal-dialog > .modal-content > .modal-footer").remove();
+			$("#table_list_productos_wrapper").find(".dataTables_paginate").remove();						
+		}
 		
 		
 	});
@@ -2098,7 +2066,7 @@
 		}
 		
 		
-		$('#table_list_productos').dataTable({
+		objTableProductosSearch = $('#table_list_productos').dataTable({
 			
 			
 			"bPaginate"			: varParameterScrollDelModalDeSeleccionProducto == "false" ? true : false,
@@ -2141,6 +2109,12 @@
 						objRowTableProductosSearch = this; 
 						fnTableSelectedRow(this,event);
 					});  
+					
+					if(varUseMobile != "1")
+					{
+						$($("#table_list_productos_filter").find("input")[0]).focus(); 
+					}	
+					
 			},
 				
 				
@@ -2263,7 +2237,6 @@
 		});
 		
 		
-		objTableProductosSearch = $('#table_list_productos').dataTable(); 		
 		$('.dataTables_length select').uniform();
 		$('.dataTables_paginate > ul').addClass('pagination');		
 		$('#table_list_productos').css('display','table');
