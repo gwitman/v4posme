@@ -149,11 +149,7 @@
 					$("#txtTransactionNumberOrdenCompra").val("");
 		});
 		
-		$(document).on("click","#btnNewItemCatalog",function(){
-			var url_request 			= "<?php echo base_url(); ?>/app_inventory_item/add/callback/fnObtenerListadoProductos/comando/pantalla_abierta_desde_la_compra";
-			window.open(url_request,"MsgWindow","width=700,height=600");
-			window.fnObtenerListadoProductos = fnObtenerListadoProductos; 			
-		});
+		
 		
 		//Ir a Lista
 		$(document).on("click","#btnBack",function(){
@@ -309,33 +305,8 @@
 	//Funciones
 	////////////////////////////
 	////////////////////////////
-	function fnObtenerListadoProductos()
-	{
-		
-		fnWaitClose();
-		$.ajax(
-		{									
-			cache       : false,
-			dataType    : 'json',
-			type        : 'GET',																	
-			url  		: "<?php echo base_url(); ?>/app_invoice_api/getViewApi/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING/"+encodeURI('{"warehouseID"|"0"{}"listPriceID"|"<?php echo $objListPrice->listPriceID; ?>"{}"typePriceID"|"0"}'),		
-			success		: fnFillListaProductos,
-			error:function(xhr,data)
-			{	
-				console.info("complete data error");									
-				fnWaitClose();
-				fnShowNotification("Error 505","error");
-			}
-		});
-		
-	}
-	function fnFillListaProductos(data)
-	{
-		console.info("complete success data");
-		fnWaitClose();		
-		objListaProductos = data.objGridView;
-		
-	}
+	
+	
 	
 	function validateForm(){
 		var result 				= true;

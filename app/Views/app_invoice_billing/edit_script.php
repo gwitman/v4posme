@@ -624,7 +624,15 @@
 					//buscar por codigo de sistema					
 					var currencyTemp	= e[i].currencyID;
 					var currencyID 		= $("#txtCurrencyID").val();
-					if(  currencyID == currencyTemp && fnDeleteCerosIzquierdos(codigoABuscar) == fnDeleteCerosIzquierdos(e[i].Codigo.replace("BITT","").replace("ITT","").toUpperCase())  )
+					
+					var warehouseIDTemp		= e[i].warehouseID;
+					var warehouseID			= $("#txtWarehouseID").val();
+					
+					if(  
+						currencyID == currencyTemp && 
+						fnDeleteCerosIzquierdos(codigoABuscar) == fnDeleteCerosIzquierdos(e[i].Codigo.replace("BITT","").replace("ITT","").toUpperCase())  &&
+						warehouseID == warehouseIDTemp 
+					)
 					{
 						encontrado = true;
 						break;
@@ -641,7 +649,11 @@
 					{
 						for(var ii = 0 ; ii < listCodigTmp.length; ii++)
 						{
-							if( fnDeleteCerosIzquierdos(listCodigTmp[ii].toUpperCase()) == fnDeleteCerosIzquierdos(codigoABuscar) && currencyID == currencyTemp  )
+							if( 
+								fnDeleteCerosIzquierdos(listCodigTmp[ii].toUpperCase()) == fnDeleteCerosIzquierdos(codigoABuscar) && 
+								currencyID == currencyTemp  &&
+								warehouseID == warehouseIDTemp 
+							)
 							{
 								encontrado = true;
 								break;
@@ -1596,7 +1608,7 @@
 			cache       : false,
 			dataType    : 'json',
 			type        : 'GET',			
-			url  		: "<?php echo base_url(); ?>/app_invoice_api/getViewApi/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING/"+encodeURI('{"warehouseID"|"'+  $("#txtWarehouseID").val()   +'"{}"listPriceID"|"<?php echo $objListPrice->listPriceID; ?>"{}"typePriceID"|"'+154+'"}'),		/*TIPO PRECIO 1 --> 154 --> PUBLICO*/
+			url  		: "<?php echo base_url(); ?>/app_invoice_api/getViewApi/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING_BACKGROUND/"+encodeURI('{"warehouseID"|"'+  $("#txtWarehouseID").val()   +'"{}"listPriceID"|"<?php echo $objListPrice->listPriceID; ?>"{}"typePriceID"|"'+154+'"}'),		/*TIPO PRECIO 1 --> 154 --> PUBLICO*/
 			success		: fnFillListaProductos,
 			error:function(xhr,data){	
 				console.info("fnObtenerListadoProductos data error");		
@@ -2024,8 +2036,12 @@
 					var objDatItem 			= data[i];
 					var currencyTemp		= objDatItem.currencyID;
 					var currencyID 			= $("#txtCurrencyID").val();
+					
+					var warehouseIDTemp		= objDatItem.warehouseID;
+					var warehouseID			= $("#txtWarehouseID").val();
+					
 					var existe 				= jLinq.from(data2).where(function(obj){   return obj[2] == objDatItem.itemID; }).select().length;			
-					if(existe == 0 && (currencyID == currencyTemp)) 
+					if(existe == 0 && (currencyID == currencyTemp) &&  (warehouseIDTemp == warehouseID)  ) 
 						break;
 					
 					index++;
@@ -2296,8 +2312,7 @@
 			const db = request.result;
 			//...
 			
-			const objectStoreX001  = db.createObjectStore('objListaProductosX001' , { keyPath : 'id',autoIncrement: true } );
-			objectStoreX001.createIndex("BPrecio", "BPrecio", { unique: false });
+			const objectStoreX001  = db.createObjectStore('objListaProductosX001' , { keyPath : 'id',autoIncrement: true } );			
 			objectStoreX001.createIndex("Barra", "Barra", { unique: false });
 			objectStoreX001.createIndex("Cantidad", "Cantidad", { unique: false });
 			objectStoreX001.createIndex("Codigo", "Codigo", { unique: false });
@@ -2305,22 +2320,17 @@
 			objectStoreX001.createIndex("Medida", "Medida", { unique: false });
 			objectStoreX001.createIndex("Precio", "Precio", { unique: false });
 			objectStoreX001.createIndex("cost", "cost", { unique: false });
-			objectStoreX001.createIndex("currencyID", "currencyID", { unique: false });
-			objectStoreX001.createIndex("display", "display", { unique: false });
-			objectStoreX001.createIndex("endOn", "endOn", { unique: false });
+			objectStoreX001.createIndex("currencyID", "currencyID", { unique: false });						
+			objectStoreX001.createIndex("warehouseID", "warehouseID", { unique: false });
 			objectStoreX001.createIndex("isInvoice", "isInvoice", { unique: false });
 			objectStoreX001.createIndex("isInvoiceQuantityZero", "isInvoiceQuantityZero", { unique: false });
 			objectStoreX001.createIndex("itemID", "itemID", { unique: false });
 			objectStoreX001.createIndex("iwCost", "iwCost", { unique: false });
 			objectStoreX001.createIndex("iwQuantityMax", "iwQuantityMax", { unique: false });
-			objectStoreX001.createIndex("iwQuantityMin", "iwQuantityMin", { unique: false });
-			objectStoreX001.createIndex("listPriceID", "listPriceID", { unique: false });
-			objectStoreX001.createIndex("percentage", "percentage", { unique: false });
+			objectStoreX001.createIndex("iwQuantityMin", "iwQuantityMin", { unique: false });			
 			objectStoreX001.createIndex("quantity", "quantity", { unique: false });
 			objectStoreX001.createIndex("quantityMax", "quantityMax", { unique: false });
 			objectStoreX001.createIndex("quantityMin", "quantityMin", { unique: false });
-			objectStoreX001.createIndex("startOn", "startOn", { unique: false });
-			objectStoreX001.createIndex("typePriceID", "typePriceID", { unique: false });
 			objectStoreX001.createIndex("unitMeasureID", "unitMeasureID", { unique: false });
 			objectStoreX001.createIndex("Precio2", "Precio2", { unique: false });
 			objectStoreX001.createIndex("Precio3", "Precio3", { unique: false });
