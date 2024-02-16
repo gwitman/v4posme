@@ -93,6 +93,9 @@
 			//Obtener Iva
 			var tmp_ = jLinq.from(varDetailConcept).where(function(obj){ return obj.componentItemID == varDetail[i].componentItemID && obj.name == "IVA" }).select();
 			var iva_ = (tmp_.length <= 0 ? 0 : parseFloat(tmp_[0].valueOut));
+			var Precio2 = jLinq.from(objTransactionMasterItemPrice).where(function(obj){ return (obj.itemID == varDetail[i].componentItemID && obj.typePriceID == "155"); }).select()[0].Precio;
+			var Precio3 = jLinq.from(objTransactionMasterItemPrice).where(function(obj){ return (obj.itemID == varDetail[i].componentItemID && obj.typePriceID == "156"); }).select()[0].Precio;
+			
 			
 			//Rellenar Datos
 			tmpData.push([
@@ -108,8 +111,10 @@
 				fnFormatNumber(iva_,2),
 				fnFormatNumber(varDetail[i].skuQuantityBySku, 4),
 				fnFormatNumber(varDetail[i].unitaryPrice, 4),
-				"",
-				varDetail[i].skuFormatoDescription
+				"",//acciones
+				varDetail[i].skuFormatoDescription,
+				Precio2,
+				Precio3
 			]);
 		}
 	}	
@@ -297,9 +302,9 @@
 			dataResponse[21] = data.Cantidad;//Cantidad
 			dataResponse[22] = data.Precio;//Precio
 			dataResponse[23] = data.MedidaID;
-			dataResponse[24] = data.itemID;
-			dataResponse[25] = data.itemID;
-			dataResponse[26] = data.itemID;
+			dataResponse[24] = data.Nombre;
+			dataResponse[25] = data.Precio2;
+			dataResponse[26] = data.Precio3;
 			
 			onCompleteNewItem(dataResponse,true);
 	});
@@ -334,9 +339,9 @@
 			dataResponse[21] = data.Cantidad;//Cantidad
 			dataResponse[22] = data.Precio;//Precio
 			dataResponse[23] = data.MedidaID;
-			dataResponse[24] = data.itemID;
-			dataResponse[25] = data.itemID;
-			dataResponse[26] = data.itemID;
+			dataResponse[24] = data.Nombre;
+			dataResponse[25] = data.Precio2;
+			dataResponse[26] = data.Precio3;
 			
 			onCompleteNewItem(dataResponse,true);
 
@@ -487,9 +492,9 @@
 		dataResponse[21] = data.Cantidad;//Cantidad
 		dataResponse[22] = data.Precio;//Precio
 		dataResponse[23] = data.MedidaID;
-		dataResponse[24] = data.itemID;
-		dataResponse[25] = data.itemID;
-		dataResponse[26] = data.itemID;
+		dataResponse[24] = data.Nombre;
+		dataResponse[25] = data.Precio2;
+		dataResponse[26] = data.Precio3;
 		
 		 
 		 onCompleteNewItem(dataResponse,true);
@@ -660,6 +665,9 @@
 					filterResultArray[21] 	= filterResult.Cantidad;
 					filterResultArray[22] 	= filterResult.Precio;
 					filterResultArray[23] 	= filterResult.unitMeasureID;
+					filterResultArray[24] 	= filterResult.Nombre;
+					filterResultArray[25] 	= filterResult.Precio2;
+					filterResultArray[26] 	= filterResult.Precio3;
 					//Agregar el Item a la Fila
 					 onCompleteNewItem(filterResultArray,sumar); 
 				}
@@ -953,6 +961,8 @@
 		objRow.iva 							= 0;
 		objRow.lote 						= "";
 		objRow.vencimiento					= "";
+		objRow.price2						= objResponse[25];
+		objRow.price3						= objResponse[26];
 		
 		
 		//Berificar que el Item ya esta agregado 
@@ -997,7 +1007,9 @@
 				0,
 				0,
 				"",
-				""
+				"",
+				objRow.price2,
+				objRow.price3
 			]);
 			
 			if(varUseMobile != "1"){
@@ -2010,8 +2022,10 @@
 				for(var i = 0 ; i < length; i++ )
 				{		
 					var objDatItem 			= data[i];
+					var currencyTemp		= objDatItem.currencyID;
+					var currencyID 			= $("#txtCurrencyID").val();
 					var existe 				= jLinq.from(data2).where(function(obj){   return obj[2] == objDatItem.itemID; }).select().length;			
-					if(existe == 0)
+					if(existe == 0 && (currencyID == currencyTemp)) 
 						break;
 					
 					index++;
@@ -2047,8 +2061,8 @@
 				dataResponse[22] = data.Precio;//Precio
 				dataResponse[23] = data.unitMeasureID;//6:Barra 
 				dataResponse[24] = data.Descripcion;//7:Descripcion
-				dataResponse[25] = data[0];
-				dataResponse[26] = data[0];		
+				dataResponse[25] = data.Precio2;
+				dataResponse[26] = data.Precio3;		
 				onCompleteNewItem(dataResponse,true);
 			}
 		);
@@ -2210,6 +2224,22 @@
 							//"mRender"		: function ( data, type, full ) {
 							//}
 						},
+						{
+							"aTargets"		: [ 9 ],//Precio2
+							"bVisible"		: false,
+							"bSearchable"	: false,
+							"mData":		'Precio2',
+							//"mRender"		: function ( data, type, full ) {
+							//}
+						},
+						{
+							"aTargets"		: [ 10 ],//Precio3
+							"bVisible"		: false,
+							"bSearchable"	: false,
+							"mData":		'Precio3',
+							//"mRender"		: function ( data, type, full ) {
+							//}
+						},
 			]
 			
 			
@@ -2292,7 +2322,8 @@
 			objectStoreX001.createIndex("startOn", "startOn", { unique: false });
 			objectStoreX001.createIndex("typePriceID", "typePriceID", { unique: false });
 			objectStoreX001.createIndex("unitMeasureID", "unitMeasureID", { unique: false });
-			
+			objectStoreX001.createIndex("Precio2", "Precio2", { unique: false });
+			objectStoreX001.createIndex("Precio3", "Precio3", { unique: false });
 			
 			
 			const objectStoreConceptX001  = db.createObjectStore('objListaProductosConceptosX001' , { keyPath : 'id',autoIncrement: true } );
@@ -2943,32 +2974,9 @@
 								"mRender"		: function ( data, type, full ) 
 								{	
 																		
-									var objProductoPrecio1;
-									var objProductoPrecio2;
-									var objProductoPrecio3;
-									
-									//precio 1 ---> 154 --> precio publico
-									objProductoPrecio1 	= jLinq.from(objTransactionMasterItemPrice).where(function(obj){ return (obj.itemID == full[2] && obj.typePriceID == "154"); }).select();
-									////precio 2 ---> 155 --> precio mayorista
-									objProductoPrecio2 	= jLinq.from(objTransactionMasterItemPrice).where(function(obj){ return (obj.itemID == full[2] && obj.typePriceID == "155"); }).select();
-									////precio 3 ---> 156 --> precio credito
-									objProductoPrecio3 	= jLinq.from(objTransactionMasterItemPrice).where(function(obj){ return (obj.itemID == full[2] && obj.typePriceID == "156"); }).select();
-									
-									
-									if(objProductoPrecio1.length == 0)
-									objProductoPrecio1 = "0.00";
-									else
-									objProductoPrecio1 = objProductoPrecio1[0].price;
-								
-									if(objProductoPrecio2.length == 0)
-									objProductoPrecio2 = "0.00";
-									else
-									objProductoPrecio2 = objProductoPrecio2[0].price;
-								
-									if(objProductoPrecio3.length == 0)
-									objProductoPrecio3 = "0.00";
-									else
-									objProductoPrecio3 = objProductoPrecio3[0].price;
+									var objProductoPrecio1 = full[7];
+									var objProductoPrecio2 = full[14];
+									var objProductoPrecio3 = full[15];
 									
 									objProductoPrecio1 = fnFormatFloat(objProductoPrecio1);
 									objProductoPrecio2 = fnFormatFloat(objProductoPrecio2);
@@ -3029,6 +3037,34 @@
 								"bSearchable"	: false,
 								"mRender"		: function ( data, type, full ) {
 									return '<input type="text" class="col-lg-12 skuFormatoDescription" value="'+data+'" name="skuFormatoDescription[]" style="text-align:right" />';
+								}
+								//,
+								//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+								//{
+								//	  $(td).css("display","block");
+								//}
+							},
+							{
+								"aTargets"		: [ 14 ],//Precio2
+								"bVisible"		: true,
+								"sClass"		: "hidden",
+								"bSearchable"	: false,
+								"mRender"		: function ( data, type, full ) {
+									return '<input type="hidden" value="'+data+'" name="txtItemPrecio2[]" />';
+								}
+								//,
+								//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+								//{
+								//	  $(td).css("display","block");
+								//}
+							},
+							{
+								"aTargets"		: [ 15 ],//Precio3
+								"bVisible"		: true,
+								"sClass"		: "hidden",
+								"bSearchable"	: false,
+								"mRender"		: function ( data, type, full ) {
+									return '<input type="hidden" value="'+data+'" name="txtItemPrecio3[]" />';
 								}
 								//,
 								//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 

@@ -543,6 +543,8 @@
 								<th>unitaryPriceInvidual</th>
 								<th>Accion</th>
 								<th>skuFormatoDescription</th>
+								<th>Precio2</th>
+								<th>Precio3</th>
 							  </tr>
 							</thead>
 							<tbody id="body_tb_transaction_master_detail">

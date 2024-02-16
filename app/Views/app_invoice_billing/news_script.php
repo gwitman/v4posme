@@ -144,10 +144,10 @@
 			dataResponse[20] = data.Medida;//Unidad de medida
 			dataResponse[21] = data.Cantidad;//Cantidad
 			dataResponse[22] = data.Precio;//Precio
-			dataResponse[23] = data.MedidaID;
-			dataResponse[24] = data.itemID;
-			dataResponse[25] = data.itemID;
-			dataResponse[26] = data.itemID;
+			dataResponse[23] = data.MedidaID;			
+			dataResponse[24] = data.Nombre;
+			dataResponse[25] = data.Precio2;
+			dataResponse[26] = data.Precio3;
 			
 			onCompleteNewItem(dataResponse,true);
 			
@@ -182,10 +182,12 @@
 			dataResponse[20] = data.Medida;//Unidad de medida
 			dataResponse[21] = data.Cantidad;//Cantidad
 			dataResponse[22] = data.Precio;//Precio
-			dataResponse[23] = data.MedidaID;
-			dataResponse[24] = data.itemID;
-			dataResponse[25] = data.itemID;
-			dataResponse[26] = data.itemID;
+			dataResponse[23] = data.MedidaID;	
+
+				
+			dataResponse[24] = data.Nombre;
+			dataResponse[25] = data.Precio2;
+			dataResponse[26] = data.Precio3;
 			
 			onCompleteNewItem(dataResponse,true);
 
@@ -291,10 +293,10 @@
 		dataResponse[20] = data.Medida;//Unidad de medida
 		dataResponse[21] = data.Cantidad;//Cantidad
 		dataResponse[22] = data.Precio;//Precio
-		dataResponse[23] = data.MedidaID;
-		dataResponse[24] = data.itemID;
-		dataResponse[25] = data.itemID;
-		dataResponse[26] = data.itemID;
+		dataResponse[23] = data.MedidaID;		
+		dataResponse[24] = data.Nombre;
+		dataResponse[25] = data.Precio2;
+		dataResponse[26] = data.Precio3;
 		 
 		 onCompleteNewItem(dataResponse,true);
 		 $(this).focus();
@@ -522,6 +524,9 @@
 					filterResultArray[21] 	= filterResult.Cantidad;
 					filterResultArray[22] 	= filterResult.Precio;
 					filterResultArray[23] 	= filterResult.unitMeasureID;
+					filterResultArray[24] 	= filterResult.Nombre;
+					filterResultArray[25] 	= filterResult.Precio2;
+					filterResultArray[26] 	= filterResult.Precio3;
 					
 					//Agregar el Item a la Fila					
 					onCompleteNewItem(filterResultArray,sumar); 
@@ -834,7 +839,8 @@
 		objRow.iva 							= 0;
 		objRow.lote 						= "";
 		objRow.vencimiento					= "";
-		
+		objRow.price2						= objResponse[25];
+		objRow.price3						= objResponse[26];
 		
 		//Actualizar
 		if(jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[2] == objRow.itemID;}).select().length > 0 ){
@@ -875,7 +881,9 @@
 				0,
 				0,
 				"",
-				""
+				"",
+				objRow.price2,
+				objRow.price3
 			]);
 			
 			
@@ -1696,8 +1704,11 @@
 				for(var i = 0 ; i < length; i++ )
 				{		
 					var objDatItem 			= data[i];
+					var currencyTemp		= objDatItem.currencyID;
+					var currencyID 			= $("#txtCurrencyID").val();
+					
 					var existe 				= jLinq.from(data2).where(function(obj){   return obj[2] == objDatItem.itemID; }).select().length;			
-					if(existe == 0)
+					if(existe == 0 && (currencyID == currencyTemp) )
 						break;
 					
 					index++;
@@ -1732,8 +1743,8 @@
 				dataResponse[22] = data.Precio;//Precio
 				dataResponse[23] = data.unitMeasureID;//6:Barra 
 				dataResponse[24] = data.Descripcion;//7:Descripcion
-				dataResponse[25] = data[0];
-				dataResponse[26] = data[0];		
+				dataResponse[25] = data.Precio2;
+				dataResponse[26] = data.Precio3;		
 				onCompleteNewItem(dataResponse,true);
 			}
 		);
@@ -1895,6 +1906,22 @@
 								//"mRender"		: function ( data, type, full ) {
 								//}
 							},
+							{
+								"aTargets"		: [ 9 ],//Precio2
+								"bVisible"		: false,
+								"bSearchable"	: false,
+								"mData":		'Precio2',
+								//"mRender"		: function ( data, type, full ) {
+								//}
+							},
+							{
+								"aTargets"		: [ 10 ],//Precio3
+								"bVisible"		: false,
+								"bSearchable"	: false,
+								"mData":		'Precio3',
+								//"mRender"		: function ( data, type, full ) {
+								//}
+							},
 				]
 				
 				
@@ -2037,7 +2064,8 @@
 			objectStoreX001.createIndex("startOn", "startOn", { unique: false });
 			objectStoreX001.createIndex("typePriceID", "typePriceID", { unique: false });
 			objectStoreX001.createIndex("unitMeasureID", "unitMeasureID", { unique: false });
-			
+			objectStoreX001.createIndex("Precio2", "Precio2", { unique: false });
+			objectStoreX001.createIndex("Precio3", "Precio3", { unique: false });
 			
 			
 			
@@ -2513,9 +2541,9 @@
 										//publico
 										var objProductoPrecio1 	= full[7];
 										//por mayor
-										var objProductoPrecio2 	= full[7];
+										var objProductoPrecio2 	= full[14];
 										//credito
-										var objProductoPrecio3 	= full[7];
+										var objProductoPrecio3 	= full[15];
 										
 										
 										//publico
@@ -2579,6 +2607,34 @@
 								"bSearchable"	: false,
 								"mRender"		: function ( data, type, full ) {
 									return '<input type="text" class="col-lg-12 skuFormatoDescription" value="'+data+'" name="skuFormatoDescription[]" style="text-align:right" />';
+								}
+								//,
+								//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+								//{
+								//	  $(td).css("display","block");
+								//}
+							},
+							{
+								"aTargets"		: [ 14 ],//Precio2
+								"bVisible"		: true,
+								"sClass"		: "hidden",
+								"bSearchable"	: false,
+								"mRender"		: function ( data, type, full ) {
+									return '<input type="hidden" value="'+data+'" name="txtItemPrecio2[]" />';
+								}
+								//,
+								//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+								//{
+								//	  $(td).css("display","block");
+								//}
+							},
+							{
+								"aTargets"		: [ 15 ],//Precio3
+								"bVisible"		: true,
+								"sClass"		: "hidden",
+								"bSearchable"	: false,
+								"mRender"		: function ( data, type, full ) {
+									return '<input type="hidden" value="'+data+'" name="txtItemPrecio3[]" />';
 								}
 								//,
 								//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
