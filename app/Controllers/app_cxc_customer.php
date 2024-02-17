@@ -1011,7 +1011,46 @@ class app_cxc_customer extends _BaseController {
 			
 			
 			
-			
+			//Obtener catalogos de tipos de leads
+			$objPCatalogTypeLeads 	= $this->Public_Catalog_Model->asObject()->
+										where("systemName","tb_customer.typeLeads")->
+										where("flavorID",$dataSession["company"]->flavorID)->
+										where("isActive",1)->
+										first();
+			$objPCItemTypeLeads		= $this->Public_Catalog_Detail_Model->asObject()->
+										where("publicCatalogID",helper_RequestGetValueObjet($objPCatalogTypeLeads,"publicCatalogID",0))->
+										where( "isActive",1)->
+										findAll();
+			$dataView["objPCItemTypeLeads"]	
+										= $objPCItemTypeLeads;
+										
+			//Obtener catalogos de sub tipos de leads
+			$objPCatalogSubTypeLeads 	= $this->Public_Catalog_Model->asObject()->
+										where("systemName","tb_customer.subTypeLeads")->
+										where("flavorID",$dataSession["company"]->flavorID)->
+										where("isActive",1)->
+										first();
+			$objPCItemSubTypeLeads		= $this->Public_Catalog_Detail_Model->asObject()->
+										where("publicCatalogID",helper_RequestGetValueObjet($objPCatalogSubTypeLeads,"publicCatalogID",0))->
+										where( "isActive",1)->
+										findAll();
+			$dataView["objPCItemSubTypeLeads"]	
+										= $objPCItemSubTypeLeads;
+										
+			//Obtener catalogos de categoria de leads
+			$objPCatalogCategoryLeads 	= $this->Public_Catalog_Model->asObject()->
+										where("systemName","tb_customer.categoryLeads")->
+										where("flavorID",$dataSession["company"]->flavorID)->
+										where("isActive",1)->
+										first();
+			$objPCItemCategoryLeads		= $this->Public_Catalog_Detail_Model->asObject()->
+										where("publicCatalogID",helper_RequestGetValueObjet($objPCatalogCategoryLeads,"publicCatalogID",0))->
+										where( "isActive",1)->
+										findAll();
+			$dataView["objPCItemCategoryLeads"]	
+										= $objPCItemCategoryLeads;
+										
+										
 			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);			
 			$dataSession["message"]			= $this->core_web_notification->get_message();
