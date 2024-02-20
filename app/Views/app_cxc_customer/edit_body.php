@@ -250,7 +250,7 @@
 										</select>
 									</div>
 								</div>
-								<div class="form-group   <?php echo getBehavio($company->type,"app_cxc_customer","divTxtCategoria",""); ?> ">
+								<div class="form-group   <?php echo getBehavio($company->type,"app_cxc_customer","divTxtCategoria",""); ?> " id="divTxtCategoryE" >
 									<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_cxc_customer","Categoria",""); ?></label>
 									<div class="col-lg-8">
 										<select name="txtCategoryID" id="txtCategoryID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"   >
@@ -849,8 +849,8 @@
         </select>
       </div>
 	  
-      <div class="form-group">
-        <label for="txtLeadSubTipo">Sub Tipo:</label>
+      <div class="form-group" id="divTxtLeadsSubTipo" >
+        <label id="lblLeadSubTipoLeads" for="txtLeadSubTipo">Leads:</label>
         <select class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>" id="txtLeadSubTipo" name="txtLeadSubTipo" >
           <?php
 			if($objPCItemSubTypeLeads)

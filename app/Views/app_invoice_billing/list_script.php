@@ -53,6 +53,22 @@
 			}
 			
 		}); 
+		$(document).on("dblclick","#ListView tbody tr",function(){
+			
+			if(objRowTableListView != undefined)
+			{
+				fnWaitOpen();
+				var data 		= objTableListView.fnGetData(objRowTableListView);		
+
+				if(objParameterPantallaParaFacturar == "-")	
+					window.location	= "<?php echo base_url(); ?>/app_invoice_billing/edit/companyID/"+data[0]+"/transactionID/"+data[1]+"/transactionMasterID/"+data[2];
+				else
+					window.location	= "<?php echo base_url(); ?>/app_invoice_billing/"+objParameterPantallaParaFacturar+"/companyID/"+data[0]+"/transactionID/"+data[1]+"/transactionMasterID/"+data[2];					
+			}
+			else{
+				fnShowNotification("Seleccionar el Registro...","error");
+			}
+		});
 		$(document).on("click","#btnSearchTransaction",function(){
 					fnWaitOpen();
 					var transactionNumber 	= $("#txtSearchTransaction").val() ;

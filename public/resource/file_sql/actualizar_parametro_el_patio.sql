@@ -861,3 +861,13 @@ update tb_exchange_rate set
 where 
 	currencyID = 1
 	and targetCurrencyID = 2; 
+	
+	
+/*BD: dbr0n63dlv2ggk  */
+/*********************************************/
+/*
+revision
+	tb_item.currencyID = 1;
+	tb_item.isInvoiceable = 1;
+*/
+

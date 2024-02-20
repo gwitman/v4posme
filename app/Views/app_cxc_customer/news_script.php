@@ -665,6 +665,8 @@
 			result = false;
 		}
 		
+		
+		<?php echo getBehavio($company->type,"app_cxc_customer","divScriptValideFunction",""); ?>		
 		return result;
 		
 	}

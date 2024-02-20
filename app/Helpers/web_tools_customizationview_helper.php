@@ -287,15 +287,50 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 																														<script>
 																														$(document).ready(function(){ 
 																															$('#txtIdentification').val('0');				
+																															$('#divTxtLeadsSubTipo').insertAfter('#divTxtCategoryE');
+																															$('#lblLeadSubTipoLeads').addClass('col-lg-4');
+																															$('#lblLeadSubTipoLeads').addClass('control-label');																															
+																															$('#s2id_txtLeadSubTipo').wrap('<div class=\"col-lg-8\"></div>');
+																															
+																															
 																															$(document).on('focusout','#txtLegalName',function(){ 									 
 																																var varLegalName 	= $('#txtLegalName').val(); 
 																																$('#txtFirstName').val(varLegalName  ); 
 																																$('#txtLastName').val(varLegalName  ); 
 																																$('#txtCommercialName').val(varLegalName); 	 
 																															}); 
+																															
+																															
 																														}); 
 																														</script> 
 																													",
+		strtolower('luciaralstate_app_cxc_customer_divScriptValideFunction') 	 								=> "
+																													
+																													$.ajax({									
+																															cache       : false,
+																															dataType    : 'json',
+																															type        : 'POST',
+																															url  		: '".base_url()."/app_cxc_leads/save/new',
+																															data 		: {
+																																	mode: 'new',
+																																	txtLeadTipo: $('#txtLeadTipo').val(),
+																																	txtLeadSubTipo: $('#txtLeadSubTipo').val(),
+																																	txtLeadCategory: $('#txtLeadCategory').val(),
+																																	txtLeadComentario: $('#txtLeadComentario').val(),
+																																	txtCustomerID : 0
+																															},
+																															success		: function(data){
+																																console.info(data);
+																																fnShowNotification('Leads agregado!','success');
+																															},
+																															error:function(xhr,data){						
+																																console.info('complete data error');													
+																																fnShowNotification('Error 505','error');
+																															}
+																													});
+																													
+																														
+																												",	
 		strtolower('luciaralstate_app_inventory_item_divTxtEstado') 			 								=> "hidden",
 		strtolower('luciaralstate_app_inventory_item_divTxtUM') 			 									=> "hidden",
 		strtolower('luciaralstate_app_inventory_item_divTxtPresentacionUM')  									=> "hidden",
@@ -309,6 +344,8 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('luciaralstate_app_inventory_item_divControlCreatedOn') 	 									=> "",
 		strtolower('luciaralstate_app_inventory_item_divControlModifiedOn') 	 								=> "",	
 		strtolower('luciaralstate_app_inventory_item_fieldExclusiveGerencia') 	 								=> "",	
+		
+		
 		
 	);
 	

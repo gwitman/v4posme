@@ -878,7 +878,11 @@ class app_cxc_customer extends _BaseController {
 			if($db->transStatus() !== false){
 				$db->transCommit();						
 				$this->core_web_notification->set_message(false,SUCCESS);
-				$this->response->redirect(base_url()."/".'app_cxc_customer/edit/companyID/'.$companyID."/branchID/".$objEntity["branchID"]."/entityID/".$entityID."/callback/".$callback);
+				
+				if($dataSession["company"]->type=="luciaralstate")
+					$this->response->redirect(base_url()."/".'app_cxc_customer/index');			
+				else 
+					$this->response->redirect(base_url()."/".'app_cxc_customer/edit/companyID/'.$companyID."/branchID/".$objEntity["branchID"]."/entityID/".$entityID."/callback/".$callback);
 			}
 			else{
 				$db->transRollback();						
