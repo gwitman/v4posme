@@ -1,3 +1,18 @@
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "100" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_CANTIDAD_ITEM";## PANTALLA PARA LA FACTUACION
+	
+
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "****" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CORE_LABEL_SISTEMA_SUPLANTATION";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
+	
+
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
@@ -643,7 +658,7 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
+	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT";## Imprimir directo en la impresora 
@@ -824,26 +839,6 @@ WHERE
 
 
 
-
-
-/*
-Eliminar o desactivar usuarios
-*/
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/
- 200,  	/*supervisor*/
- 199, 	/*facturador*/
- 198 	/*administrador*/
-);
-
-update tb_role set isActive = 0; 
-update tb_role set isActive = 1 where roleID in (
-	3,
-	194,
-	193,
-	192	
-);
 
 
 

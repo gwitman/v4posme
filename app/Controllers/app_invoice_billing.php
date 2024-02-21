@@ -63,6 +63,12 @@ class app_invoice_billing extends _BaseController {
 			if(!$objComponentItem)
 			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 			
+			
+		
+			
+			
+			
+			
 			$objCurrency						= $this->core_web_currency->getCurrencyDefault($companyID);
 			$targetCurrency						= $this->core_web_currency->getCurrencyExternal($companyID);			
 			$customerDefault					= $this->core_web_parameter->getParameter("INVOICE_BILLING_CLIENTDEFAULT",$companyID);
@@ -134,6 +140,11 @@ class app_invoice_billing extends _BaseController {
 			$objParameterMostrarImagenEnSeleccion					= $objParameterMostrarImagenEnSeleccion->value;	
 			$dataView["objParameterMostrarImagenEnSeleccion"] 		= $objParameterMostrarImagenEnSeleccion;
 			
+			$objParameterPantallaParaFacturar				= $this->core_web_parameter->getParameter("INVOICE_PANTALLA_FACTURACION",$this->session->get('user')->companyID);
+			$objParameterPantallaParaFacturar				= $objParameterPantallaParaFacturar->value;
+			$dataView["objParameterPantallaParaFacturar"] 	= $objParameterPantallaParaFacturar;
+			
+			
 			//Tipo de Factura
 			$agent 												= $this->request->getUserAgent();			
 			$dataView["isMobile"]								= helper_RequestGetValue($agent->isMobile(),"0");
@@ -163,7 +174,8 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objListEmployee"]		= $this->Employee_Model->get_rowByBranchIDAndType($companyID,$branchID,$objParameterAll["INVOICE_TYPE_EMPLOYEER"]);
 			$dataView["objListBank"]			= $this->Bank_Model->getByCompany($companyID);
 			$dataView["objListPrice"]			= $objListPrice;
-			$dataView["objComponentBilling"]	= $objComponentTransactionBilling;
+			$dataView["objComponentBilling"]			= $objComponentTransactionBilling;
+			$dataView["objComponentTransactionBilling"]	= $objComponentTransactionBilling;
 			$dataView["objComponentItem"]		= $objComponentItem;
 			$dataView["objComponentCustomer"]	= $objComponentCustomer;
 			$dataView["objCaudal"]				= $this->Transaction_Causal_Model->getCausalByBranch($companyID,$transactionID,$branchID);			
@@ -2413,7 +2425,7 @@ class app_invoice_billing extends _BaseController {
 		try{ 
 			
 			
-			$this->cachePage( 0 /*TIME_CACHE_APP*/  );
+			$this->cachePage( TIME_CACHE_APP  );
 			
 			//AUTENTICADO
 			if(!$this->core_web_authentication->isAuthenticated())
@@ -2450,6 +2462,10 @@ class app_invoice_billing extends _BaseController {
 			$objComponentItem	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
 			if(!$objComponentItem)
 			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+		
+			$objComponentTransactionBilling	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_billing");
+			if(!$objComponentTransactionBilling)
+			throw new \Exception("EL COMPONENTE 'tb_transaction_master_billing' NO EXISTE...");
 			
 			
 			//Obtener Tasa de Cambio			
@@ -2506,6 +2522,7 @@ class app_invoice_billing extends _BaseController {
 			//Tipo de Factura
 			$agent 											= $this->request->getUserAgent();						
 			$dataView["isMobile"]							= helper_RequestGetValue($agent->isMobile(),"0");
+			$dataView["objComponentTransactionBilling"]		= $objComponentTransactionBilling;
 			$dataView["companyID"]							= $dataSession["user"]->companyID;
 			$dataView["isAdmin"]							= $dataSession["role"]->isAdmin;
 			$dataView["userID"]								= $dataSession["user"]->userID;
@@ -2566,6 +2583,10 @@ class app_invoice_billing extends _BaseController {
 			$objParameterMostrarImagenEnSeleccion					= $this->core_web_parameter->getParameter("INVOICE_BILLING_SHOW_IMAGE_IN_DETAIL_SELECTION",$companyID);
 			$objParameterMostrarImagenEnSeleccion					= $objParameterMostrarImagenEnSeleccion->value;	
 			$dataView["objParameterMostrarImagenEnSeleccion"] 		= $objParameterMostrarImagenEnSeleccion;
+			
+			$objParameterPantallaParaFacturar				= $this->core_web_parameter->getParameter("INVOICE_PANTALLA_FACTURACION",$this->session->get('user')->companyID);
+			$objParameterPantallaParaFacturar				= $objParameterPantallaParaFacturar->value;
+			$dataView["objParameterPantallaParaFacturar"] 	= $objParameterPantallaParaFacturar;
 						
 			if(!$dataView["objCustomerDefault"])
 			throw new \Exception("NO EXISTE EL CLIENTE POR DEFECTO");

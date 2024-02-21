@@ -578,8 +578,15 @@
 								</div>
 							</div>
 							<div class="col col-lg-2">
-								<a href="#" id="btnBack" class="btn btn-inverse  btn-block hidden btn-comando-factura" ><i class="icon16 i-rotate"></i> REGRESAR</a>
+								<div class="btn-group btn-block  hidden btn-comando-factura ">
+									<button  type="button" class="btn btn-flat btn-inverse dropdown-toggle btn-block" data-toggle="dropdown"><i class="icon16 i-pencil"></i> SELECCION <span class="caret"></span></button>
+									<ul class="dropdown-menu">
+										<li><a href="#" id="btnBack"  >REGRESAR</a></li>
+										<li><a href="#" id="btnSelectInvoice"  >SELECCIONAR</a></li>
+									</ul>
+								</div>
 							</div>
+							
 						</div>
 						
 						<br/>
@@ -620,17 +627,29 @@
 					?>
 					
 					<div class="row">
-							<div class="col col-lg-2">
+							<div class="col col-lg-4 col-md-4 col-sm-4 col-xs-4">
 								<div class="btn-group  btn-block hidden btn-comando-factura">
-									<button type="button" class="btn btn-flat btn-success dropdown-toggle  btn-block" data-toggle="dropdown"><i class="icon16 i-print"></i> COMANDOS <span class="caret"></span></button>
+									<button type="button" class="btn btn-flat btn-info dropdown-toggle  btn-block" data-toggle="dropdown"><i class="icon32 i-pencil"></i> PRO <span class="caret"></span></button>
 									<ul class="dropdown-menu">
 											<li><a href="#" id="btnNewItem" >AGREGAR PRO</a></li>
-											<li><a href="#" id="btnDeleteItem" >ELIMINAR PRO</a></li>
-											<li><a href="#" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>						
-											<li><a href="#" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>											
+											<li><a href="#" id="btnDeleteItem" >ELIMINAR PRO</a></li>											
+									</ul>
+								</div>
+							</div>
+							<div class="col col-lg-4 col-md-4 col-sm-4 col-xs-4">
+								<div class="btn-group  btn-block hidden btn-comando-factura">
+									<button type="button" class="btn btn-flat btn-danger dropdown-toggle  btn-block" data-toggle="dropdown"><i class="icon32 i-print"></i> FAC <span class="caret"></span></button>
+									<ul class="dropdown-menu">											
 											<li><a href="<?php echo base_url(); ?>/app_invoice_billing/index" id="btnBack" >REGRESAR</a></li>
 											<li><a href="<?php echo base_url(); ?>/app_invoice_billing/add" id="btnNew">NUEVA FAC</a></li>
-											
+											<li><a href="#" id="btnSelectInvoice"  > SELECCIONAR</a></li>
+									</ul>
+								</div>
+							</div>
+							<div class="col col-lg-4 col-md-4 col-sm-4 col-xs-4">
+								<div class="btn-group  btn-block hidden btn-comando-factura">
+									<button type="button" class="btn btn-flat btn-primary dropdown-toggle  btn-block" data-toggle="dropdown"><i class="icon32 i-cloud"></i> SALV <span class="caret"></span></button>
+									<ul class="dropdown-menu">
 											<?php 
 												if ($objParameterInvoiceAutoApply == "true"){
 													?>
@@ -651,11 +670,21 @@
 													<?php 
 												}
 											?>
-											
-											
 									</ul>
 								</div>
 							</div>
+					</div>
+					<br/>					
+					<div class="row">
+							<div class="col col-lg-4 col-md-4 col-sm-4 col-xs-4">
+								<div class="btn-group  btn-block hidden btn-comando-factura">
+									<button type="button" class="btn btn-flat btn-success dropdown-toggle  btn-block" data-toggle="dropdown"><i class="icon32 i-search"></i> MAS <span class="caret"></span></button>
+									<ul class="dropdown-menu">											
+											<li><a href="#" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>						
+											<li><a href="#" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>
+									</ul>
+								</div>
+							</div>							
 					</div>
 					<?php
 				}
@@ -748,11 +777,11 @@
 								
 								
 								<tr>
-									<th style="text-align:left;width:30%">04) Tarjeta. Nac.</th>
+									<th style="text-align:left">04) Tarjeta. Nac.</th>
 									<td style="">
 										<input type="text" id="txtReceiptAmountTarjeta" name="txtReceiptAmountTarjeta"   class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
-									<td style="width:30%">
+									<td style="">
 										<select name="txtReceiptAmountTarjeta_BankID" id="txtReceiptAmountTarjeta_BankID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
 												<?php
 												$count = 0;

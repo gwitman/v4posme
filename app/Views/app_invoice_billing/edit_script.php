@@ -43,7 +43,8 @@
 	var varParameterHidenFiledItemNumber	= <?php echo $objParameterHidenFiledItemNumber; ?>;  	
 	var varParameterAmortizationDuranteFactura		= <?php echo $objParameterAmortizationDuranteFactura; ?>;  	
 	var varParameterImprimirPorCadaFactura 			= '<?php echo $objParameterImprimirPorCadaFactura; ?>';
-	var varParameterRegresarAListaDespuesDeGuardar	= '<?php echo $objParameterRegresarAListaDespuesDeGuardar; ?>';	
+	var varParameterRegresarAListaDespuesDeGuardar	= '<?php echo $objParameterRegresarAListaDespuesDeGuardar; ?>';
+	var objParameterPantallaParaFacturar 			= '<?php echo $objParameterPantallaParaFacturar; ?>';		
 	var varParameterAlturaDelModalDeSeleccionProducto	= '<?php echo $objParameterAlturaDelModalDeSeleccionProducto; ?>';
 	var varParameterScrollDelModalDeSeleccionProducto	= '<?php echo $objParameterScrollDelModalDeSeleccionProducto; ?>';	
 	var varParameterINVOICE_BILLING_SELECTITEM			= '<?php echo $objParameterINVOICE_BILLING_SELECTITEM; ?>';
@@ -543,7 +544,8 @@
 		 
 	$('#mi_modal').on('hidden.bs.modal', function (e) {
 		
-		if(varParameterScanerProducto != "false"){
+		if(varParameterScanerProducto != "false" && varUseMobile == "0" )
+		{
 			document.getElementById("txtScanerCodigo").focus();					
 		}
 	
@@ -682,6 +684,14 @@
 		
 		 
 	});
+	
+	//Buscar Factura 
+	$(document).on("click","#btnSelectInvoice",function(){
+		var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentTransactionBilling->componentID; ?>/onCompleteSelectInvoice/SELECCIONAR_BILLING_REGISTER/true/empty/false/not_redirect_when_empty";
+		window.open(url_request,"MsgWindow","width=900,height=450");
+		window.onCompleteSelectInvoice = onCompleteSelectInvoice; 
+	});
+	
 	
 	//Buscar el Cliente
 	$(document).on("click","#btnSearchCustomer",function(){
@@ -905,6 +915,21 @@
 		objTableDetail.fnUpdate( !objdat_[0], objind_, 0 );
 		refreschChecked();
 	});
+	
+	//Cargar Factura
+	function onCompleteSelectInvoice(objResponse){
+		console.info("CALL onCompleteSelectInvoice");
+		
+		if(objResponse == undefined)
+			return;
+		
+		if(objParameterPantallaParaFacturar == "-")	
+			window.location	= "<?php echo base_url(); ?>/app_invoice_billing/edit/companyID/"+objResponse[0]+"/transactionID/"+objResponse[1]+"/transactionMasterID/"+objResponse[2];
+		else
+			window.location	= "<?php echo base_url(); ?>/app_invoice_billing/"+objParameterPantallaParaFacturar+"/companyID/"+objResponse[0]+"/transactionID/"+objResponse[1]+"/transactionMasterID/"+objResponse[2];					
+			
+			
+	}
 	
 	//Cargar Cliente
 	function onCompleteCustomer(objResponse){
@@ -2060,7 +2085,7 @@
 		
 		if(objTableProductosSearch != null)
 		{
-			
+			return;
 			$('#table_list_productos').dataTable().fnClearTable();
 			$('#table_list_productos').dataTable().fnDestroy();
 		}
@@ -2155,7 +2180,7 @@
 						},
 						{
 							"aTargets"		: [ 4 ],//Cantidad
-							"bVisible"		: true, //(varParameterCustomPopupFacturacion == "mobile_ruta_pablo" ? false : true),
+							"bVisible"		: (varUseMobile == "1" ? false : true),
 							"bSearchable"	: false,
 							"mData":		'Cantidad',
 							"mRender"		: function ( data, type, full ) {								
@@ -2524,7 +2549,7 @@
 			
 			
 			//Incializar Focos
-			if(varParameterScanerProducto != "false"){
+			if(varParameterScanerProducto != "false" && varUseMobile == "0" ){
 				document.getElementById("txtScanerCodigo").focus();	
 			}
 			
