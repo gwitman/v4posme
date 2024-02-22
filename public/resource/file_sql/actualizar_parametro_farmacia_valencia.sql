@@ -675,7 +675,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "2024-02-21" 
+	tb_company_parameter.value = "2050-02-21" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CUST_PRICE_LICENCES_EXPIRED";## Fecha de expiracion de la licencia 
@@ -757,13 +757,19 @@ WHERE
 
 
 
-/*
-Eliminar o desactivar usuarios
-*/
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/
- 0,  	/*supervisor*/
- 0, 	/*facturador*/
- 156 	/*administrador*/
-);
+
+
+/*tipo de cambio de dolares a cordoba*/
+update tb_exchange_rate set 
+	ratio = 36 
+where 
+	currencyID = 2
+	and targetCurrencyID = 1; 
+	
+	
+/*tipo de cambio de dolares a cordoba*/
+update tb_exchange_rate set 
+	ratio = 0.027777 
+where 
+	currencyID = 1
+	and targetCurrencyID = 2; 
