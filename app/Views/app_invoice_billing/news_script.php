@@ -1799,9 +1799,8 @@
 				},
 				
 				
+				//ajax comportamiento
 				//"aaData"			: dataSourceProductos,
-				
-				
 				"sAjaxSource": 		"<?php echo base_url(); ?>/app_invoice_api/getViewApiJsonTable/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING_POPUP_INVOICE/"+encodeURI('{"warehouseID"|"'+  $("#txtWarehouseID").val()   +'"{}"listPriceID"|"<?php echo $objListPrice->listPriceID; ?>"{}"typePriceID"|"'+154+'"}'),
 				"fnServerParams": function ( aoData ) {
 							aoData.push( 
@@ -1811,8 +1810,7 @@
 							);
 				},
 				"bProcessing": true,					
-				"bServerSide": true,
-				
+				"bServerSide": true,				
 				"fnDrawCallback": function( oSettings ) 
 				{
 					$(document).on('click','#table_list_productos tr',function(event){ 			

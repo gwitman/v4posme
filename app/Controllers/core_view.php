@@ -93,6 +93,117 @@ class core_view extends _BaseController {
 		}
 	}
 	
+	//BUSCAR UNA VISTA POR NOMBRE
+	function showviewbynamepaginate(
+		$componentid="",
+		$fnCallback="",
+		$viewname="",
+		$autoclose="",
+		$filter="",
+		$multiselect = "" ,
+		$urlRedictWhenEmpty = "",
+		$sEcho = "",
+		$iDisplayStart = "",
+		$iDisplayLength = "",
+		$sSearch = ""
+	)
+	{
+		
+		$componentid 						= helper_SegmentsByIndex($this->uri->getSegments(),1,$componentid);	
+		$fnCallback 						= helper_SegmentsByIndex($this->uri->getSegments(),2,$fnCallback);	
+		$viewname 							= helper_SegmentsByIndex($this->uri->getSegments(),3,$viewname);	
+		$autoclose 							= helper_SegmentsByIndex($this->uri->getSegments(),4,$autoclose);	
+		$filter 							= helper_SegmentsByIndex($this->uri->getSegments(),5,$filter);	
+		$multiselect 						= helper_SegmentsByIndex($this->uri->getSegments(),6,$multiselect);	
+		$urlRedictWhenEmpty 				= helper_SegmentsByIndex($this->uri->getSegments(),7,$urlRedictWhenEmpty);	
+		
+		$sEcho 								= helper_SegmentsByIndex($this->uri->getSegments(),8,$sEcho);	
+		$iDisplayStart 						= helper_SegmentsByIndex($this->uri->getSegments(),9,$iDisplayStart);	
+		$iDisplayLength 					= helper_SegmentsByIndex($this->uri->getSegments(),10,$iDisplayLength);	
+		$sSearch 							= helper_SegmentsByIndex($this->uri->getSegments(),11,$sSearch);	
+		
+		
+		$parameter["{componentid}"]					= $componentid;
+		$parameter["{fnCallback}"]					= $fnCallback;
+		$parameter["{viewname}"]					= $viewname;
+		$parameter["{autoclose}"]					= $autoclose;
+		$parameter["{filter}"]						= $filter;
+		$parameter["{multiselect}"]					= $multiselect;
+		$parameter["{urlRedictWhenEmpty}"]			= $urlRedictWhenEmpty;	
+		$parameter["{sEcho}"]						= $sEcho;
+		$parameter["{iDisplayStart}"]				= $iDisplayStart;
+		$parameter["{iDisplayStartDB}"]				= $iDisplayStart == 1 ? 0 : (($iDisplayStart-1) * $iDisplayLength) - 1 ;
+		$parameter["{iDisplayLength}"]				= $iDisplayLength;
+		$parameter["{sSearchDB}"]					= urldecode($sSearch);
+		$parameter["{sSearch}"]						= $sSearch;
+			
+			
+		try
+		{  
+		  
+			
+  
+			//Validar Authentication
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get(); 
+		
+			
+			$parameter["{companyID}"]	= $this->session->get('user')->companyID;
+			$viewname 					= urldecode($viewname);
+			$filter 					= urldecode($filter);
+			$result 					= $this->core_web_tools->formatParameter($filter);	
+			
+			
+			
+			
+			//Parsear Parametros
+			if($result)
+			$parameter 	= array_merge($parameter,$result);
+			
+			
+			
+			$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname,CALLERID_SEARCH,null,$parameter); 				
+			$dataViewDataTotal			= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname."_TOTAL",CALLERID_SEARCH,null,$parameter); 				
+			$dataViewDataDiplay			= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname."_DISPLAY",CALLERID_SEARCH,null,$parameter); 				
+			
+			$dataViewDataTotal 			= $dataViewDataTotal["view_data"][0]["itemID"];
+			$dataViewDataDiplay 		= $dataViewDataDiplay["view_data"][0]["itemID"];
+			$parameter["{dataViewDataTotal}"] 	= $dataViewDataTotal;
+			$parameter["{dataViewDataDiplay}"] 	= $dataViewDataDiplay;
+			
+			
+			if($multiselect == "true")
+			{
+				$dataViewRender				= $this->core_web_view->renderGreedPaginate($dataViewData,'ListView',"fnTableSelectedRowMultiSelect",10,true,$parameter);
+			}
+			else
+			{
+				$dataViewRender				= $this->core_web_view->renderGreedPaginate($dataViewData,'ListView',"fnTableSelectedRow",10,true,$parameter);
+			}
+			
+			$dataView["fnCallback"] 			= $fnCallback;
+			$dataView["viewname"] 				= $viewname;
+			$dataView["autoclose"] 				= $autoclose;
+			$dataView["multiselect"] 			= $multiselect;
+			$dataView["urlRedictWhenEmpty"] 	= str_replace("__","/",$urlRedictWhenEmpty);
+				
+			//Renderizar Resultado
+			$dataSession["message"]	= ""; 
+			$dataSession["head"]	= /*--inicio view*/ view('core_view/choose_view_serch_head',$dataView);//--finview 
+			$dataSession["body"]	= $dataViewRender;
+			$dataSession["script"]	= /*--inicio view*/ view('core_view/choose_view_serch_script',$dataView);//--finview 
+			$resultView 			= view("core_masterpage/default_widgetchoose",$dataSession);//--finview-r	
+			
+			
+			return $resultView;
+				
+		}
+		catch(\Exception $ex){
+			 exit($ex->getMessage());
+		}
+	}
+	
 	//INDEX
 	////////////////////////////
 	function chooseview($componentIDParameter=""){ 

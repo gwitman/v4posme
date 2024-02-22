@@ -1144,6 +1144,8 @@ $routes->match(['get','post'],'core_user/add_warehouse','core_user::add_warehous
 $routes->match(['get','post'],'core_user/add_tag','core_user::add_tag');
 $routes->match(['get','post'],'core_view/showviewbyname','core_view::showviewbyname');
 $routes->match(['get','post'],'core_view/showviewbyname/(:any)','core_view::showviewbyname');
+$routes->match(['get','post'],'core_view/showviewbynamepaginate','core_view::showviewbynamepaginate');
+$routes->match(['get','post'],'core_view/showviewbynamepaginate/(:any)','core_view::showviewbynamepaginate');
 $routes->match(['get','post'],'core_view/chooseview','core_view::chooseview');
 $routes->match(['get','post'],'core_view/chooseview/(:any)','core_view::chooseview');
 $routes->match(['get','post'],'core_cache/delete_by_name','core_cache::delete_by_name');
