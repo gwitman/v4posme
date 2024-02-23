@@ -870,8 +870,9 @@ class core_web_view {
 			//crear el encabezado
 			$table = $table."<thead>";
 			$table = $table."<tr>";
-			$summaryColumns	= explode(",",$data["view_config"]->summaryColumns);
-			$formatColumns	= explode(",",$data["view_config"]->formatColumns);
+			$summaryColumns			= explode(",",$data["view_config"]->summaryColumns);
+			$formatColumns			= explode(",",$data["view_config"]->formatColumns);
+			$formatColumnsHeader	= explode(",",$data["view_config"]->formatColumnsHeader);
 			
 			$cabezera1	= explode(",",$data["view_config"]->nonVisibleColumns);
 			$cabezera2	= explode(",",$data["view_config"]->visibleColumns);
@@ -896,10 +897,17 @@ class core_web_view {
 				}
 			}
 			
-			foreach($cabezera3 AS $fieldDisplay){			
-				$table = $table."<th>";
+			$counterColumnHeader = 0;
+			foreach($cabezera3 AS $fieldDisplay){	
+
+				$formatColumn = "";
+				if( count ($formatColumnsHeader ) > 1 )
+				$formatColumn = $formatColumnsHeader[$counterColumnHeader];		
+				
+				$table = $table."<th style='".$formatColumn."'>";
 				$table = $table.$fieldDisplay;
 				$table = $table."</th>";
+				$counterColumnHeader++;
 				
 			}
 			$table = $table."</tr>";
@@ -1122,7 +1130,7 @@ class core_web_view {
 						//dos clic
 						$(document).on('dblclick','#".$idTable." tr',function(){								
 							var data		= [];	
-							var idata		= objTableListView.fnGetData(this);
+							var idata		= objTableListView.fnGetData(this);							
 							data.push(idata);
 							window.opener.".$parameterAjax["{fnCallback}"]."(data); 
 						});

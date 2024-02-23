@@ -165,7 +165,11 @@ class core_view extends _BaseController {
 			
 			
 			
-			$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname,CALLERID_SEARCH,null,$parameter); 				
+			$dataViewData				= 
+										$this->session->get('user')->useMobile == 0 ? 
+										$this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname,CALLERID_SEARCH,null,$parameter): 				
+										$this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname."_MOBILE",CALLERID_SEARCH,null,$parameter);
+											
 			$dataViewDataTotal			= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname."_TOTAL",CALLERID_SEARCH,null,$parameter); 				
 			$dataViewDataDiplay			= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname."_DISPLAY",CALLERID_SEARCH,null,$parameter); 				
 			
@@ -184,6 +188,7 @@ class core_view extends _BaseController {
 				$dataViewRender				= $this->core_web_view->renderGreedPaginate($dataViewData,'ListView',"fnTableSelectedRow",$iDisplayLength,true,$parameter);
 			}
 			
+			$dataView["useMobile"] 				= $this->session->get('user')->useMobile;
 			$dataView["fnCallback"] 			= $fnCallback;
 			$dataView["viewname"] 				= $viewname;
 			$dataView["autoclose"] 				= $autoclose;
