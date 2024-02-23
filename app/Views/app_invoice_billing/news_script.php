@@ -1577,7 +1577,7 @@
 			} 
 			else 
 			{
-				objWindowSearchProduct 							= window.open(url_request,"MsgWindow","width=900,height=450");
+				objWindowSearchProduct 							= window.open(url_request,"MsgWindow","width=900,height=450");				
 				objWindowSearchProduct.onCompleteNewItemPopPub 	= onCompleteNewItemPopPub; 
 			}
 			
