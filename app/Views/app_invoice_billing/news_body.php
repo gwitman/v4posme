@@ -950,52 +950,5 @@
 
 
 
- 
-
-  <!-- Modal para facturar-->
-  <div class="modal fade" id="mi_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog"  id="div-modal-dialog-lista-productos">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span>
-          </button>
-          <h4 class="modal-title" id="myModalLabel">LISTA DE PRODUCTOS</h4>
-        </div>
-		
-		
-		
-        <div class="modal-body" id="modal_body_popup_productos" >
-         
-			<table id="table_list_productos" style="width:100%" class="table table-bordered">
-			
-					<thead>
-					  <tr>
-						<th>itemID</th>
-						<th>Codigo</th>						
-						<th>Descripcion</th>
-						<th>Unidad de Medida</th>
-						<th>Cantidad</th>
-						<th>Precio</th>
-						<th>Barra</th>
-						<th>Descripcion</th>
-					  </tr>
-					</thead>
-					<tbody id="table_list_productos_detail">
-					</tbody>
-					
-			</table>
-		 
-			<br/>
-		 
-		 
-        </div>
-        <div class="modal-footer">
-          <!--<button type="button" class="btn btn-default" data-dismiss="modal" >Aceptar</button>-->
-		  <button type="button" class="btn btn-primary" id="btnAddProductoOnLine"  >Agregar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <?php echo getBehavio($company->type,"app_invoice_billing","divTraslateElement",""); ?>  
+<?php echo getBehavio($company->type,"app_invoice_billing","divTraslateElement",""); ?>  
  

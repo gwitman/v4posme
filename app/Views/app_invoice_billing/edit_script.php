@@ -1891,7 +1891,7 @@
 					',\"currencyID\"|\"'+$("#txtCurrencyID").val()+'\"'+
 					'}' 
 				) + 
-				"/true/empty/1/1/6000/a/";  
+				"/true/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/a/";  
 				
 		 // Verificar si la ventana ya está abierta
 		if (objWindowSearchProduct && !objWindowSearchProduct.closed) 

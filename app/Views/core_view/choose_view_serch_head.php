@@ -2,6 +2,7 @@
 		<div id="email" class="col-lg-12">
 		<div class="email-bar" style="width:100%">				
 				<div class="btn-group pull-right">
+					<a href="#" class="btn btn-warning btnSearchServer"  id="btnSearchServer"><i class="icon16 i-rotate"></i>Refresh</a>
 					<?php
 						if($urlRedictWhenEmpty != "not_redirect_when_empty")
 						{

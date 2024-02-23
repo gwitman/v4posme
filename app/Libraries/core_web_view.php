@@ -1084,7 +1084,7 @@ class core_web_view {
 							'bAutoWidth'		: false,							
 							'iDisplayLength'	: ".$displayLength.",							
 							'oLanguage'	: {
-								'sSearch'		: '<span>Filtro:</span> _INPUT_  <!--<a class=\'btn btn-warning btnSearchServer\' href=\'#\' style=\'padding:7px 20px;font-size:14px;\'  > BUSCAR </a>--> ',
+								'sSearch'		: '<span>Filtro:</span> _INPUT_   ',
 								//'sLengthMenu'	: '<span>_MENU_ elementos</span>',
 								'sLengthMenu'	: '',
 								//'oPaginate'	: { 'sFirst': 'First', 'sLast': 'Last' } 
