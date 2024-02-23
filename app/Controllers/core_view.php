@@ -93,6 +93,48 @@ class core_view extends _BaseController {
 		}
 	}
 	
+	
+	
+	//INDEX
+	////////////////////////////
+	function chooseview($componentIDParameter=""){ 
+	
+		$componentIDParameter = helper_SegmentsByIndex($this->uri->getSegments(),1,$componentIDParameter);	
+		try{  
+		
+			//Validar Authentication
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get(); 
+		
+		
+			//Obtener grid 
+			//Obtener el Componente de CompanyComponentItemDataView
+			
+						
+			$parameter["{componentID}"]	= $componentIDParameter;
+			$parameter["{companyID}"]	= $this->session->get('user')->companyID;
+			$parameter["{callerID}"]	= CALLERID_LIST;
+			$componentSearch			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company_component_item_dataview"); 				 
+			$dataViewData				= $this->core_web_view->getView($this->session->get('user'),$componentSearch->componentID,CALLERID_LIST,null,$parameter); 			
+			$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+			  
+			  
+			//Renderizar Resultado
+			$dataSession["message"]	= ""; 
+			$dataSession["head"]	= /*--inicio view*/ view('core_view/choose_view_head');//--finview 
+			$dataSession["body"]	= $dataViewRender;
+			$dataSession["script"]	= /*--inicio view*/ view('core_view/choose_view_script');//--finview 
+			return view("core_masterpage/default_widgetchoose",$dataSession);//--finview-r
+				
+		}
+		catch(\Exception $ex){
+			show_error($ex->getMessage() ,500 );
+		}
+	}
+
+
+
 	//BUSCAR UNA VISTA POR NOMBRE
 	function showviewbynamepaginate(
 		$componentid="",
@@ -132,7 +174,7 @@ class core_view extends _BaseController {
 		$parameter["{urlRedictWhenEmpty}"]			= $urlRedictWhenEmpty;	
 		$parameter["{sEcho}"]						= $sEcho;
 		$parameter["{iDisplayStart}"]				= $iDisplayStart;
-		$parameter["{iDisplayStartDB}"]				= $iDisplayStart == 1 ? 0 : (($iDisplayStart-1) * $iDisplayLength) - 1 ;
+		$parameter["{iDisplayStartDB}"]				= $iDisplayStart == 1 ? 0 :   (( $iDisplayStart - 1 ) * $iDisplayLength)   ;
 		$parameter["{iDisplayLength}"]				= $iDisplayLength;
 		$parameter["{sSearchDB}"]					= urldecode($sSearch);
 		$parameter["{sSearch}"]						= $sSearch;
@@ -211,42 +253,5 @@ class core_view extends _BaseController {
 		}
 	}
 	
-	//INDEX
-	////////////////////////////
-	function chooseview($componentIDParameter=""){ 
-	
-		$componentIDParameter = helper_SegmentsByIndex($this->uri->getSegments(),1,$componentIDParameter);	
-		try{  
-		
-			//Validar Authentication
-			if(!$this->core_web_authentication->isAuthenticated())
-			throw new \Exception(USER_NOT_AUTENTICATED);
-			$dataSession		= $this->session->get(); 
-		
-		
-			//Obtener grid 
-			//Obtener el Componente de CompanyComponentItemDataView
-			
-						
-			$parameter["{componentID}"]	= $componentIDParameter;
-			$parameter["{companyID}"]	= $this->session->get('user')->companyID;
-			$parameter["{callerID}"]	= CALLERID_LIST;
-			$componentSearch			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company_component_item_dataview"); 				 
-			$dataViewData				= $this->core_web_view->getView($this->session->get('user'),$componentSearch->componentID,CALLERID_LIST,null,$parameter); 			
-			$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
-			  
-			  
-			//Renderizar Resultado
-			$dataSession["message"]	= ""; 
-			$dataSession["head"]	= /*--inicio view*/ view('core_view/choose_view_head');//--finview 
-			$dataSession["body"]	= $dataViewRender;
-			$dataSession["script"]	= /*--inicio view*/ view('core_view/choose_view_script');//--finview 
-			return view("core_masterpage/default_widgetchoose",$dataSession);//--finview-r
-				
-		}
-		catch(\Exception $ex){
-			show_error($ex->getMessage() ,500 );
-		}
-	}
 }
 ?>

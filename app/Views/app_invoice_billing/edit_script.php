@@ -535,7 +535,8 @@
 	});
 	
 	//Cambios
-	$(document).on("change","#txtCausalID,#txtCustomerCreditLineID,#txtCurrencyID",function(){
+	$(document).on("change","#txtCausalID,#txtCustomerCreditLineID,#txtCurrencyID,#txtWarehouseID",function(){
+		objWindowSearchProduct = null;
 		fnClearData();
 	});
 
@@ -1891,7 +1892,7 @@
 					',\"currencyID\"|\"'+$("#txtCurrencyID").val()+'\"'+
 					'}' 
 				) + 
-				"/true/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/a/";  
+				"/true/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"//";  
 				
 		 // Verificar si la ventana ya está abierta
 		if (objWindowSearchProduct && !objWindowSearchProduct.closed) 
