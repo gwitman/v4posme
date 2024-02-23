@@ -150,6 +150,8 @@ class core_view extends _BaseController {
 		
 			
 			$parameter["{companyID}"]	= $this->session->get('user')->companyID;
+			$parameter["{useMobile}"]	= $this->session->get('user')->useMobile;
+			$parameter["{fnCallback}"] 	= $fnCallback;
 			$viewname 					= urldecode($viewname);
 			$filter 					= urldecode($filter);
 			$result 					= $this->core_web_tools->formatParameter($filter);	
@@ -175,11 +177,11 @@ class core_view extends _BaseController {
 			
 			if($multiselect == "true")
 			{
-				$dataViewRender				= $this->core_web_view->renderGreedPaginate($dataViewData,'ListView',"fnTableSelectedRowMultiSelect",10,true,$parameter);
+				$dataViewRender				= $this->core_web_view->renderGreedPaginate($dataViewData,'ListView',"fnTableSelectedRowMultiSelect",$iDisplayLength,true,$parameter);
 			}
 			else
 			{
-				$dataViewRender				= $this->core_web_view->renderGreedPaginate($dataViewData,'ListView',"fnTableSelectedRow",10,true,$parameter);
+				$dataViewRender				= $this->core_web_view->renderGreedPaginate($dataViewData,'ListView',"fnTableSelectedRow",$iDisplayLength,true,$parameter);
 			}
 			
 			$dataView["fnCallback"] 			= $fnCallback;

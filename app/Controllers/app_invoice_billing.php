@@ -2425,7 +2425,7 @@ class app_invoice_billing extends _BaseController {
 		try{ 
 			
 			
-			$this->cachePage( TIME_CACHE_APP  );
+			$this->cachePage( 0 /*TIME_CACHE_APP */  );
 			
 			//AUTENTICADO
 			if(!$this->core_web_authentication->isAuthenticated())

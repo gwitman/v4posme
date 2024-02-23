@@ -25,7 +25,7 @@
 	var warehouseID 						= $("#txtWarehouseID").val();
 	var isAdmin								= '<?php echo $isAdmin; ?>';
 	var openedSearchWindow					= false;
-	var objWindowSearchProduct				= {};
+	var objWindowSearchProduct;
 	var objTableProductosSearch 			= null;	
 	var objRowTableProductosSearch 			= null;	
 	var varBaseUrl							= '<?php echo base_url(); ?>';
@@ -272,82 +272,7 @@
 	});
 	
 
-	$(document).on("dblclick","#table_list_productos_detail > tr",function(){
 			
-			
-			var data		 = {};					
-			var dataResponse = [];
-			data			 = objTableProductosSearch.fnGetData(objRowTableProductosSearch);				
-			
-			dataResponse[0] = data.itemID;
-			dataResponse[1] = data.itemID;
-			dataResponse[2] = data.itemID;
-			dataResponse[3] = data.itemID;
-			dataResponse[4] = data.itemID;
-			dataResponse[5] = data.itemID; //itemID
-			dataResponse[6] = data.itemID;
-			dataResponse[7] = data.itemID;
-			dataResponse[8] = data.itemID;
-			dataResponse[9] = data.itemID;
-			dataResponse[10] = data.itemID;
-			dataResponse[11] = data.itemID;
-			dataResponse[12] = data.itemID;
-			dataResponse[13] = data.itemID;
-			dataResponse[14] = data.itemID;
-			dataResponse[15] = data.itemID;
-			dataResponse[16] = data.itemID;
-			dataResponse[17] = data.Codigo;//Codigo
-			dataResponse[18] = data.Nombre;//Nombre
-			dataResponse[19] = data.itemID;
-			dataResponse[20] = data.Medida;//Unidad de medida
-			dataResponse[21] = data.Cantidad;//Cantidad
-			dataResponse[22] = data.Precio;//Precio
-			dataResponse[23] = data.MedidaID;
-			dataResponse[24] = data.Nombre;
-			dataResponse[25] = data.Precio2;
-			dataResponse[26] = data.Precio3;
-			
-			onCompleteNewItem(dataResponse,true);
-	});
-	$(document).on("click","#btnAddProductoOnLine",function(){
-			
-			
-			var data		 = {};					
-			var dataResponse = [];
-			data			 = objTableProductosSearch.fnGetData(objRowTableProductosSearch);				
-			
-			dataResponse[0] = data.itemID;
-			dataResponse[1] = data.itemID;
-			dataResponse[2] = data.itemID;
-			dataResponse[3] = data.itemID;
-			dataResponse[4] = data.itemID;
-			dataResponse[5] = data.itemID; //itemID
-			dataResponse[6] = data.itemID;
-			dataResponse[7] = data.itemID;
-			dataResponse[8] = data.itemID;
-			dataResponse[9] = data.itemID;
-			dataResponse[10] = data.itemID;
-			dataResponse[11] = data.itemID;
-			dataResponse[12] = data.itemID;
-			dataResponse[13] = data.itemID;
-			dataResponse[14] = data.itemID;
-			dataResponse[15] = data.itemID;
-			dataResponse[16] = data.itemID;
-			dataResponse[17] = data.Codigo;//Codigo
-			dataResponse[18] = data.Nombre;//Nombre
-			dataResponse[19] = data.itemID;
-			dataResponse[20] = data.Medida;//Unidad de medida
-			dataResponse[21] = data.Cantidad;//Cantidad
-			dataResponse[22] = data.Precio;//Precio
-			dataResponse[23] = data.MedidaID;
-			dataResponse[24] = data.Nombre;
-			dataResponse[25] = data.Precio2;
-			dataResponse[26] = data.Precio3;
-			
-			onCompleteNewItem(dataResponse,true);
-
-			
-	});						
 
 
 
@@ -443,113 +368,10 @@
 		
 	});
 	
-	$(document).on("keypress","#table_list_productos_filter > label > input[type='text']", function(e) {	
-		 
-		 
-		 //buscar el primer rgistro que se encuetre
-		 var element 		= $("#table_list_productos_filter > label > input[type='text']").val();		
-		 
-		 var code = e.keyCode || e.which;
-		 /*tecla +*/
-		 if(code != 43) { 
-			 return;
-		 }	
-		
-		 
-		 //buscar
-		 var elementr 		= $("#table_list_productos_filter > label > input[type='text']").val("");
-		 
-		 //Obtener el primer reigstro y agregar
-		 var elementoTr 	= $("#table_list_productos_detail tr.row-selected")[0];
-		 objRowTableProductosSearch = elementoTr; 
-		 fnTableSelectedRow(this,event);
-		 
-		 
-		 var data		 	= {};					
-		 var dataResponse 	= [];
-		 data			 	= objTableProductosSearch.fnGetData(objRowTableProductosSearch);				
-		 
-		dataResponse[0] = data.itemID;
-		dataResponse[1] = data.itemID;
-		dataResponse[2] = data.itemID;
-		dataResponse[3] = data.itemID;
-		dataResponse[4] = data.itemID;
-		dataResponse[5] = data.itemID; //itemID
-		dataResponse[6] = data.itemID;
-		dataResponse[7] = data.itemID;
-		dataResponse[8] = data.itemID;
-		dataResponse[9] = data.itemID;
-		dataResponse[10] = data.itemID;
-		dataResponse[11] = data.itemID;
-		dataResponse[12] = data.itemID;
-		dataResponse[13] = data.itemID;
-		dataResponse[14] = data.itemID;
-		dataResponse[15] = data.itemID;
-		dataResponse[16] = data.itemID;
-		dataResponse[17] = data.Codigo;//Codigo
-		dataResponse[18] = data.Nombre;//Nombre
-		dataResponse[19] = data.itemID;
-		dataResponse[20] = data.Medida;//Unidad de medida
-		dataResponse[21] = data.Cantidad;//Cantidad
-		dataResponse[22] = data.Precio;//Precio
-		dataResponse[23] = data.MedidaID;
-		dataResponse[24] = data.Nombre;
-		dataResponse[25] = data.Precio2;
-		dataResponse[26] = data.Precio3;
-		
-		 
-		 onCompleteNewItem(dataResponse,true);
-		 $(this).focus();
-		 $(this).val("");
-		 e.preventDefault();
-		 
-	});
-		 
-	$(document).on("keydown","#table_list_productos_filter > label > input[type='text']", function(e) {	
-		 
-		 
-		 //Obtener la tabla
-		 var element 		= $("#table_list_productos_detail");			 
-		 var code 			= e.keyCode || e.which;
-		 var selecte 		= element.find("tr.row-selected").length;
-		 var rowselected 	= element.find("tr.row-selected")[0];
-		 var firstrow		= element.children('tr:first');
-		 var lastrow		= element.children('tr:last');
-		 
-		 
-		 if(selecte == 0){
-			 firstrow.addClass("row-selected");
-			 return;
-		 }
-		 
-		 //hacia abajo
-		 if(code == 40) { 
-			$(rowselected).removeClass("row-selected");
-			$(rowselected).next().addClass("row-selected");
-			 return;
-		 }	
-		 
-		 //hacia arriba
-		 if(code == 38) { 
-			$(rowselected).removeClass("row-selected");
-			$(rowselected).prev().addClass("row-selected");
-			return;
-		 }	
-		 
-		 //Obtener el registro seleccionado
-		 var rowselected 	= element.find("tr.row-selected")[0];
-		 
-	});
-		 
-		 
-	$('#mi_modal').on('hidden.bs.modal', function (e) {
-		
-		if(varParameterScanerProducto != "false" && varUseMobile == "0" )
-		{
-			document.getElementById("txtScanerCodigo").focus();					
-		}
 	
-	});
+		 
+	
+	
 	
 	
 	$(document).on("keypress",'#txtScanerCodigo', function(e) {
@@ -568,18 +390,6 @@
 		if(codigoABuscar == "++"){
 			
 			fnCreateTableSearchProductos();
-			var ventana_ancho = $(window).width()-50;				
-			$("#div-modal-dialog-lista-productos").css("width",ventana_ancho+"px");
-			$("#mi_modal").modal();		
-			if(varUseMobile == "1")
-			{
-				//$("#table_list_productos_filter").remove();	
-				$("#table_list_productos_info").remove();							
-				$("#mi_modal > .modal-dialog > .modal-content > .modal-footer").remove();
-				$("#table_list_productos_wrapper").find(".dataTables_paginate").remove();
-				
-			}
-			
 			return;
 		}
 		
@@ -804,21 +614,8 @@
 	
 	//Nuevo Producto
 	$(document).on("click","#btnNewItem",function()
-	{
-		
+	{		
 		fnCreateTableSearchProductos();
-		var ventana_ancho = $(window).width()-50;				
-		$("#div-modal-dialog-lista-productos").css("width",ventana_ancho+"px");						
-		$("#mi_modal").modal();		
-			
-		if(varUseMobile == "1")
-		{
-			//$("#table_list_productos_filter").remove();	
-			$("#table_list_productos_info").remove();	
-			$("#mi_modal > .modal-dialog > .modal-content > .modal-footer").remove();
-			$("#table_list_productos_wrapper").find(".dataTables_paginate").remove();						
-		}
-		
 		
 	});
 	$(document).on("click","#btnNewItemCatalog",function(){
@@ -2081,195 +1878,32 @@
 	
 	
 	function fnCreateTableSearchProductos()
-	{
-		
-		if(objTableProductosSearch != null)
+	{		
+		var url_request 		= 
+				"<?php echo base_url(); ?>/core_view/showviewbynamepaginate"+
+				"/<?php echo $objComponentItem->componentID; ?>"+
+				"/onCompleteNewItemPopPub/SELECCIONAR_ITEM_BILLING_POPUP_INVOICE/true/"+
+				encodeURI(
+					'{'+
+					'\"warehouseID\"|\"'+$("#txtWarehouseID").val()+'\"'+
+					',\"listPriceID\"|\"<?php echo $objListPrice->listPriceID; ?>\"'+						
+					',\"typePriceID\"|\"'+$("#txtTypePriceID").val()+'\"'+
+					',\"currencyID\"|\"'+$("#txtCurrencyID").val()+'\"'+
+					'}' 
+				) + 
+				"/true/empty/1/1/6000/a/";  
+				
+		 // Verificar si la ventana ya está abierta
+		if (objWindowSearchProduct && !objWindowSearchProduct.closed) 
 		{
-			return;
-			$('#table_list_productos').dataTable().fnClearTable();
-			$('#table_list_productos').dataTable().fnDestroy();
+			objWindowSearchProduct.focus();
+		} 
+		else 
+		{
+			objWindowSearchProduct 							= window.open(url_request,"MsgWindow","width=900,height=450");
+			objWindowSearchProduct.onCompleteNewItemPopPub 	= onCompleteNewItemPopPub; 
 		}
 		
-		
-		objTableProductosSearch = $('#table_list_productos').dataTable({
-			
-			
-			"bPaginate"			: varParameterScrollDelModalDeSeleccionProducto == "false" ? true : false,
-			//"bFilter"			: false,
-			//"bSort"			: false,
-			//"bInfo"			: false,
-			//"bAutoWidth"		: false,
-			
-			
-			'Dom'				: "<'row'<'col-lg-6'l><'col-lg-6'f>r>t<'row'<'col-lg-6'i><'col-lg-6'p>>",
-			'sPaginationType'	: 'bootstrap',
-			'bJQueryUI'			: false,
-			'bAutoWidth'		: false,							
-			'iDisplayLength'	: varParameterCantidadItemPoup, //esta linea proboca que el boton siguiente no funcione...
-			'oLanguage'	: {
-				'sSearch'		: '<span>Filtro:</span> _INPUT_ <p>+ para agregar</p>',
-				//'sLengthMenu'	: '<span>_MENU_ elementos</span>',
-				'sLengthMenu'	: '',
-				//'oPaginate'		: { 'sFirst': 'First', 'sLast': 'Last' }
-				'oPaginate'		: { 'sFirst': 'Primera', 'sLast': 'Ultima','sNext':'Siguiente','sPrevious':'Atras' },
-				'sInfo'			:'_START_ de _END_ total _TOTAL_'
-			},
-			
-			
-			//"aaData"			: dataSourceProductos,
-			
-			"sAjaxSource": 		"<?php echo base_url(); ?>/app_invoice_api/getViewApiJsonTable/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING_POPUP_INVOICE/"+encodeURI('{"warehouseID"|"'+  $("#txtWarehouseID").val()   +'"{}"listPriceID"|"<?php echo $objListPrice->listPriceID; ?>"{}"typePriceID"|"'+154+'"}'),
-			"fnServerParams": function ( aoData ) {
-							aoData.push( 
-								{ "name": "warehouseID", "value": $("#txtWarehouseID").val() }, 
-								{ "name": "typePriceID", "value": $("#txtTypePriceID").val() },
-								{ "name": "currencyID", "value": $("#txtCurrencyID").val() },
-							);
-			},
-			"bProcessing": true,					
-			"bServerSide": true,
-			
-			"fnDrawCallback": function( oSettings ) {
-					$(document).on('click','#table_list_productos tr',function(event){ 			
-						objRowTableProductosSearch = this; 
-						fnTableSelectedRow(this,event);
-					});  
-					
-					if(varUseMobile != "1")
-					{
-						$($("#table_list_productos_filter").find("input")[0]).focus(); 
-					}	
-					
-			},
-				
-				
-			"aoColumnDefs": [ 
-						{
-							"aTargets"		: [ 0 ],//itemID
-							"bVisible"		: false,
-							"bSearchable"	: false,
-							"mData":		'itemID',
-							//"mRender"		: function ( data, type, full ) {
-							//}
-						},
-						{
-							"aTargets"		: [ 1 ],//Codigo
-							"bVisible"  	: !(varParameterHidenFiledItemNumber == true ? true : (varUseMobile == "1" ? true : false )),
-							//"sClass" 		: "hidden",
-							"bSearchable"	: true,
-							"mData":		'Codigo',
-							//"mRender"		: function ( data, type, full ) {
-							//}
-						},
-						{
-							"aTargets"		: [ 2 ],//Descripcion
-							"bVisible"		: true,
-							//"sClass" 		: "hidden",
-							"bSearchable"	: true,
-							"mData":		'Nombre',
-							//"mRender"		: function ( data, type, full ) {
-							//	
-							//}
-						},
-						{
-							"aTargets"		: [ 3 ],//Unidad
-							"bVisible"		: false,
-							"bSearchable"	: false,
-							"mData":		'Medida',
-							//"sWidth" 		: "40%"
-						},
-						{
-							"aTargets"		: [ 4 ],//Cantidad
-							"bVisible"		: (varUseMobile == "1" ? false : true),
-							"bSearchable"	: false,
-							"mData":		'Cantidad',
-							"mRender"		: function ( data, type, full ) {								
-								return "<span class='red' style='text-align:right;display:block' >"+fnFormatNumber(data,2)+"</span>";
-							}
-						},
-						{
-							"aTargets"		: [ 5 ],//Precio
-							"bVisible"		: true,
-							"mData":		'Precio',
-							"mRender"		: function ( data, type, full ) {
-								return "<span class='green' style='text-align:right;display:block' >"+fnFormatNumber(data,2) +"</span>";
-							}
-						},
-						{
-							"aTargets"		: [ 6 ],//Barra
-							"bVisible"		: (varUseMobile == "1" ? false : true),
-							"mData":		'Barra',
-							"mRender"		: function ( data, type, full ) 
-							{
-								var indexSearch = data.indexOf(",");
-								if(indexSearch > 1 )
-								{
-									return "<!--Barra oculta:  "+data+" --> "+data.split(',')[0];
-								}
-								else 
-								{
-									return ""+data;
-								}
-							}
-						},
-						{
-							"aTargets"		: [ 7 ],//Descripcion
-							"bVisible"		: (varUseMobile == "1" ? false : true),
-							"mData":		'Descripcion',
-							"mRender"		: function ( data, type, full ) {
-								if(varParameterMostrarImagenEnSeleccion == "true")
-								{
-									var src = varBaseUrl+"/resource/file_company/company_2/component_33/component_item_"+full[0]+"/preventa.jpg";
-									return ""+
-										" <button type='button' class='btn btn-primary img_row' data-src='"+src+"'>Ver imagen</button><br>"+
-										"<img class='img-thumbnail ' style='width:225px;height:120px' src='"+src+"' />"+
-										"";
-								}
-								else
-								{
-									return ""+data;
-								}
-							}
-						},
-						{
-							"aTargets"		: [ 8 ],//MedidaID
-							"bVisible"		: false,
-							"bSearchable"	: false,
-							"mData":		'MedidaID',
-							//"mRender"		: function ( data, type, full ) {
-							//}
-						},
-						{
-							"aTargets"		: [ 9 ],//Precio2
-							"bVisible"		: false,
-							"bSearchable"	: false,
-							"mData":		'Precio2',
-							//"mRender"		: function ( data, type, full ) {
-							//}
-						},
-						{
-							"aTargets"		: [ 10 ],//Precio3
-							"bVisible"		: false,
-							"bSearchable"	: false,
-							"mData":		'Precio3',
-							//"mRender"		: function ( data, type, full ) {
-							//}
-						},
-			]
-			
-			
-			
-		});
-		
-		
-		$('.dataTables_length select').uniform();
-		$('.dataTables_paginate > ul').addClass('pagination');		
-		$('#table_list_productos').css('display','table');
-				
-				
-		
-			
-			
 	}
 	
 	
@@ -2521,7 +2155,44 @@
 	
 	
 	
-	
+	function onCompleteNewItemPopPub (ee,uu,zz)
+	{
+		var data		 = {};					
+		var dataResponse = [];
+		data			 = ee;
+		
+		dataResponse[0] =  data[0][0];
+		dataResponse[1] =  data[0][0];
+		dataResponse[2] =  data[0][0];
+		dataResponse[3] =  data[0][0];
+		dataResponse[4] =  data[0][0];
+		dataResponse[5] =  data[0][0];//itemID
+		dataResponse[6] =  data[0][0];
+		dataResponse[7] =  data[0][0];
+		dataResponse[8] =  data[0][0];
+		dataResponse[9] =  data[0][0];
+		dataResponse[10] = data[0][0];
+		dataResponse[11] = data[0][0];
+		dataResponse[12] = data[0][0];
+		dataResponse[13] = data[0][0];
+		dataResponse[14] = data[0][0];
+		dataResponse[15] = data[0][0];
+		dataResponse[16] = data[0][0];
+		dataResponse[17] = data[0][4];//Codigo
+		dataResponse[18] = data[0][5];//Nombre
+		dataResponse[19] = data[0][0];
+		dataResponse[20] = data[0][7];//Unidad de medida
+		dataResponse[21] = data[0][8];//Cantidad
+		dataResponse[22] = data[0][9];//Precio
+		dataResponse[23] = data[0][1];//UnitMeasuereID
+
+			
+		dataResponse[24] = data[0][5];
+		dataResponse[25] = data[0][2];//Precio2
+		dataResponse[26] = data[0][3];//Precio3
+		
+		onCompleteNewItem(dataResponse,true);
+	}	
 	
 	
 	

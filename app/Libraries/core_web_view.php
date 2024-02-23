@@ -855,7 +855,15 @@ class core_web_view {
 		return $resultGreedMoreJS;
 	
 	}
-	function renderGreedPaginate($data,$idTable = null,$functionSelected = NULL,$displayLength = 350,$formatAjax = false,$parameterAjax=null){
+	function renderGreedPaginate($data,$idTable = null,$functionSelected = NULL,$displayLength = 350,$formatAjax = false,$parameterAjax=null)
+	{
+	
+		///////////////////
+		///////////////////
+		//CREAR TABLA
+		////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////		
+		////////////////////////////////////////////////////////////////////////////
 		
 		$table = "";
 		$table = $table."<table  id='".$idTable."' cellpadding='0' cellspacing='0' border='0' class='table table-striped table-bordered table-hover' style='display:none' >";
@@ -997,28 +1005,93 @@ class core_web_view {
 		
 		
 		
-		
+		///////////////////
+		///////////////////
+		//CREAR SCRIPT JS DE TABLA
+		////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////		
+		////////////////////////////////////////////////////////////////////////////
 		 
 		//Render JS
 		$js					= "
 		<script>
 			var objTable".$idTable.";
 			var objRowTable".$idTable.";	
+			var objUseMobile = '".$parameterAjax["{useMobile}"]."';
 					
 			$(document).ready(function() {
 						$('#".$idTable."').dataTable({
+							
+								
+							//'bPaginate'			: varParameterScrollDelModalDeSeleccionProducto == 'false' ? true : false,
+							//'bFilter'			: false,
+							//'bSort'			: false,
+							//'bInfo'			: false,
+							//'iDisplayLength'	: varParameterCantidadItemPoup, //esta linea proboca que el boton siguiente no funcione...			
+							//'aaData'			: dataSourceProductos,
+							//'bProcessing'		: true,					
+							//'bServerSide'		: true,
+							//'sAjaxSource'		:'',
+							//'fnServerParams': function ( aoData ) {
+							//				aoData.push( 
+							//					{ 'name': 'warehouseID', 'value': $('#txtWarehouseID').val() }, 
+							//					{ 'name': 'typePriceID', 'value': $('#txtTypePriceID').val() },
+							//					{ 'name': 'currencyID', 'value': $('#txtCurrencyID').val() },
+							//				);
+							//},
+							//
+							//
+							//'fnDrawCallback': function( oSettings ) {
+							//		$(document).on('click','#table_list_productos tr',function(event){ 			
+							//			objRowTableProductosSearch = this; 
+							//			fnTableSelectedRow(this,event);
+							//		});  
+							//		
+							//		if(varUseMobile != '1')
+							//		{
+							//			$($('#table_list_productos_filter').find('input')[0]).focus(); 
+							//		}	
+							//		
+							//},
+							
+							//'aoColumnDefs': [ 
+							//		{
+							//		'aTargets'		: [ 7 ],//Descripcion
+							//		'bVisible'		: (varUseMobile == '1' ? false : true),
+							//		'mData':		'Descripcion',
+							//		'mRender'		: function ( data, type, full ) {
+							//			if(varParameterMostrarImagenEnSeleccion == 'true')
+							//			{
+							//				var src = varBaseUrl+'/resource/file_company/company_2/component_33/component_item_'+full[0]+'/preventa.jpg';
+							//				return ''+
+							//					' <button type='button' class='btn btn-primary img_row' data-src=''+src+''>Ver imagen</button><br>'+
+							//					'<img class='img-thumbnail ' style='width:225px;height:120px' src=''+src+'' />'+
+							//					'';
+							//			}
+							//			else
+							//			{
+							//				return ''+data;
+							//			}
+							//		}
+							//	},
+							//]
+								
+							
+							
 							'Dom'				: \"<'row'<'col-lg-6'l><'col-lg-6'f>r>t<'row'<'col-lg-6'i><'col-lg-6'p>>\",
 							'sPaginationType'	: 'bootstrap',							
 							'bJQueryUI'			: false,
 							'bAutoWidth'		: false,							
 							'iDisplayLength'	: ".$displayLength.",							
 							'oLanguage'	: {
-								'sSearch'		: '<span>Filtro:</span> _INPUT_ <a class=\'btn btn-warning btnSearchServer\' href=\'#\' style=\'padding:7px 20px;font-size:14px;\'  > BUSCAR </a>',
+								'sSearch'		: '<span>Filtro:</span> _INPUT_  <!--<a class=\'btn btn-warning btnSearchServer\' href=\'#\' style=\'padding:7px 20px;font-size:14px;\'  > BUSCAR </a>--> ',
 								//'sLengthMenu'	: '<span>_MENU_ elementos</span>',
 								'sLengthMenu'	: '',
-								//'oPaginate'		: { 'sFirst': 'First', 'sLast': 'Last' } 
-								'oPaginate' : ''
+								//'oPaginate'	: { 'sFirst': 'First', 'sLast': 'Last' } 
+								'oPaginate' 	: ''
+								//'sInfo'		: '_START_ de _END_ total _TOTAL_'
 							}
+							
 						});
 						
 						
@@ -1039,12 +1112,107 @@ class core_web_view {
 							
 						}
 						
-						$js	= $js."	 					
-						$(document).on('click','#".$idTable." tr',function(event){ objRowTable".$idTable." = this; ".$functionSelected."(this,event);});  
-						$('#".$idTable."').css('display','table');
+						$js	= $js."	 	
+						//un clic
+						$(document).on('click','#".$idTable." tr',function(event){ 
+							objRowTable".$idTable." = this; 
+							".$functionSelected."(this,event);
+						});  
+						
+						//dos clic
+						$(document).on('dblclick','#".$idTable." tr',function(){								
+							var data		= [];	
+							var idata		= objTableListView.fnGetData(this);
+							data.push(idata);
+							window.opener.".$parameterAjax["{fnCallback}"]."(data); 
+						});
+						
+						//desplazarse
+						$(document).on('keydown','#".$idTable."_filter > label > input[type=\"text\"]', function(e) {	
+							 
+							 var element 		= $('#".$idTable."');			 
+							 var code 			= e.keyCode || e.which;
+							 var selecte 		= element.find('tr.row-selected').length;
+							 var rowselected 	= element.find('tr.row-selected')[0];
+							 var firstrow		= element.children('tr:first');
+							 var lastrow		= element.children('tr:last');
+							 
+							 
+							 if(selecte == 0){
+								 firstrow.addClass('row-selected');
+								 return;
+							 }
+							 
+							 //hacia abajo
+							 if(code == 40) { 
+								$(rowselected).removeClass('row-selected');
+								$(rowselected).next().addClass('row-selected');
+								 return;
+							 }	
+							 
+							 //hacia arriba
+							 if(code == 38) { 
+								$(rowselected).removeClass('row-selected');
+								$(rowselected).prev().addClass('row-selected');
+								return;
+							 }	
+							 
+							 //Obtener el registro seleccionado
+							 var rowselected 	= element.find('tr.row-selected')[0];
+							 
+							 
+						});
+							 
+						$(document).on('keypress','#".$idTable."_filter > label > input[type=\"text\"]', function(e) {	
+		 					 
+							
+							 //buscar el primer rgistro que se encuetre
+							 var element 		= $('#".$idTable."_filter > label > input[type=\'text\']').val();		
+							 
+							 var code = e.keyCode || e.which;
+							 
+							 //si la tecla precionada no es +, agregar los caracteres al control
+							 if(code != 43) { 
+								$('#".$idTable."_detail tr.row-selected').removeClass('row-selected');
+								 return;
+							 }	
+							 
+							 //Obtener el primer reigstro y agregar
+							 var elementoTr 	= $('#".$idTable." tr.row-selected')[0];
+							 objRowTableProductosSearch = elementoTr; 
+							 
+							 var data 			= [];
+							 var idata		 	= objTableListView.fnGetData(objRowTableProductosSearch);	
+							 data.push(idata); 
+							 window.opener.".$parameterAjax["{fnCallback}"]."(data); 
+							 
+							 $(this).focus();
+							 $(this).val('');
+							 e.preventDefault();
+							 
+							 
+						});
+							 
+					
+					
+						
+						$('#".$idTable."').css('display','table');						
+						if(objUseMobile == '1')
+						{
+						   //empty
+						}
+					
 			});							
 		</script>";
 		
+		
+		
+		///////////////////
+		///////////////////
+		//CREAR PAGINACION
+		////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////		
+		////////////////////////////////////////////////////////////////////////////
 		
 		$tabletPagination 	= "";
 		
