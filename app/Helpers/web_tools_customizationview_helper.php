@@ -305,32 +305,86 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 																														</script> 
 																													",
 		strtolower('luciaralstate_app_cxc_customer_divScriptValideFunction') 	 								=> "
-																													
-																													$.ajax({									
-																															cache       : false,
-																															dataType    : 'json',
-																															type        : 'POST',
-																															url  		: '".base_url()."/app_cxc_leads/save/new',
-																															data 		: {
-																																	mode: 'new',
-																																	txtLeadTipo: $('#txtLeadTipo').val(),
-																																	txtLeadSubTipo: $('#txtLeadSubTipo').val(),
-																																	txtLeadCategory: $('#txtLeadCategory').val(),
-																																	txtLeadComentario: $('#txtLeadComentario').val(),
-																																	txtCustomerID : 0
-																															},
-																															success		: function(data){
-																																console.info(data);
-																																fnShowNotification('Leads agregado!','success');
-																															},
-																															error:function(xhr,data){						
-																																console.info('complete data error');													
-																																fnShowNotification('Error 505','error');
-																															}
-																													});
-																													
-																														
-																												",	
+		
+		if( $('#txtPhoneNumber').val()  == ''){
+			fnShowNotification('Escribir Telefono','error',timerNotification);
+			result = false;
+		}
+		
+		if( $('#txtReference1').val()  == ''){
+			fnShowNotification('Escribir ID','error',timerNotification);
+			result = false;
+		}
+		
+		
+		
+		if( $('#txtEntityID').val() == undefined )
+		{
+			$.ajax({									
+					cache       : false,
+					dataType    : 'json',
+					type        : 'POST',
+					url  		: '".base_url()."/app_cxc_leads/save/new',
+					data 		: {
+							mode: 'new',
+							txtLeadTipo: $('#txtLeadTipo').val(),
+							txtLeadSubTipo: $('#txtLeadSubTipo').val(),
+							txtLeadCategory: $('#txtLeadCategory').val(),
+							txtLeadComentario: $('#txtLeadComentario').val(),
+							txtCustomerID : 0
+					},
+					success		: function(data){
+						console.info(data);
+						fnShowNotification('Leads agregado!','success');
+					},
+					error:function(xhr,data){						
+						console.info('complete data error');													
+						fnShowNotification('Error 505','error');
+					}
+			});
+		}	
+		",	
+		strtolower('luciaralstate_app_cxc_customer_divScriptReady') 	 										=> "		
+		$('#txtLegalName').on('blur', function() 
+		{
+			
+			var regex = /^[A-Za-z]+$/;
+			var regex = regex.test($(this).val());
+	
+			if (!regex) {
+				$(this).focus(); // Volver a enfocar el campo de entrada
+				$(this).trigger('input'); // Disparar el evento de entrada para validar la entrada
+			}
+		});
+
+		$('#txtPhoneNumber').on('blur', function() 
+		{
+			
+			var regex = /^[\d()+\-]+$/;
+			var regex = regex.test($(this).val());
+	
+			if (!regex) {
+				$(this).focus(); // Volver a enfocar el campo de entrada
+				$(this).trigger('input'); // Disparar el evento de entrada para validar la entrada
+			}
+		});
+		
+		$('#txtReference1').on('blur', function() 
+		{
+			
+			var regex = /^[0-9]+$/;
+			var regex = regex.test($(this).val());
+	
+			if (!regex) {
+				$(this).focus(); // Volver a enfocar el campo de entrada
+				$(this).trigger('input'); // Disparar el evento de entrada para validar la entrada
+			}
+		});
+		
+		
+		
+		
+		",	
 		strtolower('luciaralstate_app_inventory_item_divTxtEstado') 			 								=> "hidden",
 		strtolower('luciaralstate_app_inventory_item_divTxtUM') 			 									=> "hidden",
 		strtolower('luciaralstate_app_inventory_item_divTxtPresentacionUM')  									=> "hidden",

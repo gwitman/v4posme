@@ -23,6 +23,7 @@
 		//Inicializar DataPciker
 		$('#txtBirthDate').datepicker({format:"yyyy-mm-dd"});
 		$('#txtDateContract').datepicker({format:"yyyy-mm-dd"});
+		<?php echo getBehavio($company->type,"app_cxc_customer","divScriptReady",""); ?>		
 		
 		 //Regresar a la lista
 		$(document).on("click","#btnBack",function(){
@@ -878,6 +879,7 @@
 			result = false;
 		}
 		
+		<?php echo getBehavio($company->type,"app_cxc_customer","divScriptValideFunction",""); ?>		
 		return result;
 		
 	}

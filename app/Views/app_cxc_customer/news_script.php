@@ -28,7 +28,7 @@
 		
 		
 		refreschChecked();
-		
+		<?php echo getBehavio($company->type,"app_cxc_customer","divScriptReady",""); ?>		
 		
 		
 		

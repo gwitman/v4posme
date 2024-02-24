@@ -533,6 +533,8 @@ $routes->match(['get','post'],'app_cxc_report/customer_status/(:any)','app_cxc_r
 $routes->match(['get','post'],'app_cxc_report/customer_credit','app_cxc_report::customer_credit');
 $routes->match(['get','post'],'app_cxc_report/consulta_sin_riesgo_list','app_cxc_report::consulta_sin_riesgo_list');
 $routes->match(['get','post'],'app_cxc_report/consulta_sin_riesgo_list/(:any)','app_cxc_report::consulta_sin_riesgo_list');
+$routes->match(['get','post'],'app_cxc_report/customer_list_real_estate','app_cxc_report::customer_list_real_estate');
+$routes->match(['get','post'],'app_cxc_report/customer_list_real_estate/(:any)','app_cxc_report::customer_list_real_estate');
 $routes->match(['get','post'],'app_cxc_report/LeerDatos','app_cxc_report::LeerDatos');
 $routes->match(['get','post'],'app_cxc_report/LeerDatos/(:any)','app_cxc_report::LeerDatos');
 $routes->match(['get','post'],'app_cxc_report/FillDatos','app_cxc_report::FillDatos');
@@ -732,6 +734,8 @@ $routes->match(['get','post'],'app_inventory_report/index','app_inventory_report
 $routes->match(['get','post'],'app_inventory_report/index/(:any)','app_inventory_report::index');
 $routes->match(['get','post'],'app_inventory_report/movement_by_warehouse','app_inventory_report::movement_by_warehouse');
 $routes->match(['get','post'],'app_inventory_report/movement_by_warehouse/(:any)','app_inventory_report::movement_by_warehouse');
+$routes->match(['get','post'],'app_inventory_report/list_item_real_estate','app_inventory_report::list_item_real_estate');
+$routes->match(['get','post'],'app_inventory_report/list_item_real_estate/(:any)','app_inventory_report::list_item_real_estate');
 $routes->match(['get','post'],'app_inventory_report/movement','app_inventory_report::movement');
 $routes->match(['get','post'],'app_inventory_report/movement/(:any)','app_inventory_report::movement');
 $routes->match(['get','post'],'app_inventory_report/master_kardex','app_inventory_report::master_kardex');

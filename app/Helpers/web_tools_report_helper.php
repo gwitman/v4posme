@@ -132,6 +132,13 @@ function helper_reporteGeneralCreateEncabezado($titulo,$company,$countColumn,$ti
 
 function helper_reporteGeneralCreateFirma($firma,$column,$width){
 	
+		$filterColumn = "[ \"\" ";
+		for($i = 0 ; $i < ($column - 1); $i++)
+		{
+			$filterColumn = $filterColumn.",\"\" ";	
+		}
+		$filterColumn = $filterColumn."]";
+		
 		$result = 
 		'
 		<table style="width:'.$width.'">
@@ -139,9 +146,113 @@ function helper_reporteGeneralCreateFirma($firma,$column,$width){
 				<tr>
 					<th colspan="'.$column.'" >'.date("Y-m-d H:i:s").' '.$firma.' posMe</th>
 				</tr>
-				
+				<tr>
+					<th colspan="'.$column.'" ><a id="btnExportToExcel" href="#" >export to excel</a></th>
+				</tr>
 			</thead>
 		</table>
+		
+		
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script>
+			$(document).ready(function() {
+				
+				  $(document).on("click","#btnExportToExcel",function(e,o){
+					  
+						  
+						  // Obtener el contenido HTML de la tabla
+						  var tablaHTML = 
+										"<div>"+	
+										document.getElementById("myReport").outerHTML + 
+										"</div>";
+						  var tablaHTML = $(tablaHTML);
+						  
+						  tablaHTML.find("input").remove();						  
+						  tablaHTML 	= $(tablaHTML[0]).html();
+
+						  // Crear un objeto Blob con el contenido HTML
+						  var blob = new Blob([tablaHTML], { type: "application/vnd.ms-excel" });
+
+						  // Crear una URL para el objeto Blob
+						  var url = URL.createObjectURL(blob);
+
+
+						  // Crear un enlace <a> para iniciar la descarga
+						  var a = document.createElement("a");
+						  a.href = url;
+						  a.download = "customer_list_real_estate.xls";
+						  document.body.appendChild(a);
+
+						  // Simular un clic en el enlace para iniciar la descarga
+						  a.click();
+
+						  // Limpiar el objeto URL
+						  URL.revokeObjectURL(url);
+						  
+						
+				  });
+				
+				
+
+				  // Arreglo para almacenar los filtros
+				  var filtros = '.$filterColumn.';
+
+
+				  // Aplicar el filtro en cada columna al escribir en el input
+				  $("#myReport thead input").on("keyup", function() {
+					var index = $(this).data("index");
+					var value = $(this).val().trim().toLowerCase();
+					filtros[index] = value;
+					filtrarTabla();
+				  });
+				  
+				  
+				  //// Función para filtrar la tabla
+				  function filtrarTabla() {
+					$("#myReport tbody tr").each(function() {
+					  var mostrar = true;
+					  $(this).find("td").each(function(index) {
+						var cellText 	= $(this).text().trim().toLowerCase();
+						var filterValue = filtros[index].toLowerCase();
+						
+						if (filterValue) 
+						{
+							  if (filterValue.startsWith(">")) 
+							  {
+								var filterNumber = parseFloat(filterValue.substr(1));
+								var cellNumber = parseFloat(cellText);
+								if (isNaN(filterNumber) || isNaN(cellNumber) || cellNumber <= filterNumber) {
+								  mostrar = false;
+								  return false; // salir del bucle interno
+								}
+							  }
+							  else if (filterValue.startsWith("<")) 
+							  {
+								var filterNumber = parseFloat(filterValue.substr(1));
+								var cellNumber = parseFloat(cellText);
+								if (isNaN(filterNumber) || isNaN(cellNumber) || cellNumber >= filterNumber) {
+								  mostrar = false;
+								  return false; // salir del bucle interno
+								}
+							  } 
+							  //else if (cellText !== filterValue) 
+							  else if (!cellText.includes(filterValue)) 
+							  {
+								mostrar = false;
+								return false; // salir del bucle interno
+							  }
+						}
+						
+					  });
+					  $(this).toggle(mostrar);
+					});
+				  }
+				  
+				  
+			});
+
+		</script>
+		
 	
 		';
 		
@@ -165,37 +276,40 @@ function helper_reporteGeneralCreateTable($objDetail,$configColumn,$widht,$titul
 	$resultado["table"] 	= "";
 	$backgournd 			= $backgournd == NULL ? "00628e": $backgournd;
 	$color 					= $color == NULL ? "white": $color;
+	$idTable				= "MyTable";
+	$filtrarRegistroOnLine	= false;
 	
 	
 	
 	foreach($configColumn as $key => $value){
 		$cantidadColumnas = $cantidadColumnas + 1;
-		$configColumn[$key]["Titulo"] 				= array_key_exists("Titulo",$value) ? $value["Titulo"] : "" ;
-		$configColumn[$key]["TituloFoot"] 			= array_key_exists("TituloFoot",$value) ? $value["TituloFoot"] : "" ;
-		$configColumn[$key]["FiledSouce"] 			= array_key_exists("FiledSouce",$value) ? $value["FiledSouce"] : "" ;
-		$configColumn[$key]["Colspan"] 				= array_key_exists("Colspan",$value) ? $value["Colspan"] : "1" ;
-		$configColumn[$key]["Formato"] 				= array_key_exists("Formato",$value) ? $value["Formato"] : "" ;
-		$configColumn[$key]["Total"] 				= array_key_exists("Total",$value) ? $value["Total"] : False ;
-		$configColumn[$key]["Alineacion"] 			= array_key_exists("Alineacion",$value) ? $value["Alineacion"] : "Left" ;
-		$configColumn[$key]["TotalValor"] 			= array_key_exists("TotalValor",$value) ? $value["TotalValor"] : 0 ;
-		$configColumn[$key]["CantidadRegistro"]		= array_key_exists("CantidadRegistro",$value) ? $value["CantidadRegistro"] : 0 ;
-		$configColumn[$key]["FiledSoucePrefix"] 	= array_key_exists("FiledSoucePrefix",$value) ? $value["FiledSoucePrefix"] : "" ;
-		$configColumn[$key]["Width"] 				= array_key_exists("Width",$value) ? $value["Width"] : "auto" ;
-		$configColumn[$key]["AutoIncrement"] 		= array_key_exists("AutoIncrement",$value) ? $value["AutoIncrement"] : False ;
-		$configColumn[$key]["IsUrl"] 				= array_key_exists("IsUrl",$value) ? $value["IsUrl"] : False ;
+		$configColumn[$key]["Titulo"] 					= array_key_exists("Titulo",$value) ? $value["Titulo"] : "" ;
+		$configColumn[$key]["TituloFoot"] 				= array_key_exists("TituloFoot",$value) ? $value["TituloFoot"] : "" ;
+		$configColumn[$key]["FiledSouce"] 				= array_key_exists("FiledSouce",$value) ? $value["FiledSouce"] : "" ;
+		$configColumn[$key]["Colspan"] 					= array_key_exists("Colspan",$value) ? $value["Colspan"] : "1" ;
+		$configColumn[$key]["Formato"] 					= array_key_exists("Formato",$value) ? $value["Formato"] : "" ;
+		$configColumn[$key]["Total"] 					= array_key_exists("Total",$value) ? $value["Total"] : False ;
+		$configColumn[$key]["Alineacion"] 				= array_key_exists("Alineacion",$value) ? $value["Alineacion"] : "Left" ;
+		$configColumn[$key]["TotalValor"] 				= array_key_exists("TotalValor",$value) ? $value["TotalValor"] : 0 ;
+		$configColumn[$key]["CantidadRegistro"]			= array_key_exists("CantidadRegistro",$value) ? $value["CantidadRegistro"] : 0 ;
+		$configColumn[$key]["FiledSoucePrefix"] 		= array_key_exists("FiledSoucePrefix",$value) ? $value["FiledSoucePrefix"] : "" ;
+		$configColumn[$key]["Width"] 					= array_key_exists("Width",$value) ? $value["Width"] : "auto" ;
+		$configColumn[$key]["AutoIncrement"] 			= array_key_exists("AutoIncrement",$value) ? $value["AutoIncrement"] : False ;
+		$configColumn[$key]["IsUrl"] 					= array_key_exists("IsUrl",$value) ? $value["IsUrl"] : False ;
 		$configColumn[$key]["FiledSouceUrl"] 			= array_key_exists("FiledSouceUrl",$value) ? $value["FiledSouceUrl"] : "" ;
 		$configColumn[$key]["Url"] 						= array_key_exists("Url",$value) ? $value["Url"] : "" ;
 		$configColumn[$key]["FiledSoucePrefixCustom"] 	= array_key_exists("FiledSoucePrefixCustom",$value) ? $value["FiledSoucePrefixCustom"] : "" ;
 		$configColumn[$key]["Promedio"] 				= array_key_exists("Promedio",$value) ? $value["Promedio"] : False ;
-		
-		
-		$configColumn[$key]["Alineacion"] 			= $configColumn[$key]["Formato"] == "Number"? "Right": "Left";
+		$configColumn[$key]["Alineacion"] 				= $configColumn[$key]["Formato"] == "Number"? "Right": "Left";
+		$idTable										= array_key_exists("IdTable",$value) ? $value["IdTable"] : $idTable ;
+		$filtrarRegistroOnLine							= array_key_exists("FiltrarRegistroOnLine",$value) ? $value["FiltrarRegistroOnLine"] : $filtrarRegistroOnLine;
 	}
 	
 	
 	$widthTemporal = 0;
 	$table  = "";
 	$table2 = "";
+	$table3 = "";
 	
 	//Armar encabezado
 	foreach($configColumn as $key => $value ){
@@ -203,12 +317,22 @@ function helper_reporteGeneralCreateTable($objDetail,$configColumn,$widht,$titul
 		
 		$table2 = $table2.'<th nowrap style="text-align:left;width:'.$value['Width'].'" colspan="'.$value['Colspan'].'" class="border"  >'.$value['Titulo'].'</th>';
 	}
+	
+	foreach($configColumn as $key => $value ){
+		$widthTemporal = $widthTemporal + str_replace("px","",$value['Width']);
+		
+		$table3 = 
+		$table3.
+		'<th nowrap style="text-align:left;width:'.$value['Width'].'" colspan="'.$value['Colspan'].'" class="border"  >
+			<input style="width:80px;height: 10px;margin-top: 5px;margin-bottom: 5px;"  type="text" placeholder="Filtrar" data-index="'.$key.'" />
+		</th>';
+	}
 	$widthTemporal = $widthTemporal."px";
 	
 	
 	//Armar titulo
 	$table1 =  
-	'<table style="
+	'<table id="'.$idTable.'"  style="
 			width:'.$widthTemporal.';order-spacing: 10px;
 		" >
 			<thead>
@@ -223,12 +347,24 @@ function helper_reporteGeneralCreateTable($objDetail,$configColumn,$widht,$titul
 				};
 				
 	//Unir Titulo y encabezado de la tabla
-	$table =  $table.
-				$table1.				
-				
+	$table =  	$table.
+				$table1.
 				'<tr style="background-color:#'.$backgournd.';color:'.$color.';">'.
 				$table2.
-				'</tr>';
+				'</tr>'.
+				
+				(
+					$filtrarRegistroOnLine == true ? 
+					(
+					'<tr style="background-color:#'.$backgournd.';color:'.$color.';">'.
+					$table3.
+					'</tr>'
+					)
+					: 
+					""
+				)
+				
+				;
 		
 	//Fin de encabezado
 	$table =  $table.'
