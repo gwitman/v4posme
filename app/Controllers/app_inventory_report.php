@@ -726,10 +726,61 @@ class app_inventory_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?);";				
+				$query			= "
+									select 
+										x.`createdOn`
+										,x.`Codigo`
+										,x.`Nombre`
+										,x.`Pagina Web`
+										,x.`Amueblado`
+										,x.`Aires`
+										,x.`Niveles`
+										,x.`Hora de visita`
+										,x.`Baños`
+										,x.`Habitaciones`
+										,x.`Diseño de propiedad`
+										,x.`Tipo de casa`
+										,x.`Proposito`
+										,x.`Moneda`
+										,x.`Fecha de enlistamiento`
+										,x.`Fecha de actualizacion`
+										,x.`Precio Venta`
+										,x.`Precio Renta`
+										,x.`Disponible`
+										,x.`Area de contruccion M2`
+										,x.`Area de terreno V2`
+										,x.`ID Encuentra 24`
+										,x.`Baño de servicio`
+										,x.`Baño de visita`
+										,x.`Cuarto de servicio`
+										,x.`Walk in closet`
+										,x.`Piscina privada`
+										,x.`Area club con piscina`
+										,x.`Acepta mascota`
+										,x.`Corretaje`
+										,x.`Plan de referido`
+										,x.`Link Youtube`
+										,x.`Pagina Web Link`
+										,x.`Foto`
+										,x.`Google`
+										,x.`Otros Link`
+										,x.`Estilo de cocina`
+										,x.`Agente`
+										,x.`Zona`
+										,x.`Condominio`
+										,x.`Ubicacion`
+										,x.`Exclusividad de agente`
+										,x.`Pais`
+										,x.`Estado`
+										,x.`Ciudad`
+									from 
+										vw_inventory_list_item_real_estate x 
+									where 
+										x.createdOn BETWEEN ? and ?
+								";
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID]
+					[$startOn,$endOn]
 				);
 				
 				
