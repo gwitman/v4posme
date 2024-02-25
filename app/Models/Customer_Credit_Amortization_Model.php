@@ -202,7 +202,7 @@ class Customer_Credit_Amortization_Model extends Model  {
 			$sql = $sql.sprintf(" cd.documentNumber,");		
 			$sql = $sql.sprintf(" i.dateApply,");		
 			$sql = $sql.sprintf(" i.remaining,");
-			$sql = $sql.sprintf(" cast(i.dateApply as int) as Orden,");
+			$sql = $sql.sprintf(" CAST(i.dateApply AS UNSIGNED)   as Orden,");
 			$sql = $sql.sprintf(" DATEDIFF(cast(now() as date),  i.dateApply) as Mora, ");
 			$sql = $sql.sprintf(" ws.name as stageCuota, ");
 			$sql = $sql.sprintf(" wsd.name as stageDocumento ");
