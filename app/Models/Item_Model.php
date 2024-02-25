@@ -55,6 +55,7 @@ class Item_Model extends Model  {
 			i.realStateCityID,i.realStateStateID,i.realStateCountryID,i.realStateEmployerAgentID,i.realStateReferenceCondominio,
 			i.realStateReferenceZone,i.realStateReferenceUbicacion,
 			i.realStateRooBatchVisit,i.modifiedOn,i.realStateGerenciaExclusive
+			
 		");
 		$sql = $sql.sprintf(" from tb_item i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");

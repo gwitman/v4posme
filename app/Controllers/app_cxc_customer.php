@@ -86,6 +86,7 @@ class app_cxc_customer extends _BaseController {
 			$datView["objListCategoryID"]				= $this->core_web_catalog->getCatalogAllItem("tb_customer","categoryID",$companyID);
 			$datView["objListSubCategoryID"]			= $this->core_web_catalog->getCatalogAllItem("tb_customer","subCategoryID",$companyID);
 			$datView["objListTypePay"]					= $this->core_web_catalog->getCatalogAllItem("tb_customer","typePay",$companyID);
+			$datView["objListFormContactID"]			= $this->core_web_catalog->getCatalogAllItem("tb_customer","formContactID",$companyID);
 			$datView["objListPayConditionID"]			= $this->core_web_catalog->getCatalogAllItem("tb_customer","payConditionID",$companyID);
 			$datView["objListSexoID"]					= $this->core_web_catalog->getCatalogAllItem("tb_customer","sexoID",$companyID);
 			
@@ -394,6 +395,8 @@ class app_cxc_customer extends _BaseController {
 				$objCustomer["budget"]				= /*inicio get post*/ $this->request->getPost("txtBudget");//--fin peticion get o post
 				$objCustomer["isActive"]			= true;
 				$objCustomer["entityContactID"]		= /*inicio get post*/ $this->request->getPost("txtEmployerID");
+				$objCustomer["modifiedOn"]			= helper_getDateTime();
+				$objCustomer["formContactID"]		= /*inicio get post*/ $this->request->getPost("txtFormContactID");//--fin peticion get o post
 				$this->Customer_Model->update_app_posme($companyID_,$branchID_,$entityID_,$objCustomer);
 				
 				//Actualizar Customer Credit
@@ -699,6 +702,7 @@ class app_cxc_customer extends _BaseController {
 			$objCustomer["budget"]				= /*inicio get post*/ $this->request->getPost("txtBudget");//--fin peticion get o post
 			$objCustomer["isActive"]			= true;
 			$objCustomer["entityContactID"]		= /*inicio get post*/ $this->request->getPost("txtEmployerID");
+			$objCustomer["formContactID"]		= /*inicio get post*/ $this->request->getPost("txtFormContactID");//--fin peticion get o post
 			$this->core_web_auditoria->setAuditCreated($objCustomer,$dataSession,$this->request);
 			$result 							= $this->Customer_Model->insert_app_posme($objCustomer);
 			
@@ -998,7 +1002,7 @@ class app_cxc_customer extends _BaseController {
 			$dataView["objListTypePay"]					= $this->core_web_catalog->getCatalogAllItem("tb_customer","typePay",$companyID);
 			$dataView["objListPayConditionID"]			= $this->core_web_catalog->getCatalogAllItem("tb_customer","payConditionID",$companyID);
 			$dataView["objListSexoID"]					= $this->core_web_catalog->getCatalogAllItem("tb_customer","sexoID",$companyID);
-			
+			$dataView["objListFormContactID"]			= $this->core_web_catalog->getCatalogAllItem("tb_customer","formContactID",$companyID);
 			$dataView["objListEstadoCivilID"]			= $this->core_web_catalog->getCatalogAllItem("tb_naturales","statusID",$companyID);
 			
 			$dataView["objListProfesionID"] 			= $this->core_web_catalog->getCatalogAllItem("tb_naturales","profesionID",$companyID);

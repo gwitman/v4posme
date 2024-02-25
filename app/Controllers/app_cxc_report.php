@@ -1479,7 +1479,8 @@ class app_cxc_report extends _BaseController {
 										u.`Mensaje`,
 										u.`Comentario 1`,
 										u.`Comentario 2`,
-										u.`Ubicacion`
+										u.`Ubicacion`,
+										u.`Forma de contacto`
 									FROM 
 										vw_cxc_customer_list_real_estate u 
 									WHERE 

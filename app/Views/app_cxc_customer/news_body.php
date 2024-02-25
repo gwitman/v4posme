@@ -299,6 +299,26 @@
 									</div>
 								</div>
 								
+								<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","divTxtFormContact","hidden"); ?>  ">
+									<label class="col-lg-4 control-label" for="selectFilter">Forma de contacto</label>
+									<div class="col-lg-8">
+										<select name="txtFormContactID" id="txtFormContactID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"  >
+												<option></option>																
+												<?php
+												$count = 0;
+												if($objListFormContactID)
+												foreach($objListFormContactID as $ws){
+													if($count == 0 )
+													echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+													else
+													echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+													$count++;
+												}
+												?>
+										</select>
+									</div>
+								</div>
+								
 								<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","divTxtProfesionUFicio",""); ?>  ">
 									<label class="col-lg-4 control-label" for="selectFilter">Profesion u Oficio</label>
 									<div class="col-lg-8">
