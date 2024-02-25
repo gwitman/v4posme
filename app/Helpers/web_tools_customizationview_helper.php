@@ -233,6 +233,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 				
 		/*Santa lucia ral state*/	
 		strtolower('luciaralstate_core_web_menu_PRODUCTO')			 											=> "INMOBILIARIO",		
+		strtolower('luciaralstate_default_masterpage_backgroundImage')		 									=> "style='background-image: url(".  base_url()."/resource/img/logos/fondo_globalpro.jpg"   .");'",		
 		strtolower('luciaralstate_app_cxc_customer_Clasificacion')												=> "Estilo de propiedad",
 		strtolower('luciaralstate_app_cxc_customer_Categoria')													=> "Interes",
 		strtolower('luciaralstate_app_cxc_customer_Referencia1')												=> "Id encuentra 24",

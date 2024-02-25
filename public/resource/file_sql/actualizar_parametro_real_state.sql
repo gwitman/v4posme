@@ -1241,7 +1241,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Santa Lucia Real Estate' , address = 'Km 9.8 Carretera a Masaya, Oficentro Metropolitano 1 piso, Modulo N.4' ,
+	NAME = 'Santa Lucía Real Estate' , address = 'Km 9.8 Carretera a Masaya, Oficentro Metropolitano 1 piso, Modulo N.4' ,
 	flavorID = 439,type='luciaralstate'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
