@@ -196,7 +196,7 @@ function helper_reporteGeneralCreateFirma($firma,$column,$width){
 
 				  // Arreglo para almacenar los filtros
 				  var filtros = '.$filterColumn.';
-
+				  
 
 				  // Aplicar el filtro en cada columna al escribir en el input
 				  $("#myReport thead input").on("keyup", function() {
@@ -213,7 +213,11 @@ function helper_reporteGeneralCreateFirma($firma,$column,$width){
 					  var mostrar = true;
 					  $(this).find("td").each(function(index) {
 						var cellText 	= $(this).text().trim().toLowerCase();
-						var filterValue = filtros[index].toLowerCase();
+						var filterValue = filtros[index];
+						
+						if(filterValue)
+						filterValue = filterValue.toLowerCase();
+						
 						
 						if (filterValue) 
 						{
