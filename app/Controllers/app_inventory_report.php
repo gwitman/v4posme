@@ -728,6 +728,7 @@ class app_inventory_report extends _BaseController {
 				//Get Datos
 				$query			= "
 									select 
+										x.`itemID`,
 										x.`createdOn`
 										,x.`Codigo`
 										,x.`Nombre`

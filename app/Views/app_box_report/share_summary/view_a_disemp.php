@@ -10,8 +10,8 @@
 			 @page {       
                           size: 2.7in 60in;                  
                           margin-top:0px;
-                          margin-left:0px;
-                          margin-right:15px;
+                          margin-left:10px;
+                          margin-right:10px;
 			}
 			table
 			{
@@ -913,14 +913,14 @@
 		$configTotalesCordobaEntradasColumns[0]["FiledSouce"] 	= "total";
 		$configTotalesCordobaEntradasColumns[0]["Formato"] 		= "Number";
 		$configTotalesCordobaEntradasColumns[0]["Colspan"] 		= 1;		
-		$configTotalesCordobaEntradasColumns[0]["Width"] 				= "170px";
+		$configTotalesCordobaEntradasColumns[0]["Width"] 				= "80px";
 		$configTotalesCordobaEntradasColumns[0]["FiledSoucePrefix"] 	= "prefix";
 		
 		$configTotalesCordobaEntradasColumns[1]["Titulo"] 		= "Cant";			
 		$configTotalesCordobaEntradasColumns[1]["FiledSouce"] 	= "cantidad";
 		$configTotalesCordobaEntradasColumns[1]["Formato"] 		= "Number";
 		$configTotalesCordobaEntradasColumns[1]["Colspan"] 		= 1;		
-		$configTotalesCordobaEntradasColumns[1]["Width"] 		= "60px";
+		$configTotalesCordobaEntradasColumns[1]["Width"] 		= "40px";
 		
 		$detailTotalesCordobaTotales[0]["total"] 				= ($resultadoAbonosCordoba["table"] === 0 ? 0 : $resultadoAbonosCordoba["configColumn"][8]["TotalValor"]);
 		$detailTotalesCordobaTotales[0]["cantidad"] 			= ($resultadoAbonosCordoba["table"] === 0 ? 0 : $resultadoAbonosCordoba["configColumn"][8]["CantidadRegistro"]);
@@ -945,14 +945,14 @@
 		$configTotalesCordobaEntradasVentaContadoColumns[0]["FiledSouce"] 	= "total";
 		$configTotalesCordobaEntradasVentaContadoColumns[0]["Formato"] 		= "Number";
 		$configTotalesCordobaEntradasVentaContadoColumns[0]["Colspan"] 		= 1;		
-		$configTotalesCordobaEntradasVentaContadoColumns[0]["Width"] 		= "170px";
+		$configTotalesCordobaEntradasVentaContadoColumns[0]["Width"] 		= "80px";
 		$configTotalesCordobaEntradasVentaContadoColumns[0]["FiledSoucePrefix"] 	= "prefix";
 		
 		$configTotalesCordobaEntradasVentaContadoColumns[1]["Titulo"] 		= "Cant";			
 		$configTotalesCordobaEntradasVentaContadoColumns[1]["FiledSouce"] 	= "cantidad";
 		$configTotalesCordobaEntradasVentaContadoColumns[1]["Formato"] 		= "Number";
 		$configTotalesCordobaEntradasVentaContadoColumns[1]["Colspan"] 		= 1;		
-		$configTotalesCordobaEntradasVentaContadoColumns[1]["Width"] 		= "60px";
+		$configTotalesCordobaEntradasVentaContadoColumns[1]["Width"] 		= "40px";
 		
 		$detailTotalesCordobaTotalesVentaContado[0]["total"] 				= ($resultadoVentaContadoCordoba["table"] === 0 ? 0 : $resultadoVentaContadoCordoba["configColumn"][8]["TotalValor"]);
 		$detailTotalesCordobaTotalesVentaContado[0]["cantidad"] 			= ($resultadoVentaContadoCordoba["table"] === 0 ? 0 : $resultadoVentaContadoCordoba["configColumn"][8]["CantidadRegistro"]);
@@ -979,14 +979,14 @@
 		$configTotalesCordobaVentasCreditoColumns[0]["FiledSouce"] 			= "total";
 		$configTotalesCordobaVentasCreditoColumns[0]["Formato"] 			= "Number";
 		$configTotalesCordobaVentasCreditoColumns[0]["Colspan"] 			= 1;		
-		$configTotalesCordobaVentasCreditoColumns[0]["Width"] 				= "170px";
+		$configTotalesCordobaVentasCreditoColumns[0]["Width"] 				= "80px";
 		$configTotalesCordobaVentasCreditoColumns[0]["FiledSoucePrefix"] 	= "prefix";
 							 
 		$configTotalesCordobaVentasCreditoColumns[1]["Titulo"] 		= "Cant";			
 		$configTotalesCordobaVentasCreditoColumns[1]["FiledSouce"] 	= "cantidad";
 		$configTotalesCordobaVentasCreditoColumns[1]["Formato"] 	= "Number";
 		$configTotalesCordobaVentasCreditoColumns[1]["Colspan"] 	= 1;		
-		$configTotalesCordobaVentasCreditoColumns[1]["Width"] 		= "60px";
+		$configTotalesCordobaVentasCreditoColumns[1]["Width"] 		= "40px";
 		
 		$detailTotalesCordobaTotalesVentaCredito[0]["total"] 				= ($resultadoVentaCreditoCordoba["table"] === 0 ? 0 : $resultadoVentaCreditoCordoba["configColumn"][8]["TotalValor"]);
 		$detailTotalesCordobaTotalesVentaCredito[0]["cantidad"] 			= ($resultadoVentaCreditoCordoba["table"] === 0 ? 0 : $resultadoVentaCreditoCordoba["configColumn"][8]["CantidadRegistro"]);
@@ -1012,14 +1012,14 @@
 		$configTotalesCordobaOtrasEntradasContadoColumns[0]["FiledSouce"] 	= "total";
 		$configTotalesCordobaOtrasEntradasContadoColumns[0]["Formato"] 		= "Number";
 		$configTotalesCordobaOtrasEntradasContadoColumns[0]["Colspan"] 		= 1;	
-		$configTotalesCordobaOtrasEntradasContadoColumns[0]["Width"] 		= "170px";
+		$configTotalesCordobaOtrasEntradasContadoColumns[0]["Width"] 		= "80px";
 		$configTotalesCordobaOtrasEntradasContadoColumns[0]["FiledSoucePrefix"] 	= "prefix";
 		
 		$configTotalesCordobaOtrasEntradasContadoColumns[1]["Titulo"] 		= "Cant";			
 		$configTotalesCordobaOtrasEntradasContadoColumns[1]["FiledSouce"] 	= "cantidad";
 		$configTotalesCordobaOtrasEntradasContadoColumns[1]["Formato"] 		= "Number";
 		$configTotalesCordobaOtrasEntradasContadoColumns[1]["Colspan"] 		= 1;		
-		$configTotalesCordobaOtrasEntradasContadoColumns[1]["Width"] 		= "60px";
+		$configTotalesCordobaOtrasEntradasContadoColumns[1]["Width"] 		= "40px";
 		
 		$detailTotalesCordobaTotalesOtrasEntradas[0]["total"] 				= ($resultadoIngresoCajaCordoba["table"] === 0 ? 0 : $resultadoIngresoCajaCordoba["configColumn"][8]["TotalValor"]);
 		$detailTotalesCordobaTotalesOtrasEntradas[0]["cantidad"] 			= ($resultadoIngresoCajaCordoba["table"] === 0 ? 0 : $resultadoIngresoCajaCordoba["configColumn"][8]["CantidadRegistro"]);
@@ -1044,14 +1044,14 @@
 		$configTotalesColumnsSalidasCaja[0]["FiledSouce"] = "total";
 		$configTotalesColumnsSalidasCaja[0]["Formato"] = "Number";
 		$configTotalesColumnsSalidasCaja[0]["Colspan"] = 1;
-		$configTotalesColumnsSalidasCaja[0]["Width"] = "170px";
+		$configTotalesColumnsSalidasCaja[0]["Width"] = "80px";
 		$configTotalesColumnsSalidasCaja[0]["FiledSoucePrefix"] 	= "prefix";
 		
 		$configTotalesColumnsSalidasCaja[1]["Titulo"] 		= "Cant";			
 		$configTotalesColumnsSalidasCaja[1]["FiledSouce"] 	= "cantidad";
 		$configTotalesColumnsSalidasCaja[1]["Formato"] 		= "Number";
 		$configTotalesColumnsSalidasCaja[1]["Colspan"] 		= 1;		
-		$configTotalesColumnsSalidasCaja[1]["Width"] 		= "60px";
+		$configTotalesColumnsSalidasCaja[1]["Width"] 		= "40px";
 		
 		$detailTotalesSalidasCajas[0]["total"] 				= ($resultadoSalidaCajaCordoba["table"] === 0 ? 0 : $resultadoSalidaCajaCordoba["configColumn"][8]["TotalValor"]);
 		$detailTotalesSalidasCajas[0]["cantidad"] 			= ($resultadoSalidaCajaCordoba["table"] === 0 ? 0 : $resultadoSalidaCajaCordoba["configColumn"][8]["CantidadRegistro"]);
@@ -1074,7 +1074,7 @@
 	
 	
 		<?php 		
-		$widthX 	= "230px";
+		$widthX 	= "120px";
 -		$columnX 	= 2;
 		$configTotalesColumns[0]["Titulo"] 		= "Total Cordobas";
 		$configTotalesColumns[0]["FiledSouce"] 	= "total";
@@ -1108,14 +1108,14 @@
 		$configTotalesColumns[0]["FiledSouce"] 	= "total";
 		$configTotalesColumns[0]["Formato"] 	= "Number";
 		$configTotalesColumns[0]["Colspan"] 	= 1;
-		$configTotalesColumns[0]["Width"] 		= "170px";
+		$configTotalesColumns[0]["Width"] 		= "80px";
 		$configTotalesColumns[0]["FiledSoucePrefix"] 	= "prefix";
 		
 		$configTotalesColumns[1]["Titulo"] 		= "Cant";			
 		$configTotalesColumns[1]["FiledSouce"] 	= "cantidad";
 		$configTotalesColumns[1]["Formato"] 	= "Number";
 		$configTotalesColumns[1]["Colspan"] 	= 1;		
-		$configTotalesColumns[1]["Width"] 		= "60px";
+		$configTotalesColumns[1]["Width"] 		= "40px";
 		
 		$detailTotales[0]["total"] 				= ($resultadoAbonosDolar["table"] === 0 ? 0 : $resultadoAbonosDolar["configColumn"][8]["TotalValor"]);		
 		$detailTotales[0]["cantidad"] 			= ($resultadoAbonosDolar["table"] === 0 ? 0 : $resultadoAbonosDolar["configColumn"][8]["CantidadRegistro"]);
@@ -1142,14 +1142,14 @@
 		$configTotalesColumns[0]["FiledSouce"] = "total";
 		$configTotalesColumns[0]["Formato"] = "Number";
 		$configTotalesColumns[0]["Colspan"] = 1;
-		$configTotalesColumns[0]["Width"] = "170px";
+		$configTotalesColumns[0]["Width"] = "80px";
 		$configTotalesColumns[0]["FiledSoucePrefix"] 	= "prefix";
 		
 		$configTotalesColumns[1]["Titulo"] 		= "Cant";			
 		$configTotalesColumns[1]["FiledSouce"] 	= "cantidad";
 		$configTotalesColumns[1]["Formato"] 	= "Number";
 		$configTotalesColumns[1]["Colspan"] 	= 1;		
-		$configTotalesColumns[1]["Width"] 		= "60px";
+		$configTotalesColumns[1]["Width"] 		= "40px";
 		
 		
 		$detailTotales[0]["total"] 		= ($resultadoVentaContadoDolar["table"] === 0 ? 0 : $resultadoVentaContadoDolar["configColumn"][8]["TotalValor"]);
@@ -1178,14 +1178,14 @@
 		$configTotalesDolaresVentasCreditoColumns[0]["FiledSouce"] 			= "total";
 		$configTotalesDolaresVentasCreditoColumns[0]["Formato"] 			= "Number";
 		$configTotalesDolaresVentasCreditoColumns[0]["Colspan"] 			= 1;		
-		$configTotalesDolaresVentasCreditoColumns[0]["Width"] 				= "170px";
+		$configTotalesDolaresVentasCreditoColumns[0]["Width"] 				= "80px";
 		$configTotalesDolaresVentasCreditoColumns[0]["FiledSoucePrefix"] 	= "prefix";
 						
 		$configTotalesDolaresVentasCreditoColumns[1]["Titulo"] 		= "Cant";			
 		$configTotalesDolaresVentasCreditoColumns[1]["FiledSouce"] 	= "cantidad";
 		$configTotalesDolaresVentasCreditoColumns[1]["Formato"] 	= "Number";
 		$configTotalesDolaresVentasCreditoColumns[1]["Colspan"] 	= 1;		
-		$configTotalesDolaresVentasCreditoColumns[1]["Width"] 		= "60px";
+		$configTotalesDolaresVentasCreditoColumns[1]["Width"] 		= "40px";
 		
 		$detailTotalesDolaresTotalesVentaCredito[0]["total"] 				= ($resultadoVentaCreditoDolar["table"] === 0 ? 0 : $resultadoVentaCreditoDolar["configColumn"][8]["TotalValor"]);
 		$detailTotalesDolaresTotalesVentaCredito[0]["cantidad"] 			= ($resultadoVentaCreditoDolar["table"] === 0 ? 0 : $resultadoVentaCreditoDolar["configColumn"][8]["CantidadRegistro"]);
@@ -1214,14 +1214,14 @@
 		$configTotalesColumns[0]["FiledSouce"] = "total";
 		$configTotalesColumns[0]["Formato"] = "Number";
 		$configTotalesColumns[0]["Colspan"] = 1;	
-		$configTotalesColumns[0]["Width"] = "170px";
+		$configTotalesColumns[0]["Width"] = "80px";
 		$configTotalesColumns[0]["FiledSoucePrefix"] 	= "prefix";
 		
 		$configTotalesColumns[1]["Titulo"] 		= "Cant";			
 		$configTotalesColumns[1]["FiledSouce"] 	= "cantidad";
 		$configTotalesColumns[1]["Formato"] 	= "Number";
 		$configTotalesColumns[1]["Colspan"] 	= 1;		
-		$configTotalesColumns[1]["Width"] 		= "60px";
+		$configTotalesColumns[1]["Width"] 		= "40px";
 		
 		
 		$detailTotales[0]["total"] 		= ($resultadoIngresoCajaDolares["table"] === 0 ? 0 : $resultadoIngresoCajaDolares["configColumn"][8]["TotalValor"]);
@@ -1249,14 +1249,14 @@
 		$configTotalesColumns[0]["FiledSouce"] 			= "total";
 		$configTotalesColumns[0]["Formato"] 			= "Number";
 		$configTotalesColumns[0]["Colspan"] 			= 1;
-		$configTotalesColumns[0]["Width"] 			 	= "170px";
+		$configTotalesColumns[0]["Width"] 			 	= "80px";
 		$configTotalesColumns[0]["FiledSoucePrefix"] 	= "prefix";
 		
 		$configTotalesColumns[1]["Titulo"] 		= "Cant";			
 		$configTotalesColumns[1]["FiledSouce"] 	= "cantidad";
 		$configTotalesColumns[1]["Formato"] 	= "Number";
 		$configTotalesColumns[1]["Colspan"] 	= 1;		
-		$configTotalesColumns[1]["Width"] 		= "60px";
+		$configTotalesColumns[1]["Width"] 		= "40px";
 		
 		
 		

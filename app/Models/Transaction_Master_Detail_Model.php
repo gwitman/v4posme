@@ -439,17 +439,19 @@ class Transaction_Master_Detail_Model extends Model  {
 	   		
 		$sql = "";
 		$sql = sprintf("
-			select 
-				ci.`name` as Indicador,
+			SELECT 
+				u.`name` as Indicador,
 				count(*) as Cantidad
 			from 
-				tb_transaction_master  tm 
-				inner join tb_public_catalog_detail ci on 
-					ci.publicCatalogDetailID = tm.priorityID 
-			WHERE	
-				tm.transactionID = 42 /*lead*/ and 
-				tm.createdOn between '$dateFirst' and '$dateLast'  				
-			group by  
+				tb_customer c 
+				left join tb_catalog_item u on 
+					c.formContactID = u.catalogItemID 
+			where 
+				c.isActive =  1 and 
+				c.createdOn  between '$dateFirst' and '$dateLast'  				
+			group by 
+				u.name 
+			order by 
 				1
 		");
 	
@@ -593,22 +595,15 @@ class Transaction_Master_Detail_Model extends Model  {
 	   		
 		$sql = "";
 		$sql = sprintf("
-			 select	
-				day(t.transactionOn) as firtsName,
-				sum(t.subAmount	) as monto 
+			select 
+				u.firstName as Indicador,
+				count(*) as Cantidad
 			from 
-				tb_transaction_master t 
-				inner join tb_workflow_stage ws on 
-					t.statusID = ws.workflowStageID
-				left join tb_naturales nat on 
-					nat.entityID = t.entityIDSecondary 
+				tb_customer  x 
+				inner join tb_naturales  u on 
+					x.entityContactID = u.entityID  
 			where 
-				t.transactionID in (19) and   
-				t.isActive = 1  and 
-				ws.aplicable = 1  and 
-				t.companyID = 2  and 
-				t.transactionOn between '$dateFirst' and '$dateLast' and 
-				ws.aplicable = 1 
+				x.createdOn between '$dateFirst' and '$dateLast'  
 			group by  
 				1
 		");
@@ -650,23 +645,19 @@ class Transaction_Master_Detail_Model extends Model  {
 	   		
 		$sql = "";
 		$sql = sprintf("
-			 select	
-				day(t.transactionOn) as firtsName,
-				sum(t.subAmount	) as monto 
+			select 
+				ifnull(nat.firstName,'ND') as Indicador,
+				count(*) as Cantidad 
 			from 
-				tb_transaction_master t 
-				inner join tb_workflow_stage ws on 
-					t.statusID = ws.workflowStageID
+				tb_item i 
 				left join tb_naturales nat on 
-					nat.entityID = t.entityIDSecondary 
-			where 
-				t.transactionID in (19) and   
-				t.isActive = 1  and 
-				ws.aplicable = 1  and 
-				t.companyID = 2  and 
-				t.transactionOn between '$dateFirst' and '$dateLast' and 
-				ws.aplicable = 1 
-			group by  
+					nat.entityID = i.realStateEmployerAgentID 	
+			where 	
+				i.isActive = 1 and 
+				i.createdOn between '$dateFirst' and '$dateLast' 
+			group by 
+				nat.firstName 
+			order by 
 				1
 		");
 	
@@ -682,23 +673,19 @@ class Transaction_Master_Detail_Model extends Model  {
 	   		
 		$sql = "";
 		$sql = sprintf("
-			 select	
-				day(t.transactionOn) as firtsName,
-				sum(t.subAmount	) as monto 
+			select 
+				ifnull(nat.firstName,'ND') as Indicador,
+				count(*) as Cantidad 
 			from 
-				tb_transaction_master t 
-				inner join tb_workflow_stage ws on 
-					t.statusID = ws.workflowStageID
+				tb_item i 
 				left join tb_naturales nat on 
-					nat.entityID = t.entityIDSecondary 
-			where 
-				t.transactionID in (19) and   
-				t.isActive = 1  and 
-				ws.aplicable = 1  and 
-				t.companyID = 2  and 
-				t.transactionOn between '$dateFirst' and '$dateLast' and 
-				ws.aplicable = 1 
-			group by  
+					nat.entityID = i.realStateEmployerAgentID 	
+			where 	
+				i.isActive = 1 and 
+				i.createdOn between '$dateFirst' and '$dateLast' 
+			group by 
+				nat.firstName 
+			order by 
 				1
 		");
 	
@@ -714,23 +701,19 @@ class Transaction_Master_Detail_Model extends Model  {
 	   		
 		$sql = "";
 		$sql = sprintf("
-			 select	
-				day(t.transactionOn) as firtsName,
-				sum(t.subAmount	) as monto 
+			select 
+				ifnull(nat.firstName,'ND') as Indicador,
+				count(*) as Cantidad 
 			from 
-				tb_transaction_master t 
-				inner join tb_workflow_stage ws on 
-					t.statusID = ws.workflowStageID
+				tb_item i 
 				left join tb_naturales nat on 
-					nat.entityID = t.entityIDSecondary 
-			where 
-				t.transactionID in (19) and   
-				t.isActive = 1  and 
-				ws.aplicable = 1  and 
-				t.companyID = 2  and 
-				t.transactionOn between '$dateFirst' and '$dateLast' and 
-				ws.aplicable = 1 
-			group by  
+					nat.entityID = i.realStateEmployerAgentID 	
+			where 	
+				i.isActive = 1 and 
+				i.createdOn between '$dateFirst' and '$dateLast' 
+			group by 
+				nat.firstName 
+			order by 
 				1
 		");
 	

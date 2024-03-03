@@ -283,7 +283,7 @@
 									);
 
 									var options = {
-									  title: 'Formas de contacto',
+									  title: 'Fuente de contacto',
 									  colors: ['#FF5733', '#FFC300', '#FF85A2', '#FF33FF', '#33FFBD'],
 									  seriesType: 'bars',
 									};
@@ -320,7 +320,7 @@
 									);
 							
 									var options = {
-									  title: 'Interes vs cliente',
+									  title: 'Interes del cliente',
 									  colors: ['#33A1FF', '#FF3366', '#FF3333', '#33FF33', '#33FFA8'],
 									};
 							
@@ -391,7 +391,7 @@
 									);
 							
 									var options = {										
-									  title: 'Cliente VS Agente',
+									  title: 'Cliente asignados',
 									  colors: ['#FF33FF', '#66FF33', '#33FFFF', '#CC33FF', '#FFCC33'],
 									  pieHole: 0.4,
 									};
@@ -446,7 +446,7 @@
 									);
 							
 									var options = {										
-									  title: 'Cliente vs clasificacion',
+									  title: 'Clasificacion de clientes',
 									  colors: ['#FF5733', '#FFC300', '#FF85A2', '#FF33FF', '#33FFBD'],
 									  vAxis: {title: 'Clasificacion'},
 									  hAxis: {title: 'Agente'},
@@ -463,8 +463,42 @@
 							);	
 							
 							
-							//?????
+							//Clientes por Efectividad por Agente
+							///
+							////////////////////////////////////////////////	
 							var RealState_get_AgenteEfectividad		 							= JSON.parse('<?php echo json_encode($RealState_get_AgenteEfectividad); ?>');	
+							var objDataSource6	 												= new Array();							
+							objDataSource6.push(new Array("Agente","Cantidad"));
+							for(var i = 0 ; i < RealState_get_AgenteEfectividad.length;i++)
+							{
+								objDataSource6.push(
+									new Array(
+										RealState_get_AgenteEfectividad[i].Indicador,
+										parseInt(RealState_get_AgenteEfectividad[i].Cantidad)
+									)
+								);	
+							}
+																		
+							google.charts.setOnLoadCallback(
+								function () {
+							
+									var data = google.visualization.arrayToDataTable(
+										objDataSource6
+									);
+							
+									var options = {										
+									  title: 'Efectividad por agente',
+									  colors: ['#33A1FF', '#FF3366', '#FF3333', '#33FF33', '#33FFA8'],
+									  pieHole: 0.4,
+									};
+							
+									var chart = new google.visualization.PieChart(document.getElementById('grafico6'));
+									chart.draw(data, options);
+							
+								}
+							);	
+							
+							
 							
 							
 							//Clientes por Stilo de propiedad
@@ -491,7 +525,7 @@
 									);
 							
 									var options = {										
-									  title: 'Cliente vs clasificacion',
+									  title: 'Cierre de clientes',
 									  colors: ['#33A1FF', '#FF3366', '#FF3333', '#33FF33', '#33FFA8'],
 									  pieHole: 0.4,
 									};
@@ -531,7 +565,7 @@
 									);
 							
 									var options2 = {										
-										title: 'Propiedades vs agente',
+										title: 'Enlistamiento de propiedades',
 										colors: ['#3399FF', '#9966FF', '#FF33CC', '#FF6633', '#FFFF33'],												
 									};
 							
@@ -542,13 +576,121 @@
 							);	
 							
 							
-							//?????
+							//Propiedades por Agente vs Metas
+							///
+							////////////////////////////////////////////////	
 							var RealState_get_PropiedadesPorAgentesMetas 				 		= JSON.parse('<?php echo json_encode($RealState_get_PropiedadesPorAgentesMetas); ?>');	
-							//?????
+							var objDataSource9	 												= new Array();							
+							objDataSource9.push(new Array("Agente","Cantidad"));
+							for(var i = 0 ; i < RealState_get_PropiedadesPorAgentesMetas.length;i++)
+							{
+								objDataSource9.push(
+									new Array(
+										RealState_get_PropiedadesPorAgentesMetas[i].Indicador,
+										parseInt(RealState_get_PropiedadesPorAgentesMetas[i].Cantidad)
+									)
+								);	
+							}
+							
+																		
+							google.charts.setOnLoadCallback(
+								function () {
+							
+									var data = google.visualization.arrayToDataTable(
+										objDataSource9
+									);
+							
+									var options2 = {										
+										title: 'Enlistamiento de propiedades metas',
+										colors: ['#3399FF', '#9966FF', '#FF33CC', '#FF6633', '#FFFF33'],												
+									};
+							
+									var chart = new google.visualization.AreaChart(document.getElementById('grafico9'));
+									chart.draw(data, options2);
+							
+								}
+							);
+							
+							
+							//Agente Rendimiento Anual de Ventas propiedades
+							///
+							////////////////////////////////////////////////	
+							var objDataSource10	 												= new Array();
 							var RealState_get_PropiedadesRendimientoAnualVentas			 		= JSON.parse('<?php echo json_encode($RealState_get_PropiedadesRendimientoAnualVentas); ?>');	
-							//?????
+							objDataSource10.push(new Array("Clasificacion","Cantidad"));
+							for(var i = 0 ; i < RealState_get_PropiedadesRendimientoAnualVentas.length;i++)
+							{
+								objDataSource10.push(
+									new Array(
+										RealState_get_PropiedadesRendimientoAnualVentas[i].Indicador,
+										parseInt(RealState_get_PropiedadesRendimientoAnualVentas[i].Cantidad)
+									)
+								);	
+							}
+																		
+							google.charts.setOnLoadCallback(
+								function () {
+							
+									var data = google.visualization.arrayToDataTable(
+										objDataSource10
+									);
+							
+									var options = {										
+									  
+									  title: 'Rendimiento anual de ventas',
+									  colors: ['#FF5733', '#FFC300', '#FF85A2', '#FF33FF', '#33FFBD'],
+									  vAxis: {title: 'Clasificacion'},
+									  hAxis: {title: 'Agente'},
+									  seriesType: 'bars',
+									  series: {5: {type: 'line'}}
+		  
+		  
+		  
+									};
+							
+									var chart = new google.visualization.ComboChart(document.getElementById('grafico10'));
+									chart.draw(data, options);
+							
+								}
+							);	
+							
+
+							
+							//Propiedades Agente Rendimiento anual de enlistamiento
+							///
+							////////////////////////////////////////////////							
+							var objDataSource11	 												= new Array();
 							var RealState_get_PropiedadesRendimientoAnualEnlistamiento		 	= JSON.parse('<?php echo json_encode($RealState_get_PropiedadesRendimientoAnualEnlistamiento); ?>');															
-								
+							objDataSource11.push(new Array("Agente","Cantidad"));
+							for(var i = 0 ; i < RealState_get_PropiedadesRendimientoAnualEnlistamiento.length;i++)
+							{
+								objDataSource11.push(
+									new Array(
+										RealState_get_PropiedadesRendimientoAnualEnlistamiento[i].Indicador,
+										parseInt(RealState_get_PropiedadesRendimientoAnualEnlistamiento[i].Cantidad)
+									)
+								);	
+							}
+																		
+							google.charts.setOnLoadCallback(
+								function () {
+							
+									var data = google.visualization.arrayToDataTable(
+										objDataSource11
+									);
+							
+									var options = {
+									  title: 'Rendimiento anual de enlistamiento',
+									  colors: ['#33A1FF', '#FF3366', '#FF3333', '#33FF33', '#33FFA8'],
+									};
+							
+									var chart = new google.visualization.BarChart(document.getElementById('grafico11'));
+									chart.draw(data, options);
+							
+								}
+							);	
+							
+							
 							
 							
 							
