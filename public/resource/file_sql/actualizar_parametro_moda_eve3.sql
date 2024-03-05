@@ -1279,7 +1279,7 @@ where
 	
 /*tipo de cambio de dolares a cordoba*/
 update tb_exchange_rate set 
-	ratio = 0.027777 
+	ratio = 0.027548209366
 where 
 	currencyID = 1
 	and targetCurrencyID = 2; 

@@ -36,21 +36,8 @@
 				
 				
 				<div class="row"  >
-					 <div class="col-lg-6">		
+					 <div class="col-lg-12">		
 						<img class="img-featured" style="width:400px;height:200px" src="<?php echo base_url();?>/resource/img/logos/logo-micro-finanza.png">													
-					</div>
-					<div class="col-lg-6">	
-							<div class="panel" style="margin-bottom:20px;">
-								<div class="panel-heading">
-									<div class="icon"><i class="icon20 i-health"></i></div> 
-									<h4>Fuente de Contacto</h4>
-									<a href="#" class="minimize"></a>
-								</div><!-- End .panel-heading -->
-							
-								<div class="panel-body">								
-									<div id="grafico1" style="height:300px" ></div>
-								</div><!-- End .panel-body -->
-							</div><!-- End .widget -->		
 					</div>
 				</div>
 				
@@ -245,9 +232,22 @@
 								</div><!-- End .panel-body -->
 							</div><!-- End .widget -->		
 					</div>
+					
 					<div class="col-lg-6">	
+							<div class="panel" style="margin-bottom:20px;">
+								<div class="panel-heading">
+									<div class="icon"><i class="icon20 i-health"></i></div> 
+									<h4>Fuente de Contacto</h4>
+									<a href="#" class="minimize"></a>
+								</div><!-- End .panel-heading -->
 							
+								<div class="panel-body">								
+									<div id="grafico1" style="height:300px" ></div>
+								</div><!-- End .panel-body -->
+							</div><!-- End .widget -->		
 					</div>
+					
+					
 				</div>
 				
 				
