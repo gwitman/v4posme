@@ -139,7 +139,8 @@
 		});
 		
 		$(document).on("dblclick","#btnPrinterCode",function(){
-			var url = objParameterUrlPrinterCode+"/listItem/0-0-0-0-0|"+"<?php echo $objItem->itemID."-1-".$objItem->itemNumber."-".$objItem->name."-".$objItem->barCode; ?>";
+			var price 	= <?php echo $objListPriceItemFirst; ?>;			
+			var url 	= objParameterUrlPrinterCode+"/listItem/0-0-0-0-0-0|"+"<?php echo $objItem->itemID."-1-".$objItem->itemNumber."-".$objItem->name."-".$objItem->barCode."-"; ?>"+price;
 			window.open(url, "_blank");	
 		});
 		$(document).on("click","#btnDelete",function(){							

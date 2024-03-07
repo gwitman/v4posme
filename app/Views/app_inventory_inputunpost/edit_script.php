@@ -381,18 +381,19 @@
 			var length 						= listRow.length;
 			var i 							= 0;
 			var j 							= 0;
-			var listeProductos 				= "0-0-0-0-0";
+			var listeProductos 				= "0-0-0-0-0-0";
 			
 			while (i < length )
 			{
 				if(listRow[i][0] == true)
 				{	
-					listeProductos = listeProductos + "|"+ listRow[i][1] + "-" + 1 +"-"+  listRow[i][3]  +"-"+ listRow[i][4]  +"-"+ listRow[i][3] ;					
+					
+					listeProductos = listeProductos + "|"+ listRow[i][1] + "-" + 1 +"-"+  listRow[i][3]  +"-"+ listRow[i][4]  +"-"+ listRow[i][3] + "-" + listRow[i][8] ;					
 				}	
 				i++;
 			}
 			
-			if(listeProductos == "0-0-0-0-0"){
+			if(listeProductos == "0-0-0-0-0-0"){
 				fnShowNotification("Seleccionar el Registro...","error");
 				return;
 			}

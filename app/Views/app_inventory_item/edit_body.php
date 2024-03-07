@@ -153,11 +153,13 @@
 										</div>
 								</div>
 								
+								<div id="divTraslateQuantityMax">
 								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtCantidadMaxima",""); ?>  ">
 										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","*Cantidad Maxima",""); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtQuantityMax" id="txtQuantityMax" value="<?php echo $objItem->quantityMax; ?>">												
 										</div>
+								</div>
 								</div>
 								
 								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtCosto",""); ?> ">
@@ -347,6 +349,8 @@
 									</div>
 								</div>
 								
+								<div id="divTraslateElemento1">
+								</div>
 								
 								
 								
@@ -897,3 +901,5 @@
 		</div>
 	</div>
 </div>
+
+<?php echo getBehavio($company->type,"app_inventory_item","divTraslate",""); ?>

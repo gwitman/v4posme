@@ -1,6 +1,12 @@
 <?php
 //posme:2023-02-27
 namespace App\Controllers;
+
+//use CodeIgniter\Controller;
+//use Facebook\Facebook;
+//use Facebook\Exceptions\FacebookResponseException;
+//use Facebook\Exceptions\FacebookSDKException;
+
 class app_inventory_item extends _BaseController {
 	
        
@@ -97,6 +103,19 @@ class app_inventory_item extends _BaseController {
 			$dataView["callback"]					= $callback;
 			$dataView["comando"]					= $comando;
 			$dataView["objListPriceItem"]			= $this->Price_Model->get_rowByItemID($companyID,$dataView["objParameterListPreiceDefault"],$itemID);
+			$dataView["objListPriceItemFirst"]		= 0;
+			
+			//Obtener el primer precio del producto
+			$counterIndex = 0;
+			if($dataView["objListPriceItem"])
+			foreach($dataView["objListPriceItem"] as $ws)
+			{				
+				if($counterIndex == 0)
+				$dataView["objListPriceItemFirst"] = $ws->price;
+				$counterIndex++;				
+			}
+			
+			
 			
 			
 			$objParameterMasive					= $this->core_web_parameter->getParameter("ITEM_PRINTER_BARCODE_MASIVE",$companyID);
@@ -1019,9 +1038,41 @@ class app_inventory_item extends _BaseController {
 			
     }
 	
-	function index($dataViewID = null){	
-	try{ 
+	function index($dataViewID = null)
+	{	
+		try{ 
 		
+			//-wgonzalez-require_once APPPATH . 'ThirdParty/Facebook/autoload.php';			
+			//-wgonzalez-$fb = new Facebook([
+			//-wgonzalez-	'app_id' => '1863115980872262',
+			//-wgonzalez-	'app_secret' => '02678c823881c45d3f10ca3b8bcceaec',
+			//-wgonzalez-	'default_graph_version' => 'v12.0',
+			//-wgonzalez-]);
+			//-wgonzalez-
+			//-wgonzalez-$accessToken = 'EAAaefn43GkYBOzZADryFZCyUjBIrl4R4pJ2QWYClPsi3PREfV0nRODLgjzrqVStZCcXvUgZCoQ4viy1OzO5pcdaz7aZC2QsoMZCauS1Wd3dYx8AZAPqScZCkGCUviMZALC42tpUsDEKHZCtoIEMsCHjTC4vNgcTYgX5XRKHm7ZAW1yDhZCj58LMbijr15du9eC7OPOV43Skdqbo6w0DCAtPZBIRxgi4gZD';
+			//-wgonzalez-
+			//-wgonzalez-try {
+			//-wgonzalez-	
+			//-wgonzalez-	
+			//-wgonzalez-	
+			//-wgonzalez-	// Obtener instancia del cliente de Graph API
+			//-wgonzalez-	$response = $fb->post('/me/feed', [
+			//-wgonzalez-		'message' => 'Título de tu producto',
+			//-wgonzalez-		'link' => 'https://edu.gcfglobal.org/es/como-usar-internet/que-es-una-url/1/',
+			//-wgonzalez-		'picture' => 'https://media.gcflearnfree.org/content/5e317ccfbc7eff08e406376f_01_29_2020/Captura de Pantalla 2020-02-04 a la(s) 09.04.11.png'
+			//-wgonzalez-		
+			//-wgonzalez-	], $accessToken);
+			//-wgonzalez-
+			//-wgonzalez-	$graphNode = $response->getGraphNode();
+			//-wgonzalez-
+			//-wgonzalez-	echo 'Publicación exitosa en Marketplace: ' . $graphNode['id'];
+			//-wgonzalez-} catch (FacebookResponseException $e) {
+			//-wgonzalez-	echo 'Error de Graph: ' . $e->getMessage();
+			//-wgonzalez-} catch (FacebookSDKException $e) {
+			//-wgonzalez-	echo 'Error de SDK: ' . $e->getMessage();
+			//-wgonzalez-}
+			
+			
 			
 			//AUTENTICADO
 			if(!$this->core_web_authentication->isAuthenticated())

@@ -284,29 +284,37 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('luciaralstate_app_cxc_customer_divTxtPais') 	 											=> "hidden",
 		strtolower('luciaralstate_app_cxc_customer_divTxtDepartamento') 	 									=> "hidden",
 		strtolower('luciaralstate_app_cxc_customer_divTxtMunicipio') 	 										=> "hidden",
-		strtolower('luciaralstate_app_cxc_customer_divTxtFormContact') 	 										=> "",
+		strtolower('luciaralstate_app_cxc_customer_divTxtFormContact') 	 										=> "",		
+		strtolower('luciaralstate_app_inventory_item_divTraslate') 												=> "
+		<script>
+			$(document).ready(function(){				 
+				$('#txtRealStateStyleKitchen').parent().parent().appendTo('#divTraslateQuantityMax');  
+				$('#txtQuantityMax').parent().parent().appendTo('#divTraslateElemento1');  
+			});
+		</script>",		
+		
 		strtolower('luciaralstate_app_cxc_customer_divScriptCustom') 											=> "
-																														<script>
-																														$(document).ready(function(){ 
-																															$('#txtIdentification').val('0');				
-																															
-																															//$('#divTxtLeadsSubTipo').insertAfter('#divTxtCategoryE');
-																															//$('#lblLeadSubTipoLeads').addClass('col-lg-4');
-																															//$('#lblLeadSubTipoLeads').addClass('control-label');																															
-																															//$('#s2id_txtLeadSubTipo').wrap('<div class=\"col-lg-8\"></div>');
-																															
-																															
-																															$(document).on('focusout','#txtLegalName',function(){ 									 
-																																var varLegalName 	= $('#txtLegalName').val(); 
-																																$('#txtFirstName').val(varLegalName  ); 
-																																$('#txtLastName').val(varLegalName  ); 
-																																$('#txtCommercialName').val(varLegalName); 	 
-																															}); 
-																															
-																															
-																														}); 
-																														</script> 
-																													",
+		<script>
+		$(document).ready(function(){ 
+			$('#txtIdentification').val('0');				
+			
+			//$('#divTxtLeadsSubTipo').insertAfter('#divTxtCategoryE');
+			//$('#lblLeadSubTipoLeads').addClass('col-lg-4');
+			//$('#lblLeadSubTipoLeads').addClass('control-label');																															
+			//$('#s2id_txtLeadSubTipo').wrap('<div class=\"col-lg-8\"></div>');
+			
+			
+			$(document).on('focusout','#txtLegalName',function(){ 									 
+				var varLegalName 	= $('#txtLegalName').val(); 
+				$('#txtFirstName').val(varLegalName  ); 
+				$('#txtLastName').val(varLegalName  ); 
+				$('#txtCommercialName').val(varLegalName); 	 
+			}); 
+			
+			
+		}); 
+		</script> 
+		",
 		strtolower('luciaralstate_app_cxc_customer_divScriptValideFunction') 	 								=> "
 		
 		if( $('#txtPhoneNumber').val()  == ''){
