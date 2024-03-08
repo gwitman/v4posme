@@ -3,7 +3,133 @@
 namespace App\Controllers;
 class app_inventory_api extends _BaseController {
 	
-     
+    function uploadDataEncuentra24(){
+		try{ 
+		
+			
+			//AUTENTICADO 
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE FUNCIONES
+			if(APP_NEED_AUTHENTICATION == true){
+				$permited = false;
+				$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				
+				if(!$permited)
+				throw new \Exception(NOT_ACCESS_CONTROL);
+				
+			}	
+			
+			
+			
+			$companyID			= $dataSession["user"]->companyID;
+			$branchID 			= $dataSession["user"]->branchID;
+			$loginID			= $dataSession["user"]->userID;
+			$tocken				= "";
+			
+			$startOn			= helper_PrimerDiaDelMes();
+			$endOn				= helper_UltimoDiaDelMes();
+			
+						
+			//Get Datos
+			$query			= "
+								select 
+									x.`itemID`,
+									x.`createdOn`
+									,x.`Codigo`
+									,x.`Nombre`
+									,x.`Pagina Web`
+									,x.`Amueblado`
+									,x.`Aires`
+									,x.`Niveles`
+									,x.`Hora de visita`
+									,x.`Baños`
+									,x.`Habitaciones`
+									,x.`Diseño de propiedad`
+									,x.`Tipo de casa`
+									,x.`Proposito`
+									,x.`Moneda`
+									,x.`Fecha de enlistamiento`
+									,x.`Fecha de actualizacion`
+									,x.`Precio Venta`
+									,x.`Precio Renta`
+									,x.`Disponible`
+									,x.`Area de contruccion M2`
+									,x.`Area de terreno V2`
+									,x.`ID Encuentra 24`
+									,x.`Baño de servicio`
+									,x.`Baño de visita`
+									,x.`Cuarto de servicio`
+									,x.`Walk in closet`
+									,x.`Piscina privada`
+									,x.`Area club con piscina`
+									,x.`Acepta mascota`
+									,x.`Corretaje`
+									,x.`Plan de referido`
+									,x.`Link Youtube`
+									,x.`Pagina Web Link`
+									,x.`Foto`
+									,x.`Google`
+									,x.`Otros Link`
+									,x.`Estilo de cocina`
+									,x.`Agente`
+									,x.`Zona`
+									,x.`Condominio`
+									,x.`Ubicacion`
+									,x.`Exclusividad de agente`
+									,x.`Pais`
+									,x.`Estado`
+									,x.`Ciudad`
+								from 
+									vw_inventory_list_item_real_estate x 
+								where 
+									x.createdOn BETWEEN ? and ?
+							";
+			$objData		= $this->Bd_Model->executeRender(
+				$query,
+				[$startOn,$endOn]
+			);
+			
+			
+			//Crear XML
+			$xmlContent =	'
+			<?xml version="1.0" encoding="UTF-8"?>
+			<root>
+					<integert>4</integert>
+			</root>';
+				
+			 // Crear el contenido XML
+			$xmlContent =	htmlspecialchars(trim($xmlContent));
+			echo $xmlContent;
+			
+			
+			//-wgonzalez-2-// Configurar la respuesta HTTP con el tipo de contenido XML
+			//-wgonzalez-2-$response = $this->response->setContentType('text/xml');
+			//-wgonzalez-2-
+			//-wgonzalez-2-// Enviar el contenido XML como respuesta
+			//-wgonzalez-2-return $response->setBody($xmlContent);
+	
+			//-wgonzalez-$filename = 'user_'.date('Ymd').'.xml'; 
+			//-wgonzalez-header("Content-Description: File Transfer"); 
+			//-wgonzalez-header("Content-Disposition: attachment; filename=$filename"); 
+			//-wgonzalez-header("Content-Type: text/xml; ");
+			//-wgonzalez-echo $xmlContent;
+			//-wgonzalez-exit; 
+			
+			
+		}
+		catch(\Exception $ex){
+			
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));//--finjson
+		}	 	
+			
+	}
+	
 	function generatedTransactionOutputByFormulate(){
 		try{ 
 		

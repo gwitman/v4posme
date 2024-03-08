@@ -7,6 +7,7 @@ class app_inventory_process extends _BaseController {
 	
 	
 	
+	
 	function index($dataViewID = null){	
 	try{ 
 			$dataSession		= $this->session->get();

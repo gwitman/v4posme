@@ -736,6 +736,13 @@ WHERE
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVENTORY_URL_PRINTER_INPUTUNPOST";## URL PARA LA IMPRESION DE ORDEN DE COMPRA
 	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "ITEM_PRINTER_BARCODE_SHOWPRICE";	## Imprimir el precio en la etiqueta
+	
+	
 /*--Imprimir codigos masivos*/
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "http://localhost/posmev4/app_inventory_itemmasive/printer_barcode_58ml_direct_localhost" 
@@ -744,7 +751,7 @@ WHERE
 	tb_parameter.name = "ITEM_PRINTER_BARCODE_MASIVE";## URL PARA LA IMPRESION DE CANCELACION 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "posMe58Codigo" 
+	tb_company_parameter.value = "POS-58-Series" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVENTORY_BARCODE_PRINTER_DIRECT_NAME_DEFAULT";## URL PARA LA IMPRESION DE CANCELACION 
@@ -985,7 +992,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "2024-03-07" 
+	tb_company_parameter.value = "2050-03-07" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CUST_PRICE_LICENCES_EXPIRED";## Fecha de expiracion de la licencia 

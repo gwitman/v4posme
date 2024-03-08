@@ -66,6 +66,15 @@
 				});
 		});
 		
+		
+		$(document).on("click","#btnAceptUploadFile",function(){
+			
+			var URL = "<?php echo base_url(); ?>/app_inventory_api/uploadDataEncuentra24";
+			window.open(URL, '_blank');
+			
+		});
+		
+		
 	});
 	
 	

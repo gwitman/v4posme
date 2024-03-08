@@ -202,7 +202,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "2023-12-06" 
+	tb_company_parameter.value = "2050-12-06" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CUST_PRICE_LICENCES_EXPIRED";## Fecha de expiracion de la licencia 
@@ -713,6 +713,24 @@ WHERE
 
 
 UPDATE tb_company SET 
-	NAME = 'Visteme' , address = 'Policia nacional 1/2c.este y 1/2c.norte' 
+	NAME = 'Visteme' , address = 'Policia nacional 1/2c.este y 1/2c.norte' ,
+	flavorID = 0,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
+	
+	
+
+/*tipo de cambio de dolares a cordoba*/
+update tb_exchange_rate set 
+	ratio = 36 
+where 
+	currencyID = 2
+	and targetCurrencyID = 1; 
+	
+	
+/*tipo de cambio de dolares a cordoba*/
+update tb_exchange_rate set 
+	ratio = 0.027777 
+where 
+	currencyID = 1
+	and targetCurrencyID = 2; 

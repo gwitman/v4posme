@@ -623,6 +623,7 @@ $routes->match(['get','post'],'app_inventory_category/index','app_inventory_cate
 $routes->match(['get','post'],'app_inventory_category/index/(:any)','app_inventory_category::index');
 $routes->match(['get','post'],'app_inventory_api/generatedTransactionOutputByFormulate','app_inventory_api::generatedTransactionOutputByFormulate');
 $routes->match(['get','post'],'app_inventory_api/getInforDashBoards','app_inventory_api::getInforDashBoards');
+$routes->match(['get','post'],'app_inventory_api/uploadDataEncuentra24','app_inventory_api::uploadDataEncuentra24');
 $routes->match(['get','post'],'app_inventory_datasheet/edit','app_inventory_datasheet::edit');
 $routes->match(['get','post'],'app_inventory_datasheet/edit/(:any)','app_inventory_datasheet::edit');
 $routes->match(['get','post'],'app_inventory_datasheet/delete','app_inventory_datasheet::delete');
