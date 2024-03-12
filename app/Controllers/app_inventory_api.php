@@ -29,13 +29,14 @@ class app_inventory_api extends _BaseController {
 			$loginID			= $dataSession["user"]->userID;
 			$tocken				= "";
 			
-			$startOn			= helper_PrimerDiaDelMes();
-			$endOn				= helper_UltimoDiaDelMes();
+			$startOn			= '1900-01-01';//--helper_PrimerDiaDelMes();
+			$endOn				= '2024-03-09';//--helper_UltimoDiaDelMes();
 			
 						
 			//Get Datos
 			$query			= "
 								select 
+									x.`Codigo interno`,
 									x.`itemID`,
 									x.`createdOn`
 									,x.`Codigo`
@@ -47,10 +48,7 @@ class app_inventory_api extends _BaseController {
 									,x.`Hora de visita`
 									,x.`Baños`
 									,x.`Habitaciones`
-									,x.`Diseño de propiedad`
-									,x.`Tipo de casa`
-									,x.`Proposito`
-									,x.`Moneda`
+									,x.`Diseño de propiedad`																		
 									,x.`Fecha de enlistamiento`
 									,x.`Fecha de actualizacion`
 									,x.`Precio Venta`
@@ -81,11 +79,80 @@ class app_inventory_api extends _BaseController {
 									,x.`Exclusividad de agente`
 									,x.`Pais`
 									,x.`Estado`
-									,x.`Ciudad`
+									,case 
+										when x.`Proposito` = 'RENTA' then 
+											'rent'
+										else 
+											'property'
+									end as `Proposito`
+									,x.`Proposito` as `Proposito descripcion`
+									,case 
+										when x.`Tipo de casa` = 'CASA' and x.`Proposito` = 'VENTA'  then 
+											173
+										when x.`Tipo de casa` = 'TERRENO' and x.`Proposito` = 'VENTA'  then 
+											178
+										when x.`Tipo de casa` = 'APARTAMENTO' and x.`Proposito` = 'VENTA' then 
+											179
+										when x.`Tipo de casa` = 'MODULOS' and x.`Proposito` = 'VENTA' then 
+											172
+										when x.`Tipo de casa` = 'BODEGAS' and x.`Proposito` = 'VENTA' then 
+											172
+										when x.`Tipo de casa` = 'EDIFICIOS' and x.`Proposito` = 'VENTA' then 
+											170
+										when x.`Tipo de casa` = 'CASA DE PLAYA' and x.`Proposito` = 'VENTA' then 
+											177
+										when x.`Tipo de casa` = 'TERRENO DE PLAYA' and x.`Proposito` = 'VENTA' then 
+											177
+										when x.`Tipo de casa` = 'QUINTA' and x.`Proposito` = 'VENTA' then 
+											173
+										when x.`Tipo de casa` = 'HOTEL' and x.`Proposito` = 'VENTA' then 
+											173
+										
+										
+										when x.`Tipo de casa` = 'CASA' and x.`Proposito` = 'RENTA'  then 
+											157
+										when x.`Tipo de casa` = 'TERRENO' and x.`Proposito` = 'RENTA'  then 
+											178
+										when x.`Tipo de casa` = 'APARTAMENTO' and x.`Proposito` = 'RENTA' then 
+											156
+										when x.`Tipo de casa` = 'MODULOS' and x.`Proposito` = 'RENTA' then 
+											160
+										when x.`Tipo de casa` = 'BODEGAS' and x.`Proposito` = 'RENTA' then 
+											160
+										when x.`Tipo de casa` = 'EDIFICIOS' and x.`Proposito` = 'RENTA' then 
+											159
+										when x.`Tipo de casa` = 'CASA DE PLAYA' and x.`Proposito` = 'RENTA' then 
+											162
+										when x.`Tipo de casa` = 'TERRENO DE PLAYA' and x.`Proposito` = 'RENTA' then 
+											155
+										when x.`Tipo de casa` = 'QUINTA' and x.`Proposito` = 'RENTA' then 
+											157
+										when x.`Tipo de casa` = 'HOTEL' and x.`Proposito` = 'RENTA' then 
+											158											
+										else 
+											0
+									end as `Tipo de casa`	
+									,x.`Tipo de casa` as `Tipo de casa descripcion`
+									,case 
+										when x.`Ciudad` = 'Managua' then 
+											153
+										when x.`Ciudad` = 'Santa Lucía' then 
+											269
+										else 
+											0
+									end as `Ciudad`
+									, x.`Ciudad` as `Ciudad descripcion`
+									,case 
+										when x.`Moneda` = 'Cordoba' then 
+											'NIO'
+										else 
+											'USD'
+									end as `Moneda`
+									,x.`Moneda` as `Moneda descripcion`
 								from 
-									vw_inventory_list_item_real_estate x 
+									vw_inventory_list_item_real_estate x 								
 								where 
-									x.createdOn BETWEEN ? and ?
+									x.`Codigo interno` = 29060  /*x.createdOn BETWEEN ? and ?*/
 							";
 			$objData		= $this->Bd_Model->executeRender(
 				$query,
@@ -96,12 +163,83 @@ class app_inventory_api extends _BaseController {
 			//Crear XML
 			$xmlContent =	'
 			<?xml version="1.0" encoding="UTF-8"?>
-			<root>
-					<integert>4</integert>
-			</root>';
+			<import>
+				<settings>
+					<type><![CDATA[property]]</type>
+					<language><![CDATA[es]]</language>
+				</settings>
+				<items>
+					[[ITEMS]]
+				</items>
+			</import>';
+			
+			$xmlContentItem = "
+			";
+			foreach($objData as $key => $value)
+			{
+				
+				
+				$xmlContentItem = $xmlContentItem."<item>";
+					$xmlContentItem = $xmlContentItem."<required>";
+						$xmlContentItem = $xmlContentItem."<ad>";
+						  $xmlContentItem = $xmlContentItem."<countryid><![CDATA[152]]></countryid>";
+						  $xmlContentItem = $xmlContentItem."<sourceid><![CDATA[".$value["Codigo interno"]."]]></sourceid>";
+						  $xmlContentItem = $xmlContentItem."<categoryid><![CDATA[".$value["Tipo de casa"]."]]></categoryid>";
+						  $xmlContentItem = $xmlContentItem."<!--<categoryid><![CDATA[".$value["Tipo de casa descripcion"]."]]></categoryid>-->";
+						  $xmlContentItem = $xmlContentItem."<regionid><![CDATA[".$value["Ciudad"]."]]></regionid>";
+						  $xmlContentItem = $xmlContentItem."<!--<regionid><![CDATA[".$value["Ciudad descripcion"]."]]></regionid>-->";						  
+						  $xmlContentItem = $xmlContentItem."<type><![CDATA[".$value["Proposito"]."]]></type>";
+						  $xmlContentItem = $xmlContentItem."<!--<type><![CDATA[".$value["Proposito descripcion"]."]]></type>-->";
+						  
+						  
+						  $xmlContentItem = $xmlContentItem."<title><![CDATA[".$value["Nombre"]."]]></title>";						  
+						  $xmlContentItem = $xmlContentItem."<currency><![CDATA[".$value["Moneda"]."]]></currency>";
+						  $xmlContentItem = $xmlContentItem."<!--<currency><![CDATA[".$value["Moneda descripcion"]."]]></currency>-->";
+						  $xmlContentItem = $xmlContentItem."<price><![CDATA[".$value["Precio Venta"]."]]></price>";
+						  $xmlContentItem = $xmlContentItem."<rent><![CDATA[".$value["Precio Renta"]."]]></rent>";
+						  $xmlContentItem = $xmlContentItem."<rooms><![CDATA[".$value["Habitaciones"]."]]></rooms>";
+						  $xmlContentItem = $xmlContentItem."<bath><![CDATA[".$value["Baños"]."]]></bath>";
+						  $xmlContentItem = $xmlContentItem."<square><![CDATA[".$value["Area de contruccion M2"]."]]></square>";
+						  $xmlContentItem = $xmlContentItem."<parking><![CDATA[".$value["Nombre"]."]]></parking>";
+						  $xmlContentItem = $xmlContentItem."<advertiser><![CDATA[Agente]]></advertiser>";						  
+						$xmlContentItem = $xmlContentItem."</ad>";
+						$xmlContentItem = $xmlContentItem."<contact>";
+						  $xmlContentItem = $xmlContentItem."<email><![CDATA[info@santalucia.reantatste]]></email>";
+						  $xmlContentItem = $xmlContentItem."<phone><![CDATA[88888888]]></phone>";
+						  $xmlContentItem = $xmlContentItem."<contact><![CDATA[Lucia Lindo]]></contact>";
+						  $xmlContentItem = $xmlContentItem."<city><![CDATA[Managua]]></city>";
+						$xmlContentItem = $xmlContentItem."</contact>";
+					$xmlContentItem = $xmlContentItem."</required>";	
+
+					$xmlContentItem = $xmlContentItem."<optional>";
+						$xmlContentItem = $xmlContentItem."<ad>";
+							$xmlContentItem = $xmlContentItem."<exact><![CDATA[".$value["Ubicacion"]."]]></exact>";
+							$xmlContentItem = $xmlContentItem."<lotsize><![CDATA[".$value["Area de terreno V2"]."]]></lotsize>";
+							$xmlContentItem = $xmlContentItem."<floortype><![CDATA[".$value["Nombre"]."]]></floortype>";
+							$xmlContentItem = $xmlContentItem."<stories><![CDATA[".$value["Niveles"]."]]></stories>";
+							$xmlContentItem = $xmlContentItem."<swimmingpool><![CDATA[".$value["Piscina privada"]."]]></swimmingpool>";
+							$xmlContentItem = $xmlContentItem."<appliances><![CDATA[".$value["Amueblado"]."]]></appliances>";
+							$xmlContentItem = $xmlContentItem."<youtube1><![CDATA[".$value["Link Youtube"]."]]></youtube1>";
+							$xmlContentItem = $xmlContentItem."<m2><![CDATA[".$value["Area de contruccion M2"]."]]></m2>";
+							$xmlContentItem = $xmlContentItem."<available><![CDATA[".$value["Disponible"]."]]></available>";
+							$xmlContentItem = $xmlContentItem."<picture><![CDATA[".$value["Pagina Web Link"]."]]></picture>";							
+						$xmlContentItem = $xmlContentItem."</ad>";
+						$xmlContentItem = $xmlContentItem."<contact>";
+						  $xmlContentItem = $xmlContentItem."<email><![CDATA[info@santalucia.reantatste]]></email>";
+						  $xmlContentItem = $xmlContentItem."<phone><![CDATA[88888888]]></phone>";
+						  $xmlContentItem = $xmlContentItem."<contact><![CDATA[Lucia Lindo]]></contact>";
+						  $xmlContentItem = $xmlContentItem."<city><![CDATA[Managua]]></city>";
+						$xmlContentItem = $xmlContentItem."</contact>";
+					$xmlContentItem = $xmlContentItem."</optional>";
+			
+				
+				$xmlContentItem = $xmlContentItem."</item>";
+			}
+			
 				
 			 // Crear el contenido XML
-			$xmlContent =	htmlspecialchars(trim($xmlContent));
+			$xmlContent =   str_replace("[[ITEMS]]",$xmlContentItem,$xmlContent);			
+			$xmlContent =	htmlspecialchars($xmlContent);
 			echo $xmlContent;
 			
 			

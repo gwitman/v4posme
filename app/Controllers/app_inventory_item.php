@@ -2,10 +2,10 @@
 //posme:2023-02-27
 namespace App\Controllers;
 
-//use CodeIgniter\Controller;
-//use Facebook\Facebook;
-//use Facebook\Exceptions\FacebookResponseException;
-//use Facebook\Exceptions\FacebookSDKException;
+use CodeIgniter\Controller;
+use Facebook\Facebook;
+use Facebook\Exceptions\FacebookResponseException;
+use Facebook\Exceptions\FacebookSDKException;
 
 class app_inventory_item extends _BaseController {
 	
@@ -1042,25 +1042,59 @@ class app_inventory_item extends _BaseController {
 	{	
 		try{ 
 		
+			//Lanzar un Post en una pagina de facebook success
+			//https://developers.facebook.com/docs/commerce-platform/setup/api-setup?locale=es_ES
+			//https://business.facebook.com/commerce_manager/get_started/
+			//https://developers.facebook.com/tools/explorer/?method=POST&path=109895114143555%2Ffeed%3Fmessage%3Dhola2&version=v19.0&locale=es_ES
+			//https://developers.facebook.com/docs/pages-api/posts
+			//https://developers.facebook.com/docs/commerce-platform/platforms/distribution/MPApprovalAPI/?locale=es_ES
+			//-wgonzalez-publicar-en-pagina-require_once APPPATH . 'ThirdParty/Facebook/autoload.php';			
+			//-wgonzalez-publicar-en-pagina-$fb = new Facebook([
+			//-wgonzalez-publicar-en-pagina-	'app_id' => '1863115980872262',
+			//-wgonzalez-publicar-en-pagina-	'app_secret' => '02678c823881c45d3f10ca3b8bcceaec',
+			//-wgonzalez-publicar-en-pagina-	'default_graph_version' => 'v19.0',
+			//-wgonzalez-publicar-en-pagina-]);
+			//-wgonzalez-publicar-en-pagina-
+			//-wgonzalez-publicar-en-pagina-$accessToken = 'EAAaefn43GkYBO5KVA5ZBERSEsTacyIZCoukwred8zrEdtoXlSeZCV2LZChxlQbfyArnxwtIRyIn2ueovqnUqgzS8HdxWEwTZB4X6SFUimK9k5AaaqHedKKZCEICIQ4yDl5ScykZC66gZB1qya9ZC4hDNmyfabCt65gAg7JqRBiSPvbS2GU9OM6MP1DDWDxOkLqHcDywvta7OPNMoch9nsqvRuNTIZD';
+			//-wgonzalez-publicar-en-pagina-
+			//-wgonzalez-publicar-en-pagina-try {
+			//-wgonzalez-publicar-en-pagina-	
+			//-wgonzalez-publicar-en-pagina-	
+			//-wgonzalez-publicar-en-pagina-	
+			//-wgonzalez-publicar-en-pagina-	// Obtener instancia del cliente de Graph API
+			//-wgonzalez-publicar-en-pagina-	$response = $fb->post('/109895114143555/feed', [
+			//-wgonzalez-publicar-en-pagina-		'message' => 'Título de tu producto tes tst',
+			//-wgonzalez-publicar-en-pagina-		'link' => 'https://www.posme.net'
+			//-wgonzalez-publicar-en-pagina-		
+			//-wgonzalez-publicar-en-pagina-	], $accessToken);
+			//-wgonzalez-publicar-en-pagina-
+			//-wgonzalez-publicar-en-pagina-	$graphNode = $response->getGraphNode();
+			//-wgonzalez-publicar-en-pagina-
+			//-wgonzalez-publicar-en-pagina-	echo 'Publicación exitosa en Marketplace: ' . $graphNode['id'];
+			//-wgonzalez-publicar-en-pagina-} catch (FacebookResponseException $e) {
+			//-wgonzalez-publicar-en-pagina-	echo 'Error de Graph: ' . $e->getMessage();
+			//-wgonzalez-publicar-en-pagina-} catch (FacebookSDKException $e) {
+			//-wgonzalez-publicar-en-pagina-	echo 'Error de SDK: ' . $e->getMessage();
+			//-wgonzalez-publicar-en-pagina-}
+			
+			
+			//-wgonzalez-//Lanzar un post en la market place de facebook en proceso
 			//-wgonzalez-require_once APPPATH . 'ThirdParty/Facebook/autoload.php';			
 			//-wgonzalez-$fb = new Facebook([
 			//-wgonzalez-	'app_id' => '1863115980872262',
 			//-wgonzalez-	'app_secret' => '02678c823881c45d3f10ca3b8bcceaec',
-			//-wgonzalez-	'default_graph_version' => 'v12.0',
+			//-wgonzalez-	'default_graph_version' => 'v19.0',
 			//-wgonzalez-]);
 			//-wgonzalez-
-			//-wgonzalez-$accessToken = 'EAAaefn43GkYBOzZADryFZCyUjBIrl4R4pJ2QWYClPsi3PREfV0nRODLgjzrqVStZCcXvUgZCoQ4viy1OzO5pcdaz7aZC2QsoMZCauS1Wd3dYx8AZAPqScZCkGCUviMZALC42tpUsDEKHZCtoIEMsCHjTC4vNgcTYgX5XRKHm7ZAW1yDhZCj58LMbijr15du9eC7OPOV43Skdqbo6w0DCAtPZBIRxgi4gZD';
+			//-wgonzalez-$accessToken = 'EAAaefn43GkYBO5KVA5ZBERSEsTacyIZCoukwred8zrEdtoXlSeZCV2LZChxlQbfyArnxwtIRyIn2ueovqnUqgzS8HdxWEwTZB4X6SFUimK9k5AaaqHedKKZCEICIQ4yDl5ScykZC66gZB1qya9ZC4hDNmyfabCt65gAg7JqRBiSPvbS2GU9OM6MP1DDWDxOkLqHcDywvta7OPNMoch9nsqvRuNTIZD';
 			//-wgonzalez-
 			//-wgonzalez-try {
 			//-wgonzalez-	
 			//-wgonzalez-	
 			//-wgonzalez-	
 			//-wgonzalez-	// Obtener instancia del cliente de Graph API
-			//-wgonzalez-	$response = $fb->post('/me/feed', [
-			//-wgonzalez-		'message' => 'Título de tu producto',
-			//-wgonzalez-		'link' => 'https://edu.gcfglobal.org/es/como-usar-internet/que-es-una-url/1/',
-			//-wgonzalez-		'picture' => 'https://media.gcflearnfree.org/content/5e317ccfbc7eff08e406376f_01_29_2020/Captura de Pantalla 2020-02-04 a la(s) 09.04.11.png'
-			//-wgonzalez-		
+			//-wgonzalez-	$response = $fb->post('/109895114143555', [
+			//-wgonzalez-		'onsite_commerce_merchant' => 'Título de tu producto tes tst'					
 			//-wgonzalez-	], $accessToken);
 			//-wgonzalez-
 			//-wgonzalez-	$graphNode = $response->getGraphNode();
