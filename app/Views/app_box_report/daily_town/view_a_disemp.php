@@ -19,7 +19,7 @@
 		$totalCordoba 							= 0;
 		$totalDolares 							= 0;
 		$configColumnAbonos["0"]["Titulo"] 		= "Fecha";		
-		//$configColumnAbonos["0"]["Titulo"] 		= "Codigo";		
+		//$configColumnAbonos["0"]["Titulo"] 	= "Codigo";		
 		$configColumnAbonos["1"]["Titulo"] 		= "Cliente";		
 		//$configColumnAbonos["2"]["Titulo"] 	= "Moneda";				
 		$configColumnAbonos["4"]["Titulo"] 		= "Fac";		

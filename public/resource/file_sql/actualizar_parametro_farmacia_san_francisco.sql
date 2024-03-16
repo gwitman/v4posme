@@ -885,7 +885,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Farmacia San Francisco' , address = 'Puente la quimera 20v.e' ,
-	flavorID = 266
+	flavorID = 266,type="default"
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

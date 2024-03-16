@@ -139,7 +139,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaTicket" 
+	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_URL_PRINTER";## URLs PARA LA IMPRESION DE FACTURA 
@@ -719,6 +719,28 @@ WHERE
 	companyID = 2; ##Actualizar el nombre de la compania
 	
 	
+
+
+/*
+Eliminar o desactivar usuarios
+*/
+update tb_user set isActive = 0;
+update tb_user set isActive = 1 WHERE userID in (
+ 2, 	/*administrador*/
+ 113,  	/*supervisor*/
+ 114, 	/*facturador*/
+ 115 	/*administrador*/
+);
+
+update tb_role set isActive = 0; 
+update tb_role set isActive = 1 where roleID in (
+	3,
+	126,
+	127,
+	128	
+);
+
+
 
 /*tipo de cambio de dolares a cordoba*/
 update tb_exchange_rate set 

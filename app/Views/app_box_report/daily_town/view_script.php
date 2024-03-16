@@ -13,6 +13,7 @@
 							var startOn					=	$("#txtStartOn").val();	
 							var endOn					=	$("#txtEndOn").val();	
 							var userID					=	$("#txtUserID").val();	
+							var showSumaryAmount		=	$("#txtShowSumaryAmount").val();	
 							var hourStart				=	$("#txtHourStartOn").val();	
 							var hourEnd					=	$("#txtHourEndOn").val();	
 							var filterConcept			=   "-1";
@@ -53,7 +54,7 @@
 								window.location	= "<?php echo base_url(); ?>/app_box_report/daily_town/"+
 								"viewReport/true/startOn/"+startOn+"/endOn/"+endOn+"/userIDFilter/"+userID+
 								"/hourStart/"+hourStart+"/hourEnd/"+hourEnd+"/conceptoFilter/"+filterConcept+
-								"/categoryItem/"+categoryItem;
+								"/categoryItem/"+categoryItem+"/showSumaryAmount/"+showSumaryAmount;
 							}
 							else{
 								fnShowNotification("Completar los Parametros","error");
