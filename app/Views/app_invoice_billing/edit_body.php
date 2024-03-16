@@ -319,7 +319,7 @@
 								
 								
 								
-								<div class="form-group">
+								<div class="form-group" id="divMesa" >
 									<label class="col-lg-4 control-label" for="selectFilter">Mesa</label>
 									<div class="col-lg-8">
 										<select name="txtMesaID" id="txtMesaID" class="select2">

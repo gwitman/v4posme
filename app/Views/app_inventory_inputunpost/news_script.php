@@ -4,6 +4,7 @@
 	var numberDecimalSummary		= 2;
 	var numberDecimalSummaryRound	= false;
 	var objListaProductos			= {};	
+	var objWindowSearchProduct;
 	var objListTypePreice			= JSON.parse('<?php echo json_encode($objListTypePreice); ?>');
 	var objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE	= <?php echo $objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE; ?>;
 	var sScrollY = objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE == true ?  "350px" : "auto";
@@ -52,7 +53,7 @@
 						},
 						{
 							"aTargets"	: [4], //nombre
-							"sWidth"	: "40%"
+							"sWidth"	: "20%"
 						},
 						{
 							"aTargets"	: [5], //unidad
@@ -212,12 +213,21 @@
 		
 			
 			var url_redirect		= "__app_inventory_item__add__callback__fnObtenerListadoProductos__comando__pantalla_abierta_desde_la_compra";			
-			url_redirect 			= encodeURIComponent(url_redirect);
+			url_redirect 			= encodeURIComponent(url_redirect);			
+			var url_request 		= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentItem->componentID; ?>/onCompleteItem/SELECCIONAR_ITEM_TO_PROVIDER/false/"+encodeURI('{\"providerID\"|\"'+$("#txtProviderID").val()+'\",\"currencyID\"|\"'+$("#txtCurrencyID").val() +'\"}' ) + "/true/"+url_redirect;  
 			
-			var url_request 		= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentItem->componentID; ?>/onCompleteItem/SELECCIONAR_ITEM_TO_PROVIDER/true/"+encodeURI('{\"providerID\"|\"'+$("#txtProviderID").val()+'\",\"currencyID\"|\"'+$("#txtCurrencyID").val() +'\"}' ) + "/true/"+url_redirect;  
-			window.open(url_request,"MsgWindow","width=900,height=450");
-			window.onCompleteItem 	= onCompleteItem; 
 
+			// Verificar si la ventana ya está abierta
+			if (objWindowSearchProduct && !objWindowSearchProduct.closed) 
+			{
+				objWindowSearchProduct.focus();
+			} 
+			else 
+			{
+				objWindowSearchProduct 					= window.open(url_request,"MsgWindow","width=900,height=450");
+				objWindowSearchProduct.onCompleteItem 	= onCompleteItem; 
+			}
+			
 			
 			//var url_request 		= "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?php echo $objComponentItem->componentID; ?>/onCompleteItem/SELECCIONAR_ITEM_TO_PROVIDER_T/true/"+encodeURI('{\"providerID\"|\"'+$("#txtProviderID").val()+'\",\"currencyID\"|\"'+$("#txtCurrencyID").val() +'\"}' ) + "/true/"+url_redirect+"/1/1/10/a/";  
 			//window.open(url_request,"MsgWindow","width=900,height=450");

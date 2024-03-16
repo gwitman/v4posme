@@ -48,8 +48,9 @@ class core_acount extends _BaseController {
 			
 			
 			$dataSession					= $this->session->get();	
+			$type							= $dataSession["company"]->type;
 			$companyID 						= APP_COMPANY;
-			$this->core_web_authentication->destroyLogin();			
+			//$this->core_web_authentication->destroyLogin();			
 			
 			
 			
@@ -61,7 +62,25 @@ class core_acount extends _BaseController {
 			chmod($documentoPath, 0755);
 			
 			$core_mysql_dump	= new core_mysql_dump("mysql:host=".DB_SERVER.";dbname=".DB_BDNAME,DB_USER,DB_PASSWORD);
-			$core_mysql_dump->start($documentoPath."/".DB_BDNAME."_DB_".date("Ymd_H_i_s").".sql");
+			$sqlBacku           = $documentoPath."/".DB_BDNAME."_DB_".date("Ymd_H_i_s").".sql";
+			$core_mysql_dump->start($sqlBacku);
+			
+			//Mandar respaldo
+			if($type=="globalpro")
+			{				
+				$ch 				= curl_init();								
+				$objParameterUrlServerFile 					= $this->core_web_parameter->getParameter("CORE_FILE_SERVER",$companyID);
+				$objParameterUrlServerFile 					= $objParameterUrlServerFile->value;				
+				$urlCreateFolder 							= $objParameterUrlServerFile."/core_elfinder/createFolder/companyID/".$companyID."/componentID/".$objComponentSeguridad->componentID."/transactionID/0/transactionMasterID/0";
+				$filePathDetination							= $sqlBacku;			
+				curl_setopt($ch, CURLOPT_URL, $urlCreateFolder);
+				curl_setopt($ch, CURLOPT_HEADER, 0);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($ch, CURLOPT_POSTFIELDS, array('txtFileDocument' => curl_file_create($filePathDetination) ));
+				curl_exec($ch);				
+				curl_close($ch);
+				
+			}
 			
 			$this->response->redirect(base_url());
 			

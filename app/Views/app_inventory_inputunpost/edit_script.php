@@ -5,6 +5,7 @@
 	var numberDecimalSummaryRound	= false;
 	var objTableDetailTransaction 	= {};
 	var objListaProductos			= {};
+	var objWindowSearchProduct;
 	var objListaProductos2			= {};
 	var objListaProductos3			= {};
 	var objectParameterButtoms 		= {};
@@ -85,7 +86,7 @@
 						},
 						{
 							"aTargets"	: [4], //nombre
-							"sWidth"	: "40%"
+							"sWidth"	: "20%"
 						},
 						{
 							"aTargets"	: [5], //unidad
@@ -327,11 +328,19 @@
 		
 			var url_redirect		= "__app_inventory_item__add__callback__fnObtenerListadoProductos__comando__pantalla_abierta_desde_la_compra";			
 			url_redirect 			= encodeURIComponent(url_redirect);
+			var url_request 		= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentItem->componentID; ?>/onCompleteItem/SELECCIONAR_ITEM_TO_PROVIDER/false/"+encodeURI('{\"providerID\"|\"'+$("#txtProviderID").val()+'\",\"currencyID\"|\"'+$("#txtCurrencyID").val() +'\"}' ) + "/true/"+url_redirect;  
 			
+			// Verificar si la ventana ya está abierta
+			if (objWindowSearchProduct && !objWindowSearchProduct.closed) 
+			{
+				objWindowSearchProduct.focus();
+			} 
+			else 
+			{
+				objWindowSearchProduct 					= window.open(url_request,"MsgWindow","width=900,height=450");
+				objWindowSearchProduct.onCompleteItem 	= onCompleteItem; 
+			}
 			
-			var url_request 		= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentItem->componentID; ?>/onCompleteItem/SELECCIONAR_ITEM_TO_PROVIDER/true/"+encodeURI('{\"providerID\"|\"'+$("#txtProviderID").val()+'\",\"currencyID\"|\"'+$("#txtCurrencyID").val() +'\"}' ) + "/true/"+url_redirect;  
-			window.open(url_request,"MsgWindow","width=900,height=450");
-			window.onCompleteItem 	= onCompleteItem; 
 		
 			
 		});

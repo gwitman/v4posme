@@ -833,7 +833,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'El Patio' , address = 'Alcaldia 50vs este' ,flavorID = 0, type='default'
+	NAME = 'El Patio' , address = 'Alcaldia 50vs este' ,flavorID = 0, type='patio'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

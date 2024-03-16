@@ -304,7 +304,7 @@
 								</div>
 
 								
-								<div class="form-group">
+								<div class="form-group"  >
 										<label class="col-lg-4 control-label" for="normal">Telefono</label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtNumberPhone" id="txtNumberPhone" value="">												
@@ -313,7 +313,7 @@
 								
 							
 								
-								<div class="form-group">
+								<div class="form-group" id="divMesa" >
 									<label class="col-lg-4 control-label" for="selectFilter">Mesa</label>
 									<div class="col-lg-8">
 										<select name="txtMesaID" id="txtMesaID" class="select2">

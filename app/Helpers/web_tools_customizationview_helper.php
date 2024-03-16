@@ -230,7 +230,15 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('khadash_app_box_share_divCobrador')															=> "hidden", 
 		strtolower('khadash_app_box_share_divMoneda')															=> "hidden", 
 				
-				
+		/*El patio*/
+		strtolower('patio_app_invoice_billing_divTraslateElement') 											=> "
+		<script>
+			$(document).ready(function(){		
+				$('#divVendedor').appendTo('#divInformacionLeft');
+				$('#divMesa').appendTo('#divInformacionLeft');
+			});
+		</script>",		
+		
 		/*Santa lucia ral state*/	
 		strtolower('luciaralstate_core_web_menu_PRODUCTO')			 											=> "INMOBILIARIO",		
 		strtolower('luciaralstate_default_masterpage_backgroundImage')		 									=> "style='background-image: url(".  base_url()."/resource/img/logos/fondo_globalpro.jpg"   .");'",		
