@@ -138,6 +138,7 @@ use App\Models\Public_Catalog_Detail_Model;
 use App\Models\Cash_Box_User_Model;
 use App\Models\Cash_Box_Session_Model;
 use App\Models\Cash_Box_Model;
+use App\Models\Log_Session_Model;
 
 use App\Models\Transaction_Master_Concept_Model;
 use App\Models\Transaction_Master_Detail_Credit_Model;
@@ -323,6 +324,7 @@ abstract class _BaseController extends Controller
 	protected $Cash_Box_User_Model;
 	protected $Cash_Box_Session_Model;
 	protected $Cash_Box_Model;
+	protected $Log_Session_Model;
 
 	protected $Transaction_Master_Concept_Model;
 	protected $Transaction_Master_Detail_Credit_Model;
@@ -489,6 +491,7 @@ abstract class _BaseController extends Controller
 		$this->Cash_Box_User_Model = new Cash_Box_User_Model();
 		$this->Cash_Box_Session_Model = new Cash_Box_Session_Model();
 		$this->Cash_Box_Model = new Cash_Box_Model();
+		$this->Log_Session_Model = new Log_Session_Model();
 	
 		$this->Transaction_Master_Concept_Model= new Transaction_Master_Concept_Model();
 		$this->Transaction_Master_Detail_Credit_Model= new Transaction_Master_Detail_Credit_Model();

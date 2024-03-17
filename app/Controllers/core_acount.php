@@ -44,14 +44,13 @@ class core_acount extends _BaseController {
 	}		
 	
 	function logout(){
-		try{																
+		try
+		{																
 			
 			
 			$dataSession					= $this->session->get();	
 			$type							= $dataSession["company"]->type;
 			$companyID 						= APP_COMPANY;
-			//$this->core_web_authentication->destroyLogin();			
-			
 			
 			
 			$objComponentSeguridad			= $this->core_web_tools->getComponentIDBy_ComponentName("0-SEGURIDAD");
@@ -82,13 +81,31 @@ class core_acount extends _BaseController {
 				
 			}
 			
+			
+			
+			//Guardar Log			
+			$objLogSessionModel["session_id"] 		= session_id();
+			$objLogSessionModel["ip_address"] 		= $this->request->getIPAddress();
+			$objLogSessionModel["user_agent"] 		= $this->request->getUserAgent()->getPlatform();
+			$objLogSessionModel["last_activity"] 	= \DateTime::createFromFormat("Y-m-d H:i:s",helper_getDateTime())->format("YmdHis");
+			$objLogSessionModel["user_data"] 		= $dataSession["user"]->nickname." destroy session";
+			
+			
+			$objLogSessionModel2 					= $this->Log_Session_Model->asObject()->where("session_id",$objLogSessionModel["session_id"])->find();
+			if(!$objLogSessionModel2)			
+			$this->Log_Session_Model->insert($objLogSessionModel);			
+			else 			
+			$this->Log_Session_Model->upsert($objLogSessionModel);
+		
+		
+			$this->core_web_authentication->destroyLogin();			
 			$this->response->redirect(base_url());
 			
 						
 		}
-		catch(\Exception $e){				
-			
-			show_error($e->getMessage() ,500 );
+		catch(\Exception $e)
+		{		
+			echo $e->getMessage();
 		}
 	}
 	
@@ -159,6 +176,8 @@ class core_acount extends _BaseController {
 			set_cookie("email",$dataSession['user']->email,86400,"localhost");			
 			
 	
+			
+			
 			$subject 	= "Inicio de session: ".$objCompany->name." ".$nickname;
 			$body  		= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview
 			
@@ -170,7 +189,24 @@ class core_acount extends _BaseController {
 			
 			$resultSend01 = $this->email->send();
 			$resultSend02 = $this->email->printDebugger();
-						
+			
+			
+			//Guardar Log			
+			$objLogSessionModel["session_id"] 		= session_id();
+			$objLogSessionModel["ip_address"] 		= $this->request->getIPAddress();
+			$objLogSessionModel["user_agent"] 		= $this->request->getUserAgent()->getPlatform();
+			$objLogSessionModel["last_activity"] 	= \DateTime::createFromFormat("Y-m-d H:i:s",helper_getDateTime())->format("YmdHis");
+			$objLogSessionModel["user_data"] 		= $objUser["user"]->nickname." create session";
+			
+			
+			$objLogSessionModel2 					= $this->Log_Session_Model->asObject()->where("session_id",$objLogSessionModel["session_id"])->find();
+			if(!$objLogSessionModel2)			
+			$this->Log_Session_Model->insert($objLogSessionModel);			
+			else 			
+			$this->Log_Session_Model->upsert($objLogSessionModel);
+		
+		
+			
 			$this->response->redirect(base_url()."/".$objUser["role"]->urlDefault."/index");
 			
 			
