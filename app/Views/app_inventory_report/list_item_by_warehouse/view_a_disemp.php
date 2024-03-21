@@ -79,8 +79,12 @@
 					<th  style="text-align:left;text-align:left;width:150px;"    colspan="1" class="border">Categoria</th>	
 					
 					<?php
+						
+						$bodegasArray 		= explode(",", $warehouseListID);
+						$bodegasArrayTodas 	= $warehouseListID == "-1,0" ? "true" : "false";
 						foreach($objListWarehouse as $iele)
 						{
+							if($bodegasArrayTodas == "true" || in_array($iele->warehouseID,$bodegasArray ) )
 							echo '<th  style="text-align:right;width:120px;"  colspan="1"   class="border">'.$iele->name.'</th>';
 						}
 					?>
@@ -94,7 +98,9 @@
 			</thead>				
 			<tbody>
 				<?php
-				$count 			= 0;
+				$bodegasArray 		= explode(",", $warehouseListID);
+				$bodegasArrayTodas 	= $warehouseListID == "-1,0" ? "true" : "false";
+				$count 				= 0;
 				if($objListItem)
 				{
 					
@@ -113,6 +119,7 @@
 								<?php
 									foreach($objListWarehouse as $iele)
 									{
+										if($bodegasArrayTodas == "true" || in_array($iele->warehouseID,$bodegasArray ) )
 										echo '<th  style="text-align:right;width:120px;"  colspan="1"   class="border">'.$iele->name.'</th>';
 									}
 								?>
@@ -138,7 +145,10 @@
 								echo (substr($ielement,-15));
 							echo "</td>";
 							echo "<td style='text-align:left'  colspan='1'  class='border' >";
-								echo $i["itemName"];
+								if( $typeCompay == "exceso")
+									echo $i["itemName"];
+								else 
+									echo $i["itemName"];
 							echo "</td>";		
 							echo "<td style='text-align:left'  colspan='1' class='border' >";
 								echo ($i["categoryName"]);
@@ -156,13 +166,15 @@
 								
 								$w 			= reset($w);
 								
-								
-								echo "<td style='text-align:right;' colspan='1'  class='border' >";
-										if($w === false)
-										echo number_format(0,2,'.',',');
-										else 
-										echo number_format($w["quantity"],2,'.',',');
-								echo "</td>";
+								if($bodegasArrayTodas == "true" || in_array($iele->warehouseID,$bodegasArray ) )
+								{
+									echo "<td style='text-align:right;' colspan='1'  class='border' >";
+											if($w === false)
+											echo number_format(0,2,'.',',');
+											else 
+											echo number_format($w["quantity"],2,'.',',');
+									echo "</td>";
+								}
 							}
 							
 							echo "<td  style='text-align:right' class='border'>";
@@ -192,6 +204,7 @@
 					<?php
 						foreach($objListWarehouse as $iele)
 						{
+							if($bodegasArrayTodas == "true" || in_array($iele->warehouseID,$bodegasArray ) )
 							echo '<th  style="text-align:right;width:120px;"  colspan="1"   class="border">'.$iele->name.'</th>';
 						}
 					?>

@@ -1248,25 +1248,6 @@ WHERE
 
 
 
-/*
-Eliminar o desactivar usuarios
-*/
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/
- 439,  	/*supervisor*/
- 438, 	/*facturador*/
- 437 	/*administrador*/
-);
-
-update tb_role set isActive = 0; 
-update tb_role set isActive = 1 where roleID in (
-	3,
-	365,
-	364,
-	363	
-);
-
 
 
 /*tipo de cambio de dolares a cordoba*/

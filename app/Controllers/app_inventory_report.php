@@ -402,10 +402,16 @@ class app_inventory_report extends _BaseController {
 			$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_inventory_get_report_list_item" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
 			$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
 			
-			if($objCompany->type == "default")
+			
+			//Revisar si existe la vista
+			$documentoPath = PATH_FILE_OF_APP_SYSTEM."/app/Views/app_inventory_report/list_item/view_a_disemp_".$objCompany->type.".php";						
+			if (!file_exists($documentoPath))
+			{
 				return view("app_inventory_report/list_item/view_a_disemp",$objDataResult);//--finview-r
+			}
 			else 
 				return view("app_inventory_report/list_item/view_a_disemp_".$objCompany->type,$objDataResult);//--finview-r
+			
 			
 		}
 		catch(\Exception $ex){
@@ -589,6 +595,9 @@ class app_inventory_report extends _BaseController {
 				$objDataResult["objParameterAltoDeLaFila"] 	= $objParameterAltoDeLaFila;				
 				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_inventory_get_report_list_item_by_warehouse" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
 				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
+				$objDataResult["warehouseListID"]			= $warehouseListID;
+				$objDataResult["typeCompay"]				= $objCompany->type;
+				$objDataResult["flavorIDCompay"]			= $objCompany->flavorID;
 				
 				return view("app_inventory_report/list_item_by_warehouse/view_a_disemp",$objDataResult);//--finview-r
 			}

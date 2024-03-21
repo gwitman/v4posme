@@ -42,7 +42,7 @@
 																<?php
 																if($objListItem)
 																foreach($objListItem as $i){
-																	echo "<option value='".$i->itemID."'>".$i->itemNumber." ".$i->name."</option>";
+																	echo "<option value='".$i->itemID."'>".$i->itemNumber." ".$i->name." ".$i->barCode."</option>";
 																}
 																?>
 														</select>

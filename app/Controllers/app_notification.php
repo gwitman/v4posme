@@ -1753,25 +1753,10 @@ class app_notification extends _BaseController {
 			$fechaNowWile		= $fechaNowWile->modify('-'.$parameterDaySleep.' day');		
 			
 			
-			$fechaBeforeWile  	= \DateTime::createFromFormat('Y-m-d',date("Y-m-d"));  			
-			$fechaBeforeWile	= $fechaBeforeWile->modify('-'.$parameterDaySleep.' day');	
-			
-			
-			
-			$fechaNow  		= $fechaNowWile->format("Y-m-d");	
-			$fechaBefore	= "";
-			if( intval($parameterDaySleep) == 0)
-			{
-				$fechaNow			= $fechaNowWile->modify('+1 day')->format("Y-m-d");						
-				$fechaBefore		= $fechaBeforeWile->format("Y-m-d 23:59:59");	
+			$fechaNow			= $fechaNowWile->format("Y-m-d");						
+			$fechaBefore		= $fechaNowWile->format("Y-m-d")." 23:59:59";
 				
-			}
-			else
-			{
-				$fechaNow			= $fechaNowWile->modify("+1 day")->format("Y-m-d");					
-				$fechaBefore		= $fechaBeforeWile->format("Y-m-d 23:59:59");		
-				
-			}		
+			
 			
 			if($format == "pdf")
 			{
@@ -1883,14 +1868,8 @@ class app_notification extends _BaseController {
 		$parameterDaySleep					= $parameterDaySleep->value;
 			
 			
-		$fechaNowWile  		= \DateTime::createFromFormat('Y-m-d',$parameterLastNotification);  
-		$fechaNowWile		= $fechaNowWile->modify('-'.$parameterDaySleep.' day');		
 		
-		
-		$fechaBeforeWile  	= \DateTime::createFromFormat('Y-m-d',date("Y-m-d"));  			
-		$fechaBeforeWile	= $fechaBeforeWile->modify('-'.$parameterDaySleep.' day');	
-		
-		
+		$fechaBeforeWile  				= \DateTime::createFromFormat('Y-m-d',$parameterLastNotification);  		
 		$dataNewParameter 				= array();		
 		$fechaBeforeWile				= $fechaBeforeWile->modify('+'.$parameterDaySleep.' day');	
 		$dataNewParameter["value"] 		= $fechaBeforeWile->format("Y-m-d");

@@ -73,7 +73,7 @@
 				<tr>
 					<th colspan="7" style="
 						text-align:right;background-color:#00628e;color:white;
-					">PRODUCTO: <?php echo $objItem->itemNumber." ".$objItem->name; ?></th>
+					">PRODUCTO: <?php echo $objItem->itemNumber." ".$objItem->name." ".$objItem->barCode; ?></th>
 				</tr>
 				<tr>
 					<th colspan="7" style="text-align:left">&nbsp;</th>

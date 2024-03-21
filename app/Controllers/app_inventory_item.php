@@ -1042,12 +1042,11 @@ class app_inventory_item extends _BaseController {
 	{	
 		try{ 
 		
-			//Lanzar un Post en una pagina de facebook success
-			//https://developers.facebook.com/docs/commerce-platform/setup/api-setup?locale=es_ES
-			//https://business.facebook.com/commerce_manager/get_started/
+			//crear token en facebook
 			//https://developers.facebook.com/tools/explorer/?method=POST&path=109895114143555%2Ffeed%3Fmessage%3Dhola2&version=v19.0&locale=es_ES
-			//https://developers.facebook.com/docs/pages-api/posts
-			//https://developers.facebook.com/docs/commerce-platform/platforms/distribution/MPApprovalAPI/?locale=es_ES
+			//publicaciones en pagina de facebook
+			//https://developers.facebook.com/docs/pages-api/posts			
+			//Lanzar un Post en una pagina de facebook success
 			//-wgonzalez-publicar-en-pagina-require_once APPPATH . 'ThirdParty/Facebook/autoload.php';			
 			//-wgonzalez-publicar-en-pagina-$fb = new Facebook([
 			//-wgonzalez-publicar-en-pagina-	'app_id' => '1863115980872262',
@@ -1078,7 +1077,15 @@ class app_inventory_item extends _BaseController {
 			//-wgonzalez-publicar-en-pagina-}
 			
 			
-			//-wgonzalez-//Lanzar un post en la market place de facebook en proceso
+			//Crear una cuenta de negocio
+			//https://www.facebook.com/business/help/169396597334438?id=2042840805783715
+			//pasos para crear una merket place
+			//https://developers.facebook.com/docs/commerce-platform/setup/api-setup?locale=es_ES						
+			//api de productos
+			//https://developers.facebook.com/docs/marketing-api/reference/product-catalog/product_sets/
+			//crear token en facebook
+			//https://developers.facebook.com/tools/explorer/?method=POST&path=109895114143555%2Ffeed%3Fmessage%3Dhola2&version=v19.0&locale=es_ES
+			//Lanzar un post en la market place de facebook en proceso		
 			//-wgonzalez-require_once APPPATH . 'ThirdParty/Facebook/autoload.php';			
 			//-wgonzalez-$fb = new Facebook([
 			//-wgonzalez-	'app_id' => '1863115980872262',
@@ -1086,20 +1093,95 @@ class app_inventory_item extends _BaseController {
 			//-wgonzalez-	'default_graph_version' => 'v19.0',
 			//-wgonzalez-]);
 			//-wgonzalez-
-			//-wgonzalez-$accessToken = 'EAAaefn43GkYBO5KVA5ZBERSEsTacyIZCoukwred8zrEdtoXlSeZCV2LZChxlQbfyArnxwtIRyIn2ueovqnUqgzS8HdxWEwTZB4X6SFUimK9k5AaaqHedKKZCEICIQ4yDl5ScykZC66gZB1qya9ZC4hDNmyfabCt65gAg7JqRBiSPvbS2GU9OM6MP1DDWDxOkLqHcDywvta7OPNMoch9nsqvRuNTIZD';
+			//-wgonzalez-$accessToken = 'EAAaefn43GkYBO0D1I6BKZBRHnoxRV6fnIUEZClkcRIuEC8TlYhrNKjqihsMlzn3TMrYRfIujv1wo6XfsR858MEHAkAANwm1es7syPVjnEg9SiL8jni1gel5cdFfWbJQh23zr8bHHBDxO90Opcc5tSikyz8cPfwAXVr8YS97Gn75gWnepRYA8FTpPASqlF0vuKOdN2pZB7AQfwULEQZDZD';
 			//-wgonzalez-
 			//-wgonzalez-try {
 			//-wgonzalez-	
+			//-wgonzalez-	//$helper = $fb->getRedirectLoginHelper();
+			//-wgonzalez-	//$tocken = $helper->getAccessToken();
 			//-wgonzalez-	
-			//-wgonzalez-	
+			//-wgonzalez-    // call facebook and ask for name and picture
+			//-wgonzalez-    //var_dump( (string)$tocken );
+			//-wgonzalez-	//$facebookResponse 	= $fb->get( '/me?fields=first_name,last_name,picture' );
+			//-wgonzalez-	//$facebookUser 		= $facebookResponse->getGraphUser();
+			//-wgonzalez-	//https://baulphp.com/publicar-en-facebook-desde-sitio-web-utilizando-php/
+			//-wgonzalez-
+			//-wgonzalez-	 // Use handler to get access token info
+			//-wgonzalez-	//$oAuth2Client = $fb->getOAuth2Client();
+			//-wgonzalez-	//$accessToken = $oAuth2Client->debugToken($tocken);
+			//-wgonzalez-
+			//-wgonzalez-
 			//-wgonzalez-	// Obtener instancia del cliente de Graph API
-			//-wgonzalez-	$response = $fb->post('/109895114143555', [
-			//-wgonzalez-		'onsite_commerce_merchant' => 'Título de tu producto tes tst'					
-			//-wgonzalez-	], $accessToken);
+			//-wgonzalez-	// Verificar si ya existe un conjunto de productos con los mismos filtros
+			//-wgonzalez-	// $existingSets = $fb->get('/746644540896409/product_sets',$accessToken);
+			//-wgonzalez-	// foreach ($existingSets->getGraphEdge() as $existingSet) {
+			//-wgonzalez-	// 	if ($existingSet['filter'] == '{ "product_type": { "contains": "electronics" } }') {
+			//-wgonzalez-	// 	  // Si ya existe un conjunto de productos con los mismos filtros, muestra un mensaje o realiza alguna acción
+			//-wgonzalez-	// 	  echo '¡Ya existe un conjunto de productos con los mismos filtros!';
+			//-wgonzalez-	// 	  
+			//-wgonzalez-	// 	}
+			//-wgonzalez-	// }
+			//-wgonzalez-	  
+			//-wgonzalez-	
+			//-wgonzalez-	// Array de datos de productos
+			//-wgonzalez-	$products = [
+			//-wgonzalez-		[
+			//-wgonzalez-		  'name' => 'Producto 1',
+			//-wgonzalez-		  'description' => 'Descripción del producto 1',
+			//-wgonzalez-		  'availability' => 'in stock',
+			//-wgonzalez-		  'condition' => 'new',
+			//-wgonzalez-		  'price' => '10,99',
+			//-wgonzalez-		  'currency' => 'USD',
+			//-wgonzalez-		  'url' => 'https://example.com/product1',
+			//-wgonzalez-		  'image_url' => 'https://example.com/product1.jpg'
+			//-wgonzalez-		]/*,
+			//-wgonzalez-		[
+			//-wgonzalez-		  'name' => 'Producto 2',
+			//-wgonzalez-		  'description' => 'Descripción del producto 2',
+			//-wgonzalez-		  'availability' => 'in stock',
+			//-wgonzalez-		  'condition' => 'new',
+			//-wgonzalez-		  'price' => '19,99',
+			//-wgonzalez-		  'currency' => 'USD',
+			//-wgonzalez-		  'url' => 'https://example.com/product2',
+			//-wgonzalez-		  'image_url' => 'https://example.com/product2.jpg'7636920466326070
+			//-wgonzalez-		],
+			//-wgonzalez-		[
+			//-wgonzalez-		  'name' => 'Producto 3',
+			//-wgonzalez-		  'description' => 'Descripción del producto 3',
+			//-wgonzalez-		  'availability' => 'in stock',
+			//-wgonzalez-		  'condition' => 'new',
+			//-wgonzalez-		  'price' => '29,99',
+			//-wgonzalez-		  'currency' => 'USD',
+			//-wgonzalez-		  'url' => 'https://example.com/product3',
+			//-wgonzalez-		  'image_url' => 'https://example.com/product3.jpg'
+			//-wgonzalez-		]*/
+			//-wgonzalez-	];
 			//-wgonzalez-
-			//-wgonzalez-	$graphNode = $response->getGraphNode();
+			//-wgonzalez-	// Realiza una solicitud POST para insertar los productos en el catálogo
+			//-wgonzalez-	$response = $fb->post('/378489238328938/products',
+			//-wgonzalez-	//array (
+			//-wgonzalez-	//  'name' => 'Test Set',
+			//-wgonzalez-	//  'filter' => '{"product_type":{"contains":"shirt"}}',
+			//-wgonzalez-	//)
+			//-wgonzalez-	
+			//-wgonzalez-	array (
+			//-wgonzalez-		  'retailer_id' => '125',
+			//-wgonzalez-		  'name' => 'Producto 1',
+			//-wgonzalez-		  'description' => 'Descripción del producto 1',
+			//-wgonzalez-		  'availability' => 'in stock',
+			//-wgonzalez-		  'condition' => 'new',
+			//-wgonzalez-		  'price' => '1099',
+			//-wgonzalez-		  'currency' => 'USD',
+			//-wgonzalez-		  'url' => 'https://example.com/product1',
+			//-wgonzalez-		  'image_url' => 'https://example.com/product1.jpg'
+			//-wgonzalez-	)
+			//-wgonzalez-	
+			//-wgonzalez-	/*$products*/
+			//-wgonzalez-	,$accessToken);
+			//-wgonzalez-	  
+			//-wgonzalez-	  
 			//-wgonzalez-
-			//-wgonzalez-	echo 'Publicación exitosa en Marketplace: ' . $graphNode['id'];
+			//-wgonzalez-	//echo 'Publicación exitosa en Marketplace: ' . $graphNode['id'];
 			//-wgonzalez-} catch (FacebookResponseException $e) {
 			//-wgonzalez-	echo 'Error de Graph: ' . $e->getMessage();
 			//-wgonzalez-} catch (FacebookSDKException $e) {
