@@ -151,8 +151,9 @@ class app_inventory_api extends _BaseController {
 									,x.`Moneda` as `Moneda descripcion`
 								from 
 									vw_inventory_list_item_real_estate x 								
-								where 
-									x.`Codigo interno` = 29060  /*x.createdOn BETWEEN ? and ?*/
+								limit 1 
+								/*where */
+									  /*x.createdOn BETWEEN ? and ?*/
 							";
 			$objData		= $this->Bd_Model->executeRender(
 				$query,
@@ -161,20 +162,17 @@ class app_inventory_api extends _BaseController {
 			
 			
 			//Crear XML
-			$xmlContent =	'
-			<?xml version="1.0" encoding="UTF-8"?>
-			<import>
-				<settings>
-					<type><![CDATA[property]]</type>
-					<language><![CDATA[es]]</language>
-				</settings>
-				<items>
-					[[ITEMS]]
-				</items>
-			</import>';
+			$xmlContent =	'<?xml version="1.0" encoding="UTF-8"?>
+<import>
+<settings>
+	<type><![CDATA[property]]></type>
+	<language><![CDATA[es]]></language>
+</settings>
+<items>[[ITEMS]]</items>
+</import>';
+
 			
-			$xmlContentItem = "
-			";
+			$xmlContentItem = "";
 			foreach($objData as $key => $value)
 			{
 				
@@ -182,31 +180,25 @@ class app_inventory_api extends _BaseController {
 				$xmlContentItem = $xmlContentItem."<item>";
 					$xmlContentItem = $xmlContentItem."<required>";
 						$xmlContentItem = $xmlContentItem."<ad>";
-						  $xmlContentItem = $xmlContentItem."<countryid><![CDATA[152]]></countryid>";
-						  $xmlContentItem = $xmlContentItem."<sourceid><![CDATA[".$value["Codigo interno"]."]]></sourceid>";
-						  $xmlContentItem = $xmlContentItem."<categoryid><![CDATA[".$value["Tipo de casa"]."]]></categoryid>";
-						  $xmlContentItem = $xmlContentItem."<!--<categoryid><![CDATA[".$value["Tipo de casa descripcion"]."]]></categoryid>-->";
-						  $xmlContentItem = $xmlContentItem."<regionid><![CDATA[".$value["Ciudad"]."]]></regionid>";
-						  $xmlContentItem = $xmlContentItem."<!--<regionid><![CDATA[".$value["Ciudad descripcion"]."]]></regionid>-->";						  
+						  $xmlContentItem = $xmlContentItem."<countryid>152</countryid>";
+						  $xmlContentItem = $xmlContentItem."<sourceid>".$value["Codigo interno"]."</sourceid>";
+						  $xmlContentItem = $xmlContentItem."<categoryid>".$value["Tipo de casa"]."</categoryid>";
+						  $xmlContentItem = $xmlContentItem."<regionid>".$value["Ciudad"]."</regionid>";						  
 						  $xmlContentItem = $xmlContentItem."<type><![CDATA[".$value["Proposito"]."]]></type>";
-						  $xmlContentItem = $xmlContentItem."<!--<type><![CDATA[".$value["Proposito descripcion"]."]]></type>-->";
-						  
-						  
 						  $xmlContentItem = $xmlContentItem."<title><![CDATA[".$value["Nombre"]."]]></title>";						  
-						  $xmlContentItem = $xmlContentItem."<currency><![CDATA[".$value["Moneda"]."]]></currency>";
-						  $xmlContentItem = $xmlContentItem."<!--<currency><![CDATA[".$value["Moneda descripcion"]."]]></currency>-->";
-						  $xmlContentItem = $xmlContentItem."<price><![CDATA[".$value["Precio Venta"]."]]></price>";
-						  $xmlContentItem = $xmlContentItem."<rent><![CDATA[".$value["Precio Renta"]."]]></rent>";
-						  $xmlContentItem = $xmlContentItem."<rooms><![CDATA[".$value["Habitaciones"]."]]></rooms>";
-						  $xmlContentItem = $xmlContentItem."<bath><![CDATA[".$value["Baños"]."]]></bath>";
-						  $xmlContentItem = $xmlContentItem."<square><![CDATA[".$value["Area de contruccion M2"]."]]></square>";
-						  $xmlContentItem = $xmlContentItem."<parking><![CDATA[".$value["Nombre"]."]]></parking>";
+						  $xmlContentItem = $xmlContentItem."<currency><![CDATA[".$value["Moneda"]."]]></currency>";						  
+						  $xmlContentItem = $xmlContentItem."<price>".$value["Precio Venta"]."</price>";
+						  $xmlContentItem = $xmlContentItem."<rent>".$value["Precio Renta"]."</rent>";
+						  $xmlContentItem = $xmlContentItem."<rooms>".$value["Habitaciones"]."</rooms>";
+						  $xmlContentItem = $xmlContentItem."<bath>".$value["Baños"]."</bath>";
+						  $xmlContentItem = $xmlContentItem."<square>".$value["Area de contruccion M2"]."</square>";
+						  $xmlContentItem = $xmlContentItem."<parking>".$value["Nombre"]."</parking>";
 						  $xmlContentItem = $xmlContentItem."<advertiser><![CDATA[Agente]]></advertiser>";						  
 						$xmlContentItem = $xmlContentItem."</ad>";
 						$xmlContentItem = $xmlContentItem."<contact>";
-						  $xmlContentItem = $xmlContentItem."<email><![CDATA[info@santalucia.reantatste]]></email>";
-						  $xmlContentItem = $xmlContentItem."<phone><![CDATA[88888888]]></phone>";
-						  $xmlContentItem = $xmlContentItem."<contact><![CDATA[Lucia Lindo]]></contact>";
+						  $xmlContentItem = $xmlContentItem."<email><![CDATA[operaciones@santaluciare.com]]></email>";
+						  $xmlContentItem = $xmlContentItem."<phone><![CDATA[+505 8513 8974]]></phone>";
+						  $xmlContentItem = $xmlContentItem."<contact><![CDATA[Jessica Romero]]></contact>";
 						  $xmlContentItem = $xmlContentItem."<city><![CDATA[Managua]]></city>";
 						$xmlContentItem = $xmlContentItem."</contact>";
 					$xmlContentItem = $xmlContentItem."</required>";	
@@ -225,37 +217,35 @@ class app_inventory_api extends _BaseController {
 							$xmlContentItem = $xmlContentItem."<picture><![CDATA[".$value["Pagina Web Link"]."]]></picture>";							
 						$xmlContentItem = $xmlContentItem."</ad>";
 						$xmlContentItem = $xmlContentItem."<contact>";
-						  $xmlContentItem = $xmlContentItem."<email><![CDATA[info@santalucia.reantatste]]></email>";
-						  $xmlContentItem = $xmlContentItem."<phone><![CDATA[88888888]]></phone>";
-						  $xmlContentItem = $xmlContentItem."<contact><![CDATA[Lucia Lindo]]></contact>";
+						  $xmlContentItem = $xmlContentItem."<email><![CDATA[operaciones@santaluciare.com]]></email>";
+						  $xmlContentItem = $xmlContentItem."<phone><![CDATA[+505 8513 8974]]></phone>";
+						  $xmlContentItem = $xmlContentItem."<contact><![CDATA[Jessica Romero]]></contact>";
 						  $xmlContentItem = $xmlContentItem."<city><![CDATA[Managua]]></city>";
 						$xmlContentItem = $xmlContentItem."</contact>";
 					$xmlContentItem = $xmlContentItem."</optional>";
-			
-				
 				$xmlContentItem = $xmlContentItem."</item>";
 			}
 			
 				
 			 // Crear el contenido XML
 			$xmlContent =   str_replace("[[ITEMS]]",$xmlContentItem,$xmlContent);			
-			$xmlContent =	htmlspecialchars($xmlContent);
-			echo $xmlContent;
+			//$xmlContent =	htmlspecialchars($xmlContent);
+			//echo $xmlContent;
 			
 			
-			//-wgonzalez-2-// Configurar la respuesta HTTP con el tipo de contenido XML
-			//-wgonzalez-2-$response = $this->response->setContentType('text/xml');
-			//-wgonzalez-2-
-			//-wgonzalez-2-// Enviar el contenido XML como respuesta
-			//-wgonzalez-2-return $response->setBody($xmlContent);
+			//wgonzalez-// Configurar la respuesta HTTP con el tipo de contenido XML
+			//wgonzalez-$response = $this->response->setContentType('text/xml');
+			//wgonzalez-
+			//wgonzalez-// Enviar el contenido XML como respuesta
+			//wgonzalez-return $response->setBody($xmlContent);
 	
-			//-wgonzalez-$filename = 'user_'.date('Ymd').'.xml'; 
-			//-wgonzalez-header("Content-Description: File Transfer"); 
-			//-wgonzalez-header("Content-Disposition: attachment; filename=$filename"); 
-			//-wgonzalez-header("Content-Type: text/xml; ");
-			//-wgonzalez-echo $xmlContent;
-			//-wgonzalez-exit; 
 			
+			$filename = 'user_'.date('Ymd').'.xml'; 
+			header("Content-Description: File Transfer"); 
+			header("Content-Disposition: attachment; filename=$filename"); 
+			header("Content-Type: text/xml; ");			
+			print($xmlContent);
+			exit;
 			
 		}
 		catch(\Exception $ex){
