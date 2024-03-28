@@ -67,7 +67,9 @@ class app_inventory_api extends _BaseController {
 									,x.`Corretaje`
 									,x.`Plan de referido`
 									,x.`Link Youtube`
+									,x.`Link Youtube Url`
 									,x.`Pagina Web Link`
+									,x.`Pagina Web Link Url`
 									,x.`Foto`
 									,x.`Google`
 									,x.`Otros Link`
@@ -151,7 +153,7 @@ class app_inventory_api extends _BaseController {
 									,x.`Moneda` as `Moneda descripcion`
 								from 
 									vw_inventory_list_item_real_estate x 								
-								limit 1 
+								limit 1
 								/*where */
 									  /*x.createdOn BETWEEN ? and ?*/
 							";
@@ -186,18 +188,26 @@ class app_inventory_api extends _BaseController {
 						  $xmlContentItem = $xmlContentItem."<regionid>".$value["Ciudad"]."</regionid>";						  
 						  $xmlContentItem = $xmlContentItem."<type><![CDATA[".$value["Proposito"]."]]></type>";
 						  $xmlContentItem = $xmlContentItem."<title><![CDATA[".$value["Nombre"]."]]></title>";						  
-						  $xmlContentItem = $xmlContentItem."<currency><![CDATA[".$value["Moneda"]."]]></currency>";						  
-						  $xmlContentItem = $xmlContentItem."<price>".$value["Precio Venta"]."</price>";
-						  $xmlContentItem = $xmlContentItem."<rent>".$value["Precio Renta"]."</rent>";
+						  $xmlContentItem = $xmlContentItem."<currency><![CDATA[".$value["Moneda"]."]]></currency>";	
+						  
+						  if($value["Proposito"] == "rent")
+						  {
+								$xmlContentItem = $xmlContentItem."<rent>".$value["Precio Renta"]."</rent>";							
+						  }
+						  else
+						  {							 
+								$xmlContentItem = $xmlContentItem."<price>".$value["Precio Venta"]."</price>";
+						  }
+						  
 						  $xmlContentItem = $xmlContentItem."<rooms>".$value["Habitaciones"]."</rooms>";
 						  $xmlContentItem = $xmlContentItem."<bath>".$value["Baños"]."</bath>";
 						  $xmlContentItem = $xmlContentItem."<square>".$value["Area de contruccion M2"]."</square>";
-						  $xmlContentItem = $xmlContentItem."<parking>".$value["Nombre"]."</parking>";
+						  $xmlContentItem = $xmlContentItem."<parking>1</parking>";
 						  $xmlContentItem = $xmlContentItem."<advertiser><![CDATA[Agente]]></advertiser>";						  
 						$xmlContentItem = $xmlContentItem."</ad>";
 						$xmlContentItem = $xmlContentItem."<contact>";
 						  $xmlContentItem = $xmlContentItem."<email><![CDATA[operaciones@santaluciare.com]]></email>";
-						  $xmlContentItem = $xmlContentItem."<phone><![CDATA[+505 8513 8974]]></phone>";
+						  $xmlContentItem = $xmlContentItem."<phone><![CDATA[00505 85138974]]></phone>";
 						  $xmlContentItem = $xmlContentItem."<contact><![CDATA[Jessica Romero]]></contact>";
 						  $xmlContentItem = $xmlContentItem."<city><![CDATA[Managua]]></city>";
 						$xmlContentItem = $xmlContentItem."</contact>";
@@ -211,14 +221,14 @@ class app_inventory_api extends _BaseController {
 							$xmlContentItem = $xmlContentItem."<stories><![CDATA[".$value["Niveles"]."]]></stories>";
 							$xmlContentItem = $xmlContentItem."<swimmingpool><![CDATA[".$value["Piscina privada"]."]]></swimmingpool>";
 							$xmlContentItem = $xmlContentItem."<appliances><![CDATA[".$value["Amueblado"]."]]></appliances>";
-							$xmlContentItem = $xmlContentItem."<youtube1><![CDATA[".$value["Link Youtube"]."]]></youtube1>";
+							$xmlContentItem = $xmlContentItem."<youtube1><![CDATA[".$value["Link Youtube Url"]."]]></youtube1>";
 							$xmlContentItem = $xmlContentItem."<m2><![CDATA[".$value["Area de contruccion M2"]."]]></m2>";
 							$xmlContentItem = $xmlContentItem."<available><![CDATA[".$value["Disponible"]."]]></available>";
-							$xmlContentItem = $xmlContentItem."<picture><![CDATA[".$value["Pagina Web Link"]."]]></picture>";							
+							$xmlContentItem = $xmlContentItem."<picture><![CDATA[".$value["Pagina Web Link Url"]."]]></picture>";							
 						$xmlContentItem = $xmlContentItem."</ad>";
 						$xmlContentItem = $xmlContentItem."<contact>";
 						  $xmlContentItem = $xmlContentItem."<email><![CDATA[operaciones@santaluciare.com]]></email>";
-						  $xmlContentItem = $xmlContentItem."<phone><![CDATA[+505 8513 8974]]></phone>";
+						  $xmlContentItem = $xmlContentItem."<phone2><![CDATA[00505 85138974]]></phone2>";
 						  $xmlContentItem = $xmlContentItem."<contact><![CDATA[Jessica Romero]]></contact>";
 						  $xmlContentItem = $xmlContentItem."<city><![CDATA[Managua]]></city>";
 						$xmlContentItem = $xmlContentItem."</contact>";

@@ -249,6 +249,12 @@ Crear la tarea programada para enviar reportes diarios
 	Hora:	15:00:00
 	cmd.exe	/c start /min C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_job\job_send_notification_systema.bat ^& exit
 	
+	//ejecutar siguietne dia en cron servidor web
+	//Hora del servidor UTC	 (con este comando se ejecuta a las 1 de la tarde 01:00 p.m)
+	1 19 * * * curl "https://posme.net/v4posme/patio/public/app_notification/file_next_date/2"
+	1 18 * * * curl "https://posme.net/v4posme/patio/public/app_notification/file_job_send_report_daly_share_sumary_80mm_general/2"
+	
+	
 
 Probar Jobs Configurados	
 	
@@ -358,6 +364,7 @@ certificado vencido:
 	
 	limpia la cheche si es posible
 	
+
 	
 ---------------------------------------
 Servidor Siteground:

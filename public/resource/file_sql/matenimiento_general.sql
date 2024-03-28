@@ -1,4 +1,5 @@
 update tb_item set isInvoice = 1 ; 
+update tb_item set currencyID = 1;
 update tb_item set unitMeasureID = 78,displayUnitMeasureID = 78;
 
 delete from tb_item_sku where catalogItemID = 78;

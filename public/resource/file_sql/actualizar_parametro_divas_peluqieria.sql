@@ -729,7 +729,7 @@ WHERE
 
 			
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "25" 
+	tb_company_parameter.value = "2000" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_CANTIDAD_ITEM";## PANTALLA PARA LA FACTUACION
@@ -872,7 +872,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Divas Peluqieria' , address = 'Frente a pulperia San Luis' ,
-	flavorID = 0 
+	flavorID = 0 , type="default"
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
@@ -897,11 +897,20 @@ update tb_role set isActive = 1 where roleID in (
 	243	
 );
 
-
-/*
+/*tipo de cambio de dolares a cordoba*/
 update tb_exchange_rate set 
 	ratio = 36 
 where 
-	currencyID = 2 
-	and targetCurrencyID = 1;
-*/
+	currencyID = 2
+	and targetCurrencyID = 1; 
+	
+	
+/*tipo de cambio de dolares a cordoba*/
+update tb_exchange_rate set 
+	ratio = 0.027777 
+where 
+	currencyID = 1
+	and targetCurrencyID = 2; 
+	
+	
+	
