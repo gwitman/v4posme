@@ -134,6 +134,7 @@ define('APP_URL_RESOURCE_CSS_JS','http://localhost/posmev4');
 define('URL_REDIRECT_CALENDAR_POSME','http://localhost/posmev4/core_user/savepublicgooglereturn');
 define('APP_URL_WOOCOMERCE','https://posme.net');
 
+
 //BD
 //define("DB_PASSWORD","root1.2Blandon");
 //define("DB_USER","root");

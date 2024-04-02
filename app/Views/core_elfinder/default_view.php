@@ -74,8 +74,8 @@
 		</div><!-- End .main  -->
 		
 		<script>
-			var urlRootElFinder 		= '<?php echo APP_URL_RESOURCE_CSS_JS; ?>/core_elfinder/load_elfinder/componentID/<?php echo $componentID; ?>/componentItemID/<?php echo $componentItemID; ?>';
-			var urlRootComponentFolder 	= '<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/file_company/company_<?php echo $companyID; ?>/component_<?php echo $componentID; ?>/component_item_<?php echo $componentItemID; ?>';
+			var urlRootElFinder 		= '<?php echo base_url(); ?>/core_elfinder/load_elfinder/componentID/<?php echo $componentID; ?>/componentItemID/<?php echo $componentItemID; ?>';
+			var urlRootComponentFolder 	= '<?php echo base_url(); ?>/resource/file_company/company_<?php echo $companyID; ?>/component_<?php echo $componentID; ?>/component_item_<?php echo $componentItemID; ?>';
 			function initReady()
 			{
 				$(document).ready(function() {

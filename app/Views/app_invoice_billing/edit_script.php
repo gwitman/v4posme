@@ -476,7 +476,7 @@
 					filterResultArray[5]  	= filterResult.itemID;
 					filterResultArray[17] 	= filterResult.Codigo;
 					filterResultArray[18] 	= filterResult.Nombre;
-					filterResultArray[20] 	= "N/A"
+					filterResultArray[20] 	= filterResult.Medida;
 					filterResultArray[21] 	= filterResult.Cantidad;
 					filterResultArray[22] 	= filterResult.Precio;
 					filterResultArray[23] 	= filterResult.unitMeasureID;
@@ -757,6 +757,7 @@
 		objRow.codigo						= objResponse[17];
 		objRow.description					= objResponse[18].toLowerCase();
 		objRow.um							= objResponse[23];
+		objRow.umDescription				= objResponse[20];
 		objRow.quantity 					= fnFormatNumber(1,2);
 		objRow.bquantity 					= fnFormatNumber(objResponse[21],2);
 		objRow.price 						= fnFormatNumber(objResponse[22],2);
@@ -810,7 +811,7 @@
 				0,
 				0,
 				"",
-				"",
+				objRow.umDescription,
 				objRow.price2,
 				objRow.price3
 			]);
@@ -2544,7 +2545,7 @@
 												if(varUseMobile == "1")
 													espacio = "";		
 												
-												sel = sel + '<option value="'+full[5]+'" data-skuv="1" data-skupriceunitary="'+full[7]+'" selected style="font-size:200%" data-description="UNIDAD" >UNIDAD'+espacio+'</option>';
+												sel = sel + '<option value="'+full[5]+'" data-skuv="1" data-skupriceunitary="'+full[7]+'" selected style="font-size:200%" data-description="'+full[13]+'" >'+full[13]+espacio+'</option>';
 												sel = sel + '</select>';
 												return sel;
 									

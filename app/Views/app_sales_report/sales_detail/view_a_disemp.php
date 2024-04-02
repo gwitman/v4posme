@@ -53,7 +53,7 @@
 		$configColumn["15"]["FiledSouce"] 		= "ivaTotal";
 		$configColumn["16"]["FiledSouce"] 		= "amountConIva";
 		$configColumn["17"]["FiledSouce"] 		= "amountCommision";
-
+		
 		$configColumn["0"]["Formato"] 		= "";		
 		$configColumn["1"]["Formato"] 		= "";		
 		$configColumn["2"]["Formato"] 		= "Date";		

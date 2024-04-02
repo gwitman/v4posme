@@ -279,7 +279,15 @@ WHERE
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PAYMENT_PRUEBA_CLAVE";## Clave para realizar el pago en ambiente de prueba 
 				
-				
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "3000" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_CANTIDAD_ITEM";## PANTALLA PARA LA FACTUACION
+	
+	
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "35f6110eb79c3640a9bc35f876fe05f6" 
 WHERE 
@@ -675,7 +683,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "2023-12-15" 
+	tb_company_parameter.value = "2050-12-15" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CUST_PRICE_LICENCES_EXPIRED";## Fecha de expiracion de la licencia 
@@ -751,6 +759,6 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Variedades Mondragon' , address = 'Terminal de Buses Malpaisillo' 
+	NAME = 'Variedades Mondragon' , address = 'Terminal de Buses Malpaisillo'  , type = "default"
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
