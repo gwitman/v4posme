@@ -31,6 +31,31 @@
 												</div>
 											</div>
 											
+											<div class="form-group ">
+												<label class="col-lg-6 control-label" for="selectFilter">Encuentra 24</label>
+												<div class="col-lg-6"> 
+													<div class="col-lg-6">
+													</div>
+													<div class="col-lg-6">
+														<input class="form-control"  type="text"  name="txtNumberEncuentra24" id="txtNumberEncuentra24" value="">				
+													</div>													
+												</div>
+											</div>
+											
+											
+											<div class="form-group ">
+												<label class="col-lg-6 control-label" for="selectFilter">Propietario</label>
+												<div class="col-lg-6"> 
+													<div class="col-lg-6">
+													</div>
+													<div class="col-lg-6">
+														<input class="form-control"  type="text"  name="txtNamePropietario" id="txtNamePropietario" value="">
+													</div>													
+												</div>
+											</div>
+											
+											
+											
 											<div class="form-group hidden">
 												<label class="col-lg-6 control-label" for="selectFilter">Categorias</label>
 												<div class="col-lg-6"> 

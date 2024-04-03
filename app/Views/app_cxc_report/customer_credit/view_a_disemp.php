@@ -172,6 +172,18 @@
 		$configColumn["13"]["Width"]			= "200px";
 		
 		
+		$configColumn["14"]["Titulo"] 		= "Visita";
+		$configColumn["14"]["TituloFoot"]	= "";
+		$configColumn["14"]["FiledSouce"]	= "lastVisit";
+		$configColumn["14"]["Colspan"] 		= "1";
+		$configColumn["14"]["Formato"] 		= "";
+		$configColumn["14"]["Total"] 		= False;
+		$configColumn["14"]["Alineacion"] 	= "Left";
+		$configColumn["14"]["TotalValor"] 		= 0;
+		$configColumn["14"]["FiledSoucePrefix"]	= "";
+		$configColumn["14"]["Width"]			= "200px";
+		
+		
 		$resultado = helper_reporteGeneralCreateTable($objDetail,$configColumn,'0');
 		?>
 		

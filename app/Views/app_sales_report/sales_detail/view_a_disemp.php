@@ -16,7 +16,10 @@
 		
 		
 		<?php
-		$configColumn["0"]["Titulo"] 		= "Factura";		
+		$configColumn["0"]["Titulo"] 				= "Factura";	
+		$configColumn["0"]["IdTable"] 				= "myReport";		
+		$configColumn["0"]["FiltrarRegistroOnLine"] = True;	
+		
 		$configColumn["1"]["Titulo"] 		= "Tipo";		
 		$configColumn["2"]["Titulo"] 		= "Fecha";		
 		$configColumn["3"]["Titulo"] 		= "Cod Cliente";		

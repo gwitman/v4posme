@@ -711,6 +711,10 @@ class app_inventory_report extends _BaseController {
 			$endOn					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri
 			$inventoryCategoryID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"inventoryCategoryID");//--finuri
 			$warehouseID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"warehouseID");//--finuri
+			$namePropietario		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"namePropietario");//--finuri
+			$numberEncuentra24		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"numberEncuentra24");//--finuri
+			$namePropietario		= $namePropietario == "numberEncuentra24" ? "" : $namePropietario;
+			$numberEncuentra24		= $numberEncuentra24 == "numberEncuentra24" ? "" : $numberEncuentra24;
 			
 			if(!($viewReport && $startOn && $endOn  )){
 				
@@ -786,8 +790,26 @@ class app_inventory_report extends _BaseController {
 									from 
 										vw_inventory_list_item_real_estate x 
 									where 
-										x.createdOn BETWEEN ? and ?
+										(
+											'".$namePropietario."' != '' and  											
+											x.`Nombre` like '%".$namePropietario."%'  
+										) or
+										(
+											
+											'".$numberEncuentra24."' != '' and 
+											x.`ID Encuentra 24` like '%".$numberEncuentra24."%'  
+										) or 
+										(
+											x.createdOn BETWEEN ? and ? 
+											and
+											(
+											  '".$namePropietario."' = '' and  
+											  '".$numberEncuentra24."' = '' 
+											)											
+										)
 								";
+								
+				
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
 					[$startOn,$endOn]
