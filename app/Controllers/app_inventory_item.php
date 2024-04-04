@@ -199,9 +199,18 @@ class app_inventory_item extends _BaseController {
 			//PERMISO PUEDE ELIMINAR EL REGISTRO SEGUN EL WORKFLOW
 			if(!$this->core_web_workflow->validateWorkflowStage("tb_item","statusID",$obj->statusID,COMMAND_ELIMINABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
 			throw new \Exception(NOT_WORKFLOW_DELETE);
+		
+			
 			//VALIDAR CANTIDAD
-			if($obj->quantity > 0)
-			throw new \Exception("EL REGISTRO NO PUEDE SER ELIMINADO, SU CANTIDAD ES MAYOR QUE  0");			
+			if($dataSession["company"]->type != "luciaralstate" )
+			{
+				if($obj->quantity > 0 )
+				{
+					throw new \Exception("EL REGISTRO NO PUEDE SER ELIMINADO, SU CANTIDAD ES MAYOR QUE  0");			
+				}
+			}
+		
+		
 			//Eliminar el Registro
 			$this->Item_Model->delete_app_posme($companyID,$itemID);
 					
