@@ -1007,8 +1007,8 @@
 		$configTotalesColumns[0]["Titulo"] = "Total Cordoba";			
 		$configTotalesColumns[0]["FiledSouce"] = "total";
 		$configTotalesColumns[0]["Formato"] = "Number";
-		$configTotalesColumns[0]["Colspan"] = $columnX;		
-		$configTotalesColumns[0]["Width"] = $widthX;
+		$configTotalesColumns[0]["Colspan"] = $columnX;				
+		$configTotalesColumns[0]["Width"] = (str_replace("px", "", $widthX) / 2 )."px";
 		$detailTotales[0]["total"] = $totalCordoba;
 		
 		
@@ -1064,7 +1064,7 @@
 		$configTotalesColumns[0]["FiledSouce"] = "total";
 		$configTotalesColumns[0]["Formato"] = "Number";
 		$configTotalesColumns[0]["Colspan"] = $columnX;		
-		$configTotalesColumns[0]["Width"] = $widthX;
+		$configTotalesColumns[0]["Width"] = (str_replace("px", "", $widthX) / 2 )."px";
 		$detailTotales[0]["total"] = $totalDolares;
 		
 		$rosTotales = helper_reporteGeneralCreateTable(

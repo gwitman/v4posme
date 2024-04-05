@@ -138,8 +138,24 @@ class app_inventory_api extends _BaseController {
 									,case 
 										when x.`Ciudad` = 'Managua' then 
 											153
-										when x.`Ciudad` = 'Santa Lucía' then 
-											269
+										when x.`Ciudad` = 'Larreynaga Malpaisillo' then 
+											234
+										when x.`Ciudad` = 'San Juan Sur' then 
+											250
+										when x.`Ciudad` = 'Carazo' then 
+											173
+										when x.`Ciudad` = 'León' then 
+											230
+										when x.`Ciudad` = 'Granada' then 
+											181
+										when x.`Ciudad` = 'Rivas' then 
+											241
+										when x.`Ciudad` = 'Masaya' then 
+											163
+										when x.`Ciudad` = 'Estelí' then 
+											209
+										when x.`Ciudad` = 'San Rafael Del Sur' then 
+											159
 										else 
 											0
 									end as `Ciudad`
