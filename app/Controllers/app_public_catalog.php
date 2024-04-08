@@ -172,7 +172,9 @@ class app_public_catalog extends _BaseController {
 			$objTM["isActive"]						= 1;
 			$objTM["statusID"]						= /*inicio get post*/ $this->request->getPost("txtStatusID");
 			$objTM["orden"] 						= 1;
-			$objTM["description"] 					= /*inicio get post*/ $this->request->getPost("txtName");		
+			$objTM["description"] 					= /*inicio get post*/ $this->request->getPost("txtName");	
+			$objTM["flavorID"]						= $dataSession["company"]->flavorID;
+			
 			
 			
 			$db=db_connect();

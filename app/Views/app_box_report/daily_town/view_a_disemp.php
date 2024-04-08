@@ -60,18 +60,18 @@
 		$configColumnAbonos["11"]["Formato"] 		= "";	
 		
 		
-		$configColumnAbonos["0"]["Width"] 		= "80px";		
+		$configColumnAbonos["0"]["Width"] 		= "15px";		
 		//$configColumnAbonos["0"]["Width"] 		= "80px";		
-		$configColumnAbonos["1"]["Width"] 		= "220px";		
+		$configColumnAbonos["1"]["Width"] 		= "80px";		
 		//$configColumnAbonos["2"]["Width"] 		= "85px";	
-		$configColumnAbonos["4"]["Width"] 		= "80px";		
-		$configColumnAbonos["5"]["Width"] 		= "200px";		
-		$configColumnAbonos["6"]["Width"] 		= "80px";		
-		$configColumnAbonos["7"]["Width"] 		= "80px";		
-		$configColumnAbonos["8"]["Width"] 		= "120px";		
-		$configColumnAbonos["9"]["Width"] 		= "120px";		
-		$configColumnAbonos["10"]["Width"] 		= "220px";	
-		$configColumnAbonos["11"]["Width"] 		= "80px";	
+		$configColumnAbonos["4"]["Width"] 		= "40px";		
+		$configColumnAbonos["5"]["Width"] 		= "100px";		
+		$configColumnAbonos["6"]["Width"] 		= "40px";		
+		$configColumnAbonos["7"]["Width"] 		= "40px";		
+		$configColumnAbonos["8"]["Width"] 		= "60px";		
+		$configColumnAbonos["9"]["Width"] 		= "60px";		
+		$configColumnAbonos["10"]["Width"] 		= "40px";	
+		$configColumnAbonos["11"]["Width"] 		= "40px";	
 		
 		$configColumnAbonos["0"]["Total"] 		= False;	
 		//$configColumnAbonos["0"]["Total"] 		= False;		
@@ -125,19 +125,22 @@
 		$configColumnAbonosDolares["9"]["Formato"] 		= "";		
 		$configColumnAbonosDolares["10"]["Formato"] 	= "";	
 		$configColumnAbonosDolares["11"]["Formato"] 	= "";	
+	
 		
-		$configColumnAbonosDolares["0"]["Width"] 		= "80px";				
+		$configColumnAbonosDolares["0"]["Width"] 		= "15px";		
 		//$configColumnAbonosDolares["0"]["Width"] 		= "80px";		
-		$configColumnAbonosDolares["1"]["Width"] 		= "220px";		
-		//$configColumnAbonosDolares["2"]["Width"] 		= "85px";				
-		$configColumnAbonosDolares["4"]["Width"] 		= "80px";		
-		$configColumnAbonosDolares["5"]["Width"] 		= "200px";		
-		$configColumnAbonosDolares["6"]["Width"] 		= "80px";		
-		$configColumnAbonosDolares["7"]["Width"] 		= "80px";		
-		$configColumnAbonosDolares["8"]["Width"] 		= "120px";		
-		$configColumnAbonosDolares["9"]["Width"] 		= "120px";		
-		$configColumnAbonosDolares["10"]["Width"] 		= "220px";	
-		$configColumnAbonosDolares["11"]["Width"] 		= "80px";	
+		$configColumnAbonosDolares["1"]["Width"] 		= "80px";		
+		//$configColumnAbonosDolares["2"]["Width"] 		= "85px";	
+		$configColumnAbonosDolares["4"]["Width"] 		= "40px";		
+		$configColumnAbonosDolares["5"]["Width"] 		= "100px";		
+		$configColumnAbonosDolares["6"]["Width"] 		= "40px";		
+		$configColumnAbonosDolares["7"]["Width"] 		= "40px";		
+		$configColumnAbonosDolares["8"]["Width"] 		= "60px";		
+		$configColumnAbonosDolares["9"]["Width"] 		= "60px";		
+		$configColumnAbonosDolares["10"]["Width"] 		= "40px";	
+		$configColumnAbonosDolares["11"]["Width"] 		= "40px";	
+		
+		
 		
 		$configColumnAbonosDolares["0"]["Total"] 		= False;				
 		//$configColumnAbonosDolares["0"]["Total"] 		= False;		
@@ -234,18 +237,21 @@
 		$configColumnVentaContado["10"]["Formato"] 		= "";		
 		$configColumnVentaContado["11"]["Formato"] 		= "";	
 
-		$configColumnVentaContado["0"]["Width"] 		= "80px";		
+
+		$configColumnVentaContado["0"]["Width"] 		= "15px";		
 		//$configColumnVentaContado["0"]["Width"] 		= "80px";		
-		$configColumnVentaContado["1"]["Width"] 		= "220px";		
-		//$configColumnVentaContado["2"]["Width"] 		= "85px";				
-		$configColumnVentaContado["4"]["Width"] 		= "80px";		
-		$configColumnVentaContado["5"]["Width"] 		= "200px";		
-		$configColumnVentaContado["6"]["Width"] 		= "80px";		
-		$configColumnVentaContado["7"]["Width"] 		= "80px";		
-		$configColumnVentaContado["8"]["Width"] 		= "120px";		
-		$configColumnVentaContado["9"]["Width"] 		= "120px";		
-		$configColumnVentaContado["10"]["Width"] 		= "220px";			
-		$configColumnVentaContado["11"]["Width"] 		= "80px";			
+		$configColumnVentaContado["1"]["Width"] 		= "80px";		
+		//$configColumnVentaContado["2"]["Width"] 		= "85px";	
+		$configColumnVentaContado["4"]["Width"] 		= "40px";		
+		$configColumnVentaContado["5"]["Width"] 		= "100px";		
+		$configColumnVentaContado["6"]["Width"] 		= "40px";		
+		$configColumnVentaContado["7"]["Width"] 		= "40px";		
+		$configColumnVentaContado["8"]["Width"] 		= "60px";		
+		$configColumnVentaContado["9"]["Width"] 		= "60px";		
+		$configColumnVentaContado["10"]["Width"] 		= "40px";	
+		$configColumnVentaContado["11"]["Width"] 		= "40px";	
+		
+		
 		
 		
 		$configColumnVentaContado["0"]["Total"] 		= False;		
@@ -300,20 +306,20 @@
 		$configColumnVentaContadoDolares["9"]["Formato"] 		= "";		
 		$configColumnVentaContadoDolares["10"]["Formato"] 		= "";		
 		$configColumnVentaContadoDolares["11"]["Formato"] 		= "";		
-		
 
-		$configColumnVentaContadoDolares["0"]["Width"] 		= "80px";				
-		//$configColumnVentaContadoDolares["0"]["Width"] 		= "80px";		
-		$configColumnVentaContadoDolares["1"]["Width"] 		= "220px";		
-		//$configColumnVentaContadoDolares["2"]["Width"] 		= "85px";				
-		$configColumnVentaContadoDolares["4"]["Width"] 		= "80px";		
-		$configColumnVentaContadoDolares["5"]["Width"] 		= "200px";		
-		$configColumnVentaContadoDolares["6"]["Width"] 		= "80px";		
-		$configColumnVentaContadoDolares["7"]["Width"] 		= "80px";		
-		$configColumnVentaContadoDolares["8"]["Width"] 		= "120px";		
-		$configColumnVentaContadoDolares["9"]["Width"] 		= "120px";		
-		$configColumnVentaContadoDolares["10"]["Width"] 	= "220px";			
-		$configColumnVentaContadoDolares["11"]["Width"] 	= "80px";			
+
+		$configColumnVentaContadoDolares["0"]["Width"] 		= "15px";		
+		//$configColumnVentaContadoDolares["0"]["Width"] 	= "80px";		
+		$configColumnVentaContadoDolares["1"]["Width"] 		= "80px";		
+		//$configColumnVentaContadoDolares["2"]["Width"] 	= "85px";	
+		$configColumnVentaContadoDolares["4"]["Width"] 		= "40px";		
+		$configColumnVentaContadoDolares["5"]["Width"] 		= "100px";		
+		$configColumnVentaContadoDolares["6"]["Width"] 		= "40px";		
+		$configColumnVentaContadoDolares["7"]["Width"] 		= "40px";		
+		$configColumnVentaContadoDolares["8"]["Width"] 		= "60px";		
+		$configColumnVentaContadoDolares["9"]["Width"] 		= "60px";		
+		$configColumnVentaContadoDolares["10"]["Width"] 	= "40px";	
+		$configColumnVentaContadoDolares["11"]["Width"] 	= "40px";	
 								 
 		
 		$configColumnVentaContadoDolares["0"]["Total"] 		= False;				
@@ -414,19 +420,20 @@
 		$configColumnVentaCredito["9"]["Formato"] 		= "";		
 		$configColumnVentaCredito["10"]["Formato"] 		= "";	
 		$configColumnVentaCredito["11"]["Formato"] 		= "";			
-
-		$configColumnVentaCredito["0"]["Width"] 		= "80px";		
+	
+		$configColumnVentaCredito["0"]["Width"] 		= "15px";		
 		//$configColumnVentaCredito["0"]["Width"] 		= "80px";		
-		$configColumnVentaCredito["1"]["Width"] 		= "220px";		
-		//$configColumnVentaCredito["2"]["Width"] 		= "85px";				
-		$configColumnVentaCredito["4"]["Width"] 		= "80px";		
-		$configColumnVentaCredito["5"]["Width"] 		= "200px";		
-		$configColumnVentaCredito["6"]["Width"] 		= "80px";		
-		$configColumnVentaCredito["7"]["Width"] 		= "80px";		
-		$configColumnVentaCredito["8"]["Width"] 		= "120px";		
-		$configColumnVentaCredito["9"]["Width"] 		= "120px";		
-		$configColumnVentaCredito["10"]["Width"] 		= "220px";	
-		$configColumnVentaCredito["11"]["Width"] 		= "80px";					
+		$configColumnVentaCredito["1"]["Width"] 		= "80px";		
+		//$configColumnVentaCredito["2"]["Width"] 		= "85px";	
+		$configColumnVentaCredito["4"]["Width"] 		= "40px";		
+		$configColumnVentaCredito["5"]["Width"] 		= "100px";		
+		$configColumnVentaCredito["6"]["Width"] 		= "40px";		
+		$configColumnVentaCredito["7"]["Width"] 		= "40px";		
+		$configColumnVentaCredito["8"]["Width"] 		= "60px";		
+		$configColumnVentaCredito["9"]["Width"] 		= "60px";		
+		$configColumnVentaCredito["10"]["Width"] 		= "40px";	
+		$configColumnVentaCredito["11"]["Width"] 		= "40px";
+		
 		
 		$configColumnVentaCredito["0"]["Total"] 		= False;				
 		//$configColumnVentaCredito["0"]["Total"] 		= False;		
@@ -481,18 +488,20 @@
 		$configColumnVentaCreditoDolares["10"]["Formato"] 		= "";		
 		$configColumnVentaCreditoDolares["11"]["Formato"] 		= "";		
 		
-		$configColumnVentaCreditoDolares["0"]["Width"] 		= "80px";				
-		//$configColumnVentaCreditoDolares["0"]["Width"] 		= "80px";		
-		$configColumnVentaCreditoDolares["1"]["Width"] 		= "220px";		
-		//$configColumnVentaCreditoDolares["2"]["Width"] 		= "85px";				
-		$configColumnVentaCreditoDolares["4"]["Width"] 		= "80px";		
-		$configColumnVentaCreditoDolares["5"]["Width"] 		= "200px";		
-		$configColumnVentaCreditoDolares["6"]["Width"] 		= "80px";		
-		$configColumnVentaCreditoDolares["7"]["Width"] 		= "80px";		
-		$configColumnVentaCreditoDolares["8"]["Width"] 		= "120px";		
-		$configColumnVentaCreditoDolares["9"]["Width"] 		= "120px";		
-		$configColumnVentaCreditoDolares["10"]["Width"] 	= "220px";	
-		$configColumnVentaCreditoDolares["11"]["Width"] 	= "80px";				
+		
+		$configColumnVentaCreditoDolares["0"]["Width"] 		= "15px";		
+		//$configColumnVentaCreditoDolares["0"]["Width"] 	= "80px";		
+		$configColumnVentaCreditoDolares["1"]["Width"] 		= "80px";		
+		//$configColumnVentaCreditoDolares["2"]["Width"] 	= "85px";	
+		$configColumnVentaCreditoDolares["4"]["Width"] 		= "40px";		
+		$configColumnVentaCreditoDolares["5"]["Width"] 		= "100px";		
+		$configColumnVentaCreditoDolares["6"]["Width"] 		= "40px";		
+		$configColumnVentaCreditoDolares["7"]["Width"] 		= "40px";		
+		$configColumnVentaCreditoDolares["8"]["Width"] 		= "60px";		
+		$configColumnVentaCreditoDolares["9"]["Width"] 		= "60px";		
+		$configColumnVentaCreditoDolares["10"]["Width"] 	= "40px";	
+		$configColumnVentaCreditoDolares["11"]["Width"] 	= "40px";
+		
 								 
 		
 		$configColumnVentaCreditoDolares["0"]["Total"] 		= False;				
@@ -593,18 +602,20 @@
 		$configColumnIngresoCaja["10"]["Formato"] 		= "";	
 		$configColumnIngresoCaja["11"]["Formato"] 		= "";		
 
-		$configColumnIngresoCaja["0"]["Width"] 		= "80px";		
-		//$configColumnIngresoCaja["0"]["Width"] 		= "80px";		
-		$configColumnIngresoCaja["1"]["Width"] 		= "220px";		
-		//$configColumnIngresoCaja["2"]["Width"] 		= "85px";				
-		$configColumnIngresoCaja["4"]["Width"] 		= "80px";		
-		$configColumnIngresoCaja["5"]["Width"] 		= "200px";		
-		$configColumnIngresoCaja["6"]["Width"] 		= "80px";		
-		$configColumnIngresoCaja["7"]["Width"] 		= "80px";		
-		$configColumnIngresoCaja["8"]["Width"] 		= "120px";		
-		$configColumnIngresoCaja["9"]["Width"] 		= "120px";		
-		$configColumnIngresoCaja["10"]["Width"] 	= "220px";	
-		$configColumnIngresoCaja["11"]["Width"] 	= "80px";				
+
+		$configColumnIngresoCaja["0"]["Width"] 		= "15px";		
+		//$configColumnIngresoCaja["0"]["Width"] 	= "80px";		
+		$configColumnIngresoCaja["1"]["Width"] 		= "80px";		
+		//$configColumnIngresoCaja["2"]["Width"] 	= "85px";	
+		$configColumnIngresoCaja["4"]["Width"] 		= "40px";		
+		$configColumnIngresoCaja["5"]["Width"] 		= "100px";		
+		$configColumnIngresoCaja["6"]["Width"] 		= "40px";		
+		$configColumnIngresoCaja["7"]["Width"] 		= "40px";		
+		$configColumnIngresoCaja["8"]["Width"] 		= "60px";		
+		$configColumnIngresoCaja["9"]["Width"] 		= "60px";		
+		$configColumnIngresoCaja["10"]["Width"] 	= "40px";	
+		$configColumnIngresoCaja["11"]["Width"] 	= "40px";
+		
 		
 		$configColumnIngresoCaja["0"]["Total"] 		= False;		
 		//$configColumnIngresoCaja["0"]["Total"] 		= False;		
@@ -661,18 +672,20 @@
 		$configColumnIngresoCajaDolares["11"]["Formato"] 		= "";	
 						
 
-		$configColumnIngresoCajaDolares["0"]["Width"] 		= "80px";								
-		//$configColumnIngresoCajaDolares["0"]["Width"] 		= "80px";		
-		$configColumnIngresoCajaDolares["1"]["Width"] 		= "220px";		
-		//$configColumnIngresoCajaDolares["2"]["Width"] 		= "85px";				
-		$configColumnIngresoCajaDolares["4"]["Width"] 		= "80px";		
-		$configColumnIngresoCajaDolares["5"]["Width"] 		= "200px";		
-		$configColumnIngresoCajaDolares["6"]["Width"] 		= "80px";		
-		$configColumnIngresoCajaDolares["7"]["Width"] 		= "80px";		
-		$configColumnIngresoCajaDolares["8"]["Width"] 		= "120px";		
-		$configColumnIngresoCajaDolares["9"]["Width"] 		= "120px";		
-		$configColumnIngresoCajaDolares["10"]["Width"] 		= "220px";		
-		$configColumnIngresoCajaDolares["11"]["Width"] 		= "80px";			
+		$configColumnIngresoCajaDolares["0"]["Width"] 		= "15px";		
+		//$configColumnIngresoCajaDolares["0"]["Width"] 	= "80px";		
+		$configColumnIngresoCajaDolares["1"]["Width"] 		= "80px";		
+		//$configColumnIngresoCajaDolares["2"]["Width"] 	= "85px";	
+		$configColumnIngresoCajaDolares["4"]["Width"] 		= "40px";		
+		$configColumnIngresoCajaDolares["5"]["Width"] 		= "100px";		
+		$configColumnIngresoCajaDolares["6"]["Width"] 		= "40px";		
+		$configColumnIngresoCajaDolares["7"]["Width"] 		= "40px";		
+		$configColumnIngresoCajaDolares["8"]["Width"] 		= "60px";		
+		$configColumnIngresoCajaDolares["9"]["Width"] 		= "60px";		
+		$configColumnIngresoCajaDolares["10"]["Width"] 		= "40px";	
+		$configColumnIngresoCajaDolares["11"]["Width"] 		= "40px";
+		
+		
 		
 		$configColumnIngresoCajaDolares["0"]["Total"] 		= False;				
 		//$configColumnIngresoCajaDolares["0"]["Total"] 		= False;		
@@ -730,9 +743,9 @@
 		<?php
 		
 		$configColumnSalidaCaja["0"]["Titulo"] 		= "Fecha";		
-		//$configColumnSalidaCaja["0"]["Titulo"] 		= "Codigo";		
+		//$configColumnSalidaCaja["0"]["Titulo"] 	= "Codigo";		
 		$configColumnSalidaCaja["1"]["Titulo"] 		= "Cliente";		
-		//$configColumnSalidaCaja["2"]["Titulo"] 		= "Moneda";	
+		//$configColumnSalidaCaja["2"]["Titulo"] 	= "Moneda";	
 		$configColumnSalidaCaja["4"]["Titulo"] 		= "Fac";		
 		$configColumnSalidaCaja["5"]["Titulo"] 		= "Transaccion";		
 		$configColumnSalidaCaja["6"]["Titulo"] 		= "Tran. Numero";		
@@ -743,9 +756,9 @@
 		$configColumnSalidaCaja["11"]["Titulo"] 	= "Tipo";		
 		
 		$configColumnSalidaCaja["0"]["FiledSouce"] 		= "transactionOn";				
-		//$configColumnSalidaCaja["0"]["FiledSouce"] 		= "transactionNumber";		
+		//$configColumnSalidaCaja["0"]["FiledSouce"] 	= "transactionNumber";		
 		$configColumnSalidaCaja["1"]["FiledSouce"] 		= "transactionNumber";		
-		//$configColumnSalidaCaja["2"]["FiledSouce"] 		= "moneda";				
+		//$configColumnSalidaCaja["2"]["FiledSouce"] 	= "moneda";				
 		$configColumnSalidaCaja["4"]["FiledSouce"] 		= "transactionNumber";		
 		$configColumnSalidaCaja["5"]["FiledSouce"] 		= "transactionName";		
 		$configColumnSalidaCaja["6"]["FiledSouce"] 		= "transactionNumber";		
@@ -768,18 +781,19 @@
 		$configColumnSalidaCaja["10"]["Formato"] 		= "";	
 		$configColumnSalidaCaja["11"]["Formato"] 		= "";				
 		
-		$configColumnSalidaCaja["0"]["Width"] 		= "80px";		
-		//$configColumnSalidaCaja["0"]["Width"] 		= "80px";		
-		$configColumnSalidaCaja["1"]["Width"] 		= "220px";		
-		//$configColumnSalidaCaja["2"]["Width"] 		= "85px";	
-		$configColumnSalidaCaja["4"]["Width"] 		= "80px";		
-		$configColumnSalidaCaja["5"]["Width"] 		= "200px";		
-		$configColumnSalidaCaja["6"]["Width"] 		= "80px";		
-		$configColumnSalidaCaja["7"]["Width"] 		= "80px";		
-		$configColumnSalidaCaja["8"]["Width"] 		= "120px";		
-		$configColumnSalidaCaja["9"]["Width"] 		= "120px";		
-		$configColumnSalidaCaja["10"]["Width"] 		= "220px";	
-		$configColumnSalidaCaja["11"]["Width"] 		= "80px";	
+		$configColumnSalidaCaja["0"]["Width"] 		= "15px";		
+		//$configColumnSalidaCaja["0"]["Width"] 	= "80px";		
+		$configColumnSalidaCaja["1"]["Width"] 		= "80px";		
+		//$configColumnSalidaCaja["2"]["Width"] 	= "85px";	
+		$configColumnSalidaCaja["4"]["Width"] 		= "40px";		
+		$configColumnSalidaCaja["5"]["Width"] 		= "100px";		
+		$configColumnSalidaCaja["6"]["Width"] 		= "40px";		
+		$configColumnSalidaCaja["7"]["Width"] 		= "40px";		
+		$configColumnSalidaCaja["8"]["Width"] 		= "60px";		
+		$configColumnSalidaCaja["9"]["Width"] 		= "60px";		
+		$configColumnSalidaCaja["10"]["Width"] 		= "40px";	
+		$configColumnSalidaCaja["11"]["Width"] 		= "40px";
+		
 		
 		$configColumnSalidaCaja["0"]["Total"] 		= False;		
 		//$configColumnSalidaCaja["0"]["Total"] 		= False;		
@@ -835,18 +849,18 @@
 		$configColumnSalidaCajaDolares["11"]["Formato"] 	= "";				
 		
 
-		$configColumnSalidaCajaDolares["0"]["Width"] 		= "80px";				
+		$configColumnSalidaCajaDolares["0"]["Width"] 		= "15px";		
 		//$configColumnSalidaCajaDolares["0"]["Width"] 		= "80px";		
-		$configColumnSalidaCajaDolares["1"]["Width"] 		= "220px";		
-		//$configColumnSalidaCajaDolares["2"]["Width"] 		= "85px";				
-		$configColumnSalidaCajaDolares["4"]["Width"] 		= "80px";		
-		$configColumnSalidaCajaDolares["5"]["Width"] 		= "200px";		
-		$configColumnSalidaCajaDolares["6"]["Width"] 		= "80px";		
-		$configColumnSalidaCajaDolares["7"]["Width"] 		= "80px";		
-		$configColumnSalidaCajaDolares["8"]["Width"] 		= "120px";		
-		$configColumnSalidaCajaDolares["9"]["Width"] 		= "120px";		
-		$configColumnSalidaCajaDolares["10"]["Width"] 		= "220px";	
-		$configColumnSalidaCajaDolares["11"]["Width"] 		= "80px";	
+		$configColumnSalidaCajaDolares["1"]["Width"] 		= "80px";		
+		//$configColumnSalidaCajaDolares["2"]["Width"] 		= "85px";	
+		$configColumnSalidaCajaDolares["4"]["Width"] 		= "40px";		
+		$configColumnSalidaCajaDolares["5"]["Width"] 		= "100px";		
+		$configColumnSalidaCajaDolares["6"]["Width"] 		= "40px";		
+		$configColumnSalidaCajaDolares["7"]["Width"] 		= "40px";		
+		$configColumnSalidaCajaDolares["8"]["Width"] 		= "60px";		
+		$configColumnSalidaCajaDolares["9"]["Width"] 		= "60px";		
+		$configColumnSalidaCajaDolares["10"]["Width"] 		= "40px";	
+		$configColumnSalidaCajaDolares["11"]["Width"] 		= "40px";
 		
 
 		$configColumnSalidaCajaDolares["0"]["Total"] 		= False;				

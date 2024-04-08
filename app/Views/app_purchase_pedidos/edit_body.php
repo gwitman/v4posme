@@ -68,13 +68,13 @@
 										</div>
 									</div>
 									
-									<div class="form-group">
+									<div class="form-group hidden">
 											<label class="col-lg-4 control-label" for="normal">Aplicado</label>
 											<div class="col-lg-5">
 												<input type="checkbox" disabled   name="txtIsApplied" id="txtIsApplied" value="1" <?php if($objTransactionMaster->isApplied) echo "checked"; ?> >
 											</div>
 									</div>
-									<div class="form-group">
+									<div class="form-group hidden">
 											<label class="col-lg-4 control-label" for="normal">Cambio</label>
 											<div class="col-lg-8">
 												<input class="form-control"   type="text" disabled="disabled" name="txtExchangeRate" id="txtExchangeRate" value="<?php echo $exchangeRate; ?>">
@@ -101,6 +101,28 @@
 										</div>
 									</div>
 									
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="buttons">Factura</label>
+										<div class="col-lg-8">
+											<div class="input-group">
+												<input type="hidden" id="txtNote" name="txtNote" value="<?php echo $objBilling->transactionNumber;  ?>">
+												<input class="form-control" readonly id="txtNoteDescription" type="txtNoteDescription" value="<?php echo $objBilling->transactionNumber;  ?>">
+												
+												<span class="input-group-btn">
+													<button class="btn btn-danger" type="button" id="btnClearNote">
+														<i aria-hidden="true" class="i-undo-2"></i>
+														clear
+													</button>
+												</span>
+												<span class="input-group-btn">
+													<button class="btn btn-primary" type="button" id="btnSearchNote">
+														<i aria-hidden="true" class="i-search-5"></i>
+														buscar
+													</button>
+												</span>											
+											</div>
+										</div>
+									</div>
 									
 									<div class="form-group">
 										<label class="col-lg-4 control-label" for="buttons">Cliente</label>
@@ -149,28 +171,7 @@
 									</div>
 									
 									
-									<div class="form-group">
-										<label class="col-lg-4 control-label" for="buttons">Factura</label>
-										<div class="col-lg-8">
-											<div class="input-group">
-												<input type="hidden" id="txtNote" name="txtNote" value="<?php echo $objBilling->transactionNumber;  ?>">
-												<input class="form-control" readonly id="txtNoteDescription" type="txtNoteDescription" value="<?php echo $objBilling->transactionNumber;  ?>">
-												
-												<span class="input-group-btn">
-													<button class="btn btn-danger" type="button" id="btnClearNote">
-														<i aria-hidden="true" class="i-undo-2"></i>
-														clear
-													</button>
-												</span>
-												<span class="input-group-btn">
-													<button class="btn btn-primary" type="button" id="btnSearchNote">
-														<i aria-hidden="true" class="i-search-5"></i>
-														buscar
-													</button>
-												</span>											
-											</div>
-										</div>
-									</div>
+									
 									
 									<div class="form-group">
 											<label class="col-lg-4 control-label" for="normal">Informacion adicional</label>

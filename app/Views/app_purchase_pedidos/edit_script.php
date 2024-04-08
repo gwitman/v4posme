@@ -110,9 +110,9 @@
 						
 						//Buscar Factura
 						$(document).on("click","#btnSearchNote",function(){
-							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentBilling->componentID; ?>/onCompleteEmployee/SELECCIONAR_FACTURA/true/empty/false/not_redirect_when_empty";
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentBilling->componentID; ?>/onCompleteBilling/SELECCIONAR_FACTURA/true/empty/false/not_redirect_when_empty";
 							window.open(url_request,"MsgWindow","width=900,height=450");
-							window.onCompleteEmployee = onCompleteBilling; 
+							window.onCompleteBilling = onCompleteBilling; 
 						});
 						//Eliminar Factura
 						$(document).on("click","#btnClearNote",function(){
@@ -129,16 +129,11 @@
 					function onCompleteBilling(objResponse)
 					{							
 							
-							$("#txtNote").val(objResponse[1]);
-							$("#txtNoteDescription").val(objResponse[1]);
+							$("#txtNote").val(objResponse[0]);
+							$("#txtNoteDescription").val(objResponse[2]);
 							
-					}
-					
-					function onCompleteEmployee(objResponse)
-					{							
-							
-							$("#txtEmployerID").val(objResponse[2]);
-							$("#txtEmployerDescription").val(objResponse[3] + " / " + objResponse[4]);
+							$("#txtCustomerID").val(objResponse[1]);
+							$("#txtCustomerDescription").val(objResponse[3] + " / " + objResponse[4]);								
 							
 					}
 					
@@ -152,6 +147,16 @@
 						}
 						
 					}
+					
+					function onCompleteEmployee(objResponse)
+					{							
+							
+							$("#txtEmployerID").val(objResponse[2]);
+							$("#txtEmployerDescription").val(objResponse[3] + " / " + objResponse[4]);
+							
+					}
+					
+					
 					
 					
 					function validateForm(){

@@ -403,14 +403,27 @@ class app_inventory_report extends _BaseController {
 			$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
 			
 			
-			//Revisar si existe la vista
-			$documentoPath = PATH_FILE_OF_APP_SYSTEM."/app/Views/app_inventory_report/list_item/view_a_disemp_".$objCompany->type.".php";						
-			if (!file_exists($documentoPath))
+			//Revisar si existe la vista			
+			if($objCompany->type == "globalpro")
+			{
+				return view("app_inventory_report/list_item/view_a_disemp_globalpro",$objDataResult);//--finview-r
+			}
+			else if($objCompany->type == "agencia_freddy")
+			{
+				return view("app_inventory_report/list_item/view_a_disemp_agencia_freddy",$objDataResult);//--finview-r
+			}
+			else if($objCompany->type == "ainaracloset")
+			{
+				return view("app_inventory_report/list_item/view_a_disemp_ainaracloset",$objDataResult);//--finview-r
+			}
+			else if($objCompany->type == "agro_el_labrador")
+			{
+				return view("app_inventory_report/list_item/view_a_disemp_agro_el_labrador",$objDataResult);//--finview-r
+			}
+			else
 			{
 				return view("app_inventory_report/list_item/view_a_disemp",$objDataResult);//--finview-r
-			}
-			else 
-				return view("app_inventory_report/list_item/view_a_disemp_".$objCompany->type,$objDataResult);//--finview-r
+			}	
 			
 			
 		}

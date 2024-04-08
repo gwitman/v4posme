@@ -7,6 +7,21 @@ use dbjznvjrsdpypf;
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "0" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_COUNTER_MESSAGE";	## Contador de mensaje de whatsapp
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "1000" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_MESSAGE_BY_MONTO";	## Cantidad de mensajes mensuales
+	
+
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "app_purchase_taller/viewPrinterFormatoA4Stiker" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
