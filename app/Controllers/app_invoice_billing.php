@@ -189,7 +189,7 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objListPay"]				= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","periodPay",$companyID);
 			$dataView["listCurrency"]			= $objListCurrency;
 			$dataView["listProvider"]			= $this->Provider_Model->get_rowByCompany($companyID);
-			$dataView["objListaPermisos"]		= $dataSession["menuHiddenPopup"];	
+			$dataView["objListaPermisos"]		= $dataSession["menuHiddenPopup"];				
 			$dataView["useMobile"]												= $dataSession["user"]->useMobile;			
 			$dataView["objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE"] 	= $this->core_web_parameter->getParameterValue("INVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE",$companyID);
 			$dataView["objParameterINVOICE_OPEN_CASH_PASSWORD"] 				= $this->core_web_parameter->getParameterValue("INVOICE_OPEN_CASH_PASSWORD",$companyID);

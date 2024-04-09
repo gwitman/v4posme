@@ -115,7 +115,7 @@
             <div class="collapse navbar-collapse" id="navbar-to-collapse">				
                 <ul class="nav navbar-nav pull-right">					
 					<?php echo $notification;?>										
-					<?php echo $menuRenderTop;?> 
+					<?php echo $menuRenderTop; ?> 
                 </ul>
             </div><!--/.nav-collapse -->
         </nav>
@@ -132,7 +132,7 @@
 				<div class="sidebar-wrapper">
 					<nav id="mainnav">
 						<ul class="nav nav-list">							
-							<?php echo $menuRenderLeft;?>
+							<?php echo $menuRenderLeft; ?>
 						</ul>
 					</nav> 
 				</div> 
