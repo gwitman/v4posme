@@ -1,4 +1,4 @@
-use db22qmjrdbnj4a;
+use dba48qrimqrnp5;
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -1063,7 +1063,7 @@ WHERE
 
 			
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "3000" 
+	tb_company_parameter.value = "1000" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_CANTIDAD_ITEM";## PANTALLA PARA LA FACTUACION
@@ -1152,7 +1152,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "2050-03-07" 
+	tb_company_parameter.value = "2024-03-07" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CUST_PRICE_LICENCES_EXPIRED";## Fecha de expiracion de la licencia 
@@ -1177,7 +1177,7 @@ WHERE
 /***************************************************************/
 		
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Elida Miranda Rodriguez" 
+	tb_company_parameter.value = "Ivette de los Angeles Pineda Coronado" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_NAME";## Witman José González Rostran 
@@ -1205,28 +1205,28 @@ WHERE
 	tb_parameter.name = "WHATSAP_CURRENT_PROPIETARY_COMMERSE";## WHATSAPP DEL PRIPIETARIO
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "1650802710000P" 
+	tb_company_parameter.value = "281-260178-0015S" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "1650802710000P" 
+	tb_company_parameter.value = "281-260178-0015S" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8126-7764 5876-0780" 
+	tb_company_parameter.value = "TEL: 8173-7735" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8126-7764 5876-0780" 
+	tb_company_parameter.value = "TEL: 8173-7735" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1234,17 +1234,17 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Parque forestal 2.5 al este" 
+	tb_company_parameter.value = "Gasolinera uno la terminal 3 cuadras al norte" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Miranda Market' , address = 'Parque forestal 2.5 al este' ,
-	flavorID = 445,type='default'
+	NAME = 'Agro quimico La Terminal' , address = 'Gasolinera uno la terminal 3 cuadras al norte' ,
+	flavorID = 454,type='default'
 WHERE 
-	companyID = 2; ##Actualizar el nombre de la compania Avenida principal ruben dario parque forestal 2.5 al este
+	companyID = 2; ##Actualizar el nombre de la compania
 
 
 
@@ -1254,17 +1254,17 @@ Eliminar o desactivar usuarios
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2, 	/*administrador*/
- 445,  	/*supervisor*/
- 444, 	/*facturador*/
- 443 	/*administrador*/
+ 455,  	/*supervisor*/
+ 456, 	/*facturador*/
+ 457 	/*administrador*/
 );
 
 update tb_role set isActive = 0; 
 update tb_role set isActive = 1 where roleID in (
 	3,
-	371,
-	370,
-	369	
+	381,
+	382,
+	383	
 );
 
 
@@ -1292,7 +1292,7 @@ update tb_item set realStateStateID = ifnull(realStateStateID,0);
 update tb_customer set entityContactID = ifnull(entityContactID,0);
 	
 	
-/*BD: db22qmjrdbnj4a */
+/*BD: dba48qrimqrnp5 */
 /*********************************************/
 /*
 revision

@@ -1434,7 +1434,7 @@ class app_cxc_report extends _BaseController {
 			$viewReport				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"viewReport");//--finuri
 			$startOn				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"startOn");//--finuri
 			$endOn					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri
-			$inventoryCategoryID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"inventoryCategoryID");//--finuri
+			$showActivos			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"showActivos");//--finuri
 			$warehouseID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"warehouseID");//--finuri
 			
 			if(!($viewReport && $startOn && $endOn  )){
@@ -1484,7 +1484,7 @@ class app_cxc_report extends _BaseController {
 									FROM 
 										vw_cxc_customer_list_real_estate u 
 									WHERE 
-										u.Modificacion between ? and ? ; 
+										u.Contacto between ? and ? ; 
 								";				
 				$objData		= $this->Bd_Model->executeRender(
 					$query,

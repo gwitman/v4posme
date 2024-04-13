@@ -2,8 +2,13 @@
 				<script>
 					$(document).ready(function(){						 
 						 $('#txtDate').datepicker({format:"yyyy-mm-dd"});
-						 $('#txtDate').val(moment().format("YYYY-MM-DD"));	
+						 //$('#txtDate').val(moment().format("YYYY-MM-DD"));	
 						 $("#txtDate").datepicker("update");
+						 
+						 $('#txtDate2').datepicker({format:"yyyy-mm-dd"});
+						 //$('#txtDate2').val(moment().format("YYYY-MM-DD"));	
+						 $("#txtDate2").datepicker("update");
+						 
 						 $('.txt-numeric').mask('000,000.00', {reverse: true});
 						 
 						
@@ -121,10 +126,10 @@
 						var timerNotification 	= 15000;
 						
 						//Validar Fecha
-						if($("#txtDate").val() == ""){
-							fnShowNotification("Establecer Fecha al Documento","error",timerNotification);
-							result = false;
-						}
+						//if($("#txtDate").val() == ""){
+						//	fnShowNotification("Establecer Fecha al Documento","error",timerNotification);
+						//	result = false;
+						//}
 						
 						//Validar Monto
 						if($("#txtDetailAmount").val() == "0"){

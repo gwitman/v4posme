@@ -52,10 +52,20 @@
 													
 										
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="datepicker">Fecha</label>
+															<label class="col-lg-4 control-label" for="datepicker">Fecha pedido</label>
 															<div class="col-lg-8">
 																<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
 																	<input size="16"  class="form-control" type="text" name="txtDate" id="txtDate" >
+																	<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+																</div>
+															</div>
+														</div>
+														
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="datepicker">Fecha bodega</label>
+															<div class="col-lg-8">
+																<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
+																	<input size="16"  class="form-control" type="text" name="txtDate2" id="txtDate2" >
 																	<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
 																</div>
 															</div>
@@ -181,7 +191,7 @@
 														
 															
 														<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal">Marca/Modelo</label>
+																<label class="col-lg-4 control-label" for="normal">Marca</label>
 																<div class="col-lg-8">
 																	
 																	<input class="form-control"  type="text"  name="txtDetailReference2" id="txtDetailReference2" value="">												
@@ -189,9 +199,19 @@
 														</div>
 														
 														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal">Modelo</label>
+																<div class="col-lg-8">
+																	
+																	<input class="form-control"  type="text"  name="txtDetailReference4" id="txtDetailReference4" value="">												
+																</div>
+														</div>
+														
+														
+														
+														<div class="form-group">
 																<label class="col-lg-4 control-label" for="normal">Numero de parte</label>
 																<div class="col-lg-8">																	
-																	<input class="form-control"  type="text"  name="txtDetailReference3" id="txtDetailReference3" value="">												
+																	<textarea class="form-control"  type="text"  name="txtDetailReference3" id="txtDetailReference3" ></textarea>
 																</div>
 														</div>
 														
@@ -226,6 +246,8 @@
 																</div>
 														</div>
 														
+														
+														
 													
 														<div class="form-group">
 															<label class="col-lg-4 control-label" for="selectFilter">Pieza</label>
@@ -246,6 +268,13 @@
 																		?>
 																</select>
 															</div>
+														</div>
+														
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal">Otros</label>
+																<div class="col-lg-8">												
+																	<input class="form-control"  type="text"  name="txtTMInfoDetailReferenceClientName" id="txtTMInfoDetailReferenceClientName" value="">
+																</div>
 														</div>
 														
 														<div class="form-group">
@@ -285,10 +314,20 @@
 															</div>
 														</div>
 														
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal">Tracking</label>
+																<div class="col-lg-8">												
+																	<input class="form-control"  type="text"  name="txtTMInfoDetailReference1" id="txtTMInfoDetailReference1" value="">
+																</div>
+														</div>
 														
 														
-														
-														
+														<div class="form-group ">
+																<label class="col-lg-4 control-label" for="normal">Precio de compra</label>
+																<div class="col-lg-8">												
+																	<input class="form-control"  type="text"  name="txtTMInfoDetailReference2" id="txtTMInfoDetailReference2" value="">
+																</div>
+														</div>
 														
 
 														
@@ -356,4 +395,4 @@
 					</div>
 					
 					
-					
+					<?php echo getBehavio($company->type,"app_purchase_pedidos","divScriptCustom",""); ?>

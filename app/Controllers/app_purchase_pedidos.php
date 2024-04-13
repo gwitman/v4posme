@@ -286,11 +286,12 @@ class app_purchase_pedidos extends _BaseController {
 			
 					
 			
-			if($this->core_web_accounting->cycleIsCloseByDate($companyID,$objTM->transactionOn))
-			throw new \Exception("EL DOCUMENTO NO PUEDE ACTUALIZARCE, EL CICLO CONTABLE ESTA CERRADO");
+			//if($this->core_web_accounting->cycleIsCloseByDate($companyID,$objTM->transactionOn))
+			//throw new \Exception("EL DOCUMENTO NO PUEDE ACTUALIZARCE, EL CICLO CONTABLE ESTA CERRADO");
 			
 			//Actualizar Maestro			
 			$objTMNew["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
+			$objTMNew["transactionOn2"]					= /*inicio get post*/ $this->request->getPost("txtDate2");
 			$objTMNew["statusIDChangeOn"]				= date("Y-m-d H:m:s");
 			$objTMNew["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");//--fin peticion get o post
 			$objTMNew["currencyID"] 					= /*inicio get post*/ $this->request->getPost("txtCurrencyID");//--fin peticion get o post			
@@ -300,7 +301,7 @@ class app_purchase_pedidos extends _BaseController {
 			$objTMNew["reference1"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference1");
 			$objTMNew["reference2"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference2");
 			$objTMNew["reference3"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference3");			
-			$objTMNew["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtReference4");			
+			$objTMNew["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference4");			
 			$objTMNew["statusID"] 						= /*inicio get post*/ $this->request->getPost("txtStatusID");
 			$objTMNew["amount"] 						= /*inicio get post*/ $this->request->getPost("txtDetailAmount");	
 			$objTMNew["entityID"]						= /*inicio get post*/ $this->request->getPost("txtCustomerID");
@@ -326,7 +327,10 @@ class app_purchase_pedidos extends _BaseController {
 			//Actualizar Mas Informacion
 			if($actualizarTransaccionPermtida == true)
 			{
-				$objTMI["zoneID"]					= /*inicio get post*/ $this->request->getPost("txtZoneID");								
+				$objTMI["zoneID"]					= /*inicio get post*/ $this->request->getPost("txtZoneID");
+				$objTMI["reference1"]				= /*inicio get post*/ $this->request->getPost("txtTMInfoDetailReference1");
+				$objTMI["reference2"]				= /*inicio get post*/ $this->request->getPost("txtTMInfoDetailReference2");
+				$objTMI["referenceClientName"]		= /*inicio get post*/ $this->request->getPost("txtTMInfoDetailReferenceClientName");
 				$this->Transaction_Master_Info_Model-> update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMI);				
 			}
 					
@@ -538,8 +542,8 @@ class app_purchase_pedidos extends _BaseController {
 			
 			
 			
-			if($this->core_web_accounting->cycleIsCloseByDate($dataSession["user"]->companyID,/*inicio get post*/ $this->request->getPost("txtDate")))
-			throw new \Exception("EL DOCUMENTO NO PUEDE INGRESAR, EL CICLO CONTABLE ESTA CERRADO");
+			//if($this->core_web_accounting->cycleIsCloseByDate($dataSession["user"]->companyID,/*inicio get post*/ $this->request->getPost("txtDate")))
+			//throw new \Exception("EL DOCUMENTO NO PUEDE INGRESAR, EL CICLO CONTABLE ESTA CERRADO");
 			
 			//Obtener transaccion
 			$transactionID 							= $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID,"tb_transaction_master_workshop_pedido",0);
@@ -550,8 +554,10 @@ class app_purchase_pedidos extends _BaseController {
 			$objTM["transactionID"] 				= $transactionID;			
 			$objTM["branchID"]						= $dataSession["user"]->branchID;
 			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_workshop_pedido",0);
-			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($dataSession["user"]->companyID,$transactionID);			
-			$objTM["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
+			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($dataSession["user"]->companyID,$transactionID);		
+			
+			$objTM["transactionOn"]					= /*inicio get post*/ helper_RequestGetValue($this->request->getPost("txtDate"),"1900-01-01");
+			$objTM["transactionOn2"]				= /*inicio get post*/ helper_RequestGetValue($this->request->getPost("txtDate2"),"1900-01-01");
 			$objTM["statusIDChangeOn"]				= date("Y-m-d H:m:s");
 			$objTM["componentID"] 					= $objComponentShare->componentID;
 			$objTM["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");//--fin peticion get o post
@@ -562,7 +568,7 @@ class app_purchase_pedidos extends _BaseController {
 			$objTM["reference1"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference1");
 			$objTM["reference2"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference2");
 			$objTM["reference3"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference3");
-			$objTM["reference4"] 					= '';
+			$objTM["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference4");
 			$objTM["statusID"] 						= /*inicio get post*/ $this->request->getPost("txtStatusID");
 			$objTM["amount"] 						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost('txtDetailAmount'));
 			$objTM["isApplied"] 					= 0;
@@ -588,9 +594,12 @@ class app_purchase_pedidos extends _BaseController {
 			$objTMI["transactionID"]				= $objTM["transactionID"];
 			$objTMI["transactionMasterID"]			= $transactionMasterID ;						
 			$objTMI["zoneID"]						= /*inicio get post*/ $this->request->getPost("txtZoneID");			
+			$objTMI["reference1"]					= /*inicio get post*/ $this->request->getPost("txtTMInfoDetailReference1");
+			$objTMI["reference2"]					= /*inicio get post*/ $this->request->getPost("txtTMInfoDetailReference2");
+			$objTMI["referenceClientName"]			= /*inicio get post*/ $this->request->getPost("txtTMInfoDetailReferenceClientName");
 			$this->Transaction_Master_Info_Model->insert_app_posme($objTMI);
-
-
+			
+			
 			
 			
 			//Crear la Carepta en servidor remoto y guardar archivos
@@ -648,7 +657,7 @@ class app_purchase_pedidos extends _BaseController {
 							$filePathDetination 	=  $pathDocument."/".$fileName;
 							copy($filePathSource,$filePathDetination);
 							unlink($filePathSource);		
-
+			
 							//Mandar la Imagen al server remoto
 							if ($dataView["objParameterUrlServerFile"] != "")
 							{
@@ -723,7 +732,7 @@ class app_purchase_pedidos extends _BaseController {
 			
 			//Validar Formulario						
 			$this->validation->setRule("txtStatusID","Estado","required");
-			$this->validation->setRule("txtDate","Fecha","required");
+			//$this->validation->setRule("txtDate","Fecha","required");
 			
 			 //Validar Formulario
 			if(!$this->validation->withRequest($this->request)->run()){

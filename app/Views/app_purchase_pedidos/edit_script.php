@@ -4,6 +4,10 @@
 					$(document).ready(function(){					
 						$('#txtDate').datepicker({format:"yyyy-mm-dd"});						 
 						$("#txtDate").datepicker("update");
+						
+						$('#txtDate2').datepicker({format:"yyyy-mm-dd"});						 
+						$("#txtDate2").datepicker("update");
+						
 						$('.txt-numeric').mask('000,000.00', {reverse: true});
 						var urlPrinter = '<?php echo $objParameterUrlPrinter; ?>';
 						
@@ -164,10 +168,10 @@
 						var timerNotification 	= 15000;
 						
 						//Validar Fecha
-						if($("#txtDate").val() == ""){
-							fnShowNotification("Establecer Fecha al Documento","error",timerNotification);
-							result = false;
-						}
+						//if($("#txtDate").val() == ""){
+						//	fnShowNotification("Establecer Fecha al Documento","error",timerNotification);
+						//	result = false;
+						//}
 						
 						
 						//Validar Monto

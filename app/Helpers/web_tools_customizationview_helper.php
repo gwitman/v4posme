@@ -104,6 +104,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('default_app_inventory_item_Modelo')															=> "Modelo",
 		strtolower('default_app_inventory_item_Serie ó MAI')													=> "Serie o MAI",		
 		strtolower('default_app_inventory_item_fieldInmobiliaria')												=> "",
+		strtolower('default_app_purchase_pedidos_divScriptCustom')												=> "",
 	
 	
 		
@@ -166,7 +167,37 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('globalpro_app_inventory_transferoutput_parameterValidarEnvioDestino')						=> "true",
 		strtolower('globalpro_app_inventory_transferoutput_labelReference1')									=> "Orden / Cliente",
 		strtolower('globalpro_app_purchase_pedidos_divDllEstado')												=> "hidden",
-		strtolower('globalpro_app_cxc_customer_divScriptCustom') 												=> "<script>$(document).ready(function(){ 		$('#txtSexoID').val(''); $('#txtSexoID').trigger('change'); 							 $(document).on('focusout','#txtLegalName',function(){ 									 var varLegalName 	= $('#txtLegalName').val(); $('#txtFirstName').val(  varLegalName  ); $('#txtLastName').val(  varLegalName  ); $('#txtCommercialName').val(  varLegalName  ); 	 }); }); </script> ",
+		strtolower('globalpro_app_purchase_pedidos_divScriptCustom')											=> "
+			<script>
+			$(document).ready(function(){ 		
+				var nickname 	= $('#header > nav > a > span' ).text().replace('(', '');
+				nickname 		= nickname.replace('(', '');
+				nickname 		= nickname.replace(')', '');
+				nickname 		= nickname.replace(':', '');
+				nickname 		= nickname.replace(' ', '');
+				nickname 		= nickname.replace('usuario', '');
+				
+				if( !(nickname  == 'gabriel' || nickname  == 'superadmin')  )
+				{
+					$('#txtTMInfoDetailReference2').parent().parent().addClass('hidden');
+				}
+				
+			}); 
+			</script>
+		",
+		strtolower('globalpro_app_cxc_customer_divScriptCustom') 												=> "
+			<script>
+			$(document).ready(function(){ 		
+				$('#txtSexoID').val(''); 
+				$('#txtSexoID').trigger('change'); 							 
+				$(document).on('focusout','#txtLegalName',function(){ 									
+					var varLegalName 	= $('#txtLegalName').val(); 
+					$('#txtFirstName').val(  varLegalName  ); 
+					$('#txtLastName').val(  varLegalName  ); 
+					$('#txtCommercialName').val(  varLegalName  ); 	 
+				}); 
+			}); 
+			</script> ",
 		strtolower('globalpro_app_inventory_item_divTraslateElementTablePrecio') 								=> "<script>$(document).ready(function(){       $('#btnPrice').parent().remove(); $('#tblPrecios').appendTo('#divContainerRowPersonalization');  });</script>",
 		strtolower('globalpro_app_invoice_billing_divTraslateElement') 											=> "<script>$(document).ready(function(){		$('#divVendedor').appendTo('#divInformacionLeft');$('#divBodega').appendTo('#divInformacionLeft');});</script>",		
 		strtolower('globalpro_app_box_share_new_script_validate_reference1')									=> "/*Validar Atiende*/ if($('#txtReference1').val() == ''){fnShowNotification('Escriba quien le atiende','error',timerNotification);result = false;}",		

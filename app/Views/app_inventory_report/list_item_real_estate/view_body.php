@@ -56,20 +56,15 @@
 											
 											
 											
-											<div class="form-group hidden">
-												<label class="col-lg-6 control-label" for="selectFilter">Categorias</label>
+											<div class="form-group">
+												<label class="col-lg-6 control-label" for="selectFilter">Mostrar</label>
 												<div class="col-lg-6"> 
 													<div class="col-lg-6">
 													</div>
 													<div class="col-lg-6">
-														<select name="txtInventoryCategoryID" id="txtInventoryCategoryID" class="select2">
-																<option value="0">TODOS</option>
-																<?php
-																if($objListCategoryItem)
-																foreach($objListCategoryItem as $i){
-																	echo "<option value='".$i->inventoryCategoryID."'>".$i->name."</option>";
-																}
-																?>
+														<select name="txtShowActivos" id="txtShowActivos" class="select2">
+																<option value="1" selected >Activos</option>
+																<option value="0">Eliminados</option>
 														</select>
 													</div>													
 												</div>

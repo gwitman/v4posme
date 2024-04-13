@@ -8,17 +8,17 @@ class core_upgrade extends _BaseController {
 		
 		//https://www.toptal.com/php/building-an-imap-email-client-with-php
 		//Estructura del mensaje		
-		//SUBJECT:	UPGRADE_COMPANIA|.TIPO_DE_ARCHIVO|RUTA_DESTINO|NOMBRE_DEL_ARCHIVO.EXTENSION
+		//DESTINO:	posme2022@gmail.com
+		//SUBJECT:	UPGRADE_COMPANIATYPE->.TIPO_DE_ARCHIVO->RUTA_DESTINO->NOMBRE_DEL_ARCHIVO.EXTENSION
+		//SUBJECT:	UPGRADE_ferreteria_mateo->.php->app/Views/app_inventory_report/list_item/->view_a_disemp_ferreteria_mateo.php
 		//BODY:		[[posme_email_start]]
-		//BODY: 	TEXTO PLANO DEL ARCHIVO A ACTUALIZAR
+		//BODY: 	TEXTO PLANO DEL ARCHIVO A ACTUALIZAR ADJUNTAR EL ARCHIVO
 		//BODY:		[[posme_email_end]]
-		
-		$objParameterClienteID		= $this->core_web_parameter->getParameter("CORE_CXC_WSDL_SIN_RIESGO_USUARIO",APP_COMPANY);
-		$objParameterClienteID		= $objParameterClienteID->value;
+		$objCompany					= $this->Company_Model->get_rowByPK(APP_COMPANY);		
 		$objParameterServerImap 	= 'gmail';
 		$objParameterUserImp    	= EMAIL_APP;
 		$objParameterPasswordImp    = EMAIL_APP_PASSWORD;
-		$subjectFilter 				= "UPGRADE_".$objParameterClienteID;
+		$subjectFilter 				= "UPGRADE_".$objCompany->type;
 		
 		$inbox    = imap_open(
 			'{imap.'.$objParameterServerImap.'.com:993/imap/ssl}INBOX', 
