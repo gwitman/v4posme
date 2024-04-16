@@ -37,6 +37,7 @@ class core_view extends _BaseController {
 		
 			
 			$parameter["{companyID}"]	= $this->session->get('user')->companyID;
+			$parameter["{isWindowForm}"]= "0";
 			$viewname 					= urldecode($viewname);
 			$filter 					= urldecode($filter);
 			$result 					= $this->core_web_tools->formatParameter($filter);	
@@ -115,6 +116,7 @@ class core_view extends _BaseController {
 			$parameter["{componentID}"]	= $componentIDParameter;
 			$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 			$parameter["{callerID}"]	= CALLERID_LIST;
+			$parameter["{isWindowForm}"]= "0";
 			$componentSearch			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company_component_item_dataview"); 				 
 			$dataViewData				= $this->core_web_view->getView($this->session->get('user'),$componentSearch->componentID,CALLERID_LIST,null,$parameter); 			
 			$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
@@ -178,6 +180,7 @@ class core_view extends _BaseController {
 		$parameter["{iDisplayLength}"]				= $iDisplayLength;
 		$parameter["{sSearchDB}"]					= urldecode($sSearch);
 		$parameter["{sSearch}"]						= $sSearch;
+		$parameter["{isWindowForm}"]				= "0";
 			
 			
 		try

@@ -4,6 +4,7 @@
 	var numberDecimalSummary		= 2;
 	var numberDecimalSummaryRound	= false;
 	var objListaProductos			= {};	
+	var varUseMobile				= '<?php echo $useMobile; ?>';
 	var objWindowSearchProduct;
 	var objListTypePreice			= JSON.parse('<?php echo json_encode($objListTypePreice); ?>');
 	var objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE	= <?php echo $objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE; ?>;
@@ -62,19 +63,28 @@
 						{
 							"aTargets"	: [ 6 ],//cantidad
 							"mRender"	: function ( data, type, full ) {
-								return '<input type="text" class="col-lg-12 txtDetailQuantity txt-numeric" value="'+data+'" name="txtDetailQuantity[]" />';
+								var str =  '<input type="text" class="col-lg-12 txtDetailQuantity txt-numeric" value="'+data+'" name="txtDetailQuantity[]" />';
+								if (varUseMobile == "1")
+									str = str + " <span class='badge badge-inverse' >Cantidad</span>";
+								return str;
 							}
 						},
 						{
 							"aTargets"	: [ 7 ],//costo
 							"mRender"	: function ( data, type, full ) {
-								return '<input type="text" class="col-lg-12 txtDetailCost txt-numeric" value="'+data+'" name="txtDetailCost[]" />';
+								var str = '<input type="text" class="col-lg-12 txtDetailCost txt-numeric" value="'+data+'" name="txtDetailCost[]" />';
+								if (varUseMobile == "1")
+									str = str + " <span class='badge badge-inverse' >Costo</span>";
+								return str;
 							}
 						},
 						{
 							"aTargets"	: [ 8 ],//precio
 							"mRender"	: function ( data, type, full ) {
-								return '<input type="text" class="col-lg-12 txtDetailPrice txt-numeric" value="'+data+'" name="txtDetailPrice[]" />';
+								var str = '<input type="text" class="col-lg-12 txtDetailPrice txt-numeric" value="'+data+'" name="txtDetailPrice[]" />';
+								if (varUseMobile == "1")
+									str = str + " <span class='badge badge-inverse' >Precio</span>";
+								return str;
 							}
 						},
 						{
@@ -140,6 +150,8 @@
 		});
 		
 		refreschChecked();
+		onCompletePantalla();	
+		
 		//Buscar el Proveedor
 		$(document).on("click","#btnSearchProvider",function(){
 			var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentProvider->componentID; ?>/onCompleteProvider/SELECCIONAR_PROVEEDOR/true/empty/false/not_redirect_when_empty";
@@ -513,6 +525,12 @@
 		$('#txtDiscount').mask('000,000.00', {reverse: true});
 		$('#txtIva').mask('000,000.00', {reverse: true});
 		*/
+		
+		if(varUseMobile == "1")
+		{
+			$("#tb_transaction_master_detail td").css("display","block");
+		}
+		
 	}
 	function onCompleteOrdenCompra(objResponse){
 		console.info("CALL onCompleteOrdenCompra");
@@ -554,4 +572,20 @@
 		fnShowNotification("TOTAL: C$ " +  $.number(total) ,"success");
 		
 	}
+	
+	function onCompletePantalla(){
+		
+		
+		
+		if(varUseMobile == "1" ){
+		   $(".elementMovilOculto").addClass("hidden");		   
+		   $("#tb_transaction_master_detail th").css("display","none");
+		   $("#tb_transaction_master_detail td").css("display","block");
+		   
+	    }
+	   
+	    //$("#divLoandingCustom").remove();
+		
+	}
+	
 </script>

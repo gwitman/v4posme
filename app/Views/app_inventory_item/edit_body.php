@@ -593,14 +593,14 @@
 								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
 										<label class="col-lg-4 control-label" for="normal">Condominio</label>
 										<div class="col-lg-8">
-											<input class="form-control"  type="text"  name="txtRealStateReferenceCondominio" id="txtRealStateReferenceCondominio" value="<?php echo $objItem->realStateReferenceUbicacion; ?>">												
+											<input class="form-control"  type="text"  name="txtRealStateReferenceCondominio" id="txtRealStateReferenceCondominio" value="<?php echo $objItem->realStateReferenceCondominio; ?>">												
 										</div>
 								</div>
 								
 								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
 										<label class="col-lg-4 control-label" for="normal">Zona</label>
 										<div class="col-lg-8">
-											<input class="form-control"  type="text"  name="txtRealStateReferenceZone" id="txtRealStateReferenceZone" value="<?php echo $objItem->realStateReferenceUbicacion; ?>">												
+											<input class="form-control"  type="text"  name="txtRealStateReferenceZone" id="txtRealStateReferenceZone" value="<?php echo $objItem->realStateReferenceZone; ?>">												
 										</div>
 								</div>
 								

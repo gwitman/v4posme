@@ -70,7 +70,7 @@
 													<div class="form-group">
 														<label class="col-lg-2 control-label" for="selectFilter">Estado</label>
 														<div class="col-lg-8">
-															<select name="txtStatusID" id="txtStatusID" class="select2">
+															<select name="txtStatusID" id="txtStatusID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
 																	<option></option>																
 																	<?php
 																	if($objListWorkflowStage)

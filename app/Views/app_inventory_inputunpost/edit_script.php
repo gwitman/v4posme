@@ -11,6 +11,7 @@
 	var objectParameterButtoms 		= {};
 	var objParameterUrlPrinter		= '<?php echo $objParameterUrlPrinter; ?>';
 	var objParameterUrlPrinterCode  = '<?php echo $objParameterMasive; ?>';
+	var varUseMobile				= '<?php echo $useMobile; ?>';
 	var objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE	= <?php echo $objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE; ?>;
 	var objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_ONLY_QUANTITY	= '<?php echo $objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_ONLY_QUANTITY; ?>';
 	var objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES	= '<?php echo $objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES; ?>';
@@ -95,19 +96,28 @@
 						{
 							"aTargets"	: [ 6 ],//cantidad
 							"mRender"	: function ( data, type, full ) {
-								return '<input type="text" class="col-lg-12 txtDetailQuantity txt-numeric" value="'+data+'" name="txtDetailQuantity[]" />';
+								var str = '<input type="text" class="col-lg-12 txtDetailQuantity txt-numeric" value="'+data+'" name="txtDetailQuantity[]" />';
+								if (varUseMobile == "1")
+									str = str + " <span class='badge badge-inverse' >Cantidad</span>";
+								return str;
 							}
 						},
 						{
 							"aTargets"	: [ 7 ],//costo
 							"mRender"	: function ( data, type, full ) {
-								return '<input type="text" class="col-lg-12 txtDetailCost txt-numeric" value="'+data+'" name="txtDetailCost[]" />';
+								var str = '<input type="text" class="col-lg-12 txtDetailCost txt-numeric" value="'+data+'" name="txtDetailCost[]" />';
+								if (varUseMobile == "1")
+									str = str + " <span class='badge badge-inverse' >Costo</span>";
+								return str;
 							}
 						},
 						{
 							"aTargets"	: [ 8 ],//precio
 							"mRender"	: function ( data, type, full ) {
-								return '<input type="text" class="col-lg-12 txtDetailPrice txt-numeric" value="'+data+'" name="txtDetailPrice[]" />';
+								var str = '<input type="text" class="col-lg-12 txtDetailPrice txt-numeric" value="'+data+'" name="txtDetailPrice[]" />';
+								if (varUseMobile == "1")
+									str = str + " <span class='badge badge-inverse' >Precio</span>";
+								return str;
 							}
 						},
 						{
@@ -172,7 +182,7 @@
 			]							
 		});
 		refreschChecked();
-		
+		onCompletePantalla();	
 		
 		if(objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES == "true"){		
 			objectParameterButtoms.Imprmir_Cantidades=function(){
@@ -640,6 +650,13 @@
 		$('#txtDiscount').mask('000,000.00', {reverse: true});
 		$('#txtIva').mask('000,000.00', {reverse: true});
 		*/
+		
+		if(varUseMobile == "1")
+		{
+			$("#tb_transaction_master_detail td").css("display","block");
+		}
+		
+		
 	}
 	function onCompleteOrdenCompra(objResponse){
 		console.info("CALL onCompleteOrdenCompra");
@@ -682,4 +699,21 @@
 		
 		fnShowNotification("TOTAL: C$ " +  $.number(total) ,"success");
 	}
+	
+	function onCompletePantalla(){
+		
+		
+		
+		if(varUseMobile == "1" ){
+		   $(".elementMovilOculto").addClass("hidden");		   
+		   
+		   $("#tb_transaction_master_detail th").css("display","none");
+		   $("#tb_transaction_master_detail td").css("display","block");
+		   
+	    }
+	   
+	    //$("#divLoandingCustom").remove();
+		
+	}
+	
 </script>

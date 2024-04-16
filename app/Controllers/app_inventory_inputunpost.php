@@ -45,6 +45,7 @@ class app_inventory_inputunpost extends _BaseController {
 			$dataView["objCurrency"]					= $this->Currency_Model->get_rowByPK($dataView["objTransactionMaster"]->currencyID);
 			$dataView["prefixCurrency"]					= $dataView["objCurrency"]->simbol." ";			
 			$dataView["objStage"]						= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($dataView["objTransactionMaster"]->statusID);
+			$dataView["useMobile"]						= $dataSession["user"]->useMobile;
 			//obtener nombre de impresora por defecto
 			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT",$companyID);
 			$objParameterPrinterName = $objParameterPrinterName->value;
@@ -1526,6 +1527,7 @@ class app_inventory_inputunpost extends _BaseController {
 			$datView["objListPrice"]			= $objListPrice;			
 			$datView["objListTypePreice"]		= $this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID);
 			//Obtener el Registro	
+			$datView["useMobile"]					= $dataSession["user"]->useMobile;
 			$datView["objComponentItem"]	 		= $objComponentItem;
 			$datView["objComponentProvider"]	 	= $objComponentProvider;
 			$datView["objComponentInputSinPost"]	= $objComponentInputSinPost;
@@ -1632,6 +1634,7 @@ class app_inventory_inputunpost extends _BaseController {
 			
 			$objListPrice 							= $this->List_Price_Model->getListPriceToApply($companyID);
 			$dataView["objListPrice"]				= $objListPrice;
+			$dataView["useMobile"]					= $dataSession["user"]->useMobile;
 			$dataView["objComponentItem"] 			= $objComponentItem;
 			$dataView["objComponentProvider"] 		= $objComponentProvider;
 			$dataView["objComponentInputSinPost"]	= $objComponentInputSinPost;

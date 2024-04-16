@@ -130,7 +130,7 @@
 
 														<div class="col-lg-8">
 
-															<select name="txtStatusID" id="txtStatusID" class="select2">
+															<select name="txtStatusID" id="txtStatusID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
 
 																	<option></option>																
 

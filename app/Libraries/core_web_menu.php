@@ -345,6 +345,7 @@ class core_web_menu {
 				$data_["icon"]		= $obj->icon;
 				$data_["address"]	= base_url()."/". str_replace(URL_SUFFIX_OLD,URL_SUFFIX_NEW,$obj->address);
 				$data_["display"]	= $obj->display;
+				$data_["target"]	= $obj->typeUrlRedirect;
 				$data_["submenu"]	= $x;								
 				$template			= view("core_template/".$obj->template,$data_);		
 				$html				= $html . $template;
