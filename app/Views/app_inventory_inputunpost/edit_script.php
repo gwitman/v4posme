@@ -707,6 +707,7 @@
 		if(varUseMobile == "1" ){
 		   $(".elementMovilOculto").addClass("hidden");		   
 		   
+		   $("#tb_transaction_master_detail_wrapper .dataTables_scrollHead .table.table-bordered.dataTable th").css("display","none");
 		   $("#tb_transaction_master_detail th").css("display","none");
 		   $("#tb_transaction_master_detail td").css("display","block");
 		   
