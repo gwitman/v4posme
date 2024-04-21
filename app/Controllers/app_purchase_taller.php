@@ -97,7 +97,7 @@ class app_purchase_taller extends _BaseController {
 			//Obtener Factura
 			$dataView["objBilling"]					= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,$dataView["objTransactionMaster"]->note);
 			
-			
+			$dataView["company"]				= $dataSession["company"];
 			$dataView["objListCurrency"]		= $objListCurrency;
 			$dataView["companyID"]				= $dataSession["user"]->companyID;
 			$dataView["userID"]					= $dataSession["user"]->userID;
@@ -817,6 +817,7 @@ class app_purchase_taller extends _BaseController {
 			$dataView["objComponentCustomer"]	= $objComponentCustomer;
 			$dataView["objComponentEmployer"]	= $objComponentEmployer;
 			$dataView["objListCurrency"]		= $objListCurrency;
+			$dataView["company"]				= $dataSession["company"];
 			$dataView["companyID"]				= $dataSession["user"]->companyID;
 			$dataView["userID"]					= $dataSession["user"]->userID;
 			$dataView["userName"]				= $dataSession["user"]->nickname;

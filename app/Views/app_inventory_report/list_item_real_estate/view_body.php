@@ -56,7 +56,7 @@
 											
 											
 											
-											<div class="form-group">
+											<div class="form-group hidden ">
 												<label class="col-lg-6 control-label" for="selectFilter">Mostrar</label>
 												<div class="col-lg-6"> 
 													<div class="col-lg-6">

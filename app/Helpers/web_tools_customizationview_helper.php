@@ -202,6 +202,10 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('globalpro_app_invoice_billing_divTraslateElement') 											=> "<script>$(document).ready(function(){		$('#divVendedor').appendTo('#divInformacionLeft');$('#divBodega').appendTo('#divInformacionLeft');});</script>",		
 		strtolower('globalpro_app_box_share_new_script_validate_reference1')									=> "/*Validar Atiende*/ if($('#txtReference1').val() == ''){fnShowNotification('Escriba quien le atiende','error',timerNotification);result = false;}",		
 		strtolower('globalpro_app_inventory_inputunpost_new_script_validate_reference1')						=> "/*Validar Referecia 1*/ if($('#txtReference1').val() == ''){fnShowNotification('Escriba Referencia 1 es obligatoria','error',timerNotification);result = false;}",
+		strtolower('globalpro_app_purchase_taller_divTxtApplied')												=> "hidden",
+		strtolower('globalpro_app_purchase_taller_divTxtChange')												=> "hidden",
+		strtolower('globalpro_app_purchase_taller_divTxtStatus')												=> "hidden",
+		strtolower('globalpro_app_purchase_taller_divTxtCurrency')												=> "hidden",
 					
 					
 		/*Ferreteria Mateo*/			

@@ -77,6 +77,13 @@ class app_inventory_item extends _BaseController {
 			$objParameterListPreiceDefault			= $objParameterListPreiceDefault->value;
 			$objParameterAll						= $this->core_web_parameter->getParameterAll($companyID);
 			
+			//Activar inmueble
+			if($comando == "activate")
+			{
+				$dataActivate["isActive"] = 1;
+				$this->Item_Model->update_app_posme($companyID,$itemID,$dataActivate);
+			}
+			
 			//Obtener Informacion
 			$dataView["objComponentEmployer"]		= $objComponentEmployer;
 			$dataView["objComponent"] 				= $objComponent;

@@ -61,20 +61,20 @@
 															</div>
 														</div>
 														
-														<div class="form-group">
+														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_taller","divTxtApplied","");  ?> ">
 																<label class="col-lg-4 control-label" for="normal">Aplicado</label>
 																<div class="col-lg-5">
 																	<input type="checkbox" disabled   name="txtIsApplied" id="txtIsApplied" value="1" >
 																</div>
 														</div>
-														<div class="form-group">
+														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_taller","divTxtChange","");  ?>">
 																<label class="col-lg-4 control-label" for="normal">Cambio</label>
 																<div class="col-lg-8">
 																	<input class="form-control"   type="text" disabled="disabled" name="txtExchangeRate" id="txtExchangeRate" value="<?php echo $exchangeRate; ?>">
 																</div>
 														</div>
 														
-														<div class="form-group">
+														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_taller","divTxtStatus","");  ?>">
 															<label class="col-lg-4 control-label" for="selectFilter">Estado</label>
 															<div class="col-lg-8">
 																<select name="txtStatusID" id="txtStatusID" class="select2">
@@ -161,63 +161,28 @@
 																</div>
 															</div>
 														</div>
-													
-														<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal">Nota</label>
-																<div class="col-lg-8">																																		
-																	<textarea class="form-control" type="text"  name="txtDetailReference1" id="txtDetailReference1" ></textarea>
-																</div>
-														</div>
-														
-															
-														<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal">Problema</label>
-																<div class="col-lg-8">
-																	<textarea class="form-control" type="text"  name="txtDetailReference2" id="txtDetailReference2" ></textarea>																	
-																</div>
-														</div>
 														
 														<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal">Solucion</label>
-																<div class="col-lg-8">																	
-																	<textarea class="form-control" type="text"  name="txtDetailReference3" id="txtDetailReference3" ></textarea>
-																</div>
-														</div>
-														
-													
-												</div>
-												<div class="col-lg-6">
-														
-														<div class="form-group">
-															<label class="col-lg-4 control-label" for="selectFilter">Moneda</label>
+															<label class="col-lg-4 control-label" for="selectFilter">Estado del equipo</label>
 															<div class="col-lg-8">
-																<select name="txtCurrencyID" id="txtCurrencyID" class="select2">																		>																
+																<select name="txtAreaID" id="txtAreaID" class="select2">																									
 																		<?php
 																		$counter = 0;
-																		if($objListCurrency)
-																		foreach($objListCurrency as $ws){
-																			
+																		if($objListEstadosEquipo)
+																		foreach($objListEstadosEquipo as $ws){
 																			if($counter == 0)
-																				echo "<option value='".$ws->currencyID."' selected>".$ws->simb."</option>";
-																			else
-																				echo "<option value='".$ws->currencyID."' >".$ws->simb."</option>";
+																				echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+																			else 
+																				echo "<option value='".$ws->catalogItemID."' >".$ws->name."</option>";
 																			
 																			$counter++;
+																				
 																		}
 																		?>
 																</select>
 															</div>
 														</div>
 														
-														<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal">Monto</label>
-																<div class="col-lg-8">
-																	<input type="hidden" name="txtDetailTransactionDetailID" value="0">
-																	<input class="form-control"  type="text"  name="txtDetailAmount" id="txtDetailAmount" value="0">												
-																</div>
-														</div>
-														
-													
 														<div class="form-group">
 															<label class="col-lg-4 control-label" for="selectFilter">Articulo</label>
 															<div class="col-lg-8">
@@ -295,24 +260,26 @@
 																</select>
 															</div>
 														</div>
+													
+													
+												</div>
+												<div class="col-lg-6">
 														
-														
-														
-														<div class="form-group">
-															<label class="col-lg-4 control-label" for="selectFilter">Estado del equipo</label>
+														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_taller","divTxtCurrency","");  ?>">
+															<label class="col-lg-4 control-label" for="selectFilter">Moneda</label>
 															<div class="col-lg-8">
-																<select name="txtAreaID" id="txtAreaID" class="select2">																									
+																<select name="txtCurrencyID" id="txtCurrencyID" class="select2">																		>																
 																		<?php
 																		$counter = 0;
-																		if($objListEstadosEquipo)
-																		foreach($objListEstadosEquipo as $ws){
+																		if($objListCurrency)
+																		foreach($objListCurrency as $ws){
+																			
 																			if($counter == 0)
-																				echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
-																			else 
-																				echo "<option value='".$ws->catalogItemID."' >".$ws->name."</option>";
+																				echo "<option value='".$ws->currencyID."' selected>".$ws->simb."</option>";
+																			else
+																				echo "<option value='".$ws->currencyID."' >".$ws->simb."</option>";
 																			
 																			$counter++;
-																				
 																		}
 																		?>
 																</select>
@@ -320,12 +287,35 @@
 														</div>
 														
 														
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal">Problema</label>
+																<div class="col-lg-8">
+																	<textarea class="form-control" type="text"  name="txtDetailReference2" id="txtDetailReference2" ></textarea>																	
+																</div>
+														</div>
 														
-													
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal">Nota</label>
+																<div class="col-lg-8">																																		
+																	<textarea class="form-control" type="text"  name="txtDetailReference1" id="txtDetailReference1" ></textarea>
+																</div>
+														</div>
 														
 														
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal">Solucion</label>
+																<div class="col-lg-8">																	
+																	<textarea class="form-control" type="text"  name="txtDetailReference3" id="txtDetailReference3" ></textarea>
+																</div>
+														</div>
 														
-
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal">Monto</label>
+																<div class="col-lg-8">
+																	<input type="hidden" name="txtDetailTransactionDetailID" value="0">
+																	<input class="form-control"  type="text"  name="txtDetailAmount" id="txtDetailAmount" value="0">												
+																</div>
+														</div>
 														
 												</div>
 											</div>

@@ -819,8 +819,10 @@ class app_inventory_report extends _BaseController {
 											  '".$namePropietario."' = '' and  
 											  '".$numberEncuentra24."' = '' 
 											)											
-										) AND 
-										x.isActive = ".$showActivos."
+										) 
+										AND 
+										x.isActive = ".$showActivos."   
+										
 								";
 								
 				

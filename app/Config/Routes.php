@@ -687,6 +687,8 @@ $routes->match(['get','post'],'app_inventory_item/index/(:any)','app_inventory_i
 $routes->match(['get','post'],'app_inventory_item/popup_add_concept','app_inventory_item::popup_add_concept');
 $routes->match(['get','post'],'app_inventory_item/popup_add_renderimg','app_inventory_item::popup_add_renderimg');
 $routes->match(['get','post'],'app_inventory_item/popup_add_renderimg/(:any)','app_inventory_item::popup_add_renderimg');
+$routes->match(['get','post'],'app_inventory_item_delete/index','app_inventory_item_delete::index');
+$routes->match(['get','post'],'app_inventory_item_delete/index/(:any)','app_inventory_item_delete::index');
 $routes->match(['get','post'],'app_inventory_otherinput/viewRegister','app_inventory_otherinput::viewRegister');
 $routes->match(['get','post'],'app_inventory_otherinput/viewRegister/(:any)','app_inventory_otherinput::viewRegister');
 $routes->match(['get','post'],'app_inventory_otherinput/searchTransactionMaster','app_inventory_otherinput::searchTransactionMaster');
