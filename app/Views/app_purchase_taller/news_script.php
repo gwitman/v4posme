@@ -120,16 +120,6 @@
 							result = false;
 						}
 						
-						//Validar Monto
-						if($("#txtDetailAmount").val() == "0"){
-							fnShowNotification("El monto no puede ser 0","error",timerNotification);
-							result = false;
-						}
-						
-						if($("#txtNote").val() == ""){
-							fnShowNotification("Seleccionar factura","error",timerNotification);
-							result = false;
-						}
 						
 						if($("#txtCustomerID").val() == ""){
 							fnShowNotification("Seleccionar cliente","error",timerNotification);
@@ -141,6 +131,8 @@
 							result = false;
 						}
 						
+						
+						<?php echo getBehavio($company->type,"app_purchase_taller","scriptValidateForm","") ?>
 						return result;
 					}
 					

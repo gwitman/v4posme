@@ -206,6 +206,22 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('globalpro_app_purchase_taller_divTxtChange')												=> "hidden",
 		strtolower('globalpro_app_purchase_taller_divTxtStatus')												=> "hidden",
 		strtolower('globalpro_app_purchase_taller_divTxtCurrency')												=> "hidden",
+		strtolower('globalpro_app_purchase_taller_scriptValidateForm')											=> "	
+
+
+		if( $('#txtAreaID').val() == 799 /*entregado*/ )
+		{
+			if($('#txtDetailAmount').val() == '0'){
+				fnShowNotification('El monto no puede ser 0','error',timerNotification);
+				result = false;
+			}					
+
+			if($('#txtNote').val() == ''){
+				fnShowNotification('Seleccionar factura','error',timerNotification);
+				result = false;
+			}
+		}				
+		",
 					
 					
 		/*Ferreteria Mateo*/			
