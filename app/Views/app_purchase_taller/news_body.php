@@ -301,6 +301,12 @@
 																</div>
 														</div>
 														
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal">Contraseña</label>
+																<div class="col-lg-8">
+																	<input class="form-control"  type="text"  name="txtInfoReference1" id="txtInfoReference1" value="">
+																</div>
+														</div>
 														
 														<div class="form-group">
 																<label class="col-lg-4 control-label" for="normal">Solucion</label>

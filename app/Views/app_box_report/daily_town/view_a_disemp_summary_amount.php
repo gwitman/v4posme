@@ -36,6 +36,8 @@
 		{
 			foreach($dataDetail as $key => $valueDeail)
 			{				
+			
+				
 				//agregar llame si no existe
 				$exist = array_filter($detailTotales,function($ele) use ($key) { return $ele["Fecha"] == $key; });
 				if(!$exist)
@@ -49,9 +51,10 @@
 				//Ventas de Contado
 				if($valueDeail["objSales"])
 				{					
-					$temp = array_filter($valueDeail["objSales"],function($ele) use ($key) { 
-						return 
-							$ele["transactionOn"] == $key." 00:00:00" && 
+					
+					
+					$temp = array_filter($dataDetail[$key]["objSales"],function($ele) use ($key) { 
+						return
 							$ele["currencyName"] == "Cordoba" &&
 							$ele["tipo"] == "CONTADO";
 					});										
@@ -66,9 +69,8 @@
 				//Ventas de Credito Primas
 				if($valueDeail["objSalesCredito"])
 				{					
-					$temp = array_filter($valueDeail["objSalesCredito"],function($ele) use ($key) { 
-						return 
-							$ele["transactionOn"] == $key." 00:00:00" && 
+					$temp = array_filter($dataDetail[$key]["objSalesCredito"],function($ele) use ($key) { 
+						return
 							$ele["currencyName"] == "Cordoba" &&
 							$ele["tipo"] == "CREDITO";
 					});										
@@ -84,9 +86,8 @@
 				//Abonos
 				if($valueDeail["objDetail"])
 				{					
-					$temp = array_filter($valueDeail["objDetail"],function($ele) use ($key) { 
-						return 
-							\DateTime::createFromFormat('Y-m-d H:i:s',$ele["transactionOn"])->format("Y-m-d") == $key."" && 
+					$temp = array_filter($dataDetail[$key]["objDetail"],function($ele) use ($key) { 
+						return
 							$ele["moneda"] == "Cordoba" ;
 					});										
 					if($temp)
@@ -102,9 +103,8 @@
 				//Ingreso de Caja				
 				if($valueDeail["objCash"])
 				{					
-					$temp = array_filter($valueDeail["objCash"],function($ele) use ($key) { 
-						return 
-							 \DateTime::createFromFormat('Y-m-d H:i:s',$ele["transactionOn"])->format("Y-m-d") == $key."" && 
+					$temp = array_filter($dataDetail[$key]["objCash"],function($ele) use ($key) { 
+						return
 							$ele["moneda"] == "Cordoba" ;
 					});										
 					if($temp)
@@ -118,9 +118,8 @@
 				//Salida de Caja
 				if($valueDeail["objCashOut"])
 				{					
-					$temp = array_filter($valueDeail["objCashOut"],function($ele) use ($key) { 
-						return 
-							 \DateTime::createFromFormat('Y-m-d H:i:s',$ele["transactionOn"])->format("Y-m-d") == $key."" && 
+					$temp = array_filter($dataDetail[$key]["objCashOut"],function($ele) use ($key) { 
+						return
 							$ele["moneda"] == "Cordoba" ;
 					});										
 					if($temp)

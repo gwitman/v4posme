@@ -1,23 +1,9 @@
-use dbkroqnguhldo1;
+use db5fgagxsmujug;
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 
-
-UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "1" 
-WHERE 
-	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "CXC_CURRENT_REQUEST_BURO";## Usuario para conectarse a la sin riesgo 
-	
-UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "25" 
-WHERE 
-	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "CXC_COUNT_MAX_REQUEST_BURO";## Usuario para conectarse a la sin riesgo 
-	
-	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "app_cxc_customer/viewPrinterDirectBalance58mm" 
 WHERE 
@@ -111,32 +97,7 @@ WHERE
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
-UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://api.whaticket.com/api/v1/whatsapps" 
-WHERE 
-	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
-	
 
-UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "50584766457" 
-WHERE 
-	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "WHATSAP_CURRENT_PROPIETARY_COMMERSE";## WHATSAPP DEL PRIPIETARIO
-	
-UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "0" 
-WHERE 
-	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "WHATSAP_COUNTER_MESSAGE";	## Contador de mensaje de whatsapp
-	
-
-UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "1000" 
-WHERE 
-	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "WHATSAP_MESSAGE_BY_MONTO";	## Cantidad de mensajes mensuales
-	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "3" 
@@ -580,7 +541,7 @@ WHERE
 	tb_parameter.name = "CORE_CXC_WSDL_SIN_RIESGO";## Urls para consultar a la sin riesgo y para reportar a la sin riesgo 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "180389Gonzalez." 
+	tb_company_parameter.value = "..2ACLA" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CXC_WSDL_SIN_RIESGO_PASSWORD";## Passwords para conectarse a la sin riesgo 
@@ -779,7 +740,7 @@ WHERE
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "flc_victoria_store" 
+	tb_company_parameter.value = "flc-rblandon" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CXC_WSDL_SIN_RIESGO_USUARIO";## Usuario para conectarse a la sin riesgo 
@@ -1236,6 +1197,19 @@ WHERE
 	tb_parameter.name = "CORE_PROPIETARY_EMAIL";## CORREO DEL PROPIETARIO
 
 
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "30" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_MESSAGE_BY_MONTO";## Mensajes de Whatsapp mensuales
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "50584766457" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_CURRENT_PROPIETARY_COMMERSE";## WHATSAPP DEL PRIPIETARIO
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "047-160483-0000C" 
@@ -1267,14 +1241,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Donde fue aserrio santa fe, 2c abajo 15v.sur" 
+	tb_company_parameter.value = "" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Distribuidora Gonzalez' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
+	NAME = 'FC Blanadon' , address = '' ,
 	flavorID = 0,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
@@ -1287,18 +1261,17 @@ Eliminar o desactivar usuarios
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2, 	/*administrador*/
- 5,		/*administrador*/
- 191,  	/*supervisor*/
- 190, 	/*facturador*/
- 189 	/*administrador*/
+ 481,  	/*supervisor*/
+ 480, 	/*facturador*/
+ 479 	/*administrador*/
 );
 
 update tb_role set isActive = 0; 
 update tb_role set isActive = 1 where roleID in (
 	3,
-	201,
-	202,
-	203	
+	407,
+	406,
+	405	
 );
 
 
@@ -1326,4 +1299,4 @@ update tb_item set realStateStateID = ifnull(realStateStateID,0);
 update tb_customer set entityContactID = ifnull(entityContactID,0);
 	
 	
-/*BD: dbkroqnguhldo1 */
+/*BD: db5fgagxsmujug */

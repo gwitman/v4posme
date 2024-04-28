@@ -318,6 +318,7 @@ class app_purchase_taller extends _BaseController {
 				$objTMI["routeID"]						= /*inicio get post*/ $this->request->getPost("txtRouteID");
 				$objTMI["zoneID"]						= /*inicio get post*/ $this->request->getPost("txtZoneID");				
 				$objTMI["reference2"]					= /*inicio get post*/ $this->request->getPost("txtInfoReference2");
+				$objTMI["reference1"]					= /*inicio get post*/ $this->request->getPost("txtInfoReference1");
 				$this->Transaction_Master_Info_Model-> update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMI);
 				
 			}
@@ -415,14 +416,22 @@ class app_purchase_taller extends _BaseController {
 			$warrning = false;
 			if($this->core_web_whatsap->validSendMessage(APP_COMPANY))
 			{
+				$catalogItemEtapa 			= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","areaID",$companyID,$objTMNew["areaID"]);								
+				$catalogItemArticulo		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","routeID",$companyID,$objTMI["routeID"]);								
 				$objPC_PlantillaWhatsapp 	= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_workshop_taller.templates_whatsapp")->where("isActive",1)->where("flavorID",$dataSession["company"]->flavorID)->find();				
 				$objPCD_PlantillaWhatsapp   = false;			
 				if($objPC_PlantillaWhatsapp)
 				{
-					$objPCD_PlantillaWhatsapp	= $this->Public_Catalog_Detail_Model->asObject()->where("publicCatalogID",$objPC_PlantillaWhatsapp[0]->publicCatalogID)->where( "isActive",1)->findAll();					
+					//Obtener la plantilla corresponeidnte a la etapa					
+					$objPCD_PlantillaWhatsapp	= $this->Public_Catalog_Detail_Model->asObject()->
+													where("publicCatalogID",$objPC_PlantillaWhatsapp[0]->publicCatalogID)->
+													where( "isActive",1)->
+													where( "name",$catalogItemEtapa->name)->
+													findAll();					
 					$themplate 					= "";
 					if($objPCD_PlantillaWhatsapp)
 					{
+						
 						$themplate 				= helper_RequestGetValueObjet($objPCD_PlantillaWhatsapp[0],"description","");
 						if($themplate != "")
 						{
@@ -444,20 +453,23 @@ class app_purchase_taller extends _BaseController {
 							$dataView["objCatalogItemAreaID"] 		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","areaID",$companyID,$objTMNew["areaID"]);
 							
 							
-							$themplate = str_replace("{customer_name}",helper_RequestGetValueObjet($dataView["objCustomerNatural"],"firstName",""),$themplate);
-							$themplate = str_replace("{employeer_name}",helper_RequestGetValueObjet($dataView["objEmployerNatural"],"firstName",""),$themplate);
-							$themplate = str_replace("{employeer_phone}",$dataView["objEmployerPhoneNumber"],$themplate);
-							$themplate = str_replace("{status_name}",helper_RequestGetValueObjet($dataView["objCatalogItemAreaID"],"name",""),$themplate);
-							$themplate = str_replace("{transaction_number}",helper_RequestGetValueObjet($dataView["objBilling"],"transactionNumber",""),$themplate);
-							$themplate = str_replace("{amount}",$objTMNew["amount"],$themplate);
-							$themplate = str_replace("{text}",$objTMNew["reference1"],$themplate);
+							$themplate 		= str_replace("{customer_name}",helper_RequestGetValueObjet($dataView["objCustomerNatural"],"firstName",""),$themplate);
+							$themplate 		= str_replace("{employeer_name}",helper_RequestGetValueObjet($dataView["objEmployerNatural"],"firstName",""),$themplate);
+							$themplate 		= str_replace("{employeer_phone}",$dataView["objEmployerPhoneNumber"],$themplate);
+							$themplate 		= str_replace("{status_name}",helper_RequestGetValueObjet($dataView["objCatalogItemAreaID"],"name",""),$themplate);
+							$themplate 		= str_replace("{transaction_number}",helper_RequestGetValueObjet($dataView["objBilling"],"transactionNumber",""),$themplate);
+							$themplate		= str_replace("{amount}",$objTMNew["amount"],$themplate);
+							$themplate 		= str_replace("{text}",$objTMNew["reference1"],$themplate);
+							$themplate 		= str_replace("{article}",$catalogItemArticulo->name,$themplate);
+							$numerDestino 	= clearNumero($dataView["objCustomer"]->phoneNumber); 
+							
 							
 							$warrning = true;
-							$this->core_web_notification->set_message(false,"Mensaje enviado al No:".$dataView["objCustomer"]->phoneNumber." ---> ".$themplate);
+							$this->core_web_notification->set_message(false,"A:".$numerDestino." - ".substr($themplate,0,55)." ...");
 							$this->core_web_whatsap->sendMessageUltramsg(
 								APP_COMPANY, 
 								$themplate,
-								$dataView["objCustomer"]->phoneNumber
+								$numerDestino
 							);
 							
 							
@@ -589,6 +601,7 @@ class app_purchase_taller extends _BaseController {
 			$objTMI["routeID"]						= /*inicio get post*/ $this->request->getPost("txtRouteID");
 			$objTMI["zoneID"]						= /*inicio get post*/ $this->request->getPost("txtZoneID");
 			$objTMI["reference2"]					= /*inicio get post*/ $this->request->getPost("txtInfoReference2");
+			$objTMI["reference1"]					= /*inicio get post*/ $this->request->getPost("txtInfoReference1");
 			$this->Transaction_Master_Info_Model->insert_app_posme($objTMI);
 
 

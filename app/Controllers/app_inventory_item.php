@@ -363,6 +363,7 @@ class app_inventory_item extends _BaseController {
 					$paisDefault 				= $this->core_web_parameter->getParameterValue("CXC_PAIS_DEFAULT",$companyID);
 					$departamentoDefault 		= $this->core_web_parameter->getParameterValue("CXC_DEPARTAMENTO_DEFAULT",$companyID);
 					$municipioDefault 			= $this->core_web_parameter->getParameterValue("CXC_MUNICIPIO_DEFAULT",$companyID);
+					$validateBarCode 			= $this->core_web_parameter->getParameterValue("INVENTORY_BAR_CODE_UNIQUE",$companyID);
 			
 			
 					$paisID 			= empty (/*inicio get post*/ $this->request->getPost('txtCountryID') /*//--fin peticion get o post*/ ) ?  $paisDefault : /*inicio get post*/ $this->request->getPost('txtCountryID');  /*//--fin peticion get o post*/
@@ -402,31 +403,34 @@ class app_inventory_item extends _BaseController {
 					$objItem["barCode"]						= str_replace(["\n\r", "\n", "\r"],"",$objItem["barCode"]);					 
 					$objItemValidBarCode 					= $this->Item_Model->get_rowByCodeBarra($companyID , $objItem["barCode"]  );
 					
-					if($objItemValidBarCode)
+					if(strtoupper($validateBarCode) == strtoupper("true"))
 					{
-						$this->core_web_notification->set_message(true,"Codigo de barra ya existe.");
-						$this->response->redirect(base_url()."/".'app_inventory_item/add');	
-						return;
-					}
-					
-					$objItemValidBarCode 					= $this->Item_Model->get_rowByCodeBarraSimilar($companyID , $objItem["barCode"]  );
-					if($objItemValidBarCode)
-					{
-						
-						foreach($objItemValidBarCode as $objItemSimiliar)
+						if($objItemValidBarCode)
 						{
-							$codeTemp = explode(",",$objItemSimiliar->barCode);
+							$this->core_web_notification->set_message(true,"Codigo de barra ya existe.");
+							$this->response->redirect(base_url()."/".'app_inventory_item/add');	
+							return;
+						}
+						
+						$objItemValidBarCode 					= $this->Item_Model->get_rowByCodeBarraSimilar($companyID , $objItem["barCode"]  );
+						if($objItemValidBarCode)
+						{
 							
-							foreach($codeTemp as $arrayCode)
-							{	
-								if($arrayCode == $objItem["barCode"] )
-								{
-									$this->core_web_notification->set_message(true,"Codigo de barra ya existe.");
-									$this->response->redirect(base_url()."/".'app_inventory_item/add');	
-									return;
+							foreach($objItemValidBarCode as $objItemSimiliar)
+							{
+								$codeTemp = explode(",",$objItemSimiliar->barCode);
+								
+								foreach($codeTemp as $arrayCode)
+								{	
+									if($arrayCode == $objItem["barCode"] )
+									{
+										$this->core_web_notification->set_message(true,"Codigo de barra ya existe.");
+										$this->response->redirect(base_url()."/".'app_inventory_item/add');	
+										return;
+									}
 								}
+								
 							}
-							
 						}
 					}
 					

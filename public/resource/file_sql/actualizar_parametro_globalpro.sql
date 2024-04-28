@@ -7,6 +7,32 @@ use dbjznvjrsdpypf;
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "https://api.ultramsg.com/instance65915/messages/chat" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WAHTSAP_URL_ENVIO_MENSAJE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "n5hb8n1wf0r6e27i" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "https://api.whaticket.com/api/v1/whatsapps" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "50584766457" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_CURRENT_PROPIETARY_COMMERSE";## WHATSAPP DEL PRIPIETARIO
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "0" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
@@ -19,7 +45,7 @@ WHERE
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_MESSAGE_BY_MONTO";	## Cantidad de mensajes mensuales
 	
-
+	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "app_purchase_taller/viewPrinterFormatoA4Stiker" 
@@ -1105,11 +1131,7 @@ WHERE
 	tb_parameter.name = "WHATSAP_MESSAGE_BY_MONTO";## Mensajes de Whatsapp mensuales
 	
 
-UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "50557165864" 
-WHERE 
-	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "WHATSAP_CURRENT_PROPIETARY_COMMERSE";## WHATSAPP DEL PRIPIETARIO
+
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "888-080396-0001K" 

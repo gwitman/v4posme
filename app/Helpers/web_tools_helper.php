@@ -616,3 +616,17 @@ function deleteDir($dir) {
     emptyDir($dir);
     rmdir($dir);
 }
+
+function clearNumero($numero)
+{
+    // Eliminar caracteres no deseados
+    $numeroLimpio = preg_replace("/[^0-9]/", "", $numero);
+    
+    // Verificar si el número resultante no comienza con "505"
+    if (substr($numeroLimpio, 0, 3) !== "505") {
+        // Si no comienza con "505", concatenar "505" al inicio
+        $numeroLimpio = "505" . $numeroLimpio;
+    }
+    
+    return $numeroLimpio;
+}

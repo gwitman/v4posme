@@ -2836,9 +2836,9 @@ function helper_reporteA4mmTransactionMasterTallerGlobalPro(
                     <table style='width:98%'>
                       <tr>
 						<td  style='vertical-align:top;text-align:center;width:33%;text-align:left'>
-                          <img  src='".$base64."' width='200px' height='120px'  >
+                          <img  src='".$base64."' width='200px' height='100px'  >
                         </td>
-						<td style='vertical-align:top;text-align:center;width:33%;text-align:center; font-weight: bold;font-size:".$font_size1."'>
+						<td style='vertical-align:middle;text-align:center;width:33%;text-align:center; font-weight: bold;font-size:".$font_size1."'>
 							HOJA DE INGRESO
 						</td>
                         <td  style='vertical-align:top;text-align:center;width:33%'>
@@ -2971,12 +2971,12 @@ $f_html = $f_html."
             </td>                 
           </tr>
 		  <tr>
-            <td  style='text-align:center;vertical-align:top;widht:auto;font-weight: bold;' >              
+            <td  style='text-align:center;vertical-align:top;width:auto;font-weight: bold;' >              
 				Nota
             </td>                 
           </tr>
 		  <tr>
-            <td  style='text-align:left;vertical-align:top;widht:auto;' >              
+            <td  style='text-align:left;vertical-align:top;width:auto;' >              
 				<table style='width:100%'>
 					<tr>
 						<td colspan='3'>
@@ -2984,7 +2984,7 @@ $f_html = $f_html."
 						</td>
 					</tr>
 					<tr>
-						<td style='widht:30px'>
+						<td style='width:150px'>
 							Deja cargador o Accesorios:
 						</td>
 						<td style='text-align:left'>
@@ -3081,7 +3081,7 @@ $f_html = $f_html."
 			  
             </td>
 			<td style='text-align:center;font-weight: bold'>
-              ".$objData["objCustomer"]->phoneNumber."
+              ".$objData["objCustomer"]->identification."
             </td>
 			<td style='text-align:center;font-weight: bold'>
               

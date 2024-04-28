@@ -1,7 +1,7 @@
-set @nameOrigen        	:= 'GBT';
-set @flavorOrigen  	  	:= '380';
-set @nameTarget        	:= 'COMPANY_TEST';
-set @flavorTarget  	  	:= '408';
+set @nameOrigen        	:= 'RUSTIK';
+set @flavorOrigen  	  	:= '298';
+set @nameTarget        	:= 'BLUE_MOON';
+set @flavorTarget  	  	:= '484';
 
 
 insert into tb_catalog_item (

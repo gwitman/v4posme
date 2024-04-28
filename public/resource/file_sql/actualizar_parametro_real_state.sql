@@ -20,6 +20,14 @@ UPDATE  tb_company_parameter,tb_parameter SET
 	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_BAR_CODE_UNIQUE";	## codigo de barra unico
+	
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_SHOW_BARCODE_INNAME";	## Mostrar el codigo del producto scanerado al momento de facturar
 	
 

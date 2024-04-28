@@ -300,6 +300,14 @@
 								</div>
 								
 								<div class="form-group">
+										<label class="col-lg-4 control-label" for="normal">Contraseña</label>
+										<div class="col-lg-8">
+											<input class="form-control"  type="text"  name="txtInfoReference1" id="txtInfoReference1" value="<?php echo $objTransactionMasterInfo->reference1; ?>">
+										</div>
+								</div>
+							
+								
+								<div class="form-group">
 										<label class="col-lg-4 control-label" for="normal">Solución</label>
 										<div class="col-lg-8">																	
 											<textarea class="form-control" type="text"  name="txtDetailReference3" id="txtDetailReference3" ><?php echo $objTransactionMaster->reference3; ?></textarea>												

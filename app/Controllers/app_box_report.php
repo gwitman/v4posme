@@ -420,7 +420,7 @@ class app_box_report extends _BaseController {
 						
 						$startOn_ 	= $startOn->format("Y-m-d");
 						$endOn_ 	= $endOn->format("Y-m-d")." 23:59:59";
-						
+					
 						
 						
 						//Get Datos
@@ -492,6 +492,7 @@ class app_box_report extends _BaseController {
 					$objDataResult["startOn"] 					= $startOn_r;
 					$objDataResult["endOn"] 					= $endOn_r;
 					$objDataResult["dataDetail"] 				= $dataDetail;
+					
 					$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_customer_credit" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
 					$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);					
 					return view("app_box_report/daily_town/view_a_disemp_summary_amount",$objDataResult);//--finview-r
