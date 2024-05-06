@@ -277,8 +277,62 @@ class core_web_whatsap {
 		
    }
    
+   function sendMessageByWaapi($companyID, $message, $phoneDestino)
+   {
+		//https://waapi.app/account/instances/10179
+		//qMAsXGyf0jIswU6xttfuZvORRhCRJnlrLClmlBgMe31db7ac
+		//10179
+		//gabriel.ley@grupogasani.com
+		//Sistema123.
+		
+		
+		$Parameter_Model 			= new Parameter_Model();
+		$Company_Parameter_Model 	= new Company_Parameter_Model();
+		
+		
+		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
+		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
+		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
+		
+		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
+		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
+		
+		$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
+		$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
+		$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);			
+		
+		//https://api.ultramsg.com/instance65915/messages/chat
+		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
+		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
+		
+		
+		
+		$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;			
+		$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
+		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
+		
+		
+		$clientCurlRequest		= \Config\Services::curlrequest();
+		$response  				= $clientCurlRequest->request(
+			'POST',
+			$objCP_WhatsapUrlSendMessage->value,
+			[					
+				'body' => '{"chatId":"'.$phoneDestino.'@c.us","message":"'.$message.'"}',
+				'headers' 		=> [						
+					'accept'     	=> 'application/json',
+					'authorization' => 'Bearer '.$objCP_WhatsapToken->value,
+					'content-type' => 'application/json'
+				]
+			]				
+		);
+		
+			
+   }
    
-   function sendMessageUltramsg( $companyID, $message, $phoneDestino="" )
+   
+   function sendMessageUltramsg( $companyID, $message, $phoneDestino)
    {
 		//password: 180389Witman
 		//usuario: wgonzalez@gruposi.com
@@ -310,11 +364,10 @@ class core_web_whatsap {
 			$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
 			
 			
-						
-			$phoneDestino	= isset($phoneDestino) ? "" : $phoneDestino;	
-			$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;				
-			$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
 			
+			$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;			
+			$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
+			$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
 			
 			$params=array(
 			'token' 	=> $objCP_WhatsapToken->value,

@@ -77,18 +77,13 @@ class app_invoice_billing extends _BaseController {
 			$urlPrinterDocument					= $this->core_web_parameter->getParameter("INVOICE_URL_PRINTER",$companyID);
 			
 			if(!$objListPrice)
-			throw new \Exception("NO EXISTE UNA LISTA DE PRECIO PARA SER APLICADA");
+			throw new \Exception("NO EXISTE UNA LISTA DE PRECIO PARA SER APLICADA");			
 			
-			//Obtener parametros para mostrar botones de impresion
-			//$parameterValue = $this->core_web_parameter->getParameter("INVOICE_BUTTOM_PRINTER_BAUCHER_GENERAL",$companyID);
-			//$dataView["objParameterInvoiceButtomPrinterBoucherGeneral"] = $parameterValue->value;
 			
-			//$parameterValue = $this->core_web_parameter->getParameter("INVOICE_BUTTOM_PRINTER_PREPRINTER",$companyID);
-			//$dataView["objParameterInvoiceButtomPrinterPrePrinter"] = $parameterValue->value;
-			//$parameterValue = $this->core_web_parameter->getParameter("INVOICE_BUTTOM_PRINTER_FIDLOCAL_PAYMENT",$companyID);
-			//$dataView["objParameterInvoiceButtomPrinterFidLocalPayment"] = $parameterValue->value;
 			
-			$objParameterAll	 						= $this->core_web_parameter->getParameterAll($companyID);			
+			$objParameterInvoiceTypeEmployer			= $this->core_web_parameter->getParameter("INVOICE_TYPE_EMPLOYEER",$companyID);
+			$objParameterInvoiceTypeEmployer			= $objParameterInvoiceTypeEmployer->value;
+			
 			$parameterValue 							= $this->core_web_parameter->getParameter("INVOICE_BUTTOM_PRINTER_FIDLOCAL_PAYMENT_AND_AMORTIZACION",$companyID);
 			$dataView["objParameterInvoiceButtomPrinterFidLocalPaymentAndAmortization"] = $parameterValue->value;
 			
@@ -171,7 +166,7 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objCurrency"]			= $objCurrency;
 			$dataView["company"]				= $dataSession["company"];
 			
-			$dataView["objListEmployee"]		= $this->Employee_Model->get_rowByBranchIDAndType($companyID,$branchID,$objParameterAll["INVOICE_TYPE_EMPLOYEER"]);
+			$dataView["objListEmployee"]		= $this->Employee_Model->get_rowByBranchIDAndType($companyID,$branchID,  $objParameterInvoiceTypeEmployer );
 			$dataView["objListBank"]			= $this->Bank_Model->getByCompany($companyID);
 			$dataView["objListPrice"]			= $objListPrice;
 			$dataView["objComponentBilling"]			= $objComponentTransactionBilling;
@@ -694,7 +689,10 @@ class app_invoice_billing extends _BaseController {
 			if($this->core_web_accounting->cycleIsCloseByDate($companyID,$objTM->transactionOn))
 			throw new \Exception("EL DOCUMENTO NO PUEDE ACTUALIZARCE, EL CICLO CONTABLE ESTA CERRADO");
 			
-			$objParameterAll	 						= $this->core_web_parameter->getParameterAll($companyID);
+			
+			$objParameterInvoiceUpdateNameInTransactionOnly		= $this->core_web_parameter->getParameter("INVOICE_UPDATENAME_IN_TRANSACTION_ONLY",$companyID);
+			$objParameterInvoiceUpdateNameInTransactionOnly		= $objParameterInvoiceUpdateNameInTransactionOnly->value;
+			
 			$objParameterInvoiceBillingQuantityZero		= $this->core_web_parameter->getParameter("INVOICE_BILLING_QUANTITY_ZERO",$companyID);
 			$objParameterInvoiceBillingQuantityZero		= $objParameterInvoiceBillingQuantityZero->value;
 			$objParameterImprimirPorCadaFactura			= $this->core_web_parameter->getParameter("INVOICE_PRINT_BY_INVOICE",$companyID);
@@ -885,16 +883,9 @@ class app_invoice_billing extends _BaseController {
 					$skuCatalogItemID						= $arrayListSku[$key];
 					$itemNameDetail							= str_replace('"',"",str_replace("'","",$arrayListItemName[$key]));
 					
-					log_message("error",">>>>>>>>>");
-					log_message("error",print_r($itemID,true));
-					log_message("error",print_r($skuCatalogItemID,true));
+					
 					
 					$objItemSku								= $this->Item_Sku_Model->getByPK($itemID,$skuCatalogItemID);
-					
-					//$price 								= $objItem->cost * ( 1 + ($objPrice->percentage/100));
-					//$price 								= $arrayListPrice[$key];	
-					log_message("error",">>>>>>>>>");
-					log_message("error",print_r($objItemSku,true));
 					$price 									= $arrayListPrice[$key] / ($objItemSku->value) ;
 					$skuFormatoDescription					= $arrayListSkuFormatoDescription[$key];
 					$ivaPercentage							= ($objCompanyComponentConcept != null ? $objCompanyComponentConcept->valueOut : 0 );					
@@ -906,7 +897,7 @@ class app_invoice_billing extends _BaseController {
 					$unitaryCost							= $this->core_web_transaction_master_detail->getCostCustomer($companyID,$itemID,$unitaryCost,$price);
 					
 					//Actualisar nombre 		
-					if($objParameterAll["INVOICE_UPDATENAME_IN_TRANSACTION_ONLY"] == "false")
+					if( $objParameterInvoiceUpdateNameInTransactionOnly  == "false")
 					{
 						
 						$objItemNew 			= array();
@@ -1314,20 +1305,8 @@ class app_invoice_billing extends _BaseController {
 			
 			if($db->transStatus() !== false)
 			{
-				$db->transCommit();	
-				
-				//Generar pdf en la carpeta
-				//$objParameterShowPreview		= $this->core_web_parameter->getParameter("INVOICE_SHOW_PREVIEW_INLIST",$this->session->get('user')->companyID);
-				//$objParameterShowPreview		= $objParameterShowPreview->value;
-				//if($objParameterShowPreview == "true")
-				//{
-				//		$urlGenerateDocument 	= base_url()."/app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1/companyID/".$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID;
-				//		$client 				= \Config\Services::curlrequest();
-				//		$client->get($urlGenerateDocument);
-				//		
-				//}
-				
-				
+				$db->transCommit();					
+			
 				$this->core_web_notification->set_message(false,SUCCESS);				
 				if($objParameterRegrearANuevo == "true")
 					$this->response->redirect(base_url()."/".'app_invoice_billing/add');	
@@ -1365,8 +1344,6 @@ class app_invoice_billing extends _BaseController {
 	
 	function insertElement($dataSession){
 		try{
-			//$benchmark = \Config\Services::timer();
-			//$benchmark->start('render view');		
 			
 			//PERMISO SOBRE LA FUNCTION
 			if(APP_NEED_AUTHENTICATION == true){
@@ -1505,7 +1482,9 @@ class app_invoice_billing extends _BaseController {
 			
 			$db=db_connect();
 			$db->transStart();	
-			$objParameterAll	 = $this->core_web_parameter->getParameterAll($companyID);		
+
+			$objParameterInvoiceUpdateNameInTransactionOnly		= $this->core_web_parameter->getParameter("INVOICE_UPDATENAME_IN_TRANSACTION_ONLY",$companyID);
+			$objParameterInvoiceUpdateNameInTransactionOnly		= $objParameterInvoiceUpdateNameInTransactionOnly->value;			
 			$transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
 			
 			
@@ -1606,7 +1585,7 @@ class app_invoice_billing extends _BaseController {
 					$tax1 									= $price * $ivaPercentage;
 					
 					//Actualisar nombre 
-					if($objParameterAll["INVOICE_UPDATENAME_IN_TRANSACTION_ONLY"] == "false")
+					if( $objParameterInvoiceUpdateNameInTransactionOnly == "false")
 					{
 						$objItemNew 		= array();
 						$objItemNew["name"] = $itemNameDetail;
@@ -2483,7 +2462,11 @@ class app_invoice_billing extends _BaseController {
 			if(!$objListPrice)
 			throw new \Exception("NO EXISTE UNA LISTA DE PRECIO PARA SER APLICADA");
 		
-			$objParameterAll	 					= $this->core_web_parameter->getParameterAll($companyID);
+			
+			
+			$objParameterInvoiceTypeEmployer		= $this->core_web_parameter->getParameter("INVOICE_TYPE_EMPLOYEER",$companyID);
+			$objParameterInvoiceTypeEmployer		= $objParameterInvoiceTypeEmployer->value;
+			
 			$objParameterInvoiceAutoApply			= $this->core_web_parameter->getParameter("INVOICE_AUTOAPPLY_CASH",$companyID);
 			$objParameterInvoiceAutoApply			= $objParameterInvoiceAutoApply->value;
 			$objParameterTypePreiceDefault			= $this->core_web_parameter->getParameter("INVOICE_DEFAULT_TYPE_PRICE",$companyID);
@@ -2537,7 +2520,7 @@ class app_invoice_billing extends _BaseController {
 			$dataView["listCurrency"]						= $objListCurrency;
 			$dataView["objCurrency"]						= $objCurrency;
 			$dataView["objListPrice"]						= $objListPrice;
-			$dataView["objListEmployee"]					= $this->Employee_Model->get_rowByBranchIDAndType($companyID,$branchID,$objParameterAll["INVOICE_TYPE_EMPLOYEER"]);
+			$dataView["objListEmployee"]					= $this->Employee_Model->get_rowByBranchIDAndType($companyID,$branchID, $objParameterInvoiceTypeEmployer );
 			$dataView["objListBank"]						= $this->Bank_Model->getByCompany($companyID);
 			$dataView["objComponentItem"]					= $objComponentItem;
 			$dataView["objComponentCustomer"]				= $objComponentCustomer;
@@ -2569,8 +2552,8 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objParameterINVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_BAR"]				= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_BAR",$companyID);
 			$dataView["objParameterINVOICE_BILLING_PRINTER_DIRECT_URL_BAR"]							= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_PRINTER_DIRECT_URL_BAR",$companyID);
 			$dataView["objParameterobjParameterINVOICE_BILLING_PRINTER_URL_BAR"]					= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_PRINTER_URL_BAR",$companyID);			
-			$dataView["objListParameterJavaScript"]													= $this->core_web_parameter->getParameterAllToJavaScript($companyID);
-			$dataView["objListParameterAll"]														= $this->core_web_parameter->getParameterAll($companyID);
+			$dataView["objListParameterJavaScript"]													= $this->core_web_parameter->getParameterAllToJavaScript($companyID);			
+			$dataView["objParameterINVOICE_BILLING_EMPLOYEE_DEFAULT"]								= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_EMPLOYEE_DEFAULT",$companyID);
 			$dataView["objParameterINVOICE_BILLING_SELECTITEM"]										= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_SELECTITEM",$companyID);
 			
 			
@@ -3616,14 +3599,16 @@ class app_invoice_billing extends _BaseController {
 			$transactionID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri	
 			$transactionMasterID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri	
 			$itemID					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"itemID");//--finuri	
+			$comment				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterComment");//--finuri	
 			
 			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
-			$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+			$dataView["objTransactionMasterDetail2"]			= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+			$dataView["objTransactionMasterDetail"]				= array();
 			$dataView["objTransactionMasterDetailWarehouse"]	= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterDetailConcept"]		= $this->Transaction_Master_Concept_Model->get_rowByTransactionMasterConcept($companyID,$transactionID,$transactionMasterID,$objComponentItem->componentID);
 			
-			
+			$dataView["objComentario"]					= $comment;
 			$dataView["objComponentCompany"]			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
 			$dataView["objParameterLogo"]				= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
 			$dataView["objParameterPhoneProperty"]		= $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE",$companyID);
@@ -3642,6 +3627,19 @@ class app_invoice_billing extends _BaseController {
 			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_COCINA",$companyID);
 			$objParameterPrinterName = $objParameterPrinterName->value;
 								
+			//Filtrar productos			
+			$itemID = explode(",",$itemID);			
+			foreach($dataView["objTransactionMasterDetail2"] as $tmd)
+			{
+				foreach($itemID as $itemIDx)
+				{
+					if ($itemIDx == $tmd->componentItemID)
+					{
+						array_push($dataView["objTransactionMasterDetail"],$tmd);
+					}
+				}				
+			}	
+			
 			
 			$this->core_web_printer_direct->configurationPrinter($objParameterPrinterName);
 			$this->core_web_printer_direct->executePrinter80mmCommandaCocina($dataView);
@@ -3689,14 +3687,16 @@ class app_invoice_billing extends _BaseController {
 			$transactionID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri	
 			$transactionMasterID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri	
 			$itemID					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"itemID");//--finuri	
+			$comment				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterComment");//--finuri	
 			
 			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
-			$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+			$dataView["objTransactionMasterDetail2"]			= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+			$dataView["objTransactionMasterDetail"]				= array();
 			$dataView["objTransactionMasterDetailWarehouse"]	= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterDetailConcept"]		= $this->Transaction_Master_Concept_Model->get_rowByTransactionMasterConcept($companyID,$transactionID,$transactionMasterID,$objComponentItem->componentID);
 			
-			
+			$dataView["objComentario"]					= $comment;
 			$dataView["objComponentCompany"]			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
 			$dataView["objParameterLogo"]				= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
 			$dataView["objParameterPhoneProperty"]		= $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE",$companyID);
@@ -3715,6 +3715,19 @@ class app_invoice_billing extends _BaseController {
 			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_COCINA",$companyID);
 			$objParameterPrinterName = $objParameterPrinterName->value;
 								
+			//Filtrar productos			
+			$itemID = explode(",",$itemID);			
+			foreach($dataView["objTransactionMasterDetail2"] as $tmd)
+			{
+				foreach($itemID as $itemIDx)
+				{
+					if ($itemIDx == $tmd->componentItemID)
+					{
+						array_push($dataView["objTransactionMasterDetail"],$tmd);
+					}
+				}				
+			}	
+			
 			
 			$this->core_web_printer_direct->configurationPrinter($objParameterPrinterName);
 			$this->core_web_printer_direct->executePrinter80mmCommandaCocina($dataView);

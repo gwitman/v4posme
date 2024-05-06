@@ -7,14 +7,14 @@ use dbjznvjrsdpypf;
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://api.ultramsg.com/instance65915/messages/chat" 
+	tb_company_parameter.value = "https://waapi.app/api/v1/instances/10179/client/action/send-message" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WAHTSAP_URL_ENVIO_MENSAJE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "n5hb8n1wf0r6e27i" 
+	tb_company_parameter.value = "qMAsXGyf0jIswU6xttfuZvORRhCRJnlrLClmlBgMe31db7ac" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
@@ -31,6 +31,13 @@ UPDATE  tb_company_parameter,tb_parameter SET
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_CURRENT_PROPIETARY_COMMERSE";## WHATSAPP DEL PRIPIETARIO
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_purchase_pedidos/viewPrinterFormatoA4Stiker" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WORKSHOW_URL_PRINTER_PEDIDO";## WHATSAPP DEL PRIPIETARIO
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "0" 

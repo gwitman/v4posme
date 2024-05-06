@@ -851,7 +851,7 @@ WHERE
 				
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Cordoba" 
+	tb_company_parameter.value = "Dolar" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "ACCOUNTING_CURRENCY_NAME_REPORT";## Moneda de Reporte para Presentar los Estados Financieros 
@@ -1283,7 +1283,9 @@ update tb_exchange_rate set
 where 
 	currencyID = 1
 	and targetCurrencyID = 2; 
-	
+
+update tb_currency set `name` = 'Dolar' where currencyID = 1;
+update tb_currency set `name` = 'Cordoba' where currencyID = 2;	
 	
 update tb_item set realStateEmployerAgentID = ifnull(realStateEmployerAgentID,0);
 update tb_item set realStateCityID = ifnull(realStateCityID,0);

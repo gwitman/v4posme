@@ -288,7 +288,7 @@
 													<option></option>																
 													<?php
 													$count					= 0;
-													$employerDefault 		= $objListParameterAll["INVOICE_BILLING_EMPLOYEE_DEFAULT"];
+													$employerDefault 		= $objParameterINVOICE_BILLING_EMPLOYEE_DEFAULT;
 													
 													if($objListEmployee)
 													foreach($objListEmployee as $employee){

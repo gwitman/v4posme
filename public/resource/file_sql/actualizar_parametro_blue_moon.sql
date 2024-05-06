@@ -796,27 +796,27 @@ WHERE
 /***********************************************************************/
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_SHOW_COMMAND_BAR";## Mostrar el bonto de impresion en bar
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "posMe" 
+	tb_company_parameter.value = "POS-80-Series" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_BAR";## Nombre de la impresora de bar
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "posMe" 
+	tb_company_parameter.value = "app_invoice_billing/viewPrinterDirectBar80mmRustikChillGrill" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_URL_BAR";## Url para imprimir comanda de bar
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "posMe" 
+	tb_company_parameter.value = "viewRegisterFormatoPaginaCocina80mm" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_URL_BAR";## Url para imprimir comanda de bar con previoew
@@ -955,7 +955,7 @@ WHERE
 	tb_parameter.name = "ITEM_PRINTER_BARCODE_MASIVE";## URL PARA LA IMPRESION DE CANCELACION 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "posMe58Codigo" 
+	tb_company_parameter.value = "POS-80-Series" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVENTORY_BARCODE_PRINTER_DIRECT_NAME_DEFAULT";## URL PARA LA IMPRESION DE CANCELACION 
@@ -1057,7 +1057,7 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT";## Imprimir directo en la impresora 
@@ -1089,7 +1089,7 @@ WHERE
 	tb_parameter.name = "INVOICE_PRINT_BY_INVOICE";## Imprimir por cada factura
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "POS-80-Series4" 
+	tb_company_parameter.value = "POS-80-Series" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT";## Nombre de la impresora por defecto 	
@@ -1117,25 +1117,25 @@ WHERE
 	
 /*--Cocina*/
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_SHOW_COMMAND_FOOT";## Símbolo de la Moneda Funcional 
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "POS-80-Series4" 
+	tb_company_parameter.value = "POS-80-Series" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_COCINA";## Imprimie Directamente la Cocina
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaCocina58mm" 
+	tb_company_parameter.value = "app_invoice_billing/viewPrinterDirectCocina80mmRustikChillGrill" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_URL_PRINTER_COCINA";## Símbolo de la Moneda Funcional 
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewPrinterDirectCocina58mm" 
+	tb_company_parameter.value = "app_invoice_billing/viewPrinterDirectCocina80mmRustikChillGrill" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_URL_PRINTER_COCINA_DIRECT";## Símbolo de la Moneda Funcional 
@@ -1238,14 +1238,14 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "281-211198-0003A" 
+	tb_company_parameter.value = "2812111980003A" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "120624" 
+	tb_company_parameter.value = "2812111980003A" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
@@ -1275,7 +1275,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Blue Moon' , address = 'Teatro Municipal 1C. Sur' ,
-	flavorID = 483,type='default'
+	flavorID = 483,type='bluemoon'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

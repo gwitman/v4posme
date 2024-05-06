@@ -97,21 +97,28 @@ class app_box_report extends _BaseController {
 			$conceptoFilter		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"conceptoFilter");//--finuri	
 			$categoryItem		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"categoryItem");//--finuri	
 			$startOn			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"startOn");//--finuri
-			$endOn				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri
+			$endOn				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri			
+			$hourStart			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"hourStart");//--finuri
+			$hourEnd			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"hourEnd");//--finuri
+			
+			
+			
+			
 			$startOn			= $startOn != "" ? $startOn: 	\DateTime::createFromFormat('Y-m-d', date("Y-m-d") )->format("Y-m-d");
+			$startOn 			= $startOn." ".$hourStart.":00:00";	
 			$endOn				= $endOn != "" ? $endOn : 	\DateTime::createFromFormat('Y-m-d', date("Y-m-d") )->format("Y-m-d");			
-			$endOn				= $endOn." 23:59:59";	
+			$endOn				= $endOn." ".$hourEnd.":59:59";	
 			$userIDFilter		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"userIDFilter");//--finuri
 			
 			//calcular las fechas iniciales del reporte
-			$startOn_ 	= \DateTime::createFromFormat('Y-m-d',$startOn);		
+			$startOn_ 	= \DateTime::createFromFormat('Y-m-d H:i:s',$startOn);		
 			$endOn_ 	= \DateTime::createFromFormat('Y-m-d H:i:s',$endOn);		
 			if($filteredArray != -1){
 				$startOn_Temporal = $endOn_;				
 				date_sub($startOn_Temporal, date_interval_create_from_date_string($filteredArray.' days'));
 				
 				if($startOn_ <  $startOn_Temporal){
-					$startOn = $startOn_Temporal->format('Y-m-d');
+					$startOn = $startOn_Temporal->format('Y-m-d H:i:s');
 				}
 			}
 			

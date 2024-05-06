@@ -249,7 +249,9 @@ class app_purchase_taller extends _BaseController {
 			$branchID 								= $dataSession["user"]->branchID;
 			$roleID 								= $dataSession["role"]->roleID;
 			$companyID 								= $dataSession["user"]->companyID;
-			$userID 								= $dataSession["user"]->userID;			
+			$userID 								= $dataSession["user"]->userID;	
+			$objCompany								= $dataSession["company"];
+			
 			$transactionID 							= /*inicio get post*/ $this->request->getPost("txtTransactionID");
 			$transactionMasterID					= /*inicio get post*/ $this->request->getPost("txtTransactionMasterID");
 			$objTM	 								= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
@@ -416,7 +418,7 @@ class app_purchase_taller extends _BaseController {
 			$warrning = false;
 			if($this->core_web_whatsap->validSendMessage(APP_COMPANY))
 			{
-				$catalogItemEtapa 			= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","areaID",$companyID,$objTMNew["areaID"]);								
+				$catalogItemEtapa 			= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","areaID",$companyID,$objTMNew["areaID"]);
 				$catalogItemArticulo		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","routeID",$companyID,$objTMI["routeID"]);								
 				$objPC_PlantillaWhatsapp 	= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_workshop_taller.templates_whatsapp")->where("isActive",1)->where("flavorID",$dataSession["company"]->flavorID)->find();				
 				$objPCD_PlantillaWhatsapp   = false;			
@@ -461,16 +463,27 @@ class app_purchase_taller extends _BaseController {
 							$themplate		= str_replace("{amount}",$objTMNew["amount"],$themplate);
 							$themplate 		= str_replace("{text}",$objTMNew["reference1"],$themplate);
 							$themplate 		= str_replace("{article}",$catalogItemArticulo->name,$themplate);
+							
 							$numerDestino 	= clearNumero($dataView["objCustomer"]->phoneNumber); 
-							
-							
 							$warrning = true;
 							$this->core_web_notification->set_message(false,"A:".$numerDestino." - ".substr($themplate,0,55)." ...");
-							$this->core_web_whatsap->sendMessageUltramsg(
-								APP_COMPANY, 
-								$themplate,
-								$numerDestino
-							);
+							
+							if($objCompany->type=="globalpro")
+							{
+								$this->core_web_whatsap->sendMessageByWaapi(
+									APP_COMPANY, 
+									$themplate,
+									$numerDestino
+								);
+							}
+							else
+							{
+								$this->core_web_whatsap->sendMessageUltramsg(
+									APP_COMPANY, 
+									$themplate,
+									$numerDestino
+								);
+							}
 							
 							
 							
@@ -556,6 +569,7 @@ class app_purchase_taller extends _BaseController {
 			$transactionID 							= $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID,"tb_transaction_master_workshop_taller",0);
 			$companyID 								= $dataSession["user"]->companyID;
 			$objT 									= $this->Transaction_Model->getByCompanyAndTransaction($dataSession["user"]->companyID,$transactionID);
+			$objCompany								= $dataSession["company"];
 			
 			$objTM["companyID"] 					= $dataSession["user"]->companyID;
 			$objTM["transactionID"] 				= $transactionID;			
@@ -603,7 +617,7 @@ class app_purchase_taller extends _BaseController {
 			$objTMI["reference2"]					= /*inicio get post*/ $this->request->getPost("txtInfoReference2");
 			$objTMI["reference1"]					= /*inicio get post*/ $this->request->getPost("txtInfoReference1");
 			$this->Transaction_Master_Info_Model->insert_app_posme($objTMI);
-
+			
 
 			
 			
@@ -615,6 +629,8 @@ class app_purchase_taller extends _BaseController {
 			$objParameterUrlServerFile 					= $this->core_web_parameter->getParameter("CORE_FILE_SERVER",$companyID);
 			$objParameterUrlServerFile 					= $objParameterUrlServerFile->value;
 			$dataView["objParameterUrlServerFile"]	 	= $objParameterUrlServerFile;
+			
+			
 			
 			if(!empty($dataFileTypeID))
 			{
@@ -706,11 +722,110 @@ class app_purchase_taller extends _BaseController {
 				}
 			}
 					
-			
+			//Envio de whatsapp
+			$warrning = false;
+			if($this->core_web_whatsap->validSendMessage(APP_COMPANY))
+			{
+				
+				
+				$catalogItemEtapa 			= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","areaID",$companyID,$objTM["areaID"]);
+				$catalogItemArticulo		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","routeID",$companyID,$objTMI["routeID"]);								
+				$objPC_PlantillaWhatsapp 	= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_workshop_taller.templates_whatsapp")->where("isActive",1)->where("flavorID",$dataSession["company"]->flavorID)->find();				
+				$objPCD_PlantillaWhatsapp   = false;			
+				if($objPC_PlantillaWhatsapp)
+				{
+					
+					//Obtener la plantilla corresponeidnte a la etapa					
+					$objPCD_PlantillaWhatsapp	= $this->Public_Catalog_Detail_Model->asObject()->
+													where("publicCatalogID",$objPC_PlantillaWhatsapp[0]->publicCatalogID)->
+													where( "isActive",1)->
+													where( "name",$catalogItemEtapa->name)->
+													findAll();					
+					
+					$themplate 					= "";
+					if($objPCD_PlantillaWhatsapp)
+					{
+						
+						$themplate 				= helper_RequestGetValueObjet($objPCD_PlantillaWhatsapp[0],"description","");						
+						if($themplate != "")
+						{
+							
+							//Obtener al cliente
+							$dataView["objCustomer"]				= $this->Customer_Model->get_rowByEntity($companyID,$objTM["entityID"]);
+							$dataView["objCustomerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$dataView["objCustomer"]->entityID);
+							$dataView["objCustomerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$dataView["objCustomer"]->entityID);
+
+							//Obtener colaborador
+							$dataView["objEmployer"]				= $this->Employee_Model->get_rowByEntityID($companyID,$objTM["entityIDSecondary"]);
+							$dataView["objEmployerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID);
+							$dataView["objEmployerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID);
+							$dataView["objEmployerPhone"]			= $this->Entity_Phone_Model->get_rowByEntity( $dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID );
+							$dataView["objEmployerPhoneNumber"]		= $dataView["objEmployerPhone"] ? $dataView["objEmployerPhone"][0]->number : "N/D";
+							
+							//Obtener Factura
+							$dataView["objBilling"]					= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,$objTM["note"]);							
+							$dataView["objCatalogItemAreaID"] 		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","areaID",$companyID,$objTM["areaID"]);
+							
+							
+							$themplate 		= str_replace("{customer_name}",helper_RequestGetValueObjet($dataView["objCustomerNatural"],"firstName",""),$themplate);
+							$themplate 		= str_replace("{employeer_name}",helper_RequestGetValueObjet($dataView["objEmployerNatural"],"firstName",""),$themplate);
+							$themplate 		= str_replace("{employeer_phone}",$dataView["objEmployerPhoneNumber"],$themplate);
+							$themplate 		= str_replace("{status_name}",helper_RequestGetValueObjet($dataView["objCatalogItemAreaID"],"name",""),$themplate);
+							$themplate 		= str_replace("{transaction_number}",helper_RequestGetValueObjet($dataView["objBilling"],"transactionNumber",""),$themplate);
+							$themplate		= str_replace("{amount}",$objTM["amount"],$themplate);
+							$themplate 		= str_replace("{text}",$objTM["reference1"],$themplate);
+							$themplate 		= str_replace("{article}",$catalogItemArticulo->name,$themplate);							
+							$numerDestino 	= clearNumero($dataView["objCustomer"]->phoneNumber); 
+							$warrning = true;							
+							$this->core_web_notification->set_message(false,"A:".$numerDestino." - ".substr($themplate,0,55)." ...");
+							
+							if($objCompany->type=="globalpro")
+							{
+								$this->core_web_whatsap->sendMessageByWaapi(
+									APP_COMPANY, 
+									$themplate,
+									$numerDestino
+								);
+							}
+							else
+							{
+								$this->core_web_whatsap->sendMessageUltramsg(
+									APP_COMPANY, 
+									$themplate,
+									$numerDestino
+								);
+							}
+							
+							
+							
+						}
+						else 
+						{
+							$warrning = true;
+							$this->core_web_notification->set_message(true,"Pedido guardado correctamente, whatsap no enviado, configurar mensaje en plantilla (tb_transaction_master_workshop_taller.templates_whatsapp) campo Grupo");	
+						}
+					}
+					else {
+						$warrning = true;
+						$this->core_web_notification->set_message(true,"Pedido guardado correctamente, whatsap no enviado, configurar mensaje en plantilla (tb_transaction_master_workshop_taller.templates_whatsapp)");	
+					}
+				}	
+				else {
+					$warrning = true;
+					$this->core_web_notification->set_message(true,"Pedido guardado correctamente, whatsap no enviado, configurar plantailla (tb_transaction_master_workshop_taller.templates_whatsapp)");	
+				}				
+			}
+			else {
+				$warrning = true;
+				$this->core_web_notification->set_message(true,"Pedido guardado correctamente, whatsap no enviado, por falta de saldo.");
+			}
 			
 			if($db->transStatus() !== false){
 				$db->transCommit();						
-				$this->core_web_notification->set_message(false,SUCCESS);
+				
+				if($warrning == false )
+				$this->core_web_notification->set_message(false,SUCCESS);		
+			
 				$this->response->redirect(base_url()."/".'app_purchase_taller/edit/companyID/'.$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID);
 			}
 			else{

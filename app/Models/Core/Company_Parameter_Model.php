@@ -35,6 +35,20 @@ class Company_Parameter_Model extends Model  {
 		return $recordSet;
    }
    
+   function get_rowByCompanyID($companyID)
+   {
+	   	$db 	= db_connect();    
+		$sql = "";
+		$sql = sprintf("select c.companyID,c.parameterID,c.display,c.description,c.value,c.customValue, p.name ");
+		$sql = $sql.sprintf(" from tb_company_parameter  c ");			
+		$sql = $sql.sprintf(" inner join tb_parameter p  on p.parameterID = c.parameterID ");		
+		$sql = $sql.sprintf(" where companyID = $companyID");
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+		
+   }
+   
    
 }
 ?>

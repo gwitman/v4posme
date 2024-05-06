@@ -1197,7 +1197,7 @@ class app_inventory_inputunpost extends _BaseController {
 							];
 							
 							
-							$response  	= $clientCreateItem->request('POST',$urlCreateItemRequest,['form_params' => $form_data]);														
+							$response  	= $clientCreateItem->request('POST',$urlCreateItemRequest,['form_params' => $form_data]);								
 							$response  	= explode("/",$response->getHeaderLine("Location"));
 							$response  	= $response[11];								
 							$objItem	= $this->Item_Model->get_rowByPK($companyID,$response);								
@@ -1205,6 +1205,7 @@ class app_inventory_inputunpost extends _BaseController {
 							
 						}
 							
+						
 						$transactionMasterDetailID				= 0;					
 						$itemID 								= $objItem->itemID;
 						$quantity 								= helper_StringToNumber(ltrim(rtrim($cantidad)));

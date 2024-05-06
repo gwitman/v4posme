@@ -3553,6 +3553,120 @@ function helper_reporteA4mmTransactionMasterTallerStickerGlobalPro(
 }
 
 
+function helper_reporteA4mmTransactionMasterPedidoStickerGlobalPro(
+  $titulo,
+  $objCompany,
+  $objParameterLogo,
+  $objTransactionMastser,
+  $tipoCambio,
+  $objCurrency,
+  $objTransactionMasterInfo,    	
+  $objParameterTelefono, /*telefono*/	
+  $objData,
+  $statusName = "", /*estado*/
+  $causalName = ""
+  
+)
+{
+	$path    		= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
+  
+	$font_size1   	= "18px";
+	$border_left 	= "border-left: 1px solid black;";
+	$border_right 	= "border-right: 1px solid black;";
+	$border_top 	= "border-top: 1px solid black;";
+	$border_bottom 	= "border-bottom: 1px solid black;";
+	$border_radius	= "border-radius: 10px;";
+	$border_colapse = "border-collapse:separate;";
+
+
+
+  $type    		= pathinfo($path, PATHINFO_EXTENSION);
+  $data    		= file_get_contents($path);
+  $base64  		= 'data:image/' . $type . ';base64,' . base64_encode($data);
+  $numberDocument = str_replace("IAT"," No ", $objTransactionMastser->transactionNumber);
+  $tipoDocumento  = "TALLER";
+
+  $telefono  		= "";
+
+  $html    = "";
+  $html    = "
+                  <!--
+                  Online HTML, CSS and JavaScript editor to run code online.
+                  https://www.programiz.com/html/online-compiler/
+                  -->
+                  <!DOCTYPE html>
+                  <html lang='en'>
+      
+                  <head>
+                    <meta charset='UTF-8' />
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+                    <style>
+          
+                      @page {       
+                        size: 6cm 3.4cm;             
+            
+                        margin-top:25px;
+                        margin-left:25px;
+                        margin-right:20px;
+						margin-bottom: 25px;
+						
+						
+						padding-top: 0px;
+						padding-right: 0px;
+						padding-bottom: 0px;
+						padding-left: 0px;
+            
+                      }
+                      table{
+                        font-size: xx-small;
+                        font-family: sans-serif, monaco, monospace;						 
+						border-collapse: collapse;
+                      }
+						td{
+                        font-size: xx-small;
+                        font-family: sans-serif, monaco, monospace;
+						/*border: 1px solid black;*/
+						border-collapse: collapse;
+                      }
+                    </style>
+                  </head>
+      
+                  <body>
+        ";
+      
+  $f_html = 	  "
+                    <table style='width:98%'>
+						  <tr>
+							<td style='text-align:center;font-weight: bold;'>
+								GLOBAL PRO	
+							</td>
+						  </tr>
+						  <tr>
+							<td style='text-align:center'>
+								Orden: ". $numberDocument ."
+							</td>
+						  </tr>
+						  <tr>
+							<td style='text-align:center'>
+								Cliente: ".$objData["objCustomerNatural"]->firstName."
+							</td>
+						  </tr>
+						  <tr>
+							<td style='text-align:center'>
+								Técnico: ".$objData["objEmployerNatural"]->firstName."
+							</td>
+						  </tr>
+					</table>
+        
+          ";
+		   
+
+  $html 				= $html.$f_html."</body></html>";	  
+  return $html;
+}
+
+
+
 function helper_reporteA4mmTransactionMasterGastosGlobalPro(
   $titulo,
   $objCompany,

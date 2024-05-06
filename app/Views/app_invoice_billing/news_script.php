@@ -40,6 +40,7 @@
 	
 	var PriceStatus = varPermisosEsPermitidoModificarPrecio == true ? "":"readonly";
 	var NameStatus  = varPermisosEsPermitidoModificarNombre == true ? "":"readonly";
+	
 	<?php echo $objListParameterJavaScript; ?>
 	
 	var objListCustomerCreditLine 	= JSON.parse('<?php echo json_encode($objListCustomerCreditLine); ?>');

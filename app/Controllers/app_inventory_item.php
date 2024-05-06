@@ -947,16 +947,22 @@ class app_inventory_item extends _BaseController {
 		}
 		catch(\Exception $ex){
 			
-			$data["session"]   = $dataSession;
-		    $data["exception"] = $ex;
-		    $data["urlLogin"]  = base_url();
-		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    $resultView        = view("core_template/email_error_general",$data);
-		    
-		    
-		    
-		    return $resultView;
+			log_message("error",print_r($method,true));
+			
+			if($method != "apinew")
+			{
+				$data["session"]   = $dataSession;
+				$data["exception"] = $ex;
+				$data["urlLogin"]  = base_url();
+				$data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+				$data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+				$resultView        = view("core_template/email_error_general",$data);
+				return $resultView;				
+			}
+			if($method == "apinew")
+			{
+				log_message("error",print_r($ex,true));
+			}
 			
 		}		
 			

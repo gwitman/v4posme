@@ -345,6 +345,8 @@ $routes->match(['get','post'],'app_purchase_pedidos/delete','app_purchase_pedido
 $routes->match(['get','post'],'app_purchase_pedidos/delete/(:any)','app_purchase_pedidos::delete');
 $routes->match(['get','post'],'app_purchase_pedidos/viewPrinterFormatoA4','app_purchase_pedidos::viewPrinterFormatoA4');
 $routes->match(['get','post'],'app_purchase_pedidos/viewPrinterFormatoA4/(:any)','app_purchase_pedidos::viewPrinterFormatoA4');
+$routes->match(['get','post'],'app_purchase_pedidos/viewPrinterFormatoA4Stiker','app_purchase_pedidos::viewPrinterFormatoA4Stiker');
+$routes->match(['get','post'],'app_purchase_pedidos/viewPrinterFormatoA4Stiker/(:any)','app_purchase_pedidos::viewPrinterFormatoA4Stiker');
 $routes->match(['get','post'],'app_purchase_taller/index','app_purchase_taller::index');
 $routes->match(['get','post'],'app_purchase_taller/index/(:any)','app_purchase_taller::index');
 $routes->match(['get','post'],'app_purchase_taller/add','app_purchase_taller::add');

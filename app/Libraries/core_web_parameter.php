@@ -161,15 +161,13 @@ class core_web_parameter {
 		$javascriptResult		 = "";
 		
 		//Obtener el Parametro
-		$objParameterList = $Parameter_Model->get_all();	
+		$objParameterList = $Company_Parameter_Model->get_rowByCompanyID($companyID);	
 		
 		if($objParameterList)
 		{
 			foreach($objParameterList as $objParameter)
 			{
-				
-				$objCompanyParameter =  $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objParameter->parameterID);
-				$javascriptResult	 = $javascriptResult."var objCompanyParameter_Key_".$objParameter->name." = '".$objCompanyParameter->value."';";
+				$javascriptResult	 = $javascriptResult."var objCompanyParameter_Key_".$objParameter->name." = '".$objParameter->value."';";
 			}
 		}
 		
