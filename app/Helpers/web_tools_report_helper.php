@@ -3605,10 +3605,10 @@ function helper_reporteA4mmTransactionMasterPedidoStickerGlobalPro(
                       @page {       
                         size: 6cm 3.4cm;             
             
-                        margin-top:10px;
+                        margin-top:25px;
                         margin-left:25px;
                         margin-right:20px;
-						margin-bottom: 10px;
+						margin-bottom: 25px;
 						
 						
 						padding-top: 0px;
@@ -3640,30 +3640,25 @@ function helper_reporteA4mmTransactionMasterPedidoStickerGlobalPro(
 							<td style='text-align:center;font-weight: bold;'>
 								GLOBAL PRO	
 							</td>
-						  </tr>
+						  </tr>						  
 						  <tr>
 							<td style='text-align:center'>
-								Orden: ". $numberDocument ."
+								<b>".strtoupper($objData["objCustomerNatural"]->firstName)."</b>
 							</td>
 						  </tr>
 						  <tr>
 							<td style='text-align:center'>
-								Cliente: ".$objData["objCustomerNatural"]->firstName."
+								<span style='font-size: 12px;' >". $objData["objPieza"]->name." ".$objData["objTransactionMaster"]->reference2." ".$objData["objTransactionMaster"]->reference4. "</span>
+							</td>
+						  </tr>						  
+						  <tr>
+							<td style='text-align:center'>
+								<span style='font-size: 12px;' >".$objData["objEmployerNatural"]->firstName."</span>
 							</td>
 						  </tr>
 						  <tr>
 							<td style='text-align:center'>
-								".$objData["objTransactionMaster"]->reference2." ".$objData["objTransactionMaster"]->reference3." 
-							</td>
-						  </tr>
-						  <tr>
-							<td style='text-align:center'>
-								".$objData["objTransactionMasterInfo"]->reference1."
-							</td>
-						  </tr>
-						  <tr>
-							<td style='text-align:center'>
-								Técnico: ".$objData["objEmployerNatural"]->firstName."
+								<span style='font-size: 12px;' >".$objData["objTransactionMasterInfo"]->reference1."</span>
 							</td>
 						  </tr>
 					</table>

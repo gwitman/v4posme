@@ -1426,6 +1426,7 @@ class app_purchase_pedidos extends _BaseController {
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);						
 			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_workshop_pedido","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
 			$dataView["objListEstadosEquipo"]	= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_pedido","areaID",$companyID);
+			$dataView["objPieza"]				= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_pedido","areaID",$companyID,$dataView["objTransactionMaster"]->areaID );
 			$dataView["objListAccesorios"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_pedido","priorityID",$companyID);
 			$dataView["objItemAccesorios"]		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_pedido","priorityID",$companyID,$dataView["objTransactionMaster"]->priorityID);
 			$dataView["objListMarca"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_pedido","zoneID",$companyID);
