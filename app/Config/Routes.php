@@ -876,6 +876,8 @@ $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmP
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmPuraVida/(:any)','app_invoice_billing::viewPrinterDirectFactura80mmPuraVida');
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmRustikChillGrill','app_invoice_billing::viewPrinterDirectFactura80mmRustikChillGrill');
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmRustikChillGrill/(:any)','app_invoice_billing::viewPrinterDirectFactura80mmRustikChillGrill');
+$routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmBlueMoon','app_invoice_billing::viewPrinterDirectFactura80mmBlueMoon');
+$routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmBlueMoon/(:any)','app_invoice_billing::viewPrinterDirectFactura80mmBlueMoon');
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmFerreteriaDouglas','app_invoice_billing::viewPrinterDirectFactura80mmFerreteriaDouglas');
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmFerreteriaDouglas/(:any)','app_invoice_billing::viewPrinterDirectFactura80mmFerreteriaDouglas');
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmComidaAudioElPipe','app_invoice_billing::viewPrinterDirectFactura80mmComidaAudioElPipe');
