@@ -3605,10 +3605,10 @@ function helper_reporteA4mmTransactionMasterPedidoStickerGlobalPro(
                       @page {       
                         size: 6cm 3.4cm;             
             
-                        margin-top:25px;
+                        margin-top:10px;
                         margin-left:25px;
                         margin-right:20px;
-						margin-bottom: 25px;
+						margin-bottom: 10px;
 						
 						
 						padding-top: 0px;
@@ -3649,6 +3649,16 @@ function helper_reporteA4mmTransactionMasterPedidoStickerGlobalPro(
 						  <tr>
 							<td style='text-align:center'>
 								Cliente: ".$objData["objCustomerNatural"]->firstName."
+							</td>
+						  </tr>
+						  <tr>
+							<td style='text-align:center'>
+								".$objData["objTransactionMaster"]->reference2." ".$objData["objTransactionMaster"]->reference3." 
+							</td>
+						  </tr>
+						  <tr>
+							<td style='text-align:center'>
+								".$objData["objTransactionMasterInfo"]->reference1."
 							</td>
 						  </tr>
 						  <tr>
