@@ -203,7 +203,9 @@
 									</div>
 								</div>
 								
-								
+								<div id="divTxtElementoDisponibleParaMove2" class="hidden" >
+									abc
+								</div>
 								
 								
 							

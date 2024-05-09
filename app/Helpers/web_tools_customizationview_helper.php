@@ -443,12 +443,13 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('luciaralstate_app_inventory_item_fieldExclusiveGerencia') 	 								=> "",	
 		
 				
-		/*El patio*/
+		/*El blue moon*/
 		strtolower('bluemoon_app_invoice_billing_divTraslateElement') 											=> "
 		<script>
 			$(document).ready(function(){		
 				$('#divVendedor').appendTo('#divInformacionLeft');
 				$('#divMesa').appendTo('#divInformacionLeft');
+				$('#divZone').appendTo('#divInformacionRight');				
 			});
 		</script>"
 		
