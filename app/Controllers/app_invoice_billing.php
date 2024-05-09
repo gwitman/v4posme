@@ -1730,31 +1730,31 @@ class app_invoice_billing extends _BaseController {
 				if($objParameterInvoiceAutoApply == "true" && $objParameterImprimirPorCadaFactura == "true" ){
 				
 					// create a new curl resource
-					$ch 		= curl_init();
-					$urlPrinter = base_url()."/".$objParameterUrlPrinterDirect."/companyID/".$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID;
-					log_message("error",$urlPrinter);
+					
+					$urlPrinter = base_url()."/".$objParameterUrlPrinterDirect."/companyID/".$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID;					
 					
 					// set URL and other appropriate options
-					curl_setopt($ch, CURLOPT_URL, $urlPrinter);
-					curl_setopt($ch, CURLOPT_HEADER, 0);
+					$multiCurl = curl_multi_init();
+					$curl = curl_init();
+					
+					curl_setopt($curl, CURLOPT_URL, $urlPrinter);
+					curl_setopt($curl, CURLOPT_HEADER, 0);
+					curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+					curl_multi_add_handle($multiCurl, $curl);
 					
 					// grab URL and pass it to the browser
-					curl_exec($ch);
+					// esperar la respuesta
+					//curl_exec($curl); 
+					
+					// No esperar la respuesta
+					curl_multi_exec($multiCurl, $running);	
+
 					
 					// close cURL resource, and free up system resources
-					curl_close($ch);
+					curl_close($curl);
+					curl_multi_close($multiCurl);
+					
 				}
-				
-				//Generar pdf en la carpeta
-				//$objParameterShowPreview		= $this->core_web_parameter->getParameter("INVOICE_SHOW_PREVIEW_INLIST",$this->session->get('user')->companyID);
-				//$objParameterShowPreview		= $objParameterShowPreview->value;
-				//if($objParameterShowPreview == "true")
-				//{
-				//		$urlGenerateDocument 	= base_url()."/app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1/companyID/".$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID;
-				//		$client 				= \Config\Services::curlrequest();
-				//		$client->get($urlGenerateDocument);
-				//		
-				//}
 				
 				
 				$this->core_web_notification->set_message(false,SUCCESS);				
@@ -2404,7 +2404,7 @@ class app_invoice_billing extends _BaseController {
 		try{ 
 			
 			
-			$this->cachePage( 0 /*TIME_CACHE_APP */  );
+			$this->cachePage( TIME_CACHE_APP  );
 			
 			//AUTENTICADO
 			if(!$this->core_web_authentication->isAuthenticated())

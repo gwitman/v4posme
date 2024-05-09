@@ -71,14 +71,17 @@ modificar el siguiente archivo
 		post_max_size=80M
 		upload_max_filesize=80M
 		
-		
-		; http://php.net/date.timezone
-		; date.timezone=Europe/Berlin
+		memory_limit=512M
+		opcache.enable=1
+		opcache.enable_cli=1
+		opcache.memory_consumption=128
+		opcache.interned_strings_buffer=8
+		opcache.max_accelerated_files=10000
+		opcache.revalidate_freq=60
+		display_errors=Off
+		log_errors=On		
 		date.timezone=America/Managua
 		
-		
-		; SMTP = localhost
-		; smtp_port = 25
 		SMTP = smtp.gmail.com
 		smtp_port = 465
 		
@@ -101,6 +104,13 @@ modificar el siguiente archivo
 				extension=gd
 				extension=soap
 				extension=imap
+		
+modificar los siguiente archivos:
+		C:\xampp\mysql\bin\my.ini
+		innodb_buffer_pool_size=256M		16M
+		innodb_flush_log_at_trx_commit=5	1
+		innodb_log_buffer_size=16M			8M
+		innodb_log_file_size=12M			5M
 		
 		
 modificar los siguientes archivos: 
