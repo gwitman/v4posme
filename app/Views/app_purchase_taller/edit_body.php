@@ -211,6 +211,13 @@
 									</div>
 									
 									<div class="form-group">
+										<label class="col-lg-4 control-label" for="normal">Desc. otros</label>
+										<div class="col-lg-8">
+											<input class="form-control"  type="text"  name="txtReferenceClientName" id="txtReferenceClientName" value="<?php echo $objTransactionMasterInfo->referenceClientName; ?>">
+										</div>
+									</div>
+									
+									<div class="form-group">
 										<label class="col-lg-4 control-label" for="selectFilter">Marca</label>
 										<div class="col-lg-8">
 											<select name="txtZoneID" id="txtZoneID" class="select2">																									

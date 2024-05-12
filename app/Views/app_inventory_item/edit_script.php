@@ -406,6 +406,8 @@
 			result = false;
 		}
 		
+		<?php echo getBehavio($company->type,"app_inventory_item","scriptValidate",""); ?>
+		
 		return result;
 	}
 	function onCompleteConcept(objResponse){

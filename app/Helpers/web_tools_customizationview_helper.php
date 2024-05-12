@@ -220,7 +220,14 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 				fnShowNotification('Seleccionar factura','error',timerNotification);
 				result = false;
 			}
-		}				
+		}
+
+		
+		if( $('#txtRouteID').val() == 794 /*otros*/ && $('#txtReferenceClientName').val() == ''  )
+		{
+			fnShowNotification('Describir descripción de (otros)','error',timerNotification);
+			result = false;
+		}
 		",
 					
 					
@@ -351,6 +358,70 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 				$('#txtQuantityMax').parent().parent().appendTo('#divTraslateElemento1');  
 			});
 		</script>",		
+		
+		strtolower('luciaralstate_app_inventory_item_scriptValidate') 											=> "		
+		//Validar que el campo sea solo numero
+		var regexOnlyNumber = /^[0-9]+$/;		
+		if (!regexOnlyNumber.test($('#txtBarCode').val())) 
+		{
+			fnShowNotification('El campo (ID página web) solo puede contener numeros ','error',timerNotification);
+			result = false;
+		}
+		
+		//Validar que sea un enlace correcto
+		var regexOnlyNumber = /^(ftp|http|https):\/\/[^ \"]+$/;
+		if (!regexOnlyNumber.test($('#txtRealStateLinkPaginaWeb').val())) 
+		{
+			fnShowNotification('El campo (Página web) debe ser un enlace válido.','error',timerNotification);
+			result = false;
+		}
+		
+		
+		//Validar el precio de renta o precio de venta la suma no pueden dar 0
+		var totalPrecio = 0;
+		for(var il = 0 ; il < 2 ; il++)
+		{
+			var rowx = $($($('#body_detail_precio tr')[il]).find('td')[1]).find('input')[0];
+			rowx = $(rowx).val();
+			totalPrecio = totalPrecio + parseInt(rowx);
+			
+		}
+		
+		if(totalPrecio <= 1)
+		{
+			fnShowNotification('Precio y renta no pude ser menor a 0','error',timerNotification);
+			result = false;
+		}
+		
+		//Obtener precio de venta 
+		var precioVenta = 0;
+		for(var il = 0 ; il < 1 ; il++)
+		{
+			var rowx = $($($('#body_detail_precio tr')[il]).find('td')[1]).find('input')[0];
+			rowx = $(rowx).val();
+			precioVenta = precioVenta + parseInt(rowx);
+			
+		}
+		
+		
+		//Obtener precio de renta 
+		var precioRenta = 0;
+		for(var il = 1 ; il < 2 ; il++)
+		{
+			var rowx = $($($('#body_detail_precio tr')[il]).find('td')[1]).find('input')[0];
+			rowx = $(rowx).val();
+			precioRenta = precioRenta + parseInt(rowx);
+			
+		}
+		
+		if(precioRenta == precioVenta)
+		{
+			fnShowNotification('Precio y Renta no pueden ser iguales','error',timerNotification);
+			result = false;
+		}
+		
+		
+		",		
 		
 		strtolower('luciaralstate_app_cxc_customer_divScriptCustom') 											=> "
 		<script>

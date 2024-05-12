@@ -203,6 +203,13 @@
 																</select>
 															</div>
 														</div>
+														
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="normal">Desc. otros</label>
+															<div class="col-lg-8">
+																<input class="form-control"  type="text"  name="txtReferenceClientName" id="txtReferenceClientName" value="">
+															</div>
+														</div>
 
 														<div class="form-group">
 															<label class="col-lg-4 control-label" for="selectFilter">Marca</label>

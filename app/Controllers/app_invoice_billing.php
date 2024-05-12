@@ -3697,7 +3697,7 @@ class app_invoice_billing extends _BaseController {
 			$dataView["nombreCliente"] 					= $dataView["objTransactionMasterInfo"]->referenceClientName  == "" ? $dataView["objCustumer"]->firstName : $dataView["objTransactionMasterInfo"]->referenceClientName ;
 			$dataView["objStage"]						= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($dataView["objTransactionMaster"]->statusID);
 			//obtener nombre de impresora por defecto
-			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_COCINA",$companyID);
+			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_BAR",$companyID);
 			$objParameterPrinterName = $objParameterPrinterName->value;
 								
 			//Filtrar productos			

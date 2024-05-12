@@ -321,6 +321,7 @@ class app_purchase_taller extends _BaseController {
 				$objTMI["zoneID"]						= /*inicio get post*/ $this->request->getPost("txtZoneID");				
 				$objTMI["reference2"]					= /*inicio get post*/ $this->request->getPost("txtInfoReference2");
 				$objTMI["reference1"]					= /*inicio get post*/ $this->request->getPost("txtInfoReference1");
+				$objTMI["referenceClientName"]			= /*inicio get post*/ $this->request->getPost("txtReferenceClientName");
 				$this->Transaction_Master_Info_Model-> update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMI);
 				
 			}
@@ -454,7 +455,7 @@ class app_purchase_taller extends _BaseController {
 							$dataView["objBilling"]					= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,$objTMNew["note"]);							
 							$dataView["objCatalogItemAreaID"] 		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","areaID",$companyID,$objTMNew["areaID"]);
 							
-							
+							$articleDesc	= strtoupper($catalogItemArticulo->name) == strtoupper("Otros") ? $objTMI["referenceClientName"] : $catalogItemArticulo->name; 
 							$themplate 		= str_replace("{customer_name}",helper_RequestGetValueObjet($dataView["objCustomerNatural"],"firstName",""),$themplate);
 							$themplate 		= str_replace("{employeer_name}",helper_RequestGetValueObjet($dataView["objEmployerNatural"],"firstName",""),$themplate);
 							$themplate 		= str_replace("{employeer_phone}",$dataView["objEmployerPhoneNumber"],$themplate);
@@ -462,7 +463,7 @@ class app_purchase_taller extends _BaseController {
 							$themplate 		= str_replace("{transaction_number}",helper_RequestGetValueObjet($dataView["objBilling"],"transactionNumber",""),$themplate);
 							$themplate		= str_replace("{amount}",$objTMNew["amount"],$themplate);
 							$themplate 		= str_replace("{text}",$objTMNew["reference1"],$themplate);
-							$themplate 		= str_replace("{article}",$catalogItemArticulo->name,$themplate);
+							$themplate 		= str_replace("{article}",$articleDesc,$themplate);
 							
 							$numerDestino 	= clearNumero($dataView["objCustomer"]->phoneNumber); 
 							$warrning = true;
@@ -616,6 +617,7 @@ class app_purchase_taller extends _BaseController {
 			$objTMI["zoneID"]						= /*inicio get post*/ $this->request->getPost("txtZoneID");
 			$objTMI["reference2"]					= /*inicio get post*/ $this->request->getPost("txtInfoReference2");
 			$objTMI["reference1"]					= /*inicio get post*/ $this->request->getPost("txtInfoReference1");
+			$objTMI["referenceClientName"]			= /*inicio get post*/ $this->request->getPost("txtReferenceClientName");
 			$this->Transaction_Master_Info_Model->insert_app_posme($objTMI);
 			
 
@@ -766,15 +768,15 @@ class app_purchase_taller extends _BaseController {
 							$dataView["objBilling"]					= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,$objTM["note"]);							
 							$dataView["objCatalogItemAreaID"] 		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","areaID",$companyID,$objTM["areaID"]);
 							
-							
+							$articleDesc	= strtoupper($catalogItemArticulo->name) == strtoupper("Otros") ? $objTMI["referenceClientName"] : $catalogItemArticulo->name; 
 							$themplate 		= str_replace("{customer_name}",helper_RequestGetValueObjet($dataView["objCustomerNatural"],"firstName",""),$themplate);
 							$themplate 		= str_replace("{employeer_name}",helper_RequestGetValueObjet($dataView["objEmployerNatural"],"firstName",""),$themplate);
 							$themplate 		= str_replace("{employeer_phone}",$dataView["objEmployerPhoneNumber"],$themplate);
 							$themplate 		= str_replace("{status_name}",helper_RequestGetValueObjet($dataView["objCatalogItemAreaID"],"name",""),$themplate);
 							$themplate 		= str_replace("{transaction_number}",helper_RequestGetValueObjet($dataView["objBilling"],"transactionNumber",""),$themplate);
 							$themplate		= str_replace("{amount}",$objTM["amount"],$themplate);
-							$themplate 		= str_replace("{text}",$objTM["reference1"],$themplate);
-							$themplate 		= str_replace("{article}",$catalogItemArticulo->name,$themplate);							
+							$themplate 		= str_replace("{text}",$objTM["reference1"],$themplate);							
+							$themplate 		= str_replace("{article}", $articleDesc ,$themplate);							
 							$numerDestino 	= clearNumero($dataView["objCustomer"]->phoneNumber); 
 							$warrning = true;							
 							$this->core_web_notification->set_message(false,"A:".$numerDestino." - ".substr($themplate,0,55)." ...");

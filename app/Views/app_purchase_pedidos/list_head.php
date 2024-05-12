@@ -16,6 +16,7 @@
 									</form>
 							
 									<div class="btn-group pull-right" style="margin-top:0px">
+										<a href="#" class="btn btn-success" id="btnPrinter"><i class="icon16 i-print-2"></i>Imprimir</a>
 										<a href="#" class="btn btn-inverse" id="btnView"><i class="icon16 i-grid-2"></i>Vistas</a>
 										<a href="#" class="btn btn-primary" id="btnEdit"><i class="icon16 i-pencil-4"></i>Editar</a>
 										<a href="#" class="btn btn-danger"  id="btnEliminar"><i class="icon16 i-remove"></i>Delete</a>

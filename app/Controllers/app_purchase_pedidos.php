@@ -913,13 +913,18 @@ class app_purchase_pedidos extends _BaseController {
 				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			}
 			
+			
+			$objParameterUrlPrinter 				= $this->core_web_parameter->getParameter("WORKSHOW_URL_PRINTER_PEDIDO",$this->session->get('user')->companyID);
+			$objParameterUrlPrinter 				= $objParameterUrlPrinter->value;
+			$dataView["objParameterUrlPrinter"]	 	= $objParameterUrlPrinter;
+			
 			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
 			$dataSession["head"]			= /*--inicio view*/ view('app_purchase_pedidos/list_head');//--finview
 			$dataSession["footer"]			= /*--inicio view*/ view('app_purchase_pedidos/list_footer');//--finview
 			$dataSession["body"]			= $dataViewRender; 
-			$dataSession["script"]			= /*--inicio view*/ view('app_purchase_pedidos/list_script');//--finview
+			$dataSession["script"]			= /*--inicio view*/ view('app_purchase_pedidos/list_script',$dataView);//--finview
 			$dataSession["script"]			= $dataSession["script"].$this->core_web_javascript->createVar("componentID",$objComponent->componentID);   
 			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r	
 		}
