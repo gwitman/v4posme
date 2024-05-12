@@ -84,6 +84,20 @@ class Employee_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
    }
+   function get_rowByCompanyID($companyID){
+		$db 	= db_connect();
+		$builder	= $db->table("tb_employee");    
+		
+		$sql = "";
+		$sql = sprintf("select i.companyID, i.branchID, i.entityID, i.employeNumber, i.numberIdentification, i.identificationTypeID, i.socialSecurityNumber, i.address, i.countryID, i.stateID, i.cityID, i.departamentID, i.areaID, i.clasificationID, i.categoryID, i.reference1, i.reference2, i.typeEmployeeID, i.hourCost, i.parentEmployeeID, i.startOn, i.endOn,i.statusID, i.createdOn, i.createdIn, i.createdAt, i.createdBy, i.isActive,n.firstName,n.lastName ");
+		$sql = $sql.sprintf(" from tb_employee i");		
+		$sql = $sql.sprintf(" inner join tb_naturales n on  n.entityID = i.entityID ");		
+		$sql = $sql.sprintf(" where i.companyID = $companyID");
+		$sql = $sql.sprintf(" and i.isActive= 1");		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
    function get_rowByEntityID($companyID,$entityID){
 		$db 	= db_connect();
 		$builder	= $db->table("tb_employee");    

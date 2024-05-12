@@ -947,6 +947,7 @@ class app_sales_report extends _BaseController {
 		}
 	}
 	
+	
 	function sales_detail_traking_globalpro()
 	{
 		try{ 
@@ -1036,6 +1037,11 @@ class app_sales_report extends _BaseController {
 		catch(\Exception $ex){
 			exit($ex->getMessage());
 		}
+	}
+	
+	function sales_detail_out_of_range()
+	{
+		
 	}
 	
 	

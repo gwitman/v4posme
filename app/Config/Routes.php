@@ -1087,12 +1087,16 @@ $routes->match(['get','post'],'app_sales_report/sales_detail_item_sales_globalpr
 $routes->match(['get','post'],'app_sales_report/sales_detail_item_sales_globalpro/(:any)','app_sales_report::sales_detail_item_sales_globalpro');
 $routes->match(['get','post'],'app_sales_report/sales_detail_traking_globalpro','app_sales_report::sales_detail_traking_globalpro');
 $routes->match(['get','post'],'app_sales_report/sales_detail_traking_globalpro/(:any)','app_sales_report::sales_detail_traking_globalpro');
+$routes->match(['get','post'],'app_sales_report/sales_detail_out_of_range','app_sales_report::sales_detail_out_of_range');
+$routes->match(['get','post'],'app_sales_report/sales_detail_out_of_range/(:any)','app_sales_report::sales_detail_out_of_range');
 $routes->match(['get','post'],'app_sales_report/company_utitlity','app_sales_report::company_utitlity');
 $routes->match(['get','post'],'app_sales_report/company_utitlity/(:any)','app_sales_report::company_utitlity');
 $routes->match(['get','post'],'app_purchase_report/index','app_purchase_report::index');
 $routes->match(['get','post'],'app_purchase_report/index/(:any)','app_purchase_report::index');
 $routes->match(['get','post'],'app_purchase_report/purchase_detail','app_purchase_report::purchase_detail');
 $routes->match(['get','post'],'app_purchase_report/purchase_detail/(:any)','app_purchase_report::purchase_detail');
+$routes->match(['get','post'],'app_purchase_report/purchase_taller','app_purchase_report::purchase_taller');
+$routes->match(['get','post'],'app_purchase_report/purchase_taller/(:any)','app_purchase_report::purchase_taller');
 $routes->match(['get','post'],'core_acount/index','core_acount::index');
 $routes->match(['get','post'],'core_acount/index/(:any)','core_acount::index');
 $routes->match(['get','post'],'core_acount/logout','core_acount::logout');
