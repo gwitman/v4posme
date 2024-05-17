@@ -5504,33 +5504,30 @@ function helper_reporte80mmTransactionMaster(
 				//datos
 				else{
 					
-					if( $confiDetalle[$colun]["nueva_fila_row_data"] ==  1 ){
+					if( $confiDetalle[$colun]["nueva_fila_row_data"] ==  1 &&  strpos($key, "-comand-new-row") !== false  )
+					{
 						$cuerpo 		= $cuerpo."<tr >";							
 						
-						$cuerpo = $cuerpo."<td style=".$confiDetalle[$colun]["style_row_data"]." colspan='".$confiDetalle[$colun]["colspan_row_data"]."' >";
-						$cuerpo = $cuerpo.$confiDetalle[$colun]["prefix_row_data"]." ".$key;
+						$cuerpo = $cuerpo."<td style=".$confiDetalle[$colun]["style_row_data"]." colspan='". $colunCantidad ."' >";
+						$cuerpo = $cuerpo.$confiDetalle[$colun]["prefix_row_data"]." ". str_replace("-comand-new-row", "", $key );
 						$cuerpo = $cuerpo."</td>";
 						
 						$cuerpo 		= $cuerpo."</tr >";	
-						$nuevaFila		= 1;						
+						break;
+											
 					}	
-					else{
-							
-						
-						if($nuevaFila == 1)
-							$cuerpo 	= $cuerpo."<tr >";								
+					else
+					{	
 						
 						if($rowin > 0 && $colun == 0)
-							$cuerpo 	= $cuerpo."<tr >";								
+						$cuerpo 	= $cuerpo."<tr >";								
 						
 						$cuerpo = $cuerpo."<td style=".$confiDetalle[$colun]["style_row_data"]." colspan='".$confiDetalle[$colun]["colspan_row_data"]."' >";
 						$cuerpo = $cuerpo.$confiDetalle[$colun]["prefix_row_data"]." ".$key;
 						$cuerpo = $cuerpo."</td>";								
 						
 						if($colun == $colunCantidad)
-							$cuerpo 	= $cuerpo."</tr >";								
-						
-						$nuevaFila = 0;
+						$cuerpo 	= $cuerpo."</tr >";
 							
 					}
 						

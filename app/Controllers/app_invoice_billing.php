@@ -4543,7 +4543,7 @@ class app_invoice_billing extends _BaseController {
 				
 				
 				"style_row_data"		=>"text-align:left;width:auto",
-				"colspan_row_data"		=>'3',
+				"colspan_row_data"		=>'1',
 				"prefix_row_data"		=>'',
 				"nueva_fila_row_data"	=>1
 			);
@@ -4555,7 +4555,7 @@ class app_invoice_billing extends _BaseController {
 				"prefix"	=>'',
 				
 				"style_row_data"		=>"text-align:right;width:auto",
-				"colspan_row_data"		=>'2',
+				"colspan_row_data"		=>'1',
 				"prefix_row_data"		=>'',
 				"nueva_fila_row_data"	=>0
 			);
@@ -4569,7 +4569,7 @@ class app_invoice_billing extends _BaseController {
 				
 				"style_row_data"		=>"text-align:right;width:90px",
 				"colspan_row_data"		=>'1',
-				"prefix_row_data"		=>$datView["objCurrency"]->simbol,
+				"prefix_row_data"		=>"",
 				"nueva_fila_row_data"	=>0
 			);
 			array_push($confiDetalleHeader,$row);
@@ -4577,15 +4577,22 @@ class app_invoice_billing extends _BaseController {
 			
 		    
 		    $detalle = array();		    
-		    $row = array("PRODUCTO", 'CANT', "TOTAL");
+		    $row = array("CANT", 'PREC', "TOTAL");
 		    array_push($detalle,$row);
 		    
 		    
 			foreach($datView["objTMD"] as $detail_){
-			    $row = array(
-					$detail_->itemName. " ". strtolower($detail_->skuFormatoDescription),  
+				$row = array(
+					$detail_->itemName. " ". strtolower($detail_->skuFormatoDescription)."-comand-new-row",  				
+					"none",
+					"none"
+				);
+			    array_push($detalle,$row);
+				
+			    $row = array(					
 					sprintf("%01.2f",round($detail_->quantity,2)), 					
-					sprintf("%01.2f",round($detail_->amount,2))
+					sprintf("%01.2f",round($detail_->unitaryPrice,2)),
+					sprintf("%01.2f",round($detail_->amount,2))					
 				);
 			    array_push($detalle,$row);
 			}

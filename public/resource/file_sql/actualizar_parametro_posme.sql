@@ -1,3 +1,5 @@
+/*BD	dbs3obkhhc1pgu  */
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "gwitman@yahoo.com" 
 WHERE 
