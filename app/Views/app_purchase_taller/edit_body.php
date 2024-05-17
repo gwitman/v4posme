@@ -328,6 +328,16 @@
 										</div>
 								</div>
 								
+								<div class="form-group">
+										<label class="col-lg-4 control-label" for="normal"></label>
+										<div class="col-lg-8">
+											<blockquote class="red" style="text-align: justify;" >
+												Agregar cualquier nota al cliente (rayones, quebraduras) Observaciones (Al no encender el equipo, no sabemos si algún componente este dañado tal como batería,pantalla,tecaldo etc.)
+											</blockquote>
+										</div>
+								</div>
+								
+								
 							</div>
 						</div>
 					</div>

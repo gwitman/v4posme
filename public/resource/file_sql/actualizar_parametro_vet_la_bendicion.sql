@@ -1206,7 +1206,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Vet la Bendicion' , address = 'De la alcaldía 1 1/2 al Este' ,
-	flavorID = 0,type='default'
+	flavorID = 0,type='veterinaria_bendicion'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

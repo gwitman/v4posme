@@ -522,10 +522,13 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 				$('#divMesa').appendTo('#divInformacionLeft');
 				$('#divZone').appendTo('#divInformacionRight');				
 			});
-		</script>"
+		</script>",
 		
-		
-		
+		//Veterinaria la Bendicion
+		strtolower('veterinaria_bendicion_app_inventory_item_Marca')											=> "Vencimiento",
+		strtolower('veterinaria_bendicion_app_inventory_item_fieldInmobiliaria')								=> "hidden",
+		strtolower('veterinaria_bendicion_app_inventory_item_fieldEquiposModelo')								=> "hidden",
+		strtolower('veterinaria_bendicion_app_inventory_item_fieldEquiposSerie')								=> "hidden",
 	);
 	
 	

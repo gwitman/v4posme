@@ -376,19 +376,19 @@
 						<div class="row">	
 							<div class="col-lg-6">
 							
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldEquiposMarca",""); ?> ">
 										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Marca",""); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtReference1" id="txtReference1" value="<?php echo $objItem->reference1; ?>">												
 										</div>
 								</div>											
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldEquiposModelo",""); ?> ">
 										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Modelo",""); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtReference2" id="txtReference2" value="<?php echo $objItem->reference2; ?>">												
 										</div>
 								</div>
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldEquiposSerie",""); ?> ">
 										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Serie ó MAI",""); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtReference3" id="txtReference3" value="<?php echo $objItem->reference3; ?>">												

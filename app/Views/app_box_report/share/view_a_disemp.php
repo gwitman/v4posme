@@ -12,7 +12,7 @@
 		?>
 		
 	</head>
-	<body style="font-family:monospace;font-size:smaller;margin:0px 0px 0px 0px"> 
+	<body style="font-family:monospace;font-size:<?php echo $fontSize; ?>;margin:0px 0px 0px 0px"> 
 		
 		
 		<?php
