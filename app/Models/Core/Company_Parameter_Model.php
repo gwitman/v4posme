@@ -38,6 +38,7 @@ class Company_Parameter_Model extends Model  {
    function get_rowByCompanyID($companyID)
    {
 	   	$db 	= db_connect();    
+		$db->table('tb_company_parameter');
 		$sql = "";
 		$sql = sprintf("select c.companyID,c.parameterID,c.display,c.description,c.value,c.customValue, p.name ");
 		$sql = $sql.sprintf(" from tb_company_parameter  c ");			

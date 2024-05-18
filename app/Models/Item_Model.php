@@ -294,5 +294,34 @@ class Item_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
+   function get_rowByCompanyIDToMobile($listWarehouseID)
+   {
+	   
+		$db 		= db_connect();
+		$builder	= $db->table("tb_item");    
+		$sql = "";
+		$sql = sprintf("
+				select 
+					i.itemID,
+					i.barCode,
+					i.itemNumber,
+					i.`name`,
+					iw.quantity,
+					(select pp.price from tb_price pp where pp.itemID = i.itemID and pp.typePriceID = 154 /*precio publico*/) as PrecioPublico	
+				from 
+					tb_item i 
+					inner join tb_item_warehouse iw on 
+						i.itemID  = iw.itemID  
+				where 
+					i.isActive = 1 and 
+					iw.warehouseID in (".implode(",", $listWarehouseID).")
+				order by 
+					i.barCode
+			");
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+   
 }
 ?>

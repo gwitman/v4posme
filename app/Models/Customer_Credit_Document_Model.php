@@ -207,5 +207,59 @@ class Customer_Credit_Document_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
+   function get_rowByBalancePendingByCompanyToMobile($companyID)
+   {
+		$db 		= db_connect();
+		$builder	= $db->table("tb_customer_credit_document");    
+		
+		$sql = "";
+		$sql = sprintf("
+			select 
+				d.entityID,
+				d.customerCreditDocumentID,
+				d.customerCreditLineID,
+				d.documentNumber,
+				d.balance as balanceDocument,
+				d.currencyID,
+				d.statusID as statusDocument,
+				min(a.creditAmortizationID) as creditAmortizationID,
+				min(a.dateApply) as dateApply,	
+				sum(a.remaining) as remaingin,
+				min(a.statusID) as statusAmotization,
+				min(wsa.name) as statusAmortizatonName
+			from 
+				tb_customer_credit_document  d 
+				inner join tb_customer_credit_amoritization a on 
+					d.customerCreditDocumentID = a.customerCreditDocumentID 
+				inner join tb_workflow_stage wsa on 
+					wsa.workflowStageID = a.statusID 
+				inner join tb_workflow_stage wsd on 
+					wsd.workflowStageID = d.statusID 
+					
+			where 
+				d.isActive = 1 and 
+				d.companyID = $companyID and 
+				a.isActive = 1 and 
+				wsa.aplicable = 1 and 
+				wsd.aplicable = 1 and 
+				a.remaining > 0  
+			group by 
+				d.entityID,
+				d.customerCreditDocumentID,
+				d.customerCreditLineID,
+				d.documentNumber,
+				d.balance,
+				d.currencyID,
+				d.statusID
+			order by 
+				d.customerCreditDocumentID 
+		");
+		
+		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+   
 }
 ?>

@@ -206,5 +206,21 @@ class Customer_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
    }
+   function get_rowByCompanyIDToMobile($companyID){
+		$db 	= db_connect();
+		$builder	= $db->table("tb_customer");
+			
+		$sql = "";
+		$sql = sprintf("select 
+		i.companyID, i.branchID, i.entityID, i.customerNumber, i.identification, nat.firstName,nat.lastName  
+		");
+		$sql = $sql.sprintf(" from tb_customer i");
+		$sql = $sql.sprintf(" inner join  tb_naturales nat on nat.entityID = i.entityID");				
+		$sql = $sql.sprintf(" where i.companyID = $companyID");
+		$sql = $sql.sprintf(" and i.isActive= 1");		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+	}
 }
 ?>

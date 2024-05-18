@@ -844,6 +844,8 @@ $routes->match(['get','post'],'app_invoice_api/getLastMovement','app_invoice_api
 $routes->match(['get','post'],'app_invoice_api/getLastMovement/(:any)','app_invoice_api::getLastMovement');
 $routes->match(['get','post'],'app_invoice_api/getLineByCustomerAll','app_invoice_api::getLineByCustomerAll');
 $routes->match(['get','post'],'app_invoice_api/getLineByCustomerAll/(:any)','app_invoice_api::getLineByCustomerAll');
+$routes->match(['get','post'],'app_mobile_api/getDataDownload','app_mobile_api::getDataDownload');
+$routes->match(['get','post'],'app_mobile_api/getDataDownload/(:any)','app_mobile_api::getDataDownload');
 $routes->match(['get','post'],'app_invoice_billing/edit','app_invoice_billing::edit');
 $routes->match(['get','post'],'app_invoice_billing/edit/(:any)','app_invoice_billing::edit');
 $routes->match(['get','post'],'app_invoice_billing/editv2','app_invoice_billing::editv2');
