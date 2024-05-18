@@ -242,6 +242,97 @@ class core_acount extends _BaseController {
 		
 	}
 	
+	function loginMobile()
+	{	
+		
+		try
+		{ 
+			
+			$nickname	= /*inicio get post*/ $this->request->getPost("txtNickname");			
+			$password	= /*inicio get post*/ $this->request->getPost("txtPassword");	
+			$objUser	= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname,$password);
+			
+			
+			//Obtener Datos 				
+			$parameterCantidadTransacciones 	= $this->core_web_parameter->getParameter("CORE_QUANTITY_TRANSACCION",$objUser["user"]->companyID);
+			$parameterCantidadTransacciones 	= $parameterCantidadTransacciones->value;
+		
+			$parameterBalance = $this->core_web_parameter->getParameter("CORE_CUST_PRICE_BALANCE",$objUser["user"]->companyID);
+			$parameterBalance = $parameterBalance->value;
+			$parameterSendBox = $this->core_web_parameter->getParameter("CORE_PAYMENT_SENDBOX",$objUser["user"]->companyID);
+			$parameterSendBox = $parameterSendBox->value;
+			$parameterSendBoxUsuario = $this->core_web_parameter->getParameter("CORE_PAYMENT_PRUEBA_USUARIO",$objUser["user"]->companyID);
+			$parameterSendBoxUsuario = $parameterSendBoxUsuario->value;
+			$parameterSendBoxClave = $this->core_web_parameter->getParameter("CORE_PAYMENT_PRUEBA_CLAVE",$objUser["user"]->companyID);
+			$parameterSendBoxClave = $parameterSendBoxClave->value;
+			$parameterProduccionUsuario = $this->core_web_parameter->getParameter("CORE_PAYMENT_PRODUCCION_USUARIO",$objUser["user"]->companyID);
+			$parameterProduccionUsuario = $parameterProduccionUsuario->value;
+			$parameterProduccionClave = $this->core_web_parameter->getParameter("CORE_PAYMENT_PRODUCCION_CLAVE",$objUser["user"]->companyID);
+			$parameterProduccionClave = $parameterProduccionClave->value;
+			$parameterPrice				= $this->core_web_parameter->getParameter("CORE_CUST_PRICE",$objUser["user"]->companyID);
+			$parameterPrice 			= $parameterPrice->value;
+			$parameterTipoPlan 			= $this->core_web_parameter->getParameter("CORE_CUST_PRICE_TIPO_PLAN",$objUser["user"]->companyID);
+			$parameterTipoPlan 			= $parameterTipoPlan->value;
+			
+			//Validar Fecha de Expiracion
+			$objCompany 	= $this->Company_Model->get_rowByPK($objUser["user"]->companyID);
+			
+			
+			//Enviar mensaje				
+			$params_["nickname"]								= $nickname;
+			$params_["objCompany"]								= $objCompany;
+			$params_["parameterBalance"]						= $parameterBalance;
+			$params_["parameterCantidadDeTransacciones"]		= $parameterCantidadTransacciones;
+			$params_["mensaje"]									= "Su balance de uso es:".$parameterBalance.", Cantidad de Transacciones:".$parameterCantidadTransacciones;
+			
+			
+			$subject 	= "Inicio de session: ".$objCompany->name." ".$nickname;
+			$body  		= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview			
+			
+			$this->email->setFrom(EMAIL_APP);
+			$this->email->setTo(EMAIL_APP_COPY);
+			$this->email->setSubject($subject);			
+			$this->email->setMessage($body); 
+			
+			$resultSend01 = $this->email->send();
+			$resultSend02 = $this->email->printDebugger();
+			
+			
+			//Guardar Log			
+			$objLogSessionModel["session_id"] 		= session_id();
+			$objLogSessionModel["ip_address"] 		= $this->request->getIPAddress();
+			$objLogSessionModel["user_agent"] 		= $this->request->getUserAgent()->getPlatform();
+			$objLogSessionModel["last_activity"] 	= \DateTime::createFromFormat("Y-m-d H:i:s",helper_getDateTime())->format("YmdHis");
+			$objLogSessionModel["user_data"] 		= $objUser["user"]->nickname." create session";
+			
+			
+			$objLogSessionModel2 					= $this->Log_Session_Model->asObject()->where("session_id",$objLogSessionModel["session_id"])->find();
+			if(!$objLogSessionModel2)			
+			$this->Log_Session_Model->insert($objLogSessionModel);			
+			else 			
+			$this->Log_Session_Model->upsert($objLogSessionModel);
+		
+		
+			return $this->response->setJSON(array(
+				'error'   	=> false,
+				'message' 	=> SUCCESS,			
+				'objUser'  	=> $objUser["user"]
+			));//--finjson			
+		
+			
+		
+		}
+		catch(\Exception $ex)
+		{							
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));
+			
+		}
+		
+	}
+	
 	function rememberpassword(){
 		
 		try{ 

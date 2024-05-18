@@ -263,6 +263,100 @@ function helper_reporteGeneralCreateFirma($firma,$column,$width){
 		echo $result;
 }
 
+function helper_reporteGeneralCreateFirmaNotEjecuteExport($firma,$column,$width){
+	
+		$filterColumn = "[ \"\" ";
+		for($i = 0 ; $i < ($column - 1); $i++)
+		{
+			$filterColumn = $filterColumn.",\"\" ";	
+		}
+		$filterColumn = $filterColumn."]";
+		
+		$result = 
+		'
+		<table style="width:'.$width.'">
+			<thead>
+				<tr>
+					<th colspan="'.$column.'" >'.date("Y-m-d H:i:s").' '.$firma.' posMe</th>
+				</tr>
+				<tr>
+					<th colspan="'.$column.'" ><a id="btnExportToExcel" href="#" >export to excel</a></th>
+				</tr>
+			</thead>
+		</table>
+		
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script>
+			$(document).ready(function() {
+				
+				
+				  // Arreglo para almacenar los filtros
+				  var filtros = '.$filterColumn.';
+				  
+
+				  // Aplicar el filtro en cada columna al escribir en el input
+				  $("#myReport thead input").on("keyup", function() {
+					var index = $(this).data("index");
+					var value = $(this).val().trim().toLowerCase();
+					filtros[index] = value;
+					filtrarTabla();
+				  });
+				  
+				  
+				  //// Función para filtrar la tabla
+				  function filtrarTabla() 
+				  {
+					$("#myReport tbody tr").each(function() {
+					  var mostrar = true;
+					  $(this).find("td").each(function(index) {
+						var cellText 	= $(this).text().trim().toLowerCase();
+						var filterValue = filtros[index];
+						
+						if(filterValue)
+						filterValue = filterValue.toLowerCase();
+						
+						
+						if (filterValue) 
+						{
+							  if (filterValue.startsWith(">")) 
+							  {
+								var filterNumber = parseFloat(filterValue.substr(1));
+								var cellNumber = parseFloat(cellText);
+								if (isNaN(filterNumber) || isNaN(cellNumber) || cellNumber <= filterNumber) {
+								  mostrar = false;
+								  return false; // salir del bucle interno
+								}
+							  }
+							  else if (filterValue.startsWith("<")) 
+							  {
+								var filterNumber = parseFloat(filterValue.substr(1));
+								var cellNumber = parseFloat(cellText);
+								if (isNaN(filterNumber) || isNaN(cellNumber) || cellNumber >= filterNumber) {
+								  mostrar = false;
+								  return false; // salir del bucle interno
+								}
+							  } 
+							  //else if (cellText !== filterValue) 
+							  else if (!cellText.includes(filterValue)) 
+							  {
+								mostrar = false;
+								return false; // salir del bucle interno
+							  }
+						}
+						
+					  });
+					  $(this).toggle(mostrar);
+					});
+				  }
+				  
+			});
+		</script>
+		
+		';
+		
+		echo $result;
+}
+
 
 
 //$resultado["columnas"] 	= 0;
@@ -443,10 +537,6 @@ function helper_reporteGeneralCreateTable($objDetail,$configColumn,$widht,$titul
 				if($sumaryzar){
 					$configColumn[$key]["TotalValor"] 		= $value["TotalValor"] + str_replace(",","",$valueField);
 					$configColumn[$key]["CantidadRegistro"] = $counterRow;
-					
-					//log_message("ERROR","Sumarizar totales");
-					//log_message("ERROR",$valueField);
-					//log_message("ERROR",print_r($configColumn[$key]["TotalValor"],true));
 					
 				}
 				if($Promedio){

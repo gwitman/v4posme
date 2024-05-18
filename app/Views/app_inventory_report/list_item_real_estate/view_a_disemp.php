@@ -306,13 +306,7 @@
 		$configColumn["41"]["Width"] = "80px";
 		$configColumn["41"]["Total"] = false;
 		
-		$configColumn["42"]["Titulo"] 						= "Codigo";				
-		$configColumn["42"]["FiledSouce"] 					= "itemID";				
-		$configColumn["42"]["Formato"] 						= "";		
-		$configColumn["42"]["Width"] 						= "80px";	
-		$configColumn["42"]["Total"] 						= False;		
-		$configColumn["42"]["IdTable"] 						= "myReport";		
-		$configColumn["42"]["FiltrarRegistroOnLine"] 		= True;	
+		
 		
 		$configColumn["43"]["Titulo"] = "Moneda";
 		$configColumn["43"]["FiledSouce"] = "Moneda";
@@ -328,13 +322,212 @@
 		<br/>
 		
 		<?php 
-		echo helper_reporteGeneralCreateFirma(	
+		echo helper_reporteGeneralCreateFirmaNotEjecuteExport(	
 			$objFirmaEncription,
 			"44",
 			"1000px"
 		);
 		?>
 		
+		<?php
+		echo 
+		'
+		<script>
+			$(document).ready(function() {
+				
+				  $(document).on("click","#btnExportToExcel",function(e,o){
+						  
+						  // Obtener el contenido HTML de la tabla
+						  var tablaHTML = 
+										"<div>"+	
+										document.getElementById("myReport").outerHTML + 
+										"</div>";
+						  var tablaHTML = $(tablaHTML);
+						  
+						  //Eliminar los input de filtros
+						  tablaHTML.find("input").remove();	
+						  
+						  
+						  //Eliminar columna amueblado
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(4), th:eq(4)").remove();								
+					      });
+						  //Eliminar columna disponible
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(4), th:eq(4)").remove();								
+					      });
+						  //Eliminar ciudad
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(4), th:eq(4)").remove();								
+					      });
+						  //Eliminar ubicacion
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(4), th:eq(4)").remove();								
+					      });
+						  //Eliminar zona
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(4), th:eq(4)").remove();								
+					      });
+						  //Eliminar condominio
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(4), th:eq(4)").remove();								
+					      });
+						  //Eliminar id pagina web
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(6), th:eq(6)").remove();								
+					      });
+						  //Eliminar pagina web
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(6), th:eq(6)").remove();								
+					      });
+						  //Eliminar link de youtube
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(6), th:eq(6)").remove();								
+					      });
+						  //Eliminar precio de renta
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(6), th:eq(6)").remove();								
+					      });
+						  //Eliminar precio de venta
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(6), th:eq(6)").remove();								
+					      });
+						  //Eliminar area de contruccion
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(6), th:eq(6)").remove();								
+					      });
+						  //Eliminar area de terreno
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(6), th:eq(6)").remove();								
+					      });
+						  //Eliminar niveles
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(6), th:eq(6)").remove();								
+					      });
+						  //Eliminar habitacines
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(6), th:eq(6)").remove();								
+					      });
+						  //Eliminar baños
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(6), th:eq(6)").remove();								
+					      });
+						  //Eliminar baños de servicio
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(6), th:eq(6)").remove();								
+					      });
+						  //Eliminar baños de visita 
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(6), th:eq(6)").remove();								
+					      });
+						  //Eliminar cuarto de servicio
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(6), th:eq(6)").remove();								
+					      });
+						  //Eliminar walking 
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(6), th:eq(6)").remove();								
+					      });
+						  //Eliminar aires 
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(6), th:eq(6)").remove();								
+					      });
+						  //Eliminar piscina privada 
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(6), th:eq(6)").remove();								
+					      });
+						  //Eliminar area club  
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(6), th:eq(6)").remove();								
+					      });
+						  //Eliminar hora de visita 
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(6), th:eq(6)").remove();								
+					      });
+						  //Eliminar acepta mascota 
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(6), th:eq(6)").remove();								
+					      });
+						  //Eliminar estilo de cocina 
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(6), th:eq(6)").remove();								
+					      });
+						  //Eliminar corretaje 
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(6), th:eq(6)").remove();								
+					      });
+						  //Eliminar plan referido 
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(6), th:eq(6)").remove();								
+					      });
+						  //Eliminar otros link 
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(8), th:eq(8)").remove();								
+					      });
+						  //Eliminar fotos 
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(8), th:eq(8)").remove();								
+					      });
+						  //Eliminar google  
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(8), th:eq(8)").remove();								
+					      });
+						  //Eliminar exclusividad de agente   
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(8), th:eq(8)").remove();								
+					      });
+						  //Eliminar pais  
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(8), th:eq(8)").remove();								
+					      });
+						  //Eliminar estado 
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(8), th:eq(8)").remove();								
+					      });
+						  //Eliminar moneda 
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(8), th:eq(8)").remove();								
+					      });
+						  //Eliminar moneda 
+						  tablaHTML.find("tr").each(function(){								
+								$(this).find("td:eq(8), th:eq(8)").remove();								
+					      });
+							
+							
+						  
+						  tablaHTML 	= $(tablaHTML[0]).html();
+
+						  // Crear un objeto Blob con el contenido HTML
+						  var blob = new Blob([tablaHTML], { type: "application/vnd.ms-excel" });
+
+						  // Crear una URL para el objeto Blob
+						  var url = URL.createObjectURL(blob);
+
+
+						  // Crear un enlace <a> para iniciar la descarga
+						  var a = document.createElement("a");
+						  a.href = url;
+						  a.download = "customer_list_real_estate.xls";
+						  document.body.appendChild(a);
+
+						  // Simular un clic en el enlace para iniciar la descarga
+						  a.click();
+
+						  // Limpiar el objeto URL
+						  URL.revokeObjectURL(url);
+						  
+						
+				  });
+				
+				
+
+				  
+				  
+			});
+
+		</script>
+		';
+		?>
 		
 		
 	</body>	

@@ -1101,6 +1101,7 @@ $routes->match(['get','post'],'core_acount/index','core_acount::index');
 $routes->match(['get','post'],'core_acount/index/(:any)','core_acount::index');
 $routes->match(['get','post'],'core_acount/logout','core_acount::logout');
 $routes->match(['get','post'],'core_acount/login','core_acount::login');
+$routes->match(['get','post'],'core_acount/loginMobile','core_acount::loginMobile');
 $routes->match(['get','post'],'core_acount/rememberpassword','core_acount::rememberpassword');
 $routes->match(['get','post'],'core_acount/edit','core_acount::edit');
 $routes->match(['get','post'],'core_acount/payment','core_acount::payment');
