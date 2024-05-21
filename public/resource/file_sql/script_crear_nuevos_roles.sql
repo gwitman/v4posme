@@ -1,4 +1,4 @@
-set @nameCompany        := 'cylmodanic';
+set @nameCompany        := 'NEG_HERNANDEZ';
 set @domainDestino 			:= CONCAT('@',LOWER( @nameCompany));
 
 

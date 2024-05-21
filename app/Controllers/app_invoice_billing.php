@@ -235,6 +235,41 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objTransactionMasterItemSku"]			= $this->Item_Sku_Model->get_rowByTransactionMasterID($companyID, $dataView["objTransactionMaster"]->transactionMasterID );
 			$dataView["objTransactionMasterItem"]				= $this->Item_Model->get_rowByTransactionMasterID( $dataView["objTransactionMaster"]->transactionMasterID  );
 			
+			
+			//Datos para imprimir la factura
+			//------------------------------------------			
+			$objParameterDirectFormServer = $this->core_web_parameter->getParameterValue("INVOICE_BILLING_PRINTER_DIRECT_FROM_SERVER",$companyID);
+			if($objParameterDirectFormServer  == "true")
+			{
+				$dataPostPrinter["objTransactionMaster"]					= $dataView["objTransactionMaster"];
+				$dataPostPrinter["objTransactionMasterInfo"]				= $dataView["objTransactionMasterInfo"];
+				$dataPostPrinter["objTransactionMasterDetail"]				= $dataView["objTransactionMasterDetail"];
+				$dataPostPrinter["objTransactionMasterDetailWarehouse"]		= $dataView["objTransactionMasterDetailWarehouse"];
+				$dataPostPrinter["objTransactionMasterDetailConcept"]		= $dataView["objTransactionMasterDetailConcept"];
+				$dataPostPrinter["objComponentCompany"]				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+				$dataPostPrinter["objParameterLogo"]				= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+				$dataPostPrinter["objParameterPhoneProperty"]		= $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE",$companyID);
+				$dataPostPrinter["objCompany"] 						= $this->Company_Model->get_rowByPK($companyID);			
+				$dataPostPrinter["objUser"] 						= $this->User_Model->get_rowByPK($companyID,$dataPostPrinter["objTransactionMaster"]->createdAt,$dataPostPrinter["objTransactionMaster"]->createdBy);
+				$dataPostPrinter["Identifier"]						= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+				$dataPostPrinter["objBranch"]						= $this->Branch_Model->get_rowByPK($companyID,$dataPostPrinter["objTransactionMaster"]->branchID);
+				$dataPostPrinter["objTipo"]							= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$dataPostPrinter["objTransactionMaster"]->transactionID,$dataPostPrinter["objTransactionMaster"]->transactionCausalID);
+				$dataPostPrinter["objCustumer"]						= $this->Customer_Model->get_rowByEntity($companyID,$dataPostPrinter["objTransactionMaster"]->entityID);
+				$dataPostPrinter["objCurrency"]						= $this->Currency_Model->get_rowByPK($dataPostPrinter["objTransactionMaster"]->currencyID);
+				$dataPostPrinter["prefixCurrency"]					= $dataPostPrinter["objCurrency"]->simbol." ";
+				$dataPostPrinter["cedulaCliente"] 					= $dataPostPrinter["objTransactionMasterInfo"]->referenceClientIdentifier == "" ? $dataPostPrinter["objCustumer"]->customerNumber :  $dataPostPrinter["objTransactionMasterInfo"]->referenceClientIdentifier;
+				$dataPostPrinter["nombreCliente"] 					= $dataPostPrinter["objTransactionMasterInfo"]->referenceClientName  == "" ? $dataPostPrinter["objCustumer"]->firstName : $dataPostPrinter["objTransactionMasterInfo"]->referenceClientName ;
+				$dataPostPrinter["objStage"]						= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($dataPostPrinter["objTransactionMaster"]->statusID);
+				$serializedDataPostPrinter 							= serialize($dataPostPrinter);
+				$serializedDataPostPrinter 							= base64_encode($serializedDataPostPrinter);
+				$dataView["dataPrinterLocal"]						= $serializedDataPostPrinter;
+			}
+			else 
+			{
+				$dataView["dataPrinterLocal"]						= "";
+			}
+			
+			//------------------------------------------
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
@@ -1731,28 +1766,29 @@ class app_invoice_billing extends _BaseController {
 				
 					// create a new curl resource
 					
-					$urlPrinter = base_url()."/".$objParameterUrlPrinterDirect."/companyID/".$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID;					
-					
+					$urlPrinter = base_url()."/".$objParameterUrlPrinterDirect."/companyID/".$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID;
 					// set URL and other appropriate options
-					$multiCurl = curl_multi_init();
+					//$multiCurl = curl_multi_init();					
 					$curl = curl_init();
 					
 					curl_setopt($curl, CURLOPT_URL, $urlPrinter);
 					curl_setopt($curl, CURLOPT_HEADER, 0);
 					curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-					curl_multi_add_handle($multiCurl, $curl);
+					//curl_multi_add_handle($multiCurl, $curl);
 					
 					// grab URL and pass it to the browser
 					// esperar la respuesta
-					//curl_exec($curl); 
+					curl_exec($curl); 
 					
 					// No esperar la respuesta
-					curl_multi_exec($multiCurl, $running);	
-
+					//$running = 0;
+					//curl_multi_exec($multiCurl, $running);	
+					
 					
 					// close cURL resource, and free up system resources
 					curl_close($curl);
-					curl_multi_close($multiCurl);
+					//curl_multi_close($multiCurl);
+					
 					
 				}
 				
@@ -2906,28 +2942,45 @@ class app_invoice_billing extends _BaseController {
 			$companyID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"companyID");//--finuri
 			$transactionID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri	
 			$transactionMasterID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri	
+			$fromServer				= /*inicio get post*/ $this->request->getPost("fromServer");
+
+			if($fromServer == "")
+			{
+				
+				$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+				$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+				$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+				$dataView["objTransactionMasterDetailWarehouse"]	= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterID);
+				$dataView["objTransactionMasterDetailConcept"]		= $this->Transaction_Master_Concept_Model->get_rowByTransactionMasterConcept($companyID,$transactionID,$transactionMasterID,$objComponentItem->componentID);
+				
+				
+				$dataView["objComponentCompany"]			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+				$dataView["objParameterLogo"]				= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+				$dataView["objParameterPhoneProperty"]		= $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE",$companyID);
+				$dataView["objCompany"] 					= $this->Company_Model->get_rowByPK($companyID);			
+				$dataView["objUser"] 						= $this->User_Model->get_rowByPK($companyID,$dataView["objTransactionMaster"]->createdAt,$dataView["objTransactionMaster"]->createdBy);
+				$dataView["Identifier"]						= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+				$dataView["objBranch"]						= $this->Branch_Model->get_rowByPK($companyID,$dataView["objTransactionMaster"]->branchID);
+				$dataView["objTipo"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$dataView["objTransactionMaster"]->transactionID,$dataView["objTransactionMaster"]->transactionCausalID);
+				$dataView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$dataView["objTransactionMaster"]->entityID);
+				$dataView["objCurrency"]					= $this->Currency_Model->get_rowByPK($dataView["objTransactionMaster"]->currencyID);
+				$dataView["prefixCurrency"]					= $dataView["objCurrency"]->simbol." ";
+				$dataView["cedulaCliente"] 					= $dataView["objTransactionMasterInfo"]->referenceClientIdentifier == "" ? $dataView["objCustumer"]->customerNumber :  $dataView["objTransactionMasterInfo"]->referenceClientIdentifier;
+				$dataView["nombreCliente"] 					= $dataView["objTransactionMasterInfo"]->referenceClientName  == "" ? $dataView["objCustumer"]->firstName : $dataView["objTransactionMasterInfo"]->referenceClientName ;
+				$dataView["objStage"]						= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($dataView["objTransactionMaster"]->statusID);
+			}
+			else 
+			{
+				// Decodificar la cadena Base64
+				$serializedData = base64_decode($fromServer);
+
+				// Deserializar la cadena a un array
+				$serializedData = unserialize($serializedData);			
 			
-			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
-			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
-			$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
-			$dataView["objTransactionMasterDetailWarehouse"]	= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterID);
-			$dataView["objTransactionMasterDetailConcept"]		= $this->Transaction_Master_Concept_Model->get_rowByTransactionMasterConcept($companyID,$transactionID,$transactionMasterID,$objComponentItem->componentID);
+				$dataView	= $serializedData;
+			}
 			
 			
-			$dataView["objComponentCompany"]			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
-			$dataView["objParameterLogo"]				= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
-			$dataView["objParameterPhoneProperty"]		= $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE",$companyID);
-			$dataView["objCompany"] 					= $this->Company_Model->get_rowByPK($companyID);			
-			$dataView["objUser"] 						= $this->User_Model->get_rowByPK($companyID,$dataView["objTransactionMaster"]->createdAt,$dataView["objTransactionMaster"]->createdBy);
-			$dataView["Identifier"]						= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
-			$dataView["objBranch"]						= $this->Branch_Model->get_rowByPK($companyID,$dataView["objTransactionMaster"]->branchID);
-			$dataView["objTipo"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$dataView["objTransactionMaster"]->transactionID,$dataView["objTransactionMaster"]->transactionCausalID);
-			$dataView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$dataView["objTransactionMaster"]->entityID);
-			$dataView["objCurrency"]					= $this->Currency_Model->get_rowByPK($dataView["objTransactionMaster"]->currencyID);
-			$dataView["prefixCurrency"]					= $dataView["objCurrency"]->simbol." ";
-			$dataView["cedulaCliente"] 					= $dataView["objTransactionMasterInfo"]->referenceClientIdentifier == "" ? $dataView["objCustumer"]->customerNumber :  $dataView["objTransactionMasterInfo"]->referenceClientIdentifier;
-			$dataView["nombreCliente"] 					= $dataView["objTransactionMasterInfo"]->referenceClientName  == "" ? $dataView["objCustumer"]->firstName : $dataView["objTransactionMasterInfo"]->referenceClientName ;
-			$dataView["objStage"]						= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($dataView["objTransactionMaster"]->statusID);
 			//obtener nombre de impresora por defecto
 			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT",$companyID);
 			$objParameterPrinterName = $objParameterPrinterName->value;

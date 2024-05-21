@@ -63,6 +63,7 @@
 	var varParameterInvoiceBillingPrinterDirectUrl			= '<?php echo $objParameterInvoiceBillingPrinterDirectUrl; ?>';	
 	var varParameterInvoiceBillingPrinterDirectCocinaUrl	= '<?php echo $urlPrinterDocumentCocinaDirect; ?>';	
 	var varParameterInvoiceBillingPrinterDirectBarUrl		= '<?php echo $objParameterINVOICE_BILLING_PRINTER_DIRECT_URL_BAR; ?>';	
+	var varParameterInvoiceBillingPrinterDataLocal			= '<?php echo $dataPrinterLocal; ?>';
 	
 	var varTransactionCausalID	= <?php echo $objTransactionMaster->transactionCausalID; ?>;	
 	var varCustomerCrediLineID	= <?php echo $objTransactionMaster->reference4; ?>;	
@@ -1632,7 +1633,8 @@
 			$.ajax({									
 				cache       : false,
 				dataType    : 'json',
-				type        : 'GET',
+				type        : 'POST',
+				data		: { "fromServer" : varParameterInvoiceBillingPrinterDataLocal },
 				url  		: url,
 				success		: function(){
 					fnWaitClose();						
