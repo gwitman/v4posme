@@ -39,7 +39,7 @@
 			<!-- /titulo de comprobante-->
 			
 			<!-- body -->	
-			<form id="form-new-invoice" name="form-new-invoice" class="form-horizontal" role="form">
+			<form id="form-new-invoice" name="form-new-invoice" class="form-horizontal" role="form" >
 			<div class="panel-body printArea"> 
 			
 				<ul id="myTab" class="nav nav-tabs">

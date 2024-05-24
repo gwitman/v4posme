@@ -859,6 +859,7 @@ $routes->match(['get','post'],'app_invoice_billing/saveApi','app_invoice_billing
 $routes->match(['get','post'],'app_invoice_billing/save','app_invoice_billing::save');
 $routes->match(['get','post'],'app_invoice_billing/save/(:any)','app_invoice_billing::save');
 $routes->match(['get','post'],'app_invoice_billing/add','app_invoice_billing::add');
+$routes->match(['get','post'],'app_invoice_billing/add/(:any)','app_invoice_billing::add');
 $routes->match(['get','post'],'app_invoice_billing/index','app_invoice_billing::index');
 $routes->match(['get','post'],'app_invoice_billing/index/(:any)','app_invoice_billing::index');
 $routes->match(['get','post'],'app_invoice_billing/searchTransactionMaster','app_invoice_billing::searchTransactionMaster');

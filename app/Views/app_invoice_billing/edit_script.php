@@ -1621,6 +1621,7 @@
 	
 	
 	function fnImprimir(){
+		debugger;
 		if(varParameterInvoiceBillingPrinterDirect == true)
 		{
 			
