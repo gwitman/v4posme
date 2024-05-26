@@ -40,6 +40,31 @@ class Public_Catalog_Model extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 	
-   
+    function getBySystemNameAndFlavorID($systemName,$flavorID)
+    {
+		$db 		= db_connect();
+		$builder	= $db->table("tb_public_catalog");		
+		$sql 		= 
+			"
+				select 
+					c.publicCatalogID,c.`name`,
+					c.systemName,c.statusID,
+					c.orden,c.description,
+					c.isActive,c.flavorID 
+				from 
+					tb_public_catalog c  
+				where 
+					c.systemName = '".$systemName."' and 
+					c.isActive = 1 and 
+					c.flavorID = '".$flavorID."';
+				
+			";
+			
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+		
+    }
+	
+	
 }
 ?>

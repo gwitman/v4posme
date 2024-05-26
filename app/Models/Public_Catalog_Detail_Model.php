@@ -75,5 +75,38 @@ class Public_Catalog_Detail_Model extends Model
 		
     }
 	
+	function getRowByCatalogIDAndName($publicCatalogID,$name)
+	{
+		$db 		= db_connect();
+		$builder	= $db->table("tb_public_catalog_detail");		
+		$sql 		= 
+		"
+				select 
+					c.publicCatalogDetailID,
+					c.publicCatalogID, 
+					c.name,display,
+					c.flavorID,
+					c.description,
+					c.sequence,
+					c.parentCatalogDetailID,
+					c.ratio,
+					c.reference1,
+					c.reference2,
+					c.reference3,
+					c.reference4,
+					c.parentName,
+					c.isActive
+				from 
+					tb_public_catalog_detail c 
+				where 
+					c.publicCatalogID = ".$publicCatalogID." and 
+					c.isActive = 1 and 
+					c.name = '".$name."'
+			";
+			
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+	}
+	
 }
 ?>

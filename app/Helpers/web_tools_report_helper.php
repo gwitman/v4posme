@@ -180,7 +180,7 @@ function helper_reporteGeneralCreateFirma($firma,$column,$width){
 						  // Crear un enlace <a> para iniciar la descarga
 						  var a = document.createElement("a");
 						  a.href = url;
-						  a.download = "customer_list_real_estate.xls";
+						  a.download = "data_export.xls";
 						  document.body.appendChild(a);
 
 						  // Simular un clic en el enlace para iniciar la descarga

@@ -37,6 +37,7 @@ class app_invoice_billing extends _BaseController {
 			$companyID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"companyID");//--finuri
 			$transactionID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri	
 			$transactionMasterID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri	
+			$codigoMesero			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"codigoMesero");//--finuri	
 			$branchID 				= $dataSession["user"]->branchID;
 			$roleID 				= $dataSession["role"]->roleID;			
 			$userID					= $dataSession["user"]->userID;
@@ -78,6 +79,27 @@ class app_invoice_billing extends _BaseController {
 			
 			if(!$objListPrice)
 			throw new \Exception("NO EXISTE UNA LISTA DE PRECIO PARA SER APLICADA");			
+			
+			
+			$objPublicCatalogId							= 0;
+			$objPubliCatalogMesasConfig 				= $this->Public_Catalog_Model->asObject()
+																	->where("systemName","tb_transaction_master_billing.mesas_x_meseros")
+																	->where("isActive",1)
+																	->where("flavorID",$dataSession["company"]->flavorID)
+																	->find();
+			
+			if($codigoMesero != "none" && !$objPubliCatalogMesasConfig )
+			{
+				throw new \Exception("CONFIGURAR EL CATALOGO DE MESAS tb_transaction_master_billing.mesas_x_meseros");
+			}
+			
+			$objPublicCatalogId							= $codigoMesero == "none" ? 0 : $objPubliCatalogMesasConfig[0]->publicCatalogID;
+			$objPubliCatalogDetailMesasConfiguradas		= $this->Public_Catalog_Detail_Model->asObject()
+																->where("publicCatalogID",$objPublicCatalogId)
+																->where( "isActive",1)	
+																->where( "name",$codigoMesero)
+																->findAll();
+			
 			
 			
 			
@@ -180,7 +202,33 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objCustomerDefault"]		= $this->Customer_Model->get_rowByEntity($companyID,$dataView["objTransactionMaster"]->entityID);
 			$dataView["objListTypePrice"]		= $this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID);
 			$dataView["objListZone"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_info_billing","zoneID",$companyID);
-			$dataView["objListMesa"]						= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_info_billing","mesaID",$companyID);			
+			$dataView["objListMesa"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_info_billing","mesaID",$companyID);			
+			
+			
+			
+			//Filtrar la lista de mesas que el mesero tiene permiso
+			$listMesasByMesero = array_map(function($item) {
+				return $item->display;
+			}, $objPubliCatalogDetailMesasConfiguradas);
+
+			
+			$listMesaFiltradas = array_filter($dataView["objListMesa"] , function($item) use ($listMesasByMesero) {
+				return in_array($item->name, $listMesasByMesero);
+			});
+
+			$dataView["objListMesa"] = $codigoMesero == "none" ? $dataView["objListMesa"]  : $listMesaFiltradas;
+			if(!$dataView["objListMesa"])
+			throw new \Exception("NO ES POSIBLE CONTINUAR CONFIGURAR CATALOGO MESS");
+		
+			$mesaID = $dataView["objTransactionMasterInfo"]->mesaID;
+			
+			$listMesaFiltradas = array_filter($dataView["objListMesa"] , function($item) use ($mesaID) {
+				return $item->catalogItemID == $mesaID;
+			});
+			if(!$listMesaFiltradas)
+			throw new \Exception("NO TIENE ACCESO AL CATALOGO MESS");	
+			
+			
 			$dataView["objListPay"]				= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","periodPay",$companyID);
 			$dataView["listCurrency"]			= $objListCurrency;
 			$dataView["listProvider"]			= $this->Provider_Model->get_rowByCompany($companyID);
@@ -2470,6 +2518,7 @@ class app_invoice_billing extends _BaseController {
 			$roleID 							= $dataSession["role"]->roleID;
 			$userID								= $dataSession["user"]->userID;
 			$transactionMasterIDToPrinter		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterIDToPrinter");//--finuri	
+			$codigoMesero						= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"codigoMesero");//--finuri	
 			
 			
 			//Obtener el componente de Item
@@ -2540,6 +2589,25 @@ class app_invoice_billing extends _BaseController {
 				$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_billing","statusID",$companyID,$branchID,$roleID);
 			}
 			
+			//Obtener Lista de mesas configuradas							
+			$objPublicCatalogId							= 0;
+			$objPubliCatalogMesasConfig 				= $this->Public_Catalog_Model->asObject()
+																	->where("systemName","tb_transaction_master_billing.mesas_x_meseros")
+																	->where("isActive",1)
+																	->where("flavorID",$dataSession["company"]->flavorID)
+																	->find();
+			
+			if($codigoMesero != "none" && !$objPubliCatalogMesasConfig )
+			{
+				throw new \Exception("CONFIGURAR EL CATALOGO DE MESAS tb_transaction_master_billing.mesas_x_meseros");
+			}
+			
+			$objPublicCatalogId							= $codigoMesero == "none" ? 0 : $objPubliCatalogMesasConfig[0]->publicCatalogID;
+			$objPubliCatalogDetailMesasConfiguradas		= $this->Public_Catalog_Detail_Model->asObject()
+																->where("publicCatalogID",$objPublicCatalogId)
+																->where( "isActive",1)	
+																->where( "name",$codigoMesero)
+																->findAll();
 			
 			
 			//Tipo de Factura
@@ -2571,6 +2639,22 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objListTypePrice"]					= $this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID);
 			$dataView["objListZone"]						= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_info_billing","zoneID",$companyID);			
 			$dataView["objListMesa"]						= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_info_billing","mesaID",$companyID);			
+			
+			
+			//Filtrar la lista de mesas que el mesero tiene permiso
+			$listMesasByMesero = array_map(function($item) {
+				return $item->display;
+			}, $objPubliCatalogDetailMesasConfiguradas);
+
+			
+			$listMesaFiltradas = array_filter($dataView["objListMesa"] , function($item) use ($listMesasByMesero) {
+				return in_array($item->name, $listMesasByMesero);
+			});
+
+			$dataView["objListMesa"] = $codigoMesero == "none" ? $dataView["objListMesa"]  : $listMesaFiltradas;
+			if(!$dataView["objListMesa"])
+			throw new \Exception("NO ES POSIBLE CONTINUAR CONFIGURAR CATALOGO MESS");
+			
 			$dataView["objListPay"]							= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","periodPay",$companyID);
 			$dataView["listProvider"]						= $this->Provider_Model->get_rowByCompany($companyID);
 			$dataView["objListaPermisos"]					= $dataSession["menuHiddenPopup"];
@@ -2811,7 +2895,7 @@ class app_invoice_billing extends _BaseController {
 				}
 			} 
 			 
-			 
+			 //Factura prerender en la lista principal
 			$objParameterPantallaParaFacturar		= $this->core_web_parameter->getParameter("INVOICE_PANTALLA_FACTURACION",$this->session->get('user')->companyID);
 			$objParameterPantallaParaFacturar		= $objParameterPantallaParaFacturar->value;
 			$urlPrinterDocument						= $this->core_web_parameter->getParameter("INVOICE_URL_PRINTER",$this->session->get('user')->companyID);
@@ -2844,6 +2928,13 @@ class app_invoice_billing extends _BaseController {
 					$iframePreviewReport = $iframePreviewReport.view('core_view_fragmentos/app_invoice_billing_index_iframe',$value);
 				}
 			}
+			
+			//Variable para validar si es un mesero
+			$esMesero 					= false;
+			$esMesero 					= $this->core_web_permission->urlPermited("es_mesero","index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+			$dataViewJava["esMesero"]	= $dataSession["role"]->isAdmin ? "0" :  $esMesero;
+			
+			
 			
 			//Renderizar Resultado
 			$dataViewJava["objParameterPantallaParaFacturar"]	= $objParameterPantallaParaFacturar;

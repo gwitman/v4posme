@@ -33,7 +33,7 @@
 						<img width="120" height="110" 						
 							style="
 								width: 120px;
-								height: 110px;
+								height: 60px;
 							"
 							
 							src="<?php echo base_url(); ?>/resource/img/logos/logo-micro-finanza.jpg" 
@@ -72,22 +72,20 @@
 		<br/>
 		
 		
-		<table style="
-			width:100%;order-spacing: 10px;
-		" >
+		<table style="width:100%;" id="myReport"  >
 			<thead>
 				<tr style='background-color:#00628e;color:white'>
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Codigo</td>
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Categoria</td>
-					<td style="text-align:left;width:220px;font-weight:bold" class="border">Nombre</td>					
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Cant Ini</td>
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Cost Ini</td>
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Cant Ent</td>
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Cost Ent</td>						
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Cant Sal</td>
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Cost Sal</td>
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Cant Fin</td>
-					<td style="text-align:left;width:100px;font-weight:bold" class="border">Cost Fin</td>						
+					<td style="text-align:left;font-weight:bold" class="border">Codigo</td>
+					<td style="text-align:left;font-weight:bold" class="border">Categoria</td>
+					<td style="text-align:left;font-weight:bold" class="border">Nombre</td>					
+					<td style="text-align:left;font-weight:bold" class="border">Cant Ini</td>
+					<td style="text-align:left;font-weight:bold" class="border">Cost Ini</td>
+					<td style="text-align:left;font-weight:bold" class="border">Cant Ent</td>
+					<td style="text-align:left;font-weight:bold" class="border">Cost Ent</td>						
+					<td style="text-align:left;font-weight:bold" class="border">Cant Sal</td>
+					<td style="text-align:left;font-weight:bold" class="border">Cost Sal</td>
+					<td style="text-align:left;font-weight:bold" class="border">Cant Fin</td>
+					<td style="text-align:left;font-weight:bold" class="border">Cost Fin</td>						
 				</tr>
 			
 			</thead>				
@@ -110,26 +108,6 @@
 					$costosalida	= $costosalida  +  	$i["costOutput"];	
 					$costofinal		= ($costoinicial   +  $costoentrada) - $costosalida;
 					
-					
-					
-					//if($count % $modulo == 0 || $count == 1  )
-					//{
-					//	echo '
-					//	<tr>
-					//		<td style="text-align:left;width:100px;" class="border">Codigo</td>
-					//		<td style="text-align:left;width:100px;" class="border">Nombre</td>
-					//		<td style="text-align:left;width:100px;" class="border">Categoria</td>
-					//		
-					//		<td style="text-align:left;width:100px;" class="border">Cant Ini</td>
-					//		<td style="text-align:left;width:100px;" class="border">Cost Ini</td>
-					//		<td style="text-align:left;width:100px;" class="border">Cant Ent</td>
-					//		<td style="text-align:left;width:100px;" class="border">Cost Ent</td>						
-					//		<td style="text-align:left;width:100px;border-left: 0px;" class="border">Cant Sal</td>
-					//		<td style="text-align:left;width:100px;" class="border">Cost Sal</td>
-					//		<td style="text-align:left;width:100px;" class="border">Cant Fin</td>
-					//		<td style="text-align:left;width:100px;"  class="border">Cost Fin</td>						
-					//	</tr>';					
-					//}
 					
 					echo "<tr>";
 						echo "<td style='text-align:right;border-top: 0px'  class='border'>";
@@ -172,15 +150,7 @@
 				?>
 			</tbody>
 			<tfoot>
-				<!--
-				<tr style="background-color:#00628e;color:white;">					
-					<th style="text-align:left;width:120px;"   colspan="1" class="border">Codigo</th>
-					<th style="text-align:left;"  colspan="8" class="border">Descripcion</th>
-					<th style="text-align:left;width:240px;"  colspan="2" class="border">Categoria</th>
-				<tr>
-				-->
-				
-				
+			
 				<tr>
 					<th style="text-align:left;" class="border">Codigo</th>
 					<th style="text-align:left;" class="border">Categoria</th>
@@ -208,9 +178,115 @@
 				<tr>
 					<th colspan="12" ><?php echo date("Y-m-d H:i:s");  ?> <?php echo $objFirmaEncription; ?> posMe</th>
 				</tr>
+				<tr>
+					<th colspan="'.$column.'" ><a id="btnExportToExcel" href="#" >export to excel</a></th>
+				</tr>
 			</tbody>
 		</table>
 		
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script>
+			$(document).ready(function() {
+				
+				  $(document).on("click","#btnExportToExcel",function(e,o){
+					  
+						  
+						  // Obtener el contenido HTML de la tabla
+						  var tablaHTML = 
+										"<div>"+	
+										document.getElementById("myReport").outerHTML + 
+										"</div>";
+						  var tablaHTML = $(tablaHTML);
+						  
+						  tablaHTML.find("input").remove();						  
+						  tablaHTML 	= $(tablaHTML[0]).html();
+
+						  // Crear un objeto Blob con el contenido HTML
+						  var blob = new Blob([tablaHTML], { type: "application/vnd.ms-excel" });
+
+						  // Crear una URL para el objeto Blob
+						  var url = URL.createObjectURL(blob);
+
+
+						  // Crear un enlace <a> para iniciar la descarga
+						  var a = document.createElement("a");
+						  a.href = url;
+						  a.download = "master_kardex.xls";
+						  document.body.appendChild(a);
+
+						  // Simular un clic en el enlace para iniciar la descarga
+						  a.click();
+
+						  // Limpiar el objeto URL
+						  URL.revokeObjectURL(url);
+						  
+						
+				  });
+				
+				
+
+				  // Arreglo para almacenar los filtros
+				  var filtros = '.$filterColumn.';
+				  
+
+				  // Aplicar el filtro en cada columna al escribir en el input
+				  $("#myReport thead input").on("keyup", function() {
+					var index = $(this).data("index");
+					var value = $(this).val().trim().toLowerCase();
+					filtros[index] = value;
+					filtrarTabla();
+				  });
+				  
+				  
+				  //// Función para filtrar la tabla
+				  function filtrarTabla() {
+					$("#myReport tbody tr").each(function() {
+					  var mostrar = true;
+					  $(this).find("td").each(function(index) {
+						var cellText 	= $(this).text().trim().toLowerCase();
+						var filterValue = filtros[index];
+						
+						if(filterValue)
+						filterValue = filterValue.toLowerCase();
+						
+						
+						if (filterValue) 
+						{
+							  if (filterValue.startsWith(">")) 
+							  {
+								var filterNumber = parseFloat(filterValue.substr(1));
+								var cellNumber = parseFloat(cellText);
+								if (isNaN(filterNumber) || isNaN(cellNumber) || cellNumber <= filterNumber) {
+								  mostrar = false;
+								  return false; // salir del bucle interno
+								}
+							  }
+							  else if (filterValue.startsWith("<")) 
+							  {
+								var filterNumber = parseFloat(filterValue.substr(1));
+								var cellNumber = parseFloat(cellText);
+								if (isNaN(filterNumber) || isNaN(cellNumber) || cellNumber >= filterNumber) {
+								  mostrar = false;
+								  return false; // salir del bucle interno
+								}
+							  } 
+							  //else if (cellText !== filterValue) 
+							  else if (!cellText.includes(filterValue)) 
+							  {
+								mostrar = false;
+								return false; // salir del bucle interno
+							  }
+						}
+						
+					  });
+					  $(this).toggle(mostrar);
+					});
+				  }
+				  
+				  
+			});
+
+		</script>
 		
 		
 	</body>	
