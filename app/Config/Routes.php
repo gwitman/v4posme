@@ -951,6 +951,7 @@ $routes->match(['get','post'],'app_notification/sendEmail','app_notification::se
 $routes->match(['get','post'],'app_notification/fillSendWhatsappCustomer','app_notification::fillSendWhatsappCustomer');
 $routes->match(['get','post'],'app_notification/sendWhatsappPosMeCalendar','app_notification::sendWhatsappPosMeCalendar');
 $routes->match(['get','post'],'app_notification/sendWhatsappPosMeSendMessage','app_notification::sendWhatsappPosMeSendMessage');
+$routes->match(['get','post'],'app_notification/sendWhatsappGlobalProLaptopMenorA14400Frecuency7Meses','app_notification::sendWhatsappGlobalProLaptopMenorA14400Frecuency7Meses');
 $routes->match(['get','post'],'app_notification/fillTipoCambio','app_notification::fillTipoCambio');
 $routes->match(['get','post'],'app_notification/fillInventarioMinimo','app_notification::fillInventarioMinimo');
 $routes->match(['get','post'],'app_notification/fillInventarioFechaVencimiento','app_notification::fillInventarioFechaVencimiento');

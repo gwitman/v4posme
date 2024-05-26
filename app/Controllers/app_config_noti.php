@@ -1,5 +1,9 @@
 <?php
 //posme:2023-02-27
+//Pantalla para hacer el crud de notificaciones
+//Pantalla de administracion de notificaciones
+//Pantalla para el mantenimiento de notificaciones
+
 namespace App\Controllers;
 use App\Libraries\core_web_google;
 

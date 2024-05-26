@@ -348,151 +348,71 @@
 						  tablaHTML.find("input").remove();	
 						  
 						  
-						  //Eliminar columna amueblado
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(4), th:eq(4)").remove();								
-					      });
-						  //Eliminar columna disponible
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(4), th:eq(4)").remove();								
-					      });
-						  //Eliminar ciudad
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(4), th:eq(4)").remove();								
-					      });
-						  //Eliminar ubicacion
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(4), th:eq(4)").remove();								
-					      });
-						  //Eliminar zona
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(4), th:eq(4)").remove();								
-					      });
-						  //Eliminar condominio
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(4), th:eq(4)").remove();								
-					      });
-						  //Eliminar id pagina web
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(6), th:eq(6)").remove();								
-					      });
-						  //Eliminar pagina web
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(6), th:eq(6)").remove();								
-					      });
-						  //Eliminar link de youtube
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(6), th:eq(6)").remove();								
-					      });
-						  //Eliminar precio de renta
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(6), th:eq(6)").remove();								
-					      });
-						  //Eliminar precio de venta
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(6), th:eq(6)").remove();								
-					      });
-						  //Eliminar area de contruccion
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(6), th:eq(6)").remove();								
-					      });
-						  //Eliminar area de terreno
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(6), th:eq(6)").remove();								
-					      });
-						  //Eliminar niveles
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(6), th:eq(6)").remove();								
-					      });
-						  //Eliminar habitacines
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(6), th:eq(6)").remove();								
-					      });
-						  //Eliminar baños
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(6), th:eq(6)").remove();								
-					      });
-						  //Eliminar baños de servicio
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(6), th:eq(6)").remove();								
-					      });
-						  //Eliminar baños de visita 
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(6), th:eq(6)").remove();								
-					      });
-						  //Eliminar cuarto de servicio
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(6), th:eq(6)").remove();								
-					      });
-						  //Eliminar walking 
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(6), th:eq(6)").remove();								
-					      });
-						  //Eliminar aires 
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(6), th:eq(6)").remove();								
-					      });
-						  //Eliminar piscina privada 
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(6), th:eq(6)").remove();								
-					      });
-						  //Eliminar area club  
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(6), th:eq(6)").remove();								
-					      });
-						  //Eliminar hora de visita 
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(6), th:eq(6)").remove();								
-					      });
-						  //Eliminar acepta mascota 
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(6), th:eq(6)").remove();								
-					      });
-						  //Eliminar estilo de cocina 
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(6), th:eq(6)").remove();								
-					      });
-						  //Eliminar corretaje 
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(6), th:eq(6)").remove();								
-					      });
-						  //Eliminar plan referido 
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(6), th:eq(6)").remove();								
-					      });
-						  //Eliminar otros link 
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(8), th:eq(8)").remove();								
-					      });
-						  //Eliminar fotos 
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(8), th:eq(8)").remove();								
-					      });
-						  //Eliminar google  
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(8), th:eq(8)").remove();								
-					      });
-						  //Eliminar exclusividad de agente   
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(8), th:eq(8)").remove();								
-					      });
-						  //Eliminar pais  
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(8), th:eq(8)").remove();								
-					      });
-						  //Eliminar estado 
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(8), th:eq(8)").remove();								
-					      });
-						  //Eliminar moneda 
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(8), th:eq(8)").remove();								
-					      });
-						  //Eliminar moneda 
-						  tablaHTML.find("tr").each(function(){								
-								$(this).find("td:eq(8), th:eq(8)").remove();								
-					      });
-							
+						  var columnasDelete = [
+							"Amueblado",
+							"Amueblado",
+							"Disponible",
+							"Ciudad",
+							"Zona",
+							"Condominio",
+							"Pagina Web",
+							"Link Youtube",
+							"Area de contruccion M2",
+							"Area de terreno V2",
+							"Niveles",
+							"Habitaciones",
+							"Baños",
+							"Baño de servicio",
+							"Baño de visita",
+							"Cuarto de servicio",
+							"Walk in closet",
+							"Aires",
+							"Piscina privada",
+							"Area club con piscina",
+							"Hora de visita",
+							"Acepta mascota",
+							"Diseño de propiedad",
+							"Estilo de cocina",
+							"Corretaje",
+							"Plan de referido",
+							"Otros Link",
+							"Foto",
+							"Google",
+							"Exclusividad de agente",
+							"Pais",
+							"Estado",
+							"Moneda"
+						  ];
+						  
+						  var columnRemove	   = -1;
+						  for(var iel = 0; iel < columnasDelete.length; iel++)
+						  {
+							  columnRemove	   = -1;
+							  var cantidadColumnas = $(tablaHTML.find("tr")[0]).find("th").length;
+							  for(var colI = 0 ; colI < cantidadColumnas; colI++ )
+							  {
+								  columnRemove	   = -1;  
+								  tablaHTML.find("tr").each(function()
+								  {
+									  
+									  if(columnRemove == -1)
+									  {
+										  if(columnasDelete.includes( $(this).find("th:eq("+colI+")").text()))
+										  {
+											  columnRemove = colI;
+										  }
+									  }
+								  
+									  if(columnRemove > -1)
+									  {
+										$(this).find("td:eq("+columnRemove+"), th:eq("+columnRemove+")").remove();
+									  }
+								  });
+							  }
+							  
+						  }
+						  
+						  
 							
 						  
 						  tablaHTML 	= $(tablaHTML[0]).html();

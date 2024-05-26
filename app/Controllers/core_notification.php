@@ -1,5 +1,7 @@
 <?php
 //posme:2023-02-27
+//Pantalla para ver el listado de notificaciones
+//Pantalla para ver el listado de notificaiones en sistema
 namespace App\Controllers;
 class core_notification extends _BaseController {
 	

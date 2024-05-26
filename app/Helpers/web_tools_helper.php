@@ -630,3 +630,14 @@ function clearNumero($numero)
     
     return $numeroLimpio;
 }
+
+function replaceSimbol($string)
+{
+	$string = str_replace("[simbol-carita-feliz]", "😊", $string);
+	$string = str_replace("[simbol-cono]", "🎉", $string);
+	$string = str_replace("[simbol-carita-estrellada]", "🤩", $string);
+	$string = str_replace("[simbol-pastel]", "🎂", $string);
+	$string = str_replace("[simbol-enter]", "\\n", $string);
+	
+	return $string;
+}

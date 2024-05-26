@@ -431,6 +431,68 @@ class Transaction_Master_Detail_Model extends Model  {
 			
    }
    
+   function GlobalPro_get_Notification_LaptopMenorA14400_7Meses()
+   {
+	   $db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+	   		
+		$sql = "";
+		$sql = "select   
+				
+				tx.phoneNumber as Destino,
+				
+				CONCAT(
+				tx.transactionNumber,
+				'-',
+				tx.transactionMasterDetailID,
+				'-sendWhatsappGlobalProLaptopMenorA14400Frecuency7Meses'
+				) as CodigoMensaje,
+
+			
+				CONCAT(
+				'¡Hola ', tx.firstName  ,' [simbol-cono] [simbol-enter][simbol-enter] !Esperamos que hayas disfrutado de tu laptop! [simbol-carita-estrellada]   Queremos recordarte que la garantía de 7 meses está por terminar, es por eso que te ofrecemos un 50% de DESCUENTO en mantenimiento. Para que tu equipo siga funcionando de maravilla,  ¡Aprovecha esta oferta y asegura un rendimiento óptimo!  Saludos,SERVICIO TECNICO GLOBAL PRO!'
+				) as Mensaje 
+
+			from 
+					(
+						select 
+							tmd.transactionMasterDetailID,
+							tm.transactionNumber,
+							nat.firstName,
+							REPLACE(cus.identification, '[^a-zA-Z0-9]', '') as identification,
+							REPLACE(cus.phoneNumber, '[^a-zA-Z0-9]', '') as phoneNumber,
+							tm.createdOn,
+							tmd.itemNameLog 
+						from 
+							tb_transaction_master tm 
+							inner join tb_transaction_master_detail tmd on 
+								tm.transactionMasterID = tmd.transactionMasterID 
+							inner join tb_item i on 
+								tmd.componentItemID = i.itemID 
+							inner join tb_item_category cat on 
+								i.inventoryCategoryID = cat.inventoryCategoryID 
+							inner join tb_naturales nat on 
+								nat.entityID = tm.entityID 
+							inner join tb_customer cus on 
+								nat.entityID = cus.entityID 
+						where 
+							tm.transactionID = 19 and 
+							tm.isActive = 1 and 
+							tmd.isActive = 1 and 
+							cat.`name` = 'Laptops' and 
+							tmd.unitaryAmount <= 14400  and 
+							LENGTH(REPLACE(cus.identification, '[^a-zA-Z0-9]', '')) = 14 and 
+							LENGTH(REPLACE(cus.phoneNumber, '[^a-zA-Z0-9]', '')) = 8 and 
+							tm.createdOn <= DATE_SUB(CURDATE(), INTERVAL 210 DAY) and 
+							tm.createdOn >= DATE_SUB(CURDATE(), INTERVAL 209 DAY) 
+							
+					) tx
+			";
+	
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+   
    function RealState_get_ClienteFuenteDeContacto($companyID,$dateFirst,$dateLast)
    {
 	   

@@ -116,6 +116,7 @@ class app_notification extends _BaseController {
 		
 	}
 	
+	
 	function fillSendWhatsappCustomer()
 	{
 			
@@ -797,84 +798,7 @@ class app_notification extends _BaseController {
 		echo "SUCCESS";
 	}
 	
-	function sendWhatsappPosMeSendMessage()
-	{
-		//Cargar Libreria
-		
-		//Obtener lista de email
-		$objListNotification = $this->Notification_Model->get_rowsWhatsappPosMeSendMessage(20);
-		if($objListNotification)
-		foreach($objListNotification as $i)
-		{
-			
-			
-			/////////////////////////////////////////////
-			/////////////////////////////////////////////
-			/////////////////////////////////////////////
-			//Enviar Whatsapp
-			/////////////////////////////////////////////
-			/////////////////////////////////////////////
-			/////////////////////////////////////////////
-			if($this->core_web_whatsap->validSendMessage(APP_COMPANY))
-			{
-				$this->core_web_whatsap->sendMessageUltramsg(
-					APP_COMPANY, 
-					"Hola ".$i->to." ".$i->message,
-					$i->phoneTo
-				);
-				
-				
-				$data["sendOn"]			= date_format(date_create(),"Y-m-d H:i:s");
-				$data["sendWhatsappOn"]	= date_format(date_create(),"Y-m-d H:i:s");
-				$this->Notification_Model->update_app_posme($i->notificationID,$data);
-				
-			}
-				
-				
-				
-		}
-		
-		echo "SUCCESS";
-		
-	}
 	
-	function sendWhatsappPosMeCalendar(){
-		//Cargar Libreria
-		
-		//Obtener lista de email
-		$objListNotification = $this->Notification_Model->get_rowsWhatsappPosMeCalendar(20);
-		if($objListNotification)
-		foreach($objListNotification as $i){
-			
-			
-			/////////////////////////////////////////////
-			/////////////////////////////////////////////
-			/////////////////////////////////////////////
-			//Enviar Whatsapp
-			/////////////////////////////////////////////
-			/////////////////////////////////////////////
-			/////////////////////////////////////////////
-			if($this->core_web_whatsap->validSendMessage(APP_COMPANY))
-			{
-				$this->core_web_whatsap->sendMessageUltramsg(
-					APP_COMPANY, 
-					"Hola mi nombre es:".$i->title." agende una cita con el objetivo ".$i->message." (".$i->phoneFrom." ".$i->from.")" 
-				);
-				
-				
-				$data["sendOn"]			= date_format(date_create(),"Y-m-d H:i:s");
-				$data["sendWhatsappOn"]	= date_format(date_create(),"Y-m-d H:i:s");
-				$this->Notification_Model->update_app_posme($i->notificationID,$data);
-				
-			}
-				
-				
-				
-		}
-		
-		echo "SUCCESS";
-		
-	}
 	
 	//mandar reporte de caja
 	function file_job_send_report_daly_reprote_de_caja($companyID="")
@@ -1934,6 +1858,107 @@ class app_notification extends _BaseController {
 		
 	}
 	
+	
+	
+	
+	function sendWhatsappPosMeSendMessage()
+	{
+		//Cargar Libreria
+		
+		//Obtener lista de email
+		$objListNotification = $this->Notification_Model->get_rowsWhatsappPosMeSendMessage(20);
+		if($objListNotification)
+		foreach($objListNotification as $i)
+		{
+			
+			
+			/////////////////////////////////////////////
+			/////////////////////////////////////////////
+			/////////////////////////////////////////////
+			//Enviar Whatsapp
+			/////////////////////////////////////////////
+			/////////////////////////////////////////////
+			/////////////////////////////////////////////
+			if($this->core_web_whatsap->validSendMessage(APP_COMPANY))
+			{
+				$this->core_web_whatsap->sendMessageUltramsg(
+					APP_COMPANY, 
+					"Hola ".$i->to." ".$i->message,
+					$i->phoneTo
+				);
+				
+				
+				$data["sendOn"]			= date_format(date_create(),"Y-m-d H:i:s");
+				$data["sendWhatsappOn"]	= date_format(date_create(),"Y-m-d H:i:s");
+				$this->Notification_Model->update_app_posme($i->notificationID,$data);
+				
+			}
+				
+				
+				
+		}
+		
+		echo "SUCCESS";
+		
+	}
+	
+	function sendWhatsappPosMeCalendar(){
+		//Cargar Libreria
+		
+		//Obtener lista de email
+		$objListNotification = $this->Notification_Model->get_rowsWhatsappPosMeCalendar(20);
+		if($objListNotification)
+		foreach($objListNotification as $i){
+			
+			
+			/////////////////////////////////////////////
+			/////////////////////////////////////////////
+			/////////////////////////////////////////////
+			//Enviar Whatsapp
+			/////////////////////////////////////////////
+			/////////////////////////////////////////////
+			/////////////////////////////////////////////
+			if($this->core_web_whatsap->validSendMessage(APP_COMPANY))
+			{
+				$this->core_web_whatsap->sendMessageUltramsg(
+					APP_COMPANY, 
+					"Hola mi nombre es:".$i->title." agende una cita con el objetivo ".$i->message." (".$i->phoneFrom." ".$i->from.")" 
+				);
+				
+				
+				$data["sendOn"]			= date_format(date_create(),"Y-m-d H:i:s");
+				$data["sendWhatsappOn"]	= date_format(date_create(),"Y-m-d H:i:s");
+				$this->Notification_Model->update_app_posme($i->notificationID,$data);
+				
+			}
+				
+				
+				
+		}
+		
+		echo "SUCCESS";
+		
+	}
+	
+	
+	function sendWhatsappGlobalProLaptopMenorA14400Frecuency7Meses()
+	{
+		
+		$objNotificar = $this->Transaction_Master_Detail_Model->GlobalPro_get_Notification_LaptopMenorA14400_7Meses();		
+		if($objNotificar)
+		foreach($objNotificar as $i)
+		{	
+			echo clearNumero($i->Destino)."---".$i->Mensaje."</br></br>";
+			$this->core_web_whatsap->sendMessageByWaapi(
+				APP_COMPANY, 
+				replaceSimbol($i->Mensaje),
+				clearNumero($i->Destino) 
+			);
+				
+		}
+		
+		echo "SUCCESS";
+	}
 	
 	
 	
