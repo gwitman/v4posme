@@ -528,7 +528,24 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('veterinaria_bendicion_app_inventory_item_Marca')											=> "Vencimiento",
 		strtolower('veterinaria_bendicion_app_inventory_item_fieldInmobiliaria')								=> "hidden",
 		strtolower('veterinaria_bendicion_app_inventory_item_fieldEquiposModelo')								=> "hidden",
-		strtolower('veterinaria_bendicion_app_inventory_item_fieldEquiposSerie')								=> "hidden",
+		strtolower('veterinaria_bendicion_app_inventory_item_fieldEquiposSerie')								=> "hidden",		
+		strtolower('veterinaria_bendicion_app_inventory_item_divTraslate') 										=> "
+		<script>
+			$(document).ready(function(){				 
+				$('#txtReference1').parent().parent().appendTo('#divTraslateElemento2');  
+			});
+		</script>",	
+		strtolower('veterinaria_bendicion_app_inventory_item_scriptValidate') 									=> "		
+		//Validar fecha de vencimiento
+		var regexOnlyNumber =  /^\d{4}-\d{2}-\d{2}$/;
+		if (!regexOnlyNumber.test($('#txtReference1').val())) 
+		{
+			fnShowNotification('Fecha de vencimiento debe tener el formato YYYY-MM-DD','error',timerNotification);
+			result = false;
+		}
+		
+		",	
+		
 	);
 	
 	

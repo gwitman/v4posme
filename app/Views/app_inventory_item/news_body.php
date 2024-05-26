@@ -91,6 +91,9 @@
 										</div>
 								</div>
 								
+								<div id="divTraslateElemento2">
+								</div>
+								
 								
 								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtPerecedero",""); ?>">
 										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Perecedero",""); ?></label>

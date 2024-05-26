@@ -1736,6 +1736,11 @@ class app_invoice_billing extends _BaseController {
 				//Crear Conceptos.
 				$this->core_web_concept->billing($companyID,$transactionID,$transactionMasterID);
 				
+				
+				//Actualizar el numero de factura
+				$objTMNew003["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_billing",0);
+				$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMNew003);
+				
 			}
 			
 			
