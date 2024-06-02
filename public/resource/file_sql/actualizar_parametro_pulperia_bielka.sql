@@ -1247,7 +1247,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Pulperia Bielka' , address = 'Alcaldia 1C.E y 1/2C.Sur.' ,
+	NAME = 'Distribuidora Dios Proveerá' , address = 'Alcaldia 1C.E y 1/2C.Sur.' ,
 	flavorID = 466,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

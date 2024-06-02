@@ -331,7 +331,7 @@
 		if(e.key === "k" && e.ctrlKey) { 		
 			e.preventDefault();
 			e.stopPropagation();			
-			window.location = "<?php echo base_url(); ?>/app_invoice_billing/add";			 
+			window.location = "<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>";			 
 		}	
 		//Abrir Caja
 		if(e.key === "i" && e.ctrlKey) 
@@ -600,7 +600,7 @@
 						fnShowNotification(data.message,"error");
 					}
 					else{
-						window.location = "<?php echo base_url(); ?>/app_invoice_billing/add";
+						window.location = "<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>";
 					}
 				},
 				error:function(xhr,data){	
@@ -723,9 +723,9 @@
 			return;
 		
 		if(objParameterPantallaParaFacturar == "-")	
-			window.location	= "<?php echo base_url(); ?>/app_invoice_billing/edit/companyID/"+objResponse[0]+"/transactionID/"+objResponse[1]+"/transactionMasterID/"+objResponse[2];
+			window.location	= "<?php echo base_url(); ?>/app_invoice_billing/edit/companyID/"+objResponse[0]+"/transactionID/"+objResponse[1]+"/transactionMasterID/"+objResponse[2]+"/codigoMesero/"+$("#txtCodigoMesero").val();
 		else
-			window.location	= "<?php echo base_url(); ?>/app_invoice_billing/"+objParameterPantallaParaFacturar+"/companyID/"+objResponse[0]+"/transactionID/"+objResponse[1]+"/transactionMasterID/"+objResponse[2];					
+			window.location	= "<?php echo base_url(); ?>/app_invoice_billing/"+objParameterPantallaParaFacturar+"/companyID/"+objResponse[0]+"/transactionID/"+objResponse[1]+"/transactionMasterID/"+objResponse[2]+"/codigoMesero/"+$("#txtCodigoMesero").val();
 			
 			
 	}
@@ -1621,7 +1621,7 @@
 	
 	
 	function fnImprimir(){
-		debugger;
+		
 		if(varParameterInvoiceBillingPrinterDirect == true)
 		{
 			
@@ -2431,7 +2431,7 @@
 							window.location	= "<?php echo base_url(); ?>/app_invoice_billing/index";
 						  }
 						  if(varParameterRegresarAListaDespuesDeGuardar != "true"){
-							window.location	= "<?php echo base_url(); ?>/app_invoice_billing/add";
+							window.location	= "<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>";
 						  }
 						  
 						  fnWaitClose();

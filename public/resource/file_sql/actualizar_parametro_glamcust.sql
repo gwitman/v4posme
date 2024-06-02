@@ -1281,8 +1281,8 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Glam Cust' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 0,type='default'
+	NAME = 'Glam Cuts' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
+	flavorID = 493,type='galmcuts'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

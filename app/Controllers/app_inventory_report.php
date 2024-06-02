@@ -797,9 +797,13 @@ class app_inventory_report extends _BaseController {
 										,x.`Condominio`
 										,x.`Ubicacion`
 										,x.`Exclusividad de agente`
+										
+										/*
 										,x.`Pais`
 										,x.`Estado`
 										,x.`Ciudad`
+										*/
+										 
 									from 
 										vw_inventory_list_item_real_estate x 
 									where 

@@ -296,7 +296,14 @@ class Transaction_Master_Detail_Model extends Model  {
 		$sql = sprintf("
 			 select	
 				ifnull(nat.firstName,'ND') as firtsName,
-				sum(td.unitaryPrice * td.quantity	) as monto 
+				sum(
+					case 
+						when t.transactionID = 19 then 
+							td.unitaryPrice * td.quantity	
+						else 
+							td.unitaryPrice * td.quantity	 * -1
+					end 
+				) as monto 
 			from 
 				tb_transaction_master t 
 				inner join tb_workflow_stage ws on 
@@ -308,7 +315,7 @@ class Transaction_Master_Detail_Model extends Model  {
 				inner join tb_item i on 
 					i.itemID = td.componentItemID
 			where 
-				t.transactionID in (19) and   
+				t.transactionID in (19,20) and   
 				t.isActive = 1  and 
 				ws.aplicable = 1  and 
 				t.companyID = 2  and 
@@ -336,7 +343,14 @@ class Transaction_Master_Detail_Model extends Model  {
 		$sql = sprintf("
 			 select	
 				REPLACE(ifnull(i.name,'ND'),'Reparacion de Laptop','') as firtsName,
-				sum(td.unitaryPrice * td.quantity	) as monto 
+				sum(
+					case 
+						when t.transactionID = 19 then 
+							td.unitaryPrice * td.quantity	
+						else
+							td.unitaryPrice * td.quantity * -1 
+					end 
+				) as monto 
 			from 
 				tb_transaction_master t 
 				inner join tb_workflow_stage ws on 
@@ -348,7 +362,7 @@ class Transaction_Master_Detail_Model extends Model  {
 				inner join tb_item i on 
 					i.itemID = td.componentItemID
 			where 
-				t.transactionID in (19) and   
+				t.transactionID in (19,20) and   
 				t.isActive = 1  and 
 				ws.aplicable = 1  and 
 				t.companyID = 2  and 
@@ -375,7 +389,14 @@ class Transaction_Master_Detail_Model extends Model  {
 		$sql = sprintf("
 		 select	
 				month(t.transactionOn) as firtsName,
-				sum(t.subAmount) as monto 
+				sum(
+					case 
+						when t.transactionID = 19 then 
+							t.amount
+						else 
+							(t.amount * -1)
+					end 
+				) as monto 
 			from 
 				tb_transaction_master t 
 				inner join tb_workflow_stage ws on 
@@ -383,7 +404,7 @@ class Transaction_Master_Detail_Model extends Model  {
 				left join tb_naturales nat on 
 					nat.entityID = t.entityIDSecondary 
 			where 
-				t.transactionID in (19) and   
+				t.transactionID in (19,20) and   
 				t.isActive = 1  and 
 				ws.aplicable = 1  and 
 				t.companyID = 2  and 
@@ -408,7 +429,14 @@ class Transaction_Master_Detail_Model extends Model  {
 		$sql = sprintf("
 			 select	
 				day(t.transactionOn) as firtsName,
-				sum(t.subAmount	) as monto 
+				sum(
+					case
+						when t.transactionID = 19 then 
+							t.amount 
+						else 
+							(t.amount * -1)
+					end
+				) as monto 
 			from 
 				tb_transaction_master t 
 				inner join tb_workflow_stage ws on 
@@ -416,7 +444,7 @@ class Transaction_Master_Detail_Model extends Model  {
 				left join tb_naturales nat on 
 					nat.entityID = t.entityIDSecondary 
 			where 
-				t.transactionID in (19) and   
+				t.transactionID in (19,20) and   
 				t.isActive = 1  and 
 				ws.aplicable = 1  and 
 				t.companyID = 2  and 

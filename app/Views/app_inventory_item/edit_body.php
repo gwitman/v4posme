@@ -529,7 +529,7 @@
 								</div>
 								
 								
-								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliariaPais","hidden"); ?>">
 									<label class="col-lg-4 control-label text-primary" for="selectFilter">*Pais</label>
 									<div class="col-lg-8">
 										<select name="txtCountryID" id="txtCountryID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"   >
@@ -547,7 +547,7 @@
 										</select>
 									</div>
 								</div>
-								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliariaDepartamento","hidden"); ?>">
 									<label class="col-lg-4 control-label text-primary" for="selectFilter">*Departamento</label>
 									<div class="col-lg-8">
 										<select name="txtStateID" id="txtStateID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"   >
@@ -565,7 +565,7 @@
 										</select>
 									</div>
 								</div>
-								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?>">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliariaMunicipio","hidden"); ?>">
 									<label class="col-lg-4 control-label text-primary" for="selectFilter">*Municipio</label>
 									<div class="col-lg-8">
 										<select name="txtCityID" id="txtCityID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"   >

@@ -90,11 +90,13 @@
 		$configColumn["5"]["Width"] = "80px";
 		$configColumn["5"]["Total"] = false;		
 		
+		/*
 		$configColumn["6"]["Titulo"] = "Ciudad";
 		$configColumn["6"]["FiledSouce"] = "Ciudad";
 		$configColumn["6"]["Formato"] = "";
 		$configColumn["6"]["Width"] = "80px";
 		$configColumn["6"]["Total"] = false;		
+		*/
 		
 		$configColumn["7"]["Titulo"] = "Ubicacion";
 		$configColumn["7"]["FiledSouce"] = "Ubicacion";
@@ -294,18 +296,21 @@
 		$configColumn["39"]["Width"] = "80px";
 		$configColumn["39"]["Total"] = false;
 		
+		/*
 		$configColumn["40"]["Titulo"] = "Pais";
 		$configColumn["40"]["FiledSouce"] = "Pais";
 		$configColumn["40"]["Formato"] = "";
 		$configColumn["40"]["Width"] = "80px";
 		$configColumn["40"]["Total"] = false;
+		*/
 		
+		/*
 		$configColumn["41"]["Titulo"] = "Estado";
 		$configColumn["41"]["FiledSouce"] = "Estado";
 		$configColumn["41"]["Formato"] = "";
 		$configColumn["41"]["Width"] = "80px";
 		$configColumn["41"]["Total"] = false;
-		
+		*/
 		
 		
 		$configColumn["43"]["Titulo"] = "Moneda";

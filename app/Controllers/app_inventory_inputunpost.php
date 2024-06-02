@@ -1133,7 +1133,8 @@ class app_inventory_inputunpost extends _BaseController {
 						$objItem		= $this->Item_Model->get_rowByCode($companyID,$codigo);	
 						
 						if(!$objItem) {
-						$objItem		= $this->Item_Model->get_rowByCodeBarra($companyID,$codigo);		
+							$objItem		= $this->Item_Model->get_rowByCodeBarra($companyID,$codigo);		
+							
 						}				
 						
 						
@@ -1198,13 +1199,22 @@ class app_inventory_inputunpost extends _BaseController {
 							
 							
 							$response  	= $clientCreateItem->request('POST',$urlCreateItemRequest,['form_params' => $form_data]);								
-							$response  	= explode("/",$response->getHeaderLine("Location"));
-							$response  	= $response[11];								
-							$objItem	= $this->Item_Model->get_rowByPK($companyID,$response);								
-							//throw new \Exception("El siguiente producto no existe en inventario: ". $codigo);
+							$response  	= explode("/",$response->getHeaderLine("Location"));							
+							$response  	= $response[11];		
+							
+							
+							$objItem	= $this->Item_Model->get_rowByPK($companyID,$response);
+							if(!$objItem)
+							{
+								//throw new \Exception("El siguiente producto no existe en inventario: ". $codigo);							
+								echo "El siguiente producto no existe en inventario: ". $codigo."</br>";
+							}
 							
 						}
 							
+						
+						if(!$objItem)
+							continue;
 						
 						$transactionMasterDetailID				= 0;					
 						$itemID 								= $objItem->itemID;

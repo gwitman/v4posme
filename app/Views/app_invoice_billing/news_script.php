@@ -179,10 +179,40 @@
 		if(e.key === "k" && e.ctrlKey) { 		
 			e.preventDefault();
 			e.stopPropagation();			
-			window.location = "<?php echo base_url(); ?>/app_invoice_billing/add";			 
+			window.location = "<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>";			 
 		}
 		
-		
+		//Imprimir Factura Anterior
+		if(e.key === "m" && e.ctrlKey && varParameterInvoiceBillingPrinterDataLocal != "" )
+		{
+			
+			e.preventDefault();
+			e.stopPropagation();			
+			
+			var url="<?php echo base_url(); ?>/"+varParameterInvoiceBillingPrinterDirectUrl;
+			url = url+
+			"/companyID/"+"<?php echo $dataPrinterLocalCompanyID; ?>" + 
+			"/transactionID/"+"<?php echo $dataPrinterLocalTransactionID; ?>"+
+			"/transactionMasterID/"+"<?php echo $dataPrinterLocalTransactionMasterID; ?>";
+			
+			$.ajax({									
+				cache       : false,
+				dataType    : 'json',
+				type        : 'POST',
+				data		: { "fromServer" : varParameterInvoiceBillingPrinterDataLocal },
+				url  		: url,
+				success		: function(){
+									
+				},
+				error:function(xhr,data){
+					console.info("complete data error");									
+					console.info(data);
+					console.info(xhr);
+				}
+			});	
+			
+			
+		}
 		
 		
 		
@@ -604,9 +634,9 @@
 			return;
 		
 		if(objParameterPantallaParaFacturar == "-")	
-			window.location	= "<?php echo base_url(); ?>/app_invoice_billing/edit/companyID/"+objResponse[0]+"/transactionID/"+objResponse[1]+"/transactionMasterID/"+objResponse[2];
+			window.location	= "<?php echo base_url(); ?>/app_invoice_billing/edit/companyID/"+objResponse[0]+"/transactionID/"+objResponse[1]+"/transactionMasterID/"+objResponse[2]+"/codigoMesero/"+$("#txtCodigoMesero").val();
 		else
-			window.location	= "<?php echo base_url(); ?>/app_invoice_billing/"+objParameterPantallaParaFacturar+"/companyID/"+objResponse[0]+"/transactionID/"+objResponse[1]+"/transactionMasterID/"+objResponse[2];					
+			window.location	= "<?php echo base_url(); ?>/app_invoice_billing/"+objParameterPantallaParaFacturar+"/companyID/"+objResponse[0]+"/transactionID/"+objResponse[1]+"/transactionMasterID/"+objResponse[2]+"/codigoMesero/"+$("#txtCodigoMesero").val();
 			
 				
 	}
@@ -2065,7 +2095,7 @@
 							window.location	= "<?php echo base_url(); ?>/app_invoice_billing/index";
 						  }
 						  if(varParameterRegresarAListaDespuesDeGuardar != "true"){
-							window.location	= "<?php echo base_url(); ?>/app_invoice_billing/add";
+							window.location	= "<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>";
 						  }
 						  
 						  fnWaitClose();
@@ -2351,7 +2381,11 @@
 			
 			
 			//Mandar a imprimr la factura
-			if(varParameterInvoiceBillingPrinterDirect == true && varParameterInvoiceBillingPrinterDataLocal != "" )
+			if(
+				varParameterInvoiceBillingPrinterDirect == true && 
+				varParameterImprimirPorCadaFactura == "true" && 
+				varParameterInvoiceBillingPrinterDataLocal != "" 
+			)
 			{
 				
 				var url="<?php echo base_url(); ?>/"+varParameterInvoiceBillingPrinterDirectUrl;

@@ -72,7 +72,7 @@
 								<input type="hidden" name="txtCompanyID" value="<?php echo $objTransactionMaster->companyID; ?>">
 								<input type="hidden" name="txtTransactionID" value="<?php echo $objTransactionMaster->transactionID; ?>">
 								<input type="hidden" name="txtTransactionMasterID" value="<?php echo $objTransactionMaster->transactionMasterID; ?>">
-								
+								<input type="hidden" id="txtCodigoMesero" name="txtCodigoMesero" value="<?php echo $codigoMesero;  ?>">
 								
 								<div class="form-group">
 									<label class="col-lg-4 control-label" for="datepicker">Fecha</label>
@@ -291,7 +291,7 @@
 								</div>		
 								
 								<div class="form-group" id="divVendedor" >
-										<label class="col-lg-4 control-label" for="selectFilter">Vendedor</label>
+										<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionVendedor","Vendedor"); ?></label>
 										<div class="col-lg-8">
 											<select name="txtEmployeeID" id="txtEmployeeID" class="select2">
 													<option></option>																
@@ -321,8 +321,8 @@
 								
 								
 								
-								<div class="form-group" id="divMesa" >
-									<label class="col-lg-4 control-label" for="selectFilter">Mesa</label>
+								<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divMesa",""); ?> " id="divMesa" >
+									<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionMesa","Mesa"); ?></label>
 									<div class="col-lg-8">
 										<select name="txtMesaID" id="txtMesaID" class="select2">
 												<option></option>																
@@ -594,7 +594,7 @@
 					<br/>
 					<div class="row">
 						<div class="col col-lg-2">
-							<a href="<?php echo base_url(); ?>/app_invoice_billing/add" class="btn btn-flat btn-info btn-block hidden btn-comando-factura" id="btnNew"><i class="icon16 i-checkmark-4"></i> NUEVA FAC</a>
+							<a href="<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>" class="btn btn-flat btn-info btn-block hidden btn-comando-factura" id="btnNew"><i class="icon16 i-checkmark-4"></i> NUEVA FAC</a>
 						</div>
 						<div class="col col-lg-2">
 							<a href="#" class="btn btn-flat btn-danger btn-block hidden btn-comando-factura" id="btnDelete"><i class="icon16 i-remove "></i> ELIMINAR FAC</a>	
@@ -678,7 +678,7 @@
 									<button type="button" class="btn btn-flat btn-danger dropdown-toggle  btn-block" data-toggle="dropdown"><i class="icon32 i-print"></i> FAC <span class="caret"></span></button>
 									<ul class="dropdown-menu">											
 											<li><a href="<?php echo base_url(); ?>/app_invoice_billing/index" id="btnBack" >REGRESAR</a></li>
-											<li><a href="<?php echo base_url(); ?>/app_invoice_billing/add" id="btnNew">NUEVA FAC</a></li>
+											<li><a href="<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>" id="btnNew">NUEVA FAC</a></li>
 											<li><a href="#" id="btnDelete">ELIMINAR FAC</a></li>		
 											<li><a href="#" id="btnPrinter">IMPRIMIR</a></li>	
 											<li><a href="#" id="btnSelectInvoice"  > SELECCIONAR</a></li>											

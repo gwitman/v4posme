@@ -157,6 +157,7 @@ class Item_Model extends Model  {
 		$sql = $sql.sprintf(" and i.itemID = $itemID");
 		$sql = $sql.sprintf(" and i.isActive= 1");		
 		
+		
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
    }

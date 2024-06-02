@@ -102,7 +102,7 @@ class app_invoice_billing extends _BaseController {
 			
 			
 			
-			
+			$dataView["codigoMesero"]					= $codigoMesero;
 			$objParameterInvoiceTypeEmployer			= $this->core_web_parameter->getParameter("INVOICE_TYPE_EMPLOYEER",$companyID);
 			$objParameterInvoiceTypeEmployer			= $objParameterInvoiceTypeEmployer->value;
 			
@@ -110,8 +110,10 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objParameterInvoiceButtomPrinterFidLocalPaymentAndAmortization"] = $parameterValue->value;
 			
 			
+			$objParameterDirect 									= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_PRINTER_DIRECT",$companyID);
 			$objParameterInvoiceBillingQuantityZero					= $this->core_web_parameter->getParameter("INVOICE_BILLING_QUANTITY_ZERO",$companyID);
 			$dataView["objParameterInvoiceBillingQuantityZero"]		= $objParameterInvoiceBillingQuantityZero->value;
+			
 			$objParameterInvoiceBillingPrinterDirect				= $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT",$companyID);
 			$dataView["objParameterInvoiceBillingPrinterDirect"]	= $objParameterInvoiceBillingPrinterDirect->value;
 			$objParameterInvoiceBillingPrinterDirectUrl					= $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_URL",$companyID);
@@ -285,9 +287,8 @@ class app_invoice_billing extends _BaseController {
 			
 			
 			//Datos para imprimir la factura
-			//------------------------------------------			
-			$objParameterDirectFormServer = $this->core_web_parameter->getParameterValue("INVOICE_BILLING_PRINTER_DIRECT",$companyID);
-			if($objParameterDirectFormServer  == "true")
+			//------------------------------------------						
+			if($objParameterDirect  == "true")
 			{
 				$dataPostPrinter["objTransactionMaster"]					= $dataView["objTransactionMaster"];
 				$dataPostPrinter["objTransactionMasterInfo"]				= $dataView["objTransactionMasterInfo"];
@@ -785,6 +786,7 @@ class app_invoice_billing extends _BaseController {
 			$objParameterRegrearANuevo					= $objParameterRegrearANuevo->value;
 			
 			//Actualizar Maestro
+			$codigoMesero								= /*inicio get post*/ $this->request->getPost("txtCodigoMesero");
 			$typePriceID 								= /*inicio get post*/ $this->request->getPost("txtTypePriceID");
 			$objListPrice 								= $this->List_Price_Model->getListPriceToApply($companyID);
 			$objTMNew["transactionCausalID"] 			= /*inicio get post*/ $this->request->getPost("txtCausalID");
@@ -1393,15 +1395,15 @@ class app_invoice_billing extends _BaseController {
 			
 				$this->core_web_notification->set_message(false,SUCCESS);				
 				if($objParameterRegrearANuevo == "true")
-					$this->response->redirect(base_url()."/".'app_invoice_billing/add');	
+					$this->response->redirect(base_url()."/".'app_invoice_billing/add/transactionMasterIDToPrinter/'.$transactionMasterID."/codigoMesero/".$codigoMesero);	
 				else
-					$this->response->redirect(base_url()."/".'app_invoice_billing/edit/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID);
+					$this->response->redirect(base_url()."/".'app_invoice_billing/edit/transactionMasterIDToPrinter/'.$transactionMasterID.'/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID."/codigoMesero/".$codigoMesero);
 			
 			}
 			else{
 				$db->transRollback();						
 				$this->core_web_notification->set_message(true,$this->db->_error_message());
-				$this->response->redirect(base_url()."/".'app_invoice_billing/add');	
+				$this->response->redirect(base_url()."/".'app_invoice_billing/add/transactionMasterIDToPrinter/0'."/codigoMesero/".$codigoMesero);	
 			}
 			
 		}
@@ -1527,7 +1529,7 @@ class app_invoice_billing extends _BaseController {
 			}
 			
 			
-			
+			$codigoMesero							= /*inicio get post*/ $this->request->getPost("txtCodigoMesero");
 			$objTM["companyID"] 					= $dataSession["user"]->companyID;
 			$objTM["transactionID"] 				= $transactionID;			
 			$objTM["branchID"]						= $dataSession["user"]->branchID;			
@@ -1794,52 +1796,49 @@ class app_invoice_billing extends _BaseController {
 			
 			
 			//No auto aplicar
-			$transactionMasterIDToPrinter = 0;
 			if( $db->transStatus() !== false && $objParameterInvoiceAutoApply == "false"  )
 			{
 				$db->transCommit();
 				$this->core_web_notification->set_message(false,SUCCESS);				
-				$this->response->redirect(base_url()."/".'app_invoice_billing/edit/companyID/'.$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID);
+				$this->response->redirect(base_url()."/".'app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/'.$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID."/codigoMesero/".$codigoMesero);
 			}			
 			//Si auto aplicar
 			else if( $db->transStatus() !== false && $objParameterInvoiceAutoApply == "true"  ){
 				$db->transCommit();
 				
 				//si es auto aplicadao mandar a imprimir
-				if($objParameterInvoiceAutoApply == "true" && $objParameterImprimirPorCadaFactura == "true" )
-				{
-					$transactionMasterIDToPrinter = $transactionMasterID;
-					
-					// create a new curl resource					
-					//wgonzalez-$urlPrinter = base_url()."/".$objParameterUrlPrinterDirect."/companyID/".$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID;
-					//wgonzalez-// set URL and other appropriate options
-					//wgonzalez-//$multiCurl = curl_multi_init();					
-					//wgonzalez-$curl = curl_init();
-					//wgonzalez-
-					//wgonzalez-curl_setopt($curl, CURLOPT_URL, $urlPrinter);
-					//wgonzalez-curl_setopt($curl, CURLOPT_HEADER, 0);
-					//wgonzalez-curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-					//wgonzalez-//curl_multi_add_handle($multiCurl, $curl);
-					//wgonzalez-
-					//wgonzalez-// grab URL and pass it to the browser
-					//wgonzalez-// esperar la respuesta
-					//wgonzalez-curl_exec($curl); 
-					//wgonzalez-
-					//wgonzalez-// No esperar la respuesta
-					//wgonzalez-//$running = 0;
-					//wgonzalez-//curl_multi_exec($multiCurl, $running);	
-					//wgonzalez-
-					//wgonzalez-
-					//wgonzalez-// close cURL resource, and free up system resources
-					//wgonzalez-curl_close($curl);
-					//wgonzalez-//curl_multi_close($multiCurl);
-					
-					
-				}
+				//-wgonzlez-if($objParameterInvoiceAutoApply == "true" && $objParameterImprimirPorCadaFactura == "true" )
+				//-wgonzlez-{
+				//-wgonzlez-	// create a new curl resource					
+				//-wgonzlez-	//wgonzalez-$urlPrinter = base_url()."/".$objParameterUrlPrinterDirect."/companyID/".$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID;
+				//-wgonzlez-	//wgonzalez-// set URL and other appropriate options
+				//-wgonzlez-	//wgonzalez-//$multiCurl = curl_multi_init();					
+				//-wgonzlez-	//wgonzalez-$curl = curl_init();
+				//-wgonzlez-	//wgonzalez-
+				//-wgonzlez-	//wgonzalez-curl_setopt($curl, CURLOPT_URL, $urlPrinter);
+				//-wgonzlez-	//wgonzalez-curl_setopt($curl, CURLOPT_HEADER, 0);
+				//-wgonzlez-	//wgonzalez-curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+				//-wgonzlez-	//wgonzalez-//curl_multi_add_handle($multiCurl, $curl);
+				//-wgonzlez-	//wgonzalez-
+				//-wgonzlez-	//wgonzalez-// grab URL and pass it to the browser
+				//-wgonzlez-	//wgonzalez-// esperar la respuesta
+				//-wgonzlez-	//wgonzalez-curl_exec($curl); 
+				//-wgonzlez-	//wgonzalez-
+				//-wgonzlez-	//wgonzalez-// No esperar la respuesta
+				//-wgonzlez-	//wgonzalez-//$running = 0;
+				//-wgonzlez-	//wgonzalez-//curl_multi_exec($multiCurl, $running);	
+				//-wgonzlez-	//wgonzalez-
+				//-wgonzlez-	//wgonzalez-
+				//-wgonzlez-	//wgonzalez-// close cURL resource, and free up system resources
+				//-wgonzlez-	//wgonzalez-curl_close($curl);
+				//-wgonzlez-	//wgonzalez-//curl_multi_close($multiCurl);
+				//-wgonzlez-	
+				//-wgonzlez-	
+				//-wgonzlez-}
 				
 				
 				$this->core_web_notification->set_message(false,SUCCESS);					
-				$this->response->redirect(base_url()."/".'app_invoice_billing/add/transactionMasterIDToPrinter/'.$transactionMasterID);	
+				$this->response->redirect(base_url()."/".'app_invoice_billing/add/transactionMasterIDToPrinter/'.$transactionMasterID."/codigoMesero/".$codigoMesero);	
 				
 			}
 			//Error 
@@ -1850,7 +1849,7 @@ class app_invoice_billing extends _BaseController {
 				$errorMessage 	= $db->error()["message"];
 				
 				$this->core_web_notification->set_message(true, $errorCode." ".$errorMessage );				
-				$this->response->redirect(base_url()."/".'app_invoice_billing/add/transactionMasterIDToPrinter/0');	
+				$this->response->redirect(base_url()."/".'app_invoice_billing/add/transactionMasterIDToPrinter/0'."/codigoMesero/".$codigoMesero);	
 			}
 			
 			
@@ -2518,7 +2517,7 @@ class app_invoice_billing extends _BaseController {
 			$roleID 							= $dataSession["role"]->roleID;
 			$userID								= $dataSession["user"]->userID;
 			$transactionMasterIDToPrinter		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterIDToPrinter");//--finuri	
-			$codigoMesero						= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"codigoMesero");//--finuri	
+			$codigoMesero						= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"codigoMesero");//--finuri				
 			
 			
 			//Obtener el componente de Item
@@ -2572,7 +2571,7 @@ class app_invoice_billing extends _BaseController {
 			$objParameterHidenFiledItemNumber		= $objParameterHidenFiledItemNumber->value;			
 			$objParameterAmortizationDuranteFactura	= $this->core_web_parameter->getParameter("INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE",$companyID);
 			$objParameterAmortizationDuranteFactura	= $objParameterAmortizationDuranteFactura->value;
-			
+			$objParameterDirect 					= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_PRINTER_DIRECT",$companyID);
 			
 			$objParameterAlturaDelModalDeSeleccionProducto	= $this->core_web_parameter->getParameter("INVOICE_ALTO_MODAL_DE_SELECCION_DE_PRODUCTO_AL_FACTURAR",$companyID);
 			$objParameterAlturaDelModalDeSeleccionProducto	= $objParameterAlturaDelModalDeSeleccionProducto->value;			
@@ -2655,6 +2654,7 @@ class app_invoice_billing extends _BaseController {
 			if(!$dataView["objListMesa"])
 			throw new \Exception("NO ES POSIBLE CONTINUAR CONFIGURAR CATALOGO MESS");
 			
+			$dataView["codigoMesero"]						= $codigoMesero;
 			$dataView["objListPay"]							= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","periodPay",$companyID);
 			$dataView["listProvider"]						= $this->Provider_Model->get_rowByCompany($companyID);
 			$dataView["objListaPermisos"]					= $dataSession["menuHiddenPopup"];
@@ -2679,6 +2679,9 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objListParameterJavaScript"]													= $this->core_web_parameter->getParameterAllToJavaScript($companyID);			
 			$dataView["objParameterINVOICE_BILLING_EMPLOYEE_DEFAULT"]								= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_EMPLOYEE_DEFAULT",$companyID);
 			$dataView["objParameterINVOICE_BILLING_SELECTITEM"]										= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_SELECTITEM",$companyID);
+			
+			$objParameterImprimirPorCadaFactura							= $this->core_web_parameter->getParameter("INVOICE_PRINT_BY_INVOICE",$companyID);
+			$dataView["objParameterImprimirPorCadaFactura"]				= $objParameterImprimirPorCadaFactura->value;
 			
 			$objParameterInvoiceBillingPrinterDirect				= $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT",$companyID);
 			$dataView["objParameterInvoiceBillingPrinterDirect"]	= $objParameterInvoiceBillingPrinterDirect->value;
@@ -2722,46 +2725,34 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objCustomerCreditAmoritizationAll"] 	=  $objCustomerCreditAmoritizationAll;
 			
 			//Obtener los datos de impresion				
-			if($transactionMasterIDToPrinter > 0 )
-			{
-				$objParameterDirectFormServer = $this->core_web_parameter->getParameterValue("INVOICE_BILLING_PRINTER_DIRECT",$companyID);
-				if($objParameterDirectFormServer  == "true")
-				{
-					
-					$dataPostPrinter["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterIDToPrinter);
-					$dataPostPrinter["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterIDToPrinter);
-					$dataPostPrinter["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterIDToPrinter);
-					$dataPostPrinter["objTransactionMasterDetailWarehouse"]		= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterIDToPrinter);
-					$dataPostPrinter["objTransactionMasterDetailConcept"]		= $this->Transaction_Master_Concept_Model->get_rowByTransactionMasterConcept($companyID,$transactionID,$transactionMasterIDToPrinter,$objComponentItem->componentID);
-					$dataPostPrinter["objComponentCompany"]				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
-					$dataPostPrinter["objParameterLogo"]				= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
-					$dataPostPrinter["objParameterPhoneProperty"]		= $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE",$companyID);
-					$dataPostPrinter["objCompany"] 						= $this->Company_Model->get_rowByPK($companyID);			
-					$dataPostPrinter["objUser"] 						= $this->User_Model->get_rowByPK($companyID,$dataPostPrinter["objTransactionMaster"]->createdAt,$dataPostPrinter["objTransactionMaster"]->createdBy);
-					$dataPostPrinter["Identifier"]						= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
-					$dataPostPrinter["objBranch"]						= $this->Branch_Model->get_rowByPK($companyID,$dataPostPrinter["objTransactionMaster"]->branchID);
-					$dataPostPrinter["objTipo"]							= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$dataPostPrinter["objTransactionMaster"]->transactionID,$dataPostPrinter["objTransactionMaster"]->transactionCausalID);
-					$dataPostPrinter["objCustumer"]						= $this->Customer_Model->get_rowByEntity($companyID,$dataPostPrinter["objTransactionMaster"]->entityID);
-					$dataPostPrinter["objCurrency"]						= $this->Currency_Model->get_rowByPK($dataPostPrinter["objTransactionMaster"]->currencyID);
-					$dataPostPrinter["prefixCurrency"]					= $dataPostPrinter["objCurrency"]->simbol." ";
-					$dataPostPrinter["cedulaCliente"] 					= $dataPostPrinter["objTransactionMasterInfo"]->referenceClientIdentifier == "" ? $dataPostPrinter["objCustumer"]->customerNumber :  $dataPostPrinter["objTransactionMasterInfo"]->referenceClientIdentifier;
-					$dataPostPrinter["nombreCliente"] 					= $dataPostPrinter["objTransactionMasterInfo"]->referenceClientName  == "" ? $dataPostPrinter["objCustumer"]->firstName : $dataPostPrinter["objTransactionMasterInfo"]->referenceClientName ;
-					$dataPostPrinter["objStage"]						= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($dataPostPrinter["objTransactionMaster"]->statusID);
-					$serializedDataPostPrinter 							= serialize($dataPostPrinter);
-					$serializedDataPostPrinter 							= base64_encode($serializedDataPostPrinter);
-					$dataView["dataPrinterLocal"]						= $serializedDataPostPrinter;
-					$dataView["dataPrinterLocalTransactionMasterID"]	= $dataPostPrinter["objTransactionMaster"]->transactionMasterID;
-					$dataView["dataPrinterLocalTransactionID"]			= $dataPostPrinter["objTransactionMaster"]->transactionID;
-					$dataView["dataPrinterLocalCompanyID"]				= $dataPostPrinter["objTransactionMaster"]->companyID;
-					
-				}
-				else 
-				{
-					$dataView["dataPrinterLocal"]						= "";
-					$dataView["dataPrinterLocalTransactionMasterID"]	= 0;
-					$dataView["dataPrinterLocalTransactionID"]			= 0;
-					$dataView["dataPrinterLocalCompanyID"]				= 0;
-				}
+			if($transactionMasterIDToPrinter > 0 && $objParameterDirect  == "true")
+			{	
+				$dataPostPrinter["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterIDToPrinter);
+				$dataPostPrinter["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterIDToPrinter);
+				$dataPostPrinter["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterIDToPrinter);
+				$dataPostPrinter["objTransactionMasterDetailWarehouse"]		= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterIDToPrinter);
+				$dataPostPrinter["objTransactionMasterDetailConcept"]		= $this->Transaction_Master_Concept_Model->get_rowByTransactionMasterConcept($companyID,$transactionID,$transactionMasterIDToPrinter,$objComponentItem->componentID);
+				$dataPostPrinter["objComponentCompany"]				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+				$dataPostPrinter["objParameterLogo"]				= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+				$dataPostPrinter["objParameterPhoneProperty"]		= $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE",$companyID);
+				$dataPostPrinter["objCompany"] 						= $this->Company_Model->get_rowByPK($companyID);			
+				$dataPostPrinter["objUser"] 						= $this->User_Model->get_rowByPK($companyID,$dataPostPrinter["objTransactionMaster"]->createdAt,$dataPostPrinter["objTransactionMaster"]->createdBy);
+				$dataPostPrinter["Identifier"]						= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+				$dataPostPrinter["objBranch"]						= $this->Branch_Model->get_rowByPK($companyID,$dataPostPrinter["objTransactionMaster"]->branchID);
+				$dataPostPrinter["objTipo"]							= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$dataPostPrinter["objTransactionMaster"]->transactionID,$dataPostPrinter["objTransactionMaster"]->transactionCausalID);
+				$dataPostPrinter["objCustumer"]						= $this->Customer_Model->get_rowByEntity($companyID,$dataPostPrinter["objTransactionMaster"]->entityID);
+				$dataPostPrinter["objCurrency"]						= $this->Currency_Model->get_rowByPK($dataPostPrinter["objTransactionMaster"]->currencyID);
+				$dataPostPrinter["prefixCurrency"]					= $dataPostPrinter["objCurrency"]->simbol." ";
+				$dataPostPrinter["cedulaCliente"] 					= $dataPostPrinter["objTransactionMasterInfo"]->referenceClientIdentifier == "" ? $dataPostPrinter["objCustumer"]->customerNumber :  $dataPostPrinter["objTransactionMasterInfo"]->referenceClientIdentifier;
+				$dataPostPrinter["nombreCliente"] 					= $dataPostPrinter["objTransactionMasterInfo"]->referenceClientName  == "" ? $dataPostPrinter["objCustumer"]->firstName : $dataPostPrinter["objTransactionMasterInfo"]->referenceClientName ;
+				$dataPostPrinter["objStage"]						= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($dataPostPrinter["objTransactionMaster"]->statusID);
+				$serializedDataPostPrinter 							= serialize($dataPostPrinter);
+				$serializedDataPostPrinter 							= base64_encode($serializedDataPostPrinter);
+				$dataView["dataPrinterLocal"]						= $serializedDataPostPrinter;
+				$dataView["dataPrinterLocalTransactionMasterID"]	= $dataPostPrinter["objTransactionMaster"]->transactionMasterID;
+				$dataView["dataPrinterLocalTransactionID"]			= $dataPostPrinter["objTransactionMaster"]->transactionID;
+				$dataView["dataPrinterLocalCompanyID"]				= $dataPostPrinter["objTransactionMaster"]->companyID;
+			
 			}
 			else 
 			{
@@ -2770,6 +2761,7 @@ class app_invoice_billing extends _BaseController {
 				$dataView["dataPrinterLocalTransactionID"]			= 0;
 				$dataView["dataPrinterLocalCompanyID"]				= 0;
 			}
+			
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -2931,10 +2923,11 @@ class app_invoice_billing extends _BaseController {
 			
 			//Variable para validar si es un mesero
 			$esMesero 					= false;
-			$esMesero 					= $this->core_web_permission->urlPermited("es_mesero","index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-			$dataViewJava["esMesero"]	= $dataSession["role"]->isAdmin ? "0" :  $esMesero;
+			$esMesero 					= $this->core_web_permission->urlPermited("es_mesero","index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);			
 			
-			
+			$esMesero					= !$esMesero ? "0" : $esMesero;
+			$esMesero					= $dataSession["role"]->isAdmin ? "0" : $esMesero;
+			$dataViewJava["esMesero"]	= $esMesero;
 			
 			//Renderizar Resultado
 			$dataViewJava["objParameterPantallaParaFacturar"]	= $objParameterPantallaParaFacturar;

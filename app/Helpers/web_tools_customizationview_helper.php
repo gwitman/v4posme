@@ -104,7 +104,9 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('default_app_inventory_item_Modelo')															=> "Modelo",
 		strtolower('default_app_inventory_item_Serie ó MAI')													=> "Serie o MAI",		
 		strtolower('default_app_inventory_item_fieldInmobiliaria')												=> "",
-		strtolower('default_app_purchase_pedidos_divScriptCustom')												=> "",
+		strtolower('default_app_purchase_pedidos_divScriptCustom')												=> "",		
+		strtolower('default_app_invoice_billing_txtTraductionVendedor') 		 								=> "Vendedor",
+		strtolower('default_app_invoice_billing_txtTraductionMesa') 		 									=> "Mesa",
 	
 	
 		
@@ -317,7 +319,10 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('luciaralstate_app_inventory_item_*SKU Produccion')											=> "Habitaciones",
 		strtolower('luciaralstate_app_inventory_item_*Cantidad Minima')											=> "Niveles",
 		strtolower('luciaralstate_app_inventory_item_*Cantidad Maxima')											=> "Horas antes de visita",
-		strtolower('luciaralstate_app_inventory_item_Servicio')													=> "Disponible",		
+		strtolower('luciaralstate_app_inventory_item_Servicio')													=> "Disponible",				
+		strtolower('luciaralstate_app_inventory_item_fieldInmobiliariaPais')									=> "hidden",		
+		strtolower('luciaralstate_app_inventory_item_fieldInmobiliariaDepartamento')							=> "hidden",		
+		strtolower('luciaralstate_app_inventory_item_fieldInmobiliariaMunicipio')								=> "hidden",
 		strtolower('luciaralstate_app_inventory_item_*Categoria')												=> "Diseño de propiedad",
 		strtolower('luciaralstate_app_inventory_item_*Capacidad')												=> "Aires",		
 		strtolower('luciaralstate_app_inventory_item_Marca')													=> "Area de contruccion M2",
@@ -452,10 +457,21 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 			result = false;
 		}
 		
+		if(!/^\d+$/.test(   $('#txtPhoneNumber').val()   )){
+            fnShowNotification('Escribir Telefono solo puede tener números','error',timerNotification);
+			result = false;
+        } 
+		
 		if( $('#txtReference1').val()  == ''){
 			fnShowNotification('Escribir ID','error',timerNotification);
 			result = false;
 		}
+		
+		if(!/^\d+$/.test(   $('#txtReference1').val()   )){
+            fnShowNotification('Escribir ID Encuentra 24 solo puede tener números','error',timerNotification);
+			result = false;
+        } 
+		
 		
 		",	
 		strtolower('luciaralstate_app_cxc_customer_divScriptReady') 	 										=> "		
@@ -480,6 +496,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 			if (!regex) {
 				$(this).focus(); // Volver a enfocar el campo de entrada
 				$(this).trigger('input'); // Disparar el evento de entrada para validar la entrada
+				fnShowNotification('Escribir Telefono solo puede tener números','error',5000);
 			}
 		});
 		
@@ -492,6 +509,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 			if (!regex) {
 				$(this).focus(); // Volver a enfocar el campo de entrada
 				$(this).trigger('input'); // Disparar el evento de entrada para validar la entrada
+				fnShowNotification('Escribir ID Encuentra 24 solo puede tener números','error',5000);
 			}
 		});
 		
@@ -545,6 +563,12 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		}
 		
 		",	
+		
+		/*Galmcuts*/
+		strtolower('galmcuts_app_invoice_billing_txtTraductionVendedor') 		 									=> "Barvero",
+		strtolower('galmcuts_app_invoice_billing_txtTraductionMesa') 		 										=> "Sala",
+		strtolower('galmcuts_app_invoice_billing_divMesa') 		 													=> "hidden"
+		
 		
 	);
 	

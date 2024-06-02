@@ -24,7 +24,15 @@
 		//Inicializar DataPciker
 		
 		$('#txtBirthDate').datepicker({format:"yyyy-mm-dd"});
+		
+		var today = new Date();
+		var year = today.getFullYear();
+		var month = String(today.getMonth() + 1).padStart(2, '0'); // Los meses son 0-indexados
+		var day = String(today.getDate()).padStart(2, '0');
+		var formattedDate = year + '-' + month + '-' + day;
+		$("#txtDateContract").val(formattedDate);
 		$('#txtDateContract').datepicker({format:"yyyy-mm-dd"});
+		$("#txtDateContract").datepicker("setDate", new Date());
 		
 		
 		refreschChecked();
