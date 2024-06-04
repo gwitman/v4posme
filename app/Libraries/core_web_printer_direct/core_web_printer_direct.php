@@ -52,8 +52,7 @@ class core_web_printer_direct {
         $this->nombre_impresora           = $printerName;
         $this->connectorWindowPrinter     = new WindowsPrintConnector($this->nombre_impresora);
         $this->printer                    = new Printer($this->connectorWindowPrinter);
-		//$this->printer->close();
-        
+		//$this->printer->close();        
 	}
 
 	function addSpaces($string = '', $valid_string_length = 0) {

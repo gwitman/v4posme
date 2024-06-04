@@ -64,7 +64,7 @@
 	var varParameterInvoiceBillingPrinterDirectCocinaUrl	= '<?php echo $urlPrinterDocumentCocinaDirect; ?>';	
 	var varParameterInvoiceBillingPrinterDirectBarUrl		= '<?php echo $objParameterINVOICE_BILLING_PRINTER_DIRECT_URL_BAR; ?>';	
 	var varParameterInvoiceBillingPrinterDataLocal			= '<?php echo $dataPrinterLocal; ?>';
-	
+	var varParameterUrlServidorDeImpresion 					= '<?php echo $objParameterUrlServidorDeImpresion; ?>';
 	var varTransactionCausalID	= <?php echo $objTransactionMaster->transactionCausalID; ?>;	
 	var varCustomerCrediLineID	= <?php echo $objTransactionMaster->reference4; ?>;	
 	var varPermisos				= JSON.parse('<?php echo json_encode($objListaPermisos); ?>');
@@ -1625,7 +1625,7 @@
 		if(varParameterInvoiceBillingPrinterDirect == true)
 		{
 			
-			var url="<?php echo base_url(); ?>/"+varParameterInvoiceBillingPrinterDirectUrl;
+			var url=varParameterUrlServidorDeImpresion+varParameterInvoiceBillingPrinterDirectUrl;
 			url = url+
 			"/companyID/"+"<?php echo $objTransactionMaster->companyID; ?>" + 
 			"/transactionID/"+"<?php echo $objTransactionMaster->transactionID; ?>"+

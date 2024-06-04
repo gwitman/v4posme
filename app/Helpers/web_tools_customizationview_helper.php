@@ -567,7 +567,20 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		/*Galmcuts*/
 		strtolower('galmcuts_app_invoice_billing_txtTraductionVendedor') 		 									=> "Barvero",
 		strtolower('galmcuts_app_invoice_billing_txtTraductionMesa') 		 										=> "Sala",
-		strtolower('galmcuts_app_invoice_billing_divMesa') 		 													=> "hidden"
+		strtolower('galmcuts_app_invoice_billing_divLabelZone') 		 											=> "Hora",
+		strtolower('galmcuts_app_invoice_billing_divMesa') 		 													=> "hidden",
+		strtolower('galmcuts_app_invoice_billing_divTraslateElement') 												=> "
+		<script>
+			$(document).ready(function(){	
+				debugger;
+				var tivReferencia 	   = $('#divReferencia').html();
+				var tivSiguienteVisita = $('#divSiguienteVisita').html();
+				
+                $('#divReferencia').html(tivSiguienteVisita);
+                $('#divSiguienteVisita').html(tivReferencia);
+				
+			});
+		</script>"
 		
 		
 	);

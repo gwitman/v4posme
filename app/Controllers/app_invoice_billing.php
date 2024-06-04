@@ -133,6 +133,11 @@ class app_invoice_billing extends _BaseController {
 			$objParameterScanerProducto									= $objParameterScanerProducto->value;
 			$dataView["objParameterScanerProducto"] 					= $objParameterScanerProducto;
 			
+			$objParameterUrlServidorDeImpresion							= $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_SERVER_PATH",$companyID);
+			$objParameterUrlServidorDeImpresion							= $objParameterUrlServidorDeImpresion->value;
+			$dataView["objParameterUrlServidorDeImpresion"] 			= $objParameterUrlServidorDeImpresion;
+			
+			
 			$objParameterCantidadItemPoup								= $this->core_web_parameter->getParameter("INVOICE_CANTIDAD_ITEM",$companyID);
 			$objParameterCantidadItemPoup								= $objParameterCantidadItemPoup->value;			
 			$dataView["objParameterCantidadItemPoup"] 					= $objParameterCantidadItemPoup;
@@ -2680,6 +2685,10 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objParameterINVOICE_BILLING_EMPLOYEE_DEFAULT"]								= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_EMPLOYEE_DEFAULT",$companyID);
 			$dataView["objParameterINVOICE_BILLING_SELECTITEM"]										= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_SELECTITEM",$companyID);
 			
+			$objParameterUrlServidorDeImpresion							= $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_SERVER_PATH",$companyID);
+			$objParameterUrlServidorDeImpresion							= $objParameterUrlServidorDeImpresion->value;
+			$dataView["objParameterUrlServidorDeImpresion"] 			= $objParameterUrlServidorDeImpresion;
+			
 			$objParameterImprimirPorCadaFactura							= $this->core_web_parameter->getParameter("INVOICE_PRINT_BY_INVOICE",$companyID);
 			$dataView["objParameterImprimirPorCadaFactura"]				= $objParameterImprimirPorCadaFactura->value;
 			
@@ -3066,12 +3075,6 @@ class app_invoice_billing extends _BaseController {
 	function viewPrinterDirectFactura80mm(){
 		try{
 			
-			//Librerias		
-			//
-			////////////////////////////////////////
-			////////////////////////////////////////
-			////////////////////////////////////////
-			
 			
 			
 			//Obtener el componente de Item
@@ -3079,12 +3082,12 @@ class app_invoice_billing extends _BaseController {
 			if(!$objComponentItem)
 			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 			$dataSession		= $this->session->get();
-									
+			
 			$companyID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"companyID");//--finuri
 			$transactionID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri	
 			$transactionMasterID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri	
 			$fromServer				= /*inicio get post*/ $this->request->getPost("fromServer");
-
+			
 			if($fromServer == "")
 			{
 				
@@ -3114,7 +3117,7 @@ class app_invoice_billing extends _BaseController {
 			{
 				// Decodificar la cadena Base64
 				$serializedData = base64_decode($fromServer);
-
+			
 				// Deserializar la cadena a un array
 				$serializedData = unserialize($serializedData);			
 			
@@ -3132,7 +3135,7 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-		    
+		    log_message("error",print_r($ex->getMessage(),true));
 			
 		    //$data["session"]   = $dataSession;
 		    //$data["exception"] = $ex;

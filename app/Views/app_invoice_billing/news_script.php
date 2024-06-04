@@ -34,6 +34,7 @@
 	var varParameterMostrarImagenEnSeleccion 			= '<?php echo $objParameterMostrarImagenEnSeleccion; ?>';
 	var varPermisos										= JSON.parse('<?php echo json_encode($objListaPermisos); ?>');
 	var varParameterInvoiceBillingPrinterDataLocal		= '<?php echo $dataPrinterLocal; ?>';
+	var varParameterUrlServidorDeImpresion 				= '<?php echo $objParameterUrlServidorDeImpresion; ?>';
 	var varPermisosEsPermitidoModificarPrecio 			= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_MODIFICAR_PRECIO_EN_FACTURACION"}).select().length > 0 ? true:	false;	
 	var varPermisosEsPermitidoModificarNombre 			= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_MODIFICAR_NOMBRE_EN_FACTURACION"}).select().length > 0 ? true:	false;
 	var varPermisosEsPermitidoSeleccionarPrecioPublico 	= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_SELECCIONAR_PRECIO_PUBLICO"}).select().length > 0 ? true:	false;
@@ -189,7 +190,7 @@
 			e.preventDefault();
 			e.stopPropagation();			
 			
-			var url="<?php echo base_url(); ?>/"+varParameterInvoiceBillingPrinterDirectUrl;
+			var url=varParameterUrlServidorDeImpresion+varParameterInvoiceBillingPrinterDirectUrl;
 			url = url+
 			"/companyID/"+"<?php echo $dataPrinterLocalCompanyID; ?>" + 
 			"/transactionID/"+"<?php echo $dataPrinterLocalTransactionID; ?>"+
@@ -2388,28 +2389,50 @@
 			)
 			{
 				
-				var url="<?php echo base_url(); ?>/"+varParameterInvoiceBillingPrinterDirectUrl;
-				url = url+
-				"/companyID/"+"<?php echo $dataPrinterLocalCompanyID; ?>" + 
-				"/transactionID/"+"<?php echo $dataPrinterLocalTransactionID; ?>"+
-				"/transactionMasterID/"+"<?php echo $dataPrinterLocalTransactionMasterID; ?>";
+				$("#modalDialogOpenPrimter").dialog({
+						autoOpen: false,
+						modal: true,
+						width:520,
+						dialogClass: "dialog",
+						buttons: {
+							'Si' : function ()
+							{
+								
+									var url=varParameterUrlServidorDeImpresion+varParameterInvoiceBillingPrinterDirectUrl;
+									url = url+
+									"/companyID/"+"<?php echo $dataPrinterLocalCompanyID; ?>" + 
+									"/transactionID/"+"<?php echo $dataPrinterLocalTransactionID; ?>"+
+									"/transactionMasterID/"+"<?php echo $dataPrinterLocalTransactionMasterID; ?>";
+									
+									$.ajax({									
+										cache       : false,
+										dataType    : 'json',
+										type        : 'POST',
+										data		: { "fromServer" : varParameterInvoiceBillingPrinterDataLocal },
+										url  		: url,
+										success		: function(){
+															
+										},
+										error:function(xhr,data){
+											console.info("complete data error");									
+											console.info(data);
+											console.info(xhr);
+										}
+									});	
+									
+									$(this).dialog("close");
+									
+							},
+							'No' : function()
+							{
+								$(this).dialog("close");
+							}
+						}
+				});
 				
-				$.ajax({									
-					cache       : false,
-					dataType    : 'json',
-					type        : 'POST',
-					data		: { "fromServer" : varParameterInvoiceBillingPrinterDataLocal },
-					url  		: url,
-					success		: function(){
-										
-					},
-					error:function(xhr,data){
-						console.info("complete data error");									
-						console.info(data);
-						console.info(xhr);
-					}
-				});	
-				return;
+				$("#modalDialogOpenPrimter").dialog("open");
+				
+				
 			}
 			
 			

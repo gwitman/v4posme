@@ -1960,6 +1960,36 @@ class app_notification extends _BaseController {
 		echo "SUCCESS";
 	}
 	
+	function sendEmailGlamCustCitas()
+	{
+		
+		$emailProperty = $this->core_web_parameter->getParameter("CORE_PROPIETARY_EMAIL",APP_COMPANY);
+		$emailProperty = $emailProperty->value;
+		$objCompany  	= $this->Company_Model->get_rowByPK(APP_COMPANY);
+		
+		$objNotificar = $this->Transaction_Master_Detail_Model->GlamCust_get_Citas(APP_COMPANY);		
+		if($objNotificar)
+		foreach($objNotificar as $i)
+		{	
+		
+		
+			$params_["objCompany"]  = $objCompany;
+			$params_["firstName"]  	= $i->firstName;
+			$params_["hour"]  		= $i->SiguienteVisita;
+			$params_["mensaje"]  	= "Cita de: ".$i->firstName." programada para : ".$i->SiguienteVisita;
+			$subject 				= "Cita de: ".$i->firstName;
+			$body  					= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview
+			
+			$this->email->setFrom(EMAIL_APP);
+			$this->email->setTo( "www.witman@gmail.com"  /*$emailProperty*/ );
+			$this->email->setSubject($subject);			
+			$this->email->setMessage($body); 
+			$resultSend01 = $this->email->send();
+			
+		}
+		
+		echo "SUCCESS";
+	}
 	
 	
 }

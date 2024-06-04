@@ -1230,14 +1230,14 @@ WHERE
 /***************************************************************/
 		
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Eusebia Del Carmen Dumas Ruiz" 
+	tb_company_parameter.value = "Marvin Morales" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_NAME";## Witman José González Rostran 
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "gwitman@yahoo.com" 
+	tb_company_parameter.value = "glamcuts90@gmail.com" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_EMAIL";## CORREO DEL PROPIETARIO

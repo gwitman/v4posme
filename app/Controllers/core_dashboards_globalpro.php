@@ -81,7 +81,7 @@ class core_dashboards_globalpro extends _BaseController {
 			$objNowDate 		= \DateTime::createFromFormat('Y-m-d H:i:s', helper_getDate());
 			$objNowDate->setTime(0, 0, 0);
 			$objListVentaDiaria = array();
-			while($objFirstDate <= $objNowDate)
+			while($objFirstDate < $objNowDate)
 			{				
 				$objListVentaDiariaTemporal = $this->Transaction_Master_Detail_Model->GlobalPro_get_Day_Sales($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objNowDate->format("Y-m-d") );
 				if($objListVentaDiariaTemporal)

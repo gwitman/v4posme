@@ -214,7 +214,7 @@
 						<div class="row">
 							<div class="col-lg-6">
 								<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divTxtZone",""); ?>" id="divZone"  >
-									<label class="col-lg-4 control-label" for="selectFilter">Zona</label>
+									<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_invoice_billing","divLabelZone","Zona"); ?></label>
 									<div class="col-lg-8">
 										<select name="txtZoneID" id="txtZoneID" class="select2">
 												<option></option>																
@@ -280,7 +280,7 @@
 								
 							
 								
-								<div class="form-group">
+								<div class="form-group" id="divReferencia">
 										<label class="col-lg-4 control-label" for="normal">Referencia</label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtReference3" id="txtReference3" value="<?php echo ($objEmployeeNatural ? $objEmployeeNatural->firstName : "N/D"); ?>">
@@ -339,7 +339,7 @@
 									</div>
 								</div>
 								
-								<div class="form-group">
+								<div class="form-group" id="divSiguienteVisita">
 									<label class="col-lg-4 control-label" for="datepicker">Siguiente Visita</label>
 									<div class="col-lg-8">
 										<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
@@ -930,6 +930,9 @@
 				<p>Seguro que desea regresa a la lista</p>
 			</div>
 			
+			<div id="modalDialogOpenPrimter" title="Impresion" class="dialog">
+				<p>Desea imprmir la factura en formato 80mm</p>
+			</div>
 			
 			
 		</div>

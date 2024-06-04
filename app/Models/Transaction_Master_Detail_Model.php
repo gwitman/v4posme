@@ -317,11 +317,19 @@ class Transaction_Master_Detail_Model extends Model  {
 			where 
 				t.transactionID in (19,20) and   
 				t.isActive = 1  and 
-				ws.aplicable = 1  and 
 				t.companyID = 2  and 
 				t.transactionOn between '$dateFirst' and '$dateLast' and 
-				ws.aplicable = 1 and 
-				i.name NOT LIKE '%s'
+				i.name NOT LIKE '%s' and 
+				(
+					(
+						t.transactionID = 19 and 
+						t.statusID in ( 67 /*aplicada*/,68 /*anulada*/  )
+					)
+					or 
+					(
+						t.transactionID = 20 
+					)				
+				)
 			group by  
 				nat.firstName
 		","%repara%");
@@ -364,11 +372,19 @@ class Transaction_Master_Detail_Model extends Model  {
 			where 
 				t.transactionID in (19,20) and   
 				t.isActive = 1  and 
-				ws.aplicable = 1  and 
 				t.companyID = 2  and 
 				t.transactionOn between '$dateFirst' and '$dateLast' and 
-				ws.aplicable = 1 and 
-				i.name LIKE  '%s'
+				i.name LIKE  '%s' and 
+				(
+					(
+						t.transactionID = 19 and 
+						t.statusID in ( 67 /*aplicada*/,68 /*anulada*/  )
+					)
+					or 
+					(
+						t.transactionID = 20 
+					)				
+				)
 			group by  
 				i.name
 		","%repara%");
@@ -405,11 +421,20 @@ class Transaction_Master_Detail_Model extends Model  {
 					nat.entityID = t.entityIDSecondary 
 			where 
 				t.transactionID in (19,20) and   
-				t.isActive = 1  and 
-				ws.aplicable = 1  and 
+				t.isActive = 1   
+				and 
+				(
+					(
+						t.transactionID = 19 and 
+						t.statusID in ( 67 /*aplicada*/,68 /*anulada*/  )
+					)
+					or 
+					(
+						t.transactionID = 20 
+					)
+				) and 
 				t.companyID = 2  and 
-				t.transactionOn between '$dateFirst' and '$dateLast' and 
-				ws.aplicable = 1 
+				t.transactionOn between '$dateFirst' and '$dateLast' 
 			group by  
 				1
 		");
@@ -445,11 +470,19 @@ class Transaction_Master_Detail_Model extends Model  {
 					nat.entityID = t.entityIDSecondary 
 			where 
 				t.transactionID in (19,20) and   
-				t.isActive = 1  and 
-				ws.aplicable = 1  and 
+				t.isActive = 1  and 				
 				t.companyID = 2  and 
 				t.transactionOn between '$dateFirst' and '$dateLast' and 
-				ws.aplicable = 1 
+				(
+					(
+						t.transactionID = 19 and 
+						t.statusID in ( 67 /*aplicada*/,68 /*anulada*/  )
+					)
+					or 
+					(
+						t.transactionID = 20 
+					)				
+				)
 			group by  
 				1
 		");
@@ -811,5 +844,50 @@ class Transaction_Master_Detail_Model extends Model  {
 		return $db->query($sql)->getResult();
 			
    }
+   function GlamCust_get_Citas($companyID)
+   {
+	   
+	    $db 		= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+	   		
+		$sql = "";
+		$sql = sprintf("
+			select 
+				tat.firstName,
+				tat.transactionNumber,
+				tat.SiguienteVisita 	
+			from 
+				(
+					select 
+						nat.firstName,
+						c.transactionNumber ,
+						DATE_ADD(c.nextVisit , INTERVAL zone.`name`  HOUR) as SiguienteVisita 
+					from 
+						tb_transaction_master c 
+						inner join tb_transaction_master_info ci on 
+							c.transactionMasterID = ci.transactionMasterID 
+						inner join tb_catalog_item zone on 
+							zone.catalogItemID = ci.zoneID 
+						inner join tb_workflow_stage ws on 
+							c.statusID = ws.workflowStageID 
+						inner join tb_naturales nat on 
+							c.entityID = nat.entityID 
+					where 
+						c.isActive = 1 and 
+						c.companyID = 2 and 
+						c.transactionID = 19  and 
+						ws.isInit = 1 and 
+						CAST(zone.`name`  AS UNSIGNED ) > 1   and 
+						c.nextVisit is not null 
+				)  tat 
+			where 
+				tat.SiguienteVisita < DATE_ADD(NOW() , INTERVAL 2 HOUR)
+						
+		");
+	
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+			
+   } 
 }
 ?>
