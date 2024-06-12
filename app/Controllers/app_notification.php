@@ -1960,9 +1960,49 @@ class app_notification extends _BaseController {
 		echo "SUCCESS";
 	}
 	
-	function sendEmailGlamCustCitas()
+	function sendWhatsappGlobalProLaptopMayoresA14400Frecuency11Meses()
 	{
 		
+		$objNotificar = $this->Transaction_Master_Detail_Model->GlobalPro_get_Notification_LaptopMayoresA14400_11Meses();		
+		if($objNotificar)
+		foreach($objNotificar as $i)
+		{	
+			echo clearNumero($i->Destino)."---".$i->Mensaje."</br></br>";
+			$this->core_web_whatsap->sendMessageByWaapi(
+				APP_COMPANY, 
+				replaceSimbol($i->Mensaje),
+				clearNumero($i->Destino) 
+			);
+				
+		}
+		
+		echo "SUCCESS";
+	}
+	
+	function sendWhatsappGlobalProCumpleAnnos()
+	{
+		
+		$objNotificar = $this->Transaction_Master_Detail_Model->GlobalPro_get_Notification_CumpleAnnos();		
+		if($objNotificar)
+		foreach($objNotificar as $i)
+		{	
+			echo clearNumero($i->Destino)."---".$i->Mensaje."</br></br>";
+			$this->core_web_whatsap->sendMessageByWaapi(
+				APP_COMPANY, 
+				replaceSimbol($i->Mensaje),
+				clearNumero($i->Destino) 
+			);
+				
+		}
+		
+		echo "SUCCESS";
+	}
+	
+	
+	
+	function sendEmailGlamCustCitas()
+	{
+		log_message("error",print_r("sendEmailGlamCustCitas",true));
 		$emailProperty = $this->core_web_parameter->getParameter("CORE_PROPIETARY_EMAIL",APP_COMPANY);
 		$emailProperty = $emailProperty->value;
 		$objCompany  	= $this->Company_Model->get_rowByPK(APP_COMPANY);
@@ -1973,6 +2013,10 @@ class app_notification extends _BaseController {
 		{	
 		
 		
+			$i->SiguienteVisita = \DateTime::createFromFormat('Y-m-d H:i:s', $i->SiguienteVisita)->format("Y-m-d h:i A");
+			echo "Cita de: ".$i->firstName." programada para : ".$i->SiguienteVisita."</br>";
+			log_message("error","Cita de: ".$i->firstName." programada para : ".$i->SiguienteVisita);
+			
 			$params_["objCompany"]  = $objCompany;
 			$params_["firstName"]  	= $i->firstName;
 			$params_["hour"]  		= $i->SiguienteVisita;
@@ -1981,7 +2025,7 @@ class app_notification extends _BaseController {
 			$body  					= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview
 			
 			$this->email->setFrom(EMAIL_APP);
-			$this->email->setTo( "www.witman@gmail.com"  /*$emailProperty*/ );
+			$this->email->setTo( $emailProperty /*"www.witman@gmail.com"*/ );
 			$this->email->setSubject($subject);			
 			$this->email->setMessage($body); 
 			$resultSend01 = $this->email->send();

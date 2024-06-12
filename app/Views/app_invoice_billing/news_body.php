@@ -102,7 +102,7 @@
 												$count = 0;
 												if($listCurrency)
 												foreach($listCurrency as $currency){
-													if($count == 0 )
+													if( $currency->name == $objParameterACCOUNTING_CURRENCY_NAME_IN_BILLING  )
 													echo "<option value='".$currency->currencyID."' selected >".$currency->name."</option>";
 													else
 													echo "<option value='".$currency->currencyID."'  >".$currency->name."</option>";

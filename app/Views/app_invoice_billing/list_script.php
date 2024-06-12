@@ -42,7 +42,7 @@
 		});	
 		
 		$(document).on("click","#btnEdit",function(){
-		
+			
 			$("#modalDialogClaveMesero").dialog({
 				autoOpen: false,
 				modal: true,

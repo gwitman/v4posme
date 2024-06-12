@@ -96,6 +96,7 @@ class app_purchase_taller extends _BaseController {
 			
 			//Obtener Factura
 			$dataView["objBilling"]					= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,$dataView["objTransactionMaster"]->note);
+			$dataView["objListBranch"]				= $this->Branch_Model->getByCompany($companyID);
 			
 			$dataView["company"]				= $dataSession["company"];
 			$dataView["objListCurrency"]		= $objListCurrency;
@@ -281,6 +282,7 @@ class app_purchase_taller extends _BaseController {
 			//Actualizar Maestro			
 			$objTMNew["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
 			$objTMNew["statusIDChangeOn"]				= date("Y-m-d H:m:s");			
+			$objTMNew["branchID"]						= /*inicio get post*/ $this->request->getPost("txtBranchID");
 			$objTMNew["currencyID"] 					= /*inicio get post*/ $this->request->getPost("txtCurrencyID");//--fin peticion get o post			
 			$objTMNew["exchangeRate"]					= $this->core_web_currency->getRatio($dataSession["user"]->companyID,date("Y-m-d"),1,$objTM->currencyID2,$objTMNew["currencyID"]);
 			$objTMNew["areaID"] 						= /*inicio get post*/ $this->request->getPost("txtAreaID");
@@ -475,6 +477,7 @@ class app_purchase_taller extends _BaseController {
 									APP_COMPANY, 
 									$themplate,
 									$numerDestino
+									/*"87125827"*/
 								);
 							}
 							else
@@ -574,7 +577,7 @@ class app_purchase_taller extends _BaseController {
 			
 			$objTM["companyID"] 					= $dataSession["user"]->companyID;
 			$objTM["transactionID"] 				= $transactionID;			
-			$objTM["branchID"]						= $dataSession["user"]->branchID;
+			$objTM["branchID"]						= /*inicio get post*/ $this->request->getPost("txtBranchID");
 			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_workshop_taller",0);
 			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($dataSession["user"]->companyID,$transactionID);			
 			$objTM["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
@@ -786,7 +789,7 @@ class app_purchase_taller extends _BaseController {
 								$this->core_web_whatsap->sendMessageByWaapi(
 									APP_COMPANY, 
 									$themplate,
-									$numerDestino
+									$numerDestino									
 								);
 							}
 							else
@@ -956,6 +959,7 @@ class app_purchase_taller extends _BaseController {
 			$dataView["branchID"]				= $dataSession["branch"]->branchID;
 			$dataView["branchName"]				= $dataSession["branch"]->name;
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
+			$dataView["objListBranch"]			= $this->Branch_Model->getByCompany($companyID);
 			
 			$objParameterExchangePurchase		= $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_PURCHASE",$companyID);
 			$dataView["exchangeRatePurchase"]	= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID) - $objParameterExchangePurchase->value;			

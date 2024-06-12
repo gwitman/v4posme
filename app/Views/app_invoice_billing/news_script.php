@@ -270,9 +270,9 @@
 		
 		
 		//++Abrir popup de productos
-		if(codigoABuscar == "++"){
-			
-			fnCreateTableSearchProductos();
+		if(  codigoABuscar.includes("++")  ){
+			codigoABuscar = codigoABuscar.replace("++","");
+			fnCreateTableSearchProductos(codigoABuscar);
 			return;
 		}
 		
@@ -459,7 +459,8 @@
 	
 	$(document).on("click","#btnNewItem",function(){
 		
-		fnCreateTableSearchProductos();
+		var CodigoBuscar = "";
+		fnCreateTableSearchProductos(CodigoBuscar);
 	
 	});
 
@@ -1600,7 +1601,7 @@
 	
 	
 	
-	function fnCreateTableSearchProductos(){
+	function fnCreateTableSearchProductos(codigoBuscar){
 			
 			var url_request 		= 
 					"<?php echo base_url(); ?>/core_view/showviewbynamepaginate"+
@@ -1614,7 +1615,7 @@
 						',\"currencyID\"|\"'+$("#txtCurrencyID").val()+'\"'+
 						'}' 
 					) + 
-					"/true/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"//";  
+					"/true/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/"+codigoBuscar+"/";  
 					
 			 // Verificar si la ventana ya está abierta
 			if (objWindowSearchProduct && !objWindowSearchProduct.closed) 

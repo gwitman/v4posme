@@ -61,6 +61,28 @@
 															</div>
 														</div>
 														
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="selectFilter">Sucursal</label>
+															<div class="col-lg-8">
+																<select name="txtBranchID" id="txtBranchID" class="select2">																									
+																		<?php
+																		$counter = 0;
+																		if($objListBranch)
+																		foreach($objListBranch as $ws){
+																			if($counter == 0 )
+																				echo "<option value='".$ws->branchID."' selected >".$ws->name."</option>";
+																			else 
+																				echo "<option value='".$ws->branchID."' >".$ws->name."</option>";
+																			
+																			$counter++;
+																				
+																		}
+																		?>
+																</select>
+															</div>
+														</div>
+														
+														
 														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_taller","divTxtApplied","");  ?> ">
 																<label class="col-lg-4 control-label" for="normal">Aplicado</label>
 																<div class="col-lg-5">

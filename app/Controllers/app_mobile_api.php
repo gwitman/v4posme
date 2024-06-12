@@ -29,7 +29,7 @@ class app_mobile_api extends _BaseController {
 			$objListDocumentCredit = $this->Customer_Credit_Document_Model->get_rowByBalancePendingByCompanyToMobile($companyID);				
 				
 			//Obtener lista de amortizaciones
-			$objListAmortization = $this->Customer_Credit_Amortization_Model->get_rowShareLate($companyID);
+			$objListAmortization = $this->Customer_Credit_Amortization_Model->get_rowShareLateByCompanyToMobile($companyID);
 			
 			return $this->response->setJSON(array(
 				'error'   							=> false,

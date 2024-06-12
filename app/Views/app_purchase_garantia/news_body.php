@@ -62,19 +62,41 @@
 														</div>
 														
 														<div class="form-group">
+															<label class="col-lg-4 control-label" for="selectFilter">Sucursal</label>
+															<div class="col-lg-8">
+																<select name="txtBranchID" id="txtBranchID" class="select2">																									
+																		<?php
+																		$counter = 0;
+																		if($objListBranch)
+																		foreach($objListBranch as $ws){
+																			if($counter == 0 )
+																				echo "<option value='".$ws->branchID."' selected >".$ws->name."</option>";
+																			else 
+																				echo "<option value='".$ws->branchID."' >".$ws->name."</option>";
+																			
+																			$counter++;
+																				
+																		}
+																		?>
+																</select>
+															</div>
+														</div>
+														
+														
+														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_garantia","divPanelAplicado",""); ?> ">
 																<label class="col-lg-4 control-label" for="normal">Aplicado</label>
 																<div class="col-lg-5">
 																	<input type="checkbox" disabled   name="txtIsApplied" id="txtIsApplied" value="1" >
 																</div>
 														</div>
-														<div class="form-group">
+														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_garantia","divPanelCambio",""); ?>">
 																<label class="col-lg-4 control-label" for="normal">Cambio</label>
 																<div class="col-lg-8">
 																	<input class="form-control"   type="text" disabled="disabled" name="txtExchangeRate" id="txtExchangeRate" value="<?php echo $exchangeRate; ?>">
 																</div>
 														</div>
 														
-														<div class="form-group">
+														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_garantia","divPanelEstado",""); ?> ">
 															<label class="col-lg-4 control-label" for="selectFilter">Estado</label>
 															<div class="col-lg-8">
 																<select name="txtStatusID" id="txtStatusID" class="select2">
@@ -88,6 +110,26 @@
 																</select>
 															</div>
 														</div>
+														
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="selectFilter">Status de Grantia</label>
+															<div class="col-lg-8">
+																<select name="txtPriorityID" id="txtPriorityID" class="select2">																									
+																		<?php
+																		$counter = 0;
+																		if($objListCatalogoStatusGarantia)
+																		foreach($objListCatalogoStatusGarantia as $ws){
+																			if($counter == 0)
+																				echo "<option value='".$ws->catalogItemID."' selected>".$ws->name."</option>";
+																			else 
+																				echo "<option value='".$ws->catalogItemID."' >".$ws->name."</option>";
+																			$counter++;
+																		}
+																		?>
+																</select>
+															</div>
+														</div>
+
 														
 														<div class="form-group">
 															<label class="col-lg-4 control-label" for="buttons">Cliente</label>
@@ -160,68 +202,6 @@
 														</div>
 														
 														<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal">Modelo</label>
-																<div class="col-lg-8">																	
-																	<input class="form-control"  type="text"  name="txtDetailReference1" id="txtDetailReference1" value="">												
-																</div>
-														</div>
-														
-															
-														<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal">Serie</label>
-																<div class="col-lg-8">
-																	
-																	<input class="form-control"  type="text"  name="txtDetailReference2" id="txtDetailReference2" value="">												
-																</div>
-														</div>
-														
-														<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal">Problema</label>
-																<div class="col-lg-8">																	
-																	<input class="form-control"  type="text"  name="txtDetailReference3" id="txtDetailReference3" value="">												
-																</div>
-														</div>
-														
-														<div class="form-group">
-															<label class="col-lg-4 control-label" for="normal">Solucion</label>
-															<div class="col-lg-8">
-																<textarea class="form-control"  id="txtDetailReference4" name="txtDetailReference4" rows="6"></textarea>
-															</div>
-														</div>
-														
-													
-												</div>
-												<div class="col-lg-6">
-														
-														<div class="form-group">
-															<label class="col-lg-4 control-label" for="selectFilter">Moneda</label>
-															<div class="col-lg-8">
-																<select name="txtCurrencyID" id="txtCurrencyID" class="select2">																		>																
-																		<?php
-																		$count = 0;
-																		if($objListCurrency)
-																		foreach($objListCurrency as $ws){
-																			if($count == 0)
-																			echo "<option value='".$ws->currencyID."' selected>".$ws->simb."</option>";
-																			else 
-																			echo "<option value='".$ws->currencyID."' >".$ws->simb."</option>";
-																			$count++;
-																		}
-																		?>
-																</select>
-															</div>
-														</div>
-														
-														<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal">Monto</label>
-																<div class="col-lg-8">
-																	<input type="hidden" name="txtDetailTransactionDetailID" value="0">
-																	<input class="form-control"  type="text"  name="txtDetailAmount" id="txtDetailAmount" value="0">												
-																</div>
-														</div>
-														
-													
-														<div class="form-group">
 															<label class="col-lg-4 control-label" for="selectFilter">Articulo</label>
 															<div class="col-lg-8">
 																<select name="txtRouteID" id="txtRouteID" class="select2">																									
@@ -263,6 +243,60 @@
 															</div>
 														</div>
 														
+														
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal">Modelo</label>
+																<div class="col-lg-8">																	
+																	<input class="form-control"  type="text"  name="txtDetailReference1" id="txtDetailReference1" value="">												
+																</div>
+														</div>
+														
+															
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal">Serie</label>
+																<div class="col-lg-8">
+																	
+																	<input class="form-control"  type="text"  name="txtDetailReference2" id="txtDetailReference2" value="">												
+																</div>
+														</div>
+														
+														
+														
+													
+												</div>
+												<div class="col-lg-6">
+														
+														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_garantia","divPanelMoneda",""); ?> ">
+															<label class="col-lg-4 control-label" for="selectFilter">Moneda</label>
+															<div class="col-lg-8">
+																<select name="txtCurrencyID" id="txtCurrencyID" class="select2">																		>																
+																		<?php
+																		$count = 0;
+																		if($objListCurrency)
+																		foreach($objListCurrency as $ws){
+																			if($count == 0)
+																			echo "<option value='".$ws->currencyID."' selected>".$ws->simb."</option>";
+																			else 
+																			echo "<option value='".$ws->currencyID."' >".$ws->simb."</option>";
+																			$count++;
+																		}
+																		?>
+																</select>
+															</div>
+														</div>
+														
+														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_garantia","divPanelMonto",""); ?> ">
+																<label class="col-lg-4 control-label" for="normal">Monto</label>
+																<div class="col-lg-8">
+																	<input type="hidden" name="txtDetailTransactionDetailID" value="0">
+																	<input class="form-control"  type="text"  name="txtDetailAmount" id="txtDetailAmount" value="0">												
+																</div>
+														</div>
+														
+													
+														
+														
+														
 														<div class="form-group">
 															<label class="col-lg-4 control-label" for="selectFilter">Deja cargador</label>
 															<div class="col-lg-8">
@@ -284,28 +318,22 @@
 															</div>
 														</div>
 														
-														
-														
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal">Problema</label>
+																<div class="col-lg-8">																	
+																	<input class="form-control"  type="text"  name="txtDetailReference3" id="txtDetailReference3" value="">												
+																</div>
+														</div>
 														
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="selectFilter">Status de Grantia</label>
+															<label class="col-lg-4 control-label" for="normal">Solucion</label>
 															<div class="col-lg-8">
-																<select name="txtPriorityID" id="txtPriorityID" class="select2">																									
-																		<?php
-																		$counter = 0;
-																		if($objListCatalogoStatusGarantia)
-																		foreach($objListCatalogoStatusGarantia as $ws){
-																			if($counter == 0)
-																				echo "<option value='".$ws->catalogItemID."' selected>".$ws->name."</option>";
-																			else 
-																				echo "<option value='".$ws->catalogItemID."' >".$ws->name."</option>";
-																			$counter++;
-																		}
-																		?>
-																</select>
+																<textarea class="form-control"  id="txtDetailReference4" name="txtDetailReference4" rows="6"></textarea>
 															</div>
 														</div>
-
+														
+														
+														
 														
 												</div>
 											</div>

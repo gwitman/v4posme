@@ -7,14 +7,14 @@ use dbjznvjrsdpypf;
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://waapi.app/api/v1/instances/10179/client/action/send-message" 
+	tb_company_parameter.value = "https://waapi.app/api/v1/instances/12905/client/action/send-message" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WAHTSAP_URL_ENVIO_MENSAJE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "qMAsXGyf0jIswU6xttfuZvORRhCRJnlrLClmlBgMe31db7ac" 
+	tb_company_parameter.value = "YHFr2PqqcQxvE0jbvBAjxdaAeHsNar1QOvoEw2AQfa1b0787" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema

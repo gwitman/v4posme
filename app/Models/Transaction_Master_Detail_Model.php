@@ -554,6 +554,138 @@ class Transaction_Master_Detail_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
+   function GlobalPro_get_Notification_LaptopMayoresA14400_11Meses()
+   {
+	   $db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+	   		
+		$sql = "";
+		$sql = "select   
+				
+				tx.phoneNumber as Destino,
+				
+				CONCAT(
+				tx.transactionNumber,
+				'-',
+				tx.transactionMasterDetailID,
+				'-sendWhatsappGlobalProLaptopMayoresA14400Frecuency11Meses'
+				) as CodigoMensaje,
+
+			
+				CONCAT(
+				'¡Hola ', tx.firstName  ,' [simbol-cono] [simbol-enter][simbol-enter] !Esperamos que hayas disfrutado de tu laptop! [simbol-carita-estrellada]   Queremos recordarte que la garantía de 12 meses está por terminar, es por eso que te ofrecemos un 50% de DESCUENTO en mantenimiento. Para que tu equipo siga funcionando de maravilla,  ¡Aprovecha esta oferta y asegura un rendimiento óptimo!  Saludos,SERVICIO TECNICO GLOBAL PRO!'
+				) as Mensaje 
+
+			from 
+					(
+						select 
+							tmd.transactionMasterDetailID,
+							tm.transactionNumber,
+							nat.firstName,
+							REPLACE(cus.identification, '[^a-zA-Z0-9]', '') as identification,
+							REPLACE(cus.phoneNumber, '[^a-zA-Z0-9]', '') as phoneNumber,
+							tm.createdOn,
+							tmd.itemNameLog 
+						from 
+							tb_transaction_master tm 
+							inner join tb_transaction_master_detail tmd on 
+								tm.transactionMasterID = tmd.transactionMasterID 
+							inner join tb_item i on 
+								tmd.componentItemID = i.itemID 
+							inner join tb_item_category cat on 
+								i.inventoryCategoryID = cat.inventoryCategoryID 
+							inner join tb_naturales nat on 
+								nat.entityID = tm.entityID 
+							inner join tb_customer cus on 
+								nat.entityID = cus.entityID 
+						where 
+							tm.transactionID = 19 and 
+							tm.isActive = 1 and 
+							tmd.isActive = 1 and 
+							cat.`name` = 'Laptops' and 
+							tmd.unitaryAmount > 14400  and 
+							LENGTH(REPLACE(cus.identification, '[^a-zA-Z0-9]', '')) = 14 and 
+							LENGTH(REPLACE(cus.phoneNumber, '[^a-zA-Z0-9]', '')) = 8 and 
+							tm.createdOn <= DATE_SUB(CURDATE(), INTERVAL 229 DAY) and 
+							tm.createdOn >= DATE_SUB(CURDATE(), INTERVAL 331 DAY) 
+							
+					) tx
+			";
+	
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+   
+   function GlobalPro_get_Notification_CumpleAnnos()
+   {
+	   $db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+	   		
+		$sql = "";
+		$sql = "select   
+				
+				tx.phoneNumber as Destino,
+				
+				CONCAT(
+				tx.transactionNumber,
+				'-',
+				tx.transactionMasterDetailID,
+				'-sendWhatsappGlobalProCumpleAnnos'
+				) as CodigoMensaje,
+
+			
+				CONCAT(
+				'¡Felicidades ', tx.firstName  ,' [simbol-cono] [simbol-enter][simbol-enter] !Queremos desearte un muy feliz cumpleaños. Que tu dia esté lleno de alegría, amor y momentos inolvidables. [simbol-enter][simbol-enter] Agradecemos tu confianza en nosotros, esperamos seguir siendo parte de tu vida muchos años mas. [simbol-enter][simbol-enter]!Disfruta tu día al máximo! [simbol-enter][simbol-carita-estrellada]    Saludos,[simbol-enter]GLOBAL PRO NICARAGUA'
+				) as Mensaje 
+
+			from 
+					(
+						select 
+							tmd.transactionMasterDetailID,
+							tm.transactionNumber,
+							nat.firstName,
+							REPLACE(cus.identification, '[^a-zA-Z0-9]', '') as identification,
+							REPLACE(cus.phoneNumber, '[^a-zA-Z0-9]', '') as phoneNumber,
+							tm.createdOn,
+							tmd.itemNameLog 
+						from 
+							tb_transaction_master tm 
+							inner join tb_transaction_master_detail tmd on 
+								tm.transactionMasterID = tmd.transactionMasterID 
+							inner join tb_item i on 
+								tmd.componentItemID = i.itemID 
+							inner join tb_item_category cat on 
+								i.inventoryCategoryID = cat.inventoryCategoryID 
+							inner join tb_naturales nat on 
+								nat.entityID = tm.entityID 
+							inner join tb_customer cus on 
+								nat.entityID = cus.entityID 
+						where 
+							tm.transactionID = 19 and 
+							tm.isActive = 1 and 
+							tmd.isActive = 1 and 
+							cat.`name` = 'Laptops' and 
+							LENGTH(REPLACE(cus.identification, '[^a-zA-Z0-9]', '')) = 14 and 
+							LENGTH(REPLACE(cus.phoneNumber, '[^a-zA-Z0-9]', '')) = 8 and 
+							DATE(DATE_ADD(NOW() , INTERVAL -6 HOUR )) = 
+							STR_TO_DATE(
+								CONCAT(
+									SUBSTRING(cus.identification, 4, 2), 
+									'-', 
+									SUBSTRING(cus.identification, 6, 2), 
+									'-', 
+									SUBSTRING(cus.identification, 8, 2) + 1900 
+								),
+								'%d-%m-%Y' 
+							) 
+					) tx
+			";
+	
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+   
+   
    function RealState_get_ClienteFuenteDeContacto($companyID,$dateFirst,$dateLast)
    {
 	   
@@ -855,13 +987,18 @@ class Transaction_Master_Detail_Model extends Model  {
 			select 
 				tat.firstName,
 				tat.transactionNumber,
-				tat.SiguienteVisita 	
+				tat.SiguienteVisita
 			from 
 				(
 					select 
-						nat.firstName,
+						case 
+							when ci.referenceClientName != '' then 
+								ci.referenceClientName
+							else 
+								nat.firstName
+						end  as firstName ,
 						c.transactionNumber ,
-						DATE_ADD(c.nextVisit , INTERVAL zone.`name`  HOUR) as SiguienteVisita 
+						DATE_ADD(c.nextVisit , INTERVAL zone.`sequence`  MINUTE) as SiguienteVisita 
 					from 
 						tb_transaction_master c 
 						inner join tb_transaction_master_info ci on 
@@ -881,10 +1018,21 @@ class Transaction_Master_Detail_Model extends Model  {
 						c.nextVisit is not null 
 				)  tat 
 			where 
-				tat.SiguienteVisita < DATE_ADD(NOW() , INTERVAL 2 HOUR)
+				tat.SiguienteVisita < DATE_ADD( 
+					DATE_ADD(
+						NOW() , 
+						INTERVAL ".APP_HOUR_DIFERENCE_MYSQL_EMBEDDED."
+					), 
+					INTERVAL 2 HOUR
+				) AND 
+				tat.SiguienteVisita > DATE_ADD(
+						NOW() , 
+						INTERVAL ".APP_HOUR_DIFERENCE_MYSQL_EMBEDDED."
+				)
 						
 		");
 	
+		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
 			

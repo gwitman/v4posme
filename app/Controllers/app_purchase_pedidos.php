@@ -108,7 +108,7 @@ class app_purchase_pedidos extends _BaseController {
 			$dataView["objBilling"]					= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,$dataView["objTransactionMaster"]->note);
 			
 			
-			
+			$dataView["objListBranch"]			= $this->Branch_Model->getByCompany($companyID);
 			$dataView["objListCurrency"]		= $objListCurrency;
 			$dataView["company"]				= $dataSession["company"];
 			$dataView["companyID"]				= $dataSession["user"]->companyID;
@@ -290,6 +290,7 @@ class app_purchase_pedidos extends _BaseController {
 			//throw new \Exception("EL DOCUMENTO NO PUEDE ACTUALIZARCE, EL CICLO CONTABLE ESTA CERRADO");
 			
 			//Actualizar Maestro			
+			$objTMNew["branchID"]						= /*inicio get post*/ $this->request->getPost("txtBranchID");
 			$objTMNew["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
 			$objTMNew["transactionOn2"]					= /*inicio get post*/ $this->request->getPost("txtDate2");
 			$objTMNew["statusIDChangeOn"]				= date("Y-m-d H:m:s");
@@ -552,7 +553,7 @@ class app_purchase_pedidos extends _BaseController {
 			
 			$objTM["companyID"] 					= $dataSession["user"]->companyID;
 			$objTM["transactionID"] 				= $transactionID;			
-			$objTM["branchID"]						= $dataSession["user"]->branchID;
+			$objTM["branchID"]						= /*inicio get post*/ $this->request->getPost("txtBranchID");
 			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_workshop_pedido",0);
 			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($dataSession["user"]->companyID,$transactionID);		
 			
@@ -831,6 +832,7 @@ class app_purchase_pedidos extends _BaseController {
 			$dataView["branchID"]				= $dataSession["branch"]->branchID;
 			$dataView["branchName"]				= $dataSession["branch"]->name;
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
+			$dataView["objListBranch"]			= $this->Branch_Model->getByCompany($companyID);
 			
 			$objParameterExchangePurchase		= $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_PURCHASE",$companyID);
 			$dataView["exchangeRatePurchase"]	= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID) - $objParameterExchangePurchase->value;			

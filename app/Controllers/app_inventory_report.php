@@ -420,6 +420,10 @@ class app_inventory_report extends _BaseController {
 			{
 				return view("app_inventory_report/list_item/view_a_disemp_agro_el_labrador",$objDataResult);//--finview-r
 			}
+			else if($objCompany->type == "galmcuts")
+			{
+				return view("app_inventory_report/list_item/view_a_disemp_galmcuts",$objDataResult);//--finview-r
+			}
 			else
 			{
 				return view("app_inventory_report/list_item/view_a_disemp",$objDataResult);//--finview-r

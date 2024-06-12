@@ -15,7 +15,8 @@
 	
 </div>
 
-
-<div id="modalDialogClaveMesero" title="Clave" class="dialog">
-	<input type="password" id="txtClaveMesero" >
+<div style="display:none">
+	<div id="modalDialogClaveMesero" title="Clave" class="dialog">
+		<input type="password" id="txtClaveMesero" >
+	</div>
 </div>

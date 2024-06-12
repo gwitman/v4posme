@@ -211,13 +211,40 @@ class Customer_Model extends Model  {
 		$builder	= $db->table("tb_customer");
 			
 		$sql = "";
-		$sql = sprintf("select 
-		i.companyID, i.branchID, i.entityID, i.customerNumber, i.identification, nat.firstName,nat.lastName  
-		");
-		$sql = $sql.sprintf(" from tb_customer i");
-		$sql = $sql.sprintf(" inner join  tb_naturales nat on nat.entityID = i.entityID");				
-		$sql = $sql.sprintf(" where i.companyID = $companyID");
-		$sql = $sql.sprintf(" and i.isActive= 1");		
+		$sql = sprintf("
+		select 
+				i.companyID, 
+				i.branchID, 
+				i.entityID, 
+				i.customerNumber, 
+				i.identification, 
+				nat.firstName,
+				nat.lastName,
+				cur.simbol as currencyName,
+				cl.currencyID as currencyID,
+				cl.customerCreditLineID,
+				IFNULL(sum(cdd.balance),0) as balance
+		from 
+				tb_customer i
+				inner join  tb_naturales nat on nat.entityID = i.entityID 
+				inner join  tb_customer_credit_line cl on cl.entityID = i.entityID 
+				inner join tb_currency cur on  cur.currencyID = cl.currencyID 					
+				left join  tb_customer_credit_document cdd on cdd.entityID = i.entityID and cdd.balance > 0 
+		where 
+				i.companyID = $companyID 
+				and i.isActive= 1
+		group by 
+				i.companyID, 
+				i.branchID, 
+				i.entityID, 
+				i.customerNumber, 
+				i.identification, 
+				nat.firstName,
+				nat.lastName,
+				cur.simbol,
+				cl.currencyID ,
+				cl.customerCreditLineID
+		");		
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();

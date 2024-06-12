@@ -146,6 +146,29 @@ class Customer_Credit_Amortization_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
+   function get_rowShareLateByCompanyToMobile($companyID){
+		$db 	= db_connect();
+		
+		
+	    $sql = "";
+		$sql = sprintf("select c.customerNumber,n.firstName,n.lastName,c.birthDate,ccd.documentNumber,ccd.currencyID,ccd.reportSinRiesgo,cca.creditAmortizationID,cca.dateApply,cca.remaining as balance,cca.remaining");
+		$sql = $sql.sprintf(" from tb_customer c");
+		$sql = $sql.sprintf(" inner join  tb_naturales n on n.entityID = c.entityID");		
+		$sql = $sql.sprintf(" inner join  tb_customer_credit_document ccd on c.entityID = ccd.entityID");		
+		$sql = $sql.sprintf(" inner join  tb_customer_credit_amoritization cca on ccd.customerCreditDocumentID = cca.customerCreditDocumentID");		
+		$sql = $sql.sprintf(" inner join  tb_workflow_stage cca_status on cca_status.workflowStageID = cca.statusID");
+		$sql = $sql.sprintf(" inner join  tb_workflow_stage ccd_status on ccd_status.workflowStageID = ccd.statusID");
+		$sql = $sql.sprintf(" where c.companyID = $companyID");
+		$sql = $sql.sprintf(" and ccd_status.vinculable= 1");
+		$sql = $sql.sprintf(" and c.isActive= 1");
+		$sql = $sql.sprintf(" and cca.remaining > 0");
+		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+   
+   
    function get_rowBySummaryInformationCredit($documentNumber)
    {
 	   $db 		= db_connect();

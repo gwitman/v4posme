@@ -562,6 +562,7 @@ class app_box_report extends _BaseController {
 			$filteredArray 		= [];
 			$filterIndex 		= 0;			
 			foreach($filterArray as $key => $value ){ $filteredArray[$filterIndex] = $value;  $filterIndex++; }
+			
 			if(count($filteredArray) > 0 && $dataSession["role"]->isAdmin == 0 ){
 				$filteredArray = str_replace("ES_PERMITIDO_MOSTRAR_INFO_DE_","",$filteredArray[0]->display);
 				$filteredArray = str_replace("_DAY_IN_app_box_report_share","",$filteredArray);
@@ -571,7 +572,7 @@ class app_box_report extends _BaseController {
 				$filteredArray = -1;
 			}
 			
-			
+						
 			$viewReport			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"viewReport");//--finuri	
 			$startOn			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"startOn");//--finuri
 			$endOn				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri			
@@ -666,7 +667,9 @@ class app_box_report extends _BaseController {
 			
 			
 				if(isset($objDataSales))
+				{
 				$objDataResult["objSales"]					= $objDataSales;
+				}
 				else
 				$objDataResult["objSales"]					= NULL;
 			
@@ -698,7 +701,11 @@ class app_box_report extends _BaseController {
 				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_customer_credit" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
 				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
 				
+				if($objCompany->type == "galmcuts")
+				$html = view("app_box_report/share_summary/view_a_disemp_glamcuts",$objDataResult);//--finview-r				
+				else 
 				$html = view("app_box_report/share_summary/view_a_disemp",$objDataResult);//--finview-r				
+			
 				$this->dompdf->loadHTML($html);
 			
 				//1cm = 29.34666puntos

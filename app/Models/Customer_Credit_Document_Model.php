@@ -218,13 +218,15 @@ class Customer_Credit_Document_Model extends Model  {
 				d.entityID,
 				d.customerCreditDocumentID,
 				d.customerCreditLineID,
-				d.documentNumber,
-				d.balance as balanceDocument,
+				d.documentNumber,				
 				d.currencyID,
+				cur.simbol as currencyName,
 				d.statusID as statusDocument,
+				min(ex.ratio) as exchangeRate,
 				min(a.creditAmortizationID) as creditAmortizationID,
-				min(a.dateApply) as dateApply,	
-				sum(a.remaining) as remaingin,
+				min(a.dateApply) as dateApply,					
+				sum(a.remaining) as balance,
+				sum(a.remaining) as remaining,
 				min(a.statusID) as statusAmotization,
 				min(wsa.name) as statusAmortizatonName
 			from 
@@ -235,10 +237,17 @@ class Customer_Credit_Document_Model extends Model  {
 					wsa.workflowStageID = a.statusID 
 				inner join tb_workflow_stage wsd on 
 					wsd.workflowStageID = d.statusID 
-					
+				inner join tb_currency cur on 
+					cur.currencyID = d.currencyID 
+				inner join tb_customer_credit_line crd on 
+					crd.customerCreditLineID = d.customerCreditLineID 
+				left join tb_exchange_rate ex on 
+					ex.currencyID = 1 and 
+					ex.targetCurrencyID = 2 and 
+					ex.date = DATE(now()) 
 			where 
 				d.isActive = 1 and 
-				d.companyID = $companyID and 
+				d.companyID = $companyID  and 
 				a.isActive = 1 and 
 				wsa.aplicable = 1 and 
 				wsd.aplicable = 1 and 
@@ -247,9 +256,9 @@ class Customer_Credit_Document_Model extends Model  {
 				d.entityID,
 				d.customerCreditDocumentID,
 				d.customerCreditLineID,
-				d.documentNumber,
-				d.balance,
+				d.documentNumber,				
 				d.currencyID,
+				cur.name, 
 				d.statusID
 			order by 
 				d.customerCreditDocumentID 

@@ -231,6 +231,11 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 			result = false;
 		}
 		",
+		strtolower('globalpro_app_purchase_garantia_divPanelAplicado') 												=> "hidden",
+		strtolower('globalpro_app_purchase_garantia_divPanelCambio') 												=> "hidden",
+		strtolower('globalpro_app_purchase_garantia_divPanelEstado') 												=> "hidden",
+		strtolower('globalpro_app_purchase_garantia_divPanelMoneda') 												=> "hidden",
+		strtolower('globalpro_app_purchase_garantia_divPanelMonto') 												=> "hidden",
 					
 					
 		/*Ferreteria Mateo*/			

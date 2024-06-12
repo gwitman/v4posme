@@ -897,6 +897,8 @@ $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNorm
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1AgroServicioElLabrador','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1AgroServicioElLabrador');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1AgroServicioElLabrador/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1AgroServicioElLabrador');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1GlamCuts','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1GlamCuts');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1GlamCuts/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1GlamCuts');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1MarysCosmetic','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1MarysCosmetic');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1MarysCosmetic/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1MarysCosmetic');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Axceso','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1Axceso');
@@ -952,6 +954,8 @@ $routes->match(['get','post'],'app_notification/fillSendWhatsappCustomer','app_n
 $routes->match(['get','post'],'app_notification/sendWhatsappPosMeCalendar','app_notification::sendWhatsappPosMeCalendar');
 $routes->match(['get','post'],'app_notification/sendWhatsappPosMeSendMessage','app_notification::sendWhatsappPosMeSendMessage');
 $routes->match(['get','post'],'app_notification/sendWhatsappGlobalProLaptopMenorA14400Frecuency7Meses','app_notification::sendWhatsappGlobalProLaptopMenorA14400Frecuency7Meses');
+$routes->match(['get','post'],'app_notification/sendWhatsappGlobalProLaptopMayoresA14400Frecuency11Meses','app_notification::sendWhatsappGlobalProLaptopMayoresA14400Frecuency11Meses');
+$routes->match(['get','post'],'app_notification/sendWhatsappGlobalProCumpleAnnos','app_notification::sendWhatsappGlobalProCumpleAnnos');
 $routes->match(['get','post'],'app_notification/sendEmailGlamCustCitas','app_notification::sendEmailGlamCustCitas');
 $routes->match(['get','post'],'app_notification/fillTipoCambio','app_notification::fillTipoCambio');
 $routes->match(['get','post'],'app_notification/fillInventarioMinimo','app_notification::fillInventarioMinimo');

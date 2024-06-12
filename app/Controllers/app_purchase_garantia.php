@@ -89,7 +89,9 @@ class app_purchase_garantia extends _BaseController {
 			$dataView["objTransactionMaster"]->transactionOn 	= date_format(date_create($dataView["objTransactionMaster"]->transactionOn),"Y-m-d");
 			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			
+			$dataView["objListBranch"]			= $this->Branch_Model->getByCompany($companyID);
 			$dataView["objListCurrency"]		= $objListCurrency;
+			$dataView["company"]				= $dataSession["company"];
 			$dataView["companyID"]				= $dataSession["user"]->companyID;
 			$dataView["userID"]					= $dataSession["user"]->userID;
 			$dataView["userName"]				= $dataSession["user"]->nickname;
@@ -267,6 +269,7 @@ class app_purchase_garantia extends _BaseController {
 			
 			//Actualizar Maestro			
 			$objTMNew["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
+			$objTMNew["branchID"]						= /*inicio get post*/ $this->request->getPost("txtBranchID");
 			$objTMNew["statusIDChangeOn"]				= date("Y-m-d H:m:s");			
 			$objTMNew["currencyID"] 					= /*inicio get post*/ $this->request->getPost("txtCurrencyID");//--fin peticion get o post			
 			$objTMNew["exchangeRate"]					= $this->core_web_currency->getRatio($dataSession["user"]->companyID,date("Y-m-d"),1,$objTM->currencyID2,$objTMNew["currencyID"]);
@@ -365,7 +368,7 @@ class app_purchase_garantia extends _BaseController {
 			
 			$objTM["companyID"] 					= $dataSession["user"]->companyID;
 			$objTM["transactionID"] 				= $transactionID;			
-			$objTM["branchID"]						= $dataSession["user"]->branchID;
+			$objTM["branchID"]						= /*inicio get post*/ $this->request->getPost("txtBranchID");
 			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_workshop_garantias",0);
 			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($dataSession["user"]->companyID,$transactionID);			
 			$objTM["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
@@ -532,10 +535,11 @@ class app_purchase_garantia extends _BaseController {
 		
 		
 			//Tipo de Factura
+			$dataView["objListBranch"]			= $this->Branch_Model->getByCompany($companyID);
 			$dataView["objComponentBilling"]	= $objComponentBilling;
 			$dataView["objComponentCustomer"]	= $objComponentCustomer;
 			$dataView["objComponentEmployer"]	= $objComponentEmployer;
-			
+			$dataView["company"]				= $dataSession["company"];
 			$dataView["objListCurrency"]		= $objListCurrency;
 			$dataView["companyID"]				= $dataSession["user"]->companyID;
 			$dataView["userID"]					= $dataSession["user"]->userID;

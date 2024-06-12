@@ -121,10 +121,7 @@
 						}
 						
 						//Validar Monto
-						if($("#txtDetailAmount").val() == "0"){
-							fnShowNotification("El monto no puede ser 0","error",timerNotification);
-							result = false;
-						}
+						
 						
 						if($("#txtNote").val() == ""){
 							fnShowNotification("Seleccionar factura","error",timerNotification);
