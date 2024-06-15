@@ -484,6 +484,9 @@ class app_inventory_item extends _BaseController {
 					$objItem["realStateCityID"]				= $municipioId;
 					$objItem["modifiedOn"]					= helper_getDateTime();
 					$objItem["realStateEmployerAgentID"]	= /*inicio get post*/ $this->request->getPost("txtEmployerID");
+					$objItem["realStateStyleKitchen"] 		= /*inicio get post*/ $this->request->getPost("txtRealStateStyleKitchen");
+					$objItem["realStateEmail"] 				= /*inicio get post*/ $this->request->getPost("txtRealStateEmail");
+					$objItem["realStatePhone"] 				= /*inicio get post*/ $this->request->getPost("txtRealStatePhone");
 					
 					if($method02 != "apinew")
 					{						
@@ -788,6 +791,8 @@ class app_inventory_item extends _BaseController {
 						$objNewItem["realStateCityID"]				= $municipioId;
 						$objNewItem["modifiedOn"]					= helper_getDateTime();
 						$objNewItem["realStateEmployerAgentID"]		= /*inicio get post*/ $this->request->getPost("txtEmployerID");
+						$objNewItem["realStateEmail"] 				= /*inicio get post*/ $this->request->getPost("txtRealStateEmail");
+						$objNewItem["realStatePhone"] 				= /*inicio get post*/ $this->request->getPost("txtRealStatePhone");
 						
 						//Actualizar Objeto
 						$row_affected 	= $this->Item_Model->update_app_posme($companyID,$itemID,$objNewItem);

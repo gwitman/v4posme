@@ -1697,7 +1697,12 @@ class app_notification extends _BaseController {
 			$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);			
 			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 			
+			
 			$query			= "CALL pr_box_get_report_closed(?,?,?,?,?,?,?);";
+			if(	$objCompany->type=="galmcuts" )
+			$query			= "CALL pr_box_get_report_closed_glamcuts(?,?,?,?,?,?,?);";
+		
+		
 			$objData		= $this->Bd_Model->executeRender(
 				$query,
 				[$userID,$tocken,$companyID,$authorization,$fechaNow,$fechaBefore,$userIDFilter]

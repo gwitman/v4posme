@@ -398,6 +398,20 @@
 										</div>
 								</div>	
 
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldTelefonoRealState",""); ?> ">
+										<label class="col-lg-4 control-label" for="normal">Telefono</label>
+										<div class="col-lg-8">
+											<input class="form-control"  type="text"  name="txtRealStatePhone" id="txtRealStatePhone" value="<?php echo $objItem->realStatePhone; ?>">												
+										</div>
+								</div>
+								
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldEmailRealState",""); ?> ">
+										<label class="col-lg-4 control-label" for="normal">Email</label>
+										<div class="col-lg-8">
+											<input class="form-control"  type="text"  name="txtRealStateEmail" id="txtRealStateEmail" value="<?php echo $objItem->realStateEmail; ?>">												
+										</div>
+								</div>
+								
 								
 								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?> ">
 									<label class="col-lg-4 control-label" for="normal">Baño de servicio</label>

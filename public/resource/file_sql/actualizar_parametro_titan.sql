@@ -1282,7 +1282,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'TITAN Auto Repuestos y Accesorios' , address = 'Rotonda Universitaria, Plaza 101 - Modulo 21.' ,
-	flavorID = 490,type='default'
+	flavorID = 490,type='titanes'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

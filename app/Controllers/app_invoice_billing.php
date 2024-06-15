@@ -843,7 +843,8 @@ class app_invoice_billing extends _BaseController {
 			$objTMInfoNew["receiptAmountBankDolID"]					= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountBankDol_BankID"));
 			$objTMInfoNew["receiptAmountCardBankID"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountTarjeta_BankID"));
 			$objTMInfoNew["receiptAmountCardBankDolID"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountTarjetaDol_BankID"));
-			
+			$objTMInfoNew["reference1"]								= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtTMIReference1"));
+			$objTMInfoNew["reference2"]								= "not_used";
 			
 			
 			
@@ -1614,7 +1615,9 @@ class app_invoice_billing extends _BaseController {
 			$objTMInfo["receiptAmountBankID"]						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountBank_BankID"));
 			$objTMInfo["receiptAmountBankDolID"]					= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountBankDol_BankID"));
 			$objTMInfo["receiptAmountCardBankID"]					= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountTarjeta_BankID"));
-			$objTMInfo["receiptAmountCardBankDolID"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountTarjetaDol_BankID"));
+			$objTMInfo["receiptAmountCardBankDolID"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountTarjetaDol_BankID"));			
+			$objTMInfo["reference1"]								= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtTMIReference1"));
+			$objTMInfo["reference2"]								= "not_used";
 			
 			
 			$this->Transaction_Master_Info_Model->insert_app_posme($objTMInfo);

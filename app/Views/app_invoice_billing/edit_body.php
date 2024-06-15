@@ -513,10 +513,13 @@
 					</div>
 					
 					
-					<div class="tab-pane fade" id="dropdown">
-						
-							
-						
+					<div class="tab-pane fade" id="dropdown">						
+						<div class="form-group">
+								<label class="col-lg-2 control-label" for="normal">Procedimiento</label>
+								<div class="col-lg-10">
+									<textarea class="form-control" type="text"  name="txtTMIReference1" id="txtTMIReference1" ><?php echo $objTransactionMasterInfo->reference1; ?></textarea>
+								</div>
+						</div>								
 					</div>
 					<div class="tab-pane fade" id="dropdown-file">
 						

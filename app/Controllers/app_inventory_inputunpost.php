@@ -1194,7 +1194,9 @@ class app_inventory_inputunpost extends _BaseController {
 																			$this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID)->value,
 																			$this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID)->value,
 																			$this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID)->value
-																	   ]
+																	   ],
+										'txtRealStateEmail'			= "",
+										'txtRealStatePhone'			= ""
 							];
 							
 							

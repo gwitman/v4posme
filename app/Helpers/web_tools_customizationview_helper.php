@@ -378,6 +378,23 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 			result = false;
 		}
 		
+		//Validar que el campo sea solo numero
+		var regexOnlyNumber = /^[0-9]+$/;		
+		if (!regexOnlyNumber.test($('#txtRealStatePhone').val())) 
+		{
+			fnShowNotification('El campo Telefono solo puede contener numeros ','error',timerNotification);
+			result = false;
+		}
+		
+		//Validar que el campo sea solo numero		
+		var regexOnlyNumber = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+		if (!regexOnlyNumber.test($('#txtRealStateEmail').val())) 
+		{
+			fnShowNotification('El campo Email no es valido','error',timerNotification);
+			result = false;
+		}
+		
+		
 		//Validar que sea un enlace correcto
 		var regexOnlyNumber = /^(ftp|http|https):\/\/[^ \"]+$/;
 		if (!regexOnlyNumber.test($('#txtRealStateLinkPaginaWeb').val())) 
@@ -585,8 +602,10 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
                 $('#divSiguienteVisita').html(tivReferencia);
 				
 			});
-		</script>"
+		</script>",
 		
+		/*Titanes*/
+		strtolower('titanes_core_web_menu_CXP')			 															=> "PROVEEDORES",
 		
 	);
 	
