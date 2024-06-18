@@ -601,7 +601,11 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
                 $('#divReferencia').html(tivSiguienteVisita);
                 $('#divSiguienteVisita').html(tivReferencia);
 				
-				if( $('#txtUserID').val() == '-2' )
+				if( 
+					$('#txtUserID').val() == '494' || 
+					$('#txtUserID').val() == '495' || 
+					$('#txtUserID').val() == '496' 
+				)
 				{
 					$($('.btnAcept')[0]).addClass('hidden');
 				}
@@ -627,6 +631,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('fn_blandon_app_invoice_billing_divDesembolsoEfectivo')	 										=> "hidden",
 		strtolower('fn_blandon_app_invoice_billing_divReportSinRiesgo')												=> "hidden",
 		strtolower('fn_blandon_app_invoice_billing_divProviderCredit')												=> "hidden",
+		strtolower('fn_blandon_app_invoice_billing_divApplied')														=> "hidden",
 		
 		
 		strtolower('fn_blandon_app_invoice_billing_txtTermReference')	 											=> "Plazo",
@@ -638,10 +643,13 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 				if( $('#txtTransactionMasterID').val() == undefined )
 				$('#txtNote').val('');
 			
-				$('#divBeneficiario').appendTo('#divInformacionLeft');
-				$('#divCedula').appendTo('#divInformacionLeft');
-				$('#divZone').appendTo('#divInformacionLeft');
-				$('#divTrasuctionPhone').appendTo('#divInformacionLeft');
+				$('#divBeneficiario').appendTo('#divInformacionLeftReference');
+				$('#divCedula').appendTo('#divInformacionLeftReference');
+				$('#divZone').appendTo('#divInformacionLeftReference');
+				$('#divTrasuctionPhone').appendTo('#divInformacionLeftReference');
+				$('#divFixedExpenses').appendTo('#divInformacionRightReference');
+				$('#divNote').appendTo('#divInformacionLeftZone');
+				
 			});
 		</script>
 		",		

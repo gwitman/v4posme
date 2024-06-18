@@ -94,7 +94,7 @@
 								</div>
 								
 								
-								<div class="form-group">
+								<div class="form-group" id="divNote" >
 									<label class="col-lg-4 control-label" for="normal">Descripcion</label>
 									<div class="col-lg-8">										
 										<input class="form-control"   type="text" name="txtNote" id="txtNote" value="<?php echo $objTransactionMaster->note; ?>">
@@ -217,7 +217,7 @@
 					</div>
 					<div class="tab-pane fade" id="profile">
 						<div class="row">
-							<div class="col-lg-6">
+							<div class="col-lg-6" id="divInformacionLeftZone" >
 								<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divTxtZone",""); ?>" id="divZone"  >
 									<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_invoice_billing","divLabelZone","Zona"); ?></label>
 									<div class="col-lg-8">
@@ -282,7 +282,7 @@
 								
 								
 							</div>
-							<div class="col-lg-6">
+							<div class="col-lg-6" id="divInformacionRightZone" >
 							
 								<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divHiddenReference",""); ?>  " id="divReferencia"> 
 										<label class="col-lg-4 control-label" for="normal">Referencia</label>
@@ -357,7 +357,7 @@
 					</div>
 					<div class="tab-pane fade" id="credit">
 						<div class="row">
-								<div class="col-lg-6">
+								<div class="col-lg-6" id="divInformacionLeftReference">
 								
 									<div class="form-group  <?php echo getBehavio($company->type,"app_invoice_billing","divProviderCredit",""); ?> ">
 											<label class="col-lg-4 control-label" for="normal">Proveedor de Credito</label>
@@ -380,7 +380,7 @@
 											</div>
 									</div>
 									
-									<div class="form-group">
+									<div class="form-group" id="divFixedExpenses" >
 											<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionExpenseLabel","% De Gasto."); ?></label>
 											<div class="col-lg-8">
 												<input class="form-control"   type="text" name="txtFixedExpenses" id="txtFixedExpenses" value="<?php echo helper_RequestGetValueObjet($objTransactionMasterDetailCredit,"reference1",0); ?>">
@@ -391,7 +391,7 @@
 											</div>
 									</div>
 									
-									<div class="form-group">
+									<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divApplied",""); ?>  ">
 											<label class="col-lg-4 control-label" for="normal">Aplicado</label>
 											<div class="col-lg-8">
 												<input type="checkbox" disabled   name="txtIsApplied" id="txtIsApplied" value="1" <?php if($objTransactionMaster->isApplied) echo "checked"; ?> >
@@ -414,7 +414,7 @@
 									
 									
 								</div>
-								<div class="col-lg-6">
+								<div class="col-lg-6" id="divInformacionRightReference"  >
 								
 									<div class="form-group">
 										<label class="col-lg-4 control-label" for="datepicker">Primer Pago</label>

@@ -104,9 +104,9 @@
 				var data 		= objTableListView.fnGetData(objRowTableListView);		
 
 				if(objParameterPantallaParaFacturar == "-")	
-					window.location	= "<?php echo base_url(); ?>/app_invoice_billing/edit/companyID/"+data[0]+"/transactionID/"+data[1]+"/transactionMasterID/"+data[2];
+					window.location	= "<?php echo base_url(); ?>/app_invoice_billing/edit/companyID/"+data[0]+"/transactionID/"+data[1]+"/transactionMasterID/"+data[2]+"/codigoMesero/"+$("#txtClaveMesero").val() ; 
 				else
-					window.location	= "<?php echo base_url(); ?>/app_invoice_billing/"+objParameterPantallaParaFacturar+"/companyID/"+data[0]+"/transactionID/"+data[1]+"/transactionMasterID/"+data[2];					
+					window.location	= "<?php echo base_url(); ?>/app_invoice_billing/"+objParameterPantallaParaFacturar+"/companyID/"+data[0]+"/transactionID/"+data[1]+"/transactionMasterID/"+data[2]+"/codigoMesero/"+$("#txtClaveMesero").val();
 			}
 			else{
 				fnShowNotification("Seleccionar el Registro...","error");
