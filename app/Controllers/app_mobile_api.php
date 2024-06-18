@@ -31,9 +31,10 @@ class app_mobile_api extends _BaseController {
 			//Obtener lista de amortizaciones
 			$objListAmortization = $this->Customer_Credit_Amortization_Model->get_rowShareLateByCompanyToMobile($companyID);
 			
+			
 			return $this->response->setJSON(array(
 				'error'   							=> false,
-				'message' 							=> SUCCESS,
+				'message' 							=> SUCCESS,				
 				'ListItem'  						=> $objListItem,
 				'ListCustomer'  					=> $objListCustomer,
 				'ListParameter'  					=> $objListParameter,

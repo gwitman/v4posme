@@ -813,7 +813,7 @@
 		};		
 		
 		
-		if(varAutoAPlicar == "true" && objTableDetail.fnGetData().length == 0){
+		if( /*varAutoAPlicar == "true" && */ objTableDetail.fnGetData().length == 0){
 			fnShowNotification("La factura no puede estar vacia","error",timerNotification);
 			result = false;
 			fnWaitClose();
@@ -869,6 +869,7 @@
 		//Validaciones si la factura es al credito.
 		if(invoiceTypeCredit){
 			
+			<?php echo getBehavio($company->type,"app_invoice_billing","scriptValidateInCredit",""); ?>  
 			
 			//Validar Fecha del Primer Pago si es de Credito
 			if($("#txtDateFirst").val() == "" && switchDesembolso){

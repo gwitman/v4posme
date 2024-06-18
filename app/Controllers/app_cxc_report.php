@@ -133,6 +133,8 @@ class app_cxc_report extends _BaseController {
 				
 				if($objDataResult["objFirstDetail"] != NULL)
 				{
+					if($objCompany->type == "fn_blandon")
+						return view("app_cxc_report/document_contract/view_a_disemp_fnblandon",$objDataResult);//--finview-r
 					if($view_name == "view_a_disemp_provider")
 						return view("app_cxc_report/document_contract/view_a_disemp_provider",$objDataResult);//--finview-r
 					else if($view_name == "view_a_disemp_protocolo")
@@ -261,8 +263,9 @@ class app_cxc_report extends _BaseController {
 				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_document_credit" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
 				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
 				
-				
-				if($view_name)
+				if($objCompany->type == "fn_blandon")
+					return view("app_cxc_report/document_credit/view_a_disemp_fnblandon",$objDataResult);//--finview-r
+				else if($view_name)
 					return view("app_cxc_report/document_credit/view_a_disemp_fidlocal",$objDataResult);//--finview-r
 				else
 					return view("app_cxc_report/document_credit/view_a_disemp",$objDataResult);//--finview-r

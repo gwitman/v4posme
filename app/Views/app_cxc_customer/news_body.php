@@ -458,7 +458,7 @@
 								<div class="form-group">
 										<label class="col-lg-4 control-label" for="normal">Limite Credito US$</label>
 										<div class="col-lg-8">
-											<input class="form-control txt-numeric"  type="text"  name="txtLimitCreditDol" id="txtLimitCreditDol" value="20000.00">												
+											<input class="form-control txt-numeric"  type="text"  name="txtLimitCreditDol" id="txtLimitCreditDol" value="900000.00">												
 										</div>
 								</div>
 								<div class="form-group">

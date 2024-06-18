@@ -75,7 +75,7 @@
 														<div class="col-lg-10">
 															<div class="input-group">
 																<span class="input-group-addon">$</span>
-																<input class="form-control txt-numeric" id="txtLimitCredit" type="text" placeholder="" value="80000.00">
+																<input class="form-control txt-numeric" id="txtLimitCredit" type="text" placeholder="" value="30000000.00">
 															</div>
 														</div>
 													</div>
@@ -85,7 +85,7 @@
 														<div class="col-lg-10">
 															<div class="input-group">
 																<span class="input-group-addon">%</span>
-																<input class="form-control txt-numeric" id="txtInteresYear" type="text" value="0.00">
+																<input class="form-control txt-numeric" id="txtInteresYear" type="text" value="<?php echo $objParameterInteresDefault; ?>">
 															</div>
 														</div>
 													</div>

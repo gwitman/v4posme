@@ -648,6 +648,7 @@ class app_cxc_customer extends _BaseController {
 			$frecuencyDefault 			= $this->core_web_parameter->getParameterValue("CXC_FRECUENCIA_PAY_DEFAULT",$companyID);
 			$creditLineDefault 			= $this->core_web_parameter->getParameterValue("CXC_CREDIT_LINE_DEFAULT",$companyID);
 			$validarCedula 				= $this->core_web_parameter->getParameterValue("CXC_VALIDAR_CEDULA_REPETIDA",$companyID);
+			$interesDefault				= $this->core_web_parameter->getParameterValue("CXC_INTERES_DEFAULT",$companyID);
 			
 			
 			$paisID = empty (/*inicio get post*/ $this->request->getPost('txtCountryID') /*//--fin peticion get o post*/ ) ?  $paisDefault : /*inicio get post*/ $this->request->getPost('txtCountryID');  /*//--fin peticion get o post*/
@@ -802,13 +803,16 @@ class app_cxc_customer extends _BaseController {
 			$arrayListTypeAmortization		= /*inicio get post*/ $this->request->getPost("txtTypeAmortization");			
 			$limitCreditLine 				= 0;
 			
+			
+			
+			
 			if(empty($arrayListCustomerCreditLineID))
 			{
 				 $arrayListCustomerCreditLineID[0]	= 1;
 				 $arrayListCreditLineID[0] 			= $creditLineDefault;
 				 $arrayListCreditCurrencyID[0]		= $this->core_web_currency->getCurrencyDefault($companyID)->currencyID;
-				 $arrayListCreditLimit[0]			= 80000;
-				 $arrayListCreditInterestYear[0]	= 0;
+				 $arrayListCreditLimit[0]			= 300000;
+				 $arrayListCreditInterestYear[0]	= $interesDefault;
 				 $arrayListCreditInterestPay[0]		= 0;
 				 $arrayListCreditTotalPay[0]		= 0;
 				 $arrayListCreditTotalDefeated[0]	= 0;
@@ -1238,6 +1242,10 @@ class app_cxc_customer extends _BaseController {
 			$objParameterAmortizationDefault 	= $objParameterAmortizationDefault->value;
 			$dataView["objParameterAmortizationDefault"] = $objParameterAmortizationDefault;
 			
+			
+			$objParameterInteresDefault						= $this->core_web_parameter->getParameter("CXC_INTERES_DEFAULT",$companyID);			
+			$objParameterInteresDefault 					= $objParameterInteresDefault->value;
+			$dataView["objParameterInteresDefault"] 		= $objParameterInteresDefault;
 			
 			$objParameterPayDefault						= $this->core_web_parameter->getParameter("CXC_FRECUENCIA_PAY_DEFAULT",$companyID);			
 			$objParameterPayDefault 					= $objParameterPayDefault->value;

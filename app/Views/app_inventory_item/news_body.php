@@ -379,12 +379,20 @@
 												$count = 0;
 												if($objListCurrency)
 												foreach($objListCurrency as $currency){
-													if($count == 0 && $company->type != "luciaralstate" )
-														echo "<option value='".$currency->currencyID."' selected >".$currency->name."</option>";
-													else if($count == 1 && $company->type == "luciaralstate" )
-														echo "<option value='".$currency->currencyID."' selected >".$currency->name."</option>";
-													else
-														echo "<option value='".$currency->currencyID."'  >".$currency->name."</option>";
+													
+													if( $company->type == "luciaralstate" )
+													{
+														if($count == 1)
+															echo "<option value='".$currency->currencyID."' selected >".$currency->name."</option>";
+													}
+													else 
+													{
+														if($count == 0 )
+															echo "<option value='".$currency->currencyID."' selected >".$currency->name."</option>";
+														else
+															echo "<option value='".$currency->currencyID."'  >".$currency->name."</option>";
+													}													
+													
 													$count++;
 												}
 												?>

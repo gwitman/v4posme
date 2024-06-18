@@ -1,4 +1,4 @@
-use dbkroqnguhldo1;
+use dbkqbggdnbz0u7;
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -282,13 +282,6 @@ WHERE
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVENTORY_IN_NEW_ITEM_MAINTAIN_NAME";## Cuando se hace un nuevo producto mantener el nombre del producto anterior
 	
-
-UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "0" 
-WHERE 
-	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "CXC_INTERES_DEFAULT";## Plazo predeterminado
-
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "1" 
@@ -1301,8 +1294,8 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Distribuidora Gonzalez' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 0,type='default'
+	NAME = 'Laptop Store' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
+	flavorID = 508,type='laptop_store'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
@@ -1314,18 +1307,17 @@ Eliminar o desactivar usuarios
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2, 	/*administrador*/
- 5,		/*administrador*/
- 191,  	/*supervisor*/
- 190, 	/*facturador*/
- 189 	/*administrador*/
+ 508,  	/*supervisor*/
+ 507, 	/*facturador*/
+ 506 	/*administrador*/
 );
 
 update tb_role set isActive = 0; 
 update tb_role set isActive = 1 where roleID in (
 	3,
-	201,
-	202,
-	203	
+	437,
+	436,
+	435	
 );
 
 
@@ -1357,4 +1349,4 @@ update tb_currency set `name` = 'Cordoba' where currencyID = 1;
 update tb_currency set `name` = 'Dolar' where currencyID = 2;	
 	
 	
-/*BD: dbkroqnguhldo1 */
+/*BD: dbkqbggdnbz0u7 */

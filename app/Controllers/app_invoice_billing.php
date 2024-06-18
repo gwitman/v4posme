@@ -1257,6 +1257,7 @@ class app_invoice_billing extends _BaseController {
 						
 						
 						$objCustomerCreditDocument["term"] 					= $objTMNew["reference2"];
+						$objCustomerCreditDocument["interes"] 				= /*inicio get post*/ $this->request->getPost("txtFixedExpenses");
 						$objCustomerCreditDocument["amount"] 				= 	$amountTotal - 
 																				$objTMInfoNew["receiptAmountPoint"] - 
 																				
@@ -1274,6 +1275,7 @@ class app_invoice_billing extends _BaseController {
 					if($objParameterAmortizationDuranteFactura == "true" &&  $objTMNew["currencyID"] == 2 /*dolares*/)
 					{
 						$objCustomerCreditDocument["term"] 					= $objTMNew["reference2"];
+						$objCustomerCreditDocument["interes"] 				= /*inicio get post*/ $this->request->getPost("txtFixedExpenses");
 						$objCustomerCreditDocument["amount"] 				= 	$amountTotal - 
 																				$objTMInfoNew["receiptAmountPoint"] - 
 																				
@@ -1546,7 +1548,7 @@ class app_invoice_billing extends _BaseController {
 			$objTM["transactionOn2"]				= /*inicio get post*/ $this->request->getPost("txtDateFirst");//Fecha del Primer Pago, de las facturas al credito
 			$objTM["statusIDChangeOn"]				= date("Y-m-d H:m:s");
 			$objTM["componentID"] 					= $objComponentBilling->componentID;
-			$objTM["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");//--fin peticion get o post
+			$objTM["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");//--fin peticion get o post			
 			$objTM["sign"] 							= $objT->signInventory;
 			$objTM["currencyID"]					= /*inicio get post*/ $this->request->getPost("txtCurrencyID"); 
 			$objTM["currencyID2"]					= $this->core_web_currency->getTarget($companyID,$objTM["currencyID"]);

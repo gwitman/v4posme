@@ -601,11 +601,89 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
                 $('#divReferencia').html(tivSiguienteVisita);
                 $('#divSiguienteVisita').html(tivReferencia);
 				
+				if( $('#txtUserID').val() == '-2' )
+				{
+					$($('.btnAcept')[0]).addClass('hidden');
+				}
+				
 			});
 		</script>",
 		
 		/*Titanes*/
 		strtolower('titanes_core_web_menu_CXP')			 															=> "PROVEEDORES",
+		
+		//Funeraria Blandon
+		strtolower('fn_blandon_app_invoice_billing_divLabelZone') 		 											=> "Parentesco",
+		strtolower('fn_blandon_app_invoice_billing_txtTraductionPhone')	 											=> "Tel. Bene.",
+		strtolower('fn_blandon_app_invoice_billing_divTxtClienteBeneficiario')	 									=> "Bene. Nombre",
+		strtolower('fn_blandon_app_invoice_billing_divTxtCedulaBeneficiario')	 									=> "Bene. Cedula",
+		
+		strtolower('fn_blandon_app_invoice_billing_divHiddenReference')	 											=> "hidden",
+		strtolower('fn_blandon_app_invoice_billing_divMesa')	 													=> "hidden",
+		strtolower('fn_blandon_app_invoice_billing_divNextVisitHidden')	 											=> "hidden",
+		strtolower('fn_blandon_app_invoice_billing_divBodegaHidden')	 											=> "hidden",
+		strtolower('fn_blandon_app_invoice_billing_divTxtCambio')	 												=> "hidden",
+		strtolower('fn_blandon_app_invoice_billing_divPrecio')	 													=> "hidden",
+		strtolower('fn_blandon_app_invoice_billing_divDesembolsoEfectivo')	 										=> "hidden",
+		strtolower('fn_blandon_app_invoice_billing_divReportSinRiesgo')												=> "hidden",
+		strtolower('fn_blandon_app_invoice_billing_divProviderCredit')												=> "hidden",
+		
+		
+		strtolower('fn_blandon_app_invoice_billing_txtTermReference')	 											=> "Plazo",
+		strtolower('fn_blandon_app_invoice_billing_txtTraductionExpenseLabel')										=> "Interes",
+		strtolower('fn_blandon_app_invoice_billing_divTraslateElement') 											=> "
+		<script>
+			$(document).ready(function(){		
+				
+				if( $('#txtTransactionMasterID').val() == undefined )
+				$('#txtNote').val('');
+			
+				$('#divBeneficiario').appendTo('#divInformacionLeft');
+				$('#divCedula').appendTo('#divInformacionLeft');
+				$('#divZone').appendTo('#divInformacionLeft');
+				$('#divTrasuctionPhone').appendTo('#divInformacionLeft');
+			});
+		</script>
+		",		
+		strtolower('fn_blandon_app_invoice_billing_scriptValidateInCredit')											=> "
+		if($('#txtReferenceClientIdentifier').val() == '')
+		{
+				fnShowNotification('Cedula del beneficiario','error',timerNotification);
+				result = false;
+				fnWaitClose();
+		}
+		if($('#txtReferenceClientName').val() == '')
+		{
+				fnShowNotification('Nombre del beneficiario','error',timerNotification);
+				result = false;
+				fnWaitClose();
+		}
+		if($('#txtNumberPhone').val() == '')
+		{
+				fnShowNotification('Telefono del beneficiario','error',timerNotification);
+				result = false;
+				fnWaitClose();
+		}
+		if($('#txtFixedExpenses').val() == '0')
+		{
+				fnShowNotification('Interes del credito','error',timerNotification);
+				result = false;
+				fnWaitClose();
+		}
+		if($('#txtReference2').val() == '1')
+		{
+				fnShowNotification('Plazo del credito','error',timerNotification);
+				result = false;
+				fnWaitClose();
+		}
+		if($('#txtEmployeeID').val() == '614')
+		{
+				fnShowNotification('Vendedor','error',timerNotification);
+				result = false;
+				fnWaitClose();
+		}
+		
+		",
 		
 	);
 	

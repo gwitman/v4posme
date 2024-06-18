@@ -988,6 +988,9 @@
 		
 		//Obtener Limite
 		if(invoiceTypeCredit){
+			
+			<?php echo getBehavio($company->type,"app_invoice_billing","scriptValidateInCredit",""); ?>  
+			
 			//Validar Fecha del Primer Pago si es de Credito
 			if($("#txtDateFirst").val() == "" && switchDesembolso){
 				fnShowNotification("Seleccionar la Fecha del Primer Pago","error",timerNotification);
@@ -2240,7 +2243,7 @@
 			
 			
 			if(<?php echo $objParameterInvoiceButtomPrinterFidLocalPaymentAndAmortization; ?> == true){	
-				objectParameterButtoms.FidLocalTabla=function(){
+				objectParameterButtoms.Tabla=function(){
 					fnWaitOpen();
 					window.open("<?php echo base_url(); ?>/app_cxc_report/document_credit/viewReport/true/documentNumber/<?php echo $objTransactionMaster->transactionNumber;?>", '_blank');
 					fnWaitClose();

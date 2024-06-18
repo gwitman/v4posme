@@ -1,4 +1,4 @@
-use dbkroqnguhldo1;
+use dbc4gdiktr0mg5;
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -288,7 +288,6 @@ UPDATE  tb_company_parameter,tb_parameter SET
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CXC_INTERES_DEFAULT";## Plazo predeterminado
-
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "1" 
@@ -330,7 +329,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "193" 
+	tb_company_parameter.value = "544" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CXC_TYPE_AMORTIZATION";## CXC_TYPE_AMORTIZATION 
@@ -896,7 +895,7 @@ WHERE
 	tb_parameter.name = "INVOICE_BILLING_QUANTITY_ZERO";## Permite facturar productos, aunque las existencias esten en 0 unidades 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BUTTOM_PRINTER_FIDLOCAL_PAYMENT_AND_AMORTIZACION";## Mostrar Calendario de Pago , al momento de imprimir una factura
@@ -1250,7 +1249,7 @@ WHERE
 /***************************************************************/
 		
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Eusebia Del Carmen Dumas Ruiz" 
+	tb_company_parameter.value = "Randy Eliezer Blandon Vanegas" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_NAME";## Witman José González Rostran 
@@ -1301,8 +1300,8 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Distribuidora Gonzalez' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 0,type='default'
+	NAME = 'Un encuentro con dios' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
+	flavorID = 505,type='fn_blandon'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
@@ -1314,18 +1313,17 @@ Eliminar o desactivar usuarios
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2, 	/*administrador*/
- 5,		/*administrador*/
- 191,  	/*supervisor*/
- 190, 	/*facturador*/
- 189 	/*administrador*/
+ 505,  	/*supervisor*/
+ 504, 	/*facturador*/
+ 503 	/*administrador*/
 );
 
 update tb_role set isActive = 0; 
 update tb_role set isActive = 1 where roleID in (
 	3,
-	201,
-	202,
-	203	
+	434,
+	433,
+	432	
 );
 
 
@@ -1357,4 +1355,4 @@ update tb_currency set `name` = 'Cordoba' where currencyID = 1;
 update tb_currency set `name` = 'Dolar' where currencyID = 2;	
 	
 	
-/*BD: dbkroqnguhldo1 */
+/*BD: dbc4gdiktr0mg5 */

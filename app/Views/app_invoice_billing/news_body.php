@@ -66,7 +66,8 @@
 					<div class="tab-pane fade in active" id="home">	
 						<div class="row">										
 						<div class="col-lg-6" id="divInformacionLeft" >
-								
+						
+								<input type="hidden" name="txtUserID" value="<?php echo $userID; ?>">
 								<input type="hidden" id="txtCodigoMesero" name="txtCodigoMesero" value="<?php echo $codigoMesero;  ?>">
 								<div class="form-group">
 									<label class="col-lg-4 control-label" for="datepicker">Fecha</label>
@@ -87,7 +88,7 @@
 								</div>
 								
 								
-								<div class="form-group">
+								<div class="form-group" >
 									<label class="col-lg-4 control-label" for="normal">Descripcion</label>
 									<div class="col-lg-8">										
 										<input class="form-control"   type="text" name="txtNote" id="txtNote" value="sin comentarios.">
@@ -154,8 +155,8 @@
 								
 								
 								
-								<div class="form-group  <?php echo getBehavio($company->type,"app_invoice_billing","divTxtCliente2",""); ?>  ">
-										<label class="col-lg-4 control-label" for="normal">Cliente</label>
+								<div class="form-group  <?php echo getBehavio($company->type,"app_invoice_billing","divTxtCliente2",""); ?>  " id="divBeneficiario" >
+										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","divTxtClienteBeneficiario","Cliente"); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"   type="text" name="txtReferenceClientName" id="txtReferenceClientName" value="">
 										</div>
@@ -166,7 +167,7 @@
 								</div>
 								
 								<div class="form-group   <?php echo getBehavio($company->type,"app_invoice_billing","divTxtCedula2",""); ?> "  id="divCedula"  >
-										<label class="col-lg-4 control-label" for="normal">Cedula</label>
+										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","divTxtCedulaBeneficiario","Cedula"); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"   type="text" name="txtReferenceClientIdentifier" id="txtReferenceClientIdentifier" value="">
 										</div>
@@ -234,7 +235,7 @@
 								</div>
 								
 									
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divPrecio",""); ?>  ">
 									<label class="col-lg-4 control-label" for="selectFilter">Precio</label>
 									<div class="col-lg-8">
 										<select name="txtTypePriceID" id="txtTypePriceID" class="select2">
@@ -254,7 +255,7 @@
 									</div>
 								</div>
 								
-								<div class="form-group" id="divBodega" >
+								<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divBodegaHidden",""); ?> " id="divBodega" >
 									<label class="col-lg-4 control-label" for="selectFilter">Bodega</label>
 									<div class="col-lg-8">
 										<select name="txtWarehouseID" id="txtWarehouseID" class="select2">
@@ -280,7 +281,7 @@
 								
 							
 								
-								<div class="form-group" id="divReferencia">
+								<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divHiddenReference",""); ?> " id="divReferencia">
 										<label class="col-lg-4 control-label" for="normal">Referencia</label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtReference3" id="txtReference3" value="<?php echo ($objEmployeeNatural ? $objEmployeeNatural->firstName : "N/D"); ?>">
@@ -310,8 +311,8 @@
 								</div>
 
 								
-								<div class="form-group"  >
-										<label class="col-lg-4 control-label" for="normal">Telefono</label>
+								<div class="form-group" id="divTrasuctionPhone"  >
+										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionPhone","Telefono"); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtNumberPhone" id="txtNumberPhone" value="">												
 										</div>
@@ -339,7 +340,7 @@
 									</div>
 								</div>
 								
-								<div class="form-group" id="divSiguienteVisita">
+								<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divNextVisitHidden",""); ?> " id="divSiguienteVisita">
 									<label class="col-lg-4 control-label" for="datepicker">Siguiente Visita</label>
 									<div class="col-lg-8">
 										<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
@@ -358,7 +359,7 @@
 					<div class="tab-pane fade" id="credit">
 						<div class="row">
 								<div class="col-lg-6">
-									<div class="form-group">
+									<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divProviderCredit",""); ?> ">
 											<label class="col-lg-4 control-label" for="normal">Proveedor de Credito</label>
 											<div class="col-lg-8">
 												<!--
@@ -389,7 +390,7 @@
 									</div>
 								
 									<div class="form-group ">
-											<label class="col-lg-4 control-label" for="normal">% De Gasto.</label>
+											<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionExpenseLabel","% De Gasto."); ?></label>
 											<div class="col-lg-8">
 												<input class="form-control"   type="text" name="txtFixedExpenses" id="txtFixedExpenses" value="0">
 												<!--
@@ -430,7 +431,7 @@
 									</div>
 									
 									<div class="form-group">
-											<label class="col-lg-4 control-label" for="normal">Plazo ó Referencia2</label>
+											<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","txtTermReference","Plazo ó Referencia2"); ?></label>
 											<div class="col-lg-8">
 												<input class="form-control"  type="text"  name="txtReference2" id="txtReference2" value="<?php echo  $objParameterCXC_PLAZO_DEFAULT; ?>">												
 											</div>
@@ -469,7 +470,7 @@
 							
 							
 								
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divDesembolsoEfectivo",""); ?> ">
 										<label class="col-lg-4 control-label" for="normal"></label>
 										<div class="col-lg-8">
 											 <label class="label-change-switch" id="txtLabelIsDesembolsoEfectivo">Es un desembolso en efectivo?</label>
@@ -480,7 +481,7 @@
 										</div>
 								</div>
 								
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divReportSinRiesgo",""); ?>">
 										<label class="col-lg-4 control-label" for="normal"></label>
 										<div class="col-lg-8">
 											
