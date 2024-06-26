@@ -400,10 +400,14 @@ class app_inventory_itemmasive extends _BaseController {
 					$dataView["objParameterPrinterShowPrice"] 	= $objParameterPrinterShowPrice;	
 					
 					$this->core_web_printer_direct->configurationPrinter($objParameterPrinterName);
+					echo "print codigo</br>";
+					echo print_r($listItemFilter,true);
+					echo "</br>";
+					echo "</br>";					
 					$this->core_web_printer_direct->executePrinter58mmBarCodeListLocalHost($dataView["objComponentItem"],$listItemFilter,$dataView);
 				}
 			}
-			
+			echo "fin de impresion print codigo</br>";
 			
 			
 		//}

@@ -195,8 +195,12 @@ class app_accounting_level extends _BaseController {
 						$obj["split"] 				= /*inicio get post*/ $this->request->getPost("txtSplit");
 						$obj["description"] 		= /*inicio get post*/ $this->request->getPost("txtDescription");
 						$obj["lengthTotal"] 		= /*inicio get post*/ $this->request->getPost("txtLengthTotal");	
-						$obj["lengthGroup"] 		= /*inicio get post*/ $this->request->getPost("txtLengthGroup");					 
-						$obj["isOperative"] 		= /*inicio get post*/ $this->request->getPost("txtIsOperative");
+						$obj["lengthGroup"] 		= /*inicio get post*/ $this->request->getPost("txtLengthGroup");				
+
+						$txtIsOperative				= $this->request->getPost("txtIsOperative");	
+						$txtIsOperative				= empty($txtIsOperative) ? 0 : 1;
+						
+						$obj["isOperative"] 		= $txtIsOperative;
 						$obj["isActive"] 			= true;
 						$this->core_web_auditoria->setAuditCreated($obj,$dataSession,$this->request);
 						
@@ -255,7 +259,12 @@ class app_accounting_level extends _BaseController {
 						$obj["split"] 		= /*inicio get post*/ $this->request->getPost("txtSplit");
 						$obj["lengthGroup"] = /*inicio get post*/ $this->request->getPost("txtLengthGroup");
 						$obj["lengthTotal"] = /*inicio get post*/ $this->request->getPost("txtLengthTotal");
-						$obj["isOperative"] = /*inicio get post*/ $this->request->getPost("txtIsOperative");						
+						
+						$txtIsOperative				= $this->request->getPost("txtIsOperative");	
+						$txtIsOperative				= empty($txtIsOperative) ? 0 : 1;
+						
+						
+						$obj["isOperative"] = $txtIsOperative;
 						$result 			= $this->Account_Level_Model->update_app_posme($companyID,$accountLevelID,$obj);
 					
 						if($db->transStatus() !== false){

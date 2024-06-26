@@ -6,22 +6,24 @@ class app_accounting_account extends _BaseController {
 
 	public function isValidAccountNumber($accountNumber="",$companyID="",$accountLevelID=""){ 
 		//false numero incorrecto
-		//true numero correcto
-		$accountNumber = helper_SegmentsByIndex($this->uri->getSegments(),1,$accountNumber);	
-		$companyID = helper_SegmentsByIndex($this->uri->getSegments(),2,$companyID);	
-		$accountLevelID = helper_SegmentsByIndex($this->uri->getSegments(),3,$accountLevelID);	
+		//true numero correcto		
 		
 		$objAccountLevel = $this->Account_Level_Model->get_rowByPK($companyID,$accountLevelID);
 				
-				
+		
 		//Validar Longitud Total
 		if($objAccountLevel->lengthTotal != strlen($accountNumber) )
 		return false;		
 			
+		
+		
 		//Validar Longitud de Grupo
-		if($objAccountLevel->split){
+		if($objAccountLevel->split)
+		{		
 			$partNumber = explode($objAccountLevel->split,$accountNumber);
 			$count 		= count($partNumber) -1;
+			
+			
 			if($objAccountLevel->lengthGroup != strlen($partNumber[$count]))
 			return false;
 		}
@@ -79,7 +81,11 @@ class app_accounting_account extends _BaseController {
 			
 			//Obtener el Registro			
 			$datView["objAccount"]	 				= $this->Account_Model->get_rowByPK($companyID,$accountID);
+			$datView["objParentAccount"]			= null;
+			
+			if( $datView["objAccount"]->parentAccountID != null )
 			$datView["objParentAccount"]			= $this->Account_Model->get_rowByPK($companyID,$datView["objAccount"]->parentAccountID);
+		
 			$datView["objListAccountLevel"]	 		= $this->Account_Level_Model->getByCompany($companyID);
 			$datView["objListAccountType"]	 		= $this->Account_Type_Model->getByCompany($companyID);
 			$datView["objListCompanyCurrency"]	 	= $this->Company_Currency_Model->getByCompany($companyID);
@@ -256,14 +262,16 @@ class app_accounting_account extends _BaseController {
 							$continue 				= false;
 							throw new \Exception("EL CODIGO DE LA CUENTA YA ESTA RESERVADO...");
 						}
-						//Validar Codigo	
-						if(!$this->isValidAccountNumber(/*inicio get post*/ $this->request->getPost("txtAccountNumber"),$dataSession["user"]->companyID,/*inicio get post*/ $this->request->getPost("txtAccountLevelID"))){
+						//Validar Codigo							
+						if(!$this->isValidAccountNumber( $this->request->getPost("txtAccountNumber") ,$dataSession["user"]->companyID,/*inicio get post*/ $this->request->getPost("txtAccountLevelID"))){
 							$continue 				= false;
 							throw new \Exception("EL CODIGO DE LA CUENTA TIENE UN FORMATO INCORRECTO");
 						}
 						//Validar si la cuenta puede ser operativa
 						$objAccountLevel 			= $this->Account_Level_Model->get_rowByPK($dataSession["user"]->companyID,/*inicio get post*/ $this->request->getPost("txtAccountLevelID"));
-						if(/*inicio get post*/ $this->request->getPost("txtIsOperative") !=  $objAccountLevel->isOperative){
+						$txtIsOperative				= $this->request->getPost("txtIsOperative");	
+						$txtIsOperative				= empty($txtIsOperative) ? 0 : 1;
+						if( $txtIsOperative !=  $objAccountLevel->isOperative){
 							$continue 				= false;
 							throw new \Exception("OPERATIVIDAD DE LA CUENTA NO ES VALIDA");
 						}
@@ -279,7 +287,7 @@ class app_accounting_account extends _BaseController {
 						$obj["accountNumber"] 		= /*inicio get post*/ $this->request->getPost("txtAccountNumber");	
 						$obj["name"] 				= /*inicio get post*/ $this->request->getPost("txtName");					 
 						$obj["description"] 		= /*inicio get post*/ $this->request->getPost("txtDescription");
-						$obj["isOperative"] 		= /*inicio get post*/ $this->request->getPost("txtIsOperative");
+						$obj["isOperative"] 		= $txtIsOperative;
 						$obj["statusID"] 			= 0;
 						$obj["currencyID"] 			= /*inicio get post*/ $this->request->getPost("txtCurrencyID");
 						$obj["isActive"] 			= true;
@@ -357,7 +365,10 @@ class app_accounting_account extends _BaseController {
 				
 						//Validar si la cuenta puede ser operativa
 						$objAccountLevel 			= $this->Account_Level_Model->get_rowByPK($dataSession["user"]->companyID,/*inicio get post*/ $this->request->getPost("txtAccountLevelID"));
-						if(/*inicio get post*/ $this->request->getPost("txtIsOperative") !=  $objAccountLevel->isOperative){
+						$txtIsOperative				= $this->request->getPost("txtIsOperative") ;
+						$txtIsOperative				= empty($txtIsOperative) ? 0 : 1;
+						if( $txtIsOperative !=  $objAccountLevel->isOperative)
+						{
 							$continue 				= false;
 							throw new \Exception("OPERATIVIDAD DE LA CUENTA NO ES VALIDA");
 						}
@@ -374,7 +385,7 @@ class app_accounting_account extends _BaseController {
 						$obj["accountNumber"] 		= /*inicio get post*/ $this->request->getPost("txtAccountNumber");	
 						$obj["name"] 				= /*inicio get post*/ $this->request->getPost("txtName");					 
 						$obj["description"] 		= /*inicio get post*/ $this->request->getPost("txtDescription");
-						$obj["isOperative"] 		= /*inicio get post*/ $this->request->getPost("txtIsOperative");						
+						$obj["isOperative"] 		= $txtIsOperative;
 						$obj["currencyID"] 			= /*inicio get post*/ $this->request->getPost("txtCurrencyID");
 						$obj["isActive"] 			= true;					
 						$result 					= $this->Account_Model->update_app_posme($companyID,$accountID,$obj);

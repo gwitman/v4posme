@@ -32,6 +32,7 @@ class core_dashboards extends _BaseController {
 			}		
 								
 			//Validar Parametro de maximo de usuario.
+			$objCompany									= $dataSession["company"];
 			$companyID 									= $dataSession["company"]->companyID;
 			$objParameterMAX_USER 						= $this->core_web_parameter->getParameter("CORE_CUST_PRICE_MAX_USER",$companyID);
 			$objParameterMAX_USER 						= $objParameterMAX_USER->value;
@@ -76,7 +77,12 @@ class core_dashboards extends _BaseController {
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= "";
 			$dataSession["head"]			= "";
+			
+			if($objCompany->type == "fn_blandon")
+			$dataSession["body"]			= /*--inicio view*/ view('core_dasboard/dashboards_default_fun_blandon',$dataSession);//--finview
+			else
 			$dataSession["body"]			= /*--inicio view*/ view('core_dasboard/dashboards_default',$dataSession);//--finview
+			
 			$dataSession["script"]			= ""; 
 			$dataSession["footer"]			= ""; 			
 			

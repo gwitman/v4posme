@@ -13,6 +13,7 @@ class app_mobile_api extends _BaseController {
 			$objUser		= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname,$password);
 			$companyID  	= $objUser["user"]->companyID;
 			$userID		 	= $objUser["user"]->userID;
+			$objCompany		= $objUser["company"];
 			
 			//Obtener listado de productos
 			$objWarehouse 	= $this->Userwarehouse_Model->getRowByUserIDAndFacturable($companyID,$userID);
@@ -34,7 +35,8 @@ class app_mobile_api extends _BaseController {
 			
 			return $this->response->setJSON(array(
 				'error'   							=> false,
-				'message' 							=> SUCCESS,				
+				'message' 							=> SUCCESS,		
+				'ObjCompany'						=> $objCompany,
 				'ListItem'  						=> $objListItem,
 				'ListCustomer'  					=> $objListCustomer,
 				'ListParameter'  					=> $objListParameter,

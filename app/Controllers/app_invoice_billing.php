@@ -3130,6 +3130,7 @@ class app_invoice_billing extends _BaseController {
 				$dataView	= $serializedData;
 			}
 			
+			//log_message("error",print_r($dataView,true));
 			
 			//obtener nombre de impresora por defecto
 			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT",$companyID);
@@ -3138,6 +3139,7 @@ class app_invoice_billing extends _BaseController {
 			
 			$this->core_web_printer_direct->configurationPrinter($objParameterPrinterName);
 			$this->core_web_printer_direct->executePrinter80mm($dataView);
+			log_message("error","impresion elaborada");
 			
 		}
 		catch(\Exception $ex){

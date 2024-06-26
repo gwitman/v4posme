@@ -39,7 +39,7 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "ITEM_PRINTER_BARCODE_SHOWPRICE";	## Imprimir el precio en la etiqueta
@@ -956,13 +956,13 @@ WHERE
 	
 /*--Imprimir codigos masivos*/
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "http://localhost/posmev4/app_inventory_itemmasive/printer_barcode_58ml_direct" 
+	tb_company_parameter.value = "http://localhost/posmev4/app_inventory_itemmasive/printer_barcode_58ml_direct_localhost" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "ITEM_PRINTER_BARCODE_MASIVE";## URL PARA LA IMPRESION DE CANCELACION 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "posMe58Codigo" 
+	tb_company_parameter.value = "POS-58-Series" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVENTORY_BARCODE_PRINTER_DIRECT_NAME_DEFAULT";## URL PARA LA IMPRESION DE CANCELACION 
@@ -1243,14 +1243,14 @@ WHERE
 /***************************************************************/
 		
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Eusebia Del Carmen Dumas Ruiz" 
+	tb_company_parameter.value = "Ruddy Alexi Rizo Ortega" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_NAME";## Witman José González Rostran 
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "gwitman@yahoo.com" 
+	tb_company_parameter.value = "laptopnicstore@gmail.com" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_EMAIL";## CORREO DEL PROPIETARIO
@@ -1258,28 +1258,28 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "047-160483-0000C" 
+	tb_company_parameter.value = "0012910650018M" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "047-160483-0000C" 
+	tb_company_parameter.value = "0012910650018M" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8505-7109" 
+	tb_company_parameter.value = "TEL: 8894-3974" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8505-7109" 
+	tb_company_parameter.value = "TEL: 8894-3974" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1287,14 +1287,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Donde fue aserrio santa fe, 2c abajo 15v.sur" 
+	tb_company_parameter.value = "Barrio Riguera Talleres Modernos 4C.S, 1/2A 20V al Sur" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Laptop Store' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
+	NAME = 'Laptop NIC Store' , address = 'Barrio Riguera Talleres Modernos 4C.S, 1/2A 20V al Sur' ,
 	flavorID = 508,type='laptop_store'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

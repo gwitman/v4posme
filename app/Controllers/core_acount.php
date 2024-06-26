@@ -230,7 +230,7 @@ class core_acount extends _BaseController {
 			$parameterTipoPlan = $parameterTipoPlan->value;		
 			$parameterLabelSistem = $this->core_web_parameter->getParameter("CORE_LABEL_SISTEMA_SUPLANTATION",APP_COMPANY);
 			$parameterLabelSistem = $parameterLabelSistem->value;	
-		
+			
 			//Renderizar					
 			$data_login["message"]				= $e->getMessage();
 			$data_login["parameterPrice"]		= $parameterPrice;

@@ -378,9 +378,9 @@ class app_inventory_item extends _BaseController {
 					$callback  								= /*inicio get post*/ $this->request->getPost("txtCallback"); 					
 					$comando  								= /*inicio get post*/ $this->request->getPost("txtComando"); 
 					$objItem["companyID"]					= $companyID;
-					$objItem["branchID"] 					= $branchID;					
+					$objItem["branchID"] 					= $branchID;
 					$objItem["inventoryCategoryID"] 		= /*inicio get post*/ $this->request->getPost("txtInventoryCategoryID");
-					$nameProducto							= /*inicio get post*/ rtrim(ltrim(str_replace("\\","",str_replace("'", "", $this->request->getPost("txtName") ))));  
+					$nameProducto							= /*inicio get post*/ rtrim(ltrim(str_replace("\\","",str_replace("'", "", $this->request->getPost("txtName") )))); 
 					$nameProducto 							= str_replace('"',"",$nameProducto);
 					
 					$cache = \Config\Services::cache();

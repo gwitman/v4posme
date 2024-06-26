@@ -25,5 +25,5 @@
 				</style>
 				
 				<div id="heading" class="page-header">
-							<h1><i class="icon20  i-bag-2"></i> Editar Factura</h1>
+							<h1><i class="icon20  i-bag-2"></i> Editar <?php echo getBehavio($company->type,"app_invoice_billing","labelTitlePageEdit","Factura"); ?></h1>
 				</div> 

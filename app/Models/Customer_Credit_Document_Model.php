@@ -36,7 +36,32 @@ class Customer_Credit_Document_Model extends Model  {
 		$db 	     = db_connect();
 		$builder	 = $db->table("tb_customer_credit_document");
 	    $sql = "";
-		$sql = sprintf("select i.customerCreditDocumentID, i.companyID, i.entityID, i.customerCreditLineID,i.documentNumber, i.dateOn, i.amount, i.interes, i.term,i.exchangeRate, i.reference1, i.reference2, i.reference3, i.statusID, i.isActive,i.balance,i.balanceProvicioned,i.currencyID,cur.name as currencyName,cur.simbol as currencySimbol,	(select sum(tccda.remaining) from tb_customer_credit_document tccd inner join tb_customer_credit_amoritization tccda on tccd.customerCreditDocumentID = tccda.customerCreditDocumentID where tccd.customerCreditDocumentID = i.customerCreditDocumentID)  as balanceNew,i.reportSinRiesgo ");
+		$sql = sprintf("
+		select 
+			i.customerCreditDocumentID, i.companyID, i.entityID, i.customerCreditLineID,
+			i.documentNumber, i.dateOn, i.amount, i.interes, i.term,i.exchangeRate, 
+			i.reference1, i.reference2, i.reference3, i.statusID, i.isActive,i.balance,
+			i.balanceProvicioned,i.currencyID,cur.name as currencyName,cur.simbol as currencySimbol,	
+			(
+			select 	
+				sum(tccda.remaining) 
+			from 
+				tb_customer_credit_document tccd 
+				inner join tb_customer_credit_amoritization tccda on tccd.customerCreditDocumentID = tccda.customerCreditDocumentID 
+			where 
+				tccd.customerCreditDocumentID = i.customerCreditDocumentID
+			)  as balanceNew,
+			i.reportSinRiesgo, 
+			(
+				select 	
+					max(tccda.dateApply) 
+				from 
+					tb_customer_credit_document tccd 
+					inner join tb_customer_credit_amoritization tccda on tccd.customerCreditDocumentID = tccda.customerCreditDocumentID 
+				where 
+					tccd.customerCreditDocumentID = i.customerCreditDocumentID
+			) as dateFinish 
+		");
 		$sql = $sql.sprintf(" from tb_customer_credit_document i");	
 		$sql = $sql.sprintf(" inner join  tb_currency cur on i.currencyID = cur.currencyID");
 		$sql = $sql.sprintf(" where i.customerCreditDocumentID = $customerCreditDocumentID");

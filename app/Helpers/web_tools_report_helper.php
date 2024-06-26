@@ -4047,6 +4047,7 @@ $html 				= $html.$f_html."</body></html>";
   return $html;
 }
 
+
 function helper_reporteA4mmTransactionMasterGarantiasGlobalPro(
   $titulo,
   $objCompany,
@@ -4056,29 +4057,31 @@ function helper_reporteA4mmTransactionMasterGarantiasGlobalPro(
   $objCurrency,
   $objTransactionMasterInfo,    	
   $objParameterTelefono, /*telefono*/	
+  $objData,
   $statusName = "", /*estado*/
   $causalName = ""
+  
 )
 {
-  $path    		= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
+	$path    		= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
   
-$font_size1   	= "18px";
-$border_left 	= "border-left: 1px solid black;";
-$border_right 	= "border-right: 1px solid black;";
-$border_top 	= "border-top: 1px solid black;";
-$border_bottom 	= "border-bottom: 1px solid black;";
-$border_radius	= "border-radius: 10px;";
-$border_colapse = "border-collapse:separate;";
+	$font_size1   	= "18px";
+	$border_left 	= "border-left: 1px solid black;";
+	$border_right 	= "border-right: 1px solid black;";
+	$border_top 	= "border-top: 1px solid black;";
+	$border_bottom 	= "border-bottom: 1px solid black;";
+	$border_radius	= "border-radius: 10px;";
+	$border_colapse = "border-collapse:separate;";
 
 
 
   $type    		= pathinfo($path, PATHINFO_EXTENSION);
   $data    		= file_get_contents($path);
   $base64  		= 'data:image/' . $type . ';base64,' . base64_encode($data);
-  $numberDocument = str_replace("ESP","PEDIDO No ", $objTransactionMastser->transactionNumber);
-$tipoDocumento  = "PEDIDO";
+  $numberDocument = str_replace("IAT"," No ", $objTransactionMastser->transactionNumber);
+  $tipoDocumento  = "TALLER";
 
-$telefono  		= "";
+  $telefono  		= "";
 
   $html    = "";
   $html    = "
@@ -4095,31 +4098,30 @@ $telefono  		= "";
                     <style>
           
                       @page {       
-                        size: Legal;   
-          
+                        size: Legal;             
             
                         margin-top:25px;
                         margin-left:25px;
                         margin-right:20px;
-            margin-bottom: 25px;
-            
-            
-            padding-top: 0px;
-            padding-right: 0px;
-            padding-bottom: 0px;
-            padding-left: 0px;
+						margin-bottom: 25px;
+						
+						
+						padding-top: 0px;
+						padding-right: 0px;
+						padding-bottom: 0px;
+						padding-left: 0px;
             
                       }
                       table{
                         font-size: xx-small;
                         font-family: sans-serif, monaco, monospace;						 
-            border-collapse: collapse;
+						border-collapse: collapse;
                       }
-          td{
+						td{
                         font-size: xx-small;
                         font-family: sans-serif, monaco, monospace;
-            /*border: 1px solid black;*/
-            border-collapse: collapse;
+						/*border: 1px solid black;*/
+						border-collapse: collapse;
                       }
                     </style>
                   </head>
@@ -4130,158 +4132,174 @@ $telefono  		= "";
   $f_html = 	  "
                     <table style='width:98%'>
                       <tr>
-            <td  style='text-align:center;width:500px;text-align:left'>
-                          <img  src='".$base64."' width='300'  >
+						<td  style='vertical-align:top;text-align:center;width:33%;text-align:left'>
+                          <img  src='".$base64."' width='200px' height='100px'  >
                         </td>
-                        <td  style='text-align:center;'>
-                <table style='width:100%'>
-                  <tr>
-                    <td  style='text-align:center;font-size:".$font_size1."; font-weight: bold;'>
-                    ". $numberDocument ."
-                    </td>
-                  </tr>
-                  
-                  <tr>
-                    <td style='text-align:center'>
-                    Carretera Masaya, Frente al colegio Teresiano 
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style='text-align:center'>
-                    Edificio Delta RUC: 888-080396-0001K
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style='text-align:center'>
-                    &nbsp;
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style='text-align:center'>
-                    AUT.DGI. No. ASFC 02/0009/02/2023/2
-                    </td>
-                  </tr>
-                </table>
+						<td style='vertical-align:middle;text-align:center;width:33%;text-align:center; font-weight: bold;font-size:".$font_size1."'>
+							HOJA DE INGRESO
+						</td>
+                        <td  style='vertical-align:top;text-align:center;width:33%'>
+							<table style='width:100%'>
+							  <tr>
+								<td  style='text-align:center;font-size:".$font_size1."; font-weight: bold;'>
+								<!--". $numberDocument ."-->
+								</td>
+							  </tr>
+							  
+							  <tr>
+								<td style='text-align:center'>
+								Carretera Masaya, Frente al colegio Teresiano 
+								</td>
+							  </tr>
+							  <tr>
+								<td style='text-align:center'>
+								Servicio Tecnico: 5863-7406
+								</td>
+							  </tr>
+							  <tr>
+								<td style='text-align:center'>
+								&nbsp;
+								</td>
+							  </tr>
+							  <tr>
+								<td style='text-align:center'>
+								Siguenos! Global Pro Nicaragua
+								</td>
+							  </tr>
+							</table>
                         </td>
                       </tr>
         </table>
         
           ";
-       
-$f_html = $f_html."
-      <table style='width:98%' >
-        <tr>
-          <td>&nbsp;</td>
-        </tr>
-      </table>
-    ";
-    
-/*
-$f_html = $f_html."
-      <table style='width:98%' >
-        <tr>
-          <td style='text-align:center' colspan='3'>[[TIPO_DOCUMENTO]]</td>
-          <td style='text-align:center;width:70px'>".$causalName."</td>
-          <td style='text-align:center;width:70px; font-weight: bold;'>Vendedor</td>
-          <td style='text-align:center; font-weight: bold;'>".$objEmployerNatural->firstName." ".$objEmployerNatural->lastName."</td>
-        </tr>
-        <tr>
-          <td style='text-align:center; font-weight: bold;".$border_left.$border_right.$border_top.$border_bottom."'>Cliente</td>
-          <td style='text-align:left;".$border_left.$border_right.$border_top.$border_bottom."' colspan='3'>".$clientName."</td>						
-          <td style='text-align:center;".$border_left.$border_right.$border_top.$border_bottom."'>Cedula</td>
-          <td style='text-align:center;".$border_left.$border_right.$border_top.$border_bottom."'>".$objEntidadCustomer->numberIdentification."</td>
-        </tr>
-        <tr>
-          <td style='text-align:center;width:70px; font-weight: bold;".$border_left.$border_right.$border_top.$border_bottom."' >Telefono</td>
-          <td style='text-align:left;".$border_left.$border_right.$border_top.$border_bottom."' colspan='3'>".$telefono."</td>						
-          <td style='text-align:center;".$border_left.$border_right.$border_top.$border_bottom."' >Fecha</td>
-          <td style='text-align:center;width:250px;".$border_left.$border_right.$border_top.$border_bottom."' >".$objTransactionMastser->createdOn."</td>
-        </tr>
-      </table>
-    ";
-*/
-
-
-/*
-$f_html = $f_html."
-      <table style='width:98%' >
-        <tr>
-          <td>&nbsp;</td>
-        </tr>
-      </table>
-    ";
-*/ 	
-    
-$f_html = $f_html."
-    <table style='width:98%' > 
-      <tr style='background-color: #ccc;'>
-        <td style='text-align:center;width:70px; font-weight: bold;"."' >ARTICULO</td>
-        <td style='text-align:center; font-weight: bold;"."' >DESCRIPCION</td>
-        <td style='text-align:center;width:70px; font-weight: bold;"."' >Pre. Unit.</td>
-        <td style='text-align:center;width:70px; font-weight: bold;"."' >Cant.</td>
-        <td style='text-align:center;width:70px; font-weight: bold;"."' >Descuento</td>
-        <td style='text-align:center;width:70px; font-weight: bold;"."' >TOTAL</td>
-      <tr>
-    ";
-  
-
-
-$f_html = $f_html."
-    </table>
-    ";
-     
-$f_html = $f_html."
-      <table style='width:98%' >
-        <tr>
-          <td>&nbsp;</td>
-        </tr>
-      </table>
-    ";
+		   
+	$f_html = $f_html."
+		  <table style='width:98%' >
+			<tr>
+			  <td>&nbsp;</td>
+			</tr>			
+		  </table>	
+		";
+		
       
 
 $f_html = $f_html."
         <table style='width:98%;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom."' >
           <tr>
-            <td  style='text-align:left;vertical-align:top;widht:auto;' >
-              <table style='width:100%;'>
-                <tr>
-                  <td style='font-size:".$font_size1.";font-weight:bold;' >Nota al cliente:</td>
-                </tr>
-                <tr>
-                  <td style='height:60px;text-justify: auto;  '>". substr($objTransactionMastser->note,0,450) ."</td>
-                </tr>
-              </table>
+            <td  style='width:20px;text-align:left;vertical-align:top;' >
+				Nombre:
             </td>
-            <td style='width:200px;vertical-align:top;' >									
-              <table style='width:100%;'>
-                <tr>										
-                  <td style='text-align:right;vertical-align: top;font-size:".$font_size1."; font-weight: bold;'>Totales:</td>								
-                </tr>
-                <tr>
-                  <td>&nbsp;</td>										
-                </tr>
-                <tr>
-                  <td>&nbsp;</td>										
-                </tr>
-                <tr>
-                  <td>&nbsp;</td>										
-                </tr>																
-                <tr>										
-                  <td style='text-align:right;padding-top:5px;'>No se aceptan devoluciones.</td>										
-                </tr>						
-              </table>
-              
+            <td style='width:180px;vertical-align:top;' >	
+				".$objData["objCustomerNatural"]->firstName."
             </td>
-            <td  style='text-align:left;vertical-align:top;widht:100px;' >
-              
+			<td style='width:20px;vertical-align:top;' >									              
+				Fecha:
             </td>
-            
+			<td style='width:120px;vertical-align:top;' >					
+				".$objData["objTransactionMaster"]->transactionOn."
+            </td>
+			<td style='width:60px;vertical-align:top;' >									              
+				Técnico:
+            </td>
+            <td  style='width:120px;text-align:left;vertical-align:top;' >              				
+				".$objData["objEmployerNatural"]->firstName."
+            </td>            
           </tr>
-          
-          
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;' >              
+				Teléfono:
+            </td>
+            <td style='vertical-align:top;' >									              
+				".$objData["objCustomer"]->phoneNumber."
+            </td>
+			<td style='vertical-align:top;' >									              
+				Modelo:
+            </td>
+			<td style='vertical-align:top;' >									              
+				".$objData["objTransactionMaster"]->reference1."
+            </td>
+			<td style='vertical-align:top;' >									              
+				Factura:
+            </td>
+            <td  style='text-align:left;vertical-align:top;' >              
+				".$objData["objTransactionMaster"]->note."
+            </td>            
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;' >              
+				Articulo
+            </td>
+            <td style='vertical-align:top;' >				
+				".$objData["objItemArticulo"]->name."
+            </td>
+			<td style='vertical-align:top;' >									              
+				Serie
+            </td>
+			<td style='vertical-align:top;' >									              
+				".$objData["objTransactionMaster"]->reference2."
+            </td>
+			<td style='vertical-align:top;' >									              
+				Fecha de compra:
+            </td>
+            <td  style='text-align:left;vertical-align:top;' >              
+				".$objData["objTransactionMasterInvoice"]->transactionOn."
+            </td>            
+          </tr>
          </table>";
          
-         
+$f_html = $f_html."
+      <table style='width:98%' >
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+      </table>
+    ";
+	
+$f_html = $f_html."
+        <table style='width:98%;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom."' >
+          <tr>
+            <td  style='text-align:center;vertical-align:top;widht:auto;font-weight: bold;' >              
+				Problema reportado
+            </td>                 
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;widht:auto;' >              
+				".$objData["objTransactionMaster"]->reference3."
+            </td>                 
+          </tr>
+		  <tr>
+            <td  style='text-align:center;vertical-align:top;width:auto;font-weight: bold;' >              
+				Nota
+            </td>                 
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;width:auto;' >              
+				<table style='width:100%'>
+					<tr>
+						<td colspan='4'>
+							".$objData["objTransactionMaster"]->reference4."
+						</td>
+					</tr>
+					<tr>
+						<td style='width:150px'>
+							Deja cargador o Accesorios:
+						</td>
+						<td style='text-align:left'>
+							".$objData["objItemEstadosEquipo"]->name."
+						</td>
+						<td>
+							Sello de garantia:
+						</td>
+						<td>
+							".$objData["objItemMarca"]->name."
+						</td>
+					</tr>
+				</table>
+            </td>                 
+          </tr>
+         </table>";
+		 
+		 
 $f_html = $f_html."
       <table style='width:98%' >
         <tr>
@@ -4294,42 +4312,92 @@ $f_html = $f_html."
 $f_html = $f_html."
         <table style='width:98%' >
           <tr>
-            <td style='text-align:center;text-decoration:underline;font-weight: bold;font-size:14px'>
-              Al comprar tu equipo en GLOBAL PRO,puedes cambiarlo por uno superior cuando gustes!
+            <td style='text-align:justify;font-weight: bold;font-size:12px'>
+              
             </td>
           </tr>
-         </table>";
+		  <tr>
+            <td style='text-align:justify;font-weight: bold;font-size:12px'>
+				-GLOBAL PRO no se hace responsable de pérdidas de información, por lo cual solicitamos hacer un respaldo previamente.</br>
+				-Para hacer efectiva la garantía es necesario presentar la factura y la hoja de garantía.</br>
+				-La garantía no aplica al sistema operativo y problemas de carga (alto voltaje), en batería, cargador o chip de carga.</br>
+				-No se cubrirá la garantía si presenta mal manejo del operador como golpes, líquido en su interior, uso excesivo sin previo mantenimiento, equipos abiertos, entre otras malas acciones que hayan sido la causa para la falla del equipo.</br>
+				-Todo equipo que cumpla con los requisitos de garantía y tenga falla de fábrica, será revisado por nuestros técnicos, y se cambiarán las piezas que sean necesarias para su perfecto funcionamiento.</br>
+			 </td>
+          </tr>
+        </table>";
+		
+$f_html = $f_html."
+      <table style='width:98%' >
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+      </table>
+    ";
+	
+$f_html = $f_html."
+      <table style='width:98%' >
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+      </table>
+    ";
+
+$f_html = $f_html."
+      <table style='width:98%' >
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+      </table>
+    ";
+    
+
+$f_html = $f_html."
+		<!--
+        <table style='width:98%' >
+          <tr>
+            <td style='text-align:center;font-weight: bold'>
+              
+            </td>
+			<td style='text-align:center;font-weight: bold'>
+              ---------------------------------
+            </td>
+			<td style='text-align:center;font-weight: bold'>
+              
+            </td>
+          </tr>
+		  <tr>
+            <td style='text-align:center;font-weight: bold'>
+              
+            </td>
+			<td style='text-align:center;font-weight: bold'>
+              ".$objData["objCustomerNatural"]->firstName."
+            </td>
+			<td style='text-align:center;font-weight: bold'>
+              
+            </td>
+          </tr>
+		  <tr>
+            <td style='text-align:center;font-weight: bold;'>              
+			  
+            </td>
+			<td style='text-align:center;font-weight: bold'>
+              ".$objData["objCustomer"]->identification."
+            </td>
+			<td style='text-align:center;font-weight: bold'>
+              
+            </td>
+          </tr>
+		  
+        </table>
+		-->
+		";
 
 
-$f_html_copia 		= $f_html;
-$f_html_original 	= $f_html;
-$f_html_credito		= $f_html;
-
-$f_html_original 		= str_replace("[[TIPO_DOCUMENTO]]","ORIGINAL",$f_html_original);
-$f_html_copia 			= str_replace("[[TIPO_DOCUMENTO]]","COPIA",$f_html_copia);
-$f_html_credito 		= str_replace("[[TIPO_DOCUMENTO]]","COPIA",$f_html_copia);
-
-if($tipoDocumento == "PROFORMA")
-{
-  $f_html				= $f_html_original;
-}
-else 
-{
-  if(strtoupper($causalName) == strtoupper( "CREDITO" ) )
-  $f_html				= $f_html_original;
-  else 
-  $f_html				= $f_html_original;
-
-}
-$html 				= $html.$f_html."</body></html>";	
-
-
-
-            
-     
-  
+  $html 				= $html.$f_html."</body></html>";	  
   return $html;
 }
+
 
 function helper_reporteA4mmTransactionMasterPedidosGlobalPro(
     $titulo,
@@ -5639,6 +5707,299 @@ function helper_reporte80mmTransactionMaster(
     $html = str_replace("[[DETALLE]]", $cuerpo, $html);
     return $html;
 }
+
+
+function helper_reporte80mmTransactionMasterFunBlandon(
+    $titulo,
+    $objCompany,
+    $objParameterLogo,
+    $objTransactionMastser,
+    $objEntidadNatural,
+    $objEntidadCustomer,
+    $tipoCambio,
+    $objCurrency,
+    $objTransactionMasterInfo, 
+    $confiDetalle, /**/
+    $arrayDetalle, /**/
+    $objParameterTelefono, /*telefono*/
+    $statusName = "", /*estado*/
+    $causalName = "", /*causal*/
+	$userNickName = "", /*vendedor*/
+    $rucCompany = "" /*ruc*/
+)
+{
+    $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
+    
+    $type    = pathinfo($path, PATHINFO_EXTENSION);
+    $data    = file_get_contents($path);
+    $base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
+    
+    $html    = "";
+    $html    = "
+                    <!--
+                    Online HTML, CSS and JavaScript editor to run code online.
+                    https://www.programiz.com/html/online-compiler/
+                    -->
+                    <!DOCTYPE html>
+                    <html lang='en'>
+        
+                    <head>
+                      <meta charset='UTF-8' />
+                      <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+                      <style>
+                        @page {       
+                          size: 2.7in 60in;                  
+                          margin-top:0px;
+                          margin-left:0px;
+                          margin-right:15px;
+                        }
+                        table{
+                          font-size: x-small;
+                          font-weight: bold;
+                          font-family: Consolas, monaco, monospace;
+                        }
+                      </style>
+                    </head>
+        
+                    <body>
+        
+                      <table style='width:100%'>
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            <img  src='".$base64."' width='110'  >
+                          </td>
+                        </tr>
+                                
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".strtoupper($objCompany->name)."
+                          </td>
+                        </tr>";
+    
+
+          if($userNickName != "")
+          {
+            $html	= $html."<tr>                              
+    						  <td colspan='3' style='text-align:center'>
+                                RUC : ".  $rucCompany ."
+                              </td>
+                            </tr>";
+          }
+    
+          $html = $html."<tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".strtoupper($titulo)."
+                          </td>
+                        </tr>
+                                
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            # ".strtoupper($objTransactionMastser->transactionNumber)."
+                          </td>
+                        </tr>
+                                
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            FECHA: ".$objTransactionMastser->createdOn."
+                          </td>
+                        </tr>
+                                
+                         <tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>";
+						
+          if($userNickName != "")
+		  {      
+			$html	= $html."<tr>
+                          <td colspan=''>
+                            Vendedor:
+                          </td>
+						  <td colspan='2'>
+                            ". (strpos($userNickName , "@") === false ? $userNickName : substr($userNickName,0,strpos($userNickName , "@") ) )   ."
+                          </td>
+                        </tr>";
+		  }
+						
+          $html	= $html."<tr>
+                          <td colspan=''>
+                            Codigo:
+                          </td>
+						  <td colspan='2'>
+                            ".$objEntidadCustomer->customerNumber."
+                          </td>
+                        </tr>";
+			
+			
+		  if($causalName != ""){
+			$html	= $html."<tr>
+							<td colspan='1'>
+								Tipo:
+							</td>
+							<td colspan='2'>
+								".$causalName."
+							</td>
+						</tr>";
+		  }
+			
+			
+		  $html	= $html."<tr>
+                          <td colspan='1'>
+                            Estado
+                          </td>
+						  <td colspan='2'>
+                            ". ($statusName == "CANCELADA" ? "APLICADA" : $statusName ) ."
+                          </td>
+                        </tr>
+                            
+						<tr>
+                          <td colspan='1'>
+                            Moneda:
+                          </td>
+						  <td colspan='2'>
+                            ".$objCurrency->simbol."
+                          </td>
+                        </tr>";
+			
+		
+						
+          $html	= $html."
+						<tr>
+						  <td colspan='1'>
+							Cliente:
+                          <td colspan='2'>
+                          </td>
+                        </tr>
+						
+						<tr>
+						  <td colspan='3'>							
+                            ". ( $objTransactionMasterInfo->referenceClientName == "" ?   $objEntidadNatural->firstName." ".$objEntidadNatural->lastName  :  $objTransactionMasterInfo->referenceClientName)  ."
+                          </td>
+                        </tr>
+
+						
+						<tr>
+                          <td colspan='3' style='text-align:left'>".$objTransactionMastser->note."</td>
+                        </tr>
+                                
+                         <tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+                                
+                     
+                                
+                         [[DETALLE]]
+                                
+                         <tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+                            
+
+                         <tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".$objCompany->address."
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".$objParameterTelefono->value."
+                          </td>
+                        </tr>
+
+                                
+                      </table>
+                    </body>
+                                
+                    </html>
+            ";
+    
+    $cuerpo = "";
+    $colun  = 0;
+	$rowin  = 0;
+    foreach($arrayDetalle as $row){
+		
+            $colun  		= 0;
+			$colunCantidad 	= count($row);
+			$nuevaFila		= 0;
+            foreach ($row as $col => $key){				
+			
+			    //encabezado
+				if($rowin == 0){
+					
+					//Mostrar los productos en una sola fila
+					if($colun == 0){
+						$cuerpo 		= $cuerpo."<tr >";							
+					}	
+						
+					$cuerpo = $cuerpo."<td style=".$confiDetalle[$colun]["style"]." colspan='".$confiDetalle[$colun]["colspan"]."' >";
+					$cuerpo = $cuerpo." ".$key;
+					$cuerpo = $cuerpo."</td>";
+						
+					if($colun == $colunCantidad ){
+						$cuerpo 	   = $cuerpo."</tr >";
+					}
+					
+				}
+				//datos
+				else{
+					
+					if( $confiDetalle[$colun]["nueva_fila_row_data"] ==  1 &&  strpos($key, "-comand-new-row") !== false  )
+					{
+						$cuerpo 		= $cuerpo."<tr >";							
+						
+						$cuerpo = $cuerpo."<td style=".$confiDetalle[$colun]["style_row_data"]." colspan='". $colunCantidad ."' >";
+						$cuerpo = $cuerpo.$confiDetalle[$colun]["prefix_row_data"]." ". str_replace("-comand-new-row", "", $key );
+						$cuerpo = $cuerpo."</td>";
+						
+						$cuerpo 		= $cuerpo."</tr >";	
+						break;
+											
+					}	
+					else
+					{	
+						
+						if($rowin > 0 && $colun == 0)
+						$cuerpo 	= $cuerpo."<tr >";								
+						
+						$cuerpo = $cuerpo."<td style=".$confiDetalle[$colun]["style_row_data"]." colspan='".$confiDetalle[$colun]["colspan_row_data"]."' >";
+						$cuerpo = $cuerpo.$confiDetalle[$colun]["prefix_row_data"]." ".$key;
+						$cuerpo = $cuerpo."</td>";								
+						
+						if($colun == $colunCantidad)
+						$cuerpo 	= $cuerpo."</tr >";
+							
+					}
+						
+				
+				}
+				
+                
+				
+                $colun++;
+            }
+			
+			$rowin++;
+            
+    }
+    
+	
+    
+    $html = str_replace("[[DETALLE]]", $cuerpo, $html);
+    return $html;
+}
+
 
 function helper_reporte80mmTransactionMasterGlamCuts(
     $titulo,

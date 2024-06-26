@@ -1011,7 +1011,7 @@ WHERE
 	
 /*--Imprimir abonos	*/			
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_box_share/viewRegisterFormatoPaginaTicket" 
+	tb_company_parameter.value = "app_box_share/viewRegisterFormatoPaginaTicketFunBlandon" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "BOX_SHARE_URL_PRINTER";## URL PARA LA IMPRESION DE ABONOS 

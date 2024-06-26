@@ -53,7 +53,14 @@ WHERE
 	tb_parameter.name = "WHATSAP_MESSAGE_BY_MONTO";	## Cantidad de mensajes mensuales
 	
 	
-	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_purchase_garantia/viewPrinterFormatoA4" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WORKSHOW_URL_PRINTER_GARANTIA";	## Print de deposito en garantia
+
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "app_purchase_taller/viewPrinterFormatoA4Stiker" 
 WHERE 

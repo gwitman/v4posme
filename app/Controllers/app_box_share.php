@@ -420,6 +420,7 @@ class app_box_share extends _BaseController {
 					{	
 						$objCustomerCreditDocument				= $this->Customer_Credit_Document_Model->get_rowByPK($customerCreditDocumentID);						
 						$objCustomerCreditLine					= $this->Customer_Credit_Line_Model->get_rowByPK($objCustomerCreditDocument->customerCreditLineID); /*customerCreditLineID*/
+						$objCustomerAmortization				= $this->Customer_Credit_Amortization_Model->get_rowByPK($refernece3AmortizationID);
 						
 						$objTMD 								= NULL;
 						$objTMD["companyID"] 					= $objTM->companyID;
@@ -447,6 +448,18 @@ class app_box_share extends _BaseController {
 						
 						
 						$objTMD["reference3"]					= $refernece3AmortizationID;
+						$objTMD["reference5"]					= $objCustomerCreditDocument->dateOn;
+						$objTMD["reference6"]					= $objCustomerCreditDocument->dateFinish;
+						$objTMD["reference7"]					= $objCustomerAmortization->dateApply;
+						
+						//Verificar los dias de atraso
+						$hoy									= (new \DateTime())->format("Y-m-d");
+						$hoy									= \DateTime::createFromFormat('Y-m-d',$hoy);
+						$cuotaDate								= \DateTime::createFromFormat('Y-m-d', $objCustomerAmortization->dateApply );
+						$cuotaDif								= $hoy->diff($cuotaDate);
+						$cuotaDif								= $cuotaDif->days;
+						$objTMD["lote"]							= $cuotaDif;
+						
 						$objTMD["catalogStatusID"]				= 0;
 						$objTMD["inventoryStatusID"]			= 0;
 						$objTMD["isActive"]						= 1;
@@ -468,7 +481,9 @@ class app_box_share extends _BaseController {
 						$objTMD 								= $this->Transaction_Master_Detail_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID,$transactionDetailID,$objComponentShare->componentID);												
 						$objTMDNew 								= null;
 						$objCustomerCreditDocument				= $this->Customer_Credit_Document_Model->get_rowByPK($objTMD->componentItemID);
-						$objCustomerCreditLine					= $this->Customer_Credit_Line_Model->get_rowByPK($objCustomerCreditDocument->customerCreditLineID); /*customerCreditLineID*/
+						$objCustomerCreditLine					= $this->Customer_Credit_Line_Model->get_rowByPK($objCustomerCreditDocument->customerCreditLineID); 
+						$objCustomerAmortization				= $this->Customer_Credit_Amortization_Model->get_rowByPK($refernece3AmortizationID);
+						
 						$objTMDNew["amount"] 					= $share;
 						$objTMDNew["reference1"]				= $reference1Documento;
 						
@@ -479,8 +494,21 @@ class app_box_share extends _BaseController {
 						$objTMDNew["reference2"]					= $objCustomerCreditDocument->balanceNew;					
 						
 						$objTMDNew["reference3"]				= $refernece3AmortizationID;
+						$objTMDNew["reference5"]				= $objCustomerCreditDocument->dateOn;
+						$objTMDNew["reference6"]				= $objCustomerCreditDocument->dateFinish;
+						$objTMDNew["reference7"]				= $objCustomerAmortization->dateApply;
+						
+						//Verificar los dias de atraso
+						$hoy									= (new \DateTime())->format("Y-m-d");
+						$hoy									= \DateTime::createFromFormat('Y-m-d',$hoy);
+						$cuotaDate								= \DateTime::createFromFormat('Y-m-d', $objCustomerAmortization->dateApply );
+						$cuotaDif								= $hoy->diff($cuotaDate);
+						$cuotaDif								= $cuotaDif->days;
+						$objTMDNew["lote"]						= $cuotaDif;
+						
+						
 						$objTMDNew["exchangeRateReference"]		= $objCustomerCreditDocument->exchangeRate;
-						$objTMDNew["descriptionReference"]		= '{componentID:"Componente de transacciones de cuotas",componentItemID:"Id del documento de credito",reference1:"Numero del desembolso",refernece2:"balance anterior",refernece3:"Id de la amortizacion",reference4:"balance nuevo",exchangeRateReference:"Tasa de cambio del desembolso"}';
+						$objTMDNew["descriptionReference"]		= '{componentID:"Componente de transacciones de cuotas",componentItemID:"Id del documento de credito",reference1:"Numero del desembolso",refernece2:"balance anterior",refernece3:"Id de la amortizacion",reference4:"balance nuevo",exchangeRateReference:"Tasa de cambio del desembolso",referece5:"Fecha Inical de la deuda",reference6:"Fecha Final de la deuda",reference7:"dia que tocaba la cuota",lote:"Dias de atraso de la cuota"}';
 						$amount 								= $amount + $objTMDNew["amount"];
 						$this->Transaction_Master_Detail_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$transactionDetailID,$objTMDNew);
 					}
@@ -1642,6 +1670,209 @@ class app_box_share extends _BaseController {
 			
 			//Generar Reporte
 			$html = helper_reporte80mmTransactionMaster(
+			    "ABONO",
+			    $objCompany,
+			    $objParameter,
+			    $datView["objTM"],
+			    $datView["objNatural"],
+			    $datView["objCustumer"],
+			    $datView["tipoCambio"],
+			    $datView["objCurrency"],
+			    $datView["objTMI"],
+			    $confiDetalle,
+			    $detalle,
+			    $objParameterTelefono,
+				$datView["objStage"][0]->display,
+				"",
+				""
+			);
+			$this->dompdf->loadHTML($html);
+			
+			//1cm = 29.34666puntos
+			//a4: 210 ancho x 297
+			//a4: 21cm x 29.7cm
+			//a4: 595.28puntos x 841.59puntos
+			
+			//$this->dompdf->setPaper('A4','portrait');
+			//$this->dompdf->setPaper(array(0,0,234.76,6000));
+			
+			$this->dompdf->render();
+			
+			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+			$nameFileDownload				= date("YmdHis").".pdf";
+			
+			//visualizar
+			$this->response->setContentType('application/pdf');
+			$objParameterShowLinkDownload 	= $objParameterShowLinkDownload == "false" ? true : false;
+			$this->dompdf->stream($nameFileDownload	, ['Attachment' => $objParameterShowLinkDownload]);
+			
+			//descargar
+			//$this->dompdf->stream();
+			
+		}
+		catch(\Exception $ex){
+		    
+		    $data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+		    
+		    $this->email->setFrom(EMAIL_APP);
+		    $this->email->setTo(EMAIL_APP_COPY);
+		    $this->email->setSubject("Error");
+		    $this->email->setMessage($resultView);
+		    
+		    $resultSend01 = $this->email->send();
+		    $resultSend02 = $this->email->printDebugger();
+		    
+		    
+		    return $resultView;
+		}
+	}
+	
+	function viewRegisterFormatoPaginaTicketFunBlandon(){
+		try{ 
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+						$permited = false;
+						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						
+						if(!$permited)
+						throw new \Exception(NOT_ACCESS_CONTROL);
+						
+							
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						if ($resultPermission 	== PERMISSION_NONE)
+						throw new \Exception(NOT_ALL_EDIT);		
+			}	 
+			
+			
+			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri			
+			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri				
+			$saldos						= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"saldos");//--finuri	
+			$companyID 					= $dataSession["user"]->companyID;		
+			$branchID 					= $dataSession["user"]->branchID;		
+			$roleID 					= $dataSession["role"]->roleID;		
+			
+			//Get Component
+			$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			//Get Logo
+			$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+			//Get Company
+			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);			
+			//Get Documento				
+			
+			//Get Documento
+			//Obtener Datos
+			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
+			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
+			$datView["objBranch"]					= $this->Branch_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->branchID);
+			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
+			$datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
+			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
+			$datView["objCurrency"]                 = $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_share","statusID",$datView["objTM"]->statusID,$companyID,$branchID,$roleID);
+			
+			
+			//Configurar Detalle			
+			$confiDetalle = array();
+			if($saldos != "Basico"){
+				$row = array(
+					"style"		=>"text-align:left;width:50%",
+					"colspan"	=>'1',
+					"prefix"	=>'',
+					
+					
+					"style_row_data"		=>"text-align:left;width:50%",
+					"colspan_row_data"		=>'1',
+					"prefix_row_data"		=>'',
+					"nueva_fila_row_data"	=>0
+				);
+				array_push($confiDetalle,$row);
+				
+				$row = array(
+					"style"		=>"text-align:left;width:10%",
+					"colspan"	=>'1',
+					"prefix"	=>'',
+					
+					"style_row_data"		=>"text-align:left;width:10%",
+					"colspan_row_data"		=>'1',
+					"prefix_row_data"		=>'',
+					"nueva_fila_row_data"	=>0
+				);
+				array_push($confiDetalle,$row);
+				
+				$row = array(
+					"style"		=>"text-align:right",
+					"colspan"	=>'1',
+					"prefix"	=>$datView["objCurrency"]->simbol,
+					
+					"style_row_data"		=>"text-align:right",
+					"colspan_row_data"		=>'1',
+					"prefix_row_data"		=>"",
+					"nueva_fila_row_data"	=>0
+				);
+				array_push($confiDetalle,$row);
+			}
+			
+			//Inicializar Detalle
+			$saldoInicial = array_sum(array_column($datView["objTMD"], 'reference2'));
+			$saldoFinal   = array_sum(array_column($datView["objTMD"], 'reference4'));
+			$saldoAbonado = array_sum(array_column($datView["objTMD"], 'amount'));
+			
+			/*Calculo de saldos generales*/
+			$saldoInicialGeneral = round($datView["objTMI"]->reference1,0);
+			$saldoFinalGeneral   = round($datView["objTMI"]->reference2,0);
+			
+			$saldoInicial 	= $saldos == "Individuales"? $saldoInicial: $saldoInicialGeneral ;
+			$saldoFinal 	= $saldos == "Individuales"? $saldoFinal: $saldoFinalGeneral ;
+			
+			$detalle = array();
+			if($saldos != "Basico"){
+				
+				
+				
+				$row = array("SALDO INICIAL", '', $datView["objCurrency"]->simbol." ".sprintf("%.2f", $saldoInicial));
+				array_push($detalle,$row);
+				
+				foreach($datView["objTMD"] as $detail_){
+					
+					$row = array("APERTURA", '', $detail_->reference5 );
+					array_push($detalle,$row);
+					
+					$row = array("FINALIZACION", '', $detail_->reference6);
+					array_push($detalle,$row);
+					
+					
+					$row = array("MORA", '', ($detail_->lote > 0 ? "0" :  $detail_->lote) );
+					array_push($detalle,$row);
+					
+					
+					$row = array("ABONO", '', sprintf('%.2f',round($detail_->amount,2)));
+					array_push($detalle,$row);
+				}
+				
+				$row = array("SALDO FINAL", '', sprintf('%.2f', $saldoFinal) );
+				array_push($detalle,$row);
+			}
+			
+			
+			
+			
+			//Generar Reporte
+			$html = helper_reporte80mmTransactionMasterFunBlandon(
 			    "ABONO",
 			    $objCompany,
 			    $objParameter,

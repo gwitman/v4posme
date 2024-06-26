@@ -22,5 +22,5 @@
 				</style>
 				
 				<div id="heading" class="page-header"  >
-							<h1><i class="icon20  i-bag-2"></i> Agregar Factura</h1>
+							<h1><i class="icon20  i-bag-2"></i> Agregar <?php echo getBehavio($company->type,"app_invoice_billing","labelTitlePageNew","Factura"); ?> </h1>
 				</div> 

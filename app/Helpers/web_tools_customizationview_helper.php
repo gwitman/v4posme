@@ -617,11 +617,15 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('titanes_core_web_menu_CXP')			 															=> "PROVEEDORES",
 		
 		//Funeraria Blandon
+		strtolower('fn_blandon_core_web_menu_FACTURACION')			 												=> "CONTRATOS",
+		strtolower('fn_blandon_core_web_menu_FACTURAR')			 													=> "CONTRATO",
 		strtolower('fn_blandon_app_invoice_billing_divLabelZone') 		 											=> "Parentesco",
 		strtolower('fn_blandon_app_invoice_billing_txtTraductionPhone')	 											=> "Tel. Bene.",
 		strtolower('fn_blandon_app_invoice_billing_divTxtClienteBeneficiario')	 									=> "Bene. Nombre",
-		strtolower('fn_blandon_app_invoice_billing_divTxtCedulaBeneficiario')	 									=> "Bene. Cedula",
-		
+		strtolower('fn_blandon_app_invoice_billing_divTxtCedulaBeneficiario')	 									=> "Bene. Cedula",		
+		strtolower('fn_blandon_app_invoice_billing_labelTitlePageList')	 											=> "CONTRATOS",
+		strtolower('fn_blandon_app_invoice_billing_labelTitlePageEdit')	 											=> "Contrato",
+		strtolower('fn_blandon_app_invoice_billing_labelTitlePageNew')	 											=> "Contrato",		
 		strtolower('fn_blandon_app_invoice_billing_divHiddenReference')	 											=> "hidden",
 		strtolower('fn_blandon_app_invoice_billing_divMesa')	 													=> "hidden",
 		strtolower('fn_blandon_app_invoice_billing_divNextVisitHidden')	 											=> "hidden",
@@ -671,13 +675,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 				fnShowNotification('Telefono del beneficiario','error',timerNotification);
 				result = false;
 				fnWaitClose();
-		}
-		if($('#txtFixedExpenses').val() == '0')
-		{
-				fnShowNotification('Interes del credito','error',timerNotification);
-				result = false;
-				fnWaitClose();
-		}
+		}		
 		if($('#txtReference2').val() == '1')
 		{
 				fnShowNotification('Plazo del credito','error',timerNotification);
