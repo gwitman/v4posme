@@ -14,13 +14,13 @@ WHERE
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "YHFr2PqqcQxvE0jbvBAjxdaAeHsNar1QOvoEw2AQfa1b0787" 
+	tb_company_parameter.value = "S0EEmlFcUcvlDRdW3cIE8WQedbtdk2GVRKypXWJu8649891a" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://api.whaticket.com/api/v1/whatsapps" 
+	tb_company_parameter.value = "https://waapi.app/api/v1/instances/12905/client/action/send-message" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
@@ -60,6 +60,22 @@ WHERE
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WORKSHOW_URL_PRINTER_GARANTIA";	## Print de deposito en garantia
 
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_purchase_garantia/viewPrinterFormatoA4Output" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WORKSHOW_URL_PRINTER_TALLER_GARANTIA_OUTPUT";	## Hoja de salida de la garantia
+	
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_purchase_garantia/viewPrinterFormatoA4Stiker" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WORKSHOW_URL_PRINTER_TALLER_GARANTIA_STIKER";	## Hoja de sticker de la garantia
+	
+	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "app_purchase_taller/viewPrinterFormatoA4Stiker" 
@@ -1138,12 +1154,6 @@ WHERE
 
 
 
-UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "30" 
-WHERE 
-	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "WHATSAP_MESSAGE_BY_MONTO";## Mensajes de Whatsapp mensuales
-	
 
 
 				
@@ -1209,5 +1219,15 @@ update tb_exchange_rate set
 where 
 	currencyID = 1
 	and targetCurrencyID = 2; 
+	
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "2024-07-01" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_MONTH";	## Cantidad de mensajes mensuales
+	
+	
 	
 /*BD: dbjznvjrsdpypf	*/

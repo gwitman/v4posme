@@ -463,7 +463,11 @@ class core_web_view {
 						objTable".$idTable." = $('#".$idTable."').dataTable( ); 
 		
 						$('.dataTables_length select').uniform();
-						$('.dataTables_paginate > ul').addClass('pagination');						
+						$('.dataTables_paginate > ul').addClass('pagination');		
+						$($('#".$idTable."_filter').find('input')[0]).val('');						
+						$($('#".$idTable."_filter').find('input')[0]).attr('autocomplete', 'off');
+						
+						
 						";
 						
 						foreach($cabezera1 AS $field ){
@@ -737,7 +741,10 @@ class core_web_view {
 						objTable".$idTable." = $('#".$idTable."').dataTable( ); 
 		
 						$('.dataTables_length select').uniform();
-						$('.dataTables_paginate > ul').addClass('pagination');						
+						$('.dataTables_paginate > ul').addClass('pagination');	
+						$($('#".$idTable."_filter').find('input')[0]).val('');
+						$($('#".$idTable."_filter').find('input')[0]).attr('autocomplete', 'off');
+						
 						";
 						
 						foreach($cabezera1 AS $field ){

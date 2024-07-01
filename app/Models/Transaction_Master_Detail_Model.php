@@ -230,7 +230,8 @@ class Transaction_Master_Detail_Model extends Model  {
 						i.name as itemName,
 						ci.name as unitMeasureName,td.descriptionReference,td.exchangeRateReference,
 						td.lote,td.typePriceID,td.skuCatalogItemID,td.skuQuantity,
-						td.skuQuantityBySku,td.skuFormatoDescription,td.itemNameLog,
+						td.skuQuantityBySku,td.skuFormatoDescription,
+						REPLACE(REPLACE(REPLACE(REPLACE(replace(td.itemNameLog,'\"',''), '\r\n', ''), '\r', ''),'\n', ''),'\t','')   as itemNameLog,
 						td.amountCommision
 						");
 		$sql = $sql.sprintf(" from tb_transaction_master_detail td");

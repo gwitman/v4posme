@@ -5,8 +5,9 @@
 						$('#txtDate').datepicker({format:"yyyy-mm-dd"});						 
 						$("#txtDate").datepicker("update");
 						$('.txt-numeric').mask('000,000.00', {reverse: true});
-						var urlPrinter = '<?php echo $objParameterUrlPrinter; ?>';
-						
+						var urlPrinter 			= '<?php echo $objParameterUrlPrinter; ?>';
+						var urlPrinterOutput 	= '<?php echo $objParameterUrlPrinterOutput; ?>';
+						var urlPrinterStiker 	= '<?php echo $objParameterUrlPrinterSticker; ?>';
 						
 						//Regresar a la lista
 						$(document).on("click","#btnBack",function(){
@@ -36,6 +37,18 @@
 						$(document).on("click","#btnPrinter",function(){
 									fnWaitOpen();
 									window.open("<?php echo base_url(); ?>"+"/"+urlPrinter+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>", '_blank');
+									fnWaitClose();																	
+						});
+						
+						$(document).on("click","#btnPrinterOutput",function(){
+									fnWaitOpen();
+									window.open("<?php echo base_url(); ?>"+"/"+urlPrinterOutput+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>", '_blank');
+									fnWaitClose();																	
+						});
+						
+						$(document).on("click","#btnPrinterStiker",function(){
+									fnWaitOpen();
+									window.open("<?php echo base_url(); ?>"+"/"+urlPrinterStiker+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>", '_blank');
 									fnWaitClose();																	
 						});
 						

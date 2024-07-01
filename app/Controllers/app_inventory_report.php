@@ -775,8 +775,8 @@ class app_inventory_report extends _BaseController {
 										,x.`Moneda`
 										,x.`Fecha de enlistamiento`
 										,x.`Fecha de actualizacion`
-										,x.`Precio Venta`
-										,x.`Precio Renta`
+										,round(x.`Precio Venta`,2) as `Precio Venta`
+										,round(x.`Precio Renta`,2) as `Precio Renta`
 										,x.`Disponible`
 										,x.`Area de contruccion M2`
 										,x.`Area de terreno V2`

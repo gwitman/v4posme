@@ -279,9 +279,12 @@ class core_web_whatsap {
    
    function sendMessageByWaapi($companyID, $message, $phoneDestino)
    {
-		//https://waapi.app/account/instances/10179
-		//qMAsXGyf0jIswU6xttfuZvORRhCRJnlrLClmlBgMe31db7ac
-		//10179
+	    //2024-06-30
+		//https://waapi.app/account/
+		//tocken  qMAsXGyf0jIswU6xttfuZvORRhCRJnlrLClmlBgMe31db7ac
+		//tocken  S0EEmlFcUcvlDRdW3cIE8WQedbtdk2GVRKypXWJu8649891a
+		//api     https://waapi.app/api/v1/instances/12905/client/action/send-message
+		
 		//gabriel.ley@grupogasani.com
 		//Sistema123.
 		

@@ -389,6 +389,10 @@ $routes->match(['get','post'],'app_purchase_garantia/delete','app_purchase_garan
 $routes->match(['get','post'],'app_purchase_garantia/delete/(:any)','app_purchase_garantia::delete');
 $routes->match(['get','post'],'app_purchase_garantia/viewPrinterFormatoA4','app_purchase_garantia::viewPrinterFormatoA4');
 $routes->match(['get','post'],'app_purchase_garantia/viewPrinterFormatoA4/(:any)','app_purchase_garantia::viewPrinterFormatoA4');
+$routes->match(['get','post'],'app_purchase_garantia/viewPrinterFormatoA4Stiker','app_purchase_garantia::viewPrinterFormatoA4Stiker');
+$routes->match(['get','post'],'app_purchase_garantia/viewPrinterFormatoA4Stiker/(:any)','app_purchase_garantia::viewPrinterFormatoA4Stiker');
+$routes->match(['get','post'],'app_purchase_garantia/viewPrinterFormatoA4Output','app_purchase_garantia::viewPrinterFormatoA4Output');
+$routes->match(['get','post'],'app_purchase_garantia/viewPrinterFormatoA4Output/(:any)','app_purchase_garantia::viewPrinterFormatoA4Output');
 $routes->match(['get','post'],'app_cxp_expenses/index','app_cxp_expenses::index');
 $routes->match(['get','post'],'app_cxp_expenses/index/(:any)','app_cxp_expenses::index');
 $routes->match(['get','post'],'app_cxp_expenses/add','app_cxp_expenses::add');
@@ -891,6 +895,8 @@ $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNorm
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mm/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mm');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmGlobalPro','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmGlobalPro');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmGlobalPro/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmGlobalPro');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmLaptopStore','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmLaptopStore');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmLaptopStore/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmLaptopStore');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmBpn','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmBpn');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmBpn/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmBpn');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');

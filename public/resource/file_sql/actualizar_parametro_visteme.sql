@@ -1,3 +1,6 @@
+/*dbmjtoa2dl3hcu*/
+
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "gwitman@yahoo.com" 
 WHERE 
@@ -756,3 +759,6 @@ update tb_exchange_rate set
 where 
 	currencyID = 1
 	and targetCurrencyID = 2; 
+	
+	
+/*vistme dbmjtoa2dl3hcu */
