@@ -65,17 +65,12 @@ class app_invoice_billing extends _BaseController {
 			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 			
 			
-		
-			
-			
-			
 			
 			$objCurrency						= $this->core_web_currency->getCurrencyDefault($companyID);
-			$targetCurrency						= $this->core_web_currency->getCurrencyExternal($companyID);			
-			$customerDefault					= $this->core_web_parameter->getParameter("INVOICE_BILLING_CLIENTDEFAULT",$companyID);
+			$targetCurrency						= $this->core_web_currency->getCurrencyExternal($companyID);						
 			$objListPrice 						= $this->List_Price_Model->getListPriceToApply($companyID);
 			$objListCurrency					= $this->Company_Currency_Model->getByCompany($companyID);
-			$urlPrinterDocument					= $this->core_web_parameter->getParameter("INVOICE_URL_PRINTER",$companyID);
+			
 			
 			if(!$objListPrice)
 			throw new \Exception("NO EXISTE UNA LISTA DE PRECIO PARA SER APLICADA");			
@@ -101,75 +96,74 @@ class app_invoice_billing extends _BaseController {
 																->findAll();
 			
 			
+			$objListComanyParameter					= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$customerDefault						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_CLIENTDEFAULT");			
+			$urlPrinterDocument						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_URL_PRINTER");
 			
 			$dataView["codigoMesero"]					= $codigoMesero;
-			$objParameterInvoiceTypeEmployer			= $this->core_web_parameter->getParameter("INVOICE_TYPE_EMPLOYEER",$companyID);
+			$objParameterInvoiceTypeEmployer			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_TYPE_EMPLOYEER");
 			$objParameterInvoiceTypeEmployer			= $objParameterInvoiceTypeEmployer->value;
 			
-			$parameterValue 							= $this->core_web_parameter->getParameter("INVOICE_BUTTOM_PRINTER_FIDLOCAL_PAYMENT_AND_AMORTIZACION",$companyID);
+			$parameterValue 							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BUTTOM_PRINTER_FIDLOCAL_PAYMENT_AND_AMORTIZACION");
 			$dataView["objParameterInvoiceButtomPrinterFidLocalPaymentAndAmortization"] = $parameterValue->value;
 			
 			
-			$objParameterDirect 									= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_PRINTER_DIRECT",$companyID);
-			$objParameterInvoiceBillingQuantityZero					= $this->core_web_parameter->getParameter("INVOICE_BILLING_QUANTITY_ZERO",$companyID);
-			$dataView["objParameterInvoiceBillingQuantityZero"]		= $objParameterInvoiceBillingQuantityZero->value;
+			$objParameterDirect 										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT")->value;
+			$objParameterInvoiceBillingQuantityZero						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_QUANTITY_ZERO");
+			$dataView["objParameterInvoiceBillingQuantityZero"]			= $objParameterInvoiceBillingQuantityZero->value;
 			
-			$objParameterInvoiceBillingPrinterDirect				= $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT",$companyID);
-			$dataView["objParameterInvoiceBillingPrinterDirect"]	= $objParameterInvoiceBillingPrinterDirect->value;
-			$objParameterInvoiceBillingPrinterDirectUrl					= $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_URL",$companyID);
+			$objParameterInvoiceBillingPrinterDirect					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT");
+			$dataView["objParameterInvoiceBillingPrinterDirect"]		= $objParameterInvoiceBillingPrinterDirect->value;
+			$objParameterInvoiceBillingPrinterDirectUrl					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_URL");
 			$dataView["objParameterInvoiceBillingPrinterDirectUrl"]		= $objParameterInvoiceBillingPrinterDirectUrl->value;
 			
-			$objParameterShowComandoDeCocina							= $this->core_web_parameter->getParameter("INVOICE_BILLING_SHOW_COMMAND_FOOT",$companyID);
+			$objParameterShowComandoDeCocina							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SHOW_COMMAND_FOOT");
 			$dataView["objParameterShowComandoDeCocina"]				= $objParameterShowComandoDeCocina->value;			
-			$urlPrinterDocumentCocina									= $this->core_web_parameter->getParameter("INVOICE_URL_PRINTER_COCINA",$companyID);
+			$urlPrinterDocumentCocina									= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_URL_PRINTER_COCINA");
 			$dataView["urlPrinterDocumentCocina"]						= $urlPrinterDocumentCocina->value;
-			$urlPrinterDocumentCocinaDirect								= $this->core_web_parameter->getParameter("INVOICE_URL_PRINTER_COCINA_DIRECT",$companyID);
+			$urlPrinterDocumentCocinaDirect								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_URL_PRINTER_COCINA_DIRECT");
 			$dataView["urlPrinterDocumentCocinaDirect"]					= $urlPrinterDocumentCocinaDirect->value;
-			$objParameterImprimirPorCadaFactura							= $this->core_web_parameter->getParameter("INVOICE_PRINT_BY_INVOICE",$companyID);
+			$objParameterImprimirPorCadaFactura							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PRINT_BY_INVOICE");
 			$dataView["objParameterImprimirPorCadaFactura"]				= $objParameterImprimirPorCadaFactura->value;
-			$objParameterRegresarAListaDespuesDeGuardar					= $this->core_web_parameter->getParameter("INVOICE_BILLING_SAVE_AFTER_TO_LIST",$companyID);
+			$objParameterRegresarAListaDespuesDeGuardar					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SAVE_AFTER_TO_LIST");
 			$dataView["objParameterRegresarAListaDespuesDeGuardar"]		= $objParameterRegresarAListaDespuesDeGuardar->value;
-			$objParameterScanerProducto									= $this->core_web_parameter->getParameter("INVOICE_SHOW_POPUP_FIND_PRODUCTO_NOT_SCANER",$companyID);
+			$objParameterScanerProducto									= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_SHOW_POPUP_FIND_PRODUCTO_NOT_SCANER");
 			$objParameterScanerProducto									= $objParameterScanerProducto->value;
-			$dataView["objParameterScanerProducto"] 					= $objParameterScanerProducto;
-			
-			$objParameterUrlServidorDeImpresion							= $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_SERVER_PATH",$companyID);
+			$dataView["objParameterScanerProducto"] 					= $objParameterScanerProducto;			
+			$objParameterUrlServidorDeImpresion							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_SERVER_PATH");
 			$objParameterUrlServidorDeImpresion							= $objParameterUrlServidorDeImpresion->value;
 			$dataView["objParameterUrlServidorDeImpresion"] 			= $objParameterUrlServidorDeImpresion;
 			
 			
-			$objParameterCantidadItemPoup								= $this->core_web_parameter->getParameter("INVOICE_CANTIDAD_ITEM",$companyID);
+			$objParameterCantidadItemPoup								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
 			$objParameterCantidadItemPoup								= $objParameterCantidadItemPoup->value;			
-			$dataView["objParameterCantidadItemPoup"] 					= $objParameterCantidadItemPoup;
-			
-			$objParameterHidenFiledItemNumber							= $this->core_web_parameter->getParameter("INVOICE_HIDEN_ITEMNUMBER_IN_POPUP",$companyID);
+			$dataView["objParameterCantidadItemPoup"] 					= $objParameterCantidadItemPoup;			
+			$objParameterHidenFiledItemNumber							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_HIDEN_ITEMNUMBER_IN_POPUP");
 			$objParameterHidenFiledItemNumber							= $objParameterHidenFiledItemNumber->value;			
-			$dataView["objParameterHidenFiledItemNumber"] 				= $objParameterHidenFiledItemNumber;
-			
-			$objParameterEsResrarante									= $this->core_web_parameter->getParameter("INVOICE_BILLING_IS_RESTAURANT",$this->session->get('user')->companyID);
+			$dataView["objParameterHidenFiledItemNumber"] 				= $objParameterHidenFiledItemNumber;			
+			$objParameterEsResrarante									= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_IS_RESTAURANT");
 			$objParameterEsResrarante									= $objParameterEsResrarante->value;
-			$dataView["objParameterEsResrarante"] 						= $objParameterEsResrarante;
-						
-			$objParameterAmortizationDuranteFactura						= $this->core_web_parameter->getParameter("INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE",$companyID);
+			$dataView["objParameterEsResrarante"] 						= $objParameterEsResrarante;						
+			$objParameterAmortizationDuranteFactura						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE");
 			$objParameterAmortizationDuranteFactura						= $objParameterAmortizationDuranteFactura->value;			
 			$dataView["objParameterAmortizationDuranteFactura"] 		= $objParameterAmortizationDuranteFactura;
 			
 			
-			$objParameterAlturaDelModalDeSeleccionProducto					= $this->core_web_parameter->getParameter("INVOICE_ALTO_MODAL_DE_SELECCION_DE_PRODUCTO_AL_FACTURAR",$companyID);
+			$objParameterAlturaDelModalDeSeleccionProducto					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_ALTO_MODAL_DE_SELECCION_DE_PRODUCTO_AL_FACTURAR");
 			$objParameterAlturaDelModalDeSeleccionProducto					= $objParameterAlturaDelModalDeSeleccionProducto->value;			
 			$dataView["objParameterAlturaDelModalDeSeleccionProducto"] 		= $objParameterAlturaDelModalDeSeleccionProducto;
 			
-			$objParameterScrollDelModalDeSeleccionProducto					= $this->core_web_parameter->getParameter("INVOICE_SCROLL_DE_MODAL_EN_SELECCION_DE_PRODUTO_AL_FACTURAR",$companyID);
+			$objParameterScrollDelModalDeSeleccionProducto					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_SCROLL_DE_MODAL_EN_SELECCION_DE_PRODUTO_AL_FACTURAR");
 			$objParameterScrollDelModalDeSeleccionProducto					= $objParameterScrollDelModalDeSeleccionProducto->value;
 			$dataView["objParameterScrollDelModalDeSeleccionProducto"] 		= $objParameterScrollDelModalDeSeleccionProducto;
 			
-			$objParameterMostrarImagenEnSeleccion					= $this->core_web_parameter->getParameter("INVOICE_BILLING_SHOW_IMAGE_IN_DETAIL_SELECTION",$companyID);
-			$objParameterMostrarImagenEnSeleccion					= $objParameterMostrarImagenEnSeleccion->value;	
-			$dataView["objParameterMostrarImagenEnSeleccion"] 		= $objParameterMostrarImagenEnSeleccion;
+			$objParameterMostrarImagenEnSeleccion							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SHOW_IMAGE_IN_DETAIL_SELECTION");
+			$objParameterMostrarImagenEnSeleccion							= $objParameterMostrarImagenEnSeleccion->value;	
+			$dataView["objParameterMostrarImagenEnSeleccion"] 				= $objParameterMostrarImagenEnSeleccion;
 			
-			$objParameterPantallaParaFacturar				= $this->core_web_parameter->getParameter("INVOICE_PANTALLA_FACTURACION",$this->session->get('user')->companyID);
-			$objParameterPantallaParaFacturar				= $objParameterPantallaParaFacturar->value;
-			$dataView["objParameterPantallaParaFacturar"] 	= $objParameterPantallaParaFacturar;
+			$objParameterPantallaParaFacturar								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PANTALLA_FACTURACION");
+			$objParameterPantallaParaFacturar								= $objParameterPantallaParaFacturar->value;
+			$dataView["objParameterPantallaParaFacturar"] 					= $objParameterPantallaParaFacturar;
 			
 			
 			//Tipo de Factura
@@ -244,17 +238,17 @@ class app_invoice_billing extends _BaseController {
 			$dataView["listProvider"]			= $this->Provider_Model->get_rowByCompany($companyID);
 			$dataView["objListaPermisos"]		= $dataSession["menuHiddenPopup"];				
 			$dataView["useMobile"]												= $dataSession["user"]->useMobile;			
-			$dataView["objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE"] 	= $this->core_web_parameter->getParameterValue("INVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE",$companyID);
-			$dataView["objParameterINVOICE_OPEN_CASH_PASSWORD"] 				= $this->core_web_parameter->getParameterValue("INVOICE_OPEN_CASH_PASSWORD",$companyID);
-			$dataView["objParameterCustomPopupFacturacion"]											= $this->core_web_parameter->getParameterValue("CORE_VIEW_CUSTOM_PANTALLA_DE_FACTURACION_POPUP_SELECCION_PRODUCTO_FORMA_MOSTRAR",$companyID);
-			$dataView["objParameterTipoPrinterDonwload"]											= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_PRINTER_DOWNLOAD",$companyID);
-			$dataView["objParameterINVOICE_BILLING_APPLY_TYPE_PRICE_ON_DAY_POR_MAYOR"]				= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_APPLY_TYPE_PRICE_ON_DAY_POR_MAYOR",$companyID);
-			$dataView["objParameterINVOICE_BILLING_SHOW_COMMAND_BAR"]								= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_SHOW_COMMAND_BAR",$companyID);
-			$dataView["objParameterINVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_BAR"]				= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_BAR",$companyID);
-			$dataView["objParameterINVOICE_BILLING_PRINTER_DIRECT_URL_BAR"]							= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_PRINTER_DIRECT_URL_BAR",$companyID);
-			$dataView["objParameterINVOICE_BILLING_PRINTER_URL_BAR"]								= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_PRINTER_URL_BAR",$companyID);			
+			$dataView["objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE"] 						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE")->value;
+			$dataView["objParameterINVOICE_OPEN_CASH_PASSWORD"] 									= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_OPEN_CASH_PASSWORD")->value;
+			$dataView["objParameterCustomPopupFacturacion"]											= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CORE_VIEW_CUSTOM_PANTALLA_DE_FACTURACION_POPUP_SELECCION_PRODUCTO_FORMA_MOSTRAR")->value;
+			$dataView["objParameterTipoPrinterDonwload"]											= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DOWNLOAD")->value;
+			$dataView["objParameterINVOICE_BILLING_APPLY_TYPE_PRICE_ON_DAY_POR_MAYOR"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_APPLY_TYPE_PRICE_ON_DAY_POR_MAYOR")->value;
+			$dataView["objParameterINVOICE_BILLING_SHOW_COMMAND_BAR"]								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SHOW_COMMAND_BAR")->value;
+			$dataView["objParameterINVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_BAR"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_BAR")->value;
+			$dataView["objParameterINVOICE_BILLING_PRINTER_DIRECT_URL_BAR"]							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_URL_BAR")->value;
+			$dataView["objParameterINVOICE_BILLING_PRINTER_URL_BAR"]								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_URL_BAR")->value;					
+			$dataView["objParameterINVOICE_BILLING_SELECTITEM"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SELECTITEM")->value;
 			$dataView["objListParameterJavaScript"]													= $this->core_web_parameter->getParameterAllToJavaScript($companyID);
-			$dataView["objParameterINVOICE_BILLING_SELECTITEM"]										= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_SELECTITEM",$companyID);
 			
 			
 			if(!$dataView["objCustomerDefault"])
@@ -276,7 +270,7 @@ class app_invoice_billing extends _BaseController {
 			//Obtener la linea de credito del cliente por defecto
 			$objCurrencyDolares						= $this->core_web_currency->getCurrencyExternal($companyID);
 			$objCurrencyCordoba						= $this->core_web_currency->getCurrencyDefault($companyID);			
-			$parameterCausalTypeCredit 				= $this->core_web_parameter->getParameter("INVOICE_BILLING_CREDIT",$companyID);			
+			$parameterCausalTypeCredit 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_CREDIT");			
 			$objCustomerCreditAmoritizationAll		= $this->Customer_Credit_Amortization_Model->get_rowByCustomerID( $dataView["objTransactionMaster"]->entityID );
 			$objListCustomerCreditLine 				= $this->Customer_Credit_Line_Model->get_rowByEntityBalanceMayorCero($companyID,$dataSession["user"]->branchID,$dataView["objTransactionMaster"]->entityID);			
 			
@@ -304,11 +298,11 @@ class app_invoice_billing extends _BaseController {
 				$dataPostPrinter["objTransactionMasterDetailWarehouse"]		= $dataView["objTransactionMasterDetailWarehouse"];
 				$dataPostPrinter["objTransactionMasterDetailConcept"]		= $dataView["objTransactionMasterDetailConcept"];
 				$dataPostPrinter["objComponentCompany"]				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
-				$dataPostPrinter["objParameterLogo"]				= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
-				$dataPostPrinter["objParameterPhoneProperty"]		= $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE",$companyID);
+				$dataPostPrinter["objParameterLogo"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CORE_COMPANY_LOGO");
+				$dataPostPrinter["objParameterPhoneProperty"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CORE_PROPIETARY_PHONE");
 				$dataPostPrinter["objCompany"] 						= $this->Company_Model->get_rowByPK($companyID);			
 				$dataPostPrinter["objUser"] 						= $this->User_Model->get_rowByPK($companyID,$dataPostPrinter["objTransactionMaster"]->createdAt,$dataPostPrinter["objTransactionMaster"]->createdBy);
-				$dataPostPrinter["Identifier"]						= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+				$dataPostPrinter["Identifier"]						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CORE_COMPANY_IDENTIFIER");
 				$dataPostPrinter["objBranch"]						= $this->Branch_Model->get_rowByPK($companyID,$dataPostPrinter["objTransactionMaster"]->branchID);
 				$dataPostPrinter["objTipo"]							= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$dataPostPrinter["objTransactionMaster"]->transactionID,$dataPostPrinter["objTransactionMaster"]->transactionCausalID);
 				$dataPostPrinter["objCustumer"]						= $this->Customer_Model->get_rowByEntity($companyID,$dataPostPrinter["objTransactionMaster"]->entityID);
@@ -2555,8 +2549,7 @@ class app_invoice_billing extends _BaseController {
 			$roleID 							= $dataSession["role"]->roleID;
 			$transactionID 						= $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID,"tb_transaction_master_billing",0);
 			$objCurrency						= $this->core_web_currency->getCurrencyDefault($companyID);
-			$targetCurrency						= $this->core_web_currency->getCurrencyExternal($companyID);			
-			$customerDefault					= $this->core_web_parameter->getParameter("INVOICE_BILLING_CLIENTDEFAULT",$companyID);
+			$targetCurrency						= $this->core_web_currency->getCurrencyExternal($companyID);						
 			$objListPrice 						= $this->List_Price_Model->getListPriceToApply($companyID);
 			$objListCurrency					= $this->Company_Currency_Model->getByCompany($companyID);
 			
@@ -2565,32 +2558,32 @@ class app_invoice_billing extends _BaseController {
 			throw new \Exception("NO EXISTE UNA LISTA DE PRECIO PARA SER APLICADA");
 		
 			
-			
-			$objParameterInvoiceTypeEmployer		= $this->core_web_parameter->getParameter("INVOICE_TYPE_EMPLOYEER",$companyID);
-			$objParameterInvoiceTypeEmployer		= $objParameterInvoiceTypeEmployer->value;
-			
-			$objParameterInvoiceAutoApply			= $this->core_web_parameter->getParameter("INVOICE_AUTOAPPLY_CASH",$companyID);
+			$objListComanyParameter					= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$customerDefault						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_CLIENTDEFAULT");
+			$objParameterInvoiceTypeEmployer		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_TYPE_EMPLOYEER");
+			$objParameterInvoiceTypeEmployer		= $objParameterInvoiceTypeEmployer->value;			
+			$objParameterInvoiceAutoApply			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_AUTOAPPLY_CASH");
 			$objParameterInvoiceAutoApply			= $objParameterInvoiceAutoApply->value;
-			$objParameterTypePreiceDefault			= $this->core_web_parameter->getParameter("INVOICE_DEFAULT_TYPE_PRICE",$companyID);
+			$objParameterTypePreiceDefault			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_DEFAULT_TYPE_PRICE");
 			$objParameterTypePreiceDefault			= $objParameterTypePreiceDefault->value;
-			$objParameterTipoWarehouseDespacho		= $this->core_web_parameter->getParameter("INVOICE_TYPE_WAREHOUSE_DESPACHO",$companyID);
+			$objParameterTipoWarehouseDespacho		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_TYPE_WAREHOUSE_DESPACHO");
 			$objParameterTipoWarehouseDespacho		= $objParameterTipoWarehouseDespacho->value;
-			$objParameterImprimirPorCadaFactura		= $this->core_web_parameter->getParameter("INVOICE_PRINT_BY_INVOICE",$companyID);
+			$objParameterImprimirPorCadaFactura		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PRINT_BY_INVOICE");
 			$objParameterImprimirPorCadaFactura		= $objParameterImprimirPorCadaFactura->value;
-			$objParameterScanerProducto				= $this->core_web_parameter->getParameter("INVOICE_SHOW_POPUP_FIND_PRODUCTO_NOT_SCANER",$companyID);
+			$objParameterScanerProducto				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_SHOW_POPUP_FIND_PRODUCTO_NOT_SCANER");
 			$objParameterScanerProducto				= $objParameterScanerProducto->value;
-			$objParameterCantidadItemPoup			= $this->core_web_parameter->getParameter("INVOICE_CANTIDAD_ITEM",$companyID);
+			$objParameterCantidadItemPoup			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
 			$objParameterCantidadItemPoup			= $objParameterCantidadItemPoup->value;
-			$objParameterHidenFiledItemNumber		= $this->core_web_parameter->getParameter("INVOICE_HIDEN_ITEMNUMBER_IN_POPUP",$companyID);
+			$objParameterHidenFiledItemNumber		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_HIDEN_ITEMNUMBER_IN_POPUP");
 			$objParameterHidenFiledItemNumber		= $objParameterHidenFiledItemNumber->value;			
-			$objParameterAmortizationDuranteFactura	= $this->core_web_parameter->getParameter("INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE",$companyID);
+			$objParameterAmortizationDuranteFactura	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE");
 			$objParameterAmortizationDuranteFactura	= $objParameterAmortizationDuranteFactura->value;
-			$objParameterDirect 					= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_PRINTER_DIRECT",$companyID);
+			$objParameterDirect 					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT")->value;
 			
-			$objParameterAlturaDelModalDeSeleccionProducto	= $this->core_web_parameter->getParameter("INVOICE_ALTO_MODAL_DE_SELECCION_DE_PRODUCTO_AL_FACTURAR",$companyID);
+			$objParameterAlturaDelModalDeSeleccionProducto	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_ALTO_MODAL_DE_SELECCION_DE_PRODUCTO_AL_FACTURAR");
 			$objParameterAlturaDelModalDeSeleccionProducto	= $objParameterAlturaDelModalDeSeleccionProducto->value;			
 			
-			$objParameterScrollDelModalDeSeleccionProducto	= $this->core_web_parameter->getParameter("INVOICE_SCROLL_DE_MODAL_EN_SELECCION_DE_PRODUTO_AL_FACTURAR",$companyID);
+			$objParameterScrollDelModalDeSeleccionProducto	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_SCROLL_DE_MODAL_EN_SELECCION_DE_PRODUTO_AL_FACTURAR");
 			$objParameterScrollDelModalDeSeleccionProducto	= $objParameterScrollDelModalDeSeleccionProducto->value;			
 			
 			
@@ -2682,48 +2675,48 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objParameterAmortizationDuranteFactura"] = $objParameterAmortizationDuranteFactura;
 			$dataView["objParameterAlturaDelModalDeSeleccionProducto"] 	= $objParameterAlturaDelModalDeSeleccionProducto;
 			$dataView["objParameterScrollDelModalDeSeleccionProducto"] 	= $objParameterScrollDelModalDeSeleccionProducto;
-			$dataView["objParameterCXC_PLAZO_DEFAULT"]												= $this->core_web_parameter->getParameterValue("CXC_PLAZO_DEFAULT",$companyID);
-			$dataView["objParameterCXC_FRECUENCIA_PAY_DEFAULT"]										= $this->core_web_parameter->getParameterValue("CXC_FRECUENCIA_PAY_DEFAULT",$companyID);
-			$dataView["objParameterCustomPopupFacturacion"]											= $this->core_web_parameter->getParameterValue("CORE_VIEW_CUSTOM_PANTALLA_DE_FACTURACION_POPUP_SELECCION_PRODUCTO_FORMA_MOSTRAR",$companyID);
-			$dataView["objParameterINVOICE_BILLING_APPLY_TYPE_PRICE_ON_DAY_POR_MAYOR"]				= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_APPLY_TYPE_PRICE_ON_DAY_POR_MAYOR",$companyID);
-			$dataView["objParameterINVOICE_BILLING_SHOW_COMMAND_BAR"]								= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_SHOW_COMMAND_BAR",$companyID);
-			$dataView["objParameterINVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_BAR"]				= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_BAR",$companyID);
-			$dataView["objParameterINVOICE_BILLING_PRINTER_DIRECT_URL_BAR"]							= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_PRINTER_DIRECT_URL_BAR",$companyID);
-			$dataView["objParameterobjParameterINVOICE_BILLING_PRINTER_URL_BAR"]					= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_PRINTER_URL_BAR",$companyID);			
+			$dataView["objParameterCXC_PLAZO_DEFAULT"]												= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_PLAZO_DEFAULT")->value;
+			$dataView["objParameterCXC_FRECUENCIA_PAY_DEFAULT"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_FRECUENCIA_PAY_DEFAULT")->value;
+			$dataView["objParameterCustomPopupFacturacion"]											= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CORE_VIEW_CUSTOM_PANTALLA_DE_FACTURACION_POPUP_SELECCION_PRODUCTO_FORMA_MOSTRAR")->value;
+			$dataView["objParameterINVOICE_BILLING_APPLY_TYPE_PRICE_ON_DAY_POR_MAYOR"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_APPLY_TYPE_PRICE_ON_DAY_POR_MAYOR")->value;
+			$dataView["objParameterINVOICE_BILLING_SHOW_COMMAND_BAR"]								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SHOW_COMMAND_BAR")->value;
+			$dataView["objParameterINVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_BAR"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_BAR")->value;
+			$dataView["objParameterINVOICE_BILLING_PRINTER_DIRECT_URL_BAR"]							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_URL_BAR")->value;
+			$dataView["objParameterobjParameterINVOICE_BILLING_PRINTER_URL_BAR"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_URL_BAR")->value;					
+			$dataView["objParameterINVOICE_BILLING_EMPLOYEE_DEFAULT"]								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_EMPLOYEE_DEFAULT")->value;
+			$dataView["objParameterINVOICE_BILLING_SELECTITEM"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SELECTITEM")->value;
+			$dataView["objParameterACCOUNTING_CURRENCY_NAME_IN_BILLING"]							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"ACCOUNTING_CURRENCY_NAME_IN_BILLING")->value;
 			$dataView["objListParameterJavaScript"]													= $this->core_web_parameter->getParameterAllToJavaScript($companyID);			
-			$dataView["objParameterINVOICE_BILLING_EMPLOYEE_DEFAULT"]								= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_EMPLOYEE_DEFAULT",$companyID);
-			$dataView["objParameterINVOICE_BILLING_SELECTITEM"]										= $this->core_web_parameter->getParameterValue("INVOICE_BILLING_SELECTITEM",$companyID);
-			$dataView["objParameterACCOUNTING_CURRENCY_NAME_IN_BILLING"]							= $this->core_web_parameter->getParameterValue("ACCOUNTING_CURRENCY_NAME_IN_BILLING",$companyID);
 			
-			$objParameterUrlServidorDeImpresion							= $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_SERVER_PATH",$companyID);
+			$objParameterUrlServidorDeImpresion							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_SERVER_PATH");
 			$objParameterUrlServidorDeImpresion							= $objParameterUrlServidorDeImpresion->value;
 			$dataView["objParameterUrlServidorDeImpresion"] 			= $objParameterUrlServidorDeImpresion;
 			
-			$objParameterImprimirPorCadaFactura							= $this->core_web_parameter->getParameter("INVOICE_PRINT_BY_INVOICE",$companyID);
+			$objParameterImprimirPorCadaFactura							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PRINT_BY_INVOICE");
 			$dataView["objParameterImprimirPorCadaFactura"]				= $objParameterImprimirPorCadaFactura->value;
 			
-			$objParameterInvoiceBillingPrinterDirect				= $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT",$companyID);
-			$dataView["objParameterInvoiceBillingPrinterDirect"]	= $objParameterInvoiceBillingPrinterDirect->value;
-			$objParameterInvoiceBillingPrinterDirectUrl					= $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_URL",$companyID);
+			$objParameterInvoiceBillingPrinterDirect					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT");
+			$dataView["objParameterInvoiceBillingPrinterDirect"]		= $objParameterInvoiceBillingPrinterDirect->value;
+			$objParameterInvoiceBillingPrinterDirectUrl					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_URL");
 			$dataView["objParameterInvoiceBillingPrinterDirectUrl"]		= $objParameterInvoiceBillingPrinterDirectUrl->value;
 			
 			
-			$objParameterInvoiceBillingQuantityZero					= $this->core_web_parameter->getParameter("INVOICE_BILLING_QUANTITY_ZERO",$companyID);
-			$dataView["objParameterInvoiceBillingQuantityZero"]		= $objParameterInvoiceBillingQuantityZero->value;
-			$objParameterRegresarAListaDespuesDeGuardar					= $this->core_web_parameter->getParameter("INVOICE_BILLING_SAVE_AFTER_TO_LIST",$companyID);
+			$objParameterInvoiceBillingQuantityZero						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_QUANTITY_ZERO");
+			$dataView["objParameterInvoiceBillingQuantityZero"]			= $objParameterInvoiceBillingQuantityZero->value;
+			$objParameterRegresarAListaDespuesDeGuardar					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SAVE_AFTER_TO_LIST");
 			$dataView["objParameterRegresarAListaDespuesDeGuardar"]		= $objParameterRegresarAListaDespuesDeGuardar->value;
 			
-			$objParameterMostrarImagenEnSeleccion					= $this->core_web_parameter->getParameter("INVOICE_BILLING_SHOW_IMAGE_IN_DETAIL_SELECTION",$companyID);
-			$objParameterMostrarImagenEnSeleccion					= $objParameterMostrarImagenEnSeleccion->value;	
-			$dataView["objParameterMostrarImagenEnSeleccion"] 		= $objParameterMostrarImagenEnSeleccion;
+			$objParameterMostrarImagenEnSeleccion						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SHOW_IMAGE_IN_DETAIL_SELECTION");
+			$objParameterMostrarImagenEnSeleccion						= $objParameterMostrarImagenEnSeleccion->value;	
+			$dataView["objParameterMostrarImagenEnSeleccion"] 			= $objParameterMostrarImagenEnSeleccion;
 			
-			$objParameterPantallaParaFacturar				= $this->core_web_parameter->getParameter("INVOICE_PANTALLA_FACTURACION",$this->session->get('user')->companyID);
-			$objParameterPantallaParaFacturar				= $objParameterPantallaParaFacturar->value;
-			$dataView["objParameterPantallaParaFacturar"] 	= $objParameterPantallaParaFacturar;
+			$objParameterPantallaParaFacturar							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PANTALLA_FACTURACION");
+			$objParameterPantallaParaFacturar							= $objParameterPantallaParaFacturar->value;
+			$dataView["objParameterPantallaParaFacturar"] 				= $objParameterPantallaParaFacturar;
 			
-			$objParameterEsResrarante				= $this->core_web_parameter->getParameter("INVOICE_BILLING_IS_RESTAURANT",$this->session->get('user')->companyID);
-			$objParameterEsResrarante				= $objParameterEsResrarante->value;
-			$dataView["objParameterEsResrarante"] 	= $objParameterEsResrarante;
+			$objParameterEsResrarante									= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_IS_RESTAURANT");
+			$objParameterEsResrarante									= $objParameterEsResrarante->value;
+			$dataView["objParameterEsResrarante"] 						= $objParameterEsResrarante;
 			
 						
 			if(!$dataView["objCustomerDefault"])
@@ -2737,7 +2730,7 @@ class app_invoice_billing extends _BaseController {
 			//Obtener la linea de credito del cliente por defecto
 			$objCurrencyDolares						= $this->core_web_currency->getCurrencyExternal($companyID);
 			$objCurrencyCordoba						= $this->core_web_currency->getCurrencyDefault($companyID);			
-			$parameterCausalTypeCredit 				= $this->core_web_parameter->getParameter("INVOICE_BILLING_CREDIT",$companyID);			
+			$parameterCausalTypeCredit 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_CREDIT");			
 			$objCustomerCreditAmoritizationAll		= $this->Customer_Credit_Amortization_Model->get_rowByCustomerID($dataView["objCustomerDefault"]->entityID);
 			$objListCustomerCreditLine 				= $this->Customer_Credit_Line_Model->get_rowByEntityBalanceMayorCero($companyID,$dataSession["user"]->branchID,$dataView["objCustomerDefault"]->entityID);			
 			
@@ -2757,11 +2750,11 @@ class app_invoice_billing extends _BaseController {
 				$dataPostPrinter["objTransactionMasterDetailWarehouse"]		= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterIDToPrinter);
 				$dataPostPrinter["objTransactionMasterDetailConcept"]		= $this->Transaction_Master_Concept_Model->get_rowByTransactionMasterConcept($companyID,$transactionID,$transactionMasterIDToPrinter,$objComponentItem->componentID);
 				$dataPostPrinter["objComponentCompany"]				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
-				$dataPostPrinter["objParameterLogo"]				= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
-				$dataPostPrinter["objParameterPhoneProperty"]		= $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE",$companyID);
+				$dataPostPrinter["objParameterLogo"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CORE_COMPANY_LOGO");
+				$dataPostPrinter["objParameterPhoneProperty"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CORE_PROPIETARY_PHONE");
 				$dataPostPrinter["objCompany"] 						= $this->Company_Model->get_rowByPK($companyID);			
 				$dataPostPrinter["objUser"] 						= $this->User_Model->get_rowByPK($companyID,$dataPostPrinter["objTransactionMaster"]->createdAt,$dataPostPrinter["objTransactionMaster"]->createdBy);
-				$dataPostPrinter["Identifier"]						= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+				$dataPostPrinter["Identifier"]						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CORE_COMPANY_IDENTIFIER");
 				$dataPostPrinter["objBranch"]						= $this->Branch_Model->get_rowByPK($companyID,$dataPostPrinter["objTransactionMaster"]->branchID);
 				$dataPostPrinter["objTipo"]							= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$dataPostPrinter["objTransactionMaster"]->transactionID,$dataPostPrinter["objTransactionMaster"]->transactionCausalID);
 				$dataPostPrinter["objCustumer"]						= $this->Customer_Model->get_rowByEntity($companyID,$dataPostPrinter["objTransactionMaster"]->entityID);

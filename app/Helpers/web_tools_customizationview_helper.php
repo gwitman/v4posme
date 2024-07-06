@@ -698,7 +698,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		
 		/*Pizza Laus*/		
 		strtolower('pizza_laus_core_web_language_REGISTRADA')			 											=> "GUARDAR MESA",
-		strtolower('pizza_laus_core_web_language_APLICADA')				 											=> "YA FUE PAGADA",
+		strtolower('pizza_laus_core_web_language_APLICADA')				 											=> "PAGAR",
 		strtolower('pizza_laus_core_web_language_REGISTRAR')				 										=> "GUARDAR MESA",
 		strtolower('pizza_laus_core_web_language_APLICAR')				 											=> "PAGAR",		
 		strtolower('pizza_laus_app_invoice_billing_divTxtMoneda') 													=> "hidden",
@@ -710,8 +710,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('pizza_laus_app_invoice_billing_lblReferencia')													=> "Vendedor",	
 		strtolower('pizza_laus_app_invoice_billing_txtScanerBarCode')	 											=> "hidden",
 		strtolower('pizza_laus_app_invoice_billing_panelResumenFacturaTool')	 									=> "hidden",
-		strtolower('pizza_laus_app_invoice_billing_panelResumenFactura')	 										=> "hidden",
-		strtolower('pizza_laus_app_invoice_billing_panelSummaryInvoice')	 										=> "hidden",
+		strtolower('pizza_laus_app_invoice_billing_panelResumenFactura')	 										=> "hidden",		
 		strtolower('pizza_laus_app_invoice_billing_rowOptionPaymentExtras')	 										=> "hidden",
 		
 		
@@ -726,6 +725,11 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 				$('#divReferencia').appendTo('#divInformacionRight');	
 				$('#divPaymentOption').appendTo('#siderbar_content_right');	
 				$('#divPaymentOption').removeClass('col-lg-5');
+				$('#divPaymentOption').addClass('col-lg-6');
+				$('#divPanelShowSummaryNumber').appendTo('#siderbar_content_right');	
+				$('#divPanelShowSummaryNumber').removeClass('col-lg-5');
+				$('#divPanelShowSummaryNumber').addClass('col-lg-6');
+				
 				$('#heading').remove();
 				$('.btnAcept[data-valueworkflow=\"67\"]').parent().appendTo('#divPanelPaymentSideBar');	
 				$('.btnAcept[data-valueworkflow=\"67\"]').parent().removeClass('col-lg-2');
@@ -742,6 +746,8 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 				$('#btnVeDetalleFactura').parent().appendTo('#rowBotoneraFacturaFila4');				
 				$('#saltoDeLineaFila3').remove();
 				$('#saltoDeLineaFila2').remove();
+				
+				
 			});
 		</script>",
 		

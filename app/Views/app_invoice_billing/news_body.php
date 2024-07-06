@@ -939,7 +939,7 @@
 						</table>
 					</div>
 					
-					<div class="col-lg-4 col-sm-12 <?php echo getBehavio($company->type,"app_invoice_billing","panelSummaryInvoice",""); ?> ">
+					<div class="col-lg-4 col-sm-12 <?php echo getBehavio($company->type,"app_invoice_billing","panelSummaryInvoice",""); ?> " id="divPanelShowSummaryNumber"  >
 						<div class="page-header">
 							<h3>Resumen</h3>
 						</div>
@@ -969,6 +969,55 @@
 					
 				</div><!-- End .row-fluid  -->                                       
 			</div>
+			
+			
+						
+			<!-- Barra Lateral -->
+			<div id="mySidebar" class="sidebar" style="background-color:white">
+			  <div class="sidebar-content"> 
+			  
+				<div class="row">
+					<div id="siderbar_content_right">
+					</di/v>
+				</div>
+				
+				<div class="row" id="divPanelPaymentSideBar" >
+					<div class="col col-lg-12">
+						<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackPayment"><i class="icon16 i-print "></i> Regresar</a>
+					</div>	
+				</div>
+				
+			  </div>
+			</div>
+
+
+			<!-- Barra Lateral Factura-->
+			<div id="mySidebarFactura" class="sidebar" style="background-color:white">
+			  <div class="sidebar-content"> 
+				<div id="siderbar_content_right_factura">
+				</div>
+				
+				<div class="row" id="divPanelFacturaSideBarComandos" >
+				
+				</div>
+				
+				</br>
+				
+				
+				<div class="row" id="divPanelFacturaSideBar" >
+					<div class="col col-lg-12">
+						<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackFactura"><i class="icon16 i-print "></i> Regresar</a>
+					</div>	
+				</div>
+			  </div>
+			</div>
+
+
+			
+			
+			
+			
+			
 			</form>
 			<!-- /body -->
 			
@@ -1004,46 +1053,6 @@
 	<!-- End #email  -->
 </div>
 <!-- End .row-fluid  -->
-
-<!-- Barra Lateral -->
-<div id="mySidebar" class="sidebar" style="background-color:white">
-  <div class="sidebar-content"> 
-  
-  
-	<div id="siderbar_content_right">
-	</div>
-	
-	<div class="row" id="divPanelPaymentSideBar" >
-		<div class="col col-lg-12">
-			<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackPayment"><i class="icon16 i-print "></i> Regresar</a>
-		</div>	
-	</div>
-	
-  </div>
-</div>
-
-
-<!-- Barra Lateral Factura-->
-<div id="mySidebarFactura" class="sidebar" style="background-color:white">
-  <div class="sidebar-content"> 
-	<div id="siderbar_content_right_factura">
-	</div>
-	
-	<div class="row" id="divPanelFacturaSideBarComandos" >
-	
-	</div>
-	
-	</br>
-	
-	
-	<div class="row" id="divPanelFacturaSideBar" >
-		<div class="col col-lg-12">
-			<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackFactura"><i class="icon16 i-print "></i> Regresar</a>
-		</div>	
-	</div>
-  </div>
-</div>
-
 
 
 

@@ -122,23 +122,17 @@
 
 	
 	//Traking
-	$(document).on("click","#btnOptionPago",function(){
-		$("#saveLeads").focus();
-		 $("#mySidebar").css("width","450px");
-		 
+	$(document).on("click","#btnOptionPago",function(){		
+		 $("#mySidebar").css("width","100%");		 
 	});				
 	$(document).on("click","#btnRollbackPayment",function(){
 		var sidebar = $("#mySidebar");		
 		sidebar.css("width", "0");
-		
-		 
 	});
 
 	
-	$(document).on("click","#btnVeDetalleFactura",function(){
-		$("#saveLeads").focus();
-		 $("#mySidebarFactura").css("width","1300px");
-		 
+	$(document).on("click","#btnVeDetalleFactura",function(){		
+		 $("#mySidebarFactura").css("width","100%");
 	});				
 	$(document).on("click","#btnRollbackFactura",function(){
 		var sidebar = $("#mySidebarFactura");		

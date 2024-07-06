@@ -1310,14 +1310,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Sensicomp 15vs al norte" 
+	tb_company_parameter.value = "Censicomp 15vs al norte" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Pizza Laus' , address = 'Sensicomp 15vs al norte' ,
+	NAME = 'Pizza Laus' , address = 'Censicomp 15vs al norte' ,
 	flavorID = 511,type='pizza_laus'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

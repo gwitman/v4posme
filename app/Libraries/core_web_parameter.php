@@ -214,5 +214,17 @@ class core_web_parameter {
 		
 		return $objCompanyParameter->parameterID;		
    }
+   function getParameterFiltered($objListCompanyParameter,$parameterName)
+   {
+	   
+		$result = current(array_filter($objListCompanyParameter, function($obj) use ($parameterName) {
+			return $obj->name === $parameterName;
+		}));
+		
+		return $result;
+
+   }
+   
+   
 }
 ?>

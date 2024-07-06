@@ -274,9 +274,8 @@
 	
 
 	//Traking
-	$(document).on("click","#btnOptionPago",function(){
-		$("#saveLeads").focus();
-		 $("#mySidebar").css("width","450px");
+	$(document).on("click","#btnOptionPago",function(){		
+		 $("#mySidebar").css("width","100%");
 		 
 	});				
 	$(document).on("click","#btnRollbackPayment",function(){
@@ -286,9 +285,8 @@
 		 
 	});
 
-	$(document).on("click","#btnVeDetalleFactura",function(){
-		$("#saveLeads").focus();
-		 $("#mySidebarFactura").css("width","1300px");
+	$(document).on("click","#btnVeDetalleFactura",function(){		
+		 $("#mySidebarFactura").css("width","100%");
 		 
 	});				
 	$(document).on("click","#btnRollbackFactura",function(){
@@ -1189,7 +1187,7 @@
 
 
 	function fnRecalculateDetail(clearRecibo,sourceEvent){
-		
+		debugger;
 		var typePriceID 			= $("#txtTypePriceID").val();
 		var cantidad 				= 0;
 		var iva 					= 0;
