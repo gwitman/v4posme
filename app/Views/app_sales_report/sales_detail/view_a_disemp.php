@@ -18,6 +18,10 @@
 		<?php
 		$configColumn["0"]["Titulo"] 				= "Factura";	
 		$configColumn["0"]["IdTable"] 				= "myReport";		
+		
+		if($objCompany->type == "globalpro")
+		$configColumn["0"]["FiltrarRegistroOnLine"] = False;	
+		else
 		$configColumn["0"]["FiltrarRegistroOnLine"] = True;	
 		
 		$configColumn["1"]["Titulo"] 		= "Tipo";		

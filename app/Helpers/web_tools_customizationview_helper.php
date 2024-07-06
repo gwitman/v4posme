@@ -619,6 +619,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		//Funeraria Blandon
 		strtolower('fn_blandon_core_web_menu_FACTURACION')			 												=> "CONTRATOS",
 		strtolower('fn_blandon_core_web_menu_FACTURAR')			 													=> "CONTRATO",
+		strtolower('fn_blandon_core_web_menu_ABONO')			 													=> "RECIBO",
 		strtolower('fn_blandon_app_invoice_billing_divLabelZone') 		 											=> "Parentesco",
 		strtolower('fn_blandon_app_invoice_billing_txtTraductionPhone')	 											=> "Tel. Bene.",
 		strtolower('fn_blandon_app_invoice_billing_divTxtClienteBeneficiario')	 									=> "Bene. Nombre",
@@ -626,6 +627,9 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('fn_blandon_app_invoice_billing_labelTitlePageList')	 											=> "CONTRATOS",
 		strtolower('fn_blandon_app_invoice_billing_labelTitlePageEdit')	 											=> "Contrato",
 		strtolower('fn_blandon_app_invoice_billing_labelTitlePageNew')	 											=> "Contrato",		
+		strtolower('fn_blandon_app_box_share_labelTitlePageList')	 												=> "RECIBOS",
+		strtolower('fn_blandon_app_box_share_labelTitlePageEdit')	 												=> "Recibo",
+		strtolower('fn_blandon_app_box_share_labelTitlePageNew')	 												=> "Recibo",		
 		strtolower('fn_blandon_app_invoice_billing_divHiddenReference')	 											=> "hidden",
 		strtolower('fn_blandon_app_invoice_billing_divMesa')	 													=> "hidden",
 		strtolower('fn_blandon_app_invoice_billing_divNextVisitHidden')	 											=> "hidden",
@@ -691,13 +695,96 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		
 		",
 		
+		
+		/*Pizza Laus*/		
+		strtolower('pizza_laus_core_web_language_REGISTRADA')			 											=> "GUARDAR MESA",
+		strtolower('pizza_laus_core_web_language_APLICADA')				 											=> "YA FUE PAGADA",
+		strtolower('pizza_laus_core_web_language_REGISTRAR')				 										=> "GUARDAR MESA",
+		strtolower('pizza_laus_core_web_language_APLICAR')				 											=> "PAGAR",		
+		strtolower('pizza_laus_app_invoice_billing_divTxtMoneda') 													=> "hidden",
+		strtolower('pizza_laus_app_invoice_billing_divTxtCambio') 													=> "hidden",				
+		strtolower('pizza_laus_app_invoice_billing_divPestanaCredito') 												=> "hidden",		
+		strtolower('pizza_laus_app_invoice_billing_divPestanaMas')	 												=> "hidden",
+		strtolower('pizza_laus_app_invoice_billing_divPestanaReferencias')											=> "hidden",
+		strtolower('pizza_laus_app_invoice_billing_divHiddenEmployer')												=> "hidden",		
+		strtolower('pizza_laus_app_invoice_billing_lblReferencia')													=> "Vendedor",	
+		strtolower('pizza_laus_app_invoice_billing_txtScanerBarCode')	 											=> "hidden",
+		strtolower('pizza_laus_app_invoice_billing_panelResumenFacturaTool')	 									=> "hidden",
+		strtolower('pizza_laus_app_invoice_billing_panelResumenFactura')	 										=> "hidden",
+		strtolower('pizza_laus_app_invoice_billing_panelSummaryInvoice')	 										=> "hidden",
+		strtolower('pizza_laus_app_invoice_billing_rowOptionPaymentExtras')	 										=> "hidden",
+		
+		
+		
+		strtolower('pizza_laus_app_invoice_billing_divTraslateElement') 											=> "
+		<script>
+			$(document).ready(function(){		
+				$('#divVendedor').appendTo('#divInformacionLeft');
+				$('#divZone').appendTo('#divInformacionLeft');								
+				$('#divMesa').appendTo('#divInformacionLeft');
+				$('#divTrasuctionPhone').appendTo('#divInformacionRight');				
+				$('#divReferencia').appendTo('#divInformacionRight');	
+				$('#divPaymentOption').appendTo('#siderbar_content_right');	
+				$('#divPaymentOption').removeClass('col-lg-5');
+				$('#heading').remove();
+				$('.btnAcept[data-valueworkflow=\"67\"]').parent().appendTo('#divPanelPaymentSideBar');	
+				$('.btnAcept[data-valueworkflow=\"67\"]').parent().removeClass('col-lg-2');
+				$('.btnAcept[data-valueworkflow=\"67\"]').parent().addClass('col-lg-12');
+				$('#panelContainterDetailInvoice').appendTo('#siderbar_content_right_factura');	
+				$('#btnBar').parent().appendTo('#divPanelFacturaSideBarComandos');
+				$('#btnFooter').parent().appendTo('#divPanelFacturaSideBarComandos');
+				$('#btnDeleteItem').parent().appendTo('#divPanelFacturaSideBarComandos');
+				$('#btnNewItem').parent().appendTo('#divPanelFacturaSideBarComandos');
+				$('#btnPrinter').parent().appendTo('#rowBotoneraFacturaFila1');
+				$('#btnNew').parent().appendTo('#rowBotoneraFacturaFila1');
+				$('#btnDelete').parent().appendTo('#rowBotoneraFacturaFila1');
+				$('#btnOptionPago').parent().appendTo('#rowBotoneraFacturaFila4');
+				$('#btnVeDetalleFactura').parent().appendTo('#rowBotoneraFacturaFila4');				
+				$('#saltoDeLineaFila3').remove();
+				$('#saltoDeLineaFila2').remove();
+			});
+		</script>",
+		
 	);
 	
 	
 	//Comanda traducir es para los menu
 	//comportamiento del controlador
 	//si el key no existe regresa valor vacio
-	if($key_controller != "core_web_menu")
+	if($key_controller == "core_web_language")
+	{
+		//lenguaje		
+		$key = strtolower($type_company)."_".strtolower($key_controller)."_".strtolower($key_element);
+		
+		if(!array_key_exists( $key, $divs) )
+		{
+			//si el key no existe regrear el elemento
+			return $key_element;
+		}
+		else 
+		{
+			//si el key existe , retornar valor
+			return $divs[$key];
+		}
+	}
+	//Menu
+	//Si el key no existe regrea el mismo valor
+	else if($key_controller == "core_web_menu")
+	{
+		//lenguaje		
+		$key = strtolower($type_company)."_".strtolower($key_controller)."_".strtolower($key_element);
+		if(!array_key_exists( $key, $divs) )
+		{
+			//si el key no existe regrear el elemento
+			return $key_element;
+		}
+		else 
+		{
+			//si el key existe , retornar valor
+			return $divs[$key];
+		}
+	}
+	else 
 	{		
 		$key = strtolower($type_company)."_".strtolower($key_controller)."_".strtolower($key_element);
 		if(!array_key_exists( $key, $divs) )
@@ -721,23 +808,6 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 			return $divs[$key];
 		}
 		
-	}
-	//Menu
-	//Si el key no existe regrea el mismo valor
-	else 
-	{
-		//lenguaje		
-		$key = strtolower($type_company)."_".strtolower($key_controller)."_".strtolower($key_element);
-		if(!array_key_exists( $key, $divs) )
-		{
-			//si el key no existe regrear el elemento
-			return $key_element;
-		}
-		else 
-		{
-			//si el key existe , retornar valor
-			return $divs[$key];
-		}
 	}
 		
 }
