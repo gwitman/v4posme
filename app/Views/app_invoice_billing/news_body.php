@@ -1,3 +1,29 @@
+<style>
+
+  /* Estilo para ocultar la barra lateral */
+  .sidebar 
+  {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    top: 0;
+    right: 0;
+    background-color: #fff;
+    overflow-x: hidden;
+    /*transition: 0.5s;*/
+    padding-top: 60px;
+  }
+
+  /* Estilo para el contenido de la barra lateral */
+  .sidebar-content 
+  {
+    padding: 20px;
+  }
+
+</style>
+
+
+
 <div 
 	class="isloading-overlay"
 	id="divLoandingCustom"
@@ -46,14 +72,14 @@
 					<li class="active">
 						<a href="#home" data-toggle="tab">Informacion</a>
 					</li>
-					<li class="elementMovilOculto">
+					<li class="elementMovilOculto <?php echo getBehavio($company->type,"app_invoice_billing","divPestanaReferencias",""); ?>  ">
 						<a href="#profile" data-toggle="tab">Referencias.</a>
 					</li>
 					
-					<li>
+					<li class="<?php echo getBehavio($company->type,"app_invoice_billing","divPestanaCredito",""); ?> " >
 						<a href="#credit" data-toggle="tab">Info de Credito.</a>
 					</li>
-					<li class="dropdown elementMovilOculto">
+					<li class="dropdown elementMovilOculto <?php echo getBehavio($company->type,"app_invoice_billing","divPestanaMas",""); ?> ">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas <b class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<li><a href="#dropdown" data-toggle="tab">Comentario</a></li>
@@ -282,13 +308,13 @@
 							
 								
 								<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divHiddenReference",""); ?> " id="divReferencia">
-										<label class="col-lg-4 control-label" for="normal">Referencia</label>
+										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","lblReferencia","Referencia"); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtReference3" id="txtReference3" value="<?php echo ($objEmployeeNatural ? $objEmployeeNatural->firstName : "N/D"); ?>">
 										</div>
 								</div>
 								
-								<div class="form-group" id="divVendedor">
+								<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divHiddenEmployer",""); ?> " id="divVendedor">
 										<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionVendedor","Vendedor"); ?></label>
 										<div class="col-lg-8">
 											<select name="txtEmployeeID" id="txtEmployeeID" class="select2">
@@ -523,7 +549,7 @@
 		
 				<br/>
 				
-				<div class="row">
+				<div class="row" id="panelContainterDetailInvoice" >
 					<div class="col-lg-12">
 						<h3>Detalle:</h3>
 						<table id="tb_transaction_master_detail" class="table table-bordered"  >
@@ -573,7 +599,7 @@
 				{
 					?>
 						
-						<div class="row">
+						<div class="row" id="rowBotoneraFacturaFila1">
 							<div class="col col-lg-2">
 								<a href="#" class="btn btn-flat btn-info   btn-block hidden btn-comando-factura" id="btnNewItem" ><i class="icon16 i-print"></i> AGREGAR PRO</a>
 							</div>
@@ -601,9 +627,24 @@
 							
 						</div>
 						
+					
+						<?php 
+						if( $objParameterEsResrarante == "true")
+						{
+							?>
+							<br id="saltoDeLineaFila3" />
+							<div class="row" id="rowBotoneraFacturaFila3">									
+									<div class="col col-lg-2">
+										<a href="#" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-print "></i> DETALLE </a>
+									</div>
+							</div>
+						<?php 
+						}
+						?>
+						
 						<br/>
 						
-						<div class="row">
+						<div class="row" id="rowBotoneraFacturaFila4">
 						
 							<div class="col col-lg-2">
 								<a href="<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>" class="btn btn-flat btn-info btn-block hidden btn-comando-factura" id="btnNew"><i class="icon16 i-checkmark-4"></i> NUEVA FAC</a>
@@ -614,15 +655,15 @@
 									<?php 
 									if ($objParameterInvoiceAutoApply == "true"){
 										?>
-										<a href="#" class="btn btn-warning  btn-block hidden btn-comando-factura" id="btnAcept"><i class="icon16 i-checkmark-4"></i> 
-										APLICAR
+										<a href="#" class="btn btn-warning  btn-block hidden btn-comando-factura" id="btnAcept"><i class="icon16 i-checkmark-4"></i>
+										<?php echo getBehavio($company->type,"core_web_language","APLICAR","APLICAR" ) ?>
 										</a>
 										<?php
 									}
 									else{
 										?>
-										<a href="#" class="btn btn-warning  btn-block hidden btn-comando-factura" id="btnAcept"><i class="icon16 i-checkmark-4"></i> 
-										REGISTRAR
+										<a href="#" class="btn btn-warning  btn-block hidden btn-comando-factura" id="btnAcept"><i class="icon16 i-checkmark-4"></i>
+										<?php echo getBehavio($company->type,"core_web_language","REGISTRAR","REGISTRAR") ?>
 										</a>
 										<?php 
 									}
@@ -666,8 +707,8 @@
 												if ($objParameterInvoiceAutoApply == "true"){
 													?>
 													<li>
-													<a href="#" id="btnAcept">
-													APLICAR
+													<a href="#" id="btnAcept">													
+													<?php echo getBehavio($company->type,"core_web_language","APLICAR","APLICAR" ) ?>
 													</a>
 													</li>
 													<?php
@@ -675,8 +716,8 @@
 												else{
 													?>
 													<li class="badge-info">
-													<a href="#" id="btnAcept">
-													REGISTRAR
+													<a href="#" id="btnAcept">													
+													<?php echo getBehavio($company->type,"core_web_language","REGISTRAR","REGISTRAR" ) ?>
 													</a>
 													</li>
 													<?php 
@@ -706,7 +747,7 @@
 				
 				<br/>
 				<br/>
-				<input class="form-control"  type="text"  name="txtScanerCodigo" id="txtScanerCodigo" value="" >
+				<input class="form-control <?php echo getBehavio($company->type,"app_invoice_billing","txtScanerBarCode",""); ?>  "  type="text"  name="txtScanerCodigo" id="txtScanerCodigo" value="" >
 				
 
 				<div class="row">
@@ -756,7 +797,7 @@
 
 					</div>
 					
-					<div class="col-lg-5 col-sm-12">
+					<div class="col-lg-5 col-sm-12" id="divPaymentOption" >
 						<div class="page-header">
 							<h3>Pago</h3>
 						</div>
@@ -788,7 +829,7 @@
 								</tr>
 								
 								
-								<tr>
+								<tr class="<?php echo getBehavio($company->type,"app_invoice_billing","rowOptionPaymentExtras",""); ?>" >
 									<th style="text-align:left">04) Tarjeta. Nac.</th>
 									<td style="">
 										<input type="text" id="txtReceiptAmountTarjeta" name="txtReceiptAmountTarjeta"   class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
@@ -812,7 +853,7 @@
 										<input type="text" id="txtReceiptAmountTarjeta_Reference" name="txtReceiptAmountTarjeta_Reference"   class="col-lg-12" value="" />
 									</td>
 								</tr>
-								<tr>
+								<tr class="<?php echo getBehavio($company->type,"app_invoice_billing","rowOptionPaymentExtras",""); ?>" >
 									<th style="text-align:left">05) Tarjeta. Ext.</th>
 									<td>
 										<input type="text" id="txtReceiptAmountTarjetaDol" name="txtReceiptAmountTarjetaDol"   class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
@@ -837,7 +878,7 @@
 									</td>
 								</tr>
 								
-								<tr>
+								<tr class="<?php echo getBehavio($company->type,"app_invoice_billing","rowOptionPaymentExtras",""); ?>" >
 									<th style="text-align:left">06) TRANS. Nac.</th>
 									<td >
 										<input type="text" id="txtReceiptAmountBank" name="txtReceiptAmountBank"  class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
@@ -861,7 +902,7 @@
 										<input type="text" id="txtReceiptAmountBank_Reference" name="txtReceiptAmountBank_Reference"   class="col-lg-12" value="" />
 									</td>
 								</tr>
-								<tr>
+								<tr class="<?php echo getBehavio($company->type,"app_invoice_billing","rowOptionPaymentExtras",""); ?>" >
 									<th style="text-align:left">07) TRANS. Ext.</th>
 									<td >
 										<input type="text" id="txtReceiptAmountBankDol" name="txtReceiptAmountBankDol"  class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
@@ -886,7 +927,7 @@
 									</td>
 								</tr>
 								
-								<tr>
+								<tr class="<?php echo getBehavio($company->type,"app_invoice_billing","rowOptionPaymentExtras",""); ?>" >
 									<th style="text-align:left" >08) Pt</th>
 									<td >
 										<input type="text" id="txtReceiptAmountPoint" name="txtReceiptAmountPoint"  class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
@@ -898,7 +939,7 @@
 						</table>
 					</div>
 					
-					<div class="col-lg-4 col-sm-12 ">
+					<div class="col-lg-4 col-sm-12 <?php echo getBehavio($company->type,"app_invoice_billing","panelSummaryInvoice",""); ?> ">
 						<div class="page-header">
 							<h3>Resumen</h3>
 						</div>
@@ -936,7 +977,8 @@
 				<p>Seguro que desea regresa a la lista</p>
 			</div>
 			
-			<div id="modalDialogOpenPrimter" title="Impresion" class="dialog">
+			
+			<div id="modalDialogOpenPrimter" title="Impresion" class="dialog hidden">
 				<p>Desea imprmir la factura en formato 80mm</p>
 			</div>
 			
@@ -962,6 +1004,46 @@
 	<!-- End #email  -->
 </div>
 <!-- End .row-fluid  -->
+
+<!-- Barra Lateral -->
+<div id="mySidebar" class="sidebar" style="background-color:white">
+  <div class="sidebar-content"> 
+  
+  
+	<div id="siderbar_content_right">
+	</div>
+	
+	<div class="row" id="divPanelPaymentSideBar" >
+		<div class="col col-lg-12">
+			<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackPayment"><i class="icon16 i-print "></i> Regresar</a>
+		</div>	
+	</div>
+	
+  </div>
+</div>
+
+
+<!-- Barra Lateral Factura-->
+<div id="mySidebarFactura" class="sidebar" style="background-color:white">
+  <div class="sidebar-content"> 
+	<div id="siderbar_content_right_factura">
+	</div>
+	
+	<div class="row" id="divPanelFacturaSideBarComandos" >
+	
+	</div>
+	
+	</br>
+	
+	
+	<div class="row" id="divPanelFacturaSideBar" >
+		<div class="col col-lg-12">
+			<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackFactura"><i class="icon16 i-print "></i> Regresar</a>
+		</div>	
+	</div>
+  </div>
+</div>
+
 
 
 
