@@ -289,7 +289,9 @@ class Item_Model extends Model  {
 				i.createdOn, i.isActive,i.isInvoiceQuantityZero,
 				i.isServices,i.currencyID,i.isInvoice,i.reference3,
 				unit.name as unitMeasureName,
-				replace(td.itemNameLog ,'\"','') as itemNameLog
+				replace(td.itemNameLog ,'\"','') as itemNameLog,
+				replace(td.itemNameDescriptionLog ,'\"','') as itemNameDescriptionLog
+				
 			");
 		$sql = $sql.sprintf(" from tb_transaction_master tm ");		
 		$sql = $sql.sprintf(" inner join tb_transaction_master_detail td on  tm.transactionMasterID = td.transactionMasterID ");		

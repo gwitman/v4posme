@@ -116,7 +116,8 @@
 				"",//acciones
 				varDetail[i].skuFormatoDescription,
 				Precio2,
-				Precio3
+				Precio3,
+				"'"+varDetail[i].itemNameDescriptionLog + "'", 
 			]);
 		}
 	}	
@@ -499,8 +500,8 @@
 					filterResultArray[20] 	= filterResult.Medida;
 					filterResultArray[21] 	= filterResult.Cantidad;
 					filterResultArray[22] 	= filterResult.Precio;
-					filterResultArray[23] 	= filterResult.unitMeasureID;
-					filterResultArray[24] 	= filterResult.Nombre;
+					filterResultArray[23] 	= filterResult.unitMeasureID;				
+					filterResultArray[24] 	= filterResult.Descripcion;
 					filterResultArray[25] 	= filterResult.Precio2;
 					filterResultArray[26] 	= filterResult.Precio3;
 					//Agregar el Item a la Fila
@@ -788,6 +789,7 @@
 		objRow.vencimiento					= "";
 		objRow.price2						= objResponse[25];
 		objRow.price3						= objResponse[26];
+		objRow.itemNameDescription			= objResponse[24];
 		
 		
 		//Berificar que el Item ya esta agregado 
@@ -834,7 +836,8 @@
 				"",
 				objRow.umDescription,
 				objRow.price2,
-				objRow.price3
+				objRow.price3,
+				objRow.itemNameDescription /*itemDescriptionLog*/
 			]);
 			
 			if(varUseMobile != "1"){
@@ -1187,7 +1190,7 @@
 
 
 	function fnRecalculateDetail(clearRecibo,sourceEvent){
-		debugger;
+		
 		var typePriceID 			= $("#txtTypePriceID").val();
 		var cantidad 				= 0;
 		var iva 					= 0;
@@ -2213,9 +2216,9 @@
 		dataResponse[21] = data[0][8];//Cantidad
 		dataResponse[22] = data[0][9];//Precio
 		dataResponse[23] = data[0][1];//UnitMeasuereID
-
+		
 			
-		dataResponse[24] = data[0][5];
+		dataResponse[24] = data[0][10];//Description
 		dataResponse[25] = data[0][2];//Precio2
 		dataResponse[26] = data[0][3];//Precio3
 		
@@ -2546,7 +2549,7 @@
 									}	
 									
 									var  strFiledSelecte 	= "";
-									var  strFiled			= '<input type="text" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"   class="col-lg-12 '+classHiddenTex+' " style="text-align:left" value="'+full[4]+'" '+PriceStatus+' />';
+									var  strFiled			= '<input type="text" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"   class="col-lg-12 '+classHiddenTex+' " style="text-align:left" value="'+full[4]+'" '+PriceStatus+' />';									
 									var strFiledSelecte 	= "<select name='txtItemSelected' class='<?php echo ($useMobile == "1" ? "" : "select2"); ?> txtItemSelected "+classHiddenSelect+"  ' >";
 									strFiledSelecte			= strFiledSelecte+"<option value='"+full[2]+"' selected data-itemid='"+full[2]+"' data-codigo='"+full[3]+"' data-name='"+full[4].replace("'","").replace("'","") +"' data-unidadmedida='"+full[5]+"' data-cantidad='"+full[6]+"' data-precio='"+full[7]+"' data-barra='"+full[3]+"'  data-description='"+full[4].replace("'","").replace("'","") + "'    >"+ full[4].replace("'","").replace("'","")  +"</option>";
 									
@@ -2778,6 +2781,15 @@
 								//{
 								//	  $(td).css("display","block");
 								//}
+							},
+							{
+								"aTargets"		: [ 16 ],//itemNameDescription
+								"bVisible"		: true,
+								"sClass"		: "hidden",
+								"bSearchable"	: false,
+								"mRender"		: function ( data, type, full ) {
+									return '<input type="hidden" value="'+data+'" name="txtTransactionDetailNameDescription[]" />';
+								}								
 							}
 				]						
 			});	

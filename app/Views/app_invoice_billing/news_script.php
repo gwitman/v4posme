@@ -380,7 +380,7 @@
 					filterResultArray[21] 	= filterResult.Cantidad;
 					filterResultArray[22] 	= filterResult.Precio;
 					filterResultArray[23] 	= filterResult.unitMeasureID;
-					filterResultArray[24] 	= filterResult.Nombre;
+					filterResultArray[24] 	= filterResult.Descripcion;
 					filterResultArray[25] 	= filterResult.Precio2;
 					filterResultArray[26] 	= filterResult.Precio3;
 					
@@ -674,7 +674,6 @@
 	function onCompleteNewItem(objResponse,suma){
 		console.info("CALL onCompleteNewItem");
 		
-		
 		var objRow 							= {};	
 		objRow.checked 						= false;						
 		objRow.transactionMasterDetailID 	= 0;
@@ -692,6 +691,7 @@
 		objRow.vencimiento					= "";
 		objRow.price2						= objResponse[25];
 		objRow.price3						= objResponse[26];
+		objRow.itemNameDescription			= objResponse[24];
 		
 		//Actualizar
 		if(jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[2] == objRow.itemID;}).select().length > 0 ){
@@ -734,7 +734,8 @@
 				"",
 				objRow.umDescription,
 				objRow.price2,
-				objRow.price3
+				objRow.price3,
+				objRow.itemNameDescription /*itemDescriptionLog*/
 			]);
 			
 			
@@ -1993,8 +1994,8 @@
 			dataResponse[22] = data[0][9];//Precio
 			dataResponse[23] = data[0][1];//UnitMeasuereID
 
-				
-			dataResponse[24] = data[0][5];
+			
+			dataResponse[24] = data[0][10];//Description
 			dataResponse[25] = data[0][2];//Precio2
 			dataResponse[26] = data[0][3];//Precio3
 			
@@ -2067,7 +2068,7 @@
 			)
 			{
 				$( "#form-new-invoice" ).submit(function(e){
-						  debugger;
+						  
 						  e.preventDefault(e);
 
 						  var formData = new FormData(this);
@@ -2386,6 +2387,15 @@
 								//{
 								//	  $(td).css("display","block");
 								//}
+							},
+							{
+								"aTargets"		: [ 16 ],//itemNameDescription
+								"bVisible"		: true,
+								"sClass"		: "hidden",
+								"bSearchable"	: false,
+								"mRender"		: function ( data, type, full ) {
+									return '<input type="hidden" value="'+data+'" name="txtTransactionDetailNameDescription[]" />';
+								}								
 							}
 
 				]							

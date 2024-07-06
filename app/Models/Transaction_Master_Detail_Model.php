@@ -34,7 +34,7 @@ class Transaction_Master_Detail_Model extends Model  {
 		if($componentID == 33 /*33 component:tb_item*/){
 	
 			$sql = "";
-			$sql = sprintf("select td.companyID, td.transactionID, td.transactionMasterID, td.transactionMasterDetailID, td.componentID, td.componentItemID, td.promotionID, td.amount, td.cost, td.quantity, td.discount, td.unitaryAmount, td.unitaryCost, td.unitaryPrice, td.reference1, td.reference2, td.reference3,td.reference4,td.reference5,td.reference6,td.reference7, td.catalogStatusID, td.inventoryStatusID, td.isActive, td.quantityStock, td.quantiryStockInTraffic, td.quantityStockUnaswared, td.remaingStock, td.expirationDate, td.inventoryWarehouseSourceID, td.inventoryWarehouseTargetID,i.itemNumber,i.name as itemName,ci.name as unitMeasureName,td.descriptionReference,td.exchangeRateReference,td.lote , td.typePriceID,td.skuCatalogItemID,td.skuQuantity,td.skuQuantityBySku,td.skuFormatoDescription,td.itemNameLog,td.amountCommision ");
+			$sql = sprintf("select td.companyID, td.transactionID, td.transactionMasterID, td.transactionMasterDetailID, td.componentID, td.componentItemID, td.promotionID, td.amount, td.cost, td.quantity, td.discount, td.unitaryAmount, td.unitaryCost, td.unitaryPrice, td.reference1, td.reference2, td.reference3,td.reference4,td.reference5,td.reference6,td.reference7, td.catalogStatusID, td.inventoryStatusID, td.isActive, td.quantityStock, td.quantiryStockInTraffic, td.quantityStockUnaswared, td.remaingStock, td.expirationDate, td.inventoryWarehouseSourceID, td.inventoryWarehouseTargetID,i.itemNumber,i.name as itemName,ci.name as unitMeasureName,td.descriptionReference,td.exchangeRateReference,td.lote , td.typePriceID,td.skuCatalogItemID,td.skuQuantity,td.skuQuantityBySku,td.skuFormatoDescription,td.itemNameLog,td.amountCommision, td.itemNameDescriptionLog ");
 			$sql = $sql.sprintf(" from tb_transaction_master_detail td");
 			$sql = $sql.sprintf(" inner join  tb_item i on td.companyID = i.companyID and td.componentItemID = i.itemID");
 			$sql = $sql.sprintf(" inner join  tb_catalog_item ci on i.unitMeasureID = ci.catalogItemID");
@@ -47,7 +47,7 @@ class Transaction_Master_Detail_Model extends Model  {
 		else if($componentID == 64 /*64 component:tb_transaction_master_share*/){
 	
 			$sql = "";
-			$sql = sprintf("select td.companyID, td.transactionID, td.transactionMasterID, td.transactionMasterDetailID, td.componentID, td.componentItemID, td.promotionID, td.amount, td.cost, td.quantity, td.discount, td.unitaryAmount, td.unitaryCost, td.unitaryPrice, td.reference1, td.reference2, td.reference3,td.reference4,td.reference5,td.reference6,td.reference7, td.catalogStatusID, td.inventoryStatusID, td.isActive, td.quantityStock, td.quantiryStockInTraffic, td.quantityStockUnaswared, td.remaingStock, td.expirationDate, td.inventoryWarehouseSourceID, td.inventoryWarehouseTargetID,td.descriptionReference,td.exchangeRateReference,td.lote,td.skuFormatoDescription,td.itemNameLog,td.amountCommision");
+			$sql = sprintf("select td.companyID, td.transactionID, td.transactionMasterID, td.transactionMasterDetailID, td.componentID, td.componentItemID, td.promotionID, td.amount, td.cost, td.quantity, td.discount, td.unitaryAmount, td.unitaryCost, td.unitaryPrice, td.reference1, td.reference2, td.reference3,td.reference4,td.reference5,td.reference6,td.reference7, td.catalogStatusID, td.inventoryStatusID, td.isActive, td.quantityStock, td.quantiryStockInTraffic, td.quantityStockUnaswared, td.remaingStock, td.expirationDate, td.inventoryWarehouseSourceID, td.inventoryWarehouseTargetID,td.descriptionReference,td.exchangeRateReference,td.lote,td.skuFormatoDescription,td.itemNameLog,td.amountCommision, td.itemNameDescriptionLog ");
 			$sql = $sql.sprintf(" from tb_transaction_master_detail td");
 			$sql = $sql.sprintf(" inner join  tb_customer_credit_document i on td.companyID = i.companyID and td.componentItemID = i.customerCreditDocumentID");
 			$sql = $sql.sprintf(" where td.companyID = $companyID");
@@ -58,7 +58,7 @@ class Transaction_Master_Detail_Model extends Model  {
 		}	
 		else {
 			$sql = "";
-			$sql = sprintf("select td.companyID, td.transactionID, td.transactionMasterID, td.transactionMasterDetailID, td.componentID, td.componentItemID, td.promotionID, td.amount, td.cost, td.quantity, td.discount, td.unitaryAmount, td.unitaryCost, td.unitaryPrice, td.reference1, td.reference2, td.reference3,td.reference4,td.reference5,td.reference6,td.reference7, td.catalogStatusID, td.inventoryStatusID, td.isActive, td.quantityStock, td.quantiryStockInTraffic, td.quantityStockUnaswared, td.remaingStock, td.expirationDate, td.inventoryWarehouseSourceID, td.inventoryWarehouseTargetID,td.descriptionReference,td.exchangeRateReference,td.lote,td.skuFormatoDescription,td.itemNameLog,td.amountCommision");
+			$sql = sprintf("select td.companyID, td.transactionID, td.transactionMasterID, td.transactionMasterDetailID, td.componentID, td.componentItemID, td.promotionID, td.amount, td.cost, td.quantity, td.discount, td.unitaryAmount, td.unitaryCost, td.unitaryPrice, td.reference1, td.reference2, td.reference3,td.reference4,td.reference5,td.reference6,td.reference7, td.catalogStatusID, td.inventoryStatusID, td.isActive, td.quantityStock, td.quantiryStockInTraffic, td.quantityStockUnaswared, td.remaingStock, td.expirationDate, td.inventoryWarehouseSourceID, td.inventoryWarehouseTargetID,td.descriptionReference,td.exchangeRateReference,td.lote,td.skuFormatoDescription,td.itemNameLog,td.amountCommision, td.itemNameDescriptionLog ");
 			$sql = $sql.sprintf(" from tb_transaction_master_detail td");		
 			$sql = $sql.sprintf(" where td.companyID = $companyID");
 			$sql = $sql.sprintf(" and td.transactionID = $transactionID");		
@@ -77,7 +77,7 @@ class Transaction_Master_Detail_Model extends Model  {
 		
 	
 		$sql = "";
-		$sql = sprintf("select td.companyID, td.transactionID, td.transactionMasterID, td.transactionMasterDetailID, td.componentID, td.componentItemID, td.promotionID, td.amount, td.cost, td.quantity, td.discount, td.unitaryAmount, td.unitaryCost, td.unitaryPrice, td.reference1, td.reference2, td.reference3,td.reference4,td.reference5,td.reference6,td.reference7, td.catalogStatusID, td.inventoryStatusID, td.isActive, td.quantityStock, td.quantiryStockInTraffic, td.quantityStockUnaswared, td.remaingStock, td.expirationDate, td.inventoryWarehouseSourceID, td.inventoryWarehouseTargetID,i.itemNumber,i.barCode,i.name as itemName,ci.name as unitMeasureName,td.descriptionReference,td.exchangeRateReference,td.lote,td.typePriceID,td.skuCatalogItemID,td.skuQuantity,td.skuQuantityBySku,td.skuFormatoDescription,td.itemNameLog,td.amountCommision");
+		$sql = sprintf("select td.companyID, td.transactionID, td.transactionMasterID, td.transactionMasterDetailID, td.componentID, td.componentItemID, td.promotionID, td.amount, td.cost, td.quantity, td.discount, td.unitaryAmount, td.unitaryCost, td.unitaryPrice, td.reference1, td.reference2, td.reference3,td.reference4,td.reference5,td.reference6,td.reference7, td.catalogStatusID, td.inventoryStatusID, td.isActive, td.quantityStock, td.quantiryStockInTraffic, td.quantityStockUnaswared, td.remaingStock, td.expirationDate, td.inventoryWarehouseSourceID, td.inventoryWarehouseTargetID,i.itemNumber,i.barCode,i.name as itemName,ci.name as unitMeasureName,td.descriptionReference,td.exchangeRateReference,td.lote,td.typePriceID,td.skuCatalogItemID,td.skuQuantity,td.skuQuantityBySku,td.skuFormatoDescription,td.itemNameLog,td.amountCommision,  td.itemNameDescriptionLog ");
 		$sql = $sql.sprintf(" from tb_transaction_master_detail td");
 		$sql = $sql.sprintf(" inner join  tb_item i on td.companyID = i.companyID and td.componentItemID = i.itemID");
 		$sql = $sql.sprintf(" inner join  tb_catalog_item ci on i.unitMeasureID = ci.catalogItemID");
@@ -95,7 +95,7 @@ class Transaction_Master_Detail_Model extends Model  {
 		$db 		= db_connect();
 		$builder	= $db->table("tb_transaction_master_detail");
 	    $sql = "";
-		$sql = sprintf("select w.companyID,w.branchID,w.warehouseID,w.itemID,w.quantity,w.cost,w.quantityMax,w.quantityMin,td.descriptionReference,td.exchangeRateReference,td.expirationDate,td.lote , td.typePriceID,td.skuCatalogItemID,td.skuQuantity,td.skuQuantityBySku,td.skuFormatoDescription,td.itemNameLog,td.amountCommision");
+		$sql = sprintf("select w.companyID,w.branchID,w.warehouseID,w.itemID,w.quantity,w.cost,w.quantityMax,w.quantityMin,td.descriptionReference,td.exchangeRateReference,td.expirationDate,td.lote , td.typePriceID,td.skuCatalogItemID,td.skuQuantity,td.skuQuantityBySku,td.skuFormatoDescription,td.itemNameLog,td.amountCommision,td.itemNameDescriptionLog");
 	    $sql = $sql.sprintf(" from tb_transaction_master tm");
 		$sql = $sql.sprintf(" inner join  tb_transaction_master_detail td on tm.companyID = td.companyID and tm.transactionID = td.transactionID and tm.transactionMasterID = td.transactionMasterID");
 		$sql = $sql.sprintf(" inner join  tb_item i on td.companyID = i.companyID and td.componentItemID = i.itemID");		
@@ -129,7 +129,8 @@ class Transaction_Master_Detail_Model extends Model  {
 								i.reference1,
 								td.skuFormatoDescription,
 								td.itemNameLog,
-								td.amountCommision
+								td.amountCommision,
+								td.itemNameDescriptionLog
 							");
 			$sql = $sql.sprintf(" from tb_transaction_master tm");
 			$sql = $sql.sprintf(" inner join  tb_transaction_master_detail td on tm.companyID = td.companyID and tm.transactionID = td.transactionID and tm.transactionMasterID = td.transactionMasterID");
@@ -161,7 +162,8 @@ class Transaction_Master_Detail_Model extends Model  {
 								
 								td.skuFormatoDescription,
 								td.itemNameLog,
-								td.amountCommision
+								td.amountCommision,
+								td.itemNameDescriptionLog
 							");
 			$sql = $sql.sprintf(" from tb_transaction_master tm");
 			$sql = $sql.sprintf(" inner join  tb_transaction_master_detail td on tm.companyID = td.companyID and tm.transactionID = td.transactionID and tm.transactionMasterID = td.transactionMasterID");
@@ -232,7 +234,9 @@ class Transaction_Master_Detail_Model extends Model  {
 						td.lote,td.typePriceID,td.skuCatalogItemID,td.skuQuantity,
 						td.skuQuantityBySku,td.skuFormatoDescription,
 						REPLACE(REPLACE(REPLACE(REPLACE(replace(td.itemNameLog,'\"',''), '\r\n', ''), '\r', ''),'\n', ''),'\t','')   as itemNameLog,
-						td.amountCommision
+						td.amountCommision,
+						REPLACE(REPLACE(REPLACE(REPLACE(replace(td.itemNameDescriptionLog,'\"',''), '\r\n', ''), '\r', ''),'\n', ''),'\t','')   as itemNameDescriptionLog
+						
 						");
 		$sql = $sql.sprintf(" from tb_transaction_master_detail td");
 		$sql = $sql.sprintf(" inner join  tb_item i on td.companyID = i.companyID and td.componentItemID = i.itemID");
@@ -251,7 +255,7 @@ class Transaction_Master_Detail_Model extends Model  {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_transaction_master_detail");
 		$sql = "";
-		$sql = sprintf("select td.companyID, td.transactionID, td.transactionMasterID, td.transactionMasterDetailID, td.componentID, td.componentItemID, td.promotionID, td.amount, td.cost, td.quantity, td.discount, td.unitaryAmount, td.unitaryCost, td.unitaryPrice, td.reference1, td.reference2, td.reference3,td.reference4,td.reference5,td.reference6,td.reference7, td.catalogStatusID, td.inventoryStatusID, td.isActive, td.quantityStock, td.quantiryStockInTraffic, td.quantityStockUnaswared, td.remaingStock, td.expirationDate, td.inventoryWarehouseSourceID, td.inventoryWarehouseTargetID,td.descriptionReference,td.exchangeRateReference,td.lote,td.skuFormatoDescription,td.itemNameLog,td.amountCommision ");
+		$sql = sprintf("select td.companyID, td.transactionID, td.transactionMasterID, td.transactionMasterDetailID, td.componentID, td.componentItemID, td.promotionID, td.amount, td.cost, td.quantity, td.discount, td.unitaryAmount, td.unitaryCost, td.unitaryPrice, td.reference1, td.reference2, td.reference3,td.reference4,td.reference5,td.reference6,td.reference7, td.catalogStatusID, td.inventoryStatusID, td.isActive, td.quantityStock, td.quantiryStockInTraffic, td.quantityStockUnaswared, td.remaingStock, td.expirationDate, td.inventoryWarehouseSourceID, td.inventoryWarehouseTargetID,td.descriptionReference,td.exchangeRateReference,td.lote,td.skuFormatoDescription,td.itemNameLog,td.amountCommision,td.itemNameDescriptionLog ");
 		$sql = $sql.sprintf(" from tb_transaction_master_detail td");
 		$sql = $sql.sprintf(" where td.companyID = $companyID");
 		$sql = $sql.sprintf(" and td.transactionID = $transactionID");		
@@ -524,7 +528,8 @@ class Transaction_Master_Detail_Model extends Model  {
 							REPLACE(cus.identification, '[^a-zA-Z0-9]', '') as identification,
 							REPLACE(cus.phoneNumber, '[^a-zA-Z0-9]', '') as phoneNumber,
 							tm.createdOn,
-							tmd.itemNameLog 
+							tmd.itemNameLog,
+							tmd.itemNameDescriptionLog
 						from 
 							tb_transaction_master tm 
 							inner join tb_transaction_master_detail tmd on 
@@ -586,7 +591,8 @@ class Transaction_Master_Detail_Model extends Model  {
 							REPLACE(cus.identification, '[^a-zA-Z0-9]', '') as identification,
 							REPLACE(cus.phoneNumber, '[^a-zA-Z0-9]', '') as phoneNumber,
 							tm.createdOn,
-							tmd.itemNameLog 
+							tmd.itemNameLog ,
+							tmd.itemNameDescriptionLog
 						from 
 							tb_transaction_master tm 
 							inner join tb_transaction_master_detail tmd on 
@@ -648,7 +654,8 @@ class Transaction_Master_Detail_Model extends Model  {
 							REPLACE(cus.identification, '[^a-zA-Z0-9]', '') as identification,
 							REPLACE(cus.phoneNumber, '[^a-zA-Z0-9]', '') as phoneNumber,
 							tm.createdOn,
-							tmd.itemNameLog 
+							tmd.itemNameLog ,
+							tmd.itemNameDescriptionLog
 						from 
 							tb_transaction_master tm 
 							inner join tb_transaction_master_detail tmd on 

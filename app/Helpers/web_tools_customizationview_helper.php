@@ -722,15 +722,22 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 				$('#divZone').appendTo('#divInformacionLeft');								
 				$('#divMesa').appendTo('#divInformacionLeft');
 				$('#divTrasuctionPhone').appendTo('#divInformacionRight');				
+				$('#divTipoFactura').appendTo('#divInformacionLeft');
 				$('#divReferencia').appendTo('#divInformacionRight');	
+				
+				//Mover opciones de pago
 				$('#divPaymentOption').appendTo('#siderbar_content_right');	
 				$('#divPaymentOption').removeClass('col-lg-5');
 				$('#divPaymentOption').addClass('col-lg-6');
+				
+				//Mover panel donde se muestra los totales de la factura
 				$('#divPanelShowSummaryNumber').appendTo('#siderbar_content_right');	
 				$('#divPanelShowSummaryNumber').removeClass('col-lg-5');
 				$('#divPanelShowSummaryNumber').addClass('col-lg-6');
 				
+				
 				$('#heading').remove();
+				$('<br/>').appendTo('#divPanelPaymentSideBar');	
 				$('.btnAcept[data-valueworkflow=\"67\"]').parent().appendTo('#divPanelPaymentSideBar');	
 				$('.btnAcept[data-valueworkflow=\"67\"]').parent().removeClass('col-lg-2');
 				$('.btnAcept[data-valueworkflow=\"67\"]').parent().addClass('col-lg-12');
@@ -746,6 +753,13 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 				$('#btnVeDetalleFactura').parent().appendTo('#rowBotoneraFacturaFila4');				
 				$('#saltoDeLineaFila3').remove();
 				$('#saltoDeLineaFila2').remove();
+				$('#saltoDeLineaFila0').remove();
+				$('#saltoDeLineaFila6').remove();
+				$('#saltoDeLineaFila7').remove();
+				$('#rowBotoneraFacturaFila1').appendTo('#panelComandoAlternativa2');				
+				$('#rowBotoneraFacturaFila2').appendTo('#panelComandoAlternativa2');				
+				$('#rowBotoneraFacturaFila3').appendTo('#panelComandoAlternativa2');				
+				$('#rowBotoneraFacturaFila4').appendTo('#panelComandoAlternativa2');
 				
 				
 			});

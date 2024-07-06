@@ -68,6 +68,9 @@
 			<form id="form-new-invoice" name="form-new-invoice" class="form-horizontal" role="form" >
 			<div class="panel-body printArea"> 
 			
+				<div id="panelComandoAlternativa2">
+				</div>
+				
 				<ul id="myTab" class="nav nav-tabs">
 					<li class="active">
 						<a href="#home" data-toggle="tab">Informacion</a>
@@ -571,6 +574,7 @@
 								<th>skuFormatoDescription</th>
 								<th>Precio2</th>
 								<th>Precio3</th>
+								<th>itemNameDescription</th>
 							  </tr>
 							</thead>
 							<tbody id="body_tb_transaction_master_detail">
@@ -592,7 +596,7 @@
 				
 				<input class="form-control"  type="hidden"  name="txtStatusID" id="txtStatusID" value="<?php echo $valueWorkflowFirst; ?>" >
 				
-				<br/>
+				<br id="saltoDeLineaFila0" />
 				
 				<?php
 				if($useMobile != "1")
@@ -601,14 +605,14 @@
 						
 						<div class="row" id="rowBotoneraFacturaFila1">
 							<div class="col col-lg-2">
-								<a href="#" class="btn btn-flat btn-info   btn-block hidden btn-comando-factura" id="btnNewItem" ><i class="icon16 i-print"></i> AGREGAR PRO</a>
+								<a href="#" class="btn btn-flat btn-info   btn-block hidden btn-comando-factura" id="btnNewItem" ><i class="icon16 i-plus"></i> AGREGAR PRO</a>
 							</div>
 							<div class="col col-lg-2">
-								<a href="#" class="btn btn-flat btn-danger  btn-block hidden btn-comando-factura" id="btnDeleteItem" ><i class="icon16 i-print"></i> ELIMINAR PRO</a>					
+								<a href="#" class="btn btn-flat btn-danger  btn-block hidden btn-comando-factura" id="btnDeleteItem" ><i class="icon16 i-remove"></i> ELIMINAR PRO</a>					
 							</div>
 							<div class="col col-lg-2">
 								<div class="btn-group  btn-block">
-									<button type="button" class="btn btn-flat btn-success dropdown-toggle  btn-block hidden btn-comando-factura" data-toggle="dropdown"><i class="icon16 i-print"></i> PRODUCTO <span class="caret"></span></button>
+									<button type="button" class="btn btn-flat btn-success dropdown-toggle  btn-block hidden btn-comando-factura" data-toggle="dropdown"><i class="icon16 i-box"></i> PRODUCTO <span class="caret"></span></button>
 									<ul class="dropdown-menu">
 											<li><a href="#" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>						
 											<li><a href="#" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>											
@@ -635,7 +639,7 @@
 							<br id="saltoDeLineaFila3" />
 							<div class="row" id="rowBotoneraFacturaFila3">									
 									<div class="col col-lg-2">
-										<a href="#" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-print "></i> DETALLE </a>
+										<a href="#" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> DETALLE </a>
 									</div>
 							</div>
 						<?php 
@@ -745,8 +749,8 @@
 				
 				
 				
-				<br/>
-				<br/>
+				<br id="saltoDeLineaFila6" />
+				<br id="saltoDeLineaFila7" />
 				<input class="form-control <?php echo getBehavio($company->type,"app_invoice_billing","txtScanerBarCode",""); ?>  "  type="text"  name="txtScanerCodigo" id="txtScanerCodigo" value="" >
 				
 
@@ -983,7 +987,7 @@
 				
 				<div class="row" id="divPanelPaymentSideBar" >
 					<div class="col col-lg-12">
-						<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackPayment"><i class="icon16 i-print "></i> Regresar</a>
+						<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackPayment"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
 					</div>	
 				</div>
 				
@@ -1006,7 +1010,7 @@
 				
 				<div class="row" id="divPanelFacturaSideBar" >
 					<div class="col col-lg-12">
-						<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackFactura"><i class="icon16 i-print "></i> Regresar</a>
+						<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackFactura"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
 					</div>	
 				</div>
 			  </div>

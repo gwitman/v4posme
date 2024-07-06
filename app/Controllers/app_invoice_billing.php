@@ -875,6 +875,7 @@ class app_invoice_billing extends _BaseController {
 				$listTransactionDetalID 					= array();
 				$arrayListItemID 							= array();
 				$arrayListItemName							= array();
+				$arrayListItemNameDescription				= array();
 				$arrayListQuantity	 						= array();
 				$arrayListPrice		 						= array();
 				$arrayListSubTotal	 						= array();
@@ -907,6 +908,7 @@ class app_invoice_billing extends _BaseController {
 					array_push($listTransactionDetalID, 0);
 					array_push($arrayListItemID, $objItem->itemID);
 					array_push($arrayListItemName, $objItem->name);
+					array_push($arrayListItemNameDescription, $objItem->name);					
 					array_push($arrayListQuantity, $cantidad);
 					array_push($arrayListPrice, $precio);
 					//$arrayListSubTotal		= SUB TOTAL ES UN SOLO NUMERO
@@ -923,6 +925,7 @@ class app_invoice_billing extends _BaseController {
 				$listTransactionDetalID 					= /*inicio get post*/ $this->request->getPost("txtTransactionMasterDetailID");
 				$arrayListItemID 							= /*inicio get post*/ $this->request->getPost("txtItemID");
 				$arrayListItemName 							= /*inicio get post*/ $this->request->getPost("txtTransactionDetailName");
+				$arrayListItemNameDescription				= /*inicio get post*/ $this->request->getPost("txtTransactionDetailNameDescription");
 				$arrayListQuantity	 						= /*inicio get post*/ $this->request->getPost("txtQuantity");
 				$arrayListPrice		 						= /*inicio get post*/ $this->request->getPost("txtPrice");
 				$arrayListSubTotal	 						= /*inicio get post*/ $this->request->getPost("txtSubTotal");
@@ -971,6 +974,7 @@ class app_invoice_billing extends _BaseController {
 					$objCompanyComponentConcept 			= $this->Company_Component_Concept_Model->get_rowByPK($companyID,$objComponentItem->componentID,$itemID,"IVA");
 					$skuCatalogItemID						= $arrayListSku[$key];
 					$itemNameDetail							= str_replace('"',"",str_replace("'","",$arrayListItemName[$key]));
+					$itemNameDetailDecription				= str_replace('"',"",str_replace("'","",$arrayListItemNameDescription[$key]));
 					
 					
 					
@@ -1062,6 +1066,7 @@ class app_invoice_billing extends _BaseController {
 						$objTMD["reference2"]					= $vencimiento;
 						$objTMD["reference3"]					= '0';
 						$objTMD["itemNameLog"] 					= $itemNameDetail;
+						$objTMD["itemNameDescriptionLog"] 		= $itemNameDetailDecription;
 						
 						
 						$objTMD["catalogStatusID"]				= 0;
@@ -1135,6 +1140,7 @@ class app_invoice_billing extends _BaseController {
 						$objTMDNew["reference2"]				= $vencimiento;
 						$objTMDNew["reference3"]				= '0';
 						$objTMDNew["itemNameLog"] 				= $itemNameDetail;
+						$objTMDNew["itemNameDescriptionLog"] 	= $itemNameDetailDecription;
 						$objTMDNew["inventoryWarehouseSourceID"]= $objTMNew["sourceWarehouseID"];
 						$objTMDNew["skuCatalogItemID"] 			= $skuCatalogItemID;
 						$objTMDNew["skuFormatoDescription"] 	= $skuFormatoDescription;						
@@ -1625,6 +1631,7 @@ class app_invoice_billing extends _BaseController {
 			//Recorrer la lista del detalle del documento
 			$arrayListItemID 							= /*inicio get post*/ $this->request->getPost("txtItemID");
 			$arrayListItemName 							= /*inicio get post*/ $this->request->getPost("txtTransactionDetailName");
+			$arrayListItemNameDescription				= /*inicio get post*/ $this->request->getPost("txtTransactionDetailNameDescription");
 			$arrayListQuantity	 						= /*inicio get post*/ $this->request->getPost("txtQuantity");	
 			$arrayListPrice		 						= /*inicio get post*/ $this->request->getPost("txtPrice");
 			$arrayListSubTotal	 						= /*inicio get post*/ $this->request->getPost("txtSubTotal");
@@ -1669,6 +1676,7 @@ class app_invoice_billing extends _BaseController {
 					$objCompanyComponentConcept 			= $this->Company_Component_Concept_Model->get_rowByPK($companyID,$objComponentItem->componentID,$itemID,"IVA");
 					$skuCatalogItemID						= $arrayListSku[$key];
 					$itemNameDetail							= str_replace("'","",$arrayListItemName[$key]);
+					$itemNameDetailDescription				= str_replace("'","",$arrayListItemNameDescription[$key]);
 					$objItemSku								= $this->Item_Sku_Model->getByPK($itemID,$skuCatalogItemID);
 					
 					//$price								= $objItem->cost * ( 1 + ($objPrice->percentage/100));
@@ -1723,6 +1731,8 @@ class app_invoice_billing extends _BaseController {
 					$objTMD["reference2"]					= $vencimiento;
 					$objTMD["reference3"]					= '0';
 					$objTMD["itemNameLog"] 					= $itemNameDetail;
+					$objTMD["itemNameDescriptionLog"] 		= $itemNameDetailDescription;
+					
 					
 					$objTMD["catalogStatusID"]				= 0;
 					$objTMD["inventoryStatusID"]			= 0;
