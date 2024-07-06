@@ -850,6 +850,8 @@ $routes->match(['get','post'],'app_invoice_api/getLineByCustomerAll','app_invoic
 $routes->match(['get','post'],'app_invoice_api/getLineByCustomerAll/(:any)','app_invoice_api::getLineByCustomerAll');
 $routes->match(['get','post'],'app_mobile_api/getDataDownload','app_mobile_api::getDataDownload');
 $routes->match(['get','post'],'app_mobile_api/getDataDownload/(:any)','app_mobile_api::getDataDownload');
+$routes->match(['get','post'],'app_mobile_api/setDataUpload','app_mobile_api::setDataUpload');
+$routes->match(['get','post'],'app_mobile_api/setDataUpload/(:any)','app_mobile_api::setDataUpload');
 $routes->match(['get','post'],'app_invoice_billing/edit','app_invoice_billing::edit');
 $routes->match(['get','post'],'app_invoice_billing/edit/(:any)','app_invoice_billing::edit');
 $routes->match(['get','post'],'app_invoice_billing/editv2','app_invoice_billing::editv2');
@@ -885,6 +887,8 @@ $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmR
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmRustikChillGrill/(:any)','app_invoice_billing::viewPrinterDirectFactura80mmRustikChillGrill');
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmBlueMoon','app_invoice_billing::viewPrinterDirectFactura80mmBlueMoon');
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmBlueMoon/(:any)','app_invoice_billing::viewPrinterDirectFactura80mmBlueMoon');
+$routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmPizzaLaus','app_invoice_billing::viewPrinterDirectFactura80mmPizzaLaus');
+$routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmPizzaLaus/(:any)','app_invoice_billing::viewPrinterDirectFactura80mmPizzaLaus');
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmFerreteriaDouglas','app_invoice_billing::viewPrinterDirectFactura80mmFerreteriaDouglas');
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmFerreteriaDouglas/(:any)','app_invoice_billing::viewPrinterDirectFactura80mmFerreteriaDouglas');
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmComidaAudioElPipe','app_invoice_billing::viewPrinterDirectFactura80mmComidaAudioElPipe');
@@ -901,6 +905,8 @@ $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNorm
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmBpn/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmBpn');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Chic','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1Chic');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Chic/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1Chic');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1AgroServicioElLabrador','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1AgroServicioElLabrador');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1AgroServicioElLabrador/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1AgroServicioElLabrador');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1GlamCuts','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1GlamCuts');
@@ -913,6 +919,8 @@ $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNorm
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1PabloRosales/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1PabloRosales');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Douglas','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1Douglas');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Douglas/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1Douglas');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormalA4FunBlandonReciboOficialCaja','app_invoice_billing::viewRegisterFormatoPaginaNormalA4FunBlandonReciboOficialCaja');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormalA4FunBlandonReciboOficialCaja/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormalA4FunBlandonReciboOficialCaja');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmCarlosLuis','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmCarlosLuis');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmCarlosLuis/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmCarlosLuis');
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura58mm','app_invoice_billing::viewPrinterDirectFactura58mm');

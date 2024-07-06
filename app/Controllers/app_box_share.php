@@ -1013,10 +1013,10 @@ class app_box_share extends _BaseController {
 			$dataViewHeader["company"]		= $dataSession["company"];
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID,$dataViewHeader);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
-			$dataSession["head"]			= /*--inicio view*/ view('app_box_share/list_head');//--finview
-			$dataSession["footer"]			= /*--inicio view*/ view('app_box_share/list_footer');//--finview
+			$dataSession["head"]			= /*--inicio view*/ view('app_box_share/list_head',$dataViewHeader);//--finview
+			$dataSession["footer"]			= /*--inicio view*/ view('app_box_share/list_footer',$dataViewHeader);//--finview
 			$dataSession["body"]			= $dataViewRender; 
-			$dataSession["script"]			= /*--inicio view*/ view('app_box_share/list_script');//--finview
+			$dataSession["script"]			= /*--inicio view*/ view('app_box_share/list_script',$dataViewHeader);//--finview
 			$dataSession["script"]			= $dataSession["script"].$this->core_web_javascript->createVar("componentID",$objComponent->componentID);   
 			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r	
 		}
@@ -1935,6 +1935,8 @@ class app_box_share extends _BaseController {
 		    return $resultView;
 		}
 	}
+	
+	
 	
 	function viewRegisterFormatoPaginaTicketKhadash(){
 		try{ 

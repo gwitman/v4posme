@@ -8,15 +8,18 @@
 	<span style="font-family:'Arial Black'; color:#0070c0;">FUNERIA UN ENCUENTRO CON DIOS</span>
 </p>
 <p style="margin-top:0pt; margin-bottom:8pt; text-align:center; line-height:108%; font-size:10pt;">
-	<span style="font-family:'Arial Black'; color:#0070c0;">Villa flor sur sem&aacute;foro super xpress 1 &frac12; arriba M/I.</span>
+	<span style="font-family:'Arial Black'; color:#0070c0;">“PRESENTE EN LOS MOMENTOS DIFICILES 24/7”</span>
 </p>
 <p style="margin-top:0pt; margin-bottom:8pt; text-align:center; line-height:108%; font-size:10pt;">
-	<span style="font-family:'Arial Black'; color:#0070c0;">Direcci&oacute;n</span>
+	<span style="font-family:'Arial Black'; color:#0070c0;">DE LOS SEMAFOROS DE VILLA FLOR SUR 1 1/2 C ARRIBA M/I</span>
 </p>
 <p style="margin-top:0pt; margin-bottom:8pt; text-align:center; line-height:108%; font-size:10pt;">
-	<span style="font-family:'Arial Black'; color:#0070c0;">&ldquo;PRESENTE EN LOS MOMENTOS DIFICILES 24/7&rdquo;</span>
-	<span style="font-family:'Arial Black'; color:#0070c0;">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+	<span style="font-family:'Arial Black'; color:#0070c0;">RUC 0011910051026M</span>
 </p>
+<p style="margin-top:0pt; margin-bottom:8pt; text-align:center; line-height:108%; font-size:10pt;">
+	<span style="font-family:'Arial Black'; color:#0070c0;">2253-5671/ 7797-0325</span>
+</p>
+
 <p style="margin-top:14pt; margin-bottom:8pt; text-align:center; line-height:normal; font-size:10pt;">
 	<strong>
 		<span style="font-family:'Arial Black'; color:#0070c0;">CONTRATO DE SERVICIO FUNERARIO</span>
@@ -45,7 +48,7 @@
 	<tr>
 		<td>
 			<p style="margin-top:0pt;  text-align:justify; margin-bottom:0pt;  font-size:10pt;">
-				<span style="font-family:'Arial Black';">DIRECCION</span>
+				<span style="font-family:'Arial Black';">DIRECCION DOMICILIAR</span>
 			</p>
 		</td>
 		<td colspan="3">
@@ -178,15 +181,18 @@
 	</tr>
 </table>
 
-<p style="margin-top:14pt; margin-bottom:14pt; text-align:justify; line-height:normal;">	
-	<span style="font-family:'Times New Roman';">Funeraria Un Encuentro Con Dios, constituida e inscrita 
-	conforme las leyes de la Republica de 
-	Nicaragua, representada por RANDY ELIEZER BLANDON VANEGAS, con domicilio en sem&aacute;foro super xpress 1 &frac12; arriba M/I, en 
-	adelante denominada &quot;La Funeraria&quot;. Y <?php echo $objFirstDetail["legalName"]; ?>  
-	con documento cedula de identidad n&uacute;mero <?php echo $objFirstDetail["identification"]; ?> 
-	con domicilio en <?php echo $objFirstDetail["address"] == ""? "**NULL**" : $objFirstDetail["address"]; ?>  en 
-	adelante denominado &quot;El Contratante&quot;.</span>	
+
+<p style="margin-top:14pt; margin-bottom:14pt; line-height:normal; text-align:justify;  ">
+	<span style="font-family:'Times New Roman';">FUNERARIA UN ENCUENTRO CON DIOS, constituida e inscrita conforme las leyes de la 
+	Republica de Nicaragua, representada por ANGIE ARIEL BLANDON VANEGAS, con cedula de identidad n0 001-101005-1026M,  
+	con domicilio EN VILLA FLOR SUR, DE LOS SEMAFOROS DE VILLA FLOR SUR 1 ½ C ARRIBA, en adelante denominada "La Funeraria".
+	</span>
 </p>
+
+<p style="margin-top:14pt; margin-bottom:14pt; line-height:normal; text-align:justify;  ">
+	<span style="font-family:'Times New Roman';">Y <?php echo $objFirstDetail["legalName"]; ?> con documento cedula de identidad número <?php echo $objFirstDetail["identification"]; ?> con domicilio en <?php echo $objFirstDetail["address"] == ""? "**NULL**" : $objFirstDetail["address"]; ?> en adelante denominado "El Contratante".</span>
+</p>
+
 <p style="margin-top:14pt; margin-bottom:14pt; line-height:normal;">
 	<strong>
 		<span style="font-family:'Times New Roman';">Ambas partes acuerdan lo siguiente:</span>
@@ -198,16 +204,16 @@
 	</strong>
 </p>
 <p style="margin-top:14pt; margin-bottom:14pt; line-height:normal; text-align:justify;  ">
-	<span style="font-family:'Times New Roman';">LA FUNERARIA se compromete a proporcionar 
-	los servicios funerarios detallados en este contrato, a solicitud de El Contratante, 
-	est&aacute;n de acuerdo en emitir y firmar el presente contrato de cr&eacute;dito de 
-	Servicio Funerario, el cual est&aacute; sujeto a las cl&aacute;usulas que se enumeran 
-	y especifican a continuaci&oacute;n:</span>
+	<span style="font-family:'Times New Roman';">LA FUNERARIA se compromete a proporcionar los servicios funerarios detallados 
+	en este contrato, a solicitud de EL CONTRATANTE, están de acuerdo en emitir y firmar el presente contrato de crédito de 
+	Servicio Funerario, el cual está sujeto a las cláusulas que se enumeran y especifican a continuación:</span>
 </p>
+ 
+ 
  
 <p style="margin-top:14pt; margin-bottom:14pt; line-height:normal; font-size:12pt;">
 	<strong>
-		<span style="font-family:'Times New Roman';">2. Descripci&oacute;n del servicio adquirido por el contratante:&nbsp;</span>
+		<span style="font-family:'Times New Roman';">2. Descripción del servicio adquirido por el contratante:</span>
 	</strong>
 </p>
 <p style="margin-top:14pt; margin-bottom:10pt; line-height:normal;">
@@ -224,8 +230,8 @@
 	<strong>3. Vigencia:&nbsp;</strong>
 </p>
 <p style="margin-top:14pt; margin-bottom:14pt; line-height:normal;">
-	<span style="font-family:'Times New Roman';">Esta venta de cr&eacute;dito de servicio funerario entra en vigencia 
-	una vez que el cliente haya cancelado al menos el 50 % del valor del contrato.</span>
+	<span style="font-family:'Times New Roman';">Esta venta de crédito de servicio funerario entra en vigencia una vez que el 
+	cliente haya cancelado al menos el 50 % del valor del contrato.</span>
 </p>
 <p style="margin-top:14pt; margin-bottom:14pt; line-height:normal;">
 	<span style="font-family:'Times New Roman';">&nbsp;</span>
@@ -236,33 +242,23 @@
 	</strong>
 </p>
 <p style="margin-top:14pt; margin-bottom:14pt; text-align:justify; line-height:normal; font-size:12pt;">
-	<span style="font-family:'Times New Roman'; font-size:11pt;">El o los servicios funerarios del presente 
-	contrato tiene un costo de: <?php echo $objFirstDetail["cuota"]; ?> dolares pagaderos</span>
-	<span style="font-family:'Times New Roman'; font-size:11pt;">&nbsp;&nbsp;</span>
-	<span style="font-family:'Times New Roman'; font-size:11pt;">en cuotas <?php echo $objFirstDetail["period"]; ?> de </span> 		
-	<span style="font-family:'Times New Roman'; font-size:11pt;">&nbsp;&nbsp;&nbsp;</span>
+	<span style="font-family:'Times New Roman'; font-size:11pt;">El o los servicios funerarios del presente contrato tiene un costo de: 
+	<?php echo $objFirstDetail["cuota"]; ?> dolares pagaderos</span> <span style="font-family:'Times New Roman'; font-size:11pt;">&nbsp;&nbsp;
+	</span> <span style="font-family:'Times New Roman'; font-size:11pt;">en cuotas <?php echo $objFirstDetail["period"]; ?> de 
+	</span> <span style="font-family:'Times New Roman'; font-size:11pt;">&nbsp;&nbsp;&nbsp;</span> 
 	<span style="font-family:'Times New Roman'; font-size:11pt;"><?php echo round($objFirstDetail["cuota"] / $objFirstDetail["term"],2) ; ?> 
-	d&oacute;lares, 
-	o su equivalente en moneda nacional al tipo de cambio paralelo conforme al</span>
-	<span style="font-family:'Times New Roman'; font-size:11pt;">&nbsp;&nbsp;</span>
-	<span style="font-family:'Times New Roman'; font-size:11pt;">Sistema bancario nacional. 
-	El CONTRATANTE acuerda efectuar los pagos los d&iacute;as 
-	<?php echo  \DateTime::createFromFormat("Y-m-d",$objFirstDetail["fechInicial"])->format("d")  ; ?>  de 
-	cada mes</span>
-	<span style="font-family:'Times New Roman';">.</span>
+	d&oacute;lares, o su equivalente en moneda nacional al tipo de cambio paralelo conforme al</span> 
+	<span style="font-family:'Times New Roman'; font-size:11pt;">&nbsp;&nbsp;</span> 
+	<span style="font-family:'Times New Roman'; font-size:11pt;">Sistema bancario nacional. El CONTRATANTE acuerda efectuar los pagos 
+	los d&iacute;as <?php echo  \DateTime::createFromFormat("Y-m-d",$objFirstDetail["fechInicial"])->format("d")  ; ?>  de 
+	cada mes</span> <span style="font-family:'Times New Roman';">.</span>
 </p>
 <p style="margin-top:14pt; margin-bottom:14pt; line-height:normal; font-size:12pt;">
 	<span style="font-family:'Times New Roman';">&nbsp;</span>
 </p>
 <p style="margin-top:14pt; margin-bottom:14pt; line-height:normal; font-size:12pt;">
 	<strong>
-		<span style="font-family:'Times New Roman';">5.</span>
-	</strong>
-	<strong>
-		<span style="font-size:11pt;">&nbsp;E</span>
-	</strong>
-	<strong>
-		<span style="font-family:'Times New Roman';">l pago de las cuotas:&nbsp;</span>
+		<span style="font-family:'Times New Roman';">5. El pago de las cuotas:</span>
 	</strong>
 </p>
 <p style="margin-top:14pt; margin-bottom:14pt; text-align:justify; line-height:normal;">
@@ -306,7 +302,7 @@
 	<span style="font-family:'Times New Roman';">&nbsp;&nbsp;</span>
 	<span style="font-family:'Times New Roman';">(S) FUNERARIA UN ENCUENTRO CON DIOS, reestructurar&aacute; el saldo 
 	pendiente del servicio o servicios entregados para ser cancelados en un plazo comprendido entre uno (1) a 
-	doce (24) meses.</span>
+	doce (12) meses.</span>
 </p>
 <p style="margin-top:14pt; margin-bottom:14pt; line-height:normal;">
 	<span style="font-family:'Times New Roman';">&nbsp;</span>
@@ -374,15 +370,11 @@
 	</strong>
 </p>
 <p style="margin-top:14pt; margin-bottom:14pt; text-align:justify; line-height:normal; font-size:12pt;">
-	<span style="font-family:'Times New Roman'; font-size:11pt;">LA anulaci&oacute;n del contrato de 
-	cr&eacute;dito de servicio funerario se har&aacute; efectiva Si EL CONTRATANTE lo notifica por 
-	escrito o por acumular tres (3) cuotas consecutivas sin pagar. Las cuotas pagadas al momento 
-	de la anulaci&oacute;n le servir&aacute;n al contratante para adquirir cualquier tipo de 
-	servicio funerario equivalente al monto acumulado hasta la fecha de anulaci&oacute;n o uno 
-	de mayor valor al completar la diferencia. Se acuerda que 
-	funeraria El FUNERARIA UN ENCUNTRO CON DIOS no har&aacute; devoluci&oacute;n de 
-	dinero bajo las condiciones ya especificadas en esta misma cl&aacute;usula</span>
-	<span style="font-family:'Times New Roman';">.</span>
+	<span style="font-family:'Times New Roman'; font-size:11pt;">LA anulación del contrato de crédito de servicio funerario se 
+	hará efectiva Si EL CONTRATANTE lo notifica por escrito o por acumular tres (3) cuotas consecutivas sin pagar.  
+	Se acuerda que funeraria Un Encuentro con Dios 	no hará devolución de dinero bajo las condiciones ya especificadas 
+	en esta misma cláusula.
+	</span>	
 </p>
 <p style="margin-top:14pt; margin-bottom:14pt; text-align:justify; line-height:normal; font-size:12pt;">
 	<strong>

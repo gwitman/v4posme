@@ -276,8 +276,8 @@ class app_purchase_taller extends _BaseController {
 			if(!$this->core_web_workflow->validateWorkflowStage("tb_transaction_master_workshop_taller","statusID",$objTM->statusID,COMMAND_EDITABLE_TOTAL,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
 			throw new \Exception(NOT_WORKFLOW_EDIT);					
 			
-			if($this->core_web_accounting->cycleIsCloseByDate($companyID,$objTM->transactionOn))
-			throw new \Exception("EL DOCUMENTO NO PUEDE ACTUALIZARCE, EL CICLO CONTABLE ESTA CERRADO");
+			//if($this->core_web_accounting->cycleIsCloseByDate($companyID,$objTM->transactionOn))
+			//throw new \Exception("EL DOCUMENTO NO PUEDE ACTUALIZARCE, EL CICLO CONTABLE ESTA CERRADO");
 			
 			//Actualizar Maestro			
 			$objTMNew["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");

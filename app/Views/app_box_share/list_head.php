@@ -1,5 +1,5 @@
 				<div id="heading" class="page-header">
-					<h1><i class="icon20 i-storage-2"></i> LISTA DE ABONOS</h1>
+					<h1><i class="icon20 i-storage-2"></i> LISTA DE <?php echo getBehavio($company->type,"app_box_share","labelTitlePageList","ABONOS"); ?></h1>
 				</div>
 				
 				<div class="row">  

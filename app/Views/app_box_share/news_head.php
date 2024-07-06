@@ -9,5 +9,5 @@
 				</style>
 				
 				<div id="heading" class="page-header">
-							<h1><i class="icon20  i-storage-2"></i> Agregar Abono</h1>
+							<h1><i class="icon20  i-storage-2"></i> Agregar <?php echo getBehavio($company->type,"app_box_share","labelTitlePageNew","Abono"); ?></h1>
 				</div> 

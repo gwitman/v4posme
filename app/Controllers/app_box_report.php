@@ -239,6 +239,11 @@ class app_box_report extends _BaseController {
 					$objDataResult["fontSize"]					= "12px";
 					return view("app_box_report/share/view_a_disemp",$objDataResult);//--finview-r
 				}
+				//gym raptor 
+				else if( $objCompany->flavorID == 236 ) 
+				{
+					return view("app_box_report/share/view_a_disemp_raptor",$objDataResult);//--finview-r
+				}
 				else 
 				{
 					return view("app_box_report/share/view_a_disemp",$objDataResult);//--finview-r

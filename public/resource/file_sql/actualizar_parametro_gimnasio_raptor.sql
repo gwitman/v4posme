@@ -795,7 +795,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "2024-06-25" 
+	tb_company_parameter.value = "2050-06-25" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CUST_PRICE_LICENCES_EXPIRED";## Fecha de expiracion de la licencia 
@@ -825,6 +825,7 @@ WHERE
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_NAME";## Witman José González Rostran 
 
+				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "johannadevaldivia@gmail.com" 
@@ -872,7 +873,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'GYM Raptor' , address = 'Del arbolito 1.c al sur' ,
-	flavorID = 236 
+	flavorID = 236 , type = 'gym_raptor'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

@@ -3,8 +3,42 @@
 namespace App\Controllers;
 class app_mobile_api extends _BaseController {
 	
-     function getDataDownload()
-	 {
+	function setDataUpload()
+	{
+		try
+		{ 
+			
+			$nickname		= /*inicio get post*/ $this->request->getPost("txtNickname");			
+			$password		= /*inicio get post*/ $this->request->getPost("txtPassword");	
+			$objUser		= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname,$password);
+			$companyID  	= $objUser["user"]->companyID;
+			$userID		 	= $objUser["user"]->userID;
+			$objCompany		= $objUser["company"];
+			
+			$objListCustomerSource					= /*inicio get post*/ $this->request->getPost("txtObjListCustomer");
+			$objListItemsSource						= /*inicio get post*/ $this->request->getPost("txtObjListItems");
+			$objListTransactionMasterSource			= /*inicio get post*/ $this->request->getPost("txtObjListTransactionMaster");
+			$objListTransactionMasterDetialSource 	= /*inicio get post*/ $this->request->getPost("txtObjListTransactionMasterDetail");			
+			
+			return $this->response->setJSON(array(
+				'error'   							=> false,
+				'message' 							=> SUCCESS
+			));//--finjson
+			
+		}
+		catch(\Exception $ex)
+		{
+			
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));//--finjson
+			
+		}		
+			
+	}
+    function getDataDownload()
+	{
 		try
 		{ 
 			
@@ -55,6 +89,6 @@ class app_mobile_api extends _BaseController {
 			
 		}		
 			
-	 }
+	}
 }
 ?>
