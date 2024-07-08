@@ -1182,6 +1182,8 @@
 			$("#txtSubTotal").val("0");
 			$("#txtIva").val("0");
 			$("#txtTotal").val("0");
+			$("#txtTotalAlternativo").text("0");
+
 			
 			$("#txtReceiptAmountTarjeta").val("0");
 			$("#txtReceiptAmountTarjetaDol").val("0");
@@ -1254,6 +1256,8 @@
 		$("#txtSubTotal").val(fnFormatNumber(subtotalGeneral,2));
 		$("#txtIva").val(fnFormatNumber(ivaGeneral,2));
 		$("#txtTotal").val(fnFormatNumber(totalGeneral,2));
+		$("#txtTotalAlternativo").text(fnFormatNumber(totalGeneral,2));
+
 		
 			
 		

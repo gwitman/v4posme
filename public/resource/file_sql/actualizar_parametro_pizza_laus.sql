@@ -839,7 +839,7 @@ WHERE
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_BAR";## Nombre de la impresora de bar
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewPrinterDirectBar80mmRustikChillGrill" 
+	tb_company_parameter.value = "app_invoice_billing/viewPrinterDirectBar80mmPizzaLaus" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_URL_BAR";## Url para imprimir comanda de bar
@@ -1061,7 +1061,7 @@ WHERE
 	tb_parameter.name = "INVOICE_BILLING_SAVE_AFTER_TO_LIST";## Despues de Guardar o aplicar regresar a la lista
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_SAVE_AFTER_TO_ADD";## Despues de Guardar o aplicar regresar a la lista
@@ -1178,7 +1178,7 @@ WHERE
 	tb_parameter.name = "INVOICE_URL_PRINTER_COCINA";## Símbolo de la Moneda Funcional 
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewPrinterDirectCocina58mm" 
+	tb_company_parameter.value = "app_invoice_billing/viewPrinterDirectCocina80mmPizzaLaus" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_URL_PRINTER_COCINA_DIRECT";## Símbolo de la Moneda Funcional 
@@ -1295,14 +1295,14 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 2311-5283" 
+	tb_company_parameter.value = "TEL: 2311-5283 WHATSAPP: 8188-8074" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 2311-5283" 
+	tb_company_parameter.value = "TEL: 2311-5283 WHATSAPP: 8188-8074" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1310,14 +1310,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Censicomp 15vs al norte" 
+	tb_company_parameter.value = "Cencicomp 15 vrs al Norte." 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Pizza Laus' , address = 'Censicomp 15vs al norte' ,
+	NAME = 'Pizza Laus' , address = 'Cencicomp 15 vrs al Norte.' ,
 	flavorID = 511,type='pizza_laus'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
@@ -1355,7 +1355,7 @@ where
 	
 /*tipo de cambio de dolares a cordoba*/
 update tb_exchange_rate set 
-	ratio = 0.027777 
+	ratio = 0.02754820 
 where 
 	currencyID = 1
 	and targetCurrencyID = 2; 

@@ -554,7 +554,7 @@
 				
 				<div class="row" id="panelContainterDetailInvoice" >
 					<div class="col-lg-12">
-						<h3>Detalle:</h3>
+						<h3 id="labelTitleDetalle" >Detalle:</h3>
 						<table id="tb_transaction_master_detail" class="table table-bordered"  >
 							<thead>
 							  <tr>
@@ -612,7 +612,7 @@
 							</div>
 							<div class="col col-lg-2">
 								<div class="btn-group  btn-block">
-									<button type="button" class="btn btn-flat btn-success dropdown-toggle  btn-block hidden btn-comando-factura" data-toggle="dropdown"><i class="icon16 i-box"></i> PRODUCTO <span class="caret"></span></button>
+									<button type="button" class="btn btn-flat btn-success dropdown-toggle  btn-block hidden btn-comando-factura" data-toggle="dropdown" id="btnGroupdProducto"  ><i class="icon16 i-box"></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunConfiguracion","PRODUCTO"); ?>  <span class="caret"></span></button>
 									<ul class="dropdown-menu">
 											<li><a href="#" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>						
 											<li><a href="#" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>											
@@ -639,7 +639,7 @@
 							<br id="saltoDeLineaFila3" />
 							<div class="row" id="rowBotoneraFacturaFila3">									
 									<div class="col col-lg-2">
-										<a href="#" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> DETALLE </a>
+										<a href="#" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunVerDetalle","DETALLE"); ?>  </a>
 									</div>
 							</div>
 						<?php 
@@ -660,14 +660,14 @@
 									if ($objParameterInvoiceAutoApply == "true"){
 										?>
 										<a href="#" class="btn btn-warning  btn-block hidden btn-comando-factura" id="btnAcept"><i class="icon16 i-checkmark-4"></i>
-										<?php echo getBehavio($company->type,"core_web_language","APLICAR","APLICAR" ) ?>
+										<?php echo getBehavio($company->type,"core_web_language_workflowstage","billing_APLICAR","APLICAR" ) ?>
 										</a>
 										<?php
 									}
 									else{
 										?>
 										<a href="#" class="btn btn-warning  btn-block hidden btn-comando-factura" id="btnAcept"><i class="icon16 i-checkmark-4"></i>
-										<?php echo getBehavio($company->type,"core_web_language","REGISTRAR","REGISTRAR") ?>
+										<?php echo getBehavio($company->type,"core_web_language_workflowstage","billing_REGISTRAR","REGISTRAR") ?>
 										</a>
 										<?php 
 									}
@@ -712,7 +712,7 @@
 													?>
 													<li>
 													<a href="#" id="btnAcept">													
-													<?php echo getBehavio($company->type,"core_web_language","APLICAR","APLICAR" ) ?>
+													<?php echo getBehavio($company->type,"core_web_language_workflowstage","billing_APLICAR","APLICAR" ) ?>
 													</a>
 													</li>
 													<?php
@@ -721,7 +721,7 @@
 													?>
 													<li class="badge-info">
 													<a href="#" id="btnAcept">													
-													<?php echo getBehavio($company->type,"core_web_language","REGISTRAR","REGISTRAR" ) ?>
+													<?php echo getBehavio($company->type,"core_web_language_workflowstage","billing_REGISTRAR","REGISTRAR" ) ?>
 													</a>
 													</li>
 													<?php 
@@ -833,7 +833,7 @@
 								</tr>
 								
 								
-								<tr class="<?php echo getBehavio($company->type,"app_invoice_billing","rowOptionPaymentExtras",""); ?>" >
+								<tr class="<?php echo getBehavio($company->type,"app_invoice_billing","rowOptionPaymentExtrasTarjeta",""); ?>" >
 									<th style="text-align:left">04) Tarjeta. Nac.</th>
 									<td style="">
 										<input type="text" id="txtReceiptAmountTarjeta" name="txtReceiptAmountTarjeta"   class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
@@ -857,7 +857,7 @@
 										<input type="text" id="txtReceiptAmountTarjeta_Reference" name="txtReceiptAmountTarjeta_Reference"   class="col-lg-12" value="" />
 									</td>
 								</tr>
-								<tr class="<?php echo getBehavio($company->type,"app_invoice_billing","rowOptionPaymentExtras",""); ?>" >
+								<tr class="<?php echo getBehavio($company->type,"app_invoice_billing","rowOptionPaymentExtrasTarjeta",""); ?>" >
 									<th style="text-align:left">05) Tarjeta. Ext.</th>
 									<td>
 										<input type="text" id="txtReceiptAmountTarjetaDol" name="txtReceiptAmountTarjetaDol"   class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
@@ -1035,6 +1035,12 @@
 				<p>Desea imprmir la factura en formato 80mm</p>
 			</div>
 			
+			
+			<div id="labelTotalAlternativo"  class="<?php echo getBehavio($company->type,"app_invoice_billing","panelLabelSumaryAlternativo","hidden"); ?>" >
+				<div class="col col-lg-2 text-right">
+					<h2>TOTAL: <span class="invoice-num red" id="txtTotalAlternativo">0.00</span></h2>
+				</div>
+			</div>
 			
 		</div>
 	</div>

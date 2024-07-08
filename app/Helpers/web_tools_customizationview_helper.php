@@ -697,10 +697,13 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		
 		
 		/*Pizza Laus*/		
-		strtolower('pizza_laus_core_web_language_REGISTRADA')			 											=> "GUARDAR MESA",
-		strtolower('pizza_laus_core_web_language_APLICADA')				 											=> "PAGAR",
-		strtolower('pizza_laus_core_web_language_REGISTRAR')				 										=> "GUARDAR MESA",
-		strtolower('pizza_laus_core_web_language_APLICAR')				 											=> "PAGAR",		
+		strtolower('pizza_laus_core_web_language_workflowstage_billing_REGISTRADA')			 						=> "GUARDAR MESA",
+		strtolower('pizza_laus_core_web_language_workflowstage_billing_APLICADA')				 					=> "PAGAR",
+		strtolower('pizza_laus_core_web_language_workflowstage_billing_REGISTRAR')				 					=> "GUARDAR MESA",
+		strtolower('pizza_laus_core_web_language_workflowstage_billing_APLICAR')				 					=> "PAGAR",		
+		strtolower('pizza_laus_core_web_language_workflowstage_billing_ANULADA')				 					=> "ANULADA",		
+		strtolower('pizza_laus_app_invoice_billing_lablBotunConfiguracion')											=> "CONFIGURACION",
+		strtolower('pizza_laus_app_invoice_billing_lablBotunVerDetalle')											=> "PRODUCTO",
 		strtolower('pizza_laus_app_invoice_billing_divTxtMoneda') 													=> "hidden",
 		strtolower('pizza_laus_app_invoice_billing_divTxtCambio') 													=> "hidden",				
 		strtolower('pizza_laus_app_invoice_billing_divPestanaCredito') 												=> "hidden",		
@@ -712,6 +715,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('pizza_laus_app_invoice_billing_panelResumenFacturaTool')	 									=> "hidden",
 		strtolower('pizza_laus_app_invoice_billing_panelResumenFactura')	 										=> "hidden",		
 		strtolower('pizza_laus_app_invoice_billing_rowOptionPaymentExtras')	 										=> "hidden",
+		strtolower('pizza_laus_app_invoice_billing_panelLabelSumaryAlternativo')	 								=> "",
 		
 		
 		
@@ -759,7 +763,18 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 				$('#rowBotoneraFacturaFila1').appendTo('#panelComandoAlternativa2');				
 				$('#rowBotoneraFacturaFila2').appendTo('#panelComandoAlternativa2');				
 				$('#rowBotoneraFacturaFila3').appendTo('#panelComandoAlternativa2');				
-				$('#rowBotoneraFacturaFila4').appendTo('#panelComandoAlternativa2');
+				$('#rowBotoneraFacturaFila4').appendTo('#panelComandoAlternativa2');				
+				$('#btnVeDetalleFactura').removeClass('btn-primary');
+				$('#btnVeDetalleFactura').addClass('btn-success');				
+				$('#btnGroupdProducto').removeClass('btn-success');
+				$('#btnGroupdProducto').addClass('btn-primary');				
+				$('#btnOptionPago').removeClass('btn-primary');
+				$('#btnOptionPago').addClass('btn-warning');				
+				$('#labelTotalAlternativo').appendTo('#divPanelFacturaSideBarComandos');
+				$('#labelTitleDetalle').remove();
+				$('#mySidebarFactura').css('padding-top','0px');
+				
+				
 				
 				
 			});
@@ -780,6 +795,22 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		{
 			//si el key no existe regrear el elemento
 			return $key_element;
+		}
+		else 
+		{
+			//si el key existe , retornar valor
+			return $divs[$key];
+		}
+	}
+	else if ( $key_controller == "core_web_language_workflowstage" )
+	{
+		//lenguaje		
+		$key = strtolower($type_company)."_".strtolower($key_controller)."_".strtolower($key_element);
+		
+		if(!array_key_exists( $key, $divs) )
+		{
+			//si el key no existe regrear el elemento
+			return $default_value;
 		}
 		else 
 		{

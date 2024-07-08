@@ -560,7 +560,7 @@
 				
 				<div class="row" id="panelContainterDetailInvoice" >
 					<div class="col-lg-12">
-						<h3>Detalle:</h3>
+						<h3 id="labelTitleDetalle" >Detalle:</h3>
 						<table id="tb_transaction_master_detail" class="table table-bordered" >
 							<thead>
 							  <tr>
@@ -607,7 +607,7 @@
 						</div>
 						<div class="col col-lg-2">
 							<div class="btn-group btn-block  hidden btn-comando-factura ">
-								<button  type="button" class="btn btn-flat btn-success dropdown-toggle btn-block" data-toggle="dropdown"><i class="icon16 i-box"></i> PRODUCTO <span class="caret"></span></button>
+								<button  type="button" class="btn btn-flat btn-success dropdown-toggle btn-block" data-toggle="dropdown" id="btnGroupdProducto" ><i class="icon16 i-box"></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunConfiguracion","PRODUCTO"); ?> <span class="caret"></span></button>
 								<ul class="dropdown-menu">
 										<li><a href="#" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>						
 										<li><a href="#" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>										
@@ -667,10 +667,10 @@
 						<br id="saltoDeLineaFila3" />
 						<div class="row" id="rowBotoneraFacturaFila3">
 								<div class="col col-lg-2">
-									<a href="#" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnOptionPago"><i class="icon16 i-print "></i> PROCESAR PAGO</a>
+									<a href="#" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnOptionPago"><i class="icon16 i-arrow-down-12 "></i> PROCESAR PAGO</a>
 								</div>
 								<div class="col col-lg-2">
-									<a href="#" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> DETALLE </a>
+									<a href="#" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunVerDetalle","DETALLE"); ?>  </a>
 								</div>
 						</div>
 					<?php 
@@ -687,12 +687,12 @@
 							$counter++;
 							if($counter == 1){
 							echo '<div class="col col-lg-2">';
-							echo "<a href='#' class='btn btn-flat btn-warning btnAcept btn-block hidden btn-comando-factura'  data-valueworkflow='".$ws->workflowStageID."'   > <i class='icon16 i-checkmark-4'></i>  ".getBehavio($company->type,"core_web_language",$ws->name,"" )."</a> ";							
+								echo "<a href='#' class='btn btn-flat btn-warning btnAcept btn-block hidden btn-comando-factura'  data-valueworkflow='".$ws->workflowStageID."'   > <i class='icon16 i-checkmark-4'></i>  ".getBehavio($company->type,"core_web_language_workflowstage","billing_".$ws->name,$ws->name )."</a> ";							
 							echo '</div>';
 							}
 							else{
 							echo '<div class="col col-lg-2">';
-							echo "<a href='#' class='btn btn-flat btn-warning btnAcept btnAceptAplicar btn-block hidden btn-comando-factura' data-valueworkflow='".$ws->workflowStageID."'  > <i class='icon16 i-checkmark-4'></i>  ".getBehavio($company->type,"core_web_language",$ws->name,"" )  ."</a> ";
+								echo "<a href='#' class='btn btn-flat btn-warning btnAcept btnAceptAplicar btn-block hidden btn-comando-factura' data-valueworkflow='".$ws->workflowStageID."'  > <i class='icon16 i-checkmark-4'></i>  ".getBehavio($company->type,"core_web_language_workflowstage","billing_".$ws->name,$ws->name )  ."</a> ";
 							echo '</div>';
 							}
 						}
@@ -764,11 +764,13 @@
 											if($objListWorkflowStage)
 											foreach($objListWorkflowStage as $ws){					
 												$counter++;
-												if($counter == 1){
-												echo "<li><a href='#' class='btnAcept'  data-valueworkflow='".$ws->workflowStageID."'   > ". getBehavio($company->type,"core_web_language",$ws->name,"" ) ."</a></li>";
+												if($counter == 1)
+												{
+													echo "<li><a href='#' class='btnAcept'  data-valueworkflow='".$ws->workflowStageID."'   > ". getBehavio($company->type,"core_web_language_workflowstage","billing_".$ws->name,$ws->name ) ."</a></li>";
 												}
-												else{												
-												echo "<li class='badge-info' ><a href='#' class='btnAcept btnAceptAplicar' data-valueworkflow='".$ws->workflowStageID."'  >  ".getBehavio($company->type,"core_web_language",$ws->name,"" ) ."</a> </li>";
+												else
+												{												
+													echo "<li class='badge-info' ><a href='#' class='btnAcept btnAceptAplicar' data-valueworkflow='".$ws->workflowStageID."'  >  ".getBehavio($company->type,"core_web_language_workflowstage","billing_".$ws->name,$ws->name ) ."</a> </li>";
 												}
 											}
 											?>
@@ -881,7 +883,7 @@
 									</td>
 								</tr>
 								
-								<tr class="<?php echo getBehavio($company->type,"app_invoice_billing","rowOptionPaymentExtras",""); ?>" >
+								<tr class="<?php echo getBehavio($company->type,"app_invoice_billing","rowOptionPaymentExtrasTarjeta",""); ?>" >
 									<th style="text-align:left">04) Tarjeta. Nac.</th>
 									<td style="">
 										<input type="text" id="txtReceiptAmountTarjeta" name="txtReceiptAmountTarjeta"  class="col-lg-12 txt-numeric" value="<?php echo number_format($objTransactionMasterInfo->receiptAmountCard,2); ?>" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
@@ -905,7 +907,7 @@
 										<input type="text" id="txtReceiptAmountTarjeta_Reference" name="txtReceiptAmountTarjeta_Reference"   class="col-lg-12" value="<?php echo $objTransactionMasterInfo->receiptAmountCardBankReference;  ?>" />
 									</td>
 								</tr>
-								<tr class="<?php echo getBehavio($company->type,"app_invoice_billing","rowOptionPaymentExtras",""); ?>" >
+								<tr class="<?php echo getBehavio($company->type,"app_invoice_billing","rowOptionPaymentExtrasTarjeta",""); ?>" >
 									<th style="text-align:left">05) Tarjeta. Ext.</th>
 									<td >
 										<input type="text" id="txtReceiptAmountTarjetaDol" name="txtReceiptAmountTarjetaDol"  class="col-lg-12 txt-numeric" value="<?php echo number_format($objTransactionMasterInfo->receiptAmountCardDol,2); ?>" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
@@ -1084,6 +1086,13 @@
 			<div id="modalDialogOpenPrimterClave" title="Clave" class="dialog">
 				<input type="password" id="txtClaveValidToOpenCash" >
 			</div>
+			
+			<div id="labelTotalAlternativo"  class="<?php echo getBehavio($company->type,"app_invoice_billing","panelLabelSumaryAlternativo","hidden"); ?>" >
+				<div class="col col-lg-2 text-right">
+					<h2>TOTAL: <span class="invoice-num red" id="txtTotalAlternativo">0.00</span></h2>
+				</div>
+			</div>
+			
 			
 		</div>
 	</div>

@@ -935,6 +935,10 @@ $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectCocina80mmRu
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectCocina80mmRustikChillGrill/(:any)','app_invoice_billing::viewPrinterDirectCocina80mmRustikChillGrill');
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectBar80mmRustikChillGrill','app_invoice_billing::viewPrinterDirectBar80mmRustikChillGrill');
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectBar80mmRustikChillGrill/(:any)','app_invoice_billing::viewPrinterDirectBar80mmRustikChillGrill');
+$routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectBar80mmPizzaLaus','app_invoice_billing::viewPrinterDirectBar80mmPizzaLaus');
+$routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectBar80mmPizzaLaus/(:any)','app_invoice_billing::viewPrinterDirectBar80mmPizzaLaus');
+$routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectCocina80mmPizzaLaus','app_invoice_billing::viewPrinterDirectCocina80mmPizzaLaus');
+$routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectCocina80mmPizzaLaus/(:any)','app_invoice_billing::viewPrinterDirectCocina80mmPizzaLaus');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaCocina80mm','app_invoice_billing::viewRegisterFormatoPaginaCocina80mm');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaCocina80mm/(:any)','app_invoice_billing::viewRegisterFormatoPaginaCocina80mm');
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectCocina58mm','app_invoice_billing::viewPrinterDirectCocina58mm');
