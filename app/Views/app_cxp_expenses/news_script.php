@@ -5,10 +5,13 @@
 						 $('#txtDate').val();	
 						 $("#txtDate").datepicker("update");
 						 $('.txt-numeric').mask('000,000.00', {reverse: true});
-						 
-						
-						
-						
+
+
+
+                        $(document).on("change","#txtDetailAmount,#txtTransactionMasterTax1",function(){
+                            fnCalcularMontoTotal()
+                        });
+
 						$(document).on("change","#txtCurrencyID",function(){
 							updatePantalla();
 							updateAmount();
@@ -112,7 +115,13 @@
 						//$('.txtCredit').mask('000,000.00', {reverse: true});
 						$('.txt-numeric').mask('000,000.00', {reverse: true});
 					}
-					
+
+                    function fnCalcularMontoTotal(){
+                        let monto = parseFloat($('#txtDetailAmount').val());
+                        let iva = parseFloat($('#txtTransactionMasterTax1').val());
+                        var total = monto+iva;
+                        $('#txtTransactionMasterTax2').val(total);
+                    }
 					
 					
 				</script>

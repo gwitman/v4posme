@@ -533,12 +533,9 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 				$(this).trigger('input'); // Disparar el evento de entrada para validar la entrada
 				fnShowNotification('Escribir ID Encuentra 24 solo puede tener números','error',5000);
 			}
-		});
+		});",
 		
         strtolower('pizza_laus_app_invoice_billing_divTxtCedulaBeneficiario')	 									=> "Dirección",
-		
-		
-		",	
 		strtolower('luciaralstate_app_inventory_item_divTxtEstado') 			 								=> "hidden",
 		strtolower('luciaralstate_app_inventory_item_divTxtUM') 			 									=> "hidden",
 		strtolower('luciaralstate_app_inventory_item_divTxtPresentacionUM')  									=> "hidden",
