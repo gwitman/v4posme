@@ -212,7 +212,7 @@ class app_purchase_report extends _BaseController {
 				$query			= "CALL pr_purchase_get_report_purchase_taller(?,?,?,?,?,?);";
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$userID,$tocken,$companyID,$employerListID, $startOn,$endOn ]
+					[$userID,$tocken,$companyID,$employerListID, $startOn,$endOn." 23:59:59" ]
 				);			
 				
 				if(isset($objData))
