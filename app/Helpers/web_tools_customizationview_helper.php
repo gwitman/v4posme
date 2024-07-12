@@ -535,7 +535,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 			}
 		});
 		
-		
+        strtolower('pizza_laus_app_invoice_billing_divTxtCedulaBeneficiario')	 									=> "Dirección",
 		
 		
 		",	

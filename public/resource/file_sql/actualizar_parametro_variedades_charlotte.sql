@@ -600,7 +600,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormal80mm" 
+	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormal" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_URL_PRINTER";## URLs PARA LA IMPRESION DE FACTURA 
@@ -757,17 +757,8 @@ WHERE
 
 
 
-/*tipo de cambio de dolares a cordoba*/
 update tb_exchange_rate set 
 	ratio = 36 
 where 
-	currencyID = 2
-	and targetCurrencyID = 1; 
-	
-	
-/*tipo de cambio de dolares a cordoba*/
-update tb_exchange_rate set 
-	ratio = 0.027777 
-where 
-	currencyID = 1
-	and targetCurrencyID = 2; 
+	currencyID = 2 
+	and targetCurrencyID = 1;
