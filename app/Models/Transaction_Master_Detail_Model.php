@@ -614,7 +614,7 @@ class Transaction_Master_Detail_Model extends Model  {
 							LENGTH(REPLACE(cus.identification, '[^a-zA-Z0-9]', '')) = 14 and 
 							LENGTH(REPLACE(cus.phoneNumber, '[^a-zA-Z0-9]', '')) = 8 and 
 							tm.createdOn <= DATE_SUB(CURDATE(), INTERVAL 229 DAY) and 
-							tm.createdOn >= DATE_SUB(CURDATE(), INTERVAL 331 DAY) 
+							tm.createdOn >= DATE_SUB(CURDATE(), INTERVAL 228 DAY) 
 							
 					) tx
 			";
