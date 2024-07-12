@@ -3,3 +3,9 @@ writable/*
 public/resource/file_company/company_2/
 app/Libraries/core_web_qr/cache/*
 app/Libraries/core_web_qr/temp/*
+.idea/.gitignore
+.idea/modules.xml
+.idea/php.xml
+.idea/phpunit.xml
+.idea/v4posme.iml
+.idea/vcs.xml
