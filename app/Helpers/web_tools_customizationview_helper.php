@@ -716,7 +716,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('pizza_laus_app_invoice_billing_panelResumenFactura')	 										=> "hidden",		
 		strtolower('pizza_laus_app_invoice_billing_rowOptionPaymentExtras')	 										=> "hidden",
 		strtolower('pizza_laus_app_invoice_billing_panelLabelSumaryAlternativo')	 								=> "",
-		
+		strtolower('pizza_laus_app_invoice_billing_divTxtCedulaBeneficiario')	 									=> "Dirección",
 		
 		
 		strtolower('pizza_laus_app_invoice_billing_divTraslateElement') 											=> "

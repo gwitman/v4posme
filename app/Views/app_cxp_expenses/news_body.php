@@ -178,18 +178,49 @@
 																</select>
 															</div>
 														</div>
-														
+
+                                                    <div class="form-group">
+                                                        <label class="col-lg-4 control-label" for="txtClassID">Clasificación</label>
+                                                        <div class="col-lg-8">
+                                                            <select name="txtClassID" id="txtClassID" class="select2">
+                                                                <?php
+                                                                $counter = 0;
+                                                                if($objListCatalogItemClasificacion)
+                                                                    foreach($objListCatalogItemClasificacion as $ws){
+                                                                        if($counter == 0)
+                                                                            echo "<option value='".$ws->catalogItemID."' selected >".$ws->display."</option>";
+                                                                        else
+                                                                            echo "<option value='".$ws->catalogItemID."' >".$ws->display."</option>";
+
+                                                                        $counter++;
+
+                                                                    }
+                                                                ?>
+                                                            </select>
+                                                        </div>
+                                                    </div>
 														
 														<div class="form-group">
 																<label class="col-lg-4 control-label" for="normal">Monto</label>
 																<div class="col-lg-8">
 																	<input type="hidden" name="txtDetailTransactionDetailID" value="0">
-																	<input class="form-control"  type="text"  name="txtDetailAmount" id="txtDetailAmount" value="0">												
-																</div>
+                                                                    <input class="form-control"  type="text"  name="txtDetailAmount" id="txtDetailAmount" value="0">
+                                                                </div>
 														</div>
-														
-														
 
+                                                    <div class="form-group">
+                                                        <label class="col-lg-4 control-label" for="txtTransactionMasterTax1">IVA</label>
+                                                        <div class="col-lg-8">
+                                                            <input class="form-control"  type="text"  name="txtTransactionMasterTax1" id="txtTransactionMasterTax1" value="0">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="col-lg-4 control-label" for="txtTransactionMasterTax2">Total</label>
+                                                        <div class="col-lg-8">
+                                                            <input class="form-control"  type="text"  name="txtTransactionMasterTax2" id="txtTransactionMasterTax2" value="0">
+                                                        </div>
+                                                    </div>
 														
 												</div>
 											</div>

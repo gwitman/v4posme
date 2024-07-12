@@ -79,7 +79,7 @@ class app_cxp_expenses extends _BaseController {
 			$objPublicCatalogTipoGastos 						= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_accounting_expenses.tipos_gastos")->where("isActive",1)->find();			
 			$objPublicCatalogCategoriaGastos 					= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_accounting_expenses.categoria_gastos")->where("isActive",1)->find();
 			$dataView["objListCatalogoTipoGastos"]				= $this->Public_Catalog_Detail_Model->asObject()->where("publicCatalogID",$objPublicCatalogTipoGastos[0]->publicCatalogID)->where( "isActive",1)->findAll();
-			
+            $dataView["objListCatalogItemClasificacion"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_accounting_expenses","classID",$companyID);
 			
 			$dataView["objTipoGasto"]							= $this->Public_Catalog_Detail_Model->
 																	asObject()->
@@ -258,9 +258,11 @@ class app_cxp_expenses extends _BaseController {
 			//$objTMNew["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtCustomerCreditLineID");//--fin peticion get o post
 			//$objTMNew["descriptionReference"] 		= "reference1:input,reference2:input,reference3:Gestor de Cobro,reference4:Linea de credito del Cliente";
 			$objTMNew["statusID"] 						= /*inicio get post*/ $this->request->getPost("txtStatusID");
-			$objTMNew["amount"] 						= /*inicio get post*/ $this->request->getPost("txtDetailAmount");	
-			
-			
+			$objTMNew["amount"] 						= /*inicio get post*/ $this->request->getPost("txtDetailAmount");
+            $objTMNew["tax1"] 						    = helper_StringToNumber(/*inicio get post*/ $this->request->getPost('txtTransactionMasterTax1'));
+            $objTMNew["tax2"] 						    = helper_StringToNumber(/*inicio get post*/ $this->request->getPost('txtTransactionMasterTax2'));
+			$objTMNew['classID']                        =  $this->request->getPost('txtClassID');
+
 			$db=db_connect();
 			$db->transStart();
 			
@@ -348,9 +350,11 @@ class app_cxp_expenses extends _BaseController {
 			$objTM["reference4"] 					= '';
 			$objTM["statusID"] 						= /*inicio get post*/ $this->request->getPost("txtStatusID");
 			$objTM["amount"] 						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost('txtDetailAmount'));
+			$objTM["tax1"] 						    = helper_StringToNumber(/*inicio get post*/ $this->request->getPost('txtTransactionMasterTax1'));
+			$objTM["tax2"] 						    = helper_StringToNumber(/*inicio get post*/ $this->request->getPost('txtTransactionMasterTax2'));
 			$objTM["isApplied"] 					= 0;
 			$objTM["journalEntryID"] 				= 0;
-			$objTM["classID"] 						= NULL;
+			$objTM["classID"] 						= $this->request->getPost('txtClassID');
 			$objTM["areaID"] 						= /*inicio get post*/ $this->request->getPost("txtAreaID");
 			$objTM["priorityID"] 					= /*inicio get post*/ $this->request->getPost("txtPriorityID");
 			$objTM["sourceWarehouseID"]				= NULL;
@@ -526,9 +530,9 @@ class app_cxp_expenses extends _BaseController {
 			{
 				throw new \Exception("CONFIGURAR EL CATALOGO DE CATEGORIA DE GASTOS tb_transaction_master_accounting_expenses.categoria_gastos");
 			}
-			
-			
-			$dataView["objListCatalogoTipoGastos"]				= $this->Public_Catalog_Detail_Model->asObject()->where("publicCatalogID",$objPublicCatalogTipoGastos[0]->publicCatalogID)->where( "isActive",1)->findAll();
+            $dataView["objListCatalogItemClasificacion"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_accounting_expenses","classID",$companyID);
+
+            $dataView["objListCatalogoTipoGastos"]				= $this->Public_Catalog_Detail_Model->asObject()->where("publicCatalogID",$objPublicCatalogTipoGastos[0]->publicCatalogID)->where( "isActive",1)->findAll();
 			$dataView["objListCatalogoCategoriaGastos"]			= $this->Public_Catalog_Detail_Model->
 																	asObject()->
 																	where("publicCatalogID",$objPublicCatalogCategoriaGastos[0]->publicCatalogID)->

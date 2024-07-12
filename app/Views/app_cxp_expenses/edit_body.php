@@ -189,10 +189,29 @@
 										</select>
 									</div>
 								</div>
-								
-								
-								
-								
+
+
+
+                                <div class="form-group">
+                                    <label class="col-lg-4 control-label" for="txtClassID">Clasificación</label>
+                                    <div class="col-lg-8">
+                                        <select name="txtClassID" id="txtClassID" class="select2">
+                                            <?php
+                                            $counter = 0;
+                                            if($objListCatalogItemClasificacion)
+                                                foreach($objListCatalogItemClasificacion as $ws){
+                                                    if($ws->catalogItemID==$objTransactionMaster->classID)
+                                                        echo "<option value='".$ws->catalogItemID."' selected >".$ws->display."</option>";
+                                                    else
+                                                        echo "<option value='".$ws->catalogItemID."' >".$ws->display."</option>";
+
+                                                    $counter++;
+
+                                                }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
 								
 								<div class="form-group">
 										<label class="col-lg-4 control-label" for="normal">Monto</label>
@@ -200,8 +219,20 @@
 											<input class="form-control"  type="text"  name="txtDetailAmount" id="txtDetailAmount" value="<?php echo sprintf("%01.2f",$objTransactionMaster->amount); ?>">
 										</div>
 								</div>
-								
-								
+
+                                <div class="form-group">
+                                    <label class="col-lg-4 control-label" for="txtTransactionMasterTax1">IVA</label>
+                                    <div class="col-lg-8">
+                                        <input class="form-control"  type="text"  name="txtTransactionMasterTax1" id="txtTransactionMasterTax1" value="<?= sprintf("%01.2f",$objTransactionMaster->tax1)?>">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-lg-4 control-label" for="txtTransactionMasterTax2">Total</label>
+                                    <div class="col-lg-8">
+                                        <input class="form-control"  type="text"  name="txtTransactionMasterTax2" id="txtTransactionMasterTax2" value="<?= sprintf("%01.2f",$objTransactionMaster->tax2)?>">
+                                    </div>
+                                </div>
 								
 
 								
