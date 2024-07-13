@@ -1,4 +1,4 @@
-set @nameCompany        := 'NEG_HERNANDEZ';
+set @nameCompany        := 'CONVIERTEN';
 set @domainDestino 			:= CONCAT('@',LOWER( @nameCompany));
 
 
