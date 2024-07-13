@@ -322,6 +322,16 @@ class core_web_printer_direct {
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\n".$dataSetValores["objCompany"]->address);
 		$this->printer->setTextSize(2, 1);
+		$this->printer->text("\n****************************.");
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nDirección de entrega.");
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\n".$dataSetValores["objTransactionMasterInfo"]->referenceClientIdentifier);
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nNo Telefono cliente.");
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\n".$dataSetValores["objTransactionMaster"]->numberPhone);
+		$this->printer->setTextSize(2, 1);
 		$this->printer->feed(10);
 		//$this->printer->text("Hola mundo\n\nParzibyte.me\n\nNo olvides suscribirte");
 		/*
