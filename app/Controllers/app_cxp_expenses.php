@@ -52,8 +52,7 @@ class app_cxp_expenses extends _BaseController {
 			$objComponentTransactionShare	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_accounting_expenses");
 			if(!$objComponentTransactionShare)
 			throw new \Exception("EL COMPONENTE 'tb_transaction_master_accounting_expenses' NO EXISTE...");
-		
-			
+
 			$objCurrency						= $this->core_web_currency->getCurrencyDefault($companyID);
 			$targetCurrency						= $this->core_web_currency->getCurrencyExternal($companyID);			
 			$objListCurrency					= $this->Company_Currency_Model->getByCompany($companyID);

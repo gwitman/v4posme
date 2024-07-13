@@ -13,8 +13,12 @@ class app_mobile_api extends _BaseController {
 			$objUser		= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname,$password);
 			$companyID  	= $objUser["user"]->companyID;
 			$userID		 	= $objUser["user"]->userID;
-			$objCompany		= $objUser["company"];			
-			$objData		= /*inicio get post*/ $this->request->getPost("txtData");
+			$objCompany		= $objUser["company"];
+			
+			$objListCustomerSource					= /*inicio get post*/ $this->request->getPost("txtObjListCustomer");
+			$objListItemsSource						= /*inicio get post*/ $this->request->getPost("txtObjListItems");
+			$objListTransactionMasterSource			= /*inicio get post*/ $this->request->getPost("txtObjListTransactionMaster");
+			$objListTransactionMasterDetialSource 	= /*inicio get post*/ $this->request->getPost("txtObjListTransactionMasterDetail");			
 			
 			return $this->response->setJSON(array(
 				'error'   							=> false,
