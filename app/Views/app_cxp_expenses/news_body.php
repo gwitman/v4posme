@@ -218,7 +218,7 @@
                                                     <div class="form-group">
                                                         <label class="col-lg-4 control-label" for="txtTransactionMasterTax2">Total</label>
                                                         <div class="col-lg-8">
-                                                            <input class="form-control"  type="text"  name="txtTransactionMasterTax2" id="txtTransactionMasterTax2" value="0">
+                                                            <input class="form-control" readonly  type="text"  name="txtTransactionMasterTax2" id="txtTransactionMasterTax2" value="0">
                                                         </div>
                                                     </div>
 														
