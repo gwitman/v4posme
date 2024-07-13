@@ -195,7 +195,7 @@
 							<td colspan="4">______________________________</td>
 						</tr>
 						<tr>
-							<td colspan="4"><?php echo $objPropietaryName->value; ?></td>
+							<td colspan="4">Lic. Julissa Casco</td>
 							<td colspan="4"><?php echo $objFirstDetail["legalName"]; ?></td>
 						</tr>
 						<tr>
@@ -211,7 +211,7 @@
 					<tbody>
 						<tr>
 							<td colspan="6">
-								<span style="color: red;font-weight: bold;font-style: inherit;font-size: initial;"><?php echo $objParameterBank->value; ?></span><br/>								
+								<span style="color: red;font-weight: bold;font-style: inherit;font-size: initial;"><!--<?php echo $objParameterBank->value; ?>--></span><br/>								
 								<span style="color: blue;font-weight: bold;font-style: inherit;font-size: initial;"><?php echo date("Y-m-d H:i:s");  ?> <?php echo $objFirmaEncription; ?></span><br/>
 							</td>
 						</tr>
