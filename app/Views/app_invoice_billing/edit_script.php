@@ -274,18 +274,18 @@
 	});
 	
 
-	//Traking
+	//Pago
 	$(document).on("click","#btnOptionPago",function(){		
 		 $("#mySidebar").css("width","100%");
 		 
 	});				
 	$(document).on("click","#btnRollbackPayment",function(){
 		var sidebar = $("#mySidebar");		
-		sidebar.css("width", "0");
-		
+		sidebar.css("width", "0");		
 		 
 	});
-
+	
+	//Detalle de factura
 	$(document).on("click","#btnVeDetalleFactura",function(){		
 		 $("#mySidebarFactura").css("width","100%");
 		 
@@ -295,6 +295,22 @@
 		sidebar.css("width", "0");
 	});
 	
+	//Zona
+	$(document).on("click","#btnShowZona",function(){		
+		 $("#mySidebarZona").css("width","100%");
+	});				
+	$(document).on("click","#btnRollbackZona",function(){
+		var sidebar = $("#mySidebarZona");		
+		sidebar.css("width", "0");
+	});
+	//Mesa
+	$(document).on("click","#btnShowMesa",function(){		
+		 $("#mySidebarMesa").css("width","100%");
+	});				
+	$(document).on("click","#btnRollbackMesa",function(){
+		var sidebar = $("#mySidebarMesa");		
+		sidebar.css("width", "0");
+	});
 
 
 	$(document).on("keypress",'#txtReceiptAmount', function(e) {	
@@ -1168,6 +1184,27 @@
 		{
 			$("#tb_transaction_master_detail td").css("display","block");
 		}
+		
+	}
+	
+	function fnSelectCellZone(cell) {		
+		var catalogItemIDZone = $(cell).data("value");
+		
+		$(".custom-table-zalones").find("td").removeClass("selected");
+		$(cell).addClass("selected");
+		$("#txtZoneID").val( catalogItemIDZone );
+		$("#txtZoneID").select2();
+		$(".custom-table-mesas").find("td").addClass("hidden");
+		$(".custom-table-mesas").find('td[data-parent="'+catalogItemIDZone+'"]').removeClass("hidden");
+		
+	}
+	
+	
+	function fnSelectCellMesa(cell) {		
+		$(".custom-table-mesas").find("td").removeClass("selected");
+		$(cell).addClass("selected");
+		$("#txtMesaID").val( $(cell).data("value") );
+		$("#txtMesaID").select2();
 		
 	}
 

@@ -23,6 +23,85 @@
 </style>
 
 
+<style>
+	.custom-table-zalones td {
+		border: 1px solid #dee2e6;
+		border-radius: 8px;
+		background-size: cover;
+		background-position: center;
+		cursor: pointer;
+		height: 150px;
+		width: 150px;
+		position: relative;
+		
+	
+		
+		
+	}
+	.custom-table-zalones td:hover {
+		border-color: #007bff;
+	}
+	.custom-table-zalones .overlay {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		background-color: rgba(0, 0, 0, 0.5);
+		color: white;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		opacity: 0;
+		transition: opacity 0.3s;
+	}
+	.custom-table-zalones td:hover .overlay {
+		opacity: 1;
+	}
+	.custom-table-zalones .selected {
+		border-color: #ff0000 !important;
+		border-width: 5px !important;
+	}
+</style>
+
+
+
+<style>
+	.custom-table-mesas td {
+		border: 1px solid #dee2e6;
+		border-radius: 8px;
+		background-size: cover;
+		background-position: center;
+		cursor: pointer;
+		height: 150px;
+		width: 150px;
+		position: relative;
+	}
+	.custom-table-mesas td:hover {
+		border-color: #007bff;
+	}
+	.custom-table-mesas .overlay {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		background-color: rgba(0, 0, 0, 0.5);
+		color: white;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		opacity: 0;
+		transition: opacity 0.3s;
+	}
+	.custom-table-mesas td:hover .overlay {
+		opacity: 1;
+	}
+	.custom-table-mesas .selected {
+		border-color: #ff0000 !important;
+		border-width: 5px !important;
+	}
+</style>
 
 <div 
 	class="isloading-overlay"
@@ -246,6 +325,7 @@
 								<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divTxtZone",""); ?>" id="divZone"  >
 									<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_invoice_billing","divLabelZone","Zona"); ?></label>
 									<div class="col-lg-8">
+									
 										<select name="txtZoneID" id="txtZoneID" class="select2">
 												<option></option>																
 												<?php
@@ -260,6 +340,19 @@
 												}
 												?>
 										</select>
+										
+										<?php 
+										if($objParameterEsResrarante == "true")
+										{
+											?>
+											<a href="#" class="btn btn-flat btn-info btn-block btn-comando-showsona" id="btnShowZona">
+												<i class="icon16 i-checkmark-4"></i> Zona
+											</a>
+											<?php 
+										}
+										?>
+										
+										
 									</div>
 								</div>
 								
@@ -366,6 +459,20 @@
 												}
 												?>
 										</select>
+										
+										
+										<?php 
+										if($objParameterEsResrarante == "true")
+										{
+											?>
+											<a href="#" class="btn btn-flat btn-info btn-block btn-comando-showmesa" id="btnShowMesa">
+												<i class="icon16 i-checkmark-4"></i> Mesa
+											</a>
+											<?php 
+										}
+										?>
+										
+										
 									</div>
 								</div>
 								
@@ -1017,6 +1124,90 @@
 			</div>
 
 
+			<!-- Barra Lateral Zona-->
+			<div id="mySidebarZona" class="sidebar" style="background-color:white">
+			  <div class="sidebar-content"> 
+				<div id="siderbar_content_right_zona">
+				</div>
+				
+				<div class="row" id="divPanelFacturaSideZona" >			
+					<div class="container mt-5">
+						<table class="table custom-table-zalones">
+							<tbody>
+								<?php foreach ($objListZone as $index => $item): ?>
+									<?php if ($index % 3 == 0): ?>
+										<tr>
+									<?php endif; ?>
+									<td style="background-image: url('<?php echo $item->reference1; ?>');" onclick="fnSelectCellZone(this)" data-value="<?php echo $item->catalogItemID; ?>"> 
+										<div class="overlay"> 
+											<span class="badge badge-success" ><?php echo $item->display; ?></span>
+										</div>
+									</td>
+									<?php if ($index % 3 == 2): ?>
+										</tr>
+									<?php endif; ?>
+								<?php endforeach; ?>
+								<?php if (count($objListZone) % 3 != 0): ?>
+									</tr>
+								<?php endif; ?>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				
+				</br>
+				
+				
+				<div class="row" id="divPanelFacturaZona" >
+					<div class="col col-lg-12">
+						<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackZona"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
+					</div>	
+				</div>
+			  </div>
+			</div>
+			
+			
+			<!-- Barra Lateral Mesa-->
+			<div id="mySidebarMesa" class="sidebar" style="background-color:white">
+			  <div class="sidebar-content"> 
+				<div id="siderbar_content_right_mesa">
+				</div>
+				
+				<div class="row" id="divPanelFacturaSideMesa" >				
+					<div class="container mt-5">
+						<table class="table custom-table-mesas">
+							<tbody>
+								<?php foreach ($objListMesa as $index => $item): ?>
+									<?php if ($index % 3 == 0): ?>
+										<tr>
+									<?php endif; ?>
+									<td style="background-image: url('<?php echo $item->reference1; ?>');" onclick="fnSelectCellMesa(this)" data-value="<?php echo $item->catalogItemID; ?>" data-parent="<?php echo $item->parentCatalogItemID; ?>" > 
+										<div class="overlay"> 
+											<span class="badge badge-success" ><?php echo $item->display; ?></span>
+										</div>
+									</td>
+									<?php if ($index % 3 == 2): ?>
+										</tr>
+									<?php endif; ?>
+								<?php endforeach; ?>
+								<?php if (count($objListMesa) % 3 != 0): ?>
+									</tr>
+								<?php endif; ?>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				
+				</br>
+				
+				
+				<div class="row" id="divPanelFacturaMesa" >
+					<div class="col col-lg-12">
+						<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackMesa"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
+					</div>	
+				</div>
+			  </div>
+			</div>
 			
 			
 			
