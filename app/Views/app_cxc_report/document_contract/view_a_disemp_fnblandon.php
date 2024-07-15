@@ -128,12 +128,7 @@
 <table/>
 
 
-<p style="margin-top:0pt;  text-align:justify; margin-bottom:0pt;  font-size:10pt;">
-	<span style="font-family:'Arial Black';">&nbsp;</span>
-</p>
-<p style="margin-top:0pt;  text-align:justify; margin-bottom:0pt;  font-size:10pt;">
-	<span style="font-family:'Arial Black';">&nbsp;</span>
-</p>
+
 <p style="margin-top:0pt;  text-align:justify; margin-bottom:0pt;  font-size:10pt;">
 	<span style="font-family:'Arial Black';">BENEFICIARIO EN CASO DE FALLECIMIENTO DE EL CONTRATANTE</span>
 </p>
@@ -233,9 +228,7 @@
 	<span style="font-family:'Times New Roman';">Esta venta de crédito de servicio funerario entra en vigencia una vez que el 
 	cliente haya cancelado al menos el 50 % del valor del contrato.</span>
 </p>
-<p style="margin-top:14pt; margin-bottom:14pt; line-height:normal;">
-	<span style="font-family:'Times New Roman';">&nbsp;</span>
-</p>
+
 <p style="margin-top:14pt; margin-bottom:14pt; line-height:normal; font-size:12pt;">
 	<strong>
 		<span style="font-family:'Times New Roman';">4. Valor Nominal:</span>
@@ -339,9 +332,7 @@
 	<span style="font-family:'Times New Roman';">&nbsp;&nbsp;</span>
 	<span style="font-family:'Times New Roman';">la cl&aacute;usula n&uacute;mero 6 de este contrato.</span>
 </p>
-<p style="margin-top:14pt; margin-bottom:14pt; text-align:justify; line-height:normal;">
-	<span style="font-family:'Times New Roman';">&nbsp;</span>
-</p>
+
 <p style="margin-top:14pt; margin-bottom:14pt; text-align:justify; line-height:normal; font-size:12pt;">
 	<strong>
 		<span style="font-family:'Times New Roman';">9. Excepci&oacute;n de obligaci&oacute;n.</span>
@@ -361,9 +352,7 @@
 	<span style="font-family:'Times New Roman';">LA FUNERARIA se compromete a hacer lo humanamente posible 
 	para cumplir sus obligaciones si las condiciones lo permiten.</span>
 </p>
-<p style="margin-top:14pt; margin-bottom:14pt; text-align:justify; line-height:normal;">
-	<span style="font-family:'Times New Roman';">&nbsp;</span>
-</p>
+
 <p style="margin-top:14pt; margin-bottom:14pt; text-align:justify; line-height:normal; font-size:12pt;">
 	<strong>
 		<span style="font-family:'Times New Roman';">10. Anulaci&oacute;n.</span>
@@ -380,7 +369,7 @@
 	<strong>
 		<span style="font-family:'Times New Roman';">11. Rehabilitaci&oacute;n</span>
 	</strong>
-	<span style="font-family:'Times New Roman';">:&nbsp;</span>
+	
 </p>
 <p style="margin-top:14pt; margin-bottom:14pt; text-align:justify; line-height:normal;">
 	<span style="font-family:'Times New Roman';">EL CONTRATANTE</span>
@@ -390,11 +379,7 @@
 	las cuotas morosas. En todo caso FUNERARIA UN ENCUENTRO CON DIOS se reserva el derecho 
 	de aprobar o negar la rehabilitaci&oacute;n del contrato.</span>
 </p>
-<p style="margin-top:14pt; margin-bottom:14pt; text-align:justify; line-height:normal;">
-	<strong>
-		<span style="font-family:'Times New Roman';">&nbsp;</span>
-	</strong>
-</p>
+
 <p style="margin-top:14pt; margin-bottom:14pt; text-align:justify; line-height:normal; font-size:12pt;">
 	<strong>
 		<span style="font-family:'Times New Roman';">12. El &aacute;rea de cobertura.</span>
@@ -408,9 +393,7 @@
 	el valor de distancia seg&uacute;n lo indicado en la tabla existente de 
 	funeraria un encuentro con Dios.</span>
 </p>
-<p style="margin-top:14pt; margin-bottom:14pt; text-align:justify; line-height:normal;">
-	<span style="font-family:'Times New Roman';">&nbsp;</span>
-</p>
+
 <p style="margin-top:14pt; margin-bottom:14pt; text-align:justify; line-height:normal; font-size:12pt;">
 	<strong>
 		<span style="font-family:'Times New Roman';">13. Aceptaci&oacute;n y sometimiento:&nbsp;</span>
@@ -425,9 +408,7 @@
 	convienen en dilucidar cualquier controversia que pueda dar esta venta de cr&eacute;dito de 
 	servicios funerarios en los tribunales de la capital de la Rep&uacute;blica de Nicaragua.</span>
 </p>
-<p style="margin-top:14pt; margin-bottom:14pt; text-align:justify; line-height:normal; font-size:12pt;">
-	<span style="font-family:'Times New Roman';">&nbsp;</span>
-</p>
+
 <p style="margin-top:14pt; margin-bottom:14pt; text-align:justify; line-height:normal; font-size:12pt;">
 	<strong>
 		<span style="font-family:'Times New Roman';">Los contratantes habiendo le&iacute;do y aceptado 
@@ -439,16 +420,8 @@
 		<?php echo helper_DateToSpanish($objFirstDetail["fechActual"],"Y"); ?>.</span>
 	</strong>
 </p>
-<p style="margin-top:14pt; margin-bottom:14pt; line-height:normal; font-size:12pt;">
-	<strong>
-		<span style="font-family:'Times New Roman';">&nbsp;&nbsp;&nbsp;</span>
-	</strong>
-</p>
-<p style="margin-top:14pt; margin-bottom:14pt; text-align:center; line-height:normal; font-size:12pt;">
-	<strong>
-		<span style="font-family:'Times New Roman';">&nbsp;</span>
-	</strong>
-</p>
+
+
 <p style="margin-top:14pt; margin-bottom:14pt; text-align:center; line-height:normal; font-size:12pt;">
 	<strong>
 		<span style="font-family:'Times New Roman';">____________________________</span>
