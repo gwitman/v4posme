@@ -5,6 +5,35 @@
 /******************************************************************/	
 
 
+
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_PRINT_BY_INVOICE";## Imprimir por cada factura
+	
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_FROM_SERVER";## Impresion en impresora local con datos del servidor 
+	
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "http://localhost/posmev4/" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_SERVER_PATH";## URL DE servidor de impresion
+	
+	
+	
+	
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "true" 
 WHERE 
@@ -839,7 +868,7 @@ WHERE
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_BAR";## Nombre de la impresora de bar
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewPrinterDirectBar80mmPizzaLaus" 
+	tb_company_parameter.value = "app_invoice_billing/viewPrinterDirectBar80mmCafeRetorno" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_URL_BAR";## Url para imprimir comanda de bar
@@ -1112,24 +1141,14 @@ WHERE
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_AUTOAPPLY_CASH";## Auto aplicar las facturas de contados 
 	
-UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
-WHERE 
-	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "INVOICE_PRINT_BY_INVOICE";## Imprimir por cada factura
+
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Barra" 
+	tb_company_parameter.value = "POS-80-Series" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT";## Nombre de la impresora por defecto 	
 
-
-UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
-WHERE 
-	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_FROM_SERVER";## Impresion en impresora local con datos del servidor 
 
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
@@ -1139,18 +1158,11 @@ WHERE
 	tb_parameter.name = "INVOICE_URL_PRINTER";## URLs PARA LA IMPRESION DE FACTURA 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewPrinterDirectFactura80mmPizzaLaus" 
+	tb_company_parameter.value = "app_invoice_billing/viewPrinterDirectFactura80mmCafeRetorno" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_URL";## Urls para imprimir el recibo directamente en la impresora, mejor dicho imprimir la factura 
 
-UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "http://localhost/posmev4/" 
-WHERE 
-	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_SERVER_PATH";## URL DE servidor de impresion
-	
-			
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "1000" 
 WHERE 

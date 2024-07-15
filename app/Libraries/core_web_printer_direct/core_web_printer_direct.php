@@ -632,6 +632,155 @@ class core_web_printer_direct {
 		$this->printer->close();
     }
 	
+	function executePrinter80mmCafeRetorno($dataSetValores)
+	{    
+		echo print_r($dataSetValores,true);
+		$this->printer->setJustification(Printer::JUSTIFY_CENTER);
+		$pathImg = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-logo-micro-finanza.png';
+		echo $pathImg;
+
+		//--wgonzalez
+		//--posme
+		//--cambio al momento de cambiar la version de code integer 4.1
+		//-core_web_printer_direct-77
+		//referencia de modificaciones
+		//$logo = EscposImage::load($pathImg, false);
+		//$this->printer->bitImage($logo,1);
+		
+		//en formato de $this->printer->setTextSize(1, 1);
+		//cada linea tiene 48 caracteres
+
+		//en formato de $this->printer->setTextSize(2, 1);
+		//cada linea tiene 24 caracteres
+
+		/*
+		Imprimimos un mensaje. Podemos usar
+		el salto de línea o llamar muchas
+		veces a $printer->text()
+		*/
+
+		$this->printer->feed();
+		$this->printer->setTextSize(2, 2);
+		$this->printer->text("CAFE Y HOSTEL RETORNO");
+		$this->printer->text("\n");
+		$this->printer->setTextSize(2, 1);		
+		$this->printer->text("\nRUC:".$dataSetValores["Identifier"]->value);
+		$this->printer->setTextSize(2, 1);
+		$this->printer->text("\n#".$dataSetValores["objTransactionMaster"]->transactionNumber);
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\n");
+
+		$this->printer->text("\nFecha: ".$dataSetValores["objTransactionMaster"]->createdOn);
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nEstado: ".$dataSetValores["objStage"][0]->display);
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nUsuario: ".$dataSetValores["objUser"]->nickname);
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nTipo: ".$dataSetValores["objTipo"]->name);
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nMesa: ".$dataSetValores["objMesa"]->name);
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nCliente: ".$dataSetValores["cedulaCliente"]);
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nNombre: ".$dataSetValores["nombreCliente"]);
+		$this->printer->text("\n");
+		//Detalle
+		$data1		= array();			
+		$subtotal 	= 0;
+		$iva 		= 0;
+		$total 		= 0;
+		$cambio		= 0;
+		
+		//pone en negrita
+		//$this->printer->setEmphasis(true);		
+		//$this->printer->text($this->addSpaces('Cantidad', 20) . $this->addSpaces('Precio', 20) . $this->addSpaces('Total', 8) . "\n");
+		$this->printer->setPrintLeftMargin(0);
+		$this->printer->setJustification(Printer::JUSTIFY_LEFT);
+		if($dataSetValores["objTransactionMasterDetail"]){
+			foreach($dataSetValores["objTransactionMasterDetail"] as $row)
+			{	
+
+
+				$this->printer->text($this->addSpaces(strtolower(substr($row->itemName,0,35)), 20));
+				$this->printer->text("\n");				
+				
+				$this->printer->text(						
+						$this->addSpaces(   number_format(round($row->quantity,2),2,'.',','), 10) . 						
+						$this->addSpaces($dataSetValores["prefixCurrency"].number_format(round($row->unitaryPrice,2),2,'.',','), 20). 
+						$this->addSpaces($dataSetValores["prefixCurrency"].number_format(round($row->amount,2),2,'.',','), 0)						
+				);
+				$this->printer->text("\n");
+				$iva		= $iva + ($row->tax1 * $row->quantity);
+				$total		= $total + $row->amount;
+				$subtotal	= $total - $iva;
+
+			}
+		}
+		$this->printer->text("\n");
+
+		$this->printer->setJustification(Printer::JUSTIFY_RIGHT);
+		$iva 		= number_format(round($iva,2),2,'.',',');
+		$total 		= number_format(round($total,2),2,'.',',');
+		$subtotal 	= number_format(round($subtotal,2),2,'.',',');
+		$cambio		= ($dataSetValores["objTransactionMasterInfo"]->receiptAmount - $dataSetValores["objTransactionMaster"]->amount);
+		$cambio 	= number_format(round($cambio,2),2,'.',',');
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nTotal: ".$dataSetValores["prefixCurrency"].$total) ;
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nCambio: ".$dataSetValores["prefixCurrency"].$cambio);
+		$this->printer->text("\n");
+		$this->printer->setJustification(Printer::JUSTIFY_CENTER);
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nGracias por su compra.");
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nContamos con servicio a domicilio.");
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\n****************************.");
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\n".$dataSetValores["objParameterPhoneProperty"]->value);
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\n".$dataSetValores["objCompany"]->address);
+		$this->printer->setTextSize(2, 1);
+		$this->printer->text("\n****************************.");
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nDirección de entrega.");
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\n".$dataSetValores["objTransactionMasterInfo"]->referenceClientIdentifier);
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nNo Telefono cliente.");
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\n".$dataSetValores["objTransactionMaster"]->numberPhone);
+		$this->printer->setTextSize(2, 1);
+		$this->printer->feed(10);
+		//$this->printer->text("Hola mundo\n\nParzibyte.me\n\nNo olvides suscribirte");
+		/*
+		Hacemos que el papel salga. Es como
+		dejar muchos saltos de línea sin escribir nada
+		*/
+		//$this->printer->feed(15);
+
+		/*
+		Cortamos el papel. Si nuestra impresora
+		no tiene soporte para ello, no generará
+		ningún error
+		*/
+		$this->printer->cut();
+
+		/*
+		Por medio de la impresora mandamos un pulso.
+		Esto es útil cuando la tenemos conectada
+		por ejemplo a un cajón
+		*/
+		$this->printer->pulse();
+
+		/*
+		Para imprimir realmente, tenemos que "cerrar"
+		la conexión con la impresora. Recuerda incluir esto al final de todos los archivos
+		*/
+		$this->printer->close();
+    }
+	
+	
 	function executePrinter80mmBlueMoon($dataSetValores)
 	{    
 		echo print_r($dataSetValores,true);
