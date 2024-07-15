@@ -98,6 +98,99 @@
 </style>
 
 
+
+
+<style>
+	.custom-table-container-categorias  {
+		max-height: 400px; /* Ajusta la altura según sea necesario */
+        overflow-y: auto;
+	}
+	
+	
+	.custom-table-categorias td {
+		border: 1px solid #dee2e6;
+		border-radius: 8px;
+		background-size: cover;
+		background-position: center;
+		cursor: pointer;
+		height: 150px;
+		width: 150px;
+		position: relative;
+	}
+	.custom-table-categorias td:hover {
+		border-color: #007bff;
+	}
+	.custom-table-categorias .overlay {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		background-color: rgba(0, 0, 0, 0.5);
+		color: white;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		/*opacity: 0;*/
+		transition: opacity 0.3s;
+	}
+	.custom-table-categorias td:hover .overlay {
+		opacity: 1;
+	}
+	.custom-table-categorias .selected {
+		border-color: #ff0000 !important;
+		border-width: 5px !important;
+	}
+</style>
+
+
+
+<style>
+	.custom-table-container-inventory  {
+		max-height: 400px; /* Ajusta la altura según sea necesario */
+        overflow-y: auto;
+	}
+	
+	
+	.custom-table-inventory td {
+		border: 1px solid #dee2e6;
+		border-radius: 8px;
+		background-size: cover;
+		background-position: center;
+		cursor: pointer;
+		height: 150px;
+		width: 150px;
+		position: relative;
+	}
+	.custom-table-inventory td:hover {
+		border-color: #007bff;
+	}
+	.custom-table-inventory .overlay {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		background-color: rgba(0, 0, 0, 0.5);
+		color: white;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		/*opacity: 0;*/
+		transition: opacity 0.3s;
+	}
+	.custom-table-inventory td:hover .overlay {
+		opacity: 1;
+	}
+	.custom-table-inventory .selected {
+		border-color: #ff0000 !important;
+		border-width: 5px !important;
+	}
+</style>
+
+
+
+
 <div 
 	class="isloading-overlay"
 	id="divLoandingCustom"
@@ -1158,6 +1251,58 @@
 						<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackFactura"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
 					</div>	
 				</div>
+					
+				<div class="mt-5 custom-table-container-categorias">
+					<table class="table custom-table-categorias">
+						<tbody>
+							<?php if ($objListInventoryCategoryRestaurant != NULL) : ?>
+								<?php foreach ($objListInventoryCategoryRestaurant as $index => $item): ?>
+									<?php if ($index % 6 == 0): ?>
+										<tr>
+									<?php endif; ?>
+									<td style="/*background-image: url('<?php echo $item->name; ?>');*/" onclick="fnSelectCellCategoryInventory(this)" data-value="<?php echo $item->inventoryCategoryID; ?>" data-parent="<?php echo $item->inventoryCategoryID; ?>" > 
+										<div class="overlay"> 
+											<span class="badge badge-success"  ><?php echo $item->name; ?></span>
+										</div>
+									</td>
+									<?php if ($index % 6 == 5): ?>
+										</tr>
+									<?php endif; ?>
+								<?php endforeach; ?>
+								<?php if (count($objListInventoryCategoryRestaurant) % 6 != 0): ?>
+									</tr>
+								<?php endif; ?>
+							<?php endif; ?>
+						</tbody>
+					</table>
+				</div>
+				
+				<div class="mt-5 custom-table-container-inventory">
+					<table class="table custom-table-inventory">
+						<tbody>
+							<?php if ($objListInventoryItemsRestaurant != NULL) : ?>
+								<?php foreach ($objListInventoryItemsRestaurant as $index => $item): ?>
+									<?php if ($index % 6 == 0): ?>
+										<tr>
+									<?php endif; ?>
+									<td style="/*background-image: url('<?php echo $item["Nombre"]; ?>');*/" onclick="fnSelectCellInventory(this)" ondblclick="fnSelectDoubleCellInventory(this)" data-value="<?php echo $item["inventoryCategoryID"]; ?>" data-parent="<?php echo $item["inventoryCategoryID"]; ?>"  data-codigo="<?php echo $item["Codigo"]; ?>"  > 
+										<div class="overlay"> 
+											<span class="badge badge-success"  ><?php echo $item["Nombre"]; ?></span>
+										</div>
+									</td>
+									<?php if ($index % 6 == 5): ?>
+										</tr>
+									<?php endif; ?>
+								<?php endforeach; ?>
+								<?php if (count($objListInventoryItemsRestaurant) % 6 != 0): ?>
+									</tr>
+								<?php endif; ?>
+							<?php endif; ?>
+						</tbody>
+					</table>
+				</div>
+				
+				
 			  </div>
 			</div>
 			

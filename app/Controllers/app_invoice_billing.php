@@ -147,7 +147,8 @@ class app_invoice_billing extends _BaseController {
 			$objParameterAmortizationDuranteFactura						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE");
 			$objParameterAmortizationDuranteFactura						= $objParameterAmortizationDuranteFactura->value;			
 			$dataView["objParameterAmortizationDuranteFactura"] 		= $objParameterAmortizationDuranteFactura;
-			
+			$objParameterTypePreiceDefault								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_DEFAULT_TYPE_PRICE");
+			$objParameterTypePreiceDefault								= $objParameterTypePreiceDefault->value;
 			
 			$objParameterAlturaDelModalDeSeleccionProducto					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_ALTO_MODAL_DE_SELECCION_DE_PRODUCTO_AL_FACTURAR");
 			$objParameterAlturaDelModalDeSeleccionProducto					= $objParameterAlturaDelModalDeSeleccionProducto->value;			
@@ -286,6 +287,39 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objTransactionMasterItemConcepto"]		= $this->Company_Component_Concept_Model->get_rowByTransactionMasterID($companyID,$objComponentItem->componentID, $dataView["objTransactionMaster"]->transactionMasterID );
 			$dataView["objTransactionMasterItemSku"]			= $this->Item_Sku_Model->get_rowByTransactionMasterID($companyID, $dataView["objTransactionMaster"]->transactionMasterID );
 			$dataView["objTransactionMasterItem"]				= $this->Item_Model->get_rowByTransactionMasterID( $dataView["objTransactionMaster"]->transactionMasterID  );
+			
+			//Obtener la categoria de prodcutos y la lista de prodcutos si es restaurante
+			$dataView["objListInventoryCategoryRestaurant"]	 = NULL;
+			$dataView["objListInventoryItemsRestaurant"]	 = NULL;
+			if($objParameterEsResrarante == "true")
+			{
+				$parameterView["{companyID}"]			= $this->session->get('user')->companyID;
+				$parameterView["{currencyID}"] 			= $objCurrency->currencyID;
+				$parameterView["{warehouseID}"]			= $dataView["warehouseID"];
+				$parameterView["{listPriceID}"]			= $objListPrice->listPriceID;				
+				$parameterView["{useMobile}"]			= $this->session->get('user')->useMobile;
+				$parameterView["{fnCallback}"] 			= "";
+				$parameterView["{typePriceID}"] 		= $objParameterTypePreiceDefault;				
+				$parameterView["{iDisplayStartDB}"]		= "0";
+				$parameterView["{iDisplayLength}"]		= "10";
+				$parameterView["{sSearchDB}"]			= "";
+				$parameterView["{isWindowForm}"]		= "0";
+				
+				
+			
+			
+				$dataView["objListInventoryCategoryRestaurant"]  =  $this->Itemcategory_Model->getByCompany($companyID);
+				$dataView["objListInventoryItemsRestaurant"]	 = 	$this->core_web_view->getViewByName(
+						$this->session->get('user'),
+						$objComponentItem->componentID,
+						"SELECCIONAR_ITEM_BILLING_POPUP_INVOICE_RESTAURANT",
+						CALLERID_SEARCH,
+						null,
+						$parameterView
+				)["view_data"];
+				
+										
+			}
 			
 			
 			//Datos para imprimir la factura
@@ -2736,6 +2770,39 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objNaturalDefault"]		= $this->Natural_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
 			$dataView["objLegalDefault"]		= $this->Legal_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
 			$dataView["objEmployeeNatural"]		= $this->Natural_Model->get_rowByPK($companyID,$dataSession["user"]->branchID,$dataSession["user"]->employeeID);
+			
+			//Obtener la categoria de prodcutos y la lista de prodcutos si es restaurante
+			$dataView["objListInventoryCategoryRestaurant"]	 = NULL;
+			$dataView["objListInventoryItemsRestaurant"]	 = NULL;
+			if($objParameterEsResrarante == "true")
+			{
+				$parameterView["{companyID}"]			= $this->session->get('user')->companyID;
+				$parameterView["{currencyID}"] 			= $objCurrency->currencyID;
+				$parameterView["{warehouseID}"]			= $dataView["warehouseID"];
+				$parameterView["{listPriceID}"]			= $objListPrice->listPriceID;				
+				$parameterView["{useMobile}"]			= $this->session->get('user')->useMobile;
+				$parameterView["{fnCallback}"] 			= "";
+				$parameterView["{typePriceID}"] 		= $objParameterTypePreiceDefault;				
+				$parameterView["{iDisplayStartDB}"]		= "0";
+				$parameterView["{iDisplayLength}"]		= "10";
+				$parameterView["{sSearchDB}"]			= "";
+				$parameterView["{isWindowForm}"]		= "0";
+				
+				
+			
+			
+				$dataView["objListInventoryCategoryRestaurant"]  =  $this->Itemcategory_Model->getByCompany($companyID);
+				$dataView["objListInventoryItemsRestaurant"]	 = 	$this->core_web_view->getViewByName(
+						$this->session->get('user'),
+						$objComponentItem->componentID,
+						"SELECCIONAR_ITEM_BILLING_POPUP_INVOICE_RESTAURANT",
+						CALLERID_SEARCH,
+						null,
+						$parameterView
+				)["view_data"];
+				
+										
+			}
 			
 			
 			//Obtener la linea de credito del cliente por defecto

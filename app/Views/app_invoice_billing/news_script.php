@@ -409,12 +409,8 @@
 			}
 			
 		);
-		 
-		 
-		 
 		
 		
-		 
 	});
 	
 	//Buscar Factura 
@@ -1083,6 +1079,123 @@
 		$("#txtMesaID").val( $(cell).data("value") );
 		$("#txtMesaID").select2();
 		
+	}
+	
+	function fnSelectCellCategoryInventory(cell) {		
+		var inventoryCategoryID = $(cell).data("value");
+		
+		$(".custom-table-categorias").find("td").removeClass("selected");
+		$(cell).addClass("selected");
+		
+		$(".custom-table-inventory").find("td").addClass("hidden");
+		$(".custom-table-inventory").find('td[data-parent="'+inventoryCategoryID+'"]').removeClass("hidden");		
+		
+	}
+	
+	function fnSelectCellInventory(cell) {		
+		$(".custom-table-inventory").find("td").removeClass("selected");
+		$(cell).addClass("selected");
+	}
+	
+	function fnSelectDoubleCellInventory(cell) {		
+		$(".custom-table-inventory").find("td").removeClass("selected");
+		$(cell).addClass("selected");
+		var codigoProducto = $(cell).data("codigo");		
+		
+		
+		
+		//buscar el producto y agregar por codigo de barra
+		obtenerDataDBProductoArray(
+			"objListaProductosX001",
+			"all",
+			0,
+			"all",
+			{"codigoABuscar":""+codigoProducto+""},
+			function(e){    
+				
+				
+				//buscar el producto y agregar						
+				var codigoABuscar 	= e.codigoABuscar.toUpperCase();
+				e 					= e.all;
+				var encontrado		= false;				
+				for(var i = 0 ; i < e.length ; i++)
+				{
+					
+					if(encontrado == true)
+					{
+						i--;
+						break;
+					}
+					
+					//buscar por codigo de sistema					
+					var currencyTemp	= e[i].currencyID;
+					var currencyID 		= $("#txtCurrencyID").val();
+					
+					var warehouseIDTemp		= e[i].warehouseID;
+					var warehouseID			= $("#txtWarehouseID").val();
+					
+					if(  
+						currencyID == currencyTemp && 
+						fnDeleteCerosIzquierdos(codigoABuscar) == fnDeleteCerosIzquierdos(e[i].Codigo.replace("BITT","").replace("ITT","").toUpperCase())  && 
+						warehouseID == warehouseIDTemp
+					)
+					{
+						
+						encontrado 		= true;
+						break;
+					}
+					
+					
+					//buscar por codigo de barra
+					var listCodigTmp 	= e[i].Barra.split(",");
+					currencyTemp		= e[i].currencyID;
+					currencyID 			= $("#txtCurrencyID").val();
+					encontrado			= false;
+							
+					if(encontrado == false )
+					{
+						for(var ii = 0 ; ii < listCodigTmp.length; ii++)
+						{
+							if( 
+								fnDeleteCerosIzquierdos(listCodigTmp[ii].toUpperCase()) == fnDeleteCerosIzquierdos(codigoABuscar) && 
+								currencyID == currencyTemp  &&
+								warehouseID == warehouseIDTemp
+							)
+							{
+								
+								encontrado 		= true;
+								break;
+							}
+						}
+					}
+					
+					
+					
+				}
+				
+				if(encontrado == true)
+				{
+					
+					var sumar				= true;
+					var filterResult 		= e[i];						
+					var filterResultArray 	= [];					
+					filterResultArray[5]  	= filterResult.itemID;
+					filterResultArray[17] 	= filterResult.Codigo;
+					filterResultArray[18] 	= filterResult.Nombre;
+					filterResultArray[20] 	= filterResult.Medida;
+					filterResultArray[21] 	= filterResult.Cantidad;
+					filterResultArray[22] 	= filterResult.Precio;
+					filterResultArray[23] 	= filterResult.unitMeasureID;
+					filterResultArray[24] 	= filterResult.Descripcion;
+					filterResultArray[25] 	= filterResult.Precio2;
+					filterResultArray[26] 	= filterResult.Precio3;
+					
+					//Agregar el Item a la Fila					
+					onCompleteNewItem(filterResultArray,sumar); 
+				}
+				 
+			}
+		);	
 	}
 	
 	
