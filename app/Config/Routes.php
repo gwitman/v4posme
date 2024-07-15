@@ -1300,6 +1300,11 @@ $routes->match(['get','post'],'app_api_fingerprint/sensor_close/(:any)','app_api
 $routes->match(['get','post'],'app_api_fingerprint/sincronizar','app_api_fingerprint::sincronizar');
 $routes->match(['get','post'],'app_api_fingerprint/sincronizar/(:any)','app_api_fingerprint::sincronizar');
 
+
+$routes->match(['get','post'],'core_caching_image/get','core_caching_image::get');
+$routes->match(['get','post'],'core_caching_image/get/(:any)','core_caching_image::get');
+
+
 /*
  * --------------------------------------------------------------------
  * Additional Routing
