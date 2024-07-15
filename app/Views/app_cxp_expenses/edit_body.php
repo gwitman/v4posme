@@ -233,9 +233,7 @@
                                         <input class="form-control" readonly  type="text"  name="txtTransactionMasterTax2" id="txtTransactionMasterTax2" value="<?= sprintf("%01.2f",$objTransactionMaster->tax2)?>">
                                     </div>
                                 </div>
-								
 
-								
 						</div>
 						</div>
 					</div>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="196f761a-f9e1-40ad-bbfd-96b4a5255c4f" name="globalpro" url="http://ftp.posme.net">
+        <fileTransfer rootFolder="/posme.net/public_html/v4posme/globalpro" host="ftp.posme.net" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

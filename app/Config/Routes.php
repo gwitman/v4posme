@@ -1310,6 +1310,17 @@ $routes->match(['get','post'],'core_caching_image/get/(:any)','core_caching_imag
 
 
 /*
+ * INICIO DE DASHBOARDS ESTADISTICOS REAL STATE
+ */
+$routes->match(['get','post'],'app_stadistic_dashboards/real_state','app_stadistic_dashboards::real_state');
+$routes->match(['get','post'],'app_stadistic_dashboards/real_state/(:any)','app_stadistic_dashboards::real_state');
+$routes->match(['get','post'],'app_stadistic_dashboards/customer_realstate','app_stadistic_dashboards::customer_realstate');
+$routes->match(['get','post'],'app_stadistic_dashboards/customer_realstate/(:any)','app_stadistic_dashboards::customer_realstate');
+/*
+ * INICIO DE DASHBOARDS ESTADISTICOS REAL STATE
+ */
+
+/*
  * --------------------------------------------------------------------
  * Additional Routing
  * --------------------------------------------------------------------
