@@ -32,7 +32,7 @@
 	<span style="font-family:'Arial Black';">&nbsp;</span>
 </p>
 <p style="margin-top:0pt; margin-bottom:8pt; line-height:108%; font-size:10pt;">
-	<span style="font-family:'Arial Black';">GENERALIDADES DE EL COTRATANTE.</span>
+	<span style="font-family:'Arial Black';">GENERALIDADES DEL CONTRATANTE.</span>
 </p>
 <table style="width:100%" > 
 	<tr>
