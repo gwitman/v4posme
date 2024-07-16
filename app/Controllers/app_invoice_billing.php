@@ -301,7 +301,7 @@ class app_invoice_billing extends _BaseController {
 				$parameterView["{fnCallback}"] 			= "";
 				$parameterView["{typePriceID}"] 		= $objParameterTypePreiceDefault;				
 				$parameterView["{iDisplayStartDB}"]		= "0";
-				$parameterView["{iDisplayLength}"]		= "10";//$objParameterCantidadItemPoup;
+				$parameterView["{iDisplayLength}"]		= $objParameterCantidadItemPoup;
 				$parameterView["{sSearchDB}"]			= "";
 				$parameterView["{isWindowForm}"]		= "0";
 				
@@ -2784,7 +2784,7 @@ class app_invoice_billing extends _BaseController {
 				$parameterView["{fnCallback}"] 			= "";
 				$parameterView["{typePriceID}"] 		= $objParameterTypePreiceDefault;				
 				$parameterView["{iDisplayStartDB}"]		= "0";
-				$parameterView["{iDisplayLength}"]		= "10";//$objParameterCantidadItemPoup;
+				$parameterView["{iDisplayLength}"]		= $objParameterCantidadItemPoup;
 				$parameterView["{sSearchDB}"]			= "";
 				$parameterView["{isWindowForm}"]		= "0";
 				

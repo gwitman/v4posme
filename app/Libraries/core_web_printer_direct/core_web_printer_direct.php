@@ -647,8 +647,8 @@ class core_web_printer_direct {
 		//--cambio al momento de cambiar la version de code integer 4.1
 		//-core_web_printer_direct-77
 		//referencia de modificaciones
-		//$logo = EscposImage::load($pathImg, false);
-		//$this->printer->bitImage($logo,1);
+		$logo = EscposImage::load($pathImg, false);
+		$this->printer->bitImage($logo,1);
 		
 		//en formato de $this->printer->setTextSize(1, 1);
 		//cada linea tiene 48 caracteres
