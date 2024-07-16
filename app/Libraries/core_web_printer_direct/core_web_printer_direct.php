@@ -240,7 +240,7 @@ class core_web_printer_direct {
 		veces a $printer->text()
 		*/
 
-		$this->printer->feed();
+		//$this->printer->feed();
 		$this->printer->setTextSize(2, 2);
 		$this->printer->text($dataSetValores["objCompany"]->name);
 		$this->printer->text("\n");
@@ -248,21 +248,24 @@ class core_web_printer_direct {
 		$this->printer->text("\nRUC:".$dataSetValores["Identifier"]->value);
 		$this->printer->setTextSize(2, 1);
 		$this->printer->text("\n#".$dataSetValores["objTransactionMaster"]->transactionNumber);
-		$this->printer->setTextSize(1, 1);
+		$this->printer->setTextSize(2, 1);
 		$this->printer->text("\n");
 
-		$this->printer->text("\nFecha: ".$dataSetValores["objTransactionMaster"]->createdOn);
-		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nFec: ".$dataSetValores["objTransactionMaster"]->createdOn);
+		$this->printer->setTextSize(2, 1);
 		$this->printer->text("\nEstado: ".$dataSetValores["objStage"][0]->display);
-		$this->printer->setTextSize(1, 1);
-		$this->printer->text("\nUsuario: ".$dataSetValores["objUser"]->nickname);
-		$this->printer->setTextSize(1, 1);
+		$this->printer->setTextSize(2, 1);
+		$this->printer->text("\nUsuario: ". substr($dataSetValores["objUser"]->nickname,1,5) );
+		$this->printer->setTextSize(2, 1);
 		$this->printer->text("\nTipo: ".$dataSetValores["objTipo"]->name);
-		$this->printer->setTextSize(1, 1);
+		$this->printer->setTextSize(2, 1);
 		$this->printer->text("\nCliente: ".$dataSetValores["cedulaCliente"]);
-		$this->printer->setTextSize(1, 1);
+		$this->printer->setTextSize(2, 1);
+		$this->printer->text("\n");
 		$this->printer->text("\nNombre: ".$dataSetValores["nombreCliente"]);
 		$this->printer->text("\n");
+		$this->printer->text("\n");
+		$this->printer->text("\n\n");
 		//Detalle
 		$data1		= array();			
 		$subtotal 	= 0;
@@ -285,10 +288,10 @@ class core_web_printer_direct {
 				
 				$this->printer->text(						
 						$this->addSpaces(   number_format(round($row->quantity,2),2,'.',','), 10) . 						
-						$this->addSpaces($dataSetValores["prefixCurrency"].number_format(round($row->unitaryPrice,2),2,'.',','), 25). 
+						$this->addSpaces($dataSetValores["prefixCurrency"].number_format(round($row->unitaryPrice,2),2,'.',','), 24). 
 						$this->addSpaces($dataSetValores["prefixCurrency"].number_format(round($row->amount,2),2,'.',','), 0)						
 				);
-				$this->printer->text("\n");
+				$this->printer->text("\n\n");
 				$iva		= $iva + ($row->tax1 * $row->quantity);
 				$total		= $total + $row->amount;
 				$subtotal	= $total - $iva;
@@ -303,24 +306,24 @@ class core_web_printer_direct {
 		$subtotal 	= number_format(round($subtotal,2),2,'.',',');
 		$cambio		= ($dataSetValores["objTransactionMasterInfo"]->receiptAmount - $dataSetValores["objTransactionMaster"]->amount);
 		$cambio 	= number_format(round($cambio,2),2,'.',',');
-		$this->printer->setTextSize(1, 1);
-		$this->printer->text("\nTotal: ".$dataSetValores["prefixCurrency"].$total) ;
-		$this->printer->setTextSize(1, 1);
+		$this->printer->setTextSize(2, 1);
+		$this->printer->text("\n\nTotal: ".$dataSetValores["prefixCurrency"].$total) ;
+		$this->printer->setTextSize(2, 1);
 		$this->printer->text("\nCambio: ".$dataSetValores["prefixCurrency"].$cambio);
-		$this->printer->text("\n");
+		$this->printer->text("\n\n");
 
-		$this->printer->setTextSize(1, 1);
+		$this->printer->setTextSize(2, 1);
 		$this->printer->text("\nGracias por su compra.");
-		$this->printer->setTextSize(1, 1);
+		$this->printer->setTextSize(2, 1);
 		$this->printer->text("\nContamos con servicio a domicilio.");
-		$this->printer->setTextSize(1, 1);
-		$this->printer->text("\n****************************.");
-		$this->printer->setTextSize(1, 1);
-		$this->printer->text("\nTelefono de tienda: ".$dataSetValores["objParameterPhoneProperty"]->value);
-		$this->printer->setTextSize(1, 1);
+		$this->printer->setTextSize(2, 1);
+		$this->printer->text("\n*********************");
+		$this->printer->setTextSize(2, 1);
+		$this->printer->text("\n".$dataSetValores["objParameterPhoneProperty"]->value);
+		$this->printer->setTextSize(2, 1);
 		$this->printer->text("\n".$dataSetValores["objCompany"]->address);
-		$this->printer->setTextSize(1, 1);
-		$this->printer->text("\nSistema:+(505) 8712-5827");
+		$this->printer->setTextSize(2, 1);
+		$this->printer->text("\n\nSistema:+(505) 8712-5827");
 
 		$this->printer->setTextSize(2, 1);
 		$this->printer->feed(10);
