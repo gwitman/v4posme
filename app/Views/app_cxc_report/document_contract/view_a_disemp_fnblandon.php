@@ -36,9 +36,9 @@
 </p>
 <table style="width:100%" > 
 	<tr>
-		<td>
+		<td colspan="1">
 			<p style="margin-top:0pt;  text-align:justify; margin-bottom:0pt;  font-size:10pt;">
-				<span style="font-family:'Arial Black';">NOMBRES Y DOS APELLIDOS</span>
+				<span style="font-family:'Arial Black';">NOMBRES Y APELLIDOS</span>
 			</p>
 		</td>
 		<td colspan="3">
