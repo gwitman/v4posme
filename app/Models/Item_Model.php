@@ -289,8 +289,10 @@ class Item_Model extends Model  {
 				i.createdOn, i.isActive,i.isInvoiceQuantityZero,
 				i.isServices,i.currencyID,i.isInvoice,i.reference3,
 				unit.name as unitMeasureName,
-				replace(td.itemNameLog ,'\"','') as itemNameLog,
-				replace(td.itemNameDescriptionLog ,'\"','') as itemNameDescriptionLog
+				REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(replace(td.itemNameLog,'\"',''), '\r\n', ''), '\n\r', ''),'\n', ''),'\t','') , '?', '')  as itemNameLog,				
+				REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(replace(td.itemNameDescriptionLog,'\"',''), '\r\n', ''), '\n\r', ''),'\n', ''),'\t','') , '?', '')   as itemNameDescriptionLog
+					
+					
 				
 			");
 		$sql = $sql.sprintf(" from tb_transaction_master tm ");		

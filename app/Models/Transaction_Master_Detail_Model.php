@@ -95,7 +95,16 @@ class Transaction_Master_Detail_Model extends Model  {
 		$db 		= db_connect();
 		$builder	= $db->table("tb_transaction_master_detail");
 	    $sql = "";
-		$sql = sprintf("select w.companyID,w.branchID,w.warehouseID,w.itemID,w.quantity,w.cost,w.quantityMax,w.quantityMin,td.descriptionReference,td.exchangeRateReference,td.expirationDate,td.lote , td.typePriceID,td.skuCatalogItemID,td.skuQuantity,td.skuQuantityBySku,td.skuFormatoDescription,td.itemNameLog,td.amountCommision,td.itemNameDescriptionLog");
+		$sql = sprintf("select 
+					w.companyID,w.branchID,w.warehouseID,w.itemID,w.quantity,w.cost,w.quantityMax,
+					w.quantityMin,td.descriptionReference,td.exchangeRateReference,td.expirationDate,td.lote ,
+					td.typePriceID,td.skuCatalogItemID,td.skuQuantity,td.skuQuantityBySku,
+					td.skuFormatoDescription,
+					REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(replace(td.itemNameLog,'\"',''), '\r\n', ''), '\n\r', ''),'\n', ''),'\t','') , '?', '')  as itemNameLog,
+					td.amountCommision,
+					REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(replace(td.itemNameDescriptionLog,'\"',''), '\r\n', ''), '\n\r', ''),'\n', ''),'\t','') , '?', '')   as itemNameDescriptionLog
+						
+				");
 	    $sql = $sql.sprintf(" from tb_transaction_master tm");
 		$sql = $sql.sprintf(" inner join  tb_transaction_master_detail td on tm.companyID = td.companyID and tm.transactionID = td.transactionID and tm.transactionMasterID = td.transactionMasterID");
 		$sql = $sql.sprintf(" inner join  tb_item i on td.companyID = i.companyID and td.componentItemID = i.itemID");		
@@ -233,9 +242,9 @@ class Transaction_Master_Detail_Model extends Model  {
 						ci.name as unitMeasureName,td.descriptionReference,td.exchangeRateReference,
 						td.lote,td.typePriceID,td.skuCatalogItemID,td.skuQuantity,
 						td.skuQuantityBySku,td.skuFormatoDescription,
-						REPLACE(REPLACE(REPLACE(REPLACE(replace(td.itemNameLog,'\"',''), '\r\n', ''), '\r', ''),'\n', ''),'\t','')   as itemNameLog,
+						REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(replace(td.itemNameLog,'\"',''), '\r\n', ''), '\n\r', ''),'\n', ''),'\t','') , '?', '')  as itemNameLog,
 						td.amountCommision,
-						REPLACE(REPLACE(REPLACE(REPLACE(replace(td.itemNameDescriptionLog,'\"',''), '\r\n', ''), '\r', ''),'\n', ''),'\t','')   as itemNameDescriptionLog
+						REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(replace(td.itemNameDescriptionLog,'\"',''), '\r\n', ''), '\n\r', ''),'\n', ''),'\t','') , '?', '')   as itemNameDescriptionLog
 						
 						");
 		$sql = $sql.sprintf(" from tb_transaction_master_detail td");

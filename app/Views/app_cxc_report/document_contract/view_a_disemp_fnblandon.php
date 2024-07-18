@@ -212,7 +212,7 @@
 	</strong>
 </p>
 <p style="margin-top:14pt; margin-bottom:10pt; line-height:normal;">
-	<span style="font-family:'Times New Roman';">Contrato No <?php echo $objFirstDetail["documentNumber"]; ?></span>
+	<span style="font-family:'Times New Roman';">Contrato No <?php echo str_replace("CON","",$objFirstDetail["documentNumber"]); ?></span>
 	</br>
 	<span style="font-family:'Times New Roman';">Estilo(s) (<?php echo $objFirstDetail["productNameLog"]; ?>)</span>	
 	</br>
@@ -297,9 +297,7 @@
 	pendiente del servicio o servicios entregados para ser cancelados en un plazo comprendido entre uno (1) a 
 	doce (12) meses.</span>
 </p>
-<p style="margin-top:14pt; margin-bottom:14pt; line-height:normal;">
-	<span style="font-family:'Times New Roman';">&nbsp;</span>
-</p>
+
 <p style="margin-top:14pt; margin-bottom:14pt; line-height:normal; font-size:12pt;">
 	<strong>
 		<span style="font-family:'Times New Roman';">7. Pagare a la orden.</span>
@@ -322,8 +320,7 @@
 	<strong>
 		<span style="font-family:'Times New Roman';">8. El Beneficiario.</span>
 	</strong>
-</p>
-<p style="margin-top:14pt; margin-bottom:14pt; text-align:justify; line-height:normal;">
+	
 	<span style="font-family:'Times New Roman';">El CONTRATANTE deber&aacute; nombrar un beneficiario mayor 
 	de edad y sin l&iacute;mite de edad.</span>
 	<span style="font-family:'Times New Roman';">&nbsp;&nbsp;</span>
@@ -332,6 +329,12 @@
 	<span style="font-family:'Times New Roman';">&nbsp;&nbsp;</span>
 	<span style="font-family:'Times New Roman';">la cl&aacute;usula n&uacute;mero 6 de este contrato.</span>
 </p>
+
+
+
+
+
+
 
 <p style="margin-top:14pt; margin-bottom:14pt; text-align:justify; line-height:normal; font-size:12pt;">
 	<strong>
