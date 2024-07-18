@@ -68,7 +68,7 @@
 										</div>
 									</div>
 									
-									<div class="form-group">
+									<div class="form-group <?php echo getBehavio($company->type,"app_cxp_expenses","lblAplicado",""); ?>">
 											<label class="col-lg-4 control-label" for="normal">Aplicado</label>
 											<div class="col-lg-5">
 												<input type="checkbox" disabled   name="txtIsApplied" id="txtIsApplied" value="1" <?php if($objTransactionMaster->isApplied) echo "checked"; ?> >
