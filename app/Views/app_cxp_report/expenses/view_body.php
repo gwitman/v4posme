@@ -49,7 +49,26 @@
 													</div>													
 												</div>
 											</div>
-											
+
+                                            <div class="form-group">
+                                                <label class="col-lg-6 control-label" for="txtClassID">Clasificación</label>
+                                                <div class="col-lg-6">
+                                                    <div class="col-lg-6">
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <select name="txtClassID" id="txtClassID" class="select2">
+                                                            <option value="0">TODOS</option>
+                                                            <?php
+                                                            if($objListCatalogItemClasificacion)
+                                                                foreach($objListCatalogItemClasificacion as $ws){
+                                                                    echo "<option value='".$ws->catalogItemID."' >".$ws->display."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
 											<div class="form-group">
 												<label class="col-lg-6 control-label" for="selectFilter">Categoria</label>
 												<div class="col-lg-6"> 

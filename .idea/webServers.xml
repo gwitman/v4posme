@@ -2,6 +2,13 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
+      <webServer id="2f0be4f2-f8b0-4dd1-bc92-ff0819ae6e3e" name="Glamcus" url="http://ftp.posme.net">
+        <fileTransfer rootFolder="/posme.net/public_html/v4posme/glamcus" host="ftp.posme.net" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
       <webServer id="196f761a-f9e1-40ad-bbfd-96b4a5255c4f" name="globalpro" url="http://ftp.posme.net">
         <fileTransfer rootFolder="/posme.net/public_html/v4posme/globalpro" host="ftp.posme.net" port="21">
           <advancedOptions>
@@ -10,5 +17,14 @@
         </fileTransfer>
       </webServer>
     </option>
+    <groups>
+      <group>
+        <name>v4posme</name>
+        <servers>
+          <name value="Glamcus" />
+          <name value="globalpro" />
+        </servers>
+      </group>
+    </groups>
   </component>
 </project>

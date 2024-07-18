@@ -13,10 +13,11 @@
 							var endOn					=	$("#txtEndOn").val();
 							var txtTiposID					=	$("#txtTiposID").val();	
 							var txtCategoriaID				=	$("#txtCategoriaID").val();	
-							
+							var txtClassID				=	$("#txtClassID").val();
+
 							if(!( startOn == "" || endOn == "" ) ){
 								fnWaitOpen();
-								window.location	= "<?php echo base_url(); ?>/app_cxp_report/expenses/viewReport/true/startOn/"+startOn+"/endOn/"+endOn+"/txtTiposID/"+txtTiposID+"/txtCategoriaID/"+txtCategoriaID;
+								window.location	= "<?php echo base_url(); ?>/app_cxp_report/expenses/viewReport/true/startOn/"+startOn+"/endOn/"+endOn+"/txtTiposID/"+txtTiposID+"/txtCategoriaID/"+txtCategoriaID+"/txtClassID/"+txtClassID;
 							}
 							else{
 								fnShowNotification("Completar los Parametros","error");
