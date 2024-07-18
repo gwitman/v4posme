@@ -786,8 +786,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('cafe_hotel_retorno_core_web_language_workflowstage_billing_APLICAR')				 					=> "PAGAR",		
 		strtolower('cafe_hotel_retorno_core_web_language_workflowstage_billing_ANULADA')				 					=> "ANULADA",		
 		strtolower('cafe_hotel_retorno_app_invoice_billing_lablBotunConfiguracion')											=> "CONFIGURACION",
-		strtolower('cafe_hotel_retorno_app_invoice_billing_lablBotunVerDetalle')											=> "PRODUCTO",
-		strtolower('cafe_hotel_retorno_app_invoice_billing_divTxtMoneda') 													=> "hidden",
+		strtolower('cafe_hotel_retorno_app_invoice_billing_lablBotunVerDetalle')											=> "PRODUCTO",		
 		strtolower('cafe_hotel_retorno_app_invoice_billing_divTxtCambio') 													=> "hidden",				
 		strtolower('cafe_hotel_retorno_app_invoice_billing_divPestanaCredito') 												=> "hidden",		
 		strtolower('cafe_hotel_retorno_app_invoice_billing_divPestanaMas')	 												=> "hidden",
@@ -800,6 +799,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('cafe_hotel_retorno_app_invoice_billing_rowOptionPaymentExtras')	 										=> "hidden",
 		strtolower('cafe_hotel_retorno_app_invoice_billing_panelLabelSumaryAlternativo')	 								=> "",
 		strtolower('cafe_hotel_retorno_app_invoice_billing_divTxtCedulaBeneficiario')	 									=> "Dirección",
+		strtolower('cafe_hotel_retorno_app_invoice_billing_divTxtMoneda')	 												=> "",
 		
 		
 		strtolower('cafe_hotel_retorno_app_invoice_billing_divTraslateElement') 											=> "

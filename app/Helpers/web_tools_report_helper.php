@@ -8357,7 +8357,10 @@ function helper_reporte80mmTransactionMasterAxceso(
                        
                         <tr>
                           <td colspan='3' style='text-align:center'>
-                            Multímetro las américa, contiguo al GRAN MALL primer piso
+                            Multímetro las américa, contiguo al GRAN MALL primer piso 
+							</br>
+							<img style='width: 0.2cm;height: 0.2cm;' src='data:image/png;base64,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' />
+							7652-2699
                           </td>
                         </tr>
 						<!--
@@ -8395,7 +8398,7 @@ function helper_reporte80mmTransactionMasterAxceso(
 						
                         <tr>
                           <td colspan='3' style='text-align:center'>
-                            # ".strtoupper($objTransactionMastser->transactionNumber)."
+                            # ".strtoupper(str_replace("FAC","",$objTransactionMastser->transactionNumber))."
                           </td>
                         </tr>
                                 
@@ -8461,7 +8464,20 @@ function helper_reporte80mmTransactionMasterAxceso(
 						  <td colspan='2'>
                             ".$objCurrency->simbol."
                           </td>
-                        </tr>";
+                        </tr>
+						
+						<tr>
+							<td colspan='1'>Garantia:</td>
+							<td colspan='2'>".$objTransactionMastser->note."</td>                          
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+						
+						";
 			
 		
 						
@@ -8488,15 +8504,8 @@ function helper_reporte80mmTransactionMasterAxceso(
                         </tr>
 						-->
 						
-						<tr>
-                          <td colspan='3' style='text-align:left'>".$objTransactionMastser->note."</td>
-                        </tr>
                                 
-                         <tr>
-                          <td colspan='3' style='text-align:center'>
-                            &nbsp;
-                          </td>
-                        </tr>
+                        
                                 
                      
                                 
@@ -8546,12 +8555,14 @@ function helper_reporte80mmTransactionMasterAxceso(
                           </td>
                         </tr>
 
+						<!--
                          <tr>
                           <td colspan='3' style='text-align:center'>
                             &nbsp;
                           </td>
                         </tr>
 
+						
 						<tr>
                           <td colspan='3' style='text-align:center'>
                             1) Este producto se entrega PROBADO Y Sin Grantia
@@ -8563,6 +8574,10 @@ function helper_reporte80mmTransactionMasterAxceso(
                             &nbsp;
                           </td>
                         </tr>
+						
+						-->
+						
+						<!--
 						
 						<tr>
                           <td colspan='3' style='text-align:center'>
@@ -8576,17 +8591,11 @@ function helper_reporte80mmTransactionMasterAxceso(
                           </td>
                         </tr>
 						
+						-->
 						
                         <tr>
                           <td colspan='3' style='text-align:center'>
                             ***Gracias por su compra***
-                          </td>
-                        </tr>
-
-                      
-                        <tr>
-                          <td colspan='3' style='text-align:center' >
-                            sistema +(505) 8712-5827
                           </td>
                         </tr>
                                 
