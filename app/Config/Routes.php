@@ -913,6 +913,8 @@ $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNorm
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmBpn/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmBpn');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Miranda','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1Miranda');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Miranda/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1Miranda');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Chic','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1Chic');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Chic/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1Chic');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1AgroServicioElLabrador','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1AgroServicioElLabrador');
@@ -983,6 +985,7 @@ $routes->match(['get','post'],'app_notification/sendWhatsappGlobalProLaptopMenor
 $routes->match(['get','post'],'app_notification/sendWhatsappGlobalProLaptopMayoresA14400Frecuency11Meses','app_notification::sendWhatsappGlobalProLaptopMayoresA14400Frecuency11Meses');
 $routes->match(['get','post'],'app_notification/sendWhatsappGlobalProCumpleAnnos','app_notification::sendWhatsappGlobalProCumpleAnnos');
 $routes->match(['get','post'],'app_notification/sendEmailGlamCustCitas','app_notification::sendEmailGlamCustCitas');
+$routes->match(['get','post'],'app_notification/sendEmailGlamCustCitasFrecuency2DayBefore','app_notification::sendEmailGlamCustCitasFrecuency2DayBefore');
 $routes->match(['get','post'],'app_notification/fillTipoCambio','app_notification::fillTipoCambio');
 $routes->match(['get','post'],'app_notification/fillInventarioMinimo','app_notification::fillInventarioMinimo');
 $routes->match(['get','post'],'app_notification/fillInventarioFechaVencimiento','app_notification::fillInventarioFechaVencimiento');

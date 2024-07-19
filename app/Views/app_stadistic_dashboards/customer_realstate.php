@@ -136,23 +136,8 @@
             </div><!-- End .panel-body -->
         </div><!-- End .widget -->
     </div>
-    <div class="col-lg-6">
-        <div class="panel" style="margin-bottom:20px;">
-            <div class="panel-heading">
-                <div class="icon"><i class="icon20 i-health"></i></div>
-                <h4>Efectividad</h4>
-                <a href="#" class="minimize"></a>
-            </div><!-- End .panel-heading -->
-
-            <div class="panel-body">
-                <div id="grafico6" style="height:300px" ></div>
-            </div><!-- End .panel-body -->
-        </div><!-- End .widget -->
-    </div>
-</div>
-
-<div class="row"  >
-    <div class="col-lg-6">
+	
+	<div class="col-lg-6">
         <div class="panel" style="margin-bottom:20px;">
             <div class="panel-heading">
                 <div class="icon"><i class="icon20 i-health"></i></div>
@@ -165,38 +150,13 @@
             </div><!-- End .panel-body -->
         </div><!-- End .widget -->
     </div>
-    <div class="col-lg-6">
-        <div class="panel" style="margin-bottom:20px;">
-            <div class="panel-heading">
-                <div class="icon"><i class="icon20 i-health"></i></div>
-                <h4>Rendimiento anual de venta</h4>
-                <a href="#" class="minimize"></a>
-            </div><!-- End .panel-heading -->
-
-            <div class="panel-body">
-                <div id="grafico10" style="height:300px" ></div>
-            </div><!-- End .panel-body -->
-        </div><!-- End .widget -->
-    </div>
+	
+	
 </div>
 
-
 <div class="row"  >
-    <div class="col-lg-6">
-        <div class="panel" style="margin-bottom:20px;">
-            <div class="panel-heading">
-                <div class="icon"><i class="icon20 i-health"></i></div>
-                <h4>Rendimiento anual de enlistamiento</h4>
-                <a href="#" class="minimize"></a>
-            </div><!-- End .panel-heading -->
-
-            <div class="panel-body">
-                <div id="grafico11" style="height:300px" ></div>
-            </div><!-- End .panel-body -->
-        </div><!-- End .widget -->
-    </div>
-
-    <div class="col-lg-6">
+    
+	 <div class="col-lg-6">
         <div class="panel" style="margin-bottom:20px;">
             <div class="panel-heading">
                 <div class="icon"><i class="icon20 i-health"></i></div>
@@ -210,6 +170,14 @@
         </div><!-- End .widget -->
     </div>
 
+
+	
+</div>
+
+
+<div class="row"  >
+
+   
 
 </div>
 
@@ -247,6 +215,7 @@
 
                     var options = {
                         title: 'Fuente de contacto',
+						isStacked: 'percent',
                         colors: ['#FF5733', '#FFC300', '#FF85A2', '#FF33FF', '#33FFBD'],
                         seriesType: 'bars',
                     };
@@ -284,10 +253,12 @@
 
                     var options = {
                         title: 'Interes del cliente',
+						isStacked: 'percent',
                         colors: ['#33A1FF', '#FF3366', '#FF3333', '#33FF33', '#33FFA8'],
                     };
 
-                    var chart = new google.visualization.BarChart(document.getElementById('grafico2'));
+                    //var chart = new google.visualization.BarChart(document.getElementById('grafico2'));
+					var chart = new google.visualization.PieChart(document.getElementById('grafico2'));					
                     chart.draw(data, options);
 
                 }

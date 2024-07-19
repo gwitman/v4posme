@@ -2039,6 +2039,40 @@ class app_notification extends _BaseController {
 		
 		echo "SUCCESS";
 	}
+	function sendEmailGlamCustCitasFrecuency2DayBefore()
+	{
+		log_message("error",print_r("sendEmailGlamCustCitas",true));
+		$emailProperty = $this->core_web_parameter->getParameter("CORE_PROPIETARY_EMAIL",APP_COMPANY);
+		$emailProperty = $emailProperty->value;
+		$objCompany  	= $this->Company_Model->get_rowByPK(APP_COMPANY);
+		
+		$objNotificar = $this->Transaction_Master_Detail_Model->GlamCust_get_Citas_2DayBefore(APP_COMPANY);		
+		if($objNotificar)
+		foreach($objNotificar as $i)
+		{	
+		
+		
+			$i->SiguienteVisita = \DateTime::createFromFormat('Y-m-d H:i:s', $i->SiguienteVisita)->format("Y-m-d h:i A");
+			echo "Cita de: ".$i->firstName." programada para : ".$i->SiguienteVisita."</br>";
+			log_message("error","Cita de: ".$i->firstName." programada para : ".$i->SiguienteVisita);
+			
+			$params_["objCompany"]  = $objCompany;
+			$params_["firstName"]  	= $i->firstName;
+			$params_["hour"]  		= $i->SiguienteVisita;
+			$params_["mensaje"]  	= "Cita de: ".$i->firstName." programada para : ".$i->SiguienteVisita;
+			$subject 				= "Cita de: ".$i->firstName;
+			$body  					= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview
+			
+			$this->email->setFrom(EMAIL_APP);
+			$this->email->setTo( $emailProperty /*"www.witman@gmail.com"*/ );
+			$this->email->setSubject($subject);			
+			$this->email->setMessage($body); 
+			$resultSend01 = $this->email->send();
+			
+		}
+		
+		echo "SUCCESS";
+	}
 	
 	
 }

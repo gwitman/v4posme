@@ -355,8 +355,7 @@
 						  
 						  var columnasDelete = [
 							"Amueblado",
-							"Amueblado",
-							"Disponible",
+							"Amueblado",							
 							"Ciudad",
 							"Zona",
 							"Condominio",

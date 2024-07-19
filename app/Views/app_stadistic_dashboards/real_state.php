@@ -209,7 +209,18 @@
 
                     var options2 = {
                         title: 'Enlistamiento de propiedades metas',
+						/*isStacked: 'percent',*/
                         colors: ['#3399FF', '#9966FF', '#FF33CC', '#FF6633', '#FFFF33'],
+						/*
+						hAxis: {
+							title: 'Year',
+							format: '0'
+						},
+						vAxis: {
+							title: 'Percentage',
+							format: '#%'
+						}
+						*/ 
                     };
 
                     var chart = new google.visualization.AreaChart(document.getElementById('grafico9'));

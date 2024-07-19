@@ -6,6 +6,14 @@ use dbkroqnguhldo1;
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_SEND_EMAIL_IN_INSERT";## Moneda por defecto al momento de facturar	
+	
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "Cordoba" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
