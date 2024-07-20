@@ -30,6 +30,23 @@
 													</div>													
 												</div>
 											</div>
+											
+											<div class="form-group">
+												<label class="col-lg-6 control-label" for="selectFilter">Ventas con IVA</label>
+												<div class="col-lg-6"> 
+													<div class="col-lg-6">
+													</div>
+													<div class="col-lg-6">
+														<select name="txtTax1" id="txtTax1" class="select2">
+																<option value="0">Todas</option>
+																<option value="-1">No</option>
+																<option value="1">Sin</option>
+														</select>
+													</div>													
+												</div>
+											</div>
+											
+											
                                         </form>
                                     </div><!-- End .panel-body -->
                                 </div><!-- End .widget -->	

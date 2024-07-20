@@ -439,6 +439,7 @@ class app_sales_report extends _BaseController {
 			$viewReport			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"viewReport");//--finuri	
 			$startOn			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"startOn");//--finuri				
 			$endOn				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri				
+			$tax1				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"tax1");//--finuri				
 				
 				
 			if(!($viewReport && $startOn && $endOn  )){
@@ -462,10 +463,10 @@ class app_sales_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?);";
+				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?);";
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,0,"-1"]
+					[$companyID,$tocken,$userID,$startOn,$endOn,0,"-1",$tax1] 
 				);			
 				
 				

@@ -11,10 +11,13 @@
 						$(document).on("click","#print-btn-report",function(){
 							var startOn					=	$("#txtStartOn").val();	
 							var endOn					=	$("#txtEndOn").val();
+							var tax1					=	$("#txtTax1").val();	
 							
 							if(!( startOn == "" || endOn == "" ) ){
 								fnWaitOpen();
-								window.location	= "<?php echo base_url(); ?>/app_sales_report/sales_summary/viewReport/true/startOn/"+startOn+"/endOn/"+endOn;
+								window.location	= "<?php echo base_url(); ?>/app_sales_report/sales_summary/viewReport/true/startOn/"+
+										startOn+"/endOn/"+endOn+
+										"/tax1/"+tax1;
 							}
 							else{
 								fnShowNotification("Completar los Parametros","error");
