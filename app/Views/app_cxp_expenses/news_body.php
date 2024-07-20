@@ -61,13 +61,13 @@
 															</div>
 														</div>
 														
-														<div class="form-group <?php echo getBehavio($company->type,"app_cxp_expenses","lblAplicado",""); ?>">
+														<div class="form-group <?= getBehavio($company->type,"app_cxp_expenses","lblAplicado",""); ?>">
 																<label class="col-lg-4 control-label" for="normal">Aplicado</label>
 																<div class="col-lg-5">
 																	<input type="checkbox" disabled   name="txtIsApplied" id="txtIsApplied" value="1" >
 																</div>
 														</div>
-														<div class="form-group">
+														<div class="form-group <?= getBehavio($company->type,"app_cxp_expenses","lblCambio",""); ?>">
 																<label class="col-lg-4 control-label" for="normal">Cambio</label>
 																<div class="col-lg-8">
 																	<input class="form-control"   type="text" disabled="disabled" name="txtExchangeRate" id="txtExchangeRate" value="<?php echo $exchangeRate; ?>">

@@ -100,6 +100,8 @@ $routes->match(['get','post'],'app_purchase_purchaseorden/posMeGetRutasOfControl
 $routes->match(['get','post'],'app_purchase_returnsprovider/posMeGetRutasOfController','app_purchase_returnsprovider::posMeGetRutasOfController');
 $routes->match(['get','post'],'app_rrhh_employee/posMeGetRutasOfController','app_rrhh_employee::posMeGetRutasOfController');
 $routes->match(['get','post'],'app_sales_report/posMeGetRutasOfController','app_sales_report::posMeGetRutasOfController');
+$routes->match(['get','post'],'app_sales_report/sales_summary_by_client','app_sales_report::sales_summary_by_client');
+$routes->match(['get','post'],'app_sales_report/sales_summary_by_client/(:any)','app_sales_report::sales_summary_by_client');
 $routes->match(['get','post'],'app_transaction_config/posMeGetRutasOfController','app_transaction_config::posMeGetRutasOfController');
 $routes->match(['get','post'],'core_acount/posMeGetRutasOfController','core_acount::posMeGetRutasOfController');
 $routes->match(['get','post'],'core_concept_api/posMeGetRutasOfController','core_concept_api::posMeGetRutasOfController');

@@ -231,13 +231,14 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 			result = false;
 		}
 		",
-		strtolower('globalpro_app_purchase_garantia_divPanelAplicado') 												=> "hidden",
+		strtolower('globalpro_app_purchase_garantia_divPanelAplicado') 											=> "hidden",
 		strtolower('globalpro_app_purchase_garantia_divPanelCambio') 												=> "hidden",
 		strtolower('globalpro_app_purchase_garantia_divPanelEstado') 												=> "hidden",
 		strtolower('globalpro_app_purchase_garantia_divPanelMoneda') 												=> "hidden",
 		strtolower('globalpro_app_purchase_garantia_divPanelMonto') 												=> "hidden",
 		strtolower('globalpro_app_cxp_expenses_lblAplicado') 														=> "hidden",
-					
+		strtolower('globalpro_app_cxp_expenses_lblCambio') 														=> "hidden",
+
 					
 		/*Ferreteria Mateo*/			
 		strtolower('ferreteria_mateo_app_invoice_billing_bodyListInvoice')	 									=> "height: 550px; overflow: scroll;",
