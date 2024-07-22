@@ -99,68 +99,71 @@ use App\Models\Transaction_Profile_Detail_Model;
 use App\Models\Userwarehouse_Model;
 use App\Models\User_Tag_Model;
 use App\Models\Warehouse_Model;
+use CodeIgniter\HTTP\Response;
+use CodeIgniter\HTTP\ResponseInterface;
+use Config\Services;
 
 
 class core_web_whatsap {
-   
+
    /**********************Variables Estaticas********************/
    /*************************************************************/
    /*************************************************************/
    /*************************************************************/
-	private $CI; 
-	
-	
+	private $CI;
+
+
    /**********************Funciones******************************/
    /*************************************************************/
    /*************************************************************/
    /*************************************************************/
-   public function __construct(){		
-         
+   public function __construct(){
+
    }
    function validSendMessage($companyID)
    {
-	   
+
 		$Parameter_Model 			= new Parameter_Model();
 		$Company_Parameter_Model 	= new Company_Parameter_Model();
-		
+
 		$objPWhatsapMonth 					= $Parameter_Model->get_rowByName("WHATSAP_MONTH");
 		$objPWhatsapMonthId 				= $objPWhatsapMonth->parameterID;
 		$objCP_WhatsapMonth					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapMonthId);
-		
+
 		$objPWhatsapMessageByMonto 			= $Parameter_Model->get_rowByName("WHATSAP_MESSAGE_BY_MONTO");
 		$objPWhatsapMessageByMontoId 		= $objPWhatsapMessageByMonto->parameterID;
 		$objCP_WhatsapMessageByMonto		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapMessageByMontoId);
-		
+
 		$objPWhatsapCounterMessage 			= $Parameter_Model->get_rowByName("WHATSAP_COUNTER_MESSAGE");
 		$objPWhatsapCounterMessageId		= $objPWhatsapCounterMessage->parameterID;
 		$objCP_WhatsapCounterMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapCounterMessageId);
-		
+
 		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
 		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
 		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
-		
+
 		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
 		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
 		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
-		
+
 		$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
 		$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
 		$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
-		
+
 		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
 		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
 		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-		
-		$fechaNow  							= \DateTime::createFromFormat('Y-m-d',date("Y-m-d"));  
+
+		$fechaNow  							= \DateTime::createFromFormat('Y-m-d',date("Y-m-d"));
 		$fechaNow							= $fechaNow->format("Y-m")."-01";
-		$fechaNow 							= \DateTime::createFromFormat('Y-m-d',$fechaNow);	
-	
-		
+		$fechaNow 							= \DateTime::createFromFormat('Y-m-d',$fechaNow);
+
+
 		$fechaMonth 						= $objCP_WhatsapMonth->value;
-		$fechaMonth 						= \DateTime::createFromFormat('Y-m-d',$fechaMonth);	
-		
-	
-		
+		$fechaMonth 						= \DateTime::createFromFormat('Y-m-d',$fechaMonth);
+
+
+
 		//permitod enviar el email
 		if(  ($fechaNow->format("Y-m-d") == $fechaMonth->format("Y-m-d") ) && (intval($objCP_WhatsapCounterMessage->value) <= intval($objCP_WhatsapMessageByMonto->value))  )
 		{
@@ -168,7 +171,7 @@ class core_web_whatsap {
 			$data 			= null;
 			$data["value"]	= intval($objCP_WhatsapCounterMessage->value) + 1;
 			$Company_Parameter_Model->update_app_posme($objCP_WhatsapCounterMessage->companyID,$objCP_WhatsapCounterMessage->parameterID,$data);
-			
+
 			return true;
 		}
 		if( ($fechaNow > $fechaMonth) && (intval($objCP_WhatsapCounterMessage->value) > 0)  )
@@ -177,67 +180,67 @@ class core_web_whatsap {
 			$data 			= null;
 			$data["value"]	= $fechaNow->format("Y-m-d");
 			$Company_Parameter_Model->update_app_posme($objCP_WhatsapMonth->companyID,$objCP_WhatsapMonth->parameterID,$data);
-			
+
 			//actualizar el contador en 1
 			$data 			= null;
 			$data["value"]	= "1";
 			$Company_Parameter_Model->update_app_posme($objCP_WhatsapCounterMessage->companyID,$objCP_WhatsapCounterMessage->parameterID,$data);
-			
-			
-			
+
+
+
 			return true;
-			
+
 		}
-		
+
 		//no enviar el whatsapp
 		return false;
-		
-		
+
+
    }
-   
+
    function sendMessage($companyID,$message)
    {
 	    //https://app.whaticket.com/tickets
 	    //Cada mensaje cuesta al cliene: 0.2 dolares
-	    //Habilitar 30 mensaje le cuesta: 6 dolares mensuales	   
+	    //Habilitar 30 mensaje le cuesta: 6 dolares mensuales
 		//try
-		//{	
+		//{
 			$Parameter_Model 			= new Parameter_Model();
 			$Company_Parameter_Model 	= new Company_Parameter_Model();
-			
-			
+
+
 			$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
 			$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
 			$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
-			
+
 			$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
 			$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
 			$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
-			
+
 			//https://api.whaticket.com/api/v1/whatsapps
 			$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
 			$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
 			$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
-			
-			
+
+
 			//https://api.whaticket.com/api/v1/messages
 			$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
 			$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
 			$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-			
-			
-			//Obtener session 
-			$clientCurl = \Config\Services::curlrequest();
+
+
+			//Obtener session
+			$clientCurl = Services::curlrequest();
 			$response = $clientCurl->request('GET', $objCP_WhatsapUrlSession->value, [
 				'headers' => [
 					'Content-Type' 	=> 'application/json',
 					'accept'     	=> 'application/json',
 					'Authorization' => "Bearer ".$objCP_WhatsapToken->value
 				],
-		
+
 			]);
-			
-			
+
+
 			$response 	= json_decode($response->getBody(), true);
 			if(count($response) > 0)
 			{
@@ -251,32 +254,127 @@ class core_web_whatsap {
 					$sendWhatsapp["messages"][0]["number"]		= $objCP_WhatsapPropertyNumber->value;
 					$sendWhatsapp["messages"][0]["name"]		= "posMe";
 					$sendWhatsapp["messages"][0]["body"]		= $message;
-					
-					$clientCurl2 = \Config\Services::curlrequest();
-					$response = $clientCurl2->request('POST', $objCP_WhatsapUrlSendMessage->value, 
+
+					$clientCurl2 = Services::curlrequest();
+					$response = $clientCurl2->request('POST', $objCP_WhatsapUrlSendMessage->value,
 						[
 							'headers' => [
 								'Content-Type' 	=> 'application/x-www-form-urlencoded',
 								'accept'     	=> '*/*'
 							],
 							"debug" => true,
-							"form_params" => $sendWhatsapp 
+							"form_params" => $sendWhatsapp
 						]
 					);
-					
+
 				}
-				
+
 			}
 		//}
 		//catch(\Exception $ex)
-		//{	
+		//{
 		//		exit($ex->getMessage());
 		//}
-		
-		
-		
+
+
+
    }
-   
+
+    function sendMessageByLiveconnect($companyID, $message, $phoneDestino){
+       //2024-07-22
+        //api token: https://api.liveconnect.chat/prod/account/token
+
+        $Parameter_Model 			= new Parameter_Model();
+        $Company_Parameter_Model 	= new Company_Parameter_Model();
+
+        $objPWhatsapPrivatekey		= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+        $objPWhatsapPrivatekeyId	= $objPWhatsapPrivatekey->parameterID;
+        $objPWhatsapPrivatekey		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPrivatekeyId);
+
+        $objPWhatsapCkey		= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
+        $objPWhatsapCkeyId		= $objPWhatsapCkey->parameterID;
+        $objPWhatsapCkey		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapCkeyId);
+
+        $objPWhatsapUrlTokenMessage			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
+        $objPWhatsapUrlTokenMessageId 		= $objPWhatsapUrlTokenMessage->parameterID;
+        $objCP_WhatsapUrlTokenMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlTokenMessageId);
+
+        $objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+        $objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
+        $objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $objCP_WhatsapUrlTokenMessage->value,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => json_encode([
+                'cKey' => $objPWhatsapCkey->value,
+                'privateKey' => $objPWhatsapPrivatekey->value
+            ]),
+            CURLOPT_HTTPHEADER => [
+                "Accept: application/json, application/xml",
+                "Content-Type: application/json"
+            ],
+        ]);
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+            return "cURL Error #:" . $err;
+        }
+
+        $response_data 	= json_decode($response, true);
+
+        if($response_data['status'] ==1)
+        {
+            $token = $response_data['PageGearToken'];
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, [
+                CURLOPT_URL => $objCP_WhatsapUrlSendMessage->value,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => json_encode([
+                    'id_conversacion' => GUIDv4(),
+                    'numero'=>$phoneDestino,
+                    'mensaje' => $message
+                ]),
+                CURLOPT_HTTPHEADER => [
+                    "Accept: application/json",
+                    "Content-Type: application/json",
+                    "PageGearToken: ".$token
+                ],
+            ]);
+
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+
+            curl_close($curl);
+
+            if ($err) {
+                return "cURL Error #:" . $err;
+            } else {
+                $response_data 	= json_decode($response, true);
+                return $response_data['status'];
+            }
+        }
+        return "";
+    }
+
    function sendMessageByWaapi($companyID, $message, $phoneDestino)
    {
 	    //2024-06-30
@@ -284,94 +382,94 @@ class core_web_whatsap {
 		//tocken  qMAsXGyf0jIswU6xttfuZvORRhCRJnlrLClmlBgMe31db7ac
 		//tocken  S0EEmlFcUcvlDRdW3cIE8WQedbtdk2GVRKypXWJu8649891a
 		//api     https://waapi.app/api/v1/instances/12905/client/action/send-message
-		
+
 		//gabriel.ley@grupogasani.com
 		//Sistema123.
-		
-		
+
+
 		$Parameter_Model 			= new Parameter_Model();
 		$Company_Parameter_Model 	= new Company_Parameter_Model();
-		
-		
+
+
 		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
 		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
 		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
-		
+
 		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
 		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
 		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
-		
+
 		$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
 		$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
-		$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);			
-		
+		$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
+
 		//https://api.ultramsg.com/instance65915/messages/chat
-		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WHATSAP_URL_ENVIO_MENSAJE");
 		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
 		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-		
-		
-		
-		$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;			
+
+
+
+		$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;
 		$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
 		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
-		
-		
-		$clientCurlRequest		= \Config\Services::curlrequest();
+
+
+		$clientCurlRequest		= Services::curlrequest();
 		$response  				= $clientCurlRequest->request(
 			'POST',
 			$objCP_WhatsapUrlSendMessage->value,
-			[					
+			[
 				'body' => '{"chatId":"'.$phoneDestino.'@c.us","message":"'.$message.'"}',
-				'headers' 		=> [						
+				'headers' 		=> [
 					'accept'     	=> 'application/json',
 					'authorization' => 'Bearer '.$objCP_WhatsapToken->value,
 					'content-type' => 'application/json'
 				]
-			]				
+			]
 		);
-		
-			
+
+
    }
-   
-   
+
+
    function sendMessageUltramsg( $companyID, $message, $phoneDestino)
    {
 		//password: 180389Witman
 		//usuario: wgonzalez@gruposi.com
 	    //https://user.ultramsg.com/
 	    //Cada mensaje cuesta al cliene: 0.2 dolares
-	    //Habilitar 30 mensaje le cuesta: 6 dolares mensuales	   
+	    //Habilitar 30 mensaje le cuesta: 6 dolares mensuales
 		//try
-		//{	
+		//{
 			$Parameter_Model 			= new Parameter_Model();
 			$Company_Parameter_Model 	= new Company_Parameter_Model();
-			
-			
+
+
 			$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
 			$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
 			$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
-			
+
 			$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
 			$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
 			$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
-			
+
 			$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
 			$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
 			$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
-			
-			
+
+
 			//https://api.ultramsg.com/instance65915/messages/chat
 			$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
 			$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
 			$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-			
-			
-			
-			$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;			
+
+
+
+			$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;
 			$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
 			$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
-			
+
 			$params=array(
 			'token' 	=> $objCP_WhatsapToken->value,
 			'to' 		=> $phoneDestino,
@@ -399,11 +497,11 @@ class core_web_whatsap {
 
 			curl_close($curl);
 
-			if ($err) 
+			if ($err)
 			{
 			  echo "cURL Error #:" . $err;
-			} 
-			else 
+			}
+			else
 			{
 			  echo $response;
 			}
@@ -411,57 +509,57 @@ class core_web_whatsap {
 
 		//}
 		//catch(\Exception $ex)
-		//{	
+		//{
 		//		exit($ex->getMessage());
 		//}
-		
-		
-		
+
+
+
    }
-   
+
    function sendMessageTypeImagUltramsg( $companyID, $message,$title, $phoneDestino="" )
    {
 		//password: 180389Witman
 		//usuario: wgonzalez@gruposi.com
 	    //https://user.ultramsg.com/
 	    //Cada mensaje cuesta al cliene: 0.2 dolares
-	    //Habilitar 30 mensaje le cuesta: 6 dolares mensuales	   
+	    //Habilitar 30 mensaje le cuesta: 6 dolares mensuales
 		//try
-		//{	
+		//{
 			$Parameter_Model 			= new Parameter_Model();
 			$Company_Parameter_Model 	= new Company_Parameter_Model();
-			
-			
+
+
 			$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
 			$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
 			$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
-			
+
 			$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
 			$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
 			$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
-			
+
 			$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
 			$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
 			$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
-			
-			
+
+
 			//https://api.ultramsg.com/instance65915/messages/chat
 			$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
 			$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
 			$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-			
-			
-						
-			$phoneDestino	= isset($phoneDestino) ? "" : $phoneDestino;	
-			$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;				
+
+
+
+			$phoneDestino	= isset($phoneDestino) ? "" : $phoneDestino;
+			$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
 			$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
-			
-			
+
+
 			$params=array(
 			'token' 	=> $objCP_WhatsapToken->value,
 			'to' 		=> $phoneDestino,
 			'image'		=> $message,
-			'caption'	=> $title 
+			'caption'	=> $title
 			);
 			$curl = curl_init();
 			curl_setopt_array($curl, array(
@@ -485,11 +583,11 @@ class core_web_whatsap {
 
 			curl_close($curl);
 
-			if ($err) 
+			if ($err)
 			{
 			  echo "cURL Error #:" . $err;
-			} 
-			else 
+			}
+			else
 			{
 			  echo $response;
 			}
@@ -497,14 +595,14 @@ class core_web_whatsap {
 
 		//}
 		//catch(\Exception $ex)
-		//{	
+		//{
 		//		exit($ex->getMessage());
 		//}
-		
-		
-		
+
+
+
    }
-   
-  
+
+
 }
 ?>

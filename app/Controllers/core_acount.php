@@ -4,6 +4,7 @@ namespace App\Controllers;
 use App\Libraries\core_mysql_dump;
 
 
+
 class core_acount extends _BaseController {
 	
 	
@@ -33,14 +34,11 @@ class core_acount extends _BaseController {
 		//execute
 		//echo "<h1 style='color: wheat;' >uso de la variable ENVIRONMENT:".print_r(ENVIRONMENT ,true)."</h1>";		
 		//Renderizar		
-		$data["message"]	= "";		
+		$data["message"]	= "";
 		$data["parameterPrice"]		= $parameterPrice;
 		$data["parameterTipoPlan"]	= $parameterTipoPlan;
 		$data["parameterLabelSistem"]	= $parameterLabelSistem;
 		return view('core_acount/login',$data);//--finview-r
-		
-	
-			
 	}		
 	
 	function logout(){

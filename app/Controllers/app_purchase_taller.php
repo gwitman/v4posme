@@ -471,7 +471,7 @@ class app_purchase_taller extends _BaseController {
 							$warrning = true;
 							$this->core_web_notification->set_message(false,"A:".$numerDestino." - ".substr($themplate,0,55)." ...");
 							
-							if($objCompany->type=="globalpro")
+							if($objCompany->type=="globalpro_decline")
 							{
 								$this->core_web_whatsap->sendMessageByWaapi(
 									APP_COMPANY, 
@@ -479,7 +479,14 @@ class app_purchase_taller extends _BaseController {
 									$numerDestino
 									/*"50587125827"*/
 								);
-							}
+							}elseif ($objCompany->type =="globalpro"){
+                                $this->core_web_whatsap->sendMessageByLiveconnect(
+                                    APP_COMPANY,
+                                    $themplate,
+                                    $numerDestino
+                                /*"50587125827"*/
+                                );
+                            }
 							else
 							{
 								$this->core_web_whatsap->sendMessageUltramsg(
@@ -784,14 +791,21 @@ class app_purchase_taller extends _BaseController {
 							$warrning = true;							
 							$this->core_web_notification->set_message(false,"A:".$numerDestino." - ".substr($themplate,0,55)." ...");
 							
-							if($objCompany->type=="globalpro")
+							if($objCompany->type=="globalpro_decline")
 							{
 								$this->core_web_whatsap->sendMessageByWaapi(
 									APP_COMPANY, 
 									$themplate,
 									$numerDestino									
 								);
-							}
+							}elseif($objCompany->type=="globalpro")
+                            {
+                                $this->core_web_whatsap->sendMessageByLiveconnect(
+                                    APP_COMPANY,
+                                    $themplate,
+                                    $numerDestino
+                                );
+                            }
 							else
 							{
 								$this->core_web_whatsap->sendMessageUltramsg(

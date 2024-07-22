@@ -1954,12 +1954,11 @@ class app_notification extends _BaseController {
 		foreach($objNotificar as $i)
 		{	
 			echo clearNumero($i->Destino)."---".$i->Mensaje."</br></br>";
-			$this->core_web_whatsap->sendMessageByWaapi(
+			$this->core_web_whatsap->sendMessageByLiveconnect(
 				APP_COMPANY, 
 				replaceSimbol($i->Mensaje),
 				clearNumero($i->Destino) 
 			);
-				
 		}
 		
 		echo "SUCCESS";
@@ -1973,7 +1972,7 @@ class app_notification extends _BaseController {
 		foreach($objNotificar as $i)
 		{	
 			echo clearNumero($i->Destino)."---".$i->Mensaje."</br></br>";
-			$this->core_web_whatsap->sendMessageByWaapi(
+			$this->core_web_whatsap->sendMessageByLiveconnect(
 				APP_COMPANY, 
 				replaceSimbol($i->Mensaje),
 				clearNumero($i->Destino) 
@@ -1992,7 +1991,7 @@ class app_notification extends _BaseController {
 		foreach($objNotificar as $i)
 		{	
 			echo clearNumero($i->Destino)."---".$i->Mensaje."</br></br>";
-			$this->core_web_whatsap->sendMessageByWaapi(
+			$this->core_web_whatsap->sendMessageByLiveconnect(
 				APP_COMPANY, 
 				replaceSimbol($i->Mensaje),
 				clearNumero($i->Destino) 
