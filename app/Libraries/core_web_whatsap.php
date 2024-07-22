@@ -303,6 +303,11 @@ class core_web_whatsap {
         $objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
         $objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
 
+        //id canal
+        $objPWhatsapIdCanal		= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION_PARAMETERF1");
+        $objPWhatsapPrivatekeyId	= $objPWhatsapIdCanal->parameterID;
+        $objPWhatsapIdCanal		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPrivatekeyId);
+
         $curl = curl_init();
 
         curl_setopt_array($curl, [
@@ -331,7 +336,7 @@ class core_web_whatsap {
         if ($err) {
             return "cURL Error #:" . $err;
         }
-
+        //return $response;
         $response_data 	= json_decode($response, true);
 
         if($response_data['status'] ==1)
@@ -349,7 +354,7 @@ class core_web_whatsap {
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => "POST",
                 CURLOPT_POSTFIELDS => json_encode([
-                    'id_conversacion' => GUIDv4(),
+                    'id_canal' => $objPWhatsapIdCanal->value,
                     'numero'=>$phoneDestino,
                     'mensaje' => $message
                 ]),
@@ -369,7 +374,7 @@ class core_web_whatsap {
                 return "cURL Error #:" . $err;
             } else {
                 $response_data 	= json_decode($response, true);
-                return $response_data['status'];
+                return $response_data['status_message'];
             }
         }
         return "";
