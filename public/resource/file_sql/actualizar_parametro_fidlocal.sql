@@ -13,6 +13,12 @@ WHERE
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_DEFAULT_TYPE_PRICE";## Tipo de precio por defecto
 
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE";## Aplicar tabla de amortizacoin segun parametros durante la facturacion.
+	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
