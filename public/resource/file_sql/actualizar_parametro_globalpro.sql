@@ -6,28 +6,41 @@ use dbjznvjrsdpypf;
 /******************************************************************/		
 
 
+
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://waapi.app/api/v1/instances/12905/client/action/send-message" 
+	tb_company_parameter.value = "945" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "WAHTSAP_URL_ENVIO_MENSAJE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
+	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION_PARAMETERF1";## Parametro 1 para envio de whatsap
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "https://api.liveconnect.chat/prod/direct/wa/sendMessage"  
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WAHTSAP_URL_ENVIO_MENSAJE";
+	
+## Se usa para poner un label al sistema,  como un segundo nombre de sistema
+##wapi: https://waapi.app/api/v1/instances/12905/client/action/send-message
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "S0EEmlFcUcvlDRdW3cIE8WQedbtdk2GVRKypXWJu8649891a" 
+	tb_company_parameter.value = "54e324c18d34abe4ec45b16b233305de" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://waapi.app/api/v1/instances/12905/client/action/send-message" 
+	tb_company_parameter.value = "https://api.liveconnect.chat/prod/account/token" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
+	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION";
+## Se usa para poner un label al sistema,  como un segundo nombre de sistema
+## wapi: https://waapi.app/api/v1/instances/12905/client/action/send-message,
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "50584766457" 
+	tb_company_parameter.value = "e012d47bd4df1d95e93a65f6e65a4336" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_CURRENT_PROPIETARY_COMMERSE";## WHATSAPP DEL PRIPIETARIO
