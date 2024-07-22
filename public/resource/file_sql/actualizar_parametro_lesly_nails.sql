@@ -1,3 +1,7 @@
+use dbnguipulegvtk;
+
+
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "154" 
 WHERE 
@@ -795,7 +799,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "2024-07-06" 
+	tb_company_parameter.value = "2050-07-06" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CUST_PRICE_LICENCES_EXPIRED";## Fecha de expiracion de la licencia 
@@ -905,3 +909,5 @@ where
 	currencyID = 2 
 	and targetCurrencyID = 1;
 */
+
+use dbnguipulegvtk;
