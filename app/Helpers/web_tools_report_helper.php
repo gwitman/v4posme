@@ -6518,7 +6518,7 @@ function helper_reporte80mmTransactionMasterMiranda(
                                 
                         <tr>
                           <td colspan='3' style='text-align:center'>
-                            # ".str_replace("FAC","",strtoupper($objTransactionMastser->transactionNumber))."
+                            # ".str_replace("FAC","NO VAUCHER ",strtoupper($objTransactionMastser->transactionNumber))."
                           </td>
                         </tr>
                                 
