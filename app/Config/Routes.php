@@ -1154,6 +1154,8 @@ $routes->match(['get','post'],'core_concept_api/getConceptAllProduct','core_conc
 $routes->match(['get','post'],'core_concept_api/getConceptAllProduct/(:any)','core_concept_api::getConceptAllProduct');
 $routes->match(['get','post'],'app_public_catalog_api/getPublicCatalogDetail','app_public_catalog_api::getPublicCatalogDetail');
 $routes->match(['get','post'],'app_public_catalog_api/getPublicCatalogDetail/(:any)','app_public_catalog_api::getPublicCatalogDetail');
+$routes->match(['get','post'],'app_public_catalog_api/getPublicCatalogDetailFilter','app_public_catalog_api::getPublicCatalogDetailFilter');
+$routes->match(['get','post'],'app_public_catalog_api/getPublicCatalogDetailFilter/(:any)','app_public_catalog_api::getPublicCatalogDetailFilter');
 $routes->match(['get','post'],'core_testunitary/index','core_testunitary::index');
 $routes->match(['get','post'],'core_elfinder/index','core_elfinder::index');
 $routes->match(['get','post'],'core_elfinder/index/(:any)','core_elfinder::index');
