@@ -6518,7 +6518,7 @@ function helper_reporte80mmTransactionMasterMiranda(
                                 
                         <tr>
                           <td colspan='3' style='text-align:center'>
-                            # ".str_replace("FAC","NO VAUCHER ",strtoupper($objTransactionMastser->transactionNumber))."
+                            # ".str_replace("FAC","# VAUCHER ",strtoupper($objTransactionMastser->transactionNumber))."
                           </td>
                         </tr>
                                 
@@ -6612,7 +6612,7 @@ function helper_reporte80mmTransactionMasterMiranda(
 						-->
 						
 						<tr>
-                          <td colspan='3' style='text-align:left'>".$objTransactionMastser->note."</td>
+                          <td colspan='3' style='text-align:left'>Gracias por su compra <!--".$objTransactionMastser->note."--> </td>
                         </tr>
                                 
                          <tr>
