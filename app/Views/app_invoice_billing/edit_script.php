@@ -1213,6 +1213,8 @@
 		
 		$(".custom-table-categorias").find("td").removeClass("selected");
 		$(cell).addClass("selected");
+		$(".custom-table-container-categorias").addClass("hidden");
+		$(".custom-table-container-inventory").removeClass("hidden");
 		
 		$(".custom-table-inventory").find("td").addClass("hidden");
 		$(".custom-table-inventory").find('td[data-parent="'+inventoryCategoryID+'"]').removeClass("hidden");		
@@ -1228,6 +1230,13 @@
 		$(".custom-table-inventory").find("td").removeClass("selected");
 		$(cell).addClass("selected");
 		var codigoProducto = $(cell).data("codigo");
+		
+		if(codigoProducto == "0" )
+		{
+			$(".custom-table-container-categorias").removeClass("hidden");
+			$(".custom-table-container-inventory").addClass("hidden");
+			return;
+		}
 		
 		
 		//buscar el producto y agregar por codigo de barra

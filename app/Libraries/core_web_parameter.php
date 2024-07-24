@@ -190,7 +190,10 @@ class core_web_parameter {
 			{
 				
 				$objCompanyParameter 		=  $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objParameter->parameterID);
-				$data[$objParameter->name] 	=  $objCompanyParameter->value;				
+				if($objCompanyParameter != null)
+				{
+					$data[$objParameter->name] 	=  $objCompanyParameter->value;				
+				}
 			}
 		}
 		return $data;

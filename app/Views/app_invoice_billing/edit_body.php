@@ -1282,19 +1282,28 @@
 						<tbody>
 							<?php if ($objListInventoryItemsRestaurant != NULL) : ?>
 								<?php foreach ($objListInventoryItemsRestaurant as $index => $item): ?>
-									<?php if ($index % 6 == 0): ?>
+									<?php if ($index % 5 == 0): ?>
 										<tr>
 									<?php endif; ?>
+									
+									<?php if ($index % 5 == 0): ?>
+									<td style="" onclick="fnSelectCellInventory(this)" ondblclick="fnSelectDoubleCellInventory(this)" data-value="<?php echo $item["inventoryCategoryID"]; ?>" data-parent="<?php echo $item["inventoryCategoryID"]; ?>" data-codigo="0" > 
+										<div class="overlay"> 
+											<span class="badge badge-success"  >REGRESAR</span>
+										</div>
+									</td>
+									<?php endif; ?>
+									
 									<td style="/*background-image: url('<?php echo $item["Nombre"]; ?>');*/" onclick="fnSelectCellInventory(this)" ondblclick="fnSelectDoubleCellInventory(this)" data-value="<?php echo $item["inventoryCategoryID"]; ?>" data-parent="<?php echo $item["inventoryCategoryID"]; ?>"  data-codigo="<?php echo $item["Codigo"]; ?>"  > 
 										<div class="overlay"> 
 											<span class="badge badge-success"  ><?php echo $item["Nombre"]; ?></span>
 										</div>
 									</td>
-									<?php if ($index % 6 == 5): ?>
+									<?php if ($index % 5 == 4): ?>
 										</tr>
 									<?php endif; ?>
 								<?php endforeach; ?>
-								<?php if (count($objListInventoryItemsRestaurant) % 6 != 0): ?>
+								<?php if (count($objListInventoryItemsRestaurant) % 5 != 0): ?>
 									</tr>
 								<?php endif; ?>
 							<?php endif; ?>
