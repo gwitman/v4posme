@@ -62,54 +62,93 @@ class app_public_catalog_api extends _BaseController {
     function getPublicCatalogDetailFilter()
     {
         try{
-            $catalogName	= $this->request->getPost('catalogName');
-            $filter1	= $this->request->getPost('filter1',FILTER_SANITIZE_STRING);
-            $filter2	= $this->request->getPost('filter2',FILTER_SANITIZE_STRING);
-            $filter3	= $this->request->getPost('filter3',FILTER_SANITIZE_STRING);
-            $filter4	= $this->request->getPost('filter4',FILTER_SANITIZE_STRING);
+			$objCompany		= $this->Company_Model->get_rowByPK(APP_COMPANY);
+            $catalogName	= $this->request->getGet('catalogName');
+			$catalogValue	= $this->request->getGet('fieldValue');
+			$fieldValueBD	= "";
+			
+			
+            $filter1	= $this->request->getGet('filter1',FILTER_SANITIZE_STRING);
+            $filter2	= $this->request->getGet('filter2',FILTER_SANITIZE_STRING);
+            $filter3	= $this->request->getGet('filter3',FILTER_SANITIZE_STRING);
+            $filter4	= $this->request->getGet('filter4',FILTER_SANITIZE_STRING);
 
-            $objPC					= $this->Public_Catalog_Model->
-                                    asObject()->
-                                    where("name",$catalogName)->
-                                    find();
+			$objPC		= $this->Public_Catalog_Model->
+						asObject()->
+						where("systemName",$catalogName)->
+						find();
+									
             if(count($objPC)==0){
-                return $this->response->setJSON(array(
-                    'error'    => false,
-                    'message' => SUCCESS,
-                    'result' => [0=>'NO APLICA']
-                ));
+                return $this->response->setJSON(
+                    [0=>'ND']
+                );
             }
+			
+			//Obtener la priemra fila
+			$objPCDResult 			= $this->Public_Catalog_Detail_Model->asObject()->	
+									where("sequence",1)->
+                                    where("publicCatalogID",$objPC[0]->publicCatalogID)->find();
+									
+			if($objPCDResult)
+			{
+				//Obtener el nombre del campo en la tabla en la base de dtos
+				foreach($objPCDResult as $value)
+				{
+					// Obtener un array asociativo de todas las propiedades del objeto
+					$propiedades = get_object_vars($value);
 
-            $objPCDResult 			= $this->Public_Catalog_Detail_Model->asObject()->
-                                    where("publicCatalogID",$objPC[0]->publicCatalogID);
+					// Recorrer todas las propiedades y verificar si alguna tiene el valor 'abc'
+					foreach ($propiedades as $nombrePropiedad => $valorPropiedad) {
+						if ($valorPropiedad === $catalogValue) {
+							$fieldValueBD = $nombrePropiedad;
+							break;
+						}
+					}
+				}
+				
+				
+				
+				
+				$objPCDResult 			= $this->Public_Catalog_Detail_Model->asObject()->	
+										where("sequence !=",1)->
+										where("publicCatalogID",$objPC[0]->publicCatalogID);
 
-            if (isset($filter1)){
-                $objPCDResult= $objPCDResult->where("reference1",$filter1);
-            }
-            if (isset($filter2)){
-                $objPCDResult=$objPCDResult->where("reference2",$filter2);
-            }
-            if (isset($filter3)){
-                $objPCDResult= $objPCDResult->where("reference3",$filter3);
-            }
-            if (isset($filter4)){
-                $objPCDResult= $objPCDResult->where("reference4",$filter4);
-            }
-            $objPCDResult=$objPCDResult->find();
+				if (isset($filter1)){
+					$objPCDResult= $objPCDResult->where("reference1",$filter1);
+				}
+				if (isset($filter2)){
+					$objPCDResult=$objPCDResult->where("reference2",$filter2);
+				}
+				if (isset($filter3)){
+					$objPCDResult= $objPCDResult->where("reference3",$filter3);
+				}
+				if (isset($filter4)){
+					$objPCDResult= $objPCDResult->where("reference4",$filter4);
+				}
+				$objPCDResult=$objPCDResult->distinct()->select(''.$fieldValueBD.' as  label ')->find();
 
-            if (count($objPCDResult)==0){
-                return $this->response->setJSON(array(
-                    'error'    => false,
-                    'message' => SUCCESS,
-                    'result' => [0=>'NO APLICA']
-                ));
-            }else{
-                return $this->response->setJSON(array(
-                    'error'   			=> false,
-                    'message' 			=> SUCCESS,
-                    'result'	 	=> $objPCDResult
-                ));
-            }
+				if (count($objPCDResult)==0){
+					return $this->response->setJSON(                    
+						[0=>'ND']
+					);
+				}else{
+					return $this->response->setJSON(
+						$objPCDResult
+					);
+				}
+				
+			}
+			else 
+			{
+				return $this->response->setJSON(                    
+                    [0=>'ND']
+                );
+			}
+			exit;
+									
+							
+					
+
         }
         catch(Exception $ex){
             return $this->response->setJSON(array(

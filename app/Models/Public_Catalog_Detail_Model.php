@@ -16,7 +16,17 @@ class Public_Catalog_Detail_Model extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = false;
 
-    protected $allowedFields = ['publicCatalogDetailID','publicCatalogID', 'name','display','flavorID','description','sequence','parentCatalogDetailID','ratio','reference1','reference2','reference3','reference4','isActive','parentName'];
+    protected $allowedFields = [
+		'publicCatalogDetailID',
+		'publicCatalogID', 'name','display','flavorID','description','sequence','parentCatalogDetailID','ratio',
+		'reference1','reference2','reference3','reference4',
+		'reference5','reference6','reference7','reference8',
+		'reference9','reference10','reference11','reference12',
+		'reference13','reference14','reference15','reference16',
+		'reference17','reference18','reference19','reference20',
+		'reference21','reference22','reference23','reference24',
+		'isActive','parentName'
+	];
 
     // Dates
     //protected $useTimestamps = false;

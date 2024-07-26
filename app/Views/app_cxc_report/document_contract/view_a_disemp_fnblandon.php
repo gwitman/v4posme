@@ -5,7 +5,7 @@
 />
 
 <p style="margin-top:0pt; margin-bottom:8pt; text-align:center; line-height:108%; font-size:10pt;">
-	<span style="font-family:'Arial Black'; color:#0070c0;">FUNERIA UN ENCUENTRO CON DIOS</span>
+	<span style="font-family:'Arial Black'; color:#0070c0;">FUNERARIA UN ENCUENTRO CON DIOS</span>
 </p>
 <p style="margin-top:0pt; margin-bottom:8pt; text-align:center; line-height:108%; font-size:10pt;">
 	<span style="font-family:'Arial Black'; color:#0070c0;">“PRESENTE EN LOS MOMENTOS DIFICILES 24/7”</span>
@@ -36,7 +36,7 @@
 </p>
 <table style="width:100%" > 
 	<tr>
-		<td colspan="1">
+		<td style="width:220px" colspan="1">
 			<p style="margin-top:0pt;  text-align:justify; margin-bottom:0pt;  font-size:10pt;">
 				<span style="font-family:'Arial Black';">NOMBRES Y APELLIDOS</span>
 			</p>
@@ -57,7 +57,7 @@
 	</tr>
 	
 	<tr>
-		<td>
+		<td style="width:220px">
 			<p style="margin-top:0pt;  text-align:justify; margin-bottom:0pt;  font-size:10pt;">
 				<span style="font-family:'Arial Black';">FECHA DE NACIMIENTO</span>
 			</p>
