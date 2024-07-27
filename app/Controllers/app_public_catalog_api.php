@@ -65,6 +65,9 @@ class app_public_catalog_api extends _BaseController {
 			$objCompany		= $this->Company_Model->get_rowByPK(APP_COMPANY);
             $catalogName	= $this->request->getGet('catalogName');
 			$catalogValue	= $this->request->getGet('fieldValue');
+			log_message("error",print_r($catalogName,true));
+			log_message("error",print_r($catalogValue,true));
+			
 			$fieldValueBD	= "";
 			
 			
@@ -72,6 +75,26 @@ class app_public_catalog_api extends _BaseController {
             $filter2	= $this->request->getGet('filter2',FILTER_SANITIZE_STRING);
             $filter3	= $this->request->getGet('filter3',FILTER_SANITIZE_STRING);
             $filter4	= $this->request->getGet('filter4',FILTER_SANITIZE_STRING);
+			$filter5	= $this->request->getGet('filter5',FILTER_SANITIZE_STRING);
+			$filter6	= $this->request->getGet('filter6',FILTER_SANITIZE_STRING);
+			$filter7	= $this->request->getGet('filter7',FILTER_SANITIZE_STRING);
+			$filter8	= $this->request->getGet('filter8',FILTER_SANITIZE_STRING);
+			$filter9	= $this->request->getGet('filter9',FILTER_SANITIZE_STRING);
+			$filter10	= $this->request->getGet('filter10',FILTER_SANITIZE_STRING);
+			$filter11	= $this->request->getGet('filter11',FILTER_SANITIZE_STRING);
+			$filter12	= $this->request->getGet('filter12',FILTER_SANITIZE_STRING);
+			$filter13	= $this->request->getGet('filter13',FILTER_SANITIZE_STRING);
+			$filter14	= $this->request->getGet('filter14',FILTER_SANITIZE_STRING);
+			$filter15	= $this->request->getGet('filter15',FILTER_SANITIZE_STRING);
+			$filter16	= $this->request->getGet('filter16',FILTER_SANITIZE_STRING);
+			$filter17	= $this->request->getGet('filter17',FILTER_SANITIZE_STRING);
+			$filter18	= $this->request->getGet('filter18',FILTER_SANITIZE_STRING);
+			$filter19	= $this->request->getGet('filter19',FILTER_SANITIZE_STRING);
+			$filter20	= $this->request->getGet('filter20',FILTER_SANITIZE_STRING);
+			$filter21	= $this->request->getGet('filter21',FILTER_SANITIZE_STRING);
+			$filter22	= $this->request->getGet('filter22',FILTER_SANITIZE_STRING);
+			$filter23	= $this->request->getGet('filter23',FILTER_SANITIZE_STRING);
+			$filter24	= $this->request->getGet('filter24',FILTER_SANITIZE_STRING);
 
 			$objPC		= $this->Public_Catalog_Model->
 						asObject()->
@@ -125,7 +148,70 @@ class app_public_catalog_api extends _BaseController {
 				if (isset($filter4)){
 					$objPCDResult= $objPCDResult->where("reference4",$filter4);
 				}
+				if (isset($filter5)){
+					$objPCDResult= $objPCDResult->where("reference5",$filter4);
+				}
+				if (isset($filter6)){
+					$objPCDResult= $objPCDResult->where("reference6",$filter4);
+				}
+				if (isset($filter7)){
+					$objPCDResult= $objPCDResult->where("reference7",$filter4);
+				}
+				if (isset($filter8)){
+					$objPCDResult= $objPCDResult->where("reference8",$filter4);
+				}
+				if (isset($filter9)){
+					$objPCDResult= $objPCDResult->where("reference9",$filter4);
+				}
+				if (isset($filter10)){
+					$objPCDResult= $objPCDResult->where("reference10",$filter4);
+				}
+				if (isset($filter11)){
+					$objPCDResult= $objPCDResult->where("reference11",$filter4);
+				}
+				if (isset($filter12)){
+					$objPCDResult= $objPCDResult->where("reference12",$filter4);
+				}
+				if (isset($filter13)){
+					$objPCDResult= $objPCDResult->where("reference13",$filter4);
+				}
+				if (isset($filter14)){
+					$objPCDResult= $objPCDResult->where("reference14",$filter4);
+				}
+				if (isset($filter15)){
+					$objPCDResult= $objPCDResult->where("reference15",$filter4);
+				}
+				if (isset($filter16)){
+					$objPCDResult= $objPCDResult->where("reference16",$filter4);
+				}
+				if (isset($filter17)){
+					$objPCDResult= $objPCDResult->where("reference17",$filter4);
+				}
+				if (isset($filter18)){
+					$objPCDResult= $objPCDResult->where("reference18",$filter4);
+				}
+				if (isset($filter19)){
+					$objPCDResult= $objPCDResult->where("reference19",$filter4);
+				}
+				if (isset($filter20)){
+					$objPCDResult= $objPCDResult->where("reference20",$filter4);
+				}
+				if (isset($filter21)){
+					$objPCDResult= $objPCDResult->where("reference21",$filter4);
+				}
+				if (isset($filter22)){
+					$objPCDResult= $objPCDResult->where("reference22",$filter4);
+				}
+				if (isset($filter23)){
+					$objPCDResult= $objPCDResult->where("reference23",$filter4);
+				}
+				if (isset($filter24)){
+					$objPCDResult= $objPCDResult->where("reference24",$filter4);
+				}
+				
+				
 				$objPCDResult=$objPCDResult->distinct()->select(''.$fieldValueBD.' as  label ')->find();
+				log_message("error",print_r($objPCDResult,true));
 
 				if (count($objPCDResult)==0){
 					return $this->response->setJSON(                    
@@ -144,7 +230,7 @@ class app_public_catalog_api extends _BaseController {
                     [0=>'ND']
                 );
 			}
-			exit;
+			
 									
 							
 					
