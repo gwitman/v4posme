@@ -2,6 +2,9 @@ use db5fgagxsmujug;
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
+/*
+Pago realizado al 2024-07-28 siguiente siclo inicia del 2024-07-29
+*/
 /******************************************************************/	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
