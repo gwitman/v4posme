@@ -55,7 +55,7 @@ class app_accounting_journal extends _BaseController {
 			//Obtener el Registro			
 			$datView["objJournalEntry"]	 			= $this->Journal_Entry_Model->get_rowByPK($companyID,$journalEntryID);
 			$datView["objJournalEntryDetail"]		= $this->Journal_Entry_Detail_Model->get_rowByJournalEntryID($companyID,$journalEntryID);
-			$datView["objNextJournal"]			= $this->Journal_Entry_Model->get_rowByPK_Next($companyID,$journalEntryID);
+			$datView["objNextJournal"]				= $this->Journal_Entry_Model->get_rowByPK_Next($companyID,$journalEntryID);
 			
 			$datView["objBackJournal"]			= $this->Journal_Entry_Model->get_rowByPK_Back($companyID,$journalEntryID);
 			//Obtener los Permisos Core
@@ -289,7 +289,7 @@ class app_accounting_journal extends _BaseController {
 					//Ingresar Cuenta
 					if($continue){
 						$db=db_connect();
-			$db->transStart();
+						$db->transStart();
 						//Obtener Ciclo
 						$objCycle											= $this->Component_Cycle_Model->get_rowByCompanyIDFecha($dataSession["user"]->companyID,/*inicio get post*/ $this->request->getPost("txtDate"));
 						if(!$objCycle)
@@ -410,7 +410,7 @@ class app_accounting_journal extends _BaseController {
 					
 					if($continue){
 						$db=db_connect();
-			$db->transStart();
+						$db->transStart();
 						
 						if(!$this->core_web_workflow->validateWorkflowStage("tb_journal_entry","statusID",$objOld->statusID,COMMAND_EDITABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
 						{
@@ -436,7 +436,7 @@ class app_accounting_journal extends _BaseController {
 							$objx = $this->core_web_accounting->cycleIsCloseByID($companyID,$objCycle->componentCycleID);
 							if($objx)
 							throw new \Exception("EL CICLO DESTINO ESTA CERRADO, EL COMPROBANTE NO PUEDE SER EDITADO");
-			
+					
 							//Actualizar Cuenta
 							$objJournalEntryNew["entryName"] 						= /*inicio get post*/ $this->request->getPost("txtEntryName");
 							$objJournalEntryNew["journalDate"] 						= /*inicio get post*/ $this->request->getPost("txtDate");

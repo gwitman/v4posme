@@ -135,7 +135,8 @@ class app_public_catalog_api extends _BaseController {
 				$objPCDResult 			= $this->Public_Catalog_Detail_Model->asObject()->	
 										where("sequence !=",1)->
 										where("publicCatalogID",$objPC[0]->publicCatalogID);
-
+				
+				
 				if (isset($filter1)){
 					$objPCDResult= $objPCDResult->where("reference1",$filter1);
 				}
@@ -149,70 +150,77 @@ class app_public_catalog_api extends _BaseController {
 					$objPCDResult= $objPCDResult->where("reference4",$filter4);
 				}
 				if (isset($filter5)){
-					$objPCDResult= $objPCDResult->where("reference5",$filter4);
+					$objPCDResult= $objPCDResult->where("reference5",$filter5);
 				}
 				if (isset($filter6)){
-					$objPCDResult= $objPCDResult->where("reference6",$filter4);
+					$objPCDResult= $objPCDResult->where("reference6",$filter6);
 				}
 				if (isset($filter7)){
-					$objPCDResult= $objPCDResult->where("reference7",$filter4);
+					$objPCDResult= $objPCDResult->where("reference7",$filter7);
 				}
 				if (isset($filter8)){
-					$objPCDResult= $objPCDResult->where("reference8",$filter4);
+					$objPCDResult= $objPCDResult->where("reference8",$filter8);
 				}
 				if (isset($filter9)){
-					$objPCDResult= $objPCDResult->where("reference9",$filter4);
+					$objPCDResult= $objPCDResult->where("reference9",$filter9);
 				}
 				if (isset($filter10)){
-					$objPCDResult= $objPCDResult->where("reference10",$filter4);
+					$objPCDResult= $objPCDResult->where("reference10",$filter10);
 				}
 				if (isset($filter11)){
-					$objPCDResult= $objPCDResult->where("reference11",$filter4);
+					$objPCDResult= $objPCDResult->where("reference11",$filter11);
 				}
 				if (isset($filter12)){
-					$objPCDResult= $objPCDResult->where("reference12",$filter4);
+					$objPCDResult= $objPCDResult->where("reference12",$filter12);
 				}
 				if (isset($filter13)){
-					$objPCDResult= $objPCDResult->where("reference13",$filter4);
+					$objPCDResult= $objPCDResult->where("reference13",$filter13);
 				}
 				if (isset($filter14)){
-					$objPCDResult= $objPCDResult->where("reference14",$filter4);
+					$objPCDResult= $objPCDResult->where("reference14",$filter14);
 				}
 				if (isset($filter15)){
-					$objPCDResult= $objPCDResult->where("reference15",$filter4);
+					$objPCDResult= $objPCDResult->where("reference15",$filter15);
 				}
 				if (isset($filter16)){
-					$objPCDResult= $objPCDResult->where("reference16",$filter4);
+					$objPCDResult= $objPCDResult->where("reference16",$filter16);
 				}
 				if (isset($filter17)){
-					$objPCDResult= $objPCDResult->where("reference17",$filter4);
+					$objPCDResult= $objPCDResult->where("reference17",$filter17);
 				}
 				if (isset($filter18)){
-					$objPCDResult= $objPCDResult->where("reference18",$filter4);
+					$objPCDResult= $objPCDResult->where("reference18",$filter18);
 				}
 				if (isset($filter19)){
-					$objPCDResult= $objPCDResult->where("reference19",$filter4);
+					$objPCDResult= $objPCDResult->where("reference19",$filter19);
 				}
 				if (isset($filter20)){
-					$objPCDResult= $objPCDResult->where("reference20",$filter4);
+					$objPCDResult= $objPCDResult->where("reference20",$filter20);
 				}
 				if (isset($filter21)){
-					$objPCDResult= $objPCDResult->where("reference21",$filter4);
+					$objPCDResult= $objPCDResult->where("reference21",$filter21);
 				}
 				if (isset($filter22)){
-					$objPCDResult= $objPCDResult->where("reference22",$filter4);
+					$objPCDResult= $objPCDResult->where("reference22",$filter22);
 				}
 				if (isset($filter23)){
-					$objPCDResult= $objPCDResult->where("reference23",$filter4);
+					$objPCDResult= $objPCDResult->where("reference23",$filter23);
 				}
 				if (isset($filter24)){
-					$objPCDResult= $objPCDResult->where("reference24",$filter4);
+					$objPCDResult= $objPCDResult->where("reference24",$filter24);
 				}
 				
 				
-				$objPCDResult=$objPCDResult->distinct()->select(''.$fieldValueBD.' as  label ')->find();
-				log_message("error",print_r($objPCDResult,true));
-
+				
+				$objPCDResult	= $objPCDResult->distinct()->select(''.$fieldValueBD.' as  label ')->find();								
+				
+				
+				
+				$db 	= \Config\Database::connect();				
+				$sql 	= $db->getLastQuery()->__toString();
+				log_message("error",print_r($sql,true));
+				
+				
 				if (count($objPCDResult)==0){
 					return $this->response->setJSON(                    
 						[0=>'ND']

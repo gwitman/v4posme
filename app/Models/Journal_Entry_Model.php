@@ -78,7 +78,7 @@ class Journal_Entry_Model extends Model  {
 		$sql = sprintf("select je.journalEntryID,je.companyID,je.journalNumber,je.entryName,je.journalDate,je.tb_exchange_rate,je.createdOn,je.createdIn,je.createdAt,je.createdBy,je.isActive,je.isApplied,je.statusID,je.note,je.reference1,je.reference2,je.reference3,je.journalTypeID,je.currencyID,je.accountingCycleID,je.isModule,je.transactionMasterID");
 		$sql = $sql.sprintf(" from tb_journal_entry je");		
 		$sql = $sql.sprintf(" where je.companyID = $companyID");
-		$sql = $sql.sprintf(" and je.journalEntryID > = $journalEntryID");
+		$sql = $sql.sprintf(" and je.journalEntryID >= $journalEntryID");
 		$sql = $sql.sprintf(" and je.isActive= 1");			
 		$sql = $sql.sprintf(" order by je.journalEntryID asc");		
 		$sql = $sql.sprintf(" limit 0,1 ");
@@ -94,7 +94,7 @@ class Journal_Entry_Model extends Model  {
 		$sql = sprintf("select je.journalEntryID,je.companyID,je.journalNumber,je.entryName,je.journalDate,je.tb_exchange_rate,je.createdOn,je.createdIn,je.createdAt,je.createdBy,je.isActive,je.isApplied,je.statusID,je.note,je.reference1,je.reference2,je.reference3,je.journalTypeID,je.currencyID,je.accountingCycleID,je.isModule,je.transactionMasterID");
 		$sql = $sql.sprintf(" from tb_journal_entry je");		
 		$sql = $sql.sprintf(" where je.companyID = $companyID");
-		$sql = $sql.sprintf(" and je.journalEntryID < = $journalEntryID");
+		$sql = $sql.sprintf(" and je.journalEntryID <= $journalEntryID");
 		$sql = $sql.sprintf(" and je.isActive= 1");				
 		$sql = $sql.sprintf(" order by je.journalEntryID desc");		
 		$sql = $sql.sprintf(" limit 0,1 ");

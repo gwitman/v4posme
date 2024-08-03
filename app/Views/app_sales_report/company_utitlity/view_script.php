@@ -11,11 +11,11 @@
 						$(document).on("click","#print-btn-report",function(){
 							var startOn					=	$("#txtStartOn").val();	
 							var endOn					=	$("#txtEndOn").val();
-							
+							var txtClassID				=	$("#txtClassID").val();
 							
 							if(!( startOn == "" || endOn == "" ) ){
 								fnWaitOpen();
-								window.location	= "<?php echo base_url(); ?>/app_sales_report/company_utitlity/viewReport/true/startOn/"+startOn+"/endOn/"+endOn;
+								window.location	= "<?php echo base_url(); ?>/app_sales_report/company_utitlity/viewReport/true/startOn/"+startOn+"/endOn/"+endOn+"/txtClassID/"+txtClassID;
 							}
 							else{
 								fnShowNotification("Completar los Parametros","error");

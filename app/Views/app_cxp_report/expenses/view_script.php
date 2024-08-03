@@ -11,8 +11,8 @@
 						$(document).on("click","#print-btn-report",function(){
 							var startOn					=	$("#txtStartOn").val();	
 							var endOn					=	$("#txtEndOn").val();
-							var txtTiposID					=	$("#txtTiposID").val();	
-							var txtCategoriaID				=	$("#txtCategoriaID").val();	
+							var txtTiposID				=	$("#txtTiposID").val();	
+							var txtCategoriaID			=	$("#txtCategoriaID").val();	
 							var txtClassID				=	$("#txtClassID").val();
 
 							if(!( startOn == "" || endOn == "" ) ){

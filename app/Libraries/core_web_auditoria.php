@@ -203,7 +203,7 @@ class core_web_auditoria {
 		//Guardar el Maestro de la Auditoria
 		$data["companyID"] 		= $session["user"]->companyID;
 		$data["branchID"] 		= $session["user"]->branchID;
-		$data["elementID"] 		= $objElement->elementID;
+		$data["elementID"] 		= $objElement->elementID;		
 		$data["elementItemID"] 	= is_array($old) ? $old[$columnAutoIncrement] : $old->$columnAutoIncrement;
 		$data["modifiedOn"] 	= date("Y-m-d H-i-s");
 		$data["modifiedAt"] 	= $session["user"]->branchID;

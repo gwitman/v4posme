@@ -41,6 +41,7 @@ class PreparedQuery extends BasePreparedQuery
         // Mysqli driver doesn't like statements
         // with terminating semicolons.
         $sql = rtrim($sql, ';');
+		
 
         if (! $this->statement = $this->db->mysqli->prepare($sql)) {
             $this->errorCode   = $this->db->mysqli->errno;
