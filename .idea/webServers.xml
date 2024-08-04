@@ -16,6 +16,13 @@
           </advancedOptions>
         </fileTransfer>
       </webServer>
+      <webServer id="569fb665-5d86-4692-9a28-b6521fe1df33" name="convierte" url="http://ftp.posme.net">
+        <fileTransfer rootFolder="/posme.net/public_html/v4posme/convierten" host="ftp.posme.net" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
     </option>
     <groups>
       <group>
@@ -23,6 +30,7 @@
         <servers>
           <name value="Glamcus" />
           <name value="globalpro" />
+          <name value="convierte" />
         </servers>
       </group>
     </groups>

@@ -7,6 +7,7 @@ use CodeIgniter\HTTP\CLIRequest;
 use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
+use Config\Services;
 use Psr\Log\LoggerInterface;
 
 
@@ -351,10 +352,10 @@ abstract class _BaseController extends Controller
         parent::initController($request, $response, $logger);
 
         // Preload any models, libraries, etc, here.
-        $this->session 	= \Config\Services::session();	
-		$this->cache = \Config\Services::cache();
-		$this->email 	= \Config\Services::email();
-		$this->validation = \Config\Services::validation();
+        $this->session 	= Services::session();
+		$this->cache = Services::cache();
+		$this->email 	= Services::email();
+		$this->validation = Services::validation();
 		$this->uri = $this->request->getUri();
 		
 		$this->core_financial = new core_financial();
