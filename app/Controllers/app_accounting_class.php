@@ -8,10 +8,6 @@ class app_accounting_class extends _BaseController {
 	public function isValidAccountNumber($accountNumber="",$companyID="",$accountLevelID=""){
 		//false numero incorrecto
 		//true 	numero correcto
-		$accountNumber = helper_SegmentsByIndex($this->uri->getSegments(),1,$accountNumber);	
-		$companyID = helper_SegmentsByIndex($this->uri->getSegments(),2,$companyID);	
-		$accountLevelID = helper_SegmentsByIndex($this->uri->getSegments(),3,$accountLevelID);	
-		
 		$objAccountLevel = $this->Account_Level_Model->get_rowByPK($companyID,$accountLevelID);
 		
 		//Validar Longitud Total
@@ -74,8 +70,11 @@ class app_accounting_class extends _BaseController {
 			
 			//Obtener el Registro			
 			$datView["objClass"]	 				= $this->Center_Cost_Model->get_rowByPK($companyID,$classID);
-			$datView["objParentClass"]				= $this->Center_Cost_Model->get_rowByPK($companyID,$datView["objClass"]->parentClassID);
 			$datView["objListAccountLevel"]	 		= $this->Account_Level_Model->getByCompany($companyID);
+			
+			if($datView["objClass"]->parentClassID != null)
+			$datView["objParentClass"]				= $this->Center_Cost_Model->get_rowByPK($companyID,$datView["objClass"]->parentClassID);
+			
 			
 			
 			//Obtener los Permisos Core
@@ -207,7 +206,7 @@ class app_accounting_class extends _BaseController {
 					//Ingresar Cuenta
 					if($continue){
 						$db=db_connect();
-			$db->transStart();
+						$db->transStart();
 						//Buscar Padre
 						$objParentClass = NULL;
 						if(/*inicio get post*/ $this->request->getPost("txtParentClassNumber")){
@@ -281,7 +280,7 @@ class app_accounting_class extends _BaseController {
 			
 					if($continue){
 						$db=db_connect();
-			$db->transStart();					
+						$db->transStart();					
 						
 						//Buscar Padre
 						$objParentClass 	= NULL;

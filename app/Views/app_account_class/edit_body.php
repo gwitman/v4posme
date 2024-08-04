@@ -46,7 +46,7 @@
 														<div class="form-group">
 																<label class="col-lg-2 control-label" for="normal">Centro de Costo Superior</label>
 																<div class="col-lg-5">
-																	<input class="form-control"  type="text"  name="txtParentClassNumber" id="txtParentClassNumber" value="<?php if ($objParentClass) { echo  $objParentClass->number; } ?>">												
+																	<input class="form-control"  type="text"  name="txtParentClassNumber" id="txtParentClassNumber" value="<?php if ($objClass->parentClassID != null) { echo  $objParentClass->number; } ?>">												
 																</div>
 														</div>
 														

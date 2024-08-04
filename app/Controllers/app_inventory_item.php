@@ -1180,9 +1180,8 @@ class app_inventory_item extends _BaseController
             }
         }
         catch(\Exception $ex){
-            print_r($ex);
+            
             log_message("error",print_r($method,true));
-
             if($method == "new" || $method == "edit")
             {
                 $data["session"]   = $dataSession;
