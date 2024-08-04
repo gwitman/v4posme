@@ -308,7 +308,10 @@ class app_inventory_item extends _BaseController
         }
     }
 
-    function save($method = NULL, $item =null, $dataSession = null){
+    function save($method  , $item  , $dataSession )
+	{
+		
+		
         if ($method == "edit" || $method == "new" || $method == "apinew"){
             $method 	= helper_SegmentsByIndex($this->uri->getSegments(), 1, $method);
             $method02 	= $method;
@@ -316,6 +319,8 @@ class app_inventory_item extends _BaseController
 
         try{
 
+			
+			
             //AUTENTICADO
             if($method == "new" || $method =="edit")
             {
@@ -693,7 +698,8 @@ class app_inventory_item extends _BaseController
 
             }
             //Editar Registro
-            elseif($method =="edit") {
+            if($method =="edit") 
+			{
 
                 //PERMISO SOBRE LA FUNCTION
                 if(APP_NEED_AUTHENTICATION == true){
@@ -956,32 +962,33 @@ class app_inventory_item extends _BaseController
                 $this->response->redirect(base_url()."/".'app_inventory_item/edit/companyID/'.$companyID."/itemID/".$itemID."/callback/".$callback."/comando/".$comando);
 
             }
-            elseif ($method=="new_customer_mobile"){
+            if ($method=="new_customer_mobile")
+			{
                 $companyID 	= $dataSession["user"]->companyID;
                 $branchID   = $dataSession["user"]->branchID;
                 $roleID      = $dataSession["role"]->roleID;
-
+			
                 $objListComanyParameter			 = $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
                 $paisDefault				     = $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_PAIS_DEFAULT");
                 $departamentoDefault             = $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_DEPARTAMENTO_DEFAULT");
                 $municipioDefault                = $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_MUNICIPIO_DEFAULT");
                 $validateBarCode                 = $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVENTORY_BAR_CODE_UNIQUE");
-
+			
                 $paisID 			= $paisDefault->value;
                 $departamentoId		= $departamentoDefault->value;
                 $municipioId		= $municipioDefault->value;
-
-
+			
+			
                 //Ingresar Cuenta
                 $db=db_connect();
                 $db->transStart();
-
+			
                 $objItem["companyID"]					= $companyID;
                 $objItem["branchID"] 					= $branchID;
                 $objItem["inventoryCategoryID"] 		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVENTORY_CATEGORY_BY_DEFAULT_ID")->value;
                 $nameProducto							= $item->name;
                 $nameProducto 							= str_replace('"',"",$nameProducto);
-
+			
                 $objItem["familyID"] 					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVENTORY_FAMILY_ID_DEFAULT")->value;
                 $objItem["itemNumber"] 					= $this->core_web_counter->goNextNumber($companyID,$branchID,"tb_item",0);
                 $objItem["barCode"] 					= $item->barCode;
@@ -1002,9 +1009,9 @@ class app_inventory_item extends _BaseController
                 $objItem["reference1"] 					= "";
                 $objItem["reference2"] 					= "";
                 $objItem["reference3"] 					= "";
-
+			
                 $objItem["statusID"]                    = $this->core_web_workflow->getWorkflowInitStage("tb_item","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
-
+			
                 $objItem["isPerishable"] 				= 0;
                 $objItem["isServices"] 					= 0;
                 $objItem["isInvoiceQuantityZero"] 		= 1;
@@ -1013,7 +1020,7 @@ class app_inventory_item extends _BaseController
                 $objItem["factorProgram"] 				= 1;
                 $objItem["isActive"] 					= 1;
                 $objItem["currencyID"] 					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVENTORY_CURRENCY_ID_DEFAULT")->value;
-
+			
                 $objItem["realStateRoomBatchServices"] 				= "";
                 $objItem["realStateRoomServices"] 					= "";
                 $objItem["realStateWallInCloset"] 					= "";
@@ -1029,7 +1036,7 @@ class app_inventory_item extends _BaseController
                 $objItem["realStateLinkGoogleMaps"] 				= "";
                 $objItem["realStateLinkOther"] 						= "";
                 $objItem["realStateStyleKitchen"] 					= "";
-
+			
                 $objItem["realStateReferenceUbicacion"] 				= "";
                 $objItem["realStateReferenceCondominio"] 				= "";
                 $objItem["realStateReferenceZone"] 						= "";
@@ -1042,16 +1049,16 @@ class app_inventory_item extends _BaseController
                 $objItem["realStateStyleKitchen"] 		= "";
                 $objItem["realStateEmail"] 				= "";
                 $objItem["realStatePhone"] 				= "";
-
+			
                 $this->core_web_auditoria->setAuditCreated($objItem,$dataSession,$this->request);
-
+			
                 $itemID								= $this->Item_Model->insert_app_posme($objItem);
                 $companyID 							= $objItem["companyID"];
                 //Crear la Carpeta para almacenar los Archivos del Item
                 $pathFileFloder = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$itemID;
                 if(!file_exists($pathFileFloder))
                     mkdir($pathFileFloder, 0700);
-
+			
                 //Agregar las bodegas que no esten
                 $objListWarehouse		= $this->Warehouse_Model->getByCompany($companyID);
                 if($objListWarehouse)
@@ -1061,7 +1068,7 @@ class app_inventory_item extends _BaseController
                         $existWarehouse = $this->Itemwarehouse_Model->getByPK($companyID,$itemID,$ware->warehouseID);
                         if($existWarehouse)
                             continue;
-
+			
                         $objItemWarehouse						= null;
                         $objItemWarehouse["companyID"] 			= $companyID;
                         $objItemWarehouse["branchID"] 			= $objItem["branchID"];
@@ -1073,7 +1080,7 @@ class app_inventory_item extends _BaseController
                         $this->Itemwarehouse_Model->insert_app_posme($objItemWarehouse);
                     }
                 }
-
+			
                 //Guardar Detalle de sku
                 $objSkuExist 				= $this->Item_Sku_Model->getByPK($itemID,$objItem["unitMeasureID"]);
                 if(!$objSkuExist)
@@ -1083,7 +1090,7 @@ class app_inventory_item extends _BaseController
                     $objSku["value"] 			= 1;
                     $this->Item_Sku_Model->insert_app_posme($objSku);
                 }
-
+			
                 //Guardar proveedor por defecto
                 $objParameterProviderDefault	= $this->core_web_parameter->getParameter("INVENTORY_ITEM_PROVIDER_DEFAULT",$companyID);
                 $objParameterProviderDefault 	= $objParameterProviderDefault->value;
@@ -1093,21 +1100,21 @@ class app_inventory_item extends _BaseController
                 $objTmpProvider["itemID"]		= $itemID;
                 $objTmpProvider["entityID"]		= $objParameterProviderDefault;
                 $this->Provideritem_Model->insert_app_posme($objTmpProvider);
-
-
+			
+			
                 //Ingresar la configuracion de precios
                 //por defecto con 0% de utilidad
                 $objParameterPriceDefault	= $this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID);
                 $listPriceID 				= $objParameterPriceDefault->value;
                 $objTipePrice 				= $this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID);
-
+			
                 foreach($objTipePrice as $key => $price)
                 {
                     $typePriceID				= $objTipePrice[$key];
                     $priceValue					= $item->precioPublico;
                     $comisionValue				= 0;
-
-
+			
+			
                     //Insert register to price
                     $dataPrice["companyID"] 				= $companyID;
                     $dataPrice["listPriceID"] 				= $listPriceID;
@@ -1116,10 +1123,10 @@ class app_inventory_item extends _BaseController
                     $dataPrice["price"] 					= $priceValue;
                     $dataPrice["percentage"] 				= 0;
                     $dataPrice["percentageCommision"] 		= $comisionValue;
-
+			
                     $this->Price_Model->insert_app_posme($dataPrice);
                 }
-
+			
                 //Fin
                 if($db->transStatus() !== false){
                     $db->transCommit();
@@ -1127,30 +1134,32 @@ class app_inventory_item extends _BaseController
                 else{
                     $db->transRollback();
                 }
-            }elseif($method=="edit_customer_mobile"){
+            }
+			if($method=="edit_customer_mobile")
+			{
                 $companyID 	= $dataSession["user"]->companyID;
-
+			
                 $db=db_connect();
                 $db->transStart();
-
+			
                 $objItem['name']=$item->name;
                 $objItem['description']=$item->name;
                 $itemID=$item->itemID;
-
+			
                 $result = $this->Item_Model->update_app_posme($companyID,$itemID,$objItem);
-
+			
                 //Ingresar la configuracion de precios
                 //por defecto con 0% de utilidad
                 $objParameterPriceDefault	= $this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID);
                 $listPriceID 				= $objParameterPriceDefault->value;
                 $objTipePrice 				= $this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID);
-
+			
                 foreach($objTipePrice as $key => $price)
                 {
                     $typePriceID				= $objTipePrice[$key];
                     $priceValue					= $item->precioPublico;
                     $comisionValue				= 0;
-
+			
                     //Insert register to price
                     $dataPrice["companyID"] 				= $companyID;
                     $dataPrice["listPriceID"] 				= $listPriceID;
@@ -1159,7 +1168,7 @@ class app_inventory_item extends _BaseController
                     $dataPrice["price"] 					= $priceValue;
                     $dataPrice["percentage"] 				= 0;
                     $dataPrice["percentageCommision"] 		= $comisionValue;
-
+			
                     $objPrice = $this->Price_Model->get_rowByPK($companyID,$listPriceID,$itemID,$dataPrice["typePriceID"]);
                     if($objPrice == null )
                     {
@@ -1169,7 +1178,7 @@ class app_inventory_item extends _BaseController
                         $this->Price_Model->update_app_posme($companyID,$listPriceID,$itemID,$dataPrice["typePriceID"],$dataPrice);
                     }
                 }
-
+			
                 //Fin
                 if($db->transStatus() !== false){
                     $db->transCommit();
@@ -1179,7 +1188,8 @@ class app_inventory_item extends _BaseController
                 }
             }
         }
-        catch(\Exception $ex){
+        catch(\Exception $ex)
+		{
             
             log_message("error",print_r($method,true));
             if($method == "new" || $method == "edit")

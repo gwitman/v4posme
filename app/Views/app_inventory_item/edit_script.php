@@ -119,7 +119,7 @@
 		//Guardar
 		$(document).on("click","#btnAcept",function(){
 				$( "#form-new-account-journal" ).attr("method","POST");
-				$( "#form-new-account-journal" ).attr("action","<?php echo base_url(); ?>/app_inventory_item/save/edit");
+				$( "#form-new-account-journal" ).attr("action","<?php echo base_url(); ?>/app_inventory_item/save/edit/item/null/dataSession/null");
 				
 				if(validateForm()){
 					fnWaitOpen();

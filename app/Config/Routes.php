@@ -687,7 +687,7 @@ $routes->match(['get','post'],'app_inventory_item/edit/(:any)','app_inventory_it
 $routes->match(['get','post'],'app_inventory_item/delete','app_inventory_item::delete');
 $routes->match(['get','post'],'app_inventory_item/searchItem','app_inventory_item::searchItem');
 $routes->match(['get','post'],'app_inventory_item/save','app_inventory_item::save');
-$routes->match(['get','post'],'app_inventory_item/save/(:any)','app_inventory_item::save');
+$routes->match(['get','post'],'app_inventory_item/save/(:any)/(:any)/(:any)','app_inventory_item::save/$1/$2/$3');
 $routes->match(['get','post'],'app_inventory_item/add','app_inventory_item::add');
 $routes->match(['get','post'],'app_inventory_item/add/(:any)','app_inventory_item::add');
 $routes->match(['get','post'],'app_inventory_item/index','app_inventory_item::index');
