@@ -11,32 +11,37 @@ class app_mobile_api extends _BaseController
     function setDataUpload()
     {
         try {
-            $controller = new app_inventory_item();
+            $controller 				= new app_inventory_item();
             $controller->initController($this->request, $this->response, $this->logger);
-            $nickname = /*inicio get post*/ $this->request->getPost("txtNickname");
-            $password = /*inicio get post*/ $this->request->getPost("txtPassword");
-            $objUser = $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);
-            $companyID = $objUser["user"]->companyID;
+            $nickname 					= /*inicio get post*/ $this->request->getPost("txtNickname");
+            $password 					= /*inicio get post*/ $this->request->getPost("txtPassword");
+            $objUser 					= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);
+            $companyID 					= $objUser["user"]->companyID;
             Services::session()->set("user", $objUser["user"]);
-            $objCompany = $objUser["company"];
-            $objItemsJson = /*inicio get post*/  $this->request->getPost("txtData");
-            $data = json_decode($objItemsJson, true);
-            $items = $data['ObjItems'];
-            $dataSession['user'] = $objUser["user"];
-            $dataSession['company'] = $objCompany;
-            $dataSession['role'] = $objUser["role"];
+            $objCompany 				= $objUser["company"];
+            $objItemsJson 				= /*inicio get post*/  $this->request->getPost("txtData");
+            $data 						= json_decode($objItemsJson, true);
+            $items 						= $data['ObjItems'];
+            $dataSession['user'] 		= $objUser["user"];
+            $dataSession['company'] 	= $objCompany;
+            $dataSession['role'] 		= $objUser["role"];
             $this->core_web_permission->getValueLicense($companyID,get_class($this)."/"."index");
-            foreach ($items as $va) {
+            foreach ($items as $va) 
+			{
                 $objOldItem = $this->Item_Model->get_rowByCodeBarra($companyID, $va['barCode']);
-                if (!is_null($objOldItem)) {
+                if (!is_null($objOldItem)) 
+				{
                     $method = "edit_customer_mobile";
                     $va['itemID']= $objOldItem->itemID;
-                } else {
+                } 
+				else 
+				{
                     $method = "new_customer_mobile";
                 }
                 $objOldItem=json_decode(json_encode($va));
-               $controller->save($method, $objOldItem, $dataSession);
+				$controller->save($method, $objOldItem, $dataSession);
             }
+			
             return $this->response->setJSON(array(
                 'error' => false,
                 'message' => SUCCESS
@@ -56,19 +61,17 @@ class app_mobile_api extends _BaseController
     {
         try {
 
-            $nickname = /*inicio get post*/
-                $this->request->getPost("txtNickname");
-            $password = /*inicio get post*/
-                $this->request->getPost("txtPassword");
-            $objUser = $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);
-            $companyID = $objUser["user"]->companyID;
-            $userID = $objUser["user"]->userID;
+            $nickname 	= /*inicio get post*/ $this->request->getPost("txtNickname");
+            $password 	= /*inicio get post*/ $this->request->getPost("txtPassword");
+            $objUser 	= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);
+            $companyID 	= $objUser["user"]->companyID;
+            $userID 	= $objUser["user"]->userID;
             $objCompany = $objUser["company"];
 
             //Obtener listado de productos
-            $objWarehouse = $this->Userwarehouse_Model->getRowByUserIDAndFacturable($companyID, $userID);
+            $objWarehouse 	= $this->Userwarehouse_Model->getRowByUserIDAndFacturable($companyID, $userID);
             $objWarehouseID = array_map(fn($warehouseItem) => $warehouseItem->warehouseID, $objWarehouse);
-            $objListItem = $this->Item_Model->get_rowByCompanyIDToMobile($objWarehouseID);
+            $objListItem 	= $this->Item_Model->get_rowByCompanyIDToMobile($objWarehouseID);
 
             //Obtener lista de clients
             $objListCustomer = $this->Customer_Model->get_rowByCompanyIDToMobile($companyID);
@@ -77,10 +80,10 @@ class app_mobile_api extends _BaseController
             $objListParameter = $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
 
             //Obtener documentos pendientes
-            $objListDocumentCredit = $this->Customer_Credit_Document_Model->get_rowByBalancePendingByCompanyToMobile($companyID);
+            $objListDocumentCredit 	= $this->Customer_Credit_Document_Model->get_rowByBalancePendingByCompanyToMobile($companyID);
 
             //Obtener lista de amortizaciones
-            $objListAmortization = $this->Customer_Credit_Amortization_Model->get_rowShareLateByCompanyToMobile($companyID);
+            $objListAmortization 	= $this->Customer_Credit_Amortization_Model->get_rowShareLateByCompanyToMobile($companyID);
 
 
             return $this->response->setJSON(array(

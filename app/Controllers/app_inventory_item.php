@@ -25,10 +25,12 @@ class app_inventory_item extends _BaseController
             //AUTENTICADO
             if (!$this->core_web_authentication->isAuthenticated())
                 throw new \Exception(USER_NOT_AUTENTICATED);
+			
+			
             $dataSession = $this->session->get();
-
             //PERMISO SOBRE LA FUNCTION
-            if (APP_NEED_AUTHENTICATION == true) {
+            if (APP_NEED_AUTHENTICATION == true) 
+			{
                 $permited = false;
                 $permited = $this->core_web_permission->urlPermited(get_class($this), "index", URL_SUFFIX, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
 
@@ -49,19 +51,17 @@ class app_inventory_item extends _BaseController
 
             //Redireccionar datos
 
-            $companyID = /*--ini uri*/
-                helper_SegmentsValue($this->uri->getSegments(), "companyID");//--finuri
-            $itemID = /*--ini uri*/
-                helper_SegmentsValue($this->uri->getSegments(), "itemID");//--finuri
-            $callback = /*--ini uri*/
-                helper_SegmentsValue($this->uri->getSegments(), "callback");//--finuri
-            $callback = $callback === "" ? "false" : $callback;
-            $comando = /*--ini uri*/
-                helper_SegmentsValue($this->uri->getSegments(), "comando");//--finuri
-            $comando = $comando === "" ? "false" : $comando;
-            $branchID = $dataSession["user"]->branchID;
-            $roleID = $dataSession["role"]->roleID;
-            if ((!$companyID || !$itemID)) {
+            $companyID 	= /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "companyID");//--finuri
+            $itemID 	= /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "itemID");//--finuri
+            $callback 	= /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "callback");//--finuri
+            $callback 	= $callback === "" ? "false" : $callback;
+            $comando 	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "comando");//--finuri
+            $comando 	= $comando === "" ? "false" : $comando;
+            $branchID 	= $dataSession["user"]->branchID;
+            $roleID 	= $dataSession["role"]->roleID;
+			
+            if ((!$companyID || !$itemID)) 
+			{
                 $this->response->redirect(base_url() . "/" . 'app_inventory_item/add');
             }
 
@@ -88,83 +88,84 @@ class app_inventory_item extends _BaseController
             $objParameterAll = $this->core_web_parameter->getParameterAll($companyID);
 
             //Activar inmueble
-            if ($comando == "activate") {
+            if ($comando == "activate") 
+			{
                 $dataActivate["isActive"] = 1;
                 $this->Item_Model->update_app_posme($companyID, $itemID, $dataActivate);
             }
 
             //Obtener Informacion
-            $dataView["objComponentEmployer"] = $objComponentEmployer;
-            $dataView["objComponent"] = $objComponent;
-            $dataView["componentProviderID"] = $objComponentProvider->componentID;
-            $dataView["objListConcept"] = $this->Company_Component_Concept_Model->get_rowByComponentItemID($companyID, $objComponent->componentID, $itemID);
-            $dataView["objItem"] = $this->Item_Model->get_rowByPK($companyID, $itemID);
-            $dataView["objItemSku"] = $this->Item_Sku_Model->get_rowByItemID($itemID);
-            $dataView["objItemWarehouse"] = $this->Itemwarehouse_Model->get_rowByItemID($companyID, $itemID);
-            $dataView["objListWarehouse"] = $this->Warehouse_Model->getByCompany($companyID);
-            $dataView["objListProvider"] = $this->Provideritem_Model->get_rowByItemID($companyID, $itemID);
-            $dataView["objListInventoryCategory"] = $this->Itemcategory_Model->getByCompany($companyID);
-            $dataView["objListWorkflowStage"] = $this->core_web_workflow->getWorkflowStageByStageInit("tb_item", "statusID", $dataView["objItem"]->statusID, $companyID, $branchID, $roleID);
-            $dataView["objListFamily"] = $this->core_web_catalog->getCatalogAllItem("tb_item", "familyID", $companyID);
-            $dataView["objListUnitMeasure"] = $this->core_web_catalog->getCatalogAllItem("tb_item", "unitMeasureID", $companyID);
-            $dataView["objListDisplay"] = $this->core_web_catalog->getCatalogAllItem("tb_item", "displayID", $companyID);
-            $dataView["objListDisplayUnitMeasure"] = $this->core_web_catalog->getCatalogAllItem("tb_item", "displayUnitMeasureID", $companyID);
-            $dataView["objListDisplayGerenciaExcl"] = $this->core_web_catalog->getCatalogAllItem("tb_item", "realStateGerenciaExclusive", $companyID);
-            $dataView["objListTypePreice"] = $this->core_web_catalog->getCatalogAllItem("tb_price", "typePriceID", $companyID);
-            $dataView["objListCurrency"] = $this->Company_Currency_Model->getByCompany($companyID);
-            $dataView["company"] = $dataSession["company"];
-            $dataView["useMobile"] = $dataSession["user"]->useMobile;
-            $dataView["objParameterTypePreiceDefault"] = $objParameterTypePreiceDefault;
-            $dataView["objParameterListPreiceDefault"] = $objParameterListPreiceDefault;
-            $dataView["callback"] = $callback;
-            $dataView["comando"] = $comando;
-            $dataView["objListPriceItem"] = $this->Price_Model->get_rowByItemID($companyID, $dataView["objParameterListPreiceDefault"], $itemID);
-            $dataView["objListPriceItemFirst"] = 0;
+            $dataView["objComponentEmployer"] 			= $objComponentEmployer;
+            $dataView["objComponent"] 					= $objComponent;
+            $dataView["componentProviderID"] 			= $objComponentProvider->componentID;
+            $dataView["objListConcept"] 				= $this->Company_Component_Concept_Model->get_rowByComponentItemID($companyID, $objComponent->componentID, $itemID);
+            $dataView["objItem"] 						= $this->Item_Model->get_rowByPK($companyID, $itemID);
+            $dataView["objItemSku"] 					= $this->Item_Sku_Model->get_rowByItemID($itemID);
+            $dataView["objItemWarehouse"] 				= $this->Itemwarehouse_Model->get_rowByItemID($companyID, $itemID);
+            $dataView["objListWarehouse"] 				= $this->Warehouse_Model->getByCompany($companyID);
+            $dataView["objListProvider"] 				= $this->Provideritem_Model->get_rowByItemID($companyID, $itemID);
+            $dataView["objListInventoryCategory"] 		= $this->Itemcategory_Model->getByCompany($companyID);
+            $dataView["objListWorkflowStage"] 			= $this->core_web_workflow->getWorkflowStageByStageInit("tb_item", "statusID", $dataView["objItem"]->statusID, $companyID, $branchID, $roleID);
+            $dataView["objListFamily"] 					= $this->core_web_catalog->getCatalogAllItem("tb_item", "familyID", $companyID);
+            $dataView["objListUnitMeasure"] 			= $this->core_web_catalog->getCatalogAllItem("tb_item", "unitMeasureID", $companyID);
+            $dataView["objListDisplay"] 				= $this->core_web_catalog->getCatalogAllItem("tb_item", "displayID", $companyID);
+            $dataView["objListDisplayUnitMeasure"] 		= $this->core_web_catalog->getCatalogAllItem("tb_item", "displayUnitMeasureID", $companyID);
+            $dataView["objListDisplayGerenciaExcl"] 	= $this->core_web_catalog->getCatalogAllItem("tb_item", "realStateGerenciaExclusive", $companyID);
+            $dataView["objListTypePreice"] 				= $this->core_web_catalog->getCatalogAllItem("tb_price", "typePriceID", $companyID);
+            $dataView["objListCurrency"] 				= $this->Company_Currency_Model->getByCompany($companyID);
+            $dataView["company"] 						= $dataSession["company"];
+            $dataView["useMobile"] 						= $dataSession["user"]->useMobile;
+            $dataView["objParameterTypePreiceDefault"] 	= $objParameterTypePreiceDefault;
+            $dataView["objParameterListPreiceDefault"] 	= $objParameterListPreiceDefault;
+            $dataView["callback"] 						= $callback;
+            $dataView["comando"] 						= $comando;
+            $dataView["objListPriceItem"] 				= $this->Price_Model->get_rowByItemID($companyID, $dataView["objParameterListPreiceDefault"], $itemID);
+            $dataView["objListPriceItemFirst"] 			= 0;
 
             //Obtener el primer precio del producto
             $counterIndex = 0;
             if ($dataView["objListPriceItem"])
-                foreach ($dataView["objListPriceItem"] as $ws) {
+                foreach ($dataView["objListPriceItem"] as $ws) 
+				{
                     if ($counterIndex == 0)
                         $dataView["objListPriceItemFirst"] = $ws->price;
                     $counterIndex++;
                 }
 
 
-            $objParameterMasive = $this->core_web_parameter->getParameter("ITEM_PRINTER_BARCODE_MASIVE", $companyID);
-            $objParameterMasive = $objParameterMasive->value;
+            $objParameterMasive 			= $this->core_web_parameter->getParameter("ITEM_PRINTER_BARCODE_MASIVE", $companyID);
+            $objParameterMasive 			= $objParameterMasive->value;
             $dataView["objParameterMasive"] = $objParameterMasive;
 
 
             //Obtener colaborador
-            $dataView["objEmployer"] = $this->Employee_Model->get_rowByEntityID($companyID, $dataView["objItem"]->realStateEmployerAgentID);
-            $entityEmployeerID = helper_RequestGetValueObjet($dataView["objEmployer"], "entityID", 0);
+            $dataView["objEmployer"] 		= $this->Employee_Model->get_rowByEntityID($companyID, $dataView["objItem"]->realStateEmployerAgentID);
+            $entityEmployeerID 				= helper_RequestGetValueObjet($dataView["objEmployer"], "entityID", 0);
             $dataView["objEmployerNatural"] = $this->Natural_Model->get_rowByPK($dataView["objItem"]->companyID, $dataView["objItem"]->branchID, $entityEmployeerID);
-            $dataView["objEmployerLegal"] = $this->Legal_Model->get_rowByPK($dataView["objItem"]->companyID, $dataView["objItem"]->branchID, $entityEmployeerID);
+            $dataView["objEmployerLegal"] 	= $this->Legal_Model->get_rowByPK($dataView["objItem"]->companyID, $dataView["objItem"]->branchID, $entityEmployeerID);
 
             //direccion
-            $dataView["objListCountry"] = $this->core_web_catalog->getCatalogAllItem("tb_item", "realStateCountryID", $companyID);
-            $dataView["objListState"] = $this->core_web_catalog->getCatalogAllItem_Parent("tb_item", "realStateStateID", $companyID, $dataView["objItem"]->realStateCountryID);
-            $dataView["objListCity"] = $this->core_web_catalog->getCatalogAllItem_Parent("tb_item", "realStateCityID", $companyID, $dataView["objItem"]->realStateStateID);
+            $dataView["objListCountry"] 	= $this->core_web_catalog->getCatalogAllItem("tb_item", "realStateCountryID", $companyID);
+            $dataView["objListState"] 		= $this->core_web_catalog->getCatalogAllItem_Parent("tb_item", "realStateStateID", $companyID, $dataView["objItem"]->realStateCountryID);
+            $dataView["objListCity"] 		= $this->core_web_catalog->getCatalogAllItem_Parent("tb_item", "realStateCityID", $companyID, $dataView["objItem"]->realStateStateID);
 
 
             //Renderizar Resultado
-            $dataSession["notification"] = $this->core_web_error->get_error($dataSession["user"]->userID);
-            $dataSession["message"] = $this->core_web_notification->get_message();
-            $dataSession["head"] = /*--inicio view*/
-                view('app_inventory_item/edit_head', $dataView);//--finview
-            $dataSession["body"] = /*--inicio view*/
-                view('app_inventory_item/edit_body', $dataView);//--finview
-            $dataSession["script"] = /*--inicio view*/
-                view('app_inventory_item/edit_script', $dataView);//--finview
-            $dataSession["footer"] = "";
+            $dataSession["notification"] 	= $this->core_web_error->get_error($dataSession["user"]->userID);
+            $dataSession["message"] 		= $this->core_web_notification->get_message();
+            $dataSession["head"] 			= /*--inicio view*/view('app_inventory_item/edit_head', $dataView);//--finview
+            $dataSession["body"] 			= /*--inicio view*/view('app_inventory_item/edit_body', $dataView);//--finview
+            $dataSession["script"] 			= /*--inicio view*/view('app_inventory_item/edit_script', $dataView);//--finview
+            $dataSession["footer"] 			= "";
+			
             if ($callback == "false")
                 return view("core_masterpage/default_masterpage", $dataSession);//--finview-r
             else
                 return view("core_masterpage/default_popup", $dataSession);//--finview-r
 
 
-        } catch (\Exception $ex) {
+        } catch (\Exception $ex) 
+		{
             exit($ex->getMessage());
         }
     }
