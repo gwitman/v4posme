@@ -11,8 +11,6 @@ class app_mobile_api extends _BaseController
     function setDataUpload()
     {
         try {
-            $controller 				= new app_inventory_item();
-            $controller->initController($this->request, $this->response, $this->logger);
             $nickname 					= /*inicio get post*/ $this->request->getPost("txtNickname");
             $password 					= /*inicio get post*/ $this->request->getPost("txtPassword");
             $objUser 					= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);
@@ -22,26 +20,56 @@ class app_mobile_api extends _BaseController
             $objItemsJson 				= /*inicio get post*/  $this->request->getPost("txtData");
             $data 						= json_decode($objItemsJson, true);
             $items 						= $data['ObjItems'];
+            $customers                  = $data['ObjCustomers'];
             $dataSession['user'] 		= $objUser["user"];
             $dataSession['company'] 	= $objCompany;
             $dataSession['role'] 		= $objUser["role"];
             $this->core_web_permission->getValueLicense($companyID,get_class($this)."/"."index");
-            foreach ($items as $va) 
-			{
-                $objOldItem = $this->Item_Model->get_rowByCodeBarra($companyID, $va['barCode']);
-                if (!is_null($objOldItem)) 
-				{
-                    $method = "edit_customer_mobile";
-                    $va['itemID']= $objOldItem->itemID;
-                } 
-				else 
-				{
-                    $method = "new_customer_mobile";
+            // INICIO DE CARGA DE ITEMS
+            if (count($items) > 0) {
+                $controller 				= new app_inventory_item();
+                $controller->initController($this->request, $this->response, $this->logger);
+                foreach ($items as $va)
+                {
+                    $objOldItem = $this->Item_Model->get_rowByCodeBarra($companyID, $va['barCode']);
+                    if (!is_null($objOldItem))
+                    {
+                        $method = "edit_customer_mobile";
+                        $va['itemID']= $objOldItem->itemID;
+                    }
+                    else
+                    {
+                        $method = "new_customer_mobile";
+                    }
+                    $objOldItem=json_decode(json_encode($va));
+                    $controller->save($method, $objOldItem, $dataSession);
                 }
-                $objOldItem=json_decode(json_encode($va));
-				$controller->save($method, $objOldItem, $dataSession);
             }
-			
+
+
+            //INICIO DE CARGA DE CUSTOMERS
+            if (count($customers) > 0) {
+                $controller = new app_cxc_customer();
+                $controller->initController($this->request, $this->response, $this->logger);
+                foreach ($customers as $cus)
+                {
+                    $obj=json_decode(json_encode($cus));
+                    $companyID=$obj->companyID;
+                    $branchID=$obj->branchID;
+                    $entityID=$obj->entityID;
+                    //si entityid es null o 0, es nuevo, sino un update
+                    $objCustomer= $this->Customer_Model->get_rowByPK($companyID,$branchID,$entityID);
+                    if (is_null($objCustomer)){
+                        $controller->insertElementMobile($dataSession,$obj);
+                    }else{
+                        $objCustomer=json_decode(json_encode($objCustomer));
+                        $objCustomer->firstName = $obj->firstName;
+                        $objCustomer->lastName=$obj->lastName;
+                        $controller->updateElementMobile($dataSession, $objCustomer);
+                    }
+                }
+            }
+
             return $this->response->setJSON(array(
                 'error' => false,
                 'message' => SUCCESS
