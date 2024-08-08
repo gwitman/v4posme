@@ -1,10 +1,25 @@
-use dbctkwo0yqp47s
-go 
+/*
+use hipexctq_hiperallcrm;
+*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/	
+/*
+https://hiperall-crm.com/phpmyadmin_external_mpos/
+$servername 	= "localhost"
+$username 		= "hipexctq_hiperallcrm";
+$password 		= "Fn@UJp+skwWt";
+$dbname 		= "hipexctq_hiperallcrm";
 
+
+Username: 	mpos@hiperall-crm.com
+password: 	Temporal1234**
+server: 	ftp.hiperall-crm.com
+port:  		21
+Domain		hiperall-crm.com
+
+*/
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
@@ -1150,7 +1165,7 @@ WHERE
 
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1BivalyStore" 
+	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_URL_PRINTER";## URLs PARA LA IMPRESION DE FACTURA 	
@@ -1283,7 +1298,7 @@ WHERE
 /***************************************************************/
 		
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Jasmina Orozco Lopez" 
+	tb_company_parameter.value = "Eusebia Del Carmen Dumas Ruiz" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_NAME";## Witman José González Rostran 
@@ -1298,28 +1313,28 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "0" 
+	tb_company_parameter.value = "047-160483-0000C" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "" 
+	tb_company_parameter.value = "047-160483-0000C" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8730-8288" 
+	tb_company_parameter.value = "TEL: 8505-7109" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8730-8288" 
+	tb_company_parameter.value = "TEL: 8505-7109" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1327,15 +1342,15 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Multicentro las americas, primera planta, contiguo a helados POP" 
+	tb_company_parameter.value = "Donde fue aserrio santa fe, 2c abajo 15v.sur" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Bivaly Store' , address = 'Multicentro las americas, primera planta, contiguo a helados POP' ,
-	flavorID = 523,type='default'
+	NAME = 'HIPER ALL' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
+	flavorID = 526,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
@@ -1344,22 +1359,24 @@ WHERE
 /*
 Eliminar o desactivar usuarios
 */
+
+/*
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/ 
- 523,  	/*supervisor*/
- 522, 	/*facturador*/
- 521 	/*administrador*/
+ 2, 	
+ 526,  	
+ 525, 	
+ 524 	
 );
 
 update tb_role set isActive = 0; 
 update tb_role set isActive = 1 where roleID in (
 	3,
-	452,
-	451,
-	450	
+	455,
+	454,
+	453	
 );
-
+*/
 
 
 /*tipo de cambio de dolares a cordoba*/
@@ -1372,7 +1389,7 @@ where
 	
 /*tipo de cambio de dolares a cordoba*/
 update tb_exchange_rate set 
-	ratio = 0.0273972 
+	ratio = 0.027777 
 where 
 	currencyID = 1
 	and targetCurrencyID = 2; 
@@ -1389,3 +1406,4 @@ update tb_currency set `name` = 'Cordoba' where currencyID = 1;
 update tb_currency set `name` = 'Dolar' where currencyID = 2;	
 	
 	
+/*BD: hipexctq_hiperallcrm */
