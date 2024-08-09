@@ -746,7 +746,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "2024-05-14" 
+	tb_company_parameter.value = "2050-05-14" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CUST_PRICE_LICENCES_EXPIRED";## Fecha de expiracion de la licencia 
@@ -863,4 +863,20 @@ update tb_exchange_rate set
 where 
 	currencyID = 1
 	and targetCurrencyID = 2; 
+	
+	
+update tb_item set realStateEmployerAgentID = ifnull(realStateEmployerAgentID,0);
+update tb_item set realStateCityID = ifnull(realStateCityID,0);
+update tb_item set realStateCountryID = ifnull(realStateCountryID,0);
+update tb_item set realStateStateID = ifnull(realStateStateID,0);
+update tb_customer set entityContactID = ifnull(entityContactID,0);
+	
+
+
+update tb_currency set `name` = 'Cordoba' where currencyID = 1;
+update tb_currency set `name` = 'Dolar' where currencyID = 2;	
+update tb_company_currency set `simb` = 'C$' where currencyID = 1;
+update tb_company_currency set `simb` = 'U$' where currencyID = 2;	
+
+
 	
