@@ -694,6 +694,19 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		
 		",
 		
+		//HipperAll
+		strtolower('hiperall_core_web_menu_FACTURACION')			 												=> "CONTRATOS",
+		strtolower('hiperall_core_web_menu_FACTURAR')			 													=> "CONTRATO",
+		strtolower('hiperall_core_web_menu_ABONO')			 														=> "RECIBO",		
+		strtolower('hiperall_app_invoice_billing_labelTitlePageList')	 											=> "CONTRATOS",
+		strtolower('hiperall_app_invoice_billing_labelTitlePageEdit')	 											=> "Contrato",
+		strtolower('hiperall_app_invoice_billing_labelTitlePageNew')	 											=> "Contrato",		
+		strtolower('hiperall_app_box_share_labelTitlePageList')	 													=> "RECIBOS",
+		strtolower('hiperall_app_box_share_labelTitlePageEdit')	 													=> "Recibo",
+		strtolower('hiperall_app_box_share_labelTitlePageNew')	 													=> "Recibo",				
+		strtolower('hiperall_app_invoice_billing_txtTermReference')	 												=> "Plazo",
+		strtolower('hiperall_app_invoice_billing_txtTraductionExpenseLabel')										=> "Interes",
+		
 		
 		/*Pizza Laus*/		
 		strtolower('pizza_laus_core_web_language_workflowstage_billing_REGISTRADA')			 						=> "GUARDAR MESA",

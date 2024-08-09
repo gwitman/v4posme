@@ -1385,8 +1385,11 @@ update tb_item set realStateStateID = ifnull(realStateStateID,0);
 update tb_customer set entityContactID = ifnull(entityContactID,0);
 	
 
+
 update tb_currency set `name` = 'Cordoba' where currencyID = 1;
 update tb_currency set `name` = 'Dolar' where currencyID = 2;	
-	
+update tb_company_currency set `simb` = 'C$' where currencyID = 1;
+update tb_company_currency set `simb` = 'U$' where currencyID = 2;	
+
 	
 /*BD: dbkroqnguhldo1 */

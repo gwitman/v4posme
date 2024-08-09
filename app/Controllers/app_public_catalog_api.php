@@ -65,9 +65,7 @@ class app_public_catalog_api extends _BaseController {
 			$objCompany		= $this->Company_Model->get_rowByPK(APP_COMPANY);
             $catalogName	= $this->request->getGet('catalogName');
 			$catalogValue	= $this->request->getGet('fieldValue');
-			log_message("error",print_r($catalogName,true));
-			log_message("error",print_r($catalogValue,true));
-			
+			$keyFieldValue	= $this->request->getGet('keyFildValue');
 			$fieldValueBD	= "";
 			
 			
@@ -96,6 +94,109 @@ class app_public_catalog_api extends _BaseController {
 			$filter23	= $this->request->getGet('filter23',FILTER_SANITIZE_STRING);
 			$filter24	= $this->request->getGet('filter24',FILTER_SANITIZE_STRING);
 
+
+			//Aplicacion de filtro antes de buscar en base de datos
+			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_RentaMobile" &&  $filter13 == "" )
+			{
+				return $this->response->setJSON(
+                    [0=>'ND']
+                );
+			}
+			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_RentaFijo" &&  $filter11 == "" )
+			{
+				return $this->response->setJSON(
+                    [0=>'ND']
+                );
+			}
+			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_RguMobile" &&  $filter11 == "" )
+			{
+				return $this->response->setJSON(
+                    [0=>'ND']
+                );
+			}
+			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_RguFijos" &&  $filter3 == "" )
+			{
+				return $this->response->setJSON(
+                    [0=>'ND']
+                );
+			}
+			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_PlanMobileAdicional1" &&  $filter12 == "" )
+			{
+				return $this->response->setJSON(
+                    [0=>'ND']
+                );
+			}
+			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_GestionMovileAdicional1" &&  $filter11 == "" )
+			{
+				return $this->response->setJSON(
+                    [0=>'ND']
+                );
+			}
+			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_LineasMobileAdicionales" &&  $filter6 == "" )
+			{
+				return $this->response->setJSON(
+                    [0=>'ND']
+                );
+			}
+			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_TipoMigracion" &&  $filter9 == "" )
+			{
+				return $this->response->setJSON(
+                    [0=>'ND']
+                );
+			}
+			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_OperadorDonante" &&  $filter8 == "" )
+			{
+				return $this->response->setJSON(
+                    [0=>'ND']
+                );
+			}
+			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_TipoDeLinea" &&  $filter7 == "" )
+			{
+				return $this->response->setJSON(
+                    [0=>'ND']
+                );
+			}
+			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_PlanMobile" &&  $filter6 == "" )
+			{
+				return $this->response->setJSON(
+                    [0=>'ND']
+                );
+			}
+			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_GestionMobile" &&  $filter5 == "" )
+			{
+				return $this->response->setJSON(
+                    [0=>'ND']
+                );
+			}
+			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_VelocidadInternet" &&  $filter4 == "" )
+			{
+				return $this->response->setJSON(
+                    [0=>'ND']
+                );
+			}
+			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_Tecnologia" &&  $filter3 == "" )
+			{
+				return $this->response->setJSON(
+                    [0=>'ND']
+                );
+			}
+			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_Servicio" &&  $filter2 == "" )
+			{
+				return $this->response->setJSON(
+                    [0=>'ND']
+                );
+			}
+			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_ServicioExistente" &&  $filter1 == "" )
+			{
+				log_message("error","witmante testint");
+				log_message("error",print_r($filter1,true));
+				return $this->response->setJSON(
+                    [0=>'ND']
+                );
+			}
+			
+			
+			
 			$objPC		= $this->Public_Catalog_Model->
 						asObject()->
 						where("systemName",$catalogName)->
@@ -216,9 +317,9 @@ class app_public_catalog_api extends _BaseController {
 				
 				
 				
-				$db 	= \Config\Database::connect();				
-				$sql 	= $db->getLastQuery()->__toString();
-				log_message("error",print_r($sql,true));
+				//$db 	= \Config\Database::connect();				
+				//$sql 	= $db->getLastQuery()->__toString();
+				//log_message("error",print_r($sql,true));
 				
 				
 				if (count($objPCDResult)==0){
