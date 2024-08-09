@@ -22,7 +22,7 @@
 	
 	$(document).ready(function(){	
 		//Inicializar DataPciker
-		
+		$('#txtVencimientoTarjeta').datepicker({format: "mm/yyyy"})
 		$('#txtBirthDate').datepicker({format:"yyyy-mm-dd"});
 		
 		var today = new Date();

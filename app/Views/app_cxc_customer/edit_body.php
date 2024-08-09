@@ -78,6 +78,7 @@
 						<ul class="dropdown-menu">
 							<li><a href="#dropdown" data-toggle="tab">Direccion</a></li>
 							<li><a id="btnClickArchivo" href="#dropdown-file" data-toggle="tab">Archivos</a></li>
+							<li><a href="#dropdown-formapago" data-toggle="tab">Forma de Pago</a></li>
 						 </ul>
 					</li>
 				</ul>
@@ -787,6 +788,71 @@
 					</div>
 					<div class="tab-pane fade" id="dropdown-file">
 						
+					</div>
+					<div class="tab-pane fade" id="dropdown-formapago">
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group ">
+									<label class="col-lg-4 control-label" for="txtNombreTarjeta">Nombre tarjeta</label>
+									<div class="col-lg-8">
+										<input class="form-control"  type="text"  name="txtNombreTarjeta" id="txtNombreTarjeta" value="<?= is_null($objPaymentMethod) ? "" : $objPaymentMethod->name ?>">												
+									</div>
+								</div>
+								<div class="form-group ">
+									<label class="col-lg-4 control-label" for="txtEmailTarjeta">Correo:</label>
+									<div class="col-lg-8">
+										<input class="form-control"  type="email"  name="txtEmailTarjeta" id="txtEmailTarjeta" value="<?= is_null($objPaymentMethod) ? "" : $objPaymentMethod->email ?>">												
+									</div>
+								</div>
+								<div class="form-group ">
+									<label class="col-lg-4 control-label" for="txtNumeroTarjeta">Número tarjeta</label>
+									<div class="col-lg-8">
+										<input class="form-control"  type="text"  name="txtNumeroTarjeta" id="txtNumeroTarjeta" value="<?= is_null($objPaymentMethod) ? "" : $objPaymentMethod->number ?>">												
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="form-group ">
+									<label class="col-lg-4 control-label" for="txtVencimientoTarjeta">Vencimiento</label>
+									<div class="col-lg-8">
+										<input class="form-control"  type="text"  name="txtVencimientoTarjeta" id="txtVencimientoTarjeta" value="<?= is_null($objPaymentMethod) ? "" : $objPaymentMethod->expirationDate ?>">												
+									</div>
+								</div>
+								<div class="form-group ">
+									<label class="col-lg-4 control-label" for="txtCodigoCvc">Código CVC</label>
+									<div class="col-lg-8">
+										<input class="form-control"  type="number"  name="txtCodigoCvc" id="txtCodigoCvc" value="<?= is_null($objPaymentMethod) ? "" : $objPaymentMethod->cvc ?>">												
+									</div>
+								</div>
+								<div class="form-group ">
+									<label class="col-lg-4 control-label" for="txtTipoTarjeta">Tipo Tarjeta:</label>
+									<div class="col-lg-8">
+										<select name="txtTipoTarjeta" id="txtTipoTarjeta" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"  >
+												<option></option>																
+												<?php
+												$count = 0;
+												if($objListTypeID){
+													foreach($objListTypeID as $ws){
+														if(is_null($objPaymentMethod)){
+															if($count == 0 )
+																echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+															else
+																echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+														}else{
+															if( $ws->catalogItemID == $objPaymentMethod->typeId )
+																echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+															else
+																echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+														}
+													$count++;
+													}
+												}
+												?>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>    
 				

@@ -21,6 +21,7 @@
 	
 	$(document).ready(function(){	
 		//Inicializar DataPciker
+		$('#txtVencimientoTarjeta').datepicker({format: "mm/yyyy"})
 		$('#txtBirthDate').datepicker({format:"yyyy-mm-dd"});
 		$('#txtDateContract').datepicker({format:"yyyy-mm-dd"});
 		<?php echo getBehavio($company->type,"app_cxc_customer","divScriptReady",""); ?>		

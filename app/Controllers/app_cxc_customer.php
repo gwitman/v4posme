@@ -53,6 +53,7 @@ class app_cxc_customer extends _BaseController {
 			$datView["objCustomerCredit"]		= $this->Customer_Credit_Model->get_rowByPK($companyID,$branchID,$entityID);
 			$datView["objCustomerCreditLine"]	= $this->Customer_Credit_Line_Model->get_rowByEntity($companyID,$branchID,$entityID);
 			$datView["objCustomerSinRiesgo"]	= $this->Customer_Consultas_Sin_Riesgo_Model->get_rowByCedula_FileName($companyID,str_replace("-","",$datView["objCustomer"]->identification));
+			$datView["objPaymentMethod"]        = $this->Customer_Payment_Method_Model->get_rowByEntityID($entityID);
 			$datView["callback"]				= $callback;
 			$objComponent						= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
 			if(!$objComponent)
@@ -89,7 +90,7 @@ class app_cxc_customer extends _BaseController {
 			$datView["objListFormContactID"]			= $this->core_web_catalog->getCatalogAllItem("tb_customer","formContactID",$companyID);
 			$datView["objListPayConditionID"]			= $this->core_web_catalog->getCatalogAllItem("tb_customer","payConditionID",$companyID);
 			$datView["objListSexoID"]					= $this->core_web_catalog->getCatalogAllItem("tb_customer","sexoID",$companyID);
-			
+			$datView["objListTypeID"]			        = $this->core_web_catalog->getCatalogAllItem("tb_customer_payment_method","typeID",$companyID);
 			$datView["objListEstadoCivilID"]			= $this->core_web_catalog->getCatalogAllItem("tb_naturales","statusID",$companyID);
 			
 			$datView["objListProfesionID"] 				= $this->core_web_catalog->getCatalogAllItem("tb_naturales","profesionID",$companyID);
@@ -348,6 +349,14 @@ class app_cxc_customer extends _BaseController {
 				$objLegal["address"]		= /*inicio get post*/ $this->request->getPost("txtAddress");//--fin peticion get o post
 				$this->Legal_Model->update_app_posme($companyID_,$branchID_,$entityID_,$objLegal);
 				
+				$objPaymentMethod['name']     = /*inicio get post*/ $this->request->getPost("txtNombreTarjeta");//--fin peticion get o post;
+				$objPaymentMethod['number']   = /*inicio get post*/ $this->request->getPost("txtNumeroTarjeta");//--fin peticion get o post;
+				$objPaymentMethod['email']    = /*inicio get post*/ $this->request->getPost("txtEmailTarjeta");//--fin peticion get o post;
+				$objPaymentMethod['expirationDate']=/*inicio get post*/ $this->request->getPost("txtVencimientoTarjeta");//--fin peticion get o post;
+				$objPaymentMethod['cvc']      = /*inicio get post*/ $this->request->getPost("txtCodigoCvc");//--fin peticion get o post;
+				$objPaymentMethod['typeID']   = /*inicio get post*/ $this->request->getPost("txtTipoTarjeta");//--fin peticion get o post;
+				$result 					  = $this->Customer_Payment_Method_Model->update_app_posme($entityID_,$objPaymentMethod);
+
 				$objCustomer 						= NULL;
 				$objCustomer["identificationType"]	= /*inicio get post*/ $this->request->getPost('txtIdentificationTypeID');//--fin peticion get o post
 				$objCustomer["identification"]		= /*inicio get post*/ $this->request->getPost('txtIdentification');//--fin peticion get o post
@@ -639,6 +648,17 @@ class app_cxc_customer extends _BaseController {
 			$objLegal["legalName"]		= /*inicio get post*/ $this->request->getPost("txtLegalName");//--fin peticion get o post
 			$objLegal["address"]		= /*inicio get post*/ $this->request->getPost("txtAddress");//--fin peticion get o post
 			$result 					= $this->Legal_Model->insert_app_posme($objLegal);
+
+			$objPaymentMethod['entityID'] = $entityID;
+			$objPaymentMethod['statusID'] = 1;
+			$objPaymentMethod['isActive'] = true;
+			$objPaymentMethod['name']     = /*inicio get post*/ $this->request->getPost("txtNombreTarjeta");//--fin peticion get o post;
+			$objPaymentMethod['number']   = /*inicio get post*/ $this->request->getPost("txtNumeroTarjeta");//--fin peticion get o post;
+			$objPaymentMethod['email']    = /*inicio get post*/ $this->request->getPost("txtEmailTarjeta");//--fin peticion get o post;
+			$objPaymentMethod['expirationDate']=/*inicio get post*/ $this->request->getPost("txtVencimientoTarjeta");//--fin peticion get o post;
+			$objPaymentMethod['cvc']      = /*inicio get post*/ $this->request->getPost("txtCodigoCvc");//--fin peticion get o post;
+			$objPaymentMethod['typeID']   = /*inicio get post*/ $this->request->getPost("txtTipoTarjeta");//--fin peticion get o post;
+			$result 					  = $this->Customer_Payment_Method_Model->insert_app_posme($objPaymentMethod);
 			
 			$paisDefault 				= $this->core_web_parameter->getParameterValue("CXC_PAIS_DEFAULT",$companyID);
 			$departamentoDefault 		= $this->core_web_parameter->getParameterValue("CXC_DEPARTAMENTO_DEFAULT",$companyID);
@@ -1021,7 +1041,7 @@ class app_cxc_customer extends _BaseController {
 			$dataView["useMobile"]						= $dataSession["user"]->useMobile;		
 			$dataView["company"]						= $dataSession["company"];
 			
-			
+			$dataView["objListTypeID"]			        = $this->core_web_catalog->getCatalogAllItem("tb_customer_payment_method","typeID",$companyID);
 			
 			//Obtener catalogos de tipos de leads
 			$objPCatalogTypeLeads 	= $this->Public_Catalog_Model->asObject()->
