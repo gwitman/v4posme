@@ -106,6 +106,7 @@ use App\Models\Customer_Credit_Line_Model;
 use App\Models\Customer_Credit_Model;
 use App\Models\Customer_Model;
 use App\Models\Customer_Payment_Method_Model;
+use App\Models\Customer_Frecuency_Actuations_Model;
 use App\Models\Employee_Calendar_Pay_detail_Model;
 use App\Models\Employee_Calendar_Pay_Model;
 use App\Models\Employee_Model;
@@ -293,6 +294,7 @@ abstract class _BaseController extends Controller
 	protected $Customer_Credit_Model;
 	protected $Customer_Model;
 	protected $Customer_Payment_Method_Model;
+	protected $Customer_Frecuency_Actuations_Model;
 	protected $Employee_Calendar_Pay_detail_Model;
 	protected $Employee_Calendar_Pay_Model;
 	protected $Employee_Model;
@@ -460,6 +462,7 @@ abstract class _BaseController extends Controller
 		$this->Customer_Credit_Model= new Customer_Credit_Model();
 		$this->Customer_Model= new Customer_Model();
 		$this->Customer_Payment_Method_Model=new Customer_Payment_Method_Model();
+		$this->Customer_Frecuency_Actuations_Model=new Customer_Frecuency_Actuations_Model();
 		$this->Employee_Calendar_Pay_detail_Model= new Employee_Calendar_Pay_detail_Model();
 		$this->Employee_Calendar_Pay_Model= new Employee_Calendar_Pay_Model();
 		

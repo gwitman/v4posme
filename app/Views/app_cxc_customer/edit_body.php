@@ -79,6 +79,7 @@
 							<li><a href="#dropdown" data-toggle="tab">Direccion</a></li>
 							<li><a id="btnClickArchivo" href="#dropdown-file" data-toggle="tab">Archivos</a></li>
 							<li><a href="#dropdown-formapago" data-toggle="tab">Forma de Pago</a></li>
+							<li><a href="#dropdown-recordatorio" data-toggle="tab">Recordatorios</a></li>
 						 </ul>
 					</li>
 				</ul>
@@ -854,8 +855,120 @@
 							</div>
 						</div>
 					</div>
-				</div>    
+					<div class="tab-pane fade" id="dropdown-recordatorio">
+					
+						<div class="row">
+							<div class="col-md-12">
+								<table class="table" id="tableFrecuency">
+								<thead>
+									<tr>
+										<th>Descripcion</th>
+										<th>Estado</th>
+										<th>Frecuencia</th>
+										<th>Acción</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class="" id="filaEntrada">
+										<td>
+											<input class="form-control"  type="text"  name="txtNombreRecordatorio" id="txtNombreRecordatorio" value="">
+											<label id="errorLabel" class="text-danger">Este campo no puede estar vacío</label>
+										</td>
+										<td>
+											<label class="sr-only" for="txtSituationID">Situacion:</label>
+											<select name="txtSituationID" id="txtSituationID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"  >
+													<option></option>																
+													<?php
+													$count = 0;
+													if($objListSituationID){
+														foreach($objListSituationID as $ws){
+															if($count == 0 )
+																echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+															else
+																echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+															$count++;
+														}
+													}
+													?>
+											</select>
+										</td>
+										<td>
+											<label class="sr-only" for="txtFrecuencyContactID">Frecuencia:</label>
+											<select name="txtFrecuencyContactID" id="txtFrecuencyContactID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"  >
+													<option></option>																
+													<?php
+													$count = 0;
+													if($objListFrecuencyContactID){
+														foreach($objListFrecuencyContactID as $ws){
+															if($count == 0 )
+																echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+															else
+																echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+															$count++;
+														}
+													}
+													?>
+											</select>
+										</td>
+										<td>
+											<a href="#" class="btn btn-flat btn-info" id="btnAddFrecuency"><i class="fas fa-plus"></i></a>
+										</td>
+									</tr>
+									<!-- Aquí se agregarán las filas dinámicamente -->
+
+									<!-- Filas dinámicas obtenidas de la base de datos -->
+									 <?php
+									 if($objCustomerFrecuency){
+										foreach($objCustomerFrecuency as $value):
+										?>
+									<tr>
+										<td>
+											<input type="hidden" name="customerFrecuencyActuations[]" value="<?= $value->customerFrecuencyActuations?>" />
+											<input class="form-control" type="text" name="txtNombreRecordatorioArray[]" value="<?= $value->name ?>">
+										</td>
+										<td>
+											<select name="txtSituationIDArray[]" id="txtSituationIDArray" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"  >
+												<?php
+													if($objListSituationID){
+														foreach($objListSituationID as $ws){
+												?>
+														<option value='<?=$ws->catalogItemID?>' <?= $ws->catalogItemID== $value->situationID ? 'selected' : '' ?> ><?=$ws->name?></option>
+												<?php
+														}
+													}
+												?>
+											</select>
+										</td>
+										<td>
+										<select name="txtFrecuencyContactIDArray[]" id="txtFrecuencyContactIDArray" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"  >
+											<?php
+												if($objListFrecuencyContactID){
+													foreach($objListFrecuencyContactID as $ws){
+											?>
+													<option value='<?=$ws->catalogItemID?>' <?= $ws->catalogItemID== $value->frecuencyContactID ? 'selected' : '' ?> ><?=$ws->name?></option>
+											<?php
+													}
+												}
+											?>
+										</select>
+										</td>
+										<td>
+											<button type="button" class="btn btn-flat btn-danger" onclick="eliminarFila(this)">
+												<i class="fas fa-trash"></i>
+											</button>
+										</td>
+									</tr>
+									<?php
+										endforeach;
+									 }
+									 ?>
+								</tbody>
+								</table>
+							</div>
+						</div>
+					</div>    
 				
+				</div>
 			</div>
 			</form>
 			<!-- /body -->

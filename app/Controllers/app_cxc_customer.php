@@ -108,7 +108,9 @@ class app_cxc_customer extends _BaseController {
 			$datView["objEmployerNatural"]			= $this->Natural_Model->get_rowByPK($datView["objCustomer"]->companyID,$datView["objCustomer"]->branchID,$entityEmployeerID);
 			$datView["objEmployerLegal"]			= $this->Legal_Model->get_rowByPK($datView["objCustomer"]->companyID,$datView["objCustomer"]->branchID,$entityEmployeerID);
 			
-			
+			$datView["objListSituationID"]			= $this->core_web_catalog->getCatalogAllItem("tb_customer_frecuency_actuations","situationID",$companyID);
+			$datView["objListFrecuencyContactID"]	= $this->core_web_catalog->getCatalogAllItem("tb_customer_frecuency_actuations","frecuencyContactID",$companyID);
+			$datView['objCustomerFrecuency']		= $this->Customer_Frecuency_Actuations_Model->get_rowByEntityID($entityID);
 			//Obtener catalogos de tipos de leads
 			$objPCatalogTypeLeads 	= $this->Public_Catalog_Model->asObject()->
 										where("systemName","tb_customer.typeLeads")->
@@ -145,9 +147,8 @@ class app_cxc_customer extends _BaseController {
 										where("publicCatalogID",helper_RequestGetValueObjet($objPCatalogCategoryLeads,"publicCatalogID",0))->
 										where( "isActive",1)->
 										findAll();
-			$datView["objPCItemCategoryLeads"]	
-										= $objPCItemCategoryLeads;
-			
+			$datView["objPCItemCategoryLeads"]	= $objPCItemCategoryLeads;
+		
 			
 			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -377,6 +378,30 @@ class app_cxc_customer extends _BaseController {
 				}
 				
 				
+				$customerFrecuencyActuations =/*inicio get post*/ $this->request->getPost("customerFrecuencyActuations");//--fin peticion get o post
+				if(!is_null($customerFrecuencyActuations)){
+					$this->Customer_Frecuency_Actuations_Model->deleteWhereIDNotIn($entityID_,$customerFrecuencyActuations);
+					$nombreRecordatorios = /*inicio get post*/ $this->request->getPost("txtNombreRecordatorioArray");//--fin peticion get o post
+					$situationes         = /*inicio get post*/ $this->request->getPost("txtSituationIDArray");//--fin peticion get o post
+					$frecuenias 		 = /*inicio get post*/ $this->request->getPost("txtFrecuencyContactIDArray");//--fin peticion get o post
+					$cant = count($customerFrecuencyActuations)-1;
+					for($i=$cant; $i>=0;$i--){
+						$objFrecuencyActuations['entityID'] = $entityID_;
+						$objFrecuencyActuations['createdOn'] = date('Y-m-d H:i:s');
+						$objFrecuencyActuations['name'] = $nombreRecordatorios[$i];
+						$objFrecuencyActuations['situationID'] = $situationes[$i];
+						$objFrecuencyActuations['frecuencyContactID'] = $frecuenias[$i];
+						$objFrecuencyActuations['isActive'] = 1;
+						$idFrecuencia = $customerFrecuencyActuations[$i];
+						if($idFrecuencia==0){
+							$objFrecuencyActuations['isApply'] = 0;
+							$this->Customer_Frecuency_Actuations_Model->insert_app_posme($objFrecuencyActuations);
+						}else{
+							$this->Customer_Frecuency_Actuations_Model->update_app_posme($entityID_,$idFrecuencia,$objFrecuencyActuations);
+						}	
+					}
+				}
+
 				$objCustomer["countryID"]			= /*inicio get post*/ $this->request->getPost('txtCountryID');//--fin peticion get o post
 				$objCustomer["stateID"]				= /*inicio get post*/ $this->request->getPost('txtStateID');//--fin peticion get o post
 				$objCustomer["cityID"]				= /*inicio get post*/ $this->request->getPost("txtCityID");//--fin peticion get o post
@@ -660,6 +685,23 @@ class app_cxc_customer extends _BaseController {
 			$objPaymentMethod['typeID']   = /*inicio get post*/ $this->request->getPost("txtTipoTarjeta");//--fin peticion get o post;
 			$result 					  = $this->Customer_Payment_Method_Model->insert_app_posme($objPaymentMethod);
 			
+			$nombreRecordatorios = /*inicio get post*/ $this->request->getPost("txtNombreRecordatorioArray");//--fin peticion get o post;
+			$situationes         = /*inicio get post*/ $this->request->getPost("txtSituationIDArray");//--fin peticion get o post;
+			$frecuenias 		 = /*inicio get post*/ $this->request->getPost("txtFrecuencyContactIDArray");//--fin peticion get o post;
+			if(!is_null($nombreRecordatorios)){
+				$cant = count($nombreRecordatorios)-1;
+				for($i=$cant; $i>=0;$i--){
+					$objFrecuencyActuations['entityID'] = $entityID;
+					$objFrecuencyActuations['createdOn'] = date('Y-m-d H:i:s');
+					$objFrecuencyActuations['name'] = $nombreRecordatorios[$i];
+					$objFrecuencyActuations['situationID'] = $situationes[$i];
+					$objFrecuencyActuations['frecuencyContactID'] = $frecuenias[$i];
+					$objFrecuencyActuations['isActive'] = 1;
+					$objFrecuencyActuations['isApply'] = 0;
+					$this->Customer_Frecuency_Actuations_Model->insert_app_posme($objFrecuencyActuations);
+				}
+			}
+
 			$paisDefault 				= $this->core_web_parameter->getParameterValue("CXC_PAIS_DEFAULT",$companyID);
 			$departamentoDefault 		= $this->core_web_parameter->getParameterValue("CXC_DEPARTAMENTO_DEFAULT",$companyID);
 			$municipioDefault 			= $this->core_web_parameter->getParameterValue("CXC_MUNICIPIO_DEFAULT",$companyID);
@@ -1042,7 +1084,8 @@ class app_cxc_customer extends _BaseController {
 			$dataView["company"]						= $dataSession["company"];
 			
 			$dataView["objListTypeID"]			        = $this->core_web_catalog->getCatalogAllItem("tb_customer_payment_method","typeID",$companyID);
-			
+			$dataView["objListSituationID"]			    = $this->core_web_catalog->getCatalogAllItem("tb_customer_frecuency_actuations","situationID",$companyID);
+			$dataView["objListFrecuencyContactID"]	    = $this->core_web_catalog->getCatalogAllItem("tb_customer_frecuency_actuations","frecuencyContactID",$companyID);
 			//Obtener catalogos de tipos de leads
 			$objPCatalogTypeLeads 	= $this->Public_Catalog_Model->asObject()->
 										where("systemName","tb_customer.typeLeads")->

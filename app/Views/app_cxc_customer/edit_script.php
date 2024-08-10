@@ -796,10 +796,82 @@
 		$(document).on("click","#btnScanerHuella",function(){
 			fnReadHuella();
 		});
-		
+
+		$(document).on("click","#btnAddFrecuency",function(){
+			fnAgregarFila();
+		});
+		$('#errorLabel').hide();
 	});
 	
-	
+	function fnEliminarFila(boton) {
+		$(boton).closest('tr').remove();
+	}
+
+	function fnAgregarFila() {
+		
+		var texto = $('#txtNombreRecordatorio').val();
+
+		// Si el campo de texto está vacío, mostrar un mensaje de error
+        if (texto === "") {
+            $('#errorLabel').show();
+            return; 
+        } else {
+            $('#errorLabel').hide();
+        }
+
+		var combo1 = $('#txtSituationID').val();
+		var combo2 = $('#txtFrecuencyContactID').val();
+
+		var nuevaFila = `
+            <tr>
+                <td>
+					<input type="hidden" name="customerFrecuencyActuations[]" value="0	" />
+                    <input class="form-control" type="text" name="txtNombreRecordatorioArray[]" value="${texto}">
+                </td>
+                <td>
+                    <select name="txtSituationIDArray[]" id="comboSituationId">
+					<?php
+						if($objListSituationID){
+							foreach($objListSituationID as $ws){
+					?>
+								"<option value='<?=$ws->catalogItemID?>' ${combo1 === '<?=$ws->catalogItemID?>' ? 'selected' : ''} ><?=$ws->name?></option>";
+					<?php
+							}
+						}
+					?>
+                </td>
+                <td>
+                    <select name="txtFrecuencyContactIDArray[]" id="comboFrecuencyContactId">
+					<?php
+						if($objListFrecuencyContactID){
+							foreach($objListFrecuencyContactID as $ws){
+					?>
+								"<option value='<?=$ws->catalogItemID?>' ${combo1 === '<?=$ws->catalogItemID?>' ? 'selected' : ''} ><?=$ws->name?></option>";
+					<?php
+							}
+						}
+					?>
+                    </select>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-flat btn-danger" onclick="fnEliminarFila(this)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+
+		// Agregar la nueva fila después de la primera fila de entrada
+		$('#filaEntrada').after(nuevaFila);
+
+        $('#txtNombreRecordatorio').val('');
+        $('#txtSituationID').val(null).trigger('change');
+        $('#txtFrecuencyContactID').val(null).trigger('change');
+
+		// Inicializar Select2 en los nuevos select creados
+		$('#comboSituationId').select2();
+		$('#comboFrecuencyContactId').select2();
+	}
 	
 	function fnReadHuella(){
 						
