@@ -953,7 +953,7 @@
 										</select>
 										</td>
 										<td>
-											<button type="button" class="btn btn-flat btn-danger" onclick="eliminarFila(this)">
+											<button type="button" class="btn btn-flat btn-danger" onclick="fnEliminarFila(this)">
 												<i class="fas fa-trash"></i>
 											</button>
 										</td>
