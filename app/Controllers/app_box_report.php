@@ -731,6 +731,10 @@ class app_box_report extends _BaseController {
 				$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview->value;
 				$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true" ? true : false;
 				
+				$pathFileFloder = "./resource/file_company/company_".$companyID."/component_48/component_item_0";
+                if(!file_exists($pathFileFloder))
+                    mkdir($pathFileFloder, 0700);				
+				
 				$fileNamePut = "caja_0_".date("dmYhis").".pdf";
 				$path        = "./resource/file_company/company_".$companyID."/component_48/component_item_0/".$fileNamePut;
 					
