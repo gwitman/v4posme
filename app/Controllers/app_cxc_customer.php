@@ -350,13 +350,19 @@ class app_cxc_customer extends _BaseController {
 				$objLegal["address"]		= /*inicio get post*/ $this->request->getPost("txtAddress");//--fin peticion get o post
 				$this->Legal_Model->update_app_posme($companyID_,$branchID_,$entityID_,$objLegal);
 				
+				$findPaymentMethod            = $this->Customer_Payment_Method_Model->get_rowByEntityID($entityID_);
 				$objPaymentMethod['name']     = /*inicio get post*/ $this->request->getPost("txtNombreTarjeta");//--fin peticion get o post;
 				$objPaymentMethod['number']   = /*inicio get post*/ $this->request->getPost("txtNumeroTarjeta");//--fin peticion get o post;
 				$objPaymentMethod['email']    = /*inicio get post*/ $this->request->getPost("txtEmailTarjeta");//--fin peticion get o post;
 				$objPaymentMethod['expirationDate']=/*inicio get post*/ $this->request->getPost("txtVencimientoTarjeta");//--fin peticion get o post;
 				$objPaymentMethod['cvc']      = /*inicio get post*/ $this->request->getPost("txtCodigoCvc");//--fin peticion get o post;
 				$objPaymentMethod['typeID']   = /*inicio get post*/ $this->request->getPost("txtTipoTarjeta");//--fin peticion get o post;
-				$result 					  = $this->Customer_Payment_Method_Model->update_app_posme($entityID_,$objPaymentMethod);
+				if(is_null($findPaymentMethod)){
+					$objPaymentMethod['entityID']=$entityID_;
+					$this->Customer_Payment_Method_Model->insert_app_posme($objPaymentMethod);
+				}else{
+					$this->Customer_Payment_Method_Model->update_app_posme($entityID_,$objPaymentMethod);
+				}
 
 				$objCustomer 						= NULL;
 				$objCustomer["identificationType"]	= /*inicio get post*/ $this->request->getPost('txtIdentificationTypeID');//--fin peticion get o post
