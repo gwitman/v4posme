@@ -386,14 +386,14 @@ class app_cxc_customer extends _BaseController {
 					$frecuenias 		 = /*inicio get post*/ $this->request->getPost("txtFrecuencyContactIDArray");//--fin peticion get o post
 					$cant = count($customerFrecuencyActuations)-1;
 					for($i=$cant; $i>=0;$i--){
-						$objFrecuencyActuations['entityID'] = $entityID_;
-						$objFrecuencyActuations['createdOn'] = date('Y-m-d H:i:s');
+						$objFrecuencyActuations['entityID'] = $entityID_;						
 						$objFrecuencyActuations['name'] = $nombreRecordatorios[$i];
 						$objFrecuencyActuations['situationID'] = $situationes[$i];
 						$objFrecuencyActuations['frecuencyContactID'] = $frecuenias[$i];
 						$objFrecuencyActuations['isActive'] = 1;
 						$idFrecuencia = $customerFrecuencyActuations[$i];
 						if($idFrecuencia==0){
+							$objFrecuencyActuations['createdOn'] = date('Y-m-d H:i:s');
 							$objFrecuencyActuations['isApply'] = 0;
 							$this->Customer_Frecuency_Actuations_Model->insert_app_posme($objFrecuencyActuations);
 						}else{

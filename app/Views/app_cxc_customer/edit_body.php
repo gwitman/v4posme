@@ -921,43 +921,43 @@
 									 if($objCustomerFrecuency){
 										foreach($objCustomerFrecuency as $value):
 										?>
-									<tr>
-										<td>
-											<input type="hidden" name="customerFrecuencyActuations[]" value="<?= $value->customerFrecuencyActuations?>" />
-											<input class="form-control" type="text" name="txtNombreRecordatorioArray[]" value="<?= $value->name ?>">
-										</td>
-										<td>
-											<select name="txtSituationIDArray[]" id="txtSituationIDArray" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"  >
-												<?php
-													if($objListSituationID){
-														foreach($objListSituationID as $ws){
-												?>
-														<option value='<?=$ws->catalogItemID?>' <?= $ws->catalogItemID== $value->situationID ? 'selected' : '' ?> ><?=$ws->name?></option>
-												<?php
+											<tr>
+												<td>
+													<input type="hidden" name="customerFrecuencyActuations[]" value="<?= $value->customerFrecuencyActuations?>" />
+													<input class="form-control" type="text" name="txtNombreRecordatorioArray[]" value="<?= $value->name ?>">
+												</td>
+												<td>
+													<select name="txtSituationIDArray[]" id="txtSituationIDArray" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"  >
+														<?php
+															if($objListSituationID){
+																foreach($objListSituationID as $ws){
+														?>
+																<option value='<?=$ws->catalogItemID?>' <?= $ws->catalogItemID== $value->situationID ? 'selected' : '' ?> ><?=$ws->name?></option>
+														<?php
+																}
+															}
+														?>
+													</select>
+												</td>
+												<td>
+												<select name="txtFrecuencyContactIDArray[]" id="txtFrecuencyContactIDArray" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"  >
+													<?php
+														if($objListFrecuencyContactID){
+															foreach($objListFrecuencyContactID as $ws){
+													?>
+															<option value='<?=$ws->catalogItemID?>' <?= $ws->catalogItemID== $value->frecuencyContactID ? 'selected' : '' ?> ><?=$ws->name?></option>
+													<?php
+															}
 														}
-													}
-												?>
-											</select>
-										</td>
-										<td>
-										<select name="txtFrecuencyContactIDArray[]" id="txtFrecuencyContactIDArray" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>"  >
-											<?php
-												if($objListFrecuencyContactID){
-													foreach($objListFrecuencyContactID as $ws){
-											?>
-													<option value='<?=$ws->catalogItemID?>' <?= $ws->catalogItemID== $value->frecuencyContactID ? 'selected' : '' ?> ><?=$ws->name?></option>
-											<?php
-													}
-												}
-											?>
-										</select>
-										</td>
-										<td>
-											<button type="button" class="btn btn-flat btn-danger" onclick="fnEliminarFila(this)">
-												<i class="fas fa-trash"></i>
-											</button>
-										</td>
-									</tr>
+													?>
+												</select>
+												</td>
+												<td>
+													<button type="button" class="btn btn-flat btn-danger" onclick="fnEliminarFila(this)">
+														<i class="fas fa-trash"></i>
+													</button>
+												</td>
+											</tr>
 									<?php
 										endforeach;
 									 }
