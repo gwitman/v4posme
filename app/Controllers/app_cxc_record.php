@@ -107,8 +107,6 @@ class app_cxc_record extends _BaseController {
 				if( $dataPara["value"] <= $objParameterCantidadDeConsultasMaximas->value )
 				{
 					$this->Company_Parameter_Model->update_app_posme($companyID,$objParameterCantidadDeConsultasActuales->parameterID,$dataPara);
-					
-					
 					$objUltimoRegistro 				= $this->Customer_Consultas_Sin_Riesgo_Model->get_rowByCedulaLast($companyID,$identificacion);
 					$requestID						= $objUltimoRegistro == null ? 0 : $objUltimoRegistro->requestID;
 					$objUltimoRegistroMas6Dias 		= $this->Customer_Consultas_Sin_Riesgo_Model->get_rowValidOld($requestID,6);
@@ -144,9 +142,9 @@ class app_cxc_record extends _BaseController {
 					$requestID												= 0;
 					$objCustomerConsultaSinRiesgo							= NULL;
 					$objCustomerConsultaSinRiesgo["modifiedOn"] 			= date("Y-m-d");
+					$objCustomerConsultaSinRiesgo["createdOn"] 				= date("Y-m-d");
 					$objCustomerConsultaSinRiesgo["userID"] 				= $dataSession["user"]->userID;
 					$objCustomerConsultaSinRiesgo["file"] 					= substr($archivo2,-29);
-
 					$this->Customer_Consultas_Sin_Riesgo_Model->updateByCedula($companyID,$identificacion,$objCustomerConsultaSinRiesgo);
 					
 				}
