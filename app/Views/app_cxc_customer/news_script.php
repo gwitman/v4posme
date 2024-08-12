@@ -636,7 +636,7 @@
                 "<td>"+
                     "<select name='txtSituationIDArray[]' id='comboSituationId'>";
 					<?php
-						if($objListSituationID){
+						if(isset($objListSituationID)){
 							foreach($objListSituationID as $ws){
 					?>
 								selected = ((combo1===<?= $ws->catalogItemID?>) ? 'selected' : '');
@@ -649,7 +649,7 @@
                 "<td>"+
                     "<select name='txtFrecuencyContactIDArray[]' id='comboFrecuencyContactId'>";
 					<?php
-						if($objListFrecuencyContactID){
+						if(isset($objListFrecuencyContactID)){
 							foreach($objListFrecuencyContactID as $ws){
 					?>
 								selected = ((combo2===<?= $ws->catalogItemID?>) ? 'selected' : '');
