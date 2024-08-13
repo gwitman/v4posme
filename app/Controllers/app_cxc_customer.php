@@ -359,6 +359,8 @@ class app_cxc_customer extends _BaseController {
 				$objPaymentMethod['typeID']   = /*inicio get post*/ $this->request->getPost("txtTipoTarjeta");//--fin peticion get o post;
 				if(is_null($findPaymentMethod)){
 					$objPaymentMethod['entityID']=$entityID_;
+					$objPaymentMethod['statusID']=1;
+					$objPaymentMethod['isActive']=true;
 					$this->Customer_Payment_Method_Model->insert_app_posme($objPaymentMethod);
 				}else{
 					$this->Customer_Payment_Method_Model->update_app_posme($entityID_,$objPaymentMethod);

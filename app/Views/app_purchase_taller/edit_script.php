@@ -132,8 +132,10 @@
 									$("#txtNote").val("");
 									$("#txtNoteDescription").val("");
 						});
-						
-						
+						$('#errorLabel').hide();
+						$(document).on("click","#btnAddComments",function(){
+							fnAgregarFila();
+						});
 						
 						
 					});
@@ -198,5 +200,56 @@
 						//$('.txtCredit').mask('000,000.00', {reverse: true});
 						$('.txt-numeric').mask('000,000.00', {reverse: true});
 					}
-					
+					function fnEliminarFila(boton) {
+						$(boton).closest('tr').remove();
+					}
+
+					function fnAgregarFila() {
+						
+						let texto = $('#txtComentarioTaller').val();
+
+						// Si el campo de texto está vacío, mostrar un mensaje de error
+						if (texto === "") {
+							$('#errorLabel').show();
+							return; 
+						} else {
+							$('#errorLabel').hide();
+						}
+						let combo1 = $('#txtSelectComments').val();
+						let selected = '';
+						let nuevaFila = ""+
+							"<tr> "+
+								"<td>"+
+									"<input class='form-control' type='hidden' name='commentsDetailID[]' value='0'> "+
+									"<input class='form-control' type='text' name='txtComentarioTallerArray[]' value='"+texto+"'> "+
+								"</td>"+
+								"<td>"+
+									"<select name='txtCommentsIDArray[]' id='comboCommentsId'>";
+									<?php
+										if($objListComments){
+											foreach($objListComments as $ws){
+									?>
+												selected = ((combo1===<?= $ws->catalogItemID?>) ? 'selected' : '');
+												nuevaFila += "<option value='<?=$ws->catalogItemID?>' " + selected + "><?=$ws->name?></option>"+
+									<?php
+											}
+										}
+									?>
+								"</td>"+
+								"<td>"+
+									"<button type='button' class='btn btn-flat btn-danger' onclick='fnEliminarFila(this)'>"+
+										"<i class='fas fa-trash'></i>"+
+									"</button>"+
+								"</td>"+
+							"</tr>";
+
+						// Agregar la nueva fila después de la primera fila de entrada
+						$('#filaEntrada').after(nuevaFila);
+
+						$('#txtComentarioTaller').val('');
+						$('#txtSelectComments').val(null).trigger('change');
+
+						// Inicializar Select2 en los nuevos select creados
+						$('#comboCommentsId').select2();
+					}
 				</script>

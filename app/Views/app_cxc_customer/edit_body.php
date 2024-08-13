@@ -832,9 +832,9 @@
 												<option></option>																
 												<?php
 												$count = 0;
-												if($objListTypeID){
+												if(isset($objListTypeID)){
 													foreach($objListTypeID as $ws){
-														if(is_null($objPaymentMethod)){
+														if(!isset($objPaymentMethod)){
 															if($count == 0 )
 																echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
 															else

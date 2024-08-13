@@ -824,6 +824,7 @@
 		let nuevaFila = ""+
         	"<tr> "+
                 "<td>"+
+					"<input class='form-control' type='hidden' name='customerFrecuencyActuations[]' value='0'> "+
                     "<input class='form-control' type='text' name='txtNombreRecordatorioArray[]' value='"+texto+"'> "+
                 "</td>"+
                 "<td>"+

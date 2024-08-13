@@ -212,6 +212,27 @@ class Transaction_Master_Detail_Model extends Model  {
 			
 			
 		}
+
+		if($componentID == 104 /*tb_comments*/)
+		{
+			$sql = sprintf("select 
+								td.companyID,
+								td.transactionID,
+								td.transactionMasterID,
+								td.transactionMasterDetailID,
+								td.componentID,
+								td.expirationDate,
+								td.reference1,
+								td.catalogStatusID
+							");
+			$sql = $sql.sprintf(" from tb_transaction_master_detail td");
+			$sql = $sql.sprintf(" where td.companyID = $companyID");
+			$sql = $sql.sprintf(" and td.transactionID = $transactionID");		
+			$sql = $sql.sprintf(" and td.transactionMasterID = $transactionMasterID");
+			$sql = $sql.sprintf(" and td.componentID = $componentID");
+			$sql = $sql.sprintf(" and td.isActive= 1");		
+			$sql = $sql.sprintf(" order by td.transactionMasterDetailID desc");			
+		}
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
@@ -299,6 +320,20 @@ class Transaction_Master_Detail_Model extends Model  {
 		return $builder->update($data);
 		
    }
+
+   function deleteWhereIDNotInComponent($companyID,$transactionID,$transactionMasterID,$componentID,$listTMD_ID){
+		$db 		= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+		$data["isActive"] = 0;
+
+
+		$builder->where("companyID",$companyID);
+		$builder->where("transactionID",$transactionID);	
+		$builder->where("transactionMasterID",$transactionMasterID);
+		$builder->where("componentID",$componentID);
+		$builder->whereNotIn("transactionMasterDetailID",$listTMD_ID);	
+		return $builder->update($data);
+	}
    
     function GlobalPro_get_rowBySalesByEmployeerMonthOnly_Sales($companyID,$dateFirst,$dateLast)
    {

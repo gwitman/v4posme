@@ -74,6 +74,10 @@ class app_purchase_taller extends _BaseController {
 			$objComponentFile	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_file");
 			if(!$objComponentFile)
 			throw new \Exception("EL COMPONENTE 'tb_file' NO EXISTE...");
+
+			$objComponentComments	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_comments");
+			if(is_null($objComponentComments))
+			throw new \Exception("EL COMPONENTE 'tb_comments' NO EXISTE...");
 		
 			//Tipo de Factura			
 			$dataView["objComponentBilling"]					= $objComponentBilling;
@@ -83,6 +87,9 @@ class app_purchase_taller extends _BaseController {
 			$dataView["objTransactionMaster"]->transactionOn 	= date_format(date_create($dataView["objTransactionMaster"]->transactionOn),"Y-m-d");
 			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterDetailDocument"]		= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID,$transactionID,$transactionMasterID,$objComponentFile->componentID);
+			
+			//comentarios sobre taller
+			$dataView["objDetalleComentariosTaller"]		    = $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID,$transactionID,$transactionMasterID,$objComponentComments->componentID);
 			
 			//Obtener al cliente
 			$dataView["objCustomer"]				= $this->Customer_Model->get_rowByEntity($companyID,$dataView["objTransactionMaster"]->entityID);
@@ -116,6 +123,8 @@ class app_purchase_taller extends _BaseController {
 			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","routeID",$companyID);
 			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","mesaID",$companyID);
 			
+			$dataView["objListComments"]		= $this->core_web_catalog->getCatalogAllItem("tb_comments","catalogStatusID",$companyID);
+
 			$objParameterUrlPrinter 						= $this->core_web_parameter->getParameter("WORKSHOW_URL_PRINTER_TALLER",$companyID);
 			$objParameterUrlPrinter 						= $objParameterUrlPrinter->value;
 			$dataView["objParameterUrlPrinterInput"]	 	= $objParameterUrlPrinter;
@@ -245,7 +254,10 @@ class app_purchase_taller extends _BaseController {
 			$objComponentFile			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_file");
 			if(!$objComponentFile)
 			throw new \Exception("EL COMPONENTE 'tb_file' NO EXISTE...");
-			
+
+			$objComponentComments			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_comments");
+			if(is_null($objComponentComments))
+			throw new \Exception("EL COMPONENTE 'tb_comments' NO EXISTE...");
 			
 			$branchID 								= $dataSession["user"]->branchID;
 			$roleID 								= $dataSession["role"]->roleID;
@@ -328,6 +340,30 @@ class app_purchase_taller extends _BaseController {
 				
 			}
 			
+			//Actualizar Comentarios sobre el trabajo a realizar
+			$comentariosTallerID		= $this->request->getPost("commentsDetailID");
+			if(!is_null($comentariosTallerID)){
+				$comentariosTaller 	= $this->request->getPost("txtComentarioTallerArray");
+				$comentariosCatalogID= $this->request->getPost('txtCommentsIDArray');
+				$contar = count($comentariosTaller)-1;
+				$this->Transaction_Master_Detail_Model->deleteWhereIDNotInComponent($companyID,$transactionID,$transactionMasterID,$objComponentComments->componentID,$comentariosTallerID);
+				for($i=$contar; $i>=0; $i--){
+					$objTMD 								= NULL;
+					$objTMD["companyID"] 					= $companyID;
+					$objTMD["transactionID"] 				= $transactionID;
+					$objTMD["transactionMasterID"] 			= $transactionMasterID;
+					$objTMD["componentID"]					= $objComponentComments->componentID;
+					$objTMD['catalogStatusID']				= $comentariosCatalogID[$i];
+					$objTMD["reference1"]					= $comentariosTaller[$i];
+					if($comentariosTallerID[$i]==0){
+						$objTMD['expirationDate']			= date('Y-m-d H:i:s');
+						$objTMD["isActive"]					= 1;
+						$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
+					}else{
+						$this->Transaction_Master_Detail_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$comentariosTallerID[$i],$objTMD);
+					}					
+				}
+			}
 			
 			//Actualizar Imagenes
 			if($actualizarTransaccionPermtida == true)
@@ -572,6 +608,9 @@ class app_purchase_taller extends _BaseController {
 			if(!$objComponentFile)
 			throw new \Exception("EL COMPONENTE 'tb_file' NO EXISTE...");
 			
+			$objComponentComments			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_comments");
+			if(is_null($objComponentComments))
+			throw new \Exception("EL COMPONENTE 'tb_comments' NO EXISTE...");
 			
 			if($this->core_web_accounting->cycleIsCloseByDate($dataSession["user"]->companyID,/*inicio get post*/ $this->request->getPost("txtDate")))
 			throw new \Exception("EL DOCUMENTO NO PUEDE INGRESAR, EL CICLO CONTABLE ESTA CERRADO");
@@ -631,7 +670,24 @@ class app_purchase_taller extends _BaseController {
 			$this->Transaction_Master_Info_Model->insert_app_posme($objTMI);
 			
 
-			
+			//Comentarios sobre el trabajo a realizar
+			$comentariosTaller 					= $this->request->getPost("txtComentarioTallerArray");
+			if(!is_null($comentariosTaller)){
+				$comentariosCatalogID= $this->request->getPost('txtCommentsIDArray');
+				$contar = count($comentariosTaller)-1;
+				for($i=$contar; $i>=0; $i--){
+					$objTMD 								= NULL;
+					$objTMD["companyID"] 					= $objTM["companyID"];
+					$objTMD["transactionID"] 				= $objTM["transactionID"];
+					$objTMD["transactionMasterID"] 			= $transactionMasterID;
+					$objTMD["componentID"]					= $objComponentComments->componentID;
+					$objTMD['catalogStatusID']				= $comentariosCatalogID[$i];
+					$objTMD["reference1"]					= $comentariosTaller[$i];
+					$objTMD['expirationDate']				= date('Y-m-d H:i:s');
+					$objTMD["isActive"]						= 1;
+					$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
+				}
+			}
 			
 			//Crear la Carepta en servidor remoto y guardar archivos
 			$dataFileID							=  $this->request->getPost("txtFileID");
@@ -988,7 +1044,7 @@ class app_purchase_taller extends _BaseController {
 			$dataView["objListMarca"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","zoneID",$companyID);
 			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","routeID",$companyID);
 			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","mesaID",$companyID);
-			
+			$dataView["objListComments"]		= $this->core_web_catalog->getCatalogAllItem("tb_comments","catalogStatusID",$companyID);
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);

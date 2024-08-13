@@ -364,17 +364,83 @@
 					</div>
 					<div class="tab-pane fade" id="profile">
 						<div class="row">
-							<div class="col-lg-6 currency-1">
-								
-								
-								
-								
+							<div class="col-md-12">
+								<table class="table" id="tableComments">
+								<thead>
+									<tr>
+										<th>Descripción</th>
+										<th>Situción</th>
+										<th>Acción</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class="" id="filaEntrada">
+										<td>
+											<input class="form-control"  type="text"  name="txtComentarioTaller" id="txtComentarioTaller" value="">
+											<label id="errorLabel" class="text-danger">Este campo no puede estar vacío</label>
+										</td>
+										<td>
+											<label class="sr-only" for="txtSelectComments"></label>
+											<select name="txtSelectComments" id="txtSelectComments" class="select2"  >
+													<option></option>																
+													<?php
+													$count = 0;
+													if(isset($objListComments)){
+														foreach($objListComments as $ws){
+															if($count == 0 )
+																echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+															else
+																echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+															$count++;
+														}
+													}
+													?>
+											</select>
+										</td>
+										<td>
+											<a href="#" class="btn btn-flat btn-info" id="btnAddComments"><i class="fas fa-plus"></i></a>
+										</td>
+									</tr>
+									<!-- Aquí se agregarán las filas dinámicamente -->
+
+									<!-- Filas dinámicas obtenidas de la base de datos -->
+									<?php
+									 if(isset($objDetalleComentariosTaller)){
+										foreach($objDetalleComentariosTaller as $value):
+										?>
+											<tr>
+												<td>
+													<input type="hidden" name="commentsDetailID[]" value="<?= $value->transactionMasterDetailID?>" />
+													<input class="form-control" type="text" name="txtComentarioTallerArray[]" value="<?= $value->reference1 ?>">
+												</td>
+												<td>
+													<label class="sr-only" for="txtCommentsID">Seleccionar Situación</label>
+													<select name="txtCommentsIDArray[]" id="comboCommentsId" class="select2"  >
+															<option></option>																
+															<?php
+															$count = 0;
+															if(isset($objListComments)){
+																foreach($objListComments as $ws):?>
+																	<option value='<?=$ws->catalogItemID?>' <?= $ws->catalogItemID== $value->catalogStatusID ? 'selected' : '' ?> ><?=$ws->name?></option>
+															<?php
+																endforeach;
+															}
+															?>
+													</select>
+												</td>
+												<td>
+													<button type="button" class="btn btn-flat btn-danger" onclick="fnEliminarFila(this)">
+														<i class="fas fa-trash"></i>
+													</button>
+												</td>
+											</tr>
+									<?php
+										endforeach;
+									 }
+									 ?>
+								</tbody>
+								</table>
 							</div>
-							
-							<div class="col-lg-6 currency-2">
-								
-							</div>
-							
 						</div>
 					</div>
 					<div class="tab-pane fade" id="dropdown">

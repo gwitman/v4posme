@@ -77,7 +77,11 @@ $(document).ready(function(){
 				$("#txtNoteDescription").val("");
 	});
 	
-	
+	$('#errorLabel').hide();
+
+	$(document).on("click","#btnAddComments",function(){
+		fnAgregarFila();
+	});
 	
 	
 });
@@ -149,7 +153,7 @@ function fnEliminarFila(boton) {
 
 function fnAgregarFila() {
 	
-	let texto = $('#txtNombreRecordatorio').val();
+	let texto = $('#txtComentarioTaller').val();
 
 	// Si el campo de texto está vacío, mostrar un mensaje de error
 	if (texto === "") {
@@ -158,19 +162,18 @@ function fnAgregarFila() {
 	} else {
 		$('#errorLabel').hide();
 	}
-	let combo1 = $('#txtSituationID').val();
-	let combo2 = $('#txtFrecuencyContactID').val();
+	let combo1 = $('#txtCommentsID').val();
 	let selected = '';
 	let nuevaFila = ""+
 		"<tr> "+
 			"<td>"+
-				"<input class='form-control' type='text' name='txtNombreRecordatorioArray[]' value='"+texto+"'> "+
+				"<input class='form-control' type='text' name='txtComentarioTallerArray[]' value='"+texto+"'> "+
 			"</td>"+
 			"<td>"+
-				"<select name='txtSituationIDArray[]' id='comboSituationId'>";
+				"<select name='txtCommentsIDArray[]' id='comboCommentsId'>";
 				<?php
-					if($objListSituationID){
-						foreach($objListSituationID as $ws){
+					if($objListComments){
+						foreach($objListComments as $ws){
 				?>
 							selected = ((combo1===<?= $ws->catalogItemID?>) ? 'selected' : '');
 							nuevaFila += "<option value='<?=$ws->catalogItemID?>' " + selected + "><?=$ws->name?></option>"+
@@ -178,20 +181,6 @@ function fnAgregarFila() {
 						}
 					}
 				?>
-			"</td>"+
-			"<td>"+
-				"<select name='txtFrecuencyContactIDArray[]' id='comboFrecuencyContactId'>";
-				<?php
-					if($objListFrecuencyContactID){
-						foreach($objListFrecuencyContactID as $ws){
-				?>
-							selected = ((combo2===<?= $ws->catalogItemID?>) ? 'selected' : '');
-							nuevaFila += "<option value='<?=$ws->catalogItemID?>' " + selected + "><?=$ws->name?></option>"+
-				<?php
-						}
-					}
-				?>
-				"</select>"+
 			"</td>"+
 			"<td>"+
 				"<button type='button' class='btn btn-flat btn-danger' onclick='fnEliminarFila(this)'>"+
@@ -203,13 +192,11 @@ function fnAgregarFila() {
 	// Agregar la nueva fila después de la primera fila de entrada
 	$('#filaEntrada').after(nuevaFila);
 
-	$('#txtNombreRecordatorio').val('');
-	$('#txtSituationID').val(null).trigger('change');
-	$('#txtFrecuencyContactID').val(null).trigger('change');
+	$('#txtComentarioTaller').val('');
+	$('#txtSelectComments').val(null).trigger('change');
 
 	// Inicializar Select2 en los nuevos select creados
-	$('#comboSituationId').select2();
-	$('#comboFrecuencyContactId').select2();
+	$('#comboCommentsId').select2();
 }
 				
 </script>
