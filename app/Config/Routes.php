@@ -915,6 +915,8 @@ $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNorm
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmBpn/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmBpn');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1FarmaJireth','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1FarmaJireth');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1FarmaJireth/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1FarmaJireth');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1BivalyStore','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1BivalyStore');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1BivalyStore/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1BivalyStore');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Miranda','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1Miranda');

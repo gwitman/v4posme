@@ -21,7 +21,7 @@
 								<!-- titulo de comprobante-->
 								<div class="panel-heading">
 										<div class="icon"><i class="icon20 i-file"></i></div> 
-										<h4>PEDIDO:#<span class="invoice-num">00000000</span></h4>
+										<h4>CODIGO:#<span class="invoice-num">00000000</span></h4>
 								</div>
 								<!-- /titulo de comprobante-->
 								
@@ -97,7 +97,7 @@
 														</div>
 														
 														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_taller","divTxtStatus","");  ?>">
-															<label class="col-lg-4 control-label" for="selectFilter">Estado</label>
+															<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_purchase_taller","divLabelStatus","Estado");  ?></label>
 															<div class="col-lg-8">
 																<select name="txtStatusID" id="txtStatusID" class="select2">
 																		<option></option>																
@@ -138,7 +138,7 @@
 														</div>
 														
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="buttons">Tecnico</label>
+															<label class="col-lg-4 control-label" for="buttons"><?php echo getBehavio($company->type,"app_purchase_taller","labelTecnico","Tecnico");  ?></label>
 															<div class="col-lg-8">
 																<div class="input-group">
 																	<input type="hidden" id="txtEmployerID" name="txtEmployerID" value="">
@@ -161,7 +161,7 @@
 														</div>
 														
 														
-														<div class="form-group">
+														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_taller","classTxtFactura","");  ?>">
 															<label class="col-lg-4 control-label" for="buttons">Factura</label>
 															<div class="col-lg-8">
 																<div class="input-group">
@@ -185,7 +185,7 @@
 														</div>
 														
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="selectFilter">Estado del equipo</label>
+															<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_purchase_taller","divLabelStatusMachine","Estado del equipo");  ?></label>
 															<div class="col-lg-8">
 																<select name="txtAreaID" id="txtAreaID" class="select2">																									
 																		<?php
@@ -206,7 +206,7 @@
 														</div>
 														
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="selectFilter">Articulo</label>
+															<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_purchase_taller","labelArticulo","Articulo");  ?></label>
 															<div class="col-lg-8">
 																<select name="txtRouteID" id="txtRouteID" class="select2">																									
 																		<?php
@@ -226,7 +226,7 @@
 															</div>
 														</div>
 														
-														<div class="form-group">
+														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_taller","classDescOtros","");  ?> ">
 															<label class="col-lg-4 control-label" for="normal">Desc. otros</label>
 															<div class="col-lg-8">
 																<input class="form-control"  type="text"  name="txtReferenceClientName" id="txtReferenceClientName" value="">
@@ -234,7 +234,7 @@
 														</div>
 
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="selectFilter">Marca</label>
+															<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_purchase_taller","labelMarca","Marca");  ?></label>
 															<div class="col-lg-8">
 																<select name="txtZoneID" id="txtZoneID" class="select2">																									
 																		<?php
@@ -254,14 +254,14 @@
 															</div>
 														</div>
 														
-														<div class="form-group">
+														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_taller","classModelo","");  ?>">
 																<label class="col-lg-4 control-label" for="normal">Modelo</label>
 																<div class="col-lg-8">
 																	<input class="form-control"  type="text"  name="txtInfoReference2" id="txtInfoReference2" value="">
 																</div>
 														</div>
 														
-														<div class="form-group">
+														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_taller","classSerie","");  ?>">
 																<label class="col-lg-4 control-label" for="normal">Serie</label>
 																<div class="col-lg-8">
 																	<input class="form-control"  type="text"  name="txtReference4" id="txtReference4" value="">
@@ -269,8 +269,8 @@
 														</div>
 
 														
-														<div class="form-group">
-															<label class="col-lg-4 control-label" for="selectFilter">Accesorios</label>
+														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_taller","classAccesorios","");  ?>">
+															<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_purchase_taller","labelAccesorios","Accesorios");  ?></label>
 															<div class="col-lg-8">
 																<select name="txtPriorityID" id="txtPriorityID" class="select2">																									
 																		<?php
@@ -316,7 +316,7 @@
 														</div>
 														
 														
-														<div class="form-group">
+														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_taller","classProblema","");  ?>">
 																<label class="col-lg-4 control-label" for="normal">Problema</label>
 																<div class="col-lg-8">
 																	<textarea class="form-control" type="text"  name="txtDetailReference2" id="txtDetailReference2" ></textarea>																	
@@ -324,27 +324,27 @@
 														</div>
 														
 														<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal">Nota</label>
+																<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_purchase_taller","labelNota","Nota");  ?></label>
 																<div class="col-lg-8">																																		
 																	<textarea class="form-control" type="text"  name="txtDetailReference1" id="txtDetailReference1" ></textarea>
 																</div>
 														</div>
 														
-														<div class="form-group">
+														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_taller","classPassword","");  ?>">
 																<label class="col-lg-4 control-label" for="normal">Contraseña</label>
 																<div class="col-lg-8">
 																	<input class="form-control"  type="text"  name="txtInfoReference1" id="txtInfoReference1" value="">
 																</div>
 														</div>
 														
-														<div class="form-group">
+														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_taller","classSolucion","");  ?>">
 																<label class="col-lg-4 control-label" for="normal">Solucion</label>
 																<div class="col-lg-8">																	
 																	<textarea class="form-control" type="text"  name="txtDetailReference3" id="txtDetailReference3" ></textarea>
 																</div>
 														</div>
 														
-														<div class="form-group">
+														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_taller","classAmount","");  ?>">
 																<label class="col-lg-4 control-label" for="normal">Monto</label>
 																<div class="col-lg-8">
 																	<input type="hidden" name="txtDetailTransactionDetailID" value="0">
@@ -352,7 +352,7 @@
 																</div>
 														</div>
 														
-														<div class="form-group">
+														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_taller","classLabel","");  ?>">
 																<label class="col-lg-4 control-label" for="normal"></label>
 																<div class="col-lg-8">
 																	<blockquote class="red" style="text-align: justify;" >
