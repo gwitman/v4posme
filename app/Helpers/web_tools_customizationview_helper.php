@@ -697,7 +697,18 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		//HipperAll
 		strtolower('hiperall_core_web_menu_FACTURACION')			 												=> "CONTRATOS",
 		strtolower('hiperall_core_web_menu_FACTURAR')			 													=> "CONTRATO",
-		strtolower('hiperall_core_web_menu_ABONO')			 														=> "RECIBO",		
+		strtolower('hiperall_core_web_menu_ABONO')			 														=> "RECIBO",
+		strtolower('hiperall_core_web_menu_ADM TALLER')			 													=> "ADM TAREAS",
+		strtolower('hiperall_core_web_menu_TALLER')			 														=> "TAREAS",
+		
+		strtolower('hiperall_app_purchase_taller_labelTitlePageList')	 											=> "LISTA DE TAREAS",
+		strtolower('hiperall_app_purchase_taller_labelTitlePageEdit')	 											=> "EDITAR TAREA",
+		strtolower('hiperall_app_purchase_taller_labelTitlePageNew')	 											=> "AGREGAR TAREA",
+		strtolower('hiperall_app_purchase_taller_classTxtSucursal')	 												=> "hidden",
+		strtolower('hiperall_app_purchase_taller_divTxtApplied')	 												=> "hidden",
+		strtolower('hiperall_app_purchase_taller_divTxtChange')	 													=> "hidden",
+		
+		
 		strtolower('hiperall_app_invoice_billing_labelTitlePageList')	 											=> "CONTRATOS",
 		strtolower('hiperall_app_invoice_billing_labelTitlePageEdit')	 											=> "Contrato",
 		strtolower('hiperall_app_invoice_billing_labelTitlePageNew')	 											=> "Contrato",		

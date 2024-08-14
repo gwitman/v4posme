@@ -1115,9 +1115,10 @@ class app_purchase_taller extends _BaseController {
 			}
 			
 			//Renderizar Resultado
+			$dataSession["company"]			= $dataSession["company"];
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
-			$dataSession["head"]			= /*--inicio view*/ view('app_purchase_taller/list_head');//--finview
+			$dataSession["head"]			= /*--inicio view*/ view('app_purchase_taller/list_head',$dataSession);//--finview
 			$dataSession["footer"]			= /*--inicio view*/ view('app_purchase_taller/list_footer');//--finview
 			$dataSession["body"]			= $dataViewRender; 
 			$dataSession["script"]			= /*--inicio view*/ view('app_purchase_taller/list_script');//--finview

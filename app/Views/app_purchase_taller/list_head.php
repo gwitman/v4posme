@@ -1,5 +1,5 @@
 				<div id="heading" class="page-header">
-					<h1><i class="icon20 i-storage-2"></i> LISTA DE TALLER</h1>
+					<h1><i class="icon20 i-storage-2"></i><?php echo getBehavio($company->type,"app_purchase_taller","labelTitlePageList","LISTA DE TALLER"); ?></h1>
 				</div>
 				
 				<div class="row">  

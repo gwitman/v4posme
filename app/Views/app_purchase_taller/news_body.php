@@ -61,7 +61,7 @@
 															</div>
 														</div>
 														
-														<div class="form-group">
+														<div class="form-group <?php echo getBehavio($company->type,"app_purchase_taller","classTxtSucursal",""); ?> ">
 															<label class="col-lg-4 control-label" for="selectFilter">Sucursal</label>
 															<div class="col-lg-8">
 																<select name="txtBranchID" id="txtBranchID" class="select2">																									

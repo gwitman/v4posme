@@ -6,5 +6,5 @@
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jLinq-2.2.1.js"></script>
 				
 				<div id="heading" class="page-header">
-							<h1><i class="icon20  i-storage-2"></i> Editar En Taller</h1>
+							<h1><i class="icon20  i-storage-2"></i><?php echo getBehavio($company->type,"app_purchase_taller","labelTitlePageEdit","EDITAR EN TALLER"); ?></h1>
 				</div> 

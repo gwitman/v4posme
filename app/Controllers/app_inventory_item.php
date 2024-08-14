@@ -342,6 +342,7 @@ class app_inventory_item extends _BaseController
             if(!$objComponent)
                 throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 
+			
             //Nuevo Registro
             if( $method == "new"  )
             {
@@ -684,7 +685,7 @@ class app_inventory_item extends _BaseController
 			{
 				
 
-
+				
                 $companyID 	= APP_COMPANY ;
                 $branchID   = APP_BRANCH ;
                 $this->core_web_permission->getValueLicense($companyID,get_class($this)."/"."index");
@@ -837,7 +838,7 @@ class app_inventory_item extends _BaseController
                     }
                 }
 
-
+				
 
                 //Guardar el Detalle de las Bodegas
                 $objListWarehouseID					= /*inicio get post*/ $this->request->getPost("txtDetailWarehouseID");
@@ -912,7 +913,8 @@ class app_inventory_item extends _BaseController
                 $objTmpProvider["entityID"]		= $objParameterProviderDefault;
                 $this->Provideritem_Model->insert_app_posme($objTmpProvider);
 
-
+				
+				
                 //Ingresar la configuracion de precios
                 //por defecto con 0% de utilidad
                 $arrayListPrecioValue 		= /*inicio get post*/ $this->request->getPost("txtDetailTypePriceValue");
@@ -953,22 +955,23 @@ class app_inventory_item extends _BaseController
                 $pathFileCodeBarra = PATH_FILE_OF_APP."/company_".$companyID.
                     "/component_".$objComponent->componentID."/component_item_".$itemID."/barcode.jpg";
 
-                if(	strpos($objItem["barCode"],",") > 0  ){
+                if(	strpos($objItem["barCode"],",") > 0  )
+				{
                 }
-                else{
+                else
+				{
                     $this->core_web_barcode->generate( $pathFileCodeBarra, $objItem["barCode"], "80", "horizontal", "code128", false, 1 );
                 }
-
+				
+				
 
                 //Fin
                 if($db->transStatus() !== false && $comando == "false" ){
-                    $db->transCommit();
-                    $this->core_web_notification->set_message(false,SUCCESS);
+                    $db->transCommit();					
                     $this->response->redirect(base_url()."/".'app_inventory_item/edit/companyID/'.$companyID."/itemID/".$itemID."/callback/".$callback."/comando/".$comando);
                 }
                 else{
-                    $db->transRollback();
-                    $this->core_web_notification->set_message(true,$this->db->_error_message());
+                    $db->transRollback();                    					
                     $this->response->redirect(base_url()."/".'app_inventory_item/add');
                 }
 			}
@@ -1467,7 +1470,7 @@ class app_inventory_item extends _BaseController
         catch(\Exception $ex)
 		{
             
-            log_message("error",print_r($method,true));
+            
             if($method == "new" || $method == "edit")
             {
                 $data["session"]   = $dataSession;
