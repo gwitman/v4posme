@@ -32,7 +32,7 @@ instalador:
 		backup_posmev4_fidlocal
 		backup_posmev4_merge
 		backup_posmev4_posme
-		restore_backup_posmev4_fidlocal
+		restore_backup_posmev4_fidlocal 
 		restore_backup_posmev4_merge
 		restore_backup_posmev4_posme
 		scaner_routes
