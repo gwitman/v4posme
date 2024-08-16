@@ -1674,18 +1674,37 @@ class app_notification extends _BaseController {
 			
 			//Obtener la fecha inicial y fecha final del reporte
 			$fechaNowWile  		= \DateTime::createFromFormat('Y-m-d',$parameterLastNotification);  			//ahora		
-			$fechaNowWile		= $fechaNowWile->modify('-'.$parameterDaySleep.' day');		
-			
-			
-			$fechaNow			= $fechaNowWile->format("Y-m-d");						
-			$fechaBefore		= $fechaNowWile->format("Y-m-d")." 23:59:59";
+			$fechaNowWile		= $fechaNowWile->modify('+'.$parameterDaySleep.' day');		
+			$fechaNow			= $fechaNowWile->format("Y-m-d");		
+
+			$fechaDate				= date('Y-m-d');
+			$fechaActual			= \DateTime::createFromFormat('Y-m-d',$fechaDate);
+			$fechaActual			= $fechaActual->modify('-'.$parameterDaySleep.' day');		
+			$fechaBefore			= $fechaActual->format("Y-m-d")." 23:59:59";			
 				
+			if($fechaActual < $fechaNowWile)
+			{
+				$fechaActual			= $fechaActual->modify('+'.$parameterDaySleep.' day');		
+				$fechaBefore			= $fechaActual->format("Y-m-d")." 23:59:59";				
+			}
 			
 			
+			//Es el repoete de pantalla
 			if($format == "pdf")
 			{
 				$fechaNow		= $startOn." ".$hourOn.":00:00";
 				$fechaBefore	= $endOn." ".$hourEnd.":59:59";
+			}
+			//Es el envio de correo automatico
+			else 
+			{		
+					
+				$fechaBeforeWile  				= \DateTime::createFromFormat('Y-m-d',$fechaDate);  		
+				$dataNewParameter 				= array();		
+				$fechaBeforeWile				= $fechaBeforeWile->modify('-'.$parameterDaySleep.' day');	
+				$dataNewParameter["value"] 		= $fechaBeforeWile->format("Y-m-d");
+				$this->Company_Parameter_Model->update_app_posme($companyID,$parameterLastNotificationId,$dataNewParameter);	
+				
 			}
 			
 			
@@ -1735,6 +1754,7 @@ class app_notification extends _BaseController {
 			{
 				
 				echo $html;
+				
 				//enviar correo
 				$this->email->setFrom(EMAIL_APP);
 				$this->email->setTo($parameterEmail);
@@ -1742,6 +1762,17 @@ class app_notification extends _BaseController {
 				$this->email->setMessage($html); 
 				$resultSend01 = $this->email->send();
 				$resultSend02 = $this->email->printDebugger();
+				
+				
+				//enviar correo
+				$this->email->setFrom(EMAIL_APP);
+				$this->email->setTo(EMAIL_APP_COPY);
+				$this->email->setSubject($subject);			
+				$this->email->setMessage($html); 
+				$resultSend01 = $this->email->send();
+				$resultSend02 = $this->email->printDebugger();
+				
+				
 			}
 			else
 			{
@@ -1802,11 +1833,7 @@ class app_notification extends _BaseController {
 		$dataNewParameter 				= array();		
 		$fechaBeforeWile				= $fechaBeforeWile->modify('+'.$parameterDaySleep.' day');	
 		$dataNewParameter["value"] 		= $fechaBeforeWile->format("Y-m-d");
-		$this->Company_Parameter_Model->update_app_posme($companyID,$parameterLastNotificationId,$dataNewParameter);	
-		
-		
-		
-		
+		//$this->Company_Parameter_Model->update_app_posme($companyID,$parameterLastNotificationId,$dataNewParameter);	
 		return view('core_template/close');//--finview-r
 		
 	}

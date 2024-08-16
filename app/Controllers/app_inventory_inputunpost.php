@@ -1291,6 +1291,7 @@ class app_inventory_inputunpost extends _BaseController {
 						}
 					}
 					
+					
 					foreach ($table as $row) 
 					{	
 						$fila++;
@@ -1312,7 +1313,7 @@ class app_inventory_inputunpost extends _BaseController {
 						//Agregar productos nuevos
 						if(!$objItem) 
 						{
-							$urlCreateItemRequest 			= base_url()."/app_inventory_item/save/apinew";
+							$urlCreateItemRequest 			= base_url()."/app_inventory_item/save/apinew/empty/empty";
 							$clientCreateItem 				= \Config\Services::curlrequest();
 							$form_data 						= [
 										'txtCallback' 				=> 'fnCollback',
@@ -1371,7 +1372,8 @@ class app_inventory_inputunpost extends _BaseController {
 							];
 							
 							
-							$response  	= $clientCreateItem->request('POST',$urlCreateItemRequest,['form_params' => $form_data]);								
+							
+							$response  	= $clientCreateItem->request('POST',$urlCreateItemRequest,['form_params' => $form_data]);									
 							$response  	= explode("/",$response->getHeaderLine("Location"));							
 							$response  	= $response[11];		
 							

@@ -1095,10 +1095,23 @@ class app_purchase_taller extends _BaseController {
 			
 			//Vista por defecto PC
 			if($dataViewID == null and   $dataSession["user"]->useMobile != 1 ){				
-				$targetComponentID			= 0;	
+				$targetComponentID			= $this->session->get('company')->flavorID;	
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				
+				
+				if(!$dataViewData){
+					
+					$targetComponentID			= 0;	
+					$parameter["{companyID}"]	= $this->session->get('user')->companyID;					
+					$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);				
+					$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				}
+				else 
+				{
+					$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				}
+				
 			}		
 			//Vista por defecto MOBILE
 			else if( $dataSession["user"]->useMobile == 1 ){
@@ -1115,9 +1128,10 @@ class app_purchase_taller extends _BaseController {
 			}
 			
 			//Renderizar Resultado
+			$dataSession["company"]			= $dataSession["company"];
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
-			$dataSession["head"]			= /*--inicio view*/ view('app_purchase_taller/list_head');//--finview
+			$dataSession["head"]			= /*--inicio view*/ view('app_purchase_taller/list_head',$dataSession);//--finview
 			$dataSession["footer"]			= /*--inicio view*/ view('app_purchase_taller/list_footer');//--finview
 			$dataSession["body"]			= $dataViewRender; 
 			$dataSession["script"]			= /*--inicio view*/ view('app_purchase_taller/list_script');//--finview

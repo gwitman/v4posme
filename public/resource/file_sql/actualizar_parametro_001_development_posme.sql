@@ -807,7 +807,7 @@ UPDATE  tb_company_parameter,tb_parameter SET
 	tb_company_parameter.value = "2023-04-01" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "CORE_LAST_NOTIFICACION";## GANANCIA POR VENTA DE Dolares
+	tb_parameter.name = "CORE_LAST_NOTIFICACION";## La fecha que esta escrita aqui, significa que el informe enviado los datos del informe enviado incluidan este dia, que se muestra en el campo
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
