@@ -25,6 +25,7 @@ class app_mobile_api extends _BaseController
             $dataSession['company'] 	= $objCompany;
             $dataSession['role'] 		= $objUser["role"];
             $this->core_web_permission->getValueLicense($companyID,get_class($this)."/"."index");
+
             // INICIO DE CARGA DE ITEMS
             if (count($items) > 0) {
                 $controller 				= new app_inventory_item();
@@ -70,6 +71,14 @@ class app_mobile_api extends _BaseController
                 }
             }
 
+            // SINCRONIZACION DE COMPRAS
+            if (count($items) > 0) {
+                $inventoryController  =new app_inventory_inputunpost();
+                $inventoryController->initController($this->request, $this->response, $this->logger); 
+                $items=json_decode(json_encode($items));
+                $inventoryController->insertElementMobile($dataSession, $items);
+            }
+            
             return $this->response->setJSON(array(
                 'error' => false,
                 'message' => SUCCESS

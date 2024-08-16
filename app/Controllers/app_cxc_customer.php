@@ -613,6 +613,67 @@ class app_cxc_customer extends _BaseController {
 			exit($ex->getMessage());
 		}			
 	}
+
+	public function updateElementMobile($dataSession, $customer){
+		try{
+					
+			//Obtener el Componente de Transacciones Other Input to Inventory
+			$objComponent							= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
+			if(!$objComponent)	throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
+			
+			
+			$branchID 								= $customer->branchID;
+			$entityID 								= $customer->entityID;
+			$companyID								= $customer->companyID;
+			
+			//Moneda Dolares
+			date_default_timezone_set(APP_TIMEZONE); 
+			
+			$dateOn 								= date("Y-m-d");
+			$dateOn 								= date_format(date_create($dateOn),"Y-m-d");
+										
+			$objCustomer							= $this->Customer_Model->get_rowByPK($companyID,$branchID,$entityID);
+			$oldStatusID 							= $objCustomer->statusID;
+			
+			//Validar si el estado permite editar
+			if(!$this->core_web_workflow->validateWorkflowStage("tb_customer","statusID",$objCustomer->statusID,COMMAND_EDITABLE_TOTAL,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
+			throw new \Exception(NOT_WORKFLOW_EDIT);					
+			
+			
+			
+			$db=db_connect();
+			$db->transStart();			
+			//El Estado solo permite editar el workflow
+			if($this->core_web_workflow->validateWorkflowStage("tb_customer","statusID",$oldStatusID,COMMAND_EDITABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID)){				
+				$objCustomer["statusID"] 		=$customer->statusID;
+				$this->Customer_Model->update_app_posme($companyID,$branchID,$entityID,$objCustomer);
+			}
+			else{
+				$objNatural["isActive"]		= true;
+				$objNatural["firstName"]	= $customer->firstName;
+				$objNatural["lastName"]		= $customer->lastName;		
+				$this->Natural_Model->update_app_posme($companyID,$branchID,$entityID,$objNatural);
+
+				$objLegal["isActive"]		= true;
+				$objLegal["comercialName"]	= $customer->firstName;
+				$objLegal["legalName"]		= $customer->lastName;
+				$this->Legal_Model->update_app_posme($companyID,$branchID,$entityID,$objLegal);		
+			}
+			
+			
+			//Confirmar Entidad
+			if($db->transStatus() !== false){
+				$db->transCommit();
+			}
+			else{
+				$db->transRollback();
+			}
+		}
+		catch(\Exception $ex){
+			exit($ex->getMessage());
+		}		
+    }
+	
 	function insertElement($dataSession){
 		try{
 			
@@ -973,6 +1034,289 @@ class app_cxc_customer extends _BaseController {
 			exit($ex->getMessage());
 		}	
 	}
+
+	public function insertElementMobile($dataSession,$customer)
+    {
+        try{
+
+            //Obtener el Componente de Transacciones Other Input to Inventory
+            $objComponent							= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
+            if(!$objComponent)
+                throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
+
+            //Obtener transaccion
+            $companyID 								= $dataSession["user"]->companyID;
+            $objEntity["companyID"] 				= $dataSession["user"]->companyID;
+            $objEntity["branchID"]					= $dataSession["user"]->branchID;
+            $branchID 								= $dataSession["user"]->branchID;
+            $roleID 								= $dataSession["role"]->roleID;
+            $this->core_web_auditoria->setAuditCreated($objEntity,$dataSession,$this->request);
+
+            //Moneda Dolares
+            date_default_timezone_set(APP_TIMEZONE);
+            $objCurrencyDolares						= $this->core_web_currency->getCurrencyExternal($companyID);
+            $dateOn 								= date("Y-m-d");
+            $dateOn 								= date_format(date_create($dateOn),"Y-m-d");
+            $exchangeRate 							= 0;
+            $exchangeRateTotal 						= 0;
+            $exchangeRateAmount 					= 0;
+
+            $db=db_connect();
+            $db->transStart();
+
+
+            $entityID = $this->Entity_Model->insert_app_posme($objEntity);
+
+			$objListComanyParameter			 = $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+
+            $objNatural["companyID"]	= $objEntity["companyID"];
+            $objNatural["branchID"] 	= $objEntity["branchID"];
+            $objNatural["entityID"]		= $entityID;
+            $objNatural["isActive"]		= true;
+            $objNatural["firstName"]	= $customer->firstName;
+            $objNatural["lastName"]		= $customer->lastName;
+            $objNatural["address"]		= "";
+            $objNatural["statusID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_STATUS_CIVIL_ID_DEFAULT")->value;
+            $objNatural["profesionID"]	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_PROFESION_ID_DEFAULT")->value;
+            $result 					= $this->Natural_Model->insert_app_posme($objNatural);
+
+            $objLegal["companyID"]		= $objEntity["companyID"];
+            $objLegal["branchID"]		= $objEntity["branchID"];
+            $objLegal["entityID"]		= $entityID;
+            $objLegal["isActive"]		= true;
+            $objLegal["comercialName"]	= $customer->firstName;
+            $objLegal["legalName"]		= $customer->lastName;
+            $objLegal["address"]		= "";
+            $result 					= $this->Legal_Model->insert_app_posme($objLegal);
+
+            $paisDefault 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_PAIS_DEFAULT")->value;
+            $departamentoDefault 		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_DEPARTAMENTO_DEFAULT")->value;
+            $municipioDefault 			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_MUNICIPIO_DEFAULT")->value;
+            $plazoDefault 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_PLAZO_DEFAULT")->value;
+            $typeAmortizationDefault 	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_TYPE_AMORTIZATION")->value;
+            $frecuencyDefault 			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_FRECUENCIA_PAY_DEFAULT")->value;
+            $creditLineDefault 			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_CREDIT_LINE_DEFAULT")->value;
+            $validarCedula 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_VALIDAR_CEDULA_REPETIDA")->value;
+            $interesDefault				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_INTERES_DEFAULT")->value;
+
+
+            $paisID = $paisDefault;
+            $departamentoId= $departamentoDefault;
+            $municipioId= $municipioDefault;
+
+
+            $objCustomer["companyID"]			= $objEntity["companyID"];
+            $objCustomer["branchID"]			= $objEntity["branchID"];
+            $objCustomer["entityID"]			= $entityID;
+            $objCustomer["customerNumber"]		= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_customer",0);
+            $objCustomer["identificationType"]	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_IDENTIFICATION_TYPE_DEFAULT")->value;
+            $objCustomer["identification"]		= $customer->identification;
+
+
+            //validar que se permita la omision de la cedula
+            if(strcmp($validarCedula,"true") == 0)
+            {
+                //Validar que ya existe el cliente
+                $objCustomerOld					= $this->Customer_Model->get_rowByIdentification($companyID,$objCustomer["identification"]);
+                if($objCustomerOld)
+                {
+                    throw new \Exception("Error identificacion del cliente ya existe.");
+                }
+            }
+
+
+            $objCustomer["countryID"]			= $paisID;
+            $objCustomer["stateID"]				= $departamentoId;
+            $objCustomer["cityID"]				= $municipioId;
+            $objCustomer["location"]			= "";
+            $objCustomer["address"]				= "";
+            $objCustomer["currencyID"]			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVENTORY_CURRENCY_ID_DEFAULT")->value;
+            $objCustomer["clasificationID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CLASIFICATION_ID_DEFAULT")->value;
+            $objCustomer["categoryID"]			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CATEGORY_ID_DEFAULT")->value;
+            $objCustomer["subCategoryID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_SUBCATEGORY_ID_DEFAULT")->value;
+            $objCustomer["customerTypeID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CUSTOMER_TYPE_ID_DEFAULT")->value;
+            $objCustomer["birthDate"]			= date("Y-m-d");
+            $objCustomer["dateContract"]		= date("Y-m-d");
+            $objCustomer["statusID"]			= $this->core_web_workflow->getWorkflowInitStage("tb_customer","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;; //lo mismo statusid de producto solo cambiar nombre de la tabla
+            $objCustomer["typePay"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CUSTOMER_TYPE_PAY_ID_DEFAULT")->value;
+            $objCustomer["payConditionID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CUSTOMER_PAY_CONDITION_ID_DEFAULT")->value;
+            $objCustomer["sexoID"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CUSTOMER_SEX_ID_DEFAULT")->value;
+            $objCustomer["reference1"]			= "";
+            $objCustomer["reference2"]			= "";
+            $objCustomer["reference3"]			= "";
+            $objCustomer["reference4"]			= "";
+            $objCustomer["reference5"]			= "";
+            $objCustomer["balancePoint"]		= 0;
+            $objCustomer["phoneNumber"]			= "";
+            $objCustomer["typeFirm"]			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_TYPE_FIRM_ID_DEFAULT")->value;
+            $objCustomer["budget"]				= 0;
+            $objCustomer["isActive"]			= true;
+            $objCustomer["entityContactID"]		= 0;
+            $objCustomer["formContactID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_FORM_CONTACT_ID_DEFAULT")->value;
+            $this->core_web_auditoria->setAuditCreated($objCustomer,$dataSession,$this->request);
+            $result 							= $this->Customer_Model->insert_app_posme($objCustomer);
+
+            //Ingresar registro en el lector biometrico
+            $dataUser["id"]							= $entityID;
+            $dataUser["name"]						= "buscar en otra base";
+            $dataUser["email"]						= "buscar en otra base";
+            $dataUser["email_verified_at"]			= "0000-00-00 00:00:00";
+            $dataUser["password"]					= "buscar en otra base";
+            $dataUser["remember_token"]				= "buscar en otra base";
+            $dataUser["created_at"]					= "0000-00-00 00:00:00";
+            $dataUser["updated_at"]					= "0000-00-00 00:00:00";
+            $dataUser["image"]						= "";
+            $resultUser 							= $this->Biometric_User_Model->delete_app_posme($dataUser["id"]);
+            $resultUser 							= $this->Biometric_User_Model->insert_app_posme($dataUser);
+
+
+
+            //Ingresar Cuenta
+            $objEntityAccount["companyID"]			= $objEntity["companyID"];
+            $objEntityAccount["componentID"]		= $objComponent->componentID;
+            $objEntityAccount["componentItemID"]	= $entityID;
+            $objEntityAccount["name"]				= "";
+            $objEntityAccount["description"]		= "";
+            $objEntityAccount["accountTypeID"]		= "0";
+            $objEntityAccount["currencyID"]			= "0";
+            $objEntityAccount["classID"]			= "0";
+            $objEntityAccount["balance"]			= "0";
+            $objEntityAccount["creditLimit"]		= "0";
+            $objEntityAccount["maxCredit"]			= "0";
+            $objEntityAccount["debitLimit"]			= "0";
+            $objEntityAccount["maxDebit"]			= "0";
+            $objEntityAccount["statusID"]			= "0";
+
+            $objEntityAccount["accountID"]			= "0";
+            $objEntityAccount["statusID"]			= "0";
+            $objEntityAccount["isActive"]			= 1;
+            $this->core_web_auditoria->setAuditCreated($objEntityAccount,$dataSession,$this->request);
+            $this->Entity_Account_Model->insert_app_posme($objEntityAccount);
+
+            //Ingresar Customer Credit
+            $objCustomerCredit["companyID"] 		= $objEntity["companyID"];
+            $objCustomerCredit["branchID"] 			= $objEntity["branchID"];
+            $objCustomerCredit["entityID"] 			= $entityID;
+            $objCustomerCredit["limitCreditDol"] 	= 80000;
+            $objCustomerCredit["balanceDol"] 		= $objCustomerCredit["limitCreditDol"];
+            $objCustomerCredit["incomeDol"] 		= 5000;
+            $this->Customer_Credit_Model->insert_app_posme($objCustomerCredit);
+
+            //Lineas de Creditos
+            $arrayListCustomerCreditLineID	= array();
+            $arrayListCreditLineID			= array();
+            $arrayListCreditCurrencyID		= array();
+            $arrayListCreditStatusID		= array();
+            $arrayListCreditInterestYear	= array();
+            $arrayListCreditInterestPay		= array();
+            $arrayListCreditTotalPay		= array();
+            $arrayListCreditTotalDefeated	= array();
+            $arrayListCreditDateOpen		= array();
+            $arrayListCreditPeriodPay		= array();
+            $arrayListCreditDateLastPay		= array();
+            $arrayListCreditTerm			= array();
+            $arrayListCreditNote			= array();
+            $arrayListCreditLine			= array();
+            $arrayListCreditNumber			= array();
+            $arrayListCreditLimit			= array();
+            $arrayListCreditBalance			= array();
+            $arrayListCreditStatus			= array();
+            $arrayListTypeAmortization		= array();
+            $limitCreditLine 				= 0;
+
+
+
+
+            if(empty($arrayListCustomerCreditLineID))
+            {
+                $arrayListCustomerCreditLineID[0]	= 1;
+                $arrayListCreditLineID[0] 			= $creditLineDefault;
+                $arrayListCreditCurrencyID[0]		= $this->core_web_currency->getCurrencyDefault($companyID)->currencyID;
+                $arrayListCreditLimit[0]			= 300000;
+                $arrayListCreditInterestYear[0]	= $interesDefault;
+                $arrayListCreditInterestPay[0]		= 0;
+                $arrayListCreditTotalPay[0]		= 0;
+                $arrayListCreditTotalDefeated[0]	= 0;
+                $arrayListCreditPeriodPay[0]		= $frecuencyDefault;
+                $arrayListCreditTerm[0]			= $plazoDefault;
+                $arrayListCreditNote[0]			= "-";
+                $arrayListTypeAmortization[0]		= $typeAmortizationDefault;
+                $arrayListCreditStatusID[0]		= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_line","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
+
+            }
+
+            if(!empty($arrayListCustomerCreditLineID))
+            {
+                foreach($arrayListCustomerCreditLineID as $key => $value)
+                {
+                    $objCustomerCreditLine["companyID"]		= $objEntity["companyID"];
+                    $objCustomerCreditLine["branchID"]		= $objEntity["branchID"];
+                    $objCustomerCreditLine["entityID"]		= $entityID;
+                    $objCustomerCreditLine["creditLineID"]	= $arrayListCreditLineID[$key];
+                    $objCustomerCreditLine["accountNumber"]	= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_customer_credit_line",0);
+                    $objCustomerCreditLine["currencyID"]	= $arrayListCreditCurrencyID[$key];
+                    $objCustomerCreditLine["limitCredit"]	= helper_StringToNumber($arrayListCreditLimit[$key]);
+                    $objCustomerCreditLine["balance"]		= helper_StringToNumber($arrayListCreditLimit[$key]);
+                    $objCustomerCreditLine["interestYear"]	= helper_StringToNumber($arrayListCreditInterestYear[$key]);
+                    $objCustomerCreditLine["interestPay"]	= $arrayListCreditInterestPay[$key];
+                    $objCustomerCreditLine["totalPay"]		= $arrayListCreditTotalPay[$key];
+                    $objCustomerCreditLine["totalDefeated"]	= $arrayListCreditTotalDefeated[$key];
+                    $objCustomerCreditLine["dateOpen"]		= date("Y-m-d");
+                    $objCustomerCreditLine["periodPay"]		= $arrayListCreditPeriodPay[$key];
+                    $objCustomerCreditLine["dateLastPay"]	= date("Y-m-d");
+                    $objCustomerCreditLine["term"]			= helper_StringToNumber($arrayListCreditTerm[$key]);
+                    $objCustomerCreditLine["note"]			= $arrayListCreditNote[$key];
+                    $objCustomerCreditLine["statusID"]		= $arrayListCreditStatusID[$key];
+                    $objCustomerCreditLine["isActive"]		= 1;
+                    $objCustomerCreditLine["typeAmortization"]	= $arrayListTypeAmortization[$key];
+                    $limitCreditLine 							= $limitCreditLine + $objCustomerCreditLine["limitCredit"];
+                    $exchangeRate 								= $this->core_web_currency->getRatio($companyID,$dateOn,1,$objCustomerCreditLine["currencyID"],$objCurrencyDolares->currencyID);//cordobas a dolares, o dolares a dolares.
+                    $exchangeRateAmount							= $objCustomerCreditLine["limitCredit"];
+                    $this->Customer_Credit_Line_Model->insert_app_posme($objCustomerCreditLine);
+
+
+
+
+                    //sumar los limites en dolares
+                    if($exchangeRate == 1)
+                        $exchangeRateTotal = $exchangeRateTotal + $exchangeRateAmount;
+                    //sumar los limite en cordoba
+                    else
+                        $exchangeRateTotal = $exchangeRateTotal + ($exchangeRateAmount / $exchangeRate);
+
+
+
+                }
+            }
+
+
+            //Validar Limite de Credito
+            if($exchangeRateTotal > $objCustomerCredit["limitCreditDol"])
+                throw new \Exception("LINEAS DE CREDITOS MAL CONFIGURADAS LÍMITE EXCEDIDO");
+
+            //Crear la Carpeta para almacenar los Archivos del Cliente
+            $pathfile = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$entityID;
+
+            if (!file_exists($pathfile))
+            {
+                mkdir($pathfile, 0700);
+            }
+
+
+
+            if($db->transStatus() !== false){
+                $db->transCommit();
+            }
+            else{
+                $db->transRollback();
+            }
+
+        }
+        catch(\Exception $ex){
+            exit($ex->getMessage());
+        }
+    }
+
 	function save($mode="",$dataSession=null){
 			$mode = helper_SegmentsByIndex($this->uri->getSegments(),1,$mode);	
 			//AUTENTICADO
@@ -1450,347 +1794,6 @@ class app_cxc_customer extends _BaseController {
 		    return $resultView;
 		}	
 	}
-
-    public function insertElementMobile($dataSession,$customer)
-    {
-        try{
-
-            //Obtener el Componente de Transacciones Other Input to Inventory
-            $objComponent							= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
-            if(!$objComponent)
-                throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
-
-            //Obtener transaccion
-            $companyID 								= $dataSession["user"]->companyID;
-            $objEntity["companyID"] 				= $dataSession["user"]->companyID;
-            $objEntity["branchID"]					= $dataSession["user"]->branchID;
-            $branchID 								= $dataSession["user"]->branchID;
-            $roleID 								= $dataSession["role"]->roleID;
-            $this->core_web_auditoria->setAuditCreated($objEntity,$dataSession,$this->request);
-
-            //Moneda Dolares
-            date_default_timezone_set(APP_TIMEZONE);
-            $objCurrencyDolares						= $this->core_web_currency->getCurrencyExternal($companyID);
-            $dateOn 								= date("Y-m-d");
-            $dateOn 								= date_format(date_create($dateOn),"Y-m-d");
-            $exchangeRate 							= 0;
-            $exchangeRateTotal 						= 0;
-            $exchangeRateAmount 					= 0;
-
-            $db=db_connect();
-            $db->transStart();
-
-
-            $entityID = $this->Entity_Model->insert_app_posme($objEntity);
-
-			$objListComanyParameter			 = $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
-
-            $objNatural["companyID"]	= $objEntity["companyID"];
-            $objNatural["branchID"] 	= $objEntity["branchID"];
-            $objNatural["entityID"]		= $entityID;
-            $objNatural["isActive"]		= true;
-            $objNatural["firstName"]	= $customer->firstName;
-            $objNatural["lastName"]		= $customer->lastName;
-            $objNatural["address"]		= "";
-            $objNatural["statusID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_STATUS_CIVIL_ID_DEFAULT")->value;
-            $objNatural["profesionID"]	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_PROFESION_ID_DEFAULT")->value;
-            $result 					= $this->Natural_Model->insert_app_posme($objNatural);
-
-            $objLegal["companyID"]		= $objEntity["companyID"];
-            $objLegal["branchID"]		= $objEntity["branchID"];
-            $objLegal["entityID"]		= $entityID;
-            $objLegal["isActive"]		= true;
-            $objLegal["comercialName"]	= $customer->firstName;
-            $objLegal["legalName"]		= $customer->lastName;
-            $objLegal["address"]		= "";
-            $result 					= $this->Legal_Model->insert_app_posme($objLegal);
-
-            $paisDefault 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_PAIS_DEFAULT")->value;
-            $departamentoDefault 		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_DEPARTAMENTO_DEFAULT")->value;
-            $municipioDefault 			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_MUNICIPIO_DEFAULT")->value;
-            $plazoDefault 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_PLAZO_DEFAULT")->value;
-            $typeAmortizationDefault 	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_TYPE_AMORTIZATION")->value;
-            $frecuencyDefault 			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_FRECUENCIA_PAY_DEFAULT")->value;
-            $creditLineDefault 			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_CREDIT_LINE_DEFAULT")->value;
-            $validarCedula 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_VALIDAR_CEDULA_REPETIDA")->value;
-            $interesDefault				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_INTERES_DEFAULT")->value;
-
-
-            $paisID = $paisDefault;
-            $departamentoId= $departamentoDefault;
-            $municipioId= $municipioDefault;
-
-
-            $objCustomer["companyID"]			= $objEntity["companyID"];
-            $objCustomer["branchID"]			= $objEntity["branchID"];
-            $objCustomer["entityID"]			= $entityID;
-            $objCustomer["customerNumber"]		= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_customer",0);
-            $objCustomer["identificationType"]	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_IDENTIFICATION_TYPE_DEFAULT")->value;
-            $objCustomer["identification"]		= $customer->identification;
-
-
-            //validar que se permita la omision de la cedula
-            if(strcmp($validarCedula,"true") == 0)
-            {
-                //Validar que ya existe el cliente
-                $objCustomerOld					= $this->Customer_Model->get_rowByIdentification($companyID,$objCustomer["identification"]);
-                if($objCustomerOld)
-                {
-                    throw new \Exception("Error identificacion del cliente ya existe.");
-                }
-            }
-
-
-            $objCustomer["countryID"]			= $paisID;
-            $objCustomer["stateID"]				= $departamentoId;
-            $objCustomer["cityID"]				= $municipioId;
-            $objCustomer["location"]			= "";
-            $objCustomer["address"]				= "";
-            $objCustomer["currencyID"]			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVENTORY_CURRENCY_ID_DEFAULT")->value;
-            $objCustomer["clasificationID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CLASIFICATION_ID_DEFAULT")->value;
-            $objCustomer["categoryID"]			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CATEGORY_ID_DEFAULT")->value;
-            $objCustomer["subCategoryID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_SUBCATEGORY_ID_DEFAULT")->value;
-            $objCustomer["customerTypeID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CUSTOMER_TYPE_ID_DEFAULT")->value;
-            $objCustomer["birthDate"]			= date("Y-m-d");
-            $objCustomer["dateContract"]		= date("Y-m-d");
-            $objCustomer["statusID"]			= $this->core_web_workflow->getWorkflowInitStage("tb_customer","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;; //lo mismo statusid de producto solo cambiar nombre de la tabla
-            $objCustomer["typePay"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CUSTOMER_TYPE_PAY_ID_DEFAULT")->value;
-            $objCustomer["payConditionID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CUSTOMER_PAY_CONDITION_ID_DEFAULT")->value;
-            $objCustomer["sexoID"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CUSTOMER_SEX_ID_DEFAULT")->value;
-            $objCustomer["reference1"]			= "";
-            $objCustomer["reference2"]			= "";
-            $objCustomer["reference3"]			= "";
-            $objCustomer["reference4"]			= "";
-            $objCustomer["reference5"]			= "";
-            $objCustomer["balancePoint"]		= 0;
-            $objCustomer["phoneNumber"]			= "";
-            $objCustomer["typeFirm"]			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_TYPE_FIRM_ID_DEFAULT")->value;
-            $objCustomer["budget"]				= 0;
-            $objCustomer["isActive"]			= true;
-            $objCustomer["entityContactID"]		= 0;
-            $objCustomer["formContactID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_FORM_CONTACT_ID_DEFAULT")->value;
-            $this->core_web_auditoria->setAuditCreated($objCustomer,$dataSession,$this->request);
-            $result 							= $this->Customer_Model->insert_app_posme($objCustomer);
-
-            //Ingresar registro en el lector biometrico
-            $dataUser["id"]							= $entityID;
-            $dataUser["name"]						= "buscar en otra base";
-            $dataUser["email"]						= "buscar en otra base";
-            $dataUser["email_verified_at"]			= "0000-00-00 00:00:00";
-            $dataUser["password"]					= "buscar en otra base";
-            $dataUser["remember_token"]				= "buscar en otra base";
-            $dataUser["created_at"]					= "0000-00-00 00:00:00";
-            $dataUser["updated_at"]					= "0000-00-00 00:00:00";
-            $dataUser["image"]						= "";
-            $resultUser 							= $this->Biometric_User_Model->delete_app_posme($dataUser["id"]);
-            $resultUser 							= $this->Biometric_User_Model->insert_app_posme($dataUser);
-
-
-
-            //Ingresar Cuenta
-            $objEntityAccount["companyID"]			= $objEntity["companyID"];
-            $objEntityAccount["componentID"]		= $objComponent->componentID;
-            $objEntityAccount["componentItemID"]	= $entityID;
-            $objEntityAccount["name"]				= "";
-            $objEntityAccount["description"]		= "";
-            $objEntityAccount["accountTypeID"]		= "0";
-            $objEntityAccount["currencyID"]			= "0";
-            $objEntityAccount["classID"]			= "0";
-            $objEntityAccount["balance"]			= "0";
-            $objEntityAccount["creditLimit"]		= "0";
-            $objEntityAccount["maxCredit"]			= "0";
-            $objEntityAccount["debitLimit"]			= "0";
-            $objEntityAccount["maxDebit"]			= "0";
-            $objEntityAccount["statusID"]			= "0";
-
-            $objEntityAccount["accountID"]			= "0";
-            $objEntityAccount["statusID"]			= "0";
-            $objEntityAccount["isActive"]			= 1;
-            $this->core_web_auditoria->setAuditCreated($objEntityAccount,$dataSession,$this->request);
-            $this->Entity_Account_Model->insert_app_posme($objEntityAccount);
-
-            //Ingresar Customer Credit
-            $objCustomerCredit["companyID"] 		= $objEntity["companyID"];
-            $objCustomerCredit["branchID"] 			= $objEntity["branchID"];
-            $objCustomerCredit["entityID"] 			= $entityID;
-            $objCustomerCredit["limitCreditDol"] 	= 80000;
-            $objCustomerCredit["balanceDol"] 		= $objCustomerCredit["limitCreditDol"];
-            $objCustomerCredit["incomeDol"] 		= 5000;
-            $this->Customer_Credit_Model->insert_app_posme($objCustomerCredit);
-
-            //Lineas de Creditos
-            $arrayListCustomerCreditLineID	= array();
-            $arrayListCreditLineID			= array();
-            $arrayListCreditCurrencyID		= array();
-            $arrayListCreditStatusID		= array();
-            $arrayListCreditInterestYear	= array();
-            $arrayListCreditInterestPay		= array();
-            $arrayListCreditTotalPay		= array();
-            $arrayListCreditTotalDefeated	= array();
-            $arrayListCreditDateOpen		= array();
-            $arrayListCreditPeriodPay		= array();
-            $arrayListCreditDateLastPay		= array();
-            $arrayListCreditTerm			= array();
-            $arrayListCreditNote			= array();
-            $arrayListCreditLine			= array();
-            $arrayListCreditNumber			= array();
-            $arrayListCreditLimit			= array();
-            $arrayListCreditBalance			= array();
-            $arrayListCreditStatus			= array();
-            $arrayListTypeAmortization		= array();
-            $limitCreditLine 				= 0;
-
-
-
-
-            if(empty($arrayListCustomerCreditLineID))
-            {
-                $arrayListCustomerCreditLineID[0]	= 1;
-                $arrayListCreditLineID[0] 			= $creditLineDefault;
-                $arrayListCreditCurrencyID[0]		= $this->core_web_currency->getCurrencyDefault($companyID)->currencyID;
-                $arrayListCreditLimit[0]			= 300000;
-                $arrayListCreditInterestYear[0]	= $interesDefault;
-                $arrayListCreditInterestPay[0]		= 0;
-                $arrayListCreditTotalPay[0]		= 0;
-                $arrayListCreditTotalDefeated[0]	= 0;
-                $arrayListCreditPeriodPay[0]		= $frecuencyDefault;
-                $arrayListCreditTerm[0]			= $plazoDefault;
-                $arrayListCreditNote[0]			= "-";
-                $arrayListTypeAmortization[0]		= $typeAmortizationDefault;
-                $arrayListCreditStatusID[0]		= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_line","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
-
-            }
-
-            if(!empty($arrayListCustomerCreditLineID))
-            {
-                foreach($arrayListCustomerCreditLineID as $key => $value)
-                {
-                    $objCustomerCreditLine["companyID"]		= $objEntity["companyID"];
-                    $objCustomerCreditLine["branchID"]		= $objEntity["branchID"];
-                    $objCustomerCreditLine["entityID"]		= $entityID;
-                    $objCustomerCreditLine["creditLineID"]	= $arrayListCreditLineID[$key];
-                    $objCustomerCreditLine["accountNumber"]	= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_customer_credit_line",0);
-                    $objCustomerCreditLine["currencyID"]	= $arrayListCreditCurrencyID[$key];
-                    $objCustomerCreditLine["limitCredit"]	= helper_StringToNumber($arrayListCreditLimit[$key]);
-                    $objCustomerCreditLine["balance"]		= helper_StringToNumber($arrayListCreditLimit[$key]);
-                    $objCustomerCreditLine["interestYear"]	= helper_StringToNumber($arrayListCreditInterestYear[$key]);
-                    $objCustomerCreditLine["interestPay"]	= $arrayListCreditInterestPay[$key];
-                    $objCustomerCreditLine["totalPay"]		= $arrayListCreditTotalPay[$key];
-                    $objCustomerCreditLine["totalDefeated"]	= $arrayListCreditTotalDefeated[$key];
-                    $objCustomerCreditLine["dateOpen"]		= date("Y-m-d");
-                    $objCustomerCreditLine["periodPay"]		= $arrayListCreditPeriodPay[$key];
-                    $objCustomerCreditLine["dateLastPay"]	= date("Y-m-d");
-                    $objCustomerCreditLine["term"]			= helper_StringToNumber($arrayListCreditTerm[$key]);
-                    $objCustomerCreditLine["note"]			= $arrayListCreditNote[$key];
-                    $objCustomerCreditLine["statusID"]		= $arrayListCreditStatusID[$key];
-                    $objCustomerCreditLine["isActive"]		= 1;
-                    $objCustomerCreditLine["typeAmortization"]	= $arrayListTypeAmortization[$key];
-                    $limitCreditLine 							= $limitCreditLine + $objCustomerCreditLine["limitCredit"];
-                    $exchangeRate 								= $this->core_web_currency->getRatio($companyID,$dateOn,1,$objCustomerCreditLine["currencyID"],$objCurrencyDolares->currencyID);//cordobas a dolares, o dolares a dolares.
-                    $exchangeRateAmount							= $objCustomerCreditLine["limitCredit"];
-                    $this->Customer_Credit_Line_Model->insert_app_posme($objCustomerCreditLine);
-
-
-
-
-                    //sumar los limites en dolares
-                    if($exchangeRate == 1)
-                        $exchangeRateTotal = $exchangeRateTotal + $exchangeRateAmount;
-                    //sumar los limite en cordoba
-                    else
-                        $exchangeRateTotal = $exchangeRateTotal + ($exchangeRateAmount / $exchangeRate);
-
-
-
-                }
-            }
-
-
-            //Validar Limite de Credito
-            if($exchangeRateTotal > $objCustomerCredit["limitCreditDol"])
-                throw new \Exception("LINEAS DE CREDITOS MAL CONFIGURADAS LÍMITE EXCEDIDO");
-
-            //Crear la Carpeta para almacenar los Archivos del Cliente
-            $pathfile = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$entityID;
-
-            if (!file_exists($pathfile))
-            {
-                mkdir($pathfile, 0700);
-            }
-
-
-
-            if($db->transStatus() !== false){
-                $db->transCommit();
-            }
-            else{
-                $db->transRollback();
-            }
-
-        }
-        catch(\Exception $ex){
-            exit($ex->getMessage());
-        }
-    }
-    public function updateElementMobile($dataSession, $customer){
-		try{
-					
-			//Obtener el Componente de Transacciones Other Input to Inventory
-			$objComponent							= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
-			if(!$objComponent)	throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
-			
-			
-			$branchID 								= $customer->branchID;
-			$entityID 								= $customer->entityID;
-			$companyID								= $customer->companyID;
-			
-			//Moneda Dolares
-			date_default_timezone_set(APP_TIMEZONE); 
-			
-			$dateOn 								= date("Y-m-d");
-			$dateOn 								= date_format(date_create($dateOn),"Y-m-d");
-										
-			$objCustomer							= $this->Customer_Model->get_rowByPK($companyID,$branchID,$entityID);
-			$oldStatusID 							= $objCustomer->statusID;
-			
-			//Validar si el estado permite editar
-			if(!$this->core_web_workflow->validateWorkflowStage("tb_customer","statusID",$objCustomer->statusID,COMMAND_EDITABLE_TOTAL,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
-			throw new \Exception(NOT_WORKFLOW_EDIT);					
-			
-			
-			
-			$db=db_connect();
-			$db->transStart();			
-			//El Estado solo permite editar el workflow
-			if($this->core_web_workflow->validateWorkflowStage("tb_customer","statusID",$oldStatusID,COMMAND_EDITABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID)){				
-				$objCustomer["statusID"] 		=$customer->statusID;
-				$this->Customer_Model->update_app_posme($companyID,$branchID,$entityID,$objCustomer);
-			}
-			else{
-				$objNatural["isActive"]		= true;
-				$objNatural["firstName"]	= $customer->firstName;
-				$objNatural["lastName"]		= $customer->lastName;		
-				$this->Natural_Model->update_app_posme($companyID,$branchID,$entityID,$objNatural);
-
-				$objLegal["isActive"]		= true;
-				$objLegal["comercialName"]	= $customer->firstName;
-				$objLegal["legalName"]		= $customer->lastName;
-				$this->Legal_Model->update_app_posme($companyID,$branchID,$entityID,$objLegal);		
-			}
-			
-			
-			//Confirmar Entidad
-			if($db->transStatus() !== false){
-				$db->transCommit();
-			}
-			else{
-				$db->transRollback();
-			}
-		}
-		catch(\Exception $ex){
-			exit($ex->getMessage());
-		}		
-    }
 
 }
 ?>
