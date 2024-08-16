@@ -2,7 +2,7 @@
 instalador:
 ---------------------------------------
 ---------------------------------------
----------------------------------------
+--------------------------------------- 
 		nota:	dimenciones de pantalla table:  1080 x 600 inspeccionar.
 		nota:	android aplicacion para imprimir: ESC POS Print Services	
 		
