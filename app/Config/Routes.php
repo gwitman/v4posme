@@ -1320,6 +1320,10 @@ $routes->match(['get','post'],'core_caching_image/get','core_caching_image::get'
 $routes->match(['get','post'],'core_caching_image/get/(:any)','core_caching_image::get');
 
 
+$routes->match(['get','post'],'app_form_public/convierten_detalle_servicio','app_form_public::convierten_detalle_servicio');
+$routes->match(['get','post'],'app_form_public/convierten_detalle_servicio/(:any)','app_form_public::convierten_detalle_servicio');
+
+
 /*
  * INICIO DE DASHBOARDS ESTADISTICOS REAL STATE
  */
