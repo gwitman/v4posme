@@ -17,7 +17,7 @@ instalador:
 		
 		instalar Adoberd1011_es_ES
 		instalar HeidiSQL
-		instalar npp++
+		instalar npp++ 
 		instalar teamviewer
 		instalar view chart navicate
 		instalar xampp-windows-x64-8.0.25-0-VS16-installer
