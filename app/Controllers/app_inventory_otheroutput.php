@@ -437,6 +437,153 @@ class app_inventory_otheroutput extends _BaseController {
 			exit($ex->getMessage());
 		}			
 	}
+
+	function insertElementMobile($dataSession, $items){
+		try{
+			$validate = false;
+			foreach($items as $value){
+				$cantidadFinal = $value->cantidadEntradas-$value->cantidadSalidas;
+				if($cantidadFinal >=0) $validate = false;
+				else $validate = true;
+				if($validate) break;
+			}
+			if(!$validate) {
+				return;
+			}
+			//Obtener el Componente de Transacciones Other Input to Inventory
+			$objComponent							= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_otheroutput");
+			if(!$objComponent)
+			throw new \Exception("EL COMPONENTE 'tb_transaction_master_otheroutput' NO EXISTE...");
+			
+			$objComponentItem						= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+			
+			//Obtener transaccion
+			$companyID 								= $dataSession["user"]->companyID;
+			$branchID								= $dataSession["user"]->branchID;
+			$roleID									= $dataSession["role"]->roleID;
+			$transactionID 							= $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_otheroutput",0);
+			$objT 									= $this->Transaction_Model->getByCompanyAndTransaction($companyID,$transactionID);
+			
+			$objParameterWarehouseDefault		= $this->core_web_parameter->getParameter("INVENTORY_ITEM_WAREHOUSE_DEFAULT",$companyID);
+			$warehouseDefault 					= $objParameterWarehouseDefault->value;
+			//buscar el id de la bodega por number
+			$warehouseID 						= $this->Warehouse_Model->getByCode($companyID, $warehouseDefault)->warehouseID;
+			$objParameterProviderDefault		= $this->core_web_parameter->getParameter("CXP_PROVIDER_DEFAULT",$companyID);
+			$objParameterProviderDefault 		= $objParameterProviderDefault->value;
+
+			$objTM["companyID"] 					= $companyID;
+			$objTM["transactionID"] 				= $transactionID;			
+			$objTM["branchID"]						= $branchID;
+			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($companyID,$branchID,"tb_transaction_master_otheroutput",0);
+			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($objTM["companyID"],$objTM["transactionID"]);
+			$objTM["transactionOn"]					= date("Y-m-d H:i:s");
+			$objTM["statusIDChangeOn"]				= date("Y-m-d H:i:s");
+			$objTM["componentID"] 					= $objComponent->componentID;
+			$objTM["note"] 							= "";
+			$objTM["sign"] 							= $objT->signInventory;
+			$objTM["currencyID"]					= $this->core_web_currency->getCurrencyDefault($companyID)->currencyID;
+			$objTM["currencyID2"]					= $objTM["currencyID"];//$this->core_web_currency->getCurrencyExternal($dataSession["user"]->companyID)->currencyID;
+			$objTM["exchangeRate"]					= 1;//$this->core_web_currency->getRatio($dataSession["user"]->companyID,date("Y-m-d"),1,$objTM["currencyID"],$objTM["currencyID2"]);
+			$objTM["reference1"] 					= "";
+			$objTM["reference2"] 					= "";
+			$objTM["reference3"] 					= "";
+			$objTM["reference4"] 					= "";
+			$objTM["statusID"] 						= $this->core_web_workflow->getWorkflowStageApplyFirst("tb_transaction_master_otheroutput","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
+			$objTM["isApplied"] 					= 0;
+			$objTM["journalEntryID"] 				= 0;
+			$objTM["classID"] 						= NULL;
+			$objTM["areaID"] 						= NULL;
+			$objTM["sourceWarehouseID"]				= $warehouseID;
+			$objTM["targetWarehouseID"]				= NULL;
+			$objTM["isActive"]						= 1;
+			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);			
+			
+			
+			
+			$db=db_connect();
+			$db->transStart();
+			$transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
+			
+			//Crear la Carpeta para almacenar los Archivos del Documento
+			mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$transactionMasterID, 0700);
+			//Recorrer la lista del detalle del documento			
+			if(!empty($items)){
+				$amount=0;
+				$subAmount=0;
+				foreach($items as $key => $value){
+					$cantidadFinal = $value->cantidadEntradas-$value->cantidadSalidas;
+					if($cantidadFinal >=0) continue;
+					$cantidadFinal							=-1*$cantidadFinal;
+					$objItem 								= $this->Item_Model->get_rowByCodeBarra($companyID, $value->barCode);
+					$lote 									= "";
+					$vencimiento							= "";
+										
+					$objTMD["companyID"] 					= $objTM["companyID"];
+					$objTMD["transactionID"] 				= $objTM["transactionID"];
+					$objTMD["transactionMasterID"] 			= $transactionMasterID;
+					$objTMD["componentID"]					= $objComponentItem->componentID;
+					$objTMD["componentItemID"] 				= $value->itemID; 
+					$objTMD["quantity"] 					= $cantidadFinal;
+					$objTMD["unitaryCost"]					= $objItem->cost;//costo
+					$objTMD["cost"] 						= $objTMD["quantity"] * $objTMD["unitaryCost"];
+					$amount									+= $objTMD["cost"];
+					$subAmount								= $amount;
+					$objTMD["unitaryAmount"]				= 0;
+					$objTMD["amount"] 						= 0;										
+					$objTMD["discount"]						= 0;
+					$objTMD["unitaryPrice"]					= 0;
+					$objTMD["promotionID"] 					= 0;
+					
+					$objTMD["lote"]							= $lote;
+					$objTMD["expirationDate"]				= $vencimiento == "" ? NULL:  $vencimiento;
+					$objTMD["reference3"]					= '';
+					$objTMD["catalogStatusID"]				= 0;
+					$objTMD["inventoryStatusID"]			= 0;
+					$objTMD["isActive"]						= 1;
+					$objTMD["quantityStock"]				= 0;
+					$objTMD["quantiryStockInTraffic"]		= 0;
+					$objTMD["quantityStockUnaswared"]		= 0;
+					$objTMD["remaingStock"]					= 0;					
+					$objTMD["inventoryWarehouseSourceID"]	= $objTM["sourceWarehouseID"];
+					$objTMD["inventoryWarehouseTargetID"]	= $objTM["targetWarehouseID"];
+					
+					$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
+				}
+				
+			}
+
+			$objTM["amount"]	=$amount;
+			$objTM["subAmount"]	=$subAmount;
+			$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTM);
+
+			
+			//Aplicar el Documento?
+			if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_otheroutput","statusID",$objTM["statusID"],COMMAND_APLICABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID)){
+				//Ingresar en Kardex.
+				$this->core_web_inventory->calculateKardexNewOutput($companyID,$transactionID,$transactionMasterID);			
+			
+				//Crear Conceptos.
+				$this->core_web_concept->otheroutput($companyID,$transactionID,$transactionMasterID);
+			}
+
+			if($db->transStatus() !== false){
+				$db->transCommit();						
+			}
+			else{
+				$db->transRollback();
+			}
+			
+		}
+		catch(\Exception $ex){
+			return $this->response->setJSON(array(
+                'error' => true,
+                'message' => 'Linea: ' . $ex->getLine() . " - Error:" . $ex->getMessage()
+            ));//--finjson
+		}	
+	}
+	
 	function updateElement($dataSession){
 		try{
 			//PERMISO SOBRE LA FUNCTION
@@ -529,8 +676,7 @@ class app_inventory_otheroutput extends _BaseController {
 					$objItemWarehouse						= $this->Itemwarehouse_Model->getByPK($objTM->companyID,$objItem->itemID,$objTMNew["sourceWarehouseID"]);
 					
 					if($objItemWarehouse->quantity < helper_StringToNumber($arrayListQuantity[$key]))
-					throw new \Exception("La cantidad de '" . $objItem->itemNumber . " " . $objItem->name . "' es mayor que la disponible en bodega");
-					
+					throw new \Exception("La cantidad de '" . $objItem->itemNumber . " " . $objItem->name . "' es mayor que la disponible en bodega");				
 					
 					
 					//Nuevo Detalle

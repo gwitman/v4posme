@@ -79,6 +79,14 @@ class app_mobile_api extends _BaseController
                 $inventoryController->insertElementMobile($dataSession, $items);
             }
             
+            //las entradas - salidas < 0
+            // SINCRONIZACION DE SALIDAS
+            if(count($items)>0){
+                $inventoryOutController = new app_inventory_otheroutput();
+                $inventoryOutController->initController($this->request, $this->response, $this->logger);
+                $items = json_decode(json_encode($items)); 
+                $inventoryOutController->insertElementMobile($dataSession, $items);     
+            }
             return $this->response->setJSON(array(
                 'error' => false,
                 'message' => SUCCESS
