@@ -216,7 +216,7 @@
 							$('#errorLabel').hide();
 						}
 						let combo1 = $('#txtSelectComments').val();
-						let selected = '';
+						console.log(combo1);
 						let nuevaFila = ""+
 							"<tr> "+
 								"<td>"+
@@ -224,13 +224,12 @@
 									"<input class='form-control' type='text' name='txtComentarioTallerArray[]' value='"+texto+"'> "+
 								"</td>"+
 								"<td>"+
-									"<select name='txtCommentsIDArray[]' id='comboCommentsId'>";
+									"<select name='txtCommentsIDArray[]' id='comboCommentsId'>"+
 									<?php
 										if($objListComments){
 											foreach($objListComments as $ws){
 									?>
-												selected = ((combo1===<?= $ws->catalogItemID?>) ? 'selected' : '');
-												nuevaFila += "<option value='<?=$ws->catalogItemID?>' " + selected + "><?=$ws->name?></option>"+
+												"<option value='<?=$ws->catalogItemID?>' " + ((combo1 ==<?= $ws->catalogItemID?>) ? 'selected' : '') + "><?=$ws->name?></option>"+
 									<?php
 											}
 										}

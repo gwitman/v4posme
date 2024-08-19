@@ -634,26 +634,24 @@
                     "<input class='form-control' type='text' name='txtNombreRecordatorioArray[]' value='"+texto+"'> "+
                 "</td>"+
                 "<td>"+
-                    "<select name='txtSituationIDArray[]' id='comboSituationId'>";
+                    "<select name='txtSituationIDArray[]' id='comboSituationId'>"+
 					<?php
 						if(isset($objListSituationID)){
 							foreach($objListSituationID as $ws){
 					?>
-								selected = ((combo1===<?= $ws->catalogItemID?>) ? 'selected' : '');
-								nuevaFila += "<option value='<?=$ws->catalogItemID?>' " + selected + "><?=$ws->name?></option>"+
+								"<option value='<?=$ws->catalogItemID?>' " + ((combo1==<?= $ws->catalogItemID?>) ? 'selected' : '') + "><?=$ws->name?></option>"+
 					<?php
 							}
 						}
 					?>
                 "</td>"+
                 "<td>"+
-                    "<select name='txtFrecuencyContactIDArray[]' id='comboFrecuencyContactId'>";
+                    "<select name='txtFrecuencyContactIDArray[]' id='comboFrecuencyContactId'>"+
 					<?php
 						if(isset($objListFrecuencyContactID)){
 							foreach($objListFrecuencyContactID as $ws){
 					?>
-								selected = ((combo2===<?= $ws->catalogItemID?>) ? 'selected' : '');
-				                nuevaFila += "<option value='<?=$ws->catalogItemID?>' " + selected + "><?=$ws->name?></option>"+
+				                "<option value='<?=$ws->catalogItemID?>' " + ((combo2==<?= $ws->catalogItemID?>) ? 'selected' : '') + "><?=$ws->name?></option>"+
 					<?php
 							}
 						}

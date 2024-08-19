@@ -18,99 +18,289 @@
 				  <h6 class="card-subtitle text-muted">Nuevo</h6>
 				</div>
 				
-				
-				
-				
-				<div class="card-body">
+
+				<div class="card-bodyi">
 				
 					<form role="form" action="<?php echo base_url(); ?>/core_user/savepublic" method="POST" enctype="multipart/form-data"  >
 					
-							  <div class="mb-12 row">
-								<label for="html5-text-input" class="col-md-6 col-form-label">Tipo de servicio</label>
-								<div class="col-md-6">
-								  <select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
-									<option value="AK">Alaska</option>
-									<option value="HI">Hawaii</option>
-									<option value="CA">California</option>
-									<option value="NV">Nevada</option>
-									<option value="OR">Oregon</option>
-									<option value="WA">Washington</option>
-									<option value="AZ">Arizona</option>
-									<option value="CO">Colorado</option>
-									<option value="ID">Idaho</option>
-									<option value="MT">Montana</option>
-									<option value="NE">Nebraska</option>
-									<option value="NM">New Mexico</option>
-									<option value="ND">North Dakota</option>
-									<option value="UT">Utah</option>
-									<option value="WY">Wyoming</option>
-									<option value="AL">Alabama</option>
-									<option value="AR">Arkansas</option>
-									<option value="IL">Illinois</option>
-									<option value="IA">Iowa</option>
-									<option value="KS">Kansas</option>
-									<option value="KY">Kentucky</option>
-									<option value="LA">Louisiana</option>
-									<option value="MN">Minnesota</option>
-									<option value="MS">Mississippi</option>
-									<option value="MO">Missouri</option>
-									<option value="OK">Oklahoma</option>
-									<option value="SD">South Dakota</option>
-									<option value="TX">Texas</option>
-									<option value="TN">Tennessee</option>
-									<option value="WI">Wisconsin</option>
-									<option value="CT">Connecticut</option>
-									<option value="DE">Delaware</option>
-									<option value="FL">Florida</option>
-									<option value="GA">Georgia</option>
-									<option value="IN">Indiana</option>
-									<option value="ME">Maine</option>
-									<option value="MD">Maryland</option>
-									<option value="MA">Massachusetts</option>
-									<option value="MI">Michigan</option>
-									<option value="NH">New Hampshire</option>
-									<option value="NJ">New Jersey</option>
-									<option value="NY">New York</option>
-									<option value="NC">North Carolina</option>
-									<option value="OH">Ohio</option>
-									<option value="PA">Pennsylvania</option>
-									<option value="RI">Rhode Island</option>
-									<option value="SC">South Carolina</option>
-									<option value="VT">Vermont</option>
-									<option value="VA">Virginia</option>
-									<option value="WV">West Virginia</option>
-								  </select>
+							<div class="mb-12 row">
+								
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-text-input" class="col-form-label">Tipo de servicio</label>
+								  	<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+										<option value="NV">Nevada</option>
+										<option value="OR">Oregon</option>
+										<option value="WA">Washington</option>
+										<option value="AZ">Arizona</option>
+										<option value="CO">Colorado</option>
+										<option value="ID">Idaho</option>
+										<option value="MT">Montana</option>
+										<option value="NE">Nebraska</option>
+										<option value="NM">New Mexico</option>
+										<option value="ND">North Dakota</option>
+										<option value="UT">Utah</option>
+										<option value="WY">Wyoming</option>
+										<option value="AL">Alabama</option>
+										<option value="AR">Arkansas</option>
+										<option value="IL">Illinois</option>
+										<option value="IA">Iowa</option>
+										<option value="KS">Kansas</option>
+										<option value="KY">Kentucky</option>
+										<option value="LA">Louisiana</option>
+										<option value="MN">Minnesota</option>
+										<option value="MS">Mississippi</option>
+										<option value="MO">Missouri</option>
+										<option value="OK">Oklahoma</option>
+										<option value="SD">South Dakota</option>
+										<option value="TX">Texas</option>
+										<option value="TN">Tennessee</option>
+										<option value="WI">Wisconsin</option>
+										<option value="CT">Connecticut</option>
+										<option value="DE">Delaware</option>
+										<option value="FL">Florida</option>
+										<option value="GA">Georgia</option>
+										<option value="IN">Indiana</option>
+										<option value="ME">Maine</option>
+										<option value="MD">Maryland</option>
+										<option value="MA">Massachusetts</option>
+										<option value="MI">Michigan</option>
+										<option value="NH">New Hampshire</option>
+										<option value="NJ">New Jersey</option>
+										<option value="NY">New York</option>
+										<option value="NC">North Carolina</option>
+										<option value="OH">Ohio</option>
+										<option value="PA">Pennsylvania</option>
+										<option value="RI">Rhode Island</option>
+										<option value="SC">South Carolina</option>
+										<option value="VT">Vermont</option>
+										<option value="VA">Virginia</option>
+										<option value="WV">West Virginia</option>
+								  	</select>
 								</div>
-							  </div>
+
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-text-input" class="col-form-label">Servicio Existente</label>
+									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+									</select>
+								</div>
+
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-form-label">Servicio</label>
+									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+									</select>
+								</div>
+
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-tel-input" class="col-md-6 col-form-label">Tecnologia</label>
+									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+									</select>
+								</div>
 							  
-							  <div class="mb-12 row">
-								<label for="html5-text-input" class="col-md-6 col-form-label">Comercio</label>
-								<div class="col-md-6">
-								  <input class="form-control" type="text" value="" id="txtComercio" name="txtComercio"  />
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">Velocidad Internet</label>
+									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+									</select>
 								</div>
-							  </div>
 							  
-						   
-							  <div class="mb-12 row">
-								<label for="html5-email-input" class="col-md-6 col-form-label">Email</label>
-								<div class="col-md-6">
-								  <input class="form-control" type="email" value="" id="txtEmail" name="txtEmail" />
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">Numero Contrato Fijo</label>
+									<input type="text" class="form-control" id="floatingInput" aria-describedby="floatingInputHelp">
 								</div>
-							  </div>
-							 
-							  <div class="mb-12 row">
-								<label for="html5-tel-input" class="col-md-6 col-form-label">Telefono</label>
-								<div class="col-md-6">
-								  <input class="form-control" type="tel" value="" id="txtTelefono" name="txtTelefono" />
+
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">Numero orden</label>
+									<input type="text" class="form-control" id="floatingInput" aria-describedby="floatingInputHelp">
 								</div>
-							  </div>
-							
-							  <div class="mb-12 row">
-								<label for="formFile" class="form-label">Portada</label>
-								<input class="form-control" type="file" id="formFilePortada" name="formFilePortada" />
-							  </div>
 							  
-							  </br>
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">Gestion Movil</label>
+									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+									</select>
+								</div>
+
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">Plan Movil</label>
+									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+									</select>
+								</div>
+
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">Numero Contrato Movil</label>
+									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+									</select>
+								</div>
+	
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">Linea a Portar o Migrar</label>
+									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+									</select>
+								</div>
+								
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">Tipo de Linea</label>
+									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+									</select>
+								</div>
+								
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">Operador donante</label>
+									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+									</select>
+								</div>
+
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">Linea Nueva o Provincial</label>
+									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+									</select>
+								</div>
+
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">Tipo de Migracion</label>
+									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+									</select>
+								</div>
+
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">Lineas Moviles adicionales</label>
+									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+									</select>
+								</div>
+
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">Gestion Movil adicional</label>
+									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+									</select>
+								</div>
+								
+
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">Plan Movil Adicional</label>
+									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+									</select>
+								</div>
+
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">Linea a Portar o Migrar Adicional</label>
+									<input type="text" class="form-control" id="floatingInput" aria-describedby="floatingInputHelp">
+								</div>
+
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">Linea Nueva o Provisional Adicional</label>
+									<input type="text" class="form-control" id="floatingInput" aria-describedby="floatingInputHelp">
+								</div>
+
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">RGus Fijos</label>
+									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+									</select>
+								</div>
+
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">RGus Moviles</label>
+									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+									</select>
+								</div>
+								
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">Total RGUs</label>
+									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+									</select>
+								</div>
+
+								
+
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">Renta Fijo</label>
+									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+									</select>
+								</div>
+
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">Renta Movil</label>
+									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+									</select>
+								</div>
+
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">Renta Total</label>
+									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+									</select>
+								</div>
+
+								<div class="col-md-4 my-2 px-4">
+									<label for="html5-email-input" class="col-md-6 col-form-label">Observaciones Servicio</label>
+									<input type="text" class="form-control" id="floatingInput" placeholder="John Doe" aria-describedby="floatingInputHelp">
+								</div>
+
+							</div>
+
+							</br>
 							  
 							  <div class="accordion mt-3" id="accordionWithIcon">
 							  	
