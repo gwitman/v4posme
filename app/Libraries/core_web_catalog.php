@@ -170,32 +170,35 @@ class core_web_catalog {
 	
 	
 		//Obtener si el catalog, usa un catalogo personalizable
-		if ( !empty( $objCatalog->publicCatalogSystemName ) &&  !is_null( $objCatalog->publicCatalogSystemName ) ) 
-		{
-			$objPublicCatalog 		= $Public_Catalog_Model->getBySystemNameAndFlavorID($objCatalog->publicCatalogSystemName,$objCompanyModel->flavorID);
-			$objPublicCatalogItem 	= $Public_Catalog_Detail_Model->getView($objPublicCatalog->publicCatalogID);
-			if(!$objPublicCatalogItem)
-			{
-				$objCatalogItem = $objCatalogItem;
-			}
-			else
-			{
-				$objCatalogItem = array();
-				foreach($objPublicCatalogItem as $objItem)
-				{
-					array_push(
-						$objCatalogItem,
-						(object)[
-							"catalogItemID" 	=> $objItem->publicCatalogDetailID,
-							"name" 				=> $objItem->name,
-							"display" 			=> $objItem->display,
-							"description" 		=> $objItem->description,
-							"sequence" 			=> $objItem->sequence
-						]
-					);
-				}
-			}
+		if ( is_null( $objCatalog->publicCatalogSystemName ) ) 
+			return $objCatalogItem;
+		
+		if ( empty( $objCatalog->publicCatalogSystemName ) ) 
+			return $objCatalogItem;
+		
+		
+		$objPublicCatalog 		= $Public_Catalog_Model->getBySystemNameAndFlavorID($objCatalog->publicCatalogSystemName,$objCompanyModel->flavorID);
+		if(!$objPublicCatalog)
+			return $objCatalogItem;		
 			
+		$objPublicCatalogItem 	= $Public_Catalog_Detail_Model->getView($objPublicCatalog->publicCatalogID);
+		if(!$objPublicCatalogItem)
+			return $objCatalogItem;		
+			
+		
+		//Usar public catalog item
+		foreach($objPublicCatalogItem as $objItem)
+		{
+			array_push(
+				$objCatalogItem,
+				(object)[
+					"catalogItemID" 	=> $objItem->publicCatalogDetailID,
+					"name" 				=> $objItem->name,
+					"display" 			=> $objItem->display,
+					"description" 		=> $objItem->description,
+					"sequence" 			=> $objItem->sequence
+				]
+			);
 		}
 
 		return $objCatalogItem;
@@ -237,33 +240,40 @@ class core_web_catalog {
 		if(!$objCatalogItem)
 		$objCatalogItem = $Catalog_Item_Model->get_rowByCatalogIDAndFlavorID($objCatalog->catalogID,$objCompanyComponentFlavor->flavorID);
 	
+		
+		
 		//Obtener si el catalog, usa un catalogo personalizable
-		if ( !empty( $objCatalog->publicCatalogSystemName ) &&  !is_null( $objCatalog->publicCatalogSystemName ) ) 
+		if ( is_null( $objCatalog->publicCatalogSystemName ) ) 
+			return $objCatalogItem;
+		
+		if ( empty( $objCatalog->publicCatalogSystemName ) ) 
+			return $objCatalogItem;
+		
+		
+		$objPublicCatalog 		= $Public_Catalog_Model->getBySystemNameAndFlavorID($objCatalog->publicCatalogSystemName,$objCompanyModel->flavorID);
+		if(!$objPublicCatalog)
+			return $objCatalogItem;		
+			
+		$objPublicCatalogItem 	= $Public_Catalog_Detail_Model->getView($objPublicCatalog->publicCatalogID);
+		if(!$objPublicCatalogItem)
+			return $objCatalogItem;		
+			
+		
+		//Usar public catalog item
+		foreach($objPublicCatalogItem as $objItem)
 		{
-			$objPublicCatalog 		= $Public_Catalog_Model->getBySystemNameAndFlavorID($objCatalog->publicCatalogSystemName,$objCompanyModel->flavorID);
-			$objPublicCatalogItem 	= $Public_Catalog_Detail_Model->getView($objPublicCatalog->publicCatalogID);
-			if(!$objPublicCatalogItem)
-			{
-				$objCatalogItem = $objCatalogItem;
-			}
-			else
-			{
-				$objCatalogItem = array();
-				foreach($objPublicCatalogItem as $objItem)
-				{
-					array_push(
-						$objCatalogItem,
-						(object)[
-							"catalogItemID" 	=> $objItem->publicCatalogDetailID,
-							"name" 				=> $objItem->name,
-							"display" 			=> $objItem->display,
-							"description" 		=> $objItem->description,
-							"sequence" 			=> $objItem->sequence
-						]
-					);
-				}
-			}
-		}
+			array_push(
+				$objCatalogItem,
+				(object)[
+					"catalogItemID" 	=> $objItem->publicCatalogDetailID,
+					"name" 				=> $objItem->name,
+					"display" 			=> $objItem->display,
+					"description" 		=> $objItem->description,
+					"sequence" 			=> $objItem->sequence
+				]
+			);
+		}	
+		
 		
 		return $objCatalogItem;
 		
@@ -309,33 +319,7 @@ class core_web_catalog {
 		//obtener la lista de catalogItem
 		$objCatalogItem = $Catalog_Item_Model->get_rowByCatalogIDAndFlavorID_Parent($objCatalog->catalogID,$objCompanyComponentFlavor->flavorID,$parentCatalogItemID);
 		
-		//Obtener si el catalog, usa un catalogo personalizable
-		if ( !empty( $objCatalog->publicCatalogSystemName ) &&  !is_null( $objCatalog->publicCatalogSystemName ) ) 
-		{
-			$objPublicCatalog 		= $Public_Catalog_Model->getBySystemNameAndFlavorID($objCatalog->publicCatalogSystemName,$objCompanyModel->flavorID);
-			$objPublicCatalogItem 	= $Public_Catalog_Detail_Model->getView($objPublicCatalog->publicCatalogID);
-			if(!$objPublicCatalogItem)
-			{
-				$objCatalogItem = $objCatalogItem;
-			}
-			else
-			{
-				$objCatalogItem = array();
-				foreach($objPublicCatalogItem as $objItem)
-				{
-					array_push(
-						$objCatalogItem,
-						(object)[
-							"catalogItemID" 	=> $objItem->publicCatalogDetailID,
-							"name" 				=> $objItem->name,
-							"display" 			=> $objItem->display,
-							"description" 		=> $objItem->description,
-							"sequence" 			=> $objItem->sequence
-						]
-					);
-				}
-			}
-		}
+		
 		
 		return $objCatalogItem;
 		
@@ -382,39 +366,48 @@ class core_web_catalog {
 		
 		
 		//Obtener si el catalog, usa un catalogo personalizable
-		if ( !empty( $objCatalog->publicCatalogSystemName ) &&  !is_null( $objCatalog->publicCatalogSystemName ) ) 
+		if ( is_null( $objCatalog->publicCatalogSystemName ) ) 
+			return $objCatalogItem;
+		
+		if ( empty( $objCatalog->publicCatalogSystemName ) ) 
+			return $objCatalogItem;
+			
+		
+		
+		
+		$objPublicCatalog 		= $Public_Catalog_Model->getBySystemNameAndFlavorID($objCatalog->publicCatalogSystemName,$objCompanyModel->flavorID);
+		if(!$objPublicCatalog)
+			return $objCatalogItem;		
+			
+		$objPublicCatalogItem 	= $Public_Catalog_Detail_Model->getView($objPublicCatalog->publicCatalogID);
+		if(!$objPublicCatalogItem)
+			return $objCatalogItem;		
+		
+		
+			
+		//Filtrar los registros		
+		$objPublicCatalogItem 	= array_filter($objPublicCatalogItem, function($i) use ($catalogItemID) {
+				return $i->publicCatalogDetailID == $catalogItemID;
+		});
+		if(!$objPublicCatalogItem)
+			return $objCatalogItem;
+		
+		
+		//Usar public catalog item
+		foreach($objPublicCatalogItem as $objItem)
 		{
-			$objPublicCatalog 		= $Public_Catalog_Model->getBySystemNameAndFlavorID($objCatalog->publicCatalogSystemName,$objCompanyModel->flavorID);
-			$objPublicCatalogItem 	= $Public_Catalog_Detail_Model->getView($objPublicCatalog->publicCatalogID);
-			if(!$objPublicCatalogItem)
-			{
-				$objCatalogItem = $objCatalogItem;
-			}
-			else
-			{
-				//Filtrar los registros
-				$objCatalogItem 		= array();
-				$objPublicCatalogItem 	= array_filter($objPublicCatalogItem, function($i) use ($catalogItemID) {
-						return $i->publicCatalogDetailID == $catalogItemID;
-				});
-
-				
-				foreach($objPublicCatalogItem as $objItem)
-				{
-					array_push(
-						$objCatalogItem,
-						(object)[
-							"catalogItemID" 	=> $objItem->publicCatalogDetailID,
-							"name" 				=> $objItem->name,
-							"display" 			=> $objItem->display,
-							"description" 		=> $objItem->description,
-							"sequence" 			=> $objItem->sequence
-						]
-					);
-				}
-				
-			}
-		}
+			array_push(
+				$objCatalogItem,
+				(object)[
+					"catalogItemID" 	=> $objItem->publicCatalogDetailID,
+					"name" 				=> $objItem->name,
+					"display" 			=> $objItem->display,
+					"description" 		=> $objItem->description,
+					"sequence" 			=> $objItem->sequence
+				]
+			);
+		}	
+		
 		
 		return $objCatalogItem;
 		
