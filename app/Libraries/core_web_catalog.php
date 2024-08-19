@@ -99,6 +99,9 @@ use App\Models\Transaction_Profile_Detail_Model;
 use App\Models\Userwarehouse_Model;
 use App\Models\User_Tag_Model;
 use App\Models\Warehouse_Model;
+use App\Models\Public_Catalog_Model;
+use App\Models\Public_Catalog_Detail_Model;
+
 
 
 class core_web_catalog {
@@ -125,6 +128,8 @@ class core_web_catalog {
 		$Company_Component_Flavor_Model = new Company_Component_Flavor_Model();
 		$Catalog_Model = new Catalog_Model();  
 		$Catalog_Item_Model = new Catalog_Item_Model();  
+		$Public_Catalog_Model = new Public_Catalog_Model();
+		$Public_Catalog_Detail_Model = new Public_Catalog_Detail_Model();
 		
 		//Obtener compania
 		$objCompanyModel = $Company_Model->get_rowByPK($companyID);
@@ -158,13 +163,41 @@ class core_web_catalog {
 		if(!$objCompanyComponentFlavor)
 		throw new \Exception("NO EXISTE EL FLAVOR PARA EL COMPONENTE DE CATALOGO ");
 		
-		//obtener la lista de catalogItem		
-		 
-		
+		//obtener la lista de catalogItem	
 		$objCatalogItem = $Catalog_Item_Model->get_rowByCatalogIDAndFlavorID($objCatalog->catalogID,$objCompanyModel->flavorID);
 		if(!$objCatalogItem)
 		$objCatalogItem = $Catalog_Item_Model->get_rowByCatalogIDAndFlavorID($objCatalog->catalogID,$objCompanyComponentFlavor->flavorID);
 	
+	
+		//Obtener si el catalog, usa un catalogo personalizable
+		if ( !empty( $objCatalog->publicCatalogSystemName ) &&  !is_null( $objCatalog->publicCatalogSystemName ) ) 
+		{
+			$objPublicCatalog 		= $Public_Catalog_Model->getBySystemNameAndFlavorID($objCatalog->publicCatalogSystemName,$objCompanyModel->flavorID);
+			$objPublicCatalogItem 	= $Public_Catalog_Detail_Model->getView($objPublicCatalog->publicCatalogID);
+			if(!$objPublicCatalogItem)
+			{
+				$objCatalogItem = $objCatalogItem;
+			}
+			else
+			{
+				$objCatalogItem = array();
+				foreach($objPublicCatalogItem as $objItem)
+				{
+					array_push(
+						$objCatalogItem,
+						(object)[
+							"catalogItemID" 	=> $objItem->publicCatalogDetailID,
+							"name" 				=> $objItem->name,
+							"display" 			=> $objItem->display,
+							"description" 		=> $objItem->description,
+							"sequence" 			=> $objItem->sequence
+						]
+					);
+				}
+			}
+			
+		}
+
 		return $objCatalogItem;
 		
    }
@@ -204,6 +237,34 @@ class core_web_catalog {
 		if(!$objCatalogItem)
 		$objCatalogItem = $Catalog_Item_Model->get_rowByCatalogIDAndFlavorID($objCatalog->catalogID,$objCompanyComponentFlavor->flavorID);
 	
+		//Obtener si el catalog, usa un catalogo personalizable
+		if ( !empty( $objCatalog->publicCatalogSystemName ) &&  !is_null( $objCatalog->publicCatalogSystemName ) ) 
+		{
+			$objPublicCatalog 		= $Public_Catalog_Model->getBySystemNameAndFlavorID($objCatalog->publicCatalogSystemName,$objCompanyModel->flavorID);
+			$objPublicCatalogItem 	= $Public_Catalog_Detail_Model->getView($objPublicCatalog->publicCatalogID);
+			if(!$objPublicCatalogItem)
+			{
+				$objCatalogItem = $objCatalogItem;
+			}
+			else
+			{
+				$objCatalogItem = array();
+				foreach($objPublicCatalogItem as $objItem)
+				{
+					array_push(
+						$objCatalogItem,
+						(object)[
+							"catalogItemID" 	=> $objItem->publicCatalogDetailID,
+							"name" 				=> $objItem->name,
+							"display" 			=> $objItem->display,
+							"description" 		=> $objItem->description,
+							"sequence" 			=> $objItem->sequence
+						]
+					);
+				}
+			}
+		}
+		
 		return $objCatalogItem;
 		
    }
@@ -247,6 +308,35 @@ class core_web_catalog {
 		
 		//obtener la lista de catalogItem
 		$objCatalogItem = $Catalog_Item_Model->get_rowByCatalogIDAndFlavorID_Parent($objCatalog->catalogID,$objCompanyComponentFlavor->flavorID,$parentCatalogItemID);
+		
+		//Obtener si el catalog, usa un catalogo personalizable
+		if ( !empty( $objCatalog->publicCatalogSystemName ) &&  !is_null( $objCatalog->publicCatalogSystemName ) ) 
+		{
+			$objPublicCatalog 		= $Public_Catalog_Model->getBySystemNameAndFlavorID($objCatalog->publicCatalogSystemName,$objCompanyModel->flavorID);
+			$objPublicCatalogItem 	= $Public_Catalog_Detail_Model->getView($objPublicCatalog->publicCatalogID);
+			if(!$objPublicCatalogItem)
+			{
+				$objCatalogItem = $objCatalogItem;
+			}
+			else
+			{
+				$objCatalogItem = array();
+				foreach($objPublicCatalogItem as $objItem)
+				{
+					array_push(
+						$objCatalogItem,
+						(object)[
+							"catalogItemID" 	=> $objItem->publicCatalogDetailID,
+							"name" 				=> $objItem->name,
+							"display" 			=> $objItem->display,
+							"description" 		=> $objItem->description,
+							"sequence" 			=> $objItem->sequence
+						]
+					);
+				}
+			}
+		}
+		
 		return $objCatalogItem;
 		
    }
@@ -289,6 +379,43 @@ class core_web_catalog {
 		
 		//obtener la lista de catalogItem
 		$objCatalogItem = $Catalog_Item_Model->get_rowByCatalogItemID($catalogItemID);
+		
+		
+		//Obtener si el catalog, usa un catalogo personalizable
+		if ( !empty( $objCatalog->publicCatalogSystemName ) &&  !is_null( $objCatalog->publicCatalogSystemName ) ) 
+		{
+			$objPublicCatalog 		= $Public_Catalog_Model->getBySystemNameAndFlavorID($objCatalog->publicCatalogSystemName,$objCompanyModel->flavorID);
+			$objPublicCatalogItem 	= $Public_Catalog_Detail_Model->getView($objPublicCatalog->publicCatalogID);
+			if(!$objPublicCatalogItem)
+			{
+				$objCatalogItem = $objCatalogItem;
+			}
+			else
+			{
+				//Filtrar los registros
+				$objCatalogItem 		= array();
+				$objPublicCatalogItem 	= array_filter($objPublicCatalogItem, function($i) use ($catalogItemID) {
+						return $i->publicCatalogDetailID == $catalogItemID;
+				});
+
+				
+				foreach($objPublicCatalogItem as $objItem)
+				{
+					array_push(
+						$objCatalogItem,
+						(object)[
+							"catalogItemID" 	=> $objItem->publicCatalogDetailID,
+							"name" 				=> $objItem->name,
+							"display" 			=> $objItem->display,
+							"description" 		=> $objItem->description,
+							"sequence" 			=> $objItem->sequence
+						]
+					);
+				}
+				
+			}
+		}
+		
 		return $objCatalogItem;
 		
    }

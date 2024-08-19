@@ -125,6 +125,7 @@ class core_web_authentication {
 		$Membership_Model = new Membership_Model();
 		$Company_Model = new Company_Model();
 		$Branch_Model = new Branch_Model();
+		$Company_Parameter_Model = new Company_Parameter_Model();
 		$core_web_menu = new core_web_menu();
 		$core_web_permission = new core_web_permission();
 		$core_web_parameter = new core_web_parameter();
@@ -146,7 +147,7 @@ class core_web_authentication {
 		
 		$objRole					= $Role_Model->get_rowByPK($objUser->companyID,$objUser->branchID,$objMembership->roleID);
 		
-		
+		$objListAllParameter		= $Company_Parameter_Model->get_rowByCompanyID($objMembership->companyID);
 		$objElementAuthorized		= $core_web_menu->get_menu_top($objMembership->companyID,$objMembership->branchID,$objMembership->roleID,$objMembership->userID);		
 		$objElementNotAuthorized	= $core_web_menu->get_menu_left($objMembership->companyID,$objMembership->branchID,$objMembership->roleID,$objMembership->userID);
 		$menuBodyReport				= $core_web_menu->get_menu_body_report($objMembership->companyID,$objMembership->branchID,$objMembership->roleID,$objMembership->userID);
@@ -168,6 +169,7 @@ class core_web_authentication {
 		
 		
 		$data["company"]				= $objCompany;
+		$data["companyParameter"]		= $objListAllParameter;
 		$data["parameterLabelSistem"]	= $parameterLabelSistem;
 		$data["mensajeLogin"]			= $mensajeLogin;
 		$data["branch"]					= $objBranch;

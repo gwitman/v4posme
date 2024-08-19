@@ -11,7 +11,7 @@ class Catalog_Model extends Model  {
    function get_rowByCatalogID($catalogID){
 		$db 	= db_connect();
 		$sql = "";
-		$sql = sprintf("select e.catalogID,e.name,e.description,e.isActive,e.orden");
+		$sql = sprintf("select e.catalogID,e.name,e.description,e.isActive,e.orden,e.publicCatalogSystemName");
 		$sql = $sql.sprintf(" from tb_catalog e");
 		$sql = $sql.sprintf(" where e.catalogID = $catalogID");	
 		$sql = $sql.sprintf(" and e.isActive= 1");	
@@ -23,7 +23,7 @@ class Catalog_Model extends Model  {
    function get_rowByName($name){
 		$db 	= db_connect();
 		$sql = "";
-		$sql = sprintf("select e.catalogID,e.name,e.description,e.isActive,e.orden");
+		$sql = sprintf("select e.catalogID,e.name,e.description,e.isActive,e.orden,e.publicCatalogSystemName");
 		$sql = $sql.sprintf(" from tb_catalog e");
 		$sql = $sql.sprintf(" where e.name = '$name' ");	
 		$sql = $sql.sprintf(" and e.isActive= 1");	
