@@ -57,4 +57,20 @@ class Customer_Frecuency_Actuations_Model extends model{
 		//Ejecutar Consulta
 		return $query->getResult();
 	}
+
+	function get_rowExpiredRegisters($userName = null)
+	{
+		$db = db_connect();
+		$builder = $db->table("tb_customer_frecuency_actuations cf");
+		$query = $builder
+		->select("cf.name, ci.description ")
+		->join("tb_catalog_item ci", "cf.frecuencyContactId = ci.catalogItemID")
+		->where("cf.isActive",1)
+		->where("cf.isApply",0)
+		->where("DATE_ADD(cf.createdOn, INTERVAL ci.sequence DAY) >=" . date('Y-m-d'))
+		->orderBy('cf.name','desc')
+		->get();
+
+		return $query->getResult();
+	}
 }

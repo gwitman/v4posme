@@ -1323,6 +1323,8 @@ $routes->match(['get','post'],'core_caching_image/get/(:any)','core_caching_imag
 $routes->match(['get','post'],'app_form_public/convierten_detalle_servicio','app_form_public::convierten_detalle_servicio');
 $routes->match(['get','post'],'app_form_public/convierten_detalle_servicio/(:any)','app_form_public::convierten_detalle_servicio');
 
+$routes->match(['get','post'],'app_notification/getNotificationShowInApp/','app_notification::getNotificationShowInApp');
+$routes->match(['get','post'],'app_notification/getNotificationShowInApp/(:any)','app_notification::getNotificationShowInApp');
 
 /*
  * INICIO DE DASHBOARDS ESTADISTICOS REAL STATE
