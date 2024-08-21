@@ -77,7 +77,7 @@
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas <b class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<li><a href="#dropdown" data-toggle="tab">Direccion</a></li>
-							<li><a href="#dropdown-file" data-toggle="tab">Archivos</a></li>
+							<li class="<?php echo getBehavio($company->type,"app_cxc_customer","divPestanaArchivos",""); ?>" ><a href="#dropdown-file" data-toggle="tab">Archivos</a></li>
 							<li><a href="#dropdown-formapago" data-toggle="tab">Forma de Pago</a></li>
 							<li><a href="#dropdown-recordatorio" data-toggle="tab">Recordatorio</a></li>
 						 </ul>
@@ -111,30 +111,30 @@
 								</div>
 								
 								<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","divTxtNombres",""); ?>  ">
-										<label class="col-lg-4 control-label text-primary" for="normal">*Nombres</label>
+										<label class="col-lg-4 control-label text-primary" for="normal"><?php echo getBehavio($company->type,"app_cxc_customer","lblTxtNombre","*Nombres"); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtFirstName" id="txtFirstName" value="">												
 										</div>
 								</div>
 								<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","divTxtApellidos",""); ?> ">
-										<label class="col-lg-4 control-label text-primary" for="normal">*Apellidos</label>
+										<label class="col-lg-4 control-label text-primary" for="normal"><?php echo getBehavio($company->type,"app_cxc_customer","lblTxtApellidos","*Apellidos"); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtLastName" id="txtLastName" value="">												
 										</div>
 								</div>
 								<div class="form-group">
-										<label class="col-lg-4 control-label text-primary" for="normal">*Nombre Completo</label>
+										<label class="col-lg-4 control-label text-primary" for="normal"><?php echo getBehavio($company->type,"app_cxc_customer","lblTxtFullName","*Nombre completo"); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtLegalName" id="txtLegalName" value="">												
 										</div>
 								</div>
 								<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","divTxtNombreComercial",""); ?> ">
-										<label class="col-lg-4 control-label text-primary" for="normal">*Nombre Comercial</label>
+										<label class="col-lg-4 control-label text-primary" for="normal"><?php echo getBehavio($company->type,"app_cxc_customer","divTxtFullNameCommercial","*Nombre comercial"); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtCommercialName" id="txtCommercialName" value="">												
 										</div>
 								</div>
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","divClassSex",""); ?>">
 									<label class="col-lg-4 control-label" for="selectFilter">Sexo</label>
 									<div class="col-lg-8">
 										<select name="txtSexoID" id="txtSexoID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>" >
@@ -173,14 +173,14 @@
 									</div>
 								</div>
 								<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","divTxtIdentification",""); ?> ">
-										<label class="col-lg-4 control-label text-primary" for="normal">*Identificacion</label>
+										<label class="col-lg-4 control-label text-primary" for="normal"><?php echo getBehavio($company->type,"app_cxc_customer","lblTxtIdentification","*Identificacion"); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtIdentification" id="txtIdentification" value="">												
 										</div>
 								</div>
 								
 								<div class="form-group">
-										<label class="col-lg-4 control-label" for="normal">Telefono</label>
+										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_cxc_customer","lblTxtPhoneTemp","Telefono"); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtPhoneNumber" id="txtPhoneNumber" value="">
 										</div>
@@ -580,7 +580,7 @@
 								</div>
 								
 								<div class="form-group">
-									<label class="col-lg-4 control-label" for="buttons">Agente</label>
+									<label class="col-lg-4 control-label" for="buttons"><?php echo getBehavio($company->type,"app_cxc_customer","labelAgente","Agente"); ?></label>
 									<div class="col-lg-8">
 										<div class="input-group">
 											<input type="hidden" id="txtEmployerID" name="txtEmployerID" value="">
@@ -603,31 +603,31 @@
 								</div>
 								
 								
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","classDivReference1",""); ?> ">
 										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_cxc_customer","Referencia1",""); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtReference1" id="txtReference1" value="">												
 										</div>
 								</div>											
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","classDivReference2",""); ?> ">
 										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_cxc_customer","Referencia2",""); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtReference2" id="txtReference2" value="">												
 										</div>
 								</div>	
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","classDivReference3",""); ?> ">
 										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_cxc_customer","Referencia3",""); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtReference3" id="txtReference3" value="">												
 										</div>
 								</div>	
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","classDivReference4",""); ?> ">
 										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_cxc_customer","Referencia4",""); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtReference4" id="txtReference4" value="">												
 										</div>
 								</div>	
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","classDivReference5",""); ?> ">
 										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_cxc_customer","Referencia5",""); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtReference5" id="txtReference5" value="">												
