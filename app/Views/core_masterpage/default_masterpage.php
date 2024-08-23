@@ -1,4 +1,7 @@
 <!--vista principal del sistema-->
+<?php
+	use App\Libraries\core_web_parameter;
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -13,11 +16,7 @@
 		================================================== 
 		-->
 
-	<link href='<?php
-
-				use App\Libraries\core_web_parameter;
-
-				echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/css/family_open_sans_400_800_700.css' rel='stylesheet' type='text/css'>
+	<link href='<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/css/family_open_sans_400_800_700.css' rel='stylesheet' type='text/css'>
 	<link href='<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/css/family_droid_sans_400_700.css' rel='stylesheet' type='text/css' />
 
 	<!--[if lt IE 9]>
@@ -26,7 +25,7 @@
 		<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/css/family_open_sans_800.css"  rel="stylesheet" type="text/css" />
 		<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/css/family_droid_sans_400.css" rel="stylesheet" type="text/css" />
 		<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/css/family_droid_sans_700.css" rel="stylesheet" type="text/css" />
-		<![endif]-->
+	<![endif]-->
 
 
 	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/css/bootstrap/bootstrap.css" rel="stylesheet" />
@@ -49,13 +48,13 @@
 
 	<!--[if IE 8]>
 		<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/css/ie8.css" rel="stylesheet" type="text/css" />
-		<![endif]-->
+	<![endif]-->
 
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<!--[if lt IE 9]>
 		  <script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/html5shiv.js"></script>
 		  <script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/respond.min.js"></script>
-		<![endif]-->
+	<![endif]-->
 
 
 	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/images/ico/apple-touch-icon-144-precomposed.png">
