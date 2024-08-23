@@ -11,16 +11,25 @@ class app_mobile_api extends _BaseController
     function setDataUpload()
     {
         try {
+
             $nickname 					= /*inicio get post*/ $this->request->getPost("txtNickname");
             $password 					= /*inicio get post*/ $this->request->getPost("txtPassword");
             $objUser 					= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);
             $companyID 					= $objUser["user"]->companyID;
             Services::session()->set("user", $objUser["user"]);
             $objCompany 				= $objUser["company"];
-            $objItemsJson 				= /*inicio get post*/  $this->request->getPost("txtData");
-            $data 						= json_decode($objItemsJson, true);
-            $items 						= $data['ObjItems'];
-            $customers                  = $data['ObjCustomers'];
+            $objItemsJson 				= $this->request->getPost("txtData");
+            $data 						= json_decode($objItemsJson, false);
+            if(!isset($data)) {
+                return $this->response->setJSON(array(
+                    'error' => false,
+                    'message' => 'No hay datos a ingresar'
+                ));//--finjson
+            }
+            $items 						= $data->ObjItems;
+            $customers                  = $data->ObjCustomers;
+            $transactionMasters         = $data->ObjTransactionMaster;
+            $transactionMasterDetails   = $data->ObjTransactionMasterDetail;
             $dataSession['user'] 		= $objUser["user"];
             $dataSession['company'] 	= $objCompany;
             $dataSession['role'] 		= $objUser["role"];
@@ -32,18 +41,17 @@ class app_mobile_api extends _BaseController
                 $controller->initController($this->request, $this->response, $this->logger);
                 foreach ($items as $va)
                 {
-                    $objOldItem = $this->Item_Model->get_rowByCodeBarra($companyID, $va['barCode']);
+                    $objOldItem = $this->Item_Model->get_rowByCodeBarra($companyID, $va->barCode);
                     if (!is_null($objOldItem))
                     {
                         $method = "edit_customer_mobile";
-                        $va['itemID']= $objOldItem->itemID;
+                        $va->itemID= $objOldItem->itemID;
                     }
                     else
                     {
                         $method = "new_customer_mobile";
                     }
-                    $objOldItem=json_decode(json_encode($va));
-                    $controller->save($method, $objOldItem, $dataSession);
+                    $controller->save($method, $va, $dataSession);
                 }
             }
 
@@ -54,18 +62,17 @@ class app_mobile_api extends _BaseController
                 $controller->initController($this->request, $this->response, $this->logger);
                 foreach ($customers as $cus)
                 {
-                    $obj=json_decode(json_encode($cus));
-                    $companyID=$obj->companyID;
-                    $branchID=$obj->branchID;
-                    $entityID=$obj->entityID;
+                    $companyID=$cus->companyID;
+                    $branchID=$cus->branchID;
+                    $entityID=$cus->entityID;
                     //si entityid es null o 0, es nuevo, sino un update
                     $objCustomer= $this->Customer_Model->get_rowByPK($companyID,$branchID,$entityID);
                     if (is_null($objCustomer)){
-                        $controller->insertElementMobile($dataSession,$obj);
+                        $controller->insertElementMobile($dataSession,$cus);
                     }else{
                         $objCustomer=json_decode(json_encode($objCustomer));
-                        $objCustomer->firstName = $obj->firstName;
-                        $objCustomer->lastName=$obj->lastName;
+                        $objCustomer->firstName = $cus->firstName;
+                        $objCustomer->lastName=$cus->lastName;
                         $controller->updateElementMobile($dataSession, $objCustomer);
                     }
                 }
@@ -74,8 +81,7 @@ class app_mobile_api extends _BaseController
             // SINCRONIZACION DE COMPRAS
             if (count($items) > 0) {
                 $inventoryController  =new app_inventory_inputunpost();
-                $inventoryController->initController($this->request, $this->response, $this->logger); 
-                $items=json_decode(json_encode($items));
+                $inventoryController->initController($this->request, $this->response, $this->logger);
                 $inventoryController->insertElementMobile($dataSession, $items);
             }
             
@@ -84,8 +90,25 @@ class app_mobile_api extends _BaseController
             if(count($items)>0){
                 $inventoryOutController = new app_inventory_otheroutput();
                 $inventoryOutController->initController($this->request, $this->response, $this->logger);
-                $items = json_decode(json_encode($items)); 
                 $inventoryOutController->insertElementMobile($dataSession, $items);     
+            }
+
+            //SINCRONIZACION FACTURAS
+            if(count($transactionMasters)>0){
+                $billingController = new app_invoice_billing();
+                $billingController->initController($this->request, $this->response, $this->logger);
+                $typeTransaction = $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_billing",0);
+                $facturas = array_filter($transactionMasterDetails, function($tm) use ($typeTransaction) {
+                    return $tm->TransactionId == $typeTransaction;
+                });
+                foreach($facturas as $objTm){
+                    // Filtrar los objetos por TransactionMasterId
+                    $transactionMasterId=$objTm->TransactionMasterId;
+                    $resultado = array_filter($transactionMasterDetails, function($tm) use ($transactionMasterId) {
+                        return $tm->TransactionMasterId == $transactionMasterId;
+                    });
+                    $billingController->insertElementMobil($dataSession,$objTm, $resultado);
+                }
             }
             return $this->response->setJSON(array(
                 'error' => false,

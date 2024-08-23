@@ -5,18 +5,18 @@ use CodeIgniter\Model;
 
 
 class User_Model extends Model  {
-   function __construct(){		
-      parent::__construct();
-   }  
-   
-   function insert_app_posme($data){
+	function __construct(){		
+		parent::__construct();
+	}  
+
+	function insert_app_posme($data){
 		$db 					= db_connect();   
 		$builder				= $db->table("tb_user");
 		$result 				= $builder->insert($data);
 		return $db->insertID();
 		
-   }
-   function update_app_posme($companyID,$branchID,$userID,$data){
+	}
+	function update_app_posme($companyID,$branchID,$userID,$data){
 		$db 					= db_connect();   
 		$builder				= $db->table("tb_user");
 		
@@ -27,9 +27,9 @@ class User_Model extends Model  {
 		$result 				= $builder->update($data);
 		return $result;		
 		
-   }
-   
-   function get_rowByComercio($comercio){
+	}
+
+	function get_rowByComercio($comercio){
 		$db 	= db_connect();
 		$sql = "";
 		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar");
@@ -39,9 +39,9 @@ class User_Model extends Model  {
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
-   }
-   
-   function get_rowByFoto($foto){
+	}
+
+	function get_rowByFoto($foto){
 		$db 	= db_connect();
 		$sql = "";
 		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar");
@@ -51,10 +51,10 @@ class User_Model extends Model  {
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
-   }
+	}
 
 
-   function get_rowByExistNickname($nickname){
+	function get_rowByExistNickname($nickname){
 		$db 	= db_connect();
 		$sql = "";
 		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar");
@@ -64,8 +64,8 @@ class User_Model extends Model  {
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
-   }
-   function get_rowByNiknamePassword($nickname,$password){
+	}
+	function get_rowByNiknamePassword($nickname,$password){
 		$db 	= db_connect();    
 		$sql = "";
 		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar");
@@ -77,8 +77,8 @@ class User_Model extends Model  {
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
-   }
-   function get_rowByEmail($email){
+	}
+	function get_rowByEmail($email){
 		$db 	= db_connect();
 		$sql = "";
 		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar");
@@ -88,8 +88,8 @@ class User_Model extends Model  {
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
-   }
-   function get_rowByPK($companyID,$branchID,$userID){
+	}
+	function get_rowByPK($companyID,$branchID,$userID){
 		$db 	= db_connect();
 		$sql = "";
 		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,isActive,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar");
@@ -101,8 +101,8 @@ class User_Model extends Model  {
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
-   }
-   function get_All($companyID){
+	}
+	function get_All($companyID){
 		$db 	= db_connect();
 		$sql = "";
 		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,isActive,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar");
@@ -112,8 +112,18 @@ class User_Model extends Model  {
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
-   }
-   function get_UserByBussnes($companyID,$bussines){
+	}
+
+	function get_UserByUserIDAndCompanyID($companyID,$userID){
+		$db = db_connect();
+		$builder = $db->table('tb_user tu');
+		$builder= $builder->select("tn.companyID, tn.branchID, tn.entityID, tn.firstName, tn.lastName, tn.address, tn.statusID, tn.profesionID, tn.naturalesID, tu.userID, tu.nickname, tu.password, tu.createdOn, tu.isActive, tu.email, tu.createdBy, tu.employeeID, tu.useMobile, tu.phone, tu.lastPayment, tu.comercio, tu.foto, tu.token_google_calendar");
+		$builder= $builder->join('tb_naturales tn','tu.employeeID = tn.entityID');
+		$builder = $builder->where(['tu.companyID'=>$companyID, 'tu.userID'=>$userID]);
+		return $builder->get()->getRowObject();
+	}
+
+	function get_UserByBussnes($companyID,$bussines){
 		$db 	= db_connect();
 		$sql = "";
 		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,isActive,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar");
@@ -124,8 +134,8 @@ class User_Model extends Model  {
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
-   }
-   function get_countUser($companyID){
+	}
+	function get_countUser($companyID){
 		$db 	= db_connect();
 		
 		$sql = "";
@@ -134,10 +144,10 @@ class User_Model extends Model  {
 		$sql = $sql.sprintf(" where isActive = 1");
 		$sql = $sql.sprintf(" and companyID = $companyID");
 		
-   		return $db->query($sql)->getRow()->counter;
-   }
-  
-   function getCount($companyID){
+		return $db->query($sql)->getRow()->counter;
+	}
+
+	function getCount($companyID){
 		$db 	= db_connect();		
 		
 		$sql = "";
@@ -146,8 +156,8 @@ class User_Model extends Model  {
 		$sql = $sql.sprintf(" where isActive = 1");
 		$sql = $sql.sprintf(" and companyID = $companyID");
 		
-   		return $db->query($sql)->getRow()->counter;
-   }
+		return $db->query($sql)->getRow()->counter;
+	}
    
 }
 ?>
