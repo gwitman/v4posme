@@ -272,17 +272,16 @@ function fnRecalcularTableSummary(
 function fnShowExpiredRegisters(baseUrl, userName, time) {
   setInterval(function () {
     $.ajax({
-      url: baseUrl + "app_notification/getNotificationShowInApp?userName=" + userName,
+      url:
+        baseUrl +
+        "app_notification/getNotificationShowInApp/" +
+        encodeURIComponent(userName),
       type: "GET",
       dataType: "json",
       success: function (response) {
         if (!response.error) {
           response["data"].forEach(function (reminder) {
-            fnShowNotification(
-              "Recordatorio:" + reminder.description,
-              "info",
-              "500"
-            );
+            fnShowNotification(reminder.name, "info", 60000);
           });
         }
       },

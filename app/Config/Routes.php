@@ -1324,7 +1324,7 @@ $routes->match(['get','post'],'app_form_public/convierten_detalle_servicio','app
 $routes->match(['get','post'],'app_form_public/convierten_detalle_servicio/(:any)','app_form_public::convierten_detalle_servicio');
 
 $routes->match(['get','post'],'app_notification/getNotificationShowInApp/','app_notification::getNotificationShowInApp');
-$routes->match(['get','post'],'app_notification/getNotificationShowInApp/(:any)','app_notification::getNotificationShowInApp');
+$routes->match(['get','post'],'app_notification/getNotificationShowInApp/(:any)','app_notification::getNotificationShowInApp/$1');
 
 /*
  * INICIO DE DASHBOARDS ESTADISTICOS REAL STATE

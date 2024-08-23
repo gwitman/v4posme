@@ -839,7 +839,7 @@ class app_cxc_customer extends _BaseController {
 			$result 							= $this->Customer_Model->insert_app_posme($objCustomer);
 			
 			$validateBiometric = $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"], "CXC_USE_BIOMETRIC");
-			if(strcmp($validateBiometric->value, "true") == 0)
+			if(strcmp(strtolower($validateBiometric->value), "true") == 0)
 			{	
 				//Ingresar registro en el lector biometrico				
 				$dataUser["id"]							= $entityID;	
