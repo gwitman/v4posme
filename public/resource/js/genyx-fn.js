@@ -272,16 +272,13 @@ function fnRecalcularTableSummary(
 function fnShowExpiredRegisters(baseUrl, userName, time) {
   setInterval(function () {
     $.ajax({
-      url:
-        baseUrl +
-        "app_notification/getNotificationShowInApp/" +
-        encodeURIComponent(userName),
+      url: baseUrl,
       type: "GET",
       dataType: "json",
       success: function (response) {
         if (!response.error) {
           response["data"].forEach(function (reminder) {
-            fnShowNotification(reminder.name, "info", 60000);
+            fnShowNotification(reminder.name, "info", 6000);
           });
         }
       },

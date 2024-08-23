@@ -183,11 +183,11 @@
 $activateNotification 	= helper_getParameterFiltered($companyParameter, "CORE_RUN_NOTIFICATION")->value;
 $timeFrequency 		  	= helper_getParameterFiltered($companyParameter, "CORE_TIME_FRECUENCY_NOTIFICATION")->value;
 $userName 				= $user->nickname;
-$baseUrl 				= base_url() . "/app_notification/getNotificationShowInApp?userName=" . $userName;
+$baseUrl 				= base_url() . "/app_notification/getNotificationShowInApp/" . urlencode($userName);
 
 if (strcmp(strtolower($activateNotification), "true") == 0) {
 ?>
-	<script>		
+	<script>
 		$(document).ready(function() {
 			fnShowExpiredRegisters('<?php echo $baseUrl ?>', '<?php echo $userName ?>', '<?php echo $timeFrequency; ?>');
 		});

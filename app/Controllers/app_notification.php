@@ -1796,11 +1796,12 @@ class app_notification extends _BaseController
 	}
 
 
-	function getNotificationShowInApp($userName = null)
+	function getNotificationShowInApp($userName)
 	{
 		if ($userName !== null) {
 			$queryResult = $this->Customer_Frecuency_Actuations_Model->get_rowExpiredRegisters($userName);
 			return $this->response->setJson([
+				"username" => $userName,
 				"error" => false,
 				"message" => "success",
 				"data" => $queryResult
@@ -1808,7 +1809,8 @@ class app_notification extends _BaseController
 		} else {
 			return $this->response->setJson([
 				"error" => true,
-				"message" => "Username is required"
+				"message" => "Username is required",
+				"username" => $userName
 			]);
 		}
 	}
