@@ -132,7 +132,7 @@
 									fnShowNotification(data.message,"error");
 								}
 								else{		
-									window.location = "<?php echo base_url(); ?>/app_invoice_billing/edit/companyID/"+data.companyID+"/transactionID/"+data.transactionID+"/transactionMasterID/"+data.transactionMasterID;
+									window.location = "<?php echo base_url(); ?>/app_invoice_billing/edit/companyID/"+data.companyID+"/transactionID/"+data.transactionID+"/transactionMasterID/"+data.transactionMasterID+"/codigoMesero/"+$("#txtClaveMesero").val()+"/none";
 								}
 							},
 							error:function(xhr,data){	
