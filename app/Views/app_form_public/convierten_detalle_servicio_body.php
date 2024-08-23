@@ -1,4 +1,4 @@
-	  <!-- Content wrapper -->
+	 <!-- Content wrapper -->
 	  <div class="content-wrapper">
 		<!-- Content -->
 
@@ -17,29 +17,25 @@
 				  <h5 class="card-title">Formulario</h5>
 				  <h6 class="card-subtitle text-muted">Nuevo</h6>
 				</div>
-				
 
 				<div class="card-bodyi">
 				
 					<form role="form" action="<?php echo base_url(); ?>/core_user/savepublic" method="POST" enctype="multipart/form-data"  >
 					
-							<div class="mb-12 row">
+							<div class="row">
 								
-							<div class="col-md-4 my-2 px-4">
-    <label for="select2Basic" class="form-label">Tipo de servicio</label>
-    <select id="select2Basic" class="select2 form-select form-select-lg" data-live-search="true" data-allow-clear="true">
-        <option value="AK">Alaska</option>
-        <option value="HI">Hawaii</option>
-        <option value="CA">California</option>
-    </select>
-</div>
-
-								
-	  							
+								<div class="col-md-4 my-2 px-4 mb-4" >
+									<label for="html5-email-input" class="form-label">Tipo de servicio</label>
+									<select id="select2_tipo_de_servicio" class="select2 form-select form-select-lg" data-live-search="true" data-allow-clear="true">
+										<option value="AK">Alaska</option>
+										<option value="HI">Hawaii</option>
+										<option value="CA">California</option>
+									</select>
+								</div>
 
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-text-input" class="col-form-label">Servicio Existente</label>
-									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id="" class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -48,7 +44,7 @@
 
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-email-input" class="col-form-label">Servicio</label>
-									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id="" class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -254,6 +250,8 @@
 									<input type="text" class="form-control" id="floatingInput" placeholder="John Doe" aria-describedby="floatingInputHelp">
 								</div>
 
+								
+
 							</div>
 
 							</br>
@@ -274,3 +272,11 @@
 		<!-- / Content -->
 	  </div>
 	  <!-- Content wrapper -->
+
+	  	<script>
+			$(document).ready(function() {
+    			//$(".selectpicker").selectpicker();
+				$('.select2').select2();
+					});
+		</script>
+	   
