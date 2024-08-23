@@ -6,6 +6,17 @@ use dbkroqnguhldo1;
 
 
 
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "78" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_UNITMEASURE_ID_DEFAULT";## Unidad de Medida por defecto
+	
+	
+
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "6000" 
 WHERE 
