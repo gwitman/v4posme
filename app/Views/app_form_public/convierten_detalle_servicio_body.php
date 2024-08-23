@@ -24,9 +24,9 @@
 					
 							<div class="row">
 								
-								<div class="col-md-4 my-2 px-4 mb-4" >
+								<div class="col-md-4 my-2 px-4" >
 									<label for="html5-email-input" class="form-label">Tipo de servicio</label>
-									<select id="select2_tipo_de_servicio" class="select2 form-select form-select-lg" data-live-search="true" data-allow-clear="true">
+									<select id="txtTransactionMasterReference1" class="select2 form-select form-select-lg" data-live-search="true" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -35,7 +35,7 @@
 
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-text-input" class="col-form-label">Servicio Existente</label>
-									<select id="" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id=txtTransactionMasterReference2 class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -44,7 +44,7 @@
 
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-email-input" class="col-form-label">Servicio</label>
-									<select id="" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id=txtTransactionMasterReference3 class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -53,7 +53,7 @@
 
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-tel-input" class="col-md-6 col-form-label">Tecnologia</label>
-									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id=txtTransactionMasterReference4 class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -62,7 +62,7 @@
 							  
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-email-input" class="col-md-6 col-form-label">Velocidad Internet</label>
-									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id=txtTransactionMasterReference5 class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -81,7 +81,7 @@
 							  
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-email-input" class="col-md-6 col-form-label">Gestion Movil</label>
-									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id=txtTransactionMasterReference6 class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -90,7 +90,7 @@
 
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-email-input" class="col-md-6 col-form-label">Plan Movil</label>
-									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id=txtTransactionMasterReference7 class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -99,7 +99,7 @@
 
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-email-input" class="col-md-6 col-form-label">Numero Contrato Movil</label>
-									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id=txtTransactionMasterReference8 class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -108,7 +108,7 @@
 	
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-email-input" class="col-md-6 col-form-label">Linea a Portar o Migrar</label>
-									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id=txtTransactionMasterReference9 class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -117,7 +117,7 @@
 								
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-email-input" class="col-md-6 col-form-label">Tipo de Linea</label>
-									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id=txtTransactionMasterReference10 class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -126,7 +126,7 @@
 								
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-email-input" class="col-md-6 col-form-label">Operador donante</label>
-									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id=txtTransactionMasterReference11 class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -135,7 +135,7 @@
 
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-email-input" class="col-md-6 col-form-label">Linea Nueva o Provincial</label>
-									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id=txtTransactionMasterReference12 class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -144,7 +144,7 @@
 
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-email-input" class="col-md-6 col-form-label">Tipo de Migracion</label>
-									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id=txtTransactionMasterReference13 class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -153,7 +153,7 @@
 
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-email-input" class="col-md-6 col-form-label">Lineas Moviles adicionales</label>
-									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id=txtTransactionMasterReference14 class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -162,7 +162,7 @@
 
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-email-input" class="col-md-6 col-form-label">Gestion Movil adicional</label>
-									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id=txtTransactionMasterReference15 class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -172,7 +172,7 @@
 
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-email-input" class="col-md-6 col-form-label">Plan Movil Adicional</label>
-									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id=txtTransactionMasterReference16 class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -191,7 +191,7 @@
 
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-email-input" class="col-md-6 col-form-label">RGus Fijos</label>
-									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id=txtTransactionMasterReference17 class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -200,7 +200,7 @@
 
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-email-input" class="col-md-6 col-form-label">RGus Moviles</label>
-									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id=txtTransactionMasterReference18 class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -209,7 +209,7 @@
 								
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-email-input" class="col-md-6 col-form-label">Total RGUs</label>
-									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id=txtTransactionMasterReference19 class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -220,7 +220,7 @@
 
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-email-input" class="col-md-6 col-form-label">Renta Fijo</label>
-									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id=txtTransactionMasterReference20 class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -229,7 +229,7 @@
 
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-email-input" class="col-md-6 col-form-label">Renta Movil</label>
-									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id=txtTransactionMasterReference21 class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
@@ -238,7 +238,7 @@
 
 								<div class="col-md-4 my-2 px-4">
 									<label for="html5-email-input" class="col-md-6 col-form-label">Renta Total</label>
-									<select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+									<select id=txtTransactionMasterReference22 class="select2 form-select form-select-lg" data-allow-clear="true">
 										<option value="AK">Alaska</option>
 										<option value="HI">Hawaii</option>
 										<option value="CA">California</option>
