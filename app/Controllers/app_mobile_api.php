@@ -98,7 +98,7 @@ class app_mobile_api extends _BaseController
                 $billingController = new app_invoice_billing();
                 $billingController->initController($this->request, $this->response, $this->logger);
                 $typeTransaction = $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_billing",0);
-                $facturas = array_filter($transactionMasterDetails, function($tm) use ($typeTransaction) {
+                $facturas = array_filter($transactionMasters, function($tm) use ($typeTransaction) {
                     return $tm->TransactionId == $typeTransaction;
                 });
                 foreach($facturas as $objTm){
