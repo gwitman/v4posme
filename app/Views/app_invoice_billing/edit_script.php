@@ -666,6 +666,25 @@
 		fnWaitOpen();	
 		openDataBaseAndCreate(false,true);
 	});
+	$(document).on("click","#btnLinkPayment",function(){
+		fnWaitOpen();			
+		$.ajax({									
+			cache       : false,
+			dataType    : 'json',
+			async		: true,
+			type        : 'POST',		
+			data		: { "companyID" : $("#txtCompanyID").val() , "transactionID": $("#txtTransactionID").val() , "transactionMasterID" : $("#txtTransactionMasterID").val() },
+			url  		: "<?php echo base_url(); ?>/app_invoice_api/getLinkPaymentPagadito",
+			success		: function(result){
+				fnWaitClose();
+				fnShowNotification("Link de pago : ","error");
+			},
+			error: function(result){
+				fnWaitClose();
+			}
+		});
+		
+	});
 	$(document).on("click","#btnSearchCustomerNew",function(){
 		var url_request 				 = "<?php echo base_url(); ?>/app_cxc_customer/add/callback/fnCustomerNewCompleted";
 		window.open(url_request,"MsgWindow","width=700,height=600");

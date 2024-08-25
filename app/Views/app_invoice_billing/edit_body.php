@@ -812,6 +812,7 @@
 								<ul class="dropdown-menu">
 									<li><a href="#" id="btnBack"  >REGRESAR</a></li>
 									<li><a href="#" id="btnSelectInvoice"  > SELECCIONAR</a></li>
+									<li><a href="#" id="btnLinkPayment"  > LINK DE PAGO</a></li>
 								</ul>								
 							</div>
 						</div>
@@ -926,7 +927,8 @@
 											<li><a href="<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>" id="btnNew">NUEVA FAC</a></li>
 											<li><a href="#" id="btnDelete">ELIMINAR FAC</a></li>		
 											<li><a href="#" id="btnPrinter">IMPRIMIR</a></li>	
-											<li><a href="#" id="btnSelectInvoice"  > SELECCIONAR</a></li>											
+											<li><a href="#" id="btnSelectInvoice"  > SELECCIONAR</a></li>
+											<li><a href="#" id="btnLinkPayment"  > LINK DE PAGO</a></li>
 									</ul>
 								</div>
 							</div>

@@ -3,8 +3,7 @@
 namespace App\Controllers;
 class app_invoice_api extends _BaseController {
 	
-     function getLastMovement()
-	 {
+    function getLastMovement(){	
 		try{ 
 			//AUTENTICADO
 			if(!$this->core_web_authentication->isAuthenticated())
@@ -43,8 +42,50 @@ class app_invoice_api extends _BaseController {
 		}		
 			
 	 }
-	 function getTransactionMaster()
-	 {
+	
+	function getLinkPaymentPagadito(){
+		try
+		{ 
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+		
+			
+			//Nuevo Registro
+			$companyID 				= /*inicio get post*/ $this->request->getPost("companyID");
+			$transactionID 			= /*inicio get post*/ $this->request->getPost("transactionID");				
+			$transactionMasterID 	= /*inicio get post*/ $this->request->getPost("transactionMasterID");				
+			
+			
+			//Eliminar el Registro			
+			$objTM 	= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$objTMD = $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);			
+		
+			
+			return $this->response->setJSON(array(
+				'error'   => false,
+				'message' => SUCCESS,
+				'objTM'   => $objTM,
+				'objTMD'  => $objTMD
+			));//--finjson
+			
+			
+			
+		}
+		catch(\Exception $ex){
+			
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));//--finjson
+			$this->core_web_notification->set_message(true,$ex->getLine()." ".$ex->getMessage());
+		}	
+		
+	}
+	
+	function getTransactionMaster(){
 		try{ 
 			//AUTENTICADO
 			if(!$this->core_web_authentication->isAuthenticated())
@@ -84,6 +125,7 @@ class app_invoice_api extends _BaseController {
 		}		
 			
 	}
+	
 	function getItemCantidad($itemID = null,$warehouseID = null){
 		$itemID 	 = helper_SegmentsByIndex($this->uri->getSegments(),1,$itemID);
 		$warehouseID = helper_SegmentsByIndex($this->uri->getSegments(),2,$warehouseID);
@@ -400,8 +442,8 @@ class app_invoice_api extends _BaseController {
 		}
 		
 	}
-	function getLineByCustomerAll()
-	{
+	
+	function getLineByCustomerAll(){
 		try{ 
 			
 			//AUTENTICACION
@@ -460,6 +502,7 @@ class app_invoice_api extends _BaseController {
 			
 		}
 	}
+	
 	function getLineByCustomer(){
 		try{ 
 			
