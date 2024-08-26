@@ -265,10 +265,10 @@
 						<div class="row">										
 						<div class="col-lg-6" id="divInformacionLeft" >
 							
-								<input type="hidden" name="txtUserID" value="<?php echo $userID; ?>">
-								<input type="hidden" name="txtCompanyID" value="<?php echo $objTransactionMaster->companyID; ?>">
-								<input type="hidden" name="txtTransactionID" value="<?php echo $objTransactionMaster->transactionID; ?>">
-								<input type="hidden" name="txtTransactionMasterID" id="txtTransactionMasterID"  value="<?php echo $objTransactionMaster->transactionMasterID; ?>">
+								<input type="hidden" id="txtUserID" name="txtUserID" value="<?php echo $userID; ?>">
+								<input type="hidden" id="txtCompanyID" name="txtCompanyID" value="<?php echo $objTransactionMaster->companyID; ?>">
+								<input type="hidden" id="txtTransactionID" name="txtTransactionID" value="<?php echo $objTransactionMaster->transactionID; ?>">
+								<input type="hidden" id="txtTransactionMasterID" name="txtTransactionMasterID"  value="<?php echo $objTransactionMaster->transactionMasterID; ?>">
 								<input type="hidden" id="txtCodigoMesero" name="txtCodigoMesero" value="<?php echo $codigoMesero;  ?>">
 								
 								<div class="form-group">

@@ -668,22 +668,8 @@
 	});
 	$(document).on("click","#btnLinkPayment",function(){
 		fnWaitOpen();			
-		$.ajax({									
-			cache       : false,
-			dataType    : 'json',
-			async		: true,
-			type        : 'POST',		
-			data		: { "companyID" : $("#txtCompanyID").val() , "transactionID": $("#txtTransactionID").val() , "transactionMasterID" : $("#txtTransactionMasterID").val() },
-			url  		: "<?php echo base_url(); ?>/app_invoice_api/getLinkPaymentPagadito",
-			success		: function(result){
-				fnWaitClose();
-				fnShowNotification("Link de pago : ","error");
-			},
-			error: function(result){
-				fnWaitClose();
-			}
-		});
-		
+		window.open("<?php echo base_url(); ?>/app_invoice_api/getLinkPaymentPagadito/companyID/"+$("#txtCompanyID").val()+"/transactionID/"+$("#txtTransactionID").val() +"/transactionMasterID/"+$("#txtTransactionMasterID").val(),"MsgWindow","width=700,height=600");
+		fnWaitClose();
 	});
 	$(document).on("click","#btnSearchCustomerNew",function(){
 		var url_request 				 = "<?php echo base_url(); ?>/app_cxc_customer/add/callback/fnCustomerNewCompleted";

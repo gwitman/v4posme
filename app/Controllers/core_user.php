@@ -891,10 +891,12 @@ class core_user extends _BaseController {
 		//Orignes de pago 1:	core_user/payment_user
 		//Orignes de pago 2:	core_account/payment
 		//Orignes de pago 3:	posme.net/ (woocommerce posme)
+		//Orignes de pago 4:	app_invoice_api/getLinkPaymentPagadito
 		
-		//PAGO WOOMCOMERCE		= NUMBER
-		//PAGO POSME CALENDAR	= AGE__EMAIL__FECHA
-		//PAGO POSME 			= POS__FLAVORID__FECHA 
+		//PAGO WOOMCOMERCE								= NUMBER
+		//PAGO POSME CALENDAR							= AGE__EMAIL__FECHA
+		//PAGO POSME 									= POS__FLAVORID__FECHA 
+		//PAGO DE FACTURA DE CLIENTES Y PARA CLIENTES	= FCCLI_FLAVORID_FECHA
 		
 		
 		
@@ -960,6 +962,10 @@ class core_user extends _BaseController {
 		{
 			$urlRedirect = base_url()."/".'core_user/payment';
 		}
+		else if($facturaParteApp == "FCCLI")
+		{
+			$urlRedirect = base_url()."/".'app_invoice_billing/add/codigoMesero/none';
+		}
 		//woocomerce
 		else 
 		{
@@ -1015,6 +1021,15 @@ class core_user extends _BaseController {
 								$objUser 					= $this->User_Model->get_rowByEmail($facturaParteClient);
 								$dataUser["lastPayment"] 	= $facturaParteConsercutivo;
 								$this->User_Model->update_app_posme($objUser->companyID,$objUser->branchID,$objUser->userID,$dataUser);
+								
+								$msgSecundario = ''.
+								'Gracias por comprar en posMe.</br> '.
+								'NAP: ' .$Pagadito->get_rs_reference(). "</br>" . 
+								'Fecha Respuesta:' .$Pagadito->get_rs_date_trans();
+								
+							}
+							if($facturaParteApp == "FCCLI")
+							{
 								
 								$msgSecundario = ''.
 								'Gracias por comprar en posMe.</br> '.

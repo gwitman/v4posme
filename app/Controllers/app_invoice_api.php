@@ -43,7 +43,7 @@ class app_invoice_api extends _BaseController {
 			
 	 }
 	
-	function getLinkPaymentPagadito(){
+	function getLinkPaymentPagadito($companyID=NULL,$transactionID= NULL,$transactionMasterID = NULL){
 		try
 		{ 
 			//AUTENTICADO
@@ -53,22 +53,175 @@ class app_invoice_api extends _BaseController {
 			
 		
 			
-			//Nuevo Registro
-			$companyID 				= /*inicio get post*/ $this->request->getPost("companyID");
-			$transactionID 			= /*inicio get post*/ $this->request->getPost("transactionID");				
-			$transactionMasterID 	= /*inicio get post*/ $this->request->getPost("transactionMasterID");				
+			$mensaje				= "";
+			$companyID 				= helper_SegmentsByIndex($this->uri->getSegments(),2,$companyID);
+			$transactionID 			= helper_SegmentsByIndex($this->uri->getSegments(),4,$transactionID);
+			$transactionMasterID 	= helper_SegmentsByIndex($this->uri->getSegments(),6,$transactionMasterID);
 			
 			
 			//Eliminar el Registro			
 			$objTM 	= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$objTMD = $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);			
 		
+		
+			/**************************************/
+			//Obtener Datos			
+			$parameterSendBox 			= $this->core_web_parameter->getParameter("CORE_PAYMENT_SENDBOX",APP_COMPANY);
+			$parameterSendBox 			= $parameterSendBox->value;
+			$parameterSendBoxUsuario 	= $this->core_web_parameter->getParameter("CORE_PAYMENT_PRUEBA_USUARIO",APP_COMPANY);
+			$parameterSendBoxUsuario 	= $parameterSendBoxUsuario->value;
+			$parameterSendBoxClave 		= $this->core_web_parameter->getParameter("CORE_PAYMENT_PRUEBA_CLAVE",APP_COMPANY);
+			$parameterSendBoxClave 		= $parameterSendBoxClave->value;
+			$parameterProduccionUsuario = $this->core_web_parameter->getParameter("CORE_PAYMENT_PRODUCCION_USUARIO_COMMERCECLIENT",APP_COMPANY);
+			$parameterProduccionUsuario = $parameterProduccionUsuario->value;
+			$parameterProduccionClave 	= $this->core_web_parameter->getParameter("CORE_PAYMENT_PRODUCCION_CLAVE_COMMERCECLIENTE",APP_COMPANY);
+			$parameterProduccionClave 	= $parameterProduccionClave->value;
+			
+			
+			
+			$parameterTemporal1 		= $this->core_web_parameter->getParameter("CORE_TEMPORAL001",APP_COMPANY);
+			$parameterTemporal2 		= $this->core_web_parameter->getParameter("CORE_TEMPORAL002",APP_COMPANY);
+			$parameterTemporal3 		= $this->core_web_parameter->getParameter("CORE_TEMPORAL003",APP_COMPANY);
+			$fechaNow  				  	= date("YmdHis");
+			$sendBox 					= $parameterSendBox == "true"? true : false;
+			
+			$uidt 						= "";
+			$wskt 						= "";
+			$urlProducto 				= base_url();
+			if($sendBox)
+			{
+				$uidt = $parameterSendBoxUsuario;
+				$wskt = $parameterSendBoxClave;
+			}
+			else
+			{
+				$uidt = $parameterProduccionUsuario;
+				$wskt = $parameterProduccionClave;
+			}
+			
+			
+		
+			
+			$company		= $dataSession["company"];
+			$nombre 		= "invoice  ".$company->name;
+			$numberFactura 	= "FCCLI__".$company->flavorID."__".$fechaNow;
+			
+			/*
+			 * Lo primero es crear el objeto nusoap_client, al que se le pasa como
+			 * parámetro la URL de Conexión definida en la constante WSPG
+			 */
+			 
+			
+			$Pagadito = $this->core_web_pagadito;			
+			$Pagadito->Init($uidt,$wskt);	
+			
+			
+			/*
+			 * Si se está realizando pruebas, necesita conectarse con Pagadito SandBox. Para ello llamamos
+			 * a la función mode_sandbox_on(). De lo contrario omitir la siguiente linea.
+			 */
+			if ($sendBox) {
+				$Pagadito->mode_sandbox_on();			
+			}
+			
+			
+			/*
+			 * Validamos la conexión llamando a la función connect(). Retorna
+			 * true si la conexión es exitosa. De lo contrario retorna false
+			 */
+			if ($Pagadito->connect()) 
+			{				
+				/*
+				 * Luego pasamos a agregar los detalles
+				 */
+				 
+				
+				if ($objTMD) 
+				{
+					foreach($objTMD as $itemD)
+					{
+						$Pagadito->add_detail($itemD->quantity,$itemD->itemNameLog, 5 /*$itemD->unitaryAmount*/,$urlProducto);
+					}
+					
+				}
+				
+				//Agregando campos personalizados de la transacción
+				/*
+				$Pagadito->set_custom_param("param1", "Valor de param1");
+				$Pagadito->set_custom_param("param2", "Valor de param2");
+				$Pagadito->set_custom_param("param3", "Valor de param3");
+				$Pagadito->set_custom_param("param4", "Valor de param4");
+				$Pagadito->set_custom_param("param5", "Valor de param5");
+				*/
+				//Habilita la recepción de pagos preautorizados para la orden de cobro.
+				//$Pagadito->enable_pending_payments();
+		
+				/*
+				 * Lo siguiente es ejecutar la transacción, enviandole el ern.
+				 *
+				 * A manera de ejemplo el ern es generado como un número
+				 * aleatorio entre 1000 y 2000. Lo ideal es que sea una
+				 * referencia almacenada por el Pagadito Comercio.
+				 */
+				//$ern = rand(1000, 2000);
+				$ern = $numberFactura;
+				if (!$Pagadito->exec_trans($ern)) {
+					/*
+					 * En caso de fallar la transacción, verificamos el error devuelto.
+					 * Debido a que la API nos puede devolver diversos mensajes de
+					 * respuesta, validamos el tipo de mensaje que nos devuelve.
+					 */
+					switch($Pagadito->get_rs_code())
+					{
+						case "PG2001":
+							/*Incomplete data*/
+						case "PG3002":
+							/*Error*/
+						case "PG3003":
+							/*Unregistered transaction*/
+						case "PG3004":
+							/*Match error*/
+						case "PG3005":
+							/*Disabled connection*/
+						default:
+							$mensaje = $Pagadito->get_rs_code().": ".$Pagadito->get_rs_message();;					
+							break;
+					}
+				}
+			}
+			else 
+			{
+				
+				
+				/*
+				 * En caso de fallar la conexión, verificamos el error devuelto.
+				 * Debido a que la API nos puede devolver diversos mensajes de
+				 * respuesta, validamos el tipo de mensaje que nos devuelve.
+				 */
+				switch($Pagadito->get_rs_code())
+				{
+					case "PG2001":
+						/*Incomplete data*/
+					case "PG3001":
+						/*Problem connection*/
+					case "PG3002":
+						/*Error*/
+					case "PG3003":
+						/*Unregistered transaction*/
+					case "PG3005":
+						/*Disabled connection*/
+					case "PG3006":
+						/*Exceeded*/
+					default:					
+						$mensaje = $Pagadito->get_rs_code().": ".$Pagadito->get_rs_message();
+						break;
+				}
+			}
+			/**************************************/
 			
 			return $this->response->setJSON(array(
 				'error'   => false,
-				'message' => SUCCESS,
-				'objTM'   => $objTM,
-				'objTMD'  => $objTMD
+				'message' => $mensaje
 			));//--finjson
 			
 			
@@ -80,7 +233,7 @@ class app_invoice_api extends _BaseController {
 				'error'   => true,
 				'message' => $ex->getLine()." ".$ex->getMessage()
 			));//--finjson
-			$this->core_web_notification->set_message(true,$ex->getLine()." ".$ex->getMessage());
+			
 		}	
 		
 	}
