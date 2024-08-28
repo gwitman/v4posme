@@ -365,69 +365,88 @@ class app_inventory_report extends _BaseController {
 			$companyID			= $dataSession["user"]->companyID;
 			$branchID			= $dataSession["user"]->branchID;
 			$userID				= $dataSession["user"]->userID;
+			$warehouseID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"warehouseID");//--finuri				
+			$categoryID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"categoryID");//--finuri				
 			$tocken				= '';
 			 
 			
 			//Cargar Libreria
-			$objParameterTamanoLetra	= $this->core_web_parameter->getParameter("CORE_VIEW_CUSTOM_REPORT_IN_LIST_ITEM_SIZE_LATTER",$companyID);
-			$objParameterTamanoLetra	= $objParameterTamanoLetra->value;	
-			$objParameterAltoDeLaFila	= $this->core_web_parameter->getParameter("CORE_VIEW_CUSTOM_REPORT_IN_LIST_ITEM_ALTO_FILA",$companyID);
-			$objParameterAltoDeLaFila	= $objParameterAltoDeLaFila->value;				
-			
+			if($warehouseID == "")
+			{
+				$data["objListWarehouse"]	= $this->Userwarehouse_Model->getRowByUserID($companyID,$userID);			
+				$data["objListCategory"]	= $this->Itemcategory_Model->getByCompany($companyID);			
 				
-				
-			//Obtener el tipo de Comprobante
-			$companyID 		= $dataSession["user"]->companyID;
-			//Get Component
-			$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
-			//Get Logo
-			$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
-			//Get Company
-			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
-			//Get Datos
-			$query			= "CALL pr_inventory_get_report_list_item(?,?,?);";
-			$objData		= $this->Bd_Model->executeRender(
-				$query,
-				[$userID,$tocken,$companyID]
-			);			
-			
-			if(isset($objData))
-			$objDataResult["objDetail"]					= $objData;
-			else
-			$objDataResult["objDetail"]					= NULL;
-			$objDataResult["objCompany"] 				= $objCompany;
-			$objDataResult["objLogo"] 					= $objParameter;
-			$objDataResult["objParameterTamanoLetra"] 	= $objParameterTamanoLetra;	
-			$objDataResult["objParameterAltoDeLaFila"] 	= $objParameterAltoDeLaFila;				
-			$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_inventory_get_report_list_item" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
-			$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
-			
-			
-			//Revisar si existe la vista			
-			if($objCompany->type == "globalpro")
-			{
-				return view("app_inventory_report/list_item/view_a_disemp_globalpro",$objDataResult);//--finview-r
-			}
-			else if($objCompany->type == "agencia_freddy")
-			{
-				return view("app_inventory_report/list_item/view_a_disemp_agencia_freddy",$objDataResult);//--finview-r
-			}
-			else if($objCompany->type == "ainaracloset")
-			{
-				return view("app_inventory_report/list_item/view_a_disemp_ainaracloset",$objDataResult);//--finview-r
-			}
-			else if($objCompany->type == "agro_el_labrador")
-			{
-				return view("app_inventory_report/list_item/view_a_disemp_agro_el_labrador",$objDataResult);//--finview-r
-			}
-			else if($objCompany->type == "galmcuts")
-			{
-				return view("app_inventory_report/list_item/view_a_disemp_galmcuts",$objDataResult);//--finview-r
+				//Renderizar Resultado 
+				$dataSession["message"]		= $this->core_web_notification->get_message();
+				$dataSession["head"]		= /*--inicio view*/ view('app_inventory_report/list_item/view_head');//--finview
+				$dataSession["body"]		= /*--inicio view*/ view('app_inventory_report/list_item/view_body',$data);//--finview
+				$dataSession["script"]		= /*--inicio view*/ view('app_inventory_report/list_item/view_script');//--finview
+				$dataSession["footer"]		= "";			
+				return view("core_masterpage/default_report",$dataSession);//--finview-r	
 			}
 			else
 			{
-				return view("app_inventory_report/list_item/view_a_disemp",$objDataResult);//--finview-r
-			}	
+				$objParameterTamanoLetra	= $this->core_web_parameter->getParameter("CORE_VIEW_CUSTOM_REPORT_IN_LIST_ITEM_SIZE_LATTER",$companyID);
+				$objParameterTamanoLetra	= $objParameterTamanoLetra->value;	
+				$objParameterAltoDeLaFila	= $this->core_web_parameter->getParameter("CORE_VIEW_CUSTOM_REPORT_IN_LIST_ITEM_ALTO_FILA",$companyID);
+				$objParameterAltoDeLaFila	= $objParameterAltoDeLaFila->value;				
+				
+					
+					
+				//Obtener el tipo de Comprobante
+				$companyID 		= $dataSession["user"]->companyID;
+				//Get Component
+				$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+				//Get Logo
+				$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+				//Get Company
+				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
+				//Get Datos
+				$query			= "CALL pr_inventory_get_report_list_item(?,?,?,?,?);";
+				$objData		= $this->Bd_Model->executeRender(
+					$query,
+					[$userID,$tocken,$companyID,$warehouseID,$categoryID]
+				);			
+				
+				if(isset($objData))
+				$objDataResult["objDetail"]					= $objData;
+				else
+				$objDataResult["objDetail"]					= NULL;
+				$objDataResult["objCompany"] 				= $objCompany;
+				$objDataResult["objLogo"] 					= $objParameter;
+				$objDataResult["objParameterTamanoLetra"] 	= $objParameterTamanoLetra;	
+				$objDataResult["objParameterAltoDeLaFila"] 	= $objParameterAltoDeLaFila;				
+				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_inventory_get_report_list_item" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
+				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
+				
+				
+				//Revisar si existe la vista			
+				if($objCompany->type == "globalpro")
+				{
+					return view("app_inventory_report/list_item/view_a_disemp_globalpro",$objDataResult);//--finview-r
+				}
+				else if($objCompany->type == "agencia_freddy")
+				{
+					return view("app_inventory_report/list_item/view_a_disemp_agencia_freddy",$objDataResult);//--finview-r
+				}
+				else if($objCompany->type == "ainaracloset")
+				{
+					return view("app_inventory_report/list_item/view_a_disemp_ainaracloset",$objDataResult);//--finview-r
+				}
+				else if($objCompany->type == "agro_el_labrador")
+				{
+					return view("app_inventory_report/list_item/view_a_disemp_agro_el_labrador",$objDataResult);//--finview-r
+				}
+				else if($objCompany->type == "galmcuts")
+				{
+					return view("app_inventory_report/list_item/view_a_disemp_galmcuts",$objDataResult);//--finview-r
+				}
+				else
+				{
+					return view("app_inventory_report/list_item/view_a_disemp",$objDataResult);//--finview-r
+				}	
+			}
+			
 			
 			
 		}

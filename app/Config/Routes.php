@@ -752,6 +752,7 @@ $routes->match(['get','post'],'app_inventory_report/movement/(:any)','app_invent
 $routes->match(['get','post'],'app_inventory_report/master_kardex','app_inventory_report::master_kardex');
 $routes->match(['get','post'],'app_inventory_report/master_kardex/(:any)','app_inventory_report::master_kardex');
 $routes->match(['get','post'],'app_inventory_report/list_item','app_inventory_report::list_item');
+$routes->match(['get','post'],'app_inventory_report/list_item/(:any)','app_inventory_report::list_item');
 $routes->match(['get','post'],'app_inventory_report/list_item_expired','app_inventory_report::list_item_expired');
 $routes->match(['get','post'],'app_inventory_report/list_item_by_warehouse','app_inventory_report::list_item_by_warehouse');
 $routes->match(['get','post'],'app_inventory_report/list_item_by_warehouse/(:any)','app_inventory_report::list_item_by_warehouse');
