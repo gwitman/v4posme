@@ -600,7 +600,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormal80mm" 
+	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormal80mmCharLot" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_URL_PRINTER";## URLs PARA LA IMPRESION DE FACTURA 
@@ -751,7 +751,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Variedades Charlotte' , address = 'Instituto España 1c.e 10v sur' 
+	NAME = 'Variedades Charlotte' , address = 'Instituto España 1c.e 10v sur', type = 'chorlote'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

@@ -909,6 +909,8 @@ $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmY
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmYahwetFart/(:any)','app_invoice_billing::viewPrinterDirectFactura80mmYahwetFart');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mm','app_invoice_billing::viewRegisterFormatoPaginaNormal80mm');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mm/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mm');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmCharLot','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmCharLot');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmCharLot/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmCharLot');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmGlobalPro','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmGlobalPro');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmGlobalPro/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmGlobalPro');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmLaptopStore','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmLaptopStore');
