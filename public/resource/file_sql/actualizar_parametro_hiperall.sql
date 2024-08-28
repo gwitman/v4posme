@@ -608,28 +608,28 @@ WHERE
 /******************************************************************/		
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "12ef04e7197c001b66920797fac63c46" 
+	tb_company_parameter.value = "8b6c763567e1b116c89582e66f6918e9" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PAYMENT_PRODUCCION_CLAVE";## Clave para realizar el pago en ambiente de produccion 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "7be685eb39ed6cac49de29bd36f4665e" 
+	tb_company_parameter.value = "15b4064c8251068e0abb3c9a8e5591de" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PAYMENT_PRODUCCION_USUARIO";## Usuario para realizar el pago en ambiente de produccion 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "56720c930f874d4011ff7f3e2a86eddb" 
+	tb_company_parameter.value = "8b6c763567e1b116c89582e66f6918e9" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PAYMENT_PRUEBA_CLAVE";## Clave para realizar el pago en ambiente de prueba 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "35f6110eb79c3640a9bc35f876fe05f6" 
+	tb_company_parameter.value = "15b4064c8251068e0abb3c9a8e5591de" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PAYMENT_PRUEBA_USUARIO";## Usuario para realizar el pago en ambiente de prueba 
@@ -641,6 +641,18 @@ WHERE
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PAYMENT_SENDBOX";## API DE PAGO DE PRUEBA 
 
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "15b4064c8251068e0abb3c9a8e5591de" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CORE_PAYMENT_PRODUCCION_USUARIO_COMMERCECLIENT";## Clave para realizar el pago en ambiente de produccion 
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "8b6c763567e1b116c89582e66f6918e9" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CORE_PAYMENT_PRODUCCION_CLAVE_COMMERCECLIENTE";## Clave para realizar el pago en ambiente de produccion 
+	
 
 /******************************************************************/
 /*****Configuracion de Sin Riesgo**********/

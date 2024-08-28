@@ -605,6 +605,19 @@ WHERE
 /******************************************************************/		
 
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "35f6110eb79c3640a9bc35f876fe05f6" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CORE_PAYMENT_PRODUCCION_USUARIO_COMMERCECLIENT";## Clave para realizar el pago en ambiente de produccion 
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "56720c930f874d4011ff7f3e2a86eddb" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CORE_PAYMENT_PRODUCCION_CLAVE_COMMERCECLIENTE";## Clave para realizar el pago en ambiente de produccion 
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "12ef04e7197c001b66920797fac63c46" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 

@@ -140,7 +140,7 @@ class app_invoice_api extends _BaseController {
 				{
 					foreach($objTMD as $itemD)
 					{
-						$Pagadito->add_detail($itemD->quantity,$itemD->itemNameLog, 5 /*$itemD->unitaryAmount*/,$urlProducto);
+						$Pagadito->add_detail($itemD->quantity,$itemD->itemNameLog, $itemD->unitaryAmount,$urlProducto);
 					}
 					
 				}
