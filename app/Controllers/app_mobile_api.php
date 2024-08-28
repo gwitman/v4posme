@@ -110,6 +110,20 @@ class app_mobile_api extends _BaseController
                     $billingController->insertElementMobil($dataSession,$objTm, $resultado);
                 }
             }
+
+            //SINCRONIZACION ABONOS
+            if(count($transactionMasters)>0){
+                $shareController = new app_box_share();
+                $shareController->initController($this->request, $this->response, $this->logger);
+                $typeTransaction = $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_share",0);
+                $abonos = array_filter($transactionMasters, function($tm) use ($typeTransaction) {
+                    return $tm->TransactionId == $typeTransaction;
+                });
+                foreach($abonos as $objTm){
+                    $shareController->insertElementMobil($dataSession,$objTm);
+                }
+            }
+
             return $this->response->setJSON(array(
                 'error' => false,
                 'message' => SUCCESS

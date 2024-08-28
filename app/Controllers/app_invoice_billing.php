@@ -3519,7 +3519,6 @@ class app_invoice_billing extends _BaseController {
 			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r	
 		}
 		catch(\Exception $ex){
-		    
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();

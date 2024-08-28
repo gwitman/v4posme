@@ -89,7 +89,7 @@ class core_dashboards extends _BaseController {
 			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r	
 		}
 		catch(\Exception $ex){
-			show_error($ex->getMessage() ,500 );
+			//show_error($ex->getMessage() ,500 );
 		}
 	}
 }
