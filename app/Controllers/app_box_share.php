@@ -856,7 +856,7 @@ class app_box_share extends _BaseController {
 			$objTM["exchangeRate"]					= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$objTM["currencyID2"],$objTM["currencyID"]);
 			$objTM["reference1"] 					= $transactionMaster->Reference1;
 			$objTM["reference2"] 					= $transactionMaster->TransactionNumber;
-			$objTM["reference3"] 					= $dataSession["user"]->employeeID; /* colaborador id */
+			$objTM["reference3"] 					= $dataSession["user"]->employeeID;
 			$objTM["reference4"] 					= $transactionMaster->CustomerCreditLineId;
 			$objTM["descriptionReference"] 			= 'reference1:input,reference2:input,reference3:Gestor de Cobro,reference4:Linea de credito del Cliente';
 			$objTM["statusID"] 						= $statusID[0]->workflowStageID;
@@ -887,7 +887,7 @@ class app_box_share extends _BaseController {
 			$objTMInfo["transactionMasterID"]		= $transactionMasterID;
 			$objTMInfo["zoneID"]					= 0;
 			$objTMInfo["routeID"]					= 0;
-			$objTMInfo["referenceClientName"]		= $customerNaturals->firstName; //***poner nombre del cliente
+			$objTMInfo["referenceClientName"]		= $customerNaturals->firstName;
 			$objTMInfo["referenceClientIdentifier"]	= $transactionMaster->CustomerIdentification;
 			$objTMInfo["receiptAmount"]				= $transactionMaster->Amount;
 			$objTMInfo["reference1"]				= $transactionMaster->Discount; //***balance inicial? en el json es el Discount

@@ -1321,9 +1321,13 @@ $routes->match(['get','post'],'app_api_fingerprint/sincronizar/(:any)','app_api_
 $routes->match(['get','post'],'core_caching_image/get','core_caching_image::get');
 $routes->match(['get','post'],'core_caching_image/get/(:any)','core_caching_image::get');
 
-
+/**
+ * INICIO DE CONVIERTE DETALLE DE SERVICIOS
+ */
 $routes->match(['get','post'],'app_form_public/convierten_detalle_servicio','app_form_public::convierten_detalle_servicio');
 $routes->match(['get','post'],'app_form_public/convierten_detalle_servicio/(:any)','app_form_public::convierten_detalle_servicio');
+$routes->match(['get','post'],'app_form_public/save/(:any)','app_form_public::savepublic');
+$routes->match(['get','post'],'app_form_public/save','app_form_public::save');
 
 $routes->match(['get','post'],'app_notification/getNotificationShowInApp/','app_notification::getNotificationShowInApp');
 $routes->match(['get','post'],'app_notification/getNotificationShowInApp/(:any)','app_notification::getNotificationShowInApp/$1');

@@ -157,7 +157,7 @@ use App\Models\Warehouse_Model;
 use App\Models\Temp_Fingerprint_Model;
 use App\Models\Fingerprints_Model;
 use App\Models\Biometric_User_Model;
-
+use App\Models\Transaction_Master_References_Model;
 
 
 /**
@@ -346,7 +346,7 @@ abstract class _BaseController extends Controller
 	protected $Fingerprints_Model;
 	protected $Biometric_User_Model;
 
-
+	protected $Transaction_Master_References_Model;
     /**
      * Constructor.
      */
@@ -515,7 +515,7 @@ abstract class _BaseController extends Controller
 		$this->Temp_Fingerprint_Model = new Temp_Fingerprint_Model();
 		$this->Fingerprints_Model = new Fingerprints_Model();
 		$this->Biometric_User_Model = new Biometric_User_Model();
-
+		$this->Transaction_Master_References_Model = new Transaction_Master_References_Model();
 		
     }
 	

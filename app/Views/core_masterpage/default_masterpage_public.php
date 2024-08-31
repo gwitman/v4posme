@@ -99,6 +99,6 @@
 
 	<!-- Page JS -->	
   
-	
+	<?= $script ?>
   </body>
 </html>
