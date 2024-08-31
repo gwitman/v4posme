@@ -98,99 +98,97 @@ class app_public_catalog_api extends _BaseController {
 			//Aplicacion de filtro antes de buscar en base de datos
 			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_RentaMobile" &&  $filter13 == "" )
 			{
-				return $this->response->setJSON(
+				return $this->response->setHeader('Access-Control-Allow-Origin', '*')->setJSON(
                     [0=>'ND']
                 );
 			}
 			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_RentaFijo" &&  $filter11 == "" )
 			{
-				return $this->response->setJSON(
+				return $this->response->setHeader('Access-Control-Allow-Origin', '*')->setJSON(
                     [0=>'ND']
                 );
 			}
 			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_RguMobile" &&  $filter11 == "" )
 			{
-				return $this->response->setJSON(
+				return $this->response->setHeader('Access-Control-Allow-Origin', '*')->setJSON(
                     [0=>'ND']
                 );
 			}
 			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_RguFijos" &&  $filter3 == "" )
 			{
-				return $this->response->setJSON(
+				return $this->response->setHeader('Access-Control-Allow-Origin', '*')->setJSON(
                     [0=>'ND']
                 );
 			}
 			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_PlanMobileAdicional1" &&  $filter12 == "" )
 			{
-				return $this->response->setJSON(
+				return $this->response->setHeader('Access-Control-Allow-Origin', '*')->setJSON(
                     [0=>'ND']
                 );
 			}
 			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_GestionMovileAdicional1" &&  $filter11 == "" )
 			{
-				return $this->response->setJSON(
+				return $this->response->setHeader('Access-Control-Allow-Origin', '*')->setJSON(
                     [0=>'ND']
                 );
 			}
 			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_LineasMobileAdicionales" &&  $filter6 == "" )
 			{
-				return $this->response->setJSON(
+				return $this->response->setHeader('Access-Control-Allow-Origin', '*')->setJSON(
                     [0=>'ND']
                 );
 			}
 			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_TipoMigracion" &&  $filter9 == "" )
 			{
-				return $this->response->setJSON(
+				return $this->response->setHeader('Access-Control-Allow-Origin', '*')->setJSON(
                     [0=>'ND']
                 );
 			}
 			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_OperadorDonante" &&  $filter8 == "" )
 			{
-				return $this->response->setJSON(
+				return $this->response->setHeader('Access-Control-Allow-Origin', '*')->setJSON(
                     [0=>'ND']
                 );
 			}
 			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_TipoDeLinea" &&  $filter7 == "" )
 			{
-				return $this->response->setJSON(
+				return $this->response->setHeader('Access-Control-Allow-Origin', '*')->setJSON(
                     [0=>'ND']
                 );
 			}
 			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_PlanMobile" &&  $filter6 == "" )
 			{
-				return $this->response->setJSON(
+				return $this->response->setHeader('Access-Control-Allow-Origin', '*')->setJSON(
                     [0=>'ND']
                 );
 			}
 			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_GestionMobile" &&  $filter5 == "" )
 			{
-				return $this->response->setJSON(
+				return $this->response->setHeader('Access-Control-Allow-Origin', '*')->setJSON(
                     [0=>'ND']
                 );
 			}
 			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_VelocidadInternet" &&  $filter4 == "" )
 			{
-				return $this->response->setJSON(
+				return $this->response->setHeader('Access-Control-Allow-Origin', '*')->setJSON(
                     [0=>'ND']
                 );
 			}
 			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_Tecnologia" &&  $filter3 == "" )
 			{
-				return $this->response->setJSON(
+				return $this->response->setHeader('Access-Control-Allow-Origin', '*')->setJSON(
                     [0=>'ND']
                 );
 			}
 			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_Servicio" &&  $filter2 == "" )
 			{
-				return $this->response->setJSON(
+				return $this->response->setHeader('Access-Control-Allow-Origin', '*')->setJSON(
                     [0=>'ND']
                 );
 			}
 			if($keyFieldValue == "convierten_tb_transaction_master_campos_cascada_detalles_servicion_ServicioExistente" &&  $filter1 == "" )
 			{
-				log_message("error","witmante testint");
-				log_message("error",print_r($filter1,true));
-				return $this->response->setJSON(
+				return $this->response->setHeader('Access-Control-Allow-Origin', '*')->setJSON(
                     [0=>'ND']
                 );
 			}
@@ -203,7 +201,7 @@ class app_public_catalog_api extends _BaseController {
 						find();
 									
             if(count($objPC)==0){
-                return $this->response->setJSON(
+                return $this->response->setHeader('Access-Control-Allow-Origin', '*')->setJSON(
                     [0=>'ND']
                 );
             }
@@ -323,11 +321,11 @@ class app_public_catalog_api extends _BaseController {
 				
 				
 				if (count($objPCDResult)==0){
-					return $this->response->setJSON(                    
+					return $this->response->setHeader('Access-Control-Allow-Origin', '*')->setJSON(                    
 						[0=>'ND']
 					);
 				}else{
-					return $this->response->setJSON(
+					return $this->response->setHeader('Access-Control-Allow-Origin', '*')->setJSON(
 						$objPCDResult
 					);
 				}
@@ -335,7 +333,7 @@ class app_public_catalog_api extends _BaseController {
 			}
 			else 
 			{
-				return $this->response->setJSON(                    
+				return $this->response->setHeader('Access-Control-Allow-Origin', '*')->setJSON(                    
                     [0=>'ND']
                 );
 			}
@@ -346,7 +344,7 @@ class app_public_catalog_api extends _BaseController {
 
         }
         catch(Exception $ex){
-            return $this->response->setJSON(array(
+            return $this->response->setHeader('Access-Control-Allow-Origin', '*')->setJSON(array(
                 'error'   			=> true,
                 'message' 			=> $ex->getMessage(),
                 'result'	 	=> []

@@ -3408,12 +3408,13 @@ class app_invoice_billing extends _BaseController {
 			$objParameterShowPreview		= $this->core_web_parameter->getParameter("INVOICE_SHOW_PREVIEW_INLIST",$this->session->get('user')->companyID);
 			$objParameterShowPreview		= $objParameterShowPreview->value;
 				
+			
 			//Vista por defecto 
-			if($dataViewID == null){				
-				$targetComponentID			= $this->session->get('company')->flavorID;
-				
+			if($dataViewID == null || $dataViewID == "null" ){
+			
+				$targetComponentID			= $this->session->get('company')->flavorID;				
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
-				$parameter["{fecha}"]		= $fecha;
+				$parameter["{fecha}"]		= $fecha;				
 				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
 				
 				
