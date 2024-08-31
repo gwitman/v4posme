@@ -19,6 +19,18 @@ server: 	ftp.hiperall-crm.com
 port:  		21
 Domain		hiperall-crm.com
 
+
+Pagadito:
+https://www.pagadito.com/index.php
+usuario:	: main@hiperallmarketing.com
+password:	: Temporal1254**
+https://hiperall-crm.com/public/core_user/payment_user_back?parametro1={value}&parametro2={ern_value}
+
+https://sandbox.pagadito.com/
+usuario:	: main@hiperallmarketing.com
+password:	: Temporal1234
+https://hiperall-crm.com/public/core_user/payment_user_back?parametro1={value}&parametro2={ern_value}
+
 */
 
 UPDATE  tb_company_parameter,tb_parameter SET 
@@ -608,14 +620,14 @@ WHERE
 /******************************************************************/		
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "8b6c763567e1b116c89582e66f6918e9" 
+	tb_company_parameter.value = "46c060e50cd9fec7d264884861f11a7b" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PAYMENT_PRODUCCION_CLAVE";## Clave para realizar el pago en ambiente de produccion 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "15b4064c8251068e0abb3c9a8e5591de" 
+	tb_company_parameter.value = "4460fef9b1ded9a6d149839f1a1c7765" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PAYMENT_PRODUCCION_USUARIO";## Usuario para realizar el pago en ambiente de produccion 
@@ -636,19 +648,19 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
+	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PAYMENT_SENDBOX";## API DE PAGO DE PRUEBA 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "15b4064c8251068e0abb3c9a8e5591de" 
+	tb_company_parameter.value = "4460fef9b1ded9a6d149839f1a1c7765" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PAYMENT_PRODUCCION_USUARIO_COMMERCECLIENT";## Clave para realizar el pago en ambiente de produccion 
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "8b6c763567e1b116c89582e66f6918e9" 
+	tb_company_parameter.value = "46c060e50cd9fec7d264884861f11a7b" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PAYMENT_PRODUCCION_CLAVE_COMMERCECLIENTE";## Clave para realizar el pago en ambiente de produccion 

@@ -70,8 +70,8 @@ class User_Model extends Model  {
 		$sql = "";
 		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar");
 		$sql = $sql.sprintf(" from tb_user");
-		$sql = $sql.sprintf(" where nickname = '$nickname'");
-		$sql = $sql.sprintf(" and password = '$password'");
+		$sql = $sql.sprintf(" where nickname = '".str_replace('"',"",str_replace("'","",$nickname))."'");
+		$sql = $sql.sprintf(" and password = '".str_replace('"',"",str_replace("'","",$password)."'"));
 		$sql = $sql.sprintf(" and isActive= 1");	
 				
 		
