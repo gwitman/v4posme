@@ -46,6 +46,24 @@ class app_form_public extends _BaseController {
 
 	function save(){
 		try{ 
+		
+				//Guardar o Editar Registro						
+			if($mode == "new"){
+				$this->insertElement();
+			}
+			
+			
+		}
+		catch(\Exception $ex){
+			echo $ex->getMessage();
+		}	
+	}
+
+	function insertElement(){
+		try{
+			
+			
+			
 			$objComponent						= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");			
 			if(!$objComponent)
 			throw new \Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
@@ -85,14 +103,7 @@ class app_form_public extends _BaseController {
 				return $this->response->setJSON(['valor'=>0]);
 			}
 			
-		}
-		catch(\Exception $ex){
-			echo $ex->getMessage();
-		}	
-	}
-
-	function insertElement($objTMR){
-		try{
+			
 			$db=db_connect();
 			$db->transStart();
 

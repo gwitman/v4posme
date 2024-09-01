@@ -1,5 +1,7 @@
 <!-- ./ page heading -->
 <script src="<?= APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jquery.loading.min.js"></script>
+
+
 <script>	
 
 	$(document).ready(function(){

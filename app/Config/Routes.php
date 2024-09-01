@@ -1219,7 +1219,6 @@ $routes->match(['get','post'],'core_view/chooseview','core_view::chooseview');
 $routes->match(['get','post'],'core_view/chooseview/(:any)','core_view::chooseview');
 $routes->match(['get','post'],'core_cache/delete_by_name','core_cache::delete_by_name');
 $routes->match(['get','post'],'core_cache/delete_by_name/(:any)','core_cache::delete_by_name');
-
 $routes->match(['get','post'],'app_public_catalog/edit','app_public_catalog::edit');
 $routes->match(['get','post'],'app_public_catalog/edit/(:any)','app_public_catalog::edit');
 $routes->match(['get','post'],'app_public_catalog/delete','app_public_catalog::delete');
@@ -1232,8 +1231,6 @@ $routes->match(['get','post'],'app_public_catalog/save/(:any)','app_public_catal
 $routes->match(['get','post'],'app_public_catalog/add','app_public_catalog::add');
 $routes->match(['get','post'],'app_public_catalog/index','app_public_catalog::index');
 $routes->match(['get','post'],'app_public_catalog/index/(:any)','app_public_catalog::index');
-
-
 $routes->match(['get','post'],'app_box_share/edit','app_box_share::edit');
 $routes->match(['get','post'],'app_box_share/edit/(:any)','app_box_share::edit');
 $routes->match(['get','post'],'app_box_share/delete','app_box_share::delete');
@@ -1305,8 +1302,6 @@ $routes->match(['get','post'],'app_api_fingerprint/web_active_sensor_read','app_
 $routes->match(['get','post'],'app_api_fingerprint/web_active_sensor_read/(:any)','app_api_fingerprint::web_active_sensor_read');
 $routes->match(['get','post'],'app_api_fingerprint/web_get_finger','app_api_fingerprint::web_get_finger');
 $routes->match(['get','post'],'app_api_fingerprint/web_get_finger/(:any)','app_api_fingerprint::web_get_finger');
-
-
 $routes->match(['get','post'],'app_api_fingerprint/sse','app_api_fingerprint::sse');
 $routes->match(['get','post'],'app_api_fingerprint/sse/(:any)','app_api_fingerprint::sse');
 $routes->match(['get','post'],'app_api_fingerprint/save_finger','app_api_fingerprint::save_finger');
@@ -1319,32 +1314,19 @@ $routes->match(['get','post'],'app_api_fingerprint/sensor_close','app_api_finger
 $routes->match(['get','post'],'app_api_fingerprint/sensor_close/(:any)','app_api_fingerprint::sensor_close');
 $routes->match(['get','post'],'app_api_fingerprint/sincronizar','app_api_fingerprint::sincronizar');
 $routes->match(['get','post'],'app_api_fingerprint/sincronizar/(:any)','app_api_fingerprint::sincronizar');
-
-
 $routes->match(['get','post'],'core_caching_image/get','core_caching_image::get');
 $routes->match(['get','post'],'core_caching_image/get/(:any)','core_caching_image::get');
-
-/**
- * INICIO DE CONVIERTE DETALLE DE SERVICIOS
- */
 $routes->match(['get','post'],'app_form_public/convierten_detalle_servicio','app_form_public::convierten_detalle_servicio');
 $routes->match(['get','post'],'app_form_public/convierten_detalle_servicio/(:any)','app_form_public::convierten_detalle_servicio');
-$routes->match(['get','post'],'app_form_public/save/(:any)','app_form_public::savepublic');
+$routes->match(['get','post'],'app_form_public/save/(:any)','app_form_public::save');
 $routes->match(['get','post'],'app_form_public/save','app_form_public::save');
-
 $routes->match(['get','post'],'app_notification/getNotificationShowInApp/','app_notification::getNotificationShowInApp');
 $routes->match(['get','post'],'app_notification/getNotificationShowInApp/(:any)','app_notification::getNotificationShowInApp/$1');
-
-/*
- * INICIO DE DASHBOARDS ESTADISTICOS REAL STATE
- */
 $routes->match(['get','post'],'app_stadistic_dashboards/real_state','app_stadistic_dashboards::real_state');
 $routes->match(['get','post'],'app_stadistic_dashboards/real_state/(:any)','app_stadistic_dashboards::real_state');
 $routes->match(['get','post'],'app_stadistic_dashboards/customer_realstate','app_stadistic_dashboards::customer_realstate');
 $routes->match(['get','post'],'app_stadistic_dashboards/customer_realstate/(:any)','app_stadistic_dashboards::customer_realstate');
-/*
- * INICIO DE DASHBOARDS ESTADISTICOS REAL STATE
- */
+
 
 /*
  * --------------------------------------------------------------------

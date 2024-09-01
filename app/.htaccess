@@ -1,7 +1,3 @@
-<IfModule mod_headers.c>
-    Header set Access-Control-Allow-Origin "*"
-</IfModule>
-
 <IfModule authz_core_module>
     Require all denied
 </IfModule>
