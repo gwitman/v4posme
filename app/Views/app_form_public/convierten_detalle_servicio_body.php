@@ -37,8 +37,7 @@
 
 				<div class="card-bodyi">
 				
-					<form id="frmPublic" role="form" action="<?= base_url(); ?>/app_form_public/save" method="POST" enctype="multipart/form-data"  >
-					
+					<form id="frmPublic" role="form" action="<?= base_url(); ?>/app_form_public/save" method="POST" enctype="multipart/form-data">
 							<div class="container-fluid">
 								<div class="row">
 									

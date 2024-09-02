@@ -38,9 +38,10 @@
 					stoppable: false,
 					 message: 'Registrando valores...'
 				});
+				var mode='new';
 				$.ajax({
 					type: 'POST',
-					url: '<?= base_url(); ?>/app_form_public/save',
+					url: '<?= base_url(); ?>/app_form_public/save?mode='+mode,
 					data: $(this).serialize(),
 					success: function (response) {
 						window.location.href = '<?= base_url(); ?>/app_form_public/convierten_detalle_servicio?valor='+response.valor;

@@ -46,13 +46,13 @@ class app_form_public extends _BaseController {
 
 	function save(){
 		try{ 
-		
-				//Guardar o Editar Registro						
+			//Guardar o Editar Registro		
+			$mode= $this->request->getGetPost('mode');				
 			if($mode == "new"){
-				$this->insertElement();
+				return $this->insertElement();
+			}else{
+				return $this->response->setJSON(['valor'=>0]); 
 			}
-			
-			
 		}
 		catch(\Exception $ex){
 			echo $ex->getMessage();
@@ -95,30 +95,28 @@ class app_form_public extends _BaseController {
 			$objTMR['reference15'] = $this->request->getPost('txtTransactionMasterReference15');
 			$objTMR['reference16'] = $this->request->getPost('txtTransactionMasterReference16');
 			$objTMR['reference17'] = $this->request->getPost('txtTransactionMasterReference17');
-			
-			if(!is_null($objTMR['reference1'])){
-				$result = $this->insertElement($objTMR);
-				return $this->response->setJSON(['valor'=>$result]);
-			}else{
-				return $this->response->setJSON(['valor'=>0]);
-			}
-			
+						
 			
 			$db=db_connect();
 			$db->transStart();
 
 			$objTMR['createdOn']  = date('Y-m-d H:i:s');
 			$objTMR['isActive']  = 1;
-			$transactionMasterReferenceID = $this->Transaction_Master_References_Model->insert_app_posme($objTMR);
 
+			if(!is_null($objTMR['reference1'])){
+				$result = $this->Transaction_Master_References_Model->insert_app_posme($objTMR);				
+			}else{
+				return $this->response->setJSON(['valor'=>0]);
+			}
+			
 			if($db->transStatus() !== false){				
 				$db->transCommit();
-				return $transactionMasterReferenceID;
+				return $this->response->setJSON(['valor'=>$result]);
 			}
 			else{
 				print_r($db->error());
 				$db->transRollback();
-				return 0;
+				return $this->response->setJSON(['valor'=>0]);
 			}
 			
 		}
