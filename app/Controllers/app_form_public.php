@@ -119,6 +119,7 @@ class app_form_public extends _BaseController {
 			$objTMR['reference15'] = $this->request->getPost('txtTransactionMasterReference15');
 			$objTMR['reference16'] = $this->request->getPost('txtTransactionMasterReference16');
 			$objTMR['reference17'] = $this->request->getPost('txtTransactionMasterReference17');
+			$objTMR['reference18'] = $this->request->getPost('txtTransactionMasterReference18');
 			$objTMR['createdOn']  = date('Y-m-d H:i:s');
 			$objTMR['isActive']  = 1;		
 			

@@ -27,16 +27,17 @@
 
 		$("#btnSave").on('click',function(event) {
 			var valorSelect = $("#txtTransactionMasterReference1").val();
-			if (valorSelect === "") {
+			var valorSelect18 = $("#txtTransactionMasterReference18").val();
+			if (valorSelect  || valorSelect18) {
+				$(".spinner-overlay-posme").show();
+				$('#frmPublic').attr("method","POST");
+				$('#frmPublic').attr("action","<?php echo base_url(); ?>/app_form_public/save/new");
+				$('#frmPublic').submit();				
+			}else{
 				$("#toast-ex").addClass("bg-danger", "animate__fadeIn");
 				$('.toast-body').text("Debe especificar un valor para continuar...");
 				let toastAnimation = new bootstrap.Toast($("#toast-ex"));
 				toastAnimation.show();
-			}else{
-				$(".spinner-overlay-posme").show();
-				$('#frmPublic').attr("method","POST");
-				$('#frmPublic').attr("action","<?php echo base_url(); ?>/app_form_public/save/new");
-				$('#frmPublic').submit();
 			}
 			
 		});
@@ -51,6 +52,26 @@
 		<?php
 		}		
 		?>
+
+		$.ajax({
+            url: var_url, 
+            type: 'get', 
+			crossDomain: true,
+			data: {
+				'catalogName':'tb_transaction_master_campos_cascada_detalles_servicion',
+				'fieldValue' :'TipoDeServicio',
+			},
+			success: function(response) {
+                response.forEach(function(elemento) {
+					$('#txtTransactionMasterReference18').append('<option value="' + elemento.label + '">' + elemento.label + '</option>');
+				});
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+        });	
+		
 		$.ajax({
             url: var_url, 
             type: 'get', 
@@ -304,7 +325,7 @@
 
 	function llenarComboBox(valorSeleccionado,data, idselect){
 		let $currentSelect = $('#' + idselect); 
-		let $allSelects = $('select'); 
+		let $allSelects = $('#detalle-servicio select'); 
 		let index = $allSelects.index($currentSelect); 
 		$allSelects.slice(index + 1).each(function() {
 			$(this).empty().append('<option value="">Seleccione una opción</option>');
