@@ -3,8 +3,8 @@
 
 
 <script>
-	$(document).ready(function(){
-
+	let var_url = 'https://posme.net/v4posme/convierten/public/app_public_catalog_api/getPublicCatalogDetailFilter';
+	$(document).ready(function(){		
 		var filter1 = "";
 		var filter2 = "";
 		var filter3 = "";
@@ -52,7 +52,7 @@
 		}		
 		?>
 		$.ajax({
-            url: 'https://posme.net/v4posme/convierten/public/app_public_catalog_api/getPublicCatalogDetailFilter', 
+            url: var_url, 
             type: 'get', 
 			crossDomain: true,
 			data: {
@@ -312,7 +312,7 @@
 
 		if (valorSeleccionado) {
 			$.ajax({
-				url: 'https://posme.net/v4posme/convierten/public/app_public_catalog_api/getPublicCatalogDetailFilter', 
+				url: var_url, 
 				type: 'GET',
 				data: data,
 				success: function(respuesta) {

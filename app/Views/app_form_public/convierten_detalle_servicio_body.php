@@ -166,7 +166,7 @@
 							</div>
 							</br>
 							<a href="#" id="btnSave" class="btn btn-success mx-3">Guardar</a>
-							<button type="button" id="btnLimpiar" class="btn btn-warning mx-3">Limpiar</button>
+							<a href="<?= base_url(); ?>/app_form_public/convierten_detalle_servicio" id="btnLimpiar" class="btn btn-warning mx-3">Limpiar</a>
 							</br></br>
 							  
 					</form>

@@ -1320,6 +1320,8 @@ $routes->match(['get','post'],'app_form_public/convierten_detalle_servicio','app
 $routes->match(['get','post'],'app_form_public/convierten_detalle_servicio/(:any)','app_form_public::convierten_detalle_servicio');
 $routes->match(['get','post'],'app_form_public/save/(:any)','app_form_public::save/$1');
 $routes->match(['get','post'],'app_form_public/save','app_form_public::save');
+$routes->match(['get','post'],'app_form_public/convierten_detalle_servicio_get/(:any)','app_form_public::convierten_detalle_servicio_get/$1');
+$routes->match(['get','post'],'app_form_public/convierten_detalle_servicio_get','app_form_public::convierten_detalle_servicio_get');
 $routes->match(['get','post'],'app_notification/getNotificationShowInApp/','app_notification::getNotificationShowInApp');
 $routes->match(['get','post'],'app_notification/getNotificationShowInApp/(:any)','app_notification::getNotificationShowInApp/$1');
 $routes->match(['get','post'],'app_stadistic_dashboards/real_state','app_stadistic_dashboards::real_state');

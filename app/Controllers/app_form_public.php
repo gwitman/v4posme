@@ -40,9 +40,36 @@ class app_form_public extends _BaseController {
 		}
 		catch(\Exception $ex){
 			exit($ex->getMessage());
-		}	
+		}
 			
     }
+
+	function convierten_detalle_servicio_get() {
+		$id = $this->request->getGet('txtTransactionMasterReferenceID');
+		try{
+			$result = $this->Transaction_Master_References_Model->get_rowByPK($id);
+			if(!is_null($result)){
+				return $this->response->setJSON(array(
+					'error' => false,
+					'message' => SUCCESS,
+					"result"=>$result
+				));//--finjson
+			}else{
+				return $this->response->setJSON(array(
+					'error' => true,
+					'message' => ERROR,
+					"result"=>"ND"
+				));//--finjson
+			}
+		}catch(\Exception $ex){
+			$this->core_web_notification->set_message(true,$ex->getMessage());
+			return $this->response->setJSON(array(
+				'error' => true,
+				'message' => $ex->getMessage(),
+				"result"=>"ND"
+			));//--finjson
+		}	
+	}
 
 	function save($mode){
 		try{ 
