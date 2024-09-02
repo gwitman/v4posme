@@ -54,3 +54,4 @@
 <link rel="stylesheet" href="<?= APP_URL_RESOURCE_CSS_JS; ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/assets/vendor/libs/typeahead-js/typeahead.css" />
 <link rel="stylesheet" href="<?= APP_URL_RESOURCE_CSS_JS; ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/assets/vendor/libs/toastr/toastr.css" />
 <link rel="stylesheet" href="<?= APP_URL_RESOURCE_CSS_JS; ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/assets/vendor/libs/animate-css/animate.css" />
+<link rel="stylesheet" href="<?= APP_URL_RESOURCE_CSS_JS; ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/assets/vendor/libs/spinkit/spinkit.css" />

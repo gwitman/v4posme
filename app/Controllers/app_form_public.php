@@ -44,18 +44,15 @@ class app_form_public extends _BaseController {
 			
     }
 
-	function save(){
+	function save($mode){
 		try{ 
 			//Guardar o Editar Registro		
-			$mode= $this->request->getGetPost('mode');				
 			if($mode == "new"){
-				return $this->insertElement();
-			}else{
-				return $this->response->setJSON(['valor'=>0]); 
+				$this->insertElement();
 			}
 		}
 		catch(\Exception $ex){
-			echo $ex->getMessage();
+			$this->core_web_notification->set_message(true,$ex->getMessage());
 		}	
 	}
 
@@ -95,28 +92,25 @@ class app_form_public extends _BaseController {
 			$objTMR['reference15'] = $this->request->getPost('txtTransactionMasterReference15');
 			$objTMR['reference16'] = $this->request->getPost('txtTransactionMasterReference16');
 			$objTMR['reference17'] = $this->request->getPost('txtTransactionMasterReference17');
-						
+			$objTMR['createdOn']  = date('Y-m-d H:i:s');
+			$objTMR['isActive']  = 1;		
 			
 			$db=db_connect();
 			$db->transStart();
 
-			$objTMR['createdOn']  = date('Y-m-d H:i:s');
-			$objTMR['isActive']  = 1;
-
 			if(!is_null($objTMR['reference1'])){
 				$result = $this->Transaction_Master_References_Model->insert_app_posme($objTMR);				
 			}else{
-				return $this->response->setJSON(['valor'=>0]);
+				$result=0;
 			}
 			
 			if($db->transStatus() !== false){				
 				$db->transCommit();
-				return $this->response->setJSON(['valor'=>$result]);
+                $this->response->redirect(base_url()."/".'app_form_public/convierten_detalle_servicio?valor='.$result);
 			}
 			else{
-				print_r($db->error());
 				$db->transRollback();
-				return $this->response->setJSON(['valor'=>0]);
+				$this->response->redirect(base_url()."/".'app_form_public/convierten_detalle_servicio?valor='.$result);
 			}
 			
 		}

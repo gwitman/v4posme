@@ -1,7 +1,24 @@
+<div id="spinner" class="spinner-overlay-posme">
+  <!-- Puedes usar un icono o imagen de spinner aquí -->
+	<div class="sk-center-posme sk-circle-fade sk-primary">
+		<div class="sk-circle-fade-dot"></div>
+		<div class="sk-circle-fade-dot"></div>
+		<div class="sk-circle-fade-dot"></div>
+		<div class="sk-circle-fade-dot"></div>
+		<div class="sk-circle-fade-dot"></div>
+		<div class="sk-circle-fade-dot"></div>
+		<div class="sk-circle-fade-dot"></div>
+		<div class="sk-circle-fade-dot"></div>
+		<div class="sk-circle-fade-dot"></div>
+		<div class="sk-circle-fade-dot"></div>
+		<div class="sk-circle-fade-dot"></div>
+		<div class="sk-circle-fade-dot"></div>
+	</div>
+</div>	
 	 <!-- Content wrapper -->
 	  <div class="content-wrapper">
 		<!-- Content -->
-
+		
 		<!-- Toast with Animation -->
 		<div
 	 		id="toast-ex"
@@ -148,7 +165,7 @@
 								</div>
 							</div>
 							</br>
-							<button type="submit" class="btn btn-success mx-3">Guardar</button>
+							<a href="#" id="btnSave" class="btn btn-success mx-3">Guardar</a>
 							<button type="button" id="btnLimpiar" class="btn btn-warning mx-3">Limpiar</button>
 							</br></br>
 							  

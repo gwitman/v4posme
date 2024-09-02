@@ -2,9 +2,9 @@
 <script src="<?= APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jquery.loading.min.js"></script>
 
 
-<script>	
-
+<script>
 	$(document).ready(function(){
+
 		var filter1 = "";
 		var filter2 = "";
 		var filter3 = "";
@@ -25,28 +25,18 @@
 		var filter18 = "";
 		let data={};
 
-		$("#frmPublic").submit(function(event) {
+		$("#btnSave").on('click',function(event) {
 			var valorSelect = $("#txtTransactionMasterReference1").val();
-			event.preventDefault(); 
 			if (valorSelect === "") {
 				$("#toast-ex").addClass("bg-danger", "animate__fadeIn");
 				$('.toast-body').text("Debe especificar un valor para continuar...");
 				let toastAnimation = new bootstrap.Toast($("#toast-ex"));
 				toastAnimation.show();
 			}else{
-				$('body').loading({
-					stoppable: false,
-					 message: 'Registrando valores...'
-				});
-				var mode='new';
-				$.ajax({
-					type: 'POST',
-					url: '<?= base_url(); ?>/app_form_public/save?mode='+mode,
-					data: $(this).serialize(),
-					success: function (response) {
-						window.location.href = '<?= base_url(); ?>/app_form_public/convierten_detalle_servicio?valor='+response.valor;
-					}
-				});
+				$(".spinner-overlay-posme").show();
+				$('#frmPublic').attr("method","POST");
+				$('#frmPublic').attr("action","<?php echo base_url(); ?>/app_form_public/save/new");
+				$('#frmPublic').submit();
 			}
 			
 		});
