@@ -52,23 +52,23 @@
 		<?php
 		}		
 		?>
-
+		$(".spinner-overlay-posme").show();
 		$.ajax({
             url: var_url, 
             type: 'get', 
 			crossDomain: true,
 			data: {
-				'catalogName':'tb_transaction_master_campos_cascada_detalles_servicion',
-				'fieldValue' :'TipoDeServicio',
+				'catalogName':'tb_transaction_master_desplegable_poblacion',
+				'fieldValue' :'Poblado',
 			},
 			success: function(response) {
+				$(".spinner-overlay-posme").hide();
                 response.forEach(function(elemento) {
 					$('#txtTransactionMasterReference18').append('<option value="' + elemento.label + '">' + elemento.label + '</option>');
 				});
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                console.log(textStatus);
-                console.log(errorThrown);
+                $('#txtTransactionMasterReference18').append('<option value="">No hay resultados</option>');
             }
         });	
 		
@@ -86,8 +86,7 @@
 				});
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                console.log(textStatus);
-                console.log(errorThrown);
+                $('#txtTransactionMasterReference1').append('<option value="">No hay resultados</option>');
             }
         });			
 
@@ -150,7 +149,7 @@
 				'filter5':filter5,
 				'keyFildValue':'convierten_tb_transaction_master_campos_cascada_detalles_servicion_GestionMobile'
 			};
-			llenarComboBox(filter4,data, 'txtTransactionMasterReference6');
+			llenarComboBox(filter5,data, 'txtTransactionMasterReference6');
 		});
 		$('#txtTransactionMasterReference6').change(function() {
 			filter6 = $(this).val();
@@ -165,7 +164,7 @@
 				'filter6':filter6,
 				'keyFildValue':'convierten_tb_transaction_master_campos_cascada_detalles_servicion_PlanMobile'
 			};
-			llenarComboBox(filter4,data, 'txtTransactionMasterReference7');
+			llenarComboBox(filter6,data, 'txtTransactionMasterReference7');
 		});
 		$('#txtTransactionMasterReference7').change(function() {
 			filter7 = $(this).val();
@@ -279,7 +278,7 @@
 				'keyFildValue':'convierten_tb_transaction_master_campos_cascada_detalles_servicion_RguFijos'
 			};
 			var currentSelectId = $(this).attr('id');
-			llenarComboBox(filter4,data, 'txtTransactionMasterReference14');
+			llenarComboBox(filter3,data, 'txtTransactionMasterReference14');
 		});
 		$('#txtTransactionMasterReference14').change(function() {
 			filter14 = $(this).val();
@@ -291,7 +290,7 @@
 				'keyFildValue':'convierten_tb_transaction_master_campos_cascada_detalles_servicion_RguMobile'
 			};
 			var currentSelectId = $(this).attr('id');
-			llenarComboBox(filter6,data, 'txtTransactionMasterReference15');
+			llenarComboBox(filter11,data, 'txtTransactionMasterReference15');
 		});
 		$('#txtTransactionMasterReference15').change(function() {
 			filter15 = $(this).val();
@@ -306,7 +305,7 @@
 				'keyFildValue':'convierten_tb_transaction_master_campos_cascada_detalles_servicion_RentaFijo'
 			};
 			var currentSelectId = $(this).attr('id');
-			llenarComboBox(filter4,data, 'txtTransactionMasterReference16');
+			llenarComboBox(filter11,data, 'txtTransactionMasterReference16');
 		});
 		$('#txtTransactionMasterReference16').change(function() {
 			filter16 = $(this).val();
@@ -332,11 +331,13 @@
 		});
 
 		if (valorSeleccionado) {
+			$(".spinner-overlay-posme").show();
 			$.ajax({
 				url: var_url, 
 				type: 'GET',
 				data: data,
 				success: function(respuesta) {
+					$(".spinner-overlay-posme").hide();
 					$currentSelect.empty();
 					$currentSelect.append('<option value="">Seleccione una opción</option>');
 					respuesta.forEach(function(elemento) {
