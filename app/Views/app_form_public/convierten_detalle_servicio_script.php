@@ -3,7 +3,9 @@
 
 
 <script>
-	let var_url = 'https://posme.net/v4posme/convierten/public/app_public_catalog_api/getPublicCatalogDetailFilter';
+	//let var_url = 'https://posme.net/v4posme/convierten/public/app_public_catalog_api/getPublicCatalogDetailFilter';
+	let var_url = '<?php echo base_url(); ?>/app_public_catalog_api/getPublicCatalogDetailFilter';
+	
 	$(document).ready(function(){		
 		var filter1 = "";
 		var filter2 = "";
