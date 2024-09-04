@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use Exception;
-use PhpParser\Node\Stmt\TryCatch;
 
 class app_form_public extends _BaseController {
 	
@@ -24,6 +23,7 @@ class app_form_public extends _BaseController {
 		
 			
 			$datView=array();
+			$datView['title']= 'Formulario Publico';
 			$datView['result']=$this->request->getGet('valor');
 			//Obtener los Roles			
 			$datView["objEmployee"]  = $objComponent;
