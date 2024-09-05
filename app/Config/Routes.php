@@ -300,6 +300,8 @@ $routes->match(['get','post'],'app_box_outcash/viewPrinterDirect80mmShareRustikG
 $routes->match(['get','post'],'app_box_outcash/viewPrinterDirect80mmShareRustikGrill/(:any)','app_box_outcash::viewPrinterDirect80mmShareRustikGrill');
 $routes->match(['get','post'],'app_box_outcash/viewPrinterDirect80mmComidaChinaMijo','app_box_outcash::viewPrinterDirect80mmComidaChinaMijo');
 $routes->match(['get','post'],'app_box_outcash/viewPrinterDirect80mmComidaChinaMijo/(:any)','app_box_outcash::viewPrinterDirect80mmComidaChinaMijo');
+$routes->match(['get','post'],'app_box_outcash/viewRegisterFormatoA4Globalpro','app_box_outcash::viewRegisterFormatoA4Globalpro');
+$routes->match(['get','post'],'app_box_outcash/viewRegisterFormatoA4Globalpro/(:any)','app_box_outcash::viewRegisterFormatoA4Globalpro');
 $routes->match(['get','post'],'app_box_attendance/edit','app_box_attendance::edit');
 $routes->match(['get','post'],'app_box_attendance/edit/(:any)','app_box_attendance::edit');
 $routes->match(['get','post'],'app_box_attendance/delete','app_box_attendance::delete');

@@ -113,6 +113,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		/*GlobalPro*/
 		strtolower('globalpro_core_web_menu_O. SALIDAS')			 											=> "AJUSTE SALIDA",
 		strtolower('globalpro_core_web_menu_O. ENTRADAS')			 											=> "AJUSTE ENTRADA",
+		strtolower('globalpro_core_web_menu_CARTERA DE CREDITO')			 									=> "CLIENTES POR COBRAR",
 		strtolower('globalpro_app_inventory_item_label_price_PUBLICO')			 								=> "PRECIO OFERTA",
 		strtolower('globalpro_app_inventory_item_label_price_POR MAYOR')										=> "REGULAR",
 		strtolower('globalpro_app_inventory_item_label_price_CREDITO')			 								=> "POR MAYOR",

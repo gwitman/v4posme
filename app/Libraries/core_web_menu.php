@@ -376,12 +376,12 @@ class core_web_menu {
 		}		 
 		return $html;  
     }
-	function render_menu_body_report($data,$elementID){
+	function render_menu_body_report($company,$data,$elementID){
 		$html		= "";		
-		$html		= self::render_item_body_report($data,$elementID);
+		$html		= self::render_item_body_report($company,$data,$elementID);
 		return $html;
 	}
-	function render_item_body_report($data,$parent){
+	function render_item_body_report($company,$data,$parent){
 		$html	= "";	
 		$x		= "";	
 		if(!$data)
@@ -389,10 +389,10 @@ class core_web_menu {
 		
 		foreach($data AS $obj){
 			if($obj->parentMenuElementID == $parent){				
-				$x 					= self::render_item_body_report($data,$obj->menuElementID);		
+				$x 					= self::render_item_body_report($company,$data,$obj->menuElementID);		
 				$data_["icon"]		= $obj->icon;
-				$data_["address"]	= base_url()."/". str_replace(URL_SUFFIX_OLD,URL_SUFFIX_NEW,$obj->address);
-				$data_["display"]	= $obj->display;
+				$data_["address"]	= base_url()."/". str_replace(URL_SUFFIX_OLD,URL_SUFFIX_NEW,$obj->address);				
+				$data_["display"]	= getBehavio(strtoupper($company->type),"core_web_menu",$obj->display,"");
 				$data_["submenu"]	= $x;								
 				$template			= view("core_template/".$obj->template,$data_);								
 				$html				= $html . $template;

@@ -16,55 +16,80 @@
 		
 		
 		<?php
-		$configColumn["0"]["Titulo"] 		= "Gasto";		
-		$configColumn["1"]["Titulo"] 		= "Fecha";		
-		$configColumn["2"]["Titulo"] 		= "Monto";		
-		$configColumn["3"]["Titulo"] 		= "IVA";
-		$configColumn["4"]["Titulo"] 		= "Total";
-		$configColumn["5"]["Titulo"] 		= "Tipo";
-		$configColumn["6"]["Titulo"] 		= "Clasificación";
-		$configColumn["7"]["Titulo"] 		= "Categoria";
-		$configColumn["8"]["Titulo"] 		= "Nota";
-
-		$configColumn["0"]["FiledSouce"] 		= "transactionNumber";		
-		$configColumn["1"]["FiledSouce"] 		= "createdOn";		
-		$configColumn["2"]["FiledSouce"] 		= "amount";		
-		$configColumn["3"]["FiledSouce"] 		= "Iva";
-		$configColumn["4"]["FiledSouce"] 		= "Total";
-		$configColumn["5"]["FiledSouce"] 		= "Tipo";
-		$configColumn["6"]["FiledSouce"] 		= "Clasificacion";
-		$configColumn["7"]["FiledSouce"] 		= "Categoria";
-		$configColumn["8"]["FiledSouce"] 		= "note";
-
-		$configColumn["0"]["Formato"] 		= "";		
-		$configColumn["1"]["Formato"] 		= "Date";		
-		$configColumn["2"]["Formato"] 		= "Number";		
-		$configColumn["3"]["Formato"] 		= "Number";
-		$configColumn["4"]["Formato"] 		= "Number";
-		$configColumn["5"]["Formato"] 		= "";
-		$configColumn["6"]["Formato"] 		= "";
-		$configColumn["7"]["Formato"] 		= "";
-		$configColumn["8"]["Formato"] 		= "";
+		$configColumn["00"]["Titulo"] 		= "Gasto";		
+		$configColumn["01"]["Titulo"] 		= "Fecha";	
+		$configColumn["02"]["Titulo"] 		= "Ruc";		
+		$configColumn["03"]["Titulo"] 		= "Proveedor";		
+		$configColumn["04"]["Titulo"] 		= "Factura";		
+		$configColumn["05"]["Titulo"] 		= "Monto";		
+		$configColumn["06"]["Titulo"] 		= "IVA";
+		$configColumn["07"]["Titulo"] 		= "Total";
+		$configColumn["08"]["Titulo"] 		= "Tipo";
+		$configColumn["09"]["Titulo"] 		= "Codigo Reglon";
+		$configColumn["10"]["Titulo"] 		= "Clasificación";
+		$configColumn["11"]["Titulo"] 		= "Categoria";
+		$configColumn["12"]["Titulo"] 		= "Nota";
 		
-		$configColumn["0"]["Width"] 		= "80px";		
-		$configColumn["1"]["Width"] 		= "80px";		
-		$configColumn["2"]["Width"] 		= "120px";		
-		$configColumn["3"]["Width"] 		= "120px";
-		$configColumn["4"]["Width"] 		= "120px";
-		$configColumn["5"]["Width"] 		= "120px";
-		$configColumn["6"]["Width"] 		= "120px";
-		$configColumn["7"]["Width"] 		= "250px";
-		$configColumn["8"]["Width"] 		= "300px";
+
+		$configColumn["00"]["FiledSouce"] 		= "transactionNumber";		
+		$configColumn["01"]["FiledSouce"] 		= "createdOn";	
+		$configColumn["02"]["FiledSouce"] 		= "ruc";		
+		$configColumn["03"]["FiledSouce"] 		= "Proveedor";		
+		$configColumn["04"]["FiledSouce"] 		= "reference2";		
+		$configColumn["05"]["FiledSouce"] 		= "amount";		
+		$configColumn["06"]["FiledSouce"] 		= "Iva";
+		$configColumn["07"]["FiledSouce"] 		= "Total";
+		$configColumn["08"]["FiledSouce"] 		= "Tipo";
+		$configColumn["09"]["FiledSouce"] 		= "CodigoReglon";		
+		$configColumn["10"]["FiledSouce"] 		= "Clasificacion";
+		$configColumn["11"]["FiledSouce"] 		= "Categoria";
+		$configColumn["12"]["FiledSouce"] 		= "note";
 		
-		$configColumn["0"]["Total"] 		= False;		
-		$configColumn["1"]["Total"] 		= False;		
-		$configColumn["2"]["Total"] 		= True;		
-		$configColumn["3"]["Total"] 		= True;
-		$configColumn["4"]["Total"] 		= True;
-		$configColumn["5"]["Total"] 		= False;
-		$configColumn["6"]["Total"] 		= False;
-		$configColumn["7"]["Total"] 		= False;
-		$configColumn["8"]["Total"] 		= False;
+
+		$configColumn["00"]["Formato"] 		= "";		
+		$configColumn["01"]["Formato"] 		= "Date";	
+		$configColumn["02"]["Formato"] 		= "";		
+		$configColumn["03"]["Formato"] 		= "";		
+		$configColumn["04"]["Formato"] 		= "";		
+		$configColumn["05"]["Formato"] 		= "Number";		
+		$configColumn["06"]["Formato"] 		= "Number";
+		$configColumn["07"]["Formato"] 		= "Number";
+		$configColumn["08"]["Formato"] 		= "";
+		$configColumn["09"]["Formato"] 		= "";
+		$configColumn["10"]["Formato"] 		= "";
+		$configColumn["11"]["Formato"] 		= "";		
+		$configColumn["12"]["Formato"] 		= "";
+		
+		
+		$configColumn["00"]["Width"] 		= "80px";		
+		$configColumn["01"]["Width"] 		= "80px";	
+		$configColumn["02"]["Width"] 		= "60px";		
+		$configColumn["03"]["Width"] 		= "60px";		
+		$configColumn["04"]["Width"] 		= "60px";	
+		$configColumn["05"]["Width"] 		= "60px";		
+		$configColumn["06"]["Width"] 		= "60px";
+		$configColumn["07"]["Width"] 		= "60px";
+		$configColumn["08"]["Width"] 		= "60px";
+		$configColumn["09"]["Width"] 		= "60px";	
+		$configColumn["10"]["Width"] 		= "120px";
+		$configColumn["11"]["Width"] 		= "250px";
+		$configColumn["12"]["Width"] 		= "300px";
+		
+		
+		$configColumn["00"]["Total"] 		= False;		
+		$configColumn["01"]["Total"] 		= False;		
+		$configColumn["02"]["Total"] 		= False;
+		$configColumn["03"]["Total"] 		= False;
+		$configColumn["04"]["Total"] 		= True;		
+		$configColumn["05"]["Total"] 		= True;
+		$configColumn["06"]["Total"] 		= True;
+		$configColumn["07"]["Total"] 		= False;
+		$configColumn["08"]["Total"] 		= False;
+		$configColumn["09"]["Total"] 		= False;
+		$configColumn["10"]["Total"] 		= False;
+		$configColumn["11"]["Total"] 		= False;
+		$configColumn["12"]["Total"] 		= False;
+		               
 		
 		$resultado 	= helper_reporteGeneralCreateTable($objDetail,$configColumn,'0px',NULL,NULL);
 		?>

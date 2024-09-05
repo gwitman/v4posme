@@ -32,7 +32,7 @@ class app_cxc_report extends _BaseController {
 			
 			//Obtener la Lista de Reportes
 			$dataMenu["menuRenderBodyReport"] 	
-									= $this->core_web_menu->render_menu_body_report($dataSession["menuBodyReport"],$parentMenuElementID);
+									= $this->core_web_menu->render_menu_body_report($dataSession["company"],$dataSession["menuBodyReport"],$parentMenuElementID);
 									
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -546,6 +546,10 @@ class app_cxc_report extends _BaseController {
 			$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_customer_credit" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
 			$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
 			
+			
+			if($objCompany->type == "globalpro")
+			return view("app_cxc_report/customer_credit/view_a_disemp_globalpro",$objDataResult);//--finview-r
+			else
 			return view("app_cxc_report/customer_credit/view_a_disemp",$objDataResult);//--finview-r
 			
 		}
@@ -929,6 +933,7 @@ class app_cxc_report extends _BaseController {
 			$objDataResult["objLogo"] 					= $objParameter;
 			$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_customer_credit" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
 			$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
+			
 			
 			return view("app_cxc_report/customer_list/view_a_disemp",$objDataResult);//--finview-r
 			

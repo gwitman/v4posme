@@ -5762,6 +5762,212 @@ function helper_reporteA4mmTransactionMasterInputUnpostGlobalProOnlyQuantity(
     return $html;
 }
 
+function helper_reporteA4mmTransactionMasterOutputCashGlobalPro(
+    $titulo,
+    $objCompany,
+    $objParameterLogo,
+    $objTransactionMastser,
+    $objEntidadNatural,
+    $objEntidadCustomer,
+    $tipoCambio,
+    $objCurrency,
+    $objTransactionMasterInfo,    
+	$objDetail,
+    $objParameterTelefono, /*telefono*/
+	$objEmployerNatural , /*venedor*/
+	$objTelefonoEmployer , /*telefono cliente*/
+    $statusName = "", /*estado*/
+    $causalName = "", /*causal*/
+	$userNickName = "", /*vendedor*/
+    $rucCompany = "" /*ruc*/
+)
+{
+    $path    		= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
+    
+	$font_size1   	= "18px";
+	$border_left 	= "border-left: 1px solid black;";
+	$border_right 	= "border-right: 1px solid black;";
+	$border_top 	= "border-top: 1px solid black;";
+	$border_bottom 	= "border-bottom: 1px solid black;";
+	$border_radius	= "border-radius: 10px;";
+	$border_colapse = "border-collapse:separate;";
+	
+	
+	
+    $type    		= pathinfo($path, PATHINFO_EXTENSION);
+    $data    		= file_get_contents($path);
+    $base64  		= 'data:image/' . $type . ';base64,' . base64_encode($data);
+    $numberDocument = str_replace("ENC","SALIDA DE CAJA ", $objTransactionMastser->transactionNumber);
+	$tipoDocumento  = "SALIDA DE CAJA";
+	$clientName		= $userNickName;
+	$telefono  		= "";
+	
+    $html    = "";
+    $html    = "
+                    <!--
+                    Online HTML, CSS and JavaScript editor to run code online.
+                    https://www.programiz.com/html/online-compiler/
+                    -->
+                    <!DOCTYPE html>
+                    <html lang='en'>
+        
+                    <head>
+                      <meta charset='UTF-8' />
+                      <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+                      <style>
+						
+                        @page {       
+                          size: Legal;   
+						
+						  
+                          margin-top:25px;
+                          margin-left:25px;
+                          margin-right:20px;
+						  margin-bottom: 25px;
+						  
+						  
+						  padding-top: 0px;
+						  padding-right: 0px;
+						  padding-bottom: 0px;
+						  padding-left: 0px;
+						  
+                        }
+                        table{
+                          font-size: xx-small;
+                          font-family: sans-serif, monaco, monospace;						 
+						  border-collapse: collapse;
+                        }
+						td{
+                          font-size: xx-small;
+                          font-family: sans-serif, monaco, monospace;
+						  /*border: 1px solid black;*/
+						  border-collapse: collapse;
+                        }
+                      </style>
+                    </head>
+        
+                    <body>
+					";
+        
+		$f_html = 	  "
+                      <table style='width:98%'>
+                        <tr>
+						  <td  style='text-align:center;width:500px;text-align:left'>
+                            <img  src='".$base64."' width='300'  >
+                          </td>
+                          <td  style='text-align:center;'>
+									<table style='width:100%'>
+										<tr>
+										  <td  style='text-align:center;font-size:".$font_size1."; font-weight: bold;'>
+											". $numberDocument ."
+										  </td>
+										</tr>
+										
+										<tr>
+										  <td style='text-align:center'>
+											Carretera Masaya, Frente al colegio Teresiano 
+										  </td>
+										</tr>
+										<tr>
+										  <td style='text-align:center'>
+											Edificio Delta RUC: 888-080396-0001K
+										  </td>
+										</tr>
+										<tr>
+										  <td style='text-align:center'>
+											&nbsp;
+										  </td>
+										</tr>
+										<tr>
+										  <td style='text-align:center'>
+											AUT.DGI. No. ASFC 02/0009/02/2023/2
+										  </td>
+										</tr>
+									</table>
+                          </td>
+                        </tr>
+					</table>
+					
+						";
+    	   
+	
+		   
+	$f_html = $f_html."
+				<table style='width:98%' >
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+				</table>
+			";
+				
+	
+	$f_html = $f_html."
+				  <table style='width:98%;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom."' >
+						<tr>
+							<td  style='text-align:left;vertical-align:top;widht:auto;' >
+								<table style='width:100%;'>
+									<tr>
+										<td style='font-size:".$font_size1.";font-weight:bold;' >Comentario:</td>
+									</tr>
+									<tr>
+										<td style='height:60px;text-justify: auto;  '>". substr($objTransactionMastser->note,0,450) ."</td>
+									</tr>
+								</table>
+							</td>
+							<td style='width:200px;vertical-align:top;' >									
+								<table style='width:100%;'>
+									<tr>										
+										<td style='text-align:right;vertical-align: top;font-size:".$font_size1."; font-weight: bold;'>Totales:</td>								
+									</tr>
+									<tr>
+										<td>&nbsp;</td>										
+									</tr>
+									<tr>
+										<td>&nbsp;</td>										
+									</tr>
+									<tr>
+										<td>&nbsp;</td>										
+									</tr>																
+														
+								</table>
+								
+							</td>
+							<td  style='text-align:left;vertical-align:top;widht:100px;' >
+								<table style='width:100%;'>
+									<tr>										
+										<td style='width:70px'>----</td>
+										<td style='text-align:right;width:70px'>".$objCurrency->simbol." ".number_format ( round($objTransactionMastser->amount,2) , 2 , ".","," ) ."</td>
+									</tr>							
+								</table>
+							</td>
+							
+						</tr>
+						
+						
+				   </table>";
+				   
+				   
+	$f_html = $f_html."
+				<table style='width:98%' >
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+				</table>
+			";
+			
+			
+
+	
+	
+	$f_html_copia 		= $f_html;
+	$f_html_original 	= $f_html;
+	$f_html_credito		= $f_html;
+	
+	
+	$html 				= $html.$f_html."</body></html>";	    
+    return $html;
+}
+
 
 function helper_reporteA4mmTransactionMasterShareGlobalPro(
     $titulo,

@@ -910,7 +910,7 @@ WHERE
 
 /*--Retiro de efectivo*/
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_box_outcash/viewRegisterFormatoPaginaTicket" 
+	tb_company_parameter.value = "app_box_outcash/viewRegisterFormatoA4Globalpro" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "BOX_OUTCASH_URL_PRINTER";## url para retiro de efectivo
@@ -1236,7 +1236,7 @@ where
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "2024-08-01" 
+	tb_company_parameter.value = "2024-09-01" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_MONTH";	## Cantidad de mensajes mensuales

@@ -457,9 +457,9 @@ class Transaction_Master_Detail_Model extends Model  {
 				sum(
 					case 
 						when t.transactionID = 19 then 
-							t.amount
+							t.subAmount
 						else 
-							(t.amount * -1)
+							(t.subAmount * -1)
 					end 
 				) as monto 
 			from 
@@ -506,9 +506,9 @@ class Transaction_Master_Detail_Model extends Model  {
 				sum(
 					case
 						when t.transactionID = 19 then 
-							t.amount 
+							t.subAmount 
 						else 
-							(t.amount * -1)
+							(t.subAmount * -1)
 					end
 				) as monto 
 			from 
