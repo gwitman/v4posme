@@ -877,6 +877,10 @@ class core_web_printer_direct {
 		$cambio		= ($dataSetValores["objTransactionMasterInfo"]->receiptAmount - $dataSetValores["objTransactionMaster"]->amount);
 		$cambio 	= number_format(round($cambio,2),2,'.',',');
 		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\Sub Total: ".$dataSetValores["prefixCurrency"].$subtotal) ;
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nIva: ".$dataSetValores["prefixCurrency"].$iva) ;
+		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\nTotal: ".$dataSetValores["prefixCurrency"].$total) ;
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\nCambio: ".$dataSetValores["prefixCurrency"].$cambio);

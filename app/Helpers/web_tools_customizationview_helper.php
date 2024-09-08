@@ -850,6 +850,15 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 			});
 		</script>",
 		
+		/*Financiera Erick Corea*/		
+		strtolower('corea_core_web_menu_SIMULADOR')			 					=> "CALCULADORA",
+		strtolower('corea_core_web_menu_FACTURACION')			 				=> "PRESTAMOS",
+		strtolower('corea_core_web_menu_FACTURAR')			 					=> "PRESTAR",
+		strtolower('corea_core_web_menu_VENTAS')			 					=> "DESEMBOLSO",
+		strtolower('corea_core_web_menu_DETALLE DE VENTAS')			 			=> "DETALLE DE DESEMBOLSOS",
+		strtolower('corea_core_web_menu_RESUMEN DE VENTAS')			 			=> "RESUMEN DE DESEMBOLSOS",
+		
+		
 		
 		/*Cafe hotel Retorno*/		
 		strtolower('cafe_hotel_retorno_core_web_language_workflowstage_billing_REGISTRADA')			 						=> "GUARDAR MESA",
