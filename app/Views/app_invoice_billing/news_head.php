@@ -5,8 +5,8 @@
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jLinq-2.2.1.js"></script>
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jquery.number.min.js"></script>
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/decimal.js"></script>
-				
-				<style>					
+                <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.js"></script>
+                <style>
 					input:focus {
 						
 					  color:black;					  
