@@ -162,7 +162,13 @@
 		$configColumn["17"]["FiledSouce"] 					= "Forma de contacto";				
 		$configColumn["17"]["Formato"] 						= "";		
 		$configColumn["17"]["Width"] 						= "80px";	
-		$configColumn["17"]["Total"] 						= False;	
+		$configColumn["17"]["Total"] 						= False;
+
+		$configColumn["18"]["Titulo"] 						= "Email";				
+		$configColumn["18"]["FiledSouce"] 					= "Email";				
+		$configColumn["18"]["Formato"] 						= "";		
+		$configColumn["18"]["Width"] 						= "80px";	
+		$configColumn["18"]["Total"] 						= False;		
 		
 		
 		$resultado 	= helper_reporteGeneralCreateTable($objDetail,$configColumn,'0px',NULL,NULL);
