@@ -88,7 +88,11 @@
 	var objTransactionMasterItemSku 			= JSON.parse('<?php echo json_encode($objTransactionMasterItemSku); ?>');
 	var objTransactionMasterItem 				= JSON.parse('<?php echo json_encode($objTransactionMasterItem); ?>');	
 	var objRenderInit							= true;
-
+    var $grid = $('.custom-table-container-inventory .row').isotope({
+        itemSelector: '.item-producto',
+        layoutMode: 'fitRows',
+        filter: '.item-producto-back'
+    });
 	
 	if(varDetail != null){
 		for(var i = 0 ; i < varDetail.length;i++){
@@ -2469,12 +2473,6 @@
             $("#mySidebarFactura").css("width","100%");
 
             $(".custom-table-container-inventory").hide();
-
-            var $grid = $('.custom-table-container-inventory .row').isotope({
-                itemSelector: '.item-producto',
-                layoutMode: 'fitRows',
-                filter: '.item-producto-back'
-            });
 
             var zonaDefault = $("#txtZoneID").val();
 

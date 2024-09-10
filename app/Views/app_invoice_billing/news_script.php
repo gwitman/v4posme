@@ -53,6 +53,12 @@
 	var objCurrencyCordoba 			= JSON.parse('<?php echo json_encode($objCurrencyCordoba); ?>');	
 	var varCustomerCrediLineID		= 0;
 
+    var $grid = $('.custom-table-container-inventory .row').isotope({
+        itemSelector: '.item-producto',
+        layoutMode: 'fitRows',
+        filter: '.item-producto-back'
+    });
+
 	$(document).on("click",".btnPlus",function(){
 		
 		var quantity = $(this).parent().parent().parent().find(".txtQuantity").val();
@@ -2231,12 +2237,6 @@
             //codigo para cuando carga la pagina y mostrar la zona
             $("#mySidebarZona").css("width","100%");
             $(".custom-table-container-inventory").hide();
-
-            var $grid = $('.custom-table-container-inventory .row').isotope({
-                itemSelector: '.item-producto',
-                layoutMode: 'fitRows',
-                filter: '.item-producto-back'
-            });
 
             var zonaDefault = $("#txtZoneID").val();
 
