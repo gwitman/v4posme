@@ -1,30 +1,33 @@
 <style>
 
-  /* Estilo para ocultar la barra lateral */
-  .sidebar 
-  {
-    height: 100%;
-    width: 0;
-    position: fixed;
-    top: 0;
-    right: 0;
-    background-color: #fff;
-    overflow-x: hidden;
-    /*transition: 0.5s;*/
-    padding-top: 60px;
-  }
+	/* Estilo para ocultar la barra lateral */
+	.sidebar{
+		height: 100%;
+		width: 0;
+		position: fixed;
+		top: 0;
+		right: 0;
+		background-color: #fff;
+		overflow-x: hidden;
+		/*transition: 0.5s;*/
+		padding-top: 60px;
+	}
 
-  /* Estilo para el contenido de la barra lateral */
-  .sidebar-content 
-  {
-    padding: 20px;
-  }
+	/* Estilo para el contenido de la barra lateral */
+	.sidebar-content{
+		padding: 20px;
+	}
 
-</style>
+	/* DISEÑO DE TABLA AL PASAR EL MOUSE Y DAR CLIC EN UNA CELDA */
+	.container-overlay.selected{
+		border-color: #ff0000 !important;
+		border-width: 5px !important;
+	}
 
-
-<style>
-	.custom-table-zalones td {
+	.container-overlay.selected > .overlay{		
+		display: block;
+	}
+	.container-overlay {
 		border: 1px solid #dee2e6;
 		border-radius: 8px;
 		background-size: cover;
@@ -32,75 +35,35 @@
 		cursor: pointer;
 		height: 150px;
 		width: 150px;
-		position: relative;
-		
-	
-		
-		
+		position: relative;		
 	}
-	.custom-table-zalones td:hover {
-		border-color: #007bff;
-	}
-	.custom-table-zalones .overlay {
+	.container-overlay .overlay {
 		position: absolute;
 		top: 0;
-		bottom: 0;
 		left: 0;
-		right: 0;
+		width: 100%;
+		height: 100%;
 		background-color: rgba(0, 0, 0, 0.5);
-		color: white;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		opacity: 0;
-		transition: opacity 0.3s;
+		z-index: 1; 
+		display: none;
 	}
-	.custom-table-zalones td:hover .overlay {
-		opacity: 1;
-	}
-	.custom-table-zalones .selected {
-		border-color: #ff0000 !important;
-		border-width: 5px !important;
-	}
-</style>
-
-
-
-<style>
-	.custom-table-mesas td {
-		border: 1px solid #dee2e6;
-		border-radius: 8px;
-		background-size: cover;
-		background-position: center;
-		cursor: pointer;
-		height: 150px;
-		width: 150px;
+	.text-overlay {
 		position: relative;
+		z-index: 2;
+		font-size: 18px;
+		color: #fff;
+		top: 1%; 
+		left: 1%;
+		transform: translate(-1%, -1%);
 	}
-	.custom-table-mesas td:hover {
+
+	.container-overlay:hover {
 		border-color: #007bff;
 	}
-	.custom-table-mesas .overlay {
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		background-color: rgba(0, 0, 0, 0.5);
-		color: white;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		opacity: 0;
-		transition: opacity 0.3s;
+	.container-overlay:hover .overlay {
+		display: block;
 	}
-	.custom-table-mesas td:hover .overlay {
-		opacity: 1;
-	}
-	.custom-table-mesas .selected {
-		border-color: #ff0000 !important;
-		border-width: 5px !important;
-	}
+	/* FIN DISEÑO DE TABLA AL PASAR EL MOUSE Y DAR CLIC EN UNA CELDA */
 </style>
 
 
@@ -109,19 +72,26 @@
 		max-height: 400px; /* Ajusta la altura según sea necesario */
         overflow-y: auto;
 	}
-	
-	.custom-table-categorias td {
+    .text-overlay-categoria{
+        position: relative;
+        z-index: 2;
+        font-size: 18px;
+        color: #ffffff;
+		top: 1%; 
+		left: 1%;
+		transform: translate(-1%, -1%);
+    }
+	.custom-table-categorias .item-categoria {
 		border: 1px solid #dee2e6;
 		border-radius: 8px;
 		background-size: cover;
 		background-position: center;
 		cursor: pointer;
-		height: 150px;
-		width: 150px;
-		position: relative;
+		min-height: 150px;
 	}
-	.custom-table-categorias td:hover {
+	.custom-table-categorias .item-categoria:hover {
 		border-color: #007bff;
+        border-radius: 8px;
 	}
 	.custom-table-categorias .overlay {
 		position: absolute;
@@ -129,6 +99,7 @@
 		bottom: 0;
 		left: 0;
 		right: 0;
+        border-radius: 8px;
 		background-color: rgba(0, 0, 0, 0.5);
 		color: white;
 		display: flex;
@@ -137,42 +108,44 @@
 		/*opacity: 0;*/
 		transition: opacity 0.3s;
 	}
-	.custom-table-categorias td:hover .overlay {
+	.item-categoria:hover .overlay {
 		opacity: 1;
 	}
-	.custom-table-categorias .selected {
+	.item-categoria.selected {
 		border-color: #ff0000 !important;
 		border-width: 5px !important;
+        border-radius: 12px;
 	}
 </style>
 
 
 <style>
 	.custom-table-container-inventory  {
-		max-height: 400px; /* Ajusta la altura según sea necesario */
+        max-height: 550px;
         overflow-y: auto;
 	}
-	
-	
-	.custom-table-inventory td {
+
+	.item-producto {
 		border: 1px solid #dee2e6;
 		border-radius: 8px;
 		background-size: cover;
 		background-position: center;
 		cursor: pointer;
-		height: 150px;
-		width: 150px;
+		min-height: 150px;
+		min-width: 150px;
 		position: relative;
 	}
-	.custom-table-inventory td:hover {
+	.item-producto:hover {
 		border-color: #007bff;
+        border-radius: 8px;
 	}
-	.custom-table-inventory .overlay {
+    .item-producto .overlay {
 		position: absolute;
 		top: 0;
 		bottom: 0;
 		left: 0;
 		right: 0;
+        border-radius: 8px;
 		background-color: rgba(0, 0, 0, 0.5);
 		color: white;
 		display: flex;
@@ -181,12 +154,14 @@
 		/*opacity: 0;*/
 		transition: opacity 0.3s;
 	}
-	.custom-table-inventory td:hover .overlay {
+    .item-producto td:hover .overlay {
 		opacity: 1;
+        border-radius: 8px;
 	}
-	.custom-table-inventory .selected {
+    .item-producto.selected {
 		border-color: #ff0000 !important;
 		border-width: 5px !important;
+        border-radius: 12px;
 	}
 </style>
 
@@ -1032,10 +1007,10 @@
 								
 								<tr class="<?php echo getBehavio($company->type,"app_invoice_billing","rowOptionPaymentExtrasTarjeta",""); ?>" >
 									<th style="text-align:left">04) Tarjeta. Nac.</th>
-									<td style="">
+									<td>
 										<input type="text" id="txtReceiptAmountTarjeta" name="txtReceiptAmountTarjeta"   class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
-									<td style="">
+									<td>
 										<select name="txtReceiptAmountTarjeta_BankID" id="txtReceiptAmountTarjeta_BankID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
 												<?php
 												$count = 0;
@@ -1050,7 +1025,7 @@
 												?>
 										</select>
 									</td>
-									<td style="">
+									<td>
 										<input type="text" id="txtReceiptAmountTarjeta_Reference" name="txtReceiptAmountTarjeta_Reference"   class="col-lg-12" value="" />
 									</td>
 								</tr>
@@ -1209,65 +1184,68 @@
 				</div>
 				
 				<br/>
-				
+
 				<div class="mt-5 custom-table-container-categorias">
-					<table class="table custom-table-categorias">
-						<tbody>
-							<?php if ($objListInventoryCategoryRestaurant != NULL) : ?>
-								<?php foreach ($objListInventoryCategoryRestaurant as $index => $item): ?>
-									<?php if ($index % 6 == 0): ?>
-										<tr>
-									<?php endif; ?>
-									<td style="/*background-image: url('<?php echo $item->name; ?>');*/" onclick="fnSelectCellCategoryInventory(this)" data-value="<?php echo $item->inventoryCategoryID; ?>" data-parent="<?php echo $item->inventoryCategoryID; ?>" > 
-										<div class="overlay"> 
-											<span class="badge badge-success"  ><?php echo $item->name; ?></span>
-										</div>
-									</td>
-									<?php if ($index % 6 == 5): ?>
-										</tr>
-									<?php endif; ?>
-								<?php endforeach; ?>
-								<?php if (count($objListInventoryCategoryRestaurant) % 6 != 0): ?>
-									</tr>
-								<?php endif; ?>
-							<?php endif; ?>
-						</tbody>
-					</table>
+                    <div style="width: 98%; margin: 0 auto;">
+                        <div class="row custom-table-categorias">
+                            <?php
+                            if (isset($objListInventoryCategoryRestaurant)):
+                                foreach($objListInventoryCategoryRestaurant as $k=>$category):
+                                    ?>
+                                    <div class="col-md-2 item-categoria"
+                                         data-value="<?= $category->inventoryCategoryID ?>"
+                                         data-parent="<?= $category->inventoryCategoryID?>"
+                                         data-filter="[data-value='<?= $category->inventoryCategoryID ?>']"
+                                         style="background-image: url('<?= base_url().'/'.$category->name ?>');"
+                                         onclick="fnSelectCellCategoryInventory(this)">
+                                        <span class="badge badge-success text-overlay-categoria"><?= $category->name; ?></span>
+                                        <div class="overlay">
+                                        </div>
+                                    </div>
+                                <?php
+                                endforeach;
+                            endif;
+                            ?>
+                        </div>
+                    </div>
 				</div>
-				
+
 				<div class="mt-5 custom-table-container-inventory">
-					<table class="table custom-table-inventory">
-						<tbody>
-							<?php if ($objListInventoryItemsRestaurant != NULL) : ?>
-								<?php foreach ($objListInventoryItemsRestaurant as $index => $item): ?>
-									<?php if ($index % 5 == 0): ?>
-										<tr>
-									<?php endif; ?>
-									
-									<?php if ($index % 5 == 0): ?>
-									<td style="" onclick="fnSelectCellInventory(this)" ondblclick="fnSelectDoubleCellInventory(this)" data-value="<?php echo $item["inventoryCategoryID"]; ?>" data-parent="<?php echo $item["inventoryCategoryID"]; ?>" data-codigo="0" > 
-										<div class="overlay"> 
-											<span class="badge badge-success"  >REGRESAR</span>
-										</div>
-									</td>
-									<?php endif; ?>
-									
-									<td style="/*background-image: url('<?php echo $item["Nombre"]; ?>');*/" onclick="fnSelectCellInventory(this)" ondblclick="fnSelectDoubleCellInventory(this)" data-value="<?php echo $item["inventoryCategoryID"]; ?>" data-parent="<?php echo $item["inventoryCategoryID"]; ?>" data-codigo="<?php echo $item["Codigo"]; ?>" > 
-										<div class="overlay"> 
-											<span class="badge badge-success"  ><?php echo $item["Nombre"]; ?></span>
-										</div>
-									</td>
-									
-									<?php if ($index % 5 == 4): ?>
-										</tr>
-									<?php endif; ?>
-								<?php endforeach; ?>
-								<?php if (count($objListInventoryItemsRestaurant) % 5 != 0): ?>
-									</tr>
-								<?php endif; ?>
-							<?php endif; ?>
-						</tbody>
-					</table>
+                    <div style="width: 98%; margin: 0 auto;">
+                        <div class="row">
+                            <?php
+                            if (isset($objListInventoryItemsRestaurant)):
+                                foreach ($objListInventoryItemsRestaurant as $k=>$item):
+                            ?>
+                                    <?php
+                                if ($k== 0):
+                                    ?>
+                                    <div class="col-md-2 item-producto item-producto-back"
+                                         data-filter="*"
+                                         onclick="fnSelectCellInventoryBack(this)">
+                                        <span class="badge badge-success text-overlay-categoria">REGRESAR</span>
+                                        <div class="overlay">
+                                        </div>
+                                    </div>
+                                    <?php
+                                endif;
+                                    ?>
+                                <div class="col-md-2 item-producto"
+                                     onclick="fnSelectCellInventory(this)"
+                                     ondblclick="fnSelectDoubleCellInventory(this)"
+                                     data-value="<?= $item["inventoryCategoryID"]; ?>"
+                                     data-parent="<?= $item["inventoryCategoryID"]; ?>"
+                                     data-codigo="<?= $item["Codigo"]; ?>">
+                                    <span class="badge badge-success text-overlay-categoria"><?= $item['Nombre']; ?></span>
+                                    <div class="overlay">
+                                    </div>
+                                </div>
+                            <?php
+                                endforeach;
+                            endif;
+                            ?>
+                        </div>
+                    </div>
 				</div>
 				
 				
@@ -1281,7 +1259,6 @@
 			  <div class="sidebar-content"> 
 				<div id="siderbar_content_right_zona">
 				</div>
-				
 				<div class="row" id="divPanelFacturaSideZona" >			
 					<div class="container mt-5">
 						<table class="table custom-table-zalones">
@@ -1290,9 +1267,10 @@
 									<?php if ($index % 3 == 0): ?>
 										<tr>
 									<?php endif; ?>
-									<td style="background-image: url('<?php echo $item->reference1; ?>');" onclick="fnSelectCellZone(this)" data-value="<?php echo $item->catalogItemID; ?>"> 
-										<div class="overlay"> 
-											<span class="badge badge-success" ><?php echo $item->display; ?></span>
+									<td class="container-overlay" style="background-image: url('<?= base_url().'/resource/img/Zonas/'.$item->reference1 ?>'); background-size: auto; background-repeat: no-repeat;" 
+										ondblclick="fnSelectCellZone(this)" data-value="<?= $item->catalogItemID; ?>"> 
+										<span class="badge badge-success text-overlay" ><?= $item->display; ?></span>
+										<div class="overlay"> 											
 										</div>
 									</td>
 									<?php if ($index % 3 == 2): ?>
@@ -1327,26 +1305,44 @@
 				
 				<div class="row" id="divPanelFacturaSideMesa" >				
 					<div class="container mt-5">
-						<table class="table custom-table-mesas">
-							<tbody>
-								<?php foreach ($objListMesa as $index => $item): ?>
-									<?php if ($index % 3 == 0): ?>
-										<tr>
-									<?php endif; ?>
-									<td style="background-image: url('<?php echo $item->reference1; ?>');" onclick="fnSelectCellMesa(this)" data-value="<?php echo $item->catalogItemID; ?>" data-parent="<?php echo $item->parentCatalogItemID; ?>" > 
-										<div class="overlay"> 
-											<span class="badge badge-success" ><?php echo $item->display; ?></span>
-										</div>
-									</td>
-									<?php if ($index % 3 == 2): ?>
-										</tr>
-									<?php endif; ?>
-								<?php endforeach; ?>
-								<?php if (count($objListMesa) % 3 != 0): ?>
+					<table class="table custom-table-mesas">
+						<tbody>
+							<?php foreach ($objListMesa as $index => $item): ?>
+								<!-- Abrir una nueva fila si el índice es múltiplo de 3 -->
+								<?php if ($index % 3 == 0): ?>
+									<tr>
+								<?php endif; ?>
+
+								<!-- Crear la celda con contenido dinámico -->
+								<td class="container-overlay" 
+									style="background-image: url('<?= base_url().'/resource/img/Mesas/'. $item->reference1; ?>'); background-size: auto; background-repeat: no-repeat;" 
+									ondblclick="fnSelectCellMesaDoubleClick(this,<?= $item->reference2 ?>)"
+									onclick="fnSelectCellMesa(this)" 
+									data-value="<?= $item->catalogItemID; ?>"
+									data-parent="<?php echo $item->parentCatalogItemID; ?>" >
+									<span class="badge badge-success text-overlay"><?php echo $item->display; ?></span>
+									<div class="overlay"></div>
+								</td>
+
+								<!-- Cerrar la fila después de cada grupo de 3 celdas -->
+								<?php if ($index % 3 == 2): ?>
 									</tr>
 								<?php endif; ?>
-							</tbody>
-						</table>
+							<?php endforeach; ?>
+
+							<!-- Si la última fila no se cerró porque no tenía 3 celdas, rellenar con celdas vacías -->
+							<?php if (count($objListMesa) % 3 != 0): ?>
+								<?php 
+									$remainingCells = 3 - (count($objListMesa) % 3); // Calcular cuántas celdas faltan
+									for ($i = 0; $i < $remainingCells; $i++): ?>
+										<td></td> <!-- Celdas vacías para completar la fila -->
+								<?php endfor; ?>
+								</tr>
+							<?php endif; ?>
+						</tbody>
+					</table>
+
+
 					</div>
 				</div>
 				
@@ -1354,9 +1350,12 @@
 				
 				
 				<div class="row" id="divPanelFacturaMesa" >
-					<div class="col col-lg-12">
-						<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackMesa"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
+					<div class="col-md-6">
+						<a href="#" class="btn btn-flat btn-warning btn-block" id="btnRollbackZonas"><i class="icon16 i-arrow-left "></i> Zonas</a>
 					</div>	
+					<div class="col-md-6">
+						<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackMesa"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
+					</div>
 				</div>
 			  </div>
 			</div>
@@ -1368,7 +1367,10 @@
 			</form>
 			<!-- /body -->
 			
-			
+			<div id="modalDialogMesaBussy" title="Mesa con factura" class="dialog hidden">
+				<p>La mesa seleccionada tiene factura registrada, ¿Desea agregar productos a la mesa?</p>
+			</div>
+
 			<div id="modalDialogBackList" title="Regresar a la lista" class="dialog">
 				<p>Seguro que desea regresa a la lista</p>
 			</div>

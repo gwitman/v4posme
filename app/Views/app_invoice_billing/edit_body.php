@@ -19,49 +19,16 @@
   {
     padding: 20px;
   }
+  /* DISEÑO DE TABLA AL PASAR EL MOUSE Y DAR CLIC EN UNA CELDA */
+	.container-overlay.selected{
+		border-color: #ff0000 !important;
+		border-width: 5px !important;
+	}
 
-</style>
-
-<style>
-.custom-table-zalones td {
-	border: 1px solid #dee2e6;
-	border-radius: 8px;
-	background-size: cover;
-	background-position: center;
-	cursor: pointer;
-	height: 150px;
-	width: 150px;
-	position: relative;
-}
-.custom-table-zalones td:hover {
-	border-color: #007bff;
-}
-.custom-table-zalones .overlay {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	background-color: rgba(0, 0, 0, 0.5);
-	color: white;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	opacity: 0;
-	transition: opacity 0.3s;
-}
-.custom-table-zalones td:hover .overlay {
-	opacity: 1;
-}
-.custom-table-zalones .selected {
-	border-color: #ff0000 !important;
-	border-width: 5px !important;
-}
-</style>
-
-
-<style>
-	.custom-table-mesas td {
+	.container-overlay.selected > .overlay{		
+		display: block;
+	}
+	.container-overlay {
 		border: 1px solid #dee2e6;
 		border-radius: 8px;
 		background-size: cover;
@@ -69,35 +36,36 @@
 		cursor: pointer;
 		height: 150px;
 		width: 150px;
-		position: relative;
+		position: relative;		
 	}
-	.custom-table-mesas td:hover {
-		border-color: #007bff;
-	}
-	.custom-table-mesas .overlay {
+	.container-overlay .overlay {
 		position: absolute;
 		top: 0;
-		bottom: 0;
 		left: 0;
-		right: 0;
+		width: 100%;
+		height: 100%;
 		background-color: rgba(0, 0, 0, 0.5);
-		color: white;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		opacity: 0;
-		transition: opacity 0.3s;
+		z-index: 1; 
+		display: none;
 	}
-	.custom-table-mesas td:hover .overlay {
-		opacity: 1;
+	.text-overlay {
+		position: relative;
+		z-index: 2;
+		font-size: 18px;
+		color: #fff;
+		top: 1%; 
+		left: 1%;
+		transform: translate(-1%, -1%);
 	}
-	.custom-table-mesas .selected {
-		border-color: #ff0000 !important;
-		border-width: 5px !important;
+
+	.container-overlay:hover {
+		border-color: #007bff;
 	}
+	.container-overlay:hover .overlay {
+		display: block;
+	}
+	/* FIN DISEÑO DE TABLA AL PASAR EL MOUSE Y DAR CLIC EN UNA CELDA */
 </style>
-
-
 
 
 <style>
@@ -105,89 +73,98 @@
 		max-height: 400px; /* Ajusta la altura según sea necesario */
         overflow-y: auto;
 	}
-	
-	
-	.custom-table-categorias td {
-		border: 1px solid #dee2e6;
-		border-radius: 8px;
-		background-size: cover;
-		background-position: center;
-		cursor: pointer;
-		height: 150px;
-		width: 150px;
-		position: relative;
-	}
-	.custom-table-categorias td:hover {
-		border-color: #007bff;
-	}
-	.custom-table-categorias .overlay {
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		background-color: rgba(0, 0, 0, 0.5);
-		color: white;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		/*opacity: 0;*/
-		transition: opacity 0.3s;
-	}
-	.custom-table-categorias td:hover .overlay {
-		opacity: 1;
-	}
-	.custom-table-categorias .selected {
-		border-color: #ff0000 !important;
-		border-width: 5px !important;
-	}
+    .text-overlay-categoria{
+        position: relative;
+        z-index: 2;
+        font-size: 18px;
+        color: #ffffff;
+		top: 1%; 
+		left: 1%;
+		transform: translate(-1%, -1%);
+    }
+    .custom-table-categorias .item-categoria {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        background-size: cover;
+        background-position: center;
+        cursor: pointer;
+        min-height: 150px;
+    }
+    .custom-table-categorias .item-categoria:hover {
+        border-color: #007bff;
+        border-radius: 8px;
+    }
+    .custom-table-categorias .overlay {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-radius: 8px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /*opacity: 0;*/
+        transition: opacity 0.3s;
+    }
+    .item-categoria:hover .overlay {
+        opacity: 1;
+    }
+    .item-categoria.selected {
+        border-color: #ff0000 !important;
+        border-width: 5px !important;
+        border-radius: 12px;
+    }
 </style>
-
 
 
 <style>
-	.custom-table-container-inventory  {
-		max-height: 400px; /* Ajusta la altura según sea necesario */
+    .custom-table-container-inventory  {
+        max-height: 550px;
         overflow-y: auto;
-	}
-	
-	
-	.custom-table-inventory td {
-		border: 1px solid #dee2e6;
-		border-radius: 8px;
-		background-size: cover;
-		background-position: center;
-		cursor: pointer;
-		height: 150px;
-		width: 150px;
-		position: relative;
-	}
-	.custom-table-inventory td:hover {
-		border-color: #007bff;
-	}
-	.custom-table-inventory .overlay {
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		background-color: rgba(0, 0, 0, 0.5);
-		color: white;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		/*opacity: 0;*/
-		transition: opacity 0.3s;
-	}
-	.custom-table-inventory td:hover .overlay {
-		opacity: 1;
-	}
-	.custom-table-inventory .selected {
-		border-color: #ff0000 !important;
-		border-width: 5px !important;
-	}
-</style>
+    }
 
+    .item-producto {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        background-size: cover;
+        background-position: center;
+        cursor: pointer;
+        min-height: 150px;
+        min-width: 150px;
+        position: relative;
+    }
+    .item-producto:hover {
+        border-color: #007bff;
+        border-radius: 8px;
+    }
+    .item-producto .overlay {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-radius: 8px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /*opacity: 0;*/
+        transition: opacity 0.3s;
+    }
+    .item-producto td:hover .overlay {
+        opacity: 1;
+        border-radius: 8px;
+    }
+    .item-producto.selected {
+        border-color: #ff0000 !important;
+        border-width: 5px !important;
+        border-radius: 12px;
+    }
+</style>
 
 
 
@@ -1253,65 +1230,69 @@
 						<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackFactura"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
 					</div>	
 				</div>
-					
-				<div class="mt-5 custom-table-container-categorias">
-					<table class="table custom-table-categorias">
-						<tbody>
-							<?php if ($objListInventoryCategoryRestaurant != NULL) : ?>
-								<?php foreach ($objListInventoryCategoryRestaurant as $index => $item): ?>
-									<?php if ($index % 6 == 0): ?>
-										<tr>
-									<?php endif; ?>
-									<td style="/*background-image: url('<?php echo $item->name; ?>');*/" onclick="fnSelectCellCategoryInventory(this)" data-value="<?php echo $item->inventoryCategoryID; ?>" data-parent="<?php echo $item->inventoryCategoryID; ?>" > 
-										<div class="overlay"> 
-											<span class="badge badge-success"  ><?php echo $item->name; ?></span>
-										</div>
-									</td>
-									<?php if ($index % 6 == 5): ?>
-										</tr>
-									<?php endif; ?>
-								<?php endforeach; ?>
-								<?php if (count($objListInventoryCategoryRestaurant) % 6 != 0): ?>
-									</tr>
-								<?php endif; ?>
-							<?php endif; ?>
-						</tbody>
-					</table>
-				</div>
-				
-				<div class="mt-5 custom-table-container-inventory">
-					<table class="table custom-table-inventory">
-						<tbody>
-							<?php if ($objListInventoryItemsRestaurant != NULL) : ?>
-								<?php foreach ($objListInventoryItemsRestaurant as $index => $item): ?>
-									<?php if ($index % 5 == 0): ?>
-										<tr>
-									<?php endif; ?>
-									
-									<?php if ($index % 5 == 0): ?>
-									<td style="" onclick="fnSelectCellInventory(this)" ondblclick="fnSelectDoubleCellInventory(this)" data-value="<?php echo $item["inventoryCategoryID"]; ?>" data-parent="<?php echo $item["inventoryCategoryID"]; ?>" data-codigo="0" > 
-										<div class="overlay"> 
-											<span class="badge badge-success"  >REGRESAR</span>
-										</div>
-									</td>
-									<?php endif; ?>
-									
-									<td style="/*background-image: url('<?php echo $item["Nombre"]; ?>');*/" onclick="fnSelectCellInventory(this)" ondblclick="fnSelectDoubleCellInventory(this)" data-value="<?php echo $item["inventoryCategoryID"]; ?>" data-parent="<?php echo $item["inventoryCategoryID"]; ?>"  data-codigo="<?php echo $item["Codigo"]; ?>"  > 
-										<div class="overlay"> 
-											<span class="badge badge-success"  ><?php echo $item["Nombre"]; ?></span>
-										</div>
-									</td>
-									<?php if ($index % 5 == 4): ?>
-										</tr>
-									<?php endif; ?>
-								<?php endforeach; ?>
-								<?php if (count($objListInventoryItemsRestaurant) % 5 != 0): ?>
-									</tr>
-								<?php endif; ?>
-							<?php endif; ?>
-						</tbody>
-					</table>
-				</div>
+
+                  <div class="mt-5 custom-table-container-categorias">
+                      <div style="width: 98%; margin: 0 auto;">
+                          <div class="row custom-table-categorias">
+                              <?php
+                              if (isset($objListInventoryCategoryRestaurant)):
+                                  foreach($objListInventoryCategoryRestaurant as $k=>$category):
+                                      ?>
+                                      <div class="col-md-2 item-categoria"
+                                           data-value="<?= $category->inventoryCategoryID ?>"
+                                           data-parent="<?= $category->inventoryCategoryID?>"
+                                           data-filter="[data-value='<?= $category->inventoryCategoryID ?>']"
+                                           style="background-image: url('<?= base_url().'/'.$category->name ?>');"
+                                           onclick="fnSelectCellCategoryInventory(this)">
+                                          <span class="badge badge-success text-overlay-categoria"><?= $category->name; ?></span>
+                                          <div class="overlay">
+                                          </div>
+                                      </div>
+                                  <?php
+                                  endforeach;
+                              endif;
+                              ?>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="mt-5 custom-table-container-inventory">
+                      <div style="width: 98%; margin: 0 auto;">
+                          <div class="row">
+                              <?php
+                              if (isset($objListInventoryItemsRestaurant)):
+                                  foreach ($objListInventoryItemsRestaurant as $k=>$item):
+                                      ?>
+                                      <?php
+                                      if ($k== 0):
+                                          ?>
+                                          <div class="col-md-2 item-producto item-producto-back"
+                                               data-filter="*"
+                                               onclick="fnSelectCellInventoryBack(this)">
+                                              <span class="badge badge-success text-overlay-categoria">REGRESAR</span>
+                                              <div class="overlay">
+                                              </div>
+                                          </div>
+                                      <?php
+                                      endif;
+                                      ?>
+                                      <div class="col-md-2 item-producto"
+                                           onclick="fnSelectCellInventory(this)"
+                                           ondblclick="fnSelectDoubleCellInventory(this)"
+                                           data-value="<?= $item["inventoryCategoryID"]; ?>"
+                                           data-parent="<?= $item["inventoryCategoryID"]; ?>"
+                                           data-codigo="<?= $item["Codigo"]; ?>">
+                                          <span class="badge badge-success text-overlay-categoria"><?= $item['Nombre']; ?></span>
+                                          <div class="overlay">
+                                          </div>
+                                      </div>
+                                  <?php
+                                  endforeach;
+                              endif;
+                              ?>
+                          </div>
+                      </div>
+                  </div>
 				
 				
 			  </div>
@@ -1332,9 +1313,10 @@
 									<?php if ($index % 3 == 0): ?>
 										<tr>
 									<?php endif; ?>
-									<td style="background-image: url('<?php echo $item->reference1; ?>');" onclick="fnSelectCellZone(this)" data-value="<?php echo $item->catalogItemID; ?>"> 
-										<div class="overlay"> 
-											<span class="badge badge-success"  ><?php echo $item->display; ?></span>
+									<td class="container-overlay" style="background-image: url('<?= base_url().'/resource/img/Zonas/'.$item->reference1 ?>'); background-size: auto; background-repeat: no-repeat;" 
+										ondblclick="fnSelectCellZone(this)" data-value="<?= $item->catalogItemID; ?>">
+										<span class="badge badge-success text-overlay"  ><?= $item->display; ?></span>
+										<div class="overlay">
 										</div>
 									</td>
 									<?php if ($index % 3 == 2): ?>
@@ -1375,9 +1357,10 @@
 									<?php if ($index % 3 == 0): ?>
 										<tr>
 									<?php endif; ?>
-									<td style="background-image: url('<?php echo $item->reference1; ?>');" onclick="fnSelectCellMesa(this)" data-value="<?php echo $item->catalogItemID; ?>" data-parent="<?php echo $item->parentCatalogItemID; ?>" > 
-										<div class="overlay"> 
-											<span class="badge badge-success"  ><?php echo $item->display; ?></span>
+									<td class="container-overlay" style="background-image: url('<?= base_url().'/resource/img/Mesas/'. $item->reference1; ?>'); background-size: auto; background-repeat: no-repeat;" 
+										ondblclick="fnSelectCellMesaDoubleClick(this,<?= $item->reference2 ?>)" onclick="fnSelectCellMesa(this)" data-value="<?= $item->catalogItemID; ?>" data-parent="<?= $item->parentCatalogItemID; ?>">
+										<span class="badge badge-success text-overlay"  ><?= $item->display; ?></span>
+										<div class="overlay">
 										</div>
 									</td>
 									<?php if ($index % 3 == 2): ?>
@@ -1396,9 +1379,12 @@
 				
 				
 				<div class="row" id="divPanelFacturaMesa" >
-					<div class="col col-lg-12">
-						<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackMesa"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
+					<div class="col-md-6">
+						<a href="#" class="btn btn-flat btn-warning btn-block" id="btnRollbackZonas"><i class="icon16 i-arrow-left "></i> Zonas</a>
 					</div>	
+					<div class="col-md-6">
+						<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackMesa"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
+					</div>
 				</div>
 			  </div>
 			</div>
@@ -1409,6 +1395,10 @@
 			</form>
 			<!-- /body -->
 			
+			<div id="modalDialogMesaBussy" title="Mesa con factura" class="dialog hidden">
+				<p>La mesa seleccionada tiene factura registrada, ¿Desea agregar productos a la mesa?</p>
+			</div>
+
 			<div id="modalDialogOpenPrimter" title="Formato de Impresion" class="dialog hidden">
 				<p>Seleccione el formato que desea imprimir la factura</p>
 			</div>
