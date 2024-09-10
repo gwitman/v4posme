@@ -75,7 +75,26 @@ class app_invoice_billing extends _BaseController {
 			if(!$objListPrice)
 			throw new \Exception("NO EXISTE UNA LISTA DE PRECIO PARA SER APLICADA");			
 			
+			/** ZONAS O SALONES */
+			$objPublicCatalogIdZonas					= 0;
+			$objPubliCatalogZonasConfig 				= $this->Public_Catalog_Model->asObject()
+															->where("systemName","tb_transaction_master_billing.zone_x_meseros")
+															->where("isActive",1)
+															->where("flavorID",$dataSession["company"]->flavorID)
+															->find();
 			
+			if($codigoMesero != "none" && !$objPubliCatalogZonasConfig )
+			{
+				throw new \Exception("CONFIGURAR EL CATALOGO DE ZONAS tb_transaction_master_billing.zone_x_meseros");
+			}
+			
+			$objPublicCatalogIdZonas					= $codigoMesero == "none" ? 0 : $objPubliCatalogZonasConfig[0]->publicCatalogID;
+			$objPubliCatalogDetailZonasConfiguradas		= $this->Public_Catalog_Detail_Model->asObject()
+																->where("publicCatalogID",$objPublicCatalogIdZonas)
+																->where( "isActive",1)	
+																->where( "name",$codigoMesero)
+																->findAll();
+			/** MESAS O UBICACIONES DE ZONAS */
 			$objPublicCatalogId							= 0;
 			$objPubliCatalogMesasConfig 				= $this->Public_Catalog_Model->asObject()
 																	->where("systemName","tb_transaction_master_billing.mesas_x_meseros")
@@ -106,7 +125,7 @@ class app_invoice_billing extends _BaseController {
 			
 			$parameterValue 							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BUTTOM_PRINTER_FIDLOCAL_PAYMENT_AND_AMORTIZACION");
 			$dataView["objParameterInvoiceButtomPrinterFidLocalPaymentAndAmortization"] = $parameterValue->value;
-			
+			$objParameterRestaurant 									= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_IS_RESTAURANT")->value;
 			
 			$objParameterDirect 										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT")->value;
 			$objParameterInvoiceBillingQuantityZero						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_QUANTITY_ZERO");
@@ -208,9 +227,28 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objListTypePrice"]		= $this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID);
 			$dataView["objListZone"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_info_billing","zoneID",$companyID);
 			$dataView["objListMesa"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_info_billing","mesaID",$companyID);			
+			$dataView['transactionID']			= $transactionID;
+			$dataView['objParameterRestaurant']	= $objParameterRestaurant;
+			if($objParameterRestaurant=='true'){
+				$catalogItemIdZonas							= array_column($dataView["objListZone"],'catalogItemID');
+				$dataView['objListZone']					= $this->Transaction_Master_Model->get_ZonasByCatalogItemID($catalogItemIdZonas);
+				$catalogItemIdMesas							= array_column($dataView["objListMesa"],'catalogItemID');
+				$dataView['objListMesa']					= $this->Transaction_Master_Model->get_MesasByCatalogItemID($catalogItemIdMesas);
+			}
+			/** FILTRAR LAS ZONAS O SALONES DONDEL MESERO TIENE PERMISO */
+			$listZonasByMesero = array_map(function($item) {
+				return $item->display;
+			}, $objPubliCatalogDetailZonasConfiguradas);
+
 			
-			
-			
+			$listZonaFiltradas = array_filter($dataView["objListZone"] , function($item) use ($listZonasByMesero) {
+				return in_array($item->name, $listZonasByMesero);
+			});
+
+			$dataView["objListZone"] = $codigoMesero == "none" ? $dataView["objListZone"]  : $listZonaFiltradas;
+			if(!$dataView["objListZone"])
+			throw new \Exception("NO ES POSIBLE CONTINUAR, CONFIGURAR CATALOGO ZONAS");	
+
 			//Filtrar la lista de mesas que el mesero tiene permiso
 			$listMesasByMesero = array_map(function($item) {
 				return $item->display;
@@ -223,7 +261,7 @@ class app_invoice_billing extends _BaseController {
 
 			$dataView["objListMesa"] = $codigoMesero == "none" ? $dataView["objListMesa"]  : $listMesaFiltradas;
 			if(!$dataView["objListMesa"])
-			throw new \Exception("NO ES POSIBLE CONTINUAR CONFIGURAR CATALOGO MESS");
+			throw new \Exception("NO ES POSIBLE CONTINUAR, CONFIGURAR CATALOGO MESAS");
 		
 			$mesaID = $dataView["objTransactionMasterInfo"]->mesaID;
 			
@@ -231,7 +269,7 @@ class app_invoice_billing extends _BaseController {
 				return $item->catalogItemID == $mesaID;
 			});
 			if(!$listMesaFiltradas)
-			throw new \Exception("NO TIENE ACCESO AL CATALOGO MESS");	
+			throw new \Exception("NO TIENE ACCESO A LA MESA SELECCIONADA");	
 			
 			
 			$dataView["objListPay"]				= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","periodPay",$companyID);
@@ -3093,6 +3131,7 @@ class app_invoice_billing extends _BaseController {
 			$objParameterAmortizationDuranteFactura	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE");
 			$objParameterAmortizationDuranteFactura	= $objParameterAmortizationDuranteFactura->value;
 			$objParameterDirect 					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT")->value;
+			$objParameterRestaurant 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_IS_RESTAURANT")->value;
 			
 			$objParameterAlturaDelModalDeSeleccionProducto	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_ALTO_MODAL_DE_SELECCION_DE_PRODUCTO_AL_FACTURAR");
 			$objParameterAlturaDelModalDeSeleccionProducto	= $objParameterAlturaDelModalDeSeleccionProducto->value;			
@@ -3109,7 +3148,27 @@ class app_invoice_billing extends _BaseController {
 				$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_billing","statusID",$companyID,$branchID,$roleID);
 			}
 			
-			//Obtener Lista de mesas configuradas							
+			/** ZONAS O SALONES */
+			$objPublicCatalogIdZonas					= 0;
+			$objPubliCatalogZonasConfig 				= $this->Public_Catalog_Model->asObject()
+															->where("systemName","tb_transaction_master_billing.zone_x_meseros")
+															->where("isActive",1)
+															->where("flavorID",$dataSession["company"]->flavorID)
+															->find();
+			
+			if($codigoMesero != "none" && !$objPubliCatalogZonasConfig )
+			{
+				throw new \Exception("CONFIGURAR EL CATALOGO DE ZONAS tb_transaction_master_billing.zone_x_meseros");
+			}
+			
+			$objPublicCatalogIdZonas					= $codigoMesero == "none" ? 0 : $objPubliCatalogZonasConfig[0]->publicCatalogID;
+			$objPubliCatalogDetailZonasConfiguradas		= $this->Public_Catalog_Detail_Model->asObject()
+																->where("publicCatalogID",$objPublicCatalogIdZonas)
+																->where( "isActive",1)	
+																->where( "name",$codigoMesero)
+																->findAll();
+
+			/** MESAS O UBICACIONES DE ZONAS */							
 			$objPublicCatalogId							= 0;
 			$objPubliCatalogMesasConfig 				= $this->Public_Catalog_Model->asObject()
 																	->where("systemName","tb_transaction_master_billing.mesas_x_meseros")
@@ -3157,10 +3216,31 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objListWarehouse"]					= $this->Userwarehouse_Model->getRowByUserIDAndFacturable($companyID,$userID);			
 			$dataView["objCustomerDefault"]					= $this->Customer_Model->get_rowByCode($companyID,$customerDefault->value);
 			$dataView["objListTypePrice"]					= $this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID);
-			$dataView["objListZone"]						= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_info_billing","zoneID",$companyID);			
-			$dataView["objListMesa"]						= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_info_billing","mesaID",$companyID);			
+			$dataView["objListZone"]						= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_info_billing","zoneID",$companyID);
+			$dataView["objListMesa"]						= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_info_billing","mesaID",$companyID);
+			$dataView['transactionID']						= $transactionID;
+			$dataView['objParameterRestaurant']				= $objParameterRestaurant;
+			if($objParameterRestaurant=='true'){
+				$catalogItemIdZonas							= array_column($dataView["objListZone"],'catalogItemID');
+				$dataView['objListZone']					= $this->Transaction_Master_Model->get_ZonasByCatalogItemID($catalogItemIdZonas);
+				$catalogItemIdMesas							= array_column($dataView["objListMesa"],'catalogItemID');
+				$dataView['objListMesa']					= $this->Transaction_Master_Model->get_MesasByCatalogItemID($catalogItemIdMesas);
+			}
 			
+			/** FILTRAR LAS ZONAS O SALONES DONDEL MESERO TIENE PERMISO */
+			$listZonasByMesero = array_map(function($item) {
+				return $item->display;
+			}, $objPubliCatalogDetailZonasConfiguradas);
+
 			
+			$listZonaFiltradas = array_filter($dataView["objListZone"] , function($item) use ($listZonasByMesero) {
+				return in_array($item->name, $listZonasByMesero);
+			});
+
+			$dataView["objListZone"] = $codigoMesero == "none" ? $dataView["objListZone"]  : $listZonaFiltradas;
+			if(!$dataView["objListZone"])
+			throw new \Exception("NO ES POSIBLE CONTINUAR, CONFIGURAR CATALOGO ZONAS");	
+
 			//Filtrar la lista de mesas que el mesero tiene permiso
 			$listMesasByMesero = array_map(function($item) {
 				return $item->display;
@@ -3173,7 +3253,7 @@ class app_invoice_billing extends _BaseController {
 
 			$dataView["objListMesa"] = $codigoMesero == "none" ? $dataView["objListMesa"]  : $listMesaFiltradas;
 			if(!$dataView["objListMesa"])
-			throw new \Exception("NO ES POSIBLE CONTINUAR CONFIGURAR CATALOGO MESS");
+			throw new \Exception("NO ES POSIBLE CONTINUAR CONFIGURAR CATALOGO MESAS");
 			
 			$dataView["codigoMesero"]						= $codigoMesero;
 			$dataView["objListPay"]							= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","periodPay",$companyID);
