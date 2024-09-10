@@ -1196,7 +1196,7 @@
                                          data-value="<?= $category->inventoryCategoryID ?>"
                                          data-parent="<?= $category->inventoryCategoryID?>"
                                          data-filter="[data-value='<?= $category->inventoryCategoryID ?>']"
-                                         style="background-image: url('<?= base_url().'/'.$category->name ?>');"
+                                         style="background-image: url('<?= $category->description ?>');"
                                          onclick="fnSelectCellCategoryInventory(this)">
                                         <span class="badge badge-success text-overlay-categoria"><?= $category->name; ?></span>
                                         <div class="overlay">
@@ -1222,7 +1222,7 @@
                                     ?>
                                     <div class="col-md-2 item-producto item-producto-back"
                                          data-filter="*"
-                                         onclick="fnSelectCellInventoryBack(this)">
+                                         onclick="fnSelectCellInventoryBack(this)" >
                                         <span class="badge badge-success text-overlay-categoria">REGRESAR</span>
                                         <div class="overlay">
                                         </div>
@@ -1235,7 +1235,8 @@
                                      ondblclick="fnSelectDoubleCellInventory(this)"
                                      data-value="<?= $item["inventoryCategoryID"]; ?>"
                                      data-parent="<?= $item["inventoryCategoryID"]; ?>"
-                                     data-codigo="<?= $item["Codigo"]; ?>">
+                                     data-codigo="<?= $item["Codigo"]; ?>"
+								>
                                     <span class="badge badge-success text-overlay-categoria"><?= $item['Nombre']; ?></span>
                                     <div class="overlay">
                                     </div>
@@ -1267,7 +1268,7 @@
 									<?php if ($index % 3 == 0): ?>
 										<tr>
 									<?php endif; ?>
-									<td class="container-overlay" style="background-image: url('<?= base_url().'/resource/img/Zonas/'.$item->reference1 ?>'); background-size: auto; background-repeat: no-repeat;" 
+									<td class="container-overlay" style="background-image: url('<?= $item->reference1 ?>'); background-size: auto; background-repeat: no-repeat;" 
 										ondblclick="fnSelectCellZone(this)" data-value="<?= $item->catalogItemID; ?>"> 
 										<span class="badge badge-success text-overlay" ><?= $item->display; ?></span>
 										<div class="overlay"> 											
@@ -1315,7 +1316,7 @@
 
 								<!-- Crear la celda con contenido dinámico -->
 								<td class="container-overlay" 
-									style="background-image: url('<?= base_url().'/resource/img/Mesas/'. $item->reference1; ?>'); background-size: auto; background-repeat: no-repeat;" 
+									style="background-image: url('<?= $item->reference1; ?>'); background-size: auto; background-repeat: no-repeat;" 
 									ondblclick="fnSelectCellMesaDoubleClick(this,<?= $item->reference2 ?>)"
 									onclick="fnSelectCellMesa(this)" 
 									data-value="<?= $item->catalogItemID; ?>"

@@ -1242,7 +1242,7 @@
                                            data-value="<?= $category->inventoryCategoryID ?>"
                                            data-parent="<?= $category->inventoryCategoryID?>"
                                            data-filter="[data-value='<?= $category->inventoryCategoryID ?>']"
-                                           style="background-image: url('<?= base_url().'/'.$category->name ?>');"
+                                           style="background-image: url('<?= $category->description ?>');"
                                            onclick="fnSelectCellCategoryInventory(this)">
                                           <span class="badge badge-success text-overlay-categoria"><?= $category->name; ?></span>
                                           <div class="overlay">
@@ -1313,7 +1313,7 @@
 									<?php if ($index % 3 == 0): ?>
 										<tr>
 									<?php endif; ?>
-									<td class="container-overlay" style="background-image: url('<?= base_url().'/resource/img/Zonas/'.$item->reference1 ?>'); background-size: auto; background-repeat: no-repeat;" 
+									<td class="container-overlay" style="background-image: url('<?= $item->reference1 ?>'); background-size: auto; background-repeat: no-repeat;" 
 										ondblclick="fnSelectCellZone(this)" data-value="<?= $item->catalogItemID; ?>">
 										<span class="badge badge-success text-overlay"  ><?= $item->display; ?></span>
 										<div class="overlay">
@@ -1357,7 +1357,7 @@
 									<?php if ($index % 3 == 0): ?>
 										<tr>
 									<?php endif; ?>
-									<td class="container-overlay" style="background-image: url('<?= base_url().'/resource/img/Mesas/'. $item->reference1; ?>'); background-size: auto; background-repeat: no-repeat;" 
+									<td class="container-overlay" style="background-image: url('<?= $item->reference1; ?>'); background-size: auto; background-repeat: no-repeat;" 
 										ondblclick="fnSelectCellMesaDoubleClick(this,<?= $item->reference2 ?>)" onclick="fnSelectCellMesa(this)" data-value="<?= $item->catalogItemID; ?>" data-parent="<?= $item->parentCatalogItemID; ?>">
 										<span class="badge badge-success text-overlay"  ><?= $item->display; ?></span>
 										<div class="overlay">
