@@ -1313,7 +1313,7 @@
 									<?php if ($index % 3 == 0): ?>
 										<tr>
 									<?php endif; ?>
-									<td class="container-overlay" style="background-image: url('<?= $item->reference1 ?>'); background-size: auto; background-repeat: no-repeat;" 
+									<td class="container-overlay" style="background-image: url('<?= $item->reference1 ?>'); background-size: 180%; background-repeat: no-repeat;" 
 										ondblclick="fnSelectCellZone(this)" data-value="<?= $item->catalogItemID; ?>">
 										<span class="badge badge-success text-overlay"  ><?= $item->display; ?></span>
 										<div class="overlay">
@@ -1357,7 +1357,7 @@
 									<?php if ($index % 3 == 0): ?>
 										<tr>
 									<?php endif; ?>
-									<td class="container-overlay" style="background-image: url('<?= $item->reference1; ?>'); background-size: auto; background-repeat: no-repeat;" 
+									<td class="container-overlay" style="background-image: url('<?= $item->reference1; ?>'); background-size: 180%; background-repeat: no-repeat;" 
 										ondblclick="fnSelectCellMesaDoubleClick(this,<?= $item->reference2 ?>)" onclick="fnSelectCellMesa(this)" data-value="<?= $item->catalogItemID; ?>" data-parent="<?= $item->parentCatalogItemID; ?>">
 										<span class="badge badge-success text-overlay"  ><?= $item->display; ?></span>
 										<div class="overlay">
