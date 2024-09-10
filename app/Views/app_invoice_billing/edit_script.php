@@ -40,6 +40,8 @@
 	var varPermitirFacturarProductosEnZero	= '<?php echo $objParameterInvoiceBillingQuantityZero; ?>';
 	var varParameterShowComandoDeCocina 	= <?php echo $objParameterShowComandoDeCocina; ?>;
 	var varParameterCantidadItemPoup		= '<?php echo $objParameterCantidadItemPoup; ?>';  
+	var varParameterRestaurante				= '<?php echo $objParameterRestaurant; ?>';
+	
 	var varParameterHidenFiledItemNumber	= <?php echo $objParameterHidenFiledItemNumber; ?>;  	
 	var varParameterAmortizationDuranteFactura		= <?php echo $objParameterAmortizationDuranteFactura; ?>;  	
 	var varParameterImprimirPorCadaFactura 			= '<?php echo $objParameterImprimirPorCadaFactura; ?>';
@@ -2472,12 +2474,13 @@
                 filter: '.item-producto-back'
             });
 
-            $("#mySidebarFactura").css("width","100%");
-
+			if(varParameterRestaurante == "true")
+			{
+				$("#mySidebarFactura").css("width","100%");
+			}
+			
             $(".custom-table-container-inventory").hide();
-
             var zonaDefault = $("#txtZoneID").val();
-
             $(".custom-table-mesas").find("td").addClass("hidden");
             $(".custom-table-mesas").find('td[data-parent="'+zonaDefault+'"]').removeClass("hidden");
 

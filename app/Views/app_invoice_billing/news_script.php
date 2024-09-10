@@ -19,6 +19,7 @@
 	var varUseMobile						= '<?php echo $useMobile; ?>';
 	var varParameterCustomPopupFacturacion	= '<?php echo $objParameterCustomPopupFacturacion; ?>';	
 	var varParameterScanerProducto			= '<?php echo $objParameterScanerProducto; ?>';
+	var varParameterRestaurante				= '<?php echo $objParameterRestaurant; ?>';
 	
 	var varAutoAPlicar						= '<?php echo $objParameterInvoiceAutoApply; ?>';
 	var varParameterCantidadItemPoup		= '<?php echo $objParameterCantidadItemPoup; ?>';  
@@ -2237,11 +2238,13 @@
             });
 
             //codigo para cuando carga la pagina y mostrar la zona
-            $("#mySidebarZona").css("width","100%");
+			if(varParameterRestaurante == "true")
+			{
+				$("#mySidebarZona").css("width","100%");
+			}
+			
             $(".custom-table-container-inventory").hide();
-
             var zonaDefault = $("#txtZoneID").val();
-
             $(".custom-table-mesas").find("td").addClass("hidden");
             $(".custom-table-mesas").find('td[data-parent="'+zonaDefault+'"]').removeClass("hidden");
 
