@@ -88,7 +88,7 @@
 	var objTransactionMasterItemSku 			= JSON.parse('<?php echo json_encode($objTransactionMasterItemSku); ?>');
 	var objTransactionMasterItem 				= JSON.parse('<?php echo json_encode($objTransactionMasterItem); ?>');	
 	var objRenderInit							= true;
-	
+
 	
 	if(varDetail != null){
 		for(var i = 0 ; i < varDetail.length;i++){
@@ -312,6 +312,11 @@
 		sidebar.css("width", "0");
 	});
 
+	$(document).on("click","#btnRollbackZonas",function(){
+		var sidebar = $("#mySidebarMesa");
+		sidebar.css("width", "0");
+		$("#mySidebarZona").css("width","100%");
+	});
 
 	$(document).on("keypress",'#txtReceiptAmount', function(e) {	
 		
@@ -756,7 +761,29 @@
 		objTableDetail.fnUpdate( !objdat_[0], objind_, 0 );
 		refreschChecked();
 	});
-	
+
+    $('.item-categoria').on('click', function () {
+        $(".custom-table-container-inventory").show();
+        var filterValue = $(this).attr('data-filter');
+
+        $grid.isotope({ filter: filterValue + ', .item-producto-back' });
+
+
+        $(".item-categoria").removeClass('selected');
+        $(this).addClass("selected");
+    });
+
+    $('#txtZoneID').change(function() {
+        zonaDefault = $(this).val();
+        $(".custom-table-mesas").find("td").addClass("hidden");
+        $(".custom-table-mesas").find('td[data-parent="'+zonaDefault+'"]').removeClass("hidden");
+    });
+
+    $(".container-overlay").click(function () {
+        $(".container-overlay").removeClass('selected');
+        $(this).addClass("selected");
+    });
+
 	//Cargar Factura
 	function onCompleteSelectInvoice(objResponse){
 		console.info("CALL onCompleteSelectInvoice");
@@ -1194,14 +1221,15 @@
 	
 	function fnSelectCellZone(cell) {		
 		var catalogItemIDZone = $(cell).data("value");
-		
 		$(".custom-table-zalones").find("td").removeClass("selected");
 		$(cell).addClass("selected");
 		$("#txtZoneID").val( catalogItemIDZone );
 		$("#txtZoneID").select2();
 		$(".custom-table-mesas").find("td").addClass("hidden");
 		$(".custom-table-mesas").find('td[data-parent="'+catalogItemIDZone+'"]').removeClass("hidden");
-		
+		var sidebar = $("#mySidebarZona");		
+		sidebar.css("width", "0");	
+		$("#mySidebarMesa").css("width","100%");
 	}
 	
 	
@@ -1212,27 +1240,57 @@
 		$("#txtMesaID").select2();
 		
 	}
-	
-	function fnSelectCellCategoryInventory(cell) {		
-		var inventoryCategoryID = $(cell).data("value");
-		
-		$(".custom-table-categorias").find("td").removeClass("selected");
+
+	function fnSelectCellMesaDoubleClick(cell,value) {		
+		$(".custom-table-mesas").find("td").removeClass("selected");
 		$(cell).addClass("selected");
-		$(".custom-table-container-categorias").addClass("hidden");
-		$(".custom-table-container-inventory").removeClass("hidden");
-		
-		$(".custom-table-inventory").find("td").addClass("hidden");
-		$(".custom-table-inventory").find('td[data-parent="'+inventoryCategoryID+'"]').removeClass("hidden");		
-		
+		$("#txtMesaID").val( $(cell).data("value") );
+		$("#txtMesaID").select2();
+		if(value !== 0 && value !== 'undefined'){
+			$("#modalDialogMesaBussy").removeClass('hidden');
+			$("#modalDialogMesaBussy").dialog({
+					autoOpen: false,
+					modal: true,
+					width:520,
+					dialogClass: "dialog",
+					buttons: {
+						'Sí': function(){
+							fnWaitOpen();
+							window.location.href = "<?=base_url()."/"."app_invoice_billing/edit/companyID/".$companyID."/transactionID/".$transactionID."/transactionMasterID/"?>"+value+"<?="/codigoMesero/".$codigoMesero ?>";			
+							$(this).dialog("close");
+						},
+						'No':function(){
+							$(this).dialog("close");
+						}
+					}
+			});	
+			$("#modalDialogMesaBussy").dialog('open');	
+		}else{
+            $("#mySidebarFactura").css("width","100%");
+            $("#mySidebarMesa").css("width","0%");
+        }
 	}
+
+    function fnSelectCellCategoryInventory(cell) {
+        var inventoryCategoryID = $(cell).data("value");
+
+        $(".custom-table-container-categorias").hide();
+        $(".custom-table-container-inventory").show();
+        /*$(".item-producto").find('[data-parent="'+inventoryCategoryID+'"]').removeClass("hidden");*/
+
+    }
+
+    function fnSelectCellInventoryBack() {
+        $(".custom-table-container-categorias").show();
+        $(".custom-table-container-inventory").hide();
+    }
+
+    function fnSelectCellInventory(cell) {
+        $(".item-producto").removeClass('selected');
+        $(cell).addClass("selected");
+    }
 	
-	function fnSelectCellInventory(cell) {		
-		$(".custom-table-inventory").find("td").removeClass("selected");
-		$(cell).addClass("selected");
-	}
-	
-	function fnSelectDoubleCellInventory(cell) {		
-		$(".custom-table-inventory").find("td").removeClass("selected");
+	function fnSelectDoubleCellInventory(cell) {
 		$(cell).addClass("selected");
 		var codigoProducto = $(cell).data("codigo");
 		
@@ -1594,13 +1652,14 @@
 	
 	
 	//obtener informacion de los productos
+	/*TIPO PRECIO 1 --> 154 --> PUBLICO*/
 	function fnObtenerListadoProductos(){
 		
 		$.ajax({									
 			cache       : false,
 			dataType    : 'json',
 			type        : 'GET',			
-			url  		: "<?php echo base_url(); ?>/app_invoice_api/getViewApi/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING_BACKGROUND/"+encodeURI('{"warehouseID"|"'+  $("#txtWarehouseID").val()   +'"{}"listPriceID"|"<?php echo $objListPrice->listPriceID; ?>"{}"typePriceID"|"'+154+'"}'),		/*TIPO PRECIO 1 --> 154 --> PUBLICO*/
+			url  		: "<?php echo base_url(); ?>/app_invoice_api/getViewApi/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING_BACKGROUND/"+encodeURI('{"warehouseID"|"'+  $("#txtWarehouseID").val()   +'"{}"listPriceID"|"<?php echo $objListPrice->listPriceID; ?>"{}"typePriceID"|"'+154+'"}'),
 			success		: fnFillListaProductos,
 			error:function(xhr,data){	
 				console.info("fnObtenerListadoProductos data error");		
@@ -2406,6 +2465,22 @@
 	function fnReady()
 	{
 		$(document).ready(function(){
+
+            $("#mySidebarFactura").css("width","100%");
+
+            $(".custom-table-container-inventory").hide();
+
+            var $grid = $('.custom-table-container-inventory .row').isotope({
+                itemSelector: '.item-producto',
+                layoutMode: 'fitRows',
+                filter: '.item-producto-back'
+            });
+
+            var zonaDefault = $("#txtZoneID").val();
+
+            $(".custom-table-mesas").find("td").addClass("hidden");
+            $(".custom-table-mesas").find('td[data-parent="'+zonaDefault+'"]').removeClass("hidden");
+
 			$('#txtDate').datepicker({format:"yyyy-mm-dd"});						 
 			$("#txtDate").datepicker("update");
 			 

@@ -52,10 +52,6 @@
 	var objCausalTypeCredit 		= JSON.parse('<?php echo json_encode($objCausalTypeCredit); ?>');
 	var objCurrencyCordoba 			= JSON.parse('<?php echo json_encode($objCurrencyCordoba); ?>');	
 	var varCustomerCrediLineID		= 0;
-		
-
-	
-	
 
 	$(document).on("click",".btnPlus",function(){
 		
@@ -153,10 +149,15 @@
 		 $("#mySidebarMesa").css("width","100%");
 	});				
 	$(document).on("click","#btnRollbackMesa",function(){
-		var sidebar = $("#mySidebarMesa");		
+		var sidebar = $("#mySidebarMesa");
 		sidebar.css("width", "0");
 	});
 	
+	$(document).on("click","#btnRollbackZonas",function(){
+		var sidebar = $("#mySidebarMesa");
+		sidebar.css("width", "0");
+		$("#mySidebarZona").css("width","100%");
+	});
 	
 	$(document).on("keypress",'#txtReceiptAmount', function(e) {	
 		var code = e.keyCode || e.which;
@@ -578,7 +579,29 @@
 		objTableDetail.fnUpdate( !objdat_[0], objind_, 0 );
 		refreschChecked();
 	});
-	
+
+    $('.item-categoria').on('click', function () {
+        $(".custom-table-container-inventory").show();
+        var filterValue = $(this).attr('data-filter');
+        fnWaitOpen();
+        $grid.isotope({ filter: filterValue + ', .item-producto-back' });
+        fnWaitClose();
+
+        $(".item-categoria").removeClass('selected');
+        $(this).addClass("selected");
+    });
+
+    $('#txtZoneID').change(function() {
+        zonaDefault = $(this).val();
+        $(".custom-table-mesas").find("td").addClass("hidden");
+        $(".custom-table-mesas").find('td[data-parent="'+zonaDefault+'"]').removeClass("hidden");
+    });
+
+    $(".container-overlay").click(function () {
+        $(".container-overlay").removeClass('selected');
+        $(this).addClass("selected");
+    });
+
 	function fnCalculateAmountPay()
 	{
 		
@@ -1063,14 +1086,15 @@
 	
 	function fnSelectCellZone(cell) {		
 		var catalogItemIDZone = $(cell).data("value");
-		
 		$(".custom-table-zalones").find("td").removeClass("selected");
 		$(cell).addClass("selected");
 		$("#txtZoneID").val( catalogItemIDZone );
 		$("#txtZoneID").select2();
 		$(".custom-table-mesas").find("td").addClass("hidden");
-		$(".custom-table-mesas").find('td[data-parent="'+catalogItemIDZone+'"]').removeClass("hidden");		
-		
+		$(".custom-table-mesas").find('td[data-parent="'+catalogItemIDZone+'"]').removeClass("hidden");	
+		var sidebar = $("#mySidebarZona");		
+		sidebar.css("width", "0");	
+		$("#mySidebarMesa").css("width","100%");
 	}
 	
 	function fnSelectCellMesa(cell) {		
@@ -1080,34 +1104,61 @@
 		$("#txtMesaID").select2();
 		
 	}
+
+	function fnSelectCellMesaDoubleClick(cell,value) {		
+		$(".custom-table-mesas").find("td").removeClass("selected");
+		$(cell).addClass("selected");
+		$("#txtMesaID").val( $(cell).data("value") );
+		$("#txtMesaID").select2();
+		if(value !== 0 && value !== 'undefined'){
+			$("#modalDialogMesaBussy").removeClass('hidden');
+			$("#modalDialogMesaBussy").dialog({
+					autoOpen: false,
+					modal: true,
+					width:520,
+					dialogClass: "dialog",
+					buttons: {
+						'Sí': function(){
+							fnWaitOpen();
+							window.location.href = "<?=base_url()."/"."app_invoice_billing/edit/companyID/".$companyID."/transactionID/".$transactionID."/transactionMasterID/"?>"+value+"<?="/codigoMesero/".$codigoMesero ?>";			
+							$(this).dialog("close");
+						},
+						'No':function(){
+							$(this).dialog("close");
+						}
+					}
+			});	
+			$("#modalDialogMesaBussy").dialog('open');	
+		}else{
+            $("#mySidebarFactura").css("width","100%");
+            $("#mySidebarMesa").css("width","0%");
+        }
+	}
 	
 	function fnSelectCellCategoryInventory(cell) {		
 		var inventoryCategoryID = $(cell).data("value");
-		
-		$(".custom-table-categorias").find("td").removeClass("selected");
-		$(cell).addClass("selected");
-		$(".custom-table-container-categorias").addClass("hidden");
-		$(".custom-table-container-inventory").removeClass("hidden");
-		
-		
-		$(".custom-table-inventory").find("td").addClass("hidden");
-		$(".custom-table-inventory").find('td[data-parent="'+inventoryCategoryID+'"]').removeClass("hidden");		
-		
+
+		$(".custom-table-container-categorias").hide();
+		$(".custom-table-container-inventory").show();
+		/*$(".item-producto").find('[data-parent="'+inventoryCategoryID+'"]').removeClass("hidden");*/
+
+	}
+
+    function fnSelectCellInventoryBack() {
+        $(".custom-table-container-categorias").show();
+        $(".custom-table-container-inventory").hide();
+    }
+
+	function fnSelectCellInventory(cell) {
+        $(".item-producto").removeClass('selected');
+        $(cell).addClass("selected");
 	}
 	
-	function fnSelectCellInventory(cell) {		
-		$(".custom-table-inventory").find("td").removeClass("selected");
-		$(cell).addClass("selected");
-		
-		
-	}
-	
-	function fnSelectDoubleCellInventory(cell) {		
-		$(".custom-table-inventory").find("td").removeClass("selected");
+	function fnSelectDoubleCellInventory(cell) {
 		$(cell).addClass("selected");
 		var codigoProducto = $(cell).data("codigo");		
 		
-		if(codigoProducto == "0" )
+		if(codigoProducto === "0" )
 		{
 			$(".custom-table-container-categorias").removeClass("hidden");
 			$(".custom-table-container-inventory").addClass("hidden");
@@ -1432,13 +1483,13 @@
 	//obtener informacion de los productos	
 	function fnObtenerListadoProductos(){		
 
-
+		/*TIPO PRECIO 1 -- 154 -- PUBLICO */
 		$.ajax(
 		{									
 			cache       : false,
 			dataType    : 'json',
 			type        : 'GET',																				
-			url  		: "<?php echo base_url(); ?>/app_invoice_api/getViewApi/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING_BACKGROUND/"+encodeURI('{"warehouseID"|"'+ $("#txtWarehouseID").val() +'"{}"listPriceID"|"<?php echo $objListPrice->listPriceID; ?>"{}"typePriceID"|"'+154+'"}'),		/*TIPO PRECIO 1 --> 154 --> PUBLICO*/
+			url  		: "<?= base_url(); ?>/app_invoice_api/getViewApi/<?= $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING_BACKGROUND/"+encodeURI('{"warehouseID"|"'+ $("#txtWarehouseID").val() +'"{}"listPriceID"|"<?= $objListPrice->listPriceID; ?>"{}"typePriceID"|"'+154+'"}'),		
 			success		: fnFillListaProductos,
 			error:function(xhr,data)
 			{	
@@ -2177,7 +2228,21 @@
 	{
 		$(document).ready(function()
 		{
-		
+            //codigo para cuando carga la pagina y mostrar la zona
+            $("#mySidebarZona").css("width","100%");
+            $(".custom-table-container-inventory").hide();
+
+            var $grid = $('.custom-table-container-inventory .row').isotope({
+                itemSelector: '.item-producto',
+                layoutMode: 'fitRows',
+                filter: '.item-producto-back'
+            });
+
+            var zonaDefault = $("#txtZoneID").val();
+
+            $(".custom-table-mesas").find("td").addClass("hidden");
+            $(".custom-table-mesas").find('td[data-parent="'+zonaDefault+'"]').removeClass("hidden");
+
 			var objectParameterButtomsBack		= {};
 			 $('#txtDate').datepicker({format:"yyyy-mm-dd"});
 			 $('#txtDate').val(moment().format("YYYY-MM-DD"));	
