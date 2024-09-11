@@ -863,6 +863,8 @@ class app_invoice_billing extends _BaseController {
 			//Actualizar Maestro
 			$codigoMesero								= /*inicio get post*/ $this->request->getPost("txtCodigoMesero");
 			$typePriceID 								= /*inicio get post*/ $this->request->getPost("txtTypePriceID");
+            $varDescuento		 					    = /*inicio get post*/ $this->request->getPost("txtDescuento");
+            $varPorcentajeDescuento		 		        = /*inicio get post*/ $this->request->getPost("txtPorcentajeDescuento");
 			$objListPrice 								= $this->List_Price_Model->getListPriceToApply($companyID);
 			$objTMNew["transactionCausalID"] 			= /*inicio get post*/ $this->request->getPost("txtCausalID");
 			$objTMNew["entityID"] 						= /*inicio get post*/ $this->request->getPost("txtCustomerID");
@@ -885,7 +887,7 @@ class app_invoice_billing extends _BaseController {
 			$objTMNew["nextVisit"]						= /*inicio get post*/ $this->request->getPost("txtNextVisit");
 			$objTMNew["numberPhone"]					= /*inicio get post*/ $this->request->getPost("txtNumberPhone");
 			$objTMNew["entityIDSecondary"]				= /*inicio get post*/ $this->request->getPost("txtEmployeeID");
-			
+
 			//Ingresar Informacion Adicional
 			$objTMInfoNew["companyID"]					= $objTM->companyID;
 			$objTMInfoNew["transactionID"]				= $objTM->transactionID;
@@ -1009,8 +1011,6 @@ class app_invoice_billing extends _BaseController {
 				$arrayListSkuFormatoDescription				= /*inicio get post*/ $this->request->getPost("skuFormatoDescription");
 				
 			}
-						
-			
 			
 			//Ingresar la configuracion de precios			
 			$objParameterPriceDefault	= $this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID);
@@ -1254,10 +1254,14 @@ class app_invoice_billing extends _BaseController {
 				}
 			}			
 			
-			//Actualizar Transaccion			
-			$objTMNew["amount"] 	= $amountTotal;
-			$objTMNew["tax1"] 		= $tax1Total;
-			$objTMNew["subAmount"] 	= $subAmountTotal;
+			//Actualizar Transaccion
+			$amountTotal 			= $amountTotal-$varDescuento;
+            $objTMNew["subAmount"]  = $subAmountTotal;
+            $objTMNew["tax1"] 		= $tax1Total;
+            $objTMNew["tax4"] 		= $varPorcentajeDescuento;
+            $objTMNew["discount"]   = $varDescuento;
+            $objTMNew["amount"] 	= $amountTotal;
+
 			$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMNew);
 			
 			
@@ -1619,6 +1623,8 @@ class app_invoice_billing extends _BaseController {
 			
 			
 			$codigoMesero							= /*inicio get post*/ $this->request->getPost("txtCodigoMesero");
+            $varDescuento		 					= /*inicio get post*/ $this->request->getPost("txtDescuento");
+            $varPorcentajeDescuento		 		    = /*inicio get post*/ $this->request->getPost("txtPorcentajeDescuento");
 			$objTM["companyID"] 					= $dataSession["user"]->companyID;
 			$objTM["transactionID"] 				= $transactionID;			
 			$objTM["branchID"]						= $dataSession["user"]->branchID;			
@@ -1713,7 +1719,7 @@ class app_invoice_billing extends _BaseController {
 			$arrayListPrice		 						= /*inicio get post*/ $this->request->getPost("txtPrice");
 			$arrayListSubTotal	 						= /*inicio get post*/ $this->request->getPost("txtSubTotal");
 			$arrayListIva		 						= /*inicio get post*/ $this->request->getPost("txtIva");
-			$arrayListLote	 							= /*inicio get post*/ $this->request->getPost("txtDetailLote");			
+			$arrayListLote	 							= /*inicio get post*/ $this->request->getPost("txtDetailLote");
 			$arrayListVencimiento						= /*inicio get post*/ $this->request->getPost("txtDetailVencimiento");			
 			$arrayListSku								= /*inicio get post*/ $this->request->getPost("txtSku");
 			$arrayListSkuFormatoDescription				= /*inicio get post*/ $this->request->getPost("skuFormatoDescription");
@@ -1779,7 +1785,7 @@ class app_invoice_billing extends _BaseController {
 						&&						
 						$objParameterInvoiceBillingQuantityZero == "false"
 					)
-					throw new \Exception("La cantidad de '"+$objItem->itemNumber+ " " +$objItem->name+"' es mayor que la disponible en bodega");
+					throw new \Exception("La cantidad de '".$objItem->itemNumber. " ".$objItem->name."' es mayor que la disponible en bodega");
 					
 					
 					$objTMD 								= NULL;
@@ -1863,11 +1869,14 @@ class app_invoice_billing extends _BaseController {
 					
 				}
 			}
-			
+			$amountTotal = $amountTotal-$varDescuento;
 			//Actualizar Transaccion
+            $objTM["subAmount"] = $subAmountTotal;
+            $objTM["tax1"] 		= $tax1Total;
+            $objTM["tax4"] 		= $varPorcentajeDescuento;
+            $objTM["discount"]  = $varDescuento;
 			$objTM["amount"] 	= $amountTotal;
-			$objTM["tax1"] 		= $tax1Total;
-			$objTM["subAmount"] = $subAmountTotal;			
+
 			$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTM);
 			
 			//Aplicar el Documento?
