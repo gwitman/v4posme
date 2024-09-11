@@ -2006,428 +2006,437 @@ class app_invoice_billing extends _BaseController {
 
 	function insertElementMobil($dataSession,$transactionMaster, $transactionMasterDetails){
 	
-		//Obtener el Componente de Transacciones Facturacion
-		$objComponentBilling			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_billing");
-		if(!$objComponentBilling)
-		throw new \Exception("EL COMPONENTE 'tb_transaction_master_billing' NO EXISTE...");
-
-
-		$objComponentItem				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
-		if(!$objComponentItem)
-		throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
-
-		$companyID 								= $dataSession["user"]->companyID;			
-		$branchID 								= $dataSession["user"]->branchID;
-		$roleID 								= $dataSession["role"]->roleID;
-		$objListComanyParameter					= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
-		//Obtener transaccion
-		$transactionID 							= $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_billing",0);
-		$companyID 								= $dataSession["user"]->companyID;
-		$objT 									= $this->Transaction_Model->getByCompanyAndTransaction($companyID,$transactionID);
-		$employee								= $this->Employee_Model->get_rowByEmployeeID($companyID, $branchID, $transactionMaster->EntityId);
-		//Valores de tasa de cambio
-		date_default_timezone_set(APP_TIMEZONE); 
-		$objCurrencyDolares						= $this->core_web_currency->getCurrencyExternal($companyID);
-		$objCurrencyCordoba						= $this->core_web_currency->getCurrencyDefault($companyID);
-		$dateOn 								= date("Y-m-d");
-		$dateOn 								= date_format(date_create($dateOn),"Y-m-d");
-
-		$objParameterInvoiceBillingQuantityZero		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "INVOICE_BILLING_QUANTITY_ZERO");
-		$objParameterInvoiceBillingQuantityZero		= $objParameterInvoiceBillingQuantityZero->value;
-
-		//Saber si se va autoaplicar
-		$objParameterInvoiceAutoApply			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_AUTOAPPLY_CASH");
-		$objParameterInvoiceAutoApply			= $objParameterInvoiceAutoApply->value;
-		$objParaemterStatusCanceled				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_CANCEL");
-		$objParaemterStatusCanceled				= $objParaemterStatusCanceled->value;
-		$objParameterUrlPrinterDirect			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_URL");
-		$objParameterUrlPrinterDirect			= $objParameterUrlPrinterDirect->value;
-		$objParameterImprimirPorCadaFactura		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PRINT_BY_INVOICE");
-		$objParameterImprimirPorCadaFactura		= $objParameterImprimirPorCadaFactura->value;
-		$objParameterSendEmailInInsert			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_SEND_EMAIL_IN_INSERT");
-		$objParameterSendEmailInInsert			= $objParameterSendEmailInInsert->value;
-		$objParameterAmortizationDuranteFactura	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE");
-		$objParameterAmortizationDuranteFactura = $objParameterAmortizationDuranteFactura->value;
-		$objParameterUnitDefault				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, 'INVENTORY_UNITMEASURE_ID_DEFAULT')->value;
-
-		//Saber si es al credito
-		$parameterCausalTypeCredit 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_CREDIT");			
-		$causalIDTypeCredit 					= explode(",", $parameterCausalTypeCredit->value);
-		$exisCausalInCredit						= null;
-
-		$exisCausalInCredit						= array_search($transactionMaster->TransactionCausalId,$causalIDTypeCredit);
-		if($exisCausalInCredit || $exisCausalInCredit === 0){
-			$exisCausalInCredit = "true";
-		}
-		$objParameterProviderDefault		= $this->core_web_parameter->getParameter("CXP_PROVIDER_DEFAULT",$companyID);
-		$objParameterProviderDefault 		= $objParameterProviderDefault->value;
-		$providerDefault	 				= $this->Provider_Model->get_rowByProviderNumber($companyID,$objParameterProviderDefault);
-		//Si esta configurado como auto aplicado
-		//y es al credito. cambiar el estado por el estado inicial, que es registrada
-		/*$customerDefault						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_CLIENTDEFAULT");*/
-		$statusID 								= $this->core_web_workflow->getWorkflowStageApplyFirst("tb_transaction_master_billing","statusID",$companyID,$branchID,$roleID);			
-		$customer 								= $this->Customer_Model->get_rowByIdentification($companyID, $transactionMaster->CustomerIdentification);
-		$objParameterWarehouseDefault			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "INVENTORY_ITEM_WAREHOUSE_DEFAULT");
-		$periodPay 								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_FRECUENCIA_PAY_DEFAULT");
-		$warehouseDefault 						= $objParameterWarehouseDefault->value;
-		$warehouseID 							= $this->Warehouse_Model->getByCode($companyID, $warehouseDefault)->warehouseID;
-		$objTM["companyID"] 					= $companyID;
-		$objTM["transactionID"] 				= $transactionID;			
-		$objTM["branchID"]						= $branchID;			
-		$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($companyID,$branchID,"tb_transaction_master_billing",0);
-		$objTM["transactionCausalID"] 			= $transactionMaster->TransactionCausalId;
-		$objTM["entityID"] 						= $customer->entityID;
-		$objTM["transactionOn"]					= $transactionMaster->TransactionOn;
-		$objTM["transactionOn2"]				= date("Y-m-d H:i:s");//Fecha del Primer Pago, de las facturas al credito
-		$objTM["statusIDChangeOn"]				= date("Y-m-d H:i:s");
-		$objTM["componentID"] 					= $objComponentBilling->componentID;
-		$objTM["note"] 							= $transactionMaster->Comment;	
-		$objTM["sign"] 							= $objT->signInventory;
-		$objTM["currencyID"]					= $transactionMaster->CurrencyId; 
-		$objTM["currencyID2"]					= $this->core_web_currency->getTarget($companyID,$objTM["currencyID"]);
-		$objTM["exchangeRate"]					= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$objTM["currencyID2"],$objTM["currencyID"]);
-		$objTM["reference1"] 					= $providerDefault->entityID;
-		$objTM["descriptionReference"] 			= "reference1:entityID del proveedor de credito para las facturas al credito,reference4: customerCreditLineID linea de credito del cliente";
-		$objTM["reference2"] 					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_PLAZO_DEFAULT")->value;
-		$objTM["reference3"] 					= $this->User_Model->get_UserByUserIDAndCompanyID($companyID, $dataSession["user"]->userID)->firstName;
-		$objTM["reference4"] 					= is_null($transactionMaster->CustomerCreditLineId) ? "0" : $transactionMaster->CustomerCreditLineId;
-		$objTM["statusID"] 						= $statusID[0]->workflowStageID;
-		$objTM["amount"] 						= 0;
-		$objTM["isApplied"] 					= 0;
-		$objTM["journalEntryID"] 				= 0;
-		$objTM["classID"] 						= NULL;
-		$objTM["areaID"] 						= NULL;
-		$objTM["sourceWarehouseID"]				= $warehouseID;
-		$objTM["targetWarehouseID"]				= NULL;
-		$objTM["isActive"]						= 1;
-		$objTM["periodPay"]						= $periodPay->value; //frecuencia de pago por defecto
-		$objTM["nextVisit"]						= "";
-		$objTM["numberPhone"]					= "";
-		$objTM["entityIDSecondary"]				= $employee->entityID;
-		$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);			
-
-
-		$db=db_connect();
-		$db->transStart();	
-
-		$objParameterInvoiceUpdateNameInTransactionOnly		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_UPDATENAME_IN_TRANSACTION_ONLY");
-		$objParameterInvoiceUpdateNameInTransactionOnly		= $objParameterInvoiceUpdateNameInTransactionOnly->value;			
-		$transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
-
-
-		//Crear la Carpeta para almacenar los Archivos del Documento
-		$documentoPath = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentBilling->componentID."/component_item_".$transactionMasterID;			
-
-		if (!file_exists($documentoPath))
+		try
 		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-
-		//Ingresar Informacion Adicional
-		$objTMInfo["companyID"]					= $companyID;
-		$objTMInfo["transactionID"]				= $transactionID;
-		$objTMInfo["transactionMasterID"]		= $transactionMasterID;
-		$objTMInfo["zoneID"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_ZONEID_DEFAULT"); //INVOICE_BILLING_ZONEID_DEFAULT
-		$objTMInfo["mesaID"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_MESAID_DEFAULT"); //INVOICE_BILLING_MESAID_DEFAULT
-		$objTMInfo["routeID"]					= 0;
-		$objTMInfo["referenceClientName"]		= "";
-		$objTMInfo["referenceClientIdentifier"]	= $customer->identification;
-		$amountDolares							= 0;
-		$amountCordobas							= 0;
-		if($transactionMaster->CurrencyId==$objCurrencyCordoba->currencyID){ //cordobas
-			$amountCordobas = $transactionMaster->Amount;
-		}else if($transactionMaster->CurrencyId==$objCurrencyDolares->currencyID){ //dolares
-			$amountDolares = $transactionMaster->Amount;
-		}
-		$objTMInfo["receiptAmount"]				= $amountCordobas;
-		$objTMInfo["receiptAmountDol"]			= $amountDolares; 
-		$objTMInfo["receiptAmountPoint"]		= 0;
-		$objTMInfo["receiptAmountBank"]			= 0;
-		$objTMInfo["receiptAmountBankDol"]		= 0;
-		$objTMInfo["receiptAmountCardDol"]		= 0;
-		$objTMInfo["receiptAmountCard"]			= 0;
-		$objTMInfo["changeAmount"]				= 0;
-
-		$objTMInfo["receiptAmountBankReference"]				= 0;
-		$objTMInfo["receiptAmountBankDolReference"]				= 0;
-		$objTMInfo["receiptAmountCardBankReference"]			= 0;
-		$objTMInfo["receiptAmountCardBankDolReference"]			= 0;
-
-		$objTMInfo["receiptAmountBankID"]						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_BANKID_DEFAULT"); //INVOICE_BILLING_BANKID_DEFAULT
-		$objTMInfo["receiptAmountBankDolID"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_BANKID_DEFAULT"); //INVOICE_BILLING_BANKID_DEFAULT
-		$objTMInfo["receiptAmountCardBankID"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_BANKID_DEFAULT"); //INVOICE_BILLING_BANKID_DEFAULT
-		$objTMInfo["receiptAmountCardBankDolID"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_BANKID_DEFAULT"); //INVOICE_BILLING_BANKID_DEFAULT
-		$objTMInfo["reference1"]								= 0;
-		$objTMInfo["reference2"]								= "not_used";
+			
+			//Obtener el Componente de Transacciones Facturacion
+			$objComponentBilling			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_billing");
+			if(!$objComponentBilling)
+			throw new \Exception("EL COMPONENTE 'tb_transaction_master_billing' NO EXISTE...");
 
 
-		$this->Transaction_Master_Info_Model->insert_app_posme($objTMInfo);
+			$objComponentItem				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 
-		//Ingresar la configuracion de precios		
-		$amountTotal 									= 0;
-		$tax1Total 										= 0;
-		$subAmountTotal									= 0;
+			$companyID 								= $dataSession["user"]->companyID;			
+			$branchID 								= $dataSession["user"]->branchID;
+			$roleID 								= $dataSession["role"]->roleID;
+			$objListComanyParameter					= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			//Obtener transaccion
+			$transactionID 							= $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_billing",0);
+			$companyID 								= $dataSession["user"]->companyID;
+			$objT 									= $this->Transaction_Model->getByCompanyAndTransaction($companyID,$transactionID);		
+			$employee								= $this->Employee_Model->get_rowByEntityID($companyID,$dataSession["user"]->employeeID );
+			
+					
+			//Valores de tasa de cambio
+			date_default_timezone_set(APP_TIMEZONE); 
+			$objCurrencyDolares						= $this->core_web_currency->getCurrencyExternal($companyID);
+			$objCurrencyCordoba						= $this->core_web_currency->getCurrencyDefault($companyID);
+			$dateOn 								= date("Y-m-d");
+			$dateOn 								= date_format(date_create($dateOn),"Y-m-d");
 
-		//obtener la lista de precio por defecto
-		$objParameterPriceDefault	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_DEFAULT_PRICELIST");
-		$listPriceID 	= $objParameterPriceDefault->value;
-		if(count($transactionMasterDetails)>0){
-			foreach($transactionMasterDetails as $value){
-				$objItem 								= $this->Item_Model->get_rowByCodeBarra($companyID, $value->ItemBarCode);
-				if(!isset($objItem)){
-					continue;
-				}
-				$itemID 								= $objItem->itemID;
-				$lote 									= "";
-				$vencimiento							= "";
-				$warehouseID 							= $objTM["sourceWarehouseID"];				
-				$quantity 								= $value->Quantity;
-				$itemNameDetail							= $objItem->name;
-				$itemNameDetailDescription				= $objItem->description;
-				$price 									= $value->UnitaryPrice;
-				$comisionPorcentage						= 0;
-				$comisionPorcentage						= $this->core_web_transaction_master_detail->getPorcentageComision($companyID,$listPriceID,$itemID,$price);
-				$ivaPercentage							= 0;
-				$unitaryAmount 							= $price * (1 + $ivaPercentage);
-				$tax1 									= $price * $ivaPercentage;
+			$objParameterInvoiceBillingQuantityZero		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "INVOICE_BILLING_QUANTITY_ZERO");
+			$objParameterInvoiceBillingQuantityZero		= $objParameterInvoiceBillingQuantityZero->value;
 
-				$objTMD 								= array();
-				$objTMD["companyID"] 					= $companyID;
-				$objTMD["transactionID"] 				= $transactionID;
-				$objTMD["transactionMasterID"] 			= $transactionMasterID;
-				$objTMD["componentID"]					= $objComponentItem->componentID;
-				$objTMD["componentItemID"] 				= $itemID;
-				$objTMD["quantity"] 					= $quantity;	//cantidad
-				$objTMD["skuQuantity"] 					= $quantity;						//cantidad
-				$objTMD["skuQuantityBySku"]				= 1;				//cantidad
+			//Saber si se va autoaplicar
+			$objParameterInvoiceAutoApply			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_AUTOAPPLY_CASH");
+			$objParameterInvoiceAutoApply			= $objParameterInvoiceAutoApply->value;
+			$objParaemterStatusCanceled				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_CANCEL");
+			$objParaemterStatusCanceled				= $objParaemterStatusCanceled->value;
+			$objParameterUrlPrinterDirect			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_URL");
+			$objParameterUrlPrinterDirect			= $objParameterUrlPrinterDirect->value;
+			$objParameterImprimirPorCadaFactura		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PRINT_BY_INVOICE");
+			$objParameterImprimirPorCadaFactura		= $objParameterImprimirPorCadaFactura->value;
+			$objParameterSendEmailInInsert			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_SEND_EMAIL_IN_INSERT");
+			$objParameterSendEmailInInsert			= $objParameterSendEmailInInsert->value;
+			$objParameterAmortizationDuranteFactura	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE");
+			$objParameterAmortizationDuranteFactura = $objParameterAmortizationDuranteFactura->value;
+			$objParameterUnitDefault				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, 'INVENTORY_UNITMEASURE_ID_DEFAULT')->value;
 
-				$objTMD["unitaryCost"]					= $value->UnitaryCost;					//costo
-				$objTMD["cost"] 						= $quantity  * $value->UnitaryCost;		//cantidad por costo
+			//Saber si es al credito
+			$parameterCausalTypeCredit 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_CREDIT");			
+			$causalIDTypeCredit 					= explode(",", $parameterCausalTypeCredit->value);
+			$exisCausalInCredit						= null;
 
-				$objTMD["unitaryPrice"]					= $price;							//precio de lista
-				$objTMD["unitaryAmount"]				= $unitaryAmount;					//precio de lista con inpuesto					
-				$objTMD["amount"] 						= $quantity * $unitaryAmount;		//precio de lista con inpuesto por cantidad
-				$objTMD["tax1"]							= $tax1;							//impuesto de lista
-
-				$objTMD["discount"]						= 0;					
-				$objTMD["promotionID"] 					= 0;
-
-				$objTMD["reference1"]					= $lote;
-				$objTMD["reference2"]					= $vencimiento;
-				$objTMD["reference3"]					= '0';
-				$objTMD["itemNameLog"] 					= $itemNameDetail;
-				$objTMD["itemNameDescriptionLog"] 		= $itemNameDetailDescription;
-
-
-				$objTMD["catalogStatusID"]				= 0;
-				$objTMD["inventoryStatusID"]			= 0;
-				$objTMD["isActive"]						= 1;
-				$objTMD["quantityStock"]				= 0;
-				$objTMD["quantiryStockInTraffic"]		= 0;
-				$objTMD["quantityStockUnaswared"]		= 0;
-				$objTMD["remaingStock"]					= 0;
-				$objTMD["expirationDate"]				= NULL;
-				$objTMD["inventoryWarehouseSourceID"]	= $objTM["sourceWarehouseID"];
-				$objTMD["inventoryWarehouseTargetID"]	= $objTM["targetWarehouseID"];
-				$objTMD["skuCatalogItemID"] 			= $objParameterUnitDefault;
-				$objTMD["skuFormatoDescription"] 		= 'UNIDAD';
-				$objTMD["amountCommision"] 				= $price * $comisionPorcentage * $quantity ;
-
-				$tax1Total								= $tax1Total + $tax1;
-				$subAmountTotal							= $subAmountTotal + ($quantity * $price);
-				$amountTotal							= $amountTotal + $objTMD["amount"];
-
-				$transactionMasterDetailID_				= $this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
-
-				$objTMDC								= NULL;
-				$objTMDC["transactionMasterID"]			= $transactionMasterID;
-				$objTMDC["transactionMasterDetailID"]	= $transactionMasterDetailID_;
-				$objTMDC["reference1"]					= $value->Reference1;
-				$objTMDC["reference2"]					= $value->Reference2;
-				$objTMDC["reference3"]					= "";
-				$objTMDC["reference4"]					= "";
-				$objTMDC["reference5"]					= "";
-				$objTMDC["reference9"]					= "reference1: Porcentaje de Gastos Fijo para las facturas de credito,reference2: Escritura Publica,reference3: Primer Linea del Protocolo";
-				$this->Transaction_Master_Detail_Credit_Model->insert_app_posme($objTMDC);
-			}
-		}
-
-		//Actualizar Transaccion
-		$objTM["amount"] 	= $amountTotal;
-		$objTM["tax1"] 		= $tax1Total;
-		$objTM["subAmount"] = $subAmountTotal;			
-		$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTM);
-
-		//Ingresar la configuracion de precios			
-		$objParameterPriceDefault	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_DEFAULT_PRICELIST");
-		$listPriceID 	= $objParameterPriceDefault->value;
-
-
-		//Aplicar el Documento?
-		if( 
-			$this->core_web_workflow->validateWorkflowStage
-			(
-				"tb_transaction_master_billing",
-				"statusID",
-				$objTM["statusID"],
-				COMMAND_APLICABLE,
-				$companyID,
-				$branchID,
-				$roleID
-			) 
-		){
-
-
-
-			//Acumular punto del cliente.
-			if($objTMInfo["receiptAmountPoint"] <= 0 && $objTM["currencyID"]  == $objCurrencyCordoba->currencyID )
-			{
-				$objCustomer 					= $this->Customer_Model->get_rowByEntity($companyID, $objTM["entityID"] );
-				$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint + $amountTotal;
-				$this->Customer_Model->update_app_posme($objCustomer->companyID,$objCustomer->branchID,$objCustomer->entityID,$objCustomerNew);
-			}
-			//Es pago con punto restar puntos
-			if($objTMInfo["receiptAmountPoint"] > 0 && $objTM["currencyID"]  ==  $objCurrencyCordoba->currencyID )
-			{
-				$objCustomer 					= $this->Customer_Model->get_rowByEntity($companyID, $objTM["entityID"] );
-				$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint - $objTMInfo["receiptAmountPoint"];
-				$this->Customer_Model->update_app_posme($objCustomer->companyID,$objCustomer->branchID,$objCustomer->entityID,$objCustomerNew);
-			}
-
-
-			//Ingresar en Kardex.
-			$this->core_web_inventory->calculateKardexNewOutput($companyID,$transactionID,$transactionMasterID);			
-
-			//Crear Conceptos.
-			$this->core_web_concept->billing($companyID,$transactionID,$transactionMasterID);
-
-			//Si es al credito crear tabla de amortizacion
-			$causalIDTypeCredit 	= explode(",", $parameterCausalTypeCredit->value);
-			$exisCausalInCredit		= null;
-			$exisCausalInCredit		= array_search($objTM["transactionCausalID"] ,$causalIDTypeCredit);
-
-			//si la factura es de credito
+			$exisCausalInCredit						= array_search($transactionMaster->TransactionCausalId,$causalIDTypeCredit);
 			if($exisCausalInCredit || $exisCausalInCredit === 0){
+				$exisCausalInCredit = "true";
+			}
+			$objParameterProviderDefault		= $this->core_web_parameter->getParameter("CXP_PROVIDER_DEFAULT",$companyID);
+			$objParameterProviderDefault 		= $objParameterProviderDefault->value;
+			$providerDefault	 				= $this->Provider_Model->get_rowByProviderNumber($companyID,$objParameterProviderDefault);
+			//Si esta configurado como auto aplicado
+			//y es al credito. cambiar el estado por el estado inicial, que es registrada			
+			$statusID 								= $this->core_web_workflow->getWorkflowStageApplyFirst("tb_transaction_master_billing","statusID",$companyID,$branchID,$roleID);			
+			$customer 								= $this->Customer_Model->get_rowByIdentification($companyID, $transactionMaster->CustomerIdentification);
+			$objParameterWarehouseDefault			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "INVENTORY_ITEM_WAREHOUSE_DEFAULT");
+			$periodPay 								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_FRECUENCIA_PAY_DEFAULT");
+			$warehouseDefault 						= $objParameterWarehouseDefault->value;
+			$warehouseID 							= $this->Warehouse_Model->getByCode($companyID, $warehouseDefault)->warehouseID;
+			$objTM["companyID"] 					= $companyID;
+			$objTM["transactionID"] 				= $transactionID;			
+			$objTM["branchID"]						= $branchID;			
+			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($companyID,$branchID,"tb_transaction_master_billing",0);
+			$objTM["transactionCausalID"] 			= $transactionMaster->TransactionCausalId;
+			$objTM["entityID"] 						= $customer->entityID;
+			$objTM["transactionOn"]					= $transactionMaster->TransactionOn;
+			$objTM["transactionOn2"]				= date("Y-m-d H:i:s");//Fecha del Primer Pago, de las facturas al credito
+			$objTM["statusIDChangeOn"]				= date("Y-m-d H:i:s");
+			$objTM["componentID"] 					= $objComponentBilling->componentID;
+			$objTM["note"] 							= $transactionMaster->Comment;	
+			$objTM["sign"] 							= $objT->signInventory;
+			$objTM["currencyID"]					= $transactionMaster->CurrencyId; 
+			$objTM["currencyID2"]					= $this->core_web_currency->getTarget($companyID,$objTM["currencyID"]);
+			$objTM["exchangeRate"]					= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$objTM["currencyID2"],$objTM["currencyID"]);
+			$objTM["reference1"] 					= $providerDefault->entityID;
+			$objTM["descriptionReference"] 			= "reference1:entityID del proveedor de credito para las facturas al credito,reference4: customerCreditLineID linea de credito del cliente";
+			$objTM["reference2"] 					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_PLAZO_DEFAULT")->value;
+			$objTM["reference3"] 					= $this->User_Model->get_UserByUserIDAndCompanyID($companyID, $dataSession["user"]->userID)->firstName;
+			$objTM["reference4"] 					= is_null($transactionMaster->CustomerCreditLineId) ? "0" : $transactionMaster->CustomerCreditLineId;
+			$objTM["statusID"] 						= $statusID[0]->workflowStageID;
+			$objTM["amount"] 						= 0;
+			$objTM["isApplied"] 					= 0;
+			$objTM["journalEntryID"] 				= 0;
+			$objTM["classID"] 						= NULL;
+			$objTM["areaID"] 						= NULL;
+			$objTM["sourceWarehouseID"]				= $warehouseID;
+			$objTM["targetWarehouseID"]				= NULL;
+			$objTM["isActive"]						= 1;
+			$objTM["periodPay"]						= $periodPay->value; //frecuencia de pago por defecto
+			$objTM["nextVisit"]						= "";
+			$objTM["numberPhone"]					= "";
+			$objTM["entityIDSecondary"]				= $employee->entityID;
+			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);			
 
 
-				//Crear documento del modulo
-				$objCustomerCreditLine 								= $this->Customer_Credit_Line_Model->get_rowByPK($transactionMaster->CustomerCreditLineId);
-				$objCustomerCreditDocument["companyID"] 			= $companyID;
-				$objCustomerCreditDocument["entityID"] 				= $objCustomerCreditLine->entityID;
-				$objCustomerCreditDocument["customerCreditLineID"] 	= $objCustomerCreditLine->customerCreditLineID;
-				$objCustomerCreditDocument["documentNumber"] 		= $objTM["transactionNumber"];
-				$objCustomerCreditDocument["dateOn"] 				= $objTM["transactionOn"];
-				$objCustomerCreditDocument["exchangeRate"] 			= $objTM["exchangeRate"];
-				$objCustomerCreditDocument["interes"] 				= $objCustomerCreditLine->interestYear;
+			$db=db_connect();
+			$db->transStart();	
 
-				$objCustomerCreditDocument["term"] 					= $objCustomerCreditLine->term;
-				$objCustomerCreditDocument["amount"] 				= $amountTotal; 
-				$objCustomerCreditDocument["balance"] 				= $amountTotal;
-
-				$objCustomerCreditDocument["currencyID"] 			= $objTM["currencyID"];					
-				$objCustomerCreditDocument["statusID"] 				= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_document","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
-				$objCustomerCreditDocument["reference1"] 			= $objTM["note"];
-				$objCustomerCreditDocument["reference2"] 			= "";
-				$objCustomerCreditDocument["reference3"] 			= "";
-				$objCustomerCreditDocument["isActive"] 				= 1;
-
-				$objCustomerCreditDocument["providerIDCredit"] 		= $objTM["reference1"];					
-				$objCustomerCreditDocument["periodPay"]				= $objCustomerCreditLine->periodPay;
-
-				$objCustomerCreditDocument["typeAmortization"] 		= $objCustomerCreditLine->typeAmortization;					
-				$objCustomerCreditDocument["reportSinRiesgo"] 	 	= 0;
-				$customerCreditDocumentID 							= $this->Customer_Credit_Document_Model->insert_app_posme($objCustomerCreditDocument);
-				$periodPay 											= $this->Catalog_Item_Model->get_rowByCatalogItemID($objCustomerCreditLine->periodPay);
-
-				$objCatalogItem_DiasNoCobrables 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES",$companyID);
-				$objCatalogItem_DiasFeriados365 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_365",$companyID);
-				$objCatalogItem_DiasFeriados366 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_366",$companyID);
+			$objParameterInvoiceUpdateNameInTransactionOnly		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_UPDATENAME_IN_TRANSACTION_ONLY");
+			$objParameterInvoiceUpdateNameInTransactionOnly		= $objParameterInvoiceUpdateNameInTransactionOnly->value;			
+			$transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
 
 
-				//Crear tabla de amortizacion
-				$this->financial_amort->amort(
-					$objCustomerCreditDocument["amount"], 		/*monto*/
-					$objCustomerCreditDocument["interes"],		/*interes anual*/
-					$objCustomerCreditDocument["term"],			/*numero de pagos*/	
-					$periodPay->sequence,						/*frecuencia de pago en dia*/
-					$objTM["transactionOn2"], 				/*fecha del credito*/	
-					$objCustomerCreditLine->typeAmortization 	/*tipo de amortizacion*/,
-					$objCatalogItem_DiasNoCobrables,
-					$objCatalogItem_DiasFeriados365,
-					$objCatalogItem_DiasFeriados366
-				);
+			//Crear la Carpeta para almacenar los Archivos del Documento
+			$documentoPath = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentBilling->componentID."/component_item_".$transactionMasterID;			
 
-				$tableAmortization = $this->financial_amort->getTable();
-				if($tableAmortization["detail"])
-				{
-					foreach($tableAmortization["detail"] as $key => $itemAmortization){
-						$objCustomerAmoritizacion["customerCreditDocumentID"]	= $customerCreditDocumentID;
-						$objCustomerAmoritizacion["balanceStart"]				= $itemAmortization["saldoInicial"];
-						$objCustomerAmoritizacion["dateApply"]					= $itemAmortization["date"];
-						$objCustomerAmoritizacion["interest"]					= $itemAmortization["interes"];
-						$objCustomerAmoritizacion["capital"]					= $itemAmortization["principal"];
-						$objCustomerAmoritizacion["share"]						= $itemAmortization["cuota"];
-						$objCustomerAmoritizacion["balanceEnd"]					= $itemAmortization["saldo"];
-						$objCustomerAmoritizacion["remaining"]					= $itemAmortization["cuota"];
-						$objCustomerAmoritizacion["dayDelay"]					= 0;
-						$objCustomerAmoritizacion["note"]						= '';
-						$objCustomerAmoritizacion["statusID"]					= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_amoritization","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
-						$objCustomerAmoritizacion["isActive"]					= 1;
-						$objCustomerAmortizationID 								= $this->Customer_Credit_Amortization_Model->insert_app_posme($objCustomerAmoritizacion);
-					}
-				}
-
-				//Crear las personas relacionadas a la factura
-				$objEntityRelated								= array();
-				$objEntityRelated["customerCreditDocumentID"]	= $customerCreditDocumentID;
-				$objEntityRelated["entityID"]					= $objCustomerCreditLine->entityID;
-				$objEntityRelated["type"]						= $this->core_web_parameter->getParameter("CXC_PROPIETARIO_DEL_CREDITO",$companyID)->value;
-				$objEntityRelated["typeCredit"]					= 401; /*comercial*/
-				$objEntityRelated["statusCredit"]				= 429; /*activo*/
-				$objEntityRelated["typeGarantia"]				= 444; /*pagare*/
-				$objEntityRelated["typeRecuperation"]			= 450; /*recuperacion normal */
-				$objEntityRelated["ratioDesembolso"]			= 1;
-				$objEntityRelated["ratioBalance"]				= 1;
-				$objEntityRelated["ratioBalanceExpired"]		= 1;
-				$objEntityRelated["ratioShare"]					= 1;
-				$objEntityRelated["isActive"]					= 1;
-				$this->core_web_auditoria->setAuditCreated($objEntityRelated,$dataSession,$this->request);			
-				$ccEntityID 		= $this->Customer_Credit_Document_Endity_Related_Model->insert_app_posme($objEntityRelated);
-
-
-
-				$montoTotalCordobaCredit = $objTM["currencyID"] == $objCurrencyCordoba->currencyID ? $objCustomerCreditDocument["amount"] : round(($objCustomerCreditDocument["amount"] * $objTM["exchangeRate"]),2) ;
-				$montoTotalDolaresCredit = $objTM["currencyID"] == $objCurrencyDolares->currencyID ? $objCustomerCreditDocument["amount"] : round(($objCustomerCreditDocument["amount"] / $objTM["exchangeRate"]),2) ;
-
-
-				//disminuir el balance de general	
-				$objCustomerCredit 					= $this->Customer_Credit_Model->get_rowByPK($objCustomerCreditLine->companyID,$objCustomerCreditLine->branchID,$objCustomerCreditLine->entityID);
-				$objCustomerCreditNew["balanceDol"]	= $objCustomerCredit->balanceDol - $montoTotalDolaresCredit;
-				$this->Customer_Credit_Model->update_app_posme($objCustomerCreditLine->companyID,$objCustomerCreditLine->branchID,$objCustomerCreditLine->entityID,$objCustomerCreditNew);
-
-
-
-				//disminuir el balance de linea
-				if($objCustomerCreditLine->currencyID == $objCurrencyCordoba->currencyID)
-				$objCustomerCreditLineNew["balance"]	= $objCustomerCreditLine->balance - $montoTotalCordobaCredit;
-				else
-				$objCustomerCreditLineNew["balance"]	= $objCustomerCreditLine->balance - $montoTotalDolaresCredit;								
-				$this->Customer_Credit_Line_Model->update_app_posme($objCustomerCreditLine->customerCreditLineID,$objCustomerCreditLineNew);
+			if (!file_exists($documentoPath))
+			{
+				mkdir($documentoPath, 0755);
+				chmod($documentoPath, 0755);
 			}
 
-		}
+			//Ingresar Informacion Adicional
+			$objTMInfo["companyID"]					= $companyID;
+			$objTMInfo["transactionID"]				= $transactionID;
+			$objTMInfo["transactionMasterID"]		= $transactionMasterID;
+			$objTMInfo["zoneID"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_ZONEID_DEFAULT")->value; //INVOICE_BILLING_ZONEID_DEFAULT
+			$objTMInfo["mesaID"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_MESAID_DEFAULT")->value; //INVOICE_BILLING_MESAID_DEFAULT
+			$objTMInfo["routeID"]					= 0;
+			$objTMInfo["referenceClientName"]		= "";
+			$objTMInfo["referenceClientIdentifier"]	= $customer->identification;
+			$amountDolares							= 0;
+			$amountCordobas							= 0;
+			if($transactionMaster->CurrencyId==$objCurrencyCordoba->currencyID){ //cordobas
+				$amountCordobas = $transactionMaster->Amount;
+			}else if($transactionMaster->CurrencyId==$objCurrencyDolares->currencyID){ //dolares
+				$amountDolares = $transactionMaster->Amount;
+			}
+			$objTMInfo["receiptAmount"]				= $amountCordobas;
+			$objTMInfo["receiptAmountDol"]			= $amountDolares; 
+			$objTMInfo["receiptAmountPoint"]		= 0;
+			$objTMInfo["receiptAmountBank"]			= 0;
+			$objTMInfo["receiptAmountBankDol"]		= 0;
+			$objTMInfo["receiptAmountCardDol"]		= 0;
+			$objTMInfo["receiptAmountCard"]			= 0;
+			$objTMInfo["changeAmount"]				= 0;
 
-		//No auto aplicar
-		if( $db->transStatus() !== false)
-		{
-			$db->transCommit();
+			$objTMInfo["receiptAmountBankReference"]				= 0;
+			$objTMInfo["receiptAmountBankDolReference"]				= 0;
+			$objTMInfo["receiptAmountCardBankReference"]			= 0;
+			$objTMInfo["receiptAmountCardBankDolReference"]			= 0;
+
+			$objTMInfo["receiptAmountBankID"]						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_BANKID_DEFAULT")->value; //INVOICE_BILLING_BANKID_DEFAULT
+			$objTMInfo["receiptAmountBankDolID"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_BANKID_DEFAULT")->value; //INVOICE_BILLING_BANKID_DEFAULT
+			$objTMInfo["receiptAmountCardBankID"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_BANKID_DEFAULT")->value; //INVOICE_BILLING_BANKID_DEFAULT
+			$objTMInfo["receiptAmountCardBankDolID"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_BANKID_DEFAULT")->value; //INVOICE_BILLING_BANKID_DEFAULT
+			$objTMInfo["reference1"]								= 0;
+			$objTMInfo["reference2"]								= "not_used";
+
+
+			$this->Transaction_Master_Info_Model->insert_app_posme($objTMInfo);
+
+			//Ingresar la configuracion de precios		
+			$amountTotal 									= 0;
+			$tax1Total 										= 0;
+			$subAmountTotal									= 0;
+
+			//obtener la lista de precio por defecto
+			$objParameterPriceDefault	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_DEFAULT_PRICELIST");
+			$listPriceID 	= $objParameterPriceDefault->value;
+			if(count($transactionMasterDetails)>0){
+				foreach($transactionMasterDetails as $value){
+					$objItem 								= $this->Item_Model->get_rowByCodeBarra($companyID, $value->ItemBarCode);
+					if(!isset($objItem)){
+						continue;
+					}
+					$itemID 								= $objItem->itemID;
+					$lote 									= "";
+					$vencimiento							= "";
+					$warehouseID 							= $objTM["sourceWarehouseID"];				
+					$quantity 								= $value->Quantity;
+					$itemNameDetail							= $objItem->name;
+					$itemNameDetailDescription				= $objItem->description;
+					$price 									= $value->UnitaryPrice;
+					$comisionPorcentage						= 0;
+					$comisionPorcentage						= $this->core_web_transaction_master_detail->getPorcentageComision($companyID,$listPriceID,$itemID,$price);
+					$ivaPercentage							= 0;
+					$unitaryAmount 							= $price * (1 + $ivaPercentage);
+					$tax1 									= $price * $ivaPercentage;
+
+					$objTMD 								= array();
+					$objTMD["companyID"] 					= $companyID;
+					$objTMD["transactionID"] 				= $transactionID;
+					$objTMD["transactionMasterID"] 			= $transactionMasterID;
+					$objTMD["componentID"]					= $objComponentItem->componentID;
+					$objTMD["componentItemID"] 				= $itemID;
+					$objTMD["quantity"] 					= $quantity;	//cantidad
+					$objTMD["skuQuantity"] 					= $quantity;						//cantidad
+					$objTMD["skuQuantityBySku"]				= 1;				//cantidad
+
+					$objTMD["unitaryCost"]					= $value->UnitaryCost;					//costo
+					$objTMD["cost"] 						= $quantity  * $value->UnitaryCost;		//cantidad por costo
+
+					$objTMD["unitaryPrice"]					= $price;							//precio de lista
+					$objTMD["unitaryAmount"]				= $unitaryAmount;					//precio de lista con inpuesto					
+					$objTMD["amount"] 						= $quantity * $unitaryAmount;		//precio de lista con inpuesto por cantidad
+					$objTMD["tax1"]							= $tax1;							//impuesto de lista
+
+					$objTMD["discount"]						= 0;					
+					$objTMD["promotionID"] 					= 0;
+
+					$objTMD["reference1"]					= $lote;
+					$objTMD["reference2"]					= $vencimiento;
+					$objTMD["reference3"]					= '0';
+					$objTMD["itemNameLog"] 					= $itemNameDetail;
+					$objTMD["itemNameDescriptionLog"] 		= $itemNameDetailDescription;
+
+
+					$objTMD["catalogStatusID"]				= 0;
+					$objTMD["inventoryStatusID"]			= 0;
+					$objTMD["isActive"]						= 1;
+					$objTMD["quantityStock"]				= 0;
+					$objTMD["quantiryStockInTraffic"]		= 0;
+					$objTMD["quantityStockUnaswared"]		= 0;
+					$objTMD["remaingStock"]					= 0;
+					$objTMD["expirationDate"]				= NULL;
+					$objTMD["inventoryWarehouseSourceID"]	= $objTM["sourceWarehouseID"];
+					$objTMD["inventoryWarehouseTargetID"]	= $objTM["targetWarehouseID"];
+					$objTMD["skuCatalogItemID"] 			= $objParameterUnitDefault;
+					$objTMD["skuFormatoDescription"] 		= 'UNIDAD';
+					$objTMD["amountCommision"] 				= $price * $comisionPorcentage * $quantity ;
+
+					$tax1Total								= $tax1Total + $tax1;
+					$subAmountTotal							= $subAmountTotal + ($quantity * $price);
+					$amountTotal							= $amountTotal + $objTMD["amount"];
+
+					$transactionMasterDetailID_				= $this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
+
+					$objTMDC								= NULL;
+					$objTMDC["transactionMasterID"]			= $transactionMasterID;
+					$objTMDC["transactionMasterDetailID"]	= $transactionMasterDetailID_;
+					$objTMDC["reference1"]					= $value->Reference1;
+					$objTMDC["reference2"]					= $value->Reference2;
+					$objTMDC["reference3"]					= "";
+					$objTMDC["reference4"]					= "";
+					$objTMDC["reference5"]					= "";
+					$objTMDC["reference9"]					= "reference1: Porcentaje de Gastos Fijo para las facturas de credito,reference2: Escritura Publica,reference3: Primer Linea del Protocolo";
+					$this->Transaction_Master_Detail_Credit_Model->insert_app_posme($objTMDC);
+				}
+			}
+
+			//Actualizar Transaccion
+			$objTM["amount"] 	= $amountTotal;
+			$objTM["tax1"] 		= $tax1Total;
+			$objTM["subAmount"] = $subAmountTotal;			
+			$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTM);
+
+			//Ingresar la configuracion de precios			
+			$objParameterPriceDefault	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_DEFAULT_PRICELIST");
+			$listPriceID 	= $objParameterPriceDefault->value;
+
+
+			//Aplicar el Documento?
+			if( 
+				$this->core_web_workflow->validateWorkflowStage
+				(
+					"tb_transaction_master_billing",
+					"statusID",
+					$objTM["statusID"],
+					COMMAND_APLICABLE,
+					$companyID,
+					$branchID,
+					$roleID
+				) 
+			){
+
+
+
+				//Acumular punto del cliente.
+				if($objTMInfo["receiptAmountPoint"] <= 0 && $objTM["currencyID"]  == $objCurrencyCordoba->currencyID )
+				{
+					$objCustomer 					= $this->Customer_Model->get_rowByEntity($companyID, $objTM["entityID"] );
+					$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint + $amountTotal;
+					$this->Customer_Model->update_app_posme($objCustomer->companyID,$objCustomer->branchID,$objCustomer->entityID,$objCustomerNew);
+				}
+				//Es pago con punto restar puntos
+				if($objTMInfo["receiptAmountPoint"] > 0 && $objTM["currencyID"]  ==  $objCurrencyCordoba->currencyID )
+				{
+					$objCustomer 					= $this->Customer_Model->get_rowByEntity($companyID, $objTM["entityID"] );
+					$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint - $objTMInfo["receiptAmountPoint"];
+					$this->Customer_Model->update_app_posme($objCustomer->companyID,$objCustomer->branchID,$objCustomer->entityID,$objCustomerNew);
+				}
+
+
+				//Ingresar en Kardex.
+				$this->core_web_inventory->calculateKardexNewOutput($companyID,$transactionID,$transactionMasterID);			
+
+				//Crear Conceptos.
+				$this->core_web_concept->billing($companyID,$transactionID,$transactionMasterID);
+
+				//Si es al credito crear tabla de amortizacion
+				$causalIDTypeCredit 	= explode(",", $parameterCausalTypeCredit->value);
+				$exisCausalInCredit		= null;
+				$exisCausalInCredit		= array_search($objTM["transactionCausalID"] ,$causalIDTypeCredit);
+
+				//si la factura es de credito
+				if($exisCausalInCredit || $exisCausalInCredit === 0){
+
+
+					//Crear documento del modulo
+					$objCustomerCreditLine 								= $this->Customer_Credit_Line_Model->get_rowByPK($transactionMaster->CustomerCreditLineId);
+					$objCustomerCreditDocument["companyID"] 			= $companyID;
+					$objCustomerCreditDocument["entityID"] 				= $objCustomerCreditLine->entityID;
+					$objCustomerCreditDocument["customerCreditLineID"] 	= $objCustomerCreditLine->customerCreditLineID;
+					$objCustomerCreditDocument["documentNumber"] 		= $objTM["transactionNumber"];
+					$objCustomerCreditDocument["dateOn"] 				= $objTM["transactionOn"];
+					$objCustomerCreditDocument["exchangeRate"] 			= $objTM["exchangeRate"];
+					$objCustomerCreditDocument["interes"] 				= $objCustomerCreditLine->interestYear;
+
+					$objCustomerCreditDocument["term"] 					= $objCustomerCreditLine->term;
+					$objCustomerCreditDocument["amount"] 				= $amountTotal; 
+					$objCustomerCreditDocument["balance"] 				= $amountTotal;
+
+					$objCustomerCreditDocument["currencyID"] 			= $objTM["currencyID"];					
+					$objCustomerCreditDocument["statusID"] 				= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_document","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
+					$objCustomerCreditDocument["reference1"] 			= $objTM["note"];
+					$objCustomerCreditDocument["reference2"] 			= "";
+					$objCustomerCreditDocument["reference3"] 			= "";
+					$objCustomerCreditDocument["isActive"] 				= 1;
+
+					$objCustomerCreditDocument["providerIDCredit"] 		= $objTM["reference1"];					
+					$objCustomerCreditDocument["periodPay"]				= $objCustomerCreditLine->periodPay;
+
+					$objCustomerCreditDocument["typeAmortization"] 		= $objCustomerCreditLine->typeAmortization;					
+					$objCustomerCreditDocument["reportSinRiesgo"] 	 	= 0;
+					$customerCreditDocumentID 							= $this->Customer_Credit_Document_Model->insert_app_posme($objCustomerCreditDocument);
+					$periodPay 											= $this->Catalog_Item_Model->get_rowByCatalogItemID($objCustomerCreditLine->periodPay);
+
+					$objCatalogItem_DiasNoCobrables 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES",$companyID);
+					$objCatalogItem_DiasFeriados365 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_365",$companyID);
+					$objCatalogItem_DiasFeriados366 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_366",$companyID);
+
+
+					//Crear tabla de amortizacion
+					$this->financial_amort->amort(
+						$objCustomerCreditDocument["amount"], 		/*monto*/
+						$objCustomerCreditDocument["interes"],		/*interes anual*/
+						$objCustomerCreditDocument["term"],			/*numero de pagos*/	
+						$periodPay->sequence,						/*frecuencia de pago en dia*/
+						$objTM["transactionOn2"], 				/*fecha del credito*/	
+						$objCustomerCreditLine->typeAmortization 	/*tipo de amortizacion*/,
+						$objCatalogItem_DiasNoCobrables,
+						$objCatalogItem_DiasFeriados365,
+						$objCatalogItem_DiasFeriados366
+					);
+
+					$tableAmortization = $this->financial_amort->getTable();
+					if($tableAmortization["detail"])
+					{
+						foreach($tableAmortization["detail"] as $key => $itemAmortization){
+							$objCustomerAmoritizacion["customerCreditDocumentID"]	= $customerCreditDocumentID;
+							$objCustomerAmoritizacion["balanceStart"]				= $itemAmortization["saldoInicial"];
+							$objCustomerAmoritizacion["dateApply"]					= $itemAmortization["date"];
+							$objCustomerAmoritizacion["interest"]					= $itemAmortization["interes"];
+							$objCustomerAmoritizacion["capital"]					= $itemAmortization["principal"];
+							$objCustomerAmoritizacion["share"]						= $itemAmortization["cuota"];
+							$objCustomerAmoritizacion["balanceEnd"]					= $itemAmortization["saldo"];
+							$objCustomerAmoritizacion["remaining"]					= $itemAmortization["cuota"];
+							$objCustomerAmoritizacion["dayDelay"]					= 0;
+							$objCustomerAmoritizacion["note"]						= '';
+							$objCustomerAmoritizacion["statusID"]					= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_amoritization","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
+							$objCustomerAmoritizacion["isActive"]					= 1;
+							$objCustomerAmortizationID 								= $this->Customer_Credit_Amortization_Model->insert_app_posme($objCustomerAmoritizacion);
+						}
+					}
+
+					//Crear las personas relacionadas a la factura
+					$objEntityRelated								= array();
+					$objEntityRelated["customerCreditDocumentID"]	= $customerCreditDocumentID;
+					$objEntityRelated["entityID"]					= $objCustomerCreditLine->entityID;
+					$objEntityRelated["type"]						= $this->core_web_parameter->getParameter("CXC_PROPIETARIO_DEL_CREDITO",$companyID)->value;
+					$objEntityRelated["typeCredit"]					= 401; /*comercial*/
+					$objEntityRelated["statusCredit"]				= 429; /*activo*/
+					$objEntityRelated["typeGarantia"]				= 444; /*pagare*/
+					$objEntityRelated["typeRecuperation"]			= 450; /*recuperacion normal */
+					$objEntityRelated["ratioDesembolso"]			= 1;
+					$objEntityRelated["ratioBalance"]				= 1;
+					$objEntityRelated["ratioBalanceExpired"]		= 1;
+					$objEntityRelated["ratioShare"]					= 1;
+					$objEntityRelated["isActive"]					= 1;
+					$this->core_web_auditoria->setAuditCreated($objEntityRelated,$dataSession,$this->request);			
+					$ccEntityID 		= $this->Customer_Credit_Document_Endity_Related_Model->insert_app_posme($objEntityRelated);
+
+
+
+					$montoTotalCordobaCredit = $objTM["currencyID"] == $objCurrencyCordoba->currencyID ? $objCustomerCreditDocument["amount"] : round(($objCustomerCreditDocument["amount"] * $objTM["exchangeRate"]),2) ;
+					$montoTotalDolaresCredit = $objTM["currencyID"] == $objCurrencyDolares->currencyID ? $objCustomerCreditDocument["amount"] : round(($objCustomerCreditDocument["amount"] / $objTM["exchangeRate"]),2) ;
+
+
+					//disminuir el balance de general	
+					$objCustomerCredit 					= $this->Customer_Credit_Model->get_rowByPK($objCustomerCreditLine->companyID,$objCustomerCreditLine->branchID,$objCustomerCreditLine->entityID);
+					$objCustomerCreditNew["balanceDol"]	= $objCustomerCredit->balanceDol - $montoTotalDolaresCredit;
+					$this->Customer_Credit_Model->update_app_posme($objCustomerCreditLine->companyID,$objCustomerCreditLine->branchID,$objCustomerCreditLine->entityID,$objCustomerCreditNew);
+
+
+
+					//disminuir el balance de linea
+					if($objCustomerCreditLine->currencyID == $objCurrencyCordoba->currencyID)
+					$objCustomerCreditLineNew["balance"]	= $objCustomerCreditLine->balance - $montoTotalCordobaCredit;
+					else
+					$objCustomerCreditLineNew["balance"]	= $objCustomerCreditLine->balance - $montoTotalDolaresCredit;								
+					$this->Customer_Credit_Line_Model->update_app_posme($objCustomerCreditLine->customerCreditLineID,$objCustomerCreditLineNew);
+				}
+
+			}
+
+			//No auto aplicar
+			if( $db->transStatus() !== false)
+			{
+				$db->transCommit();
+			}
+			else
+			{
+				$db->transRollback();
+				throw new \Exception(ERROR);
+			}	
 		}
-		else
-		{
-			$db->transRollback();
-			throw new \Exception(ERROR);
-		}	
+		catch(\Exception $ex)
+		{	
+			throw new \Exception($ex->getLine()." ".$ex->getMessage());
+		}		
 		
 	}
 

@@ -121,7 +121,7 @@ class Employee_Model extends Model  {
 					tn.firstName,
 					tn.lastName');
 		$query		= $query->join('tb_naturales tn','te.entityID=tn.entityID');
-		$query		=$query->where(['te.companyID'=>$companyID, 'te.branchID'=>$branchID, 'te.employeeID'=>$employeId,'te.isActive'=>1]);
+		$query		= $query->where(['te.companyID'=>$companyID, 'te.branchID'=>$branchID, 'te.employeeID'=>$employeId,'te.isActive'=>1]);
 		
 		//Ejecutar Consulta
 		return $query->get()->getRowObject();
