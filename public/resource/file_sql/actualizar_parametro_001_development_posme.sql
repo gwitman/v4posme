@@ -5,6 +5,28 @@ use dbkroqnguhldo1;
 /******************************************************************/	
 
 
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "2" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_BANKID_DEFAULT";## Banco por defecto
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "546" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_MESAID_DEFAULT";## Mesa por defecto
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "157" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_ZONEID_DEFAULT";## Zona por defecto
+	
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "872" 
 WHERE 

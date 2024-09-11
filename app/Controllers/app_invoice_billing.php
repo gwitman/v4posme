@@ -2104,6 +2104,8 @@ class app_invoice_billing extends _BaseController {
 			$objTM["sourceWarehouseID"]				= $warehouseID;
 			$objTM["targetWarehouseID"]				= NULL;
 			$objTM["isActive"]						= 1;
+			$objTM["tax4"]							= 0;
+			$objTM["discount"]						= 0;
 			$objTM["periodPay"]						= $periodPay->value; //frecuencia de pago por defecto
 			$objTM["nextVisit"]						= "";
 			$objTM["numberPhone"]					= "";
@@ -2144,8 +2146,8 @@ class app_invoice_billing extends _BaseController {
 			}else if($transactionMaster->CurrencyId==$objCurrencyDolares->currencyID){ //dolares
 				$amountDolares = $transactionMaster->Amount;
 			}
-			$objTMInfo["receiptAmount"]				= $amountCordobas;
-			$objTMInfo["receiptAmountDol"]			= $amountDolares; 
+			$objTMInfo["receiptAmount"]				= $exisCausalInCredit == "true" ? 0 : $amountCordobas;
+			$objTMInfo["receiptAmountDol"]			= $exisCausalInCredit == "true" ? 0 : $amountDolares; 
 			$objTMInfo["receiptAmountPoint"]		= 0;
 			$objTMInfo["receiptAmountBank"]			= 0;
 			$objTMInfo["receiptAmountBankDol"]		= 0;
@@ -2206,8 +2208,8 @@ class app_invoice_billing extends _BaseController {
 					$objTMD["skuQuantity"] 					= $quantity;						//cantidad
 					$objTMD["skuQuantityBySku"]				= 1;				//cantidad
 
-					$objTMD["unitaryCost"]					= $value->UnitaryCost;					//costo
-					$objTMD["cost"] 						= $quantity  * $value->UnitaryCost;		//cantidad por costo
+					$objTMD["unitaryCost"]					= $objItem->cost;					//costo
+					$objTMD["cost"] 						= $quantity  * $objItem->cost;		//cantidad por costo
 
 					$objTMD["unitaryPrice"]					= $price;							//precio de lista
 					$objTMD["unitaryAmount"]				= $unitaryAmount;					//precio de lista con inpuesto					
@@ -2247,9 +2249,9 @@ class app_invoice_billing extends _BaseController {
 					$objTMDC								= NULL;
 					$objTMDC["transactionMasterID"]			= $transactionMasterID;
 					$objTMDC["transactionMasterDetailID"]	= $transactionMasterDetailID_;
-					$objTMDC["reference1"]					= $value->Reference1;
-					$objTMDC["reference2"]					= $value->Reference2;
-					$objTMDC["reference3"]					= "";
+					$objTMDC["reference1"]					= "0";
+					$objTMDC["reference2"]					= "1";
+					$objTMDC["reference3"]					= "0";
 					$objTMDC["reference4"]					= "";
 					$objTMDC["reference5"]					= "";
 					$objTMDC["reference9"]					= "reference1: Porcentaje de Gastos Fijo para las facturas de credito,reference2: Escritura Publica,reference3: Primer Linea del Protocolo";
@@ -2340,7 +2342,7 @@ class app_invoice_billing extends _BaseController {
 					$objCustomerCreditDocument["periodPay"]				= $objCustomerCreditLine->periodPay;
 
 					$objCustomerCreditDocument["typeAmortization"] 		= $objCustomerCreditLine->typeAmortization;					
-					$objCustomerCreditDocument["reportSinRiesgo"] 	 	= 0;
+					$objCustomerCreditDocument["reportSinRiesgo"] 	 	= 1;
 					$customerCreditDocumentID 							= $this->Customer_Credit_Document_Model->insert_app_posme($objCustomerCreditDocument);
 					$periodPay 											= $this->Catalog_Item_Model->get_rowByCatalogItemID($objCustomerCreditLine->periodPay);
 
