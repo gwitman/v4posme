@@ -1201,7 +1201,7 @@ class app_cxc_customer extends _BaseController {
             $objCustomerCredit["companyID"] 		= $objEntity["companyID"];
             $objCustomerCredit["branchID"] 			= $objEntity["branchID"];
             $objCustomerCredit["entityID"] 			= $entityID;
-            $objCustomerCredit["limitCreditDol"] 	= 80000;
+            $objCustomerCredit["limitCreditDol"] 	= 900000;
             $objCustomerCredit["balanceDol"] 		= $objCustomerCredit["limitCreditDol"];
             $objCustomerCredit["incomeDol"] 		= 5000;
             $this->Customer_Credit_Model->insert_app_posme($objCustomerCredit);
@@ -1237,15 +1237,15 @@ class app_cxc_customer extends _BaseController {
                 $arrayListCreditLineID[0] 			= $creditLineDefault;
                 $arrayListCreditCurrencyID[0]		= $this->core_web_currency->getCurrencyDefault($companyID)->currencyID;
                 $arrayListCreditLimit[0]			= 300000;
-                $arrayListCreditInterestYear[0]	= $interesDefault;
+                $arrayListCreditInterestYear[0]		= $interesDefault;
                 $arrayListCreditInterestPay[0]		= 0;
-                $arrayListCreditTotalPay[0]		= 0;
+                $arrayListCreditTotalPay[0]			= 0;
                 $arrayListCreditTotalDefeated[0]	= 0;
                 $arrayListCreditPeriodPay[0]		= $frecuencyDefault;
-                $arrayListCreditTerm[0]			= $plazoDefault;
-                $arrayListCreditNote[0]			= "-";
+                $arrayListCreditTerm[0]				= $plazoDefault;
+                $arrayListCreditNote[0]				= "-";
                 $arrayListTypeAmortization[0]		= $typeAmortizationDefault;
-                $arrayListCreditStatusID[0]		= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_line","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
+                $arrayListCreditStatusID[0]			= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_line","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
 
             }
 

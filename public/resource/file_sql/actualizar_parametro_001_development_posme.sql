@@ -5,8 +5,102 @@ use dbkroqnguhldo1;
 /******************************************************************/	
 
 
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "872" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_FORM_CONTACT_ID_DEFAULT";## Forma de contacto 
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "468" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_TYPE_FIRM_ID_DEFAULT";## Tipo de firma
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "719" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_CUSTOMER_SEX_ID_DEFAULT";## Sexo por defecto	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "96" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_CUSTOMER_PAY_CONDITION_ID_DEFAULT";## Condicion de pago
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "92" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_CUSTOMER_TYPE_PAY_ID_DEFAULT";## Tipo de pago	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "99" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_CUSTOMER_TYPE_ID_DEFAULT";## Tipo de cliente	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "103" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_SUBCATEGORY_ID_DEFAULT";## Sub Categoria por defecto
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "102" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_CATEGORY_ID_DEFAULT";## Categoria por defecto
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "97" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_CLASIFICATION_ID_DEFAULT";## Clasificacion por defecto
 
 
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "85" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_IDENTIFICATION_TYPE_DEFAULT";## Tipo de identificacion por defecto
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "466" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_PROFESION_ID_DEFAULT";## Profesion por defecto
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "464" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_STATUS_CIVIL_ID_DEFAULT";## Estado Civil del cliente
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "4" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_WAREHOUSE_ID_DEFAULT";## Id de la bodega por dececto
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "81" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_DISPLAY_ID_DEFAULT";## Presentacion por defecto	
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "75" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_FAMILY_ID_DEFAULT";## Familia por defecto del producto
+	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "78" 
