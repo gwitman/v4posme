@@ -812,259 +812,253 @@ class app_box_share extends _BaseController {
 	}
 
 	function insertElementMobil($dataSession,$transactionMaster){
-		try{
-			//Obtener el Componente de Transacciones Facturacion
-			$objComponentShare			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_share");
-			if(!$objComponentShare)
-			throw new \Exception("EL COMPONENTE 'tb_transaction_master_share' NO EXISTE...");
-			
-			//Obtener el Componente de Transacciones Facturacion
-			$objComponentAmortization			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer_credit_amoritization");
-			if(!$objComponentAmortization)
-			throw new \Exception("EL COMPONENTE 'tb_customer_credit_amoritization' NO EXISTE...");
-			
-			
-			$objComponentCustomer				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
-			if(!$objComponentCustomer)
-			throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
-			
-			//Obtener transaccion
-			$companyID 								= $dataSession["user"]->companyID;
-			$branchID								= $dataSession['user']->branchID;
-			$roleID 								= $dataSession["role"]->roleID;
-			$transactionID 							= $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_share",0);
-			$statusID 								= $this->core_web_workflow->getWorkflowStageApplyFirst("tb_transaction_master_share","statusID",$companyID,$branchID,$roleID);			
-			$objT 									= $this->Transaction_Model->getByCompanyAndTransaction($companyID,$transactionID);			
-			$customer 								= $this->Customer_Model->get_rowByIdentification($companyID, $transactionMaster->CustomerIdentification);			
-			$customerNaturals						= $this->Natural_Model->get_rowByPK($companyID,$branchID,$customer->entityID);
-			$typeAmortizationAmericanoID			= $this->core_web_parameter->getParameter("CXC_AMERICANO",$companyID)->value;
+		
+		//Obtener el Componente de Transacciones Facturacion
+		$objComponentShare			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_share");
+		if(!$objComponentShare)
+		throw new \Exception("EL COMPONENTE 'tb_transaction_master_share' NO EXISTE...");
+		
+		//Obtener el Componente de Transacciones Facturacion
+		$objComponentAmortization			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer_credit_amoritization");
+		if(!$objComponentAmortization)
+		throw new \Exception("EL COMPONENTE 'tb_customer_credit_amoritization' NO EXISTE...");
+		
+		
+		$objComponentCustomer				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
+		if(!$objComponentCustomer)
+		throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
+		
+		//Obtener transaccion
+		$companyID 								= $dataSession["user"]->companyID;
+		$branchID								= $dataSession['user']->branchID;
+		$roleID 								= $dataSession["role"]->roleID;
+		$transactionID 							= $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_share",0);
+		$statusID 								= $this->core_web_workflow->getWorkflowStageApplyFirst("tb_transaction_master_share","statusID",$companyID,$branchID,$roleID);			
+		$objT 									= $this->Transaction_Model->getByCompanyAndTransaction($companyID,$transactionID);			
+		$customer 								= $this->Customer_Model->get_rowByIdentification($companyID, $transactionMaster->CustomerIdentification);			
+		$customerNaturals						= $this->Natural_Model->get_rowByPK($companyID,$branchID,$customer->entityID);
+		$typeAmortizationAmericanoID			= $this->core_web_parameter->getParameter("CXC_AMERICANO",$companyID)->value;
 
-			//objeto transaction_master
-			$objTM["companyID"] 					= $companyID;
-			$objTM["transactionID"] 				= $transactionID;
-			$objTM["branchID"]						= $branchID;
-			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($companyID,$branchID,"tb_transaction_master_share",0);
-			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($companyID,$transactionID);
-			$objTM["entityID"] 						= $customer->entityID;
-			$objTM["transactionOn"]					= date("Y-m-d H:i:s");
-			$objTM["statusIDChangeOn"]				= date("Y-m-d H:i:s");
-			$objTM["componentID"] 					= $objComponentShare->componentID;
-			$objTM["note"] 							= $transactionMaster->Comment;
-			$objTM["sign"] 							= $objT->signInventory;
-			$objTM["currencyID"]					= $transactionMaster->CurrencyId; 
-			$objTM["currencyID2"]					= $this->core_web_currency->getTarget($companyID,$objTM["currencyID"]);
-			$objTM["exchangeRate"]					= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$objTM["currencyID2"],$objTM["currencyID"]);
-			$objTM["reference1"] 					= $transactionMaster->Reference1;
-			$objTM["reference2"] 					= $transactionMaster->TransactionNumber;
-			$objTM["reference3"] 					= $dataSession["user"]->employeeID;
-			$objTM["reference4"] 					= $transactionMaster->CustomerCreditLineId;
-			$objTM["descriptionReference"] 			= 'reference1:input,reference2:input,reference3:Gestor de Cobro,reference4:Linea de credito del Cliente';
-			$objTM["statusID"] 						= $statusID[0]->workflowStageID;
-			$objTM["amount"] 						= $transactionMaster->SubAmount;
-			$objTM["isApplied"] 					= 0;
-			$objTM["journalEntryID"] 				= 0;
-			$objTM["classID"] 						= NULL;
-			$objTM["areaID"] 						= NULL;
-			$objTM["sourceWarehouseID"]				= NULL;
-			$objTM["targetWarehouseID"]				= NULL;
-			$objTM["isActive"]						= 1;
-			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);			
-			
-			
-			$db=db_connect();
-			$db->transStart();
+		//objeto transaction_master
+		$objTM["companyID"] 					= $companyID;
+		$objTM["transactionID"] 				= $transactionID;
+		$objTM["branchID"]						= $branchID;
+		$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($companyID,$branchID,"tb_transaction_master_share",0);
+		$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($companyID,$transactionID);
+		$objTM["entityID"] 						= $customer->entityID;
+		$objTM["transactionOn"]					= date("Y-m-d H:i:s");
+		$objTM["statusIDChangeOn"]				= date("Y-m-d H:i:s");
+		$objTM["componentID"] 					= $objComponentShare->componentID;
+		$objTM["note"] 							= $transactionMaster->Comment;
+		$objTM["sign"] 							= $objT->signInventory;
+		$objTM["currencyID"]					= $transactionMaster->CurrencyId; 
+		$objTM["currencyID2"]					= $this->core_web_currency->getTarget($companyID,$objTM["currencyID"]);
+		$objTM["exchangeRate"]					= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$objTM["currencyID2"],$objTM["currencyID"]);
+		$objTM["reference1"] 					= $transactionMaster->Reference1;
+		$objTM["reference2"] 					= $transactionMaster->TransactionNumber;
+		$objTM["reference3"] 					= $dataSession["user"]->employeeID;
+		$objTM["reference4"] 					= $transactionMaster->CustomerCreditLineId;
+		$objTM["descriptionReference"] 			= 'reference1:input,reference2:input,reference3:Gestor de Cobro,reference4:Linea de credito del Cliente';
+		$objTM["statusID"] 						= $statusID[0]->workflowStageID;
+		$objTM["amount"] 						= $transactionMaster->SubAmount;
+		$objTM["isApplied"] 					= 0;
+		$objTM["journalEntryID"] 				= 0;
+		$objTM["classID"] 						= NULL;
+		$objTM["areaID"] 						= NULL;
+		$objTM["sourceWarehouseID"]				= NULL;
+		$objTM["targetWarehouseID"]				= NULL;
+		$objTM["isActive"]						= 1;
+		$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);			
+		
+		
+		$db=db_connect();
+		$db->transStart();
 
-			$transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
+		$transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
+		
+		//Crear la Carpeta para almacenar los Archivos del Documento			
+		$filterPath = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID;
+		if (!file_exists($filterPath))			
+		mkdir($filterPath, 0777,true);
+		
+		//Ingresar Informacion Adicional
+		$objTMInfo["companyID"]					= $companyID;
+		$objTMInfo["transactionID"]				= $transactionID;
+		$objTMInfo["transactionMasterID"]		= $transactionMasterID;
+		$objTMInfo["zoneID"]					= 0;
+		$objTMInfo["routeID"]					= 0;
+		$objTMInfo["referenceClientName"]		= $customerNaturals->firstName;
+		$objTMInfo["referenceClientIdentifier"]	= $transactionMaster->CustomerIdentification;
+		$objTMInfo["receiptAmount"]				= $transactionMaster->SubAmount;
+		$objTMInfo["reference1"]				= $transactionMaster->Discount; //balance inicial? en el json es el Discount
+		$objTMInfo["reference2"]				= $transactionMaster->Amount; //balance final? en el json es el Amount
+		$objTMInfo["changeAmount"]				= 0;
+		$this->Transaction_Master_Info_Model->insert_app_posme($objTMInfo);
+		
+		//Recorrer la lista del detalle del documento
+		$arrayListDocumentosAndAmount				= explode(",",$transactionMaster->Reference1);			
+		$amount 									= 0;
+		
+		if(!empty($arrayListDocumentosAndAmount)){
+			$getFirstDocument						= explode(":",$arrayListDocumentosAndAmount[0]);				
+			//tomamos el id del primer array
+			$customerCreditAmortizationID			= $getFirstDocument[0];			
+			$findCustomerCreditAmortization			= $this->Customer_Credit_Amortization_Model->get_rowByPK($customerCreditAmortizationID);
+			$findCustomerDocumentCredit				= $this->Customer_Credit_Document_Model->get_rowByPK($findCustomerCreditAmortization->customerCreditDocumentID);
+			$findCustomerCreditLine					= $this->Customer_Credit_Line_Model->get_rowByPK($findCustomerDocumentCredit->customerCreditLineID);
 			
-			//Crear la Carpeta para almacenar los Archivos del Documento			
-			$filterPath = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID;
-			if (!file_exists($filterPath))			
-			mkdir($filterPath, 0777,true);
+			$objTMD 								= NULL;
+			$objTMD["companyID"] 					= $companyID;
+			$objTMD["transactionID"] 				= $transactionID;
+			$objTMD["transactionMasterID"] 			= $transactionMasterID;
+			$objTMD["componentID"]					= $objComponentShare->componentID;
+			$objTMD["componentItemID"] 				= $findCustomerDocumentCredit->customerCreditDocumentID;
+			$objTMD["quantity"] 					= 0;
+			$objTMD["unitaryCost"]					= 0;
+			$objTMD["cost"] 						= 0;
 			
-			//Ingresar Informacion Adicional
-			$objTMInfo["companyID"]					= $companyID;
-			$objTMInfo["transactionID"]				= $transactionID;
-			$objTMInfo["transactionMasterID"]		= $transactionMasterID;
-			$objTMInfo["zoneID"]					= 0;
-			$objTMInfo["routeID"]					= 0;
-			$objTMInfo["referenceClientName"]		= $customerNaturals->firstName;
-			$objTMInfo["referenceClientIdentifier"]	= $transactionMaster->CustomerIdentification;
-			$objTMInfo["receiptAmount"]				= $transactionMaster->SubAmount;
-			$objTMInfo["reference1"]				= $transactionMaster->Discount; //balance inicial? en el json es el Discount
-			$objTMInfo["reference2"]				= $transactionMaster->Amount; //balance final? en el json es el Amount
-			$objTMInfo["changeAmount"]				= 0;
-			$this->Transaction_Master_Info_Model->insert_app_posme($objTMInfo);
+			$objTMD["unitaryPrice"]					= 0;
+			$objTMD["unitaryAmount"]				= 0;
+			$objTMD["amount"] 						= $transactionMaster->SubAmount;
+			$objTMD["discount"]						= 0;					
+			$objTMD["promotionID"] 					= 0;
 			
-			//Recorrer la lista del detalle del documento
-			$arrayListDocumentosAndAmount				= explode(",",$transactionMaster->Reference1);			
-			$amount 									= 0;
-			
-			if(!empty($arrayListDocumentosAndAmount)){
-				$getFirstDocument						= explode(":",$arrayListDocumentosAndAmount[0]);				
-				//tomamos el id del primer array
-				$customerCreditAmortizationID			= $getFirstDocument[0];			
-				$findCustomerCreditAmortization			= $this->Customer_Credit_Amortization_Model->get_rowByPK($customerCreditAmortizationID);
-				$findCustomerDocumentCredit				= $this->Customer_Credit_Document_Model->get_rowByPK($findCustomerCreditAmortization->customerCreditDocumentID);
-				$findCustomerCreditLine					= $this->Customer_Credit_Line_Model->get_rowByPK($findCustomerDocumentCredit->customerCreditLineID);
-				
-				$objTMD 								= NULL;
-				$objTMD["companyID"] 					= $companyID;
-				$objTMD["transactionID"] 				= $transactionID;
-				$objTMD["transactionMasterID"] 			= $transactionMasterID;
-				$objTMD["componentID"]					= $objComponentShare->componentID;
-				$objTMD["componentItemID"] 				= $findCustomerDocumentCredit->customerCreditDocumentID;
-				$objTMD["quantity"] 					= 0;
-				$objTMD["unitaryCost"]					= 0;
-				$objTMD["cost"] 						= 0;
-				
-				$objTMD["unitaryPrice"]					= 0;
-				$objTMD["unitaryAmount"]				= 0;
-				$objTMD["amount"] 						= $transactionMaster->SubAmount;
-				$objTMD["discount"]						= 0;					
-				$objTMD["promotionID"] 					= 0;
-				
-				$objTMD["reference1"]					= $findCustomerDocumentCredit->documentNumber;
+			$objTMD["reference1"]					= $findCustomerDocumentCredit->documentNumber;
 
-				//Obtener balance anterior
-				if($typeAmortizationAmericanoID == $findCustomerCreditLine->typeAmortization)
-				$objTMD["reference2"]					= $findCustomerDocumentCredit->balance;
-				else
-				$objTMD["reference2"]					= $findCustomerDocumentCredit->balanceNew;
+			//Obtener balance anterior
+			if($typeAmortizationAmericanoID == $findCustomerCreditLine->typeAmortization)
+			$objTMD["reference2"]					= $findCustomerDocumentCredit->balance;
+			else
+			$objTMD["reference2"]					= $findCustomerDocumentCredit->balanceNew;
 
-				$objTMD["reference3"]					= $findCustomerCreditAmortization->creditAmortizationID;
-				$objTMD["reference4"]					= 0;
-				$objTMD["reference5"]					= $findCustomerDocumentCredit->dateOn;
-				$objTMD["reference6"]					= $findCustomerDocumentCredit->dateFinish;
-				$objTMD["reference7"]					= $findCustomerCreditAmortization->dateApply;
-				$objTMD["catalogStatusID"]				= 0;
-				$objTMD["inventoryStatusID"]			= 0;
-				$objTMD["isActive"]						= 1;
-				$objTMD["quantityStock"]				= 0;
-				$objTMD["quantiryStockInTraffic"]		= 0;
-				$objTMD["quantityStockUnaswared"]		= 0;
-				$objTMD["remaingStock"]					= 0;
-				$objTMD["expirationDate"]				= NULL;
-				$objTMD["inventoryWarehouseSourceID"]	= $objTM["sourceWarehouseID"];
-				$objTMD["inventoryWarehouseTargetID"]	= $objTM["targetWarehouseID"];
-				
-				//Verificar los dias de atraso
-				$hoy									= (new \DateTime())->format("Y-m-d");
-				$hoy									= \DateTime::createFromFormat('Y-m-d',$hoy);
-				$cuotaDate								= \DateTime::createFromFormat('Y-m-d', $findCustomerCreditAmortization->dateApply );
-				$cuotaDif								= $hoy->diff($cuotaDate);
-				$cuotaDif								= $cuotaDif->days;
-				$objTMD["lote"]							= $cuotaDif;
-				$objTMD["exchangeRateReference"]		= $findCustomerDocumentCredit->exchangeRate;
-				$objTMD["descriptionReference"]			= '{componentID:"Componente de transacciones de cuotas",componentItemID:"Id del documento de credito",reference1:"Numero del desembolso",refernece2:"balance anterior",refernece3:"Id de la amortizacion",reference4:"balance nuevo",exchangeRateReference:"Tasa de cambio del desembolso",referece5:"Fecha Inical de la deuda",reference6:"Fecha Final de la deuda",reference7:"dia que tocaba la cuota",lote:"Dias de atraso de la cuota"}';
-				$amount 								= $amount + $objTMD["amount"];
-				
-				$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
-			}
+			$objTMD["reference3"]					= $findCustomerCreditAmortization->creditAmortizationID;
+			$objTMD["reference4"]					= 0;
+			$objTMD["reference5"]					= $findCustomerDocumentCredit->dateOn;
+			$objTMD["reference6"]					= $findCustomerDocumentCredit->dateFinish;
+			$objTMD["reference7"]					= $findCustomerCreditAmortization->dateApply;
+			$objTMD["catalogStatusID"]				= 0;
+			$objTMD["inventoryStatusID"]			= 0;
+			$objTMD["isActive"]						= 1;
+			$objTMD["quantityStock"]				= 0;
+			$objTMD["quantiryStockInTraffic"]		= 0;
+			$objTMD["quantityStockUnaswared"]		= 0;
+			$objTMD["remaingStock"]					= 0;
+			$objTMD["expirationDate"]				= NULL;
+			$objTMD["inventoryWarehouseSourceID"]	= $objTM["sourceWarehouseID"];
+			$objTMD["inventoryWarehouseTargetID"]	= $objTM["targetWarehouseID"];
 			
-			//Actualizar Transaccion			
-			$objTM["amount"] = $amount;			
-			$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTM);
-						
+			//Verificar los dias de atraso
+			$hoy									= (new \DateTime())->format("Y-m-d");
+			$hoy									= \DateTime::createFromFormat('Y-m-d',$hoy);
+			$cuotaDate								= \DateTime::createFromFormat('Y-m-d', $findCustomerCreditAmortization->dateApply );
+			$cuotaDif								= $hoy->diff($cuotaDate);
+			$cuotaDif								= $cuotaDif->days;
+			$objTMD["lote"]							= $cuotaDif;
+			$objTMD["exchangeRateReference"]		= $findCustomerDocumentCredit->exchangeRate;
+			$objTMD["descriptionReference"]			= '{componentID:"Componente de transacciones de cuotas",componentItemID:"Id del documento de credito",reference1:"Numero del desembolso",refernece2:"balance anterior",refernece3:"Id de la amortizacion",reference4:"balance nuevo",exchangeRateReference:"Tasa de cambio del desembolso",referece5:"Fecha Inical de la deuda",reference6:"Fecha Final de la deuda",reference7:"dia que tocaba la cuota",lote:"Dias de atraso de la cuota"}';
+			$amount 								= $amount + $objTMD["amount"];
 			
-			//Aplicar el Documento?
-			if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_share","statusID",$objTM["statusID"],COMMAND_APLICABLE,$companyID,$branchID,$roleID)){
-				$objCurrencyDolares						= $this->core_web_currency->getCurrencyExternal($companyID);
-				$objCurrencyCordoba						= $this->core_web_currency->getCurrencyDefault($companyID);
-				
-				//Recorrer Facturas para Actualizar Balances
-				$objListTMD = $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID,$transactionID,$transactionMasterID);
-				if(count($objListTMD)>0){
-					foreach($objListTMD as $key => $objTMD){
-					
-						//documento inicial
-						$objCustomerCreditDocumentInicial			= $this->Customer_Credit_Document_Model->get_rowByPK($objTMD->componentItemID);					
-						
-						//aplicar
-						$this->core_web_amortization->applyCuote($companyID,$objTMD->componentItemID,$objTMD->amount,$objTMD->reference3);
-						
-						//documento final
-						$objCustomerCreditDocument					= $this->Customer_Credit_Document_Model->get_rowByPK($objTMD->componentItemID);					
-						
-						
-						//capital
-						$objTMDC["transactionMasterID"]				= $objTMD->transactionMasterID;
-						$objTMDC["transactionMasterDetailID"]		= $objTMD->transactionMasterDetailID;
-						$objTMDC["capital"]							= ($objCustomerCreditDocumentInicial->balance - $objCustomerCreditDocument->balance);
-						$objTMDC["interest"]						= $objTMD->amount - $objTMDC["capital"];
-						$objTMDC["dayDalay"]						= 0;
-						$objTMDC["interestMora"]					= 0;
-						$objTMDC["currencyID"]						= $objTM['currencyID'];
-						$objTMDC["exchangeRate"]					= $objTM["exchangeRate"];
-						$objTMDC["reference1"]						= NULL;
-						$objTMDC["reference2"]						= NULL;
-						$objTMDC["reference3"]						= NULL;
-						$objTMDC["reference4"]						= NULL;
-						$this->Transaction_Master_Detail_Credit_Model->insert_app_posme($objTMDC);
-						
-						
-						$objCustomer								= $this->Customer_Model->get_rowByEntity($companyID,$objTM["entityID"]);
-						$objTMFactura 								= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,$objTMD->reference1);/*invoiceNumber*/
-						$objCustomerCreditLine 						= $this->Customer_Credit_Line_Model->get_rowByPK($objTMFactura->reference4); /*customerCreditLineID*/
-						$objCustomerCredit							= $this->Customer_Credit_Model->get_rowByPK($companyID,$objCustomer->branchID,$objCustomer->entityID);
-						$montoAbono									= $objTMDC["capital"];
-						$montoAbonoDolares							= $objTMFactura->exchangeRate > 1 ? /*cordoba a dolares*/ ($objTMDC["capital"] * round(1/round($objTMFactura->exchangeRate,4),4)) : $objTMDC["capital"];
-						$montoAbonoCordobas							= $objTMFactura->exchangeRate < 1 ? /*dolares a cordoba*/ ($objTMDC["capital"] / round($objTMFactura->exchangeRate,4)) : $objTMDC["capital"];
-						
-						//actualizar saldo general del cliente
-						$objCustomerCreditNew["balanceDol"]			= $objCustomerCredit->balanceDol + $montoAbonoDolares;
-						$this->Customer_Credit_Model->update_app_posme($companyID,$objCustomer->branchID,$objCustomer->entityID,$objCustomerCreditNew);
-						
-						//actualizar saldo de la linea
-						//linea dolares y factura dolares					
-						//linea cordoba y factura cordoba
-						if($objCustomerCreditLine->currencyID == $objTMFactura->currencyID)
-						$objCustomerCreditLineNew["balance"]	= $objCustomerCreditLine->balance + $montoAbono;
-						
-						
-						//linea en dolares factura en cordoba
-						if($objCustomerCreditLine->currencyID == $objCurrencyDolares->currencyID && $objTMFactura->currencyID != $objCurrencyDolares->currencyID)
-						$objCustomerCreditLineNew["balance"]	= $objCustomerCreditLine->balance + $montoAbonoDolares;
-							
-						//linea en cordoba factura en dolares
-						if($objCustomerCreditLine->currencyID != $objCurrencyDolares->currencyID && $objTMFactura->currencyID == $objCurrencyDolares->currencyID)
-						$objCustomerCreditLineNew["balance"]	= $objCustomerCreditLine->balance + $montoAbonoCordobas;
-						
-						//actualizar linea
-						$this->Customer_Credit_Line_Model->update_app_posme($objCustomerCreditLine->customerCreditLineID,$objCustomerCreditLineNew);
-						
-						
-						//actualizar saldo del recibo
-						$objTMDNew									= NULL;
-						if($typeAmortizationAmericanoID == $objCustomerCreditLine->typeAmortization)
-						$objTMDNew["reference4"]					= $objCustomerCreditDocument->balance;
-						else
-						$objTMDNew["reference4"]					= $objCustomerCreditDocument->balanceNew;					
-						
-						//actualizar saldo del recibo
-						$this->Transaction_Master_Detail_Model->update_app_posme($objTMD->companyID,$objTMD->transactionID,$objTMD->transactionMasterID,$objTMD->transactionMasterDetailID,$objTMDNew);
-						
-						
-					}
-				}
-				
-				//Crear Conceptos.
-				$this->core_web_concept->share($companyID,$transactionID,$transactionMasterID);
-			}
-
-			
-			if($db->transStatus() !== false){
-				$db->transCommit();	}
-			else{
-				$db->transRollback();
-			}
+			$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
 		}
-		catch(\Exception $ex){
-            print_r($ex);
-			return $this->response->setJSON(array(
-				'error'   => true,
-				'message' => $ex->getLine()." ".$ex->getMessage()
-			));//--finjson
-		}	
+		
+		//Actualizar Transaccion			
+		$objTM["amount"] = $amount;			
+		$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTM);
+					
+		
+		//Aplicar el Documento?
+		if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_share","statusID",$objTM["statusID"],COMMAND_APLICABLE,$companyID,$branchID,$roleID)){
+			$objCurrencyDolares						= $this->core_web_currency->getCurrencyExternal($companyID);
+			$objCurrencyCordoba						= $this->core_web_currency->getCurrencyDefault($companyID);
+			
+			//Recorrer Facturas para Actualizar Balances
+			$objListTMD = $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID,$transactionID,$transactionMasterID);
+			if(count($objListTMD)>0){
+				foreach($objListTMD as $key => $objTMD){
+				
+					//documento inicial
+					$objCustomerCreditDocumentInicial			= $this->Customer_Credit_Document_Model->get_rowByPK($objTMD->componentItemID);					
+					
+					//aplicar
+					$this->core_web_amortization->applyCuote($companyID,$objTMD->componentItemID,$objTMD->amount,$objTMD->reference3);
+					
+					//documento final
+					$objCustomerCreditDocument					= $this->Customer_Credit_Document_Model->get_rowByPK($objTMD->componentItemID);					
+					
+					
+					//capital
+					$objTMDC["transactionMasterID"]				= $objTMD->transactionMasterID;
+					$objTMDC["transactionMasterDetailID"]		= $objTMD->transactionMasterDetailID;
+					$objTMDC["capital"]							= ($objCustomerCreditDocumentInicial->balance - $objCustomerCreditDocument->balance);
+					$objTMDC["interest"]						= $objTMD->amount - $objTMDC["capital"];
+					$objTMDC["dayDalay"]						= 0;
+					$objTMDC["interestMora"]					= 0;
+					$objTMDC["currencyID"]						= $objTM['currencyID'];
+					$objTMDC["exchangeRate"]					= $objTM["exchangeRate"];
+					$objTMDC["reference1"]						= NULL;
+					$objTMDC["reference2"]						= NULL;
+					$objTMDC["reference3"]						= NULL;
+					$objTMDC["reference4"]						= NULL;
+					$this->Transaction_Master_Detail_Credit_Model->insert_app_posme($objTMDC);
+					
+					
+					$objCustomer								= $this->Customer_Model->get_rowByEntity($companyID,$objTM["entityID"]);
+					$objTMFactura 								= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,$objTMD->reference1);/*invoiceNumber*/
+					$objCustomerCreditLine 						= $this->Customer_Credit_Line_Model->get_rowByPK($objTMFactura->reference4); /*customerCreditLineID*/
+					$objCustomerCredit							= $this->Customer_Credit_Model->get_rowByPK($companyID,$objCustomer->branchID,$objCustomer->entityID);
+					$montoAbono									= $objTMDC["capital"];
+					$montoAbonoDolares							= $objTMFactura->exchangeRate > 1 ? /*cordoba a dolares*/ ($objTMDC["capital"] * round(1/round($objTMFactura->exchangeRate,4),4)) : $objTMDC["capital"];
+					$montoAbonoCordobas							= $objTMFactura->exchangeRate < 1 ? /*dolares a cordoba*/ ($objTMDC["capital"] / round($objTMFactura->exchangeRate,4)) : $objTMDC["capital"];
+					
+					//actualizar saldo general del cliente
+					$objCustomerCreditNew["balanceDol"]			= $objCustomerCredit->balanceDol + $montoAbonoDolares;
+					$this->Customer_Credit_Model->update_app_posme($companyID,$objCustomer->branchID,$objCustomer->entityID,$objCustomerCreditNew);
+					
+					//actualizar saldo de la linea
+					//linea dolares y factura dolares					
+					//linea cordoba y factura cordoba
+					if($objCustomerCreditLine->currencyID == $objTMFactura->currencyID)
+					$objCustomerCreditLineNew["balance"]	= $objCustomerCreditLine->balance + $montoAbono;
+					
+					
+					//linea en dolares factura en cordoba
+					if($objCustomerCreditLine->currencyID == $objCurrencyDolares->currencyID && $objTMFactura->currencyID != $objCurrencyDolares->currencyID)
+					$objCustomerCreditLineNew["balance"]	= $objCustomerCreditLine->balance + $montoAbonoDolares;
+						
+					//linea en cordoba factura en dolares
+					if($objCustomerCreditLine->currencyID != $objCurrencyDolares->currencyID && $objTMFactura->currencyID == $objCurrencyDolares->currencyID)
+					$objCustomerCreditLineNew["balance"]	= $objCustomerCreditLine->balance + $montoAbonoCordobas;
+					
+					//actualizar linea
+					$this->Customer_Credit_Line_Model->update_app_posme($objCustomerCreditLine->customerCreditLineID,$objCustomerCreditLineNew);
+					
+					
+					//actualizar saldo del recibo
+					$objTMDNew									= NULL;
+					if($typeAmortizationAmericanoID == $objCustomerCreditLine->typeAmortization)
+					$objTMDNew["reference4"]					= $objCustomerCreditDocument->balance;
+					else
+					$objTMDNew["reference4"]					= $objCustomerCreditDocument->balanceNew;					
+					
+					//actualizar saldo del recibo
+					$this->Transaction_Master_Detail_Model->update_app_posme($objTMD->companyID,$objTMD->transactionID,$objTMD->transactionMasterID,$objTMD->transactionMasterDetailID,$objTMDNew);
+					
+					
+				}
+			}
+			
+			//Crear Conceptos.
+			$this->core_web_concept->share($companyID,$transactionID,$transactionMasterID);
+		}
+
+		
+		if($db->transStatus() !== false){
+			$db->transCommit();	}
+		else{
+			$db->transRollback();
+			throw new \Exception(ERROR);
+		}
+		
 	}
 	function save($mode=""){
 		$mode = helper_SegmentsByIndex($this->uri->getSegments(),1,$mode);	
