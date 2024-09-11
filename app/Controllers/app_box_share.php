@@ -834,8 +834,8 @@ class app_box_share extends _BaseController {
 			$roleID 								= $dataSession["role"]->roleID;
 			$transactionID 							= $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_share",0);
 			$statusID 								= $this->core_web_workflow->getWorkflowStageApplyFirst("tb_transaction_master_share","statusID",$companyID,$branchID,$roleID);			
-			$objT 									= $this->Transaction_Model->getByCompanyAndTransaction($companyID,$transactionID);
-			$customer 								= $this->Customer_Model->get_rowByIdentification($companyID, $transactionMaster->CustomerIdentification);
+			$objT 									= $this->Transaction_Model->getByCompanyAndTransaction($companyID,$transactionID);			
+			$customer 								= $this->Customer_Model->get_rowByIdentification($companyID, $transactionMaster->CustomerIdentification);			
 			$customerNaturals						= $this->Natural_Model->get_rowByPK($companyID,$branchID,$customer->entityID);
 			$typeAmortizationAmericanoID			= $this->core_web_parameter->getParameter("CXC_AMERICANO",$companyID)->value;
 
@@ -889,20 +889,20 @@ class app_box_share extends _BaseController {
 			$objTMInfo["routeID"]					= 0;
 			$objTMInfo["referenceClientName"]		= $customerNaturals->firstName;
 			$objTMInfo["referenceClientIdentifier"]	= $transactionMaster->CustomerIdentification;
-			$objTMInfo["receiptAmount"]				= $transactionMaster->Amount;
-			$objTMInfo["reference1"]				= $transactionMaster->Discount; //***balance inicial? en el json es el Discount
-			$objTMInfo["reference2"]				= $transactionMaster->Amount; //***balance final? en el json es el Amount
+			$objTMInfo["receiptAmount"]				= $transactionMaster->SubAmount;
+			$objTMInfo["reference1"]				= $transactionMaster->Discount; //balance inicial? en el json es el Discount
+			$objTMInfo["reference2"]				= $transactionMaster->Amount; //balance final? en el json es el Amount
 			$objTMInfo["changeAmount"]				= 0;
 			$this->Transaction_Master_Info_Model->insert_app_posme($objTMInfo);
 			
 			//Recorrer la lista del detalle del documento
-			$arrayListDocumentosAndAmount				= explode(",",$transactionMaster->Reference1);
+			$arrayListDocumentosAndAmount				= explode(",",$transactionMaster->Reference1);			
 			$amount 									= 0;
 			
 			if(!empty($arrayListDocumentosAndAmount)){
-				$getFirstDocument						= explode(":",$arrayListDocumentosAndAmount[0]);
+				$getFirstDocument						= explode(":",$arrayListDocumentosAndAmount[0]);				
 				//tomamos el id del primer array
-				$customerCreditAmortizationID			= $getFirstDocument[0]; 
+				$customerCreditAmortizationID			= $getFirstDocument[0];			
 				$findCustomerCreditAmortization			= $this->Customer_Credit_Amortization_Model->get_rowByPK($customerCreditAmortizationID);
 				$findCustomerDocumentCredit				= $this->Customer_Credit_Document_Model->get_rowByPK($findCustomerCreditAmortization->customerCreditDocumentID);
 				$findCustomerCreditLine					= $this->Customer_Credit_Line_Model->get_rowByPK($findCustomerDocumentCredit->customerCreditLineID);
@@ -954,8 +954,8 @@ class app_box_share extends _BaseController {
 				$cuotaDif								= $hoy->diff($cuotaDate);
 				$cuotaDif								= $cuotaDif->days;
 				$objTMD["lote"]							= $cuotaDif;
-				$objTMDNew["exchangeRateReference"]		= $findCustomerDocumentCredit->exchangeRate;
-				$objTMDNew["descriptionReference"]		= '{componentID:"Componente de transacciones de cuotas",componentItemID:"Id del documento de credito",reference1:"Numero del desembolso",refernece2:"balance anterior",refernece3:"Id de la amortizacion",reference4:"balance nuevo",exchangeRateReference:"Tasa de cambio del desembolso",referece5:"Fecha Inical de la deuda",reference6:"Fecha Final de la deuda",reference7:"dia que tocaba la cuota",lote:"Dias de atraso de la cuota"}';
+				$objTMD["exchangeRateReference"]		= $findCustomerDocumentCredit->exchangeRate;
+				$objTMD["descriptionReference"]			= '{componentID:"Componente de transacciones de cuotas",componentItemID:"Id del documento de credito",reference1:"Numero del desembolso",refernece2:"balance anterior",refernece3:"Id de la amortizacion",reference4:"balance nuevo",exchangeRateReference:"Tasa de cambio del desembolso",referece5:"Fecha Inical de la deuda",reference6:"Fecha Final de la deuda",reference7:"dia que tocaba la cuota",lote:"Dias de atraso de la cuota"}';
 				$amount 								= $amount + $objTMD["amount"];
 				
 				$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
@@ -1051,9 +1051,6 @@ class app_box_share extends _BaseController {
 				$this->core_web_concept->share($companyID,$transactionID,$transactionMasterID);
 			}
 
-			//Actualizar Transaccion
-			$objTM["amount"] = $amount;
-			$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTM);
 			
 			if($db->transStatus() !== false){
 				$db->transCommit();	}
