@@ -605,6 +605,16 @@
         $(this).addClass("selected");
     });
 
+	$('#txtPorcentajeDescuento').on('input', function() {
+		 //validar que solo sea numero
+		 var valor = $(this).val();
+		 var expresion = /^\d*\.?\d{0,2}$/;
+		 if (!expresion.test(valor)) {
+			$(this).val(valor.slice(0, -1));
+		 }
+		 fnRecalculateDetail(true,"");
+    });
+	
 	function fnCalculateAmountPay()
 	{
 		
@@ -843,7 +853,13 @@
 			fnWaitClose();
 		}
 		
-		
+		//Validar monto descuento en rango de 0 a 100
+		let porcentajeDescuento = parseFloat($('#txtPorcentajeDescuento').val()) || 0;
+		if (porcentajeDescuento < 0 || porcentajeDescuento > 100) {
+			fnShowNotification("El porcentaje de descuento no es valido","error",timerNotification);
+			result = false;
+			fnWaitClose();
+        }
 		
 		
 		
@@ -1272,6 +1288,8 @@
 			$("#txtReceiptAmountBank").val("0");
 			$("#txtReceiptAmountPoint").val("0");
 			$("#txtSubTotal").val("0");
+			$("#txtDescuento").val("0");
+			$("#txtPorcentajeDescuento").val("0");
 			$("#txtIva").val("0");
 			$("#txtTotal").val("0");
 			$("#txtTotalAlternativo").text("0");
@@ -1290,7 +1308,7 @@
 		var precio					= 0;		
 		var subtotal 				= 0;		
 		var total 					= 0;
-		
+		var porcentajeDescuento 	= parseFloat($('#txtPorcentajeDescuento').val()) || 0;
 		var cantidadGeneral 				= 0;
 		var ivaGeneral 						= 0;
 		var precioGeneral					= 0;		
@@ -1341,8 +1359,12 @@
 			
 			
 			objTableDetail.fnUpdate( fnFormatNumber(subtotal,2), i, 8 );
-		}						
+		}	
+        let descuento = subtotalGeneral * (porcentajeDescuento / 100);
+        totalGeneral = subtotalGeneral + ivaGeneral - descuento;
+        
 		$("#txtSubTotal").val(fnFormatNumber(subtotalGeneral,2));
+		$('#txtDescuento').val(fnFormatNumber(descuento, 2));
 		$("#txtIva").val(fnFormatNumber(ivaGeneral,2));
 		$("#txtTotal").val(fnFormatNumber(totalGeneral,2));
 		$("#txtTotalAlternativo").text(fnFormatNumber(totalGeneral,2));

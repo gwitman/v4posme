@@ -1124,19 +1124,32 @@
 								<tr>
 									<th style="text-align:left;" >01) SUB TOTAL</th>
 									<td >
-										<input type="text" id="txtSubTotal" name="txtSubTotal" readonly class="col-lg-12" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
+										<input type="text" id="txtSubTotal" name="txtSubTotal" readonly class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
 								</tr>
 								<tr>
 									<th style="text-align:left">02) IVA</th>
 									<td >
-										<input type="text" id="txtIva" name="txtIva" readonly class="col-lg-12" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
+										<input type="text" id="txtIva" name="txtIva" readonly class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
 								</tr>
+                                <tr>
+                                    <th style="text-align:left;">03) % DESC</th>
+                                    <td>
+                                        <input type="text" id="txtPorcentajeDescuento" name="txtPorcentajeDescuento" class="col-lg-12" value="0" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="text-align:left;">04) DESC</th>
+                                    <td>
+                                        <input type="text" id="txtDescuento" name="txtDescuento" readonly class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>" />
+                                    </td>
+                                </tr>
+								
 								<tr>
-									<th style="text-align:left">03) TOTAL</th>
+									<th style="text-align:left">05) TOTAL</th>
 									<td >
-										<input type="text" id="txtTotal" name="txtTotal" readonly class="col-lg-12" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
+										<input type="text" id="txtTotal" name="txtTotal" readonly class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
 								</tr>
 							</tbody>
@@ -1146,7 +1159,24 @@
 				</div><!-- End .row-fluid  -->                                       
 			</div>
 			
-			
+                <!-- mensaje de valor de porcentaje de descuento, no puede menor de 0 ni mayor de 100-->
+                <div class="modal fade" tabindex="-1" id="modalValidarDescuentoPorcentaje" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">Descuento</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>El monto de descuento no puede ser mayor de 100 ni menor de 0, cambie su valor de <span id="valorDescuentoMensaje"></span> a uno correcto.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-info" data-dismiss="modal">Aceptar</button>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+                <!-- mensaje de valor de porcentaje de descuento, no puede menor de 0 ni mayor de 100-->
 						
 			<!-- Barra Lateral -->
 			<div id="mySidebar" class="sidebar" style="background-color:white">

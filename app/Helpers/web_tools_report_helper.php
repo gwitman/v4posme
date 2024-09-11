@@ -6499,7 +6499,30 @@ function helper_reporte80mmTransactionMaster(
                             &nbsp;
                           </td>
                         </tr>
-                             
+                        <tr>
+                          <td colspan='2'>
+                            SUB-TOTAL
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->subAmount)."
+                          </td>
+                        </tr>  
+						<tr>
+                          <td colspan='2'>
+                            IVA
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->tax1)."
+                          </td>
+                        </tr> 
+                        <tr>
+                          <td colspan='2'>
+                            DESC
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->discount)."
+                          </td>
+                        </tr>                              
                         <tr>
                           <td colspan='2'>
                             TOTAL
