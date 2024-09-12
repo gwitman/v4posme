@@ -165,9 +165,9 @@ class Customer_Credit_Amortization_Model extends Model  {
 					inner join  tb_customer_credit_amoritization cca on ccd.customerCreditDocumentID = cca.customerCreditDocumentID
 					inner join  tb_workflow_stage cca_status on cca_status.workflowStageID = cca.statusID
 					inner join  tb_workflow_stage ccd_status on ccd_status.workflowStageID = ccd.statusID 
-					inner join tb_relationship rr on rr.customerID = c.entityID 
-					inner join tb_employee emp on emp.entityID = rr.employeeID 
-					inner join tb_user usr on usr.employeeID = emp.entityID 
+					inner join  tb_relationship rr on rr.customerID = c.entityID 
+					inner join  tb_employee emp on emp.entityID = rr.employeeID 
+					inner join  tb_user usr on usr.employeeID = emp.entityID 
 				where 
 					c.companyID = $companyID
 					and ccd_status.vinculable= 1

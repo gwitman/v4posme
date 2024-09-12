@@ -279,13 +279,14 @@ class Customer_Credit_Document_Model extends Model  {
 					ex.targetCurrencyID = 2 and 
 					ex.date = DATE(now()) 
 			where 
-				d.isActive = 1 and 
 				d.companyID = $companyID  and 
+				usr.userID = $userID  and 
+				d.isActive = 1 and 				
 				a.isActive = 1 and 
 				wsa.aplicable = 1 and 
 				wsd.aplicable = 1 and 
 				a.remaining > 0  and 
-				usr.userID = $userID  
+				a.dateApply <= DATE(now())  
 			group by 
 				d.entityID,
 				d.customerCreditDocumentID,
