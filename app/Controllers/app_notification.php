@@ -1795,6 +1795,77 @@ class app_notification extends _BaseController
 
 	}
 
+	function sendEmailItemExpired()
+	{
+		
+		$emailProperty  = $this->core_web_parameter->getParameter("CORE_PROPIETARY_EMAIL", APP_COMPANY);
+		$emailProperty  = $emailProperty->value;
+		$objCompany  	= $this->Company_Model->get_rowByPK(APP_COMPANY);
+
+		$objNotificar = $this->Item_Model->get_rowByItemExpired(APP_COMPANY);
+		if ($objNotificar)
+		{
+			$table 	= "";
+			$table	= $table."<table style='width:100%'>";
+			
+			$table	= $table."<thead>";
+			$table	= $table."<tr>";
+				$table	= $table."<th>";
+					$table	= $table."Codigo";
+				$table	= $table."</th>";
+				$table	= $table."<th>";
+					$table	= $table."Nombre";
+				$table	= $table."</th>";
+				$table	= $table."<th>";
+					$table	= $table."Bodega";
+				$table	= $table."</th>";
+				$table	= $table."<th>";
+					$table	= $table."Cantidad";
+				$table	= $table."</th>";
+				$table	= $table."<th>";
+					$table	= $table."Expiracion";
+				$table	= $table."</th>";
+			$table	= $table."</tr>";
+			$table	= $table."<thead>";
+				
+			$table	= $table."<tbody>";
+			foreach ($objNotificar as $i) 
+			{
+				$table	= $table."<tr>";
+					$table	= $table."<td>";
+						$table	= $table."".$i->itemNumber.""."";
+					$table	= $table."</td>";
+					$table	= $table."<td>";
+						$table	= $table."".$i->name.""."";
+					$table	= $table."</td>";
+					$table	= $table."<td>";
+						$table	= $table."".$i->warehouseName.""."";
+					$table	= $table."</td>";
+					$table	= $table."<td>";
+						$table	= $table."".$i->quantity.""."";
+					$table	= $table."</td>";
+					$table	= $table."<td>";
+						$table	= $table."".$i->dateExpired.""."";
+					$table	= $table."</td>";
+				$table	= $table."</tr>";
+			}
+			$table	= $table."</tbody>";
+			$table	= $table."</table>";
+			
+			$subject 				= "Productos por vencer";
+			$params_["objCompany"]  = $objCompany;			
+			$params_["mensaje"]  	= $table;				
+			$body  					= /*--inicio view*/ view('core_template/email_notificacion', $params_); //--finview
+			
+			$this->email->setFrom(EMAIL_APP);
+			$this->email->setTo( $emailProperty /*"www.witman@gmail.com"*/ );
+			$this->email->setSubject($subject);
+			$this->email->setMessage($body);
+			$resultSend01 = $this->email->send();
+			
+		}
+		echo "SUCCESS";
+	}
 
 	function getNotificationShowInApp($userName)
 	{

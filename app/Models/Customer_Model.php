@@ -249,5 +249,21 @@ class Customer_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
 	}
+	
+	function getIdentificationDuplicate($companyID)
+    {
+		$db 		= db_connect();
+		$builder	= $db->table("tb_customer");
+		
+		$sql = "";
+		$sql = $sql.sprintf(" select i.identification,count(*) as counter");
+		$sql = $sql.sprintf(" from tb_customer i");
+		$sql = $sql.sprintf(" where i.isActive = 1");
+		$sql = $sql.sprintf(" and i.companyID = $companyID group by  i.identification having count(*) > 1 ");
+		
+   		return $db->query($sql)->getRow();
+    }
+   
+   
 }
 ?>

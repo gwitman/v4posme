@@ -34,6 +34,28 @@ class app_mobile_api extends _BaseController
             $dataSession['company'] 	= $objCompany;
             $dataSession['role'] 		= $objUser["role"];
             $this->core_web_permission->getValueLicense($companyID,get_class($this)."/"."index");
+			
+			// APLICAR VALIDACIONES
+			// 001 validar employer del usuario
+			$employee		= $this->Employee_Model->get_rowByEntityID($companyID,$dataSession["user"]->employeeID );
+			if(!$employee)
+			{
+				throw new \Exception("El usuario no tiene un colaborador asignado");
+			}
+			
+			// 002 validar que no ayan dos item con el mismo barCode
+			$itemBarCodeDuplicate = $this->Item_Model->getItemBarCodeDuplicate($companyID);
+			if($itemBarCodeDuplicate)
+			{
+				throw new \Exception("El item -".$itemBarCodeDuplicate->barCode."- tiene codigo de barra duplicado");
+			}
+			
+			// 003 validar que no ayan dos customer del mismo identificacion
+			$customerIdentificationDuplicate = $this->Customer_Model->getIdentificationDuplicate($companyID);
+			if($customerIdentificationDuplicate)
+			{
+				throw new \Exception("El cliente -".$customerIdentificationDuplicate->identification."- tiene codigo de barra duplicado");
+			}
 
             // INICIO DE CARGA DE ITEMS
             if (count($items) > 0) {

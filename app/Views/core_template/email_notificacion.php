@@ -8,7 +8,7 @@
 	</head>
 
 	<body style="font-family:'Open Sans';">
-		<table style="width:500px">
+		<table style="width:100%">
 			<caption style="background: #00628e;color: #fff;"><h1>posMe</h1></caption>
 			<caption>Notificación</caption>
 			<thead style="background:#67c977">

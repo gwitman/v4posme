@@ -269,6 +269,19 @@ class Item_Model extends Model  {
 		
    		return $db->query($sql)->getRow()->counter;
    }
+   function getItemBarCodeDuplicate($companyID)
+   {
+		$db 		= db_connect();
+		$builder	= $db->table("tb_item");
+		
+		$sql = "";
+		$sql = $sql.sprintf(" select i.barCode,count(*) as counter");
+		$sql = $sql.sprintf(" from tb_item i");
+		$sql = $sql.sprintf(" where i.isActive = 1");
+		$sql = $sql.sprintf(" and i.companyID = $companyID group by  i.barCode having count(*) > 1 ");
+		
+   		return $db->query($sql)->getRow();
+   }
    function get_rowByTransactionMasterID($transactionMasterID)
    {
 		$db 		= db_connect();
@@ -334,6 +347,38 @@ class Item_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
+   
+   function get_rowByItemExpired($companyID){
+		$db 	= db_connect();
+		$builder	= $db->table("tb_item");    
+		$sql = "";
+		$sql = sprintf("
+			select 
+				distinct 
+				i.itemNumber,
+				i.`name`,
+				w.`name` as warehouseName,
+				u.quantity,
+				u.dateExpired
+			from 
+				tb_item i 
+				inner join tb_item_warehouse iw on 	
+					i.itemID = iw.itemID 
+				inner join tb_warehouse w on 
+					iw.warehouseID = w.warehouseID 	
+				inner join tb_item_warehouse_expired u on 
+					u.itemID = i.itemID and 
+					u.warehouseID = w.warehouseID 
+			where 
+				i.isActive = 1 and 
+				u.dateExpired != '0000-00-00 00:00:00' and 
+				DATEDIFF(u.dateExpired, CURDATE()) IN (9, 10);
+		");	
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+   
    
 }
 ?>
