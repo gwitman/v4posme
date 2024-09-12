@@ -146,23 +146,35 @@ class Customer_Credit_Amortization_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
-   function get_rowShareLateByCompanyToMobile($companyID){
+   function get_rowShareLateByCompanyToMobile($companyID,$userID){
 		$db 	= db_connect();
 		
 		
 	    $sql = "";
-		$sql = sprintf("select c.customerNumber,n.firstName,n.lastName,c.birthDate,ccd.documentNumber,ccd.currencyID,ccd.reportSinRiesgo,cca.creditAmortizationID,cca.dateApply,cca.remaining as balance,cca.remaining");
-		$sql = $sql.sprintf(" from tb_customer c");
-		$sql = $sql.sprintf(" inner join  tb_naturales n on n.entityID = c.entityID");		
-		$sql = $sql.sprintf(" inner join  tb_customer_credit_document ccd on c.entityID = ccd.entityID");		
-		$sql = $sql.sprintf(" inner join  tb_customer_credit_amoritization cca on ccd.customerCreditDocumentID = cca.customerCreditDocumentID");		
-		$sql = $sql.sprintf(" inner join  tb_workflow_stage cca_status on cca_status.workflowStageID = cca.statusID");
-		$sql = $sql.sprintf(" inner join  tb_workflow_stage ccd_status on ccd_status.workflowStageID = ccd.statusID");
-		$sql = $sql.sprintf(" where c.companyID = $companyID");
-		$sql = $sql.sprintf(" and ccd_status.vinculable= 1");
-		$sql = $sql.sprintf(" and c.isActive= 1");
-		$sql = $sql.sprintf(" and cca.remaining > 0");
-		
+		$sql = sprintf("
+				select 
+						c.customerNumber,n.firstName,n.lastName,
+						c.birthDate,ccd.documentNumber,ccd.currencyID,
+						ccd.reportSinRiesgo,cca.creditAmortizationID,cca.dateApply,
+						cca.remaining as balance,
+						cca.remaining
+				from 
+					tb_customer c
+					inner join  tb_naturales n on n.entityID = c.entityID
+					inner join  tb_customer_credit_document ccd on c.entityID = ccd.entityID
+					inner join  tb_customer_credit_amoritization cca on ccd.customerCreditDocumentID = cca.customerCreditDocumentID
+					inner join  tb_workflow_stage cca_status on cca_status.workflowStageID = cca.statusID
+					inner join  tb_workflow_stage ccd_status on ccd_status.workflowStageID = ccd.statusID 
+					inner join tb_relationship rr on rr.customerID = c.entityID 
+					inner join tb_employee emp on emp.entityID = rr.employeeID 
+					inner join tb_user usr on usr.employeeID = emp.entityID 
+				where 
+					c.companyID = $companyID
+					and ccd_status.vinculable= 1
+					and c.isActive= 1
+					and cca.remaining > 0 
+					and usr.userID = $userID 
+			");
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();

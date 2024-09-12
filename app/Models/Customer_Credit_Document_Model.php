@@ -232,7 +232,7 @@ class Customer_Credit_Document_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
-   function get_rowByBalancePendingByCompanyToMobile($companyID)
+   function get_rowByBalancePendingByCompanyToMobile($companyID,$userID)
    {
 		$db 		= db_connect();
 		$builder	= $db->table("tb_customer_credit_document");    
@@ -266,6 +266,14 @@ class Customer_Credit_Document_Model extends Model  {
 					cur.currencyID = d.currencyID 
 				inner join tb_customer_credit_line crd on 
 					crd.customerCreditLineID = d.customerCreditLineID 
+				inner join tb_customer cust on 
+					cust.entityID = d.entityID
+				inner join tb_relationship rr on 
+					rr.customerID = cust.entityID 
+				inner join tb_employee emp on 
+					emp.entityID = rr.employeeID 
+				inner join tb_user usr on 
+					usr.employeeID = emp.entityID 
 				left join tb_exchange_rate ex on 
 					ex.currencyID = 1 and 
 					ex.targetCurrencyID = 2 and 
@@ -276,7 +284,8 @@ class Customer_Credit_Document_Model extends Model  {
 				a.isActive = 1 and 
 				wsa.aplicable = 1 and 
 				wsd.aplicable = 1 and 
-				a.remaining > 0  
+				a.remaining > 0  and 
+				usr.userID = $userID  
 			group by 
 				d.entityID,
 				d.customerCreditDocumentID,

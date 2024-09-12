@@ -348,7 +348,7 @@ class Item_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
-   function get_rowByItemExpired($companyID){
+   function get_rowByItemExpiredAndDayParameter($companyID,$dayParameter){
 		$db 	= db_connect();
 		$builder	= $db->table("tb_item");    
 		$sql = "";
@@ -372,7 +372,7 @@ class Item_Model extends Model  {
 			where 
 				i.isActive = 1 and 
 				u.dateExpired != '0000-00-00 00:00:00' and 
-				DATEDIFF(u.dateExpired, CURDATE()) IN (9, 10);
+				DATEDIFF(u.dateExpired, CURDATE()) IN (".$dayParameter.");
 		");	
 		
 		//Ejecutar Consulta

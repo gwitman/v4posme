@@ -1802,7 +1802,7 @@ class app_notification extends _BaseController
 		$emailProperty  = $emailProperty->value;
 		$objCompany  	= $this->Company_Model->get_rowByPK(APP_COMPANY);
 
-		$objNotificar = $this->Item_Model->get_rowByItemExpired(APP_COMPANY);
+		$objNotificar = $this->Item_Model->get_rowByItemExpiredAndDayParameter(APP_COMPANY,"9,10");
 		if ($objNotificar)
 		{
 			$table 	= "";
