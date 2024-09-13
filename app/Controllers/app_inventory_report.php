@@ -831,20 +831,20 @@ class app_inventory_report extends _BaseController {
 										vw_inventory_list_item_real_estate x 
 									where 
 										(
-											'".$namePropietario."' != '' and  											
+											'".$namePropietario."' != 'none' and  											
 											x.`Nombre` like '%".$namePropietario."%'  
 										) or
 										(
 											
-											'".$numberEncuentra24."' != '' and 
+											'".$numberEncuentra24."' != 'none' and 
 											x.`ID Encuentra 24` like '%".$numberEncuentra24."%'  
 										) or 
 										(
 											x.createdOn BETWEEN ? and ? 
 											and
 											(
-											  '".$namePropietario."' = '' and  
-											  '".$numberEncuentra24."' = '' 
+											  '".$namePropietario."' = 'none' and  
+											  '".$numberEncuentra24."' = 'none' 
 											)											
 										) 
 										AND 

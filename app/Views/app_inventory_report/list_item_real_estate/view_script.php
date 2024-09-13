@@ -16,6 +16,16 @@
 							var namePropietario			=	$("#txtNamePropietario").val();	
 							var numberEncuentra24		=	$("#txtNumberEncuentra24").val();	
 							
+							if(namePropietario == "")
+							{
+								namePropietario = "none";
+							}
+							
+							if(numberEncuentra24 == "")
+							{
+								numberEncuentra24 = "none";
+							}	
+							
 							if(!( startOn == "" || endOn == "" ) ){
 								fnWaitOpen();
 								window.location	= "<?php echo base_url(); ?>/app_inventory_report/list_item_real_estate/viewReport/true/startOn/"+
