@@ -372,7 +372,8 @@ class Item_Model extends Model  {
 			where 
 				i.isActive = 1 and 
 				u.dateExpired != '0000-00-00 00:00:00' and 
-				DATEDIFF(u.dateExpired, CURDATE()) IN (".$dayParameter.");
+				DATEDIFF(u.dateExpired, CURDATE()) IN (".$dayParameter.") and 
+				u.quantity > 0 ; 
 		");	
 		
 		//Ejecutar Consulta

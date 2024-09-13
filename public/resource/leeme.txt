@@ -266,11 +266,11 @@ Crear la tarea programada para enviar reportes diarios
 	
 	
 	//ejecutar todos los dias
-	//Hora del servidor UTC	 (con este comando se ejecuta a las 1 de la tarde 01:00 p.m)
+	//Hora del servidor UTC	 (con este comando se ejecuta a  1ves a las tarde 01:00 p.m)
 	1 19 * * * curl "https://posme.net/v4posme/patio/public/app_notification/file_next_date/2"
-	//Hora del servidor UTC	 (con este comando se ejecuta a las 1 de la tarde 12:00 m.d)
+	//Hora del servidor UTC	 (con este comando se ejecuta a  1ves a las tarde 12:00 m.d)
 	1 18 * * * curl "https://posme.net/v4posme/patio/public/app_notification/file_job_send_report_daly_share_sumary_80mm_general/2"
-	//Hora del servidor UTC	 (con este comando se ejecuta a las 1 de la tarde 07:00 a.m)
+	//Hora del servidor UTC	 (con este comando se ejecuta a  1ves a las tarde 07:00 a.m)
 	1 13 * * * curl "https://posme.net/v4posme/patio/public/app_notification/file_next_date/2"	
 	//Hora del servidor UTC	 con esto se ejecuta todos los dias, a cada hora del dia (24 veces al dia)
 	0 * * * * curl "https://posme.net/v4posme/glamcus/public/app_notification/sendEmailGlamCustCitas"
