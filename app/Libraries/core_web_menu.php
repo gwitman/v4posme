@@ -377,6 +377,8 @@ class core_web_menu {
 		return $html;  
     }
 	function render_menu_body_report($company,$data,$elementID){
+		
+		
 		$html		= "";		
 		$html		= self::render_item_body_report($company,$data,$elementID);
 		return $html;
@@ -388,6 +390,7 @@ class core_web_menu {
 		return;
 		
 		foreach($data AS $obj){
+			
 			if($obj->parentMenuElementID == $parent){				
 				$x 					= self::render_item_body_report($company,$data,$obj->menuElementID);		
 				$data_["icon"]		= $obj->icon;

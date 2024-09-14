@@ -28,9 +28,10 @@ class app_inventory_report extends _BaseController {
 				$parentMenuElementID 	= $this->core_web_permission->getElementID(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
 			}	
 			
+			
 			//Obtener la Lista de Reportes
 			$dataMenu["menuRenderBodyReport"] 	
-									= $this->core_web_menu->render_menu_body_report($dataSession["company"],$dataSession["company"],$dataSession["menuBodyReport"],$parentMenuElementID);
+									= $this->core_web_menu->render_menu_body_report($dataSession["company"],$dataSession["menuBodyReport"],$parentMenuElementID);
 									
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
