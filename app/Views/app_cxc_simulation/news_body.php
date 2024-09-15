@@ -4,6 +4,7 @@
                         	<!-- botonera -->
                             <div class="email-bar" style="border-left:1px solid #c9c9c9">                                
                                 <div class="btn-group pull-right">
+									<a href="<?php echo  base_url()."/app_cxc_customer/edit/companyID/".$objCustomerDefault->companyID."/branchID/".$objCustomerDefault->branchID."/entityID/".$objCustomerDefault->entityID ;  ?>" class="btn btn-warning <?php echo getBehavio($company->type,"app_cxc_simulation","showBtnIrCustomerOfSimulator","hidden"); ?>" id="btnRegresarCliente"><i class="icon16 i-spinner"></i> Ir a cliente</a>
 									<a href="#" class="btn btn-info" id="btnCalculate"><i class="icon16 i-spinner"></i> Calcular</a>
                                     <a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
                                 </div>

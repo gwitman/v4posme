@@ -10,6 +10,23 @@
 		 $("#txtDate").datepicker("update");
 		 $('.txt-numeric').mask('000,000.00', {reverse: true});
 		 onCompletePantalla();
+		 
+		 
+		 <?php 
+		 if(isset($customerEntityID))
+		 {
+			?>
+			var objCustomerInit = Array;
+			objCustomerInit[0] = '<?php echo $customerEntityID; ?>';
+			objCustomerInit[1] = '<?php echo $customerEntityID; ?>';
+			objCustomerInit[2] = '<?php echo $objCustomer->customerNumber; ?>';
+			objCustomerInit[3] = '<?php echo $objNatural->firstName; ?>';
+			objCustomerInit[4] = '<?php echo $objNatural->lastName; ?>';
+			onCompleteCustomer(objCustomerInit);
+			<?php 
+		 }
+		 ?>
+		 
 		
 		//Buscar el Cliente
 		$(document).on("click","#btnSearchCustomer",function(){

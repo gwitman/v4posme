@@ -12,6 +12,7 @@
 								</form>
 															
                                 <div class="btn-group pull-right">									
+									<a href="<?php if (!$objCustomer) { echo "#"; } else { echo  base_url()."/app_cxc_customer/edit/companyID/".$objCustomer->companyID."/branchID/".$objCustomer->branchID."/entityID/".$objCustomer->entityID ; } ?>" id="btnBackCustomer" class="btn btn-warning <?php echo getBehavio($company->type,"app_cxc_record","showBtnIrCustomerOfRecord","hidden"); ?>" ><i class="icon16 i-rotate"></i> Regresar al cliente</a>                                    
 									<a href="<?php echo base_url(); ?>/app_cxc_customer/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>                                    
 									<!--<a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>-->
 									<a href="<?php echo base_url(); ?>/app_cxc_report/consulta_sin_riesgo/viewReport/true/fileName/<?php echo (isset($ObjConsulta) ? $ObjConsulta->file:""); ?>" target="_black" class="btn btn-primary" id="btnPrinter"><i class="icon16 i-print"></i> Imprimir</a>

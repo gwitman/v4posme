@@ -22,6 +22,7 @@ class app_cxc_simulation extends _BaseController {
 			
 			
 			$customerCreditLineID		= /*inicio get post*/ $this->request->getPost("txtCustomerCreditLineID");
+			$objCustomerCreditLine		= $this->Customer_Credit_Line_Model->get_rowByPK($customerCreditLineID);
 			$companyID					= $dataSession["user"]->companyID;
 			$creditMultiplicador		= $this->core_web_parameter->getParameter("CREDIT_INTERES_MULTIPLO",$companyID)->value;
 			$frecuencyID 				= /*inicio get post*/ $this->request->getPost("txtFrecuencyID");
@@ -36,7 +37,7 @@ class app_cxc_simulation extends _BaseController {
 			
 			
 			$this->core_web_notification->set_message(false,SUCCESS);			
-			$this->response->redirect(base_url()."/".'app_cxc_simulation/index');
+			$this->response->redirect(base_url()."/".'app_cxc_simulation/index?entityID='.$objCustomerCreditLine->entityID);
 		}
 		catch(\Exception $ex){			
 			exit($ex->getMessage());
@@ -108,15 +109,6 @@ class app_cxc_simulation extends _BaseController {
 			}	
 			 
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			
 			$companyID 							= $dataSession["user"]->companyID;
 			$branchID 							= $dataSession["user"]->branchID;
 			$roleID 							= $dataSession["role"]->roleID;
@@ -132,11 +124,21 @@ class app_cxc_simulation extends _BaseController {
 			$companyID 							= $dataSession["user"]->companyID;
 			$branchID 							= $dataSession["user"]->branchID;
 			$roleID 							= $dataSession["role"]->roleID;
+			
+			$customerEntityID 					= /*inicio get get*/ $this->request->getGet("entityID");//--fin peticion get o post
+			$objCustomer 						= null;
+			
+			if(isset($customerEntityID ))
+			{
+				$objCustomer = $this->Customer_Model->get_rowByEntity($companyID,$customerEntityID);
+			}
+			
 			$objCurrency						= $this->core_web_currency->getCurrencyDefault($companyID);
 			$targetCurrency						= $this->core_web_currency->getCurrencyExternal($companyID);			
 			$customerDefault					= $this->core_web_parameter->getParameter("INVOICE_BILLING_CLIENTDEFAULT",$companyID);
 			
 			//Tipo de Factura
+			$dataView["company"]				= $dataSession["company"];
 			$dataView["companyID"]				= $dataSession["user"]->companyID;
 			$dataView["userID"]					= $dataSession["user"]->userID;
 			$dataView["userName"]				= $dataSession["user"]->nickname;
@@ -147,6 +149,11 @@ class app_cxc_simulation extends _BaseController {
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
 			$dataView["objComponentCustomer"]	= $objComponentCustomer;
 			$dataView["objCustomerDefault"]		= $this->Customer_Model->get_rowByCode($companyID,$customerDefault->value);
+			if(isset($customerEntityID ))
+			{
+				$dataView["objCustomerDefault"] = $objCustomer;
+			}
+			
 			$dataView["objListPay"]				= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","periodPay",$companyID);
 			$dataView["objListTypeAmortization"]= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","typeAmortization",$companyID);
 			$dataView["objParameterCORE_VIEW_CUSTOM_LABEL_INTERES_ANUAL"] 	= $this->core_web_parameter->getParameterValue("CORE_VIEW_CUSTOM_LABEL_INTERES_ANUAL",$companyID);

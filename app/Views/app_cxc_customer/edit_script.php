@@ -30,6 +30,20 @@
 		$(document).on("click","#btnBack",function(){
 				fnWaitOpen();
 		});
+		$(document).on("click","#btnStupBuro",function(){
+				fnWaitOpen();
+		});
+		$(document).on("click","#btnStupSimulator",function(){
+				fnWaitOpen();
+		});
+		$(document).on("click","#btnStupInvoice",function(){
+				
+		});
+		$(document).on("click","#btnStupShare",function(){
+				
+		});
+		
+		
 		
 		//Buscar Colagorador
 		$(document).on("click","#btnSearchEmployer",function(){

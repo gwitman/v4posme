@@ -40,9 +40,11 @@ class app_cxc_record extends _BaseController {
 			//Leer Parametros
 			 
 			date_default_timezone_set(APP_TIMEZONE); 
-				
-			$identificacion = /*inicio get get*/ $this->request->getGet("identificacion");//--fin peticion get o post			
-			$file_exists 	= /*inicio get get*/ $this->request->getGet("file_exists");//--fin peticion get o post
+			
+			
+			$identificacion 	= /*inicio get get*/ $this->request->getGet("identificacion");//--fin peticion get o post
+			$objCustomer		= $this->Customer_Model->get_rowByIdentification($companyID,$identificacion);
+			$file_exists 		= /*inicio get get*/ $this->request->getGet("file_exists");//--fin peticion get o post
 			$identificacion	= !$file_exists ? str_replace("-","",$identificacion) : substr($file_exists,0,14);
 			$path_ 			= PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/";
 			$file			= $identificacion;
@@ -169,6 +171,8 @@ class app_cxc_record extends _BaseController {
 		
 			
 			//Renderizar Resultado
+			$datView["company"]				= $dataSession["company"];
+			$datView["objCustomer"]			= $objCustomer;
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
 			$dataSession["head"]			= /*--inicio view*/ view('app_cxc_record/edit_head',$datView);//--finview

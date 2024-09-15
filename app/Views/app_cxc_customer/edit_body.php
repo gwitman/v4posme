@@ -27,11 +27,16 @@
 <div class="row"> 
 	<div id="email" class="col-lg-12">                        	
 		<div class="email-bar" style="border-left:1px solid #c9c9c9">                                
-			<div class="btn-group pull-right">									
+			<div class="btn-group pull-right">	
+				
 				<?php 
 					if($callback == "false")
 					{
 						?>
+							<a href="<?php echo base_url(); ?>/app_box_share/add?entityID=<?php echo $objCustomer->entityID; ?>" target="_blank"  class="btn btn-primary <?php echo getBehavio($company->type,"app_cxc_customer","showBtnIrShare","hidden"); ?>" id="btnStupShare"><i class="icon16 i-checkmark-4"></i> Abono</a>		
+							<a href="<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/none" target="_blank"  class="btn btn-primary <?php echo getBehavio($company->type,"app_cxc_customer","showBtnIrInvoice","hidden"); ?>" id="btnStupInvoice"><i class="icon16 i-checkmark-4"></i> Prestamo</a>			
+							<a href="<?php echo base_url(); ?>/app_cxc_simulation/index?entityID=<?php echo $objCustomer->entityID; ?>"  class="btn btn-primary <?php echo getBehavio($company->type,"app_cxc_customer","showBtnIrSimulador","hidden"); ?>" id="btnStupSimulator"><i class="icon16 i-checkmark-4"></i> Calculadora</a>			
+							<a href="<?php echo base_url(); ?>/app_cxc_record/index?identificacion=<?php echo $objCustomer->identification; ?>"  class="btn btn-primary <?php echo getBehavio($company->type,"app_cxc_customer","showBtnIrBuro","hidden"); ?>" id="btnStupBuro"><i class="icon16 i-checkmark-4"></i> Ir a Buro</a>			
 							<a href="#" class="btn btn-warning" id="btnLeads"><i class="icon16 i-pencil"></i> Leads</a>
 							<a href="<?php echo base_url(); ?>/app_cxc_customer/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>
 							<a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>
@@ -45,6 +50,7 @@
 					}
 				?>     
 				<a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
+				
 			</div>
 		</div> 
 	</div>

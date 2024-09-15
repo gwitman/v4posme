@@ -4,6 +4,7 @@
 		<!-- botonera -->
 		<div class="email-bar" style="border-left:1px solid #c9c9c9">                                
 			<div class="btn-group pull-right">     
+				<a href="<?php echo base_url(); ?>/app_cxc_customer/index" class="btn btn-primary <?php echo getBehavio($company->type,"app_box_share","showBtnIrCustomerOfShare","hidden"); ?>" id="btnBackCustomer"><i class="icon16 i-checkmark-4"></i>Ir a clientes</a>						
 				<a href="<?php echo base_url(); ?>/app_box_share/add" class="btn btn-success" id="btnNuevo"><i class="icon16 i-checkmark-4"></i>Nuevo</a>						
 				<a href="<?php echo base_url(); ?>/app_box_share/index" class="btn btn-warning"  id="btnBack" ><i class="icon16 i-rotate"></i> Atras</a>
 				<a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>			

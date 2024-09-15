@@ -1152,6 +1152,16 @@ class app_box_share extends _BaseController {
 			$companyID 							= $dataSession["user"]->companyID;
 			$branchID 							= $dataSession["user"]->branchID;
 			$roleID 							= $dataSession["role"]->roleID;
+			$customerEntityID 					= /*inicio get get*/ $this->request->getGet("entityID");//--fin peticion get o post
+			$objCustomer						= null;
+			$objNatural							= null;
+			
+			if(isset($customerEntityID))
+			{
+				$objCustomer						= $this->Customer_Model->get_rowByEntity($companyID,$customerEntityID);
+				$objNatural							= $this->Natural_Model->get_rowByPK($companyID,$objCustomer->branchID,$customerEntityID);
+			}
+			
 			$transactionID 						= $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID,"tb_transaction_master_share",0);
 			$objCurrency						= $this->core_web_currency->getCurrencyDefault($companyID);
 			$targetCurrency						= $this->core_web_currency->getCurrencyExternal($companyID);			
@@ -1181,6 +1191,9 @@ class app_box_share extends _BaseController {
 			$dataView["objListCustomer"]					= $this->Customer_Model->get_rowByCompany($companyID);
 			$dataView["objListCurrency"]					= $this->Company_Currency_Model->getByCompany($companyID);
 			$dataView["objListCurrencyDefault"]				= $this->core_web_currency->getCurrencyDefault($companyID);
+			$dataView["customerEntityID"]					= $customerEntityID;
+			$dataView["objCustomer"]						= $objCustomer;
+			$dataView["objNatural"]							= $objNatural;
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);

@@ -973,7 +973,7 @@ WHERE
 	tb_parameter.name = "INVOICE_BILLING_QUANTITY_ZERO";## Permite facturar productos, aunque las existencias esten en 0 unidades 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BUTTOM_PRINTER_FIDLOCAL_PAYMENT_AND_AMORTIZACION";## Mostrar Calendario de Pago , al momento de imprimir una factura

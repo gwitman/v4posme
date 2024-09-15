@@ -857,6 +857,14 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('corea_core_web_menu_VENTAS')			 					=> "DESEMBOLSO",
 		strtolower('corea_core_web_menu_DETALLE DE VENTAS')			 			=> "DETALLE DE DESEMBOLSOS",
 		strtolower('corea_core_web_menu_RESUMEN DE VENTAS')			 			=> "RESUMEN DE DESEMBOLSOS",
+		strtolower('corea_app_cxc_customer_showBtnIrBuro')			 			=> "",
+		strtolower('corea_app_cxc_customer_showBtnIrSimulador')			 		=> "",
+		strtolower('corea_app_cxc_customer_showBtnIrInvoice')			 		=> "",		
+		strtolower('corea_app_cxc_customer_showBtnIrShare')			 			=> "",				
+		strtolower('corea_app_cxc_record_showBtnIrCustomerOfRecord') 			=> "",
+		strtolower('corea_app_cxc_simulation_showBtnIrCustomerOfSimulator') 	=> "",
+		strtolower('corea_app_box_share_showBtnIrCustomerOfShare') 				=> "",
+		
 		
 		
 		

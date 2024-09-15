@@ -10,7 +10,7 @@
 						dataType    : 'json',
 						type        : 'POST',
 						url  		: "<?php echo base_url(); ?>/app_invoice_api/getLineByCustomer",
-						data 		: {entityID : 0  },
+						data 		: {entityID :   <?php echo $objCustomerDefault->entityID; ?> },
 						success		: fnCompleteGetCustomerCreditLine,
 						error:function(xhr,data){	
 							console.info("complete data error");									
