@@ -150,7 +150,7 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CXC_VALIDAR_CEDULA_REPETIDA";	## True, no permite repetir la cedula, false, permite repetir la cedula

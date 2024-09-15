@@ -861,12 +861,29 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('corea_app_cxc_customer_showBtnIrSimulador')			 		=> "",
 		strtolower('corea_app_cxc_customer_showBtnIrInvoice')			 		=> "",		
 		strtolower('corea_app_cxc_customer_showBtnIrShare')			 			=> "",				
+		strtolower('corea_app_cxc_customer_showBtnGroupAcciones')	 			=> "",				
 		strtolower('corea_app_cxc_record_showBtnIrCustomerOfRecord') 			=> "",
 		strtolower('corea_app_cxc_simulation_showBtnIrCustomerOfSimulator') 	=> "",
 		strtolower('corea_app_box_share_showBtnIrCustomerOfShare') 				=> "",
+		strtolower('corea_app_cxc_customer_divScriptValideFunction') 	 		=> "
+		
+		if( $('#txtIdentification').val()  == ''){
+			fnShowNotification('Escribir cedula','error',timerNotification);
+			result = false;
+		}
+		if( $('#txtIdentification').val()  == '0'){
+			fnShowNotification('Escribir cedula con formato correcto','error',timerNotification);
+			result = false;
+		}
+		
+		const regex = /^\d{3}-\d{6}-\d{4}[A-Za-z]$/;
+		if(!regex.test(   $('#txtIdentification').val()   )){
+            fnShowNotification('Escribir cedula con formato correcto','error',timerNotification);
+			result = false;
+        } 
 		
 		
-		
+		",
 		
 		/*Cafe hotel Retorno*/		
 		strtolower('cafe_hotel_retorno_core_web_language_workflowstage_billing_REGISTRADA')			 						=> "GUARDAR MESA",
