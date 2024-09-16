@@ -1,5 +1,5 @@
 				<div id="heading" class="page-header">
-					<h1><i class="icon20  i-pawn"></i> LISTA DE GESTORES</h1>
+					<h1><i class="icon20  i-pawn"></i><?php echo getBehavio($company->type,"app_collection_manager","lblTitleList","LISTA DE GESTORES"); ?></h1>
 				</div>
 				<div class="row">  
 					<div id="email" class="col-lg-12">

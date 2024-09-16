@@ -6,5 +6,5 @@
 				
 				
 				<div id="heading" class="page-header">
-							<h1><i class="icon20 i-vcard"></i> Agregar Colaborador</h1>
+							<h1><i class="icon20 i-vcard"></i><?php echo getBehavio($company->type,"app_rrhh_employee","lblNew","Agregar Colaborador"); ?></h1>
 				</div> 

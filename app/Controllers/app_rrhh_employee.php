@@ -191,7 +191,7 @@ class app_rrhh_employee extends _BaseController {
 			$datView["objParentNatural"]		= $datView["objParentEmployee"] == null ? $datView["objParentEmployee"] : $this->Natural_Model->get_rowByPK($companyID,$datView["objParentEmployee"]->branchID,$datView["objParentEmployee"]->entityID);
 			$datView["objEntityListEmail"]		= $this->Entity_Email_Model->get_rowByEntity($companyID,$branchID,$entityID);
 			$datView["objEntityListPhone"]		= $this->Entity_Phone_Model->get_rowByEntity($companyID,$branchID,$entityID);
-			
+			$datView["company"]					= $dataSession["company"];
 			
 			$objComponent						= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
 			if(!$objComponent)
@@ -513,6 +513,7 @@ class app_rrhh_employee extends _BaseController {
 			$dataView["objListClasificationID"]			= $this->core_web_catalog->getCatalogAllItem("tb_employee","clasificationID",$companyID);			
 			$dataView["objListCategoryID"]				= $this->core_web_catalog->getCatalogAllItem("tb_employee","categoryID",$companyID);
 			$dataView["objListTypeEmployeeID"]			= $this->core_web_catalog->getCatalogAllItem("tb_employee","typeEmployeeID",$companyID);
+			$dataView["company"]						= $dataSession["company"];
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -572,12 +573,13 @@ class app_rrhh_employee extends _BaseController {
 			} 
 			 
 			//Renderizar Resultado
+			$dataView["company"]			= $dataSession["company"];
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
-			$dataSession["head"]			= /*--inicio view*/ view('app_rrhh_employee/list_head');//--finview
-			$dataSession["footer"]			= /*--inicio view*/ view('app_rrhh_employee/list_footer');//--finview
+			$dataSession["head"]			= /*--inicio view*/ view('app_rrhh_employee/list_head',$dataView);//--finview
+			$dataSession["footer"]			= /*--inicio view*/ view('app_rrhh_employee/list_footer',$dataView);//--finview
 			$dataSession["body"]			= $dataViewRender; 
-			$dataSession["script"]			= /*--inicio view*/ view('app_rrhh_employee/list_script');//--finview
+			$dataSession["script"]			= /*--inicio view*/ view('app_rrhh_employee/list_script',$dataView);//--finview
 			$dataSession["script"]			= $dataSession["script"].$this->core_web_javascript->createVar("componentID",$objComponent->componentID);   
 			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r	
 		}

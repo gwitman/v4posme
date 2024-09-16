@@ -158,12 +158,13 @@ class app_collection_manager extends _BaseController {
 		
 			$objData["componentEmployeeID"]	= $objComponentEmployee->componentID;
 			$objData["componentCustomerID"]	= $objComponentCustomer->componentID;
+			$objData["company"]				= $dataSession["company"];			
 			
-			//Renderizar Resultado 
+			//Renderizar Resultado			
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
-			$dataSession["head"]			= /*--inicio view*/ view('app_collection_manager/news_head');//--finview
-			$dataSession["body"]			= /*--inicio view*/ view('app_collection_manager/news_body');//--finview
+			$dataSession["head"]			= /*--inicio view*/ view('app_collection_manager/news_head',$objData);//--finview
+			$dataSession["body"]			= /*--inicio view*/ view('app_collection_manager/news_body',$objData);//--finview
 			$dataSession["script"]			= /*--inicio view*/ view('app_collection_manager/news_script',$objData);//--finview
 			$dataSession["footer"]			= "";
 			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r
@@ -217,12 +218,13 @@ class app_collection_manager extends _BaseController {
 			}
 			 
 			//Renderizar Resultado
+			$dataView["company"]			= $dataSession["company"];
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
-			$dataSession["head"]			= /*--inicio view*/ view('app_collection_manager/list_head');//--finview
-			$dataSession["footer"]			= /*--inicio view*/ view('app_collection_manager/list_footer');//--finview
+			$dataSession["head"]			= /*--inicio view*/ view('app_collection_manager/list_head',$dataView);//--finview
+			$dataSession["footer"]			= /*--inicio view*/ view('app_collection_manager/list_footer',$dataView);//--finview
 			$dataSession["body"]			= $dataViewRender; 
-			$dataSession["script"]			= /*--inicio view*/ view('app_collection_manager/list_script');//--finview
+			$dataSession["script"]			= /*--inicio view*/ view('app_collection_manager/list_script',$dataView);//--finview
 			$dataSession["script"]			= $dataSession["script"].$this->core_web_javascript->createVar("componentID",$objComponent->componentID);   
 			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r	
 		}

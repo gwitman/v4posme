@@ -33,7 +33,7 @@
 													<fieldset>		
 													
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="buttons">Colaborador</label>
+															<label class="col-lg-4 control-label" for="buttons"><?php echo getBehavio($company->type,"app_collection_manager","lblColaborador","Colaborador"); ?></label>
 															<div class="col-lg-8">
 																<div class="input-group">
 																	<input type="hidden" id="txtEmployeeID" name="txtEmployeeID">
