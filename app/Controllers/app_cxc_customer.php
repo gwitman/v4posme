@@ -1297,6 +1297,16 @@ class app_cxc_customer extends _BaseController {
             //Validar Limite de Credito
             if($exchangeRateTotal > $objCustomerCredit["limitCreditDol"])
                 throw new \Exception("LINEAS DE CREDITOS MAL CONFIGURADAS LÍMITE EXCEDIDO");
+			
+			
+			//Asociar el cliente al colaborador
+			$dataRelationShip["employeeID"]	= $dataSession["user"]->employeeID;
+			$dataRelationShip["customerID"]	= $entityID;
+			$dataRelationShip["isActive"]	= 1;
+			$dataRelationShip["startOn"]	= date("Y-m-d");
+			$dataRelationShip["endOn"]		= date("Y-m-d");
+			$this->Relationship_Model->insert_app_posme($dataRelationShip);
+			
 
             //Crear la Carpeta para almacenar los Archivos del Cliente
             $pathfile = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$entityID;

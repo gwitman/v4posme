@@ -776,7 +776,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Variedades Carlos Luis' , address = 'Contiguo a Veterinaria el Novillo' 
+	NAME = 'Variedades Carlos Luis' , address = 'Contiguo a Veterinaria el Novillo' , type='default', flavorID = 0
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
