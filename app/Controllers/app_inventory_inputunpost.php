@@ -1393,7 +1393,7 @@ class app_inventory_inputunpost extends _BaseController {
 							
 							$response  	= $clientCreateItem->request('POST',$urlCreateItemRequest,['form_params' => $form_data]);									
 							$response  	= explode("/",$response->getHeaderLine("Location"));							
-							$response  	= $response[11];		
+							$response  	= $response[9];		
 							
 							
 							$objItem	= $this->Item_Model->get_rowByPK($companyID,$response);
