@@ -41,7 +41,7 @@ class Journal_Entry_Model extends Model  {
 		$builder	= $db->table("tb_journal_entry");    
 		
 		$sql = "";
-		$sql = sprintf("select je.journalEntryID,je.companyID,je.journalNumber,je.entryName,je.journalDate,je.tb_exchange_rate,je.createdOn,je.createdIn,je.createdAt,je.createdBy,je.isActive,je.isApplied,je.statusID,je.note,je.reference1,je.reference2,je.reference3,je.journalTypeID,je.currencyID,je.accountingCycleID,ws.name as workflowStageName,ci.display as journalTypeName,cu.name currencyName,je.isModule,je.transactionMasterID");
+		$sql = sprintf("select je.journalEntryID,je.companyID,je.journalNumber,je.entryName,je.journalDate,je.tb_exchange_rate,je.createdOn,je.createdIn,je.createdAt,je.createdBy,je.isActive,je.isApplied,je.statusID,je.note,je.reference1,je.reference2,je.reference3,je.journalTypeID,je.currencyID,je.accountingCycleID,ws.name as workflowStageName,ci.display as journalTypeName,cu.name currencyName,cu.simbol  as currencySimbol,je.isModule,je.transactionMasterID");
 		$sql = $sql.sprintf(" from tb_journal_entry je");
 		$sql = $sql.sprintf(" inner join  tb_workflow_stage ws on je.statusID = ws.workflowStageID");
 		$sql = $sql.sprintf(" inner join  tb_catalog_item ci on je.journalTypeID = ci.catalogItemID");
@@ -58,7 +58,7 @@ class Journal_Entry_Model extends Model  {
 		$builder	= $db->table("tb_journal_entry");    
 		
 		$sql = "";
-		$sql = sprintf("select je.journalEntryID,je.companyID,je.journalNumber,je.entryName,je.journalDate,je.tb_exchange_rate,je.createdOn,je.createdIn,je.createdAt,je.createdBy,je.isActive,je.isApplied,je.statusID,je.note,je.reference1,je.reference2,je.reference3,je.journalTypeID,je.currencyID,je.accountingCycleID,ws.name as workflowStageName,ci.display as journalTypeName,cu.name currencyName,je.isModule,je.transactionMasterID,je.isTemplated,je.titleTemplated");
+		$sql = sprintf("select je.journalEntryID,je.companyID,je.journalNumber,je.entryName,je.journalDate,je.tb_exchange_rate,je.createdOn,je.createdIn,je.createdAt,je.createdBy,je.isActive,je.isApplied,je.statusID,je.note,je.reference1,je.reference2,je.reference3,je.journalTypeID,je.currencyID,je.accountingCycleID,ws.name as workflowStageName,ci.display as journalTypeName,cu.name currencyName, cu.simbol  as currencySimbol ,je.isModule,je.transactionMasterID,je.isTemplated,je.titleTemplated");
 		$sql = $sql.sprintf(" from tb_journal_entry je");
 		$sql = $sql.sprintf(" inner join  tb_workflow_stage ws on je.statusID = ws.workflowStageID");
 		$sql = $sql.sprintf(" inner join  tb_catalog_item ci on je.journalTypeID = ci.catalogItemID");

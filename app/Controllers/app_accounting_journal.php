@@ -796,16 +796,58 @@ class app_accounting_journal extends _BaseController {
 				
 			
 			//Get Component
-			$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			$objComponent			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
 			//Get Logo
-			$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$objParameter			= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
 			//Get Company
-			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);			
+			$objCompany 			= $this->Company_Model->get_rowByPK($companyID);		
+			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+
+
+			
 			//Get Journal
 			$datView["objJournalEntry"]	 					= $this->Journal_Entry_Model->get_rowByPK($companyID,$journalEntryID);
 			$datView["objJournalEntryDetail"]				= $this->Journal_Entry_Detail_Model->get_rowByJournalEntryID($companyID,$journalEntryID);								
 			$datView["objJournalEntry"]->journalDate 		= date_format(date_create($datView["objJournalEntry"]->journalDate),"Y-m-d");
-						
+			$datView["objStage"]							= $this->core_web_workflow->getWorkflowStage("tb_journal_entry","statusID",$datView["objJournalEntry"]->statusID,$companyID,APP_BRANCH,APP_ROL_SUPERADMIN);
+			
+			//Generar Reporte
+			$html = helper_reporteA4mmJournalEntry(
+			    "COMPROBANTE",
+			    $objCompany,
+			    $objParameter,
+			    $datView,
+			    $objParameterTelefono
+			);
+			$this->dompdf->loadHTML($html);
+			$this->dompdf->render();
+			
+			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+			
+			if($objParameterShowLinkDownload == "true")
+			{
+				$fileNamePut = "journal_".$journalEntryID."_".date("dmYhis").".pdf";
+				$path        = "./resource/file_company/company_".$companyID."/component_16/component_item_".$journalEntryID."/".$fileNamePut;
+				
+				file_put_contents(
+					$path , 
+					$this->dompdf->output()
+				);								
+				
+				chmod($path, 644);
+				
+				echo "<a 
+					href='".base_url()."/resource/file_company/company_".$companyID."/component_16/component_item_".$journalEntryID."/".
+					$fileNamePut."'>download comprobante</a>
+				"; 				
+
+			}
+			else{			
+				//visualizar
+				$this->dompdf->stream("file.pdf ", ['Attachment' =>  true ]);
+			}
+			
 			
 			
 		}
