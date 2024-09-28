@@ -265,6 +265,8 @@ class app_cxc_report extends _BaseController {
 				
 				if($objCompany->type == "fn_blandon")
 					return view("app_cxc_report/document_credit/view_a_disemp_fnblandon",$objDataResult);//--finview-r
+				if($objCompany->type == "corea")
+					return view("app_cxc_report/document_credit/view_a_disemp_corea",$objDataResult);//--finview-r
 				else if($view_name)
 					return view("app_cxc_report/document_credit/view_a_disemp_fidlocal",$objDataResult);//--finview-r
 				else

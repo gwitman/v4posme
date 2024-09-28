@@ -7,6 +7,13 @@ use dbkroqnguhldo1;
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "848" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "ITEM_REAL_STATE_GERENCIA_EXCLUSIVE";## Banco por defecto
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "2" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 

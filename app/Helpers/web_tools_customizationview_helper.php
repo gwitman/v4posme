@@ -866,6 +866,11 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('corea_app_rrhh_employee_lblList')			 				=> "LISTA DE RUTAS Y/O COLABORADOR",
 		strtolower('corea_app_rrhh_employee_lblNew')			 				=> "NUEVA RUTA Y/O COLABORADOR",
 		strtolower('corea_app_rrhh_employee_lblEdit')			 				=> "EDITAR RUTA Y/O COLABORADOR",
+		strtolower('corea_app_cxc_customer_divTxtCategoria')			 		=> "hidden",
+		strtolower('corea_app_cxc_customer_divTxtFullNameCommercial')			=> "Categoria",
+		strtolower('corea_app_cxc_customer_lblTxtPhoneTemp')					=> "Prefesion u Oficio",
+		strtolower('corea_app_cxc_customer_divTxtProfesionUFicio')				=> "hidden",
+		
 		
 		strtolower('corea_app_cxc_customer_showBtnIrBuro')			 			=> "",
 		strtolower('corea_app_cxc_customer_showBtnIrSimulador')			 		=> "",

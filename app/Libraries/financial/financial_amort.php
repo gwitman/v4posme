@@ -169,6 +169,8 @@ class financial_amort{
 			return 52;
 		else if ($periodPay == 15) /*quincenal*/
 			return 24;
+		else if ($periodPay == 14) /*catorcenal*/
+			return 26;
 		else if ($periodPay == 30) /*mensual*/
 			return 12;
 		else if ($periodPay == 1)  /*diario*/
@@ -249,6 +251,16 @@ class financial_amort{
 		else if ($periodPay == 15)
 		{
 			$fechaReturn = date_add($date,date_interval_create_from_date_string('15 days'));	
+			if($this->fechaEsFeriada($fechaReturn))
+			{
+				$fechaReturn = date_add($fechaReturn,date_interval_create_from_date_string('1 days'));
+			}
+			return $fechaReturn;			
+		}
+		/*catorcenal*/ 
+		else if ($periodPay == 14)
+		{
+			$fechaReturn = date_add($date,date_interval_create_from_date_string('14 days'));	
 			if($this->fechaEsFeriada($fechaReturn))
 			{
 				$fechaReturn = date_add($fechaReturn,date_interval_create_from_date_string('1 days'));

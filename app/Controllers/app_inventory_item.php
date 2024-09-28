@@ -493,6 +493,8 @@ class app_inventory_item extends _BaseController
                 $objItem["realStateStyleKitchen"] 		= /*inicio get post*/ $this->request->getPost("txtRealStateStyleKitchen");
                 $objItem["realStateEmail"] 				= /*inicio get post*/ $this->request->getPost("txtRealStateEmail");
                 $objItem["realStatePhone"] 				= /*inicio get post*/ $this->request->getPost("txtRealStatePhone");
+				$objItem["quantityInvoice"] 			= 0;
+				$objItem["dateLastUse"] 				= helper_getDateTime();
                 $this->core_web_auditoria->setAuditCreated($objItem,$dataSession,$this->request);
                 
                 $itemID								= $this->Item_Model->insert_app_posme($objItem);
@@ -817,6 +819,8 @@ class app_inventory_item extends _BaseController
                 $objItem["realStateStyleKitchen"] 		= /*inicio get post*/ $this->request->getPost("txtRealStateStyleKitchen");
                 $objItem["realStateEmail"] 				= /*inicio get post*/ $this->request->getPost("txtRealStateEmail");
                 $objItem["realStatePhone"] 				= /*inicio get post*/ $this->request->getPost("txtRealStatePhone");
+				$objItem["quantityInvoice"] 			= 0;
+				$objItem["dateLastUse"] 				= helper_getDateTime();
                 $this->core_web_auditoria->setAuditCreatedAdmin($objItem,$this->request);
                 
 
@@ -1328,7 +1332,9 @@ class app_inventory_item extends _BaseController
                 $objItem["realStateStyleKitchen"] 		= "";
                 $objItem["realStateEmail"] 				= "";
                 $objItem["realStatePhone"] 				= "";
-			
+				$objItem["quantityInvoice"] 			= 0;
+				$objItem["dateLastUse"] 				= helper_getDateTime();
+				
                 $this->core_web_auditoria->setAuditCreated($objItem,$dataSession,$this->request);
 			
                 $itemID								= $this->Item_Model->insert_app_posme($objItem);
