@@ -140,6 +140,7 @@ $routes->match(['get','post'],'app_accounting_account/index/(:any)','app_account
 $routes->match(['get','post'],'app_accounting_currency/process_view_report','app_accounting_currency::process_view_report');
 $routes->match(['get','post'],'app_accounting_currency/process_view_report/(:any)','app_accounting_currency::process_view_report');
 $routes->match(['get','post'],'app_accounting_currency/process_file','app_accounting_currency::process_file');
+$routes->match(['get','post'],'app_accounting_currency/process_file_update_exchange_rate','app_accounting_currency::process_file_update_exchange_rate');
 $routes->match(['get','post'],'app_accounting_currency/process','app_accounting_currency::process');
 $routes->match(['get','post'],'app_accounting_currency/edit','app_accounting_currency::edit');
 $routes->match(['get','post'],'app_accounting_currency/edit/(:any)','app_accounting_currency::edit');
@@ -916,6 +917,8 @@ $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNorm
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmCharLot/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmCharLot');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmGlobalPro','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmGlobalPro');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmGlobalPro/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmGlobalPro');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormalA4Titan','app_invoice_billing::viewRegisterFormatoPaginaNormalA4Titan');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormalA4Titan/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormalA4Titan');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmLaptopStore','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmLaptopStore');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmLaptopStore/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmLaptopStore');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmBpn','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmBpn');

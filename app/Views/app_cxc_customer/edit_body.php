@@ -428,6 +428,7 @@
 										<li class="active"><a href="#" class="toggle-vis" data-column="23"><i class="fa fa-tint"></i>Interes</a></li>
 										<li class="active"><a href="#" class="toggle-vis" data-column="22"><i class="fa fa-tint"></i>Frecuencia</a></li>
 										<li class="active"><a href="#" class="toggle-vis" data-column="24"><i class="fa fa-tint"></i>No Pagos</a></li>
+										<li class="active"><a href="#" class="toggle-vis" data-column="25"><i class="fa fa-tint"></i>Dias Excluidos</a></li>
 									</ul>
 								</div>
 		
@@ -438,7 +439,7 @@
 										<th>customerCreditLineID</th>
 										<th>creditLineID</th>
 										<th>currencyID</th>
-										<th>statusID</th>
+										<th>statusID</th>										
 										<th>InteresYear</th>
 										<th>InterestPay</th>
 										<th>TotalPay</th>
@@ -459,6 +460,7 @@
 										<th>Frecuencia</th>
 										<th>Interes Anual</th>
 										<th>No. Pagos</th>
+										<th>dayExcludedID</th>
 									  </tr>
 									</thead>
 									<tbody id="body_detail_line">             

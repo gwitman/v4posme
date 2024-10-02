@@ -359,7 +359,7 @@
 										<th>customerCreditLineID</th>
 										<th>creditLineID</th>
 										<th>currencyID</th>
-										<th>statusID</th>
+										<th>statusID</th>										
 										<th>InterestYear</th>
 										<th>InterestPay</th>
 										<th>TotalPay</th>
@@ -368,8 +368,7 @@
 										<th>PeriodPay</th>
 										<th>DateLastPay</th>
 										<th>Term</th>
-										<th>Note</th>
-										
+										<th>Note</th>										
 										<th>Linea</th>
 										<th>Numero</th>
 										<th>Limite</th>
@@ -377,6 +376,7 @@
 										<th>Estado</th>
 										<th>Moneda</th>
 										<th>Tipo Amortization</th>
+										<th>dayExcludedID</th>
 									  </tr>
 									</thead>
 									<tbody id="body_detail_line">             

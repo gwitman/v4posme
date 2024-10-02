@@ -273,6 +273,7 @@ class app_invoice_billing extends _BaseController {
 			
 			
 			$dataView["objListPay"]				= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","periodPay",$companyID);
+			$dataView["objListDayExcluded"]		= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","dayExcluded",$companyID);
 			$dataView["listCurrency"]			= $objListCurrency;
 			$dataView["listProvider"]			= $this->Provider_Model->get_rowByCompany($companyID);
 			$dataView["objListaPermisos"]		= $dataSession["menuHiddenPopup"];				
@@ -288,6 +289,8 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objParameterINVOICE_BILLING_PRINTER_URL_BAR"]								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_URL_BAR")->value;					
 			$dataView["objParameterINVOICE_BILLING_SELECTITEM"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SELECTITEM")->value;
 			$dataView["objListParameterJavaScript"]													= $this->core_web_parameter->getParameterAllToJavaScript($companyID);
+			$dataView["objParameterCXC_DAY_EXCLUDED_IN_CREDIT"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_DAY_EXCLUDED_IN_CREDIT")->value;
+			$dataView["objParameterINVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE")->value;
 			
 			
 			if(!$dataView["objCustomerDefault"])
@@ -887,6 +890,7 @@ class app_invoice_billing extends _BaseController {
 			$objTMNew["nextVisit"]						= /*inicio get post*/ $this->request->getPost("txtNextVisit");
 			$objTMNew["numberPhone"]					= /*inicio get post*/ $this->request->getPost("txtNumberPhone");
 			$objTMNew["entityIDSecondary"]				= /*inicio get post*/ $this->request->getPost("txtEmployeeID");
+			$objTMNew["dayExcluded"]					= /*inicio get post*/ $this->request->getPost("txtDayExcluded");
 
 			//Ingresar Informacion Adicional
 			$objTMInfoNew["companyID"]					= $objTM->companyID;
@@ -1658,6 +1662,7 @@ class app_invoice_billing extends _BaseController {
 			$objTM["nextVisit"]						= /*inicio get post*/ $this->request->getPost("txtNextVisit");
 			$objTM["numberPhone"]					= /*inicio get post*/ $this->request->getPost("txtNumberPhone");
 			$objTM["entityIDSecondary"]				= /*inicio get post*/ $this->request->getPost("txtEmployeeID");
+			$objTM["dayExcluded"]					= /*inicio get post*/ $this->request->getPost("txtDayExcluded");
 			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);			
 			
 			
@@ -2054,6 +2059,7 @@ class app_invoice_billing extends _BaseController {
 			$objParameterAmortizationDuranteFactura	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE");
 			$objParameterAmortizationDuranteFactura = $objParameterAmortizationDuranteFactura->value;
 			$objParameterUnitDefault				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, 'INVENTORY_UNITMEASURE_ID_DEFAULT')->value;
+			$objParameterCXC_DAY_EXCLUDED_IN_CREDIT	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, 'CXC_DAY_EXCLUDED_IN_CREDIT')->value;
 
 			//Saber si es al credito
 			$parameterCausalTypeCredit 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_CREDIT");			
@@ -2110,6 +2116,7 @@ class app_invoice_billing extends _BaseController {
 			$objTM["nextVisit"]						= "";
 			$objTM["numberPhone"]					= "";
 			$objTM["entityIDSecondary"]				= $employee->entityID;
+			$objTM["dayExcluded"]					= $objParameterCXC_DAY_EXCLUDED_IN_CREDIT;
 			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);			
 
 
@@ -3261,6 +3268,7 @@ class app_invoice_billing extends _BaseController {
 			
 			$dataView["codigoMesero"]						= $codigoMesero;
 			$dataView["objListPay"]							= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","periodPay",$companyID);
+			$dataView["objListDayExcluded"]					= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","dayExcluded",$companyID);
 			$dataView["listProvider"]						= $this->Provider_Model->get_rowByCompany($companyID);
 			$dataView["objListaPermisos"]					= $dataSession["menuHiddenPopup"];
 			$dataView["objParameterTypePreiceDefault"] 		= $objParameterTypePreiceDefault;
@@ -3274,6 +3282,8 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objParameterAlturaDelModalDeSeleccionProducto"] 	= $objParameterAlturaDelModalDeSeleccionProducto;
 			$dataView["objParameterScrollDelModalDeSeleccionProducto"] 	= $objParameterScrollDelModalDeSeleccionProducto;
 			$dataView["objParameterCXC_PLAZO_DEFAULT"]												= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_PLAZO_DEFAULT")->value;
+			$dataView["objParameterCXC_DAY_EXCLUDED_IN_CREDIT"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_DAY_EXCLUDED_IN_CREDIT")->value;
+			$dataView["objParameterINVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE")->value;
 			$dataView["objParameterCXC_FRECUENCIA_PAY_DEFAULT"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_FRECUENCIA_PAY_DEFAULT")->value;
 			$dataView["objParameterCustomPopupFacturacion"]											= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CORE_VIEW_CUSTOM_PANTALLA_DE_FACTURACION_POPUP_SELECCION_PRODUCTO_FORMA_MOSTRAR")->value;
 			$dataView["objParameterINVOICE_BILLING_APPLY_TYPE_PRICE_ON_DAY_POR_MAYOR"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_APPLY_TYPE_PRICE_ON_DAY_POR_MAYOR")->value;
@@ -5844,6 +5854,169 @@ class app_invoice_billing extends _BaseController {
 			
 			//Generar Reporte
 			$html = helper_reporteA4TransactionMasterInvoiceGlobalPro(
+			    "FACTURA",
+			    $objCompany,
+			    $objParameter,
+			    $datView["objTM"],
+			    $datView["objNatural"],
+			    $datView["objCustumer"],
+			    $datView["tipoCambio"],
+			    $datView["objCurrency"],
+			    $datView["objTMI"],
+				$datView["objTMD"],
+			    $objParameterTelefono, /*telefono*/
+				$datView["objNaturalEmployer"], /*vendedor*/
+				$datView["objTelefonoEmployer"], /*telefono cliente*/
+				$datView["objStage"][0]->display, /*estado*/
+				$datView["objTC"]->name, /*causal*/
+				"",
+				""
+			);
+			//echo $html;
+			$this->dompdf->loadHTML($html);
+			
+			
+			//1cm = 29.34666puntos
+			//a4: 210 ancho x 297
+			//a4: 21cm x 29.7cm
+			//a4: 595.28puntos x 841.59puntos
+			
+			//$this->dompdf->setPaper('A4','portrait');
+			//$this->dompdf->setPaper(array(0,0,234.76,6000));
+			
+			$this->dompdf->render();
+			
+			
+			
+			
+			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+			$objParameterShowDownloadPreview	= $this->core_web_parameter->getParameter("CORE_SHOW_DOWNLOAD_PREVIEW",$companyID);
+			$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview->value;
+			$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true" ? true : false;
+			
+			$fileNamePut = "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
+			$fileNamePdf = "FAC_".$datView["objTM"]->transactionNumber."_".str_replace(" ","_", $datView["objNatural"]->firstName).".pdf";
+			
+			$path        	= "./resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".$fileNamePut;
+			$patdir         = "./resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID;	
+			
+			if (!file_exists($patdir))
+			{
+				mkdir($patdir, 0755);
+				chmod($patdir, 0755);
+			}
+			
+			
+			file_put_contents(
+				$path,
+				$this->dompdf->output()					
+			);						
+			
+			chmod($path, 644);
+			
+			if($objParameterShowLinkDownload == "true")
+			{			
+				echo "<a 
+					href='".base_url()."/resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".
+					$fileNamePut."'>download factura</a>
+				"; 				
+			
+			}
+			else{			
+				//visualizar				
+				$this->dompdf->stream($fileNamePdf, ['Attachment' => $objParameterShowDownloadPreview ]);
+			}
+			
+			
+			
+			//descargar
+			//$this->dompdf->stream();
+			
+			
+		}
+		catch(\Exception $ex){
+		    
+		    $data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+		    
+		    $this->email->setFrom(EMAIL_APP);
+		    $this->email->setTo(EMAIL_APP_COPY);
+		    $this->email->setSubject("Error");
+		    $this->email->setMessage($resultView);
+		    
+		    $resultSend01 = $this->email->send();
+		    $resultSend02 = $this->email->printDebugger();
+		    
+		    
+		    return $resultView;
+		}
+	}
+	
+	function viewRegisterFormatoPaginaNormalA4Titan(){
+		try{ 
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+						$permited = false;
+						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						
+						if(!$permited)
+						throw new \Exception(NOT_ACCESS_CONTROL);
+						
+							
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						if ($resultPermission 	== PERMISSION_NONE)
+						throw new \Exception(NOT_ALL_EDIT);		
+			}	 
+			
+			
+			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri			
+			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri				
+			$companyID 					= $dataSession["user"]->companyID;		
+			$branchID 					= $dataSession["user"]->branchID;		
+			$roleID 					= $dataSession["role"]->roleID;		
+			
+			
+			//Get Component
+			$objComponent	        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			$objParameter	        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);			
+			$spacing 		= 0.5;
+			
+			//Get Documento					
+			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+			$datView["objTC"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$datView["objTM"]->transactionCausalID);
+			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
+			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
+			$datView["Identifier"]					= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+			$datView["objBranch"]					= $this->Branch_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->branchID);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_billing","statusID",$datView["objTM"]->statusID,$companyID,$branchID,$roleID);
+			$datView["objTipo"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$datView["objTM"]->transactionID,$datView["objTM"]->transactionCausalID);
+			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
+			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
+			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
+			$datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
+			$datView["objNaturalEmployer"]			= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objTM"]->entityIDSecondary);
+			$datView["objTelefonoEmployer"]			= $this->Entity_Phone_Model->get_rowByEntity($companyID,$datView["objCustumer"]->branchID,$datView["objTM"]->entityIDSecondary);
+			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
+			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 
+			
+			
+			
+			//Generar Reporte
+			$html = helper_reporteA4TransactionMasterInvoiceTitan(
 			    "FACTURA",
 			    $objCompany,
 			    $objParameter,

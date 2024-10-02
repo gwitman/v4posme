@@ -279,7 +279,7 @@
 						$listrow 	= [];
 						foreach($objCustomerCreditLine as $i)
 						{
-						$listrow[] 	= "[0,".$i->customerCreditLineID.",".$i->creditLineID.",".$i->currencyID.",".$i->statusID.",".$i->interestYear.",".$i->interestPay.",".$i->totalPay.",".$i->totalDefeated.",'".$i->dateOpen."',".$i->periodPay.",'".$i->dateLastPay."',".$i->term.",'".$i->note."','".$i->line."','".$i->accountNumber."','".number_format($i->limitCredit,2)."','".number_format($i->balance,2)."','".$i->statusName."','".$i->currencyName."',".$i->typeAmortization.",'".$i->typeAmortizationLabel."','".$i->periodPayLabel."','".number_format($i->interestYear,2)."','".number_format($i->term,2)."']";
+						$listrow[] 	= "[0,".$i->customerCreditLineID.",".$i->creditLineID.",".$i->currencyID.",".$i->statusID.",".$i->interestYear.",".$i->interestPay.",".$i->totalPay.",".$i->totalDefeated.",'".$i->dateOpen."',".$i->periodPay.",'".$i->dateLastPay."',".$i->term.",'".$i->note."','".$i->line."','".$i->accountNumber."','".number_format($i->limitCredit,2)."','".number_format($i->balance,2)."','".$i->statusName."','".$i->currencyName."',".$i->typeAmortization.",'".$i->typeAmortizationLabel."','".$i->periodPayLabel."','".number_format($i->interestYear,2)."','".number_format($i->term,2)."','".$i->dayExcluded."' ]";
 						}
 						echo implode(",",$listrow);
 					}
@@ -494,6 +494,15 @@
 							"bSearchable"	: false,
 							"mRender"		: function ( data, type, full ) {
 								return '<input type="hidden" value="'+data+'" name="txtTermLabel[]" />'+data;
+							}
+						},{
+							
+							"aTargets"		: [ 25 ],//creditLineID
+							"bVisible"		: true,
+							"sClass" 		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="hidden" value="'+data+'" name="txtDayExcluded[]" />'+data;
 							}
 						}
 			]							
@@ -992,6 +1001,7 @@
 				objTableLine.fnUpdate( data.txtStatusIDDesc, i, 18 );
 				objTableLine.fnUpdate( data.txtCurrencyIDDesc, i, 19 );
 				objTableLine.fnUpdate( data.txtTypeAmortization, i, 20 );
+				objTableLine.fnUpdate( data.txtDayExcluded, i, 25 );
 				
 			}
 		}
@@ -1033,7 +1043,8 @@
 			'N/D',						/*typeAmortizationLabel*/
 			'N/D',						/*periodPayLabel*/
 			data.txtInteresYear,		/*interestYearLabel*/
-			data.txtTerm				/*termLabel*/
+			data.txtTerm				/*termLabel*/,
+			data.txtDayExcluded			/*dayExclude*/
 		]);
 		refreschChecked();
 	}

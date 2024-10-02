@@ -4,8 +4,8 @@
 					$(document).ready(function(){					
 						 $('#txtDate').datepicker({format:"yyyy-mm-dd"});
 						 $('#txtDate').val(moment().format("YYYY-MM-DD"));	
-						 $('#txtTotalCredit').mask('000,000.00', {reverse: true});
-						 $('#txtTotalDebit').mask('000,000.00', {reverse: true});
+						 $('#txtTotalCredit').mask('000,000,000.00', {reverse: true});
+						 $('#txtTotalDebit').mask('000,000,000.00', {reverse: true});
 						
 						
 						$(document).on("click","#btnOpenTemplated",function(){
@@ -234,10 +234,10 @@
 					}
 					function refreschChecked(){
 						$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();
-						$('.txtDebit').mask('000,000.00', {reverse: true});
-						$('.txtCredit').mask('000,000.00', {reverse: true});
+						$('.txtDebit').mask('000,000,000.00', {reverse: true});
+						$('.txtCredit').mask('000,000,000.00', {reverse: true});
 						
-						$('#txtTotalCredit').mask('000,000.00', {reverse: true});
-						$('#txtTotalDebit').mask('000,000.00', {reverse: true});
+						$('#txtTotalCredit').mask('000,000,000.00', {reverse: true});
+						$('#txtTotalDebit').mask('000,000,000.00', {reverse: true});
 					}
 				</script>

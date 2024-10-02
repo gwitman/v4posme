@@ -22,8 +22,11 @@
 					data.txtPeriodPay				= $("#txtPeriodPay").val();
 					data.txtPeriodPayDesc 			= $("#txtPeriodPay option:selected").text();
 					
-					data.txtTypeAmortization	= $("#txtTypeAmorization").val();
-					data.txtTypeAmortizationDesc= $("#txtTypeAmorization option:selected").text();
+					data.txtTypeAmortization		= $("#txtTypeAmorization").val();
+					data.txtTypeAmortizationDesc	= $("#txtTypeAmorization option:selected").text();
+					
+					data.txtDayExcluded				= $("#txtDayExcluded").val();
+					data.txtDayExcludedDesc			= $("#txtDayExcluded option:selected").text();
 					
 					data.txtTerm					= $("#txtTerm").val();
 					data.txtNote					= $("#txtNote").val();

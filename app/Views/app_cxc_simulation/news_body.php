@@ -123,7 +123,24 @@
 															</div>
 													</div>
 													
-													
+													<div class="form-group">
+														<label class="col-lg-4 control-label" for="selectFilter">Dias Excluidos</label>
+														<div class="col-lg-8">
+															<select name="txtDayExcluded" id="txtDayExcluded" class="select2">
+																<?php
+																	$indec =  0;
+																	if($objListDayExcluded)
+																	foreach($objListDayExcluded as $ws){
+																		if($indec == 0 )
+																		echo "<option value='".$ws->catalogItemID."' selected  >".$ws->name."</option>";
+																	
+																		$indec++;
+																		echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+																	}
+																?>
+															</select>
+														</div>
+													</div>
 												
 											</div>
 											</div>

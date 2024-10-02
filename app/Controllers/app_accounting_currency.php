@@ -46,11 +46,128 @@ class app_accounting_currency extends _BaseController {
 			$reportName		= "TASA DE CAMBIO";
 			//Set Info File
 			
+			if(isset($objData))
+			$objDataResult["objDetail"]					= $objData;
+			else
+			$objDataResult["objDetail"]					= NULL;
+			$objDataResult["objCompany"] 				= $objCompany;
+			$objDataResult["objLogo"] 					= $objParameter;	
+			$objDataResult["objParameterTamanoLetra"] 	= "small";	
+			$objDataResult["objParameterAltoDeLaFila"] 	= "small";				
+			$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "process_view_report" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
+			$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
+			
+			
+			return view("app_account_currency/process_view_report/view_a_disemp",$objDataResult);//--finview-r
 			
 		}
 		catch(\Exception $ex){
 			exit($ex->getMessage());
 		}
+	}
+	
+	function process_file_update_exchange_rate()
+	{
+		try{ 
+		
+		
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+						$permited = false;
+						$permited = $this->core_web_permission->urlPermited(get_class($this),"currency_core_function",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						
+						if(!$permited)
+						throw new \Exception(NOT_ACCESS_CONTROL);								
+			
+			}	
+			
+		
+			$companyID 		= $dataSession["user"]->companyID;	
+			$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company_currency");
+			
+			$ratio 		= $this->request->getPost("value");
+			$startOn 	= $this->request->getPost("startOn");
+			$endOn 		= $this->request->getPost("endOn");
+			
+			date_default_timezone_set(APP_TIMEZONE); 
+			
+			$currencyIDTargetCordoba			= $this->core_web_currency->getCurrencyDefault($companyID);
+			$currencyIDSourceDolar				= $this->core_web_currency->getCurrencyExternal($companyID);
+			$startOn	= \DateTime::createFromFormat('Y-m-d', $startOn);
+			$endOn		= \DateTime::createFromFormat('Y-m-d', $endOn);
+			
+			// Mientras $fecha1 sea menor que $fecha2
+			while ($startOn <= $endOn) {
+				
+				//Buscar si existe La Tasa de Cambio
+				$date 			 = $startOn->format('Y-m-d');
+				
+				
+				//Procesar de De Cordoba a Dolar
+				$objExchangeRate = $this->Exchangerate_Model->get_rowByPK($companyID,$date,$currencyIDSourceDolar->currencyID,$currencyIDTargetCordoba->currencyID);
+				if($objExchangeRate){					
+					
+					$data["ratio"] = $ratio;
+					$this->Exchangerate_Model->update_app_posme($companyID,$date,$currencyIDSourceDolar->currencyID,$currencyIDTargetCordoba->currencyID,$data);
+					
+				}
+				else{					
+					$data["companyID"] 			= $companyID;
+					$data["date"] 				= $date;
+					$data["currencyID"] 		= $currencyIDSourceDolar->currencyID;
+					$data["targetCurrencyID"] 	= $currencyIDTargetCordoba->currencyID;
+					$data["ratio"] 				= $ratio;					
+					$this->Exchangerate_Model->insert_app_posme($data);
+				}
+
+
+
+
+				//Procesar de De Dolar A Cordoba
+				$objExchangeRate = $this->Exchangerate_Model->get_rowByPK($companyID,$date,$currencyIDTargetCordoba->currencyID,$currencyIDSourceDolar->currencyID);
+				if($objExchangeRate){					
+					
+					$data["ratio"] = 1/$ratio;
+					$this->Exchangerate_Model->update_app_posme($companyID,$date,$currencyIDTargetCordoba->currencyID,$currencyIDSourceDolar->currencyID,$data);
+					
+				}
+				else{					
+					$data["companyID"] 			= $companyID;
+					$data["date"] 				= $date;
+					$data["currencyID"] 		= $currencyIDTargetCordoba->currencyID;
+					$data["targetCurrencyID"] 	= $currencyIDSourceDolar->currencyID;
+					$data["ratio"] 				= 1/$ratio;					
+					$this->Exchangerate_Model->insert_app_posme($data);
+				}
+
+				// Incrementa la fecha en un día
+				$startOn->modify('+1 day');
+			}
+
+			
+			
+			
+			return $this->response->setJSON(array(
+				'error'   => false,
+				'message' => SUCCESS
+			));//--finjson
+			$this->core_web_notification->set_message(false,SUCCESS);
+		
+		}
+		catch(\Exception $ex){
+			
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));//--finjson
+			$this->core_web_notification->set_message(true,$ex->getLine()." ".$ex->getMessage());
+		}	
 	}
 	
 	function process_file(){
@@ -87,9 +204,14 @@ class app_accounting_currency extends _BaseController {
 			if (!file_exists($fileName))
 			throw new \Exception("NO EXISTE EL ARCHIVO MENCIONADO");
 			
-			//Leer el Archivo					
+			//Leer el Archivo			
+			$objParameterSplit	= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT",$companyID);
+			$characterSplie 	= $objParameterSplit->value;
+				
+			$this->csvreader->separator = $characterSplie;				
 			$csvTable 		= $this->csvreader->parse_file($fileName); 
 			$lineNumber		= 0;
+			
 			
 			foreach ($csvTable as $csvRow) 
 			{	

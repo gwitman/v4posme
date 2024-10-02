@@ -508,6 +508,8 @@ class app_cxc_customer extends _BaseController {
 			$arrayListCreditBalance			= /*inicio get post*/ $this->request->getPost("txtLineBalance");
 			$arrayListCreditStatus			= /*inicio get post*/ $this->request->getPost("txtLineStatus");
 			$arrayListTypeAmortization		= /*inicio get post*/ $this->request->getPost("txtTypeAmortization");
+			$arrayListDayExcluded			= /*inicio get post*/ $this->request->getPost("txtDayExcluded");
+			
 			$limitCreditLine 				= 0;
 			//Limpiar Lineas de Creditos
 			$this->Customer_Credit_Line_Model->deleteWhereIDNotIn($companyID_,$branchID_,$entityID_,$arrayListCustomerCreditLineID);
@@ -538,6 +540,7 @@ class app_cxc_customer extends _BaseController {
 					$objCustomerCreditLine["statusID"]		= $arrayListCreditStatusID[$key];
 					$objCustomerCreditLine["isActive"]		= 1;
 					$objCustomerCreditLine["typeAmortization"]		= $arrayListTypeAmortization[$key];
+					$objCustomerCreditLine["dayExcluded"]			= $arrayListDayExcluded[$key];					
 					$limitCreditLine 								= $limitCreditLine + $objCustomerCreditLine["limitCredit"];
 					$exchangeRate 									= $this->core_web_currency->getRatio($companyID,$dateOn,1,$objCustomerCreditLine["currencyID"],$objCurrencyDolares->currencyID,);
 					$exchangeRateAmount								= $objCustomerCreditLine["limitCredit"];
@@ -558,6 +561,7 @@ class app_cxc_customer extends _BaseController {
 					$objCustomerCreditLineNew["note"]				= $arrayListCreditNote[$key];
 					$objCustomerCreditLineNew["statusID"]			= $arrayListCreditStatusID[$key];
 					$objCustomerCreditLineNew["typeAmortization"]		= $arrayListTypeAmortization[$key];
+					$objCustomerCreditLineNew["dayExcluded"]			= $arrayListDayExcluded[$key];
 					$limitCreditLine 									= $limitCreditLine + $objCustomerCreditLineNew["limitCredit"];
 					$exchangeRate 										= $this->core_web_currency->getRatio($companyID,$dateOn,1,$objCustomerCreditLine->currencyID,$objCurrencyDolares->currencyID);					
 					$exchangeRateAmount									= $objCustomerCreditLineNew["limitCredit"];
@@ -776,6 +780,7 @@ class app_cxc_customer extends _BaseController {
 			$municipioDefault 			= $this->core_web_parameter->getParameterValue("CXC_MUNICIPIO_DEFAULT",$companyID);
 			$plazoDefault 				= $this->core_web_parameter->getParameterValue("CXC_PLAZO_DEFAULT",$companyID);
 			$typeAmortizationDefault 	= $this->core_web_parameter->getParameterValue("CXC_TYPE_AMORTIZATION",$companyID);
+			$dayExcludedDefault 		= $this->core_web_parameter->getParameterValue("CXC_DAY_EXCLUDED_IN_CREDIT",$companyID);			
 			$frecuencyDefault 			= $this->core_web_parameter->getParameterValue("CXC_FRECUENCIA_PAY_DEFAULT",$companyID);
 			$creditLineDefault 			= $this->core_web_parameter->getParameterValue("CXC_CREDIT_LINE_DEFAULT",$companyID);
 			$validarCedula 				= $this->core_web_parameter->getParameterValue("CXC_VALIDAR_CEDULA_REPETIDA",$companyID);
@@ -936,6 +941,7 @@ class app_cxc_customer extends _BaseController {
 			$arrayListCreditBalance			= /*inicio get post*/ $this->request->getPost("txtLineBalance");
 			$arrayListCreditStatus			= /*inicio get post*/ $this->request->getPost("txtLineStatus");
 			$arrayListTypeAmortization		= /*inicio get post*/ $this->request->getPost("txtTypeAmortization");			
+			$arrayListDayExcluded			= /*inicio get post*/ $this->request->getPost("txtDayExcluded");			
 			$limitCreditLine 				= 0;
 			
 			
@@ -955,6 +961,7 @@ class app_cxc_customer extends _BaseController {
 				 $arrayListCreditTerm[0]			= $plazoDefault;
 				 $arrayListCreditNote[0]			= "-";
 				 $arrayListTypeAmortization[0]		= $typeAmortizationDefault;
+				 $arrayListDayExcluded[0]			= $dayExcludedDefault;
 				 $arrayListCreditStatusID[0]		= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_line","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
 				 
 			}
@@ -983,6 +990,7 @@ class app_cxc_customer extends _BaseController {
 					$objCustomerCreditLine["statusID"]		= $arrayListCreditStatusID[$key];
 					$objCustomerCreditLine["isActive"]		= 1;
 					$objCustomerCreditLine["typeAmortization"]	= $arrayListTypeAmortization[$key];
+					$objCustomerCreditLine["dayExcluded"]		= $arrayListDayExcluded[$key];
 					$limitCreditLine 							= $limitCreditLine + $objCustomerCreditLine["limitCredit"];
 					$exchangeRate 								= $this->core_web_currency->getRatio($companyID,$dateOn,1,$objCustomerCreditLine["currencyID"],$objCurrencyDolares->currencyID);//cordobas a dolares, o dolares a dolares.
 					$exchangeRateAmount							= $objCustomerCreditLine["limitCredit"];
@@ -1102,7 +1110,7 @@ class app_cxc_customer extends _BaseController {
             $creditLineDefault 			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_CREDIT_LINE_DEFAULT")->value;
             $validarCedula 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_VALIDAR_CEDULA_REPETIDA")->value;
             $interesDefault				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_INTERES_DEFAULT")->value;
-
+			$dayExcludedDefault 		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_DAY_EXCLUDED_IN_CREDIT")->value;
 
             $paisID = $paisDefault;
             $departamentoId= $departamentoDefault;
@@ -1226,6 +1234,7 @@ class app_cxc_customer extends _BaseController {
             $arrayListCreditBalance			= array();
             $arrayListCreditStatus			= array();
             $arrayListTypeAmortization		= array();
+			$arrayListDayExcluded			= array();
             $limitCreditLine 				= 0;
 
 
@@ -1245,6 +1254,7 @@ class app_cxc_customer extends _BaseController {
                 $arrayListCreditTerm[0]				= $plazoDefault;
                 $arrayListCreditNote[0]				= "-";
                 $arrayListTypeAmortization[0]		= $typeAmortizationDefault;
+				$arrayListDayExcluded[0]			= $dayExcludedDefault;				
                 $arrayListCreditStatusID[0]			= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_line","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
 
             }
@@ -1273,6 +1283,7 @@ class app_cxc_customer extends _BaseController {
                     $objCustomerCreditLine["statusID"]		= $arrayListCreditStatusID[$key];
                     $objCustomerCreditLine["isActive"]		= 1;
                     $objCustomerCreditLine["typeAmortization"]	= $arrayListTypeAmortization[$key];
+					$objCustomerCreditLine["dayExcluded"]		= $arrayListDayExcluded[$key];
                     $limitCreditLine 							= $limitCreditLine + $objCustomerCreditLine["limitCredit"];
                     $exchangeRate 								= $this->core_web_currency->getRatio($companyID,$dateOn,1,$objCustomerCreditLine["currencyID"],$objCurrencyDolares->currencyID);//cordobas a dolares, o dolares a dolares.
                     $exchangeRateAmount							= $objCustomerCreditLine["limitCredit"];
@@ -1622,6 +1633,7 @@ class app_cxc_customer extends _BaseController {
 			$dataView["objListPay"]				= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","periodPay",$companyID);
 			$dataView["objCustomerCreditLine"] 	= $this->Customer_Credit_Line_Model->get_rowByPK($customerCreditLineID);
 			$dataView["objListTypeAmortization"]= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","typeAmortization",$companyID);
+			$dataView["objListDayExcluded"]		= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","dayExcluded",$companyID);
 			
 			//Renderizar Resultado
 			$dataSession["message"]		= "";
@@ -1661,10 +1673,16 @@ class app_cxc_customer extends _BaseController {
 			$dataView["objListWorkflowStage"]		= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_line","statusID",$companyID,$branchID,$roleID);
 			$dataView["objListPay"]					= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","periodPay",$companyID);
 			$dataView["objListTypeAmortization"]	= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","typeAmortization",$companyID);
+			$dataView["objListDayExcluded"]			= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","dayExcluded",$companyID);
 			
 			$objParameterCurrenyDefault	= $this->core_web_parameter->getParameter("ACCOUNTING_CURRENCY_NAME_FUNCTION",$companyID);			
 			$objParameterCurrenyDefault 	= $objParameterCurrenyDefault->value;
 			$dataView["objParameterCurrenyDefault"] = $objParameterCurrenyDefault;
+			
+			
+			$objParameterCXC_DAY_EXCLUDED_IN_CREDIT				= $this->core_web_parameter->getParameter("CXC_DAY_EXCLUDED_IN_CREDIT",$companyID);			
+			$objParameterCXC_DAY_EXCLUDED_IN_CREDIT 			= $objParameterCXC_DAY_EXCLUDED_IN_CREDIT->value;
+			$dataView["objParameterCXC_DAY_EXCLUDED_IN_CREDIT"] = $objParameterCXC_DAY_EXCLUDED_IN_CREDIT;
 			
 			
 			$objParameterAmortizationDefault	= $this->core_web_parameter->getParameter("CXC_TYPE_AMORTIZATION",$companyID);			

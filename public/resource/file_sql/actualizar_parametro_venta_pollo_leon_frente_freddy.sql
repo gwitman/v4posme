@@ -1378,7 +1378,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Pollos Adrian' , address = 'Del Instituto España 2 1/2 c al Sur.' ,
+	NAME = 'Productos Varios Delgado' , address = 'Del Instituto España 2 1/2 c al Sur.' ,
 	flavorID = 470,type='pollosadrian'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

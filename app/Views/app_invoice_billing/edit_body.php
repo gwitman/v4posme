@@ -625,7 +625,7 @@
 									</div>
 									
 									
-									<div class="form-group">
+									<div class="form-group <?php echo $objParameterINVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE=="true" ? "" : "hidden"; ?>  ">
 											<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","txtTermReference","Plazo ó Referencia2"); ?></label>
 											<div class="col-lg-8">
 												<input class="form-control"  type="text"  name="txtReference2" id="txtReference2" value="<?php echo $objTransactionMaster->reference2; ?>">												
@@ -633,7 +633,7 @@
 									</div>	
 									
 									
-									<div class="form-group">
+									<div class="form-group <?php echo $objParameterINVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE=="true" ? "" : "hidden"; ?>  ">
 											<label class="col-lg-4 control-label" for="normal">Frecuencia</label>
 											<div class="col-lg-8">
 												<!--
@@ -647,6 +647,26 @@
 														foreach($objListPay as $ws){
 																$index = $index + 1;																
 																if($ws->catalogItemID == $objTransactionMaster->periodPay)
+																echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+																else 
+																echo "<option value='".$ws->catalogItemID."' >".$ws->name."</option>";	
+														}
+														?>
+												</select>
+											</div>
+									</div>
+									
+									<div class="form-group <?php echo $objParameterINVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE=="true" ? "" : "hidden"; ?>  ">
+											<label class="col-lg-4 control-label" for="normal">Dias Excluidos</label>
+											<div class="col-lg-8">												
+												<select name="txtDayExcluded" id="txtDayExcluded" class="select2">
+														<option value="0"></option>		
+														<?php
+														$index = -1;
+														if($objListDayExcluded)
+														foreach($objListDayExcluded as $ws){
+																$index = $index + 1;																
+																if($ws->catalogItemID == $objTransactionMaster->dayExcluded)
 																echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
 																else 
 																echo "<option value='".$ws->catalogItemID."' >".$ws->name."</option>";	

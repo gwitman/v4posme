@@ -54,7 +54,8 @@ class Customer_Credit_Line_Model extends Model  {
 		i.accountNumber, i.currencyID, i.limitCredit, i.balance, i.interestYear, i.interestPay, 
 		i.totalPay, i.totalDefeated, i.dateOpen, i.periodPay, i.dateLastPay, i.term, i.note, 
 		i.statusID, i.isActive,cr.name as currencyName,
-		i.typeAmortization,cl.name as creditLineName");
+		i.typeAmortization,cl.name as creditLineName, 
+		i.dayExcluded ");
 		$sql = $sql.sprintf(" from tb_customer_credit_line i");
 		$sql = $sql.sprintf(" inner join  tb_currency cr on i.currencyID = cr.currencyID");
 		$sql = $sql.sprintf(" inner join  tb_credit_line cl on cl.creditLineID = i.creditLineID");
@@ -77,7 +78,7 @@ class Customer_Credit_Line_Model extends Model  {
 		i.totalPay, i.totalDefeated, i.dateOpen, i.periodPay, i.dateLastPay, i.term, i.note, 
 		i.statusID, i.isActive,cl.name as line,ws.name as statusName,cr.name as currencyName,
 		i.typeAmortization,ci3.name as typeAmortizationLabel,
-		ci2.name as periodPayLabel");
+		ci2.name as periodPayLabel, i.dayExcluded ");
 		$sql = $sql.sprintf(" from tb_customer_credit_line i");		
 		$sql = $sql.sprintf(" inner join  tb_credit_line cl on i.creditLineID = cl.creditLineID");
 		$sql = $sql.sprintf(" inner join  tb_workflow_stage ws on ws.workflowStageID = i.statusID");
@@ -104,7 +105,7 @@ class Customer_Credit_Line_Model extends Model  {
 		i.totalPay, i.totalDefeated, i.dateOpen, i.periodPay, i.dateLastPay, i.term, i.note, 
 		i.statusID, i.isActive,cl.name as line,ws.name as statusName,cr.name as currencyName,
 		i.typeAmortization,ci3.name as typeAmortizationLabel,
-		ci2.name as periodPayLabel");
+		ci2.name as periodPayLabel, i.dayExcluded ");
 		$sql = $sql.sprintf(" from tb_customer_credit_line i");		
 		$sql = $sql.sprintf(" inner join  tb_credit_line cl on i.creditLineID = cl.creditLineID");
 		$sql = $sql.sprintf(" inner join  tb_workflow_stage ws on ws.workflowStageID = i.statusID");
@@ -132,7 +133,7 @@ class Customer_Credit_Line_Model extends Model  {
 								i.totalPay, i.totalDefeated, i.dateOpen, i.periodPay, i.dateLastPay, i.term, i.note, 
 								i.statusID, i.isActive,cl.name as line,ws.name as statusName,cr.name as currencyName,
 								i.typeAmortization,ci3.name as typeAmortizationLabel,
-								ci2.name as periodPayLabel
+								ci2.name as periodPayLabel, i.dayExcluded 
 				");
 		$sql = $sql.sprintf(" from 
 								tb_customer_credit_line i");		
@@ -155,7 +156,7 @@ class Customer_Credit_Line_Model extends Model  {
 		$builder	= $db->table("tb_customer_credit_line");    
 		
 		$sql = "";
-		$sql = sprintf("select customerCreditLineID, companyID, branchID, entityID, creditLineID, accountNumber, currencyID, limitCredit, balance, interestYear, interestPay, totalPay, totalDefeated, dateOpen, periodPay, dateLastPay, term, note, statusID, isActive,typeAmortization");
+		$sql = sprintf("select customerCreditLineID, companyID, branchID, entityID, creditLineID, accountNumber, currencyID, limitCredit, balance, interestYear, interestPay, totalPay, totalDefeated, dateOpen, periodPay, dateLastPay, term, note, statusID, isActive,typeAmortization, i.dayExcluded ");
 		$sql = $sql.sprintf(" from tb_customer_credit_line i");		
 		$sql = $sql.sprintf(" where i.customerCreditLineID = $customerCreditLineID");
 		$sql = $sql.sprintf(" and i.isActive= 1");

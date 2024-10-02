@@ -387,7 +387,16 @@
 							"mRender"		: function ( data, type, full ) {
 								return '<input type="hidden" value="'+data+'" name="txtTypeAmortization[]" />';
 							}
-						}
+						},
+						{
+							"aTargets"		: [ 21 ],//dayExclueded
+							"bVisible"		: true,
+							"sClass" 		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="hidden" value="'+data+'" name="txtDayExcluded[]" />';
+							}
+						},
 			]							
 		});
 		
@@ -787,7 +796,8 @@
 			data.txtLimitCredit,
 			data.txtStatusIDDesc,
 			data.txtCurrencyIDDesc,
-			data.txtTypeAmortization
+			data.txtTypeAmortization,
+			data.txtDayExcluded
 		]);
 		refreschChecked();
 	}

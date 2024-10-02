@@ -32,6 +32,7 @@ class app_cxc_simulation extends _BaseController {
 			$data["typeAmortization"]	= /*inicio get post*/ $this->request->getPost("txtPlanID");
 			$data["interestYear"]		= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtInterestYear"));
 			$data["interestYear"]		= $data["interestYear"] * $objCatalogItemFrecuencia->ratio;
+			$data["dayExcluded"]		= $this->request->getPost("txtDayExcluded");
 			
 			$r = $this->Customer_Credit_Line_Model->update_app_posme($customerCreditLineID,$data);
 			
@@ -155,6 +156,7 @@ class app_cxc_simulation extends _BaseController {
 			}
 			
 			$dataView["objListPay"]				= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","periodPay",$companyID);
+			$dataView["objListDayExcluded"]		= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","dayExcluded",$companyID);
 			$dataView["objListTypeAmortization"]= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","typeAmortization",$companyID);
 			$dataView["objParameterCORE_VIEW_CUSTOM_LABEL_INTERES_ANUAL"] 	= $this->core_web_parameter->getParameterValue("CORE_VIEW_CUSTOM_LABEL_INTERES_ANUAL",$companyID);
 			

@@ -65,6 +65,14 @@ class core_dashboards extends _BaseController {
 			$objParameterPriceByInvoice					= $objParameterPriceByInvoice->value;
 			$dataSession["objParameterPriceByInvoice"] 	= $objParameterPriceByInvoice;
 			
+			
+			$objCurrency									= $this->core_web_currency->getCurrencyDefault($companyID);
+			$targetCurrency									= $this->core_web_currency->getCurrencyExternal($companyID);
+			$dataSession["objExchangeRateDolarACordoba"] 	= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
+			$dataSession["objExchangeRateCordobaDolar"] 	= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$objCurrency->currencyID,$targetCurrency->currencyID);			
+			
+			
+			
 			$diaDelAnnio 								= date("z");
 			$diaDelAnnio 								= rand(1, 360);
 			$objVersiculo 								= $this->Biblia_Model->get_rowByDay($companyID, $diaDelAnnio);

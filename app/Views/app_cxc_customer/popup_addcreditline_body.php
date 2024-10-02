@@ -112,6 +112,26 @@
 													</div>
 													
 													<div class="form-group">
+														<label class="col-lg-4 control-label" for="selectFilter">Dias Excluidos</label>
+														<div class="col-lg-8">
+															<select name="txtDayExcluded" id="txtDayExcluded" class="select2">
+																	<option></option>																
+																	<?php
+																	if($objListDayExcluded)
+																	foreach($objListDayExcluded as $ws){
+																	
+																		if($ws->catalogItemID == $objParameterCXC_DAY_EXCLUDED_IN_CREDIT )
+																			echo "<option value='".$ws->catalogItemID."' selected data-val='".$ws->sequence."' >".$ws->name."</option>";
+																		else
+																			echo "<option value='".$ws->catalogItemID."' data-val='".$ws->sequence."' >".$ws->name."</option>";
+																	}
+																	?>
+															</select>
+														</div>
+													</div>
+													
+													
+													<div class="form-group">
 														<label class="col-lg-4 control-label" for="selectFilter">Plan</label>
 														<div class="col-lg-8">
 															<select name="txtTypeAmorization" id="txtTypeAmorization" class="select2">

@@ -124,6 +124,27 @@
 					</div>
 					<div class="col-lg-6">	
 						
+						<div class="panel" style="margin-bottom:20px;">
+							<div class="panel-heading">
+								<div class="icon"><i class="icon20 i-quotes-left"></i></div> 
+								<h4>Tipo de cambio</h4>
+								<a href="#" class="minimize"></a>
+							</div><!-- End .panel-heading -->
+						
+							<div class="panel-body">
+								<blockquote>
+									<p>VALOR: <?php echo $objExchangeRateCordobaDolar; ?></p>									
+									<small>Dolar a Cordoba</small>
+								</blockquote>
+								
+							   <blockquote>
+									<p>VALOR: <?php echo $objExchangeRateDolarACordoba; ?></p>									
+									<small>Cordoba al Dolar</small>
+								</blockquote>
+							</div><!-- End .panel-body -->
+						</div><!-- End .widget -->	
+						
+						
 						
 						<div class="panel <?php echo getBehavio($company->type,"core_dashboards","divPanelSoporteTenico",""); ?> " style="margin-bottom:20px;">
 							<div class="panel-heading">
