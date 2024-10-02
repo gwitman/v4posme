@@ -557,63 +557,6 @@
 						<div class="row">
 								<div class="col-lg-6" id="divInformacionLeftReference">
 								
-									<div class="form-group  <?php echo getBehavio($company->type,"app_invoice_billing","divProviderCredit",""); ?> ">
-											<label class="col-lg-4 control-label" for="normal">Proveedor de Credito</label>
-											<div class="col-lg-8">
-												<!--
-												<input class="form-control"  type="text"  name="txtReference1" id="txtReference1" value="">												
-												-->
-												<select name="txtReference1" id="txtReference1" class="select2">
-														<option value="0"></option>		
-														<?php
-														if($listProvider)
-														foreach($listProvider as $ws){
-															if($ws->entityID == $objTransactionMaster->reference1)
-																echo "<option value='".$ws->entityID."' selected>".$ws->firstName." ".$ws->lastName."</option>";
-															else 
-																echo "<option value='".$ws->entityID."' >".$ws->firstName." ".$ws->lastName."</option>";
-														}
-														?>
-												</select>
-											</div>
-									</div>
-									
-									<div class="form-group" id="divFixedExpenses" >
-											<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionExpenseLabel","% De Gasto."); ?></label>
-											<div class="col-lg-8">
-												<input class="form-control"   type="text" name="txtFixedExpenses" id="txtFixedExpenses" value="<?php echo helper_RequestGetValueObjet($objTransactionMasterDetailCredit,"reference1",0); ?>">
-												<!--
-												<a href="#" class="btn btn-primary  gap-right10" data-toggle="popover" data-placement="bottom" 
-												data-content="Ejemplo: Del Interese de cada cuota, se multiplica por este % para saber de cuanto es la comision para FID-Local, este numero debe ser #0 o mayor que #1" title="" data-original-title="% de Gastos Fijo:">Ayuda:</a>
-												-->
-											</div>
-									</div>
-									
-									<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divApplied",""); ?>  ">
-											<label class="col-lg-4 control-label" for="normal">Aplicado</label>
-											<div class="col-lg-8">
-												<input type="checkbox" disabled   name="txtIsApplied" id="txtIsApplied" value="1" <?php if($objTransactionMaster->isApplied) echo "checked"; ?> >
-											</div>
-									</div>
-									
-									
-									<div class="form-group hide">
-											<label class="col-lg-4 control-label" for="normal">Primer Linea del Protocolo.</label>
-											<div class="col-lg-8">
-												<input class="form-control"   type="text" name="txtLayFirstLineProtocolo" id="txtLayFirstLineProtocolo" value="<?php echo helper_RequestGetValueObjet($objTransactionMasterDetailCredit,"reference3",0); ?>">
-												
-												<a href="#" class="btn btn-primary  gap-right10" data-toggle="popover" data-placement="bottom" 
-												data-content="Ejemplo: 5" title="" 
-												data-original-title="Tenor:">Ayuda:</a>
-												
-												
-											</div>
-									</div>
-									
-									
-								</div>
-								<div class="col-lg-6" id="divInformacionRightReference"  >
-								
 									<div class="form-group">
 										<label class="col-lg-4 control-label" for="datepicker">Primer Pago</label>
 										<div class="col-lg-8">
@@ -656,6 +599,27 @@
 											</div>
 									</div>
 									
+									<div class="form-group  <?php echo getBehavio($company->type,"app_invoice_billing","divProviderCredit",""); ?> ">
+											<label class="col-lg-4 control-label" for="normal">Proveedor de Credito</label>
+											<div class="col-lg-8">
+												<!--
+												<input class="form-control"  type="text"  name="txtReference1" id="txtReference1" value="">												
+												-->
+												<select name="txtReference1" id="txtReference1" class="select2">
+														<option value="0"></option>		
+														<?php
+														if($listProvider)
+														foreach($listProvider as $ws){
+															if($ws->entityID == $objTransactionMaster->reference1)
+																echo "<option value='".$ws->entityID."' selected>".$ws->firstName." ".$ws->lastName."</option>";
+															else 
+																echo "<option value='".$ws->entityID."' >".$ws->firstName." ".$ws->lastName."</option>";
+														}
+														?>
+												</select>
+											</div>
+									</div>
+									
 									<div class="form-group <?php echo $objParameterINVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE=="true" ? "" : "hidden"; ?>  ">
 											<label class="col-lg-4 control-label" for="normal">Dias Excluidos</label>
 											<div class="col-lg-8">												
@@ -678,57 +642,83 @@
 									
 									
 									
+									
+									
+								</div>
+								<div class="col-lg-6" id="divInformacionRightReference"  >
+									
+									<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divApplied",""); ?>  ">
+											<label class="col-lg-4 control-label" for="normal">Aplicado</label>
+											<div class="col-lg-8">
+												<input type="checkbox" disabled   name="txtIsApplied" id="txtIsApplied" value="1" <?php if($objTransactionMaster->isApplied) echo "checked"; ?> >
+											</div>
+									</div>
+									
+									<div class="form-group" id="divFixedExpenses" >
+											<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionExpenseLabel","% De Gasto."); ?></label>
+											<div class="col-lg-8">
+												<input class="form-control"   type="text" name="txtFixedExpenses" id="txtFixedExpenses" value="<?php echo helper_RequestGetValueObjet($objTransactionMasterDetailCredit,"reference1",0); ?>">
+												<!--
+												<a href="#" class="btn btn-primary  gap-right10" data-toggle="popover" data-placement="bottom" 
+												data-content="Ejemplo: Del Interese de cada cuota, se multiplica por este % para saber de cuanto es la comision para FID-Local, este numero debe ser #0 o mayor que #1" title="" data-original-title="% de Gastos Fijo:">Ayuda:</a>
+												-->
+											</div>
+									</div>
+									
+									
+									<div class="form-group hide">
+											<label class="col-lg-4 control-label" for="normal">Primer Linea del Protocolo.</label>
+											<div class="col-lg-8">
+												<input class="form-control"   type="text" name="txtLayFirstLineProtocolo" id="txtLayFirstLineProtocolo" value="<?php echo helper_RequestGetValueObjet($objTransactionMasterDetailCredit,"reference3",0); ?>">
+												
+												<a href="#" class="btn btn-primary  gap-right10" data-toggle="popover" data-placement="bottom" 
+												data-content="Ejemplo: 5" title="" 
+												data-original-title="Tenor:">Ayuda:</a>
+												
+												
+											</div>
+									</div>
+									
+									<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divDesembolsoEfectivo",""); ?> ">
+											<label class="col-lg-4 control-label" for="normal"></label>
+											<div class="col-lg-8">
+												 <label class="label-change-switch" id="txtLabelIsDesembolsoEfectivo">Es un desembolso en efectivo?</label>
+												 <br/>
+												 <div class="switch" data-on="success" data-off="warning">
+													<input class="toggle"controls-row type="checkbox" checked id="txtCheckDeEfectivo" />
+												 </div>																
+											</div>
+									</div>
+									
+									<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divReportSinRiesgo",""); ?> ">
+											<label class="col-lg-4 control-label" for="normal"></label>
+											<div class="col-lg-8">
+												
+												<label class="label-change-switch" id="txtLabelIsReportSinRiesgo">Reportar a SinRiesgo</label>
+												<br/>
+												
+												<div class="switch" data-on="success" data-off="warning">
+													<?php
+													if(helper_RequestGetValueObjet ($objTransactionMasterDetailCredit,"reference2",0) == 1){
+													?>
+														<input class="toggle"controls-row type="checkbox" checked id="txtCheckReportSinRiesgo" name="txtCheckReportSinRiesgo" value="1"  />																									
+													<?php
+													}
+													else{
+													?>
+														<input class="toggle"controls-row type="checkbox"  id="txtCheckReportSinRiesgo" name="txtCheckReportSinRiesgo" value="1"  />
+													<?php
+													}
+													?>
+												</div>																
+											</div>
+											
+									</div>
+									
+									
 								</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-6">
-								
-								
-								<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divDesembolsoEfectivo",""); ?> ">
-										<label class="col-lg-4 control-label" for="normal"></label>
-										<div class="col-lg-8">
-											 <label class="label-change-switch" id="txtLabelIsDesembolsoEfectivo">Es un desembolso en efectivo?</label>
-											 <br/>
-											 <div class="switch" data-on="success" data-off="warning">
-												<input class="toggle"controls-row type="checkbox" checked id="txtCheckDeEfectivo" />
-											 </div>																
-										</div>
-								</div>
-								
-								<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divReportSinRiesgo",""); ?> ">
-										<label class="col-lg-4 control-label" for="normal"></label>
-										<div class="col-lg-8">
-											
-											<label class="label-change-switch" id="txtLabelIsReportSinRiesgo">Reportar a SinRiesgo</label>
-											<br/>
-											
-											<div class="switch" data-on="success" data-off="warning">
-												<?php
-												if(helper_RequestGetValueObjet ($objTransactionMasterDetailCredit,"reference2",0) == 1){
-												?>
-													<input class="toggle"controls-row type="checkbox" checked id="txtCheckReportSinRiesgo" name="txtCheckReportSinRiesgo" value="1"  />																									
-												<?php
-												}
-												else{
-												?>
-													<input class="toggle"controls-row type="checkbox"  id="txtCheckReportSinRiesgo" name="txtCheckReportSinRiesgo" value="1"  />
-												<?php
-												}
-												?>
-											</div>																
-										</div>
-										
-								</div>
-								
-								
-								
-							</div>
-							<div class="col-lg-6">
-								
-								
-								
-							</div>
-						</div>
+						
 					</div>
 					
 					

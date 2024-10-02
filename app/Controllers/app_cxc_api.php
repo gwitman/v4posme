@@ -82,11 +82,16 @@ class app_cxc_api extends _BaseController {
 			$numberPay					= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("numberPay"));
 			$interestYear				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("interestYear"));	
 			$amount						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("amount"));
+			$dayExcluded				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("dayExcluded"));
+			
+			
 			$branchID 					= $dataSession["user"]->branchID;
 			$roleID 					= $dataSession["role"]->roleID;	
 			$companyID					= $dataSession["user"]->companyID;
 			$creditMultiplicador		= $this->core_web_parameter->getParameter("CREDIT_INTERES_MULTIPLO",$companyID)->value;
 			$objCatalogItemFrecuencia 	= $this->Catalog_Item_Model->get_rowByCatalogItemID($frecuencyID);//obtener el catalogo de la frecuencia de pago;			
+			$objCatalogItemDayExclude 	= $this->Catalog_Item_Model->get_rowByCatalogItemID($dayExcluded);//obtener el catalogo de la frecuencia de pago;			
+			
 			$interestYear				= $interestYear * $objCatalogItemFrecuencia->ratio;
 			$objCatalogItem_DiasNoCobrables 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES",$companyID);
 			$objCatalogItem_DiasFeriados365 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_365",$companyID);
@@ -106,7 +111,8 @@ class app_cxc_api extends _BaseController {
 				$plantID 									/*tipo de amortizacion*/,
 				$objCatalogItem_DiasNoCobrables,
 				$objCatalogItem_DiasFeriados365,
-				$objCatalogItem_DiasFeriados366
+				$objCatalogItem_DiasFeriados366,
+				$objCatalogItemDayExclude
 			);			
 			
 			$tableAmortization = $this->financial_amort->getTable();

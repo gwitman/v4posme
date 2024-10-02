@@ -115,6 +115,7 @@ class financial_amort{
 	var $objCatalogItems_DiasNoCobrables;
 	var $objCatalogItems_DiasFeridos365;
 	var $objCatalogItems_DiasFeridos366;
+	var $objCatalogItems_DiasExcluded;
 	
 	 
 	//*******************************
@@ -144,7 +145,7 @@ class financial_amort{
 	// Es un sistema de amortizacion que se caracteriza por el pago de cuotas iguales
 	// y el interese se multiplica por el mismo numero de meses, como que si no se disminyllera el principal
 	
-	function amort($amount=0,$rate=0,$numberPay=0,$periodPay = 0,$firstDate="",$typeAmortization="",$objCatalogItems_DiasNoCobrables="",$objCatalogItems_DiasFeridos365="",$objCatalogItems_DiasFeridos366="")
+	function amort($amount=0,$rate=0,$numberPay=0,$periodPay = 0,$firstDate="",$typeAmortization="",$objCatalogItems_DiasNoCobrables="",$objCatalogItems_DiasFeridos365="",$objCatalogItems_DiasFeridos366="",$objCatalogItems_DiasExcluded ="")
 	{
 		 date_default_timezone_set(APP_TIMEZONE);
 		 $this->amount				=	$amount;  					//monto
@@ -157,6 +158,7 @@ class financial_amort{
 		 $this->objCatalogItems_DiasNoCobrables			=   $objCatalogItems_DiasNoCobrables;
 		 $this->objCatalogItems_DiasFeridos365			=   $objCatalogItems_DiasFeridos365;
 		 $this->objCatalogItems_DiasFeridos366			=   $objCatalogItems_DiasFeridos366;
+		 $this->objCatalogItems_DiasExcluded			= 	$objCatalogItems_DiasExcluded;
 		 
 	}
 	function getPmtValueAleman($pv,$n,$i){ 
@@ -190,7 +192,19 @@ class financial_amort{
 		$diaSemana 			= date("w", strtotime(date_format($fecha,"Y-m-d")));		
 		$diaAno 			= date("z", strtotime(date_format($fecha,"Y-m-d")));		
 		$diasTotalesDelAno 	= date("z", strtotime(date_format($fechaUltimoDia,"Y-m-d")));
-		$diasTotalesDelAno	= $diasTotalesDelAno + 1;
+		$diasTotalesDelAno	= $diasTotalesDelAno + 1;		
+		$arrayDiasExcluided	= explode(",", $this->objCatalogItems_DiasExcluded->reference1);
+		
+  
+		
+		//validar dias de semana cobrales 
+		foreach($arrayDiasExcluided as $catalogItem)
+		{
+			
+			if($catalogItem == $diaSemana)
+				return true;
+		}
+		
 		
 		//validar si es domingo o segun el catalogo de configuracion		
 		foreach($this->objCatalogItems_DiasNoCobrables as $catalogItem)
@@ -211,7 +225,8 @@ class financial_amort{
 				return true;
 			}
 		}
-		else
+		
+		if($diasTotalesDelAno == 366)		
 		{		
 			//validar si la fecha es un dia feriado
 			foreach($this->objCatalogItems_DiasFeridos366 as $catalogItem)

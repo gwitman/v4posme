@@ -1334,7 +1334,7 @@ class app_invoice_billing extends _BaseController {
 					$objCustomerCreditDocument["term"] 					= $objCustomerCreditLine->term;
 					$objCustomerCreditDocument["amount"] 				= $amountTotal; 
 					$objCustomerCreditDocument["balance"] 				= $amountTotal;
-					
+					$objCatalogItemDayExclude 							= $this->Catalog_Item_Model->get_rowByCatalogItemID($objCustomerCreditLine->dayExcluded);
 				
 					if($objParameterAmortizationDuranteFactura == "true" &&  $objTMNew["currencyID"] == 1 /*cordoba*/)
 					{
@@ -1388,6 +1388,7 @@ class app_invoice_billing extends _BaseController {
 					if($objParameterAmortizationDuranteFactura == "true")
 					{
 						$objCustomerCreditDocument["periodPay"]			= $objTMNew["periodPay"];
+						$objCatalogItemDayExclude 						= $this->Catalog_Item_Model->get_rowByCatalogItemID($objTMNew["dayExcluded"]);
 					}
 					
 					$objCustomerCreditDocument["typeAmortization"] 		= $objCustomerCreditLine->typeAmortization;					
@@ -1416,7 +1417,8 @@ class app_invoice_billing extends _BaseController {
 						$objCustomerCreditLine->typeAmortization 	/*tipo de amortizacion*/,
 						$objCatalogItem_DiasNoCobrables,
 						$objCatalogItem_DiasFeriados365,
-						$objCatalogItem_DiasFeriados366
+						$objCatalogItem_DiasFeriados366,
+						$objCatalogItemDayExclude
 					);
 					
 					$tableAmortization = $this->financial_amort->getTable();
@@ -2356,7 +2358,7 @@ class app_invoice_billing extends _BaseController {
 					$objCatalogItem_DiasNoCobrables 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES",$companyID);
 					$objCatalogItem_DiasFeriados365 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_365",$companyID);
 					$objCatalogItem_DiasFeriados366 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_366",$companyID);
-
+					$objCatalogItemDayExclude 				= $this->Catalog_Item_Model->get_rowByCatalogItemID($objCustomerCreditLine->dayExcluded);
 
 					//Crear tabla de amortizacion
 					$this->financial_amort->amort(
@@ -2368,7 +2370,8 @@ class app_invoice_billing extends _BaseController {
 						$objCustomerCreditLine->typeAmortization 	/*tipo de amortizacion*/,
 						$objCatalogItem_DiasNoCobrables,
 						$objCatalogItem_DiasFeriados365,
-						$objCatalogItem_DiasFeriados366
+						$objCatalogItem_DiasFeriados366,
+						$objCatalogItemDayExclude
 					);
 
 					$tableAmortization = $this->financial_amort->getTable();
@@ -2878,7 +2881,7 @@ class app_invoice_billing extends _BaseController {
 					$objCatalogItem_DiasNoCobrables 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES",$companyID);
 					$objCatalogItem_DiasFeriados365 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_365",$companyID);
 					$objCatalogItem_DiasFeriados366 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_366",$companyID);
-						
+					$objCatalogItemDayExclude 				= $this->Catalog_Item_Model->get_rowByCatalogItemID($objCustomerCreditLine->dayExcluded);
 						
 					//Crear tabla de amortizacion
 					$this->financial_amort->amort(
@@ -2890,7 +2893,8 @@ class app_invoice_billing extends _BaseController {
 						$objCustomerCreditLine->typeAmortization 	/*tipo de amortizacion*/,
 						$objCatalogItem_DiasNoCobrables,
 						$objCatalogItem_DiasFeriados365,
-						$objCatalogItem_DiasFeriados366
+						$objCatalogItem_DiasFeriados366,
+						$objCatalogItemDayExclude
 					);
 					
 					$tableAmortization = $this->financial_amort->getTable();

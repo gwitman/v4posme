@@ -133,9 +133,10 @@
 																	foreach($objListDayExcluded as $ws){
 																		if($indec == 0 )
 																		echo "<option value='".$ws->catalogItemID."' selected  >".$ws->name."</option>";
+																		else 																		
+																		echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
 																	
 																		$indec++;
-																		echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
 																	}
 																?>
 															</select>

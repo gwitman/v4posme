@@ -63,6 +63,7 @@
 								var numberPay		= $("#txtNumberPay").val();
 								var interestYear	= $("#txtInterestYear").val();
 								var amount			= $("#txtAmount").val();
+								var dayExcluded		= $("#txtDayExcluded").val();
 								fnClearData();
 								
 								fnWaitOpen();
@@ -71,7 +72,7 @@
 									dataType    : 'json',
 									type        : 'POST',
 									url  		: "<?php echo base_url(); ?>/app_cxc_api/getSimulateAmortization",
-									data 		: {plantID :plantID , frecuencyID : frecuencyID,numberPay :numberPay,interestYear : interestYear, amount : amount },
+									data 		: {plantID :plantID , frecuencyID : frecuencyID,numberPay :numberPay,interestYear : interestYear, amount : amount, dayExcluded : dayExcluded },
 									success		: fnAmortizationComplete,
 									error:function(xhr,data){	
 										console.info("complete data error");									
