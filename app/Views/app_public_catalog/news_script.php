@@ -15,7 +15,7 @@
 				$( "#form-new-invoice" ).attr("method","POST");
 				$( "#form-new-invoice" ).attr("action","<?php echo base_url(); ?>/app_public_catalog/save/new");
 				
-				if(validateForm()){
+				if(validateForm() && validateCatalogDetails()){
 					fnWaitOpen();
 					$( "#form-new-invoice" ).submit();
 				}
@@ -33,8 +33,6 @@
 			objRow.parentCatalogDetailID	= 0;
 			objRow.name 					= "";
 			objRow.parentName 				= "";
-			
-			
 			
 			var tmpl = $($("#tmpl_row_document").html());
 			
@@ -75,8 +73,7 @@
 			fnShowNotification("Escribir nombre del catalogo","error",timerNotification);
 			result = false;
 		}
-	
-		
+			
 		return result;
 	}
 	
@@ -87,6 +84,22 @@
 		//$('.txtCredit').mask('000,000.00', {reverse: true});
 		$('.txt-numeric').mask('000,000.00', {reverse: true});
 	}
+
+	function validateCatalogDetails() 
+	{
+    
+    	var rowsCount = $("#body_tb_transaction_master_detail tr").length;
+
+    	if (rowsCount === 0) {
+        	var timerNotification = 15000;
+        	fnShowNotification("Debe agregar al menos un registro en el catálogo", "error", timerNotification);
+        	return false; 
+    	}
+
+    	return true;
+	}
+
+
 	
 	
 </script>

@@ -180,8 +180,7 @@ class app_public_catalog extends _BaseController {
 			$db=db_connect();
 			$db->transStart();
 			$this->Public_Catalog_Model->update($publicCatalogID,$objTM);			
-			
-			
+
 			//Recorrer la lista del detalle del documento
 			$array_publicCatalogID			= /*inicio get post*/ $this->request->getPost("txtPublicCatalogDetail_publicCatalogID");
 			$array_publicCatalogDetailID	= /*inicio get post*/ $this->request->getPost("txtPublicCatalogDetail_publicCatalogDetailID");
@@ -205,7 +204,7 @@ class app_public_catalog extends _BaseController {
 			$objTMD["isActive"] 					= 0;
 			$this->Public_Catalog_Detail_Model->update($objList_PublicCatalogDetailCurrent,$objTMD);
 			
-			//ingrear y actualizar
+			//ingresar y actualizar
 			if(!empty($array_publicCatalogDetailID)){
 				foreach($array_publicCatalogDetailID as $key => $value){					
 					
@@ -226,7 +225,6 @@ class app_public_catalog extends _BaseController {
 					$objTMD["reference4"]					= $array_reference4[$key];
 					$objTMD["parentName"]					= $array_parentName[$key];
 					
-					
 					$this->Public_Catalog_Detail_Model->save($objTMD);
 				}
 			}
@@ -239,11 +237,9 @@ class app_public_catalog extends _BaseController {
 			}
 			else{
 				$db->transRollback();						
-				$this->core_web_notification->set_message(true,$this->db->_error_message());
+				$this->core_web_notification->set_message(true,$this->$db->_error_message());
 				$this->response->redirect(base_url()."/".'app_public_catalog/add');	
-			}
-			
-			
+			}	
 		}
 		catch(\Exception $ex){
 			
@@ -405,7 +401,6 @@ class app_public_catalog extends _BaseController {
 		}		
 			
 	}
-	
 	function add(){ 
 	
 		try{ 
@@ -596,9 +591,5 @@ class app_public_catalog extends _BaseController {
 			));//--finjson
 		}
 	}
-	
-	
-	
-	
 }
 ?>
