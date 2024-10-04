@@ -26,17 +26,25 @@
 					<h4>Catalogo :#<span class="invoice-num"><?php echo $objPublicCatalog->publicCatalogID; ?></span></h4>
 			</div>
 			<!-- /titulo de comprobante-->
-			
+
 			<!-- body -->	
 			<form id="form-new-invoice" name="form-new-invoice" class="form-horizontal" role="form">
 			<div class="panel-body printArea"> 
 			
+				<!--tab menu-->
 				<ul id="myTab" class="nav nav-tabs">
 					<li class="active">
 						<a href="#home" data-toggle="tab">Informacion</a>
 					</li>
-					
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas<b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="#dropdown" data-toggle="tab">Comentario</a></li>
+							<li><a id="btnClickArchivo"  href="#dropdown-file" data-toggle="tab">Archivos</a></li>
+						</ul>
+					</li>
 				</ul>
+				<!--tab menu-->
 				
 				<div class="tab-content">
 					<div class="tab-pane fade in active" id="home">	
