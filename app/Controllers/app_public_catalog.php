@@ -298,8 +298,15 @@ class app_public_catalog extends _BaseController {
 			
 			$db=db_connect();
 			$db->transStart();
-			$publicCatalogID = $this->Public_Catalog_Model->insert($objTM);			
+			$publicCatalogID = $this->Public_Catalog_Model->insert($objTM);	
 			
+			$companyID 								= $dataSession["user"]->companyID;
+			//Crear la Carpeta para almacenar los Archivos del Catálogo
+			$path_ = PATH_FILE_OF_APP."/company_".$companyID."/component_92/component_item_".$publicCatalogID;						
+			if(!file_exists ($path_)){
+				mkdir($path_, 0755);
+				chmod($path_, 0755);
+			}
 			
 			//Recorrer la lista del detalle del documento
 			$array_publicCatalogID			= /*inicio get post*/ $this->request->getPost("txtPublicCatalogDetail_publicCatalogID");
