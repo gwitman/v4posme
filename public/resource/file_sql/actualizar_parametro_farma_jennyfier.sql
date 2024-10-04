@@ -1282,7 +1282,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'FARMAGAEL' , address = 'Parada Chalillo Rojas 200 metros al este' ,
-	flavorID = 0,type='default'
+	flavorID = 496 /*usuarioID*/,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

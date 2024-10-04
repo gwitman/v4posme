@@ -112,7 +112,8 @@
 				fnFormatNumber(varDetail[i].skuQuantity,2),
 				fnFormatNumber(varDetail[i].unitaryPrice *  varDetail[i].skuQuantityBySku, 4),/*precio sistema*/
 				fnFormatNumber(varDetail[i].unitaryPrice *  varDetail[i].skuQuantityBySku * varDetail[i].skuQuantity,2), /*precio por cantidad*/							
-				fnFormatNumber(iva_,2),
+				//fnFormatNumber(iva_,2),
+				fnFormatNumber(varDetail[i].tax1 / varDetail[i].unitaryPrice,2),
 				fnFormatNumber(varDetail[i].skuQuantityBySku, 4),
 				fnFormatNumber(varDetail[i].unitaryPrice, 4),
 				"",//acciones

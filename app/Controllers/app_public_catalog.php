@@ -201,7 +201,7 @@ class app_public_catalog extends _BaseController {
 			//eliminar las que no estan
 			$objList_PublicCatalogDetailCurrent		= $this->Public_Catalog_Detail_Model->getView($publicCatalogID);
 			$objList_PublicCatalogDetailCurrent	    = array_column($objList_PublicCatalogDetailCurrent,"publicCatalogDetailID");			
-			$objTMD 								= NULL;					
+			$objTMD 								= NULL;
 			$objTMD["isActive"] 					= 0;
 			$this->Public_Catalog_Detail_Model->update($objList_PublicCatalogDetailCurrent,$objTMD);
 			
