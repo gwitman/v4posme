@@ -203,9 +203,14 @@ class app_public_catalog extends _BaseController {
 			$objList_PublicCatalogDetailCurrent	    = array_column($objList_PublicCatalogDetailCurrent,"publicCatalogDetailID");			
 			$objTMD 								= NULL;
 			$objTMD["isActive"] 					= 0;
-			$this->Public_Catalog_Detail_Model->update($objList_PublicCatalogDetailCurrent,$objTMD);
+
+			if(!empty($objList_PublicCatalogDetailCurrent))
+			{
+				$this->Public_Catalog_Detail_Model->update($objList_PublicCatalogDetailCurrent,$objTMD);
+			}
+
 			
-			//ingrear y actualizar
+			//ingresar y actualizar
 			if(!empty($array_publicCatalogDetailID)){
 				foreach($array_publicCatalogDetailID as $key => $value){					
 					
