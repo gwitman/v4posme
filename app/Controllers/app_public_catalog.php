@@ -175,7 +175,7 @@ class app_public_catalog extends _BaseController {
 			$objTM["description"] 					= /*inicio get post*/ $this->request->getPost("txtName");	
 			$objTM["flavorID"]						= $dataSession["company"]->flavorID;
 			
-			
+			//hola mundo
 			
 			$db=db_connect();
 			$db->transStart();
