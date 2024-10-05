@@ -282,22 +282,70 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		
 		
 		
-		/*KHADASH*/
-		strtolower('khadash_app_box_share_divResumenAbono')			 											=> "hidden", 
-		strtolower('khadash_app_box_share_divStart')			 												=> "hidden", 
-		strtolower('khadash_app_box_share_divFecha')			 												=> "hidden", 
-		strtolower('khadash_app_box_share_divAplicado')			 												=> "hidden", 
-		strtolower('khadash_app_box_share_divCambio')			 												=> "hidden", 
-		strtolower('khadash_app_box_share_comboStyle')			 												=> "", 
-		strtolower('khadash_app_box_share_javscriptVariable_varShareMountDefaultOfAmortization')				=> "false", 
-		strtolower('khadash_app_box_share_TableColumnDocumento')												=> "hidden", 
-		strtolower('khadash_app_box_share_btnVerMovimientos')													=> "hidden", 
-		strtolower('khadash_app_box_share_javscriptVariable_varPrinterOnlyFormat')								=> "true", 
-		strtolower('khadash_app_box_share_divCustomerControlBuscar')											=> "", 
-		strtolower('khadash_app_box_share_divCustomerControlSelected')											=> "hidden", 
-		strtolower('khadash_app_box_share_divCobrador')															=> "hidden", 
-		strtolower('khadash_app_box_share_divMoneda')															=> "hidden", 
-				
+		/*KHADASH*/		
+		//strtolower('khadash_app_box_share_divResumenAbono')			 										=> "hidden", 
+		//strtolower('khadash_app_box_share_divStart')			 												=> "hidden", 
+		//strtolower('khadash_app_box_share_divFecha')			 												=> "hidden", 
+		//strtolower('khadash_app_box_share_divAplicado')			 											=> "hidden", 
+		//strtolower('khadash_app_box_share_divCambio')			 												=> "hidden", 
+		//strtolower('khadash_app_box_share_comboStyle')			 											=> "", 
+		//strtolower('khadash_app_box_share_javscriptVariable_varShareMountDefaultOfAmortization')				=> "false", 
+		//strtolower('khadash_app_box_share_TableColumnDocumento')												=> "hidden", 
+		//strtolower('khadash_app_box_share_btnVerMovimientos')													=> "hidden", 
+		//strtolower('khadash_app_box_share_javscriptVariable_varPrinterOnlyFormat')							=> "true", 
+		//strtolower('khadash_app_box_share_divCustomerControlBuscar')											=> "", 
+		//strtolower('khadash_app_box_share_divCustomerControlSelected')										=> "hidden", 
+		//strtolower('khadash_app_box_share_divCobrador')														=> "hidden", 
+		//strtolower('khadash_app_box_share_divMoneda')															=> "hidden", 
+		strtolower('khadash_core_web_menu_SIMULADOR')			 				=> "CALCULADORA",
+		strtolower('khadash_core_web_menu_FACTURACION')			 				=> "PRESTAMOS",
+		strtolower('khadash_core_web_menu_FACTURAR')			 				=> "PRESTAR",
+		strtolower('khadash_core_web_menu_VENTAS')			 					=> "DESEMBOLSO",
+		strtolower('khadash_core_web_menu_DETALLE DE VENTAS')			 		=> "DETALLE DE DESEMBOLSOS",
+		strtolower('khadash_core_web_menu_RESUMEN DE VENTAS')			 		=> "RESUMEN DE DESEMBOLSOS",
+		strtolower('khadash_core_web_menu_COBRANZA')			 				=> "CONF. RUTAS",
+		strtolower('khadash_core_web_menu_RRHH')			 					=> "RRHH RUTAS",
+		strtolower('khadash_core_web_menu_COLABORADORES')			 			=> "COLAB. RUTA.",
+		strtolower('khadash_app_collection_manager_lblTitleList')			 	=> "CLIENTES POR RUTAS",
+		strtolower('khadash_app_collection_manager_lblTitleAdd')			 	=> "AGREGAR CLIENTE A LA RUTA",
+		strtolower('khadash_app_collection_manager_lblColaborador')			 	=> "Ruta",
+		strtolower('khadash_app_rrhh_employee_lblList')			 				=> "LISTA DE RUTAS Y/O COLABORADOR",
+		strtolower('khadash_app_rrhh_employee_lblNew')			 				=> "NUEVA RUTA Y/O COLABORADOR",
+		strtolower('khadash_app_rrhh_employee_lblEdit')			 				=> "EDITAR RUTA Y/O COLABORADOR",
+		strtolower('khadash_app_cxc_customer_divTxtCategoria')			 		=> "hidden",
+		strtolower('khadash_app_cxc_customer_divTxtFullNameCommercial')			=> "Categoria",
+		strtolower('khadash_app_cxc_customer_lblTxtPhoneTemp')					=> "Prefesion u Oficio",
+		strtolower('khadash_app_cxc_customer_divTxtProfesionUFicio')			=> "hidden",
+		
+		
+		strtolower('khadash_app_cxc_customer_showBtnIrBuro')			 		=> "",
+		strtolower('khadash_app_cxc_customer_showBtnIrSimulador')			 	=> "",
+		strtolower('khadash_app_cxc_customer_showBtnIrInvoice')			 		=> "",		
+		strtolower('khadash_app_cxc_customer_showBtnIrShare')			 		=> "",				
+		strtolower('khadash_app_cxc_customer_showBtnGroupAcciones')	 			=> "",				
+		strtolower('khadash_app_cxc_record_showBtnIrCustomerOfRecord') 			=> "",
+		strtolower('khadash_app_cxc_simulation_showBtnIrCustomerOfSimulator') 	=> "",
+		strtolower('khadash_app_box_share_showBtnIrCustomerOfShare') 			=> "",
+		strtolower('khadash_app_cxc_customer_divScriptValideFunction') 	 		=> "
+		
+		if( $('#txtIdentification').val()  == ''){
+			fnShowNotification('Escribir cedula','error',timerNotification);
+			result = false;
+		}
+		if( $('#txtIdentification').val()  == '0'){
+			fnShowNotification('Escribir cedula con formato correcto','error',timerNotification);
+			result = false;
+		}
+		
+		const regex = /^\d{3}-\d{6}-\d{4}[A-Za-z]$/;
+		if(!regex.test(   $('#txtIdentification').val()   )){
+            fnShowNotification('Escribir cedula con formato correcto','error',timerNotification);
+			result = false;
+        } 
+		",
+		
+	
+		
 		/*El patio*/
 		strtolower('patio_app_invoice_billing_divTraslateElement') 											=> "
 		<script>
@@ -615,6 +663,19 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		
 		/*Titanes*/
 		strtolower('titanes_core_web_menu_CXP')			 															=> "PROVEEDORES",
+		strtolower('titanes_app_inventory_item_Serie ó MAI')	 													=> "Rubro",
+		strtolower('titanes_app_invoice_billing_rowOptionPaymentExtras')	 										=> "hidden",
+		strtolower('titanes_app_invoice_billing_rowOptionPaymentExtrasTarjeta')	 									=> "hidden",
+		strtolower('titanes_app_invoice_billing_rowOptionAmountReceiptExtranjera')	 								=> "hidden",
+		strtolower('titanes_app_invoice_billing_txtTraductionMesa')	 												=> "Forma de pago",
+		strtolower('titanes_app_invoice_billing_txtTraductionPhone')	 											=> "Banco",		
+		strtolower('titanes_app_invoice_billing_divTraslateElement') 												=> "
+		<script>
+			$(document).ready(function(){
+				$('#divMesa').appendTo('#divTransactionPhoneBefore');
+			});
+		</script>",
+		
 		
 		//Funeraria Blandon
 		strtolower('fn_blandon_core_web_menu_FACTURACION')			 												=> "CONTRATOS",

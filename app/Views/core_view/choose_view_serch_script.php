@@ -15,8 +15,8 @@
 					
 					if(multiselect == false)
 					{
-						var data		= {};					
-						data			= objTableListView.fnGetData(objRowTableListView);
+						var data		= [];					
+						data.push(objTableListView.fnGetData(objRowTableListView));
 					}
 					else
 					{

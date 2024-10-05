@@ -1556,7 +1556,7 @@ update tb_item set realStateCityID = ifnull(realStateCityID,0);
 update tb_item set realStateCountryID = ifnull(realStateCountryID,0);
 update tb_item set realStateStateID = ifnull(realStateStateID,0);
 update tb_customer set entityContactID = ifnull(entityContactID,0);
-	
+update tb_customer_credit_line set dayExcluded = IFNULL(dayExcluded,2323);
 
 
 update tb_currency set `name` = 'Cordoba' where currencyID = 1;
