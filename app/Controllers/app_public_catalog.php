@@ -231,33 +231,25 @@ class app_public_catalog extends _BaseController
 				}
 			}
 
-			$archivoCSV = $this->request->getPost("txtFileImport");
 			$companyID 								= $dataSession["user"]->companyID;
+			//Crear la Carpeta para almacenar los Archivos del Catálogo
+			$path_ = PATH_FILE_OF_APP . "/company_" . $companyID . "/component_92/component_item_" . $publicCatalogID;
+			if (!file_exists($path_)) {
+				mkdir($path_, 0755);
+				chmod($path_, 0755);
+			}
+
 			if (!is_null($this->request->getPost("txtIsTemplate"))) {
 
 				//obtener datos de la tabla
-				$data = $this->Public_Catalog_Detail_Model->getView($publicCatalogID);
+				$data = $this->Public_Catalog_Detail_Model->getRowCSV($publicCatalogID);
 
 				// Definir encabezados del CSV
-				$header = array(
-					"publicCatalogDetailID",
-					"publicCatalogID",
-					"name",
-					"display",
-					"flavorID",
-					"description",
-					"sequence",
-					"parentCatalogDetailID",
-					"ratio",
-					"reference1",
-					"reference2",
-					"reference3",
-					"reference4",
-					"parentName",
-					"isActive"
-				);
+				$header = array_keys($data[0]);
 				
-				$file = fopen($archivoCSV, 'w+');
+				//abrir archivo
+				$path_ = $path_ . "/default.csv";
+				$file = fopen($path_, 'w+');
 
 				//obtener separador
 				$objParameter	= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT", $companyID);
@@ -342,18 +334,6 @@ class app_public_catalog extends _BaseController
 				chmod($path_, 0755);
 			}
 
-			// Generar un archivo template de ejemplo
-			date_default_timezone_set(APP_TIMEZONE);
-			$objParameterCharacterSplite	= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT", $companyID);
-			$characterSplie					= $objParameterCharacterSplite->value;
-			$date 				= date("Y_m_d_H_i_s");
-			$pathTemplate 		= PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponent->componentID . "/component_item_" . $publicCatalogID;
-			$pathTemplate 		= $pathTemplate . '/ejemplo_' . $date . '.csv';
-			$fppathTemplate 	= fopen($pathTemplate, 'w');
-			$fieldTemplate 		= ["Id", "Indicador", "Valores", "Consjunto", "Grupo", "Subgrupo", "Edad", "Sexo", "Parent", "Sequencia", "Ratio", "Flavor"];
-			fputcsv($fppathTemplate, $fieldTemplate, $characterSplie);
-			fclose($fppathTemplate);
-
 			//Recorrer la lista del detalle del documento
 			$array_publicCatalogID			= /*inicio get post*/ $this->request->getPost("txtPublicCatalogDetail_publicCatalogID");
 			$array_publicCatalogDetailID	= /*inicio get post*/ $this->request->getPost("txtPublicCatalogDetail_publicCatalogDetailID");
@@ -403,7 +383,7 @@ class app_public_catalog extends _BaseController
 				$this->response->redirect(base_url() . "/" . 'app_public_catalog/edit/publicCatalogID/' . $publicCatalogID);
 			} else {
 				$db->transRollback();
-				$this->core_web_notification->set_message(true, $db->_error_message());
+				$this->core_web_notification->set_message(true, $this->db->_error_message());
 				$this->response->redirect(base_url() . "/" . 'app_public_catalog/add');
 			}
 		} catch (\Exception $ex) {
