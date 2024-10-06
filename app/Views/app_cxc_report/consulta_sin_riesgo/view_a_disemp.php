@@ -125,7 +125,7 @@
                 			$cantidad++;
                 			?>
                 			    <tr>
-                			        <td colspan="6" style="color: blue;font-style: oblique;font-weight: bold;" >Credito Numero <?php echo $cantidad; ?> --<?php echo  $ws->NumeroCredito; ?>: <?php echo $ws->Entidad; ?></td>
+                			        <td colspan="6" style="color: blue;font-style: oblique;font-weight: bold;" >Credito Numero <?php echo $cantidad; ?> --<?php echo  $ws->NumeroCredito; ?>: <?php echo ( strpos($ws->NumeroCredito, $objCompany->abreviature.'FAC') !== false  ? $objCompany->name : $ws->Entidad ); ?></td>
                 			    </tr>
 								<tr>
                 			        <td style="font-weight: bold;" >Tipo de Obligación:</td>
@@ -238,7 +238,7 @@
             			$cantidad++;
             			?>
             			        <tr>
-                			        <td colspan="6" style="color: blue;font-style: oblique;font-weight: bold;">Credito Numero <?php echo $cantidad; ?> --<?php echo  $ws->NumeroCredito; ?>: <?php echo $ws->Entidad; ?></td>
+                			        <td colspan="6" style="color: blue;font-style: oblique;font-weight: bold;">Credito Numero <?php echo $cantidad; ?> --<?php echo  $ws->NumeroCredito; ?>: <?php echo ( strpos($ws->NumeroCredito, $objCompany->abreviature.'FAC') !== false  ? $objCompany->name : $ws->Entidad ); ?></td>
                 			    </tr>
                 			    <tr>
                 			        <td style="font-weight: bold;" >Tipo de Obligación:</td>

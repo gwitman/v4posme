@@ -12,7 +12,7 @@ class Company_Model extends Model  {
    function get_rowByPK($companyID){
 		$db 	= db_connect();    
 		$sql = "";
-		$sql = sprintf("select companyID,name,createdOn,address,flavorID,type");
+		$sql = sprintf("select companyID,name,createdOn,address,flavorID,type,abreviature,namePublic");
 		$sql = $sql.sprintf(" from tb_company");
 		$sql = $sql.sprintf(" where companyID = $companyID");
 		$sql = $sql.sprintf(" and isActive= 1");		
@@ -23,7 +23,7 @@ class Company_Model extends Model  {
    function get_rows(){
 		$db 	= db_connect();    
 		$sql = "";
-		$sql = sprintf("select companyID,name,createdOn,address,flavorID,type");
+		$sql = sprintf("select companyID,name,createdOn,address,flavorID,type, abreviature,namePublic");
 		$sql = $sql.sprintf(" from tb_company");
 		$sql = $sql.sprintf(" where isActive= 1");		
 		
@@ -35,7 +35,7 @@ class Company_Model extends Model  {
 	    $db 		= db_connect("merge"); 				
 		
 		$sql = "";
-		$sql = sprintf("select companyID, name, address, createdOn, isActive, flavorID,type ");		
+		$sql = sprintf("select companyID, name, address, createdOn, isActive, flavorID,type ,abreviature,namePublic");		
 		$sql = $sql.sprintf(" from tb_company c ");		
 		
 		

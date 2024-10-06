@@ -4,7 +4,14 @@ use dbrqqywlzddj0q;
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 
-
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "Dolar" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "ACCOUNTING_CURRENCY_NAME_IN_BILLING";## Moneda por defecto al momento de facturar	
+	
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "1" 
 WHERE 
@@ -897,7 +904,7 @@ WHERE
 				
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Cordoba" 
+	tb_company_parameter.value = "Dolar" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "ACCOUNTING_CURRENCY_NAME_REPORT";## Moneda de Reporte para Presentar los Estados Financieros 

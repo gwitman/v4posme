@@ -496,7 +496,8 @@
 										</div>
 								</div>
 								
-								
+								<div id="divTransactionPhoneBefore">
+								</div>
 								
 								<div class="form-group" id="divTrasuctionPhone" >
 										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionPhone","Telefono"); ?></label>
@@ -1057,7 +1058,7 @@
 									</td>
 								</tr>
 								
-								<tr>
+								<tr class="<?php echo getBehavio($company->type,"app_invoice_billing","rowOptionAmountReceiptExtranjera",""); ?>" >
 									<th style="text-align:left">03) MON. EXT.</th>
 									<td>
 										<input type="text" id="txtReceiptAmountDol" name="txtReceiptAmountDol"  class="col-lg-12 txt-numeric" value="<?php echo number_format($objTransactionMasterInfo->receiptAmountDol,2); ?>" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>

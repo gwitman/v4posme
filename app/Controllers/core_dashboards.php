@@ -96,6 +96,11 @@ class core_dashboards extends _BaseController {
 				$dataSession					= $this->getIndexCorea($dataSession);
 				$dataSession["body"]			= /*--inicio view*/ view('core_dasboard/dashboards_default_corea',$dataSession);//--finview
 			}
+			if($objCompany->type == "khadash")
+			{
+				$dataSession					= $this->getIndexCorea($dataSession);
+				$dataSession["body"]			= /*--inicio view*/ view('core_dasboard/dashboards_default_khadash',$dataSession);//--finview
+			}
 			else
 			{				
 				$dataSession["body"]			= /*--inicio view*/ view('core_dasboard/dashboards_default',$dataSession);//--finview

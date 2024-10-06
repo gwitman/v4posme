@@ -1862,7 +1862,7 @@
 			var url_request 		= 
 					"<?php echo base_url(); ?>/core_view/showviewbynamepaginate"+
 					"/<?php echo $objComponentItem->componentID; ?>"+
-					"/onCompleteNewItemPopPub/SELECCIONAR_ITEM_BILLING_POPUP_INVOICE/true/"+
+					"/onCompleteNewItemPopPub/SELECCIONAR_ITEM_BILLING_POPUP_INVOICE/false/"+
 					encodeURI(
 						'{'+
 						'\"warehouseID\"|\"'+$("#txtWarehouseID").val()+'\"'+
@@ -1871,7 +1871,7 @@
 						',\"currencyID\"|\"'+$("#txtCurrencyID").val()+'\"'+
 						'}' 
 					) + 
-					"/true/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/"+codigoBuscar+"/";  
+					"/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/"+codigoBuscar+"/";  
 					
 			 // Verificar si la ventana ya está abierta
 			if (objWindowSearchProduct && !objWindowSearchProduct.closed) 

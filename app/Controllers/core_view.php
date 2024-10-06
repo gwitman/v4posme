@@ -158,8 +158,9 @@ class core_view extends _BaseController {
 		$viewname 							= helper_SegmentsByIndex($this->uri->getSegments(),3,$viewname);	
 		$autoclose 							= helper_SegmentsByIndex($this->uri->getSegments(),4,$autoclose);	
 		$filter 							= helper_SegmentsByIndex($this->uri->getSegments(),5,$filter);	
-		$multiselect 						= helper_SegmentsByIndex($this->uri->getSegments(),6,$multiselect);	
+		$multiselect 						= helper_SegmentsByIndex($this->uri->getSegments(),6,$multiselect);			
 		$urlRedictWhenEmpty 				= helper_SegmentsByIndex($this->uri->getSegments(),7,$urlRedictWhenEmpty);	
+		
 		
 		$sEcho 								= helper_SegmentsByIndex($this->uri->getSegments(),8,$sEcho);	
 		$iDisplayStart 						= helper_SegmentsByIndex($this->uri->getSegments(),9,$iDisplayStart);	

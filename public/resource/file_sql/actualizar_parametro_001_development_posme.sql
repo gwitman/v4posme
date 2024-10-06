@@ -4,6 +4,16 @@ use dbkroqnguhldo1;
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_UPDATE_DATE_APPLYCATION_IN_MOMENT_APLICATION";## Actualizar la fecha de apliacion de la factura al momento de aplicarla
+
+
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "2323" 
 WHERE 
@@ -1556,7 +1566,7 @@ update tb_item set realStateCityID = ifnull(realStateCityID,0);
 update tb_item set realStateCountryID = ifnull(realStateCountryID,0);
 update tb_item set realStateStateID = ifnull(realStateStateID,0);
 update tb_customer set entityContactID = ifnull(entityContactID,0);
-	
+update tb_customer_credit_line set dayExcluded = IFNULL(dayExcluded,2323);
 
 
 update tb_currency set `name` = 'Cordoba' where currencyID = 1;
