@@ -105,7 +105,7 @@
 															$cantidad++;
 															?>
 																<blockquote>
-																	<p>Credito Numero <?php echo $cantidad; ?> --<?php echo  $ws->NumeroCredito; ?>: <?php echo $ws->Entidad; ?></p>
+																	<p>Credito Numero <?php echo $cantidad; ?> --<?php echo  $ws->NumeroCredito; ?>: <?php echo ( strpos($ws->NumeroCredito, $company->abreviature.'FAC') !== false  ? $company->name : $ws->Entidad ); ?></p>
 																	<h4><span class="green">Fecha desembolso: <?php echo helper_DateToSpanish($ws->FechaDesembolso,"Y-M-d"); ?></span></h4>
 																</blockquote>																				
 																<div class="row">
@@ -181,7 +181,7 @@
 															$cantidad++;
 															?>
 																<blockquote>
-																	<p>Credito Numero <?php echo $cantidad; ?> --<?php echo  $ws->NumeroCredito; ?>: <?php echo $ws->Entidad; ?></p>
+																	<p>Credito Numero <?php echo $cantidad; ?> --<?php echo  $ws->NumeroCredito; ?>: <?php echo ( strpos($ws->NumeroCredito, $company->abreviature.'FAC') !== false  ? $company->name : $ws->Entidad ); ?></p>
 																	<h4><span class="green">Fecha desembolso: <?php echo helper_DateToSpanish($ws->FechaDesembolso,"Y-M-d"); ?></span></h4>
 																</blockquote>																				
 																<div class="row">

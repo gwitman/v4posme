@@ -861,7 +861,9 @@ class app_invoice_billing extends _BaseController {
 			$objParameterImprimirPorCadaFactura			= $this->core_web_parameter->getParameter("INVOICE_PRINT_BY_INVOICE",$companyID);
 			$objParameterImprimirPorCadaFactura			= $objParameterImprimirPorCadaFactura->value;
 			$objParameterRegrearANuevo					= $this->core_web_parameter->getParameter("INVOICE_BILLING_SAVE_AFTER_TO_ADD",$companyID);
-			$objParameterRegrearANuevo					= $objParameterRegrearANuevo->value;
+			$objParameterRegrearANuevo					= $objParameterRegrearANuevo->value;			
+			$objParameterUpdateDateAplication			= $this->core_web_parameter->getParameter("INVOICE_BILLING_UPDATE_DATE_APPLYCATION_IN_MOMENT_APLICATION",$companyID);
+			$objParameterUpdateDateAplication			= $objParameterUpdateDateAplication->value;
 			
 			//Actualizar Maestro
 			$codigoMesero								= /*inicio get post*/ $this->request->getPost("txtCodigoMesero");
@@ -871,7 +873,7 @@ class app_invoice_billing extends _BaseController {
 			$objListPrice 								= $this->List_Price_Model->getListPriceToApply($companyID);
 			$objTMNew["transactionCausalID"] 			= /*inicio get post*/ $this->request->getPost("txtCausalID");
 			$objTMNew["entityID"] 						= /*inicio get post*/ $this->request->getPost("txtCustomerID");
-			$objTMNew["transactionOn"]					= $this->request->getPost("txtDate");
+			$objTMNew["transactionOn"]					= $objParameterUpdateDateAplication == "true" ? date("Y-m-d")  : $this->request->getPost("txtDate");
 			$objTMNew["transactionOn2"]					= /*inicio get post*/ $this->request->getPost("txtDateFirst");//Fecha del Primer Pago, de las facturas al credito
 			$objTMNew["statusIDChangeOn"]				= date("Y-m-d H:m:s");
 			$objTMNew["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");//--fin peticion get o post			

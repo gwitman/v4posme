@@ -5,6 +5,11 @@ use dbroqdxsicmrel;
 /******************************************************************/	
 
 
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_UPDATE_DATE_APPLYCATION_IN_MOMENT_APLICATION";## Actualizar la fecha de apliacion de la factura al momento de aplicarla
 
 
 
@@ -1379,7 +1384,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Financiera INCOM(Inversiones Comerciales)' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 464,type='corea'
+	flavorID = 464,type='corea',abreviature='INCOM'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
