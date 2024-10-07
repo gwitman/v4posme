@@ -204,6 +204,100 @@ class app_public_catalog extends _BaseController
 				$this->Public_Catalog_Detail_Model->update($objList_PublicCatalogDetailCurrent, $objTMD);
 			}
 
+			//Actualizar Registros Catalogo
+			$companyID 								= $dataSession["user"]->companyID;
+			if (!is_null($this->request->getPost("txtIsTemplate2"))) {
+
+				$archivoCSV = $this->request->getPost("txtFileImport");
+
+				if ($archivoCSV != ".csv") {
+					//Leer archivo
+					$path 	= PATH_FILE_OF_APP . "/company_" . $companyID . "/component_92/component_item_" . $publicCatalogID;
+					$path 	= $path . '/' . $archivoCSV;
+
+					if (!file_exists($path))
+						throw new \Exception("NO EXISTE EL ARCHIVO PARA IMPORTAR LOS DATOS");
+
+					$objParameter	= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT", $companyID);
+					$characterSplie = $objParameter->value;
+
+					$this->csvreader->separator = $characterSplie;
+					$table 			= $this->csvreader->parse_file($path);
+
+					if ($table) {
+
+						//validar columnas del archivo
+						if (count($table) >= 1) {
+							if (!array_key_exists("Id", $table[0])) {
+								throw new \Exception("Columna 'Id' no existe en el archivo .csv");
+							}
+							if (!array_key_exists("Indicador", $table[0])) {
+								throw new \Exception("Columna 'Indicador' no existe en el archivo .csv");
+							}
+							if (!array_key_exists("Valores", $table[0])) {
+								throw new \Exception("Columna 'Valores' no existe en el archivo .csv");
+							}
+							if (!array_key_exists("Consjunto", $table[0])) {
+								throw new \Exception("Columna 'Consjunto' no existe en el archivo .csv");
+							}
+							if (!array_key_exists("Grupo", $table[0])) {
+								throw new \Exception("Columna 'Grupo' no existe en el archivo .csv");
+							}
+							if (!array_key_exists("SubGrupo", $table[0])) {
+								throw new \Exception("Columna 'SubGrupo' no existe en el archivo .csv");
+							}
+							if (!array_key_exists("Edad", $table[0])) {
+								throw new \Exception("Columna 'Edad' no existe en el archivo .csv");
+							}
+							if (!array_key_exists("Sexo", $table[0])) {
+								throw new \Exception("Columna 'Sexo' no existe en el archivo .csv");
+							}
+							if (!array_key_exists("Parent", $table[0])) {
+								throw new \Exception("Columna 'Parent' no existe en el archivo .csv");
+							}
+							if (!array_key_exists("Sequencia", $table[0])) {
+								throw new \Exception("Columna 'Sequencia' no existe en el archivo .csv");
+							}
+							if (!array_key_exists("Ratio", $table[0])) {
+								throw new \Exception("Columna 'Ratio' no existe en el archivo .csv");
+							}
+							if (!array_key_exists("Flavor", $table[0])) {
+								throw new \Exception("Columna 'Flavor' no existe en el archivo .csv");
+							}
+						}
+
+						//Limpiar datos
+						$array_publicCatalogDetailID	= [];
+						$array_name						= [];
+						$array_display					= [];
+						$array_description				= [];
+						$array_reference1				= [];
+						$array_reference2				= [];
+						$array_reference3				= [];
+						$array_reference4				= [];
+						$array_parentName				= [];
+						$array_sequence					= [];
+						$array_ratio					= [];
+						$array_flavor					= [];
+
+						//volver a llenar los datos
+						foreach ($table as $row) {
+							$array_publicCatalogDetailID[]	= ltrim(rtrim($row["Id"]));
+							$array_name[]					= $row["Indicador"];
+							$array_display[]				= $row["Valores"];
+							$array_description[]			= $row["Consjunto"];
+							$array_reference1[]				= $row["Grupo"];
+							$array_reference2[]				= $row["SubGrupo"];
+							$array_reference3[]				= $row["Edad"];
+							$array_reference4[]				= $row["Sexo"];
+							$array_parentName[]				= $row["Parent"];
+							$array_sequence[]				= $row["Sequencia"];
+							$array_ratio[]					= $row["Ratio"];
+							$array_flavor[]					= ltrim(rtrim($row["Flavor"]));
+						}
+					}
+				}
+			}
 
 			//ingresar y actualizar
 			if (!empty($array_publicCatalogDetailID)) {
@@ -231,7 +325,6 @@ class app_public_catalog extends _BaseController
 				}
 			}
 
-			$companyID 								= $dataSession["user"]->companyID;
 			//Crear la Carpeta para almacenar los Archivos del Catálogo
 			$path_ = PATH_FILE_OF_APP . "/company_" . $companyID . "/component_92/component_item_" . $publicCatalogID;
 			if (!file_exists($path_)) {
@@ -240,15 +333,17 @@ class app_public_catalog extends _BaseController
 			}
 
 			if (!is_null($this->request->getPost("txtIsTemplate"))) {
+				//Obtener nombre del archivo
+				$archivoCSV = $this->request->getPost("txtFileImport");
 
 				//obtener datos de la tabla
 				$data = $this->Public_Catalog_Detail_Model->getRowCSV($publicCatalogID);
 
 				// Definir encabezados del CSV
 				$header = array_keys($data[0]);
-				
+
 				//abrir archivo
-				$path_ = $path_ . "/default.csv";
+				$path_ = $path_ . "/" . $archivoCSV;
 				$file = fopen($path_, 'w+');
 
 				//obtener separador
@@ -266,7 +361,6 @@ class app_public_catalog extends _BaseController
 
 				// Cerrar el archivo
 				fclose($file);
-			
 			}
 
 			if ($db->transStatus() !== false) {

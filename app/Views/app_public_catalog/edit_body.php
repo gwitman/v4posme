@@ -115,7 +115,7 @@
 									<div class="form-group">
 										<label class="col-lg-4 control-label" for="normal">Procesar plantilla</label>
 										<div class="col-lg-8">
-											<input type="checkbox" name="txtIsTemplate" id="txtIsTemplate" value="1">
+											<input type="checkbox" name="txtIsTemplate2" id="txtIsTemplate2" value="1">
 										</div>
 									</div>
 								</div>

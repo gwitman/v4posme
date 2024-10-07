@@ -125,7 +125,7 @@ class Public_Catalog_Detail_Model extends Model
 		$sql 		= 
 		'
 				select 
-					c.publicCatalogDetailID AS Id,
+					c.publicCatalogDetailID as Id,
 					c.name as Indicador,
 					c.display as Valores,
 					c.reference4 as Consjunto, 
