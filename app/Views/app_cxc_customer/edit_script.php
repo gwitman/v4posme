@@ -918,8 +918,8 @@
 	function onCompleteEmployee(objResponse)
 	{							
 			
-			$("#txtEmployerID").val(objResponse[2]);
-			$("#txtEmployerDescription").val(objResponse[3] + " / " + objResponse[4]);
+			$("#txtEmployerID").val(objResponse[0][2]);
+			$("#txtEmployerDescription").val(objResponse[0][3] + " / " + objResponse[0][4]);
 			
 	}
 	
