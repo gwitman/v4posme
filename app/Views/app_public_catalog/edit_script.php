@@ -8,7 +8,11 @@
 		$(document).on("click","#btnBack",function(){
 				fnWaitOpen();
 		});
-		
+
+		//Archivos
+		$(document).on("click","#btnClickArchivo",function(){
+			window.open("<?php echo base_url()."/core_elfinder/index/componentID/".$objComponent->componentID."/componentItemID/".$objPublicCatalog->publicCatalogID; ?>","blanck");
+		});
 		
 		
 		//Evento Agregar el Usuario
