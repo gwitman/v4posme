@@ -334,11 +334,14 @@ class app_public_catalog extends _BaseController
 
 			if (!is_null($this->request->getPost("txtIsTemplate"))) {
 				//Obtener nombre del archivo
-				$archivoCSV = $this->request->getPost("txtFileImport");
+				$archivoCSV = "default.csv";
 
 				//obtener datos de la tabla
 				$data = $this->Public_Catalog_Detail_Model->getRowCSV($publicCatalogID);
 
+				if ( !$data )
+				throw new \Exception("NO SE PUEDE CREAR LA PLANTILLA DEBE EXISTIR AL MENOS UN INDICADOR BASE");
+					
 				// Definir encabezados del CSV
 				$header = array_keys($data[0]);
 
