@@ -5,7 +5,13 @@ use dbkroqnguhldo1;
 /******************************************************************/	
 
 
-
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "50" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_TRANSACTION_CAUSAL_PRODUCTION_ITEM";## Id del Causal que sirve para producir mercaderia
+	
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "true" 
 WHERE 

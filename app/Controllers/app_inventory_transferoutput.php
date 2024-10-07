@@ -264,14 +264,6 @@ class app_inventory_transferoutput extends _BaseController {
 				throw new \Exception(NOT_ALL_INSERT);	
 			}
 			
-				
-			
-			
-			
-				
-				
-			
-			
 			
 			$this->core_web_permission->getValueLicense($dataSession["user"]->companyID,get_class($this)."/"."index");
 			//Obtener el Componente de Transacciones Other Input to Inventory
@@ -295,12 +287,14 @@ class app_inventory_transferoutput extends _BaseController {
 			$transactionID 							= $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID,"tb_transaction_master_transferoutput",0);
 			$companyID 								= $dataSession["user"]->companyID;
 			$objT 									= $this->Transaction_Model->getByCompanyAndTransaction($dataSession["user"]->companyID,$transactionID);
+			$objListComanyParameter					= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCausalOfProduccion			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVENTORY_TRANSACTION_CAUSAL_PRODUCTION_ITEM")->value;
 			
 			$objTM["companyID"] 					= $dataSession["user"]->companyID;
 			$objTM["transactionID"] 				= $transactionID;			
 			$objTM["branchID"]						= $dataSession["user"]->branchID;
 			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_transferoutput",0);
-			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($objTM["companyID"],$objTM["transactionID"]);
+			$objTM["transactionCausalID"] 			= $this->request->getPost("txtTransactionCausalID");
 			$objTM["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtTransactionOn");
 			$objTM["statusIDChangeOn"]				= date("Y-m-d H:m:s");
 			$objTM["componentID"] 					= $objComponent->componentID;
@@ -346,6 +340,7 @@ class app_inventory_transferoutput extends _BaseController {
 				foreach($arrayListItemID as $key => $value){
 					$objItem 								= $this->Item_Model->get_rowByPK($objTM["companyID"],$value);
 					$objItemWarehouse						= $this->Itemwarehouse_Model->getByPK($objTM["companyID"],$value,$objTM["sourceWarehouseID"]);
+					$isServices								= is_null($objItem->isServices) ? false : $objItem->isServices;
 					$lote 									= $arrayListLote[$key];
 					$vencimiento							= $arrayListVencimiento[$key];
 					
@@ -379,7 +374,7 @@ class app_inventory_transferoutput extends _BaseController {
 					
 					$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
 					
-					if($objItemWarehouse->quantity < $objTMD["quantity"])
+					if($objItemWarehouse->quantity < $objTMD["quantity"] && $isServices == false   )
 					throw new \Exception("No hay suficiente existencia del producto en la bodega origen");
 				}
 			}
@@ -485,8 +480,12 @@ class app_inventory_transferoutput extends _BaseController {
 			/////////////////////////////////////////////////////
 			//Aplicar el Documento de Salida
 			if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_transferoutput","statusID",$objTM["statusID"],COMMAND_APLICABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID)  ){
-				//Ingresar en Kardex.
-				$this->core_web_inventory->calculateKardexNewOutput($objTM["companyID"],$objTM["transactionID"],$transactionMasterID);			
+				
+				//Ingresar en Kardex. de salida si el causal no es produccion de mercaderia
+				if($objTM["transactionCausalID"] != $objParameterCausalOfProduccion)
+				{
+					$this->core_web_inventory->calculateKardexNewOutput($objTM["companyID"],$objTM["transactionID"],$transactionMasterID);
+				}
 			
 				//Crear Conceptos.
 				//$this->core_web_concept->otherinput($companyID,$transactionID,$transactionMasterID);
@@ -807,6 +806,7 @@ class app_inventory_transferoutput extends _BaseController {
 			$datView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_transferoutput","statusID",$datView["objTM"]->statusID,$companyID,$branchID,$roleID);
 			$datView["objTM"]->transactionOn 	= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
 			$datView["userID"]					= $datView["objUser"]->userID;
+			$datView["objListTransactionCausal"]= $this->Transaction_Causal_Model->getCausalByBranch($companyID,$transactionID,$branchID);	
 			
 			//Obtener Empleado Envia
 			$datView["objEmployeeNaturalSource"]		=  $this->Natural_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->branchID,$datView["objTM"]->entityID);
@@ -898,14 +898,15 @@ class app_inventory_transferoutput extends _BaseController {
 			throw new \Exception("EL COMPONENTE 'tb_entity' NO EXISTE...");
 		
 		
-			$dataView["componentTranItemID"] 	= $componentTranItem->componentID;
-			$dataView["userID"] 				= $userID;
-			$dataView["objUser"]	 			= $this->User_Model->get_rowByPK($companyID,$branchID,$userID);
-			$dataView["objEntity"]				= $this->Entity_Model->get_rowByEntity($companyID,$dataView["objUser"]->employeeID);
-			
-			$dataView["objComponentEmployee"]  	= $objComponentEmployee;
-			$dataView["objComponentEntity"]  	= $objComponentEntity;
-			$dataView["company"]				= $dataSession["company"];
+			$transactionID 							= $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID,"tb_transaction_master_transferoutput",0);
+			$dataView["componentTranItemID"] 		= $componentTranItem->componentID;
+			$dataView["userID"] 					= $userID;
+			$dataView["objUser"]	 				= $this->User_Model->get_rowByPK($companyID,$branchID,$userID);
+			$dataView["objEntity"]					= $this->Entity_Model->get_rowByEntity($companyID,$dataView["objUser"]->employeeID);
+			$dataView["objListTransactionCausal"]	= $this->Transaction_Causal_Model->getCausalByBranch($companyID,$transactionID,$branchID);	
+			$dataView["objComponentEmployee"]  		= $objComponentEmployee;
+			$dataView["objComponentEntity"]  		= $objComponentEntity;
+			$dataView["company"]					= $dataSession["company"];
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]		= $this->core_web_error->get_error($dataSession["user"]->userID);

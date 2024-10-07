@@ -1120,6 +1120,7 @@ $routes->match(['get','post'],'app_transaction_config/apiDeleteProfileDetail','a
 $routes->match(['get','post'],'app_transaction_config/apiInsertProfileDetail','app_transaction_config::apiInsertProfileDetail');
 $routes->match(['get','post'],'app_transaction_config/apiGetInforCausal','app_transaction_config::apiGetInforCausal');
 $routes->match(['get','post'],'app_transaction_config/save','app_transaction_config::save');
+$routes->match(['get','post'],'app_transaction_config/save/(:any)','app_transaction_config::save');
 $routes->match(['get','post'],'app_transaction_config/add_causal','app_transaction_config::add_causal');
 $routes->match(['get','post'],'app_transaction_config/edit','app_transaction_config::edit');
 $routes->match(['get','post'],'app_transaction_config/edit/(:any)','app_transaction_config::edit');

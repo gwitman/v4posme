@@ -79,7 +79,23 @@
 													</div>
 													
 													
-													
+													<div class="form-group">
+														<label class="col-lg-2 control-label" for="selectFilter">Causa</label>
+														<div class="col-lg-8">
+															<select name="txtTransactionCausalID" id="txtTransactionCausalID" class="select2">
+																	<option></option>
+																	<?php
+																	if($objListTransactionCausal)
+																	foreach($objListTransactionCausal as $i){
+																		if($i->transactionCausalID == $objTM->transactionCausalID)
+																		echo "<option value='".$i->transactionCausalID."' selected >".$i->name."</option>";
+																		else
+																		echo "<option value='".$i->transactionCausalID."'>".$i->name."</option>";
+																	}
+																	?>
+															</select>
+														</div>
+													</div>
 													
 											</div>
 											<div class="col-lg-6">

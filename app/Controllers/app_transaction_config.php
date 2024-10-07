@@ -199,7 +199,10 @@ class app_transaction_config extends _BaseController {
 			
 			
 			//Iniciar Transacciones
-			$this->db->trans_start();
+			$db=db_connect();
+			$db->transStart();	
+
+
 			$objTransaction["journalTypeID"] 	= /*inicio get post*/ $this->request->getPost("txtJournalTypeID");
 			$objTransaction["reference1"] 		= /*inicio get post*/ $this->request->getPost("txtReference1");
 			$objTransaction["reference2"] 		= /*inicio get post*/ $this->request->getPost("txtReference2");
@@ -239,14 +242,20 @@ class app_transaction_config extends _BaseController {
 			if($countCausalDefault == 0)
 			throw new \Exception("Siempre el documento tiene que tener un Causal Principal.");
 			
-			//Confirmar Transaccion
-			$this->db->trans_complete();
+			
 						
 			//Redireccionar
-			if ($db->transStatus() === FALSE)
-			$this->core_web_notification->set_message(true,$this->db->_error_message());
-			else
-			$this->core_web_notification->set_message(false,SUCCESS);
+			if ( $db->transStatus() === false)
+			{
+				$db->transRollback();	
+				$this->core_web_notification->set_message(true,$this->db->_error_message());
+			}
+			
+			if ( $db->transStatus() !== false )
+			{
+				$db->transCommit();
+				$this->core_web_notification->set_message(false,SUCCESS);
+			}
 			
 			$this->response->redirect(base_url()."/".'app_transaction_config/edit/companyID/'.$companyID.'/transactionID/'.$transactionID);	
 		}
@@ -331,7 +340,7 @@ class app_transaction_config extends _BaseController {
 			
 			$D["objListTransactionConcept"]		= $this->Transaction_Concept_Model->getByCompanyAndTransaction($dataSession["user"]->companyID,$transactionID);
 			$D["objListAccount"]				= $this->Account_Model->getByCompanyOperative($dataSession["user"]->companyID);
-			$D["objListCenterCost"]				= $this->Center_Cost_model->getByCompany($dataSession["user"]->companyID);
+			$D["objListCenterCost"]				= $this->Center_Cost_Model->getByCompany($dataSession["user"]->companyID);
 			$D["objListJournalType"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction","journalTypeID",$dataSession["user"]->companyID);
 			$D["objTransaction"]				= $this->Transaction_Model->getByCompanyAndTransaction($dataSession["user"]->companyID,$transactionID);
 			$D["objWorkflow"]					= $this->Workflow_Model->get_rowByWorkflowID($D["objTransaction"]->workflowID);
