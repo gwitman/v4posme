@@ -157,6 +157,7 @@
 						return result;
 					}
 					function onCompleteItem(objResponse){
+						debugger;
 						console.info("CALL onCompleteItem");
 						var objRow 						= {};
 						
@@ -164,12 +165,12 @@
 						objRow.itemDataSheetID			= 0;
 						objRow.itemID 					= 0;
 						objRow.itemDataSheetDetailID 	= 0;
-						objRow.itemRelatedID 			= objResponse[0];
-						objRow.itemNumber 				= objResponse[1];
-						objRow.itemName 				= objResponse[2];
-						objRow.um 						= objResponse[3];
+						objRow.itemRelatedID 			= objResponse[0][0];
+						objRow.itemNumber 				= objResponse[0][1];
+						objRow.itemName 				= objResponse[0][2];
+						objRow.um 						= objResponse[0][3];
 						objRow.quantity 				= 0;
-						objRow.cost 					= objResponse[4];
+						objRow.cost 					= objResponse[0][4];
 						objRow.cc 						= 0;
 						
 						
@@ -199,8 +200,8 @@
 					function onCompleteItemReceta(objResponse){
 						console.info("CALL onCompleteItemReceta");
 						
-						$("#txtItemID").val(objResponse[0]);
-						$("#txtItemIDDescription").val(objResponse[1] + " / " + objResponse[2] );
+						$("#txtItemID").val(objResponse[0][0]);
+						$("#txtItemIDDescription").val(objResponse[0][1] + " / " + objResponse[0][2] );
 									
 					}
 					//Refresh
