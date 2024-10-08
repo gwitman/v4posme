@@ -856,7 +856,7 @@
 						if(isset($objListSituationID)){
 							foreach($objListSituationID as $ws){
 					?>
-								"<option value='<?=$ws->catalogItemID?>' " + ((combo1===<?= $ws->catalogItemID?>) ? 'selected' : '') + "><?=$ws->name?></option>"+
+								"<option value='<?=$ws->catalogItemID?>' " + ((combo1==<?= $ws->catalogItemID?>) ? 'selected' : '') + "><?=$ws->name?></option>"+
 					<?php
 							}
 						}

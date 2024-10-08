@@ -233,6 +233,19 @@ class Transaction_Master_Detail_Model extends Model  {
 			$sql = $sql.sprintf(" and td.isActive= 1");		
 			$sql = $sql.sprintf(" order by td.transactionMasterDetailID desc");			
 		}
+
+		if($componentID == 88 /* Consulta Medica*/)
+		{
+			$sql      = sprintf("select 
+									td.transactionMasterDetailID,
+									td.itemNameLog,
+                                    td.skuQuantity,
+                                    td.skuQuantityBySku,
+                                    td.typePriceID,
+									td.amount");
+			$sql = $sql.sprintf(" from tb_transaction_master_detail td");
+			$sql = $sql.sprintf(" where td.transactionMasterID = $transactionMasterID");
+		}
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();

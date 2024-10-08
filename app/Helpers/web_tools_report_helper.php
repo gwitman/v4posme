@@ -14207,6 +14207,220 @@ function helper_reporteA4TransactionMasterExamenLab(
    return $html;
 }
 
+function helper_reporteA4TransactionMasterConsultaMedica(
+    $titulo,
+	$rucCompany,
+    $objCompany,
+    $objParameterLogo,
+    $fecha,
+    $folio,
+    $nombreCliente,  
+	$objTransactionMasterDetail, 
+	$objTransactionMaster,
+	$objSexo,
+	$objListPriorities,
+	$objListFrecuencies,
+	$objListDoses
+) {
+    $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
+    $type    = pathinfo($path, PATHINFO_EXTENSION);
+    $data    = file_get_contents($path);
+    $base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+    $html = "
+        <!DOCTYPE html>
+        <html lang='en'>
+        <head>
+            <meta charset='UTF-8' />
+            <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+            <style>
+                @page {       
+                    size: 13cm 21cm;                  
+                    margin-top: 0px;
+                    margin-left: 20px;
+                    margin-right: 20px;
+                }
+                body {
+                    font-family: Arial, sans-serif;
+                    font-size: x-small;
+                }
+                table {
+                    font-size: x-small;
+                    font-family: Consolas, monaco, monospace;
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 7px;
+                }
+                th, td {
+                    border: 1px solid black;
+                    padding: 3px;
+                    text-align: left;
+                    vertical-align: top;
+                }
+                th {
+                    background-color: #f2f2f2;
+                    font-weight: bold;
+                }
+                td {
+                    text-align: center;
+                }
+                img {
+                    display: block;
+                    margin: 0 auto;
+                }
+                .center {
+                    text-align: center;
+                }
+                .right {
+                    text-align: right;
+                }
+                .header-table td {
+                    border: none;
+                    font-size: x-small;
+                }
+            </style>
+        </head>
+        <body>
+            <table class='header-table'>
+                <tr>
+					<td colspan='2' class='center'>
+						<img src='".$base64."' width='110'><br>
+						<b>".strtoupper($objCompany->name)."</b><br>
+						CÉDULA PROFESIONAL: ".strtoupper($rucCompany)."<br>
+						".strtoupper($titulo)."
+					</td>
+				</tr>
+
+				<tr>
+					<td colspan='2' class='right'>
+						<b>FECHA:</b> ".$fecha."<br>
+						<b>FOLIO:</b> " .strtoupper($folio)."
+					</td>
+				</tr>
+			</table>
+
+			<table style='width: 100%; border-collapse: collapse;'>
+				<thead>
+					<tr>
+						<th colspan='5' style='text-align: left;'>DETALLES DEL PACIENTE</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td colspan='5' style='text-align: left;'><b>NOMBRE DEL PACIENTE:</b> ".strtoupper($nombreCliente->firstName . " " . $nombreCliente->lastName)."</td>
+					</tr>
+					<tr>
+						<td style='text-align: left;'><b>SEXO:</b> ".$objSexo."</td>
+						<td style='text-align: left;'><b>EDAD:</b> ".number_format($objTransactionMaster->tax1, 0)." años</td>
+						<td style='text-align: left;'><b>ALTURA:</b> ".number_format($objTransactionMaster->tax2, 1)."cms</td>
+						<td style='text-align: left;'><b>PESO:</b> ".number_format($objTransactionMaster->tax3, 1)."Kgs</td>
+						<td style='text-align: left;'><b>IMC:</b> ".number_format($objTransactionMaster->tax4, 1)."</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<table>
+				<thead>
+					<tr>
+						<th colspan='4'>DETALLES DE LA CONSULTA</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td colspan='1' style='text-align:left;'>	
+							<b>EVALUACION</b>
+						</td>
+						<td colspan='3' style='text-align:left;'>" 
+							. strtoupper($objTransactionMaster->reference2) . "<br>
+						</td>";
+						$html.="</td>				
+					</tr>
+
+					<tr>
+						<td colspan='1' style='text-align:left;'>	
+							<b>RECOMENDACION</b>
+						</td>
+						<td colspan='3' style='text-align:left;'>" 
+							. strtoupper($objTransactionMaster->reference3) . "<br>
+						</td>";
+						$html.="</td>				
+					</tr>
+				</tbody>
+			</table>
+            
+            <table>
+			<thead>
+				<tr>
+            		<th colspan='3'>DETALLES DEL TRATAMIENTO</th>
+                </tr>
+            </thead>
+            <tbody>
+				<tr>
+					<td><b>PRIORIDAD</b></td>
+					<td><b>NOMBRE</b></td>
+					<td><b>DOSIS</b></td>
+				</tr>";
+					foreach($objTransactionMasterDetail as $detalle) {
+						$count = 0;
+						$html .= "
+						<tr>
+							<td style='text-align:left;'>";
+								foreach($objListPriorities as $priority) {
+									if ($detalle->skuQuantity == $priority->catalogItemID) {
+										$html .= $priority->name;
+									}
+								}
+							$html .="</td>
+							<td style='text-align:left;'>
+								{$detalle->itemNameLog}<br>
+							</td>
+							<td style='text-align:left;'>";
+
+								foreach($objListDoses as $dose) {
+									if ($detalle->typePriceID == $dose->catalogItemID) {
+										$html .= $dose->name . " ";
+									}
+								}
+
+								foreach($objListFrecuencies as $frecuency) {
+									if ($detalle->skuQuantityBySku == $frecuency->catalogItemID) {
+										$html .= $frecuency->name;
+									}
+								}
+							$html .="</td>		
+					</tr>";	
+				}
+    				$html .= "
+                </tbody>
+            </table>
+
+			<table class='header-table'>
+				<tr>
+					<td style='text-align:center;'>
+						<b>Proxima Visita:</b><br>
+						$objTransactionMaster->nextVisit
+					</td>
+				</tr>
+			</table>
+
+			<table class='header-table' style='position: fixed; bottom: 20px; width: 100%;'>
+				<tr>
+					<td style='text-align:center;'>
+						_____________________ <br><br>
+								<b>Sello</b>
+					</td>
+					<td style='text-align:center;'>
+					_____________________ <br><br>
+								<b>Firma</b>
+					</td>
+				</tr>
+			</table>
+        </body>
+    </html>";
+
+	return $html;
+}
+
 function helper_reporte80mmCocina(
     $titulo,
     $objCompany,
