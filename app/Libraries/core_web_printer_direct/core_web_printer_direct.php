@@ -2720,6 +2720,101 @@ class core_web_printer_direct {
 		$this->printer->close();
     }
 	
+	function executePrinter80mmAttendanceNoImage($dataSetValores){    
+		
+		$this->printer->setJustification(Printer::JUSTIFY_CENTER);
+		$pathImg = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$dataSetValores["objParameterLogo"]->value;
+		
+
+		//--wgonzalez
+		//--posme
+		//--cambio al momento de cambiar la version de code integer 4.1
+		//-core_web_printer_direct-77
+		//referencia de modificaciones
+		//$logo = EscposImage::load($pathImg, false);
+		//$this->printer->bitImage($logo,1);
+		
+		//en formato de $this->printer->setTextSize(1, 1);
+		//cada linea tiene 48 caracteres
+
+		//en formato de $this->printer->setTextSize(2, 1);
+		//cada linea tiene 24 caracteres
+
+		/*
+		Imprimimos un mensaje. Podemos usar
+		el salto de línea o llamar muchas
+		veces a $printer->text()
+		*/
+
+		$this->printer->feed();
+		$this->printer->setTextSize(2, 2);
+		$this->printer->text($dataSetValores["objCompany"]->name);
+		$this->printer->text("\n");
+		$this->printer->setTextSize(2, 1);		
+		$this->printer->text("\nRUC:".$dataSetValores["Identifier"]->value);
+		$this->printer->setTextSize(2, 1);
+		$this->printer->text("\n#".$dataSetValores["objTransactionMaster"]->transactionNumber);
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\n");
+
+		$this->printer->text("\nFecha: ".$dataSetValores["objTransactionMaster"]->createdOn);
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nEstado: ".$dataSetValores["objStage"][0]->display);
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nUsuario: ".$dataSetValores["objUser"]->nickname);		
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nCliente: ".$dataSetValores["objCustumer"]->customerNumber);
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nNombre: ".$dataSetValores["objNatural"]->firstName);						
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nSolvencia: ".$dataSetValores["objTransactionMaster"]->reference1);
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nProxima pago: ".$dataSetValores["objTransactionMaster"]->reference2);
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nDias Proxima pago: ".$dataSetValores["objTransactionMaster"]->reference4);
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nVencimiento: ".$dataSetValores["objTransactionMaster"]->reference3);		
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nGracias por su regitro.");		
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\n****************************.");
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nTelefono de tienda: ".$dataSetValores["objParameterPhoneProperty"]->value);
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\n".$dataSetValores["objCompany"]->address);
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nSistema:+(505) 8712-5827");
+		$this->printer->setTextSize(2, 1);
+		$this->printer->feed();
+		//$this->printer->feed(10);
+		//$this->printer->text("Hola mundo\n\nParzibyte.me\n\nNo olvides suscribirte");
+		/*
+		Hacemos que el papel salga. Es como
+		dejar muchos saltos de línea sin escribir nada
+		*/
+		//$this->printer->feed(15);
+
+		/*
+		Cortamos el papel. Si nuestra impresora
+		no tiene soporte para ello, no generará
+		ningún error
+		*/
+		$this->printer->cut();
+
+		/*
+		Por medio de la impresora mandamos un pulso.
+		Esto es útil cuando la tenemos conectada
+		por ejemplo a un cajón
+		*/
+		$this->printer->pulse();
+
+		/*
+		Para imprimir realmente, tenemos que "cerrar"
+		la conexión con la impresora. Recuerda incluir esto al final de todos los archivos
+		*/
+		$this->printer->close();
+    }
+	
 	
 	function executePrinter80mmFerreteriaDouglas($dataSetValores)
 	{    

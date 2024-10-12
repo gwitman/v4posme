@@ -113,10 +113,10 @@
 						var objRow 						= {};
 						objRow.checked 					= false;
 						objRow.transactionMasterDetail 	= 0;						
-						objRow.customerCreditDocumentID = objResponse[0];									/*customerCreditDocumentID*/
-						objRow.documentNumber		 	= objResponse[1];									/*documentNumber*/
-						objRow.nameMoneda			 	= objResponse[3];									/*moneda*/
-						objRow.balance					= fnFormatFloat(objResponse[4],2);	/*saldo*/						
+						objRow.customerCreditDocumentID = objResponse[0][0];									/*customerCreditDocumentID*/
+						objRow.documentNumber		 	= objResponse[0][1];									/*documentNumber*/
+						objRow.nameMoneda			 	= objResponse[0][3];									/*moneda*/
+						objRow.balance					= fnFormatFloat(objResponse[0][4],2);	/*saldo*/						
 						
 						
 						

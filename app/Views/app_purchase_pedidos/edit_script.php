@@ -133,11 +133,11 @@
 					function onCompleteBilling(objResponse)
 					{							
 							
-							$("#txtNote").val(objResponse[0]);
-							$("#txtNoteDescription").val(objResponse[2]);
+							$("#txtNote").val(objResponse[0][0]);
+							$("#txtNoteDescription").val(objResponse[0][2]);
 							
-							$("#txtCustomerID").val(objResponse[1]);
-							$("#txtCustomerDescription").val(objResponse[3] + " / " + objResponse[4]);								
+							$("#txtCustomerID").val(objResponse[0][1]);
+							$("#txtCustomerDescription").val(objResponse[0][3] + " / " + objResponse[0][4]);								
 							
 					}
 					
@@ -145,9 +145,9 @@
 					{
 						if(objResponse != undefined)
 						{
-							var entityID = objResponse[1];
-							$("#txtCustomerID").val(objResponse[1]);
-							$("#txtCustomerDescription").val(objResponse[2] + " " + objResponse[3] + " / " + objResponse[4]);								
+							var entityID = objResponse[0][1];
+							$("#txtCustomerID").val(objResponse[0][1]);
+							$("#txtCustomerDescription").val(objResponse[0][2] + " " + objResponse[0][3] + " / " + objResponse[0][4]);								
 						}
 						
 					}
@@ -155,8 +155,8 @@
 					function onCompleteEmployee(objResponse)
 					{							
 							
-							$("#txtEmployerID").val(objResponse[2]);
-							$("#txtEmployerDescription").val(objResponse[3] + " / " + objResponse[4]);
+							$("#txtEmployerID").val(objResponse[0][2]);
+							$("#txtEmployerDescription").val(objResponse[0][3] + " / " + objResponse[0][4]);
 							
 					}
 					

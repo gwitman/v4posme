@@ -66,8 +66,8 @@
 						var objRow 						= {};
 						objRow.checked 					= false;
 						objRow.txtCalendarDetailID 		= 0;
-						objRow.txtEmployeeID			= objResponse[2];	/*companyID*/
-						objRow.name 					= objResponse[3] + "/" + objResponse[4];	/*entityID*/
+						objRow.txtEmployeeID			= objResponse[0][2];	/*companyID*/
+						objRow.name 					= objResponse[0][3] + "/" + objResponse[0][4];	/*entityID*/
 						
 						//Validar si esta el item
 						for(var i = 0 ; i < $(".classDetailItem").length; i++){

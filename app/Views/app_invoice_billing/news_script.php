@@ -699,9 +699,9 @@
 			return;
 		
 		if(objParameterPantallaParaFacturar == "-")	
-			window.location	= "<?php echo base_url(); ?>/app_invoice_billing/edit/companyID/"+objResponse[0]+"/transactionID/"+objResponse[1]+"/transactionMasterID/"+objResponse[2]+"/codigoMesero/"+$("#txtCodigoMesero").val();
+			window.location	= "<?php echo base_url(); ?>/app_invoice_billing/edit/companyID/"+objResponse[0][0]+"/transactionID/"+objResponse[0][1]+"/transactionMasterID/"+objResponse[0][2]+"/codigoMesero/"+$("#txtCodigoMesero").val();
 		else
-			window.location	= "<?php echo base_url(); ?>/app_invoice_billing/"+objParameterPantallaParaFacturar+"/companyID/"+objResponse[0]+"/transactionID/"+objResponse[1]+"/transactionMasterID/"+objResponse[2]+"/codigoMesero/"+$("#txtCodigoMesero").val();
+			window.location	= "<?php echo base_url(); ?>/app_invoice_billing/"+objParameterPantallaParaFacturar+"/companyID/"+objResponse[0][0]+"/transactionID/"+objResponse[0][1]+"/transactionMasterID/"+objResponse[0][2]+"/codigoMesero/"+$("#txtCodigoMesero").val();
 			
 				
 	}
@@ -712,9 +712,9 @@
 	
 		if(objResponse != undefined)
 		{
-			var entityID = objResponse[1];
-			$("#txtCustomerID").val(objResponse[1]);
-			$("#txtCustomerDescription").val(objResponse[2] + " " + objResponse[3] + " / " + objResponse[4]);	
+			var entityID = objResponse[0][1];
+			$("#txtCustomerID").val(objResponse[0][1]);
+			$("#txtCustomerDescription").val(objResponse[0][2] + " " + objResponse[0][3] + " / " + objResponse[0][4]);	
 			fnClearData();
 			fnGetCustomerClient();
 		}

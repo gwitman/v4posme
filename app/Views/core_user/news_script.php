@@ -57,8 +57,8 @@
 					function onCompleteEmployee(objResponse){
 						console.info("CALL onCompleteEmployee");
 						
-						$("#txtEmployeeID").val(objResponse[2]);
-						$("#txtEmployeeDescription").val(objResponse[3] + " / " + objResponse[4]);
+						$("#txtEmployeeID").val(objResponse[0][2]);
+						$("#txtEmployeeDescription").val(objResponse[0][3] + " / " + objResponse[0][4]);
 						
 					}
 					//Callback Complete: Agregar Bodega

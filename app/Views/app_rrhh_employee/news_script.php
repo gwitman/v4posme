@@ -259,8 +259,8 @@
 					function onCompleteEmployee(objResponse){
 						console.info("CALL onCompleteEmployee");
 						
-						$("#txtParentEmployeeID").val(objResponse[2]);
-						$("#txtParentDescription").val(objResponse[3] + " / " + objResponse[4]);
+						$("#txtParentEmployeeID").val(objResponse[0][2]);
+						$("#txtParentDescription").val(objResponse[0][3] + " / " + objResponse[0][4]);
 						
 					}
 					function validateForm(){

@@ -162,9 +162,9 @@
 		console.info("CALL onCompleteCustomer");
 	
 	
-		var entityID = objResponse[1];
-		$("#txtCustomerID").val(objResponse[1]);
-		$("#txtCustomerDescription").val(objResponse[2] + " " + objResponse[3] + " / " + objResponse[4]);
+		var entityID = objResponse[0][1];
+		$("#txtCustomerID").val(objResponse[0][1]);
+		$("#txtCustomerDescription").val(objResponse[0][2] + " " + objResponse[0][3] + " / " + objResponse[0][4]);
 			
 				
 	}

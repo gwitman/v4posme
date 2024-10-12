@@ -366,8 +366,8 @@
 	
 	function onCompleteEmployee(objResponse)
 	{		
-			$("#txtEmployerID").val(objResponse[2]);
-			$("#txtEmployerDescription").val(objResponse[3] + " / " + objResponse[4]);			
+			$("#txtEmployerID").val(objResponse[0][2]);
+			$("#txtEmployerDescription").val(objResponse[0][3] + " / " + objResponse[0][4]);			
 	}
 	
 	
@@ -433,9 +433,9 @@
 			console.info("CALL onCompleteProvider");
 			var objRow 						= {};
 			objRow.checked 					= false;
-			objRow.providerID 				= objResponse[1];
-			objRow.providerNumber			= objResponse[2];
-			objRow.providerName				= objResponse[3];
+			objRow.providerID 				= objResponse[0][1];
+			objRow.providerNumber			= objResponse[0][2];
+			objRow.providerName				= objResponse[0][3];
 			
 			//Berificar que el Item ya esta agregado 
 			if(jLinq.from(objTableDetailProvider.fnGetData()).where(function(obj){ return obj[1] == objRow.providerID;}).select().length > 0 ){

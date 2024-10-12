@@ -410,8 +410,8 @@
 		function onCompleteSetAccount(objResponse){
 			console.info("CALL onCompleteSetAccount");
 			var objRow 						= {};
-			objRow.accountID				= objResponse[1];
-			objRow.accountName				= objResponse[2] + " " + objResponse[3];
+			objRow.accountID				= objResponse[0][1];
+			objRow.accountName				= objResponse[0][2] + " " + objResponse[0][3];
 			
 			$("#txtAccountID").val(objRow.accountID);
 			$("#txtAccountIDDescription").val(objRow.accountName);
