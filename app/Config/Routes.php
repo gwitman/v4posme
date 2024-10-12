@@ -436,6 +436,7 @@ $routes->match(['get','post'],'app_med_query/index','app_med_query::index');
 $routes->match(['get','post'],'app_med_query/index/(:any)','app_med_query::index');
 $routes->match(['get','post'],'app_med_query/searchTransactionMaster','app_med_query::searchTransactionMaster');
 $routes->match(['get','post'],'app_med_query/viewRegisterFormatoPaginaNormalA4LabGenerico','app_med_query::viewRegisterFormatoPaginaNormalA4LabGenerico');
+$routes->match(['get','post'],'app_med_query/viewRegisterFormatoPaginaNormalA4LabGenerico/(:any)','app_med_query::viewRegisterFormatoPaginaNormalA4LabGenerico');
 $routes->match(['get','post'],'app_calendar_citas/index','app_calendar_citas::index');
 $routes->match(['get','post'],'app_calendar_citas/index/(:any)','app_calendar_citas::index');
 $routes->match(['get','post'],'app_calendar_citas/delete','app_calendar_citas::delete');

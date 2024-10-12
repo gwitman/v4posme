@@ -6,7 +6,9 @@
 						 $('#txtDate').val(moment().format("YYYY-MM-DD"));	
 						 $("#txtDate").datepicker("update");
 						 
-					
+						 $('#txtNextVisit').datepicker({format:"yyyy-mm-dd"});
+						 $('#txtNextVisit').val(moment().format("YYYY-MM-DD"));	
+						 $("#txtNextVisit").datepicker("update");
 						
 						 //Regresar a la lista
 						$(document).on("click","#btnBack",function(){
@@ -60,8 +62,117 @@
 						
 					}
 					
+					//calcular el IMC
+					function fnCalcularIMC() {
+						var peso = parseInt($("#txtWeight").val());
+						var altura = (parseInt($("#txtHeight").val())) / 100; 
+
+						if (isNaN(peso) || isNaN(altura) || peso <= 0 || altura <= 0) {
+							$('#txtIMC').val("0");
+							return;
+						}
+
+						// Calcular el IMC (peso / (altura * altura))
+						var imc = peso / (altura * altura);
+
+						$('#txtIMC').val(imc.toFixed(2));
+					}
+					$("#txtWeight, #txtHeight").on('input', function() {
+						fnCalcularIMC();
+					});
 					
-					
+					//Manejo de campos en vista de detalles
+					//boton agregar detalles
+					$(document).on("click","#btnAddDetail",function(){
+						fnAgregarFila();
+					});
+
+					function fnEliminarFila(boton) {
+						$(boton).closest('tr').remove();
+					}
+
+					function fnAgregarFila() {
+		
+						let texto = $('#txtDetailName').val();
+						let monto = $('#txtAmount').val();
+
+						// Si el campo de texto está vacío, mostrar un mensaje de error
+						if (texto === "") {
+							$('#errorLabel').show();
+							return; 
+						} else {
+							$('#errorLabel').hide();
+						}
+						let combo1 = $('#txtPriority').val();
+						let combo2 = $('#txtFrecuency').val();
+						let combo3 = $('#txtDose').val();
+						let selected = '';
+						let nuevaFila = ""+
+							"<tr> "+
+								"<td>"+
+									"<input class='form-control' type='text' name='txtDetailNameArray[]' value='"+texto+"'> "+
+								"</td>"+
+								"<td>"+
+									"<select name='txtPriorityArray[]' id='comboPriority'>"+
+									<?php
+										if(isset($objListPriority)){
+											foreach($objListPriority as $ws){
+									?>
+												"<option value='<?=$ws->catalogItemID?>' " + ((combo1==<?= $ws->catalogItemID?>) ? 'selected' : '') + "><?=$ws->name?></option>"+
+									<?php
+											}
+										}
+									?>
+								"</td>"+
+								"<td>"+
+									"<select name='txtFrecuencyArray[]' id='comboFrecuency'>"+
+									<?php
+										if(isset($objListFrecuency)){
+											foreach($objListFrecuency as $ws){
+									?>
+												"<option value='<?=$ws->catalogItemID?>' " + ((combo2==<?= $ws->catalogItemID?>) ? 'selected' : '') + "><?=$ws->name?></option>"+
+									<?php
+											}
+										}
+									?>
+								"</td>"+
+								"<td>"+
+									"<select name='txtDoseArray[]' id='comboDose'>"+
+									<?php
+										if(isset($objListDose)){
+											foreach($objListDose as $ws){
+									?>
+												"<option value='<?=$ws->catalogItemID?>' " + ((combo3==<?= $ws->catalogItemID?>) ? 'selected' : '') + "><?=$ws->name?></option>"+
+									<?php
+											}
+										}
+									?>
+									"</select>"+
+								"</td>"+
+								"<td>"+
+									"<input class='form-control' type='number' name='txtAmountArray[]' value='"+monto+"'> "+
+								"</td>"+
+								"<td>"+
+									"<button type='button' class='btn btn-flat btn-danger' onclick='fnEliminarFila(this)'>"+
+										"<i class='fas fa-trash'></i>"+
+									"</button>"+
+								"</td>"+
+							"</tr>";
+
+						// Agregar la nueva fila después de la primera fila de entrada
+						$('#filaEntrada').after(nuevaFila);
+
+						$('#txtDetailName').val('');
+						$('#txtFrecuency').val(null).trigger('change');
+						$('#txtPriority').val(null).trigger('change');
+						$('#txtDose').val(null).trigger('change');
+
+						// Inicializar Select2 en los nuevos select creados
+						$('#comboFrecuency').select2();
+						$('#comboPriority').select2();
+						$('#comboDose').select2();
+					}
+
 					
 					function validateForm(){
 						var result 				= true;

@@ -34,7 +34,10 @@
 				<ul id="myTab" class="nav nav-tabs">
 					<li class="active">
 						<a href="#home" data-toggle="tab">Informacion</a>
-					</li>					
+					</li>		
+					<li>
+						<a href="#details" data-toggle="tab">Detalles</a>
+					</li>			
 				</ul>
 				
 				<div class="tab-content">
@@ -44,13 +47,13 @@
 								
 									<input type="hidden" name="txtCompanyID" value="<?php echo $objTransactionMaster->companyID; ?>">
 									<input type="hidden" name="txtTransactionID" value="<?php echo $objTransactionMaster->transactionID; ?>">
-									<input type="hidden" name="txtTransactionMasterID" value="<?php echo $objTransactionMaster->transactionMasterID; ?>">									
+									<input type="hidden" name="txtTransactionMasterID" value="<?php echo $objTransactionMaster->transactionMasterID; ?>">	
 									
 									<div class="form-group">
 										<label class="col-lg-4 control-label" for="datepicker">Fecha</label>
 										<div class="col-lg-8">
 											<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
-												<input size="16"  class="form-control" type="text" name="txtDate" id="txtDate" value="<?php echo $objTransactionMaster->transactionOn; ?>" >
+												<input size="16"  class="form-control" type="date" name="txtDate" id="txtDate" value="<?php echo $objTransactionMaster->transactionOn; ?>" >
 												<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
 											</div>
 										</div>
@@ -132,12 +135,238 @@
 										</div>
 									</div>
 								
+								<!-- New inputs -->
+									
+									<!-- Edad-->
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="buttons">Edad(Años)</label>
+										<div class="col-lg-8">
+											<input class="form-control" type="number"  name="txtAge" id="txtAge" value="<?php echo number_format($objTransactionMaster->tax1,0);  ?>"></input>
+										</div>
+									</div>
+
+									<!-- Altura-->
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="buttons">Altura(cm)</label>
+										<div class="col-lg-8">
+											<input class="form-control" type="number"  name="txtHeight" id="txtHeight" value="<?php echo number_format($objTransactionMaster->tax2,2);  ?>"></input>
+										</div>
+									</div>
+
+									<!-- Peso -->
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="buttons">Peso(kg)</label>
+										<div class="col-lg-8">
+											<input class="form-control" type="number"  name="txtWeight" id="txtWeight" value="<?php echo number_format($objTransactionMaster->tax3,2);  ?>"></input>
+										</div>
+									</div>
 								
+									<!-- IMC -->
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="buttons">IMC</label>
+										<div class="col-lg-8">
+											<input class="form-control" readonly type="number" name="txtIMC" id="txtIMC" value="<?php echo number_format($objTransactionMaster->tax4,2) ?>"></input>
+										</div>
+									</div>
+									
+									<!-- Proxima visita -->
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="datepicker">Proxima Visita</label>
+										<div class="col-lg-8">
+											<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
+												<input size="16"  class="form-control" type="date" name="txtNextVisit" id="txtNextVisit" value="<?php echo date('Y-m-d',strtotime($objTransactionMaster->nextVisit)); ?>">
+												<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+											</div>
+										</div>
+									</div>
+
+									<!-- Resultado -->
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="buttons">Resultado</label>
+										<div class="col-lg-8">
+											<input class="form-control" type="text"  name="txtResult" id="txtResult" value="<?php echo $objTransactionMaster->reference1;  ?>"></input>
+										</div>
+									</div>
+
+									<!-- Evaluacion -->
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="buttons">Evaluacion</label>
+										<div class="col-lg-8">
+											<input class="form-control" type="text"  name="txtEvaluation" id="txtEvaluation" value="<?php echo $objTransactionMaster->reference2;  ?>"></input>
+										</div>
+									</div>
+
+									<!-- Recomendacion -->
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="buttons">Recomendacion</label>
+										<div class="col-lg-8">
+											<input class="form-control" type="text"  name="txtRecomendation" id="txtRecomendation" value="<?php echo $objTransactionMaster->reference3;  ?>"></input>
+										</div>
+									</div>
+
+									<!-- Diagnostico -->
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="buttons">Diagnostico</label>
+										<div class="col-lg-8">
+											<input class="form-control" type="text"  name="txtDiagnostic" id="txtDiagnostic" value="<?php echo $objTransactionMaster->reference4;  ?>"></input>
+										</div>
+									</div>
+
 								
 							</div>							
 						</div>
 					</div>
 					
+					<div class="tab-pane fade" id="details">
+					
+						<div class="row">
+							<div class="col-md-12">
+								<table class="table" id="tableFrecuency">
+								<thead>
+									<tr>
+										<th>Nombre</th>
+										<th>Prioridad</th>
+										<th>Frecuencia</th>
+										<th>Dosis</th>
+										<th>Monto</th>
+										<th>Acción</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class="" id="filaEntrada">
+										<td>
+											<input class="form-control"  type="text"  name="txtDetailName" id="txtDetailName" value="">
+											<label id="errorLabel" class="text-danger">Este campo no puede estar vacío</label>
+										</td>
+										<td>
+											<label class="sr-only" for="txtPriority">Prioridad:</label>
+											<select name="txtPriority" id="txtPriority" class="select2">
+													<?php
+													$count = 0;
+													if($objListPriority){
+														foreach($objListPriority as $ws){
+															if($count == 0 )
+																echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+															else
+																echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+															$count++;
+														}
+													}
+													?>
+											</select>
+										</td>
+										<td>
+											<label class="sr-only" for="txtFrecuency">Frecuencia:</label>
+											<select name="txtFrecuency" id="txtFrecuency" class="select2">
+													<?php
+													$count = 0;
+													if($objListFrecuency){
+														foreach($objListFrecuency as $ws){
+															if($count == 0 )
+																echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+															else
+																echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+															$count++;
+														}
+													}
+													?>
+											</select>
+										</td>
+										<td>
+											<label class="sr-only" for="txtDose">Dosis:</label>
+											<select name="txtDose" id="txtDose" class="select2">
+													<?php
+													$count = 0;
+													if($objListDose){
+														foreach($objListDose as $ws){
+															if($count == 0 )
+																echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+															else
+																echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+															$count++;
+														}
+													}
+													?>
+											</select>
+										</td>
+										<td>
+											<label class="sr-only" for="txtAmount">Monto:</label>
+											<input class="form-control" type="number"  name="txtAmount" id="txtAmount" value="">
+										</td>
+										<td>
+											<a href="#" class="btn btn-flat btn-info" id="btnAddDetail"><i class="fas fa-plus"></i></a>
+										</td>
+									</tr>
+									<!-- Aquí se agregarán las filas dinámicamente -->
+									 
+									<!-- Filas dinámicas obtenidas de la base de datos -->
+									<?php
+									 if($objListDetails){
+										foreach($objListDetails as $value):
+										?>
+											<tr>
+												<td>
+													<input type="hidden" name="customerMasterDetails[]" value="<?= $value->transactionMasterDetailID?>" />
+													<input class="form-control" type="text" name="txtDetailNameArray[]" value="<?= $value->itemNameLog ?>">
+												</td>
+												<td>
+													<select name="txtPriorityArray[]" class="select2">
+														<?php
+															if($objListPriority){
+																foreach($objListPriority as $ws){
+														?>
+																<option value='<?=$ws->catalogItemID?>' <?= $ws->catalogItemID == $value->skuQuantity ? 'selected' : '' ?> ><?=$ws->name?></option>
+														<?php
+																}
+															}
+														?>
+													</select>
+												</td>
+												<td>
+												<select name="txtFrecuencyArray[]" class="select2">
+													<?php
+														if($objListFrecuency){
+															foreach($objListFrecuency as $ws){
+													?>
+															<option value='<?=$ws->catalogItemID?>' <?= $ws->catalogItemID == $value->skuQuantityBySku ? 'selected' : '' ?> ><?=$ws->name?></option>
+													<?php
+															}
+														}
+													?>
+												</select>
+												</td>
+												<td>
+												<select name="txtDoseArray[]" class="select2">
+													<?php
+														if($objListDose){
+															foreach($objListDose as $ws){
+													?>
+															<option value='<?=$ws->catalogItemID?>' <?= $ws->catalogItemID == $value->typePriceID ? 'selected' : '' ?> ><?=$ws->name?></option>
+													<?php
+															}
+														}
+													?>
+												</select>
+												</td>
+												<td>
+													<label class="sr-only" for="txtAmount">Monto:</label>
+													<input class="form-control" type="number" name="txtAmountArray[]" value="<?= $value->amount ?>">
+												</td>
+												<td>
+													<button type="button" class="btn btn-flat btn-danger" onclick="fnEliminarFila(this)">
+														<i class="fas fa-trash"></i>
+													</button>
+												</td>
+											</tr>
+									<?php
+										endforeach;
+									 }
+									 ?>
+								</tbody>
+								</table>
+							</div>
+						</div>
+					</div> 
 				</div>    
 		
 				   

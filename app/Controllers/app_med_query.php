@@ -89,6 +89,12 @@ class app_med_query extends _BaseController {
 			$dataView["objLegalDefault"]		= $this->Legal_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
 			$dataView["objListPrioridad"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_med_asistencia","priorityID",$companyID);
 			
+			//Obtener detalles de consulta medica
+			$dataView["objListPriority"] 		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_med_asistencia_detail","skuQuantity",$companyID);
+			$dataView["objListFrecuency"] 		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_med_asistencia_detail","skuQuantityBySku",$companyID);;
+			$dataView["objListDose"] 			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_med_asistencia_detail","typePriceID",$companyID);;
+			$dataView["objListDetails"]			= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID,$transactionID,$transactionMasterID,$objComponentTransactionShare->componentID);
+
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
@@ -236,17 +242,53 @@ class app_med_query extends _BaseController {
 			$objTMNew["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
 			$objTMNew["statusIDChangeOn"]				= date("Y-m-d H:m:s");			
 			$objTMNew["entityID"] 						= /*inicio get post*/ $this->request->getPost("txtCustomerID");
-			$objTMNew["reference1"] 					= '';
-			$objTMNew["reference2"] 					= '';
-			$objTMNew["reference3"] 					= '';
-			$objTMNew["reference4"] 					= '';
+			$objTMNew["reference1"] 					= /*inicio get post*/ $this->request->getPost("txtResult");
+			$objTMNew["reference2"] 					= /*inicio get post*/ $this->request->getPost("txtEvaluation");
+			$objTMNew["reference3"] 					= /*inicio get post*/ $this->request->getPost("txtRecomendation");
+			$objTMNew["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtDiagnostic");
 			$objTMNew["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");
+			$objTMNew["tax1"]							= /*inicio get post*/ $this->request->getPost("txtAge");
+			$objTMNew["tax2"]							= /*inicio get post*/ $this->request->getPost("txtHeight");
+			$objTMNew["tax3"]							= /*inicio get post*/ $this->request->getPost("txtWeight");
+			$objTMNew["tax4"]							= /*inicio get post*/ $this->request->getPost("txtIMC");
+			$objTMNew["nextVisit"]						= /*inicio get post*/ $this->request->getPost("txtNextVisit");
 			$objTMNew["statusID"] 						= /*inicio get post*/ $this->request->getPost("txtStatusID");			
 			$objTMNew["priorityID"]						= /*inicio get post*/ $this->request->getPost("txtPriorityID");
 			
 			$db=db_connect();
 			$db->transStart();
 			
+			
+			//Actualizar datos de detalles de consulta
+			$transactionMasterDetailID 				= $this->request->getPost("customerMasterDetails");								
+			if(!is_null($transactionMasterDetailID)){
+				
+				$nombreDetalles 						= /*inicio get post*/ $this->request->getPost("txtDetailNameArray");//--fin peticion get o post;
+				$prioridades         					= /*inicio get post*/ $this->request->getPost("txtPriorityArray");//--fin peticion get o post;
+				$frecuencias 		 					= /*inicio get post*/ $this->request->getPost("txtFrecuencyArray");//--fin peticion get o post;
+				$dosis 		 							= /*inicio get post*/ $this->request->getPost("txtDoseArray");//--fin peticion get o post;
+				$amount 		 						= /*inicio get post*/ $this->request->getPost("txtAmountArray");//--fin peticion get o post;
+				$cant = count($transactionMasterDetailID)-1;
+				for($i=$cant; $i>=0;$i--){
+					$objTMDetails["companyID"] 					= $dataSession["user"]->companyID;
+					$objTMDetails["transactionID"] 				= $transactionID;			
+					$objTMDetails["transactionMasterID"] 		= $transactionMasterID;			
+					$objTMDetails["itemNameLog"] 				= $nombreDetalles[$i];
+					$objTMDetails["skuQuantity"] 				= $prioridades[$i];
+					$objTMDetails["skuQuantityBySku"] 			= $frecuencias[$i];
+					$objTMDetails["typePriceID"] 				= $dosis[$i];
+					$objTMDetails["amount"] 					= $amount[$i];
+					$DetailID				 					= $transactionMasterDetailID[$i];
+					if($DetailID == 0)
+					{
+						$this->Transaction_Master_Detail_Model->insert_app_posme($objTMDetails);					
+					}else
+					{
+						$this->Transaction_Master_Detail_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$DetailID,$objTMDetails);
+					}
+				}
+			}
+
 			//El Estado solo permite editar el workflow
 			if($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_med_asistencia","statusID",$objTM->statusID,COMMAND_EDITABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID)){
 				$objTMNew								= array();
@@ -323,13 +365,17 @@ class app_med_query extends _BaseController {
 			$objTM["currencyID"]					= $this->core_web_currency->getCurrencyDefault($companyID)->currencyID;
 			$objTM["currencyID2"]					= $this->core_web_currency->getCurrencyExternal($dataSession["user"]->companyID)->currencyID;
 			$objTM["exchangeRate"]					= $this->core_web_currency->getRatio($dataSession["user"]->companyID,date("Y-m-d"),1,$objTM["currencyID2"],$objTM["currencyID"]);			
-			$objTM["reference1"] 					= '';
-			$objTM["reference2"] 					= '';
-			$objTM["reference3"] 					= '';
-			$objTM["reference4"] 					= '';
+			$objTM["reference1"] 					= /*inicio get post*/ $this->request->getPost("txtResult");
+			$objTM["reference2"] 					= /*inicio get post*/ $this->request->getPost("txtEvaluation");
+			$objTM["reference3"] 					= /*inicio get post*/ $this->request->getPost("txtRecomendation");
+			$objTM["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtDiagnostic");
 			$objTM["statusID"] 						= /*inicio get post*/ $this->request->getPost("txtStatusID");
 			$objTM["priorityID"]					= /*inicio get post*/ $this->request->getPost("txtPriorityID");
 			$objTM["amount"] 						= 0;
+			$objTM["tax1"]							= /*inicio get post*/ $this->request->getPost("txtAge");
+			$objTM["tax2"]							= /*inicio get post*/ $this->request->getPost("txtHeight");
+			$objTM["tax3"]							= /*inicio get post*/ $this->request->getPost("txtWeight");
+			$objTM["tax4"]							= /*inicio get post*/ $this->request->getPost("txtIMC");
 			$objTM["isApplied"] 					= 0;
 			$objTM["journalEntryID"] 				= 0;
 			$objTM["classID"] 						= NULL;
@@ -337,6 +383,7 @@ class app_med_query extends _BaseController {
 			$objTM["sourceWarehouseID"]				= NULL;
 			$objTM["targetWarehouseID"]				= NULL;
 			$objTM["isActive"]						= 1;
+			$objTM["nextVisit"]						= $this->request->getPost("txtNextVisit");			
 			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);			
 			
 			
@@ -344,8 +391,33 @@ class app_med_query extends _BaseController {
 			$db->transStart();
 			$transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
 			
+			//Guardar datos de detalles de consulta
+			$nombreDetalles 						= /*inicio get post*/ $this->request->getPost("txtDetailNameArray");//--fin peticion get o post;
+			$prioridades         					= /*inicio get post*/ $this->request->getPost("txtPriorityArray");//--fin peticion get o post;
+			$frecuencias 		 					= /*inicio get post*/ $this->request->getPost("txtFrecuencyArray");//--fin peticion get o post;
+			$dosis 		 							= /*inicio get post*/ $this->request->getPost("txtDoseArray");//--fin peticion get o post;
+			$monto 		 							= /*inicio get post*/ $this->request->getPost("txtAmountArray");//--fin peticion get o post;
+			if(!is_null($nombreDetalles)){
+				$cant = count($nombreDetalles)-1;
+				for($i=$cant; $i>=0;$i--){
+					$objTMDetails["companyID"] 							= $dataSession["user"]->companyID;
+					$objTMDetails["transactionID"] 						= $transactionID;			
+					$objTMDetails["transactionMasterID"] 				= $transactionMasterID;			
+					$objTMDetails["itemNameLog"]						= $nombreDetalles[$i];
+					$objTMDetails["skuQuantity"]						= $prioridades[$i];
+					$objTMDetails["skuQuantityBySku"] 					= $frecuencias[$i];
+					$objTMDetails["typePriceID"] 						= $dosis[$i];
+					$objTMDetails["amount"] 							= $monto[$i];
+					$this->Transaction_Master_Detail_Model->insert_app_posme($objTMDetails);
+				}
+			}
+
 			//Crear la Carpeta para almacenar los Archivos del Documento
-			mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID, 0700);
+			$path_ = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID;
+			if(!file_exists($path_))
+			{
+				mkdir($path_, 0700);
+			}
 			
 			
 			if($db->transStatus() !== false){
@@ -488,6 +560,10 @@ class app_med_query extends _BaseController {
 			$dataView["objLegalDefault"]		= $this->Legal_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
 			$dataView["objListPrioridad"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_med_asistencia","priorityID",$companyID);
 			
+			//Obtener detalles de consulta medica
+			$dataView['objListPriority'] 		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_med_asistencia_detail","skuQuantity",$companyID);
+			$dataView['objListFrecuency'] 		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_med_asistencia_detail","skuQuantityBySku",$companyID);;
+			$dataView['objListDose'] 			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_med_asistencia_detail","typePriceID",$companyID);;
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -668,9 +744,9 @@ class app_med_query extends _BaseController {
 			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
 			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);			
 			
-			$objComponentCatalog	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_catalog");
+			$objComponentCatalog	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_med_asistencia");
             if(!$objComponentCatalog)
-            throw new \Exception("EL COMPONENTE 'tb_catalog' NO EXISTE...");
+            throw new \Exception("EL COMPONENTE 'tb_transaction_master_med_asistencia' NO EXISTE...");
 		
 			//Get Documento					
 			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
@@ -682,39 +758,41 @@ class app_med_query extends _BaseController {
 			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
 			$datView["Identifier"]					= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
 			$datView["objBranch"]					= $this->Branch_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->branchID);
-			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_examen_lab","statusID",$datView["objTM"]->statusID,$companyID,$branchID,$roleID);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_med_asistencia","statusID",$datView["objTM"]->statusID,$companyID,$branchID,$roleID);
 			$datView["objTipo"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$datView["objTM"]->transactionID,$datView["objTM"]->transactionCausalID);
 			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
 			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
-			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
 			$datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
 			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 
 			
-			
-			
-		    
-			
-			
+			//Obtener detalles de consulta medica
+			$dataView["objListPriority"] 		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_med_asistencia_detail","skuQuantity",$companyID);
+			$dataView["objListFrecuency"] 		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_med_asistencia_detail","skuQuantityBySku",$companyID);;
+			$dataView["objListDose"] 			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_med_asistencia_detail","typePriceID",$companyID);;
+
+			$datView["objSexo"]					= $this->Public_Catalog_Detail_Model->asObject()->find($datView["objTM"]->areaID);
+
 			//Generar Reporte
-			$html = helper_reporteA4TransactionMasterExamenLab(
-			    "EXAMEN",
+			$html = helper_reporteA4TransactionMasterConsultaMedica(
+			    "CONSULTA",
+				"",
 			    $objCompany,
 			    $objParameter,
-			    $datView["objTM"],
-			    $datView["objNatural"],
-			    $datView["objCustumer"], 
-			    $datView["tipoCambio"],
-			    $datView["objCurrency"],
-			    $datView["objTMI"],	
-				$datView["objTMD"],
-			    $objParameterTelefono, /*telefono*/
-				$datView["objStage"][0]->display, /*estado*/
-				$datView["objTC"]->name /*causal*/
+				$datView["objTM"]->transactionOn,
+				$datView["objTM"]->transactionNumber,
+				$datView["objNatural"],
+			    $datView["objTMD"],
+				$datView["objTM"],
+				"",	
+				$dataView["objListPriority"],
+				$dataView["objListFrecuency"],
+				$dataView["objListDose"]
 			);
 			
 			
 			$this->dompdf->loadHTML($html);
+			
 			
 			//1cm = 29.34666puntos
 			//a4: 210 ancho x 297
@@ -729,12 +807,34 @@ class app_med_query extends _BaseController {
 			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
 			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
 			
+			if($objParameterShowLinkDownload == "true")
+			{
+				$fileNamePut = "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
+				$path        = "./resource/file_company/company_".$companyID."/component_".$objComponentCatalog->componentID."/component_item_".$transactionMasterID."/".$fileNamePut;
+				
+				file_put_contents(
+					$path , 
+					$this->dompdf->output()
+				);								
+				
+				chmod($path, 644);
+				
+				echo "<a 
+					href='".base_url()."/resource/file_company/company_".$companyID."/component_".$objComponentCatalog->componentID."/component_item_".$transactionMasterID."/".
+					$fileNamePut."'>download compra</a>
+				"; 				
+
+			}
+			else{			
+				//visualizar
+				$this->dompdf->stream("file.pdf ", ['Attachment' =>  true ]);
+			}
 			
-			//visualizar
+			// visualizar
 			$this->dompdf->stream("file.pdf", ['Attachment' => !$objParameterShowLinkDownload ]);
 			
-			//descargar
-			//$this->dompdf->stream();
+			// descargar
+			$this->dompdf->stream();
 			
 			
 		}

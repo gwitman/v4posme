@@ -27,13 +27,17 @@
 			<!-- body -->	
 			<form id="form-new-invoice" name="form-new-invoice" class="form-horizontal" role="form">
 			<div class="panel-body printArea"> 
-			
+			<!--tab menu-->
 				<ul id="myTab" class="nav nav-tabs">
 					<li class="active">
 						<a href="#home" data-toggle="tab">Informacion</a>
-					</li>					
+					</li>		
+					<li>
+						<a href="#details" data-toggle="tab">Detalles</a>
+					</li>			
 				</ul>
-				
+			<!--tab menu-->
+
 				<div class="tab-content">
 					<div class="tab-pane fade in active" id="home">	
 						<div class="row">										
@@ -43,7 +47,7 @@
 										<label class="col-lg-4 control-label" for="datepicker">Fecha</label>
 										<div class="col-lg-8">
 											<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
-												<input size="16"  class="form-control" type="text" name="txtDate" id="txtDate" >
+												<input size="16"  class="form-control" type="date" name="txtDate" id="txtDate" >
 												<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
 											</div>
 										</div>
@@ -118,13 +122,177 @@
 										</div>
 									</div>
 								
+								<!-- New inputs -->
+									
+									<!-- Edad-->
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="buttons">Edad(Años)</label>
+										<div class="col-lg-8">
+											<input class="form-control" type="number"  name="txtAge" id="txtAge" ></input>
+										</div>
+									</div>
+
+									<!-- Altura-->
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="buttons">Altura(cm)</label>
+										<div class="col-lg-8">
+											<input class="form-control" type="number"  name="txtHeight" id="txtHeight"></input>
+										</div>
+									</div>
+
+									<!-- Peso -->
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="buttons">Peso(kg)</label>
+										<div class="col-lg-8">
+											<input class="form-control" type="number"  name="txtWeight" id="txtWeight" ></input>
+										</div>
+									</div>
 								
+									<!-- IMC -->
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="buttons">IMC</label>
+										<div class="col-lg-8">
+											<input class="form-control" readonly id="txtIMC"  type="number"></input>
+										</div>
+									</div>
+									
+									<!-- Proxima visita -->
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="datepicker">Proxima Visita</label>
+										<div class="col-lg-8">
+											<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
+												<input size="16"  class="form-control" type="date" name="txtNextVisit" id="txtNextVisit" >
+												<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+											</div>
+										</div>
+									</div>
+
+									<!-- Resultado -->
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="buttons">Resultado</label>
+										<div class="col-lg-8">
+											<input class="form-control" type="text"  name="txtResult" id="txtResult" ></input>
+										</div>
+									</div>
+
+									<!-- Evaluacion -->
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="buttons">Evaluacion</label>
+										<div class="col-lg-8">
+											<input class="form-control" type="text"  name="txtEvaluation" id="txtEvaluation" ></input>
+										</div>
+									</div>
+
+									<!-- Recomendacion -->
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="buttons">Recomendacion</label>
+										<div class="col-lg-8">
+											<input class="form-control" type="text"  name="txtRecomendation" id="txtRecomendation" ></input>
+										</div>
+									</div>
+
+									<!-- Diagnostico -->
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="buttons">Diagnostico</label>
+										<div class="col-lg-8">
+											<input class="form-control" type="text"  name="txtDiagnostic" id="txtDiagnostic" ></input>
+										</div>
+									</div>
+
 									
 								
 							</div>
 						
 						</div>
 					</div>
+
+					<div class="tab-pane fade" id="details">
+					
+						<div class="row">
+							<div class="col-md-12">
+								<table class="table" id="tableFrecuency">
+								<thead>
+									<tr>
+										<th>Nombre</th>
+										<th>Prioridad</th>
+										<th>Frecuencia</th>
+										<th>Dosis</th>
+										<th>Monto</th>
+										<th>Acción</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class="" id="filaEntrada">
+										<td>
+											<input class="form-control"  type="text"  name="txtDetailName" id="txtDetailName" value="">
+											<label id="errorLabel" class="text-danger">Este campo no puede estar vacío</label>
+										</td>
+										<td>
+											<label class="sr-only" for="txtPriority">Prioridad:</label>
+											<select name="txtPriority" id="txtPriority" class="select2">
+													<?php
+													$count = 0;
+													if($objListPriority){
+														foreach($objListPriority as $ws){
+															if($count == 0 )
+																echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+															else
+																echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+															$count++;
+														}
+													}
+													?>
+											</select>
+										</td>
+										<td>
+											<label class="sr-only" for="txtFrecuency">Frecuencia:</label>
+											<select name="txtFrecuency" id="txtFrecuency" class="select2">
+													<?php
+													$count = 0;
+													if($objListFrecuency){
+														foreach($objListFrecuency as $ws){
+															if($count == 0 )
+																echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+															else
+																echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+															$count++;
+														}
+													}
+													?>
+											</select>
+										</td>
+										<td>
+											<label class="sr-only" for="txtDose">Dosis:</label>
+											<select name="txtDose" id="txtDose" class="select2">
+													<?php
+													$count = 0;
+													if($objListDose){
+														foreach($objListDose as $ws){
+															if($count == 0 )
+																echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+															else
+																echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+															$count++;
+														}
+													}
+													?>
+											</select>
+										</td>
+										<td>
+											<label class="sr-only" for="txtAmount">Monto:</label>
+											<input class="form-control" type="number"  name="txtAmount" id="txtAmount" value="">
+										</td>
+										<td>
+											<a href="#" class="btn btn-flat btn-info" id="btnAddDetail"><i class="fas fa-plus"></i></a>
+										</td>
+									</tr>
+									<!-- Aquí se agregarán las filas dinámicamente -->
+									 
+								</tbody>
+								</table>
+							</div>
+						</div>
+					</div>  
 					
 				</div>    
 		
