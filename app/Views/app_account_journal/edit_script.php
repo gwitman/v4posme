@@ -191,9 +191,9 @@
 						var objRow 						= {};
 						objRow.checked 					= false;						
 						objRow.journalEntryDetailID 	= 0;
-						objRow.accountID				= objResponse[1];
+						objRow.accountID				= objResponse[0][1];
 						objRow.classID					= 0;
-						objRow.accountName				= objResponse[2] + " " + objResponse[3];
+						objRow.accountName				= objResponse[0][2] + " " + objResponse[0][3];
 						objRow.className				= "";
 						objRow.debit 					= fnFormatNumber(0,2);
 						objRow.credit 					= fnFormatNumber(0,2);

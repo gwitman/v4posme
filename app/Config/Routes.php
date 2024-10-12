@@ -320,6 +320,8 @@ $routes->match(['get','post'],'app_box_attendance/viewRegisterFormatoPaginaTicke
 $routes->match(['get','post'],'app_box_attendance/viewRegisterFormatoPaginaTicket80mm/(:any)','app_box_attendance::viewRegisterFormatoPaginaTicket80mm');
 $routes->match(['get','post'],'app_box_attendance/viewRegisterFormatoPaginaTicketDirect80mm','app_box_attendance::viewRegisterFormatoPaginaTicketDirect80mm');
 $routes->match(['get','post'],'app_box_attendance/viewRegisterFormatoPaginaTicketDirect80mm/(:any)','app_box_attendance::viewRegisterFormatoPaginaTicketDirect80mm');
+$routes->match(['get','post'],'app_box_attendance/viewRegisterFormatoPaginaTicketDirect80mmNoImage','app_box_attendance::viewRegisterFormatoPaginaTicketDirect80mmNoImage');
+$routes->match(['get','post'],'app_box_attendance/viewRegisterFormatoPaginaTicketDirect80mmNoImage/(:any)','app_box_attendance::viewRegisterFormatoPaginaTicketDirect80mmNoImage');
 $routes->match(['get','post'],'app_rrhh_asistencia/edit','app_rrhh_asistencia::edit');
 $routes->match(['get','post'],'app_rrhh_asistencia/edit/(:any)','app_rrhh_asistencia::edit');
 $routes->match(['get','post'],'app_rrhh_asistencia/delete','app_rrhh_asistencia::delete');
@@ -928,6 +930,8 @@ $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNorm
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1FarmaGael','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1FarmaGael');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1FarmaGael/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1FarmaGael');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1FarmaLM','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1FarmaLM');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1FarmaLM/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1FarmaLM');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1FarmaJireth','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1FarmaJireth');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1FarmaJireth/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1FarmaJireth');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1BivalyStore','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1BivalyStore');

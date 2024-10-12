@@ -156,9 +156,9 @@
 	function onCompleteCustomer(objResponse){
 		console.info("CALL onCompleteCustomer");
 	
-		var entityID = objResponse[1];
-		$("#txtCustomerID").val(objResponse[1]);
-		$("#txtCustomerDescription").val(objResponse[2] + " " + objResponse[3] + " / " + objResponse[4]);
+		var entityID = objResponse[0][1];
+		$("#txtCustomerID").val(objResponse[0][1]);
+		$("#txtCustomerDescription").val(objResponse[0][2] + " " + objResponse[0][3] + " / " + objResponse[0][4]);
 		
 		fnWaitOpen();
 		
@@ -206,24 +206,24 @@
 		console.info("CALL onCompleteNewShare");	
 		
 		var objBalancesDocument = 
-		jLinq.from(objListaCustomerCredit).where(function(obj){ return obj.documentNumber == objResponse[4]}).select()[0];
+		jLinq.from(objListaCustomerCredit).where(function(obj){ return obj.documentNumber == objResponse[0][4]}).select()[0];
 		objBalancesDocument.balance = fnFormatNumber(objBalancesDocument.remaining,2);
 		
 		var objRow 						= {};
 		objRow.checked 					= false;
 		objRow.transactionMasterDetail 	= 0;
-		objRow.companyID				= objResponse[0];	/*companyID*/
-		objRow.entityID 				= objResponse[1];	/*entityID*/
-		objRow.customerCreditDocumentID = objResponse[2];	/*customerCreditDocumentID*/
-		objRow.creditAmortizationID 	= objResponse[3];	/*creditAmortizationID*/
-		objRow.doc 						= objResponse[4];	/*Doc*/						
+		objRow.companyID				= objResponse[0][0];	/*companyID*/
+		objRow.entityID 				= objResponse[0][1];	/*entityID*/
+		objRow.customerCreditDocumentID = objResponse[0][2];	/*customerCreditDocumentID*/
+		objRow.creditAmortizationID 	= objResponse[0][3];	/*creditAmortizationID*/
+		objRow.doc 						= objResponse[0][4];	/*Doc*/						
 		objRow.docMonto 				= 0;
-		objRow.abonoFecha 				= objResponse[5];	/*AbonoFecha*/
-		objRow.abonoCuota 				= fnFormatNumber(fnFormatFloat(objResponse[6]),2);							/*AbonoCuota*/
+		objRow.abonoFecha 				= objResponse[0][5];	/*AbonoFecha*/
+		objRow.abonoCuota 				= fnFormatNumber(fnFormatFloat(objResponse[0][6]),2);							/*AbonoCuota*/
 		
 		if(varShareMountDefaultOfAmortization == "true")
 		{
-			objRow.abonoFaltante 			= fnFormatNumber(fnFormatFloat($(objResponse[7]).text() ),2);			/*AbonoFaltante*/
+			objRow.abonoFaltante 			= fnFormatNumber(fnFormatFloat($(objResponse[0][7]).text() ),2);			/*AbonoFaltante*/
 		}
 		else
 		{

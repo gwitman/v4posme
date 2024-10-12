@@ -136,9 +136,9 @@
 						
 						
 						
-						var entityID = objResponse[2];
-						$("#txtCustomerID").val(objResponse[2]);
-						$("#txtCustomerDescription").val(objResponse[2] + " " + objResponse[4] + " / " + objResponse[5]);	
+						var entityID = objResponse[0][2];
+						$("#txtCustomerID").val(objResponse[0][2]);
+						$("#txtCustomerDescription").val(objResponse[0][2] + " " + objResponse[0][4] + " / " + objResponse[0][5]);	
 						
 						
 						//Enviar Formulario

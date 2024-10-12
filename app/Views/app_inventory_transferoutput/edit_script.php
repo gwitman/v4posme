@@ -268,15 +268,15 @@
 	function onCompleteEmployee(objResponse){
 		console.info("CALL onCompleteEmployee");
 		
-		$("#txtEmployeeID").val(objResponse[2]);
-		$("#txtEmployeeDescription").val(objResponse[3] + " / " + objResponse[4]);
+		$("#txtEmployeeID").val(objResponse[0][2]);
+		$("#txtEmployeeDescription").val(objResponse[0][3] + " / " + objResponse[0][4]);
 		
 	}
 	function onCompleteEmployeeTarget(objResponse){
 		console.info("CALL onCompleteEmployee");
 		
-		$("#txtEmployeeIDTarget").val(objResponse[2]);
-		$("#txtEmployeeDescriptionTarget").val(objResponse[3] + " / " + objResponse[4]);
+		$("#txtEmployeeIDTarget").val(objResponse[0][2]);
+		$("#txtEmployeeDescriptionTarget").val(objResponse[0][3] + " / " + objResponse[0][4]);
 		
 	}
 	function validateForm(){
@@ -336,11 +336,11 @@
 		console.info("CALL onCompleteItem");
 		var objRow 						= {};
 		objRow.checked 					= false;
-		objRow.itemID 					= objResponse[1];
+		objRow.itemID 					= objResponse[0][1];
 		objRow.transactionMasterDetail 	= 0;
-		objRow.itemNumber 				= objResponse[2];
-		objRow.itemName 				= objResponse[3];
-		objRow.itemUM 					= objResponse[4];
+		objRow.itemNumber 				= objResponse[0][2];
+		objRow.itemName 				= objResponse[0][3];
+		objRow.itemUM 					= objResponse[0][4];
 		objRow.quantity 				= 0;
 		objRow.lote 					= "";
 		objRow.vencimiento				= "";		

@@ -28,8 +28,8 @@
 						function onCompleteEmployee(objResponse){
 							console.info("CALL onCompleteEmployee");
 							
-							$("#txtEmployeeID").val(objResponse[2]);
-							$("#txtEmployeeDescription").val(objResponse[3] + " / " + objResponse[4]);
+							$("#txtEmployeeID").val(objResponse[0][2]);
+							$("#txtEmployeeDescription").val(objResponse[0][3] + " / " + objResponse[0][4]);
 							
 						}
 						
@@ -47,8 +47,8 @@
 						function onCompleteCustomer(objResponse){
 							console.info("CALL onCompleteCustomer");
 							
-							$("#txtCustomerID").val(objResponse[1]);
-							$("#txtCustomerDescription").val(objResponse[2] + " / " + objResponse[3]); 
+							$("#txtCustomerID").val(objResponse[0][1]);
+							$("#txtCustomerDescription").val(objResponse[0][2] + " / " + objResponse[0][3]); 
 							
 						}
 						

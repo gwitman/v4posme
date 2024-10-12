@@ -197,9 +197,16 @@
 										<select name="txtStatusID" id="txtStatusID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>" >
 												<option></option>																
 												<?php
+												$indx = 0 ;
 												if($objListWorkflowStage)
 												foreach($objListWorkflowStage as $ws){
-													echo "<option value='".$ws->workflowStageID."' selected>".$ws->name."</option>";
+													
+													if($indx == 0 )
+														echo "<option value='".$ws->workflowStageID."' selected>".$ws->name."</option>";
+													else 
+														echo "<option value='".$ws->workflowStageID."' >".$ws->name."</option>";
+													
+													$indx++;
 												}
 												?>
 										</select>

@@ -1216,8 +1216,11 @@
 				</div>
 				</br>
 				<div class="row" id="divPanelFacturaSideBar" >
-					<div class="col col-lg-12">
-						<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackFactura"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
+					<div class="col col-lg-2">
+						<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackFactura"><i class="icon16 i-arrow-bottom "></i> Regresar</a>						
+					</div>	
+					<div class="col col-lg-2">
+						<a href="#" class="btn btn-flat btn-success btn-block" id="btnSaveInvoice"><i class="icon16 i-arrow-bottom "></i> Guardar mesa</a>
 					</div>	
 				</div>
 				
@@ -1405,19 +1408,141 @@
 			
 			</form>
 			<!-- /body -->
-			
-			<div id="modalDialogMesaBussy" title="Mesa con factura" class="dialog hidden">
-				<p>La mesa seleccionada tiene factura registrada, ¿Desea agregar productos a la mesa?</p>
-			</div>
+			<div class="modal fade" tabindex="-1" id="modalDialogPrinterV2" role="dialog">
+			  <div class="modal-dialog" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Imprimir documento</h4>
+				  </div>
+				  <div class="modal-body">					
+					<h4 class="modal-title">Imprimir documento</h4>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+					<a href="#" class="btn btn-primary hidden" id="btnAceptarDialogPrinterV2AceptarTabla">Tabla</a>
+					<a href="#" class="btn btn-primary" id="btnAceptarDialogPrinterV2AceptarDocument">Preview</a>
+					<a href="#" class="btn btn-primary hidden" id="btnAceptarDialogPrinterV2AceptarDirect">Directa</a>
+				  </div>
+				</div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
 
-			<div id="modalDialogBackList" title="Regresar a la lista" class="dialog">
-				<p>Seguro que desea regresa a la lista</p>
-			</div>
+
+			<div class="modal fade" tabindex="-1" id="modalDialogBackToListV2" role="dialog">
+			  <div class="modal-dialog" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Regresar</h4>
+				  </div>
+				  <div class="modal-body">					
+					<h4 class="modal-title">Regresar a la Lista</h4>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+					<a href="#" class="btn btn-primary" id="btnAceptarDialogBackToListV2">Aceptar</a>
+				  </div>
+				</div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
 			
 			
-			<div id="modalDialogOpenPrimter" title="Impresion" class="dialog hidden">
-				<p>Desea imprmir la factura en formato 80mm</p>
-			</div>
+			<div class="modal fade" tabindex="-1" id="modalDialogCocinaV2" role="dialog">
+			  <div class="modal-dialog" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Imprimir Comanda Cocina</h4>
+				  </div>
+				  <div class="modal-body">					
+					<h4 class="modal-title">Imprimir Comanda Cocina</h4>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+					<a href="#" class="btn btn-primary hidden" id="btnAceptarDialogCocinaV2">Aceptar</a>
+				  </div>
+				</div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+			
+			
+			<div class="modal fade" tabindex="-1" id="modalDialogBarV2" role="dialog">
+			  <div class="modal-dialog" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Imprimir Comanda Bar</h4>
+				  </div>
+				  <div class="modal-body">					
+					<h4 class="modal-title">Imprimir Comanda Bar</h4>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+					<a href="#" class="btn btn-primary hidden" id="btnAceptarDialogBarV2">Aceptar</a>
+				  </div>
+				</div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+			
+			<div class="modal fade" tabindex="-1" id="modalDialogClaveOpenCash" role="dialog">
+			  <div class="modal-dialog" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Código de caja</h4>
+				  </div>
+				  <div class="modal-body">
+					<input type="input" id="txtClaveOpenCash" autocomplete="off" class="form-control" placeholder="Código de caja" />
+					<span id="errorMessageOpenCash" style="color: red; display: none;">Por favor, ingresa un código.</span>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+					<a href="#" class="btn btn-primary" id="btnAceptarClaveOpenCash">Aceptar</a>
+				  </div>
+				</div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+			
+			
+			<div class="modal fade" tabindex="-1" id="modalDialogMeaBussyV2" role="dialog">
+			  <div class="modal-dialog" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Ir a mesa</h4>
+				  </div>
+				  <div class="modal-body">
+					<h4 class="modal-title">Ir a mesa</h4>
+					<input type="text" id="txtMesaOcupada" class="hidden" >
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+					<a href="#" class="btn btn-primary" id="btnAceptarMesaBussyV2">Aceptar</a>
+				  </div>
+				</div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+			
+			
+			<div class="modal fade" tabindex="-1" id="modalDialogPrinterV3" role="dialog">
+			  <div class="modal-dialog" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Imprimir documento</h4>
+				  </div>
+				  <div class="modal-body">
+					<h4 class="modal-title">Imprimir docunento</h4>					
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+					<a href="#" class="btn btn-primary" id="btnAceptarPrinterV3">Si</a>
+				  </div>
+				</div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+			
 			
 			
 			<div id="labelTotalAlternativo"  class="<?php echo getBehavio($company->type,"app_invoice_billing","panelLabelSumaryAlternativo","hidden"); ?>" >

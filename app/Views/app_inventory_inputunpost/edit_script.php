@@ -661,15 +661,15 @@
 	function onCompleteOrdenCompra(objResponse){
 		console.info("CALL onCompleteOrdenCompra");
 	
-		$("#txtTransactionMasterIDOrdenCompra").val(objResponse[1]);
-		$("#txtTransactionNumberOrdenCompra").val(objResponse[2]);
+		$("#txtTransactionMasterIDOrdenCompra").val(objResponse[0][1]);
+		$("#txtTransactionNumberOrdenCompra").val(objResponse[0][2]);
 	
 	}
 	function onCompleteProvider(objResponse){
 		console.info("CALL onCompleteCustomer");
 	
-		$("#txtProviderID").val(objResponse[1]);
-		$("#txtProviderDescription").val(objResponse[2] + " / " + objResponse[3]);
+		$("#txtProviderID").val(objResponse[0][1]);
+		$("#txtProviderDescription").val(objResponse[0][2] + " / " + objResponse[0][3]);
 	
 	}						
 	function fnUpdateDetail(){

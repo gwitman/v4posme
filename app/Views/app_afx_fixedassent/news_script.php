@@ -36,8 +36,8 @@
 					function onCompleteEmployee(objResponse){
 						console.info("CALL onCompleteEmployee");
 						
-						$("#txtAsignedEmployeeID").val(objResponse[2]);
-						$("#txtAsignedEmployeeDescripcion").val(objResponse[3] + " / " + objResponse[4]);
+						$("#txtAsignedEmployeeID").val(objResponse[0][2]);
+						$("#txtAsignedEmployeeDescripcion").val(objResponse[0][3] + " / " + objResponse[0][4]);
 						
 					}
 					function validateForm(){

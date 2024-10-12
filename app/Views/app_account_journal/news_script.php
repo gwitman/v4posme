@@ -16,7 +16,7 @@
 						
 						function onCompleteSelectTemplate(objResponse){
 							console.info("CALL onCompleteSelectTemplate");
-							var journalEntryIDTemplated 	= objResponse[0];		
+							var journalEntryIDTemplated 	= objResponse[0][0];		
 							$( "#txtTemplatedNumber").val(journalEntryIDTemplated);
 							$( "#form-new-account-journal" ).attr("method","POST");
 							$( "#form-new-account-journal" ).attr("action","<?php echo base_url(); ?>/app_accounting_journal/save/new");							
@@ -158,9 +158,9 @@
 						var objRow 						= {};
 						objRow.checked 					= false;						
 						objRow.journalEntryDetailID 	= 0;
-						objRow.accountID				= objResponse[1];
+						objRow.accountID				= objResponse[0][1];
 						objRow.classID					= 0;
-						objRow.accountName				= objResponse[2] + " " + objResponse[3];
+						objRow.accountName				= objResponse[0][2] + " " + objResponse[0][3];
 						objRow.className				= "";
 						objRow.debit 					= fnFormatNumber(0,2);
 						objRow.credit 					= fnFormatNumber(0,2);

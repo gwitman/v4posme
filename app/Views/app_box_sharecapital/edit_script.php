@@ -117,9 +117,9 @@
 					function onCompleteCustomer(objResponse){
 						console.info("CALL onCompleteCustomer");
 					
-						var entityID = objResponse[1];
-						$("#txtCustomerID").val(objResponse[1]);
-						$("#txtCustomerDescription").val(objResponse[2] + " " + objResponse[3] + " / " + objResponse[4]);
+						var entityID = objResponse[0][1];
+						$("#txtCustomerID").val(objResponse[0][1]);
+						$("#txtCustomerDescription").val(objResponse[0][2] + " " + objResponse[0][3] + " / " + objResponse[0][4]);
 											
 					}
 					function updateSummary(){
@@ -137,9 +137,9 @@
 						var objRow 						= {};
 						objRow.checked 					= false;
 						objRow.transactionMasterDetail 	= 0;
-						objRow.customerCreditDocumentID = objResponse[0];	/*customerCreditDocumentID*/
-						objRow.doc 						= objResponse[1];	/*Doc*/
-						objRow.balance					= objResponse[3];	/*Saldo*/
+						objRow.customerCreditDocumentID = objResponse[0][0];	/*customerCreditDocumentID*/
+						objRow.doc 						= objResponse[0][1];	/*Doc*/
+						objRow.balance					= objResponse[0][3];	/*Saldo*/
 						
 						//Validar si esta el item
 						for(var i = 0 ; i < $(".classDetailItem").length; i++){

@@ -237,7 +237,7 @@ WHERE
 	tb_parameter.name = "ACCOUNTING_JOURNALTYPE_CLOSED";## VALOR DEL TIPO DE COMPROBANTE DE CIERRE: catalogItemID : 74 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "logo-micro-finanza.jpg" 
+	tb_company_parameter.value = "logo-micro-finanza.png" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_LOGO";## Logo de la empresa 
@@ -795,7 +795,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "2024-07-23" 
+	tb_company_parameter.value = "2030-07-23" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CUST_PRICE_LICENCES_EXPIRED";## Fecha de expiracion de la licencia 

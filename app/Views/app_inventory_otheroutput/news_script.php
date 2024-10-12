@@ -245,11 +245,11 @@
 		console.info("CALL onCompleteItem");
 		var objRow 						= {};
 		objRow.checked 					= false;
-		objRow.itemID 					= objResponse[1];
+		objRow.itemID 					= objResponse[0][1];
 		objRow.transactionMasterDetail 	= 0;
-		objRow.itemNumber 				= objResponse[2];
-		objRow.itemName 				= objResponse[3];
-		objRow.itemUM 					= objResponse[4];
+		objRow.itemNumber 				= objResponse[0][2];
+		objRow.itemName 				= objResponse[0][3];
+		objRow.itemUM 					= objResponse[0][4];
 		objRow.quantity 				= 1; //fnFormatNumber(objResponse[5],2);
 		objRow.lote 					= "";
 		objRow.vencimiento				= "";

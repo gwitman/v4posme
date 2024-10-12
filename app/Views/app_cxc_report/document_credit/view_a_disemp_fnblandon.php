@@ -195,11 +195,11 @@
 							<td colspan="4">______________________________</td>
 						</tr>
 						<tr>
-							<td colspan="4">Lic. Julissa Casco</td>
+							<td colspan="4">Randy Blandon</td>
 							<td colspan="4"><?php echo $objFirstDetail["legalName"]; ?></td>
 						</tr>
 						<tr>
-							<td colspan="4">Exequiales</td>
+							<td colspan="4">Gerente</td>
 							<td colspan="4">Deudor</td>
 						</tr>
 					</tbody>
