@@ -14599,18 +14599,18 @@ function helper_reporteA4TransactionMasterConsultaMedica(
                 }
                 body {
                     font-family: Arial, sans-serif;
-                    font-size: x-small;
+                    font-size: xx-small;
                 }
                 table {
-                    font-size: x-small;
+                    font-size: xx-small;
                     font-family: Consolas, monaco, monospace;
                     width: 100%;
                     border-collapse: collapse;
-                    margin-bottom: 7px;
+                    margin-bottom: 2px;
                 }
                 th, td {
-                    border: 1px solid black;
-                    padding: 3px;
+                    border: 0px solid black;
+                    padding: 0px;
                     text-align: left;
                     vertical-align: top;
                 }
@@ -14633,8 +14633,9 @@ function helper_reporteA4TransactionMasterConsultaMedica(
                 }
                 .header-table td {
                     border: none;
-                    font-size: x-small;
+                    font-size: xx-small;
                 }
+				
             </style>
         </head>
         <body>
@@ -14642,6 +14643,7 @@ function helper_reporteA4TransactionMasterConsultaMedica(
                 <tr>
 					<td colspan='2' class='center'>
 						<img src='".$base64."' width='110'><br>
+						
 						<b>".strtoupper($objCompany->name)."</b><br>
 						CÉDULA PROFESIONAL: ".strtoupper($rucCompany)."<br>
 						".strtoupper($titulo)."
@@ -14650,8 +14652,24 @@ function helper_reporteA4TransactionMasterConsultaMedica(
 
 				<tr>
 					<td colspan='2' class='right'>
-						<b>FECHA:</b> ".$fecha."<br>
-						<b>FOLIO:</b> " .strtoupper($folio)."
+						<table>
+							<tr>
+								<td>
+								</td>
+								<td  style='width: 80px;' >Fecha:
+								</td>
+								<td  style='width: 80px;'>".$fecha."
+								</td>
+							</tr>
+							<tr>
+								<td>
+								</td>
+								<td>Folio:
+								</td>
+								<td>".strtoupper($folio)."
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
 			</table>
@@ -14675,7 +14693,7 @@ function helper_reporteA4TransactionMasterConsultaMedica(
 					</tr>
 				</tbody>
 			</table>
-
+			</br>
 			<table>
 				<thead>
 					<tr>
@@ -14704,34 +14722,29 @@ function helper_reporteA4TransactionMasterConsultaMedica(
 					</tr>
 				</tbody>
 			</table>
-            
+            <br/>
             <table>
 			<thead>
 				<tr>
-            		<th colspan='3'>DETALLES DEL TRATAMIENTO</th>
+            		<th colspan='2'>DETALLES DEL TRATAMIENTO</th>
                 </tr>
             </thead>
             <tbody>
-				<tr>
-					<td><b>PRIORIDAD</b></td>
-					<td><b>NOMBRE</b></td>
-					<td><b>DOSIS</b></td>
-				</tr>";
-					foreach($objTransactionMasterDetail as $detalle) {
-						$count = 0;
+				";
+					$count = 0;
+					foreach($objTransactionMasterDetail as $detalle) 
+					{
+						
+						$count++;
 						$html .= "
-						<tr>
-							<td style='text-align:left;'>";
-								foreach($objListPriorities as $priority) {
-									if ($detalle->skuQuantity == $priority->catalogItemID) {
-										$html .= $priority->name;
-									}
-								}
-							$html .="</td>
-							<td style='text-align:left;'>
-								{$detalle->itemNameLog}<br>
+						<tr>";
+								
+							$html .="
+							<td style='text-align:left;width:50%'>
+								".$count.")".$detalle->itemNameLog."
 							</td>
-							<td style='text-align:left;'>";
+							
+							<td style='text-align:left;width:50%'>";
 
 								foreach($objListDoses as $dose) {
 									if ($detalle->typePriceID == $dose->catalogItemID) {
@@ -14745,12 +14758,13 @@ function helper_reporteA4TransactionMasterConsultaMedica(
 									}
 								}
 							$html .="</td>		
-					</tr>";	
-				}
+						</tr>";	
+					
+					}
     				$html .= "
                 </tbody>
             </table>
-
+			</br>
 			<table class='header-table'>
 				<tr>
 					<td style='text-align:center;'>

@@ -770,13 +770,14 @@ class app_med_query extends _BaseController {
 			$dataView["objListPriority"] 		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_med_asistencia_detail","skuQuantity",$companyID);
 			$dataView["objListFrecuency"] 		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_med_asistencia_detail","skuQuantityBySku",$companyID);;
 			$dataView["objListDose"] 			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_med_asistencia_detail","typePriceID",$companyID);;
-
-			$datView["objSexo"]					= $this->Public_Catalog_Detail_Model->asObject()->find($datView["objTM"]->areaID);
+			$objCustomer						= $this->Customer_Model->get_rowByEntity($datView["objTM"]->companyID,$datView["objTM"]->entityID);
+			$datView["objSexo"]					= $this->Catalog_Item_Model->get_rowByCatalogItemID($objCustomer->sexoID);
+			$datView["objRuc"]					= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
 
 			//Generar Reporte
 			$html = helper_reporteA4TransactionMasterConsultaMedica(
 			    "CONSULTA",
-				"",
+				$datView["objRuc"]->value,
 			    $objCompany,
 			    $objParameter,
 				$datView["objTM"]->transactionOn,
@@ -784,7 +785,7 @@ class app_med_query extends _BaseController {
 				$datView["objNatural"],
 			    $datView["objTMD"],
 				$datView["objTM"],
-				"",	
+				$datView["objSexo"]->name,	
 				$dataView["objListPriority"],
 				$dataView["objListFrecuency"],
 				$dataView["objListDose"]
@@ -792,6 +793,7 @@ class app_med_query extends _BaseController {
 			
 			
 			$this->dompdf->loadHTML($html);
+			//echo $html;
 			
 			
 			//1cm = 29.34666puntos
@@ -823,7 +825,7 @@ class app_med_query extends _BaseController {
 					href='".base_url()."/resource/file_company/company_".$companyID."/component_".$objComponentCatalog->componentID."/component_item_".$transactionMasterID."/".
 					$fileNamePut."'>download compra</a>
 				"; 				
-
+			
 			}
 			else{			
 				//visualizar
