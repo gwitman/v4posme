@@ -112,7 +112,8 @@ class app_cxc_api extends _BaseController {
 				$objCatalogItem_DiasNoCobrables,
 				$objCatalogItem_DiasFeriados365,
 				$objCatalogItem_DiasFeriados366,
-				$objCatalogItemDayExclude
+				$objCatalogItemDayExclude,
+				$dataSession["company"]->flavorID
 			);			
 			
 			$tableAmortization = $this->financial_amort->getTable();

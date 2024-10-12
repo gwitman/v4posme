@@ -116,6 +116,8 @@ class financial_amort{
 	var $objCatalogItems_DiasFeridos365;
 	var $objCatalogItems_DiasFeridos366;
 	var $objCatalogItems_DiasExcluded;
+	var $flavorID;
+	var $dayDesplazados;
 	
 	 
 	//*******************************
@@ -145,7 +147,7 @@ class financial_amort{
 	// Es un sistema de amortizacion que se caracteriza por el pago de cuotas iguales
 	// y el interese se multiplica por el mismo numero de meses, como que si no se disminyllera el principal
 	
-	function amort($amount=0,$rate=0,$numberPay=0,$periodPay = 0,$firstDate="",$typeAmortization="",$objCatalogItems_DiasNoCobrables="",$objCatalogItems_DiasFeridos365="",$objCatalogItems_DiasFeridos366="",$objCatalogItems_DiasExcluded ="")
+	function amort($amount=0,$rate=0,$numberPay=0,$periodPay = 0,$firstDate="",$typeAmortization="",$objCatalogItems_DiasNoCobrables="",$objCatalogItems_DiasFeridos365="",$objCatalogItems_DiasFeridos366="",$objCatalogItems_DiasExcluded ="",$flavorID = 0 )
 	{
 		 date_default_timezone_set(APP_TIMEZONE);
 		 $this->amount				=	$amount;  					//monto
@@ -159,6 +161,8 @@ class financial_amort{
 		 $this->objCatalogItems_DiasFeridos365			=   $objCatalogItems_DiasFeridos365;
 		 $this->objCatalogItems_DiasFeridos366			=   $objCatalogItems_DiasFeridos366;
 		 $this->objCatalogItems_DiasExcluded			= 	$objCatalogItems_DiasExcluded;
+		 $this->flavorID								=	$flavorID;
+		 $this->dayDesplazados							= 	0;
 		 
 	}
 	function getPmtValueAleman($pv,$n,$i){ 
@@ -241,7 +245,8 @@ class financial_amort{
 		
 	}
 	function getNextDate($date,$periodPay){
-				
+		
+		
 		$fechaReturn;
 		$day				= date_format($date, 'd');
 		$firstDateMonth		= date_format($date, 'Y-m');
@@ -281,9 +286,38 @@ class financial_amort{
 				$fechaReturn = date_add($fechaReturn,date_interval_create_from_date_string('1 days'));
 			}
 			return $fechaReturn;			
+		}		
+		/*mensual funeriaria blandon*/
+		else if ($periodPay == 30 && $this->flavorID == "505" )
+		{
+			 
+			 if($this->dayDesplazados > 0)
+			 {
+				 $date = date_add($date,date_interval_create_from_date_string('-'.$this->dayDesplazados.' days'));
+				 $this->dayDesplazados = 0;
+			 }
+			 
+			 //Primera Validacion
+			 $fechaReturn = date_add($date,date_interval_create_from_date_string('1 months'));			 
+			 if($this->fechaEsFeriada($fechaReturn))
+			 {
+				$fechaReturn 			= date_add($fechaReturn,date_interval_create_from_date_string('1 days'));
+				$this->dayDesplazados 	= $this->dayDesplazados + 1;
+			 }
+			 
+			 //Segunda Validacion
+			 if($this->fechaEsFeriada($fechaReturn))
+			 {
+				$fechaReturn 			= date_add($fechaReturn,date_interval_create_from_date_string('1 days'));
+				$this->dayDesplazados 	= $this->dayDesplazados + 1;
+			 }
+			 
+			 
+			 return $fechaReturn;
+			 
 		}
 		/*mensual*/
-		else if ($periodPay == 30)
+		else if ($periodPay == 30 )
 		{
 			 $fechaReturn = date_add($date,date_interval_create_from_date_string('1 months'));			 
 			 if($this->fechaEsFeriada($fechaReturn))

@@ -282,6 +282,8 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objParameterINVOICE_OPEN_CASH_PASSWORD"] 									= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_OPEN_CASH_PASSWORD")->value;
 			$dataView["objParameterCustomPopupFacturacion"]											= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CORE_VIEW_CUSTOM_PANTALLA_DE_FACTURACION_POPUP_SELECCION_PRODUCTO_FORMA_MOSTRAR")->value;
 			$dataView["objParameterTipoPrinterDonwload"]											= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DOWNLOAD")->value;
+			$dataView["objParameterPrinterDirectAndPreview"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_PREVIEW_AND_DIRECT")->value;
+			
 			$dataView["objParameterINVOICE_BILLING_APPLY_TYPE_PRICE_ON_DAY_POR_MAYOR"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_APPLY_TYPE_PRICE_ON_DAY_POR_MAYOR")->value;
 			$dataView["objParameterINVOICE_BILLING_SHOW_COMMAND_BAR"]								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SHOW_COMMAND_BAR")->value;
 			$dataView["objParameterINVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_BAR"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_BAR")->value;
@@ -1420,7 +1422,8 @@ class app_invoice_billing extends _BaseController {
 						$objCatalogItem_DiasNoCobrables,
 						$objCatalogItem_DiasFeriados365,
 						$objCatalogItem_DiasFeriados366,
-						$objCatalogItemDayExclude
+						$objCatalogItemDayExclude,
+						$dataSession["company"]->flavorID
 					);
 					
 					$tableAmortization = $this->financial_amort->getTable();
@@ -2373,7 +2376,8 @@ class app_invoice_billing extends _BaseController {
 						$objCatalogItem_DiasNoCobrables,
 						$objCatalogItem_DiasFeriados365,
 						$objCatalogItem_DiasFeriados366,
-						$objCatalogItemDayExclude
+						$objCatalogItemDayExclude,
+						$dataSession["company"]->flavorID
 					);
 
 					$tableAmortization = $this->financial_amort->getTable();
@@ -2896,7 +2900,8 @@ class app_invoice_billing extends _BaseController {
 						$objCatalogItem_DiasNoCobrables,
 						$objCatalogItem_DiasFeriados365,
 						$objCatalogItem_DiasFeriados366,
-						$objCatalogItemDayExclude
+						$objCatalogItemDayExclude,
+						$dataSession["company"]->flavorID
 					);
 					
 					$tableAmortization = $this->financial_amort->getTable();
