@@ -242,7 +242,7 @@
 		fnWaitOpen();
 		var value 				= $("#txtMesaOcupada").val();
 		window.location.href 	= "<?=base_url()."/"."app_invoice_billing/edit/companyID/".$companyID."/transactionID/".$transactionID."/transactionMasterID/"?>"+value+"<?="/codigoMesero/".$codigoMesero ?>";			
-		$("#modalDialogMeaBussyV2").modal("hidde");
+		$("#modalDialogMeaBussyV2").modal("hide");
 	});	
 			
 			
@@ -266,7 +266,7 @@
 					}
 			 });
 			
-			$("#modalDialogClaveOpenCash").modal("hidde");
+			$("#modalDialogClaveOpenCash").modal("hide");
 		}
 	});	
 	
@@ -295,7 +295,7 @@
 		);
 		
 		fnWaitClose();
-		$("#modalDialogBarV2").modal("hidde");
+		$("#modalDialogBarV2").modal("hide");
 	});	
 	
 	$("#btnAceptarDialogCocinaV2").click(function(){
@@ -323,7 +323,7 @@
 		);
 		
 		fnWaitClose();
-		$("#modalDialogCocinaV2").modal("hidde");
+		$("#modalDialogCocinaV2").modal("hide");
 	});	
 	
 	$(document).on("click","#btnAbrirCaja",function(){
@@ -706,6 +706,16 @@
 			
 			e.preventDefault();
 			var valueWorkflow = $(this).data("valueworkflow");
+			$("#txtStatusID").val(valueWorkflow);			
+			fnEnviarFactura();
+		
+	});
+	
+	$(document).on("click","#btnSaveInvoice",function(e){
+			
+			
+			e.preventDefault();
+			var valueWorkflow = $(".btnAcept").data("valueworkflow");
 			$("#txtStatusID").val(valueWorkflow);			
 			fnEnviarFactura();
 		
@@ -1410,9 +1420,10 @@
 		$(cell).addClass("selected");
 		$("#txtMesaID").val( $(cell).data("value") );
 		$("#txtMesaID").select2();
-		if(value !== 0 && value !== 'undefined'){
+		if(value !== 0 && value !== 'undefined'){			
 			$("#modalDialogMeaBussyV2").modal('show');
 			$("#txtMesaOcupada").val(value);
+			$(".modal-backdrop.fade.in").removeClass("modal-backdrop");
 			
 		}else{
             $("#mySidebarFactura").css("width","100%");
@@ -2035,6 +2046,7 @@
 	
 	
 	function fnImprimir(){
+		
 		
 		if(
 			varParameterInvoiceBillingPrinterDirect == 'true' && 

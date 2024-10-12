@@ -4,7 +4,13 @@
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 
-
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_PRINTER_PREVIEW_AND_DIRECT";## Imprimir directo en la impresora 
+	
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "true" 
 WHERE 

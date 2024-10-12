@@ -1266,12 +1266,17 @@
 				</br>
 				
 				<div class="row" id="divPanelFacturaSideBar" >
-					<div class="col col-lg-12">
+					<div class="col col-lg-2">
 						<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackFactura"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
 					</div>	
+					<div class="col col-lg-2">
+						<a href="#" class="btn btn-flat btn-success btn-block" id="btnSaveInvoice"><i class="icon16 i-arrow-bottom "></i> Guardar mesa</a>
+					</div>	
 				</div>
-
-                  <div class="mt-5 custom-table-container-categorias">
+				
+				</br>
+				
+                <div class="mt-5 custom-table-container-categorias">
                       <div style="width: 98%; margin: 0 auto;">
                           <div class="row custom-table-categorias">
                               <?php
@@ -1294,9 +1299,9 @@
                               ?>
                           </div>
                       </div>
-                  </div>
+                </div>
 
-                  <div class="mt-5 custom-table-container-inventory">
+                <div class="mt-5 custom-table-container-inventory">
                       <div style="width: 98%; margin: 0 auto;">
                           <div class="row">
                               <?php
@@ -1332,7 +1337,7 @@
                               ?>
                           </div>
                       </div>
-                  </div>
+                </div>
 				
 				
 			  </div>
@@ -1468,7 +1473,7 @@
 				  </div>
 				  <div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-					<a href="#" class="btn btn-primary hidden" id="btnAceptarDialogBackToListV2">Aceptar</a>
+					<a href="#" class="btn btn-primary" id="btnAceptarDialogBackToListV2">Aceptar</a>
 				  </div>
 				</div><!-- /.modal-content -->
 			  </div><!-- /.modal-dialog -->
@@ -1552,30 +1557,7 @@
 			</div><!-- /.modal -->
 
 			
-			<div id="modalDialogMesaBussy" title="Mesa con factura" class="dialog hidden">
-				<p>La mesa seleccionada tiene factura registrada, ¿Desea agregar productos a la mesa?</p>
-			</div>
-
-			<div id="modalDialogOpenPrimter" title="Formato de Impresion" class="dialog hidden">
-				<p>Seleccione el formato que desea imprimir la factura</p>
-			</div>
-			
-			<div id="modalDialogOpenPrimterCocina" title="Formato de Impresion" class="dialog">
-				<p>Seleccione el formato que desea imprimir la factura</p>
-			</div>
-			
-			<div id="modalDialogBackList" title="Regresar a la lista" class="dialog">
-				<p>Seguro que desea regresa a la lista</p>
-			</div>
-			
-			<div id="modalDialogOpenPrimterBar" title="Formato de Impresion" class="dialog">
-				<p>Seleccione el formato que desea imprimir la factura</p>
-			</div>
-			
-			<div id="modalDialogOpenPrimterClave" title="Clave" class="dialog">
-				<input type="password" id="txtClaveValidToOpenCash" >
-			</div>
-			
+		
 			<div id="labelTotalAlternativo"  class="<?php echo getBehavio($company->type,"app_invoice_billing","panelLabelSumaryAlternativo","hidden"); ?>" >
 				<div class="col col-lg-2 text-right">
 					<h2>TOTAL: <span class="invoice-num red" id="txtTotalAlternativo">0.00</span></h2>

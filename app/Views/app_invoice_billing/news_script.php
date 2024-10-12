@@ -86,7 +86,7 @@
 		fnWaitOpen();
 		var value 				= $("#txtMesaOcupada").val();
 		window.location.href 	= "<?=base_url()."/"."app_invoice_billing/edit/companyID/".$companyID."/transactionID/".$transactionID."/transactionMasterID/"?>"+value+"<?="/codigoMesero/".$codigoMesero ?>";			
-		$("#modalDialogMeaBussyV2").modal("hidde");
+		$("#modalDialogMeaBussyV2").modal("hide");
 	});	
 			
 			
@@ -110,64 +110,18 @@
 					}
 			 });
 			
-			$("#modalDialogClaveOpenCash").modal("hidde");
+			$("#modalDialogClaveOpenCash").modal("hide");
 		}
 	});	
 	
 	$("#btnAceptarDialogBarV2").click(function(){
 				
-		var listRow = objTableDetail.fnGetData();							
-		var length 	= listRow.length;
 		
-		var i 		= 0;
-		var itemid 	= "-1";
-		
-		while (i < length ){
-			if(listRow[i][0] == true){
-				itemid = itemid + ","+listRow[i][2];				
-			}
-			i++;
-		}
-	
-	
-		fnWaitOpen();
-		window.open("<?php echo base_url(); ?>/"+
-			varUrlPrinterBar+
-			"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>"+
-			"/itemID/"+itemid
-			, '_blank'
-		);
-		
-		fnWaitClose();
-		$("#modalDialogBarV2").modal("hidde");
 	});	
 	
 	$("#btnAceptarDialogCocinaV2").click(function(){
 		
-		var listRow = objTableDetail.fnGetData();							
-		var length 	= listRow.length;
 		
-		var i 		= 0;
-		var itemid 	= "-1";
-		
-		while (i < length ){
-			if(listRow[i][0] == true){
-				itemid = itemid + ","+listRow[i][2];				
-			}
-			i++;
-		}
-	
-	
-		fnWaitOpen();
-		window.open("<?php echo base_url(); ?>/"+
-			varUrlPrinterCocina+
-			"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>"+
-			"/itemID/"+itemid
-			, '_blank'
-		);
-		
-		fnWaitClose();
-		$("#modalDialogCocinaV2").modal("hidde");
 	});	
 	
 	$(document).on("click","#btnAbrirCaja",function(){
@@ -581,6 +535,13 @@
 			e.preventDefault();
 			fnEnviarFactura();
 	});
+	$(document).on("click","#btnSaveInvoice",function(e){
+			
+			e.preventDefault();
+			fnEnviarFactura();
+	});
+	
+	
 	
 	$(document).on("click","#btnNewItem",function(){
 		
@@ -706,49 +667,16 @@
 
 
 	$("#btnAceptarDialogPrinterV2AceptarTabla").click(function(){
-		fnWaitOpen();
-		window.open("<?php echo base_url(); ?>/app_cxc_report/document_credit/viewReport/true/documentNumber/<?php echo $objTransactionMaster->transactionNumber;?>", '_blank');
-		fnWaitClose();		
-		$('#modalDialogPrinterV2').modal('hide');
+		
 	});
 	
 	$("#btnAceptarDialogPrinterV2AceptarDocument").click(function(){
-		fnWaitOpen();
-		window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>", '_blank');
-		fnWaitClose();	
-		$('#modalDialogPrinterV2').modal('hide');
+		
 	});
 	
 	
 	$("#btnAceptarDialogPrinterV2AceptarDirect").click(function(){
-		fnWaitOpen();
 		
-		var url=varParameterUrlServidorDeImpresion+varParameterInvoiceBillingPrinterDirectUrl;
-			url = url+
-			"/companyID/"+"<?php echo $objTransactionMaster->companyID; ?>" + 
-			"/transactionID/"+"<?php echo $objTransactionMaster->transactionID; ?>"+
-			"/transactionMasterID/"+"<?php echo $objTransactionMaster->transactionMasterID; ?>";
-		
-		fnWaitOpen();	
-		$.ajax({									
-			cache       : false,
-			dataType    : 'json',
-			type        : 'POST',
-			data		: { "fromServer" : varParameterInvoiceBillingPrinterDataLocal },
-			url  		: url,
-			success		: function(){
-				fnWaitClose();						
-			},
-			error:function(xhr,data){
-				console.info("complete data error");									
-				console.info(data);
-				console.info(xhr);
-				fnWaitClose();
-				//fnShowNotification("Error 505","error");
-			}
-		});	
-			
-		$('#modalDialogPrinterV2').modal('hide');
 	});
 	
 	
@@ -1301,13 +1229,16 @@
 	}
 
 	function fnSelectCellMesaDoubleClick(cell,value) {		
+		
 		$(".custom-table-mesas").find("td").removeClass("selected");
 		$(cell).addClass("selected");
 		$("#txtMesaID").val( $(cell).data("value") );
 		$("#txtMesaID").select2();
 		if(value !== 0 && value !== 'undefined'){
+			
 			$("#modalDialogMeaBussyV2").modal('show');
 			$("#txtMesaOcupada").val(value);
+			$(".modal-backdrop.fade.in").removeClass("modal-backdrop");
 		}else{
             $("#mySidebarFactura").css("width","100%");
             $("#mySidebarMesa").css("width","0%");
@@ -2818,6 +2749,7 @@
 			)
 			{
 				$("#modalDialogPrinterV3").modal("show");
+				$(".modal-backdrop.fade.in").removeClass("modal-backdrop");
 			}
 			
 		});
