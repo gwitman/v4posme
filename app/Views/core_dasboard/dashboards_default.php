@@ -133,12 +133,12 @@
 						
 							<div class="panel-body">
 								<blockquote>
-									<p>VALOR: <?php echo $objExchangeRateCordobaDolar; ?></p>									
+									<p class="text-success">VALOR: <?php echo number_format($objExchangeRateCordobaDolar,2); ?></p>									
 									<small>Dolar a Cordoba</small>
 								</blockquote>
 								
 							   <blockquote>
-									<p>VALOR: <?php echo $objExchangeRateDolarACordoba; ?></p>									
+									<p class="text-danger">VALOR: <?php echo number_format($objExchangeRateDolarACordoba,4); ?></p>									
 									<small>Cordoba al Dolar</small>
 								</blockquote>
 							</div><!-- End .panel-body -->
