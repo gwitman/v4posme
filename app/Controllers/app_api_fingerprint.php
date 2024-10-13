@@ -70,14 +70,14 @@ class app_api_fingerprint extends _BaseController {
 		$finger_name	= "Pulgar_Derecho";
 		
 		$this->Temp_Fingerprint_Model->delete_app_posme($tockenPc);
-		
+		log_message("error",print_r(  "witman_gonzalez -3.1"  ,true));
 		
 		$dataNew["id"] 				= strtotime("now") ;
 		$dataNew["option"]			= "read";
 		$dataNew["token_pc"]		= $tockenPc;
 		$dataNew["created_at"] 		= date("Y-m-d H:i:s");
 		$this->Temp_Fingerprint_Model->insert_app_posme($dataNew);
-		
+		log_message("error",print_r(  "witman_gonzalez -3.2"  ,true));
 		
 	}
 	function web_get_finger(){

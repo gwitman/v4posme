@@ -154,6 +154,25 @@ class core_acount extends _BaseController {
 			$parameterTipoPlan 			= $parameterTipoPlan->value;
 			$pagoCantidadMonto		  	= $pagoCantidadDeMeses * $parameterPrice;
 			
+			
+			$parameterCORE_PROPIETARY_ADDRESS 			= $this->core_web_parameter->getParameter("CORE_PROPIETARY_ADDRESS",$objUser["user"]->companyID);
+			$parameterCORE_PROPIETARY_ADDRESS 			= $parameterCORE_PROPIETARY_ADDRESS->value;
+			$parameterCORE_PROPIETARY_PHONE 			= $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE",$objUser["user"]->companyID);
+			$parameterCORE_PROPIETARY_PHONE 			= $parameterCORE_PROPIETARY_PHONE->value;
+			$parameterCORE_PHONE 						= $this->core_web_parameter->getParameter("CORE_PHONE",$objUser["user"]->companyID);
+			$parameterCORE_PHONE 						= $parameterCORE_PHONE->value;
+			$parameterCORE_COMPANY_IDENTIFIER 			= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$objUser["user"]->companyID);
+			$parameterCORE_COMPANY_IDENTIFIER 			= $parameterCORE_COMPANY_IDENTIFIER->value;
+			$parameterCORE_PROPIETARY_EMAIL 			= $this->core_web_parameter->getParameter("CORE_PROPIETARY_EMAIL",$objUser["user"]->companyID);
+			$parameterCORE_PROPIETARY_EMAIL 			= $parameterCORE_PROPIETARY_EMAIL->value;
+			$parameterCORE_PROPIETARY_NAME 				= $this->core_web_parameter->getParameter("CORE_PROPIETARY_NAME",$objUser["user"]->companyID);
+			$parameterCORE_PROPIETARY_NAME 				= $parameterCORE_PROPIETARY_NAME->value;
+			
+			
+			
+			
+			
+			
 			//Procesar Pago
 			if($pagoCantidadMonto > 0 )
 			{
@@ -167,8 +186,16 @@ class core_acount extends _BaseController {
 			$params_["objCompany"]								= $objCompany;
 			$params_["parameterBalance"]						= $parameterBalance;
 			$params_["parameterCantidadDeTransacciones"]		= $parameterCantidadTransacciones;
-			$params_["mensaje"]									= "Su balance de uso es:".$parameterBalance.", Cantidad de Transacciones:".$parameterCantidadTransacciones;
-			
+			$params_["mensaje"]									= "Su balance de uso es:".$parameterBalance.", Cantidad de Transacciones: ".$parameterCantidadTransacciones;
+			$params_["mensaje"]									= $params_["mensaje"]." </br>".
+					" Parametro Direccion: ".$parameterCORE_PROPIETARY_ADDRESS."</br>".
+					" Parametro Telefono: ".$parameterCORE_PROPIETARY_PHONE."</br>".
+					" Parametro Telefono 2: ".$parameterCORE_PHONE."</br>".
+					" Parametro Ruc: ".$parameterCORE_COMPANY_IDENTIFIER."</br>".
+					" Parametro Email: ".$parameterCORE_PROPIETARY_EMAIL."</br>".
+					" Parametro Propietario: ".$parameterCORE_PROPIETARY_NAME."</br>";
+					
+					
 			set_cookie("userID",$dataSession['user']->userID,86400,"localhost");
 			set_cookie("nickname",$dataSession['user']->nickname,86400,"localhost");
 			set_cookie("email",$dataSession['user']->email,86400,"localhost");			
