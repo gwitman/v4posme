@@ -126,7 +126,7 @@
 									
 									<!-- Edad-->
 									<div class="form-group">
-										<label class="col-lg-4 control-label" for="buttons">Edad(Años)</label>
+										<label class="col-lg-4 control-label" for="buttons">Edad(años)</label>
 										<div class="col-lg-8">
 											<input class="form-control" type="number"  name="txtAge" id="txtAge" ></input>
 										</div>
@@ -153,6 +153,10 @@
 										<label class="col-lg-4 control-label" for="buttons">IMC</label>
 										<div class="col-lg-8">
 											<input class="form-control" readonly id="txtIMC"  type="number"></input>
+											<span class="badge badge-info" >bajo de 18.5 , bajo de peso</span>
+											<span class="badge badge-success" >18.5 a 24.9 peso noral</span>
+											<span class="badge badge-warning" >25 a 29.9 sobre peso</span>
+											<span class="badge badge-important" >30 a mas obesidad</span>
 										</div>
 									</div>
 									

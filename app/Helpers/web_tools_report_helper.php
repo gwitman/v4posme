@@ -14579,10 +14579,14 @@ function helper_reporteA4TransactionMasterConsultaMedica(
 	$objListFrecuencies,
 	$objListDoses
 ) {
-    $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
-    $type    = pathinfo($path, PATHINFO_EXTENSION);
-    $data    = file_get_contents($path);
-    $base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
+    $path    	= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;	
+	$path1    	= PATH_FILE_OF_APP_ROOT.'/img/medi.jpg';
+    $type    	= pathinfo($path, PATHINFO_EXTENSION);
+	$type1    	= pathinfo($path1, PATHINFO_EXTENSION);
+    $data    	= file_get_contents($path);
+	$data1    	= file_get_contents($path1);
+    $base64  	= 'data:image/' . $type . ';base64,' . base64_encode($data);
+	$base641  	= 'data:image/' . $type1 . ';base64,' . base64_encode($data1);
 
     $html = "
         <!DOCTYPE html>
@@ -14593,7 +14597,7 @@ function helper_reporteA4TransactionMasterConsultaMedica(
             <style>
                 @page {       
                     size: 13cm 21cm;                  
-                    margin-top: 0px;
+                    margin-top: 20px;
                     margin-left: 20px;
                     margin-right: 20px;
                 }
@@ -14640,10 +14644,22 @@ function helper_reporteA4TransactionMasterConsultaMedica(
         </head>
         <body>
             <table class='header-table'>
+				<tr>
+					<td colspan='2'>
+						<table>
+							<tr>
+								<td style='text-align:left;' ><img src='".$base641."' style='margin:0px' width='50' height='60' >
+								</td>
+								<td><img src='".$base64."' width='110'   >
+								</td>
+								<td style='text-align:right;' ><img src='".$base641."' style='margin-right:0px' width='50' height='60'>
+								</td>
+							</tr>							
+						</table>
+					</td>
+				</tr>
                 <tr>
 					<td colspan='2' class='center'>
-						<img src='".$base64."' width='110'><br>
-						
 						<b>".strtoupper($objCompany->name)."</b><br>
 						CÉDULA PROFESIONAL: ".strtoupper($rucCompany)."<br>
 						".strtoupper($titulo)."
@@ -14656,17 +14672,17 @@ function helper_reporteA4TransactionMasterConsultaMedica(
 							<tr>
 								<td>
 								</td>
-								<td  style='width: 80px;' >Fecha:
+								<td  style='width: 80px;text-align:right' >Fecha:
 								</td>
-								<td  style='width: 80px;'>".$fecha."
+								<td  style='width: 80px;text-align:right' >".$fecha."
 								</td>
 							</tr>
 							<tr>
 								<td>
 								</td>
-								<td>Folio:
+								<td style='width: 80px;text-align:right' >Folio:
 								</td>
-								<td>".strtoupper($folio)."
+								<td style='width: 80px;text-align:right' >".strtoupper($folio)."
 								</td>
 							</tr>
 						</table>
@@ -14688,7 +14704,7 @@ function helper_reporteA4TransactionMasterConsultaMedica(
 						<td style='text-align: left;'><b>SEXO:</b> ".$objSexo."</td>
 						<td style='text-align: left;'><b>EDAD:</b> ".number_format($objTransactionMaster->tax1, 0)." años</td>
 						<td style='text-align: left;'><b>ALTURA:</b> ".number_format($objTransactionMaster->tax2, 1)."cms</td>
-						<td style='text-align: left;'><b>PESO:</b> ".number_format($objTransactionMaster->tax3, 1)."Kgs</td>
+						<td style='text-align: left;'><b>PESO:</b> ".number_format($objTransactionMaster->tax3, 1)."kgs</td>
 						<td style='text-align: left;'><b>IMC:</b> ".number_format($objTransactionMaster->tax4, 1)."</td>
 					</tr>
 				</tbody>
