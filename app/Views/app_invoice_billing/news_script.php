@@ -2384,6 +2384,29 @@
 			}
 			
 			
+			if(varUseMobile == "0")
+			{
+				// Añade una nueva entrada en el historial para evitar que el usuario regrese
+				history.pushState(null, null, window.location.href);
+
+
+				// Captura el evento popstate que ocurre cuando el usuario intenta volver
+				window.onpopstate = function(event) {
+					// Redirige a la misma página o realiza otra acción
+					history.go(1);
+				};
+
+
+				//window.addEventListener('beforeunload', function (e) {
+				//	// Evita que la página se cierre
+				//	e.preventDefault();  // Necesario para algunos navegadores
+				//
+				//	// Establece el mensaje de advertencia
+				//	e.returnValue = '';  // El mensaje personalizado no es compatible en la mayoría de los navegadores
+				//});
+
+			}
+			
 			
 			
 			if(varParameterScrollDelModalDeSeleccionProducto == "true"){
