@@ -117,6 +117,7 @@ use App\Models\Entity_Phone_Model;
 use App\Models\Error_Model;
 use App\Models\Fixed_Assent_Model;
 use App\Models\Itemcategory_Model;
+use App\Models\Indicator_Model;
 use App\Models\Itemwarehouse_Model;
 use App\Models\Item_Data_Sheet_Detail_Model;
 use App\Models\Item_Data_Sheet_Model;
@@ -305,6 +306,7 @@ abstract class _BaseController extends Controller
 	protected $Error_Model;
 	protected $Fixed_Assent_Model;
 	protected $Itemcategory_Model;
+	protected $Indicator_Model;
 	protected $Itemwarehouse_Model;
 	protected $Item_Data_Sheet_Detail_Model;
 	protected $Item_Data_Sheet_Model;
@@ -474,6 +476,7 @@ abstract class _BaseController extends Controller
 		$this->Error_Model= new Error_Model();
 		$this->Fixed_Assent_Model= new Fixed_Assent_Model();
 		$this->Itemcategory_Model= new Itemcategory_Model();
+		$this->Indicator_Model = new Indicator_Model();
 		$this->Itemwarehouse_Model= new Itemwarehouse_Model();
 		$this->Item_Data_Sheet_Detail_Model= new Item_Data_Sheet_Detail_Model();
 		$this->Item_Data_Sheet_Model= new Item_Data_Sheet_Model();

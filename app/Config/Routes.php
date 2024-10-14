@@ -181,6 +181,16 @@ $routes->match(['get','post'],'app_accounting_level/add','app_accounting_level::
 $routes->match(['get','post'],'app_accounting_level/index','app_accounting_level::index');
 $routes->match(['get','post'],'app_accounting_level/index/(:any)','app_accounting_level::index');
 $routes->match(['get','post'],'app_accounting_dashboards/index','app_accounting_dashboards::index');
+$routes->match(['get','post'],'app_accounting_indicators/index','app_accounting_indicators::index');
+$routes->match(['get','post'],'app_accounting_indicators/index/(:any)','app_accounting_indicators::index');
+$routes->match(['get','post'],'app_accounting_indicators/edit','app_accounting_indicators::edit');
+$routes->match(['get','post'],'app_accounting_indicators/edit/(:any)','app_accounting_indicators::edit');
+$routes->match(['get','post'],'app_accounting_indicators/add','app_accounting_indicators::add');
+$routes->match(['get','post'],'app_accounting_indicators/add/(:any)','app_accounting_indicators::add');
+$routes->match(['get','post'],'app_accounting_indicators/save','app_accounting_indicators::save');
+$routes->match(['get','post'],'app_accounting_indicators/save/(:any)','app_accounting_indicators::save');
+$routes->match(['get','post'],'app_accounting_indicators/delete','app_accounting_indicators::delete');
+$routes->match(['get','post'],'app_accounting_indicators/delete/(:any)','app_accounting_indicators::delete');
 $routes->match(['get','post'],'app_accounting_period/edit','app_accounting_period::edit');
 $routes->match(['get','post'],'app_accounting_period/edit/(:any)','app_accounting_period::edit');
 $routes->match(['get','post'],'app_accounting_period/delete','app_accounting_period::delete');
