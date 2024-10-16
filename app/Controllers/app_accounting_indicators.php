@@ -54,6 +54,91 @@ class app_accounting_indicators extends _BaseController
         }
     }
 
+    function updateElement($dataSession)
+    {
+        if (APP_NEED_AUTHENTICATION == true) {
+            $permited = false;
+            $permited = $this->core_web_permission->urlPermited(get_class($this), "index", URL_SUFFIX, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
+
+            if (!$permited)
+                throw new \Exception(NOT_ACCESS_CONTROL);
+
+            $resultPermission        = $this->core_web_permission->urlPermissionCmd(get_class($this), "edit", URL_SUFFIX, $dataSession, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
+            if ($resultPermission     == PERMISSION_NONE)
+                throw new \Exception(NOT_ALL_EDIT);
+        }
+
+        $db = db_connect();
+        $db->transStart();
+        $companyID                  = $dataSession["user"]->companyID;
+        $indicatorID                = /*inicio get post*/ $this->request->getPost("txtIndicatorID");
+        $obj["code"]                = /*inicio get post*/ $this->request->getPost("txtCode");
+        $obj["label"]               = /*inicio get post*/ $this->request->getPost("txtLabel");
+        $obj["description"]         = /*inicio get post*/ $this->request->getPost("txtDescription");
+        $obj["order"]               = /*inicio get post*/ $this->request->getPost("txtOrder");
+        $obj["script"]              = /*inicio get post*/ $this->request->getPost("txtScript");
+        $obj["prefix"]              = /*inicio get post*/ $this->request->getPost("txtPrefix");
+        $obj["posfix"]              = /*inicio get post*/ $this->request->getPost("txtPosfix");
+
+        //Actualizar
+        $result             = $this->Indicator_Model->update_app_posme($companyID, $indicatorID, $obj);
+
+        if ($db->transStatus() !== false) {
+            $db->transCommit();
+            $this->core_web_notification->set_message(false, SUCCESS);
+        } else {
+            $db->transRollback();
+            $this->core_web_notification->set_message(true, $this->db->_error_message());
+        }
+        $this->response->redirect(base_url() . "/" . 'app_accounting_indicators/edit/companyID/' . $companyID . "/indicatorID/" . $indicatorID);
+    }
+
+    function insertElement($dataSession)
+    {
+        if (APP_NEED_AUTHENTICATION == true) {
+            $permited = false;
+            $permited = $this->core_web_permission->urlPermited(get_class($this), "index", URL_SUFFIX, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
+
+            if (!$permited)
+                throw new \Exception(NOT_ACCESS_CONTROL);
+
+            $resultPermission        = $this->core_web_permission->urlPermissionCmd(get_class($this), "add", URL_SUFFIX, $dataSession, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
+            if ($resultPermission     == PERMISSION_NONE)
+                throw new \Exception(NOT_ALL_INSERT);
+        }
+
+        $this->core_web_permission->getValueLicense($dataSession["user"]->companyID, get_class($this) . "/" . "index");
+        $db = db_connect();
+        $db->transStart();
+
+        //Crear Indicador
+        $obj["companyID"]           = $dataSession["user"]->companyID;
+        $obj["code"]                = /*inicio get post*/ $this->request->getPost("txtCode");
+        $obj["name"]                = /*inicio get post*/ $this->request->getPost("txtName");
+        $obj["label"]               = /*inicio get post*/ $this->request->getPost("txtLabel");
+        $obj["description"]         = /*inicio get post*/ $this->request->getPost("txtDescription");
+        $obj["order"]               = /*inicio get post*/ $this->request->getPost("txtOrder");
+        $obj["script"]              = /*inicio get post*/ $this->request->getPost("txtScript");
+        $obj["posfix"]              = /*inicio get post*/ $this->request->getPost("txtPosfix");
+        $obj["prefix"]              = /*inicio get post*/ $this->request->getPost("txtPrefix");
+        $obj["isActive"]            = true;
+
+        $indicatorID                = $this->Indicator_Model->insert_app_posme($obj);
+        $companyID                  = $obj["companyID"];
+        //Ingresar
+
+        //Completar Transaccion
+        if ($db->transStatus() !== false) {
+            $db->transCommit();
+            $this->core_web_notification->set_message(false, SUCCESS);
+            $this->response->redirect(base_url() . "/" . 'app_accounting_indicators/edit/companyID/' . $companyID . "/indicatorID/" . $indicatorID);
+        } else {
+            $db->transRollback();
+            $this->core_web_notification->set_message(true, $this->db->_error_message());
+            $this->response->redirect(base_url() . "/" . 'app_accounting_indicators/add');
+        }
+    }
+
     function save($method = NULL)
     {
         $method = helper_SegmentsByIndex($this->uri->getSegments(), 1, $method);
@@ -76,89 +161,17 @@ class app_accounting_indicators extends _BaseController
 
             //Nuevo Registro
             if ($method == "new") {
-
-                //PERMISO SOBRE LA FUNCION
-                if (APP_NEED_AUTHENTICATION == true) {
-                    $permited = false;
-                    $permited = $this->core_web_permission->urlPermited(get_class($this), "index", URL_SUFFIX, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
-
-                    if (!$permited)
-                        throw new \Exception(NOT_ACCESS_CONTROL);
-
-                    $resultPermission        = $this->core_web_permission->urlPermissionCmd(get_class($this), "add", URL_SUFFIX, $dataSession, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
-                    if ($resultPermission     == PERMISSION_NONE)
-                        throw new \Exception(NOT_ALL_INSERT);
-                }
-
-                $this->core_web_permission->getValueLicense($dataSession["user"]->companyID, get_class($this) . "/" . "index");
-                $db = db_connect();
-                $db->transStart();
-
-                //Crear Indicador
-                $obj["companyID"]           = $dataSession["user"]->companyID;
-                $obj["code"]                = /*inicio get post*/ $this->request->getPost("txtCode");
-                $obj["name"]                = /*inicio get post*/ $this->request->getPost("txtName");
-                $obj["label"]               = /*inicio get post*/ $this->request->getPost("txtLabel");
-                $obj["description"]         = /*inicio get post*/ $this->request->getPost("txtDescription");
-                $obj["order"]               = /*inicio get post*/ $this->request->getPost("txtOrder");
-                $obj["script"]              = /*inicio get post*/ $this->request->getPost("txtScript");
-                $obj["posfix"]              = /*inicio get post*/ $this->request->getPost("txtPosfix");
-                $obj["prefix"]              = /*inicio get post*/ $this->request->getPost("txtPrefix");
-                $obj["isActive"]            = true;
-
-                $indicatorID                = $this->Indicator_Model->insert_app_posme($obj);
-                $companyID                  = $obj["companyID"];
-                //Ingresar
-
-                //Completar Transaccion
-                if ($db->transStatus() !== false) {
-                    $db->transCommit();
-                    $this->core_web_notification->set_message(false, SUCCESS);
-                    $this->response->redirect(base_url() . "/" . 'app_accounting_indicators/edit/companyID/' . $companyID . "/indicatorID/" . $indicatorID);
-                } else {
-                    $db->transRollback();
-                    $this->core_web_notification->set_message(true, $this->db->_error_message());
-                    $this->response->redirect(base_url() . "/" . 'app_accounting_indicators/add');
-                }
+                $this->insertElement($dataSession);
             }
             //Editar Registro
-            else {
-                //PERMISO SOBRE LA FUNCION
-                if (APP_NEED_AUTHENTICATION == true) {
-                    $permited = false;
-                    $permited = $this->core_web_permission->urlPermited(get_class($this), "index", URL_SUFFIX, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
-
-                    if (!$permited)
-                        throw new \Exception(NOT_ACCESS_CONTROL);
-
-                    $resultPermission        = $this->core_web_permission->urlPermissionCmd(get_class($this), "edit", URL_SUFFIX, $dataSession, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
-                    if ($resultPermission     == PERMISSION_NONE)
-                        throw new \Exception(NOT_ALL_EDIT);
-                }
-
-                $db = db_connect();
-                $db->transStart();
-                $companyID                  = $dataSession["user"]->companyID;
-                $indicatorID                = /*inicio get post*/ $this->request->getPost("txtIndicatorID");
-                $obj["code"]                = /*inicio get post*/ $this->request->getPost("txtCode");
-                $obj["label"]               = /*inicio get post*/ $this->request->getPost("txtLabel");
-                $obj["description"]         = /*inicio get post*/ $this->request->getPost("txtDescription");
-                $obj["order"]               = /*inicio get post*/ $this->request->getPost("txtOrder");
-                $obj["script"]              = /*inicio get post*/ $this->request->getPost("txtScript");
-                $obj["prefix"]              = /*inicio get post*/ $this->request->getPost("txtPrefix");
-                $obj["posfix"]              = /*inicio get post*/ $this->request->getPost("txtPosfix");
-
-                //Actualizar
-                $result             = $this->Indicator_Model->update_app_posme($companyID, $indicatorID, $obj);
-
-                if ($db->transStatus() !== false) {
-                    $db->transCommit();
-                    $this->core_web_notification->set_message(false, SUCCESS);
-                } else {
-                    $db->transRollback();
-                    $this->core_web_notification->set_message(true, $this->db->_error_message());
-                }
-                $this->response->redirect(base_url() . "/" . 'app_accounting_indicators/edit/companyID/' . $companyID . "/indicatorID/" . $indicatorID);
+            else if($method == "edit"){
+                $this->updateElement($dataSession);
+            }else
+            {
+                $stringValidation = "El modo de operacion no es correcto (new|edit)";
+				$this->core_web_notification->set_message(true,$stringValidation);
+				$this->response->redirect(base_url()."/".'app_accounting_indicators/add');
+				exit;
             }
         } catch (\Exception $ex) {
             exit("Expcion Final: " . $ex->getMessage() . "   Metodo: " . $method);
@@ -300,7 +313,6 @@ class app_accounting_indicators extends _BaseController
                 'error'   => true,
                 'message' => $ex->getLine() . " " . $ex->getMessage()
             )); //--finjson
-            $this->core_web_notification->set_message(true, $ex->getLine() . " " . $ex->getMessage());
         }
     }
 }
