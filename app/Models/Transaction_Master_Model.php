@@ -140,19 +140,24 @@ class Transaction_Master_Model extends Model  {
 							tci.parentCatalogID,
 							tci.parentCatalogItemID,
 							tci.ratio, 
-							IF((
-							SELECT MIN(ttmi.transactionMasterID)
-								FROM tb_transaction_master ttm  
-							LEFT JOIN tb_transaction_master_info ttmi
-								ON ttm.transactionMasterID = ttmi.transactionMasterID
-							LEFT JOIN tb_workflow_stage tws
-								ON ttm.statusID = tws.workflowID
-								AND tws.isInit = 1
-								WHERE tci.catalogItemID = ttmi.zoneID
-								AND ttm.transactionID = 19
-								AND ttm.isActive = 1
-								AND ttm.transactionOn >= NOW() - INTERVAL 1 DAY
-							) IS NULL,tci.reference1, REPLACE(tci.reference1, '.', '_bussy.')) AS reference1,
+							IF(
+								(
+								SELECT 
+									MIN(ttmi.transactionMasterID)
+								FROM 
+									tb_transaction_master ttm  
+									INNER JOIN tb_transaction_master_info ttmi
+										ON ttm.transactionMasterID = ttmi.transactionMasterID
+									INNER JOIN tb_workflow_stage tws
+										ON ttm.statusID = tws.workflowStageID
+										AND tws.isInit = 1
+								WHERE 
+									tci.catalogItemID = ttmi.zoneID
+									AND ttm.transactionID = 19
+									AND ttm.isActive = 1
+									AND ttm.transactionOn >= NOW() - INTERVAL 1 DAY
+								) IS NULL,tci.reference1, REPLACE(tci.reference1, '.', '_bussy.')
+							) AS reference1,
 							tci.reference2,
 							tci.reference3,
 							tci.reference4")	
@@ -173,32 +178,46 @@ class Transaction_Master_Model extends Model  {
 								tci.parentCatalogID,
 								tci.parentCatalogItemID,
 								tci.ratio, 
-								IF((
-								SELECT MIN(ttmi.transactionMasterID)
-									FROM tb_transaction_master ttm  
-								LEFT JOIN tb_transaction_master_info ttmi
-									ON ttm.transactionMasterID = ttmi.transactionMasterID
-								LEFT JOIN tb_workflow_stage tws
-									ON ttm.statusID = tws.workflowID
-									AND tws.isInit = 1
-									WHERE tci.catalogItemID = ttmi.mesaID
-									AND ttm.transactionID = 19
-									AND ttm.isActive = 1
-									AND ttm.transactionOn >= NOW() - INTERVAL 1 DAY
-								) IS NULL,tci.reference1, REPLACE(tci.reference1, '.', '_bussy.')) AS reference1,
-								IFNULL((
-								SELECT MIN(ttmi.transactionMasterID)
-									FROM tb_transaction_master ttm  
-								LEFT JOIN tb_transaction_master_info ttmi
-									ON ttm.transactionMasterID = ttmi.transactionMasterID
-								LEFT JOIN tb_workflow_stage tws
-									ON ttm.statusID = tws.workflowID
-									AND tws.isInit = 1
-									WHERE tci.catalogItemID = ttmi.mesaID
-									AND ttm.transactionID = 19
-									AND ttm.isActive = 1
-									AND ttm.transactionOn >= NOW() - INTERVAL 1 DAY
-								),0) AS reference2,
+								
+								IF(
+									(								
+									SELECT 
+										MIN(ttmi.transactionMasterID)
+									FROM 
+										tb_transaction_master ttm  
+										INNER JOIN tb_transaction_master_info ttmi
+											ON ttm.transactionMasterID = ttmi.transactionMasterID
+										INNER JOIN tb_workflow_stage tws
+											ON ttm.statusID = tws.workflowStageID
+											AND tws.isInit = 1
+									WHERE 
+										tci.catalogItemID = ttmi.mesaID
+										AND ttm.transactionID = 19
+										AND ttm.isActive = 1
+										AND ttm.transactionOn >= NOW() - INTERVAL 1 DAY
+									) IS NULL,tci.reference1, 
+									REPLACE(tci.reference1, '.', '_bussy.')
+								) AS reference1,
+								
+								IFNULL(
+									(
+										SELECT 
+											MIN(ttmi.transactionMasterID)
+										FROM 
+											tb_transaction_master ttm  
+											INNER JOIN tb_transaction_master_info ttmi
+												ON ttm.transactionMasterID = ttmi.transactionMasterID
+											INNER JOIN tb_workflow_stage tws
+												ON ttm.statusID = tws.workflowStageID
+												AND tws.isInit = 1
+											WHERE 
+												tci.catalogItemID = ttmi.mesaID
+												AND ttm.transactionID = 19
+												AND ttm.isActive = 1
+												AND ttm.transactionOn >= NOW() - INTERVAL 1 DAY
+									),
+									0
+								) AS reference2,
 								tci.reference3,
 								tci.reference4")
 						->distinct()

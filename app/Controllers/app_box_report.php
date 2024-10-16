@@ -240,7 +240,7 @@ class app_box_report extends _BaseController {
 					return view("app_box_report/share/view_a_disemp",$objDataResult);//--finview-r
 				}
 				//gym raptor 
-				else if( $objCompany->flavorID == 236 ) 
+				else if( $objCompany->flavorID == 260 ) 
 				{
 					return view("app_box_report/share/view_a_disemp_raptor",$objDataResult);//--finview-r
 				}
