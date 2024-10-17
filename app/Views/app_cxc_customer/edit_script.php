@@ -908,8 +908,11 @@
 			},
 			error:function(xhr,data)
 			{	
-				console.info("complete data error");													
-				fnShowNotification("Error 505","error");
+				if(xhr.statusText != "OK")
+				{
+					console.info("complete data error");
+					fnShowNotification("Error 505","error");
+				}		
 			}
 		});			
 		
