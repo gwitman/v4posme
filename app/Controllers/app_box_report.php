@@ -106,15 +106,17 @@ class app_box_report extends _BaseController {
 			
 			$startOn			= $startOn != "" ? $startOn: 	\DateTime::createFromFormat('Y-m-d', date("Y-m-d") )->format("Y-m-d");
 			$startOn 			= $startOn." ".$hourStart.":00:00";	
-			$endOn				= $endOn != "" ? $endOn : 	\DateTime::createFromFormat('Y-m-d', date("Y-m-d") )->format("Y-m-d");			
+			$endOn				= $endOn != "" ? $endOn : 	\DateTime::createFromFormat('Y-m-d', date("Y-m-d") )->format("Y-m-d");	
+			$hourEnd			= $hourEnd ? $hourEnd : "23";
 			$endOn				= $endOn." ".$hourEnd.":59:59";	
 			$userIDFilter		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"userIDFilter");//--finuri
+						
 			
 			//calcular las fechas iniciales del reporte
 			$startOn_ 	= \DateTime::createFromFormat('Y-m-d H:i:s',$startOn);		
-			$endOn_ 	= \DateTime::createFromFormat('Y-m-d H:i:s',$endOn);		
+			$endOn_ 	= \DateTime::createFromFormat('Y-m-d H:i:s',$endOn);							
 			if($filteredArray != -1){
-				$startOn_Temporal = $endOn_;				
+				$startOn_Temporal = $endOn_;						
 				date_sub($startOn_Temporal, date_interval_create_from_date_string($filteredArray.' days'));
 				
 				if($startOn_ <  $startOn_Temporal){

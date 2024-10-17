@@ -1329,7 +1329,7 @@ WHERE
 	tb_parameter.name = "INVOICE_PRINT_BY_INVOICE";## Imprimir por cada factura
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "POS-80-Series" 
+	tb_company_parameter.value = "POS-80-Series1" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT";## Nombre de la impresora por defecto 	
@@ -1376,7 +1376,7 @@ WHERE
 	tb_parameter.name = "INVOICE_BILLING_SHOW_COMMAND_FOOT";## Símbolo de la Moneda Funcional 
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "POS-80-Series" 
+	tb_company_parameter.value = "POS-80-Series1" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_COCINA";## Imprimie Directamente la Cocina
@@ -1520,14 +1520,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Donde fue aserrio santa fe, 2c abajo 15v.sur" 
+	tb_company_parameter.value = "Iglesia catolica Lourdes, 1c oeste 1cs, barrio la fuente" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Power House Gym' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
+	NAME = 'Power House Gym' , address = 'Iglesia catolica Lourdes, 1c oeste 1cs, barrio la fuente' ,
 	flavorID = 544 /*usuarioID*/,type='gym_power_house'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
