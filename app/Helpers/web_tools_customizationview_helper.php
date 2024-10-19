@@ -232,15 +232,17 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 			result = false;
 		}
 		",
-		strtolower('globalpro_app_purchase_garantia_divPanelAplicado') 											=> "hidden",
+		strtolower('globalpro_app_purchase_garantia_divPanelAplicado') 												=> "hidden",
 		strtolower('globalpro_app_purchase_garantia_divPanelCambio') 												=> "hidden",
 		strtolower('globalpro_app_purchase_garantia_divPanelEstado') 												=> "hidden",
 		strtolower('globalpro_app_purchase_garantia_divPanelMoneda') 												=> "hidden",
 		strtolower('globalpro_app_purchase_garantia_divPanelMonto') 												=> "hidden",
 		strtolower('globalpro_app_cxp_expenses_lblAplicado') 														=> "hidden",
-		strtolower('globalpro_app_cxp_expenses_lblCambio') 														=> "hidden",
+		strtolower('globalpro_app_cxp_expenses_lblCambio') 															=> "hidden",
 
-					
+		/*Farmacia LM*/
+		strtolower('farma_lm_app_invoice_billing_divOpcionViewA4') 													=> "",
+		
 		/*Ferreteria Mateo*/			
 		strtolower('ferreteria_mateo_app_invoice_billing_bodyListInvoice')	 									=> "height: 550px; overflow: scroll;",
 		strtolower('ferreteria_mateo_app_box_share_stylePage')	 												=> "/*posMe stylePage*/ #content .row{ margin-bottom:0px !important; } .email-bar{ margin-bottom:0px !important; } .form-group{ margin-bottom:0px !important; } .si_ferreteria_mateo{ display:none !important; } ",
@@ -586,7 +588,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 			}
 		});",
 		
-        strtolower('pizza_laus_app_invoice_billing_divTxtCedulaBeneficiario')	 									=> "Dirección",
+        
 		strtolower('luciaralstate_app_inventory_item_divTxtEstado') 			 								=> "hidden",
 		strtolower('luciaralstate_app_inventory_item_divTxtUM') 			 									=> "hidden",
 		strtolower('luciaralstate_app_inventory_item_divTxtPresentacionUM')  									=> "hidden",
@@ -848,8 +850,6 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('pizza_laus_app_invoice_billing_rowOptionPaymentExtras')	 										=> "hidden",
 		strtolower('pizza_laus_app_invoice_billing_panelLabelSumaryAlternativo')	 								=> "",
 		strtolower('pizza_laus_app_invoice_billing_divTxtCedulaBeneficiario')	 									=> "Dirección",
-		
-		
 		strtolower('pizza_laus_app_invoice_billing_divTraslateElement') 											=> "
 		<script>
 			$(document).ready(function(){		
@@ -910,6 +910,89 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 				
 			});
 		</script>",
+		
+		/*Bar Exit*/		
+		strtolower('bar_exit_core_web_language_workflowstage_billing_REGISTRADA')			 						=> "GUARDAR MESA",
+		strtolower('bar_exit_core_web_language_workflowstage_billing_APLICADA')				 					=> "PAGAR",
+		strtolower('bar_exit_core_web_language_workflowstage_billing_REGISTRAR')				 					=> "GUARDAR MESA",
+		strtolower('bar_exit_core_web_language_workflowstage_billing_APLICAR')				 					=> "PAGAR",		
+		strtolower('bar_exit_core_web_language_workflowstage_billing_ANULADA')				 					=> "ANULADA",		
+		strtolower('bar_exit_app_invoice_billing_lablBotunConfiguracion')											=> "CONFIGURACION",
+		strtolower('bar_exit_app_invoice_billing_lablBotunVerDetalle')											=> "PRODUCTO",
+		strtolower('bar_exit_app_invoice_billing_divTxtMoneda') 													=> "hidden",
+		strtolower('bar_exit_app_invoice_billing_divTxtCambio') 													=> "hidden",				
+		strtolower('bar_exit_app_invoice_billing_divPestanaCredito') 												=> "hidden",		
+		strtolower('bar_exit_app_invoice_billing_divPestanaMas')	 												=> "hidden",
+		strtolower('bar_exit_app_invoice_billing_divPestanaReferencias')											=> "hidden",
+		strtolower('bar_exit_app_invoice_billing_divHiddenEmployer')												=> "hidden",		
+		strtolower('bar_exit_app_invoice_billing_lblReferencia')													=> "Vendedor",	
+		strtolower('bar_exit_app_invoice_billing_txtScanerBarCode')	 											=> "hidden",
+		strtolower('bar_exit_app_invoice_billing_panelResumenFacturaTool')	 									=> "hidden",
+		strtolower('bar_exit_app_invoice_billing_panelResumenFactura')	 										=> "hidden",		
+		strtolower('bar_exit_app_invoice_billing_rowOptionPaymentExtras')	 										=> "hidden",
+		strtolower('bar_exit_app_invoice_billing_panelLabelSumaryAlternativo')	 								=> "",
+		strtolower('bar_exit_app_invoice_billing_divTxtCedulaBeneficiario')	 									=> "Dirección",
+		strtolower('bar_exit_app_invoice_billing_divTraslateElement') 											=> "
+		<script>
+			$(document).ready(function(){		
+				$('#divVendedor').appendTo('#divInformacionLeft');
+				$('#divZone').appendTo('#divInformacionLeft');								
+				$('#divMesa').appendTo('#divInformacionLeft');
+				$('#divTrasuctionPhone').appendTo('#divInformacionRight');				
+				$('#divTipoFactura').appendTo('#divInformacionLeft');
+				$('#divReferencia').appendTo('#divInformacionRight');	
+				
+				//Mover opciones de pago
+				$('#divPaymentOption').appendTo('#siderbar_content_right');	
+				$('#divPaymentOption').removeClass('col-lg-5');
+				$('#divPaymentOption').addClass('col-lg-6');
+				
+				//Mover panel donde se muestra los totales de la factura
+				$('#divPanelShowSummaryNumber').appendTo('#siderbar_content_right');	
+				$('#divPanelShowSummaryNumber').removeClass('col-lg-5');
+				$('#divPanelShowSummaryNumber').addClass('col-lg-6');
+				
+				
+				$('#heading').remove();
+				$('<br/>').appendTo('#divPanelPaymentSideBar');	
+				$('.btnAcept[data-valueworkflow=\"67\"]').parent().appendTo('#divPanelPaymentSideBar');	
+				$('.btnAcept[data-valueworkflow=\"67\"]').parent().removeClass('col-lg-2');
+				$('.btnAcept[data-valueworkflow=\"67\"]').parent().addClass('col-lg-12');
+				$('#panelContainterDetailInvoice').appendTo('#siderbar_content_right_factura');	
+				$('#btnBar').parent().appendTo('#divPanelFacturaSideBarComandos');
+				$('#btnFooter').parent().appendTo('#divPanelFacturaSideBarComandos');
+				$('#btnDeleteItem').parent().appendTo('#divPanelFacturaSideBarComandos');
+				$('#btnNewItem').parent().appendTo('#divPanelFacturaSideBarComandos');
+				$('#btnPrinter').parent().appendTo('#rowBotoneraFacturaFila1');
+				$('#btnNew').parent().appendTo('#rowBotoneraFacturaFila1');
+				$('#btnDelete').parent().appendTo('#rowBotoneraFacturaFila1');
+				$('#btnOptionPago').parent().appendTo('#rowBotoneraFacturaFila4');
+				$('#btnVeDetalleFactura').parent().appendTo('#rowBotoneraFacturaFila4');				
+				$('#saltoDeLineaFila3').remove();
+				$('#saltoDeLineaFila2').remove();
+				$('#saltoDeLineaFila0').remove();
+				$('#saltoDeLineaFila6').remove();
+				$('#saltoDeLineaFila7').remove();
+				$('#rowBotoneraFacturaFila1').appendTo('#panelComandoAlternativa2');				
+				$('#rowBotoneraFacturaFila2').appendTo('#panelComandoAlternativa2');				
+				$('#rowBotoneraFacturaFila3').appendTo('#panelComandoAlternativa2');				
+				$('#rowBotoneraFacturaFila4').appendTo('#panelComandoAlternativa2');				
+				$('#btnVeDetalleFactura').removeClass('btn-primary');
+				$('#btnVeDetalleFactura').addClass('btn-success');				
+				$('#btnGroupdProducto').removeClass('btn-success');
+				$('#btnGroupdProducto').addClass('btn-primary');				
+				$('#btnOptionPago').removeClass('btn-primary');
+				$('#btnOptionPago').addClass('btn-warning');				
+				$('#labelTotalAlternativo').appendTo('#divPanelFacturaSideBarComandos');
+				$('#labelTitleDetalle').remove();
+				$('#mySidebarFactura').css('padding-top','0px');
+				
+				
+				
+				
+			});
+		</script>",
+		
 		
 		/*Financiera Erick Corea*/		
 		strtolower('corea_core_web_menu_SIMULADOR')			 					=> "CALCULADORA",

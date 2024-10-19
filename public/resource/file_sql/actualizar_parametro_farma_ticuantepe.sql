@@ -4,6 +4,14 @@ use dbn89s36gqxmzq;
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormalA4Opcion1" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_URL_PRINTER_OPCION2";## URLs PARA LA IMPRESION DE FACTURA 	
+	
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "true" 
 WHERE 
@@ -1268,7 +1276,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'FARMA LM' , address = 'Reparto Juan Ramón Padilla, 7ma calle' ,
-	flavorID = 442,type='default'
+	flavorID = 442,type='farma_lm'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

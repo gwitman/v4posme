@@ -1,4 +1,4 @@
-use dbkroqnguhldo1;
+
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -1329,7 +1329,7 @@ WHERE
 	tb_parameter.name = "INVOICE_PRINT_BY_INVOICE";## Imprimir por cada factura
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "POS-80-Series4" 
+	tb_company_parameter.value = "POS-80-Series" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT";## Nombre de la impresora por defecto 	
@@ -1347,12 +1347,6 @@ UPDATE  tb_company_parameter,tb_parameter SET
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_URL_PRINTER";## URLs PARA LA IMPRESION DE FACTURA 	
-	
-UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormalA4Opcion1" 
-WHERE 
-	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "INVOICE_URL_PRINTER_OPCION2";## URLs PARA LA IMPRESION DE FACTURA 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "app_invoice_billing/viewPrinterDirectFactura80mm" 
@@ -1382,7 +1376,7 @@ WHERE
 	tb_parameter.name = "INVOICE_BILLING_SHOW_COMMAND_FOOT";## Símbolo de la Moneda Funcional 
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "POS-80-Series4" 
+	tb_company_parameter.value = "POS-80-Series" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_COCINA";## Imprimie Directamente la Cocina
@@ -1482,7 +1476,7 @@ WHERE
 /***************************************************************/
 		
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Eusebia Del Carmen Dumas Ruiz" 
+	tb_company_parameter.value = "Eliseo Benites" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_NAME";## Witman José González Rostran 
@@ -1497,28 +1491,28 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "047-160483-0000C" 
+	tb_company_parameter.value = "081-100186-0005A" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "047-160483-0000C" 
+	tb_company_parameter.value = "081-100186-0005A" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8505-7109" 
+	tb_company_parameter.value = "TEL: 0000-0000" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8505-7109" 
+	tb_company_parameter.value = "TEL: 0000-0000" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1526,15 +1520,15 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Donde fue aserrio santa fe, 2c abajo 15v.sur" 
+	tb_company_parameter.value = "Puma el calvario 25v al norte" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Demo' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 0 /*usuarioID*/,type='default'
+	NAME = 'Restaurante EXIT' , address = 'Puma el calvario 25v al norte' ,
+	flavorID = 547 /*usuarioID*/,type='bar_exit'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
@@ -1546,18 +1540,17 @@ Eliminar o desactivar usuarios
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2, 	/*administrador*/
- 5,		/*administrador*/
- 191,  	/*supervisor*/
- 190, 	/*facturador*/
- 189 	/*administrador*/
+ 547,  	/*supervisor*/
+ 546, 	/*facturador*/
+ 545 	/*administrador*/
 );
 
 update tb_role set isActive = 0; 
 update tb_role set isActive = 1 where roleID in (
 	3,
-	201,
-	202,
-	203	
+	476,
+	475,
+	474	
 );
 
 
@@ -1592,4 +1585,3 @@ update tb_company_currency set `simb` = 'C$' where currencyID = 1;
 update tb_company_currency set `simb` = 'U$' where currencyID = 2;	
 
 	
-/*BD: dbkroqnguhldo1 */

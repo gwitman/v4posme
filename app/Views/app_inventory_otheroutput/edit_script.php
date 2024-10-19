@@ -104,6 +104,11 @@
 			window.open("<?php echo base_url(); ?>/app_inventory_otheroutput/viewRegister/companyID/<?php echo $objTM->companyID;?>/transactionID/<?php echo $objTM->transactionID;?>/transactionMasterID/<?php echo $objTM->transactionMasterID;?>","_blank");
 			fnWaitClose();
 		});
+		$(document).on("click","#btnPrinterSticker",function(){
+			fnWaitOpen();							
+			window.open("<?php echo base_url(); ?>/app_inventory_otheroutput/viewRegisterSticker/companyID/<?php echo $objTM->companyID;?>/transactionID/<?php echo $objTM->transactionID;?>/transactionMasterID/<?php echo $objTM->transactionMasterID;?>","_blank");
+			fnWaitClose();
+		});
 		//Eliminar el Documento
 		$(document).on("click","#btnDelete",function(){
 			fnShowConfirm("Confirmar..","Desea eliminar este Registro...",function(){

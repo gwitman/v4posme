@@ -6,6 +6,7 @@
 									<a href="<?php echo base_url(); ?>/app_inventory_otheroutput/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>                                    
 									<a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>									
 									<a href="#" class="btn btn-primary" id="btnPrinter"><i class="icon16 i-print"></i> Imprimir</a>
+									<a href="#" class="btn btn-primary" id="btnPrinterSticker"><i class="icon16 i-print"></i> Sticker</a>
                                     <a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
                                 </div>
                             </div>

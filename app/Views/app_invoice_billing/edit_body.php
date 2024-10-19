@@ -1454,6 +1454,7 @@
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
 					<a href="#" class="btn btn-primary hidden" id="btnAceptarDialogPrinterV2AceptarTabla">Tabla</a>
 					<a href="#" class="btn btn-primary" id="btnAceptarDialogPrinterV2AceptarDocument">Preview</a>
+					<a href="#" class="btn btn-primary <?php echo getBehavio($company->type,"app_invoice_billing","divOpcionViewA4","hidden"); ?> " id="btnAceptarDialogPrinterV2AceptarDocumentA4">Preview A4</a>
 					<a href="#" class="btn btn-primary hidden" id="btnAceptarDialogPrinterV2AceptarDirect">Directa</a>
 				  </div>
 				</div><!-- /.modal-content -->

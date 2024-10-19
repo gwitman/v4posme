@@ -53,6 +53,7 @@
 	var varParameterINVOICE_BILLING_SELECTITEM			= '<?php echo $objParameterINVOICE_BILLING_SELECTITEM; ?>';
 	var varParameterMostrarImagenEnSeleccion = '<?php echo $objParameterMostrarImagenEnSeleccion; ?>';
 	var varUrlPrinter			= '<?php echo $urlPrinterDocument; ?>';
+	var varUrlPrinterOpcion2	= '<?php echo $urlPrinterDocumentOpcion2; ?>';
 	var varUrlPrinterCocina		= '<?php echo $urlPrinterDocumentCocina; ?>'; 
 	var varUrlPrinterBar		= '<?php echo $objParameterINVOICE_BILLING_PRINTER_URL_BAR; ?>'; 
 	
@@ -902,6 +903,12 @@
 	$("#btnAceptarDialogPrinterV2AceptarDocument").click(function(){
 		fnWaitOpen();
 		window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>", '_blank');
+		fnWaitClose();	
+		$('#modalDialogPrinterV2').modal('hide');
+	});
+	$("#btnAceptarDialogPrinterV2AceptarDocumentA4").click(function(){
+		fnWaitOpen();
+		window.open("<?php echo base_url(); ?>/"+varUrlPrinterOpcion2+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>", '_blank');
 		fnWaitClose();	
 		$('#modalDialogPrinterV2').modal('hide');
 	});

@@ -740,6 +740,8 @@ $routes->match(['get','post'],'app_inventory_itemmasive/printer_barcode_58ml_dir
 $routes->match(['get','post'],'app_inventory_itemmasive/printer_barcode_58ml_direct_localhost/(:any)','app_inventory_itemmasive::printer_barcode_58ml_direct_localhost');
 $routes->match(['get','post'],'app_inventory_otheroutput/viewRegister','app_inventory_otheroutput::viewRegister');
 $routes->match(['get','post'],'app_inventory_otheroutput/viewRegister/(:any)','app_inventory_otheroutput::viewRegister');
+$routes->match(['get','post'],'app_inventory_otheroutput/viewRegisterSticker','app_inventory_otheroutput::viewRegisterSticker');
+$routes->match(['get','post'],'app_inventory_otheroutput/viewRegisterSticker/(:any)','app_inventory_otheroutput::viewRegisterSticker');
 $routes->match(['get','post'],'app_inventory_otheroutput/searchTransactionMaster','app_inventory_otheroutput::searchTransactionMaster');
 $routes->match(['get','post'],'app_inventory_otheroutput/delete','app_inventory_otheroutput::delete');
 $routes->match(['get','post'],'app_inventory_otheroutput/insertElement','app_inventory_otheroutput::insertElement');
@@ -964,6 +966,8 @@ $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNorm
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Douglas/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1Douglas');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormalA4FunBlandonReciboOficialCaja','app_invoice_billing::viewRegisterFormatoPaginaNormalA4FunBlandonReciboOficialCaja');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormalA4FunBlandonReciboOficialCaja/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormalA4FunBlandonReciboOficialCaja');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormalA4Opcion1','app_invoice_billing::viewRegisterFormatoPaginaNormalA4Opcion1');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormalA4Opcion1/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormalA4Opcion1');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmCarlosLuis','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmCarlosLuis');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmCarlosLuis/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmCarlosLuis');
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura58mm','app_invoice_billing::viewPrinterDirectFactura58mm');

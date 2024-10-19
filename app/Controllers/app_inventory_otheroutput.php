@@ -121,6 +121,123 @@ class app_inventory_otheroutput extends _BaseController {
 			exit($ex->getMessage());
 		}
 	}
+	function viewRegisterSticker()
+	{
+		try
+		{ 
+			
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+						$permited = false;
+						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						
+						if(!$permited)
+						throw new \Exception(NOT_ACCESS_CONTROL);
+						
+							
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						if ($resultPermission 	== PERMISSION_NONE)
+						throw new \Exception(NOT_ALL_EDIT);		
+			}	 
+			
+			
+			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri			
+			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri				
+			$companyID 					= $dataSession["user"]->companyID;		
+			$branchID 					= $dataSession["user"]->branchID;		
+			$roleID 					= $dataSession["role"]->roleID;		
+			
+			
+			//Get Component
+			$objComponent			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			//Get Logo
+			$objParameterLogo		= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			//Get Company
+			$objCompany 			= $this->Company_Model->get_rowByPK($companyID);	
+			
+					
+			//Get Documento				
+			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");						
+			$datView["objWarehouse"]				= $this->Warehouse_Model->get_rowByPK($companyID,$datView["objTM"]->sourceWarehouseID);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_otheroutput","statusID",$datView["objTM"]->statusID,$companyID,$branchID,$roleID);
+			
+			$html = helper_reporteA4mmTransactionMasterInventoryOtherOutputStickerGlobalPro(
+			    "SALIDA DE INVENTARIO STICKER",
+			    $objCompany,
+			    $objParameterLogo,
+			    $datView["objTM"],
+				$datView["objStage"][0]->display, /*estado*/
+				$datView["objTMD"],
+				$datView["objWarehouse"]
+		    );
+			
+			
+			//echo $html;
+			$this->dompdf->loadHTML($html);
+			
+			
+			//1cm = 29.34666puntos
+			//a4: 210 ancho x 297
+			//a4: 21cm x 29.7cm
+			//a4: 595.28puntos x 841.59puntos
+			
+			//$this->dompdf->setPaper('A4','portrait');
+			//$this->dompdf->setPaper(array(0,0,234.76,6000));
+			
+			$this->dompdf->render();
+			
+			
+			
+			
+			$objParameterShowLinkDownload		= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+			$objParameterShowLinkDownload		= $objParameterShowLinkDownload->value;
+			$objParameterShowDownloadPreview	= $this->core_web_parameter->getParameter("CORE_SHOW_DOWNLOAD_PREVIEW",$companyID);
+			$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview->value;
+			$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true" ? true : false;
+			
+			$fileNamePut = "transferencia_".$transactionMasterID."_".date("dmYhis").".pdf";
+			$fileNamePdf = $datView["objTM"]->transactionNumber.".pdf";
+			
+			//$path        = "./resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".$fileNamePut;
+			//	
+			//file_put_contents(
+			//	$path,
+			//	$this->dompdf->output()					
+			//);									
+			//chmod($path, 644);
+			
+			if($objParameterShowLinkDownload == "true")
+			{			
+				echo "<a 
+					href='".base_url()."/resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".
+					$fileNamePut."'>download factura</a>
+				"; 				
+			
+			}
+			else{			
+				//visualizar				
+				$this->dompdf->stream($fileNamePdf, ['Attachment' => $objParameterShowDownloadPreview ]);
+			}
+			
+			
+			
+			//descargar
+			//$this->dompdf->stream();
+			
+			
+		}
+		catch(\Exception $ex){
+			exit($ex->getMessage());
+		}
+	}
 	function searchTransactionMaster(){
 		try{ 
 			//AUTENTICADO
