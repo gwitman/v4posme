@@ -1044,6 +1044,9 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		
 		",
 		
+		/*Gym Power House*/
+		strtolower('gym_power_house_app_inventory_item_lblBanoServicio')			 										=> "Membresia",
+		
 		/*Cafe hotel Retorno*/		
 		strtolower('cafe_hotel_retorno_core_web_language_workflowstage_billing_REGISTRADA')			 						=> "GUARDAR MESA",
 		strtolower('cafe_hotel_retorno_core_web_language_workflowstage_billing_APLICADA')				 					=> "PAGAR",

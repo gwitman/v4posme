@@ -467,6 +467,8 @@ $routes->match(['get','post'],'app_box_report/daily_town','app_box_report::daily
 $routes->match(['get','post'],'app_box_report/daily_town/(:any)','app_box_report::daily_town');
 $routes->match(['get','post'],'app_box_report/share_summary_58mm','app_box_report::share_summary_58mm');
 $routes->match(['get','post'],'app_box_report/share_summary_58mm/(:any)','app_box_report::share_summary_58mm');
+$routes->match(['get','post'],'app_box_report/attendance','app_box_report::attendance');
+$routes->match(['get','post'],'app_box_report/attendance/(:any)','app_box_report::attendance');
 $routes->match(['get','post'],'app_box_provisioned/edit','app_box_provisioned::edit');
 $routes->match(['get','post'],'app_box_provisioned/edit/(:any)','app_box_provisioned::edit');
 $routes->match(['get','post'],'app_box_provisioned/delete','app_box_provisioned::delete');

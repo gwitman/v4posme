@@ -414,7 +414,7 @@
 								
 								
 								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?> ">
-									<label class="col-lg-4 control-label" for="normal">Baño de servicio</label>
+									<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","lblBanoServicio","Baño de servicio"); ?></label>
 									<div class="col-lg-8">
 										<input type="checkbox"   name="txtRealStateRoomBatchServices" id="txtRealStateRoomBatchServices" value="1"  <?php echo ($objItem->realStateRoomBatchServices == 1) ? "checked":""; ?>  >
 									</div>

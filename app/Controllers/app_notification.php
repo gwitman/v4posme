@@ -1645,6 +1645,8 @@ class app_notification extends _BaseController
 			$query			= "CALL pr_box_get_report_closed(?,?,?,?,?,?,?);";
 			if ($objCompany->type == "galmcuts")
 				$query			= "CALL pr_box_get_report_closed_glamcuts(?,?,?,?,?,?,?);";
+			if ($objCompany->type == "gym_power_house")
+				$query			= "CALL pr_box_get_report_closed_gym(?,?,?,?,?,?,?);";
 
 
 			$objData		= $this->Bd_Model->executeRender(
@@ -1695,7 +1697,9 @@ class app_notification extends _BaseController
 				$this->email->setMessage($html);
 				$resultSend01 = $this->email->send();
 				$resultSend02 = $this->email->printDebugger();
-			} else {
+			} 
+			else 
+			{
 				$this->dompdf->loadHTML($html);
 				$this->dompdf->render();
 				$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD", $companyID);

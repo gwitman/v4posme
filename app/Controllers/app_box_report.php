@@ -1224,6 +1224,190 @@ class app_box_report extends _BaseController {
 		}
 	}
 	
+	function attendance(){
+		try{ 
+		
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+		
+			//PERMISOS SOBRE LAS FUNCIONES
+			if(APP_NEED_AUTHENTICATION == true){				
+				
+				$permited = false;
+				$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				
+				if(!$permited)
+				throw new \Exception(NOT_ACCESS_CONTROL);
+				
+				$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"index",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				if ($resultPermission 	== PERMISSION_NONE)
+				throw new \Exception(NOT_ACCESS_FUNCTION);	
+	
+			}	
+			
+			$authorization		= $resultPermission;								
+			$viewReport			= false;
+			$startOn			= false;
+			$endOn				= false;
+			$hourOn				= 1;
+			$hourEnd			= 23;
+			$companyID			= $dataSession["user"]->companyID;
+			$branchID			= $dataSession["user"]->branchID;
+			$userID				= $dataSession["user"]->userID;
+			$tocken				= '';
+			
+			
+			
+			//obtener el desplazamiento de la fecha de reporte			
+			$filterArray 		= array_filter($dataSession["menuHiddenPopup"], function($val){  return (strpos($val->display, 'ES_PERMITIDO_MOSTRAR_INFO_DE_') !== false) && (strpos($val->display, '_DAY_IN_app_box_report_share') !== false) ;});
+			$filteredArray 		= [];
+			$filterIndex 		= 0;			
+			foreach($filterArray as $key => $value ){ $filteredArray[$filterIndex] = $value;  $filterIndex++; }
+			if(count($filteredArray) > 0 && $dataSession["role"]->isAdmin == 0 ){
+				$filteredArray = str_replace("ES_PERMITIDO_MOSTRAR_INFO_DE_","",$filteredArray[0]->display);
+				$filteredArray = str_replace("_DAY_IN_app_box_report_share","",$filteredArray);
+				$filteredArray = intval($filteredArray);
+			}
+			else{
+				$filteredArray = -1;
+			}
+			
+			//obtener parametros
+			$viewReport			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"viewReport");//--finuri	
+			$startOn			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"startOn");//--finuri
+			$endOn				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri			
+			$hourOn				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"hourStart");//--finuri
+			$hourEnd			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"hourEnd");//--finuri
+			$userIDFilter		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"userIDFilter");//--finuri			
+			$format				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"format");//--finuri			
+			$size				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"size");//--finuri			
+			
+			
+			//calcular las fechas iniciales del reporte y fecha final
+			$startOn			= $startOn." ".$hourOn.":00:00";	
+			$endOn				= $endOn." ".$hourEnd.":59:59";				
+			$startOn_ 	= \DateTime::createFromFormat('Y-m-d H:i:s',$startOn);		
+			$endOn_ 	= \DateTime::createFromFormat('Y-m-d H:i:s',$endOn);		
+			if($filteredArray != -1){
+				$startOn_Temporal = $endOn_;
+				date_sub($startOn_Temporal, date_interval_create_from_date_string($filteredArray.' days'));
+				
+				if($startOn_ <  $startOn_Temporal){
+					$startOn = $startOn_Temporal->format('Y-m-d H:i:s');
+				}
+			}
+			
+			
+			
+			
+			//cargar pantalla de filtros
+			if(!($viewReport && $startOn && $endOn )){
+				
+				//Obtener lista de usuarios
+				$objListaUsuarios 				= $this->User_Model->get_All($dataSession["user"]->companyID);
+				$dataView["objListaUsuarios"] 	= $objListaUsuarios;
+				
+				//Renderizar Resultado 
+				$dataSession["message"]		= $this->core_web_notification->get_message();
+				$dataSession["head"]		= /*--inicio view*/ view('app_box_report/attendance/view_head');//--finview
+				$dataSession["body"]		= /*--inicio view*/ view('app_box_report/attendance/view_body',$dataView);//--finview
+				$dataSession["script"]		= /*--inicio view*/ view('app_box_report/attendance/view_script');//--finview
+				$dataSession["footer"]		= "";			
+				return view("core_masterpage/default_report",$dataSession);//--finview-r	
+			}
+			
+			
+			//procesar reporte			
+			$obUserModel	= $this->User_Model->get_rowByPK($companyID, $branchID, $userIDFilter);
+			$companyID 		= $companyID;
+			$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO", $companyID);
+			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
+
+
+			$query			= "CALL pr_box_get_report_attendance(?,?,?,?,?,?,?);";			
+			$objData		= $this->Bd_Model->executeRender(
+				$query,
+				[$userID, $tocken, $companyID, $authorization, $startOn, $endOn, $userIDFilter]
+			);
+
+			if (isset($objData))
+				$objDataResult["objDetail"]					= $objData;
+			else
+				$objDataResult["objDetail"]					= NULL;
+
+
+
+
+			//parametros de reportes
+			$params_["objCompany"]					= $objCompany;			
+			$params_["startOn"]						= str_replace(" 00:00:00", "", $startOn);			
+			$params_["endOn"]						= str_replace(" 00:00:00", "", $endOn);
+			$params_["dateCurrent"]					= date("Y-m-d H:i:s");
+			$params_["obUserModel"]					= $obUserModel;
+			$params_["objDetail"]					= $objDataResult["objDetail"];
+			$params_["objLogo"]						= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO", $companyID);
+			$params_["message"]						= str_replace(" 00:00:00", "", $startOn) . " ASISTENCIA DE CAJA: " . $objCompany->name . " ";
+			$params_["objFirma"] 					= "{companyID:" .  ",branchID:" .  ",userID:" . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_box_get_report_attendance" . ",ip:" . $this->request->getIPAddress() . ",sessionID:" . ",agenteID:" . $this->request->getUserAgent()->getAgentString() . ",lastActivity:" .  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}";
+			$params_["objFirmaEncription"] 			= md5($params_["objFirma"]);
+			$subject								= $params_["message"];
+			$html  									= /*--inicio view*/ view('app_box_report/attendance/view_a_disemp', $params_); //--finview
+
+
+			//generar resultado html
+			if (strtoupper($format) == strtoupper("HTML")) {
+
+				echo $html;
+				
+			} 
+			
+			//generar resultado pdf
+			if (strtoupper($format) == strtoupper("PDF")) 
+			{			
+				$this->dompdf->loadHTML($html);
+				$this->dompdf->render();
+				
+				$objParameterShowLinkDownload		= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD", $companyID);
+				$objParameterShowLinkDownload		= $objParameterShowLinkDownload->value;
+				$objParameterShowDownloadPreview	= $this->core_web_parameter->getParameter("CORE_SHOW_DOWNLOAD_PREVIEW", $companyID);
+				$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview->value;
+				$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true" ? true : false;
+
+				$fileNamePut = "caja_0_" . date("dmYhis") . ".pdf";
+				$path        = "./resource/file_company/company_" . $companyID . "/component_48/component_item_0/" . $fileNamePut;
+
+
+				//Crear la Carpeta para almacenar los Archivos del Documento
+				$documentoPath = PATH_FILE_OF_APP."/company_".$companyID."/component_48/component_item_0";
+				if (!file_exists($documentoPath))
+				{
+					mkdir($documentoPath, 0755);
+					chmod($documentoPath, 0755);
+				}
+			
+			
+				file_put_contents($path, $this->dompdf->output());
+				chmod($path, 644);
+
+				if ($objParameterShowLinkDownload == "true") {
+					echo "<a href='" . base_url() . "/resource/file_company/company_" . $companyID . "/component_48/component_item_0/" . $fileNamePut . "'>download caja</a>";
+				} 
+				else 
+				{
+					//visualizar
+					$this->dompdf->stream("file.pdf ", ['Attachment' => $objParameterShowDownloadPreview]);
+				}
+			}
+			
+			
+		}
+		catch(\Exception $ex){
+			exit($ex->getMessage());
+		}
+	}
+	
 	
 	
 	function share_summary_58mm(){
