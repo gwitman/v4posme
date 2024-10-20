@@ -12,7 +12,7 @@ class app_api_fingerprint extends _BaseController {
 	
 	function web_ssejs(){
 		
-		log_message("error",print_r(  "witman_gonzalez -1"  ,true));
+		
 		$tockenPc 		= "llRnk81687411555823";
 		$finger_name	= "Pulgar_Derecho";
 		$resultado 		= $this->Temp_Fingerprint_Model->get_ssejs($tockenPc);
@@ -44,7 +44,7 @@ class app_api_fingerprint extends _BaseController {
 	//Leer huella para guardar
 	function web_active_sensor_enroll()
 	{
-		log_message("error",print_r(  "witman_gonzalez -2"  ,true));
+		
 		$customerID	 	= /*inicio get post*/ $this->request->getPost("customerID");	
 		$tockenPc 		= "llRnk81687411555823";
 		$finger_name	= "Pulgar_Derecho";
@@ -65,23 +65,22 @@ class app_api_fingerprint extends _BaseController {
 	//Leer  huella para validar
 	function web_active_sensor_read(){
 		
-		log_message("error",print_r(  "witman_gonzalez -3"  ,true));
+		
 		$tockenPc 		= "llRnk81687411555823";
 		$finger_name	= "Pulgar_Derecho";
-		
 		$this->Temp_Fingerprint_Model->delete_app_posme($tockenPc);
-		log_message("error",print_r(  "witman_gonzalez -3.1"  ,true));
+		
 		
 		$dataNew["id"] 				= strtotime("now") ;
 		$dataNew["option"]			= "read";
 		$dataNew["token_pc"]		= $tockenPc;
 		$dataNew["created_at"] 		= date("Y-m-d H:i:s");
 		$this->Temp_Fingerprint_Model->insert_app_posme($dataNew);
-		log_message("error",print_r(  "witman_gonzalez -3.2"  ,true));
+		
 		
 	}
 	function web_get_finger(){
-		log_message("error",print_r(  "witman_gonzalez -4"  ,true));
+		
 		
 		$customerID	 		= /*inicio get post*/ $this->request->getPost("customerID");	
 		$objFinger 			= $this->Fingerprints_Model->getByUserIDAndNotifie($customerID);
@@ -95,7 +94,7 @@ class app_api_fingerprint extends _BaseController {
 	function sse($tocken = "")
 	{
 		
-		log_message("error",print_r(  "witman_gonzalez 1"  ,true));
+		
 		$tocken 		= helper_SegmentsByIndex($this->uri->getSegments(),1,$tocken);	
 		$tockenPc 		= "llRnk81687411555823";
 		$result 		= $this->Temp_Fingerprint_Model->get_ssejsByOptionIsNotNull($tockenPc);
@@ -115,7 +114,7 @@ class app_api_fingerprint extends _BaseController {
 	
 	function save_finger()
 	{
-		log_message("error",print_r(  "witman_gonzalez 2"  ,true));
+		
 		$tockenPc 			= "llRnk81687411555823";
 		$result 			= $this->Temp_Fingerprint_Model->get_ssejsByTocken($tockenPc);
 		$data["option"]		= /*inicio get post*/ $this->request->getVar("option");	
@@ -144,7 +143,7 @@ class app_api_fingerprint extends _BaseController {
 	
 	function list_finger(){
 		
-		log_message("error",print_r(  "witman_gonzalez 3"  ,true));
+		
 		$from 		= /*inicio get post*/ $this->request->getVar("from");	
 		$total 		= $this->Fingerprints_Model->getCount();
 		$total  	= $total->total;
@@ -171,7 +170,7 @@ class app_api_fingerprint extends _BaseController {
 	
 	function update_finger()
 	{
-		log_message("error",print_r(  "witman_gonzalez 4"  ,true));
+		
 		$tockenPc 			= "llRnk81687411555823";
 		$result 			= $this->Temp_Fingerprint_Model->get_ssejsByTocken($tockenPc);
 		$data["fingerprint"]		= null;
@@ -189,7 +188,7 @@ class app_api_fingerprint extends _BaseController {
 	function sensor_close()
 	{
 		
-		log_message("error",print_r(  "witman_gonzalez 5"  ,true));
+		
 		$tockenPc 			= "llRnk81687411555823";
 		$result 			= $this->Temp_Fingerprint_Model->get_ssejsByTocken($tockenPc);		
 		$data["option"]		= "close";	
@@ -203,7 +202,7 @@ class app_api_fingerprint extends _BaseController {
 	
 	function sincronizar(){
 		
-		log_message("error",print_r(  "witman_gonzalez 6"  ,true));
+		
 		$fingerID 	= $this->request->getVar("finger_id");
 		$result 	= $this->Fingerprints_Model->getByFingerId($fingerID);	
         $array 		= json_encode($result);

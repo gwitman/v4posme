@@ -68,7 +68,9 @@ class app_box_attendance extends _BaseController {
 			//Tipo de Factura			
 			$customerDefault									= $this->core_web_parameter->getParameter("INVOICE_BILLING_CLIENTDEFAULT",$companyID);
 			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);						
-			$dataView["objTransactionMaster"]->transactionOn 	= date_format(date_create($dataView["objTransactionMaster"]->transactionOn),"Y-m-d");
+			$dataView["objTransactionMaster"]->transactionOn 	= date_format(date_create($dataView["objTransactionMaster"]->transactionOn),"Y-m-d");			
+			$objParameterATTENDANCE_AUTO_PRINTER 				= $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"],"ATTENDANCE_AUTO_PRINTER")->value;
+			
 			
 			$dataView["objListCurrency"]		= $objListCurrency;
 			$dataView["companyID"]				= $dataSession["user"]->companyID;
@@ -304,6 +306,7 @@ class app_box_attendance extends _BaseController {
 			throw new \Exception("EL DOCUMENTO NO PUEDE INGRESAR, EL CICLO CONTABLE ESTA CERRADO");
 			
 			//Obtener transaccion
+			$objParameterATTENDANCE_AUTO_PRINTER 	= $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"],"ATTENDANCE_AUTO_PRINTER")->value;
 			$transactionID 							= $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID,"tb_transaction_master_attendance",0);
 			$companyID 								= $dataSession["user"]->companyID;
 			$objT 									= $this->Transaction_Model->getByCompanyAndTransaction($dataSession["user"]->companyID,$transactionID);
@@ -352,24 +355,31 @@ class app_box_attendance extends _BaseController {
 				$this->core_web_notification->set_message(false,SUCCESS);
 				
 				
-				//Ejecutar Impresion automatica				
-				$ch 		= curl_init();
-				$urlPrinter = base_url()."/app_box_attendance/viewRegisterFormatoPaginaTicketDirect80mm/companyID/".$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID;
-				log_message("error",$urlPrinter);
-				
-				// set URL and other appropriate options
-				curl_setopt($ch, CURLOPT_URL, $urlPrinter);
-				curl_setopt($ch, CURLOPT_HEADER, 0);
-				
-				// grab URL and pass it to the browser
-				curl_exec($ch);
-				
-				// close cURL resource, and free up system resources
-				curl_close($ch);
-				
-				
-				//$this->response->redirect(base_url()."/".'app_box_attendance/edit/companyID/'.$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID);
-				$this->response->redirect(base_url()."/".'app_box_attendance/add');	
+				if($objParameterATTENDANCE_AUTO_PRINTER == "true")
+				{
+					//Ejecutar Impresion automatica				
+					$ch 		= curl_init();
+					$urlPrinter = base_url()."/app_box_attendance/viewRegisterFormatoPaginaTicketDirect80mm/companyID/".$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID;
+					log_message("error",$urlPrinter);
+					
+					// set URL and other appropriate options
+					curl_setopt($ch, CURLOPT_URL, $urlPrinter);
+					curl_setopt($ch, CURLOPT_HEADER, 0);
+					
+					// grab URL and pass it to the browser
+					curl_exec($ch);
+					
+					// close cURL resource, and free up system resources
+					curl_close($ch);
+					
+					
+					
+					$this->response->redirect(base_url()."/".'app_box_attendance/add');	
+				}
+				if($objParameterATTENDANCE_AUTO_PRINTER == "false")
+				{
+					$this->response->redirect(base_url()."/".'app_box_attendance/edit/companyID/'.$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID);
+				}
 			}
 			else{
 				$db->transRollback();						
@@ -489,10 +499,13 @@ class app_box_attendance extends _BaseController {
 			$dataView["branchName"]				= $dataSession["branch"]->name;
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
 			
-			$objParameterExchangePurchase		= $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_PURCHASE",$companyID);
-			$dataView["exchangeRatePurchase"]	= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID) - $objParameterExchangePurchase->value;			
-			$objParameterExchangeSales			= $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID);
-			$dataView["exchangeRateSale"]		= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID) + $objParameterExchangeSales->value;		
+			
+			$objParameterATTENDANCE_AUTO_PRINTER 				= $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"],"ATTENDANCE_AUTO_PRINTER")->value;
+			$dataView["objParameterATTENDANCE_AUTO_PRINTER"]	= $objParameterATTENDANCE_AUTO_PRINTER;			
+			$objParameterExchangePurchase			= $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_PURCHASE",$companyID);
+			$dataView["exchangeRatePurchase"]		= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID) - $objParameterExchangePurchase->value;			
+			$objParameterExchangeSales				= $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID);
+			$dataView["exchangeRateSale"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID) + $objParameterExchangeSales->value;		
 			
 	
 			$dataView["objCurrency"]			= $objCurrency;

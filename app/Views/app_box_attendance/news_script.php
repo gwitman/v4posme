@@ -15,7 +15,7 @@
 						 //$('#txtDetailReference3').datepicker({format:"yyyy-mm-dd"});
 						 //$('#txtDetailReference3').val(moment().format("YYYY-MM-DD"));	
 						 //$("#txtDetailReference3").datepicker("update");
-
+						
 						 
 						
 						
@@ -249,12 +249,15 @@
 						$( "#form-new-invoice" ).attr("method","POST");
 						$( "#form-new-invoice" ).attr("action","<?php echo base_url(); ?>/app_box_attendance/save/new");
 						
-						if(validateForm())
-						{
-							fnWaitOpen();
-							$( "#form-new-invoice" ).submit();
-						}
 						
+						if( '<?php echo $objParameterATTENDANCE_AUTO_PRINTER; ?>' == 'true')
+						{
+							if(validateForm())
+							{
+								fnWaitOpen();
+								$( "#form-new-invoice" ).submit();
+							}
+						}
 						
 					}
 					

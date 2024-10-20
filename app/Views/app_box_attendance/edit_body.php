@@ -5,9 +5,17 @@
 		<div class="email-bar" style="border-left:1px solid #c9c9c9">                                
 			<div class="btn-group pull-right">     
 				<a href="<?php echo base_url(); ?>/app_box_attendance/add" class="btn btn-success" id="btnNuevo"><i class="icon16 i-checkmark-4"></i>Nuevo</a>						
+				<a href="#" class="btn btn-primary" id="btnNuevoAndPrinterDirect"><i class="icon16 i-checkmark-4"></i>Nuevo e Emprimir</a>						
+				
+				
+				
 				<a href="<?php echo base_url(); ?>/app_box_attendance/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>                                    
-				<a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>									
-				<a href="#" class="btn btn-primary" id="btnPrinter"><i class="icon16 i-print"></i> Imprimir</a>
+				<a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>
+				<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Imprimir </font></font><span class="caret"></span></button>
+				<ul class="dropdown-menu">
+					<li><a href="#" id="btnPrinter"   ><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"><i class="icon16 i-print"></i> Imprimir preview</font></font></a></li>
+					<li><a href="#" id="btnPrinterdDirect"   ><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"><i class="icon16 i-print"></i> Imprimir direct</font></font></a></li>
+				</ul>
 				<a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
 			</div>
 		</div> 

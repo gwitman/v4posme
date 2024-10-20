@@ -19,6 +19,19 @@
 						$(document).on("click","#btnBack",function(){
 								fnWaitOpen();
 						});
+						$(document).on("click","#btnNuevoAndPrinterDirect",function()
+						{
+							fnWaitOpen();
+							$.ajax({									
+								cache       : false,
+								dataType    : 'json',
+								type        : 'POST',
+								url  		: "<?php echo base_url(); ?>/app_box_attendance/viewRegisterFormatoPaginaTicketDirect80mm/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>"
+							});
+							window.location.href = "<?php echo base_url(); ?>"+"/app_box_attendance/add";
+							
+						});
+						
 						
 						
 						

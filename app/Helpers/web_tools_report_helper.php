@@ -1190,7 +1190,7 @@ function helper_reporteA4TransactionMasterInvoiceA4Opcion1(
     $causalName = "", /*causal*/
 	$userNickName = "", /*vendedor*/
     $rucCompany = "", /*ruc*/
-	$objListComanyParameter /*parametros*/
+	$objListComanyParameter = "" /*parametros*/
 )
 {
     $path    		= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
