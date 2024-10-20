@@ -723,7 +723,7 @@ WHERE
 	tb_parameter.name = "ACCOUNTING_JOURNALTYPE_CLOSED";## VALOR DEL TIPO DE COMPROBANTE DE CIERRE: catalogItemID : 74 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "logo-micro-finanza.jpg" 
+	tb_company_parameter.value = "logo-micro-finanza.png" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_LOGO";## Logo de la empresa 
@@ -1370,13 +1370,13 @@ WHERE
 	
 /*--Cocina*/
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_SHOW_COMMAND_FOOT";## Símbolo de la Moneda Funcional 
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "POS-80-Series-Cocina" 
+	tb_company_parameter.value = "POS-80-Cocina" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_COCINA";## Imprimie Directamente la Cocina
