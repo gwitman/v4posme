@@ -243,7 +243,7 @@ WHERE
 
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_IS_RESTAURANT";	## Es restaurante
@@ -1043,20 +1043,20 @@ WHERE
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "posMe" 
+	tb_company_parameter.value = "POS-80-Series" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_BAR";## Nombre de la impresora de bar
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "posMe" 
+	tb_company_parameter.value = "app_invoice_billing/viewPrinterDirectBar80mmRustikChillGrill" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_URL_BAR";## Url para imprimir comanda de bar
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "posMe" 
+	tb_company_parameter.value = "viewRegisterFormatoPaginaCocina80mm" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_URL_BAR";## Url para imprimir comanda de bar con previoew
@@ -1297,7 +1297,7 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT";## Imprimir directo en la impresora 
@@ -1376,19 +1376,19 @@ WHERE
 	tb_parameter.name = "INVOICE_BILLING_SHOW_COMMAND_FOOT";## Símbolo de la Moneda Funcional 
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "POS-80-Series" 
+	tb_company_parameter.value = "POS-80-Series-Cocina" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_COCINA";## Imprimie Directamente la Cocina
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaCocina58mm" 
+	tb_company_parameter.value = "app_invoice_billing/viewPrinterDirectCocina80mmRustikChillGrill" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_URL_PRINTER_COCINA";## Símbolo de la Moneda Funcional 
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewPrinterDirectCocina58mm" 
+	tb_company_parameter.value = "app_invoice_billing/viewPrinterDirectCocina80mmRustikChillGrill" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_URL_PRINTER_COCINA_DIRECT";## Símbolo de la Moneda Funcional 
