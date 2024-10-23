@@ -1349,7 +1349,7 @@ WHERE
 	tb_parameter.name = "INVOICE_URL_PRINTER";## URLs PARA LA IMPRESION DE FACTURA 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewPrinterDirectFactura80mm" 
+	tb_company_parameter.value = "app_invoice_billing/viewPrinterDirectFactura80mmBarExit" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_URL";## Urls para imprimir el recibo directamente en la impresora, mejor dicho imprimir la factura 

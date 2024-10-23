@@ -1217,10 +1217,10 @@
 				</br>
 				<div class="row" id="divPanelFacturaSideBar" >
 					<div class="col col-lg-2">
-						<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackFactura"><i class="icon16 i-arrow-bottom "></i> Regresar</a>						
+						<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackFactura"><i class="icon16 i-arrow-bottom "></i> REGRESAR</a>						
 					</div>	
 					<div class="col col-lg-2">
-						<a href="#" class="btn btn-flat btn-success btn-block" id="btnSaveInvoice"><i class="icon16 i-arrow-bottom "></i> Guardar mesa</a>
+						<a href="#" class="btn btn-flat btn-success btn-block" id="btnSaveInvoice"><i class="icon16 i-arrow-bottom "></i> GUARDAR MESA</a>
 					</div>	
 				</div>
 				

@@ -906,6 +906,8 @@ $routes->match(['get','post'],'app_invoice_billing/viewRegisterInstitutoLaVid','
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterInstitutoLaVid/(:any)','app_invoice_billing::viewRegisterInstitutoLaVid');
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mm','app_invoice_billing::viewPrinterDirectFactura80mm');
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mm/(:any)','app_invoice_billing::viewPrinterDirectFactura80mm');
+$routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmBarExit','app_invoice_billing::viewPrinterDirectFactura80mmBarExit');
+$routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmBarExit/(:any)','app_invoice_billing::viewPrinterDirectFactura80mmBarExit');
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmDistribuidoraRD','app_invoice_billing::viewPrinterDirectFactura80mmDistribuidoraRD');
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmDistribuidoraRD/(:any)','app_invoice_billing::viewPrinterDirectFactura80mmDistribuidoraRD');
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmBarMilekin','app_invoice_billing::viewPrinterDirectFactura80mmBarMilekin');

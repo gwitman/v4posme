@@ -147,6 +147,7 @@ use App\Models\Log_Session_Model;
 use App\Models\Transaction_Master_Concept_Model;
 use App\Models\Transaction_Master_Detail_Credit_Model;
 use App\Models\Transaction_Master_Detail_Model;
+use App\Models\Transaction_Master_Detail_References_Model;
 use App\Models\Transaction_Master_Info_Model;
 use App\Models\Transaction_Master_Denomination_Model;
 use App\Models\Transaction_Master_Model;
@@ -336,6 +337,7 @@ abstract class _BaseController extends Controller
 	protected $Transaction_Master_Concept_Model;
 	protected $Transaction_Master_Detail_Credit_Model;
 	protected $Transaction_Master_Detail_Model;
+	protected $Transaction_Master_Detail_References_Model;
 	protected $Transaction_Master_Info_Model;
 	protected $Transaction_Master_Denomination_Model;
 	protected $Transaction_Master_Model;
@@ -506,6 +508,7 @@ abstract class _BaseController extends Controller
 		$this->Transaction_Master_Concept_Model= new Transaction_Master_Concept_Model();
 		$this->Transaction_Master_Detail_Credit_Model= new Transaction_Master_Detail_Credit_Model();
 		$this->Transaction_Master_Detail_Model= new Transaction_Master_Detail_Model();
+		$this->Transaction_Master_Detail_References_Model = new Transaction_Master_Detail_References_Model();
 		$this->Transaction_Master_Info_Model= new Transaction_Master_Info_Model();
 		$this->Transaction_Master_Denomination_Model = new Transaction_Master_Denomination_Model();
 		$this->Transaction_Master_Model= new Transaction_Master_Model();

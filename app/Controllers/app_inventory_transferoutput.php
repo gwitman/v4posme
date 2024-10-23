@@ -684,9 +684,9 @@ class app_inventory_transferoutput extends _BaseController {
 					$objItem 									= $this->Item_Model->get_rowByPK($companyID,$value);
 					$objItemWarehouse							= $this->Itemwarehouse_Model->getByPK($companyID,$value,$objTMNew["sourceWarehouseID"]);
 					
-					//wgonzalez-//Validar Stock de Inventario
-					//wgonzalez-if($objItemWarehouse->quantity < helper_StringToNumber($arrayListQuantity[$key]))
-					//wgonzalez-throw new \Exception("La cantidad de '" . $objItem->itemNumber . " " . $objItem->name . "' es mayor que la disponible en bodega");
+					//Validar Stock de Inventario
+					if($objItemWarehouse->quantity < helper_StringToNumber($arrayListQuantity[$key]))
+					throw new \Exception("La cantidad de '" . $objItem->itemNumber . " " . $objItem->name . "' es mayor que la disponible en bodega");
 					
 					
 					//Nuevo Detalle
@@ -721,8 +721,8 @@ class app_inventory_transferoutput extends _BaseController {
 						$objTMD["inventoryWarehouseTargetID"]	= $objTMNew["targetWarehouseID"];					
 						$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
 						
-						//wgonzalez-if($objItemWarehouse->quantity < $objTMD["quantity"])
-						//wgonzalez-throw new \Exception("NO HAY SUFICIENTE EXISTENCIAS DEL PRODUCTO");
+						if($objItemWarehouse->quantity < $objTMD["quantity"])
+						throw new \Exception("NO HAY SUFICIENTE EXISTENCIAS DEL PRODUCTO");
 						
 					}
 					//Editar Detalle
@@ -737,8 +737,8 @@ class app_inventory_transferoutput extends _BaseController {
 						$objTMDNew["expirationDate"]				= $vencimiento == "" ? NULL:  $vencimiento;
 						$this->Transaction_Master_Detail_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$transactionMasterDetailID,$objTMDNew);						
 						
-						//wgonzalez-if($objItemWarehouse->quantity < $objTMDNew["quantity"])
-						//wgonzalez-throw new \Exception("NO HAY SUFICIENTE EXISTENCIAS DEL PRODUCTO");
+						if($objItemWarehouse->quantity < $objTMDNew["quantity"])
+						throw new \Exception("NO HAY SUFICIENTE EXISTENCIAS DEL PRODUCTO");
 					}
 					
 				}

@@ -195,6 +195,7 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+			$dataView["objTransactionMasterDetailReferences"] 	= $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterIDAndComponentID($transactionMasterID,$objComponentItem->componentID);
 			$dataView["objTransactionMasterDetailWarehouse"]	= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterDetailConcept"]		= $this->Transaction_Master_Concept_Model->get_rowByTransactionMasterConcept($companyID,$transactionID,$transactionMasterID,$objComponentItem->componentID);
 			
@@ -374,6 +375,7 @@ class app_invoice_billing extends _BaseController {
 				$dataPostPrinter["objTransactionMaster"]					= $dataView["objTransactionMaster"];
 				$dataPostPrinter["objTransactionMasterInfo"]				= $dataView["objTransactionMasterInfo"];
 				$dataPostPrinter["objTransactionMasterDetail"]				= $dataView["objTransactionMasterDetail"];
+				$dataPostPrinter["objTransactionMasterDetailReferences"]	= $dataView["objTransactionMasterDetailReferences"];
 				$dataPostPrinter["objTransactionMasterDetailWarehouse"]		= $dataView["objTransactionMasterDetailWarehouse"];
 				$dataPostPrinter["objTransactionMasterDetailConcept"]		= $dataView["objTransactionMasterDetailConcept"];
 				$dataPostPrinter["objComponentCompany"]				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
@@ -868,6 +870,7 @@ class app_invoice_billing extends _BaseController {
 			$objParameterRegrearANuevo					= $objParameterRegrearANuevo->value;			
 			$objParameterUpdateDateAplication			= $this->core_web_parameter->getParameter("INVOICE_BILLING_UPDATE_DATE_APPLYCATION_IN_MOMENT_APLICATION",$companyID);
 			$objParameterUpdateDateAplication			= $objParameterUpdateDateAplication->value;
+			$objParameterEsRestaurant 					= $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"],"INVOICE_BILLING_IS_RESTAURANT")->value;
 			
 			//Actualizar Maestro
 			$codigoMesero								= /*inicio get post*/ $this->request->getPost("txtCodigoMesero");
@@ -1196,6 +1199,18 @@ class app_invoice_billing extends _BaseController {
 						}
 						
 						
+						//Ingresar la lista de productos de RESTAURANTE
+						if ( $objParameterEsRestaurant == "true")
+						{
+							$objTMDRNew["isActive"] 					= 1;
+							$objTMDRNew["createdOn"] 					= date("Y-m-d H:m:s");
+							$objTMDRNew["quantity"] 					= $objTMD["quantity"];
+							$objTMDRNew["componentID"] 					= $objTMD["componentID"];
+							$objTMDRNew["componentItemID"]				= $objTMD["componentItemID"];
+							$objTMDRNew["transactionMasterDetailID"]	= $transactionMasterDetailID_;
+							$this->Transaction_Master_Detail_References_Model->insert_app_posme($objTMDRNew);
+						}
+						
 					}					
 					//Editar Detalle
 					else{
@@ -1230,7 +1245,8 @@ class app_invoice_billing extends _BaseController {
 						
 						$tax1Total								= $tax1Total + $tax1;
 						$subAmountTotal							= $subAmountTotal + ($quantity * $price);
-						$amountTotal							= $amountTotal + $objTMDNew["amount"];						
+						$amountTotal							= $amountTotal + $objTMDNew["amount"];		
+						$objTMDOld								= $this->Transaction_Master_Detail_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID,$transactionMasterDetailID,$objComponentItem->componentID);						
 						$this->Transaction_Master_Detail_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$transactionMasterDetailID,$objTMDNew);	
 						
 						$objTMDC["reference1"]					= /*inicio get post*/ $this->request->getPost("txtFixedExpenses");
@@ -1255,6 +1271,22 @@ class app_invoice_billing extends _BaseController {
 							$objPrice = $this->Price_Model->update_app_posme($companyID,$listPriceID,$itemID,$typePriceID,$dataUpdatePrice);									
 							
 						}
+						
+						
+						//Ingresar la lista de productos de RESTAURANTE
+						if ( $objParameterEsRestaurant == "true" && $objTMDNew["quantity"] > $objTMDOld->quantity )
+						{
+							$quantityRestaranteTraking 					= $objTMDNew["quantity"] - $objTMDOld->quantity;
+							$objTMDRNew["isActive"] 					= 1;
+							$objTMDRNew["createdOn"] 					= date("Y-m-d H:m:s");
+							$objTMDRNew["quantity"] 					= $quantityRestaranteTraking;
+							$objTMDRNew["componentID"] 					= $objComponentItem->componentID;
+							$objTMDRNew["componentItemID"]				= $itemID;
+							$objTMDRNew["transactionMasterDetailID"]	= $transactionMasterDetailID;
+							$this->Transaction_Master_Detail_References_Model->insert_app_posme($objTMDRNew);
+						
+						}
+						
 						
 					}
 					
@@ -1606,7 +1638,7 @@ class app_invoice_billing extends _BaseController {
 			$objParameterImprimirPorCadaFactura		= $objParameterImprimirPorCadaFactura->value;
 			$objParameterSendEmailInInsert			= $this->core_web_parameter->getParameter("INVOICE_SEND_EMAIL_IN_INSERT",$companyID);
 			$objParameterSendEmailInInsert			= $objParameterSendEmailInInsert->value;
-			
+			$objParameterEsRestaurant 				= $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"],"INVOICE_BILLING_IS_RESTAURANT")->value;
 			
 			
 			
@@ -1881,6 +1913,19 @@ class app_invoice_billing extends _BaseController {
 					}
 					
 					
+					//Ingresar la lista de productos de RESTAURANTE
+					if ( $objParameterEsRestaurant == "true")
+					{
+						$objTMDRNew["isActive"] 					= 1;
+						$objTMDRNew["createdOn"] 					= date("Y-m-d H:m:s");
+						$objTMDRNew["quantity"] 					= $objTMD["quantity"];
+						$objTMDRNew["componentID"] 					= $objTMD["componentID"];
+						$objTMDRNew["componentItemID"]				= $objTMD["componentItemID"];
+						$objTMDRNew["transactionMasterDetailID"]	= $transactionMasterDetailID_;
+						$this->Transaction_Master_Detail_References_Model->insert_app_posme($objTMDRNew);
+					}
+					
+					
 				}
 			}
 			$amountTotal = $amountTotal-$varDescuento;
@@ -2069,6 +2114,7 @@ class app_invoice_billing extends _BaseController {
 			$objParameterAmortizationDuranteFactura = $objParameterAmortizationDuranteFactura->value;
 			$objParameterUnitDefault				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, 'INVENTORY_UNITMEASURE_ID_DEFAULT')->value;
 			$objParameterCXC_DAY_EXCLUDED_IN_CREDIT	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, 'CXC_DAY_EXCLUDED_IN_CREDIT')->value;
+			$objParameterEsRestaurant 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "INVOICE_BILLING_IS_RESTAURANT")->value;
 
 			//Saber si es al credito
 			$parameterCausalTypeCredit 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_CREDIT");			
@@ -2272,6 +2318,20 @@ class app_invoice_billing extends _BaseController {
 					$objTMDC["reference5"]					= "";
 					$objTMDC["reference9"]					= "reference1: Porcentaje de Gastos Fijo para las facturas de credito,reference2: Escritura Publica,reference3: Primer Linea del Protocolo";
 					$this->Transaction_Master_Detail_Credit_Model->insert_app_posme($objTMDC);
+					
+					
+					//Ingresar la lista de productos de RESTAURANTE
+					if ( $objParameterEsRestaurant == "true")
+					{
+						$objTMDRNew["isActive"] 					= 1;
+						$objTMDRNew["createdOn"] 					= date("Y-m-d H:m:s");
+						$objTMDRNew["quantity"] 					= $objTMD["quantity"];
+						$objTMDRNew["componentID"] 					= $objTMD["componentID"];
+						$objTMDRNew["componentItemID"]				= $objTMD["componentItemID"];
+						$objTMDRNew["transactionMasterDetailID"]	= $transactionMasterDetailID_;
+						$this->Transaction_Master_Detail_References_Model->insert_app_posme($objTMDRNew);
+					}
+					
 				}
 			}
 
@@ -3757,6 +3817,7 @@ class app_invoice_billing extends _BaseController {
 				$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 				$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 				$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+				$dataView["objTransactionMasterDetailReferences"]	= $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterIDAndComponentID($transactionMasterID,$objComponentItem->componentID);
 				$dataView["objTransactionMasterDetailWarehouse"]	= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterID);
 				$dataView["objTransactionMasterDetailConcept"]		= $this->Transaction_Master_Concept_Model->get_rowByTransactionMasterConcept($companyID,$transactionID,$transactionMasterID,$objComponentItem->componentID);
 				
@@ -3787,7 +3848,7 @@ class app_invoice_billing extends _BaseController {
 				$dataView	= $serializedData;
 			}
 			
-			//log_message("error",print_r($dataView,true));
+			
 			
 			//obtener nombre de impresora por defecto
 			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT",$companyID);
@@ -3796,6 +3857,86 @@ class app_invoice_billing extends _BaseController {
 			
 			$this->core_web_printer_direct->configurationPrinter($objParameterPrinterName);
 			$this->core_web_printer_direct->executePrinter80mm($dataView);
+			log_message("error","impresion elaborada");
+			
+		}
+		catch(\Exception $ex){
+		    log_message("error",print_r($ex->getMessage(),true));
+			
+		    //$data["session"]   = $dataSession;
+		    //$data["exception"] = $ex;
+		    //$data["urlLogin"]  = base_url();
+		    //$data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    //$data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    //$resultView        = view("core_template/email_error_general",$data);
+		    //return $resultView;
+			
+			exit($ex->getMessage());
+		}	
+	}
+	//facturacino imprimir directamente en impresora, formato de ticket
+	function viewPrinterDirectFactura80mmBarExit(){
+		try{
+			
+			
+			
+			//Obtener el componente de Item
+			$objComponentItem	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+			$dataSession		= $this->session->get();
+			
+			$companyID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"companyID");//--finuri
+			$transactionID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri	
+			$transactionMasterID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri	
+			$fromServer				= /*inicio get post*/ $this->request->getPost("fromServer");
+			
+			if($fromServer == "")
+			{
+				
+				$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+				$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+				$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+				$dataView["objTransactionMasterDetailReferences"]	= $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterIDAndComponentID($transactionMasterID,$objComponentItem->componentID);
+				$dataView["objTransactionMasterDetailWarehouse"]	= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterID);
+				$dataView["objTransactionMasterDetailConcept"]		= $this->Transaction_Master_Concept_Model->get_rowByTransactionMasterConcept($companyID,$transactionID,$transactionMasterID,$objComponentItem->componentID);
+				
+				
+				$dataView["objComponentCompany"]			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+				$dataView["objParameterLogo"]				= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+				$dataView["objParameterPhoneProperty"]		= $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE",$companyID);
+				$dataView["objCompany"] 					= $this->Company_Model->get_rowByPK($companyID);			
+				$dataView["objUser"] 						= $this->User_Model->get_rowByPK($companyID,$dataView["objTransactionMaster"]->createdAt,$dataView["objTransactionMaster"]->createdBy);
+				$dataView["Identifier"]						= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+				$dataView["objBranch"]						= $this->Branch_Model->get_rowByPK($companyID,$dataView["objTransactionMaster"]->branchID);
+				$dataView["objTipo"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$dataView["objTransactionMaster"]->transactionID,$dataView["objTransactionMaster"]->transactionCausalID);
+				$dataView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$dataView["objTransactionMaster"]->entityID);
+				$dataView["objCurrency"]					= $this->Currency_Model->get_rowByPK($dataView["objTransactionMaster"]->currencyID);
+				$dataView["prefixCurrency"]					= $dataView["objCurrency"]->simbol." ";
+				$dataView["cedulaCliente"] 					= $dataView["objTransactionMasterInfo"]->referenceClientIdentifier == "" ? $dataView["objCustumer"]->customerNumber :  $dataView["objTransactionMasterInfo"]->referenceClientIdentifier;
+				$dataView["nombreCliente"] 					= $dataView["objTransactionMasterInfo"]->referenceClientName  == "" ? $dataView["objCustumer"]->firstName : $dataView["objTransactionMasterInfo"]->referenceClientName ;
+				$dataView["objStage"]						= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($dataView["objTransactionMaster"]->statusID);
+			}
+			else 
+			{
+				// Decodificar la cadena Base64
+				$serializedData = base64_decode($fromServer);
+			
+				// Deserializar la cadena a un array
+				$serializedData = unserialize($serializedData);			
+			
+				$dataView	= $serializedData;
+			}
+			
+			
+			
+			//obtener nombre de impresora por defecto
+			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT",$companyID);
+			$objParameterPrinterName = $objParameterPrinterName->value;
+								
+			
+			$this->core_web_printer_direct->configurationPrinter($objParameterPrinterName);
+			$this->core_web_printer_direct->executePrinter80mmBarExit($dataView);
 			log_message("error","impresion elaborada");
 			
 		}
@@ -3836,6 +3977,7 @@ class app_invoice_billing extends _BaseController {
 				$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 				$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 				$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+				$dataView["objTransactionMasterDetailReferences"]	= $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterIDAndComponentID($transactionMasterID,$objComponentItem->componentID);
 				$dataView["objTransactionMasterDetailWarehouse"]	= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterID);
 				$dataView["objTransactionMasterDetailConcept"]		= $this->Transaction_Master_Concept_Model->get_rowByTransactionMasterConcept($companyID,$transactionID,$transactionMasterID,$objComponentItem->componentID);
 				
@@ -3997,6 +4139,7 @@ class app_invoice_billing extends _BaseController {
 				$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 				$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 				$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+				$dataView["objTransactionMasterDetailReferences"]	= $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterIDAndComponentID($transactionMasterID,$objComponentItem->componentID);
 				$dataView["objTransactionMasterDetailWarehouse"]	= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterID);
 				$dataView["objTransactionMasterDetailConcept"]		= $this->Transaction_Master_Concept_Model->get_rowByTransactionMasterConcept($companyID,$transactionID,$transactionMasterID,$objComponentItem->componentID);
 				
@@ -4077,6 +4220,7 @@ class app_invoice_billing extends _BaseController {
 				$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 				$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 				$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+				$dataView["objTransactionMasterDetailReferences"]	= $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterIDAndComponentID($transactionMasterID,$objComponentItem->componentID);
 				$dataView["objTransactionMasterDetailWarehouse"]	= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterID);
 				$dataView["objTransactionMasterDetailConcept"]		= $this->Transaction_Master_Concept_Model->get_rowByTransactionMasterConcept($companyID,$transactionID,$transactionMasterID,$objComponentItem->componentID);
 				
@@ -4157,6 +4301,7 @@ class app_invoice_billing extends _BaseController {
 				$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 				$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 				$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+				$dataView["objTransactionMasterDetailReferences"]	= $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterIDAndComponentID($transactionMasterID,$objComponentItem->componentID);
 				$dataView["objTransactionMasterDetailWarehouse"]	= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterID);
 				$dataView["objTransactionMasterDetailConcept"]		= $this->Transaction_Master_Concept_Model->get_rowByTransactionMasterConcept($companyID,$transactionID,$transactionMasterID,$objComponentItem->componentID);
 				
