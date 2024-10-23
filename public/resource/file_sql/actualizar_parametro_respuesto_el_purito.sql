@@ -1,14 +1,34 @@
-
+use db73spii9ggork;
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "139" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_TRANSFEROUTPUT_WORKFLOW_APPLY";## Workflow Aplicable de la Transferencia por salida
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "140" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_TRANSFERINPUT_WORKFLOW_APPLY";## Workflow Aplicable de la Transferencia por entrada
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "ATTENDANCE_AUTO_PRINTER";## Auto imprimir asistencia
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_TRANSFEROUTPUT_AUTO_APPLY_TRANSFERINPUT";## Auto aplicar transferencia
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
@@ -730,7 +750,7 @@ WHERE
 	tb_parameter.name = "ACCOUNTING_JOURNALTYPE_CLOSED";## VALOR DEL TIPO DE COMPROBANTE DE CIERRE: catalogItemID : 74 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "logo-micro-finanza.png" 
+	tb_company_parameter.value = "logo-micro-finanza.jpg" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_LOGO";## Logo de la empresa 
@@ -1336,7 +1356,7 @@ WHERE
 	tb_parameter.name = "INVOICE_PRINT_BY_INVOICE";## Imprimir por cada factura
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "POS-80-Series" 
+	tb_company_parameter.value = "POS-80-Series4" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT";## Nombre de la impresora por defecto 	
@@ -1354,6 +1374,12 @@ UPDATE  tb_company_parameter,tb_parameter SET
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_URL_PRINTER";## URLs PARA LA IMPRESION DE FACTURA 	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormalA4Opcion1" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_URL_PRINTER_OPCION2";## URLs PARA LA IMPRESION DE FACTURA 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "app_invoice_billing/viewPrinterDirectFactura80mm" 
@@ -1383,7 +1409,7 @@ WHERE
 	tb_parameter.name = "INVOICE_BILLING_SHOW_COMMAND_FOOT";## Símbolo de la Moneda Funcional 
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "POS-80-Series" 
+	tb_company_parameter.value = "POS-80-Series4" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_COCINA";## Imprimie Directamente la Cocina
@@ -1483,14 +1509,14 @@ WHERE
 /***************************************************************/
 		
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "German Jouse Pavon Aguilar" 
+	tb_company_parameter.value = "Genaro Jose Moran Blanco" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_NAME";## Witman José González Rostran 
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "gwitman@yahoo.com" 
+	tb_company_parameter.value = "genarojosemoranblanco69@gmail.com" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_EMAIL";## CORREO DEL PROPIETARIO
@@ -1498,28 +1524,28 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "001-021289-0021P" 
+	tb_company_parameter.value = "281-100201-1006K" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "001-021289-0021P" 
+	tb_company_parameter.value = "281-100201-1006K" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: +505 8377 2343" 
+	tb_company_parameter.value = "TEL: TIG 7696-5428 CLARO 8618-1637" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: +505 8377 2343" 
+	tb_company_parameter.value = "TEL: TIG 7696-5428 CLARO 8618-1637" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1527,15 +1553,15 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Iglesia catolica Lourdes, 1c oeste 1cs, barrio la fuente" 
+	tb_company_parameter.value = "Calle real de tolapa centro de salud 200var al oeste" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Power House Gym' , address = 'Iglesia catolica Lourdes, 1c oeste 1cs, barrio la fuente' ,
-	flavorID = 544 /*usuarioID*/,type='gym_power_house'
+	NAME = 'Repuestos el Purito' , address = 'Calle real de tolapa centro de salud 200var al oeste' ,
+	flavorID = 550 /*usuarioID*/,type='repu_purito'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
@@ -1547,17 +1573,17 @@ Eliminar o desactivar usuarios
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2, 	/*administrador*/
- 544,  	/*supervisor*/
- 543, 	/*facturador*/
- 542 	/*administrador*/
+ 550,  	/*supervisor*/
+ 549, 	/*facturador*/
+ 548 	/*administrador*/
 );
 
 update tb_role set isActive = 0; 
 update tb_role set isActive = 1 where roleID in (
 	3,
-	473,
-	472,
-	471	
+	479,
+	478,
+	477	
 );
 
 
@@ -1592,3 +1618,4 @@ update tb_company_currency set `simb` = 'C$' where currencyID = 1;
 update tb_company_currency set `simb` = 'U$' where currencyID = 2;	
 
 	
+/*BD: db73spii9ggork */

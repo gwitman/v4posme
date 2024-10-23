@@ -369,101 +369,65 @@ class app_inventory_transferinput extends _BaseController {
 			throw new \Exception(NOT_EDIT);
 			
 			//Validar si el estado permite editar
-			if(!$this->core_web_workflow->validateWorkflowStage("tb_transaction_master_transferinput","statusID",$objTM->statusID,COMMAND_EDITABLE_TOTAL,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
+			if(!$this->core_web_workflow->validateWorkflowStage("tb_transaction_master_transferinput","statusID",$objTM->statusID,COMMAND_EDITABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
 			throw new \Exception(NOT_WORKFLOW_EDIT);					
 			
 			
-			//Actualizar Maestro
-			$objTMNew["transactionOn"]				= /*inicio get post*/ $this->request->getPost("txtTransactionOn");
-			$objTMNew["statusIDChangeOn"]			= date("Y-m-d H:m:s");			
-			$objTMNew["note"] 						= /*inicio get post*/ $this->request->getPost("txtDescription");//--fin peticion get o post
-			$objTMNew["exchangeRate"]				= 1;//$this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$objTM->currencyID,$objTM->currencyID2);
-			$objTMNew["statusID"] 					= /*inicio get post*/ $this->request->getPost("txtStatusID");						
-			$objTMNew["sourceWarehouseID"]			= /*inicio get post*/ $this->request->getPost("txtWarehouseSourceID");//--fin peticion get o post
 			$db=db_connect();
 			$db->transStart();
 			//El Estado solo permite editar el workflow
 			if($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_transferinput","statusID",$objTM->statusID,COMMAND_EDITABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID)){
 				$objTMNew								= array();
+				$objTMNew["statusIDChangeOn"]			= date("Y-m-d H:m:s");	
+				$objTMNew["note"] 						= /*inicio get post*/ $this->request->getPost("txtDescription");//--fin peticion get o post				
+				$objTMNew["exchangeRate"]				= 1;//$this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$objTM->currencyID,$objTM->currencyID2);				
 				$objTMNew["statusID"] 					= /*inicio get post*/ $this->request->getPost("txtStatusID");						
 				$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMNew);
 			}
 			else{
+				
+				//Actualizar Maestro
+				$objTMNew["transactionOn"]				= /*inicio get post*/ $this->request->getPost("txtTransactionOn");
+				$objTMNew["statusIDChangeOn"]			= date("Y-m-d H:m:s");			
+				$objTMNew["note"] 						= /*inicio get post*/ $this->request->getPost("txtDescription");//--fin peticion get o post
+				$objTMNew["exchangeRate"]				= 1;//$this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$objTM->currencyID,$objTM->currencyID2);
+				$objTMNew["statusID"] 					= /*inicio get post*/ $this->request->getPost("txtStatusID");						
+				$objTMNew["sourceWarehouseID"]			= /*inicio get post*/ $this->request->getPost("txtWarehouseSourceID");//--fin peticion get o post
 				$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMNew);
+				
 			}
 			
-			//Actualizar Detalle
-			$listTMD_ID 								= /*inicio get post*/ $this->request->getPost("txtDetailTransactionDetailID");
-			$arrayListItemID 							= /*inicio get post*/ $this->request->getPost("txtDetailItemID");
-			$arrayListQuantity	 						= /*inicio get post*/ $this->request->getPost("txtDetailQuantity");	
-			$arrayListLote	 							= /*inicio get post*/ $this->request->getPost("txtDetailLote");			
-			$arrayListVencimiento						= /*inicio get post*/ $this->request->getPost("txtDetailVencimiento");	
-			
-			$this->Transaction_Master_Detail_Model->deleteWhereIDNotIn($companyID,$transactionID,$transactionMasterID,$listTMD_ID);
-			
-			if(!empty($arrayListItemID)){
-				foreach($arrayListItemID as $key => $value){
-					$transactionMasterDetailID				= $listTMD_ID[$key];					
-					$objItem 								= $this->Item_Model->get_rowByPK($companyID,$value);
-					$lote 									= $arrayListLote[$key];
-					$vencimiento							= $arrayListVencimiento[$key];
-					
-					//Nuevo Detalle
-					if($transactionMasterDetailID == 0){						
-						$objTMD 								= array();
-						$objTMD["companyID"] 					= $companyID;
-						$objTMD["transactionID"] 				= $transactionID;
-						$objTMD["transactionMasterID"] 			= $transactionMasterID;
-						$objTMD["componentID"]					= $objComponentItem->componentID;
-						$objTMD["componentItemID"] 				= $value;//itemID
-						$objTMD["quantity"] 					= $arrayListQuantity[$key];//cantidad
-						$objTMD["unitaryCost"]					= $objItem->cost;
-						$objTMD["cost"] 						= $objTMD["quantity"] * $objTMD["unitaryCost"];
-						
-						$objTMD["unitaryAmount"]				= 0;
-						$objTMD["amount"] 						= 0;										
-						$objTMD["discount"]						= 0;
-						$objTMD["unitaryPrice"]					= 0;
-						$objTMD["promotionID"] 					= 0;
-						
-						$objTMD["lote"]							= $lote;
-						$objTMD["expirationDate"]				= $vencimiento == "" ? NULL:  $vencimiento;
-						$objTMD["reference3"]					= '';
-						$objTMD["catalogStatusID"]				= 0;
-						$objTMD["inventoryStatusID"]			= 0;
-						$objTMD["isActive"]						= 1;
-						$objTMD["quantityStock"]				= 0;
-						$objTMD["quantiryStockInTraffic"]		= 0;
-						$objTMD["quantityStockUnaswared"]		= 0;
-						$objTMD["remaingStock"]					= 0;						
-						$objTMD["inventoryWarehouseSourceID"]	= $objTMNew["sourceWarehouseID"];
-						$objTMD["inventoryWarehouseTargetID"]	= NULL;						
-						$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
-						
-					}
-					//Editar Detalle
-					else{
-						$objTMD 									= $this->Transaction_Master_Detail_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID,$transactionMasterDetailID);						
-						$objTMDNew["quantity"] 						= $arrayListQuantity[$key];//cantidad
-						$objTMDNew["unitaryCost"]					= $objItem->cost;
-						$objTMDNew["cost"] 							= $objTMDNew["quantity"] * $objTMDNew["unitaryCost"];
-						$objTMDNew["inventoryWarehouseSourceID"]	= $objTMNew["sourceWarehouseID"];
-						$objTMDNew["lote"]							= $lote;
-						$objTMDNew["expirationDate"]				= $vencimiento == "" ? NULL:  $vencimiento;
-						$this->Transaction_Master_Detail_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$transactionMasterDetailID,$objTMDNew);						
-					}
-					
-				}
-			}
 			
 			//Aplicar el Documento?
 			if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_transferinput","statusID",$objTMNew["statusID"],COMMAND_APLICABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID) &&  $oldStatusID != $objTMNew["statusID"] ){
+				
+				
+				//Obtener la transaccion de entrada
+				$objTMInput  = $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+				
+				//Obtener la transaccion de salida
+				$objTMOutput = $this->Transaction_Master_Model->get_rowByPK($companyID,$objTMInput->reference1,$objTMInput->reference2);
+				
+				//Cambiar el estado de la transferencia salida
+				$objTMNewOutput["statusID"]  = $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"],"INVENTORY_TRANSFEROUTPUT_WORKFLOW_APPLY")->value;
+				$this->Transaction_Master_Model->update_app_posme($companyID,$objTMOutput->transactionID,$objTMOutput->transactionMasterID,$objTMNewOutput);
+				
+				//Aplicar el karde de la transferenica salida
+				$this->core_web_inventory->calculateKardexNewOutput($companyID,$objTMOutput->transactionID,$objTMOutput->transactionMasterID);
+				
+				//Apclitar Conceptos de la transferencia salida
+				//$this->core_web_concept->otheroutput($companyID,$objTMOutput->transactionID,$objTMOutput->transactionMasterID);
+				
 				//Ingresar en Kardex.
 				$this->core_web_inventory->calculateKardexNewInput($companyID,$transactionID,$transactionMasterID);			
 			
 				//Crear Conceptos.
 				//$this->core_web_concept->otherinput($companyID,$transactionID,$transactionMasterID);
+				
+				
 			}
+			
+			
 			
 			if($db->transStatus() !== false){
 				$db->transCommit();						
