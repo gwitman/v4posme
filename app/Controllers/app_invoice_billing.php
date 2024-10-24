@@ -871,6 +871,7 @@ class app_invoice_billing extends _BaseController {
 			$objParameterUpdateDateAplication			= $this->core_web_parameter->getParameter("INVOICE_BILLING_UPDATE_DATE_APPLYCATION_IN_MOMENT_APLICATION",$companyID);
 			$objParameterUpdateDateAplication			= $objParameterUpdateDateAplication->value;
 			$objParameterEsRestaurant 					= $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"],"INVOICE_BILLING_IS_RESTAURANT")->value;
+			$objParameterINVOICE_BILLING_TRAKING_BAR	= $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"],"INVOICE_BILLING_TRAKING_BAR")->value;
 			
 			//Actualizar Maestro
 			$codigoMesero								= /*inicio get post*/ $this->request->getPost("txtCodigoMesero");
@@ -1200,7 +1201,7 @@ class app_invoice_billing extends _BaseController {
 						
 						
 						//Ingresar la lista de productos de RESTAURANTE
-						if ( $objParameterEsRestaurant == "true")
+						if ( $objParameterINVOICE_BILLING_TRAKING_BAR == "true")
 						{
 							$objTMDRNew["isActive"] 					= 1;
 							$objTMDRNew["createdOn"] 					= date("Y-m-d H:m:s");
@@ -1274,7 +1275,7 @@ class app_invoice_billing extends _BaseController {
 						
 						
 						//Ingresar la lista de productos de RESTAURANTE
-						if ( $objParameterEsRestaurant == "true" && $objTMDNew["quantity"] > $objTMDOld->quantity )
+						if ( $objParameterINVOICE_BILLING_TRAKING_BAR == "true" && $objTMDNew["quantity"] > $objTMDOld->quantity )
 						{
 							$quantityRestaranteTraking 					= $objTMDNew["quantity"] - $objTMDOld->quantity;
 							$objTMDRNew["isActive"] 					= 1;
@@ -1639,6 +1640,7 @@ class app_invoice_billing extends _BaseController {
 			$objParameterSendEmailInInsert			= $this->core_web_parameter->getParameter("INVOICE_SEND_EMAIL_IN_INSERT",$companyID);
 			$objParameterSendEmailInInsert			= $objParameterSendEmailInInsert->value;
 			$objParameterEsRestaurant 				= $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"],"INVOICE_BILLING_IS_RESTAURANT")->value;
+			$objParameterINVOICE_BILLING_TRAKING_BAR= $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"],"INVOICE_BILLING_TRAKING_BAR")->value;
 			
 			
 			
@@ -1914,7 +1916,7 @@ class app_invoice_billing extends _BaseController {
 					
 					
 					//Ingresar la lista de productos de RESTAURANTE
-					if ( $objParameterEsRestaurant == "true")
+					if ( $objParameterINVOICE_BILLING_TRAKING_BAR == "true")
 					{
 						$objTMDRNew["isActive"] 					= 1;
 						$objTMDRNew["createdOn"] 					= date("Y-m-d H:m:s");
@@ -2115,6 +2117,7 @@ class app_invoice_billing extends _BaseController {
 			$objParameterUnitDefault				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, 'INVENTORY_UNITMEASURE_ID_DEFAULT')->value;
 			$objParameterCXC_DAY_EXCLUDED_IN_CREDIT	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, 'CXC_DAY_EXCLUDED_IN_CREDIT')->value;
 			$objParameterEsRestaurant 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "INVOICE_BILLING_IS_RESTAURANT")->value;
+			$objParameterINVOICE_BILLING_TRAKING_BAR= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "INVOICE_BILLING_TRAKING_BAR")->value;
 
 			//Saber si es al credito
 			$parameterCausalTypeCredit 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_CREDIT");			
@@ -2321,7 +2324,7 @@ class app_invoice_billing extends _BaseController {
 					
 					
 					//Ingresar la lista de productos de RESTAURANTE
-					if ( $objParameterEsRestaurant == "true")
+					if ( $objParameterINVOICE_BILLING_TRAKING_BAR == "true")
 					{
 						$objTMDRNew["isActive"] 					= 1;
 						$objTMDRNew["createdOn"] 					= date("Y-m-d H:m:s");
