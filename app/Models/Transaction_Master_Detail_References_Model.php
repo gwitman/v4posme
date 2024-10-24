@@ -17,6 +17,15 @@ class Transaction_Master_Detail_References_Model extends Model  {
 		return $builder->update($data);
 		
    } 
+   function deleteWhereIDNotIn($listTMD_ID){
+		$db 		= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail_references");
+		$data["isActive"] = 0;
+				
+		$builder->whereNotIn("transactionMasterDetailID",$listTMD_ID);	
+		return $builder->update($data);
+		
+   }
    function insert_app_posme($data){
 		$db 		= db_connect();
 		$builder	= $db->table("tb_transaction_master_detail_references");

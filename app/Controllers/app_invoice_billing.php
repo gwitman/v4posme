@@ -1043,8 +1043,14 @@ class app_invoice_billing extends _BaseController {
 			
 			$amountTotal 									= 0;
 			$tax1Total 										= 0;
-			$subAmountTotal									= 0;			$this->Transaction_Master_Detail_Model->deleteWhereIDNotIn($companyID,$transactionID,$transactionMasterID,$listTransactionDetalID);
+			$subAmountTotal									= 0;			
+			$this->Transaction_Master_Detail_Model->deleteWhereIDNotIn($companyID,$transactionID,$transactionMasterID,$listTransactionDetalID);
 			$this->Transaction_Master_Detail_Credit_Model->deleteWhereIDNotIn($transactionMasterID,$listTransactionDetalID);
+			
+			if( $objParameterINVOICE_BILLING_TRAKING_BAR == "true")
+			$this->Transaction_Master_Detail_References_Model->deleteWhereIDNotIn($listTransactionDetalID);
+			
+			
 			if(!empty($arrayListItemID)){
 				foreach($arrayListItemID as $key => $value){			
 					$itemID 								= $value;
