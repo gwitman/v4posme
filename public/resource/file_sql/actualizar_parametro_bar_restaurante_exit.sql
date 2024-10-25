@@ -1489,7 +1489,7 @@ WHERE
 	tb_parameter.name = "CORE_PROPIETARY_EMAIL";## CORREO DEL PROPIETARIO
 
 
-				
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "081-100186-0005A" 
 WHERE 
@@ -1505,14 +1505,14 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 0000-0000" 
+	tb_company_parameter.value = "TEL: 7724-5661" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 0000-0000" 
+	tb_company_parameter.value = "TEL: 7724-5661" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 

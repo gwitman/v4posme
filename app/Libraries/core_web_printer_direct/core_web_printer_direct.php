@@ -320,7 +320,7 @@ class core_web_printer_direct {
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\n".$dataSetValores["objCompany"]->address);
 		$this->printer->setTextSize(1, 1);
-		$this->printer->text("\nSistema:+(505) 8712-5827");
+		$this->printer->text("\nPropina voluntaria");
 
 		$this->printer->setTextSize(2, 1);
 		$this->printer->feed(10);
