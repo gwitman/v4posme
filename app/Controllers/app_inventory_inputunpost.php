@@ -1331,9 +1331,9 @@ class app_inventory_inputunpost extends _BaseController {
 						//Agregar productos nuevos
 						if(!$objItem) 
 						{
-							$urlCreateItemRequest 			= base_url()."/app_inventory_item/save/apinew/empty/empty";
-							$clientCreateItem 				= \Config\Services::curlrequest();
-							$form_data 						= [
+							$controllerApi 				= new app_inventory_item();
+							$controllerApi->initController($this->request, $this->response, $this->logger);									
+							$objItemNewApi 					= [
 										'txtCallback' 				=> 'fnCollback',
 										'txtComando' 				=> 'false',
 										'txtInventoryCategoryID'	=> $this->Itemcategory_Model->getByCompany($companyID)[0]->inventoryCategoryID,
@@ -1386,17 +1386,23 @@ class app_inventory_inputunpost extends _BaseController {
 																			$this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID)->value
 																	   ],
 										'txtRealStateEmail'			=> "",
-										'txtRealStatePhone'			=> ""
+										'txtRealStatePhone'			=> "",
+										'txtRealStateLinkYoutube'	=> "",
+										'txtRealStateLinkPaginaWeb'	=> "",
+										'txtRealStateLinkPhontos'	=> "",
+										'txtRealStateLinkGoogleMaps'=> "",
+										'txtRealStateLinkOther'				=> "",
+										'txtRealStateStyleKitchen'			=> "",
+										'txtRealStateReferenceUbicacion'	=> "",
+										'txtRealStateReferenceCondominio'	=> "",
+										'txtRealStateReferenceZone'			=> "",
+										'txtRealStateGerenciaExclusive'		=> "",
+										
 							];
 							
 							
-							
-							$response  	= $clientCreateItem->request('POST',$urlCreateItemRequest,['form_params' => $form_data]);									
-							$response  	= explode("/",$response->getHeaderLine("Location"));							
-							$response  	= $response[9];		
-							
-							
-							$objItem	= $this->Item_Model->get_rowByPK($companyID,$response);
+							$objItemNewApiID	= $controllerApi->save("apinew", $objItemNewApi, $dataSession);							
+							$objItem			= $this->Item_Model->get_rowByPK($companyID,$objItemNewApiID);
 							if(!$objItem)
 							{
 								//throw new \Exception("El siguiente producto no existe en inventario: ". $codigo);							

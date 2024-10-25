@@ -312,7 +312,8 @@ class app_inventory_item extends _BaseController
 	{
 		
 		
-        if ($method == "edit" || $method == "new" || $method == "apinew"){
+        if ($method == "edit" || $method == "new")
+		{
             $method 	= helper_SegmentsByIndex($this->uri->getSegments(), 1, $method);
             $method02 	= $method;
         }
@@ -686,33 +687,29 @@ class app_inventory_item extends _BaseController
             if($method == "apinew")
 			{
 				
-
-				
                 $companyID 	= APP_COMPANY ;
                 $branchID   = APP_BRANCH ;
-                $this->core_web_permission->getValueLicense($companyID,get_class($this)."/"."index");
-
                 $paisDefault 				= $this->core_web_parameter->getParameterValue("CXC_PAIS_DEFAULT",$companyID);
                 $departamentoDefault 		= $this->core_web_parameter->getParameterValue("CXC_DEPARTAMENTO_DEFAULT",$companyID);
                 $municipioDefault 			= $this->core_web_parameter->getParameterValue("CXC_MUNICIPIO_DEFAULT",$companyID);
                 $validateBarCode 			= $this->core_web_parameter->getParameterValue("INVENTORY_BAR_CODE_UNIQUE",$companyID);
 
 
-                $paisID 			= empty (/*inicio get post*/ $this->request->getPost('txtCountryID') /*//--fin peticion get o post*/ ) ?  $paisDefault : /*inicio get post*/ $this->request->getPost('txtCountryID');  /*//--fin peticion get o post*/
-                $departamentoId		= empty (/*inicio get post*/ $this->request->getPost('txtStateID') /*//--fin peticion get o post*/ ) ?  $departamentoDefault : /*inicio get post*/ $this->request->getPost('txtStateID');  /*//--fin peticion get o post*/
-                $municipioId		= empty (/*inicio get post*/ $this->request->getPost('txtCityID') /*//--fin peticion get o post*/ ) ?  $municipioDefault : /*inicio get post*/ $this->request->getPost('txtCityID');  /*//--fin peticion get o post*/
+                $paisID 			= empty (/*inicio get post*/ $item['txtCountryID'] /*//--fin peticion get o post*/ ) ?  $paisDefault : /*inicio get post*/ $item['txtCountryID'];  /*//--fin peticion get o post*/
+                $departamentoId		= empty (/*inicio get post*/ $item['txtStateID'] /*//--fin peticion get o post*/ ) ?  $departamentoDefault : /*inicio get post*/ $item['txtStateID'];  /*//--fin peticion get o post*/
+                $municipioId		= empty (/*inicio get post*/ $item['txtCityID'] /*//--fin peticion get o post*/ ) ?  $municipioDefault : /*inicio get post*/ $item['txtCityID'];  /*//--fin peticion get o post*/
 
 
                 //Ingresar Cuenta
                 $db=db_connect();
                 $db->transStart();
                 $objParameterAll						= $this->core_web_parameter->getParameterAll($companyID);
-                $callback  								= /*inicio get post*/ $this->request->getPost("txtCallback");
-                $comando  								= /*inicio get post*/ $this->request->getPost("txtComando");
+                $callback  								= /*inicio get post*/ $item["txtCallback"];
+                $comando  								= /*inicio get post*/ $item["txtComando"];
                 $objItem["companyID"]					= $companyID;
                 $objItem["branchID"] 					= $branchID;
-                $objItem["inventoryCategoryID"] 		= /*inicio get post*/ $this->request->getPost("txtInventoryCategoryID");
-                $nameProducto							= /*inicio get post*/ rtrim(ltrim(str_replace("\\","",str_replace("'", "", $this->request->getPost("txtName") ))));
+                $objItem["inventoryCategoryID"] 		= /*inicio get post*/ $item["txtInventoryCategoryID"];
+                $nameProducto							= /*inicio get post*/ rtrim(ltrim(str_replace("\\","",str_replace("'", "", $item["txtName"] ))));
                 $nameProducto 							= str_replace('"',"",$nameProducto);
 
                 $cache = \Config\Services::cache();
@@ -727,9 +724,9 @@ class app_inventory_item extends _BaseController
                     $cache->save('app_inventory_item_last_inventory_name', "", TIME_CACHE_APP);
                 }
 
-                $objItem["familyID"] 					= /*inicio get post*/ $this->request->getPost("txtFamilyID");
+                $objItem["familyID"] 					= /*inicio get post*/ $item["txtFamilyID"];
                 $objItem["itemNumber"] 					= $this->core_web_counter->goNextNumber($companyID,$branchID,"tb_item",0);
-                $objItem["barCode"] 					= /*inicio get post*/ $this->request->getPost("txtBarCode") == "" ? "B".$objItem["itemNumber"].""  : /*inicio get post*/ $this->request->getPost("txtBarCode");
+                $objItem["barCode"] 					= /*inicio get post*/ $item["txtBarCode"] == "" ? "B".$objItem["itemNumber"].""  : /*inicio get post*/ $item["txtBarCode"];
                 $objItem["barCode"]						= str_replace(PHP_EOL,",",ltrim(rtrim($objItem["barCode"])));
                 $objItem["barCode"]						= str_replace(",,",",",$objItem["barCode"]);
                 $objItem["barCode"]						= str_replace(["\n\r", "\n", "\r"],"",$objItem["barCode"]);
@@ -768,63 +765,62 @@ class app_inventory_item extends _BaseController
 
 
                 $objItem["name"] 						= $nameProducto;
-                $objItem["description"] 				= /*inicio get post*/ $this->request->getPost("txtDescription");
-                $objItem["unitMeasureID"] 				= /*inicio get post*/ $this->request->getPost("txtUnitMeasureID");
-                $objItem["displayID"] 					= /*inicio get post*/ $this->request->getPost("txtDisplayID");
-                $objItem["capacity"] 					= /*inicio get post*/ $this->request->getPost("txtCapacity");
-                $objItem["displayUnitMeasureID"] 		= /*inicio get post*/ $this->request->getPost("txtDisplayUnitMeasureID");
-                $objItem["defaultWarehouseID"] 			= /*inicio get post*/ $this->request->getPost("txtDefaultWarehouseID");
+                $objItem["description"] 				= /*inicio get post*/ $item["txtDescription"];
+                $objItem["unitMeasureID"] 				= /*inicio get post*/ $item["txtUnitMeasureID"];
+                $objItem["displayID"] 					= /*inicio get post*/ $item["txtDisplayID"];
+                $objItem["capacity"] 					= /*inicio get post*/ $item["txtCapacity"];
+                $objItem["displayUnitMeasureID"] 		= /*inicio get post*/ $item["txtDisplayUnitMeasureID"];
+                $objItem["defaultWarehouseID"] 			= /*inicio get post*/ $item["txtDefaultWarehouseID"];
                 $objItem["quantity"] 					= 0;
-                $objItem["quantityMax"] 				= /*inicio get post*/ $this->request->getPost("txtQuantityMax");
-                $objItem["quantityMin"] 				= /*inicio get post*/ $this->request->getPost("txtQuantityMin");
+                $objItem["quantityMax"] 				= /*inicio get post*/ $item["txtQuantityMax"];
+                $objItem["quantityMin"] 				= /*inicio get post*/ $item["txtQuantityMin"];
                 $objItem["cost"] 						= 0;
-                $objItem["reference1"] 					= /*inicio get post*/ $this->request->getPost("txtReference1");
-                $objItem["reference2"] 					= /*inicio get post*/ $this->request->getPost("txtReference2");
-                $objItem["reference3"] 					= /*inicio get post*/ $this->request->getPost("txtReference3");
-                $objItem["statusID"] 					= /*inicio get post*/ $this->request->getPost("txtStatusID");
-                $objItem["isPerishable"] 				= /*inicio get post*/ $this->request->getPost("txtIsPerishable");
-                $objItem["isServices"] 					= /*inicio get post*/ $this->request->getPost("txtIsServices");
-                $objItem["isInvoiceQuantityZero"] 		= is_null (/*inicio get post*/ $this->request->getPost("txtIsInvoiceQuantityZero") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtIsInvoiceQuantityZero") ;
-                $objItem["isInvoice"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtIsInvoice") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtIsInvoice") ;
-                $objItem["factorBox"] 					= /*inicio get post*/ $this->request->getPost("txtFactorBox");
-                $objItem["factorProgram"] 				= /*inicio get post*/ $this->request->getPost("txtFactorProgram");
+                $objItem["reference1"] 					= /*inicio get post*/ $item["txtReference1"];
+                $objItem["reference2"] 					= /*inicio get post*/ $item["txtReference2"];
+                $objItem["reference3"] 					= /*inicio get post*/ $item["txtReference3"];
+                $objItem["statusID"] 					= /*inicio get post*/ $item["txtStatusID"];
+                $objItem["isPerishable"] 				= /*inicio get post*/ $item["txtIsPerishable"];
+                $objItem["isServices"] 					= /*inicio get post*/ $item["txtIsServices"];
+                $objItem["isInvoiceQuantityZero"] 		= is_null (/*inicio get post*/ $item["txtIsInvoiceQuantityZero"] ) ? 0 : /*inicio get post*/ $item["txtIsInvoiceQuantityZero"] ;
+                $objItem["isInvoice"] 					= is_null (/*inicio get post*/ $item["txtIsInvoice"] ) ? 0 : /*inicio get post*/ $item["txtIsInvoice"] ;
+                $objItem["factorBox"] 					= /*inicio get post*/ $item["txtFactorBox"];
+                $objItem["factorProgram"] 				= /*inicio get post*/ $item["txtFactorProgram"];
                 $objItem["isActive"] 					= 1;
-                $objItem["currencyID"] 					= /*inicio get post*/ $this->request->getPost("txtCurrencyID");
+                $objItem["currencyID"] 					= /*inicio get post*/ $item["txtCurrencyID"];
 
-                $objItem["realStateRoomBatchServices"] 				= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateRoomBatchServices") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateRoomBatchServices") ;
-                $objItem["realStateRoomServices"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateRoomServices") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateRoomServices") ;
-                $objItem["realStateWallInCloset"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateWallInCloset") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateWallInCloset") ;
-                $objItem["realStatePiscinaPrivate"] 				= is_null (/*inicio get post*/ $this->request->getPost("txtRealStatePiscinaPrivate") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStatePiscinaPrivate") ;
-                $objItem["realStateClubPiscina"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateClubPiscina") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateClubPiscina") ;
-                $objItem["realStateAceptanMascota"] 				= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateAceptanMascota") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateAceptanMascota") ;
-                $objItem["realStateRooBatchVisit"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateRooBatchVisit") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateRooBatchVisit") ;
-                $objItem["realStateContractCorrentaje"] 			= is_null (/*inicio get post*/ $this->request->getPost("txtRealStateContractCorrentaje") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStateContractCorrentaje") ;
-                $objItem["realStatePlanReference"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtRealStatePlanReference") ) ? 0 : /*inicio get post*/ $this->request->getPost("txtRealStatePlanReference") ;
-                $objItem["realStateLinkYoutube"] 					= /*inicio get post*/ $this->request->getPost("txtRealStateLinkYoutube");
-                $objItem["realStateLinkPaginaWeb"] 					= /*inicio get post*/ $this->request->getPost("txtRealStateLinkPaginaWeb");
-                $objItem["realStateLinkPhontos"] 					= /*inicio get post*/ $this->request->getPost("txtRealStateLinkPhontos");
-                $objItem["realStateLinkGoogleMaps"] 				= /*inicio get post*/ $this->request->getPost("txtRealStateLinkGoogleMaps");
-                $objItem["realStateLinkOther"] 						= /*inicio get post*/ $this->request->getPost("txtRealStateLinkOther");
-                $objItem["realStateStyleKitchen"] 					= /*inicio get post*/ $this->request->getPost("txtRealStateStyleKitchen");
-
-                $objItem["realStateReferenceUbicacion"] 				= /*inicio get post*/ $this->request->getPost("txtRealStateReferenceUbicacion");
-                $objItem["realStateReferenceCondominio"] 				= /*inicio get post*/ $this->request->getPost("txtRealStateReferenceCondominio");
-                $objItem["realStateReferenceZone"] 						= /*inicio get post*/ $this->request->getPost("txtRealStateReferenceZone");
-                $objItem["realStateGerenciaExclusive"] 					= /*inicio get post*/ $this->request->getPost("txtRealStateGerenciaExclusive");
+                $objItem["realStateRoomBatchServices"] 				= !isset (/*inicio get post*/ $item["txtRealStateRoomBatchServices"] ) ? 0 : /*inicio get post*/ $item["txtRealStateRoomBatchServices"] ;
+                $objItem["realStateRoomServices"] 					= !isset (/*inicio get post*/ $item["txtRealStateRoomServices"] ) ? 0 : /*inicio get post*/ $item["txtRealStateRoomServices"] ;
+                $objItem["realStateWallInCloset"] 					= !isset (/*inicio get post*/ $item["txtRealStateWallInCloset"] ) ? 0 : /*inicio get post*/ $item["txtRealStateWallInCloset"] ;
+                $objItem["realStatePiscinaPrivate"] 				= !isset (/*inicio get post*/ $item["txtRealStatePiscinaPrivate"] ) ? 0 : /*inicio get post*/ $item["txtRealStatePiscinaPrivate"] ;
+                $objItem["realStateClubPiscina"] 					= !isset (/*inicio get post*/ $item["txtRealStateClubPiscina"] ) ? 0 : /*inicio get post*/ $item["txtRealStateClubPiscina"] ;
+                $objItem["realStateAceptanMascota"] 				= !isset (/*inicio get post*/ $item["txtRealStateAceptanMascota"] ) ? 0 : /*inicio get post*/ $item["txtRealStateAceptanMascota"] ;
+                $objItem["realStateRooBatchVisit"] 					= !isset (/*inicio get post*/ $item["txtRealStateRooBatchVisit"] ) ? 0 : /*inicio get post*/ $item["txtRealStateRooBatchVisit"] ;
+                $objItem["realStateContractCorrentaje"] 			= !isset (/*inicio get post*/ $item["txtRealStateContractCorrentaje"] ) ? 0 : /*inicio get post*/ $item["txtRealStateContractCorrentaje"] ;
+                $objItem["realStatePlanReference"] 					= !isset (/*inicio get post*/ $item["txtRealStatePlanReference"] ) ? 0 : /*inicio get post*/ $item["txtRealStatePlanReference"] ;
+                $objItem["realStateLinkYoutube"] 					= /*inicio get post*/ $item["txtRealStateLinkYoutube"];
+                $objItem["realStateLinkPaginaWeb"] 					= /*inicio get post*/ $item["txtRealStateLinkPaginaWeb"];
+                $objItem["realStateLinkPhontos"] 					= /*inicio get post*/ $item["txtRealStateLinkPhontos"];
+                $objItem["realStateLinkGoogleMaps"] 				= /*inicio get post*/ $item["txtRealStateLinkGoogleMaps"];
+                $objItem["realStateLinkOther"] 						= /*inicio get post*/ $item["txtRealStateLinkOther"];
+                $objItem["realStateStyleKitchen"] 					= /*inicio get post*/ $item["txtRealStateStyleKitchen"];
+                $objItem["realStateReferenceUbicacion"] 				= /*inicio get post*/ $item["txtRealStateReferenceUbicacion"];
+                $objItem["realStateReferenceCondominio"] 				= /*inicio get post*/ $item["txtRealStateReferenceCondominio"];
+                $objItem["realStateReferenceZone"] 						= /*inicio get post*/ $item["txtRealStateReferenceZone"];
+                $objItem["realStateGerenciaExclusive"] 					= /*inicio get post*/ $item["txtRealStateGerenciaExclusive"];
                 $objItem["realStateCountryID"]			= $paisID;
                 $objItem["realStateStateID"]			= $departamentoId;
                 $objItem["realStateCityID"]				= $municipioId;
                 $objItem["modifiedOn"]					= helper_getDateTime();
                 $objItem["realStateEmployerAgentID"]	= 0;
-                $objItem["realStateStyleKitchen"] 		= /*inicio get post*/ $this->request->getPost("txtRealStateStyleKitchen");
-                $objItem["realStateEmail"] 				= /*inicio get post*/ $this->request->getPost("txtRealStateEmail");
-                $objItem["realStatePhone"] 				= /*inicio get post*/ $this->request->getPost("txtRealStatePhone");
+                $objItem["realStateStyleKitchen"] 		= /*inicio get post*/ $item["txtRealStateStyleKitchen"];
+                $objItem["realStateEmail"] 				= /*inicio get post*/ $item["txtRealStateEmail"];
+                $objItem["realStatePhone"] 				= /*inicio get post*/ $item["txtRealStatePhone"];
 				$objItem["quantityInvoice"] 			= 0;
 				$objItem["dateLastUse"] 				= helper_getDateTime();
                 $this->core_web_auditoria->setAuditCreatedAdmin($objItem,$this->request);
                 
-
-                $itemID								= $this->Item_Model->insert_app_posme($objItem);
+				
+                $itemID								= $this->Item_Model->insert_app_posme($objItem);				
                 $companyID 							= $objItem["companyID"];
                 //Crear la Carpeta para almacenar los Archivos del Item
                 $pathFileFloder = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$itemID;
@@ -845,9 +841,9 @@ class app_inventory_item extends _BaseController
 				
 
                 //Guardar el Detalle de las Bodegas
-                $objListWarehouseID					= /*inicio get post*/ $this->request->getPost("txtDetailWarehouseID");
-                $objListWarehouseQuantityMax		= /*inicio get post*/ $this->request->getPost("txtDetailQuantityMax");
-                $objListWarehouseQuantityMain		= /*inicio get post*/ $this->request->getPost("txtDetailQuantityMin");
+                $objListWarehouseID					= /*inicio get post*/ $item["txtDetailWarehouseID"];
+                $objListWarehouseQuantityMax		= /*inicio get post*/ $item["txtDetailQuantityMax"];
+                $objListWarehouseQuantityMain		= /*inicio get post*/ $item["txtDetailQuantityMin"];
 
 
                 if($objListWarehouseID)
@@ -887,8 +883,8 @@ class app_inventory_item extends _BaseController
                 }
 
                 //Guardar Detalle de sku
-                $objListCatalogItemSKU					= /*inicio get post*/ $this->request->getPost("txtDetailSkuCatalogItemID");
-                $objListCatalogItemSKUValue				= /*inicio get post*/ $this->request->getPost("txtDetailSkuValue");
+                $objListCatalogItemSKU					= /*inicio get post*/ $item["txtDetailSkuCatalogItemID"];
+                $objListCatalogItemSKUValue				= /*inicio get post*/ $item["txtDetailSkuValue"];
                 if($objListCatalogItemSKU)
                     foreach($objListCatalogItemSKU as $key => $value){
                         $objSku["itemID"] 			= $itemID;
@@ -921,10 +917,10 @@ class app_inventory_item extends _BaseController
 				
                 //Ingresar la configuracion de precios
                 //por defecto con 0% de utilidad
-                $arrayListPrecioValue 		= /*inicio get post*/ $this->request->getPost("txtDetailTypePriceValue");
-                $arrayListComisionValue 	= /*inicio get post*/ $this->request->getPost("txtDetailTypeComisionValue");
-                $arrayTypePrecioId 			= /*inicio get post*/ $this->request->getPost("txtDetailTypePriceID");
-                $arrayListPrecioID 			= /*inicio get post*/ $this->request->getPost("txtDetailListPriceID");
+                $arrayListPrecioValue 		= /*inicio get post*/ $item["txtDetailTypePriceValue"];
+                $arrayListComisionValue 	= /*inicio get post*/ $item["txtDetailTypeComisionValue"];
+                $arrayTypePrecioId 			= /*inicio get post*/ $item["txtDetailTypePriceID"];
+                $arrayListPrecioID 			= /*inicio get post*/ $item["txtDetailListPriceID"];
                 $objParameterPriceDefault	= $this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID);
                 $listPriceID 				= $objParameterPriceDefault->value;
                 $objTipePrice 				= $this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID);
@@ -967,17 +963,15 @@ class app_inventory_item extends _BaseController
                     $this->core_web_barcode->generate( $pathFileCodeBarra, $objItem["barCode"], "80", "horizontal", "code128", false, 1 );
                 }
 				
-				
-
-                //Fin
-                if($db->transStatus() !== false && $comando == "false" ){
-                    $db->transCommit();					
-                    $this->response->redirect(base_url()."/".'app_inventory_item/edit/companyID/'.$companyID."/itemID/".$itemID."/callback/".$callback."/comando/".$comando);
+				if($db->transStatus() !== false){
+                    $db->transCommit();                    
                 }
                 else{
-                    $db->transRollback();                    					
-                    $this->response->redirect(base_url()."/".'app_inventory_item/add');
+                    $db->transRollback();                    
                 }
+				
+				
+				return $itemID;
 			}
 			//Editar Registro
             if($method =="edit") 
