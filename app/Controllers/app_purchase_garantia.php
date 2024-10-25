@@ -831,7 +831,6 @@ class app_purchase_garantia extends _BaseController {
 			
 			
 			//Generar Reporte
-			//helper_reporteA4mmTransactionMasterTallerGlobalPro
 			$html = helper_reporteA4mmTransactionMasterGarantiasGlobalPro(
 			    "GARANTIA",
 			    $objCompany,

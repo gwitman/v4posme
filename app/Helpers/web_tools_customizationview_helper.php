@@ -1131,6 +1131,26 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 			});
 		</script>",
 		
+		/*Compu MATT*/						
+		strtolower('compu_matt_app_invoice_billing_lblRptInvoiceAddress') 											=> "Frente a la entrada principal de Iglesia la Merced",
+		strtolower('compu_matt_app_invoice_billing_lblRptInvoiceRuc') 												=> "Edificio Principal RUC: J0310000066388",
+		strtolower('compu_matt_app_invoice_billing_lblRptInvoiceOpcion2') 											=> "Compra Todo en COMPU MATT",
+		strtolower('compu_matt_app_invoice_billing_lblRptInvoiceOpcion1') 											=> "",
+		strtolower('compu_matt_app_invoice_billing_lblRptInvoicePhone') 											=> "Teléfono: 2311 0234.",		
+		strtolower('compu_matt_app_purchase_taller_lblReportEntradaRptDireccion') 									=> "Frente a la entrada principal de Iglesia la Merced",
+		strtolower('compu_matt_app_purchase_taller_lblReportEntradaRptPhone') 										=> "Servicio Tecnico: 2311 0234",		
+		strtolower('compu_matt_app_purchase_taller_lblReportEntradaRptRed') 										=> "Siguenos! Compu MATT",
+		strtolower('compu_matt_app_purchase_taller_lblReportEntradaRptCondicion1') 									=> "COMPU MATT NO se hace reponsable de pérdidas de informacion, por lo cual solicitamos antes
+			  hacer un respaldo a Nuestros clientes.",
+		strtolower('compu_matt_app_purchase_taller_lblReportEntradaRptCondicion2') 									=> "El Costo del diagnóstico es de C$ 450.00 si decide realizar la reparacion, NO pagara diagnostico.
+			  Despues de 30 dias de notificar que el equipo está listo para ser retirado, se cobrara $1 diario por 
+			  concepto de Almacenamiento, despues de 6 meses se procedera a liquidar el equipo.
+			  Toda reparación de COMPU MATT, cuenta con 3 meses de garantia",
+		strtolower('compu_matt_app_purchase_pedidos_scriptValidateInSave') 											=> "
+			applyValidationNote = false;
+		"
+		
+		
 	);
 	
 	

@@ -903,17 +903,17 @@ function helper_reporteA4TransactionMasterInvoiceGlobalPro(
 										
 										<tr>
 										  <td style='text-align:center'>
-											Carretera Masaya, Frente al colegio Teresiano 
+											".getBehavio($objCompany->type,"app_invoice_billing","lblRptInvoiceAddress","Carretera Masaya, Frente al colegio Teresiano")."
 										  </td>
 										</tr>
 										<tr>
 										  <td style='text-align:center'>
-											Edificio Delta RUC: 888-080396-0001K
+											".getBehavio($objCompany->type,"app_invoice_billing","lblRptInvoiceRuc","Edificio Delta RUC: 888-080396-0001K")."
 										  </td>
 										</tr>
 										<tr>
 										  <td style='text-align:center'>
-											Teléfono: 2223-2314
+											".getBehavio($objCompany->type,"app_invoice_billing","lblRptInvoicePhone","Teléfono: 2223-2314.")."
 										  </td>
 										</tr>
 										<tr>
@@ -1095,7 +1095,7 @@ function helper_reporteA4TransactionMasterInvoiceGlobalPro(
 										<td></td>
 									</tr>	
 									<tr>
-										<td colspan='2'>*=Equipo seminuevo</td>
+										<td colspan='2'>*=".getBehavio($objCompany->type,"app_invoice_billing","lblRptInvoiceOpcion1","Equipo seminuevo")." </td>
 									</tr>									
 								</table>
 							</td>
@@ -1119,7 +1119,7 @@ function helper_reporteA4TransactionMasterInvoiceGlobalPro(
 				  <table style='width:98%' >
 						<tr>
 							<td style='text-align:center;text-decoration:underline;font-weight: bold;font-size:14px'>
-								Al comprar tu equipo en GLOBAL PRO,puedes cambiarlo por uno superior cuando gustes!
+								".getBehavio($objCompany->type,"app_invoice_billing","lblRptInvoiceOpcion2","Al comprar tu equipo en GLOBAL PRO,puedes cambiarlo por uno superior cuando gustes!")."
 							</td>
 						</tr>
 				   </table>";
@@ -3355,12 +3355,12 @@ function helper_reporteA4TransactionMasterOutherInputGlobalPro(
 										
 										<tr>
 										  <td style='text-align:center'>
-											Carretera Masaya, Frente al colegio Teresiano 
+											".getBehavio($objCompany->type,"app_invoice_billing","lblRptInvoiceAddress","Carretera Masaya, Frente al colegio Teresiano")."
 										  </td>
 										</tr>
 										<tr>
 										  <td style='text-align:center'>
-											Edificio Delta RUC: 888-080396-0001K
+											".getBehavio($objCompany->type,"app_invoice_billing","lblRptInvoiceRuc","Edificio Delta RUC: 888-080396-0001K")."
 										  </td>
 										</tr>
 										<tr>
@@ -3567,7 +3567,7 @@ function helper_reporteA4TransactionMasterOutherInputGlobalPro(
 				  <table style='width:98%' >
 						<tr>
 							<td style='text-align:center;text-decoration:underline;font-weight: bold;font-size:14px'>
-								Al comprar tu equipo en GLOBAL PRO,puedes cambiarlo por uno superior cuando gustes!
+								".getBehavio($objCompany->type,"app_invoice_billing","lblRptInvoiceOpcion2","Al comprar tu equipo en GLOBAL PRO,puedes cambiarlo por uno superior cuando gustes!")."
 							</td>
 						</tr>
 				   </table>";
@@ -3692,13 +3692,13 @@ function helper_reporteA4mmTransactionMasterInputUnpostGlobalPro(
 										</tr>
 										
 										<tr>
-										  <td style='text-align:center'>
-											Carretera Masaya, Frente al colegio Teresiano 
+										  <td style='text-align:center'>											
+											".getBehavio($objCompany->type,"app_invoice_billing","lblRptInvoiceAddress","Carretera Masaya, Frente al colegio Teresiano")."
 										  </td>
 										</tr>
 										<tr>
-										  <td style='text-align:center'>
-											Edificio Delta RUC: 888-080396-0001K
+										  <td style='text-align:center'>											
+											".getBehavio($objCompany->type,"app_invoice_billing","lblRptInvoiceRuc","Edificio Delta RUC: 888-080396-0001K")."
 										  </td>
 										</tr>
 										<tr>
@@ -3887,7 +3887,7 @@ function helper_reporteA4mmTransactionMasterInputUnpostGlobalPro(
 										<td></td>
 									</tr>	
 									<tr>
-										<td colspan='2'>*=Equipo seminuevo</td>
+										<td colspan='2'>*=".getBehavio($objCompany->type,"app_invoice_billing","lblRptInvoiceOpcion1","Equipo seminuevo")."</td>
 									</tr>									
 								</table>
 							</td>
@@ -3911,7 +3911,7 @@ function helper_reporteA4mmTransactionMasterInputUnpostGlobalPro(
 				  <table style='width:98%' >
 						<tr>
 							<td style='text-align:center;text-decoration:underline;font-weight: bold;font-size:14px'>
-								Al comprar tu equipo en GLOBAL PRO,puedes cambiarlo por uno superior cuando gustes!
+								".getBehavio($objCompany->type,"app_invoice_billing","lblRptInvoiceOpcion2","Al comprar tu equipo en GLOBAL PRO,puedes cambiarlo por uno superior cuando gustes!")."
 							</td>
 						</tr>
 				   </table>";
@@ -4047,12 +4047,12 @@ function helper_reporteA4mmTransactionMasterTallerGlobalPro(
 							  
 							  <tr>
 								<td style='text-align:center'>
-								Carretera Masaya, Frente al colegio Teresiano 
+								  ".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptDireccion","Carretera Masaya, Frente al colegio Teresiano") ."
 								</td>
 							  </tr>
 							  <tr>
 								<td style='text-align:center'>
-								Servicio Tecnico: 5863-7406
+								".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptPhone","Servicio Tecnico: 5863-7406") ."
 								</td>
 							  </tr>
 							  <tr>
@@ -4062,7 +4062,7 @@ function helper_reporteA4mmTransactionMasterTallerGlobalPro(
 							  </tr>
 							  <tr>
 								<td style='text-align:center'>
-								Siguenos! Global Pro Nicaragua
+								".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptRed","Siguenos! Global Pro Nicaragua") ."
 								</td>
 							  </tr>
 							</table>
@@ -4209,16 +4209,16 @@ $f_html = $f_html."
         <table style='width:98%' >
           <tr>
             <td style='text-align:justify;font-weight: bold;font-size:12px'>
-              GLOBAL PRO NO se hace reponsable de pérdidas de informacion, por lo cual solicitamos antes
-			  hacer un respaldo a Nuestros clientes.			
+			".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptCondicion1","GLOBAL PRO NO se hace reponsable de pérdidas de informacion, por lo cual solicitamos antes
+			  hacer un respaldo a Nuestros clientes.") ."
             </td>
           </tr>
 		  <tr>
-            <td style='text-align:justify;font-weight: bold;font-size:12px'>
-              El Costo del diagnóstico es de C$ 450.00 si decide realizar la reparacion, NO pagara diagnostico.
+            <td style='text-align:justify;font-weight: bold;font-size:12px'>			  
+			  ".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptCondicion2","El Costo del diagnóstico es de C$ 450.00 si decide realizar la reparacion, NO pagara diagnostico.
 			  Despues de 30 dias de notificar que el equipo está listo para ser retirado, se cobrara $1 diario por 
 			  concepto de Almacenamiento, despues de 6 meses se procedera a liquidar el equipo.
-			  Toda reparación de GLOBAL PRO, cuenta con 3 meses de garantia
+			  Toda reparación de GLOBAL PRO, cuenta con 3 meses de garantia") ."
             </td>
           </tr>
         </table>";
@@ -4391,12 +4391,12 @@ function helper_reporteA4mmTransactionMasterTallerOutputGlobalPro(
 							  
 							  <tr>
 								<td style='text-align:center'>
-								Carretera Masaya, Frente al colegio Teresiano 
+								".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptDireccion","Frente a la entrada principal de Iglesia la Merced")."
 								</td>
 							  </tr>
 							  <tr>
 								<td style='text-align:center'>
-								Servicio Tecnico: 5863-7406
+								".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptPhone","Servicio Tecnico: 5863-7406")."
 								</td>
 							  </tr>
 							  <tr>
@@ -4406,7 +4406,7 @@ function helper_reporteA4mmTransactionMasterTallerOutputGlobalPro(
 							  </tr>
 							  <tr>
 								<td style='text-align:center'>
-								Siguenos! Global Pro Nicaragua
+								".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptRed","Siguenos! Global Pro Nicaragua")."
 								</td>
 							  </tr>
 							</table>
@@ -4526,16 +4526,16 @@ $f_html = $f_html."
         <table style='width:98%' >
           <tr>
             <td style='text-align:justify;font-weight: bold;font-size:12px'>
-              GLOBAL PRO NO se hace reponsable de pérdidas de informacion, por lo cual solicitamos antes
-			  hacer un respaldo a Nuestros clientes.			
+			".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptCondicion1","GLOBAL PRO NO se hace reponsable de pérdidas de informacion, por lo cual solicitamos antes
+			  hacer un respaldo a Nuestros clientes.")."		  
             </td>
           </tr>
 		  <tr>
             <td style='text-align:justify;font-weight: bold;font-size:12px'>
-              El Costo del diagnóstico es de C$ 450.00 si decide realizar la reparacion, NO pagara diagnostico.
+			".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptCondicion2","El Costo del diagnóstico es de C$ 450.00 si decide realizar la reparacion, NO pagara diagnostico.
 			  Despues de 30 dias de notificar que el equipo está listo para ser retirado, se cobrara $1 diario por 
 			  concepto de Almacenamiento, despues de 6 meses se procedera a liquidar el equipo.
-			  Toda reparación de GLOBAL PRO, cuenta con 3 meses de garantia
+			  Toda reparación de GLOBAL PRO, cuenta con 3 meses de garantia")."
             </td>
           </tr>
         </table>";
@@ -5064,7 +5064,7 @@ function helper_reporteA4mmTransactionMasterTallerStickerGlobalPro(
                     <table style='width:98%'>
 						  <tr>
 							<td style='text-align:center;font-weight: bold;'>
-								GLOBAL PRO	
+								".$objCompany->name."
 							</td>
 						  </tr>
 						  <tr>
@@ -5284,7 +5284,7 @@ function helper_reporteA4mmTransactionMasterPedidoStickerGlobalPro(
                     <table style='width:98%'>
 						  <tr>
 							<td style='text-align:center;font-weight: bold;'>
-								GLOBAL PRO	
+								".$objCompany->name." 
 							</td>
 						  </tr>						  
 						  <tr>

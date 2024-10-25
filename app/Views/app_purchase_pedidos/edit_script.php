@@ -166,7 +166,8 @@
 					function validateForm(){
 						var result 				= true;
 						var timerNotification 	= 15000;
-						
+						var applyValidationNote	= true;
+						<?php echo getBehavio($company->type,"app_purchase_pedidos","scriptValidateInSave",""); ?>  
 						//Validar Fecha
 						//if($("#txtDate").val() == ""){
 						//	fnShowNotification("Establecer Fecha al Documento","error",timerNotification);
@@ -180,7 +181,7 @@
 							result = false;
 						}
 						
-						if($("#txtNote").val() == ""){
+						if($("#txtNote").val() == "" && applyValidationNote == true ){
 							fnShowNotification("Seleccionar factura","error",timerNotification);
 							result = false;
 						}

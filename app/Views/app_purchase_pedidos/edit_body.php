@@ -136,8 +136,8 @@
 										<label class="col-lg-4 control-label" for="buttons">Factura</label>
 										<div class="col-lg-8">
 											<div class="input-group">
-												<input type="hidden" id="txtNote" name="txtNote" value="<?php echo $objBilling->transactionNumber;  ?>">
-												<input class="form-control" readonly id="txtNoteDescription" type="txtNoteDescription" value="<?php echo $objBilling->transactionNumber;  ?>">
+												<input type="hidden" id="txtNote" name="txtNote" value="<?php echo $objBilling ? $objBilling->transactionNumber : "";  ?>">
+												<input class="form-control" readonly id="txtNoteDescription" type="txtNoteDescription" value="<?php echo $objBilling ? $objBilling->transactionNumber : "" ;  ?>">
 												
 												<span class="input-group-btn">
 													<button class="btn btn-danger" type="button" id="btnClearNote">

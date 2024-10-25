@@ -470,22 +470,22 @@ class app_purchase_pedidos extends _BaseController {
 						else 
 						{
 							$warrning = true;
-							$this->core_web_notification->set_message(true,"Pedido guardado correctamente, whatsap no enviado, configurar mensaje en plantilla (tb_transaction_master_workshop_pedido.templates_whatsapp) campo Grupo");	
+							$this->core_web_notification->set_message(true,"Pedido guardado correctamente, WhatsApp no enviado, configurar mensaje en plantilla (tb_transaction_master_workshop_pedido.templates_whatsapp) campo Grupo");	
 						}
 					}
 					else {
 						$warrning = true;
-						$this->core_web_notification->set_message(true,"Pedido guardado correctamente, whatsap no enviado, configurar mensaje en plantilla (tb_transaction_master_workshop_pedido.templates_whatsapp)");	
+						$this->core_web_notification->set_message(true,"Pedido guardado correctamente, WhatsApp no enviado, configurar mensaje en plantilla (tb_transaction_master_workshop_pedido.templates_whatsapp)");	
 					}
 				}
 				else {
 					$warrning = true;
-					$this->core_web_notification->set_message(true,"Pedido guardado correctamente, whatsap no enviado, configurar plantailla (tb_transaction_master_workshop_pedido.templates_whatsapp)");	
+					$this->core_web_notification->set_message(true,"Pedido guardado correctamente, WhatsApp no enviado, configurar plantailla (tb_transaction_master_workshop_pedido.templates_whatsapp)");	
 				}
 			}
 			else {
 				$warrning = true;
-				$this->core_web_notification->set_message(true,"Pedido guardado correctamente, whatsap no enviado, por falta de saldo.");
+				$this->core_web_notification->set_message(true,"Pedido guardado correctamente, WhatsApp no enviado, por falta de saldo.");
 			}
 			
 			
