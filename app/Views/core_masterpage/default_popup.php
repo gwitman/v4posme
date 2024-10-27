@@ -93,12 +93,12 @@
 	
 	</head>
 	<body>
-				<div style="background:#fff">
+				<div style="background:#fff" >
 					<?php echo $message; ?>
 					
 					<?php echo $head; ?>
 					
-					<?php echo $body;?>
+					<?php echo $body; ?>
 				</div>			
 	</body>
 	<?php echo $script;?>

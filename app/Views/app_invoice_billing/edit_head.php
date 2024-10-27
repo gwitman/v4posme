@@ -25,6 +25,16 @@
 					}
 				</style>
 				
-				<div id="heading" class="page-header">
+				<style>
+					<?php 
+					$style_headding 	= "";
+					if($useMobile == "1")
+					{
+						$style_headding = "margin:0px 0px 0px 0px !important";
+					}
+					?>
+				</style>
+				
+				<div id="heading" class="page-header" style="<?php echo $style_headding ; ?> " >
 							<h1><i class="icon20  i-bag-2"></i> Editar <?php echo getBehavio($company->type,"app_invoice_billing","labelTitlePageEdit","Factura"); ?></h1>
 				</div> 
