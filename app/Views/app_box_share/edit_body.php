@@ -448,9 +448,28 @@
 			
 			
 			<!-- /body -->
-			<div id="modalDialogOpenPrimter" title="Formato de Impresion" class="dialog">
-				<p>Seleccione el formato que desea imprimir el documento</p>
-			</div>
+			
+			
+			<div class="modal fade" tabindex="-1" id="modalDialogPrinterV2" role="dialog">
+			  <div class="modal-dialog" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Imprimir documento</h4>
+				  </div>
+				  <div class="modal-body">					
+					<h4 class="modal-title">Imprimir documento</h4>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+					<a href="#" class="btn btn-primary hidden" id="btnPrinterIndividual">Individual</a>
+					<a href="#" class="btn btn-primary" id="btnPrinterGeneral">General</a>
+					<a href="#" class="btn btn-primary" id="btnPrinterBasico">Basico</a>
+				  </div>
+				</div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+
 
 		</div>
 	</div>

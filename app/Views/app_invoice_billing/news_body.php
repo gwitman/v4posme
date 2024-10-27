@@ -567,7 +567,7 @@
 										<label class="col-lg-4 control-label" for="datepicker">Primer Pago</label>
 										<div class="col-lg-8">
 											<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
-												<input size="16"  class="form-control" type="text" name="txtDateFirst" id="txtDateFirst" value="" >
+												<input size="16"  class="form-control" type="text" name="txtDateFirst" id="txtDateFirst" value=""      >
 												<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
 											</div>
 										</div>
@@ -587,7 +587,7 @@
 												<!--
 												<input class="form-control"  type="text"  name="txtReference1" id="txtReference1" value="">												
 												-->
-												<select name="txtPeriodPay" id="txtPeriodPay" class="select2">
+												<select name="txtPeriodPay" id="txtPeriodPay" class="<?php echo ($useMobile == "1" ? "" : "select2");  ?>">
 														<option value="0"></option>		
 														<?php
 														$index = -1;
@@ -611,7 +611,7 @@
 												<!--
 												<input class="form-control"  type="text"  name="txtReference1" id="txtReference1" value="">												
 												-->
-												<select name="txtReference1" id="txtReference1" class="select2">
+												<select name="txtReference1" id="txtReference1" class="<?php echo ($useMobile == "1" ? "" : "select2");  ?>">
 														<option value="0"></option>		
 														<?php
 														$index = -1;
@@ -631,7 +631,7 @@
 									<div class="form-group <?php echo $objParameterINVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE=="true" ? "" : "hidden"; ?> ">
 											<label class="col-lg-4 control-label" for="normal">Dias Excluidos</label>
 											<div class="col-lg-8">												
-												<select name="txtDayExcluded" id="txtDayExcluded" class="select2">
+												<select name="txtDayExcluded" id="txtDayExcluded" class="<?php echo ($useMobile == "1" ? "" : "select2");  ?>">
 														<option value="0"></option>		
 														<?php
 														$index = -1;
@@ -912,7 +912,7 @@
 							</div>
 					</div>
 					<br/>					
-					<div class="row">
+					<div class="row <?php echo getBehavio($company->type,"app_invoice_billing","divPanelBtnMasMobileD","" ) ?> ">
 							<div class="col col-lg-4 col-md-4 col-sm-4 col-xs-4">
 								<div class="btn-group  btn-block hidden btn-comando-factura">
 									<button type="button" class="btn btn-flat btn-success dropdown-toggle  btn-block" data-toggle="dropdown"><i class="icon32 i-search"></i> MAS <span class="caret"></span></button>
@@ -981,7 +981,7 @@
 
 					</div>
 					
-					<div class="col-lg-5 col-sm-12" id="divPaymentOption" >
+					<div class="col-lg-5 col-sm-12  <?php echo getBehavio($company->type,"app_invoice_billing","divPanelPagosIncome",""); ?> " id="divPaymentOption" >
 						<div class="page-header">
 							<h3>Pago</h3>
 						</div>

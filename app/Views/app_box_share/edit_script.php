@@ -86,32 +86,27 @@
 		
 		
 		//Imprimir Documento
-		var objectParameterButtoms = {};
-		objectParameterButtoms.Individual=function(){
-				fnWaitOpen();
-				window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>/saldos/Individuales", '_blank');
-				fnWaitClose();
-				$(this).dialog("close");
-		};
-		objectParameterButtoms.General=function(){
-				fnWaitOpen();
-				window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>/saldos/Generales", '_blank');
-				fnWaitClose();
-				$(this).dialog("close");
-		};
-		objectParameterButtoms.Basico=function(){
-				fnWaitOpen();
-				window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>/saldos/Basico", '_blank');
-				fnWaitClose();
-				$(this).dialog("close");
-		};	
-		$("#modalDialogOpenPrimter").dialog({
-				autoOpen: false,
-				modal: true,
-				width:520,
-				dialogClass: "dialog",
-				buttons: objectParameterButtoms
+		$("#btnPrinterIndividual").click(function(){
+			fnWaitOpen();
+			window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>/saldos/Individuales", '_blank');
+			fnWaitClose();		
+			$('#modalDialogPrinterV2').modal('hide');
 		});
+		
+		$("#btnPrinterGeneral").click(function(){
+			fnWaitOpen();
+			window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>/saldos/Generales", '_blank');
+			fnWaitClose();	
+			$('#modalDialogPrinterV2').modal('hide');
+		});
+		$("#btnPrinterBasico").click(function(){
+			fnWaitOpen();
+			window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>/saldos/Basico", '_blank');
+			fnWaitClose();	
+			$('#modalDialogPrinterV2').modal('hide');
+		});
+		
+		
 		$(document).on("click","#btnPrinter",function(){	
 
 			if(varPrinterOnlyFormat == "true")
@@ -120,7 +115,7 @@
 			}
 			else 
 			{
-				$("#modalDialogOpenPrimter").dialog("open");
+				$("#modalDialogPrinterV2").modal("show");
 			}
 			return
 		});

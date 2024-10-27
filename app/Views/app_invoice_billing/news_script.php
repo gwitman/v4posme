@@ -1949,11 +1949,11 @@
 	
 	
 	function fnCreateTableSearchProductos(codigoBuscar){
-			
+			var autoClose 			= '<?php echo getBehavio($company->type,"app_invoice_billing","autoCloseSelectItem","false"); ?>';			
 			var url_request 		= 
 					"<?php echo base_url(); ?>/core_view/showviewbynamepaginate"+
 					"/<?php echo $objComponentItem->componentID; ?>"+
-					"/onCompleteNewItemPopPub/SELECCIONAR_ITEM_BILLING_POPUP_INVOICE/false/"+
+					"/onCompleteNewItemPopPub/SELECCIONAR_ITEM_BILLING_POPUP_INVOICE/"+autoClose+"/"+
 					encodeURI(
 						'{'+
 						'\"warehouseID\"|\"'+$("#txtWarehouseID").val()+'\"'+
@@ -2371,9 +2371,13 @@
 			 $('#txtDate').val(moment().format("YYYY-MM-DD"));	
 			 $("#txtDate").datepicker("update");
 			 $('#txtNextVisit').datepicker({format:"yyyy-mm-dd"});
-			 $('#txtDateFirst').datepicker({format:"yyyy-mm-dd"});						 
-			 $('#txtDateFirst').val(moment().add('days', 0).format("YYYY-MM-DD"));			 
-			 $("#txtDateFirst").datepicker("update");
+			 
+			
+			$('#txtDateFirst').datepicker({format:"yyyy-mm-dd"});						 
+			$('#txtDateFirst').val(moment().add('days', 0).format("YYYY-MM-DD"));			 
+			$("#txtDateFirst").datepicker("update");
+		
+			 
 			 heigthTop							= 300;
 			 
 			 
@@ -2578,7 +2582,7 @@
 								"aTargets"		: [ 6 ],//Cantidad
 								"sWidth"		: "250px",
 								"mRender"		: function ( data, type, full ) {
-									var str =  '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right" /> ';
+									var str =  '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right" autocomplete="off" /> ';
 									
 									if (varUseMobile == "1")
 									str = str + " <span class='badge badge-inverse' >Cantidad</span>";
@@ -2590,7 +2594,7 @@
 								"aTargets"		: [ 7 ],//Precio
 								"sWidth"		: "250px",
 								"mRender"		: function ( data, type, full ) {
-									var str =  '<input type="text" class="col-lg-12 txtPrice txt-numeric"   id="txtPriceRow'+full[2]+'"   '+PriceStatus+'  value="'+data+'" name="txtPrice[]" style="text-align:right" />';
+									var str =  '<input type="text" class="col-lg-12 txtPrice txt-numeric"   id="txtPriceRow'+full[2]+'"   '+PriceStatus+'  value="'+data+'" name="txtPrice[]" style="text-align:right" autocomplete="off" />';
 									if (varUseMobile == "1")
 									str = str + " <span class='badge badge-inverse' >Precio</span>";
 									return str;
@@ -2600,7 +2604,7 @@
 								"aTargets"		: [ 8 ],//Total
 								"sWidth"		: "250px",
 								"mRender"		: function ( data, type, full ) {
-									var str = '<input type="text" class="col-lg-12 txtSubTotal" readonly value="'+data+'" name="txtSubTotal[]" style="text-align:right" />';
+									var str = '<input type="text" class="col-lg-12 txtSubTotal" readonly value="'+data+'" name="txtSubTotal[]" style="text-align:right" autocomplete="off" />';
 									if (varUseMobile == "1")
 									str = str + " <span class='badge badge-inverse' >Total</span>";
 									return str;

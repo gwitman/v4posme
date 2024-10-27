@@ -414,7 +414,7 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "" 
+	tb_company_parameter.value = "financiera" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_LABEL_SISTEMA_SUPLANTATION";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
@@ -1568,7 +1568,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Credi Flash' , address = 'Malpaisillo' ,
-	flavorID = 556 /*usuarioID*/,type='cred_flash'
+	flavorID = 556 /*usuarioID*/,type='credi_flash', abreviature = 'CREDIFLASH'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

@@ -1781,8 +1781,18 @@ class app_inventory_item extends _BaseController
                     $dataViewData = $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
                 }
 
-                $dataViewRender = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
 
+				if(  $this->request->getUserAgent()->isMobile()  )
+				{					
+					//$dataViewRender			= $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow");
+					$dataViewRender				= $this->core_web_view->renderGreedWithHtmlInFildMobile($dataViewData,'ListView',"fnTableSelectedRow");
+				}
+				else
+				{
+					//$dataViewRender			= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+					$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				}
+				
 
             } //Otra vista
             else {

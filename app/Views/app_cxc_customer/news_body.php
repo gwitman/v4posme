@@ -33,8 +33,8 @@
 					if($callback == "false")
 					{
 						?>
-						<a href="#" class="btn btn-warning" id="btnLeads"><i class="icon16 i-pencil"></i> Leads</a>
-						<a href="<?php echo base_url(); ?>/app_cxc_customer/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>
+						<a href="#" class="btn btn-warning <?php echo getBehavio($company->type,"app_cxc_customer","showBtnViewLeads",""); ?> " id="btnLeads"><i class="icon16 i-pencil"></i> Leads</a>
+						<a href="<?php echo base_url(); ?>/app_cxc_customer/index" id="btnBack" class="btn btn-warning" ><i class="icon16 i-rotate"></i> Atras</a>
 						<?php
 					}
 					else{

@@ -616,8 +616,7 @@ class core_merge extends _BaseController {
 		array_push($tablasSync,"tb_catalog:catalogID");		
 		array_push($tablasSync,"tb_company_parameter:companyParameterID");
 		array_push($tablasSync,"tb_parameter:parameterID");			
-		array_push($tablasSync,"tb_company_component_flavor:companyComponentFlavorID");
-		array_push($tablasSync,"tb_company_component_concept:companyComponentConceptID");
+		array_push($tablasSync,"tb_company_component_flavor:companyComponentFlavorID");		
 		array_push($tablasSync,"tb_company_component_item_dataview:companyComponentItemDataviewID");
 		array_push($tablasSync,"tb_company_default_dataview:companyDefaultDataviewID");
 		array_push($tablasSync,"tb_company_dataview:companyDataViewID");
@@ -648,15 +647,6 @@ class core_merge extends _BaseController {
 		
 		
 		
-		/*
-		array_push($tablasSync,"tb_role_autorization:roleAurotizationID");
-		array_push($tablasSync,"tb_role:roleID");
-		array_push($tablasSync,"tb_membership:membershipID");			
-		array_push($tablasSync,"tb_user:userID");
-		array_push($tablasSync,"tb_user_permission:userPermissionID");
-		array_push($tablasSync,"tb_user_tag:userTagID");
-		array_push($tablasSync,"tb_user_warehouse:userWarehouseID");		
-		*/
 		
 		
 		$recordSet = $dbDestino->query("SET FOREIGN_KEY_CHECKS=0;");		
@@ -760,8 +750,7 @@ class core_merge extends _BaseController {
 		array_push($tablasSync,"tb_catalog:catalogID");		
 		array_push($tablasSync,"tb_company_parameter:companyParameterID");
 		array_push($tablasSync,"tb_parameter:parameterID");				
-		array_push($tablasSync,"tb_company_component_flavor:companyComponentFlavorID");
-		array_push($tablasSync,"tb_company_component_concept:companyComponentConceptID");
+		array_push($tablasSync,"tb_company_component_flavor:companyComponentFlavorID");		
 		array_push($tablasSync,"tb_company_component_item_dataview:companyComponentItemDataviewID");
 		array_push($tablasSync,"tb_company_default_dataview:companyDefaultDataviewID");
 		array_push($tablasSync,"tb_company_dataview:companyDataViewID");
@@ -1154,9 +1143,8 @@ class core_merge extends _BaseController {
 											echo "Fecha archivo:".$daysDiff."</br>";
 											
 											if(strtoupper($fileLastExtention) == strtoupper("sql"))
-											{
-												unlink($fileLast);											
-												echo "Archivo eliminado:".$fileLast."</br>";
+											{										
+												echo "Archivos SQL No se eliminaran:".$fileLast."</br>";
 											}
 											
 											if(strtoupper($fileLastExtention) == strtoupper("csv"))

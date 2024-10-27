@@ -346,6 +346,71 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
         } 
 		",
 		
+		/*Credi Flash*/				
+		strtolower('credi_flash_core_web_menu_SIMULADOR')			 				=> "CALCULADORA",
+		strtolower('credi_flash_core_web_menu_FACTURACION')			 				=> "PRESTAMOS",
+		strtolower('credi_flash_core_web_menu_FACTURAR')			 				=> "PRESTAR",
+		strtolower('credi_flash_core_web_menu_VENTAS')			 					=> "DESEMBOLSO",
+		strtolower('credi_flash_core_web_menu_DETALLE DE VENTAS')			 		=> "DETALLE DE DESEMBOLSOS",
+		strtolower('credi_flash_core_web_menu_RESUMEN DE VENTAS')			 		=> "RESUMEN DE DESEMBOLSOS",
+		strtolower('credi_flash_core_web_menu_COBRANZA')			 				=> "CONF. RUTAS",
+		strtolower('credi_flash_core_web_menu_RRHH')			 					=> "RRHH RUTAS",
+		strtolower('credi_flash_core_web_menu_COLABORADORES')			 			=> "COLAB. RUTA.",
+		strtolower('credi_flash_app_collection_manager_lblTitleList')			 	=> "CLIENTES POR RUTAS",
+		strtolower('credi_flash_app_collection_manager_lblTitleAdd')			 	=> "AGREGAR CLIENTE A LA RUTA",
+		strtolower('credi_flash_app_collection_manager_lblColaborador')			 	=> "Ruta",
+		strtolower('credi_flash_app_rrhh_employee_lblList')			 				=> "LISTA DE RUTAS Y/O COLABORADOR",
+		strtolower('credi_flash_app_rrhh_employee_lblNew')			 				=> "NUEVA RUTA Y/O COLABORADOR",
+		strtolower('credi_flash_app_rrhh_employee_lblEdit')			 				=> "EDITAR RUTA Y/O COLABORADOR",
+		strtolower('credi_flash_app_cxc_customer_divTxtCategoria')			 		=> "hidden",
+		strtolower('credi_flash_app_cxc_customer_divTxtFullNameCommercial')			=> "Categoria",
+		strtolower('credi_flash_app_cxc_customer_lblTxtPhoneTemp')					=> "Prefesion u Oficio",
+		strtolower('credi_flash_app_cxc_customer_divTxtProfesionUFicio')			=> "hidden",
+		strtolower('credi_flash_app_cxc_customer_showBtnIrBuro')			 		=> "",
+		strtolower('credi_flash_app_cxc_customer_showBtnIrSimulador')			 	=> "",
+		strtolower('credi_flash_app_cxc_customer_showBtnIrInvoice')			 		=> "",		
+		strtolower('credi_flash_app_cxc_customer_showBtnIrShare')			 		=> "",				
+		strtolower('credi_flash_app_cxc_customer_showBtnGroupAcciones')	 			=> "hidden",				
+		strtolower('credi_flash_app_cxc_customer_showBtnViewLeads')	 				=> "hidden",				
+		strtolower('credi_flash_app_cxc_customer_showBtnPrinter')	 				=> "hidden",				
+		strtolower('credi_flash_app_cxc_customer_showBtnDelete')	 				=> "hidden",				
+		strtolower('credi_flash_app_cxc_record_showBtnIrCustomerOfRecord') 			=> "",
+		strtolower('credi_flash_app_cxc_simulation_showBtnIrCustomerOfSimulator') 	=> "",
+		strtolower('credi_flash_app_box_share_showBtnIrCustomerOfShare') 			=> "hidden",
+		strtolower('credi_flash_app_box_share_btnVerMovimientos') 					=> "hidden",
+		strtolower('credi_flash_app_invoice_billing_panelSummaryInvoice') 			=> "hidden",
+		strtolower('credi_flash_app_invoice_billing_panelResumenFactura') 			=> "hidden",
+		strtolower('credi_flash_app_invoice_billing_txtScanerBarCode') 				=> "hidden",
+		strtolower('credi_flash_app_invoice_billing_divTxtCambio') 					=> "hidden",
+		strtolower('credi_flash_app_invoice_billing_divTxtCliente2') 				=> "hidden",
+		strtolower('credi_flash_app_invoice_billing_divTxtCedula2') 				=> "hidden",		
+		strtolower('credi_flash_app_invoice_billing_divPanelPagosIncome') 			=> "hidden",
+		strtolower('credi_flash_app_invoice_billing_autoCloseSelectItem') 			=> "true",
+		strtolower('credi_flash_app_invoice_billing_divPanelBtnMasMobileD') 		=> "hidden",		
+		strtolower('credi_flash_app_invoice_billing_rowOptionPaymentExtrasTarjeta') => "hidden",
+		strtolower('credi_flash_app_invoice_billing_rowOptionPaymentExtras') 		=> "hidden",
+		
+		
+		
+		
+		strtolower('credi_flash_app_cxc_customer_divScriptValideFunction') 	 		=> "
+		
+		if( $('#txtIdentification').val()  == ''){
+			fnShowNotification('Escribir cedula','error',timerNotification);
+			result = false;
+		}
+		if( $('#txtIdentification').val()  == '0'){
+			fnShowNotification('Escribir cedula con formato correcto','error',timerNotification);
+			result = false;
+		}
+		
+		const regex = /^\d{3}-\d{6}-\d{4}[A-Za-z]$/;
+		if(!regex.test(   $('#txtIdentification').val()   )){
+            fnShowNotification('Escribir cedula con formato correcto','error',timerNotification);
+			result = false;
+        } 
+		",
+		
 	
 		
 		/*El patio*/
