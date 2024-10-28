@@ -166,7 +166,14 @@
 </style>
 
 
-
+<style>
+	@media only screen and (max-width: 480px) 
+	{
+		#rowCssPrincipal{
+			margin:0px 0px 0px 0px !important
+		}
+	}
+</style>
 
 <div 
 	class="isloading-overlay"
@@ -181,9 +188,9 @@
 
 
 
-<div class="row">
+<div class="row" id="rowCssPrincipal" >
 			
-			<div class="col-lg-12">
+			<div class="col-lg-12" >
 				<div class="panel panel-default">
 						
 				<!-- titulo de comprobante-->
@@ -195,6 +202,8 @@
 				
 				<!-- body -->	
 				<form id="form-new-invoice" name="form-new-invoice" class="form-horizontal" role="form" >
+					
+					
 					<div class="panel-body printArea"> 
 					
 						<div id="panelComandoAlternativa2">
@@ -849,18 +858,18 @@
 							?>
 							
 							<div class="row">
-									<div class="col col-lg-4 col-md-4 col-sm-4 col-xs-4">
+									<div class="col col-lg-6 col-md-6 col-sm-6 col-xs-6">
 										<div class="btn-group  btn-block hidden btn-comando-factura">
-											<button type="button" class="btn btn-flat btn-info dropdown-toggle  btn-block" data-toggle="dropdown"><i class="icon32 i-pencil"></i> PRO <span class="caret"></span></button>
+											<button type="button" class="btn btn-flat btn-info dropdown-toggle  btn-block" data-toggle="dropdown">PRO <span class="caret"></span></button>
 											<ul class="dropdown-menu">
 													<li><a href="#" id="btnNewItem" >AGREGAR PRO</a></li>
 													<li><a href="#" id="btnDeleteItem" >ELIMINAR PRO</a></li>											
 											</ul>
 										</div>
 									</div>
-									<div class="col col-lg-4 col-md-4 col-sm-4 col-xs-4">
+									<div class="col col-lg-6 col-md-6 col-sm-6 col-xs-6">
 										<div class="btn-group  btn-block hidden btn-comando-factura">
-											<button type="button" class="btn btn-flat btn-danger dropdown-toggle  btn-block" data-toggle="dropdown"><i class="icon32 i-print"></i> FAC <span class="caret"></span></button>
+											<button type="button" class="btn btn-flat btn-danger dropdown-toggle  btn-block" data-toggle="dropdown">FAC <span class="caret"></span></button>
 											<ul class="dropdown-menu">											
 													<li><a href="<?php echo base_url(); ?>/app_invoice_billing/index" id="btnBack" >REGRESAR</a></li>
 													<li><a href="<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>" id="btnNew">NUEVA FAC</a></li>
@@ -868,9 +877,12 @@
 											</ul>
 										</div>
 									</div>
-									<div class="col col-lg-4 col-md-4 col-sm-4 col-xs-4">
+							</div>
+							</br>
+							<div class="row" >
+									<div class="col col-lg-6 col-md-6 col-sm-6 col-xs-6">
 										<div class="btn-group  btn-block hidden btn-comando-factura">
-											<button type="button" class="btn btn-flat btn-primary dropdown-toggle  btn-block" data-toggle="dropdown"><i class="icon32 i-cloud"></i> SALV <span class="caret"></span></button>
+											<button type="button" class="btn btn-flat btn-primary dropdown-toggle  btn-block" data-toggle="dropdown">SALV <span class="caret"></span></button>
 											<ul class="dropdown-menu">
 													<?php 
 														if ($objParameterInvoiceAutoApply == "true"){
@@ -896,11 +908,11 @@
 										</div>
 									</div>
 							</div>
-							<br/>					
+							<br/>												
 							<div class="row <?php echo getBehavio($company->type,"app_invoice_billing","divPanelBtnMasMobileD","" ) ?> ">
-									<div class="col col-lg-4 col-md-4 col-sm-4 col-xs-4">
+									<div class="col col-lg-6 col-md-6 col-sm-6 col-xs-6">
 										<div class="btn-group  btn-block hidden btn-comando-factura">
-											<button type="button" class="btn btn-flat btn-success dropdown-toggle  btn-block" data-toggle="dropdown"><i class="icon32 i-search"></i> MAS <span class="caret"></span></button>
+											<button type="button" class="btn btn-flat btn-success dropdown-toggle  btn-block" data-toggle="dropdown">MAS <span class="caret"></span></button>
 											<ul class="dropdown-menu">											
 													<li><a href="#" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>						
 													<li><a href="#" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>
@@ -908,6 +920,9 @@
 										</div>
 									</div>							
 							</div>
+							<br/>	
+							<br/>	
+							<br/>	
 							<?php
 						}
 						?>
@@ -1152,25 +1167,7 @@
 						</div><!-- End .row-fluid  -->                                       
 					</div>
 				
-					<!-- mensaje de valor de porcentaje de descuento, no puede menor de 0 ni mayor de 100-->
-					<div class="modal fade" tabindex="-1" id="modalValidarDescuentoPorcentaje" role="dialog">
-						<div class="modal-dialog" role="document">
-							<div class="modal-content">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-									<h4 class="modal-title">Descuento</h4>
-								</div>
-								<div class="modal-body">
-									<p>El monto de descuento no puede ser mayor de 100 ni menor de 0, cambie su valor de <span id="valorDescuentoMensaje"></span> a uno correcto.</p>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-info" data-dismiss="modal">Aceptar</button>
-								</div>
-							</div><!-- /.modal-content -->
-						</div><!-- /.modal-dialog -->
-					</div><!-- /.modal -->
-					<!-- mensaje de valor de porcentaje de descuento, no puede menor de 0 ni mayor de 100-->
-							
+					
 					<!-- Barra Lateral -->
 					<div id="mySidebar" class="sidebar" style="background-color:white">
 					  <div class="sidebar-content"> 
@@ -1282,7 +1279,7 @@
 
 
 					<!-- Barra Lateral Zona-->
-					<div id="mySidebarZona" class="sidebar" style="background-color:white">
+					<div id="mySidebarZona" class="sidebar hidden" style="background-color:white">
 					  <div class="sidebar-content"> 
 						<div id="siderbar_content_right_zona">
 						</div>
@@ -1325,7 +1322,7 @@
 					
 					
 					<!-- Barra Lateral Mesa-->
-					<div id="mySidebarMesa" class="sidebar" style="background-color:white">
+					<div id="mySidebarMesa" class="sidebar hidden" style="background-color:white">
 					  <div class="sidebar-content"> 
 						<div id="siderbar_content_right_mesa">
 						</div>
@@ -1386,6 +1383,7 @@
 						</div>
 					  </div>
 					</div>
+					
 				</form>
 			<!-- /body -->
 			<div class="modal fade" tabindex="-1" id="modalDialogPrinterV2" role="dialog">
@@ -1523,7 +1521,25 @@
 			  </div><!-- /.modal-dialog -->
 			</div><!-- /.modal -->
 			
-			
+			<!-- mensaje de valor de porcentaje de descuento, no puede menor de 0 ni mayor de 100-->
+			<div class="modal fade" tabindex="-1" id="modalValidarDescuentoPorcentaje" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title">Descuento</h4>
+						</div>
+						<div class="modal-body">
+							<p>El monto de descuento no puede ser mayor de 100 ni menor de 0, cambie su valor de <span id="valorDescuentoMensaje"></span> a uno correcto.</p>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-info" data-dismiss="modal">Aceptar</button>
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+			<!-- mensaje de valor de porcentaje de descuento, no puede menor de 0 ni mayor de 100-->
+					
 			
 			<div id="labelTotalAlternativo"  class="<?php echo getBehavio($company->type,"app_invoice_billing","panelLabelSumaryAlternativo","hidden"); ?>" >
 				<div class="col col-lg-2 text-right">
