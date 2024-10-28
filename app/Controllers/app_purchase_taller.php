@@ -1248,23 +1248,23 @@ class app_purchase_taller extends _BaseController {
 			$datView["objTC"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$datView["objTM"]->transactionCausalID);
 			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
-			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_workshop_taller","statusID",$datView["objTM"]->statusID,$companyID,$datView["objTM"]->branchID,APP_ROL_SUPERADMIN);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_workshop_taller","statusID",$datView["objTM"]->statusID,$companyID,APP_BRANCH,APP_ROL_SUPERADMIN);
 			
 			
 			
-
+			
 			$objComponentCustomer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
 			if(!$objComponentCustomer)
 			throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
-		
+			
 			$objComponentEmployer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
 			if(!$objComponentEmployer)
 			throw new \Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
-		
+			
 			$objComponentBilling	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_billing");
 			if(!$objComponentBilling)
 			throw new \Exception("EL COMPONENTE 'tb_transaction_master_billing' NO EXISTE...");
-		
+			
 			$objComponentFile	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_file");
 			if(!$objComponentFile)
 			throw new \Exception("EL COMPONENTE 'tb_file' NO EXISTE...");
@@ -1286,7 +1286,7 @@ class app_purchase_taller extends _BaseController {
 			$dataView["objCustomer"]				= $this->Customer_Model->get_rowByEntity($companyID,$dataView["objTransactionMaster"]->entityID);
 			$dataView["objCustomerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$dataView["objCustomer"]->entityID);
 			$dataView["objCustomerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$dataView["objCustomer"]->entityID);
-
+			
 			//Obtener colaborador
 			$dataView["objEmployer"]				= $this->Employee_Model->get_rowByEntityID($companyID,$dataView["objTransactionMaster"]->entityIDSecondary);
 			$dataView["objEmployerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID);
@@ -1358,7 +1358,7 @@ class app_purchase_taller extends _BaseController {
 					href='".base_url()."/resource/file_company/company_".$companyID."/component_98/component_item_".$transactionMasterID."/".
 					$fileNamePut."'>download compra</a>
 				"; 				
-
+			
 			}
 			else{			
 				//visualizar
@@ -1415,7 +1415,7 @@ class app_purchase_taller extends _BaseController {
 			$datView["objTC"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$datView["objTM"]->transactionCausalID);
 			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
-			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_workshop_taller","statusID",$datView["objTM"]->statusID,$companyID,$datView["objTM"]->branchID,APP_ROL_SUPERADMIN);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_workshop_taller","statusID",$datView["objTM"]->statusID,$companyID,APP_BRANCH,APP_ROL_SUPERADMIN);
 			
 			
 			
@@ -1581,7 +1581,7 @@ class app_purchase_taller extends _BaseController {
 			$datView["objTC"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$datView["objTM"]->transactionCausalID);
 			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
-			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_workshop_taller","statusID",$datView["objTM"]->statusID,$companyID,$datView["objTM"]->branchID,APP_ROL_SUPERADMIN);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_workshop_taller","statusID",$datView["objTM"]->statusID,$companyID,APP_BRANCH,APP_ROL_SUPERADMIN);
 			
 			
 			

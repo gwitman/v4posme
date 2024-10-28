@@ -380,6 +380,7 @@ class core_web_workflow {
 		if(!$objComponent)
 		throw new \Exception("NO EXISTE EL COMPONENTE 'tb_workflow' DENTROS DE LOS REGISTROS DE 'Component' ");
 		
+		
 		//obtener el workflow
 		if(!$objSubElement->workflowID)
 		throw new \Exception("EN LA TABLA SUBELEMENT PARA '".$field."' NO EXISTE EL WORKFLOW CONFIGURADO");
@@ -401,6 +402,7 @@ class core_web_workflow {
 		
 		//obtener el rol del usuario
 		$objRole 				= $Role_Model->get_rowByPK($companyID,$branchID,$roleID);
+		
 		
 		if($objRole->isAdmin){
 			//el usuario puede ver todos los workflow
