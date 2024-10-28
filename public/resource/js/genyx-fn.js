@@ -94,6 +94,12 @@ function fnShowMessageError(message) {
   $("#main_content").prepend(_error);
 }
 function fnShowNotification(message, type, time) {
+  
+  var widthPantalla = window.innerWidth * 0.75;
+  if(widthPantalla >= 600)
+	  widthPantalla = 550;
+  
+  widthPantalla = widthPantalla + "px";
   setTimeout(function () {
     $.jGrowl("<i class='icon16 i-info'></i>" + message, {
       group: type,
@@ -106,7 +112,7 @@ function fnShowNotification(message, type, time) {
         height: "show",
       },
       beforeOpen: function (e, m, o) {
-        $(e).width("550px").height("50px");
+        $(e).width(widthPantalla).height("50px");
       },
     });
   }, 250);

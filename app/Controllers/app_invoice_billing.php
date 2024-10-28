@@ -189,7 +189,7 @@ class app_invoice_billing extends _BaseController {
 			
 			//Tipo de Factura
 			$agent 												= $this->request->getUserAgent();			
-			$dataView["isMobile"]								= helper_RequestGetValue($agent->isMobile(),"0");
+			$dataView["isMobile"]								= $dataSession["user"]->useMobile;
 			$dataView["urlPrinterDocument"]						= $urlPrinterDocument->value;
 			$dataView["urlPrinterDocumentOpcion2"]				= $urlPrinterDocumentOpcion2->value;
 			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
@@ -537,7 +537,7 @@ class app_invoice_billing extends _BaseController {
 			}
 			
 			$agent 												= $this->request->getUserAgent();			
-			$dataView["isMobile"]								= helper_RequestGetValue($agent->isMobile(),"0");
+			$dataView["isMobile"]								= $dataSession["user"]->useMobile;
 			$dataView["widthPanelComando"]						= $dataView["isMobile"] == "0" ? "280" : "450";
 			$dataView["widthPanelTeclado"]						= $dataView["isMobile"] == "0" ? "325" : "350";
 			$dataView["widthPanelNueva"]						= $dataView["isMobile"] == "0" ? "280" : "210";
@@ -3284,7 +3284,7 @@ class app_invoice_billing extends _BaseController {
 			
 			//Tipo de Factura
 			$agent 											= $this->request->getUserAgent();						
-			$dataView["isMobile"]							= helper_RequestGetValue($agent->isMobile(),"0");
+			$dataView["isMobile"]							= $dataSession["user"]->useMobile;
 			$dataView["objComponentTransactionBilling"]		= $objComponentTransactionBilling;
 			$dataView["companyID"]							= $dataSession["user"]->companyID;
 			$dataView["isAdmin"]							= $dataSession["role"]->isAdmin;
