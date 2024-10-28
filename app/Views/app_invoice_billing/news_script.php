@@ -189,25 +189,31 @@
 	//Zona
 	$(document).on("click","#btnShowZona",function(){		
 		 $("#mySidebarZona").css("width","100%");
+		 $("#mySidebarZona").removeClass("hidden");
 	});				
 	$(document).on("click","#btnRollbackZona",function(){
 		var sidebar = $("#mySidebarZona");		
 		sidebar.css("width", "0");
+		sidebar.addClass("hidden");
 	});
 	
 	//Mesa
 	$(document).on("click","#btnShowMesa",function(){		
 		 $("#mySidebarMesa").css("width","100%");
+		 $("#mySidebarMesa").removeClass("hidden");
 	});				
 	$(document).on("click","#btnRollbackMesa",function(){
 		var sidebar = $("#mySidebarMesa");
 		sidebar.css("width", "0");
+		sidebar.addClass("hidden");
 	});
 	
 	$(document).on("click","#btnRollbackZonas",function(){
 		var sidebar = $("#mySidebarMesa");
 		sidebar.css("width", "0");
+		sidebar.addClass("hidden");
 		$("#mySidebarZona").css("width","100%");
+		$("#mySidebarZona").removeClass("hidden");
 	});
 	
 	$(document).on("keypress",'#txtReceiptAmount', function(e) {	
@@ -1217,7 +1223,9 @@
 		$(".custom-table-mesas").find('td[data-parent="'+catalogItemIDZone+'"]').removeClass("hidden");	
 		var sidebar = $("#mySidebarZona");		
 		sidebar.css("width", "0");	
+		sidebar.addClass("hidden");
 		$("#mySidebarMesa").css("width","100%");
+		$("#mySidebarMesa").removeClass("hidden");
 	}
 	
 	function fnSelectCellMesa(cell) {		
@@ -1242,6 +1250,7 @@
 		}else{
             $("#mySidebarFactura").css("width","100%");
             $("#mySidebarMesa").css("width","0%");
+			$("#mySidebarMesa").addClass("hidden");
         }
 	}
 	
@@ -2359,6 +2368,7 @@
 			if(varParameterRestaurante == "true")
 			{
 				$("#mySidebarZona").css("width","100%");
+				$("#mySidebarZona").removeClass("hidden");
 			}
 			
             $(".custom-table-container-inventory").hide();
