@@ -23,15 +23,14 @@
 				</style>
 				
 				<style>
-					<?php 
-					$style_headding 	= "";
-					if($useMobile == "1")
+					@media only screen and (max-width: 480px) 
 					{
-						$style_headding = "margin:0px 0px 0px 0px !important";
+						#heading{
+							margin:0px 0px 0px 0px !important
+						}
 					}
-					?>
 				</style>
 				
-				<div id="heading" class="page-header" style="<?php echo $style_headding ; ?> " >
+				<div id="heading" class="page-header"  >
 							<h1><i class="icon20  i-bag-2"></i> Agregar <?php echo getBehavio($company->type,"app_invoice_billing","labelTitlePageNew","Factura"); ?> </h1>
 				</div> 
