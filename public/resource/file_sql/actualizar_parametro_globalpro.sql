@@ -8,6 +8,26 @@ use dbjznvjrsdpypf;
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "139" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_TRANSFEROUTPUT_WORKFLOW_APPLY";## Workflow Aplicable de la Transferencia por salida
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "140" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_TRANSFERINPUT_WORKFLOW_APPLY";## Workflow Aplicable de la Transferencia por entrada
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_TRANSFEROUTPUT_AUTO_APPLY_TRANSFERINPUT";## Auto aplicar transferencia
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "945" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 

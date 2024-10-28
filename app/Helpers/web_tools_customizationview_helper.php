@@ -1205,12 +1205,21 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('compu_matt_app_purchase_taller_lblReportEntradaRptDireccion') 									=> "Frente a la entrada principal de Iglesia la Merced",
 		strtolower('compu_matt_app_purchase_taller_lblReportEntradaRptPhone') 										=> "Servicio Tecnico: 2311 0234",		
 		strtolower('compu_matt_app_purchase_taller_lblReportEntradaRptRed') 										=> "Siguenos! Compu MATT",
-		strtolower('compu_matt_app_purchase_taller_lblReportEntradaRptCondicion1') 									=> "COMPU MATT NO se hace reponsable de pérdidas de informacion, por lo cual solicitamos antes
-			  hacer un respaldo a Nuestros clientes.",
-		strtolower('compu_matt_app_purchase_taller_lblReportEntradaRptCondicion2') 									=> "El Costo del diagnóstico es de C$ 450.00 si decide realizar la reparacion, NO pagara diagnostico.
-			  Despues de 30 dias de notificar que el equipo está listo para ser retirado, se cobrara $1 diario por 
-			  concepto de Almacenamiento, despues de 6 meses se procedera a liquidar el equipo.
-			  Toda reparación de COMPU MATT, cuenta con 3 meses de garantia",
+		strtolower('compu_matt_app_purchase_taller_lblReportEntradaRptCondicion1') 									=> "",
+		strtolower('compu_matt_app_purchase_taller_lblReportEntradaRptCondicion2') 									=> "
+			CLAUSULAS
+			</br>
+			<ul>
+				<li>Favor presentar esta esquela para retirar su equipo.</li>
+				<li>COMPU MATT No se responsabiliza por la pérdida de información. en medios extraibles tales como: disco duro (internos o externos), DVD, Pendriver, cita backup , al momento de realizar cualquier servicio.</li>
+				<li>Nuestra GARANTIA no cubre fallas de software, La garantía por mano de obra es de 7 dias.</li>
+				<li>El valor del diagnóstico es de C$ 450 y es acreditable al monto total del mantenimiento realializado.</li>
+				<li>Para hacer valida su garantía, presentar SIEMPRE su factura Original de compra.</li>
+				<li>Despues de 30 dias de notificado el diagnóstico. no nos hacemos responsables de su equipo.</li>
+				<li>Los equipos deben estar siempre conectados a tomas corriente polarizados, con protectores de energia, supresores de picos y UPS de lo contrario perderea su garantía</li>
+				<li>Para cualquier información, llamar al 2311-0234, Correo electronico: soporte@compumattsa.com. WhatsApp :  8249-3098</li>
+			</ul>
+		",
 		strtolower('compu_matt_app_purchase_pedidos_scriptValidateInSave') 											=> "
 			applyValidationNote = false;
 		"
