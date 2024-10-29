@@ -80,7 +80,7 @@ class app_api_fingerprint extends _BaseController {
 		$executeProgramFingerPint	= $this->core_web_parameter->getParameter("OPEN_FINGERPRINT_EXECUTE",APP_COMPANY);
 		$executeProgramFingerPint	= $executeProgramFingerPint->value;
 		if($executeProgramFingerPint == "false")
-			return;
+		return;
 		
 		$executeProgramFingerPintPath	= $this->core_web_parameter->getParameter("OPEN_FINGERPRINT_EXECUTE_PATH",APP_COMPANY);
 		$executeProgramFingerPintPath	= $executeProgramFingerPintPath->value;
@@ -113,21 +113,41 @@ class app_api_fingerprint extends _BaseController {
 		//wgonzalez--}
 
 
-		//wgonzalez--// Ejecutar el archivo .exe
-		//wgonzalez--$batFilePath  = 'C:\\Program Files\\FileZilla FTP Client\\filezilla.exe';
-		//wgonzalez--$batFilePath  = 'C:\\xampp\\teamds2\\nsSystem\\v4posme\\public\\resource\\file_job\\job_execute_finger_print_exe.bat';		
-		//wgonzalez--exec("start \"\" \"$batFilePath\" > NUL 2>&1 ", $output, $return_var);
-		//wgonzalez--//exec('start /B "'.$executeProgramFingerPintPath.'" 2>&1', $output, $return_var);
-		//wgonzalez--//exec('start "'.$executeProgramFingerPintPath.'" 2>&1', $output, $return_var);
-		//wgonzalez--
-		//wgonzalez--
-		//wgonzalez--// Mostrar salida y error
-		//wgonzalez--if ($return_var === 0) {
-		//wgonzalez--	log_message("error","¡Programa ejecutado con éxito!");
-		//wgonzalez--} else {
-		//wgonzalez--	log_message("error","Hubo un error al ejecutar el programa: ");
-		//wgonzalez--	log_message("error",print_r($output,true)); // Mostrar detalles del error
-		//wgonzalez--}
+		//// Ejecutar el archivo .exe				
+		//$batFilePath  = 'C:\\xampp\\teamds2\\nsSystem\\v4posme\\public\\resource\\file_job\\job_execute_finger_print_exe.bat';		
+		//$batFilePath  = 'C:\Program Files\FileZilla FTP Client\filezilla.exe';
+		//
+		//
+		//
+		//exec("powershell -command \"Start-Process '$batFilePath'\"");
+		//$descriptorspec = [
+		//	0 => ["pipe", "r"],
+		//	1 => ["pipe", "w"],
+		//	2 => ["pipe", "w"]
+		//];
+		//$process = proc_open($batFilePath, $descriptorspec, $pipes);
+		//if (is_resource($process)) {
+		//	fclose($pipes[0]);
+		//	fclose($pipes[1]);
+		//	fclose($pipes[2]);
+		//	proc_close($process);
+		//}
+		
+		//exec("cmd /c start \"".$batFilePath."\"");
+		//shell_exec("start \"\" \"$batFilePath\"");
+		//pclose(popen("start \"\" \"$batFilePath\"", "r"));		
+		//exec("start \"\" \"$batFilePath\" > NUL 2>&1 ", $output, $return_var);
+		//exec('start /B "'.$executeProgramFingerPintPath.'" 2>&1', $output, $return_var);
+		//exec('start "'.$executeProgramFingerPintPath.'" 2>&1', $output, $return_var);
+		
+		
+		// Mostrar salida y error
+		//if ($return_var === 0) {
+		//	log_message("error","¡Programa ejecutado con éxito!");
+		//} else {
+		//	log_message("error","Hubo un error al ejecutar el programa: ");
+		//	log_message("error",print_r($output,true)); // Mostrar detalles del error
+		//}
 
 		
 	}
