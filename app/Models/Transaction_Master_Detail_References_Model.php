@@ -85,7 +85,10 @@ class Transaction_Master_Detail_References_Model extends Model  {
 									tdr.isActive,
 									tdr.quantity ,
 									tdr.createdOn,
-									i.name 
+									i.name as itemName,
+									td.unitaryPrice,
+									td.unitaryPrice as amount,
+									td.tax1 
 				");
 			$sql = $sql.sprintf("from tb_transaction_master_detail_references tdr ");			
 			$sql = $sql.sprintf("inner join tb_transaction_master_detail td on td.transactionMasterDetailID = tdr.transactionMasterDetailID ");			
@@ -97,7 +100,7 @@ class Transaction_Master_Detail_References_Model extends Model  {
 			$sql = $sql.sprintf(" 	and tdr.isActive= 1");	
 		}
 		//Ejecutar Consulta
-		return $db->query($sql)->getRow();
+		return $db->query($sql)->getResult();
    }
    
    

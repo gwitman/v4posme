@@ -49,10 +49,10 @@ class core_web_printer_direct {
 
     function configurationPrinter($printerName){	
 		
-        $this->nombre_impresora           = $printerName;
+        $this->nombre_impresora           = $printerName;		
         $this->connectorWindowPrinter     = new WindowsPrintConnector($this->nombre_impresora);
         $this->printer                    = new Printer($this->connectorWindowPrinter);
-		//$this->printer->close();        
+		//$this->printer->close();  
 	}
 
 	function addSpaces($string = '', $valid_string_length = 0) {
@@ -690,11 +690,9 @@ class core_web_printer_direct {
 		//$this->printer->text($this->addSpaces('Cantidad', 20) . $this->addSpaces('Precio', 20) . $this->addSpaces('Total', 8) . "\n");
 		$this->printer->setPrintLeftMargin(0);
 		$this->printer->setJustification(Printer::JUSTIFY_LEFT);
-		if($dataSetValores["objTransactionMasterDetail"]){
-			foreach($dataSetValores["objTransactionMasterDetail"] as $row)
+		if($dataSetValores["objTransactionMasterDetailReferences"]){
+			foreach($dataSetValores["objTransactionMasterDetailReferences"] as $row)
 			{	
-
-
 				$this->printer->text($this->addSpaces(strtolower(substr($row->itemName,0,35)), 20));
 				$this->printer->text("\n");				
 				
@@ -707,7 +705,7 @@ class core_web_printer_direct {
 				$iva		= $iva + ($row->tax1 * $row->quantity);
 				$total		= $total + $row->amount;
 				$subtotal	= $total - $iva;
-
+		
 			}
 		}
 		$this->printer->text("\n");

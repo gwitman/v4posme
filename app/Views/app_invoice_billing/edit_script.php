@@ -226,7 +226,7 @@
 		
 		
 		var exoneracion = $('#txtCheckApplyExoneracion').parent().hasClass("switch-on");
-		debugger;
+		
 		if(exoneracion)
 			$("#txtCheckApplyExoneracionValue").val("0");
 		else
@@ -1395,7 +1395,7 @@
 					
 					var objConcepto = e;
 					var exoneracion = $("#txtCheckApplyExoneracionValue").val();
-					debugger;
+					
 					if(exoneracion == "0")
 					{
 						objConcepto1 	= jLinq.from(objConcepto).where(function(obj){ return (obj.name == "IVA"); }).select();
@@ -2741,7 +2741,7 @@
 			
 			
 			
-			debugger;
+			
 			if( $('#txtCheckApplyExoneracionValue').val() == "0"  )
 			{
 				$('#txtCheckApplyExoneracion').parent().removeClass("switch-off");
