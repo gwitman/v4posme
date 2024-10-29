@@ -656,16 +656,27 @@
 												</div>
 										</div>
 										
-										
-										<div class="form-group hide">
-												<label class="col-lg-4 control-label" for="normal">Primer Linea del Protocolo.</label>
+										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divApplyExoneracion",""); ?> ">
+												<label class="col-lg-4 control-label" for="normal"></label>
 												<div class="col-lg-8">
-													<input class="form-control"   type="text" name="txtLayFirstLineProtocolo" id="txtLayFirstLineProtocolo" value="<?php echo helper_RequestGetValueObjet($objTransactionMasterDetailCredit,"reference3",0); ?>">
+													 <label class="label-change-switch" id="txtLabelApplyExoneracion">Aplica exoneración?</label>
+													 <br/>
+													 <div class="switch" data-on="success" data-off="warning">
+														<input class="toggle"controls-row type="checkbox" <?php $check = helper_RequestGetValueObjet($objTransactionMasterReferences,"reference2","");  echo ($check == "" || $check == "0")  ? "" : "checked"; ?> id="txtCheckApplyExoneracion" name="txtCheckApplyExoneracion" />
+													 </div>																
+												</div>
+										</div>
+										
+										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divExoneracion",""); ?>">
+												<label class="col-lg-4 control-label" for="normal">Codigo de exoneración.</label>
+												<div class="col-lg-8">
+													<input class="form-control"   type="text" name="txtLayFirstLineProtocolo" id="txtLayFirstLineProtocolo" value="<?php echo helper_RequestGetValueObjet($objTransactionMasterReferences,"reference1",""); ?>">
 													
+													<!--
 													<a href="#" class="btn btn-primary  gap-right10" data-toggle="popover" data-placement="bottom" 
 													data-content="Ejemplo: 5" title="" 
 													data-original-title="Tenor:">Ayuda:</a>
-													
+													-->
 													
 												</div>
 										</div>

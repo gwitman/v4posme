@@ -193,6 +193,7 @@ class app_invoice_billing extends _BaseController {
 			$dataView["urlPrinterDocument"]						= $urlPrinterDocument->value;
 			$dataView["urlPrinterDocumentOpcion2"]				= $urlPrinterDocumentOpcion2->value;
 			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$dataView["objTransactionMasterReferences"]			= $this->Transaction_Master_References_Model->get_rowByTransactionMaster($transactionMasterID);
 			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterDetailReferences"] 	= $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterIDAndComponentID($transactionMasterID,$objComponentItem->componentID);
@@ -939,6 +940,10 @@ class app_invoice_billing extends _BaseController {
 			$objTMInfoNew["reference2"]								= "not_used";
 			
 			
+			//Ingresar TransactionMaster Reference			
+			$objTMReferenceNew["reference1"]				= /*inicio get post*/ $this->request->getPost("txtLayFirstLineProtocolo");
+			$objTMReferenceNew["reference2"]				= is_null( /*inicio get post*/ $this->request->getPost("txtCheckApplyExoneracion")) ? "0" : /*inicio get post*/ $this->request->getPost("txtCheckApplyExoneracion") ;
+			
 			
 			$db=db_connect();
 			$db->transStart();
@@ -952,6 +957,7 @@ class app_invoice_billing extends _BaseController {
 			else{
 				$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMNew);
 				$this->Transaction_Master_Info_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMInfoNew);
+				$this->Transaction_Master_References_Model->update_app_posme_by_transactionMasterID($transactionMasterID,$objTMReferenceNew);
 			}
 			
 			
@@ -1199,7 +1205,7 @@ class app_invoice_billing extends _BaseController {
 						$objTMDC["transactionMasterDetailID"]	= $transactionMasterDetailID_;
 						$objTMDC["reference1"]					= /*inicio get post*/ $this->request->getPost("txtFixedExpenses");
 						$objTMDC["reference2"]					= /*inicio get post*/ $this->request->getPost("txtCheckReportSinRiesgo");
-						$objTMDC["reference3"]					= /*inicio get post*/ $this->request->getPost("txtLayFirstLineProtocolo");
+						$objTMDC["reference3"]					= "";
 						$objTMDC["reference4"]					= "";
 						$objTMDC["reference5"]					= "";
 						$objTMDC["reference9"]					= "reference1: Porcentaje de Gastos fijos para las facturas de credito,reference2: Escritura Publica,reference3: Primer Linea del Protocolo";						
@@ -1274,7 +1280,7 @@ class app_invoice_billing extends _BaseController {
 						
 						$objTMDC["reference1"]					= /*inicio get post*/ $this->request->getPost("txtFixedExpenses");
 						$objTMDC["reference2"]					= /*inicio get post*/ $this->request->getPost("txtCheckReportSinRiesgo");
-						$objTMDC["reference3"]					= /*inicio get post*/ $this->request->getPost("txtLayFirstLineProtocolo");
+						$objTMDC["reference3"]					= "";
 						$objTMDC["reference4"]					= "";
 						$objTMDC["reference5"]					= "";
 						$objTMDC["reference9"]					= "reference1: Porcentaje de Gastos Fijos para las Facturas de Credito,reference2: Escritura Publica,reference3: Primer Linea del Protocolo";
@@ -1785,6 +1791,14 @@ class app_invoice_billing extends _BaseController {
 			
 			
 			$this->Transaction_Master_Info_Model->insert_app_posme($objTMInfo);
+			//Ingresar TransactionMaster Reference
+			$objTMReference["transactionMasterID"]		= $transactionMasterID;
+			$objTMReference["reference1"]				= /*inicio get post*/ $this->request->getPost("txtLayFirstLineProtocolo");
+			$objTMReference["reference2"]				= is_null( /*inicio get post*/ $this->request->getPost("txtCheckApplyExoneracion")) ? "0" : /*inicio get post*/ $this->request->getPost("txtCheckApplyExoneracion") ;
+			$objTMReference["createdOn"]				= helper_getDateTime();
+			$objTMReference["isActive"]					= 1;
+			$this->Transaction_Master_References_Model->insert_app_posme($objTMReference);
+			
 			
 			//Recorrer la lista del detalle del documento
 			$arrayListItemID 							= /*inicio get post*/ $this->request->getPost("txtItemID");
@@ -1925,7 +1939,7 @@ class app_invoice_billing extends _BaseController {
 					$objTMDC["transactionMasterDetailID"]	= $transactionMasterDetailID_;
 					$objTMDC["reference1"]					= /*inicio get post*/ $this->request->getPost("txtFixedExpenses");
 					$objTMDC["reference2"]					= /*inicio get post*/ $this->request->getPost("txtCheckReportSinRiesgo");
-					$objTMDC["reference3"]					= /*inicio get post*/ $this->request->getPost("txtLayFirstLineProtocolo");
+					$objTMDC["reference3"]					= "";
 					$objTMDC["reference4"]					= "";
 					$objTMDC["reference5"]					= "";
 					$objTMDC["reference9"]					= "reference1: Porcentaje de Gastos Fijo para las facturas de credito,reference2: Escritura Publica,reference3: Primer Linea del Protocolo";
@@ -2273,6 +2287,15 @@ class app_invoice_billing extends _BaseController {
 
 
 			$this->Transaction_Master_Info_Model->insert_app_posme($objTMInfo);
+			
+			
+			//Ingresar TransactionMaster Reference
+			$objTMReference["transactionMasterID"]		= $transactionMasterID;
+			$objTMReference["reference1"]				= "";  //numero de exoneracion
+			$objTMReference["reference2"]				= "0"; //aplica exoneracion
+			$objTMReference["createdOn"]				= helper_getDateTime();
+			$objTMReference["isActive"]					= 1;
+			$this->Transaction_Master_References_Model->insert_app_posme($objTMReference);
 
 			//Ingresar la configuracion de precios		
 			$amountTotal 									= 0;
