@@ -58,7 +58,10 @@ class app_lab_examen extends _BaseController
                     return view("core_masterpage/default_masterpage",$dataSession);//--finview-r
         }
         catch(\Exception $ex){
-            
+            if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
             $data["session"]   = $dataSession;
             $data["exception"] = $ex;
             $data["urlLogin"]  = base_url();
@@ -512,7 +515,10 @@ class app_lab_examen extends _BaseController
             
         }
         catch(\Exception $ex){
-            
+            if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
             $data["session"]   = $dataSession;
             $data["exception"] = $ex;
             $data["urlLogin"]  = base_url();
@@ -770,7 +776,10 @@ class app_lab_examen extends _BaseController
 			
 		}
 		catch(\Exception $ex){
-		    
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+	
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();

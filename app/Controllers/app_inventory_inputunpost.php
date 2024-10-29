@@ -55,7 +55,10 @@ class app_inventory_inputunpost extends _BaseController {
 			$this->core_web_printer_direct->executePrinter58Compra($dataView);
 		}
 		catch(\Exception $ex){
-		    
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -233,8 +236,18 @@ class app_inventory_inputunpost extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-			exit($ex->getMessage());
-		}
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;		}
 	}
 	function viewRegisterFormatoA4(){
 		try{ 
@@ -393,8 +406,18 @@ class app_inventory_inputunpost extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-			exit($ex->getMessage());
-		}
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;		}
 	}
 	
 	function viewRegisterFormatoA4Globalpro(){
@@ -507,8 +530,18 @@ class app_inventory_inputunpost extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-			exit($ex->getMessage());
-		}
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;		}
 	}
 	
 	function viewRegisterFormatoA4GlobalproOnlyQuantity(){
@@ -621,8 +654,18 @@ class app_inventory_inputunpost extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-			exit($ex->getMessage());
-		}
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;		}
 	}
 	
 	function searchTransactionMaster(){
@@ -974,8 +1017,18 @@ class app_inventory_inputunpost extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-			exit($ex->getMessage());
-		}			
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;		}			
 	}
 
 	function insertElementMobile($dataSession, $objItems){
@@ -1632,12 +1685,18 @@ class app_inventory_inputunpost extends _BaseController {
 		}
 		catch(\Exception $ex){
 				
-				$data["session"]   = $dataSession;
-				$data["exception"] = $ex;
-				$data["urlLogin"]  = base_url();
-				$data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-				$data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);				
-				echo view("core_template/email_error_general",$data);
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;
 		}			
 	}
 	function save($mode=""){
@@ -1776,8 +1835,18 @@ class app_inventory_inputunpost extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-			exit($ex->getMessage());
-		}
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;		}
 	}
 	function add(){
 		try{ 
@@ -1864,8 +1933,18 @@ class app_inventory_inputunpost extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-			exit($ex->getMessage());
-		}	
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;		}	
 		
 	}
 	function index($dataViewID = null){	
@@ -1949,8 +2028,18 @@ class app_inventory_inputunpost extends _BaseController {
 			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r	
 		}
 		catch(\Exception $ex){
-			exit($ex->getMessage());
-		}
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;		}
 	}	
 	function add_masinformacion($fnCallback="",$itemID="",$transactionMasterDetailID="",$positionID="",$lote="",$vencimiento="",$precio1="",$precio2="",$txtReference4TransactionMasterDetail = "" ){
 		

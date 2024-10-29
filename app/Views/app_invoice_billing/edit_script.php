@@ -222,6 +222,29 @@
 		fnRecalculateDetail(true,"");				
 	});
 	
+	$('#txtCheckApplyExoneracion').parent().parent().on('change', function() {
+		
+		
+		var exoneracion = $('#txtCheckApplyExoneracion').parent().hasClass("switch-on");
+		debugger;
+		if(exoneracion)
+			$("#txtCheckApplyExoneracionValue").val("0");
+		else
+			$("#txtCheckApplyExoneracionValue").val("1");
+		
+		
+		var listRow = objTableDetail.fnGetData();							
+		var length 	= listRow.length;
+		
+		var i 		= 0;		
+		while (i < length )
+		{	
+			fnGetConcept(listRow[i][2],"IVA");			
+			i++;
+		}
+		
+    });
+	
 	$(document).on("click","#txtToolCalcular",function(){
 		
 		var valor 	= $("#txtToolMontoConIva").val();
@@ -1371,18 +1394,28 @@
 				
 					
 					var objConcepto = e;
-					objConcepto1 	= jLinq.from(objConcepto).where(function(obj){ return (obj.name == "IVA"); }).select();
-					if( objConcepto1.length > 0 )
+					var exoneracion = $("#txtCheckApplyExoneracionValue").val();
+					debugger;
+					if(exoneracion == "0")
 					{
-						
-						objTableDetail.fnUpdate( fnFormatNumber(objConcepto1[0].valueOut,2), objind_, 9 );			
+						objConcepto1 	= jLinq.from(objConcepto).where(function(obj){ return (obj.name == "IVA"); }).select();
+						if( objConcepto1.length > 0 )
+						{
+							
+							objTableDetail.fnUpdate( fnFormatNumber(objConcepto1[0].valueOut,2), objind_, 9 );			
+						}
+						objConcepto2 	= jLinq.from(objConcepto).where(function(obj){ return (obj.name == "TAX_SERVICES"); }).select();
+						if( objConcepto2.length > 0 )
+						{
+							
+							objTableDetail.fnUpdate( fnFormatNumber(objConcepto2[0].valueOut,2), objind_, 17 );			
+						}	
+					}	
+					else 
+					{
+						objTableDetail.fnUpdate( 0, objind_, 9 );		//IVA	
+						objTableDetail.fnUpdate( 0, objind_, 17 );		//TAX_SERVICES
 					}
-					objConcepto2 	= jLinq.from(objConcepto).where(function(obj){ return (obj.name == "TAX_SERVICES"); }).select();
-					if( objConcepto2.length > 0 )
-					{
-						
-						objTableDetail.fnUpdate( fnFormatNumber(objConcepto2[0].valueOut,2), objind_, 17 );			
-					}					
 					fnRecalculateDetail(true,"");
 					
 			}
@@ -2708,6 +2741,20 @@
 			
 			
 			
+			debugger;
+			if( $('#txtCheckApplyExoneracionValue').val() == "0"  )
+			{
+				$('#txtCheckApplyExoneracion').parent().removeClass("switch-off");
+				$('#txtCheckApplyExoneracion').parent().addClass("switch-on");
+			}
+			else 
+			{
+				$('#txtCheckApplyExoneracion').parent().removeClass("switch-on");
+				$('#txtCheckApplyExoneracion').parent().addClass("switch-off");
+				
+			}
+			
+			
 			//Incializar Focos
 			if(varParameterScanerProducto != "false" && varUseMobile == "0" ){
 				document.getElementById("txtScanerCodigo").focus();	
@@ -3159,6 +3206,7 @@
 			//Renderizar combobox de las lineas de credito			
 			fnRenderLineaCredit(objListCustomerCreditLine,objCausalTypeCredit);	
 			objRenderInit = false;
+			
 			
 		});
 	}

@@ -69,8 +69,18 @@ class app_inventory_itemmasive extends _BaseController {
 			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r	
 		}
 		catch(\Exception $ex){
-			exit($ex->getMessage());
-		}
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;		}
 	}	
 	
 	function popup_add_prinercode($listItem=""){
@@ -175,8 +185,18 @@ class app_inventory_itemmasive extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-			exit($ex->getMessage());
-		}
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;		}
 	}
 	
 	//facturacino imprimir directamente en impresora, formato de ticket
@@ -186,7 +206,7 @@ class app_inventory_itemmasive extends _BaseController {
 		$listItem = helper_SegmentsByIndex($this->uri->getSegments(),1,$listItem);	
 		
 		
-		//try{
+		try{
 			
 			
 			//AUTENTICADO
@@ -302,11 +322,21 @@ class app_inventory_itemmasive extends _BaseController {
 			
 			
 			
-		//}
-		//catch(\Exception $ex)
-		//{			
-			//exit($ex->getMessage());
-		//}	
+		}
+		catch(\Exception $ex)
+		{			
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;		}	
 	}
 	//facturacino imprimir directamente en impresora, formato de ticket
 	function printer_barcode_58ml_direct_localhost($listItem="")
@@ -317,7 +347,7 @@ class app_inventory_itemmasive extends _BaseController {
 		$listItem 	= urldecode($listItem);		
 		
 		
-		//try{
+		try{
 			
 		
 			
@@ -410,11 +440,21 @@ class app_inventory_itemmasive extends _BaseController {
 			echo "fin de impresion print codigo</br>";
 			
 			
-		//}
-		//catch(\Exception $ex)
-		//{			
-			//exit($ex->getMessage());
-		//}	
+		}
+		catch(\Exception $ex)
+		{			
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;		}	
 	}
 	
 }
