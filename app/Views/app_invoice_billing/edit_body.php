@@ -662,7 +662,9 @@
 													 <label class="label-change-switch" id="txtLabelApplyExoneracion">Aplica exoneración?</label>
 													 <br/>
 													 <div class="switch" data-on="success" data-off="warning">
-														<input class="toggle"controls-row type="checkbox" <?php $check = helper_RequestGetValueObjet($objTransactionMasterReferences,"reference2","");  echo ($check == "" || $check == "0")  ? "" : "checked"; ?> id="txtCheckApplyExoneracion" name="txtCheckApplyExoneracion" />
+														<input class="toggle"controls-row type="checkbox"  id="txtCheckApplyExoneracion" name="txtCheckApplyExoneracion" />
+														<input type="hidden" id="txtCheckApplyExoneracionValue"  name="txtCheckApplyExoneracionValue" value="<?php $check = helper_RequestGetValueObjet($objTransactionMasterReferences,"reference2","");  echo ($check == "" || $check == "0")  ? "0" : "1"; ?>" />
+														
 													 </div>																
 												</div>
 										</div>

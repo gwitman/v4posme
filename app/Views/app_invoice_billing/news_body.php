@@ -671,7 +671,8 @@
 														 <label class="label-change-switch" id="txtLabelApplyExoneracion">Aplica exoneración?</label>
 														 <br/>
 														 <div class="switch" data-on="success" data-off="warning">
-															<input class="toggle"controls-row type="checkbox" id="txtCheckApplyExoneracion" name="txtCheckApplyExoneracion" />
+															<input class="toggle"controls-row type="checkbox" id="txtCheckApplyExoneracion"  name="txtCheckApplyExoneracion" />
+															<input type="hidden" id="txtCheckApplyExoneracionValue"  name="txtCheckApplyExoneracionValue" value="0" />
 														 </div>																
 													</div>
 											</div>

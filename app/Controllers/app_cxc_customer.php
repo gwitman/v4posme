@@ -884,6 +884,16 @@ class app_cxc_customer extends _BaseController {
 			$this->core_web_auditoria->setAuditCreated($objEntityAccount,$dataSession,$this->request);
 			$this->Entity_Account_Model->insert_app_posme($objEntityAccount);
 			
+			
+			//Asociar el cliente al colaborador
+			$dataRelationShip["employeeID"]	= $dataSession["user"]->employeeID;
+			$dataRelationShip["customerID"]	= $entityID;
+			$dataRelationShip["isActive"]	= 1;
+			$dataRelationShip["startOn"]	= date("Y-m-d");
+			$dataRelationShip["endOn"]		= date("Y-m-d");
+			$this->Relationship_Model->insert_app_posme($dataRelationShip);
+			
+			
 			//Ingresar Customer Credit
 			$objCustomerCredit["companyID"] 		= $objEntity["companyID"];
 			$objCustomerCredit["branchID"] 			= $objEntity["branchID"];

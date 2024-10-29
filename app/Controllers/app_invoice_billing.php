@@ -942,7 +942,7 @@ class app_invoice_billing extends _BaseController {
 			
 			//Ingresar TransactionMaster Reference			
 			$objTMReferenceNew["reference1"]				= /*inicio get post*/ $this->request->getPost("txtLayFirstLineProtocolo");
-			$objTMReferenceNew["reference2"]				= is_null( /*inicio get post*/ $this->request->getPost("txtCheckApplyExoneracion")) ? "0" : /*inicio get post*/ $this->request->getPost("txtCheckApplyExoneracion") ;
+			$objTMReferenceNew["reference2"]				= is_null( /*inicio get post*/ $this->request->getPost("txtCheckApplyExoneracionValue")) ? "0" : /*inicio get post*/ $this->request->getPost("txtCheckApplyExoneracionValue") ;
 			
 			
 			$db=db_connect();
@@ -1090,7 +1090,10 @@ class app_invoice_billing extends _BaseController {
 					$price 									= $arrayListPrice[$key] / ($objItemSku->value) ;
 					$skuFormatoDescription					= $arrayListSkuFormatoDescription[$key];
 					$ivaPercentage							= ($objCompanyComponentConcept != null ? $objCompanyComponentConcept->valueOut : 0 );	
-					$taxServicesPorcentage					= ($objCompanyComponentConceptTaxServices != null ? $objCompanyComponentConceptTaxServices->valueOut : 0 );	
+					$taxServicesPorcentage					= ($objCompanyComponentConceptTaxServices != null ? $objCompanyComponentConceptTaxServices->valueOut : 0 );						
+					$ivaPercentage 							= $objTMReferenceNew["reference2"] == "0" ? $ivaPercentage : 0;
+					$taxServicesPorcentage 					= $objTMReferenceNew["reference2"] == "0" ? $taxServicesPorcentage : 0;
+					
 					$unitaryAmount 							= $price * (1 + $ivaPercentage);					
 					$tax1 									= $price * $ivaPercentage;
 					$tax2									= $price * $taxServicesPorcentage;
@@ -1794,7 +1797,7 @@ class app_invoice_billing extends _BaseController {
 			//Ingresar TransactionMaster Reference
 			$objTMReference["transactionMasterID"]		= $transactionMasterID;
 			$objTMReference["reference1"]				= /*inicio get post*/ $this->request->getPost("txtLayFirstLineProtocolo");
-			$objTMReference["reference2"]				= is_null( /*inicio get post*/ $this->request->getPost("txtCheckApplyExoneracion")) ? "0" : /*inicio get post*/ $this->request->getPost("txtCheckApplyExoneracion") ;
+			$objTMReference["reference2"]				= is_null( /*inicio get post*/ $this->request->getPost("txtCheckApplyExoneracionValue")) ? "0" : /*inicio get post*/ $this->request->getPost("txtCheckApplyExoneracionValue") ;
 			$objTMReference["createdOn"]				= helper_getDateTime();
 			$objTMReference["isActive"]					= 1;
 			$this->Transaction_Master_References_Model->insert_app_posme($objTMReference);
@@ -1858,7 +1861,13 @@ class app_invoice_billing extends _BaseController {
 					$price 									= $arrayListPrice[$key] / ($objItemSku->value) ;
 					$skuFormatoDescription					= $arrayListSkuFormatoDescription[$key];
 					$ivaPercentage							= ($objCompanyComponentConcept != null ? $objCompanyComponentConcept->valueOut : 0 );
-					$taxServicesPercentage					= ($objCompanyComponentConceptTaxServices != null ? $objCompanyComponentConceptTaxServices->valueOut : 0 );
+					$taxServicesPercentage					= ($objCompanyComponentConceptTaxServices != null ? $objCompanyComponentConceptTaxServices->valueOut : 0 );					
+					
+					log_message("error",$objTMReference["reference2"]);
+					$ivaPercentage 							= $objTMReference["reference2"] == "0" ? $ivaPercentage : 0;
+					$taxServicesPercentage 					= $objTMReference["reference2"] == "0" ? $taxServicesPercentage : 0;
+					
+					
 					$unitaryAmount 							= $price * (1 + $ivaPercentage);
 					$tax1 									= $price * $ivaPercentage;
 					$tax2									= $price * $taxServicesPercentage;
