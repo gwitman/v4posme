@@ -417,7 +417,10 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-		    
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -624,6 +627,9 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
 		    
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
@@ -1561,6 +1567,10 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+		
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -2068,7 +2078,10 @@ class app_invoice_billing extends _BaseController {
 		}
 		catch(\Exception $ex)
 		{
-		    
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			 
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -2550,7 +2563,18 @@ class app_invoice_billing extends _BaseController {
 		}
 		catch(\Exception $ex)
 		{	
-			throw new \Exception($ex->getLine()." ".$ex->getMessage());
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;
 		}		
 		
 	}
@@ -3141,6 +3165,9 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
 		    
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
@@ -3543,7 +3570,10 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-		    
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -3722,6 +3752,10 @@ class app_invoice_billing extends _BaseController {
 			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r	
 		}
 		catch(\Exception $ex){
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -3815,17 +3849,18 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-		    
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
 			
-		    //$data["session"]   = $dataSession;
-		    //$data["exception"] = $ex;
-		    //$data["urlLogin"]  = base_url();
-		    //$data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-		    //$data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    //$resultView        = view("core_template/email_error_general",$data);
-		    //return $resultView;
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
 			
-			exit($ex->getMessage());
+		    return $resultView;
 		}	
 	}
 	
@@ -3898,15 +3933,18 @@ class app_invoice_billing extends _BaseController {
 		catch(\Exception $ex){
 		    log_message("error",print_r($ex->getMessage(),true));
 			
-		    //$data["session"]   = $dataSession;
-		    //$data["exception"] = $ex;
-		    //$data["urlLogin"]  = base_url();
-		    //$data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-		    //$data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    //$resultView        = view("core_template/email_error_general",$data);
-		    //return $resultView;
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
 			
-			exit($ex->getMessage());
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;
 		}	
 	}
 	//facturacino imprimir directamente en impresora, formato de ticket
@@ -3978,15 +4016,18 @@ class app_invoice_billing extends _BaseController {
 		catch(\Exception $ex){
 		    log_message("error",print_r($ex->getMessage(),true));
 			
-		    //$data["session"]   = $dataSession;
-		    //$data["exception"] = $ex;
-		    //$data["urlLogin"]  = base_url();
-		    //$data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-		    //$data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    //$resultView        = view("core_template/email_error_general",$data);
-		    //return $resultView;
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
 			
-			exit($ex->getMessage());
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;
 		}	
 	}
 	
@@ -4058,15 +4099,18 @@ class app_invoice_billing extends _BaseController {
 		catch(\Exception $ex){
 		    log_message("error",print_r($ex->getMessage(),true));
 			
-		    //$data["session"]   = $dataSession;
-		    //$data["exception"] = $ex;
-		    //$data["urlLogin"]  = base_url();
-		    //$data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-		    //$data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    //$resultView        = view("core_template/email_error_general",$data);
-		    //return $resultView;
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
 			
-			exit($ex->getMessage());
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;
 		}	
 	}
 	
@@ -4138,15 +4182,18 @@ class app_invoice_billing extends _BaseController {
 		catch(\Exception $ex){
 		    log_message("error",print_r($ex->getMessage(),true));
 			
-		    //$data["session"]   = $dataSession;
-		    //$data["exception"] = $ex;
-		    //$data["urlLogin"]  = base_url();
-		    //$data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-		    //$data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    //$resultView        = view("core_template/email_error_general",$data);
-		    //return $resultView;
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
 			
-			exit($ex->getMessage());
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;
 		}	
 	}
 	
@@ -4221,15 +4268,18 @@ class app_invoice_billing extends _BaseController {
 		catch(\Exception $ex){
 		    log_message("error",print_r($ex->getMessage(),true));
 			
-		    //$data["session"]   = $dataSession;
-		    //$data["exception"] = $ex;
-		    //$data["urlLogin"]  = base_url();
-		    //$data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-		    //$data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    //$resultView        = view("core_template/email_error_general",$data);
-		    //return $resultView;
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
 			
-			exit($ex->getMessage());
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;
 		}	
 	}
 	
@@ -4302,15 +4352,18 @@ class app_invoice_billing extends _BaseController {
 		catch(\Exception $ex){
 		    log_message("error",print_r($ex->getMessage(),true));
 			
-		    //$data["session"]   = $dataSession;
-		    //$data["exception"] = $ex;
-		    //$data["urlLogin"]  = base_url();
-		    //$data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-		    //$data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    //$resultView        = view("core_template/email_error_general",$data);
-		    //return $resultView;
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
 			
-			exit($ex->getMessage());
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;
 		}	
 	}
 	
@@ -4383,15 +4436,18 @@ class app_invoice_billing extends _BaseController {
 		catch(\Exception $ex){
 		    log_message("error",print_r($ex->getMessage(),true));
 			
-		    //$data["session"]   = $dataSession;
-		    //$data["exception"] = $ex;
-		    //$data["urlLogin"]  = base_url();
-		    //$data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-		    //$data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    //$resultView        = view("core_template/email_error_general",$data);
-		    //return $resultView;
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
 			
-			exit($ex->getMessage());
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;
 		}	
 	}
 	
@@ -4455,17 +4511,18 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-		    
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
 			
-		    //$data["session"]   = $dataSession;
-		    //$data["exception"] = $ex;
-		    //$data["urlLogin"]  = base_url();
-		    //$data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-		    //$data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    //$resultView        = view("core_template/email_error_general",$data);
-		    //return $resultView;
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
 			
-			exit($ex->getMessage());
+		    return $resultView;
 		}	
 	}
 	
@@ -4524,16 +4581,18 @@ class app_invoice_billing extends _BaseController {
 		}
 		catch(\Exception $ex){
 		    
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
 			
-		    //$data["session"]   = $dataSession;
-		    //$data["exception"] = $ex;
-		    //$data["urlLogin"]  = base_url();
-		    //$data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-		    //$data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    //$resultView        = view("core_template/email_error_general",$data);
-		    //return $resultView;
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
 			
-			exit($ex->getMessage());
+		    return $resultView;
 		}	
 	}
 	
@@ -4591,16 +4650,18 @@ class app_invoice_billing extends _BaseController {
 		}
 		catch(\Exception $ex){
 		    
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
 			
-		    //$data["session"]   = $dataSession;
-		    //$data["exception"] = $ex;
-		    //$data["urlLogin"]  = base_url();
-		    //$data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-		    //$data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    //$resultView        = view("core_template/email_error_general",$data);
-		    //return $resultView;
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
 			
-			exit($ex->getMessage());
+		    return $resultView;
 		}	
 	}
 	//facturacino imprimir directamente en impresora, formato de ticket
@@ -4660,16 +4721,18 @@ class app_invoice_billing extends _BaseController {
 		}
 		catch(\Exception $ex){
 		    
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
 			
-		    //$data["session"]   = $dataSession;
-		    //$data["exception"] = $ex;
-		    //$data["urlLogin"]  = base_url();
-		    //$data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-		    //$data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    //$resultView        = view("core_template/email_error_general",$data);
-		    //return $resultView;
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
 			
-			exit($ex->getMessage());
+		    return $resultView;
 		}	
 	}
 	//facturacino imprimir directamente en impresora, formato de ticket
@@ -4729,16 +4792,18 @@ class app_invoice_billing extends _BaseController {
 		}
 		catch(\Exception $ex){
 		    
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
 			
-		    //$data["session"]   = $dataSession;
-		    //$data["exception"] = $ex;
-		    //$data["urlLogin"]  = base_url();
-		    //$data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-		    //$data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    //$resultView        = view("core_template/email_error_general",$data);
-		    //return $resultView;
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
 			
-			exit($ex->getMessage());
+		    return $resultView;
 		}	
 	}
 	
@@ -4799,16 +4864,18 @@ class app_invoice_billing extends _BaseController {
 		}
 		catch(\Exception $ex){
 		    
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
 			
-		    //$data["session"]   = $dataSession;
-		    //$data["exception"] = $ex;
-		    //$data["urlLogin"]  = base_url();
-		    //$data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-		    //$data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    //$resultView        = view("core_template/email_error_general",$data);
-		    //return $resultView;
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
 			
-			exit($ex->getMessage());
+		    return $resultView;
 		}	
 	}
 	
@@ -4867,16 +4934,18 @@ class app_invoice_billing extends _BaseController {
 		}
 		catch(\Exception $ex){
 		    
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
 			
-		    //$data["session"]   = $dataSession;
-		    //$data["exception"] = $ex;
-		    //$data["urlLogin"]  = base_url();
-		    //$data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-		    //$data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    //$resultView        = view("core_template/email_error_general",$data);
-		    //return $resultView;
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
 			
-			exit($ex->getMessage());
+		    return $resultView;
 		}	
 	}
 	//facturacino imprimir directamente en impresora, formato de ticket
@@ -4931,6 +5000,9 @@ class app_invoice_billing extends _BaseController {
 			$this->core_web_printer_direct->executePrinter58mm($dataView);
 		}
 		catch(\Exception $ex){
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
 		    
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
@@ -5003,7 +5075,10 @@ class app_invoice_billing extends _BaseController {
 			$this->core_web_printer_direct->executePrinter58ChicharronesCarasenos($dataView);
 		}
 		catch(\Exception $ex){
-		    
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -5075,7 +5150,10 @@ class app_invoice_billing extends _BaseController {
 			$this->core_web_printer_direct->executePrinter58LaTenera($dataView);
 		}
 		catch(\Exception $ex){
-		    
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -5163,7 +5241,10 @@ class app_invoice_billing extends _BaseController {
 			$this->core_web_printer_direct->executePrinter80mmCommandaCocina($dataView);
 		}
 		catch(\Exception $ex){
-		    
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -5251,7 +5332,13 @@ class app_invoice_billing extends _BaseController {
 			$this->core_web_printer_direct->executePrinter80mmCommandaBarPizzaLaus($dataView);
 		}
 		catch(\Exception $ex){
-		    
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -5339,7 +5426,10 @@ class app_invoice_billing extends _BaseController {
 			$this->core_web_printer_direct->executePrinter80mmCommandaCocina($dataView);
 		}
 		catch(\Exception $ex){
-		    
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -5428,7 +5518,10 @@ class app_invoice_billing extends _BaseController {
 			$this->core_web_printer_direct->executePrinter80mmCommandaCocinaPizzaLaus($dataView);
 		}
 		catch(\Exception $ex){
-		    
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -5521,7 +5614,10 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-		    
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -5597,7 +5693,10 @@ class app_invoice_billing extends _BaseController {
 			$this->core_web_printer_direct->executePrinter58mmCommandaCocina($dataView);
 		}
 		catch(\Exception $ex){
-		    
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -5772,7 +5871,10 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-		    
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -6129,7 +6231,10 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-		    
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -6292,7 +6397,10 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-		    
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -6456,7 +6564,10 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-		    
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -6613,7 +6724,10 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-		    
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -9035,7 +9149,10 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-		    
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -9381,7 +9498,10 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-		    
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -9541,7 +9661,10 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-		    
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -9714,7 +9837,10 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-		    
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
@@ -9888,6 +10014,10 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
+
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
 		    
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
@@ -10064,6 +10194,9 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
 		    
 		    $data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
