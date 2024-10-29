@@ -969,6 +969,7 @@ class app_invoice_billing extends _BaseController {
 				$arrayListPrice		 						= array();
 				$arrayListSubTotal	 						= array();
 				$arrayListIva		 						= array();
+				$arrayListTaxServices						= array();
 				$arrayListLote	 							= array();
 				$arrayListVencimiento						= array();
 				$arrayListSku								= array();
@@ -1019,6 +1020,7 @@ class app_invoice_billing extends _BaseController {
 				$arrayListPrice		 						= /*inicio get post*/ $this->request->getPost("txtPrice");
 				$arrayListSubTotal	 						= /*inicio get post*/ $this->request->getPost("txtSubTotal");
 				$arrayListIva		 						= /*inicio get post*/ $this->request->getPost("txtIva");
+				$arrayListTaxServices 						= /*inicio get post*/ $this->request->getPost("txtTaxServices");
 				$arrayListLote	 							= /*inicio get post*/ $this->request->getPost("txtDetailLote");			
 				$arrayListVencimiento						= /*inicio get post*/ $this->request->getPost("txtDetailVencimiento");	
 				$arrayListSku								= /*inicio get post*/ $this->request->getPost("txtSku");
@@ -1043,6 +1045,7 @@ class app_invoice_billing extends _BaseController {
 			
 			$amountTotal 									= 0;
 			$tax1Total 										= 0;
+			$tax2Total										= 0;
 			$subAmountTotal									= 0;			
 			$this->Transaction_Master_Detail_Model->deleteWhereIDNotIn($companyID,$transactionID,$transactionMasterID,$listTransactionDetalID);
 			$this->Transaction_Master_Detail_Credit_Model->deleteWhereIDNotIn($transactionMasterID,$listTransactionDetalID);
@@ -1064,6 +1067,7 @@ class app_invoice_billing extends _BaseController {
 					
 					$objPrice 								= $this->Price_Model->get_rowByPK($companyID,$objListPrice->listPriceID,$itemID,$typePriceID);
 					$objCompanyComponentConcept 			= $this->Company_Component_Concept_Model->get_rowByPK($companyID,$objComponentItem->componentID,$itemID,"IVA");
+					$objCompanyComponentConceptTaxServices	= $this->Company_Component_Concept_Model->get_rowByPK($companyID,$objComponentItem->componentID,$itemID,"TAX_SERVICES");
 					$skuCatalogItemID						= $arrayListSku[$key];
 					$itemNameDetail							= str_replace('"',"",str_replace("'","",$arrayListItemName[$key]));
 					$itemNameDetailDecription				= str_replace('"',"",str_replace("'","",$arrayListItemNameDescription[$key]));
@@ -1073,9 +1077,11 @@ class app_invoice_billing extends _BaseController {
 					$objItemSku								= $this->Item_Sku_Model->getByPK($itemID,$skuCatalogItemID);
 					$price 									= $arrayListPrice[$key] / ($objItemSku->value) ;
 					$skuFormatoDescription					= $arrayListSkuFormatoDescription[$key];
-					$ivaPercentage							= ($objCompanyComponentConcept != null ? $objCompanyComponentConcept->valueOut : 0 );					
+					$ivaPercentage							= ($objCompanyComponentConcept != null ? $objCompanyComponentConcept->valueOut : 0 );	
+					$taxServicesPorcentage					= ($objCompanyComponentConceptTaxServices != null ? $objCompanyComponentConceptTaxServices->valueOut : 0 );	
 					$unitaryAmount 							= $price * (1 + $ivaPercentage);					
 					$tax1 									= $price * $ivaPercentage;
+					$tax2									= $price * $taxServicesPorcentage;
 					$transactionMasterDetailID				= $listTransactionDetalID[$key];
 					$comisionPorcentage						= 0;
 					$comisionPorcentage						= $this->core_web_transaction_master_detail->getPorcentageComision($companyID,$listPriceID,$itemID,$price);
@@ -1150,6 +1156,7 @@ class app_invoice_billing extends _BaseController {
 						$objTMD["unitaryPrice"]					= $price;							//precio de lista
 						$objTMD["unitaryAmount"]				= $unitaryAmount;					//precio de lista con inpuesto
 						$objTMD["tax1"]							= $tax1;							//impuesto de lista
+						$objTMD["tax2"]							= $tax2;							//impuesto de servicio
 						$objTMD["amount"] 						= $objTMD["quantity"] * $unitaryAmount;		//precio de lista con inpuesto por cantidad
 						$objTMD["discount"]						= 0;					
 						$objTMD["promotionID"] 					= 0;
@@ -1177,6 +1184,7 @@ class app_invoice_billing extends _BaseController {
 						
 						
 						$tax1Total								= $tax1Total + $tax1;
+						$tax2Total								= $tax2Total + $tax2;
 						$subAmountTotal							= $subAmountTotal + ($quantity * $price);
 						$amountTotal							= $amountTotal + $objTMD["amount"];
 						$transactionMasterDetailID_				= $this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
@@ -1238,6 +1246,7 @@ class app_invoice_billing extends _BaseController {
 						$objTMDNew["unitaryPrice"]				= $price;						//precio de lista
 						$objTMDNew["unitaryAmount"]				= $unitaryAmount;				//precio de lista con inpuesto
 						$objTMDNew["tax1"]						= $tax1;						//impuesto de lista
+						$objTMDNew["tax2"]						= $tax2;						//impuesto de servicio
 						$objTMDNew["amount"] 					= $objTMDNew["quantity"]  * $unitaryAmount;	//precio de lista con inpuesto por cantidad
 						
 						$objTMDNew["reference1"]				= $lote;
@@ -1251,6 +1260,7 @@ class app_invoice_billing extends _BaseController {
 						$objTMDNew["amountCommision"] 			= $price * $comisionPorcentage * $quantity;
 						
 						$tax1Total								= $tax1Total + $tax1;
+						$tax2Total								= $tax2Total + $tax2;
 						$subAmountTotal							= $subAmountTotal + ($quantity * $price);
 						$amountTotal							= $amountTotal + $objTMDNew["amount"];		
 						$objTMDOld								= $this->Transaction_Master_Detail_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID,$transactionMasterDetailID,$objComponentItem->componentID);						
@@ -1307,6 +1317,7 @@ class app_invoice_billing extends _BaseController {
 			$amountTotal 			= $amountTotal-$varDescuento;
             $objTMNew["subAmount"]  = $subAmountTotal;
             $objTMNew["tax1"] 		= $tax1Total;
+			$objTMNew["tax2"] 		= $tax2Total;
             $objTMNew["tax4"] 		= $varPorcentajeDescuento;
             $objTMNew["discount"]   = $varDescuento;
             $objTMNew["amount"] 	= $amountTotal;
@@ -1773,6 +1784,7 @@ class app_invoice_billing extends _BaseController {
 			$arrayListPrice		 						= /*inicio get post*/ $this->request->getPost("txtPrice");
 			$arrayListSubTotal	 						= /*inicio get post*/ $this->request->getPost("txtSubTotal");
 			$arrayListIva		 						= /*inicio get post*/ $this->request->getPost("txtIva");
+			$arrayListTaxServices 						= /*inicio get post*/ $this->request->getPost("txtTaxServices");
 			$arrayListLote	 							= /*inicio get post*/ $this->request->getPost("txtDetailLote");
 			$arrayListVencimiento						= /*inicio get post*/ $this->request->getPost("txtDetailVencimiento");			
 			$arrayListSku								= /*inicio get post*/ $this->request->getPost("txtSku");
@@ -1781,6 +1793,7 @@ class app_invoice_billing extends _BaseController {
 			//Ingresar la configuracion de precios		
 			$amountTotal 									= 0;
 			$tax1Total 										= 0;
+			$tax2Total										= 0;
 			$subAmountTotal									= 0;
 			
 			
@@ -1811,6 +1824,7 @@ class app_invoice_billing extends _BaseController {
 					$quantity 								= helper_StringToNumber($arrayListQuantity[$key]);
 					$objPrice 								= $this->Price_Model->get_rowByPK($companyID,$objListPrice->listPriceID,$itemID,$typePriceID);
 					$objCompanyComponentConcept 			= $this->Company_Component_Concept_Model->get_rowByPK($companyID,$objComponentItem->componentID,$itemID,"IVA");
+					$objCompanyComponentConceptTaxServices	= $this->Company_Component_Concept_Model->get_rowByPK($companyID,$objComponentItem->componentID,$itemID,"TAX_SERVICES");
 					$skuCatalogItemID						= $arrayListSku[$key];
 					$itemNameDetail							= str_replace("'","",$arrayListItemName[$key]);
 					$itemNameDetailDescription				= str_replace("'","",$arrayListItemNameDescription[$key]);
@@ -1820,8 +1834,10 @@ class app_invoice_billing extends _BaseController {
 					$price 									= $arrayListPrice[$key] / ($objItemSku->value) ;
 					$skuFormatoDescription					= $arrayListSkuFormatoDescription[$key];
 					$ivaPercentage							= ($objCompanyComponentConcept != null ? $objCompanyComponentConcept->valueOut : 0 );
+					$taxServicesPercentage					= ($objCompanyComponentConceptTaxServices != null ? $objCompanyComponentConceptTaxServices->valueOut : 0 );
 					$unitaryAmount 							= $price * (1 + $ivaPercentage);
 					$tax1 									= $price * $ivaPercentage;
+					$tax2									= $price * $taxServicesPercentage;
 					
 					//Actualisar nombre 
 					if( $objParameterInvoiceUpdateNameInTransactionOnly == "false")
@@ -1860,6 +1876,7 @@ class app_invoice_billing extends _BaseController {
 					$objTMD["unitaryAmount"]				= $unitaryAmount;					//precio de lista con inpuesto					
 					$objTMD["amount"] 						= $objTMD["quantity"] * $unitaryAmount;		//precio de lista con inpuesto por cantidad
 					$objTMD["tax1"]							= $tax1;							//impuesto de lista
+					$objTMD["tax2"]							= $tax2;							//impuesto de servicio
 					
 					$objTMD["discount"]						= 0;					
 					$objTMD["promotionID"] 					= 0;
@@ -1887,6 +1904,7 @@ class app_invoice_billing extends _BaseController {
 					
 					
 					$tax1Total								= $tax1Total + $tax1;
+					$tax2Total								= $tax2Total + $tax2;
 					$subAmountTotal							= $subAmountTotal + ($quantity * $price);
 					$amountTotal							= $amountTotal + $objTMD["amount"];
 					
@@ -1940,6 +1958,7 @@ class app_invoice_billing extends _BaseController {
 			//Actualizar Transaccion
             $objTM["subAmount"] = $subAmountTotal;
             $objTM["tax1"] 		= $tax1Total;
+			$objTM["tax2"] 		= $tax2Total;
             $objTM["tax4"] 		= $varPorcentajeDescuento;
             $objTM["discount"]  = $varDescuento;
 			$objTM["amount"] 	= $amountTotal;
@@ -2174,6 +2193,7 @@ class app_invoice_billing extends _BaseController {
 			$objTM["sourceWarehouseID"]				= $warehouseID;
 			$objTM["targetWarehouseID"]				= NULL;
 			$objTM["isActive"]						= 1;
+			$objTM["tax2"]							= 0;
 			$objTM["tax4"]							= 0;
 			$objTM["discount"]						= 0;
 			$objTM["periodPay"]						= $periodPay->value; //frecuencia de pago por defecto
@@ -2244,6 +2264,7 @@ class app_invoice_billing extends _BaseController {
 			//Ingresar la configuracion de precios		
 			$amountTotal 									= 0;
 			$tax1Total 										= 0;
+			$tax2Total										= 0;
 			$subAmountTotal									= 0;
 
 			//obtener la lista de precio por defecto
@@ -2266,8 +2287,10 @@ class app_invoice_billing extends _BaseController {
 					$comisionPorcentage						= 0;
 					$comisionPorcentage						= $this->core_web_transaction_master_detail->getPorcentageComision($companyID,$listPriceID,$itemID,$price);
 					$ivaPercentage							= 0;
+					$taxServicesPercentage					= 0;
 					$unitaryAmount 							= $price * (1 + $ivaPercentage);
 					$tax1 									= $price * $ivaPercentage;
+					$tax2									= $price * $taxServicesPercentage;
 
 					$objTMD 								= array();
 					$objTMD["companyID"] 					= $companyID;
@@ -2286,6 +2309,7 @@ class app_invoice_billing extends _BaseController {
 					$objTMD["unitaryAmount"]				= $unitaryAmount;					//precio de lista con inpuesto					
 					$objTMD["amount"] 						= $quantity * $unitaryAmount;		//precio de lista con inpuesto por cantidad
 					$objTMD["tax1"]							= $tax1;							//impuesto de lista
+					$objTMD["tax2"]							= $tax2; 							//impusto de servicio
 
 					$objTMD["discount"]						= 0;					
 					$objTMD["promotionID"] 					= 0;
@@ -2312,6 +2336,7 @@ class app_invoice_billing extends _BaseController {
 					$objTMD["amountCommision"] 				= $price * $comisionPorcentage * $quantity ;
 
 					$tax1Total								= $tax1Total + $tax1;
+					$tax2Total								= $tax2Total + $tax2;
 					$subAmountTotal							= $subAmountTotal + ($quantity * $price);
 					$amountTotal							= $amountTotal + $objTMD["amount"];
 
@@ -2347,6 +2372,7 @@ class app_invoice_billing extends _BaseController {
 			//Actualizar Transaccion
 			$objTM["amount"] 	= $amountTotal;
 			$objTM["tax1"] 		= $tax1Total;
+			$objTM["tax2"] 		= $tax2Total;
 			$objTM["subAmount"] = $subAmountTotal;			
 			$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTM);
 

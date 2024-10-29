@@ -852,6 +852,7 @@
 		objRow.price2						= objResponse[25];
 		objRow.price3						= objResponse[26];
 		objRow.itemNameDescription			= objResponse[24];
+		objRow.taxServices					= 0;
 		
 		//Actualizar
 		if(jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[2] == objRow.itemID;}).select().length > 0 ){
@@ -895,7 +896,8 @@
 				objRow.umDescription,
 				objRow.price2,
 				objRow.price3,
-				objRow.itemNameDescription /*itemDescriptionLog*/
+				objRow.itemNameDescription /*itemDescriptionLog*/,
+				objRow.taxServices 
 			]);
 			
 			
@@ -909,7 +911,7 @@
 		
 		
 		
-		fnGetConcept(objRow.itemID,"IVA");						
+		fnGetConcept(objRow.itemID,"IVA");		
 		refreschChecked();
 		document.getElementById("txtScanerCodigo").focus();	
 		
@@ -1173,22 +1175,28 @@
 			"objListaProductosConceptosX001",
 			"componentItemID",conceptItemID,"none",{},
 			function(e){ 
-				
 					
-					var objConcepto = e;		
-					if( objConcepto.length > 0 )
+					var objConcepto = e;	
+					
+					objConcepto1 	= jLinq.from(objConcepto).where(function(obj){ return (obj.name == "IVA"); }).select();
+					if( objConcepto1.length > 0 )
 					{
-						objTableDetail.fnUpdate( fnFormatNumber(objConcepto[0].valueOut,2), objind_, 9 );			
+						
+						objTableDetail.fnUpdate( fnFormatNumber(objConcepto1[0].valueOut,2), objind_, 9 );			
+					}
+					objConcepto2 	= jLinq.from(objConcepto).where(function(obj){ return (obj.name == "TAX_SERVICES"); }).select();
+					if( objConcepto2.length > 0 )
+					{
+						
+						objTableDetail.fnUpdate( fnFormatNumber(objConcepto2[0].valueOut,2), objind_, 17 );			
 					}					
 					fnRecalculateDetail(true,"");
 					
 			}
-		);
-		
-	
-		
-		
+		);		
 	}
+	
+	
 	
 	function refreschChecked()
 	{
@@ -1391,6 +1399,7 @@
 			$("#txtDescuento").val("0");
 			$("#txtPorcentajeDescuento").val("0");
 			$("#txtIva").val("0");
+			$("#txtServices").val("0");
 			$("#txtTotal").val("0");
 			$("#txtTotalAlternativo").text("0");
 
@@ -1405,12 +1414,14 @@
 		var typePriceID 			= $("#txtTypePriceID").val();
 		var cantidad 				= 0;
 		var iva 					= 0;
+		var taxServices				= 0;
 		var precio					= 0;		
 		var subtotal 				= 0;		
 		var total 					= 0;
 		var porcentajeDescuento 	= parseFloat($('#txtPorcentajeDescuento').val()) || 0;
 		var cantidadGeneral 				= 0;
 		var ivaGeneral 						= 0;
+		var serviceGeneral					= 0;
 		var precioGeneral					= 0;		
 		var subtotalGeneral 				= 0;		
 		var totalGeneral 					= 0;
@@ -1443,17 +1454,20 @@
 			cantidad 	= parseFloat(NSSystemDetailInvoice[i][6]);
 			precio 		= parseFloat(NSSystemDetailInvoice[i][7]);
 			iva 		= parseFloat(NSSystemDetailInvoice[i][9]);
+			taxServices	= parseFloat(NSSystemDetailInvoice[i][17]);
 			
 			
 			
 			subtotal    = precio * cantidad;
 			iva 		= (precio * cantidad) * iva;
-			total 		= iva + subtotal;
+			taxServices = (precio * cantidad) * taxServices;
+			total 		= iva + taxServices + subtotal ;
 			
 			
 			cantidadGeneral 	= cantidadGeneral + cantidad;
 			precioGeneral 		= precioGeneral + precio;
-			ivaGeneral 			= ivaGeneral + iva;			
+			ivaGeneral 			= ivaGeneral + iva;	
+			serviceGeneral		= serviceGeneral + taxServices;			
 			subtotalGeneral 	= subtotalGeneral + subtotal;
 			totalGeneral 		= totalGeneral + total;
 			
@@ -1461,11 +1475,12 @@
 			objTableDetail.fnUpdate( fnFormatNumber(subtotal,2), i, 8 );
 		}	
         let descuento = subtotalGeneral * (porcentajeDescuento / 100);
-        totalGeneral = subtotalGeneral + ivaGeneral - descuento;
+        totalGeneral = subtotalGeneral + serviceGeneral + ivaGeneral - descuento;
         
 		$("#txtSubTotal").val(fnFormatNumber(subtotalGeneral,2));
 		$('#txtDescuento').val(fnFormatNumber(descuento, 2));
 		$("#txtIva").val(fnFormatNumber(ivaGeneral,2));
+		$("#txtServices").val(fnFormatNumber(serviceGeneral,2));
 		$("#txtTotal").val(fnFormatNumber(totalGeneral,2));
 		$("#txtTotalAlternativo").text(fnFormatNumber(totalGeneral,2));
 
@@ -2767,7 +2782,16 @@
 								"mRender"		: function ( data, type, full ) {
 									return '<input type="hidden" value="'+data+'" name="txtTransactionDetailNameDescription[]" />';
 								}								
-							}
+							},
+							{
+								"aTargets"		: [ 17 ],//TAX_SERVICES
+								"bVisible"		: true,
+								"sClass"		: "hidden",
+								"bSearchable"	: false,
+								"mRender"		: function ( data, type, full ) {
+									return '<input type="text" class="col-lg-12 txtTaxServices" value="'+data+'" name="txtTaxServices[]" style="text-align:right" />';
+								}
+							},
 
 				]							
 			});

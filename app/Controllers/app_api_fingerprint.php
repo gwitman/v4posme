@@ -77,6 +77,58 @@ class app_api_fingerprint extends _BaseController {
 		$dataNew["created_at"] 		= date("Y-m-d H:i:s");
 		$this->Temp_Fingerprint_Model->insert_app_posme($dataNew);
 		
+		$executeProgramFingerPint	= $this->core_web_parameter->getParameter("OPEN_FINGERPRINT_EXECUTE",APP_COMPANY);
+		$executeProgramFingerPint	= $executeProgramFingerPint->value;
+		if($executeProgramFingerPint == "false")
+			return;
+		
+		$executeProgramFingerPintPath	= $this->core_web_parameter->getParameter("OPEN_FINGERPRINT_EXECUTE_PATH",APP_COMPANY);
+		$executeProgramFingerPintPath	= $executeProgramFingerPintPath->value;
+		return;
+		
+		//wgonzalez--// Nombre del programa (sin la ruta) para buscarlo en los procesos en ejecución
+		//wgonzalez--$programName = "tu_programa.exe";
+		//wgonzalez--
+		//wgonzalez--// Comprobar si el programa ya está abierto
+		//wgonzalez--exec("tasklist /FI \"IMAGENAME eq $programName\"", $output);
+		//wgonzalez--
+		//wgonzalez--$isRunning = false;
+		//wgonzalez--foreach ($output as $line) {
+		//wgonzalez--	if (strpos($line, $programName) !== false) {
+		//wgonzalez--		$isRunning = true;
+		//wgonzalez--		break;
+		//wgonzalez--	}
+		//wgonzalez--}
+		//wgonzalez--
+		//wgonzalez--if ($isRunning) {
+		//wgonzalez--	// Si el programa está abierto, cerrarlo
+		//wgonzalez--	exec("taskkill /F /IM $programName", $killOutput, $killResult);
+		//wgonzalez--	if ($killResult === 0) {
+		//wgonzalez--		echo "El programa estaba abierto y se cerró con éxito.";
+		//wgonzalez--	} else {
+		//wgonzalez--		echo "Hubo un error al intentar cerrar el programa.";
+		//wgonzalez--	}
+		//wgonzalez--} else {
+		//wgonzalez--	echo "El programa no está en ejecución.";
+		//wgonzalez--}
+
+
+		//wgonzalez--// Ejecutar el archivo .exe
+		//wgonzalez--$batFilePath  = 'C:\\Program Files\\FileZilla FTP Client\\filezilla.exe';
+		//wgonzalez--$batFilePath  = 'C:\\xampp\\teamds2\\nsSystem\\v4posme\\public\\resource\\file_job\\job_execute_finger_print_exe.bat';		
+		//wgonzalez--exec("start \"\" \"$batFilePath\" > NUL 2>&1 ", $output, $return_var);
+		//wgonzalez--//exec('start /B "'.$executeProgramFingerPintPath.'" 2>&1', $output, $return_var);
+		//wgonzalez--//exec('start "'.$executeProgramFingerPintPath.'" 2>&1', $output, $return_var);
+		//wgonzalez--
+		//wgonzalez--
+		//wgonzalez--// Mostrar salida y error
+		//wgonzalez--if ($return_var === 0) {
+		//wgonzalez--	log_message("error","¡Programa ejecutado con éxito!");
+		//wgonzalez--} else {
+		//wgonzalez--	log_message("error","Hubo un error al ejecutar el programa: ");
+		//wgonzalez--	log_message("error",print_r($output,true)); // Mostrar detalles del error
+		//wgonzalez--}
+
 		
 	}
 	function web_get_finger(){

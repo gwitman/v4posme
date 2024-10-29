@@ -751,6 +751,7 @@
 									<th>Precio2</th>
 									<th>Precio3</th>
 									<th>itemNameDescription</th>
+									<th>TAX_SERVICES</th>
 								  </tr>
 								</thead>
 								<tbody id="body_tb_transaction_master_detail">
@@ -1196,9 +1197,15 @@
 									<td>
 										<input type="text" id="txtDescuento" name="txtDescuento" readonly class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>" />
 									</td>
-								</tr>                            
+								</tr>  
 								<tr>
-									<th style="text-align:left">05) TOTAL</th>
+									<th style="text-align:left;">05) % SERV</th>
+									<td>
+										<input type="text" id="txtServices" name="txtServices" readonly class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>" />
+									</td>
+								</tr>								
+								<tr>
+									<th style="text-align:left">06) TOTAL</th>
 									<td >
 										<input type="text" id="txtTotal" name="txtTotal" readonly class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
