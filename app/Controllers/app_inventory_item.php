@@ -1480,12 +1480,13 @@ class app_inventory_item extends _BaseController
         }
         catch(\Exception $ex)
 		{
-            if (empty($dataSession)) {
-				return redirect()->to(base_url("core_acount/login"));
-			}
-			
+            
             if($method == "new" || $method == "edit")
             {
+				if (empty($dataSession)) {
+					return redirect()->to(base_url("core_acount/login"));
+				}
+				
                 $data["session"]   = $dataSession;
                 $data["exception"] = $ex;
                 $data["urlLogin"]  = base_url();
