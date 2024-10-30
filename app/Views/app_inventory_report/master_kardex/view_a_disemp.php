@@ -124,26 +124,26 @@
 							echo (number_format($i["quantityInicial"],2,'.',','));
 						echo "</td>";
 						echo "<td style='text-align:right;border-top: 0px' class='border'>";
-							echo (number_format($i["costInicial"],2,'.',','));
+							echo $objPermissionNotMostrarCosto == "true" ? 0 : (number_format($i["costInicial"],2,'.',','));
 						echo "</td>";
 						echo "<td style='text-align:right;border-top: 0px' class='border'>";
 							echo (number_format($i["quantityInput"],2,'.',','));
 						echo "</td>";
 						echo "<td style='text-align:right;border-top: 0px' class='border'>";
-							echo (number_format($i["costInput"],2,'.',','));
+							echo $objPermissionNotMostrarCosto == "true" ? 0 : (number_format($i["costInput"],2,'.',','));
 						echo "</td>";
 						
 						echo "<td style='text-align:right;border-top: 0px;border-left: 0px;'  class='border'>";
 							echo (number_format($i["quantityOutput"],2,'.',','));
 						echo "</td>";
 						echo "<td style='text-align:right;border-top: 0px' class='border'>";
-							echo (number_format($i["costOutput"],2,'.',','));
+							echo $objPermissionNotMostrarCosto == "true" ? 0 : (number_format($i["costOutput"],2,'.',','));
 						echo "</td>";
 						echo "<td style='text-align:right;border-top: 0px'  class='border'>";
 							echo (number_format($i["quantityInicial"] + $i["quantityInput"] - $i["quantityOutput"],2,'.',','));
 						echo "</td>";
 						echo "<td style='text-align:right;border-top: 0px' class='border'>";
-							echo (number_format($i["costInicial"] + $i["costInput"] - $i["costOutput"],2,'.',','));
+							echo $objPermissionNotMostrarCosto == "true" ? 0 : (number_format($i["costInicial"] + $i["costInput"] - $i["costOutput"],2,'.',','));
 						echo "</td>";
 					echo "</tr>";
 				}

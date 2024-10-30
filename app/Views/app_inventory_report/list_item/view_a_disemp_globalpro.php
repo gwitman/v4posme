@@ -118,10 +118,10 @@
 								echo number_format($i["quantity"],2,'.',',');
 							echo "</td>";
 							echo "<td  style='text-align:right' class='border'>";
-								echo number_format( $i["cost"],2,'.',',');
+								echo $objPermissionNotMostrarCosto == "true" ? 0 : number_format( $i["cost"],2,'.',',');
 							echo "</td>";
 							echo "<td style='text-align:right' class='border'>";
-								echo (number_format($i["cost"] * $i["quantity"],2,'.',',' ));;
+								echo $objPermissionNotMostrarCosto == "true" ? 0 : (number_format($i["cost"] * $i["quantity"],2,'.',',' ));;
 							echo "</td>";
 							echo "<td style='text-align:right' class='border' >";
 								echo (number_format( $i["price"],2,'.',','));

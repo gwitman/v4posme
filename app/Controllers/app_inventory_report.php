@@ -361,6 +361,11 @@ class app_inventory_report extends _BaseController {
 				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "auxiliar_mov_x_tipo_de_comprobantes" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
 				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
 				
+				$objPermissionNotMostrarCosto 					= array_filter($dataSession["menuHiddenPopup"], function($val){  return $val->display == 'NO_ES_PERMITIDO_MOSTRAR_COSTOS'; });
+				$objPermissionNotMostrarCosto 					= count($objPermissionNotMostrarCosto) > 0 ? "true" : "false";				
+				$objPermissionNotMostrarCosto					= $dataSession["role"]->isAdmin ? "false" : $objPermissionNotMostrarCosto;				
+				$objDataResult["objPermissionNotMostrarCosto"] 	= $objPermissionNotMostrarCosto;
+				
 				if($objCompany->type == "casetafreddy")
 				return view("app_inventory_report/master_kardex/view_a_disemp_caseta_freddy",$objDataResult);//--finview-r
 				else
@@ -463,6 +468,11 @@ class app_inventory_report extends _BaseController {
 				$objDataResult["objParameterAltoDeLaFila"] 	= $objParameterAltoDeLaFila;				
 				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_inventory_get_report_list_item" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
 				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
+
+				$objPermissionNotMostrarCosto 					= array_filter($dataSession["menuHiddenPopup"], function($val){  return $val->display == 'NO_ES_PERMITIDO_MOSTRAR_COSTOS'; });
+				$objPermissionNotMostrarCosto 					= count($objPermissionNotMostrarCosto) > 0 ? "true" : "false";				
+				$objPermissionNotMostrarCosto					= $dataSession["role"]->isAdmin ? "false" : $objPermissionNotMostrarCosto;				
+				$objDataResult["objPermissionNotMostrarCosto"] 	= $objPermissionNotMostrarCosto;
 				
 				
 				//Revisar si existe la vista			
