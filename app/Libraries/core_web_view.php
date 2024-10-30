@@ -289,7 +289,7 @@ class core_web_view {
 		}		
 		
 		//Ejecutar Vista.		
-		$queryFill	= str_replace("{filterPermission}", $filterPermission, $queryFill);
+		$queryFill	= str_replace("{filterPermission}", $filterPermission, $queryFill);		
 		$dataRecordSet				= $Bd_Model->executeRender($queryFill,null);
 		$dataResult["view_config"]	= $companyDataView;
 		$dataResult["view_data"]	= $dataRecordSet;

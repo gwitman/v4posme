@@ -117,13 +117,13 @@
 														<label class="col-lg-4 control-label" for="selectFilter">B. Origen</label>
 														<div class="col-lg-8">
 															<select name="txtWarehouseSourceID" id="txtWarehouseSourceID" class="select2">
-																	<option></option>
+																	<option selected ></option>
 																	<?php
 																	$count = 1;
 																	if($objListWarehouse)
 																	foreach($objListWarehouse as $i){
 																		if($count == 1)
-																		echo "<option value='".$i->warehouseID."' selected>".$i->name."</option>";
+																		echo "<option value='".$i->warehouseID."'>".$i->name."</option>";
 																		else
 																		echo "<option value='".$i->warehouseID."' >".$i->name."</option>";
 																		$count++;
@@ -137,13 +137,13 @@
 														<label class="col-lg-4 control-label" for="selectFilter">B. Destino</label>
 														<div class="col-lg-8">
 															<select name="txtWarehouseTargetID" id="txtWarehouseTargetID" class="select2">
-																	<option></option>
+																	<option selected ></option>
 																	<?php
 																	$count = 1;
 																	if($objListWarehouseAll)
 																	foreach($objListWarehouseAll as $i){
 																		if($count == 1)
-																		echo "<option value='".$i->warehouseID."' selected>".$i->name."</option>";
+																		echo "<option value='".$i->warehouseID."' >".$i->name."</option>";
 																		else
 																		echo "<option value='".$i->warehouseID."' >".$i->name."</option>";
 																		$count++;

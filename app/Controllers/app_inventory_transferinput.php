@@ -692,12 +692,14 @@ class app_inventory_transferinput extends _BaseController {
 			if($dataViewID == null){				
 				$targetComponentID			= 0;	
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
+				$parameter["{userID}"]		= $this->session->get('user')->userID;
 				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
 				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			}
 			//Otra vista
 			else{									
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
+				$parameter["{userID}"]		= $this->session->get('user')->userID;
 				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 			
 				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			} 

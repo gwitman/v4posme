@@ -169,6 +169,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('globalpro_app_box_share_labelReference1')			 										=> "Atiende",		
 		strtolower('globalpro_app_inventory_transferoutput_parameterValidarEnvioDestino')						=> "true",
 		strtolower('globalpro_app_inventory_transferoutput_labelReference1')									=> "Orden / Cliente",
+		strtolower('globalpro_app_inventory_transferoutput_parameterDefaultQuantity')							=> "0",
 		strtolower('globalpro_app_purchase_pedidos_divDllEstado')												=> "hidden",
 		strtolower('globalpro_app_purchase_pedidos_divScriptCustom')											=> "
 			<script>

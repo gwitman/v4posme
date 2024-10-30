@@ -221,6 +221,11 @@
 							fnShowNotification("Seleccionar la Bodega","error",timerNotification);
 							result = false;
 						}
+						//Bodega
+						if($("#txtWarehouseSourceIDDescription").val()==""){
+							fnShowNotification("Seleccionar la Bodega","error",timerNotification);
+							result = false;
+						}
 						//Validar Estado
 						if($("#txtStatusID").val() == ""){
 							fnShowNotification("Establecer Estado","error",timerNotification);

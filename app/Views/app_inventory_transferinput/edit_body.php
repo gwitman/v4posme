@@ -102,22 +102,24 @@
 													</div>
 													
 													<div class="form-group">
-														<label class="col-lg-4 control-label" for="selectFilter">B. Destino</label>
-														<div class="col-lg-8">
-															<select name="txtWarehouseSourceID" id="txtWarehouseSourceID" class="select2">
-																	<option></option>
-																	<?php
-																	if($objListWarehouse)
-																	foreach($objListWarehouse as $i){
+															<label class="col-lg-4 control-label" for="normal">B. Destino</label>
+															<div class="col-lg-8">
+																<input type="hidden" name="txtWarehouseSourceID" id="txtWarehouseSourceID" value="<?php echo $objTM->targetWarehouseID; ?>" />
+																<?php
+																$warehouseName = "";
+																if($objListWarehouse)
+																{
+																	foreach($objListWarehouse as $i)
+																	{
 																		if($i->warehouseID == $objTM->targetWarehouseID)
-																		echo "<option value='".$i->warehouseID."' selected >".$i->name."</option>";
-																		else
-																		echo "<option value='".$i->warehouseID."'>".$i->name."</option>";
+																			$warehouseName = $i->name;
 																	}
-																	?>
-															</select>
-														</div>
+																}
+																?>
+																<input class="form-control"  type="text"  name="txtWarehouseSourceIDDescription" id="txtWarehouseSourceIDDescription" readonly value="<?php echo $warehouseName; ?>">												
+															</div>
 													</div>
+													
 													
 											</div>
 											</div>

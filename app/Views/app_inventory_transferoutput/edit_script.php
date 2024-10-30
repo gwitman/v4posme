@@ -317,6 +317,23 @@
 			fnShowNotification("Agregar el Detalle del Documento","error",timerNotification);
 			result = false;
 		}
+		
+		
+		//Validar que las cantidades sean mayor que 0
+		var lengthRow = objTableDetailTransaction.fnGetData().length;				
+		for(var i = 0 ; i < lengthRow; i++)
+		{
+			var row 		= objTableDetailTransaction.fnGetData()[i];
+			var quantity 	= row[6];
+			
+			if(parseInt(quantity) == 0)
+			{
+				fnShowNotification("No puden haber cantidades en 0 ('"+row[4]+"') ","error",timerNotification);
+				result = false;	
+			}
+		}
+		
+		
 		return result;
 	}
 	function onCompleteUpdateMasInformacion(objResponse){
@@ -335,13 +352,16 @@
 	function onCompleteItem(objResponse){
 		console.info("CALL onCompleteItem");
 		var objRow 						= {};
+		var valueQuantityDefault 		= <?php echo getBehavio($company->type,"app_inventory_transferoutput","parameterDefaultQuantity","1"); ?>;
+		
+		
 		objRow.checked 					= false;
 		objRow.itemID 					= objResponse[0][1];
 		objRow.transactionMasterDetail 	= 0;
 		objRow.itemNumber 				= objResponse[0][2];
 		objRow.itemName 				= objResponse[0][3];
 		objRow.itemUM 					= objResponse[0][4];
-		objRow.quantity 				= 0;
+		objRow.quantity 				= valueQuantityDefault;
 		objRow.lote 					= "";
 		objRow.vencimiento				= "";		
 		objRow.masinfor					= "";
@@ -368,16 +388,4 @@
 	}
 	
 </script>
-<script>  (function(g,u,i,d,e,s){g[e]=g[e]||[];var f=u.getElementsByTagName(i)[0];var k=u.createElement(i);k.async=true;k.src='https://static.userguiding.com/media/user-guiding-'+s+'-embedded.js';f.parentNode.insertBefore(k,f);if(g[d])return;var ug=g[d]={q:[]};ug.c=function(n){return function(){ug.q.push([n,arguments])};};var m=['previewGuide','finishPreview','track','identify','triggerNps','hideChecklist','launchChecklist'];for(var j=0;j<m.length;j+=1){ug[m[j]]=ug.c(m[j]);}})(window,document,'script','userGuiding','userGuidingLayer','744100086ID'); </script>
-<script>
-	//window.userGuiding.identify(userId*, attributes)
-	  
-	// example with attributes
-	window.userGuiding.identify('<?php echo get_cookie("email"); ?>', {
-	  email: '<?php echo get_cookie("email"); ?>',
-	  name: '<?php echo get_cookie("email"); ?>',
-	  created_at: 1644403436643,
-	});
-	// or just send userId without attributes
-	//window.userGuiding.identify('1Ax69i57j0j69i60l4')
-</script>
+
