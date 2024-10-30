@@ -94,6 +94,7 @@ use App\Models\Transaction_Master_Detail_Credit_Model;
 use App\Models\Transaction_Master_Detail_Model;
 use App\Models\Transaction_Master_Info_Model;
 use App\Models\Transaction_Master_Model;
+use App\Models\Transaction_Master_Detail_References_Model;
 
 use App\Models\Transaction_Profile_Detail_Model;
 use App\Models\Userwarehouse_Model;
@@ -229,12 +230,22 @@ class core_web_amortization {
 		}
 	   
    }
-   function applyCuote($companyID,$customerCreditDocumentID,$amount,$amoritizationID){
-	    $core_web_parameter = new core_web_parameter();
-		$Customer_Credit_Document_Model = new Customer_Credit_Document_Model();
-		$Customer_Credit_Amortization_Model = new Customer_Credit_Amortization_Model();
+   function applyCuote($companyID,$customerCreditDocumentID,$amount,$amoritizationID,$transactionMasterDetailID){
+	    $core_web_parameter 						= new core_web_parameter();
+		$Customer_Credit_Document_Model 			= new Customer_Credit_Document_Model();
+		$Customer_Credit_Amortization_Model 		= new Customer_Credit_Amortization_Model();
+		$Transaction_Master_Detail_Model			= new Transaction_Master_Detail_Model();
+		$Transaction_Master_Detail_References_Model = new Transaction_Master_Detail_References_Model();	
+		$core_web_tools								= new core_web_tools();
 		date_default_timezone_set(APP_TIMEZONE);
 		 
+		 
+		$objComponentAmortization			= $core_web_tools->getComponentIDBy_ComponentName("tb_customer_credit_amoritization");
+		if(!$objComponentAmortization)
+		throw new \Exception("EL COMPONENTE 'tb_customer_credit_amoritization' NO EXISTE...");		
+	
+	
+		$objTransactionMasterDetail 				= $Transaction_Master_Detail_Model->get_rowByTransactionMasterDetailID($transactionMasterDetailID);
 		$documentCancel 							= $core_web_parameter->getParameter("SHARE_DOCUMENT_CANCEL",$companyID)->value;
 		$amortizationCancel 						= $core_web_parameter->getParameter("SHARE_CANCEL",$companyID)->value;
 		$objCustomerCreditDocument					= $Customer_Credit_Document_Model->get_rowByPK($customerCreditDocumentID);
@@ -276,7 +287,15 @@ class core_web_amortization {
 					$objConceptos["interes"] 	= $objConceptos["interes"] + $itemAmortization->interest;
 				}
 			
-				$Customer_Credit_Amortization_Model->update_app_posme($itemAmortization->creditAmortizationID,$itemAmortizationNew);				
+				$Customer_Credit_Amortization_Model->update_app_posme($itemAmortization->creditAmortizationID,$itemAmortizationNew);	
+				
+				$dataTMDR["transactionMasterDetailID"]		= $transactionMasterDetailID;
+				$dataTMDR["componentID"]					= $objComponentAmortization->componentID;
+				$dataTMDR["componentItemID"]				= $itemAmortization->creditAmortizationID;
+				$dataTMDR["quantity"]						= $itemAmortization->remaining;
+				$dataTMDR["isActive"]						= 1;
+				$dataTMDR["createdOn"]						= helper_getDateTime();	
+				$Transaction_Master_Detail_References_Model->insert_app_posme($dataTMDR);
 			}
 			else if ($amount <> 0){	
 				$itemAmortizationNew					= NULL;
@@ -303,8 +322,14 @@ class core_web_amortization {
 					$objConceptos["interes"] 	= $objConceptos["interes"] + $interes001;
 				}
 				
-				
-				$Customer_Credit_Amortization_Model->update_app_posme($itemAmortization->creditAmortizationID,$itemAmortizationNew);				
+				$Customer_Credit_Amortization_Model->update_app_posme($itemAmortization->creditAmortizationID,$itemAmortizationNew);					
+				$dataTMDR["transactionMasterDetailID"]		= $transactionMasterDetailID;
+				$dataTMDR["componentID"]					= $objComponentAmortization->componentID;
+				$dataTMDR["componentItemID"]				= $itemAmortization->creditAmortizationID;
+				$dataTMDR["quantity"]						= $amount;
+				$dataTMDR["isActive"]						= 1;
+				$dataTMDR["createdOn"]						= helper_getDateTime();				
+				$Transaction_Master_Detail_References_Model->insert_app_posme($dataTMDR);				
 				$amount 								= 0;					
 			}
 		}

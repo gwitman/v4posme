@@ -27,6 +27,39 @@ class Transaction_Master_Detail_Model extends Model  {
 		return $builder->update($data);
 		
    }
+   
+   function get_rowByTransactionMasterDetailID($transactionMasterDetailID)
+   {
+		$db 		= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");    
+		
+		$sql = "";
+		$sql = sprintf("
+				select 
+					td.companyID, td.transactionID, td.transactionMasterID, 
+					td.transactionMasterDetailID, td.componentID, td.componentItemID, 
+					td.promotionID, td.amount, td.cost, td.quantity, td.discount, 
+					td.unitaryAmount, td.unitaryCost, td.unitaryPrice, 
+					td.reference1, td.reference2, td.reference3,td.reference4,
+					td.reference5,td.reference6,td.reference7, td.catalogStatusID, 
+					td.inventoryStatusID, td.isActive, td.quantityStock, 
+					td.quantiryStockInTraffic, td.quantityStockUnaswared, 
+					td.remaingStock, td.expirationDate, td.inventoryWarehouseSourceID, 
+					td.inventoryWarehouseTargetID,
+					td.descriptionReference,td.exchangeRateReference,td.lote , 
+					td.typePriceID,td.skuCatalogItemID,td.skuQuantity,td.skuQuantityBySku,
+					td.skuFormatoDescription,td.itemNameLog,td.amountCommision, 
+					td.itemNameDescriptionLog 
+					");
+		$sql = $sql.sprintf(" from tb_transaction_master_detail td " );		
+		$sql = $sql.sprintf(" where ");		
+		$sql = $sql.sprintf(" td.transactionMasterDetailID = $transactionMasterDetailID");		
+		$sql = $sql.sprintf(" and td.isActive= 1");	
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getRow();
+   
+   }
    function get_rowByPK($companyID,$transactionID,$transactionMasterID,$transactionMasterDetailID,$componentID=33){
 		$db 		= db_connect();
 		$builder	= $db->table("tb_transaction_master_detail");    

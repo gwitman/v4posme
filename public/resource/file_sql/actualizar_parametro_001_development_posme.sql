@@ -6,6 +6,19 @@ use dbkroqnguhldo1;
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "78" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "SHARE_AMORTIZATION_STATUS_REGISTER";## Ruta de Finger Print
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "77" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "SHARE_DOCUMENT_CREDIT_STATUS_REGISTER";## Ruta de Finger Print
+
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "C:\\execute.exe" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 

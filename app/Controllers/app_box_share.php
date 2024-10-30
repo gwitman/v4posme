@@ -169,7 +169,10 @@ class app_box_share extends _BaseController {
 			$companyID 				= /*inicio get post*/ $this->request->getPost("companyID");
 			$transactionID 			= /*inicio get post*/ $this->request->getPost("transactionID");				
 			$transactionMasterID 	= /*inicio get post*/ $this->request->getPost("transactionMasterID");				
-			
+			$objListComanyParameter					= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$workflowStageAmortizationRegister 		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"SHARE_AMORTIZATION_STATUS_REGISTER")->value;	
+			$workflowStageDocumentRegister 			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"SHARE_DOCUMENT_CREDIT_STATUS_REGISTER")->value;	
+			$objCurrencyCordoba						= $this->core_web_currency->getCurrencyDefault($companyID);			
 			
 			if((!$companyID && !$transactionID && !$transactionMasterID)){
 					throw new \Exception(NOT_PARAMETER);								 
@@ -184,30 +187,108 @@ class app_box_share extends _BaseController {
 				
 				
 			
+			$db=db_connect();
+			$db->transStart();
+			
+			if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_share","statusID",$objTM->statusID,COMMAND_ELIMINABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
+			{
+				
+				//Eliminar el Registro			
+				$this->Transaction_Master_Model->delete_app_posme($companyID,$transactionID,$transactionMasterID);
+				$this->Transaction_Master_Detail_Model->deleteWhereTM($companyID,$transactionID,$transactionMasterID);			
+			
+			}
 			//Si el documento esta aplicado crear el contra documento
-			if( ! $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_share","statusID",$objTM->statusID,COMMAND_ELIMINABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
-			throw new \Exception(NOT_WORKFLOW_DELETE);
+			else 
+			{
+				//Obtener datos
+				$objTM 		= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+				$objTMD 	= $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID,$transactionID,$transactionMasterID);
+				$objTMDR	= $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterID($transactionMasterID);
+				$objTMSOld	= $this->Transaction_Master_Model->get_rowByTransactionID_And_EntityID($companyID,$transactionID,$objTM->entityID);
+				
+				
+				//Validar abono a eliminar
+				if($objTMSOld)
+				{
+					if($objTMSOld[0]->transactionMasterID != $transactionMasterID)
+					{
+						throw new \Exception("SOLO PUEDE ELIMINAR EL ULTIMO ABONO DEL CLIENTE...");
+					}
+				}
+				
+				//Recorrare las cuotas a regresar
+				foreach($objTMDR as $key => $amRef)
+				{
+					
+					//Actualizarion Amortizacion
+					$objCCA 				= $this->Customer_Credit_Amortization_Model->get_rowByPK($amRef->componentItemID);
+					$amorNew["remaining"]	= $objCCA->remaining + $amRef->quantity;
+					$amorNew["statusID"] 	= $workflowStageAmortizationRegister;
+					$amorNew["dayDelay"] 	= 0;
+					$this->Customer_Credit_Amortization_Model->update_app_posme($amRef->componentItemID,$amorNew);
+					
+					
+					//Actualizar Documento
+					$objCC					= $this->Customer_Credit_Document_Model->get_rowByPK($objCCA->customerCreditDocumentID);					
+					$cdcNew["statusID"]		= $workflowStageDocumentRegister;
+					$cdcNew["balance"]		= $objCC->balance + $amRef->quantity;
+					$this->Customer_Credit_Document_Model->update_app_posme($objCCA->customerCreditDocumentID,$cdcNew);
+					
+					//Obtener Linea de Credito
+					$objCustomerCreditLine   = $this->Customer_Credit_Line_Model->get_rowByPK($objCC->customerCreditLineID);
+					
+					//Actualizar Linea de Credito
+					$montoTotalCordobaCredit = $objTM->currencyID == 1 /*cordoba*/ ? $amRef->quantity : round(($amRef->quantity * $objTM->exchangeRate),2) ;
+					$montoTotalDolaresCredit = $objTM->currencyID == 2 /*dolares*/ ? $amRef->quantity : round(($amRef->quantity / $objTM->exchangeRate),2) ;
+					
+					
+					//aumentar el balance de general	
+					$objCustomerCredit 					= $this->Customer_Credit_Model->get_rowByPK($objCustomerCreditLine->companyID,$objCustomerCreditLine->branchID,$objCustomerCreditLine->entityID);
+					$objCustomerCreditNew["balanceDol"]	= $objCustomerCredit->balanceDol + $montoTotalDolaresCredit;
+					$this->Customer_Credit_Model->update_app_posme($objCustomerCreditLine->companyID,$objCustomerCreditLine->branchID,$objCustomerCreditLine->entityID,$objCustomerCreditNew);
+					
+					
+					
+					//aumentar el balance de linea
+					if($objCustomerCreditLine->currencyID == $objCurrencyCordoba->currencyID)
+					$objCustomerCreditLineNew["balance"]	= $objCustomerCreditLine->balance + $montoTotalCordobaCredit;
+					else
+					$objCustomerCreditLineNew["balance"]	= $objCustomerCreditLine->balance + $montoTotalDolaresCredit;
+						
+					
+					$this->Customer_Credit_Line_Model->update_app_posme($objCustomerCreditLine->customerCreditLineID,$objCustomerCreditLineNew);
+				}				
+				
+				//Eliminar el Registro			
+				$this->Transaction_Master_Model->delete_app_posme($companyID,$transactionID,$transactionMasterID);
+				$this->Transaction_Master_Detail_Model->deleteWhereTM($companyID,$transactionID,$transactionMasterID);			
+			}
 			
-			//Eliminar el Registro			
-			$this->Transaction_Master_Model->delete_app_posme($companyID,$transactionID,$transactionMasterID);
-			$this->Transaction_Master_Detail_Model->deleteWhereTM($companyID,$transactionID,$transactionMasterID);			
 			
 			
-			return $this->response->setJSON(array(
-				'error'   => false,
-				'message' => SUCCESS
-			));//--finjson
-			
-			
+			if($db->transStatus() !== false)
+			{
+				$db->transCommit();		
+				return $this->response->setJSON(array(
+					'error'   => false,
+					'message' => SUCCESS
+				));//--finjson
+				
+			}
+			else
+			{	
+				throw new \Exception($this->db->_error_message());
+			}
 			
 		}
-		catch(\Exception $ex){
-			
+		catch(\Exception $ex)
+		{
+			$db->transRollback();
 			return $this->response->setJSON(array(
 				'error'   => true,
 				'message' => $ex->getLine()." ".$ex->getMessage()
-			));//--finjson
-			$this->core_web_notification->set_message(true,$ex->getLine()." ".$ex->getMessage());
+			));
 		}		
 			
 	}
@@ -548,7 +629,7 @@ class app_box_share extends _BaseController {
 					$objCustomerCreditDocumentInicial			= $this->Customer_Credit_Document_Model->get_rowByPK($objTMD->componentItemID);					
 					
 					//aplicar
-					$this->core_web_amortization->applyCuote($companyID,$objTMD->componentItemID,$objTMD->amount,$objTMD->reference3);
+					$this->core_web_amortization->applyCuote($companyID,$objTMD->componentItemID,$objTMD->amount,$objTMD->reference3,$objTMD->transactionMasterDetailID);
 					
 					//documento final
 					$objCustomerCreditDocument					= $this->Customer_Credit_Document_Model->get_rowByPK($objTMD->componentItemID);					
@@ -651,7 +732,7 @@ class app_box_share extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo  $resultView;
 		}
 		
 	}
@@ -1008,7 +1089,7 @@ class app_box_share extends _BaseController {
 						$objCustomerCreditDocumentInicial			= $this->Customer_Credit_Document_Model->get_rowByPK($objTMD->componentItemID);					
 						
 						//aplicar
-						$this->core_web_amortization->applyCuote($companyID,$objTMD->componentItemID,$objTMD->amount,$objTMD->reference3);
+						$this->core_web_amortization->applyCuote($companyID,$objTMD->componentItemID,$objTMD->amount,$objTMD->reference3,$objTMD->transactionMasterDetailID);
 						
 						//documento final
 						$objCustomerCreditDocument					= $this->Customer_Credit_Document_Model->get_rowByPK($objTMD->componentItemID);					
@@ -1487,7 +1568,7 @@ class app_box_share extends _BaseController {
 			$saldoInicial = array_sum(array_column($datView["objTMD"], 'reference2'));
 			$saldoFinal   = array_sum(array_column($datView["objTMD"], 'reference4'));
 			$saldoAbonado = array_sum(array_column($datView["objTMD"], 'amount'));
-			log_message("error",print_r($datView["objTMD"] ,true));
+			
 			
 			
 			/*Calculo de saldos generales*/
