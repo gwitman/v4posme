@@ -1861,9 +1861,7 @@ class app_invoice_billing extends _BaseController {
 					$price 									= $arrayListPrice[$key] / ($objItemSku->value) ;
 					$skuFormatoDescription					= $arrayListSkuFormatoDescription[$key];
 					$ivaPercentage							= ($objCompanyComponentConcept != null ? $objCompanyComponentConcept->valueOut : 0 );
-					$taxServicesPercentage					= ($objCompanyComponentConceptTaxServices != null ? $objCompanyComponentConceptTaxServices->valueOut : 0 );					
-					
-					log_message("error",$objTMReference["reference2"]);
+					$taxServicesPercentage					= ($objCompanyComponentConceptTaxServices != null ? $objCompanyComponentConceptTaxServices->valueOut : 0 );
 					$ivaPercentage 							= $objTMReference["reference2"] == "0" ? $ivaPercentage : 0;
 					$taxServicesPercentage 					= $objTMReference["reference2"] == "0" ? $taxServicesPercentage : 0;
 					
@@ -3964,8 +3962,6 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-		    log_message("error",print_r($ex->getMessage(),true));
-			
 		    if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
@@ -4047,8 +4043,6 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-		    log_message("error",print_r($ex->getMessage(),true));
-			
 		    if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
@@ -4117,8 +4111,6 @@ class app_invoice_billing extends _BaseController {
 				$dataView	= $serializedData;
 			}
 			
-			//log_message("error",print_r($dataView,true));
-			
 			//obtener nombre de impresora por defecto
 			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT",$companyID);
 			$objParameterPrinterName = $objParameterPrinterName->value;
@@ -4130,8 +4122,6 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-		    log_message("error",print_r($ex->getMessage(),true));
-			
 		    if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
@@ -4199,9 +4189,6 @@ class app_invoice_billing extends _BaseController {
 			
 				$dataView	= $serializedData;
 			}
-			
-			//log_message("error",print_r($dataView,true));
-			
 			//obtener nombre de impresora por defecto
 			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT",$companyID);
 			$objParameterPrinterName = $objParameterPrinterName->value;
@@ -4213,8 +4200,6 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-		    log_message("error",print_r($ex->getMessage(),true));
-			
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
@@ -4286,8 +4271,6 @@ class app_invoice_billing extends _BaseController {
 				$dataView		= $serializedData;
 			}
 			
-			//log_message("error",print_r($dataView,true));
-			
 			//obtener nombre de impresora por defecto
 			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT",$companyID);
 			$objParameterPrinterName = $objParameterPrinterName->value;
@@ -4299,8 +4282,6 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-		    log_message("error",print_r($ex->getMessage(),true));
-			
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
@@ -4370,8 +4351,6 @@ class app_invoice_billing extends _BaseController {
 				$dataView	= $serializedData;
 			}
 			
-			//log_message("error",print_r($dataView,true));
-			
 			//obtener nombre de impresora por defecto
 			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT",$companyID);
 			$objParameterPrinterName = $objParameterPrinterName->value;
@@ -4383,8 +4362,6 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-		    log_message("error",print_r($ex->getMessage(),true));
-			
 		    if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
@@ -4453,9 +4430,6 @@ class app_invoice_billing extends _BaseController {
 			
 				$dataView	= $serializedData;
 			}
-			
-			//log_message("error",print_r($dataView,true));
-			
 			//obtener nombre de impresora por defecto
 			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT",$companyID);
 			$objParameterPrinterName = $objParameterPrinterName->value;
@@ -4467,8 +4441,6 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-		    log_message("error",print_r($ex->getMessage(),true));
-			
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
