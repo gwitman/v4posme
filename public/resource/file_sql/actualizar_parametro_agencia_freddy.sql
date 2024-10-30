@@ -1,3 +1,6 @@
+use dbuwydken46x4g;
+
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "154" 
 WHERE 
@@ -859,3 +862,4 @@ where
 	and targetCurrencyID = 2; 
 	
 	
+/*use dbuwydken46x4g;*/

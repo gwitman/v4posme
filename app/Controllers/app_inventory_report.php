@@ -919,7 +919,7 @@ class app_inventory_report extends _BaseController {
 										,x.`Condominio`
 										,x.`Ubicacion`
 										,x.`Exclusividad de agente`
-										
+										,x.`Telefono`
 										/*
 										,x.`Pais`
 										,x.`Estado`
