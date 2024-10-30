@@ -201,6 +201,11 @@ class app_box_share extends _BaseController {
 			//Si el documento esta aplicado crear el contra documento
 			else 
 			{
+				
+				if(!$dataSession["role"]->isAdmin)
+					throw new \Exception(NOT_WORKFLOW_DELETE);
+					
+				
 				//Obtener datos
 				$objTM 		= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 				$objTMD 	= $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID,$transactionID,$transactionMasterID);

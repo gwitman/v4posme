@@ -102,6 +102,9 @@ define('EVENT_PRIORITY_HIGH', 10);
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
 //APP
+define('DB_BDNAME',"posme");
+define('APP_COMERCE_NAME',"posmev4");
+
 define('APP_NEED_AUTHENTICATION',true);
 define('EMAIL_APP',"posme2022@gmail.com");
 define('EMAIL_APP_PASSWORD',"tbxbdwxjcddqptxk");
@@ -132,9 +135,8 @@ define('APP_HOUR_DIFERENCE_MYSQL','00:00:00');
 define('APP_HOUR_DIFERENCE_PHP','+0 minutes');
 define('APP_HOUR_DIFERENCE_MYSQL_EMBEDDED','-0 HOUR');
 define('APP_URL_RESOURCE_CSS_JS','http://localhost/posmev4');
-define('URL_REDIRECT_CALENDAR_POSME','http://localhost/posmev4/core_user/savepublicgooglereturn');
+define('URL_REDIRECT_CALENDAR_POSME','http://localhost/'.APP_COMERCE_NAME.'/core_user/savepublicgooglereturn');
 define('APP_URL_WOOCOMERCE','https://posme.net');
-
 
 //BD
 //define("DB_PASSWORD","root1.2Blandon");
@@ -142,10 +144,8 @@ define('APP_URL_WOOCOMERCE','https://posme.net');
 //define('DB_BDNAME',"posme");
 //define('DB_BDNAME_MERGE',"posme_merge");
 //define('DB_SERVER',"localhost");
-
 define("DB_PASSWORD","root1.2Blandon");
 define("DB_USER","root");
-define('DB_BDNAME',"posme");
 define('DB_BDNAME_MERGE',"posme_merge");
 define('DB_SERVER',"localhost");
 
@@ -198,8 +198,8 @@ define("FONT_SIZE_TITLE_INVICE","12");//cm
 define("FONT_SIZE_BODY_INVICE","10");//cm
 
 //Mensajes
-define("USER_NOT_AUTENTICATED","TIEMPO DE ESPERA AGOTADO:   <a href='http://".APP_IP_SERVER."/posmev4/'>**INGRESAR**</a> ");
-define("USER_LOGIN","<a href='http://".APP_IP_SERVER."/posmev4/'>**INGRESAR**</a> ");
+define("USER_NOT_AUTENTICATED","TIEMPO DE ESPERA AGOTADO:   <a href='http://".APP_IP_SERVER."/".APP_COMERCE_NAME."/'>**INGRESAR**</a> ");
+define("USER_LOGIN","<a href='http://".APP_IP_SERVER."/".APP_COMERCE_NAME."/'>**INGRESAR**</a> ");
 define("NOT_ALL_INSERT","NO PUEDE INGRESAR UN REGISTRO");
 define("NOT_ALL_EDIT","NO PUEDE EDITAR NINGUN REGISTRO");
 define("NOT_EDIT","NO PUEDE EDITAR UN REGISTRO QUE NO FUE CREADO POR USTED");
