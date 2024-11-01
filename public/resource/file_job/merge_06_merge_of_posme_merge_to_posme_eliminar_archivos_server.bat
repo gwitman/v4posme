@@ -1,0 +1,43 @@
+@echo off
+
+curl https://posme.net/v4posme/visteme/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/repuesto_purito/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/real_state/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/public/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/posme/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/pollos_adrian/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/pablo/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/miranda/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/lesly/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/laptop_store/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/jireth/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/globalpro/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/glamcus/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/fun_blandon/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/freddy/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/financiera_erick_corean/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/finan_halapa/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/fidlocal/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/ferreteria_welle/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/ferreteria_fer/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/farma_ticuan/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/exceso/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/eve3/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/distri_carvajal/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/development/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/demo/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/delete_titan/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/delete_blandon/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/daleska/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/credi_flash/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/compu_matt/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/chic/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+
+
+curl https://posme.net/v4posme/cafe_hostel_retorno/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/bivaly/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/audio_pipe/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/agro_quimico_laterminal/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/agro_quimico_laceiba/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/agro_quimico_ellabrador/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/agenda/public/core_merge/merge_of_posme_merge_to_posme_initialize/2

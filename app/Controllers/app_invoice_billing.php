@@ -4012,6 +4012,7 @@ class app_invoice_billing extends _BaseController {
 				$dataView["Identifier"]						= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
 				$dataView["objBranch"]						= $this->Branch_Model->get_rowByPK($companyID,$dataView["objTransactionMaster"]->branchID);
 				$dataView["objTipo"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$dataView["objTransactionMaster"]->transactionID,$dataView["objTransactionMaster"]->transactionCausalID);
+				$dataView["objMesa"]						= $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objTransactionMasterInfo"]->mesaID);
 				$dataView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$dataView["objTransactionMaster"]->entityID);
 				$dataView["objCurrency"]					= $this->Currency_Model->get_rowByPK($dataView["objTransactionMaster"]->currencyID);
 				$dataView["prefixCurrency"]					= $dataView["objCurrency"]->simbol." ";
