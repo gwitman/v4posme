@@ -55,111 +55,90 @@
   </head>
 
   <body>
-    <!-- Layout wrapper -->
-    <div class="layout-wrapper layout-content-navbar">
-      <div class="layout-container">
-      
+    
+    
+   
 
-        <!-- Layout container -->
-        <div class="layout-page">
-        
+	<div class="container-xxl flex-grow-1 container-p-y">
+	  <div class="card overflow-hidden">
+		<!-- Help Center Header -->
+		<div class="help-center-header d-flex flex-column justify-content-center align-items-center">
+		  <h3 class="text-center">Error : <?php echo ($session == null ? ""  : $session["user"]->nickname." --> Compania : ".$session["company"]->name ); ?></h3>
+		  <div class="input-wrapper my-3 input-group input-group-merge">
+		   
+		  
+		  </div>
+		  <p class="text-center px-3 mb-0"><?php echo $exception->getLine();?> <?php echo $exception->getMessage();?></p>
+		</div>
+		<!-- /Help Center Header -->
 
-          <!-- Content wrapper -->
-          <div class="content-wrapper">
-            <!-- Content -->
+		<!-- Popular Articles -->
+		<div class="help-center-popular-articles py-5">
+		  <div class="container-xl">
+			<h4 class="text-center mt-2 mb-4">Opciones</h4>
+			<div class="row">
+			  <div class="col-lg-10 mx-auto">
+				<div class="row mb-3">
+				  <div class="col-md-4 mb-md-0 mb-4">
+					<div class="card border shadow-none">
+					  <div class="card-body text-center">
+						<img
+						  class="mb-3"
+						  src="<?php echo  base_url(); ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/assets/img/icons/unicons/rocket.png"
+						  height="60"
+						  alt="Help center articles"
+						/>
+						<h5>Ingresar nuevamente</h5>
+						<p>pagina de inicio de session</p>
+						<a class="btn btn-label-primary" href="<?php echo $urlLogin; ?>">Ir</a>
+					  </div>
+					</div>
+				  </div>
 
-            <div class="container-xxl flex-grow-1 container-p-y">
-              <div class="card overflow-hidden">
-                <!-- Help Center Header -->
-                <div class="help-center-header d-flex flex-column justify-content-center align-items-center">
-                  <h3 class="text-center">Error : <?php echo ($session == null ? ""  : $session["user"]->nickname." --> Compania : ".$session["company"]->name ); ?></h3>
-                  <div class="input-wrapper my-3 input-group input-group-merge">
-                   
-                  
-                  </div>
-                  <p class="text-center px-3 mb-0"><?php echo $exception->getLine();?> <?php echo $exception->getMessage();?></p>
-                </div>
-                <!-- /Help Center Header -->
+				  <div class="col-md-4 mb-md-0 mb-4">
+					<div class="card border shadow-none">
+					  <div class="card-body text-center">
+						<img
+						  class="mb-3"
+						  src="<?php echo  base_url(); ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/assets/img/icons/unicons/cube-secondary.png"
+						  height="60"
+						  alt="Help center articles"
+						/>
+						<h5>Regresar a la lista</h5>
+						<p>Ir al listado de elementos</p>
+						<a class="btn btn-label-primary" href="<?php echo $urlIndex; ?>">Ir</a>
+					  </div>
+					</div>
+				  </div>
 
-                <!-- Popular Articles -->
-                <div class="help-center-popular-articles py-5">
-                  <div class="container-xl">
-                    <h4 class="text-center mt-2 mb-4">Opciones</h4>
-                    <div class="row">
-                      <div class="col-lg-10 mx-auto">
-                        <div class="row mb-3">
-                          <div class="col-md-4 mb-md-0 mb-4">
-                            <div class="card border shadow-none">
-                              <div class="card-body text-center">
-                                <img
-                                  class="mb-3"
-                                  src="<?php echo  base_url(); ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/assets/img/icons/unicons/rocket.png"
-                                  height="60"
-                                  alt="Help center articles"
-                                />
-                                <h5>Ingresar nuevamente</h5>
-                                <p>pagina de inicio de session</p>
-                                <a class="btn btn-label-primary" href="<?php echo $urlLogin; ?>">Ir</a>
-                              </div>
-                            </div>
-                          </div>
+				  <div class="col-md-4">
+					<div class="card border shadow-none">
+					  <div class="card-body text-center">
+						<img
+						  class="mb-3"
+						  src="<?php echo  base_url(); ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/assets/img/icons/unicons/desktop.png"
+						  height="60"
+						  alt="Help center articles"
+						/>
+						<h5>Pantalla anterior</h5>
+						<p>Regresar a la pantalla anterior</p>
+						<a class="btn btn-label-primary" href="<?php echo $urlBack; ?>">Ir</a>
+					  </div>
+					</div>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		  </div>
+		</div>
+		<!-- /Popular Articles -->
 
-                          <div class="col-md-4 mb-md-0 mb-4">
-                            <div class="card border shadow-none">
-                              <div class="card-body text-center">
-                                <img
-                                  class="mb-3"
-                                  src="<?php echo  base_url(); ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/assets/img/icons/unicons/cube-secondary.png"
-                                  height="60"
-                                  alt="Help center articles"
-                                />
-                                <h5>Regresar a la lista</h5>
-                                <p>Ir al listado de elementos</p>
-                                <a class="btn btn-label-primary" href="<?php echo $urlIndex; ?>">Ir</a>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div class="col-md-4">
-                            <div class="card border shadow-none">
-                              <div class="card-body text-center">
-                                <img
-                                  class="mb-3"
-                                  src="<?php echo  base_url(); ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/assets/img/icons/unicons/desktop.png"
-                                  height="60"
-                                  alt="Help center articles"
-                                />
-                                <h5>Pantalla anterior</h5>
-                                <p>Regresar a la pantalla anterior</p>
-                                <a class="btn btn-label-primary" href="<?php echo $urlBack; ?>">Ir</a>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- /Popular Articles -->
-
-              </div>
-            </div>
-            <!-- / Content -->
+	  </div>
+	</div>
+	<!-- / Content -->
 
         
-            <div class="content-backdrop fade"></div>
-          </div>
-          <!-- Content wrapper -->
-        </div>
-        <!-- / Layout page -->
-      </div>
-
-      <!-- Overlay -->
-      <div class="layout-overlay layout-menu-toggle"></div>
-
-      <!-- Drag Target Area To SlideIn Menu On Small Screens -->
-      <div class="drag-target"></div>
-    </div>
+    
     <!-- / Layout wrapper -->
 
     <!-- Core JS -->

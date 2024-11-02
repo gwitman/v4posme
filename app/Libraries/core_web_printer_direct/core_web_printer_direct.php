@@ -259,6 +259,8 @@ class core_web_printer_direct {
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\nTipo: ".$dataSetValores["objTipo"]->name);
 		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nMesa: ".$dataSetValores["objMesa"]->name);
+		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\nCliente: ".$dataSetValores["cedulaCliente"]);
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\nNombre: ".$dataSetValores["nombreCliente"]);
@@ -267,6 +269,7 @@ class core_web_printer_direct {
 		$data1		= array();			
 		$subtotal 	= 0;
 		$iva 		= 0;
+		$servicio	= 0;
 		$total 		= 0;
 		$cambio		= 0;
 		
@@ -285,13 +288,14 @@ class core_web_printer_direct {
 				
 				$this->printer->text(						
 						$this->addSpaces(   number_format(round($row->quantity,2),2,'.',','), 10) . 						
-						$this->addSpaces($dataSetValores["prefixCurrency"].number_format(round($row->unitaryPrice,2),2,'.',','), 25). 
-						$this->addSpaces($dataSetValores["prefixCurrency"].number_format(round($row->amount,2),2,'.',','), 0)						
+						$this->addSpaces($dataSetValores["prefixCurrency"].number_format(round($row->unitaryPrice + $row->tax2  ,2),2,'.',','), 25). 
+						$this->addSpaces($dataSetValores["prefixCurrency"].number_format(round($row->amount + ($row->tax2 * $row->quantity) ,2),2,'.',','), 0)						
 				);
 				$this->printer->text("\n");
 				$iva		= $iva + ($row->tax1 * $row->quantity);
-				$total		= $total + $row->amount;
-				$subtotal	= $total - $iva;
+				$servicio	= $servicio + ($row->tax2 * $row->quantity);
+				$total		= $total + $row->amount + $servicio;
+				$subtotal	= $total - $iva - $servicio;
 
 			}
 		}
@@ -301,8 +305,12 @@ class core_web_printer_direct {
 		$iva 		= number_format(round($iva,2),2,'.',',');
 		$total 		= number_format(round($total,2),2,'.',',');
 		$subtotal 	= number_format(round($subtotal,2),2,'.',',');
-		$cambio		= ($dataSetValores["objTransactionMasterInfo"]->receiptAmount - $dataSetValores["objTransactionMaster"]->amount);
+		$cambio		= ($dataSetValores["objTransactionMasterInfo"]->receiptAmount - $dataSetValores["objTransactionMaster"]->amount - $servicio );
 		$cambio 	= number_format(round($cambio,2),2,'.',',');
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nSub Total: ".$dataSetValores["prefixCurrency"].$subtotal) ;
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\n10% Servicio: ".$dataSetValores["prefixCurrency"].$servicio) ;
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\nTotal: ".$dataSetValores["prefixCurrency"].$total) ;
 		$this->printer->setTextSize(1, 1);
@@ -316,11 +324,13 @@ class core_web_printer_direct {
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\n****************************.");
 		$this->printer->setTextSize(1, 1);
-		$this->printer->text("\nTelefono de tienda: ".$dataSetValores["objParameterPhoneProperty"]->value);
+		$this->printer->text("\nTelefono de Restaurante: ".$dataSetValores["objParameterPhoneProperty"]->value);
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\n".$dataSetValores["objCompany"]->address);
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\nPropina voluntaria");
+		$this->printer->setTextSize(1, 1);
+		$this->printer->text("\nposMe Version 3.1 PRO");
 
 		$this->printer->setTextSize(2, 1);
 		$this->printer->feed(10);

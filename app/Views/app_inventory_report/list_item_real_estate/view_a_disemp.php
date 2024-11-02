@@ -294,6 +294,11 @@
 		$configColumn["39"]["Width"] = "80px";
 		$configColumn["39"]["Total"] = false;
 				
+		$configColumn["40"]["Titulo"] = "Telefono";
+		$configColumn["40"]["FiledSouce"] = "Telefono";
+		$configColumn["40"]["Formato"] = "";
+		$configColumn["40"]["Width"] = "80px";
+		$configColumn["40"]["Total"] = false;
 		
 		$resultado 	= helper_reporteGeneralCreateTable($objDetail,$configColumn,'0px',NULL,NULL);		
 		echo str_replace("[[BASE_URL]]",base_url(),$resultado["table"]);

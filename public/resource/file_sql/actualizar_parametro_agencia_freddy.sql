@@ -1,3 +1,6 @@
+use dbuwydken46x4g;
+
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "154" 
 WHERE 
@@ -639,7 +642,7 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
+	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT";## Imprimir directo en la impresora 
@@ -859,3 +862,4 @@ where
 	and targetCurrencyID = 2; 
 	
 	
+/*use dbuwydken46x4g;*/
