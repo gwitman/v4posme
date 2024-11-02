@@ -1,6 +1,8 @@
 <?php
 //posme:2023-02-27
 namespace App\Controllers;
+
+use Exception;
 class app_cxc_report extends _BaseController {
 	
    
@@ -55,7 +57,8 @@ class app_cxc_report extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}
+		    return $resultView;		
+		}
 	}
 	function document_contract(){
 		try{ 
@@ -414,7 +417,8 @@ class app_cxc_report extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}
+		    return $resultView;		
+		}
 	}
 	function movement_customer(){
 		try{ 
@@ -516,7 +520,8 @@ class app_cxc_report extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}
+		    return $resultView;		
+		}
 	}
 	function customer_credit(){
 		try{ 
@@ -604,7 +609,8 @@ class app_cxc_report extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}
+		    return $resultView;		
+		}
 	}
 	function consulta_sin_riesgo_list(){
 	    try{ 
@@ -699,7 +705,8 @@ class app_cxc_report extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}
+		    return $resultView;		
+		}
 	}
 	function LeerDatos($file){
 		$fp 	= fopen($file, "rb");
@@ -942,7 +949,8 @@ class app_cxc_report extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}
+		    return $resultView;		
+		}
 	}
 	function customer_list(){
 		try{ 
@@ -1019,7 +1027,8 @@ class app_cxc_report extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}
+		    return $resultView;		
+		}
 	}
 	
 	function interes_periodo(){
@@ -1111,7 +1120,8 @@ class app_cxc_report extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}
+		    return $resultView;		
+		}
 	}
 	function proyection(){
 		try{ 
@@ -1187,7 +1197,8 @@ class app_cxc_report extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}
+		    return $resultView;		
+		}
 	}	
 	function pay(){
 		try{ 
@@ -1296,7 +1307,8 @@ class app_cxc_report extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}
+		    return $resultView;
+		}
 	}
 	function collection_manager()
 	{
@@ -1392,7 +1404,8 @@ class app_cxc_report extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}
+		    return $resultView;		
+		}
 	}
 	function exchange_rate(){
 		try{ 
@@ -1468,7 +1481,8 @@ class app_cxc_report extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}
+		    return $resultView;		
+		}
 	}
 	function summary_credit(){
 		try{ 
@@ -1544,7 +1558,8 @@ class app_cxc_report extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}
+		    return $resultView;		
+		}
 	}
 	
 	function customer_list_real_estate(){
@@ -1673,7 +1688,8 @@ class app_cxc_report extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}
+		    return $resultView;		
+		}
 	}
 	
 	
