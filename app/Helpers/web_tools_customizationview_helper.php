@@ -978,26 +978,27 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		</script>",
 		
 		/*Bar Exit*/		
-		strtolower('bar_exit_core_web_language_workflowstage_billing_REGISTRADA')			 						=> "GUARDAR MESA",
+		strtolower('bar_exit_core_web_language_workflowstage_billing_REGISTRADA')			 					=> "GUARDAR MESA",
 		strtolower('bar_exit_core_web_language_workflowstage_billing_APLICADA')				 					=> "PAGAR",
-		strtolower('bar_exit_core_web_language_workflowstage_billing_REGISTRAR')				 					=> "GUARDAR MESA",
+		strtolower('bar_exit_core_web_language_workflowstage_billing_REGISTRAR')				 				=> "GUARDAR MESA",
 		strtolower('bar_exit_core_web_language_workflowstage_billing_APLICAR')				 					=> "PAGAR",		
 		strtolower('bar_exit_core_web_language_workflowstage_billing_ANULADA')				 					=> "ANULADA",		
-		strtolower('bar_exit_app_invoice_billing_lablBotunConfiguracion')											=> "CONFIGURACION",
+		strtolower('bar_exit_app_invoice_billing_lablBotunConfiguracion')										=> "CONFIGURACION",
 		strtolower('bar_exit_app_invoice_billing_lablBotunVerDetalle')											=> "PRODUCTO",
-		strtolower('bar_exit_app_invoice_billing_divTxtMoneda') 													=> "hidden",
-		strtolower('bar_exit_app_invoice_billing_divTxtCambio') 													=> "hidden",				
-		strtolower('bar_exit_app_invoice_billing_divPestanaCredito') 												=> "hidden",		
-		strtolower('bar_exit_app_invoice_billing_divPestanaMas')	 												=> "hidden",
-		strtolower('bar_exit_app_invoice_billing_divPestanaReferencias')											=> "hidden",
-		strtolower('bar_exit_app_invoice_billing_divHiddenEmployer')												=> "hidden",		
-		strtolower('bar_exit_app_invoice_billing_lblReferencia')													=> "Vendedor",	
+		strtolower('bar_exit_app_invoice_billing_divTxtMoneda') 												=> "hidden",
+		strtolower('bar_exit_app_invoice_billing_divTxtCambio') 												=> "hidden",				
+		strtolower('bar_exit_app_invoice_billing_divPestanaCredito') 											=> "hidden",		
+		strtolower('bar_exit_app_invoice_billing_divPestanaMas')	 											=> "hidden",
+		strtolower('bar_exit_app_invoice_billing_divPestanaReferencias')										=> "hidden",
+		strtolower('bar_exit_app_invoice_billing_divHiddenEmployer')											=> "hidden",		
+		strtolower('bar_exit_app_invoice_billing_lblReferencia')												=> "Vendedor",	
 		strtolower('bar_exit_app_invoice_billing_txtScanerBarCode')	 											=> "hidden",
 		strtolower('bar_exit_app_invoice_billing_panelResumenFacturaTool')	 									=> "hidden",
 		strtolower('bar_exit_app_invoice_billing_panelResumenFactura')	 										=> "hidden",		
-		strtolower('bar_exit_app_invoice_billing_rowOptionPaymentExtras')	 										=> "hidden",
+		strtolower('bar_exit_app_invoice_billing_rowOptionPaymentExtras')	 									=> "hidden",
 		strtolower('bar_exit_app_invoice_billing_panelLabelSumaryAlternativo')	 								=> "",
 		strtolower('bar_exit_app_invoice_billing_divTxtCedulaBeneficiario')	 									=> "Dirección",
+		strtolower('bar_exit_app_invoice_billing_divApplyExoneracion')	 										=> "",
 		strtolower('bar_exit_app_invoice_billing_divTraslateElement') 											=> "
 		<script>
 			$(document).ready(function(){		
@@ -1007,6 +1008,8 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 				$('#divTrasuctionPhone').appendTo('#divInformacionRight');				
 				$('#divTipoFactura').appendTo('#divInformacionLeft');
 				$('#divReferencia').appendTo('#divInformacionRight');	
+				$('#divPanelExoneracion').appendTo('#divInformacionRight');
+				
 				
 				//Mover opciones de pago
 				$('#divPaymentOption').appendTo('#siderbar_content_right');	

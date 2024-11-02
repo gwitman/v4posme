@@ -176,6 +176,20 @@
 	}
 </style>
 
+<?php 
+if($objParameterRestaurant == "true")
+{
+?>
+	<style>
+	.has-switch span, .has-switch label
+	{
+		position:static !important
+	}
+	</style>
+<?php 
+}
+?>
+
 
 <div 
 	class="isloading-overlay"
@@ -656,7 +670,7 @@
 												</div>
 										</div>
 										
-										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divApplyExoneracion",""); ?> ">
+										<div id="divPanelExoneracion" class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divApplyExoneracion",""); ?> ">
 												<label class="col-lg-4 control-label" for="normal"></label>
 												<div class="col-lg-8">
 													 <label class="label-change-switch" id="txtLabelApplyExoneracion">Aplica exoneración?</label>
