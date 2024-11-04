@@ -1597,7 +1597,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Demo' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 0 /*usuarioID*/,type='default'
+	flavorID = 0 /*usuarioID*/,type='default'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
