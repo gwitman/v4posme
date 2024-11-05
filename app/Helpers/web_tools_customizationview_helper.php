@@ -110,6 +110,25 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 	
 	
 		
+		/*Ebenezer*/
+		strtolower('ebenezer_core_web_menu_CXC')			 													=> "ALUMNOS",
+		strtolower('ebenezer_core_web_menu_CLIENTES')			 												=> "REG. ALUMNO",
+		strtolower('ebenezer_core_web_menu_ABONO')			 													=> "PAGO",
+		strtolower('ebenezer_core_web_menu_PRODUCTO')			 												=> "PRO./SER.",
+		strtolower('ebenezer_app_cxc_customer_labelTitlePageList')												=> "ALUMNOS",
+		strtolower('ebenezer_app_cxc_customer_labelTitlePageNew')												=> "ALUMNO",
+		strtolower('ebenezer_app_cxc_customer_labelTitlePageEdit')												=> "ALUMNO",		
+		strtolower('ebenezer_app_box_share_labelTitlePageList')													=> "PAGOS",
+		strtolower('ebenezer_app_box_share_labelTitlePageNew')													=> "PAGO",
+		strtolower('ebenezer_app_box_share_labelTitlePageEdit')													=> "PAGO",
+		strtolower('ebenezer_app_box_share_lblCliente')															=> "Alumno",
+		strtolower('ebenezer_app_cxc_customer_divTxtPresupuesto')												=> "hidden",
+		strtolower('ebenezer_app_cxc_customer_divTxtSubCategoria')												=> "hidden",
+		strtolower('ebenezer_app_cxc_customer_divTxtCategoria')													=> "hidden",	
+		strtolower('ebenezer_app_cxc_customer_divTxtTipo')														=> "hidden",
+		strtolower('ebenezer_app_cxc_customer_divTxtFullNameCommercial')										=> "Tutor",
+		
+		
 		/*GlobalPro*/
 		strtolower('globalpro_core_web_menu_O. SALIDAS')			 											=> "AJUSTE SALIDA",
 		strtolower('globalpro_core_web_menu_O. ENTRADAS')			 											=> "AJUSTE ENTRADA",

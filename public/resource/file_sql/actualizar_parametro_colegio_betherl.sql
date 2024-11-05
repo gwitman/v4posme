@@ -1597,7 +1597,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Centro escolar privado adventista ebenezer malpaisillo' , address = 'Antigua petronic 5c al sur' ,
-	flavorID = 574 /*usuarioID*/,type='col_ebenezer'  , abreviature='demo' 
+	flavorID = 574 /*usuarioID*/,type='ebenezer'  , abreviature='demo' 
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

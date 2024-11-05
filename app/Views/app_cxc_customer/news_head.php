@@ -7,5 +7,5 @@
 				
 				
 				<div id="heading" class="page-header">
-							<h1><i class="icon20 i-address-book"></i> Agregar Cliente</h1>
+							<h1><i class="icon20 i-address-book"></i> Agregar <?php echo getBehavio($company->type,"app_cxc_customer","labelTitlePageNew","cliente"); ?></h1>
 				</div> 

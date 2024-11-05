@@ -1525,6 +1525,7 @@ class app_cxc_customer extends _BaseController {
 			$dataView["useMobile"]						= $dataSession["user"]->useMobile;		
 			$dataView["company"]						= $dataSession["company"];
 			
+			
 			$dataView["objListTypeID"]			        = $this->core_web_catalog->getCatalogAllItem("tb_customer_payment_method","typeID",$companyID);
 			$dataView["objListSituationID"]			    = $this->core_web_catalog->getCatalogAllItem("tb_customer_frecuency_actuations","situationID",$companyID);
 			$dataView["objListFrecuencyContactID"]	    = $this->core_web_catalog->getCatalogAllItem("tb_customer_frecuency_actuations","frecuencyContactID",$companyID);
@@ -1654,6 +1655,7 @@ class app_cxc_customer extends _BaseController {
 			} 
 			 
 			//Renderizar Resultado
+			$dataView["company"]			= $dataSession["company"];
 			$dataView["objParameterCORE_VIEW_CUSTOM_SCROLL_IN_LIST_CUSTOMER"]	
 											= $this->core_web_parameter->getParameterValue("CORE_VIEW_CUSTOM_SCROLL_IN_LIST_CUSTOMER",$this->session->get('user')->companyID);
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);

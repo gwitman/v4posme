@@ -12,5 +12,5 @@
 			
 
 				<div id="heading" class="page-header">
-							<h1><i class="icon20 i-address-book"></i> Editar Cliente</h1>
+							<h1><i class="icon20 i-address-book"></i> Editar <?php echo getBehavio($company->type,"app_cxc_customer","labelTitlePageEdit","Cliente"); ?></h1>
 				</div> 
