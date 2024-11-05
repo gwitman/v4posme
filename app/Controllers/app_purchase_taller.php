@@ -399,7 +399,11 @@ class app_purchase_taller extends _BaseController {
 						$pathDocument 				= PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID;
 						$urlCreateFolder 			= $dataView["objParameterUrlServerFile"]."/core_elfinder/createFolder/companyID/".$companyID."/componentID/".$objComponentShare->componentID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID;
 							
-						
+						//Crear las careptas
+						if(!file_exists ($pathDocument))
+						{
+							mkdir( $pathDocument,0700);
+						}	
 						
 						
 						//Ingresar en transaccion master detail
