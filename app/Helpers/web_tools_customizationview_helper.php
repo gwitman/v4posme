@@ -141,6 +141,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('globalpro_app_cxp_expenses_Referencia 1')													=> "Descripcion",
 		strtolower('globalpro_app_cxp_expenses_Referencia 2')													=> "Factura",
 		strtolower('globalpro_app_cxp_expenses_Referencia 3')													=> "Proveedor",
+		strtolower('globalpro_app_cxp_expenses_Referencia 4')													=> "RUC",
 		strtolower('globalpro_app_inventory_item_Conceptos')			 										=> "IVA",
 		strtolower('globalpro_default_masterpage_backgroundImage')			 									=> "style='background-image: url(".  base_url()."/resource/img/logos/fondo_globalpro.jpg"   .");'",		
 		strtolower('globalpro_core_dashboards_divPanelCuadroMembresia')											=> "hidden",

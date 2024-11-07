@@ -29,6 +29,8 @@
 		$configColumn["10"]["Titulo"] 		= "Clasificación";
 		$configColumn["11"]["Titulo"] 		= "Categoria";
 		$configColumn["12"]["Titulo"] 		= "Nota";
+		$configColumn["13"]["Titulo"] 		= "Sucursal";
+		
 		
 
 		$configColumn["00"]["FiledSouce"] 		= "transactionNumber";		
@@ -44,6 +46,7 @@
 		$configColumn["10"]["FiledSouce"] 		= "Clasificacion";
 		$configColumn["11"]["FiledSouce"] 		= "Categoria";
 		$configColumn["12"]["FiledSouce"] 		= "note";
+		$configColumn["13"]["FiledSouce"] 		= "sucursal";
 		
 
 		$configColumn["00"]["Formato"] 		= "";		
@@ -59,6 +62,7 @@
 		$configColumn["10"]["Formato"] 		= "";
 		$configColumn["11"]["Formato"] 		= "";		
 		$configColumn["12"]["Formato"] 		= "";
+		$configColumn["13"]["Formato"] 		= "";
 		
 		
 		$configColumn["00"]["Width"] 		= "80px";		
@@ -74,21 +78,23 @@
 		$configColumn["10"]["Width"] 		= "120px";
 		$configColumn["11"]["Width"] 		= "250px";
 		$configColumn["12"]["Width"] 		= "300px";
+		$configColumn["13"]["Width"] 		= "80px";
 		
 		
 		$configColumn["00"]["Total"] 		= False;		
 		$configColumn["01"]["Total"] 		= False;		
 		$configColumn["02"]["Total"] 		= False;
 		$configColumn["03"]["Total"] 		= False;
-		$configColumn["04"]["Total"] 		= True;		
+		$configColumn["04"]["Total"] 		= False;		
 		$configColumn["05"]["Total"] 		= True;
 		$configColumn["06"]["Total"] 		= True;
-		$configColumn["07"]["Total"] 		= False;
+		$configColumn["07"]["Total"] 		= True;
 		$configColumn["08"]["Total"] 		= False;
 		$configColumn["09"]["Total"] 		= False;
 		$configColumn["10"]["Total"] 		= False;
 		$configColumn["11"]["Total"] 		= False;
 		$configColumn["12"]["Total"] 		= False;
+		$configColumn["13"]["Total"] 		= False;
 		               
 		
 		$resultado 	= helper_reporteGeneralCreateTable($objDetail,$configColumn,'0px',NULL,NULL);

@@ -67,6 +67,29 @@
 																	<input type="checkbox" disabled   name="txtIsApplied" id="txtIsApplied" value="1" >
 																</div>
 														</div>
+														
+														<div class="form-group ">
+															<label class="col-lg-4 control-label" for="selectFilter">Sucursal</label>
+															<div class="col-lg-8">
+																<select name="txtBranchID" id="txtBranchID" class="select2">																									
+																		<?php
+																		$counter = 0;
+																		if($objListBranch)
+																		foreach($objListBranch as $ws){
+																			if($counter == 0 )
+																				echo "<option value='".$ws->branchID."' selected >".$ws->name."</option>";
+																			else 
+																				echo "<option value='".$ws->branchID."' >".$ws->name."</option>";
+																			
+																			$counter++;
+																				
+																		}
+																		?>
+																</select>
+															</div>
+														</div>
+														
+														
 														<div class="form-group <?= getBehavio($company->type,"app_cxp_expenses","lblCambio",""); ?>">
 																<label class="col-lg-4 control-label" for="normal">Cambio</label>
 																<div class="col-lg-8">
@@ -109,6 +132,13 @@
 																<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_cxp_expenses","Referencia 3",""); ?></label>
 																<div class="col-lg-8">																	
 																	<input class="form-control"  type="text"  name="txtDetailReference3" id="txtDetailReference3" value="">												
+																</div>
+														</div>
+														
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_cxp_expenses","Referencia 4","Reference 4"); ?></label>
+																<div class="col-lg-8">																	
+																	<input class="form-control"  type="text"  name="txtDetailReference4" id="txtDetailReference4" value="">												
 																</div>
 														</div>
 														
