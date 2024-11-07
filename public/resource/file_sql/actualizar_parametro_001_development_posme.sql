@@ -5,6 +5,14 @@ use dbkroqnguhldo1;
 /******************************************************************/	
 
 
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_cxc_report/customer_detail_invoice_printer" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_URL_PRINT_CUSTOMER_DETAIL";## Detalle de la deuda
+	
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "78" 
 WHERE 
