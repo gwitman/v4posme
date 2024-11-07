@@ -38,60 +38,57 @@
 						<img class="img-featured" style="width:400px;height:200px" src="<?php echo base_url();?>/resource/img/logos/logo-micro-finanza.jpg">													
 					</div>
 					<div class="col-lg-6">	
-							<div class="panel" style="margin-bottom:20px;">
-								<div class="panel-heading">
-									<div class="icon"><i class="icon20 i-health"></i></div> 
-									<h4>Ordenes Terminadas</h4>
-									<a href="#" class="minimize"></a>
-								</div><!-- End .panel-heading -->
+						<div class="panel" style="margin-bottom:20px;">
+							<div class="panel-heading">
+								<div class="icon"><i class="icon20 i-health"></i></div> 
+								<h4>Ingresos Diarios del Mes Actual</h4>
+								<a href="#" class="minimize"></a>
+							</div><!-- End .panel-heading -->
 							
-								<div class="panel-body">								
-									<div id="grafico1" style="height:150px" ></div>
-								</div><!-- End .panel-body -->
-							</div><!-- End .widget -->		
+							<div class="panel-body">								
+								<div id="grafico4" style="height:300px" ></div>
+							</div><!-- End .panel-body -->
+						</div><!-- End .widget -->
+					</div>
+					<div class="col-lg-6">		
+						<div class="panel" style="margin-bottom:20px;">
+							<div class="panel-heading">
+								<div class="icon"><i class="icon20 i-health"></i></div> 
+								<h4>Ingresos Mensuales</h4>
+								<a href="#" class="minimize"></a>
+							</div><!-- End .panel-heading -->
 							
-							<div class="panel" style="margin-bottom:20px;">
-								<div class="panel-heading">
-									<div class="icon"><i class="icon20 i-health"></i></div> 
-									<h4>Desembolsos (Prestamos)</h4>
-									<a href="#" class="minimize"></a>
-								</div><!-- End .panel-heading -->
-							
-								<div class="panel-body">								
-									<div id="grafico2" style="height:150px" ></div>
-								</div><!-- End .panel-body -->
-							</div><!-- End .widget -->		
-							
+							<div class="panel-body">								
+								<div id="grafico3" style="height:300px" ></div>
+							</div><!-- End .panel-body -->
+						</div><!-- End .widget -->		
+					</div>
+					<div class="col-lg-6">
+						<div class="panel" style="margin-bottom:20px;">
+							<div class="panel-heading">
+								<div class="icon"><i class="icon20 i-health"></i></div> 
+								<h4>Ordenes de Taller por Estados</h4>
+								<a href="#" class="minimize"></a>
+							</div><!-- End .panel-heading -->
+							<div class="panel-body">								
+								<div id="grafico2" style="height:300px" ></div>
+							</div><!-- End .panel-body -->
+						</div><!-- End .widget -->	
 					</div>
 				</div>
 				
-				<div class="row"  >
-					 <div class="col-lg-6">		
-							<div class="panel" style="margin-bottom:20px;">
-								<div class="panel-heading">
-									<div class="icon"><i class="icon20 i-health"></i></div> 
-									<h4>Ingresos Mensuales</h4>
-									<a href="#" class="minimize"></a>
-								</div><!-- End .panel-heading -->
-							
-								<div class="panel-body">								
-									<div id="grafico3" style="height:300px" ></div>
-								</div><!-- End .panel-body -->
-							</div><!-- End .widget -->		
-					</div>
-					<div class="col-lg-6">	
-							<div class="panel" style="margin-bottom:20px;">
-								<div class="panel-heading">
-									<div class="icon"><i class="icon20 i-health"></i></div> 
-									<h4>Ingresos Diarios</h4>
-									<a href="#" class="minimize"></a>
-								</div><!-- End .panel-heading -->
-							
-								<div class="panel-body">								
-									<div id="grafico4" style="height:300px" ></div>
-								</div><!-- End .panel-body -->
-							</div><!-- End .widget -->		
-					</div>
+				<div class="row">
+					<div class="panel" style="margin-bottom:20px;">
+						<div class="panel-heading">
+							<div class="icon"><i class="icon20 i-health"></i></div> 
+							<h4>Ordenes Por Colaborador</h4>
+							<a href="#" class="minimize"></a>
+						</div><!-- End .panel-heading -->
+						
+						<div class="panel-body">								
+							<div id="grafico1" style="height:300px" ></div>
+						</div><!-- End .panel-body -->
+					</div><!-- End .widget -->
 				</div>
 				
 				
@@ -99,12 +96,12 @@
 				<script>	
 					//https://www.w3schools.com/js/js_graphics_google_chart.asp
 					
-					var objTransactionMaster 				 = JSON.parse('<?php echo json_encode($objListVentas); ?>');	
-					var objTransactionMasterTecnico			 = JSON.parse('<?php echo json_encode($objListTecnico); ?>');	
+					var objTransactionMasterOrdenes				= JSON.parse('<?php echo json_encode($objListOrdenesPorEmpleado); ?>');	
+					var objTransactionMasterEstado			 = JSON.parse('<?php echo json_encode($objListEstado); ?>');	
 					var objTransactionMasterMensuales		 = JSON.parse('<?php echo json_encode($objListVentaMensual); ?>');	
 					var objTransactionMasterDiarias			 = JSON.parse('<?php echo json_encode($objListVentaDiaria); ?>');	
-					var objDataSourceProductosMasVendidos	 = new Array();
-					var objDataSourceProductosMasTenicos	 = new Array();
+					var objDataSourceOrdenesPorEmpleado	 	 = new Array();
+					var objDataSourceEstadoMasCantidad		 = new Array();
 					var objDataSourceProductosMasMensuales	 = new Array();
 					var objDataSourceProductosMasDiarias	 = new Array();
 					
@@ -135,26 +132,52 @@
 					
 					
 					
-					//Obtener los ultimos 10 elementos					
-					objDataSourceProductosMasVendidos.push(new Array("Colaborador","Venta"));
-					for(var i = 0 ; i < objTransactionMaster.length;i++)
-					{
-						objDataSourceProductosMasVendidos.push(
-							new Array(
-								objTransactionMaster[i].firtsName,
-								parseInt(objTransactionMaster[i].monto)
-							)
-						);	
-					}
+					//Obtener los ultimos 10 elementos
+					const empleados = {};
+					objDataSourceOrdenesPorEmpleado.push(new Array("Colaborador", "En espera de cliente", "En Revision", "Entrante", "Entregado", "Espera de pieza", "Lista de entrega")); //Columnas del Grafico
 					
+					for (let i = 0; i < objTransactionMasterOrdenes.length; i++) {
+						const employeeName 	= objTransactionMasterOrdenes[i].employee;
+						const status 		= objTransactionMasterOrdenes[i].firstName;
+						const amount 		= parseInt(objTransactionMasterOrdenes[i].amount);
+
+						// Inicializar el objeto de cada empleado si aún no existe
+						if (!empleados[employeeName]) {
+							empleados[employeeName] = {
+								"En espera de cliente": 0,
+								"En Revision": 0,
+								"Entrante": 0,
+								"Entregado": 0,
+								"Espera de pieza": 0,
+								"Lista de entrega": 0
+							};
+						}
+
+						// Asignar la cantidad al estado correspondiente
+						empleados[employeeName][status] = amount;
+					}
+
+					// Convertir el objeto empleados a un formato de matriz para Google Charts
+					for (let empleado in empleados) {
+						objDataSourceOrdenesPorEmpleado.push([
+							empleado,
+							empleados[empleado]["En espera de cliente"],
+							empleados[empleado]["En Revision"],
+							empleados[empleado]["Entrante"],
+							empleados[empleado]["Entregado"],
+							empleados[empleado]["Espera de pieza"],
+							empleados[empleado]["Lista de entrega"]
+						]);
+					}
+										
 					//Obtener los ultimos 10 elementos					
-					objDataSourceProductosMasTenicos.push(new Array("Colaborador","Venta"));
-					for(var i = 0 ; i < objTransactionMasterTecnico.length;i++)
+					objDataSourceEstadoMasCantidad.push(new Array("Estado","Cantidad"));
+					for(var i = 0 ; i < objTransactionMasterEstado.length;i++)
 					{
-						objDataSourceProductosMasTenicos.push(
+						objDataSourceEstadoMasCantidad.push(
 							new Array(
-								objTransactionMasterTecnico[i].firtsName,
-								parseInt(objTransactionMasterTecnico[i].monto)
+								objTransactionMasterEstado[i].firstName,
+								parseInt(objTransactionMasterEstado[i].amount)
 							)
 						);	
 					}
@@ -164,8 +187,8 @@
 					
 					$(document).ready(function(){
 						google.charts.load('current',{packages:['corechart']});							
-						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasVendidos);		
-						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasTenicos);		
+						google.charts.setOnLoadCallback(drawChartBarraHorizontalOrdenesPorEmpleado);		
+						google.charts.setOnLoadCallback(drawChartBarraHorizontalEstadoMasCantidad);		
 						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasMensuales);		
 						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasDiarias);		
 					});		
@@ -203,35 +226,37 @@
 
 					}
 					
-					function drawChartBarraHorizontalProductosMasTenicos() {
+					function drawChartBarraHorizontalEstadoMasCantidad() {
 
 						var data = google.visualization.arrayToDataTable(
-							objDataSourceProductosMasTenicos
+							objDataSourceEstadoMasCantidad
 						);
 
 						var options = {
-						  title: 'Colaboradores vs Orden en Proceso',
+						  title: 'Estado vs Cantidad',
 						  colors: ['#00C868', '#006E98', '#ec8f6e', '#f3b49f', '#f6c7b6'],
+						  seriesType: 'bars',
 						};
 
-						var chart = new google.visualization.BarChart(document.getElementById('grafico2'));
+						var chart = new google.visualization.ComboChart(document.getElementById('grafico2'));
 						chart.draw(data, options);
 
 					}
 							
 					
-					function drawChartBarraHorizontalProductosMasVendidos() {
+					function drawChartBarraHorizontalOrdenesPorEmpleado() {
 
 						var data = google.visualization.arrayToDataTable(
-							objDataSourceProductosMasVendidos
+							objDataSourceOrdenesPorEmpleado
 						);
 
 						var options = {
-						  title: 'Colaboradores vs Orden Terminada',
+						  title: 'Ordenes por Estado de Colaborador',
 						  colors: ['#006E98', '#00C868', '#ec8f6e', '#f3b49f', '#f6c7b6'],
+						  seriesType: 'bars'
 						};
 
-						var chart = new google.visualization.BarChart(document.getElementById('grafico1'));
+						var chart = new google.visualization.ComboChart(document.getElementById('grafico1'));
 						chart.draw(data, options);
 
 					}
