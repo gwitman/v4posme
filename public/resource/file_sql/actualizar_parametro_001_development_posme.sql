@@ -5,6 +5,13 @@ use dbkroqnguhldo1;
 /******************************************************************/	
 
 
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_VALIDATE_EXONERATION";## Validar la exoneracion
+	
+	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "app_cxc_report/customer_detail_invoice_printer" 

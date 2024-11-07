@@ -297,6 +297,7 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objListParameterJavaScript"]													= $this->core_web_parameter->getParameterAllToJavaScript($companyID);
 			$dataView["objParameterCXC_DAY_EXCLUDED_IN_CREDIT"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_DAY_EXCLUDED_IN_CREDIT")->value;
 			$dataView["objParameterINVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE")->value;
+			$dataView["objParameterINVOICE_BILLING_VALIDATE_EXONERATION"]							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_VALIDATE_EXONERATION")->value;
 			
 			
 			if(!$dataView["objCustomerDefault"])
@@ -3459,6 +3460,7 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objParameterINVOICE_BILLING_EMPLOYEE_DEFAULT"]								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_EMPLOYEE_DEFAULT")->value;
 			$dataView["objParameterINVOICE_BILLING_SELECTITEM"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SELECTITEM")->value;
 			$dataView["objParameterACCOUNTING_CURRENCY_NAME_IN_BILLING"]							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"ACCOUNTING_CURRENCY_NAME_IN_BILLING")->value;
+			$dataView["objParameterINVOICE_BILLING_VALIDATE_EXONERATION"]							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_VALIDATE_EXONERATION")->value;
 			$dataView["objListParameterJavaScript"]													= $this->core_web_parameter->getParameterAllToJavaScript($companyID);			
 			
 			$objParameterUrlServidorDeImpresion							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_SERVER_PATH");

@@ -871,6 +871,8 @@ $routes->match(['get','post'],'app_invoice_api/getTransactionMaster','app_invoic
 $routes->match(['get','post'],'app_invoice_api/getTransactionMaster/(:any)','app_invoice_api::getTransactionMaster');
 $routes->match(['get','post'],'app_invoice_api/getLastMovement','app_invoice_api::getLastMovement');
 $routes->match(['get','post'],'app_invoice_api/getLastMovement/(:any)','app_invoice_api::getLastMovement');
+$routes->match(['get','post'],'app_invoice_api/getNumberExoneration','app_invoice_api::getNumberExoneration');
+$routes->match(['get','post'],'app_invoice_api/getNumberExoneration/(:any)','app_invoice_api::getNumberExoneration');
 $routes->match(['get','post'],'app_invoice_api/getLineByCustomerAll','app_invoice_api::getLineByCustomerAll');
 $routes->match(['get','post'],'app_invoice_api/getLineByCustomerAll/(:any)','app_invoice_api::getLineByCustomerAll');
 $routes->match(['get','post'],'app_invoice_api/getLinkPaymentPagadito','app_invoice_api::getLinkPaymentPagadito');
