@@ -1239,7 +1239,124 @@ class Transaction_Master_Detail_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
 			
-   } 
+   }
+
+	
+
+   function CompuMatt_get_MonthOnly_Sales($companyID,$dateFirst,$dateLast)
+   {
+
+	    $db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+
+		$sql = "";
+		$sql = sprintf("
+		 select	
+				month(t.transactionOn) as firtsName,
+				sum(t.amount) as monto 
+			from 
+				tb_transaction_master t 
+				inner join tb_workflow_stage ws on 
+					t.statusID = ws.workflowStageID 
+			where 
+				t.transactionID = 40 /*Ordenes de Taller*/ and   
+				t.isActive = 1 and 
+				t.companyID = 2  
+				and t.transactionOn between '$dateFirst' and '$dateLast' 
+			group by  
+				1
+		");
+
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();	
+   }
+
+   function CompuMatt_get_Day_Sales($companyID,$dateFirst,$dateLast)
+   {
+
+	    $db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+
+		$sql = "";
+		$sql = sprintf("
+			 select	
+				day(t.transactionOn) as firtsName,
+				sum(t.amount) as monto 
+			from 
+				tb_transaction_master t 
+				inner join tb_workflow_stage ws on 
+					t.statusID = ws.workflowStageID
+			where 
+				t.transactionID = 40 /*Ordenes de Taller*/ and   
+				t.isActive = 1  and 				
+				t.companyID = 2  and 
+				t.transactionOn between '$dateFirst' and '$dateLast' 
+			group by  
+				1
+		");
+
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();	
+   }
+
+   function CompuMatt_get_Amount_by_Status($companyID,$dateFirst,$dateLast)
+   {
+		$db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+
+		$sql = "";
+		$sql = sprintf("
+			 SELECT 
+					c.name AS firstName,
+					COUNT(t.areaID) AS amount
+				FROM 
+					tb_transaction_master t
+				INNER JOIN 
+					tb_workflow_stage ws ON t.statusID = ws.workflowStageID
+				INNER JOIN 
+					tb_catalog_item c ON t.areaID = c.catalogItemID
+				WHERE 
+					t.transactionID = 40 /*Ordenes de Taller*/ AND 
+					t.isActive = 1 
+					AND t.companyID = 2
+				GROUP BY 
+					c.name
+		");
+
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();	
+   }
+
+   function CompuMatt_get_Orders_by_Employee($companyID,$dateFirst,$dateLast)
+   {
+		$db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+
+		$sql = "";
+		$sql = sprintf("
+			 SELECT 
+				 nat.firstName AS employee,	c.name AS firstName, COUNT(t.areaID) AS amount
+				FROM 
+						tb_transaction_master t
+				INNER JOIN 
+					tb_workflow_stage ws ON t.statusID = ws.workflowStageID
+				INNER JOIN 
+					tb_catalog_item c ON t.areaID = c.catalogItemID
+				INNER JOIN tb_naturales nat on
+					nat.entityID = t.entityIDSecondary
+				WHERE 
+					t.transactionID = 40 /*Ordenes de Taller*/ AND 
+					t.isActive = 1 AND t.companyID = 2 AND
+					t.transactionOn between '$dateFirst' and '$dateLast'
+				GROUP BY 
+					c.name
+		");
+
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();	
+   }
+
+   
    
    
 }
