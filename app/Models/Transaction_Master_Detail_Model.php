@@ -1334,22 +1334,24 @@ class Transaction_Master_Detail_Model extends Model  {
 
 		$sql = "";
 		$sql = sprintf("
-			 SELECT 
-				 nat.firstName AS employee,	c.name AS firstName, COUNT(t.areaID) AS amount
+				SELECT 
+					nat.firstName AS employee,	
+					c.name AS firstName, 
+					COUNT(t.areaID) AS amount
 				FROM 
-						tb_transaction_master t
-				INNER JOIN 
-					tb_workflow_stage ws ON t.statusID = ws.workflowStageID
-				INNER JOIN 
-					tb_catalog_item c ON t.areaID = c.catalogItemID
-				INNER JOIN tb_naturales nat on
-					nat.entityID = t.entityIDSecondary
+					tb_transaction_master t
+					INNER JOIN 
+						tb_workflow_stage ws ON t.statusID = ws.workflowStageID
+					INNER JOIN 
+						tb_catalog_item c ON t.areaID = c.catalogItemID
+					INNER JOIN tb_naturales nat on
+						nat.entityID = t.entityIDSecondary
 				WHERE 
 					t.transactionID = 40 /*Ordenes de Taller*/ AND 
 					t.isActive = 1 AND t.companyID = 2 AND
 					t.transactionOn between '$dateFirst' and '$dateLast'
 				GROUP BY 
-					c.name
+					nat.firstName,c.name  
 		");
 
 		//Ejecutar Consulta

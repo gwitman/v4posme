@@ -96,7 +96,8 @@
 				<script>	
 					//https://www.w3schools.com/js/js_graphics_google_chart.asp
 					
-					var objTransactionMasterOrdenes				= JSON.parse('<?php echo json_encode($objListOrdenesPorEmpleado); ?>');	
+					var objStatusTaller						 = JSON.parse('<?php echo json_encode(array_unique(array_map(function($elem){ return $elem->firstName; }, $objListOrdenesPorEmpleado )));  ?>');
+					var objTransactionMasterOrdenes			 = JSON.parse('<?php echo json_encode($objListOrdenesPorEmpleado); ?>');	
 					var objTransactionMasterEstado			 = JSON.parse('<?php echo json_encode($objListEstado); ?>');	
 					var objTransactionMasterMensuales		 = JSON.parse('<?php echo json_encode($objListVentaMensual); ?>');	
 					var objTransactionMasterDiarias			 = JSON.parse('<?php echo json_encode($objListVentaDiaria); ?>');	
@@ -132,10 +133,18 @@
 					
 					
 					
-					//Obtener los ultimos 10 elementos
+					//Obtener el listado de columnas diferentes
 					const empleados = {};
-					objDataSourceOrdenesPorEmpleado.push(new Array("Colaborador", "En espera de cliente", "En Revision", "Entrante", "Entregado", "Espera de pieza", "Lista de entrega")); //Columnas del Grafico
+					var arrayField  = new Array();
+					arrayField.push("Colaborador");
+					for(var i = 0 ; i < objStatusTaller.length;i++)
+					{
+						arrayField.push(objStatusTaller[i]);
+					}
+					objDataSourceOrdenesPorEmpleado.push(arrayField);
 					
+					
+					//Darle fomrato e inicialiar los variable empleado
 					for (let i = 0; i < objTransactionMasterOrdenes.length; i++) {
 						const employeeName 	= objTransactionMasterOrdenes[i].employee;
 						const status 		= objTransactionMasterOrdenes[i].firstName;
@@ -143,34 +152,35 @@
 
 						// Inicializar el objeto de cada empleado si aún no existe
 						if (!empleados[employeeName]) {
-							empleados[employeeName] = {
-								"En espera de cliente": 0,
-								"En Revision": 0,
-								"Entrante": 0,
-								"Entregado": 0,
-								"Espera de pieza": 0,
-								"Lista de entrega": 0
-							};
+							
+							for(var izz = 0
+							/*
+							empleados[employeeName] = Object.fromEntries(
+								objStatusTaller.map(element => [ element, 0 ])
+						    );
+							*/
 						}
 
-						// Asignar la cantidad al estado correspondiente
 						empleados[employeeName][status] = amount;
 					}
 
-					// Convertir el objeto empleados a un formato de matriz para Google Charts
-					for (let empleado in empleados) {
-						objDataSourceOrdenesPorEmpleado.push([
-							empleado,
-							empleados[empleado]["En espera de cliente"],
-							empleados[empleado]["En Revision"],
-							empleados[empleado]["Entrante"],
-							empleados[empleado]["Entregado"],
-							empleados[empleado]["Espera de pieza"],
-							empleados[empleado]["Lista de entrega"]
-						]);
+					//Obtener los datos y armar el datasource
+					for (let empleado in empleados) 
+					{	
+						var arrayValue = new Array();
+						arrayValue.push(empleado);
+						for(var att in empleados[empleado])
+						{
+							arrayValue.push(empleados[empleado][att]);
+						}
+						
+						objDataSourceOrdenesPorEmpleado.push(arrayValue);
 					}
 										
-					//Obtener los ultimos 10 elementos					
+					
+					
+					
+					
 					objDataSourceEstadoMasCantidad.push(new Array("Estado","Cantidad"));
 					for(var i = 0 ; i < objTransactionMasterEstado.length;i++)
 					{
