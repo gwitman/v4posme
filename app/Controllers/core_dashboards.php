@@ -199,7 +199,8 @@ class core_dashboards extends _BaseController {
 		$firstDateYear					= helper_PrimerDiaDelYear();
 		$lastDateYear					= helper_UltimoDiaDelMes();
 		$firstDate						= helper_PrimerDiaDelMes();
-		$lastDate						= helper_UltimoDiaDelMes();			
+		$lastDate						= helper_UltimoDiaDelMes();	
+		$objListEstados					= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","areaID",$dataSession["user"]->companyID);
 		$objListOrdenesPorEmpleado		= $this->Transaction_Master_Detail_Model->CompuMatt_get_Orders_by_Employee($dataSession["user"]->companyID,$firstDate,$lastDate);
 		$objListEstado					= $this->Transaction_Master_Detail_Model->CompuMatt_get_Amount_by_Status($dataSession["user"]->companyID,$firstDate,$lastDate);
 		
@@ -250,6 +251,7 @@ class core_dashboards extends _BaseController {
 		$dataSession["objListEstado"]					= $objListEstado;
 		$dataSession["objListVentaMensual"]				= $objListVentaMensual;
 		$dataSession["objListVentaDiaria"]				= $objListVentaDiaria;
+		$dataSession["objListEstados"]					= $objListEstados;
 		return $dataSession;
 	}
 	

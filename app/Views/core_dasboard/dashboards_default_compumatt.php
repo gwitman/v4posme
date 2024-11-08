@@ -67,7 +67,7 @@
 						<div class="panel" style="margin-bottom:20px;">
 							<div class="panel-heading">
 								<div class="icon"><i class="icon20 i-health"></i></div> 
-								<h4>Ordenes de Taller por Estados</h4>
+								<h4>Estadistica de Taller</h4>
 								<a href="#" class="minimize"></a>
 							</div><!-- End .panel-heading -->
 							<div class="panel-body">								
@@ -81,7 +81,7 @@
 					<div class="panel" style="margin-bottom:20px;">
 						<div class="panel-heading">
 							<div class="icon"><i class="icon20 i-health"></i></div> 
-							<h4>Ordenes Por Colaborador</h4>
+							<h4>Colaborador vs Estados de equipos</h4>
 							<a href="#" class="minimize"></a>
 						</div><!-- End .panel-heading -->
 						
@@ -96,7 +96,7 @@
 				<script>	
 					//https://www.w3schools.com/js/js_graphics_google_chart.asp
 					
-					var objStatusTaller						 = JSON.parse('<?php echo json_encode(array_unique(array_map(function($elem){ return $elem->firstName; }, $objListOrdenesPorEmpleado )));  ?>');
+					var objStatusTaller						 = JSON.parse('<?php echo json_encode(array_unique(array_map(function($elem){ return $elem->name; }, $objListEstados )));  ?>');
 					var objTransactionMasterOrdenes			 = JSON.parse('<?php echo json_encode($objListOrdenesPorEmpleado); ?>');	
 					var objTransactionMasterEstado			 = JSON.parse('<?php echo json_encode($objListEstado); ?>');	
 					var objTransactionMasterMensuales		 = JSON.parse('<?php echo json_encode($objListVentaMensual); ?>');	
@@ -133,7 +133,7 @@
 					
 					
 					
-					//Obtener el listado de columnas diferentes
+					//Agregar la cavezera de la lista de estados
 					const empleados = {};
 					var arrayField  = new Array();
 					arrayField.push("Colaborador");
@@ -144,27 +144,26 @@
 					objDataSourceOrdenesPorEmpleado.push(arrayField);
 					
 					
-					//Darle fomrato e inicialiar los variable empleado
+					//Inicializar todos los empleados con sus estados y sus cantidades
 					for (let i = 0; i < objTransactionMasterOrdenes.length; i++) {
 						const employeeName 	= objTransactionMasterOrdenes[i].employee;
 						const status 		= objTransactionMasterOrdenes[i].firstName;
 						const amount 		= parseInt(objTransactionMasterOrdenes[i].amount);
 
-						// Inicializar el objeto de cada empleado si aún no existe
+						
 						if (!empleados[employeeName]) {
-							
-							for(var izz = 0
-							/*
-							empleados[employeeName] = Object.fromEntries(
-								objStatusTaller.map(element => [ element, 0 ])
-						    );
-							*/
+						
+							empleados[employeeName] = {};
+							for(var izz = 0 ; izz < objStatusTaller.length; izz++)
+							{
+								empleados[employeeName][objStatusTaller[izz]] = 0;
+							}
 						}
 
 						empleados[employeeName][status] = amount;
 					}
 
-					//Obtener los datos y armar el datasource
+					//Asociar el array de empleados al data source
 					for (let empleado in empleados) 
 					{	
 						var arrayValue = new Array();
@@ -173,12 +172,8 @@
 						{
 							arrayValue.push(empleados[empleado][att]);
 						}
-						
 						objDataSourceOrdenesPorEmpleado.push(arrayValue);
 					}
-										
-					
-					
 					
 					
 					objDataSourceEstadoMasCantidad.push(new Array("Estado","Cantidad"));
@@ -210,7 +205,7 @@
 						);
 
 						var options = {
-						  title: 'Ingresos Mensuales',
+						  /*title: 'Ingresos Mensuales',*/
 						  colors: ['#ff8000', '#ff8000', '#ff8000', '#ff8000', '#ff8000'],
 						  seriesType: 'bars',
 						};
@@ -227,7 +222,7 @@
 						);
 
 						var options = {
-						  title: 'Ingresos Diarios',
+						  /*title: 'Ingresos Diarios',*/
 						  colors: ['#ff0000', '#ff0000', '#ff0000', '#ff0000', '#ff0000'],
 						};
 
@@ -243,7 +238,7 @@
 						);
 
 						var options = {
-						  title: 'Estado vs Cantidad',
+						  /*title: 'Estado vs Cantidad',*/
 						  colors: ['#00C868', '#006E98', '#ec8f6e', '#f3b49f', '#f6c7b6'],
 						  seriesType: 'bars',
 						};
@@ -260,10 +255,27 @@
 							objDataSourceOrdenesPorEmpleado
 						);
 
-						var options = {
-						  title: 'Ordenes por Estado de Colaborador',
-						  colors: ['#006E98', '#00C868', '#ec8f6e', '#f3b49f', '#f6c7b6'],
-						  seriesType: 'bars'
+						var options = 
+						{
+							  /*title: 'Ordenes por Estado de Colaborador',*/
+							  colors: ['#FF5733', '#FF8D1A', '#FFC300', '#28B463', '#33FFDD',"#C700FF","#3385FF"],
+							  seriesType: 'bars',
+							  legend: 
+							  {
+								position: 'top', // Puedes probar con 'top', 'bottom', o 'right' según convenga
+								alignment: 'left', // Centra la leyenda para más espacio en los lados
+								maxLines: 2 // Aumenta el número de líneas si la leyenda tiene varias categorías
+							  },
+							  
+							  chartArea: {
+								left: 50, // Ajusta para aumentar el espacio en el área del gráfico
+								right: 50,
+								top: 50,
+								bottom: 50,
+								width: '70%', // Reduce el ancho del área de gráficos para dar más espacio a la leyenda
+								height: '70%' 
+							  },
+							  
 						};
 
 						var chart = new google.visualization.ComboChart(document.getElementById('grafico1'));
