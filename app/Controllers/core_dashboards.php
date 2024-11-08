@@ -196,10 +196,22 @@ class core_dashboards extends _BaseController {
 	}
 	function getIndexCompuMatt($dataSession)
 	{
-		$firstDateYear					= helper_PrimerDiaDelYear();
+		$firstDateYear					= helper_PrimerDiaDelMes();
 		$lastDateYear					= helper_UltimoDiaDelMes();
 		$firstDate						= helper_PrimerDiaDelMes();
 		$lastDate						= helper_UltimoDiaDelMes();	
+		
+		if(
+			$dataSession["role"]->name == "COMPU_MATT@ADMINISTRADOR" ||
+			$dataSession["role"]->name == "SUPE ADMIN"
+		)
+		{
+			$firstDateYear					= helper_PrimerDiaDelYear();
+			$lastDateYear					= helper_UltimoDiaDelYear();
+		}
+		
+		
+		
 		$objListEstados					= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","areaID",$dataSession["user"]->companyID);
 		$objListOrdenesPorEmpleado		= $this->Transaction_Master_Detail_Model->CompuMatt_get_Orders_by_Employee($dataSession["user"]->companyID,$firstDate,$lastDate);
 		$objListEstado					= $this->Transaction_Master_Detail_Model->CompuMatt_get_Amount_by_Status($dataSession["user"]->companyID,$firstDate,$lastDate);
