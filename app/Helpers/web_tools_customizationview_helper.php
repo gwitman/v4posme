@@ -110,6 +110,25 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 	
 	
 		
+		/*Ebenezer*/
+		strtolower('ebenezer_core_web_menu_CXC')			 													=> "ALUMNOS",
+		strtolower('ebenezer_core_web_menu_CLIENTES')			 												=> "REG. ALUMNO",
+		strtolower('ebenezer_core_web_menu_ABONO')			 													=> "PAGO",
+		strtolower('ebenezer_core_web_menu_PRODUCTO')			 												=> "PRO./SER.",
+		strtolower('ebenezer_app_cxc_customer_labelTitlePageList')												=> "ALUMNOS",
+		strtolower('ebenezer_app_cxc_customer_labelTitlePageNew')												=> "ALUMNO",
+		strtolower('ebenezer_app_cxc_customer_labelTitlePageEdit')												=> "ALUMNO",		
+		strtolower('ebenezer_app_box_share_labelTitlePageList')													=> "PAGOS",
+		strtolower('ebenezer_app_box_share_labelTitlePageNew')													=> "PAGO",
+		strtolower('ebenezer_app_box_share_labelTitlePageEdit')													=> "PAGO",
+		strtolower('ebenezer_app_box_share_lblCliente')															=> "Alumno",
+		strtolower('ebenezer_app_cxc_customer_divTxtPresupuesto')												=> "hidden",
+		strtolower('ebenezer_app_cxc_customer_divTxtSubCategoria')												=> "hidden",
+		strtolower('ebenezer_app_cxc_customer_divTxtCategoria')													=> "hidden",	
+		strtolower('ebenezer_app_cxc_customer_divTxtTipo')														=> "hidden",
+		strtolower('ebenezer_app_cxc_customer_divTxtFullNameCommercial')										=> "Tutor",
+		
+		
 		/*GlobalPro*/
 		strtolower('globalpro_core_web_menu_O. SALIDAS')			 											=> "AJUSTE SALIDA",
 		strtolower('globalpro_core_web_menu_O. ENTRADAS')			 											=> "AJUSTE ENTRADA",
@@ -122,6 +141,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('globalpro_app_cxp_expenses_Referencia 1')													=> "Descripcion",
 		strtolower('globalpro_app_cxp_expenses_Referencia 2')													=> "Factura",
 		strtolower('globalpro_app_cxp_expenses_Referencia 3')													=> "Proveedor",
+		strtolower('globalpro_app_cxp_expenses_Referencia 4')													=> "RUC",
 		strtolower('globalpro_app_inventory_item_Conceptos')			 										=> "IVA",
 		strtolower('globalpro_default_masterpage_backgroundImage')			 									=> "style='background-image: url(".  base_url()."/resource/img/logos/fondo_globalpro.jpg"   .");'",		
 		strtolower('globalpro_core_dashboards_divPanelCuadroMembresia')											=> "hidden",

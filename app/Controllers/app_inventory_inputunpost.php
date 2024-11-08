@@ -1336,6 +1336,10 @@ class app_inventory_inputunpost extends _BaseController {
 				$fila 			= 0;
 				if($table){
 					
+					if (count($table) > 201){	
+						throw new \Exception("Archivo con mas de 200 registros");
+					}
+					
 					if (count($table) >= 1){	
 
 						
@@ -1366,6 +1370,10 @@ class app_inventory_inputunpost extends _BaseController {
 					foreach ($table as $row) 
 					{	
 						$fila++;
+						
+						if(count($row) == 0 )
+							continue;
+						
 						$codigo 		= $row["Codigo"];
 						$description 	= $row["Nombre"];
 						$cantidad 		= ltrim(rtrim($row["Cantidad"]));
@@ -1696,7 +1704,7 @@ class app_inventory_inputunpost extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}			
 	}
 	function save($mode=""){

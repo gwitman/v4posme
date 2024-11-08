@@ -310,25 +310,25 @@
 		$configColumn1["6"]["FiledSoucePrefix"]	= "";
 		$configColumn1["6"]["Width"]			= "195px";
 		
-		$configColumn1["10"]["Titulo"] 		= "Deuda Cordobas";
-		$configColumn1["10"]["TituloFoot"]	= "";
-		$configColumn1["10"]["FiledSouce"]	= "deudaCordobas";
-		$configColumn1["10"]["Colspan"] 	= "17";
-		$configColumn1["10"]["Formato"] 	= "Number";
-		$configColumn1["10"]["Total"] 		= False;
-		$configColumn1["10"]["Alineacion"] 	= "Right";
-		$configColumn1["10"]["TotalValor"] 	= 0;
+		$configColumn1["10"]["Titulo"] 				= "Deuda Cordobas";
+		$configColumn1["10"]["TituloFoot"]			= "";
+		$configColumn1["10"]["FiledSouce"]			= "deudaCordobas";
+		$configColumn1["10"]["Colspan"] 			= "17";
+		$configColumn1["10"]["Formato"] 			= "Number";
+		$configColumn1["10"]["Total"] 				= False;
+		$configColumn1["10"]["Alineacion"] 			= "Right";
+		$configColumn1["10"]["TotalValor"] 			= 0;
 		$configColumn1["10"]["FiledSoucePrefix"]	= "";
 		$configColumn1["10"]["Width"]				= "195px";
 
-		$configColumn1["11"]["Titulo"] 		= "Deuda Dolares";
-		$configColumn1["11"]["TituloFoot"]	= "";
-		$configColumn1["11"]["FiledSouce"]	= "deudaDolares";
-		$configColumn1["11"]["Colspan"] 	= "17";
-		$configColumn1["11"]["Formato"] 	= "Number";
-		$configColumn1["11"]["Total"] 		= False;
-		$configColumn1["11"]["Alineacion"] 	= "Right";
-		$configColumn1["11"]["TotalValor"] 	= 0;
+		$configColumn1["11"]["Titulo"] 				= "Deuda Dolares";
+		$configColumn1["11"]["TituloFoot"]			= "";
+		$configColumn1["11"]["FiledSouce"]			= "deudaDolares";
+		$configColumn1["11"]["Colspan"] 			= "17";
+		$configColumn1["11"]["Formato"] 			= "Number";
+		$configColumn1["11"]["Total"] 				= False;
+		$configColumn1["11"]["Alineacion"] 			= "Right";
+		$configColumn1["11"]["TotalValor"] 			= 0;
 		$configColumn1["11"]["FiledSoucePrefix"]	= "";
 		$configColumn1["11"]["Width"]				= "195px";
 
@@ -347,6 +347,14 @@
 				<tr>
 					<td nowrap='' style='text-align:;width:167px;background-color:#00628e;color:white;' >Print</td>
 					<td nowrap='' style='text-align:Left;width:auto' >"."<a href='".base_url()."/".$objParameterUrlImpresion->value."/customerNumber/".$customerNumber."' target='_blank' >Imprimir saldo en impresora</a>"."</td>
+				</tr>
+				</tbody>
+			 </table>";
+		echo "<table style='width:100%;order-spacing: 10px;'>
+				<tbody>
+				<tr>
+					<td nowrap='' style='text-align:;width:167px;background-color:#00628e;color:white;' >Ver detalle</td>
+					<td nowrap='' style='text-align:Left;width:auto' >"."<a href='".base_url()."/".$objParameterUrlImpresionViewDetalle->value."/customerNumber/".$customerNumber."' target='_blank' >Ver</a>"."</td>
 				</tr>
 				</tbody>
 			 </table>";

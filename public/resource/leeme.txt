@@ -265,6 +265,12 @@ Crear la tarea programada para enviar reportes diarios
 	cmd.exe	/c start /min C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_job\job_send_notification_item_expired.bat ^& exit
 	
 	
+	//ejecutar notificaciones de recordatorio de tareas
+	Nombre: posme_job_send_notification_systema
+	Hora:	15:00:00
+	cmd.exe	/c start /min C:\xampp\teamds2\nsSystem\v4posme\public\resource\file_job\job_send_notification_recordatorio_de_tareas.bat ^& exit
+	
+	
 	//ejecutar todos los dias
 	//Hora del servidor UTC	 (con este comando se ejecuta a  1ves a las tarde 01:00 p.m)
 	1 19 * * * curl "https://posme.net/v4posme/patio/public/app_notification/file_next_date/2"

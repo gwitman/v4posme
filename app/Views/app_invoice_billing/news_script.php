@@ -32,10 +32,11 @@
 	var varParameterAlturaDelModalDeSeleccionProducto	= '<?php echo $objParameterAlturaDelModalDeSeleccionProducto; ?>';
 	var varParameterScrollDelModalDeSeleccionProducto	= '<?php echo $objParameterScrollDelModalDeSeleccionProducto; ?>';
 	var varParameterINVOICE_BILLING_SELECTITEM			= '<?php echo $objParameterINVOICE_BILLING_SELECTITEM; ?>';	
-	var varParameterMostrarImagenEnSeleccion 			= '<?php echo $objParameterMostrarImagenEnSeleccion; ?>';
-	var varPermisos										= JSON.parse('<?php echo json_encode($objListaPermisos); ?>');
-	var varParameterInvoiceBillingPrinterDataLocal		= '<?php echo $dataPrinterLocal; ?>';
-	var varParameterUrlServidorDeImpresion 				= '<?php echo $objParameterUrlServidorDeImpresion; ?>';
+	var varParameterMostrarImagenEnSeleccion 				= '<?php echo $objParameterMostrarImagenEnSeleccion; ?>';
+	var varPermisos											= JSON.parse('<?php echo json_encode($objListaPermisos); ?>');
+	var varParameterInvoiceBillingPrinterDataLocal			= '<?php echo $dataPrinterLocal; ?>';
+	var varParameterUrlServidorDeImpresion 					= '<?php echo $objParameterUrlServidorDeImpresion; ?>';
+	var varParameterINVOICE_BILLING_VALIDATE_EXONERATION 	= '<?php echo $objParameterINVOICE_BILLING_VALIDATE_EXONERATION; ?>';
 	var varPermisosEsPermitidoModificarPrecio 			= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_MODIFICAR_PRECIO_EN_FACTURACION"}).select().length > 0 ? true:	false;	
 	var varPermisosEsPermitidoModificarNombre 			= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_MODIFICAR_NOMBRE_EN_FACTURACION"}).select().length > 0 ? true:	false;
 	var varPermisosEsPermitidoSeleccionarPrecioPublico 	= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_SELECCIONAR_PRECIO_PUBLICO"}).select().length > 0 ? true:	false;
@@ -89,6 +90,59 @@
 		
     });
 	
+	$('#txtLayFirstLineProtocolo').on('change', function() 
+	{
+		
+		var urlExoneration="<?php echo base_url(); ?>/app_invoice_api/getNumberExoneration/value/"+$("#txtLayFirstLineProtocolo").val();
+		if(varParameterINVOICE_BILLING_VALIDATE_EXONERATION == "true")
+		{
+				fnWaitOpen();	
+				$.ajax({									
+					cache       : false,
+					dataType    : 'json',
+					type        : 'GET',
+					url  		: urlExoneration,
+					success		: function(e,o){
+						
+						
+						//La exoneracion ya existe no exonerar
+						var timerNotification 	= 15000;
+						if(e.objTransactionMaster.length > 0 )
+						{
+							$('#txtCheckApplyExoneracion').parent().removeClass("switch-off");
+							$('#txtCheckApplyExoneracion').parent().addClass("switch-on");
+							$("#txtCheckApplyExoneracionValue").val("0");
+							fnShowNotification("El numero de exoneracion ya existe!!","error",timerNotification);
+						}
+						//La exoneracoin no existe si se puede exonerar
+						else
+						{
+							$('#txtCheckApplyExoneracion').parent().removeClass("switch-on");
+							$('#txtCheckApplyExoneracion').parent().addClass("switch-off");
+							$("#txtCheckApplyExoneracionValue").val("1");
+							fnShowNotification("Exoneracion aplicada!!","success",timerNotification);
+						}
+						
+						//Aplicar exoneracion
+						var listRow = objTableDetail.fnGetData();							
+						var length 	= listRow.length;		
+						var i 		= 0;
+						while (i < length )
+						{	
+							fnGetConcept(listRow[i][2],"IVA");			
+							i++;
+						}
+					
+					
+						
+						fnWaitClose();						
+					},
+					error:function(xhr,data){
+						fnWaitClose();
+					}
+				});	
+		}
+    });
 	
 	$(document).on("click","#txtToolCalcular",function(){
 		

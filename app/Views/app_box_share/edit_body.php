@@ -33,7 +33,7 @@
 			<!-- titulo de comprobante-->
 			<div class="panel-heading">
 					<div class="icon"><i class="icon20 i-file"></i></div> 
-					<h4>ABONO:#<span class="invoice-num"><?php echo $objTransactionMaster->transactionNumber; ?></span></h4>
+					<h4>:#<span class="invoice-num"><?php echo $objTransactionMaster->transactionNumber; ?></span></h4>
 			</div>
 			<!-- /titulo de comprobante-->
 			
@@ -134,7 +134,7 @@
 							<div class="col-lg-6">
 						
 								<div class="form-group <?php echo getBehavio($company->type,"app_box_share","divCustomerControlSelected",""); ?> ">
-									<label class="col-lg-4 control-label" for="selectFilter">Cliente</label>
+									<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_box_share","lblCliente","Cliente"); ?></label>
 									<div class="col-lg-8">
 										<select name="txtMobileEntityID" id="txtMobileEntityID">
 												<option selected >Seleccionar</option>
@@ -159,7 +159,7 @@
 								
 								
 								<div class="form-group <?php echo getBehavio($company->type,"app_box_share","divCustomerControlBuscar",""); ?>   ">
-									<label class="col-lg-4 control-label" for="buttons">Cliente</label>
+									<label class="col-lg-4 control-label" for="buttons"><?php echo getBehavio($company->type,"app_box_share","lblCliente","Cliente"); ?></label>
 									<div class="col-lg-8">
 										<div class="input-group">
 											<input type="hidden" id="txtCustomerID" name="txtCustomerID" value="<?php echo $objTransactionMaster->entityID;  ?>">

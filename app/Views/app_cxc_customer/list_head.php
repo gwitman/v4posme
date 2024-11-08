@@ -1,5 +1,5 @@
 				<div id="heading" class="page-header">
-					<h1><i class="icon20 i-address-book"></i> LISTA DE CLIENTES</h1>
+					<h1><i class="icon20 i-address-book"></i> LISTA DE <?php echo getBehavio($company->type,"app_cxc_customer","labelTitlePageList","CLIENTES"); ?></h1>
 				</div>
 				
 				<div class="row">  

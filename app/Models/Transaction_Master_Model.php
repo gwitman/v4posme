@@ -153,6 +153,37 @@ class Transaction_Master_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
+   
+   function get_rowByNumberExoneration($companyID,$exonerationNumber)
+   {
+	   	$db 		= db_connect();
+		$builder	= $db->table("tb_transaction_master");    
+   
+		
+	
+		$sql = "";
+		$sql = sprintf("
+			select 
+				t.transactionNumber,
+				tr.reference1 as  exonerationNumber 
+			from 
+				tb_transaction_master t 
+				inner join tb_workflow_stage ws on 
+					ws.workflowStageID = t.statusID 
+				inner join tb_transaction_master_references tr on 
+					tr.transactionMasterID = t.transactionMasterID 
+			where 
+				t.transactionID = 19 /*factura*/ and 
+				t.isActive = 1 and 
+				ws.aplicable = 1 and 
+				tr.reference1 != '' and 
+				tr.reference1 = '$exonerationNumber' 
+		");
+		
+	
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
 
 	function get_ZonasByCatalogItemID($catalogItemId):array{
 		$db 		= db_connect();

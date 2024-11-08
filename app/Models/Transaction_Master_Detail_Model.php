@@ -380,6 +380,50 @@ class Transaction_Master_Detail_Model extends Model  {
 		$builder->whereNotIn("transactionMasterDetailID",$listTMD_ID);	
 		return $builder->update($data);
 	}
+	
+	function get_rowByEntityIDAndCreditPending($companyID,$customerNumber)
+	{
+		$db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+	   		
+		$sql = "";
+		$sql = sprintf("
+				select 
+					c.customerNumber,
+					n.firstName,
+					tm.createdOn,
+					i.`name` as itemName,
+					tmd.quantity ,
+					tmd.unitaryPrice ,
+					ifnull(tmd.tax1,0) as tax1,
+					ifnull(tmd.tax2,0) as tax2,
+					tmd.amount 
+				from 
+					tb_customer c 
+					inner join tb_naturales n on 
+						c.entityID = n.entityID 
+					inner join tb_customer_credit_document ccd on 
+						ccd.entityID = c.entityID 
+					inner join tb_transaction_master tm on 
+						tm.transactionNumber = ccd.documentNumber 
+					inner join tb_transaction_master_detail tmd on 
+						tmd.transactionMasterID = tm.transactionMasterID 
+					inner join tb_item i on 
+						i.itemID = tmd.componentItemID 
+				where 
+					c.customerNumber = '$customerNumber' and 
+					tm.isActive = 1 and 
+					tmd.isActive = 1 and 
+					ccd.isActive = 1 and 
+					ccd.statusID in (77 /*registrado*/) and 
+					c.companyID = $companyID 
+						");
+	
+	
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+   
    
     function GlobalPro_get_rowBySalesByEmployeerMonthOnly_Sales($companyID,$dateFirst,$dateLast)
    {

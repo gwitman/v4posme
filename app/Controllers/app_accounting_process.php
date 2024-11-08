@@ -202,11 +202,9 @@ class app_accounting_process extends _BaseController {
 			$companyID				= $this->core_web_authentication->isAuthenticated() ? $dataSession["user"]->companyID : 2;
 			$branchID 				= $this->core_web_authentication->isAuthenticated() ? $dataSession["user"]->branchID : 2;
 			$loginID				= $this->core_web_authentication->isAuthenticated() ? $dataSession["user"]->userID : 2;
-			$notificationName		= /*inicio get post*/ $this->request->getPost("notificationName") == "" ? "TODAS" : /*inicio get post*/ $this->request->getPost("notificationName") ;	
+			$notificationName		= /*inicio get post*/ $this->request->getVar("notificationName") == "" ? "TODAS" : /*inicio get post*/ $this->request->getVar("notificationName") ;	
 			$logDB["code"]			= 0;
 
-			
-			
 			
 			
 			/*TODAS*/			

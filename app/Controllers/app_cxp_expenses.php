@@ -73,7 +73,7 @@ class app_cxp_expenses extends _BaseController {
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
 			$dataView["objComponentShare"]		= $objComponentTransactionShare;					
 			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_accounting_expenses","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
-			
+			$dataView["objListBranch"]			= $this->Branch_Model->getByCompany($companyID);
 			
 			$objPublicCatalogTipoGastos 						= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_accounting_expenses.tipos_gastos")->where("isActive",1)->find();			
 			$objPublicCatalogCategoriaGastos 					= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_accounting_expenses.categoria_gastos")->where("isActive",1)->find();
@@ -254,6 +254,7 @@ class app_cxp_expenses extends _BaseController {
 			
 			//Actualizar Maestro			
 			$objTMNew["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
+			$objTMNew["branchID"]						= /*inicio get post*/ $this->request->getPost("txtBranchID");
 			$objTMNew["statusIDChangeOn"]				= date("Y-m-d H:m:s");
 			$objTMNew["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");//--fin peticion get o post
 			$objTMNew["currencyID"] 					= /*inicio get post*/ $this->request->getPost("txtCurrencyID");//--fin peticion get o post			
@@ -263,7 +264,8 @@ class app_cxp_expenses extends _BaseController {
 			$objTMNew["reference1"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference1");
 			$objTMNew["reference2"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference2");
 			$objTMNew["reference3"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference3");			
-			//$objTMNew["reference3"] 					= /*inicio get post*/ $this->request->getPost("txtEmployeeID");//--fin peticion get o post
+			$objTMNew["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference4");			
+			
 			//$objTMNew["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtCustomerCreditLineID");//--fin peticion get o post
 			//$objTMNew["descriptionReference"] 		= "reference1:input,reference2:input,reference3:Gestor de Cobro,reference4:Linea de credito del Cliente";
 			$objTMNew["statusID"] 						= /*inicio get post*/ $this->request->getPost("txtStatusID");
@@ -352,7 +354,7 @@ class app_cxp_expenses extends _BaseController {
 			
 			$objTM["companyID"] 					= $dataSession["user"]->companyID;
 			$objTM["transactionID"] 				= $transactionID;			
-			$objTM["branchID"]						= $dataSession["user"]->branchID;
+			$objTM["branchID"]						= /*inicio get post*/ $this->request->getPost("txtBranchID");
 			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_accounting_expenses",0);
 			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($dataSession["user"]->companyID,$transactionID);			
 			$objTM["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
@@ -366,7 +368,7 @@ class app_cxp_expenses extends _BaseController {
 			$objTM["reference1"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference1");
 			$objTM["reference2"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference2");
 			$objTM["reference3"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference3");
-			$objTM["reference4"] 					= '';
+			$objTM["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference4");
 			$objTM["statusID"] 						= /*inicio get post*/ $this->request->getPost("txtStatusID");
 			$objTM["amount"] 						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost('txtDetailAmount'));
 			$objTM["tax1"] 						    = helper_StringToNumber(/*inicio get post*/ $this->request->getPost('txtTransactionMasterTax1'));
@@ -553,7 +555,7 @@ class app_cxp_expenses extends _BaseController {
 			$dataView["exchangeRatePurchase"]	= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID) - $objParameterExchangePurchase->value;			
 			$objParameterExchangeSales			= $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID);
 			$dataView["exchangeRateSale"]		= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID) + $objParameterExchangeSales->value;		
-			
+			$dataView["objListBranch"]			= $this->Branch_Model->getByCompany($companyID);
 		
 			$dataView["objCaudal"]				= $this->Transaction_Causal_Model->getCausalByBranch($companyID,$transactionID,$branchID);			
 			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_accounting_expenses","statusID",$companyID,$branchID,$roleID);

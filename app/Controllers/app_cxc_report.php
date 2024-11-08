@@ -316,6 +316,103 @@ class app_cxc_report extends _BaseController {
 		    
 		}
 	}
+	function customer_detail_invoice_printer()
+	{
+		try{ 
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISOS SOBRE LAS FUNCIONES
+			if(APP_NEED_AUTHENTICATION == true){				
+				
+				$permited = false;
+				$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				
+				if(!$permited)
+				throw new \Exception(NOT_ACCESS_CONTROL);
+				
+				$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"index",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				if ($resultPermission 	== PERMISSION_NONE)
+				throw new \Exception(NOT_ACCESS_FUNCTION);			
+			}	
+			
+			$customerNumber				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"customerNumber");//--finuri						
+			$companyID 					= $dataSession["user"]->companyID;		
+			$branchID 					= $dataSession["user"]->branchID;		
+			$roleID 					= $dataSession["role"]->roleID;		
+			
+			
+			//Get Component
+			$objComponent	        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			$objParameter	        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+			$objCompany 			= $this->Company_Model->get_rowByPK($companyID);			
+			
+			
+			//Get Documento					
+			$datView["objDetail"]					= $this->Transaction_Master_Detail_Model->get_rowByEntityIDAndCreditPending($companyID,$customerNumber);
+			$datView["Identifier"]					= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+			
+			
+			//Generar Reporte
+			$html = helper_reporte80mmTransactionMasterViewDetailCredit(
+			    "DETALLE",
+			    $objCompany,
+			    $objParameter,
+			    $datView["objDetail"],
+			    $objParameterTelefono
+			);
+			$this->dompdf->loadHTML($html);
+			
+			//1cm = 29.34666puntos
+			//a4: 210 ancho x 297
+			//a4: 21cm x 29.7cm
+			//a4: 595.28puntos x 841.59puntos
+			
+			//$this->dompdf->setPaper('A4','portrait');
+			//$this->dompdf->setPaper(array(0,0,234.76,6000));
+			
+			$this->dompdf->render();
+			
+			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+			
+			
+			//visualizar
+			$this->dompdf->stream("file.pdf", ['Attachment' => !$objParameterShowLinkDownload ]);
+			
+			//descargar
+			//$this->dompdf->stream();
+			
+			
+		}
+		catch(\Exception $ex){
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+		    $data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+		    
+		    $this->email->setFrom(EMAIL_APP);
+		    $this->email->setTo(EMAIL_APP_COPY);
+		    $this->email->setSubject("Error");
+		    $this->email->setMessage($resultView);
+		    
+		    $resultSend01 = $this->email->send();
+		    $resultSend02 = $this->email->printDebugger();
+		    
+		    
+		    return $resultView;
+		}
+		
+	}
 	function customer_status(){
 		try{ 
 		
@@ -370,7 +467,9 @@ class app_cxc_report extends _BaseController {
 				//Get Logo
 				$objParameter				= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
 				//Url de impresion
-				$objParameterUrlImpresion	= $this->core_web_parameter->getParameter("CXC_URL_PRINT_BALANCE_CUSTOMER",$companyID);
+				$objParameterUrlImpresion				= $this->core_web_parameter->getParameter("CXC_URL_PRINT_BALANCE_CUSTOMER",$companyID);
+				$objParameterUrlImpresionViewDetalle	= $this->core_web_parameter->getParameter("CXC_URL_PRINT_CUSTOMER_DETAIL",$companyID);
+				
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
@@ -394,12 +493,13 @@ class app_cxc_report extends _BaseController {
 					$objDataResult["objAmortization"]		= NULL;
 				}
 				
-				$objDataResult["objParameterUrlImpresion"] 	= $objParameterUrlImpresion;
-				$objDataResult["customerNumber"]			= $customerNumber;
-				$objDataResult["objCompany"] 				= $objCompany;
-				$objDataResult["objLogo"] 					= $objParameter;
-				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_customer_status" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
-				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
+				$objDataResult["objParameterUrlImpresion"] 				= $objParameterUrlImpresion;
+				$objDataResult["objParameterUrlImpresionViewDetalle"] 	= $objParameterUrlImpresionViewDetalle;
+				$objDataResult["customerNumber"]						= $customerNumber;
+				$objDataResult["objCompany"] 							= $objCompany;
+				$objDataResult["objLogo"] 								= $objParameter;
+				$objDataResult["objFirma"] 								= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_customer_status" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
+				$objDataResult["objFirmaEncription"] 					= md5 ($objDataResult["objFirma"]);
 				
 				return view("app_cxc_report/customer_status/view_a_disemp",$objDataResult);//--finview-r
 				
