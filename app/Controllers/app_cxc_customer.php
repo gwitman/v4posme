@@ -1,6 +1,8 @@
 <?php
 //posme:2023-02-27
 namespace App\Controllers;
+use Config\Services;
+
 class app_cxc_customer extends _BaseController {
 	
        
@@ -1525,6 +1527,7 @@ class app_cxc_customer extends _BaseController {
 			$dataView["useMobile"]						= $dataSession["user"]->useMobile;		
 			$dataView["company"]						= $dataSession["company"];
 			
+			
 			$dataView["objListTypeID"]			        = $this->core_web_catalog->getCatalogAllItem("tb_customer_payment_method","typeID",$companyID);
 			$dataView["objListSituationID"]			    = $this->core_web_catalog->getCatalogAllItem("tb_customer_frecuency_actuations","situationID",$companyID);
 			$dataView["objListFrecuencyContactID"]	    = $this->core_web_catalog->getCatalogAllItem("tb_customer_frecuency_actuations","frecuencyContactID",$companyID);
@@ -1612,14 +1615,20 @@ class app_cxc_customer extends _BaseController {
 			
 			}	
 			//Obtener el componente Para mostrar la lista de AccountType
+			$cache 				= Services::cache();
+			$dataViewID 		= helper_SegmentsByIndex($this->uri->getSegments(), 1, $dataViewID);
 			$objComponent		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
 			if(!$objComponent)
 			throw new \Exception("00409 EL COMPONENTE 'tb_customer' NO EXISTE...");
 			
 			
+			$dataViewIDCache			= $cache->get('app_cxc_customer_dataviewid_index');
+			if($dataViewIDCache && $dataViewID == null )
+				$dataViewID = $dataViewIDCache;
+			
+			
 			//Vista por defecto 
 			if($dataViewID == null){								
-				
 				$targetComponentID			= $this->session->get('company')->flavorID;
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;				
 				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
@@ -1632,28 +1641,30 @@ class app_cxc_customer extends _BaseController {
 				}
 				
 				
+				$cache->save('app_cxc_customer_dataviewid_index', $dataViewData["view_config"]->dataViewID, TIME_CACHE_APP);
 				if(  $this->request->getUserAgent()->isMobile()  )
 				{					
 					//$dataViewRender			= $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow");
 					$dataViewRender				= $this->core_web_view->renderGreedWithHtmlInFildMobile($dataViewData,'ListView',"fnTableSelectedRow");
+					
 				}
 				else
 				{
 					//$dataViewRender			= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 					$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 				}
-				
-				
-				
+								
 			}
 			//Otra vista
-			else{									
+			else{				
+				$cache->save('app_cxc_customer_dataviewid_index', $dataViewID, TIME_CACHE_APP);
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 			
 				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			} 
 			 
 			//Renderizar Resultado
+			$dataView["company"]			= $dataSession["company"];
 			$dataView["objParameterCORE_VIEW_CUSTOM_SCROLL_IN_LIST_CUSTOMER"]	
 											= $this->core_web_parameter->getParameterValue("CORE_VIEW_CUSTOM_SCROLL_IN_LIST_CUSTOMER",$this->session->get('user')->companyID);
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);

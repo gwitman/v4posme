@@ -1,6 +1,7 @@
 <?php
 //posme:2023-02-27
 namespace App\Controllers;
+use Config\Services;
 class app_invoice_billing extends _BaseController {
 	
    
@@ -297,6 +298,7 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objListParameterJavaScript"]													= $this->core_web_parameter->getParameterAllToJavaScript($companyID);
 			$dataView["objParameterCXC_DAY_EXCLUDED_IN_CREDIT"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_DAY_EXCLUDED_IN_CREDIT")->value;
 			$dataView["objParameterINVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE")->value;
+			$dataView["objParameterINVOICE_BILLING_VALIDATE_EXONERATION"]							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_VALIDATE_EXONERATION")->value;
 			
 			
 			if(!$dataView["objCustomerDefault"])
@@ -3459,6 +3461,7 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objParameterINVOICE_BILLING_EMPLOYEE_DEFAULT"]								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_EMPLOYEE_DEFAULT")->value;
 			$dataView["objParameterINVOICE_BILLING_SELECTITEM"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SELECTITEM")->value;
 			$dataView["objParameterACCOUNTING_CURRENCY_NAME_IN_BILLING"]							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"ACCOUNTING_CURRENCY_NAME_IN_BILLING")->value;
+			$dataView["objParameterINVOICE_BILLING_VALIDATE_EXONERATION"]							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_VALIDATE_EXONERATION")->value;
 			$dataView["objListParameterJavaScript"]													= $this->core_web_parameter->getParameterAllToJavaScript($companyID);			
 			
 			$objParameterUrlServidorDeImpresion							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_SERVER_PATH");
@@ -3648,6 +3651,7 @@ class app_invoice_billing extends _BaseController {
 			
 			}	
 			//Obtener el componente Para mostrar la lista de AccountType
+			$cache 				= Services::cache();
 			$objComponent		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_billing");
 			if(!$objComponent)
 			throw new \Exception("00409 EL COMPONENTE 'tb_transaction_master_billing' NO EXISTE...");
@@ -3670,7 +3674,12 @@ class app_invoice_billing extends _BaseController {
 			
 			$objParameterShowPreview		= $this->core_web_parameter->getParameter("INVOICE_SHOW_PREVIEW_INLIST",$this->session->get('user')->companyID);
 			$objParameterShowPreview		= $objParameterShowPreview->value;
-				
+			$dataViewID 					= helper_SegmentsValue($this->uri->getSegments(), "dataViewID");
+			
+			
+			$dataViewIDCache			= $cache->get('app_invoice_billing_dataviewid_index');
+			if($dataViewIDCache && $dataViewID == null )
+				$dataViewID = $dataViewIDCache;
 			
 			//Vista por defecto 
 			if($dataViewID == null || $dataViewID == "null" ){
@@ -3689,7 +3698,7 @@ class app_invoice_billing extends _BaseController {
 					$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);				
 				}
 				
-				
+				$cache->save('app_invoice_billing_dataviewid_index', $dataViewData["view_config"]->dataViewID, TIME_CACHE_APP);
 				if($dataSession["user"]->useMobile == 1)
 				{					
 					//$dataViewRender			= $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow");
@@ -3702,7 +3711,9 @@ class app_invoice_billing extends _BaseController {
 				}
 			}
 			//Otra vista
-			else{									
+			else
+			{
+				$cache->save('app_invoice_billing_dataviewid_index', $dataViewID, TIME_CACHE_APP);				
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 			
 				

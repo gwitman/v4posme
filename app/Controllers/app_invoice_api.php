@@ -38,9 +38,39 @@ class app_invoice_api extends _BaseController {
 				'error'   => true,
 				'message' => $ex->getLine()." ".$ex->getMessage()
 			));//--finjson
-			$this->core_web_notification->set_message(true,$ex->getLine()." ".$ex->getMessage());
+			
 		}		
 			
+	 }
+	 
+	 function getNumberExoneration()
+	 {
+		 try{ 
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			$companyID 				= $dataSession["user"]->companyID;
+			$exonerationNumber		= helper_SegmentsValue($this->uri->getSegments(),"value");//--finuri				
+			$objTransactionMaster 	= $this->Transaction_Master_Model->get_rowByNumberExoneration($companyID,$exonerationNumber);
+			
+				
+			return $this->response->setJSON(array(
+				'error'   					=> false,
+				'message' 					=> SUCCESS,
+				'objTransactionMaster'   	=> $objTransactionMaster
+			));//--finjson
+			
+		}
+		catch(\Exception $ex){
+			
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));//--finjson
+			
+		}	
 	 }
 	
 	function getLinkPaymentPagadito($companyID=NULL,$transactionID= NULL,$transactionMasterID = NULL){
