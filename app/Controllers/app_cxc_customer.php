@@ -1616,7 +1616,7 @@ class app_cxc_customer extends _BaseController {
 			}	
 			//Obtener el componente Para mostrar la lista de AccountType
 			$cache 				= Services::cache();
-			$dataViewID 		= $method = helper_SegmentsByIndex($this->uri->getSegments(), 1, $dataViewID);
+			$dataViewID 		= helper_SegmentsByIndex($this->uri->getSegments(), 1, $dataViewID);
 			$objComponent		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
 			if(!$objComponent)
 			throw new \Exception("00409 EL COMPONENTE 'tb_customer' NO EXISTE...");

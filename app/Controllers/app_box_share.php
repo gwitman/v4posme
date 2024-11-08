@@ -1,6 +1,7 @@
 <?php
 //posme:2023-02-27
 namespace App\Controllers;
+use Config\Services;
 class app_box_share extends _BaseController {
 	
     
@@ -1378,12 +1379,21 @@ class app_box_share extends _BaseController {
 			
 			}	
 			//Obtener el componente Para mostrar la lista de AccountType
+			$cache 				= Services::cache();
 			$objComponent		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_share");
 			if(!$objComponent)
 			throw new \Exception("00409 EL COMPONENTE 'tb_transaction_master_share' NO EXISTE...");
 			
 			
 			//Vista por defecto PC
+			$dataViewID 					= helper_SegmentsByIndex($this->uri->getSegments(), 1, $dataViewID);
+			
+			
+			$dataViewIDCache			= $cache->get('app_box_share_dataviewid_index');
+			if($dataViewIDCache && $dataViewID == null )
+				$dataViewID = $dataViewIDCache;
+			
+			
 			if($dataViewID == null )
 			{				
 				$targetComponentID			= $this->session->get('company')->flavorID;				
@@ -1397,6 +1407,8 @@ class app_box_share extends _BaseController {
 					$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);
 				}
 				
+				
+				$cache->save('app_box_share_dataviewid_index', $dataViewData["view_config"]->dataViewID, TIME_CACHE_APP);
 				if(  $this->request->getUserAgent()->isMobile()  )
 				{					
 					//$dataViewRender			= $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow");
@@ -1412,6 +1424,7 @@ class app_box_share extends _BaseController {
 			//Vista Por Id
 			else 
 			{
+				$cache->save('app_box_share_dataviewid_index', $dataViewID, TIME_CACHE_APP);
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 							
 				if(  $this->request->getUserAgent()->isMobile() )
