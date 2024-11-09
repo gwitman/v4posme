@@ -41,7 +41,7 @@
 							<div class="panel" style="margin-bottom:20px;">
 								<div class="panel-heading">
 									<div class="icon"><i class="icon20 i-health"></i></div> 
-									<h4>Estadistica</h4>
+									<h4>Ingresos Mensuales de Ventas de Contado</h4>
 									<a href="#" class="minimize"></a>
 								</div><!-- End .panel-heading -->
 							
@@ -53,7 +53,7 @@
 							<div class="panel" style="margin-bottom:20px;">
 								<div class="panel-heading">
 									<div class="icon"><i class="icon20 i-health"></i></div> 
-									<h4>Estadistica</h4>
+									<h4>Ingresos por Matriculas Mensual</h4>
 									<a href="#" class="minimize"></a>
 								</div><!-- End .panel-heading -->
 							
@@ -70,7 +70,7 @@
 							<div class="panel" style="margin-bottom:20px;">
 								<div class="panel-heading">
 									<div class="icon"><i class="icon20 i-health"></i></div> 
-									<h4>Estadistica</h4>
+									<h4>Estudiantes Por Municipio</h4>
 									<a href="#" class="minimize"></a>
 								</div><!-- End .panel-heading -->
 							
@@ -83,7 +83,7 @@
 							<div class="panel" style="margin-bottom:20px;">
 								<div class="panel-heading">
 									<div class="icon"><i class="icon20 i-health"></i></div> 
-									<h4>Estadistica</h4>
+									<h4>Estudiantes por Sexo</h4>
 									<a href="#" class="minimize"></a>
 								</div><!-- End .panel-heading -->
 							
@@ -99,36 +99,36 @@
 				<script>	
 					//https://www.w3schools.com/js/js_graphics_google_chart.asp
 					
-					var objTransactionMaster 				 = JSON.parse('<?php echo json_encode($objListVentas); ?>');	
-					var objTransactionMasterTecnico			 = JSON.parse('<?php echo json_encode($objListTecnico); ?>');	
-					var objTransactionMasterMensuales		 = JSON.parse('<?php echo json_encode($objListVentaMensual); ?>');	
-					var objTransactionMasterDiarias			 = JSON.parse('<?php echo json_encode($objListVentaDiaria); ?>');	
-					var objDataSourceProductosMasVendidos	 = new Array();
-					var objDataSourceProductosMasTenicos	 = new Array();
-					var objDataSourceProductosMasMensuales	 = new Array();
-					var objDataSourceProductosMasDiarias	 = new Array();
+					var objStudentsByCity 				 		= JSON.parse('<?php echo json_encode($objListStudentsByCity); ?>');	
+					var objStudentsBySex			 			= JSON.parse('<?php echo json_encode($objListStudentsBySex); ?>');	
+					var objMonthlyCashSales		 				= JSON.parse('<?php echo json_encode($objListMonthlyCashSales); ?>');	
+					var objInscriptionsEarnings					= JSON.parse('<?php echo json_encode($objListInscriptionsEarnings); ?>');	
+					var objDataSourceStudentsByCity	 			= new Array();
+					var objDataSourceStudentsBySex	 			= new Array();
+					var objDataSourceMonthlyCashSales	 		= new Array();
+					var objDataSourceInscriptionsEarnings	 	= new Array();
 					
 					//Obtener los ultimos 10 elementos					
-					objDataSourceProductosMasMensuales.push(new Array("Mes","Venta"));
-					for(var i = 0 ; i < objTransactionMasterMensuales.length;i++)
+					objDataSourceMonthlyCashSales.push(new Array("Mes","Ingresos"));
+					for(var i = 0 ; i < objMonthlyCashSales.length;i++)
 					{
-						objDataSourceProductosMasMensuales.push(
+						objDataSourceMonthlyCashSales.push(
 							new Array(
-								objTransactionMasterMensuales[i].firtsName,
-								parseInt(objTransactionMasterMensuales[i].monto)
+								objMonthlyCashSales[i].mes,	
+								parseInt(objMonthlyCashSales[i].monto)
 							)
 						);	
 					}
 					
 					
 					//Obtener los ultimos 10 elementos					
-					objDataSourceProductosMasDiarias.push(new Array("Dia","Venta"));
-					for(var i = 0 ; i < objTransactionMasterDiarias.length;i++)
+					objDataSourceInscriptionsEarnings.push(new Array("Dia","Ingresos"));
+					for(var i = 0 ; i < objInscriptionsEarnings.length;i++)
 					{
-						objDataSourceProductosMasDiarias.push(
+						objDataSourceInscriptionsEarnings.push(
 							new Array(
-								objTransactionMasterDiarias[i].firtsName,
-								parseInt(objTransactionMasterDiarias[i].monto)
+								objInscriptionsEarnings[i].dia,
+								parseInt(objInscriptionsEarnings[i].ingreso)
 							)
 						);	
 					}
@@ -136,25 +136,25 @@
 					
 					
 					//Obtener los ultimos 10 elementos					
-					objDataSourceProductosMasVendidos.push(new Array("Colaborador","Venta"));
-					for(var i = 0 ; i < objTransactionMaster.length;i++)
+					objDataSourceStudentsByCity.push(new Array("Municipios","Estudiantes"));
+					for(var i = 0 ; i < objStudentsByCity.length;i++)
 					{
-						objDataSourceProductosMasVendidos.push(
+						objDataSourceStudentsByCity.push(
 							new Array(
-								objTransactionMaster[i].firtsName,
-								parseInt(objTransactionMaster[i].monto)
+								objStudentsByCity[i].municipio,
+								parseInt(objStudentsByCity[i].cantidad)
 							)
 						);	
 					}
 					
 					//Obtener los ultimos 10 elementos					
-					objDataSourceProductosMasTenicos.push(new Array("Colaborador","Venta"));
-					for(var i = 0 ; i < objTransactionMasterTecnico.length;i++)
+					objDataSourceStudentsBySex.push(new Array("Sexo","Cantidad"));
+					for(var i = 0 ; i < objStudentsBySex.length;i++)
 					{
-						objDataSourceProductosMasTenicos.push(
+						objDataSourceStudentsBySex.push(
 							new Array(
-								objTransactionMasterTecnico[i].firtsName,
-								parseInt(objTransactionMasterTecnico[i].monto)
+								objStudentsBySex[i].sexo,
+								parseInt(objStudentsBySex[i].cantidad)
 							)
 						);	
 					}
@@ -164,74 +164,74 @@
 					
 					$(document).ready(function(){
 						google.charts.load('current',{packages:['corechart']});							
-						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasVendidos);		
-						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasTenicos);		
-						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasMensuales);		
-						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasDiarias);		
+						google.charts.setOnLoadCallback(drawChartPastelEstudiantesPorMunicipio);		
+						google.charts.setOnLoadCallback(drawChartPastelEstudiantesPorSexo);		
+						google.charts.setOnLoadCallback(drawChartBarrasIngresosPorVentasDeContado);		
+						google.charts.setOnLoadCallback(drawChartIngresosPorMatriculasMensual);		
 					});		
 					
-					function drawChartBarraHorizontalProductosMasMensuales() {
+					function drawChartBarrasIngresosPorVentasDeContado() {
 
 						var data = google.visualization.arrayToDataTable(
-							objDataSourceProductosMasMensuales
+							objDataSourceMonthlyCashSales
 						);
 
 						var options = {
-						  title: 'Ingresos Mensuales',
+						  title: '',
 						  colors: ['#ff8000', '#ff8000', '#ff8000', '#ff8000', '#ff8000'],
 						  seriesType: 'bars',
 						};
 
-						var chart = new google.visualization.ComboChart(document.getElementById('grafico3'));
+						var chart = new google.visualization.ComboChart(document.getElementById('grafico1'));
 						chart.draw(data, options);
 
 					}
 					
-					function drawChartBarraHorizontalProductosMasDiarias() {
+					function drawChartIngresosPorMatriculasMensual() {
 
 						var data = google.visualization.arrayToDataTable(
-							objDataSourceProductosMasDiarias
+							objDataSourceInscriptionsEarnings
 						);
 
 						var options = {
-						  title: 'Mensualidades',
+						  title: '',
 						  colors: ['#ff0000', '#ff0000', '#ff0000', '#ff0000', '#ff0000'],
 						};
 
-						var chart = new google.visualization.ComboChart(document.getElementById('grafico4'));
+						var chart = new google.visualization.ComboChart(document.getElementById('grafico2'));
 						chart.draw(data, options);
 
 					}
 					
-					function drawChartBarraHorizontalProductosMasTenicos() {
+					function drawChartPastelEstudiantesPorSexo() {
 
 						var data = google.visualization.arrayToDataTable(
-							objDataSourceProductosMasTenicos
+							objDataSourceStudentsBySex
 						);
 
 						var options = {
-						  title: 'Gastos Mensuales',
+						  title: '',
 						  colors: ['#00C868', '#006E98', '#ec8f6e', '#f3b49f', '#f6c7b6'],
 						};
 
-						var chart = new google.visualization.BarChart(document.getElementById('grafico2'));
+						var chart = new google.visualization.PieChart(document.getElementById('grafico4'));
 						chart.draw(data, options);
 
 					}
-							
 					
-					function drawChartBarraHorizontalProductosMasVendidos() {
+					
+					function drawChartPastelEstudiantesPorMunicipio() {
 
 						var data = google.visualization.arrayToDataTable(
-							objDataSourceProductosMasVendidos
+							objDataSourceStudentsByCity
 						);
 
 						var options = {
-						  title: 'Utilidad Mensual',
+						  title: '',
 						  colors: ['#006E98', '#00C868', '#ec8f6e', '#f3b49f', '#f6c7b6'],
 						};
-
-						var chart = new google.visualization.BarChart(document.getElementById('grafico1'));
+						
+						var chart = new google.visualization.PieChart(document.getElementById('grafico3'));
 						chart.draw(data, options);
 
 					}

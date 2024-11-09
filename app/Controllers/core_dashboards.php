@@ -273,56 +273,65 @@ class core_dashboards extends _BaseController {
 		$lastDateYear					= helper_UltimoDiaDelMes();
 		$firstDate						= helper_PrimerDiaDelMes();
 		$lastDate						= helper_UltimoDiaDelMes();			
-		$objListVentas					= $this->Transaction_Master_Detail_Model->GlobalPro_get_rowBySalesByEmployeerMonthOnly_Sales($dataSession["user"]->companyID,$firstDate,$lastDate);
-		$objListTecnico					= $this->Transaction_Master_Detail_Model->GlobalPro_get_rowBySalesByEmployeerMonthOnly_Tenico($dataSession["user"]->companyID,$firstDate,$lastDate);
+
+		if(
+			$dataSession["role"]->name == "EBENEZER@ADMINISTRADOR" ||
+			$dataSession["role"]->name == "SUPE ADMIN"
+		)
+		{
+			$firstDateYear					= helper_PrimerDiaDelYear();
+			$lastDateYear					= helper_UltimoDiaDelYear();
+		}
+
+		$objListStudentsByCity			= $this->Transaction_Master_Detail_Model->Ebenezer_Get_Students_By_City();
+		$objListStudentsBySex			= $this->Transaction_Master_Detail_Model->Ebenezer_Get_Students_By_Sex();
 		
 		//Obtener las Ventas Mensuales
 		$objFirstYearDate 		= \DateTime::createFromFormat('Y-m-d', $firstDateYear);
 		$objFirstYearDate->setTime(0, 0, 0);						
 		$objFirstDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
 		$objFirstDate->setTime(0, 0, 0);		
-		$objListVentaMensual = array();
+		$objListMonthlyCashSales = array();
 		while($objFirstYearDate <= $objFirstDate)
 		{				
 			$objLastDayMont =  \DateTime::createFromFormat('Y-m-d', $objFirstYearDate->format("Y-m-d"));
 			$objLastDayMont->modify('+1 month');
 			$objLastDayMont->modify('-1 day');
 			
-			$objListVentaMensualTemporal = $this->Transaction_Master_Detail_Model->GlobalPro_get_MonthOnly_Sales($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDayMont->format("Y-m-d") );
-			if($objListVentaMensualTemporal)
+			$objListIngresosPorVentaContadoTemporal = $this->Transaction_Master_Detail_Model->Ebenezer_Get_MonthOnly_CashSale($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDayMont->format("Y-m-d") );
+			if($objListIngresosPorVentaContadoTemporal)
 			{
-				array_push($objListVentaMensual, $objListVentaMensualTemporal[0]);
+				array_push($objListMonthlyCashSales, $objListIngresosPorVentaContadoTemporal[0]);
 
 			}
 			$objFirstYearDate->modify('+1 month');
-		}
+		}		
 		
 		
-		
-		//Obtener las Ventas Diarias
+		// Obtener las Ventas Diarias
 		$objFirstDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
 		$objFirstDate->setTime(0, 0, 0);						
 		$objLastDate 		= \DateTime::createFromFormat('Y-m-d H:i:s', $lastDate);
 		$objLastDate->setTime(0, 0, 0);
 		$objNowDate 		= \DateTime::createFromFormat('Y-m-d H:i:s', helper_getDate());
 		$objNowDate->setTime(0, 0, 0);
-		$objListVentaDiaria = array();
-		while($objFirstDate <= $objNowDate)
+		$objListInscriptionsEarnings = array();
+		while($objFirstDate <= $objLastDate)
 		{				
-			$objListVentaDiariaTemporal = $this->Transaction_Master_Detail_Model->GlobalPro_get_Day_Sales($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objFirstDate->format("Y-m-d") );
-			if($objListVentaDiariaTemporal)
+			$objListIngresosPorMatriculaTemporal = $this->Transaction_Master_Detail_Model->Ebenezer_Get_MonthOnly_Inscriptions($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objFirstDate->format("Y-m-d") );
+			if($objListIngresosPorMatriculaTemporal)
 			{
-				array_push($objListVentaDiaria, $objListVentaDiariaTemporal[0]);
-
+				array_push($objListInscriptionsEarnings, $objListIngresosPorMatriculaTemporal[0]);
+				
 			}
 			$objFirstDate->modify('+1 day');
 		}
 		
 		//Renderizar Resultado			
-		$dataSession["objListVentas"]		= $objListVentas;
-		$dataSession["objListTecnico"]		= $objListTecnico;
-		$dataSession["objListVentaMensual"]	= $objListVentaMensual;
-		$dataSession["objListVentaDiaria"]	= $objListVentaDiaria;
+		$dataSession["objListStudentsByCity"]		= $objListStudentsByCity;
+		$dataSession["objListStudentsBySex"]		= $objListStudentsBySex;
+		$dataSession["objListMonthlyCashSales"]		= $objListMonthlyCashSales;
+		$dataSession["objListInscriptionsEarnings"]	= $objListInscriptionsEarnings;
 		return $dataSession;
 	}
 	

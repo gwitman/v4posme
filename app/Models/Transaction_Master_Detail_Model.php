@@ -1358,7 +1358,112 @@ class Transaction_Master_Detail_Model extends Model  {
 		return $db->query($sql)->getResult();	
    }
 
-   
+  
+
+
+
+
+   function Ebenezer_Get_MonthOnly_CashSale($companyID,$dateFirst,$dateLast)
+   {
+
+	    $db 	= db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+		  	SELECT 
+		  		MONTH(tm.transactionOn) AS mes, 
+				SUM(tm.amount) AS monto
+			FROM 
+				tb_transaction_master tm 
+				INNER JOIN tb_transaction_causal tc ON 
+					tm.transactionID = tc.transactionID
+			WHERE 
+				tc.transactionID = 19
+				AND 
+				tc.name = 'CONTADO'
+				AND 
+				tm.isActive = 1
+				AND
+				tm.transactionOn between '$dateFirst' and '$dateLast'
+			GROUP BY 
+				mes
+		");
+
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();	
+   }
+
+   function Ebenezer_Get_MonthOnly_Inscriptions($companyID,$dateFirst,$dateLast)
+   {
+
+	    $db 	= db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+		 	SELECT 
+		 		DAY(tm.transactionOn) AS dia,
+				SUM(tm.amount) AS ingreso 
+			FROM 
+				tb_transaction_master tm
+			WHERE 
+				tm.transactionID = 23
+				AND 
+				tm.transactionOn between '$dateFirst' and '$dateLast'
+				AND
+				tm.isActive = 1
+			GROUP BY 
+				dia;
+		");
+
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();	
+   }
+
+   function Ebenezer_Get_Students_By_City()
+   {
+		$db 	= db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+				SELECT 
+					ci.name AS municipio, 
+					COUNT(c.cityID) AS cantidad 
+				FROM 
+					tb_customer c
+					INNER JOIN tb_catalog_item ci ON 
+						c.cityID = ci.catalogItemID
+				WHERE 
+					c.isActive = 1
+				GROUP BY
+					ci.name
+		");
+
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();	
+   }
+
+   function Ebenezer_Get_Students_By_Sex()
+   {
+		$db 	= db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+				SELECT 
+					ci.name AS sexo, 
+					COUNT(c.sexoID) AS cantidad 
+				FROM 
+					tb_customer c 
+					INNER JOIN tb_catalog_item ci ON 
+						c.sexoID = ci.catalogItemID
+				WHERE
+					c.isActive = 1
+				GROUP BY
+					ci.name
+		");
+
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();	
+   }
    
    
 }
