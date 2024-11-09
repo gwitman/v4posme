@@ -70,7 +70,7 @@
 																		if($objListBranch)
 																		foreach($objListBranch as $ws){
 																			if($counter == 0 )
-																				echo "<option value='".$ws->branchID."' selected >".$ws->name."</option>";
+																				echo "<option value='".$ws->branchID."' ".getBehavio($company->type,"app_purchase_taller","attrSelectedSucursal","selected")." >".$ws->name."</option>";
 																			else 
 																				echo "<option value='".$ws->branchID."' >".$ws->name."</option>";
 																			

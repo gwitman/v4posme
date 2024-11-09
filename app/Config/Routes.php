@@ -769,6 +769,10 @@ $routes->match(['get','post'],'app_inventory_report/movement_by_warehouse','app_
 $routes->match(['get','post'],'app_inventory_report/movement_by_warehouse/(:any)','app_inventory_report::movement_by_warehouse');
 $routes->match(['get','post'],'app_inventory_report/list_item_real_estate','app_inventory_report::list_item_real_estate');
 $routes->match(['get','post'],'app_inventory_report/list_item_real_estate/(:any)','app_inventory_report::list_item_real_estate');
+$routes->match(['get','post'],'app_inventory_report/printer_stiker_sin_precio','app_inventory_report::printer_stiker_sin_precio');
+$routes->match(['get','post'],'app_inventory_report/printer_stiker_sin_precio/(:any)','app_inventory_report::printer_stiker_sin_precio');
+$routes->match(['get','post'],'app_inventory_report/printer_stiker_con_precio','app_inventory_report::printer_stiker_con_precio');
+$routes->match(['get','post'],'app_inventory_report/printer_stiker_con_precio/(:any)','app_inventory_report::printer_stiker_con_precio');
 $routes->match(['get','post'],'app_inventory_report/movement','app_inventory_report::movement');
 $routes->match(['get','post'],'app_inventory_report/movement/(:any)','app_inventory_report::movement');
 $routes->match(['get','post'],'app_inventory_report/master_kardex','app_inventory_report::master_kardex');

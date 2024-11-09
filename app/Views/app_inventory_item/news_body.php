@@ -42,7 +42,7 @@
 			
 				<ul id="myTab" class="nav nav-tabs">
 					<li class="active"><a href="#home" data-toggle="tab">Informacion</a></li>
-					<li><a href="#profile" data-toggle="tab">Referencias</a></li>
+					<li class="<?php echo getBehavio($company->type,"app_inventory_item","menuBodegaReferencias",""); ?>" ><a href="#profile" data-toggle="tab">Referencias</a></li>
 					<li class="<?php echo getBehavio($company->type,"app_inventory_item","menuBodegaPestana",""); ?>" ><a href="#warehouse" data-toggle="tab">Bodegas</a></li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas<b class="caret"></b></a>

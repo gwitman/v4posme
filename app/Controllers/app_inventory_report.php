@@ -992,5 +992,237 @@ class app_inventory_report extends _BaseController {
 		}
 	}
 	
+	//facturacino imprimir directamente en impresora, formato de ticket
+	function printer_stiker_sin_precio($listItem="")
+	{
+		
+		$listItem = helper_SegmentsByIndex($this->uri->getSegments(),1,$listItem);	
+		
+		
+		try{
+			
+			
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			$listItem					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"listItem");//--finuri
+			$listItem 					= urldecode($listItem);		
+			
+			$companyID 					= $dataSession["user"]->companyID;		
+			$branchID 					= $dataSession["user"]->branchID;		
+			$roleID 					= $dataSession["role"]->roleID;		
+			
+			//Cargar Libreria		
+			$listItem			= explode("|",$listItem);
+			$objCompany 		= $this->Company_Model->get_rowByPK($companyID);
+			
+			$objTypePriceValue					= $this->core_web_parameter->getParameter("INVOICE_DEFAULT_TYPE_PRICE",$companyID);
+			$objTypePriceValue					= $objTypePriceValue->value;
+			
+			$objTypeListPriceValue				= $this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID);
+			$objTypeListPriceValue				= $objTypeListPriceValue->value;
+			
+			
+			//Actualizar lso codigos de barra
+			$objListaItemPrinter = array();			
+			$itemID 			 = 0;			
+			foreach($listItem as $itemWitCantidad)
+			{
+				
+				$itemWitCantidadTmp	= explode("-",$itemWitCantidad);				
+				$itemID 	= $itemWitCantidadTmp[0];
+				$cantidad 	= $itemWitCantidadTmp[1];			
+				//Obtener Lista de Productos	
+				$objItem 			= $this->Item_Model->get_rowByPK($companyID,$itemID);
+					
+				if($objItem == null)
+				{}		
+				else{	
+					for($i = 0; $i < $cantidad ; $i++){
+						$objItemTempory 			= $this->Item_Model->get_rowByPK($companyID,$itemID);
+						$objItemTempory->itemPrice 	= $this->Price_Model->get_rowByPK($companyID, $objTypeListPriceValue, $itemID, $objTypePriceValue /*Precio publico*/)->price;
+						array_push($objListaItemPrinter,$objItemTempory);
+					}
+				}
+			}
+					
+					
+				
+		
+			
+			//Generar Reporte
+			$dataView["objListaItem"] 	= $objListaItemPrinter;
+			$html = helper_reporteItemStickerSinPrecio(
+			    "STICKER",
+			    $objCompany,
+				$dataView
+			);
+			
+			$this->dompdf->loadHTML($html);
+			$this->dompdf->render();
+			
+			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+			
+			if($objParameterShowLinkDownload == "true")
+			{
+				$fileNamePut = "sticker_".$itemID."_".date("dmYhis").".pdf";
+				$path        = "./resource/file_company/company_".$companyID."/component_33/component_item_".$itemID."/".$fileNamePut;
+				
+				file_put_contents(
+					$path , 
+					$this->dompdf->output()
+				);								
+				
+				chmod($path, 644);				
+				echo "<a 
+					href='".base_url()."/resource/file_company/company_".$companyID."/component_33/component_item_".$transactionMasterID."/".
+					$fileNamePut."'>download compra</a>
+				"; 				
+			
+			}
+			else{			
+				//visualizar
+				$this->dompdf->stream("file.pdf ", ['Attachment' =>  true ]);
+			}
+			
+			
+		}
+		catch(\Exception $ex)
+		{			
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;		
+		}	
+	}
+	
+	//facturacino imprimir directamente en impresora, formato de ticket
+	function printer_stiker_con_precio($listItem="")
+	{
+		
+		$listItem = helper_SegmentsByIndex($this->uri->getSegments(),1,$listItem);	
+		
+		
+		try{
+			
+			
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			$listItem					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"listItem");//--finuri
+			$listItem 					= urldecode($listItem);		
+			
+			$companyID 					= $dataSession["user"]->companyID;		
+			$branchID 					= $dataSession["user"]->branchID;		
+			$roleID 					= $dataSession["role"]->roleID;		
+			
+			//Cargar Libreria		
+			$listItem			= explode("|",$listItem);
+			$objCompany 		= $this->Company_Model->get_rowByPK($companyID);
+			
+			$objTypePriceValue					= $this->core_web_parameter->getParameter("INVOICE_DEFAULT_TYPE_PRICE",$companyID);
+			$objTypePriceValue					= $objTypePriceValue->value;
+			
+			$objTypeListPriceValue				= $this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID);
+			$objTypeListPriceValue				= $objTypeListPriceValue->value;
+			
+			
+			//Actualizar lso codigos de barra
+			$objListaItemPrinter = array();			
+			$itemID 			 = 0;			
+			foreach($listItem as $itemWitCantidad)
+			{
+				
+				$itemWitCantidadTmp	= explode("-",$itemWitCantidad);				
+				$itemID 	= $itemWitCantidadTmp[0];
+				$cantidad 	= $itemWitCantidadTmp[1];			
+				//Obtener Lista de Productos	
+				$objItem 			= $this->Item_Model->get_rowByPK($companyID,$itemID);
+					
+				if($objItem == null)
+				{}		
+				else{	
+					for($i = 0; $i < $cantidad ; $i++){
+						$objItemTempory 			= $this->Item_Model->get_rowByPK($companyID,$itemID);
+						$objItemTempory->itemPrice 	= $this->Price_Model->get_rowByPK($companyID, $objTypeListPriceValue, $itemID, $objTypePriceValue /*Precio publico*/)->price;
+						array_push($objListaItemPrinter,$objItemTempory);
+					}
+				}
+			}
+					
+					
+				
+		
+			
+			//Generar Reporte
+			$dataView["objListaItem"] 	= $objListaItemPrinter;
+			$html = helper_reporteItemStickerConPrecio(
+			    "STICKER",
+			    $objCompany,
+				$dataView
+			);
+			
+			$this->dompdf->loadHTML($html);
+			$this->dompdf->render();
+			
+			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+			
+			if($objParameterShowLinkDownload == "true")
+			{
+				$fileNamePut = "sticker_".$itemID."_".date("dmYhis").".pdf";
+				$path        = "./resource/file_company/company_".$companyID."/component_33/component_item_".$itemID."/".$fileNamePut;
+				
+				file_put_contents(
+					$path , 
+					$this->dompdf->output()
+				);								
+				
+				chmod($path, 644);				
+				echo "<a 
+					href='".base_url()."/resource/file_company/company_".$companyID."/component_33/component_item_".$transactionMasterID."/".
+					$fileNamePut."'>download compra</a>
+				"; 				
+			
+			}
+			else{			
+				//visualizar
+				$this->dompdf->stream("file.pdf ", ['Attachment' =>  true ]);
+			}
+			
+			
+		}
+		catch(\Exception $ex)
+		{			
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;		
+		}	
+		
+	}
+	
+	
 }
 ?>

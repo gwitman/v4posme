@@ -1,7 +1,9 @@
 <!-- ./ page heading -->
 <script>		
-	var objCallback					= '<?php echo $callback; ?>';
-	var objParameterUrlPrinterCode  = '<?php echo $objParameterMasive; ?>';
+	var objCallback							= '<?php echo $callback; ?>';
+	var objParameterUrlPrinterCode  		 = '<?php echo $objParameterMasive; ?>';
+	var objParameterUrlPrinterCodeSinPrecio  = '<?php echo $objParameterMasiveSinPrecio; ?>';
+	var objParameterUrlPrinterCodeConPrecio  = '<?php echo $objParameterMasiveConPrecio; ?>';
 	var objRowWarehouse 			= {};
 	var objRowSku 					= {};
 	var objTableDetailProvider 		= {};
@@ -143,6 +145,20 @@
 			var url 	= objParameterUrlPrinterCode+"/listItem/0-0-0-0-0-0|"+"<?php echo $objItem->itemID."-1-".$objItem->itemNumber."-".$objItem->name."-".$objItem->barCode."-"; ?>"+price;
 			window.open(url, "_blank");	
 		});
+		
+		$(document).on("click","#btnPrinterSinPrecio",function(){
+			var price 	= <?php echo $objListPriceItemFirst; ?>;			
+			var url 	= objParameterUrlPrinterCodeSinPrecio+"/listItem/0-0-0-0-0-0|"+"<?php echo $objItem->itemID."-1-".$objItem->itemNumber."-".$objItem->name."-".$objItem->barCode."-"; ?>"+price;
+			window.open(url, "_blank");	
+		});
+		
+		$(document).on("click","#btnPrinterdConPrecio",function(){
+			var price 	= <?php echo $objListPriceItemFirst; ?>;			
+			var url 	= objParameterUrlPrinterCodeConPrecio+"/listItem/0-0-0-0-0-0|"+"<?php echo $objItem->itemID."-1-".$objItem->itemNumber."-".$objItem->name."-".$objItem->barCode."-"; ?>"+price;
+			window.open(url, "_blank");	
+		});
+		
+		
 		$(document).on("click","#btnDelete",function(){							
 			fnShowConfirm("Confirmar..","Desea eliminar este Registro...",function(){
 				fnWaitOpen();

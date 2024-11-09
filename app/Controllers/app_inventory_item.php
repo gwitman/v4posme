@@ -136,6 +136,14 @@ class app_inventory_item extends _BaseController
             $objParameterMasive 			= $this->core_web_parameter->getParameter("ITEM_PRINTER_BARCODE_MASIVE", $companyID);
             $objParameterMasive 			= $objParameterMasive->value;
             $dataView["objParameterMasive"] = $objParameterMasive;
+			
+			$objParameterMasiveSinPrecio 			 = $this->core_web_parameter->getParameter("ITEM_PRINTER_BARCODE_MASIVE_SIN_PRECIO", $companyID);
+            $objParameterMasiveSinPrecio 			 = $objParameterMasiveSinPrecio->value;
+            $dataView["objParameterMasiveSinPrecio"] = $objParameterMasiveSinPrecio;
+			
+			$objParameterMasiveConPrecio 			 = $this->core_web_parameter->getParameter("ITEM_PRINTER_BARCODE_MASIVE_CON_PRECIO", $companyID);
+            $objParameterMasiveConPrecio 			 = $objParameterMasiveConPrecio->value;
+            $dataView["objParameterMasiveConPrecio"] = $objParameterMasiveConPrecio;
 
 
             //Obtener colaborador

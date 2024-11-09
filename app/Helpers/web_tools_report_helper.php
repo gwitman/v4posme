@@ -5091,6 +5091,195 @@ function helper_reporteA4mmTransactionMasterTallerStickerGlobalPro(
   return $html;
 }
 
+
+function helper_reporteItemStickerSinPrecio(
+  $titulo,
+  $objCompany,
+  $dataView
+)
+{
+	
+  
+	$font_size1   	= "18px";
+	$border_left 	= "border-left: 1px solid black;";
+	$border_right 	= "border-right: 1px solid black;";
+	$border_top 	= "border-top: 1px solid black;";
+	$border_bottom 	= "border-bottom: 1px solid black;";
+	$border_radius	= "border-radius: 10px;";
+	$border_colapse = "border-collapse:separate;";
+
+
+    $html    = "";
+    $html    = "
+				  <!--
+                  Online HTML, CSS and JavaScript editor to run code online.
+                  https://www.programiz.com/html/online-compiler/
+                  -->
+                  <!DOCTYPE html>
+                  <html lang='en'>
+      
+                  <head>
+                    <meta charset='UTF-8' />
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+                    <style>
+          
+                      @page {       
+                        size: 6cm 3.4cm;             
+            
+                        margin-top:25px;
+                        margin-left:25px;
+                        margin-right:20px;
+						margin-bottom: 25px;
+						
+						
+						padding-top: 0px;
+						padding-right: 0px;
+						padding-bottom: 0px;
+						padding-left: 0px;
+            
+                      }
+                      table{
+                        font-size: xx-small;
+                        font-family: sans-serif, monaco, monospace;						 
+						border-collapse: collapse;
+                      }
+						td{
+                        font-size: xx-small;
+                        font-family: sans-serif, monaco, monospace;
+						/*border: 1px solid black;*/
+						border-collapse: collapse;
+                      }
+                    </style>
+                  </head>
+      
+                  <body>
+        ";
+      
+  $f_html = 	  "
+                    <table style='width:98%'>
+						  <tr>
+							<td style='text-align:center;font-weight: bold;'>
+								".$objCompany->name."
+							</td>
+						  </tr>
+						  <tr>
+							<td style='text-align:center'>
+								[[NOMBRE]]
+							</td>
+						  </tr>
+						  <tr>
+							<td style='text-align:center'>
+								".$dataView["objListaItem"][0]->name."
+							</td>
+						  </tr>
+						  <tr>
+							<td style='text-align:center'>
+							</td>
+						  </tr>
+					</table>
+        
+          ";
+		   
+
+  $html 				= $html.$f_html."</body></html>";	  
+  return $html;
+}
+
+function helper_reporteItemStickerConPrecio(
+  $titulo,
+  $objCompany,
+  $dataView
+)
+{
+	
+  
+	$font_size1   	= "18px";
+	$border_left 	= "border-left: 1px solid black;";
+	$border_right 	= "border-right: 1px solid black;";
+	$border_top 	= "border-top: 1px solid black;";
+	$border_bottom 	= "border-bottom: 1px solid black;";
+	$border_radius	= "border-radius: 10px;";
+	$border_colapse = "border-collapse:separate;";
+
+
+    $html    = "";
+    $html    = "
+				  <!--
+                  Online HTML, CSS and JavaScript editor to run code online.
+                  https://www.programiz.com/html/online-compiler/
+                  -->
+                  <!DOCTYPE html>
+                  <html lang='en'>
+      
+                  <head>
+                    <meta charset='UTF-8' />
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+                    <style>
+          
+                      @page {       
+                        size: 6cm 3.4cm;             
+            
+                        margin-top:25px;
+                        margin-left:25px;
+                        margin-right:20px;
+						margin-bottom: 25px;
+						
+						
+						padding-top: 0px;
+						padding-right: 0px;
+						padding-bottom: 0px;
+						padding-left: 0px;
+            
+                      }
+                      table{
+                        font-size: xx-small;
+                        font-family: sans-serif, monaco, monospace;						 
+						border-collapse: collapse;
+                      }
+						td{
+                        font-size: xx-small;
+                        font-family: sans-serif, monaco, monospace;
+						/*border: 1px solid black;*/
+						border-collapse: collapse;
+                      }
+                    </style>
+                  </head>
+      
+                  <body>
+        ";
+      
+  $f_html = 	  "
+                    <table style='width:98%'>
+						  <tr>
+							<td style='text-align:center;font-weight: bold;'>
+								".$objCompany->name."
+							</td>
+						  </tr>
+						  <tr>
+							<td style='text-align:center'>
+								[[NOMBRE]]
+							</td>
+						  </tr>
+						  <tr>
+							<td style='text-align:center'>
+								".$dataView["objListaItem"][0]->name."
+							</td>
+						  </tr>
+						  <tr>
+							<td style='text-align:center'>
+								".round($dataView["objListaItem"][0]->itemPrice,2)."
+							</td>
+						  </tr>
+					</table>
+        
+          ";
+		   
+
+  $html 				= $html.$f_html."</body></html>";	  
+  return $html;
+}
+
+
 function helper_reporteA4mmTransactionMasterInventoryOtherOutputStickerGlobalPro(
   $titulo,
   $objCompany,

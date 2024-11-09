@@ -10,6 +10,13 @@
 						?>
 						<a href="<?php echo base_url(); ?>/app_inventory_item/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>
 						<a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>
+						
+						<button class="btn btn-primary dropdown-toggle <?php echo getBehavio($company->type,"app_inventory_item","btnDropDownPrinter","hidden"); ?>" data-toggle="dropdown"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Imprimir </font></font><span class="caret"></span></button>
+						<ul class="dropdown-menu">
+							<li><a href="#" id="btnPrinterSinPrecio"    ><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"><i class="icon16 i-print"></i> Sticker sin precio</font></font></a></li>
+							<li><a href="#" id="btnPrinterdConPrecio"   ><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"><i class="icon16 i-print"></i> Sticker con precio</font></font></a></li>
+						</ul>
+						
 						<?php
 					}
 					else{
@@ -42,7 +49,7 @@
 			
 				<ul id="myTab" class="nav nav-tabs">
 					<li class="active"><a href="#home" data-toggle="tab">Informacion</a></li>
-					<li><a href="#profile" data-toggle="tab">Referencias</a></li>
+					<li class="<?php echo getBehavio($company->type,"app_inventory_item","menuBodegaReferencias",""); ?>" ><a href="#profile" data-toggle="tab">Referencias</a></li>
 					<li class="<?php echo getBehavio($company->type,"app_inventory_item","menuBodegaPestana",""); ?>" ><a href="#warehouse" data-toggle="tab">Bodegas</a></li>
 					<li><a href="#provider" data-toggle="tab">Proveedores</a></li>
 					<li>

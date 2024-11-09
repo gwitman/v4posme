@@ -174,6 +174,8 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('globalpro_app_inventory_item_divTxtPresentacion') 			 								=> "hidden",
 		strtolower('globalpro_app_inventory_item_divTxtPresentacionUM') 										=> "hidden",
 		strtolower('globalpro_app_inventory_item_divTxtUM') 			 										=> "hidden",	
+		strtolower('globalpro_app_inventory_item_menuBodegaReferencias') 	 									=> "hidden",
+		strtolower('globalpro_app_inventory_item_btnDropDownPrinter') 	 										=> "",
 		
 		
 		strtolower('globalpro_app_cxc_customer_divTxtNombres') 													=> "hidden",
@@ -230,6 +232,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('globalpro_app_purchase_taller_divTxtChange')												=> "hidden",
 		strtolower('globalpro_app_purchase_taller_divTxtStatus')												=> "hidden",
 		strtolower('globalpro_app_purchase_taller_divTxtCurrency')												=> "hidden",
+		strtolower('globalpro_app_purchase_taller_attrSelectedSucursal')										=> "",
 		strtolower('globalpro_app_purchase_taller_scriptValidateForm')											=> "	
 
 
@@ -252,6 +255,14 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 			fnShowNotification('Describir descripción de (otros)','error',timerNotification);
 			result = false;
 		}
+		
+		
+		if( $('#txtBranchID').val() == '' )
+		{
+			fnShowNotification('Seleccionar sucursal','error',timerNotification);
+			result = false;
+		}
+		
 		",
 		strtolower('globalpro_app_purchase_garantia_divPanelAplicado') 												=> "hidden",
 		strtolower('globalpro_app_purchase_garantia_divPanelCambio') 												=> "hidden",
