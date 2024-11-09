@@ -1465,6 +1465,127 @@ class Transaction_Master_Detail_Model extends Model  {
 		return $db->query($sql)->getResult();	
    }
    
-   
+
+
+
+
+
+   function FinancieraCorea_Desembolsos_Mensuales($companyID,$dateFirst,$dateLast)
+   {
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+		  	SELECT 
+				MONTH(c.createdOn) as Mes,
+				SUM(c.amount) as Desembolso 
+			FROM 
+				tb_transaction_master c 
+			WHERE 
+				c.transactionID = 19 /*factura*/ 
+				AND 
+				c.isActive = 1 
+				AND 
+				c.transactionCausalID in (22 /*credito*/,24 /*credito*/) 
+				AND 
+				c.statusID in (67 /*aplicada*/) 
+				AND  
+				c.createdOn between '$dateFirst' and '$dateLast'
+			group by 
+				1
+		");
+
+		return $db->query($sql)->getResult();
+   }
+
+   function FinancieraCorea_Pagos_Mensuales($companyID,$dateFirst,$dateLast)
+   {
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+			SELECT 
+				MONTH(c.createdOn) AS Mes, 
+				SUM(c.amount) AS Pagos
+			FROM 
+				tb_transaction_master c
+			WHERE 
+				c.transactionID = 23 /*abonos*/ 
+				AND 
+				c.isActive = 1 
+				AND 
+				c.statusID = 80 /*aplicadao*/ 
+				AND 
+				c.createdOn BETWEEN '$dateFirst' AND '$dateLast'
+			GROUP BY 
+				1 ;
+		");
+
+		return $db->query($sql)->getResult();
+   }
+
+   function FinancieraCorea_Interes_Mensual($companyID,$dateFirst,$dateLast)
+   {
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+			SELECT 
+				MONTH(c.createdOn) AS Mes,
+				SUM(tdc.interest) as Interes 
+			FROM 
+				tb_transaction_master c 
+				INNER JOIN tb_transaction_master_detail td ON 
+					td.transactionMasterID = c.transactionMasterID 
+				INNER JOIN tb_transaction_master_detail_credit tdc ON 
+					tdc.transactionMasterDetailID = td.transactionMasterDetailID 
+			WHERE 
+				c.transactionID = 23 /*abonos*/ 
+				AND 
+				c.isActive = 1 
+				AND 
+				td.isActive = 1 
+				AND 
+				c.statusID = 80 /*aplicadao*/ 
+				AND 
+				c.createdOn between '$dateFirst' and '$dateLast'  
+			GROUP BY 
+				1 ;
+		");
+
+		return $db->query($sql)->getResult();
+	}
+
+	function FinancieraCorea_Capital_Mensual($companyID,$dateFirst,$dateLast)
+   {
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+			SELECT 
+				MONTH(c.createdOn) AS Mes,
+				SUM(tdc.capital) as Capital 
+			FROM 
+				tb_transaction_master c 
+				INNER JOIN tb_transaction_master_detail td ON 
+					td.transactionMasterID = c.transactionMasterID 
+				INNER JOIN tb_transaction_master_detail_credit tdc ON 
+					tdc.transactionMasterDetailID = td.transactionMasterDetailID 
+			WHERE 
+				c.transactionID = 23 /*abonos*/ 
+				AND 
+				c.isActive = 1 
+				AND 
+				td.isActive = 1 
+				AND 
+				c.statusID = 80 /*aplicadao*/ 
+				AND 
+				c.createdOn between '$dateFirst' and '$dateLast'  
+			GROUP BY 
+				1 ;
+		");
+
+		return $db->query($sql)->getResult();
+   	}
 }
 ?>

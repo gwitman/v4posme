@@ -138,29 +138,37 @@ class core_dashboards extends _BaseController {
 	
 	function getIndexCorea($dataSession)
 	{
+
 		$firstDateYear					= helper_PrimerDiaDelMes();
 		$lastDateYear					= helper_UltimoDiaDelMes();
 		$firstDate						= helper_PrimerDiaDelMes();
-		$lastDate						= helper_UltimoDiaDelMes();			
-		$objListVentas					= $this->Transaction_Master_Detail_Model->GlobalPro_get_rowBySalesByEmployeerMonthOnly_Sales($dataSession["user"]->companyID,$firstDate,$lastDate);
-		$objListTecnico					= $this->Transaction_Master_Detail_Model->GlobalPro_get_rowBySalesByEmployeerMonthOnly_Tenico($dataSession["user"]->companyID,$firstDate,$lastDate);
+		$lastDate						= helper_UltimoDiaDelMes();	
 		
-		//Obtener las Ventas Mensuales
+		if(
+			$dataSession["role"]->name == "COMPU_MATT@ADMINISTRADOR" ||
+			$dataSession["role"]->name == "SUPE ADMIN"
+		)
+		{
+			$firstDateYear					= helper_PrimerDiaDelYear();
+			$lastDateYear					= helper_UltimoDiaDelYear();
+		}
+			
+		
+		//Obtener Desembolsos Mensuales
 		$objFirstYearDate 		= \DateTime::createFromFormat('Y-m-d', $firstDateYear);
 		$objFirstYearDate->setTime(0, 0, 0);						
 		$objFirstDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
 		$objFirstDate->setTime(0, 0, 0);		
-		$objListVentaMensual = array();
+		$objListDesembolsoMensual = array();
 		while($objFirstYearDate <= $objFirstDate)
 		{				
 			$objLastDayMont =  \DateTime::createFromFormat('Y-m-d', $objFirstYearDate->format("Y-m-d"));
 			$objLastDayMont->modify('+1 month');
 			$objLastDayMont->modify('-1 day');
-			
-			$objListVentaMensualTemporal = $this->Transaction_Master_Detail_Model->GlobalPro_get_MonthOnly_Sales($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDayMont->format("Y-m-d") );
-			if($objListVentaMensualTemporal)
+			$objListDesembolsoMensualTemporal = $this->Transaction_Master_Detail_Model->FinancieraCorea_Desembolsos_Mensuales($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDayMont->format("Y-m-d") );
+			if($objListDesembolsoMensualTemporal)
 			{
-				array_push($objListVentaMensual, $objListVentaMensualTemporal[0]);
+				array_push($objListDesembolsoMensual, $objListDesembolsoMensualTemporal[0]);
 
 			}
 			$objFirstYearDate->modify('+1 month');
@@ -168,30 +176,71 @@ class core_dashboards extends _BaseController {
 		
 		
 		
-		//Obtener las Ventas Diarias
+		//Obtener Pagos Mensuales
+		$objFirstYearDate 		= \DateTime::createFromFormat('Y-m-d', $firstDateYear);
+		$objFirstYearDate->setTime(0, 0, 0);						
 		$objFirstDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
-		$objFirstDate->setTime(0, 0, 0);						
-		$objLastDate 		= \DateTime::createFromFormat('Y-m-d H:i:s', $lastDate);
-		$objLastDate->setTime(0, 0, 0);
-		$objNowDate 		= \DateTime::createFromFormat('Y-m-d H:i:s', helper_getDate());
-		$objNowDate->setTime(0, 0, 0);
-		$objListVentaDiaria = array();
-		while($objFirstDate <= $objNowDate)
+		$objFirstDate->setTime(0, 0, 0);		
+		$objListPagoMensual = array();
+		while($objFirstYearDate <= $objFirstDate)
 		{				
-			$objListVentaDiariaTemporal = $this->Transaction_Master_Detail_Model->GlobalPro_get_Day_Sales($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objFirstDate->format("Y-m-d") );
-			if($objListVentaDiariaTemporal)
+			$objLastDayMont =  \DateTime::createFromFormat('Y-m-d', $objFirstYearDate->format("Y-m-d"));
+			$objLastDayMont->modify('+1 month');
+			$objLastDayMont->modify('-1 day');
+			$objListPagoMensualTemporal = $this->Transaction_Master_Detail_Model->FinancieraCorea_Pagos_Mensuales($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDayMont->format("Y-m-d") );
+			if($objListPagoMensualTemporal)
 			{
-				array_push($objListVentaDiaria, $objListVentaDiariaTemporal[0]);
-
+				array_push($objListPagoMensual, $objListPagoMensualTemporal[0]);
+	
 			}
-			$objFirstDate->modify('+1 day');
+			$objFirstYearDate->modify('+1 month');
+		}
+
+		//Obtener Intereses Mensuales
+		$objFirstYearDate 		= \DateTime::createFromFormat('Y-m-d', $firstDateYear);
+		$objFirstYearDate->setTime(0, 0, 0);						
+		$objFirstDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
+		$objFirstDate->setTime(0, 0, 0);		
+		$objListInteresMensual = array();
+		while($objFirstYearDate <= $objFirstDate)
+		{				
+			$objLastDayMont =  \DateTime::createFromFormat('Y-m-d', $objFirstYearDate->format("Y-m-d"));
+			$objLastDayMont->modify('+1 month');
+			$objLastDayMont->modify('-1 day');
+			$objListInteresMensualTemporal = $this->Transaction_Master_Detail_Model->FinancieraCorea_Interes_Mensual($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDayMont->format("Y-m-d") );
+			if($objListInteresMensualTemporal)
+			{
+				array_push($objListInteresMensual, $objListInteresMensualTemporal[0]);
+	
+			}
+			$objFirstYearDate->modify('+1 month');
+		}
+
+		//Obtener Capital Mensual
+		$objFirstYearDate 		= \DateTime::createFromFormat('Y-m-d', $firstDateYear);
+		$objFirstYearDate->setTime(0, 0, 0);						
+		$objFirstDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
+		$objFirstDate->setTime(0, 0, 0);		
+		$objListCapitalMensual = array();
+		while($objFirstYearDate <= $objFirstDate)
+		{				
+			$objLastDayMont =  \DateTime::createFromFormat('Y-m-d', $objFirstYearDate->format("Y-m-d"));
+			$objLastDayMont->modify('+1 month');
+			$objLastDayMont->modify('-1 day');
+			$objListCapitalMensualTemporal = $this->Transaction_Master_Detail_Model->FinancieraCorea_Capital_Mensual($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDayMont->format("Y-m-d") );
+			if($objListCapitalMensualTemporal)
+			{
+				array_push($objListCapitalMensual, $objListCapitalMensualTemporal[0]);
+	
+			}
+			$objFirstYearDate->modify('+1 month');
 		}
 		
 		//Renderizar Resultado			
-		$dataSession["objListVentas"]		= $objListVentas;
-		$dataSession["objListTecnico"]		= $objListTecnico;
-		$dataSession["objListVentaMensual"]	= $objListVentaMensual;
-		$dataSession["objListVentaDiaria"]	= $objListVentaDiaria;
+		$dataSession["objListCapitalMensual"]		= $objListCapitalMensual;
+		$dataSession["objListInteresMensual"]		= $objListInteresMensual;
+		$dataSession["objListDesembolsoMensual"]	= $objListDesembolsoMensual;
+		$dataSession["objListPagoMensual"]			= $objListPagoMensual;
 		return $dataSession;
 	}
 	function getIndexCompuMatt($dataSession)
