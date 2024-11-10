@@ -52,7 +52,7 @@ class User_Tag_Model extends Model  {
 		$sql = $sql.sprintf(" inner join  tb_user u on ut.userID = u.userID");
 		$sql = $sql.sprintf(" inner join  tb_tag t on ut.tagID = t.tagID");
 		$sql = $sql.sprintf(" where ut.tagID = $tagID");		
-		$sql = $sql.sprintf(" and t.isActive= 1");	
+		$sql = $sql.sprintf(" and t.isActive= 1 and u.isActive = 1 ");	
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();

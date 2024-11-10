@@ -1028,6 +1028,7 @@ $routes->match(['get','post'],'app_invoice_price/add','app_invoice_price::add');
 $routes->match(['get','post'],'app_invoice_price/index','app_invoice_price::index');
 $routes->match(['get','post'],'app_invoice_price/index/(:any)','app_invoice_price::index');
 $routes->match(['get','post'],'app_notification/fillCurrentNotification','app_notification::fillCurrentNotification');
+$routes->match(['get','post'],'app_notification/fillSendWhatsappOrEmail','app_notification::fillSendWhatsappOrEmail');
 $routes->match(['get','post'],'app_notification/sendEmail','app_notification::sendEmail');
 $routes->match(['get','post'],'app_notification/fillSendWhatsappCustomer','app_notification::fillSendWhatsappCustomer');
 $routes->match(['get','post'],'app_notification/sendWhatsappPosMeCalendar','app_notification::sendWhatsappPosMeCalendar');

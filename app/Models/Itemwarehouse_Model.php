@@ -61,7 +61,7 @@ class ItemWarehouse_Model extends Model  {
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
 		$sql = $sql.sprintf(" and i.isActive= 1");
 		$sql = $sql.sprintf(" and w.isActive= 1");
-		$sql = $sql.sprintf(" and iw.quantity < iw.quantityMin");
+		$sql = $sql.sprintf(" and iw.quantity < iw.quantityMin ");
 
 		
 		//Ejecutar Consulta

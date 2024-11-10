@@ -162,7 +162,8 @@
 										type        : 'POST',
 										url  		: "<?php echo base_url(); ?>/app_accounting_process/execNotification",
 										data 		: { notificationName :$("#txtNotificationProcess").val() },
-										success:function(data){
+										success:function(data)
+										{
 											fnWaitClose();
 											console.info("complete delete success");
 											if(data.error){
@@ -178,7 +179,7 @@
 										error:function(xhr,data){	
 											fnWaitClose();
 											console.info("complete delete error");									
-											fnShowNotification("Error 505","error");
+											fnShowNotification("success","success");
 										}
 									});
 							});

@@ -204,84 +204,16 @@ class app_accounting_process extends _BaseController {
 			$loginID				= $this->core_web_authentication->isAuthenticated() ? $dataSession["user"]->userID : 2;
 			$notificationName		= /*inicio get post*/ $this->request->getVar("notificationName") == "" ? "TODAS" : /*inicio get post*/ $this->request->getVar("notificationName") ;	
 			$logDB["code"]			= 0;
-
 			
 			
-			/*TODAS*/			
-			if ($notificationName == "currentNotification" || $notificationName == "TODAS")
-			{
-					$ex = curl_init();
-					curl_setopt($ex, CURLOPT_URL, base_url()."/app_notification/fillCurrentNotification");
-					curl_setopt($ex, CURLOPT_HEADER, 0);
-					$er = curl_exec($ex);
-					$er = curl_close($ex);
-			}
-			if ($notificationName == "sendEmail" || $notificationName == "TODAS")
-			{
-				$ex = curl_init();
-				curl_setopt($ex, CURLOPT_URL,  base_url()."/app_notification/sendEmail");
-				curl_setopt($ex, CURLOPT_HEADER, 0);
-				$er = curl_exec($ex);
-				$er = curl_close($ex);
-			}
-			if ($notificationName == "fillTipoCambio" || $notificationName == "TODAS")
-			{
-				$ex = curl_init();
-				curl_setopt($ex, CURLOPT_URL,  base_url()."/app_notification/fillTipoCambio");
-				curl_setopt($ex, CURLOPT_HEADER, 0);
-				$er = curl_exec($ex);
-				$er = curl_close($ex);
-			}
-			if ($notificationName == "fillInventarioMinimo" || $notificationName == "TODAS")
-			{
-				$ex = curl_init();
-				curl_setopt($ex, CURLOPT_URL,  base_url()."/app_notification/fillInventarioMinimo");
-				curl_setopt($ex, CURLOPT_HEADER, 0);
-				$er = curl_exec($ex);
-				$er = curl_close($ex);
-			}
-			if ($notificationName == "fillInventarioFechaVencimiento" || $notificationName == "TODAS")
-			{
-				$ex = curl_init();
-				curl_setopt($ex, CURLOPT_URL,  base_url()."/app_notification/fillInventarioFechaVencimiento");
-				curl_setopt($ex, CURLOPT_HEADER, 0);
-				$er = curl_exec($ex);
-				$er = curl_close($ex);
-			}
-			if ($notificationName == "fillCumpleayo" || $notificationName == "TODAS")
-			{
-				$ex = curl_init();
-				curl_setopt($ex, CURLOPT_URL,  base_url()."/app_notification/fillCumpleayo");
-				curl_setopt($ex, CURLOPT_HEADER, 0);
-				$er = curl_exec($ex);
-				$er = curl_close($ex);
-			}
-			if ($notificationName == "fillCuotaAtrasada" || $notificationName == "TODAS")
-			{
-				$ex = curl_init();
-				curl_setopt($ex, CURLOPT_URL,  base_url()."/app_notification/fillCuotaAtrasada");
-				curl_setopt($ex, CURLOPT_HEADER, 0);
-				$er = curl_exec($ex);
-				$er = curl_close($ex);
-			}
-			if ($notificationName == "nextVisit" || $notificationName == "TODAS")
-			{
-				$ex = curl_init();
-				curl_setopt($ex, CURLOPT_URL,  base_url()."/app_notification/fillNextVisit/".$companyID);
-				curl_setopt($ex, CURLOPT_HEADER, 0);
-				$er = curl_exec($ex);
-				$er = curl_close($ex);
-			}
-			if ($notificationName == "sendWhatsappCustomer" || $notificationName == "TODAS")
-			{
-				$ex = curl_init();
-				curl_setopt($ex, CURLOPT_URL,  base_url()."/app_notification/fillSendWhatsappCustomer/".$companyID);
-				curl_setopt($ex, CURLOPT_HEADER, 0);
-				$er = curl_exec($ex);
-				$er = curl_close($ex);
-			}
 			
-															
+			/*TODAS*/
+			$ex = curl_init();
+			curl_setopt($ex, CURLOPT_URL, base_url()."/app_notification/".$notificationName);
+			curl_setopt($ex, CURLOPT_HEADER, 0);
+			$er = curl_exec($ex);
+			$er = curl_close($ex);
+												
 			
 			return $this->response->setJSON(array(
 				'error'   => false,
@@ -291,7 +223,8 @@ class app_accounting_process extends _BaseController {
 			
 			
 		}
-		catch(\Exception $ex){
+		catch(\Exception $ex)
+		{
 			
 			return $this->response->setJSON(array(
 				'error'   => true,
@@ -500,6 +433,7 @@ class app_accounting_process extends _BaseController {
 			$objCompanyParameter 				= $this->core_web_parameter->getParameter("ACCOUNTING_PERIOD_WORKFLOWSTAGECLOSED",$dataSession["user"]->companyID);
 			$dataV["objListAccountingPeriod"]	= $this->Component_Period_Model->get_rowByNotClosed($dataSession["user"]->companyID,$objCompanyParameter->value);
 			$dataV["objListTransaction"]		= $this->Transaction_Model->getTransactionContabilizable($dataSession["user"]->companyID);
+			$dataV["objListTag"]				= $this->Tag_Model->get_rows();
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);

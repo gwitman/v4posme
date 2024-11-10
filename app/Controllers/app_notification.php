@@ -22,9 +22,10 @@ class app_notification extends _BaseController
 	function fillCurrentNotification()
 	{
 
-		$tagName		= "NOTIFICAR OBLIGACION";
+		$tagName		= "LLENAR NOTI DE OBLIGACION";
 		$objListCompany = $this->Company_Model->get_rows();
 		$objTag			= $this->Tag_Model->get_rowByName($tagName);
+		
 
 		//Recorrer Empresas
 		if ($objListCompany)
@@ -46,6 +47,7 @@ class app_notification extends _BaseController
 								if ($objListItemDetail->diaProcesado == $noti->day) 
 								{
 
+									
 									$item 					= $objListItemDetail;
 									$mensaje				= "";
 									$mensaje				.= "<span class='badge badge-important'>OBLIGACION</span>" . $item->title;
@@ -119,13 +121,13 @@ class app_notification extends _BaseController
 	function fillSendWhatsappOrEmail()
 	{
 
-		$tagName			= "ENVIAR WHATSAPP A CLIENTE";
+		$tagName			= "LLENAR NOTI DE ENVIO DE EMAIL Y ENVIO DE WHATAPP MASIVO";
 		$objListCompany 	= $this->Company_Model->get_rows();
 		$objTag				= $this->Tag_Model->get_rowByName($tagName);
 		$objListUsuario		= $this->User_Tag_Model->get_rowByPK($objTag->tagID);
 		$objListCustomer 	= $this->Customer_Model->get_rowByCompany_phoneAndEmail(APP_COMPANY);
 		$objListEmail		= $this->Entity_Email_Model->get_rowByCompany(APP_COMPANY);
-		$objParameter		= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT", $companyID);
+		$objParameter		= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT", APP_COMPANY);
 		$characterSplie 	= $objParameter->value;
 
 		//Recorrer Empresas
@@ -185,8 +187,10 @@ class app_notification extends _BaseController
 							$objListItemDetail		= $this->Remember_Model->getProcessNotification($noti->rememberID, $lastNoti);
 							if ($objListItemDetail)
 							{
-								if ($objListItemDetail->diaProcesado == $noti->day) {
+								if ($objListItemDetail->diaProcesado == $noti->day) 
+								{
 
+									
 									$item 					= $objListItemDetail;
 									$mensaje				=  " ";
 									$mensaje				.= " ";
@@ -214,6 +218,7 @@ class app_notification extends _BaseController
 
 											if ($objTag->sendSMS == "1") 
 											{
+												
 												$data						= null;
 												$data["errorID"]			= $errorID;
 												$data["from"]				= PHONE_POSME;
@@ -243,11 +248,17 @@ class app_notification extends _BaseController
 									{
 										foreach ($objListEmail as $customerX) 
 										{
+											
+											$phoneNumber  	= $item->leerFile == 1 ? $customerX["phoneNumber"] : $customerX->email;
+											$firstName  	= $item->leerFile == 1 ? $customerX["firstName"] : $customerX->email;
+
+
 											if ($objTag->sendEmail == "1") {
+												
 												$data						= null;
 												$data["errorID"]			= $errorID;
 												$data["from"]				= EMAIL_APP;
-												$data["to"]					= $usuarioX->email;
+												$data["to"]					= $phoneNumber;
 												$data["subject"]			= "notificar obligacion";
 												$data["message"]			= $mensaje;
 												$data["summary"]			= "notificar obligacion";
@@ -278,7 +289,7 @@ class app_notification extends _BaseController
 	function fillTipoCambio()
 	{
 
-		$tagName		= "NOTIFICAR TIPO DE CAMBIO";
+		$tagName		= "LLENAR NOTI TIPO DE CAMBIO";
 		$date_			= date_format(date_create(), "Y-m-d");
 		$objListCompany = $this->Company_Model->get_rows();
 		$objTag			= $this->Tag_Model->get_rowByName($tagName);
@@ -289,10 +300,10 @@ class app_notification extends _BaseController
 
 				try {
 					$exchangeRate		= $this->core_web_currency->getRatio($i->companyID, $date_, 1, $reportCurrencyID, $defaultCurrencyID);
+					
 				} catch (\Exception $e) 
 				{
 					$mensaje			= $e->getMessage();
-					
 					$data				= null;
 					$errorID 			= 0;					
 					$data["notificated"] = "tipo de cambio...";
@@ -346,7 +357,7 @@ class app_notification extends _BaseController
 	function fillInventarioMinimo()
 	{
 
-		$tagName		= "NOTIFICAR INVENTARIO MINIMO";
+		$tagName		= "LLENAR NOTI INVENTARIO MINIMO";
 		$objListCompany = $this->Company_Model->get_rows();
 		$objTag			= $this->Tag_Model->get_rowByName($tagName);
 		if ($objListCompany)
@@ -414,7 +425,7 @@ class app_notification extends _BaseController
 	}
 	function fillInventarioFechaVencimiento()
 	{
-		$tagName		= "FECHA DE VENCIMIENTO";
+		$tagName		= "LLENAR NOTI DE PRODUCTOS VENCIDOS";
 		$objListCompany = $this->Company_Model->get_rows();
 		$objTag			= $this->Tag_Model->get_rowByName($tagName);
 		if ($objListCompany) {
@@ -448,10 +459,10 @@ class app_notification extends _BaseController
 									$data["errorID"]			= $errorID;
 									$data["from"]				= EMAIL_APP;
 									$data["to"]					= $usuario->email;
-									$data["subject"]			= "INVENTARIO MINIMO";
+									$data["subject"]			= "INVENTARIO VENCIMIENTO";
 									$data["message"]			= $mensaje;
-									$data["summary"]			= "INVENTARIO MINIMO";
-									$data["title"]				= "INVENTARIO MINIMO";
+									$data["summary"]			= "INVENTARIO VENCIMIENTO";
+									$data["title"]				= "INVENTARIO VENCIMIENTO";
 									$data["tagID"]				= $objTag->tagID;
 									$data["createdOn"]			= date_format(date_create(), "Y-m-d H:i:s");
 									$data["isActive"]			= 1;
@@ -485,7 +496,7 @@ class app_notification extends _BaseController
 	//mostrar las notificaciones en sistema, de cumple de clientes
 	function fillCumpleayo()
 	{
-		$tagName		= "FELIZ CUMPLE";
+		$tagName		= "LLENAR NOTI FELIZ CUMPLE";
 		$objTag			= $this->Tag_Model->get_rowByName($tagName);
 
 		//Para cada empresa
@@ -537,7 +548,7 @@ class app_notification extends _BaseController
 	function fillCuotaAtrasada()
 	{
 
-		$tagName		= "NOTIFICAR CUOTA VENCIDA";
+		$tagName		= "LLENAR NOTI CUOTA A TRASADA";
 		$objListCompany = $this->Company_Model->get_rows();
 		$objTag			= $this->Tag_Model->get_rowByName($tagName);
 
@@ -612,9 +623,9 @@ class app_notification extends _BaseController
 	//crear las notificaciones en la base de datos. para revisar cuales son las siguientes visitas
 	function fillNextVisit($companyID = "")
 	{
-		$tagName		= "PROXIMA VISITA";
+		$tagName		= "LLENAR NOTI PROXIMA VISITA";
 		$objTag			= $this->Tag_Model->get_rowByName($tagName);
-		$companyID 		= helper_SegmentsByIndex($this->uri->getSegments(), 1, $companyID);
+		$companyID 		= APP_COMPANY;
 		$objLTM			= $this->Transaction_Master_Model->get_rowByNotification($companyID);
 
 		if ($objLTM) {
