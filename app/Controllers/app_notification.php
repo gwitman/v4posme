@@ -1888,6 +1888,20 @@ class app_notification extends _BaseController
 		return view('core_template/close'); //--finview-r
 
 	}
+	
+	
+	
+	
+	
+	/********************************************/
+	/********************************************/
+	/********************************************/
+	///NOTIFICACIONES PERSONALIZADAS 
+	/********************************************/
+	/********************************************/
+	/********************************************/
+	
+	
 	function sendWhatsappGlobalProLaptopMenorA14400Frecuency7Meses()
 	{
 
