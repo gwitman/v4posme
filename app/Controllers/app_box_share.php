@@ -1707,7 +1707,191 @@ class app_box_share extends _BaseController {
 		}
 	}
 	
+	function viewRegisterFormatoA4Ebenezer(){
+		
+		try{ 
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+						$permited = false;
+						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						
+						if(!$permited)
+						throw new \Exception(NOT_ACCESS_CONTROL);
+						
+							
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						if ($resultPermission 	== PERMISSION_NONE)
+						throw new \Exception(NOT_ALL_EDIT);		
+			}	 
+			
+			
+			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri			
+			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri				
+			$saldos						= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"saldos");//--finuri	
+			$companyID 					= $dataSession["user"]->companyID;		
+			$branchID 					= $dataSession["user"]->branchID;		
+			$roleID 					= $dataSession["role"]->roleID;		
+			$employeeID					= $dataSession["user"]->employeeID;		
+			
+			//Get Component
+			$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			//Get Logo
+			$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			//Get Company
+			$objCompany 			= $this->Company_Model->get_rowByPK($companyID);	
+			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);			
+			$objParameterRuc		= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);		
+			//Get Documento				
+			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID,$transactionID,$transactionMasterID);
+			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
+			$datView["objTC"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$datView["objTM"]->transactionCausalID);
+			$datView["objProvider"]					= $this->Provider_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
+			$datView["objLegal"]					= $datView["objProvider"] != NULL ? $this->Legal_Model->get_rowByPK($companyID,$datView["objProvider"]->branchID,$datView["objProvider"]->entityID) : NULL;
+			$datView["objWarehouse"]				= $this->Warehouse_Model->get_rowByPK($companyID,0);
+			$datView["objTipo"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$datView["objTM"]->transactionID,$datView["objTM"]->transactionCausalID);
+			
+			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
+			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
+			$datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
+			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_share","statusID",$datView["objTM"]->statusID,$companyID,$datView["objTM"]->branchID,APP_ROL_SUPERADMIN);
+			$datView["objNaturalEmployer"]			= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$employeeID);
+			$datView["objTelefonoEmployer"]			= $this->Entity_Phone_Model->get_rowByEntity($companyID,$datView["objCustumer"]->branchID,$employeeID);
+			
+			
+			
+			//Inicializar Detalle
+			$saldoInicial = array_sum(array_column($datView["objTMD"], 'reference2'));
+			$saldoFinal   = array_sum(array_column($datView["objTMD"], 'reference4'));
+			$saldoAbonado = array_sum(array_column($datView["objTMD"], 'amount'));
+			
+			
+			
+			/*Calculo de saldos generales*/
+			$saldoInicialGeneral = round($datView["objTMI"]->reference1,0);
+			$saldoFinalGeneral   = round($datView["objTMI"]->reference2,0);
+			
+			$saldoInicial 	= $saldos == "Individuales"? $saldoInicial: $saldoInicialGeneral ;
+			$saldoFinal 	= $saldos == "Individuales"? $saldoFinal: $saldoFinalGeneral ;
+			
+			$datView["objPropertySaldoInicial"]	= $saldoInicial;
+			$datView["objPropertySaldoFincal"] 	= $saldoFinal;
+			$datView["objPropertySaldoAbonos"]  = array();
+			$datView["objPropertyAbonosTotal"]  = $saldoAbonado;
+				
+			$detalleShare= array();
+			if($saldos != "Basico"){
+				$row = array("SALDO INICIAL", '', sprintf('%.2f', $saldoInicial) );
+				array_push($datView["objPropertySaldoAbonos"],$row);
+				
+				foreach($datView["objTMD"] as $detail_)
+				{
+					$row = array("ABONO", '', sprintf('%.2f',round($detail_->amount,2)));
+					array_push($datView["objPropertySaldoAbonos"],$row);	
+				
+				}
+				
+				$row = array("SALDO FINAL", '', sprintf('%.2f', $saldoFinal) );
+				array_push($datView["objPropertySaldoAbonos"],$row);
+			}
+			if ($saldos == "Basico")
+			{
+				$row = array("SALDO INICIAL", '', sprintf('%.2f', $saldoInicial) );
+				array_push($datView["objPropertySaldoAbonos"],$row);
+				
+				$row = array("ABONO", '', sprintf('%.2f', $saldoAbonado) );
+				array_push($datView["objPropertySaldoAbonos"],$row);	
+				
+				$row = array("SALDO FINAL", '', sprintf('%.2f', $saldoFinal) );
+				array_push($datView["objPropertySaldoAbonos"],$row);
+				
+			}
+			
+			
+
+			//Generar Reporte
+			$html =  $this->helper_reporteA4mmTransactionMasterShareEbenezer(
+				"ABONO DE CAJA",
+				$objCompany,
+				$objParameter,
+				$datView["objTM"],
+				$datView["objNatural"],
+				$datView["objCustumer"],
+				$datView["tipoCambio"],
+				$datView["objCurrency"],
+				$datView["objTMI"],
+				$datView["objTMD"],
+				$objParameterTelefono,
+				$datView["objNaturalEmployer"], /*vendedor*/
+				$datView["objTelefonoEmployer"], /*telefono cliente*/
+				$datView["objStage"][0]->display, /*estado*/
+				$datView["objTC"]->name, /*causal*/
+				$objParameterRuc,
+				$objParameterRuc->value,
+				$datView["objPropertySaldoInicial"],
+				$datView["objPropertySaldoFincal"],
+				$datView["objPropertySaldoAbonos"],
+				$datView["objPropertyAbonosTotal"]
+			); 
+			
+			
+			$this->dompdf->loadHTML($html);
+			$this->dompdf->render();
+			
+			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+			
+			if($objParameterShowLinkDownload == "true")
+			{
+				$fileNamePut = "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
+				$path        = "./resource/file_company/company_".$companyID."/component_64/component_item_".$transactionMasterID."/".$fileNamePut;
+				
+				file_put_contents(
+					$path , 
+					$this->dompdf->output()
+				);								
+				
+				chmod($path, 644);
+				
+				echo "<a 
+					href='".base_url()."/resource/file_company/company_".$companyID."/component_64/component_item_".$transactionMasterID."/".
+					$fileNamePut."'>download compra</a>
+				"; 				
+			
+			}
+			else{			
+				//visualizar
+				$this->dompdf->stream("file.pdf ", ['Attachment' =>  true ]);
+			}
+			
+			
+		}
+		catch(\Exception $ex)
+		{
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;
+		}
+	}
 	
+	
+
 	
 	function viewRegisterFormatoPaginaNormal(){
 		try{ 
@@ -3474,6 +3658,305 @@ class app_box_share extends _BaseController {
 		}
 	}
 	
+	
+	
+	function helper_reporteA4mmTransactionMasterShareEbenezer(
+		$titulo,
+		$objCompany,
+		$objParameterLogo,
+		$objTransactionMastser,
+		$objEntidadNatural,
+		$objEntidadCustomer,
+		$tipoCambio,
+		$objCurrency,
+		$objTransactionMasterInfo,    
+		$objDetail,
+		$objParameterTelefono, /*telefono*/
+		$objEmployerNatural , /*venedor*/
+		$objTelefonoEmployer , /*telefono cliente*/
+		$statusName = "", /*estado*/
+		$causalName = "", /*causal*/
+		$userNickName = "", /*vendedor*/
+		$rucCompany = "", /*ruc*/
+		$saldoInicial = 0,
+		$saldoFinal = 0,
+		$objDetalleAbonos = '',
+		$objPropertyAbonosTotal = ''
+	)
+	{
+		$path    		= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
+		
+		$font_size1   	= "18px";
+		$border_left 	= "border-left: 1px solid black;";
+		$border_right 	= "border-right: 1px solid black;";
+		$border_top 	= "border-top: 1px solid black;";
+		$border_bottom 	= "border-bottom: 1px solid black;";
+		$border_radius	= "border-radius: 10px;";
+		$border_colapse = "border-collapse:separate;";
+		
+		
+		
+		$type    		= pathinfo($path, PATHINFO_EXTENSION);
+		$data    		= file_get_contents($path);
+		$base64  		= 'data:image/' . $type . ';base64,' . base64_encode($data);
+		$numberDocument = str_replace("SHR","RECIBO No ",$objTransactionMastser->transactionNumber);
+		$tipoDocumento  = "ABONO";
+		$clientName		= $objEntidadNatural->firstName;
+		$telefono  		= $objEntidadCustomer->phoneNumber;
+		
+		$html    = "";
+		$html    = "
+						<!--
+						Online HTML, CSS and JavaScript editor to run code online.
+						https://www.programiz.com/html/online-compiler/
+						-->
+						<!DOCTYPE html>
+						<html lang='en'>
+			
+						<head>
+						  <meta charset='UTF-8' />
+						  <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+						  <style>
+							
+							@page {       
+							  size: Legal;   
+							
+							  
+							  margin-top:25px;
+							  margin-left:25px;
+							  margin-right:20px;
+							  margin-bottom: 25px;
+							  
+							  
+							  padding-top: 0px;
+							  padding-right: 0px;
+							  padding-bottom: 0px;
+							  padding-left: 0px;
+							  
+							}
+							table{
+							  font-size: xx-small;
+							  font-family: sans-serif, monaco, monospace;						 
+							  border-collapse: collapse;
+							}
+							td{
+							  font-size: xx-small;
+							  font-family: sans-serif, monaco, monospace;
+							  /*border: 1px solid black;*/
+							  border-collapse: collapse;
+							}
+						  </style>
+						</head>
+			
+						<body>
+						";
+			
+			$f_html = 	  "
+						  <table style='width:98%'>
+							<tr>
+							  <td  style='text-align:center;width:20%;text-align:left'>
+								
+							  </td>
+							  <td  style='text-align:center;width:60%'>
+									<h2 style='margin:0px' >ESCUELA ADVENTISTA \"EBEN-EZER\" MALPAISILLO - LEON</h2>
+									<h2 style='margin:0px' >EBEN-EZER</h2>
+									<h2 style='margin:0px' >Antigua petronic 5c. al sur - Malpaisillo, León </h2>
+							  </td>
+							  <td style='width:20%;text-align: right;vertical-align: top;' >
+								<img  src='".$base64."' width='70'  >
+							  </td>
+							</tr>
+						</table>
+						</br>
+							";
+			   
+		$f_html = $f_html."
+					
+				";
+				
+				
+		$f_html = $f_html."
+				
+					
+					<table style='width:98%' >
+						<tr>
+							<td style='text-align:left;width:33%;vertical-align:bottom ' >
+								<h2 style='margin:0px;color:blue' >RUC : ". $rucCompany ."</h2>
+								<table style='width:100px ;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom." '>
+									<tr>
+										<td style='width:50px'> <h2 style='margin:0px;color:black' >Día</h2>
+										</td>
+										<td style='width:50px'> <h2 style='margin:0px;color:black' >Mes</h2>
+										</td>
+										<td style='width:50px'> <h2 style='margin:0px;color:black' >Año</h2>
+										</td>
+										<td style=''>.
+										</td>
+									</tr>
+									<tr>
+										<td>
+											".(new \DateTime($objTransactionMastser->transactionOn))->format("d")."
+										</td>
+										<td>
+											".(new \DateTime($objTransactionMastser->transactionOn))->format("m")."
+										</td>
+										<td>
+											".(new \DateTime($objTransactionMastser->transactionOn))->format("Y")."
+										</td>
+										<td> 
+										</td>
+									</tr>
+								</table>
+							</td>
+							<td style='text-align:center;width:33%; vertical-align:top' >
+								<h1 style='margin:0px;color:black' >RECIBO DE INGRESO</h1>
+							</td>
+							<td style='text-align:right;width:33%; vertical-align:bottom' >
+								<h2 style='margin:0px;color:red' >". $numberDocument ."</h2>
+								<h2 style='margin:0px' >POR C$: ".number_format($objTransactionMastser->amount,2,'.',',')."</h2>
+							</td>
+						</tr>
+					</table>
+					
+					</br>
+				";
+				
+			   
+
+			   
+		$f_html = $f_html."
+					
+				";
+					
+		
+		$f_html = $f_html."
+					  <table style='width:98%;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom."' >
+							<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td  style='text-align:right;vertical-align:top;width:120px;padding:5px' >
+									Recibimos de:
+								</td>
+								<td style='width:500px;vertical-align:top;padding:5px;".$border_bottom."' >
+									".$objEntidadNatural->firstName."
+								</td>
+								<td style='width:50px'>&nbsp;</td>
+							</tr>
+							<tr>
+								<td  style='text-align:right;vertical-align:top;width:120px;padding:5px' >
+									La cantidad de:
+								</td>
+								<td style='width:auto;vertical-align:top;padding:5px;".$border_bottom."' >
+									".helper_GetLetras($objTransactionMastser->amount,"CORDOBAS CON ","")."
+								</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td  style='text-align:right;vertical-align:top;width:120px;padding:5px' >
+									En concepto de:
+								</td>
+								<td style='width:auto;vertical-align:top;padding:5px;".$border_bottom."' >
+									".$objTransactionMastser->note."
+								</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+					   </table>
+					   ";
+					   
+					   
+		
+			   
+		$f_html = $f_html."
+					
+				";
+					
+		$f_html = $f_html."
+					</br>
+					<table style='width:98%' >
+						<tr>
+							<td style='text-align:center' >
+								<h1 style='margin:0px' >\"Educamos Para Redimir\"</h1>
+								<h2 style='margin:0px' >No se aceptan devoluciones</h2>
+							</td>
+						</tr>	
+					</table>
+				";
+				
+			   
+
+		
+		$f_html = $f_html."
+					<table style='width:98%' >
+						<tr>
+							<td>&nbsp;</td>						
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+						</tr>				
+					</table>
+				";
+					
+
+		$f_html = $f_html."
+					<table style='width:98%' >
+						<tr>
+							<td style='text-align:center' >________________________</td>
+							<td style='text-align:center' >________________________</td>						
+						</tr>							
+						<tr>
+							<td style='text-align:center' >Entregue conforme</td>
+							<td style='text-align:center' >Recibí conforme</td>						
+						</tr>							
+					</table>
+				";
+				
+		
+		$f_html_copia 		= $f_html;
+		$f_html_original 	= $f_html;
+		$f_html_credito		= $f_html;
+		
+		$f_html_original 		= str_replace("[[TIPO_DOCUMENTO]]","ORIGINAL",$f_html_original);
+		$f_html_copia 			= str_replace("[[TIPO_DOCUMENTO]]","COPIA",$f_html_copia);
+		$f_html_credito 		= str_replace("[[TIPO_DOCUMENTO]]","COPIA",$f_html_copia);
+		
+		if($tipoDocumento == "PROFORMA")
+		{
+			$f_html				= $f_html_original;
+		}
+		else 
+		{
+			if(strtoupper($causalName) == strtoupper( "CREDITO" ) )
+			$f_html				= $f_html_original;
+			else 
+			$f_html				= $f_html_original;
+		
+		}
+		$html 				= $html.$f_html."</body></html>";	
+		
+		
+		return $html;
+	}
 	
 	
 }

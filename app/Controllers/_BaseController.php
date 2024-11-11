@@ -188,7 +188,11 @@ abstract class _BaseController extends Controller
      *
      * @var array
      */
-    protected $helpers = ['url','form','web_tools','cookie','text','path','web_tools_report','language','web_tools_customizationview'];
+    protected $helpers = [
+		'url','form','web_tools','cookie','text','path',
+		'language','web_tools_customizationview',
+		'web_tools_report' 
+	];
 
     /**
      * Be sure to declare properties for any property fetch you initialized.

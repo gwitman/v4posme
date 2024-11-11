@@ -1292,6 +1292,8 @@ $routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaNormal','a
 $routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaNormal/(:any)','app_box_share::viewRegisterFormatoPaginaNormal');
 $routes->match(['get','post'],'app_box_share/viewRegisterFormatoA4Globalpro','app_box_share::viewRegisterFormatoA4Globalpro');
 $routes->match(['get','post'],'app_box_share/viewRegisterFormatoA4Globalpro/(:any)','app_box_share::viewRegisterFormatoA4Globalpro');
+$routes->match(['get','post'],'app_box_share/viewRegisterFormatoA4Ebenezer','app_box_share::viewRegisterFormatoA4Ebenezer');
+$routes->match(['get','post'],'app_box_share/viewRegisterFormatoA4Ebenezer/(:any)','app_box_share::viewRegisterFormatoA4Ebenezer');
 $routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaTicket80mmCarlosLuis','app_box_share::viewRegisterFormatoPaginaTicket80mmCarlosLuis');
 $routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaTicket80mmCarlosLuis/(:any)','app_box_share::viewRegisterFormatoPaginaTicket80mmCarlosLuis');
 $routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaTicketFunBlandon','app_box_share::viewRegisterFormatoPaginaTicketFunBlandon');

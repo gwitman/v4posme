@@ -35,7 +35,7 @@
 				
 				<div class="row"  >
 					 <div class="col-lg-6">		
-						<img class="img-featured" style="width:400px;height:200px" src="<?php echo base_url();?>/resource/img/logos/logo-micro-finanza.png">													
+						<img class="img-featured" style="width:300px;height:200px" src="<?php echo base_url();?>/resource/img/logos/logo-micro-finanza.png">													
 					</div>
 					<div class="col-lg-6">	
 							<div class="panel" style="margin-bottom:20px;">

@@ -19,6 +19,7 @@ function helper_reporteGeneralCreateStyle(){
 		
 		return $result;
 }
+ 
 
 
 
@@ -6428,6 +6429,340 @@ function helper_reporteA4mmTransactionMasterPedidosGlobalPro(
 }
 
 
+function helper_reporteA4mmTransactionMasterShareGlobalPro(
+    $titulo,
+    $objCompany,
+    $objParameterLogo,
+    $objTransactionMastser,
+    $objEntidadNatural,
+    $objEntidadCustomer,
+    $tipoCambio,
+    $objCurrency,
+    $objTransactionMasterInfo,    
+	$objDetail,
+    $objParameterTelefono, /*telefono*/
+	$objEmployerNatural , /*venedor*/
+	$objTelefonoEmployer , /*telefono cliente*/
+    $statusName = "", /*estado*/
+    $causalName = "", /*causal*/
+	$userNickName = "", /*vendedor*/
+    $rucCompany = "", /*ruc*/
+	$saldoInicial = 0,
+	$saldoFinal = 0,
+	$objDetalleAbonos = '',
+	$objPropertyAbonosTotal = ''
+)
+{
+    $path    		= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
+    
+	$font_size1   	= "18px";
+	$border_left 	= "border-left: 1px solid black;";
+	$border_right 	= "border-right: 1px solid black;";
+	$border_top 	= "border-top: 1px solid black;";
+	$border_bottom 	= "border-bottom: 1px solid black;";
+	$border_radius	= "border-radius: 10px;";
+	$border_colapse = "border-collapse:separate;";
+	
+	
+	
+    $type    		= pathinfo($path, PATHINFO_EXTENSION);
+    $data    		= file_get_contents($path);
+    $base64  		= 'data:image/' . $type . ';base64,' . base64_encode($data);
+    $numberDocument = str_replace("SHR","RECIBO No ",$objTransactionMastser->transactionNumber);
+	$tipoDocumento  = "ABONO";
+	$clientName		= $objEntidadNatural->firstName;
+	$telefono  		= $objEntidadCustomer->phoneNumber;
+	
+    $html    = "";
+    $html    = "
+                    <!--
+                    Online HTML, CSS and JavaScript editor to run code online.
+                    https://www.programiz.com/html/online-compiler/
+                    -->
+                    <!DOCTYPE html>
+                    <html lang='en'>
+        
+                    <head>
+                      <meta charset='UTF-8' />
+                      <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+                      <style>
+						
+                        @page {       
+                          size: Legal;   
+						
+						  
+                          margin-top:25px;
+                          margin-left:25px;
+                          margin-right:20px;
+						  margin-bottom: 25px;
+						  
+						  
+						  padding-top: 0px;
+						  padding-right: 0px;
+						  padding-bottom: 0px;
+						  padding-left: 0px;
+						  
+                        }
+                        table{
+                          font-size: xx-small;
+                          font-family: sans-serif, monaco, monospace;						 
+						  border-collapse: collapse;
+                        }
+						td{
+                          font-size: xx-small;
+                          font-family: sans-serif, monaco, monospace;
+						  /*border: 1px solid black;*/
+						  border-collapse: collapse;
+                        }
+                      </style>
+                    </head>
+        
+                    <body>
+					";
+        
+		$f_html = 	  "
+                      <table style='width:98%'>
+                        <tr>
+						  <td  style='text-align:center;width:500px;text-align:left'>
+                            <img  src='".$base64."' width='300'  >
+                          </td>
+                          <td  style='text-align:center;'>
+									<table style='width:100%'>
+										<tr>
+										  <td  style='text-align:center;font-size:".$font_size1."; font-weight: bold;'>
+											". $numberDocument ."
+										  </td>
+										</tr>
+										
+										<tr>
+										  <td style='text-align:center'>
+											Carretera Masaya, Frente al colegio Teresiano 
+										  </td>
+										</tr>
+										<tr>
+										  <td style='text-align:center'>
+											Edificio Delta RUC: 888-080396-0001K
+										  </td>
+										</tr>
+										<tr>
+										  <td style='text-align:center'>
+											Teléfono: 2223-2314
+										  </td>
+										</tr>
+										<tr>
+										  <td style='text-align:center'>
+											AUT.DGI. No. ASFC 02/0009/02/2023/2
+										  </td>
+										</tr>
+									</table>
+                          </td>
+                        </tr>
+					</table>
+					
+						";
+    	   
+	$f_html = $f_html."
+				<table style='width:98%' >
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+					</tr>				
+				</table>
+			";
+			
+			
+	$f_html = $f_html."
+				<table style='width:98%' >
+					<tr>
+						<td style='text-align:center;".$border_bottom.";width:160px' >
+							".$objDetail[0]->reference1."
+						</td>
+						<td style='text-align:center;".$border_bottom.";width:160px' >
+							C$ ".number_format($objTransactionMastser->amount,2,'.',',')."
+						</td>
+						<td style='text-align:center;".$border_bottom.";width:160px' >
+							".$objTransactionMastser->transactionOn."
+						</td>
+					</tr>
+					<tr>
+						<td style='text-align:center;width:160px'>
+							FACTURA
+						</td>
+						<td style='text-align:center;width:160px' >
+							MONTO
+						</td>
+						<td style='text-align:center;width:160px'>
+							FECHA
+						</td>
+					</tr>
+				</table>
+			";
+			
+		   
+
+		   
+	$f_html = $f_html."
+				<table style='width:98%' >
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+					</tr>				
+				</table>
+			";
+				
+	
+	$f_html = $f_html."
+				  <table style='width:98%;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom."' >
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td  style='text-align:right;vertical-align:top;width:120px;padding:5px' >
+								Recibimos de:
+							</td>
+							<td style='width:500px;vertical-align:top;padding:5px;".$border_bottom."' >
+								".$objEntidadNatural->firstName."
+							</td>
+							<td style='width:50px'>&nbsp;</td>
+						</tr>
+						<tr>
+							<td  style='text-align:right;vertical-align:top;width:120px;padding:5px' >
+								La cantidad de:
+							</td>
+							<td style='width:auto;vertical-align:top;padding:5px;".$border_bottom."' >
+								".helper_GetLetras($objTransactionMastser->amount,"CORDOBAS CON ","")."
+							</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td  style='text-align:right;vertical-align:top;width:120px;padding:5px' >
+								En concepto de:
+							</td>
+							<td style='width:auto;vertical-align:top;padding:5px;".$border_bottom."' >
+								".$objTransactionMastser->note."
+							</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+				   </table>";
+				   
+				   
+	
+		   
+	$f_html = $f_html."
+				<table style='width:98%' >
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+					</tr>				
+				</table>
+			";
+				
+	$f_html = $f_html."
+				<table style='width:98%' >
+					<tr>
+						<td style='text-align:center' >SALDO INICIAL:</td>
+						<td style='text-align:left;".$border_bottom."' >C$ ".number_format($saldoInicial,2,'.',',')."</td>
+						<td style='text-align:center' >ABONO:</td>
+						<td style='text-align:left;".$border_bottom."' >C$ ".number_format($objTransactionMastser->amount,2,'.',',')."</td>
+						<td style='text-align:center' >SALDO FINAL:</td>
+						<td style='text-align:left;".$border_bottom."' >C$ ".number_format($saldoFinal,2,'.',',')."</td>
+					</tr>							
+				</table>
+			";
+			
+		   
+
+	
+	$f_html = $f_html."
+				<table style='width:98%' >
+					<tr>
+						<td>&nbsp;</td>						
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+					</tr>				
+				</table>
+			";
+				
+
+	$f_html = $f_html."
+				<table style='width:98%' >
+					<tr>
+						<td style='text-align:center' >_____________________</td>
+						<td style='text-align:center' >_____________________</td>						
+					</tr>							
+					<tr>
+						<td style='text-align:center' >".$objTransactionMastser->reference1."</td>
+						<td style='text-align:center' >".$objEntidadNatural->firstName."</td>						
+					</tr>							
+				</table>
+			";
+			
+	
+	$f_html_copia 		= $f_html;
+	$f_html_original 	= $f_html;
+	$f_html_credito		= $f_html;
+	
+	$f_html_original 		= str_replace("[[TIPO_DOCUMENTO]]","ORIGINAL",$f_html_original);
+	$f_html_copia 			= str_replace("[[TIPO_DOCUMENTO]]","COPIA",$f_html_copia);
+	$f_html_credito 		= str_replace("[[TIPO_DOCUMENTO]]","COPIA",$f_html_copia);
+	
+	if($tipoDocumento == "PROFORMA")
+	{
+		$f_html				= $f_html_original;
+	}
+	else 
+	{
+		if(strtoupper($causalName) == strtoupper( "CREDITO" ) )
+		$f_html				= $f_html_original;
+		else 
+		$f_html				= $f_html_original;
+	
+	}
+	$html 				= $html.$f_html."</body></html>";	
+	
+	
+    return $html;
+}
+ 
+ 
+
+
 function helper_reporteA4mmTransactionMasterInputUnpostGlobalProOnlyQuantity(
     $titulo,
     $objCompany,
@@ -7273,336 +7608,6 @@ function helper_reporteA4mmTransactionMasterOutputCashGlobalPro(
 }
 
 
-function helper_reporteA4mmTransactionMasterShareGlobalPro(
-    $titulo,
-    $objCompany,
-    $objParameterLogo,
-    $objTransactionMastser,
-    $objEntidadNatural,
-    $objEntidadCustomer,
-    $tipoCambio,
-    $objCurrency,
-    $objTransactionMasterInfo,    
-	$objDetail,
-    $objParameterTelefono, /*telefono*/
-	$objEmployerNatural , /*venedor*/
-	$objTelefonoEmployer , /*telefono cliente*/
-    $statusName = "", /*estado*/
-    $causalName = "", /*causal*/
-	$userNickName = "", /*vendedor*/
-    $rucCompany = "", /*ruc*/
-	$saldoInicial = 0,
-	$saldoFinal = 0,
-	$objDetalleAbonos = '',
-	$objPropertyAbonosTotal = ''
-)
-{
-    $path    		= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
-    
-	$font_size1   	= "18px";
-	$border_left 	= "border-left: 1px solid black;";
-	$border_right 	= "border-right: 1px solid black;";
-	$border_top 	= "border-top: 1px solid black;";
-	$border_bottom 	= "border-bottom: 1px solid black;";
-	$border_radius	= "border-radius: 10px;";
-	$border_colapse = "border-collapse:separate;";
-	
-	
-	
-    $type    		= pathinfo($path, PATHINFO_EXTENSION);
-    $data    		= file_get_contents($path);
-    $base64  		= 'data:image/' . $type . ';base64,' . base64_encode($data);
-    $numberDocument = str_replace("SHR","RECIBO No ",$objTransactionMastser->transactionNumber);
-	$tipoDocumento  = "ABONO";
-	$clientName		= $objEntidadNatural->firstName;
-	$telefono  		= $objEntidadCustomer->phoneNumber;
-	
-    $html    = "";
-    $html    = "
-                    <!--
-                    Online HTML, CSS and JavaScript editor to run code online.
-                    https://www.programiz.com/html/online-compiler/
-                    -->
-                    <!DOCTYPE html>
-                    <html lang='en'>
-        
-                    <head>
-                      <meta charset='UTF-8' />
-                      <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-                      <style>
-						
-                        @page {       
-                          size: Legal;   
-						
-						  
-                          margin-top:25px;
-                          margin-left:25px;
-                          margin-right:20px;
-						  margin-bottom: 25px;
-						  
-						  
-						  padding-top: 0px;
-						  padding-right: 0px;
-						  padding-bottom: 0px;
-						  padding-left: 0px;
-						  
-                        }
-                        table{
-                          font-size: xx-small;
-                          font-family: sans-serif, monaco, monospace;						 
-						  border-collapse: collapse;
-                        }
-						td{
-                          font-size: xx-small;
-                          font-family: sans-serif, monaco, monospace;
-						  /*border: 1px solid black;*/
-						  border-collapse: collapse;
-                        }
-                      </style>
-                    </head>
-        
-                    <body>
-					";
-        
-		$f_html = 	  "
-                      <table style='width:98%'>
-                        <tr>
-						  <td  style='text-align:center;width:500px;text-align:left'>
-                            <img  src='".$base64."' width='300'  >
-                          </td>
-                          <td  style='text-align:center;'>
-									<table style='width:100%'>
-										<tr>
-										  <td  style='text-align:center;font-size:".$font_size1."; font-weight: bold;'>
-											". $numberDocument ."
-										  </td>
-										</tr>
-										
-										<tr>
-										  <td style='text-align:center'>
-											Carretera Masaya, Frente al colegio Teresiano 
-										  </td>
-										</tr>
-										<tr>
-										  <td style='text-align:center'>
-											Edificio Delta RUC: 888-080396-0001K
-										  </td>
-										</tr>
-										<tr>
-										  <td style='text-align:center'>
-											Teléfono: 2223-2314
-										  </td>
-										</tr>
-										<tr>
-										  <td style='text-align:center'>
-											AUT.DGI. No. ASFC 02/0009/02/2023/2
-										  </td>
-										</tr>
-									</table>
-                          </td>
-                        </tr>
-					</table>
-					
-						";
-    	   
-	$f_html = $f_html."
-				<table style='width:98%' >
-					<tr>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td>&nbsp;</td>
-					</tr>				
-				</table>
-			";
-			
-			
-	$f_html = $f_html."
-				<table style='width:98%' >
-					<tr>
-						<td style='text-align:center;".$border_bottom.";width:160px' >
-							".$objDetail[0]->reference1."
-						</td>
-						<td style='text-align:center;".$border_bottom.";width:160px' >
-							C$ ".number_format($objTransactionMastser->amount,2,'.',',')."
-						</td>
-						<td style='text-align:center;".$border_bottom.";width:160px' >
-							".$objTransactionMastser->transactionOn."
-						</td>
-					</tr>
-					<tr>
-						<td style='text-align:center;width:160px'>
-							FACTURA
-						</td>
-						<td style='text-align:center;width:160px' >
-							MONTO
-						</td>
-						<td style='text-align:center;width:160px'>
-							FECHA
-						</td>
-					</tr>
-				</table>
-			";
-			
-		   
-
-		   
-	$f_html = $f_html."
-				<table style='width:98%' >
-					<tr>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td>&nbsp;</td>
-					</tr>				
-				</table>
-			";
-				
-	
-	$f_html = $f_html."
-				  <table style='width:98%;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom."' >
-						<tr>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-						</tr>
-						<tr>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-						</tr>
-						<tr>
-							<td  style='text-align:right;vertical-align:top;width:120px;padding:5px' >
-								Recibimos de:
-							</td>
-							<td style='width:500px;vertical-align:top;padding:5px;".$border_bottom."' >
-								".$objEntidadNatural->firstName."
-							</td>
-							<td style='width:50px'>&nbsp;</td>
-						</tr>
-						<tr>
-							<td  style='text-align:right;vertical-align:top;width:120px;padding:5px' >
-								La cantidad de:
-							</td>
-							<td style='width:auto;vertical-align:top;padding:5px;".$border_bottom."' >
-								".helper_GetLetras($objTransactionMastser->amount,"CORDOBAS CON ","")."
-							</td>
-							<td>&nbsp;</td>
-						</tr>
-						<tr>
-							<td  style='text-align:right;vertical-align:top;width:120px;padding:5px' >
-								En concepto de:
-							</td>
-							<td style='width:auto;vertical-align:top;padding:5px;".$border_bottom."' >
-								".$objTransactionMastser->note."
-							</td>
-							<td>&nbsp;</td>
-						</tr>
-						<tr>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-						</tr>
-						<tr>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-						</tr>
-				   </table>";
-				   
-				   
-	
-		   
-	$f_html = $f_html."
-				<table style='width:98%' >
-					<tr>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td>&nbsp;</td>
-					</tr>				
-				</table>
-			";
-				
-	$f_html = $f_html."
-				<table style='width:98%' >
-					<tr>
-						<td style='text-align:center' >SALDO INICIAL:</td>
-						<td style='text-align:left;".$border_bottom."' >C$ ".number_format($saldoInicial,2,'.',',')."</td>
-						<td style='text-align:center' >ABONO:</td>
-						<td style='text-align:left;".$border_bottom."' >C$ ".number_format($objTransactionMastser->amount,2,'.',',')."</td>
-						<td style='text-align:center' >SALDO FINAL:</td>
-						<td style='text-align:left;".$border_bottom."' >C$ ".number_format($saldoFinal,2,'.',',')."</td>
-					</tr>							
-				</table>
-			";
-			
-		   
-
-	
-	$f_html = $f_html."
-				<table style='width:98%' >
-					<tr>
-						<td>&nbsp;</td>						
-					</tr>
-					<tr>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td>&nbsp;</td>
-					</tr>				
-				</table>
-			";
-				
-
-	$f_html = $f_html."
-				<table style='width:98%' >
-					<tr>
-						<td style='text-align:center' >_____________________</td>
-						<td style='text-align:center' >_____________________</td>						
-					</tr>							
-					<tr>
-						<td style='text-align:center' >".$objTransactionMastser->reference1."</td>
-						<td style='text-align:center' >".$objEntidadNatural->firstName."</td>						
-					</tr>							
-				</table>
-			";
-			
-	
-	$f_html_copia 		= $f_html;
-	$f_html_original 	= $f_html;
-	$f_html_credito		= $f_html;
-	
-	$f_html_original 		= str_replace("[[TIPO_DOCUMENTO]]","ORIGINAL",$f_html_original);
-	$f_html_copia 			= str_replace("[[TIPO_DOCUMENTO]]","COPIA",$f_html_copia);
-	$f_html_credito 		= str_replace("[[TIPO_DOCUMENTO]]","COPIA",$f_html_copia);
-	
-	if($tipoDocumento == "PROFORMA")
-	{
-		$f_html				= $f_html_original;
-	}
-	else 
-	{
-		if(strtoupper($causalName) == strtoupper( "CREDITO" ) )
-		$f_html				= $f_html_original;
-		else 
-		$f_html				= $f_html_original;
-	
-	}
-	$html 				= $html.$f_html."</body></html>";	
-	
-	
-    return $html;
-}
 
 
 
@@ -16679,3 +16684,304 @@ function helper_reporte80mmTransactionMasterShareCapital(
     $html = str_replace("[[DETALLE]]","", $html);
     return $html;
 }
+
+function helper_reporteA4mmTransactionMasterShareEbenezer(
+		$titulo,
+		$objCompany,
+		$objParameterLogo,
+		$objTransactionMastser,
+		$objEntidadNatural,
+		$objEntidadCustomer,
+		$tipoCambio,
+		$objCurrency,
+		$objTransactionMasterInfo,    
+		$objDetail,
+		$objParameterTelefono, /*telefono*/
+		$objEmployerNatural , /*venedor*/
+		$objTelefonoEmployer , /*telefono cliente*/
+		$statusName = "", /*estado*/
+		$causalName = "", /*causal*/
+		$userNickName = "", /*vendedor*/
+		$rucCompany = "", /*ruc*/
+		$saldoInicial = 0,
+		$saldoFinal = 0,
+		$objDetalleAbonos = '',
+		$objPropertyAbonosTotal = ''
+	)
+	{
+		$path    		= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
+		
+		$font_size1   	= "18px";
+		$border_left 	= "border-left: 1px solid black;";
+		$border_right 	= "border-right: 1px solid black;";
+		$border_top 	= "border-top: 1px solid black;";
+		$border_bottom 	= "border-bottom: 1px solid black;";
+		$border_radius	= "border-radius: 10px;";
+		$border_colapse = "border-collapse:separate;";
+		
+		
+		
+		$type    		= pathinfo($path, PATHINFO_EXTENSION);
+		$data    		= file_get_contents($path);
+		$base64  		= 'data:image/' . $type . ';base64,' . base64_encode($data);
+		$numberDocument = str_replace("SHR","RECIBO No ",$objTransactionMastser->transactionNumber);
+		$tipoDocumento  = "ABONO";
+		$clientName		= $objEntidadNatural->firstName;
+		$telefono  		= $objEntidadCustomer->phoneNumber;
+		
+		$html    = "";
+		$html    = "
+						<!--
+						Online HTML, CSS and JavaScript editor to run code online.
+						https://www.programiz.com/html/online-compiler/
+						-->
+						<!DOCTYPE html>
+						<html lang='en'>
+			
+						<head>
+						  <meta charset='UTF-8' />
+						  <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+						  <style>
+							
+							@page {       
+							  size: Legal;   
+							
+							  
+							  margin-top:25px;
+							  margin-left:25px;
+							  margin-right:20px;
+							  margin-bottom: 25px;
+							  
+							  
+							  padding-top: 0px;
+							  padding-right: 0px;
+							  padding-bottom: 0px;
+							  padding-left: 0px;
+							  
+							}
+							table{
+							  font-size: xx-small;
+							  font-family: sans-serif, monaco, monospace;						 
+							  border-collapse: collapse;
+							}
+							td{
+							  font-size: xx-small;
+							  font-family: sans-serif, monaco, monospace;
+							  /*border: 1px solid black;*/
+							  border-collapse: collapse;
+							}
+						  </style>
+						</head>
+			
+						<body>
+						";
+			
+			$f_html = 	  "
+						  <table style='width:98%'>
+							<tr>
+							  <td  style='text-align:center;width:20%;text-align:left'>
+								
+							  </td>
+							  <td  style='text-align:center;width:60%'>
+									<h2 style='margin:0px' >ESCUELA ADVENTISTA \"EBEN-EZER\" MALPAISILLO - LEON</h2>
+									<h2 style='margin:0px' >EBEN-EZER</h2>
+									<h2 style='margin:0px' >Antigua petronic 5c. al sur - Malpaisillo, León </h2>
+							  </td>
+							  <td style='width:20%;text-align: right;vertical-align: top;' >
+								<img  src='".$base64."' width='70'  >
+							  </td>
+							</tr>
+						</table>
+						</br>
+							";
+			   
+		$f_html = $f_html."
+					
+				";
+				
+				
+		$f_html = $f_html."
+				
+					
+					<table style='width:98%' >
+						<tr>
+							<td style='text-align:left;width:33%;vertical-align:bottom ' >
+								<h2 style='margin:0px;color:blue' >RUC : ". $rucCompany ."</h2>
+								<table style='width:100px ;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom." '>
+									<tr>
+										<td style='width:50px'> <h2 style='margin:0px;color:black' >Día</h2>
+										</td>
+										<td style='width:50px'> <h2 style='margin:0px;color:black' >Mes</h2>
+										</td>
+										<td style='width:50px'> <h2 style='margin:0px;color:black' >Año</h2>
+										</td>
+										<td style=''>.
+										</td>
+									</tr>
+									<tr>
+										<td>
+											".(new \DateTime($objTransactionMastser->transactionOn))->format("d")."
+										</td>
+										<td>
+											".(new \DateTime($objTransactionMastser->transactionOn))->format("m")."
+										</td>
+										<td>
+											".(new \DateTime($objTransactionMastser->transactionOn))->format("Y")."
+										</td>
+										<td> 
+										</td>
+									</tr>
+								</table>
+							</td>
+							<td style='text-align:center;width:33%; vertical-align:top' >
+								<h1 style='margin:0px;color:black' >RECIBO DE INGRESO</h1>
+							</td>
+							<td style='text-align:right;width:33%; vertical-align:bottom' >
+								<h2 style='margin:0px;color:red' >". $numberDocument ."</h2>
+								<h2 style='margin:0px' >POR C$: ".number_format($objTransactionMastser->amount,2,'.',',')."</h2>
+							</td>
+						</tr>
+					</table>
+					
+					</br>
+				";
+				
+			   
+
+			   
+		$f_html = $f_html."
+					
+				";
+					
+		
+		$f_html = $f_html."
+					  <table style='width:98%;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom."' >
+							<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td  style='text-align:right;vertical-align:top;width:120px;padding:5px' >
+									Recibimos de:
+								</td>
+								<td style='width:500px;vertical-align:top;padding:5px;".$border_bottom."' >
+									".$objEntidadNatural->firstName."
+								</td>
+								<td style='width:50px'>&nbsp;</td>
+							</tr>
+							<tr>
+								<td  style='text-align:right;vertical-align:top;width:120px;padding:5px' >
+									La cantidad de:
+								</td>
+								<td style='width:auto;vertical-align:top;padding:5px;".$border_bottom."' >
+									".helper_GetLetras($objTransactionMastser->amount,"CORDOBAS CON ","")."
+								</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td  style='text-align:right;vertical-align:top;width:120px;padding:5px' >
+									En concepto de:
+								</td>
+								<td style='width:auto;vertical-align:top;padding:5px;".$border_bottom."' >
+									".$objTransactionMastser->note."
+								</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+					   </table>
+					   ";
+					   
+					   
+		
+			   
+		$f_html = $f_html."
+					
+				";
+					
+		$f_html = $f_html."
+					</br>
+					<table style='width:98%' >
+						<tr>
+							<td style='text-align:center' >
+								<h1 style='margin:0px' >\"Educamos Para Redimir\"</h1>
+								<h2 style='margin:0px' >No se aceptan devoluciones</h2>
+							</td>
+						</tr>	
+					</table>
+				";
+				
+			   
+
+		
+		$f_html = $f_html."
+					<table style='width:98%' >
+						<tr>
+							<td>&nbsp;</td>						
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+						</tr>				
+					</table>
+				";
+					
+
+		$f_html = $f_html."
+					<table style='width:98%' >
+						<tr>
+							<td style='text-align:center' >________________________</td>
+							<td style='text-align:center' >________________________</td>						
+						</tr>							
+						<tr>
+							<td style='text-align:center' >Entregue conforme</td>
+							<td style='text-align:center' >Recibí conforme</td>						
+						</tr>							
+					</table>
+				";
+				
+		
+		$f_html_copia 		= $f_html;
+		$f_html_original 	= $f_html;
+		$f_html_credito		= $f_html;
+		
+		$f_html_original 		= str_replace("[[TIPO_DOCUMENTO]]","ORIGINAL",$f_html_original);
+		$f_html_copia 			= str_replace("[[TIPO_DOCUMENTO]]","COPIA",$f_html_copia);
+		$f_html_credito 		= str_replace("[[TIPO_DOCUMENTO]]","COPIA",$f_html_copia);
+		
+		if($tipoDocumento == "PROFORMA")
+		{
+			$f_html				= $f_html_original;
+		}
+		else 
+		{
+			if(strtoupper($causalName) == strtoupper( "CREDITO" ) )
+			$f_html				= $f_html_original;
+			else 
+			$f_html				= $f_html_original;
+		
+		}
+		$html 				= $html.$f_html."</body></html>";	
+		
+		
+		return $html;
+	}
+
+
+
