@@ -6105,6 +6105,175 @@ class app_invoice_billing extends _BaseController {
 		
 		
 	}
+	
+	
+	function viewRegisterFormatoPaginaNormal80mmEbenezer(){
+		try{ 
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+						$permited = false;
+						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						
+						if(!$permited)
+						throw new \Exception(NOT_ACCESS_CONTROL);
+						
+							
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						if ($resultPermission 	== PERMISSION_NONE)
+						throw new \Exception(NOT_ALL_EDIT);		
+			}	 
+			
+			
+			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri			
+			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri				
+			$companyID 					= $dataSession["user"]->companyID;		
+			$branchID 					= $dataSession["user"]->branchID;		
+			$roleID 					= $dataSession["role"]->roleID;		
+			
+			
+			//Get Component
+			$objComponent	        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			$objParameter	        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);			
+			$spacing 		= 0.5;
+			
+			//Get Documento					
+			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+			$datView["objTC"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$datView["objTM"]->transactionCausalID);
+			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
+			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
+			$datView["Identifier"]					= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+			$datView["objBranch"]					= $this->Branch_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->branchID);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_billing","statusID",$datView["objTM"]->statusID,$companyID,$branchID,$roleID);
+			$datView["objTipo"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$datView["objTM"]->transactionID,$datView["objTM"]->transactionCausalID);
+			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
+			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
+			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
+			$datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
+			$datView["objNaturalEmployer"]			= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objTM"]->entityIDSecondary);
+			$datView["objTelefonoEmployer"]			= $this->Entity_Phone_Model->get_rowByEntity($companyID,$datView["objCustumer"]->branchID,$datView["objTM"]->entityIDSecondary);
+			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
+			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 
+			
+			
+			
+			//Generar Reporte
+			$html = $this->helper_reporteA4TransactionMasterInvoiceEbenezer(
+			    "FACTURA",
+			    $objCompany,
+			    $objParameter,
+			    $datView["objTM"],
+			    $datView["objNatural"],
+			    $datView["objCustumer"],
+			    $datView["tipoCambio"],
+			    $datView["objCurrency"],
+			    $datView["objTMI"],
+				$datView["objTMD"],
+			    $objParameterTelefono, /*telefono*/
+				$datView["objNaturalEmployer"], /*vendedor*/
+				$datView["objTelefonoEmployer"], /*telefono cliente*/
+				$datView["objStage"][0]->display, /*estado*/
+				$datView["objTC"]->name, /*causal*/
+				"",
+				""
+			);
+			//echo $html;
+			$this->dompdf->loadHTML($html);
+			
+			
+			//1cm = 29.34666puntos
+			//a4: 210 ancho x 297
+			//a4: 21cm x 29.7cm
+			//a4: 595.28puntos x 841.59puntos
+			
+			//$this->dompdf->setPaper('A4','portrait');
+			//$this->dompdf->setPaper(array(0,0,234.76,6000));
+			
+			$this->dompdf->render();
+			
+			
+			
+			
+			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+			$objParameterShowDownloadPreview	= $this->core_web_parameter->getParameter("CORE_SHOW_DOWNLOAD_PREVIEW",$companyID);
+			$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview->value;
+			$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true" ? true : false;
+			
+			$fileNamePut = "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
+			$fileNamePdf = "FAC_".$datView["objTM"]->transactionNumber."_".str_replace(" ","_", $datView["objNatural"]->firstName).".pdf";
+			
+			$path        	= "./resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".$fileNamePut;
+			$patdir         = "./resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID;	
+			
+			if (!file_exists($patdir))
+			{
+				mkdir($patdir, 0755);
+				chmod($patdir, 0755);
+			}
+			
+			
+			file_put_contents(
+				$path,
+				$this->dompdf->output()					
+			);						
+			
+			chmod($path, 644);
+			
+			if($objParameterShowLinkDownload == "true")
+			{			
+				echo "<a 
+					href='".base_url()."/resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".
+					$fileNamePut."'>download factura</a>
+				"; 				
+			
+			}
+			else{			
+				//visualizar				
+				$this->dompdf->stream($fileNamePdf, ['Attachment' => $objParameterShowDownloadPreview ]);
+			}
+			
+			
+			
+			//descargar
+			//$this->dompdf->stream();
+			
+			
+		}
+		catch(\Exception $ex){
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+		    $data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+		    
+		    $this->email->setFrom(EMAIL_APP);
+		    $this->email->setTo(EMAIL_APP_COPY);
+		    $this->email->setSubject("Error");
+		    $this->email->setMessage($resultView);
+		    
+		    $resultSend01 = $this->email->send();
+		    $resultSend02 = $this->email->printDebugger();
+		    
+		    
+		    return $resultView;
+		}
+	}
+	
+	
 	//facturacion estandar, horizontal tamaña a4
 	function viewRegisterFormatoPaginaNormal80mmGlobalPro(){
 		try{ 
@@ -10436,6 +10605,302 @@ class app_invoice_billing extends _BaseController {
 		    return $resultView;
 		}
 	}
+	
+	
+	function helper_reporteA4TransactionMasterInvoiceEbenezer(
+		$titulo,
+		$objCompany,
+		$objParameterLogo,
+		$objTransactionMastser,
+		$objEntidadNatural,
+		$objEntidadCustomer,
+		$tipoCambio,
+		$objCurrency,
+		$objTransactionMasterInfo,    
+		$objDetail,
+		$objParameterTelefono, /*telefono*/
+		$objEmployerNatural , /*venedor*/
+		$objTelefonoEmployer , /*telefono cliente*/
+		$statusName = "", /*estado*/
+		$causalName = "", /*causal*/
+		$userNickName = "", /*vendedor*/
+		$rucCompany = "" /*ruc*/
+	)
+	{
+		$path    		= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
+		
+		$font_size1   	= "18px";
+		$border_left 	= "border-left: 1px solid black;";
+		$border_right 	= "border-right: 1px solid black;";
+		$border_top 	= "border-top: 1px solid black;";
+		$border_bottom 	= "border-bottom: 1px solid black;";
+		$border_radius	= "border-radius: 10px;";
+		$border_colapse = "border-collapse:separate;";
+		
+		
+		
+		$type    		= pathinfo($path, PATHINFO_EXTENSION);
+		$data    		= file_get_contents($path);
+		$base64  		= 'data:image/' . $type . ';base64,' . base64_encode($data);
+		$numberDocument = str_replace("SHR","RECIBO No ",$objTransactionMastser->transactionNumber);
+		$tipoDocumento  = "ABONO";
+		$clientName		= $objEntidadNatural->firstName;
+		$telefono  		= $objEntidadCustomer->phoneNumber;
+		
+		$html    = "";
+		$html    = "
+						<!--
+						Online HTML, CSS and JavaScript editor to run code online.
+						https://www.programiz.com/html/online-compiler/
+						-->
+						<!DOCTYPE html>
+						<html lang='en'>
+			
+						<head>
+						  <meta charset='UTF-8' />
+						  <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+						  <style>
+							
+							@page {       
+							  size: Legal;   
+							
+							  
+							  margin-top:25px;
+							  margin-left:25px;
+							  margin-right:20px;
+							  margin-bottom: 25px;
+							  
+							  
+							  padding-top: 0px;
+							  padding-right: 0px;
+							  padding-bottom: 0px;
+							  padding-left: 0px;
+							  
+							}
+							table{
+							  font-size: xx-small;
+							  font-family: sans-serif, monaco, monospace;						 
+							  border-collapse: collapse;
+							}
+							td{
+							  font-size: xx-small;
+							  font-family: sans-serif, monaco, monospace;
+							  /*border: 1px solid black;*/
+							  border-collapse: collapse;
+							}
+						  </style>
+						</head>
+			
+						<body>
+						";
+			
+			$f_html = 	  "
+						  <table style='width:98%'>
+							<tr>
+							  <td  style='text-align:center;width:20%;text-align:left'>
+								
+							  </td>
+							  <td  style='text-align:center;width:60%'>
+									<h2 style='margin:0px' >ESCUELA ADVENTISTA \"EBEN-EZER\" MALPAISILLO - LEON</h2>
+									<h2 style='margin:0px' >EBEN-EZER</h2>
+									<h2 style='margin:0px' >Antigua petronic 5c. al sur - Malpaisillo, León </h2>
+							  </td>
+							  <td style='width:20%;text-align: right;vertical-align: top;' >
+								<img  src='".$base64."' width='70'  >
+							  </td>
+							</tr>
+						</table>
+						</br>
+							";
+			   
+		$f_html = $f_html."
+					
+				";
+				
+				
+		$f_html = $f_html."
+				
+					
+					<table style='width:98%' >
+						<tr>
+							<td style='text-align:left;width:33%;vertical-align:bottom ' >
+								<h2 style='margin:0px;color:blue' >RUC : ". $rucCompany ."</h2>
+								<table style='width:100px ;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom." '>
+									<tr>
+										<td style='width:50px'> <h2 style='margin:0px;color:black' >Día</h2>
+										</td>
+										<td style='width:50px'> <h2 style='margin:0px;color:black' >Mes</h2>
+										</td>
+										<td style='width:50px'> <h2 style='margin:0px;color:black' >Año</h2>
+										</td>
+										<td style=''>.
+										</td>
+									</tr>
+									<tr>
+										<td>
+											".(new \DateTime($objTransactionMastser->transactionOn))->format("d")."
+										</td>
+										<td>
+											".(new \DateTime($objTransactionMastser->transactionOn))->format("m")."
+										</td>
+										<td>
+											".(new \DateTime($objTransactionMastser->transactionOn))->format("Y")."
+										</td>
+										<td> 
+										</td>
+									</tr>
+								</table>
+							</td>
+							<td style='text-align:center;width:33%; vertical-align:top' >
+								<h1 style='margin:0px;color:black' >RECIBO DE INGRESO</h1>
+							</td>
+							<td style='text-align:right;width:33%; vertical-align:bottom' >
+								<h2 style='margin:0px;color:red' >". $numberDocument ."</h2>
+								<h2 style='margin:0px' >POR C$: ".number_format($objTransactionMastser->amount,2,'.',',')."</h2>
+							</td>
+						</tr>
+					</table>
+					
+					</br>
+				";
+				
+			   
+
+			   
+		$f_html = $f_html."
+					
+				";
+					
+		
+		$f_html = $f_html."
+					  <table style='width:98%;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom."' >
+							<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td  style='text-align:right;vertical-align:top;width:120px;padding:5px' >
+									Recibimos de:
+								</td>
+								<td style='width:500px;vertical-align:top;padding:5px;".$border_bottom."' >
+									".$objEntidadNatural->firstName."
+								</td>
+								<td style='width:50px'>&nbsp;</td>
+							</tr>
+							<tr>
+								<td  style='text-align:right;vertical-align:top;width:120px;padding:5px' >
+									La cantidad de:
+								</td>
+								<td style='width:auto;vertical-align:top;padding:5px;".$border_bottom."' >
+									".helper_GetLetras($objTransactionMastser->amount,"CORDOBAS CON ","")."
+								</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td  style='text-align:right;vertical-align:top;width:120px;padding:5px' >
+									En concepto de:
+								</td>
+								<td style='width:auto;vertical-align:top;padding:5px;".$border_bottom."' >
+									".$objTransactionMastser->note."
+								</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+					   </table>
+					   ";
+					   
+					   
+		
+			   
+		$f_html = $f_html."
+					
+				";
+					
+		$f_html = $f_html."
+					</br>
+					<table style='width:98%' >
+						<tr>
+							<td style='text-align:center' >
+								<h1 style='margin:0px' >\"Educamos Para Redimir\"</h1>
+								<h2 style='margin:0px' >No se aceptan devoluciones</h2>
+							</td>
+						</tr>	
+					</table>
+				";
+				
+			   
+
+		
+		$f_html = $f_html."
+					<table style='width:98%' >
+						<tr>
+							<td>&nbsp;</td>						
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+						</tr>				
+					</table>
+				";
+					
+
+		$f_html = $f_html."
+					<table style='width:98%' >
+						<tr>
+							<td style='text-align:center' >________________________</td>
+							<td style='text-align:center' >________________________</td>						
+						</tr>							
+						<tr>
+							<td style='text-align:center' >Entregue conforme</td>
+							<td style='text-align:center' >Recibí conforme</td>						
+						</tr>							
+					</table>
+				";
+				
+		
+		$f_html_copia 		= $f_html;
+		$f_html_original 	= $f_html;
+		$f_html_credito		= $f_html;
+		
+		$f_html_original 		= str_replace("[[TIPO_DOCUMENTO]]","ORIGINAL",$f_html_original);
+		$f_html_copia 			= str_replace("[[TIPO_DOCUMENTO]]","COPIA",$f_html_copia);
+		$f_html_credito 		= str_replace("[[TIPO_DOCUMENTO]]","COPIA",$f_html_copia);
+		
+		if($tipoDocumento == "PROFORMA")
+		{
+			$f_html				= $f_html_original;
+		}
+		else 
+		{
+			if(strtoupper($causalName) == strtoupper( "CREDITO" ) )
+			$f_html				= $f_html_original;
+			else 
+			$f_html				= $f_html_original;
+		
+		}
+		$html 				= $html.$f_html."</body></html>";	
+		
+		
+		return $html;
+	}
+
 	
 }
 ?>

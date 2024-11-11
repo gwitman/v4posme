@@ -944,6 +944,8 @@ $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNorm
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmCharLot/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmCharLot');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmGlobalPro','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmGlobalPro');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmGlobalPro/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmGlobalPro');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmEbenezer','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmEbenezer');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmEbenezer/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmEbenezer');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormalA4Titan','app_invoice_billing::viewRegisterFormatoPaginaNormalA4Titan');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormalA4Titan/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormalA4Titan');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmLaptopStore','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmLaptopStore');
