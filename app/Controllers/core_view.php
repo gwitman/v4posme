@@ -58,6 +58,7 @@ class core_view extends _BaseController {
 			if($result)
 			$parameter 					= array_merge($parameter,$result);
 			
+			$parameter["{userID}"]		= $this->session->get('user')->userID;
 			$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname,CALLERID_SEARCH,null,$parameter); 			
 			
 			if($multiselect == "true")

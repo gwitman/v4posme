@@ -17096,7 +17096,7 @@ function helper_reporteA4mmTransactionMasterShareEbenezer(
 		$type    		= pathinfo($path, PATHINFO_EXTENSION);
 		$data    		= file_get_contents($path);
 		$base64  		= 'data:image/' . $type . ';base64,' . base64_encode($data);
-		$numberDocument = str_replace("SHR","RECIBO No ",$objTransactionMastser->transactionNumber);
+		$numberDocument = str_replace("SHR","SERIE \"A\" RECIBO No ",$objTransactionMastser->transactionNumber);
 		$tipoDocumento  = "ABONO";
 		$clientName		= $objEntidadNatural->firstName;
 		$telefono  		= $objEntidadCustomer->phoneNumber;

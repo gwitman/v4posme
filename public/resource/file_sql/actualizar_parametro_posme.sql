@@ -742,7 +742,7 @@ WHERE
 
 
 UPDATE tb_company SET 
-	NAME = 'posMe' , address = 'Multicentro las america, Managua Nicaragua'   ,flavorID = 0
+	NAME = 'posMe' , address = 'Multicentro las america, Managua Nicaragua'   ,flavorID = 189
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 	

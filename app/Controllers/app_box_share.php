@@ -1817,7 +1817,7 @@ class app_box_share extends _BaseController {
 			
 
 			//Generar Reporte
-			$html =  $this->helper_reporteA4mmTransactionMasterShareEbenezer(
+			$html =  helper_reporteA4mmTransactionMasterShareEbenezer(
 				"ABONO DE CAJA",
 				$objCompany,
 				$objParameter,

@@ -6166,7 +6166,7 @@ class app_invoice_billing extends _BaseController {
 			
 			
 			//Generar Reporte
-			$html = $this->helper_reporteA4TransactionMasterInvoiceEbenezer(
+			$html = helper_reporteA4TransactionMasterInvoiceEbenezer(
 			    "FACTURA",
 			    $objCompany,
 			    $objParameter,
