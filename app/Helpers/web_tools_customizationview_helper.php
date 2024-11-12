@@ -127,11 +127,16 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('ebenezer_app_cxc_customer_divTxtCategoria')													=> "hidden",	
 		strtolower('ebenezer_app_cxc_customer_divTxtTipo')														=> "hidden",
 		strtolower('ebenezer_app_cxc_customer_divTxtFullNameCommercial')										=> "Tutor",
+		strtolower('ebenezer_app_cxc_customer_lblTxtIdentification')											=> "Codigo de alumno",
+		strtolower('ebenezer_app_cxc_customer_divTxtHuella')													=> "hidden",
+		strtolower('ebenezer_app_cxc_customer_divTxtBuro')														=> "hidden",
 		strtolower('ebenezer_app_invoice_billing_labelTitlePageList')											=> "Recibos",
 		strtolower('ebenezer_app_invoice_billing_labelTitlePageNew')											=> "Recibos",
 		strtolower('ebenezer_app_invoice_billing_labelTitlePageEdit')											=> "Recibos",
 		strtolower('ebenezer_app_invoice_billing_divTxtClienteBeneficiario')									=> "Alumno",
 		strtolower('ebenezer_app_invoice_billing_divTxtClienteBeneficiarioPrincipal')							=> "Alumno",
+		
+		
 		
 		
 		
