@@ -678,8 +678,9 @@ class app_med_query extends _BaseController {
 			}		
 			//Vista por defecto MOBILE
 			else if( $this->request->getUserAgent()->isMobile() ){
+				$targetComponentID			= 0;	
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
-				$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$objComponent->componentID,"DEFAULT_MOBILE_LISTA_EGRESOS_A_CAJA",CALLERID_LIST,$resultPermission,$parameter); 			
+				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);
 				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			} 
 			//Vista Por Id
