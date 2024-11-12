@@ -1257,7 +1257,19 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		",
 		strtolower('compu_matt_app_purchase_pedidos_scriptValidateInSave') 											=> "
 			applyValidationNote = false;
-		"
+		",
+		
+		/*posme*/
+		strtolower('posme_core_web_menu_CONS. MED')			 												=> "VISITAS",
+		strtolower('posme_app_med_query_labelTitlePageList')			 									=> "VISITAS",
+		strtolower('posme_app_med_query_divPanelEdad')			 											=> "hidden",
+		strtolower('posme_app_med_query_divPanelAltura')			 										=> "hidden",
+		strtolower('posme_app_med_query_divPanelPeso')			 											=> "hidden",
+		strtolower('posme_app_med_query_divPanelIMC')			 											=> "hidden",
+		strtolower('posme_app_med_query_divPanelResultado')			 										=> "hidden",
+		strtolower('posme_app_med_query_divPanelEvaluacion')			 									=> "hidden",
+		strtolower('posme_app_med_query_divPanelRecomendacion')			 									=> "hidden",
+		strtolower('posme_app_med_query_divPanelDiagnostico')			 									=> "hidden",
 		
 		
 	);

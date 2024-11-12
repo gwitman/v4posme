@@ -138,7 +138,7 @@
 								<!-- New inputs -->
 									
 									<!-- Edad-->
-									<div class="form-group">
+									<div class="form-group <?php echo getBehavio($company->type,"app_med_query","divPanelEdad",""); ?>">
 										<label class="col-lg-4 control-label" for="buttons">Edad(años)</label>
 										<div class="col-lg-8">
 											<input class="form-control" type="number"  name="txtAge" id="txtAge" value="<?php echo number_format($objTransactionMaster->tax1,0);  ?>"></input>
@@ -146,7 +146,7 @@
 									</div>
 
 									<!-- Altura-->
-									<div class="form-group">
+									<div class="form-group <?php echo getBehavio($company->type,"app_med_query","divPanelAltura",""); ?>">
 										<label class="col-lg-4 control-label" for="buttons">Altura(cm)</label>
 										<div class="col-lg-8">
 											<input class="form-control" type="number"  name="txtHeight" id="txtHeight" value="<?php echo number_format($objTransactionMaster->tax2,2);  ?>"></input>
@@ -154,7 +154,7 @@
 									</div>
 
 									<!-- Peso -->
-									<div class="form-group">
+									<div class="form-group <?php echo getBehavio($company->type,"app_med_query","divPanelPeso",""); ?> ">
 										<label class="col-lg-4 control-label" for="buttons">Peso(kg)</label>
 										<div class="col-lg-8">
 											<input class="form-control" type="number"  name="txtWeight" id="txtWeight" value="<?php echo number_format($objTransactionMaster->tax3,2);  ?>"></input>
@@ -162,7 +162,7 @@
 									</div>
 								
 									<!-- IMC -->
-									<div class="form-group">
+									<div class="form-group <?php echo getBehavio($company->type,"app_med_query","divPanelIMC",""); ?> ">
 										<label class="col-lg-4 control-label" for="buttons">IMC</label>
 										<div class="col-lg-8">
 											<input class="form-control" readonly type="number" name="txtIMC" id="txtIMC" value="<?php echo number_format($objTransactionMaster->tax4,2) ?>"></input>
@@ -186,7 +186,7 @@
 									</div>
 
 									<!-- Resultado -->
-									<div class="form-group">
+									<div class="form-group <?php echo getBehavio($company->type,"app_med_query","divPanelResultado",""); ?> ">
 										<label class="col-lg-4 control-label" for="buttons">Resultado</label>
 										<div class="col-lg-8">
 											<input class="form-control" type="text"  name="txtResult" id="txtResult" value="<?php echo $objTransactionMaster->reference1;  ?>"></input>
@@ -194,7 +194,7 @@
 									</div>
 
 									<!-- Evaluacion -->
-									<div class="form-group">
+									<div class="form-group <?php echo getBehavio($company->type,"app_med_query","divPanelEvaluacion",""); ?> ">
 										<label class="col-lg-4 control-label" for="buttons">Evaluacion</label>
 										<div class="col-lg-8">
 											<input class="form-control" type="text"  name="txtEvaluation" id="txtEvaluation" value="<?php echo $objTransactionMaster->reference2;  ?>"></input>
@@ -202,7 +202,7 @@
 									</div>
 
 									<!-- Recomendacion -->
-									<div class="form-group">
+									<div class="form-group <?php echo getBehavio($company->type,"app_med_query","divPanelRecomendacion",""); ?> ">
 										<label class="col-lg-4 control-label" for="buttons">Recomendacion</label>
 										<div class="col-lg-8">
 											<input class="form-control" type="text"  name="txtRecomendation" id="txtRecomendation" value="<?php echo $objTransactionMaster->reference3;  ?>"></input>
@@ -210,7 +210,7 @@
 									</div>
 
 									<!-- Diagnostico -->
-									<div class="form-group">
+									<div class="form-group <?php echo getBehavio($company->type,"app_med_query","divPanelDiagnostico",""); ?> ">
 										<label class="col-lg-4 control-label" for="buttons">Diagnostico</label>
 										<div class="col-lg-8">
 											<input class="form-control" type="text"  name="txtDiagnostic" id="txtDiagnostic" value="<?php echo $objTransactionMaster->reference4;  ?>"></input>
