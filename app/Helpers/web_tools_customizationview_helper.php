@@ -127,6 +127,16 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('ebenezer_app_cxc_customer_divTxtCategoria')													=> "hidden",	
 		strtolower('ebenezer_app_cxc_customer_divTxtTipo')														=> "hidden",
 		strtolower('ebenezer_app_cxc_customer_divTxtFullNameCommercial')										=> "Tutor",
+		strtolower('ebenezer_app_invoice_billing_scriptValidateCustomer')										=> "
+		
+			if($('#txtNote').val() == 'sin comentarios.' )
+			{
+				fnShowNotification('Escribir comentario','error',timerNotification);
+				result = false;
+				fnWaitClose();
+			}
+		
+		",
 		
 		
 		/*GlobalPro*/

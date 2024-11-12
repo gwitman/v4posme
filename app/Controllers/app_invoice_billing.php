@@ -6140,6 +6140,7 @@ class app_invoice_billing extends _BaseController {
 			$objComponent	        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
 			$objParameter	        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
 			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+			$objParameterRuc 		= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID)->value;
 			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);			
 			$spacing 		= 0.5;
 			
@@ -6183,7 +6184,7 @@ class app_invoice_billing extends _BaseController {
 				$datView["objStage"][0]->display, /*estado*/
 				$datView["objTC"]->name, /*causal*/
 				"",
-				""
+				$objParameterRuc 	
 			);
 			//echo $html;
 			$this->dompdf->loadHTML($html);

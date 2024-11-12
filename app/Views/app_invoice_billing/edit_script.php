@@ -1323,6 +1323,9 @@
 			fnWaitClose();
 		}
 		
+		<?php echo getBehavio($company->type,"app_invoice_billing","scriptValidateCustomer",""); ?>  
+		
+		
 		//Obtener Limite
 		if(invoiceTypeCredit){
 			

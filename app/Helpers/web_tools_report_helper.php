@@ -1194,7 +1194,7 @@ function helper_reporteA4TransactionMasterInvoiceEbenezer(
 )
 {
     $path    		= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
-    
+		
 	$font_size1   	= "18px";
 	$border_left 	= "border-left: 1px solid black;";
 	$border_right 	= "border-right: 1px solid black;";
@@ -1205,35 +1205,35 @@ function helper_reporteA4TransactionMasterInvoiceEbenezer(
 	
 	
 	
-    $type    		= pathinfo($path, PATHINFO_EXTENSION);
-    $data    		= file_get_contents($path);
-    $base64  		= 'data:image/' . $type . ';base64,' . base64_encode($data);
-    $numberDocument = strpos($objTransactionMastser->transactionNumber ,"FAC") === false ?   str_replace("PRF","PROFORMA No. ",strtoupper($objTransactionMastser->transactionNumber)) : str_replace("FAC","FACTURA No. ",strtoupper($objTransactionMastser->transactionNumber)) ;
-	$tipoDocumento  = strpos($objTransactionMastser->transactionNumber ,"FAC") === false ?   "PROFORMA": "FACTURA";
-	$clientName		= ($objTransactionMasterInfo->referenceClientName == "" ?   $objEntidadNatural->firstName  :  $objTransactionMasterInfo->referenceClientName) ;
+	$type    		= pathinfo($path, PATHINFO_EXTENSION);
+	$data    		= file_get_contents($path);
+	$base64  		= 'data:image/' . $type . ';base64,' . base64_encode($data);
+	$numberDocument = str_replace("FAC","SERIE \"A\" RECIBO No ",$objTransactionMastser->transactionNumber);
+	$tipoDocumento  = "ABONO";
+	$clientName		= $objEntidadNatural->firstName;
 	$telefono  		= $objEntidadCustomer->phoneNumber;
 	
-    $html    = "";
-    $html    = "
-                    <!--
-                    Online HTML, CSS and JavaScript editor to run code online.
-                    https://www.programiz.com/html/online-compiler/
-                    -->
-                    <!DOCTYPE html>
-                    <html lang='en'>
-        
-                    <head>
-                      <meta charset='UTF-8' />
-                      <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-                      <style>
+	$html    = "";
+	$html    = "
+					<!--
+					Online HTML, CSS and JavaScript editor to run code online.
+					https://www.programiz.com/html/online-compiler/
+					-->
+					<!DOCTYPE html>
+					<html lang='en'>
+		
+					<head>
+					  <meta charset='UTF-8' />
+					  <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+					  <style>
 						
-                        @page {       
-                          size: Legal;   
+						@page {       
+						  size: Legal;   
 						
 						  
-                          margin-top:25px;
-                          margin-left:25px;
-                          margin-right:20px;
+						  margin-top:25px;
+						  margin-left:25px;
+						  margin-right:20px;
 						  margin-bottom: 25px;
 						  
 						  
@@ -1242,261 +1242,204 @@ function helper_reporteA4TransactionMasterInvoiceEbenezer(
 						  padding-bottom: 0px;
 						  padding-left: 0px;
 						  
-                        }
-                        table{
-                          font-size: xx-small;
-                          font-family: sans-serif, monaco, monospace;						 
+						}
+						table{
+						  font-size: xx-small;
+						  font-family: sans-serif, monaco, monospace;						 
 						  border-collapse: collapse;
-                        }
+						}
 						td{
-                          font-size: xx-small;
-                          font-family: sans-serif, monaco, monospace;
+						  font-size: xx-small;
+						  font-family: sans-serif, monaco, monospace;
 						  /*border: 1px solid black;*/
 						  border-collapse: collapse;
-                        }
-                      </style>
-                    </head>
-        
-                    <body>
-					";
-        
-		$f_html = 	  "
-                      <table style='width:98%'>
-                        <tr>
-						  <td  style='text-align:center;width:500px;text-align:left'>
-                            <img  src='".$base64."' width='300'  >
-                          </td>
-                          <td  style='text-align:center;'>
-									<table style='width:100%'>
-										<tr>
-										  <td  style='text-align:center;font-size:".$font_size1."; font-weight: bold;'>
-											". $numberDocument ."
-										  </td>
-										</tr>
-										
-										<tr>
-										  <td style='text-align:center'>
-											".getBehavio($objCompany->type,"app_invoice_billing","lblRptInvoiceAddress","Carretera Masaya, Frente al colegio Teresiano")."
-										  </td>
-										</tr>
-										<tr>
-										  <td style='text-align:center'>
-											".getBehavio($objCompany->type,"app_invoice_billing","lblRptInvoiceRuc","Edificio Delta RUC: 888-080396-0001K")."
-										  </td>
-										</tr>
-										<tr>
-										  <td style='text-align:center'>
-											".getBehavio($objCompany->type,"app_invoice_billing","lblRptInvoicePhone","Teléfono: 2223-2314.")."
-										  </td>
-										</tr>
-										<tr>
-										  <td style='text-align:center'>
-											AUT.DGI. No. ASFC 02/0009/02/2023/2
-										  </td>
-										</tr>
-									</table>
-                          </td>
-                        </tr>
-					</table>
-					
-						";
-    	   
-	$f_html = $f_html."
-				<table style='width:98%' >
-					<tr>
-						<td>&nbsp;</td>
-					</tr>
-				</table>
-			";
-			
-			
-	$f_html = $f_html."
-				<table style='width:98%' >
-					<tr>
-						<td style='text-align:center' colspan='3'>[[TIPO_DOCUMENTO]]</td>
-						<td style='text-align:center;width:70px'>".$causalName."</td>
-						<td style='text-align:center;width:70px; font-weight: bold;'>Vendedor</td>
-						<td style='text-align:center; font-weight: bold;'>".$objEmployerNatural->firstName." ".$objEmployerNatural->lastName."</td>
-					</tr>
-					<tr>
-						<td style='text-align:center; font-weight: bold;".$border_left.$border_right.$border_top.$border_bottom."'>Cliente</td>
-						<td style='text-align:left;".$border_left.$border_right.$border_top.$border_bottom."' colspan='3'>".$clientName."</td>						
-						<td style='text-align:center;".$border_left.$border_right.$border_top.$border_bottom."'>Cedula</td>
-						<td style='text-align:center;".$border_left.$border_right.$border_top.$border_bottom."'>".$objEntidadCustomer->identification."</td>
-					</tr>
-					<tr>
-						<td style='text-align:center;width:70px; font-weight: bold;".$border_left.$border_right.$border_top.$border_bottom."' >Telefono</td>
-						<td style='text-align:left;".$border_left.$border_right.$border_top.$border_bottom."' colspan='3'>".$telefono."</td>						
-						<td style='text-align:center;".$border_left.$border_right.$border_top.$border_bottom."' >Fecha</td>
-						<td style='text-align:center;width:250px;".$border_left.$border_right.$border_top.$border_bottom."' >".$objTransactionMastser->createdOn."</td>
-					</tr>
-				</table>
-			";
-			
-		   
-	$f_html = $f_html."
-				<table style='width:98%' >
-					<tr>
-						<td>&nbsp;</td>
-					</tr>
-				</table>
-			";
-			
-			
-	$f_html = $f_html."
-			<table style='width:98%' > 
-				<tr style='background-color: #ccc;'>
-					<td style='text-align:center;width:70px; font-weight: bold;"."' >ARTICULO</td>
-					<td style='text-align:center; font-weight: bold;"."' >DESCRIPCION</td>
-					<td style='text-align:center;width:70px; font-weight: bold;"."' >Pre. Unit.</td>
-					<td style='text-align:center;width:70px; font-weight: bold;"."' >Cant.</td>
-					<td style='text-align:center;width:70px; font-weight: bold;"."' >Descuento</td>
-					<td style='text-align:center;width:70px; font-weight: bold;"."' >TOTAL</td>
-				<tr>
-			";
+						}
+					  </style>
+					</head>
 		
-	$total 		= 0;
-	$subtotal 	= 0;
-	$iva 		= 0;
-	$descuento 	= 0;
-	
-	for($i = 0 ; $i < 22 ; $i++)
-	{
-		$count = count($objDetail);
-		if($i < $count)
-		{
-			$total 		= $total + $objDetail[$i]->amount ;
-			$iva 		= $iva + ($objDetail[$i]->tax1 * $objDetail[$i]->quantity);
-			$subtotal 	= $subtotal + ($objDetail[$i]->unitaryPrice * $objDetail[$i]->quantity);
-			
-			$f_html = $f_html."			
-				<tr>
-					<td style='text-align:left;width:70px' >".$objDetail[$i]->itemNumber."</td>
-					<td style='text-align:left;' >".$objDetail[$i]->itemNameLog."</td>
-					<td style='text-align:center;width:70px' >".$objCurrency->simbol." ".number_format(round($objDetail[$i]->unitaryPrice,2),2,".",",")."</td>
-					<td style='text-align:center;width:70px' >".number_format(round($objDetail[$i]->quantity,2),2,".",",")."</td>
-					<td style='text-align:center;width:70px' >".$objCurrency->simbol." 0.00</td>
-					<td style='text-align:center;width:70px' >".$objCurrency->simbol." ".number_format(round($objDetail[$i]->unitaryPrice,2)  * round($objDetail[$i]->quantity,2)   ,2,".",",")."</td>
-				<tr>
-			";
-		}
-		else
-		{
-			$f_html = $f_html."			
-				<tr>
-					<td style='text-align:center;width:70px' >&nbsp;</td>
-					<td style='text-align:center;' >&nbsp;</td>
-					<td style='text-align:center;width:70px' >&nbsp;</td>
-					<td style='text-align:center;width:70px' >&nbsp;</td>
-					<td style='text-align:center;width:70px' >&nbsp;</td>
-					<td style='text-align:center;width:70px' >&nbsp;</td>
-				<tr>
-			";
-		}
-	}
-				
-	$f_html = $f_html."
-			</table>
-			";
+					<body>
+					";
+		
+		$f_html = 	  "
+					  <table style='width:98%'>
+						<tr>
+						  <td  style='text-align:center;width:20%;text-align:left'>
+							
+						  </td>
+						  <td  style='text-align:center;width:60%'>
+								<h2 style='margin:0px' >ESCUELA ADVENTISTA \"EBEN-EZER\" MALPAISILLO - LEON</h2>
+								<h2 style='margin:0px' >EBEN-EZER</h2>
+								<h2 style='margin:0px' >Antigua petronic 5c. al sur - Malpaisillo, León </h2>
+						  </td>
+						  <td style='width:20%;text-align: right;vertical-align: top;' >
+							<img  src='".$base64."' width='70'  >
+						  </td>
+						</tr>
+					</table>
+					</br>
+						";
 		   
 	$f_html = $f_html."
+				
+			";
+			
+			
+	$f_html = $f_html."
+			
+				
 				<table style='width:98%' >
 					<tr>
-						<td>&nbsp;</td>
+						<td style='text-align:left;width:33%;vertical-align:bottom ' >
+							<h2 style='margin:0px;color:blue' >RUC : ". $rucCompany ."</h2>
+							<table style='width:100px ;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom." '>
+								<tr>
+									<td style='width:50px'> <h2 style='margin:0px;color:black' >Día</h2>
+									</td>
+									<td style='width:50px'> <h2 style='margin:0px;color:black' >Mes</h2>
+									</td>
+									<td style='width:50px'> <h2 style='margin:0px;color:black' >Año</h2>
+									</td>
+									<td style=''>.
+									</td>
+								</tr>
+								<tr>
+									<td>
+										".(new \DateTime($objTransactionMastser->transactionOn))->format("d")."
+									</td>
+									<td>
+										".(new \DateTime($objTransactionMastser->transactionOn))->format("m")."
+									</td>
+									<td>
+										".(new \DateTime($objTransactionMastser->transactionOn))->format("Y")."
+									</td>
+									<td> 
+									</td>
+								</tr>
+							</table>
+						</td>
+						<td style='text-align:center;width:33%; vertical-align:top' >
+							<h1 style='margin:0px;color:black' >RECIBO DE INGRESO</h1>
+						</td>
+						<td style='text-align:right;width:33%; vertical-align:bottom' >
+							<h2 style='margin:0px;color:red' >". $numberDocument ."</h2>
+							<h2 style='margin:0px' >POR C$: ".number_format($objTransactionMastser->amount,2,'.',',')."</h2>
+						</td>
 					</tr>
 				</table>
+				
+				</br>
+			";
+			
+		   
+
+		   
+	$f_html = $f_html."
+				
 			";
 				
 	
 	$f_html = $f_html."
 				  <table style='width:98%;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom."' >
 						<tr>
-							<td  style='text-align:left;vertical-align:top;widht:auto;' >
-								<table style='width:100%;'>
-									<tr>
-										<td style='font-size:".$font_size1.";font-weight:bold;' >Nota al cliente:</td>
-									</tr>
-									<tr>
-										<td style='height:60px;text-justify: auto;  '>". substr($objTransactionMastser->note,0,450) ."</td>
-									</tr>
-								</table>
-							</td>
-							<td style='width:200px;vertical-align:top;' >									
-								<table style='width:100%;'>
-									<tr>										
-										<td style='text-align:right;vertical-align: top;font-size:".$font_size1."; font-weight: bold;'>Totales:</td>								
-									</tr>
-									<tr>
-										<td>&nbsp;</td>										
-									</tr>
-									<tr>
-										<td>&nbsp;</td>										
-									</tr>
-									<tr>
-										<td>&nbsp;</td>										
-									</tr>																
-									<tr>										
-										<td style='text-align:right;padding-top:5px;'>No se aceptan devoluciones.</td>										
-									</tr>						
-								</table>
-								
-							</td>
-							<td  style='text-align:left;vertical-align:top;widht:100px;' >
-								<table style='width:100%;'>
-									<tr>										
-										<td style='width:70px'>Subtotal</td>
-										<td style='text-align:right;width:70px'>".$objCurrency->simbol." ".number_format ( round($subtotal,2) , 2 , ".","," ) ."</td>
-									</tr>
-									<tr>
-										<td>Descuentos</td>
-										<td style='text-align:right'>".$objCurrency->simbol." 0.00</td>
-									</tr>
-									<tr>
-										<td>Subtotal</td>
-										<td style='text-align:right'>".$objCurrency->simbol." ".number_format ( round($subtotal,2) , 2 , ".","," ) ."</td>
-									</tr>
-									<tr>
-										<td>IVA</td>
-										<td style='text-align:right'>".$objCurrency->simbol." ".number_format ( round($iva,2) , 2 , ".","," ) ."</td>
-									</tr>
-									<tr>
-										<td style=' font-weight: bold;'>TOTAL:</td>
-										<td style='text-align:right'>".$objCurrency->simbol." ".number_format ( round($objTransactionMastser->amount,2) , 2 , ".","," ) ."</td>
-									</tr>
-									<tr>										
-										<td></td>
-										<td></td>
-									</tr>	
-									<tr>
-										<td colspan='2'>*=".getBehavio($objCompany->type,"app_invoice_billing","lblRptInvoiceOpcion1","Equipo seminuevo")." </td>
-									</tr>									
-								</table>
-							</td>
-							
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
 						</tr>
-						
-						
-				   </table>";
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td  style='text-align:right;vertical-align:top;width:120px;padding:5px' >
+								Recibimos de:
+							</td>
+							<td style='width:500px;vertical-align:top;padding:5px;".$border_bottom."' >
+								".$objEntidadNatural->firstName."
+							</td>
+							<td style='width:50px'>&nbsp;</td>
+						</tr>
+						<tr>
+							<td  style='text-align:right;vertical-align:top;width:120px;padding:5px' >
+								La cantidad de:
+							</td>
+							<td style='width:auto;vertical-align:top;padding:5px;".$border_bottom."' >
+								".helper_GetLetras($objTransactionMastser->amount,"CORDOBAS CON ","")."
+							</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td  style='text-align:right;vertical-align:top;width:120px;padding:5px' >
+								En concepto de:
+							</td>
+							<td style='width:auto;vertical-align:top;padding:5px;".$border_bottom."' >
+								".$objTransactionMastser->note."
+							</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+				   </table>
+				   ";
 				   
 				   
+	
+		   
 	$f_html = $f_html."
+				
+			";
+				
+	$f_html = $f_html."
+				</br>
 				<table style='width:98%' >
 					<tr>
-						<td>&nbsp;</td>
-					</tr>
+						<td style='text-align:center' >
+							<h1 style='margin:0px' >\"Educamos Para Redimir\"</h1>
+							<h2 style='margin:0px' >No se aceptan devoluciones</h2>
+						</td>
+					</tr>	
 				</table>
 			";
 			
-			
-	$f_html = $f_html."
-				  <table style='width:98%' >
-						<tr>
-							<td style='text-align:center;text-decoration:underline;font-weight: bold;font-size:14px'>
-								".getBehavio($objCompany->type,"app_invoice_billing","lblRptInvoiceOpcion2","Al comprar tu equipo en GLOBAL PRO,puedes cambiarlo por uno superior cuando gustes!")."
-							</td>
-						</tr>
-				   </table>";
+		   
+
 	
+	$f_html = $f_html."
+				<table style='width:98%' >
+					<tr>
+						<td>&nbsp;</td>						
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+					</tr>				
+				</table>
+			";
+				
+
+	$f_html = $f_html."
+				<table style='width:98%' >
+					<tr>
+						<td style='text-align:center' >________________________</td>
+						<td style='text-align:center' >________________________</td>						
+					</tr>							
+					<tr>
+						<td style='text-align:center' >Entregue conforme</td>
+						<td style='text-align:center' >Recibí conforme</td>						
+					</tr>							
+				</table>
+			";
+			
 	
 	$f_html_copia 		= $f_html;
 	$f_html_original 	= $f_html;
@@ -1513,36 +1456,15 @@ function helper_reporteA4TransactionMasterInvoiceEbenezer(
 	else 
 	{
 		if(strtoupper($causalName) == strtoupper( "CREDITO" ) )
-		$f_html				= $f_html_original."<div style='page-break-before:always;' ></div>".$f_html_copia."<div style='page-break-before:always;' ></div>".$f_html_credito;
+		$f_html				= $f_html_original;
 		else 
-		$f_html				= $f_html_original."<div style='page-break-before:always;' ></div>".$f_html_copia;
+		$f_html				= $f_html_original;
 	
 	}
 	$html 				= $html.$f_html."</body></html>";	
 	
 	
-
-  
-	//wgonzalez	
-	//wgonzalez $html	= $html."<tr>
-    //wgonzalez                 <td colspan='1'>
-    //wgonzalez                   Estado
-    //wgonzalez                 </td>
-	//wgonzalez				  <td colspan='2'>
-    //wgonzalez                   ". ($statusName == "CANCELADA" ? "APLICADA" : $statusName ) ."
-    //wgonzalez                 </td>
-    //wgonzalez               </tr>
-   
-	//wgonzalez	
-    //wgonzalez               <tr>
-    //wgonzalez                 <td colspan='3'>
-    //wgonzalez                   Tipo de Cambio: ".$tipoCambio."
-    //wgonzalez                 </td>
-    //wgonzalez               </tr>
-	//wgonzalez                    
-       
-    
-    return $html;
+	return $html;
 }
 
 function helper_reporteA4TransactionMasterInvoiceA4Opcion1(
