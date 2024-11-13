@@ -1228,7 +1228,7 @@ function helper_reporteA4TransactionMasterInvoiceEbenezer(
 					  <style>
 						
 						@page {       
-						  size: Legal;   
+						  size: A4;   
 						
 						  
 						  margin-top:25px;
@@ -1321,6 +1321,7 @@ function helper_reporteA4TransactionMasterInvoiceEbenezer(
 							<h1 style='margin:0px;color:black' >RECIBO DE INGRESO</h1>
 						</td>
 						<td style='text-align:right;width:33%; vertical-align:bottom' >
+							<h2 style='margin:0px;' >[[TIPO_DOCUMENTO]]</h2>
 							<h2 style='margin:0px;color:red' >". $numberDocument ."</h2>
 							<h2 style='margin:0px' >POR C$: ".number_format($objTransactionMastser->amount,2,'.',',')."</h2>
 						</td>
@@ -1456,9 +1457,14 @@ function helper_reporteA4TransactionMasterInvoiceEbenezer(
 	else 
 	{
 		if(strtoupper($causalName) == strtoupper( "CREDITO" ) )
-		$f_html				= $f_html_original;
+		{
+			$f_html				= $f_html_original."<div style='page-break-before:always;' ></div>".$f_html_copia."<div style='page-break-before:always;' ></div>".$f_html_credito;
+		}
 		else 
-		$f_html				= $f_html_original;
+		{
+			//$f_html				= $f_html_original."<div style='page-break-before:always;' ></div>".$f_html_copia;
+			$f_html				= $f_html_original."</br></br></br></br></br>".$f_html_copia;
+		}
 	
 	}
 	$html 				= $html.$f_html."</body></html>";	
@@ -1559,7 +1565,7 @@ function helper_reporteA4TransactionMasterInvoiceA4Opcion1(
                       <table style='width:98%'>
                         <tr>
 						  <td  style='text-align:center;width:500px;text-align:left'>
-                            <img  src='".$base64."' width='300'  >
+                            <img  src='".$base64."' width='150'  >
                           </td>
                           <td  style='text-align:center;'>
 									<table style='width:100%'>
@@ -1586,7 +1592,7 @@ function helper_reporteA4TransactionMasterInvoiceA4Opcion1(
 										</tr>
 										<tr>
 										  <td style='text-align:center'>
-											AUT.DGI. No. ASFC 02/0009/02/2023/2
+											".getBehavio($objCompany->type,"web_tools_report_helper","reporteA4TransactionMasterInvoiceA4Opcion1AutorizationDgi","AUT.DGI. No. ASFC 02/0009/02/2023/2")."
 										  </td>
 										</tr>
 									</table>

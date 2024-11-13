@@ -297,6 +297,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 
 		/*Farmacia LM*/
 		strtolower('farma_lm_app_invoice_billing_divOpcionViewA4') 													=> "",
+		strtolower('farma_lm_web_tools_report_helper_reporteA4TransactionMasterInvoiceA4Opcion1AutorizationDgi')	=> "",
 		
 		/*Ferreteria Mateo*/			
 		strtolower('ferreteria_mateo_app_invoice_billing_bodyListInvoice')	 									=> "height: 550px; overflow: scroll;",
