@@ -731,7 +731,7 @@
 		$("#divTipoFactura").addClass("hidden");			
 		
 		
-		var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCustomer->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_BILLING/true/empty/false/not_redirect_when_empty";
+		var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCustomer->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_ALL/true/empty/false/not_redirect_when_empty";
 		window.open(url_request,"MsgWindow","width=900,height=450");
 		window.onCompleteCustomer = onCompleteCustomer; 
 	});						
