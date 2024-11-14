@@ -1267,8 +1267,8 @@ function helper_reporteA4TransactionMasterInvoiceEbenezer(
 							
 						  </td>
 						  <td  style='text-align:center;width:60%'>
-								<h2 style='margin:0px' >ESCUELA ADVENTISTA \"EBEN-EZER\" MALPAISILLO - LEON</h2>
-								<h2 style='margin:0px' >EBEN-EZER</h2>
+								<h2 style='margin:0px' >CENTRO ESCOLAR PRIVADO ADVENTISTA EBEN-EZER MALPASILLO</h2>
+								<h2 style='margin:0px' >CEPAEM</h2>
 								<h2 style='margin:0px' >Antigua petronic 5c. al sur - Malpaisillo, León </h2>
 						  </td>
 						  <td style='width:20%;text-align: right;vertical-align: top;' >
