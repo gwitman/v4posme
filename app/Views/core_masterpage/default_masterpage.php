@@ -40,7 +40,7 @@
 	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/css/genyx-theme/jquery.ui.progressbar.css" rel="stylesheet" />
 	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/css/genyx-theme/jquery.ui.genyx.css" rel="stylesheet" />
 	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/is-loading-master/style.css" rel="stylesheet" />
-	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/css/app.css" rel="stylesheet" />
+	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/css/app_css.php" rel="stylesheet" />
 	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/css/custom.css" rel="stylesheet" />
 	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/genyx-app.css" rel="stylesheet" />
 
