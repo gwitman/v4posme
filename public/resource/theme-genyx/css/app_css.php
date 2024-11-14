@@ -1,10 +1,13 @@
 <?php
 header("Content-type: text/css");
 
-$color_primary 		= "#00C868";//#363840
+$color_primary 		= "#006E98";//#363840
 $color_secundary 	= "#006E98";//#4e525d
-$color_3 			= "#00C868";//#3a3f4b
+$color_3 			= "#006E98";//#3a3f4b
 $color_4 			= "#006E98";//#5c6778
+$color_5 			= "#006E98";//black;
+
+
 ?>
 
 /* Genyx admin app.css ver1.2 by SuggeElson  */
@@ -1393,7 +1396,7 @@ border-color: #c9c9c9;
 	}
 
 	#header .navbar .divider-vertical {
-		background: black;
+		background: <?php echo $color_5; ?>;
 		-webkit-box-shadow: 1px 0 0 rgba(255, 255, 255, 0.1);
 		-moz-box-shadow: 1px 0 0 rgba(255,255,255,0.1);
 		box-shadow: 1px 0 0 rgba(255, 255, 255, 0.1);
