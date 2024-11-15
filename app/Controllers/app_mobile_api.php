@@ -15,6 +15,7 @@ class app_mobile_api extends _BaseController
             $nickname 					= /*inicio get post*/ $this->request->getPost("txtNickname");
             $password 					= /*inicio get post*/ $this->request->getPost("txtPassword");
             $objUser 					= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);
+			$objListCustomerMap			= [];
             $companyID 					= $objUser["user"]->companyID;
             Services::session()->set("user", $objUser["user"]);
             $objCompany 				= $objUser["company"];
@@ -79,7 +80,9 @@ class app_mobile_api extends _BaseController
 
 
             //INICIO DE CARGA DE CUSTOMERS
-            if (count($customers) > 0) {
+			$idexCount = 0;
+            if (count($customers) > 0) 
+			{
                 $controller = new app_cxc_customer();
                 $controller->initController($this->request, $this->response, $this->logger);
                 foreach ($customers as $cus)
@@ -89,14 +92,31 @@ class app_mobile_api extends _BaseController
                     $entityID=$cus->entityID;
                     //si entityid es null o 0, es nuevo, sino un update
                     $objCustomer= $this->Customer_Model->get_rowByPK($companyID,$branchID,$entityID);
-                    if (is_null($objCustomer)){
-                        $controller->insertElementMobile($dataSession,$cus);
-                    }else{
+                    if (is_null($objCustomer))
+					{
+                        $objDataSet 									= $controller->insertElementMobile($dataSession,$cus);
+						$entityIDOld 									= $customers[$idexCount]->entityID;
+						$customerCreditLineIDOld 						= $customers[$idexCount]->customerCreditLineID;
+						$customers[$idexCount]->entityID 				= $objDataSet["entityID"];
+						$customers[$idexCount]->customerNumber 			= $objDataSet["customerNumber"];
+						$customers[$idexCount]->customerCreditLineID 	= $objDataSet["customerCreditLineID"];
+						$objCustomerMaps = (object)[
+								'entityIDOld' 				=> $entityIDOld,
+								'customerCreditLineIDOld' 	=> $customerCreditLineIDOld,
+								'entityID' 					=> $customers[$idexCount]->entityID,
+								'customerCreditLineID' 		=> $customers[$idexCount]->customerCreditLineID 
+						];
+						$objListCustomerMap[] 							= $objCustomerMaps;
+                    }
+					else
+					{
                         $objCustomer=json_decode(json_encode($objCustomer));
                         $objCustomer->firstName = $cus->firstName;
                         $objCustomer->lastName=$cus->lastName;
                         $controller->updateElementMobile($dataSession, $objCustomer);
                     }
+					
+					$idexCount++;
                 }
             }
 
@@ -116,20 +136,32 @@ class app_mobile_api extends _BaseController
             }
 
             //SINCRONIZACION FACTURAS
-            if(count($transactionMasters)>0){
-                $billingController = new app_invoice_billing();
+			$idexCount = 0;
+            if(count($transactionMasters)>0)
+			{
+                $billingController 	= new app_invoice_billing();
                 $billingController->initController($this->request, $this->response, $this->logger);
-                $typeTransaction = $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_billing",0);
-                $facturas = array_filter($transactionMasters, function($tm) use ($typeTransaction) {
-                    return $tm->TransactionId == $typeTransaction;
-                });
-                foreach($facturas as $objTm){
+                $typeTransaction 	= $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_billing",0);
+                $facturas 			= array_filter($transactionMasters, function($tm) use ($typeTransaction) { return $tm->TransactionId == $typeTransaction; });
+                foreach($facturas as $objTm)
+				{
                     // Filtrar los objetos por TransactionMasterId
                     $transactionMasterId=$objTm->TransactionMasterId;
-                    $resultado = array_filter($transactionMasterDetails, function($tm) use ($transactionMasterId) {
-                        return $tm->TransactionMasterId == $transactionMasterId;
-                    });
+					$entityID 			=$objTm->entityID;
+					
+					
+					//buscar el entityID si es un entityID Nuevo
+					$objCustomerFilt 	= array_filter($objListCustomerMap, function($e) use ($entityID) { return $e->entityIDOld == $entityID; });
+					if($objCustomerFilt)
+					{
+						$objTm->entityID 				= $objCustomerFilt->entityID;
+						$objTm->customerCreditLineID 	= $objCustomerFilt->customerCreditLineID;
+					}
+						
+					//buscar el detalle
+                    $resultado = array_filter($transactionMasterDetails, function($tm) use ($transactionMasterId) { return $tm->TransactionMasterId == $transactionMasterId; });
                     $billingController->insertElementMobil($dataSession,$objTm, $resultado);
+					$idexCount++;
                 }
             }
 

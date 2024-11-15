@@ -1113,6 +1113,7 @@ class app_cxc_customer extends _BaseController {
                 throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
 
             //Obtener transaccion
+			$objDataSet								= null;
             $companyID 								= $dataSession["user"]->companyID;
             $objEntity["companyID"] 				= $dataSession["user"]->companyID;
             $objEntity["branchID"]					= $dataSession["user"]->branchID;
@@ -1133,9 +1134,10 @@ class app_cxc_customer extends _BaseController {
             $db->transStart();
 
 
-            $entityID = $this->Entity_Model->insert_app_posme($objEntity);
-
-			$objListComanyParameter			 = $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+            $entityID 							= $this->Entity_Model->insert_app_posme($objEntity);
+			$objDataSet["entityID"] 			= $entityID;
+			$objDataSet["customerCreditLineID"]	= 0;
+			$objListComanyParameter			 	= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
 
             $objNatural["companyID"]	= $objEntity["companyID"];
             $objNatural["branchID"] 	= $objEntity["branchID"];
@@ -1177,6 +1179,7 @@ class app_cxc_customer extends _BaseController {
             $objCustomer["branchID"]			= $objEntity["branchID"];
             $objCustomer["entityID"]			= $entityID;
             $objCustomer["customerNumber"]		= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_customer",0);
+			$objDataSet["customerNumber"] 		= $objCustomer["customerNumber"];
             $objCustomer["identificationType"]	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_IDENTIFICATION_TYPE_DEFAULT")->value;
             $objCustomer["identification"]		= $customer->identification;
 
@@ -1343,7 +1346,8 @@ class app_cxc_customer extends _BaseController {
                     $limitCreditLine 							= $limitCreditLine + $objCustomerCreditLine["limitCredit"];
                     $exchangeRate 								= $this->core_web_currency->getRatio($companyID,$dateOn,1,$objCustomerCreditLine["currencyID"],$objCurrencyDolares->currencyID);//cordobas a dolares, o dolares a dolares.
                     $exchangeRateAmount							= $objCustomerCreditLine["limitCredit"];
-                    $this->Customer_Credit_Line_Model->insert_app_posme($objCustomerCreditLine);
+                    $customerCreditLineID 						= $this->Customer_Credit_Line_Model->insert_app_posme($objCustomerCreditLine);
+					$objDataSet["customerCreditLineID"]			= $customerCreditLineID;
 
 
 
@@ -1385,11 +1389,14 @@ class app_cxc_customer extends _BaseController {
 
 
 
-            if($db->transStatus() !== false){
+            if($db->transStatus() !== false)
+			{
                 $db->transCommit();
+				return $objDataSet;
             }
             else{
                 $db->transRollback();
+				return $objDataSet;
             }
 
         }
