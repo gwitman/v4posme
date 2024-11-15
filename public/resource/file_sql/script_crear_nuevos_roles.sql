@@ -7,6 +7,7 @@ set @domainOrigen 		:=  CONCAT('@',LOWER( @nameCompanyOrigen));
 set @userAdministrador 	:=  'administrador';
 set @userFacturador 	:=  'facturador';
 set @userSupervisor     :=  'supervisor'; 
+set @flavorID			:= '0';
 
 
 #INSERTAR ROLES
@@ -120,7 +121,7 @@ select
 	isActive,
 	REPLACE(c.email,@domainOrigen,@domainDestino) as email,
 	createdBy,
-	0 as employeeID 
+	614 as employeeID 
 from 
 	tb_user c 
 where 
@@ -226,3 +227,31 @@ where
 	u.email = CONCAT(@userAdministrador,@domainOrigen)  or 
 	u.email = CONCAT(@userFacturador,@domainOrigen)  or 
 	u.email = CONCAT(@userSupervisor,@domainOrigen) ;
+
+
+#INSERTAR CATALOGO DE MESA 
+set @flavorID := (select MAX(u.userID) from tb_user u );
+INSERT INTO `tb_public_catalog` (
+	`name`, `systemName`, `statusID`, `orden`, `description`, `isActive`, `flavorID`
+) 
+VALUES (
+	'Catalogo de mesas por meseros', 'tb_transaction_master_billing.mesas_x_meseros', 
+	118, 1, 'Catalogo de mesas por meseros', b'1', 
+	@flavorID
+);
+set @publicCatalogIDMax := (select max(k.publicCatalogID) from tb_public_catalog k);
+INSERT INTO `tb_public_catalog_detail` (
+	`publicCatalogID`, `name`, `display`, `flavorID`, 
+	`description`, `sequence`, `parentCatalogDetailID`, `ratio`, `parentName`, `isActive`, 
+	`reference1`, `reference2`, `reference3`, `reference4`, `reference5`, `reference6`, 
+	`reference7`, `reference8`, `reference9`, `reference10`, `reference11`, `reference12`, 
+	`reference13`, `reference14`, `reference15`, `reference16`, `reference17`, `reference18`, 
+	`reference19`, `reference20`, `reference21`, `reference22`, `reference23`, 
+	`refecence24`, `reference25`
+) VALUES (
+	@publicCatalogIDMax, 'abc', 'Mesa 1', 0, '1', '6', 0, '7', '5', '1', '2', '4', '3', 'c', 
+	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
+	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL
+);
+
+

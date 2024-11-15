@@ -85,3 +85,7 @@ from
 	tb_item i 
 where 
 	i.itemID not in (select u.itemID from tb_price u where u.typePriceID = 478 );
+	
+	
+	
+	
