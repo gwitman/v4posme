@@ -89,3 +89,13 @@ where
 	
 	
 	
+
+
+#INSERTAR bancos
+INSERT INTO `tb_bank` (
+	`companyID`, `name`, `accountID`, 
+	`currencyID`, `balance`, `isActive`
+) 
+VALUES (
+	2, 'BAC.', 0, 0, 0.00000000, 1
+);
