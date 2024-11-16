@@ -73,9 +73,11 @@ class app_box_share extends _BaseController {
 			$targetCurrency						= $this->core_web_currency->getCurrencyExternal($companyID);			
 			
 			$urlPrinterDocument					= $this->core_web_parameter->getParameter("BOX_SHARE_URL_PRINTER",$companyID);
+			$urlPrinterDocumentInvoiceCancel	= $this->core_web_parameter->getParameter("BOX_SHARE_URL_PRINTER_INVOICE_CANCEL",$companyID);
 			
 			//Tipo de Factura
 			$dataView["urlPrinterDocument"]						= $urlPrinterDocument->value;
+			$dataView["urlPrinterDocumentInvoiceCancel"]		= $urlPrinterDocumentInvoiceCancel->value;
 			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID,$transactionID,$transactionMasterID);
@@ -2343,6 +2345,112 @@ class app_box_share extends _BaseController {
 				"",
 				""
 			);
+			$this->dompdf->loadHTML($html);
+			
+			//1cm = 29.34666puntos
+			//a4: 210 ancho x 297
+			//a4: 21cm x 29.7cm
+			//a4: 595.28puntos x 841.59puntos
+			
+			//$this->dompdf->setPaper('A4','portrait');
+			//$this->dompdf->setPaper(array(0,0,234.76,6000));
+			
+			$this->dompdf->render();
+			
+			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+			$nameFileDownload				= date("YmdHis").".pdf";
+			
+			//visualizar
+			$this->response->setContentType('application/pdf');
+			$objParameterShowLinkDownload 	= $objParameterShowLinkDownload == "false" ? true : false;
+			$this->dompdf->stream($nameFileDownload	, ['Attachment' => $objParameterShowLinkDownload]);
+			
+			//descargar
+			//$this->dompdf->stream();
+			
+		}
+		catch(\Exception $ex){
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+		
+		    $data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+		    
+		    $this->email->setFrom(EMAIL_APP);
+		    $this->email->setTo(EMAIL_APP_COPY);
+		    $this->email->setSubject("Error");
+		    $this->email->setMessage($resultView);
+		    
+		    $resultSend01 = $this->email->send();
+		    $resultSend02 = $this->email->printDebugger();
+		    
+		    
+		    return $resultView;
+		}
+	}
+	
+	function viewRegisterFormatoPaginaTicketInvoiceCancel(){
+		try{ 
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+						$permited = false;
+						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						
+						if(!$permited)
+						throw new \Exception(NOT_ACCESS_CONTROL);
+						
+							
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						if ($resultPermission 	== PERMISSION_NONE)
+						throw new \Exception(NOT_ALL_EDIT);		
+			}	 
+			
+			
+			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri			
+			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri				
+			$saldos						= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"saldos");//--finuri	
+			$companyID 					= $dataSession["user"]->companyID;		
+			$branchID 					= $dataSession["user"]->branchID;		
+			$roleID 					= $dataSession["role"]->roleID;		
+			
+			//Get Component
+			$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			//Get Logo
+			$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+			//Get Company
+			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);			
+			//Get Documento				
+			
+			
+			//Get Documento					
+			$datView["objDetail"]					= $this->Transaction_Master_Detail_Model->get_rowByShareID($companyID,$transactionMasterID);
+			$datView["Identifier"]					= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+			
+			
+			//Generar Reporte
+			$html = helper_reporte80mmTransactionMasterCancelWithShare(
+			    "DETALLE",
+			    $objCompany,
+			    $objParameter,
+			    $datView["objDetail"],
+			    $objParameterTelefono
+			);
+			$this->dompdf->loadHTML($html);
+			
+			
+			//Get Documento
 			$this->dompdf->loadHTML($html);
 			
 			//1cm = 29.34666puntos

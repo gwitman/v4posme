@@ -5,6 +5,13 @@ use dbkroqnguhldo1;
 /******************************************************************/	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_box_share/viewRegisterFormatoPaginaTicketInvoiceCancel" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "BOX_SHARE_URL_PRINTER_INVOICE_CANCEL";## Imprmir reporte de facturas canceladas con el abono
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "http://localhost/posmev4/app_inventory_report/printer_stiker_sin_precio" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 

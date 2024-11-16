@@ -735,6 +735,9 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 			});
 		</script>",
 		
+		//Daleska
+		strtolower('daleska_app_box_share_showBtnPrinterInvoiceCancel')											=> "",
+		
 		//Veterinaria la Bendicion
 		strtolower('veterinaria_bendicion_app_inventory_item_Marca')											=> "Vencimiento",
 		strtolower('veterinaria_bendicion_app_inventory_item_fieldInmobiliaria')								=> "hidden",

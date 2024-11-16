@@ -12,7 +12,10 @@
 				<?php 
 				
 					if($objWorkflowStage[0]->aplicable == 1)
-					echo '<a href="#" class="btn btn-primary" id="btnPrinter"><i class="icon16 i-print"></i> Imprimir</a>';
+					{
+						echo '<a href="#" class="btn btn-primary" id="btnPrinter"><i class="icon16 i-print"></i> Imprimir</a>';
+						echo '<a href="#" class="btn btn-warning '.getBehavio($company->type,"app_box_share","showBtnPrinterInvoiceCancel","hidden").'" id="btnPrinterInvoiceCancel"><i class="icon16 i-print"></i> Imp. Fac Canceladas</a>';
+					}
 				
 				?>
 				
@@ -488,7 +491,10 @@
 				<?php 
 				
 					if($objWorkflowStage[0]->aplicable == 1)
-					echo '<a href="#" class="btn btn-primary" id="btnPrinter"><i class="icon16 i-print"></i> Imprimir</a>';
+					{
+						echo '<a href="#" class="btn btn-primary" id="btnPrinter"><i class="icon16 i-print"></i> Imprimir</a>';
+						echo '<a href="#" class="btn btn-warning '.getBehavio($company->type,"app_box_share","showBtnPrinterInvoiceCancel","hidden").'" id="btnPrinterInvoiceCancel"><i class="icon16 i-print"></i> Imp. Fac Canceladas</a>';
+					}
 				
 				?>
 				

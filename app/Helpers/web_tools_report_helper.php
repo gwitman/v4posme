@@ -8485,6 +8485,224 @@ function helper_reporte80mmTransactionMasterViewDetailCredit(
 }
 
 
+function helper_reporte80mmTransactionMasterCancelWithShare(
+    $titulo,
+    $objCompany,
+    $objParameterLogo,    
+    $detalle, /**/
+    $objParameterTelefono
+)
+{
+    $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
+    
+    $type    = pathinfo($path, PATHINFO_EXTENSION);
+    $data    = file_get_contents($path);
+    $base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
+	
+    
+    $html    = "";
+    $html    = "
+                    <!--
+                    Online HTML, CSS and JavaScript editor to run code online.
+                    https://www.programiz.com/html/online-compiler/
+                    -->
+                    <!DOCTYPE html>
+                    <html lang='en'>
+        
+                    <head>
+                      <meta charset='UTF-8' />
+                      <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+                      <style>
+                        @page {       
+                          size: 2.7in 60in;                  
+                          margin-top:0px;
+                          margin-left:0px;
+                          margin-right:15px;
+                        }
+                        table{
+                          font-size: x-small;
+                          font-weight: bold;
+                          font-family: Consolas, monaco, monospace;
+                        }
+                      </style>
+                    </head>
+        
+                    <body>
+        
+                      <table style='width:100%'>
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            <img  src='".$base64."' width='110'  >
+                          </td>
+                        </tr>
+                                
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".strtoupper($objCompany->name)."
+                          </td>
+                        </tr>";
+    
+
+         
+    
+          $html = $html."<tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".strtoupper($titulo)."
+                          </td>
+                        </tr>
+                                
+                     
+                                
+                         <tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>";
+						
+        
+						
+          $html	= $html."<tr>
+                          <td colspan=''>
+                            Codigo:
+                          </td>
+						  <td colspan='2'>
+                            ".$detalle[0]->customerNumber."
+                          </td>
+                        </tr>";
+			
+		
+						
+          $html	= $html."
+						<tr>
+						  <td colspan='1'>
+							Cliente:
+                          <td colspan='2'>
+                          </td>
+                        </tr>
+						
+						<tr>
+						  <td colspan='3'>							
+                            ". $detalle[0]->firstName  ."
+                          </td>
+                        </tr>
+
+					
+                                
+                         <tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+                                
+                     
+                                
+                         [[DETALLE]]
+                                
+                         <tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+						
+                        <tr>
+                          <td colspan='2'>
+                            TOTAL
+                          </td>
+                          <td style='text-align:right'>
+                            [[TOTAL]]
+                          </td>
+                        </tr>  
+
+
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".$objCompany->address."
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".$objParameterTelefono->value."
+                          </td>
+                        </tr>
+
+
+                        <tr>
+                          <td colspan='3' style='text-align:center' >
+                            posMe +(505) 8712-5827
+                          </td>
+                        </tr>
+						
+						
+                      </table>
+                    </body>
+                                
+                    </html>
+            ";
+    
+    $cuerpo = "";
+    $colun  = 0;
+	$rowin  = 0;
+	$total  = 0;
+    foreach($detalle as $row){
+		
+          
+			$cuerpo = $cuerpo."<tr>";	
+			$cuerpo = $cuerpo."<td colspan='3'>";
+			$cuerpo = $cuerpo.$row->createdOn; 
+			$cuerpo = $cuerpo."</td>";		
+			$cuerpo = $cuerpo."</tr>";
+			
+			$cuerpo = $cuerpo."<tr>";	
+			$cuerpo = $cuerpo."<td colspan='3'>";
+			$cuerpo = $cuerpo.$row->itemName; 
+			$cuerpo = $cuerpo."</td>";		
+			$cuerpo = $cuerpo."</tr>";
+			
+			
+			
+			$cuerpo = $cuerpo."<tr>";								 
+									
+			
+			$cuerpo = $cuerpo."<td>";
+			$cuerpo = $cuerpo.$row->quantity; 
+			$cuerpo = $cuerpo."</td>";	
+
+			$cuerpo = $cuerpo."<td>";
+			$cuerpo = $cuerpo.$row->unitaryPrice; 
+			$cuerpo = $cuerpo."</td>";			
+
+
+			$cuerpo = $cuerpo."<td>";
+			$cuerpo = $cuerpo.$row->amount; 
+			$cuerpo = $cuerpo."</td>";				
+						
+			
+			$cuerpo = $cuerpo."</tr>";			
+			$total  = $total + ($row->quantity * $row->unitaryPrice);
+		
+            $cuerpo = $cuerpo."<tr>";	
+			$cuerpo = $cuerpo."<td colspan='3'>";
+			$cuerpo = $cuerpo.".............";
+			$cuerpo = $cuerpo."</td>";		
+			$cuerpo = $cuerpo."</tr>";
+			
+    }
+    
+	
+    
+    $html = str_replace("[[DETALLE]]", $cuerpo, $html);
+	$html = str_replace("[[TOTAL]]", $total, $html);
+    return $html;
+}
+
+
 function helper_reporte80mmTransactionMasterLM(
     $titulo,
     $objCompany,
