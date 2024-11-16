@@ -170,35 +170,35 @@ class app_box_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?);";
+				$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?,?);";
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter]
+					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,0]
 				);			
 				//Get Datos de Facturacion				
-				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?);";
+				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?);";
 				$objDataSales	= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,$categoryItem,0]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,$categoryItem,0,0]
 				);	
 
-				$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?);";
+				$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?,?);";
 				$objDataSalesCredito	= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,$categoryItem]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,$categoryItem,0]
 				);					
 				
 				//Get Datos de Entrada de Efectivo y Salida				
-				$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?);";
+				$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?,?);";
 				$objDataCash	= $this->Bd_Model->executeRender(
 					$query,
-					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,$conceptoFilter]
+					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,$conceptoFilter,0]
 				);			
 				
-				$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?);";
+				$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?,?);";
 				$objDataCashOut	= $this->Bd_Model->executeRender(
 					$query,
-					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,$conceptoFilter]
+					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,$conceptoFilter,0]
 				);			
 				
 				if(isset($objData))
@@ -329,6 +329,7 @@ class app_box_report extends _BaseController {
 			$endOn				= $endOn != "" ? $endOn : 	\DateTime::createFromFormat('Y-m-d', date("Y-m-d") )->format("Y-m-d");			
 			$endOn				= $endOn." 23:59:59";	
 			$userIDFilter		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"userIDFilter");//--finuri
+			$branchIDFiltered	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"branchID");//--finuri
 			
 			//calcular las fechas iniciales del reporte
 			$startOn_ 	= \DateTime::createFromFormat('Y-m-d',$startOn);		
@@ -354,6 +355,7 @@ class app_box_report extends _BaseController {
 				$dataView["objTipoMovementInputCash"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_inputcash","areaID",$companyID);
 				$dataView["objTipoMovementOutputCash"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_outputcash","areaID",$companyID);
 				$dataView["objListCategoryItem"]			= $this->Itemcategory_Model->getByCompany($companyID);
+				$dataView["objListBranch"]					= $this->Branch_Model->getByCompany($companyID);
 				
 				
 				//Renderizar Resultado 
@@ -379,35 +381,35 @@ class app_box_report extends _BaseController {
 				if ($showSumaryAmount == "0" )
 				{
 					//Get Datos
-					$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?);";
+					$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?,?);";
 					$objData		= $this->Bd_Model->executeRender(
 						$query,
-						[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter]
+						[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,$branchIDFiltered]
 					);			
 					//Get Datos de Facturacion				
-					$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?);";
+					$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?);";
 					$objDataSales	= $this->Bd_Model->executeRender(
 						$query,
-						[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,$categoryItem,0]
+						[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,$categoryItem,0,$branchIDFiltered]
 					);	
 
-					$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?);";
+					$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?,?);";
 					$objDataSalesCredito	= $this->Bd_Model->executeRender(
 						$query,
-						[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,$categoryItem]
+						[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,$categoryItem,$branchIDFiltered]
 					);					
 					
 					//Get Datos de Entrada de Efectivo y Salida				
-					$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?);";
+					$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?,?);";
 					$objDataCash	= $this->Bd_Model->executeRender(
 						$query,
-						[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,$conceptoFilter]
+						[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,$conceptoFilter,$branchIDFiltered]
 					);			
 					
-					$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?);";
+					$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?,?);";
 					$objDataCashOut	= $this->Bd_Model->executeRender(
 						$query,
-						[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,$conceptoFilter]
+						[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,$conceptoFilter,$branchIDFiltered]
 					);			
 					
 					if(isset($objData))
@@ -467,35 +469,35 @@ class app_box_report extends _BaseController {
 						
 						
 						//Get Datos
-						$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?);";
+						$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?,?);";
 						$objData		= $this->Bd_Model->executeRender(
 							$query,
-							[$userID,$tocken,$companyID,$authorization,$startOn_,$endOn_,$userIDFilter]
+							[$userID,$tocken,$companyID,$authorization,$startOn_,$endOn_,$userIDFilter,$branchIDFiltered]
 						);			
 						//Get Datos de Facturacion				
-						$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?);";
+						$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?);";
 						$objDataSales	= $this->Bd_Model->executeRender(
 							$query,
-							[$companyID,$tocken,$userID,$startOn_,$endOn_,$userIDFilter,$categoryItem,0]
+							[$companyID,$tocken,$userID,$startOn_,$endOn_,$userIDFilter,$categoryItem,0,$branchIDFiltered]
 						);	
 
-						$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?);";
+						$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?,?);";
 						$objDataSalesCredito	= $this->Bd_Model->executeRender(
 							$query,
-							[$companyID,$tocken,$userID,$startOn_,$endOn_,$userIDFilter,$categoryItem]
+							[$companyID,$tocken,$userID,$startOn_,$endOn_,$userIDFilter,$categoryItem,$branchIDFiltered]
 						);					
 						
 						//Get Datos de Entrada de Efectivo y Salida				
-						$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?);";
+						$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?,?,?);";
 						$objDataCash	= $this->Bd_Model->executeRender(
 							$query,
-							[$userID,$tocken,$companyID,$authorization,$startOn_,$endOn_,$userIDFilter,$conceptoFilter]
+							[$userID,$tocken,$companyID,$authorization,$startOn_,$endOn_,$userIDFilter,$conceptoFilter,$branchIDFiltered]
 						);			
 						
-						$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?);";
+						$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?,?);";
 						$objDataCashOut	= $this->Bd_Model->executeRender(
 							$query,
-							[$userID,$tocken,$companyID,$authorization,$startOn_,$endOn_,$userIDFilter,$conceptoFilter]
+							[$userID,$tocken,$companyID,$authorization,$startOn_,$endOn_,$userIDFilter,$conceptoFilter,$branchIDFiltered]
 						);			
 						
 						if(isset($objData))
@@ -667,37 +669,37 @@ class app_box_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?);";
+				$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?,?);";
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter]
+					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,0]
 				);
 				
 				//Get Datos de Facturacion				
-				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?);";
+				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?);";
 				$objDataSales	= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,"-1",0]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,"-1",0,0]
 				);	
 
 				
-				$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?);";
+				$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?,?);";
 				$objDataSalesCredito	= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,"-1"]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,"-1",0]
 				);	
 				
 				//Get Datos de Entrada de Efectivo y Salida				
-				$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?);";
+				$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?,?);";
 				$objDataCash	= $this->Bd_Model->executeRender(
 					$query,
-					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,"-1"]
+					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,"-1",0]
 				);			
 				
-				$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?);";
+				$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?,?);";
 				$objDataCashOut	= $this->Bd_Model->executeRender(
 					$query,
-					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,"-1"]
+					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,"-1",0]
 				);			
 				
 				if(isset($objData))
@@ -909,38 +911,38 @@ class app_box_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?);";
+				$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?,?);";
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter]
+					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,0]
 				);
 				
 				//Get Datos de Facturacion de contado		
-				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?);";
+				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?);";
 				$objDataSales	= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,"-1",0]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,"-1",0,0]
 				);	
 
 				//Get Datos de Facturas de credito
-				$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?);";
+				$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?,?);";
 				$objDataSalesCredito	= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,"-1"]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,"-1",0]
 				);	
 				
 				//Get Datos de Entrada de Efectivo
-				$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?);";
+				$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?,?);";
 				$objDataCash	= $this->Bd_Model->executeRender(
 					$query,
-					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,"-1"]
+					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,"-1",0]
 				);			
 				
 				//Get Datos de Salida de Efectivo
-				$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?);";
+				$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?,?);";
 				$objDataCashOut	= $this->Bd_Model->executeRender(
 					$query,
-					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,"-1"]
+					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,"-1",0]
 				);			
 				
 				
@@ -1593,37 +1595,37 @@ class app_box_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?);";
+				$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?,?);";
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter]
+					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,0]
 				);
 				
 				//Get Datos de Facturacion				
-				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?);";
+				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?);";
 				$objDataSales	= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,"-1",0]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,"-1",0,0]
 				);		
 
 				
-				$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?);";
+				$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?,?);";
 				$objDataSalesCredito	= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,"-1"]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,"-1",0]
 				);	
 				
 				//Get Datos de Entrada de Efectivo y Salida				
-				$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?);";
+				$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?,?);";
 				$objDataCash	= $this->Bd_Model->executeRender(
 					$query,
-					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,"-1"]
+					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,"-1",0]
 				);			
 				
-				$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?);";
+				$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?,?);";
 				$objDataCashOut	= $this->Bd_Model->executeRender(
 					$query,
-					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,"-1"]
+					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,"-1",0]
 				);			
 				
 				if(isset($objData))

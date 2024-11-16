@@ -618,10 +618,10 @@ class app_sales_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?);";
+				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?);";
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,0,"-1",$tax1] 
+					[$companyID,$tocken,$userID,$startOn,$endOn,0,"-1",$tax1,0] 
 				);			
 				
 				

@@ -904,35 +904,35 @@ class app_notification extends _BaseController
 		//////////////////////////////////////////////////
 		//////////////////////////////////////////////////		
 		$authorization		= 0;
-		$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?);";
+		$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?,?);";
 		$objData		= $this->Bd_Model->executeRender(
 			$query,
-			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaNow, $fechaBefore, 0]
+			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaNow, $fechaBefore, 0,0]
 		);
 		//Get Datos de Facturacion				
-		$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?);";
+		$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?);";
 		$objDataSales	= $this->Bd_Model->executeRender(
 			$query,
-			[APP_COMPANY, $tocken, APP_USERADMIN, $fechaNow, $fechaBefore, 0, "-1", 0]
+			[APP_COMPANY, $tocken, APP_USERADMIN, $fechaNow, $fechaBefore, 0, "-1", 0,0]
 		);
 
-		$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?);";
+		$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?,?);";
 		$objDataSalesCredito	= $this->Bd_Model->executeRender(
 			$query,
-			[APP_COMPANY, $tocken, APP_USERADMIN, $fechaNow, $fechaBefore, 0, "-1"]
+			[APP_COMPANY, $tocken, APP_USERADMIN, $fechaNow, $fechaBefore, 0, "-1",0]
 		);
 
 		//Get Datos de Entrada de Efectivo y Salida				
-		$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?);";
+		$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?,?);";
 		$objDataCash	= $this->Bd_Model->executeRender(
 			$query,
-			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaNow, $fechaBefore, 0, "-1"]
+			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaNow, $fechaBefore, 0, "-1",0]
 		);
 
-		$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?);";
+		$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?,?);";
 		$objDataCashOut	= $this->Bd_Model->executeRender(
 			$query,
-			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaNow, $fechaBefore, 0, "-1"]
+			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaNow, $fechaBefore, 0, "-1",0]
 		);
 
 
@@ -1493,36 +1493,36 @@ class app_notification extends _BaseController
 		//////////////////////////////////////////////////
 		//////////////////////////////////////////////////		
 		$authorization		= 0;
-		$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?);";
+		$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?,?);";
 		$objData		= $this->Bd_Model->executeRender(
 			$query,
-			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaStart, $fechaEnd, 0]
+			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaStart, $fechaEnd, 0,0]
 		);
 		//Get Datos de Facturacion				
-		$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?);";
+		$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?);";
 		$objDataSales	= $this->Bd_Model->executeRender(
 			$query,
-			[APP_COMPANY, $tocken, APP_USERADMIN, $fechaStart, $fechaEnd, 0, "-1", 0]
+			[APP_COMPANY, $tocken, APP_USERADMIN, $fechaStart, $fechaEnd, 0, "-1", 0,0]
 		);
 
-		$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?);";
+		$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?,?);";
 		$objDataSalesCredito	= $this->Bd_Model->executeRender(
 			$query,
-			[$companyID, $tocken, APP_USERADMIN, $fechaStart, $fechaEnd, 0, "-1"]
+			[$companyID, $tocken, APP_USERADMIN, $fechaStart, $fechaEnd, 0, "-1",0]
 		);
 
 
 		//Get Datos de Entrada de Efectivo y Salida				
-		$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?);";
+		$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?,?);";
 		$objDataCash	= $this->Bd_Model->executeRender(
 			$query,
-			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaStart, $fechaEnd, 0, "-1"]
+			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaStart, $fechaEnd, 0, "-1",0]
 		);
 
-		$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?);";
+		$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?,?);";
 		$objDataCashOut	= $this->Bd_Model->executeRender(
 			$query,
-			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaStart, $fechaEnd, 0, "-1"]
+			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaStart, $fechaEnd, 0, "-1",0]
 		);
 
 

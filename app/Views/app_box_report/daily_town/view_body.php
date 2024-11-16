@@ -76,6 +76,25 @@
 											</div>
 											
 											<div class="form-group">
+												<label class="col-lg-6 control-label" for="selectFilter">Sucursales</label>
+												<div class="col-lg-6"> 
+													<div class="col-lg-6">
+													</div>
+													<div class="col-lg-6">
+														<select name="txtBranchID" id="txtBranchID" class="select2">
+																<option value="0">TODOS</option>
+																<?php
+																if($objListBranch)
+																foreach($objListBranch as $i){
+																	echo "<option value='".$i->branchID."'>".$i->name."</option>";
+																}
+																?>
+														</select>
+													</div>													
+												</div>
+											</div>
+											
+											<div class="form-group">
 												<label class="col-lg-6 control-label" for="selectFilter">Mostrar Montos unicamente</label>
 												<div class="col-lg-6"> 
 													<div class="col-lg-6">

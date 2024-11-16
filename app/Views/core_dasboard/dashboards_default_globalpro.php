@@ -34,8 +34,28 @@
 				
 				
 				<div class="row"  >
-					 <div class="col-lg-6">		
-						<img class="img-featured" style="width:400px;height:200px" src="<?php echo base_url();?>/resource/img/logos/logo-micro-finanza.png">													
+					 <div class="col-lg-6">	
+
+
+						<div style="height:395px">								
+							<img class="img-featured" style="width:400px;height:200px" src="<?php echo base_url();?>/resource/img/logos/logo-micro-finanza.png">													
+						</div><!-- End .panel-body -->
+					
+						
+						
+						<div class="panel" style="margin-bottom:20px;">
+							<div class="panel-heading">
+								<div class="icon"><i class="icon20 i-health"></i></div> 
+								<h4>Estadistica</h4>
+								<a href="#" class="minimize"></a>
+							</div><!-- End .panel-heading -->
+						
+							<div class="panel-body">								
+								<div id="grafico5" style="height:300px" ></div>
+							</div><!-- End .panel-body -->
+						</div><!-- End .widget -->		
+						
+						
 					</div>
 					<div class="col-lg-6">	
 							<div class="panel" style="margin-bottom:20px;">
@@ -46,7 +66,7 @@
 								</div><!-- End .panel-heading -->
 							
 								<div class="panel-body">								
-									<div id="grafico1" style="height:150px" ></div>
+									<div id="grafico1" style="height:300px" ></div>
 								</div><!-- End .panel-body -->
 							</div><!-- End .widget -->		
 							
@@ -58,7 +78,7 @@
 								</div><!-- End .panel-heading -->
 							
 								<div class="panel-body">								
-									<div id="grafico2" style="height:150px" ></div>
+									<div id="grafico2" style="height:300px" ></div>
 								</div><!-- End .panel-body -->
 							</div><!-- End .widget -->		
 							
@@ -99,14 +119,16 @@
 				<script>	
 					//https://www.w3schools.com/js/js_graphics_google_chart.asp
 					
-					var objTransactionMaster 				 = JSON.parse('<?php echo json_encode($objListVentas); ?>');	
-					var objTransactionMasterTecnico			 = JSON.parse('<?php echo json_encode($objListTecnico); ?>');	
-					var objTransactionMasterMensuales		 = JSON.parse('<?php echo json_encode($objListVentaMensual); ?>');	
-					var objTransactionMasterDiarias			 = JSON.parse('<?php echo json_encode($objListVentaDiaria); ?>');	
-					var objDataSourceProductosMasVendidos	 = new Array();
-					var objDataSourceProductosMasTenicos	 = new Array();
-					var objDataSourceProductosMasMensuales	 = new Array();
-					var objDataSourceProductosMasDiarias	 = new Array();
+					var objTransactionMaster 				 	= JSON.parse('<?php echo json_encode($objListVentas); ?>');	
+					var objTransactionMasterTecnico			 	= JSON.parse('<?php echo json_encode($objListTecnico); ?>');	
+					var objTransactionMasterMensuales		 	= JSON.parse('<?php echo json_encode($objListVentaMensual); ?>');	
+					var objTransactionMasterDiarias			 	= JSON.parse('<?php echo json_encode($objListVentaDiaria); ?>');	
+					var objTransactionMasterMensualesPorSucursal= JSON.parse('<?php echo json_encode($objListVentaMensualPorSucursal); ?>');	
+					var objDataSourceProductosMasVendidos	 	= new Array();
+					var objDataSourceProductosMasTenicos	 	= new Array();
+					var objDataSourceVentaSucursal 				= new Array ();
+					var objDataSourceProductosMasMensuales	 	= new Array();
+					var objDataSourceProductosMasDiarias	 	= new Array();
 					
 					//Obtener los ultimos 10 elementos					
 					objDataSourceProductosMasMensuales.push(new Array("Mes","Venta"));
@@ -160,12 +182,26 @@
 					}
 					
 					
+					//Obtener los registros de los Ventas Mensual por Sucusal
+					objDataSourceVentaSucursal.push(new Array("Sucursal","Venta"));
+					for(var i = 0 ; i < objTransactionMasterMensualesPorSucursal.length;i++)
+					{
+						objDataSourceVentaSucursal.push(
+							new Array(
+								objTransactionMasterMensualesPorSucursal[i].firtsName,
+								parseInt(objTransactionMasterMensualesPorSucursal[i].monto)
+							)
+						);	
+					}
+					
+					
 					
 					
 					$(document).ready(function(){
 						google.charts.load('current',{packages:['corechart']});							
 						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasVendidos);		
-						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasTenicos);		
+						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasTenicos);	
+						google.charts.setOnLoadCallback(drawChartBarraHorizontalVentaPorSucursal);		
 						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasMensuales);		
 						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasDiarias);		
 					});		
@@ -218,6 +254,25 @@
 						chart.draw(data, options);
 
 					}
+					
+					
+					function drawChartBarraHorizontalVentaPorSucursal() {
+
+						
+						var data = google.visualization.arrayToDataTable(
+							objDataSourceVentaSucursal
+						);
+
+						var options = {
+						  title: 'Venta vs Sucursal',
+						  colors: ['#f3b49f', '#006E98', '#ec8f6e', '#f3b49f', '#f6c7b6'],
+						};
+
+						var chart = new google.visualization.PieChart(document.getElementById('grafico5'));
+						chart.draw(data, options);
+
+					}
+					
 							
 					
 					function drawChartBarraHorizontalProductosMasVendidos() {
