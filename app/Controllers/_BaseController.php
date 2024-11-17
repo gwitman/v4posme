@@ -112,6 +112,7 @@ use App\Models\Employee_Calendar_Pay_Model;
 use App\Models\Employee_Model;
 use App\Models\Entity_Account_Model;
 use App\Models\Entity_Email_Model;
+use App\Models\Entity_Location_Model;
 use App\Models\Entity_Model;
 use App\Models\Entity_Phone_Model;
 use App\Models\Error_Model;
@@ -306,6 +307,7 @@ abstract class _BaseController extends Controller
 	protected $Employee_Model;
 	protected $Entity_Account_Model;
 	protected $Entity_Email_Model;
+	protected $Entity_Location_Model;
 	protected $Entity_Model;
 	protected $Entity_Phone_Model;
 	protected $Error_Model;
@@ -477,6 +479,7 @@ abstract class _BaseController extends Controller
 		$this->Employee_Model= new Employee_Model();
 		$this->Entity_Account_Model= new Entity_Account_Model();
 		$this->Entity_Email_Model= new Entity_Email_Model();
+		$this->Entity_Location_Model = new Entity_Location_Model();
 		$this->Entity_Model= new Entity_Model();
 		$this->Entity_Phone_Model= new Entity_Phone_Model();
 		$this->Error_Model= new Error_Model();

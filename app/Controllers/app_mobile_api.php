@@ -8,6 +8,53 @@ use Config\Services;
 class app_mobile_api extends _BaseController
 {
 
+	function setPositionGps()
+	{
+		try {
+
+            $nickname 					= /*inicio get post*/ $this->request->getPost("txtNickname");
+            $password 					= /*inicio get post*/ $this->request->getPost("txtPassword");
+			$latituded					= /*inicio get post*/ $this->request->getPost("txtLatituded");
+			$longituded 				= /*inicio get post*/ $this->request->getPost("txtLongituded");
+			$reference1 				= /*inicio get post*/ $this->request->getPost("txtReference1");
+			
+            $objUser 					= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);
+			//insertar position
+			$objPosition["entityID"]	= $objUser["user"]->employeeID;
+			$objPosition["isActive"]	= 1;
+			$objPosition["createdOn"]	= helper_getDateTime();
+			$objPosition["latituded"]	= $latituded;
+			$objPosition["longituded"]	= $longituded;
+			$objPosition["reference1"]	= $reference1;
+			$positionID					= $this->Entity_Location_Model->insert_app_posme($objPosition);
+			
+			
+            $dataSession['user'] 		= $objUser["user"];  
+			$companyID 					= $objUser["company"]->companyID;			
+            $dataSession['role'] 		= $objUser["role"];
+            $this->core_web_permission->getValueLicense($companyID,get_class($this)."/"."index");
+			
+			// APLICAR VALIDACIONES
+			// 001 validar employer del usuario
+			$employee		= $this->Employee_Model->get_rowByEntityID($companyID,$dataSession["user"]->employeeID );
+			if(!$employee)
+			{
+				throw new \Exception("El usuario no tiene un colaborador asignado");
+			}
+			
+            return $this->response->setJSON(array(
+                'error' => false,
+                'message' => SUCCESS
+            ));//--finjson
+
+        } catch (\Exception $ex) {
+            return $this->response->setJSON(array(
+                'error' => true,
+                'message' => 'Linea: ' . $ex->getLine() . " - Error:" . $ex->getMessage()
+            ));//--finjson
+
+        }
+	}
     function setDataUpload()
     {
         try {
