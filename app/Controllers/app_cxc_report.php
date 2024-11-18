@@ -1444,15 +1444,17 @@ class app_cxc_report extends _BaseController {
 			$viewReport			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"viewReport");//--finuri	
 			$urilEmployeeNumber = /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"employeeNumber");//--finuri					
 			$employeeNumber		= $this->core_web_counter->getFillNumber($companyID,$branchID,"tb_employee",0,$urilEmployeeNumber);
-			
+			$startOn			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"startOn");//--finuri		
+			$endOn				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri		
 				
 			if(!($viewReport && $employeeNumber)){
 				//Renderizar Resultado 
-				$dataSession["message"]		= $this->core_web_notification->get_message();
-				$dataSession["head"]		= /*--inicio view*/ view('app_cxc_report/collection_manager/view_head');//--finview
-				$dataSession["body"]		= /*--inicio view*/ view('app_cxc_report/collection_manager/view_body');//--finview
-				$dataSession["script"]		= /*--inicio view*/ view('app_cxc_report/collection_manager/view_script');//--finview
-				$dataSession["footer"]		= "";			
+				$dataView["objListEmployer"]	= $this->Employee_Model->get_rowByCompanyID($companyID);
+				$dataSession["message"]			= $this->core_web_notification->get_message();				
+				$dataSession["head"]			= /*--inicio view*/ view('app_cxc_report/collection_manager/view_head',$dataView);//--finview
+				$dataSession["body"]			= /*--inicio view*/ view('app_cxc_report/collection_manager/view_body',$dataView);//--finview
+				$dataSession["script"]			= /*--inicio view*/ view('app_cxc_report/collection_manager/view_script',$dataView);//--finview
+				$dataSession["footer"]			= "";			
 				return view("core_masterpage/default_report",$dataSession);//--finview-r	
 			}
 			else{				
@@ -1467,11 +1469,11 @@ class app_cxc_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_cxc_get_report_collection_manager(?,?,?,?);";
+				$query			= "CALL pr_cxc_get_report_collection_manager(?,?,?,?,?,?);";
 				
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$userID,$tocken,$companyID,$employeeNumber]
+					[$userID,$tocken,$companyID,$employeeNumber,$startOn,$endOn]
 				);			
 				
 				if(isset($objData)){
