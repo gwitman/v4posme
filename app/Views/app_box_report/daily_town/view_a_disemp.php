@@ -975,7 +975,7 @@
 		
 		echo helper_reporteGeneralCreateEncabezado(
 			'<h2 style="margin:0px;" >ARQUEO DIARIO</h2>',
-			'<h2 style="margin:0px;" >'.$objCompany->name.'</h2>',
+			'<h2 style="margin:0px;" >'.$objCompany->name." ".$branchName.'</h2>',
 			$columnX,
 			'<h2 style="margin:0px; " >DEL '.$startOn.' AL '.$endOn."</h2>",
 			"",

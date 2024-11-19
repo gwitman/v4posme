@@ -279,6 +279,8 @@ class app_box_report extends _BaseController {
 		    return $resultView;
 		}
 	}
+	
+	
 	function daily_town(){
 		try{ 
 		
@@ -375,176 +377,35 @@ class app_box_report extends _BaseController {
 				$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
+				$objListBranch	= $this->Branch_Model->getByCompany($companyID);
+				$html 			= "";
 				
-				
-				//Mostrar reporte normal
-				if ($showSumaryAmount == "0" )
+				if($objListBranch)
 				{
-					//Get Datos
-					$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?,?);";
-					$objData		= $this->Bd_Model->executeRender(
-						$query,
-						[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,$branchIDFiltered]
-					);			
-					//Get Datos de Facturacion				
-					$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?);";
-					$objDataSales	= $this->Bd_Model->executeRender(
-						$query,
-						[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,$categoryItem,0,$branchIDFiltered]
-					);	
-
-					$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?,?);";
-					$objDataSalesCredito	= $this->Bd_Model->executeRender(
-						$query,
-						[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,$categoryItem,$branchIDFiltered]
-					);					
-					
-					//Get Datos de Entrada de Efectivo y Salida				
-					$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?,?);";
-					$objDataCash	= $this->Bd_Model->executeRender(
-						$query,
-						[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,$conceptoFilter,$branchIDFiltered]
-					);			
-					
-					$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?,?);";
-					$objDataCashOut	= $this->Bd_Model->executeRender(
-						$query,
-						[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,$conceptoFilter,$branchIDFiltered]
-					);			
-					
-					if(isset($objData))
-					$objDataResult["objDetail"]					= $objData;
-					else
-					$objDataResult["objDetail"]					= NULL;
-				
-				
-					if(isset($objDataSales))
-					$objDataResult["objSales"]					= $objDataSales;
-					else
-					$objDataResult["objSales"]					= NULL;
-				
-					
-					if(isset($objDataSalesCredito))
-					$objDataResult["objSalesCredito"]			= $objDataSalesCredito;
-					else
-					$objDataResult["objSalesCredito"]			= NULL;
-				
-					if(isset($objDataCash))				
-					$objDataResult["objCash"]					= $objDataCash;
-					else
-					$objDataResult["objCash"]					= NULL;
-				
-					if(isset($objDataCashOut))				
-					$objDataResult["objCashOut"]					= $objDataCashOut;
-					else
-					$objDataResult["objCashOut"]					= NULL;
-				
-				
-					$objDataResult["objCompany"] 				= $objCompany;
-					$objDataResult["objLogo"] 					= $objParameter;
-					$objDataResult["startOn"] 					= $startOn;
-					$objDataResult["endOn"] 					= $endOn;
-					$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_customer_credit" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
-					$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
-					//
-					return view("app_box_report/daily_town/view_a_disemp",$objDataResult);//--finview-r
-							
-				}
-				if ($showSumaryAmount == "1" )
-				{
-					$startOn_r 	= \DateTime::createFromFormat('Y-m-d',$startOn)->format("Y-m-d");
-					$endOn_r	= \DateTime::createFromFormat('Y-m-d H:i:s',$endOn)->format("Y-m-d H:i:s");					
-					$startOn 	= \DateTime::createFromFormat('Y-m-d',$startOn)->format("Y-m-d");
-					$endOn 		= \DateTime::createFromFormat('Y-m-d H:i:s',$endOn)->format("Y-m-d");										
-					$startOn 	= \DateTime::createFromFormat('Y-m-d',$startOn);
-					$endOn 		= \DateTime::createFromFormat('Y-m-d',$endOn);
-					$dataDetail = null;
-					
-					while($startOn <= $endOn)
+					foreach($objListBranch as $objBranch)
 					{
-						
-						$startOn_ 	= $startOn->format("Y-m-d");
-						$endOn_ 	= $endOn->format("Y-m-d")." 23:59:59";
-					
-						
-						
-						//Get Datos
-						$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?,?);";
-						$objData		= $this->Bd_Model->executeRender(
-							$query,
-							[$userID,$tocken,$companyID,$authorization,$startOn_,$endOn_,$userIDFilter,$branchIDFiltered]
-						);			
-						//Get Datos de Facturacion				
-						$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?);";
-						$objDataSales	= $this->Bd_Model->executeRender(
-							$query,
-							[$companyID,$tocken,$userID,$startOn_,$endOn_,$userIDFilter,$categoryItem,0,$branchIDFiltered]
-						);	
-
-						$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?,?);";
-						$objDataSalesCredito	= $this->Bd_Model->executeRender(
-							$query,
-							[$companyID,$tocken,$userID,$startOn_,$endOn_,$userIDFilter,$categoryItem,$branchIDFiltered]
-						);					
-						
-						//Get Datos de Entrada de Efectivo y Salida				
-						$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?,?,?);";
-						$objDataCash	= $this->Bd_Model->executeRender(
-							$query,
-							[$userID,$tocken,$companyID,$authorization,$startOn_,$endOn_,$userIDFilter,$conceptoFilter,$branchIDFiltered]
-						);			
-						
-						$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?,?);";
-						$objDataCashOut	= $this->Bd_Model->executeRender(
-							$query,
-							[$userID,$tocken,$companyID,$authorization,$startOn_,$endOn_,$userIDFilter,$conceptoFilter,$branchIDFiltered]
-						);			
-						
-						if(isset($objData))
-						$dataDetail[$startOn_]["objDetail"]					= $objData;
-						else
-						$dataDetail[$startOn_]["objDetail"]					= NULL;
-					
-					
-						if(isset($objDataSales))
-						$dataDetail[$startOn_]["objSales"]					= $objDataSales;
-						else
-						$dataDetail[$startOn_]["objSales"]					= NULL;
-					
-						
-						if(isset($objDataSalesCredito))
-						$dataDetail[$startOn_]["objSalesCredito"]			= $objDataSalesCredito;
-						else
-						$dataDetail[$startOn_]["objSalesCredito"]			= NULL;
-					
-						if(isset($objDataCash))				
-						$dataDetail[$startOn_]["objCash"]					= $objDataCash;
-						else
-						$dataDetail[$startOn_]["objCash"]					= NULL;
-					
-						if(isset($objDataCashOut))				
-						$dataDetail[$startOn_]["objCashOut"]					= $objDataCashOut;
-						else
-						$dataDetail[$startOn_]["objCashOut"]					= NULL;
-					
-					
-						date_add($startOn, date_interval_create_from_date_string('1 days'));						
+						if($objBranch->branchID == $branchIDFiltered || $branchIDFiltered == 0 )
+						{
+							$reult  = $this->daily_town_operation(
+								$showSumaryAmount,
+								$userID,$tocken,$companyID,$authorization,
+								$startOn,$endOn,$userIDFilter,$objBranch->branchID,$categoryItem,
+								$conceptoFilter,
+								$objCompany,
+								$objParameter,								
+								$dataSession,
+								$objBranch->name 
+							);
+							
+							$html = $html.$reult;
+						}
 					}
-					
-					
-					$objDataResult["objCompany"] 				= $objCompany;
-					$objDataResult["objLogo"] 					= $objParameter;
-					$objDataResult["startOn"] 					= $startOn_r;
-					$objDataResult["endOn"] 					= $endOn_r;
-					$objDataResult["dataDetail"] 				= $dataDetail;
-					
-					$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_customer_credit" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
-					$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);					
-					return view("app_box_report/daily_town/view_a_disemp_summary_amount",$objDataResult);//--finview-r
-							
-							
-							
 				}
+					
+				  // Retornar el HTML como respuesta
+				return $this->response->setBody($html)
+                        ->setHeader('Content-Type', 'text/html');
+				
 				
 				
 			}
@@ -564,6 +425,195 @@ class app_box_report extends _BaseController {
 		    return $resultView;
 		}
 	}
+	
+	function daily_town_operation(
+		$showSumaryAmount,
+		$userID,$tocken,$companyID,$authorization,
+		$startOn,$endOn,$userIDFilter,$branchIDFiltered,$categoryItem,
+		$conceptoFilter,
+		$objCompany,
+		$objParameter,
+		$dataSession,
+		$branchName
+	)
+	{
+		
+		
+		//Mostrar reporte normal
+		if ($showSumaryAmount == "0" )
+		{
+			//Get Datos
+			$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?,?);";
+			$objData		= $this->Bd_Model->executeRender(
+				$query,
+				[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,$branchIDFiltered]
+			);			
+			//Get Datos de Facturacion				
+			$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?);";
+			$objDataSales	= $this->Bd_Model->executeRender(
+				$query,
+				[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,$categoryItem,0,$branchIDFiltered]
+			);	
+
+			$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?,?);";
+			$objDataSalesCredito	= $this->Bd_Model->executeRender(
+				$query,
+				[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,$categoryItem,$branchIDFiltered]
+			);					
+			
+			//Get Datos de Entrada de Efectivo y Salida				
+			$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?,?);";
+			$objDataCash	= $this->Bd_Model->executeRender(
+				$query,
+				[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,$conceptoFilter,$branchIDFiltered]
+			);			
+			
+			$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?,?);";
+			$objDataCashOut	= $this->Bd_Model->executeRender(
+				$query,
+				[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,$conceptoFilter,$branchIDFiltered]
+			);			
+			
+			if(isset($objData))
+			$objDataResult["objDetail"]					= $objData;
+			else
+			$objDataResult["objDetail"]					= NULL;
+		
+		
+			if(isset($objDataSales))
+			$objDataResult["objSales"]					= $objDataSales;
+			else
+			$objDataResult["objSales"]					= NULL;
+		
+			
+			if(isset($objDataSalesCredito))
+			$objDataResult["objSalesCredito"]			= $objDataSalesCredito;
+			else
+			$objDataResult["objSalesCredito"]			= NULL;
+		
+			if(isset($objDataCash))				
+			$objDataResult["objCash"]					= $objDataCash;
+			else
+			$objDataResult["objCash"]					= NULL;
+		
+			if(isset($objDataCashOut))				
+			$objDataResult["objCashOut"]					= $objDataCashOut;
+			else
+			$objDataResult["objCashOut"]					= NULL;
+		
+		
+			$objDataResult["branchName"] 				= $branchName;
+			$objDataResult["objCompany"] 				= $objCompany;
+			$objDataResult["objLogo"] 					= $objParameter;
+			$objDataResult["startOn"] 					= $startOn;
+			$objDataResult["endOn"] 					= $endOn;
+			$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_customer_credit" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
+			$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
+			//
+			return view("app_box_report/daily_town/view_a_disemp",$objDataResult, ['return' => true]);//--finview-r
+					
+		}
+		if ($showSumaryAmount == "1" )
+		{
+			$startOn_r 		= \DateTime::createFromFormat('Y-m-d',$startOn)->format("Y-m-d");
+			$endOn_r		= \DateTime::createFromFormat('Y-m-d H:i:s',$endOn)->format("Y-m-d H:i:s");					
+			$startOn 		= \DateTime::createFromFormat('Y-m-d',$startOn)->format("Y-m-d");
+			$endOn 			= \DateTime::createFromFormat('Y-m-d H:i:s',$endOn)->format("Y-m-d");										
+			$startOn 		= \DateTime::createFromFormat('Y-m-d',$startOn);
+			$endOn 			= \DateTime::createFromFormat('Y-m-d',$endOn);
+			$dataDetail 	= null;
+			
+			
+			
+			
+			while($startOn <= $endOn)
+			{
+				
+				$startOn_ 	= $startOn->format("Y-m-d");
+				$endOn_ 	= $endOn->format("Y-m-d")." 23:59:59";
+			
+				
+				
+				//Get Datos
+				$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?,?);";
+				$objData		= $this->Bd_Model->executeRender(
+					$query,
+					[$userID,$tocken,$companyID,$authorization,$startOn_,$endOn_,$userIDFilter,$branchIDFiltered]
+				);			
+				//Get Datos de Facturacion				
+				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?);";
+				$objDataSales	= $this->Bd_Model->executeRender(
+					$query,
+					[$companyID,$tocken,$userID,$startOn_,$endOn_,$userIDFilter,$categoryItem,0,$branchIDFiltered]
+				);	
+
+				$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?,?);";
+				$objDataSalesCredito	= $this->Bd_Model->executeRender(
+					$query,
+					[$companyID,$tocken,$userID,$startOn_,$endOn_,$userIDFilter,$categoryItem,$branchIDFiltered]
+				);					
+				
+				//Get Datos de Entrada de Efectivo y Salida				
+				$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?,?,?);";
+				$objDataCash	= $this->Bd_Model->executeRender(
+					$query,
+					[$userID,$tocken,$companyID,$authorization,$startOn_,$endOn_,$userIDFilter,$conceptoFilter,$branchIDFiltered]
+				);			
+				
+				$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?,?);";
+				$objDataCashOut	= $this->Bd_Model->executeRender(
+					$query,
+					[$userID,$tocken,$companyID,$authorization,$startOn_,$endOn_,$userIDFilter,$conceptoFilter,$branchIDFiltered]
+				);			
+				
+				if(isset($objData))
+				$dataDetail[$startOn_]["objDetail"]					= $objData;
+				else
+				$dataDetail[$startOn_]["objDetail"]					= NULL;
+			
+			
+				if(isset($objDataSales))
+				$dataDetail[$startOn_]["objSales"]					= $objDataSales;
+				else
+				$dataDetail[$startOn_]["objSales"]					= NULL;
+			
+				
+				if(isset($objDataSalesCredito))
+				$dataDetail[$startOn_]["objSalesCredito"]			= $objDataSalesCredito;
+				else
+				$dataDetail[$startOn_]["objSalesCredito"]			= NULL;
+			
+				if(isset($objDataCash))				
+				$dataDetail[$startOn_]["objCash"]					= $objDataCash;
+				else
+				$dataDetail[$startOn_]["objCash"]					= NULL;
+			
+				if(isset($objDataCashOut))				
+				$dataDetail[$startOn_]["objCashOut"]					= $objDataCashOut;
+				else
+				$dataDetail[$startOn_]["objCashOut"]					= NULL;
+			
+			
+				date_add($startOn, date_interval_create_from_date_string('1 days'));						
+			}
+			
+			
+			$objDataResult["branchName"] 				= $branchName;
+			$objDataResult["objCompany"] 				= $objCompany;
+			$objDataResult["objLogo"] 					= $objParameter;
+			$objDataResult["startOn"] 					= $startOn_r;
+			$objDataResult["endOn"] 					= $endOn_r;
+			$objDataResult["dataDetail"] 				= $dataDetail;
+			
+			$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_customer_credit" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
+			$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);					
+			return view("app_box_report/daily_town/view_a_disemp_summary_amount",$objDataResult, ['return' => true]);//--finview-r
+					
+					
+					
+		}
+	}
+	
 	function share_summary(){
 		try{ 
 		
