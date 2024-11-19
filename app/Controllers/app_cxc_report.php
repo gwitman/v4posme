@@ -1337,9 +1337,10 @@ class app_cxc_report extends _BaseController {
 			if(!($viewReport && $customerNumber )){
 				
 				//Renderizar Resultado 
+				$data["objListCustomer"]	= $this->Customer_Model->get_rowByCompany($companyID);
 				$dataSession["message"]		= $this->core_web_notification->get_message();
 				$dataSession["head"]		= /*--inicio view*/ view('app_cxc_report/pay/view_head');//--finview
-				$dataSession["body"]		= /*--inicio view*/ view('app_cxc_report/pay/view_body');//--finview
+				$dataSession["body"]		= /*--inicio view*/ view('app_cxc_report/pay/view_body',$data);//--finview
 				$dataSession["script"]		= /*--inicio view*/ view('app_cxc_report/pay/view_script');//--finview
 				$dataSession["footer"]		= "";			
 				return view("core_masterpage/default_report",$dataSession);//--finview-r	
