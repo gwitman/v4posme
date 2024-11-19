@@ -144,8 +144,24 @@ class core_user extends _BaseController {
 					$this->core_web_permission->getValueLicense($companyID,get_class($this)."/"."index");
 					$continue = true;
 					
+					
+					$objListComanyParameter		= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+					$maxUser					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CORE_CUST_PRICE_MAX_USER")->value;
+					$objListUser				= $this->User_Model->get_All($companyID);
+			
 					//Ingresar usuario
 					if($continue){
+						
+						//Validar la cantidad de usuarios permitidos
+						if($objListUser != null)
+						{
+							if( count($objListUser) >= $maxUser )
+							{
+								throw new \Exception("Limite de usuarios superados...");
+							}						
+						}
+						
+						
 						$db=db_connect();
 						$db->transStart();
 						//Crear Usuario

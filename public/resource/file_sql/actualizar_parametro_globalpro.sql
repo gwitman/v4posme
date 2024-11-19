@@ -739,7 +739,7 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "500" 
+	tb_company_parameter.value = "8" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CUST_PRICE_MAX_USER";## MAXIMO NUMERO DE USUARIOS 
