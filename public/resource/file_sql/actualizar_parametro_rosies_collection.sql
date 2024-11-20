@@ -1624,7 +1624,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Rosies Collection' , address = 'Paseo Real, Pasillo Sur Frente a Family Store' ,
-	flavorID = 577 /*usuarioID*/,type='default'  , abreviature='demo'
+	flavorID = 577 /*usuarioID*/,type='rosie'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
