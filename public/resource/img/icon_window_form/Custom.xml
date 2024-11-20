@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-    <daleska_app_invoice_billing_divlabelzone>Forma de pago</daleska_app_invoice_billing_divlabelzone>
+    <daleska_app_invoice_billing_divLabelZone>Forma de pago</daleska_app_invoice_billing_divLabelZone>
+	<daleska_app_invoice_billing_divLabelZoneX>60</daleska_app_invoice_billing_divLabelZoneX>
+	<daleska_app_invoice_billing_divLabelZoneControlPosition>labelControl6</daleska_app_invoice_billing_divLabelZoneControlPosition>
 </root>
