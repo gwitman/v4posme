@@ -1137,7 +1137,7 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "500" 
+	tb_company_parameter.value = "7" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CUST_PRICE_MAX_USER";## MAXIMO NUMERO DE USUARIOS 
@@ -1678,18 +1678,25 @@ Eliminar o desactivar usuarios
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2, 	/*administrador*/
- 5,		/*administrador*/
- 191,  	/*supervisor*/
- 190, 	/*facturador*/
- 189 	/*administrador*/
+ 581,  
+ 582, 
+ 583,
+ 584,  
+ 585, 
+ 586, 
+ 587
 );
 
 update tb_role set isActive = 0; 
 update tb_role set isActive = 1 where roleID in (
 	3,
-	201,
-	202,
-	203	
+	510,
+	511,
+	512,
+	513,
+	514,
+	515,
+	516	
 );
 
 
