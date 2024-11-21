@@ -1805,5 +1805,117 @@ class Transaction_Master_Detail_Model extends Model  {
 
 		return $db->query($sql)->getResult();
 	}
+
+
+
+
+
+	function FunerariaBlandon_Servicios_Contratados($companyID,$dateFirst,$dateLast)
+	{
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+			SELECT
+				MONTH(c.createdOn ) AS Mes,
+				SUM(c.amount) AS Total
+			FROM 
+				tb_transaction_master c 
+			WHERE 
+				c.isActive = 1 
+				AND 
+				c.transactionID = 19 /*abonos*/ 
+				AND 
+				c.statusID IN (67 /*aplicada*/ )  
+				AND 
+				c.transactionCausalID IN (22 /*credito*/ , 24 /*credito*/ ) 
+				AND 
+				c.createdOn BETWEEN '$dateFirst' AND '$dateLast'
+			GROUP BY 
+				1;
+		");
+
+		return $db->query($sql)->getResult();
+	}
+
+	function FunerariaBlandon_Pagos_Mensuales_Realizados($companyID,$dateFirst,$dateLast)
+	{
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+			SELECT 
+				MONTH(c.createdOn ) AS Mes,
+				SUM(c.amount) AS Total
+			FROM 
+				tb_transaction_master c 
+			WHERE 
+				c.isActive = 1 
+				AND 
+				c.transactionID = 23 /*abonos*/ 
+				AND 
+				c.statusID IN (80 /*aplicada*/ )  
+				AND 
+				c.createdOn BETWEEN '$dateFirst' AND '$dateLast'
+			GROUP BY 
+				1;
+		");
+
+		return $db->query($sql)->getResult();
+	}
+
+	function FunerariaBlandon_Cartera_De_Cobros($companyID,$dateFirst,$dateLast)
+	{
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+			SELECT 
+				MONTH(u.dateApply) AS Mes,
+				SUM(u.remaining ) AS Total 
+			FROM 
+				tb_customer_credit_document  c
+				INNER JOIN tb_customer_credit_amoritization u ON 
+					c.customerCreditDocumentID = u.customerCreditDocumentID 
+			WHERE 
+				c.isActive = 1 
+				AND 	
+				c.statusID IN (77 /*registrado*/ ) 
+				AND 
+				u.dateApply BETWEEN '$dateFirst' AND '$dateLast' 
+			GROUP BY 
+			1;
+		");
+
+		return $db->query($sql)->getResult();
+	}
+
+	function FunerariaBlandon_Facturacion_Contado($companyID,$dateFirst,$dateLast)
+	{
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+			SELECT 
+				DAY(c.createdOn ) AS Dia,
+				SUM(c.amount) AS Total
+			FROM 
+				tb_transaction_master c 
+			WHERE 
+				c.isActive = 1 
+				AND 
+				c.transactionID = 19 /*facturacion*/ 
+				AND 
+				c.statusID IN (67 /*aplicada*/ )  
+				AND
+				c.transactionCausalID IN (21 /*contado*/ , 23 /*contado*/ ) 
+				AND 
+				c.createdOn BETWEEN '$dateFirst' AND '$dateLast'
+			GROUP BY 
+				1;
+		");
+
+		return $db->query($sql)->getResult();
+	}
 }
 ?>

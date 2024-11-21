@@ -304,7 +304,6 @@
 					var objDataSourceVentasDeContadoMesActual	 	= new Array();
 					var objDataSourceVentasContadoMensuales	 		= new Array();
 					
-					debugger;
 					objDataSourceVentasDeContadoMesActual.push(new Array("Dia","Ventas"));
 					for(var i = 0 ; i < objVentasDeContadoMesActual.length;i++)
 					{
@@ -388,7 +387,7 @@
 
 						var options = {
 						  title: '',
-						  colors: ['#ff0000', '#ff0000', '#ff0000', '#ff0000', '#ff0000'],
+						  colors: ['#00C868', '#006E98', '#ec8f6e', '#f3b49f', '#f6c7b6'],
 						};
 
 						var chart = new google.visualization.PieChart(document.getElementById('grafico2'));

@@ -88,6 +88,7 @@ class core_dashboards extends _BaseController {
 		
 			if($objCompany->type == "fn_blandon")
 			{
+				$dataSession 					= $this->getIndexFunerariaBlandon($dataSession);
 				$dataSession["body"]			= /*--inicio view*/ view('core_dasboard/dashboards_default_fun_blandon',$dataSession);//--finview
 			}
 			else if($objCompany->type == "corea")
@@ -403,17 +404,8 @@ class core_dashboards extends _BaseController {
 		$objNowDate 		= \DateTime::createFromFormat('Y-m-d H:i:s', helper_getDate());
 		$objNowDate->setTime(0, 0, 0);
 		$objListVentasContadoMesActual = array();
-		while($objFirstDate <= $objNowDate)
-		{				
-			$objListVentasContadoMesActualTemporal = $this->Transaction_Master_Detail_Model->Default_Ventas_De_Contado_Mes_Actual($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objFirstDate->format("Y-m-d") );
-			if($objListVentasContadoMesActualTemporal)
-			{
-				array_push($objListVentasContadoMesActual, $objListVentasContadoMesActualTemporal[0]);
-			}
-			$objFirstDate->modify('+1 day');
-		}
+		$objListVentasContadoMesActual = $this->Transaction_Master_Detail_Model->Default_Ventas_De_Contado_Mes_Actual($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objNowDate->format("Y-m-d") );
 		
-		$objListVentasContadoMesActual = $this->Transaction_Master_Detail_Model->Default_Ventas_De_Contado_Mes_Actual($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objFirstDate->format("Y-m-d") );
 
 		//Obtener Ventas de Contado Mensuales
 		$objFirstYearDate 		= \DateTime::createFromFormat('Y-m-d', $firstDateYear);
@@ -479,6 +471,100 @@ class core_dashboards extends _BaseController {
 		$dataSession["objListVentasCreditoMensuales"]		= $objListVentasCreditoMensuales;
 		$dataSession["objListVentasContadoMesActual"]		= $objListVentasContadoMesActual;
 		$dataSession["objListVentaContadoMensuales"]		= $objListVentaContadoMensuales;
+		return $dataSession;
+	}
+
+	function getIndexFunerariaBlandon($dataSession){
+
+		$firstDateYear					= helper_PrimerDiaDelMes();
+		$lastDateYear					= helper_UltimoDiaDelMes();
+		$firstDate						= helper_PrimerDiaDelMes();
+		$lastDate						= helper_UltimoDiaDelMes();			
+
+		if(
+			$dataSession["role"]->name == "EBENEZER@ADMINISTRADOR" ||
+			$dataSession["role"]->name == "SUPE ADMIN"
+		)
+		{
+			$firstDateYear					= helper_PrimerDiaDelYear();
+			$lastDateYear					= helper_UltimoDiaDelYear();
+		}
+
+			
+		//Obtener servicios contratados
+		$objFirstYearDate 		= \DateTime::createFromFormat('Y-m-d', $firstDateYear);
+		$objFirstYearDate->setTime(0, 0, 0);						
+		$objFirstDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
+		$objFirstDate->setTime(0, 0, 0);		
+		$objListServiciosContratados = array();
+		while($objFirstYearDate <= $objFirstDate)
+		{				
+			$objLastDayMont =  \DateTime::createFromFormat('Y-m-d', $objFirstYearDate->format("Y-m-d"));
+			$objLastDayMont->modify('+1 month');
+			$objLastDayMont->modify('-1 day');
+			$objListServiciosContratadosTemporal = $this->Transaction_Master_Detail_Model->FunerariaBlandon_Servicios_Contratados($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDayMont->format("Y-m-d") );
+			if($objListServiciosContratadosTemporal)
+			{
+				array_push($objListServiciosContratados, $objListServiciosContratadosTemporal[0]);
+			}
+			$objFirstYearDate->modify('+1 month');
+		}
+
+		//Obtener Pagos Mensuales Realizados
+		$objFirstYearDate 		= \DateTime::createFromFormat('Y-m-d', $firstDateYear);
+		$objFirstYearDate->setTime(0, 0, 0);						
+		$objFirstDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
+		$objFirstDate->setTime(0, 0, 0);		
+		$objListPagosMensualesRealizados = array();
+		while($objFirstYearDate <= $objFirstDate)
+		{				
+			$objLastDayMont =  \DateTime::createFromFormat('Y-m-d', $objFirstYearDate->format("Y-m-d"));
+			$objLastDayMont->modify('+1 month');
+			$objLastDayMont->modify('-1 day');
+			$objListPagoMensualTemporal = $this->Transaction_Master_Detail_Model->FunerariaBlandon_Pagos_Mensuales_Realizados($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDayMont->format("Y-m-d") );
+			if($objListPagoMensualTemporal)
+			{
+				array_push($objListPagosMensualesRealizados, $objListPagoMensualTemporal[0]);
+			}
+			$objFirstYearDate->modify('+1 month');
+		}
+		
+
+		//Obtener Cartera de Cobro
+		$objFirstYearDate 		= \DateTime::createFromFormat('Y-m-d', $firstDateYear);
+		$objFirstYearDate->setTime(0, 0, 0);						
+		$objFirstDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
+		$objFirstDate->setTime(0, 0, 0);		
+		$objListCarteraDeCobro = array();
+		while($objFirstYearDate <= $objFirstDate)
+		{				
+			$objLastDayMont =  \DateTime::createFromFormat('Y-m-d', $objFirstYearDate->format("Y-m-d"));
+			$objLastDayMont->modify('+1 month');
+			$objLastDayMont->modify('-1 day');
+			$objListVentasCarteraDeCobroTemporal = $this->Transaction_Master_Detail_Model->FunerariaBlandon_Cartera_De_Cobros($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDayMont->format("Y-m-d") );
+			if($objListVentasCarteraDeCobroTemporal)
+			{
+				array_push($objListCarteraDeCobro, $objListVentasCarteraDeCobroTemporal[0]);
+			}
+			$objFirstYearDate->modify('+1 month');
+		}
+
+		//Obtener Facturacion Contado
+		$objFirstDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
+		$objFirstDate->setTime(0, 0, 0);						
+		$objLastDate 		= \DateTime::createFromFormat('Y-m-d H:i:s', $lastDate);
+		$objLastDate->setTime(0, 0, 0);
+		$objNowDate 		= \DateTime::createFromFormat('Y-m-d H:i:s', helper_getDate());
+		$objNowDate->setTime(0, 0, 0);
+		$objListFacturacionContado = array();
+		$objListFacturacionContado = $this->Transaction_Master_Detail_Model->FunerariaBlandon_Facturacion_Contado($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objNowDate->format("Y-m-d") );
+
+		
+		//Renderizar Resultado			
+		$dataSession["objListServiciosContratados"]			= $objListServiciosContratados;
+		$dataSession["objListPagosMensualesRealizados"]		= $objListPagosMensualesRealizados;
+		$dataSession["objListCarteraDeCobro"]				= $objListCarteraDeCobro;
+		$dataSession["objListFacturacionContado"]			= $objListFacturacionContado;
 		return $dataSession;
 	}
 }
