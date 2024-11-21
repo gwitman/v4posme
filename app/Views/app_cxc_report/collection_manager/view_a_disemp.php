@@ -14,13 +14,13 @@
 			<table>
 				<thead>
 					<tr>
-						<th colspan="11">CRONOGRAMA DE COBRANZA</th>
+						<th colspan="12">CRONOGRAMA DE COBRANZA</th>
 					</tr>
 					<tr>
-						<th colspan="11"><?php echo strtoupper($objCompany->name); ?></th>
+						<th colspan="12"><?php echo strtoupper($objCompany->name); ?></th>
 					</tr>
 					<tr>
-						<th colspan="11"><?php 
+						<th colspan="12"><?php 
 							if($objDetail) { 
 								echo $objDetail[0]["FiltroCode"]."/".$objDetail[0]["FiltroName"]; 
 							} 
@@ -30,7 +30,7 @@
 					</tr>
 					
 					<tr>
-						<th colspan="11">
+						<th colspan="12">
 							Monto Total Atrazado: 
 							<?php 
 							if($objDetail) { 
@@ -43,7 +43,7 @@
 					</tr>
 					
 					<tr>
-						<th colspan="11">
+						<th colspan="12">
 							Monto Total Meta: 
 							<?php 
 							if($objDetail) { 
@@ -72,21 +72,22 @@
 						<th nowrap class="cell_right">Cuota</th>
 						<th nowrap class="cell_right">Abono</th>
 						<th nowrap class="cell_right">Moneda</th>
-						
 						<th nowrap class="cell_right">Gestor</th>
-						
 						<th nowrap class="cell_right">Comentario</th>
+						<th nowrap class="cell_right">Dirección</th>
 					</tr>
 				</thead>				
 				<tbody>
 					<?php
-					$count 			= 0;
-					$countCliente	= 1;
-					$cliente 		= "";
-					$style			= "";
-					$style2			= "";
-					$cliente2 		= "";
-					$clienteNuevo	= true;
+					$count 				= 0;
+					$countCliente		= 1;
+					$cliente 			= "";
+					$style				= "";
+					$style2				= "";
+					$cliente2 			= "";
+					$clienteNuevo		= true;
+					$totalByCustomer 	= 0;
+					
 					if($objDetail)
 					foreach($objDetail as $i){
 						//Calcular Sebra
@@ -97,14 +98,27 @@
 						$style = "";
 						//Separar Cliente al Final 
 						if($i["NoCliente"] != $cliente && $cliente != "")
-							echo  "<tr style='border-bottom-color:BLUE;border-bottom-style:solid;border-bottom-width:1px;'><td colspan='11'>&nbsp;</td></tr>";						
+						{
+							echo  
+								"<tr>
+									<td colspan='6'>&nbsp;</td>									
+									<td colspan='1' nowrap class='cell_right' >".number_format($totalByCustomer,2)."</td>
+									<td colspan='5'>&nbsp;</td>
+								</tr>";						
+							echo  "<tr style='border-bottom-color:BLUE;border-bottom-style:solid;border-bottom-width:1px;'><td colspan='12'>&nbsp;</td></tr>";						
+						}
+						
 						$cliente = $i["NoCliente"]; 
-						/*Estilo de cuota*/
 						$style2 = ";border-bottom-color:".$i["Atraso"].";border-bottom-style:dashed;border-bottom-width:1px;";
 						//Repitar Cliente unicamente al Inicio
 						if( $cliente2 != "" && $cliente2 != $i["NoCliente"] ){
-								$clienteNuevo = true;
-								$countCliente++;
+							$clienteNuevo 		= true;
+							$totalByCustomer 	= 0;
+							$countCliente++;
+						}
+						else 
+						{
+							$totalByCustomer	= $totalByCustomer + $i["Cuota"];
 						}
 					
 						//Grid
@@ -144,7 +158,11 @@
 							echo "<td nowrap class='cell_left'>";
 								echo '*';
 							echo "</td>";
-						echo "</tr>";					
+							echo "<td nowrap class='cell_left'>";
+								echo ($i["Direccion"]);
+							echo "</td>";
+						echo "</tr>";	
+						
 						//Repitar Cliente unicamente al Inicio
 						if($clienteNuevo)
 						$clienteNuevo = false;
@@ -162,7 +180,7 @@
 			<table>
 				<tbody>
 					<tr>
-						<td colspan="11"><?php echo date("Y-m-d H:i:s");  ?> <?php echo $objFirmaEncription; ?></td>
+						<td colspan="12"><?php echo date("Y-m-d H:i:s");  ?> <?php echo $objFirmaEncription; ?></td>
 					</tr>
 				</tbody>
 			</table>
