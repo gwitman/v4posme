@@ -1691,5 +1691,119 @@ class Transaction_Master_Detail_Model extends Model  {
 
 		return $db->query($sql)->getResult();
    	}
+
+
+
+
+
+	function Default_Ventas_De_Contado_Mes_Actual($companyID,$dateFirst,$dateLast)
+	{
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+		  	SELECT 
+				DAY(c.createdOn) as Dia,
+				SUM(c.amount) as Venta 
+			FROM 
+				tb_transaction_master c 
+			WHERE 
+				c.transactionID = 19 /*factura*/ 
+				AND 
+				c.isActive = 1 
+				AND 
+				c.transactionCausalID in (21 /*Contado*/,23 /*Contado*/) 
+				AND 
+				c.statusID in (67 /*aplicada*/) 
+				AND 
+				c.createdOn between '$dateFirst' and '$dateLast'
+			group by 
+				1
+		");
+
+		return $db->query($sql)->getResult();
+	}
+
+	function Default_Ventas_De_Contado_Mensuales($companyID,$dateFirst,$dateLast)
+	{
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+		  	SELECT 
+				MONTH(c.createdOn) as Mes,
+				SUM(c.amount) as Venta 
+			FROM 
+				tb_transaction_master c 
+			WHERE 
+				c.transactionID = 19 /*factura*/ 
+				AND 
+				c.isActive = 1 
+				AND 
+				c.transactionCausalID in (21 /*Contado*/,23 /*Contado*/) 
+				AND 
+				c.statusID in (67 /*aplicada*/) 
+				AND  
+				c.createdOn between '$dateFirst' and '$dateLast'
+			group by 
+				1
+		");
+
+		return $db->query($sql)->getResult();
+	}
+
+	function Default_Ventas_De_Credito_Mes_Actual($companyID,$dateFirst,$dateLast)
+	{
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+		  	SELECT 
+				MONTH(c.createdOn) as Mes,
+				SUM(c.amount) as Venta 
+			FROM 
+				tb_transaction_master c 
+			WHERE 
+				c.transactionID = 19 /*factura*/ 
+				AND 
+				c.isActive = 1 
+				AND 
+				c.transactionCausalID in (22 /*Credito*/,24 /*Credito*/) 
+				AND 
+				c.statusID in (67 /*aplicada*/) 
+				AND  
+				c.createdOn between '$dateFirst' and '$dateLast'
+			group by 
+				1
+		");
+
+		return $db->query($sql)->getResult();
+	}
+
+	function Default_Pagos_Mensuales($companyID,$dateFirst,$dateLast)
+	{
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+		  	SELECT 
+				MONTH(c.createdOn) AS Mes, 
+				SUM(c.amount) AS Pagos
+			FROM 
+				tb_transaction_master c
+			WHERE 
+				c.transactionID = 23 /*abonos*/ 
+				AND 
+				c.isActive = 1 
+				AND 
+				c.statusID = 80 /*aplicadao*/ 
+				AND 
+				c.createdOn BETWEEN '$dateFirst' AND '$dateLast'
+			GROUP BY 
+				1 ;
+		");
+
+		return $db->query($sql)->getResult();
+	}
 }
 ?>
