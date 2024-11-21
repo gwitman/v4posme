@@ -17,7 +17,7 @@
 		<?php 	
 		echo helper_reporteGeneralCreateEncabezado(
 			'ARQUEOS DE CAJA',
-			$objCompany->name,
+			$objCompany->name." ".$branchName,
 			5,
 			'DEL '.$startOn.' AL '.$endOn,
 			"",

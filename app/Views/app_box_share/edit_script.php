@@ -3,6 +3,7 @@
 	var objListaCustomerCredit  			= {};
 	var varUseMobile						= '<?php echo $useMobile; ?>';
 	var varUrlPrinter						= '<?php echo $urlPrinterDocument; ?>';
+	var varUrlPrinterInvoiceCancel			= '<?php echo $urlPrinterDocumentInvoiceCancel; ?>';
 	var varShareInvoiceByInvoice 			= '<?php echo $objParameterShareInvoiceByInvoice; ?>';
 	var varShareMountDefaultOfAmortization 	= '<?php echo getBehavio($company->type,"app_box_share","javscriptVariable_varShareMountDefaultOfAmortization",""); ?>';
 	var varPrinterOnlyFormat				= '<?php echo getBehavio($company->type,"app_box_share","javscriptVariable_varPrinterOnlyFormat",""); ?>';
@@ -119,6 +120,15 @@
 			}
 			return
 		});
+		
+		$(document).on("click","#btnPrinterInvoiceCancel",function(){	
+
+			fnWaitOpen();
+			window.open("<?php echo base_url(); ?>/"+varUrlPrinterInvoiceCancel+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>/saldos/Individuales", '_blank');
+			fnWaitClose();	
+			
+		});
+		
 		//Evento Agregar el Usuario
 		$(document).on("click","#btnAcept",function(){
 				$( "#form-new-invoice" ).attr("method","POST");

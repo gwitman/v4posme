@@ -5,6 +5,13 @@
 /******************************************************************/		
 
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_SHOW_BALANCE_IN_SHARE_MOBILE";## Mostrar los saldos en abonos mobiles
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "Interes anual" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 

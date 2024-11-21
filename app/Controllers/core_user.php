@@ -144,8 +144,24 @@ class core_user extends _BaseController {
 					$this->core_web_permission->getValueLicense($companyID,get_class($this)."/"."index");
 					$continue = true;
 					
+					
+					$objListComanyParameter		= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+					$maxUser					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CORE_CUST_PRICE_MAX_USER")->value;
+					$objListUser				= $this->User_Model->get_All($companyID);
+			
 					//Ingresar usuario
 					if($continue){
+						
+						//Validar la cantidad de usuarios permitidos
+						if($objListUser != null)
+						{
+							if( count($objListUser) >= $maxUser )
+							{
+								throw new \Exception("Limite de usuarios superados...");
+							}						
+						}
+						
+						
 						$db=db_connect();
 						$db->transStart();
 						//Crear Usuario
@@ -733,11 +749,13 @@ class core_user extends _BaseController {
 			
 			
 			//Obtener los Roles			
+			$datView["title"] 		 = "Pago";
 			$datView["objEmployee"]  = $objComponent;
 			$datView["objEntity"]  	 = $objComponentEntity;
 			$datView["message"]		 = $this->core_web_notification->get_message_alert();
 			
 			//Renderizar Resultado 			
+			
 			$dataSession["head"]			= /*--inicio view*/ view('core_user/payment_head',$datView);//--finview
 			$dataSession["body"]			= /*--inicio view*/ view('core_user/payment_body',$datView);//--finview
 			$dataSession["script"]			= /*--inicio view*/ view('core_user/payment_script',$datView);//--finview
@@ -750,7 +768,7 @@ class core_user extends _BaseController {
 				return redirect()->to(base_url("core_acount/login"));
 			}
 			
-			$data["session"]   = $dataSession;
+			$data["session"]   = null;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
 		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
@@ -1540,7 +1558,8 @@ class core_user extends _BaseController {
 			$datView["objEntity"]  	 = $objComponentEntity;
 			$datView["message"]		 = $this->core_web_notification->get_message_alert();
 			
-			//Renderizar Resultado 			
+			//Renderizar Resultado 		
+			$dataSession["title"]			= "Formulario de afiliación";
 			$dataSession["head"]			= /*--inicio view*/ view('core_user/addpublic_head',$datView);//--finview
 			$dataSession["body"]			= /*--inicio view*/ view('core_user/addpublic_body',$datView);//--finview
 			$dataSession["script"]			= /*--inicio view*/ view('core_user/addpublic_script',$datView);//--finview
@@ -1549,11 +1568,13 @@ class core_user extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-			if (empty($dataSession)) {
+			
+			if (empty($dataSession)) 
+			{
 				return redirect()->to(base_url("core_acount/login"));
 			}
 			
-			$data["session"]   = $dataSession;
+			$data["session"]   = null;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
 		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";

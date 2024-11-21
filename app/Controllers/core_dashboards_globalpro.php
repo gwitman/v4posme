@@ -72,6 +72,28 @@ class core_dashboards_globalpro extends _BaseController {
 			}
 			
 			
+			//Obtener las Ventas Mensuales Por Sucursal
+			$objFirstYearDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
+			$objFirstYearDate->setTime(0, 0, 0);						
+			$objFirstDate 		= \DateTime::createFromFormat('Y-m-d H:i:s', $lastDate);
+			$objFirstDate->setTime(0, 0, 0);		
+			$objListVentaMensualPorSucursal = array();
+			while($objFirstYearDate <= $objFirstDate)
+			{				
+				$objLastDayMont =  \DateTime::createFromFormat('Y-m-d', $objFirstYearDate->format("Y-m-d"));
+				$objLastDayMont->modify('+1 month');
+				$objLastDayMont->modify('-1 day');
+
+				$objListVentaMensualTemporal = $this->Transaction_Master_Detail_Model->GlobalPro_get_MonthOnly_SalesByBranch($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objFirstDate->format("Y-m-d")." 23:59:59" );
+				if($objListVentaMensualTemporal)
+				{
+					array_push($objListVentaMensualPorSucursal, $objListVentaMensualTemporal[0]);
+
+				}
+				$objFirstYearDate->modify('+1 month');
+			}
+			
+			
 			
 			//Obtener las Ventas Diarias
 			$objFirstDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
@@ -93,10 +115,11 @@ class core_dashboards_globalpro extends _BaseController {
 			}
 			
 			//Renderizar Resultado			
-			$dataSession["objListVentas"]		= $objListVentas;
-			$dataSession["objListTecnico"]		= $objListTecnico;
-			$dataSession["objListVentaMensual"]	= $objListVentaMensual;
-			$dataSession["objListVentaDiaria"]	= $objListVentaDiaria;
+			$dataSession["objListVentas"]					= $objListVentas;
+			$dataSession["objListTecnico"]					= $objListTecnico;
+			$dataSession["objListVentaMensual"]				= $objListVentaMensual;
+			$dataSession["objListVentaMensualPorSucursal"]	= $objListVentaMensualPorSucursal;
+			$dataSession["objListVentaDiaria"]				= $objListVentaDiaria;
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= "";
 			$dataSession["head"]			= "";

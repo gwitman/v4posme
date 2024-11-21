@@ -29,13 +29,13 @@
 							console.info("CALL onCompleteEmployee");
 							
 							$("#txtEmployeeID").val(objResponse[0][2]);
-							$("#txtEmployeeDescription").val(objResponse[0][3] + " / " + objResponse[0][4]);
+							$("#txtEmployeeDescription").val(objResponse[0][3] + " / " + objResponse[0][4]); 
 							
 						}
 						
 						//Buscar Cliente
 						$(document).on("click","#btnSearchCustomer",function(){
-							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $componentCustomerID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_BILLING/true/empty/false/not_redirect_when_empty";
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $componentCustomerID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_ALL/true/empty/false/not_redirect_when_empty";
 							window.open(url_request,"MsgWindow","width=900,height=450");
 							window.onCompleteCustomer = onCompleteCustomer; 
 						});

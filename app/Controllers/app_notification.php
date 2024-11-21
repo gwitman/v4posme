@@ -6,13 +6,26 @@ class app_notification extends _BaseController
 {
 
 
+	/********************************************/
+	/********************************************/
+	/********************************************/
+	///INICIO CORE SISTEMA
+	/********************************************/
+	/********************************************/
+	/********************************************/
+	
 	//procesar las notificaciones
+	//tomas las notifiaciones en remember e inserta en la talba error para que luesgo 
+	//aparitr de esa tabla sea mostradas las notifcaicones en el sistema o cuando 
+	//pase el barrido de envio de wahtap tome de esa tabla
+	//o cuando paes el barrido de envioa de email tome de esa tabla los datos
 	function fillCurrentNotification()
 	{
 
-		$tagName		= "NOTIFICAR OBLIGACION";
+		$tagName		= "LLENAR NOTI DE OBLIGACION";
 		$objListCompany = $this->Company_Model->get_rows();
 		$objTag			= $this->Tag_Model->get_rowByName($tagName);
+		
 
 		//Recorrer Empresas
 		if ($objListCompany)
@@ -22,87 +35,78 @@ class app_notification extends _BaseController
 				if ($objListItem) {
 					foreach ($objListItem as $noti) {
 						$hoy_			= date_format(date_create(), "Y-m-d");
-						$lastNoti 		= date_format(date_create($noti->lastNotificationOn), "Y-m-d");
+						$lastNoti 		= $hoy_; //date_format(date_create($noti->lastNotificationOn), "Y-m-d");
 
 						//Recorrer desde la ultima notificacion, hasta la fecha de hoy
 						while ($lastNoti <= $hoy_) {
-							//Validar si Ya esta procesado el Dia.
-
+							
+							//Validar si se debe ejecutar la notificacion
 							$objListItemDetail		= $this->Remember_Model->getProcessNotification($noti->rememberID, $lastNoti);
-
-
 							if ($objListItemDetail)
-								if ($objListItemDetail->diaProcesado == $noti->day) {
+							{
+								if ($objListItemDetail->diaProcesado == $noti->day) 
+								{
 
-									//echo $noti;
-									//echo $objListItemDetail;
-
+									
 									$item 					= $objListItemDetail;
 									$mensaje				= "";
 									$mensaje				.= "<span class='badge badge-important'>OBLIGACION</span>" . $item->title;
 									$mensaje				.= " => " . $item->description . " => " . $item->Fecha . " => <span class='badge badge-important'>ATRAZO</span>";
 
 									//Ver si el mensaje ya existe para el administrador
-									$objError			= $this->Error_Model->get_rowByMessageUser(0, $mensaje);
+									$objError			= false;
 									$data				= null;
 									$errorID 			= 0;
-									//tag con notificacion
-									if ($objTag->sendNotificationApp) {
-										$objListUsuario				= $this->User_Tag_Model->get_rowByPK($objTag->tagID);
-										//Lista de Usuarios
-										if ($objListUsuario)
-											foreach ($objListUsuario as $usuario) {
-
-												$objErrorUser			= $this->Error_Model->get_rowByMessageUser($usuario->userID, $mensaje);
-												if (!$objErrorUser) {
-													$data					= null;
-													$data["tagID"]			= $objTag->tagID;
-													$data["notificated"]	= "notificar obligacion";
-													$data["message"]		= $mensaje;
-													$data["isActive"]		= 1;
-													$data["userID"]			= $usuario->userID;
-													$data["createdOn"]		= date_format(date_create(), "Y-m-d H:i:s");
-													$this->Error_Model->insert_app_posme($data);
-												}
+									
+									
+									$data				= null;
+									$data["notificated"] = "notificar obligacion";
+									$data["tagID"]		= $objTag->tagID;
+									$data["message"]	= $mensaje;
+									$data["isActive"]	= 1;
+									$data["createdOn"]	= date_format(date_create(), "Y-m-d H:i:s");
+									$errorID			= $this->Error_Model->insert_app_posme($data);
+								
+								
+								
+									$objListUsuario				= $this->User_Tag_Model->get_rowByPK($objTag->tagID);
+									if ($objListUsuario)
+									{
+										foreach ($objListUsuario as $usuario) 
+										{	
+										
+											if ($objTag->sendNotificationApp)
+											{
+												$data					= null;
+												$data["tagID"]			= $objTag->tagID;
+												$data["notificated"]	= "notificar obligacion";
+												$data["message"]		= $mensaje;
+												$data["isActive"]		= 1;
+												$data["userID"]			= $usuario->userID;
+												$data["createdOn"]		= date_format(date_create(), "Y-m-d H:i:s");
+												$this->Error_Model->insert_app_posme($data);
 											}
-									}
-
-									if (!$objError) {
-										$data				= null;
-										$data["notificated"] = "notificar obligacion";
-										$data["tagID"]		= $objTag->tagID;
-										$data["message"]	= $mensaje;
-										$data["isActive"]	= 1;
-										$data["createdOn"]	= date_format(date_create(), "Y-m-d H:i:s");
-										$errorID			= $this->Error_Model->insert_app_posme($data);
-									} else
-										$errorID 			= $objError->errorID;
-
-									//tag con correo
-									if ($objTag->sendEmail) {
-
-										$objListUsuario				= $this->User_Tag_Model->get_rowByPK($objTag->tagID);
-										if ($objListUsuario)
-											foreach ($objListUsuario as $usuario) {
-
-												$objNotificationUser		= $this->Notification_Model->get_rowsByToMessage($usuario->email, $mensaje);
-												if (!$objNotificationUser) {
-													$data						= null;
-													$data["errorID"]			= $errorID;
-													$data["from"]				= EMAIL_APP;
-													$data["to"]					= $usuario->email;
-													$data["subject"]			= "notificar obligacion";
-													$data["message"]			= $mensaje;
-													$data["summary"]			= "notificar obligacion";
-													$data["title"]				= "notificar obligacion";
-													$data["tagID"]				= $objTag->tagID;
-													$data["createdOn"]			= date_format(date_create(), "Y-m-d H:i:s");
-													$data["isActive"]			= 1;
-													$this->Notification_Model->insert_app_posme($data);
-												}
+											if ($objTag->sendEmail)
+											{
+												$data						= null;
+												$data["errorID"]			= $errorID;
+												$data["from"]				= EMAIL_APP;
+												$data["to"]					= $usuario->email;
+												$data["subject"]			= "notificar obligacion";
+												$data["message"]			= $mensaje;
+												$data["summary"]			= "notificar obligacion";
+												$data["title"]				= "notificar obligacion";
+												$data["tagID"]				= $objTag->tagID;
+												$data["createdOn"]			= date_format(date_create(), "Y-m-d H:i:s");
+												$data["isActive"]			= 1;
+												$this->Notification_Model->insert_app_posme($data);
 											}
-									}
+										}
+									}	
 								}
+							}
+								
+								
 							//Actualizar Base de Datos
 							$dataRemember						= NULL;
 							$dataRemember["lastNotificationOn"]	= $lastNoti;
@@ -114,22 +118,21 @@ class app_notification extends _BaseController
 				}
 			}
 	}
-
-
-	function fillSendWhatsappCustomer()
+	function fillSendWhatsappOrEmail()
 	{
 
-		$tagName			= "ENVIAR WHATSAPP A CLIENTE";
+		$tagName			= "LLENAR NOTI DE ENVIO DE EMAIL Y ENVIO DE WHATAPP MASIVO";
 		$objListCompany 	= $this->Company_Model->get_rows();
 		$objTag				= $this->Tag_Model->get_rowByName($tagName);
 		$objListUsuario		= $this->User_Tag_Model->get_rowByPK($objTag->tagID);
 		$objListCustomer 	= $this->Customer_Model->get_rowByCompany_phoneAndEmail(APP_COMPANY);
 		$objListEmail		= $this->Entity_Email_Model->get_rowByCompany(APP_COMPANY);
-		$objParameter		= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT", $companyID);
+		$objParameter		= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT", APP_COMPANY);
 		$characterSplie 	= $objParameter->value;
 
 		//Recorrer Empresas
 		if ($objListCompany)
+		{
 			foreach ($objListCompany as $i) {
 				$objListItem		= $this->Remember_Model->getNotificationCompanyByTagId($i->companyID, $objTag->tagID);
 				//Recorrer las Notificaciones
@@ -174,7 +177,7 @@ class app_notification extends _BaseController
 
 
 						$hoy_			= date_format(date_create(), "Y-m-d");
-						$lastNoti 		= date_format(date_create($noti->lastNotificationOn), "Y-m-d");
+						$lastNoti 		= $hoy_; //date_format(date_create($noti->lastNotificationOn), "Y-m-d");
 
 
 						//Recorrer desde la ultima notificacion, hasta la fecha de hoy
@@ -182,11 +185,12 @@ class app_notification extends _BaseController
 
 							//Validar si Ya esta procesado el Dia.						
 							$objListItemDetail		= $this->Remember_Model->getProcessNotification($noti->rememberID, $lastNoti);
-
-
 							if ($objListItemDetail)
-								if ($objListItemDetail->diaProcesado == $noti->day) {
+							{
+								if ($objListItemDetail->diaProcesado == $noti->day) 
+								{
 
+									
 									$item 					= $objListItemDetail;
 									$mensaje				=  " ";
 									$mensaje				.= " ";
@@ -194,79 +198,80 @@ class app_notification extends _BaseController
 									$mensaje				.= " ";
 
 									//Ver si el mensaje ya existe para el administrador
-									$objError			= $this->Error_Model->get_rowByMessageUser(0, $mensaje);
 									$data				= null;
 									$errorID 			= 0;
+									$data				= null;
+									$data["notificated"] = "mensaje al cliente";
+									$data["tagID"]		= $objTag->tagID;
+									$data["message"]	= $mensaje;
+									$data["isActive"]	= 1;
+									$data["createdOn"]	= date_format(date_create(), "Y-m-d H:i:s");
+									$errorID			= $this->Error_Model->insert_app_posme($data);
+									
+									//Lista de Usuarios
+									if ($objListCustomer)
+									{
+										foreach ($objListCustomer as $usuarioX) {
 
-									if (!$objError) {
-										$data				= null;
-										$data["notificated"] = "mensaje al cliente";
-										$data["tagID"]		= $objTag->tagID;
-										$data["message"]	= $mensaje;
-										$data["isActive"]	= 1;
-										$data["createdOn"]	= date_format(date_create(), "Y-m-d H:i:s");
-										$errorID			= $this->Error_Model->insert_app_posme($data);
-									} else
-										$errorID 			= $objError->errorID;
+											$phoneNumber  	= $item->leerFile == 1 ? $usuarioX["phoneNumber"] : $usuarioX->phoneNumber;
+											$firstName  	= $item->leerFile == 1 ? $usuarioX["firstName"] : $usuarioX->firstName;
 
-
-									//tag con notificacion
-									if ($objTag->sendSMS == "1") {
-
-										//Lista de Usuarios
-										if ($objListCustomer)
-											foreach ($objListCustomer as $usuarioX) {
-
-												$phoneNumber  	= $item->leerFile == 1 ? $usuarioX["phoneNumber"] : $usuarioX->phoneNumber;
-												$firstName  	= $item->leerFile == 1 ? $usuarioX["firstName"] : $usuarioX->firstName;
-
-												$objNotificationUser		= $this->Notification_Model->get_rowsByToMessage($phoneNumber, $mensaje);
-												if (!$objNotificationUser) {
-													$data						= null;
-													$data["errorID"]			= $errorID;
-													$data["from"]				= PHONE_POSME;
-													$data["to"]					= $firstName;
-													$data["phoneFrom"]			= PHONE_POSME;
-													$data["phoneTo"]			= $phoneNumber;
-													$data["programDate"]		= $hoy_;
-													$data["programHour"]		= "00:00:00";
-													$data["subject"]			= "notificacion";
-													$data["message"]			= $mensaje;
-													$data["summary"]			= "summary... ";
-													$data["title"]				= "title";
-													$data["tagID"]				= $objTag->tagID;
-													$data["createdOn"]			= date_format(date_create(), "Y-m-d H:i:s");
-													$data["isActive"]			= 1;
-													$this->Notification_Model->insert_app_posme($data);
-												}
+											if ($objTag->sendSMS == "1") 
+											{
+												
+												$data						= null;
+												$data["errorID"]			= $errorID;
+												$data["from"]				= PHONE_POSME;
+												$data["to"]					= $firstName;
+												$data["phoneFrom"]			= PHONE_POSME;
+												$data["phoneTo"]			= $phoneNumber;
+												$data["programDate"]		= $hoy_;
+												$data["programHour"]		= "00:00:00";
+												$data["subject"]			= "notificacion";
+												$data["message"]			= $mensaje;
+												$data["summary"]			= "summary... ";
+												$data["title"]				= "title";
+												$data["tagID"]				= $objTag->tagID;
+												$data["createdOn"]			= date_format(date_create(), "Y-m-d H:i:s");
+												$data["isActive"]			= 1;
+												$this->Notification_Model->insert_app_posme($data);
 											}
+											
+										}
+											
 									}
-
+									
 
 
 									//tag con correo
-									if ($objTag->sendEmail == "1") {
-										if ($objListEmail)
-											foreach ($objListEmail as $customerX) {
-												$objListCustomer		= $this->Notification_Model->get_rowsByToMessage($customerX->email, $mensaje);
-												if (!$objNotificationUser) {
-													$data						= null;
-													$data["errorID"]			= $errorID;
-													$data["from"]				= EMAIL_APP;
-													$data["to"]					= $usuarioX->email;
-													$data["subject"]			= "notificar obligacion";
-													$data["message"]			= $mensaje;
-													$data["summary"]			= "notificar obligacion";
-													$data["title"]				= "notificar obligacion";
-													$data["tagID"]				= $objTag->tagID;
-													$data["createdOn"]			= date_format(date_create(), "Y-m-d H:i:s");
-													$data["isActive"]			= 1;
-													$this->Notification_Model->insert_app_posme($data);
-												}
+									if ($objListEmail)
+									{
+										foreach ($objListEmail as $customerX) 
+										{
+											
+											$phoneNumber  	= $item->leerFile == 1 ? $customerX["phoneNumber"] : $customerX->email;
+											$firstName  	= $item->leerFile == 1 ? $customerX["firstName"] : $customerX->email;
+
+
+											if ($objTag->sendEmail == "1") {
+												
+												$data						= null;
+												$data["errorID"]			= $errorID;
+												$data["from"]				= EMAIL_APP;
+												$data["to"]					= $phoneNumber;
+												$data["subject"]			= "notificar obligacion";
+												$data["message"]			= $mensaje;
+												$data["summary"]			= "notificar obligacion";
+												$data["title"]				= "notificar obligacion";
+												$data["tagID"]				= $objTag->tagID;
+												$data["createdOn"]			= date_format(date_create(), "Y-m-d H:i:s");
+												$data["isActive"]			= 1;
+												$this->Notification_Model->insert_app_posme($data);
 											}
+										}
 									}
 								}
-
+							}
 
 							//Actualizar Base de Datos
 							$dataRemember						= NULL;
@@ -278,15 +283,13 @@ class app_notification extends _BaseController
 					}
 				}
 			}
+		}
 	}
-
-
-
 	//mostrar las notificaciones en sistema, de si falta la tasa de cambio
 	function fillTipoCambio()
 	{
 
-		$tagName		= "NOTIFICAR TIPO DE CAMBIO";
+		$tagName		= "LLENAR NOTI TIPO DE CAMBIO";
 		$date_			= date_format(date_create(), "Y-m-d");
 		$objListCompany = $this->Company_Model->get_rows();
 		$objTag			= $this->Tag_Model->get_rowByName($tagName);
@@ -297,42 +300,37 @@ class app_notification extends _BaseController
 
 				try {
 					$exchangeRate		= $this->core_web_currency->getRatio($i->companyID, $date_, 1, $reportCurrencyID, $defaultCurrencyID);
-				} catch (\Exception $e) {
+					
+				} catch (\Exception $e) 
+				{
 					$mensaje			= $e->getMessage();
-
-					$objError			= $this->Error_Model->get_rowByMessageUser(0, $mensaje);
 					$data				= null;
-					$errorID 			= 0;
-					if (!$objError) {
-						$data["notificated"] = "tipo de cambio...";
-						$data["tagID"]		= $objTag->tagID;
-						$data["message"]	= $mensaje;
-						$data["isActive"]	= 1;
-						$data["createdOn"]	= date_format(date_create(), "Y-m-d H:i:s");
-						$errorID			= $this->Error_Model->insert_app_posme($data);
-					} else
-						$errorID 			= $objError->errorID;
-
+					$errorID 			= 0;					
+					$data["notificated"] = "tipo de cambio...";
+					$data["tagID"]		= $objTag->tagID;
+					$data["message"]	= $mensaje;
+					$data["isActive"]	= 1;
+					$data["createdOn"]	= date_format(date_create(), "Y-m-d H:i:s");
+					$errorID			= $this->Error_Model->insert_app_posme($data);
+				
 					//tag con correo
 					if ($objTag->sendEmail) {
 						$objListUsuario				= $this->User_Tag_Model->get_rowByPK($objTag->tagID);
 						if ($objListUsuario)
 							foreach ($objListUsuario as $usuario) {
-								$objNotificationUser		= $this->Notification_Model->get_rowsByToMessage($usuario->email, $mensaje);
-								if (!$objNotificationUser) {
-									$data						= null;
-									$data["errorID"]			= $errorID;
-									$data["from"]				= EMAIL_APP;
-									$data["to"]					= $usuario->email;
-									$data["subject"]			= "TIPO DE CAMBIO";
-									$data["message"]			= $mensaje;
-									$data["summary"]			= "TIPO DE CAMBIO NO INGRESADO";
-									$data["title"]				= "TIPO DE CAMBIO";
-									$data["tagID"]				= $objTag->tagID;
-									$data["createdOn"]			= date_format(date_create(), "Y-m-d H:i:s");
-									$data["isActive"]			= 1;
-									$this->Notification_Model->insert_app_posme($data);
-								}
+								$data						= null;
+								$data["errorID"]			= $errorID;
+								$data["from"]				= EMAIL_APP;
+								$data["to"]					= $usuario->email;
+								$data["subject"]			= "TIPO DE CAMBIO";
+								$data["message"]			= $mensaje;
+								$data["summary"]			= "TIPO DE CAMBIO NO INGRESADO";
+								$data["title"]				= "TIPO DE CAMBIO";
+								$data["tagID"]				= $objTag->tagID;
+								$data["createdOn"]			= date_format(date_create(), "Y-m-d H:i:s");
+								$data["isActive"]			= 1;
+								$this->Notification_Model->insert_app_posme($data);
+							
 							}
 					}
 
@@ -341,28 +339,25 @@ class app_notification extends _BaseController
 						$objListUsuario				= $this->User_Tag_Model->get_rowByPK($objTag->tagID);
 						if ($objListUsuario)
 							foreach ($objListUsuario as $usuario) {
-								$objErrorUser			= $this->Error_Model->get_rowByMessageUser($usuario->userID, $mensaje);
-								if (!$objErrorUser) {
-									$data					= null;
-									$data["tagID"]			= $objTag->tagID;
-									$data["notificated"]	= "tasa de cambio";
-									$data["message"]		= $mensaje;
-									$data["isActive"]		= 1;
-									$data["userID"]			= $usuario->userID;
-									$data["createdOn"]		= date_format(date_create(), "Y-m-d H:i:s");
-									$this->Error_Model->insert_app_posme($data);
-								}
+								$data					= null;
+								$data["tagID"]			= $objTag->tagID;
+								$data["notificated"]	= "tasa de cambio";
+								$data["message"]		= $mensaje;
+								$data["isActive"]		= 1;
+								$data["userID"]			= $usuario->userID;
+								$data["createdOn"]		= date_format(date_create(), "Y-m-d H:i:s");
+								$this->Error_Model->insert_app_posme($data);
+							
 							}
 					}
 				}
 			}
 	}
-
 	//mostrar las notificaciones en sistema, de inventarios minimos
 	function fillInventarioMinimo()
 	{
 
-		$tagName		= "NOTIFICAR INVENTARIO MINIMO";
+		$tagName		= "LLENAR NOTI INVENTARIO MINIMO";
 		$objListCompany = $this->Company_Model->get_rows();
 		$objTag			= $this->Tag_Model->get_rowByName($tagName);
 		if ($objListCompany)
@@ -375,39 +370,35 @@ class app_notification extends _BaseController
 						$mensaje			.= "<span class='badge badge-warning'>BODEGA</span>:" . $item->warehouseNumber . " " . $item->warehouseName . "<br/>";
 						$mensaje			.= "<span class='badge badge-warning'>CANTIDAD</span>:" . $item->quantity . ",<span class='badge badge-warning'>CANTIDAD MINIMA</span>:" . $item->quantityMin;
 
-						$objError			= $this->Error_Model->get_rowByMessageUser(0, $mensaje);
+						
 						$data				= null;
 						$errorID 			= 0;
-						if (!$objError) {
-							$data["notificated"] = "inventario minimo";
-							$data["tagID"]		= $objTag->tagID;
-							$data["message"]	= $mensaje;
-							$data["isActive"]	= 1;
-							$data["createdOn"]	= date_format(date_create(), "Y-m-d H:i:s");
-							$errorID			= $this->Error_Model->insert_app_posme($data);
-						} else
-							$errorID 			= $objError->errorID;
+						$data["notificated"] = "inventario minimo";
+						$data["tagID"]		= $objTag->tagID;
+						$data["message"]	= $mensaje;
+						$data["isActive"]	= 1;
+						$data["createdOn"]	= date_format(date_create(), "Y-m-d H:i:s");
+						$errorID			= $this->Error_Model->insert_app_posme($data);
+				
 
 						//tag con correo
 						if ($objTag->sendEmail) {
 							$objListUsuario				= $this->User_Tag_Model->get_rowByPK($objTag->tagID);
 							if ($objListUsuario)
 								foreach ($objListUsuario as $usuario) {
-									$objNotificationUser		= $this->Notification_Model->get_rowsByToMessage($usuario->email, $mensaje);
-									if (!$objNotificationUser) {
-										$data						= null;
-										$data["errorID"]			= $errorID;
-										$data["from"]				= EMAIL_APP;
-										$data["to"]					= $usuario->email;
-										$data["subject"]			= "INVENTARIO MINIMO";
-										$data["message"]			= $mensaje;
-										$data["summary"]			= "INVENTARIO MINIMO";
-										$data["title"]				= "INVENTARIO MINIMO";
-										$data["tagID"]				= $objTag->tagID;
-										$data["createdOn"]			= date_format(date_create(), "Y-m-d H:i:s");
-										$data["isActive"]			= 1;
-										$this->Notification_Model->insert_app_posme($data);
-									}
+									$data						= null;
+									$data["errorID"]			= $errorID;
+									$data["from"]				= EMAIL_APP;
+									$data["to"]					= $usuario->email;
+									$data["subject"]			= "INVENTARIO MINIMO";
+									$data["message"]			= $mensaje;
+									$data["summary"]			= "INVENTARIO MINIMO";
+									$data["title"]				= "INVENTARIO MINIMO";
+									$data["tagID"]				= $objTag->tagID;
+									$data["createdOn"]			= date_format(date_create(), "Y-m-d H:i:s");
+									$data["isActive"]			= 1;
+									$this->Notification_Model->insert_app_posme($data);
+								
 								}
 						}
 
@@ -416,27 +407,25 @@ class app_notification extends _BaseController
 							$objListUsuario				= $this->User_Tag_Model->get_rowByPK($objTag->tagID);
 							if ($objListUsuario)
 								foreach ($objListUsuario as $usuario) {
-									$objErrorUser			= $this->Error_Model->get_rowByMessageUser($usuario->userID, $mensaje);
-									if (!$objErrorUser) {
-										$data					= null;
-										$data["tagID"]			= $objTag->tagID;
-										$data["notificated"]	= "inventario minimo";
-										$data["message"]		= $mensaje;
-										$data["isActive"]		= 1;
-										$data["userID"]			= $usuario->userID;
-										$data["createdOn"]		= date_format(date_create(), "Y-m-d H:i:s");
-										$this->Error_Model->insert_app_posme($data);
-									}
+									
+									$data					= null;
+									$data["tagID"]			= $objTag->tagID;
+									$data["notificated"]	= "inventario minimo";
+									$data["message"]		= $mensaje;
+									$data["isActive"]		= 1;
+									$data["userID"]			= $usuario->userID;
+									$data["createdOn"]		= date_format(date_create(), "Y-m-d H:i:s");
+									$this->Error_Model->insert_app_posme($data);
+								
 								}
 						}
 					}
 				}
 			}
 	}
-
 	function fillInventarioFechaVencimiento()
 	{
-		$tagName		= "FECHA DE VENCIMIENTO";
+		$tagName		= "LLENAR NOTI DE PRODUCTOS VENCIDOS";
 		$objListCompany = $this->Company_Model->get_rows();
 		$objTag			= $this->Tag_Model->get_rowByName($tagName);
 		if ($objListCompany) {
@@ -450,39 +439,35 @@ class app_notification extends _BaseController
 						$mensaje			.= "<span class='badge badge-warning'>CANTIDAD</span>:" . $item->quantity . "----(" . $item->dateExpired . ")<span class='badge badge-warning'>VENCIMIENTO</span>:";
 
 						//insertar error
-						$objError			= $this->Error_Model->get_rowByMessageUser(0, $mensaje);
 						$data				= null;
 						$errorID 			= 0;
-						if (!$objError) {
-							$data["notificated"] = "fecha de vencimiento";
-							$data["tagID"]		= $objTag->tagID;
-							$data["message"]	= $mensaje;
-							$data["isActive"]	= 1;
-							$data["createdOn"]	= date_format(date_create(), "Y-m-d H:i:s");
-							$errorID			= $this->Error_Model->insert_app_posme($data);
-						} else
-							$errorID 			= $objError->errorID;
+						$data["notificated"] = "fecha de vencimiento";
+						$data["tagID"]		= $objTag->tagID;
+						$data["message"]	= $mensaje;
+						$data["isActive"]	= 1;
+						$data["createdOn"]	= date_format(date_create(), "Y-m-d H:i:s");
+						$errorID			= $this->Error_Model->insert_app_posme($data);
+				
 
 						//tag con correo
 						if ($objTag->sendEmail) {
 							$objListUsuario				= $this->User_Tag_Model->get_rowByPK($objTag->tagID);
 							if ($objListUsuario)
 								foreach ($objListUsuario as $usuario) {
-									$objNotificationUser		= $this->Notification_Model->get_rowsByToMessage($usuario->email, $mensaje);
-									if (!$objNotificationUser) {
-										$data						= null;
-										$data["errorID"]			= $errorID;
-										$data["from"]				= EMAIL_APP;
-										$data["to"]					= $usuario->email;
-										$data["subject"]			= "INVENTARIO MINIMO";
-										$data["message"]			= $mensaje;
-										$data["summary"]			= "INVENTARIO MINIMO";
-										$data["title"]				= "INVENTARIO MINIMO";
-										$data["tagID"]				= $objTag->tagID;
-										$data["createdOn"]			= date_format(date_create(), "Y-m-d H:i:s");
-										$data["isActive"]			= 1;
-										$this->Notification_Model->insert_app_posme($data);
-									}
+									
+									$data						= null;
+									$data["errorID"]			= $errorID;
+									$data["from"]				= EMAIL_APP;
+									$data["to"]					= $usuario->email;
+									$data["subject"]			= "INVENTARIO VENCIMIENTO";
+									$data["message"]			= $mensaje;
+									$data["summary"]			= "INVENTARIO VENCIMIENTO";
+									$data["title"]				= "INVENTARIO VENCIMIENTO";
+									$data["tagID"]				= $objTag->tagID;
+									$data["createdOn"]			= date_format(date_create(), "Y-m-d H:i:s");
+									$data["isActive"]			= 1;
+									$this->Notification_Model->insert_app_posme($data);
+								
 								}
 						}
 
@@ -491,18 +476,15 @@ class app_notification extends _BaseController
 							$objListUsuario				= $this->User_Tag_Model->get_rowByPK($objTag->tagID);
 							if ($objListUsuario) {
 								foreach ($objListUsuario as $usuario) {
-
-									$objErrorUser			= $this->Error_Model->get_rowByMessageUser($usuario->userID, $mensaje);
-									if (!$objErrorUser) {
-										$data					= null;
-										$data["tagID"]			= $objTag->tagID;
-										$data["notificated"]	= "fecha de vencimiento";
-										$data["message"]		= $mensaje;
-										$data["isActive"]		= 1;
-										$data["userID"]			= $usuario->userID;
-										$data["createdOn"]		= date_format(date_create(), "Y-m-d H:i:s");
-										$this->Error_Model->insert_app_posme($data);
-									}
+									$data					= null;
+									$data["tagID"]			= $objTag->tagID;
+									$data["notificated"]	= "fecha de vencimiento";
+									$data["message"]		= $mensaje;
+									$data["isActive"]		= 1;
+									$data["userID"]			= $usuario->userID;
+									$data["createdOn"]		= date_format(date_create(), "Y-m-d H:i:s");
+									$this->Error_Model->insert_app_posme($data);
+								
 								}
 							}
 						}
@@ -511,11 +493,10 @@ class app_notification extends _BaseController
 			}
 		}
 	}
-
 	//mostrar las notificaciones en sistema, de cumple de clientes
 	function fillCumpleayo()
 	{
-		$tagName		= "FELIZ CUMPLE";
+		$tagName		= "LLENAR NOTI FELIZ CUMPLE";
 		$objTag			= $this->Tag_Model->get_rowByName($tagName);
 
 		//Para cada empresa
@@ -533,39 +514,16 @@ class app_notification extends _BaseController
 						$mensaje					= "<span class='badge badge-info'>FELIZ CUMPLE</span>:" . $usuario->firstName . " : =>" . $usuario->birthDate . " AVISO DEL PERIODO = " . date_format(date_create(), "Y");
 
 						//Enviar Mensaje por Correo
-						/*
-				$objNotificationUser		= $this->Notification_Model->get_rowsByToMessage($usuario->email,$mensaje);
-				if(!$objNotificationUser){					
-					$data["errorID"]			= NULL;
-					$data["from"]				= EMAIL_APP;
-					$data["to"]					= $usuario->email;
-					$data["subject"]			= "FELIZ CUMPLE";
-					$data["message"]			= $mensaje;
-					$data["summary"]			= "FELIZ CUMPLE";
-					$data["title"]				= "FELIZ CUMPLE";
-					$data["tagID"]				= NULL;
-					$data["createdOn"]			= date_format(date_create(),"Y-m-d H:i:s");
-					$data["isActive"]			= 1;
-					$this->Notification_Model->insert_app_posme($data);
-				}
-				*/
-
 						//Notificaciones al administrador
-						$objError			= $this->Error_Model->get_rowByMessageUser(0, $mensaje);
 						$data				= null;
 						$errorID 			= 0;
-
-						if (!$objError) {
-							$data				= null;
-							$data["notificated"] = "cumple";
-							$data["tagID"]		= $objTag->tagID;
-							$data["message"]	= $mensaje;
-							$data["isActive"]	= 1;
-							$data["createdOn"]	= date_format(date_create(), "Y-m-d H:i:s");
-							$errorID			= $this->Error_Model->insert_app_posme($data);
-						} else
-							$errorID 			= $objError->errorID;
-
+						$data				= null;
+						$data["notificated"] = "cumple";
+						$data["tagID"]		= $objTag->tagID;
+						$data["message"]	= $mensaje;
+						$data["isActive"]	= 1;
+						$data["createdOn"]	= date_format(date_create(), "Y-m-d H:i:s");
+						$errorID			= $this->Error_Model->insert_app_posme($data);
 
 						//Notificacioin a los usuarios
 						if ($objTag->sendNotificationApp) {
@@ -573,28 +531,24 @@ class app_notification extends _BaseController
 							//Lista de Usuarios
 							if ($objListUsuario)
 								foreach ($objListUsuario as $usuario) {
-									$objErrorUser			= $this->Error_Model->get_rowByMessageUser($usuario->userID, $mensaje);
-									if (!$objErrorUser) {
-										$data					= null;
-										$data["tagID"]			= $objTag->tagID;
-										$data["notificated"]	= "FELIZ CUMPLE";
-										$data["message"]		= $mensaje;
-										$data["isActive"]		= 1;
-										$data["userID"]			= $usuario->userID;
-										$data["createdOn"]		= date_format(date_create(), "Y-m-d H:i:s");
-										$this->Error_Model->insert_app_posme($data);
-									}
+									$data					= null;
+									$data["tagID"]			= $objTag->tagID;
+									$data["notificated"]	= "FELIZ CUMPLE";
+									$data["message"]		= $mensaje;
+									$data["isActive"]		= 1;
+									$data["userID"]			= $usuario->userID;
+									$data["createdOn"]		= date_format(date_create(), "Y-m-d H:i:s");
+									$this->Error_Model->insert_app_posme($data);
 								}
 						}
 					}
 			}
 	}
-
 	//mostrar las notificaciones en sistema, de cuotas atrazadas
 	function fillCuotaAtrasada()
 	{
 
-		$tagName		= "NOTIFICAR CUOTA VENCIDA";
+		$tagName		= "LLENAR NOTI CUOTA A TRASADA";
 		$objListCompany = $this->Company_Model->get_rows();
 		$objTag			= $this->Tag_Model->get_rowByName($tagName);
 
@@ -611,42 +565,35 @@ class app_notification extends _BaseController
 						$mensaje			.= "" . $item->documentNumber . " => " . $item->dateApply . " => <span class='badge badge-success'>ATRAZO</span>: " . $objCurrency->simbol . " " . sprintf("%01.2f", $item->remaining);
 
 						//Ver si el mensaje ya existe para el administrador
-						$objError			= $this->Error_Model->get_rowByMessageUser(0, $mensaje);
 						$data				= null;
 						$errorID 			= 0;
-
-						if (!$objError) {
-							$data				= null;
-							$data["notificated"] = "cuota atrasada";
-							$data["tagID"]		= $objTag->tagID;
-							$data["message"]	= $mensaje;
-							$data["isActive"]	= 1;
-							$data["createdOn"]	= date_format(date_create(), "Y-m-d H:i:s");
-							$errorID			= $this->Error_Model->insert_app_posme($data);
-						} else
-							$errorID 			= $objError->errorID;
-
+						$data				= null;
+						$data["notificated"] = "cuota atrasada";
+						$data["tagID"]		= $objTag->tagID;
+						$data["message"]	= $mensaje;
+						$data["isActive"]	= 1;
+						$data["createdOn"]	= date_format(date_create(), "Y-m-d H:i:s");
+						$errorID			= $this->Error_Model->insert_app_posme($data);
+					
 
 						//tag con correo
 						if ($objTag->sendEmail) {
 							$objListUsuario				= $this->User_Tag_Model->get_rowByPK($objTag->tagID);
 							if ($objListUsuario)
 								foreach ($objListUsuario as $usuario) {
-									$objNotificationUser		= $this->Notification_Model->get_rowsByToMessage($usuario->email, $mensaje);
-									if (!$objNotificationUser) {
-										$data						= null;
-										$data["errorID"]			= $errorID;
-										$data["from"]				= EMAIL_APP;
-										$data["to"]					= $usuario->email;
-										$data["subject"]			= "CUOTA ATRASADA";
-										$data["message"]			= $mensaje;
-										$data["summary"]			= "CUOTA ATRASADA";
-										$data["title"]				= "CUOTA ATRASADA";
-										$data["tagID"]				= $objTag->tagID;
-										$data["createdOn"]			= date_format(date_create(), "Y-m-d H:i:s");
-										$data["isActive"]			= 1;
-										$this->Notification_Model->insert_app_posme($data);
-									}
+									$data						= null;
+									$data["errorID"]			= $errorID;
+									$data["from"]				= EMAIL_APP;
+									$data["to"]					= $usuario->email;
+									$data["subject"]			= "CUOTA ATRASADA";
+									$data["message"]			= $mensaje;
+									$data["summary"]			= "CUOTA ATRASADA";
+									$data["title"]				= "CUOTA ATRASADA";
+									$data["tagID"]				= $objTag->tagID;
+									$data["createdOn"]			= date_format(date_create(), "Y-m-d H:i:s");
+									$data["isActive"]			= 1;
+									$this->Notification_Model->insert_app_posme($data);
+								
 								}
 						}
 
@@ -657,30 +604,28 @@ class app_notification extends _BaseController
 							//Lista de Usuarios
 							if ($objListUsuario)
 								foreach ($objListUsuario as $usuario) {
-									$objErrorUser			= $this->Error_Model->get_rowByMessageUser($usuario->userID, $mensaje);
-									if (!$objErrorUser) {
-										$data					= null;
-										$data["tagID"]			= $objTag->tagID;
-										$data["notificated"]	= "cuota atrasada";
-										$data["message"]		= $mensaje;
-										$data["isActive"]		= 1;
-										$data["userID"]			= $usuario->userID;
-										$data["createdOn"]		= date_format(date_create(), "Y-m-d H:i:s");
-										$this->Error_Model->insert_app_posme($data);
-									}
+									
+									$data					= null;
+									$data["tagID"]			= $objTag->tagID;
+									$data["notificated"]	= "cuota atrasada";
+									$data["message"]		= $mensaje;
+									$data["isActive"]		= 1;
+									$data["userID"]			= $usuario->userID;
+									$data["createdOn"]		= date_format(date_create(), "Y-m-d H:i:s");
+									$this->Error_Model->insert_app_posme($data);
+								
 								}
 						}
 					}
 				}
 			}
 	}
-
 	//crear las notificaciones en la base de datos. para revisar cuales son las siguientes visitas
 	function fillNextVisit($companyID = "")
 	{
-		$tagName		= "PROXIMA VISITA";
+		$tagName		= "LLENAR NOTI PROXIMA VISITA";
 		$objTag			= $this->Tag_Model->get_rowByName($tagName);
-		$companyID 		= helper_SegmentsByIndex($this->uri->getSegments(), 1, $companyID);
+		$companyID 		= APP_COMPANY;
 		$objLTM			= $this->Transaction_Master_Model->get_rowByNotification($companyID);
 
 		if ($objLTM) {
@@ -696,17 +641,14 @@ class app_notification extends _BaseController
 					$objListUsuario				= $this->User_Tag_Model->get_rowByPK($objTag->tagID);
 					if ($objListUsuario) {
 						foreach ($objListUsuario as $usuario) {
-							$objErrorUser			= $this->Error_Model->get_rowByMessageUser($usuario->userID, $mensaje);
-							if (!$objErrorUser) {
-								$data					= null;
-								$data["tagID"]			= $objTag->tagID;
-								$data["notificated"]	= "proxima visita";
-								$data["message"]		= $mensaje;
-								$data["isActive"]		= 1;
-								$data["userID"]			= $usuario->userID;
-								$data["createdOn"]		= date_format(date_create(), "Y-m-d H:i:s");
-								$erroID 				= $this->Error_Model->insert_app_posme($data);
-							}
+							$data					= null;
+							$data["tagID"]			= $objTag->tagID;
+							$data["notificated"]	= "proxima visita";
+							$data["message"]		= $mensaje;
+							$data["isActive"]		= 1;
+							$data["userID"]			= $usuario->userID;
+							$data["createdOn"]		= date_format(date_create(), "Y-m-d H:i:s");
+							$erroID 				= $this->Error_Model->insert_app_posme($data);
 						}
 					}
 				}
@@ -722,7 +664,95 @@ class app_notification extends _BaseController
 		return view('core_template/close'); //--finview-r
 
 	}
+	function getNotificationShowInApp($userName)
+	{
+		if ($userName !== null) {
+			$queryResult = $this->Customer_Frecuency_Actuations_Model->get_rowExpiredRegisters($userName);
+			return $this->response->setJson([
+				"username" => $userName,
+				"error" => false,
+				"message" => "success",
+				"data" => $queryResult
+			]);
+		} else {
+			return $this->response->setJson([
+				"error" => true,
+				"message" => "Username is required",
+				"username" => $userName
+			]);
+		}
+	}
+	function sendEmailItemExpired()
+	{
+		
+		$emailProperty  = $this->core_web_parameter->getParameter("CORE_PROPIETARY_EMAIL", APP_COMPANY);
+		$emailProperty  = $emailProperty->value;
+		$objCompany  	= $this->Company_Model->get_rowByPK(APP_COMPANY);
 
+		$objNotificar = $this->Item_Model->get_rowByItemExpiredAndDayParameter(APP_COMPANY,"9,10");
+		if ($objNotificar)
+		{
+			$table 	= "";
+			$table	= $table."<table style='width:100%'>";
+			
+			$table	= $table."<thead>";
+			$table	= $table."<tr>";
+				$table	= $table."<th>";
+					$table	= $table."Codigo";
+				$table	= $table."</th>";
+				$table	= $table."<th>";
+					$table	= $table."Nombre";
+				$table	= $table."</th>";
+				$table	= $table."<th>";
+					$table	= $table."Bodega";
+				$table	= $table."</th>";
+				$table	= $table."<th>";
+					$table	= $table."Cantidad";
+				$table	= $table."</th>";
+				$table	= $table."<th>";
+					$table	= $table."Expiracion";
+				$table	= $table."</th>";
+			$table	= $table."</tr>";
+			$table	= $table."<thead>";
+				
+			$table	= $table."<tbody>";
+			foreach ($objNotificar as $i) 
+			{
+				$table	= $table."<tr>";
+					$table	= $table."<td>";
+						$table	= $table."".$i->itemNumber.""."";
+					$table	= $table."</td>";
+					$table	= $table."<td>";
+						$table	= $table."".$i->name.""."";
+					$table	= $table."</td>";
+					$table	= $table."<td>";
+						$table	= $table."".$i->warehouseName.""."";
+					$table	= $table."</td>";
+					$table	= $table."<td>";
+						$table	= $table."".$i->quantity.""."";
+					$table	= $table."</td>";
+					$table	= $table."<td>";
+						$table	= $table."".$i->dateExpired.""."";
+					$table	= $table."</td>";
+				$table	= $table."</tr>";
+			}
+			$table	= $table."</tbody>";
+			$table	= $table."</table>";
+			
+			$subject 				= "Productos por vencer";
+			$params_["objCompany"]  = $objCompany;			
+			$params_["mensaje"]  	= $table;				
+			$body  					= /*--inicio view*/ view('core_template/email_notificacion', $params_); //--finview
+			
+			$this->email->setFrom(EMAIL_APP);
+			$this->email->setTo( $emailProperty /*"www.witman@gmail.com"*/ );
+			$this->email->setSubject($subject);
+			$this->email->setMessage($body);
+			$resultSend01 = $this->email->send();
+			
+		}
+		echo "SUCCESS";
+	}
 	//mandar las notificacioneds que estan guardadas, mandarlas por correo
 	function sendEmail()
 	{
@@ -746,9 +776,77 @@ class app_notification extends _BaseController
 
 		echo "SUCCESS";
 	}
+	function sendWhatsappPosMeSendMessage()
+	{
+		//Cargar Libreria
+		//Obtener lista de email
+		$objListNotification = $this->Notification_Model->get_rowsWhatsappPosMeSendMessage(20);
+		if ($objListNotification)
+		{
+			foreach ($objListNotification as $i) 
+			{
 
 
+				/////////////////////////////////////////////
+				/////////////////////////////////////////////
+				/////////////////////////////////////////////
+				//Enviar Whatsapp
+				/////////////////////////////////////////////
+				/////////////////////////////////////////////
+				/////////////////////////////////////////////
+				if ($this->core_web_whatsap->validSendMessage(APP_COMPANY)) 
+				{
+					$this->core_web_whatsap->sendMessageUltramsg(APP_COMPANY,"Hola " . $i->to . " " . $i->message,$i->phoneTo);
+					$data["sendOn"]			= date_format(date_create(), "Y-m-d H:i:s");
+					$data["sendWhatsappOn"]	= date_format(date_create(), "Y-m-d H:i:s");
+					$this->Notification_Model->update_app_posme($i->notificationID, $data);
+				}
+			}
+		}
+		echo "SUCCESS";
+	}
+	function sendWhatsappPosMeCalendar()
+	{
 
+		//Obtener lista de email
+		$objListNotification = $this->Notification_Model->get_rowsWhatsappPosMeCalendar(20);
+		if ($objListNotification)
+		{
+			foreach ($objListNotification as $i) 
+			{
+
+
+				/////////////////////////////////////////////
+				/////////////////////////////////////////////
+				/////////////////////////////////////////////
+				//Enviar Whatsapp
+				/////////////////////////////////////////////
+				/////////////////////////////////////////////
+				/////////////////////////////////////////////
+				if ($this->core_web_whatsap->validSendMessage(APP_COMPANY)) {
+					$this->core_web_whatsap->sendMessageUltramsg(APP_COMPANY,"Hola mi nombre es:" . $i->title . " agende una cita con el objetivo " . $i->message . " (" . $i->phoneFrom . " " . $i->from . ")");
+					$data["sendOn"]			= date_format(date_create(), "Y-m-d H:i:s");
+					$data["sendWhatsappOn"]	= date_format(date_create(), "Y-m-d H:i:s");
+					$this->Notification_Model->update_app_posme($i->notificationID, $data);
+				}
+			}
+		}
+		echo "SUCCESS";
+	}
+	
+	/********************************************/
+	/********************************************/
+	/********************************************/
+	///FIN CORE SISTEMA
+	/********************************************/
+	/********************************************/
+	/********************************************/
+	
+	
+	
+	
+	
+	
 	//mandar reporte de caja
 	function file_job_send_report_daly_reprote_de_caja($companyID = "")
 	{
@@ -806,35 +904,35 @@ class app_notification extends _BaseController
 		//////////////////////////////////////////////////
 		//////////////////////////////////////////////////		
 		$authorization		= 0;
-		$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?);";
+		$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?,?);";
 		$objData		= $this->Bd_Model->executeRender(
 			$query,
-			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaNow, $fechaBefore, 0]
+			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaNow, $fechaBefore, 0,0]
 		);
 		//Get Datos de Facturacion				
-		$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?);";
+		$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?);";
 		$objDataSales	= $this->Bd_Model->executeRender(
 			$query,
-			[APP_COMPANY, $tocken, APP_USERADMIN, $fechaNow, $fechaBefore, 0, "-1", 0]
+			[APP_COMPANY, $tocken, APP_USERADMIN, $fechaNow, $fechaBefore, 0, "-1", 0,0]
 		);
 
-		$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?);";
+		$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?,?);";
 		$objDataSalesCredito	= $this->Bd_Model->executeRender(
 			$query,
-			[APP_COMPANY, $tocken, APP_USERADMIN, $fechaNow, $fechaBefore, 0, "-1"]
+			[APP_COMPANY, $tocken, APP_USERADMIN, $fechaNow, $fechaBefore, 0, "-1",0]
 		);
 
 		//Get Datos de Entrada de Efectivo y Salida				
-		$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?);";
+		$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?,?);";
 		$objDataCash	= $this->Bd_Model->executeRender(
 			$query,
-			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaNow, $fechaBefore, 0, "-1"]
+			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaNow, $fechaBefore, 0, "-1",0]
 		);
 
-		$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?);";
+		$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?,?);";
 		$objDataCashOut	= $this->Bd_Model->executeRender(
 			$query,
-			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaNow, $fechaBefore, 0, "-1"]
+			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaNow, $fechaBefore, 0, "-1",0]
 		);
 
 
@@ -974,7 +1072,6 @@ class app_notification extends _BaseController
 		return view('core_template/close'); //--finview-r
 
 	}
-
 	//mandar reporte de detalle de ventas
 	function file_job_send_report_daly_reprote_de_detalle_de_ventas($companyID = "")
 	{
@@ -1113,7 +1210,6 @@ class app_notification extends _BaseController
 		return view('core_template/close'); //--finview-r
 
 	}
-
 	//mandar reporte de transacciones regitradas
 	function file_job_send_report_daly_reprote_de_tran_registradas($companyID = "")
 	{
@@ -1238,7 +1334,6 @@ class app_notification extends _BaseController
 		return view('core_template/close'); //--finview-r
 
 	}
-
 	//mandar reporte de compras
 	function file_job_send_report_daly_reprote_de_compras($companyID = "")
 	{
@@ -1362,7 +1457,6 @@ class app_notification extends _BaseController
 		return view('core_template/close'); //--finview-r
 
 	}
-
 	//mandar informe de moniotores de caja
 	function file_monitory_cash_box($companyID = "")
 	{
@@ -1399,36 +1493,36 @@ class app_notification extends _BaseController
 		//////////////////////////////////////////////////
 		//////////////////////////////////////////////////		
 		$authorization		= 0;
-		$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?);";
+		$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?,?);";
 		$objData		= $this->Bd_Model->executeRender(
 			$query,
-			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaStart, $fechaEnd, 0]
+			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaStart, $fechaEnd, 0,0]
 		);
 		//Get Datos de Facturacion				
-		$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?);";
+		$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?);";
 		$objDataSales	= $this->Bd_Model->executeRender(
 			$query,
-			[APP_COMPANY, $tocken, APP_USERADMIN, $fechaStart, $fechaEnd, 0, "-1", 0]
+			[APP_COMPANY, $tocken, APP_USERADMIN, $fechaStart, $fechaEnd, 0, "-1", 0,0]
 		);
 
-		$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?);";
+		$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?,?);";
 		$objDataSalesCredito	= $this->Bd_Model->executeRender(
 			$query,
-			[$companyID, $tocken, APP_USERADMIN, $fechaStart, $fechaEnd, 0, "-1"]
+			[$companyID, $tocken, APP_USERADMIN, $fechaStart, $fechaEnd, 0, "-1",0]
 		);
 
 
 		//Get Datos de Entrada de Efectivo y Salida				
-		$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?);";
+		$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?,?);";
 		$objDataCash	= $this->Bd_Model->executeRender(
 			$query,
-			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaStart, $fechaEnd, 0, "-1"]
+			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaStart, $fechaEnd, 0, "-1",0]
 		);
 
-		$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?);";
+		$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?,?);";
 		$objDataCashOut	= $this->Bd_Model->executeRender(
 			$query,
-			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaStart, $fechaEnd, 0, "-1"]
+			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaStart, $fechaEnd, 0, "-1",0]
 		);
 
 
@@ -1556,7 +1650,6 @@ class app_notification extends _BaseController
 		return view('core_template/close'); //--finview-r
 
 	}
-
 	function file_job_send_report_daly_share_sumary_80mm_general()
 	{
 		try {
@@ -1725,7 +1818,6 @@ class app_notification extends _BaseController
 			exit($ex->getMessage());
 		}
 	}
-
 	//mandar informe de moniotores de caja
 	function file_next_date($companyID = "")
 	{
@@ -1752,8 +1844,6 @@ class app_notification extends _BaseController
 		return view('core_template/close'); //--finview-r
 
 	}
-
-
 	//job o proceso que me permite cancelar las facturas con balances 0 a 0.2
 	function file_job_process_customer_credit_document_to_cancel($companyID = "")
 	{
@@ -1798,169 +1888,20 @@ class app_notification extends _BaseController
 		return view('core_template/close'); //--finview-r
 
 	}
-
-	function sendEmailItemExpired()
-	{
-		
-		$emailProperty  = $this->core_web_parameter->getParameter("CORE_PROPIETARY_EMAIL", APP_COMPANY);
-		$emailProperty  = $emailProperty->value;
-		$objCompany  	= $this->Company_Model->get_rowByPK(APP_COMPANY);
-
-		$objNotificar = $this->Item_Model->get_rowByItemExpiredAndDayParameter(APP_COMPANY,"9,10");
-		if ($objNotificar)
-		{
-			$table 	= "";
-			$table	= $table."<table style='width:100%'>";
-			
-			$table	= $table."<thead>";
-			$table	= $table."<tr>";
-				$table	= $table."<th>";
-					$table	= $table."Codigo";
-				$table	= $table."</th>";
-				$table	= $table."<th>";
-					$table	= $table."Nombre";
-				$table	= $table."</th>";
-				$table	= $table."<th>";
-					$table	= $table."Bodega";
-				$table	= $table."</th>";
-				$table	= $table."<th>";
-					$table	= $table."Cantidad";
-				$table	= $table."</th>";
-				$table	= $table."<th>";
-					$table	= $table."Expiracion";
-				$table	= $table."</th>";
-			$table	= $table."</tr>";
-			$table	= $table."<thead>";
-				
-			$table	= $table."<tbody>";
-			foreach ($objNotificar as $i) 
-			{
-				$table	= $table."<tr>";
-					$table	= $table."<td>";
-						$table	= $table."".$i->itemNumber.""."";
-					$table	= $table."</td>";
-					$table	= $table."<td>";
-						$table	= $table."".$i->name.""."";
-					$table	= $table."</td>";
-					$table	= $table."<td>";
-						$table	= $table."".$i->warehouseName.""."";
-					$table	= $table."</td>";
-					$table	= $table."<td>";
-						$table	= $table."".$i->quantity.""."";
-					$table	= $table."</td>";
-					$table	= $table."<td>";
-						$table	= $table."".$i->dateExpired.""."";
-					$table	= $table."</td>";
-				$table	= $table."</tr>";
-			}
-			$table	= $table."</tbody>";
-			$table	= $table."</table>";
-			
-			$subject 				= "Productos por vencer";
-			$params_["objCompany"]  = $objCompany;			
-			$params_["mensaje"]  	= $table;				
-			$body  					= /*--inicio view*/ view('core_template/email_notificacion', $params_); //--finview
-			
-			$this->email->setFrom(EMAIL_APP);
-			$this->email->setTo( $emailProperty /*"www.witman@gmail.com"*/ );
-			$this->email->setSubject($subject);
-			$this->email->setMessage($body);
-			$resultSend01 = $this->email->send();
-			
-		}
-		echo "SUCCESS";
-	}
-
-	function getNotificationShowInApp($userName)
-	{
-		if ($userName !== null) {
-			$queryResult = $this->Customer_Frecuency_Actuations_Model->get_rowExpiredRegisters($userName);
-			return $this->response->setJson([
-				"username" => $userName,
-				"error" => false,
-				"message" => "success",
-				"data" => $queryResult
-			]);
-		} else {
-			return $this->response->setJson([
-				"error" => true,
-				"message" => "Username is required",
-				"username" => $userName
-			]);
-		}
-	}
-
-
-
-
-	function sendWhatsappPosMeSendMessage()
-	{
-		//Cargar Libreria
-
-		//Obtener lista de email
-		$objListNotification = $this->Notification_Model->get_rowsWhatsappPosMeSendMessage(20);
-		if ($objListNotification)
-			foreach ($objListNotification as $i) {
-
-
-				/////////////////////////////////////////////
-				/////////////////////////////////////////////
-				/////////////////////////////////////////////
-				//Enviar Whatsapp
-				/////////////////////////////////////////////
-				/////////////////////////////////////////////
-				/////////////////////////////////////////////
-				if ($this->core_web_whatsap->validSendMessage(APP_COMPANY)) {
-					$this->core_web_whatsap->sendMessageUltramsg(
-						APP_COMPANY,
-						"Hola " . $i->to . " " . $i->message,
-						$i->phoneTo
-					);
-
-
-					$data["sendOn"]			= date_format(date_create(), "Y-m-d H:i:s");
-					$data["sendWhatsappOn"]	= date_format(date_create(), "Y-m-d H:i:s");
-					$this->Notification_Model->update_app_posme($i->notificationID, $data);
-				}
-			}
-
-		echo "SUCCESS";
-	}
-
-	function sendWhatsappPosMeCalendar()
-	{
-		//Cargar Libreria
-
-		//Obtener lista de email
-		$objListNotification = $this->Notification_Model->get_rowsWhatsappPosMeCalendar(20);
-		if ($objListNotification)
-			foreach ($objListNotification as $i) {
-
-
-				/////////////////////////////////////////////
-				/////////////////////////////////////////////
-				/////////////////////////////////////////////
-				//Enviar Whatsapp
-				/////////////////////////////////////////////
-				/////////////////////////////////////////////
-				/////////////////////////////////////////////
-				if ($this->core_web_whatsap->validSendMessage(APP_COMPANY)) {
-					$this->core_web_whatsap->sendMessageUltramsg(
-						APP_COMPANY,
-						"Hola mi nombre es:" . $i->title . " agende una cita con el objetivo " . $i->message . " (" . $i->phoneFrom . " " . $i->from . ")"
-					);
-
-
-					$data["sendOn"]			= date_format(date_create(), "Y-m-d H:i:s");
-					$data["sendWhatsappOn"]	= date_format(date_create(), "Y-m-d H:i:s");
-					$this->Notification_Model->update_app_posme($i->notificationID, $data);
-				}
-			}
-
-		echo "SUCCESS";
-	}
-
-
+	
+	
+	
+	
+	
+	/********************************************/
+	/********************************************/
+	/********************************************/
+	///NOTIFICACIONES PERSONALIZADAS 
+	/********************************************/
+	/********************************************/
+	/********************************************/
+	
+	
 	function sendWhatsappGlobalProLaptopMenorA14400Frecuency7Meses()
 	{
 
@@ -1977,7 +1918,6 @@ class app_notification extends _BaseController
 
 		echo "SUCCESS";
 	}
-
 	function sendWhatsappGlobalProLaptopMayoresA14400Frecuency11Meses()
 	{
 
@@ -1994,7 +1934,6 @@ class app_notification extends _BaseController
 
 		echo "SUCCESS";
 	}
-
 	function sendWhatsappGlobalProCumpleAnnos()
 	{
 
@@ -2011,9 +1950,6 @@ class app_notification extends _BaseController
 
 		echo "SUCCESS";
 	}
-
-
-
 	function sendEmailGlamCustCitas()
 	{
 		log_message("error", print_r("sendEmailGlamCustCitas", true));
@@ -2078,4 +2014,6 @@ class app_notification extends _BaseController
 
 		echo "SUCCESS";
 	}
+
+
 }

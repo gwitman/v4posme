@@ -37,7 +37,7 @@ class Tag_Model extends Model  {
 		$sql = "";
 		$sql = sprintf("select tagID,name,description,sendEmail,sendNotificationApp,sendSMS,isActive");
 		$sql = $sql.sprintf(" from tb_tag n");
-		$sql = $sql.sprintf(" where n.isActive= 1");		
+		$sql = $sql.sprintf(" where n.isActive= 1 order by n.name desc ");		
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();

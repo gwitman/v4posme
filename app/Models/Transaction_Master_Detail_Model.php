@@ -425,6 +425,59 @@ class Transaction_Master_Detail_Model extends Model  {
    }
    
    
+   function get_rowByShareID($companyID,$transactionMasterID)
+	{
+		$db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+	   		
+		$sql = "";
+		$sql = sprintf("
+				select 
+					tm.transactionNumber,
+					cus.customerNumber,
+					nat.firstName,		
+					fac.transactionNumber as FacturaCancelada,
+					fac.createdOn,
+					i.`name` as itemName,
+					ul.quantity ,
+					ul.unitaryPrice ,
+					ifnull(ul.tax1,0) as tax1,
+					ifnull(ul.tax2,0) as tax2,
+					ul.amount 
+				from 
+					tb_transaction_master tm 
+					inner join tb_workflow_stage ws on 
+						ws.workflowStageID = tm.statusID 
+					inner join tb_transaction_master_detail tmd on 
+						tmd.transactionMasterID = tm.transactionMasterID 
+					inner join tb_customer_credit_document ccd on 
+						ccd.documentNumber = tmd.reference1 
+					inner join tb_workflow_stage wss on 
+						wss.workflowStageID = ccd.statusID 
+					inner join tb_transaction_master fac on 
+						fac.transactionNumber = ccd.documentNumber 
+					inner join tb_transaction_master_detail ul on 
+						ul.transactionMasterID = fac.transactionMasterID 
+					inner join tb_item i on 
+						i.itemID = ul.componentItemID 
+					inner join tb_naturales nat on 
+						nat.entityID = ccd.entityID 
+					inner join tb_customer cus on 	
+						nat.entityID = cus.entityID 
+				where 
+					tm.isActive = 1 and 
+					tm.transactionID = 23 and 
+					tm.statusID in ( 80 /*aplicado*/ )  and 
+					ccd.statusID in ( 82 /*cancelado*/ )   and 
+					tm.transactionMasterID = $transactionMasterID 	 ;  
+				");
+	
+	
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+   
+   
     function GlobalPro_get_rowBySalesByEmployeerMonthOnly_Sales($companyID,$dateFirst,$dateLast)
    {
 	   
@@ -558,6 +611,57 @@ class Transaction_Master_Detail_Model extends Model  {
 					t.statusID = ws.workflowStageID
 				left join tb_naturales nat on 
 					nat.entityID = t.entityIDSecondary 
+			where 
+				t.transactionID in (19,20) and   
+				t.isActive = 1   
+				and 
+				(
+					(
+						t.transactionID = 19 and 
+						t.statusID in ( 67 /*aplicada*/,68 /*anulada*/  )
+					)
+					or 
+					(
+						t.transactionID = 20 
+					)
+				) and 
+				t.companyID = 2  and 
+				t.transactionOn between '$dateFirst' and '$dateLast' 
+			group by  
+				1
+		");
+	
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+			
+   }
+   
+   function GlobalPro_get_MonthOnly_SalesByBranch($companyID,$dateFirst,$dateLast)
+   {
+	   
+	    $db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+	   		
+		$sql = "";
+		$sql = sprintf("
+		 select	
+				b.name as firtsName,
+				sum(
+					case 
+						when t.transactionID = 19 then 
+							t.subAmount
+						else 
+							(t.subAmount * -1)
+					end 
+				) as monto 
+			from 
+				tb_transaction_master t 
+				inner join tb_workflow_stage ws on 
+					t.statusID = ws.workflowStageID
+				left join tb_naturales nat on 
+					nat.entityID = t.entityIDSecondary 
+				inner join tb_branch b on 
+					b.branchID = t.branchID 
 			where 
 				t.transactionID in (19,20) and   
 				t.isActive = 1   

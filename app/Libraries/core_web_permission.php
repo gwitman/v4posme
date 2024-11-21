@@ -386,19 +386,19 @@ class core_web_permission {
 		
 		
 		//Validar cantidad maxima de usuario
-		if($objParameterMAX_USER->value > 0 ){			
-			$count = $User_Model->getCount($companyID);		
-			if(($count + 1) > $objParameterMAX_USER->value ){
-				
-				throw new \Exception('
-				<p>A superado el numero maximo de usuario.</p>
-				<p>telefono de contacto: 8712-5827 para activar licencia</p>
-				<p>realizar el pago de la licencia  aqui &ograve; </p>
-				<p>realizar la transferencia a la siguiente cuenta BAC Dolares: 366-577-484 </p>
-				
-				');
-			}
-		}
+		//-wg-if($objParameterMAX_USER->value > 0 ){			
+		//-wg-	$count = $User_Model->getCount($companyID);		
+		//-wg-	if(($count + 1) > $objParameterMAX_USER->value ){
+		//-wg-		
+		//-wg-		throw new \Exception('
+		//-wg-		<p>A superado el numero maximo de usuario.</p>
+		//-wg-		<p>telefono de contacto: 8712-5827 para activar licencia</p>
+		//-wg-		<p>realizar el pago de la licencia  aqui &ograve; </p>
+		//-wg-		<p>realizar la transferencia a la siguiente cuenta BAC Dolares: 366-577-484 </p>
+		//-wg-		
+		//-wg-		');
+		//-wg-	}
+		//-wg-}
 
 		//Validar Fecha de expiracion de la licencia
 		$fechaNow  = \DateTime::createFromFormat('Y-m-d',date("Y-m-d"));  						

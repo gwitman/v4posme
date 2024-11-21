@@ -78,7 +78,7 @@
 														
 														<div class="form-group">
 															<label class="col-lg-2 control-label" for="selectFilter">Tag</label>
-															<div class="col-lg-4">
+															<div class="col-lg-8">
 																<select name="txtTagID" id="txtTagID" class="select2">
 																		<option value="0">Seleccionar</option>
 																		<?php

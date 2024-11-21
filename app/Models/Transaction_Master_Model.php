@@ -120,7 +120,7 @@ class Transaction_Master_Model extends Model  {
 		$sql = $sql.sprintf(" 		tm.isActive= 1 and ");		
 		$sql = $sql.sprintf(" 		tm.nextVisit is not null and ");	
 		$sql = $sql.sprintf(" 		tm.nextVisit != '0000-00-00' and ");	
-		$sql = $sql.sprintf(" 		tm.notificationID is null ");	
+		$sql = $sql.sprintf(" 		tm.notificationID is null  ");	
 
 		
 		//Ejecutar Consulta

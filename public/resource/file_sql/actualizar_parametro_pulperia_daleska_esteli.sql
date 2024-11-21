@@ -4,7 +4,12 @@ use dbtqgjhq6kh5dq;
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 
-
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_box_share/viewRegisterFormatoPaginaTicketInvoiceCancel" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "BOX_SHARE_URL_PRINTER_INVOICE_CANCEL";## Imprmir reporte de facturas canceladas con el abono
+	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "app_cxc_report/customer_detail_invoice_printer" 
@@ -1606,7 +1611,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Pulperia Mitalecita' , address = 'Frente a finca la Joya' ,
-	flavorID = 562 /*usuarioID*/,type='default'
+	flavorID = 562 /*usuarioID*/,type='daleska'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

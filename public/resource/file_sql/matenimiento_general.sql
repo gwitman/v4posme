@@ -85,3 +85,17 @@ from
 	tb_item i 
 where 
 	i.itemID not in (select u.itemID from tb_price u where u.typePriceID = 478 );
+	
+	
+	
+	
+
+
+#INSERTAR bancos
+INSERT INTO `tb_bank` (
+	`companyID`, `name`, `accountID`, 
+	`currencyID`, `balance`, `isActive`
+) 
+VALUES (
+	2, 'BAC.', 0, 0, 0.00000000, 1
+);

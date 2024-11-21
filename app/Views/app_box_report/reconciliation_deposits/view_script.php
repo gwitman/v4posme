@@ -18,7 +18,7 @@
 							
 							if(!(employeeNumber == ""  )){
 								fnWaitOpen();
-								window.location	= "<?php echo base_url(); ?>/app_cxc_report/collection_manager/viewReport/true/employeeNumber/"+
+								window.location	= "<?php echo base_url(); ?>/app_box_report/reconciliation_deposits/viewReport/true/employeeNumber/"+
 								employeeNumber+"/startOn/"+startOn+"/endOn/"+endOn+
 								"/hourStart/"+hourStart+"/hourEnd/"+hourEnd;
 							}

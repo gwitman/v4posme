@@ -73,9 +73,11 @@ class app_box_share extends _BaseController {
 			$targetCurrency						= $this->core_web_currency->getCurrencyExternal($companyID);			
 			
 			$urlPrinterDocument					= $this->core_web_parameter->getParameter("BOX_SHARE_URL_PRINTER",$companyID);
+			$urlPrinterDocumentInvoiceCancel	= $this->core_web_parameter->getParameter("BOX_SHARE_URL_PRINTER_INVOICE_CANCEL",$companyID);
 			
 			//Tipo de Factura
 			$dataView["urlPrinterDocument"]						= $urlPrinterDocument->value;
+			$dataView["urlPrinterDocumentInvoiceCancel"]		= $urlPrinterDocumentInvoiceCancel->value;
 			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID,$transactionID,$transactionMasterID);
@@ -1707,7 +1709,191 @@ class app_box_share extends _BaseController {
 		}
 	}
 	
+	function viewRegisterFormatoA4Ebenezer(){
+		
+		try{ 
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+						$permited = false;
+						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						
+						if(!$permited)
+						throw new \Exception(NOT_ACCESS_CONTROL);
+						
+							
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						if ($resultPermission 	== PERMISSION_NONE)
+						throw new \Exception(NOT_ALL_EDIT);		
+			}	 
+			
+			
+			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri			
+			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri				
+			$saldos						= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"saldos");//--finuri	
+			$companyID 					= $dataSession["user"]->companyID;		
+			$branchID 					= $dataSession["user"]->branchID;		
+			$roleID 					= $dataSession["role"]->roleID;		
+			$employeeID					= $dataSession["user"]->employeeID;		
+			
+			//Get Component
+			$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			//Get Logo
+			$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			//Get Company
+			$objCompany 			= $this->Company_Model->get_rowByPK($companyID);	
+			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);			
+			$objParameterRuc		= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);		
+			//Get Documento				
+			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID,$transactionID,$transactionMasterID);
+			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
+			$datView["objTC"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$datView["objTM"]->transactionCausalID);
+			$datView["objProvider"]					= $this->Provider_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
+			$datView["objLegal"]					= $datView["objProvider"] != NULL ? $this->Legal_Model->get_rowByPK($companyID,$datView["objProvider"]->branchID,$datView["objProvider"]->entityID) : NULL;
+			$datView["objWarehouse"]				= $this->Warehouse_Model->get_rowByPK($companyID,0);
+			$datView["objTipo"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$datView["objTM"]->transactionID,$datView["objTM"]->transactionCausalID);
+			
+			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
+			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
+			$datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
+			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_share","statusID",$datView["objTM"]->statusID,$companyID,$datView["objTM"]->branchID,APP_ROL_SUPERADMIN);
+			$datView["objNaturalEmployer"]			= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$employeeID);
+			$datView["objTelefonoEmployer"]			= $this->Entity_Phone_Model->get_rowByEntity($companyID,$datView["objCustumer"]->branchID,$employeeID);
+			
+			
+			
+			//Inicializar Detalle
+			$saldoInicial = array_sum(array_column($datView["objTMD"], 'reference2'));
+			$saldoFinal   = array_sum(array_column($datView["objTMD"], 'reference4'));
+			$saldoAbonado = array_sum(array_column($datView["objTMD"], 'amount'));
+			
+			
+			
+			/*Calculo de saldos generales*/
+			$saldoInicialGeneral = round($datView["objTMI"]->reference1,0);
+			$saldoFinalGeneral   = round($datView["objTMI"]->reference2,0);
+			
+			$saldoInicial 	= $saldos == "Individuales"? $saldoInicial: $saldoInicialGeneral ;
+			$saldoFinal 	= $saldos == "Individuales"? $saldoFinal: $saldoFinalGeneral ;
+			
+			$datView["objPropertySaldoInicial"]	= $saldoInicial;
+			$datView["objPropertySaldoFincal"] 	= $saldoFinal;
+			$datView["objPropertySaldoAbonos"]  = array();
+			$datView["objPropertyAbonosTotal"]  = $saldoAbonado;
+				
+			$detalleShare= array();
+			if($saldos != "Basico"){
+				$row = array("SALDO INICIAL", '', sprintf('%.2f', $saldoInicial) );
+				array_push($datView["objPropertySaldoAbonos"],$row);
+				
+				foreach($datView["objTMD"] as $detail_)
+				{
+					$row = array("ABONO", '', sprintf('%.2f',round($detail_->amount,2)));
+					array_push($datView["objPropertySaldoAbonos"],$row);	
+				
+				}
+				
+				$row = array("SALDO FINAL", '', sprintf('%.2f', $saldoFinal) );
+				array_push($datView["objPropertySaldoAbonos"],$row);
+			}
+			if ($saldos == "Basico")
+			{
+				$row = array("SALDO INICIAL", '', sprintf('%.2f', $saldoInicial) );
+				array_push($datView["objPropertySaldoAbonos"],$row);
+				
+				$row = array("ABONO", '', sprintf('%.2f', $saldoAbonado) );
+				array_push($datView["objPropertySaldoAbonos"],$row);	
+				
+				$row = array("SALDO FINAL", '', sprintf('%.2f', $saldoFinal) );
+				array_push($datView["objPropertySaldoAbonos"],$row);
+				
+			}
+			
+			
+
+			//Generar Reporte
+			$html =  helper_reporteA4mmTransactionMasterShareEbenezer(
+				"ABONO DE CAJA",
+				$objCompany,
+				$objParameter,
+				$datView["objTM"],
+				$datView["objNatural"],
+				$datView["objCustumer"],
+				$datView["tipoCambio"],
+				$datView["objCurrency"],
+				$datView["objTMI"],
+				$datView["objTMD"],
+				$objParameterTelefono,
+				$datView["objNaturalEmployer"], /*vendedor*/
+				$datView["objTelefonoEmployer"], /*telefono cliente*/
+				$datView["objStage"][0]->display, /*estado*/
+				$datView["objTC"]->name, /*causal*/
+				$objParameterRuc,
+				$objParameterRuc->value,
+				$datView["objPropertySaldoInicial"],
+				$datView["objPropertySaldoFincal"],
+				$datView["objPropertySaldoAbonos"],
+				$datView["objPropertyAbonosTotal"]
+			); 
+			
+			
+			$this->dompdf->loadHTML($html);
+			$this->dompdf->render();
+			
+			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+			
+			if($objParameterShowLinkDownload == "true")
+			{
+				$fileNamePut = "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
+				$path        = "./resource/file_company/company_".$companyID."/component_64/component_item_".$transactionMasterID."/".$fileNamePut;
+				
+				file_put_contents(
+					$path , 
+					$this->dompdf->output()
+				);								
+				
+				chmod($path, 644);
+				
+				echo "<a 
+					href='".base_url()."/resource/file_company/company_".$companyID."/component_64/component_item_".$transactionMasterID."/".
+					$fileNamePut."'>download compra</a>
+				"; 				
+			
+			}
+			else{			
+				//visualizar
+				$this->dompdf->stream("file.pdf ", ['Attachment' =>  true ]);
+			}
+			
+			
+		}
+		catch(\Exception $ex)
+		{
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;
+		}
+	}
 	
+	
+
 	
 	function viewRegisterFormatoPaginaNormal(){
 		try{ 
@@ -2159,6 +2345,112 @@ class app_box_share extends _BaseController {
 				"",
 				""
 			);
+			$this->dompdf->loadHTML($html);
+			
+			//1cm = 29.34666puntos
+			//a4: 210 ancho x 297
+			//a4: 21cm x 29.7cm
+			//a4: 595.28puntos x 841.59puntos
+			
+			//$this->dompdf->setPaper('A4','portrait');
+			//$this->dompdf->setPaper(array(0,0,234.76,6000));
+			
+			$this->dompdf->render();
+			
+			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+			$nameFileDownload				= date("YmdHis").".pdf";
+			
+			//visualizar
+			$this->response->setContentType('application/pdf');
+			$objParameterShowLinkDownload 	= $objParameterShowLinkDownload == "false" ? true : false;
+			$this->dompdf->stream($nameFileDownload	, ['Attachment' => $objParameterShowLinkDownload]);
+			
+			//descargar
+			//$this->dompdf->stream();
+			
+		}
+		catch(\Exception $ex){
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+		
+		    $data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+		    
+		    $this->email->setFrom(EMAIL_APP);
+		    $this->email->setTo(EMAIL_APP_COPY);
+		    $this->email->setSubject("Error");
+		    $this->email->setMessage($resultView);
+		    
+		    $resultSend01 = $this->email->send();
+		    $resultSend02 = $this->email->printDebugger();
+		    
+		    
+		    return $resultView;
+		}
+	}
+	
+	function viewRegisterFormatoPaginaTicketInvoiceCancel(){
+		try{ 
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+						$permited = false;
+						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						
+						if(!$permited)
+						throw new \Exception(NOT_ACCESS_CONTROL);
+						
+							
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						if ($resultPermission 	== PERMISSION_NONE)
+						throw new \Exception(NOT_ALL_EDIT);		
+			}	 
+			
+			
+			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri			
+			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri				
+			$saldos						= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"saldos");//--finuri	
+			$companyID 					= $dataSession["user"]->companyID;		
+			$branchID 					= $dataSession["user"]->branchID;		
+			$roleID 					= $dataSession["role"]->roleID;		
+			
+			//Get Component
+			$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			//Get Logo
+			$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+			//Get Company
+			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);			
+			//Get Documento				
+			
+			
+			//Get Documento					
+			$datView["objDetail"]					= $this->Transaction_Master_Detail_Model->get_rowByShareID($companyID,$transactionMasterID);
+			$datView["Identifier"]					= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+			
+			
+			//Generar Reporte
+			$html = helper_reporte80mmTransactionMasterCancelWithShare(
+			    "DETALLE",
+			    $objCompany,
+			    $objParameter,
+			    $datView["objDetail"],
+			    $objParameterTelefono
+			);
+			$this->dompdf->loadHTML($html);
+			
+			
+			//Get Documento
 			$this->dompdf->loadHTML($html);
 			
 			//1cm = 29.34666puntos
@@ -3436,6 +3728,7 @@ class app_box_share extends _BaseController {
 				"",
 				""
 			);
+			
 			$this->dompdf->loadHTML($html);
 			
 			//1cm = 29.34666puntos
@@ -3473,7 +3766,6 @@ class app_box_share extends _BaseController {
 		    return $resultView;
 		}
 	}
-	
 	
 	
 }

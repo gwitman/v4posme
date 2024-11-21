@@ -3,7 +3,7 @@
 								<div class="panel panel-default">
                                     <div class="panel-heading">
                                         <div class="icon"><i class="icon20 i-tags-2"></i></div> 
-                                        <h4>CARTERA DE COBRO</h4>										
+                                        <h4>RECUPERACION DE CARTERA</h4>										
                                         <a href="#" class="minimize"></a>
 										<div class="w-right" style="margin-right:20px">
 											<button id="print-btn-report" class="btn btn-primary btn-full tip" title="Ver Reporte" rel="panel-body"><i class="icon20 i-file gap-right0"></i></button>

@@ -94,6 +94,7 @@ class app_med_query extends _BaseController {
 			$dataView["objListFrecuency"] 		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_med_asistencia_detail","skuQuantityBySku",$companyID);;
 			$dataView["objListDose"] 			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_med_asistencia_detail","typePriceID",$companyID);;
 			$dataView["objListDetails"]			= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID,$transactionID,$transactionMasterID,$objComponentTransactionShare->componentID);
+			$dataView['company']				= $dataSession["company"];
 
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -608,6 +609,7 @@ class app_med_query extends _BaseController {
 			$dataView['objListPriority'] 		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_med_asistencia_detail","skuQuantity",$companyID);
 			$dataView['objListFrecuency'] 		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_med_asistencia_detail","skuQuantityBySku",$companyID);;
 			$dataView['objListDose'] 			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_med_asistencia_detail","typePriceID",$companyID);;
+			$dataView['company']				= $dataSession["company"];
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -676,8 +678,9 @@ class app_med_query extends _BaseController {
 			}		
 			//Vista por defecto MOBILE
 			else if( $this->request->getUserAgent()->isMobile() ){
+				$targetComponentID			= 0;	
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
-				$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$objComponent->componentID,"DEFAULT_MOBILE_LISTA_EGRESOS_A_CAJA",CALLERID_LIST,$resultPermission,$parameter); 			
+				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);
 				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			} 
 			//Vista Por Id
@@ -689,12 +692,12 @@ class app_med_query extends _BaseController {
 			}
 			
 			//Renderizar Resultado
-			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
+			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);			
 			$dataSession["message"]			= $this->core_web_notification->get_message();
-			$dataSession["head"]			= /*--inicio view*/ view('app_med_query/list_head');//--finview
-			$dataSession["footer"]			= /*--inicio view*/ view('app_med_query/list_footer');//--finview
+			$dataSession["head"]			= /*--inicio view*/ view('app_med_query/list_head',$dataSession);//--finview
+			$dataSession["footer"]			= /*--inicio view*/ view('app_med_query/list_footer',$dataSession);//--finview
 			$dataSession["body"]			= $dataViewRender; 
-			$dataSession["script"]			= /*--inicio view*/ view('app_med_query/list_script');//--finview
+			$dataSession["script"]			= /*--inicio view*/ view('app_med_query/list_script',$dataSession);//--finview
 			$dataSession["script"]			= $dataSession["script"].$this->core_web_javascript->createVar("componentID",$objComponent->componentID);   
 			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r	
 		}

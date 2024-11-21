@@ -85,8 +85,7 @@ class core_dashboards extends _BaseController {
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= "";
 			$dataSession["head"]			= "";
-			
-			
+		
 			if($objCompany->type == "fn_blandon")
 			{
 				$dataSession["body"]			= /*--inicio view*/ view('core_dasboard/dashboards_default_fun_blandon',$dataSession);//--finview
@@ -103,6 +102,7 @@ class core_dashboards extends _BaseController {
 			}
 			else if($objCompany->type == "ebenezer")
 			{
+			
 				$dataSession					= $this->getIndexEbenezer($dataSession);
 				$dataSession["body"]			= /*--inicio view*/ view('core_dasboard/dashboards_default_ebenezer',$dataSession);//--finview
 			}

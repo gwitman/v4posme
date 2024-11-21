@@ -209,7 +209,7 @@ class app_config_noti extends _BaseController {
 					
 					
 					//Buscar tag
-					$objTag			= $this->Tag_Model->get_rowByName("PROXIMA VISITA");
+					$objTag			= $this->Tag_Model->get_rowByName("LLENAR NOTI PROXIMA VISITA");
 					
 					//Obtener el usuario 
 					$userID				= /*inicio get post*/ $this->request->getPost("txtUserID");
@@ -595,7 +595,7 @@ class app_config_noti extends _BaseController {
 			$business							= /*inicio get post*/ $this->request->getVar("txtBusiness");
 			$business							= $business ? $business : "default";
 			
-			
+			$dataView["title"] 					= "Agenda tu cita";
 			$dataView["business"] 				= $business;
 			$dataView["objListPeriod"]			= $this->core_web_catalog->getCatalogAllItem("tb_remember","period",APP_COMPANY);
 			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_remember","statusID",APP_COMPANY,APP_BRANCH,APP_ROL_SUPERADMIN);

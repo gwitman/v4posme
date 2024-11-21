@@ -19,9 +19,7 @@
 		$totalCordoba 							= 0;
 		$totalDolares 							= 0;
 		$configColumnAbonos["0"]["Titulo"] 		= "Fecha";		
-		//$configColumnAbonos["0"]["Titulo"] 	= "Codigo";		
-		$configColumnAbonos["1"]["Titulo"] 		= "Cliente";		
-		//$configColumnAbonos["2"]["Titulo"] 	= "Moneda";				
+		$configColumnAbonos["1"]["Titulo"] 		= "Cliente";			
 		$configColumnAbonos["4"]["Titulo"] 		= "Fac";		
 		$configColumnAbonos["5"]["Titulo"] 		= "Transaccion";		
 		$configColumnAbonos["6"]["Titulo"] 		= "Tran. Numero";		
@@ -29,12 +27,10 @@
 		$configColumnAbonos["8"]["Titulo"] 		= "Monto";		
 		$configColumnAbonos["9"]["Titulo"] 		= "Vendedor";		
 		$configColumnAbonos["10"]["Titulo"] 	= "Nota";		
-		$configColumnAbonos["11"]["Titulo"] 	= "";		
+		
 					 
-		$configColumnAbonos["0"]["FiledSouce"] 		= "transactionOn";		
-		//$configColumnAbonos["0"]["FiledSouce"] 		= "customerNumber";		
-		$configColumnAbonos["1"]["FiledSouce"] 		= "firstName";		
-		//$configColumnAbonos["2"]["FiledSouce"] 		= "moneda";				
+		$configColumnAbonos["0"]["FiledSouce"] 		= "transactionOn";				
+		$configColumnAbonos["1"]["FiledSouce"] 		= "firstName";			
 		$configColumnAbonos["4"]["FiledSouce"] 		= "Fac";		
 		$configColumnAbonos["5"]["FiledSouce"] 		= "transactionName";		
 		$configColumnAbonos["6"]["FiledSouce"] 		= "transactionNumber";		
@@ -42,14 +38,11 @@
 		$configColumnAbonos["8"]["FiledSouce"] 		= "montoFac";		
 		$configColumnAbonos["9"]["FiledSouce"] 		= "nickname";		
 		$configColumnAbonos["10"]["FiledSouce"] 	= "note";	
-		$configColumnAbonos["11"]["FiledSouce"] 	= "conceptosName";	
 		
 		
 		
 		$configColumnAbonos["0"]["Formato"] 		= "Date";		
-		//$configColumnAbonos["0"]["Formato"] 		= "";		
 		$configColumnAbonos["1"]["Formato"] 		= "";		
-		//$configColumnAbonos["2"]["Formato"] 		= "";		
 		$configColumnAbonos["4"]["Formato"] 		= "";		
 		$configColumnAbonos["5"]["Formato"] 		= "";		
 		$configColumnAbonos["6"]["Formato"] 		= "";		
@@ -57,13 +50,11 @@
 		$configColumnAbonos["8"]["Formato"] 		= "Number";		
 		$configColumnAbonos["9"]["Formato"] 		= "";		
 		$configColumnAbonos["10"]["Formato"] 		= "";	
-		$configColumnAbonos["11"]["Formato"] 		= "";	
 		
 		
-		$configColumnAbonos["0"]["Width"] 		= "15px";		
-		//$configColumnAbonos["0"]["Width"] 		= "80px";		
+		
+		$configColumnAbonos["0"]["Width"] 		= "15px";				
 		$configColumnAbonos["1"]["Width"] 		= "80px";		
-		//$configColumnAbonos["2"]["Width"] 		= "85px";	
 		$configColumnAbonos["4"]["Width"] 		= "40px";		
 		$configColumnAbonos["5"]["Width"] 		= "100px";		
 		$configColumnAbonos["6"]["Width"] 		= "40px";		
@@ -71,12 +62,9 @@
 		$configColumnAbonos["8"]["Width"] 		= "60px";		
 		$configColumnAbonos["9"]["Width"] 		= "60px";		
 		$configColumnAbonos["10"]["Width"] 		= "40px";	
-		$configColumnAbonos["11"]["Width"] 		= "40px";	
 		
-		$configColumnAbonos["0"]["Total"] 		= False;	
-		//$configColumnAbonos["0"]["Total"] 		= False;		
-		$configColumnAbonos["1"]["Total"] 		= False;		
-		//$configColumnAbonos["2"]["Total"] 		= False;
+		$configColumnAbonos["0"]["Total"] 		= False;			
+		$configColumnAbonos["1"]["Total"] 		= False;	
 		$configColumnAbonos["4"]["Total"] 		= False;		
 		$configColumnAbonos["5"]["Total"] 		= False;		
 		$configColumnAbonos["6"]["Total"] 		= False;		
@@ -84,26 +72,20 @@
 		$configColumnAbonos["8"]["Total"] 		= True;		
 		$configColumnAbonos["9"]["Total"] 		= False;		
 		$configColumnAbonos["10"]["Total"] 		= False;	
-		$configColumnAbonos["11"]["Total"] 		= False;	
 		
 		/********************************/
-		$configColumnAbonosDolares["0"]["Titulo"] 		= "Fecha";		
-		//$configColumnAbonosDolares["0"]["Titulo"] 		= "Codigo";		
-		$configColumnAbonosDolares["1"]["Titulo"] 		= "Cliente";		
-		//$configColumnAbonosDolares["2"]["Titulo"] 		= "Moneda";	
+		$configColumnAbonosDolares["0"]["Titulo"] 		= "Fecha";	
+		$configColumnAbonosDolares["1"]["Titulo"] 		= "Cliente";
 		$configColumnAbonosDolares["4"]["Titulo"] 		= "Fac";		
 		$configColumnAbonosDolares["5"]["Titulo"] 		= "Transaccion";		
 		$configColumnAbonosDolares["6"]["Titulo"] 		= "Tran. Numero";		
 		$configColumnAbonosDolares["7"]["Titulo"] 		= "Estado";		
 		$configColumnAbonosDolares["8"]["Titulo"] 		= "Monto";		
 		$configColumnAbonosDolares["9"]["Titulo"] 		= "Vendedor";		
-		$configColumnAbonosDolares["10"]["Titulo"] 		= "Nota";		
-		$configColumnAbonosDolares["11"][""] 			= "";
+		$configColumnAbonosDolares["10"]["Titulo"] 		= "Nota";	
 		
 		$configColumnAbonosDolares["0"]["FiledSouce"] 		= "transactionOn";				
-		//$configColumnAbonosDolares["0"]["FiledSouce"] 		= "customerNumber";		
 		$configColumnAbonosDolares["1"]["FiledSouce"] 		= "firstName";		
-		//$configColumnAbonosDolares["2"]["FiledSouce"] 		= "moneda";				
 		$configColumnAbonosDolares["4"]["FiledSouce"] 		= "Fac";		
 		$configColumnAbonosDolares["5"]["FiledSouce"] 		= "transactionName";		
 		$configColumnAbonosDolares["6"]["FiledSouce"] 		= "transactionNumber";		
@@ -111,12 +93,9 @@
 		$configColumnAbonosDolares["8"]["FiledSouce"] 		= "montoFac";		
 		$configColumnAbonosDolares["9"]["FiledSouce"] 		= "nickname";		
 		$configColumnAbonosDolares["10"]["FiledSouce"] 		= "note";	
-		$configColumnAbonosDolares["11"]["FiledSouce"] 		= "conceptosName";	
 		
 		$configColumnAbonosDolares["0"]["Formato"] 		= "Date";				
-		//$configColumnAbonosDolares["0"]["Formato"] 		= "";		
 		$configColumnAbonosDolares["1"]["Formato"] 		= "";		
-		//$configColumnAbonosDolares["2"]["Formato"] 		= "";				
 		$configColumnAbonosDolares["4"]["Formato"] 		= "";		
 		$configColumnAbonosDolares["5"]["Formato"] 		= "";		
 		$configColumnAbonosDolares["6"]["Formato"] 		= "";		
@@ -128,9 +107,7 @@
 	
 		
 		$configColumnAbonosDolares["0"]["Width"] 		= "15px";		
-		//$configColumnAbonosDolares["0"]["Width"] 		= "80px";		
 		$configColumnAbonosDolares["1"]["Width"] 		= "80px";		
-		//$configColumnAbonosDolares["2"]["Width"] 		= "85px";	
 		$configColumnAbonosDolares["4"]["Width"] 		= "40px";		
 		$configColumnAbonosDolares["5"]["Width"] 		= "100px";		
 		$configColumnAbonosDolares["6"]["Width"] 		= "40px";		
@@ -142,10 +119,8 @@
 		
 		
 		
-		$configColumnAbonosDolares["0"]["Total"] 		= False;				
-		//$configColumnAbonosDolares["0"]["Total"] 		= False;		
-		$configColumnAbonosDolares["1"]["Total"] 		= False;		
-		//$configColumnAbonosDolares["2"]["Total"] 		= False;				
+		$configColumnAbonosDolares["0"]["Total"] 		= False;		
+		$configColumnAbonosDolares["1"]["Total"] 		= False;				
 		$configColumnAbonosDolares["4"]["Total"] 		= False;		
 		$configColumnAbonosDolares["5"]["Total"] 		= False;		
 		$configColumnAbonosDolares["6"]["Total"] 		= False;		
@@ -198,9 +173,7 @@
 		<?php
 		
 		$configColumnVentaContado["0"]["Titulo"] 		= "Fecha";		
-		//$configColumnVentaContado["0"]["Titulo"] 		= "Codigo";		
-		$configColumnVentaContado["1"]["Titulo"] 		= "Cliente";		
-		//$configColumnVentaContado["2"]["Titulo"] 		= "Moneda";		
+		$configColumnVentaContado["1"]["Titulo"] 		= "Cliente";	
 		$configColumnVentaContado["4"]["Titulo"] 		= "Fac";		
 		$configColumnVentaContado["5"]["Titulo"] 		= "Transaccion";		
 		$configColumnVentaContado["6"]["Titulo"] 		= "Tran. Numero";		
@@ -212,9 +185,7 @@
 		
 		
 		$configColumnVentaContado["0"]["FiledSouce"] 		= "transactionOn";				
-		//$configColumnVentaContado["0"]["FiledSouce"] 		= "customerNumber";		
 		$configColumnVentaContado["1"]["FiledSouce"] 		= "firstName";		
-		//$configColumnVentaContado["2"]["FiledSouce"] 		= "currencyName";				
 		$configColumnVentaContado["4"]["FiledSouce"] 		= "transactionNumber";		
 		$configColumnVentaContado["5"]["FiledSouce"] 		= "tipo";		
 		$configColumnVentaContado["6"]["FiledSouce"] 		= "transactionNumber";		
@@ -225,9 +196,7 @@
 		$configColumnVentaContado["11"]["FiledSouce"] 		= "categoryName";	
 		
 		$configColumnVentaContado["0"]["Formato"] 		= "Date";		
-		//$configColumnVentaContado["0"]["Formato"] 		= "";		
 		$configColumnVentaContado["1"]["Formato"] 		= "";		
-		//$configColumnVentaContado["2"]["Formato"] 		= "";		
 		$configColumnVentaContado["4"]["Formato"] 		= "";		
 		$configColumnVentaContado["5"]["Formato"] 		= "";		
 		$configColumnVentaContado["6"]["Formato"] 		= "";		
@@ -239,9 +208,7 @@
 
 
 		$configColumnVentaContado["0"]["Width"] 		= "15px";		
-		//$configColumnVentaContado["0"]["Width"] 		= "80px";		
-		$configColumnVentaContado["1"]["Width"] 		= "80px";		
-		//$configColumnVentaContado["2"]["Width"] 		= "85px";	
+		$configColumnVentaContado["1"]["Width"] 		= "80px";	
 		$configColumnVentaContado["4"]["Width"] 		= "40px";		
 		$configColumnVentaContado["5"]["Width"] 		= "100px";		
 		$configColumnVentaContado["6"]["Width"] 		= "40px";		
@@ -255,9 +222,7 @@
 		
 		
 		$configColumnVentaContado["0"]["Total"] 		= False;		
-		//$configColumnVentaContado["0"]["Total"] 		= False;		
 		$configColumnVentaContado["1"]["Total"] 		= False;		
-		//$configColumnVentaContado["2"]["Total"] 		= False;		
 		$configColumnVentaContado["4"]["Total"] 		= False;		
 		$configColumnVentaContado["5"]["Total"] 		= False;		
 		$configColumnVentaContado["6"]["Total"] 		= False;		
@@ -269,9 +234,7 @@
 		
 	
 		$configColumnVentaContadoDolares["0"]["Titulo"] 		= "Fecha";		
-		//$configColumnVentaContadoDolares["0"]["Titulo"] 		= "Codigo";		
-		$configColumnVentaContadoDolares["1"]["Titulo"] 		= "Cliente";		
-		//$configColumnVentaContadoDolares["2"]["Titulo"] 		= "Moneda";				
+		$configColumnVentaContadoDolares["1"]["Titulo"] 		= "Cliente";			
 		$configColumnVentaContadoDolares["4"]["Titulo"] 		= "Fac";		
 		$configColumnVentaContadoDolares["5"]["Titulo"] 		= "Transaccion";		
 		$configColumnVentaContadoDolares["6"]["Titulo"] 		= "Tran. Numero";		
@@ -282,9 +245,7 @@
 		$configColumnVentaContadoDolares["11"]["Titulo"] 		= "Categoria";		
 		
 		$configColumnVentaContadoDolares["0"]["FiledSouce"] 		= "transactionOn";				
-		//$configColumnVentaContadoDolares["0"]["FiledSouce"] 		= "customerNumber";		
 		$configColumnVentaContadoDolares["1"]["FiledSouce"] 		= "firstName";		
-		//$configColumnVentaContadoDolares["2"]["FiledSouce"] 		= "currencyName";				
 		$configColumnVentaContadoDolares["4"]["FiledSouce"] 		= "transactionNumber";		
 		$configColumnVentaContadoDolares["5"]["FiledSouce"] 		= "tipo";		
 		$configColumnVentaContadoDolares["6"]["FiledSouce"] 		= "transactionNumber";		
@@ -295,9 +256,7 @@
 		$configColumnVentaContadoDolares["11"]["FiledSouce"] 		= "categoryName";		
 		
 		$configColumnVentaContadoDolares["0"]["Formato"] 		= "Date";				
-		//$configColumnVentaContadoDolares["0"]["Formato"] 		= "";		
 		$configColumnVentaContadoDolares["1"]["Formato"] 		= "";		
-		//$configColumnVentaContadoDolares["2"]["Formato"] 		= "";				
 		$configColumnVentaContadoDolares["4"]["Formato"] 		= "";		
 		$configColumnVentaContadoDolares["5"]["Formato"] 		= "";		
 		$configColumnVentaContadoDolares["6"]["Formato"] 		= "";		
@@ -309,9 +268,7 @@
 
 
 		$configColumnVentaContadoDolares["0"]["Width"] 		= "15px";		
-		//$configColumnVentaContadoDolares["0"]["Width"] 	= "80px";		
 		$configColumnVentaContadoDolares["1"]["Width"] 		= "80px";		
-		//$configColumnVentaContadoDolares["2"]["Width"] 	= "85px";	
 		$configColumnVentaContadoDolares["4"]["Width"] 		= "40px";		
 		$configColumnVentaContadoDolares["5"]["Width"] 		= "100px";		
 		$configColumnVentaContadoDolares["6"]["Width"] 		= "40px";		
@@ -322,10 +279,8 @@
 		$configColumnVentaContadoDolares["11"]["Width"] 	= "40px";	
 								 
 		
-		$configColumnVentaContadoDolares["0"]["Total"] 		= False;				
-		//$configColumnVentaContadoDolares["0"]["Total"] 		= False;		
-		$configColumnVentaContadoDolares["1"]["Total"] 		= False;		
-		//$configColumnVentaContadoDolares["2"]["Total"] 		= False;				
+		$configColumnVentaContadoDolares["0"]["Total"] 		= False;			
+		$configColumnVentaContadoDolares["1"]["Total"] 		= False;					
 		$configColumnVentaContadoDolares["4"]["Total"] 		= False;		
 		$configColumnVentaContadoDolares["5"]["Total"] 		= False;		
 		$configColumnVentaContadoDolares["6"]["Total"] 		= False;		
@@ -383,9 +338,7 @@
 		<?php
 		
 		$configColumnVentaCredito["0"]["Titulo"] 		= "Fecha";		
-		//$configColumnVentaCredito["0"]["Titulo"] 		= "Codigo";		
-		$configColumnVentaCredito["1"]["Titulo"] 		= "Cliente";		
-		//$configColumnVentaCredito["2"]["Titulo"] 		= "Moneda";		
+		$configColumnVentaCredito["1"]["Titulo"] 		= "Cliente";	
 		$configColumnVentaCredito["4"]["Titulo"] 		= "Fac";		
 		$configColumnVentaCredito["5"]["Titulo"] 		= "Transaccion";		
 		$configColumnVentaCredito["6"]["Titulo"] 		= "Tran. Numero";		
@@ -396,9 +349,7 @@
 		$configColumnVentaCredito["11"]["Titulo"] 		= "Categoria";
 		
 		$configColumnVentaCredito["0"]["FiledSouce"] 		= "transactionOn";				
-		//$configColumnVentaCredito["0"]["FiledSouce"] 		= "customerNumber";		
 		$configColumnVentaCredito["1"]["FiledSouce"] 		= "firstName";		
-		//$configColumnVentaCredito["2"]["FiledSouce"] 		= "currencyName";				
 		$configColumnVentaCredito["4"]["FiledSouce"] 		= "transactionNumber";		
 		$configColumnVentaCredito["5"]["FiledSouce"] 		= "tipo";		
 		$configColumnVentaCredito["6"]["FiledSouce"] 		= "transactionNumber";		
@@ -409,9 +360,7 @@
 		$configColumnVentaCredito["11"]["FiledSouce"] 		= "categoryName";	
 
 		$configColumnVentaCredito["0"]["Formato"] 		= "Date";		
-		//$configColumnVentaCredito["0"]["Formato"] 		= "";		
-		$configColumnVentaCredito["1"]["Formato"] 		= "";		
-		//$configColumnVentaCredito["2"]["Formato"] 		= "";				
+		$configColumnVentaCredito["1"]["Formato"] 		= "";				
 		$configColumnVentaCredito["4"]["Formato"] 		= "";		
 		$configColumnVentaCredito["5"]["Formato"] 		= "";		
 		$configColumnVentaCredito["6"]["Formato"] 		= "";		
@@ -422,9 +371,7 @@
 		$configColumnVentaCredito["11"]["Formato"] 		= "";			
 	
 		$configColumnVentaCredito["0"]["Width"] 		= "15px";		
-		//$configColumnVentaCredito["0"]["Width"] 		= "80px";		
-		$configColumnVentaCredito["1"]["Width"] 		= "80px";		
-		//$configColumnVentaCredito["2"]["Width"] 		= "85px";	
+		$configColumnVentaCredito["1"]["Width"] 		= "80px";	
 		$configColumnVentaCredito["4"]["Width"] 		= "40px";		
 		$configColumnVentaCredito["5"]["Width"] 		= "100px";		
 		$configColumnVentaCredito["6"]["Width"] 		= "40px";		
@@ -436,9 +383,7 @@
 		
 		
 		$configColumnVentaCredito["0"]["Total"] 		= False;				
-		//$configColumnVentaCredito["0"]["Total"] 		= False;		
 		$configColumnVentaCredito["1"]["Total"] 		= False;		
-		//$configColumnVentaCredito["2"]["Total"] 		= False;				
 		$configColumnVentaCredito["4"]["Total"] 		= False;		
 		$configColumnVentaCredito["5"]["Total"] 		= False;		
 		$configColumnVentaCredito["6"]["Total"] 		= False;		
@@ -450,9 +395,7 @@
 		
 	
 		$configColumnVentaCreditoDolares["0"]["Titulo"] 		= "Fecha";		
-		//$configColumnVentaCreditoDolares["0"]["Titulo"] 		= "Codigo";		
-		$configColumnVentaCreditoDolares["1"]["Titulo"] 		= "Cliente";		
-		//$configColumnVentaCreditoDolares["2"]["Titulo"] 		= "Moneda";				
+		$configColumnVentaCreditoDolares["1"]["Titulo"] 		= "Cliente";			
 		$configColumnVentaCreditoDolares["4"]["Titulo"] 		= "Fac";		
 		$configColumnVentaCreditoDolares["5"]["Titulo"] 		= "Transaccion";		
 		$configColumnVentaCreditoDolares["6"]["Titulo"] 		= "Tran. Numero";		
@@ -463,9 +406,7 @@
 		$configColumnVentaCreditoDolares["11"]["Titulo"] 		= "Categoria";		
 		
 		$configColumnVentaCreditoDolares["0"]["FiledSouce"] 		= "transactionOn";				
-		//$configColumnVentaCreditoDolares["0"]["FiledSouce"] 		= "customerNumber";		
 		$configColumnVentaCreditoDolares["1"]["FiledSouce"] 		= "firstName";		
-		//$configColumnVentaCreditoDolares["2"]["FiledSouce"] 		= "currencyName";				
 		$configColumnVentaCreditoDolares["4"]["FiledSouce"] 		= "transactionNumber";		
 		$configColumnVentaCreditoDolares["5"]["FiledSouce"] 		= "tipo";		
 		$configColumnVentaCreditoDolares["6"]["FiledSouce"] 		= "transactionNumber";		
@@ -476,9 +417,7 @@
 		$configColumnVentaCreditoDolares["11"]["FiledSouce"] 		= "categoryName";		
 		
 		$configColumnVentaCreditoDolares["0"]["Formato"] 		= "Date";		
-		//$configColumnVentaCreditoDolares["0"]["Formato"] 		= "";		
 		$configColumnVentaCreditoDolares["1"]["Formato"] 		= "";		
-		//$configColumnVentaCreditoDolares["2"]["Formato"] 		= "";		
 		$configColumnVentaCreditoDolares["4"]["Formato"] 		= "";		
 		$configColumnVentaCreditoDolares["5"]["Formato"] 		= "";		
 		$configColumnVentaCreditoDolares["6"]["Formato"] 		= "";		
@@ -490,9 +429,7 @@
 		
 		
 		$configColumnVentaCreditoDolares["0"]["Width"] 		= "15px";		
-		//$configColumnVentaCreditoDolares["0"]["Width"] 	= "80px";		
 		$configColumnVentaCreditoDolares["1"]["Width"] 		= "80px";		
-		//$configColumnVentaCreditoDolares["2"]["Width"] 	= "85px";	
 		$configColumnVentaCreditoDolares["4"]["Width"] 		= "40px";		
 		$configColumnVentaCreditoDolares["5"]["Width"] 		= "100px";		
 		$configColumnVentaCreditoDolares["6"]["Width"] 		= "40px";		
@@ -505,9 +442,7 @@
 								 
 		
 		$configColumnVentaCreditoDolares["0"]["Total"] 		= False;				
-		//$configColumnVentaCreditoDolares["0"]["Total"] 		= False;		
-		$configColumnVentaCreditoDolares["1"]["Total"] 		= False;		
-		//$configColumnVentaCreditoDolares["2"]["Total"] 		= False;				
+		$configColumnVentaCreditoDolares["1"]["Total"] 		= False;			
 		$configColumnVentaCreditoDolares["4"]["Total"] 		= False;		
 		$configColumnVentaCreditoDolares["5"]["Total"] 		= False;		
 		$configColumnVentaCreditoDolares["6"]["Total"] 		= False;		
@@ -564,9 +499,7 @@
 		<?php
 		
 		$configColumnIngresoCaja["0"]["Titulo"] 		= "Fecha";		
-		//$configColumnIngresoCaja["0"]["Titulo"] 		= "Codigo";		
-		$configColumnIngresoCaja["1"]["Titulo"] 		= "Cliente";		
-		//$configColumnIngresoCaja["2"]["Titulo"] 		= "Moneda";		
+		$configColumnIngresoCaja["1"]["Titulo"] 		= "Cliente";	
 		$configColumnIngresoCaja["4"]["Titulo"] 		= "Fac";		
 		$configColumnIngresoCaja["5"]["Titulo"] 		= "Transaccion";		
 		$configColumnIngresoCaja["6"]["Titulo"] 		= "Tran. Numero";		
@@ -577,9 +510,7 @@
 		$configColumnIngresoCaja["11"]["Titulo"] 		= "Tipo";		
 		
 		$configColumnIngresoCaja["0"]["FiledSouce"] 		= "transactionOn";				
-		//$configColumnIngresoCaja["0"]["FiledSouce"] 		= "transactionNumber";		
 		$configColumnIngresoCaja["1"]["FiledSouce"] 		= "transactionNumber";		
-		//$configColumnIngresoCaja["2"]["FiledSouce"] 		= "moneda";				
 		$configColumnIngresoCaja["4"]["FiledSouce"] 		= "transactionNumber";		
 		$configColumnIngresoCaja["5"]["FiledSouce"] 		= "transactionName";		
 		$configColumnIngresoCaja["6"]["FiledSouce"] 		= "transactionNumber";		
@@ -590,9 +521,7 @@
 		$configColumnIngresoCaja["11"]["FiledSouce"] 		= "tipoEntrada";		
 		
 		$configColumnIngresoCaja["0"]["Formato"] 		= "Date";		
-		//$configColumnIngresoCaja["0"]["Formato"] 		= "";		
 		$configColumnIngresoCaja["1"]["Formato"] 		= "";		
-		//$configColumnIngresoCaja["2"]["Formato"] 		= "";		
 		$configColumnIngresoCaja["4"]["Formato"] 		= "";		
 		$configColumnIngresoCaja["5"]["Formato"] 		= "";		
 		$configColumnIngresoCaja["6"]["Formato"] 		= "";		
@@ -604,9 +533,7 @@
 
 
 		$configColumnIngresoCaja["0"]["Width"] 		= "15px";		
-		//$configColumnIngresoCaja["0"]["Width"] 	= "80px";		
 		$configColumnIngresoCaja["1"]["Width"] 		= "80px";		
-		//$configColumnIngresoCaja["2"]["Width"] 	= "85px";	
 		$configColumnIngresoCaja["4"]["Width"] 		= "40px";		
 		$configColumnIngresoCaja["5"]["Width"] 		= "100px";		
 		$configColumnIngresoCaja["6"]["Width"] 		= "40px";		
@@ -617,10 +544,8 @@
 		$configColumnIngresoCaja["11"]["Width"] 	= "40px";
 		
 		
-		$configColumnIngresoCaja["0"]["Total"] 		= False;		
-		//$configColumnIngresoCaja["0"]["Total"] 		= False;		
+		$configColumnIngresoCaja["0"]["Total"] 		= False;			
 		$configColumnIngresoCaja["1"]["Total"] 		= False;		
-		//$configColumnIngresoCaja["2"]["Total"] 		= False;	
 		$configColumnIngresoCaja["4"]["Total"] 		= False;		
 		$configColumnIngresoCaja["5"]["Total"] 		= False;		
 		$configColumnIngresoCaja["6"]["Total"] 		= False;		
@@ -632,23 +557,19 @@
 		
 		
 		
-		$configColumnIngresoCajaDolares["0"]["Titulo"] 		= "Fecha";		
-		//$configColumnIngresoCajaDolares["0"]["Titulo"] 		= "Codigo";		
-		$configColumnIngresoCajaDolares["1"]["Titulo"] 		= "Cliente";		
-		//$configColumnIngresoCajaDolares["2"]["Titulo"] 		= "Moneda";	
-		$configColumnIngresoCajaDolares["4"]["Titulo"] 		= "Fac";		
-		$configColumnIngresoCajaDolares["5"]["Titulo"] 		= "Transaccion";		
-		$configColumnIngresoCajaDolares["6"]["Titulo"] 		= "Tran. Numero";		
-		$configColumnIngresoCajaDolares["7"]["Titulo"] 		= "Estado";		
-		$configColumnIngresoCajaDolares["8"]["Titulo"] 		= "Monto";		
-		$configColumnIngresoCajaDolares["9"]["Titulo"] 		= "Vendedor";		
+		$configColumnIngresoCajaDolares["0"]["Titulo"] 			= "Fecha";			
+		$configColumnIngresoCajaDolares["1"]["Titulo"] 			= "Cliente";	
+		$configColumnIngresoCajaDolares["4"]["Titulo"] 			= "Fac";		
+		$configColumnIngresoCajaDolares["5"]["Titulo"] 			= "Transaccion";		
+		$configColumnIngresoCajaDolares["6"]["Titulo"] 			= "Tran. Numero";		
+		$configColumnIngresoCajaDolares["7"]["Titulo"] 			= "Estado";		
+		$configColumnIngresoCajaDolares["8"]["Titulo"] 			= "Monto";		
+		$configColumnIngresoCajaDolares["9"]["Titulo"] 			= "Vendedor";		
 		$configColumnIngresoCajaDolares["10"]["Titulo"] 		= "Nota";		
 		$configColumnIngresoCajaDolares["11"]["Titulo"] 		= "Tipo";		
 		
 		$configColumnIngresoCajaDolares["0"]["FiledSouce"] 		= "transactionOn";				
-		//$configColumnIngresoCajaDolares["0"]["FiledSouce"] 		= "transactionNumber";		
 		$configColumnIngresoCajaDolares["1"]["FiledSouce"] 		= "transactionNumber";		
-		//$configColumnIngresoCajaDolares["2"]["FiledSouce"] 		= "moneda";				
 		$configColumnIngresoCajaDolares["4"]["FiledSouce"] 		= "transactionNumber";		
 		$configColumnIngresoCajaDolares["5"]["FiledSouce"] 		= "transactionName";		
 		$configColumnIngresoCajaDolares["6"]["FiledSouce"] 		= "transactionNumber";		
@@ -659,9 +580,7 @@
 		$configColumnIngresoCajaDolares["11"]["FiledSouce"] 	= "tipoEntrada";								
 		
 		$configColumnIngresoCajaDolares["0"]["Formato"] 		= "Date";				
-		//$configColumnIngresoCajaDolares["0"]["Formato"] 		= "";		
 		$configColumnIngresoCajaDolares["1"]["Formato"] 		= "";		
-		//$configColumnIngresoCajaDolares["2"]["Formato"] 		= "";				
 		$configColumnIngresoCajaDolares["4"]["Formato"] 		= "";		
 		$configColumnIngresoCajaDolares["5"]["Formato"] 		= "";		
 		$configColumnIngresoCajaDolares["6"]["Formato"] 		= "";		
@@ -673,9 +592,7 @@
 						
 
 		$configColumnIngresoCajaDolares["0"]["Width"] 		= "15px";		
-		//$configColumnIngresoCajaDolares["0"]["Width"] 	= "80px";		
 		$configColumnIngresoCajaDolares["1"]["Width"] 		= "80px";		
-		//$configColumnIngresoCajaDolares["2"]["Width"] 	= "85px";	
 		$configColumnIngresoCajaDolares["4"]["Width"] 		= "40px";		
 		$configColumnIngresoCajaDolares["5"]["Width"] 		= "100px";		
 		$configColumnIngresoCajaDolares["6"]["Width"] 		= "40px";		
@@ -688,9 +605,7 @@
 		
 		
 		$configColumnIngresoCajaDolares["0"]["Total"] 		= False;				
-		//$configColumnIngresoCajaDolares["0"]["Total"] 		= False;		
-		$configColumnIngresoCajaDolares["1"]["Total"] 		= False;		
-		//$configColumnIngresoCajaDolares["2"]["Total"] 		= False;				
+		$configColumnIngresoCajaDolares["1"]["Total"] 		= False;			
 		$configColumnIngresoCajaDolares["4"]["Total"] 		= False;		
 		$configColumnIngresoCajaDolares["5"]["Total"] 		= False;		
 		$configColumnIngresoCajaDolares["6"]["Total"] 		= False;		
@@ -743,9 +658,7 @@
 		<?php
 		
 		$configColumnSalidaCaja["0"]["Titulo"] 		= "Fecha";		
-		//$configColumnSalidaCaja["0"]["Titulo"] 	= "Codigo";		
-		$configColumnSalidaCaja["1"]["Titulo"] 		= "Cliente";		
-		//$configColumnSalidaCaja["2"]["Titulo"] 	= "Moneda";	
+		$configColumnSalidaCaja["1"]["Titulo"] 		= "Cliente";	
 		$configColumnSalidaCaja["4"]["Titulo"] 		= "Fac";		
 		$configColumnSalidaCaja["5"]["Titulo"] 		= "Transaccion";		
 		$configColumnSalidaCaja["6"]["Titulo"] 		= "Tran. Numero";		
@@ -756,9 +669,7 @@
 		$configColumnSalidaCaja["11"]["Titulo"] 	= "Tipo";		
 		
 		$configColumnSalidaCaja["0"]["FiledSouce"] 		= "transactionOn";				
-		//$configColumnSalidaCaja["0"]["FiledSouce"] 	= "transactionNumber";		
 		$configColumnSalidaCaja["1"]["FiledSouce"] 		= "transactionNumber";		
-		//$configColumnSalidaCaja["2"]["FiledSouce"] 	= "moneda";				
 		$configColumnSalidaCaja["4"]["FiledSouce"] 		= "transactionNumber";		
 		$configColumnSalidaCaja["5"]["FiledSouce"] 		= "transactionName";		
 		$configColumnSalidaCaja["6"]["FiledSouce"] 		= "transactionNumber";		
@@ -769,9 +680,7 @@
 		$configColumnSalidaCaja["11"]["FiledSouce"] 	= "tipoSalida";		
 
 		$configColumnSalidaCaja["0"]["Formato"] 		= "Date";		
-		//$configColumnSalidaCaja["0"]["Formato"] 		= "";		
-		$configColumnSalidaCaja["1"]["Formato"] 		= "";		
-		//$configColumnSalidaCaja["2"]["Formato"] 		= "";				
+		$configColumnSalidaCaja["1"]["Formato"] 		= "";			
 		$configColumnSalidaCaja["4"]["Formato"] 		= "";		
 		$configColumnSalidaCaja["5"]["Formato"] 		= "";		
 		$configColumnSalidaCaja["6"]["Formato"] 		= "";		
@@ -782,9 +691,7 @@
 		$configColumnSalidaCaja["11"]["Formato"] 		= "";				
 		
 		$configColumnSalidaCaja["0"]["Width"] 		= "15px";		
-		//$configColumnSalidaCaja["0"]["Width"] 	= "80px";		
 		$configColumnSalidaCaja["1"]["Width"] 		= "80px";		
-		//$configColumnSalidaCaja["2"]["Width"] 	= "85px";	
 		$configColumnSalidaCaja["4"]["Width"] 		= "40px";		
 		$configColumnSalidaCaja["5"]["Width"] 		= "100px";		
 		$configColumnSalidaCaja["6"]["Width"] 		= "40px";		
@@ -795,10 +702,8 @@
 		$configColumnSalidaCaja["11"]["Width"] 		= "40px";
 		
 		
-		$configColumnSalidaCaja["0"]["Total"] 		= False;		
-		//$configColumnSalidaCaja["0"]["Total"] 		= False;		
+		$configColumnSalidaCaja["0"]["Total"] 		= False;			
 		$configColumnSalidaCaja["1"]["Total"] 		= False;		
-		//$configColumnSalidaCaja["2"]["Total"] 		= False;	
 		$configColumnSalidaCaja["4"]["Total"] 		= False;		
 		$configColumnSalidaCaja["5"]["Total"] 		= False;		
 		$configColumnSalidaCaja["6"]["Total"] 		= False;		
@@ -808,10 +713,8 @@
 		$configColumnSalidaCaja["10"]["Total"] 		= False;	
 		$configColumnSalidaCaja["11"]["Total"] 		= False;	
 	
-		$configColumnSalidaCajaDolares["0"]["Titulo"] 		= "Fecha";		
-		//$configColumnSalidaCajaDolares["0"]["Titulo"] 		= "Codigo";		
-		$configColumnSalidaCajaDolares["1"]["Titulo"] 		= "Cliente";		
-		//$configColumnSalidaCajaDolares["2"]["Titulo"] 		= "Moneda";				
+		$configColumnSalidaCajaDolares["0"]["Titulo"] 		= "Fecha";			
+		$configColumnSalidaCajaDolares["1"]["Titulo"] 		= "Cliente";				
 		$configColumnSalidaCajaDolares["4"]["Titulo"] 		= "Fac";		
 		$configColumnSalidaCajaDolares["5"]["Titulo"] 		= "Transaccion";		
 		$configColumnSalidaCajaDolares["6"]["Titulo"] 		= "Tran. Numero";		
@@ -823,9 +726,7 @@
 		
 
 		$configColumnSalidaCajaDolares["0"]["FiledSouce"] 		= "transactionOn";				
-		//$configColumnSalidaCajaDolares["0"]["FiledSouce"] 		= "transactionNumber";		
 		$configColumnSalidaCajaDolares["1"]["FiledSouce"] 		= "transactionNumber";		
-		//$configColumnSalidaCajaDolares["2"]["FiledSouce"] 		= "moneda";				
 		$configColumnSalidaCajaDolares["4"]["FiledSouce"] 		= "transactionNumber";		
 		$configColumnSalidaCajaDolares["5"]["FiledSouce"] 		= "transactionName";		
 		$configColumnSalidaCajaDolares["6"]["FiledSouce"] 		= "transactionNumber";		
@@ -835,10 +736,8 @@
 		$configColumnSalidaCajaDolares["10"]["FiledSouce"] 		= "note";	
 		$configColumnSalidaCajaDolares["11"]["FiledSouce"] 		= "tipoSalida";	
 		
-		$configColumnSalidaCajaDolares["0"]["Formato"] 		= "Date";				
-		//$configColumnSalidaCajaDolares["0"]["Formato"] 		= "";		
-		$configColumnSalidaCajaDolares["1"]["Formato"] 		= "";		
-		//$configColumnSalidaCajaDolares["2"]["Formato"] 		= "";				
+		$configColumnSalidaCajaDolares["0"]["Formato"] 		= "Date";		
+		$configColumnSalidaCajaDolares["1"]["Formato"] 		= "";					
 		$configColumnSalidaCajaDolares["4"]["Formato"] 		= "";		
 		$configColumnSalidaCajaDolares["5"]["Formato"] 		= "";		
 		$configColumnSalidaCajaDolares["6"]["Formato"] 		= "";		
@@ -850,9 +749,7 @@
 		
 
 		$configColumnSalidaCajaDolares["0"]["Width"] 		= "15px";		
-		//$configColumnSalidaCajaDolares["0"]["Width"] 		= "80px";		
 		$configColumnSalidaCajaDolares["1"]["Width"] 		= "80px";		
-		//$configColumnSalidaCajaDolares["2"]["Width"] 		= "85px";	
 		$configColumnSalidaCajaDolares["4"]["Width"] 		= "40px";		
 		$configColumnSalidaCajaDolares["5"]["Width"] 		= "100px";		
 		$configColumnSalidaCajaDolares["6"]["Width"] 		= "40px";		
@@ -863,10 +760,8 @@
 		$configColumnSalidaCajaDolares["11"]["Width"] 		= "40px";
 		
 
-		$configColumnSalidaCajaDolares["0"]["Total"] 		= False;				
-		//$configColumnSalidaCajaDolares["0"]["Total"] 		= False;		
-		$configColumnSalidaCajaDolares["1"]["Total"] 		= False;		
-		//$configColumnSalidaCajaDolares["2"]["Total"] 		= False;				
+		$configColumnSalidaCajaDolares["0"]["Total"] 		= False;		
+		$configColumnSalidaCajaDolares["1"]["Total"] 		= False;				
 		$configColumnSalidaCajaDolares["4"]["Total"] 		= False;		
 		$configColumnSalidaCajaDolares["5"]["Total"] 		= False;		
 		$configColumnSalidaCajaDolares["6"]["Total"] 		= False;		
@@ -975,7 +870,7 @@
 		
 		echo helper_reporteGeneralCreateEncabezado(
 			'<h2 style="margin:0px;" >ARQUEO DIARIO</h2>',
-			'<h2 style="margin:0px;" >'.$objCompany->name.'</h2>',
+			'<h2 style="margin:0px;" >'.$objCompany->name." ".$branchName.'</h2>',
 			$columnX,
 			'<h2 style="margin:0px; " >DEL '.$startOn.' AL '.$endOn."</h2>",
 			"",
@@ -1105,3 +1000,4 @@
 		
 	</body>	
 </html>
+<div style='page-break-before:always;' ></div>

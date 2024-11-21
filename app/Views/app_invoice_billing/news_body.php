@@ -303,7 +303,7 @@ if($objParameterRestaurant == "true")
 								<div class="col-lg-6" id="divInformacionRight" >
 								
 										<div class="form-group">
-											<label class="col-lg-4 control-label" for="buttons">Cliente</label>
+											<label class="col-lg-4 control-label" for="buttons"><?php echo getBehavio($company->type,"app_invoice_billing","divTxtClienteBeneficiarioPrincipal","Cliente"); ?></label>
 											<div class="col-lg-8">
 												<div class="input-group">
 													<input type="hidden" id="txtCustomerID" name="txtCustomerID" value="<?php echo $objCustomerDefault->entityID;  ?>">

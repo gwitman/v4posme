@@ -469,6 +469,8 @@ $routes->match(['get','post'],'app_box_report/share_summary_58mm','app_box_repor
 $routes->match(['get','post'],'app_box_report/share_summary_58mm/(:any)','app_box_report::share_summary_58mm');
 $routes->match(['get','post'],'app_box_report/attendance','app_box_report::attendance');
 $routes->match(['get','post'],'app_box_report/attendance/(:any)','app_box_report::attendance');
+$routes->match(['get','post'],'app_box_report/reconciliation_deposits','app_box_report::reconciliation_deposits');
+$routes->match(['get','post'],'app_box_report/reconciliation_deposits/(:any)','app_box_report::reconciliation_deposits');
 $routes->match(['get','post'],'app_box_provisioned/edit','app_box_provisioned::edit');
 $routes->match(['get','post'],'app_box_provisioned/edit/(:any)','app_box_provisioned::edit');
 $routes->match(['get','post'],'app_box_provisioned/delete','app_box_provisioned::delete');
@@ -885,6 +887,8 @@ $routes->match(['get','post'],'app_mobile_api/getDataDownload','app_mobile_api::
 $routes->match(['get','post'],'app_mobile_api/getDataDownload/(:any)','app_mobile_api::getDataDownload');
 $routes->match(['get','post'],'app_mobile_api/setDataUpload','app_mobile_api::setDataUpload');
 $routes->match(['get','post'],'app_mobile_api/setDataUpload/(:any)','app_mobile_api::setDataUpload');
+$routes->match(['get','post'],'app_mobile_api/setPositionGps','app_mobile_api::setPositionGps');
+$routes->match(['get','post'],'app_mobile_api/setPositionGps/(:any)','app_mobile_api::setPositionGps');
 $routes->match(['get','post'],'app_invoice_billing/edit','app_invoice_billing::edit');
 $routes->match(['get','post'],'app_invoice_billing/edit/(:any)','app_invoice_billing::edit');
 $routes->match(['get','post'],'app_invoice_billing/editv2','app_invoice_billing::editv2');
@@ -944,6 +948,8 @@ $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNorm
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmCharLot/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmCharLot');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmGlobalPro','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmGlobalPro');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmGlobalPro/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmGlobalPro');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmEbenezer','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmEbenezer');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmEbenezer/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmEbenezer');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormalA4Titan','app_invoice_billing::viewRegisterFormatoPaginaNormalA4Titan');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormalA4Titan/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormalA4Titan');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmLaptopStore','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmLaptopStore');
@@ -1028,6 +1034,7 @@ $routes->match(['get','post'],'app_invoice_price/add','app_invoice_price::add');
 $routes->match(['get','post'],'app_invoice_price/index','app_invoice_price::index');
 $routes->match(['get','post'],'app_invoice_price/index/(:any)','app_invoice_price::index');
 $routes->match(['get','post'],'app_notification/fillCurrentNotification','app_notification::fillCurrentNotification');
+$routes->match(['get','post'],'app_notification/fillSendWhatsappOrEmail','app_notification::fillSendWhatsappOrEmail');
 $routes->match(['get','post'],'app_notification/sendEmail','app_notification::sendEmail');
 $routes->match(['get','post'],'app_notification/fillSendWhatsappCustomer','app_notification::fillSendWhatsappCustomer');
 $routes->match(['get','post'],'app_notification/sendWhatsappPosMeCalendar','app_notification::sendWhatsappPosMeCalendar');
@@ -1291,8 +1298,12 @@ $routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaNormal','a
 $routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaNormal/(:any)','app_box_share::viewRegisterFormatoPaginaNormal');
 $routes->match(['get','post'],'app_box_share/viewRegisterFormatoA4Globalpro','app_box_share::viewRegisterFormatoA4Globalpro');
 $routes->match(['get','post'],'app_box_share/viewRegisterFormatoA4Globalpro/(:any)','app_box_share::viewRegisterFormatoA4Globalpro');
+$routes->match(['get','post'],'app_box_share/viewRegisterFormatoA4Ebenezer','app_box_share::viewRegisterFormatoA4Ebenezer');
+$routes->match(['get','post'],'app_box_share/viewRegisterFormatoA4Ebenezer/(:any)','app_box_share::viewRegisterFormatoA4Ebenezer');
 $routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaTicket80mmCarlosLuis','app_box_share::viewRegisterFormatoPaginaTicket80mmCarlosLuis');
 $routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaTicket80mmCarlosLuis/(:any)','app_box_share::viewRegisterFormatoPaginaTicket80mmCarlosLuis');
+$routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaTicketInvoiceCancel','app_box_share::viewRegisterFormatoPaginaTicketInvoiceCancel');
+$routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaTicketInvoiceCancel/(:any)','app_box_share::viewRegisterFormatoPaginaTicketInvoiceCancel');
 $routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaTicketFunBlandon','app_box_share::viewRegisterFormatoPaginaTicketFunBlandon');
 $routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaTicketFunBlandon/(:any)','app_box_share::viewRegisterFormatoPaginaTicketFunBlandon');
 $routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaTicket','app_box_share::viewRegisterFormatoPaginaTicket');

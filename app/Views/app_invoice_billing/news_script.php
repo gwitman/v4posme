@@ -568,7 +568,7 @@
 		url_redirect 			= encodeURIComponent(url_redirect);
 		
 		
-		var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCustomer->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_BILLING/true/empty/false/"+url_redirect;
+		var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCustomer->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_ALL/true/empty/false/"+url_redirect;
 		window.open(url_request,"MsgWindow","width=900,height=450");
 		window.onCompleteCustomer = onCompleteCustomer; 
 	});						
@@ -1129,6 +1129,10 @@
 			result = false;
 			fnWaitClose();
 		}
+		
+		
+		<?php echo getBehavio($company->type,"app_invoice_billing","scriptValidateCustomer",""); ?>  
+		
 		
 		//Validaciones si la factura es al credito.
 		if(invoiceTypeCredit){

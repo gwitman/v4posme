@@ -127,6 +127,29 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('ebenezer_app_cxc_customer_divTxtCategoria')													=> "hidden",	
 		strtolower('ebenezer_app_cxc_customer_divTxtTipo')														=> "hidden",
 		strtolower('ebenezer_app_cxc_customer_divTxtFullNameCommercial')										=> "Tutor",
+		strtolower('ebenezer_app_cxc_customer_lblTxtIdentification')											=> "Codigo de alumno",
+		strtolower('ebenezer_app_cxc_customer_divTxtHuella')													=> "hidden",
+		strtolower('ebenezer_app_cxc_customer_divTxtBuro')														=> "hidden",
+		strtolower('ebenezer_app_invoice_billing_labelTitlePageList')											=> "Recibos",
+		strtolower('ebenezer_app_invoice_billing_labelTitlePageNew')											=> "Recibos",
+		strtolower('ebenezer_app_invoice_billing_labelTitlePageEdit')											=> "Recibos",
+		strtolower('ebenezer_app_invoice_billing_divTxtClienteBeneficiario')									=> "Alumno",
+		strtolower('ebenezer_app_invoice_billing_divTxtClienteBeneficiarioPrincipal')							=> "Alumno",
+		
+		
+		
+		
+		
+		strtolower('ebenezer_app_invoice_billing_scriptValidateCustomer')										=> "
+		
+			if($('#txtNote').val() == 'sin comentarios.' )
+			{
+				fnShowNotification('Escribir comentario','error',timerNotification);
+				result = false;
+				fnWaitClose();
+			}
+		
+		",
 		
 		
 		/*GlobalPro*/
@@ -274,6 +297,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 
 		/*Farmacia LM*/
 		strtolower('farma_lm_app_invoice_billing_divOpcionViewA4') 													=> "",
+		strtolower('farma_lm_web_tools_report_helper_reporteA4TransactionMasterInvoiceA4Opcion1AutorizationDgi')	=> "",
 		
 		/*Ferreteria Mateo*/			
 		strtolower('ferreteria_mateo_app_invoice_billing_bodyListInvoice')	 									=> "height: 550px; overflow: scroll;",
@@ -710,6 +734,9 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 				$('#divZone').appendTo('#divInformacionRight');				
 			});
 		</script>",
+		
+		//Daleska
+		strtolower('daleska_app_box_share_showBtnPrinterInvoiceCancel')											=> "",
 		
 		//Veterinaria la Bendicion
 		strtolower('veterinaria_bendicion_app_inventory_item_Marca')											=> "Vencimiento",
@@ -1257,7 +1284,19 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		",
 		strtolower('compu_matt_app_purchase_pedidos_scriptValidateInSave') 											=> "
 			applyValidationNote = false;
-		"
+		",
+		
+		/*posme*/
+		strtolower('posme_core_web_menu_CONS. MED')			 												=> "VISITAS",
+		strtolower('posme_app_med_query_labelTitlePageList')			 									=> "VISITAS",
+		strtolower('posme_app_med_query_divPanelEdad')			 											=> "hidden",
+		strtolower('posme_app_med_query_divPanelAltura')			 										=> "hidden",
+		strtolower('posme_app_med_query_divPanelPeso')			 											=> "hidden",
+		strtolower('posme_app_med_query_divPanelIMC')			 											=> "hidden",
+		strtolower('posme_app_med_query_divPanelResultado')			 										=> "hidden",
+		strtolower('posme_app_med_query_divPanelEvaluacion')			 									=> "hidden",
+		strtolower('posme_app_med_query_divPanelRecomendacion')			 									=> "hidden",
+		strtolower('posme_app_med_query_divPanelDiagnostico')			 									=> "hidden",
 		
 		
 	);

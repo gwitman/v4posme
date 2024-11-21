@@ -72,13 +72,13 @@ class core_notification extends _BaseController {
 			
 		
 			//Renderizar Resultado
-			$data["objListErrorOblicaciones"]				= $this->Error_Model->get_rowByUserAllAndTagID($dataSession["user"]->userID,$this->Tag_Model->get_rowByName("NOTIFICAR OBLIGACION")->tagID);
-			$data["objListErrorPagos"]						= $this->Error_Model->get_rowByUserAllAndTagID($dataSession["user"]->userID,$this->Tag_Model->get_rowByName("NOTIFICAR CUOTA VENCIDA")->tagID);
-			$data["objListErrorCumple"]						= $this->Error_Model->get_rowByUserAllAndTagID($dataSession["user"]->userID,$this->Tag_Model->get_rowByName("FELIZ CUMPLE")->tagID);
-			$data["objListErrorInventarioMinimo"]			= $this->Error_Model->get_rowByUserAllAndTagID($dataSession["user"]->userID,$this->Tag_Model->get_rowByName("NOTIFICAR INVENTARIO MINIMO")->tagID);
-			$data["objListErrorTC"]							= $this->Error_Model->get_rowByUserAllAndTagID($dataSession["user"]->userID,$this->Tag_Model->get_rowByName("NOTIFICAR TIPO DE CAMBIO")->tagID);
-			$data["objListErrorProximaVisita"]				= $this->Error_Model->get_rowByUserAllAndTagID($dataSession["user"]->userID,$this->Tag_Model->get_rowByName("PROXIMA VISITA")->tagID);
-			$data["objListErrorFechaDeVencimiento"]			= $this->Error_Model->get_rowByUserAllAndTagID($dataSession["user"]->userID,$this->Tag_Model->get_rowByName("FECHA DE VENCIMIENTO")->tagID);
+			$data["objListErrorOblicaciones"]				= $this->Error_Model->get_rowByUserAllAndTagID($dataSession["user"]->userID,$this->Tag_Model->get_rowByName("LLENAR NOTI DE OBLIGACION")->tagID);
+			$data["objListErrorPagos"]						= $this->Error_Model->get_rowByUserAllAndTagID($dataSession["user"]->userID,$this->Tag_Model->get_rowByName("LLENAR NOTI CUOTA A TRASADA")->tagID);
+			$data["objListErrorCumple"]						= $this->Error_Model->get_rowByUserAllAndTagID($dataSession["user"]->userID,$this->Tag_Model->get_rowByName("LLENAR NOTI FELIZ CUMPLE")->tagID);
+			$data["objListErrorInventarioMinimo"]			= $this->Error_Model->get_rowByUserAllAndTagID($dataSession["user"]->userID,$this->Tag_Model->get_rowByName("LLENAR NOTI INVENTARIO MINIMO")->tagID);
+			$data["objListErrorTC"]							= $this->Error_Model->get_rowByUserAllAndTagID($dataSession["user"]->userID,$this->Tag_Model->get_rowByName("LLENAR NOTI TIPO DE CAMBIO")->tagID);
+			$data["objListErrorProximaVisita"]				= $this->Error_Model->get_rowByUserAllAndTagID($dataSession["user"]->userID,$this->Tag_Model->get_rowByName("LLENAR NOTI PROXIMA VISITA")->tagID);
+			$data["objListErrorFechaDeVencimiento"]			= $this->Error_Model->get_rowByUserAllAndTagID($dataSession["user"]->userID,$this->Tag_Model->get_rowByName("LLENAR NOTI DE PRODUCTOS VENCIDOS")->tagID);
 			$dataViewRender									= /*--inicio view*/ view('core_notification/list_body',$data);//--finview
 			
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
