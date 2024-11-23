@@ -112,6 +112,11 @@ class core_dashboards extends _BaseController {
 				$dataSession					= $this->getIndexCorea($dataSession);
 				$dataSession["body"]			= /*--inicio view*/ view('core_dasboard/dashboards_default_khadash',$dataSession);//--finview
 			}
+			else if($objCompany->type == "gym_power_house")
+			{
+				$dataSession					= $this->getIndexGymPowerHouse($dataSession);
+				$dataSession["body"]			= /*--inicio view*/ view('core_dasboard/dashboards_default_gym_power_house',$dataSession);//--finview
+			}
 			else
 			{
 				$dataSession 					= $this->getIndexDefault($dataSession);			
@@ -482,7 +487,7 @@ class core_dashboards extends _BaseController {
 		$lastDate						= helper_UltimoDiaDelMes();			
 
 		if(
-			$dataSession["role"]->name == "EBENEZER@ADMINISTRADOR" ||
+			$dataSession["role"]->name == "FN_BLANDON@ADMINISTRADOR" ||
 			$dataSession["role"]->name == "SUPE ADMIN"
 		)
 		{
@@ -565,6 +570,85 @@ class core_dashboards extends _BaseController {
 		$dataSession["objListPagosMensualesRealizados"]		= $objListPagosMensualesRealizados;
 		$dataSession["objListCarteraDeCobro"]				= $objListCarteraDeCobro;
 		$dataSession["objListFacturacionContado"]			= $objListFacturacionContado;
+		return $dataSession;
+	}
+
+	function getIndexGymPowerHouse($dataSession)
+	{
+
+		$firstDateYear					= helper_PrimerDiaDelMes();
+		$lastDateYear					= helper_UltimoDiaDelMes();
+		$firstDate						= helper_PrimerDiaDelMes();
+		$lastDate						= helper_UltimoDiaDelMes();			
+
+		if(
+			$dataSession["role"]->name == "GYM_POWER_HOUSE@ADMINISTRADOR" ||
+			$dataSession["role"]->name == "SUPE ADMIN"
+		)
+		{
+			$firstDateYear					= helper_PrimerDiaDelYear();
+			$lastDateYear					= helper_UltimoDiaDelYear();
+		}
+		
+		$objFirstDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
+		$objFirstDate->setTime(0, 0, 0);						
+		$objLastDate 		= \DateTime::createFromFormat('Y-m-d H:i:s', $lastDate);
+		$objLastDate->setTime(0, 0, 0);
+		$objNowDate 		= \DateTime::createFromFormat('Y-m-d H:i:s', helper_getDate());
+		$objNowDate->setTime(0, 0, 0);
+		
+		//Obtener las Ventas de Contado del Mes Actual
+		$objListVentasContadoMesActual 		= $this->Transaction_Master_Detail_Model->PowerHouseGym_Ventas_De_Contado_Mes_Actual($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objNowDate->format("Y-m-d") );
+		
+		//Obtener Ingresos por Membresias del Mes Actual
+		$objListIngresosPorMembresias		= $this->Transaction_Master_Detail_Model->PowerHouseGym_Ingresos_Por_Membresias($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objNowDate->format("Y-m-d") );
+
+
+		//Obtener Proyeccion de Membresias
+		$objFirstYearDate 		= \DateTime::createFromFormat('Y-m-d', $firstDateYear);
+		$objFirstYearDate->setTime(0, 0, 0);						
+		$objFirstDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
+		$objFirstDate->setTime(0, 0, 0);		
+		$objListProyeccionDeMembresias = array();
+		while($objFirstYearDate <= $objFirstDate)
+		{				
+			$objLastDayMont =  \DateTime::createFromFormat('Y-m-d', $objFirstYearDate->format("Y-m-d"));
+			$objLastDayMont->modify('+1 month');
+			$objLastDayMont->modify('-1 day');
+			$objListProyeccionDeMembresiasTemporal = $this->Transaction_Master_Detail_Model->PowerHouseGym_Proyeccion_De_Membresias($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDayMont->format("Y-m-d") );
+			if($objListProyeccionDeMembresiasTemporal)
+			{
+				array_push($objListProyeccionDeMembresias, $objListProyeccionDeMembresiasTemporal[0]);
+			}
+			$objFirstYearDate->modify('+1 month');
+		}
+
+
+		//Obtener Conteo de Membresias
+		$objFirstYearDate 		= \DateTime::createFromFormat('Y-m-d', $firstDateYear);
+		$objFirstYearDate->setTime(0, 0, 0);						
+		$objFirstDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
+		$objFirstDate->setTime(0, 0, 0);		
+		$objListConteoDeMembresias = array();
+		while($objFirstYearDate <= $objFirstDate)
+		{				
+			$objLastDayMont =  \DateTime::createFromFormat('Y-m-d', $objFirstYearDate->format("Y-m-d"));
+			$objLastDayMont->modify('+1 month');
+			$objLastDayMont->modify('-1 day');
+			$objListVentasCreditoMensualTemporal = $this->Transaction_Master_Detail_Model->PowerHouseGym_Conteo_De_Membresias($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDayMont->format("Y-m-d") );
+			if($objListVentasCreditoMensualTemporal)
+			{
+				array_push($objListConteoDeMembresias, $objListVentasCreditoMensualTemporal[0]);
+			}
+			$objFirstYearDate->modify('+1 month');
+		}
+
+		
+		//Renderizar Resultado			
+		$dataSession["objListVentasContadoMesActual"]		= $objListVentasContadoMesActual;
+		$dataSession["objListIngresosPorMembresias"]		= $objListIngresosPorMembresias; 
+		$dataSession["objListProyeccionDeMembresias"]		= $objListProyeccionDeMembresias;
+		$dataSession["objListConteoDeMembresias"]			= $objListConteoDeMembresias;
 		return $dataSession;
 	}
 }
