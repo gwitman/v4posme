@@ -1917,5 +1917,119 @@ class Transaction_Master_Detail_Model extends Model  {
 
 		return $db->query($sql)->getResult();
 	}
+	
+
+
+
+
+	function PowerHouseGym_Ventas_De_Contado_Mes_Actual($companyID,$dateFirst,$dateLast)
+	{
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+		  	SELECT 
+				DAY(c.createdOn) as Dia,
+				SUM(c.amount) as Total 
+			FROM 
+				tb_transaction_master c 
+			WHERE 
+				c.transactionID = 19 /*factura*/ 
+				AND 
+				c.isActive = 1 
+				AND 
+				c.transactionCausalID in (21 /*Contado*/,23 /*Contado*/) 
+				AND 
+				c.statusID in (67 /*aplicada*/) 
+				AND 
+				c.createdOn between '$dateFirst' and '$dateLast'
+			group by 
+				1
+		");
+
+		return $db->query($sql)->getResult();
+	}
+
+	function PowerHouseGym_Ingresos_Por_Membresias($companyID,$dateFirst,$dateLast)
+	{
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+			SELECT
+				DAY(c.createdOn ) AS Dia,
+				SUM(c.amount) AS Total
+			FROM 
+				tb_transaction_master c 
+			WHERE 
+				c.isActive = 1 
+				AND 
+				c.transactionID = 19 /*abonos*/ 
+				AND 
+				c.statusID IN (67 /*aplicada*/ )  
+				AND 
+				c.transactionCausalID IN (22 /*credito*/ , 24 /*credito*/ ) 
+				AND 
+				c.createdOn BETWEEN '$dateFirst' AND '$dateLast'
+			GROUP BY 
+				1;
+		");
+
+		return $db->query($sql)->getResult();
+	}
+
+	function PowerHouseGym_Proyeccion_De_Membresias($companyID,$dateFirst,$dateLast)
+	{
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+			SELECT 
+				MONTH(u.dateApply) AS Mes,
+				SUM(u.remaining ) AS Total 
+			FROM 
+				tb_customer_credit_document  c
+				INNER JOIN tb_customer_credit_amoritization u ON 
+					c.customerCreditDocumentID = u.customerCreditDocumentID 
+			WHERE 
+				c.isActive = 1 
+				AND 	
+				c.statusID IN (77 /*registrado*/ ) 
+				AND 
+				u.dateApply BETWEEN '$dateFirst' AND '$dateLast' 
+			GROUP BY 
+			1;
+		");
+
+		return $db->query($sql)->getResult();
+	}
+
+	function PowerHouseGym_Conteo_De_Membresias($companyID,$dateFirst,$dateLast)
+	{
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+			SELECT 
+				MONTH(c.createdOn) as Mes,
+				COUNT(c.transactionMasterID) as Total 
+			FROM 
+				tb_transaction_master c 
+			WHERE 
+				c.transactionID = 19 /*factura*/ 
+				AND 
+				c.isActive = 1 
+				AND 
+				c.transactionCausalID in (22 /*credito*/,24 /*credito*/) 
+				AND 
+				c.statusID in (67 /*aplicada*/) 
+				AND 
+				c.createdOn between '$dateFirst' and '$dateLast'
+			group by 
+				1
+		");
+
+		return $db->query($sql)->getResult();
+	}
 }
 ?>
