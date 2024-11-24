@@ -85,7 +85,7 @@ class core_dashboards extends _BaseController {
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= "";
 			$dataSession["head"]			= "";
-		
+			
 			if($objCompany->type == "fn_blandon")
 			{
 				$dataSession 					= $this->getIndexFunerariaBlandon($dataSession);

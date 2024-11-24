@@ -1735,7 +1735,7 @@ class app_notification extends _BaseController
 			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 
 
-			$query			= "CALL pr_box_get_report_closed(?,?,?,?,?,?,?);";
+			$query				= "CALL pr_box_get_report_closed(?,?,?,?,?,?,?);";
 			if ($objCompany->type == "galmcuts")
 				$query			= "CALL pr_box_get_report_closed_glamcuts(?,?,?,?,?,?,?);";
 			if ($objCompany->type == "gym_power_house")
