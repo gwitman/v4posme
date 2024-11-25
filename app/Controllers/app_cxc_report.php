@@ -1471,6 +1471,10 @@ class app_cxc_report extends _BaseController {
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
 				$query			= "CALL pr_cxc_get_report_collection_manager(?,?,?,?,?,?);";
+				log_message("error",print_r($employeeNumber,true));
+				log_message("error",print_r($startOn,true));
+				log_message("error",print_r($endOn,true));
+				
 				
 				$objData		= $this->Bd_Model->executeRender(
 					$query,

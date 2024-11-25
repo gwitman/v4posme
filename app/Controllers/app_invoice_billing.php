@@ -1200,8 +1200,8 @@ class app_invoice_billing extends _BaseController {
 						$objTMD["amountCommision"] 				= $price * $comisionPorcentage * $quantity ;
 						
 						
-						$tax1Total								= $tax1Total + $tax1;
-						$tax2Total								= $tax2Total + $tax2;
+						$tax1Total								= $tax1Total + ($tax1 * $quantity);
+						$tax2Total								= $tax2Total + ($tax2 * $quantity);
 						$subAmountTotal							= $subAmountTotal + ($quantity * $price);
 						$amountTotal							= $amountTotal + $objTMD["amount"];
 						$transactionMasterDetailID_				= $this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
@@ -1276,8 +1276,8 @@ class app_invoice_billing extends _BaseController {
 						$objTMDNew["skuFormatoDescription"] 	= $skuFormatoDescription;						
 						$objTMDNew["amountCommision"] 			= $price * $comisionPorcentage * $quantity;
 						
-						$tax1Total								= $tax1Total + $tax1;
-						$tax2Total								= $tax2Total + $tax2;
+						$tax1Total								= $tax1Total + ($tax1 * $quantity);
+						$tax2Total								= $tax2Total + ($tax2 * $quantity);
 						$subAmountTotal							= $subAmountTotal + ($quantity * $price);
 						$amountTotal							= $amountTotal + $objTMDNew["amount"];		
 						$objTMDOld								= $this->Transaction_Master_Detail_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID,$transactionMasterDetailID,$objComponentItem->componentID);						
@@ -3684,6 +3684,7 @@ class app_invoice_billing extends _BaseController {
 			//Vista por defecto 
 			if($dataViewID == null || $dataViewID == "null" ){
 			
+				
 				$targetComponentID			= $this->session->get('company')->flavorID;				
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$parameter["{fecha}"]		= $fecha;				
@@ -3713,8 +3714,10 @@ class app_invoice_billing extends _BaseController {
 			//Otra vista
 			else
 			{
+				
 				$cache->save('app_invoice_billing_dataviewid_index', $dataViewID, TIME_CACHE_APP);				
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
+				$parameter["{fecha}"]		= $fecha;
 				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 			
 				
 				if($dataSession["user"]->useMobile == 1)
@@ -4050,7 +4053,18 @@ class app_invoice_billing extends _BaseController {
 								
 			
 			$this->core_web_printer_direct->configurationPrinter($objParameterPrinterName);
-			$this->core_web_printer_direct->executePrinter80mmBarExit($dataView);
+			
+			if (str_starts_with($dataView["objTransactionMaster"]->transactionNumber, "PRF")) 
+			{
+				$this->core_web_printer_direct->executePrinter80mmBarExitCuenta($dataView);
+			} 
+			else 
+			{				
+				$this->core_web_printer_direct->executePrinter80mmBarExitOrignal($dataView);
+				$this->core_web_printer_direct->executePrinter80mmBarExitCopia($dataView);				
+			}
+
+
 			log_message("error","impresion elaborada");
 			
 		}

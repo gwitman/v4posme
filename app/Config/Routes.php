@@ -1044,6 +1044,7 @@ $routes->match(['get','post'],'app_notification/sendWhatsappGlobalProLaptopMayor
 $routes->match(['get','post'],'app_notification/sendWhatsappGlobalProCumpleAnnos','app_notification::sendWhatsappGlobalProCumpleAnnos');
 $routes->match(['get','post'],'app_notification/sendEmailGlamCustCitas','app_notification::sendEmailGlamCustCitas');
 $routes->match(['get','post'],'app_notification/sendEmailGlamCustCitasFrecuency2DayBefore','app_notification::sendEmailGlamCustCitasFrecuency2DayBefore');
+$routes->match(['get','post'],'app_notification/sendEmailAudioElPipeCitas','app_notification::sendEmailAudioElPipeCitas');
 $routes->match(['get','post'],'app_notification/fillTipoCambio','app_notification::fillTipoCambio');
 $routes->match(['get','post'],'app_notification/fillInventarioMinimo','app_notification::fillInventarioMinimo');
 $routes->match(['get','post'],'app_notification/fillInventarioFechaVencimiento','app_notification::fillInventarioFechaVencimiento');

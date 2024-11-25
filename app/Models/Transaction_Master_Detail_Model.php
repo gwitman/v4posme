@@ -1346,6 +1346,67 @@ class Transaction_Master_Detail_Model extends Model  {
    }
 
 	
+   function AudioElPipe_get_Citas($companyID)
+   {
+	   
+	    $db 		= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+	   		
+		$sql = "";
+		$sql = sprintf("
+			select 
+				tat.firstName,
+				tat.transactionNumber,
+				tat.SiguienteVisita
+			from 
+				(
+					select 
+						case 
+							when ci.referenceClientName != '' then 
+								ci.referenceClientName
+							else 
+								nat.firstName
+						end  as firstName ,
+						c.transactionNumber ,
+						DATE_ADD(c.nextVisit , INTERVAL zone.`sequence`  MINUTE) as SiguienteVisita 
+					from 
+						tb_transaction_master c 
+						inner join tb_transaction_master_info ci on 
+							c.transactionMasterID = ci.transactionMasterID 
+						inner join tb_catalog_item zone on 
+							zone.catalogItemID = ci.zoneID 
+						inner join tb_workflow_stage ws on 
+							c.statusID = ws.workflowStageID 
+						inner join tb_naturales nat on 
+							c.entityID = nat.entityID 
+					where 
+						c.isActive = 1 and 
+						c.companyID = 2 and 
+						c.transactionID = 19  and 
+						ws.isInit = 1 and 
+						CAST(zone.`name`  AS UNSIGNED ) > 1   and 
+						c.nextVisit is not null 
+				)  tat 
+			where 
+				tat.SiguienteVisita < DATE_ADD( 
+					DATE_ADD(
+						NOW() , 
+						INTERVAL ".APP_HOUR_DIFERENCE_MYSQL_EMBEDDED."
+					), 
+					INTERVAL 2 HOUR
+				) AND 
+				tat.SiguienteVisita > DATE_ADD(
+						NOW() , 
+						INTERVAL ".APP_HOUR_DIFERENCE_MYSQL_EMBEDDED."
+				)
+						
+		");
+	
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+			
+   } 
 
    function CompuMatt_get_MonthOnly_Sales($companyID,$dateFirst,$dateLast)
    {

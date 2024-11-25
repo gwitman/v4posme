@@ -152,14 +152,14 @@
 							echo "</td>";
 							
 							echo "<td nowrap class='cell_left'>";
-								echo ($i["Gestor"]);
+								if($clienteNuevo) echo $i["Gestor"];
 							echo "</td>";
 							
 							echo "<td nowrap class='cell_left'>";
 								echo '*';
 							echo "</td>";
 							echo "<td nowrap class='cell_left'>";
-								echo ($i["Direccion"]);
+								if($clienteNuevo) echo $i["Direccion"];
 							echo "</td>";
 						echo "</tr>";	
 						
