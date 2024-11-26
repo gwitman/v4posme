@@ -1479,7 +1479,8 @@ class app_invoice_billing extends _BaseController {
 					$objCatalogItem_DiasFeriados365 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_365",$companyID);
 					$objCatalogItem_DiasFeriados366 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_366",$companyID);
 						
-						
+					
+					
 					//Crear tabla de amortizacion
 					$this->financial_amort->amort(
 						$objCustomerCreditDocument["amount"], 		/*monto*/
@@ -9985,37 +9986,6 @@ class app_invoice_billing extends _BaseController {
 			$saldoInicial = array_sum(array_column($datView["objTMD"], 'reference2'));
 			$saldoFinal   = array_sum(array_column($datView["objTMD"], 'reference4'));
 			$saldoAbonado = array_sum(array_column($datView["objTMD"], 'amount'));
-			
-			/*Calculo de saldos generales*/
-			$saldoInicialGeneral = round($datView["objTMI"]->reference1,0);
-			$saldoFinalGeneral   = round($datView["objTMI"]->reference2,0);
-			
-			$saldoInicial 	= $saldos == "Individuales"? $saldoInicial: $saldoInicialGeneral ;
-			$saldoFinal 	= $saldos == "Individuales"? $saldoFinal: $saldoFinalGeneral ;
-				
-				
-			//$row = array("SALDO INICIAL", '', $datView["objCurrency"]->simbol." ".sprintf("%.2f", $saldoInicial));
-			//array_push($detalle,$row);
-			//
-			//foreach($datView["objTMD"] as $detail_){
-			//	
-			//	$row = array("APERTURA", '', $detail_->reference5 );
-			//	array_push($detalle,$row);
-			//	
-			//	$row = array("FINALIZACION", '', $detail_->reference6);
-			//	array_push($detalle,$row);
-			//	
-			//	
-			//	$row = array("MORA", '', ($detail_->lote > 0 ? "0" :  $detail_->lote) );
-			//	array_push($detalle,$row);
-			//	
-			//	
-			//	$row = array("ABONO", '', sprintf('%.2f',round($detail_->amount,2)));
-			//	array_push($detalle,$row);
-			//}
-			//
-			//$row = array("SALDO FINAL", '', sprintf('%.2f', $saldoFinal) );
-			//array_push($detalle,$row);
 			
 			
 			

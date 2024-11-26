@@ -670,7 +670,7 @@ if($objParameterRestaurant == "true")
 											</div>
 										
 											<div class="form-group " id="divFixedExpenses">
-													<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionExpenseLabel","% De Gasto."); ?></label>
+													<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionExpenseLabel","% Interes."); ?></label>
 													<div class="col-lg-8">
 														<input class="form-control"   type="text" name="txtFixedExpenses" id="txtFixedExpenses" value="0">
 														<!--
