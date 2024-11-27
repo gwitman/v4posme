@@ -688,7 +688,7 @@ WHERE
 				
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Cordoba" 
+	tb_company_parameter.value = "Dolar" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "ACCOUNTING_CURRENCY_NAME_REPORT";## Moneda de Reporte para Presentar los Estados Financieros 
@@ -1098,7 +1098,7 @@ where
 	
 /*tipo de cambio de dolares a cordoba*/
 update tb_exchange_rate set 
-	ratio = 0.027777 
+	ratio = 0.027027
 where 
 	currencyID = 1
 	and targetCurrencyID = 2; 
