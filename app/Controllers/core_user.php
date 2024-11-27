@@ -105,10 +105,8 @@ class core_user extends _BaseController {
 			$userID		= /*inicio get post*/ $this->request->getPost("userID");	
 			$continue	= true;
 			
-			if(!$userID && $this->validation->withRequest($this->request)->run() == true ){
-					
-					
-					
+			if(!$userID && $this->validation->withRequest($this->request)->run() == true )
+			{
 					//Validar si tiene permiso para ver la Pagina WEB					
 					if(APP_NEED_AUTHENTICATION == true){
 							$permited = false;
@@ -148,7 +146,7 @@ class core_user extends _BaseController {
 					$objListComanyParameter		= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
 					$maxUser					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CORE_CUST_PRICE_MAX_USER")->value;
 					$objListUser				= $this->User_Model->get_All($companyID);
-			
+					
 					//Ingresar usuario
 					if($continue){
 						
@@ -237,10 +235,10 @@ class core_user extends _BaseController {
 						}
 						else{
 							$db->transRollback();	
-
+					
 							$errorCode 		= $db->error()["code"];
 							$errorMessage 	= $db->error()["message"];
-				
+					
 							$this->core_web_notification->set_message(true,$errorMessage);
 							$this->response->redirect(base_url()."/".'core_user/add');	
 						}
@@ -253,6 +251,7 @@ class core_user extends _BaseController {
 			} 
 			//Editar Registro
 			else if( $this->validation->withRequest($this->request)->run() == true) {
+					
 					//PERMISO SOBRE LA FUNCION
 					if(APP_NEED_AUTHENTICATION == true){
 							$permited = false;
@@ -270,8 +269,8 @@ class core_user extends _BaseController {
 					$objOld 		= $this->User_Model->get_rowByUserID($userID);					
 					if ($resultPermission 	== PERMISSION_ME && ($objOld->createdBy != $dataSession["user"]->userID))
 					throw new \Exception(NOT_EDIT);
-			
-			
+					
+					
 					//validar nickname
 					$objUserTmp = $this->User_Model->get_rowByExistNickname(/*inicio get post*/ $this->request->getPost("txtNickname"));
 					if($objUserTmp && ($objUserTmp->userID != $userID)  && $continue )

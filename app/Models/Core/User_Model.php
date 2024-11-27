@@ -107,9 +107,7 @@ class User_Model extends Model  {
 		$sql = "";
 		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,isActive,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar,locationID");
 		$sql = $sql.sprintf(" from tb_user");
-		$sql = $sql.sprintf(" where companyID = $companyID");
-		$sql = $sql.sprintf(" and branchID = $branchID");		
-		$sql = $sql.sprintf(" and userID = $userID");		
+		$sql = $sql.sprintf(" where userID = $userID");
 		$sql = $sql.sprintf(" and isActive= 1");	
 		
 		//Ejecutar Consulta
