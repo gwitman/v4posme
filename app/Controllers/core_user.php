@@ -430,7 +430,7 @@ class core_user extends _BaseController {
 			//Redireccionar datos
 			
 			$companyID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"companyID");//--finuri
-			$branchID			= dataSession["user"]->branchID;
+			$branchID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"branchID");//--finuri
 			$userID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"userID");//--finuri
 			if((!$companyID || !$branchID ||  !$userID))
 			{ 
