@@ -165,9 +165,9 @@ class core_user extends _BaseController {
 						$db=db_connect();
 						$db->transStart();
 						//Crear Usuario
-						$obj["companyID"]		= $dataSession["user"]->companyID;					
-						$obj["branchID"] 		= $dataSession["user"]->branchID;					
-						
+						$obj["companyID"]			= $dataSession["user"]->companyID;					
+						$obj["branchID"] 			= $dataSession["user"]->branchID;
+						$obj["locationID"] 			= /*inicio get post*/ $this->request->getPost("txtBranchID");						
 						$obj["nickname"] 			= /*inicio get post*/ $this->request->getPost("txtNickname");
 						$obj["password"] 			= /*inicio get post*/ $this->request->getPost("txtPassword");
 						$obj["email"] 				= /*inicio get post*/ $this->request->getPost("txtEmail");					
@@ -176,9 +176,7 @@ class core_user extends _BaseController {
 						$obj["createdBy"]			= $dataSession["user"]->userID;
 						$obj["isActive"] 			= true;		
 						$obj["employeeID"] 			= /*inicio get post*/ $this->request->getPost("txtEmployeeID");
-						$userID		 				= $this->User_Model->insert_app_posme($obj);					
-						
-						
+						$userID		 				= $this->User_Model->insert_app_posme($obj);	
 						$companyID 					= $obj["companyID"];
 						$branchID 					= $obj["branchID"];			 
 						$roleID 					= /*inicio get post*/ $this->request->getPost("txtRoleID");
@@ -269,7 +267,7 @@ class core_user extends _BaseController {
 					}	
 					
 					//PERMISO SOBRE EL REGISTRO
-					$objOld = $this->User_Model->get_rowByPK($companyID,$branchID,$userID);
+					$objOld 		= $this->User_Model->get_rowByUserID($userID);					
 					if ($resultPermission 	== PERMISSION_ME && ($objOld->createdBy != $dataSession["user"]->userID))
 					throw new \Exception(NOT_EDIT);
 			
@@ -296,6 +294,7 @@ class core_user extends _BaseController {
 						
 						//Actualizar Rol
 						$obj["nickname"] 			= /*inicio get post*/ $this->request->getPost("txtNickname");
+						$obj["locationID"] 			= $this->request->getPost("txtBranchID");
 						$obj["password"] 			= /*inicio get post*/ $this->request->getPost("txtPassword");
 						$obj["email"] 				= /*inicio get post*/ $this->request->getPost("txtEmail");
 						$obj["useMobile"]			= /*inicio get post*/ $this->request->getPost("txtIsMobile");
@@ -303,7 +302,8 @@ class core_user extends _BaseController {
 						$result 					= $this->User_Model->update_app_posme($companyID,$branchID,$userID,$obj);
 						$roleID 					= /*inicio get post*/ $this->request->getPost("txtRoleID");
 						
-						//Eliminar Membership
+						
+						//Eliminar Membership						
 						$result 					= $this->Membership_Model->delete_app_posme($companyID,$branchID,$userID);
 						 
 						//Nuevo Membership
@@ -425,21 +425,13 @@ class core_user extends _BaseController {
 			////////////////////////////////////////
 			////////////////////////////////////////
 			 			
-						
-			
-			
-			
-			
-			
-				
-			
-			
+					
 			
 			//Redireccionar datos
 			
-			$companyID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"companyID");//--finuri
-			$branchID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"branchID");//--finuri
-			$userID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"userID");//--finuri
+			$companyID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"companyID");//--finuri
+			$branchID			= dataSession["user"]->branchID;
+			$userID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"userID");//--finuri
 			if((!$companyID || !$branchID ||  !$userID))
 			{ 
 				
@@ -457,6 +449,7 @@ class core_user extends _BaseController {
 			
 			//Obtener el Registro			
 			$datView["objUser"]	 				= $this->User_Model->get_rowByPK($companyID,$branchID,$userID);
+			$datView["objBranch"]				= $this->Branch_Model->getByCompany($companyID);
 			//Obtener los Roles
 			$datView["objListRoles"]			= $this->Role_Model->get_rowByCompanyIDyBranchID($companyID,$branchID);
 			//Obtener el Membership
@@ -556,7 +549,8 @@ class core_user extends _BaseController {
 			//Obtener los Roles
 			$datView["objListRoles"] = $this->Role_Model->get_rowByCompanyIDyBranchID($this->session->get('user')->companyID,$this->session->get('user')->branchID);
 			$datView["objEmployee"]  = $objComponent;
-			$datView["objEntity"]  	 = $objComponentEntity;			
+			$datView["objEntity"]  	 = $objComponentEntity;
+			$datView["objBranch"]	 = $this->Branch_Model->getByCompany($companyID);
 			
 			//Lista de cajas
 			$datView["objListCash"]	 = $this->Cash_Box_Model->asObject()->where("companyID",$this->session->get('user')->companyID)->findAll();

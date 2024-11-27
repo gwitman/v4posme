@@ -32,7 +32,7 @@ class User_Model extends Model  {
 	function get_rowByComercio($comercio){
 		$db 	= db_connect();
 		$sql = "";
-		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar");
+		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar,locationID");
 		$sql = $sql.sprintf(" from tb_user");
 		$sql = $sql.sprintf(" where comercio = '$comercio' ");
 		$sql = $sql.sprintf(" and isActive= 1");	
@@ -44,7 +44,7 @@ class User_Model extends Model  {
 	function get_rowByFoto($foto){
 		$db 	= db_connect();
 		$sql = "";
-		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar");
+		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar,locationID");
 		$sql = $sql.sprintf(" from tb_user");
 		$sql = $sql.sprintf(" where foto = '$foto' ");
 		$sql = $sql.sprintf(" and isActive= 1");	
@@ -57,7 +57,7 @@ class User_Model extends Model  {
 	function get_rowByExistNickname($nickname){
 		$db 	= db_connect();
 		$sql = "";
-		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar");
+		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar,locationID");
 		$sql = $sql.sprintf(" from tb_user");
 		$sql = $sql.sprintf(" where nickname = '$nickname' ");
 		$sql = $sql.sprintf(" and isActive= 1");	
@@ -68,7 +68,7 @@ class User_Model extends Model  {
 	function get_rowByNiknamePassword($nickname,$password){
 		$db 	= db_connect();    
 		$sql = "";
-		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar");
+		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar,locationID");
 		$sql = $sql.sprintf(" from tb_user");
 		$sql = $sql.sprintf(" where nickname = '".str_replace('"',"",str_replace("'","",$nickname))."'");
 		$sql = $sql.sprintf(" and password = '".str_replace('"',"",str_replace("'","",$password)."'"));
@@ -81,7 +81,7 @@ class User_Model extends Model  {
 	function get_rowByEmail($email){
 		$db 	= db_connect();
 		$sql = "";
-		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar");
+		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar,locationID");
 		$sql = $sql.sprintf(" from tb_user");
 		$sql = $sql.sprintf(" where email = '$email'");
 		$sql = $sql.sprintf(" and isActive= 1");		
@@ -92,7 +92,20 @@ class User_Model extends Model  {
 	function get_rowByPK($companyID,$branchID,$userID){
 		$db 	= db_connect();
 		$sql = "";
-		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,isActive,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar");
+		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,isActive,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar,locationID");
+		$sql = $sql.sprintf(" from tb_user");
+		$sql = $sql.sprintf(" where companyID = $companyID");
+		$sql = $sql.sprintf(" and branchID = $branchID");		
+		$sql = $sql.sprintf(" and userID = $userID");		
+		$sql = $sql.sprintf(" and isActive= 1");	
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getRow();
+	}
+	function get_rowByUserID($userID){
+		$db 	= db_connect();
+		$sql = "";
+		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,isActive,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar,locationID");
 		$sql = $sql.sprintf(" from tb_user");
 		$sql = $sql.sprintf(" where companyID = $companyID");
 		$sql = $sql.sprintf(" and branchID = $branchID");		
@@ -105,7 +118,7 @@ class User_Model extends Model  {
 	function get_All($companyID){
 		$db 	= db_connect();
 		$sql = "";
-		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,isActive,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar");
+		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,isActive,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar,locationID");
 		$sql = $sql.sprintf(" from tb_user");
 		$sql = $sql.sprintf(" where companyID = $companyID");		
 		$sql = $sql.sprintf(" and isActive= 1");	
@@ -117,7 +130,7 @@ class User_Model extends Model  {
 	function get_UserByUserIDAndCompanyID($companyID,$userID){
 		$db = db_connect();
 		$builder = $db->table('tb_user tu');
-		$builder= $builder->select("tn.companyID, tn.branchID, tn.entityID, tn.firstName, tn.lastName, tn.address, tn.statusID, tn.profesionID, tn.naturalesID, tu.userID, tu.nickname, tu.password, tu.createdOn, tu.isActive, tu.email, tu.createdBy, tu.employeeID, tu.useMobile, tu.phone, tu.lastPayment, tu.comercio, tu.foto, tu.token_google_calendar");
+		$builder= $builder->select("tn.companyID, tn.branchID, tn.entityID, tn.firstName, tn.lastName, tn.address, tn.statusID, tn.profesionID, tn.naturalesID, tu.userID, tu.nickname, tu.password, tu.createdOn, tu.isActive, tu.email, tu.createdBy, tu.employeeID, tu.useMobile, tu.phone, tu.lastPayment, tu.comercio, tu.foto, tu.token_google_calendar,locationID");
 		$builder= $builder->join('tb_naturales tn','tu.employeeID = tn.entityID');
 		$builder = $builder->where(['tu.companyID'=>$companyID, 'tu.userID'=>$userID]);
 		return $builder->get()->getRowObject();
@@ -126,7 +139,7 @@ class User_Model extends Model  {
 	function get_UserByBussnes($companyID,$bussines){
 		$db 	= db_connect();
 		$sql = "";
-		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,isActive,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar");
+		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,isActive,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar,locationID");
 		$sql = $sql.sprintf(" from tb_user");
 		$sql = $sql.sprintf(" where companyID = $companyID");					
 		$sql = $sql.sprintf(" and nickname like '%s'" ,"%@".$bussines);	

@@ -226,7 +226,7 @@ where
 	
 
 #INSERTAR USUARIOS
-insert into tb_user (companyID,branchID,nickname,`password`,createdOn,isActive,email,createdBy,employeeID,useMobile)
+insert into tb_user (companyID,branchID,nickname,`password`,createdOn,isActive,email,createdBy,employeeID,useMobile,locationID)
 select 
 	companyID,
 	branchID,
@@ -237,7 +237,8 @@ select
 	REPLACE(c.email,@domainOrigen,@domainDestino) as email,
 	createdBy,
 	614 as employeeID ,
-	c.useMobile 
+	c.useMobile ,
+	0
 from 
 	tb_user c 
 where 

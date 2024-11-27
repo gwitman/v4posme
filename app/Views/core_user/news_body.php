@@ -70,6 +70,22 @@
 																			</div>
 																		</div>
 																		
+																		
+																		<div class="form-group">
+																			<label class="col-lg-2 control-label" for="selectFilter">Sucursal</label>
+																			<div class="col-lg-10">
+																				<select name="txtBranchID" id="txtBranchID" class="select2">
+																						<option></option>	
+																						<?php
+																						foreach($objBranch as $i){																							
+																							echo "<option value='".$i->branchID."'>".$i->name."</option>";
+																						}
+																						?>		
+																				</select>
+																			</div>
+																		</div>
+																		
+																		
 																		<div class="form-group">
 																			<label class="col-lg-2 control-label" for="selectFilter">Caja</label>
 																			<div class="col-lg-10">
