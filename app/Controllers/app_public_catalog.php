@@ -207,7 +207,7 @@ class app_public_catalog extends _BaseController
 			//Generar el archivo plantilla
 			if (!is_null($this->request->getPost("txtIsTemplate"))) {
 				//Obtener nombre del archivo
-				$archivoCSV = "default_".date('YmdHis').".csv";
+				$archivoCSV = "default_".date('Ymd_His').".csv";
 				
 				
 				
@@ -294,15 +294,16 @@ class app_public_catalog extends _BaseController
 						$this->csvreader->separator = $characterSplie;
 						$table 			= $this->csvreader->parse_file($path);
 						
-						
+						// Elimina el BOM si existe en la primera columna
+
+
+
 						if ($table) {
 
 							//validar columnas del archivo
 							if (count($table) >= 1) {
 								
-								if (!array_key_exists("Id", $table[0])) {
-									throw new \Exception("Columna 'Id' no existe en el archivo .csv");
-								}
+								
 								if (!array_key_exists("Indicador", $table[0])) {
 									throw new \Exception("Columna 'Indicador' no existe en el archivo .csv");
 								}
@@ -357,11 +358,11 @@ class app_public_catalog extends _BaseController
 								$array_publicCatalogDetailID[]	= ltrim(rtrim($row["Id"]));
 								$array_name[]					= $row["Indicador"];
 								$array_display[]				= $row["Valores"];
-								$array_description[]			= $row["Consjunto"];
-								$array_reference1[]				= $row["Grupo"];
-								$array_reference2[]				= $row["SubGrupo"];
+								$array_reference4[]				= $row["Consjunto"];								
+								$array_description[]			= $row["Grupo"];
+								$array_reference1[]				= $row["SubGrupo"];
 								$array_reference3[]				= $row["Edad"];
-								$array_reference4[]				= $row["Sexo"];
+								$array_reference2[]				= $row["Sexo"];
 								$array_parentName[]				= $row["Parent"];
 								$array_sequence[]				= $row["Sequencia"];
 								$array_ratio[]					= $row["Ratio"];

@@ -63,17 +63,24 @@ class csvreader {
 		//Abrir el Archivo
 		if (($gestor = fopen($p_Filepath, "r")) !== FALSE) {
 		
+			
 			//Recorrer las lineas del Archivo
 			while (($datos = fgetcsv($gestor, 1000,$this->separator)) !== FALSE) {
 			
-				if( !is_array($content) ) { 
+				
+				if( !is_array($content) ) 
+				{ 
                     $this->fields 	= ($datos);
                     $content 		= array();
-                } else {
+                } 
+				else 
+				{
                     $item = array();
                     foreach( $this->fields as $id => $field ) {
                         if( isset($datos[$id]) ) {
-                            $item[$field] = $datos[$id];
+							
+							$field 			= str_replace("\xEF\xBB\xBF", '', $field);							
+                            $item[$field] 	= $datos[$id];
                         }
                     }
                     $content[] = $item;
