@@ -43,6 +43,7 @@
 																			<input type="hidden" name="companyID" id="companyID" value="<?php echo $objUser->companyID;?>" />
 																			<input type="hidden" name="branchID" id="branchID" value="<?php echo $objUser->branchID;?>" />
 																			<input type="hidden" name="userID" id="userID" value="<?php echo $objUser->userID;?>" />
+																			<input type="hidden" name="txtBranchID" id="txtBranchID" value="<?php echo $objUser->locationID;?>" />
 																		</div>
 																</div>
 																
@@ -81,7 +82,7 @@
 																<div class="form-group">
 																	<label class="col-lg-2 control-label" for="selectFilter">Sucursal</label>
 																	<div class="col-lg-10">
-																		<select name="txtBranchID" id="txtBranchID" class="select2">
+																		<select name="txtBranchIDDesctiption" id="txtBranchIDDesctiption" readonly="true" class="select2">
 																				<option></option>	
 																				<?php
 																				foreach($objBranch as $i){

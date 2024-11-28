@@ -77,6 +77,7 @@ class app_box_outcash extends _BaseController {
 			$dataView["objTipoMovement"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_outputcash","areaID",$companyID);
 			$dataView["objSubTipoMovement"]		= $this->core_web_catalog->getCatalogAllItem_Parent("tb_transaction_master_outputcash","priorityID",$companyID,$dataView["objTransactionMaster"]->areaID);
 			$dataView["objListDenomination"]	= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_denomination","catalogItemID",$companyID);
+			$dataView["objListBranch"]			= $this->Branch_Model->getByCompany($companyID);
 			
 			$objParameterUrlPrinter 				= $this->core_web_parameter->getParameter("BOX_OUTCASH_URL_PRINTER",$companyID);
 			$objParameterUrlPrinter 				= $objParameterUrlPrinter->value;
@@ -245,6 +246,7 @@ class app_box_outcash extends _BaseController {
 			//Actualizar Maestro
 			//$objTMNew["entityID"] 						= /*inicio get post*/ $this->request->getPost("txtCustomerID");
 			$objTMNew["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
+			$objTMNew["branchID"]						= $this->request->getPost("txtBranchID");
 			$objTMNew["statusIDChangeOn"]				= date("Y-m-d H:m:s");
 			$objTMNew["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");//--fin peticion get o post
 			$objTMNew["currencyID"] 					= /*inicio get post*/ $this->request->getPost("txtCurrencyID");//--fin peticion get o post			
@@ -516,7 +518,7 @@ class app_box_outcash extends _BaseController {
 			
 			$objTM["companyID"] 					= $dataSession["user"]->companyID;
 			$objTM["transactionID"] 				= $transactionID;			
-			$objTM["branchID"]						= $dataSession["user"]->branchID;
+			$objTM["branchID"]						= $this->request->getPost("txtBranchID");
 			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_outputcash",0);
 			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($dataSession["user"]->companyID,$transactionID);
 			//$objTM["entityID"] 						= /*inicio get post*/ $this->request->getPost("txtCustomerID");
@@ -782,6 +784,7 @@ class app_box_outcash extends _BaseController {
 			$dataView["objTipoMovement"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_outputcash","areaID",$companyID);
 			$dataView["objSubTipoMovement"]		= $this->core_web_catalog->getCatalogAllItem_Parent("tb_transaction_master_outputcash","priorityID",$companyID,$dataView["objTipoMovement"][0]->catalogItemID);
 			$dataView["objListDenomination"]	= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_denomination","catalogItemID",$companyID);
+			$dataView["objListBranch"]			= $this->Branch_Model->getByCompany($companyID);
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);

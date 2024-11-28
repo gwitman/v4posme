@@ -117,6 +117,19 @@
 												<div class="col-lg-6">
 														
 														<div class="form-group">
+															<label class="col-lg-4 control-label" for="selectFilter">Sucursal</label>
+															<div class="col-lg-8">
+																<select name="txtBranchID" id="txtBranchID"  class="select2"> 
+																		<?php
+																		foreach($objListBranch as $i){
+																			echo "<option value='".$i->branchID."' selected >".$i->name."</option>"; 
+																		}
+																		?>		
+																</select>
+															</div>
+														</div>
+														
+														<div class="form-group">
 															<label class="col-lg-4 control-label" for="selectFilter">Moneda</label>
 															<div class="col-lg-8">
 																<select name="txtCurrencyID" id="txtCurrencyID" class="select2">																		>																
