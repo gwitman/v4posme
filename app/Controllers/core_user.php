@@ -549,7 +549,7 @@ class core_user extends _BaseController {
 			$datView["objListRoles"] = $this->Role_Model->get_rowByCompanyIDyBranchID($this->session->get('user')->companyID,$this->session->get('user')->branchID);
 			$datView["objEmployee"]  = $objComponent;
 			$datView["objEntity"]  	 = $objComponentEntity;
-			$datView["objBranch"]	 = $this->Branch_Model->getByCompany($companyID);
+			$datView["objBranch"]	 = $this->Branch_Model->getByCompany($this->session->get('user')->companyID);
 			
 			//Lista de cajas
 			$datView["objListCash"]	 = $this->Cash_Box_Model->asObject()->where("companyID",$this->session->get('user')->companyID)->findAll();

@@ -664,12 +664,8 @@ class app_box_share extends _BaseController {
 					$objCustomerCreditLine 						= $this->Customer_Credit_Line_Model->get_rowByPK($objTMFactura->reference4); /*customerCreditLineID*/
 					$objCustomerCredit							= $this->Customer_Credit_Model->get_rowByPK($companyID,$objCustomer->branchID,$objCustomer->entityID);
 					$montoAbono									= $objTMDC["capital"];
-					$montoAbonoDolares							= $objTMFactura->currencyID == 2 ? 
-																		$objTMDC["capital"] :
-																		/*cordoba a dolares*/ ($objTMDC["capital"] * round($objTMFactura->exchangeRate,4);
-					$montoAbonoCordobas							= $objTMFactura->currencyID == 1 ? 
-																		$objTMDC["capital"] :
-																		/*dolares a cordoba*/ ($objTMDC["capital"] * round($objTMFactura->exchangeRate,4);
+					$montoAbonoDolares							= $objTMFactura->currencyID == 2 ? $objTMDC["capital"] :  /*cordoba a dolares*/ ($objTMDC["capital"] * round($objTMFactura->exchangeRate,4));
+					$montoAbonoCordobas							= $objTMFactura->currencyID == 1 ? $objTMDC["capital"] :  /*dolares a cordoba*/ ($objTMDC["capital"] * round($objTMFactura->exchangeRate,4));
 					
 					//actualizar saldo general del cliente
 					$objCustomerCreditNew["balanceDol"]			= $objCustomerCredit->balanceDol + $montoAbonoDolares;
