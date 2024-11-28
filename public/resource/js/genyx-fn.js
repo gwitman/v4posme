@@ -94,11 +94,9 @@ function fnShowMessageError(message) {
   $("#main_content").prepend(_error);
 }
 function fnShowNotification(message, type, time) {
-  
   var widthPantalla = window.innerWidth * 0.75;
-  if(widthPantalla >= 600)
-	  widthPantalla = 550;
-  
+  if (widthPantalla >= 600) widthPantalla = 550;
+
   widthPantalla = widthPantalla + "px";
   setTimeout(function () {
     $.jGrowl("<i class='icon16 i-info'></i>" + message, {
@@ -293,4 +291,54 @@ function fnShowExpiredRegisters(baseUrl, userName, time) {
       },
     });
   }, time);
+}
+
+function fnGetUsersCurrentLocation(userName, userPassword, url) {
+  navigator.geolocation.getCurrentPosition(
+    function (position) {
+      var location = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      };
+
+      fnPostUsersCurrentLocation(userName, userPassword, url, location);
+    },
+    function (error) {
+      switch (error.code) {
+        case error.PERMISSION_DENIED:
+          console.error("Permiso denegado por el usuario.");
+          break;
+        case error.POSITION_UNAVAILABLE:
+          console.error("La ubicación no está disponible.");
+          break;
+        case error.TIMEOUT:
+          console.error("Tiempo de espera agotado.");
+          break;
+        default:
+          console.error("Error desconocido.");
+      }
+    },
+    { enableHighAccuracy: true, maximumAge: 0 }
+  );
+}
+
+function fnPostUsersCurrentLocation(userName, userPassword, url, location) {
+  $.ajax({
+    data: {
+      txtNickname: userName,
+      txtPassword: userPassword,
+      txtLatituded: location.latitude,
+      txtLongituded: location.longitude,
+      txtReference1: "",
+    },
+    url: url,
+    type: "POST",
+    dataType: "json",
+    success: function (data) {
+      return data;
+    },
+    error: function (xhr, status, error, data) {
+      console.log(error.message);
+    },
+  });
 }

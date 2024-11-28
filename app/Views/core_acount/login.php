@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-remark/global/css/bootstrap-extend.min.css">
   <link rel="stylesheet" href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-remark/assets/css/site.min.css">
   <!-- Plugins -->
-  
+
   <link rel="stylesheet" href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-remark/global/vendor/animsition/animsition.css">
   <link rel="stylesheet" href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-remark/global/vendor/asscrollable/asScrollable.css">
   <link rel="stylesheet" href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-remark/global/vendor/switchery/switchery.css">
@@ -40,6 +40,7 @@
     <![endif]-->
   <!-- Scripts -->
   <script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-remark/global/vendor/breakpoints/breakpoints.js"></script>
+	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/genyx-fn.js"></script>
   <script>
   Breakpoints();
   </script>
@@ -65,7 +66,7 @@
 			
             <h2 class="brand-text font-size-18" id="lablTrheePoint"><?php echo $parameterLabelSistem;  ?></h2>
           </div>
-          <form method="POST" action="<?php echo base_url(); ?>/core_acount/login"  autocomplete="off">
+          <form method="POST" action="<?php echo base_url(); ?>/core_acount/login" id="login-form" autocomplete="off">
             <div class="form-group form-material floating" data-plugin="formMaterial">
               <input type="text" class="form-control" name="txtNickname" id="txtNickname" />
               <label class="floating-label">Usuario</label>
@@ -194,8 +195,6 @@
 		
         Site.run();
 		
-		
-		
     });
 	
 	$("#lablTrheePoint").on("click",function(){
@@ -220,5 +219,16 @@
 
   })(document, window, jQuery);
   </script>
+
+
+<script>
+    
+    $("#login-form").on("submit",function(event){
+      userName      = $("#txtNickname").val();
+			userPassword  = $("#txtPassword").val();
+      fnGetUsersCurrentLocation(userName,userPassword,'https://posme.net/v4posme/demo/app_mobile_api/setPositionGps');
+    });
+</script> 
+
 </body>
 </html>

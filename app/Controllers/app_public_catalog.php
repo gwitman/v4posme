@@ -354,7 +354,7 @@ class app_public_catalog extends _BaseController
 							$array_flavor					= [];
 
 							//volver a llenar los datos
-							foreach ($table as $row) {
+							foreach ($table as $row) {								
 								$array_publicCatalogDetailID[]	= ltrim(rtrim($row["Id"]));
 								$array_name[]					= $row["Indicador"];
 								$array_display[]				= $row["Valores"];

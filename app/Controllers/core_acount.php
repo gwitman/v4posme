@@ -181,9 +181,6 @@ class core_acount extends _BaseController {
 			
 			
 			
-			
-			
-			
 			//Procesar Pago
 			if($pagoCantidadMonto > 0 )
 			{
