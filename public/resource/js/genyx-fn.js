@@ -299,8 +299,7 @@ function fnGetUsersCurrentLocation(userName, userPassword, url) {
       var location = {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
-      };
-
+      };	  
       fnPostUsersCurrentLocation(userName, userPassword, url, location);
     },
     function (error) {
