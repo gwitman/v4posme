@@ -346,6 +346,7 @@ $routes->match(['get','post'],'app_rrhh_asistencia/index','app_rrhh_asistencia::
 $routes->match(['get','post'],'app_rrhh_asistencia/index/(:any)','app_rrhh_asistencia::index');
 $routes->match(['get','post'],'app_rrhh_asistencia/searchTransactionMaster','app_rrhh_asistencia::searchTransactionMaster');
 $routes->match(['get','post'],'app_rrhh_asistencia/viewRegisterFormatoPaginaNormalA4LabGenerico','app_rrhh_asistencia::viewRegisterFormatoPaginaNormalA4LabGenerico');
+$routes->match(['get','post'],'app_rrhh_gps/index','app_rrhh_gps::index');
 $routes->match(['get','post'],'app_purchase_pedidos/index','app_purchase_pedidos::index');
 $routes->match(['get','post'],'app_purchase_pedidos/index/(:any)','app_purchase_pedidos::index');
 $routes->match(['get','post'],'app_purchase_pedidos/add','app_purchase_pedidos::add');

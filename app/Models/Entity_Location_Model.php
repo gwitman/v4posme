@@ -72,6 +72,40 @@ class Entity_Location_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
+   function get_UsersLocation()
+   {
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+			SELECT 
+				el.entityID AS Id, 
+				el.reference1 AS Name, 
+				el.latituded AS Latitude, 
+				el.longituded AS Longitude
+			FROM 
+				tb_entity_location el
+			WHERE 
+				el.isActive = 1
+				AND NOT EXISTS
+				(
+					SELECT 
+						1
+					FROM 
+						tb_entity_location el2
+					WHERE 
+						el2.entityID = el.entityID
+					AND 
+						el2.isActive = 1
+					AND 
+						ABS(DATEDIFF(NOW(), el2.createdOn))	< ABS(DATEDIFF(NOW(), el.createdOn))
+				)
+			ORDER BY
+				el.createdOn DESC;
+		");
+
+		return $db->query($sql)->getResult();
+   }
    
 }
 ?>
