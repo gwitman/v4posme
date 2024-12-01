@@ -66,10 +66,14 @@ crear una cuenta de gmail del cliente
 configurar las constantes de la apliacion, con la cuenta
 de gmail.
 
-modificar el siguiente archivo
+mover archivos a php: C:\xampp\php\ext
+		C:\xampp\teamds2\nsSystem\v4posme\public\resource\dll\ixed.8.0ts.win
+		
+		
+modificar el siguiente archivo		
 		C:\xampp\php\php.ini
 		post_max_size=80M
-		upload_max_filesize=80M
+		upload_max_filesize=80M		
 		
 		memory_limit=512M
 		opcache.enable=1
@@ -104,6 +108,7 @@ modificar el siguiente archivo
 				extension=gd
 				extension=soap
 				extension=imap
+				extension=ixed.8.0ts.win
 		
 modificar los siguiente archivos:
 		C:\xampp\mysql\bin\my.ini
@@ -298,10 +303,12 @@ Probar la configuracion de pago
 	http://localhost/posmev4/
 
 Encrptar los siguientes archivos
+	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\application\controller\core_account.php
+	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\application\view\core_account.php
 	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\system\libraries\Email.php
 	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\application\config\constants.php
 	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\application\config\database.php
-	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\application\config\config.php
+	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\application\config\config.php	
 	C:\xampp\teamds2\nsSystem\fidlocal-produccion-app\application\libraries\.....
 	
 

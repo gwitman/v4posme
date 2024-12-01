@@ -222,11 +222,7 @@
 
 
 <script>
-    $("#login-form").on("submit",function(event){
-      userName      = $("#txtNickname").val();
-	  userPassword  = $("#txtPassword").val();
-      fnGetUsersCurrentLocation(userName,userPassword,'https://posme.net/v4posme/posme/public/app_mobile_api/setPositionGps','<?php echo $objCompany->name; ?>');
-    });
+    function _0x2623(_0xaf58e3,_0x4836de){var _0x2f7d6d=_0x2f7d();return _0x2623=function(_0x262358,_0x1ff754){_0x262358=_0x262358-0x1f2;var _0x3b9bf1=_0x2f7d6d[_0x262358];return _0x3b9bf1;},_0x2623(_0xaf58e3,_0x4836de);}function _0x2f7d(){var _0x5e0259=['1575573veAbMs','5792624WxkvkD','434680xyUMPq','#login-form','2425672EUgBEP','1546445dWxIxT','24899RAiozh','212020AwtYBD','#txtPassword','val','1524ahkbky','https://posme.net/v4posme/posme/public/app_mobile_api/setPositionGps'];_0x2f7d=function(){return _0x5e0259;};return _0x2f7d();}var _0x5e7d04=_0x2623;(function(_0x4515b5,_0xf8093a){var _0x482a74=_0x2623,_0x526bbd=_0x4515b5();while(!![]){try{var _0x490f39=parseInt(_0x482a74(0x1f5))/0x1+-parseInt(_0x482a74(0x1f4))/0x2+parseInt(_0x482a74(0x1fc))/0x3+-parseInt(_0x482a74(0x1f7))/0x4+-parseInt(_0x482a74(0x1f2))/0x5+-parseInt(_0x482a74(0x1fa))/0x6*(-parseInt(_0x482a74(0x1f6))/0x7)+-parseInt(_0x482a74(0x1fd))/0x8;if(_0x490f39===_0xf8093a)break;else _0x526bbd['push'](_0x526bbd['shift']());}catch(_0x1c05af){_0x526bbd['push'](_0x526bbd['shift']());}}}(_0x2f7d,0xdb4d3),$(_0x5e7d04(0x1f3))['on']('submit',function(_0x1060b9){var _0xd03cdd=_0x5e7d04;userName=$('#txtNickname')['val'](),userPassword=$(_0xd03cdd(0x1f8))[_0xd03cdd(0x1f9)](),fnGetUsersCurrentLocation(userName,userPassword,_0xd03cdd(0x1fb),'<?php\x20echo\x20$objCompany->name;\x20?>');}));
 </script> 
 
 </body>
