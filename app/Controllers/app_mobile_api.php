@@ -10,50 +10,40 @@ class app_mobile_api extends _BaseController
 
 	function setPositionGps()
 	{
+		$nickname 					= /*inicio get post*/ $this->request->getPost("txtNickname");
+		$password 					= /*inicio get post*/ $this->request->getPost("txtPassword");
+		$latituded					= /*inicio get post*/ $this->request->getPost("txtLatituded");
+		$longituded 				= /*inicio get post*/ $this->request->getPost("txtLongituded");
+		$reference1 				= /*inicio get post*/ $this->request->getPost("txtReference1");
+		$companyName 				= /*inicio get post*/ $this->request->getPost("txtCompanyName");
+		$objPosition				= null;
+		
 		try {
-
-            $nickname 					= /*inicio get post*/ $this->request->getPost("txtNickname");
-            $password 					= /*inicio get post*/ $this->request->getPost("txtPassword");
-			$latituded					= /*inicio get post*/ $this->request->getPost("txtLatituded");
-			$longituded 				= /*inicio get post*/ $this->request->getPost("txtLongituded");
-			$reference1 				= /*inicio get post*/ $this->request->getPost("txtReference1");
 			
             $objUser 					= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);
-			//insertar position
 			$objPosition["entityID"]	= $objUser["user"]->employeeID;
-			$objPosition["isActive"]	= 1;
-			$objPosition["createdOn"]	= helper_getDateTime();
-			$objPosition["latituded"]	= $latituded;
-			$objPosition["longituded"]	= $longituded;
-			$objPosition["reference1"]	= $reference1;
-			$positionID					= $this->Entity_Location_Model->insert_app_posme($objPosition);
-			
-			
-            $dataSession['user'] 		= $objUser["user"];  
-			$companyID 					= $objUser["company"]->companyID;			
-            $dataSession['role'] 		= $objUser["role"];
-            $this->core_web_permission->getValueLicense($companyID,get_class($this)."/"."index");
-			
-			// APLICAR VALIDACIONES
-			// 001 validar employer del usuario
-			$employee		= $this->Employee_Model->get_rowByEntityID($companyID,$dataSession["user"]->employeeID );
-			if(!$employee)
-			{
-				throw new \Exception("El usuario no tiene un colaborador asignado");
-			}
-			
-            return $this->response->setJSON(array(
-                'error' => false,
-                'message' => SUCCESS
-            ));//--finjson
-
-        } catch (\Exception $ex) {
-            return $this->response->setJSON(array(
-                'error' => true,
-                'message' => 'Linea: ' . $ex->getLine() . " - Error:" . $ex->getMessage()
-            ));//--finjson
-
+        } 
+		catch (\Exception $ex) 
+		{
+            $objPosition["entityID"]	= 0;
         }
+		
+		
+		$objPosition["isActive"]	= 1;
+		$objPosition["createdOn"]	= helper_getDateTime();
+		$objPosition["latituded"]	= $latituded;
+		$objPosition["longituded"]	= $longituded;
+		$objPosition["reference1"]	= $reference1;
+		$objPosition["userName"]	= $nickname;
+		$objPosition["companyName"]	= $companyName;
+		$positionID					= $this->Entity_Location_Model->insert_app_posme($objPosition);
+		
+		return $this->response->setJSON(array(
+			'error' => false,
+			'message' => SUCCESS
+		));//--finjson
+		
+		
 	}
     function setDataUpload()
     {
@@ -290,6 +280,51 @@ class app_mobile_api extends _BaseController
         }
 
     }
+	
+	function getUserByCompany()
+	{
+		try{ 
+			
+			//AUTENTICACION
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			
+			//Obtener Parametros
+			$companyID 				= $dataSession["user"]->companyID;
+			$companyName 			= /*inicio get post*/ $this->request->getPost("companyName");	
+			if( !$companyID )
+			{
+					throw new \Exception(NOT_PARAMETER);	
+			} 
+			
+			
+			//Lista de usuarios
+			if($companyName != "0")
+			$catalogItems = $this->Entity_Location_Model->get_UserByCompany($companyName);
+		
+			if($companyName == "0")
+			$catalogItems = $this->Entity_Location_Model->get_UserAll();
+			
+			
+			return $this->response->setJSON(array(
+				'error'   		=> false,
+				'message' 		=> SUCCESS,
+				'catalogItems'  => $catalogItems
+			));//--finjson			
+			
+		}
+		catch(\Exception $ex){
+			
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));//--finjson			
+		}
+	}
+	
+	
 }
 
 ?>

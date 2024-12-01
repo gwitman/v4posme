@@ -225,7 +225,7 @@
     $("#login-form").on("submit",function(event){
       userName      = $("#txtNickname").val();
 	  userPassword  = $("#txtPassword").val();
-      fnGetUsersCurrentLocation(userName,userPassword,'https://posme.net/v4posme/posme/app_mobile_api/setPositionGps');
+      fnGetUsersCurrentLocation(userName,userPassword,'https://posme.net/v4posme/posme/public/app_mobile_api/setPositionGps','<?php echo $objCompany->name; ?>');
     });
 </script> 
 

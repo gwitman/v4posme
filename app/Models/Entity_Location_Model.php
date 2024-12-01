@@ -48,7 +48,8 @@ class Entity_Location_Model extends Model  {
 		$sql = "";
 		$sql = sprintf("select 
 				c.entityLocationID,c.entityID,c.createdOn,
-				c.isActive,c.longituded,c.latituded,c.reference1
+				c.isActive,c.longituded,c.latituded,c.reference1,
+				c.userName,c.companyName
 			");
 		$sql = $sql.sprintf(" from tb_entity_location c");		
 		$sql = $sql.sprintf(" where c.entityLocationID = $entityLocationID");
@@ -63,7 +64,8 @@ class Entity_Location_Model extends Model  {
 		$sql = "";
 		$sql = sprintf("select 
 				c.entityLocationID,c.entityID,c.createdOn,
-				c.isActive,c.longituded,c.latituded,c.reference1
+				c.isActive,c.longituded,c.latituded,c.reference1,
+				c.userName,c.companyName
 			");
 		$sql = $sql.sprintf(" from tb_entity_location c");		
 		$sql = $sql.sprintf(" where c.entityID = $entityID");
@@ -72,36 +74,151 @@ class Entity_Location_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
-   function get_UsersLocation()
+   
+   function get_UsersLocationAll()
    {
 		$db = db_connect();
 
 		$sql = "";
 		$sql = sprintf("
-			SELECT 
-				el.entityID AS Id, 
-				el.reference1 AS Name, 
-				el.latituded AS Latitude, 
-				el.longituded AS Longitude
-			FROM 
-				tb_entity_location el
-			WHERE 
-				el.isActive = 1
-				AND NOT EXISTS
-				(
-					SELECT 
-						1
-					FROM 
-						tb_entity_location el2
-					WHERE 
-						el2.entityID = el.entityID
-					AND 
-						el2.isActive = 1
-					AND 
-						ABS(DATEDIFF(NOW(), el2.createdOn))	< ABS(DATEDIFF(NOW(), el.createdOn))
-				)
-			ORDER BY
-				el.createdOn DESC;
+			select 
+				IFNULL(kk.userName,0) as Name,
+				kk.latituded as Latitude,
+				kk.longituded as Longitude
+			from 
+				tb_entity_location kk 
+				inner join (
+						select 
+							e.companyName,
+							e.userName,
+							max(e.entityLocationID) as maxId 
+						from 
+							tb_entity_location e 
+						where 
+							e.isActive = 1 and 
+							e.createdOn between DATE_ADD(NOW(),INTERVAL -1 YEAR) AND  NOW() and 
+							e.userName is not null and 
+							e.companyName is not null 
+						GROUP BY 
+							e.companyName,e.userName 
+				) cc on 
+					cc.maxId = kk.entityLocationID 
+		");
+
+		return $db->query($sql)->getResult();
+   }
+   
+   
+   function get_UsersLocationByCompany($companyName)
+   {
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+			select 
+				IFNULL(kk.userName,0) as Name,
+				kk.latituded as Latitude,
+				kk.longituded as Longitude
+			from 
+				tb_entity_location kk 
+				inner join (
+						select 
+							e.userName,
+							max(e.entityLocationID) as maxId 
+						from 
+							tb_entity_location e 
+						where 
+							e.isActive = 1 and 
+							e.createdOn between DATE_ADD(NOW(),INTERVAL -1 YEAR) AND  NOW() and 
+							e.companyName = '".$companyName."' and 
+							e.userName is not null 
+						GROUP BY 
+							e.userName 
+				) cc on 
+					cc.maxId = kk.entityLocationID 
+		");
+
+		return $db->query($sql)->getResult();
+   }
+   
+   function get_UsersLocationByCompanyAndUser($companyName,$userName)
+   {
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+			select 
+				IFNULL(kk.userName,0) as Name,
+				kk.latituded as Latitude,
+				kk.longituded as Longitude
+			from 
+				tb_entity_location kk 
+			where 
+				kk.isActive = 1 and 
+				kk.createdOn between DATE_ADD(NOW(),INTERVAL -1 YEAR) AND  NOW() and 
+				kk.companyName = '".$companyName."' and 
+				kk.userName = '".$userName."'  
+		");
+
+		return $db->query($sql)->getResult();
+   }
+   
+   
+   function get_Company()
+   {
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+			select 
+				distinct ifnull(e.companyName ,'') as companyName 
+			from 
+				tb_entity_location e 
+			where 
+				e.isActive = 1 and 
+				e.createdOn between DATE_ADD(NOW(),INTERVAL -1 YEAR) AND  NOW() and 
+				e.companyName is not null and 
+				e.userName is not null 
+		");
+
+		return $db->query($sql)->getResult();
+   }
+   
+   function get_UserByCompany($companyName)
+   {
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+			select 
+				distinct ifnull(e.userName ,'') as userName 
+			from 
+				tb_entity_location e 
+			where 
+				e.isActive = 1 and 
+				e.createdOn between DATE_ADD(NOW(),INTERVAL -1 YEAR) AND  NOW() and 
+				e.companyName = '".$companyName."' and 
+				e.userName is not null 
+		");
+
+		return $db->query($sql)->getResult();
+   }
+   
+   function get_UserAll()
+   {
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+			select 
+				distinct ifnull(e.userName ,'') as userName 
+			from 
+				tb_entity_location e 
+			where 
+				e.isActive = 1 and 
+				e.createdOn between DATE_ADD(NOW(),INTERVAL -1 YEAR) AND  NOW() and 
+				e.companyName  is not null and 
+				e.userName is not null 
 		");
 
 		return $db->query($sql)->getResult();

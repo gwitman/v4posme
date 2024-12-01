@@ -12,22 +12,23 @@ class core_acount extends _BaseController {
 	function index(){
 		
 		//Obtener Datos 			
-		$parameterSendBox = $this->core_web_parameter->getParameter("CORE_PAYMENT_SENDBOX",APP_COMPANY);		
-		$parameterSendBox = $parameterSendBox->value;		
-		$parameterSendBoxUsuario = $this->core_web_parameter->getParameter("CORE_PAYMENT_PRUEBA_USUARIO",APP_COMPANY);
-		$parameterSendBoxUsuario = $parameterSendBoxUsuario->value;
-		$parameterSendBoxClave = $this->core_web_parameter->getParameter("CORE_PAYMENT_PRUEBA_CLAVE",APP_COMPANY);
-		$parameterSendBoxClave = $parameterSendBoxClave->value;
+		$parameterSendBox 			= $this->core_web_parameter->getParameter("CORE_PAYMENT_SENDBOX",APP_COMPANY);		
+		$parameterSendBox 			= $parameterSendBox->value;		
+		$parameterSendBoxUsuario 	= $this->core_web_parameter->getParameter("CORE_PAYMENT_PRUEBA_USUARIO",APP_COMPANY);
+		$parameterSendBoxUsuario 	= $parameterSendBoxUsuario->value;
+		$parameterSendBoxClave 		= $this->core_web_parameter->getParameter("CORE_PAYMENT_PRUEBA_CLAVE",APP_COMPANY);
+		$parameterSendBoxClave 		= $parameterSendBoxClave->value;
 		$parameterProduccionUsuario = $this->core_web_parameter->getParameter("CORE_PAYMENT_PRODUCCION_USUARIO",APP_COMPANY);
 		$parameterProduccionUsuario = $parameterProduccionUsuario->value;
-		$parameterProduccionClave = $this->core_web_parameter->getParameter("CORE_PAYMENT_PRODUCCION_CLAVE",APP_COMPANY);
-		$parameterProduccionClave = $parameterProduccionClave->value;
-		$parameterPrice= $this->core_web_parameter->getParameter("CORE_CUST_PRICE",APP_COMPANY);
-		$parameterPrice = $parameterPrice->value;		
-		$parameterTipoPlan = $this->core_web_parameter->getParameter("CORE_CUST_PRICE_TIPO_PLAN",APP_COMPANY);
-		$parameterTipoPlan = $parameterTipoPlan->value;		
-		$parameterLabelSistem = $this->core_web_parameter->getParameter("CORE_LABEL_SISTEMA_SUPLANTATION",APP_COMPANY);
-		$parameterLabelSistem = $parameterLabelSistem->value;		
+		$parameterProduccionClave 	= $this->core_web_parameter->getParameter("CORE_PAYMENT_PRODUCCION_CLAVE",APP_COMPANY);
+		$parameterProduccionClave 	= $parameterProduccionClave->value;
+		$parameterPrice				= $this->core_web_parameter->getParameter("CORE_CUST_PRICE",APP_COMPANY);
+		$parameterPrice 			= $parameterPrice->value;		
+		$parameterTipoPlan 			= $this->core_web_parameter->getParameter("CORE_CUST_PRICE_TIPO_PLAN",APP_COMPANY);
+		$parameterTipoPlan 			= $parameterTipoPlan->value;		
+		$parameterLabelSistem 		= $this->core_web_parameter->getParameter("CORE_LABEL_SISTEMA_SUPLANTATION",APP_COMPANY);
+		$parameterLabelSistem 		= $parameterLabelSistem->value;
+		$objCompany					= $this->Company_Model->get_rowByPK(APP_COMPANY);
 		
 		
 		//C:\xampp\teamds2\nsSystem\v4posme\system\Database\MySQLi\Connection\execute
@@ -35,9 +36,10 @@ class core_acount extends _BaseController {
 		//echo "<h1 style='color: wheat;' >uso de la variable ENVIRONMENT:".print_r(ENVIRONMENT ,true)."</h1>";		
 		//Renderizar		
 		$data["message"]	= "";
-		$data["parameterPrice"]		= $parameterPrice;
-		$data["parameterTipoPlan"]	= $parameterTipoPlan;
+		$data["parameterPrice"]			= $parameterPrice;
+		$data["parameterTipoPlan"]		= $parameterTipoPlan;
 		$data["parameterLabelSistem"]	= $parameterLabelSistem;
+		$data["objCompany"]				= $objCompany;
 		return view('core_acount/login',$data);//--finview-r
 	}		
 	

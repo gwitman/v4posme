@@ -28,9 +28,54 @@ class app_rrhh_gps extends _BaseController{
                 throw new \Exception(NOT_ACCESS_FUNCTION);			
             }	
 
-
-            $objListRegisteredLocations                 = $this->Entity_Location_Model->get_UsersLocation();
-            $dataSession["objListRegisteredLocations"]  = $objListRegisteredLocations;
+			$txtCompanyName			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"txtCompanyName");//--finuri				
+			$txtUserName			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"txtUserName");//--finuri
+			
+			if($txtCompanyName == "" || $txtCompanyName == "0" )
+				$txtCompanyName = "0";
+			if($txtUserName == "" || $txtUserName == "0" )
+				$txtUserName = "0";
+			
+			echo "witman:";
+			//Obtener todos puntos
+			if($txtUserName == "0" && $txtCompanyName == "0")
+			{
+				
+				$objListRegisteredLocations                 = $this->Entity_Location_Model->get_UsersLocationAll();
+				$dataSession["objListRegisteredLocations"]  = $objListRegisteredLocations;
+			}
+			else if($txtUserName == "0" && $txtCompanyName != "0")
+			{
+				echo $txtCompanyName;
+				$objListRegisteredLocations                 = $this->Entity_Location_Model->get_UsersLocationByCompany($txtCompanyName);
+				$dataSession["objListRegisteredLocations"]  = $objListRegisteredLocations;
+			}
+			else if($txtUserName != "0" && $txtCompanyName != "0")
+			{
+				
+				$objListRegisteredLocations                 = $this->Entity_Location_Model->get_UsersLocationByCompanyAndUser($txtCompanyName,$txtUserName);
+				$dataSession["objListRegisteredLocations"]  = $objListRegisteredLocations;
+			}
+			
+			//Obtener la lista de compania
+			$objListCompany                 			= $this->Entity_Location_Model->get_Company();	
+			
+			
+			//Obtener los usuarios
+			if($txtCompanyName == "0")
+			{
+				$objListUser                 				= $this->Entity_Location_Model->get_UserAll();
+			}
+			if($txtCompanyName != "0")
+			{
+				$objListUser                 				= $this->Entity_Location_Model->get_UserByCompany($txtCompanyName);
+			}
+			
+            
+			$dataSession["objListCompany"]  			= $objListCompany;
+			$dataSession["objListUser"]  				= $objListUser;
+			$dataSession["txtCompanyName"]  			= $txtCompanyName;
+			$dataSession["txtUserName"]  				= $txtUserName;
 
             
 

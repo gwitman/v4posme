@@ -347,6 +347,7 @@ $routes->match(['get','post'],'app_rrhh_asistencia/index/(:any)','app_rrhh_asist
 $routes->match(['get','post'],'app_rrhh_asistencia/searchTransactionMaster','app_rrhh_asistencia::searchTransactionMaster');
 $routes->match(['get','post'],'app_rrhh_asistencia/viewRegisterFormatoPaginaNormalA4LabGenerico','app_rrhh_asistencia::viewRegisterFormatoPaginaNormalA4LabGenerico');
 $routes->match(['get','post'],'app_rrhh_gps/index','app_rrhh_gps::index');
+$routes->match(['get','post'],'app_rrhh_gps/index/(:any)','app_rrhh_gps::index');
 $routes->match(['get','post'],'app_purchase_pedidos/index','app_purchase_pedidos::index');
 $routes->match(['get','post'],'app_purchase_pedidos/index/(:any)','app_purchase_pedidos::index');
 $routes->match(['get','post'],'app_purchase_pedidos/add','app_purchase_pedidos::add');
@@ -890,6 +891,8 @@ $routes->match(['get','post'],'app_mobile_api/setDataUpload','app_mobile_api::se
 $routes->match(['get','post'],'app_mobile_api/setDataUpload/(:any)','app_mobile_api::setDataUpload');
 $routes->match(['get','post'],'app_mobile_api/setPositionGps','app_mobile_api::setPositionGps');
 $routes->match(['get','post'],'app_mobile_api/setPositionGps/(:any)','app_mobile_api::setPositionGps');
+$routes->match(['get','post'],'app_mobile_api/getUserByCompany','app_mobile_api::getUserByCompany');
+$routes->match(['get','post'],'app_mobile_api/getUserByCompany/(:any)','app_mobile_api::getUserByCompany');
 $routes->match(['get','post'],'app_invoice_billing/edit','app_invoice_billing::edit');
 $routes->match(['get','post'],'app_invoice_billing/edit/(:any)','app_invoice_billing::edit');
 $routes->match(['get','post'],'app_invoice_billing/editv2','app_invoice_billing::editv2');

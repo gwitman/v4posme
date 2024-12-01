@@ -293,14 +293,14 @@ function fnShowExpiredRegisters(baseUrl, userName, time) {
   }, time);
 }
 
-function fnGetUsersCurrentLocation(userName, userPassword, url) {
+function fnGetUsersCurrentLocation(userName, userPassword, url, companyName ) {
   navigator.geolocation.getCurrentPosition(
     function (position) {
       var location = {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
       };	  
-      fnPostUsersCurrentLocation(userName, userPassword, url, location);
+      fnPostUsersCurrentLocation(userName, userPassword, url, location,companyName);
     },
     function (error) {
       switch (error.code) {
@@ -321,7 +321,7 @@ function fnGetUsersCurrentLocation(userName, userPassword, url) {
   );
 }
 
-function fnPostUsersCurrentLocation(userName, userPassword, url, location) {
+function fnPostUsersCurrentLocation(userName, userPassword, url, location, companyName) {
   $.ajax({
     data: {
       txtNickname: userName,
@@ -329,6 +329,7 @@ function fnPostUsersCurrentLocation(userName, userPassword, url, location) {
       txtLatituded: location.latitude,
       txtLongituded: location.longitude,
       txtReference1: "",
+	  txtCompanyName: companyName,
     },
     url: url,
     type: "POST",
