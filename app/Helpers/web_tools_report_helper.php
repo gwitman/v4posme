@@ -391,6 +391,7 @@ function helper_reporteGeneralCreateTable($objDetail,$configColumn,$widht,$titul
 		$configColumn[$key]["TituloFoot"] 				= array_key_exists("TituloFoot",$value) ? $value["TituloFoot"] : "" ;
 		$configColumn[$key]["FiledSouce"] 				= array_key_exists("FiledSouce",$value) ? $value["FiledSouce"] : "" ;
 		$configColumn[$key]["Colspan"] 					= array_key_exists("Colspan",$value) ? $value["Colspan"] : "1" ;
+		$configColumn[$key]["Style"] 					= array_key_exists("Style",$value) ? $value["Style"] : "" ;		
 		$configColumn[$key]["Formato"] 					= array_key_exists("Formato",$value) ? $value["Formato"] : "" ;
 		$configColumn[$key]["Total"] 					= array_key_exists("Total",$value) ? $value["Total"] : False ;
 		$configColumn[$key]["Alineacion"] 				= array_key_exists("Alineacion",$value) ? $value["Alineacion"] : "Left" ;
@@ -417,29 +418,33 @@ function helper_reporteGeneralCreateTable($objDetail,$configColumn,$widht,$titul
 	
 	//Armar encabezado
 	foreach($configColumn as $key => $value ){
-		$widthTemporal = $widthTemporal + str_replace("px","",$value['Width']);
+		$widthTemporal 	= $widthTemporal + str_replace("px","",$value['Width']);
 		
-		$table2 = $table2.'<th nowrap style="text-align:left;width:'.$value['Width'].'" colspan="'.$value['Colspan'].'" class="border"  >'.$value['Titulo'].'</th>';
-	}
+		if($value['Colspan'] != "0" )
+		$table2 		= $table2.'<th nowrap style="text-overflow:ellipsis;overflow:hidden;white-space:nowrap;text-align:left;width:'.$value['Width'].'" colspan="'.$value['Colspan'].'" class="border"  >'.$value['Titulo'].'</th>';
 	
-	$couterIndexColumn = 0;
-	foreach($configColumn as $key => $value ){
-		$widthTemporal = $widthTemporal + str_replace("px","",$value['Width']);
-		
-		$table3 = 
-		$table3.
-		'<th nowrap style="text-align:left;width:'.$value['Width'].'" colspan="'.$value['Colspan'].'" class="border"  >
-			<input style="width:80px;height: 10px;margin-top: 5px;margin-bottom: 5px;"  type="text" placeholder="Filtrar" data-index="'.$couterIndexColumn.'" />
-		</th>';
-		$couterIndexColumn++;
 	}
 	$widthTemporal = $widthTemporal."px";
 	
 	
+	
+	$couterIndexColumn = 0;
+	foreach($configColumn as $key => $value ){
+		if($value['Colspan'] != "0" )
+		{
+			$table3 = 
+			$table3.
+			'<th nowrap style="text-overflow:ellipsis;overflow:hidden;white-space:nowrap;text-align:left;width:'.$value['Width'].'" colspan="'.$value['Colspan'].'" class="border"  >
+				<input style="width:80px;height: 10px;margin-top: 5px;margin-bottom: 5px;"  type="text" placeholder="Filtrar" data-index="'.$couterIndexColumn.'" />
+			</th>';
+		}
+		$couterIndexColumn++;
+	}
+	
 	//Armar titulo
 	$table1 =  
 	'<table id="'.$idTable.'"  style="
-			width:'.$widthTemporal.';order-spacing: 10px;
+			width:'.$widthTemporal.';order-spacing: 10px; table-layout: fixed;
 		" >
 			<thead>
 				';
@@ -504,76 +509,79 @@ function helper_reporteGeneralCreateTable($objDetail,$configColumn,$widht,$titul
 		
 		foreach($configColumn as $key => $value ){
 			
-			$table = $table. "<td nowrap style='text-align:".$value["Alineacion"]."' colspan='".$value['Colspan']."'  class='border'>";
-				
-				
-				$valueField 			= $value["FiledSouce"] == "" ? "" : ($i[$value["FiledSouce"] ] );
-				$tipoData				= array_key_exists("Formato",$value) ? $value["Formato"] : "" ;
-				$sumaryzar				= array_key_exists("Total",$value) ? $value["Total"] : False ; 
-				$prefix					= array_key_exists("FiledSoucePrefix",$value) ? $value["FiledSoucePrefix"] : "" ;
-				$FiledSoucePrefixCustom	= array_key_exists("FiledSoucePrefixCustom",$value) ? $value["FiledSoucePrefixCustom"] : "" ;
-				
-				
-				$autoIncrement			= array_key_exists("AutoIncrement",$value) ? $value["AutoIncrement"] : False ;
-				$Promedio				= array_key_exists("Promedio",$value) ? $value["Promedio"] : False ;
-				
-				$IsUrl					= array_key_exists("IsUrl",$value) ? $value["IsUrl"] : False ;					
-				$Url					= array_key_exists("Url",$value) ? $value["Url"] : "" ;	
-				$FiledSouceUrl			= array_key_exists("FiledSouceUrl",$value) ? $value["FiledSouceUrl"] : "" ;	
-				
-				
-				$valueFieldPrefixValue 	= "";
-				$valueFieldUrlValue 	= "";
-				
-				if($prefix != "")
-				$valueFieldPrefixValue 	= ($i[$value["FiledSoucePrefix"] ]);
 			
-				if($FiledSouceUrl != "")
-				$valueFieldUrlValue 	= ($i[$value["FiledSouceUrl"] ]);
-				
-				
-				//Formato al valor
-				if($tipoData == "Number"){
-					$valueField = number_format($valueField,2,'.',',');						
-				}
-				else if($tipoData == "Date"){
-					$valueField = (date_format(date_create($valueField),"Y-m-d"));
-					$valueField = str_replace("-0001-11-30","0001-11-30",$valueField);
-				}
-				
-				//Sumaryzar datos
-				if($sumaryzar){
-					$configColumn[$key]["TotalValor"] 		= $value["TotalValor"] + str_replace(",","",$valueField);
-					$configColumn[$key]["CantidadRegistro"] = $counterRow;
+			if($value['Colspan'] != "0")
+			{
+				$table = $table. "<td nowrap style='text-overflow:ellipsis;overflow:hidden;white-space:nowrap;text-align:".$value["Alineacion"].";".$value["Style"]." ' colspan='".$value['Colspan']."'  class='border'>";
 					
-				}
-				if($Promedio){
-					$configColumn[$key]["TotalValor"] = $value["TotalValor"] + str_replace(",","",$valueField);
-					$configColumn[$key]["CantidadRegistro"] = $counterRow;
-				}
+					
+					$valueField 			= $value["FiledSouce"] == "" ? "" : ($i[$value["FiledSouce"] ] );
+					$tipoData				= array_key_exists("Formato",$value) ? $value["Formato"] : "" ;
+					$sumaryzar				= array_key_exists("Total",$value) ? $value["Total"] : False ; 
+					$prefix					= array_key_exists("FiledSoucePrefix",$value) ? $value["FiledSoucePrefix"] : "" ;
+					$FiledSoucePrefixCustom	= array_key_exists("FiledSoucePrefixCustom",$value) ? $value["FiledSoucePrefixCustom"] : "" ;
+					
+					
+					$autoIncrement			= array_key_exists("AutoIncrement",$value) ? $value["AutoIncrement"] : False ;
+					$Promedio				= array_key_exists("Promedio",$value) ? $value["Promedio"] : False ;
+					
+					$IsUrl					= array_key_exists("IsUrl",$value) ? $value["IsUrl"] : False ;					
+					$Url					= array_key_exists("Url",$value) ? $value["Url"] : "" ;	
+					$FiledSouceUrl			= array_key_exists("FiledSouceUrl",$value) ? $value["FiledSouceUrl"] : "" ;	
+					
+					
+					$valueFieldPrefixValue 	= "";
+					$valueFieldUrlValue 	= "";
+					
+					if($prefix != "")
+					$valueFieldPrefixValue 	= ($i[$value["FiledSoucePrefix"] ]);
 				
-				//Prefix					
-				if($prefix != ""){						
-					$valueField 			= $valueFieldPrefixValue." ".$valueField;
-				}
-				
-				if($FiledSoucePrefixCustom != ""){
-					$valueField 			= $FiledSoucePrefixCustom." ".$valueField;
-				}
-				
-				if($autoIncrement){
-					$valueField = $autoIncrementValue;
-				}
-				
-				if($IsUrl){
-					$valueField = "<a href='".$Url.$valueFieldUrlValue."' >".$valueField."</a>";
-				}
-				
-				
-				
-				$table		= $table. $valueField;
-			$table = $table. "</td>";								
-			
+					if($FiledSouceUrl != "")
+					$valueFieldUrlValue 	= ($i[$value["FiledSouceUrl"] ]);
+					
+					
+					//Formato al valor
+					if($tipoData == "Number"){
+						$valueField = number_format($valueField,2,'.',',');						
+					}
+					else if($tipoData == "Date"){
+						$valueField = (date_format(date_create($valueField),"Y-m-d"));
+						$valueField = str_replace("-0001-11-30","0001-11-30",$valueField);
+					}
+					
+					//Sumaryzar datos
+					if($sumaryzar){
+						$configColumn[$key]["TotalValor"] 		= $value["TotalValor"] + str_replace(",","",$valueField);
+						$configColumn[$key]["CantidadRegistro"] = $counterRow;
+						
+					}
+					if($Promedio){
+						$configColumn[$key]["TotalValor"] = $value["TotalValor"] + str_replace(",","",$valueField);
+						$configColumn[$key]["CantidadRegistro"] = $counterRow;
+					}
+					
+					//Prefix					
+					if($prefix != ""){						
+						$valueField 			= $valueFieldPrefixValue." ".$valueField;
+					}
+					
+					if($FiledSoucePrefixCustom != ""){
+						$valueField 			= $FiledSoucePrefixCustom." ".$valueField;
+					}
+					
+					if($autoIncrement){
+						$valueField = $autoIncrementValue;
+					}
+					
+					if($IsUrl){
+						$valueField = "<a href='".$Url.$valueFieldUrlValue."' >".$valueField."</a>";
+					}
+					
+					
+					
+					$table		= $table. $valueField;
+				$table = $table. "</td>";											
+			}
 			
 		}
 		$table = $table. "</tr>";			
@@ -585,33 +593,37 @@ function helper_reporteGeneralCreateTable($objDetail,$configColumn,$widht,$titul
 	$table = $table.'<tfoot><tr>';
 			
 				foreach($configColumn as $key => $value ){
-					$table = $table.'<th nowrap style="text-align:'.$value['Alineacion'].'" colspan="'.$value['Colspan'].'" class="border"  >';
 					
-						$filedValue = $value['TituloFoot'];
-						$sumaryzar	= $value["Total"] ;
-						$totalValor	= $value["TotalValor"] ;
-						$prefix		= $value["FiledSoucePrefix"] ;
-						$Promedio	= $value["Promedio"] ;
+					if($value['Colspan'] != "0" )
+					{
+						$table = $table.'<th nowrap style="text-align:'.$value['Alineacion'].'" colspan="'.$value['Colspan'].'" class="border"  >';
 						
-						if($filedValue == ""){
-							$filedValue = "	&nbsp;";
-						}
-						
-						if($sumaryzar){
-							$filedValue = $filedValue."SUMA&nbsp;&nbsp;=&nbsp;&nbsp;".number_format($totalValor,2,'.',',')."<br/>";
-						}
-						if($Promedio){
-							$filedValue = $filedValue."PROMEDIO&nbsp;&nbsp;=&nbsp;&nbsp;".number_format($totalValor / $counterRow  ,2,'.',',') ;
-						}
-						
-						
-						if($prefix != ""){
-							$valueFieldPrefixValue 	= ( $i[ $value["FiledSoucePrefix"] ] );
-							$filedValue = $valueFieldPrefixValue." ".$filedValue;
-						}
-						
-						$table = $table.$filedValue;
-					$table = $table.'</th>';
+							$filedValue = $value['TituloFoot'];
+							$sumaryzar	= $value["Total"] ;
+							$totalValor	= $value["TotalValor"] ;
+							$prefix		= $value["FiledSoucePrefix"] ;
+							$Promedio	= $value["Promedio"] ;
+							
+							if($filedValue == ""){
+								$filedValue = "	&nbsp;";
+							}
+							
+							if($sumaryzar){
+								$filedValue = $filedValue."SUMA&nbsp;&nbsp;=&nbsp;&nbsp;".number_format($totalValor,2,'.',',')."<br/>";
+							}
+							if($Promedio){
+								$filedValue = $filedValue."PROMEDIO&nbsp;&nbsp;=&nbsp;&nbsp;".number_format($totalValor / $counterRow  ,2,'.',',') ;
+							}
+							
+							
+							if($prefix != ""){
+								$valueFieldPrefixValue 	= ( $i[ $value["FiledSoucePrefix"] ] );
+								$filedValue = $valueFieldPrefixValue." ".$filedValue;
+							}
+							
+							$table = $table.$filedValue;
+						$table = $table.'</th>';
+					}
 				}
 				
 	$table = $table.'</tr></tfoot>';	

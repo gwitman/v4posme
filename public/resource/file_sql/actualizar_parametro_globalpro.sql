@@ -1268,7 +1268,7 @@ where
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "2024-11-01" 
+	tb_company_parameter.value = "2024-12-01" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_MONTH";	## Cantidad de mensajes mensuales

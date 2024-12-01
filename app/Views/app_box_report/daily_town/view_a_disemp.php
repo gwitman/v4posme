@@ -9,7 +9,27 @@
 		
 		<?php 
 		echo helper_reporteGeneralCreateStyle();
+		
+		$width0  	= "600px";//99
+		$width1  	= "300px";//480
+		$width4  	= "15px";//97
+		$width5  	= "17px";//150
+		$width6  	= "16px";//98
+		$width7  	= "17px";//110
+		$width8  	= "15px";//96
+		$width9  	= "10px";//115
+		
+		
+		$width10  	= "60px";//480
+		$width00  	= "0px";//0
+		
+		
+		$width10_  	= "30px";//240
+		$width11_  	= "30px";//240
+		
 		?>
+		
+		
 		
 	</head>
 	<body style="font-family:monospace;font-size:smaller;margin:0px 0px 0px 0px"> 
@@ -26,7 +46,8 @@
 		$configColumnAbonos["7"]["Titulo"] 		= "Estado";		
 		$configColumnAbonos["8"]["Titulo"] 		= "Monto";		
 		$configColumnAbonos["9"]["Titulo"] 		= "Vendedor";		
-		$configColumnAbonos["10"]["Titulo"] 	= "Nota";		
+		$configColumnAbonos["10"]["Titulo"] 	= "Nota";
+		$configColumnAbonos["11"]["Titulo"] 	= "";
 		
 					 
 		$configColumnAbonos["0"]["FiledSouce"] 		= "transactionOn";				
@@ -38,6 +59,18 @@
 		$configColumnAbonos["8"]["FiledSouce"] 		= "montoFac";		
 		$configColumnAbonos["9"]["FiledSouce"] 		= "nickname";		
 		$configColumnAbonos["10"]["FiledSouce"] 	= "note";	
+		$configColumnAbonos["11"]["FiledSouce"] 	= "";	
+		
+		$configColumnAbonos["0"]["Colspan"] 		= "1";				
+		$configColumnAbonos["1"]["Colspan"] 		= "1";			
+		$configColumnAbonos["4"]["Colspan"] 		= "1";		
+		$configColumnAbonos["5"]["Colspan"] 		= "1";		
+		$configColumnAbonos["6"]["Colspan"] 		= "1";		
+		$configColumnAbonos["7"]["Colspan"] 		= "1";		
+		$configColumnAbonos["8"]["Colspan"] 		= "1";		
+		$configColumnAbonos["9"]["Colspan"] 		= "1";		
+		$configColumnAbonos["10"]["Colspan"] 		= "2";	
+		$configColumnAbonos["11"]["Colspan"] 		= "0";	
 		
 		
 		
@@ -50,18 +83,20 @@
 		$configColumnAbonos["8"]["Formato"] 		= "Number";		
 		$configColumnAbonos["9"]["Formato"] 		= "";		
 		$configColumnAbonos["10"]["Formato"] 		= "";	
+		$configColumnAbonos["11"]["Formato"] 		= "";	
 		
 		
 		
-		$configColumnAbonos["0"]["Width"] 		= "15px";				
-		$configColumnAbonos["1"]["Width"] 		= "80px";		
-		$configColumnAbonos["4"]["Width"] 		= "40px";		
-		$configColumnAbonos["5"]["Width"] 		= "100px";		
-		$configColumnAbonos["6"]["Width"] 		= "40px";		
-		$configColumnAbonos["7"]["Width"] 		= "40px";		
-		$configColumnAbonos["8"]["Width"] 		= "60px";		
-		$configColumnAbonos["9"]["Width"] 		= "60px";		
-		$configColumnAbonos["10"]["Width"] 		= "40px";	
+		$configColumnAbonos["0"]["Width"] 		= $width0;				
+		$configColumnAbonos["1"]["Width"] 		= $width1;		
+		$configColumnAbonos["4"]["Width"] 		= $width4;		
+		$configColumnAbonos["5"]["Width"] 		= $width5;		
+		$configColumnAbonos["6"]["Width"] 		= $width6;		
+		$configColumnAbonos["7"]["Width"] 		= $width7;		
+		$configColumnAbonos["8"]["Width"] 		= $width8;		
+		$configColumnAbonos["9"]["Width"] 		= $width9;		
+		$configColumnAbonos["10"]["Width"] 		= $width10;	
+		$configColumnAbonos["11"]["Width"] 		= $width00;			
 		
 		$configColumnAbonos["0"]["Total"] 		= False;			
 		$configColumnAbonos["1"]["Total"] 		= False;	
@@ -72,6 +107,7 @@
 		$configColumnAbonos["8"]["Total"] 		= True;		
 		$configColumnAbonos["9"]["Total"] 		= False;		
 		$configColumnAbonos["10"]["Total"] 		= False;	
+		$configColumnAbonos["11"]["Total"] 		= False;	
 		
 		/********************************/
 		$configColumnAbonosDolares["0"]["Titulo"] 		= "Fecha";	
@@ -83,6 +119,7 @@
 		$configColumnAbonosDolares["8"]["Titulo"] 		= "Monto";		
 		$configColumnAbonosDolares["9"]["Titulo"] 		= "Vendedor";		
 		$configColumnAbonosDolares["10"]["Titulo"] 		= "Nota";	
+		$configColumnAbonosDolares["11"]["Titulo"] 		= "";	
 		
 		$configColumnAbonosDolares["0"]["FiledSouce"] 		= "transactionOn";				
 		$configColumnAbonosDolares["1"]["FiledSouce"] 		= "firstName";		
@@ -93,6 +130,7 @@
 		$configColumnAbonosDolares["8"]["FiledSouce"] 		= "montoFac";		
 		$configColumnAbonosDolares["9"]["FiledSouce"] 		= "nickname";		
 		$configColumnAbonosDolares["10"]["FiledSouce"] 		= "note";	
+		$configColumnAbonosDolares["11"]["FiledSouce"] 		= "";	
 		
 		$configColumnAbonosDolares["0"]["Formato"] 		= "Date";				
 		$configColumnAbonosDolares["1"]["Formato"] 		= "";		
@@ -103,20 +141,19 @@
 		$configColumnAbonosDolares["8"]["Formato"] 		= "Number";		
 		$configColumnAbonosDolares["9"]["Formato"] 		= "";		
 		$configColumnAbonosDolares["10"]["Formato"] 	= "";	
-		$configColumnAbonosDolares["11"]["Formato"] 	= "";	
+		$configColumnAbonosDolares["11"]["Formato"] 	= "";			
 	
-		
-		$configColumnAbonosDolares["0"]["Width"] 		= "15px";		
-		$configColumnAbonosDolares["1"]["Width"] 		= "80px";		
-		$configColumnAbonosDolares["4"]["Width"] 		= "40px";		
-		$configColumnAbonosDolares["5"]["Width"] 		= "100px";		
-		$configColumnAbonosDolares["6"]["Width"] 		= "40px";		
-		$configColumnAbonosDolares["7"]["Width"] 		= "40px";		
-		$configColumnAbonosDolares["8"]["Width"] 		= "60px";		
-		$configColumnAbonosDolares["9"]["Width"] 		= "60px";		
-		$configColumnAbonosDolares["10"]["Width"] 		= "40px";	
-		$configColumnAbonosDolares["11"]["Width"] 		= "40px";	
-		
+
+		$configColumnAbonosDolares["0"]["Width"] 		= $width0;			
+		$configColumnAbonosDolares["1"]["Width"] 		= $width1;	
+		$configColumnAbonosDolares["4"]["Width"] 		= $width4;	
+		$configColumnAbonosDolares["5"]["Width"] 		= $width5;	
+		$configColumnAbonosDolares["6"]["Width"] 		= $width6;	
+		$configColumnAbonosDolares["7"]["Width"] 		= $width7;	
+		$configColumnAbonosDolares["8"]["Width"] 		= $width8;	
+		$configColumnAbonosDolares["9"]["Width"] 		= $width9;	
+		$configColumnAbonosDolares["10"]["Width"] 		= $width10;
+		$configColumnAbonosDolares["11"]["Width"] 		= $width00;				
 		
 		
 		$configColumnAbonosDolares["0"]["Total"] 		= False;		
@@ -206,19 +243,17 @@
 		$configColumnVentaContado["10"]["Formato"] 		= "";		
 		$configColumnVentaContado["11"]["Formato"] 		= "";	
 
-
-		$configColumnVentaContado["0"]["Width"] 		= "15px";		
-		$configColumnVentaContado["1"]["Width"] 		= "80px";	
-		$configColumnVentaContado["4"]["Width"] 		= "40px";		
-		$configColumnVentaContado["5"]["Width"] 		= "100px";		
-		$configColumnVentaContado["6"]["Width"] 		= "40px";		
-		$configColumnVentaContado["7"]["Width"] 		= "40px";		
-		$configColumnVentaContado["8"]["Width"] 		= "60px";		
-		$configColumnVentaContado["9"]["Width"] 		= "60px";		
-		$configColumnVentaContado["10"]["Width"] 		= "40px";	
-		$configColumnVentaContado["11"]["Width"] 		= "40px";	
 		
-		
+		$configColumnVentaContado["0"]["Width"] 		= $width0;			
+		$configColumnVentaContado["1"]["Width"] 		= $width1;	
+		$configColumnVentaContado["4"]["Width"] 		= $width4;	
+		$configColumnVentaContado["5"]["Width"] 		= $width5;	
+		$configColumnVentaContado["6"]["Width"] 		= $width6;	
+		$configColumnVentaContado["7"]["Width"] 		= $width7;	
+		$configColumnVentaContado["8"]["Width"] 		= $width8;	
+		$configColumnVentaContado["9"]["Width"] 		= $width9;	
+		$configColumnVentaContado["10"]["Width"] 		= $width10_;
+		$configColumnVentaContado["11"]["Width"] 		= $width11_;
 		
 		
 		$configColumnVentaContado["0"]["Total"] 		= False;		
@@ -266,18 +301,16 @@
 		$configColumnVentaContadoDolares["10"]["Formato"] 		= "";		
 		$configColumnVentaContadoDolares["11"]["Formato"] 		= "";		
 
-
-		$configColumnVentaContadoDolares["0"]["Width"] 		= "15px";		
-		$configColumnVentaContadoDolares["1"]["Width"] 		= "80px";		
-		$configColumnVentaContadoDolares["4"]["Width"] 		= "40px";		
-		$configColumnVentaContadoDolares["5"]["Width"] 		= "100px";		
-		$configColumnVentaContadoDolares["6"]["Width"] 		= "40px";		
-		$configColumnVentaContadoDolares["7"]["Width"] 		= "40px";		
-		$configColumnVentaContadoDolares["8"]["Width"] 		= "60px";		
-		$configColumnVentaContadoDolares["9"]["Width"] 		= "60px";		
-		$configColumnVentaContadoDolares["10"]["Width"] 	= "40px";	
-		$configColumnVentaContadoDolares["11"]["Width"] 	= "40px";	
-								 
+		$configColumnVentaContadoDolares["0"]["Width"] 		= $width0;
+		$configColumnVentaContadoDolares["1"]["Width"] 		= $width1;
+		$configColumnVentaContadoDolares["4"]["Width"] 		= $width4;
+		$configColumnVentaContadoDolares["5"]["Width"] 		= $width5;
+		$configColumnVentaContadoDolares["6"]["Width"] 		= $width6;
+		$configColumnVentaContadoDolares["7"]["Width"] 		= $width7;
+		$configColumnVentaContadoDolares["8"]["Width"] 		= $width8;
+		$configColumnVentaContadoDolares["9"]["Width"] 		= $width9;
+		$configColumnVentaContadoDolares["10"]["Width"] 	= $width10_;
+		$configColumnVentaContadoDolares["11"]["Width"] 	= $width11_;
 		
 		$configColumnVentaContadoDolares["0"]["Total"] 		= False;			
 		$configColumnVentaContadoDolares["1"]["Total"] 		= False;					
@@ -368,18 +401,18 @@
 		$configColumnVentaCredito["8"]["Formato"] 		= "Number";		
 		$configColumnVentaCredito["9"]["Formato"] 		= "";		
 		$configColumnVentaCredito["10"]["Formato"] 		= "";	
-		$configColumnVentaCredito["11"]["Formato"] 		= "";			
-	
-		$configColumnVentaCredito["0"]["Width"] 		= "15px";		
-		$configColumnVentaCredito["1"]["Width"] 		= "80px";	
-		$configColumnVentaCredito["4"]["Width"] 		= "40px";		
-		$configColumnVentaCredito["5"]["Width"] 		= "100px";		
-		$configColumnVentaCredito["6"]["Width"] 		= "40px";		
-		$configColumnVentaCredito["7"]["Width"] 		= "40px";		
-		$configColumnVentaCredito["8"]["Width"] 		= "60px";		
-		$configColumnVentaCredito["9"]["Width"] 		= "60px";		
-		$configColumnVentaCredito["10"]["Width"] 		= "40px";	
-		$configColumnVentaCredito["11"]["Width"] 		= "40px";
+		$configColumnVentaCredito["11"]["Formato"] 		= "";				
+		
+		$configColumnVentaCredito["0"]["Width"] 		= $width0;
+		$configColumnVentaCredito["1"]["Width"] 		= $width1;
+		$configColumnVentaCredito["4"]["Width"] 		= $width4;
+		$configColumnVentaCredito["5"]["Width"] 		= $width5;
+		$configColumnVentaCredito["6"]["Width"] 		= $width6;
+		$configColumnVentaCredito["7"]["Width"] 		= $width7;
+		$configColumnVentaCredito["8"]["Width"] 		= $width8;
+		$configColumnVentaCredito["9"]["Width"] 		= $width9;
+		$configColumnVentaCredito["10"]["Width"] 		= $width10_;
+		$configColumnVentaCredito["11"]["Width"] 		= $width11_;
 		
 		
 		$configColumnVentaCredito["0"]["Total"] 		= False;				
@@ -428,18 +461,17 @@
 		$configColumnVentaCreditoDolares["11"]["Formato"] 		= "";		
 		
 		
-		$configColumnVentaCreditoDolares["0"]["Width"] 		= "15px";		
-		$configColumnVentaCreditoDolares["1"]["Width"] 		= "80px";		
-		$configColumnVentaCreditoDolares["4"]["Width"] 		= "40px";		
-		$configColumnVentaCreditoDolares["5"]["Width"] 		= "100px";		
-		$configColumnVentaCreditoDolares["6"]["Width"] 		= "40px";		
-		$configColumnVentaCreditoDolares["7"]["Width"] 		= "40px";		
-		$configColumnVentaCreditoDolares["8"]["Width"] 		= "60px";		
-		$configColumnVentaCreditoDolares["9"]["Width"] 		= "60px";		
-		$configColumnVentaCreditoDolares["10"]["Width"] 	= "40px";	
-		$configColumnVentaCreditoDolares["11"]["Width"] 	= "40px";
+		$configColumnVentaCreditoDolares["0"]["Width"] 		= $width0;
+		$configColumnVentaCreditoDolares["1"]["Width"] 		= $width1;
+		$configColumnVentaCreditoDolares["4"]["Width"] 		= $width4;
+		$configColumnVentaCreditoDolares["5"]["Width"] 		= $width5;
+		$configColumnVentaCreditoDolares["6"]["Width"] 		= $width6;
+		$configColumnVentaCreditoDolares["7"]["Width"] 		= $width7;
+		$configColumnVentaCreditoDolares["8"]["Width"] 		= $width8;
+		$configColumnVentaCreditoDolares["9"]["Width"] 		= $width9;
+		$configColumnVentaCreditoDolares["10"]["Width"] 	= $width10_;	
+		$configColumnVentaCreditoDolares["11"]["Width"] 	= $width11_;	
 		
-								 
 		
 		$configColumnVentaCreditoDolares["0"]["Total"] 		= False;				
 		$configColumnVentaCreditoDolares["1"]["Total"] 		= False;			
@@ -532,16 +564,18 @@
 		$configColumnIngresoCaja["11"]["Formato"] 		= "";		
 
 
-		$configColumnIngresoCaja["0"]["Width"] 		= "15px";		
-		$configColumnIngresoCaja["1"]["Width"] 		= "80px";		
-		$configColumnIngresoCaja["4"]["Width"] 		= "40px";		
-		$configColumnIngresoCaja["5"]["Width"] 		= "100px";		
-		$configColumnIngresoCaja["6"]["Width"] 		= "40px";		
-		$configColumnIngresoCaja["7"]["Width"] 		= "40px";		
-		$configColumnIngresoCaja["8"]["Width"] 		= "60px";		
-		$configColumnIngresoCaja["9"]["Width"] 		= "60px";		
-		$configColumnIngresoCaja["10"]["Width"] 	= "40px";	
-		$configColumnIngresoCaja["11"]["Width"] 	= "40px";
+		
+		$configColumnIngresoCaja["0"]["Width"] 		= $width0;
+		$configColumnIngresoCaja["1"]["Width"] 		= $width1;
+		$configColumnIngresoCaja["4"]["Width"] 		= $width4;
+		$configColumnIngresoCaja["5"]["Width"] 		= $width5;
+		$configColumnIngresoCaja["6"]["Width"] 		= $width6;
+		$configColumnIngresoCaja["7"]["Width"] 		= $width7;
+		$configColumnIngresoCaja["8"]["Width"] 		= $width8;
+		$configColumnIngresoCaja["9"]["Width"] 		= $width9;
+		$configColumnIngresoCaja["10"]["Width"] 	= $width10_;
+		$configColumnIngresoCaja["11"]["Width"] 	= $width11_;
+		
 		
 		
 		$configColumnIngresoCaja["0"]["Total"] 		= False;			
@@ -589,20 +623,17 @@
 		$configColumnIngresoCajaDolares["9"]["Formato"] 		= "";		
 		$configColumnIngresoCajaDolares["10"]["Formato"] 		= "";	
 		$configColumnIngresoCajaDolares["11"]["Formato"] 		= "";	
-						
 
-		$configColumnIngresoCajaDolares["0"]["Width"] 		= "15px";		
-		$configColumnIngresoCajaDolares["1"]["Width"] 		= "80px";		
-		$configColumnIngresoCajaDolares["4"]["Width"] 		= "40px";		
-		$configColumnIngresoCajaDolares["5"]["Width"] 		= "100px";		
-		$configColumnIngresoCajaDolares["6"]["Width"] 		= "40px";		
-		$configColumnIngresoCajaDolares["7"]["Width"] 		= "40px";		
-		$configColumnIngresoCajaDolares["8"]["Width"] 		= "60px";		
-		$configColumnIngresoCajaDolares["9"]["Width"] 		= "60px";		
-		$configColumnIngresoCajaDolares["10"]["Width"] 		= "40px";	
-		$configColumnIngresoCajaDolares["11"]["Width"] 		= "40px";
-		
-		
+		$configColumnIngresoCajaDolares["0"]["Width"] 		= $width0;
+		$configColumnIngresoCajaDolares["1"]["Width"] 		= $width1;
+		$configColumnIngresoCajaDolares["4"]["Width"] 		= $width4;
+		$configColumnIngresoCajaDolares["5"]["Width"] 		= $width5;
+		$configColumnIngresoCajaDolares["6"]["Width"] 		= $width6;
+		$configColumnIngresoCajaDolares["7"]["Width"] 		= $width7;
+		$configColumnIngresoCajaDolares["8"]["Width"] 		= $width8;
+		$configColumnIngresoCajaDolares["9"]["Width"] 		= $width9;
+		$configColumnIngresoCajaDolares["10"]["Width"] 		= $width10_;			
+		$configColumnIngresoCajaDolares["11"]["Width"] 		= $width11_;			
 		
 		$configColumnIngresoCajaDolares["0"]["Total"] 		= False;				
 		$configColumnIngresoCajaDolares["1"]["Total"] 		= False;			
@@ -688,19 +719,18 @@
 		$configColumnSalidaCaja["8"]["Formato"] 		= "Number";		
 		$configColumnSalidaCaja["9"]["Formato"] 		= "";		
 		$configColumnSalidaCaja["10"]["Formato"] 		= "";	
-		$configColumnSalidaCaja["11"]["Formato"] 		= "";				
+		$configColumnSalidaCaja["11"]["Formato"] 		= "";						
 		
-		$configColumnSalidaCaja["0"]["Width"] 		= "15px";		
-		$configColumnSalidaCaja["1"]["Width"] 		= "80px";		
-		$configColumnSalidaCaja["4"]["Width"] 		= "40px";		
-		$configColumnSalidaCaja["5"]["Width"] 		= "100px";		
-		$configColumnSalidaCaja["6"]["Width"] 		= "40px";		
-		$configColumnSalidaCaja["7"]["Width"] 		= "40px";		
-		$configColumnSalidaCaja["8"]["Width"] 		= "60px";		
-		$configColumnSalidaCaja["9"]["Width"] 		= "60px";		
-		$configColumnSalidaCaja["10"]["Width"] 		= "40px";	
-		$configColumnSalidaCaja["11"]["Width"] 		= "40px";
-		
+		$configColumnSalidaCaja["0"]["Width"] 		= $width0;
+		$configColumnSalidaCaja["1"]["Width"] 		= $width1;
+		$configColumnSalidaCaja["4"]["Width"] 		= $width4;
+		$configColumnSalidaCaja["5"]["Width"] 		= $width5;
+		$configColumnSalidaCaja["6"]["Width"] 		= $width6;
+		$configColumnSalidaCaja["7"]["Width"] 		= $width7;
+		$configColumnSalidaCaja["8"]["Width"] 		= $width8;
+		$configColumnSalidaCaja["9"]["Width"] 		= $width9;
+		$configColumnSalidaCaja["10"]["Width"] 		= $width10_;
+		$configColumnSalidaCaja["11"]["Width"] 		= $width11_;
 		
 		$configColumnSalidaCaja["0"]["Total"] 		= False;			
 		$configColumnSalidaCaja["1"]["Total"] 		= False;		
@@ -747,17 +777,16 @@
 		$configColumnSalidaCajaDolares["10"]["Formato"] 	= "";				
 		$configColumnSalidaCajaDolares["11"]["Formato"] 	= "";				
 		
-
-		$configColumnSalidaCajaDolares["0"]["Width"] 		= "15px";		
-		$configColumnSalidaCajaDolares["1"]["Width"] 		= "80px";		
-		$configColumnSalidaCajaDolares["4"]["Width"] 		= "40px";		
-		$configColumnSalidaCajaDolares["5"]["Width"] 		= "100px";		
-		$configColumnSalidaCajaDolares["6"]["Width"] 		= "40px";		
-		$configColumnSalidaCajaDolares["7"]["Width"] 		= "40px";		
-		$configColumnSalidaCajaDolares["8"]["Width"] 		= "60px";		
-		$configColumnSalidaCajaDolares["9"]["Width"] 		= "60px";		
-		$configColumnSalidaCajaDolares["10"]["Width"] 		= "40px";	
-		$configColumnSalidaCajaDolares["11"]["Width"] 		= "40px";
+		$configColumnSalidaCajaDolares["0"]["Width"] 		= $width0;
+		$configColumnSalidaCajaDolares["1"]["Width"] 		= $width1;
+		$configColumnSalidaCajaDolares["4"]["Width"] 		= $width4;
+		$configColumnSalidaCajaDolares["5"]["Width"] 		= $width5;
+		$configColumnSalidaCajaDolares["6"]["Width"] 		= $width6;
+		$configColumnSalidaCajaDolares["7"]["Width"] 		= $width7;
+		$configColumnSalidaCajaDolares["8"]["Width"] 		= $width8;
+		$configColumnSalidaCajaDolares["9"]["Width"] 		= $width9;
+		$configColumnSalidaCajaDolares["10"]["Width"] 		= $width10_;
+		$configColumnSalidaCajaDolares["11"]["Width"] 		= $width11_;
 		
 
 		$configColumnSalidaCajaDolares["0"]["Total"] 		= False;		
@@ -913,12 +942,13 @@
 	
 	
 		<?php 		
-		$configTotalesColumns[0]["Titulo"] = "Total Cordoba";			
-		$configTotalesColumns[0]["FiledSouce"] = "total";
-		$configTotalesColumns[0]["Formato"] = "Number";
-		$configTotalesColumns[0]["Colspan"] = $columnX;				
-		$configTotalesColumns[0]["Width"] = (str_replace("px", "", $widthX) / 2 )."px";
-		$detailTotales[0]["total"] = $totalCordoba;
+		$configTotalesColumns[0]["Titulo"] 		= "Total Cordoba";			
+		$configTotalesColumns[0]["FiledSouce"] 	= "total";
+		$configTotalesColumns[0]["Formato"] 	= "Number";
+		$configTotalesColumns[0]["Style"] 		= "font-weight: bold;font-size:large;";
+		$configTotalesColumns[0]["Colspan"] 	= $columnX;				
+		$configTotalesColumns[0]["Width"] 		= (str_replace("px", "", $widthX) /*/ 2*/ )."px";
+		$detailTotales[0]["total"] 				= $totalCordoba;
 		
 		
 		$rosTotales = helper_reporteGeneralCreateTable(
@@ -973,7 +1003,7 @@
 		$configTotalesColumns[0]["FiledSouce"] = "total";
 		$configTotalesColumns[0]["Formato"] = "Number";
 		$configTotalesColumns[0]["Colspan"] = $columnX;		
-		$configTotalesColumns[0]["Width"] = (str_replace("px", "", $widthX) / 2 )."px";
+		$configTotalesColumns[0]["Width"] = (str_replace("px", "", $widthX) /*/ 2*/ )."px";
 		$detailTotales[0]["total"] = $totalDolares;
 		
 		$rosTotales = helper_reporteGeneralCreateTable(

@@ -380,29 +380,50 @@ class app_box_report extends _BaseController {
 				$objListBranch	= $this->Branch_Model->getByCompany($companyID);
 				$html 			= "";
 				
-				if($objListBranch)
+				
+				if($branchIDFiltered != 0)
 				{
-					foreach($objListBranch as $objBranch)
+					if($objListBranch)
 					{
-						if($objBranch->branchID == $branchIDFiltered || $branchIDFiltered == 0 )
+						foreach($objListBranch as $objBranch)
 						{
-							$reult  = $this->daily_town_operation(
-								$showSumaryAmount,
-								$userID,$tocken,$companyID,$authorization,
-								$startOn,$endOn,$userIDFilter,$objBranch->branchID,$categoryItem,
-								$conceptoFilter,
-								$objCompany,
-								$objParameter,								
-								$dataSession,
-								$objBranch->name 
-							);
-							
-							$html = $html.$reult;
+							if($objBranch->branchID == $branchIDFiltered  )
+							{
+								$reult  = $this->daily_town_operation(
+									$showSumaryAmount,
+									$userID,$tocken,$companyID,$authorization,
+									$startOn,$endOn,$userIDFilter,$objBranch->branchID,$categoryItem,
+									$conceptoFilter,
+									$objCompany,
+									$objParameter,								
+									$dataSession,
+									$objBranch->name 
+								);
+								
+								$html = $html.$reult;
+							}
 						}
 					}
 				}
+				if($branchIDFiltered == 0)
+				{
 					
-				  // Retornar el HTML como respuesta
+					$reult  = $this->daily_town_operation(
+						$showSumaryAmount,
+						$userID,$tocken,$companyID,$authorization,
+						$startOn,$endOn,$userIDFilter,0 /*branchID*/,$categoryItem,
+						$conceptoFilter,
+						$objCompany,
+						$objParameter,								
+						$dataSession,
+						"TODAS LAS SUCURSALES" 
+					);
+					
+					$html = $html.$reult;
+							
+				}
+				
+				 // Retornar el HTML como respuesta
 				return $this->response->setBody($html)
                         ->setHeader('Content-Type', 'text/html');
 				
