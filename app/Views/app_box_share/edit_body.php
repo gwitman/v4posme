@@ -70,7 +70,7 @@
 									<input type="hidden" name="txtTransactionMasterID" value="<?php echo $objTransactionMaster->transactionMasterID; ?>">
 									
 									
-									<div class="form-group <?php echo getBehavio($company->type,"app_box_share","divFecha",""); ?> ">
+									<div class="form-group <?php echo  $useMobile == "1" ? "hidden" : getBehavio($company->type,"app_box_share","divFecha",""); ?> ">
 										<label class="col-lg-2 control-label" for="datepicker">Fecha</label>
 										<div class="col-lg-8">
 											<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
@@ -80,13 +80,13 @@
 										</div>
 									</div>
 									
-									<div class="form-group si_ferreteria_mateo <?php echo getBehavio($company->type,"app_box_share","divAplicado",""); ?>  ">
+									<div class="form-group si_ferreteria_mateo <?php echo $useMobile == "1" ? "hidden" : getBehavio($company->type,"app_box_share","divAplicado",""); ?>  ">
 											<label class="col-lg-2 control-label" for="normal">Aplicado</label>
 											<div class="col-lg-5">
 												<input type="checkbox" disabled   name="txtIsApplied" id="txtIsApplied" value="1" <?php if($objTransactionMaster->isApplied) echo "checked"; ?> >
 											</div>
 									</div>
-									<div class="form-group si_ferreteria_mateo <?php echo getBehavio($company->type,"app_box_share","divCambio",""); ?> ">
+									<div class="form-group si_ferreteria_mateo <?php echo $useMobile == "1" ? "hidden" : getBehavio($company->type,"app_box_share","divCambio",""); ?> ">
 											<label class="col-lg-2 control-label" for="normal">Cambio</label>
 											<div class="col-lg-8">
 												<input class="form-control"   type="text" disabled="disabled" name="txtExchangeRate" id="txtExchangeRate" value="<?php echo $exchangeRate; ?>">
@@ -223,7 +223,7 @@
 								</div>
 								
 								
-								<div class="vital-stats <?php echo getBehavio($company->type,"app_box_share","divStart",""); ?> ">
+								<div class="vital-stats <?php echo $useMobile == "1" ? "hidden" : getBehavio($company->type,"app_box_share","divStart",""); ?> ">
 									<ul>
 											<li class="si_ferreteria_mateo">
 												<a href="#">
@@ -315,7 +315,7 @@
 				<a href="#" class="btn btn-flat btn-info" id="btnNewShare" >Agregar</a>
 				<a href="#" class="btn btn-flat btn-danger" id="btnDeleteShare" >Eliminar</a>	
 
-				<a href="#" class="btn btn-flat btn-danger <?php echo getBehavio($company->type,"app_box_share","btnVerMovimientos",""); ?> " id="btnVerMovement">
+				<a href="#" class="btn btn-flat btn-danger <?php echo getBehavio($company->type,"app_box_share","btnVerMovimientos","hidden"); ?> " id="btnVerMovement">
 						<i class="i-print"></i>
 						<span class="percent">Ver</span>
 						<span class="txt">movimientos</span>
@@ -357,18 +357,37 @@
 											
 										</td>
 										<td class="<?php echo getBehavio($company->type,"app_box_share","TableColumnDocumento",""); ?>" >
-											<text id="txtDocument">
-												<?php echo $value->reference1; ?>
-											</text>
+											
+											<?php 
+												if($useMobile == "1")
+												{
+													echo '<span class="badge badge-inverse" >Factura</span></br>';
+													echo '<div style="text-align:right">';
+														echo '<text id="txtDocument">'.$value->reference1.'</text>';
+													echo '</div>';
+												}
+												else 
+												{
+													echo '<text id="txtDocument">'.$value->reference1.'</text>';
+												}
+											?>
+											
 										</td>
 										<td>
 											<?php 
 												if($useMobile == "1")
 												{
-													echo '<span class="badge badge-inverse" >Saldo Inicial</span></br>';
+													echo '<span class="badge badge-inverse" >Saldo inicial</span></br>';
+													echo '<div style="text-align:right">';
+														echo '<text id="txtBalanceStartShare" class="txtDetailShareReference2" >'.number_format($value->reference2,2).'</text>';
+													echo '</div>';
 												}
+												else 
+												{
+													echo '<text id="txtBalanceStartShare" class="txtDetailShareReference2" >'.number_format($value->reference2,2).'</text>';
+												}
+												
 											?>
-											<text id="txtBalanceStartShare" class="txtDetailShareReference2"><?php echo number_format($value->reference2,2); ?></text>
 										</td>
 										<td>
 											<?php 
@@ -380,13 +399,20 @@
 											<input class="form-control txtDetailShare txt-numeric"  type="text" id="txtDetailShare"  name="txtDetailShare[]"  value="<?php echo  number_format($value->amount,2); ?>" />
 										</td>
 										<td>
+										
 											<?php 
 												if($useMobile == "1")
 												{
 													echo '<span class="badge badge-inverse" >Saldo Final</span></br>';
+													echo '<div style="text-align:right">';
+														echo '<text id="txtBalanceFinishShare">'.number_format($value->reference4,2).'</text>';
+													echo '</div>';
+												}
+												else
+												{
+													echo '<text id="txtBalanceFinishShare">'.number_format($value->reference4,2).'</text>';
 												}
 											?>
-											<text id="txtBalanceFinishShare"><?php echo number_format($value->reference4,2); ?></text>
 										</td>
 									</tr>
 									<?php
@@ -399,7 +425,7 @@
 				</div><!-- End .row-fluid  -->
 				
 				<div class="row <?php echo getBehavio($company->type,"app_box_share","divResumenAbono",""); ?> ">
-					<div class="col-lg-4">
+					<div class="col-lg-4 <?php echo $useMobile == "1" ? "hidden" : "" ?> ">
 						<div class="page-header">
 							<h3>Ref.</h4>
 						</div>
@@ -408,7 +434,7 @@
 							<li><i class="icon16 i-arrow-right-3"></i>Resumen de la factura</li>                                                
 						</ul>
 					</div>
-						<div class="col-lg-4">
+					<div class="col-lg-4">
 						<div class="page-header">
 							<h3>Pago</h3>
 						</div>
@@ -429,7 +455,7 @@
 							</tbody>
 						</table>
 					</div>
-					<div class="col-lg-4">
+					<div class="col-lg-4 <?php echo $useMobile == "1" ? "hidden" : "" ?>">
 						<div class="page-header">
 							<h3>Resumen</h3>
 						</div>
@@ -521,16 +547,38 @@
 				
 			</td>
 			<td class="<?php echo getBehavio($company->type,"app_box_share","TableColumnDocumento",""); ?>" >
-				<text id="txtDocument"></text>
+				
+				<?php 
+					if($useMobile == "1")
+					{
+						echo '<span class="badge badge-inverse" >Factura</span></br>';
+						echo '<div style="text-align:right">';
+							echo '<text id="txtDocument"></text>';
+						echo '</div>';
+					}
+					else 
+					{
+						echo '<text id="txtDocument"></text>';
+					}
+				?>
+										
 			</td>
 			<td>
+				
 				<?php 
 					if($useMobile == "1")
 					{
 						echo '<span class="badge badge-inverse" >Saldo inicial</span></br>';
+						echo '<div style="text-align:right">';
+							echo '<text id="txtBalanceStartShare" class="txtDetailShareReference2" ></text>';
+						echo '</div>';
+					}
+					else 
+					{
+						echo '<text id="txtBalanceStartShare" class="txtDetailShareReference2" ></text>';
 					}
 				?>
-				<text id="txtBalanceStartShare" class="txtDetailShareReference2" ></text>
+				
 			</td>
 			<td>
 				<?php 
@@ -546,9 +594,16 @@
 					if($useMobile == "1")
 					{
 						echo '<span class="badge badge-inverse" >Saldo Final</span></br>';
+						echo '<div style="text-align:right">';
+							echo '<text id="txtBalanceFinishShare"></text>';
+						echo '</div>';
+					}
+					else
+					{
+						echo '<text id="txtBalanceFinishShare"></text>';
 					}
 				?>
-				<text id="txtBalanceFinishShare"></text>
+				
 			</td>
 		</tr>
 </script>

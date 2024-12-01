@@ -30,7 +30,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('default_app_box_share_divCustomerControlSelected')											=> "hidden",
 		strtolower('default_app_box_share_divCobrador')															=> "",
 		strtolower('default_app_box_share_divMoneda')															=> "",		
-		strtolower('default_app_box_share_btnVerMovimientos')													=> "",
+		strtolower('default_app_box_share_btnVerMovimientos')													=> "hidden",
 		strtolower('default_app_inventory_transferoutput_parameterValidarEnvioDestino')							=> "false",
 		strtolower('default_app_inventory_transferoutput_labelReference1')										=> "Referencia",		
 		strtolower('default_app_invoice_billing_divTxtCedula2') 												=> "",		
