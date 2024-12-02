@@ -19,11 +19,11 @@
 					<form class="form-horizontal pad15 pad-bottom0" role="form">		
 					
 						<div class="form-group">
-							<label class="col-lg-6 control-label" for="selectFilter">Compañia</label>
-							<div class="col-lg-6"> 
-								<div class="col-lg-6">
+							<label class="col-lg-4 control-label" for="selectFilter">Compañia</label>
+							<div class="col-lg-8"> 
+								<div class="col-lg-1">
 								</div>
-								<div class="col-lg-6">
+								<div class="col-lg-11">
 									<select name="txtCompanyName" id="txtCompanyName" class="select2">
 											<option value="0">TODAS</option>
 											<?php
@@ -45,11 +45,11 @@
 						</div>
 						
 						<div class="form-group">
-							<label class="col-lg-6 control-label" for="selectFilter">Colaborador</label>
-							<div class="col-lg-6"> 
-								<div class="col-lg-6">
+							<label class="col-lg-4 control-label" for="selectFilter">Colaborador</label>
+							<div class="col-lg-8"> 
+								<div class="col-lg-1">
 								</div>
-								<div class="col-lg-6">
+								<div class="col-lg-11">
 									<select name="txtUserName" id="txtUserName" class="select2">
 											<option value="0" >TODAS</option>
 											<?php
