@@ -7,12 +7,12 @@ class Customer_Credit_Document_Endity_Related_Model extends Model  {
    function __construct(){	
       parent::__construct();
    }
-   function update_app_posme($customerCreditDocumentID,$entityID,$data){
+   function update_app_posme($entityRelatedID, $customerCreditDocumentID, $data){
 		$db 	= db_connect();
 		$builder	= $db->table("tb_customer_credit_document_entity_related");
 		
+        $builder->where("ccEntityRelatedID",$entityRelatedID);	
         $builder->where("customerCreditDocumentID",$customerCreditDocumentID);	
-        $builder->where("entityID",$entityID);	
 		return $builder->update($data);
 		
    }
@@ -26,6 +26,31 @@ class Customer_Credit_Document_Endity_Related_Model extends Model  {
 		return $builder->update($data);
 		
    } 
+
+   function deleteWhereIDNotIn($ccEntityRelatedID, $customerCreditEntityDocumentID, $entityID)
+   {
+		$db 		= db_connect();
+		$builder	= $db->table("tb_customer_credit_document_entity_related");
+
+		$data["isActive"] = 0;
+
+		$builder->where("customerCreditDocumentID", $customerCreditEntityDocumentID);
+		$builder->where("entityID", $entityID);
+		$builder->whereNotIn("ccEntityRelatedID", $ccEntityRelatedID);
+		return $builder->update($data);
+   }
+
+   function deleteWhereDocumentID($customerCreditEntityDocumentID)
+   {
+		$db 		= db_connect();
+		$builder	= $db->table("tb_customer_credit_document_entity_related");
+
+		$data["isActive"] = 0;
+
+		$builder->where("customerCreditDocumentID", $customerCreditEntityDocumentID);
+		return $builder->update($data);
+   }
+
    function insert_app_posme($data){
 		$db 	= db_connect();
 		$builder	= $db->table("tb_customer_credit_document_entity_related");
@@ -38,7 +63,7 @@ class Customer_Credit_Document_Endity_Related_Model extends Model  {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_customer_credit_document_entity_related");
 	    $sql = "";
-		$sql = sprintf("select ccEntityRelatedID,customerCreditDocumentID,entityID,type,createdOn,createdBy,createdIn,createdAt,isActive");
+		$sql = sprintf("select ccEntityRelatedID,customerCreditDocumentID,entityID,type,typeCredit,statusCredit,typeGarantia,typeRecuperation,ratioDesembolso,ratioBalance,ratioBalanceExpired,ratioShare,createdOn,createdBy,createdIn,createdAt,isActive");
 		$sql = $sql.sprintf(" from tb_customer_credit_document_entity_related i");	
 		$sql = $sql.sprintf(" where i.ccEntityRelatedID = $ccEntityRelatedID");
 		$sql = $sql.sprintf(" and i.isActive= 1");		
@@ -50,7 +75,7 @@ class Customer_Credit_Document_Endity_Related_Model extends Model  {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_customer_credit_document_entity_related");    
         $sql = "";
-		$sql = sprintf("select ccEntityRelatedID,customerCreditDocumentID,entityID,type,createdOn,createdBy,createdIn,createdAt,isActive");
+		$sql = sprintf("select ccEntityRelatedID,customerCreditDocumentID,entityID,type,typeCredit,statusCredit,typeGarantia,typeRecuperation,ratioDesembolso,ratioBalance,ratioBalanceExpired,ratioShare,createdOn,createdBy,createdIn,createdAt,isActive");
         $sql = $sql.sprintf(" from tb_customer_credit_document_entity_related i");	
         $sql = $sql.sprintf(" where i.customerCreditDocumentID = $customerCreditDocumentID");
         $sql = $sql.sprintf(" and i.entityID = $entityID");
@@ -63,7 +88,7 @@ class Customer_Credit_Document_Endity_Related_Model extends Model  {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_customer_credit_document_entity_related");    
 		$sql = "";
-		$sql = sprintf("select ccEntityRelatedID,customerCreditDocumentID,entityID,type,createdOn,createdBy,createdIn,createdAt,isActive");
+		$sql = sprintf("select ccEntityRelatedID,customerCreditDocumentID,entityID,type,typeCredit,statusCredit,typeGarantia,typeRecuperation,ratioDesembolso,ratioBalance,ratioBalanceExpired,ratioShare,createdOn,createdBy,createdIn,createdAt,isActive");
 		$sql = $sql.sprintf(" from tb_customer_credit_document_entity_related i");		
 		$sql = $sql.sprintf(" where i.customerCreditDocumentID = $customerCreditDocumentID");
 		$sql = $sql.sprintf(" and i.isActive= 1");		

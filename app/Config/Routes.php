@@ -631,6 +631,13 @@ $routes->match(['get','post'],'app_cxc_simulation/updateElement/(:any)','app_cxc
 $routes->match(['get','post'],'app_cxc_simulation/save','app_cxc_simulation::save');
 $routes->match(['get','post'],'app_cxc_simulation/save/(:any)','app_cxc_simulation::save');
 $routes->match(['get','post'],'app_cxc_simulation/index','app_cxc_simulation::index');
+$routes->match(['get','post'],'app_cxc_document/index','app_cxc_document::index');
+$routes->match(['get','post'],'app_cxc_document/edit/','app_cxc_document::edit');
+$routes->match(['get','post'],'app_cxc_document/edit/(:any)','app_cxc_document::edit');
+$routes->match(['get','post'],'app_cxc_document/save/(:any)','app_cxc_document::save');
+$routes->match(['get','post'],'app_cxc_document/save','app_cxc_document::save');
+$routes->match(['get','post'],'app_cxc_document/add_document_entity','app_cxc_document::add_document_entity');
+$routes->match(['get','post'],'app_cxc_document/edit_document_entity/(:any)','app_cxc_document::edit_document_entity');
 $routes->match(['get','post'],'app_cxp_provider/updateElement','app_cxp_provider::updateElement');
 $routes->match(['get','post'],'app_cxp_provider/updateElement/(:any)','app_cxp_provider::updateElement');
 $routes->match(['get','post'],'app_cxp_provider/insertElement','app_cxp_provider::insertElement');
