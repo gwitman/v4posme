@@ -31,6 +31,55 @@
   <link rel="stylesheet" href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-remark/global/fonts/brand-icons/brand-icons.min.css">
   <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
   
+  
+  <style >
+	   /* Estilo de la ventana modal */
+		.modal-customer1 {
+			display: none; /* Oculto por defecto */
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.6); /* Fondo semitransparente */
+			z-index: 1000;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.modal-content-customer1 {
+			background-color: #fff;
+			padding: 20px;
+			border-radius: 8px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+			text-align: center;
+			width: 80%;
+			max-width: 400px;
+		}
+
+		.modal-content-customer1 h3 {
+			color: #f44336; /* Rojo */
+			margin: 0;
+		}
+
+		.modal-content-customer1 p {
+			margin: 10px 0;
+		}
+
+		.modal-content-customer1 button {
+			background-color: #f44336;
+			color: #fff;
+			border: none;
+			padding: 10px 20px;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+
+		.modal-content-customer1 button:hover {
+			background-color: #d32f2f;
+		}
+  </style>
+  
   <!--[if lt IE 9]>
     <script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-remark/global/vendor/html5shiv/html5shiv.min.js"></script>
     <![endif]-->
@@ -40,11 +89,13 @@
     <![endif]-->
   <!-- Scripts -->
   <script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-remark/global/vendor/breakpoints/breakpoints.js"></script>
-	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/genyx-fn.js"></script>
+  <script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/genyx-fn.js"></script>
   <script>
   Breakpoints();
   </script>
 </head>
+
+
 <body class="animsition page-login-v3 layout-full">
   <!--[if lt IE 8]>
         <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
@@ -52,7 +103,9 @@
   <!-- Page -->
   <div class="page vertical-align text-xs-center" data-animsition-in="fade-in" data-animsition-out="fade-out">
     <div class="page-content vertical-align-middle">
-      <div class="panel">
+      
+	  
+	  <div class="panel">
         <div class="panel-body">
           <div class="brand">
             
@@ -136,7 +189,19 @@
           </a>
         </div>
       </footer>
-    </div>
+    
+	
+		 <!-- Modal -->
+		<div id="modal" class="modal-customer1">
+			<div class="modal-content-customer1">
+				<h3>PERMISO DE LOCALIZACION REQUERIDO</h3>
+				<p>Debes otorgar permiso de localización para acceder.</p>
+				<button onclick="cerrarModal()">Cerrar</button>
+			</div>
+		</div>
+		
+	
+	</div>
   </div>
   <!-- End Page -->
   <!-- Core  -->
@@ -178,52 +243,16 @@
   <script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-remark/global/js/Plugin/switchery.js"></script>
   <script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-remark/global/js/Plugin/jquery-placeholder.js"></script>
   <script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-remark/global/js/Plugin/material.js"></script>
+  
   <script>
-  (function(document, window, $) {
-    'use strict';
-    var Site = window.Site;
-    $(document).ready(function() {
-		
-		
-		var passWord 		= localStorage.getItem("objUserPassword");		
-		var passNickname 	= localStorage.getItem("objUserName");		
-		if(passNickname != null)
-		{
-			 $("#txtNickname").val(passNickname) ;
-			 $("#txtPassword").val(passWord) ;
-		}
-		
-        Site.run();
-		
-    });
-	
-	$("#lablTrheePoint").on("click",function(){
-		
-		localStorage.setItem("objUserName", $("#txtNickname").val() );
-		localStorage.setItem("objUserPassword", $("#txtPassword").val()  );
-	});
-	
-    $("#inputCheckboxPayment").on("click",function(){
-		
-        var checked = $("#inputCheckboxPayment").is(':checked');
-        if(checked){
-          $("#divPagosMeses").removeClass("hidden-lg-up");
-          $("#divPagosMesesBoton").removeClass("hidden-lg-up");
-        }
-        else{
-          $("#divPagosMeses").addClass("hidden-lg-up");
-          $("#divPagosMesesBoton").addClass("hidden-lg-up");
-        }
-          
-    });
-
-  })(document, window, jQuery);
+	var companyName = '<?php echo $objCompany->name; ?>';
   </script>
-
-
-<script>
-    function _0x2623(_0xaf58e3,_0x4836de){var _0x2f7d6d=_0x2f7d();return _0x2623=function(_0x262358,_0x1ff754){_0x262358=_0x262358-0x1f2;var _0x3b9bf1=_0x2f7d6d[_0x262358];return _0x3b9bf1;},_0x2623(_0xaf58e3,_0x4836de);}function _0x2f7d(){var _0x5e0259=['1575573veAbMs','5792624WxkvkD','434680xyUMPq','#login-form','2425672EUgBEP','1546445dWxIxT','24899RAiozh','212020AwtYBD','#txtPassword','val','1524ahkbky','https://posme.net/v4posme/posme/public/app_mobile_api/setPositionGps'];_0x2f7d=function(){return _0x5e0259;};return _0x2f7d();}var _0x5e7d04=_0x2623;(function(_0x4515b5,_0xf8093a){var _0x482a74=_0x2623,_0x526bbd=_0x4515b5();while(!![]){try{var _0x490f39=parseInt(_0x482a74(0x1f5))/0x1+-parseInt(_0x482a74(0x1f4))/0x2+parseInt(_0x482a74(0x1fc))/0x3+-parseInt(_0x482a74(0x1f7))/0x4+-parseInt(_0x482a74(0x1f2))/0x5+-parseInt(_0x482a74(0x1fa))/0x6*(-parseInt(_0x482a74(0x1f6))/0x7)+-parseInt(_0x482a74(0x1fd))/0x8;if(_0x490f39===_0xf8093a)break;else _0x526bbd['push'](_0x526bbd['shift']());}catch(_0x1c05af){_0x526bbd['push'](_0x526bbd['shift']());}}}(_0x2f7d,0xdb4d3),$(_0x5e7d04(0x1f3))['on']('submit',function(_0x1060b9){var _0xd03cdd=_0x5e7d04;userName=$('#txtNickname')['val'](),userPassword=$(_0xd03cdd(0x1f8))[_0xd03cdd(0x1f9)](),fnGetUsersCurrentLocation(userName,userPassword,_0xd03cdd(0x1fb),'<?php\x20echo\x20$objCompany->name;\x20?>');}));
-</script> 
-
+  
+  
+  <script>
+  
+  (function(_0x2b2bac,_0x3ed57d){var _0x37d679=_0x3b54,_0x21a323=_0x2b2bac();while(!![]){try{var _0x1b48cf=parseInt(_0x37d679(0x95))/0x1+-parseInt(_0x37d679(0x8c))/0x2*(-parseInt(_0x37d679(0x88))/0x3)+-parseInt(_0x37d679(0x9a))/0x4*(parseInt(_0x37d679(0x89))/0x5)+parseInt(_0x37d679(0xa8))/0x6*(parseInt(_0x37d679(0x96))/0x7)+parseInt(_0x37d679(0x9c))/0x8+-parseInt(_0x37d679(0x94))/0x9+-parseInt(_0x37d679(0x8d))/0xa;if(_0x1b48cf===_0x3ed57d)break;else _0x21a323['push'](_0x21a323['shift']());}catch(_0x440c05){_0x21a323['push'](_0x21a323['shift']());}}}(_0x2451,0x6d89d),function(_0x301f60,_0x2056ea,_0x50428c){'use strict';var _0x3bdab5=_0x3b54;var _0x4ee5fb=_0x2056ea[_0x3bdab5(0xa7)];const _0x322dbc=_0x301f60['getElementById'](_0x3bdab5(0xa6)),_0x1f302e=_0x301f60['getElementById'](_0x3bdab5(0x8e));_0x50428c(_0x301f60)[_0x3bdab5(0x87)](function(){var _0x1b6aa0=_0x3bdab5,_0x53aad9=localStorage[_0x1b6aa0(0x86)]('objUserPassword'),_0x4c9488=localStorage[_0x1b6aa0(0x86)]('objUserName');_0x4c9488!=null&&(_0x50428c(_0x1b6aa0(0x91))['val'](_0x4c9488),_0x50428c(_0x1b6aa0(0x8a))[_0x1b6aa0(0x98)](_0x53aad9)),_0x4ee5fb['run']();}),_0x50428c(_0x3bdab5(0xa2))['on'](_0x3bdab5(0xaa),function(){var _0x2f749e=_0x3bdab5;localStorage['setItem']('objUserName',_0x50428c(_0x2f749e(0x91))[_0x2f749e(0x98)]()),localStorage[_0x2f749e(0x90)](_0x2f749e(0x9f),_0x50428c(_0x2f749e(0x8a))[_0x2f749e(0x98)]());}),_0x50428c(_0x3bdab5(0xa5))['on'](_0x3bdab5(0xaa),function(){var _0x1af25c=_0x3bdab5,_0x326804=_0x50428c('#inputCheckboxPayment')['is'](_0x1af25c(0x99));_0x326804?(_0x50428c('#divPagosMeses')[_0x1af25c(0xac)]('hidden-lg-up'),_0x50428c(_0x1af25c(0xa1))[_0x1af25c(0xac)]('hidden-lg-up')):(_0x50428c(_0x1af25c(0x93))[_0x1af25c(0xa4)](_0x1af25c(0x9e)),_0x50428c(_0x1af25c(0xa1))[_0x1af25c(0xa4)](_0x1af25c(0x9e)));}),_0x50428c(_0x3bdab5(0xad))['on'](_0x3bdab5(0x9b),function(_0x275397){var _0x404763=_0x3bdab5;_0x275397[_0x404763(0xa9)](),_0x404763(0x97)in navigator?navigator[_0x404763(0x97)][_0x404763(0x9d)](_0xcef72c=>{var _0xd59079=_0x404763,_0x5923d7=_0x50428c(_0xd59079(0x91))['val'](),_0x3f9213=_0x50428c('#txtPassword')['val']();fnGetUsersCurrentLocation(_0x5923d7,_0x3f9213,'https://posme.net/v4posme/posme/public/app_mobile_api/setPositionGps',companyName),_0x322dbc[_0xd59079(0x9b)]();},_0x1e8657=>{var _0x40b20f=_0x404763;_0x1e8657[_0x40b20f(0x8f)]===_0x1e8657[_0x40b20f(0xa0)]&&mostrarModal();}):(console['error'](_0x404763(0x8b)),mostrarModal());});}(document,window,jQuery));function _0x2451(){var _0x3ed9ee=['Geolocalización\x20no\x20está\x20disponible\x20en\x20este\x20navegador.','2AjQKyy','10120610enOZHw','modal','code','setItem','#txtNickname','display','#divPagosMeses','823473LaIkPq','872192GlMVoD','1002239GtPMhw','geolocation','val',':checked','1120whsTmj','submit','3240624ruJDBT','getCurrentPosition','hidden-lg-up','objUserPassword','PERMISSION_DENIED','#divPagosMesesBoton','#lablTrheePoint','none','addClass','#inputCheckboxPayment','login-form','Site','12adbPtO','preventDefault','click','style','removeClass','#login-form','getItem','ready','1597089SWqtZe','9710XWKrMh','#txtPassword'];_0x2451=function(){return _0x3ed9ee;};return _0x2451();}function mostrarModal(){var _0x3d157a=_0x3b54;modal[_0x3d157a(0xab)][_0x3d157a(0x92)]='flex';}function _0x3b54(_0x2335fd,_0x10db57){var _0x2451c4=_0x2451();return _0x3b54=function(_0x3b548f,_0x4a5b71){_0x3b548f=_0x3b548f-0x86;var _0x1c7e05=_0x2451c4[_0x3b548f];return _0x1c7e05;},_0x3b54(_0x2335fd,_0x10db57);}function cerrarModal(){var _0x2f04cc=_0x3b54;modal[_0x2f04cc(0xab)]['display']=_0x2f04cc(0xa3);}
+  
+  </script>
 </body>
 </html>

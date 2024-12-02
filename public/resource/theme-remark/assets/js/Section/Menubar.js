@@ -154,10 +154,17 @@
       key: 'setMenuData',
       value: function setMenuData() {
         var api = this.getMenuApi();
-
-        api.folded = !(this.getState('menubarType') === 'open') && this.isFold;
-        api.foldAlt = false;
-        api.outerHeight = this.$el.outerHeight();
+		
+		if(api == undefined )
+		{
+			api = {};
+		}
+		
+		api.folded = !(this.getState('menubarType') === 'open') && this.isFold;
+		api.foldAlt = false;
+		api.outerHeight = this.$el.outerHeight();
+	
+		
       }
     }, {
       key: 'getMenuApi',
