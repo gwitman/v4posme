@@ -84,7 +84,8 @@ class Entity_Location_Model extends Model  {
 			select 
 				IFNULL(kk.userName,0) as Name,
 				kk.latituded as Latitude,
-				kk.longituded as Longitude
+				kk.longituded as Longitude,
+				kk.companyName 
 			from 
 				tb_entity_location kk 
 				inner join (
@@ -118,7 +119,8 @@ class Entity_Location_Model extends Model  {
 			select 
 				IFNULL(kk.userName,0) as Name,
 				kk.latituded as Latitude,
-				kk.longituded as Longitude
+				kk.longituded as Longitude,
+				kk.companyName 
 			from 
 				tb_entity_location kk 
 				inner join (
@@ -150,7 +152,8 @@ class Entity_Location_Model extends Model  {
 			select 
 				IFNULL(kk.userName,0) as Name,
 				kk.latituded as Latitude,
-				kk.longituded as Longitude
+				kk.longituded as Longitude,
+				kk.companyName 
 			from 
 				tb_entity_location kk 
 			where 
