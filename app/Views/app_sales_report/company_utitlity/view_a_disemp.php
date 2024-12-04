@@ -16,20 +16,16 @@
 		
 		
 		<?php		
-		$configColumn["14"]["Titulo"] 		= "Indicador";
-		$configColumn["17"]["Titulo"] 		= "Valor";
-		
+		$configColumn["14"]["Titulo"] 			= "Indicador";
+		$configColumn["17"]["Titulo"] 			= "Valor";		
 		$configColumn["14"]["FiledSouce"] 		= "Indicador";		
 		$configColumn["17"]["FiledSouce"] 		= "Monto";
-
-		$configColumn["14"]["Formato"] 		= "";		
-		$configColumn["17"]["Formato"] 		= "Number";
-				
-		$configColumn["14"]["Width"] 		= "350px";
-		$configColumn["17"]["Width"] 		= "100px";
-				
-		$configColumn["14"]["Total"] 		= False;
-		$configColumn["17"]["Total"] 		= False;		
+		$configColumn["14"]["Formato"] 			= "";		
+		$configColumn["17"]["Formato"] 			= "Number";				
+		$configColumn["14"]["Width"] 			= "550px";
+		$configColumn["17"]["Width"] 			= "100px";				
+		$configColumn["14"]["Total"] 			= False;
+		$configColumn["17"]["Total"] 			= False;		
 		$resultado 	= helper_reporteGeneralCreateTable($objDetail,$configColumn,'0px',NULL,NULL);
 		?>
 		
@@ -42,7 +38,7 @@
 			$objCompany->name,
 			$resultado["columnas"],
 			'UTILIDADES DEL '.$objStartOn.' AL '.$objEndOn,
-			"",
+			"SUCURSAL: ". $branchName,
 			"",
 			$resultado["width"]
 		);

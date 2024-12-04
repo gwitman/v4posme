@@ -293,7 +293,15 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('globalpro_app_purchase_garantia_divPanelMoneda') 												=> "hidden",
 		strtolower('globalpro_app_purchase_garantia_divPanelMonto') 												=> "hidden",
 		strtolower('globalpro_app_cxp_expenses_lblAplicado') 														=> "hidden",
-		strtolower('globalpro_app_cxp_expenses_lblCambio') 															=> "hidden",
+		strtolower('globalpro_app_cxp_expenses_lblCambio') 															=> "hidden",		
+		strtolower('globalpro_app_box_report_dailyTownUserDiv') 													=> "hidden",
+		strtolower('globalpro_app_box_report_dailyTownConceptIngresosDiv') 											=> "hidden",
+		strtolower('globalpro_app_box_report_dailyTownConceptEgresosDiv') 											=> "hidden",
+		strtolower('globalpro_app_box_report_dailyTownCategoryItemDiv') 											=> "hidden",
+		strtolower('globalpro_app_box_report_dailyTownNoneConceptDiv') 												=> "hidden",
+		strtolower('globalpro_app_box_report_dailyTownShowAmountDiv') 												=> "hidden",
+		
+		
 
 		/*Farmacia LM*/
 		strtolower('farma_lm_app_invoice_billing_divOpcionViewA4') 													=> "",

@@ -394,12 +394,14 @@ class app_sales_report extends _BaseController {
 			$startOn				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"startOn");//--finuri
 			$endOn					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri
 			$txtClassID 			= /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "txtClassID");//--finuri
+			$txtBranchID 			= /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "txtBranchID");//--finuri
 			
 			if(!($viewReport && $startOn && $endOn  )){
 				
 				//Renderizar Resultado 
 				$dataSession["objListCategoryItem"]					= $this->Itemcategory_Model->getByCompany($companyID);
 				$dataSession["objListWarehouse"]					= $this->Userwarehouse_Model->getRowByUserID($companyID,$userID);
+				$dataSession["objListBranch"]						= $this->Branch_Model->getByCompany($companyID);
 				$dataSession["objListCatalogItemClasificacion"] 	= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_accounting_expenses", "classID", $companyID);
 				$dataSession["message"]					= $this->core_web_notification->get_message();
 				$dataSession["head"]					= /*--inicio view*/ view('app_sales_report/company_utitlity/view_head');//--finview
@@ -410,6 +412,10 @@ class app_sales_report extends _BaseController {
 			}
 			else{				
 				
+				//Obtener sucursal  
+				$objBranch						= $this->Branch_Model->get_rowByPK($companyID,$txtBranchID);
+				$objDataResult["branchName"]	= $txtBranchID == 0 ? "TODAS" : $objBranch->name;
+				
 				//Obtener el tipo de Comprobante
 				$companyID 		= $dataSession["user"]->companyID;
 				//Get Component
@@ -419,10 +425,10 @@ class app_sales_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_sales_get_report_sales_utility_summary(?,?,?,?,?,?);";				
+				$query			= "CALL pr_sales_get_report_sales_utility_summary(?,?,?,?,?,?,?);";				
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$txtClassID]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$txtClassID,$txtBranchID]
 				);
 				
 				

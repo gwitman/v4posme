@@ -56,7 +56,7 @@
 											
 											
 											
-											<div class="form-group">
+											<div class="form-group <?php echo getBehavio($objCompany->type,"app_box_report","dailyTownUserDiv","") ?>">
 												<label class="col-lg-6 control-label" for="selectFilter">Usuario</label>
 												<div class="col-lg-6"> 
 													<div class="col-lg-6">
@@ -94,7 +94,7 @@
 												</div>
 											</div>
 											
-											<div class="form-group">
+											<div class="form-group <?php echo getBehavio($objCompany->type,"app_box_report","dailyTownShowAmountDiv","") ?>  ">
 												<label class="col-lg-6 control-label" for="selectFilter">Mostrar Montos unicamente</label>
 												<div class="col-lg-6"> 
 													<div class="col-lg-6">
@@ -108,7 +108,7 @@
 												</div>
 											</div>
 											
-											<div class="form-group">
+											<div class="form-group  <?php echo getBehavio($objCompany->type,"app_box_report","dailyTownConceptIngresosDiv","") ?>">
 													<label class="col-lg-6 control-label" for="normal">Conceptos de ingresos</label> 
 													<div class="col-lg-6">
 														<hr/>
@@ -119,7 +119,7 @@
 											foreach($objTipoMovementInputCash as  $value)
 											{
 												?>
-												<div class="form-group">
+												<div class="form-group <?php echo getBehavio($objCompany->type,"app_box_report","dailyTownConceptIngresosDiv","") ?> ">
 														<label class="col-lg-6 control-label" for="normal"><?php echo $value->name; ?></label> 
 														<div class="col-lg-6">
 															<input type="checkbox"  class="areas"   name="txtIsServices" id="txtIsServices" value="<?php echo $value->catalogItemID;   ?>"    >
@@ -129,7 +129,7 @@
 											}
 											?>
 										
-											<div class="form-group">
+											<div class="form-group <?php echo getBehavio($objCompany->type,"app_box_report","dailyTownConceptEgresosDiv","") ?>">
 													<label class="col-lg-6 control-label" for="normal">Conceptos de egreso</label> 
 													<div class="col-lg-6">
 														<hr/>
@@ -140,7 +140,7 @@
 											foreach($objTipoMovementOutputCash as  $value)
 											{
 												?>
-												<div class="form-group">
+												<div class="form-group <?php echo getBehavio($objCompany->type,"app_box_report","dailyTownConceptEgresosDiv","") ?>">
 														<label class="col-lg-6 control-label" for="normal"><?php echo $value->name; ?></label> 
 														<div class="col-lg-6">
 															<input type="checkbox"  class="areas"  name="txtIsServices" id="txtIsServices" value="<?php echo $value->catalogItemID;   ?>"     >
@@ -151,7 +151,7 @@
 											?>
 											
 											
-											<div class="form-group">
+											<div class="form-group <?php echo getBehavio($objCompany->type,"app_box_report","dailyTownNoneConceptDiv","") ?> ">
 													<label class="col-lg-6 control-label" for="normal">Ningun concepto</label> 
 													<div class="col-lg-6">
 														<input type="checkbox"  class="areas"   name="txtIsServices" id="txtIsServices" value="0"    >
@@ -159,7 +159,7 @@
 											</div>
 											
 												
-											<div class="form-group">
+											<div class="form-group <?php echo getBehavio($objCompany->type,"app_box_report","dailyTownCategoryItemDiv","") ?>">
 													<label class="col-lg-6 control-label" for="normal">Categoria de productos</label> 
 													<div class="col-lg-6">
 														<hr/>
@@ -170,7 +170,7 @@
 											foreach($objListCategoryItem as  $value)
 											{
 												?>
-												<div class="form-group">
+												<div class="form-group <?php echo getBehavio($objCompany->type,"app_box_report","dailyTownCategoryItemDiv","") ?>">
 														<label class="col-lg-6 control-label" for="normal"><?php echo $value->name; ?></label> 
 														<div class="col-lg-6">
 															<input type="checkbox"  class="categorias"   name="txtCategoryItem" id="txtCategoryItem" value="<?php echo $value->inventoryCategoryID;   ?>"     >
@@ -180,7 +180,7 @@
 											}
 											?>
 										
-											<div class="form-group">
+											<div class="form-group <?php echo getBehavio($objCompany->type,"app_box_report","dailyTownCategoryItemDiv","") ?>">
 													<label class="col-lg-6 control-label" for="normal">Ninguna categoria</label> 
 													<div class="col-lg-6">
 														<input type="checkbox"  class="categorias"   name="txtCategoryItem" id="txtCategoryItem" value="0"    >

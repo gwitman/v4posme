@@ -12,10 +12,13 @@
 							var startOn					=	$("#txtStartOn").val();	
 							var endOn					=	$("#txtEndOn").val();
 							var txtClassID				=	$("#txtClassID").val();
+							var txtBranchID				=	$("#txtBranchID").val();
 							
 							if(!( startOn == "" || endOn == "" ) ){
 								fnWaitOpen();
-								window.location	= "<?php echo base_url(); ?>/app_sales_report/company_utitlity/viewReport/true/startOn/"+startOn+"/endOn/"+endOn+"/txtClassID/"+txtClassID;
+								window.location	= "<?php echo base_url(); ?>/app_sales_report/company_utitlity/viewReport/true/startOn/"+
+									startOn+"/endOn/"+endOn+"/txtClassID/"+txtClassID+
+									"/txtBranchID/"+txtBranchID;
 							}
 							else{
 								fnShowNotification("Completar los Parametros","error");

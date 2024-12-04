@@ -358,10 +358,10 @@ class app_box_report extends _BaseController {
 				$dataView["objTipoMovementOutputCash"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_outputcash","areaID",$companyID);
 				$dataView["objListCategoryItem"]			= $this->Itemcategory_Model->getByCompany($companyID);
 				$dataView["objListBranch"]					= $this->Branch_Model->getByCompany($companyID);
-				
+				$dataView["objCompany"]						= $dataSession["company"];
 				
 				//Renderizar Resultado 
-				$dataSession["message"]		= $this->core_web_notification->get_message();
+				$dataSession["message"]		= $this->core_web_notification->get_message();				
 				$dataSession["head"]		= /*--inicio view*/ view('app_box_report/daily_town/view_head');//--finview
 				$dataSession["body"]		= /*--inicio view*/ view('app_box_report/daily_town/view_body',$dataView);//--finview
 				$dataSession["script"]		= /*--inicio view*/ view('app_box_report/daily_town/view_script');//--finview
