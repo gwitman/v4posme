@@ -192,6 +192,40 @@ if($objParameterRestaurant == "true")
 ?>
 
 
+<style>
+	/*encabezado*/
+	#heading
+	{
+		margin: 0 -25px 0px -25px !important
+	}
+	
+	
+	/*label de los etiquetas*/
+	@media (min-width: 768px) {
+	  .form-horizontal .control-label {
+		text-align: left;
+	  }
+	}
+	
+	
+	/*detalle de factura*/
+	.table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td
+	{
+		padding: 0px
+	}
+
+	.form-group
+	{
+		margin-bottom:0px;
+	}
+	
+	.select2-container
+	{
+		margin-bottom:0px;
+	}
+	
+</style>
+
 <div 
 	class="isloading-overlay"
 	id="divLoandingCustom"

@@ -2613,7 +2613,11 @@
 				"bPaginate"		: false,
 				"bFilter"		: false,
 				"bSort"			: false,
-				"bInfo"			: false,
+				"bInfo"			: false,				
+				"oLanguage"		: {
+					"sEmptyTable": "", // No mostrar texto cuando está vacía
+					"sZeroRecords": "",
+				},
 				"bAutoWidth"	: false,
 				"aoColumnDefs": [ 
 							{

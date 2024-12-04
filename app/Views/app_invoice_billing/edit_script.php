@@ -2923,6 +2923,10 @@
 				"bSort"			: false,
 				"bInfo"			: false,
 				"bAutoWidth"	: false,
+				"oLanguage"		: {
+					"sEmptyTable": "", // No mostrar texto cuando está vacía
+					"sZeroRecords": "",
+				},
 				"aaData"		: tmpData,
 				"aoColumnDefs": [ 
 							{
