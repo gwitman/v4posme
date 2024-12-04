@@ -70,6 +70,8 @@
 	var varParameterInvoiceBillingPrinterDataLocal			= '<?php echo $dataPrinterLocal; ?>';
 	var varParameterUrlServidorDeImpresion 					= '<?php echo $objParameterUrlServidorDeImpresion; ?>';
 	var varParameterINVOICE_BILLING_VALIDATE_EXONERATION 	= '<?php echo $objParameterINVOICE_BILLING_VALIDATE_EXONERATION; ?>';
+	var objParameterINVOICE_SHOW_FIELD_PESO					= '<?php echo $objParameterINVOICE_SHOW_FIELD_PESO; ?>';
+	
 	var varTransactionCausalID	= <?php echo $objTransactionMaster->transactionCausalID; ?>;	
 	var varCustomerCrediLineID	= <?php echo $objTransactionMaster->reference4; ?>;	
 	var varPermisos				= JSON.parse('<?php echo json_encode($objListaPermisos); ?>');
@@ -124,7 +126,8 @@
 				Precio2,
 				Precio3,
 				"'"+varDetail[i].itemNameDescriptionLog + "'", 
-				fnFormatNumber(varDetail[i].tax2 / varDetail[i].unitaryPrice,2) /*tax_services*/
+				fnFormatNumber(varDetail[i].tax2 / varDetail[i].unitaryPrice,2) /*tax_services*/ ,
+				varDetail[i].reference1 /*peso */
 			]);
 		}
 	}	
@@ -1099,6 +1102,7 @@
 		objRow.price3						= objResponse[26];
 		objRow.itemNameDescription			= objResponse[24];
 		objRow.taxServices					= 0;
+		objRow.peso 						= 0;
 		
 		//Berificar que el Item ya esta agregado 
 		if(jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[2] == objRow.itemID;}).select().length > 0 ){
@@ -1146,7 +1150,8 @@
 				objRow.price2,
 				objRow.price3,
 				objRow.itemNameDescription /*itemDescriptionLog*/,
-				objRow.taxServices
+				objRow.taxServices,
+				objRow.peso
 			]);
 			
 			if(varUseMobile != "1"){
@@ -3034,7 +3039,7 @@
 							},
 							{
 								"aTargets"		: [ 6 ],//Cantidad
-								"sWidth"		: "250px",
+								"sWidth"		: objParameterINVOICE_SHOW_FIELD_PESO == "true" ? "150px" : "250px",
 								"mRender"		: function ( data, type, full ) {
 									var str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right" autocomplete="off" />';
 									
@@ -3241,6 +3246,15 @@
 								"bSearchable"	: false,
 								"mRender"		: function ( data, type, full ) {
 									return '<input type="text" class="col-lg-12 txtTaxServices" value="'+data+'" name="txtTaxServices[]" style="text-align:right" />';
+								}
+							},
+							{
+								"aTargets"		: [ 18 ],//Peso
+								"bVisible"		: true,
+								"sClass"		: objParameterINVOICE_SHOW_FIELD_PESO == "true" ? "" : "hidden",
+								"bSearchable"	: false,
+								"mRender"		: function ( data, type, full ) {
+									return '<input type="text" class="col-lg-12 txtDetailLote" value="'+data+'" name="txtDetailLote[]" style="text-align:right" />';
 								}
 							}
 				]						

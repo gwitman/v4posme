@@ -766,7 +766,7 @@ if($objParameterRestaurant == "true")
 										<th></th>
 										<th>Codigo</th>
 										<th>Descripcion</th>
-										<th>U/M</th>
+										<th>U/M</th>										
 										<th>Cantidad</th>													
 										<th>Precio</th>
 										<th>Total</th>
@@ -779,6 +779,7 @@ if($objParameterRestaurant == "true")
 										<th>Precio3</th>
 										<th>itemNameDescription</th>
 										<th>TAX_SERVICES</th>
+										<th>Peso</th>
 									  </tr>
 									</thead>
 									<tbody id="body_tb_transaction_master_detail">
