@@ -15904,6 +15904,7 @@ function helper_reporteA4TransactionMasterExamenLab(
 						$valor->display	= str_replace("|","</br>",$valor->display);
 						$valor->display	= str_replace(",","</br>",$valor->display);
 						
+						
 						//si el examen solo tiene una columna mostrar el indicador de la siguiente manera						
 						if($cant == 1)
 						{
@@ -15912,7 +15913,9 @@ function helper_reporteA4TransactionMasterExamenLab(
 							$html = $html."<tr  >";
 								$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;width:33% '>".$valor->name."</td>";
 								$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;width:33%'>".$valor->reference3."</td>";
-								$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;color:blue;width:33%'>".htmlentities($valor->display)."</td>";
+								$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;color:blue;width:33%'>".												
+												str_replace("&lt;/br&gt;","</br>",htmlentities($valor->display)).
+											"</td>";
 							$html = $html."</tr>";
 
 						}
@@ -15924,7 +15927,11 @@ function helper_reporteA4TransactionMasterExamenLab(
 							$html = $html."<tr  >";
 								$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse; '>".$valor->name."</td>";
 								$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;'>".$valor->reference3."</td>";
-								$html = $html."<td style='text-align:right;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;color:blue'>".htmlentities($valor->display)."</td>";
+								$html = $html.
+											"<td style='text-align:right;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;color:blue'>".												
+												str_replace("&lt;/br&gt;","</br>",htmlentities($valor->display)).
+											"</td>";
+											
 							$html = $html."</tr>";
 						}
 					}
