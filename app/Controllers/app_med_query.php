@@ -473,6 +473,106 @@ class app_med_query extends _BaseController {
 		    return $resultView;
 		}	
 	}
+	
+	function insertElementMobil($dataSession,$transactionMaster){
+		
+		try
+		{
+			//Obtener el Componente de Transacciones Facturacion
+			$objComponentShare			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_med_asistencia");
+			if(!$objComponentShare)
+			throw new \Exception("EL COMPONENTE 'tb_transaction_master_med_asistencia' NO EXISTE...");
+			
+			
+			$companyID 								= $dataSession["user"]->companyID;
+			$branchID								= $dataSession['user']->branchID;
+			$roleID 								= $dataSession["role"]->roleID;
+			$customer 								= $this->Customer_Model->get_rowByIdentification($companyID, $transactionMaster->CustomerIdentification);			
+			$customerNaturals						= $this->Natural_Model->get_rowByPK($companyID,$branchID,$customer->entityID);
+			$objListWorkflowStage					= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_med_asistencia","statusID",$companyID,$branchID,$roleID);
+			
+			$transactionID 							= $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID,"tb_transaction_master_med_asistencia",0);			
+			$objT 									= $this->Transaction_Model->getByCompanyAndTransaction($dataSession["user"]->companyID,$transactionID);
+			
+			
+			$objTM["companyID"] 					= $dataSession["user"]->companyID;
+			$objTM["transactionID"] 				= $transactionID;			
+			$objTM["branchID"]						= $dataSession["user"]->branchID;
+			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_med_asistencia",0);
+			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($dataSession["user"]->companyID,$transactionID);
+			$objTM["entityID"] 						= $customer->entityID;
+			$objTM["transactionOn"]					= $transactionMaster->transactionOn;
+			$objTM["statusIDChangeOn"]				= date("Y-m-d H:m:s");
+			$objTM["componentID"] 					= $objComponentShare->componentID;
+			$objTM["note"] 							= $transactionMaster->note;
+			$objTM["sign"] 							= 0;
+			$objTM["currencyID"]					= $this->core_web_currency->getCurrencyDefault($companyID)->currencyID;
+			$objTM["currencyID2"]					= $this->core_web_currency->getCurrencyExternal($dataSession["user"]->companyID)->currencyID;
+			$objTM["exchangeRate"]					= $this->core_web_currency->getRatio($dataSession["user"]->companyID,date("Y-m-d"),1,$objTM["currencyID2"],$objTM["currencyID"]);			
+			$objTM["reference1"] 					= "";
+			$objTM["reference2"] 					= "";
+			$objTM["reference3"] 					= "";
+			$objTM["reference4"] 					= "";
+			$objTM["statusID"] 						= $objListWorkflowStage[0]->workflowStageID;
+			$objTM["priorityID"]					= $transactionMaster->priorityID;
+			$objTM["amount"] 						= 0;
+			$objTM["tax1"]							= 0;
+			$objTM["tax2"]							= 0;
+			$objTM["tax3"]							= 0;
+			$objTM["tax4"]							= 0;
+			$objTM["isApplied"] 					= 0;
+			$objTM["journalEntryID"] 				= 0;
+			$objTM["classID"] 						= NULL;
+			$objTM["areaID"] 						= NULL;
+			$objTM["sourceWarehouseID"]				= NULL;
+			$objTM["targetWarehouseID"]				= NULL;
+			$objTM["isActive"]						= 1;
+			$objTM["nextVisit"]						= $transactionMaster->transactionOn;
+			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);
+							
+			$db=db_connect();
+			$db->transStart();
+			$transactionMasterID 	= $this->Transaction_Master_Model->insert_app_posme($objTM);			
+			
+			//Crear la Carpeta para almacenar los Archivos del Documento
+			$path_ 					= PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID;
+			if(!file_exists($path_))
+			{
+				mkdir($path_, 0700);
+			}
+			
+			
+			if($db->transStatus() !== false)
+			{
+				$db->transCommit();	
+			}
+			else
+			{
+				$db->transRollback();
+				throw new \Exception(ERROR);
+			}
+			
+			
+		}
+		catch(\Exception $ex)
+		{	
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;
+		}
+		
+	}
+	
+	
 	function save($mode=""){
 		 $mode = helper_SegmentsByIndex($this->uri->getSegments(),1,$mode);	
 		 try{ 
