@@ -2197,8 +2197,7 @@ class app_invoice_billing extends _BaseController {
 			//y es al credito. cambiar el estado por el estado inicial, que es registrada			
 			$statusID 								= $this->core_web_workflow->getWorkflowStageApplyFirst("tb_transaction_master_billing","statusID",$companyID,$branchID,$roleID);			
 			$customer 								= $this->Customer_Model->get_rowByIdentification($companyID, $transactionMaster->CustomerIdentification);
-			$objParameterWarehouseDefault			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "INVENTORY_ITEM_WAREHOUSE_DEFAULT");
-			$periodPay 								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_FRECUENCIA_PAY_DEFAULT");
+			$objParameterWarehouseDefault			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "INVENTORY_ITEM_WAREHOUSE_DEFAULT");			
 			$warehouseDefault 						= $objParameterWarehouseDefault->value;
 			$warehouseID 							= $this->Warehouse_Model->getByCode($companyID, $warehouseDefault)->warehouseID;
 			$objTM["companyID"] 					= $companyID;
@@ -2208,7 +2207,7 @@ class app_invoice_billing extends _BaseController {
 			$objTM["transactionCausalID"] 			= $transactionMaster->TransactionCausalId;
 			$objTM["entityID"] 						= $customer->entityID;
 			$objTM["transactionOn"]					= $transactionMaster->TransactionOn;
-			$objTM["transactionOn2"]				= date("Y-m-d H:i:s");//Fecha del Primer Pago, de las facturas al credito
+			$objTM["transactionOn2"]				= $transactionMaster->NextVisit;
 			$objTM["statusIDChangeOn"]				= date("Y-m-d H:i:s");
 			$objTM["componentID"] 					= $objComponentBilling->componentID;
 			$objTM["note"] 							= $transactionMaster->Comment;	
@@ -2218,7 +2217,7 @@ class app_invoice_billing extends _BaseController {
 			$objTM["exchangeRate"]					= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$objTM["currencyID2"],$objTM["currencyID"]);
 			$objTM["reference1"] 					= $providerDefault->entityID;
 			$objTM["descriptionReference"] 			= "reference1:entityID del proveedor de credito para las facturas al credito,reference4: customerCreditLineID linea de credito del cliente";
-			$objTM["reference2"] 					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_PLAZO_DEFAULT")->value;
+			$objTM["reference2"] 					= $transactionMaster->Plazo; 
 			$objTM["reference3"] 					= $this->User_Model->get_UserByUserIDAndCompanyID($companyID, $dataSession["user"]->userID)->firstName;
 			$objTM["reference4"] 					= is_null($transactionMaster->CustomerCreditLineId) ? "0" : $transactionMaster->CustomerCreditLineId;
 			$objTM["statusID"] 						= $statusID[0]->workflowStageID;
@@ -2233,8 +2232,8 @@ class app_invoice_billing extends _BaseController {
 			$objTM["tax2"]							= 0;
 			$objTM["tax4"]							= 0;
 			$objTM["discount"]						= 0;
-			$objTM["periodPay"]						= $periodPay->value; //frecuencia de pago por defecto
-			$objTM["nextVisit"]						= "";
+			$objTM["periodPay"]						= $transactionMaster->PeriodPay;
+			$objTM["nextVisit"]						= $transactionMaster->NextVisit;
 			$objTM["numberPhone"]					= "";
 			$objTM["entityIDSecondary"]				= $employee->entityID;
 			$objTM["dayExcluded"]					= $objParameterCXC_DAY_EXCLUDED_IN_CREDIT;
@@ -2391,7 +2390,7 @@ class app_invoice_billing extends _BaseController {
 					$objTMDC								= NULL;
 					$objTMDC["transactionMasterID"]			= $transactionMasterID;
 					$objTMDC["transactionMasterDetailID"]	= $transactionMasterDetailID_;
-					$objTMDC["reference1"]					= "0";
+					$objTMDC["reference1"]					= $transactionMaster->FixedExpenses;
 					$objTMDC["reference2"]					= "1";
 					$objTMDC["reference3"]					= "0";
 					$objTMDC["reference4"]					= "";
@@ -2487,7 +2486,47 @@ class app_invoice_billing extends _BaseController {
 					$objCustomerCreditDocument["term"] 					= $objCustomerCreditLine->term;
 					$objCustomerCreditDocument["amount"] 				= $amountTotal; 
 					$objCustomerCreditDocument["balance"] 				= $amountTotal;
+					$objCatalogItemDayExclude 							= $this->Catalog_Item_Model->get_rowByCatalogItemID($objCustomerCreditLine->dayExcluded);
 
+					if($objParameterAmortizationDuranteFactura == "true" &&  $objTM["currencyID"] == 1 /*cordoba*/)
+					{
+						
+						
+						$objCustomerCreditDocument["term"] 					= $objTM["reference2"];
+						$objCustomerCreditDocument["interes"] 				= $transactionMaster->FixedExpenses;
+						$objCustomerCreditDocument["amount"] 				= 	$amountTotal - 
+																				$objTMInfo["receiptAmountPoint"] - 
+																				
+																				$objTMInfo["receiptAmount"] - 
+																				$objTMInfo["receiptAmountBank"] - 																				
+																				$objTMInfo["receiptAmountCard"] - 
+																				
+																				round(($objTMInfo["receiptAmountBankDol"] * $objTM["exchangeRate"]),2) - 
+																				round(($objTMInfo["receiptAmountCardDol"] * $objTM["exchangeRate"]),2) - 																			
+																				round(($objTMInfo["receiptAmountDol"] * $objTM["exchangeRate"]),2)  ;
+																				
+						$objCustomerCreditDocument["balance"] 				= $objCustomerCreditDocument["amount"];
+					}
+					
+					if($objParameterAmortizationDuranteFactura == "true" &&  $objTM["currencyID"] == 2 /*dolares*/)
+					{
+						$objCustomerCreditDocument["term"] 					= $objTM["reference2"];
+						$objCustomerCreditDocument["interes"] 				= $transactionMaster->FixedExpenses;
+						$objCustomerCreditDocument["amount"] 				= 	$amountTotal - 
+																				$objTMInfo["receiptAmountPoint"] - 
+																				
+																				$objTMInfo["receiptAmount"] - 
+																				$objTMInfo["receiptAmountBank"] - 																				
+																				$objTMInfo["receiptAmountCard"] - 
+																				
+																				round(($objTMInfo["receiptAmountBankDol"] / $objTM["exchangeRate"]),2) - 
+																				round(($objTMInfo["receiptAmountCardDol"] / $objTM["exchangeRate"]),2) - 																			
+																				round(($objTMInfo["receiptAmountDol"] / $objTM["exchangeRate"]),2)  ;
+																				
+						$objCustomerCreditDocument["balance"] 				= $objCustomerCreditDocument["amount"];
+					}
+					
+					
 					$objCustomerCreditDocument["currencyID"] 			= $objTM["currencyID"];					
 					$objCustomerCreditDocument["statusID"] 				= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_document","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
 					$objCustomerCreditDocument["reference1"] 			= $objTM["note"];
@@ -2495,18 +2534,31 @@ class app_invoice_billing extends _BaseController {
 					$objCustomerCreditDocument["reference3"] 			= "";
 					$objCustomerCreditDocument["isActive"] 				= 1;
 
-					$objCustomerCreditDocument["providerIDCredit"] 		= $objTM["reference1"];					
+					$objCustomerCreditDocument["providerIDCredit"] 		= $objTM["reference1"];
 					$objCustomerCreditDocument["periodPay"]				= $objCustomerCreditLine->periodPay;
 
+					if($objParameterAmortizationDuranteFactura == "true")
+					{
+						$objCustomerCreditDocument["periodPay"]			= $objTM["periodPay"];
+						$objCatalogItemDayExclude 						= $this->Catalog_Item_Model->get_rowByCatalogItemID($objTM["dayExcluded"]);
+					}
+					
+					
 					$objCustomerCreditDocument["typeAmortization"] 		= $objCustomerCreditLine->typeAmortization;					
 					$objCustomerCreditDocument["reportSinRiesgo"] 	 	= 1;
 					$customerCreditDocumentID 							= $this->Customer_Credit_Document_Model->insert_app_posme($objCustomerCreditDocument);
 					$periodPay 											= $this->Catalog_Item_Model->get_rowByCatalogItemID($objCustomerCreditLine->periodPay);
 
+					if($objParameterAmortizationDuranteFactura == "true")
+					{
+						$periodPay 										= $this->Catalog_Item_Model->get_rowByCatalogItemID( $objTM["periodPay"] );
+					}
+					
+					
 					$objCatalogItem_DiasNoCobrables 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES",$companyID);
 					$objCatalogItem_DiasFeriados365 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_365",$companyID);
 					$objCatalogItem_DiasFeriados366 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_366",$companyID);
-					$objCatalogItemDayExclude 				= $this->Catalog_Item_Model->get_rowByCatalogItemID($objCustomerCreditLine->dayExcluded);
+					
 
 					//Crear tabla de amortizacion
 					$this->financial_amort->amort(
@@ -2564,7 +2616,7 @@ class app_invoice_billing extends _BaseController {
 
 					$montoTotalCordobaCredit = $objTM["currencyID"] == $objCurrencyCordoba->currencyID ? $objCustomerCreditDocument["amount"] : round(($objCustomerCreditDocument["amount"] * $objTM["exchangeRate"]),2) ;
 					$montoTotalDolaresCredit = $objTM["currencyID"] == $objCurrencyDolares->currencyID ? $objCustomerCreditDocument["amount"] : round(($objCustomerCreditDocument["amount"] / $objTM["exchangeRate"]),2) ;
-
+				
 
 					//disminuir el balance de general	
 					$objCustomerCredit 					= $this->Customer_Credit_Model->get_rowByPK($objCustomerCreditLine->companyID,$objCustomerCreditLine->branchID,$objCustomerCreditLine->entityID);
