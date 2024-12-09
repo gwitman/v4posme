@@ -117,7 +117,7 @@ class app_sales_report extends _BaseController {
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
 				$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?);";		
-				log_message("error","CALL pr_sales_get_report_sales_detail(2,'',2,'".$startOn."','".$endOn."',".$inventoryCategoryID.",'".$warehouseID."');");				
+				log_message("error","CALL pr_sales_get_report_sales_detail(2,'',2,'".$startOn."','".$endOn."',".$inventoryCategoryID.",'".$warehouseID."'); 001");				
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
 					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID]
@@ -131,13 +131,14 @@ class app_sales_report extends _BaseController {
 					$objDataResult["objDetail"]				= $objData;
 				}
 				
+				log_message("error","CALL pr_sales_get_report_sales_detail(2,'',2,'".$startOn."','".$endOn."',".$inventoryCategoryID.",'".$warehouseID."'); 002");
 				$objDataResult["objCompany"] 				= $objCompany;
 				$objDataResult["objStartOn"] 				= $startOn;
 				$objDataResult["objEndOn"] 					= $endOn;
 				$objDataResult["objLogo"] 					= $objParameter;
 				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_sales_get_report_sales_detail" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
 				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
-				
+				log_message("error","CALL pr_sales_get_report_sales_detail(2,'',2,'".$startOn."','".$endOn."',".$inventoryCategoryID.",'".$warehouseID."'); 003");
 				return view("app_sales_report/sales_detail/view_a_disemp",$objDataResult);//--finview-r
 				
 			}
