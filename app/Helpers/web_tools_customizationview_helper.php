@@ -307,6 +307,23 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('farma_lm_app_invoice_billing_divOpcionViewA4') 													=> "",
 		strtolower('farma_lm_web_tools_report_helper_reporteA4TransactionMasterInvoiceA4Opcion1AutorizationDgi')	=> "",
 		
+		/*Mini Ferreteria Shalom*/		
+		strtolower('mini_ferreteria_shalom_web_tools_report_helper_reporte80mmTransactionMaster_Devolucion')		=> "	
+			</br>
+			<tr>
+			  <td colspan='3' style='text-align:center'>
+				No le digas a Dios cuáles tu problema , mejor dile al problema quien es tu Dios ( pon a Dios sobre todas tus cosas )
+			  </td>
+			</tr>
+			</br>
+			<tr>
+			  <td colspan='3' style='text-align:center'>
+				No se aceptan devoluciones.                
+			  </td>
+			</tr>
+			
+		",
+		
 		/*Ferreteria Mateo*/			
 		strtolower('ferreteria_mateo_app_invoice_billing_bodyListInvoice')	 									=> "height: 550px; overflow: scroll;",
 		strtolower('ferreteria_mateo_app_box_share_stylePage')	 												=> "/*posMe stylePage*/ #content .row{ margin-bottom:0px !important; } .email-bar{ margin-bottom:0px !important; } .form-group{ margin-bottom:0px !important; } .si_ferreteria_mateo{ display:none !important; } ",

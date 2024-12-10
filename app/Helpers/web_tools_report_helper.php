@@ -8187,11 +8187,12 @@ function helper_reporte80mmTransactionMaster(
                             ".$objParameterTelefono->value."
                           </td>
                         </tr>
-
+						
+						".getBehavio($objCompany->type,"web_tools_report_helper","reporte80mmTransactionMaster_Devolucion","")."
 
                         <tr>
                           <td colspan='3' style='text-align:center' >
-                            sistema 505-8712-5827
+                            posMe PRO Premium 3.1
                           </td>
                         </tr>
                                 
