@@ -1304,6 +1304,13 @@ class app_purchase_taller extends _BaseController {
 			$roleID 					= $dataSession["role"]->roleID;		
 			$employeeID					= $dataSession["user"]->employeeID;		
 			
+			
+			//Obtener el Componente de Transacciones Facturacion
+			$objComponentTaller			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_workshop_taller");
+			if(!$objComponentTaller)
+			throw new \Exception("EL COMPONENTE 'tb_transaction_master_workshop_taller' NO EXISTE...");
+		
+		
 			//Get Component
 			$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
 			//Get Logo
@@ -1316,6 +1323,7 @@ class app_purchase_taller extends _BaseController {
 			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);			
 			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
 			$datView["objTC"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$datView["objTM"]->transactionCausalID);
+			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID,$transactionID,$transactionMasterID,$objComponentTaller->componentID);
 			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
 			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_workshop_taller","statusID",$datView["objTM"]->statusID,$companyID,APP_BRANCH,APP_ROL_SUPERADMIN);
@@ -1384,25 +1392,47 @@ class app_purchase_taller extends _BaseController {
 			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","routeID",$companyID);
 			$dataView["objItemArticulo"]		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","routeID",$companyID,$dataView["objTransactionMasterInfo"]->routeID);
 			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","mesaID",$companyID);
-			
+			$dataView["objTMD"]					= $datView["objTMD"];
 			
 			
 			
 			//Generar Reporte
-			$html = helper_reporteA4mmTransactionMasterTallerGlobalPro(
-			    "TALLER",
-			    $objCompany,
-			    $objParameter,
-			    $datView["objTM"],
-			    $datView["tipoCambio"],
-			    $datView["objCurrency"],
-			    $datView["objTMI"],				
-			    $objParameterTelefono,				
-				$dataView ,
-				$datView["objStage"][0]->display, /*estado*/
-				$datView["objTC"]->name /*causal*/
-				
-			);
+			$html = "";
+			if($dataSession["company"]->type == "compu_matt" )
+			{
+				$html = helper_reporteA4mmTransactionMasterTallerCompuMatt(
+					"TALLER",
+					$objCompany,
+					$objParameter,
+					$datView["objTM"],
+					$datView["tipoCambio"],
+					$datView["objCurrency"],
+					$datView["objTMI"],				
+					$objParameterTelefono,				
+					$dataView ,
+					$datView["objStage"][0]->display, /*estado*/
+					$datView["objTC"]->name /*causal*/
+					
+				);
+
+			}
+			else 
+			{
+				$html = helper_reporteA4mmTransactionMasterTallerGlobalPro(
+					"TALLER",
+					$objCompany,
+					$objParameter,
+					$datView["objTM"],
+					$datView["tipoCambio"],
+					$datView["objCurrency"],
+					$datView["objTMI"],				
+					$objParameterTelefono,				
+					$dataView ,
+					$datView["objStage"][0]->display, /*estado*/
+					$datView["objTC"]->name /*causal*/
+					
+				);
+			}
 			
 			$this->dompdf->loadHTML($html);
 			
@@ -1482,6 +1512,13 @@ class app_purchase_taller extends _BaseController {
 			$roleID 					= $dataSession["role"]->roleID;		
 			$employeeID					= $dataSession["user"]->employeeID;		
 			
+			
+			//Obtener el Componente de Transacciones Facturacion
+			$objComponentTaller			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_workshop_taller");
+			if(!$objComponentTaller)
+			throw new \Exception("EL COMPONENTE 'tb_transaction_master_workshop_taller' NO EXISTE...");
+		
+		
 			//Get Component
 			$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
 			//Get Logo
@@ -1494,6 +1531,7 @@ class app_purchase_taller extends _BaseController {
 			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);			
 			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
 			$datView["objTC"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$datView["objTM"]->transactionCausalID);
+			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID,$transactionID,$transactionMasterID,$objComponentTaller->componentID);
 			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
 			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_workshop_taller","statusID",$datView["objTM"]->statusID,$companyID,APP_BRANCH,APP_ROL_SUPERADMIN);
@@ -1562,7 +1600,7 @@ class app_purchase_taller extends _BaseController {
 			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","routeID",$companyID);
 			$dataView["objItemArticulo"]		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","routeID",$companyID,$dataView["objTransactionMasterInfo"]->routeID);
 			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","mesaID",$companyID);
-			
+			$dataView["objTMD"]					= $datView["objTMD"];
 			
 			
 			

@@ -280,6 +280,17 @@ class Transaction_Master_Detail_Model extends Model  {
 			$sql = $sql.sprintf(" where td.transactionMasterID = $transactionMasterID");
 		}
 		
+		if($componentID == 98 /* Orden de taller : tb_transaction_master_workshop_taller*/)
+		{
+			$sql      = sprintf("select 
+									td.reference1,
+									ci.name									
+								");
+			$sql = $sql.sprintf(" from tb_transaction_master_detail td");
+			$sql = $sql.sprintf(" inner join tb_catalog_item ci on ci.catalogItemID = td.catalogStatusID ");			
+			$sql = $sql.sprintf(" where td.transactionMasterID = $transactionMasterID and td.isActive = 1 ");
+		}
+		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
