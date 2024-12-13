@@ -294,16 +294,16 @@ class core_web_printer_direct {
 				);
 				$this->printer->text("\n");
 				$iva		= $iva + ($row->tax1 * $row->quantity);
-				$servicio	= $servicio + ($row->tax2 * $row->quantity);
-				$total		= $total + $row->amount + $servicio;
-				$subtotal	= $total - $iva - $servicio;
+				$servicio	= $servicio + ($row->tax2 * $row->quantity);				
+				$subtotal	= $subtotal + $row->amount;
 
 			}
 		}
 		$this->printer->text("\n");
 
 		$this->printer->setJustification(Printer::JUSTIFY_CENTER);
-		$iva 		= number_format(round($iva,2),2,'.',',');
+		$total		= $subtotal + $servicio;
+		$iva 		= number_format(round($iva,2),2,'.',',');		
 		$total 		= number_format(round($total,2),2,'.',',');
 		$subtotal 	= number_format(round($subtotal,2),2,'.',',');
 		$cambio		= ($dataSetValores["objTransactionMasterInfo"]->receiptAmount - $dataSetValores["objTransactionMaster"]->amount - $servicio );
@@ -311,7 +311,7 @@ class core_web_printer_direct {
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\nSub Total: ".$dataSetValores["prefixCurrency"].$subtotal) ;
 		$this->printer->setTextSize(1, 1);
-		$this->printer->text("\n10% Servicio: ".$dataSetValores["prefixCurrency"].$servicio) ;
+		$this->printer->text("\n12% Servicio: ".$dataSetValores["prefixCurrency"].$servicio) ;
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\nTotal: ".$dataSetValores["prefixCurrency"].$total) ;
 		$this->printer->setTextSize(1, 1);
@@ -445,14 +445,14 @@ class core_web_printer_direct {
 				$this->printer->text("\n");
 				$iva		= $iva + ($row->tax1 * $row->quantity);
 				$servicio	= $servicio + ($row->tax2 * $row->quantity);
-				$total		= $total + $row->amount + $servicio;
-				$subtotal	= $total - $iva - $servicio;
+				$subtotal	= $subtotal + $row->amount;
 
 			}
 		}
 		$this->printer->text("\n");
 
 		$this->printer->setJustification(Printer::JUSTIFY_CENTER);
+		$total		= $subtotal + $servicio;
 		$iva 		= number_format(round($iva,2),2,'.',',');
 		$total 		= number_format(round($total,2),2,'.',',');
 		$subtotal 	= number_format(round($subtotal,2),2,'.',',');
@@ -461,7 +461,7 @@ class core_web_printer_direct {
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\nSub Total: ".$dataSetValores["prefixCurrency"].$subtotal) ;
 		$this->printer->setTextSize(1, 1);
-		$this->printer->text("\n10% Servicio: ".$dataSetValores["prefixCurrency"].$servicio) ;
+		$this->printer->text("\n12% Servicio: ".$dataSetValores["prefixCurrency"].$servicio) ;
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\nTotal: ".$dataSetValores["prefixCurrency"].$total) ;
 		$this->printer->setTextSize(1, 1);
@@ -595,14 +595,14 @@ class core_web_printer_direct {
 				$this->printer->text("\n");
 				$iva		= $iva + ($row->tax1 * $row->quantity);
 				$servicio	= $servicio + ($row->tax2 * $row->quantity);
-				$total		= $total + $row->amount + $servicio;
-				$subtotal	= $total - $iva - $servicio;
+				$subtotal	= $subtotal + $row->amount;
 
 			}
 		}
 		$this->printer->text("\n");
 
 		$this->printer->setJustification(Printer::JUSTIFY_CENTER);
+		$total		= $subtotal + $servicio;
 		$iva 		= number_format(round($iva,2),2,'.',',');
 		$total 		= number_format(round($total,2),2,'.',',');
 		$subtotal 	= number_format(round($subtotal,2),2,'.',',');
@@ -611,7 +611,7 @@ class core_web_printer_direct {
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\nSub Total: ".$dataSetValores["prefixCurrency"].$subtotal) ;
 		$this->printer->setTextSize(1, 1);
-		$this->printer->text("\n10% Servicio: ".$dataSetValores["prefixCurrency"].$servicio) ;
+		$this->printer->text("\n12% Servicio: ".$dataSetValores["prefixCurrency"].$servicio) ;
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\nTotal: ".$dataSetValores["prefixCurrency"].$total) ;
 		$this->printer->setTextSize(1, 1);
