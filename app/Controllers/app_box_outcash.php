@@ -264,6 +264,34 @@ class app_box_outcash extends _BaseController {
 			$objCatalogItemTypeMovement					= $this->Catalog_Item_Model->get_rowByCatalogItemID($objTMNew["areaID"]);
 			
 			
+			//Aplicar documento		
+			if( 
+				$this->core_web_workflow->validateWorkflowStage
+				(
+					"tb_transaction_master_outputcash",
+					"statusID",
+					$objTMNew["statusID"],
+					COMMAND_APLICABLE,
+					$dataSession["user"]->companyID,
+					$dataSession["user"]->branchID,
+					$dataSession["role"]->roleID
+				) &&  
+				$oldStatusID != $objTMNew["statusID"]  && 
+				strtoupper($objCatalogItemTypeMovement->name)  ==   $movementTypeCierreParameter	
+			)
+			{
+				
+				//Validar registro de caja
+				$objListTMRegister 	= $this->Transaction_Master_Model->get_rowInStatusRegister($companyID,$transactionMasterID);
+				if($objListTMRegister)
+				{
+					$continue			= false;
+					$mensaje			= "Caja no puede ser cerrada tiene movimientos registrados, o los anula o los aplica.";
+				}
+				
+			}
+			
+			
 			$db=db_connect();
 			$db->transStart();
 			
@@ -382,32 +410,7 @@ class app_box_outcash extends _BaseController {
 			$objTMNew["amount"] = $amount;			
 			$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMNew);
 						
-			//Aplicar documento		
-			if( 
-				$this->core_web_workflow->validateWorkflowStage
-				(
-					"tb_transaction_master_outputcash",
-					"statusID",
-					$objTMNew["statusID"],
-					COMMAND_APLICABLE,
-					$dataSession["user"]->companyID,
-					$dataSession["user"]->branchID,
-					$dataSession["role"]->roleID
-				) &&  
-				$oldStatusID != $objTMNew["statusID"]  && 
-				strtoupper($objCatalogItemTypeMovement->name)  ==   $movementTypeCierreParameter	
-			)
-			{
-				
-				//Validar registro de caja
-				$objListTMRegister 	= $this->Transaction_Master_Model->get_rowInStatusRegister($companyID,$transactionMasterID);
-				if($objListTMRegister)
-				{
-					$continue			= false;
-					$mensaje			= "Caja no puede ser cerrada tiene movimientos registrados, o los anula o los aplica.";
-				}
-				
-			}
+			
 			
 			//Cerrar caja si el tipo es Cierre
 			$typeOutputCash 		= $objTMNew["areaID"];
