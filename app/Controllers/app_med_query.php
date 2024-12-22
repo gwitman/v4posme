@@ -501,10 +501,10 @@ class app_med_query extends _BaseController {
 			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_med_asistencia",0);
 			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($dataSession["user"]->companyID,$transactionID);
 			$objTM["entityID"] 						= $customer->entityID;
-			$objTM["transactionOn"]					= $transactionMaster->transactionOn;
+			$objTM["transactionOn"]					= date("Y-m-d H:m:s");
 			$objTM["statusIDChangeOn"]				= date("Y-m-d H:m:s");
 			$objTM["componentID"] 					= $objComponentShare->componentID;
-			$objTM["note"] 							= $transactionMaster->note;
+			$objTM["note"] 							= $transactionMaster->Comment;
 			$objTM["sign"] 							= 0;
 			$objTM["currencyID"]					= $this->core_web_currency->getCurrencyDefault($companyID)->currencyID;
 			$objTM["currencyID2"]					= $this->core_web_currency->getCurrencyExternal($dataSession["user"]->companyID)->currencyID;
@@ -514,7 +514,7 @@ class app_med_query extends _BaseController {
 			$objTM["reference3"] 					= "";
 			$objTM["reference4"] 					= "";
 			$objTM["statusID"] 						= $objListWorkflowStage[0]->workflowStageID;
-			$objTM["priorityID"]					= $transactionMaster->priorityID;
+			$objTM["priorityID"]					= $transactionMaster->Reference1;
 			$objTM["amount"] 						= 0;
 			$objTM["tax1"]							= 0;
 			$objTM["tax2"]							= 0;
@@ -527,7 +527,7 @@ class app_med_query extends _BaseController {
 			$objTM["sourceWarehouseID"]				= NULL;
 			$objTM["targetWarehouseID"]				= NULL;
 			$objTM["isActive"]						= 1;
-			$objTM["nextVisit"]						= $transactionMaster->transactionOn;
+			$objTM["nextVisit"]						= $transactionMaster->TransactionOn;
 			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);
 							
 			$db=db_connect();
