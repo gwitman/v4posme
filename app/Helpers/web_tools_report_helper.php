@@ -830,7 +830,8 @@ function helper_reporteA4TransactionMasterInvoiceGlobalPro(
     $statusName = "", /*estado*/
     $causalName = "", /*causal*/
 	$userNickName = "", /*vendedor*/
-    $rucCompany = "" /*ruc*/
+    $rucCompany = "" /*ruc*/ ,
+	$dataSet = "" 
 )
 {
     $path    		= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
@@ -916,7 +917,7 @@ function helper_reporteA4TransactionMasterInvoiceGlobalPro(
 										
 										<tr>
 										  <td style='text-align:center'>
-											".getBehavio($objCompany->type,"app_invoice_billing","lblRptInvoiceAddress","Carretera Masaya, Frente al colegio Teresiano")."
+											".$dataSet["objBranch"]->address."
 										  </td>
 										</tr>
 										<tr>

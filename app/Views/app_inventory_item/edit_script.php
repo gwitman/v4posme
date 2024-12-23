@@ -147,14 +147,18 @@
 		});
 		
 		$(document).on("click","#btnPrinterSinPrecio",function(){
-			var price 	= <?php echo $objListPriceItemFirst; ?>;			
-			var url 	= objParameterUrlPrinterCodeSinPrecio+"/listItem/0-0-0-0-0-0|"+"<?php echo $objItem->itemID."-1-".$objItem->itemNumber."-".$objItem->name."-".$objItem->barCode."-"; ?>"+price;
+			var price 			= <?php echo $objListPriceItemFirst; ?>;	
+			var randomDecimal 	= Math.random();
+			var randomInteger 	= Math.floor(randomDecimal * 1000); // Entre 0 y 1000
+			var url 			= objParameterUrlPrinterCodeSinPrecio+"/listItem/"+randomInteger+"-0-0-0-0-0|"+"<?php echo $objItem->itemID."-1-".$objItem->itemNumber."-".urlencode($objItem->name)."-".$objItem->barCode."-"; ?>"+price;
 			window.open(url, "_blank");	
 		});
 		
 		$(document).on("click","#btnPrinterdConPrecio",function(){
-			var price 	= <?php echo $objListPriceItemFirst; ?>;			
-			var url 	= objParameterUrlPrinterCodeConPrecio+"/listItem/0-0-0-0-0-0|"+"<?php echo $objItem->itemID."-1-".$objItem->itemNumber."-".$objItem->name."-".$objItem->barCode."-"; ?>"+price;
+			var price 			= <?php echo $objListPriceItemFirst; ?>;			
+			var randomDecimal 	= Math.random();
+			var randomInteger 	= Math.floor(randomDecimal * 1000); // Entre 0 y 1000
+			var url 			= objParameterUrlPrinterCodeConPrecio+"/listItem/"+randomInteger+"-0-0-0-0-0|"+"<?php echo $objItem->itemID."-1-".$objItem->itemNumber."-".urlencode($objItem->name)."-".$objItem->barCode."-"; ?>"+price;
 			window.open(url, "_blank");	
 		});
 		

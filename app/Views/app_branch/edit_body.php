@@ -43,6 +43,13 @@
 																</div>
 														</div>
 														
+														<div class="form-group">
+																<label class="col-lg-2 control-label" for="normal">Dirección</label>
+																<div class="col-lg-4">
+																	<input class="form-control"  type="text" name="txtAddress" id="txtAddress" value="<?php echo $objBranch->address; ?>">												
+																</div>
+														</div>
+														
 														
 													</fieldset> 
 												</form>

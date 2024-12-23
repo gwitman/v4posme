@@ -1088,7 +1088,7 @@ class app_inventory_report extends _BaseController {
 			}
 			else{			
 				//visualizar
-				$this->dompdf->stream("file.pdf ", ['Attachment' =>  true ]);
+				$this->dompdf->stream("file".date("dmYhis").".pdf ", ['Attachment' =>  true ]);
 			}
 			
 			

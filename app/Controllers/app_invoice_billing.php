@@ -6398,6 +6398,7 @@ class app_invoice_billing extends _BaseController {
 			$datView["objNaturalEmployer"]			= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objTM"]->entityIDSecondary);
 			$datView["objTelefonoEmployer"]			= $this->Entity_Phone_Model->get_rowByEntity($companyID,$datView["objCustumer"]->branchID,$datView["objTM"]->entityIDSecondary);
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
+			$datView["objBranch"]					= $this->Branch_Model->get_rowByPK($companyID,$datView["objUser"]->locationID);
 			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 
 			
 			
@@ -6420,7 +6421,8 @@ class app_invoice_billing extends _BaseController {
 				$datView["objStage"][0]->display, /*estado*/
 				$datView["objTC"]->name, /*causal*/
 				"",
-				""
+				"",
+				$datView
 			);
 			//echo $html;
 			$this->dompdf->loadHTML($html);
