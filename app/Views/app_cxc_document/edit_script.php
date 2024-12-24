@@ -341,7 +341,6 @@
 					"aTargets": [4], //Date Apply
 					"bVisible": true,
 					"mRender": function(data, type, full) {
-						debugger;
 						return '<input type="hidden" value="' + data + '" name="txtDateApply[]" />' + data;
 					}
 				},
@@ -398,10 +397,8 @@
 					"aTargets": [12], // statusID
 					"bVisible": true,
 					"mRender": function(data, type, full) {
-						return '<select name="txtAmortizationStatusID[]" id="txtAmortizationStatusID[]">' +
-						+'<option></option>' +
-						printCustomerAmortization() +
-						'</select>';
+						return '<select name="txtAmortizationStatusID[]" id="txtAmortizationStatusID[]"  >' + '<option> </option>' + printCustomerAmortization() + '</select>';
+						
 					}
 				},
 				{
@@ -675,10 +672,16 @@
 	}
 
 	function refreschChecked() {
-		$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();
+		//$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();
+		//$('.txt-numeric').mask('000,000.00', {
+		//	reverse: true
+		//});
+		
+		$("[type='checkbox'], [type='radio'], [type='file']").not('.toggle').uniform();
 		$('.txt-numeric').mask('000,000.00', {
 			reverse: true
 		});
+		
 	}
 
 	function parentEditLine(data) {
@@ -828,7 +831,8 @@
 	//Esta funcion imprime el nombre de los estados de los registros de entidad
 	function printEntityFieldStatus(rowData, fieldName) 
 	{
-		objListFieldName				= JSON.parse('<?php echo json_encode($objCatalogLegalName) ?>');
+		var listCustomer				= '<?php echo json_encode($objCatalogLegalName) ?>';		
+		objListFieldName				= JSON.parse(listCustomer.replace(/[\r\n]/g, ""));
 		objListFieldStatus 				= JSON.parse('<?php echo json_encode($objCatalogEntityType) ?>')
 		objListFieldTypeCredit 			= JSON.parse('<?php echo json_encode($objCatalogEntityTypeCredit) ?>');
 		objListFieldStatusCredit 		= JSON.parse('<?php echo json_encode($objCatalogEntityStatusCredit) ?>');

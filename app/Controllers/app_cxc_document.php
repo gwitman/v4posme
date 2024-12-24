@@ -337,8 +337,7 @@ class app_cxc_document extends _BaseController
                 $this->Customer_Credit_Document_Endity_Related_Model->deleteWhereIDNotIn($arrayListEntityRelatedID, $customerCreditDocumentID, $entityID_);
             }
 
-            var_dump($arrayListDocumentEntityStatusCredit);
-            // throw new Exception("Error Processing Request", 1);
+                        
             if(!empty($arrayListEntityRelatedID))
             {
                 foreach($arrayListEntityRelatedID as $key => $value)
