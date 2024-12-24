@@ -50,5 +50,20 @@ class Legal_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
    }
+
+   function get_rowByCompany($companyID,$branchID){
+	$db 	= db_connect();
+	$builder	= $db->table("tb_legal");    
+	
+	$sql = "";
+	$sql = sprintf("select i.companyID,i.branchID,i.entityID,i.comercialName,i.legalName,i.address,i.isActive");
+	$sql = $sql.sprintf(" from tb_legal i");		
+	$sql = $sql.sprintf(" where i.companyID = $companyID");
+	$sql = $sql.sprintf(" and i.branchID = $branchID");
+	$sql = $sql.sprintf(" and i.isActive= 1");		
+	
+	//Ejecutar Consulta
+	return $db->query($sql)->getResult();
+}
 }
 ?>
