@@ -613,9 +613,7 @@ class core_merge extends _BaseController {
 		$tablasSync 		= array();
 		array_push($tablasSync,"tb_catalog_item_convertion:catalogItemConvertionID");
 		array_push($tablasSync,"tb_catalog_item:catalogItemID");
-		array_push($tablasSync,"tb_catalog:catalogID");		
-		array_push($tablasSync,"tb_company_parameter:companyParameterID");
-		array_push($tablasSync,"tb_parameter:parameterID");			
+		array_push($tablasSync,"tb_catalog:catalogID");				
 		array_push($tablasSync,"tb_company_component_flavor:companyComponentFlavorID");		
 		array_push($tablasSync,"tb_company_component_item_dataview:companyComponentItemDataviewID");
 		array_push($tablasSync,"tb_company_default_dataview:companyDefaultDataviewID");
@@ -633,8 +631,7 @@ class core_merge extends _BaseController {
 		array_push($tablasSync,"tb_component_autorization_detail:componentAurotizationDetailID");		
 		array_push($tablasSync,"tb_component_element:componentElementID");	
 		array_push($tablasSync,"tb_company_component:companyComponentID");
-		array_push($tablasSync,"tb_component:componentID");
-		array_push($tablasSync,"tb_company:companyID");				
+		array_push($tablasSync,"tb_component:componentID");		
 		array_push($tablasSync,"tb_tag:tagID");				
 		array_push($tablasSync,"tb_transaction_profile_detail:profileDetailID");
 		array_push($tablasSync,"tb_transaction_concept:conceptID");
@@ -714,6 +711,42 @@ class core_merge extends _BaseController {
 				
 			}
 		}
+		
+		
+		//Ingresar los parametros
+		$sql 			= "select * from tb_parameter ";
+		$objListOrigen 	= $dbOrigen->query($sql)->getResult();
+		foreach($objListOrigen as $origenItem)
+		{
+			$sql		 		= "select * from tb_parameter c where c.parameterID = ".$origenItem->parameterID;
+			$objDestinoItem 	= $dbDestino->query($sql)->getRow();
+			if(!$objDestinoItem)
+			{
+				echo $origenItem->name."  only insert listos </br>";
+				$sql 		= "insert into tb_parameter (parameterID,`name`,description,isRequiered,isEdited) values ( ".$origenItem->parameterID.",'".$origenItem->name."','".$origenItem->description."',".$origenItem->isRequiered.",".$origenItem->isEdited." ); ";
+				$dbDestino->query($sql);
+				
+			}
+		}
+		
+		
+		//Ingresar los company parameter 
+		$sql 			= "select * from tb_company_parameter ";
+		$objListOrigen 	= $dbOrigen->query($sql)->getResult();
+		foreach($objListOrigen as $origenItem)
+		{
+			$sql		 		= "select * from tb_company_parameter c where c.companyParameterID = ".$origenItem->companyParameterID;
+			$objDestinoItem 	= $dbDestino->query($sql)->getRow();
+			if(!$objDestinoItem)
+			{
+				echo $origenItem->display."  only insert listos </br>";
+				$sql 		= "insert into tb_company_parameter (parameterID,companyID,display,description,`value`,customValue,companyParameterID) values ( ".$origenItem->parameterID.",".$origenItem->companyID.",'".$origenItem->display."','".$origenItem->description."','".$origenItem->value."','".$origenItem->customValue."', ".$origenItem->companyParameterID." ); ";
+				$dbDestino->query($sql);
+				
+			}
+		}
+		
+		
 		
 		
 		

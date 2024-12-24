@@ -18,7 +18,7 @@
 									<div class="btn-group pull-right" style="margin-top:0px">
 										<a href="#" class="btn btn-inverse" id="btnView"><i class="icon16 i-grid-2"></i>Vistas</a>
 										<a href="#" class="btn btn-primary" id="btnEdit"><i class="icon16 i-pencil-4"></i>Editar</a>
-										<a href="#" class="btn btn-danger"  id="btnEliminar"><i class="icon16 i-remove"></i>Delete</a>
+										<a href="#" class="btn btn-danger <?php echo getBehavio($company->type,"app_inventory_item","btnDelete",""); ?> "  id="btnEliminar"><i class="icon16 i-remove"></i>Delete</a>
 										<a href="#" class="btn btn-success" id="btnNuevo"><i class="icon16 i-checkmark-4"></i>Nuevo</a>						
 									</div>
 					</div>			

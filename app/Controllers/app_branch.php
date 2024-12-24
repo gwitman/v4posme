@@ -196,6 +196,7 @@ class app_branch extends _BaseController {
 					//Crear Cuenta
 					$obj["companyID"]			= $dataSession["user"]->companyID;
 					$obj["name"] 				= /*inicio get post*/ $this->request->getPost("txtName");				 
+					$obj["address"]				= /*inicio get post*/ $this->request->getPost("txtAddress");				 
 					$obj["isActive"] 			= true;
 					$obj["createdOn"] 			= date("Y-m-d H:i:s");	
 					
@@ -246,6 +247,7 @@ class app_branch extends _BaseController {
 					$db=db_connect();
 					$db->transStart();					
 					$obj["name"] 				= /*inicio get post*/ $this->request->getPost("txtName");
+					$obj["address"]				= /*inicio get post*/ $this->request->getPost("txtAddress");				 
 					//Actualizar Bodega
 					$result 			= $this->Branch_Model->update_app_posme($companyID,$branchID,$obj);
 				

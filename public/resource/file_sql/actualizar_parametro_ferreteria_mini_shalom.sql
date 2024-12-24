@@ -1643,7 +1643,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8666-2719 8625-7731" 
+	tb_company_parameter.value = "(********)" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
@@ -1658,15 +1658,15 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Enitel, 1C.O 20vs norte, Telica" 
+	tb_company_parameter.value = "Telica, primera calle estatua sandino 1c al este ;20 varas al norte" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Mini Ferreteria Shalom' , address = 'Enitel, 1C.O 20vs norte, Telica' ,
-	flavorID = 615 /*usuarioID*/,type='default'  , abreviature='demo'
+	NAME = 'Mini Ferreteria Shalom' , address = 'Telica, primera calle estatua sandino 1c al este ;20 varas al norte' ,
+	flavorID = 615 /*usuarioID*/,type='mini_ferreteria_shalom'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

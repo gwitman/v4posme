@@ -1835,16 +1835,14 @@ class app_inventory_item extends _BaseController
             }
 
             //Renderizar Resultado
-            $dataSession["notification"] = $this->core_web_error->get_error($dataSession["user"]->userID);
-            $dataSession["message"] = $this->core_web_notification->get_message();
-            $dataSession["head"] = /*--inicio view*/
-                view('app_inventory_item/list_head');//--finview
-            $dataSession["footer"] = /*--inicio view*/
-                view('app_inventory_item/list_footer');//--finview
-            $dataSession["body"] = $dataViewRender;
-            $dataSession["script"] = /*--inicio view*/
-                view('app_inventory_item/list_script');//--finview
-            $dataSession["script"] = $dataSession["script"] . $this->core_web_javascript->createVar("componentID", $objComponent->componentID);
+			$dataView["company"] 			= $dataSession["company"];
+            $dataSession["notification"] 	= $this->core_web_error->get_error($dataSession["user"]->userID);
+            $dataSession["message"] 		= $this->core_web_notification->get_message();
+            $dataSession["head"] 			= /*--inicio view*/  view('app_inventory_item/list_head',$dataView);//--finview
+            $dataSession["footer"] 			= /*--inicio view*/ view('app_inventory_item/list_footer');//--finview
+            $dataSession["body"] 			= $dataViewRender;
+            $dataSession["script"] 			= /*--inicio view*/ view('app_inventory_item/list_script');//--finview
+            $dataSession["script"] 			= $dataSession["script"] . $this->core_web_javascript->createVar("componentID", $objComponent->componentID);
 
             return view("core_masterpage/default_masterpage", $dataSession);//--finview-r
         } catch (\Exception $ex) {

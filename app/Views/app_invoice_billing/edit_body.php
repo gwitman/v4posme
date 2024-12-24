@@ -191,10 +191,44 @@ if($objParameterRestaurant == "true")
 ?>
 
 
+<style>
+	/*encabezado*/
+	#heading
+	{
+		margin: 0 -25px 0px -25px !important
+	}
+	
+	
+	/*label de los etiquetas*/
+	@media (min-width: 768px) {
+	  .form-horizontal .control-label {
+		text-align: left;
+	  }
+	}
+	
+	
+	/*detalle de factura*/
+	.table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td
+	{
+		padding: 0px
+	}
+
+	.form-group
+	{
+		margin-bottom:0px;
+	}
+	
+	.select2-container
+	{
+		margin-bottom:0px;
+	}
+	
+</style>
+
 <div 
 	class="isloading-overlay"
 	id="divLoandingCustom"
-	style="position:fixed; left:0; top:0; z-index: 10000; background: rgba(0,0,0,0.9); width: 100%; height: 1090px;"	
+	style="position:fixed; left:0; top:0; z-index: 10000; background: rgba(0,0,0,1); width: 100%; height: 1090px;"	
 >
 	<span class="isloading-wrapper  isloading-show  isloading-overlay">espere un momento ...  
 		<i class="icon-refresh icon-spin">
@@ -766,7 +800,7 @@ if($objParameterRestaurant == "true")
 									<th></th>
 									<th>Codigo</th>
 									<th>Descripcion</th>
-									<th>U/M</th>
+									<th>U/M</th>									
 									<th>Cantidad</th>
 									<th>Precio</th>
 									<th>Total</th>
@@ -779,6 +813,7 @@ if($objParameterRestaurant == "true")
 									<th>Precio3</th>
 									<th>itemNameDescription</th>
 									<th>TAX_SERVICES</th>
+									<th>Peso</th>
 								  </tr>
 								</thead>
 								<tbody id="body_tb_transaction_master_detail">

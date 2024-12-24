@@ -215,6 +215,20 @@ class app_mobile_api extends _BaseController
                 }
             }
 
+
+			//SINCRONIZAR VISITAS O CONSULTAS MEDICAS
+			if(count($transactionMasters)>0){
+                $medQueryController = new app_med_query();
+                $medQueryController->initController($this->request, $this->response, $this->logger);
+                $typeTransaction = $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_med_asistencia",0);
+                $medQuery = array_filter($transactionMasters, function($tm) use ($typeTransaction) {
+                    return $tm->TransactionId == $typeTransaction;
+                });
+                foreach($medQuery as $objTm){
+                    $medQueryController->insertElementMobil($dataSession,$objTm);
+                }
+            }
+			
             return $this->response->setJSON(array(
                 'error' => false,
                 'message' => SUCCESS

@@ -413,7 +413,7 @@ class app_lab_examen extends _BaseController
 			$dataView["objListEdad"]				= $this->Public_Catalog_Detail_Model->asObject()->where("publicCatalogID",$objPublicCatalogEdades[0]->publicCatalogID)->where( "isActive",1)->findAll();
             $dataView["objListExamenes"]			= $this->Public_Catalog_Detail_Model->asObject()->where("publicCatalogID",$objPublicCatalogExamen[0]->publicCatalogID)->where( "isActive",1)->findAll();
 			$dataView["objListMuestra"]				= $this->Public_Catalog_Detail_Model->asObject()->where("publicCatalogID",$objPublicCatalogMuestra[0]->publicCatalogID)->where( "isActive",1)->findAll();
-			$dataView["objListIndicadores"]			= $this->Public_Catalog_Detail_Model->asObject()->where("publicCatalogID",$objPublicCatalogIndicadores[0]->publicCatalogID)->where( "isActive",1)->findAll();
+			$dataView["objListIndicadores"]			= $this->Public_Catalog_Detail_Model->asObject()->where("publicCatalogID",$objPublicCatalogIndicadores[0]->publicCatalogID)->where( "isActive",1)->orderBy('sequence', 'ASC')->orderBy('parentCatalogDetailID', 'ASC')->findAll();
 			
 			//Obtener muestra por defecto
 			$muestraID 		= 0;			

@@ -293,11 +293,36 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('globalpro_app_purchase_garantia_divPanelMoneda') 												=> "hidden",
 		strtolower('globalpro_app_purchase_garantia_divPanelMonto') 												=> "hidden",
 		strtolower('globalpro_app_cxp_expenses_lblAplicado') 														=> "hidden",
-		strtolower('globalpro_app_cxp_expenses_lblCambio') 															=> "hidden",
+		strtolower('globalpro_app_cxp_expenses_lblCambio') 															=> "hidden",		
+		strtolower('globalpro_app_box_report_dailyTownUserDiv') 													=> "hidden",
+		strtolower('globalpro_app_box_report_dailyTownConceptIngresosDiv') 											=> "hidden",
+		strtolower('globalpro_app_box_report_dailyTownConceptEgresosDiv') 											=> "hidden",
+		strtolower('globalpro_app_box_report_dailyTownCategoryItemDiv') 											=> "hidden",
+		strtolower('globalpro_app_box_report_dailyTownNoneConceptDiv') 												=> "hidden",
+		strtolower('globalpro_app_box_report_dailyTownShowAmountDiv') 												=> "hidden",
+		
+		
 
 		/*Farmacia LM*/
 		strtolower('farma_lm_app_invoice_billing_divOpcionViewA4') 													=> "",
 		strtolower('farma_lm_web_tools_report_helper_reporteA4TransactionMasterInvoiceA4Opcion1AutorizationDgi')	=> "",
+		
+		/*Mini Ferreteria Shalom*/		
+		strtolower('mini_ferreteria_shalom_web_tools_report_helper_reporte80mmTransactionMaster_Devolucion')		=> "	
+			</br>
+			<tr>
+			  <td colspan='3' style='text-align:center'>
+				No le digas a Dios cuáles tu problema , mejor dile al problema quien es tu Dios ( pon a Dios sobre todas tus cosas )
+			  </td>
+			</tr>
+			</br>
+			<tr>
+			  <td colspan='3' style='text-align:center'>
+				No se aceptan devoluciones.                
+			  </td>
+			</tr>
+			
+		",
 		
 		/*Ferreteria Mateo*/			
 		strtolower('ferreteria_mateo_app_invoice_billing_bodyListInvoice')	 									=> "height: 550px; overflow: scroll;",
@@ -513,7 +538,8 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('luciaralstate_app_inventory_item_label_price_POR MAYOR')			 						=> "PRECIO DE RENTA",
 		strtolower('luciaralstate_app_inventory_item_label_price_CREDITO')			 							=> "----",
 		strtolower('luciaralstate_app_inventory_item_label_price_CREDITO POR MAYOR')			 				=> "----",
-		strtolower('luciaralstate_app_inventory_item_label_price_ESPECIAL')			 							=> "----",
+		strtolower('luciaralstate_app_inventory_item_label_price_ESPECIAL')			 							=> "----",		
+		strtolower('luciaralstate_app_inventory_item_btnDelete')			 									=> "hidden",	
 		strtolower('luciaralstate_app_cxc_customer_divTxtNombres')												=> "hidden",
 		strtolower('luciaralstate_app_cxc_customer_divTxtApellidos')											=> "hidden",
 		strtolower('luciaralstate_app_cxc_customer_divTxtNombreComercial')										=> "hidden",

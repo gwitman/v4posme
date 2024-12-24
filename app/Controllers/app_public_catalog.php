@@ -379,19 +379,19 @@ class app_public_catalog extends _BaseController
 						$objTMD 								= NULL;
 						$objTMD["publicCatalogID"] 				= $publicCatalogID;
 						$objTMD["publicCatalogDetailID"]		= $array_publicCatalogDetailID[$key];
-						$objTMD["name"] 						= utf8_encode($array_name[$key]);
-						$objTMD["display"] 						= utf8_encode($array_display[$key]);
+						$objTMD["name"] 						= helper_convertToUTF8($array_name[$key]);
+						$objTMD["display"] 						= helper_convertToUTF8($array_display[$key]);
 						$objTMD["flavorID"]						= $array_flavor[$key];
-						$objTMD["description"] 					= utf8_encode($array_description[$key]);
+						$objTMD["description"] 					= helper_convertToUTF8($array_description[$key]);
 						$objTMD["sequence"] 					= $array_sequence[$key];
 						$objTMD["parentCatalogDetailID"]		= 0;
 						$objTMD["ratio"] 						= $array_ratio[$key];
 						$objTMD["isActive"] 					= 1;
-						$objTMD["reference1"]					= utf8_encode($array_reference1[$key]);
-						$objTMD["reference2"]					= utf8_encode($array_reference2[$key]);
-						$objTMD["reference3"]					= utf8_encode($array_reference3[$key]);
-						$objTMD["reference4"]					= utf8_encode($array_reference4[$key]);
-						$objTMD["parentName"]					= utf8_encode($array_parentName[$key]);
+						$objTMD["reference1"]					= helper_convertToUTF8($array_reference1[$key]);
+						$objTMD["reference2"]					= helper_convertToUTF8($array_reference2[$key]);
+						$objTMD["reference3"]					= helper_convertToUTF8($array_reference3[$key]);
+						$objTMD["reference4"]					= helper_convertToUTF8($array_reference4[$key]);
+						$objTMD["parentName"]					= helper_convertToUTF8($array_parentName[$key]);
 
 
 						$this->Public_Catalog_Detail_Model->save($objTMD);

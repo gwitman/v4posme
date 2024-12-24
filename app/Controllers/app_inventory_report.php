@@ -920,6 +920,9 @@ class app_inventory_report extends _BaseController {
 										,x.`Ubicacion`
 										,x.`Exclusividad de agente`
 										,x.`Telefono`
+										
+										
+										
 										/*
 										,x.`Pais`
 										,x.`Estado`
@@ -939,7 +942,7 @@ class app_inventory_report extends _BaseController {
 											x.`ID Encuentra 24` like '%".$numberEncuentra24."%'  
 										) or 
 										(
-											x.createdOn BETWEEN ? and ? 
+											x.`Fecha de actualizacion` BETWEEN ? and ? 
 											and
 											(
 											  '".$namePropietario."' = 'none' and  
@@ -1085,7 +1088,7 @@ class app_inventory_report extends _BaseController {
 			}
 			else{			
 				//visualizar
-				$this->dompdf->stream("file.pdf ", ['Attachment' =>  true ]);
+				$this->dompdf->stream("file".date("dmYhis").".pdf ", ['Attachment' =>  true ]);
 			}
 			
 			

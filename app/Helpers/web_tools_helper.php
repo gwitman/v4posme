@@ -686,3 +686,13 @@ function helper_getParameterFiltered($objListCompanyParameter, $parameterName)
 
     return $result;
 }
+
+
+function helper_convertToUTF8($texto)
+{
+	if (!mb_check_encoding($texto, 'UTF-8')) {
+		$texto = utf8_encode($texto);
+	}
+	
+	return $texto;
+}

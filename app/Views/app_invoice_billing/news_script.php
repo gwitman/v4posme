@@ -37,6 +37,8 @@
 	var varParameterInvoiceBillingPrinterDataLocal			= '<?php echo $dataPrinterLocal; ?>';
 	var varParameterUrlServidorDeImpresion 					= '<?php echo $objParameterUrlServidorDeImpresion; ?>';
 	var varParameterINVOICE_BILLING_VALIDATE_EXONERATION 	= '<?php echo $objParameterINVOICE_BILLING_VALIDATE_EXONERATION; ?>';
+	var objParameterINVOICE_SHOW_FIELD_PESO					= '<?php echo $objParameterINVOICE_SHOW_FIELD_PESO; ?>';
+	
 	var varPermisosEsPermitidoModificarPrecio 			= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_MODIFICAR_PRECIO_EN_FACTURACION"}).select().length > 0 ? true:	false;	
 	var varPermisosEsPermitidoModificarNombre 			= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_MODIFICAR_NOMBRE_EN_FACTURACION"}).select().length > 0 ? true:	false;
 	var varPermisosEsPermitidoSeleccionarPrecioPublico 	= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_SELECCIONAR_PRECIO_PUBLICO"}).select().length > 0 ? true:	false;
@@ -935,6 +937,7 @@
 		objRow.price3						= objResponse[26];
 		objRow.itemNameDescription			= objResponse[24];
 		objRow.taxServices					= 0;
+		objRow.peso 						= 0;
 		
 		//Actualizar
 		if(jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[2] == objRow.itemID;}).select().length > 0 ){
@@ -979,7 +982,8 @@
 				objRow.price2,
 				objRow.price3,
 				objRow.itemNameDescription /*itemDescriptionLog*/,
-				objRow.taxServices 
+				objRow.taxServices,
+				objRow.peso
 			]);
 			
 			
@@ -2609,7 +2613,11 @@
 				"bPaginate"		: false,
 				"bFilter"		: false,
 				"bSort"			: false,
-				"bInfo"			: false,
+				"bInfo"			: false,				
+				"oLanguage"		: {
+					"sEmptyTable": "", // No mostrar texto cuando está vacía
+					"sZeroRecords": "",
+				},
 				"bAutoWidth"	: false,
 				"aoColumnDefs": [ 
 							{
@@ -2700,7 +2708,7 @@
 							},
 							{
 								"aTargets"		: [ 6 ],//Cantidad
-								"sWidth"		: "250px",
+								"sWidth"		: objParameterINVOICE_SHOW_FIELD_PESO == "true" ? "150px" : "250px",
 								"mRender"		: function ( data, type, full ) {
 									var str =  '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right" autocomplete="off" /> ';
 									
@@ -2885,6 +2893,15 @@
 								"bSearchable"	: false,
 								"mRender"		: function ( data, type, full ) {
 									return '<input type="text" class="col-lg-12 txtTaxServices" value="'+data+'" name="txtTaxServices[]" style="text-align:right" />';
+								}
+							},
+							{
+								"aTargets"		: [ 18 ],//Peso
+								"bVisible"		: true,
+								"sClass"		: objParameterINVOICE_SHOW_FIELD_PESO == "true" ? "" : "hidden",
+								"bSearchable"	: false,
+								"mRender"		: function ( data, type, full ) {
+									return '<input type="text" class="col-lg-12 txtDetailLote" value="'+data+'" name="txtDetailLote[]" style="text-align:right" />';
 								}
 							},
 

@@ -830,7 +830,8 @@ function helper_reporteA4TransactionMasterInvoiceGlobalPro(
     $statusName = "", /*estado*/
     $causalName = "", /*causal*/
 	$userNickName = "", /*vendedor*/
-    $rucCompany = "" /*ruc*/
+    $rucCompany = "" /*ruc*/ ,
+	$dataSet = "" 
 )
 {
     $path    		= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
@@ -916,7 +917,7 @@ function helper_reporteA4TransactionMasterInvoiceGlobalPro(
 										
 										<tr>
 										  <td style='text-align:center'>
-											".getBehavio($objCompany->type,"app_invoice_billing","lblRptInvoiceAddress","Carretera Masaya, Frente al colegio Teresiano")."
+											".$dataSet["objBranch"]->address."
 										  </td>
 										</tr>
 										<tr>
@@ -4604,6 +4605,381 @@ $f_html = $f_html."
   return $html;
 }
 
+function helper_reporteA4mmTransactionMasterTallerCompuMatt(
+  $titulo,
+  $objCompany,
+  $objParameterLogo,
+  $objTransactionMastser,
+  $tipoCambio,
+  $objCurrency,
+  $objTransactionMasterInfo,    	
+  $objParameterTelefono, /*telefono*/	
+  $objData,
+  $statusName = "", /*estado*/
+  $causalName = ""
+  
+)
+{
+	$path    		= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
+  
+	$font_size1   	= "18px";
+	$border_left 	= "border-left: 1px solid black;";
+	$border_right 	= "border-right: 1px solid black;";
+	$border_top 	= "border-top: 1px solid black;";
+	$border_bottom 	= "border-bottom: 1px solid black;";
+	$border_radius	= "border-radius: 10px;";
+	$border_colapse = "border-collapse:separate;";
+
+
+
+  $type    		= pathinfo($path, PATHINFO_EXTENSION);
+  $data    		= file_get_contents($path);
+  $base64  		= 'data:image/' . $type . ';base64,' . base64_encode($data);
+  $numberDocument = str_replace("IAT"," No ", $objTransactionMastser->transactionNumber);
+  $tipoDocumento  = "TALLER";
+
+  $telefono  		= "";
+
+  $html    = "";
+  $html    = "
+                  <!--
+                  Online HTML, CSS and JavaScript editor to run code online.
+                  https://www.programiz.com/html/online-compiler/
+                  -->
+                  <!DOCTYPE html>
+                  <html lang='en'>
+      
+                  <head>
+                    <meta charset='UTF-8' />
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+                    <style>
+          
+                      @page {       
+                        size: Legal;             
+            
+                        margin-top:25px;
+                        margin-left:25px;
+                        margin-right:20px;
+						margin-bottom: 25px;
+						
+						
+						padding-top: 0px;
+						padding-right: 0px;
+						padding-bottom: 0px;
+						padding-left: 0px;
+            
+                      }
+                      table{
+                        font-size: xx-small;
+                        font-family: sans-serif, monaco, monospace;						 
+						border-collapse: collapse;
+                      }
+						td{
+                        font-size: xx-small;
+                        font-family: sans-serif, monaco, monospace;
+						/*border: 1px solid black;*/
+						border-collapse: collapse;
+                      }
+                    </style>
+                  </head>
+      
+                  <body>
+        ";
+      
+  $f_html = 	  "
+                    <table style='width:98%'>
+                      <tr>
+						<td  style='vertical-align:top;text-align:center;width:33%;text-align:left'>
+                          <img  src='".$base64."' width='200px' height='100px'  >
+                        </td>
+						<td style='vertical-align:middle;text-align:center;width:33%;text-align:center; font-weight: bold;font-size:".$font_size1."'>
+							HOJA DE INGRESO
+						</td>
+                        <td  style='vertical-align:top;text-align:center;width:33%'>
+							<table style='width:100%'>
+							  <tr>
+								<td  style='text-align:center;font-size:".$font_size1."; font-weight: bold;'>
+								". $numberDocument ."
+								</td>
+							  </tr>
+							  
+							  <tr>
+								<td style='text-align:center'>
+								  ".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptDireccion","Carretera Masaya, Frente al colegio Teresiano") ."
+								</td>
+							  </tr>
+							  <tr>
+								<td style='text-align:center'>
+								".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptPhone","Servicio Tecnico: 5863-7406") ."
+								</td>
+							  </tr>
+							  <tr>
+								<td style='text-align:center'>
+								&nbsp;
+								</td>
+							  </tr>
+							  <tr>
+								<td style='text-align:center'>
+								".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptRed","Siguenos! Global Pro Nicaragua") ."
+								</td>
+							  </tr>
+							</table>
+                        </td>
+                      </tr>
+        </table>
+        
+          ";
+		   
+	$f_html = $f_html."
+		  <table style='width:98%' >
+			<tr>
+			  <td>&nbsp;</td>
+			</tr>			
+		  </table>	
+		";
+		
+      
+
+$f_html = $f_html."
+        <table style='width:98%;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom."' >
+          <tr>
+            <td  style='width:20px;text-align:left;vertical-align:top;' >
+				Nombre:
+            </td>
+            <td style='width:180px;vertical-align:top;' >	
+				".$objData["objCustomerNatural"]->firstName."
+            </td>
+			<td style='width:20px;vertical-align:top;' >									              
+				Marca:
+            </td>
+			<td style='width:120px;vertical-align:top;' >	
+				".$objData["objItemMarca"]->name."
+            </td>
+			<td style='width:60px;vertical-align:top;' >									              
+				No. Orden:
+            </td>
+            <td  style='width:120px;text-align:left;vertical-align:top;' >              
+				".$objData["objTransactionMaster"]->transactionNumber."
+            </td>            
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;' >              
+				Teléfono:
+            </td>
+            <td style='vertical-align:top;' >									              
+				".$objData["objCustomer"]->phoneNumber."
+            </td>
+			<td style='vertical-align:top;' >									              
+				Modelo:
+            </td>
+			<td style='vertical-align:top;' >									              
+				".$objData["objTransactionMasterInfo"]->reference2."
+            </td>
+			<td style='vertical-align:top;' >									              
+				Fecha:
+            </td>
+            <td  style='text-align:left;vertical-align:top;' >              
+				".$objData["objTransactionMaster"]->transactionOn."
+            </td>            
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;' >              
+				Articulo
+            </td>
+            <td style='vertical-align:top;' >				
+				".$objData["objItemArticulo"]->name."
+            </td>
+			<td style='vertical-align:top;' >									              
+				Serie
+            </td>
+			<td style='vertical-align:top;' >									              
+				".$objData["objTransactionMaster"]->reference4."
+            </td>
+			<td style='vertical-align:top;' >									              
+				Técnico:
+            </td>
+            <td  style='text-align:left;vertical-align:top;' >              
+				".$objData["objEmployerNatural"]->firstName."
+            </td>            
+          </tr>
+         </table>";
+         
+$f_html = $f_html."
+      <table style='width:98%' >
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+      </table>
+    ";
+	
+
+if($objData["objTMD"])
+{
+$f_html = $f_html."
+        <table style='width:98%;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom."' >";
+		
+		  foreach($objData["objTMD"] as $itemTMD)
+		  {
+				$f_html = $f_html."<tr>
+					<td  style='width:20px;text-align:left;vertical-align:top;' >
+						Caracteristicas adicionales:
+					</td>
+					<td style='width:180px;vertical-align:top;' >	
+						".$itemTMD->reference1."
+					</td>  
+				  </tr>";		  
+		  }
+		  
+$f_html = $f_html."
+		</table>";
+         
+$f_html = $f_html."
+      <table style='width:98%' >
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+      </table>
+    ";
+}
+	
+$f_html = $f_html."
+        <table style='width:98%;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom."' >
+          <tr>
+            <td  style='text-align:center;vertical-align:top;widht:auto;font-weight: bold;' >              
+				Problema reportado
+            </td>                 
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;widht:auto;' >              
+				".$objData["objTransactionMaster"]->reference2."
+            </td>                 
+          </tr>
+		  <tr>
+            <td  style='text-align:center;vertical-align:top;width:auto;font-weight: bold;' >              
+				Nota
+            </td>                 
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;width:auto;' >              
+				<table style='width:100%'>
+					<tr>
+						<td colspan='3'>
+							".$objData["objTransactionMaster"]->reference1."
+						</td>
+					</tr>
+					<tr>
+						<td style='width:150px'>
+							Deja cargador o Accesorios:
+						</td>
+						<td style='text-align:left'>
+							".$objData["objItemAccesorios"]->name."
+						</td>
+						<td>
+							EXPERTOS EN REPARACION Y MANTENIMIENTO
+						</td>
+					</tr>
+				</table>
+            </td>                 
+          </tr>
+         </table>";
+		 
+		 
+$f_html = $f_html."
+      <table style='width:98%' >
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+      </table>
+    ";
+    
+    
+$f_html = $f_html."
+        <table style='width:98%' >
+          <tr>
+            <td style='text-align:justify;font-weight: bold;font-size:12px'>
+			".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptCondicion1","GLOBAL PRO NO se hace reponsable de pérdidas de informacion, por lo cual solicitamos antes
+			  hacer un respaldo a Nuestros clientes.") ."
+            </td>
+          </tr>
+		  <tr>
+            <td style='text-align:justify;font-weight: bold;font-size:12px'>			  
+			  ".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptCondicion2","El Costo del diagnóstico es de C$ 450.00 si decide realizar la reparacion, NO pagara diagnostico.
+			  Despues de 30 dias de notificar que el equipo está listo para ser retirado, se cobrara $1 diario por 
+			  concepto de Almacenamiento, despues de 6 meses se procedera a liquidar el equipo.
+			  Toda reparación de GLOBAL PRO, cuenta con 3 meses de garantia") ."
+            </td>
+          </tr>
+        </table>";
+		
+$f_html = $f_html."
+      <table style='width:98%' >
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+      </table>
+    ";
+	
+$f_html = $f_html."
+      <table style='width:98%' >
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+      </table>
+    ";
+
+$f_html = $f_html."
+      <table style='width:98%' >
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+      </table>
+    ";
+    
+
+$f_html = $f_html."
+        <table style='width:98%' >
+          <tr>
+            <td style='text-align:center;font-weight: bold'>
+              
+            </td>
+			<td style='text-align:center;font-weight: bold'>
+              ---------------------------------
+            </td>
+			<td style='text-align:center;font-weight: bold'>
+              
+            </td>
+          </tr>
+		  <tr>
+            <td style='text-align:center;font-weight: bold'>
+              
+            </td>
+			<td style='text-align:center;font-weight: bold'>
+              ".$objData["objCustomerNatural"]->firstName."
+            </td>
+			<td style='text-align:center;font-weight: bold'>
+              
+            </td>
+          </tr>
+		  <tr>
+            <td style='text-align:center;font-weight: bold;'>              
+			  
+            </td>
+			<td style='text-align:center;font-weight: bold'>
+              ".$objData["objCustomer"]->identification."
+            </td>
+			<td style='text-align:center;font-weight: bold'>
+              
+            </td>
+          </tr>
+		  
+        </table>";
+
+
+  $html 				= $html.$f_html."</body></html>";	  
+  return $html;
+}
+
+
 function helper_reporteA4mmTransactionMasterTallerOutputGlobalPro(
   $titulo,
   $objCompany,
@@ -8187,11 +8563,12 @@ function helper_reporte80mmTransactionMaster(
                             ".$objParameterTelefono->value."
                           </td>
                         </tr>
-
+						
+						".getBehavio($objCompany->type,"web_tools_report_helper","reporte80mmTransactionMaster_Devolucion","")."
 
                         <tr>
                           <td colspan='3' style='text-align:center' >
-                            sistema 505-8712-5827
+                            posMe PRO Premium 3.1
                           </td>
                         </tr>
                                 
@@ -15904,6 +16281,7 @@ function helper_reporteA4TransactionMasterExamenLab(
 						$valor->display	= str_replace("|","</br>",$valor->display);
 						$valor->display	= str_replace(",","</br>",$valor->display);
 						
+						
 						//si el examen solo tiene una columna mostrar el indicador de la siguiente manera						
 						if($cant == 1)
 						{
@@ -15912,7 +16290,9 @@ function helper_reporteA4TransactionMasterExamenLab(
 							$html = $html."<tr  >";
 								$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;width:33% '>".$valor->name."</td>";
 								$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;width:33%'>".$valor->reference3."</td>";
-								$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;color:blue;width:33%'>".htmlentities($valor->display)."</td>";
+								$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;color:blue;width:33%'>".												
+												str_replace("&lt;/br&gt;","</br>",htmlentities($valor->display)).
+											"</td>";
 							$html = $html."</tr>";
 
 						}
@@ -15924,7 +16304,11 @@ function helper_reporteA4TransactionMasterExamenLab(
 							$html = $html."<tr  >";
 								$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse; '>".$valor->name."</td>";
 								$html = $html."<td style='text-align:left;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;'>".$valor->reference3."</td>";
-								$html = $html."<td style='text-align:right;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;color:blue'>".htmlentities($valor->display)."</td>";
+								$html = $html.
+											"<td style='text-align:right;vertical-align:top;border-bottom: black solid 1px;border-collapse: collapse;color:blue'>".												
+												str_replace("&lt;/br&gt;","</br>",htmlentities($valor->display)).
+											"</td>";
+											
 							$html = $html."</tr>";
 						}
 					}
