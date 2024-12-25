@@ -56,18 +56,20 @@
     function onCompleteEmisor(objResponse) {
 
         console.info("CALL onCompleteCustomer");
-        var entityID = objResponse[0][2];
+        let entityID = objResponse[0][2];
+        let codigo = objResponse[0][3];
         $("#txtEmisorID").val(entityID);
-        $("#txtEmisorDescription").val(entityID + " " + objResponse[0][4] + " / " + objResponse[0][5]);
+        $("#txtEmisorDescription").val(codigo + " " + objResponse[0][4] + " / " + objResponse[0][5]);
 
     }
 
     function onCompleteAsignado(objResponse) {
 
         console.info("CALL onCompleteCustomer");
-        var entityID = objResponse[0][2];
+        let entityID = objResponse[0][2];
+        let codigo = objResponse[0][3];
         $("#txtAsignadoID").val(entityID);
-        $("#txtAsignadoDescription").val(entityID + " " + objResponse[0][4] + " / " + objResponse[0][5]);
+        $("#txtAsignadoDescription").val(codigo + " " + objResponse[0][4] + " / " + objResponse[0][5]);
 
     }
 

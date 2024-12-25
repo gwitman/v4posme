@@ -102,6 +102,35 @@ class User_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
 	}
+
+    function get_rowByEmployeeID($companyID, $employeeID){
+        $db 	= db_connect();
+        $builder = $db->table("tb_user tu");
+        $builder = $builder->select(" tu.companyID,
+                                   tu.branchID,
+                                   tu.userID,
+                                   tu.nickname,
+                                   tu.password,
+                                   tu.createdOn,
+                                   tu.isActive,
+                                   tu.email,
+                                   tu.createdBy,
+                                   tu.employeeID,
+                                   tu.useMobile,
+                                   tu.phone,
+                                   tu.lastPayment,
+                                   tu.comercio,
+                                   tu.foto,
+                                   tu.token_google_calendar,
+                                   tu.locationID")
+            ->where("isActive",1)
+            ->where("companyID",$companyID)
+            ->where("employeeID",$employeeID);
+
+        //Ejecutar Consulta
+        return $builder->get()->getRowObject();
+    }
+
 	function get_rowByUserID($userID){
 		$db 	= db_connect();
 		$sql = "";

@@ -376,6 +376,22 @@ class app_rrhh_task extends _BaseController
                 }
             }
 
+            //insertar notificacion en tabla error log
+            $tagName		= "LLENAR NOTI DE OBLIGACION";
+            $objTag			= $this->Tag_Model->get_rowByName($tagName);
+
+            $userAsignado           = $this->User_Model->get_rowByEmployeeID($companyID, $objTM["entityID"]);
+            if (!$userAsignado) {
+                $data					= null;
+                $data["tagID"]			= $objTag->tagID;
+                $data["notificated"]	= "notificar obligacion";
+                $data["message"]		= "Tarea asiganda: ".$objTM["reference4"];
+                $data["isActive"]		= 1;
+                $data["userID"]			= $userAsignado->userID;
+                $data["createdOn"]		= date_format(date_create(), "Y-m-d H:i:s");
+                $this->Error_Model->insert_app_posme($data);
+            }
+
             if($db->transStatus() !== false){
                 $db->transCommit();
                 $this->core_web_notification->set_message(false,SUCCESS);

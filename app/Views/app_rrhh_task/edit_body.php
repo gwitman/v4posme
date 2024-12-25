@@ -150,7 +150,7 @@
                                         <div class="col-lg-8">
                                             <div class="input-group">
                                                 <input type="hidden" id="txtEmisorID" name="txtEmisorID" value="<?= $objTransactionMaster->entityIDSecondary?>" />
-                                                <input class="form-control" readonly id="txtEmisorDescription" type="text" value="<?= isset($objEmisorNatural) ? strtoupper($objEmisor->entityID . " ". $objEmisorNatural->firstName . " ". $objEmisorNatural->lastName ) : strtoupper($objEmisor->entityID." ".$objEmisorLegal->comercialName); ?>" />
+                                                <input class="form-control" readonly id="txtEmisorDescription" type="text" value="<?= isset($objEmisorNatural) ? strtoupper($objEmisor->employeNumber . " ". $objEmisorNatural->firstName . " ". $objEmisorNatural->lastName ) : strtoupper($objEmisor->employeNumber." ".$objEmisorLegal->comercialName); ?>" />
                                                 <span class="input-group-btn">
                                                     <button class="btn btn-danger" type="button" id="btnClearEmisor">
                                                         <i aria-hidden="true" class="i-undo-2"></i>
@@ -172,7 +172,7 @@
                                         <div class="col-lg-8">
                                             <div class="input-group">
                                                 <input type="hidden" id="txtAsignadoID" name="txtAsignadoID" value="<?= $objTransactionMaster->entityID?>" />
-                                                <input class="form-control" readonly id="txtAsignadoDescription" type="text" value="<?= isset($objAsignadoNatural) ? strtoupper($objAsignado->entityID . " ". $objAsignadoNatural->firstName . " ". $objAsignadoNatural->lastName ) : strtoupper($objAsignado->entityID." ".$objAsignadoLegal->comercialName); ?>" />
+                                                <input class="form-control" readonly id="txtAsignadoDescription" type="text" value="<?= isset($objAsignadoNatural) ? strtoupper($objAsignado->employeNumber . " ". $objAsignadoNatural->firstName . " ". $objAsignadoNatural->lastName ) : strtoupper($objAsignado->employeNumber." ".$objAsignadoLegal->comercialName); ?>" />
                                                 <span class="input-group-btn">
                                                     <button class="btn btn-danger" type="button" id="btnClearAsignado">
                                                         <i aria-hidden="true" class="i-undo-2"></i>
