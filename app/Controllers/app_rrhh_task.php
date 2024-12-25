@@ -675,3 +675,4 @@ class app_rrhh_task extends _BaseController
         }
     }
 }
+?>
