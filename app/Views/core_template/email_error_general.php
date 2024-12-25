@@ -68,7 +68,7 @@
 		   
 		  
 		  </div>
-		  <p class="text-center px-3 mb-0"><?php echo $exception->getLine();?> <?php echo $exception->getMessage();?> <?php echo $exception->getFile();?> </p>
+		  <p class="text-center px-3 mb-0">Linea: <?php echo $exception->getLine();?> - Mensaje: <?php echo $exception->getMessage();?> - Archivo: <?php echo $exception->getFile();?> </p>
 		</div>
 		<!-- /Help Center Header -->
 

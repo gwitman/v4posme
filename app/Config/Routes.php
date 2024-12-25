@@ -348,6 +348,16 @@ $routes->match(['get','post'],'app_rrhh_asistencia/searchTransactionMaster','app
 $routes->match(['get','post'],'app_rrhh_asistencia/viewRegisterFormatoPaginaNormalA4LabGenerico','app_rrhh_asistencia::viewRegisterFormatoPaginaNormalA4LabGenerico');
 $routes->match(['get','post'],'app_rrhh_gps/index','app_rrhh_gps::index');
 $routes->match(['get','post'],'app_rrhh_gps/index/(:any)','app_rrhh_gps::index');
+$routes->match(['get','post'],'app_rrhh_task/index','app_rrhh_task::index');
+$routes->match(['get','post'],'app_rrhh_task/index/(:any)','app_rrhh_task::index');
+$routes->match(['get','post'],'app_rrhh_task/add','app_rrhh_task::add');
+$routes->match(['get','post'],'app_rrhh_task/edit','app_rrhh_task::edit');
+$routes->match(['get','post'],'app_rrhh_task/edit/(:any)','app_rrhh_task::edit');
+$routes->match(['get','post'],'app_rrhh_task/save','app_rrhh_task::save');
+$routes->match(['get','post'],'app_rrhh_task/save/(:any)','app_rrhh_task::save');
+$routes->match(['get','post'],'app_rrhh_task/delete/(:any)','app_rrhh_task::delete');
+$routes->match(['get','post'],'app_rrhh_task/delete','app_rrhh_task::delete');
+$routes->match(['get','post'],'app_rrhh_task/searchTransactionMaster','app_rrhh_task::searchTransactionMaster');
 $routes->match(['get','post'],'app_purchase_pedidos/index','app_purchase_pedidos::index');
 $routes->match(['get','post'],'app_purchase_pedidos/index/(:any)','app_purchase_pedidos::index');
 $routes->match(['get','post'],'app_purchase_pedidos/add','app_purchase_pedidos::add');
