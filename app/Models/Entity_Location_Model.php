@@ -99,7 +99,8 @@ class Entity_Location_Model extends Model  {
 							e.isActive = 1 and 
 							e.createdOn between DATE_ADD(NOW(),INTERVAL -1 YEAR) AND  NOW() and 
 							e.userName is not null and 
-							e.companyName is not null 
+							e.companyName is not null and 
+							e.userName != '' 
 						GROUP BY 
 							e.companyName,e.userName 
 				) cc on 
@@ -133,7 +134,8 @@ class Entity_Location_Model extends Model  {
 							e.isActive = 1 and 
 							e.createdOn between DATE_ADD(NOW(),INTERVAL -1 YEAR) AND  NOW() and 
 							e.companyName = '".$companyName."' and 
-							e.userName is not null 
+							e.userName is not null and 
+							e.userName != '' 
 						GROUP BY 
 							e.userName 
 				) cc on 
@@ -160,7 +162,8 @@ class Entity_Location_Model extends Model  {
 				kk.isActive = 1 and 
 				kk.createdOn between DATE_ADD(NOW(),INTERVAL -1 YEAR) AND  NOW() and 
 				kk.companyName = '".$companyName."' and 
-				kk.userName = '".$userName."'  
+				kk.userName = '".$userName."'  and 
+				kk.userName != '' 
 		");
 
 		return $db->query($sql)->getResult();
@@ -181,7 +184,8 @@ class Entity_Location_Model extends Model  {
 				e.isActive = 1 and 
 				e.createdOn between DATE_ADD(NOW(),INTERVAL -1 YEAR) AND  NOW() and 
 				e.companyName is not null and 
-				e.userName is not null 
+				e.userName is not null and 
+				e.userName != ''  
 		");
 
 		return $db->query($sql)->getResult();
@@ -201,7 +205,8 @@ class Entity_Location_Model extends Model  {
 				e.isActive = 1 and 
 				e.createdOn between DATE_ADD(NOW(),INTERVAL -1 YEAR) AND  NOW() and 
 				e.companyName = '".$companyName."' and 
-				e.userName is not null 
+				e.userName is not null and 
+				e.userName != ''  
 		");
 
 		return $db->query($sql)->getResult();
@@ -221,7 +226,8 @@ class Entity_Location_Model extends Model  {
 				e.isActive = 1 and 
 				e.createdOn between DATE_ADD(NOW(),INTERVAL -1 YEAR) AND  NOW() and 
 				e.companyName  is not null and 
-				e.userName is not null 
+				e.userName is not null and 
+				e.userName != '' 
 		");
 
 		return $db->query($sql)->getResult();
