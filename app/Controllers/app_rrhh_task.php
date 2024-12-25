@@ -381,7 +381,7 @@ class app_rrhh_task extends _BaseController
             $objTag			= $this->Tag_Model->get_rowByName($tagName);
 
             $userAsignado           = $this->User_Model->get_rowByEmployeeID($companyID, $objTM["entityID"]);
-            if (!$userAsignado) {
+            if ($userAsignado) {
                 $data					= null;
                 $data["tagID"]			= $objTag->tagID;
                 $data["notificated"]	= "notificar obligacion";
