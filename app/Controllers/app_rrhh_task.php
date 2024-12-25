@@ -509,28 +509,28 @@ class app_rrhh_task extends _BaseController
                 throw new \Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
 
             $dataView["objComponentEmployer"] = $objComponentEmployer;
-            $dataView["objComponentTask"] = $objComponentTask;
-            $dataView["companyID"] = $companyID;
-            $dataView["userID"] = $userID;
-            $dataView["userName"] = $dataSession["user"]->nickname;
-            $dataView["roleID"] = $roleID;
-            $dataView["roleName"] = $dataSession["role"]->name;
-            $dataView["branchID"] = $branchID;
-            $dataView["branchName"] = $dataSession["branch"]->name;
-            $dataView["company"] = $dataSession["company"];
-            $dataView["objCaudal"] = $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
+            $dataView["objComponentTask"] 	= $objComponentTask;
+            $dataView["companyID"] 			= $companyID;
+            $dataView["userID"] 			= $userID;
+            $dataView["userName"] 			= $dataSession["user"]->nickname;
+            $dataView["roleID"] 			= $roleID;
+            $dataView["roleName"] 			= $dataSession["role"]->name;
+            $dataView["branchID"] 			= $branchID;
+            $dataView["branchName"] 		= $dataSession["branch"]->name;
+            $dataView["company"] 			= $dataSession["company"];
+            $dataView["objCaudal"] 			= $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
             $dataView["objListWorkflowStage"] = $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_task", "statusID", $companyID, $branchID, $roleID);
-            $dataView["objListPrioridad"] = $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_task", "priorityID", $companyID);
-            $dataView["objListCategoria"] = $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_task", "areaID", $companyID);
-            $dataView["objListComments"] = $this->core_web_catalog->getCatalogAllItem("tb_comments", "catalogStatusID", $companyID);
+            $dataView["objListPrioridad"] 	= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_task", "priorityID", $companyID);
+            $dataView["objListCategoria"] 	= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_task", "areaID", $companyID);
+            $dataView["objListComments"] 	= $this->core_web_catalog->getCatalogAllItem("tb_comments", "catalogStatusID", $companyID);
 
             //Renderizar Resultado
-            $dataSession["notification"] = $this->core_web_error->get_error($dataSession["user"]->userID);
-            $dataSession["message"] = $this->core_web_notification->get_message();
-            $dataSession["head"] = /*--inicio view*/ view('app_rrhh_task/news_head', $dataView);//--finview
-            $dataSession["body"] = /*--inicio view*/ view('app_rrhh_task/news_body', $dataView);//--finview
-            $dataSession["script"] = /*--inicio view*/ view('app_rrhh_task/news_script', $dataView);//--finview
-            $dataSession["footer"] = "";
+            $dataSession["notification"]= $this->core_web_error->get_error($dataSession["user"]->userID);
+            $dataSession["message"] 	= $this->core_web_notification->get_message();
+            $dataSession["head"] 		= /*--inicio view*/ view('app_rrhh_task/news_head', $dataView);//--finview
+            $dataSession["body"] 		= /*--inicio view*/ view('app_rrhh_task/news_body', $dataView);//--finview
+            $dataSession["script"] 		= /*--inicio view*/ view('app_rrhh_task/news_script', $dataView);//--finview
+            $dataSession["footer"] 		= "";
             return view("core_masterpage/default_masterpage", $dataSession);//--finview-r
 
         } catch (\Exception $ex) {
@@ -578,26 +578,26 @@ class app_rrhh_task extends _BaseController
 
             //Vista por defecto
             if ($dataViewID == null) {
-                $targetComponentID = 0;
-                $parameter["{companyID}"] = $this->session->get('user')->companyID;
-                $dataViewData = $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
-                $dataViewRender = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+                $targetComponentID 			= 0;
+                $parameter["{companyID}"] 	= $this->session->get('user')->companyID;
+                $dataViewData 				= $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
+                $dataViewRender 			= $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
             } //Otra vista
             else {
-                $parameter["{companyID}"] = $this->session->get('user')->companyID;
-                $dataViewData = $this->core_web_view->getViewBy_DataViewID($this->session->get('user'), $objComponent->componentID, $dataViewID, CALLERID_LIST, $resultPermission, $parameter);
-                $dataViewRender = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+                $parameter["{companyID}"] 	= $this->session->get('user')->companyID;
+                $dataViewData 				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'), $objComponent->componentID, $dataViewID, CALLERID_LIST, $resultPermission, $parameter);
+                $dataViewRender 			= $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
             }
 
             //Renderizar Resultado
-            $dataView["company"] = $dataSession["company"];
-            $dataSession["notification"] = $this->core_web_error->get_error($dataSession["user"]->userID);
-            $dataSession["message"] = $this->core_web_notification->get_message();
-            $dataSession["head"] = /*--inicio view*/ view('app_rrhh_task/list_head', $dataView);//--finview
-            $dataSession["footer"] = /*--inicio view*/ view('app_rrhh_task/list_footer', $dataView);//--finview
-            $dataSession["body"] = $dataViewRender;
-            $dataSession["script"] = /*--inicio view*/ view('app_rrhh_task/list_script', $dataView);//--finview
-            $dataSession["script"] = $dataSession["script"] . $this->core_web_javascript->createVar("componentID", $objComponent->componentID);
+            $dataView["company"] 			= $dataSession["company"];
+            $dataSession["notification"] 	= $this->core_web_error->get_error($dataSession["user"]->userID);
+            $dataSession["message"] 		= $this->core_web_notification->get_message();
+            $dataSession["head"] 			= /*--inicio view*/ view('app_rrhh_task/list_head', $dataView);//--finview
+            $dataSession["footer"] 			= /*--inicio view*/ view('app_rrhh_task/list_footer', $dataView);//--finview
+            $dataSession["body"] 			= $dataViewRender;
+            $dataSession["script"] 			= /*--inicio view*/ view('app_rrhh_task/list_script', $dataView);//--finview
+            $dataSession["script"] 			= $dataSession["script"] . $this->core_web_javascript->createVar("componentID", $objComponent->componentID);
             return view("core_masterpage/default_masterpage", $dataSession);//--finview-r
         } catch (\Exception $ex) {
             if (empty($dataSession)) {
