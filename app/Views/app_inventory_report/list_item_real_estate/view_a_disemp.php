@@ -5,6 +5,7 @@
 		<title><?php echo $objFirmaEncription; ?></title>
 		<meta name="viewport" 			content="width=device-width, initial-scale=1.0">
 		<meta name="application-name" 	content="dsemp" /> 
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 		
 		<?php 
 		echo helper_reporteGeneralCreateStyle();
@@ -399,26 +400,69 @@
 						  
 							
 						  
-						  tablaHTML 	= $(tablaHTML[0]).html();
+						  tablaHTML 				= $(tablaHTML[0]).html();						  
+						  const tabla 				= $(tablaHTML);
+						  const filas 				= Array.from(tabla[0].querySelectorAll("tr"));
+						  const datos 				= filas.map(fila => Array.from(fila.children).map(celda => celda.textContent));
 
-						  // Crear un objeto Blob con el contenido HTML
-						  var blob = new Blob([tablaHTML], { type: "application/vnd.ms-excel" });
+						  
+						  //Todos
+						  var datos_ 				= [];
+						  for(var i = 0 ; i  < datos.length; i++)
+						  {
+							  if(i != 1 )
+							  datos_.push(datos[i]);
+						  }						  
+						  const grupo1 				= datos_.slice(1, datos_.length-1);
+					      const hoja1 				= XLSX.utils.aoa_to_sheet([datos[0], ...grupo1]); // Encabezados + Grupo 1
+						  
+						  
+						  //Activos
+						  var grupo2 = [];
+						  for(var i = 0 ; i  < grupo1.length; i++)
+						  {
+							  if(grupo1[i][4] == "Si" )
+							  grupo2.push(grupo1[i]);
+						  }						  
+						  const hoja2 				= XLSX.utils.aoa_to_sheet([datos[0], ...grupo2]); // Encabezados + Grupo 1
+						  
+						  //No Activos
+						  var grupo3 = [];
+						  for(var i = 0 ; i  < grupo1.length; i++)
+						  {
+							  if(grupo1[i][4] == "No" )
+							  grupo3.push(grupo1[i]);
+						  }						  
+						  const hoja3 				= XLSX.utils.aoa_to_sheet([datos[0], ...grupo3]); // Encabezados + Grupo 1
+						  
+						  
+						  // Crear el libro de Excel
+						  const libro = XLSX.utils.book_new();
+						  XLSX.utils.book_append_sheet(libro, hoja1, "Todos");
+						  XLSX.utils.book_append_sheet(libro, hoja2, "Activos");
+						  XLSX.utils.book_append_sheet(libro, hoja3, "Desactivos");
 
-						  // Crear una URL para el objeto Blob
-						  var url = URL.createObjectURL(blob);
+						  // Exportar el archivo
+						  XLSX.writeFile(libro, "resultado.xlsx");
 
-
-						  // Crear un enlace <a> para iniciar la descarga
-						  var a = document.createElement("a");
-						  a.href = url;
-						  a.download = "customer_list_real_estate.xls";
-						  document.body.appendChild(a);
-
-						  // Simular un clic en el enlace para iniciar la descarga
-						  a.click();
-
-						  // Limpiar el objeto URL
-						  URL.revokeObjectURL(url);
+						  //Decline-2024-12-27-UsarLibrary--https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js--// Crear un objeto Blob con el contenido HTML
+						  //Decline-2024-12-27-UsarLibrary--https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js--var blob = new Blob([tablaHTML], { type: "application/vnd.ms-excel" });
+						  //Decline-2024-12-27-UsarLibrary--https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js--
+						  //Decline-2024-12-27-UsarLibrary--https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js--// Crear una URL para el objeto Blob
+						  //Decline-2024-12-27-UsarLibrary--https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js--var url = URL.createObjectURL(blob);
+						  //Decline-2024-12-27-UsarLibrary--https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js--
+						  //Decline-2024-12-27-UsarLibrary--https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js--
+						  //Decline-2024-12-27-UsarLibrary--https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js--// Crear un enlace <a> para iniciar la descarga
+						  //Decline-2024-12-27-UsarLibrary--https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js--var a = document.createElement("a");
+						  //Decline-2024-12-27-UsarLibrary--https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js--a.href = url;
+						  //Decline-2024-12-27-UsarLibrary--https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js--a.download = "customer_list_real_estate.xls";
+						  //Decline-2024-12-27-UsarLibrary--https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js--document.body.appendChild(a);
+						  //Decline-2024-12-27-UsarLibrary--https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js--
+						  //Decline-2024-12-27-UsarLibrary--https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js--// Simular un clic en el enlace para iniciar la descarga
+						  //Decline-2024-12-27-UsarLibrary--https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js--a.click();
+						  //Decline-2024-12-27-UsarLibrary--https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js--
+						  //Decline-2024-12-27-UsarLibrary--https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js--// Limpiar el objeto URL
+						  //Decline-2024-12-27-UsarLibrary--https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js--URL.revokeObjectURL(url);
 						  
 						
 				  });
