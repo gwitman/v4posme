@@ -181,24 +181,17 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="btn-group pull-right">
-                                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Action <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a id="btnMostrar" href="#">Mostrar</a></li>
-                                        <li><a id="btnGuardar" href="#">Guardar</a></li>
-                                        <li><a id="btnDelete" href="#">Eliminar</a></li>
-                                    </ul>
+                                
+								
+								<div class="btn-group pull-right">
+									<a href="#" class="btn btn-primary" id="btnImprimir"><i class="icon16 i-print"></i> Certificado</a>
+									<a href="#" class="btn btn-primary" id="btnMostrar"><i class="icon16 i-search-2"></i> Mostrar</a>
+									<a href="#" class="btn btn-success" id="btnGuardar"><i class="icon16 i-checkmark-4"></i> Guardar</a>
+									<a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>
                                 </div>
-                                <div class="btn-group pull-right">
-                                    <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Action <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a id="btnImprimir" href="#">Certificado de notas</a></li>
-                                    </ul>
-                                </div>
+								
+								
+                               
                             </div>
                         </div>
                     </dv>
@@ -211,11 +204,11 @@
                         <table class="table table-bordered" id="data_table">
                             <thead>
                             <tr>
-                                <th>Profesor</th>
-                                <th>Materia</th>
-                                <th>Mes</th>
-                                <th>Valor Cualitativo</th>
-                                <th>Valor Cuantitativo</th>
+                                <th style="width:20%">Colaborador</th>
+                                <th style="width:20%">Materia</th>
+                                <th style="width:20%">Mes</th>
+                                <th style="width:20%">Cualitativo</th>
+                                <th style="width:20%">Cuantitativo</th>
                             </tr>
                             </thead>
                             <tbody>
