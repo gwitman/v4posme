@@ -443,7 +443,13 @@
 								<tr>
 									<th>INGRESO</th>
 									<td >
-										<input type="text" id="txtReceiptAmount" name="txtReceiptAmount"  class="col-lg-12 txt-numeric" value="<?php echo number_format($objTransactionMasterInfo->receiptAmount,2); ?>" style="text-align:right"/>
+										<input type="text" id="txtReceiptAmount" name="txtReceiptAmount"  class="col-lg-12 txt-numeric" value="<?php echo number_format($objTransactionMasterInfo->receiptAmount ,2); ?>" style="text-align:right"/>
+									</td>
+								</tr>
+								<tr>
+									<th>DESCUENTO</th>
+									<td >
+										<input type="text" id="txtDiscountAmount" name="txtDiscountAmount"  class="col-lg-12 txt-numeric" value="<?php echo number_format($objTransactionMaster->discount ?? 0,2); ?>" style="text-align:right"/>
 									</td>
 								</tr>
 								<tr>

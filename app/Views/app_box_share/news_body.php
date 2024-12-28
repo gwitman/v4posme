@@ -26,7 +26,7 @@
 								<!-- /titulo de comprobante-->
 								
 								<!-- body -->	
-								<form id="form-new-invoice" name="form-new-invoice" class="form-horizontal" role="form">
+								<form id="form-new-invoice" name="form-new-invoice" class="form-horizontal" role="form" method="post">
 								<div class="panel-body printArea"> 
 								
 									<ul id="myTab" class="nav nav-tabs">
@@ -310,6 +310,12 @@
                                                         <th>INGRESO</th>
                                                         <td >
 															<input type="text" id="txtReceiptAmount" name="txtReceiptAmount"  class="col-lg-12 txt-numeric" value="0" style="text-align:right"/>
+														</td>
+                                                    </tr>
+													<tr>
+                                                        <th>DESCUENTO</th>
+                                                        <td >
+															<input type="text" id="txtDiscountAmount" name="txtDiscountAmount"  class="col-lg-12 txt-numeric" value="0" style="text-align:right"/>
 														</td>
                                                     </tr>
                                                     <tr>

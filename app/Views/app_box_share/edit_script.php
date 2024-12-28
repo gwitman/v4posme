@@ -177,6 +177,12 @@
 		$(document).on("change","#txtReceiptAmount",function(){
 			updateCalculateChange();
 		});
+
+		//Descuento
+		$(document).on("change","#txtDiscountAmount",function(){
+			updateCalculateChange();
+		});
+		
 		$(document).on("change","#txtMobileEntityID",function(){			
 			$("#txtCustomerID").val(	$(this).val()	);
 			$("#txtCustomerDescription").val(	$('#txtMobileEntityID').find(":selected").data("name")	);
@@ -247,7 +253,9 @@
 		console.info("updateCalculateChange");
 		var i = fnFormatFloat($("#txtTotal").val());
 		var x = fnFormatFloat($("#txtReceiptAmount").val());
-		$("#txtChangeAmount").val(fnFormatNumber((x-i),2));
+		const x2 = fnFormatFloat($("#txtDiscountAmount").val());
+
+		$("#txtChangeAmount").val(fnFormatNumber(((x + x2) - i),2));	
 	}
 	function onCompleteEmployee(objResponse){
 		console.info("CALL onCompleteEmployee");
@@ -399,6 +407,11 @@
 			fnShowNotification("Seleccionar el Cliente","error",timerNotification);
 			result = false;
 		}
+
+		if(fnFormatFloat($("#txtChangeAmount").val()) < 0){
+			fnShowNotification("Monto insuficiente para aplicar el abono","error",timerNotification);
+			result = false;
+		}
 		
 		//Si este valor esta en true, se tiene que seleccionar una factura  a la vez para ir abonoando una una
 		if( varShareInvoiceByInvoice == 'true')
@@ -432,6 +445,5 @@
 		   $("#tb_transaction_master_detail td").css("display","block");		   
 	    }
 	}
-	
-	
+
 </script>

@@ -379,6 +379,7 @@ class app_box_share extends _BaseController {
 			$objTMNew["currencyID"]						= /*inicio get post*/ $this->request->getPost("txtCurrencyID"); 
 			$objTMNew["currencyID2"]					= $this->core_web_currency->getTarget($companyID,$objTMNew["currencyID"]);
 			$objTMNew["exchangeRate"]					= $this->core_web_currency->getRatio($dataSession["user"]->companyID,date("Y-m-d"),1,$objTMNew["currencyID2"],$objTMNew["currencyID"]);
+			$objTMNew["discount"] 						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtDiscountAmount"));
 			
 			//Ingresar Informacion Adicional
 			$objTMInfoNew["companyID"]					= $objTM->companyID;
@@ -780,6 +781,9 @@ class app_box_share extends _BaseController {
 			if($this->core_web_accounting->cycleIsCloseByDate($dataSession["user"]->companyID,/*inicio get post*/ $this->request->getPost("txtDate")))
 			throw new \Exception("EL DOCUMENTO NO PUEDE INGRESAR, EL CICLO CONTABLE ESTA CERRADO");
 			
+			//sumatoria del descuento + el ingreso
+			$receiptAmount = helper_StringToNumber($this->request->getPost("txtReceiptAmount")) + helper_StringToNumber($this->request->getPost("txtDiscountAmount"));
+
 			//Obtener transaccion
 			$transactionID 							= $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID,"tb_transaction_master_share",0);
 			$companyID 								= $dataSession["user"]->companyID;
@@ -812,6 +816,7 @@ class app_box_share extends _BaseController {
 			$objTM["sourceWarehouseID"]				= NULL;
 			$objTM["targetWarehouseID"]				= NULL;
 			$objTM["isActive"]						= 1;
+			$objTM["discount"]						= helper_StringToNumber($this->request->getPost("txtDiscountAmount")); /*Descuento*/ 
 			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);			
 			
 			
@@ -822,7 +827,7 @@ class app_box_share extends _BaseController {
 			//Crear la Carpeta para almacenar los Archivos del Documento			
 			$filterPath = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID;
 			if (!file_exists($filterPath))			
-			mkdir($filterPath, 0777,true);
+			mkdir($filterPath, 0777,true);					
 			
 			//Ingresar Informacion Adicional
 			$objTMInfo["companyID"]					= $objTM["companyID"];
@@ -835,6 +840,8 @@ class app_box_share extends _BaseController {
 			$objTMInfo["receiptAmount"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmount"));
 			$objTMInfo["reference1"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtBalanceStart"));
 			$objTMInfo["reference2"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtBalanceFinish"));
+			$objTMInfo["changeAmount"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtChangeAmount"));
+
 			$this->Transaction_Master_Info_Model->insert_app_posme($objTMInfo);
 			
 			//Recorrer la lista del detalle del documento
@@ -910,7 +917,6 @@ class app_box_share extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-			
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
@@ -1195,6 +1201,7 @@ class app_box_share extends _BaseController {
 	}
 	function save($mode=""){
 		$mode = helper_SegmentsByIndex($this->uri->getSegments(),1,$mode);	
+
 		 try{ 
 			//AUTENTICADO
 			if(!$this->core_web_authentication->isAuthenticated())
@@ -1230,6 +1237,8 @@ class app_box_share extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
+			echo $ex;
+			exit();
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
