@@ -1404,7 +1404,16 @@ $routes->match(['get','post'],'app_stadistic_dashboards/real_state','app_stadist
 $routes->match(['get','post'],'app_stadistic_dashboards/real_state/(:any)','app_stadistic_dashboards::real_state');
 $routes->match(['get','post'],'app_stadistic_dashboards/customer_realstate','app_stadistic_dashboards::customer_realstate');
 $routes->match(['get','post'],'app_stadistic_dashboards/customer_realstate/(:any)','app_stadistic_dashboards::customer_realstate');
-
+$routes->match(['get','post'],'app_customer_notes/index','app_customer_notes::index');
+$routes->match(['get','post'],'app_customer_notes/index/(:any)','app_customer_notes::index');
+$routes->match(['get','post'],'app_customer_notes/save','app_customer_notes::save');
+$routes->match(['get','post'],'app_customer_notes/save/(:any)','app_customer_notes::save');
+$routes->match(['get','post'],'app_customer_notes/searchTransactionMaster','app_customer_notes::searchTransactionMaster');
+$routes->match(['get','post'],'app_customer_notes/searchTransactionMaster/(:any)','app_customer_notes::searchTransactionMaster');
+$routes->match(['get','post'],'app_customer_notes/delete','app_customer_notes::delete');
+$routes->match(['get','post'],'app_customer_notes/delete/(:any)','app_customer_notes::delete');
+$routes->match(['get','post'],'app_customer_notes/viewPrinterFormatoA4/(:any)','app_customer_notes::viewPrinterFormatoA4');
+$routes->match(['get','post'],'app_customer_notes/viewPrinterFormatoA4','app_customer_notes::viewPrinterFormatoA4');
 
 /*
  * --------------------------------------------------------------------
