@@ -514,6 +514,11 @@ class app_cxc_notes extends _BaseController
             if (!$this->core_web_authentication->isAuthenticated())
                 throw new \Exception(USER_NOT_AUTENTICATED);
 
+            //Obtener el Componente de Tarea
+            $objComponentGrade = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_grade_book");
+            if (!$objComponentGrade)
+                throw new \Exception("EL COMPONENTE 'tb_transaction_master_grade_book' NO EXISTE...");
+
             //http://localhost/posmev4/app_cxc_notes/viewPrinterFormatoA4/companyID/2/userID/2/gradoID/2443/anio/2025/alumnoID/715
             $companyID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "companyID"); //--finuri
             $userID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "userID"); //--finuri
@@ -529,49 +534,40 @@ class app_cxc_notes extends _BaseController
             $fechaNow           = date('Y-m-d');
             $query				= "CALL pr_cxc_get_report_certificate_of_grades(?, ?, ?, ?, ?, ?);";
 
-            $objData		= $this->Bd_Model->executeRender(
+            $objData		= $this->Bd_Model->executeRenderMultipleNative(
                 $query,
                 [$userID, $token, $companyID, $gradoID, $anio, $alumnoID]
             );
-            if (isset($objData))
-                $objDataResult["objDetail"]					= $objData;
-            else
-                $objDataResult["objDetail"]					= NULL;
+            $objDetail = [];
+            if (isset($objData)) {
+                $objDataResult["objDetail"]     = $objData[0];
+                $objDataResult["objAlumno"]     = $objData[1];
+                $objDataResult["objLeyendas"]   = $objData[2];
+            }
+            else {
+                $objDataResult["objDetail"]     = null;
+                $objDataResult["objAlumno"]     = null;
+                $objDataResult["objLeyendas"]   = null;
+            }
 
             //parametros de reportes
             $params_["objCompany"]					= $objCompany;
             $params_["dateCurrent"]					= date("Y-m-d H:i:s");
             $params_["obUserModel"]					= $obUserModel;
             $params_["objDetail"]					= $objDataResult["objDetail"];
+            $params_["objAlumno"]					= $objDataResult["objAlumno"][0];
+            $params_["objLeyendas"]					= $objDataResult["objLeyendas"];
             $params_["objLogo"]						= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO", $companyID);
+            $params_["objTelefono"]					= $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE", $companyID);
             $params_["message"]						= str_replace(" 00:00:00", "", $fechaNow) . " CIERRE DE CAJA: " . $objCompany->name . " ";
             $params_["objFirma"] 					= "{companyID:" .  ",branchID:" .  ",userID:" . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_box_get_report_closed" . ",ip:" . $this->request->getIPAddress() . ",sessionID:" . ",agenteID:" . $this->request->getUserAgent()->getAgentString() . ",lastActivity:" .  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}";
             $params_["objFirmaEncription"] 			= md5($params_["objFirma"]);
             $subject								= $params_["message"];
-            $html  									= /*--inicio view*/ view('app_box_report/share_summary_80mm_general/view_a_disemp', $params_); //--finview
+            $html  									= /*--inicio view*/ view('app_cxc_notes/share_summary_certificado/view_a_disemp', $params_); //--finview
+            echo $html;
 
-            $this->dompdf->loadHTML($html);
-            $this->dompdf->render();
-            $objParameterShowLinkDownload	    = $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD", $companyID);
-            $objParameterShowLinkDownload	    = $objParameterShowLinkDownload->value;
-            $objParameterShowDownloadPreview	= $this->core_web_parameter->getParameter("CORE_SHOW_DOWNLOAD_PREVIEW", $companyID);
-            $objParameterShowDownloadPreview	= $objParameterShowDownloadPreview->value;
-            $objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true";
-
-            $fileNamePut = "certificado_".$anio."_".date("dmYhis") . ".pdf";
-            $path        = "./resource/file_company/company_" . $companyID . "/component_108/component_item_0/" . $fileNamePut;
-
-            file_put_contents($path, $this->dompdf->output());
-            chmod($path, 644);
-
-            if ($objParameterShowLinkDownload == "true") {
-                echo "<a href='" . base_url() . "/resource/file_company/company_" . $companyID . "/component_108/component_item_0/" . $fileNamePut . "'>Descargar certificado</a>";
-            } else {
-                //visualizar
-                $this->dompdf->stream("file.pdf ", ['Attachment' => $objParameterShowDownloadPreview]);
-            }
         }catch (\Exception $ex){
-
+            echo $ex;
         }
     }
 }

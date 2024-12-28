@@ -250,17 +250,14 @@
             let alumnoId            = $('#txtAlumnoID').val();
             let gradoId             = $('#txtGradoID').val();
             if (gradoId.trim() === ""){
-                fnWaitClose();
                 fnShowNotification("Debe seleccionar un grado", "error", timerNotification);
                 return;
             }
             if (txtAnio.trim()===""){
-                fnWaitClose();
                 fnShowNotification("Debe seleccionar un año", "error", timerNotification);
                 return;
             }
             if (alumnoId.trim() === ""){
-                fnWaitClose();
                 fnShowNotification("Debe seleccionar un alumno", "error", timerNotification);
                 return;
             }

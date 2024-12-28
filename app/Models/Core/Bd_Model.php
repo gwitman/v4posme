@@ -58,7 +58,7 @@ class Bd_Model extends Model  {
 			
 			return $array_result_sets;
 		}
-		$db_mysqli->close();
+		//$db_mysqli->close();
    }  
    
    
