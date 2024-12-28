@@ -521,9 +521,9 @@ class app_cxc_notes extends _BaseController
 
             //http://localhost/posmev4/app_cxc_notes/viewPrinterFormatoA4/companyID/2/userID/2/gradoID/2443/anio/2025/alumnoID/715
             $companyID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "companyID"); //--finuri
-            $userID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "userID"); //--finuri
+            $userID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "userID"); //--finuri
             $gradoID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "gradoID"); //--finuri
-            $anio			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "anio"); //--finuri
+            $anio				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "anio"); //--finuri
             $alumnoID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "alumnoID"); //--finuri
 
             $dataSession        = $this->session->get();
@@ -571,3 +571,4 @@ class app_cxc_notes extends _BaseController
         }
     }
 }
+?>
