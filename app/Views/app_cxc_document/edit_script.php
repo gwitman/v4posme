@@ -25,8 +25,16 @@
 
 
 	$(document).ready(function() {
+		$('#txtDocumentDate').datepicker({format:"yyyy-mm-dd"});						 
+		$("#txtDocumentDate").datepicker("update");
+		
+		$('.txtDateApply').datepicker({format:"yyyy-mm-dd"});						 
+		$(".txtDateApply").datepicker("update");
+		
+		
+		
 		<?php echo getBehavio($company->type, "app_cxc_document", "divScriptReady", ""); ?>
-
+			
 		//Regresar a la lista
 		$(document).on("click", "#btnBack", function() {
 			fnWaitOpen();
@@ -316,7 +324,7 @@
 				},
 				{
 					"aTargets": [1], //creditAmortizationID
-					"bVisible": false,
+					"bVisible": true,
 					"sClass": "hidden",
 					"mRender": function(data, type, full) {
 						return '<input type="hidden" value="' + data + '" name="txtCustomerCreditAmortizationID[]" />';
@@ -333,6 +341,7 @@
 				{
 					"aTargets": [3], //Balance Inicial
 					"bVisible": true,
+					"sWidth"  :"120px",
 					"mRender": function(data, type, full) {
 						return '<input type="hidden" value="' + data + '" name="txtBalanceStart[]" />' + data;
 					}
@@ -340,13 +349,21 @@
 				{
 					"aTargets": [4], //Date Apply
 					"bVisible": true,
-					"mRender": function(data, type, full) {
-						return '<input type="hidden" value="' + data + '" name="txtDateApply[]" />' + data;
+					"sWidth"  :"200px",
+					"mRender" : function(data, type, full) {
+						
+						
+						return '<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">'+
+							'<input size="16"  class="form-control txtDateApply" type="text" name="txtDateApply[]"  value="'+data+'" >'+
+							'<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>'+
+						'</div>';
+											
 					}
 				},
 				{
 					"aTargets": [5], //Interes
 					"bVisible": true,
+					"sWidth"  :"100px",
 					"mRender": function(data, type, full) {
 						return '<input type="hidden" value="' + data + '" name="txtInterest[]" />' + data;
 					}
@@ -354,6 +371,7 @@
 				{
 					"aTargets": [6], //Capital
 					"bVisible": true,
+					"sWidth"  :"100px",
 					"mRender": function(data, type, full) {
 						return '<input type="hidden" value="' + data + '" name="txtCapital[]" />' + data;
 					}
@@ -361,6 +379,7 @@
 				{
 					"aTargets": [7], //share
 					"bVisible": true,
+					"sWidth"  :"100px",
 					"mRender": function(data, type, full) {
 						return '<input type="hidden" value="' + data + '" name="txtShare[]" />' + data;
 					}
@@ -368,6 +387,7 @@
 				{
 					"aTargets": [8], //Balance Final
 					"bVisible": true,
+					"sWidth"  :"120px",
 					"mRender": function(data, type, full) {
 						return '<input type="hidden" value="' + data + '" name="txtBalanceEnd[]" />' + data;
 					}
@@ -375,6 +395,7 @@
 				{
 					"aTargets": [9], //Remanente
 					"bVisible": true,
+					"sWidth"  :"100px",
 					"mRender": function(data, type, full) {
 						return '<input class="form-control txt-numeric" type="text" value="' + data + '" name="txtRemaining[]" />';
 					}
@@ -382,6 +403,7 @@
 				{
 					"aTargets": [10], //Dias Atrazados
 					"bVisible": true,
+					"sWidth"  :"120px",
 					"mRender": function(data, type, full) {
 						return '<input class="form-control txt-numeric" type="number" value="' + data + '" name="txtDayDelay[]" />';
 					}
@@ -389,6 +411,7 @@
 				{
 					"aTargets": [11], //Nota
 					"bVisible": true,
+					"sWidth"  :"100px",
 					"mRender": function(data, type, full) {
 						return '<input class="form-control type="text" value="' + data + '" name="txtNote[]" />';
 					}
@@ -396,6 +419,7 @@
 				{
 					"aTargets": [12], // statusID
 					"bVisible": true,
+					"sWidth"  :"200px",
 					"mRender": function(data, type, full) {
 						return '<select name="txtAmortizationStatusID[]" id="txtAmortizationStatusID[]"  >' + '<option> </option>' + printCustomerAmortization() + '</select>';
 						
@@ -412,6 +436,7 @@
 				{
 					"aTargets": [14], //Abono al Capital
 					"bVisible": true,
+					"sWidth"  :"150px",
 					"mRender": function(data, type, full) {
 						return '<input class="form-control txt-numeric" type="text" value="' + data + '" name="txtShareCapital[]" />';
 					}
@@ -435,7 +460,9 @@
 							echo implode(",", $listrow);
 						}
 						?>],
-			"aoColumnDefs": [{
+			"aoColumnDefs": 
+			[
+				{
 					"aTargets": [0], //checked,
 					"mRender": function(data, type, full) {
 						if (data == false)
@@ -681,6 +708,9 @@
 		$('.txt-numeric').mask('000,000.00', {
 			reverse: true
 		});
+		
+		$('.txtDateApply').datepicker({format:"yyyy-mm-dd"});						 
+		$(".txtDateApply").datepicker("update");
 		
 	}
 
