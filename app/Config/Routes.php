@@ -1370,6 +1370,8 @@ $routes->match(['get','post'],'app_lab_examen/delete','app_lab_examen::delete');
 $routes->match(['get','post'],'app_lab_examen/delete/(:any)','app_lab_examen::delete');
 $routes->match(['get','post'],'app_lab_examen/viewRegisterFormatoPaginaNormalA4LabGenerico','app_lab_examen::viewRegisterFormatoPaginaNormalA4LabGenerico');
 $routes->match(['get','post'],'app_lab_examen/viewRegisterFormatoPaginaNormalA4LabGenerico/(:any)','app_lab_examen::viewRegisterFormatoPaginaNormalA4LabGenerico');
+$routes->match(['get','post'],'app_lab_examen/viewRegisterFormatoPaginaNormalA4LabGenericoV1','app_lab_examen::viewRegisterFormatoPaginaNormalA4LabGenericoV1');
+$routes->match(['get','post'],'app_lab_examen/viewRegisterFormatoPaginaNormalA4LabGenericoV1/(:any)','app_lab_examen::viewRegisterFormatoPaginaNormalA4LabGenericoV1');
 $routes->match(['get','post'],'app_api_fingerprint/web_ssejs','app_api_fingerprint::web_ssejs');
 $routes->match(['get','post'],'app_api_fingerprint/web_ssejs/(:any)','app_api_fingerprint::web_ssejs');
 $routes->match(['get','post'],'app_api_fingerprint/web_active_sensor_enroll','app_api_fingerprint::web_active_sensor_enroll');

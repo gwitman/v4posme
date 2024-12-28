@@ -753,6 +753,149 @@ class app_lab_examen extends _BaseController
 			
 			$this->dompdf->loadHTML($html);
 			
+			
+			//1cm = 29.34666puntos
+			//a4: 210 ancho x 297
+			//a4: 21cm x 29.7cm
+			//a4: 595.28puntos x 841.59puntos
+			
+			//$this->dompdf->setPaper('A4','portrait');
+			//$this->dompdf->setPaper(array(0,0,234.76,6000));
+			
+			$this->dompdf->render();
+			
+			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+			
+			
+			//visualizar
+			$this->dompdf->stream("file.pdf", ['Attachment' => !$objParameterShowLinkDownload ]);
+			
+			//descargar
+			//$this->dompdf->stream();
+			
+			
+		}
+		catch(\Exception $ex){
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+	
+		    $data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+		    
+		    $this->email->setFrom(EMAIL_APP);
+		    $this->email->setTo(EMAIL_APP_COPY);
+		    $this->email->setSubject("Error");
+		    $this->email->setMessage($resultView);
+		    
+		    $resultSend01 = $this->email->send();
+		    $resultSend02 = $this->email->printDebugger();
+		    
+		    
+		    return $resultView;
+		}
+	}
+	
+	//facturacion estandar, horizontal tamaña a4
+	function viewRegisterFormatoPaginaNormalA4LabGenericoV1(){
+		try{ 
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+						$permited = false;
+						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						
+						if(!$permited)
+						throw new \Exception(NOT_ACCESS_CONTROL);
+						
+							
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						if ($resultPermission 	== PERMISSION_NONE)
+						throw new \Exception(NOT_ALL_EDIT);		
+			}	 
+			
+			
+			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri			
+			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri				
+			$companyID 					= $dataSession["user"]->companyID;		
+			$branchID 					= $dataSession["user"]->branchID;		
+			$roleID 					= $dataSession["role"]->roleID;		
+			
+			
+			//Get Component
+			$objComponent	        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			$objParameter	        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+			$objCompany 			= $this->Company_Model->get_rowByPK($companyID);			
+			
+			$objComponentPublicCatalog	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_public_catalog");
+            if(!$objComponentPublicCatalog)
+            throw new \Exception("EL COMPONENTE 'tb_public_catalog' NO EXISTE...");
+		
+			//Get Documento					
+			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);			
+			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID,$transactionID,$transactionMasterID,$objComponentPublicCatalog->componentID);
+			
+			$datView["objTC"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$datView["objTM"]->transactionCausalID);
+			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
+			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
+			$datView["Identifier"]					= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+			$datView["objBranch"]					= $this->Branch_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->branchID);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_examen_lab","statusID",$datView["objTM"]->statusID,$companyID,$branchID,$roleID);
+			$datView["objTipo"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$datView["objTM"]->transactionID,$datView["objTM"]->transactionCausalID);
+			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
+			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
+			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
+			$datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
+			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
+			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 
+			
+			
+			$datView["objMuestra"]					= $this->Public_Catalog_Detail_Model->asObject()->find($datView["objTM"]->reference1);
+			$datView["objTipoExamen"]				= $this->Public_Catalog_Detail_Model->asObject()->find($datView["objTM"]->reference3);
+			$datView["objEdad"]						= $this->Public_Catalog_Detail_Model->asObject()->find($datView["objTM"]->priorityID);
+			$datView["objSexo"]						= $this->Public_Catalog_Detail_Model->asObject()->find($datView["objTM"]->areaID);
+			
+			
+			
+			
+		    
+			
+			
+			//Generar Reporte
+			$html = helper_reporteA4TransactionMasterExamenLabV1(
+			    "EXAMEN",
+			    $objCompany,
+			    $objParameter,
+			    $datView["objTM"],
+			    $datView["objNatural"],
+			    $datView["objCustumer"], 
+			    $datView["tipoCambio"],
+			    $datView["objCurrency"],
+			    $datView["objTMI"],	
+				$datView["objTMD"],
+			    $objParameterTelefono, /*telefono*/
+				$datView["objStage"][0]->display, /*estado*/
+				$datView["objTC"]->name /*causal*/,
+				$datView["objMuestra"],
+				$datView["objTipoExamen"],
+				$datView["objEdad"],
+				$datView["objSexo"]
+			);
+			
+			
+			$this->dompdf->loadHTML($html);
+			
 			//1cm = 29.34666puntos
 			//a4: 210 ancho x 297
 			//a4: 21cm x 29.7cm

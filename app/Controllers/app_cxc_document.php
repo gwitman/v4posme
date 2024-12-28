@@ -163,7 +163,7 @@ class app_cxc_document extends _BaseController
             $dataView["objCustomerCreditDocument"]          = $objCustomerCreditDocument;
             $dataView["objCustomerCreditAmortization"]      = $objCustomerCreditAmortization;
             $dataView["objListWorkflowStageAmortization"]   = $this->core_web_workflow->getWorkflowAllStage("tb_customer_credit_amoritization", "statusID", $companyID, $branchIDUser, $roleID);
-
+			$dataView["objListCurrency"]					= $this->Currency_Model->getList();
             $dataView["objCatalogLegalName"]                = $this->Legal_Model->get_rowByCompany($companyID, $branchID);  
 
 			$dataView["objCatalogEntityType"]			    = $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_document_entity_related","type",$companyID);
@@ -266,7 +266,7 @@ class app_cxc_document extends _BaseController
 
             //Actualizar Customer Credit
             $objCustomerCreditNew["limitCreditDol"]         = helper_StringToNumber(/*inicio get post*/$this->request->getPost("txtLimitCreditDol"));
-            $objCustomerCreditNew["balanceDol"]             = helper_StringToNumber(/*inicio get post*/$this->request->getPost("txtBalanceDol"));
+            $objCustomerCreditNew["balanceDol"]             = helper_StringToNumber(/*inicio get post*/$this->request->getPost("txtBalanceDol"));			
             $this->Customer_Credit_Model->update_app_posme($companyID_, $branchID_, $entityID_, $objCustomerCreditNew);
 
 
@@ -306,12 +306,14 @@ class app_cxc_document extends _BaseController
 
             //Actualizar Documento
             $customerCreditDocumentID                   = /*inicio get post*/ $this->request->getPost("txtCustomerCreditDocumentID");
-            $customerCreditDocumentBalance               = /*inicio get post*/ $this->request->getPost("txtCreditDocumentBalance");
+            $customerCreditDocumentBalance              = /*inicio get post*/ $this->request->getPost("txtCreditDocumentBalance");
             $customerCreditDocumentStatusID             = /*inicio get post*/ $this->request->getPost("txtCreditDocumentStatusID");
-
+			$customerCreditDocumentoDateOn              = /*inicio get post*/ $this->request->getPost("txtDocumentDate");
+			
             $objCustomerCreditDocumentNew               = NULL;
             $objCustomerCreditDocumentNew["balance"]    = $customerCreditDocumentBalance;
             $objCustomerCreditDocumentNew["statusID"]   = $customerCreditDocumentStatusID;
+			$objCustomerCreditDocumentNew["dateOn"]     = $customerCreditDocumentoDateOn;			
             $this->Customer_Credit_Document_Model->update_app_posme($customerCreditDocumentID, $objCustomerCreditDocumentNew);
 
             //Actualizar Entity Documento
@@ -389,6 +391,7 @@ class app_cxc_document extends _BaseController
             $listCustomerCreditAmortizationID                   = /*inicio get post*/ $this->request->getPost("txtCustomerCreditAmortizationID");
             $customerCreditAmortizationRemaining                = /*inicio get post*/ $this->request->getPost("txtRemaining");
             $customerCreditAmortizationDayDelay                 = /*inicio get post*/ $this->request->getPost("txtDayDelay");
+			$customerCreditAmortizationDateApply                = /*inicio get post*/ $this->request->getPost("txtDateApply");
             $customerCreditAmortizationNote                     = /*inicio get post*/ $this->request->getPost("txtNote");
             $customerCreditAmortizationStatus                   = /*inicio get post*/ $this->request->getPost("txtAmortizationStatusID");
             $customerCreditAmortizationShareCapital             = /*inicio get post*/ $this->request->getPost("txtShareCapital");
@@ -397,13 +400,13 @@ class app_cxc_document extends _BaseController
             if (!empty($listCustomerCreditAmortizationID)) {
                 foreach ($listCustomerCreditAmortizationID as $key => $value) {
                     $customerCreditAmortizationID                       = $value;
-
                     $objCustomerCreditAmortizationNew                   = NULL;
                     $objCustomerCreditAmortizationNew["remaining"]      = helper_StringToNumber($customerCreditAmortizationRemaining[$key]);
                     $objCustomerCreditAmortizationNew["dayDelay"]       = helper_StringToNumber($customerCreditAmortizationDayDelay[$key]);
                     $objCustomerCreditAmortizationNew["note"]           = $customerCreditAmortizationNote[$key];
                     $objCustomerCreditAmortizationNew["statusID"]       = $customerCreditAmortizationStatus[$key];
                     $objCustomerCreditAmortizationNew["shareCapital"]   = helper_StringToNumber($customerCreditAmortizationShareCapital[$key]);
+					$objCustomerCreditAmortizationNew["dateApply"]      = $customerCreditAmortizationDateApply[$key];
                     $this->Customer_Credit_Amortization_Model->update_app_posme($customerCreditAmortizationID, $objCustomerCreditAmortizationNew);
                 }
             }
