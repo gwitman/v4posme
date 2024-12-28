@@ -263,22 +263,22 @@
                 <td><?= intval($value["02-Febrero"]) ?></td>
                 <td><?= intval($value["03-Marzo"]) ?></td>
                 <td><?= intval($value["Trimestral1"]) ?></td>
-                <td><?= intval($value["Trimestre1Cualitativo"]) ?></td>
+                <td><?= ($value["Trimestre1Cualitativo"]) ?></td>
                 <td><?= intval($value["04-Abril"]) ?></td>
                 <td><?= intval($value["05-Mayo"]) ?></td>
                 <td><?= intval($value["06-Junio"]) ?></td>
                 <td><?= intval($value["Trimestral2"]) ?></td>
-                <td><?= intval($value["Trimestre2Cualitativo"]) ?></td>
+                <td><?= ($value["Trimestre2Cualitativo"]) ?></td>
                 <td><?= intval($value["07-Julio"]) ?></td>
                 <td><?= intval($value["08-Agosto"]) ?></td>
                 <td><?= intval($value["09-Septiembre"]) ?></td>
                 <td><?= intval($value["Trimestral3"]) ?></td>
-                <td><?= intval($value["Trimestre3Cualitativo"]) ?></td>
+                <td><?= ($value["Trimestre3Cualitativo"]) ?></td>
                 <td><?= intval($value["10-Octubre"]) ?></td>
                 <td><?= intval($value["11-Noviembre"]) ?></td>
                 <td><?= intval($value["12-Diciembre"]) ?></td>
                 <td><?= intval($value["Trimestral4"]) ?></td>
-                <td><?= intval($value["Trimestre4Cualitativo"]) ?></td>
+                <td><?= ($value["Trimestre4Cualitativo"]) ?></td>
                 <td><?= intval($value["Anualidad"]) ?></td>
                 <td><?= $value["AnualidadCualitativo"] ?></td>
             </tr>
