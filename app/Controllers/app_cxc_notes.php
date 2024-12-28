@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use function PHPUnit\Framework\isEmpty;
 
-class app_customer_notes extends _BaseController
+class app_cxc_notes extends _BaseController
 {
     public function edit()
     {
@@ -424,9 +424,9 @@ class app_customer_notes extends _BaseController
             //Renderizar Resultado
             $dataSession["notification"]    = $this->core_web_error->get_error($userID);
             $dataSession["message"]         = $this->core_web_notification->get_message();
-            $dataSession["head"]            = /*--inicio view*/view('app_customer_notes/index_head', $dataView);//--finview
-            $dataSession["body"]            = /*--inicio view*/view('app_customer_notes/index_body', $dataView);//--finview
-            $dataSession["script"]          = /*--inicio view*/view('app_customer_notes/index_script', $dataView);//--finview
+            $dataSession["head"]            = /*--inicio view*/view('app_cxc_notes/index_head', $dataView);//--finview
+            $dataSession["body"]            = /*--inicio view*/view('app_cxc_notes/index_body', $dataView);//--finview
+            $dataSession["script"]          = /*--inicio view*/view('app_cxc_notes/index_script', $dataView);//--finview
             $dataSession["footer"]          = "";
 
             return view("core_masterpage/default_masterpage", $dataSession);//--finview-r
@@ -514,7 +514,7 @@ class app_customer_notes extends _BaseController
             if (!$this->core_web_authentication->isAuthenticated())
                 throw new \Exception(USER_NOT_AUTENTICATED);
 
-            //http://localhost/posmev4/app_customer_notes/viewPrinterFormatoA4/companyID/2/userID/2/gradoID/2443/anio/2025/alumnoID/715
+            //http://localhost/posmev4/app_cxc_notes/viewPrinterFormatoA4/companyID/2/userID/2/gradoID/2443/anio/2025/alumnoID/715
             $companyID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "companyID"); //--finuri
             $userID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "userID"); //--finuri
             $gradoID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "gradoID"); //--finuri

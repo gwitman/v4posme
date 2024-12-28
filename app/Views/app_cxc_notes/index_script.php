@@ -4,7 +4,7 @@
     var $txtCalificacionCuantitativa = $('#txtCalificacionCuantitativa');
     var companyID = <?= $companyID ?? "0" ?>;
     var userID = <?= $userID ?? "0" ?>;
-    var urlPrinter = "app_customer_notes/viewPrinterFormatoA4";
+    var urlPrinter = "app_cxc_notes/viewPrinterFormatoA4";
     $(document).ready(function () {
 
         $('#txtPriorityID').select2({
@@ -156,7 +156,7 @@
             count++;
             if (fnValidateForm(true)) {
                 fnWaitOpen();
-                var urlSave = "<?= base_url(); ?>/app_customer_notes/save";
+                var urlSave = "<?= base_url(); ?>/app_cxc_notes/save";
                 $.ajax({
                     type:   "POST",
                     url:    urlSave,
@@ -210,7 +210,7 @@
                         cache: false,
                         dataType: 'json',
                         type: 'POST',
-                        url: "<?php echo base_url(); ?>/app_customer_notes/delete",
+                        url: "<?php echo base_url(); ?>/app_cxc_notes/delete",
                         data: {
                             'anio':             txtAnio,
                             'mes':              txtMes,
@@ -337,7 +337,7 @@
             fnShowNotification("Debe seleccionar un alumno", "error", timerNotification);
             return;
         }
-        var urlSearch = "<?= base_url(); ?>/app_customer_notes/searchTransactionMaster";
+        var urlSearch = "<?= base_url(); ?>/app_cxc_notes/searchTransactionMaster";
         $.ajax({
             type: "POST",
             url: urlSearch,
@@ -391,8 +391,8 @@
             html_code           += "<td>" + item.colaborador + "</td>";
             html_code           += "<td>" + item.materia + "</td>";
             html_code           += "<td>" + mes + "</td>";
-            html_code           += "<td style='color: "+ item.color + ";'>" + item.calificacionCualitativa + "</td>";
-            html_code           += "<td style='color: "+ item.color + ";'>" + fnFormatNumber(item.calificacionCuantitativa, 2) + "</td>";
+            html_code           += "<td ><p class='"+ item.color + "' >" + item.calificacionCualitativa + "</p></td>";
+            html_code           += "<td ><p class='"+ item.color + "' >" + fnFormatNumber(item.calificacionCuantitativa, 2) + "</p></td>";
             html_code           += "</tr>";
             $('#data_table').append(html_code);
         });
