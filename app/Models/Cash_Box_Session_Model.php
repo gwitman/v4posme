@@ -14,7 +14,7 @@ class Cash_Box_Session_Model extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = false;
 
-    protected $allowedFields = ['cashBoxSessionID', 'companyID','branchID','cashBoxID','startOn','endOn','statusID','isActive','userID','transactionMasterID'];
+    protected $allowedFields = ['cashBoxSessionID', 'companyID','branchID','cashBoxID','startOn','endOn','statusID','isActive','userID','transactionMasterIDOpen','transactionMasterIDClosed'];
 
     // Dates
     protected $useTimestamps = false;
