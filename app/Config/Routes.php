@@ -348,6 +348,16 @@ $routes->match(['get','post'],'app_rrhh_asistencia/searchTransactionMaster','app
 $routes->match(['get','post'],'app_rrhh_asistencia/viewRegisterFormatoPaginaNormalA4LabGenerico','app_rrhh_asistencia::viewRegisterFormatoPaginaNormalA4LabGenerico');
 $routes->match(['get','post'],'app_rrhh_gps/index','app_rrhh_gps::index');
 $routes->match(['get','post'],'app_rrhh_gps/index/(:any)','app_rrhh_gps::index');
+$routes->match(['get','post'],'app_rrhh_task/index','app_rrhh_task::index');
+$routes->match(['get','post'],'app_rrhh_task/index/(:any)','app_rrhh_task::index');
+$routes->match(['get','post'],'app_rrhh_task/add','app_rrhh_task::add');
+$routes->match(['get','post'],'app_rrhh_task/edit','app_rrhh_task::edit');
+$routes->match(['get','post'],'app_rrhh_task/edit/(:any)','app_rrhh_task::edit');
+$routes->match(['get','post'],'app_rrhh_task/save','app_rrhh_task::save');
+$routes->match(['get','post'],'app_rrhh_task/save/(:any)','app_rrhh_task::save');
+$routes->match(['get','post'],'app_rrhh_task/delete/(:any)','app_rrhh_task::delete');
+$routes->match(['get','post'],'app_rrhh_task/delete','app_rrhh_task::delete');
+$routes->match(['get','post'],'app_rrhh_task/searchTransactionMaster','app_rrhh_task::searchTransactionMaster');
 $routes->match(['get','post'],'app_purchase_pedidos/index','app_purchase_pedidos::index');
 $routes->match(['get','post'],'app_purchase_pedidos/index/(:any)','app_purchase_pedidos::index');
 $routes->match(['get','post'],'app_purchase_pedidos/add','app_purchase_pedidos::add');
@@ -1058,6 +1068,7 @@ $routes->match(['get','post'],'app_notification/sendEmailGlamCustCitasFrecuency2
 $routes->match(['get','post'],'app_notification/sendEmailAudioElPipeCitas','app_notification::sendEmailAudioElPipeCitas');
 $routes->match(['get','post'],'app_notification/fillTipoCambio','app_notification::fillTipoCambio');
 $routes->match(['get','post'],'app_notification/fillInventarioMinimo','app_notification::fillInventarioMinimo');
+$routes->match(['get','post'],'app_notification/fillInventarioMinimoNotEmailSiApp','app_notification::fillInventarioMinimoNotEmailSiApp');
 $routes->match(['get','post'],'app_notification/fillInventarioFechaVencimiento','app_notification::fillInventarioFechaVencimiento');
 $routes->match(['get','post'],'app_notification/fillCumpleayo','app_notification::fillCumpleayo');
 $routes->match(['get','post'],'app_notification/fillCuotaAtrasada','app_notification::fillCuotaAtrasada');
@@ -1360,6 +1371,8 @@ $routes->match(['get','post'],'app_lab_examen/delete','app_lab_examen::delete');
 $routes->match(['get','post'],'app_lab_examen/delete/(:any)','app_lab_examen::delete');
 $routes->match(['get','post'],'app_lab_examen/viewRegisterFormatoPaginaNormalA4LabGenerico','app_lab_examen::viewRegisterFormatoPaginaNormalA4LabGenerico');
 $routes->match(['get','post'],'app_lab_examen/viewRegisterFormatoPaginaNormalA4LabGenerico/(:any)','app_lab_examen::viewRegisterFormatoPaginaNormalA4LabGenerico');
+$routes->match(['get','post'],'app_lab_examen/viewRegisterFormatoPaginaNormalA4LabGenericoV1','app_lab_examen::viewRegisterFormatoPaginaNormalA4LabGenericoV1');
+$routes->match(['get','post'],'app_lab_examen/viewRegisterFormatoPaginaNormalA4LabGenericoV1/(:any)','app_lab_examen::viewRegisterFormatoPaginaNormalA4LabGenericoV1');
 $routes->match(['get','post'],'app_api_fingerprint/web_ssejs','app_api_fingerprint::web_ssejs');
 $routes->match(['get','post'],'app_api_fingerprint/web_ssejs/(:any)','app_api_fingerprint::web_ssejs');
 $routes->match(['get','post'],'app_api_fingerprint/web_active_sensor_enroll','app_api_fingerprint::web_active_sensor_enroll');
@@ -1394,7 +1407,16 @@ $routes->match(['get','post'],'app_stadistic_dashboards/real_state','app_stadist
 $routes->match(['get','post'],'app_stadistic_dashboards/real_state/(:any)','app_stadistic_dashboards::real_state');
 $routes->match(['get','post'],'app_stadistic_dashboards/customer_realstate','app_stadistic_dashboards::customer_realstate');
 $routes->match(['get','post'],'app_stadistic_dashboards/customer_realstate/(:any)','app_stadistic_dashboards::customer_realstate');
-
+$routes->match(['get','post'],'app_cxc_notes/index','app_cxc_notes::index');
+$routes->match(['get','post'],'app_cxc_notes/index/(:any)','app_cxc_notes::index');
+$routes->match(['get','post'],'app_cxc_notes/save','app_cxc_notes::save');
+$routes->match(['get','post'],'app_cxc_notes/save/(:any)','app_cxc_notes::save');
+$routes->match(['get','post'],'app_cxc_notes/searchTransactionMaster','app_cxc_notes::searchTransactionMaster');
+$routes->match(['get','post'],'app_cxc_notes/searchTransactionMaster/(:any)','app_cxc_notes::searchTransactionMaster');
+$routes->match(['get','post'],'app_cxc_notes/delete','app_cxc_notes::delete');
+$routes->match(['get','post'],'app_cxc_notes/delete/(:any)','app_cxc_notes::delete');
+$routes->match(['get','post'],'app_cxc_notes/viewPrinterFormatoA4/(:any)','app_cxc_notes::viewPrinterFormatoA4');
+$routes->match(['get','post'],'app_cxc_notes/viewPrinterFormatoA4','app_cxc_notes::viewPrinterFormatoA4');
 
 /*
  * --------------------------------------------------------------------

@@ -110,6 +110,12 @@
 		$(document).on("change","#txtReceiptAmount",function(){
 			updateCalculateChange();
 		});
+
+		//Descuento
+		$(document).on("change","#txtDiscountAmount",function(){
+			updateCalculateChange();
+		});
+
 		$(document).on("change","#txtMobileEntityID",function(){
 			
 			$("#txtCustomerID").val(	$(this).val()	);
@@ -151,7 +157,9 @@
 		console.info("updateCalculateChange");
 		var i = fnFormatFloat($("#txtTotal").val());
 		var x = fnFormatFloat($("#txtReceiptAmount").val());
-		$("#txtChangeAmount").val(fnFormatNumber((x-i),2));
+		const x2 = fnFormatFloat($("#txtDiscountAmount").val());
+
+		$("#txtChangeAmount").val(fnFormatNumber(((x + x2) - i),2));		
 	}
 	function onCompleteCustomer(objResponse){
 		console.info("CALL onCompleteCustomer");
@@ -296,7 +304,11 @@
 			fnShowNotification("Seleccionar el Cliente","error",timerNotification);
 			result = false;
 		}
-		
+
+		if(fnFormatFloat($("#txtChangeAmount").val()) < 0){
+			fnShowNotification("Monto insuficiente para aplicar el abono","error",timerNotification);
+			result = false;
+		}
 		
 		<?php echo getBehavio($company->type,"app_box_share","new_script_validate_reference1",""); ?>
 		
@@ -316,7 +328,5 @@
 		   $("#tb_transaction_master_detail td").css("display","block");		   
 	    }		
 	}
-	
-	
 	
 </script>

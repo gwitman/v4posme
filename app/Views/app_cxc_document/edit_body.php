@@ -148,6 +148,26 @@
                                             <input class="form-control txt-numeric" readonly type="text" name="" id="" value="<?php echo number_format($objCustomerCreditDocument->amount, 2); ?>">
                                         </div>
                                     </div>
+									
+									<div class="form-group">
+                                        <label class="col-lg-4 control-label" for="selectFilter">Moneda</label>
+                                        <div class="col-lg-8">
+                                            <select name="txtCurrencyID" id="txtCurrencyID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
+                                                <option></option>
+                                                <?php
+                                                if ($objListCurrency)
+                                                    foreach ($objListCurrency as $ws) {
+                                                        if ($ws->currencyID == $objCustomerCreditDocument->currencyID)
+                                                            echo "<option value='" . $ws->currencyID . "' selected>" . $ws->name . "</option>";
+                                                        else
+                                                            echo "<option value='" . $ws->currencyID . "' >" . $ws->name . "</option>";
+                                                    }
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+									
+									
                                 </div>
 
                                 <div class="col-lg-6">
@@ -157,7 +177,8 @@
                                             <input class="form-control" type="text" name="txtCreditDocumentBalance" id="txtCreditDocumentBalance" value="<?php echo number_format($objCustomerCreditDocument->balance, 2); ?>">
                                         </div>
                                     </div>
-                                    <div class="form-group" <?php echo getBehavio($company->type, "app_cxc_document", "divTxtEstado", ""); ?>>
+                                    
+									<div class="form-group" <?php echo getBehavio($company->type, "app_cxc_document", "divTxtEstado", ""); ?>>
                                         <label class="col-lg-4 control-label" for="selectFilter">Estado</label>
                                         <div class="col-lg-8">
                                             <select name="txtCreditDocumentStatusID" id="txtCreditDocumentStatusID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
@@ -174,6 +195,20 @@
                                             </select>
                                         </div>
                                     </div>
+									
+									
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="datepicker">Fecha</label>
+										<div class="col-lg-8">
+											<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
+												<input size="16"  class="form-control" type="text" name="txtDocumentDate" id="txtDocumentDate" value="<?php echo $objCustomerCreditDocument->dateOn; ?>" >
+												<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+											</div>
+										</div>
+									</div>
+									
+									
+									
                                 </div>
                             </div>
                             <div class="row">
@@ -240,29 +275,40 @@
                                         <h4>DETALLES DE AMORTIZACION<span class="invoice-num"></span></h4>
                                     </div>
 
-                                    <table id="tb_detail_amortization" class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th>creditAmortizationID</th>
-                                                <th>customerCreditDocumentID</th>
-                                                <th>Balance Inicial</th>
-                                                <th>Fecha</th>
-                                                <th>Interes</th>
-                                                <th>Capital</th>
-                                                <th>Cuota</th>
-                                                <th>Balance Final</th>
-                                                <th>Remanente</th>
-                                                <th>Dias Atrazados</th>
-                                                <th>Nota</th>
-                                                <th>Estado</th>
-                                                <th>IsActive</th>
-                                                <th>Abono al Capital</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="body_detail_line">
-                                        </tbody>
-                                    </table>
+									<div style=" 
+										height:500px;
+										overflow-y: auto;  
+										overflow-x: auto;
+										padding:0px;
+										margin:0px;
+										"
+									>
+										<table id="tb_detail_amortization" class="table table-bordered">
+											<thead>
+												<tr>
+													<th></th>
+													<th>creditAmortizationID</th>
+													<th>customerCreditDocumentID</th>
+													<th>Balance Inicial</th>
+													<th>Fecha</th>
+													<th>Interes</th>
+													<th>Capital</th>
+													<th>Cuota</th>
+													<th>Balance Final</th>
+													<th>Remanente</th>
+													<th>Dias Atrazados</th>
+													<th>Nota</th>
+													<th>Estado</th>
+													<th>IsActive</th>
+													<th>Abono al Capital</th>
+												</tr>
+											</thead>
+											<tbody id="body_detail_line">
+											</tbody>
+										</table>
+									</div>
+									
+									
                                 </div>
                             </div>
                         </div>

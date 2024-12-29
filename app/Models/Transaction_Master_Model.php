@@ -42,7 +42,7 @@ class Transaction_Master_Model extends Model  {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_transaction_master");    
 		$sql = "";
-		$sql = sprintf("select tm.companyID, tm.transactionID, tm.transactionMasterID, tm.branchID, tm.transactionNumber, tm.transactionCausalID,tm.entityID, tm.transactionOn, tm.statusIDChangeOn, tm.componentID,tm.tax1,tm.tax2,tm.tax3,tm.tax4,tm.discount,tm.subAmount, tm.note, tm.sign, tm.currencyID, tm.currencyID2, tm.exchangeRate, tm.reference1, tm.reference2, tm.reference3, tm.reference4, tm.statusID, tm.amount, tm.isApplied, tm.journalEntryID, tm.classID, tm.areaID, tm.sourceWarehouseID, tm.targetWarehouseID, tm.createdBy, tm.createdAt, tm.createdOn, tm.createdIn, tm.isActive, ws.name as workflowStageName,tm.priorityID, tm.transactionOn2 , tm.isTemplate,tm.periodPay,tm.nextVisit,tm.numberPhone ,tm.printerQuantity,tm.entityIDSecondary , tm.dayExcluded  ");
+		$sql = sprintf("select tm.companyID, tm.transactionID, tm.transactionMasterID, tm.branchID, tm.transactionNumber, tm.transactionCausalID,tm.entityID, tm.transactionOn, tm.statusIDChangeOn, tm.componentID,tm.tax1,tm.tax2,tm.tax3,tm.tax4,tm.discount,tm.subAmount, tm.note, tm.sign, tm.currencyID, tm.currencyID2, tm.exchangeRate, tm.reference1, tm.reference2, tm.reference3, tm.reference4, tm.descriptionReference, tm.statusID, tm.amount, tm.isApplied, tm.journalEntryID, tm.classID, tm.areaID, tm.sourceWarehouseID, tm.targetWarehouseID, tm.createdBy, tm.createdAt, tm.createdOn, tm.createdIn, tm.isActive, ws.name as workflowStageName,tm.priorityID, tm.transactionOn2 , tm.isTemplate,tm.periodPay,tm.nextVisit,tm.numberPhone ,tm.printerQuantity,tm.entityIDSecondary , tm.dayExcluded  ");
 		$sql = $sql.sprintf(" from tb_transaction_master tm");		
 		$sql = $sql.sprintf(" inner join  tb_workflow_stage ws on tm.statusID = ws.workflowStageID");
 		$sql = $sql.sprintf(" where tm.transactionMasterID = $transactionMasterID");
@@ -284,5 +284,120 @@ class Transaction_Master_Model extends Model  {
 						
 		return $builder->get()->getResultObject();
 	}
+
+    /*
+     * Grado -> classID
+     * Alumno -> entityID
+     * Colaborador -> entityIDSecondary
+     * Materia -> areaID
+     * Anio, mes y dia -> transactionON
+     * ValorCuantitativo -> amount
+     * ValorCualitativo -> priorityID
+     */
+    function get_RowByNotas($classID, $entityID, $entityIDSecondary, $areaID, $transactionON, $priorityID)
+    {
+        $db 		= db_connect();
+
+        $builder	= $db->table("tb_transaction_master ttm")
+                        ->select("ttm.transactionMasterID,
+                     ttm.companyID,
+                     ttm.transactionNumber,
+                     ttm.transactionID,
+                     ttm.branchID,
+                     ttm.transactionCausalID,
+                     ttm.entityID,
+                     ttm.transactionOn,
+                     ttm.transactionOn2,
+                     ttm.statusIDChangeOn,
+                     ttm.componentID,
+                     ttm.reference1,
+                     ttm.reference2,
+                     ttm.amount,
+                     ttm.classID,
+                     ttm.areaID,
+                     ttm.priorityID,
+                     ttm.createdBy,
+                     ttm.createdAt,
+                     ttm.createdOn,
+                     ttm.createdIn,
+                     ttm.isActive,
+                     ttm.entityIDSecondary");
+        if (!empty($classID)) {
+            $builder->where("ttm.classID",$classID);
+        }
+        if (!empty($entityID)) {
+            $builder->where("ttm.entityID",$entityID);
+        }
+        if (!empty($entityIDSecondary)) {
+            $builder->where("ttm.entityIDSecondary",$entityIDSecondary);
+        }
+        if (!empty($areaID)) {
+            $builder->where("ttm.areaID",$areaID);
+        }
+        if (!empty($priorityID)) {
+            $builder->where("ttm.priorityID",$priorityID);
+        }
+        if (!empty($transactionON)) {
+            $builder->where("ttm.transactionON",$transactionON);
+        }
+        $builder->where("ttm.isActive",1);
+        $builder->where("ttm.componentID",108); /*tb_transaction_master_grade_book*/
+        return $builder->get()->getRow();
+    }
+
+
+    function get_RowGradeBook($classID, $entityID, $entityIDSecondary, $areaID, $anio, $mes, $transactionON)
+    {
+        $db 		= db_connect();
+
+        $builder	= $db->table("tb_transaction_master ttm")
+                        ->select("
+                          ttm.transactionID,
+                          ttm.transactionMasterID,
+                          tc.customerNumber as codigoAlumno,
+                          CONCAT(tn.firstName, ' ', tn.lastName) as alumno, 
+                          te.employeNumber as codigoColaborador,
+                          CONCAT(tn1.firstName, ' ', tn1.lastName) AS colaborador,
+                          tpcd.name as materia, 
+                          tci.description AS calificacionCualitativa,
+                          tci2.display as grado, 
+                          ttm.amount AS calificacionCuantitativa,
+                          ttm.transactionOn,
+                          tci.display as color")
+            ->join('tb_naturales tn', 'ttm.entityID=tn.entityID', 'inner')
+            ->join('tb_customer tc', 'tn.entityID = tc.entityID', 'inner')
+            ->join('tb_naturales tn1', 'ttm.entityIDSecondary=tn1.entityID', 'inner')
+            ->join('tb_employee te', 'tn1.entityID = te.entityID', 'inner')
+            ->join('tb_public_catalog_detail tpcd', 'ttm.areaID=tpcd.publicCatalogDetailID', 'inner')
+            ->join('tb_catalog_item tci', 'ttm.priorityID = tci.catalogItemID', 'inner')
+            ->join('tb_catalog_item tci2', 'ttm.classID = tci2.catalogItemID', 'inner');
+        if (!empty($classID)) {
+            $builder->where("ttm.classID",$classID);
+        }
+        if (!empty($entityID)) {
+            $builder->where("ttm.entityID",$entityID);
+        }
+        if (!empty($entityIDSecondary)) {
+            $builder->where("ttm.entityIDSecondary",$entityIDSecondary);
+        }
+        if (!empty($areaID)) {
+            $builder->where("ttm.areaID",$areaID);
+        }
+        if (!empty($anio)) {
+            $builder->where("YEAR(ttm.transactionON)",$anio);
+        }
+        if (!empty($mes) && is_numeric($mes) && $mes >= 1 && $mes <= 12) {
+            $builder->where("MONTH(ttm.transactionON)", $mes);
+        }
+        if (!empty($transactionON)) {
+            $builder->where("ttm.transactionON",$transactionON);
+        }
+        $builder->where("ttm.isActive",1);
+        $builder->where("ttm.componentID",108); /*tb_transaction_master_grade_book*/
+        $builder->orderBy('MONTH(ttm.transactionON)','desc');
+        $builder->orderBy('ttm.areaID','desc');
+        $builder->orderBy('ttm.entityIDSecondary','desc');
+        return $builder->get()->getResult();
+    }
 }
 ?>
