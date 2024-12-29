@@ -367,7 +367,7 @@ class app_notification extends _BaseController
 					foreach ($objListItem as $item) {
 						$mensaje			 = "";
 						$mensaje			.= "<span class='badge badge-warning'>PRODUCTO</span>:" . $item->itemNumber . " " . $item->itemName . "<br/>";
-						$mensaje			.= "<span class='badge badge-warning'>BODEGA</span>:" . $item->warehouseNumber . " " . $item->warehouseName . "<br/>";
+						$mensaje			.= "<span class='badge badge-warning'>BODEGA</span>:" .   $item->warehouseNumber . " " . $item->warehouseName . "<br/>";
 						$mensaje			.= "<span class='badge badge-warning'>CANTIDAD</span>:" . $item->quantity . ",<span class='badge badge-warning'>CANTIDAD MINIMA</span>:" . $item->quantityMin;
 
 						
@@ -403,7 +403,8 @@ class app_notification extends _BaseController
 						}
 
 						//tag con notificacion
-						if ($objTag->sendNotificationApp) {
+						if ($objTag->sendNotificationApp) 
+						{
 							$objListUsuario				= $this->User_Tag_Model->get_rowByPK($objTag->tagID);
 							if ($objListUsuario)
 								foreach ($objListUsuario as $usuario) {
@@ -423,6 +424,48 @@ class app_notification extends _BaseController
 				}
 			}
 	}
+	
+	//mostrar las notificaciones en sistema, de inventarios minimos no envia email
+	function fillInventarioMinimoNotEmailSiApp()
+	{
+
+		$tagName		= "LLENAR NOTI INVENTARIO MINIMO";
+		$objListCompany = $this->Company_Model->get_rows();
+		$objTag			= $this->Tag_Model->get_rowByName($tagName);
+		if ($objListCompany)
+			foreach ($objListCompany as $i) {
+				$objListItem		= $this->Itemwarehouse_Model->get_rowLowMinimus($i->companyID);
+				if ($objListItem) {
+					foreach ($objListItem as $item) {
+						$mensaje			 = "";
+						$mensaje			.= "<span class='badge badge-warning'>PRODUCTO</span>:" . $item->itemNumber . " " . $item->itemName . "<br/>";
+						$mensaje			.= "<span class='badge badge-warning'>BODEGA</span>:" .   $item->warehouseNumber . " " . $item->warehouseName . "<br/>";
+						$mensaje			.= "<span class='badge badge-warning'>CANTIDAD</span>:" . $item->quantity . ",<span class='badge badge-warning'>CANTIDAD MINIMA</span>:" . $item->quantityMin;
+
+						//tag con notificacion
+						if ($objTag->sendNotificationApp) 
+						{
+							$objListUsuario				= $this->User_Tag_Model->get_rowByPK($objTag->tagID);
+							if ($objListUsuario)
+								foreach ($objListUsuario as $usuario) {
+									
+									$data					= null;
+									$data["tagID"]			= $objTag->tagID;
+									$data["notificated"]	= "inventario minimo";
+									$data["message"]		= $mensaje;
+									$data["isActive"]		= 1;
+									$data["userID"]			= $usuario->userID;
+									$data["createdOn"]		= date_format(date_create(), "Y-m-d H:i:s");
+									$this->Error_Model->insert_app_posme($data);
+								
+								}
+						}
+					}
+				}
+			}
+	}
+	
+	
 	function fillInventarioFechaVencimiento()
 	{
 		$tagName		= "LLENAR NOTI DE PRODUCTOS VENCIDOS";

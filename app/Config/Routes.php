@@ -1068,6 +1068,7 @@ $routes->match(['get','post'],'app_notification/sendEmailGlamCustCitasFrecuency2
 $routes->match(['get','post'],'app_notification/sendEmailAudioElPipeCitas','app_notification::sendEmailAudioElPipeCitas');
 $routes->match(['get','post'],'app_notification/fillTipoCambio','app_notification::fillTipoCambio');
 $routes->match(['get','post'],'app_notification/fillInventarioMinimo','app_notification::fillInventarioMinimo');
+$routes->match(['get','post'],'app_notification/fillInventarioMinimoNotEmailSiApp','app_notification::fillInventarioMinimoNotEmailSiApp');
 $routes->match(['get','post'],'app_notification/fillInventarioFechaVencimiento','app_notification::fillInventarioFechaVencimiento');
 $routes->match(['get','post'],'app_notification/fillCumpleayo','app_notification::fillCumpleayo');
 $routes->match(['get','post'],'app_notification/fillCuotaAtrasada','app_notification::fillCuotaAtrasada');

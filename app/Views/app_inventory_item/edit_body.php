@@ -766,20 +766,18 @@
 											foreach($objItemWarehouse as $i){
 												echo "<tr class='row_warehouse'>";
 													echo "<td>";
-														echo "<input type='hidden' class='txtDetailWarehouseID' name='txtDetailWarehouseID[]' value='".$i->warehouseID."'></input>";
-														echo "<input type='hidden' class='txtDetailQuantityMax' name='txtDetailQuantityMax[]' value='".$i->quantityMax."'></input>";
-														echo "<input type='hidden' class='txtDetailQuantityMin' name='txtDetailQuantityMin[]' value='".$i->quantityMin."'></input>";
+														echo "<input type='hidden' class='txtDetailWarehouseID' name='txtDetailWarehouseID[]' value='".$i->warehouseID."'></input>";														
 														echo "<input type='hidden' class='txtDetailQuantity' name='txtDetailQuantity[]'    value='0'></input>";
 														echo $i->warehouseName;
 													echo "</td>";
 													echo "<td>";
 														echo $i->quantity;
 													echo "</td>";
-													echo "<td>";
-														echo $i->quantityMin;
+													echo "<td>";														
+														echo "<input type='text' class='txtDetailQuantityMin' name='txtDetailQuantityMin[]' value='".round($i->quantityMin,2)."'></input>";
 													echo "</td>";
 													echo "<td>";
-														echo $i->quantityMax;
+														echo "<input type='text' class='txtDetailQuantityMax' name='txtDetailQuantityMax[]' value='".round($i->quantityMax,2)."'></input>";														
 													echo "</td>";
 												echo "</tr>";
 											}
