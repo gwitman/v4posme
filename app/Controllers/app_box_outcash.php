@@ -474,6 +474,23 @@ class app_box_outcash extends _BaseController {
 					$objCashBoxSessionMe["endOn"] 						= date("Y-m-d H:i:s");
 					$objCashBoxSessionMe["transactionMasterIDClosed"] 	= $transactionMasterID;
 					$this->Cash_Box_Session_Model->update($objCashBoxSessionMe["cashBoxSessionID"],$objCashBoxSessionMe);
+					
+					$query			= "CALL pr_box_closed_box(?,?,?,?,?,?,?,?);";
+					$objData		= $this->Bd_Model->executeRender(
+						$query,
+						[
+							$userID,
+							$branchID,
+							"",
+							$companyID,
+							$objCashBoxSessionMe->transactionMasterIDOpen,
+							$objCashBoxSessionMe->transactionMasterIDClosed,
+							$objCashBoxSessionMe->cashBoxID,
+							$objCashBoxSessionMe->cashBoxSessionID
+						]
+					);	
+					
+					
 				}
 			
 			}
