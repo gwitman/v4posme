@@ -422,17 +422,58 @@ class app_box_outcash extends _BaseController {
 			
 			if( strtoupper($objCatalogItem->display) == strtoupper("Cierre") )
 			{
-				$objCashBoxSession	= $this->Cash_Box_Session_Model->asArray()->
+				//Obtener la sesion de caja abierta por mi
+				$objCashBoxSessionMe	= $this->Cash_Box_Session_Model->asArray()->
 										where("userID",$userID)->
 										where("statusID",$objWorkflowStageInit[0]->workflowStageID)->
+										where("cashBoxID",$cashBoxID)->
 										findAll();		
-
-				if($objCashBoxSession)
+				
+				//Obtener otros usuarios que tienen abierta la caja
+				$objCashBoxSessionNotMe = $this->Cash_Box_Session_Model->asArray()->
+										where("userID !=",$userID)->
+										where("statusID",$objWorkflowStageInit[0]->workflowStageID)->
+										where("cashBoxID",$cashBoxID)->
+										findAll();
+				
+				//Obtener el nombre del Usuario que tiene abierta la caja.
+				$cashBoxSessionUserID 		= $objCashBoxSessionNotMe ? 
+												$objCashBoxSessionNotMe[0]["userID"] : 
+												(
+													$objCashBoxSessionMe ? 
+													$objCashBoxSessionMe[0]["userID"]:
+													0
+												);
+				
+				$cashBoxSessionUserName 	= $this->User_Model->get_rowByUserID($cashBoxSessionUserID);
+				$cashBoxSessionUserName 	= $cashBoxSessionUserName ? $cashBoxSessionUserName->nickname : "";
+				
+				//No se puede cerrar caja si la caja no ha sido abierta por mi
+				if(!$objCashBoxSessionMe && $objCashBoxSessionNotMe)
+				{
+					$db->transRollback();	
+					$this->core_web_notification->set_message(true, "Esta caja fue abierta por: " . $cashBoxSessionUserName);
+					$this->response->redirect(base_url()."/".'app_box_outcash/edit/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID);
+					return;
+				}
+				
+				//No se puede cerrar caja si esta se encuentra cerrada actualmente
+				if(!$objCashBoxSessionMe)
+				{
+					$db->transRollback();	
+					$this->core_web_notification->set_message(true, "Esta caja ya se encuentra cerrada");
+					$this->response->redirect(base_url()."/".'app_box_outcash/edit/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID);
+					return;
+				}
+				
+				//Actualizar estado de la sesion si nadie mas tiene la caja abierta
+				if($objCashBoxSessionMe)
 				{				
-					$objCashBoxSession 					= $objCashBoxSession[0];
-					$objCashBoxSession["statusID"] 		= $objWorkflowStageApply[0]->workflowStageID;					
-					$objCashBoxSession["endOn"] 		= date("Y-m-d H:i:s");
-					$this->Cash_Box_Session_Model->update($objCashBoxSession["cashBoxSessionID"],$objCashBoxSession);
+					$objCashBoxSessionMe 								= $objCashBoxSessionMe[0];
+					$objCashBoxSessionMe["statusID"] 					= $objWorkflowStageApply[0]->workflowStageID;					
+					$objCashBoxSessionMe["endOn"] 						= date("Y-m-d H:i:s");
+					$objCashBoxSessionMe["transactionMasterIDClosed"] 	= $transactionMasterID;
+					$this->Cash_Box_Session_Model->update($objCashBoxSessionMe["cashBoxSessionID"],$objCashBoxSessionMe);
 				}
 			
 			}
