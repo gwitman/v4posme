@@ -352,6 +352,21 @@ class Transaction_Master_Detail_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
+
+   function get_rowByTransactionToAdvanceOfPayroll($companyID,$transactionID,$transactionMasterID){
+	$db 	= db_connect();
+	$builder	= $db->table("tb_transaction_master_detail");
+	$sql = "";
+	$sql = sprintf("select td.companyID, td.transactionID, td.transactionMasterID, td.transactionMasterDetailID, td.componentID, td.componentItemID, td.promotionID, td.amount, td.cost, td.quantity, td.discount, td.unitaryAmount, td.unitaryCost, td.unitaryPrice, td.reference1, td.reference2, td.reference3,td.reference4,td.reference5,td.reference6,td.reference7, td.catalogStatusID, td.inventoryStatusID, td.isActive, td.quantityStock, td.quantiryStockInTraffic, td.quantityStockUnaswared, td.remaingStock, td.expirationDate, td.inventoryWarehouseSourceID, td.inventoryWarehouseTargetID,td.descriptionReference,td.exchangeRateReference,td.lote,td.skuFormatoDescription,td.itemNameLog,td.amountCommision,td.itemNameDescriptionLog ");
+	$sql = $sql.sprintf(" from tb_transaction_master_detail td");
+	$sql = $sql.sprintf(" where td.companyID = $companyID");
+	$sql = $sql.sprintf(" and td.transactionID = $transactionID");		
+	$sql = $sql.sprintf(" and td.transactionMasterID = $transactionMasterID");		
+	$sql = $sql.sprintf(" and td.isActive= 1");		
+	
+	//Ejecutar Consulta
+	return $db->query($sql)->getResult();
+}
    function deleteWhereTM($companyID,$transactionID,$transactionMasterID){
 		$db 	= db_connect();
 		$builder	= $db->table("tb_transaction_master_detail");
