@@ -84,7 +84,8 @@ class app_rrhh_employee extends _BaseController {
 				$objEmployee["areaID"]					= /*inicio get post*/ $this->request->getPost('txtAreaID');//--fin peticion get o post
 				$objEmployee["parentEmployeeID"]		= /*inicio get post*/ $this->request->getPost("txtParentEmployeeID");//--fin peticion get o post
 				$objEmployee["startOn"]					= /*inicio get post*/ $this->request->getPost("txtStartOn");//--fin peticion get o post
-				$objEmployee["endOn"]					= /*inicio get post*/ $this->request->getPost("txtEndOn");//--fin peticion get o post			
+				$objEmployee["endOn"]					= /*inicio get post*/ $this->request->getPost("txtEndOn");//--fin peticion get o post
+				$objEmployee["vacationBalanceDay"]		= /*inicio get post*/ $this->request->getPost("txtVacationBalanceDay");//--fin peticion get o post			
 				$objEmployee["isActive"]				= true;
 				$this->Employee_Model->update_app_posme($companyID_,$branchID_,$entityID_,$objEmployee);
 			
@@ -203,7 +204,7 @@ class app_rrhh_employee extends _BaseController {
 			$datView["objEntityListEmail"]		= $this->Entity_Email_Model->get_rowByEntity($companyID,$branchID,$entityID);
 			$datView["objEntityListPhone"]		= $this->Entity_Phone_Model->get_rowByEntity($companyID,$branchID,$entityID);
 			$datView["company"]					= $dataSession["company"];
-			
+
 			$objComponent						= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
 			if(!$objComponent)
 			throw new \Exception("00409 EL COMPONENTE 'tb_employee' NO EXISTE...");
@@ -322,7 +323,8 @@ class app_rrhh_employee extends _BaseController {
 			$objEmployee["areaID"]					= /*inicio get post*/ $this->request->getPost('txtAreaID');//--fin peticion get o post
 			$objEmployee["parentEmployeeID"]		= /*inicio get post*/ $this->request->getPost("txtParentEmployeeID");//--fin peticion get o post
 			$objEmployee["startOn"]					= /*inicio get post*/ $this->request->getPost("txtStartOn");//--fin peticion get o post
-			$objEmployee["endOn"]					= /*inicio get post*/ $this->request->getPost("txtEndOn");//--fin peticion get o post			
+			$objEmployee["endOn"]					= /*inicio get post*/ $this->request->getPost("txtEndOn");//--fin peticion get o post
+			$objEmployee["vacationBalanceDay"]		= /*inicio get post*/ $this->request->getPost("txtVacationBalanceDay");//--fin peticion get o post			
 			$objEmployee["isActive"]				= true;
 			$this->core_web_auditoria->setAuditCreated($objEmployee,$dataSession,$this->request);
 			$result 							= $this->Employee_Model->insert_app_posme($objEmployee);

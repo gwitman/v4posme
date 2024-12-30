@@ -42,7 +42,7 @@ class Employee_Model extends Model  {
 		$builder	= $db->table("tb_employee");    
 		
 		$sql = "";
-		$sql = sprintf("select i.companyID, i.branchID, i.entityID, i.employeNumber, i.numberIdentification, i.identificationTypeID, i.socialSecurityNumber, i.address, i.countryID, i.stateID, i.cityID, i.departamentID, i.areaID, i.clasificationID, i.categoryID, i.reference1, i.reference2, i.typeEmployeeID, i.hourCost, i.parentEmployeeID, i.startOn, i.endOn,i.statusID, i.createdOn, i.createdIn, i.createdAt, i.createdBy, i.isActive,n.firstName,n.lastName ");
+		$sql = sprintf("select i.companyID, i.branchID, i.entityID, i.employeNumber, i.numberIdentification, i.identificationTypeID, i.socialSecurityNumber, i.address, i.countryID, i.stateID, i.cityID, i.departamentID, i.areaID, i.clasificationID, i.categoryID, i.reference1, i.reference2, i.typeEmployeeID, i.hourCost, i.parentEmployeeID, i.startOn, i.endOn,i.statusID, i.createdOn, i.createdIn, i.createdAt, i.createdBy, i.isActive, i.vacationBalanceDay, n.firstName,n.lastName ");
 		$sql = $sql.sprintf(" from tb_employee i");		
 		$sql = $sql.sprintf(" inner join tb_naturales n on  n.entityID = i.entityID ");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
@@ -58,7 +58,7 @@ class Employee_Model extends Model  {
 		$builder	= $db->table("tb_employee");    
 		
 		$sql = "";
-		$sql = sprintf("select i.companyID, i.branchID, i.entityID, i.employeNumber, i.numberIdentification, i.identificationTypeID, i.socialSecurityNumber, i.address, i.countryID, i.stateID, i.cityID, i.departamentID, i.areaID, i.clasificationID, i.categoryID, i.reference1, i.reference2, i.typeEmployeeID, i.hourCost, i.parentEmployeeID, i.startOn, i.endOn,i.statusID, i.createdOn, i.createdIn, i.createdAt, i.createdBy, i.isActive,n.firstName,n.lastName ");
+		$sql = sprintf("select i.companyID, i.branchID, i.entityID, i.employeNumber, i.numberIdentification, i.identificationTypeID, i.socialSecurityNumber, i.address, i.countryID, i.stateID, i.cityID, i.departamentID, i.areaID, i.clasificationID, i.categoryID, i.reference1, i.reference2, i.typeEmployeeID, i.hourCost, i.parentEmployeeID, i.startOn, i.endOn,i.statusID, i.createdOn, i.createdIn, i.createdAt, i.createdBy, i.isActive, i.vacationBalanceDay, n.firstName,n.lastName ");
 		$sql = $sql.sprintf(" from tb_employee i");		
 		$sql = $sql.sprintf(" inner join tb_naturales n on  n.entityID = i.entityID ");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
@@ -73,7 +73,7 @@ class Employee_Model extends Model  {
 		$builder	= $db->table("tb_employee");    
 		
 		$sql = "";
-		$sql = sprintf("select i.companyID, i.branchID, i.entityID, i.employeNumber, i.numberIdentification, i.identificationTypeID, i.socialSecurityNumber, i.address, i.countryID, i.stateID, i.cityID, i.departamentID, i.areaID, i.clasificationID, i.categoryID, i.reference1, i.reference2, i.typeEmployeeID, i.hourCost, i.parentEmployeeID, i.startOn, i.endOn,i.statusID, i.createdOn, i.createdIn, i.createdAt, i.createdBy, i.isActive,n.firstName,n.lastName ");
+		$sql = sprintf("select i.companyID, i.branchID, i.entityID, i.employeNumber, i.numberIdentification, i.identificationTypeID, i.socialSecurityNumber, i.address, i.countryID, i.stateID, i.cityID, i.departamentID, i.areaID, i.clasificationID, i.categoryID, i.reference1, i.reference2, i.typeEmployeeID, i.hourCost, i.parentEmployeeID, i.startOn, i.endOn,i.statusID, i.createdOn, i.createdIn, i.createdAt, i.createdBy, i.isActive, i.vacationBalanceDay, n.firstName,n.lastName ");
 		$sql = $sql.sprintf(" from tb_employee i");		
 		$sql = $sql.sprintf(" inner join tb_naturales n on  n.entityID = i.entityID ");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
@@ -118,6 +118,7 @@ class Employee_Model extends Model  {
 					createdAt,
 					createdBy,
 					te.isActive,
+					te.vacationBalanceDay,
 					tn.firstName,
 					tn.lastName');
 		$query		= $query->join('tb_naturales tn','te.entityID=tn.entityID');
@@ -132,7 +133,7 @@ class Employee_Model extends Model  {
 		$builder	= $db->table("tb_employee");    
 		
 		$sql = "";
-		$sql = sprintf("select i.companyID, i.branchID, i.entityID, i.employeNumber, i.numberIdentification, i.identificationTypeID, i.socialSecurityNumber, i.address, i.countryID, i.stateID, i.cityID, i.departamentID, i.areaID, i.clasificationID, i.categoryID, i.reference1, i.reference2, i.typeEmployeeID, i.hourCost, i.parentEmployeeID, i.startOn, i.endOn,i.statusID, i.createdOn, i.createdIn, i.createdAt, i.createdBy, i.isActive,n.firstName,n.lastName ");
+		$sql = sprintf("select i.companyID, i.branchID, i.entityID, i.employeNumber, i.numberIdentification, i.identificationTypeID, i.socialSecurityNumber, i.address, i.countryID, i.stateID, i.cityID, i.departamentID, i.areaID, i.clasificationID, i.categoryID, i.reference1, i.reference2, i.typeEmployeeID, i.hourCost, i.parentEmployeeID, i.startOn, i.endOn,i.statusID, i.createdOn, i.createdIn, i.createdAt, i.createdBy, i.isActive, i.vacationBalanceDay, n.firstName,n.lastName ");
 		$sql = $sql.sprintf(" from tb_employee i");		
 		$sql = $sql.sprintf(" inner join tb_naturales n on  n.entityID = i.entityID ");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
@@ -146,7 +147,7 @@ class Employee_Model extends Model  {
 		$builder	= $db->table("tb_employee");    
 		
 		$sql = "";
-		$sql = sprintf("select i.companyID, i.branchID, i.entityID, i.employeNumber, i.numberIdentification, i.identificationTypeID, i.socialSecurityNumber, i.address, i.countryID, i.stateID, i.cityID, i.departamentID, i.areaID, i.clasificationID, i.categoryID, i.reference1, i.reference2, i.typeEmployeeID, i.hourCost, i.parentEmployeeID, i.startOn, i.endOn,i.statusID, i.createdOn, i.createdIn, i.createdAt, i.createdBy, i.isActive,n.firstName,n.lastName ");
+		$sql = sprintf("select i.companyID, i.branchID, i.entityID, i.employeNumber, i.numberIdentification, i.identificationTypeID, i.socialSecurityNumber, i.address, i.countryID, i.stateID, i.cityID, i.departamentID, i.areaID, i.clasificationID, i.categoryID, i.reference1, i.reference2, i.typeEmployeeID, i.hourCost, i.parentEmployeeID, i.startOn, i.endOn,i.statusID, i.createdOn, i.createdIn, i.createdAt, i.createdBy, i.isActive, i.vacationBalanceDay, n.firstName,n.lastName ");
 		$sql = $sql.sprintf(" from tb_employee i");		
 		$sql = $sql.sprintf(" inner join tb_naturales n on  n.entityID = i.entityID ");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");

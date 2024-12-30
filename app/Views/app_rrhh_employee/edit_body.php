@@ -330,7 +330,12 @@
 															</div>
 													</div>				
 													
-													
+													<div class="form-group">
+														<label class="col-lg-4 control-label" for="normal">Vacaciones Acumuladas</label>
+														<div class="col-lg-8">
+															<input class="form-control" readonly type="number"  name="txtVacationBalanceDay" id="txtVacationBalanceDay" value="<?php echo $objEmployee->vacationBalanceDay; ?>">												
+														</div>
+													</div>	
 												</div>
 											</div>
 										</div>
