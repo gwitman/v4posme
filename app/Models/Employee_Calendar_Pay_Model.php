@@ -38,7 +38,7 @@ class Employee_Calendar_Pay_Model extends Model  {
 		$builder	= $db->table("tb_employee_calendar_pay");    
 		
 		$sql = "";
-		$sql = sprintf("select i.calendarID,i.companyID,i.accountingCycleID,i.name,i.number,i.typeID,i.currencyID,i.statusID,i.description,i.createdBy,i.createdAt,i.createdOn,i.createdIn,i.isActive");
+		$sql = sprintf("select i.calendarID,i.companyID,i.accountingCycleID,i.name,i.number,i.typeID,i.currencyID,i.statusID,i.description,i.createdBy,i.createdAt,i.createdOn,i.createdIn,i.weekID,i.isActive");
 		$sql = $sql.sprintf(" from tb_employee_calendar_pay i");		
 		$sql = $sql.sprintf(" where i.calendarID = $calendarID");
 		

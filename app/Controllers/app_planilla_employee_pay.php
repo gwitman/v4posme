@@ -63,15 +63,28 @@ class app_planilla_employee_pay extends _BaseController {
 			$dataView["branchName"]				= $dataSession["branch"]->name;
 			
 			
-			$dataView["objComponentCalendarPay"]= $objComponentCalendarPay;
-			$dataView["objComponentEmployee"]	= $objComponentEmployee;
-			$dataView["objCalendarPay"]			= $this->Employee_Calendar_Pay_Model->get_rowByPK($calendarID);
-			$dataView["objCalendarPayDetail"]	= $this->Employee_Calendar_Pay_Detail_Model->get_rowByCalendarID($calendarID);
-			$dataView["objListCycle"]			= $this->Component_Cycle_Model->get_rowByCycleID($dataView["objCalendarPay"]->accountingCycleID);
-			$dataView["objListType"]			= $this->core_web_catalog->getCatalogAllItem("tb_employee_calendar_pay","typeID",$dataView["companyID"]);
-			$dataView["objListCurrency"]		= $this->Company_Currency_Model->getByCompany($dataView["companyID"]);
-			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_employee_calendar_pay","statusID",$dataView["objCalendarPay"]->statusID,$companyID,$branchID,$roleID);
-			
+			$dataView["objComponentCalendarPay"]	= $objComponentCalendarPay;
+			$dataView["objComponentEmployee"]		= $objComponentEmployee;
+			$dataView["objCalendarPay"]				= $this->Employee_Calendar_Pay_Model->get_rowByPK($calendarID);
+			$dataView["objCalendarPayDetail"]		= $this->Employee_Calendar_Pay_detail_Model->get_rowByCalendarID($calendarID);
+			$dataView["objListCycle"]				= $this->Component_Cycle_Model->get_rowByCycleID($dataView["objCalendarPay"]->accountingCycleID);
+			$dataView["objListType"]				= $this->core_web_catalog->getCatalogAllItem("tb_employee_calendar_pay","typeID",$dataView["companyID"]);
+			$dataView["objListCurrency"]			= $this->Company_Currency_Model->getByCompany($dataView["companyID"]);
+			$dataView["objListWorkflowStage"]		= $this->core_web_workflow->getWorkflowStageByStageInit("tb_employee_calendar_pay","statusID",$dataView["objCalendarPay"]->statusID,$companyID,$branchID,$roleID);
+			$dataView["objListCatalogWeeks"]		= $this->core_web_catalog->getCatalogAllItem("tb_employee_calendar_pay","weekID",$dataView["companyID"]);
+
+			//Obtener los ID de los empleados registrados en la planilla
+			$objListEmployeeIDs = array_map(function($row)
+				{
+					return $row->employeeID;
+				},$dataView["objCalendarPayDetail"]
+			);
+
+			//Verificar que hayan datos para no lanzar excepcion en la consulta
+			if($objListEmployeeIDs)
+			{
+				$dataView["objListEmployee"] 		= $this->Employee_Model->get_rowByEmployeeIDList($companyID, $branchID, $objListEmployeeIDs);
+			}
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -256,9 +269,25 @@ class app_planilla_employee_pay extends _BaseController {
 			$arrayListComision			= /*inicio get post*/ $this->request->getPost("txtComision");
 			$arrayListAdelantos	 		= /*inicio get post*/ $this->request->getPost("txtAdelantos");			
 			$arrayListNeto				= /*inicio get post*/ $this->request->getPost("txtNeto");
+
+			$arrayListBono					= /*inicio get post*/ $this->request->getPost("txtBonoQuincenal");
+			$arrayListDeduccionPrestamo		= /*inicio get post*/ $this->request->getPost("txtDeduccionesPrestamo");
+			$arrayListDeduccionLlegadaTarde	= /*inicio get post*/ $this->request->getPost("txtDeduccionesLlegadaTarde");
+			$arrayListINSS					= /*inicio get post*/ $this->request->getPost("txtINSS");
+			$arrayListINSSPatronal			= /*inicio get post*/ $this->request->getPost("txtINSSPatronal");
+			$arrayListIR					= /*inicio get post*/ $this->request->getPost("txtIR");
+			$arrayListAhorro				= /*inicio get post*/ $this->request->getPost("txtAhorro");
 			
 			//Eliminar Para Crear Nuevamente.
-			$this->Employee_Calendar_Pay_Detail_Model->deleteWhereIDNotIn($calendarID,$arrayListCalendarDetailID);
+			if(empty($arrayListCalendarDetailID))
+			{
+				//Por si se eliminan todos los registros de la planilla
+				$this->Employee_Calendar_Pay_detail_Model->deleteWhereCalendarID($calendarID);
+			}
+			else
+			{
+				$this->Employee_Calendar_Pay_detail_Model->deleteWhereIDNotIn($calendarID,$arrayListCalendarDetailID);
+			}
 			
 			if(!empty($arrayListCalendarDetailID)){
 				foreach($arrayListCalendarDetailID as $key => $value){
@@ -269,30 +298,53 @@ class app_planilla_employee_pay extends _BaseController {
 					$Adelantos					= $arrayListAdelantos[$key];
 					$Neto 						= $arrayListNeto[$key];
 					
+					$Bono						= $arrayListBono[$key];
+					$DeduccionPrestamo			= $arrayListDeduccionPrestamo[$key];
+					$DeduccionLlegadaTarde		= $arrayListDeduccionLlegadaTarde[$key];
+					$INSS						= $arrayListINSS[$key];
+					$INSSPatronal 				= $arrayListINSSPatronal[$key];
+					$IR							= $arrayListIR[$key];
+					$Ahorro						= $arrayListAhorro[$key];
+					
 					//Nuevo Detalle
 					if($calendarPayDetailID == 0){	
-						$objECD 								= NULL;
-						$objECD["calendarID"] 					= $calendarID;
-						$objECD["employeeID"] 					= $EmployeeID;
-						$objECD["salary"] 						= $Salario;
-						$objECD["commission"]					= $Comision;
-						$objECD["adelantos"] 					= $Adelantos;
-						$objECD["neto"] 						= $Neto;
-						$objECD["isActive"]						= 1;
+						$objECD 									= NULL;
+						$objECD["calendarID"] 						= $calendarID;
+						$objECD["employeeID"] 						= $EmployeeID;
+						$objECD["plus_salary"] 						= $Salario;
+						$objECD["plus_commission"]					= $Comision;
+						$objECD["plus_bonus"]						= $Bono;
+						$objECD["minus_adelantos"]					= $Adelantos;
+						$objECD["minus_deduction_for_loans"]		= $DeduccionPrestamo;
+						$objECD["minus_deduction_for_late_arrival"]	= $DeduccionLlegadaTarde;
+						$objECD["minus_inss"]						= $INSS;
+						$objECD["inss_patronal"]					= $INSSPatronal;
+						$objECD["minus_ir"]							= $IR;
+						$objECD["saving"]							= $Ahorro;
+						$objECD["equal_neto"] 						= $Neto;
+						$objECD["isActive"]							= 1;
 						
-						$this->Employee_Calendar_Pay_Detail_Model->insert_app_posme($objECD);
+						$this->Employee_Calendar_Pay_detail_Model->insert_app_posme($objECD);
 					}					
 					//Editar Detalle
 					else{						
-						$objECD 								= NULL;
-						$objECD["calendarID"] 					= $calendarID;
-						$objECD["employeeID"] 					= $EmployeeID;
-						$objECD["salary"] 						= $Salario;
-						$objECD["commission"]					= $Comision;
-						$objECD["adelantos"] 					= $Adelantos;
-						$objECD["neto"] 						= $Neto;
-						$objECD["isActive"]						= 1;						
-						$this->Employee_Calendar_Pay_Detail_Model->update_app_posme($calendarPayDetailID,$objECD);					
+						$objECD 									= NULL;
+						$objECD["calendarID"] 						= $calendarID;
+						$objECD["employeeID"] 						= $EmployeeID;
+						$objECD["plus_salary"] 						= $Salario;
+						$objECD["plus_commission"]					= $Comision;
+						$objECD["plus_bonus"]						= $Bono;
+						$objECD["minus_adelantos"]					= $Adelantos;
+						$objECD["minus_deduction_for_loans"]		= $DeduccionPrestamo;
+						$objECD["minus_deduction_for_late_arrival"]	= $DeduccionLlegadaTarde;
+						$objECD["minus_inss"]						= $INSS;
+						$objECD["inss_patronal"]					= $INSSPatronal;
+						$objECD["minus_ir"]							= $IR;
+						$objECD["saving"]							= $Ahorro;
+						$objECD["equal_neto"] 						= $Neto;
+						$objECD["isActive"]							= 1;
+												
+						$this->Employee_Calendar_Pay_detail_Model->update_app_posme($calendarPayDetailID,$objECD);					
 					}
 					
 					
@@ -338,7 +390,7 @@ class app_planilla_employee_pay extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}
 		
 	}
@@ -383,6 +435,7 @@ class app_planilla_employee_pay extends _BaseController {
 			$objEC["name"] 							= /*inicio get post*/ $this->request->getPost("txtNombre");
 			$objEC["typeID"] 						= /*inicio get post*/ $this->request->getPost("txtTypeID");
 			$objEC["currencyID"]					= /*inicio get post*/ $this->request->getPost("txtCurrencyID");
+			$objEC["weekID"]						= /*inicio get post*/ $this->request->getPost("txtWeekID");	
 			$objEC["statusID"]						= /*inicio get post*/ $this->request->getPost("txtStatusID");
 			$objEC["description"] 					= /*inicio get post*/ $this->request->getPost("txtNote");
 			$objEC["isActive"] 						= 1;
@@ -404,7 +457,14 @@ class app_planilla_employee_pay extends _BaseController {
 			$arrayListAdelantos	 		= /*inicio get post*/ $this->request->getPost("txtAdelantos");			
 			$arrayListNeto				= /*inicio get post*/ $this->request->getPost("txtNeto");
 			
-			
+			$arrayListBono					= /*inicio get post*/ $this->request->getPost("txtBonoQuincenal");
+			$arrayListDeduccionPrestamo		= /*inicio get post*/ $this->request->getPost("txtDeduccionesPrestamo");
+			$arrayListDeduccionLlegadaTarde	= /*inicio get post*/ $this->request->getPost("txtDeduccionesLlegadaTarde");
+			$arrayListINSS					= /*inicio get post*/ $this->request->getPost("txtINSS");
+			$arrayListINSSPatronal			= /*inicio get post*/ $this->request->getPost("txtINSSPatronal");
+			$arrayListIR					= /*inicio get post*/ $this->request->getPost("txtIR");
+			$arrayListAhorro				= /*inicio get post*/ $this->request->getPost("txtAhorro");
+
 			if(!empty($arrayListCalendarDetailID)){
 				foreach($arrayListCalendarDetailID as $key => $value){
 					$calendarPayDetailID		= $value;
@@ -414,16 +474,31 @@ class app_planilla_employee_pay extends _BaseController {
 					$Adelantos					= $arrayListAdelantos[$key];
 					$Neto 						= $arrayListNeto[$key];
 					
-					$objECD 								= NULL;
-					$objECD["calendarID"] 					= $calendarID;
-					$objECD["employeeID"] 					= $EmployeeID;
-					$objECD["salary"] 						= $Salario;
-					$objECD["commission"]					= $Comision;
-					$objECD["adelantos"] 					= $Adelantos;
-					$objECD["neto"] 						= $Neto;
-					$objECD["isActive"]						= 1;
+					$Bono						= $arrayListBono[$key];
+					$DeduccionPrestamo			= $arrayListDeduccionPrestamo[$key];
+					$DeduccionLlegadaTarde		= $arrayListDeduccionLlegadaTarde[$key];
+					$INSS						= $arrayListINSS[$key];
+					$INSSPatronal 				= $arrayListINSSPatronal[$key];
+					$IR							= $arrayListIR[$key];
+					$Ahorro						= $arrayListAhorro[$key];
 					
-					$this->Employee_Calendar_Pay_Detail_Model->insert_app_posme($objECD);
+					$objECD 									= NULL;
+					$objECD["calendarID"] 						= $calendarID;
+					$objECD["employeeID"] 						= $EmployeeID;
+					$objECD["plus_salary"] 						= $Salario;
+					$objECD["plus_commission"]					= $Comision;
+					$objECD["plus_bonus"]						= $Bono;
+					$objECD["minus_adelantos"]					= $Adelantos;
+					$objECD["minus_deduction_for_loans"]		= $DeduccionPrestamo;
+					$objECD["minus_deduction_for_late_arrival"]	= $DeduccionLlegadaTarde;
+					$objECD["minus_inss"]						= $INSS;
+					$objECD["inss_patronal"]					= $INSSPatronal;
+					$objECD["minus_ir"]							= $IR;
+					$objECD["saving"]							= $Ahorro;
+					$objECD["equal_neto"] 						= $Neto;
+					$objECD["isActive"]							= 1;
+					
+					$this->Employee_Calendar_Pay_detail_Model->insert_app_posme($objECD);
 				}
 			}
 			
@@ -451,8 +526,8 @@ class app_planilla_employee_pay extends _BaseController {
 		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
-			
-		    return $resultView;
+
+			echo $resultView;
 		}	
 	}
 	function save($mode=""){
@@ -560,8 +635,8 @@ class app_planilla_employee_pay extends _BaseController {
 			$dataView["objListType"]			= $this->core_web_catalog->getCatalogAllItem("tb_employee_calendar_pay","typeID",$dataView["companyID"]);
 			$dataView["objListCurrency"]		= $this->Company_Currency_Model->getByCompany($dataView["companyID"]);
 			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_employee_calendar_pay","statusID",$dataView["companyID"],$dataView["branchID"],$dataView["roleID"]);
-			
-			
+			$dataView["objListCatalogWeeks"]	= $this->core_web_catalog->getCatalogAllItem("tb_employee_calendar_pay","weekID",$dataView["companyID"]);
+		
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
