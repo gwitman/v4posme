@@ -169,6 +169,32 @@ class Entity_Location_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
+   function get_UsersLocationByCompanyAndUserLast($companyName,$userName)
+   {
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+			select 
+				IFNULL(kk.userName,0) as Name,
+				kk.latituded as Latitude,
+				kk.longituded as Longitude,
+				kk.companyName 
+			from 
+				tb_entity_location kk 
+			where 
+				kk.isActive = 1 and 
+				kk.createdOn between DATE_ADD(NOW(),INTERVAL -1 YEAR) AND  NOW() and 
+				kk.companyName = '".$companyName."' and 
+				kk.userName = '".$userName."'  and 
+				kk.userName != '' 
+			order by 
+				kk.entityLocationID desc limit 1
+		");
+
+		return $db->query($sql)->getResult();
+   }
+   
    
    function get_Company()
    {

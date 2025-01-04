@@ -1,6 +1,8 @@
 <?php
 //posme:2023-02-27
 namespace App\Controllers;
+
+use Exception;
 class app_planilla_adelantos extends _BaseController {
 	
     
@@ -131,7 +133,7 @@ class app_planilla_adelantos extends _BaseController {
 			
 			$dataView["objComponentEmployee"]	= $objComponentEmployee;
 			$dataView["objTM"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
-			$dataView["objTMD"]					= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+			$dataView["objTMD"]					= $this->Transaction_Master_Detail_Model->get_rowByTransactionToAdvanceOfPayroll($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTMDNatural"]			= NULL;
 			$dataView["objTMDEmployee"]			= NULL;
 			$dataView["objListCycle"]			= $this->Component_Cycle_Model->get_rowByCycleID($dataView["objTM"]->reference2);
@@ -468,7 +470,7 @@ class app_planilla_adelantos extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}
 		
 	}

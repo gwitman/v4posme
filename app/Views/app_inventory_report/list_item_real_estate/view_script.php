@@ -15,6 +15,7 @@
 							var warehouseID				=	$("#txtWarehouseID").val();	
 							var namePropietario			=	$("#txtNamePropietario").val();	
 							var numberEncuentra24		=	$("#txtNumberEncuentra24").val();	
+							var typeDate				=	$("#txtTypeDate").val();	
 							
 							if(namePropietario == "")
 							{
@@ -30,7 +31,9 @@
 								fnWaitOpen();
 								window.location	= "<?php echo base_url(); ?>/app_inventory_report/list_item_real_estate/viewReport/true/startOn/"+
 									startOn+"/endOn/"+endOn+"/showActivos/"+showActivos+
-									"/warehouseID/"+warehouseID+"/namePropietario/"+namePropietario+"/numberEncuentra24/"+numberEncuentra24;
+									"/warehouseID/"+warehouseID+"/namePropietario/"+namePropietario+
+									"/numberEncuentra24/"+numberEncuentra24+
+									"/typeDate/"+typeDate;
 							}
 							else{
 								fnShowNotification("Completar los Parametros","error");

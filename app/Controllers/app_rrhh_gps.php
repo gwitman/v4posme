@@ -36,7 +36,7 @@ class app_rrhh_gps extends _BaseController{
 			if($txtUserName == "" || $txtUserName == "0" )
 				$txtUserName = "0";
 			
-			echo "witman:";
+			
 			//Obtener todos puntos
 			if($txtUserName == "0" && $txtCompanyName == "0")
 			{
@@ -46,7 +46,7 @@ class app_rrhh_gps extends _BaseController{
 			}
 			else if($txtUserName == "0" && $txtCompanyName != "0")
 			{
-				echo $txtCompanyName;
+			
 				$objListRegisteredLocations                 = $this->Entity_Location_Model->get_UsersLocationByCompany($txtCompanyName);
 				$dataSession["objListRegisteredLocations"]  = $objListRegisteredLocations;
 			}
@@ -102,6 +102,34 @@ class app_rrhh_gps extends _BaseController{
 		    return $resultView;
 		}
     }
+
+	function edit()
+    {      
+		$txtCompanyName			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"txtCompanyName");//--finuri				
+		$txtUserName			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"txtUserName");//--finuri			
+		if($txtCompanyName == "" || $txtCompanyName == "0" )
+			$txtCompanyName = "0";
+		if($txtUserName == "" || $txtUserName == "0" )
+			$txtUserName = "0";
+		
+		
+		$objListRegisteredLocations                 = $this->Entity_Location_Model->get_UsersLocationByCompanyAndUserLast($txtCompanyName,$txtUserName);
+		$dataSession["objListRegisteredLocations"]  = $objListRegisteredLocations;
+		
+		
+		$dataSession["txtCompanyName"]  			= $txtCompanyName;
+		$dataSession["txtUserName"]  				= $txtUserName;			
+		$dataSession["message"]			= "";
+		$dataSession["head"]            = /*--inicio view*/ view("app_rrhh_gps/edit_head",$dataSession);//--finview
+		$dataSession["body"]            = /*--inicio view*/ view("app_rrhh_gps/edit_body",$dataSession);//--finview
+		$dataSession["script"]          = /*--inicio view*/ view("app_rrhh_gps/edit_script",$dataSession);//--finview
+		$dataSession["footer"]          = "";
+		$dataSession["title"]           = "traking";
+		return view("core_masterpage/default_masterpage_public",$dataSession);//--finview-r
+       
+    }
+	
+	
 
 }
 
