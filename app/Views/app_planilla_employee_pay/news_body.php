@@ -1,3 +1,29 @@
+<style>
+	#tb_transaction_master_detail {
+		table-layout: fixed;
+		width: 100%;
+	}
+
+	#tb_transaction_master_detail th,
+	#tb_transaction_master_detail td {
+		width: 20em;
+		word-wrap: break-word;
+	}
+
+	#tb_transaction_master_detail thead
+	{
+		position: sticky;
+		top: 0;
+		z-index: 2;
+	}
+
+	#div_transaction_master_detail
+	{
+		height:500px;
+		overflow-y: auto;  
+		overflow-x: auto;								
+	}
+</style>
 					<div class="row"> 
                         <div id="email" class="col-lg-12">
                         
@@ -55,6 +81,30 @@
 																		if($objListCycle)
 																		foreach($objListCycle as $item){
 																			echo "<option value='".$item->componentCycleID."' >".$item->startOn."</option>";
+																		}
+																		?>
+																</select>
+															</div>
+														</div>
+
+														<div class="form-group">
+															<label class="col-lg-2 control-label" for="selectFilter">Quincena</label>
+															<div class="col-lg-8">
+																<select name="txtWeekID" id="txtWeekID" class="select2">
+																		<option></option>																
+																		<?php
+																		$counter = 0;
+																		if($objListCatalogWeeks)
+																		foreach($objListCatalogWeeks as $ws){
+																			if($counter == 0)
+																			{
+																				echo "<option value='".$ws->catalogItemID."' selected>".$ws->name."</option>";
+																			}
+																			else
+																			{
+																				echo "<option value='".$ws->catalogItemID."' >".$ws->name."</option>";
+																			}
+																			$counter++;
 																		}
 																		?>
 																</select>
@@ -141,21 +191,30 @@
 									<div class="row">
                                         <div class="col-lg-12">
                                             <h3>Detalle:</h3>
-                                            <table id="tb_transaction_master_detail" class="table table-bordered">
-                                                <thead>
-                                                  <tr>
-                                                    <th></th>
-													<th>Colaborador</th>
-                                                    <th>+Salario</th>
-													<th>+Comision</th>
-													<th>-Adelantos</th>
-													<th>Neto</th>
-                                                  </tr>
-                                                </thead>
-                                                <tbody id="body_tb_transaction_master_detail">
-                                                </tbody>
-                                            </table>
-                                            
+											<div id="div_transaction_master_detail">
+												<table id="tb_transaction_master_detail" class="table table-bordered">
+													<thead>
+														<tr>
+															<th style="width: 40px;"></th>
+															<th>Colaborador</th>
+															<th>Vacaciones Acumuladas</th>
+															<th>INSS Patronal</th>
+															<th>+Salario</th>
+															<th>+Comision</th>
+															<th>+Bono Quincenal</th>
+															<th>-Adelantos</th>
+															<th>-Deducciones Por Prestamos</th>
+															<th>-Deducciones Por Llegada Tarde</th>
+															<th>INSS</th>
+															<th>Ahorro</th>
+															<th>IR</th>
+															<th>Salario Neto</th>
+														</tr>
+													</thead>
+													<tbody id="body_tb_transaction_master_detail">
+													</tbody>
+												</table>
+											</div>
                                         </div><!-- End .col-lg-12  --> 
                                     </div><!-- End .row-fluid  -->
                                     <div class="row">
@@ -195,23 +254,47 @@
 					
 					<script type="text/template"  id="tmpl_row_document">
 							<tr class="row_razon">
-								<td>
+								<td class="td-checkbox">
 									<input type="checkbox"  class="txtCheckedIsActive" name="txtCheckedIsActive[]" value="1" />
 									<input type="hidden"  name="txtCalendarDetailID[]" id="txtCalendarDetailID"  />
 									<input type="hidden" class="classDetailItem" id="txtEmployeeID" name="txtEmployeeID[]" />
 								</td>
 								<td><text id="txtDocument"></text></td>
 								<td>
-									<input class="form-control txtDetailShare txt-numeric"  type="text" id="txtSalario"  name="txtSalario[]"  value="0" />
+									<input class="form-control txtDetailShare txt-numeric" readonly type="text" id="txtVacationBalanceDay"  name="txtVacationBalanceDay[]"  value="0" />
+								</td>
+								<td>
+									<input class="form-control txtDetailShare txt-numeric" readonly type="text" id="txtINSSPatronal"  name="txtINSSPatronal[]"  value="0" />
+								</td>
+								<td>
+									<input class="form-control txtDetailShare txt-numeric" readonly type="text" id="txtSalario"  name="txtSalario[]"  value="0" />
 								</td>
 								<td>
 									<input class="form-control txtDetailShare txt-numeric"  type="text" id="txtComision"  name="txtComision[]"  value="0" />
 								</td>
 								<td>
-									<input class="form-control txtDetailShare txt-numeric" readonly="true" type="text" id="txtAdelantos"  name="txtAdelantos[]"  value="0" />
+									<input class="form-control txtDetailShare txt-numeric"  type="text" id="txtBonoQuincenal"  name="txtBonoQuincenal[]"  value="0" />
 								</td>
 								<td>
-									<input class="form-control txtDetailShare txt-numeric"  type="text" id="txtNeto"  name="txtNeto[]"  value="0" />
+									<input class="form-control txtDetailShare txt-numeric"  type="text" id="txtAdelantos"  name="txtAdelantos[]"  value="0" />
+								</td>
+								<td>
+									<input class="form-control txtDetailShare txt-numeric"  type="text" id="txtDeduccionesPrestamo"  name="txtDeduccionesPrestamo[]"  value="0" />
+								</td>
+								<td>
+									<input class="form-control txtDetailShare txt-numeric"  type="text" id="txtDeduccionesLlegadaTarde"  name="txtDeduccionesLlegadaTarde[]"  value="0" />
+								</td>
+								<td>
+									<input class="form-control txtDetailShare txt-numeric" readonly type="text" id="txtINSS"  name="txtINSS[]"  value="0" />
+								</td>
+								<td>
+									<input class="form-control txtDetailShare txt-numeric" readonly  type="text" id="txtAhorro"  name="txtAhorro[]"  value="0" />
+								</td>
+								<td>
+									<input class="form-control txtDetailShare txt-numeric" readonly  type="text" id="txtIR"  name="txtIR[]"  value="0" />
+								</td>
+								<td>
+									<input class="form-control txtDetailShare txt-numeric" readonly type="text" id="txtNeto"  name="txtNeto[]"  value="0" />
 								</td>
 							</tr>
 					</script>
