@@ -846,6 +846,7 @@ class app_inventory_report extends _BaseController {
 			$endOn					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri
 			$showActivos			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"showActivos");//--finuri
 			$warehouseID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"warehouseID");//--finuri
+			$typeDate				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"typeDate");//--finuri
 			$namePropietario		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"namePropietario");//--finuri
 			$numberEncuentra24		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"numberEncuentra24");//--finuri
 			$namePropietario		= $namePropietario == "numberEncuentra24" ? "" : $namePropietario;
@@ -942,7 +943,7 @@ class app_inventory_report extends _BaseController {
 											x.`ID Encuentra 24` like '%".$numberEncuentra24."%'  
 										) or 
 										(
-											x.`Fecha de actualizacion` BETWEEN ? and ? 
+											[[TIPO_FILTRO_FECHA]] 
 											and
 											(
 											  '".$namePropietario."' = 'none' and  
@@ -954,7 +955,18 @@ class app_inventory_report extends _BaseController {
 										
 								";
 								
+				if($typeDate == "actualizacion")
+				{
+					$query	= str_replace("[[TIPO_FILTRO_FECHA]]", " x.`Fecha de actualizacion` BETWEEN ? and ? ", $query);
+				}
+				if($typeDate == "enlistamiento")
+				{
+					$query	= str_replace("[[TIPO_FILTRO_FECHA]]", " x.`Fecha de enlistamiento` BETWEEN ? and ? ", $query);
+				}
 				
+								
+				
+				log_message("error",$query);
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
 					[$startOn,$endOn]

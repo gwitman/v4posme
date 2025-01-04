@@ -12,7 +12,22 @@
 									<!-- End .panel-heading -->
                                 
                                     <div class="panel-body">
-                                        <form class="form-horizontal pad15 pad-bottom0" role="form">											
+                                        <form class="form-horizontal pad15 pad-bottom0" role="form">		
+											
+											<div class="form-group">
+												<label class="col-lg-6 control-label" for="selectFilter">Filtrar por</label>
+												<div class="col-lg-6"> 
+													<div class="col-lg-6">
+													</div>
+													<div class="col-lg-6">
+														<select name="txtTypeDate" id="txtTypeDate" class="select2">
+																<option value="actualizacion" selected>Fecha de actualizacion</option>
+																<option value="enlistamiento">Fecha de enlistamiento</option>																
+														</select>
+													</div>													
+												</div>
+											</div>
+											
 											<div class="form-group">
 												<label class="col-lg-6 control-label" for="selectFilter">Fecha Inicial y Final</label>
 												<div class="col-lg-6"> 
