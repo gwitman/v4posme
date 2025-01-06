@@ -182,9 +182,10 @@ class app_mobile_api extends _BaseController
                 $facturas 			= array_filter($transactionMasters, function($tm) use ($typeTransaction) { return $tm->TransactionId == $typeTransaction; });
                 foreach($facturas as $objTm)
 				{
+					
                     // Filtrar los objetos por TransactionMasterId
                     $transactionMasterId=$objTm->TransactionMasterId;
-					$entityID 			=$objTm->entityID;
+					$entityID 			=$objTm->EntityId;
 					
 					
 					//buscar el entityID si es un entityID Nuevo
