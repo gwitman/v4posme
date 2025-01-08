@@ -536,6 +536,7 @@ class Transaction_Master_Detail_Model extends Model  {
 				t.transactionID in (19,20) and   
 				t.isActive = 1  and 
 				t.companyID = 2  and 
+				td.isActive = 1 and 
 				t.transactionOn between '$dateFirst' and '$dateLast' and 
 				i.name NOT LIKE '%s' and 
 				(
