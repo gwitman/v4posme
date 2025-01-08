@@ -112,9 +112,13 @@
 			var txtCompanyName 			=	$("#txtCompanyName").val();
 			var txtUserName	 			=	$("#txtUserName").val();
 			
+			
 			if(!(txtCompanyName == ""  ) )
 			{
 				fnWaitOpen();
+				txtCompanyName 	= txtCompanyName.replaceAll("/", "X2F");
+				txtCompanyName 	= txtCompanyName.replaceAll(":", "X3A");
+				txtCompanyName 	= txtCompanyName.replaceAll(" ", "X4Z");
 				window.location	= "<?php echo base_url(); ?>/app_rrhh_gps/index/txtCompanyName/"+txtCompanyName+"/txtUserName/"+txtUserName;
 			}
 			else{

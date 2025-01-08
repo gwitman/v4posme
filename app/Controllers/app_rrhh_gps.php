@@ -31,6 +31,11 @@ class app_rrhh_gps extends _BaseController{
 			$txtCompanyName			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"txtCompanyName");//--finuri				
 			$txtUserName			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"txtUserName");//--finuri
 			
+			
+			$txtCompanyName 		= str_replace("X3A", ":", $txtCompanyName);
+			$txtCompanyName 		= str_replace("X2F", "/", $txtCompanyName);
+			$txtCompanyName 		= str_replace("X4Z", " ", $txtCompanyName);
+			
 			if($txtCompanyName == "" || $txtCompanyName == "0" )
 				$txtCompanyName = "0";
 			if($txtUserName == "" || $txtUserName == "0" )
@@ -54,6 +59,12 @@ class app_rrhh_gps extends _BaseController{
 			{
 				
 				$objListRegisteredLocations                 = $this->Entity_Location_Model->get_UsersLocationByCompanyAndUser($txtCompanyName,$txtUserName);
+				$dataSession["objListRegisteredLocations"]  = $objListRegisteredLocations;
+			}
+			else if($txtUserName != "0" && $txtCompanyName == "0")
+			{
+				
+				$objListRegisteredLocations                 = $this->Entity_Location_Model->get_UsersLocationByAllCompanyAndUser($txtUserName);
 				$dataSession["objListRegisteredLocations"]  = $objListRegisteredLocations;
 			}
 			
@@ -106,7 +117,12 @@ class app_rrhh_gps extends _BaseController{
 	function edit()
     {      
 		$txtCompanyName			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"txtCompanyName");//--finuri				
-		$txtUserName			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"txtUserName");//--finuri			
+		$txtUserName			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"txtUserName");//--finuri	
+
+		$txtCompanyName 		= str_replace("X3A", ":", $txtCompanyName);
+		$txtCompanyName 		= str_replace("X2F", "/", $txtCompanyName);
+		$txtCompanyName 		= str_replace("X4Z", " ", $txtCompanyName);
+			
 		if($txtCompanyName == "" || $txtCompanyName == "0" )
 			$txtCompanyName = "0";
 		if($txtUserName == "" || $txtUserName == "0" )
