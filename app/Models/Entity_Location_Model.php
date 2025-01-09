@@ -41,6 +41,8 @@ class Entity_Location_Model extends Model  {
 		return $builder->update($data);
 		
    }
+   
+   
    function get_rowByPK($entityLocationID){
 		$db 	= db_connect();
 		$builder	= $db->table("tb_entity_location");    
