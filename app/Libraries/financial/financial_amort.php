@@ -196,19 +196,20 @@ class financial_amort{
 		$diaSemana 			= date("w", strtotime(date_format($fecha,"Y-m-d")));		
 		$diaAno 			= date("z", strtotime(date_format($fecha,"Y-m-d")));		
 		$diasTotalesDelAno 	= date("z", strtotime(date_format($fechaUltimoDia,"Y-m-d")));
-		$diasTotalesDelAno	= $diasTotalesDelAno + 1;		
-		$arrayDiasExcluided	= explode(",", $this->objCatalogItems_DiasExcluded->reference1);
+		$diasTotalesDelAno	= $diasTotalesDelAno + 1;	
+
 		
-  
-		
-		//validar dias de semana cobrales 
-		foreach($arrayDiasExcluided as $catalogItem)
+		if($this->objCatalogItems_DiasExcluded)
 		{
-			
-			if($catalogItem == $diaSemana)
-				return true;
+			$arrayDiasExcluided	= explode(",", $this->objCatalogItems_DiasExcluded->reference1);
+			//validar dias de semana cobrales 
+			foreach($arrayDiasExcluided as $catalogItem)
+			{
+				
+				if($catalogItem == $diaSemana)
+					return true;
+			}
 		}
-		
 		
 		//validar si es domingo o segun el catalogo de configuracion		
 		foreach($this->objCatalogItems_DiasNoCobrables as $catalogItem)

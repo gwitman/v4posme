@@ -205,6 +205,7 @@ class core_web_catalog {
 		
    }
    function getCatalogAllItemByNameCatalogo($name,$companyID){
+	    
 		$Company_Model = new Company_Model();
 		$Component_Model = new Component_Model();
 		$Element_Model = new Element_Model();
