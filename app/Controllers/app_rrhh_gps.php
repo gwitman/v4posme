@@ -58,28 +58,28 @@ class app_rrhh_gps extends _BaseController{
 			else if($txtUserName != "0" && $txtCompanyName != "0")
 			{
 				
-				$objListRegisteredLocations                 = $this->Entity_Location_Model->get_UsersLocationByCompanyAndUser($txtCompanyName,$txtUserName);
+				$objListRegisteredLocations                 = $this->Entity_Location_Model->get_UsersLocationByCompanyAndUser_History($txtCompanyName,$txtUserName);
 				$dataSession["objListRegisteredLocations"]  = $objListRegisteredLocations;
 			}
 			else if($txtUserName != "0" && $txtCompanyName == "0")
 			{
 				
-				$objListRegisteredLocations                 = $this->Entity_Location_Model->get_UsersLocationByAllCompanyAndUser($txtUserName);
+				$objListRegisteredLocations                 = $this->Entity_Location_Model->get_UsersLocationByAllCompanyAndUser_History($txtUserName);
 				$dataSession["objListRegisteredLocations"]  = $objListRegisteredLocations;
 			}
 			
 			//Obtener la lista de compania
-			$objListCompany                 			= $this->Entity_Location_Model->get_Company();	
+			$objListCompany                 			= $this->Entity_Location_Model->get_Company_History();	
 			
 			
 			//Obtener los usuarios
 			if($txtCompanyName == "0")
 			{
-				$objListUser                 				= $this->Entity_Location_Model->get_UserAll();
+				$objListUser                 				= $this->Entity_Location_Model->get_UserAll_History();
 			}
 			if($txtCompanyName != "0")
 			{
-				$objListUser                 				= $this->Entity_Location_Model->get_UserByCompany($txtCompanyName);
+				$objListUser                 				= $this->Entity_Location_Model->get_UserByCompany_History($txtCompanyName);
 			}
 			
             

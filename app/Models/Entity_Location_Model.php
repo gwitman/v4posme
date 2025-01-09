@@ -70,7 +70,7 @@ class Entity_Location_Model extends Model  {
 				c.userName,c.companyName
 			");
 		$sql = $sql.sprintf(" from tb_entity_location c");		
-		$sql = $sql.sprintf(" where c.entityID = $entityID");
+		$sql = $sql.sprintf(" where c.entityID = $entityID order by c.entityLocationID desc ");
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
@@ -147,7 +147,7 @@ class Entity_Location_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
-   function get_UsersLocationByCompanyAndUser($companyName,$userName)
+   function get_UsersLocationByCompanyAndUser_History($companyName,$userName)
    {
 		$db = db_connect();
 
@@ -166,13 +166,15 @@ class Entity_Location_Model extends Model  {
 				kk.companyName = '".$companyName."' and 
 				kk.userName = '".$userName."'  and 
 				kk.userName != '' 
+			order by 
+				kk.entityLocationID desc 
 		");
 
 		return $db->query($sql)->getResult();
    }
    
    
-   function get_UsersLocationByAllCompanyAndUser($userName)
+   function get_UsersLocationByAllCompanyAndUser_History($userName)
    {
 		$db = db_connect();
 
@@ -192,7 +194,7 @@ class Entity_Location_Model extends Model  {
 				kk.userName != '' 
 			order by 
 				kk.entityLocationID 
-			limit 1 
+			
    
 		");
 
@@ -227,7 +229,7 @@ class Entity_Location_Model extends Model  {
    }
    
    //Obtener el ultimo punto de todos los usuarios sin importar la compañia
-   function get_Company()
+   function get_Company_History()
    {
 		$db = db_connect();
 
@@ -243,13 +245,15 @@ class Entity_Location_Model extends Model  {
 				e.companyName is not null and 
 				e.userName is not null and 
 				e.userName != ''  
+			order by 
+				e.entityLocationID desc 
 		");
 
 		return $db->query($sql)->getResult();
    }
    
    //Obtener el ultimo punto en que todos los usuarioa de una compañia han estado 
-   function get_UserByCompany($companyName)
+   function get_UserByCompany_History($companyName)
    {
 		$db = db_connect();
 
@@ -264,14 +268,16 @@ class Entity_Location_Model extends Model  {
 				e.createdOn between DATE_ADD(NOW(),INTERVAL -1 YEAR) AND  NOW() and 
 				e.companyName = '".$companyName."' and 
 				e.userName is not null and 
-				e.userName != ''  
+				e.userName != '' 
+			order by 
+				e.entityLocationID desc 
 		");
 
 		return $db->query($sql)->getResult();
    }
    
    /*Obtener el ultimo punto en que todos los usaurio han estado*/
-   function get_UserAll()
+   function get_UserAll_History()
    {
 		$db = db_connect();
 
@@ -287,6 +293,8 @@ class Entity_Location_Model extends Model  {
 				e.companyName  is not null and 
 				e.userName is not null and 
 				e.userName != '' 
+			order by 
+				e.entityLocationID desc 
 		");
 
 		return $db->query($sql)->getResult();
