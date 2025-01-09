@@ -171,6 +171,7 @@ class Entity_Location_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
+   
    function get_UsersLocationByAllCompanyAndUser($userName)
    {
 		$db = db_connect();
@@ -198,6 +199,7 @@ class Entity_Location_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
+   //Obtener el ultimo punto de un usuario en especifico  de una compañia
    function get_UsersLocationByCompanyAndUserLast($companyName,$userName)
    {
 		$db = db_connect();
@@ -224,7 +226,7 @@ class Entity_Location_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
-   
+   //Obtener el ultimo punto de todos los usuarios sin importar la compañia
    function get_Company()
    {
 		$db = db_connect();
@@ -246,6 +248,7 @@ class Entity_Location_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
+   //Obtener el ultimo punto en que todos los usuarioa de una compañia han estado 
    function get_UserByCompany($companyName)
    {
 		$db = db_connect();
@@ -267,6 +270,7 @@ class Entity_Location_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
+   /*Obtener el ultimo punto en que todos los usaurio han estado*/
    function get_UserAll()
    {
 		$db = db_connect();
