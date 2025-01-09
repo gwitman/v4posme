@@ -187,6 +187,10 @@ class Entity_Location_Model extends Model  {
 				kk.createdOn between DATE_ADD(NOW(),INTERVAL -1 YEAR) AND  NOW() and 				
 				kk.userName = '".$userName."'  and 
 				kk.userName != '' 
+			order by 
+				kk.entityLocationID 
+			limit 1 
+   
 		");
 
 		return $db->query($sql)->getResult();
