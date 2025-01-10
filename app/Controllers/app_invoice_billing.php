@@ -2040,15 +2040,18 @@ class app_invoice_billing extends _BaseController {
 					
 			}
 			
+			
 			//No auto aplicar
 			if( $db->transStatus() !== false && $objParameterInvoiceAutoApply == "false"  )
 			{
+				
 				$db->transCommit();
 				$this->core_web_notification->set_message(false,SUCCESS);				
 				$this->response->redirect(base_url()."/".'app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/'.$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID."/codigoMesero/".$codigoMesero);
 			}			
 			//Si auto aplicar
 			else if( $db->transStatus() !== false && $objParameterInvoiceAutoApply == "true"  ){
+				
 				$db->transCommit();
 				
 				//si es auto aplicadao mandar a imprimir
@@ -2085,10 +2088,12 @@ class app_invoice_billing extends _BaseController {
 				$this->core_web_notification->set_message(false,SUCCESS);					
 				$this->response->redirect(base_url()."/".'app_invoice_billing/add/transactionMasterIDToPrinter/'.$transactionMasterID."/codigoMesero/".$codigoMesero);	
 				
+				return;
 			}
 			//Error 
 			else
 			{
+				
 				$db->transRollback();						
 				$errorCode 		= $db->error()["code"];
 				$errorMessage 	= $db->error()["message"];
@@ -3202,8 +3207,7 @@ class app_invoice_billing extends _BaseController {
 	}
 	
 	function save($mode=""){		
-		 $mode = helper_SegmentsByIndex($this->uri->getSegments(),1,$mode);	
-		 
+		 $mode = helper_SegmentsByIndex($this->uri->getSegments(),1,$mode);			 
 		 try{ 
 			//AUTENTICADO
 			if(!$this->core_web_authentication->isAuthenticated())
@@ -3213,7 +3217,7 @@ class app_invoice_billing extends _BaseController {
 			
 			//Validar Formulario									
 			
-	
+			
 			
 			//reglas			
 			$this->validation->setRule("txtStatusID","Estado","required|min_length[1]");
@@ -3309,6 +3313,8 @@ class app_invoice_billing extends _BaseController {
 			$userID								= $dataSession["user"]->userID;
 			$transactionMasterIDToPrinter		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterIDToPrinter");//--finuri	
 			$codigoMesero						= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"codigoMesero");//--finuri				
+			
+			
 			
 			
 			//Obtener el componente de Item
@@ -3517,6 +3523,8 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objParameterINVOICE_BILLING_VALIDATE_EXONERATION"]							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_VALIDATE_EXONERATION")->value;
 			$dataView["objParameterINVOICE_SHOW_FIELD_PESO"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_SHOW_FIELD_PESO")->value;
 			$dataView["objListParameterJavaScript"]													= $this->core_web_parameter->getParameterAllToJavaScript($companyID);			
+			$dataView["urlPrinterDocument"]															= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_URL_PRINTER")->value;
+			
 			
 			$objParameterUrlServidorDeImpresion							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_SERVER_PATH");
 			$objParameterUrlServidorDeImpresion							= $objParameterUrlServidorDeImpresion->value;
@@ -3638,6 +3646,7 @@ class app_invoice_billing extends _BaseController {
 			}
 			else 
 			{
+				$dataView["transactionMasterIDToPrinter"] 			= $transactionMasterIDToPrinter;
 				$dataView["dataPrinterLocal"]						= "";
 				$dataView["dataPrinterLocalTransactionMasterID"]	= 0;
 				$dataView["dataPrinterLocalTransactionID"]			= 0;
