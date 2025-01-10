@@ -172,7 +172,8 @@ function helper_reporteGeneralCreateFirma($firma,$column,$width){
 						  tablaHTML 	= $(tablaHTML[0]).html();
 
 						  // Crear un objeto Blob con el contenido HTML
-						  var blob = new Blob([tablaHTML], { type: "application/vnd.ms-excel" });
+						  var BOM = "\uFEFF"; // Marcador UTF-8
+						  var blob = new Blob([ BOM + tablaHTML], { type: "application/vnd.ms-excel;charset=utf-8" });
 
 						  // Crear una URL para el objeto Blob
 						  var url = URL.createObjectURL(blob);

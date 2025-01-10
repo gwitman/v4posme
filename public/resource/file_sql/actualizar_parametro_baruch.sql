@@ -1183,7 +1183,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Baruch' , address = 'Recreativo 75v . este' ,
-	flavorID = 0,type='default'
+	flavorID = 0,type='baruh'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

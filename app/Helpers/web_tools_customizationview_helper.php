@@ -107,8 +107,8 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('default_app_purchase_pedidos_divScriptCustom')												=> "",		
 		strtolower('default_app_invoice_billing_txtTraductionVendedor') 		 								=> "Vendedor",
 		strtolower('default_app_invoice_billing_txtTraductionMesa') 		 									=> "Mesa",
-	
-	
+		/*Baru*/
+		strtolower('baruh_core_web_printer_direct_executePrinter80mmFooter')									=> "\nNo se aceptan devoluciones.\nRevisar antes de salir",
 		
 		/*Ebenezer*/
 		strtolower('ebenezer_core_web_menu_CXC')			 													=> "ALUMNOS",
