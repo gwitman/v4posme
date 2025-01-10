@@ -1106,13 +1106,55 @@ class app_cxc_report extends _BaseController {
 			$objDataResult["objDetail"]					= $objData;
 			else
 			$objDataResult["objDetail"]					= NULL;
-			$objDataResult["objCompany"] 				= $objCompany;
-			$objDataResult["objLogo"] 					= $objParameter;
-			$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_customer_credit" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
-			$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
-			
-			
-			return view("app_cxc_report/customer_list/view_a_disemp",$objDataResult);//--finview-r
+		
+			if(count($objDataResult["objDetail"]) <= 1500 )
+			{			
+				$objDataResult["objCompany"] 				= $objCompany;
+				$objDataResult["objLogo"] 					= $objParameter;
+				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_customer_credit" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
+				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
+				return view("app_cxc_report/customer_list/view_a_disemp",$objDataResult);//--finview-r
+			}
+			else 
+			{
+				$objParameterDeliminterCsv	 = $this->core_web_parameter->getParameter("CORE_CSV_SPLIT",$companyID);
+				$objParameterDeliminterCsv	 = $objParameterDeliminterCsv->value;
+				
+				//Descargar Datos
+				//file name 
+				$filename = 'user_'.date('Ymd').'.csv'; 
+				header("Content-Description: File Transfer"); 
+				header("Content-Disposition: attachment; filename=$filename"); 
+				header("Content-Type: application/csv; ");
+				
+	   
+				// file creation 
+				$file 	= fopen('php://output', 'w');
+				$header = array(
+					"Codigo"			,
+					"Nombre"			,
+					"Identificacion"	,
+					"Telefono"			,
+					"Email"				,
+					"Moneda"			,
+					"Balance"			,
+					"Capital"			,
+					"Interes"
+				); 
+				
+				//Agregar cabecera
+				fputcsv($file, $header,$objParameterDeliminterCsv);
+				
+				//Agregar fila
+				foreach ($objDataResult["objDetail"] as $key=>$line){ 
+						fputcsv($file,$line,$objParameterDeliminterCsv); 
+				}
+				
+				//retonar
+				fclose($file); 
+				exit; 
+				
+			}
 			
 		}
 		catch(\Exception $ex){

@@ -4273,8 +4273,8 @@ function helper_reporteA4mmTransactionMasterTallerGlobalPro(
   $objParameterTelefono, /*telefono*/	
   $objData,
   $statusName = "", /*estado*/
-  $causalName = ""
-  
+  $causalName = "",
+  $datView = ""
 )
 {
 	$path    		= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
@@ -4362,7 +4362,7 @@ function helper_reporteA4mmTransactionMasterTallerGlobalPro(
 							  
 							  <tr>
 								<td style='text-align:center'>
-								  ".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptDireccion","Carretera Masaya, Frente al colegio Teresiano") ."
+								  ". $datView["objBranch"]->address."
 								</td>
 							  </tr>
 							  <tr>
@@ -4992,7 +4992,8 @@ function helper_reporteA4mmTransactionMasterTallerOutputGlobalPro(
   $objParameterTelefono, /*telefono*/	
   $objData,
   $statusName = "", /*estado*/
-  $causalName = ""
+  $causalName = "",
+  $datView=""
   
 )
 {
@@ -5081,7 +5082,7 @@ function helper_reporteA4mmTransactionMasterTallerOutputGlobalPro(
 							  
 							  <tr>
 								<td style='text-align:center'>
-								".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptDireccion","Frente a la entrada principal de Iglesia la Merced")."
+								".$datView["objBranch"]->address."
 								</td>
 							  </tr>
 							  <tr>
