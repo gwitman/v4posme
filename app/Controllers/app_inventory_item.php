@@ -1283,7 +1283,6 @@ class app_inventory_item extends _BaseController
                 $departamentoId		= $departamentoDefault->value;
                 $municipioId		= $municipioDefault->value;
 			
-			
                 //Ingresar Cuenta
                 $db=db_connect();
                 $db->transStart();
@@ -1313,17 +1312,15 @@ class app_inventory_item extends _BaseController
                 $objItem["cost"] 						= 0;
                 $objItem["reference1"] 					= "";
                 $objItem["reference2"] 					= "";
-                $objItem["reference3"] 					= "";
-			
-                $objItem["statusID"]                    = $this->core_web_workflow->getWorkflowInitStage("tb_item","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
-			
+                $objItem["reference3"] 					= "";				
+                $objItem["statusID"]                    = $this->core_web_workflow->getWorkflowInitStage("tb_item","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;				
                 $objItem["isPerishable"] 				= 0;
                 $objItem["isServices"] 					= 0;
                 $objItem["isInvoiceQuantityZero"] 		= 1;
                 $objItem["isInvoice"] 					= 1;
                 $objItem["factorBox"] 					= 1;
                 $objItem["factorProgram"] 				= 1;
-                $objItem["isActive"] 					= 1;
+                $objItem["isActive"] 					= 1;				
                 $objItem["currencyID"] 					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVENTORY_CURRENCY_ID_DEFAULT")->value;
 			
                 $objItem["realStateRoomBatchServices"] 				= "";
@@ -1340,8 +1337,7 @@ class app_inventory_item extends _BaseController
                 $objItem["realStateLinkPhontos"] 					= "";
                 $objItem["realStateLinkGoogleMaps"] 				= "";
                 $objItem["realStateLinkOther"] 						= "";
-                $objItem["realStateStyleKitchen"] 					= "";
-			
+                $objItem["realStateStyleKitchen"] 					= "";				
                 $objItem["realStateReferenceUbicacion"] 				= "";
                 $objItem["realStateReferenceCondominio"] 				= "";
                 $objItem["realStateReferenceZone"] 						= "";
