@@ -560,7 +560,13 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('luciaralstate_app_cxc_customer_divTxtPais') 	 											=> "hidden",
 		strtolower('luciaralstate_app_cxc_customer_divTxtDepartamento') 	 									=> "hidden",
 		strtolower('luciaralstate_app_cxc_customer_divTxtMunicipio') 	 										=> "hidden",
-		strtolower('luciaralstate_app_cxc_customer_divTxtFormContact') 	 										=> "",		
+		strtolower('luciaralstate_app_cxc_customer_divTxtFormContact') 	 										=> "",
+        strtolower('luciaralstate_app_inventory_item_divTxtBirthday') 	 									=> "",
+        strtolower('luciaralstate_app_inventory_item_divBirthday') 	 									=> "
+		    $('#txtDateLastUse').datepicker({
+		        format: 'mm-dd'
+		    });
+		",
 		strtolower('luciaralstate_app_inventory_item_divTraslate') 												=> "
 		<script>
 			$(document).ready(function(){				 

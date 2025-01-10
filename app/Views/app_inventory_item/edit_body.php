@@ -192,6 +192,16 @@
 											<input class="form-control"  type="text"  name="txtFactorProgram" id="txtFactorProgram" value="<?php echo $objItem->factorProgram; ?>">												
 										</div>
 								</div>
+                                <div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtBirthday","hidden"); ?>" >
+                                    <label class="col-lg-4 control-label" for="txtDateLastUse">Cumpleaños</label>
+                                    <div class="col-lg-8">
+                                        <div class="input-group date" data-date="<?= $objItem->dateLastUse ?>" data-date-format="mm-dd">
+                                            <input type="hidden" name="txtCallback" value="<?php echo $callback; ?>"/>
+                                            <input size="16"  class="form-control" type="text" name="txtDateLastUse" id="txtDateLastUse" value="<?= (new DateTime($objItem->dateLastUse))->format('m-d') ?>">
+                                            <span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
 							
 						</div>
 						<div class="col-lg-6">
