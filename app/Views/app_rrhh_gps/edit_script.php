@@ -16,7 +16,7 @@
             new google.maps.Marker ({
                 position: {lat: parseFloat(location.Latitude), lng: parseFloat(location.Longitude)},
                 map: map,
-                title: location.Name 
+                title: location.Name +  "(" + location.createdOn + ")"
             });
         });
     }

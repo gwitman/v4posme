@@ -212,7 +212,8 @@ class Entity_Location_Model extends Model  {
 				IFNULL(kk.userName,0) as Name,
 				kk.latituded as Latitude,
 				kk.longituded as Longitude,
-				kk.companyName 
+				kk.companyName,
+				kk.createdOn
 			from 
 				tb_entity_location kk 
 			where 
