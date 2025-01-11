@@ -58,13 +58,13 @@ class app_rrhh_gps extends _BaseController{
 			else if($txtUserName != "0" && $txtCompanyName != "0")
 			{
 				
-				$objListRegisteredLocations                 = $this->Entity_Location_Model->get_UsersLocationByCompanyAndUser_History($txtCompanyName,$txtUserName);
+				$objListRegisteredLocations                 = $this->Entity_Location_Model->get_UsersLocationByCompanyAndUserLast($txtCompanyName,$txtUserName);
 				$dataSession["objListRegisteredLocations"]  = $objListRegisteredLocations;
 			}
 			else if($txtUserName != "0" && $txtCompanyName == "0")
 			{
 				
-				$objListRegisteredLocations                 = $this->Entity_Location_Model->get_UsersLocationByAllCompanyAndUser_History($txtUserName);
+				$objListRegisteredLocations                 = $this->Entity_Location_Model->get_UsersLocationByUserLast($txtUserName);
 				$dataSession["objListRegisteredLocations"]  = $objListRegisteredLocations;
 			}
 			

@@ -21,6 +21,13 @@
         });
     }
 	
+	$(document).ready(function() {
+		// Refresca la página cada 5 minutos, evitando el caché
+		setInterval(function() {			
+			window.location.href = window.location.origin + window.location.pathname + window.location.search + '/time/' + new Date().getTime();
+		}, 300000);
+	});
+
 </script>
 
 <!-- Link API Google Maps (PosMe API Key) -->

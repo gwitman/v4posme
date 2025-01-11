@@ -99,7 +99,7 @@
             new google.maps.Marker ({
                 position: {lat: parseFloat(location.Latitude), lng: parseFloat(location.Longitude)},
                 map: map,
-                title: location.Name + " " + location.companyName,
+                title: location.Name + " " + location.companyName + "  ("+location.createdOn+")",
 				//descripcion : "descripcion",
 				//label: "label"
             });
@@ -159,6 +159,13 @@
 				}
 			});
 		});
+		
+		
+		
+		//setInterval(function() {			
+		//	window.location.href = window.location.origin + window.location.pathname + window.location.search + '/time/' + new Date().getTime();
+		//}, 60000);
+		
 		
 	});	
 

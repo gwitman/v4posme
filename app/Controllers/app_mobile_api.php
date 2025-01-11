@@ -20,15 +20,14 @@ class app_mobile_api extends _BaseController
 		
 		try {
 			
-            $objUser 					= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);
+            $objUser 					= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);			
 			$objPosition["entityID"]	= $objUser["user"]->employeeID;
         } 
 		catch (\Exception $ex) 
-		{
+		{			
             $objPosition["entityID"]	= 0;
         }
-		
-		
+				
 		$objPosition["isActive"]	= 1;
 		$objPosition["createdOn"]	= helper_getDateTime();
 		$objPosition["latituded"]	= $latituded;
@@ -327,7 +326,7 @@ class app_mobile_api extends _BaseController
 			
 			//Lista de usuarios
 			if($companyName != "0")
-			$catalogItems = $this->Entity_Location_Model->get_UserByCompany($companyName);
+			$catalogItems = $this->Entity_Location_Model->get_UserByCompanyLast($companyName);
 		
 			if($companyName == "0")
 			$catalogItems = $this->Entity_Location_Model->get_UserAll();
