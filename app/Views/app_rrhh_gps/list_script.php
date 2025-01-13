@@ -99,9 +99,10 @@
             new google.maps.Marker ({
                 position: {lat: parseFloat(location.Latitude), lng: parseFloat(location.Longitude)},
                 map: map,
-                title: location.Name + " " + location.companyName + "  ("+location.createdOn+")",
+                title: location.Name + " " + location.companyName + "  ("+location.createdOn+")" 
 				//descripcion : "descripcion",
 				//label: "label"
+				//icon: 'icono-inicial.png',
             });
         });
     }
