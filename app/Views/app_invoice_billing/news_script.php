@@ -1068,13 +1068,18 @@
 		//Validar Detalle
 		//
 		///////////////////////////////////////////////		
-		var cantidadTotalesEnZero = jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[8] == 0;}).select().length ;
-		if(cantidadTotalesEnZero > 0){
-			fnShowNotification("No pueden haber totales en 0","error",timerNotification);
-			result = false;
-			fnWaitClose();
-		};		
-		
+		var cantidadTotalesEnZero 	= jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[8] == 0;}).select().length ;
+		var validateTotalesZero 	= true;
+		<?php echo getBehavio($company->type,"app_invoice_billing","scriptValidateTotalesZero",""); ?>  
+
+		if(validateTotalesZero == true)
+		{
+			if(cantidadTotalesEnZero > 0){
+				fnShowNotification("No pueden haber totales en 0","error",timerNotification);
+				result = false;
+				fnWaitClose();
+			};		
+		}
 		
 		
 		var cantidadTotalesEnZero = jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[6] == 0;}).select().length ;

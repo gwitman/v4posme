@@ -300,7 +300,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('globalpro_app_box_report_dailyTownCategoryItemDiv') 											=> "hidden",
 		strtolower('globalpro_app_box_report_dailyTownNoneConceptDiv') 												=> "hidden",
 		strtolower('globalpro_app_box_report_dailyTownShowAmountDiv') 												=> "hidden",
-		
+		strtolower('globalpro_app_invoice_billing_scriptValidateTotalesZero')										=> "validateTotalesZero = false;",
 		
 
 		/*Farmacia LM*/

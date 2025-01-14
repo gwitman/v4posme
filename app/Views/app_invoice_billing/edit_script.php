@@ -100,11 +100,33 @@
 	if(varDetail != null){
 		for(var i = 0 ; i < varDetail.length;i++){
 			//Obtener Iva
-			var tmp_ = jLinq.from(varDetailConcept).where(function(obj){ return obj.componentItemID == varDetail[i].componentItemID && obj.name == "IVA" }).select();
-			var iva_ = (tmp_.length <= 0 ? 0 : parseFloat(tmp_[0].valueOut));
-			var Precio2 = jLinq.from(objTransactionMasterItemPrice).where(function(obj){ return (obj.itemID == varDetail[i].componentItemID && obj.typePriceID == "155"); }).select()[0].Precio;
-			var Precio3 = jLinq.from(objTransactionMasterItemPrice).where(function(obj){ return (obj.itemID == varDetail[i].componentItemID && obj.typePriceID == "156"); }).select()[0].Precio;
-			var tax2	= varDetail[i].tax2;
+			var tmp_ 			= jLinq.from(varDetailConcept).where(function(obj){ return obj.componentItemID == varDetail[i].componentItemID && obj.name == "IVA" }).select();
+			var iva_ 			= (tmp_.length <= 0 ? 0 : parseFloat(tmp_[0].valueOut));
+			var Precio2 		= jLinq.from(objTransactionMasterItemPrice).where(function(obj){ return (obj.itemID == varDetail[i].componentItemID && obj.typePriceID == "155"); }).select()[0].Precio;
+			var Precio3 		= jLinq.from(objTransactionMasterItemPrice).where(function(obj){ return (obj.itemID == varDetail[i].componentItemID && obj.typePriceID == "156"); }).select()[0].Precio;
+			var tax2			= varDetail[i].tax2;
+			var taxServices 	= 0;
+			
+			//Validar impuesto IVA
+			if (  isNaN(varDetail[i].tax1 / varDetail[i].unitaryPrice)  )
+			{
+				iva_  = 0 ;
+			}
+			else 
+			{
+				iva_  = varDetail[i].tax1 / varDetail[i].unitaryPrice ;
+			}
+			
+			//Validar servicio TAX_SERVICES
+			if (  isNaN(varDetail[i].tax2 / varDetail[i].unitaryPrice)  )
+			{
+				taxServices  = 0 ;
+			}
+			else 
+			{
+				taxServices  = varDetail[i].tax2 / varDetail[i].unitaryPrice ;
+			}
+			
 			
 			//Rellenar Datos
 			tmpData.push([
@@ -117,8 +139,7 @@
 				fnFormatNumber(varDetail[i].skuQuantity,2),
 				fnFormatNumber(varDetail[i].unitaryPrice *  varDetail[i].skuQuantityBySku, 4),/*precio sistema*/
 				fnFormatNumber(varDetail[i].unitaryPrice *  varDetail[i].skuQuantityBySku * varDetail[i].skuQuantity,2), /*precio por cantidad*/							
-				//fnFormatNumber(iva_,2),
-				fnFormatNumber(varDetail[i].tax1 / varDetail[i].unitaryPrice,2),
+				fnFormatNumber(iva_,2),
 				fnFormatNumber(varDetail[i].skuQuantityBySku, 4),
 				fnFormatNumber(varDetail[i].unitaryPrice, 4),
 				"",//acciones
@@ -126,7 +147,7 @@
 				Precio2,
 				Precio3,
 				"'"+varDetail[i].itemNameDescriptionLog + "'", 
-				fnFormatNumber(varDetail[i].tax2 / varDetail[i].unitaryPrice,2) /*tax_services*/ ,
+				fnFormatNumber(taxServices,2) /*tax_services*/ ,
 				varDetail[i].reference1 /*peso */
 			]);
 		}
@@ -1265,20 +1286,28 @@
 		
 		
 		//Validar Detalle
-		var cantidadTotalesEnZero = jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[8] == 0;}).select().length ;
-		if(cantidadTotalesEnZero > 0){
-			fnShowNotification("No pueden haber totales en 0","error",timerNotification);
-			result = false;
-			fnWaitClose();
-		};		
+		var cantidadTotalesEnZero 	= jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[8] == 0;}).select().length ;
+		var validateTotalesZero 	= true;
+		<?php echo getBehavio($company->type,"app_invoice_billing","scriptValidateTotalesZero",""); ?>  
 		
-		var cantidadTotalesEnZero = jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[6] == 0;}).select().length ;
+		if(validateTotalesZero == true)
+		{
+			if(cantidadTotalesEnZero > 0){
+				fnShowNotification("No pueden haber totales en 0","error",timerNotification);
+				result = false;
+				fnWaitClose();
+			};		
+		}
+		
+
+		var cantidadTotalesEnZero 	= jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[6] == 0;}).select().length ;
 		if(cantidadTotalesEnZero > 0){
 			fnShowNotification("No pueden haber cantidades en 0","error",timerNotification);
 			result = false;
 			fnWaitClose();
 		};	
-
+		
+		
 		
 		var listItemIDToValid 	= "-1";
 		var listQntity 			= "-1";
