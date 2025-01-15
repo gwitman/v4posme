@@ -1119,6 +1119,17 @@ $routes->match(['get','post'],'app_planilla_employee_pay/save/(:any)','app_plani
 $routes->match(['get','post'],'app_planilla_employee_pay/add','app_planilla_employee_pay::add');
 $routes->match(['get','post'],'app_planilla_employee_pay/index','app_planilla_employee_pay::index');
 $routes->match(['get','post'],'app_planilla_employee_pay/index/(:any)','app_planilla_employee_pay::index');
+$routes->match(['get','post'],'app_planilla_settlement/index','app_planilla_settlement::index');
+$routes->match(['get','post'],'app_planilla_settlement/index/(:any)','app_planilla_settlement::index');
+$routes->match(['get','post'],'app_planilla_settlement/add','app_planilla_settlement::add');
+$routes->match(['get','post'],'app_planilla_settlement/save','app_planilla_settlement::save');
+$routes->match(['get','post'],'app_planilla_settlement/save/(:any)','app_planilla_settlement::save');
+$routes->match(['get','post'],'app_planilla_settlement/edit','app_planilla_settlement::edit');
+$routes->match(['get','post'],'app_planilla_settlement/edit/(:any)','app_planilla_settlement::edit');
+$routes->match(['get','post'],'app_planilla_settlement/updateElement','app_planilla_settlement::updateElement');
+$routes->match(['get','post'],'app_planilla_settlement/updateElement/(:any)','app_planilla_settlement::updateElement');
+$routes->match(['get','post'],'app_planilla_settlement/delete','app_planilla_settlement::delete');
+$routes->match(['get','post'],'app_planilla_settlement/searchTransactionMaster','app_planilla_settlement::searchTransactionMaster');
 $routes->match(['get','post'],'app_purchase_api/getInforDashBoards','app_purchase_api::getInforDashBoards');
 $routes->match(['get','post'],'app_purchase_dashboards/index','app_purchase_dashboards::index');
 $routes->match(['get','post'],'app_purchase_internalpurchaserequest/getInfoImport','app_purchase_internalPurchaseRequest::getInfoImport');
