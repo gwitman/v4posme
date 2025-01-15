@@ -1420,7 +1420,7 @@ class Transaction_Master_Detail_Model extends Model  {
 						NOW() , 
 						INTERVAL ".APP_HOUR_DIFERENCE_MYSQL_EMBEDDED."
 					), 
-					INTERVAL 2 HOUR
+					INTERVAL 24 HOUR
 				) AND 
 				tat.SiguienteVisita > DATE_ADD(
 						NOW() , 
