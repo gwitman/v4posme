@@ -15,7 +15,7 @@
         $("#btnSearchEmployee").on("click", function() 
         {
             var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentEmployee->componentID; ?>/onCompleteNewEmployee/SELECCIONAR_EMPLOYEE_TO_PLANILLA/true/empty/false/not_redirect_when_empty";
-            window.open(url_request, "MsgWindow", "width=1585,height=795");
+            window.open(url_request, "MsgWindow", "width=500,height=500");
             window.onCompleteNewEmployee = onCompleteNewEmployee;
         });
 
