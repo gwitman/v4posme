@@ -41,6 +41,8 @@ class Entity_Location_Model extends Model  {
 		return $builder->update($data);
 		
    }
+   
+   
    function get_rowByPK($entityLocationID){
 		$db 	= db_connect();
 		$builder	= $db->table("tb_entity_location");    
@@ -68,7 +70,7 @@ class Entity_Location_Model extends Model  {
 				c.userName,c.companyName
 			");
 		$sql = $sql.sprintf(" from tb_entity_location c");		
-		$sql = $sql.sprintf(" where c.entityID = $entityID");
+		$sql = $sql.sprintf(" where c.entityID = $entityID order by c.entityLocationID desc ");
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
@@ -85,7 +87,8 @@ class Entity_Location_Model extends Model  {
 				IFNULL(kk.userName,0) as Name,
 				kk.latituded as Latitude,
 				kk.longituded as Longitude,
-				kk.companyName 
+				kk.companyName,
+				kk.createdOn 
 			from 
 				tb_entity_location kk 
 				inner join (
@@ -121,7 +124,8 @@ class Entity_Location_Model extends Model  {
 				IFNULL(kk.userName,0) as Name,
 				kk.latituded as Latitude,
 				kk.longituded as Longitude,
-				kk.companyName 
+				kk.companyName,
+				kk.createdOn 
 			from 
 				tb_entity_location kk 
 				inner join (
@@ -145,7 +149,7 @@ class Entity_Location_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
-   function get_UsersLocationByCompanyAndUser($companyName,$userName)
+   function get_UsersLocationByCompanyAndUser_History($companyName,$userName)
    {
 		$db = db_connect();
 
@@ -155,7 +159,8 @@ class Entity_Location_Model extends Model  {
 				IFNULL(kk.userName,0) as Name,
 				kk.latituded as Latitude,
 				kk.longituded as Longitude,
-				kk.companyName 
+				kk.companyName ,
+				kk.createdOn
 			from 
 				tb_entity_location kk 
 			where 
@@ -164,11 +169,43 @@ class Entity_Location_Model extends Model  {
 				kk.companyName = '".$companyName."' and 
 				kk.userName = '".$userName."'  and 
 				kk.userName != '' 
+			order by 
+				kk.entityLocationID desc 
 		");
 
 		return $db->query($sql)->getResult();
    }
    
+   
+   function get_UsersLocationByAllCompanyAndUser_History($userName)
+   {
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+			select 
+				IFNULL(kk.userName,0) as Name,
+				kk.latituded as Latitude,
+				kk.longituded as Longitude,
+				kk.companyName ,
+				kk.createdOn
+			from 
+				tb_entity_location kk 
+			where 
+				kk.isActive = 1 and 
+				kk.createdOn between DATE_ADD(NOW(),INTERVAL -1 YEAR) AND  NOW() and 				
+				kk.userName = '".$userName."'  and 
+				kk.userName != '' 
+			order by 
+				kk.entityLocationID 
+			
+   
+		");
+
+		return $db->query($sql)->getResult();
+   }
+   
+   //Obtener el ultimo punto de un usuario en especifico  de una compañia
    function get_UsersLocationByCompanyAndUserLast($companyName,$userName)
    {
 		$db = db_connect();
@@ -179,12 +216,12 @@ class Entity_Location_Model extends Model  {
 				IFNULL(kk.userName,0) as Name,
 				kk.latituded as Latitude,
 				kk.longituded as Longitude,
-				kk.companyName 
+				kk.companyName,
+				kk.createdOn
 			from 
 				tb_entity_location kk 
 			where 
-				kk.isActive = 1 and 
-				kk.createdOn between DATE_ADD(NOW(),INTERVAL -1 YEAR) AND  NOW() and 
+				kk.isActive = 1 and 				
 				kk.companyName = '".$companyName."' and 
 				kk.userName = '".$userName."'  and 
 				kk.userName != '' 
@@ -195,8 +232,35 @@ class Entity_Location_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
+   //Obtener el ultimo punto de un usuario en especifico  de una compañia
+   function get_UsersLocationByUserLast($userName)
+   {
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+			select 
+				IFNULL(kk.userName,0) as Name,
+				kk.latituded as Latitude,
+				kk.longituded as Longitude,
+				kk.companyName,
+				kk.createdOn
+			from 
+				tb_entity_location kk 
+			where 
+				kk.isActive = 1 and 				
+				kk.companyName != '' and 
+				kk.userName = '".$userName."'  and 
+				kk.userName != '' 
+			order by 
+				kk.entityLocationID desc limit 1
+		");
+
+		return $db->query($sql)->getResult();
+   }
    
-   function get_Company()
+   //Obtener el ultimo punto de todos los usuarios sin importar la compañia
+   function get_Company_History()
    {
 		$db = db_connect();
 
@@ -212,12 +276,15 @@ class Entity_Location_Model extends Model  {
 				e.companyName is not null and 
 				e.userName is not null and 
 				e.userName != ''  
+			order by 
+				e.entityLocationID desc 
 		");
 
 		return $db->query($sql)->getResult();
    }
    
-   function get_UserByCompany($companyName)
+   //Obtener el ultimo punto en que todos los usuarioa de una compañia han estado 
+   function get_UserByCompany_History($companyName)
    {
 		$db = db_connect();
 
@@ -232,13 +299,39 @@ class Entity_Location_Model extends Model  {
 				e.createdOn between DATE_ADD(NOW(),INTERVAL -1 YEAR) AND  NOW() and 
 				e.companyName = '".$companyName."' and 
 				e.userName is not null and 
-				e.userName != ''  
+				e.userName != '' 
+			order by 
+				e.entityLocationID desc 
 		");
 
 		return $db->query($sql)->getResult();
    }
    
-   function get_UserAll()
+   //Obtener el ultimo punto en que todos los usuarioa de una compañia han estado 
+   function get_UserByCompanyLast($companyName)
+   {
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+			select 
+				distinct ifnull(e.userName ,'') as userName 
+			from 
+				tb_entity_location e 
+			where 
+				e.isActive = 1 and 				
+				e.companyName = '".$companyName."' and 
+				e.userName is not null and 
+				e.userName != '' 
+			order by 
+				e.entityLocationID desc 
+		");
+
+		return $db->query($sql)->getResult();
+   }
+   
+   /*Obtener el ultimo punto en que todos los usaurio han estado*/
+   function get_UserAll_History()
    {
 		$db = db_connect();
 
@@ -254,6 +347,34 @@ class Entity_Location_Model extends Model  {
 				e.companyName  is not null and 
 				e.userName is not null and 
 				e.userName != '' 
+			order by 
+				e.entityLocationID desc 
+		");
+
+		return $db->query($sql)->getResult();
+   }
+   
+    
+   /*Obtener el ultimo punto en que todos los usaurio han estado*/
+   function get_UserAll()
+   {
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+			select 
+				distinct ifnull(e.userName ,'') as userName 
+			from 
+				tb_entity_location e 
+			where 
+				e.isActive = 1 and 				
+				e.createdOn between DATE_ADD(NOW(),INTERVAL -1 YEAR) AND  NOW() and 				
+				e.companyName  is not null and 
+				e.userName is not null and 
+				e.userName != '' and 
+				e.companyName != '' 
+			order by 
+				e.entityLocationID desc 
 		");
 
 		return $db->query($sql)->getResult();

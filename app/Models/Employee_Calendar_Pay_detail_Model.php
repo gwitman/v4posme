@@ -25,6 +25,14 @@ class Employee_Calendar_Pay_Detail_Model extends Model  {
 		return $builder->update($data);
 		
    }
+   	function deleteWhereCalendarID($calendarID){
+		$db 	= db_connect();
+		$builder	= $db->table("tb_employee_calendar_pay_detail");
+		$data["isActive"] = 0;
+		
+		$builder->where("calendarID",$calendarID);
+		return $builder->update($data);
+	}
    function delete_app_posme($calendarDetailID){
 		$db 	= db_connect();
 		$builder	= $db->table("tb_employee_calendar_pay_detail");		  		
@@ -51,11 +59,18 @@ class Employee_Calendar_Pay_Detail_Model extends Model  {
 			i.calendarDetailID,
 			i.calendarID,
 			i.employeeID,
-			i.salary,
-			i.commission,
-			i.adelantos,
-			i.neto,
-			i.isActive  ,
+			i.plus_salary,
+			i.plus_commission,
+			i.plus_bonus,
+			i.minus_adelantos,
+			i.minus_deduction_for_loans,
+			i.minus_deduction_for_late_arrival,
+			i.minus_inss,
+			i.inss_patronal,
+			i.minus_ir,
+			i.saving,
+			i.equal_neto,
+			i.isActive,
 			n.firstName,
 			n.lastName ,
 			e.employeNumber ,
@@ -80,11 +95,18 @@ class Employee_Calendar_Pay_Detail_Model extends Model  {
 			i.calendarDetailID,
 			i.calendarID,
 			i.employeeID,
-			i.salary,
-			i.commission,
-			i.adelantos,
-			i.neto,
-			i.isActive  ,
+			i.plus_salary,
+			i.plus_commission,
+			i.plus_bonus,
+			i.minus_adelantos,
+			i.minus_deduction_for_loans,
+			i.minus_deduction_for_late_arrival,
+			i.minus_inss,
+			i.inss_patronal,
+			i.minus_ir,
+			i.saving,
+			i.equal_neto,
+			i.isActive,
 			n.firstName,
 			n.lastName ,
 			e.employeNumber ,

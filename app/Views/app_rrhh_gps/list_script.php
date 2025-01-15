@@ -91,7 +91,7 @@
         };
 
         var map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 15,
+            zoom: 13,
             center: coord
         });
        
@@ -99,9 +99,10 @@
             new google.maps.Marker ({
                 position: {lat: parseFloat(location.Latitude), lng: parseFloat(location.Longitude)},
                 map: map,
-                title: location.Name + " " + location.companyName,
+                title: location.Name + " " + location.companyName + "  ("+location.createdOn+")" 
 				//descripcion : "descripcion",
 				//label: "label"
+				//icon: 'icono-inicial.png',
             });
         });
     }
@@ -112,9 +113,13 @@
 			var txtCompanyName 			=	$("#txtCompanyName").val();
 			var txtUserName	 			=	$("#txtUserName").val();
 			
+			
 			if(!(txtCompanyName == ""  ) )
 			{
 				fnWaitOpen();
+				txtCompanyName 	= txtCompanyName.replaceAll("/", "X2F");
+				txtCompanyName 	= txtCompanyName.replaceAll(":", "X3A");
+				txtCompanyName 	= txtCompanyName.replaceAll(" ", "X4Z");
 				window.location	= "<?php echo base_url(); ?>/app_rrhh_gps/index/txtCompanyName/"+txtCompanyName+"/txtUserName/"+txtUserName;
 			}
 			else{
@@ -155,6 +160,13 @@
 				}
 			});
 		});
+		
+		
+		
+		//setInterval(function() {			
+		//	window.location.href = window.location.origin + window.location.pathname + window.location.search + '/time/' + new Date().getTime();
+		//}, 60000);
+		
 		
 	});	
 

@@ -1327,7 +1327,8 @@ class app_purchase_taller extends _BaseController {
 			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
 			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_workshop_taller","statusID",$datView["objTM"]->statusID,$companyID,APP_BRANCH,APP_ROL_SUPERADMIN);
-			
+			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
+			$datView["objBranch"]					= $this->Branch_Model->get_rowByPK($companyID,$datView["objUser"]->locationID);
 			
 			
 			
@@ -1396,6 +1397,7 @@ class app_purchase_taller extends _BaseController {
 			
 			
 			
+			
 			//Generar Reporte
 			$html = "";
 			if($dataSession["company"]->type == "compu_matt" )
@@ -1429,8 +1431,8 @@ class app_purchase_taller extends _BaseController {
 					$objParameterTelefono,				
 					$dataView ,
 					$datView["objStage"][0]->display, /*estado*/
-					$datView["objTC"]->name /*causal*/
-					
+					$datView["objTC"]->name /*causal*/ , 
+					$datView
 				);
 			}
 			
@@ -1535,7 +1537,8 @@ class app_purchase_taller extends _BaseController {
 			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
 			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_workshop_taller","statusID",$datView["objTM"]->statusID,$companyID,APP_BRANCH,APP_ROL_SUPERADMIN);
-			
+			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
+			$datView["objBranch"]					= $this->Branch_Model->get_rowByPK($companyID,$datView["objUser"]->locationID);
 			
 			
 
@@ -1616,7 +1619,8 @@ class app_purchase_taller extends _BaseController {
 			    $objParameterTelefono,				
 				$dataView ,
 				$datView["objStage"][0]->display, /*estado*/
-				$datView["objTC"]->name /*causal*/
+				$datView["objTC"]->name /*causal*/ , 
+				$datView
 				
 			);
 			

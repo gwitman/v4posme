@@ -12,7 +12,7 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Dolar" 
+	tb_company_parameter.value = "Cordoba" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "ACCOUNTING_CURRENCY_NAME_IN_BILLING";## Usuario para conectarse a la sin riesgo 
@@ -1325,7 +1325,7 @@ update tb_role set isActive = 1 where roleID in (
 
 /*tipo de cambio de dolares a cordoba*/
 update tb_exchange_rate set 
-	ratio = 36 
+	ratio = 36.9 
 where 
 	currencyID = 2
 	and targetCurrencyID = 1; 
@@ -1333,7 +1333,7 @@ where
 	
 /*tipo de cambio de dolares a cordoba*/
 update tb_exchange_rate set 
-	ratio = 0.0272479
+	ratio = 0.02710027100271
 where 
 	currencyID = 1
 	and targetCurrencyID = 2; 

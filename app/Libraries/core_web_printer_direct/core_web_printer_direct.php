@@ -181,7 +181,8 @@ class core_web_printer_direct {
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\n".$dataSetValores["objCompany"]->address);
 		$this->printer->setTextSize(1, 1);
-		$this->printer->text("\nSistema:+(505) 8712-5827");
+		$this->printer->text(getBehavio($dataSetValores["objCompany"]->type,"core_web_printer_direct","executePrinter80mmFooter","posMe V2.3: 8712-5827"));
+		$this->printer->text("\nposMe V2.3: 8712-5827");
 
 		$this->printer->setTextSize(2, 1);
 		$this->printer->feed(10);

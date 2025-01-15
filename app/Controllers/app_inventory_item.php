@@ -11,6 +11,7 @@ use App\Libraries\core_web_tools;
 use App\Models\Item_Model;
 use CodeIgniter\Controller;
 use Config\Services;
+use DateTime;
 use Facebook\Facebook;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
@@ -514,7 +515,11 @@ class app_inventory_item extends _BaseController
                 $objItem["realStateEmail"] 				= /*inicio get post*/ $this->request->getPost("txtRealStateEmail");
                 $objItem["realStatePhone"] 				= /*inicio get post*/ $this->request->getPost("txtRealStatePhone");
 				$objItem["quantityInvoice"] 			= 0;
-				$objItem["dateLastUse"] 				= helper_getDateTime();
+                $year                                   = date("Y");
+                $dateLastUse                            = /*inicio get post*/ $this->request->getPost("txtDateLastUse");
+                $fechaCompleta                          = "$year-$dateLastUse";
+                $fecha                                  = new DateTime($fechaCompleta);
+				$objItem["dateLastUse"] 				= $fecha->format("Y-m-d");
                 $this->core_web_auditoria->setAuditCreated($objItem,$dataSession,$this->request);
                 
                 $itemID								= $this->Item_Model->insert_app_posme($objItem);
@@ -835,7 +840,7 @@ class app_inventory_item extends _BaseController
                 $objItem["realStateEmail"] 				= /*inicio get post*/ $item["txtRealStateEmail"];
                 $objItem["realStatePhone"] 				= /*inicio get post*/ $item["txtRealStatePhone"];
 				$objItem["quantityInvoice"] 			= 0;
-				$objItem["dateLastUse"] 				= helper_getDateTime();
+                $objItem["dateLastUse"] 				= helper_getDateTime();
                 $this->core_web_auditoria->setAuditCreatedAdmin($objItem,$this->request);
                 
 				
@@ -1103,7 +1108,11 @@ class app_inventory_item extends _BaseController
                     $objNewItem["realStateEmployerAgentID"]		= /*inicio get post*/ $this->request->getPost("txtEmployerID");
                     $objNewItem["realStateEmail"] 				= /*inicio get post*/ $this->request->getPost("txtRealStateEmail");
                     $objNewItem["realStatePhone"] 				= /*inicio get post*/ $this->request->getPost("txtRealStatePhone");
-
+                    $year                                   = date("Y");
+                    $dateLastUse                            = /*inicio get post*/ $this->request->getPost("txtDateLastUse");
+                    $fechaCompleta                          = "$year-$dateLastUse";
+                    $fecha                                  = new DateTime($fechaCompleta);
+                    $objNewItem["dateLastUse"] 				= $fecha->format("Y-m-d");
                     //Actualizar Objeto
                     $row_affected 	= $this->Item_Model->update_app_posme($companyID,$itemID,$objNewItem);
 
@@ -1274,7 +1283,6 @@ class app_inventory_item extends _BaseController
                 $departamentoId		= $departamentoDefault->value;
                 $municipioId		= $municipioDefault->value;
 			
-			
                 //Ingresar Cuenta
                 $db=db_connect();
                 $db->transStart();
@@ -1304,17 +1312,15 @@ class app_inventory_item extends _BaseController
                 $objItem["cost"] 						= 0;
                 $objItem["reference1"] 					= "";
                 $objItem["reference2"] 					= "";
-                $objItem["reference3"] 					= "";
-			
-                $objItem["statusID"]                    = $this->core_web_workflow->getWorkflowInitStage("tb_item","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
-			
+                $objItem["reference3"] 					= "";				
+                $objItem["statusID"]                    = $this->core_web_workflow->getWorkflowInitStage("tb_item","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;				
                 $objItem["isPerishable"] 				= 0;
                 $objItem["isServices"] 					= 0;
                 $objItem["isInvoiceQuantityZero"] 		= 1;
                 $objItem["isInvoice"] 					= 1;
                 $objItem["factorBox"] 					= 1;
                 $objItem["factorProgram"] 				= 1;
-                $objItem["isActive"] 					= 1;
+                $objItem["isActive"] 					= 1;				
                 $objItem["currencyID"] 					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVENTORY_CURRENCY_ID_DEFAULT")->value;
 			
                 $objItem["realStateRoomBatchServices"] 				= "";
@@ -1331,8 +1337,7 @@ class app_inventory_item extends _BaseController
                 $objItem["realStateLinkPhontos"] 					= "";
                 $objItem["realStateLinkGoogleMaps"] 				= "";
                 $objItem["realStateLinkOther"] 						= "";
-                $objItem["realStateStyleKitchen"] 					= "";
-			
+                $objItem["realStateStyleKitchen"] 					= "";				
                 $objItem["realStateReferenceUbicacion"] 				= "";
                 $objItem["realStateReferenceCondominio"] 				= "";
                 $objItem["realStateReferenceZone"] 						= "";

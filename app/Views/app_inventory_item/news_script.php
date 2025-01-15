@@ -28,8 +28,10 @@
 		});
 	}
 
-	$(document).ready(function(){	
-				
+	$(document).ready(function(){
+
+        <?= getBehavio($company->type,"app_inventory_item","divBirthday",""); ?>
+
 		 //Regresar a la lista
 		$(document).on("click","#btnBack",function(){
 				fnWaitOpen();
@@ -44,7 +46,8 @@
 					$( "#form-new-account-journal" ).submit();
 				}
 				
-		});		
+		});
+
 		//Buscar Colagorador
 		$(document).on("click","#btnSearchEmployer",function(){
 			var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentEmployer->componentID; ?>/onCompleteEmployee/SELECCIONAR_EMPLOYEE/true/empty/false/not_redirect_when_empty";

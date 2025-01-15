@@ -21,6 +21,9 @@
 	}
 	
 	$(document).ready(function(){
+
+        <?= getBehavio($company->type,"app_inventory_item","divBirthday",""); ?>
+
 		objTableDetailProvider = $("#table_provider").dataTable({
 			"bPaginate"		: false,
 			"bFilter"		: false,

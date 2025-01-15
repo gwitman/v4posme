@@ -103,6 +103,7 @@ use App\Models\Warehouse_Model;
 
 
 use App\Libraries\financial\financial_amort;
+use App\Libraries\core_web_catalog;
 
 class core_web_amortization {
    
@@ -155,7 +156,9 @@ class core_web_amortization {
 		$Customer_Credit_Amortization_Model = new Customer_Credit_Amortization_Model();
 		$Customer_Credit_Line_Model = new Customer_Credit_Line_Model();		
 		$Catalog_Item_Model		= new Catalog_Item_Model();
-		$financial_amort = new financial_amort();
+		$financial_amort 	= new financial_amort();
+		$core_web_catalog 	= new core_web_catalog();
+		
 		date_default_timezone_set(APP_TIMEZONE);
 		
 		
@@ -169,9 +172,10 @@ class core_web_amortization {
 		//$creditAmortizationIDMin					= array_reduce($objListCustomerCreditDocumentAmortization,function($v,$w){if (!$v)$v = $w->creditAmortizationID;if ($v > $w->creditAmortizationID){ $v = $w->creditAmortizationID;} return $v;});
 		$dateApplyFirst 							= $objListCustomerCreditDocumentAmortization[0]->dateApply;
 		
-		$objCatalogItem_DiasNoCobrables 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES",$companyID);
-		$objCatalogItem_DiasFeriados365 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_365",$companyID);
-		$objCatalogItem_DiasFeriados366 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_366",$companyID);
+		
+		$objCatalogItem_DiasNoCobrables 		= $core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES",$companyID);		
+		$objCatalogItem_DiasFeriados365 		= $core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_365",$companyID);
+		$objCatalogItem_DiasFeriados366 		= $core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_366",$companyID);
 			
 		$financial_amort->amort(
 						$totalCapital, 											/*monto*/

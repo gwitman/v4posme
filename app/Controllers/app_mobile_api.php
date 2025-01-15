@@ -20,15 +20,14 @@ class app_mobile_api extends _BaseController
 		
 		try {
 			
-            $objUser 					= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);
+            $objUser 					= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);			
 			$objPosition["entityID"]	= $objUser["user"]->employeeID;
         } 
 		catch (\Exception $ex) 
-		{
+		{			
             $objPosition["entityID"]	= 0;
         }
-		
-		
+				
 		$objPosition["isActive"]	= 1;
 		$objPosition["createdOn"]	= helper_getDateTime();
 		$objPosition["latituded"]	= $latituded;
@@ -49,6 +48,8 @@ class app_mobile_api extends _BaseController
     {
         try {
 
+
+			log_message("error",print_r("0001",true));
             $nickname 					= /*inicio get post*/ $this->request->getPost("txtNickname");
             $password 					= /*inicio get post*/ $this->request->getPost("txtPassword");
             $objUser 					= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);
@@ -58,6 +59,7 @@ class app_mobile_api extends _BaseController
             $objCompany 				= $objUser["company"];
             $objItemsJson 				= $this->request->getPost("txtData");
             $data 						= json_decode($objItemsJson, false);
+			log_message("error",print_r("0002",true));
             if(!isset($data)) {
                 return $this->response->setJSON(array(
                     'error' => false,
@@ -72,7 +74,7 @@ class app_mobile_api extends _BaseController
             $dataSession['company'] 	= $objCompany;
             $dataSession['role'] 		= $objUser["role"];
             $this->core_web_permission->getValueLicense($companyID,get_class($this)."/"."index");
-			
+			log_message("error",print_r("0003",true));
 			// APLICAR VALIDACIONES
 			// 001 validar employer del usuario
 			$employee		= $this->Employee_Model->get_rowByEntityID($companyID,$dataSession["user"]->employeeID );
@@ -94,27 +96,31 @@ class app_mobile_api extends _BaseController
 			{
 				throw new \Exception("El cliente -".$customerIdentificationDuplicate->identification."- tiene codigo de barra duplicado");
 			}
-
+			log_message("error",print_r("0004",true));
             // INICIO DE CARGA DE ITEMS
             if (count($items) > 0) {
+				
                 $controller 				= new app_inventory_item();
                 $controller->initController($this->request, $this->response, $this->logger);
                 foreach ($items as $va)
                 {
+					
                     $objOldItem = $this->Item_Model->get_rowByCodeBarra($companyID, $va->barCode);
                     if (!is_null($objOldItem))
-                    {
+                    {					
                         $method = "edit_customer_mobile";
                         $va->itemID= $objOldItem->itemID;
                     }
                     else
-                    {
+                    {					
                         $method = "new_customer_mobile";
                     }
+					
                     $controller->save($method, $va, $dataSession);
+					
                 }
             }
-
+			log_message("error",print_r("0005",true));
 
             //INICIO DE CARGA DE CUSTOMERS
 			$idexCount = 0;
@@ -156,7 +162,7 @@ class app_mobile_api extends _BaseController
 					$idexCount++;
                 }
             }
-
+			log_message("error",print_r("0006",true));
             // SINCRONIZACION DE COMPRAS
             if (count($items) > 0) {
                 $inventoryController  =new app_inventory_inputunpost();
@@ -182,9 +188,10 @@ class app_mobile_api extends _BaseController
                 $facturas 			= array_filter($transactionMasters, function($tm) use ($typeTransaction) { return $tm->TransactionId == $typeTransaction; });
                 foreach($facturas as $objTm)
 				{
+					
                     // Filtrar los objetos por TransactionMasterId
                     $transactionMasterId=$objTm->TransactionMasterId;
-					$entityID 			=$objTm->entityID;
+					$entityID 			=$objTm->EntityId;
 					
 					
 					//buscar el entityID si es un entityID Nuevo
@@ -201,7 +208,7 @@ class app_mobile_api extends _BaseController
 					$idexCount++;
                 }
             }
-
+			log_message("error",print_r("0007",true));
             //SINCRONIZACION ABONOS
             if(count($transactionMasters)>0){
                 $shareController = new app_box_share();
@@ -229,12 +236,15 @@ class app_mobile_api extends _BaseController
                 }
             }
 			
+			log_message("error",print_r("0008",true));
             return $this->response->setJSON(array(
                 'error' => false,
                 'message' => SUCCESS
             ));//--finjson
 
         } catch (\Exception $ex) {
+			
+			log_message("error",print_r($ex,true));
             return $this->response->setJSON(array(
                 'error' => true,
                 'message' => 'Linea: ' . $ex->getLine() . " - Error:" . $ex->getMessage()
@@ -316,7 +326,7 @@ class app_mobile_api extends _BaseController
 			
 			//Lista de usuarios
 			if($companyName != "0")
-			$catalogItems = $this->Entity_Location_Model->get_UserByCompany($companyName);
+			$catalogItems = $this->Entity_Location_Model->get_UserByCompanyLast($companyName);
 		
 			if($companyName == "0")
 			$catalogItems = $this->Entity_Location_Model->get_UserAll();

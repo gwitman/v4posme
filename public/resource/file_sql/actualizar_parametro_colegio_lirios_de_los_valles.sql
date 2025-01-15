@@ -1,24 +1,137 @@
-use dbjznvjrsdpypf;
+use dbp5id83u8dllq;
 
-
-/******************************************************************/ 
+/******************************************************************/
 /*****Personalizar pantalla**********/
-/******************************************************************/		
+/******************************************************************/	
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "http://posme.net/v4posme/globalpro/public/app_inventory_report/printer_stiker_sin_precio" 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CORE_TRAKING_GPS";## Valida si es neceasrio llevar el seguimiento del gps
+	
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_SHOW_FIELD_PESO";## Campo de peso en el detalle de la factura visible true
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "https://posme.net/v4posme/posme/app_mobile_api/setPositionGps" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CORE_SEND_GPS_POSITION_TO_POSME";## Url envio de notificaciones
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "20" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_SYNC_GPS";## Enviar la sincronizacion al api cada 20 minutos
+
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "10" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_SHOW_TOP_CUSTOMER";## En la pantalla de cliente en el mobile mostrar el top
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "10" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_SHOW_TOP_ITEMS";## En la pantalla de items en el mobile mostrar el top
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "50" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_SHOW_TOP_CUSTOMER_IN_SHARE";## En la pantalla de cliente en el mobile mostrar el top durante el abono
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_SHOW_BALANCE_IN_SHARE_MOBILE";## Mostrar los saldos en abonos mobiles
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_box_share/viewRegisterFormatoPaginaTicketInvoiceCancel" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "BOX_SHARE_URL_PRINTER_INVOICE_CANCEL";## Imprmir reporte de facturas canceladas con el abono
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "http://localhost/posmev4/app_inventory_report/printer_stiker_sin_precio" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "ITEM_PRINTER_BARCODE_MASIVE_SIN_PRECIO";## Imprmir stiker sin precio
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "http://posme.net/v4posme/globalpro/public/app_inventory_report/printer_stiker_con_precio" 
+	tb_company_parameter.value = "http://localhost/posmev4/app_inventory_report/printer_stiker_con_precio" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "ITEM_PRINTER_BARCODE_MASIVE_CON_PRECIO";## Imprimir stiker con precio
 	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_VALIDATE_EXONERATION";## Validar la exoneracion
+	
+	
 
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_cxc_report/customer_detail_invoice_printer" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_URL_PRINT_CUSTOMER_DETAIL";## Detalle de la deuda
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "78" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "SHARE_AMORTIZATION_STATUS_REGISTER";## Ruta de Finger Print
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "77" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "SHARE_DOCUMENT_CREDIT_STATUS_REGISTER";## Ruta de Finger Print
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "C:\\execute.exe" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "OPEN_FINGERPRINT_EXECUTE_PATH";## Ruta de Finger Print
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "OPEN_FINGERPRINT_EXECUTE";## Ejecutar progrma finger print automaticamente
+	
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_TRAKING_BAR";## Auto imprimir asistencia
+	
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "139" 
 WHERE 
@@ -33,93 +146,268 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "ATTENDANCE_AUTO_PRINTER";## Auto imprimir asistencia
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVENTORY_TRANSFEROUTPUT_AUTO_APPLY_TRANSFERINPUT";## Auto aplicar transferencia
 	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_PRINTER_PREVIEW_AND_DIRECT";## Imprimir directo en la impresora 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "945" 
+	tb_company_parameter.value = "50" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION_PARAMETERF1";## Parametro 1 para envio de whatsap
+	tb_parameter.name = "INVENTORY_TRANSACTION_CAUSAL_PRODUCTION_ITEM";## Id del Causal que sirve para producir mercaderia
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://api.liveconnect.chat/prod/direct/wa/sendMessage"  
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "WAHTSAP_URL_ENVIO_MENSAJE";
-	
-## Se usa para poner un label al sistema,  como un segundo nombre de sistema
-##wapi: https://waapi.app/api/v1/instances/12905/client/action/send-message
+	tb_parameter.name = "INVOICE_BILLING_UPDATE_DATE_APPLYCATION_IN_MOMENT_APLICATION";## Actualizar la fecha de apliacion de la factura al momento de aplicarla
+
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "54e324c18d34abe4ec45b16b233305de" 
+	tb_company_parameter.value = "2323" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
-	
-UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://api.liveconnect.chat/prod/account/token" 
-WHERE 
-	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION";
-## Se usa para poner un label al sistema,  como un segundo nombre de sistema
-## wapi: https://waapi.app/api/v1/instances/12905/client/action/send-message,
+	tb_parameter.name = "CXC_DAY_EXCLUDED_IN_CREDIT";## Banco por defecto
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "e012d47bd4df1d95e93a65f6e65a4336" 
+	tb_company_parameter.value = "848" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "WHATSAP_CURRENT_PROPIETARY_COMMERSE";## WHATSAPP DEL PRIPIETARIO
+	tb_parameter.name = "ITEM_REAL_STATE_GERENCIA_EXCLUSIVE";## Banco por defecto
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_purchase_pedidos/viewPrinterFormatoA4Stiker" 
+	tb_company_parameter.value = "2" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "WORKSHOW_URL_PRINTER_PEDIDO";## WHATSAPP DEL PRIPIETARIO
+	tb_parameter.name = "INVOICE_BILLING_BANKID_DEFAULT";## Banco por defecto
 	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "546" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_MESAID_DEFAULT";## Mesa por defecto
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "157" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_ZONEID_DEFAULT";## Zona por defecto
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "872" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_FORM_CONTACT_ID_DEFAULT";## Forma de contacto 
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "468" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_TYPE_FIRM_ID_DEFAULT";## Tipo de firma
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "719" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_CUSTOMER_SEX_ID_DEFAULT";## Sexo por defecto	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "96" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_CUSTOMER_PAY_CONDITION_ID_DEFAULT";## Condicion de pago
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "92" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_CUSTOMER_TYPE_PAY_ID_DEFAULT";## Tipo de pago	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "99" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_CUSTOMER_TYPE_ID_DEFAULT";## Tipo de cliente	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "103" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_SUBCATEGORY_ID_DEFAULT";## Sub Categoria por defecto
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "102" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_CATEGORY_ID_DEFAULT";## Categoria por defecto
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "97" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_CLASIFICATION_ID_DEFAULT";## Clasificacion por defecto
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "85" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_IDENTIFICATION_TYPE_DEFAULT";## Tipo de identificacion por defecto
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "466" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_PROFESION_ID_DEFAULT";## Profesion por defecto
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "464" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_STATUS_CIVIL_ID_DEFAULT";## Estado Civil del cliente
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "4" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_WAREHOUSE_ID_DEFAULT";## Id de la bodega por dececto
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "81" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_DISPLAY_ID_DEFAULT";## Presentacion por defecto	
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "75" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_FAMILY_ID_DEFAULT";## Familia por defecto del producto
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "78" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_UNITMEASURE_ID_DEFAULT";## Unidad de Medida por defecto
+	
+	
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "6000" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CORE_TIME_FRECUENCY_NOTIFICATION";## Intervalo de notificaciones
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CORE_RUN_NOTIFICATION";## Correr las notificaciones
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_USE_BIOMETRIC";## Ingresar en las tablas del biometric
+
+
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "0" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "WHATSAP_COUNTER_MESSAGE";	## Contador de mensaje de whatsapp
-	
-
-UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "1000" 
-WHERE 
-	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "WHATSAP_MESSAGE_BY_MONTO";	## Cantidad de mensajes mensuales
-	
-	
-
-UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_purchase_garantia/viewPrinterFormatoA4" 
-WHERE 
-	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "WORKSHOW_URL_PRINTER_GARANTIA";	## Print de deposito en garantia
+	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION_PARAMETERF1";## Parametro 1 para envio de whatsap
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_purchase_garantia/viewPrinterFormatoA4Output" 
+	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "WORKSHOW_URL_PRINTER_TALLER_GARANTIA_OUTPUT";	## Hoja de salida de la garantia
+	tb_parameter.name = "INVOICE_SEND_EMAIL_IN_INSERT";## Moneda por defecto al momento de facturar	
 	
 	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "Cordoba" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "ACCOUNTING_CURRENCY_NAME_IN_BILLING";## Moneda por defecto al momento de facturar	
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "1" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_CURRENT_REQUEST_BURO";## Usuario para conectarse a la sin riesgo 
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "25" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_COUNT_MAX_REQUEST_BURO";## Usuario para conectarse a la sin riesgo 
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_cxc_customer/viewPrinterDirectBalance58mm" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_URL_PRINT_BALANCE_CUSTOMER";	## Imprimir el precio en la etiqueta
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_purchase_garantia/viewPrinterFormatoA4Stiker" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "WORKSHOW_URL_PRINTER_TALLER_GARANTIA_STIKER";	## Hoja de sticker de la garantia
+	tb_parameter.name = "INVENTORY_BAR_CODE_UNIQUE";	## codigo de barra unico
 	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "ITEM_PRINTER_BARCODE_SHOWPRICE";	## Imprimir el precio en la etiqueta
+
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_IS_RESTAURANT";	## Es restaurante
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_SHOW_BARCODE_INNAME";	## Mostrar el codigo del producto scanerado al momento de facturar
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
@@ -141,25 +429,117 @@ WHERE
 	tb_parameter.name = "WORKSHOW_URL_PRINTER_TALLER";	## True, no permite cedula repetidas, False, permite cecedula repetidas
 	
 	
-UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
-WHERE 
-	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "CXC_VALIDAR_CEDULA_REPETIDA";	## True, no permite cedula repetidas, False, permite cecedula repetidas
-	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://facturacion.globalpronic.com/posme/v4posme/public" 
+	tb_company_parameter.value = "" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_FILE_SERVER";	## Servidor de archivo
+
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_purchase_garantia/viewPrinterFormatoA4" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WORKSHOW_URL_PRINTER_GARANTIA";	## Print de deposito en garantia
+
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_SELECTITEM";	## SI este valor esta en true, los produyctos se seleccionar a traves de un selecte item
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_VALIDAR_CEDULA_REPETIDA";	## True, no permite repetir la cedula, false, permite repetir la cedula
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_MUCHOS_PRODUCTOS";	## Parametro que define si la tienea tiene muchos productos y no es viable mostrala en un combobox
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_ACCOUNT_BANK";	## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Infac" 
+	tb_company_parameter.value = "https://api.ultramsg.com/instance65915/messages/chat" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WAHTSAP_URL_ENVIO_MENSAJE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "n5hb8n1wf0r6e27i" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "https://api.whaticket.com/api/v1/whatsapps" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "50584766457" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_CURRENT_PROPIETARY_COMMERSE";## WHATSAPP DEL PRIPIETARIO
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "0" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_COUNTER_MESSAGE";	## Contador de mensaje de whatsapp
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "1000" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_MESSAGE_BY_MONTO";	## Cantidad de mensajes mensuales
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "3" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "POSME_CALENDAR_ROLE_DEFAULT";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "8" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "POSME_CALENDAR_TAG_DEFAULT";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "http://localhost/posmev4/app_config_noti/eventgoogleadd" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "POSME_CALENDAR_URL_CITA";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
+	
+	
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_LABEL_SISTEMA_SUPLANTATION";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
+	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "Interes anual" 
@@ -212,6 +592,22 @@ WHERE
 	tb_parameter.name = "CORE_TEMPORAL003";## Varible para realiar calculos 
 	
 	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "121" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_TYPE_EMPLOYEER";## Varible para realiar calculos 
+	
+	
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_VALIDATE_BALANCE";## Varible para realiar calculos 
+	
+	
 
 				
 				
@@ -235,8 +631,9 @@ WHERE
 	tb_parameter.name = "CORE_CACHE_IN_VIEW";## Cache en controlador viewX
 	
 	
+			
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVENTORY_CATEGORY_BY_DEFAULT";## Establecer la categoria por defecto
@@ -247,6 +644,19 @@ WHERE
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVENTORY_ITEM_PROVIDER_DEFAULT";## Proveedor por defecto para los productos. 
 	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_IN_NEW_ITEM_MAINTAIN_NAME";## Cuando se hace un nuevo producto mantener el nombre del producto anterior
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "0" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_INTERES_DEFAULT";## Plazo predeterminado
+
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "1" 
@@ -258,7 +668,7 @@ UPDATE  tb_company_parameter,tb_parameter SET
 	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "SHARE_INVOICE_BY_INVOICE";## Plazo predeterminado
+	tb_parameter.name = "SHARE_INVOICE_BY_INVOICE";## Si este valor esta en true, se tiene que seleccionar una factura a la ves, par ir abonando una a una
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
@@ -274,7 +684,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "294" 
+	tb_company_parameter.value = "284" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CXC_MUNICIPIO_DEFAULT";## Municipio por defecto 
@@ -303,7 +713,7 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "213" 
+	tb_company_parameter.value = "211" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CXC_DEPARTAMENTO_DEFAULT";## Departamento por defecto 
@@ -404,16 +814,14 @@ UPDATE  tb_company_parameter,tb_parameter SET
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_CREDIT";## ID DE LOS CAUSALES DE CREDITO DE LA FACTURACION. 
-				
-				
-		
+	
+			
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "INVOICE_BILLING_EMPLOYEE_DEFAULT";## ID DE LOS CAUSALES DE CREDITO DE LA FACTURACION. 	
-	
-	
+	tb_parameter.name = "INVOICE_BILLING_EMPLOYEE_DEFAULT";## Variable para poner por defecto al vendedor
+				
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "20" 
 WHERE 
@@ -501,6 +909,19 @@ WHERE
 /******************************************************************/		
 
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "35f6110eb79c3640a9bc35f876fe05f6" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CORE_PAYMENT_PRODUCCION_USUARIO_COMMERCECLIENT";## Clave para realizar el pago en ambiente de produccion 
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "56720c930f874d4011ff7f3e2a86eddb" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CORE_PAYMENT_PRODUCCION_CLAVE_COMMERCECLIENTE";## Clave para realizar el pago en ambiente de produccion 
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "12ef04e7197c001b66920797fac63c46" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
@@ -529,7 +950,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PAYMENT_SENDBOX";## API DE PAGO DE PRUEBA 
@@ -735,11 +1156,11 @@ UPDATE  tb_company_parameter,tb_parameter SET
 	tb_company_parameter.value = "2023-04-01" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "CORE_LAST_NOTIFICACION";## GANANCIA POR VENTA DE Dolares
+	tb_parameter.name = "CORE_LAST_NOTIFICACION";## La fecha que esta escrita aqui, significa que el informe enviado los datos del informe enviado incluidan este dia, que se muestra en el campo
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "8" 
+	tb_company_parameter.value = "7" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CUST_PRICE_MAX_USER";## MAXIMO NUMERO DE USUARIOS 
@@ -753,13 +1174,13 @@ WHERE
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "flc_global_pro" 
+	tb_company_parameter.value = "flc_victoria_store" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CXC_WSDL_SIN_RIESGO_USUARIO";## Usuario para conectarse a la sin riesgo 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "306" 
+	tb_company_parameter.value = "0" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_FALVOR";## Usuario para conectarse a la sin riesgo 
@@ -803,6 +1224,14 @@ WHERE
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "ACCOUNTING_EXCHANGE_SALE";## GANANCIA POR VENTA DE Dolares
 				
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_SHOW_IMAGE_IN_DETAIL_SELECTION";## Mostrar la imagen al momento de seleccionar el producto
+	
+	
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "0.4" 
@@ -811,7 +1240,7 @@ WHERE
 	tb_parameter.name = "ACCOUNTING_EXCHANGE_PURCHASE";## ganancia por compra de dolares 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "PROMEDIO COSTO" 
+	tb_company_parameter.value = "ULTIMO COSTO" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVENTORY_TYPE_COST";## Tipos de Costo: ULTIMO COSTO; PROMEDIO 
@@ -822,14 +1251,13 @@ UPDATE  tb_company_parameter,tb_parameter SET
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_UPDATEPRICE_ONLINE";## ACTUALIZAR EL PRECIO DURANTE LA FACTURACION 				
-
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
+	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_UPDATENAME_IN_TRANSACTION_ONLY";## Actualiazar el nombre unicamente en la transaccion
-	
-	
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "400" 
 WHERE 
@@ -885,7 +1313,7 @@ WHERE
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
+	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_SHOW_DOWNLOAD_PREVIEW";#No mostrar previoew, solo descargar
@@ -893,22 +1321,25 @@ WHERE
 
 /*--Imprimir de orden de compra*/
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_inventory_inputunpost/viewRegisterFormatoA4Globalpro" 
+	tb_company_parameter.value = "app_inventory_inputunpost/viewRegisterFormato80mm" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVENTORY_URL_PRINTER_INPUTUNPOST";## URL PARA LA IMPRESION DE ORDEN DE COMPRA
 	
-UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_inventory_inputunpost/viewRegisterFormatoA4GlobalproOnlyQuantity" 
-WHERE 
-	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "INVENTORY_URL_PRINTER_INPUTUNPOST_ONLY_QUANTITY";## Url para impirmir orden de compra solo cantidades
+	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
+	tb_company_parameter.value = "app_inventory_inputunpost/viewRegisterFormato80mm" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "INVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES";## Opcion que me permite verificar dos opciones de reporte en la compra
+	tb_parameter.name = "INVENTORY_URL_PRINTER_INPUTUNPOST_ONLY_QUANTITY";## URL PARA LA IMPRESION DE ORDEN DE COMPRA
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES";## URL PARA LA IMPRESION DE ORDEN DE COMPRA
+	
 	
 	
 /*--Imprimir codigos masivos*/
@@ -942,7 +1373,7 @@ WHERE
 
 /*--Retiro de efectivo*/
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_box_outcash/viewRegisterFormatoA4Globalpro" 
+	tb_company_parameter.value = "app_box_outcash/viewRegisterFormatoPaginaTicket" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "BOX_OUTCASH_URL_PRINTER";## url para retiro de efectivo
@@ -956,11 +1387,13 @@ WHERE
 	
 	
 	
+	
+	
 
 	
 /*--Imprimir abonos	*/			
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_box_share/viewRegisterFormatoA4Globalpro" 
+	tb_company_parameter.value = "app_box_share/viewRegisterFormatoPaginaTicket" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "BOX_SHARE_URL_PRINTER";## URL PARA LA IMPRESION DE ABONOS 
@@ -1056,12 +1489,25 @@ WHERE
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT";## Nombre de la impresora por defecto 	
 
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_FROM_SERVER";## Impresion en impresora local con datos del servidor 
+
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormal80mmGlobalPro" 
+	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_URL_PRINTER";## URLs PARA LA IMPRESION DE FACTURA 	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormalA4Opcion1" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_URL_PRINTER_OPCION2";## URLs PARA LA IMPRESION DE FACTURA 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "app_invoice_billing/viewPrinterDirectFactura80mm" 
@@ -1069,9 +1515,15 @@ WHERE
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_URL";## Urls para imprimir el recibo directamente en la impresora, mejor dicho imprimir la factura 
 
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "http://localhost/posmev4/" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_SERVER_PATH";## URL DE servidor de impresion
+	
 			
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "3000" 
+	tb_company_parameter.value = "1000" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_CANTIDAD_ITEM";## PANTALLA PARA LA FACTUACION
@@ -1132,7 +1584,7 @@ update tb_catalog_item set ratio  = 1 where catalogItemID = 531;  /*DIARIO*/
 /***************************************************************/
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "35" 
+	tb_company_parameter.value = "1" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CUST_PRICE";## Precio mensual de la licencia 
@@ -1160,7 +1612,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "2050-10-08" 
+	tb_company_parameter.value = "2050-03-07" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CUST_PRICE_LICENCES_EXPIRED";## Fecha de expiracion de la licencia 
@@ -1185,46 +1637,43 @@ WHERE
 /***************************************************************/
 		
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Gabriel Lay" 
+	tb_company_parameter.value = "Eusebia Del Carmen Dumas Ruiz" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_NAME";## Witman José González Rostran 
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "gabriellay@yahoo.com" 
+	tb_company_parameter.value = "gwitman@yahoo.com" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_EMAIL";## CORREO DEL PROPIETARIO
 
 
-
-
-
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "888-080396-0001K" 
+	tb_company_parameter.value = "047-160483-0000C" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "888-080396-0001K" 
+	tb_company_parameter.value = "047-160483-0000C" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 5716-5864" 
+	tb_company_parameter.value = "TEL: 8505-7109" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 5716-5864" 
+	tb_company_parameter.value = "TEL: 8505-7109" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1232,21 +1681,46 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Carretera Masaya, Frente al colegio Teresiano" 
+	tb_company_parameter.value = "Donde fue aserrio santa fe, 2c abajo 15v.sur" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'GLOBALPRO' , address = 'Carretera Masaya, Frente al colegio Teresiano' ,
-	flavorID = 306,
-	type = 'globalpro'
+	NAME = 'Colegio Lirio de los valles' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
+	flavorID = 629 /*usuarioID*/,type='colirio'  , abreviature='colirio'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
 
 
+/*
+Eliminar o desactivar usuarios
+*/
+update tb_user set isActive = 0;
+update tb_user set isActive = 1 WHERE userID in (
+ 2, 	/*administrador*/
+ 623,  
+ 624, 
+ 625,
+ 626,  
+ 627, 
+ 628, 
+ 629
+);
+
+update tb_role set isActive = 0; 
+update tb_role set isActive = 1 where roleID in (
+	3,
+	559,
+	560,
+	561,
+	562,
+	563,
+	564,
+	565	
+);
 
 
 
@@ -1266,13 +1740,18 @@ where
 	and targetCurrencyID = 2; 
 	
 	
+update tb_item set realStateEmployerAgentID = ifnull(realStateEmployerAgentID,0);
+update tb_item set realStateCityID = ifnull(realStateCityID,0);
+update tb_item set realStateCountryID = ifnull(realStateCountryID,0);
+update tb_item set realStateStateID = ifnull(realStateStateID,0);
+update tb_customer set entityContactID = ifnull(entityContactID,0);
+update tb_customer_credit_line set dayExcluded = IFNULL(dayExcluded,2323);
 
-UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "2025-01-01" 
-WHERE 
-	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "WHATSAP_MONTH";	## Cantidad de mensajes mensuales
+
+update tb_currency set `name` = 'Cordoba' where currencyID = 1;
+update tb_currency set `name` = 'Dolar' where currencyID = 2;	
+update tb_company_currency set `simb` = 'C$' where currencyID = 1;
+update tb_company_currency set `simb` = 'U$' where currencyID = 2;	
+
 	
-	
-	
-/*BD: dbjznvjrsdpypf	*/
+/*BD: dbp5id83u8dllq */

@@ -158,5 +158,47 @@ class Employee_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
    }
+
+   function get_rowByEmployeeIDList($companyID,$branchID,$employeId){
+	$db 	= db_connect();
+	$builder	= $db->table("tb_employee te");    
+	$query		= $builder->select('te.employeeID,
+				te.companyID,
+				te.branchID,
+				te.entityID,
+				te.employeNumber,
+				te.numberIdentification,
+				te.identificationTypeID,
+				te.socialSecurityNumber,
+				te.address,
+				te.countryID,
+				te.stateID,
+				te.cityID,
+				te.departamentID,
+				te.areaID,
+				te.clasificationID,
+				te.categoryID,
+				te.reference1,
+				te.reference2,
+				te.typeEmployeeID,
+				te.hourCost,
+				te.comissionPorcentage,
+				te.parentEmployeeID,
+				te.startOn,
+				te.endOn,
+				te.statusID,
+				te.createdOn,
+				te.createdIn,
+				te.createdAt,
+				te.createdBy,
+				te.isActive,
+				te.vacationBalanceDay,
+				te.amountSaving');
+	$query		= $query->where(['te.companyID'=>$companyID, 'te.branchID'=>$branchID,'te.isActive'=>1]);
+	$query		= $query->whereIn('te.entityID',$employeId);
+	
+	//Ejecutar Consulta
+	return $query->get()->getResultArray();
+}
 }
 ?>

@@ -107,8 +107,8 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('default_app_purchase_pedidos_divScriptCustom')												=> "",		
 		strtolower('default_app_invoice_billing_txtTraductionVendedor') 		 								=> "Vendedor",
 		strtolower('default_app_invoice_billing_txtTraductionMesa') 		 									=> "Mesa",
-	
-	
+		/*Baru*/
+		strtolower('baruh_core_web_printer_direct_executePrinter80mmFooter')									=> "\nNo se aceptan devoluciones.\nRevisar antes de salir",
 		
 		/*Ebenezer*/
 		strtolower('ebenezer_core_web_menu_CXC')			 													=> "ALUMNOS",
@@ -300,7 +300,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('globalpro_app_box_report_dailyTownCategoryItemDiv') 											=> "hidden",
 		strtolower('globalpro_app_box_report_dailyTownNoneConceptDiv') 												=> "hidden",
 		strtolower('globalpro_app_box_report_dailyTownShowAmountDiv') 												=> "hidden",
-		
+		strtolower('globalpro_app_invoice_billing_scriptValidateTotalesZero')										=> "validateTotalesZero = false;",
 		
 
 		/*Farmacia LM*/
@@ -560,7 +560,13 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('luciaralstate_app_cxc_customer_divTxtPais') 	 											=> "hidden",
 		strtolower('luciaralstate_app_cxc_customer_divTxtDepartamento') 	 									=> "hidden",
 		strtolower('luciaralstate_app_cxc_customer_divTxtMunicipio') 	 										=> "hidden",
-		strtolower('luciaralstate_app_cxc_customer_divTxtFormContact') 	 										=> "",		
+		strtolower('luciaralstate_app_cxc_customer_divTxtFormContact') 	 										=> "",
+        strtolower('luciaralstate_app_inventory_item_divTxtBirthday') 	 									=> "",
+        strtolower('luciaralstate_app_inventory_item_divBirthday') 	 									=> "
+		    $('#txtDateLastUse').datepicker({
+		        format: 'mm-dd'
+		    });
+		",
 		strtolower('luciaralstate_app_inventory_item_divTraslate') 												=> "
 		<script>
 			$(document).ready(function(){				 

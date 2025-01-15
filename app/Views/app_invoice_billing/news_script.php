@@ -20,6 +20,8 @@
 	var varParameterCustomPopupFacturacion	= '<?php echo $objParameterCustomPopupFacturacion; ?>';	
 	var varParameterScanerProducto			= '<?php echo $objParameterScanerProducto; ?>';
 	var varParameterRestaurante				= '<?php echo $objParameterRestaurant; ?>';
+	var varTransactionMasterIDToPrinter  	= '<?php echo $transactionMasterIDToPrinter; ?>';
+	var varUrlPrinter						= '<?php echo $urlPrinterDocument; ?>';
 	
 	var varAutoAPlicar						= '<?php echo $objParameterInvoiceAutoApply; ?>';
 	var varParameterCantidadItemPoup		= '<?php echo $objParameterCantidadItemPoup; ?>';  
@@ -38,6 +40,7 @@
 	var varParameterUrlServidorDeImpresion 					= '<?php echo $objParameterUrlServidorDeImpresion; ?>';
 	var varParameterINVOICE_BILLING_VALIDATE_EXONERATION 	= '<?php echo $objParameterINVOICE_BILLING_VALIDATE_EXONERATION; ?>';
 	var objParameterINVOICE_SHOW_FIELD_PESO					= '<?php echo $objParameterINVOICE_SHOW_FIELD_PESO; ?>';
+	
 	
 	var varPermisosEsPermitidoModificarPrecio 			= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_MODIFICAR_PRECIO_EN_FACTURACION"}).select().length > 0 ? true:	false;	
 	var varPermisosEsPermitidoModificarNombre 			= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_MODIFICAR_NOMBRE_EN_FACTURACION"}).select().length > 0 ? true:	false;
@@ -617,13 +620,11 @@
 	});
 	
 	//Evento Agregar el Usuario
-	$(document).on("click","#btnAcept",function(e){
-			
+	$(document).on("click","#btnAcept",function(e){			
 			e.preventDefault();
 			fnEnviarFactura();
 	});
-	$(document).on("click","#btnSaveInvoice",function(e){
-			
+	$(document).on("click","#btnSaveInvoice",function(e){			
 			e.preventDefault();
 			fnEnviarFactura();
 	});
@@ -757,8 +758,11 @@
 		
 	});
 	
-	$("#btnAceptarDialogPrinterV2AceptarDocument").click(function(){
-		
+	$("#btnAceptarDialogPrinterV2AceptarDocument").click(function(){			
+		fnWaitOpen();
+		window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/2/transactionID/19/transactionMasterID/"+varTransactionMasterIDToPrinter, '_blank');
+		fnWaitClose();	
+		$('#modalDialogPrinterV2').modal('hide');
 	});
 	
 	
@@ -1064,13 +1068,18 @@
 		//Validar Detalle
 		//
 		///////////////////////////////////////////////		
-		var cantidadTotalesEnZero = jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[8] == 0;}).select().length ;
-		if(cantidadTotalesEnZero > 0){
-			fnShowNotification("No pueden haber totales en 0","error",timerNotification);
-			result = false;
-			fnWaitClose();
-		};		
-		
+		var cantidadTotalesEnZero 	= jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[8] == 0;}).select().length ;
+		var validateTotalesZero 	= true;
+		<?php echo getBehavio($company->type,"app_invoice_billing","scriptValidateTotalesZero",""); ?>  
+
+		if(validateTotalesZero == true)
+		{
+			if(cantidadTotalesEnZero > 0){
+				fnShowNotification("No pueden haber totales en 0","error",timerNotification);
+				result = false;
+				fnWaitClose();
+			};		
+		}
 		
 		
 		var cantidadTotalesEnZero = jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[6] == 0;}).select().length ;
@@ -1200,8 +1209,7 @@
 		
 		
 		if(varPermitirFacturarProductosEnZero == "true" && result )
-		{			
-			
+		{	
 			$("#form-new-invoice" ).submit();
 			return;
 			
@@ -1684,6 +1692,7 @@
 					
 	function fnEnviarFactura()
 	{
+		
 		fnWaitOpen();
 		$( "#form-new-invoice" ).attr("method","POST");
 		$( "#form-new-invoice" ).attr("action","<?php echo base_url(); ?>/app_invoice_billing/save/new");
@@ -2545,10 +2554,14 @@
 			
 			//Guardar y regresar a la lista, de una sola ves si
 			//Si es auto aplicar y es regresar a la lista y no es impresion directa 
+			//Y no hay impresion por cada factura			
 			if (
 				
-				(varParameterInvoiceBillingPrinterDirect == "false"   && varAutoAPlicar == "true" ) || 
-				(varParameterInvoiceBillingPrinterDirect == "false"   && varParameterRegresarAListaDespuesDeGuardar == "true" )
+				(
+					(varParameterInvoiceBillingPrinterDirect == "false"   && varAutoAPlicar == "true" ) || 
+					(varParameterInvoiceBillingPrinterDirect == "false"   && varParameterRegresarAListaDespuesDeGuardar == "true" ) 
+				) && 
+				objCompanyParameter_Key_INVOICE_PRINT_BY_INVOICE == "false" 
 				
 			)
 			{
@@ -2915,6 +2928,8 @@
 			
 			
 			//Mandar a imprimr la factura
+			//Por cada factura nueva
+			//Si que la impresiona sea directa
 			if(
 				varParameterInvoiceBillingPrinterDirect == 'true' && 
 				varParameterImprimirPorCadaFactura == "true" && 
@@ -2922,6 +2937,21 @@
 			)
 			{
 				$("#modalDialogPrinterV3").modal("show");
+				$(".modal-backdrop.fade.in").removeClass("modal-backdrop");
+			}
+			
+			
+			//Mandar a imprimr la factura
+			//Por cada factura
+			//Con el cuadro de dialogo
+			//Con factura en el server 
+			if(
+				varParameterInvoiceBillingPrinterDirect == 'false' && 
+				varParameterImprimirPorCadaFactura == "true"  && 
+				varTransactionMasterIDToPrinter != "" 
+			)
+			{
+				$("#modalDialogPrinterV2").modal("show");
 				$(".modal-backdrop.fade.in").removeClass("modal-backdrop");
 			}
 			

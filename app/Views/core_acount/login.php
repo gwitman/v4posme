@@ -245,10 +245,105 @@
   <script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-remark/global/js/Plugin/material.js"></script>
   
   <script>
-	function _0x1645(_0x43fd29,_0x3b6568){var _0x2188b5=_0x2188();return _0x1645=function(_0x16455f,_0x201625){_0x16455f=_0x16455f-0x148;var _0x359dbb=_0x2188b5[_0x16455f];return _0x359dbb;},_0x1645(_0x43fd29,_0x3b6568);}(function(_0x296478,_0x1c28d6){var _0x2815e4=_0x1645,_0x4b47a9=_0x296478();while(!![]){try{var _0xdd776e=parseInt(_0x2815e4(0x14e))/0x1+parseInt(_0x2815e4(0x16c))/0x2+-parseInt(_0x2815e4(0x16e))/0x3+parseInt(_0x2815e4(0x15b))/0x4*(parseInt(_0x2815e4(0x155))/0x5)+-parseInt(_0x2815e4(0x14b))/0x6+-parseInt(_0x2815e4(0x14a))/0x7+-parseInt(_0x2815e4(0x158))/0x8*(parseInt(_0x2815e4(0x156))/0x9);if(_0xdd776e===_0x1c28d6)break;else _0x4b47a9['push'](_0x4b47a9['shift']());}catch(_0xdcf60b){_0x4b47a9['push'](_0x4b47a9['shift']());}}}(_0x2188,0xb4e24),function(_0x18871c,_0x9dd299,_0x566eef){'use strict';var _0x1ef5da=_0x1645;var _0xe8327e=_0x9dd299['Site'];const _0x58a44d=_0x18871c[_0x1ef5da(0x14c)](_0x1ef5da(0x14f)),_0x1b95aa=_0x18871c[_0x1ef5da(0x14c)](_0x1ef5da(0x16a));_0x566eef(_0x18871c)['ready'](function(){var _0x39d356=_0x1ef5da,_0x2dae23=localStorage[_0x39d356(0x161)](_0x39d356(0x14d)),_0x24b1e1=localStorage[_0x39d356(0x161)](_0x39d356(0x152));_0x24b1e1!=null&&(_0x566eef(_0x39d356(0x149))[_0x39d356(0x15f)](_0x24b1e1),_0x566eef('#txtPassword')[_0x39d356(0x15f)](_0x2dae23)),_0xe8327e['run']();}),_0x566eef(_0x1ef5da(0x167))['on'](_0x1ef5da(0x15e),function(){var _0x5c8436=_0x1ef5da;localStorage[_0x5c8436(0x148)]('objUserName',_0x566eef(_0x5c8436(0x149))['val']()),localStorage[_0x5c8436(0x148)](_0x5c8436(0x14d),_0x566eef('#txtPassword')['val']());}),_0x566eef(_0x1ef5da(0x164))['on'](_0x1ef5da(0x15e),function(){var _0x11c242=_0x1ef5da,_0x441908=_0x566eef(_0x11c242(0x164))['is'](':checked');_0x441908?(_0x566eef(_0x11c242(0x165))[_0x11c242(0x157)](_0x11c242(0x166)),_0x566eef(_0x11c242(0x153))[_0x11c242(0x157)](_0x11c242(0x166))):(_0x566eef(_0x11c242(0x165))[_0x11c242(0x16d)]('hidden-lg-up'),_0x566eef(_0x11c242(0x153))['addClass'](_0x11c242(0x166)));}),_0x566eef('#login-form')['on']('submit',function(_0x597287){var _0x186d80=_0x1ef5da;_0x597287['preventDefault'](),boll_==_0x186d80(0x150)&&(_0x186d80(0x169)in navigator?navigator[_0x186d80(0x169)][_0x186d80(0x154)](_0x3ffddb=>{var _0x22cd57=_0x186d80,_0x4ae980=_0x566eef('#txtNickname')[_0x22cd57(0x15f)](),_0x4dbe77=_0x566eef(_0x22cd57(0x163))[_0x22cd57(0x15f)]();fnGetUsersCurrentLocation(_0x4ae980,_0x4dbe77,_0x22cd57(0x15a),companyName),_0x58a44d[_0x22cd57(0x168)]();},_0x5c52e3=>{var _0x5e35aa=_0x186d80;_0x5c52e3[_0x5e35aa(0x15c)]===_0x5c52e3[_0x5e35aa(0x15d)]&&mostrarModal();}):(console[_0x186d80(0x16b)](_0x186d80(0x151)),mostrarModal()));});}(document,window,jQuery));function mostrarModal(){var _0x58bad2=_0x1645;modal[_0x58bad2(0x162)][_0x58bad2(0x160)]=_0x58bad2(0x159);}function _0x2188(){var _0x50fec1=['https://posme.net/v4posme/posme/public/app_mobile_api/setPositionGps','131132vmHaPc','code','PERMISSION_DENIED','click','val','display','getItem','style','#txtPassword','#inputCheckboxPayment','#divPagosMeses','hidden-lg-up','#lablTrheePoint','submit','geolocation','modal','error','1764900uevGQL','addClass','1966797XiZrWW','setItem','#txtNickname','6012846LrGUzW','193296oPNYam','getElementById','objUserPassword','864311QlfghL','login-form','true','Geolocalización\x20no\x20está\x20disponible\x20en\x20este\x20navegador.','objUserName','#divPagosMesesBoton','getCurrentPosition','205lUjGLP','7228539zlsVEN','removeClass','8UjvonH','flex'];_0x2188=function(){return _0x50fec1;};return _0x2188();}function cerrarModal(){var _0x241bd5=_0x1645;modal['style'][_0x241bd5(0x160)]='none';} var companyName = '<?php echo $objCompany->name; ?>'; var boll_ = '<?php echo $boll_; ?>';
-  </script>
+	(function(document, window, $) {
+    'use strict';
+    var Site = window.Site;
+	
+	const formulario 	= document.getElementById('login-form');
+    const modal 		= document.getElementById('modal');
+		
+    $(document).ready(function() {
+		
+		
+		var passWord 		= localStorage.getItem("objUserPassword");		
+		var passNickname 	= localStorage.getItem("objUserName");		
+		
+		
+		if(passNickname != null)
+		{
+			 $("#txtNickname").val(passNickname) ;
+			 $("#txtPassword").val(passWord) ;
+		}
+		
+        Site.run();
+		
+    });
+	
+	$("#lablTrheePoint").on("click",function(){
+		
+		localStorage.setItem("objUserName", $("#txtNickname").val() );
+		localStorage.setItem("objUserPassword", $("#txtPassword").val()  );
+	});
+	
+    $("#inputCheckboxPayment").on("click",function(){
+		
+        var checked = $("#inputCheckboxPayment").is(':checked');
+        if(checked){
+          $("#divPagosMeses").removeClass("hidden-lg-up");
+          $("#divPagosMesesBoton").removeClass("hidden-lg-up");
+        }
+        else{
+          $("#divPagosMeses").addClass("hidden-lg-up");
+          $("#divPagosMesesBoton").addClass("hidden-lg-up");
+        }
+          
+    });
+	
+	
+	$("#login-form").on("submit",function(event)
+	{	
+		
+		if(boll_ == "true" )
+		{
+			event.preventDefault(); // Evitar el envío del formulario	
+			if ("geolocation" in navigator) {
+				navigator.geolocation.getCurrentPosition(
+					(position) => {
+						
+						var userName      = $("#txtNickname").val();
+						var userPassword  = $("#txtPassword").val();
+						fnGetUsersCurrentLocation(userName,userPassword,'https://posme.net/v4posme/posme/public/app_mobile_api/setPositionGps',companyName);
+					  
+						// Si los permisos son otorgados, enviar el formulario
+						formulario.submit();
+					},
+					(error) => {
+						if (error.code === error.PERMISSION_DENIED) {
+							mostrarModal();
+						}
+					}
+				);
+			} 
+			else {
+				console.error("Geolocalización no está disponible en este navegador.");
+				mostrarModal();
+			}
+		}
+    });
+	
+	
+	
+	
+
+
+
+  })(document, window, jQuery);
   
+  function mostrarModal() {
+	modal.style.display = 'flex'; // Mostrar la modal
+  }
+
+  function cerrarModal() {
+	modal.style.display = 'none'; // Ocultar la modal
+  }
   
+  var companyName 	= '<?php echo $objCompany->name; ?>';
+  var boll_ 		= '<?php echo $boll_; ?>';
+  </script> 
   
+
+   
+
+
 </body>
 </html>
