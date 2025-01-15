@@ -23,7 +23,7 @@
 						//Nueva factura
 						$(document).on("click","#btnNewShare",function(){
 							var url_request 			= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentEmployee->componentID; ?>/onCompleteNewShare/SELECCIONAR_EMPLOYEE_TO_PLANILLA/true/empty/false/not_redirect_when_empty";
-							window.open(url_request,"MsgWindow","width=1585,height=795");
+							window.open(url_request,"MsgWindow","width=900,height=500");
 							window.onCompleteNewShare 	= onCompleteNewShare; 
 						});
 						//Eliminar factura

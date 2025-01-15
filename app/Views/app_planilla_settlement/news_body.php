@@ -197,29 +197,29 @@
                                 <div class="col-lg-6">
 
                                     <div class="form-group">
-                                        <label class="col-lg-4 control-label" for="normal">Bono</label>
-                                        <div class="col-lg-8">
+                                        <label class="col-lg-6 control-label" for="normal">Bono</label>
+                                        <div class="col-lg-6">
                                             <input class="form-control txt-employee-numeric" type="text" name="txtEmployeeBonus" id="txtEmployeeBonus" value="">
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="col-lg-4 control-label" for="normal">Pago Vacaciones Acumuladas</label>
-                                        <div class="col-lg-8">
+                                        <label class="col-lg-6 control-label" for="normal">Pago Vacaciones Acumuladas</label>
+                                        <div class="col-lg-6">
                                             <input class="form-control txt-employee-numeric" readonly type="text" name="txtEmployeeAccumulatedVacationsPayment" id="txtEmployeeAccumulatedVacationsPayment" value="">
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="col-lg-4 control-label" for="normal">Pago por mes 13</label>
-                                        <div class="col-lg-8">
+                                        <label class="col-lg-6 control-label" for="normal">Pago por mes 13</label>
+                                        <div class="col-lg-6">
                                             <input class="form-control txt-employee-numeric" readonly type="text" name="txtEmployeePaymentMonthThirteen" id="txtEmployeePaymentMonthThirteen" value="">
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="col-lg-4 control-label" for="normal">Pago por Antiguedad</label>
-                                        <div class="col-lg-8">
+                                        <label class="col-lg-6 control-label" for="normal">Pago por Antiguedad</label>
+                                        <div class="col-lg-6">
                                             <input class="form-control txt-employee-numeric" readonly type="text" name="txtEmployeeSeniorityPayment" id="txtEmployeeSeniorityPayment" value="">
                                         </div>
                                     </div>

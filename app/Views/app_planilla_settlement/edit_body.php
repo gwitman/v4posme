@@ -197,29 +197,29 @@
                                 <div class="col-lg-6">
 
                                     <div class="form-group">
-                                        <label class="col-lg-4 control-label" for="normal">Bono</label>
-                                        <div class="col-lg-8">
+                                        <label class="col-lg-6 control-label" for="normal">Bono</label>
+                                        <div class="col-lg-6">
                                             <input class="form-control txt-employee-numeric" type="text" name="txtEmployeeBonus" id="txtEmployeeBonus" value="<?php echo number_format($objTMI->changeAmount,2) ?>">
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="col-lg-4 control-label" for="normal">Pago Vacaciones Acumuladas</label>
-                                        <div class="col-lg-8">
+                                        <label class="col-lg-6 control-label" for="normal">Pago Vacaciones Acumuladas</label>
+                                        <div class="col-lg-6">
                                             <input class="form-control txt-employee-numeric" readonly type="text" name="txtEmployeeAccumulatedVacationsPayment" id="txtEmployeeAccumulatedVacationsPayment" value="<?php echo number_format($objTMI->receiptAmount,2) ?>">
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="col-lg-4 control-label" for="normal">Pago por mes 13</label>
-                                        <div class="col-lg-8">
+                                        <label class="col-lg-6 control-label" for="normal">Pago por mes 13</label>
+                                        <div class="col-lg-6">
                                             <input class="form-control txt-employee-numeric" readonly type="text" name="txtEmployeePaymentMonthThirteen" id="txtEmployeePaymentMonthThirteen" value="<?php echo number_format($objTMI->receiptAmountPoint,2) ?>">
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="col-lg-4 control-label" for="normal">Pago por Antiguedad</label>
-                                        <div class="col-lg-8">
+                                        <label class="col-lg-6 control-label" for="normal">Pago por Antiguedad</label>
+                                        <div class="col-lg-6">
                                             <input class="form-control txt-employee-numeric" readonly type="text" name="txtEmployeeSeniorityPayment" id="txtEmployeeSeniorityPayment" value="<?php echo number_format($objTMI->reference1,2) ?>">
                                         </div>
                                     </div>
