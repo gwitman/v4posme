@@ -1387,6 +1387,8 @@ class Transaction_Master_Detail_Model extends Model  {
 				tat.SiguienteVisita
 			from 
 				(
+					
+
 					select 
 						case 
 							when ci.referenceClientName != '' then 
@@ -1395,7 +1397,7 @@ class Transaction_Master_Detail_Model extends Model  {
 								nat.firstName
 						end  as firstName ,
 						c.transactionNumber ,
-						DATE_ADD(c.nextVisit , INTERVAL zone.`sequence`  MINUTE) as SiguienteVisita 
+						c.nextVisit as SiguienteVisita 
 					from 
 						tb_transaction_master c 
 						inner join tb_transaction_master_info ci on 
@@ -1409,23 +1411,29 @@ class Transaction_Master_Detail_Model extends Model  {
 					where 
 						c.isActive = 1 and 
 						c.companyID = 2 and 
-						c.transactionID = 19  and 
-						ws.isInit = 1 and 
-						CAST(zone.`name`  AS UNSIGNED ) > 1   and 
+						c.transactionID = 19  and   
+						ws.isInit = 1 and    					
 						c.nextVisit is not null 
+						
+	
 				)  tat 
-			where 
-				tat.SiguienteVisita < DATE_ADD( 
+			where
+				tat.SiguienteVisita BETWEEN  
+				DATE_ADD( 
 					DATE_ADD(
 						NOW() , 
-						INTERVAL ".APP_HOUR_DIFERENCE_MYSQL_EMBEDDED."
+						INTERVAL -6 hour 
 					), 
-					INTERVAL 24 HOUR
-				) AND 
-				tat.SiguienteVisita > DATE_ADD(
+					INTERVAL -2 HOUR
+				) 
+				AND 				
+				DATE_ADD( 
+					DATE_ADD(
 						NOW() , 
-						INTERVAL ".APP_HOUR_DIFERENCE_MYSQL_EMBEDDED."
-				)
+						INTERVAL -6 hour 
+					), 
+					INTERVAL 2 HOUR
+				)  
 						
 		");
 	
