@@ -1637,7 +1637,7 @@ WHERE
 /***************************************************************/
 		
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Eusebia Del Carmen Dumas Ruiz" 
+	tb_company_parameter.value = "Colegio Lirio de los Valles" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_NAME";## Witman José González Rostran 
@@ -1652,28 +1652,28 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "047-160483-0000C" 
+	tb_company_parameter.value = "J0810000142710" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "047-160483-0000C" 
+	tb_company_parameter.value = "J0810000142710" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8505-7109" 
+	tb_company_parameter.value = "TEL: 2315-0137" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8505-7109" 
+	tb_company_parameter.value = "TEL: 2315-0137" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1681,15 +1681,15 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Donde fue aserrio santa fe, 2c abajo 15v.sur" 
+	tb_company_parameter.value = "Aserrio Santa Fe. 1c al Norte , 1c al Este, Rpto Primera de Mayo" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Colegio Lirio de los valles' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 629 /*usuarioID*/,type='colirio'  , abreviature='colirio'
+	NAME = 'Lirio de los valles' , address = 'Aserrio Santa Fe. 1c al Norte , 1c al Este, Rpto Primera de Mayo' ,
+	flavorID = 629 /*usuarioID*/,type='colirio'  , abreviature='colirio', namePublic = 'Colegio Apostólico'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
