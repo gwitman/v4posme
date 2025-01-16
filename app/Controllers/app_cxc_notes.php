@@ -2,8 +2,6 @@
 
 namespace App\Controllers;
 
-use function PHPUnit\Framework\isEmpty;
-
 class app_cxc_notes extends _BaseController
 {
     public function edit()
@@ -550,6 +548,7 @@ class app_cxc_notes extends _BaseController
                 $objDataResult["objLeyendas"]   = null;
             }
 
+
             //parametros de reportes
             $params_["objCompany"]					= $objCompany;
             $params_["dateCurrent"]					= date("Y-m-d H:i:s");
@@ -563,9 +562,12 @@ class app_cxc_notes extends _BaseController
             $params_["objFirma"] 					= "{companyID:" .  ",branchID:" .  ",userID:" . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_box_get_report_closed" . ",ip:" . $this->request->getIPAddress() . ",sessionID:" . ",agenteID:" . $this->request->getUserAgent()->getAgentString() . ",lastActivity:" .  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}";
             $params_["objFirmaEncription"] 			= md5($params_["objFirma"]);
             $subject								= $params_["message"];
-            $html  									= /*--inicio view*/ view('app_cxc_notes/share_summary_certificado/view_a_disemp', $params_); //--finview
+            if($objCompany->type=="colirio"){
+                $html  									= /*--inicio view*/ view('app_cxc_notes/share_summary_certificado/view_a_disemp_colirio', $params_); //--finview
+            }else{
+                $html  									= /*--inicio view*/ view('app_cxc_notes/share_summary_certificado/view_a_disemp', $params_); //--finview
+            }
             echo $html;
-
         }catch (\Exception $ex){
             echo $ex;
         }

@@ -10,3 +10,4 @@ app/Libraries/core_web_qr/temp/*
 .idea/v4posme.iml
 .idea/vcs.xml
 /vendor/dompdf/dompdf/lib/fonts/Helvetica-BoldOblique.afm.json
+/vendor/dompdf/dompdf/lib/fonts/Times-BoldItalic.afm.json

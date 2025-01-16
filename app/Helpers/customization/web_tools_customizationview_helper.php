@@ -150,8 +150,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 			}
 		
 		",
-		
-		
+
 		/*GlobalPro*/
 		strtolower('globalpro_core_web_menu_O. SALIDAS')			 											=> "AJUSTE SALIDA",
 		strtolower('globalpro_core_web_menu_O. ENTRADAS')			 											=> "AJUSTE ENTRADA",
@@ -562,7 +561,7 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('luciaralstate_app_cxc_customer_divTxtMunicipio') 	 										=> "hidden",
 		strtolower('luciaralstate_app_cxc_customer_divTxtFormContact') 	 										=> "",
         strtolower('luciaralstate_app_inventory_item_divTxtBirthday') 	 									=> "",
-        strtolower('luciaralstate_app_inventory_item_divBirthday') 	 									=> "
+        strtolower('luciaralstate_app_inventory_item_divBirthday') 	 									    => "
 		    $('#txtDateLastUse').datepicker({
 		        format: 'mm-dd'
 		    });
@@ -1332,8 +1331,10 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		
 		
 	);
-	
-	
+
+	$colirio    = getBehavioColirio();
+    $divs       = array_merge($divs, $colirio);
+
 	//Comanda traducir es para los menu
 	//comportamiento del controlador
 	//si el key no existe regresa valor vacio

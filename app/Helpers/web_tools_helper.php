@@ -140,7 +140,7 @@ function helper_DateToSpanish($date_, $format)
     $english     = NULL;
     $spanish       = NULL;
 
-    if ($format == "Y-F" or $format == "Y-F-d" or "F") {
+    if ($format == "Y-F" or $format == "Y-F-d" or $format == "F") {
         $english     = array("JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER");
         $spanish       = array("ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
     } else {
