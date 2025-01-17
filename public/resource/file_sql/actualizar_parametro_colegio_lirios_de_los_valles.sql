@@ -1373,14 +1373,14 @@ WHERE
 
 /*--Retiro de efectivo*/
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_box_outcash/viewRegisterFormatoPaginaTicket" 
+	tb_company_parameter.value = "app_box_outcash/viewRegisterFormatoPaginaTicketColirio"
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "BOX_OUTCASH_URL_PRINTER";## url para retiro de efectivo
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_box_inputcash/viewRegisterFormatoPaginaTicket" 
+	tb_company_parameter.value = "app_box_inputcash/viewRegisterFormatoPaginaTicketColirio"
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "BOX_INPUTCASH_URL_PRINTER";## url para retiro de efectivo

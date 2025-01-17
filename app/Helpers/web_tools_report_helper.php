@@ -8899,6 +8899,217 @@ function helper_reporte80mmTransactionMasterColirio(
     return $html;
 }
 
+function helper_reporte80mmTransactionMasterInputOutPutCashColirio(
+    $titulo,
+    $objCompany,
+    $objParameterLogo,
+    $objTransactionMastser,
+    $objEntidadNatural,
+    $objEntidadCustomer,
+    $tipoCambio,
+    $objCurrency,
+    $objTransactionMasterInfo,
+    $confiDetalle, /**/
+    $arrayDetalle, /**/
+    $objParameterTelefono, /*telefono*/
+    $objParameterEmail, /*email*/
+    $statusName = "", /*estado*/
+    $causalName = "", /*causal*/
+    $userNickName = "", /*vendedor*/
+    $rucCompany = "" /*ruc*/
+): string
+{
+    $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
+
+    $type    = pathinfo($path, PATHINFO_EXTENSION);
+    $data    = file_get_contents($path);
+    $base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+    $html    = "";
+    $html    = "
+                    <!--
+                    Online HTML, CSS and JavaScript editor to run code online.
+                    https://www.programiz.com/html/online-compiler/
+                    -->
+                    <!DOCTYPE html>
+                    <html lang='en'>
+        
+                    <head>
+                      <meta charset='UTF-8' />
+                      <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+                      <style>
+                        @page {       
+                          size: 2.7in 60in;                  
+                          margin-top:0px;
+                          margin-left:0px;
+                          margin-right:15px;
+                        }
+                        table{
+                          font-size: x-small;
+                          font-weight: bold;
+                          font-family: Consolas, monaco, monospace;
+                        }
+                      </style>
+                    </head>
+        
+                    <body>
+        
+                      <table style='width:100%'>
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            <div style='font-size:12pt'>".strtoupper($objCompany->namePublic)."</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            <div style='font-size:9pt'>".strtoupper($objCompany->name)."</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            <div style='font-size:7pt'>PARA GENTE IMPORTANTE, PARA GENTE COMO USTED</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            <img  src='".$base64."' width='110'  alt='Logo'/>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            Dirección: ".$objCompany->address."
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            EMAIL: ".$objParameterEmail->value."
+                          </td>
+                        </tr>
+                        <tr>                              
+                          <td colspan='3' style='text-align:center'>
+                            No RUC: ".  $rucCompany ."
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            Teléfono: ".$objParameterTelefono->value."
+                          </td>
+                        </tr>";
+
+
+    $html = $html."
+                        <tr><td>&nbsp;</td></tr>
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".strtoupper($titulo)."
+                          </td>
+                        </tr>
+                        <tr>
+                            <td colspan='3' style='text-align:center'>
+                                <hr style='width:100%;' />
+                            </td>
+                        </tr>
+                        <tr>
+                          <td colspan='3' style='text-align:center'>                           
+                            <div style='display:flex; justify-content: space-between;width: 100%; font-size: 8pt'>
+                                <span style='text-align: left;'>FECHA: ".date('d/m/Y', strtotime($objTransactionMastser->createdOn))."</span>
+                                <span style='text-align: right;'>HORA: ".date('h:i:s A', strtotime($objTransactionMastser->createdOn))."</span>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                           Comp. # <span style='font-size:9pt'>".strtoupper($objTransactionMastser->transactionNumber)."</span>
+                          </td>
+                        </tr>
+                        <tr>
+                            <td colspan='3' style='text-align:center'>
+                                <hr style='width:100%;' />
+                            </td>
+                        </tr>
+                         <tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>";
+
+
+
+    $html	= $html."                            
+						<tr>
+                          <td colspan='1'>
+                            Moneda:
+                          </td>
+						  <td colspan='2'>
+                            ".$objCurrency->simbol."
+                          </td>
+                        </tr>";
+
+
+
+    $html	= $html."
+						
+
+						
+						<!--
+                        <tr>
+                          <td colspan='3'>
+                            Tipo de Cambio: ".$tipoCambio."
+                          </td>
+                        </tr>
+						--> 
+                         <tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+                                                                
+                         <tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+                        
+   
+                        <tr>
+                          <td colspan='2'>
+                            RECIBIDO
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount)."
+                          </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan='3' style='text-align:center'>
+                                <hr style='width:100%;' />
+                            </td>
+                        </tr>
+                       <tr>
+                          <td colspan='3' style='text-align:left'>".$objTransactionMastser->note."</td>
+                        </tr>
+                        <tr><td>&nbsp;</td></tr>
+                        <tr>
+                            <td colspan='3' style='text-align:center'>
+                                <hr style='width: 75%'>
+                                <span>Entregue Conforme<br></span>
+                                <hr style='width: 75%'>
+                                <span>Número de Cedula</span>
+                                <br>
+                                <span>".(strpos($userNickName , "@") === false ? $userNickName : substr($userNickName,0,strpos($userNickName , "@") ) )."</span>
+                                <hr style='width: 75%'>
+                                <span>Responsable de Caja</span>
+                            </td>
+                        </tr>                                
+                      </table>
+                    </body>
+                                
+                    </html>
+            ";
+
+    return $html;
+}
+
 function helper_reporte80mmTransactionMasterViewDetailCredit(
     $titulo,
     $objCompany,

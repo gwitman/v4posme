@@ -286,6 +286,8 @@ $routes->match(['get','post'],'app_box_inputcash/index/(:any)','app_box_inputcas
 $routes->match(['get','post'],'app_box_inputcash/searchTransactionMaster','app_box_inputcash::searchTransactionMaster');
 $routes->match(['get','post'],'app_box_inputcash/viewRegisterFormatoPaginaTicket','app_box_inputcash::viewRegisterFormatoPaginaTicket');
 $routes->match(['get','post'],'app_box_inputcash/viewRegisterFormatoPaginaTicket/(:any)','app_box_inputcash::viewRegisterFormatoPaginaTicket');
+$routes->match(['get','post'],'app_box_inputcash/viewRegisterFormatoPaginaTicketColirio','app_box_inputcash::viewRegisterFormatoPaginaTicketColirio');
+$routes->match(['get','post'],'app_box_inputcash/viewRegisterFormatoPaginaTicketColirio/(:any)','app_box_inputcash::viewRegisterFormatoPaginaTicketColirio');
 $routes->match(['get','post'],'app_box_inputcash/viewRegisterFormatoPaginaTicketTermica','app_box_inputcash::viewRegisterFormatoPaginaTicketTermica');
 $routes->match(['get','post'],'app_box_inputcash/viewRegisterFormatoPaginaTicketTermica/(:any)','app_box_inputcash::viewRegisterFormatoPaginaTicketTermica');
 $routes->match(['get','post'],'app_box_inputcash/viewPrinterDirect80mmShareRustikGrill','app_box_inputcash::viewPrinterDirect80mmShareRustikGrill');
@@ -305,6 +307,8 @@ $routes->match(['get','post'],'app_box_outcash/index/(:any)','app_box_outcash::i
 $routes->match(['get','post'],'app_box_outcash/searchTransactionMaster','app_box_outcash::searchTransactionMaster');
 $routes->match(['get','post'],'app_box_outcash/viewRegisterFormatoPaginaTicket','app_box_outcash::viewRegisterFormatoPaginaTicket');
 $routes->match(['get','post'],'app_box_outcash/viewRegisterFormatoPaginaTicket/(:any)','app_box_outcash::viewRegisterFormatoPaginaTicket');
+$routes->match(['get','post'],'app_box_outcash/viewRegisterFormatoPaginaTicketColirio','app_box_outcash::viewRegisterFormatoPaginaTicketColirio');
+$routes->match(['get','post'],'app_box_outcash/viewRegisterFormatoPaginaTicketColirio/(:any)','app_box_outcash::viewRegisterFormatoPaginaTicketColirio');
 $routes->match(['get','post'],'app_box_outcash/viewRegisterFormatoPaginaTicketTermica','app_box_outcash::viewRegisterFormatoPaginaTicketTermica');
 $routes->match(['get','post'],'app_box_outcash/viewRegisterFormatoPaginaTicketTermica/(:any)','app_box_outcash::viewRegisterFormatoPaginaTicketTermica');
 $routes->match(['get','post'],'app_box_outcash/viewPrinterDirect80mmShareRustikGrill','app_box_outcash::viewPrinterDirect80mmShareRustikGrill');
