@@ -1,4 +1,4 @@
-use dbjqgzzu2ai7rh ;
+use dbkxs0cvuoq4zw;
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -42,7 +42,7 @@ WHERE
 	tb_parameter.name = "MOBILE_SHOW_TOP_CUSTOMER";## En la pantalla de cliente en el mobile mostrar el top
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "50" 
+	tb_company_parameter.value = "10" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "MOBILE_SHOW_TOP_ITEMS";## En la pantalla de items en el mobile mostrar el top
@@ -1637,7 +1637,7 @@ WHERE
 /***************************************************************/
 		
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Adonis Miranda" 
+	tb_company_parameter.value = "Mario Hidalgo" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_NAME";## Witman José González Rostran 
@@ -1652,28 +1652,28 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "--------" 
+	tb_company_parameter.value = "------" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "--------" 
+	tb_company_parameter.value = "------" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 5824-3259" 
+	tb_company_parameter.value = "TEL: 8910 1842" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 5824-3259" 
+	tb_company_parameter.value = "TEL: 8910 1842" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1681,15 +1681,15 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Parque forestal 2.5 al este" 
+	tb_company_parameter.value = "Leon 1K carretera a Managua mano izquierda" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Super Market Comida' , address = 'Parque forestal 2.5 al este' ,
-	flavorID = 622 /*usuarioID*/,type='mirada_comida'  , abreviature='demo'
+	NAME = 'TENAMPA' , address = 'Leon 1K carretera a Managua mano izquierda' ,
+	flavorID = 636 /*usuarioID*/,type='default'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
@@ -1701,25 +1701,25 @@ Eliminar o desactivar usuarios
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2, 	/*administrador*/
- 616,  
- 617, 
- 618,
- 619,  
- 620, 
- 621, 
- 622
+ 636,  
+ 635, 
+ 634,
+ 633,  
+ 632, 
+ 631, 
+ 630
 );
 
 update tb_role set isActive = 0; 
 update tb_role set isActive = 1 where roleID in (
 	3,
-	552,
-	553,
-	554,
-	555,
-	556,
-	557,
-	558	
+	572,
+	571,
+	570,
+	569,
+	568,
+	567,
+	566	
 );
 
 
@@ -1754,4 +1754,4 @@ update tb_company_currency set `simb` = 'C$' where currencyID = 1;
 update tb_company_currency set `simb` = 'U$' where currencyID = 2;	
 
 	
-/*BD: dbjqgzzu2ai7rh  */
+/*BD: dbkxs0cvuoq4zw  */
