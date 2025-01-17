@@ -10958,6 +10958,15 @@ function helper_reporte80mmTransactionMasterBivalyStore(
                             ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount)."
                           </td>
                         </tr>
+
+						<tr>
+                          <td colspan='2'>
+                            DESCUENTO
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->discount)."
+                          </td>
+                        </tr>
    
                         <tr>
                           <td colspan='2'>
