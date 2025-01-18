@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use function PHPUnit\Framework\directoryExists;
+
 class app_cxc_notes extends _BaseController
 {
     public function edit()
@@ -567,7 +569,53 @@ class app_cxc_notes extends _BaseController
             }else{
                 $html  									= /*--inicio view*/ view('app_cxc_notes/share_summary_certificado/view_a_disemp', $params_); //--finview
             }
-            echo $html;
+            //echo $html;
+
+            $this->dompdf->loadHTML($html);
+
+            //1cm = 29.34666puntos
+            //a4: 210 ancho x 297
+            //a4: 21cm x 29.7cm
+            //a4: 595.28puntos x 841.59puntos
+
+            //$this->dompdf->setPaper('A4','portrait');
+            //$this->dompdf->setPaper(array(0,0,234.76,6000));
+
+            $this->dompdf->render();
+
+            $objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+            $objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+            $objParameterShowDownloadPreview	= $this->core_web_parameter->getParameter("CORE_SHOW_DOWNLOAD_PREVIEW",$companyID);
+            $objParameterShowDownloadPreview	= $objParameterShowDownloadPreview->value;
+            $objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true" ? true : false;
+
+            $fileNamePut = "certificado_".$params_["objAlumno"]["customerNumber"]."_".date("dmYhis").".pdf";
+            $path        = "./resource/file_company/company_".$companyID."/component_".$objComponentGrade->componentID."/component_item_".$params_["objAlumno"]["customerNumber"]."/".$fileNamePut;
+            if (!file_exists($path)) {
+                mkdir($path, 0755, true);
+                chmod($path, 0755);
+            }
+            $path        .= $fileNamePut;
+
+            file_put_contents(
+                $path,
+                $this->dompdf->output()
+            );
+
+            chmod($path, 644);
+
+            if($objParameterShowLinkDownload == "true")
+            {
+                echo "<a 
+					href='".base_url()."/resource/file_company/company_".$companyID."/component_".$objComponentGrade->componentID."/component_item_0"."/".
+                    $fileNamePut."'>download certificado</a>
+				";
+
+            }
+            else{
+                //visualizar
+                $this->dompdf->stream("file_".date('YmdHms'), ['Attachment' => $objParameterShowDownloadPreview ]);
+            }
         }catch (\Exception $ex){
             echo $ex;
         }

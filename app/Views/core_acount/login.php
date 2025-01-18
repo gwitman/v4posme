@@ -337,8 +337,8 @@
 	modal.style.display = 'none'; // Ocultar la modal
   }
   
-  var companyName 	= '<?php echo $objCompany->name; ?>';
-  var boll_ 		= '<?php echo $boll_; ?>';
+  var companyName 	= '<?php echo (!$objCompany  ? "" :  $objCompany->name); ?>';
+  var boll_ 		= '<?php echo (!$boll_  ? "" 	  :  $boll_); ?>';
   </script> 
   
 

@@ -1,7 +1,7 @@
 set @nameOrigen        	:= 'RUSTIK';
 set @flavorOrigen  	  	:= '298';
-set @nameTarget        	:= 'BLUE_MOON';
-set @flavorTarget  	  	:= '484';
+set @nameTarget        	:= 'TENAMPA';
+set @flavorTarget  	  	:= '636';
 
 
 insert into tb_catalog_item (
@@ -60,4 +60,27 @@ from
 	tb_company_dataview c 
 where 
 	c.flavorID = @flavorOrigen and 
-	not exists (select * from tb_company_dataview ul where ul.flavorID = @flavorTarget and ul.name = REPLACE ( ul.name, @nameOrigen , @nameTarget ) );
+	not exists (select * from tb_company_dataview ul where ul.flavorID = @flavorTarget and ul.dataViewID = c.dataViewID );
+	
+	
+
+select 
+	c.companyID,
+	c.componentID,
+	c.dataViewID,
+	c.callerID,
+	c.targetComponentID,
+	c.companyDefaultDataviewID 
+from 
+	tb_company_default_dataview c 
+where 
+	c.targetComponentID = @flavorOrigen and 
+	not exists (
+		select 
+			* 
+		from 
+			tb_company_default_dataview ul 
+		where 
+			ul.targetComponentID = @flavorTarget and 
+			ul.dataViewID = c.dataViewID 
+		);

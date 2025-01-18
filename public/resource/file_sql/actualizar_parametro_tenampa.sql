@@ -1,4 +1,4 @@
-use dbp5id83u8dllq;
+use dbkxs0cvuoq4zw;
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -659,7 +659,7 @@ WHERE
 
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "12" 
+	tb_company_parameter.value = "1" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CXC_PLAZO_DEFAULT";## Plazo predeterminado
@@ -1373,14 +1373,14 @@ WHERE
 
 /*--Retiro de efectivo*/
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_box_outcash/viewRegisterFormatoPaginaTicketColirio"
+	tb_company_parameter.value = "app_box_outcash/viewRegisterFormatoPaginaTicket" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "BOX_OUTCASH_URL_PRINTER";## url para retiro de efectivo
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_box_inputcash/viewRegisterFormatoPaginaTicketColirio"
+	tb_company_parameter.value = "app_box_inputcash/viewRegisterFormatoPaginaTicket" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "BOX_INPUTCASH_URL_PRINTER";## url para retiro de efectivo
@@ -1393,7 +1393,7 @@ WHERE
 	
 /*--Imprimir abonos	*/			
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_box_share/viewRegisterFormatoPaginaTicketColirio" 
+	tb_company_parameter.value = "app_box_share/viewRegisterFormatoPaginaTicket" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "BOX_SHARE_URL_PRINTER";## URL PARA LA IMPRESION DE ABONOS 
@@ -1465,7 +1465,7 @@ WHERE
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE";## Aplicar tabla de amortizacoin segun parametros durante la facturacion.
@@ -1498,7 +1498,7 @@ WHERE
 
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Colirio" 
+	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_URL_PRINTER";## URLs PARA LA IMPRESION DE FACTURA 	
@@ -1531,7 +1531,7 @@ WHERE
 	
 /*--Cocina*/
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_SHOW_COMMAND_FOOT";## Símbolo de la Moneda Funcional 
@@ -1637,7 +1637,7 @@ WHERE
 /***************************************************************/
 		
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Colegio Lirio de los Valles" 
+	tb_company_parameter.value = "Mario Hidalgo" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_NAME";## Witman José González Rostran 
@@ -1652,28 +1652,28 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "J0810000142710" 
+	tb_company_parameter.value = "------" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "J0810000142710" 
+	tb_company_parameter.value = "------" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 2315-0137" 
+	tb_company_parameter.value = "TEL: 8910 1842" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 2315-0137" 
+	tb_company_parameter.value = "TEL: 8910 1842" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1681,15 +1681,15 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Aserrio Santa Fe. 1c al Norte , 1c al Este, Rpto Primera de Mayo" 
+	tb_company_parameter.value = "Leon 1K carretera a Managua mano izquierda" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Lirio de los valles' , address = 'Aserrio Santa Fe. 1c al Norte , 1c al Este, Rpto Primera de Mayo' ,
-	flavorID = 629 /*usuarioID*/,type='colirio'  , abreviature='colirio', namePublic = 'Colegio Apostólico'
+	NAME = 'TENAMPA' , address = 'Leon 1K carretera a Managua mano izquierda' ,
+	flavorID = 636 /*usuarioID*/,type='tenampa'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
@@ -1701,25 +1701,25 @@ Eliminar o desactivar usuarios
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2, 	/*administrador*/
- 623,  
- 624, 
- 625,
- 626,  
- 627, 
- 628, 
- 629
+ 636,  
+ 635, 
+ 634,
+ 633,  
+ 632, 
+ 631, 
+ 630
 );
 
 update tb_role set isActive = 0; 
 update tb_role set isActive = 1 where roleID in (
 	3,
-	559,
-	560,
-	561,
-	562,
-	563,
-	564,
-	565	
+	572,
+	571,
+	570,
+	569,
+	568,
+	567,
+	566	
 );
 
 
@@ -1754,4 +1754,4 @@ update tb_company_currency set `simb` = 'C$' where currencyID = 1;
 update tb_company_currency set `simb` = 'U$' where currencyID = 2;	
 
 	
-/*BD: dbp5id83u8dllq */
+/*BD: dbkxs0cvuoq4zw  */
