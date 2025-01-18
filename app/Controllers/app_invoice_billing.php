@@ -10718,7 +10718,11 @@ class app_invoice_billing extends _BaseController {
 			$dataView["nombreCliente"] 					= $dataView["objTransactionMasterInfo"]->referenceClientName  == "" ? $dataView["objCustumer"]->firstName : $dataView["objTransactionMasterInfo"]->referenceClientName ;
 			$dataView["objStage"]						= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($dataView["objTransactionMaster"]->statusID);
 			$dataView["objNatural"]						= $this->Natural_Model->get_rowByPK($companyID,$dataView["objCustumer"]->branchID,$dataView["objCustumer"]->entityID);
-			$dataView["tipoCambio"]						= round($dataView["objTransactionMaster"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
+			$dataView["tipoCambio"]						= round($dataView["objTransactionMaster"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);			
+			$dataView["objZone"]						= $this->core_web_catalog->getCatalogItem("tb_transaction_master_info_billing","zoneID",$companyID,$dataView["objTransactionMasterInfo"]->zoneID);
+			$dataView["objMesa"]						= $this->core_web_catalog->getCatalogItem("tb_transaction_master_info_billing","mesaID",$companyID,$dataView["objTransactionMasterInfo"]->mesaID);
+			
+			
 			//obtener nombre de impresora por defecto
 			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_COCINA",$companyID);
 			$objParameterPrinterName = $objParameterPrinterName->value;
@@ -10733,9 +10737,9 @@ class app_invoice_billing extends _BaseController {
 			    "prefix"=>'',
 			    
 			    "style_row_data"		=>"text-align:left;width:auto",
-			    "colspan_row_data"		=>'1',
+			    "colspan_row_data"		=>'3',
 			    "prefix_row_data"		=>'',
-			    "nueva_fila_row_data"	=>0
+			    "nueva_fila_row_data"	=>1
 			    
 			);
 			array_push($confiDetalle,$row);
@@ -10752,11 +10756,11 @@ class app_invoice_billing extends _BaseController {
 			);
 			array_push($confiDetalle,$row);
 			$row = array(
-			    "style"=>"text-align:right;width:70px",
+			    "style"=>"text-align:right;width:5px",
 			    "colspan"=>'1',
 			    "prefix"=>$dataView["objCurrency"]->simbol,
 			    
-			    "style_row_data"		=>"text-align:right;width:70px",
+			    "style_row_data"		=>"text-align:right;width:5px",
 			    "colspan_row_data"		=>'1',
 			    "prefix_row_data"		=>"",
 			    "nueva_fila_row_data"	=>0
@@ -10793,10 +10797,12 @@ class app_invoice_billing extends _BaseController {
 			    $dataView["objTransactionMasterInfo"],
 			    $confiDetalle,
 			    $detalle,
+				$dataView, 
 			    $objParameterTelefono,
 				"",
 				"",
-				""
+				"",
+				""				
 			);
 			$this->dompdf->loadHTML($html);
 			

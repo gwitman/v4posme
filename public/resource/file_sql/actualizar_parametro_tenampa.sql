@@ -1531,7 +1531,7 @@ WHERE
 	
 /*--Cocina*/
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_SHOW_COMMAND_FOOT";## Símbolo de la Moneda Funcional 
@@ -1689,7 +1689,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'TENAMPA' , address = 'Leon 1K carretera a Managua mano izquierda' ,
-	flavorID = 636 /*usuarioID*/,type='default'  , abreviature='demo'
+	flavorID = 636 /*usuarioID*/,type='tenampa'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

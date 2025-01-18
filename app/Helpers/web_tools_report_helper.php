@@ -17540,14 +17540,16 @@ function helper_reporte58mmCocina(
     $objTransactionMasterInfo, 
     $confiDetalle, /**/
     $arrayDetalle, /**/
-    $objParameterTelefono, /*telefono*/
+	$dataView, 
+    $objParameterTelefono, /*telefono*/	
     $statusName = "", /*estado*/
     $causalName = "", /*causal*/
 	$userNickName = "", /*vendedor*/
-    $rucCompany = "" /*ruc*/
+    $rucCompany = "" /*ruc*/ 	
 )
 {
     
+	
     $html    = "";
     $html    = "
                     <!--
@@ -17600,11 +17602,25 @@ function helper_reporte58mmCocina(
                           </td>
                         </tr>
                                 
-                         <tr>
+                        <tr>
                           <td colspan='3' style='text-align:center'>
                             &nbsp;
                           </td>
-                        </tr>";
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style=''>
+                            Zona: ".$dataView["objZone"]->name."
+                          </td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style=''>
+                            Mesa: ".$dataView["objMesa"]->name."
+                          </td>
+                        </tr>
+						
+						";
 						
 						
           $html	= $html."<tr>
@@ -17613,7 +17629,11 @@ function helper_reporte58mmCocina(
                           </td>
                         </tr>
 
-						
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
 						
 						
                                 
