@@ -1132,6 +1132,15 @@ $routes->match(['get','post'],'app_planilla_settlement/updateElement','app_plani
 $routes->match(['get','post'],'app_planilla_settlement/updateElement/(:any)','app_planilla_settlement::updateElement');
 $routes->match(['get','post'],'app_planilla_settlement/delete','app_planilla_settlement::delete');
 $routes->match(['get','post'],'app_planilla_settlement/searchTransactionMaster','app_planilla_settlement::searchTransactionMaster');
+$routes->match(['get','post'],'app_planilla_leave/index','app_planilla_leave::index');
+$routes->match(['get','post'],'app_planilla_leave/index/(:any)','app_planilla_leave::index');
+$routes->match(['get','post'],'app_planilla_leave/add','app_planilla_leave::add');
+$routes->match(['get','post'],'app_planilla_leave/save','app_planilla_leave::save');
+$routes->match(['get','post'],'app_planilla_leave/save/(:any)','app_planilla_leave::save');
+$routes->match(['get','post'],'app_planilla_leave/edit','app_planilla_leave::edit');
+$routes->match(['get','post'],'app_planilla_leave/edit/(:any)','app_planilla_leave::edit');
+$routes->match(['get','post'],'app_planilla_leave/delete','app_planilla_leave::delete');
+$routes->match(['get','post'],'app_planilla_leave/searchTransactionMaster','app_planilla_leave::searchTransactionMaster');
 $routes->match(['get','post'],'app_purchase_api/getInforDashBoards','app_purchase_api::getInforDashBoards');
 $routes->match(['get','post'],'app_purchase_dashboards/index','app_purchase_dashboards::index');
 $routes->match(['get','post'],'app_purchase_internalpurchaserequest/getInfoImport','app_purchase_internalPurchaseRequest::getInfoImport');
