@@ -113,8 +113,10 @@ where
 	r.`name` = CONCAT(@nameCompanyOrigen,'@ADMINISTRADOR_WINDOW');
 
 
-#CONFIGURAR RACTURADOR_WEB
-set @roleFacturadorWeb := (select u.roleID from tb_role u where u.`name` = CONCAT(@nameCompany,'@RACTURADOR_WEB') );
+
+
+#CONFIGURAR FACTURADOR_WEB
+set @roleFacturadorWeb := (select u.roleID from tb_role u where u.`name` = CONCAT(@nameCompany,'@FACTURADOR_WEB') );
 insert into tb_user_permission(elementID,companyID,branchID,roleID,selected,inserted,deleted,edited)
 select 
 	e.elementID,e.companyID,e.branchID,@roleFacturadorWeb roleID,e.selected,e.inserted,e.deleted,e.edited
@@ -123,9 +125,9 @@ from
 	inner join tb_role r on 
 		e.roleID = r.roleID 
 where
-	r.`name` = CONCAT(@nameCompanyOrigen,'@RACTURADOR_WEB');
+	r.`name` = CONCAT(@nameCompanyOrigen,'@FACTURADOR_WEB');
 
-set @roleFacturadorWeb := (select u.roleID from tb_role u where u.`name` = CONCAT(@nameCompany,'@RACTURADOR_WEB') );
+set @roleFacturadorWeb := (select u.roleID from tb_role u where u.`name` = CONCAT(@nameCompany,'@FACTURADOR_WEB') );
 insert into tb_role_autorization(companyID,componentAutorizationID,roleID,branchID)
 select 
 	 e.companyID,
@@ -137,12 +139,12 @@ from
 	inner join tb_role r on 
 		e.roleID = r.roleID 
 where
-	r.`name` = CONCAT(@nameCompanyOrigen,'@RACTURADOR_WEB');
+	r.`name` = CONCAT(@nameCompanyOrigen,'@FACTURADOR_WEB');
 	
 	
 
-#CONFIGURAR RACTURADOR_MOBILE
-set @roleFacturadorMobile := (select u.roleID from tb_role u where u.`name` = CONCAT(@nameCompany,'@RACTURADOR_MOBILE') );
+#CONFIGURAR FACTURADOR_MOBILE
+set @roleFacturadorMobile := (select u.roleID from tb_role u where u.`name` = CONCAT(@nameCompany,'@FACTURADOR_MOBILE') );
 insert into tb_user_permission(elementID,companyID,branchID,roleID,selected,inserted,deleted,edited)
 select 
 	e.elementID,e.companyID,e.branchID,@roleFacturadorMobile roleID,e.selected,e.inserted,e.deleted,e.edited
@@ -151,9 +153,9 @@ from
 	inner join tb_role r on 
 		e.roleID = r.roleID 
 where
-	r.`name` = CONCAT(@nameCompanyOrigen,'@RACTURADOR_MOBILE');
+	r.`name` = CONCAT(@nameCompanyOrigen,'@FACTURADOR_MOBILE');
 
-set @roleFacturadorMobile := (select u.roleID from tb_role u where u.`name` = CONCAT(@nameCompany,'@RACTURADOR_MOBILE') );
+set @roleFacturadorMobile := (select u.roleID from tb_role u where u.`name` = CONCAT(@nameCompany,'@FACTURADOR_MOBILE') );
 insert into tb_role_autorization(companyID,componentAutorizationID,roleID,branchID)
 select 
 	 e.companyID,
@@ -165,11 +167,11 @@ from
 	inner join tb_role r on 
 		e.roleID = r.roleID 
 where
-	r.`name` = CONCAT(@nameCompanyOrigen,'@RACTURADOR_MOBILE');
+	r.`name` = CONCAT(@nameCompanyOrigen,'@FACTURADOR_MOBILE');
 	
 	
-#CONFIGURAR RACTURADOR_WINDOW
-set @roleFacturadorWindow := (select u.roleID from tb_role u where u.`name` = CONCAT(@nameCompany,'@RACTURADOR_WINDOW') );
+#CONFIGURAR FACTURADOR_WINDOW
+set @roleFacturadorWindow := (select u.roleID from tb_role u where u.`name` = CONCAT(@nameCompany,'@FACTURADOR_WINDOW') );
 insert into tb_user_permission(elementID,companyID,branchID,roleID,selected,inserted,deleted,edited)
 select 
 	e.elementID,e.companyID,e.branchID,@roleFacturadorWindow roleID,e.selected,e.inserted,e.deleted,e.edited
@@ -178,9 +180,9 @@ from
 	inner join tb_role r on 
 		e.roleID = r.roleID 
 where
-	r.`name` = CONCAT(@nameCompanyOrigen,'@RACTURADOR_WINDOW');
+	r.`name` = CONCAT(@nameCompanyOrigen,'@FACTURADOR_WINDOW');
 
-set @roleFacturadorWindow := (select u.roleID from tb_role u where u.`name` = CONCAT(@nameCompany,'@RACTURADOR_WINDOW') );
+set @roleFacturadorWindow := (select u.roleID from tb_role u where u.`name` = CONCAT(@nameCompany,'@FACTURADOR_WINDOW') );
 insert into tb_role_autorization(companyID,componentAutorizationID,roleID,branchID)
 select 
 	 e.companyID,
@@ -192,10 +194,11 @@ from
 	inner join tb_role r on 
 		e.roleID = r.roleID 
 where
-	r.`name` = CONCAT(@nameCompanyOrigen,'@RACTURADOR_WINDOW');
+	r.`name` = CONCAT(@nameCompanyOrigen,'@FACTURADOR_WINDOW');
+	
 
 
-#CONFIGURAR SUPERVISOR
+#CONFIGURAR SUPERVISOR WEB , WINDOW, MOBILE
 set @roleSupervisor := (select u.roleID from tb_role u where u.`name` = CONCAT(@nameCompany,'@SUPERVISOR') );
 insert into tb_user_permission(elementID,companyID,branchID,roleID,selected,inserted,deleted,edited)
 select 
@@ -223,7 +226,6 @@ where
 	r.`name` = CONCAT(@nameCompanyOrigen,'@SUPERVISOR');
 	
 	
-	
 
 #INSERTAR USUARIOS
 insert into tb_user (companyID,branchID,nickname,`password`,createdOn,isActive,email,createdBy,employeeID,useMobile,locationID)
@@ -238,7 +240,7 @@ select
 	createdBy,
 	614 as employeeID ,
 	c.useMobile ,
-	0
+	2
 from 
 	tb_user c 
 where 
@@ -249,6 +251,36 @@ where
 	c.email = CONCAT(@userFacturadorMobile,@domainOrigen) or 
 	c.email = CONCAT(@userFacturadorWindow,@domainOrigen) or 
 	c.email = CONCAT(@userSupervisor,@domainOrigen);
+	
+	
+
+#INSERTAR CAJAS
+insert into tb_cash_box_user (companyID,branchID,userID,cashBoxID,typeID)
+select 
+	2,
+	2,
+	c.userID,
+	1,
+	0
+from 
+	tb_user c 
+	inner join (
+			select 
+				x.userID,
+				x.email 
+			from 
+				tb_user x 
+			where 
+				x.email = CONCAT(@userAdministradorWeb,@domainDestino)  or 
+				x.email = CONCAT(@userAdministradorMobile,@domainDestino)  or 
+				x.email = CONCAT(@userAdministradorWindow,@domainDestino)  or 
+				x.email = CONCAT(@userFacturadorWeb,@domainDestino)  or 
+				x.email = CONCAT(@userFacturadorMobile,@domainDestino)  or 
+				x.email = CONCAT(@userFacturadorWindow,@domainDestino)  or 
+				x.email = CONCAT(@userSupervisor,@domainDestino)  	
+	) as dd on dd.email = c.email;
+
+	
 	
 #ASOCIAR ROLES A LOS USUARIOS
 insert into tb_membership (branchID,companyID,roleID,userID)
