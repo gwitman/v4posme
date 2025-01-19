@@ -1666,14 +1666,14 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 5824-3259" 
+	tb_company_parameter.value = "TEL: 8463-0023" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 5824-3259" 
+	tb_company_parameter.value = "TEL: 8463-0023" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1688,7 +1688,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Super Market Comida' , address = 'Parque forestal 2.5 al este' ,
+	NAME = 'Mirada Market Comida' , address = 'Parque forestal 2.5 al este' ,
 	flavorID = 622 /*usuarioID*/,type='mirada_comida'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

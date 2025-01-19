@@ -44,6 +44,26 @@ class app_mobile_api extends _BaseController
 		
 		
 	}
+	function getPositionGps()
+	{		
+		$txtCompanyName 				= /*inicio get post*/ $this->request->getPost("txtCompanyName");
+		$txtUserName 					= /*inicio get post*/ $this->request->getPost("txtUserName");		
+		$txtIndex						= /*inicio get post*/ $this->request->getPost("txtIndex");		
+		
+		
+		$txtCompanyName 		= str_replace("X3A", ":", $txtCompanyName);
+		$txtCompanyName 		= str_replace("X2F", "/", $txtCompanyName);
+		$txtCompanyName 		= str_replace("X4Z", " ", $txtCompanyName);			
+			
+		$objListRegisteredLocations                 = $this->Entity_Location_Model->get_UsersLocationByCompanyAndUserLast($txtCompanyName,$txtUserName);
+		
+		return $this->response->setJSON(array(
+			'error' 	=> false,
+			'message' 	=> SUCCESS,
+			'index' 	=> $txtIndex, 
+			'data' 		=> $objListRegisteredLocations
+		));//--finjson
+	}
     function setDataUpload()
     {
         try {

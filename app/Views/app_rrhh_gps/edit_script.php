@@ -1,7 +1,12 @@
 <script>
 	//https://localhost/posmev4/app_rrhh_gps/edit/txtCompanyName/Demo4/txtUserName/abc
     var Locations = JSON.parse('<?php echo json_encode($objListRegisteredLocations) ?>');    
+	
     function fnCargarMapa() {
+		
+		
+		var companyName 	= Locations[0].companyName;
+		var userName 		= Locations[0].Name;
         var coord = {
             lat: parseFloat(Locations[0].Latitude),
             lng: parseFloat(Locations[0].Longitude)
@@ -12,21 +17,50 @@
             center: coord
         });
        
-        Locations.forEach(location => {
-            new google.maps.Marker ({
-                position: {lat: parseFloat(location.Latitude), lng: parseFloat(location.Longitude)},
-                map: map,
-                title: location.Name +  "(" + location.createdOn + ")" 
-				//icon: 'icono-inicial.png',
-            });
-        });
+        
+		var marcador = new google.maps.Marker ({
+			position	: {lat: parseFloat(Locations[0].Latitude), lng: parseFloat(Locations[0].Longitude)},
+			map			: map,
+			title		: Locations[0].Name +  "(" + Locations[0].createdOn + ")"  
+		});
+        	
+		
+		// Refresca la página cada 5 minutos, evitando el caché
+		setInterval(function() {			
+			 
+			 $.ajax({									
+				cache       : false,
+				dataType    : 'json',
+				type        : 'POST',
+				url  		: "<?php echo base_url(); ?>/app_mobile_api/getPositionGps",
+				data 		: {						
+						txtCompanyName: companyName,
+						txtUserName: 	userName
+				},
+				success		: function(data){					
+					if(data.error == false && data.data.length > 0 )
+					{
+						
+						var coord2 = {
+							lat: parseFloat(data.data[0].Latitude),
+							lng: parseFloat(data.data[0].Longitude)
+						};
+						marcador.setPosition(coord2); 	// Actualiza la posición del marcador
+						map.panTo(coord2); 				// Centra el mapa en la nueva posición
+					}
+				},
+				error:function(xhr,data){						
+					console.info("complete data error");																		
+				}
+			});
+			 
+		}, 10000);
+		
+		
     }
 	
 	$(document).ready(function() {
-		// Refresca la página cada 5 minutos, evitando el caché
-		setInterval(function() {			
-			window.location.href = window.location.origin + window.location.pathname + window.location.search + '/time/' + new Date().getTime();
-		}, 300000);
+		
 	});
 
 

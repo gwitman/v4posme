@@ -3750,9 +3750,8 @@ class app_invoice_billing extends _BaseController {
 				
 				$targetComponentID			= $this->session->get('company')->flavorID;				
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
-				$parameter["{fecha}"]		= $fecha;				
+				$parameter["{fecha}"]		= $fecha;					
 				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
-				
 				
 				if(!$dataViewData){
 					
@@ -3781,7 +3780,7 @@ class app_invoice_billing extends _BaseController {
 				$cache->save('app_invoice_billing_dataviewid_index', $dataViewID, TIME_CACHE_APP);				
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$parameter["{fecha}"]		= $fecha;
-				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 			
+				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 							
 				
 				if($dataSession["user"]->useMobile == 1)
 				{

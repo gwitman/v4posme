@@ -114,7 +114,7 @@ class app_rrhh_gps extends _BaseController{
 		}
     }
 
-	function edit()
+	function Edit()
     {      
 		$txtCompanyName			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"txtCompanyName");//--finuri				
 		$txtUserName			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"txtUserName");//--finuri	

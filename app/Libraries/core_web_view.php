@@ -262,7 +262,7 @@ class core_web_view {
 		
 		
 		//Obtener la vista por company segun el flavor
-		$companyDataView			= $Company_Data_View_Model->get_rowBy_companyIDDataViewIDAndFlavor($user->companyID,$objCompanyDefaultDataView->dataViewID,$callerID,$componentID, $targetComponentID );
+		$companyDataView			= $Company_Data_View_Model->get_rowBy_companyIDDataViewIDAndFlavor($user->companyID,$objCompanyDefaultDataView->dataViewID,$callerID,$componentID, $targetComponentID );				
 		if(!$companyDataView)
 		{
 			//Obtener la vista por company genral
@@ -270,13 +270,6 @@ class core_web_view {
 			if(!$companyDataView)
 			return null;
 		}
-		
-		
-		//Obtener la vista por company
-		$companyDataView			= $Company_Data_View_Model->get_rowBy_companyIDDataViewID($user->companyID,$objCompanyDefaultDataView->dataViewID,$callerID,$componentID);
-		if(!$companyDataView)
-		return null;
-		
 		
 		
 		//EXECUTE 

@@ -82,8 +82,9 @@
 
 <script>
 
-    var Locations = JSON.parse('<?php echo json_encode($objListRegisteredLocations) ?>');
-    
+    var Locations 	= JSON.parse('<?php echo json_encode($objListRegisteredLocations) ?>');
+    var Markets 	= [];
+	
     function fnCargarMapa() {
         var coord = {
             lat: parseFloat(Locations[0].Latitude),
@@ -96,7 +97,7 @@
         });
        
         Locations.forEach(location => {
-            new google.maps.Marker ({
+            var mari = new google.maps.Marker ({
                 position: {lat: parseFloat(location.Latitude), lng: parseFloat(location.Longitude)},
                 map: map,
                 title: location.Name + " " + location.companyName + "  ("+location.createdOn+")" 
@@ -104,7 +105,52 @@
 				//label: "label"
 				//icon: 'icono-inicial.png',
             });
+			
+			Markets.push(mari);
+			
         });
+		
+		
+		// Refresca la página cada 5 minutos, evitando el caché
+		setInterval(function() {			
+			 
+			 var idex = 0 ;
+			 Locations.forEach(location => {
+				$.ajax({									
+					cache       : false,
+					dataType    : 'json',
+					type        : 'POST',
+					url  		: "<?php echo base_url(); ?>/app_mobile_api/getPositionGps",
+					data 		: {						
+							txtCompanyName: location.companyName,
+							txtUserName: 	location.Name,
+							txtIndex: 		idex
+					},
+					success		: function(data){					
+						if(data.error == false && data.data.length > 0 )
+						{
+							
+							var coord2 = {
+								lat: parseFloat(data.data[0].Latitude),
+								lng: parseFloat(data.data[0].Longitude)
+							};							
+							Markets[data.index].setPosition(coord2); 	// Actualiza la posición del marcador							
+						}
+					},
+					error:function(xhr,data){						
+						console.info("complete data error");																		
+					}
+				});
+				
+				idex++;
+			});
+			
+			 
+			 
+		}, 10000);
+		
+		
+		
     }
 	
 	$(document).ready(function(){
@@ -163,10 +209,7 @@
 		
 		
 		
-		//setInterval(function() {			
-		//	window.location.href = window.location.origin + window.location.pathname + window.location.search + '/time/' + new Date().getTime();
-		//}, 60000);
-		
+
 		
 	});	
 

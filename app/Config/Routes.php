@@ -914,6 +914,8 @@ $routes->match(['get','post'],'app_mobile_api/setDataUpload','app_mobile_api::se
 $routes->match(['get','post'],'app_mobile_api/setDataUpload/(:any)','app_mobile_api::setDataUpload');
 $routes->match(['get','post'],'app_mobile_api/setPositionGps','app_mobile_api::setPositionGps');
 $routes->match(['get','post'],'app_mobile_api/setPositionGps/(:any)','app_mobile_api::setPositionGps');
+$routes->match(['get','post'],'app_mobile_api/getPositionGps','app_mobile_api::getPositionGps');
+$routes->match(['get','post'],'app_mobile_api/getPositionGps/(:any)','app_mobile_api::getPositionGps');
 $routes->match(['get','post'],'app_mobile_api/getUserByCompany','app_mobile_api::getUserByCompany');
 $routes->match(['get','post'],'app_mobile_api/getUserByCompany/(:any)','app_mobile_api::getUserByCompany');
 $routes->match(['get','post'],'app_invoice_billing/edit','app_invoice_billing::edit');
