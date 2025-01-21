@@ -10691,7 +10691,9 @@ class app_invoice_billing extends _BaseController {
 			$transactionID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri	
 			$transactionMasterID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri	
 			$itemID					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"itemID");//--finuri	
-		
+			$itemIDArray			= explode(",",$itemID);
+			$itemIDArray			= array_map('intval', $itemIDArray);
+			
 			$objCompany 			= $this->Company_Model->get_rowByPK($companyID);					
 			$objParameter	        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
 			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
@@ -10773,13 +10775,18 @@ class app_invoice_billing extends _BaseController {
 		    array_push($detalle,$row);
 		    
 		    
+			
 			foreach($dataView["objTransactionMasterDetail"] as $detail_){
-			    $row = array(
-					$detail_->itemName,  
-					1, /*round($detail_->quantity,2),*/ 
-					"" /*round($detail_->amount,2)*/
-				);
-			    array_push($detalle,$row);
+				
+				if(in_array($detail_->componentItemID, $itemIDArray)   )
+				{
+					$row = array(
+						$detail_->itemName,  
+						1, /*round($detail_->quantity,2),*/ 
+						"" /*round($detail_->amount,2)*/
+					);
+					array_push($detalle,$row);
+				}
 			}
 			
 			

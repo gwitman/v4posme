@@ -160,7 +160,16 @@ class app_box_report extends _BaseController {
 				$dataSession["footer"]		= "";			
 				return view("core_masterpage/default_report",$dataSession);//--finview-r	
 			}
-			else{						
+			else{				
+				log_message("error",print_r($userID,true));
+				log_message("error",print_r($tocken,true));
+				log_message("error",print_r($companyID,true));
+				log_message("error",print_r($authorization,true));
+				log_message("error",print_r($startOn,true));
+				log_message("error",print_r($endOn,true));
+				log_message("error",print_r($userIDFilter,true));
+				
+				
 				//Obtener el tipo de Comprobante
 				$companyID 		= $dataSession["user"]->companyID;
 				//Get Component

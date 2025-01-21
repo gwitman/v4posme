@@ -1,3 +1,5 @@
+/*DB:  dbimnhv2es7glt*/
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "154" 
 WHERE 
@@ -836,3 +838,4 @@ update tb_company_currency set `simb` = 'C$' where currencyID = 1;
 update tb_company_currency set `simb` = 'U$' where currencyID = 2;	
 
 
+/*DB:  dbimnhv2es7glt*/
