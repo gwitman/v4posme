@@ -34,6 +34,7 @@
 										<li><a href="#profile" data-toggle="tab">Referencias.</a></li>
 										<li><a href="#profile-phones" data-toggle="tab">Telefonos.</a></li>
 										<li><a href="#profile-email" data-toggle="tab">Email.</a></li>
+										<li><a href="#profile-cxc-line" data-toggle="tab">CXC Lineas.</a></li>
 										<li class="dropdown">
 											<a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas <b class="caret"></b></a>
 											<ul class="dropdown-menu">
@@ -331,6 +332,48 @@
 														<tbody id="body_detail_email">             
 														</tbody>
 													</table>
+													
+												</div>
+											</div>
+										</div>
+										<div class="tab-pane fade" id="profile-cxc-line">
+											<div class="row">
+												<div class="col-lg-12">
+													<br/>
+													<a href="#" class="btn btn-flat btn-info" id="btnNewLine" >Agregar</a>
+													<a href="#" class="btn btn-flat btn-danger" id="btnDeleteLine" >Eliminar</a>
+													
+													<table id="tb_detail_credit_line" class="table table-bordered">
+														<thead>
+														<tr>
+															<th></th>
+															<th>providerCreditLineID</th>
+															<th>creditLineID</th>
+															<th>currencyID</th>
+															<th>statusID</th>										
+															<th>InterestYear</th>
+															<th>InterestPay</th>
+															<th>TotalPay</th>
+															<th>TotalDefeated</th>
+															<th>DateOpen</th>
+															<th>PeriodPay</th>
+															<th>DateLastPay</th>
+															<th>Term</th>
+															<th>Note</th>										
+															<th>Linea</th>
+															<th>Numero</th>
+															<th>Limite</th>
+															<th>Balance</th>
+															<th>Estado</th>
+															<th>Moneda</th>
+															<th>Tipo Amortization</th>
+															<th>dayExcludedID</th>
+														</tr>
+														</thead>
+														<tbody id="body_detail_line">             
+														</tbody>
+													</table>
+													
 													
 												</div>
 											</div>

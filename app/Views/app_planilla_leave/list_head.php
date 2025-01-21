@@ -33,4 +33,4 @@
                 <h4>...</h4>
                 <a href="#" class="minimize"></a>
             </div>
-            <div class="panel-body"></div>
+            <div class="panel-body">

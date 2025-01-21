@@ -42,6 +42,11 @@ class app_cxp_provider extends _BaseController {
 			
 			$objProvider							= $this->Provider_Model->get_rowByPK($companyID_,$branchID_,$entityID_);
 			$oldStatusID 							= $objProvider->statusID;
+
+			//Moneda Dolares
+			date_default_timezone_set(APP_TIMEZONE); 
+			$dateOn 								= date("Y-m-d");
+			$dateOn 								= date_format(date_create($dateOn),"Y-m-d");
 			
 			//Validar Edicion por el Usuario
 			if ($resultPermission 	== PERMISSION_ME && ($objProvider->createdBy != $dataSession["user"]->userID))
@@ -126,6 +131,91 @@ class app_cxp_provider extends _BaseController {
 				$objEntityPhone["isPrimary"]	= $arrayListEntityPhoneIsPrimary[$key];
 				$this->Entity_Phone_Model->insert_app_posme($objEntityPhone);
 			}	
+
+			//Lineas de Creditos
+			$arrayListProviderCreditLineID	= /*inicio get post*/ $this->request->getPost("txtProviderCreditLineID");
+			$arrayListCreditLineID			= /*inicio get post*/ $this->request->getPost("txtCreditLineID");
+			$arrayListCreditCurrencyID		= /*inicio get post*/ $this->request->getPost("txtCreditCurrencyID");
+			$arrayListCreditStatusID		= /*inicio get post*/ $this->request->getPost("txtCreditStatusID");
+			$arrayListCreditInterestYear	= /*inicio get post*/ $this->request->getPost("txtCreditInterestYear");
+			$arrayListCreditInterestPay		= /*inicio get post*/ $this->request->getPost("txtCreditInterestPay");
+			$arrayListCreditTotalPay		= /*inicio get post*/ $this->request->getPost("txtCreditTotalPay");
+			$arrayListCreditTotalDefeated	= /*inicio get post*/ $this->request->getPost("txtCreditTotalDefeated");
+			$arrayListCreditDateOpen		= /*inicio get post*/ $this->request->getPost("txtCreditDateOpen");
+			$arrayListCreditPeriodPay		= /*inicio get post*/ $this->request->getPost("txtCreditPeriodPay");
+			$arrayListCreditDateLastPay		= /*inicio get post*/ $this->request->getPost("txtCreditDateLastPay");
+			$arrayListCreditTerm			= /*inicio get post*/ $this->request->getPost("txtCreditTerm");
+			$arrayListCreditNote			= /*inicio get post*/ $this->request->getPost("txtCreditNote");
+			$arrayListCreditLine			= /*inicio get post*/ $this->request->getPost("txtLine");
+			$arrayListCreditNumber			= /*inicio get post*/ $this->request->getPost("txtLineNumber");
+			$arrayListCreditLimit			= /*inicio get post*/ $this->request->getPost("txtLineLimit");
+			$arrayListCreditBalance			= /*inicio get post*/ $this->request->getPost("txtLineBalance");
+			$arrayListCreditStatus			= /*inicio get post*/ $this->request->getPost("txtLineStatus");
+			$arrayListTypeAmortization		= /*inicio get post*/ $this->request->getPost("txtTypeAmortization");
+			$arrayListDayExcluded			= /*inicio get post*/ $this->request->getPost("txtDayExcluded");
+			
+			$limitCreditLine 				= 0;
+			//Limpiar Lineas de Creditos
+			$this->Customer_Credit_Line_Model->deleteWhereIDNotIn($companyID_,$branchID_,$entityID_,$arrayListProviderCreditLineID);
+			
+			
+			if(!empty($arrayListProviderCreditLineID))
+			foreach($arrayListProviderCreditLineID as $key => $value){
+			
+				$providerCreditLineID 						= $value;
+				if($providerCreditLineID == 0 ){
+					$objProviderCreditLine					= NULL;
+					$objProviderCreditLine["companyID"]		= $companyID_;
+					$objProviderCreditLine["branchID"]		= $branchID_;
+					$objProviderCreditLine["entityID"]		= $entityID_;
+					$objProviderCreditLine["creditLineID"]	= $arrayListCreditLineID[$key];
+					$objProviderCreditLine["accountNumber"]	= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_customer_credit_line",0);
+					$objProviderCreditLine["currencyID"]	= helper_StringToNumber($arrayListCreditCurrencyID[$key]);
+					$objProviderCreditLine["limitCredit"]	= helper_StringToNumber($arrayListCreditLimit[$key]);
+					$objProviderCreditLine["balance"]		= helper_StringToNumber($arrayListCreditLimit[$key]);
+					$objProviderCreditLine["interestYear"]	= helper_StringToNumber($arrayListCreditInterestYear[$key]);
+					$objProviderCreditLine["interestPay"]	= $arrayListCreditInterestPay[$key];
+					$objProviderCreditLine["totalPay"]		= $arrayListCreditTotalPay[$key];
+					$objProviderCreditLine["totalDefeated"]	= $arrayListCreditTotalDefeated[$key];
+					$objProviderCreditLine["dateOpen"]		= date("Y-m-d");
+					$objProviderCreditLine["periodPay"]		= $arrayListCreditPeriodPay[$key];
+					$objProviderCreditLine["dateLastPay"]	= date("Y-m-d");
+					$objProviderCreditLine["term"]			= helper_StringToNumber($arrayListCreditTerm[$key]);
+					$objProviderCreditLine["note"]			= $arrayListCreditNote[$key];
+					$objProviderCreditLine["statusID"]		= $arrayListCreditStatusID[$key];
+					$objProviderCreditLine["isActive"]		= 1;
+					$objProviderCreditLine["typeAmortization"]		= $arrayListTypeAmortization[$key];
+					$objProviderCreditLine["dayExcluded"]			= $arrayListDayExcluded[$key];					
+					$limitCreditLine 								= $limitCreditLine + $objProviderCreditLine["limitCredit"];
+					$this->Customer_Credit_Line_Model->insert_app_posme($objProviderCreditLine);
+					
+					if($objProviderCreditLine["balance"] > $objProviderCreditLine["limitCredit"])
+					throw new \Exception("BALANCE NO PUEDE SER MAYOR QUE EL LIMITE EN LA LINEA");
+				}
+				else{					
+					$objProviderCreditLine 							= $this->Customer_Credit_Line_Model->get_rowByPK($providerCreditLineID);
+					$objProviderCreditLineNew						= NULL;
+					$objProviderCreditLineNew["creditLineID"]		= $arrayListCreditLineID[$key];
+					$objProviderCreditLineNew["currencyID"]			= helper_StringToNumber($arrayListCreditCurrencyID[$key]);
+					$objProviderCreditLineNew["limitCredit"]		= helper_StringToNumber($arrayListCreditLimit[$key]);
+					$objProviderCreditLineNew["interestYear"]		= helper_StringToNumber($arrayListCreditInterestYear[$key]);
+					$objProviderCreditLineNew["balance"] 			= $objProviderCreditLineNew["limitCredit"] - ($objProviderCreditLine->limitCredit - $objProviderCreditLine->balance);
+					$objProviderCreditLineNew["periodPay"]			= $arrayListCreditPeriodPay[$key];
+					$objProviderCreditLineNew["term"]				= helper_StringToNumber($arrayListCreditTerm[$key]);
+					$objProviderCreditLineNew["note"]				= $arrayListCreditNote[$key];
+					$objProviderCreditLineNew["statusID"]			= $arrayListCreditStatusID[$key];
+					$objProviderCreditLineNew["typeAmortization"]	= $arrayListTypeAmortization[$key];
+					$objProviderCreditLineNew["dayExcluded"]		= $arrayListDayExcluded[$key];
+					$limitCreditLine 								= $limitCreditLine + $objProviderCreditLineNew["limitCredit"];
+					
+					//Si el balance es mayor que el limite igual el balance al limite
+					if($objProviderCreditLineNew["balance"] > $objProviderCreditLineNew["limitCredit"])
+					$objProviderCreditLineNew["balance"] = $objProviderCreditLineNew["limitCredit"];
+					
+					//actualizar
+					$this->Customer_Credit_Line_Model->update_app_posme($providerCreditLineID,$objProviderCreditLineNew);
+				}
+			}
 			
 			//Confirmar Entidad
 			if($db->transStatus() !== false){
@@ -151,7 +241,8 @@ class app_cxp_provider extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}			
+		    return $resultView;		
+		}			
 	}
 	function insertElement($dataSession){
 		try{
@@ -186,9 +277,14 @@ class app_cxp_provider extends _BaseController {
 			//Obtener transaccion
 			$companyID 								= $dataSession["user"]->companyID;			
 			$objEntity["companyID"] 				= $dataSession["user"]->companyID;			
-			$objEntity["branchID"]					= $dataSession["user"]->branchID;			
+			$objEntity["branchID"]					= $dataSession["user"]->branchID;	
+			$branchID 								= $dataSession["user"]->branchID;		
+			$roleID 								= $dataSession["role"]->roleID;
 			$this->core_web_auditoria->setAuditCreated($objEntity,$dataSession,$this->request);
-			
+
+			$dateOn 								= date("Y-m-d");
+			$dateOn 								= date_format(date_create($dateOn),"Y-m-d");
+
 			$db=db_connect();
 			$db->transStart();
 			$entityID = $this->Entity_Model->insert_app_posme($objEntity);
@@ -264,7 +360,94 @@ class app_cxp_provider extends _BaseController {
 				$objEntityPhone["isPrimary"]	= $arrayListEntityPhoneIsPrimary[$key];
 				$this->Entity_Phone_Model->insert_app_posme($objEntityPhone);
 			}
+
+			//Ingresar Customer Credit
+			$objProviderCredit["companyID"] 		= $objEntity["companyID"];
+			$objProviderCredit["branchID"] 			= $objEntity["branchID"];
+			$objProviderCredit["entityID"] 			= $entityID;
+			$this->Customer_Credit_Model->insert_app_posme($objProviderCredit);
 			
+			$objListComanyParameter			= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+            $creditLineDefault 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_CREDIT_LINE_DEFAULT")->value;
+			$interesDefault					= $this->core_web_parameter->getParameterValue("CXC_INTERES_DEFAULT",$companyID);
+			$frecuencyDefault 				= $this->core_web_parameter->getParameterValue("CXC_FRECUENCIA_PAY_DEFAULT",$companyID);
+			$plazoDefault 					= $this->core_web_parameter->getParameterValue("CXC_PLAZO_DEFAULT",$companyID);
+			$typeAmortizationDefault 		= $this->core_web_parameter->getParameterValue("CXC_TYPE_AMORTIZATION",$companyID);
+			$dayExcludedDefault 			= $this->core_web_parameter->getParameterValue("CXC_DAY_EXCLUDED_IN_CREDIT",$companyID);			
+
+			//Lineas de Creditos
+			$arrayListProviderCreditLineID	= /*inicio get post*/ $this->request->getPost("txtProviderCreditLineID");
+			$arrayListCreditLineID			= /*inicio get post*/ $this->request->getPost("txtCreditLineID");
+			$arrayListCreditCurrencyID		= /*inicio get post*/ $this->request->getPost("txtCreditCurrencyID");
+			$arrayListCreditStatusID		= /*inicio get post*/ $this->request->getPost("txtCreditStatusID");
+			$arrayListCreditInterestYear	= /*inicio get post*/ $this->request->getPost("txtCreditInterestYear");
+			$arrayListCreditInterestPay		= /*inicio get post*/ $this->request->getPost("txtCreditInterestPay");
+			$arrayListCreditTotalPay		= /*inicio get post*/ $this->request->getPost("txtCreditTotalPay");
+			$arrayListCreditTotalDefeated	= /*inicio get post*/ $this->request->getPost("txtCreditTotalDefeated");
+			$arrayListCreditDateOpen		= /*inicio get post*/ $this->request->getPost("txtCreditDateOpen");
+			$arrayListCreditPeriodPay		= /*inicio get post*/ $this->request->getPost("txtCreditPeriodPay");
+			$arrayListCreditDateLastPay		= /*inicio get post*/ $this->request->getPost("txtCreditDateLastPay");
+			$arrayListCreditTerm			= /*inicio get post*/ $this->request->getPost("txtCreditTerm");
+			$arrayListCreditNote			= /*inicio get post*/ $this->request->getPost("txtCreditNote");
+			$arrayListCreditLine			= /*inicio get post*/ $this->request->getPost("txtLine");
+			$arrayListCreditNumber			= /*inicio get post*/ $this->request->getPost("txtLineNumber");
+			$arrayListCreditLimit			= /*inicio get post*/ $this->request->getPost("txtLineLimit");
+			$arrayListCreditBalance			= /*inicio get post*/ $this->request->getPost("txtLineBalance");
+			$arrayListCreditStatus			= /*inicio get post*/ $this->request->getPost("txtLineStatus");
+			$arrayListTypeAmortization		= /*inicio get post*/ $this->request->getPost("txtTypeAmortization");			
+			$arrayListDayExcluded			= /*inicio get post*/ $this->request->getPost("txtDayExcluded");			
+			$limitCreditLine 				= 0;
+			
+			
+			if(empty($arrayListProviderCreditLineID))
+			{
+				 $arrayListProviderCreditLineID[0]	= 1;
+				 $arrayListCreditLineID[0] 			= $creditLineDefault;
+				 $arrayListCreditCurrencyID[0]		= $this->core_web_currency->getCurrencyDefault($companyID)->currencyID;
+				 $arrayListCreditLimit[0]			= 300000;
+				 $arrayListCreditInterestYear[0]	= $interesDefault;
+				 $arrayListCreditInterestPay[0]		= 0;
+				 $arrayListCreditTotalPay[0]		= 0;
+				 $arrayListCreditTotalDefeated[0]	= 0;
+				 $arrayListCreditPeriodPay[0]		= $frecuencyDefault;
+				 $arrayListCreditTerm[0]			= $plazoDefault;
+				 $arrayListCreditNote[0]			= "-";
+				 $arrayListTypeAmortization[0]		= $typeAmortizationDefault;
+				 $arrayListDayExcluded[0]			= $dayExcludedDefault;
+				 $arrayListCreditStatusID[0]		= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_line","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
+				 
+			}
+			
+			if(!empty($arrayListProviderCreditLineID))
+			{
+				foreach($arrayListProviderCreditLineID as $key => $value)
+				{
+					$objProviderCreditLine["companyID"]			= $objEntity["companyID"];
+					$objProviderCreditLine["branchID"]			= $objEntity["branchID"];
+					$objProviderCreditLine["entityID"]			= $entityID;
+					$objProviderCreditLine["creditLineID"]		= $arrayListCreditLineID[$key];
+					$objProviderCreditLine["accountNumber"]		= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_customer_credit_line",0);
+					$objProviderCreditLine["currencyID"]		= $arrayListCreditCurrencyID[$key];
+					$objProviderCreditLine["limitCredit"]		= helper_StringToNumber($arrayListCreditLimit[$key]);
+					$objProviderCreditLine["balance"]			= helper_StringToNumber($arrayListCreditLimit[$key]);
+					$objProviderCreditLine["interestYear"]		= helper_StringToNumber($arrayListCreditInterestYear[$key]);
+					$objProviderCreditLine["interestPay"]		= $arrayListCreditInterestPay[$key];
+					$objProviderCreditLine["totalPay"]			= $arrayListCreditTotalPay[$key];
+					$objProviderCreditLine["totalDefeated"]		= $arrayListCreditTotalDefeated[$key];
+					$objProviderCreditLine["dateOpen"]			= date("Y-m-d");
+					$objProviderCreditLine["periodPay"]			= $arrayListCreditPeriodPay[$key];
+					$objProviderCreditLine["dateLastPay"]		= date("Y-m-d");
+					$objProviderCreditLine["term"]				= helper_StringToNumber($arrayListCreditTerm[$key]);
+					$objProviderCreditLine["note"]				= $arrayListCreditNote[$key];
+					$objProviderCreditLine["statusID"]			= $arrayListCreditStatusID[$key];
+					$objProviderCreditLine["isActive"]			= 1;
+					$objProviderCreditLine["typeAmortization"]	= $arrayListTypeAmortization[$key];
+					$objProviderCreditLine["dayExcluded"]		= $arrayListDayExcluded[$key];
+					$limitCreditLine 							= $limitCreditLine + $objProviderCreditLine["limitCredit"];
+					$this->Customer_Credit_Line_Model->insert_app_posme($objProviderCreditLine);
+					
+				}
+			}
 			
 			//Crear la Carpeta para almacenar los Archivos del Cliente
 			mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$entityID, 0700);
@@ -293,7 +476,8 @@ class app_cxp_provider extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}	
+		    return $resultView;		
+		}	
 	}
 	function delete(){
 		try{ 
@@ -484,7 +668,8 @@ class app_cxp_provider extends _BaseController {
 			$datView["objListCategoryID"]				= $this->core_web_catalog->getCatalogAllItem("tb_provider","providerCategoryID",$companyID);
 			$datView["objListClasificationID"]			= $this->core_web_catalog->getCatalogAllItem("tb_provider","providerClasificationID",$companyID);
 			$datView["objListPayConditionID"]			= $this->core_web_catalog->getCatalogAllItem("tb_provider","payConditionID",$companyID);
-			
+			$datView["objCustomerCreditLine"]			= $this->Customer_Credit_Line_Model->get_rowByEntity($companyID,$branchID,$entityID);
+
 			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			=  $this->core_web_notification->get_message();
@@ -702,5 +887,112 @@ class app_cxp_provider extends _BaseController {
 			return view("core_masterpage/default_popup",$dataSession);//--finview-r
 	}
 	
+	function add_credit_line(){
+			
+		//AUTENTICACION
+		if(!$this->core_web_authentication->isAuthenticated())
+		throw new \Exception(USER_NOT_AUTENTICATED);
+		$dataSession		= $this->session->get();
+		
+		//PERMISO SOBRE LA FUNCION
+		if(APP_NEED_AUTHENTICATION == true){
+			$permited = false;
+			$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+			
+			if(!$permited)
+			throw new \Exception(NOT_ACCESS_CONTROL);
+			
+			$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"index",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+			if ($resultPermission 	== PERMISSION_NONE)
+			throw new \Exception(NOT_ACCESS_FUNCTION);			
+		}
+		
+		
+		
+		
+		$companyID 								= $dataSession["user"]->companyID;
+		$branchID 								= $dataSession["user"]->branchID;
+		$roleID 								= $dataSession["role"]->roleID;
+		$dataView["objListLine"]				= $this->Credit_Line_Model->get_rowByCompany($companyID);
+		$dataView["objCurrencyList"]			= $this->Company_Currency_Model->getByCompany($companyID);
+		$dataView["objListWorkflowStage"]		= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_line","statusID",$companyID,$branchID,$roleID);
+		$dataView["objListPay"]					= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","periodPay",$companyID);
+		$dataView["objListTypeAmortization"]	= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","typeAmortization",$companyID);
+		$dataView["objListDayExcluded"]			= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","dayExcluded",$companyID);
+		
+		$objParameterCurrenyDefault				= $this->core_web_parameter->getParameter("ACCOUNTING_CURRENCY_NAME_FUNCTION",$companyID);			
+		$objParameterCurrenyDefault 			= $objParameterCurrenyDefault->value;
+		$dataView["objParameterCurrenyDefault"] = $objParameterCurrenyDefault;
+		
+		
+		$objParameterCXC_DAY_EXCLUDED_IN_CREDIT				= $this->core_web_parameter->getParameter("CXC_DAY_EXCLUDED_IN_CREDIT",$companyID);			
+		$objParameterCXC_DAY_EXCLUDED_IN_CREDIT 			= $objParameterCXC_DAY_EXCLUDED_IN_CREDIT->value;
+		$dataView["objParameterCXC_DAY_EXCLUDED_IN_CREDIT"] = $objParameterCXC_DAY_EXCLUDED_IN_CREDIT;
+		
+		
+		$objParameterAmortizationDefault	= $this->core_web_parameter->getParameter("CXC_TYPE_AMORTIZATION",$companyID);			
+		$objParameterAmortizationDefault 	= $objParameterAmortizationDefault->value;
+		$dataView["objParameterAmortizationDefault"] = $objParameterAmortizationDefault;
+		
+		
+		$objParameterInteresDefault						= $this->core_web_parameter->getParameter("CXC_INTERES_DEFAULT",$companyID);			
+		$objParameterInteresDefault 					= $objParameterInteresDefault->value;
+		$dataView["objParameterInteresDefault"] 		= $objParameterInteresDefault;
+		
+		$objParameterPayDefault						= $this->core_web_parameter->getParameter("CXC_FRECUENCIA_PAY_DEFAULT",$companyID);			
+		$objParameterPayDefault 					= $objParameterPayDefault->value;
+		$dataView["objParameterPayDefault"] 		= $objParameterPayDefault;
+		$dataView["objParameterCXC_PLAZO_DEFAULT"]	= $this->core_web_parameter->getParameterValue("CXC_PLAZO_DEFAULT",$companyID);			
+		
+		//Renderizar Resultado
+		$dataSession["message"]		= "";
+		$dataSession["head"]		= /*--inicio view*/ view('app_cxp_provider/popup_addcreditline_head',$dataView);//--finview
+		$dataSession["body"]		= /*--inicio view*/ view('app_cxp_provider/popup_addcreditline_body',$dataView);//--finview
+		$dataSession["script"]		= /*--inicio view*/ view('app_cxp_provider/popup_addcreditline_script',$dataView);//--finview
+		return view("core_masterpage/default_popup",$dataSession);//--finview-r
+	}
+
+	function edit_credit_line(){
+			
+		//AUTENTICACION
+		if(!$this->core_web_authentication->isAuthenticated())
+		throw new \Exception(USER_NOT_AUTENTICATED);
+		$dataSession		= $this->session->get();
+		
+		//PERMISO SOBRE LA FUNCION
+		if(APP_NEED_AUTHENTICATION == true){
+			$permited = false;
+			$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+			
+			if(!$permited)
+			throw new \Exception(NOT_ACCESS_CONTROL);
+			
+			$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"index",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+			if ($resultPermission 	== PERMISSION_NONE)
+			throw new \Exception(NOT_ACCESS_FUNCTION);			
+		}
+		
+		
+		$customerCreditLineID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"customerCreditLineID");//--finuri
+		$companyID 							= $dataSession["user"]->companyID;
+		$branchID 							= $dataSession["user"]->branchID;
+		$roleID 							= $dataSession["role"]->roleID;
+		
+		
+		$dataView["objListLine"]			= $this->Credit_Line_Model->get_rowByCompany($companyID);
+		$dataView["objCurrencyList"]		= $this->Company_Currency_Model->getByCompany($companyID);
+		$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_line","statusID",$companyID,$branchID,$roleID);
+		$dataView["objListPay"]				= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","periodPay",$companyID);
+		$dataView["objCustomerCreditLine"] 	= $this->Customer_Credit_Line_Model->get_rowByPK($customerCreditLineID);
+		$dataView["objListTypeAmortization"]= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","typeAmortization",$companyID);
+		$dataView["objListDayExcluded"]		= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","dayExcluded",$companyID);
+		
+		//Renderizar Resultado
+		$dataSession["message"]		= "";
+		$dataSession["head"]		= /*--inicio view*/ view('app_cxp_provider/popup_editcreditline_head',$dataView);//--finview
+		$dataSession["body"]		= /*--inicio view*/ view('app_cxp_provider/popup_editcreditline_body',$dataView);//--finview
+		$dataSession["script"]		= /*--inicio view*/ view('app_cxp_provider/popup_editcreditline_script',$dataView);//--finview
+		return view("core_masterpage/default_popup",$dataSession);//--finview-r
+	}
 }
 ?>
