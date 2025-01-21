@@ -33,6 +33,7 @@
 										<li><a href="#profile" data-toggle="tab">Referencias.</a></li>
 										<li><a href="#profile-phones" data-toggle="tab">Telefonos.</a></li>
 										<li><a href="#profile-email" data-toggle="tab">Email.</a></li>
+										<li><a href="#profile-cxc-line" data-toggle="tab">CXC Lineas.</a></li>
 										<li class="dropdown">
 											<a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas <b class="caret"></b></a>
 											<ul class="dropdown-menu">
@@ -363,6 +364,75 @@
 												</div>
 											</div>
 										</div>
+
+										<div class="tab-pane fade" id="profile-cxc-line">
+											<div class="row">
+												<div class="col-lg-12">
+													<br/>
+													<a href="#" class="btn btn-flat btn-info" id="btnNewLine" >Agregar</a>
+													<a href="#" class="btn btn-flat btn-success" id="btnEditLine" >Editar</a>
+													<a href="#" class="btn btn-flat btn-danger" id="btnDeleteLine" >Eliminar</a>
+													
+													<div class="btn-group">
+														<button class="btn btn-flat btn-warning">mostrar</button>
+														<button class="btn btn-flat dropdown-toggle btn-warning" data-toggle="dropdown"><span class="caret"></span></button>
+														<ul class="dropdown-menu">
+															<li class="active"><a href="#" class="toggle-vis" data-column="14"><i class="fa fa-tint"></i>Linea</a></li>
+															<li class="active"><a href="#" class="toggle-vis" data-column="15"><i class="fa fa-tint"></i>Numero</a></li>
+															<li class="active"><a href="#" class="toggle-vis" data-column="16"><i class="fa fa-tint"></i>Limite</a></li>
+															<li class="divider"></li>
+															<li class="active"><a href="#" class="toggle-vis" data-column="17"><i class="fa fa-tint"></i>Balance</a></li>
+															<li class="active"><a href="#" class="toggle-vis" data-column="18"><i class="fa fa-tint"></i>Estado</a></li>
+															<li class="active"><a href="#" class="toggle-vis" data-column="19"><i class="fa fa-tint"></i>Moneda</a></li>
+															<li class="divider"></li>
+															<li class="active"><a href="#" class="toggle-vis" data-column="21"><i class="fa fa-tint"></i>Plan</a></li>
+															<li class="active"><a href="#" class="toggle-vis" data-column="23"><i class="fa fa-tint"></i>Interes</a></li>
+															<li class="active"><a href="#" class="toggle-vis" data-column="22"><i class="fa fa-tint"></i>Frecuencia</a></li>
+															<li class="active"><a href="#" class="toggle-vis" data-column="24"><i class="fa fa-tint"></i>No Pagos</a></li>
+															<li class="active"><a href="#" class="toggle-vis" data-column="25"><i class="fa fa-tint"></i>Dias Excluidos</a></li>
+														</ul>
+													</div>
+
+													<table id="tb_detail_credit_line" class="table table-bordered">
+														<thead>
+														<tr>
+															<th></th>
+															<th>providerCreditLineID</th>
+															<th>creditLineID</th>
+															<th>currencyID</th>
+															<th>statusID</th>										
+															<th>InterestYear</th>
+															<th>InterestPay</th>
+															<th>TotalPay</th>
+															<th>TotalDefeated</th>
+															<th>DateOpen</th>
+															<th>PeriodPay</th>	
+															<th>DateLastPay</th>
+															<th>Term</th>
+															<th>Note</th>										
+															<th>Linea</th>
+															<th>Numero</th>
+															<th>Limite</th>
+															<th>Balance</th>
+															<th>Estado</th>
+															<th>Moneda</th>
+															<th>Tipo Amortization</th>
+															<th>Plan</th>
+															<th>Frecuencia</th>
+															<th>Interes Anual</th>
+															<th>No. Pagos</th>
+															<th>dayExcludedID</th>
+														</tr>
+														</thead>
+														<tbody id="body_detail_line">             
+														</tbody>
+													</table>
+													
+													
+												</div>
+											</div>
+										</div>
+
 										<div class="tab-pane fade" id="dropdown">
 											
 												<div class="form-group">

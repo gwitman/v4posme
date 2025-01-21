@@ -668,6 +668,9 @@ $routes->match(['get','post'],'app_cxp_provider/index','app_cxp_provider::index'
 $routes->match(['get','post'],'app_cxp_provider/index/(:any)','app_cxp_provider::index');
 $routes->match(['get','post'],'app_cxp_provider/add_email','app_cxp_provider::add_email');
 $routes->match(['get','post'],'app_cxp_provider/add_phone','app_cxp_provider::add_phone');
+$routes->match(['get','post'],'app_cxp_provider/add_credit_line','app_cxp_provider::add_credit_line');
+$routes->match(['get','post'],'app_cxp_provider/edit_credit_line','app_cxp_provider::edit_credit_line');
+$routes->match(['get','post'],'app_cxp_provider/edit_credit_line/(:any)','app_cxp_provider::edit_credit_line');
 $routes->match(['get','post'],'app_inventory_category/edit','app_inventory_category::edit');
 $routes->match(['get','post'],'app_inventory_category/edit/(:any)','app_inventory_category::edit');
 $routes->match(['get','post'],'app_inventory_category/delete','app_inventory_category::delete');
