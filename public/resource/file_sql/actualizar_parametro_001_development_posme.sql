@@ -1744,6 +1744,13 @@ update tb_item set realStateEmployerAgentID = ifnull(realStateEmployerAgentID,0)
 update tb_item set realStateCityID = ifnull(realStateCityID,0);
 update tb_item set realStateCountryID = ifnull(realStateCountryID,0);
 update tb_item set realStateStateID = ifnull(realStateStateID,0);
+update tb_item set realStateStateID = ifnull(realStateStateID,0);
+update tb_item set realStateRoomBatchServices = ifnull(realStateRoomBatchServices,0);
+update tb_item set realStateRooBatchVisit = ifnull(realStateRooBatchVisit,0);
+update tb_item set realStateRoomServices = ifnull(realStateRoomServices,0);
+
+
+
 update tb_customer set entityContactID = ifnull(entityContactID,0);
 update tb_customer_credit_line set dayExcluded = IFNULL(dayExcluded,2323);
 
