@@ -1,6 +1,8 @@
 <?php
 //posme:2023-02-27
 namespace App\Controllers;
+
+use Exception;
 class app_inventory_inputunpost extends _BaseController {
 	
     
@@ -832,7 +834,7 @@ class app_inventory_inputunpost extends _BaseController {
 			$objTM["transactionID"] 				= $transactionID;			
 			$objTM["branchID"]						= $dataSession["user"]->branchID;			
 			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_inputunpost",0);
-			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($objTM["companyID"],$objTM["transactionID"]);
+			$objTM["transactionCausalID"] 			= /*inicio get post*/ $this->request->getPost("txtCausalID");
 			$objTM["entityID"]						= /*inicio get post*/ $this->request->getPost("txtProviderID");
 			$objTM["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtTransactionOn");
 			$objTM["statusIDChangeOn"]				= date("Y-m-d H:m:s");
@@ -857,7 +859,7 @@ class app_inventory_inputunpost extends _BaseController {
 			$objTM["tax1"]							= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtIva"));
 			$objTM["tax2"]							= 0;
 			$objTM["tax3"]							= 0;
-			$objTM["tax4"]							= 0;
+			$objTM["tax4"]							= /*inicio get post*/ $this->request->getPost("txtCreditLineID");
 			$objTM["subAmount"]						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtSubTotal"));
 			$objTM["discount"]						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtDiscount"));
 			$objTM["amount"]						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtTotal"));
@@ -1028,7 +1030,8 @@ class app_inventory_inputunpost extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}			
+		    return $resultView;		
+		}			
 	}
 
 	function insertElementMobile($dataSession, $objItems){
@@ -1248,8 +1251,10 @@ class app_inventory_inputunpost extends _BaseController {
 			$companyID 								= $dataSession["user"]->companyID;
 			$transactionID 							= /*inicio get post*/ $this->request->getPost("txtTransactionID");
 			$transactionMasterID					= /*inicio get post*/ $this->request->getPost("txtTransactionMasterID");
+			$transactionNumber						= /*inicio get post*/ $this->request->getPost("txtTransactionNumber");
 			$objTM	 								= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$oldStatusID 							= $objTM->statusID;
+			$parameterCausalTypeCredit 				= $this->core_web_parameter->getParameter("INVOICE_BILLING_CREDIT",$companyID);
 			
 			//Validar Edicion por el Usuario
 			if ($resultPermission 	== PERMISSION_ME && ($objTM->createdBy != $dataSession["user"]->userID))
@@ -1266,6 +1271,7 @@ class app_inventory_inputunpost extends _BaseController {
 			$listPriceID 								= $objParameterPriceDefault->value;
 			$objTipePrice 								= $this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID);
 			//Actualizar Maestro
+			$objTMNew["transactionCausalID"] 		= /*inicio get post*/ $this->request->getPost("txtCausalID");
 			$objTMNew["transactionOn"]				= /*inicio get post*/ $this->request->getPost("txtTransactionOn");
 			$objTMNew["statusIDChangeOn"]			= date("Y-m-d H:m:s");			
 			$objTMNew["note"] 						= /*inicio get post*/ $this->request->getPost("txtDescription");//--fin peticion get o post			
@@ -1283,7 +1289,7 @@ class app_inventory_inputunpost extends _BaseController {
 			$objTMNew["tax1"]						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtIva"));
 			$objTMNew["tax2"]						= 0;
 			$objTMNew["tax3"]						= 0;
-			$objTMNew["tax4"]						= 0;
+			$objTMNew["tax4"]						= /*inicio get post*/ $this->request->getPost("txtCreditLineID");
 			$objTMNew["subAmount"]					= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtSubTotal"));
 			$objTMNew["discount"]					= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtDiscount"));
 			$objTMNew["amount"]						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtTotal"));
@@ -1677,6 +1683,81 @@ class app_inventory_inputunpost extends _BaseController {
 			
 				//Crear Conceptos.
 				$this->core_web_concept->inputunpost($companyID,$transactionID,$transactionMasterID);
+
+				//Si es al credito crear tabla de amortizacion
+				$amountTotal 			= $objTMNew["amount"] - $objTMNew["discount"];
+				$causalIDTypeCredit 	= explode(",", $parameterCausalTypeCredit->value);
+				$exisCausalInCredit		= null;
+				$exisCausalInCredit		= array_search($objTMNew["transactionCausalID"] ,$causalIDTypeCredit);
+
+				//Validar si el causal existe y si es de tipo credito
+				if(($exisCausalInCredit|| $exisCausalInCredit === 0)/*CREDITO*/ && $objTMNew["tax4"] != 0 /*NO INGRESADA*/&& !empty($objTMNew["tax4"]) /*VACIO*/)
+				{
+					//Crear documento del modulo
+					$objCustomerCreditLine 								= $this->Customer_Credit_Line_Model->get_rowByPK($objTMNew["tax4"]);
+					$objCustomerCreditDocument["companyID"] 			= $companyID;
+					$objCustomerCreditDocument["entityID"] 				= $objCustomerCreditLine->entityID;
+					$objCustomerCreditDocument["customerCreditLineID"] 	= $objCustomerCreditLine->customerCreditLineID;
+					$objCustomerCreditDocument["documentNumber"] 		= $transactionNumber;
+					$objCustomerCreditDocument["dateOn"] 				= $objTMNew["transactionOn"];
+					$objCustomerCreditDocument["exchangeRate"] 			= $objTMNew["exchangeRate"];
+					$objCustomerCreditDocument["interes"] 				= $objCustomerCreditLine->interestYear;
+					$objCustomerCreditDocument["term"] 					= $objCustomerCreditLine->term;
+					$objCustomerCreditDocument["amount"] 				= $amountTotal; 
+					$objCustomerCreditDocument["balance"] 				= $amountTotal;
+					$objCatalogItemDayExclude 							= $this->Catalog_Item_Model->get_rowByCatalogItemID($objCustomerCreditLine->dayExcluded);
+					$objCustomerCreditDocument["currencyID"] 			= $objTMNew["currencyID"];					
+					$objCustomerCreditDocument["statusID"] 				= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_document","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
+					$objCustomerCreditDocument["reference1"] 			= $objTMNew["reference1"];
+					$objCustomerCreditDocument["reference2"] 			= $objTMNew["reference2"];
+					$objCustomerCreditDocument["reference3"] 			= $objTMNew["reference3"];
+					$objCustomerCreditDocument["isActive"] 				= 1;
+					$objCustomerCreditDocument["providerIDCredit"] 		= $objTMNew["entityID"];
+					$objCustomerCreditDocument["periodPay"]				= $objCustomerCreditLine->periodPay;
+					$objCustomerCreditDocument["typeAmortization"] 		= $objCustomerCreditLine->typeAmortization;					
+					$customerCreditDocumentID 							= $this->Customer_Credit_Document_Model->insert_app_posme($objCustomerCreditDocument);
+
+					$periodPay 								= $this->Catalog_Item_Model->get_rowByCatalogItemID( $objCustomerCreditLine->periodPay );
+					$objCatalogItem_DiasNoCobrables 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES",$companyID);
+					$objCatalogItem_DiasFeriados365 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_365",$companyID);
+					$objCatalogItem_DiasFeriados366 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_366",$companyID);
+
+					//Crear tabla de amortizacion
+					$this->financial_amort->amort(
+						$objCustomerCreditDocument["amount"], 				/*monto*/
+						$objCustomerCreditDocument["interes"],				/*interes anual*/
+						$objCustomerCreditDocument["term"],				/*numero de pagos*/	
+						$periodPay->sequence,							/*frecuencia de pago en dia*/
+						$objTMNew["transactionOn"], 						/*fecha del credito*/	
+						$objCustomerCreditLine->typeAmortization, /*tipo de amortizacion*/
+						$objCatalogItem_DiasNoCobrables,
+						$objCatalogItem_DiasFeriados365,
+						$objCatalogItem_DiasFeriados366,
+						$objCatalogItemDayExclude,
+						$dataSession["company"]->flavorID
+					);
+
+					$tableAmortization = $this->financial_amort->getTable();
+					if($tableAmortization["detail"])
+					{
+						foreach($tableAmortization["detail"] as $key => $itemAmortization){
+							$objCustomerAmoritizacion["customerCreditDocumentID"]	= $customerCreditDocumentID;
+							$objCustomerAmoritizacion["balanceStart"]				= $itemAmortization["saldoInicial"];
+							$objCustomerAmoritizacion["dateApply"]					= $itemAmortization["date"];
+							$objCustomerAmoritizacion["interest"]					= $itemAmortization["interes"];
+							$objCustomerAmoritizacion["capital"]					= $itemAmortization["principal"];
+							$objCustomerAmoritizacion["share"]						= $itemAmortization["cuota"];
+							$objCustomerAmoritizacion["balanceEnd"]					= $itemAmortization["saldo"];
+							$objCustomerAmoritizacion["remaining"]					= $itemAmortization["cuota"];
+							$objCustomerAmoritizacion["dayDelay"]					= 0;
+							$objCustomerAmoritizacion["note"]						= '';
+							$objCustomerAmoritizacion["statusID"]					= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_amoritization","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
+							$objCustomerAmoritizacion["isActive"]					= 1;
+							$objCustomerAmortizationID 								= $this->Customer_Credit_Amortization_Model->insert_app_posme($objCustomerAmoritizacion);
+						}
+					}
+
+				}
 			}
 			
 			
@@ -1798,7 +1879,11 @@ class app_inventory_inputunpost extends _BaseController {
 			$objComponentOrdenCompra		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_purchaseorden");
 			if(!$objComponentOrdenCompra)
 			throw new \Exception("EL COMPONENTE 'tb_transaction_master_purchaseorden' NO EXISTE...");
-			
+			 
+			//Obtener el componente de linea de credito
+			$objComponentCreditLine		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer_credit_line");
+			if(!$objComponentCreditLine)
+			throw new \Exception("EL COMPONENTE 'tb_customer_credit_line' NO EXISTE...");
 			
 			$objListPrice 						= $this->List_Price_Model->getListPriceToApply($companyID);
 			$datView["objListPrice"]			= $objListPrice;			
@@ -1809,6 +1894,7 @@ class app_inventory_inputunpost extends _BaseController {
 			$datView["objComponentProvider"]	 	= $objComponentProvider;
 			$datView["objComponentInputSinPost"]	= $objComponentInputSinPost;
 			$datView["objComponentOrdenCompra"]		= $objComponentOrdenCompra;
+			$datView["objComponentCreditLine"]		= $objComponentCreditLine;
 			$datView["objListWarehouse"]		= $this->Userwarehouse_Model->getRowByUserID($companyID,$userID);
 			$datView["objTM"]	 				= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$datView["objTMD"]					= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
@@ -1831,7 +1917,8 @@ class app_inventory_inputunpost extends _BaseController {
 			$objParameterMasive					= $this->core_web_parameter->getParameter("ITEM_PRINTER_BARCODE_MASIVE",$this->session->get('user')->companyID);
 			$objParameterMasive					= $objParameterMasive->value;	
 			$datView["objParameterMasive"]		= $objParameterMasive;
-			
+			$datView["objListCausal"]			= $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
+			$datView["objListCreditLine"]		= $this->Customer_Credit_Line_Model->get_rowByBranchID($companyID, $branchID);			
 			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			=  $this->core_web_notification->get_message();
@@ -1907,6 +1994,11 @@ class app_inventory_inputunpost extends _BaseController {
 			$objComponentOrdenCompra		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_purchaseorden");
 			if(!$objComponentOrdenCompra)
 			throw new \Exception("EL COMPONENTE 'tb_transaction_master_purchaseorden' NO EXISTE...");
+
+			//Obtener el componente de linea de credito
+			$objComponentCreditLine		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer_credit_line");
+			if(!$objComponentCreditLine)
+			throw new \Exception("EL COMPONENTE 'tb_customer_credit_line' NO EXISTE...");
 			
 			$objParameterWarehouseDefault		= $this->core_web_parameter->getParameter("INVENTORY_ITEM_WAREHOUSE_DEFAULT",$companyID);
 			$warehouseDefault 					= $objParameterWarehouseDefault->value;
@@ -1915,7 +2007,7 @@ class app_inventory_inputunpost extends _BaseController {
 			$objParameterProviderDefault 		= $objParameterProviderDefault->value;
 			$dataView["providerDefault"]	 		= $this->Provider_Model->get_rowByProviderNumber($companyID,$objParameterProviderDefault);
 			$dataView["providerNaturalDefault"]	 	= $this->Natural_Model->get_rowByPK($companyID,$dataView["providerDefault"]->branchID,$dataView["providerDefault"]->entityID);
-			
+			$transactionID 							= $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID,"tb_transaction_master_inputunpost",0);
 			//Obtener el catalogo de tipos de precios
 			$dataView["objListTypePreice"]			= $this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID);
 			
@@ -1924,11 +2016,13 @@ class app_inventory_inputunpost extends _BaseController {
 			$dataView["useMobile"]					= $dataSession["user"]->useMobile;
 			$dataView["objComponentItem"] 			= $objComponentItem;
 			$dataView["objComponentProvider"] 		= $objComponentProvider;
+			$dataView["objComponentCreditLine"]		= $objComponentCreditLine;
 			$dataView["objComponentInputSinPost"]	= $objComponentInputSinPost;
 			$dataView["objComponentOrdenCompra"]	= $objComponentOrdenCompra;
 			$dataView["objListCurrency"]			= $this->Company_Currency_Model->getByCompany($companyID);
 			$dataView["objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE"]	= $this->core_web_parameter->getParameterValue("CORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE",$companyID);
 			$dataView["company"]					= $dataSession["company"];
+			$dataView["objListCausal"]				= $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]		= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -1952,7 +2046,8 @@ class app_inventory_inputunpost extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}	
+		    return $resultView;		
+		}	
 		
 	}
 	function index($dataViewID = null){	

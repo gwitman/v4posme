@@ -55,6 +55,7 @@
 													<input type="hidden" name="txtCompanyID" value="<?php echo $objTM->companyID; ?>">
 													<input type="hidden" name="txtTransactionID" value="<?php echo $objTM->transactionID; ?>">
 													<input type="hidden" name="txtTransactionMasterID" value="<?php echo $objTM->transactionMasterID; ?>">
+													<input type="hidden" name="txtTransactionNumber" value="<?php echo $objTM->transactionNumber ?>">
 													
 													<div class="form-group">
 														<label class="col-lg-2 control-label" for="datepicker">Fecha</label>
@@ -174,6 +175,57 @@
 																	</button>
 																</span>
 																
+															</div>
+														</div>
+													</div>
+
+													<div class="form-group">
+														<label class="col-lg-4 control-label" for="selectFilter">Causal</label>
+														<div class="col-lg-8">
+															<select name="txtCausalID" id="txtCausalID" class="select2">
+																<option></option>																
+																<?php
+																$count = 0;
+																if($objListCausal)
+																	foreach($objListCausal as $ws){
+																		if($ws->transactionCausalID == $objTM->transactionCausalID)
+																		{
+																			echo "<option value='".$ws->transactionCausalID."' selected >".$ws->name."</option>";
+																		}else{
+																			echo "<option value='".$ws->transactionCausalID."'  >".$ws->name."</option>";
+																		}
+																	}
+																?>
+															</select>
+														</div>
+													</div>
+
+													<div class="form-group">
+														<label class="col-lg-4 control-label" for="buttons">Linea de Credito</label>
+														<div class="col-lg-8">
+															<div class="input-group">
+																<input type="hidden" id="txtCreditLineID" name="txtCreditLineID" value="<?php echo $objTM->tax4; ?>">
+																<input class="form-control" readonly id="txtCreditLineDescription" type="txtCreditLineDescription" value="<?php
+																	if($objListCreditLine){
+																		foreach($objListCreditLine as $cl){
+																			if($cl->customerCreditLineID == $objTM->tax4){
+																				echo $cl->accountNumber;
+																			}
+																		}
+																	}
+																?>">
+
+																<span class="input-group-btn">
+																	<button class="btn btn-danger" type="button" id="btnClearCreditLine">
+																		<i aria-hidden="true" class="i-undo-2"></i>clear
+																	</button>
+																</span>
+
+																<span class="input-group-btn">
+																	<button class="btn btn-primary" type="button" id="btnSearchCreditLine">
+																		<i aria-hidden="true" class="i-search-5"></i>buscar
+																	</button>
+																</span>
 															</div>
 														</div>
 													</div>

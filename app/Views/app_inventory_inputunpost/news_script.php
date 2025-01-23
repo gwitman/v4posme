@@ -160,8 +160,9 @@
 		});		
 		//Eliminar Proveedor
 		$(document).on("click","#btnClearProvider",function(){
-					$("#txtProviderID").val("");
-					$("#txtProviderDescription").val("");
+			$("#txtProviderID").val("");
+			$("#txtProviderDescription").val("");
+			fnClearCreditLine();
 		});
 		//Buscar el Orden de Compra
 		$(document).on("click","#btnSearchOrdenCompra",function(){
@@ -177,6 +178,17 @@
 					$("#txtTransactionNumberOrdenCompra").val("");
 		});
 		
+		//Buscar Linea de Credito
+		$(document).on("click","#btnSearchCreditLine",function(){			
+			var url_request 		= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCreditLine->componentID; ?>/onCompleteCreditLine/SELECCIONAR_LINEA_CREDITO/true/"+encodeURI('{\"entityID\"|\"'+$("#txtProviderID").val())+ '\"}' +"/false/not_redirect_when_empty";  
+			window.open(url_request,"MsgWindow","width=900,height=450");
+			window.onCompleteCreditLine = onCompleteCreditLine;  
+		});	
+		
+		//Eliminar linea de credito
+		$(document).on("click","#btnClearCreditLine",function(){
+			fnClearCreditLine();
+		});
 		
 		//Ir a Lista
 		$(document).on("click","#btnBack",function(){
@@ -425,11 +437,31 @@
 			}
 		}
 		
+		//Validar causal
+		if($("#txtCausalID").val() == "")
+		{
+			fnShowNotification("El causal es invalido ","error",timerNotification);
+			result = false;
+		}
+
+		//Validar linea de credito si el causal es tipo credito
+		if($("#txtCreditLineID").val() == "" && $("#txtCausalID").val() == 55 /*CREDITO*/)
+		{
+			fnShowNotification("Por favor configura una linea de credito al proveedor","error",timerNotification);
+			result = false;
+		}
 		
 		<?php echo getBehavio($company->type,"app_inventory_inputunpost","new_script_validate_reference1",""); ?>
 	
 		return result;
 	}
+
+	function fnClearCreditLine()
+	{
+		$("#txtCreditLineID").val("");
+		$("#txtCreditLineDescription").val("");
+	}
+
 	function onCompleteUpdateMasInformacion(objResponse){
 			var index 		= objResponse.txtPosition;
 			var vencimiento = objResponse.txtVencimiento;
@@ -540,10 +572,17 @@
 	
 	}
 	function onCompleteProvider(objResponse){
-		console.info("CALL onCompleteCustomer");
-	
+		console.info("CALL onCompleteProvider");
+		fnClearCreditLine();
+		objTableDetailTransaction.fnClearTable();
 		$("#txtProviderID").val(objResponse[0][1]);
 		$("#txtProviderDescription").val(objResponse[0][2] + " / " + objResponse[0][3]);
+	
+	}
+	function onCompleteCreditLine(objResponse){
+		console.info("CALL onCompleteCreditLine");
+		$("#txtCreditLineID").val(objResponse[0][0]);
+		$("#txtCreditLineDescription").val(objResponse[0][2]);
 	
 	}	
 	function fnUpdateDetail(){

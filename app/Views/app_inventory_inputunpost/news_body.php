@@ -302,7 +302,43 @@
 
 													</div>
 
-													
+													<div class="form-group">
+														<label class="col-lg-4 control-label" for="selectFilter">Causal</label>
+														<div class="col-lg-8">
+															<select name="txtCausalID" id="txtCausalID" class="select2">
+																<option></option>																
+																<?php
+																$count = 0;
+																if($objListCausal)
+																	foreach($objListCausal as $ws){
+																		echo "<option value='".$ws->transactionCausalID."'  >".$ws->name."</option>";
+																	}
+																?>
+															</select>
+														</div>
+													</div>
+
+													<div class="form-group">
+														<label class="col-lg-4 control-label" for="buttons">Linea de Credito</label>
+														<div class="col-lg-8">
+															<div class="input-group">
+																<input type="hidden" id="txtCreditLineID" name="txtCreditLineID" value="">
+																<input class="form-control" readonly id="txtCreditLineDescription" type="txtCreditLineDescription" value="">
+
+																<span class="input-group-btn">
+																	<button class="btn btn-danger" type="button" id="btnClearCreditLine">
+																		<i aria-hidden="true" class="i-undo-2"></i>clear
+																	</button>
+																</span>
+
+																<span class="input-group-btn">
+																	<button class="btn btn-primary" type="button" id="btnSearchCreditLine">
+																		<i aria-hidden="true" class="i-search-5"></i>buscar
+																	</button>
+																</span>
+															</div>
+														</div>
+													</div>
 
 													<div class="form-group">
 															<label class="col-lg-4 control-label" for="normal">Guardar como plantilla</label>
