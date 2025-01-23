@@ -52,7 +52,8 @@ class app_cxc_simulation extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}	
+		    echo $resultView;		
+		}	
 	}
 	function save($mode=""){
 			$mode = helper_SegmentsByIndex($this->uri->getSegments(),1,$mode);	
@@ -103,7 +104,8 @@ class app_cxc_simulation extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}		
+		    echo $resultView;		
+		}		
 			
 	}
 	
@@ -140,6 +142,9 @@ class app_cxc_simulation extends _BaseController {
 			if(!$objComponentCustomer)
 			throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
 			
+			$objComponentEntity					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_entity");			
+			if(!$objComponentEntity)
+			throw new \Exception("EL COMPONENTE 'tb_entity' NO EXISTE...");
 			
 			//Obtener Tasa de Cambio			
 			$companyID 							= $dataSession["user"]->companyID;
@@ -147,11 +152,17 @@ class app_cxc_simulation extends _BaseController {
 			$roleID 							= $dataSession["role"]->roleID;
 			
 			$customerEntityID 					= /*inicio get get*/ $this->request->getGet("entityID");//--fin peticion get o post
-			$objCustomer 						= null;
 			
-			if(isset($customerEntityID ))
+
+			$objEntity 						= $this->Customer_Model->get_rowByPK($companyID, $branchID, $customerEntityID);
+			if(is_null($objEntity))
 			{
-				$objCustomer = $this->Customer_Model->get_rowByEntity($companyID,$customerEntityID);
+				$objEntity						= $this->Employee_Model->get_rowByPK($companyID, $branchID, $customerEntityID);
+			}
+
+			if(is_null($objEntity))
+			{
+				$objEntity						= $this->Provider_Model->get_rowByPK($companyID, $branchID, $customerEntityID);	
 			}
 			
 			$objCurrency						= $this->core_web_currency->getCurrencyDefault($companyID);
@@ -170,9 +181,10 @@ class app_cxc_simulation extends _BaseController {
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
 			$dataView["objComponentCustomer"]	= $objComponentCustomer;
 			$dataView["objCustomerDefault"]		= $this->Customer_Model->get_rowByCode($companyID,$customerDefault->value);
+			$dataView["objEntity"]				= $objComponentEntity;
 			if(isset($customerEntityID ))
 			{
-				$dataView["objCustomerDefault"] = $objCustomer;
+				$dataView["objCustomerDefault"] = $objEntity;
 			}
 			
 			$dataView["objListPay"]				= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","periodPay",$companyID);
@@ -208,7 +220,8 @@ class app_cxc_simulation extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}	
+		    return $resultView;		
+		}	
 			
     }	
 	
