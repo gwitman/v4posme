@@ -195,7 +195,8 @@ abstract class _BaseController extends Controller
         'web_tools_report',
         'customization/web_tools_customizationview',
         'customization/web_tools_customizationview_colirio',
-		'customization/web_tools_customizationview_tenampa'
+		'customization/web_tools_customizationview_tenampa',
+		'customization/web_tools_customizationview_emanuel'
     ];
 
     /**

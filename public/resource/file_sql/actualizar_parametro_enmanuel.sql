@@ -1,4 +1,4 @@
-use dbkroqnguhldo1;
+use dbnvdfhklrg7as ;
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -810,7 +810,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "22,24,55" 
+	tb_company_parameter.value = "22,24" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_CREDIT";## ID DE LOS CAUSALES DE CREDITO DE LA FACTURACION. 
@@ -1531,7 +1531,7 @@ WHERE
 	
 /*--Cocina*/
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_SHOW_COMMAND_FOOT";## Símbolo de la Moneda Funcional 
@@ -1637,7 +1637,7 @@ WHERE
 /***************************************************************/
 		
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Eusebia Del Carmen Dumas Ruiz" 
+	tb_company_parameter.value = "Mario Hidalgo" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_NAME";## Witman José González Rostran 
@@ -1652,28 +1652,28 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "047-160483-0000C" 
+	tb_company_parameter.value = "------" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "047-160483-0000C" 
+	tb_company_parameter.value = "------" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8505-7109" 
+	tb_company_parameter.value = "TEL: 8910 1842" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8505-7109" 
+	tb_company_parameter.value = "TEL: 8910 1842" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1681,15 +1681,15 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Donde fue aserrio santa fe, 2c abajo 15v.sur" 
+	tb_company_parameter.value = "Leon 1K carretera a Managua mano izquierda" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Demo' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 0 /*usuarioID*/,type='default'  , abreviature='demo'
+	NAME = 'Pupusas EMANUEL' , address = 'Leon 1K carretera a Managua mano izquierda' ,
+	flavorID = 664 /*usuarioID*/,type='emanuel'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
@@ -1701,25 +1701,25 @@ Eliminar o desactivar usuarios
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2, 	/*administrador*/
- 581,  
- 582, 
- 583,
- 584,  
- 585, 
- 586, 
- 587
+ 658,  
+ 659, 
+ 660,
+ 661,  
+ 662, 
+ 663, 
+ 664
 );
 
 update tb_role set isActive = 0; 
 update tb_role set isActive = 1 where roleID in (
 	3,
-	510,
-	511,
-	512,
-	513,
-	514,
-	515,
-	516	
+	594,
+	595,
+	596,
+	597,
+	598,
+	599,
+	600	
 );
 
 
@@ -1744,13 +1744,6 @@ update tb_item set realStateEmployerAgentID = ifnull(realStateEmployerAgentID,0)
 update tb_item set realStateCityID = ifnull(realStateCityID,0);
 update tb_item set realStateCountryID = ifnull(realStateCountryID,0);
 update tb_item set realStateStateID = ifnull(realStateStateID,0);
-update tb_item set realStateStateID = ifnull(realStateStateID,0);
-update tb_item set realStateRoomBatchServices = ifnull(realStateRoomBatchServices,0);
-update tb_item set realStateRooBatchVisit = ifnull(realStateRooBatchVisit,0);
-update tb_item set realStateRoomServices = ifnull(realStateRoomServices,0);
-
-
-
 update tb_customer set entityContactID = ifnull(entityContactID,0);
 update tb_customer_credit_line set dayExcluded = IFNULL(dayExcluded,2323);
 
@@ -1761,4 +1754,4 @@ update tb_company_currency set `simb` = 'C$' where currencyID = 1;
 update tb_company_currency set `simb` = 'U$' where currencyID = 2;	
 
 	
-/*BD: dbkroqnguhldo1 */
+/*BD: dbnvdfhklrg7as   */
