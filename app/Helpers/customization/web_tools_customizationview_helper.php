@@ -1336,6 +1336,8 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
     $divs       = array_merge($divs, $colirio);
 	$tenampa    = getBehavioTenampa();
     $divs       = array_merge($divs, $tenampa);
+	$emanuel    = getBehavioEmanuel();
+    $divs       = array_merge($divs, $emanuel);
 
 	//Comanda traducir es para los menu
 	//comportamiento del controlador

@@ -2,22 +2,7 @@
 				<script>
 					var objDetail 	= {};
 					//$('.txt-numeric').mask('000,000.00', {reverse: true});
-					
-					//Obtener informacion del cliente
-					fnWaitOpen();
-					$.ajax({									
-						cache       : false,
-						dataType    : 'json',
-						type        : 'POST',
-						url  		: "<?php echo base_url(); ?>/app_invoice_api/getLineByCustomer",
-						data 		: {entityID :   <?php echo $objCustomerDefault->entityID; ?> },
-						success		: fnCompleteGetCustomerCreditLine,
-						error:function(xhr,data){	
-							console.info("complete data error");									
-							fnWaitClose();
-							fnShowNotification("Error 505","error");
-						}
-					});
+										
 					
 					$(document).ready(function(){	
 						objDetail = $("#tb_transaction_master_detail").dataTable({
@@ -31,15 +16,14 @@
 						
 						//Buscar el Cliente
 						$(document).on("click","#btnSearchCustomer",function(){
-							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCustomer->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_BILLING/true/empty/false/not_redirect_when_empty";
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objEntity->componentID; ?>/onCompleteCustomer/SELECCIONAR_ENTIDAD/true/empty/false/not_redirect_when_empty";
 							window.open(url_request,"MsgWindow","width=900,height=450");
 							window.onCompleteCustomer = onCompleteCustomer; 
 						});						
 					
 						//Eliminar Cliente
 						$(document).on("click","#btnClearCustomer",function(){
-									$("#txtCustomerID").val("");
-									$("#txtCustomerDescription").val("");
+							fnClearCreditLine();
 						});
 						//Cambios
 						$(document).on("change","#txtAmount,#txtInterestYear,#txtNumberPay,#txtFrecuencyID,#txtPlanID",function(){
@@ -114,12 +98,14 @@
 						$("#txtInterestTotal").val(fnFormatNumber(total_interest,2));
 						$("#txtTotal").val(fnFormatNumber(total_interest + total_capital,2));
 					}
-					function onCompleteCustomer(objResponse){
-						console.info("CALL onCompleteCustomer");
 					
-						var entityID = objResponse[0][1];
-						$("#txtCustomerID").val(objResponse[0][1]);
-						$("#txtCustomerDescription").val(objResponse[0][2] + " " + objResponse[0][3] + " / " + objResponse[0][4]);
+					function onCompleteCustomer(objResponse){
+						fnClearCreditLine();
+						console.info("CALL onCompleteCustomer");
+						var entityID = objResponse[0][2];
+						$("#txtCustomerID").val(objResponse[0][2]);
+						$("#txtCustomerDescription").val(objResponse[0][4] + " | " + objResponse[0][3] + " / " + objResponse[0][5]);
+						
 					
 						fnClearData();
 						//Obtener Informacion de Credito
@@ -128,7 +114,7 @@
 							cache       : false,
 							dataType    : 'json',
 							type        : 'POST',
-							url  		: "<?php echo base_url(); ?>/app_invoice_api/getLineByCustomer",
+							url  		: "<?php echo base_url(); ?>/app_invoice_api/getLineByEntity",
 							data 		: {entityID : entityID  },
 							success		: fnCompleteGetCustomerCreditLine,
 							error:function(xhr,data){	
@@ -164,10 +150,21 @@
 							console.info("fnClearData");
 							objDetail.fnClearTable();
 					}
+
+					function fnClearCreditLine()
+					{
+						//Limpiar datos de la ENTIDAD
+						$("#txtCustomerID").val("");
+						$("#txtCustomerDescription").val("");
+
+						//Limpiar select de lineas de credito
+						$("#txtCustomerCreditLineID").html("");
+						$("#txtCustomerCreditLineID").val("");
+						$("#txtCustomerCreditLineID").select2();
+					}
 					
 					function fnCompleteGetCustomerCreditLine (data)
 					{
-						
 						console.info("complete success data");
 						fnWaitClose();
 						tmpInfoClient = data;
