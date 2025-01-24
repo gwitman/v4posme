@@ -792,6 +792,89 @@ class app_invoice_api extends _BaseController {
 			
 		}
 	}
+
+	function getLineByEntity(){
+		try{ 
+			
+			//AUTENTICACION
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();			
+			
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+				$permited = false;
+				$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				
+				if(!$permited)
+				throw new \Exception(NOT_ACCESS_CONTROL." ".get_class($this));		
+			}			
+			
+			//Obtener Parametros
+			$entityID 		= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("entityID"));//--fin peticion get o post
+			$companyID 		= $dataSession["user"]->companyID;
+			$branchID 		= $dataSession["user"]->branchID;
+			if(!$companyID && !$entityID){
+				throw new \Exception(NOT_PARAMETER);		
+			} 
+			
+			//Obtener tasa de cambio
+			date_default_timezone_set(APP_TIMEZONE); 
+			$objCurrencyDolares						= $this->core_web_currency->getCurrencyExternal($companyID);
+			$objCurrencyCordoba						= $this->core_web_currency->getCurrencyDefault($companyID);
+			$dateOn 								= date("Y-m-d");
+			$dateOn 								= date_format(date_create($dateOn),"Y-m-d");
+			$exchangeRate 							= $this->core_web_currency->getRatio($companyID,$dateOn,1,$objCurrencyDolares->currencyID,$objCurrencyCordoba->currencyID);
+			$parameterCausalTypeCredit 				= $this->core_web_parameter->getParameter("INVOICE_BILLING_CREDIT",$companyID);
+			
+			//Obtener ENTIDAD
+			$objEntity 						= $this->Customer_Model->get_rowByPK($companyID, $branchID, $entityID);
+			if(is_null($objEntity))
+			{
+				$objEntity						= $this->Employee_Model->get_rowByPK($companyID, $branchID, $entityID);
+			}
+
+			if(is_null($objEntity))
+			{
+				$objEntity						= $this->Provider_Model->get_rowByPK($companyID, $branchID, $entityID);	
+			}
+					
+			//Obtener Lineas de Credito
+			$objListEntityCreditLine2 		= $this->Customer_Credit_Line_Model->get_rowByEntity($companyID,$branchID,$entityID);
+			$objListEntityCreditLine 		= null;
+			$counter 						= 0;
+			
+			if($objListEntityCreditLine2)
+			{
+				foreach($objListEntityCreditLine2 as $key => $value){
+					if($value->balance > 0)
+					{
+						$objListEntityCreditLine[$counter] = $value;
+						$counter++;
+					}
+				}
+			}
+						
+			//Obtener Resultados.			
+			return $this->response->setJSON(array(
+				'error'   => false,
+				'message' => SUCCESS,			
+				'objCustomer'	  					=> $objEntity,
+				'objListCustomerCreditLine'	  		=> $objListEntityCreditLine,
+				'objExchangeRate'					=> $exchangeRate,
+				'objCausalTypeCredit'				=> $parameterCausalTypeCredit,
+				'objCurrencyDolares' 				=> $objCurrencyDolares,
+				'objCurrencyCordoba' 				=> $objCurrencyCordoba,
+			));//--finjson			
+			
+		}
+		catch(\Exception $ex){
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));//--finjson				
+		}
+	}
 	
 	function getInforDashBoards(){
 		try{ 
