@@ -1384,7 +1384,8 @@ class Transaction_Master_Detail_Model extends Model  {
 			select 
 				tat.firstName,
 				tat.transactionNumber,
-				tat.SiguienteVisita
+				tat.SiguienteVisita,
+				tat.Notas 
 			from 
 				(
 					
@@ -1397,7 +1398,8 @@ class Transaction_Master_Detail_Model extends Model  {
 								nat.firstName
 						end  as firstName ,
 						c.transactionNumber ,
-						c.nextVisit as SiguienteVisita 
+						c.nextVisit as SiguienteVisita,
+						c.note as Notas 
 					from 
 						tb_transaction_master c 
 						inner join tb_transaction_master_info ci on 
@@ -1419,6 +1421,16 @@ class Transaction_Master_Detail_Model extends Model  {
 				)  tat 
 			where
 				tat.SiguienteVisita BETWEEN  
+				/*utc zona 0 a las media noche */
+				/*utc zona 0 a las media noche */
+				/*
+				'2025-01-24 22:00:00' and 
+				'2025-01-25 02:00:00' ;
+				*/
+				
+				/*utc zona 0 a las media noche */
+				/*utc zona 0 a las media noche */
+				
 				DATE_ADD( 
 					DATE_ADD(
 						NOW() , 
@@ -1433,7 +1445,8 @@ class Transaction_Master_Detail_Model extends Model  {
 						INTERVAL -6 hour 
 					), 
 					INTERVAL 2 HOUR
-				)  
+				) 
+				 
 						
 		");
 	

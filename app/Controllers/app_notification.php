@@ -2071,13 +2071,13 @@ class app_notification extends _BaseController
 
 
 				$i->SiguienteVisita = \DateTime::createFromFormat('Y-m-d H:i:s', $i->SiguienteVisita)->format("Y-m-d h:i A");
-				echo "Cita de: " . $i->firstName . " programada para : " . $i->SiguienteVisita . "</br>";
-				log_message("error", "Cita de: " . $i->firstName . " programada para : " . $i->SiguienteVisita);
+				echo "Cita de: " . $i->firstName . " programada para : " . $i->SiguienteVisita . "</br> Enviada a: ".$emailProperty. " [[".$i->Notas."]]"."</br></br>";
+				log_message("error", "Cita de: " . $i->firstName . " programada para : " . $i->SiguienteVisita." [[".$i->Notas."]]");
 
 				$params_["objCompany"]  = $objCompany;
 				$params_["firstName"]  	= $i->firstName;
 				$params_["hour"]  		= $i->SiguienteVisita;
-				$params_["mensaje"]  	= "Cita de: " . $i->firstName . " programada para : " . $i->SiguienteVisita;
+				$params_["mensaje"]  	= "Cita de: " . $i->firstName . " programada para : " . $i->SiguienteVisita ." [[".$i->Notas."]]" ;
 				$subject 				= "Cita de: " . $i->firstName;
 				$body  					= /*--inicio view*/ view('core_template/email_notificacion', $params_); //--finview
 
