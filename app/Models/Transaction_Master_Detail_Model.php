@@ -894,64 +894,76 @@ class Transaction_Master_Detail_Model extends Model  {
 		$builder	= $db->table("tb_transaction_master_detail");
 	   		
 		$sql = "";
-		$sql = "select   
-				
+		$sql = "
+			select  
 				tx.phoneNumber as Destino,
+				'sendWhatsappGlobalProCumpleAnnos' as CodigoMensaje,
+				tx.Comparacion , 
 				
 				CONCAT(
-				tx.transactionNumber,
-				'-',
-				tx.transactionMasterDetailID,
-				'-sendWhatsappGlobalProCumpleAnnos'
-				) as CodigoMensaje,
-
-			
-				CONCAT(
-				'¡Felicidades ', tx.firstName  ,' [simbol-cono] [simbol-enter][simbol-enter] !Queremos desearte un muy feliz cumpleaños. Que tu dia esté lleno de alegría, amor y momentos inolvidables. [simbol-enter][simbol-enter] Agradecemos tu confianza en nosotros, esperamos seguir siendo parte de tu vida muchos años mas. [simbol-enter][simbol-enter]!Disfruta tu día al máximo! [simbol-enter][simbol-carita-estrellada]    Saludos,[simbol-enter]GLOBAL PRO NICARAGUA'
-				) as Mensaje 
-
+				'¡Felicidades ', tx.firstName  ,' [simbol-cono] [simbol-enter][simbol-enter] !Queremos desearte un muy feliz cumpleaños. Que tu dia esté lleno de alegría, amor y momentos inolvidables. [simbol-enter][simbol-enter] Agradecemos tu confianza en nosotros, esperamos seguir siendo parte de tu vida muchos años mas. [simbol-enter][simbol-enter]!Disfruta tu día al máximo! [simbol-enter][simbol-carita-estrellada]    Saludos,[simbol-enter] GLOBAL PRO NICARAGUA '
+				) as Mensaje  
+				
 			from 
 					(
-						select 
-							tmd.transactionMasterDetailID,
-							tm.transactionNumber,
+						select 							
 							nat.firstName,
 							REPLACE(cus.identification, '[^a-zA-Z0-9]', '') as identification,
-							REPLACE(cus.phoneNumber, '[^a-zA-Z0-9]', '') as phoneNumber,
-							tm.createdOn,
-							tmd.itemNameLog ,
-							tmd.itemNameDescriptionLog
+							REPLACE(cus.phoneNumber, '[^a-zA-Z0-9]', '') as phoneNumber 		,
+							
+							
+							
+							DATE(DATE_ADD(NOW(), INTERVAL -6 HOUR)) AS Fecha,							
+							STR_TO_DATE(
+									CONCAT(
+											SUBSTRING(cus.identification, 4, 2), 
+											'-', 
+											SUBSTRING(cus.identification, 6, 2), 
+											'-', 
+											SUBSTRING(cus.identification, 8, 2) + 1900
+									),
+									'%d-%m-%Y'
+							) AS FechaCus,
+							-- Comparación de días y meses
+							CASE 
+									WHEN MONTH(DATE(DATE_ADD(NOW(), INTERVAL -6 HOUR))) = MONTH(
+											STR_TO_DATE(
+													CONCAT(
+															SUBSTRING(cus.identification, 4, 2), 
+															'-', 
+															SUBSTRING(cus.identification, 6, 2), 
+															'-', 
+															SUBSTRING(cus.identification, 8, 2) + 1900
+													),
+													'%d-%m-%Y'
+											)
+									) 
+									AND DAY(DATE(DATE_ADD(NOW(), INTERVAL -6 HOUR))) = DAY(
+											STR_TO_DATE(
+													CONCAT(
+															SUBSTRING(cus.identification, 4, 2), 
+															'-', 
+															SUBSTRING(cus.identification, 6, 2), 
+															'-', 
+															SUBSTRING(cus.identification, 8, 2) + 1900
+													),
+													'%d-%m-%Y'
+											)
+									)
+									THEN 'Iguales'
+									ELSE 'Diferentes'
+							END AS Comparacion 
 						from 
-							tb_transaction_master tm 
-							inner join tb_transaction_master_detail tmd on 
-								tm.transactionMasterID = tmd.transactionMasterID 
-							inner join tb_item i on 
-								tmd.componentItemID = i.itemID 
-							inner join tb_item_category cat on 
-								i.inventoryCategoryID = cat.inventoryCategoryID 
-							inner join tb_naturales nat on 
-								nat.entityID = tm.entityID 
+							tb_naturales nat 
 							inner join tb_customer cus on 
 								nat.entityID = cus.entityID 
-						where 
-							tm.transactionID = 19 and 
-							tm.isActive = 1 and 
-							tmd.isActive = 1 and 
-							cat.`name` = 'Laptops' and 
+						where 				
+							nat.entityID = 5511 and 
 							LENGTH(REPLACE(cus.identification, '[^a-zA-Z0-9]', '')) = 14 and 
-							LENGTH(REPLACE(cus.phoneNumber, '[^a-zA-Z0-9]', '')) = 8 and 
-							DATE(DATE_ADD(NOW() , INTERVAL -6 HOUR )) = 
-							STR_TO_DATE(
-								CONCAT(
-									SUBSTRING(cus.identification, 4, 2), 
-									'-', 
-									SUBSTRING(cus.identification, 6, 2), 
-									'-', 
-									SUBSTRING(cus.identification, 8, 2) + 1900 
-								),
-								'%d-%m-%Y' 
-							) 
+							LENGTH(REPLACE(cus.phoneNumber, '[^a-zA-Z0-9]', '')) = 8  
 					) tx
+			where 
+				tx.Comparacion = 'Iguales'
 			";
 	
 		//Ejecutar Consulta

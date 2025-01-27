@@ -280,8 +280,8 @@ class core_web_whatsap {
 
    }
 
-    function sendMessageByLiveconnect($companyID, $message, $phoneDestino){
-       //2024-07-22
+   function sendMessageByLiveconnect($companyID, $message, $phoneDestino){
+        //2024-07-22
         //api token: https://api.liveconnect.chat/prod/account/token
 
         $Parameter_Model 			= new Parameter_Model();
@@ -357,6 +357,110 @@ class core_web_whatsap {
                     'id_canal' => $objPWhatsapIdCanal->value,
                     'numero'=>$phoneDestino,
                     'mensaje' => $message
+                ]),
+                CURLOPT_HTTPHEADER => [
+                    "Accept: application/json",
+                    "Content-Type: application/json",
+                    "PageGearToken: ".$token
+                ],
+            ]);
+
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+
+            curl_close($curl);
+
+            if ($err) {
+                return "cURL Error #:" . $err;
+            } else {
+                $response_data 	= json_decode($response, true);
+                return $response_data['status_message'];
+            }
+        }
+        return "";
+    }
+	
+	
+	function sendMessageByLiveconnectFileGlobalPro($companyID, $message, $phoneDestino){
+        //2024-07-22
+        //api token: https://api.liveconnect.chat/prod/account/token
+
+        $Parameter_Model 			= new Parameter_Model();
+        $Company_Parameter_Model 	= new Company_Parameter_Model();
+
+        $objPWhatsapPrivatekey		= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+        $objPWhatsapPrivatekeyId	= $objPWhatsapPrivatekey->parameterID;
+        $objPWhatsapPrivatekey		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPrivatekeyId);
+
+        $objPWhatsapCkey		= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
+        $objPWhatsapCkeyId		= $objPWhatsapCkey->parameterID;
+        $objPWhatsapCkey		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapCkeyId);
+
+        $objPWhatsapUrlTokenMessage			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
+        $objPWhatsapUrlTokenMessageId 		= $objPWhatsapUrlTokenMessage->parameterID;
+        $objCP_WhatsapUrlTokenMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlTokenMessageId);
+
+        $objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+        $objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
+        $objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
+
+        //id canal
+        $objPWhatsapIdCanal		= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION_PARAMETERF1");
+        $objPWhatsapPrivatekeyId	= $objPWhatsapIdCanal->parameterID;
+        $objPWhatsapIdCanal		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPrivatekeyId);
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $objCP_WhatsapUrlTokenMessage->value,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => json_encode([
+                'cKey' => $objPWhatsapCkey->value,
+                'privateKey' => $objPWhatsapPrivatekey->value
+            ]),
+            CURLOPT_HTTPHEADER => [
+                "Accept: application/json, application/xml",
+                "Content-Type: application/json"
+            ],
+        ]);
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+            return "cURL Error #:" . $err;
+        }
+        //return $response;
+        $response_data 	= json_decode($response, true);
+
+        if($response_data['status'] ==1)
+        {
+            $token = $response_data['PageGearToken'];
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, [
+                CURLOPT_URL => "https://api.liveconnect.chat/prod/direct/wa/sendFile",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => json_encode([
+                    'id_canal' => $objPWhatsapIdCanal->value,
+                    'numero'=>$phoneDestino,                    
+					"url"=> "https://posme.net/v4posme/posme/public/resource/img/logos/logo-micro-finanza.jpg",
+					"nombre"=> "logo-micro-finanza",
+				    "extension"=> "jpg"
+  
                 ]),
                 CURLOPT_HTTPHEADER => [
                     "Accept: application/json",

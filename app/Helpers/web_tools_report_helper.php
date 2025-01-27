@@ -6030,15 +6030,14 @@ function helper_reporteA4mmTransactionMasterInventoryOtherOutputStickerGlobalPro
 						padding-left: 0px;
             
                       }
-                      table{
+                      table {
                         font-size: xx-small;
                         font-family: sans-serif, monaco, monospace;						 
 						border-collapse: collapse;
                       }
-						td{
+					  td {
                         font-size: xx-small;
-                        font-family: sans-serif, monaco, monospace;
-						/*border: 1px solid black;*/
+                        font-family: sans-serif, monaco, monospace;						
 						border-collapse: collapse;
                       }
                     </style>
@@ -6056,17 +6055,17 @@ function helper_reporteA4mmTransactionMasterInventoryOtherOutputStickerGlobalPro
 						  </tr>
 						  <tr>
 							<td style='text-align:center'>
-								Orden de Descargo: ". $numberDocument ."
+								". $numberDocument ."
 							</td>
 						  </tr>
 						  <tr>
 							<td style='text-align:center'>
-								Bodega: ".$objWarehouse->name."
+								".$objWarehouse->name."
 							</td>
 						  </tr>
 						  <tr>
 							<td style='text-align:center'>
-								Nota: ".$objTransactionMastser->note."
+								".substr($objTransactionMastser->note,0,40)."
 							</td>
 						  </tr>
 					</table>

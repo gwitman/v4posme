@@ -1982,15 +1982,25 @@ class app_notification extends _BaseController
 
 		$objNotificar = $this->Transaction_Master_Detail_Model->GlobalPro_get_Notification_CumpleAnnos();
 		if ($objNotificar)
-			foreach ($objNotificar as $i) {
+		{
+			foreach ($objNotificar as $i) 
+			{
 				echo clearNumero($i->Destino) . "---" . $i->Mensaje . "</br></br>";
 				$this->core_web_whatsap->sendMessageByLiveconnect(
 					APP_COMPANY,
-					replaceSimbol($i->Mensaje),
+					replaceSimbol($i->Mensaje),					
 					clearNumero($i->Destino)
 				);
+				
+				/*
+				$this->core_web_whatsap->sendMessageByLiveconnectFileGlobalPro(
+					APP_COMPANY,
+					replaceSimbol($i->Mensaje),					
+					clearNumero($i->Destino)
+				);
+				*/
 			}
-
+		}
 		echo "SUCCESS";
 	}
 	function sendEmailGlamCustCitas()
