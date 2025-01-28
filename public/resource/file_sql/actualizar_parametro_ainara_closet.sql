@@ -563,7 +563,7 @@ WHERE
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
+	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_UPDATEPRICE_ONLINE";## ACTUALIZAR EL PRECIO DURANTE LA FACTURACION 				
@@ -816,7 +816,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "2024-07-10" 
+	tb_company_parameter.value = "2050-07-10" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CUST_PRICE_LICENCES_EXPIRED";## Fecha de expiracion de la licencia 
@@ -919,6 +919,7 @@ update tb_role set isActive = 1 where roleID in (
 );
 
 
+
 /*tipo de cambio de dolares a cordoba*/
 update tb_exchange_rate set 
 	ratio = 36 
@@ -933,4 +934,5 @@ update tb_exchange_rate set
 where 
 	currencyID = 1
 	and targetCurrencyID = 2; 
+	
 	

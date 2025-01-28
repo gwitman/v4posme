@@ -381,7 +381,7 @@ class core_web_whatsap {
     }
 	
 	
-	function sendMessageByLiveconnectFileGlobalPro($companyID, $message, $phoneDestino){
+	function sendMessageByLiveconnectFileGlobalPro($companyID, $message, $phoneDestino,$urlImage,$nameImage,$extImage){
         //2024-07-22
         //api token: https://api.liveconnect.chat/prod/account/token
 
@@ -457,9 +457,9 @@ class core_web_whatsap {
                 CURLOPT_POSTFIELDS => json_encode([
                     'id_canal' => $objPWhatsapIdCanal->value,
                     'numero'=>$phoneDestino,                    
-					"url"=> "https://posme.net/v4posme/globalpro/public/resource/img/feliz_cumple.jpeg",
-					"nombre"=> "feliz_cumple",
-				    "extension"=> "jpeg"
+					"url"=> $urlImage,
+					"nombre"=> $nameImage,
+				    "extension"=> $extImage
   
                 ]),
                 CURLOPT_HTTPHEADER => [

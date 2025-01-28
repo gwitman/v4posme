@@ -1972,6 +1972,8 @@ class app_notification extends _BaseController
 					APP_COMPANY,
 					replaceSimbol($i->Mensaje),
 					clearNumero($i->Destino)
+					/*"50587125827"*/
+					/*"50557165864"*/
 				);
 			}
 
@@ -1986,20 +1988,26 @@ class app_notification extends _BaseController
 			foreach ($objNotificar as $i) 
 			{
 				echo clearNumero($i->Destino) . "---" . $i->Mensaje . "</br></br>";
-				$this->core_web_whatsap->sendMessageByLiveconnect(
-					APP_COMPANY,
-					replaceSimbol($i->Mensaje),					
-					"50587125827"
-					/*clearNumero($i->Destino)*/
-				);
 				
 				
 				$this->core_web_whatsap->sendMessageByLiveconnectFileGlobalPro(
 					APP_COMPANY,
 					replaceSimbol($i->Mensaje),	
-					"50587125827"
-					/*clearNumero($i->Destino)*/
+					/*"50587125827"*/
+					clearNumero($i->Destino),
+					"https://posme.net/v4posme/globalpro/public/resource/img/feliz_cumple.jpeg",
+					"feliz_cumple",
+					"jpeg"
 				);
+				
+				$this->core_web_whatsap->sendMessageByLiveconnect(
+					APP_COMPANY,
+					replaceSimbol($i->Mensaje),					
+					/*"50587125827"*/
+					clearNumero($i->Destino)
+				);
+				
+				
 				
 			}
 		}

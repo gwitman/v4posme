@@ -882,6 +882,7 @@ class Transaction_Master_Detail_Model extends Model  {
 							tm.createdOn >= DATE_SUB(CURDATE(), INTERVAL 228 DAY) 
 							
 					) tx
+			limit 1 
 			";
 	
 		//Ejecutar Consulta
@@ -902,7 +903,7 @@ class Transaction_Master_Detail_Model extends Model  {
 				tx.Comparacion , 
 				
 				CONCAT(
-				'¡Felicidades ', tx.firstName  ,' [simbol-carita-estrellada] [simbol-cono] [simbol-enter][simbol-enter] Espero tengas un excelente día!. [simbol-enter][simbol-enter]-Equipo Global Pro [simbol-enter]Las mejores computadoras del país!' 
+				'¡Felicidades ', tx.firstName  ,'![simbol-carita-estrellada][simbol-cono][simbol-enter]Espero tengas un excelente día!.[simbol-enter][simbol-enter]-Equipo Global Pro [simbol-enter]Las mejores computadoras del país!' 
 				) as Mensaje  
 				
 			from 
