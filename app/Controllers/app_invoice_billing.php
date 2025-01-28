@@ -3758,6 +3758,9 @@ class app_invoice_billing extends _BaseController {
 				$this->cachePage( TIME_CACHE_APP );	
 			}
 			
+			$objParameterMeseroScreenIndividual		= $this->core_web_parameter->getParameter("INVOICE_BILLING_MESERO_SCREEN_INDIVIDUAL",$this->session->get('user')->companyID);
+			$objParameterMeseroScreenIndividual		= $objParameterMeseroScreenIndividual->value;
+			
 			
 			$objParameterShowPreview		= $this->core_web_parameter->getParameter("INVOICE_SHOW_PREVIEW_INLIST",$this->session->get('user')->companyID);
 			$objParameterShowPreview		= $objParameterShowPreview->value;
@@ -3856,12 +3859,14 @@ class app_invoice_billing extends _BaseController {
 			$esMesero 					= $this->core_web_permission->urlPermited("es_mesero","index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
 			$eliminarProductos 		    = $this->core_web_permission->urlPermited("no_permitir_eliminar_productos_de_factura","index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
 
-			$esMesero					        = !$esMesero ? "0" : $esMesero;
-			$esMesero					        = $dataSession["role"]->isAdmin ? "0" : $esMesero;
-            $eliminarProductos                  = !$eliminarProductos ? "0" : $eliminarProductos;
-            $eliminarProductos					= $dataSession["role"]->isAdmin ? "0" : $eliminarProductos;
-			$dataViewJava["esMesero"]	        = $esMesero;
-			$dataViewJava["eliminarProductos"]	= $eliminarProductos;
+			$esMesero					        				= !$esMesero ? "0" : $esMesero;
+			$esMesero					        				= $dataSession["role"]->isAdmin ? "0" : $esMesero;
+            $eliminarProductos                  				= !$eliminarProductos ? "0" : $eliminarProductos;
+            $eliminarProductos									= $dataSession["role"]->isAdmin ? "0" : $eliminarProductos;
+			$dataViewJava["esMesero"]	        				= $esMesero;
+			$dataViewJava["eliminarProductos"]					= $eliminarProductos;
+			$dataViewJava["objParameterMeseroScreenIndividual"] = $objParameterMeseroScreenIndividual;
+			$dataViewJava["objPasswordMesero"] 					= $dataSession["user"]->password;
 
 			//Renderizar Resultado
 			$dataViewJava["objParameterPantallaParaFacturar"]	= $objParameterPantallaParaFacturar;

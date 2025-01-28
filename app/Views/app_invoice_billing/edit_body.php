@@ -193,9 +193,16 @@ if($objParameterRestaurant == "true")
 
 <style>
 	/*encabezado*/
+	/*
 	#heading
 	{
 		margin: 0 -25px 0px -25px !important
+	}
+	*/
+	
+	#heading
+	{
+		margin: 0 0 0 0 !important
 	}
 	
 	
