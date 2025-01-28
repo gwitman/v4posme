@@ -186,7 +186,7 @@ class app_invoice_billing extends _BaseController {
 			$objParameterPantallaParaFacturar								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PANTALLA_FACTURACION");
 			$objParameterPantallaParaFacturar								= $objParameterPantallaParaFacturar->value;
 			$dataView["objParameterPantallaParaFacturar"] 					= $objParameterPantallaParaFacturar;
-			
+
 			
 			//Tipo de Factura
 			$agent 												= $this->request->getUserAgent();			
@@ -216,7 +216,6 @@ class app_invoice_billing extends _BaseController {
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
 			$dataView["objCurrency"]			= $objCurrency;
 			$dataView["company"]				= $dataSession["company"];
-			
 			$dataView["objListEmployee"]		= $this->Employee_Model->get_rowByBranchIDAndType($companyID,$branchID,  $objParameterInvoiceTypeEmployer );
 			$dataView["objListBank"]			= $this->Bank_Model->getByCompany($companyID);
 			$dataView["objListPrice"]			= $objListPrice;
@@ -405,7 +404,20 @@ class app_invoice_billing extends _BaseController {
 			{
 				$dataView["dataPrinterLocal"]						= "";
 			}
-			
+
+             //Variable para validar si es un mesero
+             $esMesero 					        = false;
+             $eliminarProductos 			    = false;
+             $esMesero 					        = $this->core_web_permission->urlPermited("es_mesero","index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+             $eliminarProductos 		        = $this->core_web_permission->urlPermited("no_permitir_eliminar_productos_de_factura","index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+
+             $esMesero					        = !$esMesero ? "0" : $esMesero;
+             $esMesero					        = $dataSession["role"]->isAdmin ? "0" : $esMesero;
+             $eliminarProductos                 = !$eliminarProductos ? "0" : $eliminarProductos;
+             $eliminarProductos					= $dataSession["role"]->isAdmin ? "0" : $eliminarProductos;
+             $dataViewJava["esMesero"]	        = $esMesero;
+             $dataViewJava["eliminarProducto"]	= $eliminarProductos;
+
 			//------------------------------------------
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -3652,7 +3664,19 @@ class app_invoice_billing extends _BaseController {
 				$dataView["dataPrinterLocalTransactionID"]			= 0;
 				$dataView["dataPrinterLocalCompanyID"]				= 0;
 			}
-			
+
+            //Variable para validar si es un mesero
+            $esMesero 					= false;
+            $eliminarProductos 			= false;
+            $esMesero 					= $this->core_web_permission->urlPermited("es_mesero","index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+            $eliminarProductos 		    = $this->core_web_permission->urlPermited("no_permitir_eliminar_productos_de_factura","index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+
+            $esMesero					        = !$esMesero ? "0" : $esMesero;
+            $esMesero					        = $dataSession["role"]->isAdmin ? "0" : $esMesero;
+            $eliminarProductos                  = !$eliminarProductos ? "0" : $eliminarProductos;
+            $eliminarProductos					= $dataSession["role"]->isAdmin ? "0" : $eliminarProductos;
+            $dataViewJava["esMesero"]	        = $esMesero;
+            $dataViewJava["eliminarProducto"]	= $eliminarProductos;
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -3828,12 +3852,17 @@ class app_invoice_billing extends _BaseController {
 			
 			//Variable para validar si es un mesero
 			$esMesero 					= false;
-			$esMesero 					= $this->core_web_permission->urlPermited("es_mesero","index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);			
-			
-			$esMesero					= !$esMesero ? "0" : $esMesero;
-			$esMesero					= $dataSession["role"]->isAdmin ? "0" : $esMesero;
-			$dataViewJava["esMesero"]	= $esMesero;
-			
+            $eliminarProductos 			= false;
+			$esMesero 					= $this->core_web_permission->urlPermited("es_mesero","index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+			$eliminarProductos 		    = $this->core_web_permission->urlPermited("no_permitir_eliminar_productos_de_factura","index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+
+			$esMesero					        = !$esMesero ? "0" : $esMesero;
+			$esMesero					        = $dataSession["role"]->isAdmin ? "0" : $esMesero;
+            $eliminarProductos                  = !$eliminarProductos ? "0" : $eliminarProductos;
+            $eliminarProductos					= $dataSession["role"]->isAdmin ? "0" : $eliminarProductos;
+			$dataViewJava["esMesero"]	        = $esMesero;
+			$dataViewJava["eliminarProductos"]	= $eliminarProductos;
+
 			//Renderizar Resultado
 			$dataViewJava["objParameterPantallaParaFacturar"]	= $objParameterPantallaParaFacturar;
 			$dataViewJava["objParameterShowPreview"]			= $objParameterShowPreview;
@@ -7209,6 +7238,217 @@ class app_invoice_billing extends _BaseController {
 		    return $resultView;
 		}
 	}
+
+    function viewRegisterFormatoPaginaNormal80mmOpcion1Emanuel(){
+        try{
+
+
+            $transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri
+            $transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri
+            $companyID 					= APP_COMPANY;
+
+
+
+            //Get Component
+            $objComponent	        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+            $objParameter	        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+            $objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+            $objParameterRuc	    = $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+            $objParameterRuc        = $objParameterRuc->value;
+            $objCompany 	= $this->Company_Model->get_rowByPK($companyID);
+            $spacing 		= 0.5;
+
+            //Get Documento
+            $datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+            $datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+            $datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+            $datView["objTC"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$datView["objTM"]->transactionCausalID);
+            $datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
+            $datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
+            $datView["Identifier"]					= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+            $datView["objBranch"]					= $this->Branch_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->branchID);
+            $datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_billing","statusID",$datView["objTM"]->statusID,$companyID,$datView["objTM"]->branchID,APP_ROL_SUPERADMIN);
+            $datView["objTipo"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$datView["objTM"]->transactionID,$datView["objTM"]->transactionCausalID);
+            $datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
+            $datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
+            $datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
+            $datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
+            $datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
+            $datView["objUser"]						= $this->User_Model->get_rowByPK($companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
+            $prefixCurrency 						= $datView["objCurrency"]->simbol." ";
+
+
+
+            //Configurar Detalle Header
+            $confiDetalleHeader = array();
+            $row = array(
+                "style"		=>"text-align:left;width:auto",
+                "colspan"	=>'1',
+                "prefix"	=>'',
+
+
+                "style_row_data"		=>"text-align:left;width:auto",
+                "colspan_row_data"		=>'1',
+                "prefix_row_data"		=>'',
+                "nueva_fila_row_data"	=>1
+            );
+            array_push($confiDetalleHeader,$row);
+
+            $row = array(
+                "style"		=>"text-align:left;width:50px",
+                "colspan"	=>'1',
+                "prefix"	=>'',
+
+                "style_row_data"		=>"text-align:right;width:auto",
+                "colspan_row_data"		=>'1',
+                "prefix_row_data"		=>'',
+                "nueva_fila_row_data"	=>0
+            );
+            array_push($confiDetalleHeader,$row);
+
+
+            $row = array(
+                "style"		=>"text-align:right;width:90px",
+                "colspan"	=>'1',
+                "prefix"	=>$datView["objCurrency"]->simbol,
+
+                "style_row_data"		=>"text-align:right;width:90px",
+                "colspan_row_data"		=>'1',
+                "prefix_row_data"		=>"",
+                "nueva_fila_row_data"	=>0
+            );
+            array_push($confiDetalleHeader,$row);
+
+
+
+            $detalle = array();
+            $row = array("CANT", 'PREC', "TOTAL");
+            array_push($detalle,$row);
+
+
+            foreach($datView["objTMD"] as $detail_){
+                $row = array(
+                    $detail_->itemName. " ". strtolower($detail_->skuFormatoDescription)."-comand-new-row",
+                    "none",
+                    "none"
+                );
+                array_push($detalle,$row);
+
+                $row = array(
+                    sprintf("%01.2f",round($detail_->quantity,2)),
+                    sprintf("%01.2f",round($detail_->unitaryPrice,2)),
+                    sprintf("%01.2f",round($detail_->amount,2))
+                );
+                array_push($detalle,$row);
+            }
+
+            if ($datView["objStage"][0]->display == "APLICADA"){
+                $html = helper_reporte80mmTransactionMaster(
+                    "FACTURA",
+                    $objCompany,
+                    $objParameter,
+                    $datView["objTM"],
+                    $datView["objNatural"],
+                    $datView["objCustumer"],
+                    $datView["tipoCambio"],
+                    $datView["objCurrency"],
+                    $datView["objTMI"],
+                    $confiDetalleHeader,
+                    $detalle,
+                    $objParameterTelefono, /*telefono*/
+                    $datView["objStage"][0]->display, /*estado*/
+                    $datView["objTC"]->name /*causal*/,
+                    $datView["objUser"]->nickname,
+                    $objParameterRuc /*ruc*/
+                );
+            }else{
+                $html = helper_reporte80mmTransactionMasterRegistrada(
+                    "FACTURA",
+                    $objCompany,
+                    $objParameter,
+                    $datView["objTM"],
+                    $datView["objNatural"],
+                    $datView["objCustumer"],
+                    $datView["tipoCambio"],
+                    $datView["objCurrency"],
+                    $datView["objTMI"],
+                    $confiDetalleHeader,
+                    $detalle,
+                    $objParameterTelefono, /*telefono*/
+                    $datView["objStage"][0]->display, /*estado*/
+                    $datView["objTC"]->name /*causal*/,
+                    $datView["objUser"]->nickname,
+                    $objParameterRuc /*ruc*/
+                );
+            }
+
+            $this->dompdf->loadHTML($html);
+
+            //1cm = 29.34666puntos
+            //a4: 210 ancho x 297
+            //a4: 21cm x 29.7cm
+            //a4: 595.28puntos x 841.59puntos
+
+            //$this->dompdf->setPaper('A4','portrait');
+            //$this->dompdf->setPaper(array(0,0,234.76,6000));
+
+            $this->dompdf->render();
+
+            $objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+            $objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+            $objParameterShowDownloadPreview	= $this->core_web_parameter->getParameter("CORE_SHOW_DOWNLOAD_PREVIEW",$companyID);
+            $objParameterShowDownloadPreview	= $objParameterShowDownloadPreview->value;
+            $objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true" ? true : false;
+
+            $fileNamePut = "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
+            $path        = "./resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".$fileNamePut;
+
+            file_put_contents(
+                $path,
+                $this->dompdf->output()
+            );
+
+            chmod($path, 644);
+
+            if($objParameterShowLinkDownload == "true")
+            {
+                echo "<a 
+					href='".base_url()."/resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".
+                    $fileNamePut."'>download factura</a>
+				";
+
+            }
+            else{
+                //visualizar
+                $this->dompdf->stream("factura_".$transactionMasterID."_".date("dmYhis"), ['Attachment' => $objParameterShowDownloadPreview ]);
+            }
+
+
+
+
+        }
+        catch(\Exception $ex){
+
+            //$data["session"] = $dataSession;
+            $data["session"] 	= null;
+            $data["exception"] 	= $ex;
+            $data["urlLogin"]  	= base_url();
+            $data["urlIndex"]  	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+            $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+            $resultView        	= view("core_template/email_error_general",$data);
+
+            $this->email->setFrom(EMAIL_APP);
+            $this->email->setTo(EMAIL_APP_COPY);
+            $this->email->setSubject("Error");
+            $this->email->setMessage($resultView);
+
+            $resultSend01 = $this->email->send();
+            $resultSend02 = $this->email->printDebugger();
+
+
+            return $resultView;
+        }
+    }
 	
 	function viewRegisterFormatoPaginaNormal80mmOpcion1Tenampa(){
 		try{ 

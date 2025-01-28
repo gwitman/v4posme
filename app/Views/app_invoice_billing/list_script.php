@@ -1,7 +1,8 @@
 <script>
 	var objIsMobile							= '<?php echo $useMobile; ?>';	
 	var objEsMesero							= '<?php echo $esMesero; ?>';	
-	var objParameterPantallaParaFacturar 	= '<?php echo $objParameterPantallaParaFacturar; ?>';	
+	var objEliminarProductos				= '<?php echo $eliminarProductos; ?>';
+	var objParameterPantallaParaFacturar 	= '<?php echo $objParameterPantallaParaFacturar; ?>';
 	var urlPreview 							= "<?php echo base_url(); ?>/app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1/companyID/2/transactionID/19/transactionMasterID/";
 	
 	$(document).ready(function(){	
@@ -9,6 +10,10 @@
 			'webkitTextSecurity': 'disc', // Para WebKit browsers
 			'textSecurity': 'disc'        // Para otros browsers que lo soporten
 		});
+
+        if (objEliminarProductos != '0'){
+            $('#btnEliminar').addClass('hidden');
+        }
 
 		if(objIsMobile == "1")
 		{

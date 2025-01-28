@@ -47,7 +47,8 @@
 	var varPermisosEsPermitidoSeleccionarPrecioPublico 	= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_SELECCIONAR_PRECIO_PUBLICO"}).select().length > 0 ? true:	false;
 	var varPermisosEsPermitidoSeleccionarPrecioPormayor	= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_SELECCIONAR_PRECIO_PORMAYOR"}).select().length > 0 ? true:	false;
 	var varPermisosEsPermitidoSeleccionarPrecioCredito 	= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_SELECCIONAR_PRECIO_CREDITO"}).select().length > 0 ? true:	false;
-	
+	var varPermisosNoPermitirEliminarProductosFactura 	= jLinq.from(varPermisos).where(function(obj){ return obj.display == "NO_PERMITIR_ELIMINAR_PRODUCTOS_DE_FACTURA"}).select().length > 0 ? true:	false;
+
 	var PriceStatus = varPermisosEsPermitidoModificarPrecio == true ? "":"readonly";
 	var NameStatus  = varPermisosEsPermitidoModificarNombre == true ? "":"readonly";
 	var varParameterInvoiceBillingPrinterDirect				= '<?php echo $objParameterInvoiceBillingPrinterDirect; ?>';	
@@ -1720,10 +1721,10 @@
 				$("#divLineaCredit").removeClass("hidden");
 			}
 			else{
-				$("#divLineaCredit").addClass("hidden");				
+				$("#divLineaCredit").addClass("hidden");
 			}
 			
-			
+
 
 	}	
 	
@@ -2112,7 +2113,7 @@
 	function fnRenderLineaCredit(objListCustomerCreditLine,objCausalTypeCredit)
 	{
 		
-		$("#divTipoFactura").removeClass("hidden");
+		$("#divTipoFactura").removeClass("<?= getBehavio($company->type,"app_invoice_billing","divTxtCausalIDScript","hidden"); ?>");
 		$("#txtCustomerCreditLineID").html("");
 		$("#txtCustomerCreditLineID").val("");
 		
@@ -2476,11 +2477,12 @@
 	{
 		$(document).ready(function()
 		{
+
 			$('#txtClaveOpenCash').css({
 				'webkitTextSecurity': 'disc', 		// Para WebKit browsers
 				'textSecurity'		: 'disc'        // Para otros browsers que lo soporten
 			});
-			
+
             $grid = $('.custom-table-container-inventory .row').isotope({
                 itemSelector: '.item-producto',
                 layoutMode: 'fitRows',
@@ -2493,7 +2495,7 @@
 				$("#mySidebarZona").css("width","100%");
 				$("#mySidebarZona").removeClass("hidden");
 			}
-			
+
             $(".custom-table-container-inventory").hide();
             var zonaDefault = $("#txtZoneID").val();
             $(".custom-table-mesas").find("td").addClass("hidden");
@@ -2637,10 +2639,14 @@
 								"aTargets"		: [ 0 ],//checked
 								"sWidth"		: "50px",
 								"mRender"		: function ( data, type, full ) {
+                                    var ocultarBoton="";
+                                    if(varPermisosNoPermitirEliminarProductosFactura){
+                                        ocultarBoton="hidden";
+                                    }
 									if (data == false)
-									return '<input type="checkbox"  class="classCheckedDetail"  value="0" ></span>';
+									return '<input type="checkbox"  class="classCheckedDetail '+ocultarBoton+'"  value="0" ></span>';
 									else
-									return '<input type="checkbox"  class="classCheckedDetail" checked="checked" value="0" ></span>';
+									return '<input type="checkbox"  class="classCheckedDetail '+ocultarBoton+'" checked="checked" value="0" ></span>';
 								}
 							},
 							{
@@ -2723,8 +2729,11 @@
 								"aTargets"		: [ 6 ],//Cantidad
 								"sWidth"		: objParameterINVOICE_SHOW_FIELD_PESO == "true" ? "150px" : "250px",
 								"mRender"		: function ( data, type, full ) {
-									var str =  '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right" autocomplete="off" /> ';
-									
+                                    if (varPermisosNoPermitirEliminarProductosFactura){
+                                        str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right" autocomplete="off" readonly />';
+                                    }else{
+                                        str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right" autocomplete="off" />';
+                                    }
 									if (varUseMobile == "1")
 									str = str + " <span class='badge badge-inverse' >Cantidad</span>";
 							
@@ -2811,17 +2820,20 @@
 											str    	= str + '' + 
 											'<button type="button" class="btn btn-warning btnAddSelectedItem"><span class="icon16 i-archive"></span> </button>';
 										}
-										
-										str    	= str + '' + 
-										'<button type="button" class="btn btn-primary btnMenus"><span class="icon16 i-minus"></span> </button>';
+                                        var ocultarBoton="";
+                                        if(varPermisosNoPermitirEliminarProductosFactura){
+                                            ocultarBoton="hidden";
+                                        }
+                                        str    	= str + '' +
+                                        '<button type="button" class="btn btn-primary btnMenus '+ ocultarBoton +'"><span class="icon16 i-minus"></span> </button>';
 										
 										str    	= str + '' + 
 										'<button type="button" class="btn btn-primary btnPlus"><span class="icon16 i-plus"></span> </button>';
 										
 										
 										
-										
-										str		= str+'<div class="btn-group">';
+										ocultarBoton="<?= getBehavio($company->type, 'app_invoice_billing','divBtnPrecios','')?>";
+										str		= str+'<div class="btn-group '+ocultarBoton+'">';
 												str = 	str+'<button type="button" class="btn btn-success dropdown-toggle  " data-toggle="dropdown"><i class="icon16 i-bookmark"></i>  <span class="caret"></span> </button>';
 												str =	str+'<ul class="dropdown-menu">';
 													//publico											
@@ -2967,7 +2979,11 @@
 				$('#txtCheckApplyExoneracion').parent().addClass("switch-off");
 				
 			}
-			
+            if(varPermisosNoPermitirEliminarProductosFactura){
+                $('.btnMenus').addClass('hidden');
+                $('#btnDelete').addClass('hidden');
+                $('#btnDeleteItem').addClass('hidden');
+            }
 			
 		});
 	}

@@ -80,8 +80,8 @@
 	var varPermisosEsPermitidoSeleccionarPrecioPublico 	= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_SELECCIONAR_PRECIO_PUBLICO"}).select().length > 0 ? true:	false;
 	var varPermisosEsPermitidoSeleccionarPrecioPormayor	= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_SELECCIONAR_PRECIO_PORMAYOR"}).select().length > 0 ? true:	false;
 	var varPermisosEsPermitidoSeleccionarPrecioCredito 	= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_SELECCIONAR_PRECIO_CREDITO"}).select().length > 0 ? true:	false;
-	
-	
+    var varPermisosNoPermitirEliminarProductosFactura 	= jLinq.from(varPermisos).where(function(obj){ return obj.display == "NO_PERMITIR_ELIMINAR_PRODUCTOS_DE_FACTURA"}).select().length > 0 ? true:	false;
+
 	var PriceStatus = varPermisosEsPermitidoModificarPrecio == true ? "":"readonly";
 	var NameStatus  = varPermisosEsPermitidoModificarNombre == true ? "":"readonly";
 	<?php echo $objListParameterJavaScript; ?>
@@ -911,6 +911,7 @@
 			fnRecalculateDetail(true,"");		
 			
 	});
+
 	$(document).on("change","input.txtQuantity",function(){
 		fnRecalculateDetail(true,"");		
 	});
@@ -1887,7 +1888,7 @@
 	function fnRenderLineaCredit(objListCustomerCreditLine,objCausalTypeCredit)
 	{
 		
-		$("#divTipoFactura").removeClass("hidden");
+		$("#divTipoFactura").removeClass("<?= getBehavio($company->type,"app_invoice_billing","divTxtCausalIDScript","hidden"); ?>");
 		
 		//Renderizar Line Credit
 		$("#txtCustomerCreditLineID").html("");
@@ -2239,7 +2240,7 @@
 		if ( varParameterTipoPrinterDownload == 'true' )
 		{
 			fnWaitOpen();
-			window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>", '_blank');
+            window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>", '_blank');
 			fnWaitClose();
 			return;
 		}
@@ -2804,8 +2805,8 @@
 				'webkitTextSecurity': 'disc', 		// Para WebKit browsers
 				'textSecurity'		: 'disc'        // Para otros browsers que lo soporten
 			});
-			
-			
+
+
             $grid = $('.custom-table-container-inventory .row').isotope({
                 itemSelector: '.item-producto',
                 layoutMode: 'fitRows',
@@ -2962,11 +2963,14 @@
 								"aTargets"		: [ 0 ],//checked
 								"sWidth"		: "50px",
 								"mRender"		: function ( data, type, full ) {
-									
+                                    var ocultarBoton="";
+                                    if(varPermisosNoPermitirEliminarProductosFactura){
+                                        ocultarBoton="hidden";
+                                    }
 									if (data == false)
-									return '<input type="checkbox"  class="classCheckedDetail"  value="0" ></span>';
+									return '<input type="checkbox"  class="classCheckedDetail '+ocultarBoton+'"  value="0" ></span>';
 									else
-									return '<input type="checkbox"  class="classCheckedDetail" checked="checked" value="0" ></span>';
+									return '<input type="checkbox"  class="classCheckedDetail '+ocultarBoton+'" checked="checked" value="0" ></span>';
 								}
 								//,
 								//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
@@ -3074,8 +3078,15 @@
 								"aTargets"		: [ 6 ],//Cantidad
 								"sWidth"		: objParameterINVOICE_SHOW_FIELD_PESO == "true" ? "150px" : "250px",
 								"mRender"		: function ( data, type, full ) {
-									var str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right" autocomplete="off" />';
-									
+                                    var readOnlyQuantity = "";
+                                    var str='';
+                                    if (varPermisosNoPermitirEliminarProductosFactura){
+                                        str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right" autocomplete="off" readonly />';
+                                    }else{
+                                        str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right" autocomplete="off" />';
+                                    }
+
+
 									if (varUseMobile == "1")
 									str = str + " <span class='badge badge-inverse' >Cantidad</span>";
 								
@@ -3186,17 +3197,21 @@
 									{
 										str    	= str + '' + 
 										'<button type="button" class="btn btn-warning btnAddSelectedItem"><span class="icon16 i-archive"></span> </button>';
-									}								
-									
-									
-									str    	= str + '' + 
-									'<button type="button" class="btn btn-primary btnMenus"><span class="icon16 i-minus"></span> </button>';
+									}
+
+
+                                    var ocultarBoton="";
+                                    if(varPermisosNoPermitirEliminarProductosFactura){
+                                        ocultarBoton="hidden";
+                                    }
+                                    str    	= str + '' +
+                                        '<button type="button" class="btn btn-primary btnMenus '+ ocultarBoton +'"><span class="icon16 i-minus"></span> </button>';
 									
 									str    	= str + '' + 
 									'<button type="button" class="btn btn-primary btnPlus"><span class="icon16 i-plus"></span> </button>';
-									
-									
-									str		= str+'<div class="btn-group">';
+
+                                    ocultarBoton="<?= getBehavio($company->type, 'app_invoice_billing','divBtnPrecios','')?>";
+									str		= str+'<div class="btn-group '+ ocultarBoton +'">';
 											str = 	str+'<button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><i class="icon16 i-bookmark"></i><span class="caret"></span></button>';
 											str =	str+'<ul class="dropdown-menu">';
 												//publico
@@ -3311,8 +3326,12 @@
 			//Renderizar combobox de las lineas de credito			
 			fnRenderLineaCredit(objListCustomerCreditLine,objCausalTypeCredit);	
 			objRenderInit = false;
-			
-			
+			if(varPermisosNoPermitirEliminarProductosFactura){
+                $('.btnMenus').addClass('hidden');
+                $('#btnDelete').addClass('hidden');
+                $('#btnDeleteItem').addClass('hidden');
+            }
+            <?php echo getBehavio($company->type, 'app_invoice_billing', 'btnFooter','') ?>
 		});
 	}
 	

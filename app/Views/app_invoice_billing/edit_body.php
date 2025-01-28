@@ -260,7 +260,7 @@ if($objParameterRestaurant == "true")
 						<li class="active">
 							<a href="#home" data-toggle="tab">Informacion</a>
 						</li>
-						<li class="elementMovilOculto <?php echo getBehavio($company->type,"app_invoice_billing","divPestanaReferencias",""); ?>  ">
+						<li class="elementMovilOculto <?= getBehavio($company->type,"app_invoice_billing","divPestanaReferencias",""); ?>  ">
 							<a href="#profile" data-toggle="tab">Referencias.</a>
 						</li>
 						<li class="<?php echo getBehavio($company->type,"app_invoice_billing","divPestanaCredito",""); ?> " >
@@ -286,7 +286,7 @@ if($objParameterRestaurant == "true")
 									<input type="hidden" id="txtTransactionMasterID" name="txtTransactionMasterID"  value="<?php echo $objTransactionMaster->transactionMasterID; ?>">
 									<input type="hidden" id="txtCodigoMesero" name="txtCodigoMesero" value="<?php echo $codigoMesero;  ?>">
 									
-									<div class="form-group">
+									<div class="form-group <?= getBehavio($company->type,"app_invoice_billing","divTxtFecha","") ?>">
 										<label class="col-lg-4 control-label" for="datepicker">Fecha</label>
 										<div class="col-lg-8">
 											<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
@@ -336,7 +336,7 @@ if($objParameterRestaurant == "true")
 							</div>
 							<div class="col-lg-6" id="divInformacionRight" >
 							
-									<div class="form-group">
+									<div class="form-group <?= getBehavio($company->type,"app_invoice_billing","divTxtCliente","") ?>">
 										<label class="col-lg-4 control-label" for="buttons"><?php echo getBehavio($company->type,"app_invoice_billing","divTxtClienteBeneficiarioPrincipal","Cliente"); ?></label>
 										<div class="col-lg-8">
 											<div class="input-group">
@@ -382,14 +382,14 @@ if($objParameterRestaurant == "true")
 									</div>
 									
 									<div class="form-group  <?php echo getBehavio($company->type,"app_invoice_billing","divTxtCedula2",""); ?>" id="divCedula" >
-											<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","divTxtCedulaBeneficiario","Cedula"); ?></label>
+											<label class="col-lg-4 control-label" for="txtReferenceClientIdentifier"><?php echo getBehavio($company->type,"app_invoice_billing","divTxtCedulaBeneficiario","Cedula"); ?></label>
 											<div class="col-lg-8">
 												<input class="form-control"   type="text" name="txtReferenceClientIdentifier" id="txtReferenceClientIdentifier" value="<?php echo $objTransactionMasterInfo->referenceClientIdentifier; ?>">
 											</div>
 									</div>
 									
-									<div class="form-group" id="divTipoFactura" >
-										<label class="col-lg-4 control-label" for="selectFilter">Tipo</label>
+									<div class="form-group <?= getBehavio($company->type,"app_invoice_billing","divTxtCausalID",""); ?>" id="divTipoFactura" >
+										<label class="col-lg-4 control-label" for="txtCausalID">Tipo</label>
 										<div class="col-lg-8">
 											<select name="txtCausalID" id="txtCausalID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">							
 													<?php
@@ -408,7 +408,7 @@ if($objParameterRestaurant == "true")
 									
 
 									<div class="form-group hidden" id="divLineaCredit">
-										<label class="col-lg-4 control-label" for="selectFilter">Línea de Crédito</label>
+										<label class="col-lg-4 control-label" for="txtCustomerCreditLineID">Línea de Crédito</label>
 										<div class="col-lg-8">
 											<select name="txtCustomerCreditLineID" id="txtCustomerCreditLineID" class="<?php echo ($useMobile == "1" ? "" : "select2");  ?>" >
 											</select>
@@ -547,10 +547,9 @@ if($objParameterRestaurant == "true")
 									
 									
 									<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divMesa",""); ?> " id="divMesa" >
-										<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionMesa","Mesa"); ?></label>
+										<label class="col-lg-4 control-label" for="txtMesaID"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionMesa","Mesa"); ?></label>
 										<div class="col-lg-8">
-											<select name="txtMesaID" id="txtMesaID" class="select2">
-													<option></option>																
+											<select name="txtMesaID" id="txtMesaID" class="<?php echo ($useMobile == "1" ? "" : "select2");  ?>" <?= $codigoMesero != 'none' ? getBehavio($company->type, 'app_invoice_billing', 'divTxtMesa', '') : '' ?>>
 													<?php
 													$count = 0;
 													if($objListMesa)
@@ -842,7 +841,7 @@ if($objParameterRestaurant == "true")
 								<div class="btn-group btn-block  hidden btn-comando-factura ">
 									<button  type="button" class="btn btn-flat btn-success dropdown-toggle btn-block" data-toggle="dropdown" id="btnGroupdProducto" ><i class="icon16 i-box"></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunConfiguracion","PRODUCTO"); ?> <span class="caret"></span></button>
 									<ul class="dropdown-menu">
-											<li><a href="#" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>						
+											<li class="<?= getBehavio($company->type,"app_invoice_billing","btnNewItemCatalog",""); ?>"><a href="#" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>
 											<li><a href="#" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>										
 									</ul>
 								</div>
@@ -1236,38 +1235,38 @@ if($objParameterRestaurant == "true")
 							</div>
 							<table class="<?php echo $useMobile == "1" ? "" : "table table-bordered "  ?>" id="table-resumen-pago" >
 								<tbody>
-								<tr>
+								<tr class="<?= getBehavio($company->type,"app_invoice_billing","divHiddeValue",""); ?>">
 									<th style="text-align:left;" >01) SUB TOTAL</th>
 									<td >
 										<input type="text" id="txtSubTotal" name="txtSubTotal" readonly class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
 								</tr>
-								<tr>
+								<tr class="<?= getBehavio($company->type,"app_invoice_billing","divHiddeValue",""); ?>">
 									<th style="text-align:left">02) IVA</th>
 									<td >
 										<input type="text" id="txtIva" name="txtIva" readonly class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
 								</tr>
-								<tr>
+								<tr class="<?= getBehavio($company->type,"app_invoice_billing","divHiddeValue",""); ?>">
 									<th style="text-align:left;">03) % DESC</th>
 									<td>
 										<input type="text" id="txtPorcentajeDescuento" name="txtPorcentajeDescuento" class="col-lg-12" value="0" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>" />
 									</td>
 								</tr>
-								<tr>
+								<tr class="<?= getBehavio($company->type,"app_invoice_billing","divHiddeValue",""); ?>">
 									<th style="text-align:left;">04) DESC</th>
 									<td>
 										<input type="text" id="txtDescuento" name="txtDescuento" readonly class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>" />
 									</td>
 								</tr>  
-								<tr>
+								<tr class="<?= getBehavio($company->type,"app_invoice_billing","divHiddeValue",""); ?>">
 									<th style="text-align:left;">05) % SERV</th>
 									<td>
 										<input type="text" id="txtServices" name="txtServices" readonly class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>" />
 									</td>
 								</tr>								
 								<tr>
-									<th style="text-align:left">06) TOTAL</th>
+									<th style="text-align:left"><?= getBehavio($company->type,"app_invoice_billing","divTxtTotal","06)"); ?> TOTAL</th>
 									<td >
 										<input type="text" id="txtTotal" name="txtTotal" readonly class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>"/>
 									</td>
