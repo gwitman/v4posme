@@ -457,9 +457,9 @@ class core_web_whatsap {
                 CURLOPT_POSTFIELDS => json_encode([
                     'id_canal' => $objPWhatsapIdCanal->value,
                     'numero'=>$phoneDestino,                    
-					"url"=> "https://posme.net/v4posme/posme/public/resource/img/logos/logo-micro-finanza.jpg",
-					"nombre"=> "logo-micro-finanza",
-				    "extension"=> "jpg"
+					"url"=> "https://posme.net/v4posme/globalpro/public/resource/img/feliz_cumple.jpeg",
+					"nombre"=> "feliz_cumple",
+				    "extension"=> "jpeg"
   
                 ]),
                 CURLOPT_HTTPHEADER => [

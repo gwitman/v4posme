@@ -1989,16 +1989,18 @@ class app_notification extends _BaseController
 				$this->core_web_whatsap->sendMessageByLiveconnect(
 					APP_COMPANY,
 					replaceSimbol($i->Mensaje),					
-					clearNumero($i->Destino)
+					"50587125827"
+					/*clearNumero($i->Destino)*/
 				);
 				
-				/*
+				
 				$this->core_web_whatsap->sendMessageByLiveconnectFileGlobalPro(
 					APP_COMPANY,
-					replaceSimbol($i->Mensaje),					
-					clearNumero($i->Destino)
+					replaceSimbol($i->Mensaje),	
+					"50587125827"
+					/*clearNumero($i->Destino)*/
 				);
-				*/
+				
 			}
 		}
 		echo "SUCCESS";

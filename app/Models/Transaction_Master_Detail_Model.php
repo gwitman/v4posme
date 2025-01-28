@@ -888,6 +888,7 @@ class Transaction_Master_Detail_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
+
    function GlobalPro_get_Notification_CumpleAnnos()
    {
 	   $db 	= db_connect();
@@ -901,7 +902,7 @@ class Transaction_Master_Detail_Model extends Model  {
 				tx.Comparacion , 
 				
 				CONCAT(
-				'¡Felicidades ', tx.firstName  ,' [simbol-cono] [simbol-enter][simbol-enter] !Queremos desearte un muy feliz cumpleaños. Que tu dia esté lleno de alegría, amor y momentos inolvidables. [simbol-enter][simbol-enter] Agradecemos tu confianza en nosotros, esperamos seguir siendo parte de tu vida muchos años mas. [simbol-enter][simbol-enter]!Disfruta tu día al máximo! [simbol-enter][simbol-carita-estrellada]    Saludos,[simbol-enter] GLOBAL PRO NICARAGUA '
+				'¡Felicidades ', tx.firstName  ,' [simbol-carita-estrellada] [simbol-cono] [simbol-enter][simbol-enter] Espero tengas un excelente día!. [simbol-enter][simbol-enter]-Equipo Global Pro [simbol-enter]Las mejores computadoras del país!' 
 				) as Mensaje  
 				
 			from 
