@@ -1759,6 +1759,8 @@ update tb_item set realStateRoomServices = ifnull(realStateRoomServices,0);
 
 update tb_customer set entityContactID = ifnull(entityContactID,0);
 update tb_customer_credit_line set dayExcluded = IFNULL(dayExcluded,2323);
+update tb_customer set balancePoint = ifnull(balancePoint,0);
+update tb_customer set budget = ifnull(budget,0);
 
 
 update tb_currency set `name` = 'Cordoba' where currencyID = 1;
