@@ -22,7 +22,7 @@
 											</div>
 											
 											
-											<div class="input-group-btn">
+											<div class="<?= $useMobile == "1" ? '' : 'input-group-btn'?>">
 												<input type="text" class="form-control" id="txtSearchTransaction" placeholder="search ..." style="width:160px" >
 												<button type="button" class="btn" id="btnSearchTransaction" ><i class="icon16 i-search-2 gap-left5"></i></button>
 											</div>
