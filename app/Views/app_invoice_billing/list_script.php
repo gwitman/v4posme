@@ -8,7 +8,7 @@
 	var objBoton							= "";
 	var urlPreview 							= "<?php echo base_url(); ?>/app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1/companyID/2/transactionID/19/transactionMasterID/";
 	
-	$(document).ready(function(){	
+	$(document).ready(function(){
 		$('#txtClaveMesero').css({
 			'webkitTextSecurity': 'disc', // Para WebKit browsers
 			'textSecurity': 'disc'        // Para otros browsers que lo soporten
@@ -26,7 +26,7 @@
 			$(".dataTables_paginate.paging_bootstrap.pagination").remove();
 			$("#ListView_length").remove();
 			$("#ListView_filter").remove();
-			$("#ListView").css("width",availWidth+"px");
+			$("#ListView").css("width","100%");
 			
 		}
 		
@@ -75,8 +75,13 @@
 			}
 			else 
 			{
-				$("#txtClaveMesero").val("");
-				$("#modalDialogClaveMesero").modal("show");
+                if (objParameterMeseroScreenIndividual === "true"){
+                    $("#txtClaveMesero").val("<?= $objPasswordMesero ?>");
+                    fnAceptarClaveMesero();
+                }else{
+                    $("#txtClaveMesero").val("");
+                    $("#modalDialogClaveMesero").modal("show");
+                }
 			}
 			
 		}); 
@@ -196,57 +201,63 @@
 			}
 			else 
 			{
-				$("#txtClaveMesero").val("");
-				$('#modalDialogClaveMesero').modal('show');
+                if (objParameterMeseroScreenIndividual === "true"){
+                    $("#txtClaveMesero").val("<?= $objPasswordMesero ?>");
+                    fnAceptarClaveMesero();
+                }else{
+                    $("#txtClaveMesero").val("");
+                    $("#modalDialogClaveMesero").modal("show");
+                }
 			}
 			
 			
 		});
 		
-		$(document).on("click",'#btnAceptarClaveMesero').function(){
-			
-			// Validar si el input está vacío
-			let codigoMesero = $('#txtClaveMesero').val().trim();
-			if (codigoMesero === '') {
-				$('#errorMessage').show();
-			} else {
-				$('#errorMessage').hide(); 											
-				$('#modalDialogClaveMesero').modal('hide');				
-				fnWaitOpen();
-				
-				if(objBoton == "new")
-				{
-					if(objParameterPantallaParaFacturar == "-")
-						window.location	= "<?= base_url() ?>/app_invoice_billing/add"+"/codigoMesero/"+codigoMesero;
-					else 
-						window.location	= "<?= base_url() ?>/app_invoice_billing/"+objParameterPantallaParaFacturar+"/companyID/0/transactionID/19/transactionMasterID/0"+"/codigoMesero/"+codigoMesero;
-				}
-				
-				if(objBoton == "edit")
-				{
-					if(objRowTableListView != undefined)
-					{
-						fnWaitOpen();
-						var data 		= objTableListView.fnGetData(objRowTableListView);		
-						if(objParameterPantallaParaFacturar == "-")	
-							window.location	= "<?php echo base_url(); ?>/app_invoice_billing/edit/companyID/"+data[0]+"/transactionID/"+data[1]+"/transactionMasterID/"+data[2]+"/codigoMesero/"+codigoMesero;
-						else
-							window.location	= "<?php echo base_url(); ?>/app_invoice_billing/"+objParameterPantallaParaFacturar+"/companyID/"+data[0]+"/transactionID/"+data[1]+"/transactionMasterID/"+data[2]+"/codigoMesero/"+codigoMesero;
-					}
-					else{
-						fnShowNotification("Seleccionar el Registro...","error");
-					}
-				}
-		
-			}
-			
+		$(document).on("click",'#btnAceptarClaveMesero', function(){
+			fnAceptarClaveMesero();
 		});
 	
 	
 	
 		
 	});
-	
+
+    function fnAceptarClaveMesero(){
+        // Validar si el input está vacío
+        let codigoMesero = $('#txtClaveMesero').val().trim();
+        if (codigoMesero === '') {
+            $('#errorMessage').show();
+        } else {
+            $('#errorMessage').hide();
+            $('#modalDialogClaveMesero').modal('hide');
+            fnWaitOpen();
+
+            if(objBoton == "new")
+            {
+                if(objParameterPantallaParaFacturar == "-")
+                    window.location	= "<?= base_url() ?>/app_invoice_billing/add"+"/codigoMesero/"+codigoMesero;
+                else
+                    window.location	= "<?= base_url() ?>/app_invoice_billing/"+objParameterPantallaParaFacturar+"/companyID/0/transactionID/19/transactionMasterID/0"+"/codigoMesero/"+codigoMesero;
+            }
+
+            if(objBoton == "edit")
+            {
+                if(objRowTableListView != undefined)
+                {
+                    fnWaitOpen();
+                    var data 		= objTableListView.fnGetData(objRowTableListView);
+                    if(objParameterPantallaParaFacturar == "-")
+                        window.location	= "<?php echo base_url(); ?>/app_invoice_billing/edit/companyID/"+data[0]+"/transactionID/"+data[1]+"/transactionMasterID/"+data[2]+"/codigoMesero/"+codigoMesero;
+                    else
+                        window.location	= "<?php echo base_url(); ?>/app_invoice_billing/"+objParameterPantallaParaFacturar+"/companyID/"+data[0]+"/transactionID/"+data[1]+"/transactionMasterID/"+data[2]+"/codigoMesero/"+codigoMesero;
+                }
+                else{
+                    fnShowNotification("Seleccionar el Registro...","error");
+                }
+            }
+
+        }
+    }
 	function fn_aceptCallback(data){
 			var dataViewID 	= data[0];
 			window.location = "../../app_invoice_billing/index/"+dataViewID;   
