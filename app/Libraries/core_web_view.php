@@ -124,8 +124,9 @@ class core_web_view {
 		
 		//Obtener la vista generica
 		$companyDataView			= $Data_View_Model->getViewByName($componentID,$name,$callerID);
-		if(!$companyDataView)
-		return null;
+		if(!$companyDataView) {
+            return null;
+        }
 		
 		//Obtener la compania
 		$objCompany = $Company_Model->get_rowByPK($user->companyID);
@@ -134,7 +135,7 @@ class core_web_view {
 		$dataviewID 				= $companyDataView->dataViewID;
 		$companyDataView			= $Company_Data_View_Model->get_rowBy_companyIDDataViewIDAndFlavor($user->companyID,$dataviewID,$callerID,$componentID,$objCompany->flavorID);
 		if(!$companyDataView)
-		{	
+		{
 			//Obtener la vista unica
 			$dataviewID 				= $dataviewID;
 			$companyDataView			= $Company_Data_View_Model->get_rowBy_companyIDDataViewID($user->companyID,$dataviewID,$callerID,$componentID);
@@ -172,16 +173,21 @@ class core_web_view {
 		$dataResult["view_data"]	= $dataRecordSet;
 		return $dataResult;
    }
-   function getViewBy_DataViewID($user,$componentID,$dataviewID,$callerID,$permission=null,$parameter=null){
+   function getViewBy_DataViewID($user,$componentID,$dataviewID,$callerID,$permission=null,$parameter=null, $targetComponentID = null){
 		$Data_View_Model = new Data_View_Model();
 		$Company_Data_View_Model = new Company_Data_View_Model();
 		$Bd_Model = new Bd_Model();  
-		
-		//Obtener la vista por company
-		$companyDataView			= $Company_Data_View_Model->get_rowBy_companyIDDataViewID($user->companyID,$dataviewID,$callerID,$componentID);
-		if(!$companyDataView)
-		return null;
-		
+
+       //Obtener la vista por el flavor
+       $companyDataView			= $Company_Data_View_Model->get_rowBy_companyIDDataViewIDAndFlavor($user->companyID,$dataviewID,$callerID,$componentID,$targetComponentID);
+       if(!$companyDataView)
+       {
+           //Obtener la vista unica
+           $companyDataView			= $Company_Data_View_Model->get_rowBy_companyIDDataViewID($user->companyID,$dataviewID,$callerID,$componentID);
+           if(!$companyDataView)
+               return null;
+       }
+
 		//EXECUTE 
 		$queryFill					= str_replace(array_keys($parameter), array_values ($parameter), $companyDataView->sqlScript);
 		
@@ -1141,8 +1147,16 @@ class core_web_view {
 						//dos clic
 						$(document).on('dblclick','#".$idTable." tr',function(){								
 							var data		= [];	
-							var idata		= objTableListView.fnGetData(this);							
+							var idata		= objTableListView.fnGetData(this);						    	
 							data.push(idata);
+							window.opener.".$parameterAjax["{fnCallback}"]."(data); 
+						});
+						
+						$(document).on('dblclick','.td_interno ',function(){						
+							var data		    = [];
+							var firstTableRow   = $(this).closest('table').parent().parent();
+                            var idata		    = objTableListView.fnGetData(firstTableRow[0]);
+                            data.push(idata);
 							window.opener.".$parameterAjax["{fnCallback}"]."(data); 
 						});
 						
