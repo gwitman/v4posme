@@ -63,6 +63,17 @@
 		display: block;
 	}
 	/* FIN DISEÑO DE TABLA AL PASAR EL MOUSE Y DAR CLIC EN UNA CELDA */
+    <?php if($useMobile == "1"){?>
+    #tb_transaction_master_detail {
+        border-collapse: separate; /* Necesario para que border-spacing funcione */
+        border-spacing: 0 3px; /* Espaciado vertical entre filas */
+        width: 100%;
+    }
+
+    #tb_transaction_master_detail td, th {
+        padding: 3px; /* Espaciado interno en las celdas */
+    }
+    <?php } ?>
 </style>
 
 
@@ -796,7 +807,7 @@ if($objParameterRestaurant == "true")
 						<div class="row" id="panelContainterDetailInvoice" >
 							<div class="col-lg-12">
 								<h3 id="labelTitleDetalle" >Detalle:</h3>
-								<table id="tb_transaction_master_detail" class="table table-bordered"  >
+								<table id="tb_transaction_master_detail" class="<?= $useMobile=="1" ? '' : 'table table-bordered' ?>"  >
 									<thead>
 									  <tr>
 										<th></th>
@@ -940,7 +951,7 @@ if($objParameterRestaurant == "true")
 										<div class="btn-group  btn-block hidden btn-comando-factura">
 											<button type="button" class="btn btn-flat btn-danger dropdown-toggle  btn-block" data-toggle="dropdown">FAC <span class="caret"></span></button>
 											<ul class="dropdown-menu">											
-													<li><a href="<?php echo base_url(); ?>/app_invoice_billing/index" id="btnBack" >REGRESAR</a></li>
+													<li><a href="#" id="btnBack" >REGRESAR</a></li>
 													<li><a href="<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>" id="btnNew">NUEVA FAC</a></li>
 													<li><a href="#" id="btnSelectInvoice"  > SELECCIONAR</a></li>
 											</ul>
@@ -1482,7 +1493,7 @@ if($objParameterRestaurant == "true")
 			</div><!-- /.modal -->
 
 
-			<div class="modal fade" tabindex="-1" id="modalDialogBackToListV2" role="dialog">
+			<div class="modal fade"  id="modalDialogBackToListV2" role="dialog" tabindex="-1" data-backdrop="false">
 			  <div class="modal-dialog" role="document">
 				<div class="modal-content">
 				  <div class="modal-header">
