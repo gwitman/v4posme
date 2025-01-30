@@ -239,21 +239,21 @@ class core_view extends _BaseController {
 			$parameter 	= array_merge($parameter,$result);
 			
 			
-			
+
 			$dataViewData				= 
-										$this->session->get('user')->useMobile == 0 ? 
+										$this->session->get('user')->useMobile == "0" ?
 										$this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname,CALLERID_SEARCH,null,$parameter): 				
 										$this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname."_MOBILE",CALLERID_SEARCH,null,$parameter);
-											
-			$dataViewDataTotal			= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname."_TOTAL",CALLERID_SEARCH,null,$parameter); 				
+
+			$dataViewDataTotal			= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname."_TOTAL",CALLERID_SEARCH,null,$parameter);
 			$dataViewDataDiplay			= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname."_DISPLAY",CALLERID_SEARCH,null,$parameter); 				
-			
+
 			$dataViewDataTotal 			= $dataViewDataTotal["view_data"][0]["itemID"];
 			$dataViewDataDiplay 		= $dataViewDataDiplay["view_data"][0]["itemID"];
 			$parameter["{dataViewDataTotal}"] 	= $dataViewDataTotal;
 			$parameter["{dataViewDataDiplay}"] 	= $dataViewDataDiplay;
-			
-			
+
+
 			if($multiselect == "true")
 			{
 				$dataViewRender				= $this->core_web_view->renderGreedPaginate($dataViewData,'ListView',"fnTableSelectedRowMultiSelect",$iDisplayLength,true,$parameter);
@@ -262,22 +262,22 @@ class core_view extends _BaseController {
 			{
 				$dataViewRender				= $this->core_web_view->renderGreedPaginate($dataViewData,'ListView',"fnTableSelectedRow",$iDisplayLength,true,$parameter);
 			}
-			
+
 			$dataView["useMobile"] 				= $this->session->get('user')->useMobile;
 			$dataView["fnCallback"] 			= $fnCallback;
 			$dataView["viewname"] 				= $viewname;
 			$dataView["autoclose"] 				= $autoclose;
 			$dataView["multiselect"] 			= $multiselect;
 			$dataView["urlRedictWhenEmpty"] 	= str_replace("__","/",$urlRedictWhenEmpty);
-				
+
 			//Renderizar Resultado
-			$dataSession["message"]	= ""; 
-			$dataSession["head"]	= /*--inicio view*/ view('core_view/choose_view_serch_head',$dataView);//--finview 
+			$dataSession["message"]	= "";
+			$dataSession["head"]	= /*--inicio view*/ view('core_view/choose_view_serch_head',$dataView);//--finview
 			$dataSession["body"]	= $dataViewRender;
-			$dataSession["script"]	= /*--inicio view*/ view('core_view/choose_view_serch_script',$dataView);//--finview 
-			$resultView 			= view("core_masterpage/default_widgetchoose",$dataSession);//--finview-r	
-			
-			
+			$dataSession["script"]	= /*--inicio view*/ view('core_view/choose_view_serch_script',$dataView);//--finview
+			$resultView 			= view("core_masterpage/default_widgetchoose",$dataSession);//--finview-r
+
+
 			return $resultView;
 				
 		}
