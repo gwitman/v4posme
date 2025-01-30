@@ -796,20 +796,21 @@
 		fnRenderLineaCreditoDiv();
 	});
 
-	//Regresar a la lista
-	$(document).on("click","#btnBack",function(){
-			var listRow = objTableDetail.fnGetData();							
-			var length 	= listRow.length;
-			if(length > 0)
-			{
-				$("#modalDialogBackToListV2").modal("show");
-			}
-			else 
-			{
-				fnWaitOpen();
-				window.location.href = '<?php echo base_url(); ?>/app_invoice_billing/index'; 				
-			}
-	});
+    //Regresar a la lista
+    $("#btnBack").click(function(e){
+        e.preventDefault();
+        let listRow = objTableDetail.fnGetData();
+        let length = listRow.length;
+        if(length > 0)
+        {
+            $("#modalDialogBackToListV2").modal("show");
+        }
+        else
+        {
+            fnWaitOpen();
+            window.location.href = '<?php echo base_url(); ?>/app_invoice_billing/index';
+        }
+    });
 	
 	//Evento Agregar el Usuario
 	$(document).on("click",".btnAcept",function(e){
@@ -3010,7 +3011,7 @@
 								"aTargets"		: [ 3 ],//itemNumber
 								"sWidth"		: "250px",
 								"mRender"		: function ( data, type, full ) {
-									return '<input type="text" class="col-lg-12" style="text-align:left" value="'+data+'" readonly="true" />';
+									return '<input type="text" class="col-lg-12 <?= $useMobile == "1" ? 'hidden' : '' ?>" style="text-align:left; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" value="'+data+'" readonly="true" />';
 								}
 								//,
 								//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
@@ -3036,10 +3037,15 @@
 										classHiddenTex = "";
 										classHiddenSelect 	= "hidden";
 									}	
-									
-									var  strFiledSelecte 	= "";
-									var  strFiled			= '<input type="text" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"   class="col-lg-12 '+classHiddenTex+' " style="text-align:left" value="'+full[4]+'" '+PriceStatus+' />';									
-									var strFiledSelecte 	= "<select name='txtItemSelected' class='<?php echo ($useMobile == "1" ? "" : "select2"); ?> txtItemSelected "+classHiddenSelect+"  ' >";
+
+                                    let strFiled = "";
+                                    if (varUseMobile === "1"){
+                                        strFiled        += '<label class="col-lg-12" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>">Descripción: '+full[4]+'</label>';
+                                        strFiled 		+= '<input type="hidden" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"  value="'+full[4]+'" '+NameStatus+' />';
+                                    }else{
+                                        strFiled		= '<input type="text" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"   class="col-lg-12 '+classHiddenTex+' " style="text-align:left; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" value="'+full[4]+'" '+PriceStatus+' />';
+                                    }
+									let strFiledSelecte 	= "<select name='txtItemSelected' class='<?php echo ($useMobile == "1" ? "" : "select2"); ?> txtItemSelected "+classHiddenSelect+"  ' >";
 									strFiledSelecte			= strFiledSelecte+"<option value='"+full[2]+"' selected data-itemid='"+full[2]+"' data-codigo='"+full[3]+"' data-name='"+full[4].replace("'","").replace("'","") +"' data-unidadmedida='"+full[5]+"' data-cantidad='"+full[6]+"' data-precio='"+full[7]+"' data-barra='"+full[3]+"'  data-description='"+full[4].replace("'","").replace("'","") + "'    >"+ full[4].replace("'","").replace("'","")  +"</option>";
 									
 									strFiledSelecte		= strFiledSelecte+"</select>";								
@@ -3058,7 +3064,7 @@
 												
 												var sel 					= '';
 												var espacio					=  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";								
-												sel 						= '<select name="txtSku[]" id="txtSku'+full[2]+'" class="txtSku col-lg-12 skuStyleNormal" >';	
+												sel 						= '<select name="txtSku[]" id="txtSku'+full[2]+'" class="txtSku col-lg-12 skuStyleNormal <?= $useMobile == "1" ? 'hidden' : '' ?>" style="<?= $useMobile == "1" ? 'width: 100%;' : '' ?>">';
 												
 												if(varUseMobile == "1")
 													espacio = "";		
@@ -3081,9 +3087,9 @@
                                     var readOnlyQuantity = "";
                                     var str='';
                                     if (varPermisosNoPermitirEliminarProductosFactura){
-                                        str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right" autocomplete="off" readonly />';
+                                        str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" readonly />';
                                     }else{
-                                        str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right" autocomplete="off" />';
+                                        str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" />';
                                     }
 
 
@@ -3102,7 +3108,7 @@
 								"aTargets"		: [ 7 ],//Precio
 								"sWidth"		: "250px",
 								"mRender"		: function ( data, type, full ) {									
-									var str =  '<input type="text" class="col-lg-12 txtPrice txt-numeric "  id="txtPriceRow'+full[2]+'"   '+PriceStatus+'  value="'+ data +'" name="txtPrice[]" style="text-align:right" autocomplete="off"  />';
+									var str =  '<input type="text" class="col-lg-12 txtPrice txt-numeric "  id="txtPriceRow'+full[2]+'"   '+PriceStatus+'  value="'+ data +'" name="txtPrice[]" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off"  />';
 									
 									if (varUseMobile == "1")
 									str = str + " <span class='badge badge-inverse' >Precio</span>";
@@ -3115,11 +3121,13 @@
 								"aTargets"		: [ 8 ],//Total
 								"sWidth"		: "250px",
 								"mRender"		: function ( data, type, full ) {
-									var str = '<input type="text" class="col-lg-12 txtSubTotal" readonly value="'+data+'" name="txtSubTotal[]" style="text-align:right" autocomplete="off" />';
-									
-									if (varUseMobile == "1")
-									str = str + " <span class='badge badge-inverse' >Total</span>";
-								
+                                    let str;
+                                    if (varUseMobile === "1"){
+                                        str = '<input type="hidden" name="txtSubTotal[]" value="'+data+'" />';
+                                    }else{
+                                        str = '<input type="text" class="col-lg-12 txtSubTotal" readonly value="' + data + '" name="txtSubTotal[]" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" />';
+                                    }
+
 									return str;
 								}
 								//,
