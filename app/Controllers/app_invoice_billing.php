@@ -3770,12 +3770,10 @@ class app_invoice_billing extends _BaseController {
 			$dataViewIDCache			= $cache->get('app_invoice_billing_dataviewid_index');
 			if($dataViewIDCache && $dataViewID == null )
 				$dataViewID = $dataViewIDCache;
-			
+
+            $targetComponentID			= $this->session->get('company')->flavorID;
 			//Vista por defecto 
 			if($dataViewID == null || $dataViewID == "null" ){
-			
-				
-				$targetComponentID			= $this->session->get('company')->flavorID;				
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$parameter["{fecha}"]		= $fecha;					
 				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
@@ -3789,7 +3787,7 @@ class app_invoice_billing extends _BaseController {
 				}
 				
 				$cache->save('app_invoice_billing_dataviewid_index', $dataViewData["view_config"]->dataViewID, TIME_CACHE_APP);
-				if($dataSession["user"]->useMobile == 1)
+				if($dataSession["user"]->useMobile == "1")
 				{					
 					//$dataViewRender			= $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow");
 					$dataViewRender				= $this->core_web_view->renderGreedWithHtmlInFildMobile($dataViewData,'ListView',"fnTableSelectedRow");
@@ -3807,9 +3805,9 @@ class app_invoice_billing extends _BaseController {
 				$cache->save('app_invoice_billing_dataviewid_index', $dataViewID, TIME_CACHE_APP);				
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$parameter["{fecha}"]		= $fecha;
-				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 							
-				
-				if($dataSession["user"]->useMobile == 1)
+				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter, $targetComponentID);
+
+				if($dataSession["user"]->useMobile == "1")
 				{
 					$dataViewRender				= $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow");
 				}
@@ -3876,6 +3874,7 @@ class app_invoice_billing extends _BaseController {
 			$dataViewHeader["company"]							= $dataSession["company"];
 			$dataViewHeader["objFecha"] 						= $objFecha;
 			$dataViewHeader["objParameterShowPreview"] 			= $objParameterShowPreview;
+            $dataViewHeader["useMobile"]						= $dataSession["user"]->useMobile;
 			
 			$dataViewFooter["objFecha"] 						= $objFecha;
 			$dataViewFooter["objParameterShowPreview"] 			= $objParameterShowPreview;
