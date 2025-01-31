@@ -959,8 +959,7 @@ class Transaction_Master_Detail_Model extends Model  {
 							tb_naturales nat 
 							inner join tb_customer cus on 
 								nat.entityID = cus.entityID 
-						where 				
-							nat.entityID = 5511 and 
+						where 											
 							LENGTH(REPLACE(cus.identification, '[^a-zA-Z0-9]', '')) = 14 and 
 							LENGTH(REPLACE(cus.phoneNumber, '[^a-zA-Z0-9]', '')) = 8  
 					) tx
