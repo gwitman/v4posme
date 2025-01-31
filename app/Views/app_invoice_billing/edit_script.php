@@ -2965,7 +2965,7 @@
 								"sWidth"		: "50px",
 								"mRender"		: function ( data, type, full ) {
                                     var ocultarBoton="";
-                                    if(varPermisosNoPermitirEliminarProductosFactura){
+                                    if(varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
                                         ocultarBoton="hidden";
                                     }
 									if (data == false)
@@ -3086,7 +3086,7 @@
 								"mRender"		: function ( data, type, full ) {
                                     var readOnlyQuantity = "";
                                     var str='';
-                                    if (varPermisosNoPermitirEliminarProductosFactura){
+                                    if (varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
                                         str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" readonly />';
                                     }else{
                                         str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" />';
@@ -3209,7 +3209,7 @@
 
 
                                     var ocultarBoton="";
-                                    if(varPermisosNoPermitirEliminarProductosFactura){
+                                    if(varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
                                         ocultarBoton="hidden";
                                     }
                                     str    	= str + '' +
@@ -3334,7 +3334,7 @@
 			//Renderizar combobox de las lineas de credito			
 			fnRenderLineaCredit(objListCustomerCreditLine,objCausalTypeCredit);	
 			objRenderInit = false;
-			if(varPermisosNoPermitirEliminarProductosFactura){
+			if(varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
                 $('.btnMenus').addClass('hidden');
                 $('#btnDelete').addClass('hidden');
                 $('#btnDeleteItem').addClass('hidden');

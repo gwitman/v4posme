@@ -2641,9 +2641,10 @@
 								"sWidth"		: "50px",
 								"mRender"		: function ( data, type, full ) {
                                     var ocultarBoton="";
-                                    if(varPermisosNoPermitirEliminarProductosFactura){
+                                    if(varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
                                         ocultarBoton="hidden";
                                     }
+
 									if (data == false)
 									return '<input type="checkbox"  class="classCheckedDetail '+ocultarBoton+'"  value="0" ></span>';
 									else
@@ -2734,7 +2735,7 @@
 								"aTargets"		: [ 6 ],//Cantidad
 								"sWidth"		: objParameterINVOICE_SHOW_FIELD_PESO == "true" ? "150px" : "250px",
 								"mRender"		: function ( data, type, full ) {
-                                    if (varPermisosNoPermitirEliminarProductosFactura){
+                                    if (varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
                                         str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" readonly />';
                                     }else{
                                         str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" />';
@@ -2830,9 +2831,10 @@
 											'<button type="button" class="btn btn-warning btnAddSelectedItem"><span class="icon16 i-archive"></span> </button>';
 										}
                                         var ocultarBoton="";
-                                        if(varPermisosNoPermitirEliminarProductosFactura){
+                                        if(varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
                                             ocultarBoton="hidden";
                                         }
+
                                         str    	= str + '' +
                                         '<button type="button" class="btn btn-primary btnMenus '+ ocultarBoton +'"><span class="icon16 i-minus"></span> </button>';
 										
@@ -2988,7 +2990,7 @@
 				$('#txtCheckApplyExoneracion').parent().addClass("switch-off");
 				
 			}
-            if(varPermisosNoPermitirEliminarProductosFactura){
+            if(varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
                 $('.btnMenus').addClass('hidden');
                 $('#btnDelete').addClass('hidden');
                 $('#btnDeleteItem').addClass('hidden');
