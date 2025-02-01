@@ -24,6 +24,7 @@
 	var scrollPosition						= 0;
 	var warehouseID 						= $("#txtWarehouseID").val();
 	var isAdmin								= '<?php echo $isAdmin; ?>';
+    var esMesero							= '<?php echo $esMesero; ?>';
 	var openedSearchWindow					= false;
 	var objWindowSearchProduct;
 	var objTableProductosSearch 			= null;	
@@ -3339,6 +3340,7 @@
                 $('#btnDelete').addClass('hidden');
                 $('#btnDeleteItem').addClass('hidden');
             }
+
             <?php echo getBehavio($company->type, 'app_invoice_billing', 'btnFooter','') ?>
 		});
 	}

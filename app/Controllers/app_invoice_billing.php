@@ -415,8 +415,8 @@ class app_invoice_billing extends _BaseController {
              $esMesero					        = $dataSession["role"]->isAdmin ? "0" : $esMesero;
              $eliminarProductos                 = !$eliminarProductos ? "0" : $eliminarProductos;
              $eliminarProductos					= $dataSession["role"]->isAdmin ? "0" : $eliminarProductos;
-             $dataViewJava["esMesero"]	        = $esMesero;
-             $dataViewJava["eliminarProducto"]	= $eliminarProductos;
+             $dataView["esMesero"]	            = $esMesero;
+             $dataView["eliminarProducto"]	    = $eliminarProductos;
 
 			//------------------------------------------
 			//Renderizar Resultado 
@@ -3675,8 +3675,8 @@ class app_invoice_billing extends _BaseController {
             $esMesero					        = $dataSession["role"]->isAdmin ? "0" : $esMesero;
             $eliminarProductos                  = !$eliminarProductos ? "0" : $eliminarProductos;
             $eliminarProductos					= $dataSession["role"]->isAdmin ? "0" : $eliminarProductos;
-            $dataViewJava["esMesero"]	        = $esMesero;
-            $dataViewJava["eliminarProducto"]	= $eliminarProductos;
+            $dataView["esMesero"]	            = $esMesero;
+            $dataView["eliminarProducto"]	    = $eliminarProductos;
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -3801,7 +3801,7 @@ class app_invoice_billing extends _BaseController {
 			//Otra vista
 			else
 			{
-				
+
 				$cache->save('app_invoice_billing_dataviewid_index', $dataViewID, TIME_CACHE_APP);				
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$parameter["{fecha}"]		= $fecha;

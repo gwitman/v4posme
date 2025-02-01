@@ -8,6 +8,7 @@
 	
 	var scrollPosition						= 0;
 	var isAdmin								= '<?php echo $isAdmin; ?>';
+	var esMesero							= '<?php echo $esMesero; ?>';
 	var openedSearchWindow					= false;
 	var objWindowSearchProduct;
 	var warehouseID 						= $("#txtWarehouseID").val();
@@ -2990,6 +2991,7 @@
 				$('#txtCheckApplyExoneracion').parent().addClass("switch-off");
 				
 			}
+
             if(varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
                 $('.btnMenus').addClass('hidden');
                 $('#btnDelete').addClass('hidden');
