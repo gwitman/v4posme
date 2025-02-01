@@ -3,7 +3,7 @@ set @flavorOrigen  	  	:= '298';
 set @nameTarget        	:= 'TENAMPA';
 set @flavorTarget  	  	:= '636';
 
-
+select 'clonoar catalogo item' as mensaje;
 insert into tb_catalog_item (
 	catalogID,
 	name,
@@ -40,8 +40,23 @@ where
 	not exists (select * from tb_catalog_item ul where ul.flavorID = @flavorTarget and ul.catalogID = c.catalogID );
 	
 	
-	
-
+select 'clonoar company_dataview' as mensaje;	
+insert into tb_company_dataview (
+	companyID,
+	dataViewID,
+	callerID,
+	componentID,
+	`name`,
+	description,
+	sqlScript,
+	visibleColumns,
+	nonVisibleColumns,
+	summaryColumns,
+	formatColumns,
+	isActive,
+	flavorID,
+	formatColumnsHeader 
+)
 select 
 	c.companyID,
 	c.dataViewID,
@@ -55,22 +70,22 @@ select
 	c.summaryColumns,
 	c.formatColumns,
 	c.isActive,
-	@flavorTarget  as flavorID 	
+	@flavorTarget  as flavorID 	,
+	c.formatColumnsHeader
 from 
 	tb_company_dataview c 
 where 
 	c.flavorID = @flavorOrigen and 
 	not exists (select * from tb_company_dataview ul where ul.flavorID = @flavorTarget and ul.dataViewID = c.dataViewID );
 	
-	
-
+select 'clonoar company_default_dataview' as mensaje;	
+insert into tb_company_default_dataview (companyID,componentID,dataViewID,callerID,targetComponentID)
 select 
 	c.companyID,
 	c.componentID,
 	c.dataViewID,
 	c.callerID,
-	c.targetComponentID,
-	c.companyDefaultDataviewID 
+	c.targetComponentID
 from 
 	tb_company_default_dataview c 
 where 
