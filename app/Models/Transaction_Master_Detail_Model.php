@@ -1398,7 +1398,8 @@ class Transaction_Master_Detail_Model extends Model  {
 				tat.firstName,
 				tat.transactionNumber,
 				tat.SiguienteVisita,
-				tat.Notas 
+				tat.Notas,
+				tat.transactionMasterID
 			from 
 				(
 					
@@ -1412,7 +1413,8 @@ class Transaction_Master_Detail_Model extends Model  {
 						end  as firstName ,
 						c.transactionNumber ,
 						c.nextVisit as SiguienteVisita,
-						c.note as Notas 
+						c.note as Notas,
+						c.transactionMasterID
 					from 
 						tb_transaction_master c 
 						inner join tb_transaction_master_info ci on 

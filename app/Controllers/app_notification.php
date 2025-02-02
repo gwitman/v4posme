@@ -2088,21 +2088,27 @@ class app_notification extends _BaseController
 		$objNotificar = $this->Transaction_Master_Detail_Model->AudioElPipe_get_Citas(APP_COMPANY);
 		if ($objNotificar)
 			foreach ($objNotificar as $i) {
-
+                $detail             = $this->Transaction_Master_Detail_Model->get_rowByTransaction($objCompany->companyID, 19/*transaction id: factura*/,$i->transactionMasterID);
 
 				$i->SiguienteVisita = \DateTime::createFromFormat('Y-m-d H:i:s', $i->SiguienteVisita)->format("Y-m-d h:i A");
 				echo "Cita de: " . $i->firstName . " programada para : " . $i->SiguienteVisita . "</br> Enviada a: ".$emailProperty. " [[".$i->Notas."]]"."</br></br>";
 				log_message("error", "Cita de: " . $i->firstName . " programada para : " . $i->SiguienteVisita." [[".$i->Notas."]]");
 
-				$params_["objCompany"]  = $objCompany;
-				$params_["firstName"]  	= $i->firstName;
-				$params_["hour"]  		= $i->SiguienteVisita;
-				$params_["mensaje"]  	= "Cita de: " . $i->firstName . " programada para : " . $i->SiguienteVisita ." [[".$i->Notas."]]" ;
-				$subject 				= "Cita de: " . $i->firstName;
-				$body  					= /*--inicio view*/ view('core_template/email_notificacion', $params_); //--finview
+				$params_["objCompany"]      = $objCompany;
+				$params_["firstName"]  	    = $i->firstName;
+				$params_["hour"]  		    = $i->SiguienteVisita;
+				$params_["mensaje"]  	    = "Cita de: " . $i->firstName . " programada para : " . $i->SiguienteVisita ." [[".$i->Notas."]] <br />" ;
+				$params_["mensaje"]  	    .= "Con los siguientes detalles a revisar:";
+                $params_["mensaje"]         .="<ol style='margin-left:20px'>";
+                foreach($detail as $item){
+                    $params_["mensaje"]     .= "<li>".$item->itemName."</li>";
+                }
+                $params_["mensaje"]         .= "</ol>";
+				$subject 				    = "Cita de: " . $i->firstName;
+				$body  					    = /*--inicio view*/ view('core_template/email_notificacion', $params_); //--finview
 
 				$this->email->setFrom(EMAIL_APP);
-				$this->email->setTo($emailProperty /*"www.witman@gmail.com"*/);
+				$this->email->setTo("jmiguelsevilla@hotmail.com"/*$emailProperty "www.witman@gmail.com"*/);
 				$this->email->setSubject($subject);
 				$this->email->setMessage($body);
 				$resultSend01 = $this->email->send();

@@ -12,12 +12,14 @@
 			<caption style="background: #00628e;color: #fff;"><h1>posMe</h1></caption>
 			<caption>Notificación</caption>
 			<thead style="background:#67c977">
-				<th>Estimado señores de: 
-				<?php 
-					if(isset($objCompany)) echo $objCompany->name;
-					else echo "N/D";
-				?>
-				</th>
+				<tr>
+                    <th>Estimado señores de:
+                        <?php
+                        if(isset($objCompany)) echo $objCompany->name;
+                        else echo "N/D";
+                        ?>
+                    </th>
+                </tr>
 			</thead>
 			<tbody>
 				<tr>
@@ -29,7 +31,7 @@
 							else echo "N/D";
 						?>						
 						</p>
-					</td>					
+					</td>
 				</tr>
 				<tr>
 					<td>
