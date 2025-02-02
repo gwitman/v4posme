@@ -1332,12 +1332,14 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		
 	);
 
-	$colirio    = getBehavioColirio();
-    $divs       = array_merge($divs, $colirio);
-	$tenampa    = getBehavioTenampa();
-    $divs       = array_merge($divs, $tenampa);
-	$emanuel    = getBehavioEmanuel();
-    $divs       = array_merge($divs, $emanuel);
+	$colirio        = getBehavioColirio();
+    $divs           = array_merge($divs, $colirio);
+	$tenampa        = getBehavioTenampa();
+    $divs           = array_merge($divs, $tenampa);
+	$emanuel        = getBehavioEmanuel();
+    $divs           = array_merge($divs, $emanuel);
+    $carlosLuis     = getBehavioCarlosLuis();
+    $divs           = array_merge($divs, $carlosLuis);
 
 	//Comanda traducir es para los menu
 	//comportamiento del controlador

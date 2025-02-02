@@ -1,4 +1,4 @@
-/*DB:  dbimnhv2es7glt*/
+﻿/*DB:  dbimnhv2es7glt*/
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "154" 
@@ -778,7 +778,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Variedades Carlos Luis' , address = 'Contiguo a Veterinaria el Novillo' , type='default', flavorID = 0
+	NAME = 'Variedades Carlos Luis' , address = 'Contiguo a Veterinaria el Novillo' , type='carlosluis', flavorID = 0
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
