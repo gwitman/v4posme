@@ -1024,7 +1024,7 @@ if($objParameterRestaurant == "true")
 													}
 													else
 													{												
-														echo "<li class='badge-info' ><a href='#' class='btnAcept btnAceptAplicar' data-valueworkflow='".$ws->workflowStageID."'  >  ".getBehavio($company->type,"core_web_language_workflowstage","billing_".$ws->name,$ws->name ) ."</a> </li>";
+														echo "<li><a href='#' class='btnAcept btnAceptAplicar' data-valueworkflow='".$ws->workflowStageID."'  >  ".getBehavio($company->type,"core_web_language_workflowstage","billing_".$ws->name,$ws->name ) ."</a> </li>";
 													}
 												}
 												?>

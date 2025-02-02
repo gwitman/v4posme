@@ -37,6 +37,8 @@ function getBehavioEmanuel(): array
                 
                 if(esMesero === '1'){
 				    $('#divPaymentOption').addClass('hidden');
+				    $('.btnAcept').addClass('hidden');
+				    $('.btnAceptAplicar').removeClass('hidden');
 				}
 				
 
