@@ -2108,7 +2108,7 @@ class app_notification extends _BaseController
 				$body  					    = /*--inicio view*/ view('core_template/email_notificacion', $params_); //--finview
 
 				$this->email->setFrom(EMAIL_APP);
-				$this->email->setTo("jmiguelsevilla@hotmail.com"/*$emailProperty "www.witman@gmail.com"*/);
+				$this->email->setTo($emailProperty /*"www.witman@gmail.com"*/);
 				$this->email->setSubject($subject);
 				$this->email->setMessage($body);
 				$resultSend01 = $this->email->send();
