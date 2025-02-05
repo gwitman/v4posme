@@ -152,7 +152,8 @@ class app_cxc_simulation extends _BaseController {
 			$roleID 							= $dataSession["role"]->roleID;
 			
 			$customerEntityID 					= /*inicio get get*/ $this->request->getGet("entityID");//--fin peticion get o post
-			
+			$entityNumber 						= "";
+
 			if(is_null($customerEntityID))
 			{
 				$customerDefault				= $this->core_web_parameter->getParameter("INVOICE_BILLING_CLIENTDEFAULT",$companyID);
@@ -160,15 +161,19 @@ class app_cxc_simulation extends _BaseController {
 				$customerEntityID				= $customerDefault->entityID; 
 			}
 
-			$objEntity 						= $this->Customer_Model->get_rowByPK($companyID, $branchID, $customerEntityID);
+			$objEntity 							= $this->Customer_Model->get_rowByPK($companyID, $branchID, $customerEntityID);
+			$objEntity != null ? $entityNumber = $objEntity->customerNumber : $entityNumber = "";
+			
 			if(is_null($objEntity))
 			{
 				$objEntity						= $this->Employee_Model->get_rowByPK($companyID, $branchID, $customerEntityID);
+				$objEntity != null ? $entityNumber = $objEntity->employeNumber : $entityNumber = "";
 			}
 
 			if(is_null($objEntity))
 			{
 				$objEntity						= $this->Provider_Model->get_rowByPK($companyID, $branchID, $customerEntityID);	
+				$objEntity != null ? $entityNumber = $objEntity->providerNumber : $entityNumber = "";
 			}
 			
 			$objCurrency						= $this->core_web_currency->getCurrencyDefault($companyID);
@@ -188,6 +193,7 @@ class app_cxc_simulation extends _BaseController {
 			$dataView["objComponentCustomer"]	= $objComponentCustomer;
 			$dataView["objCustomerDefault"]		= $this->Customer_Model->get_rowByCode($companyID,$customerDefault->value);
 			$dataView["objEntity"]				= $objComponentEntity;
+			$dataView["entityNumber"]			= $entityNumber;
 			if(isset($customerEntityID ))
 			{
 				$dataView["objCustomerDefault"] = $objEntity;

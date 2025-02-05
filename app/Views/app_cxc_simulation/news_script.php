@@ -152,6 +152,25 @@
 							fnShowNotification("Seleccionar el Cliente","error",timerNotification);
 							result = false;
 						}
+
+						if($("#txtCustomerCreditLineID").val() == null)
+						{
+							fnShowNotification("Seleccione una linea de credito","error",timerNotification);
+							result = false;
+						}
+
+						if($("#txtNumberPay").val() == "")
+						{
+							fnShowNotification("Ingrese el numero de pagos","error",timerNotification);
+							result = false;
+						}
+
+						if($("#txtInterestYear").val() == "")
+						{
+							fnShowNotification("Ingrese el interes anual","error",timerNotification);
+							result = false;
+						}
+
 						return result;
 					}
 					
