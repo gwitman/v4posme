@@ -2,7 +2,22 @@
 				<script>
 					var objDetail 	= {};
 					//$('.txt-numeric').mask('000,000.00', {reverse: true});
-										
+						
+					//Obtener informacion del cliente
+					fnWaitOpen();
+					$.ajax({
+						cache		: false,
+						dataType	: 'json',
+						type		: 'POST',
+						url			: "<?php echo base_url(); ?>/app_invoice_api/getLineByEntity",
+						data		: { entityID: <?php echo $objCustomerDefault->entityID; ?>},
+						success		: fnCompleteGetCustomerCreditLine,
+						error:function(xhr,data){	
+							console.info("complete data error");									
+							fnWaitClose();
+							fnShowNotification("Error 505","error");
+						}
+					});
 					
 					$(document).ready(function(){	
 						objDetail = $("#tb_transaction_master_detail").dataTable({
