@@ -3,82 +3,54 @@ function getBehavioCreditAguil(): array
 {
     return array(
 		//Credit Aguil
-		strtolower('creditaguil_core_web_menu_FACTURACION')			 												=> "CONTRATOS",
-		strtolower('creditaguil_core_web_menu_FACTURAR')			 													=> "CONTRATO",
-		strtolower('creditaguil_core_web_menu_ABONO')			 													=> "RECIBO",
-		strtolower('creditaguil_app_invoice_billing_divLabelZone') 		 											=> "Parentesco",
-		strtolower('creditaguil_app_invoice_billing_txtTraductionPhone')	 											=> "Tel. Bene.",
-		strtolower('creditaguil_app_invoice_billing_divTxtClienteBeneficiario')	 									=> "Bene. Nombre",
-		strtolower('creditaguil_app_invoice_billing_divTxtCedulaBeneficiario')	 									=> "Bene. Cedula",		
-		strtolower('creditaguil_app_invoice_billing_labelTitlePageList')	 											=> "CONTRATOS",
-		strtolower('creditaguil_app_invoice_billing_labelTitlePageEdit')	 											=> "Contrato",
-		strtolower('creditaguil_app_invoice_billing_labelTitlePageNew')	 											=> "Contrato",		
-		strtolower('creditaguil_app_box_share_labelTitlePageList')	 												=> "RECIBOS",
-		strtolower('creditaguil_app_box_share_labelTitlePageEdit')	 												=> "Recibo",
-		strtolower('creditaguil_app_box_share_labelTitlePageNew')	 												=> "Recibo",		
-		strtolower('creditaguil_app_invoice_billing_divHiddenReference')	 											=> "hidden",
-		strtolower('creditaguil_app_invoice_billing_divMesa')	 													=> "hidden",
-		strtolower('creditaguil_app_invoice_billing_divNextVisitHidden')	 											=> "hidden",
-		strtolower('creditaguil_app_invoice_billing_divBodegaHidden')	 											=> "hidden",
-		strtolower('creditaguil_app_invoice_billing_divTxtCambio')	 												=> "hidden",
-		strtolower('creditaguil_app_invoice_billing_divPrecio')	 													=> "hidden",
-		strtolower('creditaguil_app_invoice_billing_divDesembolsoEfectivo')	 										=> "hidden",
-		strtolower('creditaguil_app_invoice_billing_divReportSinRiesgo')												=> "hidden",
-		strtolower('creditaguil_app_invoice_billing_divProviderCredit')												=> "hidden",
-		strtolower('creditaguil_app_invoice_billing_divApplied')														=> "hidden",
+        strtolower('creditaguil_core_web_menu_SIMULADOR')			 					=> "CALCULADORA",
+        strtolower('creditaguil_core_web_menu_FACTURACION')			 				=> "PRESTAMOS",
+        strtolower('creditaguil_core_web_menu_FACTURAR')			 					=> "PRESTAR",
+        strtolower('creditaguil_core_web_menu_VENTAS')			 					=> "DESEMBOLSO",
+        strtolower('creditaguil_core_web_menu_DETALLE DE VENTAS')			 			=> "DETALLE DE DESEMBOLSOS",
+        strtolower('creditaguil_core_web_menu_RESUMEN DE VENTAS')			 			=> "RESUMEN DE DESEMBOLSOS",
+        strtolower('creditaguil_core_web_menu_COBRANZA')			 					=> "CONF. RUTAS",
+        strtolower('creditaguil_core_web_menu_RRHH')			 						=> "RRHH RUTAS",
+        strtolower('creditaguil_core_web_menu_COLABORADORES')			 				=> "COLAB. RUTA.",
+        strtolower('creditaguil_app_collection_manager_lblTitleList')			 		=> "CLIENTES POR RUTAS",
+        strtolower('creditaguil_app_collection_manager_lblTitleAdd')			 		=> "AGREGAR CLIENTE A LA RUTA",
+        strtolower('creditaguil_app_collection_manager_lblColaborador')			 	=> "Ruta",
+        strtolower('creditaguil_app_rrhh_employee_lblList')			 				=> "LISTA DE RUTAS Y/O COLABORADOR",
+        strtolower('creditaguil_app_rrhh_employee_lblNew')			 				=> "NUEVA RUTA Y/O COLABORADOR",
+        strtolower('creditaguil_app_rrhh_employee_lblEdit')			 				=> "EDITAR RUTA Y/O COLABORADOR",
+        strtolower('creditaguil_app_cxc_customer_divTxtCategoria')			 		=> "hidden",
+        strtolower('creditaguil_app_cxc_customer_divTxtFullNameCommercial')			=> "Categoria",
+        strtolower('creditaguil_app_cxc_customer_lblTxtPhoneTemp')					=> "Prefesion u Oficio",
+        strtolower('creditaguil_app_cxc_customer_divTxtProfesionUFicio')				=> "hidden",
+
+
+        strtolower('creditaguil_app_cxc_customer_showBtnIrBuro')			 			=> "",
+        strtolower('creditaguil_app_cxc_customer_showBtnIrSimulador')			 		=> "",
+        strtolower('creditaguil_app_cxc_customer_showBtnIrInvoice')			 		=> "",
+        strtolower('creditaguil_app_cxc_customer_showBtnIrShare')			 			=> "",
+        strtolower('creditaguil_app_cxc_customer_showBtnGroupAcciones')	 			=> "",
+        strtolower('creditaguil_app_cxc_record_showBtnIrCustomerOfRecord') 			=> "",
+        strtolower('creditaguil_app_cxc_simulation_showBtnIrCustomerOfSimulator') 	=> "",
+        strtolower('creditaguil_app_box_share_showBtnIrCustomerOfShare') 				=> "",
+        strtolower('creditaguil_app_cxc_customer_divScriptValideFunction') 	 		=> "
 		
+		if( $('#txtIdentification').val()  == ''){
+			fnShowNotification('Escribir cedula','error',timerNotification);
+			result = false;
+		}
+		if( $('#txtIdentification').val()  == '0'){
+			fnShowNotification('Escribir cedula con formato correcto','error',timerNotification);
+			result = false;
+		}
 		
-		strtolower('creditaguil_app_invoice_billing_txtTermReference')	 											=> "Plazo",
-		strtolower('creditaguil_app_invoice_billing_txtTraductionExpenseLabel')										=> "Interes",
-		strtolower('creditaguil_app_invoice_billing_divTraslateElement') 											=> "
-		<script>
-			$(document).ready(function(){		
-				
-				if( $('#txtTransactionMasterID').val() == undefined )
-				$('#txtNote').val('');
-			
-				$('#divBeneficiario').appendTo('#divInformacionLeftReference');
-				$('#divCedula').appendTo('#divInformacionLeftReference');
-				$('#divZone').appendTo('#divInformacionLeftReference');
-				$('#divTrasuctionPhone').appendTo('#divInformacionLeftReference');
-				$('#divFixedExpenses').appendTo('#divInformacionRightReference');
-				$('#divNote').appendTo('#divInformacionLeftZone');
-				
-			});
-		</script>
-		",		
-		strtolower('creditaguil_app_invoice_billing_scriptValidateInCredit')											=> "
-		if($('#txtReferenceClientIdentifier').val() == '')
-		{
-				fnShowNotification('Cedula del beneficiario','error',timerNotification);
-				result = false;
-				fnWaitClose();
-		}
-		if($('#txtReferenceClientName').val() == '')
-		{
-				fnShowNotification('Nombre del beneficiario','error',timerNotification);
-				result = false;
-				fnWaitClose();
-		}
-		if($('#txtNumberPhone').val() == '')
-		{
-				fnShowNotification('Telefono del beneficiario','error',timerNotification);
-				result = false;
-				fnWaitClose();
-		}		
-		if($('#txtReference2').val() == '1')
-		{
-				fnShowNotification('Plazo del credito','error',timerNotification);
-				result = false;
-				fnWaitClose();
-		}
-		if($('#txtEmployeeID').val() == '614')
-		{
-				fnShowNotification('Vendedor','error',timerNotification);
-				result = false;
-				fnWaitClose();
-		}
+		const regex = /^\d{3}-\d{6}-\d{4}[A-Za-z]$/;
+		if(!regex.test(   $('#txtIdentification').val()   )){
+            fnShowNotification('Escribir cedula con formato correcto','error',timerNotification);
+			result = false;
+        } 
+		
 		
 		",
+
     );
 }
