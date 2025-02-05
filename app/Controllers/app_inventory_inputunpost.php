@@ -1919,6 +1919,12 @@ class app_inventory_inputunpost extends _BaseController {
 			$datView["objParameterMasive"]		= $objParameterMasive;
 			$datView["objListCausal"]			= $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
 			$datView["objListCreditLine"]		= $this->Customer_Credit_Line_Model->get_rowByBranchID($companyID, $branchID);			
+			
+			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($dataSession["user"]->companyID);
+			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$objParameterCantidadItemPoup				= $objParameterCantidadItemPoup->value;
+			$datView["objParameterCantidadItemPoup"] 	= $objParameterCantidadItemPoup;
+			
 			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			=  $this->core_web_notification->get_message();
@@ -2023,6 +2029,11 @@ class app_inventory_inputunpost extends _BaseController {
 			$dataView["objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE"]	= $this->core_web_parameter->getParameterValue("CORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE",$companyID);
 			$dataView["company"]					= $dataSession["company"];
 			$dataView["objListCausal"]				= $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
+			
+			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($dataSession["user"]->companyID);
+			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$objParameterCantidadItemPoup				= $objParameterCantidadItemPoup->value;
+			$dataView["objParameterCantidadItemPoup"] 	= $objParameterCantidadItemPoup;
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]		= $this->core_web_error->get_error($dataSession["user"]->userID);
