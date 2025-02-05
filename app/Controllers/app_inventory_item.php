@@ -515,11 +515,20 @@ class app_inventory_item extends _BaseController
                 $objItem["realStateEmail"] 				= /*inicio get post*/ $this->request->getPost("txtRealStateEmail");
                 $objItem["realStatePhone"] 				= /*inicio get post*/ $this->request->getPost("txtRealStatePhone");
 				$objItem["quantityInvoice"] 			= 0;
-                $year                                   = date("Y");
-                $dateLastUse                            = /*inicio get post*/ $this->request->getPost("txtDateLastUse");
-                $fechaCompleta                          = "$year-$dateLastUse";
-                $fecha                                  = new DateTime($fechaCompleta);
-				$objItem["dateLastUse"] 				= $fecha->format("Y-m-d");
+				
+				if(!$this->request->getPost("txtDateLastUse"))
+				{
+					$objItem["dateLastUse"] 				= date("Y-m-d");
+				}
+				else
+				{
+					$year                                   = date("Y");
+					$dateLastUse                            = /*inicio get post*/ $this->request->getPost("txtDateLastUse");
+					$fechaCompleta                          = "$year-$dateLastUse";
+					$fecha                                  = new DateTime($fechaCompleta);
+					$objItem["dateLastUse"] 				= $fecha->format("Y-m-d");
+				}
+				
                 $this->core_web_auditoria->setAuditCreated($objItem,$dataSession,$this->request);
                 
                 $itemID								= $this->Item_Model->insert_app_posme($objItem);
