@@ -153,6 +153,12 @@ class app_cxc_simulation extends _BaseController {
 			
 			$customerEntityID 					= /*inicio get get*/ $this->request->getGet("entityID");//--fin peticion get o post
 			
+			if(is_null($customerEntityID))
+			{
+				$customerDefault				= $this->core_web_parameter->getParameter("INVOICE_BILLING_CLIENTDEFAULT",$companyID);
+				$customerDefault 				= $this->Customer_Model->get_rowByCode($companyID,$customerDefault->value);
+				$customerEntityID				= $customerDefault->entityID; 
+			}
 
 			$objEntity 						= $this->Customer_Model->get_rowByPK($companyID, $branchID, $customerEntityID);
 			if(is_null($objEntity))
