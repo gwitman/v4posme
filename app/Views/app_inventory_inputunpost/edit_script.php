@@ -16,6 +16,7 @@
 	var objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_ONLY_QUANTITY	= '<?php echo $objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_ONLY_QUANTITY; ?>';
 	var objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES	= '<?php echo $objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES; ?>';
 	var sScrollY = objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE == true ?  "350px" : "auto";
+	var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';  
 	
 	$(document).ready(function(){					
 		//Inicializar Controles		
@@ -357,7 +358,7 @@
 		
 			var url_redirect		= "__app_inventory_item__add__callback__fnObtenerListadoProductos__comando__pantalla_abierta_desde_la_compra";			
 			url_redirect 			= encodeURIComponent(url_redirect);
-			var url_request 		= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentItem->componentID; ?>/onCompleteItem/SELECCIONAR_ITEM_TO_PROVIDER/false/"+encodeURI('{\"providerID\"|\"'+$("#txtProviderID").val()+'\",\"currencyID\"|\"'+$("#txtCurrencyID").val() +'\"}' ) + "/true/"+url_redirect;  
+			var url_request 		= "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?php echo $objComponentItem->componentID; ?>/onCompleteItem/SELECCIONAR_ITEM_TO_PROVIDER_T/false/"+encodeURI('{\"providerID\"|\"'+$("#txtProviderID").val()+'\",\"currencyID\"|\"'+$("#txtCurrencyID").val() +'\"}' ) + "/true/"+url_redirect+"/1/1/"+varParameterCantidadItemPoup;  
 			
 			// Verificar si la ventana ya está abierta
 			if (objWindowSearchProduct && !objWindowSearchProduct.closed) 
