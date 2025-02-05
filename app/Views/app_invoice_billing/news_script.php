@@ -1065,8 +1065,7 @@
 			result = false;
 			fnWaitClose();
         }
-		
-		
+
 		
 		//Validar Detalle
 		//

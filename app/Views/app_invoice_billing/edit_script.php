@@ -1286,8 +1286,8 @@
 			result = false;
 			fnWaitClose();
 		}
-		
-		
+
+
 		//Validar Detalle
 		var cantidadTotalesEnZero 	= jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[8] == 0;}).select().length ;
 		var validateTotalesZero 	= true;
