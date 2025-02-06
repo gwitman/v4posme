@@ -136,7 +136,43 @@ class app_cxc_document extends _BaseController
             $objCustomerCreditDocument      = $this->Customer_Credit_Document_Model->get_rowByPK($customerCreditDocumentID);
             $customerEntityID               = $objCustomerCreditDocument->entityID;
             $companyID                      = $dataSession["user"]->companyID;
+            $branchID                       = $dataSession["user"]->branchID;
+			$entityNumber 					= "";
+            $entityIdentification           = "";
+            $entityPhoneNumber              = "";
+            $entityBalanceDol               = 0;
+            $entityLimitCreditDol           = 0;
+
+            //Obtener Entidad
             $objCustomer                    = $this->Customer_Model->get_rowByEntity($companyID, $customerEntityID);
+            if(!is_null($objCustomer))
+            {
+                $entityNumber               = $objCustomer->customerNumber;
+                $entityIdentification       = $objCustomer->identification;
+                $entityPhoneNumber          = $objCustomer->phoneNumber; //Solo los objetos de tipo customer tienen numeros de telefono
+            }
+
+            if(is_null($objCustomer))
+            {
+				$objCustomer			    = $this->Employee_Model->get_rowByPK($companyID, $branchID, $customerEntityID);
+
+                if($objCustomer != null)
+                {   
+                    $entityNumber           = $objCustomer->employeNumber;
+                    $entityIdentification   = $objCustomer->numberIdentification;
+                }
+            }
+
+            if(is_null($objCustomer))
+            {
+				$objCustomer                = $this->Provider_Model->get_rowByPK($companyID, $branchID, $customerEntityID);	
+
+                if($objCustomer != null)
+                {   
+                    $entityNumber           = $objCustomer->providerNumber;
+                    $entityIdentification   = $objCustomer->numberIdentification;
+                }
+            }
 
             $objCustomerCreditAmortization  = $this->Customer_Credit_Amortization_Model->get_rowByDocument($customerCreditDocumentID);
             $objCustomerEntityRelated       = $this->Customer_Credit_Document_Endity_Related_Model->get_rowByDocument($customerCreditDocumentID); 
@@ -148,7 +184,11 @@ class app_cxc_document extends _BaseController
             }
 
             
-            $dataView["objCustomer"]                        = $this->Customer_Model->get_rowByEntity($companyID, $customerEntityID);
+            
+            $dataView["objCustomer"]                        = $objCustomer;
+            $dataView["entityNumber"]                       = $entityNumber;
+            $dataView["entityIdentification"]               = $entityIdentification;
+            $dataView["entityPhoneNumber"]                  = $entityPhoneNumber;
             $branchID                                       = $dataView["objCustomer"]->branchID;
             $entityID                                       = $dataView["objCustomer"]->entityID;
             $dataView["company"]                            = $dataSession["company"];
@@ -171,6 +211,19 @@ class app_cxc_document extends _BaseController
 			$dataView["objCatalogEntityStatusCredit"]		= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_document_entity_related","statusCredit",$companyID);
 			$dataView["objCatalogEntityTypeGarantia"]		= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_document_entity_related","typeGarantia",$companyID);
 			$dataView["objCatalogEntityTypeRecuperation"]	= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_document_entity_related","typeRecuperation",$companyID);
+
+            if($dataView["objCustomerCredit"] != null)
+            {
+                $dataView["entityBalanceDol"]               = $dataView["objCustomerCredit"]->balanceDol;
+                $dataView["entityLimitCreditDol"]           = $dataView["objCustomerCredit"]->limitCreditDol;
+            }
+            else
+            {
+                $dataView["entityBalanceDol"]               = $entityBalanceDol;
+                $dataView["entityLimitCreditDol"]           = $entityLimitCreditDol;
+            }
+            
+            
 
             //Renderizar Resultado
             $dataSession["notification"]        = $this->core_web_error->get_error($dataSession["user"]->userID);
