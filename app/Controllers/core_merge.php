@@ -1197,6 +1197,11 @@ class core_merge extends _BaseController {
 											{										
 												echo "Archivos SQL No se eliminaran si son menores a 30 dias:".$fileLast."</br>";
 											}
+											else 
+											{											
+												unlink($fileLast);
+												echo "Archivos eliminado :".$fileLast."</br>";
+											}
 											
 											if(strtoupper($fileLastExtention) == strtoupper("csv"))
 											{
