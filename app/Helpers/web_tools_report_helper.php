@@ -8576,7 +8576,7 @@ function helper_reporte80mmTransactionMaster(
                         
 
                                 
-                      </table>
+                      </table>					  
                     </body>
                                 
                     </html>

@@ -7196,6 +7196,16 @@ class app_invoice_billing extends _BaseController {
 			$fileNamePut = "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
 			$path        = "./resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".$fileNamePut;
 				
+				
+			//Crear la Carpeta para almacenar los Archivos del Documento
+			$documentoPath = PATH_FILE_OF_APP."/company_".$companyID."/component_48/component_item_".$transactionMasterID;						
+			if (!file_exists($documentoPath))
+			{
+				mkdir($documentoPath, 0755, true);
+				chmod($documentoPath, 0755);
+			}
+			
+			
 			file_put_contents(
 				$path,
 				$this->dompdf->output()					

@@ -1847,6 +1847,15 @@ class app_notification extends _BaseController
 				$fileNamePut = "caja_0_" . date("dmYhis") . ".pdf";
 				$path        = "./resource/file_company/company_" . $companyID . "/component_48/component_item_0/" . $fileNamePut;
 
+				//Crear la Carpeta para almacenar los Archivos del Documento
+				$documentoPath = PATH_FILE_OF_APP."/company_".$companyID."/component_48/component_item_0";							
+				if (!file_exists($documentoPath))
+				{
+					mkdir($documentoPath, 0755, true);
+					chmod($documentoPath, 0755);
+				}
+				
+				
 				file_put_contents($path, $this->dompdf->output());
 				chmod($path, 644);
 
