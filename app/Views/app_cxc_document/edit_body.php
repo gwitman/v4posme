@@ -18,7 +18,7 @@
             <!-- titulo de comprobante-->
             <div class="panel-heading">
                 <div class="icon"><i class="icon20 i-file"></i></div>
-                <h4>CODIGO:#<span class="invoice-num"><?php echo $objCustomer->customerNumber; ?></span></h4>
+                <h4>CODIGO:#<span class="invoice-num"><?php echo $entityNumber; ?></span></h4>
             </div>
             <!-- /titulo de comprobante-->
 
@@ -27,7 +27,7 @@
                 <div class="panel-body printArea">
 
                     <ul id="myTab" class="nav nav-tabs">
-                        <li class="active"><a href="#home" data-toggle="tab">Cliente</a></li>
+                        <li class="active"><a href="#home" data-toggle="tab">ENTIDAD</a></li>
                         <li><a href="#document" data-toggle="tab">Documento</a></li>
                         <li><a href="#amortization" data-toggle="tab">Amortizacion</a></li>
                     </ul>
@@ -41,8 +41,8 @@
                                     <input type="hidden" name="txtEntityID" value="<?php echo $objCustomer->entityID; ?>" id="txtEntityID">
                                     <input type="hidden" name="txtStatusID" value="<?php echo $objCustomer->statusID ?>" id="txtStatusID">
                                     <input type="hidden" name="txtCountryID" value="<?php echo $objCustomer->countryID ?>" id="txtCountryID">
-                                    <input type="hidden" name="txtEntityNumberID" value="<?php echo $objCustomer->customerNumber; ?>" id="txtEntityNumberID">
-                                    <input type="hidden" name="txtLimitCreditDol" value="<?php echo ($objCustomerCredit->limitCreditDol); ?>" id="txtLimitCreditDol">
+                                    <input type="hidden" name="txtEntityNumberID" value="<?php echo $entityNumber; ?>" id="txtEntityNumberID">
+                                    <input type="hidden" name="txtLimitCreditDol" value="<?php echo $entityLimitCreditDol; ?>" id="txtLimitCreditDol">
                                     <input type="hidden" name="txtCustomerCreditDocumentID" value="<?php echo ($objCustomerCreditDocument->customerCreditDocumentID); ?>" id="txtCustomerCreditDocumentID">
 
 
@@ -61,14 +61,14 @@
                                     <div class="form-group">
                                         <label class="col-lg-4 control-label text-primary" for="normal"><?php echo getBehavio($company->type, "app_cxc_document", "lblTxtFullName", "*Nombre completo"); ?></label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" type="text" readonly name="txtLegalName" id="txtLegalName" value="<?php echo $objLegal->legalName; ?>">
+                                            <input class="form-control" type="text" readonly name="txtLegalName" id="txtLegalName" value="<?php echo $objLegal != null ? $objLegal->legalName : ""; ?>">
                                         </div>
                                     </div>
 
                                     <div class="form-group <?php echo getBehavio($company->type, "app_cxc_document", "divTxtIdentification", ""); ?> ">
                                         <label class="col-lg-4 control-label text-primary" for="normal"><?php echo getBehavio($company->type, "app_cxc_document", "lblTxtIdentification", "*Identificacion"); ?></label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" type="text" readonly name="txtIdentification" id="txtIdentification" value="<?php echo $objCustomer->identification; ?>">
+                                            <input class="form-control" type="text" readonly name="txtIdentification" id="txtIdentification" value="<?php echo $entityIdentification; ?>">
                                         </div>
                                     </div>
                                 </div>
@@ -76,13 +76,13 @@
                                     <div class="form-group">
                                         <label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type, "app_cxc_document", "lblTxtPhoneTemp", "Telefono"); ?></label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" type="text" readonly name="txtPhoneNumber" id="txtPhoneNumber" value="<?php echo $objCustomer->phoneNumber; ?>">
+                                            <input class="form-control" type="text" readonly name="txtPhoneNumber" id="txtPhoneNumber" value="<?php echo $entityPhoneNumber; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-lg-4 control-label" for="normal">Balance US$</label>
                                         <div class="col-lg-8">
-                                            <input class="form-control txt-numeric" type="text" name="txtBalanceDol" id="txtBalanceDol" value="<?php echo number_format($objCustomerCredit->balanceDol, 2); ?>">
+                                            <input class="form-control txt-numeric" type="text" name="txtBalanceDol" id="txtBalanceDol" value="<?php echo number_format( $entityBalanceDol, 2); ?>">
                                         </div>
                                     </div>
                                 </div>
