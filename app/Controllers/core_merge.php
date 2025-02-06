@@ -1108,7 +1108,24 @@ class core_merge extends _BaseController {
 		{
 			if( $current != "." && $current != ".." && $current != "index.html" ) 
 			{
-				unlink(PATH_FILE_OF_APP."/../../../writable/uploads/".$current);
+				if(is_dir(PATH_FILE_OF_APP."/../../../writable/uploads/".$current)) 
+				{
+					
+					$dir2 	= opendir(PATH_FILE_OF_APP."/../../../writable/uploads/".$current);
+					while ($current2 = readdir($dir2))
+					{
+						if( $current2 != "." && $current2 != "..") 
+						{	
+							echo "Eliminar :".PATH_FILE_OF_APP."/../../../writable/uploads/"."/".$current2."</br>";
+							unlink(PATH_FILE_OF_APP."/../../../writable/uploads/".$current."/".$current2);
+						}					
+					}
+				}
+				else 
+				{					
+					echo "Eliminar :".PATH_FILE_OF_APP."/../../../writable/uploads/".$current."</br>";
+					unlink(PATH_FILE_OF_APP."/../../../writable/uploads/".$current);
+				}
 			}
 		}
 		
