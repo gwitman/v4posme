@@ -1100,6 +1100,16 @@ class core_merge extends _BaseController {
 				unlink(PATH_FILE_OF_APP."/../../../writable/logs/".$current);
 			}
 		}
+
+		//Eliminar archivos de writable/session
+		$dir = opendir(PATH_FILE_OF_APP . "/../../../writable/session");
+		while ($current = readdir($dir))
+		{
+			if( $current != "." && $current != ".." && $current != "index.html" ) 
+			{
+				unlink(PATH_FILE_OF_APP."/../../../writable/session/".$current);
+			}
+		}
 		
 		
 		//Eliminar archivos de writable/uploads
@@ -1203,65 +1213,13 @@ class core_merge extends _BaseController {
 												echo "Archivos eliminado :".$fileLast."</br>";
 											}
 											
-											if(strtoupper($fileLastExtention) == strtoupper("csv"))
-											{
-												unlink($fileLast);											
-												echo "Archivo eliminado:".$fileLast."</br>";
-											}
-											
-											if(strtoupper($fileLastExtention) == strtoupper("zip"))
-											{
-												unlink($fileLast);											
-												echo "Archivo eliminado:".$fileLast."</br>";
-											}
-											
-											if(strtoupper($fileLastExtention) == strtoupper("txt"))
-											{
-												unlink($fileLast);											
-												echo "Archivo eliminado:".$fileLast."</br>";
-											}
-											
-											if(strtoupper($fileLastExtention) == strtoupper("doc"))
-											{
-												unlink($fileLast);											
-												echo "Archivo eliminado:".$fileLast."</br>";
-											}
-											
-											if(strtoupper($fileLastExtention) == strtoupper("docx"))
-											{
-												unlink($fileLast);											
-												echo "Archivo eliminado:".$fileLast."</br>";
-											}
-											
-											if(strtoupper($fileLastExtention) == strtoupper("mp4"))
-											{
-												unlink($fileLast);											
-												echo "Archivo eliminado:".$fileLast."</br>";
-											}
-												
-											if(strtoupper($fileLastExtention) == strtoupper("pdf"))
-											{
+											$extensionesEliminar = ["csv", "zip", "txt", "doc", "docx", "mp4", "pdf", "m4a", "xlsx", "rtf"];
+
+											if (in_array(strtolower($fileLastExtention), $extensionesEliminar) && file_exists($fileLast)) {
 												unlink($fileLast);
-												echo "Archivo eliminado:".$fileLast."</br>";
+												echo "Archivo eliminado: " . $fileLast . "</br>";
 											}
-											
-											if(strtoupper($fileLastExtention) == strtoupper("m4a"))
-											{
-												unlink($fileLast);
-												echo "Archivo eliminado:".$fileLast."</br>";
-											}
-											
-											if(strtoupper($fileLastExtention) == strtoupper("xlsx"))
-											{
-												unlink($fileLast);
-												echo "Archivo eliminado:".$fileLast."</br>";
-											}
-											
-											if(strtoupper($fileLastExtention) == strtoupper("rtf"))
-											{
-												unlink($fileLast);
-												echo "Archivo eliminado:".$fileLast."</br>";
-											}
+
 											
 											
 											if(
@@ -1312,13 +1270,14 @@ class core_merge extends _BaseController {
 												)
 											)
 											{
-												unlink($fileLast);
-												echo "Archivo eliminado:".$fileLast."</br>";
-											}
-											
-											
+												if (file_exists($fileLast)) {
+													unlink($fileLast);
+													echo "Archivo eliminado: ".$fileLast."</br>";
+												} else {
+													echo "El archivo no existe: ".$fileLast."</br>";
+												}
 												
-											
+											}
 										}
 											
 									}
