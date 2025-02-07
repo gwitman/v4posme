@@ -36,7 +36,7 @@
     if (isset($datatable_V2_2_2) && $datatable_V2_2_2){
         echo '<link href="'.APP_URL_RESOURCE_CSS_JS.'/resource/datatable222/dataTables.css" rel="stylesheet" />';
     }else{
-        echo '<link href="' . APP_URL_RESOURCE_CSS_JS . '/resource/theme-genyx/js/plugins/tables/datatables/jquery.dataTables.css" rel="stylesheet" />';
+        echo '<link href="'.APP_URL_RESOURCE_CSS_JS.'/resource/theme-genyx/js/plugins/tables/datatables/jquery.dataTables.css" rel="stylesheet" />';
     }
     ?>
 
