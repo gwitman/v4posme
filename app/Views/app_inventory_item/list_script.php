@@ -7,12 +7,12 @@
 		$(document).on("click","#btnEdit",function(){
 		
 			if(objRowTableListView != undefined){
-				var data 		= objTableListView.fnGetData(objRowTableListView);			
+				var data 		= objTableListView.row(objRowTableListView).data();
 				if (data == null)
 				return;
-				
+
 				fnWaitOpen();				
-				window.location	= "<?php echo base_url(); ?>/app_inventory_item/edit/companyID/"+data[0]+"/itemID/"+data[1];
+				window.location	= "<?php echo base_url(); ?>/app_inventory_item/edit/companyID/"+data.companyID+"/itemID/"+data.itemID;
 			}
 			else{
 				fnShowNotification("Seleccionar el Registro...","error");
@@ -22,11 +22,11 @@
 		$(document).on("click","#btnPrinter",function(){
 		
 			if(objRowTableListView != undefined){
-				var data 		= objTableListView.fnGetData(objRowTableListView);			
+                var data 		= objTableListView.row(objRowTableListView).data();
 				if (data == null)
 				return;
 				
-				var url = "<?php echo base_url(); ?>/app_inventory_item/printerBarCode/companyID/"+data[0]+"/itemID/"+data[1];
+				var url = "<?php echo base_url(); ?>/app_inventory_item/printerBarCode/companyID/"+data.companyID+"/itemID/"+data.itemID;
 				window.open(url, "_blank");								
 			}
 			else{
@@ -62,7 +62,7 @@
 		$(document).on("click","#btnEliminar",function(){
 		
 			if(objRowTableListView != undefined){
-				var data 		= objTableListView.fnGetData(objRowTableListView);	
+                var data 		= objTableListView.row(objRowTableListView).data();
 				if(data == null)
 				return;
 				
@@ -73,7 +73,7 @@
 						dataType    : 'json',
 						type        : 'POST',
 						url  		: "<?php echo base_url(); ?>/app_inventory_item/delete",
-						data 		: {companyID : data[0], itemID :data[1]},
+						data 		: {companyID : data.companyID, itemID :data.itemID},
 						success:function(data){
 							console.info("complete delete success");
 							fnWaitClose();
@@ -82,7 +82,7 @@
 							}
 							else{				
 								fnShowNotification("success","success");
-								objTableListView.fnDeleteRow(objRowTableListView);
+								objTableListView.row(objRowTableListView).remove().draw();
 							}
 						},
 						error:function(xhr,data){	
