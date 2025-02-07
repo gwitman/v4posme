@@ -32,7 +32,13 @@
 	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/css/bootstrap/bootstrap-theme.css" rel="stylesheet" />
 	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/css/icons.css" rel="stylesheet" />
 	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/uniform/uniform.default.css" rel="stylesheet" />
-	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/tables/datatables/jquery.dataTables.css" rel="stylesheet" />
+    <?php
+    if (isset($datatable_V2_2_2) && $datatable_V2_2_2){
+        echo '<link href="'.APP_URL_RESOURCE_CSS_JS.'/resource/datatable222/dataTables.css" rel="stylesheet" />';
+    }else{
+        echo '<link href="' . APP_URL_RESOURCE_CSS_JS . '/resource/theme-genyx/js/plugins/tables/datatables/jquery.dataTables.css" rel="stylesheet" />';
+    }
+    ?>
 
 	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/switch/bootstrapSwitch.css" rel="stylesheet" />
 	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/select2/select2.css" rel="stylesheet" />
@@ -64,9 +70,9 @@
 	<link rel="shortcut icon" href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/images/ico/favicon.ico">
 
 	<!-- javascript
-		================================================== 
+		==================================================
 		-->
-	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/jquery-1-9-1.min.js"></script>
+	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jquery-1.12.4.min.js"></script>
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/jquery-migrate-1.2.1.js"></script>
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/jquery-ui-1-10-2.min.js"></script>
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/bootstrap/bootstrap.js"></script>
@@ -80,7 +86,15 @@
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/jquery.tmpl.js"></script>
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/ui/jgrowl/jquery.jgrowl.min.js"></script>
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/uniform/jquery.uniform.min.js"></script>
-	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/tables/datatables/jquery.dataTables.min.js"></script>
+	<!--Validacion de DataTable V2.2.2-->
+
+    <?php
+    if (isset($datatable_V2_2_2) && $datatable_V2_2_2){
+        echo '<script src="'.APP_URL_RESOURCE_CSS_JS.'/resource/datatable222/dataTables.js"></script>';
+    }else{
+        echo '<script src="'.APP_URL_RESOURCE_CSS_JS.'/resource/theme-genyx/js/plugins/tables/datatables/jquery.dataTables.min.js"></script>';
+    }
+    ?>
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/select2/select2.js"></script>
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/app.js"></script>
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/pages/domready.js"></script>
