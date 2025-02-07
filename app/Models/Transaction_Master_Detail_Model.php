@@ -1855,10 +1855,12 @@ class Transaction_Master_Detail_Model extends Model  {
 		$sql = "";
 		$sql = sprintf("
 		  	SELECT 
-				MONTH(c.createdOn) as Mes,
+				u.nickname as Mes,
 				SUM(c.amount) as Venta 
 			FROM 
 				tb_transaction_master c 
+				inner join tb_user u on 
+					c.createdBy = u.userID 
 			WHERE 
 				c.transactionID = 19 /*factura*/ 
 				AND 
@@ -1892,7 +1894,7 @@ class Transaction_Master_Detail_Model extends Model  {
 				AND 
 				c.isActive = 1 
 				AND 
-				c.transactionCausalID in (22 /*Credito*/,24 /*Credito*/) 
+				c.transactionCausalID in (21 /*Contado*/,23 /*Contado*/) 
 				AND 
 				c.statusID in (67 /*aplicada*/) 
 				AND  
