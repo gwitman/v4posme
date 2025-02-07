@@ -36,9 +36,9 @@ $(document).ready(function() {
     });
 
     //Disable certain links
-    $('a[href^=#]').click(function (e) {
-        e.preventDefault()
-    })
+    $('a[href="#"]').on('click', function(event) {
+        event.preventDefault(); // Previene el comportamiento por defecto
+    });
 
     //------------- Prettify code  -------------//
     window.prettyPrint && prettyPrint();
