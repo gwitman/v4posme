@@ -204,6 +204,108 @@ class core_web_catalog {
 		return $objCatalogItem;
 		
    }
+   function getCatalogAllItemIncludeId($table,$field,$companyID,$catalogItemID){
+		$Company_Model = new Company_Model();
+		$Component_Model = new Component_Model();
+		$Element_Model = new Element_Model();
+		$Sub_Element_Model = new Sub_Element_Model();
+		$Company_Component_Flavor_Model = new Company_Component_Flavor_Model();
+		$Catalog_Model = new Catalog_Model();  
+		$Catalog_Item_Model = new Catalog_Item_Model();  
+		$Public_Catalog_Model = new Public_Catalog_Model();
+		$Public_Catalog_Detail_Model = new Public_Catalog_Detail_Model();
+		
+		//Obtener compania
+		$objCompanyModel = $Company_Model->get_rowByPK($companyID);
+		
+		//obtener elemento 
+		$objElement 	= $Element_Model->get_rowByName($table,ELEMENT_TYPE_TABLE);
+		if(!$objElement)
+		throw new \Exception("NO EXISTE LA TABLA '".$table."' DENTRO DE LOS REGISTROS DE ELEMENT ");
+		
+		//obtener subelement
+		$objSubElement 	= $Sub_Element_Model->get_rowByNameAndElementID($objElement->elementID,$field); 
+		if(!$objSubElement)
+		throw new \Exception("NO EXISTE EL CAMPO '".$field."' DENTRO DE LOS REGISTROS DE SUBELEMENT PARA EL ELEMENTO '".$table."' ");
+		
+		//obtener componente catalogo
+		$objComponent = $Component_Model->get_rowByName("tb_catalog");
+		if(!$objComponent)
+		throw new \Exception("NO EXISTE EL COMPONENTE 'tb_catalog' DENTROS DE LOS REGISTROS DE 'Component' ");
+		
+		
+		//obtener el catalogo
+		if(!$objSubElement->catalogID)
+		throw new \Exception("EN LA TABLA SUBELEMENT PARA '".$field."' NO EXISTE EL CATALOGO CONFIGURADO");
+		
+		$objCatalog = $Catalog_Model->get_rowByCatalogID($objSubElement->catalogID);
+		if(!$objCatalog)
+		throw new \Exception("NO EXISTE EL CATALOGO ");
+				
+		//obtener flavor
+		$objCompanyComponentFlavor = $Company_Component_Flavor_Model->get_rowByCompanyAndComponentAndComponentItemID($companyID,$objComponent->componentID,$objCatalog->catalogID);
+		if(!$objCompanyComponentFlavor)
+		throw new \Exception("NO EXISTE EL FLAVOR PARA EL COMPONENTE DE CATALOGO ");
+		
+		//obtener el catalogItem que biene seteado
+		$objCatalogItemInclude = null;
+		if($catalogItemID)
+		{
+			$objCatalogItemInclude = $Catalog_Item_Model->get_rowByCatalogItemID($catalogItemID);
+		}		
+		
+		//obtener la lista de catalogItem	
+		$objCatalogItem = $Catalog_Item_Model->get_rowByCatalogIDAndFlavorID($objCatalog->catalogID,$objCompanyModel->flavorID);
+		if(!$objCatalogItem)
+		$objCatalogItem = $Catalog_Item_Model->get_rowByCatalogIDAndFlavorID($objCatalog->catalogID,$objCompanyComponentFlavor->flavorID);
+	
+	
+		//agregar el catalogitem seteado al array de resultados		
+		if($objCatalogItemInclude)
+		{
+			array_push(
+				$objCatalogItem,
+				$objCatalogItemInclude
+			);
+		}
+	
+		//Obtener si el catalog, usa un catalogo personalizable
+		if ( is_null( $objCatalog->publicCatalogSystemName ) ) 
+			return $objCatalogItem;
+		
+		if ( empty( $objCatalog->publicCatalogSystemName ) ) 
+			return $objCatalogItem;
+		
+		
+		$objPublicCatalog 		= $Public_Catalog_Model->getBySystemNameAndFlavorID($objCatalog->publicCatalogSystemName,$objCompanyModel->flavorID);
+		if(!$objPublicCatalog)
+			return $objCatalogItem;		
+			
+		$objPublicCatalogItem 	= $Public_Catalog_Detail_Model->getView($objPublicCatalog->publicCatalogID);
+		if(!$objPublicCatalogItem)
+			return $objCatalogItem;		
+			
+		
+		//Usar public catalog item
+		foreach($objPublicCatalogItem as $objItem)
+		{
+			array_push(
+				$objCatalogItem,
+				(object)[
+					"catalogItemID" 	=> $objItem->publicCatalogDetailID,
+					"name" 				=> $objItem->name,
+					"display" 			=> $objItem->display,
+					"description" 		=> $objItem->description,
+					"sequence" 			=> $objItem->sequence
+				]
+			);
+		}
+
+	
+		
+		return $objCatalogItem;
+		
+   }
    function getCatalogAllItemByNameCatalogo($name,$companyID){
 	    
 		$Company_Model = new Company_Model();
