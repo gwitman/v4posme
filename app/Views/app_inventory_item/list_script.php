@@ -1,5 +1,8 @@
 <script>
 	$(document).ready(function(){	
+		fnWaitClose();
+		fnWaitClose();
+		
 		$(document).on("click","#btnView",function(){
 			window.open("<?php echo base_url(); ?>/core_view/chooseview/"+componentID,"MsgWindow","width=900,height=450");
 			window.fn_aceptCallback = fn_aceptCallback; 
