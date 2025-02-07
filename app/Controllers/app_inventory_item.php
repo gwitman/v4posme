@@ -1816,11 +1816,9 @@ class app_inventory_item extends _BaseController
 
             //Vista por defecto
             if ($dataViewID == null) {
-
                 $targetComponentID = $this->session->get('company')->flavorID;
                 $parameter["{companyID}"] = $this->session->get('user')->companyID;
                 $dataViewData = $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
-
 
                 if (!$dataViewData) {
                     $targetComponentID = 0;
@@ -1837,7 +1835,7 @@ class app_inventory_item extends _BaseController
 				else
 				{
 					//$dataViewRender			= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
-					$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+					$dataViewRender				= $this->core_web_view->renderGreedJson($dataViewData,'ListView',"fnTableSelectedRow");
 				}
 				
 
@@ -1845,18 +1843,19 @@ class app_inventory_item extends _BaseController
             else {
                 $parameter["{companyID}"] = $this->session->get('user')->companyID;
                 $dataViewData = $this->core_web_view->getViewBy_DataViewID($this->session->get('user'), $objComponent->componentID, $dataViewID, CALLERID_LIST, $resultPermission, $parameter);
-                $dataViewRender = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+                $dataViewRender = $this->core_web_view->renderGreedJson($dataViewData, 'ListView', "fnTableSelectedRow");
             }
 
             //Renderizar Resultado
-			$dataView["company"] 			= $dataSession["company"];
-            $dataSession["notification"] 	= $this->core_web_error->get_error($dataSession["user"]->userID);
-            $dataSession["message"] 		= $this->core_web_notification->get_message();
-            $dataSession["head"] 			= /*--inicio view*/  view('app_inventory_item/list_head',$dataView);//--finview
-            $dataSession["footer"] 			= /*--inicio view*/ view('app_inventory_item/list_footer');//--finview
-            $dataSession["body"] 			= $dataViewRender;
-            $dataSession["script"] 			= /*--inicio view*/ view('app_inventory_item/list_script');//--finview
-            $dataSession["script"] 			= $dataSession["script"] . $this->core_web_javascript->createVar("componentID", $objComponent->componentID);
+			$dataView["company"] 			        = $dataSession["company"];
+            $dataSession["datatable_V2_2_2"] 	    = true;
+            $dataSession["notification"] 	        = $this->core_web_error->get_error($dataSession["user"]->userID);
+            $dataSession["message"] 		        = $this->core_web_notification->get_message();
+            $dataSession["head"] 			        = /*--inicio view*/  view('app_inventory_item/list_head',$dataView);//--finview
+            $dataSession["footer"] 			        = /*--inicio view*/ view('app_inventory_item/list_footer');//--finview
+            $dataSession["body"] 			        = $dataViewRender;
+            $dataSession["script"] 			        = /*--inicio view*/ view('app_inventory_item/list_script');//--finview
+            $dataSession["script"] 			        = $dataSession["script"] . $this->core_web_javascript->createVar("componentID", $objComponent->componentID);
 
             return view("core_masterpage/default_masterpage", $dataSession);//--finview-r
         } catch (\Exception $ex) {
