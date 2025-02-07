@@ -499,6 +499,64 @@ class core_web_view {
 		return $resultGreedMoreJS;
 		
    }
+
+    function renderGreedJson($data, $idTable = null, $functionSelected = NULL, $displayLength = 350)
+    {
+        // Crear el HTML para la tabla
+        $table = "<table id='" . $idTable . "' class='table table-striped table-bordered table-hover'>";
+
+        // Crear el encabezado
+        $table .= "<thead><tr>";
+        $summaryColumns = explode(",", $data["view_config"]->summaryColumns);
+        $formatColumns = explode(",", $data["view_config"]->formatColumns);
+        $cabezera1 = explode(",", $data["view_config"]->nonVisibleColumns);
+        $cabezera2 = explode(",", $data["view_config"]->visibleColumns);
+        $cabezera3 = array_merge($cabezera1, $cabezera2);
+
+        foreach ($cabezera3 as $fieldDisplay) {
+            $table .= "<th>" . $fieldDisplay . "</th>";
+        }
+
+        $table .= "</tr></thead>";
+        // Cuerpo de la tabla vacío inicialmente (DataTables se encargará de llenarlo con AJAX)
+        $table .= "<tbody></tbody>";
+        $table .= "</table>";
+
+        // Script JS para inicializar DataTable con AJAX
+        $js = "
+        <script>
+        $(document).ready(function() {
+            var table = new DataTable('#" . $idTable . "', {
+                'data': " . json_encode($data["view_data"], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . ",
+                'columns': [
+                    " . implode(",", array_map(function ($field) {
+                return "{ 'data': '$field' }";
+            }, $cabezera3)) . "
+                ],
+            });
+            objTable" . $idTable . " = table; 
+            // Configuración para manejar los eventos de clic
+            $('#" . $idTable . "').on('click', 'tr', function(event) {
+                " . $functionSelected . "(this, event);
+            });";
+
+        foreach ($cabezera1 as $field) {
+            $i = array_search($field, $cabezera3);
+            $temp = "table.column($i).visible(false, false);";
+            $js = $js . $temp;
+
+        }
+
+        $js .= "table.columns.adjust().draw(false);";
+        $js .= "
+                $(document).on('click','#" . $idTable . " tr',function(event){ objRowTable" . $idTable . " = this; " . $functionSelected . "(this,event);});  
+                $('#" . $idTable . "').css('display','table');
+            });
+        </script>";
+
+        // Devuelve el HTML y JS generados
+        return $table . $js;
+    }
    function renderGreedMobile($data,$idTable = null,$functionSelected = NULL,$displayLength = 350){
 		
 		$table = "";
