@@ -51,12 +51,6 @@ function getBehavioCreditAguil(): array
 			result = false;
 		}
 		
-		const regex = /^\d{3}-\d{6}-\d{4}[A-Za-z]$/;
-		if(!regex.test(   $('#txtIdentification').val()   )){
-            fnShowNotification('Escribir cedula con formato correcto','error',timerNotification);
-			result = false;
-        } 
-		
 		
 		",
 
