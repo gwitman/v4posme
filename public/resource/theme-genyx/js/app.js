@@ -36,9 +36,14 @@ $(document).ready(function() {
     });
 
     //Disable certain links
-    $('a[href="#"]').on('click', function(event) {
-        event.preventDefault(); // Previene el comportamiento por defecto
-    });
+	$('a[href^="#"]').click(function(e) {
+        e.preventDefault()
+    })
+	
+	//witman-//Disable certain links
+    //witman-$('a[href="#"]').click(function(e) {
+    //witman-    e.preventDefault();
+    //witman-});
 
     //------------- Prettify code  -------------//
     window.prettyPrint && prettyPrint();

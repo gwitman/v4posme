@@ -71,8 +71,16 @@
 
 	<!-- javascript
 		==================================================
-		-->
-	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jquery-1.12.4.min.js"></script>
+	-->
+	
+	 <?php
+    if (isset($jquery_V1_12_4) && $jquery_V1_12_4){
+        echo '<script src="'.APP_URL_RESOURCE_CSS_JS.'/resource/js/jquery-1.12.4.min.js"></script>';
+    }else{
+        echo '<script src="'.APP_URL_RESOURCE_CSS_JS.'/resource/theme-genyx/js/jquery-1-9-1.min.js"></script>';
+    }
+    ?>
+	
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/jquery-migrate-1.2.1.js"></script>
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/jquery-ui-1-10-2.min.js"></script>
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/bootstrap/bootstrap.js"></script>
