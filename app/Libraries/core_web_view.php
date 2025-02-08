@@ -173,7 +173,7 @@ class core_web_view {
 		$dataResult["view_data"]	= $dataRecordSet;
 		return $dataResult;
    }
-   function getViewBy_DataViewID($user,$componentID,$dataviewID,$callerID,$permission=null,$parameter=null, $targetComponentID = null){
+   function getViewBy_DataViewID($user,$componentID,$dataviewID,$callerID,$permission=null,$parameter=null, $targetComponentID = 0){
 		$Data_View_Model = new Data_View_Model();
 		$Company_Data_View_Model = new Company_Data_View_Model();
 		$Bd_Model = new Bd_Model();  

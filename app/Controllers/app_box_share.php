@@ -1404,10 +1404,9 @@ class app_box_share extends _BaseController {
 			if($dataViewIDCache && $dataViewID == null )
 				$dataViewID = $dataViewIDCache;
 			
-			
+			$targetComponentID			= $this->session->get('company')->flavorID;
 			if($dataViewID == null )
-			{				
-				$targetComponentID			= $this->session->get('company')->flavorID;				
+			{	
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;				
 				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
 				
@@ -1437,7 +1436,7 @@ class app_box_share extends _BaseController {
 			{
 				$cache->save('app_box_share_dataviewid_index', $dataViewID, TIME_CACHE_APP);
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
-				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 							
+				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter,$targetComponentID); 							
 				if(  $this->request->getUserAgent()->isMobile() )
 				{
 					$dataViewRender				= $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow");
