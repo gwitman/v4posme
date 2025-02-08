@@ -167,6 +167,7 @@ class core_web_counter {
    function goNextNumber($companyID,$branchID,$componentName,$componentItemID){
 		$Counter_Model = new Counter_Model();
 		$Component_Model = new Component_Model();
+		$Branch_Model = new Branch_Model();
 		
 		//obtener componente 
 		$objComponente 	= $Component_Model->get_rowByName($componentName);
@@ -185,8 +186,22 @@ class core_web_counter {
 		$value = str_pad($objCounter->currentValue, $objCounter->length, "0", STR_PAD_LEFT);
 		$value = $objCounter->serie.$value; 
 		
+		
+		//obtner la serie de la sucursal
+		$serieBranch 	= "";
+		$objBranch 		= null;
+		if($branchID)
+		{
+			$objBranch = $Branch_Model->get_rowByPK($companyID,$branchID);
+		}
+		
+		if($objBranch)
+		{
+			$serieBranch = $objBranch->serie;
+		}
+			
 		//retornar valor 
-		return $value;
+		return $serieBranch."".$value;
 		
 		
    }
