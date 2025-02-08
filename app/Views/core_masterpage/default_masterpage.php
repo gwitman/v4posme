@@ -34,7 +34,7 @@
 	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/uniform/uniform.default.css" rel="stylesheet" />
     <?php
     if (isset($datatable_V2_2_2) && $datatable_V2_2_2){
-        echo '<link href="'.APP_URL_RESOURCE_CSS_JS.'/resource/datatable222/dataTables.css" rel="stylesheet" />';
+        echo '<link href="'.APP_URL_RESOURCE_CSS_JS.'/resource/js/datatable222/dataTables.css" rel="stylesheet" />';
     }else{
         echo '<link href="'.APP_URL_RESOURCE_CSS_JS.'/resource/theme-genyx/js/plugins/tables/datatables/jquery.dataTables.css" rel="stylesheet" />';
     }
@@ -98,7 +98,7 @@
 
     <?php
     if (isset($datatable_V2_2_2) && $datatable_V2_2_2){
-        echo '<script src="'.APP_URL_RESOURCE_CSS_JS.'/resource/datatable222/dataTables.js"></script>';
+        echo '<script src="'.APP_URL_RESOURCE_CSS_JS.'/resource/js/datatable222/dataTables.js"></script>';
     }else{
         echo '<script src="'.APP_URL_RESOURCE_CSS_JS.'/resource/theme-genyx/js/plugins/tables/datatables/jquery.dataTables.min.js"></script>';
     }
