@@ -1635,8 +1635,8 @@ class app_cxc_customer extends _BaseController {
 			
 			
 			//Vista por defecto 
-			if($dataViewID == null){								
-				$targetComponentID			= $this->session->get('company')->flavorID;
+			$targetComponentID			= $this->session->get('company')->flavorID;
+			if($dataViewID == null){
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;				
 				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
 				
@@ -1666,7 +1666,7 @@ class app_cxc_customer extends _BaseController {
 			else{				
 				$cache->save('app_cxc_customer_dataviewid_index', $dataViewID, TIME_CACHE_APP);
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
-				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 			
+				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter,$targetComponentID); 			
 				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			} 
 			 
