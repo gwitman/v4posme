@@ -1849,6 +1849,7 @@ class app_inventory_item extends _BaseController
             //Renderizar Resultado
 			$dataView["company"] 			        = $dataSession["company"];
             $dataSession["datatable_V2_2_2"] 	    = true;
+			$dataSession["jquery_V1_12_4"] 	    	= true;
             $dataSession["notification"] 	        = $this->core_web_error->get_error($dataSession["user"]->userID);
             $dataSession["message"] 		        = $this->core_web_notification->get_message();
             $dataSession["head"] 			        = /*--inicio view*/  view('app_inventory_item/list_head',$dataView);//--finview
