@@ -2,6 +2,9 @@
 				<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/datepicker/datepicker.css" rel="stylesheet" /> 
 				
 				
+				<?php 
+					helper_getHtmlOfPageLanding();
+				?>
 				
 				<div id="heading" class="page-header">
 					<h1><i class="icon20 i-bag-2"></i> LISTA DE <?php echo getBehavio($company->type,"app_invoice_billing","labelTitlePageList","FACTURAS"); ?></h1>

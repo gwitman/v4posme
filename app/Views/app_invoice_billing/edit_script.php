@@ -2,7 +2,7 @@
 <!-- ./ page heading -->
 <script>	
 
-	//fnWaitOpen();	
+	//fnWaitOpenV2();	
 	
 	/*
 	try {
@@ -277,7 +277,7 @@
 		var urlExoneration="<?php echo base_url(); ?>/app_invoice_api/getNumberExoneration/value/"+$("#txtLayFirstLineProtocolo").val();
 		if(varParameterINVOICE_BILLING_VALIDATE_EXONERATION == "true")
 		{
-				fnWaitOpen();	
+				fnWaitOpenV2();	
 				$.ajax({									
 					cache       : false,
 					dataType    : 'json',
@@ -316,10 +316,10 @@
 					
 					
 						
-						fnWaitClose();						
+						fnWaitCloseV2();						
 					},
 					error:function(xhr,data){
-						fnWaitClose();
+						fnWaitCloseV2();
 					}
 				});	
 		}
@@ -344,7 +344,7 @@
 	
 	
 	$("#btnAceptarMesaBussyV2").click(function(){
-		fnWaitOpen();
+		fnWaitOpenV2();
 		var value 				= $("#txtMesaOcupada").val();
 		window.location.href 	= "<?=base_url()."/"."app_invoice_billing/edit/companyID/".$companyID."/transactionID/".$transactionID."/transactionMasterID/"?>"+value+"<?="/codigoMesero/".$codigoMesero ?>";			
 		$("#modalDialogMeaBussyV2").modal("hide");
@@ -391,7 +391,7 @@
 		}
 	
 	
-		fnWaitOpen();
+		fnWaitOpenV2();
 		window.open("<?php echo base_url(); ?>/"+
 			varUrlPrinterBar+
 			"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>"+
@@ -399,7 +399,7 @@
 			, '_blank'
 		);
 		
-		fnWaitClose();
+		fnWaitCloseV2();
 		$("#modalDialogBarV2").modal("hide");
 	});	
 	
@@ -419,7 +419,7 @@
 		}
 	
 	
-		fnWaitOpen();
+		fnWaitOpenV2();
 		window.open("<?php echo base_url(); ?>/"+
 			varUrlPrinterCocina+
 			"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>"+
@@ -427,7 +427,7 @@
 			, '_blank'
 		);
 		
-		fnWaitClose();
+		fnWaitCloseV2();
 		$("#modalDialogCocinaV2").modal("hide");
 	});	
 	
@@ -589,7 +589,7 @@
 				data 		: {companyID : 2 },
 				success:function(data){
 					console.info("complete delete success");
-					fnWaitClose();
+					fnWaitCloseV2();
 					if(data.error){
 						fnShowNotification(data.message,"error");
 					}
@@ -599,7 +599,7 @@
 				},
 				error:function(xhr,data){	
 					console.info("complete delete error");									
-					fnWaitClose();
+					fnWaitCloseV2();
 					fnShowNotification("Error 505","error");
 				}
 			});
@@ -804,11 +804,11 @@
         let length = listRow.length;
         if(length > 0)
         {
-            $("#modalDialogBackToListV2").modal("show");
+			mostrarModal('ModalBackToList');
         }
         else
         {
-            fnWaitOpen();
+            fnWaitOpenV2();
             window.location.href = '<?php echo base_url(); ?>/app_invoice_billing/index';
         }
     });
@@ -841,7 +841,7 @@
 		
 		fnShowConfirm("Confirmar..","Desea eliminar este Registro...",function(){
 			
-			fnWaitOpen();
+			fnWaitOpenV2();
 			$.ajax({									
 				cache       : false,
 				dataType    : 'json',
@@ -850,7 +850,7 @@
 				data 		: {companyID : <?php echo $objTransactionMaster->companyID;?>, transactionID : <?php echo $objTransactionMaster->transactionID;?>,transactionMasterID : <?php echo $objTransactionMaster->transactionMasterID; ?>  },
 				success:function(data){
 					console.info("complete delete success");
-					fnWaitClose();
+					fnWaitCloseV2();
 					if(data.error){
 						fnShowNotification(data.message,"error");
 					}
@@ -860,7 +860,7 @@
 				},
 				error:function(xhr,data){	
 					console.info("complete delete error");									
-					fnWaitClose();
+					fnWaitCloseV2();
 					fnShowNotification("Error 505","error");
 				}
 			});
@@ -882,13 +882,13 @@
 		window.fnObtenerListadoProductos = fnObtenerListadoProductos; 
 	});
 	$(document).on("click","#btnRefreshDataCatalogo",function(){
-		fnWaitOpen();	
+		fnWaitOpenV2();	
 		openDataBaseAndCreate(false,true);
 	});
 	$(document).on("click","#btnLinkPayment",function(){
-		fnWaitOpen();			
+		fnWaitOpenV2();			
 		window.open("<?php echo base_url(); ?>/app_invoice_api/getLinkPaymentPagadito/companyID/"+$("#txtCompanyID").val()+"/transactionID/"+$("#txtTransactionID").val() +"/transactionMasterID/"+$("#txtTransactionMasterID").val(),"MsgWindow","width=700,height=600");
-		fnWaitClose();
+		fnWaitCloseV2();
 	});
 	$(document).on("click","#btnSearchCustomerNew",function(){
 		var url_request 				 = "<?php echo base_url(); ?>/app_cxc_customer/add/callback/fnCustomerNewCompleted";
@@ -999,35 +999,33 @@
         $(this).addClass("selected");
     });
 
-	$("#btnAceptarDialogBackToListV2").click(function(){								
-		fnWaitOpen();
-		window.location.href = '<?php echo base_url(); ?>/app_invoice_billing/index'; 	
-	});
+
+	
 
 
 	$("#btnAceptarDialogPrinterV2AceptarTabla").click(function(){
-		fnWaitOpen();
+		fnWaitOpenV2();
 		window.open("<?php echo base_url(); ?>/app_cxc_report/document_credit/viewReport/true/documentNumber/<?php echo $objTransactionMaster->transactionNumber;?>", '_blank');
-		fnWaitClose();		
+		fnWaitCloseV2();		
 		$('#modalDialogPrinterV2').modal('hide');
 	});
 	
 	$("#btnAceptarDialogPrinterV2AceptarDocument").click(function(){
-		fnWaitOpen();
+		fnWaitOpenV2();
 		window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>", '_blank');
-		fnWaitClose();	
+		fnWaitCloseV2();	
 		$('#modalDialogPrinterV2').modal('hide');
 	});
 	$("#btnAceptarDialogPrinterV2AceptarDocumentA4").click(function(){
-		fnWaitOpen();
+		fnWaitOpenV2();
 		window.open("<?php echo base_url(); ?>/"+varUrlPrinterOpcion2+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>", '_blank');
-		fnWaitClose();	
+		fnWaitCloseV2();	
 		$('#modalDialogPrinterV2').modal('hide');
 	});
 	
 	
 	$("#btnAceptarDialogPrinterV2AceptarDirect").click(function(){
-		fnWaitOpen();
+		fnWaitOpenV2();
 		
 		var url=varParameterUrlServidorDeImpresion+varParameterInvoiceBillingPrinterDirectUrl;
 			url = url+
@@ -1035,7 +1033,7 @@
 			"/transactionID/"+"<?php echo $objTransactionMaster->transactionID; ?>"+
 			"/transactionMasterID/"+"<?php echo $objTransactionMaster->transactionMasterID; ?>";
 		
-		fnWaitOpen();	
+		fnWaitOpenV2();	
 		$.ajax({									
 			cache       : false,
 			dataType    : 'json',
@@ -1043,13 +1041,13 @@
 			data		: { "fromServer" : varParameterInvoiceBillingPrinterDataLocal },
 			url  		: url,
 			success		: function(){
-				fnWaitClose();						
+				fnWaitCloseV2();						
 			},
 			error:function(xhr,data){
 				console.info("complete data error");									
 				console.info(data);
 				console.info(xhr);
-				fnWaitClose();
+				fnWaitCloseV2();
 				//fnShowNotification("Error 505","error");
 			}
 		});	
@@ -1211,7 +1209,7 @@
 			{
 					fnShowNotification("Intete nuevamente..","error",timerNotification);			
 					result = false;	
-					fnWaitClose();
+					fnWaitCloseV2();
 					return;
 			}
 			
@@ -1220,7 +1218,7 @@
 		{
 			fnShowNotification("Intete nuevamente..","error",timerNotification);			
 			result = false;	
-			fnWaitClose();
+			fnWaitCloseV2();
 			return;
 		}
 		
@@ -1229,40 +1227,40 @@
 		if($("#txtWarehouseID").val() == ""){
 			fnShowNotification("Seleccionar bodega de desapcho","error",timerNotification);			
 			result = false;	
-			fnWaitClose();
+			fnWaitCloseV2();
 		}
 		
 		//Validar Fecha		
 		if($("#txtDate").val() == ""){			
 			fnShowNotification("Establecer Fecha al Documento","error",timerNotification);			
 			result = false;	
-			fnWaitClose();			
+			fnWaitCloseV2();			
 		}		
 		//Validar Cliente		
 		if($("#txtCustomerID").val() == ""){
 			fnShowNotification("Seleccionar el Cliente","error",timerNotification);
 			result = false;
-			fnWaitClose();
+			fnWaitCloseV2();
 		}
 		
 		//Validar Proveedor de Credito
 		if($("#txtReference1").val() == "0" && switchDesembolso){
 			fnShowNotification("Seleccionar el Proveedor de Credito","error",timerNotification);
 			result = false;
-			fnWaitClose();
+			fnWaitCloseV2();
 		}
 		//Validar Zona
 		if($("#txtZoneID").val() == "" && switchDesembolso){
 			fnShowNotification("Seleccionar la Zona de la Factura","error",timerNotification);
 			result = false;
-			fnWaitClose();
+			fnWaitCloseV2();
 		}
 		
 		//Validar Vendedor
 		if($("#txtEmployeeID").val() == "" && switchDesembolso){
 			fnShowNotification("Seleccionar el vendedor en la Factura","error",timerNotification);
 			result = false;
-			fnWaitClose();
+			fnWaitCloseV2();
 		}
 		
 		//Validar monto descuento en rango de 0 a 100
@@ -1270,21 +1268,21 @@
 		if (porcentajeDescuento < 0 || porcentajeDescuento > 100) {
 			fnShowNotification("El porcentaje de descuento no es valido","error",timerNotification);
 			result = false;
-			fnWaitClose();
+			fnWaitCloseV2();
         }
 		
 		//Validar Estado de la factura
 		if($("#txtStatusIDOld").val() ==  varStatusInvoiceAplicado){
 			fnShowNotification("Crear una nueva factura, por que la actual esta aplicada, no puede ser modificada","error",timerNotification);
 			result = false;
-			fnWaitClose();
+			fnWaitCloseV2();
 		}
 		
 		//Validar estado anulado
 		if($("#txtStatusID").val() ==  varStatusInvoiceAnular){
 			fnShowNotification("No puede pasar a estado anulado","error",timerNotification);
 			result = false;
-			fnWaitClose();
+			fnWaitCloseV2();
 		}
 
 
@@ -1298,7 +1296,7 @@
 			if(cantidadTotalesEnZero > 0){
 				fnShowNotification("No pueden haber totales en 0","error",timerNotification);
 				result = false;
-				fnWaitClose();
+				fnWaitCloseV2();
 			};		
 		}
 		
@@ -1307,7 +1305,7 @@
 		if(cantidadTotalesEnZero > 0){
 			fnShowNotification("No pueden haber cantidades en 0","error",timerNotification);
 			result = false;
-			fnWaitClose();
+			fnWaitCloseV2();
 		};	
 		
 		
@@ -1349,7 +1347,7 @@
 		if(varParameterAmortizationDuranteFactura && $("#txtReference2").val() == "" && invoiceTypeCredit ){
 			fnShowNotification("Seleccionar el plazo","error",timerNotification);
 			result = false;
-			fnWaitClose();
+			fnWaitCloseV2();
 		}
 		
 		//No puede haber cambio, si la factura es de credito
@@ -1357,7 +1355,7 @@
 		{
 			fnShowNotification("No puede haber cambio si la factura es de credito","error",timerNotification);
 			result = false;
-			fnWaitClose();
+			fnWaitCloseV2();
 		}
 		
 		<?php echo getBehavio($company->type,"app_invoice_billing","scriptValidateCustomer",""); ?>  
@@ -1372,7 +1370,7 @@
 			if($("#txtDateFirst").val() == "" && switchDesembolso){
 				fnShowNotification("Seleccionar la Fecha del Primer Pago","error",timerNotification);
 				result = false;
-				fnWaitClose();
+				fnWaitCloseV2();
 			}
 			
 			
@@ -1380,14 +1378,14 @@
 			if($("#txtNote").val() == "" && switchDesembolso){
 				fnShowNotification("Asignarle una nota al documento","error",timerNotification);
 				result = false;
-				fnWaitClose();
+				fnWaitCloseV2();
 			}
 			
 			//Validar Escritura Publica
 			if($("#txtFixedExpenses").val() == "" && switchDesembolso){
 				fnShowNotification("Ingresar el Porcentaje de Gastos Fijo por Desembolso","error",timerNotification);
 				result = false;
-				fnWaitClose();
+				fnWaitCloseV2();
 			}
 			
 			var montoTotalInvoice 	= fnFormatFloat(fnFormatNumber($("#txtTotal").val(),"4"));
@@ -1409,7 +1407,7 @@
 				if(balanceCredit < montoTotalInvoice && balanceCredit != 0 ){
 					fnShowNotification("La factura no puede ser facturada al credito. Balance del cliente: " + balanceCredit,"error",timerNotification);
 					result = false;
-					fnWaitClose();
+					fnWaitCloseV2();
 				}
 			}
 			
@@ -1419,7 +1417,7 @@
 			if( parseFloat( $("#txtChangeAmount").val() )  < 0 ){
 				fnShowNotification("El cambio de la factura no puede ser menor a 0","error",timerNotification);
 				result = false;
-				fnWaitClose();
+				fnWaitCloseV2();
 			}
 			
 		}
@@ -1448,7 +1446,7 @@
 							$( "#form-new-invoice" ).submit();							
 						}
 						else{
-							fnWaitClose();
+							fnWaitCloseV2();
 							for(var ie = 0 ; ie < result.resultValidate.length ; ie++){								
 								fnShowNotification(
 									""+
@@ -1463,7 +1461,7 @@
 						
 					},
 					error: function(result){
-						fnWaitClose();
+						fnWaitCloseV2();
 					}
 				}
 			);
@@ -1881,7 +1879,7 @@
 		
 	}
 	function fnEnviarFactura(){
-				fnWaitOpen();
+				fnWaitOpenV2();
 				$( "#form-new-invoice" ).attr("method","POST");
 				$( "#form-new-invoice" ).attr("action","<?php echo base_url(); ?>/app_invoice_billing/save/edit");
 				validateFormAndSubmit();
@@ -2219,7 +2217,7 @@
 			"/companyID/"+"<?php echo $objTransactionMaster->companyID; ?>" + 
 			"/transactionID/"+"<?php echo $objTransactionMaster->transactionID; ?>"+
 			"/transactionMasterID/"+"<?php echo $objTransactionMaster->transactionMasterID; ?>";
-			fnWaitOpen();	
+			fnWaitOpenV2();	
 			$.ajax({									
 				cache       : false,
 				dataType    : 'json',
@@ -2227,13 +2225,13 @@
 				data		: { "fromServer" : varParameterInvoiceBillingPrinterDataLocal },
 				url  		: url,
 				success		: function(){
-					fnWaitClose();						
+					fnWaitCloseV2();						
 				},
 				error:function(xhr,data){
 					console.info("complete data error");									
 					console.info(data);
 					console.info(xhr);
-					fnWaitClose();
+					fnWaitCloseV2();
 					//fnShowNotification("Error 505","error");
 				}
 			});	
@@ -2241,9 +2239,9 @@
 		}
 		if ( varParameterTipoPrinterDownload == 'true' )
 		{
-			fnWaitOpen();
+			fnWaitOpenV2();
             window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>", '_blank');
-			fnWaitClose();
+			fnWaitCloseV2();
 			return;
 		}
 		if(objParameterPrinterDirectAndPreview == 'true')
@@ -2284,20 +2282,20 @@
 			"/transactionMasterID/"+"<?php echo $objTransactionMaster->transactionMasterID; ?>"+
 			"/itemID/"+itemid;
 			
-			fnWaitOpen();	
+			fnWaitOpenV2();	
 			$.ajax({									
 				cache       : false,
 				dataType    : 'json',
 				type        : 'GET',
 				url  		: url,
 				success		: function(){
-					fnWaitClose();						
+					fnWaitCloseV2();						
 				},
 				error:function(xhr,data){
 					console.info("complete data error");									
 					console.info(data);
 					console.info(xhr);
-					fnWaitClose();
+					fnWaitCloseV2();
 				}
 			});	
 			return;
@@ -2334,20 +2332,20 @@
 			"/transactionMasterID/"+"<?php echo $objTransactionMaster->transactionMasterID; ?>"+
 			"/itemID/"+itemid+"/transactionMasterComment/"+comentario;
 			
-			fnWaitOpen();	
+			fnWaitOpenV2();	
 			$.ajax({									
 				cache       : false,
 				dataType    : 'json',
 				type        : 'GET',
 				url  		: url,
 				success		: function(){
-					fnWaitClose();						
+					fnWaitCloseV2();						
 				},
 				error:function(xhr,data){
 					console.info("complete data error");									
 					console.info(data);
 					console.info(xhr);
-					fnWaitClose();
+					fnWaitCloseV2();
 					//fnShowNotification("Error 505","error");
 				}
 			});	
@@ -2525,7 +2523,7 @@
 			if(bInicializar)
 			{
 				fnReady();
-				setTimeout(function() { fnWaitClose(); fnWaitClose(); }, 1000);		
+				setTimeout(function() { fnWaitCloseV2(); fnWaitCloseV2(); }, 1000);		
 			}
 			
 			if(obtenerRegistroDelServer)
@@ -2533,7 +2531,7 @@
 				fnObtenerListadoProductos();				
 				fnObtenerListadoItemConcept();
 				fnObtenerListadoCustomerCreditLine();
-				setTimeout(function() { fnWaitClose(); fnWaitClose(); }, 4000);		
+				setTimeout(function() { fnWaitCloseV2(); fnWaitCloseV2(); }, 4000);		
 				
 			}
 			
@@ -2752,6 +2750,12 @@
 		}
 	}
 	
+	function fnAceptarModalBackToList()
+	{
+		cerrarModal('ModalBackToList');
+		fnWaitOpenV2();
+		window.location.href = '<?php echo base_url(); ?>/app_invoice_billing/index'; 	
+	}
 	
 	
 	
@@ -2944,7 +2948,7 @@
 							window.location	= "<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>";
 						  }
 						  
-						  fnWaitClose();
+						  fnWaitCloseV2();
 				});
 			}
 			

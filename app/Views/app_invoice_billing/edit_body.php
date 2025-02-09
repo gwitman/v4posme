@@ -243,16 +243,10 @@ if($objParameterRestaurant == "true")
 	
 </style>
 
-<div 
-	class="isloading-overlay"
-	id="divLoandingCustom"
-	style="position:fixed; left:0; top:0; z-index: 10000; background: rgba(0,0,0,1); width: 100%; height: 1090px;"	
->
-	<span class="isloading-wrapper  isloading-show  isloading-overlay">espere un momento ...  
-		<i class="icon-refresh icon-spin">
-		</i>
-	</span>
-</div>
+
+<?php 
+echo helper_getHtmlOfPageLanding();
+?>
 
 
 <!-- End .row-fluid  -->
@@ -285,10 +279,10 @@ if($objParameterRestaurant == "true")
 							<a href="#credit" data-toggle="tab">Info de Credito.</a>
 						</li>
 						<li class="dropdown elementMovilOculto <?php echo getBehavio($company->type,"app_invoice_billing","divPestanaMas",""); ?> ">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas <b class="caret"></b></a>
+							<a href=javascript:void(0) class="dropdown-toggle" data-toggle="dropdown">Mas <b class="caret"></b></a>
 							<ul class="dropdown-menu">
 								<li><a href="#dropdown" data-toggle="tab">Comentario</a></li>
-								<li><a id="btnClickArchivo" href="#" target="blanck"  data-toggle="tab">Archivos</a></li>
+								<li><a id="btnClickArchivo" href=javascript:void(0) target="blanck"  data-toggle="tab">Archivos</a></li>
 							 </ul>
 						</li>
 					</ul>
@@ -469,7 +463,7 @@ if($objParameterRestaurant == "true")
 											if($objParameterEsResrarante == "true")
 											{
 												?>
-												<a href="#" class="btn btn-flat btn-info btn-block btn-comando-showsona" id="btnShowZona">
+												<a href=javascript:void(0) class="btn btn-flat btn-info btn-block btn-comando-showsona" id="btnShowZona">
 													<i class="icon16 i-checkmark-4"></i> Zona
 												</a>
 												<?php 
@@ -585,7 +579,7 @@ if($objParameterRestaurant == "true")
 											if($objParameterEsResrarante == "true")
 											{
 												?>
-												<a href="#" class="btn btn-flat btn-info btn-block btn-comando-showmesa" id="btnShowMesa">
+												<a href=javascript:void(0) class="btn btn-flat btn-info btn-block btn-comando-showmesa" id="btnShowMesa">
 													<i class="icon16 i-checkmark-4"></i> Mesa
 												</a>
 												<?php 
@@ -715,7 +709,7 @@ if($objParameterRestaurant == "true")
 												<div class="col-lg-8">
 													<input class="form-control"   type="text" name="txtFixedExpenses" id="txtFixedExpenses" value="<?php echo helper_RequestGetValueObjet($objTransactionMasterDetailCredit,"reference1",0); ?>">
 													<!--
-													<a href="#" class="btn btn-primary  gap-right10" data-toggle="popover" data-placement="bottom" 
+													<a href=javascript:void(0) class="btn btn-primary  gap-right10" data-toggle="popover" data-placement="bottom" 
 													data-content="Ejemplo: Del Interese de cada cuota, se multiplica por este % para saber de cuanto es la comision para FID-Local, este numero debe ser #0 o mayor que #1" title="" data-original-title="% de Gastos Fijo:">Ayuda:</a>
 													-->
 												</div>
@@ -740,7 +734,7 @@ if($objParameterRestaurant == "true")
 													<input class="form-control"   type="text" name="txtLayFirstLineProtocolo" id="txtLayFirstLineProtocolo" value="<?php echo helper_RequestGetValueObjet($objTransactionMasterReferences,"reference1",""); ?>">
 													
 													<!--
-													<a href="#" class="btn btn-primary  gap-right10" data-toggle="popover" data-placement="bottom" 
+													<a href=javascript:void(0) class="btn btn-primary  gap-right10" data-toggle="popover" data-placement="bottom" 
 													data-content="Ejemplo: 5" title="" 
 													data-original-title="Tenor:">Ayuda:</a>
 													-->
@@ -850,17 +844,17 @@ if($objParameterRestaurant == "true")
 						?>
 						<div class="row" id="rowBotoneraFacturaFila1" >
 							<div class="col col-lg-2">
-								<a href="#" class="btn btn-flat btn-info btn-block hidden btn-comando-factura" id="btnNewItem" ><i class="icon16 i-plus"></i> AGREGAR PRO</a>
+								<a href=javascript:void(0) class="btn btn-flat btn-info btn-block hidden btn-comando-factura" id="btnNewItem" ><i class="icon16 i-plus"></i> AGREGAR PRO</a>
 							</div>
 							<div class="col col-lg-2">
-								<a href="#" class="btn btn-flat btn-danger btn-block hidden btn-comando-factura" id="btnDeleteItem" ><i class="icon16 i-remove"></i> ELIMINAR PRO</a>	
+								<a href=javascript:void(0) class="btn btn-flat btn-danger btn-block hidden btn-comando-factura" id="btnDeleteItem" ><i class="icon16 i-remove"></i> ELIMINAR PRO</a>	
 							</div>
 							<div class="col col-lg-2">
 								<div class="btn-group btn-block  hidden btn-comando-factura ">
 									<button  type="button" class="btn btn-flat btn-success dropdown-toggle btn-block" data-toggle="dropdown" id="btnGroupdProducto" ><i class="icon16 i-box"></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunConfiguracion","PRODUCTO"); ?> <span class="caret"></span></button>
 									<ul class="dropdown-menu">
-											<li class="<?= getBehavio($company->type,"app_invoice_billing","btnNewItemCatalog",""); ?>"><a href="#" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>
-											<li><a href="#" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>										
+											<li class="<?= getBehavio($company->type,"app_invoice_billing","btnNewItemCatalog",""); ?>"><a href=javascript:void(0) id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>
+											<li><a href=javascript:void(0) id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>										
 									</ul>
 								</div>
 							</div>
@@ -868,9 +862,9 @@ if($objParameterRestaurant == "true")
 								<div class="btn-group btn-block  hidden btn-comando-factura ">
 									<button  type="button" class="btn btn-flat btn-inverse dropdown-toggle btn-block" data-toggle="dropdown"><i class="icon16 i-pencil"></i> SELECCION <span class="caret"></span></button>
 									<ul class="dropdown-menu">
-										<li><a href="#" id="btnBack"  >REGRESAR</a></li>
-										<li><a href="#" id="btnSelectInvoice"  > SELECCIONAR</a></li>
-										<li><a href="#" id="btnLinkPayment"  > LINK DE PAGO</a></li>
+										<li><a href=javascript:void(0) id="btnBack"  >REGRESAR</a></li>
+										<li><a href=javascript:void(0) id="btnSelectInvoice"  > SELECCIONAR</a></li>
+										<li><a href=javascript:void(0) id="btnLinkPayment"  > LINK DE PAGO</a></li>
 									</ul>								
 								</div>
 							</div>
@@ -882,17 +876,17 @@ if($objParameterRestaurant == "true")
 								<a href="<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>" class="btn btn-flat btn-info btn-block hidden btn-comando-factura" id="btnNew"><i class="icon16 i-checkmark-4"></i> NUEVA FAC</a>
 							</div>
 							<div class="col col-lg-2">
-								<a href="#" class="btn btn-flat btn-danger btn-block hidden btn-comando-factura" id="btnDelete"><i class="icon16 i-remove "></i> ELIMINAR FAC</a>	
+								<a href=javascript:void(0) class="btn btn-flat btn-danger btn-block hidden btn-comando-factura" id="btnDelete"><i class="icon16 i-remove "></i> ELIMINAR FAC</a>	
 							</div>
 							<div class="col col-lg-2">
-								<a href="#" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnPrinter"><i class="icon16 i-print "></i> IMPRIMIR</a>
+								<a href=javascript:void(0) class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnPrinter"><i class="icon16 i-print "></i> IMPRIMIR</a>
 							</div>
 							
 							<?php 
 							if($objParameterShowComandoDeCocina == 'true' ){
 								?>
 									<div class="col col-lg-2">
-										<a href="#" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnFooter"><i class="icon16 i-print "></i> COCINA</a>
+										<a href=javascript:void(0) class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnFooter"><i class="icon16 i-print "></i> COCINA</a>
 									</div>
 								<?php 
 							}
@@ -902,7 +896,7 @@ if($objParameterRestaurant == "true")
 							if($objParameterINVOICE_BILLING_SHOW_COMMAND_BAR == 'true' ){
 								?>
 									<div class="col col-lg-2">
-										<a href="#" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnBar"><i class="icon16 i-print "></i> BAR</a>
+										<a href=javascript:void(0) class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnBar"><i class="icon16 i-print "></i> BAR</a>
 									</div>
 								<?php 
 							}
@@ -918,10 +912,10 @@ if($objParameterRestaurant == "true")
 							<br id="saltoDeLineaFila3" />
 							<div class="row" id="rowBotoneraFacturaFila3">
 									<div class="col col-lg-2">
-										<a href="#" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnOptionPago"><i class="icon16 i-arrow-down-12 "></i> PROCESAR PAGO</a>
+										<a href=javascript:void(0) class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnOptionPago"><i class="icon16 i-arrow-down-12 "></i> PROCESAR PAGO</a>
 									</div>
 									<div class="col col-lg-2">
-										<a href="#" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunVerDetalle","DETALLE"); ?>  </a>
+										<a href=javascript:void(0) class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunVerDetalle","DETALLE"); ?>  </a>
 									</div>
 							</div>
 						<?php 
@@ -954,7 +948,7 @@ if($objParameterRestaurant == "true")
 							if($objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE == 'false' ){
 								?>
 									<div class="col col-lg-2">
-										<a href="#" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnAbrirCaja"><i class="icon16 i-print "></i> ABRIR CAJA</a>
+										<a href=javascript:void(0) class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnAbrirCaja"><i class="icon16 i-print "></i> ABRIR CAJA</a>
 									</div>
 								<?php 
 							}
@@ -972,8 +966,8 @@ if($objParameterRestaurant == "true")
 									<div class="btn-group  btn-block hidden btn-comando-factura">
 										<button type="button" class="btn btn-flat btn-info dropdown-toggle  btn-block" data-toggle="dropdown">PRO <span class="caret"></span></button>
 										<ul class="dropdown-menu">
-												<li><a href="#" id="btnNewItem" >AGREGAR PRO</a></li>
-												<li><a href="#" id="btnDeleteItem" >ELIMINAR PRO</a></li>											
+												<li><a href=javascript:void(0) id="btnNewItem" >AGREGAR PRO</a></li>
+												<li><a href=javascript:void(0) id="btnDeleteItem" >ELIMINAR PRO</a></li>											
 										</ul>
 									</div>
 								</div>
@@ -981,12 +975,12 @@ if($objParameterRestaurant == "true")
 									<div class="btn-group  btn-block hidden btn-comando-factura">
 										<button type="button" class="btn btn-flat btn-danger dropdown-toggle  btn-block" data-toggle="dropdown">FAC <span class="caret"></span></button>
 										<ul class="dropdown-menu">											
-												<li><a href="#" id="btnBack" >REGRESAR</a></li>
+												<li><a href=javascript:void(0) id="btnBack" >REGRESAR</a></li>
 												<li><a href="<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>" id="btnNew">NUEVA FAC</a></li>
-												<li><a href="#" id="btnDelete">ELIMINAR FAC</a></li>		
-												<li><a href="#" id="btnPrinter">IMPRIMIR</a></li>	
-												<li><a href="#" id="btnSelectInvoice"  > SELECCIONAR</a></li>
-												<li><a href="#" id="btnLinkPayment"  > LINK DE PAGO</a></li>
+												<li><a href=javascript:void(0) id="btnDelete">ELIMINAR FAC</a></li>		
+												<li><a href=javascript:void(0) id="btnPrinter">IMPRIMIR</a></li>	
+												<li><a href=javascript:void(0) id="btnSelectInvoice"  > SELECCIONAR</a></li>
+												<li><a href=javascript:void(0) id="btnLinkPayment"  > LINK DE PAGO</a></li>
 										</ul>
 									</div>
 								</div>
@@ -1001,14 +995,14 @@ if($objParameterRestaurant == "true")
 												<?php 
 												if($objParameterShowComandoDeCocina == 'true' ){
 													?>
-														<li><a href="#"  id="btnFooter">COCINA</a></li>
+														<li><a href=javascript:void(0)  id="btnFooter">COCINA</a></li>
 													<?php 
 												}
 												?>
 												<?php 
 												if($objParameterINVOICE_BILLING_SHOW_COMMAND_BAR == 'true' ){
 													?>
-														<li><a href="#"  id="btnBar">BAR</a></li>
+														<li><a href=javascript:void(0)  id="btnBar">BAR</a></li>
 													<?php 
 												}
 												?>
@@ -1040,8 +1034,8 @@ if($objParameterRestaurant == "true")
 									<div class="btn-group  btn-block hidden btn-comando-factura">
 										<button type="button" class="btn btn-flat btn-success dropdown-toggle  btn-block" data-toggle="dropdown">MAS <span class="caret"></span></button>
 										<ul class="dropdown-menu">											
-												<li><a href="#" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>						
-												<li><a href="#" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>
+												<li><a href=javascript:void(0) id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>						
+												<li><a href=javascript:void(0) id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>
 										</ul>
 									</div>
 								</div>							
@@ -1083,7 +1077,7 @@ if($objParameterRestaurant == "true")
 									<tr>
 										<th style="text-align:left">02) </th>
 										<td >
-											<a href="#" class="btn btn-warning  btn-block" id="txtToolCalcular"><i class="icon16 i-checkmark-4"></i> CALCULAR</a>
+											<a href=javascript:void(0) class="btn btn-warning  btn-block" id="txtToolCalcular"><i class="icon16 i-checkmark-4"></i> CALCULAR</a>
 										</td>
 									</tr>
 									<tr>
@@ -1309,7 +1303,7 @@ if($objParameterRestaurant == "true")
 					
 					<div class="row" id="divPanelPaymentSideBar" >
 						<div class="col col-lg-12">
-							<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackPayment"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
+							<a href=javascript:void(0) class="btn btn-flat btn-danger btn-block" id="btnRollbackPayment"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
 						</div>	
 					</div>
 				  </div>
@@ -1329,10 +1323,10 @@ if($objParameterRestaurant == "true")
 					
 					<div class="row" id="divPanelFacturaSideBar" >
 						<div class="col col-lg-2">
-							<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackFactura"><i class="icon16 i-arrow-bottom "></i> REGRESAR</a>
+							<a href=javascript:void(0) class="btn btn-flat btn-danger btn-block" id="btnRollbackFactura"><i class="icon16 i-arrow-bottom "></i> REGRESAR</a>
 						</div>	
 						<div class="col col-lg-2">
-							<a href="#" class="btn btn-flat btn-success btn-block" id="btnSaveInvoice"><i class="icon16 i-arrow-bottom "></i> GUARDAR MESA</a>
+							<a href=javascript:void(0) class="btn btn-flat btn-success btn-block" id="btnSaveInvoice"><i class="icon16 i-arrow-bottom "></i> GUARDAR MESA</a>
 						</div>	
 					</div>
 					
@@ -1443,7 +1437,7 @@ if($objParameterRestaurant == "true")
 					
 					<div class="row" id="divPanelFacturaZona" >
 						<div class="col col-lg-12">
-							<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackZona"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
+							<a href=javascript:void(0) class="btn btn-flat btn-danger btn-block" id="btnRollbackZona"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
 						</div>	
 					</div>
 				  </div>
@@ -1487,10 +1481,10 @@ if($objParameterRestaurant == "true")
 					
 					<div class="row" id="divPanelFacturaMesa" >
 						<div class="col-md-6">
-							<a href="#" class="btn btn-flat btn-warning btn-block" id="btnRollbackZonas"><i class="icon16 i-arrow-left "></i> Zonas</a>
+							<a href=javascript:void(0) class="btn btn-flat btn-warning btn-block" id="btnRollbackZonas"><i class="icon16 i-arrow-left "></i> Zonas</a>
 						</div>	
 						<div class="col-md-6">
-							<a href="#" class="btn btn-flat btn-danger btn-block" id="btnRollbackMesa"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
+							<a href=javascript:void(0) class="btn btn-flat btn-danger btn-block" id="btnRollbackMesa"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
 						</div>
 					</div>
 				  </div>
@@ -1511,16 +1505,27 @@ if($objParameterRestaurant == "true")
 				  </div>
 				  <div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-					<a href="#" class="btn btn-primary hidden" id="btnAceptarDialogPrinterV2AceptarTabla">Tabla</a>
-					<a href="#" class="btn btn-primary" id="btnAceptarDialogPrinterV2AceptarDocument">Preview</a>
-					<a href="#" class="btn btn-primary <?php echo getBehavio($company->type,"app_invoice_billing","divOpcionViewA4","hidden"); ?> " id="btnAceptarDialogPrinterV2AceptarDocumentA4">Preview A4</a>
-					<a href="#" class="btn btn-primary hidden" id="btnAceptarDialogPrinterV2AceptarDirect">Directa</a>
+					<a href=javascript:void(0) class="btn btn-primary hidden" id="btnAceptarDialogPrinterV2AceptarTabla">Tabla</a>
+					<a href=javascript:void(0) class="btn btn-primary" id="btnAceptarDialogPrinterV2AceptarDocument">Preview</a>
+					<a href=javascript:void(0) class="btn btn-primary <?php echo getBehavio($company->type,"app_invoice_billing","divOpcionViewA4","hidden"); ?> " id="btnAceptarDialogPrinterV2AceptarDocumentA4">Preview A4</a>
+					<a href=javascript:void(0) class="btn btn-primary hidden" id="btnAceptarDialogPrinterV2AceptarDirect">Directa</a>
 				  </div>
 				</div><!-- /.modal-content -->
 			  </div><!-- /.modal-dialog -->
 			</div><!-- /.modal -->
 
 
+			<div id="modalBodyHtmlBackToList" style="display:none">
+				<h3>REGRESAR A LA LISTA DE FACTURA</h3>
+				<p>Si para regresar.</p>
+			</div>
+			<?php
+				helper_getHtmlOfModalDialog("ModalBackToList","modalBodyHtmlBackToList","fnAceptarModalBackToList");				
+			?>
+			
+			
+			
+			
 			<div class="modal fade" tabindex="-1" id="modalDialogBackToListV2" role="dialog" data-backdrop="false">
 			  <div class="modal-dialog" role="document">
 				<div class="modal-content">
@@ -1533,7 +1538,7 @@ if($objParameterRestaurant == "true")
 				  </div>
 				  <div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-					<a href="#" class="btn btn-primary" id="btnAceptarDialogBackToListV2">Aceptar</a>
+					<a href=javascript:void(0) class="btn btn-primary" id="btnAceptarDialogBackToListV2">Aceptar</a>
 				  </div>
 				</div><!-- /.modal-content -->
 			  </div><!-- /.modal-dialog -->
@@ -1552,7 +1557,7 @@ if($objParameterRestaurant == "true")
 				  </div>
 				  <div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-					<a href="#" class="btn btn-primary hidden" id="btnAceptarDialogCocinaV2">Aceptar</a>
+					<a href=javascript:void(0) class="btn btn-primary hidden" id="btnAceptarDialogCocinaV2">Aceptar</a>
 				  </div>
 				</div><!-- /.modal-content -->
 			  </div><!-- /.modal-dialog -->
@@ -1571,7 +1576,7 @@ if($objParameterRestaurant == "true")
 				  </div>
 				  <div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-					<a href="#" class="btn btn-primary hidden" id="btnAceptarDialogBarV2">Aceptar</a>
+					<a href=javascript:void(0) class="btn btn-primary hidden" id="btnAceptarDialogBarV2">Aceptar</a>
 				  </div>
 				</div><!-- /.modal-content -->
 			  </div><!-- /.modal-dialog -->
@@ -1590,7 +1595,7 @@ if($objParameterRestaurant == "true")
 				  </div>
 				  <div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-					<a href="#" class="btn btn-primary" id="btnAceptarClaveOpenCash">Aceptar</a>
+					<a href=javascript:void(0) class="btn btn-primary" id="btnAceptarClaveOpenCash">Aceptar</a>
 				  </div>
 				</div><!-- /.modal-content -->
 			  </div><!-- /.modal-dialog -->
@@ -1610,7 +1615,7 @@ if($objParameterRestaurant == "true")
 				  </div>
 				  <div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-					<a href="#" class="btn btn-primary" id="btnAceptarMesaBussyV2">Aceptar</a>
+					<a href=javascript:void(0) class="btn btn-primary" id="btnAceptarMesaBussyV2">Aceptar</a>
 				  </div>
 				</div><!-- /.modal-content -->
 			  </div><!-- /.modal-dialog -->
@@ -1650,19 +1655,7 @@ if($objParameterRestaurant == "true")
 <div class="row"> 
 	<div id="email" class="col-lg-12">
 	
-		<!-- botonera -->
-		<!--
-		<div class="email-bar" style="border-left:1px solid #c9c9c9">                                
-			<div class="btn-group pull-right">                                    
-				<a href="<?php echo base_url(); ?>/app_invoice_billing/add" class="btn btn-info" id="btnNew"><i class="icon16 i-checkmark-4"></i> Nueva</a>
-				<a href="<?php echo base_url(); ?>/app_invoice_billing/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>                                    
-				<a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>									
-				<a href="#" class="btn btn-primary" id="btnPrinter"><i class="icon16 i-print"></i> Imprimir</a>
-				<a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
-			</div>
-		</div> 
-		-->
-		<!-- /botonera -->
+	
 	</div>
 	<!-- End #email  -->
 </div>

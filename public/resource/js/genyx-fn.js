@@ -1,1 +1,351 @@
-(function(_0x326a75,_0x851784){var _0x108ea6=_0x1db5,_0x48d4c1=_0x326a75();while(!![]){try{var _0x216389=-parseInt(_0x108ea6(0x83))/0x1*(-parseInt(_0x108ea6(0xaa))/0x2)+-parseInt(_0x108ea6(0xc7))/0x3+-parseInt(_0x108ea6(0xb3))/0x4+parseInt(_0x108ea6(0x7c))/0x5+parseInt(_0x108ea6(0x86))/0x6+parseInt(_0x108ea6(0xba))/0x7*(parseInt(_0x108ea6(0xb2))/0x8)+parseInt(_0x108ea6(0xc1))/0x9*(-parseInt(_0x108ea6(0x89))/0xa);if(_0x216389===_0x851784)break;else _0x48d4c1['push'](_0x48d4c1['shift']());}catch(_0x668ac6){_0x48d4c1['push'](_0x48d4c1['shift']());}}}(_0x50e7,0x7188a));function selectMenu(_0x1bd87a){var _0x29ee0c=_0x1db5;_0x1bd87a=_0x1bd87a['split']('/')[0x0]+'/'+_0x1bd87a['split']('/')[0x1]+'/'+_0x1bd87a[_0x29ee0c(0xcf)]('/')[0x2]+'/'+_0x1bd87a[_0x29ee0c(0xcf)]('/')[0x3]+'/'+_0x1bd87a[_0x29ee0c(0xcf)]('/')[0x4]+_0x29ee0c(0x7d);if($(_0x29ee0c(0x8f)+_0x1bd87a+'\x27]')[_0x29ee0c(0x77)]()['parent']()['parent']()[_0x29ee0c(0x77)]()[_0x29ee0c(0xa7)](_0x29ee0c(0x7e)))return;$(_0x29ee0c(0x8f)+_0x1bd87a+'\x27]')[_0x29ee0c(0xc5)]('li')[_0x29ee0c(0xca)](_0x29ee0c(0xc3)),$(_0x29ee0c(0x8f)+_0x1bd87a+'\x27]')[_0x29ee0c(0xc5)]('li')[_0x29ee0c(0xc5)]('ul')[_0x29ee0c(0xca)](_0x29ee0c(0xa3)),$('a[href=\x27'+_0x1bd87a+'\x27]')[_0x29ee0c(0xc5)]('li')[_0x29ee0c(0xc5)]('ul')[_0x29ee0c(0xca)](_0x29ee0c(0x78)),$(_0x29ee0c(0x8f)+_0x1bd87a+'\x27]')[_0x29ee0c(0xc5)]('li')[_0x29ee0c(0xc5)]('ul')[_0x29ee0c(0xc5)]('li')[_0x29ee0c(0xca)](_0x29ee0c(0xc3)),$(_0x29ee0c(0x8f)+_0x1bd87a+'\x27]')['closest']('li')['closest']('ul')[_0x29ee0c(0xc5)]('li'),$(_0x29ee0c(0x8f)+_0x1bd87a+'\x27]')['closest']('li')[_0x29ee0c(0xc5)]('ul')[_0x29ee0c(0xc5)]('li')[_0x29ee0c(0xcb)]('a')['first']()[_0x29ee0c(0x91)](_0x29ee0c(0x9a)),$(_0x29ee0c(0x8f)+_0x1bd87a+'\x27]')[_0x29ee0c(0xc5)]('li')[_0x29ee0c(0xc5)]('ul')[_0x29ee0c(0xc5)]('li')[_0x29ee0c(0xcb)]('a')[_0x29ee0c(0xbf)]()['addClass'](_0x29ee0c(0xa3));}function fnTableSelectedRowMultiSelect(_0x5feb2b,_0x410d3d){var _0x3a2d97=_0x1db5;$(_0x410d3d[_0x3a2d97(0xb5)][_0x3a2d97(0x7b)])['hasClass']('row-selected')?$(_0x410d3d['target'][_0x3a2d97(0x7b)])['removeClass'](_0x3a2d97(0xc2)):$(_0x410d3d[_0x3a2d97(0xb5)][_0x3a2d97(0x7b)])['addClass'](_0x3a2d97(0xc2));}function fnTableSelectedRow(_0x1dca22,_0x31e0af){var _0x15f438=_0x1db5;$(_0x31e0af['target'][_0x15f438(0xb0)][_0x15f438(0xb0)])[_0x15f438(0xcb)]('tr')[_0x15f438(0x91)](_0x15f438(0xc2)),$(_0x31e0af['target'][_0x15f438(0x7b)])[_0x15f438(0xca)](_0x15f438(0xc2));}function _0x50e7(){var _0x5d38c6=['removeClass','body','<div\x20class=\x22alert\x20alert-success\x22\x20style=\x22margin-top:15px\x22>','#myModalPrompt','message','#btnAceptMyModalConfirm','\x09\x20\x20</div>','#myModalConfirm','innerWidth','notExpand','data','geolocation','bottom-left','name','POST','\x09\x09</div>','html','call','expand','<div\x20class=\x22alert\x20alert-error\x22\x20style=\x22margin-top:15px\x22>','\x09\x09\x09\x09\x09\x09<fieldset>\x09\x09\x09','\x09\x09\x09${body}','hasClass','<div\x20class=\x22modal\x20fade\x22\x20id=\x22myModalPrompt\x22\x20tabindex=\x22-1\x22\x20role=\x22dialog\x22\x20aria-labelledby=\x22myModalLabel\x22\x20aria-hidden=\x22true\x22>','val','1081504EiYLGO','\x09\x09\x09\x09</form>','#txtMyModalPromptForm','replace','isLoading','<div>','parentElement','width','4917608DdkSMD','1694492qTZgQY','tmpl','target','error','\x09\x09\x20\x20<button\x20type=\x22button\x22\x20class=\x22btn\x20btn-default\x22\x20data-dismiss=\x22modal\x22>Cerrar</button>','remove','POSITION_UNAVAILABLE','7CgdDAN','<i\x20class=\x27icon16\x20i-info\x27></i>','<button\x20type=\x22button\x22\x20class=\x22close\x22\x20data-dismiss=\x22alert\x22>&times;</button>','longitude','\x09\x09<div\x20class=\x22modal-body\x22>','first','round','72yVMlEc','row-selected','current','\x09\x09\x20\x20<h4\x20class=\x22modal-title\x22>${title}</h4>','closest','#main_content','1407159bRFeTO','fnGetData','\x09\x09\x09\x09\x09\x09\x09\x09\x09</div>','addClass','find','modal','TIMEOUT','info','split','<div\x20class=\x22modal\x20fade\x22\x20id=\x22myModalConfirm\x22\x20tabindex=\x22-1\x22\x20role=\x22dialog\x22\x20aria-labelledby=\x22myModalLabel\x22\x20aria-hidden=\x22true\x22>','ajax','\x09<div\x20class=\x22modal-dialog\x22>','\x09</div>','substr','\x09\x09\x09\x09\x09\x09</fieldset>','prepend','indexOf','\x09\x09\x20\x20<button\x20type=\x22button\x22\x20class=\x22close\x22\x20data-dismiss=\x22modal\x22\x20aria-hidden=\x22true\x22>&times;</button>','hide','\x09\x09\x09\x09<form\x20id=\x22myModalPromptForm\x22\x20class=\x22form-horizontal\x22\x20role=\x22form\x22>','parent','show','<strong><i\x20class=\x22icon24\x20i-close-4\x22></i>\x20Error!</strong>','\x09\x09\x20\x20<button\x20type=\x22button\x22\x20id=\x22btnAceptMyModalPrompt\x22\x20class=\x22btn\x20btn-primary\x22\x20\x20>Aceptar</button>','parentNode','1257180uKAkQv','/index.aspx','nav\x20navbar-nav\x20pull-right','PERMISSION_DENIED','#btnAceptMyModalPrompt','\x09\x09\x09\x09\x09\x09\x09<div\x20class=\x22form-group\x22>','click','1XFFRrQ','coords','jGrowl','3611982qKjTih','</div>','length','813970QcAaPs','\x09\x20\x20<div\x20class=\x22modal-content\x22>','\x09\x09\x09\x09\x09\x09\x09\x09\x09<label\x20class=\x22col-lg-2\x20control-label\x22\x20for=\x22normal\x22>${label}</label>','Tiempo\x20de\x20espera\x20agotado.','<strong><i\x20class=\x22icon24\x20i-checkmark-circle\x22></i>\x20Success!</strong>','La\x20ubicación\x20no\x20está\x20disponible.','a[href=\x27','\x09\x09<div\x20class=\x22modal-header\x22>'];_0x50e7=function(){return _0x5d38c6;};return _0x50e7();}function fnShowMessageSuccess(_0x5599b8){var _0x3a430b=_0x1db5,_0x490b59=''+_0x3a430b(0x93)+_0x3a430b(0xbc)+_0x3a430b(0x8d)+_0x5599b8+_0x3a430b(0x87);$(_0x3a430b(0xc6))[_0x3a430b(0xd6)](_0x490b59);}function fnShowMessageError(_0x515a89){var _0x1c3e9b=_0x1db5,_0x43d196=''+_0x1c3e9b(0xa4)+_0x1c3e9b(0xbc)+_0x1c3e9b(0x79)+_0x515a89+'</div>';$('#main_content')[_0x1c3e9b(0xd6)](_0x43d196);}function fnShowNotification(_0x174db1,_0x8d188e,_0x4fcfda){var _0x4f1bdb=_0x1db5,_0x890799=window[_0x4f1bdb(0x99)]*0.75;if(_0x890799>=0x258)_0x890799=0x226;_0x890799=_0x890799+'px',setTimeout(function(){var _0x4df06f=_0x4f1bdb;$[_0x4df06f(0x85)](_0x4df06f(0xbb)+_0x174db1,{'group':_0x8d188e,'position':_0x4df06f(0x9d),'sticky':![],'life':_0x4fcfda,'closeTemplate':'<i\x20class=\x22icon16\x20i-close-2\x22></i>','animateOpen':{'width':_0x4df06f(0x78),'height':_0x4df06f(0x78)},'beforeOpen':function(_0x175d96,_0xa805f2,_0xb11ec5){var _0x594fcf=_0x4df06f;$(_0x175d96)[_0x594fcf(0xb1)](_0x890799)['height']('50px');}});},0xfa);}function fnShowConfirm(_0x2fe2d4,_0x533b9c,_0x267aca){var _0x242b7e=_0x1db5,_0x33d0bd=_0x242b7e(0xaf)+_0x242b7e(0xd0)+_0x242b7e(0xd2)+_0x242b7e(0x8a)+'\x09\x09<div\x20class=\x22modal-header\x22>'+_0x242b7e(0x74)+_0x242b7e(0xc4)+_0x242b7e(0xa0)+_0x242b7e(0xbe)+_0x242b7e(0xa6)+_0x242b7e(0xa0)+'\x09\x09<div\x20class=\x22modal-footer\x22>'+_0x242b7e(0xb7)+'\x09\x09\x20\x20<button\x20type=\x22button\x22\x20id=\x22btnAceptMyModalConfirm\x22\x20class=\x22btn\x20btn-primary\x22>Aceptar</button>'+'\x09\x09</div>'+_0x242b7e(0x97)+_0x242b7e(0xd3)+'</div>'+'</div>';$('#myModalConfirm')[_0x242b7e(0xb8)]();var _0x9b814=$['tmpl'](_0x33d0bd,{'title':_0x2fe2d4,'body':_0x533b9c})[_0x242b7e(0xa1)]();$(_0x242b7e(0xc6))[_0x242b7e(0xd6)](_0x9b814),$(_0x242b7e(0x98))[_0x242b7e(0xcc)](),$(_0x242b7e(0x96))[_0x242b7e(0x82)](function(){var _0xced313=_0x242b7e;$(_0xced313(0x98))['modal'](_0xced313(0x75)),_0x267aca[_0xced313(0xa2)]();});}function fnShowPrompt(_0x42f104,_0x5bb7ca,_0x2e4c90){var _0x219205=_0x1db5,_0xbe79e5=_0x219205(0xaf)+_0x219205(0xa8)+_0x219205(0xd2)+_0x219205(0x8a)+_0x219205(0x90)+_0x219205(0x74)+_0x219205(0xc4)+'\x09\x09</div>'+_0x219205(0xbe)+_0x219205(0x76)+_0x219205(0xa5)+_0x219205(0x81)+_0x219205(0x8b)+'\x09\x09\x09\x09\x09\x09\x09\x09\x09<div\x20class=\x22col-lg-10\x22>'+'\x09\x09\x09\x09\x09\x09\x09\x09\x09\x09<input\x20class=\x22form-control\x22\x20\x20type=\x22text\x22\x20name=\x22txtMyModalPromptForm\x22\x20id=\x22txtMyModalPromptForm\x22\x20value=\x22\x22>'+_0x219205(0xc9)+'\x09\x09\x09\x09\x09\x09\x09</div>'+_0x219205(0xd5)+_0x219205(0xab)+_0x219205(0xa0)+'\x09\x09<div\x20class=\x22modal-footer\x22>'+_0x219205(0xb7)+_0x219205(0x7a)+_0x219205(0xa0)+_0x219205(0x97)+'\x09</div>'+_0x219205(0x87)+'</div>';$(_0x219205(0x94))[_0x219205(0xb8)]();var _0x211e2c=$[_0x219205(0xb4)](_0xbe79e5,{'title':_0x42f104,'label':_0x5bb7ca})[_0x219205(0xa1)]();$(_0x219205(0xc6))[_0x219205(0xd6)](_0x211e2c),$(_0x219205(0x94))[_0x219205(0xcc)](),$(_0x219205(0x80))[_0x219205(0x82)](function(){var _0x2b23e6=_0x219205,_0x5699dd=$(_0x2b23e6(0xac))[_0x2b23e6(0xa9)]();$('#myModalPrompt')['modal']('hide'),_0x2e4c90[_0x2b23e6(0xa2)](this,_0x5699dd);});}function _0x1db5(_0x3a58ea,_0x34467f){var _0x50e73a=_0x50e7();return _0x1db5=function(_0x1db5c4,_0x33b4f6){_0x1db5c4=_0x1db5c4-0x73;var _0x4d1234=_0x50e73a[_0x1db5c4];return _0x4d1234;},_0x1db5(_0x3a58ea,_0x34467f);}function fnWaitOpen(){var _0x86168f=_0x1db5;$(_0x86168f(0x92))[_0x86168f(0xae)](isLoadingConfig);}function fnWaitClose(){var _0x46cc22=_0x1db5;$(_0x46cc22(0x92))['isLoading']('hide');}function fnFormatFloat(_0x262b03){var _0xa24a0f=_0x1db5,_0x535007=parseFloat(_0x262b03['replace'](',','')[_0xa24a0f(0xad)](',','')['replace'](',','')['replace'](',','')[_0xa24a0f(0xad)](',',''));return _0x535007;}function fnFormatNumber(_0x1ed8a2,_0x5a48ec){var _0x1a9d07=_0x1db5;if(parseFloat(_0x5a48ec)==NaN)_0x5a48ec=0x0;var _0x31015a='1',_0x1e65b3='',_0x585c4a='';for(var _0x3cd4b2=0x0;_0x3cd4b2<_0x5a48ec;_0x3cd4b2++)_0x31015a=_0x31015a+'0';_0x31015a=parseInt(_0x31015a),_0x1ed8a2=parseFloat(_0x1ed8a2);if(_0x1ed8a2==NaN)return 0x0;_0x1ed8a2=parseInt(Math[_0x1a9d07(0xc0)](_0x1ed8a2*_0x31015a))/_0x31015a,_0x1ed8a2=_0x1ed8a2+'';_0x1ed8a2[_0x1a9d07(0x73)]('.')==-0x1?(_0x1e65b3='',_0x585c4a=_0x1ed8a2):(_0x1e65b3=_0x1ed8a2[_0x1a9d07(0xd4)](_0x1ed8a2['indexOf']('.')+0x1,_0x1ed8a2[_0x1a9d07(0x88)]),_0x585c4a=_0x1ed8a2[_0x1a9d07(0xd4)](0x0,_0x1ed8a2[_0x1a9d07(0x73)]('.')));if(_0x1e65b3[_0x1a9d07(0x88)]!=_0x5a48ec){for(var _0x3cd4b2=_0x1e65b3[_0x1a9d07(0x88)];_0x3cd4b2<_0x5a48ec;_0x3cd4b2++)_0x1e65b3=_0x1e65b3+'0';}return _0x1ed8a2=_0x585c4a+'.'+_0x1e65b3,_0x1ed8a2;}function fnRecalcularTableSummary(_0x39acf0,_0x2c1c98,_0x22bbe4,_0x4495a1,_0x2d05f3){var _0x546b75=_0x1db5,_0x28a19b=_0x39acf0['fnGetData']()['length'],_0x192b1=0x0;for(var _0x31409c=0x0;_0x31409c<_0x28a19b;_0x31409c++){var _0x24b829=_0x39acf0[_0x546b75(0xc8)](_0x31409c),_0x1555a5=fnFormatFloat(_0x24b829[_0x22bbe4]),_0x4f1d1c=0x0,_0x385508=0x0;if(_0x4495a1!=null)_0x4f1d1c=fnFormatFloat(_0x24b829[_0x4495a1]);else _0x4f1d1c=0x0;_0x2d05f3=='+'&&(_0x385508=_0x1555a5+_0x4f1d1c),_0x2d05f3=='*'&&(_0x385508=_0x1555a5*_0x4f1d1c),_0x2d05f3=='-'&&(_0x385508=_0x1555a5-_0x4f1d1c),_0x2d05f3=='/'&&(_0x385508=_0x1555a5/_0x4f1d1c),_0x192b1=_0x192b1+_0x385508;}_0x192b1=fnFormatNumber(_0x192b1,0x2),$(_0x2c1c98)[_0x546b75(0xa9)](_0x192b1);}function fnShowExpiredRegisters(_0x5047c7,_0x133ef5,_0x309d10){setInterval(function(){var _0x5b24f5=_0x1db5;$[_0x5b24f5(0xd1)]({'url':_0x5047c7,'type':'GET','dataType':'json','success':function(_0xa5bcda){var _0x17b6d9=_0x5b24f5;!_0xa5bcda[_0x17b6d9(0xb6)]&&_0xa5bcda[_0x17b6d9(0x9b)]['forEach'](function(_0x115c88){var _0x403450=_0x17b6d9;fnShowNotification(_0x115c88[_0x403450(0x9e)],_0x403450(0xce),0x1770);});},'error':function(_0x4e75a6,_0x3ea4a4,_0x200a6a){fnShowMessageError(_0x200a6a);}});},_0x309d10);}function fnGetUsersCurrentLocation(_0x56d19f,_0x4273b3,_0x47218f,_0x1574fa){var _0x39b201=_0x1db5;navigator[_0x39b201(0x9c)]['getCurrentPosition'](function(_0x3600c8){var _0x24b050=_0x39b201,_0x19b96f={'latitude':_0x3600c8[_0x24b050(0x84)]['latitude'],'longitude':_0x3600c8[_0x24b050(0x84)][_0x24b050(0xbd)]};fnPostUsersCurrentLocation(_0x56d19f,_0x4273b3,_0x47218f,_0x19b96f,_0x1574fa);},function(_0x24d76f){var _0x592102=_0x39b201;switch(_0x24d76f['code']){case _0x24d76f[_0x592102(0x7f)]:console[_0x592102(0xb6)]('Permiso\x20denegado\x20por\x20el\x20usuario.');break;case _0x24d76f[_0x592102(0xb9)]:console[_0x592102(0xb6)](_0x592102(0x8e));break;case _0x24d76f[_0x592102(0xcd)]:console[_0x592102(0xb6)](_0x592102(0x8c));break;default:console[_0x592102(0xb6)]('Error\x20desconocido.');}},{'enableHighAccuracy':!![],'maximumAge':0x0});}function fnPostUsersCurrentLocation(_0x252977,_0x18220a,_0xef58dc,_0x28a9f9,_0x44353b){var _0x4f5bba=_0x1db5;$[_0x4f5bba(0xd1)]({'data':{'txtNickname':_0x252977,'txtPassword':_0x18220a,'txtLatituded':_0x28a9f9['latitude'],'txtLongituded':_0x28a9f9['longitude'],'txtReference1':'','txtCompanyName':_0x44353b},'url':_0xef58dc,'type':_0x4f5bba(0x9f),'dataType':'json','success':function(_0x3ecb89){return _0x3ecb89;},'error':function(_0x5bf1d1,_0x305cb4,_0x2f63e7,_0x9f49fc){var _0x15ea28=_0x4f5bba;console['log'](_0x2f63e7[_0x15ea28(0x95)]);}});}
+function selectMenu(current_url) {
+  current_url =
+    current_url.split("/")[0] +
+    "/" +
+    current_url.split("/")[1] +
+    "/" +
+    current_url.split("/")[2] +
+    "/" +
+    current_url.split("/")[3] +
+    "/" +
+    current_url.split("/")[4] +
+    "/index.aspx";
+
+  //Validar si es un menu superior
+  if (
+    $("a[href='" + current_url + "']")
+      .parent()
+      .parent()
+      .parent()
+      .parent()
+      .hasClass("nav navbar-nav pull-right")
+  )
+    return;
+
+  $("a[href='" + current_url + "']")
+    .closest("li")
+    .addClass("current");
+  $("a[href='" + current_url + "']")
+    .closest("li")
+    .closest("ul")
+    .addClass("expand");
+  $("a[href='" + current_url + "']")
+    .closest("li")
+    .closest("ul")
+    .addClass("show");
+  $("a[href='" + current_url + "']")
+    .closest("li")
+    .closest("ul")
+    .closest("li")
+    .addClass("current");
+  $("a[href='" + current_url + "']")
+    .closest("li")
+    .closest("ul")
+    .closest("li");
+  $("a[href='" + current_url + "']")
+    .closest("li")
+    .closest("ul")
+    .closest("li")
+    .find("a")
+    .first()
+    .removeClass("notExpand");
+  $("a[href='" + current_url + "']")
+    .closest("li")
+    .closest("ul")
+    .closest("li")
+    .find("a")
+    .first()
+    .addClass("expand");
+}
+
+function fnTableSelectedRowMultiSelect(obj, event) {
+  if ($(event.target.parentNode).hasClass("row-selected")) {
+    $(event.target.parentNode).removeClass("row-selected");
+  } else {
+    $(event.target.parentNode).addClass("row-selected");
+  }
+}
+function fnTableSelectedRow(obj, event) {
+  $(event.target.parentElement.parentElement)
+    .find("tr")
+    .removeClass("row-selected");
+  $(event.target.parentNode).addClass("row-selected");
+}
+
+function fnShowMessageSuccess(message) {
+  var _success =
+    "" +
+    '<div class="alert alert-success" style="margin-top:15px">' +
+    '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+    '<strong><i class="icon24 i-checkmark-circle"></i> Success!</strong>' +
+    message +
+    "</div>";
+
+  $("#main_content").prepend(_success);
+}
+function fnShowMessageError(message) {
+  var _error =
+    "" +
+    '<div class="alert alert-error" style="margin-top:15px">' +
+    '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+    '<strong><i class="icon24 i-close-4"></i> Error!</strong>' +
+    message +
+    "</div>";
+  $("#main_content").prepend(_error);
+}
+function fnShowNotification(message, type, time) {
+  var widthPantalla = window.innerWidth * 0.75;
+  if (widthPantalla >= 600) widthPantalla = 550;
+
+  widthPantalla = widthPantalla + "px";
+  setTimeout(function () {
+    $.jGrowl("<i class='icon16 i-info'></i>" + message, {
+      group: type,
+      position: "bottom-left",
+      sticky: false,
+      life: time,
+      closeTemplate: '<i class="icon16 i-close-2"></i>',
+      animateOpen: {
+        width: "show",
+        height: "show",
+      },
+      beforeOpen: function (e, m, o) {
+        $(e).width(widthPantalla).height("50px");
+      },
+    });
+  }, 250);
+}
+function fnShowConfirm(title_, body_, callback_) {
+  var template =
+    "<div>" +
+    '<div class="modal fade" id="myModalConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
+    '	<div class="modal-dialog">' +
+    '	  <div class="modal-content">' +
+    '		<div class="modal-header">' +
+    '		  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+    '		  <h4 class="modal-title">${title}</h4>' +
+    "		</div>" +
+    '		<div class="modal-body">' +
+    "			${body}" +
+    "		</div>" +
+    '		<div class="modal-footer">' +
+    '		  <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>' +
+    '		  <button type="button" id="btnAceptMyModalConfirm" class="btn btn-primary">Aceptar</button>' +
+    "		</div>" +
+    "	  </div>" +
+    "	</div>" +
+    "</div>" +
+    "</div>";
+
+  $("#myModalConfirm").remove();
+  var result = $.tmpl(template, { title: title_, body: body_ }).html();
+  $("#main_content").prepend(result);
+  $("#myModalConfirm").modal();
+  $("#btnAceptMyModalConfirm").click(function () {
+    $("#myModalConfirm").modal("hide");
+    callback_.call();
+  });
+}
+function fnShowPrompt(title_, label_, callback_) {
+  var template =
+    "<div>" +
+    '<div class="modal fade" id="myModalPrompt" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
+    '	<div class="modal-dialog">' +
+    '	  <div class="modal-content">' +
+    '		<div class="modal-header">' +
+    '		  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+    '		  <h4 class="modal-title">${title}</h4>' +
+    "		</div>" +
+    '		<div class="modal-body">' +
+    '				<form id="myModalPromptForm" class="form-horizontal" role="form">' +
+    "						<fieldset>			" +
+    '							<div class="form-group">' +
+    '									<label class="col-lg-2 control-label" for="normal">${label}</label>' +
+    '									<div class="col-lg-10">' +
+    '										<input class="form-control"  type="text" name="txtMyModalPromptForm" id="txtMyModalPromptForm" value="">' +
+    "									</div>" +
+    "							</div>" +
+    "						</fieldset>" +
+    "				</form>" +
+    "		</div>" +
+    '		<div class="modal-footer">' +
+    '		  <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>' +
+    '		  <button type="button" id="btnAceptMyModalPrompt" class="btn btn-primary"  >Aceptar</button>' +
+    "		</div>" +
+    "	  </div>" +
+    "	</div>" +
+    "</div>" +
+    "</div>";
+
+  $("#myModalPrompt").remove();
+  var result = $.tmpl(template, { title: title_, label: label_ }).html();
+  $("#main_content").prepend(result);
+  $("#myModalPrompt").modal();
+  $("#btnAceptMyModalPrompt").click(function () {
+    var result = $("#txtMyModalPromptForm").val();
+    $("#myModalPrompt").modal("hide");
+    callback_.call(this, result);
+  });
+}
+function fnWaitOpen() {
+  $("body").isLoading(isLoadingConfig);
+}
+function fnWaitClose() {
+  $("body").isLoading("hide");
+}
+function fnWaitOpenV2() {
+  $("#divLoandingCustom").removeClass("hidden");
+}
+function fnWaitCloseV2()
+{
+	$("#divLoandingCustom").addClass("hidden");
+}
+function fnFormatFloat(number) {
+  var flo = parseFloat(
+    number
+      .replace(",", "")
+      .replace(",", "")
+      .replace(",", "")
+      .replace(",", "")
+      .replace(",", "")
+  );
+  return flo;
+}
+function fnFormatNumber(number, decimal) {
+  //Validar Decimales
+  if (parseFloat(decimal) == NaN) decimal = 0;
+
+  var dec_ = "1";
+  var posfix = "";
+  var prefix = "";
+  for (var i = 0; i < decimal; i++) dec_ = dec_ + "0";
+  dec_ = parseInt(dec_);
+  number = parseFloat(number);
+
+  //Validar Numero
+  if (number == NaN) return 0;
+
+  number = parseInt(Math.round(number * dec_)) / dec_;
+  number = number + "";
+
+  if (number.indexOf(".") == -1) {
+    posfix = "";
+    prefix = number;
+  } else {
+    posfix = number.substr(number.indexOf(".") + 1, number.length);
+    prefix = number.substr(0, number.indexOf("."));
+  }
+  if (posfix.length != decimal) {
+    for (var i = posfix.length; i < decimal; i++) posfix = posfix + "0";
+  }
+
+  number = prefix + "." + posfix;
+  return number;
+}
+function fnRecalcularTableSummary(
+  table,
+  targetInput,
+  parameter1,
+  parameter2,
+  operation
+) {
+  var cantidad = table.fnGetData().length;
+  var total = 0;
+  for (var i = 0; i < cantidad; i++) {
+    var objdat_ = table.fnGetData(i);
+    var valueParameter1 = fnFormatFloat(objdat_[parameter1]);
+    var valueParameter2 = 0;
+    var result = 0;
+
+    if (parameter2 != null)
+      valueParameter2 = fnFormatFloat(objdat_[parameter2]);
+    else valueParameter2 = 0;
+
+    if (operation == "+") {
+      result = valueParameter1 + valueParameter2;
+    }
+    if (operation == "*") {
+      result = valueParameter1 * valueParameter2;
+    }
+    if (operation == "-") {
+      result = valueParameter1 - valueParameter2;
+    }
+    if (operation == "/") {
+      result = valueParameter1 / valueParameter2;
+    }
+
+    total = total + result;
+  }
+  total = fnFormatNumber(total, 2);
+  $(targetInput).val(total);
+}
+
+function fnShowExpiredRegisters(baseUrl, userName, time) {
+  setInterval(function () {
+    $.ajax({
+      url: baseUrl,
+      type: "GET",
+      dataType: "json",
+      success: function (response) {
+        if (!response.error) {
+          response["data"].forEach(function (reminder) {
+            fnShowNotification(reminder.name, "info", 6000);
+          });
+        }
+      },
+      error: function (xhr, status, error) {
+        fnShowMessageError(error);
+      },
+    });
+  }, time);
+}
+
+function fnGetUsersCurrentLocation(userName, userPassword, url, companyName ) {
+  navigator.geolocation.getCurrentPosition(
+    function (position) {
+      var location = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      };	  
+      fnPostUsersCurrentLocation(userName, userPassword, url, location,companyName);
+    },
+    function (error) {
+      switch (error.code) {
+        case error.PERMISSION_DENIED:
+          console.error("Permiso denegado por el usuario.");
+          break;
+        case error.POSITION_UNAVAILABLE:
+          console.error("La ubicación no está disponible.");
+          break;
+        case error.TIMEOUT:
+          console.error("Tiempo de espera agotado.");
+          break;
+        default:
+          console.error("Error desconocido.");
+      }
+    },
+    { enableHighAccuracy: true, maximumAge: 0 }
+  );
+}
+
+function fnPostUsersCurrentLocation(userName, userPassword, url, location, companyName) {
+  $.ajax({
+    data: {
+      txtNickname: userName,
+      txtPassword: userPassword,
+      txtLatituded: location.latitude,
+      txtLongituded: location.longitude,
+      txtReference1: "",
+	  txtCompanyName: companyName,
+    },
+    url: url,
+    type: "POST",
+    dataType: "json",
+    success: function (data) {
+      return data;
+    },
+    error: function (xhr, status, error, data) {
+      console.log(error.message);
+    },
+  });
+}

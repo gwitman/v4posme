@@ -698,3 +698,111 @@ function helper_convertToUTF8($texto)
 	
 	return $texto;
 }
+
+function helper_getHtmlOfPageLanding()
+{
+	echo '
+	<div 
+		class="isloading-overlay"
+		id="divLoandingCustom"
+		style="position:fixed; left:0; top:0; z-index: 10000; background: white; width: 100%; height: 1090px;"	
+	>
+		
+	</div>
+	';
+}
+
+function helper_getHtmlOfModalDialog($name,$idDivBody,$fncallBack,)
+{
+	echo 
+	'
+	<style>
+			.modal-customer1-'.$name.' {
+				display: none;
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background-color: rgba(0, 0, 0, 0.6); /* Fondo semitransparente */
+				z-index: 1000;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.modal-content-customer1-'.$name.' {
+				background-color: #fff;
+				padding: 20px;
+				border-radius: 8px;
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+				text-align: center;
+				width: 80%;
+				max-width: 400px;
+			}
+
+			.modal-content-customer1-'.$name.' h3 {
+				color: #f44336; /* Rojo */
+				margin: 0;
+			}
+
+			.modal-content-customer1-'.$name.' p {
+				margin: 10px 0;
+			}
+
+			.modal-content-customer1-'.$name.' .btnCerrar {
+				background-color: #f44336;
+				color: #fff;
+				border: none;
+				padding: 10px 20px;
+				border-radius: 5px;
+				cursor: pointer;
+			}
+			
+			.modal-content-customer1-'.$name.' .btnAceptar {
+				background-color: #28a745;
+				color: #fff;
+				border: none;
+				padding: 10px 20px;
+				border-radius: 5px;
+				cursor: pointer;
+			}
+
+			.modal-content-customer1-'.$name.' .btnCerrar:hover {
+				background-color: #d32f2f;
+			}
+			.modal-content-customer1-'.$name.' .btnAceptar:hover {
+				background-color: #1e7e34;
+			}
+	  </style>	  
+	  
+	     
+	  <div id="'.$name.'" class="modal-customer1-'.$name.'">
+	  	<div class="modal-content-customer1-'.$name.'" >
+			<div id="divBody'.$name.'">
+				
+			</div>
+			<button class="btnAceptar" onclick="'.$fncallBack.'(this)">Aceptar</button>
+	  		<button class="btnCerrar"  onclick="cerrarModal(\''.$name.'\')">Cerrar</button>
+	  	</div>
+	  </div>
+	
+	  <script>
+		
+		function mostrarModal(name) {
+			document.getElementById(name).style.display = "flex";
+		}
+
+		function cerrarModal(name) {
+			document.getElementById(name).style.display = "none";
+		}		
+
+		
+		
+		var div'.$name.' 			= document.getElementById("'.$idDivBody.'");
+        var destino'.$name.' 		= document.getElementById("divBody'.$name.'"); 
+		div'.$name.'.style.display 	= "block";
+        destino'.$name.'.appendChild(div'.$name.');
+		
+	  </script>
+	';
+}

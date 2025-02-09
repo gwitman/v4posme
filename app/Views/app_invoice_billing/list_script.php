@@ -9,6 +9,8 @@
 	var urlPreview 							= "<?php echo base_url(); ?>/app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1/companyID/2/transactionID/19/transactionMasterID/";
 	
 	$(document).ready(function(){
+		fnWaitCloseV2();
+		
 		$('#txtClaveMesero').css({
 			'webkitTextSecurity': 'disc', // Para WebKit browsers
 			'textSecurity': 'disc'        // Para otros browsers que lo soporten
@@ -61,7 +63,7 @@
 			if(objEsMesero == "0")
 			{			
 				if(objRowTableListView != undefined){
-					fnWaitOpen();
+					fnWaitOpenV2();
 					var data 		= objTableListView.fnGetData(objRowTableListView);		
 
 					if(objParameterPantallaParaFacturar == "-")	
@@ -89,7 +91,7 @@
 			if(objEsMesero == "0")
 			{			
 				if(objRowTableListView != undefined){
-					fnWaitOpen();
+					fnWaitOpenV2();
 					var data 		= objTableListView.fnGetData(objRowTableListView);		
 
 					if(objParameterPantallaParaFacturar == "-")	
@@ -108,7 +110,7 @@
 			}
 		});
 		$(document).on("click","#btnSearchTransaction",function(){
-					fnWaitOpen();
+					fnWaitOpenV2();
 					var transactionNumber 	= $("#txtSearchTransaction").val() ;
 					var fecha 				= $("#txtStartOn").val();
 					
@@ -122,7 +124,7 @@
 							data 		: {transactionNumber : transactionNumber },
 							success:function(data){
 								console.info("complete delete success");
-								fnWaitClose();
+								fnWaitCloseV2();
 								if(data.error){
 									fnShowNotification(data.message,"error");
 								}
@@ -142,7 +144,7 @@
 							},
 							error:function(xhr,data){	
 								console.info("complete delete error");									
-								fnWaitClose();
+								fnWaitCloseV2();
 								fnShowNotification("Error 505","error");
 							}
 						});
@@ -157,7 +159,7 @@
 			if(objRowTableListView != undefined){
 				var data 		= objTableListView.fnGetData(objRowTableListView);				
 				fnShowConfirm("Confirmar..","Desea eliminar este Registro...",function(){
-					fnWaitOpen();
+					fnWaitOpenV2();
 					$.ajax({									
 						cache       : false,
 						dataType    : 'json',
@@ -166,7 +168,7 @@
 						data 		: {companyID : data[0], transactionID :data[1],transactionMasterID : data[2] },
 						success:function(data){
 							console.info("complete delete success");
-							fnWaitClose();
+							fnWaitCloseV2();
 							if(data.error){
 								fnShowNotification(data.message,"error");
 							}
@@ -177,7 +179,7 @@
 						},
 						error:function(xhr,data){	
 							console.info("complete delete error");									
-							fnWaitClose();
+							fnWaitCloseV2();
 							fnShowNotification("Error 505","error");
 						}
 					});
@@ -192,7 +194,7 @@
 			objBoton = "new";
 			if(objEsMesero == "0")
 			{
-				fnWaitOpen();
+				fnWaitOpenV2();
 				if(objParameterPantallaParaFacturar == "-")
 					window.location	= "<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/none";
 				else 
@@ -230,7 +232,7 @@
         } else {
             $('#errorMessage').hide();
             $('#modalDialogClaveMesero').modal('hide');
-            fnWaitOpen();
+            fnWaitOpenV2();
 
             if(objBoton == "new")
             {
@@ -244,7 +246,7 @@
             {
                 if(objRowTableListView != undefined)
                 {
-                    fnWaitOpen();
+                    fnWaitOpenV2();
                     var data 		= objTableListView.fnGetData(objRowTableListView);
                     if(objParameterPantallaParaFacturar == "-")
                         window.location	= "<?php echo base_url(); ?>/app_invoice_billing/edit/companyID/"+data[0]+"/transactionID/"+data[1]+"/transactionMasterID/"+data[2]+"/codigoMesero/"+codigoMesero;
