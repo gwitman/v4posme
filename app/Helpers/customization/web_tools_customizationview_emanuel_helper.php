@@ -21,8 +21,7 @@ function getBehavioEmanuel(): array
 		strtolower('emanuel_app_invoice_billing_divHiddenEmployer') 							                => "hidden",
 		strtolower('emanuel_app_invoice_billing_divBtnPrecios') 							                    => "hidden",
 		strtolower('emanuel_app_invoice_billing_divTxtMesa') 												    => "disabled",
-		strtolower('emanuel_app_invoice_billing_divTxtTotal') 													=> "01)",
-		strtolower('emanuel_app_invoice_billing_btnMenus') 												    	=> "disabled",
+		strtolower('emanuel_app_invoice_billing_divTxtTotal') 													=> "01)",		
 		strtolower('emanuel_app_invoice_billing_btnFooter') 												    => "$('#btnFooter').addClass('hidden');",
         strtolower('emanuel_app_invoice_billing_divTraslateElement') 											=> "
 		<script>

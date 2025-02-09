@@ -567,7 +567,7 @@ if($objParameterRestaurant == "true")
 									<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divMesa",""); ?> " id="divMesa" >
 										<label class="col-lg-4 control-label" for="txtMesaID"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionMesa","Mesa"); ?></label>
 										<div class="col-lg-8">
-											<select name="txtMesaID" id="txtMesaID" class="<?php echo ($useMobile == "1" ? "" : "select2");  ?>" <?= $codigoMesero != 'none' ? getBehavio($company->type, 'app_invoice_billing', 'divTxtMesa', '') : '' ?>>
+											<select name="txtMesaID" id="txtMesaID" class="<?php echo ($useMobile == "1" ? "" : "select2");  ?>" >
 													<?php
 													$count = 0;
 													if($objListMesa)
@@ -1672,4 +1672,13 @@ if($objParameterRestaurant == "true")
   
 <div id="main_content" >
 </div>
+
+<?php 
+	if($useMobile == "1")
+	{
+		?>
+		</br></br></br></br></br>
+		<?
+	}
+?>
 <?php echo getBehavio($company->type,"app_invoice_billing","divTraslateElement",""); ?> 

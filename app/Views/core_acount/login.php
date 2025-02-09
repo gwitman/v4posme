@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-remark/global/fonts/brand-icons/brand-icons.min.css">
   <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
   
-  <link rel="manifest" href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/json/manifest.json">
+  <!--<link rel="manifest" href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/json/manifest.json">-->
   <meta name="theme-color" content="#4CAF50">
 
   
