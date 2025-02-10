@@ -667,18 +667,7 @@ function clearNumero($numero)
     return $numeroLimpio;
 }
 
-function replaceSimbol($string)
-{
-    $string = str_replace("[simbol-carita-feliz]", "😊", $string);
-    $string = str_replace("[simbol-cono]", "🎉", $string);
-    $string = str_replace("[simbol-carita-estrellada]", "🤩", $string);
-    $string = str_replace("[simbol-pastel]", "🎂", $string);
-    $string = str_replace("[simbol-enter]", 
-"
-", $string);
 
-    return $string;
-}
 
 function helper_getParameterFiltered($objListCompanyParameter, $parameterName)
 {
@@ -712,7 +701,7 @@ function helper_getHtmlOfPageLanding()
 	';
 }
 
-function helper_getHtmlOfModalDialog($name,$idDivBody,$fncallBack,)
+function helper_getHtmlOfModalDialog($name,$idDivBody,$fncallBack)
 {
 	echo 
 	'
@@ -806,3 +795,43 @@ function helper_getHtmlOfModalDialog($name,$idDivBody,$fncallBack,)
 	  </script>
 	';
 }
+
+function helper_getCssWidthInvoiceMobile()
+{
+	echo '
+		<style>
+			@media only screen and (max-width: 480px) 
+			{
+				#rowCssPrincipal{
+					margin:0px 0px 0px 0px !important
+				}
+			}
+			/*encabezado*/
+			/*
+			#heading
+			{
+				margin: 0 -25px 0px -25px !important
+			}
+			*/
+			
+			#heading
+			{
+				margin: 0 0 0 0 !important
+			}
+		</style>
+	';
+}
+function replaceSimbol($string)
+{
+    $string = str_replace("[simbol-carita-feliz]", "😊", $string);
+    $string = str_replace("[simbol-cono]", "🎉", $string);
+    $string = str_replace("[simbol-carita-estrellada]", "🤩", $string);
+    $string = str_replace("[simbol-pastel]", "🎂", $string);
+    $string = str_replace("[simbol-enter]", 
+"
+", $string);
+
+    return $string;
+}
+
+?>

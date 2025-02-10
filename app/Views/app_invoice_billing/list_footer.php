@@ -1,3 +1,4 @@
+<?php if($useMobile != "1"){?>
 			</div>
 		</div>
 	</div>
@@ -14,6 +15,7 @@
 	?>
 	
 </div>
+<?php }?>
 
 <div class="modal fade" tabindex="-1" id="modalDialogClaveMesero" role="dialog">
   <div class="modal-dialog" role="document">
@@ -28,7 +30,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-        <a href="#" class="btn btn-primary" id="btnAceptarClaveMesero">Aceptar</a>
+        <a href="javascript:void(0)" class="btn btn-primary" id="btnAceptarClaveMesero">Aceptar</a>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

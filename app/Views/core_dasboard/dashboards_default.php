@@ -43,90 +43,6 @@
 						</div><!-- End .widget -->		
 						
 						
-						
-						<div class="panel" style="margin-bottom:20px;">
-							<div class="panel-heading">
-								<div class="icon"><i class="icon20 i-health"></i></div> 
-								<h4>Ventas por usuario (Mes actual)</h4>
-								<a href="#" class="minimize"></a>
-							</div><!-- End .panel-heading -->
-							
-							<div class="panel-body">								
-								<div id="grafico2" style="height:300px" ></div>
-							</div><!-- End .panel-body -->
-						</div><!-- End .widget -->		
-							
-						
-
-						<div class="panel" style="margin-bottom:20px;">
-							<div class="panel-heading">
-								<div class="icon"><i class="icon20 i-health"></i></div> 
-								<h4>Pagos por dia (Mes actual)</h4>
-								<a href="#" class="minimize"></a>
-							</div><!-- End .panel-heading -->
-							<div class="panel-body">								
-								<div id="grafico4" style="height:150px" ></div>
-							</div><!-- End .panel-body -->
-						</div><!-- End .widget -->	
-						
-						
-						<div class="panel  <?php echo getBehavio($company->type,"core_dashboards","divPanelInfoPago",""); ?> " style="margin-bottom:20px;">
-							<div class="panel-heading">
-								<div class="icon"><i class="icon20 i-quotes-left"></i></div> 
-								<h4>Informacion de pago</h4>
-								<a href="#" class="minimize"></a>
-							</div><!-- End .panel-heading -->
-						
-							<div class="panel-body">
-							   <blockquote>									
-									<p>BAC $ 366-620-045</p>
-									<small>posMe</small>
-								</blockquote>
-							</div><!-- End .panel-body -->
-						</div><!-- End .widget -->	
-					
-						<div class="panel <?php echo getBehavio($company->type,"core_dashboards","divPanelSoporteTenico",""); ?> " style="margin-bottom:20px;">
-							<div class="panel-heading">
-								<div class="icon"><i class="icon20 i-quotes-left"></i></div> 
-								<h4>Informacion de contacto</h4>
-								<a href="#" class="minimize"></a>
-							</div><!-- End .panel-heading -->
-						
-							<div class="panel-body">
-							   <blockquote>
-									<p>Soporte Tenico: 8712-5827</p>									
-									<small>posMe</small>
-								</blockquote>
-								<a aria-label="Chat on WhatsApp" target="_blank" href="https://wa.me/50587125827?text=Buenos dias le saluda <?php echo $user->email; ?> : "> 
-									<img alt="Chat on WhatsApp" src="<?php echo base_url();?>/resource/img/logos/WhatsAppButtonGreenSmall.svg" /> 
-								</a>
-							</div><!-- End .panel-body -->
-						</div><!-- End .widget -->	
-						
-
-					</div>
-					<div class="col-lg-6">	
-						
-						<div class="panel" style="margin-bottom:20px;">
-							<div class="panel-heading">
-								<div class="icon"><i class="icon20 i-quotes-left"></i></div> 
-								<h4>Tipo de cambio</h4>
-								<a href="#" class="minimize"></a>
-							</div><!-- End .panel-heading -->
-						
-							<div class="panel-body">
-								<blockquote>
-									<p class="text-success">VALOR: <?php echo number_format($objExchangeRateCordobaDolar,2); ?></p>									
-									<small>Dolar a Cordoba</small>
-								</blockquote>
-								
-							   <blockquote>
-									<p class="text-danger">VALOR: <?php echo number_format($objExchangeRateDolarACordoba,4); ?></p>									
-									<small>Cordoba al Dolar</small>
-								</blockquote>
-							</div><!-- End .panel-body -->
-						</div><!-- End .widget -->	
-						
 						<div class="panel" style="margin-bottom:20px;">
 							<div class="panel-heading">
 								<div class="icon"><i class="icon20 i-health"></i></div> 
@@ -151,7 +67,95 @@
 							</div><!-- End .panel-body -->
 						</div><!-- End .widget -->	
 						
-						<div class="panel <?php echo getBehavio($company->type,"core_dashboards","divPanelFormaPago",""); ?>" style="margin-bottom:20px;">
+
+						
+						
+						<div class="panel  <?php echo getBehavio($company->type,"core_dashboards","divPanelInfoPago","hidden"); ?> " style="margin-bottom:20px;display:none">
+							<div class="panel-heading">
+								<div class="icon"><i class="icon20 i-quotes-left"></i></div> 
+								<h4>Informacion de pago</h4>
+								<a href="#" class="minimize"></a>
+							</div><!-- End .panel-heading -->
+						
+							<div class="panel-body">
+							   <blockquote>									
+									<p>BAC $ 366-620-045</p>
+									<small>posMe</small>
+								</blockquote>
+							</div><!-- End .panel-body -->
+						</div><!-- End .widget -->	
+					
+						<div class="panel <?php echo getBehavio($company->type,"core_dashboards","divPanelSoporteTenico","hidden"); ?> " style="margin-bottom:20px;display:none">
+							<div class="panel-heading">
+								<div class="icon"><i class="icon20 i-quotes-left"></i></div> 
+								<h4>Informacion de contacto</h4>
+								<a href="#" class="minimize"></a>
+							</div><!-- End .panel-heading -->
+						
+							<div class="panel-body">
+							   <blockquote>
+									<p>Soporte Tenico: 8712-5827</p>									
+									<small>posMe</small>
+								</blockquote>
+								<a aria-label="Chat on WhatsApp" target="_blank" href="https://wa.me/50587125827?text=Buenos dias le saluda <?php echo $user->email; ?> : "> 
+									<img alt="Chat on WhatsApp" src="<?php echo base_url();?>/resource/img/logos/WhatsAppButtonGreenSmall.svg" /> 
+								</a>
+							</div><!-- End .panel-body -->
+						</div><!-- End .widget -->	
+						
+
+					</div>
+					<div class="col-lg-6">	
+						
+						
+						
+						<div class="panel" style="margin-bottom:20px;">
+							<div class="panel-heading">
+								<div class="icon"><i class="icon20 i-health"></i></div> 
+								<h4>Ventas por usuario (Mes actual)</h4>
+								<a href="#" class="minimize"></a>
+							</div><!-- End .panel-heading -->
+							
+							<div class="panel-body">								
+								<div id="grafico2" style="height:300px" ></div>
+							</div><!-- End .panel-body -->
+						</div><!-- End .widget -->		
+							
+						
+						
+						<div class="panel" style="margin-bottom:20px;">
+							<div class="panel-heading">
+								<div class="icon"><i class="icon20 i-health"></i></div> 
+								<h4>Pagos por dia (Mes actual)</h4>
+								<a href="#" class="minimize"></a>
+							</div><!-- End .panel-heading -->
+							<div class="panel-body">								
+								<div id="grafico4" style="height:150px" ></div>
+							</div><!-- End .panel-body -->
+						</div><!-- End .widget -->	
+						
+						<div class="panel" style="margin-bottom:20px;">
+							<div class="panel-heading">
+								<div class="icon"><i class="icon20 i-quotes-left"></i></div> 
+								<h4>Tipo de cambio</h4>
+								<a href="#" class="minimize"></a>
+							</div><!-- End .panel-heading -->
+						
+							<div class="panel-body">
+								<blockquote>
+									<p class="text-success">VALOR: <?php echo number_format($objExchangeRateCordobaDolar,2); ?></p>									
+									<small>Dolar a Cordoba</small>
+								</blockquote>
+								
+							   <blockquote>
+									<p class="text-danger">VALOR: <?php echo number_format($objExchangeRateDolarACordoba,4); ?></p>									
+									<small>Cordoba al Dolar</small>
+								</blockquote>
+							</div><!-- End .panel-body -->
+						</div><!-- End .widget -->	
+						
+						
+						<div class="panel <?php echo getBehavio($company->type,"core_dashboards","divPanelFormaPago","hidden"); ?>" style="margin-bottom:20px;display:none">
 							<div class="panel-heading">
 								<div class="icon"><i class="icon20 i-quotes-left"></i></div> 
 								<h4>Pago con tarjeta</h4>
