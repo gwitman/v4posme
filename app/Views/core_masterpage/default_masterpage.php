@@ -151,7 +151,7 @@
 		<aside id="sidebar">
 			<div class="side-options">
 				<ul>
-					<li><a href="javascript:void(0)" id="collapse-nav" class="act act-primary tip" title="Collapse navigation"><i class="icon16 i-arrow-left-7"></i></a></li>
+					<li><a href="javascript:void(0);" id="collapse-nav" class="act act-primary tip" title="Collapse navigation"><i class="icon16 i-arrow-left-7"></i></a></li>
 				</ul>
 			</div>
 
@@ -169,8 +169,8 @@
 			<div class="wrapper">
 				<div class="crumb">
 					<ul class="breadcrumb">
-						<li><a href="javascript:void(0)"><i class="icon16 i-quill-3"></i>...</a></li>
-						<li><a href="javascript:void(0)"><i class="icon16 "></i>...</a></li>
+						<li><a href="javascript:void(0);"><i class="icon16 i-quill-3"></i>...</a></li>
+						<li><a href="javascript:void(0);"><i class="icon16 "></i>...</a></li>
 					</ul>
 				</div>
 

@@ -265,10 +265,10 @@ echo helper_getHtmlOfPageLanding();
 							<a href="#credit" data-toggle="tab">Info de Credito.</a>
 						</li>
 						<li class="dropdown elementMovilOculto <?php echo getBehavio($company->type,"app_invoice_billing","divPestanaMas",""); ?> ">
-							<a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Mas <b class="caret"></b></a>
+							<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">Mas <b class="caret"></b></a>
 							<ul class="dropdown-menu">
 								<li><a href="#dropdown" data-toggle="tab">Comentario</a></li>
-								<li><a id="btnClickArchivo" href="javascript:void(0)" target="blanck"  data-toggle="tab">Archivos</a></li>
+								<li><a id="btnClickArchivo" href="javascript:void(0);" target="blanck"  data-toggle="tab">Archivos</a></li>
 							 </ul>
 						</li>
 					</ul>
@@ -449,7 +449,7 @@ echo helper_getHtmlOfPageLanding();
 											if($objParameterEsResrarante == "true")
 											{
 												?>
-												<a href="javascript:void(0)" class="btn btn-flat btn-info btn-block btn-comando-showsona" id="btnShowZona">
+												<a href="javascript:void(0);" class="btn btn-flat btn-info btn-block btn-comando-showsona" id="btnShowZona">
 													<i class="icon16 i-checkmark-4"></i> Zona
 												</a>
 												<?php 
@@ -565,7 +565,7 @@ echo helper_getHtmlOfPageLanding();
 											if($objParameterEsResrarante == "true")
 											{
 												?>
-												<a href="javascript:void(0)" class="btn btn-flat btn-info btn-block btn-comando-showmesa" id="btnShowMesa">
+												<a href="javascript:void(0);" class="btn btn-flat btn-info btn-block btn-comando-showmesa" id="btnShowMesa">
 													<i class="icon16 i-checkmark-4"></i> Mesa
 												</a>
 												<?php 
@@ -695,7 +695,7 @@ echo helper_getHtmlOfPageLanding();
 												<div class="col-lg-8">
 													<input class="form-control"   type="text" name="txtFixedExpenses" id="txtFixedExpenses" value="<?php echo helper_RequestGetValueObjet($objTransactionMasterDetailCredit,"reference1",0); ?>">
 													<!--
-													<a href="javascript:void(0)" class="btn btn-primary  gap-right10" data-toggle="popover" data-placement="bottom" 
+													<a href="javascript:void(0);" class="btn btn-primary  gap-right10" data-toggle="popover" data-placement="bottom" 
 													data-content="Ejemplo: Del Interese de cada cuota, se multiplica por este % para saber de cuanto es la comision para FID-Local, este numero debe ser #0 o mayor que #1" title="" data-original-title="% de Gastos Fijo:">Ayuda:</a>
 													-->
 												</div>
@@ -720,7 +720,7 @@ echo helper_getHtmlOfPageLanding();
 													<input class="form-control"   type="text" name="txtLayFirstLineProtocolo" id="txtLayFirstLineProtocolo" value="<?php echo helper_RequestGetValueObjet($objTransactionMasterReferences,"reference1",""); ?>">
 													
 													<!--
-													<a href="javascript:void(0)" class="btn btn-primary  gap-right10" data-toggle="popover" data-placement="bottom" 
+													<a href="javascript:void(0);" class="btn btn-primary  gap-right10" data-toggle="popover" data-placement="bottom" 
 													data-content="Ejemplo: 5" title="" 
 													data-original-title="Tenor:">Ayuda:</a>
 													-->
@@ -830,17 +830,17 @@ echo helper_getHtmlOfPageLanding();
 						?>
 						<div class="row" id="rowBotoneraFacturaFila1" >
 							<div class="col col-lg-2">
-								<a href="javascript:void(0)" class="btn btn-flat btn-info btn-block hidden btn-comando-factura" id="btnNewItem" ><i class="icon16 i-plus"></i> AGREGAR PRO</a>
+								<a href="javascript:void(0);" class="btn btn-flat btn-info btn-block hidden btn-comando-factura" id="btnNewItem" ><i class="icon16 i-plus"></i> AGREGAR PRO</a>
 							</div>
 							<div class="col col-lg-2">
-								<a href="javascript:void(0)" class="btn btn-flat btn-danger btn-block hidden btn-comando-factura" id="btnDeleteItem" ><i class="icon16 i-remove"></i> ELIMINAR PRO</a>	
+								<a href="javascript:void(0);" class="btn btn-flat btn-danger btn-block hidden btn-comando-factura" id="btnDeleteItem" ><i class="icon16 i-remove"></i> ELIMINAR PRO</a>	
 							</div>
 							<div class="col col-lg-2">
 								<div class="btn-group btn-block  hidden btn-comando-factura ">
 									<button  type="button" class="btn btn-flat btn-success dropdown-toggle btn-block" data-toggle="dropdown" id="btnGroupdProducto" ><i class="icon16 i-box"></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunConfiguracion","PRODUCTO"); ?> <span class="caret"></span></button>
 									<ul class="dropdown-menu">
-											<li class="<?= getBehavio($company->type,"app_invoice_billing","btnNewItemCatalog",""); ?>"><a href="javascript:void(0)" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>
-											<li><a href="javascript:void(0)" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>										
+											<li class="<?= getBehavio($company->type,"app_invoice_billing","btnNewItemCatalog",""); ?>"><a href="javascript:void(0);" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>
+											<li><a href="javascript:void(0);" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>										
 									</ul>
 								</div>
 							</div>
@@ -848,9 +848,9 @@ echo helper_getHtmlOfPageLanding();
 								<div class="btn-group btn-block  hidden btn-comando-factura ">
 									<button  type="button" class="btn btn-flat btn-inverse dropdown-toggle btn-block" data-toggle="dropdown"><i class="icon16 i-pencil"></i> SELECCION <span class="caret"></span></button>
 									<ul class="dropdown-menu">
-										<li><a href="javascript:void(0)" id="btnBack"  >REGRESAR</a></li>
-										<li><a href="javascript:void(0)" id="btnSelectInvoice"  > SELECCIONAR</a></li>
-										<li><a href="javascript:void(0)" id="btnLinkPayment"  > LINK DE PAGO</a></li>
+										<li><a href="javascript:void(0);" id="btnBack"  >REGRESAR</a></li>
+										<li><a href="javascript:void(0);" id="btnSelectInvoice"  > SELECCIONAR</a></li>
+										<li><a href="javascript:void(0);" id="btnLinkPayment"  > LINK DE PAGO</a></li>
 									</ul>								
 								</div>
 							</div>
@@ -862,17 +862,17 @@ echo helper_getHtmlOfPageLanding();
 								<a href="<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>" class="btn btn-flat btn-info btn-block hidden btn-comando-factura" id="btnNew"><i class="icon16 i-checkmark-4"></i> NUEVA FAC</a>
 							</div>
 							<div class="col col-lg-2">
-								<a href="javascript:void(0)" class="btn btn-flat btn-danger btn-block hidden btn-comando-factura" id="btnDelete"><i class="icon16 i-remove "></i> ELIMINAR FAC</a>	
+								<a href="javascript:void(0);" class="btn btn-flat btn-danger btn-block hidden btn-comando-factura" id="btnDelete"><i class="icon16 i-remove "></i> ELIMINAR FAC</a>	
 							</div>
 							<div class="col col-lg-2">
-								<a href="javascript:void(0)" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnPrinter"><i class="icon16 i-print "></i> IMPRIMIR</a>
+								<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnPrinter"><i class="icon16 i-print "></i> IMPRIMIR</a>
 							</div>
 							
 							<?php 
 							if($objParameterShowComandoDeCocina == 'true' ){
 								?>
 									<div class="col col-lg-2">
-										<a href="javascript:void(0)" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnFooter"><i class="icon16 i-print "></i> COCINA</a>
+										<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnFooter"><i class="icon16 i-print "></i> COCINA</a>
 									</div>
 								<?php 
 							}
@@ -882,7 +882,7 @@ echo helper_getHtmlOfPageLanding();
 							if($objParameterINVOICE_BILLING_SHOW_COMMAND_BAR == 'true' ){
 								?>
 									<div class="col col-lg-2">
-										<a href="javascript:void(0)" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnBar"><i class="icon16 i-print "></i> BAR</a>
+										<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnBar"><i class="icon16 i-print "></i> BAR</a>
 									</div>
 								<?php 
 							}
@@ -898,10 +898,10 @@ echo helper_getHtmlOfPageLanding();
 							<br id="saltoDeLineaFila3" />
 							<div class="row" id="rowBotoneraFacturaFila3">
 									<div class="col col-lg-2">
-										<a href="javascript:void(0)" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnOptionPago"><i class="icon16 i-arrow-down-12 "></i> PROCESAR PAGO</a>
+										<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnOptionPago"><i class="icon16 i-arrow-down-12 "></i> PROCESAR PAGO</a>
 									</div>
 									<div class="col col-lg-2">
-										<a href="javascript:void(0)" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunVerDetalle","DETALLE"); ?>  </a>
+										<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunVerDetalle","DETALLE"); ?>  </a>
 									</div>
 							</div>
 						<?php 
@@ -934,7 +934,7 @@ echo helper_getHtmlOfPageLanding();
 							if($objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE == 'false' ){
 								?>
 									<div class="col col-lg-2">
-										<a href="javascript:void(0)" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnAbrirCaja"><i class="icon16 i-print "></i> ABRIR CAJA</a>
+										<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnAbrirCaja"><i class="icon16 i-print "></i> ABRIR CAJA</a>
 									</div>
 								<?php 
 							}
@@ -952,8 +952,8 @@ echo helper_getHtmlOfPageLanding();
 									<div class="btn-group  btn-block hidden btn-comando-factura">
 										<button type="button" class="btn btn-flat btn-info dropdown-toggle  btn-block" data-toggle="dropdown">PRO <span class="caret"></span></button>
 										<ul class="dropdown-menu">
-												<li><a href="javascript:void(0)" id="btnNewItem" >AGREGAR PRO</a></li>
-												<li><a href="javascript:void(0)" id="btnDeleteItem" >ELIMINAR PRO</a></li>											
+												<li><a href="javascript:void(0);" id="btnNewItem" >AGREGAR PRO</a></li>
+												<li><a href="javascript:void(0);" id="btnDeleteItem" >ELIMINAR PRO</a></li>											
 										</ul>
 									</div>
 								</div>
@@ -961,12 +961,12 @@ echo helper_getHtmlOfPageLanding();
 									<div class="btn-group  btn-block hidden btn-comando-factura">
 										<button type="button" class="btn btn-flat btn-danger dropdown-toggle  btn-block" data-toggle="dropdown">FAC <span class="caret"></span></button>
 										<ul class="dropdown-menu">											
-												<li><a href="javascript:void(0)" id="btnBack" >REGRESAR</a></li>
+												<li><a href="javascript:void(0);" id="btnBack" >REGRESAR</a></li>
 												<li><a href="<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>" id="btnNew">NUEVA FAC</a></li>
-												<li><a href="javascript:void(0)" id="btnDelete">ELIMINAR FAC</a></li>		
-												<li><a href="javascript:void(0)" id="btnPrinter">IMPRIMIR</a></li>	
-												<li><a href="javascript:void(0)" id="btnSelectInvoice"  > SELECCIONAR</a></li>
-												<li><a href="javascript:void(0)" id="btnLinkPayment"  > LINK DE PAGO</a></li>
+												<li><a href="javascript:void(0);" id="btnDelete">ELIMINAR FAC</a></li>		
+												<li><a href="javascript:void(0);" id="btnPrinter">IMPRIMIR</a></li>	
+												<li><a href="javascript:void(0);" id="btnSelectInvoice"  > SELECCIONAR</a></li>
+												<li><a href="javascript:void(0);" id="btnLinkPayment"  > LINK DE PAGO</a></li>
 										</ul>
 									</div>
 								</div>
@@ -981,14 +981,14 @@ echo helper_getHtmlOfPageLanding();
 												<?php 
 												if($objParameterShowComandoDeCocina == 'true' ){
 													?>
-														<li><a href="javascript:void(0)"  id="btnFooter">COCINA</a></li>
+														<li><a href="javascript:void(0);"  id="btnFooter">COCINA</a></li>
 													<?php 
 												}
 												?>
 												<?php 
 												if($objParameterINVOICE_BILLING_SHOW_COMMAND_BAR == 'true' ){
 													?>
-														<li><a href="javascript:void(0)"  id="btnBar">BAR</a></li>
+														<li><a href="javascript:void(0);"  id="btnBar">BAR</a></li>
 													<?php 
 												}
 												?>
@@ -1020,8 +1020,8 @@ echo helper_getHtmlOfPageLanding();
 									<div class="btn-group  btn-block hidden btn-comando-factura">
 										<button type="button" class="btn btn-flat btn-success dropdown-toggle  btn-block" data-toggle="dropdown">MAS <span class="caret"></span></button>
 										<ul class="dropdown-menu">											
-												<li><a href="javascript:void(0)" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>						
-												<li><a href="javascript:void(0)" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>
+												<li><a href="javascript:void(0);" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>						
+												<li><a href="javascript:void(0);" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>
 										</ul>
 									</div>
 								</div>							
@@ -1063,7 +1063,7 @@ echo helper_getHtmlOfPageLanding();
 									<tr>
 										<th style="text-align:left">02) </th>
 										<td >
-											<a href="javascript:void(0)" class="btn btn-warning  btn-block" id="txtToolCalcular"><i class="icon16 i-checkmark-4"></i> CALCULAR</a>
+											<a href="javascript:void(0);" class="btn btn-warning  btn-block" id="txtToolCalcular"><i class="icon16 i-checkmark-4"></i> CALCULAR</a>
 										</td>
 									</tr>
 									<tr>
@@ -1289,7 +1289,7 @@ echo helper_getHtmlOfPageLanding();
 					
 					<div class="row" id="divPanelPaymentSideBar" >
 						<div class="col col-lg-12">
-							<a href="javascript:void(0)" class="btn btn-flat btn-danger btn-block" id="btnRollbackPayment"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
+							<a href="javascript:void(0);" class="btn btn-flat btn-danger btn-block" id="btnRollbackPayment"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
 						</div>	
 					</div>
 				  </div>
@@ -1309,10 +1309,10 @@ echo helper_getHtmlOfPageLanding();
 					
 					<div class="row" id="divPanelFacturaSideBar" >
 						<div class="col col-lg-2">
-							<a href="javascript:void(0)" class="btn btn-flat btn-danger btn-block" id="btnRollbackFactura"><i class="icon16 i-arrow-bottom "></i> REGRESAR</a>
+							<a href="javascript:void(0);" class="btn btn-flat btn-danger btn-block" id="btnRollbackFactura"><i class="icon16 i-arrow-bottom "></i> REGRESAR</a>
 						</div>	
 						<div class="col col-lg-2">
-							<a href="javascript:void(0)" class="btn btn-flat btn-success btn-block" id="btnSaveInvoice"><i class="icon16 i-arrow-bottom "></i> GUARDAR MESA</a>
+							<a href="javascript:void(0);" class="btn btn-flat btn-success btn-block" id="btnSaveInvoice"><i class="icon16 i-arrow-bottom "></i> GUARDAR MESA</a>
 						</div>	
 					</div>
 					
@@ -1423,7 +1423,7 @@ echo helper_getHtmlOfPageLanding();
 					
 					<div class="row" id="divPanelFacturaZona" >
 						<div class="col col-lg-12">
-							<a href="javascript:void(0)" class="btn btn-flat btn-danger btn-block" id="btnRollbackZona"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
+							<a href="javascript:void(0);" class="btn btn-flat btn-danger btn-block" id="btnRollbackZona"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
 						</div>	
 					</div>
 				  </div>
@@ -1467,10 +1467,10 @@ echo helper_getHtmlOfPageLanding();
 					
 					<div class="row" id="divPanelFacturaMesa" >
 						<div class="col-md-6">
-							<a href="javascript:void(0)" class="btn btn-flat btn-warning btn-block" id="btnRollbackZonas"><i class="icon16 i-arrow-left "></i> Zonas</a>
+							<a href="javascript:void(0);" class="btn btn-flat btn-warning btn-block" id="btnRollbackZonas"><i class="icon16 i-arrow-left "></i> Zonas</a>
 						</div>	
 						<div class="col-md-6">
-							<a href="javascript:void(0)" class="btn btn-flat btn-danger btn-block" id="btnRollbackMesa"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
+							<a href="javascript:void(0);" class="btn btn-flat btn-danger btn-block" id="btnRollbackMesa"><i class="icon16 i-arrow-bottom "></i> Regresar</a>
 						</div>
 					</div>
 				  </div>
@@ -1491,10 +1491,10 @@ echo helper_getHtmlOfPageLanding();
 				  </div>
 				  <div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-					<a href="javascript:void(0)" class="btn btn-primary hidden" id="btnAceptarDialogPrinterV2AceptarTabla">Tabla</a>
-					<a href="javascript:void(0)" class="btn btn-primary" id="btnAceptarDialogPrinterV2AceptarDocument">Preview</a>
-					<a href="javascript:void(0)" class="btn btn-primary <?php echo getBehavio($company->type,"app_invoice_billing","divOpcionViewA4","hidden"); ?> " id="btnAceptarDialogPrinterV2AceptarDocumentA4">Preview A4</a>
-					<a href="javascript:void(0)" class="btn btn-primary hidden" id="btnAceptarDialogPrinterV2AceptarDirect">Directa</a>
+					<a href="javascript:void(0);" class="btn btn-primary hidden" id="btnAceptarDialogPrinterV2AceptarTabla">Tabla</a>
+					<a href="javascript:void(0);" class="btn btn-primary" id="btnAceptarDialogPrinterV2AceptarDocument">Preview</a>
+					<a href="javascript:void(0);" class="btn btn-primary <?php echo getBehavio($company->type,"app_invoice_billing","divOpcionViewA4","hidden"); ?> " id="btnAceptarDialogPrinterV2AceptarDocumentA4">Preview A4</a>
+					<a href="javascript:void(0);" class="btn btn-primary hidden" id="btnAceptarDialogPrinterV2AceptarDirect">Directa</a>
 				  </div>
 				</div><!-- /.modal-content -->
 			  </div><!-- /.modal-dialog -->
@@ -1524,7 +1524,7 @@ echo helper_getHtmlOfPageLanding();
 				  </div>
 				  <div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-					<a href="javascript:void(0)" class="btn btn-primary" id="btnAceptarDialogBackToListV2">Aceptar</a>
+					<a href="javascript:void(0);" class="btn btn-primary" id="btnAceptarDialogBackToListV2">Aceptar</a>
 				  </div>
 				</div><!-- /.modal-content -->
 			  </div><!-- /.modal-dialog -->
@@ -1543,7 +1543,7 @@ echo helper_getHtmlOfPageLanding();
 				  </div>
 				  <div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-					<a href="javascript:void(0)" class="btn btn-primary hidden" id="btnAceptarDialogCocinaV2">Aceptar</a>
+					<a href="javascript:void(0);" class="btn btn-primary hidden" id="btnAceptarDialogCocinaV2">Aceptar</a>
 				  </div>
 				</div><!-- /.modal-content -->
 			  </div><!-- /.modal-dialog -->
@@ -1562,7 +1562,7 @@ echo helper_getHtmlOfPageLanding();
 				  </div>
 				  <div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-					<a href="javascript:void(0)" class="btn btn-primary hidden" id="btnAceptarDialogBarV2">Aceptar</a>
+					<a href="javascript:void(0);" class="btn btn-primary hidden" id="btnAceptarDialogBarV2">Aceptar</a>
 				  </div>
 				</div><!-- /.modal-content -->
 			  </div><!-- /.modal-dialog -->
@@ -1581,7 +1581,7 @@ echo helper_getHtmlOfPageLanding();
 				  </div>
 				  <div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-					<a href="javascript:void(0)" class="btn btn-primary" id="btnAceptarClaveOpenCash">Aceptar</a>
+					<a href="javascript:void(0);" class="btn btn-primary" id="btnAceptarClaveOpenCash">Aceptar</a>
 				  </div>
 				</div><!-- /.modal-content -->
 			  </div><!-- /.modal-dialog -->
@@ -1601,7 +1601,7 @@ echo helper_getHtmlOfPageLanding();
 				  </div>
 				  <div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-					<a href="javascript:void(0)" class="btn btn-primary" id="btnAceptarMesaBussyV2">Aceptar</a>
+					<a href="javascript:void(0);" class="btn btn-primary" id="btnAceptarMesaBussyV2">Aceptar</a>
 				  </div>
 				</div><!-- /.modal-content -->
 			  </div><!-- /.modal-dialog -->

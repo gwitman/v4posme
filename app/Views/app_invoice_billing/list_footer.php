@@ -30,7 +30,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-        <a href="javascript:void(0)" class="btn btn-primary" id="btnAceptarClaveMesero">Aceptar</a>
+        <a href="javascript:void(0);" class="btn btn-primary" id="btnAceptarClaveMesero">Aceptar</a>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

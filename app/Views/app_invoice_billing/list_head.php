@@ -40,10 +40,10 @@
 					</form>
 			
 					<div class="btn-group pull-right" style="margin-top:0px">
-						<a href="javascript:void(0)" class="btn btn-inverse" id="btnView"><i class="icon16 i-grid-2"></i>Vistas</a>
-						<a href="javascript:void(0)" class="btn btn-primary" id="btnEdit"><i class="icon16 i-pencil-4"></i>Editar</a>
-						<a href="javascript:void(0)" class="btn btn-danger"  id="btnEliminar"><i class="icon16 i-remove"></i>Delete</a>
-						<a href="javascript:void(0)" class="btn btn-success" id="btnNuevo"><i class="icon16 i-checkmark-4"></i>Nuevo</a>						
+						<a href="javascript:void(0);" class="btn btn-inverse" id="btnView"><i class="icon16 i-grid-2"></i>Vistas</a>
+						<a href="javascript:void(0);" class="btn btn-primary" id="btnEdit"><i class="icon16 i-pencil-4"></i>Editar</a>
+						<a href="javascript:void(0);" class="btn btn-danger"  id="btnEliminar"><i class="icon16 i-remove"></i>Delete</a>
+						<a href="javascript:void(0);" class="btn btn-success" id="btnNuevo"><i class="icon16 i-checkmark-4"></i>Nuevo</a>						
 					</div>
 	</div>			
 	</div>
@@ -56,7 +56,7 @@
 			<div class="panel-heading">
 				<div class="icon"><i class="icon20 i-table"></i></div> 
 				<h4>...</h4>
-				<a href="javascript:void(0)" class="minimize"></a>
+				<a href="javascript:void(0);" class="minimize"></a>
 			</div>                            
 			<div class="panel-body" style="<?php echo getBehavio($company->type,"app_invoice_billing","bodyListInvoice",""); ?>" >
 			
