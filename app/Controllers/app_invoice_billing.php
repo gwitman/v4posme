@@ -7360,7 +7360,7 @@ class app_invoice_billing extends _BaseController {
             }
 
             if ($datView["objStage"][0]->display == "APLICADA"){
-                $html = helper_reporte80mmTransactionMaster(
+                $html = helper_reporte80mmTransactionMasterEmanuel(
                     "FACTURA",
                     $objCompany,
                     $objParameter,

@@ -1658,28 +1658,28 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "------" 
+	tb_company_parameter.value = "4810602910000W" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "------" 
+	tb_company_parameter.value = "4810602910000W" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8910 1842" 
+	tb_company_parameter.value = "TEL: 8926-9055" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8910 1842" 
+	tb_company_parameter.value = "TEL: 8926-9055" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1687,14 +1687,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Leon 1K carretera a Managua mano izquierda" 
+	tb_company_parameter.value = "Entrada Óscar Pérez 75 vrs al sur." 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Pupusas EMANUEL' , address = 'Leon 1K carretera a Managua mano izquierda' ,
+	NAME = 'Pupusas EMANUEL' , address = 'Entrada Óscar Pérez 75 vrs al sur.' ,
 	flavorID = 664 /*usuarioID*/,type='emanuel'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
