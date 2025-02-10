@@ -88,6 +88,7 @@
 			
 		}); 
 		$(document).on("dblclick","#ListView tbody tr",function() {
+			objBoton = "edit";
 			if(objEsMesero == "0")
 			{			
 				if(objRowTableListView != undefined){
@@ -105,8 +106,18 @@
 			}
 			else 
 			{
-				$("#txtClaveMesero").val("");
-				$("#modalDialogClaveMesero").modal("show");
+				if (objParameterMeseroScreenIndividual === "true")
+				{
+                    $("#txtClaveMesero").val("<?= $objPasswordMesero ?>");					
+                    fnAceptarClaveMesero();
+                }
+				else
+				{
+                    $("#txtClaveMesero").val("");
+                    $("#modalDialogClaveMesero").modal("show");
+                }
+				
+				
 			}
 		});
 		$(document).on("click","#btnSearchTransaction",function(){
@@ -229,7 +240,8 @@
         let codigoMesero = $('#txtClaveMesero').val().trim();
         if (codigoMesero === '') {
             $('#errorMessage').show();
-        } else {
+        } else 
+		{
             $('#errorMessage').hide();
             $('#modalDialogClaveMesero').modal('hide');
             fnWaitOpenV2();
