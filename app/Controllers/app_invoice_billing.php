@@ -1329,6 +1329,7 @@ class app_invoice_billing extends _BaseController {
 							$objPrice = $this->Price_Model->update_app_posme($companyID,$listPriceID,$itemID,$typePriceID,$dataUpdatePrice);									
 							
 						}
+
                         /*$quantityRestaranteTraking                  = $objTMDNew["quantity"];
                         if ( $objParameterINVOICE_BILLING_TRAKING_BAR == "true" && $objTMDNew["quantity"] > $objTMDOld->quantity )
                         {
@@ -1336,6 +1337,7 @@ class app_invoice_billing extends _BaseController {
                         }else{
                             $quantityRestaranteTraking              = $objTMDNew["quantity"];
                         }*/
+                        $objTMDROld                                 = $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterDetailID($transactionMasterDetailID);
                         $objTMDRNew["isActive"] 					= 1;
                         $objTMDRNew["createdOn"] 					= date("Y-m-d H:m:s");
                         $objTMDRNew["quantity"] 					= $objTMDNew["quantity"];;
@@ -1345,8 +1347,12 @@ class app_invoice_billing extends _BaseController {
                         $objTMDRNew["sales"]	                    = $infoSales;
                         $objTMDRNew["reference1"]	                = $infoSerie;
                         $objTMDRNew["reference2"]	                = $infoReferencia;
-                        $this->Transaction_Master_Detail_References_Model->update_byTransactionMasterDetailID_app_posme($transactionMasterDetailID, $objTMDRNew);
-						
+                        if($objTMDROld){
+                            $this->Transaction_Master_Detail_References_Model->update_byTransactionMasterDetailID_app_posme($transactionMasterDetailID, $objTMDRNew);
+                        }else{
+                            $this->Transaction_Master_Detail_References_Model->insert_app_posme($objTMDRNew);
+                        }
+
 					}
 					
 				}

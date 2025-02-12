@@ -150,7 +150,37 @@ class Transaction_Master_Detail_References_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
-   
+
+    function get_rowByTransactionMasterDetailID($transactionMasterDetailID)
+    {
+        $db 		= db_connect();
+        $builder	= $db->table("tb_transaction_master_detail_references");
+
+
+
+        $sql = "";
+        $sql = sprintf("	select 
+								tdr.transactionMasterDetailRefereceID,
+								tdr.transactionMasterDetailID,
+								tdr.componentID,
+								tdr.componentItemID,
+								tdr.isActive,
+								tdr.quantity ,
+								tdr.createdOn,
+								tdr.sales,
+								tdr.reference1,
+								tdr.reference2
+			");
+        $sql = $sql.sprintf("from tb_transaction_master_detail_references tdr ");
+        $sql = $sql.sprintf("inner join tb_transaction_master_detail td on td.transactionMasterDetailID = tdr.transactionMasterDetailID ");
+        $sql = $sql.sprintf("where ");
+        $sql = $sql.sprintf(" 	td.transactionMasterDetailID = $transactionMasterDetailID ");
+        $sql = $sql.sprintf(" 	and tdr.isActive= 1 ");
+        $sql = $sql.sprintf(" 	and td.isActive= 1 ");
+
+        //Ejecutar Consulta
+        return $db->query($sql)->getResult();
+    }
    
    
 }
