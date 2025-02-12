@@ -63,6 +63,8 @@
 	var varCustomerCrediLineID		= 0;
 
     var $grid;
+    var selectedFilaInfoProducto;
+    var selectedDataInfoProducto;
 
 	$(document).on("click",".btnPlus",function(){
 		
@@ -435,7 +437,7 @@
 			 return;
 		 }		 
 		
-		
+		e.preventDefault();
 		var currencyID 		= $("#txtCurrencyID").val();
 		var codigoABuscar 	= $("#txtScanerCodigo").val();
 		codigoABuscar 		= codigoABuscar.toUpperCase();
@@ -453,7 +455,7 @@
 		
 		//Mover a ingreso de dinero Cordoba
 		if(codigoABuscar == ""){
-			document.getElementById("txtReceiptAmount").focus();
+			$("#txtReceiptAmount").focus();
 			$("#txtReceiptAmount").val("");
 			return;
 		}
@@ -604,7 +606,55 @@
 		fnRenderLineaCreditoDiv();
 	});
 	
-	
+	//mostrar dialogo de informacion de producto
+    $(document).on('click', '.btnInfoProducto',function(e){
+        e.preventDefault();
+        //obtener datos
+        let selectTr = $(this).closest('tr');
+        selectedFilaInfoProducto = objTableDetail.fnGetPosition(selectTr[0]);
+        selectedDataInfoProducto = objTableDetail.fnGetData(selectedFilaInfoProducto);
+        let precio1 = $(this).data('precio1');
+        let precio2 = $(this).data('precio2');
+        let precio3 = $(this).data('precio3');
+        let precios = [fnFormatNumber(precio1, 2), fnFormatNumber(precio2, 2), fnFormatNumber(precio3, 2)];
+        let selectPrecio = $('#selectPrecio');
+        let precio = selectedDataInfoProducto[7];
+        selectPrecio.empty();
+
+        //establecer precios
+        if (precio>0) {
+            precios.forEach(function(p) {
+                let option = new Option(p, p);
+                option.selected = (p === precio); // Marcar como seleccionado si coincide
+                selectPrecio.append(option);
+            });
+        } else {
+            let i = 0;
+            precios.forEach(function(p) {
+                let option = new Option(p, p, i===0, i===0);
+                selectPrecio.append(option);
+                i++;
+            });
+        }
+
+        selectPrecio.trigger('change');
+
+        //establecer vendedor
+        let vendedor = selectedDataInfoProducto[19];
+        if(vendedor>0){
+            $('#selectVendedor').val(vendedor).trigger('change');
+        }else{
+            $('#selectVendedor').val("0").trigger('change');
+        }
+        //establecer serie
+        let serie = selectedDataInfoProducto[20];
+        $('#txtSerieProducto').val(serie);
+        //establecer referencia
+        let infoReferencia = selectedDataInfoProducto[21];
+        $('#txtReferenciaProducto').val(infoReferencia);
+        refreschChecked();
+        mostrarModal('ModalInfoProducto');
+    });
 	
 	//Regresar a la lista
 	$("#btnBack").click(function(e){
@@ -940,7 +990,10 @@
 		objRow.itemNameDescription			= objResponse[24];
 		objRow.taxServices					= 0;
 		objRow.peso 						= 0;
-		
+		objRow.vendedor 					= 0;
+		objRow.serie 						= "";
+		objRow.referencia 					= "";
+
 		//Actualizar
 		if(jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[2] == objRow.itemID;}).select().length > 0 ){
 			
@@ -985,7 +1038,10 @@
 				objRow.price3,
 				objRow.itemNameDescription /*itemDescriptionLog*/,
 				objRow.taxServices,
-				objRow.peso
+				objRow.peso,
+                objRow.vendedor,
+                objRow.serie,
+                objRow.referencia
 			]);
 			
 			
@@ -1001,7 +1057,7 @@
 		
 		fnGetConcept(objRow.itemID,"IVA");		
 		refreschChecked();
-		document.getElementById("txtScanerCodigo").focus();	
+		$("#txtScanerCodigo").focus();
 		
 		
 		
@@ -2334,50 +2390,39 @@
 		)
 	}
 
-	function obtenerDataDBProductoArray(varTable,varColumn,varValue,valueComando,varDataExt,varFunction){
-		
-		const requestStore 	= db.transaction(varTable, 'readwrite')
-							.objectStore(varTable);
-							
-		let request;
-		var varIndex;
-		
-		if(varColumn == "all")
-		{
-			request 		= requestStore.getAll();
-		}
-		else 
-		{
-			varIndex 		= requestStore.index(varColumn);
-			request 		= varIndex.getAll(varValue);
-		}
-		
-		request.onsuccess = ()=> {
+    function obtenerDataDBProductoArray(varTable, varColumn, varValue, valueComando, varDataExt, varFunction) {
+        const requestStore = db.transaction(varTable, 'readwrite').objectStore(varTable);
 
-			try
-			{
-				
-				if(valueComando != "none")
-				{					
-					varDataExt[valueComando] = request.result;
-					varFunction(varDataExt,varDataExt);
-				}
-				else
-				{
-					varFunction(request.result,varDataExt);
-				}
-			}
-			catch(ex)
-			{
-				
-			}
-			
-		}
+        let request;
+        let varIndex;
 
-		request.onerror = (err)=> {
-			console.info("error");
-		}
-	}
+        if (varColumn === "all") {
+            request = requestStore.getAll();
+        } else {
+            varIndex = requestStore.index(varColumn);
+            request = varIndex.getAll(varValue);
+        }
+
+        request.onsuccess = function() {
+            try {
+                if (valueComando !== "none") {
+                    varDataExt[valueComando] = request.result;
+                    varFunction(varDataExt, varDataExt);
+                } else {
+                    varFunction(request.result, varDataExt);
+                }
+            } catch (ex) {
+                console.error("Error in onsuccess:", ex);
+            }
+        }
+
+        request.onerror = function(err) {
+            console.error("Error in request:", err);
+            if (err.target && err.target.error) {
+                console.error("Error message:", err.target.error.message);
+            }
+        }
+    }
 	
 	
 	function addDataDB(varTable,varDatos){
@@ -2420,7 +2465,22 @@
 			console.log('error');
 		}
 	}
-	
+
+	function fnAceptarModalInfoProducto(){
+        let precioRecomendado = $('#selectPrecio').val();
+        let vendedor = $('#selectVendedor').val();
+        let serie = $('#txtSerieProducto').val();
+        let referencia = $('#txtReferenciaProducto').val();
+        selectedDataInfoProducto[7]=precioRecomendado;
+        selectedDataInfoProducto[19]=vendedor;
+        selectedDataInfoProducto[20]=serie;
+        selectedDataInfoProducto[21]=referencia;
+        objTableDetail.fnUpdate(selectedDataInfoProducto, selectedFilaInfoProducto);
+
+        fnRecalculateDetail(true,"txtPrice");
+        cerrarModal('ModalInfoProducto');
+    }
+
 	function fnAceptarModalBackToList()
 	{
 		cerrarModal('ModalBackToList');
@@ -2845,23 +2905,7 @@
 										
 										
 										ocultarBoton="<?= getBehavio($company->type, 'app_invoice_billing','divBtnPrecios','')?>";
-										str		= str+'<div class="btn-group '+ocultarBoton+'">';
-												str = 	str+'<button type="button" class="btn btn-success dropdown-toggle  " data-toggle="dropdown"><i class="icon16 i-bookmark"></i>  <span class="caret"></span> </button>';
-												str =	str+'<ul class="dropdown-menu">';
-													//publico											
-													if( (objProductoPrecio1 > 0 && varPermisosEsPermitidoSeleccionarPrecioPublico == true  )   || isAdmin == "1" )
-														str = str+'<li><a href="#" data-precio="'+objProductoPrecio1+'" class="btnPrecioRecomendado" >'+varCurrencyDefaultSimbol+" "+$.number(objProductoPrecio1,2)+'</a></li>';
-													
-													//por mayor
-													if( ( objProductoPrecio2 > 0 && fnValidateSiAplicaPrecioPublico() && varPermisosEsPermitidoSeleccionarPrecioPormayor == true  ) || isAdmin == "1" ) 
-														str = str+'<li><a href="#" data-precio="'+objProductoPrecio2+'" class="btnPrecioRecomendado" >'+varCurrencyDefaultSimbol+" "+$.number(objProductoPrecio2,2)+'</a></li>';
-													
-													//credito 
-													if( (objProductoPrecio3 > 0 && varPermisosEsPermitidoSeleccionarPrecioCredito == true ) || isAdmin == "1"   )
-														str = str+'<li><a href="#" data-precio="'+objProductoPrecio3+'" class="btnPrecioRecomendado"  >'+varCurrencyDefaultSimbol+" "+$.number(objProductoPrecio3,2)+'</a></li>';
-													
-												str = 	str+'</ul>';
-										str		= str+'</div>';
+                                        str     = str+'<button type="button" class="btn btn-success btnInfoProducto '+ocultarBoton+' " data-precio1="'+objProductoPrecio1+'" data-precio2="'+objProductoPrecio2+'" data-precio3="'+objProductoPrecio3+'"><i class="icon16 i-info"></i></button>';
 										str		= str+'</div>';
 										
 										return str;
@@ -2941,6 +2985,33 @@
 									return '<input type="text" class="col-lg-12 txtDetailLote" value="'+data+'" name="txtDetailLote[]" style="text-align:right" />';
 								}
 							},
+                            {
+                                "aTargets"		: [ 19 ],//VENDEDOR SELECCIONADO DEL MODAL
+                                "bVisible"		: true,
+                                "sClass"		: "hidden",
+                                "bSearchable"	: false,
+                                "mRender"		: function ( data, type, full ) {
+                                    return '<input type="text" class="col-lg-12 txtInfoVendedor" value="'+data+'" name="txtInfoVendedor[]" style="text-align:right" />';
+                                }
+                            },
+                            {
+                                "aTargets"		: [ 20 ],//SERIE INGRESADO DESDE EL MODAL
+                                "bVisible"		: true,
+                                "sClass"		: "hidden",
+                                "bSearchable"	: false,
+                                "mRender"		: function ( data, type, full ) {
+                                    return '<input type="text" class="col-lg-12 txtInfoSerie" value="'+data+'" name="txtInfoSerie[]" style="text-align:right" />';
+                                }
+                            },
+                            {
+                                "aTargets"		: [ 21 ],//REFERENCIA INGRESADO DESDE EL MODAL
+                                "bVisible"		: true,
+                                "sClass"		: "hidden",
+                                "bSearchable"	: false,
+                                "mRender"		: function ( data, type, full ) {
+                                    return '<input type="text" class="col-lg-12 txtInfoReferencia" value="'+data+'" name="txtInfoReferencia[]" style="text-align:right" />';
+                                }
+                            },
 
 				]							
 			});
