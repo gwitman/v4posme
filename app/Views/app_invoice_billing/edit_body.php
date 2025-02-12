@@ -811,6 +811,9 @@ echo helper_getHtmlOfPageLanding();
 									<th>itemNameDescription</th>
 									<th>TAX_SERVICES</th>
 									<th>Peso</th>
+                                    <th>Vendedor</th>
+                                    <th>Serie</th>
+                                    <th>Referencia</th>
 								  </tr>
 								</thead>
 								<tbody id="body_tb_transaction_master_detail">
@@ -1508,8 +1511,55 @@ echo helper_getHtmlOfPageLanding();
 			<?php
 				helper_getHtmlOfModalDialog("ModalBackToList","modalBodyHtmlBackToList","fnAceptarModalBackToList");				
 			?>
-			
-			
+
+            <div id="modalBodyHtmlInfoProducto" style="display:none">
+                <h3>INFORMACION DEL PRODUCTO</h3>
+                <hr />
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="selectPrecio">Precios:</label>
+                    <div class="col-md-8">
+                        <select class="select2" id="selectPrecio"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="selectVendedor">Vendedor:</label>
+                    <div class="col-md-8">
+                        <select class="select2" id="selectVendedor">
+                            <?php
+                            $count					= 0;
+                            $employerDefault 		= "true"; //$objParameterINVOICE_BILLING_EMPLOYEE_DEFAULT;
+
+                            if($objListEmployee)
+                                foreach($objListEmployee as $employee){
+                                    if($count == 0 && $employerDefault == "true")
+                                        echo "<option value='".$employee->entityID."' selected >".$employee->firstName."</option>";
+                                    else
+                                        echo "<option value='".$employee->entityID."'  >".$employee->firstName."</option>";
+                                    $count++;
+                                }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="txtSerieProducto">Serie:</label>
+                    <div class="col-md-8">
+                        <input class="form-control" type="text" id="txtSerieProducto" value="" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="txtReferenciaProducto">Referencia:</label>
+                    <div class="col-md-8">
+                        <input class="form-control" type="text" id="txtReferenciaProducto" value="" />
+                    </div>
+                </div>
+                <input type="hidden" id="indexTransctionMasterDetail" value="" />
+                <p>&nbsp;</p>
+                <hr />
+            </div>
+            <?php
+            helper_getHtmlOfModalDialog("ModalInfoProducto","modalBodyHtmlInfoProducto","fnAceptarModalInfoProducto");
+            ?>
 			
 			
 			<div class="modal fade" tabindex="-1" id="modalDialogBackToListV2" role="dialog" data-backdrop="false">

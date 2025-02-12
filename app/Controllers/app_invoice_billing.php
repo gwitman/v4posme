@@ -1000,7 +1000,10 @@ class app_invoice_billing extends _BaseController {
 				$arrayListVencimiento						= array();
 				$arrayListSku								= array();
 				$arrayListSkuFormatoDescription 			= array();
-				
+				$arrayListInfoSales			                = array();
+				$arrayListInfoSerie 			            = array();
+                $arrayListInfoReferencia 			        = array();
+
 				$objParameterDeliminterCsv	= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT",$companyID);
 				$characterSplie = $objParameterDeliminterCsv->value;
 				
@@ -1033,6 +1036,9 @@ class app_invoice_billing extends _BaseController {
 					array_push($arrayListVencimiento, '');
 					array_push($arrayListSku,0);
 					array_push($arrayListSkuFormatoDescription,'');
+					array_push($arrayListInfoSales,'');
+					array_push($arrayListInfoSerie,'');
+					array_push($arrayListInfoReferencia,'');
 					
 				}
 			}
@@ -1051,6 +1057,9 @@ class app_invoice_billing extends _BaseController {
 				$arrayListVencimiento						= /*inicio get post*/ $this->request->getPost("txtDetailVencimiento");	
 				$arrayListSku								= /*inicio get post*/ $this->request->getPost("txtSku");
 				$arrayListSkuFormatoDescription				= /*inicio get post*/ $this->request->getPost("skuFormatoDescription");
+                $arrayListInfoSales				            = /*inicio get post*/ $this->request->getPost("txtInfoVendedor");
+                $arrayListInfoSerie				            = /*inicio get post*/ $this->request->getPost("txtInfoSerie");
+                $arrayListInfoReferencia				    = /*inicio get post*/ $this->request->getPost("txtInfoReferencia");
 				
 			}
 			
@@ -1115,7 +1124,12 @@ class app_invoice_billing extends _BaseController {
 					$comisionPorcentage						= 0;
 					$comisionPorcentage						= $this->core_web_transaction_master_detail->getPorcentageComision($companyID,$listPriceID,$itemID,$price);
 					$unitaryCost							= $this->core_web_transaction_master_detail->getCostCustomer($companyID,$itemID,$unitaryCost,$price);
-					
+
+                    //información del producto
+                    $infoSales				                = $arrayListInfoSales[$key];
+                    $infoSerie				                = $arrayListInfoSerie[$key];
+                    $infoReferencia				            = $arrayListInfoReferencia[$key];
+
 					//Actualisar nombre 		
 					if( $objParameterInvoiceUpdateNameInTransactionOnly  == "false")
 					{
@@ -1241,19 +1255,17 @@ class app_invoice_billing extends _BaseController {
 							$objPrice = $this->Price_Model->update_app_posme($companyID,$listPriceID,$itemID,$typePriceID,$dataUpdatePrice);									
 							
 						}
-						
-						
-						//Ingresar la lista de productos de RESTAURANTE
-						if ( $objParameterINVOICE_BILLING_TRAKING_BAR == "true")
-						{
-							$objTMDRNew["isActive"] 					= 1;
-							$objTMDRNew["createdOn"] 					= date("Y-m-d H:m:s");
-							$objTMDRNew["quantity"] 					= $objTMD["quantity"];
-							$objTMDRNew["componentID"] 					= $objTMD["componentID"];
-							$objTMDRNew["componentItemID"]				= $objTMD["componentItemID"];
-							$objTMDRNew["transactionMasterDetailID"]	= $transactionMasterDetailID_;
-							$this->Transaction_Master_Detail_References_Model->insert_app_posme($objTMDRNew);
-						}
+
+                        $objTMDRNew["isActive"] 					= 1;
+                        $objTMDRNew["createdOn"] 					= date("Y-m-d H:m:s");
+                        $objTMDRNew["quantity"] 					= $objTMD["quantity"];
+                        $objTMDRNew["componentID"] 					= $objTMD["componentID"];
+                        $objTMDRNew["componentItemID"]				= $objTMD["componentItemID"];
+                        $objTMDRNew["transactionMasterDetailID"]	= $transactionMasterDetailID_;
+                        $objTMDRNew["sales"]	                    = $infoSales;
+                        $objTMDRNew["reference1"]	                = $infoSerie;
+                        $objTMDRNew["reference2"]	                = $infoReferencia;
+                        $this->Transaction_Master_Detail_References_Model->insert_app_posme($objTMDRNew);
 						
 					}					
 					//Editar Detalle
@@ -1317,27 +1329,25 @@ class app_invoice_billing extends _BaseController {
 							$objPrice = $this->Price_Model->update_app_posme($companyID,$listPriceID,$itemID,$typePriceID,$dataUpdatePrice);									
 							
 						}
-						
-						
-						//Ingresar la lista de productos de RESTAURANTE
-						if ( $objParameterINVOICE_BILLING_TRAKING_BAR == "true" && $objTMDNew["quantity"] > $objTMDOld->quantity )
-						{
-							$quantityRestaranteTraking 					= $objTMDNew["quantity"] - $objTMDOld->quantity;
-							$objTMDRNew["isActive"] 					= 1;
-							$objTMDRNew["createdOn"] 					= date("Y-m-d H:m:s");
-							$objTMDRNew["quantity"] 					= $quantityRestaranteTraking;
-							$objTMDRNew["componentID"] 					= $objComponentItem->componentID;
-							$objTMDRNew["componentItemID"]				= $itemID;
-							$objTMDRNew["transactionMasterDetailID"]	= $transactionMasterDetailID;
-							$this->Transaction_Master_Detail_References_Model->insert_app_posme($objTMDRNew);
-						
-						}
-						
+                        /*$quantityRestaranteTraking                  = $objTMDNew["quantity"];
+                        if ( $objParameterINVOICE_BILLING_TRAKING_BAR == "true" && $objTMDNew["quantity"] > $objTMDOld->quantity )
+                        {
+                            $quantityRestaranteTraking 				= $objTMDNew["quantity"] - $objTMDOld->quantity;
+                        }else{
+                            $quantityRestaranteTraking              = $objTMDNew["quantity"];
+                        }*/
+                        $objTMDRNew["isActive"] 					= 1;
+                        $objTMDRNew["createdOn"] 					= date("Y-m-d H:m:s");
+                        $objTMDRNew["quantity"] 					= $objTMDNew["quantity"];;
+                        $objTMDRNew["componentID"] 					= $objComponentItem->componentID;
+                        $objTMDRNew["componentItemID"]				= $itemID;
+                        $objTMDRNew["transactionMasterDetailID"]	= $transactionMasterDetailID;
+                        $objTMDRNew["sales"]	                    = $infoSales;
+                        $objTMDRNew["reference1"]	                = $infoSerie;
+                        $objTMDRNew["reference2"]	                = $infoReferencia;
+                        $this->Transaction_Master_Detail_References_Model->update_byTransactionMasterDetailID_app_posme($transactionMasterDetailID, $objTMDRNew);
 						
 					}
-					
-					
-					
 					
 				}
 			}			
@@ -1831,7 +1841,10 @@ class app_invoice_billing extends _BaseController {
 			$arrayListVencimiento						= /*inicio get post*/ $this->request->getPost("txtDetailVencimiento");			
 			$arrayListSku								= /*inicio get post*/ $this->request->getPost("txtSku");
 			$arrayListSkuFormatoDescription				= /*inicio get post*/ $this->request->getPost("skuFormatoDescription");
-			
+			$arrayListInfoSales				            = /*inicio get post*/ $this->request->getPost("txtInfoVendedor");
+			$arrayListInfoSerie				            = /*inicio get post*/ $this->request->getPost("txtInfoSerie");
+			$arrayListInfoReferencia				    = /*inicio get post*/ $this->request->getPost("txtInfoReferencia");
+
 			//Ingresar la configuracion de precios		
 			$amountTotal 									= 0;
 			$tax1Total 										= 0;
@@ -1884,7 +1897,11 @@ class app_invoice_billing extends _BaseController {
 					$unitaryAmount 							= $price * (1 + $ivaPercentage);
 					$tax1 									= $price * $ivaPercentage;
 					$tax2									= $price * $taxServicesPercentage;
-					
+
+                    $infoSales				                = $arrayListInfoSales[$key];
+                    $infoSerie				                = $arrayListInfoSerie[$key];
+                    $infoReferencia				            = $arrayListInfoReferencia[$key];
+
 					//Actualisar nombre 
 					if( $objParameterInvoiceUpdateNameInTransactionOnly == "false")
 					{
@@ -1983,20 +2000,17 @@ class app_invoice_billing extends _BaseController {
 								
 						
 					}
-					
-					
-					//Ingresar la lista de productos de RESTAURANTE
-					if ( $objParameterINVOICE_BILLING_TRAKING_BAR == "true")
-					{
-						$objTMDRNew["isActive"] 					= 1;
-						$objTMDRNew["createdOn"] 					= date("Y-m-d H:m:s");
-						$objTMDRNew["quantity"] 					= $objTMD["quantity"];
-						$objTMDRNew["componentID"] 					= $objTMD["componentID"];
-						$objTMDRNew["componentItemID"]				= $objTMD["componentItemID"];
-						$objTMDRNew["transactionMasterDetailID"]	= $transactionMasterDetailID_;
-						$this->Transaction_Master_Detail_References_Model->insert_app_posme($objTMDRNew);
-					}
-					
+
+                    $objTMDRNew["isActive"] 					= 1;
+                    $objTMDRNew["createdOn"] 					= date("Y-m-d H:m:s");
+                    $objTMDRNew["quantity"] 					= $objTMD["quantity"];
+                    $objTMDRNew["componentID"] 					= $objTMD["componentID"];
+                    $objTMDRNew["componentItemID"]				= $objTMD["componentItemID"];
+                    $objTMDRNew["transactionMasterDetailID"]	= $transactionMasterDetailID_;
+                    $objTMDRNew["sales"]	                    = $infoSales;
+                    $objTMDRNew["reference1"]	                = $infoSerie;
+                    $objTMDRNew["reference2"]	                = $infoReferencia;
+                    $this->Transaction_Master_Detail_References_Model->insert_app_posme($objTMDRNew);
 					
 				}
 			}

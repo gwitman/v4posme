@@ -770,8 +770,8 @@ function helper_getHtmlOfModalDialog($name,$idDivBody,$fncallBack)
 			<div id="divBody'.$name.'">
 				
 			</div>
-			<button class="btnAceptar" onclick="'.$fncallBack.'(this)">Aceptar</button>
-	  		<button class="btnCerrar"  onclick="cerrarModal(\''.$name.'\')">Cerrar</button>
+			<button class="btnAceptar" onclick="event.preventDefault();'.$fncallBack.'(this)">Aceptar</button>
+	  		<button class="btnCerrar"  onclick="event.preventDefault();cerrarModal(\''.$name.'\')">Cerrar</button>
 	  	</div>
 	  </div>
 	

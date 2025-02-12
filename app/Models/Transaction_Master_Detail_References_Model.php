@@ -43,6 +43,17 @@ class Transaction_Master_Detail_References_Model extends Model  {
 		return $builder->update($data);
 		
    }
+
+    function update_byTransactionMasterDetailID_app_posme($transactionMasterDetailID,$data){
+        $db 	= db_connect();
+        $builder	= $db->table("tb_transaction_master_detail_references");
+
+
+        $builder->where("transactionMasterDetailID",$transactionMasterDetailID);
+        return $builder->update($data);
+
+    }
+
    function get_rowByPK($transactionMasterDetailRefereceID)
    {
 		$db 		= db_connect();
@@ -58,7 +69,10 @@ class Transaction_Master_Detail_References_Model extends Model  {
 									td.componentItemID,
 									td.isActive,
 									td.quantity ,
-									td.createdOn 
+									td.createdOn,
+									tdr.sales,
+									tdr.reference1,
+									tdr.reference2
 				");
 			$sql = $sql.sprintf("from tb_transaction_master_detail_references td");			
 			$sql = $sql.sprintf("where ");
@@ -88,7 +102,10 @@ class Transaction_Master_Detail_References_Model extends Model  {
 									i.name as itemName,
 									td.unitaryPrice,
 									td.unitaryPrice as amount,
-									td.tax1 
+									td.tax1,
+									tdr.sales,
+									tdr.reference1,
+									tdr.reference2
 				");
 			$sql = $sql.sprintf("from tb_transaction_master_detail_references tdr ");			
 			$sql = $sql.sprintf("inner join tb_transaction_master_detail td on td.transactionMasterDetailID = tdr.transactionMasterDetailID ");			
@@ -118,7 +135,10 @@ class Transaction_Master_Detail_References_Model extends Model  {
 								tdr.componentItemID,
 								tdr.isActive,
 								tdr.quantity ,
-								tdr.createdOn
+								tdr.createdOn,
+								tdr.sales,
+								tdr.reference1,
+								tdr.reference2
 			");
 		$sql = $sql.sprintf("from tb_transaction_master_detail_references tdr ");			
 		$sql = $sql.sprintf("inner join tb_transaction_master_detail td on td.transactionMasterDetailID = tdr.transactionMasterDetailID ");			
