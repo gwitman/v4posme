@@ -17,11 +17,6 @@
                             fnCalcularMontoTotal()
                         });
 						
-						$(document).on("change","#txtCurrencyID",function(){
-							updatePantalla();
-							updateAmount();
-						});
-						
 						$(document).on("change","#txtPriorityID",function(){
 							var tipoGasto = $(this).val();
 							
@@ -54,7 +49,45 @@
 								}
 								
 						});
+
+						//Buscar el proveedor
+						$(document).on("click","#btnSearchProvider",function(){
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentProvider->componentID; ?>/onCompleteProvider/SELECCIONAR_PROVEEDOR/true/empty/false/not_redirect_when_empty";
+							window.open(url_request,"MsgWindow","width=900,height=450");
+							window.onCompleteProvider = onCompleteProvider; 
+						});						
+					
+						//Eliminar proveedor
+						$(document).on("click","#btnClearProvider",function(){
+							fnClearExpense();
+						});
+
+						//Buscar el amortizacion
+						$(document).on("click","#btnSearchAmortization",function()
+						{
+							var providerID = $("#txtProviderID").val();
+							var currencyID	= $("#txtCurrencyID").val();
+							if(providerID == "")
+							{
+								fnShowNotification("Seleccione el proveedor","error");
+								return;
+							}
+
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentAmortization->componentID; ?>/onCompleteAmortization/SELECCIONAR_CUOTA_CXP/true/" + encodeURI('{\"entityID\"|\"' + providerID + '\",\"currencyID\"|\"' + currencyID + '\"}') + "/false/not_redirect_when_empty";
+							window.open(url_request,"MsgWindow","width=900,height=450");
+							window.onCompleteAmortization = onCompleteAmortization; 
+						});						
+					
+						//Eliminar amortizacion
+						$(document).on("click","#btnClearAmortization",function(){
+							$("#txtAmortizationID").val("");
+							$("#txtAmortizationDescription").val("");
+						});
 						
+						$(document).on("change","#txtCurrencyID",function(){
+							$("#txtAmortizationID").val("");
+							$("#txtAmortizationDescription").val("");
+						});
 						
 						$(document).on("click","#btnPrinter",function(){
 									fnWaitOpen();
@@ -164,4 +197,30 @@
                         var total = monto+iva;
                         $('#txtTransactionMasterTax2').val(total);
                     }
+
+					function fnClearExpense()
+					{
+						$("#txtProviderID").val("");
+						$("#txtProviderDescription").val("");
+
+						$("#txtAmortizationID").val("");
+						$("#txtAmortizationDescription").val("");
+					}
+
+					function onCompleteProvider(objResponse)
+					{
+						console.info("CALL onCompleteProvider");
+						fnClearExpense();
+						$("#txtProviderID").val(objResponse[0][1]);
+						$("#txtProviderDescription").val(objResponse[0][2] + " | " + objResponse[0][3]);
+					}
+
+					function onCompleteAmortization(objResponse)
+					{
+						console.info("CALL onCompleteProvider");
+						$("#txtCustomerCreditDocumentID").val(objResponse[0][0]);
+						$("#txtAmortizationID").val(objResponse[0][1]);
+						$("#txtDocumentNumber").val(objResponse[0][2]);
+						$("#txtAmortizationDescription").val(objResponse[0][2] + " | Pendiente = " + objResponse[0][5]);
+					}
 				</script>
