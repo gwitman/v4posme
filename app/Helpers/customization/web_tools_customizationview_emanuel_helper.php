@@ -17,6 +17,9 @@ function getBehavioEmanuel(): array
 		strtolower('emanuel_app_invoice_billing_txtScanerBarCode') 							                	=> "hidden",
 		strtolower('emanuel_app_invoice_billing_btnNewItemCatalog') 							                => "hidden",
 		strtolower('emanuel_app_invoice_billing_divTxtCausalIDScript') 							            	=> "",
+		strtolower('emanuel_app_invoice_billing_divTxtCedulaBeneficiario')						            	=> "RUC",
+		
+		
 		strtolower('emanuel_app_invoice_billing_divTxtZone') 							                        => "hidden",
 		strtolower('emanuel_app_invoice_billing_divHiddenEmployer') 							                => "hidden",
 		strtolower('emanuel_app_invoice_billing_divBtnPrecios') 							                    => "hidden",

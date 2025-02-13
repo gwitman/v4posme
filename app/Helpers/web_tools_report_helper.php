@@ -8804,12 +8804,22 @@ function helper_reporte80mmTransactionMasterEmanuel(
 			
 		  if($causalName != ""){
 			$html	= $html."<tr>
+							<!--
 							<td colspan='1'>
 								Tipo:
 							</td>
 							<td colspan='2'>
 								".$causalName."
 							</td>
+							-->
+							
+							<td colspan='1'>
+								Pago:
+							</td>
+							<td colspan='2'>
+								". ($objTransactionMasterInfo->receiptAmountCard > 0 ? "TARJETA" : "EFECTIVO" ) ."
+							</td>
+							
 						</tr>";
 		  }
 			
@@ -8837,8 +8847,9 @@ function helper_reporte80mmTransactionMasterEmanuel(
           $html	= $html."
 						<tr>
 						  <td colspan='1'>
-							Cliente:". ( $objTransactionMasterInfo->referenceClientName == "" ?   $objEntidadNatural->firstName." ".$objEntidadNatural->lastName  :  $objTransactionMasterInfo->referenceClientName)  ."
+							Cliente:
                           <td colspan='2'>
+							". ( $objTransactionMasterInfo->referenceClientName == "" ?   $objEntidadNatural->firstName." ".$objEntidadNatural->lastName  :  $objTransactionMasterInfo->referenceClientName)  ." 
                           </td>
                         </tr>
 						
@@ -9194,7 +9205,7 @@ function helper_reporte80mmTransactionMasterRegistrada(
 
                 if( $confiDetalle[$colun]["nueva_fila_row_data"] ==  1 &&  strpos($key, "-comand-new-row") !== false  )
                 {
-                    $cuerpo 		= $cuerpo."<tr >";
+                    $cuerpo 		= $cuerpo."<tr><td>&nbsp;</td></tr><tr >";
 
                     $cuerpo = $cuerpo."<td style=".$confiDetalle[$colun]["style_row_data"]." colspan='". $colunCantidad ."' >";
                     $cuerpo = $cuerpo.$confiDetalle[$colun]["prefix_row_data"]." ". str_replace("-comand-new-row", "", $key );
