@@ -8673,7 +8673,8 @@ function helper_reporte80mmTransactionMasterEmanuel(
     $statusName = "", /*estado*/
     $causalName = "", /*causal*/
 	$userNickName = "", /*vendedor*/
-    $rucCompany = "" /*ruc*/
+    $rucCompany = "" /*ruc*/ ,
+	$dataView = "" 
 )
 {
     $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
@@ -8774,24 +8775,31 @@ function helper_reporte80mmTransactionMasterEmanuel(
 						
           if($userNickName != "")
 		  {      
-			$html	= $html."<tr>
+			$html	= $html."
+						<!--
+						<tr>
                           <td colspan=''>
                             Vendedor:
                           </td>
 						  <td colspan='2'>
                             ". (strpos($userNickName , "@") === false ? $userNickName : substr($userNickName,0,strpos($userNickName , "@") ) )   ."
                           </td>
-                        </tr>";
+                        </tr>
+						-->";
 		  }
 						
-          $html	= $html."<tr>
+          $html	= $html."
+						<!--
+						<tr>
                           <td colspan=''>
                             Codigo:
                           </td>
 						  <td colspan='2'>
                             ".$objEntidadCustomer->customerNumber."
                           </td>
-                        </tr>";
+                        </tr>
+						-->
+						";
 			
 			
 		  if($causalName != ""){
@@ -8811,7 +8819,7 @@ function helper_reporte80mmTransactionMasterEmanuel(
                             Estado
                           </td>
 						  <td colspan='2'>
-                            ". ($statusName == "CANCELADA" ? "APLICADA" : $statusName ) ."
+                            ". ($statusName == "APLICADA" ? "CANCELADA" : $statusName ) ."
                           </td>
                         </tr>
                             
@@ -8829,17 +8837,11 @@ function helper_reporte80mmTransactionMasterEmanuel(
           $html	= $html."
 						<tr>
 						  <td colspan='1'>
-							Cliente:
+							Cliente:". ( $objTransactionMasterInfo->referenceClientName == "" ?   $objEntidadNatural->firstName." ".$objEntidadNatural->lastName  :  $objTransactionMasterInfo->referenceClientName)  ."
                           <td colspan='2'>
                           </td>
                         </tr>
 						
-						<tr>
-						  <td colspan='3'>							
-                            ". ( $objTransactionMasterInfo->referenceClientName == "" ?   $objEntidadNatural->firstName." ".$objEntidadNatural->lastName  :  $objTransactionMasterInfo->referenceClientName)  ."
-                          </td>
-                        </tr>
-
 						
 						<!--
                         <tr>
@@ -8849,9 +8851,11 @@ function helper_reporte80mmTransactionMasterEmanuel(
                         </tr>
 						-->
 						
+						<!--
 						<tr>
                           <td colspan='3' style='text-align:left'>".$objTransactionMastser->note."</td>
                         </tr>
+						-->
                                 
                          <tr>
                           <td colspan='3' style='text-align:center'>
@@ -9039,7 +9043,8 @@ function helper_reporte80mmTransactionMasterRegistrada(
     $statusName = "", /*estado*/
     $causalName = "", /*causal*/
     $userNickName = "", /*vendedor*/
-    $rucCompany = "" /*ruc*/
+    $rucCompany = "" /*ruc*/ , 
+	$dataView = "" 
 )
 {
     $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
@@ -9095,6 +9100,11 @@ function helper_reporte80mmTransactionMasterRegistrada(
                         <tr>
                           <td colspan='3' style='text-align:center'>
                             FECHA: ".$objTransactionMastser->createdOn."
+                          </td>
+						 </tr>
+						 <tr>
+						  <td colspan='3' style='text-align:center'>
+                            MESA: ". ($dataView["objMesa"] ? $dataView["objMesa"]->name : "N/D") ."
                           </td>
                         </tr>
                                 

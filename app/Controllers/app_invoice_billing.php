@@ -7312,6 +7312,8 @@ class app_invoice_billing extends _BaseController {
             $datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
             $datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
             $datView["objUser"]						= $this->User_Model->get_rowByPK($companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
+			$datView["objZone"]						= $this->core_web_catalog->getCatalogItem("tb_transaction_master_info_billing","zoneID",$companyID,$datView["objTMI"]->zoneID);
+			$datView["objMesa"]						= $this->core_web_catalog->getCatalogItem("tb_transaction_master_info_billing","mesaID",$companyID,$datView["objTMI"]->mesaID);			
             $prefixCurrency 						= $datView["objCurrency"]->simbol." ";
 
 
@@ -7396,7 +7398,8 @@ class app_invoice_billing extends _BaseController {
                     $datView["objStage"][0]->display, /*estado*/
                     $datView["objTC"]->name /*causal*/,
                     $datView["objUser"]->nickname,
-                    $objParameterRuc /*ruc*/
+                    $objParameterRuc /*ruc*/ , 
+					$datView 
                 );
             }else{
                 $html = helper_reporte80mmTransactionMasterRegistrada(
@@ -7415,7 +7418,8 @@ class app_invoice_billing extends _BaseController {
                     $datView["objStage"][0]->display, /*estado*/
                     $datView["objTC"]->name /*causal*/,
                     $datView["objUser"]->nickname,
-                    $objParameterRuc /*ruc*/
+                    $objParameterRuc /*ruc*/ , 
+					$datView
                 );
             }
 
