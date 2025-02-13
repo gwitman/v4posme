@@ -10035,7 +10035,8 @@ class app_invoice_billing extends _BaseController {
 			foreach($datView["objTMD"] as $detail_){
 			    $row = array(
 					$detail_->itemName. " ". strtolower($detail_->skuFormatoDescription),  
-					sprintf("%01.2f",round($detail_->quantity,2)), 
+					sprintf("%01.2f",round($detail_->quantity,2))."  * ".
+					sprintf("%s",number_format($detail_->unitaryAmount,2,".","," )) , 
 					sprintf("%01.2f",round($detail_->amount,2))
 				);
 			    array_push($detalle,$row);
