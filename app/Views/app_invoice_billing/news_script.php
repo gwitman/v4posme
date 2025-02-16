@@ -304,6 +304,13 @@
 		$("#mySidebarZona").removeClass("hidden");
 	});
 	
+	 
+	
+	$(document).on("focus",'#txtReceiptAmount', function(e) {	
+		$(this).val("");	
+	});
+	
+	
 	$(document).on("keypress",'#txtReceiptAmount', function(e) {	
 		var code = e.keyCode || e.which;
 		 if(code != 13) { 
@@ -315,6 +322,9 @@
 			
 	});
 	
+	$(document).on("focus",'#txtReceiptAmountDol', function(e) {	
+		$(this).val("");	
+	});
 	
 	$(document).on("keypress",'#txtReceiptAmountDol', function(e) {		
 	
@@ -760,8 +770,14 @@
 	$(document).on("change","input#txtReceiptAmountPoint",function(){							
 			fnCalculateAmountPay();			
 	});
+	$(document).on("focus","input#txtReceiptAmountTarjeta",function(){							
+			$(this).val("");			
+	});
 	$(document).on("change","input#txtReceiptAmountTarjeta",function(){							
 			fnCalculateAmountPay();			
+	});
+	$(document).on("focus","input#txtReceiptAmountTarjetaDol",function(){							
+			$(this).val("");		
 	});
 	$(document).on("change","input#txtReceiptAmountTarjetaDol",function(){							
 			fnCalculateAmountPay();			
