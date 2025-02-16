@@ -72,7 +72,10 @@ class Transaction_Master_Detail_References_Model extends Model  {
 									td.createdOn,
 									tdr.sales,
 									tdr.reference1,
-									tdr.reference2
+									tdr.reference2,
+									tdr.precio1,
+									tdr.precio2,
+									tdr.precio3
 				");
 			$sql = $sql.sprintf("from tb_transaction_master_detail_references td");			
 			$sql = $sql.sprintf("where ");
@@ -105,7 +108,10 @@ class Transaction_Master_Detail_References_Model extends Model  {
 									td.tax1,
 									tdr.sales,
 									tdr.reference1,
-									tdr.reference2
+									tdr.reference2,
+									tdr.precio1,
+									tdr.precio2,
+									tdr.precio3
 				");
 			$sql = $sql.sprintf("from tb_transaction_master_detail_references tdr ");			
 			$sql = $sql.sprintf("inner join tb_transaction_master_detail td on td.transactionMasterDetailID = tdr.transactionMasterDetailID ");			
@@ -138,7 +144,10 @@ class Transaction_Master_Detail_References_Model extends Model  {
 								tdr.createdOn,
 								tdr.sales,
 								tdr.reference1,
-								tdr.reference2
+								tdr.reference2,
+								tdr.precio1,
+                                tdr.precio2,
+                                tdr.precio3
 			");
 		$sql = $sql.sprintf("from tb_transaction_master_detail_references tdr ");			
 		$sql = $sql.sprintf("inner join tb_transaction_master_detail td on td.transactionMasterDetailID = tdr.transactionMasterDetailID ");			
@@ -169,7 +178,10 @@ class Transaction_Master_Detail_References_Model extends Model  {
 								tdr.createdOn,
 								tdr.sales,
 								tdr.reference1,
-								tdr.reference2
+								tdr.reference2,
+								tdr.precio1,
+								tdr.precio2,
+								tdr.precio3
 			");
         $sql = $sql.sprintf("from tb_transaction_master_detail_references tdr ");
         $sql = $sql.sprintf("inner join tb_transaction_master_detail td on td.transactionMasterDetailID = tdr.transactionMasterDetailID ");

@@ -808,6 +808,7 @@ echo helper_getHtmlOfPageLanding();
                                         <th>Vendedor</th>
                                         <th>Serie</th>
                                         <th>Referencia</th>
+                                        <th>Precio1</th>
 									  </tr>
 									</thead>
 									<tbody id="body_tb_transaction_master_detail">

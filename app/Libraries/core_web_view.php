@@ -1204,8 +1204,8 @@ class core_web_view {
 						
 						//dos clic
 						$(document).on('dblclick','#".$idTable." tr',function(){								
-							var data		= [];	
-							var idata		= objTableListView.fnGetData(this);						    	
+							var data		    = [];
+							var idata		= objTable".$idTable.".fnGetData(this);						    	
 							data.push(idata);
 							window.opener.".$parameterAjax["{fnCallback}"]."(data); 
 						});

@@ -10,17 +10,15 @@
 				
 					
 					var viewName 	= '<?php echo $viewname;?>';
-					var data		= {};					
+					let data		= [];
 					
 					
 					if(multiselect == false)
 					{
-						var data		= [];					
 						data.push(objTableListView.fnGetData(objRowTableListView));
 					}
 					else
 					{
-						var data		= [];
 						var objListaFilasSeleccionadas 	= $('tr.row-selected');
 						for(var i = 0 ; i < objListaFilasSeleccionadas.length ; i++){
 							var ipush 	= {};
@@ -28,7 +26,6 @@
 							data.push(ipush);
 						}	
 					}
-					
 					if(objRowTableListView == undefined)
 					window.opener.<?php echo $fnCallback;?>(undefined); 
 					else
