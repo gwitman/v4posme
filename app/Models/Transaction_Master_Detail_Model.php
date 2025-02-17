@@ -687,8 +687,10 @@ class Transaction_Master_Detail_Model extends Model  {
 					t.statusID = ws.workflowStageID
 				left join tb_naturales nat on 
 					nat.entityID = t.entityIDSecondary 
+				inner join tb_user us on 
+					us.userID = t.createdBy 
 				inner join tb_branch b on 
-					b.branchID = t.branchID 
+					b.branchID = us.locationID 
 			where 
 				t.transactionID in (19,20) and   
 				t.isActive = 1   

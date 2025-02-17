@@ -123,7 +123,7 @@
 					var objTransactionMasterTecnico			 	= JSON.parse('<?php echo json_encode($objListTecnico); ?>');	
 					var objTransactionMasterMensuales		 	= JSON.parse('<?php echo json_encode($objListVentaMensual); ?>');	
 					var objTransactionMasterDiarias			 	= JSON.parse('<?php echo json_encode($objListVentaDiaria); ?>');	
-					var objTransactionMasterMensualesPorSucursal= JSON.parse('<?php echo json_encode($objListVentaMensualPorSucursal); ?>');	
+					var objTransactionMasterMensualesPorSucursal= JSON.parse('<?php echo json_encode($objListVentaMensualPorSucursal); ?>')[0];	
 					var objDataSourceProductosMasVendidos	 	= new Array();
 					var objDataSourceProductosMasTenicos	 	= new Array();
 					var objDataSourceVentaSucursal 				= new Array ();

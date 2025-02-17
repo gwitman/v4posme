@@ -463,11 +463,11 @@ class core_dashboards extends _BaseController {
 			$objLastDayMont =  \DateTime::createFromFormat('Y-m-d', $objFirstYearDate->format("Y-m-d"));
 			$objLastDayMont->modify('+1 month');
 			$objLastDayMont->modify('-1 day');
-
+			
 			$objListVentaMensualTemporal = $this->Transaction_Master_Detail_Model->GlobalPro_get_MonthOnly_SalesByBranch($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objFirstDate->format("Y-m-d")." 23:59:59" );
 			if($objListVentaMensualTemporal)
 			{
-				array_push($objListVentaMensualPorSucursal, $objListVentaMensualTemporal[0]);
+				array_push($objListVentaMensualPorSucursal, $objListVentaMensualTemporal);
 
 			}
 			$objFirstYearDate->modify('+1 month');
