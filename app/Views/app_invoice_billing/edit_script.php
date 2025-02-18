@@ -101,6 +101,12 @@
     var selectedFilaInfoProducto;
     var selectedDataInfoProducto;
 
+    let columnasTableDetail = {
+        precio1 : 22,
+        precio2 : 14,
+        precio3 : 15
+    };
+
 	if(varDetail != null){
 		for(var i = 0 ; i < varDetail.length;i++){
             //master detail reference
@@ -132,14 +138,20 @@
 			{
 				taxServices  = varDetail[i].tax2 / varDetail[i].unitaryPrice ;
 			}
-            let infoSales = '';
-            let infoSerie = '';
-            let infoReferencia='';
+            let infoSales       = '';
+            let infoSerie       = '';
+            let infoReferencia  ='';
+            let infoPrecio1     = 0;
+            let infoPrecio2     = 0;
+            let infoPrecio3     = 0;
 
             if (objDetailReference && objDetailReference.length > 0) {
-                infoSales = objDetailReference[0].sales;
-                infoSerie = objDetailReference[0].reference1;
-                infoReferencia = objDetailReference[0].reference2;
+                infoSales       = objDetailReference[0].sales;
+                infoSerie       = objDetailReference[0].reference1;
+                infoReferencia  = objDetailReference[0].reference2;
+                infoPrecio1     = objDetailReference[0].precio1;
+                infoPrecio2     = objDetailReference[0].precio2;
+                infoPrecio3     = objDetailReference[0].precio3;
             }
 			
 			//Rellenar Datos
@@ -158,14 +170,15 @@
 				fnFormatNumber(varDetail[i].unitaryPrice, 4),
 				"",//acciones
 				varDetail[i].skuFormatoDescription,
-				Precio2,
-				Precio3,
+                fnFormatNumber(infoPrecio2, 2),
+                fnFormatNumber(infoPrecio3, 2),
 				"'"+varDetail[i].itemNameDescriptionLog + "'", 
 				fnFormatNumber(taxServices,2) /*tax_services*/ ,
 				varDetail[i].reference1, /*peso */
                 infoSales,
                 infoSerie,
-                infoReferencia
+                infoReferencia,
+                fnFormatNumber(infoPrecio1, 2)
 			]);
 		}
 	}	
@@ -829,9 +842,9 @@
         let selectTr = $(this).closest('tr');
         selectedFilaInfoProducto = objTableDetail.fnGetPosition(selectTr[0]);
         selectedDataInfoProducto = objTableDetail.fnGetData(selectedFilaInfoProducto);
-        let precio1 = $(this).data('precio1');
-        let precio2 = $(this).data('precio2');
-        let precio3 = $(this).data('precio3');
+        let precio1 = selectedDataInfoProducto[columnasTableDetail.precio1];
+        let precio2 = selectedDataInfoProducto[columnasTableDetail.precio2];
+        let precio3 = selectedDataInfoProducto[columnasTableDetail.precio3];
         let precios = [fnFormatNumber(precio1, 2), fnFormatNumber(precio2, 2), fnFormatNumber(precio3, 2)];
         let selectPrecio = $('#selectPrecio');
         let precio = selectedDataInfoProducto[7];
@@ -1194,7 +1207,7 @@
 		objRow.description					= objResponse[18].toLowerCase();
 		objRow.um							= objResponse[23];
 		objRow.umDescription				= objResponse[20];
-		objRow.quantity 					= fnFormatNumber(1,2);
+		objRow.quantity 					= fnFormatNumber(objResponse[21],2);
 		objRow.bquantity 					= fnFormatNumber(objResponse[21],2);
 		objRow.price 						= fnFormatNumber(objResponse[22],2);
 		objRow.total 						= fnFormatNumber(objRow.quantity * objRow.price,2);						
@@ -1209,16 +1222,17 @@
         objRow.vendedor 					= 0;
         objRow.serie 						= "";
         objRow.referencia 					= "";
-		
+        objRow.precio1 					    = fnFormatNumber(objResponse[22],2);
+
 		//Berificar que el Item ya esta agregado 
 		if(jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[2] == objRow.itemID;}).select().length > 0 ){
 			var x_ 			= jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[2] == objRow.itemID;}).select();
 			var newCantidad =  0;
 			
 			if (suma == true)
-			newCantidad =  parseFloat(fnFormatNumber(x_[0][6],2)) + 1;
+			newCantidad =  parseFloat(fnFormatNumber(x_[0][6],2)) + parseFloat(objRow.bquantity);
 			else
-			newCantidad =  parseFloat(fnFormatNumber(x_[0][6],2)) - 1;
+			newCantidad =  parseFloat(fnFormatNumber(x_[0][6],2)) - parseFloat(objRow.bquantity);
 		
 		
 			var objind_ 	= fnGetPosition(x_,objTableDetail.fnGetData());
@@ -1260,7 +1274,8 @@
 				objRow.peso,
                 objRow.vendedor,
                 objRow.serie,
-                objRow.referencia
+                objRow.referencia,
+                objRow.precio1
 			]);
 			
 			if(varUseMobile != "1"){
@@ -2855,38 +2870,48 @@
 		var data		 = {};					
 		var dataResponse = [];
 		data			 = ee;
-		
-		dataResponse[0] =  data[0][0];
-		dataResponse[1] =  data[0][0];
-		dataResponse[2] =  data[0][0];
-		dataResponse[3] =  data[0][0];
-		dataResponse[4] =  data[0][0];
-		dataResponse[5] =  data[0][0];//itemID
-		dataResponse[6] =  data[0][0];
-		dataResponse[7] =  data[0][0];
-		dataResponse[8] =  data[0][0];
-		dataResponse[9] =  data[0][0];
-		dataResponse[10] = data[0][0];
-		dataResponse[11] = data[0][0];
-		dataResponse[12] = data[0][0];
-		dataResponse[13] = data[0][0];
-		dataResponse[14] = data[0][0];
-		dataResponse[15] = data[0][0];
-		dataResponse[16] = data[0][0];
-		dataResponse[17] = data[0][4];//Codigo
-		dataResponse[18] = data[0][5];//Nombre
-		dataResponse[19] = data[0][0];
-		dataResponse[20] = data[0][7];//Unidad de medida
-		dataResponse[21] = data[0][8];//Cantidad
-		dataResponse[22] = data[0][9];//Precio
-		dataResponse[23] = data[0][1];//UnitMeasuereID
-		
-			
-		dataResponse[24] = data[0][10];//Description
-		dataResponse[25] = data[0][2];//Precio2
-		dataResponse[26] = data[0][3];//Precio3
-		
-		onCompleteNewItem(dataResponse,true);
+
+        for(let i=0; i < data.length; i++){
+            let element = data[i];
+            const containsInputOrSelect = element.some(item => {
+                if (typeof item === 'string') {
+                    return item.includes('<input') || item.includes('<select');
+                }
+                return false;
+            });
+            if (containsInputOrSelect === false){
+                data[i][8]   = 1 ;//Cantidad
+            }
+            dataResponse[0]  = element[0];
+            dataResponse[1]  = element[0];
+            dataResponse[2]  = element[0];
+            dataResponse[3]  = element[0];
+            dataResponse[4]  = element[0];
+            dataResponse[5]  = element[0];//itemID
+            dataResponse[6]  = element[0];
+            dataResponse[7]  = element[0];
+            dataResponse[8]  = element[0];
+            dataResponse[9]  = element[0];
+            dataResponse[10] = element[0];
+            dataResponse[11] = element[0];
+            dataResponse[12] = element[0];
+            dataResponse[13] = element[0];
+            dataResponse[14] = element[0];
+            dataResponse[15] = element[0];
+            dataResponse[16] = element[0];
+            dataResponse[17] = element[4];//Codigo
+            dataResponse[18] = element[5];//Nombre
+            dataResponse[19] = element[0];
+            dataResponse[20] = element[7];//Unidad de medida
+            dataResponse[21] = element[8];//Cantidad
+            dataResponse[22] = element[9];//Precio
+            dataResponse[23] = element[1];//UnitMeasuereID
+            dataResponse[24] = element[10];//Description
+            dataResponse[25] = element[2];//Precio2
+            dataResponse[26] = element[3];//Precio3
+
+            onCompleteNewItem(dataResponse, true);
+        }
 	}	
 	
 	
@@ -3280,15 +3305,14 @@
 								"mRender"		: function ( data, type, full ) 
 								{	
 																		
-									var objProductoPrecio1 = full[7];
-									var objProductoPrecio2 = full[14];
-									var objProductoPrecio3 = full[15];
-									
-									objProductoPrecio1 = fnFormatFloat(objProductoPrecio1);
-									objProductoPrecio2 = fnFormatFloat(objProductoPrecio2);
-									objProductoPrecio3 = fnFormatFloat(objProductoPrecio3);
-									
-									
+									let objProductoPrecio1 = full[columnasTableDetail.precio1];
+									let objProductoPrecio2 = full[columnasTableDetail.precio2];
+									let objProductoPrecio3 = full[columnasTableDetail.precio3];
+
+                                    objProductoPrecio1 = fnFormatFloat(objProductoPrecio1);
+                                    objProductoPrecio2 = fnFormatFloat(objProductoPrecio2);
+                                    objProductoPrecio3 = fnFormatFloat(objProductoPrecio3);
+
 									var styleButtom = "";
 									if(varUseMobile == "1")
 									styleButtom = "style='text-align:right'";
@@ -3339,7 +3363,7 @@
 								//}
 							},
 							{
-								"aTargets"		: [ 14 ],//Precio2
+								"aTargets"		: [ columnasTableDetail.precio2 ],//Precio2
 								"bVisible"		: true,
 								"sClass"		: "hidden",
 								"bSearchable"	: false,
@@ -3353,7 +3377,7 @@
 								//}
 							},
 							{
-								"aTargets"		: [ 15 ],//Precio3
+								"aTargets"		: [ columnasTableDetail.precio3 ],//Precio3
 								"bVisible"		: true,
 								"sClass"		: "hidden",
 								"bSearchable"	: false,
@@ -3418,6 +3442,15 @@
                                 "bSearchable"	: false,
                                 "mRender"		: function ( data, type, full ) {
                                     return '<input type="text" class="col-lg-12 txtInfoReferencia" value="'+data+'" name="txtInfoReferencia[]" style="text-align:right" />';
+                                }
+                            },
+                            {
+                                "aTargets"		: [ columnasTableDetail.precio1 ],//Precio1
+                                "bVisible"		: true,
+                                "sClass"		: "hidden",
+                                "bSearchable"	: false,
+                                "mRender"		: function ( data, type, full ) {
+                                    return '<input type="hidden" value="'+data+'" name="txtItemPrecio1[]" />';
                                 }
                             },
 				]						
