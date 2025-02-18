@@ -1237,8 +1237,6 @@ class app_box_share extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-			echo $ex;
-			exit();
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}

@@ -51,7 +51,7 @@
 								
 						});
 						$(document).on("click","#btnClickArchivo",function(){
-							window.open("<?php echo base_url()."core_elfinder/index/componentID/".$objComponent->componentID."/componentItemID/".$objProvider->entityID; ?>","blanck");
+							window.open("<?php echo base_url()."/core_elfinder/index/componentID/".$objComponent->componentID."/componentItemID/".$objProvider->entityID; ?>","blanck");
 						});
 						//Grid de Email
 						objTableEmail = $("#tb_detail_email").dataTable({
