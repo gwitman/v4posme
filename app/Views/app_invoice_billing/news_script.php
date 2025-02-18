@@ -626,15 +626,15 @@
     $(document).on('click', '.btnInfoProducto',function(e){
         e.preventDefault();
         //obtener datos
-        let selectTr = $(this).closest('tr');
-        selectedFilaInfoProducto = objTableDetail.fnGetPosition(selectTr[0]);
-        selectedDataInfoProducto = objTableDetail.fnGetData(selectedFilaInfoProducto);
-        let precio1 = selectedDataInfoProducto[columnasTableDetail.precio1];
-        let precio2 = selectedDataInfoProducto[columnasTableDetail.precio2];
-        let precio3 = selectedDataInfoProducto[columnasTableDetail.precio3];
-        let precios = [fnFormatNumber(precio1, 2), fnFormatNumber(precio2, 2), fnFormatNumber(precio3, 2)];
-        let selectPrecio = $('#selectPrecio');
-        let precio = selectedDataInfoProducto[7];
+        let selectTr 				= $(this).closest('tr');
+        selectedFilaInfoProducto 	= objTableDetail.fnGetPosition(selectTr[0]);
+        selectedDataInfoProducto 	= objTableDetail.fnGetData(selectedFilaInfoProducto);
+        let precio1 				= selectedDataInfoProducto[columnasTableDetail.precio1];
+        let precio2 				= selectedDataInfoProducto[columnasTableDetail.precio2];
+        let precio3 				= selectedDataInfoProducto[columnasTableDetail.precio3];
+        let precios 				= [fnFormatNumber(precio1, 2), fnFormatNumber(precio2, 2), fnFormatNumber(precio3, 2)];
+        let selectPrecio 			= $('#selectPrecio');
+        let precio 					= selectedDataInfoProducto[7];
         selectPrecio.empty();
 
         //establecer precios
@@ -2518,18 +2518,25 @@
         var data		 = {};
         var dataResponse = [];
         data			 = ee;
+		
         if(data.length < 0) return;
-        for(let i=0; i < data.length; i++){
-            let element = data[i];
+        for(let i=0; i < data.length; i++)
+		{
+			//si no hay ningun string input o select 
+			//dejar por defecto cantidad igual a 1
+            let element 				= data[i];
             const containsInputOrSelect = element.some(item => {
                 if (typeof item === 'string') {
                     return item.includes('<input') || item.includes('<select');
                 }
                 return false;
             });
-            if (containsInputOrSelect === false){
-                data[i][8]   = 1 ;//Cantidad
+			
+            if (containsInputOrSelect === false)
+			{
+                element[8]   = 1 ;//Cantidad
             }
+			
             dataResponse[0]  = element[0];
             dataResponse[1]  = element[0];
             dataResponse[2]  = element[0];

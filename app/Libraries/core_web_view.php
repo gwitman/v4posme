@@ -1207,21 +1207,27 @@ class core_web_view {
 							var data		    = [];	
 							let findQuantity    = $(this).find('.quantity_inline');
 							//obtener valores de cantidad si existe input o select
-							if (findQuantity.length > 0) {
-                                let cantidad;
+							if (findQuantity.length > 0) 
+							{
+                                let cantidad		= 0;
                                 let findDataIndex   = $(findQuantity[0]);
                                 let index           = 0;
                                 if (findQuantity.hasClass('select2')){
                                     index       = $(findQuantity[1]).data('index');
                                     cantidad    = parseFloat(findQuantity.select2('data').text);
-                                }else{
+                                }
+								else
+								{
                                     index       = findDataIndex.data('index');
                                     cantidad    = parseFloat(findQuantity.val());
                                 }
                                 
-                                if (cantidad !== null && cantidad !== undefined && cantidad !== '') {
-                                    objTable".$idTable.".fnUpdate(cantidad, objRowTable".$idTable.", index);
-                                } 
+								if(index > 0 )
+								{
+									if (cantidad !== null && cantidad !== undefined && cantidad !== '') {
+										objTable".$idTable.".fnUpdate(cantidad, objRowTable".$idTable.", index);
+									} 
+								}
 							}
 							var idata		= objTable".$idTable.".fnGetData(this);						    	
 							data.push(idata);
@@ -1234,20 +1240,26 @@ class core_web_view {
 							let findQuantity    = firstTableRow.find('.quantity_inline');
 							//obtener valores de cantidad si existe input o select
 							if (findQuantity.length > 0) {
-							    let cantidad;
+							    let cantidad		= 0;
 							    let findDataIndex   = $(findQuantity[0]);
                                 let index           = 0;
-                                if (findQuantity.hasClass('select2')){
+                                if (findQuantity.hasClass('select2'))
+								{
                                     index       = $(findQuantity[1]).data('index');
                                     cantidad    = parseFloat(findQuantity.select2('data').text);
-                                }else{
+                                }
+								else
+								{
                                     index       = findDataIndex.data('index');
                                     cantidad    = parseFloat(findQuantity.val());
                                 }
                                 
-                                if (cantidad !== null && cantidad !== undefined && cantidad !== '') {
-                                    firstTableRow[0].fnUpdate(cantidad, firstTableRow[0], index);
-                                } 
+								if(index > 0 )
+								{
+									if (cantidad !== null && cantidad !== undefined && cantidad !== '') {
+										objTable".$idTable.".fnUpdate(cantidad, firstTableRow[0], index);
+									}
+								}								
 							}                           
                             var idata		    = objTableListView.fnGetData(firstTableRow[0]);
                             data.push(idata);
