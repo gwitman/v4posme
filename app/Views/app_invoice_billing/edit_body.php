@@ -814,6 +814,7 @@ echo helper_getHtmlOfPageLanding();
                                     <th>Vendedor</th>
                                     <th>Serie</th>
                                     <th>Referencia</th>
+                                    <th>Precio1</th>
 								  </tr>
 								</thead>
 								<tbody id="body_tb_transaction_master_detail">
@@ -1251,7 +1252,7 @@ echo helper_getHtmlOfPageLanding();
 								<tr class="<?= getBehavio($company->type,"app_invoice_billing","divHiddeValue",""); ?>">
 									<th style="text-align:left;">03) % DESC</th>
 									<td>
-										<input type="text" id="txtPorcentajeDescuento" name="txtPorcentajeDescuento" class="col-lg-12" value="0" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>" />
+										<input type="text" id="txtPorcentajeDescuento" name="txtPorcentajeDescuento" class="col-lg-12 txt-numeric" value="0" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>" />
 									</td>
 								</tr>
 								<tr class="<?= getBehavio($company->type,"app_invoice_billing","divHiddeValue",""); ?>">

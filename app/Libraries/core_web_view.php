@@ -1204,8 +1204,32 @@ class core_web_view {
 						
 						//dos clic
 						$(document).on('dblclick','#".$idTable." tr',function(){								
-							var data		= [];	
-							var idata		= objTableListView.fnGetData(this);						    	
+							var data		    = [];	
+							let findQuantity    = $(this).find('.quantity_inline');
+							//obtener valores de cantidad si existe input o select
+							if (findQuantity.length > 0) 
+							{
+                                let cantidad		= 0;
+                                let findDataIndex   = $(findQuantity[0]);
+                                let index           = 0;
+                                if (findQuantity.hasClass('select2')){
+                                    index       = $(findQuantity[1]).data('index');
+                                    cantidad    = parseFloat(findQuantity.select2('data').text);
+                                }
+								else
+								{
+                                    index       = findDataIndex.data('index');
+                                    cantidad    = parseFloat(findQuantity.val());
+                                }
+                                
+								if(index > 0 )
+								{
+									if (cantidad !== null && cantidad !== undefined && cantidad !== '') {
+										objTable".$idTable.".fnUpdate(cantidad, objRowTable".$idTable.", index);
+									} 
+								}
+							}
+							var idata		= objTable".$idTable.".fnGetData(this);						    	
 							data.push(idata);
 							window.opener.".$parameterAjax["{fnCallback}"]."(data); 
 						});
@@ -1213,6 +1237,30 @@ class core_web_view {
 						$(document).on('dblclick','.td_interno ',function(){						
 							var data		    = [];
 							var firstTableRow   = $(this).closest('table').parent().parent();
+							let findQuantity    = firstTableRow.find('.quantity_inline');
+							//obtener valores de cantidad si existe input o select
+							if (findQuantity.length > 0) {
+							    let cantidad		= 0;
+							    let findDataIndex   = $(findQuantity[0]);
+                                let index           = 0;
+                                if (findQuantity.hasClass('select2'))
+								{
+                                    index       = $(findQuantity[1]).data('index');
+                                    cantidad    = parseFloat(findQuantity.select2('data').text);
+                                }
+								else
+								{
+                                    index       = findDataIndex.data('index');
+                                    cantidad    = parseFloat(findQuantity.val());
+                                }
+                                
+								if(index > 0 )
+								{
+									if (cantidad !== null && cantidad !== undefined && cantidad !== '') {
+										objTable".$idTable.".fnUpdate(cantidad, firstTableRow[0], index);
+									}
+								}								
+							}                           
                             var idata		    = objTableListView.fnGetData(firstTableRow[0]);
                             data.push(idata);
 							window.opener.".$parameterAjax["{fnCallback}"]."(data); 

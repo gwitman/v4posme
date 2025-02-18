@@ -1529,7 +1529,7 @@ WHERE
 	
 			
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "1000" 
+	tb_company_parameter.value = "100" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_CANTIDAD_ITEM";## PANTALLA PARA LA FACTUACION
@@ -1732,7 +1732,7 @@ update tb_role set isActive = 1 where roleID in (
 
 /*tipo de cambio de dolares a cordoba*/
 update tb_exchange_rate set 
-	ratio = 36 
+	ratio = 36.5 
 where 
 	currencyID = 2
 	and targetCurrencyID = 1; 
@@ -1740,7 +1740,7 @@ where
 	
 /*tipo de cambio de dolares a cordoba*/
 update tb_exchange_rate set 
-	ratio = 0.027777 
+	ratio = 0.0273972602739726 
 where 
 	currencyID = 1
 	and targetCurrencyID = 2; 

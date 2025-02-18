@@ -1003,6 +1003,9 @@ class app_invoice_billing extends _BaseController {
 				$arrayListInfoSales			                = array();
 				$arrayListInfoSerie 			            = array();
                 $arrayListInfoReferencia 			        = array();
+                $arrayListInfoPrecio1				        = array();
+                $arrayListInfoPrecio2				        = array();
+                $arrayListInfoPrecio3				        = array();
 
 				$objParameterDeliminterCsv	= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT",$companyID);
 				$characterSplie = $objParameterDeliminterCsv->value;
@@ -1039,7 +1042,10 @@ class app_invoice_billing extends _BaseController {
 					array_push($arrayListInfoSales,'');
 					array_push($arrayListInfoSerie,'');
 					array_push($arrayListInfoReferencia,'');
-					
+					array_push($arrayListInfoPrecio1,'');
+					array_push($arrayListInfoPrecio2,'');
+					array_push($arrayListInfoPrecio3,'');
+
 				}
 			}
 			else{
@@ -1060,6 +1066,9 @@ class app_invoice_billing extends _BaseController {
                 $arrayListInfoSales				            = /*inicio get post*/ $this->request->getPost("txtInfoVendedor");
                 $arrayListInfoSerie				            = /*inicio get post*/ $this->request->getPost("txtInfoSerie");
                 $arrayListInfoReferencia				    = /*inicio get post*/ $this->request->getPost("txtInfoReferencia");
+                $arrayListInfoPrecio1				        = /*inicio get post*/ $this->request->getPost("txtItemPrecio1");
+                $arrayListInfoPrecio2				        = /*inicio get post*/ $this->request->getPost("txtItemPrecio2");
+                $arrayListInfoPrecio3				        = /*inicio get post*/ $this->request->getPost("txtItemPrecio3");
 				
 			}
 			
@@ -1129,6 +1138,9 @@ class app_invoice_billing extends _BaseController {
                     $infoSales				                = $arrayListInfoSales[$key];
                     $infoSerie				                = $arrayListInfoSerie[$key];
                     $infoReferencia				            = $arrayListInfoReferencia[$key];
+                    $infoPrecio1				            = $arrayListInfoPrecio1[$key];
+                    $infoPrecio2				            = $arrayListInfoPrecio2[$key];
+                    $infoPrecio3				            = $arrayListInfoPrecio3[$key];
 
 					//Actualisar nombre 		
 					if( $objParameterInvoiceUpdateNameInTransactionOnly  == "false")
@@ -1265,6 +1277,9 @@ class app_invoice_billing extends _BaseController {
                         $objTMDRNew["sales"]	                    = $infoSales;
                         $objTMDRNew["reference1"]	                = $infoSerie;
                         $objTMDRNew["reference2"]	                = $infoReferencia;
+                        $objTMDRNew["precio1"]	                    = $infoPrecio1;
+                        $objTMDRNew["precio2"]	                    = $infoPrecio2;
+                        $objTMDRNew["precio3"]	                    = $infoPrecio3;
                         $this->Transaction_Master_Detail_References_Model->insert_app_posme($objTMDRNew);
 						
 					}					
@@ -1347,6 +1362,9 @@ class app_invoice_billing extends _BaseController {
                         $objTMDRNew["sales"]	                    = $infoSales;
                         $objTMDRNew["reference1"]	                = $infoSerie;
                         $objTMDRNew["reference2"]	                = $infoReferencia;
+                        $objTMDRNew["precio1"]	                    = $infoPrecio1;
+                        $objTMDRNew["precio2"]	                    = $infoPrecio2;
+                        $objTMDRNew["precio3"]	                    = $infoPrecio3;
                         if($objTMDROld){
                             $this->Transaction_Master_Detail_References_Model->update_byTransactionMasterDetailID_app_posme($transactionMasterDetailID, $objTMDRNew);
                         }else{
@@ -1850,6 +1868,9 @@ class app_invoice_billing extends _BaseController {
 			$arrayListInfoSales				            = /*inicio get post*/ $this->request->getPost("txtInfoVendedor");
 			$arrayListInfoSerie				            = /*inicio get post*/ $this->request->getPost("txtInfoSerie");
 			$arrayListInfoReferencia				    = /*inicio get post*/ $this->request->getPost("txtInfoReferencia");
+			$arrayListInfoPrecio1				        = /*inicio get post*/ $this->request->getPost("txtItemPrecio1");
+			$arrayListInfoPrecio2				        = /*inicio get post*/ $this->request->getPost("txtItemPrecio2");
+			$arrayListInfoPrecio3				        = /*inicio get post*/ $this->request->getPost("txtItemPrecio3");
 
 			//Ingresar la configuracion de precios		
 			$amountTotal 									= 0;
@@ -1907,6 +1928,9 @@ class app_invoice_billing extends _BaseController {
                     $infoSales				                = $arrayListInfoSales[$key];
                     $infoSerie				                = $arrayListInfoSerie[$key];
                     $infoReferencia				            = $arrayListInfoReferencia[$key];
+                    $infoPrecio1				            = $arrayListInfoPrecio1[$key];
+                    $infoPrecio2				            = $arrayListInfoPrecio2[$key];
+                    $infoPrecio3				            = $arrayListInfoPrecio3[$key];
 
 					//Actualisar nombre 
 					if( $objParameterInvoiceUpdateNameInTransactionOnly == "false")
@@ -2016,6 +2040,9 @@ class app_invoice_billing extends _BaseController {
                     $objTMDRNew["sales"]	                    = $infoSales;
                     $objTMDRNew["reference1"]	                = $infoSerie;
                     $objTMDRNew["reference2"]	                = $infoReferencia;
+                    $objTMDRNew["precio1"]	                    = $infoPrecio1;
+                    $objTMDRNew["precio2"]	                    = $infoPrecio2;
+                    $objTMDRNew["precio3"]	                    = $infoPrecio3;
                     $this->Transaction_Master_Detail_References_Model->insert_app_posme($objTMDRNew);
 					
 				}
@@ -7312,6 +7339,8 @@ class app_invoice_billing extends _BaseController {
             $datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
             $datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
             $datView["objUser"]						= $this->User_Model->get_rowByPK($companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
+			$datView["objZone"]						= $this->core_web_catalog->getCatalogItem("tb_transaction_master_info_billing","zoneID",$companyID,$datView["objTMI"]->zoneID);
+			$datView["objMesa"]						= $this->core_web_catalog->getCatalogItem("tb_transaction_master_info_billing","mesaID",$companyID,$datView["objTMI"]->mesaID);			
             $prefixCurrency 						= $datView["objCurrency"]->simbol." ";
 
 
@@ -7396,7 +7425,8 @@ class app_invoice_billing extends _BaseController {
                     $datView["objStage"][0]->display, /*estado*/
                     $datView["objTC"]->name /*causal*/,
                     $datView["objUser"]->nickname,
-                    $objParameterRuc /*ruc*/
+                    $objParameterRuc /*ruc*/ , 
+					$datView 
                 );
             }else{
                 $html = helper_reporte80mmTransactionMasterRegistrada(
@@ -7415,7 +7445,8 @@ class app_invoice_billing extends _BaseController {
                     $datView["objStage"][0]->display, /*estado*/
                     $datView["objTC"]->name /*causal*/,
                     $datView["objUser"]->nickname,
-                    $objParameterRuc /*ruc*/
+                    $objParameterRuc /*ruc*/ , 
+					$datView
                 );
             }
 
@@ -10031,7 +10062,8 @@ class app_invoice_billing extends _BaseController {
 			foreach($datView["objTMD"] as $detail_){
 			    $row = array(
 					$detail_->itemName. " ". strtolower($detail_->skuFormatoDescription),  
-					sprintf("%01.2f",round($detail_->quantity,2)), 
+					sprintf("%01.2f",round($detail_->quantity,2))."  * ".
+					sprintf("%s",number_format($detail_->unitaryAmount,2,".","," )) , 
 					sprintf("%01.2f",round($detail_->amount,2))
 				);
 			    array_push($detalle,$row);

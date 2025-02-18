@@ -66,6 +66,12 @@
     var selectedFilaInfoProducto;
     var selectedDataInfoProducto;
 
+    let columnasTableDetail = {
+        precio1 : 22,
+        precio2 : 14,
+        precio3 : 15
+    };
+
 	$(document).on("click",".btnPlus",function(){
 		
 		var quantity = $(this).parent().parent().parent().find(".txtQuantity").val();
@@ -304,6 +310,13 @@
 		$("#mySidebarZona").removeClass("hidden");
 	});
 	
+	 
+	
+	$(document).on("focus",'#txtReceiptAmount', function(e) {	
+		$(this).val("");	
+	});
+	
+	
 	$(document).on("keypress",'#txtReceiptAmount', function(e) {	
 		var code = e.keyCode || e.which;
 		 if(code != 13) { 
@@ -315,6 +328,9 @@
 			
 	});
 	
+	$(document).on("focus",'#txtReceiptAmountDol', function(e) {	
+		$(this).val("");	
+	});
 	
 	$(document).on("keypress",'#txtReceiptAmountDol', function(e) {		
 	
@@ -549,7 +565,7 @@
 					filterResultArray[26] 	= filterResult.Precio3;
 					
 					//Agregar el Item a la Fila					
-					onCompleteNewItem(filterResultArray,sumar); 
+					onCompleteNewItem(filterResultArray,sumar);
 				}
 				 
 			}
@@ -610,15 +626,15 @@
     $(document).on('click', '.btnInfoProducto',function(e){
         e.preventDefault();
         //obtener datos
-        let selectTr = $(this).closest('tr');
-        selectedFilaInfoProducto = objTableDetail.fnGetPosition(selectTr[0]);
-        selectedDataInfoProducto = objTableDetail.fnGetData(selectedFilaInfoProducto);
-        let precio1 = $(this).data('precio1');
-        let precio2 = $(this).data('precio2');
-        let precio3 = $(this).data('precio3');
-        let precios = [fnFormatNumber(precio1, 2), fnFormatNumber(precio2, 2), fnFormatNumber(precio3, 2)];
-        let selectPrecio = $('#selectPrecio');
-        let precio = selectedDataInfoProducto[7];
+        let selectTr 				= $(this).closest('tr');
+        selectedFilaInfoProducto 	= objTableDetail.fnGetPosition(selectTr[0]);
+        selectedDataInfoProducto 	= objTableDetail.fnGetData(selectedFilaInfoProducto);
+        let precio1 				= selectedDataInfoProducto[columnasTableDetail.precio1];
+        let precio2 				= selectedDataInfoProducto[columnasTableDetail.precio2];
+        let precio3 				= selectedDataInfoProducto[columnasTableDetail.precio3];
+        let precios 				= [fnFormatNumber(precio1, 2), fnFormatNumber(precio2, 2), fnFormatNumber(precio3, 2)];
+        let selectPrecio 			= $('#selectPrecio');
+        let precio 					= selectedDataInfoProducto[7];
         selectPrecio.empty();
 
         //establecer precios
@@ -760,8 +776,14 @@
 	$(document).on("change","input#txtReceiptAmountPoint",function(){							
 			fnCalculateAmountPay();			
 	});
+	$(document).on("focus","input#txtReceiptAmountTarjeta",function(){							
+			$(this).val("");			
+	});
 	$(document).on("change","input#txtReceiptAmountTarjeta",function(){							
 			fnCalculateAmountPay();			
+	});
+	$(document).on("focus","input#txtReceiptAmountTarjetaDol",function(){							
+			$(this).val("");		
 	});
 	$(document).on("change","input#txtReceiptAmountTarjetaDol",function(){							
 			fnCalculateAmountPay();			
@@ -853,8 +875,8 @@
 
 	$('#txtPorcentajeDescuento').on('input', function() {
 		 //validar que solo sea numero
-		 var valor = $(this).val();
-		 var expresion = /^\d*\.?\d{0,2}$/;
+		 var valor 		= $(this).val();
+		 var expresion 	= /^\d*\.?\d{0,2}$/;
 		 if (!expresion.test(valor)) {
 			$(this).val(valor.slice(0, -1));
 		 }
@@ -978,7 +1000,7 @@
 		objRow.description					= objResponse[18].toLowerCase();
 		objRow.um							= objResponse[23];
 		objRow.umDescription				= objResponse[20];
-		objRow.quantity 					= fnFormatNumber(1,2);
+		objRow.quantity 					= fnFormatNumber(objResponse[21],2);
 		objRow.bquantity 					= fnFormatNumber(objResponse[21],2);
 		objRow.price 						= fnFormatNumber(objResponse[22],2);
 		objRow.total 						= fnFormatNumber(objRow.quantity * objRow.price,2);						
@@ -993,6 +1015,7 @@
 		objRow.vendedor 					= 0;
 		objRow.serie 						= "";
 		objRow.referencia 					= "";
+		objRow.price1 					    = fnFormatNumber(objResponse[22],2);
 
 		//Actualizar
 		if(jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[2] == objRow.itemID;}).select().length > 0 ){
@@ -1001,9 +1024,9 @@
 			var newCantidad =  0;
 			
 			if (suma == true)
-			newCantidad =  parseFloat(fnFormatNumber(x_[0][6],2)) + 1;
+			newCantidad =  parseFloat(fnFormatNumber(x_[0][6],2)) + parseFloat(objRow.bquantity);
 			else
-			newCantidad =  parseFloat(fnFormatNumber(x_[0][6],2)) - 1;
+			newCantidad =  parseFloat(fnFormatNumber(x_[0][6],2)) - parseFloat(objRow.bquantity);
 			
 			var objind_ 	= fnGetPosition(x_,objTableDetail.fnGetData());
 			objTableDetail.fnUpdate( fnFormatNumber(newCantidad,2)  , objind_, 6 );
@@ -1041,7 +1064,8 @@
 				objRow.peso,
                 objRow.vendedor,
                 objRow.serie,
-                objRow.referencia
+                objRow.referencia,
+                objRow.price1
 			]);
 			
 			
@@ -2147,7 +2171,7 @@
 						',\"currencyID\"|\"'+$("#txtCurrencyID").val()+'\"'+
 						'}' 
 					) + 
-					"/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/"+codigoBuscar+"/";  
+					"/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/"+codigoBuscar+"/";
 					
 			 // Verificar si la ventana ya está abierta
 			if (objWindowSearchProduct && !objWindowSearchProduct.closed) 
@@ -2490,44 +2514,59 @@
 	
 	
 	function onCompleteNewItemPopPub (ee,uu,zz){
-			
-			
-			var data		 = {};					
-			var dataResponse = [];
-			data			 = ee;
-			
-			dataResponse[0] =  data[0][0];
-			dataResponse[1] =  data[0][0];
-			dataResponse[2] =  data[0][0];
-			dataResponse[3] =  data[0][0];
-			dataResponse[4] =  data[0][0];
-			dataResponse[5] =  data[0][0];//itemID
-			dataResponse[6] =  data[0][0];
-			dataResponse[7] =  data[0][0];
-			dataResponse[8] =  data[0][0];
-			dataResponse[9] =  data[0][0];
-			dataResponse[10] = data[0][0];
-			dataResponse[11] = data[0][0];
-			dataResponse[12] = data[0][0];
-			dataResponse[13] = data[0][0];
-			dataResponse[14] = data[0][0];
-			dataResponse[15] = data[0][0];
-			dataResponse[16] = data[0][0];
-			dataResponse[17] = data[0][4];//Codigo
-			dataResponse[18] = data[0][5];//Nombre
-			dataResponse[19] = data[0][0];
-			dataResponse[20] = data[0][7];//Unidad de medida
-			dataResponse[21] = data[0][8];//Cantidad
-			dataResponse[22] = data[0][9];//Precio
-			dataResponse[23] = data[0][1];//UnitMeasuereID
 
+        var data		 = {};
+        var dataResponse = [];
+        data			 = ee;
+		
+        if(data.length < 0) return;
+        for(let i=0; i < data.length; i++)
+		{
+			//si no hay ningun string input o select 
+			//dejar por defecto cantidad igual a 1
+            let element 				= data[i];
+            const containsInputOrSelect = element.some(item => {
+                if (typeof item === 'string') {
+                    return item.includes('<input') || item.includes('<select');
+                }
+                return false;
+            });
 			
-			dataResponse[24] = data[0][10];//Description
-			dataResponse[25] = data[0][2];//Precio2
-			dataResponse[26] = data[0][3];//Precio3
+            if (containsInputOrSelect === false)
+			{
+                element[8]   = 1 ;//Cantidad
+            }
 			
-			onCompleteNewItem(dataResponse,true);
+            dataResponse[0]  = element[0];
+            dataResponse[1]  = element[0];
+            dataResponse[2]  = element[0];
+            dataResponse[3]  = element[0];
+            dataResponse[4]  = element[0];
+            dataResponse[5]  = element[0];//itemID
+            dataResponse[6]  = element[0];
+            dataResponse[7]  = element[0];
+            dataResponse[8]  = element[0];
+            dataResponse[9]  = element[0];
+            dataResponse[10] = element[0];
+            dataResponse[11] = element[0];
+            dataResponse[12] = element[0];
+            dataResponse[13] = element[0];
+            dataResponse[14] = element[0];
+            dataResponse[15] = element[0];
+            dataResponse[16] = element[0];
+            dataResponse[17] = element[4];//Codigo
+            dataResponse[18] = element[5];//Nombre
+            dataResponse[19] = element[0];
+            dataResponse[20] = element[7];//Unidad de medida
+            dataResponse[21] = element[8];//Cantidad
+            dataResponse[22] = element[9];//Precio
+            dataResponse[23] = element[1];//UnitMeasuereID
+            dataResponse[24] = element[10];//Description
+            dataResponse[25] = element[2];//Precio2
+            dataResponse[26] = element[3];//Precio3
 
+            onCompleteNewItem(dataResponse, true);
+        }
 			
 	}
 	
@@ -2931,7 +2970,7 @@
 								//}
 							},
 							{
-								"aTargets"		: [ 14 ],//Precio2
+								"aTargets"		: [ columnasTableDetail.precio2 ],//Precio2
 								"bVisible"		: true,
 								"sClass"		: "hidden",
 								"bSearchable"	: false,
@@ -2945,7 +2984,7 @@
 								//}
 							},
 							{
-								"aTargets"		: [ 15 ],//Precio3
+								"aTargets"		: [ columnasTableDetail.precio3 ],//Precio3
 								"bVisible"		: true,
 								"sClass"		: "hidden",
 								"bSearchable"	: false,
@@ -3010,6 +3049,15 @@
                                 "bSearchable"	: false,
                                 "mRender"		: function ( data, type, full ) {
                                     return '<input type="text" class="col-lg-12 txtInfoReferencia" value="'+data+'" name="txtInfoReferencia[]" style="text-align:right" />';
+                                }
+                            },
+                            {
+                                "aTargets"		: [ columnasTableDetail.precio1 ],//Precio1
+                                "bVisible"		: true,
+                                "sClass"		: "hidden",
+                                "bSearchable"	: false,
+                                "mRender"		: function ( data, type, full ) {
+                                    return '<input type="hidden" value="'+data+'" name="txtItemPrecio1[]" />';
                                 }
                             },
 
