@@ -195,7 +195,7 @@ class Customer_Model extends Model  {
 				createdOn, createdAt, isActive,i.typeFirm,i.balancePoint,
 				i.phoneNumber,i.dateContract,i.entityContactID,
 				i.reference3,i.reference4,i.reference5,i.reference6,i.budget,
-				i.modifiedOn,i.formContactID
+				i.modifiedOn,i.formContactID, i.balanceDol, i.balanceCor
 			");
 		$sql = $sql.sprintf(" from tb_customer i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");

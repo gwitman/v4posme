@@ -652,6 +652,15 @@ $routes->match(['get','post'],'app_cxc_document/edit/','app_cxc_document::edit')
 $routes->match(['get','post'],'app_cxc_document/edit/(:any)','app_cxc_document::edit');
 $routes->match(['get','post'],'app_cxc_document/save/(:any)','app_cxc_document::save');
 $routes->match(['get','post'],'app_cxc_document/save','app_cxc_document::save');
+$routes->match(['get','post'],'app_cxc_notecredit/index','app_cxc_notecredit::index');
+$routes->match(['get','post'],'app_cxc_notecredit/save','app_cxc_notecredit::save');
+$routes->match(['get','post'],'app_cxc_notecredit/save/(:any)','app_cxc_notecredit::save');
+$routes->match(['get','post'],'app_cxc_notecredit/add','app_cxc_notecredit::add');
+$routes->match(['get','post'],'app_cxc_notecredit/edit','app_cxc_notecredit::edit');
+$routes->match(['get','post'],'app_cxc_notecredit/edit/(:any)','app_cxc_notecredit::edit');
+$routes->match(['get','post'],'app_cxc_notecredit/delete','app_cxc_notecredit::delete');
+$routes->match(['get','post'],'app_cxc_notecredit/searchTransactionMaster','app_cxc_notecredit::searchTransactionMaster');
+$routes->match(['get','post'],'app_cxc_notecredit/viewPrinterFormatoA4/(:any)','app_cxc_notecredit::viewPrinterFormatoA4');
 $routes->match(['get','post'],'app_cxc_document/add_document_entity','app_cxc_document::add_document_entity');
 $routes->match(['get','post'],'app_cxc_document/edit_document_entity/(:any)','app_cxc_document::edit_document_entity');
 $routes->match(['get','post'],'app_cxp_provider/updateElement','app_cxp_provider::updateElement');
