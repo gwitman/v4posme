@@ -1202,9 +1202,9 @@ echo helper_getHtmlOfPageLanding();
 											</td>
 										</tr>
 										<tr class="<?= getBehavio($company->type,"app_invoice_billing","divHiddeValue",""); ?>">
-											<th style="text-align:left;">03) % DESC</th>
+											<th style="text-align:left;"><?= getBehavio($company->type,"app_invoice_billing","divLabelNumDescuston","03)"); ?> % DESC</th>
 											<td>
-												<input type="text" id="txtPorcentajeDescuento" name="txtPorcentajeDescuento" class="col-lg-12" value="0" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>" />
+												<input type="text" id="txtPorcentajeDescuento" name="txtPorcentajeDescuento" class="col-lg-12 txt-numeric" value="0" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>" />
 											</td>
 										</tr>
 										<tr class="<?= getBehavio($company->type,"app_invoice_billing","divHiddeValue",""); ?>">

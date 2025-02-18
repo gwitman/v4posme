@@ -1155,9 +1155,10 @@
 
 	$('#txtPorcentajeDescuento').on('input', function() {
 		 //validar que solo sea numero
-		 var valor = $(this).val();
-		 var expresion = /^\d*\.?\d{0,2}$/;
-		 if (!expresion.test(valor)) {
+		 var valor 		= $(this).val();
+		 var expresion 	= /^\d*\.?\d{0,2}$/;
+		 if (!expresion.test(valor)) 
+		 {
 			$(this).val(valor.slice(0, -1));
 		 }
 		 fnRecalculateDetail(true,"");

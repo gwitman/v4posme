@@ -3,7 +3,7 @@ function getBehavioEmanuel(): array
 {
     return array(
 		strtolower('emanuel_app_invoice_billing_divTxtCambio') 													=> "hidden",
-		strtolower('emanuel_app_invoice_billing_divHiddeValue') 												=> "hidden",
+		strtolower('emanuel_app_invoice_billing_divHiddeValue') 												=> "",
 		strtolower('emanuel_app_invoice_billing_rowOptionPaymentExtrasTarjeta') 								=> "",
 		strtolower('emanuel_app_invoice_billing_rowOptionPaymentExtras') 								        => "hidden",
 		strtolower('emanuel_app_invoice_billing_panelResumenFactura') 								        	=> "hidden",
@@ -20,11 +20,14 @@ function getBehavioEmanuel(): array
 		strtolower('emanuel_app_invoice_billing_divTxtCedulaBeneficiario')						            	=> "RUC",
 		
 		
+		
 		strtolower('emanuel_app_invoice_billing_divTxtZone') 							                        => "hidden",
 		strtolower('emanuel_app_invoice_billing_divHiddenEmployer') 							                => "hidden",
 		strtolower('emanuel_app_invoice_billing_divBtnPrecios') 							                    => "hidden",
 		strtolower('emanuel_app_invoice_billing_divTxtMesa') 												    => "disabled",
-		strtolower('emanuel_app_invoice_billing_divTxtTotal') 													=> "01)",		
+		strtolower('emanuel_app_invoice_billing_divTxtTotal') 													=> "01)",	
+		strtolower('emanuel_app_invoice_billing_divLabelNumDescuston') 											=> "00)",	
+		
 		strtolower('emanuel_app_invoice_billing_btnFooter') 												    => "$('#btnFooter').addClass('hidden');",
         strtolower('emanuel_app_invoice_billing_divTraslateElement') 											=> "
 		<script>
@@ -41,6 +44,18 @@ function getBehavioEmanuel(): array
 				    $('#divPaymentOption').addClass('hidden');
 				    $('.btnAcept').addClass('hidden');
 				    $('.btnAceptAplicar').removeClass('hidden');
+					$('#txtServices').parent().parent().addClass('hidden');
+					$('#txtDescuento').parent().parent().addClass('hidden');
+					$('#txtPorcentajeDescuento').parent().parent().addClass('hidden');
+					$('#txtIva').parent().parent().addClass('hidden');
+					$('#txtSubTotal').parent().parent().addClass('hidden');
+				}
+				else
+				{   
+					$('#txtServices').parent().parent().addClass('hidden');
+					$('#txtDescuento').parent().parent().addClass('hidden');					
+					$('#txtIva').parent().parent().addClass('hidden');
+					$('#txtSubTotal').parent().parent().addClass('hidden');					
 				}
 				
 
