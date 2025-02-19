@@ -102,7 +102,7 @@ define('EVENT_PRIORITY_HIGH', 10);
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
 //APP
-define('DB_BDNAME',"posme");
+define('DB_BDNAME',"dbwy9kg4wu18oc");
 define('APP_COMERCE_NAME',"posmev4");
 
 define('APP_NEED_AUTHENTICATION',true);
@@ -144,10 +144,10 @@ define('APP_URL_WOOCOMERCE','https://posme.net');
 //define('DB_BDNAME',"posme");
 //define('DB_BDNAME_MERGE',"posme_merge");
 //define('DB_SERVER',"localhost");
-define("DB_PASSWORD","root1.2Blandon");
-define("DB_USER","root");
+define("DB_PASSWORD","c1:cjAn1[@1%");
+define("DB_USER","uxfdggzn94yfc");
 define('DB_BDNAME_MERGE',"posme_merge");
-define('DB_SERVER',"localhost");
+define('DB_SERVER',"posme.net");
 
 //Tipos de Menu
 define("MENU_TOP",4);
