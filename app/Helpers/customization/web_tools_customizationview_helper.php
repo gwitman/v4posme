@@ -1344,6 +1344,8 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 	$divs                   = array_merge($divs, $creditAguil);
     $autoLavadoMaximum      = getBehavioAutoLavadoMaximum();
     $divs                   = array_merge($divs, $autoLavadoMaximum);
+	$emanuelPizza		    = getBehavioEmanuelPizza();
+    $divs                   = array_merge($divs, $emanuelPizza);
 
 	//Comanda traducir es para los menu
 	//comportamiento del controlador
