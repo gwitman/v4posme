@@ -644,23 +644,26 @@ class app_cxc_notecredit extends _BaseController
 			$objNoteBalances			= array();
 			$noteStatus					= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($objTM->statusID)[0]->name;
 
-			$objNoteBalances["montoInicial"]	= $objTM->discount;
-			$objNoteBalances["montoFinal"]		= $objTM->subAmount;
+			$objNote["type"]			= "CREDITO";
+			$objNote["status"]			= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($objTM->statusID)[0]->name;
+			$objNote["montoInicial"]	= $objTM->discount;
+			$objNote["montoFinal"]		= $objTM->subAmount;
+
+			$objNoteEntity["type"]		= "Cliente";
+			$objNoteEntity["name"]		= $objCustomerNatural->firstName . " " . $objCustomerNatural->lastName;
+			$objNoteEntity["number"]	= $objCustomer->customerNumber;
 
 			//Generar Reporte
 			$html = helper_reporteA4CreditAndDebitNote(
-				"NOTA DE CREDITO",
+				$objNote,
 				$objCompany,
 				$objParameterLogo,
 				$objTM,
-				$objNoteBalances,
-				$objCustomerNatural,
-				$objCustomer,
+				$objNoteEntity,
 				$objCurrency,
 				$objParameterTelefono,
 				$objUser,
 				$objParameterRuc,
-				$noteStatus
 			);
 
 			$this->dompdf->loadHTML($html);

@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use Exception;
 
-class app_cxc_notedebit extends _BaseController
+class app_cxp_notedebit extends _BaseController
 {
 	function index($dataViewID = null)
 	{
@@ -29,9 +29,9 @@ class app_cxc_notedebit extends _BaseController
 			}
 
 			//Obtener el componente Para mostrar la lista de AccountType
-			$objComponent        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_cxc_notadebito");
+			$objComponent        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_cxp_notadebito");
 			if (!$objComponent)
-				throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_cxc_notadebito' NO EXISTE...");
+				throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_cxp_notadebito' NO EXISTE...");
 
 
 			//Vista por defecto PC
@@ -44,7 +44,7 @@ class app_cxc_notedebit extends _BaseController
 			//Vista por defecto MOBILE
 			else if ($this->request->getUserAgent()->isMobile()) {
 				$parameter["{companyID}"]       = $this->session->get('user')->companyID;
-				$dataViewData                   = $this->core_web_view->getViewByName($this->session->get('user'), $objComponent->componentID, "LISTA DE NOTAS DE DEBITOS DE CLIENTES", CALLERID_LIST, $resultPermission, $parameter);
+				$dataViewData                   = $this->core_web_view->getViewByName($this->session->get('user'), $objComponent->componentID, "LISTA DE NOTAS DE DEBITOS DE PROVEEDORES", CALLERID_LIST, $resultPermission, $parameter);
 				$dataViewRender                 = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
 			}
 			//Vista Por Id
@@ -57,10 +57,10 @@ class app_cxc_notedebit extends _BaseController
 			//Renderizar Resultado
 			$dataSession["notification"]        = $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]             = $this->core_web_notification->get_message();
-			$dataSession["head"]                = /*--inicio view*/ view('app_cxc_notedebit/list_head'); //--finview
-			$dataSession["footer"]              = /*--inicio view*/ view('app_cxc_notedebit/list_footer'); //--finview
+			$dataSession["head"]                = /*--inicio view*/ view('app_cxp_notedebit/list_head'); //--finview
+			$dataSession["footer"]              = /*--inicio view*/ view('app_cxp_notedebit/list_footer'); //--finview
 			$dataSession["body"]                = $dataViewRender;
-			$dataSession["script"]              = /*--inicio view*/ view('app_cxc_notedebit/list_script'); //--finview
+			$dataSession["script"]              = /*--inicio view*/ view('app_cxp_notedebit/list_script'); //--finview
 			$dataSession["script"]              = $dataSession["script"] . $this->core_web_javascript->createVar("componentID", $objComponent->componentID);
 			return view("core_masterpage/default_masterpage", $dataSession); //--finview-r	
 		} catch (Exception $ex) {
@@ -90,7 +90,7 @@ class app_cxc_notedebit extends _BaseController
 			$dataSession		= $this->session->get();
 
 			//Validar Formulario						
-			$this->validation->setRule("txtCustomerEntityID", "Cliente", "required");
+			$this->validation->setRule("txtProviderEntityID", "Cliente", "required");
 			$this->validation->setRule("txtAmount", "Monto", "required");
 			$this->validation->setRule("txtDate", "Fecha", "required");
 
@@ -98,7 +98,7 @@ class app_cxc_notedebit extends _BaseController
 			if (!$this->validation->withRequest($this->request)->run()) {
 				$stringValidation = $this->core_web_tools->formatMessageError($this->validation->getErrors());
 				$this->core_web_notification->set_message(true, $stringValidation);
-				$this->response->redirect(base_url() . "/" . 'app_cxc_notedebit/add');
+				$this->response->redirect(base_url() . "/" . 'app_cxp_notedebit/add');
 				exit;
 			}
 
@@ -110,7 +110,7 @@ class app_cxc_notedebit extends _BaseController
 			} else {
 				$stringValidation = "El modo de operacion no es correcto (new|edit)";
 				$this->core_web_notification->set_message(true, $stringValidation);
-				$this->response->redirect(base_url() . "/" . 'app_cxc_notedebit/add');
+				$this->response->redirect(base_url() . "/" . 'app_cxp_notedebit/add');
 				exit;
 			}
 		} catch (Exception $ex) {
@@ -154,23 +154,23 @@ class app_cxc_notedebit extends _BaseController
 			$branchID       = $dataSession["user"]->branchID;
 			$roleID         = $dataSession["role"]->roleID;
 
-			$objComponentNoteDebit        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_cxc_notadebito");
+			$objComponentNoteDebit        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_cxp_notadebito");
 			if (!$objComponentNoteDebit)
-				throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_cxc_notadebito' NO EXISTE...");
+				throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_cxp_notadebito' NO EXISTE...");
 
 
 			//Obtener el componente de Item
-			$objComponentCustomer    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
-			if (!$objComponentCustomer)
-				throw new Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
+			$objComponentProvider    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_Provider");
+			if (!$objComponentProvider)
+				throw new Exception("EL COMPONENTE 'tb_Provider' NO EXISTE...");
 
 
 			$objCurrency						                = $this->core_web_currency->getCurrencyDefault($companyID);
 			$dataView["company"]                                = $dataSession["company"];
 			$dataView["objComponentNoteDebit"]                  = $objComponentNoteDebit;
-			$dataView["objComponentCustomer"]                   = $objComponentCustomer;
-			$dataView["objListWorkflowStage"]                   = $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_cxc_notadebito", "statusID", $companyID, $branchID, $roleID);
-			$dataView["objListCustomer"]                        = $this->Customer_Model->get_rowByCompany($companyID);
+			$dataView["objComponentProvider"]                   = $objComponentProvider;
+			$dataView["objListWorkflowStage"]                   = $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_cxp_notadebito", "statusID", $companyID, $branchID, $roleID);
+			$dataView["objListProvider"]                        = $this->Provider_Model->get_rowByCompany($companyID);
 			$dataView["objListCurrency"]                        = $this->Company_Currency_Model->getByCompany($companyID);
 			$dataView["objListCurrencyDefault"]                 = $this->core_web_currency->getCurrencyDefault($companyID);
 			$dataView["objCurrency"]                            = $objCurrency;
@@ -178,9 +178,9 @@ class app_cxc_notedebit extends _BaseController
 			//Renderizar Resultado 
 			$dataSession["notification"]        = $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]             = $this->core_web_notification->get_message();
-			$dataSession["head"]                = /*--inicio view*/ view('app_cxc_notedebit/news_head', $dataView); //--finview
-			$dataSession["body"]                = /*--inicio view*/ view('app_cxc_notedebit/news_body', $dataView); //--finview
-			$dataSession["script"]              = /*--inicio view*/ view('app_cxc_notedebit/news_script', $dataView); //--finview
+			$dataSession["head"]                = /*--inicio view*/ view('app_cxp_notedebit/news_head', $dataView); //--finview
+			$dataSession["body"]                = /*--inicio view*/ view('app_cxp_notedebit/news_body', $dataView); //--finview
+			$dataSession["script"]              = /*--inicio view*/ view('app_cxp_notedebit/news_script', $dataView); //--finview
 			$dataSession["footer"]              = "";
 			return view("core_masterpage/default_masterpage", $dataSession); //--finview-r
 
@@ -227,35 +227,36 @@ class app_cxc_notedebit extends _BaseController
 			$branchID 				= $dataSession["user"]->branchID;
 
 
-			$objComponentNoteDebit        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_cxc_notadebito");
+			$objComponentNoteDebit        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_cxp_notadebito");
 			if (!$objComponentNoteDebit)
-				throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_cxc_notadebito' NO EXISTE...");
+				throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_cxp_notadebito' NO EXISTE...");
 
 
-			$objComponentCustomer    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
-			if (!$objComponentCustomer)
-				throw new Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
+			$objComponentProvider    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_Provider");
+			if (!$objComponentProvider)
+				throw new Exception("EL COMPONENTE 'tb_Provider' NO EXISTE...");
 
 
 
 			if ((!$companyID) || (!$transactionID) || (!$transactionMasterID)) {
-				$this->response->redirect(base_url() . "/" . 'app_cxc_notedebit/add');
+				$this->response->redirect(base_url() . "/" . 'app_cxp_notedebit/add');
 			}
 
 			$dataView["objTM"]                  = $this->Transaction_Master_Model->get_rowByPk($companyID, $transactionID, $transactionMasterID);
-			$dataView["objCustomer"]            = $this->Customer_Model->get_rowByPK($companyID, $branchID, $dataView["objTM"]->entityID);
+			$dataView["objProvider"]            = $this->Provider_Model->get_rowByPK($companyID, $branchID, $dataView["objTM"]->entityID);
 			$dataView["objListLegal"]			= $this->Legal_Model->get_rowByPk($companyID, $branchID, $dataView["objTM"]->entityID);
-			$dataView["objComponentCustomer"]   = $objComponentCustomer;
+			$dataView["objListNatural"]			= $this->Natural_Model->get_rowByPk($companyID, $branchID, $dataView["objTM"]->entityID);
+			$dataView["objComponentProvider"]   = $objComponentProvider;
 			$dataView["objComponentNoteDebit"]	= $objComponentNoteDebit;
 			$dataView["objListCurrency"]        = $this->Company_Currency_Model->getByCompany($companyID);
-			$dataView["objListWorkflowStage"]   = $this->core_web_workflow->getWorkflowAllStage("tb_transaction_master_cxc_notadebito", "statusID", $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID);
+			$dataView["objListWorkflowStage"]   = $this->core_web_workflow->getWorkflowAllStage("tb_transaction_master_cxp_notadebito", "statusID", $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID);
 
 			//RENDERIZAR RESULTADO
 			$dataSession["notification"]    = $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]         = $this->core_web_notification->get_message();
-			$dataSession["head"]            = view('app_cxc_notedebit/edit_head', $dataView);
-			$dataSession["body"]            = view('app_cxc_notedebit/edit_body', $dataView);
-			$dataSession["script"]          = view('app_cxc_notedebit/edit_script', $dataView);
+			$dataSession["head"]            = view('app_cxp_notedebit/edit_head', $dataView);
+			$dataSession["body"]            = view('app_cxp_notedebit/edit_body', $dataView);
+			$dataSession["script"]          = view('app_cxp_notedebit/edit_script', $dataView);
 			$dataSession["footer"]          = "";
 			return view('core_masterpage/default_masterpage', $dataSession);
 		} catch (Exception $ex) {
@@ -292,21 +293,21 @@ class app_cxc_notedebit extends _BaseController
 
 
 
-			$objComponentNoteDebit        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_cxc_notadebito");
+			$objComponentNoteDebit        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_cxp_notadebito");
 			if (!$objComponentNoteDebit)
-				throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_cxc_notadebito' NO EXISTE...");
+				throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_cxp_notadebito' NO EXISTE...");
 
 
 			//Obtener el componente de Item
-			$objComponentCustomer    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
-			if (!$objComponentCustomer) {
-				throw new Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
+			$objComponentProvider    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_Provider");
+			if (!$objComponentProvider) {
+				throw new Exception("EL COMPONENTE 'tb_Provider' NO EXISTE...");
 			}
 
 			$companyID                              = $dataSession["user"]->companyID;
 			$branchID                               = $dataSession["user"]->branchID;
 
-			$entityID                               = $this->request->getPost("txtCustomerEntityID");
+			$entityID                               = $this->request->getPost("txtProviderEntityID");
 			$currencyID                             = $this->request->getPost("txtCurrencyID");
 			$monto                                  = $this->request->getPost("txtAmount");
 
@@ -319,8 +320,8 @@ class app_cxc_notedebit extends _BaseController
 			$exchangeRate 							= $this->core_web_currency->getRatio($companyID, $dateOn, 1, $objCurrencyDolares->currencyID, $objCurrencyCordoba->currencyID);
 
 			$objTM["companyID"]                     = $companyID;
-			$objTM["transactionNumber"]             = $this->core_web_counter->goNextNumber($companyID, $branchID, "tb_transaction_master_cxc_notadebito", 0);
-			$objTM["transactionID"]                 = $this->core_web_transaction->getTransactionID($companyID, "tb_transaction_master_cxc_notadebito", 0);
+			$objTM["transactionNumber"]             = $this->core_web_counter->goNextNumber($companyID, $branchID, "tb_transaction_master_cxp_notadebito", 0);
+			$objTM["transactionID"]                 = $this->core_web_transaction->getTransactionID($companyID, "tb_transaction_master_cxp_notadebito", 0);
 			$objTM["branchID"]                      = $branchID;
 			$objTM["transactionCausalID"]           = $this->core_web_transaction->getDefaultCausalID($companyID, $objTM["transactionID"]);
 			$objTM["entityID"]                      = $entityID;
@@ -351,11 +352,11 @@ class app_cxc_notedebit extends _BaseController
 			if ($db->transStatus() !== false) {
 				$db->transCommit();
 				$this->core_web_notification->set_message(false, SUCCESS);
-				$this->response->redirect(base_url() . "/" . 'app_cxc_notedebit/edit/companyID/' . $companyID . "/transactionID/" . $objTM["transactionID"] . "/transactionMasterID/" . $transactionMasterID);
+				$this->response->redirect(base_url() . "/" . 'app_cxp_notedebit/edit/companyID/' . $companyID . "/transactionID/" . $objTM["transactionID"] . "/transactionMasterID/" . $transactionMasterID);
 			} else {
 				$db->transRollback();
 				$this->core_web_notification->set_message(true, $this->$db->_error_message());
-				$this->response->redirect(base_url() . "/" . 'app_cxc_notedebit/add');
+				$this->response->redirect(base_url() . "/" . 'app_cxp_notedebit/add');
 			}
 		} catch (Exception $ex) {
 			if (empty($dataSession)) {
@@ -391,29 +392,29 @@ class app_cxc_notedebit extends _BaseController
 
 
 
-			$objComponentNoteDebit        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_cxc_notadebito");
+			$objComponentNoteDebit        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_cxp_notadebito");
 			if (!$objComponentNoteDebit)
-				throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_cxc_notadebito' NO EXISTE...");
+				throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_cxp_notadebito' NO EXISTE...");
 
 
 			//Obtener el componente de Item
-			$objComponentCustomer    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
-			if (!$objComponentCustomer) {
-				throw new Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
+			$objComponentProvider    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_Provider");
+			if (!$objComponentProvider) {
+				throw new Exception("EL COMPONENTE 'tb_Provider' NO EXISTE...");
 			}
 
 			$companyID                              = $dataSession["user"]->companyID;
 			$branchID                               = $dataSession["user"]->branchID;
 			$roleID                                 = $dataSession["role"]->roleID;
 
-			$entityID                               = $this->request->getPost("txtCustomerEntityID");
+			$entityID                               = $this->request->getPost("txtProviderEntityID");
 			$currencyID                             = $this->request->getPost("txtCurrencyID");
 			$monto                                  = $this->request->getPost("txtAmount");
 			$transactionID                          = $this->request->getPost("txtTransactionID");
 			$transactionMasterID                    = $this->request->getPost("txtTransactionMasterID");
 
 			$objTM                                  = $this->Transaction_Master_Model->get_rowByPk($companyID, $transactionID, $transactionMasterID);
-			$objC								   	= $this->Customer_Model->get_rowByPK($companyID, $branchID, $entityID);
+			$objP								   	= $this->Provider_Model->get_rowByPK($companyID, $branchID, $entityID);
 
 			//Valores de tasa de cambio
 			date_default_timezone_set(APP_TIMEZONE);
@@ -438,13 +439,13 @@ class app_cxc_notedebit extends _BaseController
 			$objTMNew["isActive"]                   = 1;
 
 			//Validar si el estado permite editar
-			if (!$this->core_web_workflow->validateWorkflowStage("tb_transaction_master_cxc_notadebito", "statusID", $objTM->statusID, COMMAND_EDITABLE_TOTAL, $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID))
+			if (!$this->core_web_workflow->validateWorkflowStage("tb_transaction_master_cxp_notadebito", "statusID", $objTM->statusID, COMMAND_EDITABLE_TOTAL, $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID))
 				throw new Exception(NOT_WORKFLOW_EDIT);
 
 			$db = db_connect();
 			$db->transStart();
 
-			if ($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_cxc_notadebito", "statusID", $objTM->statusID, COMMAND_EDITABLE, $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID)) {
+			if ($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_cxp_notadebito", "statusID", $objTM->statusID, COMMAND_EDITABLE, $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID)) {
 				$objTMNew								= array();
 				$objTMNew["statusID"] 					= $this->request->getPost("txtStatusID");
 				$this->Transaction_Master_Model->update_app_posme($companyID, $transactionID, $transactionMasterID, $objTMNew);
@@ -453,30 +454,30 @@ class app_cxc_notedebit extends _BaseController
 			}
 
 
-			if ($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_cxc_notadebito", "statusID", $objTMNew["statusID"], COMMAND_APLICABLE, $companyID, $branchID, $roleID)) {
+			if ($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_cxp_notadebito", "statusID", $objTMNew["statusID"], COMMAND_APLICABLE, $companyID, $branchID, $roleID)) {
 
 				if ($objTMNew["currencyID"] == 1/*CORDOBA*/) {
-					$objTMNew["discount"]			= $objC->balanceCor;
-					$objTMNew["subAmount"]			= $objC->balanceCor - $monto;
-					$objCNew["balanceCor"]          = $objTMNew["subAmount"];
+					$objTMNew["discount"]			= $objP->balanceCor;
+					$objTMNew["subAmount"]			= $objP->balanceCor - $monto;
+					$objPNew["balanceCor"]          = $objTMNew["subAmount"];
 				} else /*DOLAR*/ {
-					$objTMNew["discount"]			= $objC->balanceDol;
-					$objTMNew["subAmount"]			= $objC->balanceDol - $monto;
-					$objCNew["balanceDol"]			= $objTMNew["subAmount"];
+					$objTMNew["discount"]			= $objP->balanceDol;
+					$objTMNew["subAmount"]			= $objP->balanceDol - $monto;
+					$objPNew["balanceDol"]			= $objTMNew["subAmount"];
 				}
 
 				$this->Transaction_Master_Model->update_app_posme($companyID, $transactionID, $transactionMasterID, $objTMNew);
-				$this->Customer_Model->update_app_posme($companyID, $branchID, $entityID, $objCNew);
+				$this->Provider_Model->update_app_posme($companyID, $branchID, $entityID, $objPNew);
 			}
 
 			if ($db->transStatus() !== false) {
 				$db->transCommit();
 				$this->core_web_notification->set_message(false, SUCCESS);
-				$this->response->redirect(base_url() . "/" . 'app_cxc_notedebit/edit/companyID/' . $companyID . "/transactionID/" . $transactionID . "/transactionMasterID/" . $transactionMasterID);
+				$this->response->redirect(base_url() . "/" . 'app_cxp_notedebit/edit/companyID/' . $companyID . "/transactionID/" . $transactionID . "/transactionMasterID/" . $transactionMasterID);
 			} else {
 				$db->transRollback();
 				$this->core_web_notification->set_message(true, $this->$db->_error_message());
-				$this->response->redirect(base_url() . "/" . 'app_cxc_notedebit/add');
+				$this->response->redirect(base_url() . "/" . 'app_cxp_notedebit/add');
 			}
 		} catch (Exception $ex) {
 			if (empty($dataSession)) {
@@ -529,7 +530,7 @@ class app_cxc_notedebit extends _BaseController
 				throw new Exception(NOT_DELETE);
 
 			//Si el documento esta aplicado crear el contra documento			
-			if (!$this->core_web_workflow->validateWorkflowStage("tb_transaction_master_cxc_notadebito", "statusID", $objTM->statusID, COMMAND_ELIMINABLE, $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID))
+			if (!$this->core_web_workflow->validateWorkflowStage("tb_transaction_master_cxp_notadebito", "statusID", $objTM->statusID, COMMAND_ELIMINABLE, $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID))
 				throw new Exception(NOT_WORKFLOW_DELETE);
 
 			//Eliminar el Registro			
@@ -625,16 +626,14 @@ class app_cxc_notedebit extends _BaseController
 			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "transactionMasterID"); //--finuri				
 			$companyID 					= $dataSession["user"]->companyID;
 			$branchID 					= $dataSession["user"]->branchID;
-			$roleID						= $dataSession["role"]->roleID;
 
 			$objCompany 			    = $this->Company_Model->get_rowByPK($companyID);
 			$objParameterTelefono	    = $this->core_web_parameter->getParameter("CORE_PHONE", $companyID);
 			$objParameterLogo	        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO", $companyID);
 
 			$objTM						= $this->Transaction_Master_Model->get_rowByPk($companyID, $transactionID, $transactionMasterID);
-			$objCustomer                = $this->Customer_Model->get_rowByPK($companyID, $branchID, $objTM->entityID);
-			$objCustomerNatural         = $this->Natural_Model->get_rowByPk($companyID, $branchID, $objTM->entityID);
-
+			$objProvider                = $this->Provider_Model->get_rowByPK($companyID, $branchID, $objTM->entityID);
+			$objProviderNatural         = $this->Natural_Model->get_rowByPk($companyID, $branchID, $objTM->entityID);
 			$objCurrency				= $this->Currency_Model->get_rowByPK($objTM->currencyID);
 			$objParameterRuc 			= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER", $companyID)->value;
 			$objTM->transactionOn		= date_format(date_create($objTM->transactionOn), "Y-m-d");
@@ -645,9 +644,9 @@ class app_cxc_notedebit extends _BaseController
 			$objNote["montoInicial"]	= $objTM->discount;
 			$objNote["montoFinal"]		= $objTM->subAmount;
 
-			$objNoteEntity["type"]		= "Cliente";
-			$objNoteEntity["name"]		= $objCustomerNatural->firstName . " " . $objCustomerNatural->lastName;
-			$objNoteEntity["number"]	= $objCustomer->customerNumber;
+			$objNoteEntity["type"]		= "Proveedor";
+			$objNoteEntity["name"]		= $objProviderNatural->firstName . " " . $objProviderNatural->lastName;
+			$objNoteEntity["number"]	= $objProvider->providerNumber; 
 
 			//Generar Reporte
 			$html = helper_reporteA4CreditAndDebitNote(
