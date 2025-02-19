@@ -1,7 +1,7 @@
-set @nameOrigen        	:= 'RUSTIK';
-set @flavorOrigen  	  	:= '298';
-set @nameTarget        	:= 'TENAMPA';
-set @flavorTarget  	  	:= '636';
+set @nameOrigen        	:= 'EMANUEL PUPUSAS';
+set @flavorOrigen  	  	:= '664';
+set @nameTarget        	:= 'EMANUEL PIZZA';
+set @flavorTarget  	  	:= '714';
 
 select 'clonoar catalogo item' as mensaje;
 insert into tb_catalog_item (
