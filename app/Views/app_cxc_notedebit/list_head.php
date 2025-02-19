@@ -1,5 +1,5 @@
 <div id="heading" class="page-header">
-    <h1><i class="icon20 i-storage-2"></i> LISTA DE NOTAS DE DEBITO</h1>
+    <h1><i class="icon20 i-storage-2"></i> LISTA DE NOTAS DE DEBITO DE CLIENTES</h1>
 </div>
 
 <div class="row">

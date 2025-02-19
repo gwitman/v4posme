@@ -670,6 +670,15 @@ $routes->match(['get','post'],'app_cxc_notedebit/edit/(:any)','app_cxc_notedebit
 $routes->match(['get','post'],'app_cxc_notedebit/delete','app_cxc_notedebit::delete');
 $routes->match(['get','post'],'app_cxc_notedebit/searchTransactionMaster','app_cxc_notedebit::searchTransactionMaster');
 $routes->match(['get','post'],'app_cxc_notedebit/viewPrinterFormatoA4/(:any)','app_cxc_notedebit::viewPrinterFormatoA4');
+$routes->match(['get','post'],'app_cxp_notedebit/index','app_cxp_notedebit::index');
+$routes->match(['get','post'],'app_cxp_notedebit/save','app_cxp_notedebit::save');
+$routes->match(['get','post'],'app_cxp_notedebit/save/(:any)','app_cxp_notedebit::save');
+$routes->match(['get','post'],'app_cxp_notedebit/add','app_cxp_notedebit::add');
+$routes->match(['get','post'],'app_cxp_notedebit/edit','app_cxp_notedebit::edit');
+$routes->match(['get','post'],'app_cxp_notedebit/edit/(:any)','app_cxp_notedebit::edit');
+$routes->match(['get','post'],'app_cxp_notedebit/delete','app_cxp_notedebit::delete');
+$routes->match(['get','post'],'app_cxp_notedebit/searchTransactionMaster','app_cxp_notedebit::searchTransactionMaster');
+$routes->match(['get','post'],'app_cxp_notedebit/viewPrinterFormatoA4/(:any)','app_cxp_notedebit::viewPrinterFormatoA4');
 $routes->match(['get','post'],'app_cxc_document/add_document_entity','app_cxc_document::add_document_entity');
 $routes->match(['get','post'],'app_cxc_document/edit_document_entity/(:any)','app_cxc_document::edit_document_entity');
 $routes->match(['get','post'],'app_cxp_provider/updateElement','app_cxp_provider::updateElement');

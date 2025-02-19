@@ -19628,18 +19628,15 @@ function helper_reporteA4mmTransactionMasterShareEbenezer(
 
 
 function helper_reporteA4CreditAndDebitNote(
-    $titulo,
+    $objNote,						/* Tipo de nota(credito o debito), estado de la nota, monto inicial, monto final */
     $objCompany, 					/* company name, address */
     $objParameterLogo, 				/* company logo */
     $objTransactionMastser, 		/* transaction number, date, amount, note, reference */
-    $objNoteBalances, 				/* initial amount, final amount */
-    $objEntidadNatural, 			/* customer name */
-    $objEntidadCustomer,			/* customer code */
-    $objCurrency, 					/* currency */
-    $objParameterTelefono, 			/* phone number */
-    $objEmployerNatural, 			/* user (vendedor) */
-    $rucCompany, 					/* codigo ruc */
-	$noteStatus						/* estado nota de credito */
+    $objEntity, 					/* tipo de entidad(proveedor, cliente...), nombre, numero*/
+    $objCurrency, 					/* tipo de moneda(cordoba, dolar) */
+    $objParameterTelefono, 			/* numero de telefono */
+    $objEmployerNatural, 			/* usuario (vendedor) */
+    $rucCompany 					/* codigo ruc */
 ) {
     $path = PATH_FILE_OF_APP_ROOT . '/img/logos/' . $objParameterLogo->value;
 
@@ -19647,8 +19644,8 @@ function helper_reporteA4CreditAndDebitNote(
     $data = file_get_contents($path);
     $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
     $numberDocument = str_replace("FAC", "SERIE \"A\" RECIBO No ", $objTransactionMastser->transactionNumber);
-	$montoInicial 	= $objNoteBalances["montoInicial"];
-	$montoFinal 	= $objNoteBalances["montoFinal"];
+	$montoInicial 	= $objNote["montoInicial"];
+	$montoFinal 	= $objNote["montoFinal"];
 
     $html = "
     <!DOCTYPE html>
@@ -19741,8 +19738,8 @@ function helper_reporteA4CreditAndDebitNote(
         <div class='content'>
             <table>
 				<tr>
-					<th class='text-left' style='border-right:none'>" . $titulo . "</th>
-					<th class='text-right' style='border-left:none'>" . $noteStatus . "</th>
+					<th class='text-left' style='border-right:none'> NOTA DE " . $objNote["type"] . " DE ". strtoupper($objEntity["type"]) ."</th>
+					<th class='text-right' style='border-left:none'>" . $objNote["status"] . "</th>
 				</tr>
                 <tr>
                     <td class='bold col-30'>Número de Documento:</td>
@@ -19753,12 +19750,12 @@ function helper_reporteA4CreditAndDebitNote(
                     <td class='col-70'>" . (new \DateTime($objTransactionMastser->transactionOn))->format("Y/m/d") . "</td>
                 </tr>
                 <tr>
-                    <td class='bold col-30'>Código de Cliente:</td>
-                    <td class='col-70'>{$objEntidadCustomer->customerNumber}</td>
+                    <td class='bold col-30'>Código de ". $objEntity["type"] .":</td>
+                    <td class='col-70'>". $objEntity["number"] ."</td>
                 </tr>
                 <tr>
-                    <td class='bold col-30'>Cliente:</td>
-                    <td class='col-70'>{$objEntidadNatural->firstName}</td>
+                    <td class='bold col-30'>". $objEntity["type"] .":</td>
+                    <td class='col-70'>". $objEntity["name"] ."</td>
                 </tr>
                 <tr>
                     <td class='bold col-30'>Usuario:</td>
