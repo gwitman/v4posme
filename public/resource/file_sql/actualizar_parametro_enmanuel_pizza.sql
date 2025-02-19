@@ -1504,7 +1504,7 @@ WHERE
 
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Emanuel" 
+	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1EmanuelPizza" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_URL_PRINTER";## URLs PARA LA IMPRESION DE FACTURA 	

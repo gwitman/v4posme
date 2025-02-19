@@ -430,7 +430,7 @@ INSERT INTO `tb_public_catalog_detail` (
 	`reference19`, `reference20`, `reference21`, `reference22`, `reference23`, 
 	`refecence24`, `reference25`
 ) VALUES (
-	@publicCatalogIDMax, 'password', 'mesa 001', 0, '1', '', 0, '', '', '1', '', '', '', '', 
+	@publicCatalogIDMax, 'password', 'M001', 0, '1', '', 0, '', '', '1', '', '', '', '', 
 	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
 	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL
 );
@@ -457,7 +457,7 @@ INSERT INTO `tb_public_catalog_detail` (
 	`reference19`, `reference20`, `reference21`, `reference22`, `reference23`, 
 	`refecence24`, `reference25`
 ) VALUES (
-	@publicCatalogIDMax, 'password', 'sala', 0, '1', '', 0, '', '', '1', '', '', '', '', 
+	@publicCatalogIDMax, 'password', 'SALA', 0, '1', '', 0, '', '', '1', '', '', '', '', 
 	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
 	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL
 );

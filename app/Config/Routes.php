@@ -1084,6 +1084,8 @@ $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmC
 $routes->match(['get','post'],'app_invoice_billing/viewPrinterDirectFactura80mmComidaChinaMijo/(:any)','app_invoice_billing::viewPrinterDirectFactura80mmComidaChinaMijo');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Emanuel','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1Emanuel');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Emanuel/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1Emanuel');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1EmanuelPizza','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1EmanuelPizza');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1EmanuelPizza/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1EmanuelPizza');
 $routes->match(['get','post'],'app_invoice_dashboards/index','app_invoice_dashboards::index');
 $routes->match(['get','post'],'app_invoice_price/viewRegister','app_invoice_price::viewRegister');
 $routes->match(['get','post'],'app_invoice_price/viewRegister/(:any)','app_invoice_price::viewRegister');
