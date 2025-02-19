@@ -68,9 +68,9 @@
 			
 				<ul id="myTab" class="nav nav-tabs">
 					<li class="active"><a href="#home" data-toggle="tab">Informacion</a></li>
-					<li><a href="#profile" data-toggle="tab">Referencias.</a></li>
+					<li class="<?php echo getBehavio($company->type,"app_cxc_customer","divPestanaReferencias",""); ?>" ><a href="#profile" data-toggle="tab">Referencias.</a></li>
 					<li class="<?php echo getBehavio($company->type,"app_cxc_customer","divPestanaTelefono",""); ?>" ><a href="#profile-phones" data-toggle="tab">Telefonos.</a></li>
-					<li><a href="#profile-email" data-toggle="tab">Email.</a></li>
+					<li class="<?php echo getBehavio($company->type,"app_cxc_customer","divPestanaEmail",""); ?>" ><a href="#profile-email" data-toggle="tab">Email.</a></li>
 					<li class="<?php echo getBehavio($company->type,"app_cxc_customer","divPestanaCXC",""); ?>" ><a href="#profile-cxc" data-toggle="tab">CXC.</a></li>
 					<li class="<?php echo getBehavio($company->type,"app_cxc_customer","divPestanaCXCLineas",""); ?>" ><a href="#profile-cxc-line" data-toggle="tab">CXC Lineas.</a></li>
 					<li class="dropdown <?php echo getBehavio($company->type,"app_cxc_customer","divPestanaMas",""); ?>">
@@ -189,7 +189,7 @@
 								
 								
 						</div>
-						<div class="col-lg-6">
+						<div class="col-lg-6 <?php echo getBehavio($company->type,"app_cxc_customer","divRigthHome",""); ?>">
 						
 								<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","divTxtEstado",""); ?> ">
 									<label class="col-lg-4 control-label" for="selectFilter">Estado</label>

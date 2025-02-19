@@ -977,6 +977,7 @@
 	function onCompleteCustomer(objResponse){
 		
 		console.info("CALL onCompleteCustomer");
+		debugger;
 	
 		if(objResponse != undefined)
 		{

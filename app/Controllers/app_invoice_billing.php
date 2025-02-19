@@ -3824,8 +3824,7 @@ class app_invoice_billing extends _BaseController {
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$parameter["{userID}"]		= $this->session->get('user')->userID;
 				$parameter["{fecha}"]		= $fecha;					
-				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
-				
+				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);							
 				if(!$dataViewData){
 					
 					$targetComponentID			= 0;	
@@ -3850,7 +3849,7 @@ class app_invoice_billing extends _BaseController {
 			//Otra vista
 			else
 			{
-
+				
 				$cache->save('app_invoice_billing_dataviewid_index', $dataViewID, TIME_CACHE_APP);				
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$parameter["{userID}"]		= $this->session->get('user')->userID;
