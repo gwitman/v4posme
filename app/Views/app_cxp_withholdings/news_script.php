@@ -10,14 +10,6 @@
 				            reverse: true
 				        });
 
-						//Datos del catalogo de taxes
-						var objListCatalogTaxPercentage = <?= json_encode($objPublicCatalogTaxPercentage); ?>;
-						var taxPercentageMap			= {};
-
-						objListCatalogTaxPercentage.forEach(function(taxItem){
-							taxPercentageMap[taxItem.catalogItemID] = taxItem.ratio;
-						});
-
 				        //Regresar a la lista
 				        $(document).on("click", "#btnBack", function() {
 				            fnWaitOpen();
@@ -56,11 +48,10 @@
 
 					function onPercentageAndAmountChange()
 					{
-							var amount 			= parseFloat($("#txtInvoiceAmount").val()) || 0;
-							var percentageID 	= $("#txtTax").val();
-							var percentage 		= taxPercentageMap[percentageID] || 0;
-							var result 			= fnCalculatePercentage(amount, percentage);
-							$("#txtWithholdingAmount").val(result.toFixed(2));							
+						var amount 			= parseFloat($("#txtInvoiceAmount").val()) || 0;
+						var percentage 		= $("#txtTax option:selected").data("ratio");
+						var result 			= fnCalculatePercentage(amount, percentage);
+						$("#txtWithholdingAmount").val(result.toFixed(2));							
 					};
 
 				    function validateForm() {
