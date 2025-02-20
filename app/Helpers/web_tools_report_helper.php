@@ -19797,3 +19797,177 @@ function helper_reporteA4CreditAndDebitNote(
 
     return $html;
 }
+
+
+function helper_reporteA4Withholding(
+    $objWithhold,						
+    $objCompany, 					
+    $objParameterLogo, 				
+    $objTransactionMastser, 		
+    $objEntity, 					
+    $objCurrency, 					
+    $objParameterTelefono, 			
+    $objEmployerNatural, 			
+    $rucCompany 					
+) {
+    $path = PATH_FILE_OF_APP_ROOT . '/img/logos/' . $objParameterLogo->value;
+
+    $type = pathinfo($path, PATHINFO_EXTENSION);
+    $data = file_get_contents($path);
+    $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+    $numberDocument = str_replace("FAC", "SERIE \"A\" RECIBO No ", $objTransactionMastser->transactionNumber);
+
+    $html = "
+    <!DOCTYPE html>
+    <html lang='en'>
+    <head>
+        <meta charset='UTF-8' />
+        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+        <style>
+            @page {
+                size: A4;
+                margin: 25px;
+            }
+            body {
+                font-family: Arial, sans-serif;
+                font-size: 12px;
+                color: #000;
+            }
+            .header, .footer {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .header img {
+                max-width: 200px;
+            }
+            .header h1 {
+                font-size: 18px;
+                margin: 5px 0;
+            }
+            .header h2 {
+                font-size: 14px;
+                margin: 5px 0;
+            }
+            .content {
+                margin: 20px 0;
+            }
+            .content table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+                border: 1px solid #000;
+            }
+            .content table td {
+                padding: 8px;
+                border-right: 1px solid #000;
+            }
+            .content table td:last-child {
+                border-right: none;
+            }
+            .content table tr:last-child td {
+                border-bottom: none;
+            }
+            .content table th {
+                padding: 8px;
+                border: 1px solid #000;
+                background-color: #f2f2f2;
+            }
+            .footer {
+                font-size: 10px;
+                margin-top: 20px;
+            }
+            .text-center {
+                text-align: center;
+            }
+            .text-right {
+                text-align: right;
+            }
+            .text-left {
+                text-align: left;
+            }
+            .bold {
+                font-weight: bold;
+            }
+            .col-30 {
+                width: 30%;
+            }
+            .col-70 {
+                width: 70%;
+            }
+        </style>
+    </head>
+    <body>
+        <div class='header'>
+            <img src='{$base64}' alt='Company Logo'>
+            <h1>{$objCompany->name}</h1>
+            <h2>RUC: {$rucCompany}</h2>
+            <h2>Teléfono: {$objParameterTelefono->value}</h2>
+            <h2>Dirección: {$objCompany->address}</h2>
+        </div>
+
+        <div class='content'>
+            <table>
+				<tr>
+					<th class='text-left' style='border-right:none'> RETENCION DE ". strtoupper($objEntity["type"]) ."</th>
+					<th class='text-right' style='border-left:none'>" . $objWithhold["status"] . "</th>
+				</tr>
+                <tr>
+                    <td class='bold col-30'>Número de Documento:</td>
+                    <td class='col-70'>{$numberDocument}</td>
+                </tr>
+                <tr>
+                    <td class='bold col-30'>Fecha de Emisión:</td>
+                    <td class='col-70'>" . (new \DateTime($objTransactionMastser->transactionOn))->format("Y/m/d") . "</td>
+                </tr>
+                <tr>
+                    <td class='bold col-30'>Código de ". $objEntity["type"] .":</td>
+                    <td class='col-70'>". $objEntity["number"] ."</td>
+                </tr>
+                <tr>
+                    <td class='bold col-30'>". $objEntity["type"] .":</td>
+                    <td class='col-70'>". $objEntity["name"] ."</td>
+                </tr>
+                <tr>
+                    <td class='bold col-30'>Usuario:</td>
+                    <td class='col-70'>{$objEmployerNatural->nickname}</td>
+                </tr>
+                <tr>
+                    <td class='bold col-30'>Moneda:</td>
+                    <td class='col-70'>" . strtoupper($objCurrency->name) . "</td>
+                </tr>
+                <tr>
+                    <td class='bold col-30'>Factura:</td>
+                    <td class='col-70'>". $objWithhold["invoice"] ."</td>
+                </tr>
+                <tr>
+                    <td class='bold col-30'>Impuesto:</td>
+                    <td class='col-70'>". $objWithhold["taxPercentage"] ."</td>
+                </tr>
+                <tr>
+                    <td class='bold col-30'>Monto de Factura:</td>
+                    <td class='col-70'>{$objCurrency->simbol} " . number_format($objWithhold["invoiceAmount"], 2, '.', ',') . "</td>
+                </tr>
+				<tr>
+                    <td class='bold col-30'>Monto de Retencion:</td>
+                    <td class='col-70'>{$objCurrency->simbol} " . number_format($objWithhold["withholdingAmount"], 2, '.', ',') . "</td>
+                </tr>
+                <tr>
+                    <td class='bold col-30'>Referencia:</td>
+                    <td class='col-70'>{$objTransactionMastser->reference1}</td>
+                </tr>
+                <tr>
+                    <td class='bold col-30'>Nota:</td>
+                    <td class='col-70'>{$objTransactionMastser->note}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class='footer'>
+            <p class='text-center'></p>
+        </div>
+    </body>
+    </html>
+    ";
+
+    return $html;
+}
