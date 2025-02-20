@@ -12,10 +12,10 @@
 		$(window).unload(function() {
 			//do something
 			var dataCustomerNewRow 	= [];
-			var dataCustomerItem 	= [];
+			var dataCustomerItem 	= [];			
 			dataCustomerItem 		= ('0|'+$("#txtEntityID").val()+'|'+$("#txtEntityNumberID").val()+'|'+$("#txtLegalName").val()+'|'+$("#txtLegalName").val()).split("|");
-			
-			window.opener.<?php echo $callback; ?>(dataCustomerItem); 
+			dataCustomerNewRow.push(dataCustomerItem);
+			window.opener.<?php echo $callback; ?>(dataCustomerNewRow); 
 		});
 	}
 	
@@ -929,6 +929,9 @@
 	function validateForm(){
 		var result 				= true;
 		var timerNotification 	= 15000;
+		
+		<?php echo getBehavio($company->type,"app_cxc_customer","divScriptValideFunctionPre",""); ?>		
+		
 		
 		//Pais
 		if($("#txtCountryID").val() == ""){

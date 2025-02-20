@@ -85,7 +85,7 @@ select
 	c.componentID,
 	c.dataViewID,
 	c.callerID,
-	c.targetComponentID
+	@flavorTarget 
 from 
 	tb_company_default_dataview c 
 where 

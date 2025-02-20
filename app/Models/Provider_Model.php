@@ -70,7 +70,7 @@ class Provider_Model extends Model  {
 		$builder	= $db->table("tb_provider");
 		
 		$sql = "";
-		$sql = sprintf("select companyID, branchID, entityID, providerNumber, numberIdentification, identificationTypeID, providerType, providerCategoryID, providerClasificationID, reference1, reference2, payConditionID, isLocal, countryID, stateID, cityID, address, currencyID, statusID, deleveryDay, deleveryDayReal, distancia, createdIn, createdBy, createdAt, createdOn, isActive");
+		$sql = sprintf("select companyID, branchID, entityID, providerNumber, numberIdentification, identificationTypeID, providerType, providerCategoryID, providerClasificationID, reference1, reference2, payConditionID, isLocal, countryID, stateID, cityID, address, currencyID, statusID, deleveryDay, deleveryDayReal, distancia, createdIn, createdBy, createdAt, createdOn, isActive, balanceDol, balanceCor");
 		$sql = $sql.sprintf(" from tb_provider i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
 		$sql = $sql.sprintf(" and i.branchID = $branchID");

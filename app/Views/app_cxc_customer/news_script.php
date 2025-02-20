@@ -25,10 +25,10 @@
 		$('#txtVencimientoTarjeta').datepicker({format: "mm/yyyy"})
 		$('#txtBirthDate').datepicker({format:"yyyy-mm-dd"});
 		
-		var today = new Date();
-		var year = today.getFullYear();
-		var month = String(today.getMonth() + 1).padStart(2, '0'); // Los meses son 0-indexados
-		var day = String(today.getDate()).padStart(2, '0');
+		var today 	= new Date();
+		var year 	= today.getFullYear();
+		var month 	= String(today.getMonth() + 1).padStart(2, '0'); // Los meses son 0-indexados
+		var day 	= String(today.getDate()).padStart(2, '0');
 		var formattedDate = year + '-' + month + '-' + day;
 		$("#txtDateContract").val(formattedDate);
 		$('#txtDateContract').datepicker({format:"yyyy-mm-dd"});
@@ -697,6 +697,9 @@
 	function validateForm(){
 		var result 				= true;
 		var timerNotification 	= 15000;
+		
+		
+		<?php echo getBehavio($company->type,"app_cxc_customer","divScriptValideFunctionPre",""); ?>		
 		
 		//Pais
 		//if($("#txtCountryID").val() == ""){

@@ -1087,7 +1087,8 @@ class app_cxc_customer extends _BaseController {
 			}
 			
 		}
-		catch(\Exception $ex){
+		catch(\Exception $ex)
+		{
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
@@ -1429,7 +1430,7 @@ class app_cxc_customer extends _BaseController {
 			//$this->validation->setRule("txtCityID","Municipio","required");
 			$this->validation->setRule("txtIdentification","Identificacion","required");
 				
-				
+			
 			//Validar Formulario
 			if(!$this->validation->withRequest($this->request)->run()){
 				$stringValidation = $this->core_web_tools->formatMessageError($this->validation->getErrors());
@@ -1439,7 +1440,7 @@ class app_cxc_customer extends _BaseController {
 			} 
 			
 			//Guardar o Editar Registro						
-			if($mode == "new"){
+			if($mode == "new"){				
 				$this->insertElement($dataSession);
 			}
 			else if ($mode == "edit"){

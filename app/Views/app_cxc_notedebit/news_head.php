@@ -5,5 +5,5 @@
 <script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jLinq-2.2.1.js"></script>
 
 <div id="heading" class="page-header">
-    <h1><i class="icon20  i-storage-2"></i> Agregar Nota De Debito</h1>
+    <h1><i class="icon20  i-storage-2"></i> Agregar Nota De Debito De Cliente</h1>
 </div>
