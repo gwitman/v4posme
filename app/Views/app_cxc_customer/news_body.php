@@ -560,6 +560,21 @@
 												<input class="form-control"  type="number"  name="txtBudget" id="txtBudget" value="">												
 											</div>
 									</div>
+
+									<!-- Balance Cordoba -->
+								<div class="form-group">
+										<label class="col-lg-4 control-label" for="normal">Balance Cordobas</label>
+										<div class="col-lg-8">
+											<input class="form-control txt-numeric" readonly type="text"  name="txtBalanceCor" id="txtBalanceCor" value="0">												
+										</div>
+								</div>
+								<!-- Balance Dolares -->
+								<div class="form-group">
+										<label class="col-lg-4 control-label" for="normal">Balance Dolares</label>
+										<div class="col-lg-8">
+											<input class="form-control txt-numeric" readonly type="text"  name="txtBalanceDol" id="txtBalanceDol" value="0">
+										</div>
+								</div>
 							</div>
 							<div class="col-lg-6">
 								
