@@ -201,6 +201,7 @@
 													<div class="form-group">
 															<label class="col-lg-4 control-label" for="normal">Es Foraneo</label>
 															<div class="col-lg-8">
+																<input type="hidden" name="txtIsForaneo" value="0"> <!-- En caso de que no se seleccione el checkbox -->
 																<input type="checkbox"   name="txtIsForaneo" id="txtIsForaneo" value="1" >
 															</div>
 													</div>

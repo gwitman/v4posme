@@ -659,6 +659,21 @@
 												<input class="form-control"  type="number"  name="txtBudget" id="txtBudget" value="<?php echo $objCustomer->budget; ?>">
 											</div>
 									</div>
+
+									<!-- Balance Cordoba -->
+								<div class="form-group">
+										<label class="col-lg-4 control-label" for="normal">Balance Cordobas</label>
+										<div class="col-lg-8">
+											<input class="form-control" readonly type="text"  name="txtBalanceCor" id="txtBalanceCor" value="<?= $objCustomer->balanceCor ?>">												
+										</div>
+								</div>
+								<!-- Balance Dolares -->
+								<div class="form-group">
+										<label class="col-lg-4 control-label" for="normal">Balance Dolares</label>
+										<div class="col-lg-8">
+											<input class="form-control" readonly type="text"  name="txtBalanceDol" id="txtBalanceDol" value="<?= $objCustomer->balanceDol ?>">
+										</div>
+								</div>
 							</div>
 							<div class="col-lg-6">
 							

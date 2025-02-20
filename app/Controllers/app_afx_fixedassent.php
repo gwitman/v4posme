@@ -264,8 +264,11 @@ class app_afx_fixedassent extends _BaseController {
 			
 			
 			//Crear la Carpeta para almacenar los Archivos del Cliente
-			mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$fixedAssentID, 0700);
-			
+			if(!file_exists(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$fixedAssentID))
+			{
+				mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$fixedAssentID, 0700, true);
+			}
+
 			if($db->transStatus() !== false){
 				$db->transCommit();						
 				$this->core_web_notification->set_message(false,SUCCESS);
