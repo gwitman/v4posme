@@ -51,17 +51,17 @@
 							onPercentageAndAmountChange();
 						});
 
-						function onPercentageAndAmountChange(){
+						
+				    });
+
+					function onPercentageAndAmountChange()
+					{
 							var amount 			= parseFloat($("#txtInvoiceAmount").val()) || 0;
 							var percentageID 	= $("#txtTax").val();
 							var percentage 		= taxPercentageMap[percentageID] || 0;
 							var result 			= fnCalculatePercentage(amount, percentage);
-							$("#txtWithholdingAmount").val(result.toFixed(2));
-							debugger;
-						};
-				    });
-
-
+							$("#txtWithholdingAmount").val(result.toFixed(2));							
+					};
 
 				    function validateForm() {
 				        var result = true;

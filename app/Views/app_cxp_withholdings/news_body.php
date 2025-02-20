@@ -121,9 +121,9 @@
                                                 if ($objPublicCatalogTaxPercentage)
                                                     foreach ($objPublicCatalogTaxPercentage as $tp) {
                                                         if ($counter == 0)
-                                                            echo "<option value='" . $tp->catalogItemID . "' selected>" . $tp->name . "</option>";
+                                                            echo "<option value='" . $tp->catalogItemID . "' selected data-ratio='".$tp->ratio."' >" . $tp->name . "</option>";
                                                         else
-                                                            echo "<option value='" . $tp->catalogItemID . "' >" . $tp->name . "</option>";
+                                                            echo "<option value='" . $tp->catalogItemID . "' data-ratio='".$tp->ratio."' >" . $tp->name . "</option>";
                                                         $counter++;
                                                     }
                                                 ?>
