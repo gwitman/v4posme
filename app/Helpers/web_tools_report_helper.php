@@ -9525,12 +9525,24 @@ function helper_reporte80mmTransactionMasterEmanuelPizza(
                           </td>
                         </tr>
 
-                         <tr>
+                        <tr>
                           <td colspan='3' style='text-align:center'>
                             &nbsp;
                           </td>
                         </tr>
 
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            Dirección de cliente: ".$dataView["objLegal"]->legalName."
+                          </td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+						
                         <tr>
                           <td colspan='3' style='text-align:center'>
                             Gracias por su compra!!
