@@ -88,6 +88,7 @@ class app_afx_fixedassent extends _BaseController {
 				$objFA["startOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
 				$objFA["ratio"]						= /*inicio get post*/ $this->request->getPost("txtRatio");
 				$objFA["settlementAmount"]			= /*inicio get post*/ $this->request->getPost("txtSettlementAmount");
+				$objFA["currentAmount"]				= /*inicio get post*/ $this->request->getPost("txtCurrentAmount");
 				$this->Fixed_Assent_Model->update_app_posme($companyID_,$branchID_,$fixedAssentID_,$objFA);
 			
 			}
@@ -282,6 +283,7 @@ class app_afx_fixedassent extends _BaseController {
 			$objFA["startOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
 			$objFA["ratio"]						= /*inicio get post*/ $this->request->getPost("txtRatio");
 			$objFA["settlementAmount"]			= /*inicio get post*/ $this->request->getPost("txtSettlementAmount");
+			$objFA["currentAmount"]				= /*inicio get post*/ $this->request->getPost("txtCurrentAmount");
 			$objFA["isActive"]					= 1;
 			$this->core_web_auditoria->setAuditCreated($objFA,$dataSession,$this->request);
 			
