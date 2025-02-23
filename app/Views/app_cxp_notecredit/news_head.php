@@ -6,5 +6,5 @@
 				
 				
 				<div id="heading" class="page-header">
-							<h1><i class="icon20 i-storage-2"></i> Agregar Nota de Credito</h1>
+							<h1><i class="icon20 i-storage-2"></i> Agregar Nota de Credito de Proveedor</h1>
 				</div> 

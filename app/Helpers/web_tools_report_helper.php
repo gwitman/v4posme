@@ -20119,6 +20119,12 @@ function helper_reporteA4CreditAndDebitNote(
             .col-70 {
                 width: 70%;
             }
+			.col-60 {
+				width: 60% !important;
+			}
+			.col-40 {
+				width: 40% !important;
+			}
         </style>
     </head>
     <body>
@@ -20133,8 +20139,8 @@ function helper_reporteA4CreditAndDebitNote(
         <div class='content'>
             <table>
 				<tr>
-					<th class='text-left' style='border-right:none'> NOTA DE " . $objNote["type"] . " DE ". strtoupper($objEntity["type"]) ."</th>
-					<th class='text-right' style='border-left:none'>" . $objNote["status"] . "</th>
+					<th class='text-left col-60' style='border-right:none'> NOTA DE " . $objNote["type"] . " DE ". strtoupper($objEntity["type"]) ."</th>
+					<th class='text-right col-40' style='border-left:none'>" . $objNote["status"] . "</th>
 				</tr>
                 <tr>
                     <td class='bold col-30'>Número de Documento:</td>

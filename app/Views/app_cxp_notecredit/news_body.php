@@ -65,29 +65,31 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-group">
-                                        <label class="col-lg-4 control-label" for="normal">Ref. 1</label>
+                                    <div class="form-group <?php echo getBehavio($company->type, "app_cxp_notecredit", "divMoneda", ""); ?>  ">
+                                        <label class="col-lg-4 control-label" for="selectFilter">Moneda</label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" type="text" name="txtRef1" id="" value="">
+                                            <select name="txtCurrencyID" id="txtCurrencyID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
+                                                <option></option>
+                                                <?php
+                                                if ($objListCurrency)
+                                                    foreach ($objListCurrency as $ws) {
+
+                                                        if ($ws->currencyID == $objListCurrencyDefault->currencyID)
+                                                            echo "<option value='" . $ws->currencyID . "' selected >" . $ws->name . "</option>";
+                                                        else
+                                                            echo "<option value='" . $ws->currencyID . "' >" . $ws->name . "</option>";
+                                                    }
+                                                ?>
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="col-lg-4 control-label" for="normal">Ref. 2</label>
+                                        <label class="col-lg-4 control-label" for="normal">Monto</label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" type="text" name="txtRef2" id="" value="">
+                                            <input class="form-control" type="text" name="txtAmount" id="txtAmount" value="0">
                                         </div>
                                     </div>
-
-                                    <div class="form-group">
-                                        <label class="col-lg-4 control-label" for="normal">Ref. 3</label>
-                                        <div class="col-lg-8">
-                                            <input class="form-control" type="text" name="txtRef3" id="" value="">
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="col-lg-6">
 
                                     <div class="form-group <?php echo getBehavio($company->type, "app_cxp_notecredit", "divCustomerControlBuscar", ""); ?> ">
                                         <label class="col-lg-4 control-label" for="buttons"><?php echo getBehavio($company->type, "app_cxp_notecredit", "lblProveedor", "Proveedor"); ?></label>
@@ -113,38 +115,35 @@
                                         </div>
                                     </div>
 
+                                </div>
 
-                                    <div class="form-group <?php echo getBehavio($company->type, "app_cxp_notecredit", "divMoneda", ""); ?>  ">
-                                        <label class="col-lg-4 control-label" for="selectFilter">Moneda</label>
+                                <div class="col-lg-6">
+                                    
+                                    <div class="form-group">
+                                        <label class="col-lg-4 control-label" for="normal">Referencia 1</label>
                                         <div class="col-lg-8">
-                                            <select name="txtCurrencyID" id="txtCurrencyID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
-                                                <option></option>
-                                                <?php
-                                                if ($objListCurrency)
-                                                    foreach ($objListCurrency as $ws) {
-
-                                                        if ($ws->currencyID == $objListCurrencyDefault->currencyID)
-                                                            echo "<option value='" . $ws->currencyID . "' selected >" . $ws->name . "</option>";
-                                                        else
-                                                            echo "<option value='" . $ws->currencyID . "' >" . $ws->name . "</option>";
-                                                    }
-                                                ?>
-                                            </select>
+                                            <input class="form-control" type="text" name="txtRef1" id="" value="">
                                         </div>
                                     </div>
-
 
                                     <div class="form-group">
-                                        <label class="col-lg-4 control-label" for="normal">Monto</label>
+                                        <label class="col-lg-4 control-label" for="normal">Referencia 2</label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" type="text" name="txtAmount" id="" value="0">
+                                            <input class="form-control" type="text" name="txtRef2" id="" value="">
                                         </div>
                                     </div>
 
+                                    <div class="form-group">
+                                        <label class="col-lg-4 control-label" for="normal">Referencia 3</label>
+                                        <div class="col-lg-8">
+                                            <input class="form-control" type="text" name="txtRef3" id="" value="">
+                                        </div>
+                                    </div>
+                                  
                                     <div class="form-group">
                                         <label class="col-lg-4 control-label" for="normal">Comentario</label>
                                         <div class="col-lg-8">
-                                            <textarea class="form-control" name="txtComment" id=""></textarea>
+                                            <textarea class="form-control" name="txtComment" id="txtComment" rows="6"></textarea>
                                         </div>
                                     </div>
 
