@@ -173,16 +173,7 @@
                     </div>
 
                     <br />
-
-                    <a href="#" class="btn btn-flat btn-danger <?php echo getBehavio($company->type, "app_box_share", "btnVerMovimientos", "hidden"); ?> " id="btnVerMovement">
-                        <i class="i-print"></i>
-                        <span class="percent">Ver</span>
-                        <span class="txt">movimientos</span>
-                    </a>
-
-
-
-
+                
                 </div>
             </form>
             <!-- /body -->
