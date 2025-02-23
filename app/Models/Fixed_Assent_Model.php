@@ -39,7 +39,7 @@ class Fixed_Assent_Model extends Model  {
 		$builder	= $db->table("tb_fixed_assent");    
 		
 		$sql = "";
-		$sql = sprintf("select companyID, branchID, fixedAssentID, fixedAssentCode, name, description, modelNumber, marca, colorID, chasisNumber, reference1, reference2, year, asignedEmployeeID, categoryID, typeID, typeDepresiationID, yearOfUtility, currencyID, priceStart, isForaneo, statusID, createdIn, createdOn, createdAt, createdBy, countryID, cityID, municipalityID, address, areaID, projectID, duration, typeFixedAssentID, startOn, ratio, settlementAmount, isActive");
+		$sql = sprintf("select companyID, branchID, fixedAssentID, fixedAssentCode, name, description, modelNumber, marca, colorID, chasisNumber, reference1, reference2, year, asignedEmployeeID, categoryID, typeID, typeDepresiationID, yearOfUtility, currencyID, priceStart, isForaneo, statusID, createdIn, createdOn, createdAt, createdBy, countryID, cityID, municipalityID, address, areaID, projectID, duration, typeFixedAssentID, startOn, ratio, settlementAmount, currentAmount, isActive");
 		$sql = $sql.sprintf(" from tb_fixed_assent i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
 		$sql = $sql.sprintf(" and i.fixedAssentID = $fixedAssentID");
