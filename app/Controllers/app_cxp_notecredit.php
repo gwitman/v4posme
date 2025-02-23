@@ -63,8 +63,7 @@ class app_cxp_notecredit extends _BaseController
 			$dataSession["script"]              = $dataSession["script"] . $this->core_web_javascript->createVar("componentID", $objComponent->componentID);
 			return view("core_masterpage/default_masterpage", $dataSession); //--finview-r	
 		} catch (\Exception $ex) {
-			echo $ex->getMessage();
-			/* if (empty($dataSession)) {
+			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
 
@@ -75,7 +74,7 @@ class app_cxp_notecredit extends _BaseController
 			$data["urlBack"]   = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 			$resultView        = view("core_template/email_error_general", $data);
 
-			return $resultView; */
+			return $resultView;
 		}
 	}
 
