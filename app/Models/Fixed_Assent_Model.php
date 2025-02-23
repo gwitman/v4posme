@@ -12,7 +12,6 @@ class Fixed_Assent_Model extends Model  {
 		$builder	= $db->table("tb_fixed_assent");
 		
 		$builder->where("companyID",$companyID);
-		$builder->where("branchID",$branchID);	
 		$builder->where("fixedAssentID",$fixedAssentID);	
 		return $builder->update($data);
 		
@@ -23,7 +22,6 @@ class Fixed_Assent_Model extends Model  {
 		$data["isActive"]	= 0;
 		
 		$builder->where("companyID",$companyID);
-		$builder->where("branchID",$branchID);	
 		$builder->where("fixedAssentID",$fixedAssentID);	
 		return $builder->update($data);
 		
@@ -41,11 +39,11 @@ class Fixed_Assent_Model extends Model  {
 		$builder	= $db->table("tb_fixed_assent");    
 		
 		$sql = "";
-		$sql = sprintf("select companyID, branchID, fixedAssentID, fixedAssentCode, name, description, modelNumber, marca, colorID, chasisNumber, reference1, reference2, year, asignedEmployeeID, categoryID, typeID, typeDepresiationID, yearOfUtility, priceStart, isForaneo, statusID,createdIn, createdOn, createdAt, createdBy, isActive");
+		$sql = sprintf("select companyID, branchID, fixedAssentID, fixedAssentCode, name, description, modelNumber, marca, colorID, chasisNumber, reference1, reference2, year, asignedEmployeeID, categoryID, typeID, typeDepresiationID, yearOfUtility, currencyID, priceStart, isForaneo, statusID, createdIn, createdOn, createdAt, createdBy, countryID, cityID, municipalityID, address, areaID, projectID, duration, typeFixedAssentID, startOn, ratio, settlementAmount, isActive");
 		$sql = $sql.sprintf(" from tb_fixed_assent i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
-		$sql = $sql.sprintf(" and i.branchID = $branchID");
 		$sql = $sql.sprintf(" and i.fixedAssentID = $fixedAssentID");
+		$sql = $sql.sprintf(" and i.isActive = 1");
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();

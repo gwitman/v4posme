@@ -27,9 +27,6 @@ class app_afx_fixedassent extends _BaseController {
 			throw new \Exception("EL COMPONENTE 'tb_fixed_assent' NO EXISTE...");
 			
 			
-			$branchID 								= $dataSession["user"]->branchID;
-			$roleID 								= $dataSession["role"]->roleID;
-			$companyID 								= $dataSession["user"]->companyID;
 			
 			$companyID_ 							= /*inicio get post*/ $this->request->getPost("txtCompanyID");
 			$branchID_								= /*inicio get post*/ $this->request->getPost("txtBranchID");
@@ -60,25 +57,37 @@ class app_afx_fixedassent extends _BaseController {
 			}
 			else{
 				
-				$objFA 								= NULL;										
-				$objFA["colorID"]					= /*inicio get post*/ $this->request->getPost('txtColorID');//--fin peticion get o post
-				$objFA["typeID"]					= /*inicio get post*/ $this->request->getPost('txtTypeID');//--fin peticion get o post
-				$objFA["categoryID"]				= /*inicio get post*/ $this->request->getPost('txtCategoryID');//--fin peticion get o post
-				$objFA["typeDepresiationID"]		= /*inicio get post*/ $this->request->getPost('txtTypeDepresiationID');//--fin peticion get o post
-				$objFA["statusID"]					= /*inicio get post*/ $this->request->getPost('txtStatusID');//--fin peticion get o post
-				$objFA["isForaneo"]					= /*inicio get post*/ $this->request->getPost('txtIsForaneo');//--fin peticion get o post
+				$objFA 								= NULL;		
+				$objFA["branchID"]					= /*inicio get post*/ $this->request->getPost("txtBranchID");
 				$objFA["name"]						= /*inicio get post*/ $this->request->getPost('txtName');//--fin peticion get o post
 				$objFA["description"]				= /*inicio get post*/ $this->request->getPost('txtDescription');//--fin peticion get o post
 				$objFA["modelNumber"]				= /*inicio get post*/ $this->request->getPost('txtModelNumber');//--fin peticion get o post
 				$objFA["marca"]						= /*inicio get post*/ $this->request->getPost('txtMarca');//--fin peticion get o post
+				$objFA["colorID"]					= /*inicio get post*/ $this->request->getPost('txtColorID');//--fin peticion get o post
 				$objFA["chasisNumber"]				= /*inicio get post*/ $this->request->getPost('txtChasisNumber');//--fin peticion get o post
 				$objFA["reference1"]				= /*inicio get post*/ $this->request->getPost('txtReference1');//--fin peticion get o post
 				$objFA["reference2"]				= /*inicio get post*/ $this->request->getPost('txtReference2');//--fin peticion get o post
 				$objFA["year"]						= /*inicio get post*/ $this->request->getPost('txtYear');//--fin peticion get o post
 				$objFA["asignedEmployeeID"]			= /*inicio get post*/ $this->request->getPost('txtAsignedEmployeeID');//--fin peticion get o post
+				$objFA["categoryID"]				= /*inicio get post*/ $this->request->getPost('txtCategoryID');//--fin peticion get o post
+				$objFA["typeID"]					= /*inicio get post*/ $this->request->getPost('txtTypeID');//--fin peticion get o post
+				$objFA["typeDepresiationID"]		= /*inicio get post*/ $this->request->getPost('txtTypeDepresiationID');//--fin peticion get o post
 				$objFA["yearOfUtility"]				= /*inicio get post*/ $this->request->getPost('txtYearUtility');//--fin peticion get o post
+				$objFA["currencyID"]				= /*inicio get post*/ $this->request->getPost("txtCurrencyID");
 				$objFA["priceStart"]				= /*inicio get post*/ $this->request->getPost('txtPriceStart');//--fin peticion get o post
-			
+				$objFA["isForaneo"]					= /*inicio get post*/ $this->request->getPost('txtIsForaneo');//--fin peticion get o post
+				$objFA["statusID"]					= /*inicio get post*/ $this->request->getPost('txtStatusID');//--fin peticion get o post
+				$objFA["countryID"]					= /*inicio get post*/ $this->request->getPost("txtCountryID");
+				$objFA["cityID"]					= /*inicio get post*/ $this->request->getPost("txtStateID");
+				$objFA["municipalityID"]			= /*inicio get post*/ $this->request->getPost("txtCityID");
+				$objFA["address"]					= /*inicio get post*/ $this->request->getPost("txtAddress");
+				$objFA["areaID"]					= /*inicio get post*/ $this->request->getPost("txtAreaID");
+				$objFA["projectID"]					= /*inicio get post*/ $this->request->getPost("txtProyectID");
+				$objFA["duration"]					= /*inicio get post*/ $this->request->getPost("txtDuration");
+				$objFA["typeFixedAssentID"]			= /*inicio get post*/ $this->request->getPost("txtTypeAssentID");
+				$objFA["startOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
+				$objFA["ratio"]						= /*inicio get post*/ $this->request->getPost("txtRatio");
+				$objFA["settlementAmount"]			= /*inicio get post*/ $this->request->getPost("txtSettlementAmount");
 				$this->Fixed_Assent_Model->update_app_posme($companyID_,$branchID_,$fixedAssentID_,$objFA);
 			
 			}
@@ -169,7 +178,12 @@ class app_afx_fixedassent extends _BaseController {
 			if(!$objComponentFA)
 			throw new \Exception("00409 EL COMPONENTE 'tb_fixed_assent' NO EXISTE...");
 			
+			$objComponentCatalog					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_public_catalog");
+			if(!$objComponentCatalog)
+			throw new \Exception("EL COMPONENTE 'tb_public_catalog' NO EXISTE...");
+
 			//Obtener Informacion
+			$datView["objComponentCatalog"]			= $objComponentCatalog;
 			$datView["objListWorkflowStage"]		= $this->core_web_workflow->getWorkflowStageByStageInit("tb_fixed_assent","statusID",$datView["objFA"]->statusID,$companyID,$branchIDUser,$roleID);
 			$datView["componentEmployeeID"] 		= $objComponent->componentID;
 			$datView["objComponentFA"] 				= $objComponentFA;
@@ -177,7 +191,12 @@ class app_afx_fixedassent extends _BaseController {
 			$datView["objListCategory"]				= $this->core_web_catalog->getCatalogAllItem("tb_fixed_assent","categoryID",$companyID);						
 			$datView["objListType"]					= $this->core_web_catalog->getCatalogAllItem("tb_fixed_assent","typeID",$companyID);					
 			$datView["objListTypeDepresiation"]		= $this->core_web_catalog->getCatalogAllItem("tb_fixed_assent","typeDepresiationID",$companyID);
-			
+			$datView["objListBranch"]				= $this->Branch_Model->getByCompany($companyID);
+			$datView["objListTypeFixedAssent"]		= $this->core_web_catalog->getCatalogAllItem("tb_fixed_assent","typeFixedAssentID",$companyID);
+			$datView["objListCountry"]				= $this->core_web_catalog->getCatalogAllItem("tb_employee","countryID",$companyID);
+			$datView["objListState"]				= $this->core_web_catalog->getCatalogAllItem_Parent("tb_employee","stateID",$companyID,$datView["objFA"]->countryID);			
+			$datView["objListMunicipality"]			= $this->core_web_catalog->getCatalogAllItem_Parent("tb_employee","cityID",$companyID,$datView["objFA"]->cityID);
+			$datView["objListCurrency"]             = $this->Company_Currency_Model->getByCompany($companyID);
 			
 			
 			//Renderizar Resultado
@@ -220,9 +239,7 @@ class app_afx_fixedassent extends _BaseController {
 				$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"add",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
 				if ($resultPermission 	== PERMISSION_NONE)
 				throw new \Exception(NOT_ALL_INSERT);	
-			}
-			
-				;
+			};
 			
 			
 			//Obtener el Componente de Transacciones Other Input to Inventory
@@ -234,28 +251,38 @@ class app_afx_fixedassent extends _BaseController {
 			//Obtener transaccion
 			$companyID 							= $dataSession["user"]->companyID;			
 			$objFA["companyID"] 				= $dataSession["user"]->companyID;			
-			$objFA["branchID"]					= $dataSession["user"]->branchID;
-			$objFA["isActive"]					= true;
+			$objFA["branchID"]					= $this->request->getPost("txtBranchID");
 			$objFA["fixedAssentCode"]			= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_fixed_assent",0);
-			$objFA["colorID"]					= /*inicio get post*/ $this->request->getPost('txtColorID');//--fin peticion get o post
-			$objFA["typeID"]					= /*inicio get post*/ $this->request->getPost('txtTypeID');//--fin peticion get o post
-			$objFA["categoryID"]				= /*inicio get post*/ $this->request->getPost('txtCategoryID');//--fin peticion get o post
-			$objFA["typeDepresiationID"]		= /*inicio get post*/ $this->request->getPost('txtTypeDepresiationID');//--fin peticion get o post
-			$objFA["statusID"]					= /*inicio get post*/ $this->request->getPost('txtStatusID');//--fin peticion get o post
-			$objFA["isForaneo"]					= /*inicio get post*/ $this->request->getPost('txtIsForaneo');//--fin peticion get o post			
 			$objFA["name"]						= /*inicio get post*/ $this->request->getPost('txtName');//--fin peticion get o post
 			$objFA["description"]				= /*inicio get post*/ $this->request->getPost('txtDescription');//--fin peticion get o post
 			$objFA["modelNumber"]				= /*inicio get post*/ $this->request->getPost('txtModelNumber');//--fin peticion get o post
 			$objFA["marca"]						= /*inicio get post*/ $this->request->getPost('txtMarca');//--fin peticion get o post
+			$objFA["colorID"]					= /*inicio get post*/ $this->request->getPost('txtColorID');//--fin peticion get o post
 			$objFA["chasisNumber"]				= /*inicio get post*/ $this->request->getPost('txtChasisNumber');//--fin peticion get o post
 			$objFA["reference1"]				= /*inicio get post*/ $this->request->getPost('txtReference1');//--fin peticion get o post
 			$objFA["reference2"]				= /*inicio get post*/ $this->request->getPost('txtReference2');//--fin peticion get o post
 			$objFA["year"]						= /*inicio get post*/ $this->request->getPost('txtYear');//--fin peticion get o post
 			$objFA["asignedEmployeeID"]			= /*inicio get post*/ $this->request->getPost('txtAsignedEmployeeID');//--fin peticion get o post
+			$objFA["categoryID"]				= /*inicio get post*/ $this->request->getPost('txtCategoryID');//--fin peticion get o post
+			$objFA["typeID"]					= /*inicio get post*/ $this->request->getPost('txtTypeID');//--fin peticion get o post
+			$objFA["typeDepresiationID"]		= /*inicio get post*/ $this->request->getPost('txtTypeDepresiationID');//--fin peticion get o post
 			$objFA["yearOfUtility"]				= /*inicio get post*/ $this->request->getPost('txtYearUtility');//--fin peticion get o post
+			$objFA["currencyID"]				= /*inicio get post*/ $this->request->getPost("txtCurrencyID");
 			$objFA["priceStart"]				= /*inicio get post*/ $this->request->getPost('txtPriceStart');//--fin peticion get o post
-			
-			
+			$objFA["isForaneo"]					= /*inicio get post*/ $this->request->getPost('txtIsForaneo');//--fin peticion get o post			
+			$objFA["statusID"]					= /*inicio get post*/ $this->request->getPost('txtStatusID');//--fin peticion get o post
+			$objFA["countryID"]					= /*inicio get post*/ $this->request->getPost("txtCountryID");
+			$objFA["cityID"]					= /*inicio get post*/ $this->request->getPost("txtStateID");
+			$objFA["municipalityID"]			= /*inicio get post*/ $this->request->getPost("txtCityID");
+			$objFA["address"]					= /*inicio get post*/ $this->request->getPost("txtAddress");
+			$objFA["areaID"]					= /*inicio get post*/ $this->request->getPost("txtAreaID");
+			$objFA["projectID"]					= /*inicio get post*/ $this->request->getPost("txtProyectID");
+			$objFA["duration"]					= /*inicio get post*/ $this->request->getPost("txtDuration");
+			$objFA["typeFixedAssentID"]			= /*inicio get post*/ $this->request->getPost("txtTypeAssentID");
+			$objFA["startOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
+			$objFA["ratio"]						= /*inicio get post*/ $this->request->getPost("txtRatio");
+			$objFA["settlementAmount"]			= /*inicio get post*/ $this->request->getPost("txtSettlementAmount");
+			$objFA["isActive"]					= 1;
 			$this->core_web_auditoria->setAuditCreated($objFA,$dataSession,$this->request);
 			
 			$db=db_connect();
@@ -276,7 +303,7 @@ class app_afx_fixedassent extends _BaseController {
 			}
 			else{
 				$db->transRollback();						
-				$this->core_web_notification->set_message(true,$this->db->_error_message());
+				$this->core_web_notification->set_message(true,$db->error());
 				$this->response->redirect(base_url()."/".'app_afx_fixedassent/add');	
 			}
 			
@@ -428,7 +455,7 @@ class app_afx_fixedassent extends _BaseController {
 			
 			}	
 			
-			$dataView							= null;			
+			$dataView							= [];			
 			$companyID 							= $dataSession["user"]->companyID;
 			$branchID 							= $dataSession["user"]->branchID;
 			$roleID 							= $dataSession["role"]->roleID;			
@@ -437,14 +464,22 @@ class app_afx_fixedassent extends _BaseController {
 			if(!$objComponent)
 			throw new \Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
 			
+			$objComponentCatalog					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_public_catalog");
+			if(!$objComponentCatalog)
+			throw new \Exception("EL COMPONENTE 'tb_public_catalog' NO EXISTE...");
 			
 			$dataView["componentEmployeeID"] 			= $objComponent->componentID;			
+			$dataView["objComponentCatalog"]			= $objComponentCatalog;
 			$dataView["objListWorkflowStage"]			= $this->core_web_workflow->getWorkflowInitStage("tb_fixed_assent","statusID",$companyID,$branchID,$roleID);
 			$dataView["objListColor"]					= $this->core_web_catalog->getCatalogAllItem("tb_fixed_assent","colorID",$companyID);			
 			$dataView["objListCategory"]				= $this->core_web_catalog->getCatalogAllItem("tb_fixed_assent","categoryID",$companyID);						
 			$dataView["objListType"]					= $this->core_web_catalog->getCatalogAllItem("tb_fixed_assent","typeID",$companyID);					
 			$dataView["objListTypeDepresiation"]		= $this->core_web_catalog->getCatalogAllItem("tb_fixed_assent","typeDepresiationID",$companyID);
-			
+			$dataView["objListCurrency"]                = $this->Company_Currency_Model->getByCompany($companyID);
+			$dataView["objListCountry"]					= $this->core_web_catalog->getCatalogAllItem("tb_employee","countryID",$companyID);
+			$dataView["objListBranch"]					= $this->Branch_Model->getByCompany($companyID);
+			$dataView["objListTypeFixedAssent"]			= $this->core_web_catalog->getCatalogAllItem("tb_fixed_assent","typeFixedAssentID",$companyID);
+
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
