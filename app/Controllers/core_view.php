@@ -38,6 +38,7 @@ class core_view extends _BaseController {
 			
 			$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 			$parameter["{isWindowForm}"]= "0";
+			$parameter["{fnCallback}"]	= $fnCallback;
 			$viewname 					= urldecode($viewname);
 			$filter 					= urldecode($filter);
 			$result 					= $this->core_web_tools->formatParameter($filter);	
@@ -69,11 +70,11 @@ class core_view extends _BaseController {
 			
 			if($multiselect == "true")
 			{
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRowMultiSelect");
+				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRowMultiSelect",350,null,$parameter);
 			}
 			else
 			{
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow",350,null,$parameter);
 			}
 			
 			$dataView["fnCallback"] 			= $fnCallback;
