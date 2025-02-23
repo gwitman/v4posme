@@ -75,7 +75,7 @@
 																		echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
 																		else
 																		echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
-																		$count++;
+																		// $count++;
 																	}
 																	?>
 															</select>
@@ -149,7 +149,7 @@
 																		echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
 																		else
 																		echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
-																		$count++;
+																		// $count++;
 																	}
 																	?>
 															</select>
@@ -168,7 +168,7 @@
 																		echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
 																		else
 																		echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
-																		$count++;
+																		// $count++;
 																	}
 																	?>
 															</select>
@@ -187,7 +187,7 @@
 																		echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
 																		else
 																		echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
-																		$count++;
+																		// $count++;
 																	}
 																	?>
 															</select>
