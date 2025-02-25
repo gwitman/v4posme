@@ -247,7 +247,7 @@
 															<div class="col-lg-8">
 																<div class="input-group">
 																	<input type="hidden" id="txtAreaID" name="txtAreaID" value="<?= $objFA->areaID ?>">
-																	<input class="form-control" readonly id="txtAreaDescripcion" type="txtAreaDescripcion" value="">
+																	<input class="form-control" readonly id="txtAreaDescripcion" type="txtAreaDescripcion" value="<?= $objArea != null ? $objArea->Id . " | " . $objArea->Indicador : "" ?>">
 
 																	<span class="input-group-btn">
 																		<button class="btn btn-danger" type="button" id="btnClearArea">
@@ -271,8 +271,8 @@
 															<label class="col-lg-4 control-label" for="buttons">Proyecto</label>
 															<div class="col-lg-8">
 																<div class="input-group">
-																	<input type="hidden" id="txtProyectID" name="txtProyectID">
-																	<input class="form-control" readonly id="txtProyectDescripcion" type="txtProyectDescripcion">
+																	<input type="hidden" id="txtProyectID" name="txtProyectID" value="<?= $objFA->projectID?>">
+																<input class="form-control" readonly id="txtProyectDescripcion" type="txtProyectDescripcion" value="<?= $objProject != null ? $objProject->Id  . " | " . $objProject->Indicador : "" ?>">
 
 																	<span class="input-group-btn">
 																		<button class="btn btn-danger" type="button" id="btnClearProyect">
