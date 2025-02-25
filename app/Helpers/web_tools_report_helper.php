@@ -9541,9 +9541,17 @@ function helper_reporte80mmTransactionMasterEmanuelPizza(
                           </td>
                         </tr>
 
+						<!--
 						<tr>
                           <td colspan='3' style='text-align:center'>
                             Dirección de cliente: ".$dataView["objLegal"]->legalName." Telefono de cliente: ".$objEntidadCustomer->phoneNumber."
+                          </td>
+                        </tr>
+						-->
+						
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            Dirección de cliente: ".$objTransactionMasterInfo->referenceClientIdentifier." Telefono de cliente: ".$objTransactionMastser->numberPhone."
                           </td>
                         </tr>
 						

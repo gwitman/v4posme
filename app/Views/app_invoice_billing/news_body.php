@@ -1452,33 +1452,30 @@ echo helper_getHtmlOfPageLanding();
 					
 				</form>
 			<!-- /body -->
-			<div class="modal fade" tabindex="-1" id="modalDialogPrinterV2" role="dialog">
-			  <div class="modal-dialog" role="document">
-				<div class="modal-content">
-				  <div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title">Imprimir documento</h4>
-				  </div>
-				  <div class="modal-body">					
-					<h4 class="modal-title">Imprimir documento</h4>
-				  </div>
-				  <div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-					<a href=javascript:void(0);" class="btn btn-primary hidden" id="btnAceptarDialogPrinterV2AceptarTabla">Tabla</a>
-					<a href="javascript:void(0);" class="btn btn-primary" id="btnAceptarDialogPrinterV2AceptarDocument">Preview</a>
-					<a href="javascript:void(0);" class="btn btn-primary hidden" id="btnAceptarDialogPrinterV2AceptarDirect">Directa</a>
-				  </div>
-				</div><!-- /.modal-content -->
-			  </div><!-- /.modal-dialog -->
-			</div><!-- /.modal -->
-
+		
+			
+			<div id="modalDialogHtmlPrinterV2" style="display:none">
+				<h3>Opciones de impresion</h3>
+				</br>
+				<button type="button" class="btn btn-default btn-flat btn-block" data-dismiss="modal" id="btnCloseModalOpcionesImpresion" >Cerrar</button>
+				</br>
+				<a href="javascript:void(0);" class="btn btn-primary hidden btn-flat btn-block" id="btnAceptarDialogPrinterV2AceptarTabla">Tabla</a>
+				</br>
+				<a href="javascript:void(0);" class="btn btn-primary btn-flat btn-block" id="btnAceptarDialogPrinterV2AceptarDocument">Preview</a>
+				</br>
+				<a href="javascript:void(0);" class="btn btn-primary hidden btn-flat btn-block" id="btnAceptarDialogPrinterV2AceptarDirect">Directa</a>
+			</div>
+			<?php
+				helper_getHtmlOfModalDialog("ModalOpcionesImpresion","modalDialogHtmlPrinterV2","fnAceptarModalDialogHtmlPrinterV2",false);
+			?>
+			
 			
 			<div id="modalBodyHtmlBackToList" style="display:none">
 				<h3>REGRESAR A LA LISTA DE FACTURA</h3>
 				<p>Aceptar para regresar.</p>
 			</div>
 			<?php
-				helper_getHtmlOfModalDialog("ModalBackToList","modalBodyHtmlBackToList","fnAceptarModalBackToList");
+				helper_getHtmlOfModalDialog("ModalBackToList","modalBodyHtmlBackToList","fnAceptarModalBackToList",true);
 			?>
 
             <div id="modalBodyHtmlInfoProducto" style="display:none">
@@ -1527,7 +1524,7 @@ echo helper_getHtmlOfPageLanding();
                 <hr />
             </div>
             <?php
-            helper_getHtmlOfModalDialog("ModalInfoProducto","modalBodyHtmlInfoProducto","fnAceptarModalInfoProducto");
+            helper_getHtmlOfModalDialog("ModalInfoProducto","modalBodyHtmlInfoProducto","fnAceptarModalInfoProducto",true);
             ?>
 			
 			<div class="modal fade"  id="modalDialogBackToListV2" role="dialog" tabindex="-1" data-backdrop="false">
@@ -1626,23 +1623,15 @@ echo helper_getHtmlOfPageLanding();
 			</div><!-- /.modal -->
 			
 			
-			<div class="modal fade" tabindex="-1" id="modalDialogPrinterV3" role="dialog">
-			  <div class="modal-dialog" role="document">
-				<div class="modal-content">
-				  <div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title">Imprimir documento</h4>
-				  </div>
-				  <div class="modal-body">
-					<h4 class="modal-title">Imprimir docunento</h4>					
-				  </div>
-				  <div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-					<a href="javascript:void(0);" class="btn btn-primary" id="btnAceptarPrinterV3">Si</a>
-				  </div>
-				</div><!-- /.modal-content -->
-			  </div><!-- /.modal-dialog -->
-			</div><!-- /.modal -->
+			
+			<div id="modalPrinterDocumentBody" style="display:none">
+				<h3>IMPRIMIR DOCUMENTO</h3>
+				<p>Aceptar para imprimir</p>
+			</div>
+			<?php
+				helper_getHtmlOfModalDialog("ModalPrinterDocumentDialogCustom","modalPrinterDocumentBody","fnAceptarModalModalPrinterDocumentDialogCustom",true);				
+			?>
+			
 			
 			<!-- mensaje de valor de porcentaje de descuento, no puede menor de 0 ni mayor de 100-->
 			<div class="modal fade" tabindex="-1" id="modalValidarDescuentoPorcentaje" role="dialog">

@@ -701,9 +701,9 @@ function helper_getHtmlOfPageLanding()
 	';
 }
 
-function helper_getHtmlOfModalDialog($name,$idDivBody,$fncallBack)
+function helper_getHtmlOfModalDialog($name,$idDivBody,$fncallBack,$fnShowBotones)
 {
-	echo 
+	$string  =  
 	'
 	<style>
 			.modal-customer1-'.$name.' {
@@ -770,8 +770,16 @@ function helper_getHtmlOfModalDialog($name,$idDivBody,$fncallBack)
 			<div id="divBody'.$name.'">
 				
 			</div>
+	';
+	
+	 if($fnShowBotones == true)
+	 {
+		 $string = $string.'
 			<button class="btnAceptar" onclick="event.preventDefault();'.$fncallBack.'(this)">Aceptar</button>
-	  		<button class="btnCerrar"  onclick="event.preventDefault();cerrarModal(\''.$name.'\')">Cerrar</button>
+	  		<button class="btnCerrar"  onclick="event.preventDefault();cerrarModal(\''.$name.'\')">Cerrar</button>';
+	 }
+	 
+	 $string = $string.'
 	  	</div>
 	  </div>
 	
@@ -794,6 +802,8 @@ function helper_getHtmlOfModalDialog($name,$idDivBody,$fncallBack)
 		
 	  </script>
 	';
+	
+	echo $string;
 }
 
 function helper_getCssWidthInvoiceMobile()

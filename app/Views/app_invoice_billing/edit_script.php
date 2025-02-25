@@ -1101,20 +1101,23 @@
 		fnWaitOpenV2();
 		window.open("<?php echo base_url(); ?>/app_cxc_report/document_credit/viewReport/true/documentNumber/<?php echo $objTransactionMaster->transactionNumber;?>", '_blank');
 		fnWaitCloseV2();		
-		$('#modalDialogPrinterV2').modal('hide');
+		cerrarModal("ModalOpcionesImpresion");
 	});
 	
 	$("#btnAceptarDialogPrinterV2AceptarDocument").click(function(){
 		fnWaitOpenV2();
 		window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>", '_blank');
 		fnWaitCloseV2();	
-		$('#modalDialogPrinterV2').modal('hide');
+		cerrarModal("ModalOpcionesImpresion");
 	});
 	$("#btnAceptarDialogPrinterV2AceptarDocumentA4").click(function(){
 		fnWaitOpenV2();
 		window.open("<?php echo base_url(); ?>/"+varUrlPrinterOpcion2+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>", '_blank');
 		fnWaitCloseV2();	
-		$('#modalDialogPrinterV2').modal('hide');
+		cerrarModal("ModalOpcionesImpresion");
+	});
+	$("#btnCloseModalOpcionesImpresion").click(function(){		
+		cerrarModal("ModalOpcionesImpresion");
 	});
 	
 	
@@ -1146,7 +1149,7 @@
 			}
 		});	
 			
-		$('#modalDialogPrinterV2').modal('hide');
+		cerrarModal("ModalOpcionesImpresion");
 	});
 	
 	
@@ -2350,13 +2353,13 @@
 		}
 		if(objParameterPrinterDirectAndPreview == 'true')
 		{
-			$("#modalDialogPrinterV2").modal("show");
+			mostrarModal("ModalOpcionesImpresion");
 			return
 		}
 		
 		
 		
-		$("#modalDialogPrinterV2").modal("show");
+		mostrarModal("ModalOpcionesImpresion");
 		
 	}
 	

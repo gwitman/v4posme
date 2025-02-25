@@ -832,18 +832,35 @@
 		fnWaitOpenV2();
 		window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/2/transactionID/19/transactionMasterID/"+varTransactionMasterIDToPrinter, '_blank');
 		fnWaitCloseV2();	
-		$('#modalDialogPrinterV2').modal('hide');
+		cerrarModal("ModalOpcionesImpresion");
 	});
-	
+	$("#btnCloseModalOpcionesImpresion").click(function(){		
+		cerrarModal("ModalOpcionesImpresion");
+	});
 	
 	$("#btnAceptarDialogPrinterV2AceptarDirect").click(function(){
 		
 	});
 	
 	
-	$("#btnAceptarPrinterV3").click(function(){
-		fnWaitOpenV2();
+	
+	
+
+	$('#txtPorcentajeDescuento').on('input', function() {
+		 //validar que solo sea numero
+		 var valor 		= $(this).val();
+		 var expresion 	= /^\d*\.?\d{0,2}$/;
+		 if (!expresion.test(valor)) {
+			$(this).val(valor.slice(0, -1));
+		 }
+		 fnRecalculateDetail(true,"");
+    });
+	
+	
+	function fnAceptarModalModalPrinterDocumentDialogCustom()
+	{
 		
+		fnWaitOpenV2();
 		var url=varParameterUrlServidorDeImpresion+varParameterInvoiceBillingPrinterDirectUrl;
 			url = url+
 			"/companyID/"+"<?php echo $dataPrinterLocalCompanyID; ?>" + 
@@ -867,21 +884,10 @@
 		});	
 			
 		
-		$('#modalDialogPrinterV3').modal('hide');
+		cerrarModal("ModalPrinterDocumentDialogCustom");
 		fnWaitCloseV2();
 		
-	});
-	
-
-	$('#txtPorcentajeDescuento').on('input', function() {
-		 //validar que solo sea numero
-		 var valor 		= $(this).val();
-		 var expresion 	= /^\d*\.?\d{0,2}$/;
-		 if (!expresion.test(valor)) {
-			$(this).val(valor.slice(0, -1));
-		 }
-		 fnRecalculateDetail(true,"");
-    });
+	}
 	
 	function fnCalculateAmountPay()
 	{
@@ -3082,7 +3088,7 @@
 				varParameterInvoiceBillingPrinterDataLocal != "" 
 			)
 			{
-				$("#modalDialogPrinterV3").modal("show");
+				mostrarModal("ModalPrinterDocumentDialogCustom");
 				$(".modal-backdrop.fade.in").removeClass("modal-backdrop");
 			}
 			
@@ -3097,7 +3103,7 @@
 				varTransactionMasterIDToPrinter != "" 
 			)
 			{
-				$("#modalDialogPrinterV2").modal("show");
+				mostrarModal("ModalOpcionesImpresion");
 				$(".modal-backdrop.fade.in").removeClass("modal-backdrop");
 			}
 			
