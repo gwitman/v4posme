@@ -1672,14 +1672,14 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 2311-3965" 
+	tb_company_parameter.value = "TEL: 2311-3965 / 8763-6824" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 2311-3965" 
+	tb_company_parameter.value = "TEL: 2311-3965 / 8763-6824" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1687,14 +1687,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Costado sur colegío la SALLE media a bajo" 
+	tb_company_parameter.value = "Del Museo Archivo Ruben Dario, 75 varas al oeste, Leon, Nicaragua" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'EMANUEL Pizza' , address = 'Costado sur colegío la SALLE media a bajo' ,
+	NAME = 'EMANUEL Pizza' , address = 'Del Museo Archivo Ruben Dario, 75 varas al oeste, Leon, Nicaragua' ,
 	flavorID = 714 /*usuarioID*/,type='pizzaemanuel'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
