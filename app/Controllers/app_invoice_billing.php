@@ -3551,6 +3551,8 @@ class app_invoice_billing extends _BaseController {
 			if(!$dataView["objListMesa"])
 			throw new \Exception("NO ES POSIBLE CONTINUAR CONFIGURAR CATALOGO MESAS");
 			
+			
+			
 			$dataView["codigoMesero"]						= $codigoMesero;
 			$dataView["objListPay"]							= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","periodPay",$companyID);
 			$dataView["objListDayExcluded"]					= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","dayExcluded",$companyID);
@@ -3701,6 +3703,7 @@ class app_invoice_billing extends _BaseController {
 				$dataView["dataPrinterLocalTransactionMasterID"]	= $dataPostPrinter["objTransactionMaster"]->transactionMasterID;
 				$dataView["dataPrinterLocalTransactionID"]			= $dataPostPrinter["objTransactionMaster"]->transactionID;
 				$dataView["dataPrinterLocalCompanyID"]				= $dataPostPrinter["objTransactionMaster"]->companyID;
+				$dataView["transactionMasterIDToPrinter"] 			= $transactionMasterIDToPrinter;
 			
 			}
 			else 
@@ -3711,6 +3714,7 @@ class app_invoice_billing extends _BaseController {
 				$dataView["dataPrinterLocalTransactionID"]			= 0;
 				$dataView["dataPrinterLocalCompanyID"]				= 0;
 			}
+			
 
             //Variable para validar si es un mesero
             $esMesero 					= false;

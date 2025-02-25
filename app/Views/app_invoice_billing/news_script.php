@@ -1407,6 +1407,7 @@
 	}
 	
 	function fnSelectCellZone(cell) {		
+		
 		var catalogItemIDZone = $(cell).data("value");
 		$(".custom-table-zalones").find("td").removeClass("selected");
 		$(cell).addClass("selected");
@@ -1467,6 +1468,7 @@
 	}
 	
 	function fnSelectDoubleCellInventory(cell) {
+		
 		$(cell).addClass("selected");
 		var codigoProducto = $(cell).data("codigo");		
 		
@@ -1556,7 +1558,7 @@
 					filterResultArray[17] 	= filterResult.Codigo;
 					filterResultArray[18] 	= filterResult.Nombre;
 					filterResultArray[20] 	= filterResult.Medida;
-					filterResultArray[21] 	= filterResult.Cantidad;
+					filterResultArray[21] 	= 1;//filterResult.Cantidad;
 					filterResultArray[22] 	= filterResult.Precio;
 					filterResultArray[23] 	= filterResult.unitMeasureID;
 					filterResultArray[24] 	= filterResult.Descripcion;
