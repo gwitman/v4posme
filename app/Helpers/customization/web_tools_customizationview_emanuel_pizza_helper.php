@@ -30,7 +30,7 @@ function getBehavioEmanuelPizza(): array
 		strtolower('pizzaemanuel_app_invoice_billing_divTxtTotal') 													=> "**",	
 		strtolower('pizzaemanuel_app_invoice_billing_divLabelNumDescuston') 										=> "**",	
 		
-		strtolower('pizzaemanuel_app_invoice_billing_btnFooter') 												    => "$('#btnFooter').addClass('hidden');",
+		strtolower('pizzaemanuel_app_invoice_billing_btnFooter') 												    => "",
         strtolower('pizzaemanuel_app_invoice_billing_divTraslateElement') 											=> "
 		<script>
 			$(document).ready(function(){		

@@ -871,7 +871,7 @@ echo helper_getHtmlOfPageLanding();
 							<div class="col col-lg-2">
 								<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnPrinter"><i class="icon16 i-print "></i> IMPRIMIR</a>
 							</div>
-							
+							 
 							<?php 
 							if($objParameterShowComandoDeCocina == 'true' ){
 								?>

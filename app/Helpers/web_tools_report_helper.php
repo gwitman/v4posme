@@ -9424,7 +9424,17 @@ function helper_reporte80mmTransactionMasterEmanuelPizza(
                             ". ($statusName == "APLICADA" ? "CANCELADA" : $statusName ) ."
                           </td>
                         </tr>
-                            
+						
+						
+                        <tr>
+                          <td colspan='1'>
+                            Mesa:
+                          </td>
+						  <td colspan='2'>
+                            ".$dataView["objMesa"]->name."
+                          </td>
+                        </tr>
+						
 						<tr>
                           <td colspan='1'>
                             Moneda:
@@ -9533,7 +9543,7 @@ function helper_reporte80mmTransactionMasterEmanuelPizza(
 
 						<tr>
                           <td colspan='3' style='text-align:center'>
-                            Dirección de cliente: ".$dataView["objLegal"]->legalName."
+                            Dirección de cliente: ".$dataView["objLegal"]->legalName." Telefono de cliente: ".$objEntidadCustomer->phoneNumber."
                           </td>
                         </tr>
 						
