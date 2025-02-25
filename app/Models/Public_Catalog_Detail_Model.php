@@ -148,6 +148,36 @@ class Public_Catalog_Detail_Model extends Model
 		return $db->query($sql)->getResultArray();
 		
     }
+
+	function get_rowByPk($publicCatalogDetailID)
+    {
+		$db 		= db_connect();
+		$builder	= $db->table("tb_public_catalog_detail");		
+		$sql 		= 
+		'
+				select 
+					c.publicCatalogDetailID as Id,
+					c.name as Indicador,
+					c.display as Valores,
+					c.reference4 as Conjunto, 
+					c.description as Grupo,
+					c.reference1 as SubGrupo,
+					c.reference3 as Edad,
+					c.reference2 as Sexo,
+					c.parentName as Parent,
+					c.sequence as Sequencia,
+					c.ratio as Ratio,
+					c.flavorID as Flavor
+				from 
+					tb_public_catalog_detail c 
+				where 
+					c.publicCatalogDetailID = '.$publicCatalogDetailID.' and 
+					c.isActive = 1 
+			';
+			
+		//Ejecutar Consulta
+		return $db->query($sql)->getRow();
+    }
 	
 }
 ?>

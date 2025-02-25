@@ -43,7 +43,7 @@
 
 						//Buscar area
 						$(document).on("click","#btnSearchArea",function(){
-							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCatalog->componentID; ?>/onCompleteEmployee/SELECCIONAR_ACTIVOFIJO_AREA/true/empty/false/not_redirect_when_empty";
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCatalog->componentID; ?>/onCompleteArea/SELECCIONAR_ACTIVOFIJO_AREA/true/empty/false/not_redirect_when_empty";
 							window.open(url_request,"MsgWindow","width=900,height=450");
 							window.onCompleteArea = onCompleteArea; 
 						});
@@ -55,7 +55,7 @@
 
 						//Buscar proyecto
 						$(document).on("click","#btnSearchProyect",function(){
-							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCatalog->componentID; ?>/onCompleteEmployee/SELECCIONAR_ACTIVOFIJO_PROYECTO/true/empty/false/not_redirect_when_empty";
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCatalog->componentID; ?>/onCompleteProyect/SELECCIONAR_ACTIVOFIJO_PROYECTO/true/empty/false/not_redirect_when_empty";
 							window.open(url_request,"MsgWindow","width=900,height=450");
 							window.onCompleteProyect = onCompleteProyect; 
 						});
@@ -139,6 +139,7 @@
 
 					function onCompleteArea(objResponse)
 					{
+						debugger;
 						console.info("CALL onCompleteArea");
 
 						$("#txtAreaID").val(objResponse[0][0]);
