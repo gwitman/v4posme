@@ -1360,7 +1360,7 @@ echo helper_getHtmlOfPageLanding();
 											  <div class="col-md-2 item-producto item-producto-back"
 												   data-filter="*"
 												   onclick="fnSelectCellInventoryBack(this)">
-												  <span class="badge badge-success text-overlay-categoria">REGRESAR</span>
+												  <span class="badge badge-warning text-overlay-categoria">REGRESAR</span>
 												  <div class="overlay">
 												  </div>
 											  </div>
@@ -1373,7 +1373,7 @@ echo helper_getHtmlOfPageLanding();
 											   data-value="<?= $item["inventoryCategoryID"]; ?>"
 											   data-parent="<?= $item["inventoryCategoryID"]; ?>"
 											   data-codigo="<?= $item["Codigo"]; ?>">
-											  <span class="badge badge-success text-overlay-categoria"><?= $item['Nombre']; ?></span>
+											  <span class="badge badge-success text-overlay-categoria" style="display: block; /* Convierte el span en bloque para que respete el ancho */    white-space: normal; /* Permite el salto de línea */" ><?= $item['Nombre']; ?></span>
 											  <div class="overlay">
 											  </div>
 										  </div>
@@ -1587,7 +1587,7 @@ echo helper_getHtmlOfPageLanding();
 			
 			
 			
-			<div id="ModalCodigoCaja" style="display:none">
+			<div id="ModalCodigoCajaBody" style="display:none">
 				<h3>Codigo de caja</h3>
 				
 				<input type="input" id="txtClaveOpenCash" autocomplete="off" class="form-control" placeholder="Código de caja" />
