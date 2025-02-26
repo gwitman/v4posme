@@ -87,6 +87,7 @@
 	.custom-table-container-categorias  {
 		max-height: 400px; /* Ajusta la altura según sea necesario */
         overflow-y: auto;
+		scrollbar-width:thin;
 	}
     .text-overlay-categoria{
         position: relative;
@@ -139,6 +140,7 @@
     .custom-table-container-inventory  {
         max-height: 550px;
         overflow-y: auto;
+		scrollbar-width:thin;
     }
 
     .item-producto {
@@ -1487,15 +1489,15 @@ echo helper_getHtmlOfPageLanding();
 			<div id="modalDialogHtmlPrinterV2" style="display:none">
 				<h3>Opciones de impresion</h3>
 				</br>
-				<button type="button" class="btn btn-default btn-flat btn-block" data-dismiss="modal" id="btnCloseModalOpcionesImpresion" >Cerrar</button>
+				<button type="button" class="btn btn-flat btn-block btnCerrarModalOpcionesImpresion " data-dismiss="modal" id="btnCloseModalOpcionesImpresion" >Cerrar</button>
 				</br>
-				<a href="javascript:void(0);" class="btn btn-primary hidden btn-flat btn-block" id="btnAceptarDialogPrinterV2AceptarTabla">Tabla</a>
+				<a href="javascript:void(0);" class="btn hidden btn-flat btn-block btnAceptarModalOpcionesImpresion" id="btnAceptarDialogPrinterV2AceptarTabla">Tabla</a>
 				</br>
-				<a href="javascript:void(0);" class="btn btn-primary btn-flat btn-block" id="btnAceptarDialogPrinterV2AceptarDocument">Preview</a>
+				<a href="javascript:void(0);" class="btn btn-flat btn-block btnAceptarModalOpcionesImpresion" id="btnAceptarDialogPrinterV2AceptarDocument">Preview</a>
 				</br>
-				<a href="javascript:void(0);" class="btn btn-primary btn-flat btn-block <?php echo getBehavio($company->type,"app_invoice_billing","divOpcionViewA4","hidden"); ?> " id="btnAceptarDialogPrinterV2AceptarDocumentA4">Preview A4</a>
+				<a href="javascript:void(0);" class="btn btn-flat btn-block btnAceptarModalOpcionesImpresion <?php echo getBehavio($company->type,"app_invoice_billing","divOpcionViewA4","hidden"); ?> " id="btnAceptarDialogPrinterV2AceptarDocumentA4">Preview A4</a>
 				</br>
-				<a href="javascript:void(0);" class="btn btn-primary hidden btn-flat btn-block" id="btnAceptarDialogPrinterV2AceptarDirect">Directa</a>
+				<a href="javascript:void(0);" class="btn hidden btn-flat btn-block btnAceptarModalOpcionesImpresion" id="btnAceptarDialogPrinterV2AceptarDirect">Directa</a>
 			</div>
 			<?php
 				helper_getHtmlOfModalDialog("ModalOpcionesImpresion","modalDialogHtmlPrinterV2","fnAceptarModalDialogHtmlPrinterV2",false);

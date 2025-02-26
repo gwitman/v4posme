@@ -696,8 +696,19 @@ function helper_getHtmlOfPageLanding()
 		id="divLoandingCustom"
 		style="position:fixed; left:0; top:0; z-index: 10000; background: white; width: 100%; height: 1090px;"	
 	>
-		
+		 <div style="width: 100%; height: 4px; background: #ddd; position: relative; overflow: hidden; border-radius: 10px;">
+			<div style="width: 0; height: 100%; background: #007bff; position: absolute; animation: carga 2s infinite;"></div>
+		</div>
 	</div>
+	
+	<style>
+		@keyframes carga {
+			0% { width: 0%; }
+			50% { width: 100%; }
+			100% { width: 0%; }
+		}
+	</style>
+
 	';
 }
 
@@ -738,7 +749,7 @@ function helper_getHtmlOfModalDialog($name,$idDivBody,$fncallBack,$fnShowBotones
 				margin: 10px 0;
 			}
 
-			.modal-content-customer1-'.$name.' .btnCerrar {
+			.modal-content-customer1-'.$name.' .btnCerrar'.$name.' {
 				background-color: #f44336;
 				color: #fff;
 				border: none;
@@ -747,7 +758,7 @@ function helper_getHtmlOfModalDialog($name,$idDivBody,$fncallBack,$fnShowBotones
 				cursor: pointer;
 			}
 			
-			.modal-content-customer1-'.$name.' .btnAceptar {
+			.modal-content-customer1-'.$name.' .btnAceptar'.$name.' {
 				background-color: #28a745;
 				color: #fff;
 				border: none;
@@ -756,10 +767,10 @@ function helper_getHtmlOfModalDialog($name,$idDivBody,$fncallBack,$fnShowBotones
 				cursor: pointer;
 			}
 
-			.modal-content-customer1-'.$name.' .btnCerrar:hover {
+			.modal-content-customer1-'.$name.' .btnCerrar'.$name.':hover {
 				background-color: #d32f2f;
 			}
-			.modal-content-customer1-'.$name.' .btnAceptar:hover {
+			.modal-content-customer1-'.$name.' .btnAceptar'.$name.':hover {
 				background-color: #1e7e34;
 			}
 	  </style>	  
@@ -775,8 +786,8 @@ function helper_getHtmlOfModalDialog($name,$idDivBody,$fncallBack,$fnShowBotones
 	 if($fnShowBotones == true)
 	 {
 		 $string = $string.'
-			<button class="btnAceptar" onclick="event.preventDefault();'.$fncallBack.'(this)">Aceptar</button>
-	  		<button class="btnCerrar"  onclick="event.preventDefault();cerrarModal(\''.$name.'\')">Cerrar</button>';
+			<button class="btnAceptar'.$name.'" onclick="event.preventDefault();'.$fncallBack.'(this)">Aceptar</button>
+	  		<button class="btnCerrar'.$name.'"  onclick="event.preventDefault();cerrarModal(\''.$name.'\')">Cerrar</button>';
 	 }
 	 
 	 $string = $string.'

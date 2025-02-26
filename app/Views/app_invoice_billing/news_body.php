@@ -84,6 +84,7 @@
 	.custom-table-container-categorias  {
 		max-height: 400px; /* Ajusta la altura según sea necesario */
         overflow-y: auto;
+		scrollbar-width:thin;
 	}
     .text-overlay-categoria{
         position: relative;
@@ -136,6 +137,7 @@
 	.custom-table-container-inventory  {
         max-height: 550px;
         overflow-y: auto;
+		scrollbar-width:thin;
 	}
 
 	.item-producto {
