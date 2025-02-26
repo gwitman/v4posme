@@ -1527,24 +1527,6 @@ echo helper_getHtmlOfPageLanding();
             helper_getHtmlOfModalDialog("ModalInfoProducto","modalBodyHtmlInfoProducto","fnAceptarModalInfoProducto",true);
             ?>
 			
-			<div class="modal fade"  id="modalDialogBackToListV2" role="dialog" tabindex="-1" data-backdrop="false">
-			  <div class="modal-dialog" role="document">
-				<div class="modal-content">
-				  <div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title">Regresar</h4>
-				  </div>
-				  <div class="modal-body">					
-					<h4 class="modal-title">Regresar a la Lista</h4>
-				  </div>
-				  <div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-					<a href="javascript:void(0);" class="btn btn-primary" id="btnAceptarDialogBackToListV2">Aceptar</a>
-				  </div>
-				</div><!-- /.modal-content -->
-			  </div><!-- /.modal-dialog -->
-			</div><!-- /.modal -->
-			
 			
 			<div id="ModalCustomCocinaBodyV2" style="display:none">
 				<h3>Impresion de cocina</h3>
@@ -1559,64 +1541,50 @@ echo helper_getHtmlOfPageLanding();
 						
 			
 			
-			<div class="modal fade" tabindex="-1" id="modalDialogBarV2" role="dialog">
-			  <div class="modal-dialog" role="document">
-				<div class="modal-content">
-				  <div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title">Imprimir Comanda Bar</h4>
-				  </div>
-				  <div class="modal-body">					
-					<h4 class="modal-title">Imprimir Comanda Bar</h4>
-				  </div>
-				  <div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-					<a href="javascript:void(0);" class="btn btn-primary hidden" id="btnAceptarDialogBarV2">Aceptar</a>
-				  </div>
-				</div><!-- /.modal-content -->
-			  </div><!-- /.modal-dialog -->
-			</div><!-- /.modal -->
-			
-			<div class="modal fade" tabindex="-1" id="modalDialogClaveOpenCash" role="dialog">
-			  <div class="modal-dialog" role="document">
-				<div class="modal-content">
-				  <div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title">Código de caja</h4>
-				  </div>
-				  <div class="modal-body">
-					<input type="input" id="txtClaveOpenCash" autocomplete="off" class="form-control" placeholder="Código de caja" />
-					<span id="errorMessageOpenCash" style="color: red; display: none;">Por favor, ingresa un código.</span>
-				  </div>
-				  <div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-					<a href="javascript:void(0);" class="btn btn-primary" id="btnAceptarClaveOpenCash">Aceptar</a>
-				  </div>
-				</div><!-- /.modal-content -->
-			  </div><!-- /.modal-dialog -->
-			</div><!-- /.modal -->
+			<div id="customModalImprimirComanaBarBody" style="display:none">
+				<h3>Imprimir comanda bar</h3>
+				<br/>
+				<button type="button" class="btn btn-default btn-flat btn-block" data-dismiss="modal" id="btnCancelarComandaBar">Cerrar</button>
+				<br/>
+				<a href="javascript:void(0);" class="btn btn-primary hidden btn-flat btn-block" id="btnAceptarDialogBarV2">Aceptar</a>
+			</div>
+			<?php
+				helper_getHtmlOfModalDialog("ModalImprimirComandaBar","customModalImprimirComanaBarBody","",false);				
+			?>
 			
 			
-			<div class="modal fade" tabindex="-1" id="modalDialogMeaBussyV2" role="dialog">
-			  <div class="modal-dialog" role="document">
-				<div class="modal-content">
-				  <div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title">Ir a mesa</h4>
-				  </div>
-				  <div class="modal-body">
-					<h4 class="modal-title">Ir a mesa</h4>
-					<input type="text" id="txtMesaOcupada" class="hidden" >
-				  </div>
-				  <div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-					<a href="javascript:void(0);" class="btn btn-primary" id="btnAceptarMesaBussyV2">Aceptar</a>
-				  </div>
-				</div><!-- /.modal-content -->
-			  </div><!-- /.modal-dialog -->
-			</div><!-- /.modal -->
+			
+			<div id="ModalCodigoCaja" style="display:none">
+				<h3>Codigo de caja</h3>
+				
+				<input type="input" id="txtClaveOpenCash" autocomplete="off" class="form-control" placeholder="Código de caja" />
+				<span id="errorMessageOpenCash" style="color: red; display: none;">Por favor, ingresa un código.</span>
+					
+				<br/>
+				<button type="button" class="btn btn-default btn-flat btn-block" data-dismiss="modal" id="btnCancelarCashOpen"> Cerrar</button>
+				<br/>
+				<a href="javascript:void(0);" class="btn btn-primary btn-flat btn-block" id="btnAceptarClaveOpenCash">Aceptar</a>
+					
+			</div>
+			<?php
+				helper_getHtmlOfModalDialog("ModalCodigoCaja","ModalCodigoCajaBody","",false);				
+			?>
 			
 			
+			
+			
+			<div id="customModalIrAMesaBody" style="display:none">
+				<h3>Ir a mesa</h3>
+				<input type="text" id="txtMesaOcupada" class="hidden" >
+				<br/>
+				<button type="button" class="btn btn-default btn-flat btn-block" data-dismiss="modal" id="btnCancelarIrMesa">Cerrar</button>
+				<br/>
+				<a href="javascript:void(0);" class="btn btn-primary btn-flat btn-block" id="btnAceptarMesaBussyV2">Aceptar</a>
+			</div>
+			<?php
+				helper_getHtmlOfModalDialog("ModalIrMesaDocumentDialogCustom","customModalIrAMesaBody","",false);				
+			?>
+
 			
 			<div id="modalPrinterDocumentBody" style="display:none">
 				<h3>IMPRIMIR DOCUMENTO</h3>
@@ -1627,25 +1595,7 @@ echo helper_getHtmlOfPageLanding();
 			?>
 			
 			
-			<!-- mensaje de valor de porcentaje de descuento, no puede menor de 0 ni mayor de 100-->
-			<div class="modal fade" tabindex="-1" id="modalValidarDescuentoPorcentaje" role="dialog">
-				<div class="modal-dialog" role="document">
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-							<h4 class="modal-title">Descuento</h4>
-						</div>
-						<div class="modal-body">
-							<p>El monto de descuento no puede ser mayor de 100 ni menor de 0, cambie su valor de <span id="valorDescuentoMensaje"></span> a uno correcto.</p>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-info" data-dismiss="modal">Aceptar</button>
-						</div>
-					</div><!-- /.modal-content -->
-				</div><!-- /.modal-dialog -->
-			</div><!-- /.modal -->
-			<!-- mensaje de valor de porcentaje de descuento, no puede menor de 0 ni mayor de 100-->
-					
+			
 			
 			<div id="labelTotalAlternativo"  class="<?php echo getBehavio($company->type,"app_invoice_billing","panelLabelSumaryAlternativo","hidden"); ?>" >
 				<div class="col col-lg-2 text-right">

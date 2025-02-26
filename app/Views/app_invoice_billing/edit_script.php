@@ -376,7 +376,7 @@
 		fnWaitOpenV2();
 		var value 				= $("#txtMesaOcupada").val();
 		window.location.href 	= "<?=base_url()."/"."app_invoice_billing/edit/companyID/".$companyID."/transactionID/".$transactionID."/transactionMasterID/"?>"+value+"<?="/codigoMesero/".$codigoMesero ?>";			
-		$("#modalDialogMeaBussyV2").modal("hide");
+		cerrarModal("ModalIrMesaDocumentDialogCustom");
 	});	
 			
 			
@@ -400,7 +400,7 @@
 					}
 			 });
 			
-			$("#modalDialogClaveOpenCash").modal("hide");
+			cerrarModal("ModalCodigoCaja");
 		}
 	});	
 	
@@ -429,7 +429,7 @@
 		);
 		
 		fnWaitCloseV2();
-		$("#modalDialogBarV2").modal("hide");
+		cerrarModal('ModalImprimirComandaBar');
 	});	
 	
 	$("#btnAceptarDialogCocinaV2").click(function(){
@@ -462,7 +462,7 @@
 	
 	$(document).on("click","#btnAbrirCaja",function(){
 		$("#txtClaveOpenCash").val("");
-		$("#modalDialogClaveOpenCash").model("show");
+		mostrarModal("ModalCodigoCaja");
 	});
 	
 	$(document).on("click",".btnAddSelectedItem",function(){
@@ -1122,6 +1122,9 @@
 	$("#btnCloseModalImpresionCocinV2").click(function(){		
 		cerrarModal("ModalCustomCocinaV2");
 	});
+	$("#btnCancelarComandaBar").click(function(){		
+		cerrarModal("ModalImprimirComandaBar");
+	});
 	
 	
 	$("#btnAceptarDialogPrinterV2AceptarDirect").click(function(){
@@ -1679,7 +1682,7 @@
 		$("#txtMesaID").val( $(cell).data("value") );
 		$("#txtMesaID").select2();
 		if(value !== 0 && value !== 'undefined'){			
-			$("#modalDialogMeaBussyV2").modal('show');
+			mostrarModal("ModalIrMesaDocumentDialogCustom");
 			$("#txtMesaOcupada").val(value);
 			$(".modal-backdrop.fade.in").removeClass("modal-backdrop");
 			
@@ -2411,7 +2414,7 @@
 			return;
 		}
 		else{
-			$("#modalDialogBarV2").modal("show");
+			mostrarModal('ModalImprimirComandaBar');
 			return
 		}
 	}

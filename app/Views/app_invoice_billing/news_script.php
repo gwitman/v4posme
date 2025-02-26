@@ -180,7 +180,7 @@
 		fnWaitOpenV2();
 		var value 				= $("#txtMesaOcupada").val();
 		window.location.href 	= "<?=base_url()."/"."app_invoice_billing/edit/companyID/".$companyID."/transactionID/".$transactionID."/transactionMasterID/"?>"+value+"<?="/codigoMesero/".$codigoMesero ?>";			
-		$("#modalDialogMeaBussyV2").modal("hide");
+		cerrarModal("ModalIrMesaDocumentDialogCustom");
 	});	
 			
 			
@@ -204,7 +204,7 @@
 					}
 			 });
 			
-			$("#modalDialogClaveOpenCash").modal("hide");
+			cerrarModal("ModalCodigoCaja");
 		}
 	});	
 	
@@ -220,7 +220,7 @@
 	
 	$(document).on("click","#btnAbrirCaja",function(){
 		$("#txtClaveOpenCash").val("");
-		$("#modalDialogClaveOpenCash").model("show");
+		mostrarModal("ModalCodigoCaja");
 	});
 	
 	
@@ -1444,7 +1444,7 @@
 		$("#txtMesaID").select2();
 		if(value !== 0 && value !== 'undefined'){
 			
-			$("#modalDialogMeaBussyV2").modal('show');
+			mostrarModal("ModalIrMesaDocumentDialogCustom");
 			$("#txtMesaOcupada").val(value);
 			$(".modal-backdrop.fade.in").removeClass("modal-backdrop");
 		}else{
