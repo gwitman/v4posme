@@ -1546,23 +1546,17 @@ echo helper_getHtmlOfPageLanding();
 			</div><!-- /.modal -->
 			
 			
-			<div class="modal fade" tabindex="-1" id="modalDialogCocinaV2" role="dialog">
-			  <div class="modal-dialog" role="document">
-				<div class="modal-content">
-				  <div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title">Imprimir Comanda Cocina</h4>
-				  </div>
-				  <div class="modal-body">					
-					<h4 class="modal-title">Imprimir Comanda Cocina</h4>
-				  </div>
-				  <div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-					<a href="javascript:void(0);" class="btn btn-primary hidden" id="btnAceptarDialogCocinaV2">Aceptar</a>
-				  </div>
-				</div><!-- /.modal-content -->
-			  </div><!-- /.modal-dialog -->
-			</div><!-- /.modal -->
+			<div id="ModalCustomCocinaBodyV2" style="display:none">
+				<h3>Impresion de cocina</h3>
+				</br>	
+				<button type="button" class="btn btn-default btn-flat btn-block" data-dismiss="modal" id="btnCloseModalImpresionCocinV2">Cerrar</button>
+				</br>				
+				<a href="javascript:void(0);" class="btn btn-primary hidden btn-flat btn-block" id="btnAceptarDialogCocinaV2">Aceptar</a>
+			</div>
+			<?php
+				helper_getHtmlOfModalDialog("ModalCustomCocinaV2","ModalCustomCocinaBodyV2","fnAceptarModalImpresionCocinaV2",false);
+			?>
+						
 			
 			
 			<div class="modal fade" tabindex="-1" id="modalDialogBarV2" role="dialog">

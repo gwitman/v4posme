@@ -457,7 +457,7 @@
 		);
 		
 		fnWaitCloseV2();
-		$("#modalDialogCocinaV2").modal("hide");
+		cerrarModal("ModalCustomCocinaV2");
 	});	
 	
 	$(document).on("click","#btnAbrirCaja",function(){
@@ -1118,6 +1118,9 @@
 	});
 	$("#btnCloseModalOpcionesImpresion").click(function(){		
 		cerrarModal("ModalOpcionesImpresion");
+	});
+	$("#btnCloseModalImpresionCocinV2").click(function(){		
+		cerrarModal("ModalCustomCocinaV2");
 	});
 	
 	
@@ -2459,7 +2462,7 @@
 			return;
 		}
 		else{
-			$("#modalDialogCocinaV2").modal("show");
+			mostrarModal("ModalCustomCocinaV2");
 			return
 		}
 	}

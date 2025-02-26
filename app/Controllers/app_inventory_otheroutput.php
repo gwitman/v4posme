@@ -481,7 +481,7 @@ class app_inventory_otheroutput extends _BaseController {
 					$vencimiento							= $arrayListVencimiento[$key];
 					
 					if($objItem->quantity < helper_StringToNumber($arrayListQuantity[$key]))
-					throw new \Exception("La cantidad de '"+$objItem->itemNumber+ " " +$objItem->name+"' es mayor que la disponible en bodega");
+					throw new \Exception("La cantidad de '" . $objItem->itemNumber . " " . $objItem->name . "' es mayor que la disponible en bodega");
 					
 					$objTMD["companyID"] 					= $objTM["companyID"];
 					$objTMD["transactionID"] 				= $objTM["transactionID"];
@@ -584,7 +584,7 @@ class app_inventory_otheroutput extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}			
 	}
 

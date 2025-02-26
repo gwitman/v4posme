@@ -31,6 +31,7 @@ function getBehavioEmanuelPizza(): array
 				$('#divTrasuctionPhone').appendTo('#divInformacionRight');				
 				$('#divTipoFactura').appendTo('#divInformacionLeft');
 				$('#divReferencia').appendTo('#divInformacionRight');	
+				$('#btnAceptarDialogCocinaV2').removeClass('hidden');
 				
 				//Mover opciones de pago
 				$('#divPaymentOption').appendTo('#siderbar_content_right');	
