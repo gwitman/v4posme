@@ -1322,12 +1322,12 @@ echo helper_getHtmlOfPageLanding();
 										endif;
 											?>
 										<div class="col-md-2 item-producto"
+											 style="background-image: url('<?= $item["Imagen"]; ?>');" 
 											 onclick="fnSelectCellInventory(this)"
 											 ondblclick="fnSelectDoubleCellInventory(this)"
 											 data-value="<?= $item["inventoryCategoryID"]; ?>"
 											 data-parent="<?= $item["inventoryCategoryID"]; ?>"
-											 data-codigo="<?= $item["Codigo"]; ?>"
-										>
+											 data-codigo="<?= $item["Codigo"]; ?>" >
 											<span class="badge badge-success text-overlay-categoria" style="display: block; /* Convierte el span en bloque para que respete el ancho */    white-space: normal; /* Permite el salto de línea */" ><?= $item['Nombre']; ?></span>
 											<div class="overlay">
 											</div>
@@ -1575,13 +1575,20 @@ echo helper_getHtmlOfPageLanding();
 			
 			
 			
-			<div id="customModalIrAMesaBody" style="display:none">
+			<div id="customModalIrAMesaBody" style="display:none;text-align: -webkit-center;">
 				<h3>Ir a mesa</h3>
 				<input type="text" id="txtMesaOcupada" class="hidden" >
 				<br/>
-				<button type="button" class="btn btn-default btn-flat btn-block" data-dismiss="modal" id="btnCancelarIrMesa">Cerrar</button>
-				<br/>
-				<a href="javascript:void(0);" class="btn btn-primary btn-flat btn-block" id="btnAceptarMesaBussyV2">Aceptar</a>
+				<table>
+					<tr>
+						<td>
+							<button type="button" class="btnCerrarModalIrMesaDocumentDialogCustom"  id="btnCancelarIrMesa">Cerrar</button>
+						</td>
+						<td>				
+							<button type="button" class="btnAceptarModalIrMesaDocumentDialogCustom" id="btnAceptarMesaBussyV2">Aceptar</a>
+						</td>
+					</tr>
+				</table>
 			</div>
 			<?php
 				helper_getHtmlOfModalDialog("ModalIrMesaDocumentDialogCustom","customModalIrAMesaBody","",false);				

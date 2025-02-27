@@ -215,7 +215,7 @@ class Transaction_Master_Model extends Model  {
 									AND ttm.transactionID = 19
 									AND ttm.isActive = 1
 									AND ttm.transactionOn >= NOW() - INTERVAL 1 DAY
-								) IS NULL,tci.reference1, REPLACE(tci.reference1, '.', '_bussy.')
+								) IS NULL,tci.reference1, REPLACE(tci.reference1, '.JPG', '_BUSSY.JPG')
 							) AS reference1,
 							tci.reference2,
 							tci.reference3,
@@ -255,7 +255,7 @@ class Transaction_Master_Model extends Model  {
 										AND ttm.isActive = 1
 										AND ttm.transactionOn >= NOW() - INTERVAL 1 DAY
 									) IS NULL,tci.reference1, 
-									REPLACE(tci.reference1, '.', '_bussy.')
+									REPLACE(tci.reference1, '.JPG', '_BUSSY.JPG')
 								) AS reference1,
 								
 								IFNULL(

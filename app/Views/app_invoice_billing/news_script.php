@@ -176,6 +176,10 @@
 		  
 	});
 	
+	$("#btnCancelarIrMesa").click(function(){		
+		cerrarModal("ModalIrMesaDocumentDialogCustom");
+	});	
+	
 	$("#btnAceptarMesaBussyV2").click(function(){
 		fnWaitOpenV2();
 		var value 				= $("#txtMesaOcupada").val();

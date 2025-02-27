@@ -786,8 +786,8 @@ function helper_getHtmlOfModalDialog($name,$idDivBody,$fncallBack,$fnShowBotones
 	 if($fnShowBotones == true)
 	 {
 		 $string = $string.'
-			<button class="btnAceptar'.$name.'" onclick="event.preventDefault();'.$fncallBack.'(this)">Aceptar</button>
-	  		<button class="btnCerrar'.$name.'"  onclick="event.preventDefault();cerrarModal(\''.$name.'\')">Cerrar</button>';
+			<button class="btnCerrar'.$name.'"  onclick="event.preventDefault();cerrarModal(\''.$name.'\')">Cerrar</button>
+			<button class="btnAceptar'.$name.'" onclick="event.preventDefault();'.$fncallBack.'(this)">Aceptar</button>';
 	 }
 	 
 	 $string = $string.'
