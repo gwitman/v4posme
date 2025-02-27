@@ -33,7 +33,8 @@ class UserWarehouse_Model extends Model  {
 		$sql = $sql.sprintf(" where uw.companyID = $companyID");		
 		$sql = $sql.sprintf(" and uw.userID = $userID");		
 		$sql = $sql.sprintf(" and w.isActive= 1");		
-		$sql = $sql.sprintf(" and w.typeWarehouse = 480 /*480 : tipo despacho*/");	
+		$sql = $sql.sprintf(" and w.typeWarehouse = 480 /*480 : tipo despacho*/ ");	
+		$sql = $sql.sprintf(" order by w.number ");	
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
