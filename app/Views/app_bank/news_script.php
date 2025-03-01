@@ -17,17 +17,6 @@
 						});
 
 
-
-						/* $('#txtDate').datepicker({
-							format: "mm/yyyy",
-							changeMonth: true,
-							changeYear: true,
-							showButtonPanel: false,
-						}); */
-						/* $('.txt-numeric').mask('000,000.00', {
-						    reverse: true
-						}); */
-
 					});
 
 
