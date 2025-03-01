@@ -1462,7 +1462,7 @@ class app_purchase_pedidos extends _BaseController {
 			$datView["objTC"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$datView["objTM"]->transactionCausalID);
 			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
-			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_workshop_pedido","statusID",$datView["objTM"]->statusID,$companyID,$datView["objTM"]->branchID,APP_ROL_SUPERADMIN);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_workshop_pedido","statusID",$datView["objTM"]->statusID,$companyID,APP_BRANCH,APP_ROL_SUPERADMIN);
 			
 			
 			
