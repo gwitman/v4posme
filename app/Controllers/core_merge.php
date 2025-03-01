@@ -640,6 +640,7 @@ class core_merge extends _BaseController {
 		array_push($tablasSync,"tb_workflow_stage_relation:workflowStageRelationID");
 		array_push($tablasSync,"tb_workflow_stage:workflowStageID");
 		array_push($tablasSync,"tb_workflow:workflowID");
+		array_push($tablasSync,"tb_workflow_stage_affect:workflowStageAffectID");
 		
 		
 		
@@ -810,7 +811,7 @@ class core_merge extends _BaseController {
 		array_push($tablasSync,"tb_workflow_stage_relation:workflowStageRelationID");
 		array_push($tablasSync,"tb_workflow_stage:workflowStageID");
 		array_push($tablasSync,"tb_workflow:workflowID");
-		
+		array_push($tablasSync,"tb_workflow_stage_affect:workflowStageAffectID");
 		
 		
 		$recordSet = $dbDestino->query("SET FOREIGN_KEY_CHECKS=0;");	

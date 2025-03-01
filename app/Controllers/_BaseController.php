@@ -85,6 +85,7 @@ use App\Models\Core\User_Permission_Model;
 use App\Models\Core\Workflow_Model;
 use App\Models\Core\Workflow_Stage_Model;
 use App\Models\Core\Workflow_Stage_Relation_Model;
+use App\Models\Core\Workflow_Stage_Affect_Model;
 
 use App\Models\Accounting_Balance_Model;
 use App\Models\Account_Level_Model;
@@ -289,6 +290,7 @@ abstract class _BaseController extends Controller
     protected $Workflow_Model;
     protected $Workflow_Stage_Model;
     protected $Workflow_Stage_Relation_Model;
+	protected $Workflow_Stage_Affect_Model;
 
     protected $Accounting_Balance_Model;
     protected $Account_Level_Model;
@@ -462,6 +464,7 @@ abstract class _BaseController extends Controller
         $this->Workflow_Model= new Workflow_Model();
         $this->Workflow_Stage_Model= new Workflow_Stage_Model();
         $this->Workflow_Stage_Relation_Model= new Workflow_Stage_Relation_Model();
+		$this->Workflow_Stage_Affect_Model = new Workflow_Stage_Affect_Model();
 
         $this->Accounting_Balance_Model= new Accounting_Balance_Model();
         $this->Account_Level_Model= new Account_Level_Model();
