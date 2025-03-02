@@ -844,7 +844,8 @@ function helper_getCssWidthInvoiceMobile()
 }
 function replaceSimbol($string)
 {
-    $string = str_replace("[simbol-carita-feliz]", "😊", $string);
+	$string = nl2br(htmlspecialchars(mb_convert_encoding($string, "UTF-8", "Windows-1252")));
+	$string = str_replace("[simbol-carita-feliz]", "😊", $string);
     $string = str_replace("[simbol-cono]", "🎉", $string);
     $string = str_replace("[simbol-carita-estrellada]", "🤩", $string);
     $string = str_replace("[simbol-pastel]", "🎂", $string);

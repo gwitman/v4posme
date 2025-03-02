@@ -2188,21 +2188,30 @@ class app_notification extends _BaseController
 			
 			foreach($objListCustomer as $customer)
 			{
-				echo clearNumero($customer["phoneNumber"]) . "****" . $customer["mensaje"] . "</br></br>";
+				
+				$phoneNumber 	= clearNumero($customer["phoneNumber"]);
+				$menssage		= replaceSimbol($customer["mensaje"]);
+				$imagen			= $customer["urlImage"];
+				log_message("error",$menssage);
+				
+				//50584766457
+				if( strlen($phoneNumber) != 11)
+					continue;
+				
+				echo $phoneNumber . "****" . $menssage. "</br></br>";				
 				$this->core_web_whatsap->sendMessageByLiveconnect(
 					APP_COMPANY,
-					replaceSimbol($customer["mensaje"]),										
-					clearNumero($customer["phoneNumber"])
+					$menssage,										
+					$phoneNumber
 				);
-				
 				
 				if($customer["urlImage"] != "")
 				{
 					$this->core_web_whatsap->sendMessageByLiveconnectFile(
 						APP_COMPANY,
-						replaceSimbol($customer["mensaje"]),						
-						clearNumero($customer["phoneNumber"]),
-						base_url()."/resource/file_company/company_2/component_76/component_item_".$objRemember->rememberID."/".$customer["urlImage"],
+						$menssage,						
+						$phoneNumber,
+						base_url()."/resource/file_company/company_2/component_76/component_item_".$objRemember->rememberID."/".$imagen,
 						"buscame",
 						"jpeg"
 					);
