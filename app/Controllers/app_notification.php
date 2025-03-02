@@ -2202,7 +2202,7 @@ class app_notification extends _BaseController
 						APP_COMPANY,
 						replaceSimbol($customer["mensaje"]),						
 						clearNumero($customer["phoneNumber"]),
-						$customer["urlImage"],
+						base_url()."/resource/file_company/company_2/component_76/component_item_".$objRemember->rememberID."/".$customer["urlImage"],
 						"buscame",
 						"jpeg"
 					);
