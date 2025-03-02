@@ -198,8 +198,8 @@ class app_afx_fixedassent extends _BaseController {
 			$datView["objListState"]				= $this->core_web_catalog->getCatalogAllItem_Parent("tb_employee","stateID",$companyID,$datView["objFA"]->countryID);			
 			$datView["objListMunicipality"]			= $this->core_web_catalog->getCatalogAllItem_Parent("tb_employee","cityID",$companyID,$datView["objFA"]->cityID);
 			$datView["objListCurrency"]             = $this->Company_Currency_Model->getByCompany($companyID);
-			$datView["objArea"]						= $this->Public_Catalog_Detail_Model->get_rowByPk($datView["objFA"]->areaID);
-			$datView["objProject"]					= $this->Public_Catalog_Detail_Model->get_rowByPk($datView["objFA"]->projectID);
+			$datView["objArea"]						= $datView["objFA"]->areaID 	? $this->Public_Catalog_Detail_Model->get_rowByPk($datView["objFA"]->areaID) 	: "";
+			$datView["objProject"]					= $datView["objFA"]->projectID 	? $this->Public_Catalog_Detail_Model->get_rowByPk($datView["objFA"]->projectID) : "";
 			
 			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);

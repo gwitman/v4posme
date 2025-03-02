@@ -48,5 +48,59 @@ class Fixed_Assent_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
    }
+
+   	function get_rowByPKListID($companyID,$branchID,$fixedAssetIDList){
+		$db 		= db_connect();
+		$builder	= $db->table("tb_fixed_assent");
+		
+		$query		= $builder->select('
+			companyID, 
+			branchID, 
+			fixedAssentID, 
+			fixedAssentCode, 
+			name, 
+			description, 
+			modelNumber, 
+			marca, 
+			colorID, 
+			chasisNumber, 
+			reference1, 
+			reference2, 
+			year, 
+			asignedEmployeeID, 
+			categoryID, 
+			typeID, 
+			typeDepresiationID, 
+			yearOfUtility, 
+			currencyID, 
+			priceStart, 
+			isForaneo, 
+			statusID, 
+			createdIn, 
+			createdOn, 
+			createdAt, 
+			createdBy, 
+			countryID, 
+			cityID, 
+			municipalityID, 
+			address, 
+			areaID, 
+			projectID, 
+			duration, 
+			typeFixedAssentID, 
+			startOn, 
+			ratio, 
+			settlementAmount, 
+			currentAmount, 
+			isActive'
+		);
+			
+		$query		= $query->where(['companyID'=>$companyID,'isActive'=>1]);
+		$query		= $query->whereIn('fixedAssentID',$fixedAssetIDList);
+
+		//Ejecutar consulta
+		return $query->get()->getResultArray();
+	}
+
 }
 ?>

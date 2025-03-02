@@ -447,7 +447,9 @@ class app_planilla_employee_pay extends _BaseController {
 			$calendarID = $this->Employee_Calendar_Pay_Model->insert_app_posme($objEC);
 			
 			//Crear la Carpeta para almacenar los Archivos del Documento
-			mkdir(PATH_FILE_OF_APP."/company_".$objEC["companyID"]."/component_".$objComponentCalendarPay->componentID."/component_item_".$calendarID, 0700);
+			if(!file_exists(PATH_FILE_OF_APP."/company_".$objEC["companyID"]."/component_".$objComponentCalendarPay->componentID."/component_item_".$calendarID)){
+				mkdir(PATH_FILE_OF_APP."/company_".$objEC["companyID"]."/component_".$objComponentCalendarPay->componentID."/component_item_".$calendarID, 0700);
+			}
 			
 			//Recorrer la lista del detalle del documento
 			$arrayListCalendarDetailID	= /*inicio get post*/ $this->request->getPost("txtCalendarDetailID");
