@@ -274,6 +274,62 @@ class core_web_workflow {
 		
    }
    
+   function getWorkflowStageTargetBySource
+   (
+		$transactionID,
+		$companyID,
+		$transactionCausalID,
+		$componentNameSource,
+		$workflowSourceStageID,
+		$componentNameTarget 		
+   )
+   {
+		//Obtener la compañia
+		$Company_Model 	= new Company_Model();
+		$objCompany 	= $Company_Model->get_rowByPK($companyID);
+		
+		//Obtener el componente Origen
+		$Component_Model 		= new Component_Model();
+		$objComponentSource 	= $Component_Model->get_rowByName($componentNameSource);
+		if(!$objComponentSource)
+		throw new \Exception("NO EXISTE EL COMPONENTE '".$componentNameSource."' DENTROS DE LOS REGISTROS DE 'Component' ");
+	
+		//Obtener el componente Destino
+		$objComponentTarget 	= $Component_Model->get_rowByName($componentNameTarget);
+		if(!$objComponentTarget)
+		throw new \Exception("NO EXISTE EL COMPONENTE '".$componentNameTarget."' DENTROS DE LOS REGISTROS DE 'Component' ");
+	
+	
+		//Obtener el estado destino con sabor
+		$Workflow_Stage_Affect_Model 	= new Workflow_Stage_Affect_Model();
+		$objWorkflowTarget 				= $Workflow_Stage_Affect_Model->get_rowByTransactionCausalID_And_WorkflowStageID
+		(
+				$transactionID,
+				$objCompany->flavorID,
+				$transactionCausalID,
+				$objComponentSource->componentID,
+				$workflowSourceStageID,
+				$objComponentTarget->componentID		
+		);
+		
+		if($objWorkflowTarget)
+			return $objWorkflowTarget;
+		
+		//Obtener el estado destino sin sabor
+		$objWorkflowTarget 				= $Workflow_Stage_Affect_Model->get_rowByTransactionCausalID_And_WorkflowStageID
+		(
+				$transactionID,
+				0,
+				$transactionCausalID,
+				$objComponentSource->componentID,
+				$workflowSourceStageID,
+				$objComponentTarget->componentID		
+		);
+		
+		return $objWorkflowTarget;
+		
+   }
+   
    //Obtener el primer estado de aplicacion
    function getWorkflowStageApplyFirst($table,$field,$companyID,$branchID,$roleID){
 		$Component_Model = new Component_Model();
