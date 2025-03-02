@@ -340,12 +340,12 @@ class app_afx_fixedassent_input extends _BaseController
             $branchID                   = $dataSession["user"]->branchID;
             $roleID                     = $dataSession["role"]->roleID;
 
-            $objComponentFixedAsset        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_fixed_assent");
+            $objComponentFixedAsset             = $this->core_web_tools->getComponentIDBy_ComponentName("tb_fixed_assent");
             if (!$objComponentFixedAsset) {
                 throw new Exception("00409 EL COMPONENTE 'tb_fixed_assent' NO EXISTE...");
             }
 
-            $objComponentPublicCatalog        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_public_catalog");
+            $objComponentPublicCatalog          = $this->core_web_tools->getComponentIDBy_ComponentName("tb_public_catalog");
             if (!$objComponentPublicCatalog) {
                 throw new Exception("00409 EL COMPONENTE 'tb_public_catalog' NO EXISTE...");
             }
@@ -420,7 +420,7 @@ class app_afx_fixedassent_input extends _BaseController
                     throw new Exception(NOT_ALL_EDIT);
             }
 
-            $objComponentFixedAsset        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_fixed_assent");
+            $objComponentFixedAsset             = $this->core_web_tools->getComponentIDBy_ComponentName("tb_fixed_assent");
             if (!$objComponentFixedAsset) {
                 throw new Exception("00409 EL COMPONENTE 'tb_fixed_assent' NO EXISTE...");
             }
@@ -582,22 +582,22 @@ class app_afx_fixedassent_input extends _BaseController
                 if (!$permited)
                     throw new Exception(NOT_ACCESS_CONTROL);
 
-                $resultPermission        = $this->core_web_permission->urlPermissionCmd(get_class($this), "delete", URL_SUFFIX, $dataSession, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
-                if ($resultPermission     == PERMISSION_NONE)
+                $resultPermission       = $this->core_web_permission->urlPermissionCmd(get_class($this), "delete", URL_SUFFIX, $dataSession, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
+                if ($resultPermission   == PERMISSION_NONE)
                     throw new Exception(NOT_ALL_DELETE);
             }
 
-            $companyID                 = /*inicio get post*/ $this->request->getPost("companyID");
-            $transactionID             = /*inicio get post*/ $this->request->getPost("transactionID");
-            $transactionMasterID     = /*inicio get post*/ $this->request->getPost("transactionMasterID");
+            $companyID                  = /*inicio get post*/ $this->request->getPost("companyID");
+            $transactionID              = /*inicio get post*/ $this->request->getPost("transactionID");
+            $transactionMasterID        = /*inicio get post*/ $this->request->getPost("transactionMasterID");
 
 
             if ((!$companyID && !$transactionID && !$transactionMasterID)) {
                 throw new Exception(NOT_PARAMETER);
             }
 
-            $objTM                     = $this->Transaction_Master_Model->get_rowByPK($companyID, $transactionID, $transactionMasterID);
-            if ($resultPermission     == PERMISSION_ME && ($objTM->createdBy != $dataSession["user"]->userID))
+            $objTM                      = $this->Transaction_Master_Model->get_rowByPK($companyID, $transactionID, $transactionMasterID);
+            if ($resultPermission       == PERMISSION_ME && ($objTM->createdBy != $dataSession["user"]->userID))
                 throw new Exception(NOT_DELETE);
 
             //Si el documento esta aplicado crear el contra documento			
@@ -653,11 +653,11 @@ class app_afx_fixedassent_input extends _BaseController
                 throw new Exception("NO SE ENCONTRO EL DOCUMENTO");
 
             return $this->response->setJSON(array(
-                'error'                   => false,
-                'message'                 => SUCCESS,
-                'companyID'             => $objTM->companyID,
-                'transactionID'            => $objTM->transactionID,
-                'transactionMasterID'    => $objTM->transactionMasterID
+                'error'                     => false,
+                'message'                   => SUCCESS,
+                'companyID'                 => $objTM->companyID,
+                'transactionID'             => $objTM->transactionID,
+                'transactionMasterID'       => $objTM->transactionMasterID
             )); //--finjson
 
         } catch (Exception $ex) {
@@ -692,41 +692,41 @@ class app_afx_fixedassent_input extends _BaseController
             }
 
 
-            $transactionID                = /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "transactionID"); //--finuri			
-            $transactionMasterID        = /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "transactionMasterID"); //--finuri				
-            $companyID                     = $dataSession["user"]->companyID;
-            $branchID                     = $dataSession["user"]->branchID;
+            $transactionID                  = /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "transactionID"); //--finuri			
+            $transactionMasterID            = /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "transactionMasterID"); //--finuri				
+            $companyID                      = $dataSession["user"]->companyID;
+            $branchID                       = $dataSession["user"]->branchID;
 
-            $objCompany                 = $this->Company_Model->get_rowByPK($companyID);
-            $objParameterTelefono        = $this->core_web_parameter->getParameter("CORE_PHONE", $companyID);
-            $objParameterLogo            = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO", $companyID);
-            $objParameterRuc             = $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER", $companyID)->value;
+            $objCompany                     = $this->Company_Model->get_rowByPK($companyID);
+            $objParameterTelefono           = $this->core_web_parameter->getParameter("CORE_PHONE", $companyID);
+            $objParameterLogo               = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO", $companyID);
+            $objParameterRuc                = $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER", $companyID)->value;
 
-            $objTM                        = $this->Transaction_Master_Model->get_rowByPk($companyID, $transactionID, $transactionMasterID);
-            $objTMD                     = $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID, $transactionID, $transactionMasterID, $objTM->componentID);
-            $objEmployee                = $this->Employee_Model->get_rowByPK($companyID, $branchID, $objTM->entityID);
-            $objEmployeeNatural         = $this->Natural_Model->get_rowByPk($companyID, $branchID, $objTM->entityID);
-            $objTM->transactionOn        = date_format(date_create($objTM->transactionOn), "Y-m-d");
-            $objUser                    = $this->User_Model->get_rowByPK($companyID, $branchID, $dataSession["user"]->userID);
+            $objTM                          = $this->Transaction_Master_Model->get_rowByPk($companyID, $transactionID, $transactionMasterID);
+            $objTMD                         = $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID, $transactionID, $transactionMasterID, $objTM->componentID);
+            $objEmployee                    = $this->Employee_Model->get_rowByPK($companyID, $branchID, $objTM->entityID);
+            $objEmployeeNatural             = $this->Natural_Model->get_rowByPk($companyID, $branchID, $objTM->entityID);
+            $objTM->transactionOn           = date_format(date_create($objTM->transactionOn), "Y-m-d");
+            $objUser                        = $this->User_Model->get_rowByPK($companyID, $branchID, $dataSession["user"]->userID);
 
-            $objArea                    = $this->Public_Catalog_Detail_Model->get_rowByPk($objTM->areaID);
-            $objProject                 = $this->Public_Catalog_Detail_Model->get_rowByPk($objTM->classID);
+            $objArea                        = $this->Public_Catalog_Detail_Model->get_rowByPk($objTM->areaID);
+            $objProject                     = $this->Public_Catalog_Detail_Model->get_rowByPk($objTM->classID);
 
-            $objFAI["type"]                = "ENTRADA DE ACTIVO FIJO";
-            $objFAI["transactionOn"]    = $objTM->transactionOn;
-            $objFAI["status"]            = $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($objTM->statusID)[0]->name;
-            $objFAI["causalName"]       = $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID, $transactionID, $objTM->transactionCausalID)->name;
-            $objFAI["reference1"]       = $objTM->reference1;
-            $objFAI["reference2"]       = $objTM->reference2;
-            $objFAI["reference3"]       = $objTM->reference3;
-            $objFAI["comment"]          = $objTM->note;
-            $objFAI["entityType"]       = "Empleado";
-            $objFAI["entityName"]       = $objEmployeeNatural->firstName . " " . $objEmployeeNatural->lastName;
-            $objFAI["entityNumber"]     = $objEmployee->employeNumber;
-            $objFAI["areaID"]           = $objArea->Id;
-            $objFAI["areaName"]         = $objArea->Indicador;
-            $objFAI["projectID"]        = $objProject->Id;
-            $objFAI["projectName"]      = $objProject->Indicador;
+            $objFAI["type"]                 = "ENTRADA DE ACTIVO FIJO";
+            $objFAI["transactionOn"]        = $objTM->transactionOn;
+            $objFAI["status"]               = $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($objTM->statusID)[0]->name;
+            $objFAI["causalName"]           = $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID, $transactionID, $objTM->transactionCausalID)->name;
+            $objFAI["reference1"]           = $objTM->reference1;
+            $objFAI["reference2"]           = $objTM->reference2;
+            $objFAI["reference3"]           = $objTM->reference3;
+            $objFAI["comment"]              = $objTM->note;
+            $objFAI["entityType"]           = "Empleado";
+            $objFAI["entityName"]           = $objEmployeeNatural->firstName . " " . $objEmployeeNatural->lastName;
+            $objFAI["entityNumber"]         = $objEmployee->employeNumber;
+            $objFAI["areaID"]               = $objArea->Id;
+            $objFAI["areaName"]             = $objArea->Indicador;
+            $objFAI["projectID"]            = $objProject->Id;
+            $objFAI["projectName"]          = $objProject->Indicador;
 
             //Generar Reporte
             $html = helper_reporteA4FixedAssetTransaction(
