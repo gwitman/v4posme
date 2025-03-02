@@ -19,6 +19,13 @@
 			}
 			
 		});  
+		
+		$(document).on("click","#btnSendWhatapp",function(){
+			fnWaitOpen();
+			window.open("<?php echo base_url().'/app_notification/sendWhatsappDiarioChochoMandado'; ?>","blanck");
+			fnWaitClose();
+		});  
+		
 		$(document).on("click","#btnEliminar",function(){
 		
 			if(objRowTableListView != undefined){

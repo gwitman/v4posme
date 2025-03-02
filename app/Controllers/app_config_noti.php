@@ -396,6 +396,7 @@ class app_config_noti extends _BaseController {
 						$db->transStart();
 						
 						//Actualizar Rol
+						$companyID							= $dataSession["user"]->companyID;
 						$rememberID							= /*inicio get post*/ $this->request->getPost("txtRememberID");
 						$obj["title"] 						= /*inicio get post*/ $this->request->getPost("txtTitulo");
 						$obj["period"] 						= /*inicio get post*/ $this->request->getPost("txtPeriodID");
@@ -406,6 +407,13 @@ class app_config_noti extends _BaseController {
 						$obj["leerFile"] 					= helper_RequestGetValue( /*inicio get post*/ $this->request->getPost("txtLeerFile"), 0) ;
 						$obj["description"] 				= /*inicio get post*/ $this->request->getPost("txtDescripcion");
 						$result 			= $this->Remember_Model->update_app_posme($rememberID,$obj);						
+						
+						//Crear la Carpeta para almacenar los Archivos del Documento
+						$path_ = PATH_FILE_OF_APP."/company_".$companyID."/component_76/component_item_".$rememberID;						
+						if(!file_exists ($path_)){
+							mkdir($path_, 0755);
+							chmod($path_, 0755);
+						}
 						
 						if($db->transStatus() !== false){
 							$db->transCommit();

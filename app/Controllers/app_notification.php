@@ -877,6 +877,8 @@ class app_notification extends _BaseController
 		echo "SUCCESS";
 	}
 	
+	
+	
 	/********************************************/
 	/********************************************/
 	/********************************************/
@@ -2125,5 +2127,94 @@ class app_notification extends _BaseController
 
 		echo "SUCCESS";
 	}
+	function sendWhatsappDiarioChochoMandado()
+	{
+
+		//Obtener la lista de recordatorios
+		$tagName			= "ENVIAR WHATSAPP A CLIENTE";
+		$objTag				= $this->Tag_Model->get_rowByName($tagName);
+		
+		$objListRemember 	= $this->Remember_Model->getNotificationCompanyByTagId(APP_COMPANY,$objTag->tagID);
+		$objParameter		= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT", APP_COMPANY);
+		$characterSplie 	= $objParameter->value;
+
+		
+		if(!$objListRemember)
+			return;
+		
+		
+		foreach($objListRemember as $objRemember)
+		{
+			if($objRemember->leerFile == 0)
+				continue;
+			
+			
+			//Obtener la lista de mensajes
+			$path 	= PATH_FILE_OF_APP . "/company_" . APP_COMPANY . "/component_76/component_item_" . $objRemember->rememberID;
+			$path 	= $path . '/send.csv';
+			if (!file_exists($path))
+				continue;
+			
+			$this->csvreader->separator = $characterSplie;
+			$table 						= $this->csvreader->parse_file($path);
+
+			if (!$table)
+				continue;
+			
+			if (count($table) <= 0) 
+				continue;
+				
+			
+			if (!array_key_exists("Destino", $table[0])) {
+				$table = null;
+			}
+			if (!array_key_exists("Mensaje", $table[0])) {
+				$table = null;
+			}
+
+			if (is_null($table))
+				continue;
+			
+			$objListCustomer = array();
+			foreach ($table as $row) 
+			{
+				$rowx 					= array();
+				$rowx["firstName"] 		= "";
+				$rowx["phoneNumber"] 	= $row["Destino"];
+				$rowx["mensaje"] 		= $row["Mensaje"];
+				$rowx["urlImage"]		= array_key_exists("Imagen", $row) ? $row["Imagen"] : "";
+				array_push($objListCustomer, $rowx);
+			}	
+			
+			foreach($objListCustomer as $customer)
+			{
+				echo clearNumero($customer["phoneNumber"]) . "****" . $customer["mensaje"] . "</br></br>";
+				$this->core_web_whatsap->sendMessageByLiveconnect(
+					APP_COMPANY,
+					replaceSimbol($customer["mensaje"]),										
+					clearNumero($customer["phoneNumber"])
+				);
+				
+				
+				if($customer["urlImage"] != "")
+				{
+					$this->core_web_whatsap->sendMessageByLiveconnectFile(
+						APP_COMPANY,
+						replaceSimbol($customer["mensaje"]),						
+						clearNumero($customer["phoneNumber"]),
+						$customer["urlImage"],
+						"buscame",
+						"jpeg"
+					);
+				}
+				
+			}
+			
+			
+		}
+		
+		echo "SUCCESS";
+	}
+	
 	
 }
