@@ -2186,19 +2186,21 @@ class app_notification extends _BaseController
 				array_push($objListCustomer, $rowx);
 			}	
 			
+			echo "Envio de: ".count($objListCustomer)." mensajes.</br></br>";	
+			$counter 			= 0;
 			foreach($objListCustomer as $customer)
 			{
-				
+				$counter		= $counter++;
 				$phoneNumber 	= clearNumero($customer["phoneNumber"]);
 				$menssage		= replaceSimbol($customer["mensaje"]);
 				$imagen			= $customer["urlImage"];
-				log_message("error",$menssage);
+				echo "Mensaje No: ".$counter." de ".count($objListCustomer)."  ".$phoneNumber . "****" . $menssage. "</br>";				
 				
 				//50584766457
 				if( strlen($phoneNumber) != 11)
 					continue;
 				
-				echo $phoneNumber . "****" . $menssage. "</br></br>";				
+				
 				$this->core_web_whatsap->sendMessageByLiveconnect(
 					APP_COMPANY,
 					$menssage,										
@@ -2206,12 +2208,17 @@ class app_notification extends _BaseController
 				);
 				
 				if($customer["urlImage"] != "")
-				{
+				{	
+					// Obtener el nombre del archivo con la extensión
+					$pathUrl 		= base_url()."/resource/file_company/company_2/component_76/component_item_".$objRemember->rememberID."/".$imagen;
+					$fileNameFull 	= basename($pathUrl);
+					$extension 		= pathinfo($fileNameFull, PATHINFO_EXTENSION);
+					$fileName 		= pathinfo($fileNameFull, PATHINFO_FILENAME);
 					$this->core_web_whatsap->sendMessageByLiveconnectFile(
 						APP_COMPANY,
 						$menssage,						
 						$phoneNumber,
-						base_url()."/resource/file_company/company_2/component_76/component_item_".$objRemember->rememberID."/".$imagen,
+						$pathUrl,
 						"buscame",
 						"jpeg"
 					);

@@ -301,16 +301,28 @@ class core_web_workflow {
 		throw new \Exception("NO EXISTE EL COMPONENTE '".$componentNameTarget."' DENTROS DE LOS REGISTROS DE 'Component' ");
 	
 	
+		//Obgener la transaccion
+		$Transaction_Model 	= new Transaction_Model();
+		$objTransaction 	= $Transaction_Model->getByCompanyAndTransaction($companyID,$transactionID);
+		
+		//Obtener el Causal
+		$Transaction_Causal_Model 	= new Transaction_Causal_Model();
+		$objTransactionCausal		= $Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$transactionCausalID);
+		
+		//Obtener el nombre del estado
+		$Workflow_Stage_Model		= new Workflow_Stage_Model();
+		$objWorkflowStage			= $Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($workflowSourceStageID);
+		
 		//Obtener el estado destino con sabor
 		$Workflow_Stage_Affect_Model 	= new Workflow_Stage_Affect_Model();
 		$objWorkflowTarget 				= $Workflow_Stage_Affect_Model->get_rowByTransactionCausalID_And_WorkflowStageID
 		(
-				$transactionID,
+				$objTransaction->name,
 				$objCompany->flavorID,
-				$transactionCausalID,
-				$objComponentSource->componentID,
-				$workflowSourceStageID,
-				$objComponentTarget->componentID		
+				$objTransactionCausal->name,
+				$componentNameSource,
+				$objWorkflowStage[0]->name,
+				$componentNameTarget		
 		);
 		
 		if($objWorkflowTarget)
@@ -319,14 +331,24 @@ class core_web_workflow {
 		//Obtener el estado destino sin sabor
 		$objWorkflowTarget 				= $Workflow_Stage_Affect_Model->get_rowByTransactionCausalID_And_WorkflowStageID
 		(
-				$transactionID,
+				$objTransaction->name,
 				0,
-				$transactionCausalID,
-				$objComponentSource->componentID,
-				$workflowSourceStageID,
-				$objComponentTarget->componentID		
+				$objTransactionCausal->name,
+				$componentNameSource,
+				$objWorkflowStage[0]->name,
+				$componentNameTarget	
 		);
 		
+		
+		if(!$objWorkflowTarget)
+			return $objWorkflowTarget;
+		
+		
+		$objWorkflowTarget = $Workflow_Stage_Model->get_rowByWorkflowName_And_WorkflowStageName(
+			$objWorkflowTarget[0]->flavorID,
+			$objWorkflowTarget[0]->workflowTargetID,
+			$objWorkflowTarget[0]->workflowTargetStageID
+		);
 		return $objWorkflowTarget;
 		
    }

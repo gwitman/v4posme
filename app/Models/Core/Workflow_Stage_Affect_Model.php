@@ -22,6 +22,7 @@ class Workflow_Stage_Affect_Model extends Model  {
 		$sql = sprintf("
 			 select 
 				x.workflowStageAffectID,
+				x.flavorID,
 				x.transactionID,
 				x.transactionCausalID,
 				x.componentSourceID,
@@ -38,17 +39,19 @@ class Workflow_Stage_Affect_Model extends Model  {
 			from 
 				tb_workflow_stage_affect x 
 			where
-				x.transactionID = $transactionID and 
+				x.transactionID = '$transactionID' and 
 				x.flavorID = $flavorID and 
-				x.transactionCausalID = $transactionCausalID and 
-				x.componentSourceID = $componentSourceID and 
-				x.workflowSourceStageID = $workflowSourceStageID  and 
-				x.componentTargetID = $componentTargetID and 
+				x.transactionCausalID = '$transactionCausalID' and 
+				x.componentSourceID = '$componentSourceID' and 
+				x.workflowSourceStageID = '$workflowSourceStageID'  and 
+				x.componentTargetID = '$componentTargetID' and 
 				x.isActive = 1 
 			order by 
 				x.workflowStageAffectID 
 	
 		");
+		
+		
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();

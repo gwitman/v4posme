@@ -101,6 +101,22 @@ class Workflow_Stage_Model extends Model  {
 		return $db->query($sql)->getResult();
 		
 	}
+	function get_rowByWorkflowName_And_WorkflowStageName($flavorID,$workflowName,$stageName)
+	{
+		$db 	= db_connect();
+		$sql = "";
+		$sql = sprintf("select e.workflowID,e.componentID,e.workflowStageID,e.name,e.description,e.display,e.flavorID,e.editableParcial,e.editableTotal,e.eliminable,e.aplicable,e.vinculable,e.isActive");
+		$sql = $sql.sprintf(" from tb_workflow_stage e");
+		$sql = $sql.sprintf(" inner join tb_workflow w on w.workflowID = e.workflowID ");
+		$sql = $sql.sprintf(" where ");	
+		$sql = $sql.sprintf(" e.flavorID = $flavorID ");
+		$sql = $sql.sprintf(" and e.isActive= 1");			
+		$sql = $sql.sprintf(" and REPLACE(e.name,' ','') = REPLACE('$stageName',' ','') ");
+		$sql = $sql.sprintf(" and REPLACE(w.name,' ','') = REPLACE('$workflowName',' ','') ");
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+	}
 
 }
 ?>
