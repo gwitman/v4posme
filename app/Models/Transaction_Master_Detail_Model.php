@@ -291,8 +291,10 @@ class Transaction_Master_Detail_Model extends Model  {
 			$sql = $sql.sprintf(" where td.transactionMasterID = $transactionMasterID and td.isActive = 1 ");
 		}
 
-		if($componentID == 119 /*Entrada de Activo Fijo: tb_transaction_master_fixedassent_input*/)
+		if($componentID == 119 || $componentID == 121)
 		{
+			/*Entrada de Activo Fijo: tb_transaction_master_fixedassent_input - 119*/
+			/*Salida de Activo Fijo:  tb_transaction_master_fixedassent_output- 121*/
 			$sql = sprintf("SELECT 
 									tmd.transactionMasterDetailID as tmdID,
 									fa.fixedAssentID AS fixedAssetID,
