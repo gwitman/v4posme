@@ -2186,6 +2186,18 @@ class app_notification extends _BaseController
 				array_push($objListCustomer, $rowx);
 			}	
 			
+			//Obtener los clientes unicos eliminar los repetidos
+			$objListCustomerNuevoArray 		= [];
+			$objListCustomerUnicos 			= [];
+			foreach ($objListCustomer as $obj) {
+				if (!in_array($obj["phoneNumber"], $objListCustomerUnicos)) {
+					$objListCustomerUnicos[] 	 = $obj["phoneNumber"];
+					$objListCustomerNuevoArray[] = $obj;
+				}
+			}
+			$objListCustomer	= $objListCustomerNuevoArray;
+
+			
 			echo "Envio de: ".count($objListCustomer)." mensajes.</br></br>";	
 			$counter 			= 0;
 			foreach($objListCustomer as $customer)
