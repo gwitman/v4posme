@@ -1,10 +1,10 @@
 <?php
-//posme:2025-02-28
+//posme:2025-03-03
 namespace App\Controllers;
 
 use Exception;
 
-class app_afx_fixedassent_input extends _BaseController
+class app_afx_fixedassent_output extends _BaseController
 {
     function index($dataViewID = null)
     {
@@ -28,9 +28,9 @@ class app_afx_fixedassent_input extends _BaseController
                     throw new Exception(NOT_ACCESS_FUNCTION);
             }
 
-            $objComponent        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_fixedassent_input");
+            $objComponent        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_fixedassent_output");
             if (!$objComponent)
-                throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_fixedassent_input' NO EXISTE...");
+                throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_fixedassent_output' NO EXISTE...");
 
 
             //Vista por defecto PC
@@ -43,7 +43,7 @@ class app_afx_fixedassent_input extends _BaseController
             //Vista por defecto MOBILE
             else if ($this->request->getUserAgent()->isMobile()) {
                 $parameter["{companyID}"]       = $this->session->get('user')->companyID;
-                $dataViewData                   = $this->core_web_view->getViewByName($this->session->get('user'), $objComponent->componentID, "LISTA DE ENTRADAS DE ACTIVOS FIJOS", CALLERID_LIST, $resultPermission, $parameter);
+                $dataViewData                   = $this->core_web_view->getViewByName($this->session->get('user'), $objComponent->componentID, "LISTA DE SALIDAS DE ACTIVOS", CALLERID_LIST, $resultPermission, $parameter);
                 $dataViewRender                 = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
             }
             //Vista Por Id
@@ -56,10 +56,10 @@ class app_afx_fixedassent_input extends _BaseController
             //Renderizar Resultado
             $dataSession["notification"]        = $this->core_web_error->get_error($dataSession["user"]->userID);
             $dataSession["message"]             = $this->core_web_notification->get_message();
-            $dataSession["head"]                = /*--inicio view*/ view('app_afx_fixedassent_input/list_head'); //--finview
-            $dataSession["footer"]              = /*--inicio view*/ view('app_afx_fixedassent_input/list_footer'); //--finview
+            $dataSession["head"]                = /*--inicio view*/ view('app_afx_fixedassent_output/list_head'); //--finview
+            $dataSession["footer"]              = /*--inicio view*/ view('app_afx_fixedassent_output/list_footer'); //--finview
             $dataSession["body"]                = $dataViewRender;
-            $dataSession["script"]              = /*--inicio view*/ view('app_afx_fixedassent_input/list_script'); //--finview
+            $dataSession["script"]              = /*--inicio view*/ view('app_afx_fixedassent_output/list_script'); //--finview
             $dataSession["script"]              = $dataSession["script"] . $this->core_web_javascript->createVar("componentID", $objComponent->componentID);
             return view("core_masterpage/default_masterpage", $dataSession); //--finview-r	
         } catch (Exception $ex) {
@@ -98,7 +98,7 @@ class app_afx_fixedassent_input extends _BaseController
             if (!$this->validation->withRequest($this->request)->run()) {
                 $stringValidation = $this->core_web_tools->formatMessageError($this->validation->getErrors());
                 $this->core_web_notification->set_message(true, $stringValidation);
-                $this->response->redirect(base_url() . "/" . 'app_afx_fixedassent_input/add');
+                $this->response->redirect(base_url() . "/" . 'app_afx_fixedassent_output/add');
                 exit;
             }
 
@@ -110,7 +110,7 @@ class app_afx_fixedassent_input extends _BaseController
             } else {
                 $stringValidation = "El modo de operacion no es correcto (new|edit)";
                 $this->core_web_notification->set_message(true, $stringValidation);
-                $this->response->redirect(base_url() . "/" . 'app_afx_fixedassent_input/add');
+                $this->response->redirect(base_url() . "/" . 'app_afx_fixedassent_output/add');
                 exit;
             }
         } catch (Exception $ex) {
@@ -164,9 +164,9 @@ class app_afx_fixedassent_input extends _BaseController
                 throw new Exception("00409 EL COMPONENTE 'tb_public_catalog' NO EXISTE...");
             }
 
-            $objComponentFixedAssetInput        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_fixedassent_input");
-            if (!$objComponentFixedAssetInput) {
-                throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_fixedassent_input' NO EXISTE...");
+            $objComponentFixedAssetOutput        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_fixedassent_output");
+            if (!$objComponentFixedAssetOutput) {
+                throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_fixedassent_output' NO EXISTE...");
             }
 
             $objComponentEmployee    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
@@ -174,23 +174,23 @@ class app_afx_fixedassent_input extends _BaseController
                 throw new Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
             }
 
-            $transactionID                                      = $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID, "tb_transaction_master_fixedassent_input", 0);
+            $transactionID                                      = $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID, "tb_transaction_master_fixedassent_output", 0);
 
             $dataView["company"]                                = $dataSession["company"];
             $dataView["objComponentFixedAsset"]                 = $objComponentFixedAsset;
             $dataView["objComponentPublicCatalog"]              = $objComponentPublicCatalog;
-            $dataView["objComponentFixedAssetInput"]            = $objComponentFixedAssetInput;
+            $dataView["objComponentFixedAssetOutput"]           = $objComponentFixedAssetOutput;
             $dataView["objComponentEmployee"]                   = $objComponentEmployee;
-            $dataView["objListWorkflowStage"]                   = $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_fixedassent_input", "statusID", $companyID, $branchID, $roleID);
+            $dataView["objListWorkflowStage"]                   = $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_fixedassent_output", "statusID", $companyID, $branchID, $roleID);
             $dataView["objListEmployee"]                        = $this->Employee_Model->get_rowByBranchID($companyID, $branchID);
             $dataView["objCausal"]                              = $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
 
             //Renderizar Resultado 
             $dataSession["notification"]        = $this->core_web_error->get_error($dataSession["user"]->userID);
             $dataSession["message"]             = $this->core_web_notification->get_message();
-            $dataSession["head"]                = /*--inicio view*/ view('app_afx_fixedassent_input/news_head', $dataView); //--finview
-            $dataSession["body"]                = /*--inicio view*/ view('app_afx_fixedassent_input/news_body', $dataView); //--finview
-            $dataSession["script"]              = /*--inicio view*/ view('app_afx_fixedassent_input/news_script', $dataView); //--finview
+            $dataSession["head"]                = /*--inicio view*/ view('app_afx_fixedassent_output/news_head', $dataView); //--finview
+            $dataSession["body"]                = /*--inicio view*/ view('app_afx_fixedassent_output/news_body', $dataView); //--finview
+            $dataSession["script"]              = /*--inicio view*/ view('app_afx_fixedassent_output/news_script', $dataView); //--finview
             $dataSession["footer"]              = "";
             return view("core_masterpage/default_masterpage", $dataSession); //--finview-r
 
@@ -228,9 +228,9 @@ class app_afx_fixedassent_input extends _BaseController
 
 
 
-            $objComponentFixedAssetInput        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_fixedassent_input");
-            if (!$objComponentFixedAssetInput) {
-                throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_fixedassent_input' NO EXISTE...");
+            $objComponentFixedAssetOutput        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_fixedassent_output");
+            if (!$objComponentFixedAssetOutput) {
+                throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_fixedassent_output' NO EXISTE...");
             }
 
             $objComponentEmployee    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
@@ -242,13 +242,13 @@ class app_afx_fixedassent_input extends _BaseController
             $branchID                               = $dataSession["user"]->branchID;
 
             $objTM["companyID"]                    = $companyID;
-            $objTM["transactionNumber"]            = $this->core_web_counter->goNextNumber($companyID, $branchID, "tb_transaction_master_fixedassent_input", 0);
-            $objTM["transactionID"]                = $this->core_web_transaction->getTransactionID($companyID, "tb_transaction_master_fixedassent_input", 0);
+            $objTM["transactionNumber"]            = $this->core_web_counter->goNextNumber($companyID, $branchID, "tb_transaction_master_fixedassent_output", 0);
+            $objTM["transactionID"]                = $this->core_web_transaction->getTransactionID($companyID, "tb_transaction_master_fixedassent_output", 0);
             $objTM["branchID"]                     = $branchID;
             $objTM["transactionCausalID"]          = /*inicio get post*/ $this->request->getPost("txtCausalID");
             $objTM["entityID"]                     = /*inicio get post*/ $this->request->getPost("txtEmployeeEntityID");
             $objTM["transactionOn"]                = /*inicio get post*/ $this->request->getPost("txtDate");
-            $objTM["componentID"]                  = $objComponentFixedAssetInput->componentID;
+            $objTM["componentID"]                  = $objComponentFixedAssetOutput->componentID;
             $objTM["note"]                         = /*inicio get post*/ $this->request->getPost("txtComment");
             $objTM["reference1"]                   = /*inicio get post*/ $this->request->getPost("txtReference1");
             $objTM["reference2"]                   = /*inicio get post*/ $this->request->getPost("txtReference2");
@@ -274,7 +274,7 @@ class app_afx_fixedassent_input extends _BaseController
                     $objTMD["companyID"]                    = $companyID;
                     $objTMD["transactionID"]                = $objTM["transactionID"];
                     $objTMD["transactionMasterID"]          = $transactionMasterID;
-                    $objTMD["componentID"]                  = $objComponentFixedAssetInput->componentID;
+                    $objTMD["componentID"]                  = $objComponentFixedAssetOutput->componentID;
                     $objTMD["componentItemID"]              = $assetID;
                     $objTMD["amount"]                       = $assetEstimatedDuration;
                     $objTMD["isActive"]                     = 1;
@@ -282,18 +282,18 @@ class app_afx_fixedassent_input extends _BaseController
                 }
             }
 
-            if (!file_exists(PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponentFixedAssetInput->componentID . "/component_item_" . $transactionMasterID)) {
-                mkdir(PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponentFixedAssetInput->componentID . "/component_item_" . $transactionMasterID, 0700, true);
+            if (!file_exists(PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponentFixedAssetOutput->componentID . "/component_item_" . $transactionMasterID)) {
+                mkdir(PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponentFixedAssetOutput->componentID . "/component_item_" . $transactionMasterID, 0700, true);
             }
 
             if ($db->transStatus() !== false) {
                 $db->transCommit();
                 $this->core_web_notification->set_message(false, SUCCESS);
-                $this->response->redirect(base_url() . "/" . 'app_afx_fixedassent_input/edit/companyID/' . $companyID . "/transactionID/" . $objTM["transactionID"] . "/transactionMasterID/" . $transactionMasterID);
+                $this->response->redirect(base_url() . "/" . 'app_afx_fixedassent_output/edit/companyID/' . $companyID . "/transactionID/" . $objTM["transactionID"] . "/transactionMasterID/" . $transactionMasterID);
             } else {
                 $db->transRollback();
                 $this->core_web_notification->set_message(true, $this->$db->_error_message());
-                $this->response->redirect(base_url() . "/" . 'app_afx_fixedassent_input/add');
+                $this->response->redirect(base_url() . "/" . 'app_afx_fixedassent_output/add');
             }
         } catch (Exception $ex) {
             if (empty($dataSession)) {
@@ -350,9 +350,9 @@ class app_afx_fixedassent_input extends _BaseController
                 throw new Exception("00409 EL COMPONENTE 'tb_public_catalog' NO EXISTE...");
             }
 
-            $objComponentFixedAssetInput        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_fixedassent_input");
-            if (!$objComponentFixedAssetInput) {
-                throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_fixedassent_input' NO EXISTE...");
+            $objComponentFixedAssetOutput        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_fixedassent_output");
+            if (!$objComponentFixedAssetOutput) {
+                throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_fixedassent_output' NO EXISTE...");
             }
 
             $objComponentEmployee    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
@@ -361,31 +361,31 @@ class app_afx_fixedassent_input extends _BaseController
             }
 
             if ((!$companyID) || (!$transactionID) || (!$transactionMasterID)) {
-                $this->response->redirect(base_url() . "/" . 'app_afx_fixedassent_input/add');
+                $this->response->redirect(base_url() . "/" . 'app_afx_fixedassent_output/add');
             }
 
 
             $dataView["company"]                                = $dataSession["company"];
             $dataView["objTM"]                                  = $this->Transaction_Master_Model->get_rowByPK($companyID, $transactionID, $transactionMasterID);
             $dataView["objEmployee"]                            = $this->Employee_Model->get_rowByPK($companyID, $branchID, $dataView["objTM"]->entityID);
-            $dataView["objComponentFixedAssetInput"]            = $objComponentFixedAssetInput;
+            $dataView["objComponentFixedAssetOutput"]           = $objComponentFixedAssetOutput;
             $dataView["objComponentFixedAsset"]                 = $objComponentFixedAsset;
             $dataView["objComponentPublicCatalog"]              = $objComponentPublicCatalog;
             $dataView["objComponentEmployee"]                   = $objComponentEmployee;
-            $dataView["objListWorkflowStage"]                   = $this->core_web_workflow->getWorkflowAllStage("tb_transaction_master_fixedassent_input", "statusID", $companyID, $branchID, $roleID);
+            $dataView["objListWorkflowStage"]                   = $this->core_web_workflow->getWorkflowAllStage("tb_transaction_master_fixedassent_output", "statusID", $companyID, $branchID, $roleID);
             $dataView["objListEmployee"]                        = $this->Employee_Model->get_rowByBranchID($companyID, $branchID);
             $dataView["objCausal"]                              = $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
             $dataView["objNatural"]                             = $this->Natural_Model->get_rowByPk($companyID, $branchID, $dataView["objTM"]->entityID);
             $dataView["objArea"]                                =  $dataView["objTM"]->areaID   ? $this->Public_Catalog_Detail_Model->get_rowByPk($dataView["objTM"]->areaID) : "";
             $dataView["objProject"]                             =  $dataView["objTM"]->classID  ? $this->Public_Catalog_Detail_Model->get_rowByPk($dataView["objTM"]->classID) : "";
-            $dataView["objTMD"]                                 = $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID, $transactionID, $transactionMasterID, $objComponentFixedAssetInput->componentID);
+            $dataView["objTMD"]                                 = $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID, $transactionID, $transactionMasterID, $objComponentFixedAssetOutput->componentID);
 
             //RENDERIZAR RESULTADO
             $dataSession["notification"]    = $this->core_web_error->get_error($dataSession["user"]->userID);
             $dataSession["message"]         = $this->core_web_notification->get_message();
-            $dataSession["head"]            = view('app_afx_fixedassent_input/edit_head', $dataView);
-            $dataSession["body"]            = view('app_afx_fixedassent_input/edit_body', $dataView);
-            $dataSession["script"]          = view('app_afx_fixedassent_input/edit_script', $dataView);
+            $dataSession["head"]            = view('app_afx_fixedassent_output/edit_head', $dataView);
+            $dataSession["body"]            = view('app_afx_fixedassent_output/edit_body', $dataView);
+            $dataSession["script"]          = view('app_afx_fixedassent_output/edit_script', $dataView);
             $dataSession["footer"]          = "";
             return view('core_masterpage/default_masterpage', $dataSession);
         } catch (Exception $ex) {
@@ -425,9 +425,9 @@ class app_afx_fixedassent_input extends _BaseController
                 throw new Exception("00409 EL COMPONENTE 'tb_fixed_assent' NO EXISTE...");
             }
 
-            $objComponentFixedAssetInput        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_fixedassent_input");
+            $objComponentFixedAssetInput        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_fixedassent_output");
             if (!$objComponentFixedAssetInput) {
-                throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_fixedassent_input' NO EXISTE...");
+                throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_fixedassent_output' NO EXISTE...");
             }
 
             $objComponentEmployee    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
@@ -455,14 +455,14 @@ class app_afx_fixedassent_input extends _BaseController
             $objTMNew["areaID"]                     = /*inicio get post*/ $this->request->getPost("txtAreaID");
 
             //Validar si el estado permite editar
-            if (!$this->core_web_workflow->validateWorkflowStage("tb_transaction_master_fixedassent_input", "statusID", $objTM->statusID, COMMAND_EDITABLE_TOTAL, $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID))
+            if (!$this->core_web_workflow->validateWorkflowStage("tb_transaction_master_fixedassent_output", "statusID", $objTM->statusID, COMMAND_EDITABLE_TOTAL, $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID))
                 throw new Exception(NOT_WORKFLOW_EDIT);
 
             $db = db_connect();
             $db->transStart();
 
 
-            if ($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_fixedassent_input", "statusID", $objTM->statusID, COMMAND_EDITABLE, $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID)) {
+            if ($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_fixedassent_output", "statusID", $objTM->statusID, COMMAND_EDITABLE, $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID)) {
                 $objTMNew                           = array();
                 $objTMNew["statusID"]               = $this->request->getPost("txtStatusID");
                 $this->Transaction_Master_Model->update_app_posme($companyID, $transactionID, $transactionMasterID, $objTMNew);
@@ -510,14 +510,14 @@ class app_afx_fixedassent_input extends _BaseController
             }
 
 
-            if ($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_fixedassent_input", "statusID", $objTMNew["statusID"], COMMAND_APLICABLE, $companyID, $branchID, $roleID)) {
+            if ($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_fixedassent_output", "statusID", $objTMNew["statusID"], COMMAND_APLICABLE, $companyID, $branchID, $roleID)) {
 
                 $objListFixedAssets                             = $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID, $transactionID, $transactionMasterID, $objComponentFixedAssetInput->componentID);
 
                 //Validar el estado del activo para ver si es permitido ser aplicado en la transaccion.
                 foreach ($objListFixedAssets as $asset) {
                     $objAsset                                       = $this->Fixed_Assent_Model->get_rowByPK($companyID, $branchID, $asset->componentItemID);
-                    $objWorkflowStage                               = $this->core_web_workflow->getWorkflowStageTargetBySource($transactionID, $companyID, $objTMNew["transactionCausalID"], "tb_fixed_assent", $objAsset->statusID, "tb_transaction_master_fixedassent_input");
+                    $objWorkflowStage                               = $this->core_web_workflow->getWorkflowStageTargetBySource($transactionID, $companyID, $objTMNew["transactionCausalID"], "tb_fixed_assent", $objAsset->statusID, "tb_transaction_master_fixedassent_output");
 
                     if ($objWorkflowStage) {
                         throw new Exception("EL ESTADO ACTUAL DEL ACTIVO FIJO " . $objAsset->fixedAssentCode . " " . $objAsset->name . " NO PERMITE APLICAR LA ENTRADA");
@@ -525,7 +525,7 @@ class app_afx_fixedassent_input extends _BaseController
                 }
 
                 //Asignar el estado a los activos fijos en funcion del causal y el estado origen de la transaccion.
-                $objWorkflowStage                               = $this->core_web_workflow->getWorkflowStageTargetBySource($transactionID, $companyID, $objTMNew["transactionCausalID"], "tb_transaction_master_fixedassent_input", $objTMNew["statusID"], "tb_fixed_assent");
+                $objWorkflowStage                               = $this->core_web_workflow->getWorkflowStageTargetBySource($transactionID, $companyID, $objTMNew["transactionCausalID"], "tb_transaction_master_fixedassent_output", $objTMNew["statusID"], "tb_fixed_assent");
                 $fixedAssetStatusID                             = $objWorkflowStage ? $objWorkflowStage[0]->workflowStageID : "";
 
                 if (!empty($fixedAssetStatusID)) {
@@ -544,11 +544,11 @@ class app_afx_fixedassent_input extends _BaseController
             if ($db->transStatus() !== false) {
                 $db->transCommit();
                 $this->core_web_notification->set_message(false, SUCCESS);
-                $this->response->redirect(base_url() . "/" . 'app_afx_fixedassent_input/edit/companyID/' . $companyID . "/transactionID/" . $transactionID . "/transactionMasterID/" . $transactionMasterID);
+                $this->response->redirect(base_url() . "/" . 'app_afx_fixedassent_output/edit/companyID/' . $companyID . "/transactionID/" . $transactionID . "/transactionMasterID/" . $transactionMasterID);
             } else {
                 $db->transRollback();
                 $this->core_web_notification->set_message(true, $this->$db->_error_message());
-                $this->response->redirect(base_url() . "/" . 'app_afx_fixedassent_input/add');
+                $this->response->redirect(base_url() . "/" . 'app_afx_fixedassent_output/add');
             }
         } catch (Exception $ex) {
             if (empty($dataSession)) {
@@ -601,7 +601,7 @@ class app_afx_fixedassent_input extends _BaseController
                 throw new Exception(NOT_DELETE);
 
             //Si el documento esta aplicado crear el contra documento			
-            if (!$this->core_web_workflow->validateWorkflowStage("tb_transaction_master_fixedassent_input", "statusID", $objTM->statusID, COMMAND_ELIMINABLE, $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID))
+            if (!$this->core_web_workflow->validateWorkflowStage("tb_transaction_master_fixedassent_output", "statusID", $objTM->statusID, COMMAND_ELIMINABLE, $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID))
                 throw new Exception(NOT_WORKFLOW_DELETE);
 
             //Eliminar el Registro			
@@ -712,7 +712,7 @@ class app_afx_fixedassent_input extends _BaseController
             $objArea                        = $this->Public_Catalog_Detail_Model->get_rowByPk($objTM->areaID);
             $objProject                     = $this->Public_Catalog_Detail_Model->get_rowByPk($objTM->classID);
 
-            $objFAI["type"]                 = "ENTRADA";
+            $objFAI["type"]                 = "SALIDA";
             $objFAI["transactionOn"]        = $objTM->transactionOn;
             $objFAI["status"]               = $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($objTM->statusID)[0]->name;
             $objFAI["causalName"]           = $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID, $transactionID, $objTM->transactionCausalID)->name;

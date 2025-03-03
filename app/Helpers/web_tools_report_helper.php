@@ -20537,7 +20537,7 @@ function helper_reporteA4FixedAssetTransaction(
         <div class='content'>
             <table>
                 <tr>
-                    <th class='text-left col-30' style='border-right:none'>" . $objFAI["type"] ."</th>
+                    <th class='text-left col-30' style='border-right:none'>" . $objFAI["type"] ." DE ACTIVO FIJO</th>
                     <th class='text-right col-70' style='border-left:none'>" . $objFAI["status"] . "</th>
                 </tr>
                 <tr>
@@ -20594,7 +20594,7 @@ function helper_reporteA4FixedAssetTransaction(
             <table class='table-fixed-assets'>
                 <thead>
                     <tr>
-                        <th colspan='3' class='text-center'>Activos Fijos a Asignar</th>
+                        <th colspan='3' class='text-center'>ACTIVOS FIJOS DE ".  $objFAI["type"] ."</th>
                     </tr>
                     <tr>
                         <th>Codigo</th>
