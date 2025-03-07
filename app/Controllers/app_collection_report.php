@@ -105,7 +105,7 @@ class app_collection_report extends _BaseController {
 				//Renderizar Resultado 
 				$dataSession["message"]		= $this->core_web_notification->get_message();
 				$dataSession["head"]		= /*--inicio view*/ view('app_collection_report/commission_provider/view_head');//--finview
-				$dataSession["body"]		= /*--inicio view*/ view('app_collection_report/commission_provider/view_body',$objFiltros,true);//--finview
+				$dataSession["body"]		= /*--inicio view*/ view('app_collection_report/commission_provider/view_body',$objFiltros);//--finview
 				$dataSession["script"]		= /*--inicio view*/ view('app_collection_report/commission_provider/view_script');//--finview
 				$dataSession["footer"]		= "";			
 				return view("core_masterpage/default_report",$dataSession);//--finview-r	

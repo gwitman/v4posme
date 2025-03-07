@@ -2202,24 +2202,27 @@ class app_notification extends _BaseController
 			$counter 			= 0;
 			foreach($objListCustomer as $customer)
 			{
-				$counter		= $counter++;
+				$counter		= $counter+1;
 				$phoneNumber 	= clearNumero($customer["phoneNumber"]);
 				$menssage		= replaceSimbol($customer["mensaje"]);
 				$imagen			= $customer["urlImage"];
-				echo "Mensaje No: ".$counter." de ".count($objListCustomer)."  ".$phoneNumber . "****" . $menssage. "</br>";				
+				echo "Mensaje No: ".$counter." de ".count($objListCustomer)."  ".$phoneNumber . "**** Mensaje:" . $menssage. " **** Imagen: ".$imagen."</br>";				
 				
 				//50584766457
 				if( strlen($phoneNumber) != 11)
 					continue;
 				
+		
+				if($menssage != "")
+				{
+					$this->core_web_whatsap->sendMessageByLiveconnect(
+						APP_COMPANY,
+						$menssage,										
+						$phoneNumber
+					);
+				}
 				
-				$this->core_web_whatsap->sendMessageByLiveconnect(
-					APP_COMPANY,
-					$menssage,										
-					$phoneNumber
-				);
-				
-				if($customer["urlImage"] != "")
+				if($imagen != "")
 				{	
 					// Obtener el nombre del archivo con la extensión
 					$pathUrl 		= base_url()."/resource/file_company/company_2/component_76/component_item_".$objRemember->rememberID."/".$imagen;
@@ -2232,7 +2235,7 @@ class app_notification extends _BaseController
 						$phoneNumber,
 						$pathUrl,
 						"buscame",
-						"jpeg"
+						$extension
 					);
 				}
 				

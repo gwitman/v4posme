@@ -517,7 +517,7 @@ class app_afx_fixedassent_input extends _BaseController
                 //Validar el estado del activo para ver si es permitido ser aplicado en la transaccion.
                 foreach ($objListFixedAssets as $asset) {
                     $objAsset                                       = $this->Fixed_Assent_Model->get_rowByPK($companyID, $branchID, $asset->componentItemID);
-                    $objWorkflowStage                               = $this->core_web_workflow->getWorkflowStageTargetBySource($transactionID, $companyID, $objTMNew["transactionCausalID"], "tb_fixed_assent", $objAsset->statusID, "tb_transaction_master_fixedassent_input");
+                    $objWorkflowStage                               = $this->core_web_workflow->getWorkflowStageTargetBySource($transactionID, $companyID, $objTMNew["transactionCausalID"], "tb_fixed_assent", $objAsset->statusID, "tb_transaction_master_fixedassent_input","");
 
                     if ($objWorkflowStage) {
                         throw new Exception("EL ESTADO ACTUAL DEL ACTIVO FIJO " . $objAsset->fixedAssentCode . " " . $objAsset->name . " NO PERMITE APLICAR LA ENTRADA");
@@ -525,7 +525,7 @@ class app_afx_fixedassent_input extends _BaseController
                 }
 
                 //Asignar el estado a los activos fijos en funcion del causal y el estado origen de la transaccion.
-                $objWorkflowStage                               = $this->core_web_workflow->getWorkflowStageTargetBySource($transactionID, $companyID, $objTMNew["transactionCausalID"], "tb_transaction_master_fixedassent_input", $objTMNew["statusID"], "tb_fixed_assent");
+                $objWorkflowStage                               = $this->core_web_workflow->getWorkflowStageTargetBySource($transactionID, $companyID, $objTMNew["transactionCausalID"], "tb_transaction_master_fixedassent_input", $objTMNew["statusID"], "tb_fixed_assent","");
                 $fixedAssetStatusID                             = $objWorkflowStage ? $objWorkflowStage[0]->workflowStageID : "";
 
                 if (!empty($fixedAssetStatusID)) {

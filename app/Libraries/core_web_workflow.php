@@ -282,7 +282,8 @@ class core_web_workflow {
 		$transactionCausalID,
 		$componentNameSource,
 		$workflowSourceStageID,
-		$componentNameTarget 		
+		$componentNameTarget,
+		$condition1
    )
    {
 		//Obtener la compañia
@@ -315,28 +316,30 @@ class core_web_workflow {
 		
 		//Obtener el estado destino con sabor
 		$Workflow_Stage_Affect_Model 	= new Workflow_Stage_Affect_Model();
-		$objWorkflowTarget 				= $Workflow_Stage_Affect_Model->get_rowByTransactionCausalID_And_WorkflowStageID
+		$objWorkflowTarget 				= $Workflow_Stage_Affect_Model->get_rowByTransactionCausalID_And_WorkflowStageID_AndCondition1
 		(
 				$objTransaction->name,
 				$objCompany->flavorID,
 				$objTransactionCausal->name,
 				$componentNameSource,
 				$objWorkflowStage[0]->name,
-				$componentNameTarget		
+				$componentNameTarget,
+				$condition1			
 		);
 		
 		if($objWorkflowTarget)
 			return $objWorkflowTarget;
 		
 		//Obtener el estado destino sin sabor
-		$objWorkflowTarget 				= $Workflow_Stage_Affect_Model->get_rowByTransactionCausalID_And_WorkflowStageID
+		$objWorkflowTarget 				= $Workflow_Stage_Affect_Model->get_rowByTransactionCausalID_And_WorkflowStageID_AndCondition1
 		(
 				$objTransaction->name,
 				0,
 				$objTransactionCausal->name,
 				$componentNameSource,
 				$objWorkflowStage[0]->name,
-				$componentNameTarget	
+				$componentNameTarget,
+				$condition1
 		);
 		
 		

@@ -7,14 +7,15 @@ class Workflow_Stage_Affect_Model extends Model  {
    function __construct(){		
       parent::__construct();
    }    
-   function get_rowByTransactionCausalID_And_WorkflowStageID
+   function get_rowByTransactionCausalID_And_WorkflowStageID_AndCondition1
    (
 		$transactionID,
 		$flavorID,
 		$transactionCausalID,
 		$componentSourceID,
 		$workflowSourceStageID,
-		$componentTargetID		
+		$componentTargetID,
+		$condition1
    )
    {
 		$db 	= db_connect();
@@ -35,7 +36,10 @@ class Workflow_Stage_Affect_Model extends Model  {
 				x.reference1,
 				x.reference2,
 				x.reference3,
-				x.isActive
+				x.isActive,
+				x.condition1,
+				x.condition2,
+				x.condition3
 			from 
 				tb_workflow_stage_affect x 
 			where
@@ -45,7 +49,8 @@ class Workflow_Stage_Affect_Model extends Model  {
 				x.componentSourceID = '$componentSourceID' and 
 				x.workflowSourceStageID = '$workflowSourceStageID'  and 
 				x.componentTargetID = '$componentTargetID' and 
-				x.isActive = 1 
+				x.isActive = 1 and 
+				IFNULL(x.condition1, '')  = '$condition1'
 			order by 
 				x.workflowStageAffectID 
 	

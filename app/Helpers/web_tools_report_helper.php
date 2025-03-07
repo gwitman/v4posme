@@ -1675,7 +1675,7 @@ function helper_reporteA4TransactionMasterInvoiceA4Opcion1(
 	$iva 		= 0;
 	$descuento 	= 0;
 	
-	for($i = 0 ; $i < 22 ; $i++)
+	for($i = 0 ; $i < 150 ; $i++)
 	{
 		$count = count($objDetail);
 		if($i < $count)
@@ -1688,26 +1688,26 @@ function helper_reporteA4TransactionMasterInvoiceA4Opcion1(
 				<tr>
 					<td style='text-align:left;width:70px' >".$objDetail[$i]->itemNumber."</td>
 					<td style='text-align:left;' >".$objDetail[$i]->itemNameLog."</td>
-					<td style='text-align:center;width:70px' >".$objCurrency->simbol." ".number_format(round($objDetail[$i]->unitaryPrice,2),2,".",",")."</td>
-					<td style='text-align:center;width:70px' >".number_format(round($objDetail[$i]->quantity,2),2,".",",")."</td>
-					<td style='text-align:center;width:70px' >".$objCurrency->simbol." 0.00</td>
-					<td style='text-align:center;width:70px' >".$objCurrency->simbol." ".number_format(round($objDetail[$i]->unitaryPrice,2)  * round($objDetail[$i]->quantity,2)   ,2,".",",")."</td>
+					<td style='text-align:right;width:70px' >".$objCurrency->simbol." ".number_format(round($objDetail[$i]->unitaryPrice,2),2,".",",")."</td>
+					<td style='text-align:right;width:70px' >".number_format(round($objDetail[$i]->quantity,2),2,".",",")."</td>
+					<td style='text-align:right;width:70px' >".$objCurrency->simbol." 0.00</td>
+					<td style='text-align:right;width:70px' >".$objCurrency->simbol." ".number_format(round($objDetail[$i]->unitaryPrice,2)  * round($objDetail[$i]->quantity,2)   ,2,".",",")."</td>
 				<tr>
 			";
 		}
-		else
-		{
-			$f_html = $f_html."			
-				<tr>
-					<td style='text-align:center;width:70px' >&nbsp;</td>
-					<td style='text-align:center;' >&nbsp;</td>
-					<td style='text-align:center;width:70px' >&nbsp;</td>
-					<td style='text-align:center;width:70px' >&nbsp;</td>
-					<td style='text-align:center;width:70px' >&nbsp;</td>
-					<td style='text-align:center;width:70px' >&nbsp;</td>
-				<tr>
-			";
-		}
+		//-wgonzalez-else
+		//-wgonzalez-{
+		//-wgonzalez-	$f_html = $f_html."			
+		//-wgonzalez-		<tr>
+		//-wgonzalez-			<td style='text-align:center;width:70px' >&nbsp;</td>
+		//-wgonzalez-			<td style='text-align:center;' >&nbsp;</td>
+		//-wgonzalez-			<td style='text-align:center;width:70px' >&nbsp;</td>
+		//-wgonzalez-			<td style='text-align:center;width:70px' >&nbsp;</td>
+		//-wgonzalez-			<td style='text-align:center;width:70px' >&nbsp;</td>
+		//-wgonzalez-			<td style='text-align:center;width:70px' >&nbsp;</td>
+		//-wgonzalez-		<tr>
+		//-wgonzalez-	";
+		//-wgonzalez-}
 	}
 				
 	$f_html = $f_html."
@@ -8845,6 +8845,14 @@ function helper_reporte80mmTransactionMasterEmanuel(
 		
 						
           $html	= $html."
+						<tr>
+						  <td colspan='1'>
+							RUC:
+                          <td colspan='2'>
+							". ( $objTransactionMasterInfo->referenceClientIdentifier == "" ?   "" :  $objTransactionMasterInfo->referenceClientIdentifier )  ." 
+                          </td>
+                        </tr>
+						
 						<tr>
 						  <td colspan='1'>
 							Cliente:
