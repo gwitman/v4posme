@@ -328,7 +328,14 @@ class core_web_workflow {
 		);
 		
 		if($objWorkflowTarget)
+		{
+			$objWorkflowTarget = $Workflow_Stage_Model->get_rowByWorkflowName_And_WorkflowStageName(
+				$objWorkflowTarget[0]->flavorID,
+				$objWorkflowTarget[0]->workflowTargetID,
+				$objWorkflowTarget[0]->workflowTargetStageID
+			);
 			return $objWorkflowTarget;
+		}
 		
 		//Obtener el estado destino sin sabor
 		$objWorkflowTarget 				= $Workflow_Stage_Affect_Model->get_rowByTransactionCausalID_And_WorkflowStageID_AndCondition1
