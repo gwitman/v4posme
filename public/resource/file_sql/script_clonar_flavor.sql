@@ -99,3 +99,81 @@ where
 			ul.targetComponentID = @flavorTarget and 
 			ul.dataViewID = c.dataViewID 
 		);
+		
+
+select 'clonoar public_catalog' as mensaje;	
+insert into tb_public_catalog ( `name` , systemName,statusID,	orden,description,isActive,flavorID)
+select 
+	k.`name`,
+	k.systemName,
+	k.statusID,
+	k.orden,
+	k.description,
+	k.isActive,
+	@flavorTarget
+from 
+	tb_public_catalog k 
+where 
+	k.flavorID = @flavorOrigen and 
+	not exists (select * from tb_public_catalog  p where p.flavorID = @flavorTarget and p.systemName = k.systemName) ;
+	
+	
+select 'clonoar public_catalog_detail' as mensaje;		
+insert into tb_public_catalog_detail(
+		publicCatalogID,
+		`name`,
+		display,
+		flavorID,
+		description,
+		`sequence`,
+		parentCatalogDetailID,
+		ratio,
+		parentName,
+		isActive,
+		reference1,
+		reference2,
+		reference3
+)
+select 
+	(
+		select 
+			ld.publicCatalogID 
+		from 
+			tb_public_catalog lm 
+			inner join tb_public_catalog ld on 
+				ld.systemName = lm.systemName and 
+				ld.flavorID = @flavorTarget 
+		where 
+			lm.publicCatalogID = c.publicCatalogID 
+		limit 1 
+	)
+	c.`name`,
+	c.display,
+	c.flavorID,
+	c.description,
+	c.`sequence`,
+	c.parentCatalogDetailID,
+	c.ratio,
+	c.parentName,
+	c.isActive,
+	c.reference1,
+	c.reference2,
+	c.reference3
+from 
+	tb_public_catalog_detail c 
+	inner join tb_public_catalog k on 
+		k.publicCatalogID = c.publicCatalogID 
+where 
+	k.flavorID = @flavorOrigen and 
+	not exists (
+		select 
+			* 
+		from 
+			tb_public_catalog  d 
+			inner join tb_public_catalog_detail dd on 
+				d.publicCatalogID = dd.publicCatalogID 
+		where 
+			d.flavorID = @flavorTarget and 
+			concat(d.systemName,'',dd.name) = concat(k.systemName,'',c.name) 
+			
+	);
