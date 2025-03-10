@@ -310,6 +310,29 @@ class Transaction_Master_Detail_Model extends Model  {
 			$sql = $sql.sprintf(" AND tmd.componentID = $componentID");
 			$sql = $sql.sprintf(" AND tmd.isActive =  1");
 		}
+
+		if($componentID == 122)
+		{
+			#Depreciacion de activo fijo: tb_transaction_master_fixed_assent_depreciated
+			$sql = sprintf("SELECT 
+									tmd.transactionMasterDetailID as tmdID,
+									fa.fixedAssentID AS fixedAssetID,
+									fa.fixedAssentCode AS fixedAssetCode,
+									fa.`name` AS fixedAssetName,
+									fa.ratio AS fixedAssetRatio,
+        							fa.currentAmount,
+									fa.settlementAmount,
+									tmd.amount AS amountRatio,
+									tmd.componentItemID,
+									tmd.tax1 as newCurrentAmount");
+			$sql = $sql.sprintf(" FROM tb_transaction_master_detail tmd");
+			$sql = $sql.sprintf(" INNER JOIN tb_fixed_assent fa ON tmd.componentItemID = fa.fixedAssentID");
+			$sql = $sql.sprintf(" WHERE tmd.companyID = $companyID");
+			$sql = $sql.sprintf(" AND tmd.transactionID = $transactionID");
+			$sql = $sql.sprintf(" AND tmd.transactionMasterID = $transactionMasterID");
+			$sql = $sql.sprintf(" AND tmd.componentID = $componentID");
+			$sql = $sql.sprintf(" AND tmd.isActive =  1");
+		}
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();

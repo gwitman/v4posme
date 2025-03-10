@@ -443,7 +443,7 @@
 														<div class="form-group">
 															<label class="col-lg-4 control-label" for="normal">Monto Corriente</label>
 															<div class="col-lg-8">
-																<input class="form-control" readonly type="number" name="txtCurrentAmount" id="txtCurrentAmount" value="0">
+																<input class="form-control" readonly type="number" name="txtCurrentAmount" id="txtCurrentAmount" value="<?= $objFA->currentAmount?>">
 															</div>
 														</div>
 

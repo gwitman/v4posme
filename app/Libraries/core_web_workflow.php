@@ -350,17 +350,17 @@ class core_web_workflow {
 		);
 		
 		
-		if(!$objWorkflowTarget)
+		if($objWorkflowTarget)
+		{
+			$objWorkflowTarget = $Workflow_Stage_Model->get_rowByWorkflowName_And_WorkflowStageName(
+				0,
+				$objWorkflowTarget[0]->workflowTargetID,
+				$objWorkflowTarget[0]->workflowTargetStageID
+			);
 			return $objWorkflowTarget;
-		
-		
-		$objWorkflowTarget = $Workflow_Stage_Model->get_rowByWorkflowName_And_WorkflowStageName(
-			$objWorkflowTarget[0]->flavorID,
-			$objWorkflowTarget[0]->workflowTargetID,
-			$objWorkflowTarget[0]->workflowTargetStageID
-		);
-		return $objWorkflowTarget;
-		
+		}
+
+		return $objWorkflowTarget;		
    }
    
    //Obtener el primer estado de aplicacion

@@ -20639,3 +20639,245 @@ function helper_reporteA4FixedAssetTransaction(
 
     return $html;
 }
+
+function helper_reporteA4FixedAssetDepreciated(
+    $objFAD,						
+    $objCompany, 					
+    $objParameterLogo, 	
+	$objCurrency,			
+    $objTransactionMastser, 		
+    $objTMD, 					
+    $objParameterTelefono, 			
+    $objEmployerNatural, 			
+    $rucCompany 					
+) {
+    $path = PATH_FILE_OF_APP_ROOT . '/img/logos/' . $objParameterLogo->value;
+
+    $type = pathinfo($path, PATHINFO_EXTENSION);
+    $data = file_get_contents($path);
+    $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+    $numberDocument = str_replace("FAC", "SERIE \"A\" RECIBO No ", $objTransactionMastser->transactionNumber);
+
+    $html = "
+    <!DOCTYPE html>
+    <html lang='en'>
+    <head>
+        <meta charset='UTF-8' />
+        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+        <style>
+            @page {
+                size: A4;
+                margin: 25px;
+            }
+            body {
+                font-family: Arial, sans-serif;
+                font-size: 12px;
+                color: #000;
+            }
+            .header, .footer {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .header img {
+                max-width: 200px;
+            }
+            .header h1 {
+                font-size: 18px;
+                margin: 5px 0;
+            }
+            .header h2 {
+                font-size: 14px;
+                margin: 5px 0;
+            }
+            .content {
+                margin: 20px 0;
+            }
+            .content table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+                border: 1px solid #000;
+            }
+            .content table td {
+                padding: 8px;
+                border-right: 1px solid #000;
+            }
+            .content table td:last-child {
+                border-right: none;
+            }
+            .content table tr:last-child td {
+                border-bottom: none;
+            }
+            .content table th {
+                padding: 8px;
+                border: 1px solid #000;
+                background-color: #f2f2f2;
+            }
+            .footer {
+                font-size: 10px;
+                margin-top: 20px;
+            }
+            .text-center {
+                text-align: center;
+            }
+            .text-right {
+                text-align: right;
+            }
+            .text-left {
+                text-align: left;
+            }
+            .bold {
+                font-weight: bold;
+            }
+            .col-30 {
+                width: 30%;
+            }
+            .col-70 {
+                width: 70%;
+            }
+            .col-60 {
+                width: 60% !important;
+            }
+            .col-40 {
+                width: 40% !important;
+            }
+
+            /* New Styles for the Second Table */
+            .table-fixed-assets {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+                border: 1px solid #000;
+            }
+            .table-fixed-assets th {
+                background-color: #f2f2f2;
+                padding: 10px;
+                border: 1px solid #000;
+                font-weight: bold;
+                text-align: center;
+            }
+            .table-fixed-assets td {
+                padding: 10px;
+                border: 1px solid #000;
+                text-align: left;
+            }
+            .table-fixed-assets td.text-center {
+                text-align: center;
+            }
+            .table-fixed-assets td.text-right {
+                text-align: right;
+            }
+            .table-fixed-assets tr:nth-child(even) {
+                background-color: #f9f9f9; /* Alternate row color */
+            }
+            .table-fixed-assets tr:hover {
+                background-color: #f1f1f1; /* Hover effect */
+            }
+        </style>
+    </head>
+    <body>
+        <div class='header'>
+            <img src='{$base64}' alt='Company Logo'>
+            <h1>{$objCompany->name}</h1>
+            <h2>RUC: {$rucCompany}</h2>
+            <h2>Teléfono: {$objParameterTelefono->value}</h2>
+            <h2>Dirección: {$objCompany->address}</h2>
+        </div>
+
+        <div class='content'>
+            <table>
+                <tr>
+                    <th class='text-left col-30' style='border-right:none'>" . $objFAD["type"] ." DE ACTIVO FIJO</th>
+                    <th class='text-right col-70' style='border-left:none'>" . $objFAD["status"] . "</th>
+                </tr>
+                <tr>
+                    <td class='bold col-30'>Número de Documento:</td>
+                    <td class='col-70'>{$numberDocument}</td>
+                </tr>
+                <tr>
+                    <td class='bold col-30'>Fecha de Emisión:</td>
+                    <td class='col-70'>" . ($objFAD["transactionOn"]) . "</td>
+                </tr>
+                <tr>
+                    <td class='bold col-30'>Año: </td>
+                    <td class='col-70'>". $objFAD["yearPeriod"] ."</td>
+                </tr>
+                <tr>
+                    <td class='bold col-30'>Mes: </td>
+                    <td class='col-70'>". $objFAD["monthCycle"] ."</td>
+                </tr>
+                <tr>
+                    <td class='bold col-30'>Usuario:</td>
+                    <td class='col-70'>{$objEmployerNatural->nickname}</td>
+                </tr>
+                <tr>
+                    <td class='bold col-30'>Causal:</td>
+                    <td class='col-70'>" . $objFAD["causalName"] . "</td>
+                </tr>
+                <tr>
+                    <td class='bold col-30'>Monto de Factura:</td>
+                    <td class='col-70'>{$objCurrency->simbol} " . number_format($objFAD["totalAmount"], 2, '.', ',') . "</td>
+                </tr>
+                <tr>
+                    <td class='bold col-30'>Referencia:</td>
+                    <td class='col-70'>". $objFAD["reference1"] ."</td>
+                </tr>
+                <tr>
+                    <td class='bold col-30'>Referencia:</td>
+                    <td class='col-70'>". $objFAD["reference2"] ."</td>
+                </tr>
+                <tr>
+                    <td class='bold col-30'>Referencia:</td>
+                    <td class='col-70'>". $objFAD["reference3"] ."</td>
+                </tr>
+                <tr>
+                    <td class='bold col-30'>Nota:</td>
+                    <td class='col-70'>". $objFAD["comment"] ."</td>
+                </tr>
+            </table>
+
+            <!-- New Table: Activos Fijos a Asignar -->
+            <table class='table-fixed-assets'>
+                <thead>
+                    <tr>
+                        <th colspan='5' class='text-center'>ACTIVOS FIJOS A DEPRECIAR </th>
+                    </tr>
+                    <tr>
+                        <th>Codigo</th>
+                        <th>Nombre</th>
+                        <th>Ratio</th>
+                        <th>Monto Corriente</th>
+                        <th>Monto De Liquidacion</th>
+                    </tr>
+                </thead>
+                <tbody>
+    ";
+
+    if ($objTMD) {
+        foreach ($objTMD as $detail) {
+            $html .= "
+                    <tr>
+                        <td>{$detail->fixedAssetCode}</td>
+                        <td>{$detail->fixedAssetName}</td>
+                        <td>{$detail->amountRatio}</td>
+                        <td>{$detail->currentAmount}</td>
+                        <td  class='text-right'>{$detail->settlementAmount}</td>
+                    </tr>
+            ";
+        }
+    }
+
+    $html .= "
+                </tbody>
+            </table>
+        </div>
+
+        <div class='footer'>
+            <p class='text-center'></p>
+        </div>
+    </body>
+    </html>
+    ";
+
+    return $html;
+}
