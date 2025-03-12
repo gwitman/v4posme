@@ -20640,7 +20640,7 @@ function helper_reporteA4FixedAssetTransaction(
     return $html;
 }
 
-function helper_reporteA4FixedAssetDepreciated(
+function helper_reporteA4FixedAssetDepreciationAndValuation(
     $objFAD,						
     $objCompany, 					
     $objParameterLogo, 	
@@ -20787,7 +20787,7 @@ function helper_reporteA4FixedAssetDepreciated(
         <div class='content'>
             <table>
                 <tr>
-                    <th class='text-left col-30' style='border-right:none'>" . $objFAD["type"] ." DE ACTIVO FIJO</th>
+                    <th class='text-left col-30' style='border-right:none'>" . $objFAD["type"] ." DE ACTIVOS FIJOS</th>
                     <th class='text-right col-70' style='border-left:none'>" . $objFAD["status"] . "</th>
                 </tr>
                 <tr>
@@ -20840,7 +20840,7 @@ function helper_reporteA4FixedAssetDepreciated(
             <table class='table-fixed-assets'>
                 <thead>
                     <tr>
-                        <th colspan='5' class='text-center'>ACTIVOS FIJOS A DEPRECIAR </th>
+                        <th colspan='5' class='text-center'>LISTA DE ACTIVOS FIJOS EN ". $objFAD["type"] ." </th>
                     </tr>
                     <tr>
                         <th>Codigo</th>

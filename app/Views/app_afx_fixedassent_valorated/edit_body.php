@@ -27,8 +27,8 @@
         <!-- botonera -->
         <div class="email-bar" style="border-left:1px solid #c9c9c9">
             <div class="btn-group pull-right">
-                <a href="<?php echo base_url(); ?>/app_afx_fixedassent_depreciated/add" class="btn btn-success" id="btnNuevo"><i class="icon16 i-checkmark-4"></i>Nuevo</a>
-                <a href="<?php echo base_url(); ?>/app_afx_fixedassent_depreciated/index" id="btnBack" class="btn btn-inverse"><i class="icon16 i-rotate"></i> Atras</a>
+                <a href="<?php echo base_url(); ?>/app_afx_fixedassent_valorated/add" class="btn btn-success" id="btnNuevo"><i class="icon16 i-checkmark-4"></i>Nuevo</a>
+                <a href="<?php echo base_url(); ?>/app_afx_fixedassent_valorated/index" id="btnBack" class="btn btn-inverse"><i class="icon16 i-rotate"></i> Atras</a>
                 <a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>
                 <a href="#" class="btn btn-primary" id="btnPrinter"><i class="icon16 i-print"></i> Imprimir</a>
                 <a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
@@ -47,7 +47,7 @@
             <!-- titulo de comprobante-->
             <div class="panel-heading">
                 <div class="icon"><i class="icon20 i-file"></i></div>
-                <h4>Depreciacion De Activo Fijo:#<span class="invoice-num"><?= $objTM->transactionNumber ?></span></h4>
+                <h4>Valoracion De Activo Fijo:#<span class="invoice-num"><?= $objTM->transactionNumber ?></span></h4>
             </div>
             <!-- /titulo de comprobante-->
 
