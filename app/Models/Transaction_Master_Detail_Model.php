@@ -311,9 +311,10 @@ class Transaction_Master_Detail_Model extends Model  {
 			$sql = $sql.sprintf(" AND tmd.isActive =  1");
 		}
 
-		if($componentID == 122)
+		if($componentID == 122 || $componentID == 123)
 		{
-			#Depreciacion de activo fijo: tb_transaction_master_fixed_assent_depreciated
+			//Depreciacion de Activo Fijo: 	tb_transaction_master_fixed_assent_depreciated 	- 122
+			//Valoracion de Activo Fijo: 	tb_transaction_master_fixed_assent_valorated 	- 123
 			$sql = sprintf("SELECT 
 									tmd.transactionMasterDetailID as tmdID,
 									fa.fixedAssentID AS fixedAssetID,
