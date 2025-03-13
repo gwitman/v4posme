@@ -2137,76 +2137,100 @@ class app_notification extends _BaseController
 		$objListRemember 	= $this->Remember_Model->getNotificationCompanyByTagId(APP_COMPANY,$objTag->tagID);
 		$objParameter		= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT", APP_COMPANY);
 		$characterSplie 	= $objParameter->value;
-
+		$chatSend			= [];
+		$session 			= session();
+		$mensaje			= "";
+		$mensageByPage		= 100;
 		
-		if(!$objListRemember)
+		//Si no existe la variable session obtener los chat
+		if (!$session->has('chatSend')) 
+		{
+			if(!$objListRemember)
 			return;
 		
 		
-		foreach($objListRemember as $objRemember)
-		{
-			if($objRemember->leerFile == 0)
-				continue;
-			
-			
-			//Obtener la lista de mensajes
-			$path 	= PATH_FILE_OF_APP . "/company_" . APP_COMPANY . "/component_76/component_item_" . $objRemember->rememberID;
-			$path 	= $path . '/send.csv';
-			if (!file_exists($path))
-				continue;
-			
-			$this->csvreader->separator = $characterSplie;
-			$table 						= $this->csvreader->parse_file($path);
-
-			if (!$table)
-				continue;
-			
-			if (count($table) <= 0) 
-				continue;
-				
-			
-			if (!array_key_exists("Destino", $table[0])) {
-				$table = null;
-			}
-			if (!array_key_exists("Mensaje", $table[0])) {
-				$table = null;
-			}
-
-			if (is_null($table))
-				continue;
-			
-			$objListCustomer = array();
-			foreach ($table as $row) 
+			foreach($objListRemember as $objRemember)
 			{
-				$rowx 					= array();
-				$rowx["firstName"] 		= "";
-				$rowx["phoneNumber"] 	= $row["Destino"];
-				$rowx["mensaje"] 		= $row["Mensaje"];
-				$rowx["urlImage"]		= array_key_exists("Imagen", $row) ? $row["Imagen"] : "";
-				array_push($objListCustomer, $rowx);
-			}	
-			
-			//Obtener los clientes unicos eliminar los repetidos
-			$objListCustomerNuevoArray 		= [];
-			$objListCustomerUnicos 			= [];
-			foreach ($objListCustomer as $obj) {
-				if (!in_array($obj["phoneNumber"], $objListCustomerUnicos)) {
-					$objListCustomerUnicos[] 	 = $obj["phoneNumber"];
-					$objListCustomerNuevoArray[] = $obj;
+				if($objRemember->leerFile == 0)
+					continue;
+				
+				
+				//Obtener la lista de mensajes
+				$path 	= PATH_FILE_OF_APP . "/company_" . APP_COMPANY . "/component_76/component_item_" . $objRemember->rememberID;
+				$path 	= $path . '/send.csv';
+				if (!file_exists($path))
+					continue;
+				
+				$this->csvreader->separator = $characterSplie;
+				$table 						= $this->csvreader->parse_file($path);
+
+				if (!$table)
+					continue;
+				
+				if (count($table) <= 0) 
+					continue;
+					
+				
+				if (!array_key_exists("Destino", $table[0])) {
+					$table = null;
+				}
+				if (!array_key_exists("Mensaje", $table[0])) {
+					$table = null;
+				}
+
+				if (is_null($table))
+					continue;
+				
+				$objListCustomer = array();
+				foreach ($table as $row) 
+				{
+					$rowx 					= array();
+					$rowx["firstName"] 		= "";
+					$rowx["phoneNumber"] 	= $row["Destino"];
+					$rowx["mensaje"] 		= $row["Mensaje"];
+					$rowx["urlImage"]		= array_key_exists("Imagen", $row) ? $row["Imagen"] : "";
+					$rowx["rememberID"]		= $objRemember->rememberID;
+					$rowx["key"]			= $rowx["phoneNumber"].$row["Mensaje"].$rowx["urlImage"];
+					array_push($objListCustomer, $rowx);
+				}	
+				
+				//Obtener los clientes unicos eliminar los repetidos
+				$objListCustomerNuevoArray 		= [];
+				$objListCustomerUnicos 			= [];
+				foreach ($objListCustomer as $obj) {
+					if (!in_array($obj["key"], $objListCustomerUnicos)) {
+						$objListCustomerUnicos[] 	 = $obj["key"];
+						$objListCustomerNuevoArray[] = $obj;
+						$chatSend[]					 = $obj;
+					}
 				}
 			}
-			$objListCustomer	= $objListCustomerNuevoArray;
+		} 
+		else 
+		{
+			$chatSend  = $session->get('chatSend');
+		}
 
-			
-			echo "Envio de: ".count($objListCustomer)." mensajes.</br></br>";	
-			$counter 			= 0;
-			foreach($objListCustomer as $customer)
+
+		
+		
+		
+		
+		
+		
+		$mensaje 			=  "Envio de: ".count($chatSend)." mensajes.</br></br>";	
+		$chatSendTemp		= [];
+		$counter 			= 0;
+		foreach($chatSend as $customer)
+		{
+			$counter		= $counter+1;
+			if($counter <= $mensageByPage)
 			{
-				$counter		= $counter+1;
 				$phoneNumber 	= clearNumero($customer["phoneNumber"]);
 				$menssage		= replaceSimbol($customer["mensaje"]);
+				$rememberID		= $customer["rememberID"];
 				$imagen			= $customer["urlImage"];
-				echo "Mensaje No: ".$counter." de ".count($objListCustomer)."  ".$phoneNumber . "**** Mensaje:" . $menssage. " **** Imagen: ".$imagen."</br>";				
+				$mensaje 		= $mensaje."Mensaje No: ".$counter." de ".count($chatSend)."  Al telefono: ".$phoneNumber . " **** Mensaje:" . $menssage. " **** Imagen: ".$imagen."</br></br>";				
 				
 				//50584766457
 				if( strlen($phoneNumber) != 11)
@@ -2225,7 +2249,7 @@ class app_notification extends _BaseController
 				if($imagen != "")
 				{	
 					// Obtener el nombre del archivo con la extensión
-					$pathUrl 		= base_url()."/resource/file_company/company_2/component_76/component_item_".$objRemember->rememberID."/".$imagen;
+					$pathUrl 		= base_url()."/resource/file_company/company_2/component_76/component_item_".$rememberID."/".$imagen;
 					$fileNameFull 	= basename($pathUrl);
 					$extension 		= pathinfo($fileNameFull, PATHINFO_EXTENSION);
 					$fileName 		= pathinfo($fileNameFull, PATHINFO_FILENAME);
@@ -2238,13 +2262,39 @@ class app_notification extends _BaseController
 						$extension
 					);
 				}
-				
 			}
-			
+			else 
+			{
+				$chatSendTemp[] = $customer;
+			}
 			
 		}
 		
-		echo "SUCCESS";
+		
+		//Continuar
+		if(!empty($chatSendTemp))
+		{
+			$session->set('chatSend', $chatSendTemp);
+			$data["message"]	= $mensaje."<span class='btn btn-info' >Volver a cargar hay mas datos por procesar...</span>";
+            $data["urlLogin"]  	= base_url();
+            $data["urlIndex"]  	= base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . "sendWhatsappDiarioChochoMandado";
+            $data["urlBack"]   	= base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . "sendWhatsappDiarioChochoMandado";
+            $resultView        	= view("core_template/message_general_not_ajax", $data);
+			echo $resultView;
+			
+		}
+		//No continuar
+		else
+		{
+			$session->remove('chatSend');			
+			$data["message"]   = $mensaje."<span class='btn btn-danger' >No hay mas datos cerrar ventana...</span>";
+            $data["urlLogin"]  = base_url();
+            $data["urlIndex"]  = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . "sendWhatsappDiarioChochoMandado";
+            $data["urlBack"]   = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . "sendWhatsappDiarioChochoMandado";
+            $resultView        = view("core_template/message_general_not_ajax", $data);
+			echo $resultView;
+		}
+		
 	}
 	
 	
