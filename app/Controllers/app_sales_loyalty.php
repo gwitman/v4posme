@@ -623,6 +623,8 @@ class app_sales_loyalty extends _BaseController
 				$objParameterRuc,
 			);
 
+			//echo $html;
+			//return;
 			$this->dompdf->loadHTML($html);
 
 			$this->dompdf->render();

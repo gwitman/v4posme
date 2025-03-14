@@ -20883,6 +20883,7 @@ function helper_reporteA4FixedAssetDepreciationAndValuation(
 }
 
 
+
 function helper_reporteA4TarjetaFidelidad(
     $objCompany, 					/* company name, address */
     $objParameterLogo, 				/* company logo */
@@ -20890,13 +20891,20 @@ function helper_reporteA4TarjetaFidelidad(
     $objParameterTelefono, 			/* numero de telefono */
     $rucCompany 					/* codigo ruc */
 ) {
-    $path = PATH_FILE_OF_APP_ROOT . '/img/logos/' . $objParameterLogo->value;
-
+    $path 			= PATH_FILE_OF_APP_ROOT . '/img/fidelidad_background.jpg';
+	$imagenOcupado 	= PATH_FILE_OF_APP_ROOT . "/img/fidelidad_ocupado.jpg";
+	$imagenExtra   	= PATH_FILE_OF_APP_ROOT . "/img/fidelidad_extra.jpg";
+	
 	$type               = pathinfo($path, PATHINFO_EXTENSION);
 	$data               = file_get_contents($path);
 	$base64             = 'data:image/' . $type . ';base64,' . base64_encode($data);
 	$cantidadCuadros    = $objTransactionMastser->amount;
 	$cantidadOcupados   = $objTransactionMastser->tax1;
+
+	
+
+	$base64Ocupado = 'data:image/' . pathinfo($imagenOcupado, PATHINFO_EXTENSION) . ';base64,' . base64_encode(file_get_contents($imagenOcupado));
+	$base64Extra   = 'data:image/' . pathinfo($imagenExtra, PATHINFO_EXTENSION) . ';base64,' . base64_encode(file_get_contents($imagenExtra));
 
 	$html = '
 	<!DOCTYPE html>
@@ -20907,50 +20915,79 @@ function helper_reporteA4TarjetaFidelidad(
 		<title>Tarjeta con Cuadros</title>
 		<style>
 			@page {
-				size: 3.5in 2in; /* Tamaño estándar de tarjeta de presentación */
-				margin: 0; /* Sin márgenes */
+				size: 3.5in 2in;
+				margin: 0;
 			}
 
+			/*
 			body {
 				display: flex;
 				justify-content: center;
 				align-items: center;
 				height: 100vh;
 				background: url("' . $base64 . '") no-repeat center center/cover;
-				background-size: cover; /* La imagen ocupa toda la pantalla */
+				background-size: cover;
 				margin: 0;
+				background-size:81%;
+			}
+			*/
+			
+			body {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100vh;
+				background: url("' . $base64 . '") no-repeat center center/cover;
+				background-size: cover;
+				margin: 0;
+				background-size:81%;
+				
 			}
 
 			.tabla-container {
 				background: rgba(255, 255, 255, 0.8);
-				padding: 20px;
+				padding: 1px;
 				border-radius: 10px;
 				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 				display: flex;
 				flex-direction: column;
 				align-items: center;
+				
+				background: url("' . $base64 . '") no-repeat center center/cover;
 			}
 
 			table {
 				border-collapse: collapse;
 				margin: auto;
+				width:100%;
+				border-spacing: 0; 
 			}
 
 			td {
 				width: 50px;
 				height: 50px;
 				text-align: center;
-				border: none; /* Se eliminan los bordes por defecto */
+				border: none;
 			}
 
 			.ocupado {
-				background-color: salmon;
-				border: 0.5px solid black; /* Borde fino */
+				background: url("' . $base64Ocupado . '") no-repeat center center;
+				background-size: cover;
+				border: 0.0px solid black;
+				background-size:81%;
 			}
 
 			.no-ocupado {
-				background-color: lightblue;
-				border: 0.5px solid black; /* Borde fino */
+				/*background-color: lightblue;*/
+				background-color: white;
+				border: 0.0px solid black;
+			}
+
+			.extra {
+				background: url("' . $base64Extra . '") no-repeat center center;
+				background-size: cover;
+				border: 0.0px solid black;
+				background-size:81%;
 			}
 		</style>
 	</head>
@@ -20962,7 +20999,7 @@ function helper_reporteA4TarjetaFidelidad(
 				$cantidadOcupados = $objTransactionMastser->tax1;
 				
 				$maxPorFila = 5;
-				$filas = ceil($cantidadCuadros / $maxPorFila);
+				$filas = ceil(($cantidadCuadros + 1) / $maxPorFila);
 				$cuadro = 0;
 				
 				for ($i = 0; $i < $filas; $i++) {
@@ -20971,6 +21008,8 @@ function helper_reporteA4TarjetaFidelidad(
 						if ($cuadro < $cantidadCuadros) {
 							$clase = ($cuadro < $cantidadOcupados) ? 'ocupado' : 'no-ocupado';
 							$html .= "<td class='$clase'></td>";
+						} elseif ($cuadro == $cantidadCuadros) {
+							$html .= "<td class='extra'></td>";
 						} else {
 							$html .= "<td></td>";
 						}
@@ -20981,12 +21020,28 @@ function helper_reporteA4TarjetaFidelidad(
 			
 	$html .= '
 			</table>
+			<table style="width:100%;border-collapse: collapse;  border-spacing: 0; ">
+				<tr>
+					<td style="height:25px;text-align: left;">
+					  '.$objTransactionMastser->reference1.'
+					</td>
+				</tr>
+				<tr>
+					<td style="height:25px;text-align: left;">
+					  Cliente: '.$objTransactionMastser->numberPhone.'
+					</td>
+				</tr>
+				<tr>
+					<td style="height:25px;text-align: left;">
+					  Puntos: '.ceil($objTransactionMastser->tax1).' / '.ceil($objTransactionMastser->amount).'
+					</td>
+				</tr>
+			</table>
 		</div>
 	</body>
 	</html>
 	';
 
 	return $html;
-
-
 }
+
