@@ -20881,3 +20881,112 @@ function helper_reporteA4FixedAssetDepreciationAndValuation(
 
     return $html;
 }
+
+
+function helper_reporteA4TarjetaFidelidad(
+    $objCompany, 					/* company name, address */
+    $objParameterLogo, 				/* company logo */
+    $objTransactionMastser, 		/* transaction number, date, amount, note, reference */
+    $objParameterTelefono, 			/* numero de telefono */
+    $rucCompany 					/* codigo ruc */
+) {
+    $path = PATH_FILE_OF_APP_ROOT . '/img/logos/' . $objParameterLogo->value;
+
+	$type               = pathinfo($path, PATHINFO_EXTENSION);
+	$data               = file_get_contents($path);
+	$base64             = 'data:image/' . $type . ';base64,' . base64_encode($data);
+	$cantidadCuadros    = $objTransactionMastser->amount;
+	$cantidadOcupados   = $objTransactionMastser->tax1;
+
+	$html = '
+	<!DOCTYPE html>
+	<html lang="es">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Tarjeta con Cuadros</title>
+		<style>
+			@page {
+				size: 3.5in 2in; /* Tamaño estándar de tarjeta de presentación */
+				margin: 0; /* Sin márgenes */
+			}
+
+			body {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100vh;
+				background: url("' . $base64 . '") no-repeat center center/cover;
+				background-size: cover; /* La imagen ocupa toda la pantalla */
+				margin: 0;
+			}
+
+			.tabla-container {
+				background: rgba(255, 255, 255, 0.8);
+				padding: 20px;
+				border-radius: 10px;
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+
+			table {
+				border-collapse: collapse;
+				margin: auto;
+			}
+
+			td {
+				width: 50px;
+				height: 50px;
+				text-align: center;
+				border: none; /* Se eliminan los bordes por defecto */
+			}
+
+			.ocupado {
+				background-color: salmon;
+				border: 0.5px solid black; /* Borde fino */
+			}
+
+			.no-ocupado {
+				background-color: lightblue;
+				border: 0.5px solid black; /* Borde fino */
+			}
+		</style>
+	</head>
+	<body>
+		<div class="tabla-container">
+			<table>';
+				
+				$cantidadCuadros = $objTransactionMastser->amount;
+				$cantidadOcupados = $objTransactionMastser->tax1;
+				
+				$maxPorFila = 5;
+				$filas = ceil($cantidadCuadros / $maxPorFila);
+				$cuadro = 0;
+				
+				for ($i = 0; $i < $filas; $i++) {
+					$html .= "<tr>";
+					for ($j = 0; $j < $maxPorFila; $j++) {
+						if ($cuadro < $cantidadCuadros) {
+							$clase = ($cuadro < $cantidadOcupados) ? 'ocupado' : 'no-ocupado';
+							$html .= "<td class='$clase'></td>";
+						} else {
+							$html .= "<td></td>";
+						}
+						$cuadro++;
+					}
+					$html .= "</tr>";
+				}
+			
+	$html .= '
+			</table>
+		</div>
+	</body>
+	</html>
+	';
+
+	return $html;
+
+
+}

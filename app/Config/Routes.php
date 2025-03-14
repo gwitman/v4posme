@@ -962,6 +962,15 @@ $routes->match(['get','post'],'app_bank_notedebit/edit/(:any)','app_bank_notedeb
 $routes->match(['get','post'],'app_bank_notedebit/delete','app_bank_notedebit::delete');
 $routes->match(['get','post'],'app_bank_notedebit/searchTransactionMaster','app_bank_notedebit::searchTransactionMaster');
 $routes->match(['get','post'],'app_bank_notedebit/viewPrinterFormatoA4/(:any)','app_bank_notedebit::viewPrinterFormatoA4');
+$routes->match(['get','post'],'app_sales_loyalty/index','app_sales_loyalty::index');
+$routes->match(['get','post'],'app_sales_loyalty/save','app_sales_loyalty::save');
+$routes->match(['get','post'],'app_sales_loyalty/save/(:any)','app_sales_loyalty::save');
+$routes->match(['get','post'],'app_sales_loyalty/add','app_sales_loyalty::add');
+$routes->match(['get','post'],'app_sales_loyalty/edit','app_sales_loyalty::edit');
+$routes->match(['get','post'],'app_sales_loyalty/edit/(:any)','app_sales_loyalty::edit');
+$routes->match(['get','post'],'app_sales_loyalty/delete','app_sales_loyalty::delete');
+$routes->match(['get','post'],'app_sales_loyalty/searchTransactionMaster','app_sales_loyalty::searchTransactionMaster');
+$routes->match(['get','post'],'app_sales_loyalty/viewPrinterFormatoA4/(:any)','app_sales_loyalty::viewPrinterFormatoA4');
 $routes->match(['get','post'],'app_bank_notecredit/index','app_bank_notecredit::index');
 $routes->match(['get','post'],'app_bank_notecredit/save','app_bank_notecredit::save');
 $routes->match(['get','post'],'app_bank_notecredit/save/(:any)','app_bank_notecredit::save');
