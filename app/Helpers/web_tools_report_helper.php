@@ -21033,7 +21033,7 @@ function helper_reporteA4TarjetaFidelidad(
 				</tr>
 				<tr>
 					<td style="height:25px;text-align: left;">
-					  Puntos: '.ceil($objTransactionMastser->tax1).' / '.ceil($objTransactionMastser->amount).'
+					  '.$objTransactionMastser->transactionNumber.' Ptn: '.ceil($objTransactionMastser->tax1).' / '.ceil($objTransactionMastser->amount).'
 					</td>
 				</tr>
 			</table>
