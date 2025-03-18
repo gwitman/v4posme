@@ -980,6 +980,15 @@ $routes->match(['get','post'],'app_bank_notecredit/edit/(:any)','app_bank_notecr
 $routes->match(['get','post'],'app_bank_notecredit/delete','app_bank_notecredit::delete');
 $routes->match(['get','post'],'app_bank_notecredit/searchTransactionMaster','app_bank_notecredit::searchTransactionMaster');
 $routes->match(['get','post'],'app_bank_notecredit/viewPrinterFormatoA4/(:any)','app_bank_notecredit::viewPrinterFormatoA4');
+$routes->match(['get','post'],'app_bank_cheque_make/index','app_bank_cheque_make::index');
+$routes->match(['get','post'],'app_bank_cheque_make/save','app_bank_cheque_make::save');
+$routes->match(['get','post'],'app_bank_cheque_make/save/(:any)','app_bank_cheque_make::save');
+$routes->match(['get','post'],'app_bank_cheque_make/add','app_bank_cheque_make::add');
+$routes->match(['get','post'],'app_bank_cheque_make/edit','app_bank_cheque_make::edit');
+$routes->match(['get','post'],'app_bank_cheque_make/edit/(:any)','app_bank_cheque_make::edit');
+$routes->match(['get','post'],'app_bank_cheque_make/delete','app_bank_cheque_make::delete');
+$routes->match(['get','post'],'app_bank_cheque_make/searchTransactionMaster','app_bank_cheque_make::searchTransactionMaster');
+$routes->match(['get','post'],'app_bank_cheque_make/viewPrinterFormatoA4/(:any)','app_bank_cheque_make::viewPrinterFormatoA4');
 $routes->match(['get','post'],'app_tool_report/index','app_tool_report::index');
 $routes->match(['get','post'],'app_tool_report/index/(:any)','app_tool_report::index');
 $routes->match(['get','post'],'app_inventory_transferoutput/viewRegister','app_inventory_transferoutput::viewRegister');

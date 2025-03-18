@@ -21045,3 +21045,174 @@ function helper_reporteA4TarjetaFidelidad(
 	return $html;
 }
 
+function helper_reporteA4Checkbook(
+    $objTMCheckbook,    
+    $objCheckbook,    
+    $objTM,                
+    $objCompany,                     
+    $objParameterLogo,                 
+    $objTransactionMastser,         
+    $objCurrency,                     
+    $objParameterTelefono,             
+    $objUser,             
+    $rucCompany                     
+) {
+    $path = PATH_FILE_OF_APP_ROOT . '/img/logos/' . $objParameterLogo->value;
+
+    $type = pathinfo($path, PATHINFO_EXTENSION);
+    $data = file_get_contents($path);
+    $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+    $html = "
+    <!DOCTYPE html>
+    <html lang='en'>
+    <head>
+        <meta charset='UTF-8' />
+        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+        <style>
+        @page {
+			size: A4;
+			margin: 2px;
+		}
+		body {
+			font-family: Arial, sans-serif;
+			font-size: 12px;
+			color: #000;
+		}
+		.check {
+			width: 96%;
+			margin: 0 auto;
+			border: 2px solid #000;
+			padding: 5px 10px;
+			position: relative;
+		}
+		.header {
+			overflow: hidden;
+			border-bottom: 1px solid #eee;
+		}
+		.header .left {	
+			float: left;
+			text-align: left;
+		}
+		.header .right {
+			float: right;
+			text-align: right;
+		}
+		.header img {
+			max-width: 120px;
+			display: inline-block;
+			margin-bottom: 5px;
+			margin-right: 5px;
+		}
+		.header h1 {
+			font-size: 14px;
+			margin: 8px 0 2px;
+		}
+		.header h2 {
+			font-size: 11px;
+			margin: 2px 0;
+		}
+		.title-row {
+			width: 100%;
+			margin-top: 5px;
+			overflow: hidden;
+		}
+		.title-row .title {
+			font-size: 14px;
+			font-weight: bold;
+			float: left;
+		}
+		.title-row .status {
+			font-size: 14px;
+			float: right;
+		}
+		.content {
+			margin: 2px 0;
+		}
+
+		/* Layout con CSS 2.1 usando floats */
+		.container {
+			width: 100%;
+			margin-top: 5px;
+		}
+		.row {
+			overflow: hidden;
+			width: 100%;
+			margin-bottom: 5px;
+		}
+		.field-name {
+			float: left;
+			width: auto;
+			padding: 5px;
+			font-weight: bold;
+		}
+		.field-value {
+			float: left;
+			width: 41%;
+			padding: 5px;
+			position: relative;
+		}
+		.field-value span {
+			display: block;
+			border-bottom: 1px solid #000; /* Línea debajo del valor */
+			padding-bottom: 2px; 
+		}
+		.clearfix::after {
+			content: '';
+			display: table;
+			clear: both;
+		}
+			
+        </style>
+    </head>
+    <body>
+        <div class='check'>
+            <div class='header clearfix'>
+                <div class='left'>
+                    <div class='title-row'>
+                        <img src='{$base64}' alt='Company Logo'>
+                        <div style='display:inline-block'>
+                            <h1>{$objCompany->name}</h1>
+                            <h2>RUC: {$rucCompany}</h2>
+                            <h2>Teléfono: {$objParameterTelefono->value}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+			<div class='title-row clearfix' style='border-bottom: 1px solid #eee'>
+				<div class='title'>{$objTMCheckbook["type"]} {$objCheckbook->name}</div>
+				<div class='status'>{$objTMCheckbook["status"]}</div>
+			</div>
+
+            <div class='content'>
+				<div class='container'>
+					<div class='row clearfix'>
+						<div class='field-name'><span>Número de Documento:</span></div>
+						<div class='field-value'><span>{$objTM->transactionNumber}</span></div>
+						<div class='field-name'><span>Fecha de Emisión:</span></div>
+						<div class='field-value'><span>" . (new \DateTime($objTransactionMastser->transactionOn))->format("Y-m-d") ."</span></div>
+					</div>
+					<div class='row clearfix'>
+						<div class='field-name'><span>Numero de Chequera:</span></div>
+						<div class='field-value'><span>". $objCheckbook->chequeNumber ."</span></div>
+						<div class='field-name'><span>Numero de Cheque:</span></div>
+						<div class='field-value'><span>". (!empty($objTM->numberPhone) ? $objTM->numberPhone : "No disponible") ."</span></div>
+					</div>
+					<div class='row clearfix'>
+						<div class='field-name'>Pagar A:</div>
+						<div class='field-value'><span>{$objTM->reference4}</span></div>
+						<div class='field-name'>Monto Total:</div>
+						<div class='field-value'><span>". $objCurrency->simbol ." ".$objTM->amount."</span></div>
+					</div>
+				</div>
+            </div>
+        </div>
+    </body>
+    </html>
+    ";
+
+    return $html;
+}
+
+
