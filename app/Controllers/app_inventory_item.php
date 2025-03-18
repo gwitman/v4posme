@@ -424,7 +424,7 @@ class app_inventory_item extends _BaseController
 
                 $objItem["familyID"] 					= /*inicio get post*/ $this->request->getPost("txtFamilyID");
                 $objItem["itemNumber"] 					= $this->core_web_counter->goNextNumber($companyID,$branchID,"tb_item",0);
-                $objItem["barCode"] 					= /*inicio get post*/ $this->request->getPost("txtBarCode") == "" ? "".$objItem["itemNumber"].""  : /*inicio get post*/ $this->request->getPost("txtBarCode");
+                $objItem["barCode"] 					= /*inicio get post*/ $this->request->getPost("txtBarCode") == "" ? str_replace("ITT", "7777",$objItem["itemNumber"]."")  : /*inicio get post*/ $this->request->getPost("txtBarCode");
                 $objItem["barCode"]						= str_replace(PHP_EOL,",",ltrim(rtrim($objItem["barCode"])));
                 $objItem["barCode"]						= str_replace(",,",",",$objItem["barCode"]);
                 $objItem["barCode"]						= str_replace(["\n\r", "\n", "\r"],"",$objItem["barCode"]);
@@ -759,7 +759,7 @@ class app_inventory_item extends _BaseController
 
                 $objItem["familyID"] 					= /*inicio get post*/ $item["txtFamilyID"];
                 $objItem["itemNumber"] 					= $this->core_web_counter->goNextNumber($companyID,$branchID,"tb_item",0);
-                $objItem["barCode"] 					= /*inicio get post*/ $item["txtBarCode"] == "" ? "".$objItem["itemNumber"].""  : /*inicio get post*/ $item["txtBarCode"];
+                $objItem["barCode"] 					= /*inicio get post*/ $item["txtBarCode"] == "" ? str_replace("ITT", "7777", $objItem["itemNumber"]."")  : /*inicio get post*/ $item["txtBarCode"];
                 $objItem["barCode"]						= str_replace(PHP_EOL,",",ltrim(rtrim($objItem["barCode"])));
                 $objItem["barCode"]						= str_replace(",,",",",$objItem["barCode"]);
                 $objItem["barCode"]						= str_replace(["\n\r", "\n", "\r"],"",$objItem["barCode"]);
@@ -1063,7 +1063,7 @@ class app_inventory_item extends _BaseController
                     //Actualizar Cuenta
                     $objNewItem["inventoryCategoryID"] 			= /*inicio get post*/ $this->request->getPost("txtInventoryCategoryID");
                     $objNewItem["familyID"] 					= /*inicio get post*/ $this->request->getPost("txtFamilyID");
-                    $objNewItem["barCode"] 						= /*inicio get post*/ $this->request->getPost("txtBarCode") == "" ? "".$objOldItem->itemNumber  : /*inicio get post*/ $this->request->getPost("txtBarCode");
+                    $objNewItem["barCode"] 						= /*inicio get post*/ $this->request->getPost("txtBarCode") == "" ? str_replace("ITT", "7777", $objOldItem->itemNumber)  : /*inicio get post*/ $this->request->getPost("txtBarCode");
                     $objNewItem["barCode"]						= str_replace(PHP_EOL,",",ltrim(rtrim($objNewItem["barCode"])));
                     $objNewItem["barCode"]						= str_replace(",,",",",$objNewItem["barCode"]);
                     $objNewItem["barCode"]						= str_replace(["\n\r", "\n", "\r"],"",$objNewItem["barCode"]);
