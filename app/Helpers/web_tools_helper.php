@@ -1013,7 +1013,25 @@ function replaceSimbol($string)
         "[simbol-brocoli]" => "🥦",
         "[simbol-escarola]" => "🥒",
         "[simbol-pimiento]" => "🌶️",
-        "[simbol-zanahoria]" => "🥕"
+        "[simbol-zanahoria]" => "🥕",
+		"[simbol-cine]" => "🎬",
+		"[simbol-television]" => "📺",
+		"[simbol-telefono-movil]" => "📲",
+		"[simbol-bicicleta-hombre]" => "🚴‍♂️",
+		"[simbol-puerta]" => "🚪",
+		"[simbol-viento]" => "💨",
+		"[simbol-chocolate]" => "🍫",
+		"[simbol-megafono]" => "📢",
+		"[simbol-cien]" => "💯",
+		"[simbol-sobre]" => "📩",
+		"[simbol-marcador]" => "📍",
+		"[simbol-exclamacion]" => "❗",
+		"[simbol-a-acento]" => "á",
+		"[simbol-e-acento]" => "é",
+		"[simbol-i-acento]" => "í",
+		"[simbol-o-acento]" => "ó",
+		"[simbol-u-acento]" => "ú"
+
     ];
     
     $string = str_replace(array_keys($emojiMap), array_values($emojiMap), $string);

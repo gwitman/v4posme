@@ -3581,8 +3581,18 @@ class core_web_printer_direct {
 			foreach($dataSetValores["objTransactionMasterDetail"] as $row)
 			{	
 
-
-				$this->printer->text($this->addSpaces(substr($row->itemNumber,4,7), 10) . $this->addSpaces(strtolower(substr($row->itemName,0,15)), 20));
+				$nameProduct = "";
+				
+				if($dataSetValores["objParameterInvoiceUpdateNameInTransactionOnly"] == "true")
+				{
+					$nameProduct = $row->itemNameLog;
+				}
+				else 
+				{
+					$nameProduct = $row->itemName;
+				}
+				
+				$this->printer->text($this->addSpaces(substr($row->itemNumber,4,7), 10) . $this->addSpaces(strtolower(substr($nameProduct,0,50)), 20));
 				$this->printer->text("\n");
 				$this->printer->text(
 						$this->addSpaces(number_format(round($row->quantity,2),2,'.',','), 10) . 

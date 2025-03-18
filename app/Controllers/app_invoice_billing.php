@@ -5170,6 +5170,12 @@ class app_invoice_billing extends _BaseController {
 			$dataView["cedulaCliente"] 					= $dataView["objTransactionMasterInfo"]->referenceClientIdentifier == "" ? $dataView["objCustumer"]->customerNumber :  $dataView["objTransactionMasterInfo"]->referenceClientIdentifier;
 			$dataView["nombreCliente"] 					= $dataView["objTransactionMasterInfo"]->referenceClientName  == "" ? $dataView["objCustumer"]->firstName : $dataView["objTransactionMasterInfo"]->referenceClientName ;
 			$dataView["objStage"]						= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($dataView["objTransactionMaster"]->statusID);
+			
+			
+			$objParameterInvoiceUpdateNameInTransactionOnly				 = $this->core_web_parameter->getParameter("INVOICE_UPDATENAME_IN_TRANSACTION_ONLY",$companyID);
+			$objParameterInvoiceUpdateNameInTransactionOnly				 = $objParameterInvoiceUpdateNameInTransactionOnly->value;	
+			$dataView["objParameterInvoiceUpdateNameInTransactionOnly"]  = $objParameterInvoiceUpdateNameInTransactionOnly;
+			
 			//obtener nombre de impresora por defecto
 			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT",$companyID);
 			$objParameterPrinterName = $objParameterPrinterName->value;
