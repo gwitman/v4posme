@@ -8677,7 +8677,7 @@ function helper_reporte80mmTransactionMasterEmanuel(
 	$dataView = "" 
 )
 {
-    $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
+    $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-logo-micro-finanzaV2.jpg';
     
     $type    = pathinfo($path, PATHINFO_EXTENSION);
     $data    = file_get_contents($path);
@@ -9092,7 +9092,7 @@ function helper_reporte80mmTransactionMasterRegistrada(
                           margin-right:0px;
                         }
                         table{
-                          font-size: x-small;
+                          font-size: medium; /*x-small; small; medium ;  large ; x-large; xx-large; */
                           font-weight: bold;
                           font-family: Consolas, monaco, monospace;
                         }
