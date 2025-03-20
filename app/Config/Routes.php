@@ -1109,6 +1109,8 @@ $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNorm
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmBpn/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmBpn');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1RepuestoCristoRey','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1RepuestoCristoRey');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1RepuestoCristoRey/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1RepuestoCristoRey');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Tenampa','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1Tenampa');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Tenampa/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1Tenampa');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Colirio','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1Colirio');

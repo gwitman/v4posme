@@ -1538,6 +1538,7 @@ class app_inventory_inputunpost extends _BaseController {
 			else
 			{
 				
+				
 				$this->Transaction_Master_Detail_Model->deleteWhereIDNotIn($companyID,$transactionID,$transactionMasterID,$listTMD_ID);
 				
 				if(!empty($arrayListItemID)){
@@ -1789,6 +1790,7 @@ class app_inventory_inputunpost extends _BaseController {
 		}			
 	}
 	function save($mode=""){
+			
 			$mode = helper_SegmentsByIndex($this->uri->getSegments(),1,$mode);	
 	
 			//AUTENTICADO
