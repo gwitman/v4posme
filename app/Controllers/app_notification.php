@@ -2227,7 +2227,7 @@ class app_notification extends _BaseController
 			if($counter <= $mensageByPage)
 			{
 				$phoneNumber 	= clearNumero($customer["phoneNumber"]);
-				$menssage		= replaceSimbol($customer["mensaje"]);
+				$menssage		= $customer["mensaje"];//replaceSimbol($customer["mensaje"]);
 				$rememberID		= $customer["rememberID"];
 				$imagen			= $customer["urlImage"];
 				$mensaje 		= $mensaje."Mensaje No: ".$counter." de ".count($chatSend)."  Al telefono: ".$phoneNumber . " **** Mensaje:" . $menssage. " **** Imagen: ".$imagen."</br></br>";				
@@ -2275,7 +2275,19 @@ class app_notification extends _BaseController
 		if(!empty($chatSendTemp))
 		{
 			$session->set('chatSend', $chatSendTemp);
-			$data["message"]	= $mensaje."<span class='btn btn-info' >Volver a cargar hay mas datos por procesar...</span>";
+			$data["message"]	= $mensaje."<span class='btn btn-danger' >Volver a cargar hay mas datos por procesar...</span>";
+			$data["javascript"]	= "
+										$(document).ready(function() {
+											// Desplazar al final de la página
+											$('html, body').animate({ scrollTop: $(document).height() }, 'slow');
+											
+											// Esperar 5 segundos y recargar la página
+											setTimeout(function() {
+												location.reload();
+											}, 5000);
+										});
+			";
+			
             $data["urlLogin"]  	= base_url();
             $data["urlIndex"]  	= base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . "sendWhatsappDiarioChochoMandado";
             $data["urlBack"]   	= base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . "sendWhatsappDiarioChochoMandado";
@@ -2287,11 +2299,17 @@ class app_notification extends _BaseController
 		else
 		{
 			$session->remove('chatSend');			
-			$data["message"]   = $mensaje."<span class='btn btn-danger' >No hay mas datos cerrar ventana...</span>";
-            $data["urlLogin"]  = base_url();
-            $data["urlIndex"]  = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . "sendWhatsappDiarioChochoMandado";
-            $data["urlBack"]   = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . "sendWhatsappDiarioChochoMandado";
-            $resultView        = view("core_template/message_general_not_ajax", $data);
+			$data["message"]   	= $mensaje."<span class='btn btn-success' >No hay mas datos cerrar ventana...</span>";
+			$data["javascript"]	= "
+										$(document).ready(function() {
+											// Desplazar al final de la página
+											$('html, body').animate({ scrollTop: $(document).height() }, 'slow');
+										});
+			";
+            $data["urlLogin"]  	= base_url();
+            $data["urlIndex"]  	= base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . "sendWhatsappDiarioChochoMandado";
+            $data["urlBack"]   	= base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . "sendWhatsappDiarioChochoMandado";
+            $resultView        	= view("core_template/message_general_not_ajax", $data);
 			echo $resultView;
 		}
 		

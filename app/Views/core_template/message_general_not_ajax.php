@@ -134,5 +134,11 @@
     <script src="<?php echo  APP_URL_RESOURCE_CSS_JS; ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/assets/js/main.js"></script>
 
     <!-- Page JS -->
+	<script>
+	<?php
+		echo $javascript;
+	?>
+	</script>
+	
   </body>
 </html>

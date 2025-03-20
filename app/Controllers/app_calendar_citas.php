@@ -609,6 +609,7 @@ class app_calendar_citas extends _BaseController {
 			
 			//Renderizar Resultado
 			$dataSession["dataViewData"]	= $dataViewData;
+			$dataSession["title"]			= "calendario";
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
 			$dataSession["head"]			= /*--inicio view*/ view('app_calendar_citas/index_head',$dataSession);//--finview

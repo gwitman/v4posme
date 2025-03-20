@@ -9171,7 +9171,21 @@ function helper_reporte80mmTransactionMasterRegistrada(
                             posMe PRO Premium 3.1
                           </td>
                         </tr>
-                                
+                        <tr>
+                          <td colspan='3' style='text-align:center' >
+                            &nbsp;
+                          </td>
+                        </tr>
+						<tr>
+                          <td colspan='3' style='text-align:center' >
+                            &nbsp;
+                          </td>
+                        </tr>
+						<tr>
+                          <td colspan='3' style='text-align:center' >
+                            &nbsp;
+                          </td>
+                        </tr>						
                         
 
                                 
