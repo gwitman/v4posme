@@ -344,34 +344,36 @@ class Transaction_Master_Detail_Model extends Model  {
 	   		
 		$sql = "";
 		$sql = sprintf("select 
-						td.companyID, td.transactionID, td.transactionMasterID, 
-						td.transactionMasterDetailID, td.componentID, td.componentItemID,
-						td.promotionID, td.amount, td.cost, td.quantity, td.discount,
-						td.unitaryAmount, td.unitaryCost, td.unitaryPrice,td.tax1,td.tax2,td.tax3,td.tax4,
-						td.reference1, td.reference2, td.reference3,td.reference4,
-						td.reference5,td.reference6,td.reference7,
-						td.catalogStatusID, td.inventoryStatusID, td.isActive,
-						td.quantityStock, td.quantiryStockInTraffic, td.quantityStockUnaswared, 
-						td.remaingStock, td.expirationDate, td.inventoryWarehouseSourceID, 
-						td.inventoryWarehouseTargetID,i.itemNumber,
-						case 
-							when LOCATE(',',i.barCode) > 1 then 
-								CONCAT(SUBSTRING(i.barCode,1,LOCATE(',',i.barCode)+1),'...') 
-							else 
-								i.barCode 
-						end  as barCode,
-						i.name as itemName,
-						ci.name as unitMeasureName,td.descriptionReference,td.exchangeRateReference,
-						td.lote,td.typePriceID,td.skuCatalogItemID,td.skuQuantity,
-						td.skuQuantityBySku,td.skuFormatoDescription,
-						REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(replace(td.itemNameLog,'\"',''), '\r\n', ''), '\n\r', ''),'\n', ''),'\t','') , '?', '')  as itemNameLog,
-						td.amountCommision,
-						REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(replace(td.itemNameDescriptionLog,'\"',''), '\r\n', ''), '\n\r', ''),'\n', ''),'\t','') , '?', '')   as itemNameDescriptionLog
-						
+							td.companyID, td.transactionID, td.transactionMasterID, 
+							td.transactionMasterDetailID, td.componentID, td.componentItemID,
+							td.promotionID, td.amount, td.cost, td.quantity, td.discount,
+							td.unitaryAmount, td.unitaryCost, td.unitaryPrice,td.tax1,td.tax2,td.tax3,td.tax4,
+							td.reference1, td.reference2, td.reference3,td.reference4,
+							td.reference5,td.reference6,td.reference7,
+							td.catalogStatusID, td.inventoryStatusID, td.isActive,
+							td.quantityStock, td.quantiryStockInTraffic, td.quantityStockUnaswared, 
+							td.remaingStock, td.expirationDate, td.inventoryWarehouseSourceID, 
+							td.inventoryWarehouseTargetID,i.itemNumber,
+							case 
+								when LOCATE(',',i.barCode) > 1 then 
+									CONCAT(SUBSTRING(i.barCode,1,LOCATE(',',i.barCode)+1),'...') 
+								else 
+									i.barCode 
+							end  as barCode,
+							i.name as itemName,
+							ci.name as unitMeasureName,td.descriptionReference,td.exchangeRateReference,
+							td.lote,td.typePriceID,td.skuCatalogItemID,td.skuQuantity,
+							td.skuQuantityBySku,td.skuFormatoDescription,
+							ic.name as categoryName,
+							REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(replace(td.itemNameLog,'\"',''), '\r\n', ''), '\n\r', ''),'\n', ''),'\t','') , '?', '')  as itemNameLog,
+							td.amountCommision,
+							REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(replace(td.itemNameDescriptionLog,'\"',''), '\r\n', ''), '\n\r', ''),'\n', ''),'\t','') , '?', '')   as itemNameDescriptionLog
+							
 						");
 		$sql = $sql.sprintf(" from tb_transaction_master_detail td");
 		$sql = $sql.sprintf(" inner join  tb_item i on td.companyID = i.companyID and td.componentItemID = i.itemID");
 		$sql = $sql.sprintf(" inner join  tb_catalog_item ci on i.unitMeasureID = ci.catalogItemID");
+		$sql = $sql.sprintf(" inner join  tb_item_category ic on i.inventoryCategoryID = ic.inventoryCategoryID");
 		$sql = $sql.sprintf(" where td.companyID = $companyID");
 		$sql = $sql.sprintf(" and td.transactionID = $transactionID");		
 		$sql = $sql.sprintf(" and td.transactionMasterID = $transactionMasterID");		

@@ -8714,7 +8714,7 @@ function helper_reporte80mmTransactionMasterRepuestoCristoRey(
                       <table style='width:100%'>
                         <tr>
                           <td colspan='3' style='text-align:center'>
-                            <img  src='".$base64."' width='110'  >
+                            <img  src='".$base64."' width='140' height='130'  >
                           </td>
                         </tr>
                                 
@@ -8747,7 +8747,11 @@ function helper_reporte80mmTransactionMasterRepuestoCristoRey(
                             ".$objParameterTelefono->value."
                           </td>
                         </tr>
-						
+						<tr>
+                          <td colspan='3' style='text-align:center'>							
+                            &nbsp;
+                          </td>
+                        </tr>
 						<tr>
                           <td colspan='3' style='text-align:center'>
                             COMPROBANTE NO:
@@ -8762,12 +8766,13 @@ function helper_reporte80mmTransactionMasterRepuestoCristoRey(
                                 
                         <tr>
                           <td colspan='3' style='text-align:center'>
-                            FECHA: ".$objTransactionMastser->createdOn."
+                            FECHA: ". date("d/m/Y h:i:s", strtotime($objTransactionMastser->createdOn)) ."
                           </td>
                         </tr>
                                 
                          <tr>
                           <td colspan='3' style='text-align:center'>
+							________________________________
                             &nbsp;
                           </td>
                         </tr>";
@@ -8776,20 +8781,20 @@ function helper_reporte80mmTransactionMasterRepuestoCristoRey(
 		  {      
 			$html	= $html."<tr>
                           <td colspan=''>
-                            Vendedor:
+                            VENDEDOR:
                           </td>
 						  <td colspan='2'>
-                            ". (strpos($userNickName , "@") === false ? $userNickName : substr($userNickName,0,strpos($userNickName , "@") ) )   ."
+                            ". strtoupper((strpos($userNickName , "@") === false ? $userNickName : substr($userNickName,0,strpos($userNickName , "@") ) ))   ."
                           </td>
                         </tr>";
 		  }
 						
           $html	= $html."<tr>
                           <td colspan=''>
-                            Codigo:
+                            CODIGO:
                           </td>
 						  <td colspan='2'>
-                            ".$objEntidadCustomer->customerNumber."
+                            ".strtoupper($objEntidadCustomer->customerNumber)."
                           </td>
                         </tr>";
 			
@@ -8797,10 +8802,10 @@ function helper_reporte80mmTransactionMasterRepuestoCristoRey(
 		  if($causalName != ""){
 			$html	= $html."<tr>
 							<td colspan='1'>
-								Tipo:
+								TIPO:
 							</td>
 							<td colspan='2'>
-								".$causalName."
+								".strtoupper($causalName)."
 							</td>
 						</tr>";
 		  }
@@ -8808,7 +8813,7 @@ function helper_reporte80mmTransactionMasterRepuestoCristoRey(
 			
 		  $html	= $html."<tr>
                           <td colspan='1'>
-                            Estado
+                            ESTADO
                           </td>
 						  <td colspan='2'>
                             ". ($statusName == "CANCELADA" ? "APLICADA" : $statusName ) ."
@@ -8817,7 +8822,7 @@ function helper_reporte80mmTransactionMasterRepuestoCristoRey(
                             
 						<tr>
                           <td colspan='1'>
-                            Moneda:
+                            MONEDA:
                           </td>
 						  <td colspan='2'>
                             ".$objCurrency->simbol."
@@ -8829,7 +8834,7 @@ function helper_reporte80mmTransactionMasterRepuestoCristoRey(
           $html	= $html."
 						<tr>
 						  <td colspan='1'>
-							Cliente:
+							CLIENTE:
                           <td colspan='2'>
                           </td>
                         </tr>
@@ -8850,11 +8855,12 @@ function helper_reporte80mmTransactionMasterRepuestoCristoRey(
 						-->
 						
 						<tr>
-                          <td colspan='3' style='text-align:left'>".$objTransactionMastser->note."</td>
+                          <td colspan='3' style='text-align:left'>".strtoupper($objTransactionMastser->note)."</td>
                         </tr>
                                 
                          <tr>
                           <td colspan='3' style='text-align:center'>
+						    ________________________________
                             &nbsp;
                           </td>
                         </tr>
@@ -8865,6 +8871,7 @@ function helper_reporte80mmTransactionMasterRepuestoCristoRey(
                                 
                          <tr>
                           <td colspan='3' style='text-align:center'>
+							________________________________
                             &nbsp;
                           </td>
                         </tr>
@@ -8941,6 +8948,16 @@ function helper_reporte80mmTransactionMasterRepuestoCristoRey(
                             &nbsp;
                           </td>
                         </tr>
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
 						 <tr>
                           <td colspan='3' style='text-align:center' >
                             _________________
@@ -8980,7 +8997,7 @@ function helper_reporte80mmTransactionMasterRepuestoCristoRey(
                         </tr>
 						<tr>
                           <td colspan='3' style='text-align:center' >
-                            Revise su mercaderia antes de salir. No aceptamos devoluciones
+                            REVISE SU MERCADERIA ANTES DE SALIR. NO ACEPTAMOS DEVOLUCIONES
                           </td>
                         </tr>
 						<tr>
@@ -9003,7 +9020,7 @@ function helper_reporte80mmTransactionMasterRepuestoCristoRey(
 
                         <tr>
                           <td colspan='3' style='text-align:center' >
-                            posMe PRO Premium 3.1
+                            POSME PRO PREMIUM 3.1
                           </td>
                         </tr>
                                 

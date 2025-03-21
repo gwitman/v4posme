@@ -12,7 +12,7 @@
 					var viewName 	= '<?php echo $viewname;?>';
 					let data		= [];
 					
-					debugger;
+					
 					if(multiselect === false)
 					{
                         //obtener valores de cantidad si existe input o select

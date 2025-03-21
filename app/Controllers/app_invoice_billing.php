@@ -7403,10 +7403,14 @@ class app_invoice_billing extends _BaseController {
 		    $row = array("CANT", 'PREC', "TOTAL");
 		    array_push($detalle,$row);
 		    
-		    
+		    // Ordenar el array por el campo barCode (ascendente)
+			usort($datView["objTMD"], function($a, $b) {
+				return strcmp($a->barCode, $b->barCode);
+			});
+
 			foreach($datView["objTMD"] as $detail_){
 				$row = array(
-					$detail_->itemName. " ". strtolower($detail_->skuFormatoDescription)."-comand-new-row",  				
+					strtoupper($detail_->barCode). " ". strtoupper($detail_->categoryName)."-comand-new-row",  				
 					"none",
 					"none"
 				);

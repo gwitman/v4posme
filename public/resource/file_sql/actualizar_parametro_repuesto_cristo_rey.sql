@@ -1673,14 +1673,14 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8204-2539" 
+	tb_company_parameter.value = "TEL: 8204-2539  2713-7822" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8204-2539" 
+	tb_company_parameter.value = "TEL: 8204-2539  2713-7822" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1688,14 +1688,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Frente a Semáforos de Enabas, Costado Sureste." 
+	tb_company_parameter.value = "FRENTE A SEMAFOROS DE ENABAS, COSTADO SURESTE." 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Repuesto Cristo Rey' , address = 'Frente a Semáforos de Enabas, Costado Sureste.' ,
+	NAME = 'Auto Repuestos Cristo Rey' , address = 'FRENTE A SEMAFOROS DE ENABAS, COSTADO SURESTE.' ,
 	flavorID = 721 /*usuarioID*/,type='default'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
