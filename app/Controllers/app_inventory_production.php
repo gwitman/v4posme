@@ -618,36 +618,14 @@ class app_inventory_production extends _BaseController
 
 				foreach($objListWarehouseSourceID as $WarehouseSourceID)
 				{
-					$query			= "CALL pr_inventory_create_transaction_otheroutput_by_production(?,?,?,?,?,?,?);";
-					$objData		= $this->Bd_Model->executeRender(
-					$query,
-					[
-						$companyID,
-						$branchID,
-						$userID,
-						$transactionID,
-						$transactionMasterID,
-						$WarehouseSourceID,
-						0
-						]
-					);
+					$query			= "CALL pr_inventory_create_transaction_otheroutput_by_production(".$companyID.",".$branchID.",".$userID.",".$transactionID.",".$transactionMasterID.",".$WarehouseSourceID.");";
+					$objData		= $this->Bd_Model->executeRender($query,NULL);
 				}
 				
 				foreach($objListWarehouseTargetID as $WarehouseTargetID)
 				{
-					$query			= "CALL pr_inventory_create_transaction_otherinput_by_production(?,?,?,?,?,?,?);";
-					$objData		= $this->Bd_Model->executeRender(
-					$query,
-					[
-						$companyID,
-						$branchID,
-						$userID,
-						$transactionID,
-						$transactionMasterID,
-						$WarehouseTargetID,
-						0
-						]
-					);
+					$query			= "CALL pr_inventory_create_transaction_otherinput_by_production(".$companyID.",".$branchID.",".$userID.",".$transactionID.",".$transactionMasterID.",".$WarehouseTargetID.");";
+					$objData		= $this->Bd_Model->executeRender($query,NULL);
 				}
 
 				$this->Transaction_Master_Model->update_app_posme($companyID, $transactionID, $transactionMasterID, $objTMNew);
