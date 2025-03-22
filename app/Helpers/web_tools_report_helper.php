@@ -21684,3 +21684,250 @@ function helper_reporteA4Checkbook(
 }
 
 
+function helper_reporteA4ProductionOrder(
+    $objProductionOrder,						
+    $objCompany, 					
+    $objParameterTelefono, 			
+    $objParameterLogo, 				
+    $rucCompany, 	
+	$objTM,				
+    $objWorkflowStage, 		
+    $objTMD, 			
+	$objCurrency,		
+    $objRequestEmployeeName,
+	$objSenderEmployeeName 			
+) {
+    $path = PATH_FILE_OF_APP_ROOT . '/img/logos/' . $objParameterLogo->value;
+
+    $type = pathinfo($path, PATHINFO_EXTENSION);
+    $data = file_get_contents($path);
+    $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+    $numberDocument = str_replace("FAC", "SERIE \"A\" RECIBO No ", $objTM->transactionNumber);
+
+	$html = "
+	<!DOCTYPE html>
+	<html lang='en'>
+	<head>
+		<meta charset='UTF-8' />
+		<meta name='viewport' content='width=device-width, initial-scale=1.0' />
+		<style>
+			@page {
+				size: A4;
+				margin: 25px;
+			}
+			body {
+				font-family: Arial, sans-serif;
+				font-size: 12px;
+				color: #000;
+			}
+			.header, .footer {
+				text-align: center;
+				margin-bottom: 20px;
+			}
+			.header img {
+				max-width: 200px;
+			}
+			.header h1 {
+				font-size: 18px;
+				margin: 5px 0;
+			}
+			.header h2 {
+				font-size: 14px;
+				margin: 5px 0;
+			}
+			.content {
+				margin: 20px 0;
+			}
+			.content table {
+				width: 100%;
+				border-collapse: collapse;
+				margin-bottom: 20px;
+				border: 1px solid #000;
+			}
+			.content table td {
+				padding: 8px;
+				border-right: 1px solid #000;
+			}
+			.content table td:last-child {
+				border-right: none;
+			}
+			.content table tr:last-child td {
+				border-bottom: none;
+			}
+			.content table th {
+				padding: 8px;
+				border: 1px solid #000;
+				background-color: #f2f2f2;
+			}
+			.footer {
+				font-size: 10px;
+				margin-top: 20px;
+			}
+			.text-center {
+				text-align: center;
+			}
+			.text-right {
+				text-align: right;
+			}
+			.text-left {
+				text-align: left;
+			}
+			.bold {
+				font-weight: bold;
+			}
+			.col-30 {
+				width: 30%;
+			}
+			.col-70 {
+				width: 70%;
+			}
+			.col-60 {
+				width: 60% !important;
+			}
+			.col-40 {
+				width: 40% !important;
+			}
+		</style>
+	</head>
+	<body>
+		<div class='header'>
+			<img src='{$base64}' alt='Company Logo'>
+			<h1>{$objCompany->name}</h1>
+			<h2>RUC: {$rucCompany}</h2>
+			<h2>Teléfono: {$objParameterTelefono->value}</h2>
+			<h2>Dirección: {$objCompany->address}</h2>
+		</div>
+
+		<div class='content'>
+			<!-- Transaction Info Table -->
+			<table>
+				<thead>
+					<tr>
+						<th class='text-left col-30 style='border-right:none'> ORDEN DE PRODUCCION</th>
+						<th class='text-right col-70 style='border-left:none'>". $objWorkflowStage ."</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td class='bold'>Fecha:</td>
+						<td>". explode(" ", $objTM->transactionOn)[0] ."</td>
+					</tr>
+					<tr>
+						<td class='bold'>Orden de Produccion:</td>
+						<td>". $objTM->transactionNumber ."</td>
+					</tr>
+					<tr>
+						<td class='bold'>Solicitado Por:</td>
+						<td>". $objRequestEmployeeName ."</td>
+					</tr>
+					<tr>
+						<td class='bold'>Elaborado Por:</td>
+						<td>". $objSenderEmployeeName ."</td>
+					</tr>
+					<tr>
+						<td class='bold'>Monto Total:</td>
+						<td>".$objCurrency->simbol . " " . $objTM->amount ."</td>
+					</tr>
+					<tr>
+						<td class='bold'>Referencia 1:</td>
+						<td>". $objTM->reference1 ."</td>
+					</tr>
+					<tr>
+						<td class='bold'>Referencia 2:</td>
+						<td>". $objTM->reference2 ."</td>
+					</tr>
+					<tr>
+						<td class='bold'>Referencia 3:</td>
+						<td>". $objTM->reference3 ."</td>
+					</tr>
+					<tr>
+						<td class='bold'>Comentario:</td>
+						<td>". $objTM->note ."</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<!-- Input Items Table -->
+			<table>
+				<thead>
+					<tr>
+						<th colspan='7'>Insumos</th>
+					</tr>
+					<tr>
+						<th>Código</th>
+						<th>Nombre</th>
+						<th>Cantidad</th>
+						<th>Costo Unitario</th>
+						<th>Costo Total</th>
+						<th>Almacén Origen</th>
+						<th>Producto Destino</th>
+					</tr>
+				</thead>
+				<tbody>";
+					if ($objTMD) {
+						foreach ($objTMD as $detail) {
+							if ($detail->itemWarehouseSourceID != null) {
+								$html .= "
+								<tr>
+									<td>{$detail->itemNumber}</td>
+									<td>{$detail->itemName}</td>
+									<td class='text-right'>{$detail->itemQuantity}</td>
+									<td class='text-right'>{$detail->itemUnitaryCost}</td>
+									<td class='text-right'>{$detail->itemTotalCost}</td>
+									<td>{$detail->itemWarehouseSource}</td>
+									<td>". $detail->itemDestinationNumber . " | " . $detail->itemDestinationName ."</td>
+								</tr>
+								";
+							}
+						}
+					}
+			$html .="	</tbody>
+			</table>
+
+			<!-- Output Items Table -->
+			<table>
+				<thead>
+					<tr>
+						<th colspan='6'>Productos Finales</th>
+					</tr>
+					<tr>
+						<th>Código</th>
+						<th>Nombre</th>
+						<th>Cantidad</th>
+						<th>Costo Unitario</th>
+						<th>Costo Total</th>
+						<th>Almacén Destino</th>
+					</tr>
+				</thead>
+				<tbody>";
+					if ($objTMD) {
+						foreach ($objTMD as $detail) {
+							if ($detail->itemWarehouseTargetID != null) {
+								$html .= "
+								<tr>
+									<td>{$detail->itemNumber}</td>
+									<td>{$detail->itemName}</td>
+									<td class='text-right'>{$detail->itemQuantity}</td>
+									<td class='text-right'>{$detail->itemUnitaryCost}</td>
+									<td class='text-right'>{$detail->itemTotalCost}</td>
+									<td>{$detail->itemWarehouseTarget}</td>
+								</tr>
+								";
+							}
+						}
+					}
+				$html .="	</tbody>
+
+				</tbody>
+			</table>
+		</div>
+
+		<div class='footer'>
+			<p class='text-center'>Este documento es generado automáticamente.</p>
+		</div>
+	</body>
+	</html>
+	";
+
+    return $html;
+}
