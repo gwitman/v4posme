@@ -1008,6 +1008,15 @@ $routes->match(['get','post'],'app_inventory_transferoutput/index','app_inventor
 $routes->match(['get','post'],'app_inventory_transferoutput/index/(:any)','app_inventory_transferoutput::index');
 $routes->match(['get','post'],'app_inventory_transferoutput/add_masinformacion','app_inventory_transferoutput::add_masinformacion');
 $routes->match(['get','post'],'app_inventory_transferoutput/add_masinformacion/(:any)','app_inventory_transferoutput::add_masinformacion');
+$routes->match(['get','post'],'app_inventory_production/index','app_inventory_production::index');
+$routes->match(['get','post'],'app_inventory_production/save','app_inventory_production::save');
+$routes->match(['get','post'],'app_inventory_production/save/(:any)','app_inventory_production::save');
+$routes->match(['get','post'],'app_inventory_production/add','app_inventory_production::add');
+$routes->match(['get','post'],'app_inventory_production/edit','app_inventory_production::edit');
+$routes->match(['get','post'],'app_inventory_production/edit/(:any)','app_inventory_production::edit');
+$routes->match(['get','post'],'app_inventory_production/delete','app_inventory_production::delete');
+$routes->match(['get','post'],'app_inventory_production/searchTransactionMaster','app_inventory_production::searchTransactionMaster');
+$routes->match(['get','post'],'app_inventory_production/viewPrinterFormatoA4/(:any)','app_inventory_production::viewPrinterFormatoA4');
 $routes->match(['get','post'],'app_invoice_api/getItemCantidad','app_invoice_api::getItemCantidad');
 $routes->match(['get','post'],'app_invoice_api/getItemCantidad/(:any)','app_invoice_api::getItemCantidad');
 $routes->match(['get','post'],'app_invoice_api/getValidExistencia','app_invoice_api::getValidExistencia');

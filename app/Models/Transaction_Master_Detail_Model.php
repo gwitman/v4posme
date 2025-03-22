@@ -334,6 +334,40 @@ class Transaction_Master_Detail_Model extends Model  {
 			$sql = $sql.sprintf(" AND tmd.componentID = $componentID");
 			$sql = $sql.sprintf(" AND tmd.isActive =  1");
 		}
+
+		if($componentID == 112 /*Orden de Produccion: tb_transaction_master_production_orden*/)
+		{
+			$sql = sprintf("SELECT 
+					tmd.companyID,
+					tmd.transactionID,
+					tmd.transactionMasterID,
+					tmd.transactionMasterDetailID,
+					tmd.componentID,
+					i1.itemID		AS itemID, 
+					i1.itemNumber 	AS itemNumber, 
+					i1.`name`		AS itemName,
+					tmd.quantity	AS itemQuantity,
+					tmd.unitaryCost	AS itemUnitaryCost,
+					tmd.amount 		AS itemTotalCost,
+					w1.warehouseID 	AS itemWarehouseSourceID,
+					w1.`name`		AS itemWarehouseSource,
+					i2.itemID		AS itemDestinationID, 
+					i2.itemNumber 	AS itemDestinationNumber, 
+					i2.`name`		AS itemDestinationName,
+					w2.warehouseID 	AS itemWarehouseTargetID,
+					w2.`name`		AS itemWarehouseTarget");
+			$sql = $sql.sprintf(" FROM tb_transaction_master_detail tmd");
+			$sql = $sql.sprintf(" LEFT JOIN tb_item i1 ON tmd.componentItemID = i1.itemID");
+			$sql = $sql.sprintf(" LEFT JOIN tb_item i2 ON tmd.skuCatalogItemID = i2.itemID");
+			$sql = $sql.sprintf(" LEFT JOIN tb_warehouse w1 ON tmd.inventoryWarehouseSourceID = w1.warehouseID");
+			$sql = $sql.sprintf(" LEFT JOIN tb_warehouse w2 ON w2.warehouseID = tmd.inventoryWarehouseTargetID");
+			$sql = $sql.sprintf(" WHERE tmd.transactionID = $transactionID"); 
+			$sql = $sql.sprintf(" AND tmd.transactionMasterID = $transactionMasterID");
+			$sql = $sql.sprintf(" AND tmd.isActive = 1 ");
+			$sql = $sql.sprintf(" AND tmd.componentID = $componentID");
+			$sql = $sql.sprintf(" ORDER BY itemDestinationName ASC, itemName ASC");
+
+		}
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
