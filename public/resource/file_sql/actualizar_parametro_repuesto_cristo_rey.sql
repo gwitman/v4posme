@@ -1733,7 +1733,7 @@ update tb_role set isActive = 1 where roleID in (
 
 /*tipo de cambio de dolares a cordoba*/
 update tb_exchange_rate set 
-	ratio = 36 
+	ratio = 36.60 
 where 
 	currencyID = 2
 	and targetCurrencyID = 1; 
@@ -1741,7 +1741,7 @@ where
 	
 /*tipo de cambio de dolares a cordoba*/
 update tb_exchange_rate set 
-	ratio = 0.027777 
+	ratio = 0.0273224043715847
 where 
 	currencyID = 1
 	and targetCurrencyID = 2; 

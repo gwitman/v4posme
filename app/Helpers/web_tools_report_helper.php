@@ -8827,7 +8827,16 @@ function helper_reporte80mmTransactionMasterRepuestoCristoRey(
 						  <td colspan='2'>
                             ".$objCurrency->simbol."
                           </td>
-                        </tr>";
+                        </tr>
+						<tr>
+                          <td colspan='1'>
+                            T/C:
+                          </td>
+						  <td colspan='2'>
+                            ".round(1/$objTransactionMastser->exchangeRate,2)."
+                          </td>
+                        </tr>
+						";
 			
 		
 						
@@ -8847,16 +8856,10 @@ function helper_reporte80mmTransactionMasterRepuestoCristoRey(
 
 						
 						<!--
-                        <tr>
-                          <td colspan='3'>
-                            Tipo de Cambio: ".$tipoCambio."
-                          </td>
-                        </tr>
-						-->
-						
 						<tr>
                           <td colspan='3' style='text-align:left'>".strtoupper($objTransactionMastser->note)."</td>
                         </tr>
+						-->
                                 
                          <tr>
                           <td colspan='3' style='text-align:center'>
