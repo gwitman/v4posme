@@ -17,6 +17,7 @@ curl https://posme.net/v4posme/demo/public/core_merge/merge_of_posme_merge_to_po
 curl https://posme.net/v4posme/distri_carvajal/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/ebenezer/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/emanuel/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/emanuel_pizza/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/eve3/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/exceso/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/farma_ticuan/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
@@ -34,10 +35,12 @@ curl https://posme.net/v4posme/miranda/public/core_merge/merge_of_posme_merge_to
 curl https://posme.net/v4posme/miranda_comida/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/nica_verde/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/pablo/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/pasteleria_lizzette/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/pollos_adrian/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/posme/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/public/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/real_state/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/repuesto_cristo_rey/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/repuesto_purito/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/shalom/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/tenampa/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
