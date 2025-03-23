@@ -1325,356 +1325,42 @@ class app_inventory_inputunpost extends _BaseController {
 			
 			if($archivoCSV != ".csv")
 			{
-				$this->Transaction_Master_Detail_Model->deleteWhereTM($companyID,$transactionID,$transactionMasterID);
-				
-				//Leer archivo
-				$path 	= PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$transactionMasterID;			
-				$path 	= $path.'/'.$archivoCSV;
-				
-				if (!file_exists($path))
-				throw new \Exception("NO EXISTE EL ARCHIVO PARA IMPORTAR LOS PRECIOS");
-				
-				$objParameter	= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT",$companyID);
-				$characterSplie = $objParameter->value;
-				
-				$this->csvreader->separator = $characterSplie;
-				$table 			= $this->csvreader->parse_file($path); 
-				$fila 			= 0;
-				if($table){
-					
-					if (count($table) > 201){	
-						throw new \Exception("Archivo con mas de 200 registros");
-					}
-					
-					if (count($table) >= 1){	
-
-						
-						if(!array_key_exists("Codigo",$table[0])){
-							throw new \Exception("Columna 'Codigo' no existe en el archivo .csv");
-						}
-						if(!array_key_exists("Nombre",$table[0])){
-							throw new \Exception("Columna 'Nombre' no existe en el archivo .csv");
-						}
-						if(!array_key_exists("Cantidad",$table[0])){
-							throw new \Exception("Columna 'Cantidad' no existe en el archivo .csv");
-						}
-						if(!array_key_exists("Costo",$table[0])){
-							throw new \Exception("Columna 'Costo' no existe en el archivo .csv");
-						}
-						if(!array_key_exists("Precio",$table[0])){
-							throw new \Exception("Columna 'Costo' no existe en el archivo .csv");
-						}
-						if(!array_key_exists("Lote",$table[0])){
-							throw new \Exception("Columna 'Lote' no existe en el archivo .csv");
-						}
-						if(!array_key_exists("Vencimiento",$table[0])){
-							throw new \Exception("Columna 'Vencimiento' no existe en el archivo .csv");
-						}
-					}
-					
-					
-					foreach ($table as $row) 
-					{	
-						$fila++;
-						
-						if(count($row) == 0 )
-							continue;
-						
-						$codigo 		= $row["Codigo"];
-						$description 	= $row["Nombre"];
-						$cantidad 		= ltrim(rtrim($row["Cantidad"]));
-						$costo 			= ltrim(rtrim($row["Costo"]));			
-						$lote 			= $row["Lote"];
-						$vencimiento	= $row["Vencimiento"];
-						$precio			= ltrim(rtrim($row["Precio"]));
-						$objItem		= $this->Item_Model->get_rowByCode($companyID,$codigo);	
-						
-						if(!$objItem) {
-							$objItem		= $this->Item_Model->get_rowByCodeBarra($companyID,$codigo);		
-							
-						}				
-						
-						
-						//Agregar productos nuevos
-						if(!$objItem) 
-						{
-							$controllerApi 				= new app_inventory_item();
-							$controllerApi->initController($this->request, $this->response, $this->logger);									
-							$objItemNewApi 					= [
-										'txtCallback' 				=> 'fnCollback',
-										'txtComando' 				=> 'false',
-										'txtInventoryCategoryID'	=> $this->Itemcategory_Model->getByCompany($companyID)[0]->inventoryCategoryID,
-										'txtName'					=> $description,
-										'txtFamilyID'				=> $this->core_web_catalog->getCatalogAllItem("tb_item","familyID",$companyID)[0]->catalogItemID,
-										'txtBarCode'				=> $codigo,
-										'txtDescription'			=> $description,
-										'txtUnitMeasureID'			=> $this->core_web_catalog->getCatalogAllItem("tb_item","unitMeasureID",$companyID)[0]->catalogItemID,
-										'txtDisplayID'				=> $this->core_web_catalog->getCatalogAllItem("tb_item","displayID",$companyID)[0]->catalogItemID,
-										'txtCapacity'				=> 1,
-										'txtDisplayUnitMeasureID'	=> $this->core_web_catalog->getCatalogAllItem("tb_item","displayUnitMeasureID",$companyID)[0]->catalogItemID,
-										'txtDefaultWarehouseID'		=> $objTMNew["targetWarehouseID"],
-										'txtQuantityMax'			=> 1000,
-										'txtQuantityMin'			=> 0,
-										'txtReference1'				=> '-',
-										'txtReference2'				=> '-',
-										'txtReference3'				=> '-',
-										'txtStatusID'				=> $this->core_web_workflow->getWorkflowInitStage("tb_item","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID,
-										'txtIsPerishable'			=> 0,
-										'txtIsServices'				=> 0,
-										'txtIsInvoiceQuantityZero'	=> true,
-										'txtIsInvoice'				=> true,
-										'txtFactorBox'				=> 1,
-										'txtFactorProgram'			=> 1,
-										'txtCurrencyID'				=> $objTMNew["currencyID"],
-										'txtQuantity'				=> 0,
-										'txtCost'					=> 0,
-										
-										'txtDetailWarehouseID'		=> [$objTMNew["targetWarehouseID"]],
-										'txtDetailQuantityMax'		=> [1000],
-										'txtDetailQuantityMin'		=> [0],
-										
-										'txtDetailSkuCatalogItemID'	=> [$this->core_web_catalog->getCatalogAllItem("tb_item","unitMeasureID",$companyID)[0]->catalogItemID],
-										'txtDetailSkuValue'			=> [1],
-										
-										'txtDetailTypePriceValue'	=> [0,0,0,0,0],
-										'txtDetailTypeComisionValue'=> [0,0,0,0,0],
-										'txtDetailTypePriceID'		=> [
-																			$this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID)[0]->catalogItemID,
-																			$this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID)[1]->catalogItemID,
-																			$this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID)[2]->catalogItemID,
-																			$this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID)[3]->catalogItemID,
-																			$this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID)[4]->catalogItemID
-																	   ],
-										'txtDetailListPriceID'		=> [
-																			$this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID)->value,
-																			$this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID)->value,
-																			$this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID)->value,
-																			$this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID)->value,
-																			$this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID)->value
-																	   ],
-										'txtRealStateEmail'			=> "",
-										'txtRealStatePhone'			=> "",
-										'txtRealStateLinkYoutube'	=> "",
-										'txtRealStateLinkPaginaWeb'	=> "",
-										'txtRealStateLinkPhontos'	=> "",
-										'txtRealStateLinkGoogleMaps'=> "",
-										'txtRealStateLinkOther'				=> "",
-										'txtRealStateStyleKitchen'			=> "",
-										'txtRealStateReferenceUbicacion'	=> "",
-										'txtRealStateReferenceCondominio'	=> "",
-										'txtRealStateReferenceZone'			=> "",
-										'txtRealStateGerenciaExclusive'		=> "",
-										
-							];
-							
-							
-							$objItemNewApiID	= $controllerApi->save("apinew", $objItemNewApi, $dataSession);							
-							$objItem			= $this->Item_Model->get_rowByPK($companyID,$objItemNewApiID);
-							if(!$objItem)
-							{
-								//throw new \Exception("El siguiente producto no existe en inventario: ". $codigo);							
-								echo "El siguiente producto no existe en inventario: ". $codigo."</br>";
-							}
-							
-						}
-							
-						
-						if(!$objItem)
-							continue;
-						
-						$transactionMasterDetailID				= 0;					
-						$itemID 								= $objItem->itemID;
-						$quantity 								= helper_StringToNumber(ltrim(rtrim($cantidad)));
-						$cost 									= helper_StringToNumber(ltrim(rtrim($costo)));	
-						
-						//Ingrear al provedor si no existe. 
-						$objProviderItemModel = $this->Provideritem_Model->getByPK($companyID,$itemID,$objTMNew["entityID"]);						
-						if(!$objProviderItemModel){
-							
-							$objPIMNew["companyID"]	= $companyID;
-							$objPIMNew["branchID"]	= $branchID;
-							$objPIMNew["entityID"]	= $objTMNew["entityID"];
-							$objPIMNew["itemID"]	= $itemID;
-							$this->Provideritem_Model->insert_app_posme($objPIMNew);
-						}
-						
-						//Nuevo Detalle
-						if($transactionMasterDetailID == 0 ){						
-							$objTMD 								= array();
-							$objTMD["companyID"] 					= $companyID;
-							$objTMD["transactionID"] 				= $transactionID;
-							$objTMD["transactionMasterID"] 			= $transactionMasterID;
-							$objTMD["componentID"]					= $objComponentItem->componentID;
-							$objTMD["componentItemID"] 				= $itemID;//itemID
-							$objTMD["quantity"] 					= $quantity;
-							$objTMD["unitaryCost"]					= $cost;
-							$objTMD["cost"] 						= $objTMD["quantity"] * $objTMD["unitaryCost"];
-							$objTMD["unitaryAmount"]				= $precio;
-							$objTMD["amount"] 						= 0;
-							$objTMD["discount"]						= 0;
-							$objTMD["unitaryPrice"]					= $precio;
-							$objTMD["promotionID"] 					= 0;
-							$objTMD["lote"]							= $lote;
-							$objTMD["expirationDate"]				= $vencimiento == "" ? NULL:  $vencimiento;
-							$objTMD["reference3"]					= '0|0';
-							$objTMD["reference4"]					= '';//si se carga mediatne un excel no exsite el reference4, por que los valores de exencion de codigo, se deben de modificar, en la pantalla propiamente
-							$objTMD["catalogStatusID"]				= 0;
-							$objTMD["inventoryStatusID"]			= 0;
-							$objTMD["isActive"]						= 1;
-							$objTMD["quantityStock"]				= 0;
-							$objTMD["quantiryStockInTraffic"]		= 0;
-							$objTMD["quantityStockUnaswared"]		= 0;
-							$objTMD["remaingStock"]					= 0;						
-							$objTMD["inventoryWarehouseSourceID"]	= $objTMNew["sourceWarehouseID"];
-							$objTMD["inventoryWarehouseTargetID"]	= $objTMNew["targetWarehouseID"];
-							$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
-							
-						}
-					}
-				}
-					
+				$this->updateElementDetailByFile(
+					$companyID,
+					$transactionID,
+					$transactionMasterID,
+					$listTMD_ID,
+					$arrayListItemID,
+					$arrayListQuantity,
+					$arrayListCost,
+					$arrayListLote,
+					$arrayListVencimiento,
+					$arrayPrice,
+					$arrayPrice2,
+					$arrayPrice3,
+					$arrayReference4TransactionMasterDetail,
+					$archivoCSV
+				);
 				
 			}
 			else
 			{
-				
-				
-				$this->Transaction_Master_Detail_Model->deleteWhereIDNotIn($companyID,$transactionID,$transactionMasterID,$listTMD_ID);
-				
-				if(!empty($arrayListItemID)){
-					foreach($arrayListItemID as $key => $value){
-						$transactionMasterDetailID				= $listTMD_ID[$key];	
-						$objItem 								= $this->Item_Model->get_rowByPK($objTM->companyID,$value);
-						$objItemInactive						= $this->Item_Model->get_rowByPKAndInactive($objTM->companyID,$value);
-						
-						$itemID 								= $value;
-						$quantity 								= helper_StringToNumber(ltrim(rtrim($arrayListQuantity[$key])));
-						$cost 									= helper_StringToNumber(ltrim(rtrim($arrayListCost[$key])));
-						$lote 									= $arrayListLote[$key];
-						$vencimiento							= $arrayListVencimiento[$key];
-						$unitaryPrice 							= ltrim(rtrim($arrayPrice[$key]));
-						$unitaryPrice2 							= helper_RequestGetValue(ltrim(rtrim($arrayPrice2[$key])),0);
-						$unitaryPrice3 							= helper_RequestGetValue(ltrim(rtrim($arrayPrice3[$key])),0);
-						$barCodeExtende 						= $arrayReference4TransactionMasterDetail[$key];
-						 
-						if(!$objItem && $objItemInactive)
-						{
-							throw new \Exception("Revisar el producto :" .$objItemInactive->itemNumber. " bar code (".$objItemInactive->barCode.") revisar configuracion no se encuentra en sistema...");
-						}
-						
-						//Actualizar Codigo de barra
-						if($barCodeExtende != "")
-						{
-							if(strpos($objItem->barCode,$barCodeExtende) === false)
-							{
-								$dataNewItem 			= null;
-								$dataNewItem["barCode"] = $objItem->barCode.",". str_replace(",,",",", str_replace(PHP_EOL,",",  ltrim(rtrim($barCodeExtende)) )) 	;
-								$this->Item_Model->update_app_posme($objItem->companyID,$objItem->itemID,$dataNewItem);
-							}
-						}
-						
-						//Actualizar tipo de precio 1 ---> 154 ---->PUBLICO
-						if($unitaryPrice > 0){
-							
-							$typePriceID					= 154;
-							$dataUpdatePrice["price"] 		= $unitaryPrice;
-							$dataUpdatePrice["percentage"] 	= 
-															$objItem->cost == 0 ? 
-																($unitaryPrice / 100) : 
-																(((100 * $unitaryPrice) / $objItem->cost) - 100);
-							$objPrice = $this->Price_Model->update_app_posme($companyID,$listPriceID,$itemID,$typePriceID,$dataUpdatePrice);
-						}
-						
-						//Actualizar tipo de precio 2 ---> 155 ---->POR MAYOR
-						if($unitaryPrice2 > 0){
-							$typePriceID					= 155;
-							$dataUpdatePrice["price"] 		= $unitaryPrice2;
-							$dataUpdatePrice["percentage"] 	= 
-															$objItem->cost == 0 ? 
-																($unitaryPrice2 / 100) : 
-																(((100 * $unitaryPrice2) / $objItem->cost) - 100);
-							$objPrice = $this->Price_Model->update_app_posme($companyID,$listPriceID,$itemID,$typePriceID,$dataUpdatePrice);
-						}
-						
-						//Actualizar tipo de precio 3 ---> 156 ---->CREDITO
-						if($unitaryPrice3 > 0 ){							
-							$typePriceID					= 156;
-							$dataUpdatePrice["price"] 		= $unitaryPrice3;
-							$dataUpdatePrice["percentage"] 	= 
-															$objItem->cost == 0 ? 
-																($unitaryPrice3 / 100) : 
-																(((100 * $unitaryPrice3) / $objItem->cost) - 100);
-							$objPrice = $this->Price_Model->update_app_posme($companyID,$listPriceID,$itemID,$typePriceID,$dataUpdatePrice);
-						}
-					
-						//Ingrear al provedor si no existe. 
-						$objProviderItemModel = $this->Provideritem_Model->getByPK($companyID,$itemID,$objTMNew["entityID"]);						
-						if(!$objProviderItemModel){
-							$objPIMNew["companyID"]	= $companyID;
-							$objPIMNew["branchID"]	= $branchID;
-							$objPIMNew["entityID"]	= $objTMNew["entityID"];
-							$objPIMNew["itemID"]	= $itemID;
-							$this->Provideritem_Model->insert_app_posme($objPIMNew);
-						}
-						
-						
-						//Nuevo Detalle
-						if($transactionMasterDetailID == 0){						
-							$objTMD 								= array();
-							$objTMD["companyID"] 					= $companyID;
-							$objTMD["transactionID"] 				= $transactionID;
-							$objTMD["transactionMasterID"] 			= $transactionMasterID;
-							$objTMD["componentID"]					= $objComponentItem->componentID;
-							$objTMD["componentItemID"] 				= $itemID;//itemID
-							$objTMD["quantity"] 					= $quantity;
-							$objTMD["unitaryCost"]					= $cost;
-							$objTMD["cost"] 						= $objTMD["quantity"] * $objTMD["unitaryCost"];
-							
-							$objTMD["unitaryAmount"]				= $unitaryPrice;
-							$objTMD["amount"] 						= $objTMD["unitaryCost"] * $objTMD["quantity"];
-							$objTMD["discount"]						= 0;
-							$objTMD["unitaryPrice"]					= $unitaryPrice;
-							$objTMD["promotionID"] 					= 0;
-							
-							$objTMD["lote"]							= $lote;
-							$objTMD["expirationDate"]				= $vencimiento == "" ? NULL:  $vencimiento;
-							$objTMD["reference3"]					= $unitaryPrice2."|".$unitaryPrice3;
-							$objTMD["reference4"]					= str_replace(",,",",", str_replace(PHP_EOL,",",  ltrim(rtrim($barCodeExtende)) ));
-							$objTMD["catalogStatusID"]				= 0;
-							$objTMD["inventoryStatusID"]			= 0;
-							$objTMD["isActive"]						= 1;
-							$objTMD["quantityStock"]				= 0;
-							$objTMD["quantiryStockInTraffic"]		= 0;
-							$objTMD["quantityStockUnaswared"]		= 0;
-							$objTMD["remaingStock"]					= 0;							
-							$objTMD["inventoryWarehouseSourceID"]	= $objTMNew["sourceWarehouseID"];
-							$objTMD["inventoryWarehouseTargetID"]	= $objTMNew["targetWarehouseID"];;						
-							$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
-							
-						}
-						//Editar Detalle
-						else{
-							$objTMD 									= $this->Transaction_Master_Detail_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID,$transactionMasterDetailID);						
-							$objTMDNew["quantity"] 						= $quantity;
-							$objTMDNew["unitaryCost"]					= $cost;
-							$objTMDNew["unitaryPrice"]					= $unitaryPrice;
-							$objTMDNew["amount"] 						= $cost * $quantity;
-							$objTMDNew["reference3"]					= $unitaryPrice2."|".$unitaryPrice3;
-							$objTMDNew["reference4"]					= str_replace(",,",",", str_replace(PHP_EOL,",",  ltrim(rtrim($barCodeExtende)) ));
-							
-							
-							$objTMDNew["unitaryAmount"]					= $unitaryPrice;
-							$objTMDNew["cost"] 							= $objTMDNew["quantity"] * $objTMDNew["unitaryCost"];
-							$objTMDNew["lote"]							= $lote;
-							$objTMDNew["expirationDate"]				= $vencimiento == "" ? NULL:  $vencimiento;
-							$objTMDNew["inventoryWarehouseSourceID"]	= $objTMNew["sourceWarehouseID"];
-							$objTMDNew["inventoryWarehouseTargetID"]	= $objTMNew["targetWarehouseID"];
-							$this->Transaction_Master_Detail_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$transactionMasterDetailID,$objTMDNew);						
-						}
-						
-						
-					}
-				}
+				$this->updateElementDetailByPost(
+					$companyID,
+					$transactionID,
+					$transactionMasterID,
+					$listTMD_ID,
+					$arrayListItemID,
+					$arrayListQuantity,
+					$arrayListCost,
+					$arrayListLote,
+					$arrayListVencimiento,
+					$arrayPrice,
+					$arrayPrice2,
+					$arrayPrice3,
+					$arrayReference4TransactionMasterDetail,
+					$archivoCSV
+				);
 			}
 			
 			//Aplicar el Documento?
@@ -1789,6 +1475,406 @@ class app_inventory_inputunpost extends _BaseController {
 		    echo $resultView;
 		}			
 	}
+	
+	
+	function updateElementDetailByPost(
+		$companyID,
+		$transactionID,
+		$transactionMasterID,
+		$listTMD_ID,
+		$arrayListItemID,
+		$arrayListQuantity,
+		$arrayListCost,
+		$arrayListLote,
+		$arrayListVencimiento,
+		$arrayPrice,
+		$arrayPrice2,
+		$arrayPrice3,
+		$arrayReference4TransactionMasterDetail,
+		$archivoCSV
+	)
+	{
+		$this->Transaction_Master_Detail_Model->deleteWhereIDNotIn($companyID,$transactionID,$transactionMasterID,$listTMD_ID);
+				
+		if(!empty($arrayListItemID)){
+			foreach($arrayListItemID as $key => $value){
+				$transactionMasterDetailID				= $listTMD_ID[$key];	
+				$objItem 								= $this->Item_Model->get_rowByPK($objTM->companyID,$value);
+				$objItemInactive						= $this->Item_Model->get_rowByPKAndInactive($objTM->companyID,$value);
+				
+				$itemID 								= $value;
+				$quantity 								= helper_StringToNumber(ltrim(rtrim($arrayListQuantity[$key])));
+				$cost 									= helper_StringToNumber(ltrim(rtrim($arrayListCost[$key])));
+				$lote 									= $arrayListLote[$key];
+				$vencimiento							= $arrayListVencimiento[$key];
+				$unitaryPrice 							= ltrim(rtrim($arrayPrice[$key]));
+				$unitaryPrice2 							= helper_RequestGetValue(ltrim(rtrim($arrayPrice2[$key])),0);
+				$unitaryPrice3 							= helper_RequestGetValue(ltrim(rtrim($arrayPrice3[$key])),0);
+				$barCodeExtende 						= $arrayReference4TransactionMasterDetail[$key];
+				 
+				if(!$objItem && $objItemInactive)
+				{
+					throw new \Exception("Revisar el producto :" .$objItemInactive->itemNumber. " bar code (".$objItemInactive->barCode.") revisar configuracion no se encuentra en sistema...");
+				}
+				
+				//Actualizar Codigo de barra
+				if($barCodeExtende != "")
+				{
+					if(strpos($objItem->barCode,$barCodeExtende) === false)
+					{
+						$dataNewItem 			= null;
+						$dataNewItem["barCode"] = $objItem->barCode.",". str_replace(",,",",", str_replace(PHP_EOL,",",  ltrim(rtrim($barCodeExtende)) )) 	;
+						$this->Item_Model->update_app_posme($objItem->companyID,$objItem->itemID,$dataNewItem);
+					}
+				}
+				
+				//Actualizar tipo de precio 1 ---> 154 ---->PUBLICO
+				if($unitaryPrice > 0){
+					
+					$typePriceID					= 154;
+					$dataUpdatePrice["price"] 		= $unitaryPrice;
+					$dataUpdatePrice["percentage"] 	= 
+													$objItem->cost == 0 ? 
+														($unitaryPrice / 100) : 
+														(((100 * $unitaryPrice) / $objItem->cost) - 100);
+					$objPrice = $this->Price_Model->update_app_posme($companyID,$listPriceID,$itemID,$typePriceID,$dataUpdatePrice);
+				}
+				
+				//Actualizar tipo de precio 2 ---> 155 ---->POR MAYOR
+				if($unitaryPrice2 > 0){
+					$typePriceID					= 155;
+					$dataUpdatePrice["price"] 		= $unitaryPrice2;
+					$dataUpdatePrice["percentage"] 	= 
+													$objItem->cost == 0 ? 
+														($unitaryPrice2 / 100) : 
+														(((100 * $unitaryPrice2) / $objItem->cost) - 100);
+					$objPrice = $this->Price_Model->update_app_posme($companyID,$listPriceID,$itemID,$typePriceID,$dataUpdatePrice);
+				}
+				
+				//Actualizar tipo de precio 3 ---> 156 ---->CREDITO
+				if($unitaryPrice3 > 0 ){							
+					$typePriceID					= 156;
+					$dataUpdatePrice["price"] 		= $unitaryPrice3;
+					$dataUpdatePrice["percentage"] 	= 
+													$objItem->cost == 0 ? 
+														($unitaryPrice3 / 100) : 
+														(((100 * $unitaryPrice3) / $objItem->cost) - 100);
+					$objPrice = $this->Price_Model->update_app_posme($companyID,$listPriceID,$itemID,$typePriceID,$dataUpdatePrice);
+				}
+			
+				//Ingrear al provedor si no existe. 
+				$objProviderItemModel = $this->Provideritem_Model->getByPK($companyID,$itemID,$objTMNew["entityID"]);						
+				if(!$objProviderItemModel){
+					$objPIMNew["companyID"]	= $companyID;
+					$objPIMNew["branchID"]	= $branchID;
+					$objPIMNew["entityID"]	= $objTMNew["entityID"];
+					$objPIMNew["itemID"]	= $itemID;
+					$this->Provideritem_Model->insert_app_posme($objPIMNew);
+				}
+				
+				
+				//Nuevo Detalle
+				if($transactionMasterDetailID == 0){						
+					$objTMD 								= array();
+					$objTMD["companyID"] 					= $companyID;
+					$objTMD["transactionID"] 				= $transactionID;
+					$objTMD["transactionMasterID"] 			= $transactionMasterID;
+					$objTMD["componentID"]					= $objComponentItem->componentID;
+					$objTMD["componentItemID"] 				= $itemID;//itemID
+					$objTMD["quantity"] 					= $quantity;
+					$objTMD["unitaryCost"]					= $cost;
+					$objTMD["cost"] 						= $objTMD["quantity"] * $objTMD["unitaryCost"];
+					
+					$objTMD["unitaryAmount"]				= $unitaryPrice;
+					$objTMD["amount"] 						= $objTMD["unitaryCost"] * $objTMD["quantity"];
+					$objTMD["discount"]						= 0;
+					$objTMD["unitaryPrice"]					= $unitaryPrice;
+					$objTMD["promotionID"] 					= 0;
+					
+					$objTMD["lote"]							= $lote;
+					$objTMD["expirationDate"]				= $vencimiento == "" ? NULL:  $vencimiento;
+					$objTMD["reference3"]					= $unitaryPrice2."|".$unitaryPrice3;
+					$objTMD["reference4"]					= str_replace(",,",",", str_replace(PHP_EOL,",",  ltrim(rtrim($barCodeExtende)) ));
+					$objTMD["catalogStatusID"]				= 0;
+					$objTMD["inventoryStatusID"]			= 0;
+					$objTMD["isActive"]						= 1;
+					$objTMD["quantityStock"]				= 0;
+					$objTMD["quantiryStockInTraffic"]		= 0;
+					$objTMD["quantityStockUnaswared"]		= 0;
+					$objTMD["remaingStock"]					= 0;							
+					$objTMD["inventoryWarehouseSourceID"]	= $objTMNew["sourceWarehouseID"];
+					$objTMD["inventoryWarehouseTargetID"]	= $objTMNew["targetWarehouseID"];;						
+					$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
+					
+				}
+				//Editar Detalle
+				else{
+					$objTMD 									= $this->Transaction_Master_Detail_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID,$transactionMasterDetailID);						
+					$objTMDNew["quantity"] 						= $quantity;
+					$objTMDNew["unitaryCost"]					= $cost;
+					$objTMDNew["unitaryPrice"]					= $unitaryPrice;
+					$objTMDNew["amount"] 						= $cost * $quantity;
+					$objTMDNew["reference3"]					= $unitaryPrice2."|".$unitaryPrice3;
+					$objTMDNew["reference4"]					= str_replace(",,",",", str_replace(PHP_EOL,",",  ltrim(rtrim($barCodeExtende)) ));
+					
+					
+					$objTMDNew["unitaryAmount"]					= $unitaryPrice;
+					$objTMDNew["cost"] 							= $objTMDNew["quantity"] * $objTMDNew["unitaryCost"];
+					$objTMDNew["lote"]							= $lote;
+					$objTMDNew["expirationDate"]				= $vencimiento == "" ? NULL:  $vencimiento;
+					$objTMDNew["inventoryWarehouseSourceID"]	= $objTMNew["sourceWarehouseID"];
+					$objTMDNew["inventoryWarehouseTargetID"]	= $objTMNew["targetWarehouseID"];
+					$this->Transaction_Master_Detail_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$transactionMasterDetailID,$objTMDNew);						
+				}
+				
+				
+			}
+		}
+		
+	}
+	
+	function updateElementDetailByFile(
+		$companyID,
+		$transactionID,
+		$transactionMasterID,
+		$listTMD_ID,
+		$arrayListItemID,
+		$arrayListQuantity,
+		$arrayListCost,
+		$arrayListLote,
+		$arrayListVencimiento,
+		$arrayPrice,
+		$arrayPrice2,
+		$arrayPrice3,
+		$arrayReference4TransactionMasterDetail,
+		$archivoCSV
+	)
+	{
+		$this->Transaction_Master_Detail_Model->deleteWhereTM($companyID,$transactionID,$transactionMasterID);
+				
+		//Leer archivo
+		$path 	= PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$transactionMasterID;			
+		$path 	= $path.'/'.$archivoCSV;
+		
+		if (!file_exists($path))
+		throw new \Exception("NO EXISTE EL ARCHIVO PARA IMPORTAR LOS PRECIOS");
+		
+		$objParameter				= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT",$companyID);
+		$characterSplie 			= $objParameter->value;
+		$objParameterPriceDefault	= $this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID);
+		$listPriceID 				= $objParameterPriceDefault->value;
+		
+		$this->csvreader->separator = $characterSplie;
+		$table 			= $this->csvreader->parse_file($path); 
+		$fila 			= 0;
+		if($table){
+			
+			//if (count($table) > 7000){	
+			//	throw new \Exception("Archivo con mas de 200 registros");
+			//}
+			
+			if (count($table) >= 1){	
+
+				
+				if(!array_key_exists("Codigo",$table[0])){
+					throw new \Exception("Columna 'Codigo' no existe en el archivo .csv");
+				}
+				if(!array_key_exists("Nombre",$table[0])){
+					throw new \Exception("Columna 'Nombre' no existe en el archivo .csv");
+				}
+				if(!array_key_exists("Cantidad",$table[0])){
+					throw new \Exception("Columna 'Cantidad' no existe en el archivo .csv");
+				}
+				if(!array_key_exists("Costo",$table[0])){
+					throw new \Exception("Columna 'Costo' no existe en el archivo .csv");
+				}
+				if(!array_key_exists("Precio",$table[0])){
+					throw new \Exception("Columna 'Costo' no existe en el archivo .csv");
+				}
+				if(!array_key_exists("Lote",$table[0])){
+					throw new \Exception("Columna 'Lote' no existe en el archivo .csv");
+				}
+				if(!array_key_exists("Vencimiento",$table[0])){
+					throw new \Exception("Columna 'Vencimiento' no existe en el archivo .csv");
+				}
+			}
+			
+			
+			foreach ($table as $row) 
+			{	
+				$fila++;
+				
+				if(count($row) == 0 )
+					continue;
+				
+				$codigo 		= $row["Codigo"];
+				$description 	= $row["Nombre"];
+				$cantidad 		= ltrim(rtrim($row["Cantidad"]));
+				$costo 			= ltrim(rtrim($row["Costo"]));			
+				$lote 			= $row["Lote"];
+				$vencimiento	= $row["Vencimiento"];
+				$precio			= ltrim(rtrim($row["Precio"]));
+				$objItem		= $this->Item_Model->get_rowByCode($companyID,$codigo);	
+				
+				if(!$objItem) {
+					$objItem		= $this->Item_Model->get_rowByCodeBarra($companyID,$codigo);		
+					
+				}				
+				
+				
+				//Agregar productos nuevos
+				if(!$objItem) 
+				{
+					$controllerApi 				= new app_inventory_item();
+					$controllerApi->initController($this->request, $this->response, $this->logger);									
+					$objItemNewApi 					= [
+								'txtCallback' 				=> 'fnCollback',
+								'txtComando' 				=> 'false',
+								'txtInventoryCategoryID'	=> $this->Itemcategory_Model->getByCompany($companyID)[0]->inventoryCategoryID,
+								'txtName'					=> $description,
+								'txtFamilyID'				=> $this->core_web_catalog->getCatalogAllItem("tb_item","familyID",$companyID)[0]->catalogItemID,
+								'txtBarCode'				=> $codigo,
+								'txtDescription'			=> $description,
+								'txtUnitMeasureID'			=> $this->core_web_catalog->getCatalogAllItem("tb_item","unitMeasureID",$companyID)[0]->catalogItemID,
+								'txtDisplayID'				=> $this->core_web_catalog->getCatalogAllItem("tb_item","displayID",$companyID)[0]->catalogItemID,
+								'txtCapacity'				=> 1,
+								'txtDisplayUnitMeasureID'	=> $this->core_web_catalog->getCatalogAllItem("tb_item","displayUnitMeasureID",$companyID)[0]->catalogItemID,
+								'txtDefaultWarehouseID'		=> $objTMNew["targetWarehouseID"],
+								'txtQuantityMax'			=> 1000,
+								'txtQuantityMin'			=> 0,
+								'txtReference1'				=> '-',
+								'txtReference2'				=> '-',
+								'txtReference3'				=> '-',
+								'txtStatusID'				=> $this->core_web_workflow->getWorkflowInitStage("tb_item","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID,
+								'txtIsPerishable'			=> 0,
+								'txtIsServices'				=> 0,
+								'txtIsInvoiceQuantityZero'	=> true,
+								'txtIsInvoice'				=> true,
+								'txtFactorBox'				=> 1,
+								'txtFactorProgram'			=> 1,
+								'txtCurrencyID'				=> $objTMNew["currencyID"],
+								'txtQuantity'				=> 0,
+								'txtCost'					=> 0,
+								
+								'txtDetailWarehouseID'		=> [$objTMNew["targetWarehouseID"]],
+								'txtDetailQuantityMax'		=> [1000],
+								'txtDetailQuantityMin'		=> [0],
+								
+								'txtDetailSkuCatalogItemID'	=> [$this->core_web_catalog->getCatalogAllItem("tb_item","unitMeasureID",$companyID)[0]->catalogItemID],
+								'txtDetailSkuValue'			=> [1],
+								
+								'txtDetailTypePriceValue'	=> [0,0,0,0,0],
+								'txtDetailTypeComisionValue'=> [0,0,0,0,0],
+								'txtDetailTypePriceID'		=> [
+																	$this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID)[0]->catalogItemID,
+																	$this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID)[1]->catalogItemID,
+																	$this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID)[2]->catalogItemID,
+																	$this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID)[3]->catalogItemID,
+																	$this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID)[4]->catalogItemID
+															   ],
+								'txtDetailListPriceID'		=> [
+																	$this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID)->value,
+																	$this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID)->value,
+																	$this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID)->value,
+																	$this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID)->value,
+																	$this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID)->value
+															   ],
+								'txtRealStateEmail'			=> "",
+								'txtRealStatePhone'			=> "",
+								'txtRealStateLinkYoutube'	=> "",
+								'txtRealStateLinkPaginaWeb'	=> "",
+								'txtRealStateLinkPhontos'	=> "",
+								'txtRealStateLinkGoogleMaps'=> "",
+								'txtRealStateLinkOther'				=> "",
+								'txtRealStateStyleKitchen'			=> "",
+								'txtRealStateReferenceUbicacion'	=> "",
+								'txtRealStateReferenceCondominio'	=> "",
+								'txtRealStateReferenceZone'			=> "",
+								'txtRealStateGerenciaExclusive'		=> "",
+								
+					];
+					
+					
+					$objItemNewApiID	= $controllerApi->save("apinew", $objItemNewApi, $dataSession);							
+					$objItem			= $this->Item_Model->get_rowByPK($companyID,$objItemNewApiID);
+					if(!$objItem)
+					{
+						throw new \Exception("El siguiente producto no existe en inventario: ". $codigo."");
+					}
+					
+				}
+					
+				
+				if(!$objItem)
+					continue;
+				
+				$transactionMasterDetailID				= 0;					
+				$itemID 								= $objItem->itemID;
+				$quantity 								= helper_StringToNumber(ltrim(rtrim($cantidad)));
+				$cost 									= helper_StringToNumber(ltrim(rtrim($costo)));	
+				
+				//Ingrear al provedor si no existe. 
+				$objProviderItemModel = $this->Provideritem_Model->getByPK($companyID,$itemID,$objTMNew["entityID"]);						
+				if(!$objProviderItemModel){
+					
+					$objPIMNew["companyID"]	= $companyID;
+					$objPIMNew["branchID"]	= $branchID;
+					$objPIMNew["entityID"]	= $objTMNew["entityID"];
+					$objPIMNew["itemID"]	= $itemID;
+					$this->Provideritem_Model->insert_app_posme($objPIMNew);
+				}
+				
+				//Actualizar tipo de precio 1 ---> 154 ---->PUBLICO
+				if($precio > 0){
+					
+					$typePriceID					= 154;
+					$dataUpdatePrice["price"] 		= $precio;
+					$dataUpdatePrice["percentage"] 	= 
+													$objItem->cost == 0 ? 
+														($precio / 100) : 
+														(((100 * $precio) / $objItem->cost) - 100);
+					$objPrice = $this->Price_Model->update_app_posme($companyID,$listPriceID,$itemID,$typePriceID,$dataUpdatePrice);
+				}
+				
+				
+				
+				//Nuevo Detalle
+				if($transactionMasterDetailID == 0 ){						
+					$objTMD 								= array();
+					$objTMD["companyID"] 					= $companyID;
+					$objTMD["transactionID"] 				= $transactionID;
+					$objTMD["transactionMasterID"] 			= $transactionMasterID;
+					$objTMD["componentID"]					= $objComponentItem->componentID;
+					$objTMD["componentItemID"] 				= $itemID;//itemID
+					$objTMD["quantity"] 					= $quantity;
+					$objTMD["unitaryCost"]					= $cost;
+					$objTMD["cost"] 						= $objTMD["quantity"] * $objTMD["unitaryCost"];
+					$objTMD["unitaryAmount"]				= $precio;
+					$objTMD["amount"] 						= $cost * $precio;
+					$objTMD["discount"]						= 0;
+					$objTMD["unitaryPrice"]					= $precio;
+					$objTMD["promotionID"] 					= 0;
+					$objTMD["lote"]							= $lote;
+					$objTMD["expirationDate"]				= $vencimiento == "" ? NULL:  $vencimiento;
+					$objTMD["reference3"]					= '0|0';
+					$objTMD["reference4"]					= '';//si se carga mediatne un excel no exsite el reference4, por que los valores de exencion de codigo, se deben de modificar, en la pantalla propiamente
+					$objTMD["catalogStatusID"]				= 0;
+					$objTMD["inventoryStatusID"]			= 0;
+					$objTMD["isActive"]						= 1;
+					$objTMD["quantityStock"]				= 0;
+					$objTMD["quantiryStockInTraffic"]		= 0;
+					$objTMD["quantityStockUnaswared"]		= 0;
+					$objTMD["remaingStock"]					= 0;						
+					$objTMD["inventoryWarehouseSourceID"]	= $objTMNew["sourceWarehouseID"];
+					$objTMD["inventoryWarehouseTargetID"]	= $objTMNew["targetWarehouseID"];
+					$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
+					
+				}
+			}
+		}
+				
+	}
+	
 	function save($mode=""){
 			
 			$mode = helper_SegmentsByIndex($this->uri->getSegments(),1,$mode);	
