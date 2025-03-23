@@ -1295,8 +1295,14 @@ class app_inventory_inputunpost extends _BaseController {
 			$objTMNew["amount"]						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtTotal"));
 			$objTMNew["isTemplate"] 				= is_null(/*inicio get post*/ $this->request->getPost("txtIsTemplate")) ? "0" : /*inicio get post*/ $this->request->getPost("txtIsTemplate");
 			
-			$db=db_connect();
-			$db->transStart();
+			/*****************************
+			///Las transacciones no se usan en esta pantalla con el objetivo de qeu se puedan importar muchos item
+			///
+			///
+			*****************************/
+			//$db=db_connect();
+			//$db->transStart();
+			
 			//El Estado solo permite editar el workflow
 			if($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_inputunpost","statusID",$objTM->statusID,COMMAND_EDITABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID)){
 				$objTMNew								= array();
@@ -1326,6 +1332,10 @@ class app_inventory_inputunpost extends _BaseController {
 			if($archivoCSV != ".csv")
 			{
 				$this->updateElementDetailByFile(
+					$dataSession,
+					$branchID,
+					$roleID,
+					$objTMNew,
 					$companyID,
 					$transactionID,
 					$transactionMasterID,
@@ -1346,6 +1356,10 @@ class app_inventory_inputunpost extends _BaseController {
 			else
 			{
 				$this->updateElementDetailByPost(
+					$dataSession,
+					$branchID,
+					$roleID,
+					$objTMNew,
 					$companyID,
 					$transactionID,
 					$transactionMasterID,
@@ -1448,16 +1462,25 @@ class app_inventory_inputunpost extends _BaseController {
 			}
 			
 			
-			if($db->transStatus() !== false){
-				$db->transCommit();						
-				$this->core_web_notification->set_message(false,SUCCESS);
-				$this->response->redirect(base_url()."/".'app_inventory_inputunpost/edit/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID);
-			}
-			else{
-				$db->transRollback();						
-				$this->core_web_notification->set_message(true,$this->db->_error_message());
-				$this->response->redirect(base_url()."/".'app_inventory_inputunpost/add');	
-			}
+			/*****************************
+			///Las transacciones no se usan en esta pantalla con el objetivo de qeu se puedan importar muchos item
+			///
+			///
+			*****************************/			
+			//if($db->transStatus() !== false){
+			//	$db->transCommit();						
+			//	$this->core_web_notification->set_message(false,SUCCESS);
+			//	$this->response->redirect(base_url()."/".'app_inventory_inputunpost/edit/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID);
+			//}
+			//else{
+			//	$db->transRollback();						
+			//	$this->core_web_notification->set_message(true,$this->db->_error_message());
+			//	$this->response->redirect(base_url()."/".'app_inventory_inputunpost/add');	
+			//}
+			$this->core_web_notification->set_message(false,SUCCESS);
+			$this->response->redirect(base_url()."/".'app_inventory_inputunpost/edit/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID);
+			
+			
 		}
 		catch(\Exception $ex){
 				
@@ -1478,6 +1501,10 @@ class app_inventory_inputunpost extends _BaseController {
 	
 	
 	function updateElementDetailByPost(
+		$dataSession,
+		$branchID,
+		$roleID,
+		$objTMNew,
 		$companyID,
 		$transactionID,
 		$transactionMasterID,
@@ -1495,12 +1522,14 @@ class app_inventory_inputunpost extends _BaseController {
 	)
 	{
 		$this->Transaction_Master_Detail_Model->deleteWhereIDNotIn($companyID,$transactionID,$transactionMasterID,$listTMD_ID);
-				
+		$objParameterPriceDefault	= $this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID);
+		$listPriceID 				= $objParameterPriceDefault->value;
+		
 		if(!empty($arrayListItemID)){
 			foreach($arrayListItemID as $key => $value){
 				$transactionMasterDetailID				= $listTMD_ID[$key];	
-				$objItem 								= $this->Item_Model->get_rowByPK($objTM->companyID,$value);
-				$objItemInactive						= $this->Item_Model->get_rowByPKAndInactive($objTM->companyID,$value);
+				$objItem 								= $this->Item_Model->get_rowByPK($companyID,$value);
+				$objItemInactive						= $this->Item_Model->get_rowByPKAndInactive($companyID,$value);
 				
 				$itemID 								= $value;
 				$quantity 								= helper_StringToNumber(ltrim(rtrim($arrayListQuantity[$key])));
@@ -1634,6 +1663,10 @@ class app_inventory_inputunpost extends _BaseController {
 	}
 	
 	function updateElementDetailByFile(
+		$dataSession,
+		$branchID,
+		$roleID,
+		$objTMNew,
 		$companyID,
 		$transactionID,
 		$transactionMasterID,
@@ -1653,6 +1686,16 @@ class app_inventory_inputunpost extends _BaseController {
 		$this->Transaction_Master_Detail_Model->deleteWhereTM($companyID,$transactionID,$transactionMasterID);
 				
 		//Leer archivo
+		$objComponent		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_inputunpost");
+		if(!$objComponent)
+		throw new \Exception("EL COMPONENTE 'tb_transaction_master_inputunpost' NO EXISTE...");
+	
+		$objComponentItem						= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+		if(!$objComponentItem)
+		throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+			
+			
+		
 		$path 	= PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$transactionMasterID;			
 		$path 	= $path.'/'.$archivoCSV;
 		
