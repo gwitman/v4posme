@@ -1,4 +1,5 @@
-<div id="calendario"></div>
+<div id="calendario" >
+</div>
 
 
 <!-- Modal para agregar eventos -->

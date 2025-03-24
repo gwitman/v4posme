@@ -162,7 +162,8 @@ class Remember_Model extends Model  {
             r.title,
             r.description,	
             r.createdOn,
-            r.tagID
+            r.tagID,
+			'yellow' as color
         from 
             tb_remember r 
             inner join tb_workflow_stage sr on 
@@ -183,7 +184,8 @@ class Remember_Model extends Model  {
             'PROFORMA' AS title,
             tm.note AS description,	
             tm.nextVisit AS createdOn,
-            0  AS tagID
+            0  AS tagID,
+			'yellow' as color
         from 
             tb_transaction_master tm 
             inner join tb_workflow_stage st on 
@@ -202,7 +204,8 @@ class Remember_Model extends Model  {
             'CONSULTAS' AS title,
             tm.note AS description,	
             tm.nextVisit AS createdOn,
-            0  AS tagID
+            0  AS tagID,
+			'yellow' as color
         from 
             tb_transaction_master tm 
             inner join tb_workflow_stage st on 
@@ -222,7 +225,8 @@ class Remember_Model extends Model  {
             'TASK' AS title,
             tm.note AS description,	
             tm.nextVisit AS createdOn,
-            0  AS tagID
+            0  AS tagID,
+			'yellow' as color
         from 
             tb_transaction_master tm 
             inner join tb_workflow_stage st on 
@@ -248,7 +252,8 @@ class Remember_Model extends Model  {
             r.title,
             r.description,	
             r.createdOn,
-            r.tagID
+            r.tagID,
+			'blue' as color
         from 
             tb_remember r 
             inner join tb_workflow_stage sr on 
@@ -268,7 +273,8 @@ class Remember_Model extends Model  {
             'PROFORMA' AS title,
             tm.note AS description,	
             tm.nextVisit AS createdOn,
-            0  AS tagID
+            0  AS tagID,
+			'green' as color
         from 
             tb_transaction_master tm 
             inner join tb_workflow_stage st on 
@@ -287,7 +293,8 @@ class Remember_Model extends Model  {
             'CONSULTAS' AS title,
             tm.note AS description,	
             tm.nextVisit AS createdOn,
-            0  AS tagID
+            0  AS tagID,
+			'red' as color
         from 
             tb_transaction_master tm 
             inner join tb_workflow_stage st on 
@@ -307,7 +314,8 @@ class Remember_Model extends Model  {
             'TASK' AS title,
             tm.note AS description,	
             tm.nextVisit AS createdOn,
-            0  AS tagID
+            0  AS tagID,
+			'yellow' as color
         from 
             tb_transaction_master tm 
             inner join tb_workflow_stage st on 

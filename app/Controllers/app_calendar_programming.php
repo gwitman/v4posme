@@ -172,7 +172,8 @@ class app_calendar_programming extends _BaseController
                     'id'    => $row->rememberID,
                     'title' => $row->title,
                     'start' => $row->createdOn,
-                    'url'   => $row->url
+                    'url'   => $row->url,
+					'color' => $row->color
                 ];
             }
             return $this->response->setJSON($events);
