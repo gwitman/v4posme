@@ -3,12 +3,12 @@
 
     $(document).ready(function () {
         fnWaitOpen();
-        var calendarEl = document.getElementById('calendario');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth', // Vista mensual
-			height: 500, // Establece la altura en píxeles
-            locale: 'es', // Español
-            themeSystem: 'bootstrap',
+        var calendarEl 	= document.getElementById('calendario');
+        var calendar 	= new FullCalendar.Calendar(calendarEl, {
+            initialView: 	'dayGridMonth', // Vista mensual
+			height: 		600, // Establece la altura en píxeles
+            locale: 		'es', // Español
+            themeSystem: 	'bootstrap',
             customButtons: {
                 btnAdd: {
                     text: 'Agregar',
@@ -31,14 +31,14 @@
                     click: function (){
                         let view = calendar.view;
                         if (view.type === 'timeGridDay'){
-                            let currentStart = view.currentStart;
-                            let mes = currentStart.getMonth()+1;
-                            let date = currentStart.getFullYear() + "-" + mes + "-"+ currentStart.getDate();
+                            let currentStart 	= view.currentStart;
+                            let mes 			= currentStart.getMonth()+1;
+                            let date 			= currentStart.getFullYear() + "-" + mes + "-"+ currentStart.getDate();
                             $('#eventModal').modal('hide');
                             fnWaitOpen();
-                            let a = document.createElement("a");
-                            a.href = '<?= base_url()?>/app_calendar_programming/imprimirEventos?date='+date;
-                            a.download = "eventos_" + date + ".pdf";
+                            let a 			= document.createElement("a");
+                            a.href 			= '<?= base_url()?>/app_calendar_programming/imprimirEventos?date='+date;
+                            a.download 		= "eventos_" + date + ".pdf";
                             document.body.appendChild(a);
                             a.click();
                             document.body.removeChild(a);
@@ -48,24 +48,24 @@
                 }
             },
             headerToolbar: {
-                left: 'prevYear,nextYear,prev,next today btnAdd btnPrint',
+                left: 	'prevYear,nextYear,prev,next today btnAdd btnPrint',
                 center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay,multiMonthYear'
+                right: 	'dayGridMonth,timeGridWeek,timeGridDay,multiMonthYear'
             },
             buttonText: {
-                today: 'Hoy',
-                month: 'Mes',
-                week: 'Semana',
-                day: 'Día',
-                list: 'Lista',
-                year: 'Año'
+                today: 	'Hoy',
+                month: 	'Mes',
+                week: 	'Semana',
+                day: 	'Día',
+                list: 	'Lista',
+                year: 	'Año'
             },
             events: function(info, successCallback, failureCallback) {
                 $.ajax({
-                    url: '<?= APP_URL_RESOURCE_CSS_JS ?>/app_calendar_programming/events',
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
+                    url: 		'<?= APP_URL_RESOURCE_CSS_JS ?>/app_calendar_programming/events',
+                    method: 	'GET',
+                    dataType: 	'json',
+                    success: 	function(data) {
                         successCallback(data); // Pasa los eventos a FullCalendar
                         fnWaitClose();
                     },
@@ -91,12 +91,12 @@
         // Evento submit del formulario
         $('#save').click(function (e) {
             e.preventDefault();
-            let eventTitle = $('#eventTitle').val().trim();
-            let eventDate = $('#eventDate').val().trim();
-            let eventTime = $('#eventTime').val().trim();
+            let eventTitle 	= $('#eventTitle').val().trim();
+            let eventDate 	= $('#eventDate').val().trim();
+            let eventTime 	= $('#eventTime').val().trim();
             let eventDescripcion = $('#eventDescripcion').val().trim();
-            let tagID = $('#txtTagID').val();
-            let id = $('#eventId').val();
+            let tagID 		= $('#txtTagID').val();
+            let id 			= $('#eventId').val();
 
             if (validateForm(eventTitle,eventDescripcion, eventDate, eventTime, tagID)){
                 return;
@@ -105,23 +105,23 @@
             let fullDateTime = eventTime ? `${eventDate}T${eventTime}:00` : eventDate; // Formato correcto
 
             let eventData = {
-                id: id ? id : null, // Si hay ID, es una actualización
-                title: eventTitle,
-                start: fullDateTime,
-                tagID: tagID,
-                descripcion: eventDescripcion
+                id: id ? id : 	null, // Si hay ID, es una actualización
+                title: 			eventTitle,
+                start: 			fullDateTime,
+                tagID:			tagID,
+                descripcion: 	eventDescripcion
             };
 
             let url = id ? 'save/edit' : 'save/new'; // Si hay ID, actualizar
             fnWaitOpen();
             $('#eventModal').modal('hide'); // Cerrar modal
             $.ajax({
-                url: url,
-                type: 'POST',
-                contentType: 'application/json',
-                dataType: 'json', // Especificar que se espera JSON como respuesta
-                processData: false, // No procesar datos automáticamente
-                data: JSON.stringify(eventData),
+                url: 			url,
+                type: 			'POST',
+                contentType: 	'application/json',
+                dataType: 		'json', // Especificar que se espera JSON como respuesta
+                processData: 	false, // No procesar datos automáticamente
+                data: 			JSON.stringify(eventData),
                 success: function (response) {
                     if (response.status === "success") {
                         calendar.refetchEvents();
@@ -144,12 +144,12 @@
             fnWaitOpen();
             $('#eventModal').modal('hide');
             $.ajax({
-                url: 'delete',
-                type: 'POST',
-                contentType: 'application/json',
-                dataType: 'json',
-                processData: false,
-                data: JSON.stringify(eventData),
+                url: 		 	'delete',
+                type: 		 	'POST',
+                contentType: 	'application/json',
+                dataType: 		'json',
+                processData: 	false,
+                data: 			JSON.stringify(eventData),
                 success: function (response) {
                     if (response.status === "success") {
                         calendar.refetchEvents();
@@ -160,14 +160,14 @@
         });
 
         $('#printEvent').click(function (){
-            let id = $('#eventId').val();
+            let id 		= $('#eventId').val();
             if (!id) return;
-            let idevent= id;
+            let idevent	= id;
             $('#eventModal').modal('hide');
             fnWaitOpen();
-            let a = document.createElement("a");
-            a.href = '<?= base_url()?>/app_calendar_programming/imprimirEvento?idevent='+idevent;
-            a.download = "evento_" + idevent + ".pdf";
+            let a 		= document.createElement("a");
+            a.href 		= '<?= base_url()?>/app_calendar_programming/imprimirEvento?idevent='+idevent;
+            a.download 	= "evento_" + idevent + ".pdf";
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -186,8 +186,8 @@
                 fnWaitOpen();
                 $('#eventId').val(event.id);
                 $.ajax({
-                    dataType: 'json',
-                    url: 'find/'+event.id,
+                    dataType: 	'json',
+                    url: 		'find/'+event.id,
                     success: function (response) {
                         $('#eventDescripcion').val(response.description);
                         $('#eventTitle').val(response.title);
@@ -239,10 +239,6 @@
             if (!eventDate) {
                 showError("#eventDate", "La fecha del evento es obligatoria.");
             }
-
-            /*if (!eventTime) {
-                showError("#eventTime", "La hora del evento es obligatoria.");
-            }*/
 
             if (!tagID || tagID === "0") { // Suponiendo que "0" es la opción por defecto
                 showError("#txtTagID", "Debe seleccionar una etiqueta.");

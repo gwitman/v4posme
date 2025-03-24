@@ -230,8 +230,7 @@ class app_calendar_programming extends _BaseController
                 if ($resultPermission == PERMISSION_NONE) throw new \Exception(NOT_ACCESS_FUNCTION);
             }
 
-            $dataView["objListTag"] = $this->Tag_Model->get_rows();
-
+            $dataView["objListTag"] 		= $this->Tag_Model->get_rows();
             //Renderizar Resultado
             $dataSession["notification"]    = $this->core_web_error->get_error($dataSession["user"]->userID);
             $dataSession["message"]         = $this->core_web_notification->get_message();
@@ -285,15 +284,14 @@ class app_calendar_programming extends _BaseController
             $objParameterShowDownloadPreview	= $this->core_web_parameter->getParameter("CORE_SHOW_DOWNLOAD_PREVIEW",$companyID);
             $objParameterShowDownloadPreview	= $objParameterShowDownloadPreview->value;
             $objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true" ? true : false;
-            $date = $this->request->getGet("date");
-
+            $date 		= $this->request->getGet("date");
             // Obtener eventos de la base de datos (si es necesario)
-            $eventos = $this->Remember_Model->getProgrammingByDate($date);
+            $eventos 	= $this->Remember_Model->getProgrammingByDate($date);
 
             // Configurar Dompdf
-            $options = new Options();
+            $options 	= new Options();
             $options->set('isHtml5ParserEnabled', true);
-            $dompdf = new Dompdf($options);
+            $dompdf 	= new Dompdf($options);
 
             // Iniciar HTML
             $html = "<html><head><title>Eventos</title></head><body>";
