@@ -57,7 +57,7 @@
             },
             events: function(info, successCallback, failureCallback) {
                 $.ajax({
-                    url: 		'<?= APP_URL_RESOURCE_CSS_JS ?>/app_calendar_programming/events',
+                    url: 		'<?= base_url()?>/app_calendar_programming/events',
                     method: 	'GET',
                     dataType: 	'json',
                     success: 	function(data) {

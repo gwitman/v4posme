@@ -200,8 +200,8 @@ class Remember_Model extends Model  {
 		
 		/*FACTURAS*/
         select 
-            TM.transactionNumber as rememberID,	
-            CONCAT('".base_url()."/app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/2/transactionID/19/transactionMasterID/',TM.transactionMasterID,'/codigoMesero/none') as url,
+            tm.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/2/transactionID/19/transactionMasterID/',tm.transactionMasterID,'/codigoMesero/none') as url,
             'PROFORMA' AS title,
             tm.note AS description,	
             tm.nextVisit AS createdOn,
@@ -226,8 +226,8 @@ class Remember_Model extends Model  {
 		union all 
 		/*CONSULTAS MEDICAS*/
 		select 
-            TM.transactionNumber as rememberID,	
-            CONCAT('".base_url()."/app_med_query/edit/companyID/2/transactionID/35/transactionMasterID/',TM.transactionMasterID) as url,
+            tm.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_med_query/edit/companyID/2/transactionID/35/transactionMasterID/',tm.transactionMasterID) as url,
             'CONSULTAS' AS title,
             tm.note AS description,	
             tm.nextVisit AS createdOn,
@@ -253,8 +253,8 @@ class Remember_Model extends Model  {
 		union all 
 		/*TAREAS TASK*/
 		select 
-            TM.transactionNumber as rememberID,	
-            CONCAT('".base_url()."/app_rrhh_task/edit/companyID/2/transactionID/44/transactionMasterID/',TM.transactionMasterID) as url,
+            tm.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_rrhh_task/edit/companyID/2/transactionID/44/transactionMasterID/',tm.transactionMasterID) as url,
             'TASK' AS title,
             tm.reference4 AS description,	
             tm.nextVisit AS createdOn,
@@ -307,8 +307,8 @@ class Remember_Model extends Model  {
 		
 		/*FACTURAS*/
         select 
-            TM.transactionNumber as rememberID,	
-            CONCAT('".base_url()."/app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/2/transactionID/19/transactionMasterID/',TM.transactionMasterID,'/codigoMesero/none') as url,
+            tm.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/2/transactionID/19/transactionMasterID/',tm.transactionMasterID,'/codigoMesero/none') as url,
             'PROFORMA' AS title,
             tm.note AS description,	
             tm.nextVisit AS createdOn,
@@ -322,13 +322,13 @@ class Remember_Model extends Model  {
             tm.isActive = 1 and 
             st.isInit = 1 and 
             tm.transactionID in ( 19 /*FAC*/  ) and 
-            tm.nextVisit != '0000-00-00'
+            tm.nextVisit > '1000-01-01 00:00:00'
 			
 		union all 
 		/*CONSULTAS MEDICAS*/
 		select 
-            TM.transactionNumber as rememberID,	
-            CONCAT('".base_url()."/app_med_query/edit/companyID/2/transactionID/35/transactionMasterID/',TM.transactionMasterID) as url,
+            tm.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_med_query/edit/companyID/2/transactionID/35/transactionMasterID/',tm.transactionMasterID) as url,
             'CONSULTAS' AS title,
             tm.note AS description,	
             tm.nextVisit AS createdOn,
@@ -342,14 +342,16 @@ class Remember_Model extends Model  {
             tm.isActive = 1 and 
             st.isInit = 1 and 
             tm.transactionID in ( 35 /*CONSULTAS MEDICAS*/  ) and 
-            tm.nextVisit != '0000-00-00'
+            tm.nextVisit > '1000-01-01 00:00:00'
 			
 			
 		union all 
 		/*TAREAS TASK*/
+		
+		
 		select 
-            TM.transactionNumber as rememberID,	
-            CONCAT('".base_url()."/app_rrhh_task/edit/companyID/2/transactionID/44/transactionMasterID/',TM.transactionMasterID) as url,
+            tm.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_rrhh_task/edit/companyID/2/transactionID/44/transactionMasterID/',tm.transactionMasterID) as url,
             'TASK' AS title,
             tm.note AS description,	
             tm.nextVisit AS createdOn,
@@ -363,7 +365,7 @@ class Remember_Model extends Model  {
             tm.isActive = 1 and 
             st.isInit = 1 and 
             tm.transactionID in ( 44 /*TAREAS*/  ) and 
-            tm.nextVisit != '0000-00-00'
+            tm.nextVisit  > '1000-01-01 00:00:00'
 			
 		";
 
