@@ -9756,8 +9756,8 @@ function helper_reporte80mmEventosCalendario(
                         @page {       
                             size: 3.15in 7in;                  
                             margin-top:0px;
-                            margin-left:25px;
-                            margin-right:0px;
+                            margin-left:5px;
+                            margin-right:5px;
                         }
                         table{
                             font-size: small; /*x-small; small; medium ;  large ; x-large; xx-large; */
@@ -9765,7 +9765,6 @@ function helper_reporte80mmEventosCalendario(
                             font-family: Consolas, monaco, monospace;
                         }
                         th, td {
-                            padding: 8px;
                             text-align: left;
                         }
                         th {
@@ -9820,12 +9819,16 @@ function helper_reporte80mmEventosCalendario(
                             <td>REGISTRADA</td>
                         </tr>
                         <tr style='text-align:center'>
-                            <td>TITULO</td>
-                            <td>$evento->title</td>
+                            <td colspan='3' style='text-align: center'>TITULO</td>
                         </tr>
                         <tr style='text-align:center'>
-                            <td>DESCRIPCION</td>
-                            <td>$evento->description</td>
+                            <td colspan='3' style='text-align: left'>$evento->title</td>
+                        </tr>
+                        <tr style='text-align:center'>
+                            <td colspan='3' style='text-align: center'>DESCRIPCION</td>
+                        </tr>
+                        <tr style='text-align:center'>
+                            <td colspan='2' style='text-align: left'>$evento->description</td>
                         </tr>
                         <tr style='text-align:center'>
                             <td>ENTIDAD</td>

@@ -77,6 +77,7 @@
             eventClick: function (info) {
                 handleEventClick(info, false);
             },
+            navLinks: true,
             eventBackgroundColor: '#378006'
         });
 
