@@ -34,27 +34,15 @@
                             let currentStart = view.currentStart;
                             let mes = currentStart.getMonth()+1;
                             let date = currentStart.getFullYear() + "-" + mes + "-"+ currentStart.getDate();
+                            $('#eventModal').modal('hide');
                             fnWaitOpen();
-                            $.ajax({
-                                url: 'imprimirEventos',
-                                method: 'POST',
-                                data: { date: date },
-                                xhrFields: {
-                                    responseType: 'blob'
-                                },
-                                success: function (response) {
-                                    var blob = new Blob([response], { type: 'application/pdf' });
-                                    var url = window.URL.createObjectURL(blob);
-                                    window.open(url, '_blank');
-                                    setTimeout(() => {
-                                        window.URL.revokeObjectURL(url);
-                                    }, 1000);
-                                    fnWaitClose();
-                                },
-                                error: function () {
-                                    fnWaitClose();
-                                }
-                            });
+                            let a = document.createElement("a");
+                            a.href = '<?= base_url()?>/app_calendar_programming/imprimirEventos?date='+date;
+                            a.download = "eventos_" + date + ".pdf";
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            fnWaitClose();
                         }
                     }
                 }
@@ -62,14 +50,15 @@
             headerToolbar: {
                 left: 'prevYear,nextYear,prev,next today btnAdd btnPrint',
                 center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay, multiMonthYear'
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,multiMonthYear'
             },
             buttonText: {
                 today: 'Hoy',
                 month: 'Mes',
                 week: 'Semana',
                 day: 'Día',
-                list: 'Lista'
+                list: 'Lista',
+                year: 'Año'
             },
             events: function(info, successCallback, failureCallback) {
                 $.ajax({
@@ -173,31 +162,16 @@
         $('#printEvent').click(function (){
             let id = $('#eventId').val();
             if (!id) return;
-            let eventData = {
-                idevent: id
-            };
+            let idevent= id;
             $('#eventModal').modal('hide');
             fnWaitOpen();
-            $.ajax({
-                url: 'imprimirEvento',
-                method: 'POST',
-                data: eventData,
-                xhrFields: {
-                    responseType: 'blob'
-                },
-                success: function (response) {
-                    var blob = new Blob([response], { type: 'application/pdf' });
-                    var url = window.URL.createObjectURL(blob);
-                    window.open(url, '_blank');
-                    fnWaitClose();
-                    setTimeout(() => {
-                        window.URL.revokeObjectURL(url);
-                    }, 1000);
-                },
-                error: function (response){
-                    fnWaitClose();
-                }
-            });
+            let a = document.createElement("a");
+            a.href = '<?= base_url()?>/app_calendar_programming/imprimirEvento?idevent='+idevent;
+            a.download = "evento_" + idevent + ".pdf";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            fnWaitClose();
         });
         function handleEventClick(info, isDateClick = false) {
             info.jsEvent.preventDefault(); // don't let the browser navigate

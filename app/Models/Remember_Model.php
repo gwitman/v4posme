@@ -194,7 +194,7 @@ class Remember_Model extends Model  {
             tm.isActive = 1 and 
             st.isInit = 1 and 
             tm.transactionID in ( 19 /*FAC*/  ) and 
-            tm.nextVisit != ?
+            tm.nextVisit = ?
 			
 		union all 
 		/*CONSULTAS MEDICAS*/
@@ -214,7 +214,7 @@ class Remember_Model extends Model  {
             tm.isActive = 1 and 
             st.isInit = 1 and 
             tm.transactionID in ( 35 /*CONSULTAS MEDICAS*/  ) and 
-            tm.nextVisit != ?
+            tm.nextVisit = ?
 			
 			
 		union all 
@@ -235,7 +235,7 @@ class Remember_Model extends Model  {
             tm.isActive = 1 and 
             st.isInit = 1 and 
             tm.transactionID in ( 44 /*TAREAS*/  ) and 
-            tm.nextVisit != ?
+            tm.nextVisit = ?
 		";
 
         //Ejecutar Consulta

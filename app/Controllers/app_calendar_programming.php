@@ -281,7 +281,11 @@ class app_calendar_programming extends _BaseController
             $objParameterRuc	    = $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
             $objParameterRuc        = $objParameterRuc->value;
             $objCompany 	        = $this->Company_Model->get_rowByPK($companyID);
-            $date = $this->request->getPost("date");
+
+            $objParameterShowDownloadPreview	= $this->core_web_parameter->getParameter("CORE_SHOW_DOWNLOAD_PREVIEW",$companyID);
+            $objParameterShowDownloadPreview	= $objParameterShowDownloadPreview->value;
+            $objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true" ? true : false;
+            $date = $this->request->getGet("date");
 
             // Obtener eventos de la base de datos (si es necesario)
             $eventos = $this->Remember_Model->getProgrammingByDate($date);
@@ -314,13 +318,10 @@ class app_calendar_programming extends _BaseController
 
             // Cargar contenido en Dompdf
             $dompdf->loadHtml($html);
-            $dompdf->setPaper('Letter');
             $dompdf->render();
 
-            return $this->response
-                ->setHeader('Content-Type', 'application/pdf')
-                ->setHeader('Content-Disposition', 'inline; filename="eventos_'.$date.'.pdf"')
-                ->setBody($dompdf->output());
+            $fileNamePut = "eventos_".date("dmYhis").".pdf";
+            $dompdf->stream($fileNamePut, ['Attachment' => $objParameterShowDownloadPreview ]);
 
         }catch (\Exception $exception){
             if (empty($dataSession)) {
@@ -362,10 +363,12 @@ class app_calendar_programming extends _BaseController
             $objParameterRuc	    = $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
             $objParameterRuc        = $objParameterRuc->value;
             $objCompany 	        = $this->Company_Model->get_rowByPK($companyID);
-            $idevent                = $this->request->getPost("idevent");
+            $idevent                = $this->request->getGet("idevent");
             $id                     = str_replace('REM','', $idevent);
             $evento = $this->Remember_Model->get_rowByPK($id);
-
+            $objParameterShowDownloadPreview	= $this->core_web_parameter->getParameter("CORE_SHOW_DOWNLOAD_PREVIEW",$companyID);
+            $objParameterShowDownloadPreview	= $objParameterShowDownloadPreview->value;
+            $objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true" ? true : false;
             // Configurar Dompdf
             $options = new Options();
             $options->set('isHtml5ParserEnabled', true);
@@ -386,11 +389,8 @@ class app_calendar_programming extends _BaseController
             // Cargar contenido en Dompdf
             $dompdf->loadHtml($html);
             $dompdf->render();
-
-            return $this->response
-                ->setHeader('Content-Type', 'application/pdf')
-                ->setHeader('Content-Disposition', 'inline; filename="evento_'.$idevent.'.pdf"')
-                ->setBody($dompdf->output());
+            $fileNamePut = "evento".$idevent."_".date("dmYhis").".pdf";
+            $dompdf->stream($fileNamePut, ['Attachment' => $objParameterShowDownloadPreview ]);
 
         }catch (\Exception $exception){
             if (empty($dataSession)) {
