@@ -151,6 +151,20 @@ class Remember_Model extends Model  {
 		return $db->query($sql)->getRow();
 		
 	}
-	
+
+    function getRememberByDate($date)
+    {
+        $db 	= db_connect();
+        $sql = "
+		SELECT tr.rememberID, tr.companyID, tr.title, tr.description, tr.period, tr.day, tr.statusID, 
+		       tr.lastNotificationOn, tr.isTemporal, tr.createdBy, tr.createdOn, tr.createdIn, 
+		       tr.createdAt, tr.isActive, tr.tagID, tr.leerFile 
+        FROM tb_remember tr
+        WHERE tr.createdOn = ? AND tr.isActive=1
+		";
+
+        //Ejecutar Consulta
+        return $db->query($sql, [$date])->getResult();
+    }
 }
 ?>

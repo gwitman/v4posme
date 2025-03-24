@@ -505,6 +505,17 @@ $routes->match(['get','post'],'app_calendar_citas/index','app_calendar_citas::in
 $routes->match(['get','post'],'app_calendar_citas/index/(:any)','app_calendar_citas::index');
 $routes->match(['get','post'],'app_calendar_citas/delete','app_calendar_citas::delete');
 $routes->match(['get','post'],'app_calendar_citas/delete/(:any)','app_calendar_citas::delete');
+$routes->match(['get','post'],'app_calendar_programming/index','app_calendar_programming::index');
+$routes->match(['get','post'],'app_calendar_programming/index/(:any)','app_calendar_programming::index');
+$routes->match(['get','post'],'app_calendar_programming/save/(:any)','app_calendar_programming::save');
+$routes->match(['get','post'],'app_calendar_programming/events','app_calendar_programming::events');
+$routes->match(['get','post'],'app_calendar_programming/find/(:any)','app_calendar_programming::find/$1');
+$routes->match(['get','post'],'app_calendar_programming/delete/(:any)','app_calendar_programming::delete');
+$routes->match(['get','post'],'app_calendar_programming/imprimirEventos','app_calendar_programming::imprimirEventos');
+$routes->match(['get','post'],'app_calendar_programming/imprimirEventos/(:any)','app_calendar_programming::imprimirEventos');
+$routes->match(['get','post'],'app_calendar_programming/imprimirEvento/(:any)','app_calendar_programming::imprimirEvento');
+$routes->match(['get','post'],'app_calendar_programming/imprimirEvento','app_calendar_programming::imprimirEvento');
+$routes->match(['get','post'],'app_calendar_programming/delete','app_calendar_programming::delete');
 $routes->match(['get','post'],'app_box_report/index','app_box_report::index');
 $routes->match(['get','post'],'app_box_report/index/(:any)','app_box_report::index');
 $routes->match(['get','post'],'app_box_report/share','app_box_report::share');

@@ -9724,6 +9724,139 @@ function helper_reporte80mmTransactionMasterRegistrada(
     return $html;
 }
 
+function helper_reporte80mmEventosCalendario(
+    $titulo,
+    $objCompany,
+    $objParameterLogo,
+    $evento,
+    $objEntidadNatural,
+    $objEntidadCustomer,
+    $objParameterTelefono, /*telefono*/
+    $rucCompany = "" /*ruc*/ ,
+): string
+{
+    $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
+
+    $type    = pathinfo($path, PATHINFO_EXTENSION);
+    $data    = file_get_contents($path);
+    $base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
+    // Crear un objeto DateTime a partir de la cadena
+    $createdOn = new DateTime($evento->createdOn);
+    $fecha = $createdOn->format('Y-m-d');
+    $hora = $createdOn->format('H:i:s');
+    $html    = "";
+    $html    = "
+                    <!DOCTYPE html>
+                    <html lang='en'>
+                    <title>$titulo</title>
+                    <head>
+                        <meta charset='UTF-8' />
+                        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+                        <style>
+                        @page {       
+                            size: 3.15in 7in;                  
+                            margin-top:0px;
+                            margin-left:25px;
+                            margin-right:0px;
+                        }
+                        table{
+                            font-size: small; /*x-small; small; medium ;  large ; x-large; xx-large; */
+                            font-weight: bold;
+                            font-family: Consolas, monaco, monospace;
+                        }
+                        th, td {
+                            padding: 8px;
+                            text-align: left;
+                        }
+                        th {
+                            background-color: #f2f2f2;
+                        }
+                        .firma {
+                            text-align: center;
+                            padding-top: 20px;
+                        }
+                        </style>
+                    </head>
+                    
+                    <body>
+                    
+                        <table style='width:100%'>
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            <img  src='".$base64."' width='110'  >
+                          </td>
+                        </tr>
+                        <tr>
+                            <td colspan='3' style='text-align:center'>
+                            ".strtoupper($objCompany->name)."
+                            </td>
+                        </tr>    
+                        <tr>
+                            <td colspan='3' style='text-align:center'>
+                            ".strtoupper($objCompany->address)."
+                            </td>
+                        </tr>  
+                        <tr>                              
+    						  <td colspan='3' style='text-align:center'>
+                                RUC : ".  $rucCompany ."
+                              </td>
+                            </tr>                
+                        <tr>
+                            <td colspan='3' style='text-align:center'>
+                            # ".strtoupper($evento->rememberID)."
+                            </td>
+                        </tr>
+                                
+                        <tr style='text-align:center'>
+                            <td>FECHA</td>
+                            <td>".$fecha."</td>
+                        </tr>
+                        <tr style='text-align:center'>
+                            <td>HORA</td>
+                            <td>".$hora."</td>
+                        </tr>
+                        <tr style='text-align:center'>
+                            <td>ESTADO</td>
+                            <td>REGISTRADA</td>
+                        </tr>
+                        <tr style='text-align:center'>
+                            <td>TITULO</td>
+                            <td>$evento->title</td>
+                        </tr>
+                        <tr style='text-align:center'>
+                            <td>DESCRIPCION</td>
+                            <td>$evento->description</td>
+                        </tr>
+                        <tr style='text-align:center'>
+                            <td>ENTIDAD</td>
+                            <td></td>
+                        </tr>
+                        <tr style='text-align:center'>
+                            <td>NOMBRE</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan='3' style='text-align:center'>
+                                <div class='firma'>
+                                    <p>________________________</p>
+                                    <p>FIRMA</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan='3' style='text-align:center' >
+                            posMe PRO Premium 3.1
+                            </td>
+                        </tr>
+                        </table>
+                    </body>
+                                
+                    </html>
+            ";
+
+
+    return $html;
+}
 
 function helper_reporte80mmTransactionMasterEmanuelPizza(
     $titulo,
