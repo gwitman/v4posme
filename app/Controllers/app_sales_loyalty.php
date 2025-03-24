@@ -440,16 +440,6 @@ class app_sales_loyalty extends _BaseController
 			}
 
 
-			if ($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_sales_loyalty", "statusID", $objTMNew["statusID"], COMMAND_APLICABLE, $companyID, $branchID, $roleID)) {
-
-				$objTMNew["discount"]			= $objBank->balance;
-				$objTMNew["subAmount"]			= $objBank->balance - $monto;
-				$objBankNew["balance"]         	= $objTMNew["subAmount"];
-				
-				$this->Transaction_Master_Model->update_app_posme($companyID, $transactionID, $transactionMasterID, $objTMNew);
-				$this->Bank_Model->update_app_posme($companyID,  $entityID, $objBankNew);
-			}
-
 			if ($db->transStatus() !== false) {
 				$db->transCommit();
 				$this->core_web_notification->set_message(false, SUCCESS);
