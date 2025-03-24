@@ -9818,26 +9818,51 @@ function helper_reporte80mmEventosCalendario(
                             <td>ESTADO</td>
                             <td>REGISTRADA</td>
                         </tr>
+						<tr>
+                          <td colspan='3' style='text-align:center' >
+                            &nbsp;
+                          </td>
+                        </tr>
+						<tr style='text-align:center'>
+                            <td colspan='3' style='text-align: center'>ENTIDAD</td>
+                        </tr>
+						
+						<tr style='text-align:center'>
+                            <td colspan='3' style='text-align: left'>$evento->entidad</td>
+                        </tr>
+						
+						<tr style='text-align:center'>
+                            <td colspan='3' style='text-align: center'>NOMBRE</td>
+                        </tr>
+						
+						<tr style='text-align:center'>
+                            <td colspan='3' style='text-align: left'>$evento->nombre</td>
+                        </tr>
+						<tr>
+                          <td colspan='3' style='text-align:center' >
+                            &nbsp;
+                          </td>
+                        </tr>
                         <tr style='text-align:center'>
                             <td colspan='3' style='text-align: center'>TITULO</td>
                         </tr>
                         <tr style='text-align:center'>
                             <td colspan='3' style='text-align: left'>$evento->title</td>
                         </tr>
+						<tr>
+                          <td colspan='3' style='text-align:center' >
+                            &nbsp;
+                          </td>
+                        </tr>
                         <tr style='text-align:center'>
                             <td colspan='3' style='text-align: center'>DESCRIPCION</td>
                         </tr>
                         <tr style='text-align:center'>
-                            <td colspan='2' style='text-align: left'>$evento->description</td>
+                            <td colspan='3' style='text-align: left'>$evento->description</td>
                         </tr>
-                        <tr style='text-align:center'>
-                            <td>ENTIDAD</td>
-                            <td></td>
-                        </tr>
-                        <tr style='text-align:center'>
-                            <td>NOMBRE</td>
-                            <td></td>
-                        </tr>
+						
+						
+						
                         <tr>
                             <td colspan='3' style='text-align:center'>
                                 <div class='firma'>

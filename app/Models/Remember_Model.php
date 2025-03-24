@@ -36,7 +36,26 @@ class Remember_Model extends Model  {
 		$db 	= db_connect();
 		    
 		$sql = "";
-		$sql = sprintf("select companyID,rememberID,title,description,period,day,statusID,lastNotificationOn,isTemporal,createdBy,createdOn,createdIn,createdAt,isActive,tagID,leerFile");
+		$sql = sprintf("select 
+						companyID,
+						rememberID,
+						title,
+						description,
+						period,
+						day,
+						statusID,
+						lastNotificationOn,
+						isTemporal,
+						createdBy,
+						createdOn,
+						createdIn,
+						createdAt,
+						isActive,
+						tagID,
+						leerFile,
+						'' as entidad,
+						'' as nombre
+				");
 		$sql = $sql.sprintf(" from tb_remember");
 		$sql = $sql.sprintf(" where rememberID = $rememberID");
 		$sql = $sql.sprintf(" and isActive= 1");		
