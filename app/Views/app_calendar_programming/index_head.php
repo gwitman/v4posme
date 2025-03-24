@@ -1,5 +1,5 @@
 <!-- Font Awesome (CDN) -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="<?= APP_URL_RESOURCE_CSS_JS?>/resource/css/font-awesome-6-5-1/all.min.css">
 
 
 <script src='<?= APP_URL_RESOURCE_CSS_JS?>/resource/js/fullcallendar/index.global.js'></script>
