@@ -2,7 +2,7 @@
     $.fn.modal.Constructor.prototype.enforceFocus = function () {};
 
     $(document).ready(function () {
-
+        fnWaitOpen();
         var calendarEl = document.getElementById('calendario');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth', // Vista mensual
@@ -49,6 +49,9 @@
                                         window.URL.revokeObjectURL(url);
                                     }, 1000);
                                     fnWaitClose();
+                                },
+                                error: function () {
+                                    fnWaitClose();
                                 }
                             });
                         }
@@ -67,7 +70,22 @@
                 day: 'Día',
                 list: 'Lista'
             },
-            events: '<?= APP_URL_RESOURCE_CSS_JS ?>/app_calendar_programming/events',
+            events: function(info, successCallback, failureCallback) {
+                $.ajax({
+                    url: '<?= APP_URL_RESOURCE_CSS_JS ?>/app_calendar_programming/events',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        successCallback(data); // Pasa los eventos a FullCalendar
+                        fnWaitClose();
+                    },
+                    error: function() {
+                        failureCallback();
+                        console.log("Error al cargar eventos.");
+                        fnWaitClose();
+                    }
+                });
+            },
             dateClick: function (info) {
                 handleEventClick(info, true);
             },
@@ -116,9 +134,11 @@
                 data: JSON.stringify(eventData),
                 success: function (response) {
                     if (response.status === "success") {
-                        calendar.refetchEvents(); // Recargar eventos
+                        calendar.refetchEvents();
+                        fnWaitClose();
+                    }else{
+                        fnWaitClose();
                     }
-                    fnWaitClose();
                 }
             });
 
@@ -168,18 +188,26 @@
                     var blob = new Blob([response], { type: 'application/pdf' });
                     var url = window.URL.createObjectURL(blob);
                     window.open(url, '_blank');
+                    fnWaitClose();
                     setTimeout(() => {
                         window.URL.revokeObjectURL(url);
                     }, 1000);
+                },
+                error: function (response){
                     fnWaitClose();
                 }
             });
         });
         function handleEventClick(info, isDateClick = false) {
+            info.jsEvent.preventDefault(); // don't let the browser navigate
             let event = isDateClick ? null : info.event;
             $('#deleteEvent').toggle(!isDateClick);
             $('#printEvent').toggle(!isDateClick);
             if (event){
+                if (info.event.url) {
+                    window.open(info.event.url, '_blank');
+                    return;
+                }
                 fnWaitOpen();
                 $('#eventId').val(event.id);
                 $.ajax({

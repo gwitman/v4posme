@@ -166,5 +166,49 @@ class Remember_Model extends Model  {
         //Ejecutar Consulta
         return $db->query($sql, [$date])->getResult();
     }
+
+    function getProgramming()
+    {
+        $db 	= db_connect();
+        $sql = "
+		select
+            CONCAT('REM','',r.rememberID) as rememberID,
+            '' as url,
+            r.title,
+            r.description,	
+            r.createdOn,
+            r.tagID
+        from 
+            tb_remember r 
+            inner join tb_workflow_stage sr on 
+                sr.workflowStageID = r.statusID 
+        where 
+            r.companyID = 2 and 
+            r.isActive= 1 and 
+            sr.isInit = 1 
+        
+        union all 
+        
+        select 
+            TM.transactionNumber as rememberID,	
+            'https://www.yahoo.com' as url,
+            'PROFORMA' AS title,
+            tm.note AS description,	
+            tm.nextVisit AS createdOn,
+            0  AS tagID
+        from 
+            tb_transaction_master tm 
+            inner join tb_workflow_stage st on 
+                tm.statusID = st.workflowStageID 
+        where 
+            tm.isActive = 1 and 
+            st.isInit = 1 and 
+            tm.transactionID in ( 19 /**FAC**/  ) and 
+            tm.nextVisit != '0000-00-00'
+		";
+
+        //Ejecutar Consulta
+        return $db->query($sql)->getResult();
+    }
 }
 ?>

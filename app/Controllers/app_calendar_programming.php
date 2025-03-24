@@ -26,8 +26,9 @@ class app_calendar_programming extends _BaseController
 
             $this->core_web_permission->getValueLicense($dataSession["user"]->companyID, get_class($this) . "/" . "index");
 
-            $datos = $this->request->getJSON(true);
-            $this->Remember_Model->delete_app_posme($datos["idevent"]);
+            $datos  = $this->request->getJSON(true);
+            $id     = str_replace('REM','', $datos["idevent"]);
+            $this->Remember_Model->delete_app_posme($id);
 
             $result = ['status' => 'success', 'message' => 'Datos eliminados correctamente', 'code' => $datos["idevent"]];
             return $this->response->setJSON($result);
@@ -52,14 +53,14 @@ class app_calendar_programming extends _BaseController
             }
 
             $this->core_web_permission->getValueLicense($dataSession["user"]->companyID, get_class($this) . "/" . "index");
-
+            $id                             = str_replace('REM','', $datos["id"]);
             $remember['title']              = $datos['title'];
             $remember['createdOn']          = $datos['start'];
             $remember['tagID']              = $datos['tagID'];
             $remember["description"]        = $datos['descripcion'];
             $remember["lastNotificationOn"] = date('c');
 
-            $code   = $this->Remember_Model->update_app_posme($datos["id"], $remember);
+            $code   = $this->Remember_Model->update_app_posme($id, $remember);
             $result = ['status' => 'success', 'message' => 'Datos guardados correctamente', 'code' => $code];
             return $this->response->setJSON($result);
         } catch (\Exception $exception) {
@@ -164,10 +165,15 @@ class app_calendar_programming extends _BaseController
                 if ($resultPermission == PERMISSION_NONE) throw new \Exception(NOT_ACCESS_FUNCTION);
 
             }
-            $result = $this->Remember_Model->getByCompany($dataSession["company"]->companyID);
+            $result = $this->Remember_Model->getProgramming();
             $events = [];
             foreach ($result as $row) {
-                $events[] = ['id' => $row->rememberID, 'title' => $row->title, 'start' => $row->createdOn,];
+                $events[] = [
+                    'id'    => $row->rememberID,
+                    'title' => $row->title,
+                    'start' => $row->createdOn,
+                    'url'   => $row->url
+                ];
             }
             return $this->response->setJSON($events);
         } catch (\Exception $exception) {
@@ -194,6 +200,7 @@ class app_calendar_programming extends _BaseController
                 if ($resultPermission == PERMISSION_NONE) throw new \Exception(NOT_ACCESS_FUNCTION);
 
             }
+            $id     = str_replace('REM','', $id);
             $result = $this->Remember_Model->get_rowByPK($id);
             return $this->response->setJSON($result);
         } catch (\Exception $exception) {
@@ -353,11 +360,10 @@ class app_calendar_programming extends _BaseController
             $objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
             $objParameterRuc	    = $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
             $objParameterRuc        = $objParameterRuc->value;
-            $objCompany 	= $this->Company_Model->get_rowByPK($companyID);
-            $idevent = $this->request->getPost("idevent");
-
-            // Obtener eventos de la base de datos (si es necesario)
-            $evento = $this->Remember_Model->get_rowByPK($idevent);
+            $objCompany 	        = $this->Company_Model->get_rowByPK($companyID);
+            $idevent                = $this->request->getPost("idevent");
+            $id                     = str_replace('REM','', $idevent);
+            $evento = $this->Remember_Model->get_rowByPK($id);
 
             // Configurar Dompdf
             $options = new Options();
