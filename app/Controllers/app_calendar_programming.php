@@ -283,7 +283,7 @@ class app_calendar_programming extends _BaseController
             $date = $this->request->getPost("date");
 
             // Obtener eventos de la base de datos (si es necesario)
-            $eventos = $this->Remember_Model->getRememberByDate($date);
+            $eventos = $this->Remember_Model->getProgrammingByDate($date);
 
             // Configurar Dompdf
             $options = new Options();
@@ -407,3 +407,5 @@ class app_calendar_programming extends _BaseController
         }
     }
 }
+
+?>

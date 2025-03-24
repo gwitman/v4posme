@@ -152,15 +152,19 @@ class Remember_Model extends Model  {
 		
 	}
 
-    function getRememberByDate($date)
+    function getProgrammingByDate($date)
     {
         $db 	= db_connect();
         $sql = "
-		SELECT tr.rememberID, tr.companyID, tr.title, tr.description, tr.period, tr.day, tr.statusID, 
-		       tr.lastNotificationOn, tr.isTemporal, tr.createdBy, tr.createdOn, tr.createdIn, 
-		       tr.createdAt, tr.isActive, tr.tagID, tr.leerFile 
-        FROM tb_remember tr
-        WHERE tr.createdOn = ? AND tr.isActive=1
+		SELECT 
+			tr.rememberID, tr.companyID, tr.title, tr.description, tr.period, tr.day, tr.statusID, 
+		    tr.lastNotificationOn, tr.isTemporal, tr.createdBy, tr.createdOn, tr.createdIn, 
+		    tr.createdAt, tr.isActive, tr.tagID, tr.leerFile 
+        FROM 
+			tb_remember tr
+		WHERE 
+			tr.createdOn = ? AND 
+			tr.isActive=1
 		";
 
         //Ejecutar Consulta
@@ -189,9 +193,11 @@ class Remember_Model extends Model  {
         
         union all 
         
+		
+		/*FACTURAS*/
         select 
             TM.transactionNumber as rememberID,	
-            'https://www.yahoo.com' as url,
+            CONCAT('".base_url()."/app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/2/transactionID/19/transactionMasterID/',TM.transactionMasterID,'/codigoMesero/none') as url,
             'PROFORMA' AS title,
             tm.note AS description,	
             tm.nextVisit AS createdOn,
@@ -203,8 +209,48 @@ class Remember_Model extends Model  {
         where 
             tm.isActive = 1 and 
             st.isInit = 1 and 
-            tm.transactionID in ( 19 /**FAC**/  ) and 
+            tm.transactionID in ( 19 /*FAC*/  ) and 
             tm.nextVisit != '0000-00-00'
+			
+		union all 
+		/*CONSULTAS MEDICAS*/
+		select 
+            TM.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_med_query/edit/companyID/2/transactionID/35/transactionMasterID/',TM.transactionMasterID) as url,
+            'CONSULTAS' AS title,
+            tm.note AS description,	
+            tm.nextVisit AS createdOn,
+            0  AS tagID
+        from 
+            tb_transaction_master tm 
+            inner join tb_workflow_stage st on 
+                tm.statusID = st.workflowStageID 
+        where 
+            tm.isActive = 1 and 
+            st.isInit = 1 and 
+            tm.transactionID in ( 35 /*CONSULTAS MEDICAS*/  ) and 
+            tm.nextVisit != '0000-00-00'
+			
+			
+		union all 
+		/*TAREAS TASK*/
+		select 
+            TM.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_rrhh_task/edit/companyID/2/transactionID/44/transactionMasterID/',TM.transactionMasterID) as url,
+            'TASK' AS title,
+            tm.note AS description,	
+            tm.nextVisit AS createdOn,
+            0  AS tagID
+        from 
+            tb_transaction_master tm 
+            inner join tb_workflow_stage st on 
+                tm.statusID = st.workflowStageID 
+        where 
+            tm.isActive = 1 and 
+            st.isInit = 1 and 
+            tm.transactionID in ( 44 /*TAREAS*/  ) and 
+            tm.nextVisit != '0000-00-00'
+			
 		";
 
         //Ejecutar Consulta

@@ -59,9 +59,9 @@
                 }
             },
             headerToolbar: {
-                left: 'prev,next today btnAdd btnPrint',
+                left: 'prevYear,nextYear,prev,next today btnAdd btnPrint',
                 center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                right: 'dayGridMonth,timeGridWeek,timeGridDay, multiMonthYear'
             },
             buttonText: {
                 today: 'Hoy',
