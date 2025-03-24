@@ -36,13 +36,8 @@
                             let date 			= currentStart.getFullYear() + "-" + mes + "-"+ currentStart.getDate();
                             $('#eventModal').modal('hide');
                             fnWaitOpen();
-                            let a 			= document.createElement("a");
-                            a.href 			= '<?= base_url()?>/app_calendar_programming/imprimirEventos?date='+date;
-                            a.download 		= "eventos_" + date + ".pdf";
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-                            fnWaitClose();
+							window.open('<?= base_url()?>/app_calendar_programming/imprimirEventos?date='+date, "_blank");
+							fnWaitClose();
                         }
                     }
                 }
@@ -165,13 +160,9 @@
             let idevent	= id;
             $('#eventModal').modal('hide');
             fnWaitOpen();
-            let a 		= document.createElement("a");
-            a.href 		= '<?= base_url()?>/app_calendar_programming/imprimirEvento?idevent='+idevent;
-            a.download 	= "evento_" + idevent + ".pdf";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            fnWaitClose();
+			window.open('<?= base_url()?>/app_calendar_programming/imprimirEvento?idevent='+idevent, "_blank");
+			fnWaitClose();
+			
         });
         function handleEventClick(info, isDateClick = false) {
             info.jsEvent.preventDefault(); // don't let the browser navigate

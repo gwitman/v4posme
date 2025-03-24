@@ -163,7 +163,9 @@ class Remember_Model extends Model  {
             r.description,	
             r.createdOn,
             r.tagID,
-			'yellow' as color
+			'yellow' as color,
+			'' as entidad,
+			'' as nombre
         from 
             tb_remember r 
             inner join tb_workflow_stage sr on 
@@ -185,11 +187,17 @@ class Remember_Model extends Model  {
             tm.note AS description,	
             tm.nextVisit AS createdOn,
             0  AS tagID,
-			'yellow' as color
+			'yellow' as color,
+			emp.customerNumber  as entidad,
+			nat.firstName as nombre
         from 
             tb_transaction_master tm 
             inner join tb_workflow_stage st on 
                 tm.statusID = st.workflowStageID 
+			inner join tb_naturales nat on 
+				nat.entityID = tm.entityID  
+			inner join tb_customer emp on 
+				emp.entityID = nat.entityID 
         where 
             tm.isActive = 1 and 
             st.isInit = 1 and 
@@ -205,11 +213,17 @@ class Remember_Model extends Model  {
             tm.note AS description,	
             tm.nextVisit AS createdOn,
             0  AS tagID,
-			'yellow' as color
+			'yellow' as color,
+			emp.customerNumber  as entidad,
+			nat.firstName as nombre
         from 
             tb_transaction_master tm 
             inner join tb_workflow_stage st on 
                 tm.statusID = st.workflowStageID 
+			inner join tb_naturales nat on 
+				nat.entityID = tm.entityID  
+			inner join tb_customer emp on 
+				emp.entityID = nat.entityID 
         where 
             tm.isActive = 1 and 
             st.isInit = 1 and 
@@ -223,14 +237,20 @@ class Remember_Model extends Model  {
             TM.transactionNumber as rememberID,	
             CONCAT('".base_url()."/app_rrhh_task/edit/companyID/2/transactionID/44/transactionMasterID/',TM.transactionMasterID) as url,
             'TASK' AS title,
-            tm.note AS description,	
+            tm.reference4 AS description,	
             tm.nextVisit AS createdOn,
             0  AS tagID,
-			'yellow' as color
+			'yellow' as color,
+			emp.employeNumber  as entidad,
+			nat.firstName as nombre
         from 
             tb_transaction_master tm 
             inner join tb_workflow_stage st on 
                 tm.statusID = st.workflowStageID 
+			inner join tb_naturales nat on 
+				nat.entityID = tm.entityIDSecondary 
+			inner join tb_employee emp on 
+				emp.entityID = nat.entityID 
         where 
             tm.isActive = 1 and 
             st.isInit = 1 and 
