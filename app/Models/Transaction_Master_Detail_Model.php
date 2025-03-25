@@ -844,7 +844,7 @@ class Transaction_Master_Detail_Model extends Model  {
 			
    }
    
-   function GlobalPro_get_Notification_Regalia_1Meses()
+   function GlobalPro_get_Notification_Compra_1Meses()
    {
 	   $db 	= db_connect();
 		$builder	= $db->table("tb_transaction_master_detail");
@@ -857,7 +857,7 @@ class Transaction_Master_Detail_Model extends Model  {
 				tx.transactionNumber,
 				'-',
 				tx.transactionMasterDetailID,
-				'-sendWhatsappGlobalProRegaliaFrecuency1Meses'
+				'-sendWhatsappGlobalProCompraFrecuency1Meses'
 				) as CodigoMensaje,			
 				CONCAT(
 				'¡Hola ', tx.firstName  ,'  te saludamos de Global Pro! [simbol-enter] Hace unos meses adquiriste un equipo con nosotros, quisiéramos saber tu opinión de tu experiencia en nuestra tienda y a cambio recibirás una regalía de nuestra parte.[simbol-enter] Ingresa al link y complétalo, tomará 1 minuto máximo [simbol-enter] https://docs.google.com/forms/d/e/1FAIpQLSclIpC7y-ZV9bxOXOGGizxT3UBOxXzKVdiioxCNGZckp-m1PQ/viewform?usp=header [simbol-enter] Muchas gracias por tu compra!'
@@ -889,9 +889,7 @@ class Transaction_Master_Detail_Model extends Model  {
 						where 
 							tm.transactionID = 19 and 
 							tm.isActive = 1 and 
-							tmd.isActive = 1 and 
-							cat.`name` = 'Laptops' and 
-							tmd.unitaryAmount <= 14400  and 
+							tmd.isActive = 1 and
 							LENGTH(REPLACE(cus.identification, '[^a-zA-Z0-9]', '')) = 14 and 
 							LENGTH(REPLACE(cus.phoneNumber, '[^a-zA-Z0-9]', '')) = 8 and 
 							DATE_ADD(tm.createdOn, INTERVAL 30 DAY) = CURDATE()

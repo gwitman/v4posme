@@ -1955,7 +1955,7 @@ class app_notification extends _BaseController
 	/********************************************/
 	/********************************************/
 	
-	function sendWhatsappGlobalProRegaliaFrecuency1Meses()
+	function sendWhatsappGlobalProCompraFrecuency1Meses()
 	{
 
 		$objNotificar = $this->Transaction_Master_Detail_Model->GlobalPro_get_Notification_Regalia_1Meses();
