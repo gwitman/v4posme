@@ -1958,7 +1958,7 @@ class app_notification extends _BaseController
 	function sendWhatsappGlobalProCompraFrecuency1Meses()
 	{
 
-		$objNotificar = $this->Transaction_Master_Detail_Model->GlobalPro_get_Notification_Regalia_1Meses();
+		$objNotificar = $this->Transaction_Master_Detail_Model->GlobalPro_get_Notification_Compra_1Meses();
 		if ($objNotificar)
 			foreach ($objNotificar as $i) {
 				echo clearNumero($i->Destino) . "---" . $i->Mensaje . "</br></br>";
