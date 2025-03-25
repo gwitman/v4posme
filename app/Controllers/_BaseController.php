@@ -195,7 +195,7 @@ abstract class _BaseController extends Controller
         'url','form','web_tools','cookie','text','path',
         'language',
         'web_tools_report',
-        'customization/web_tools_customizationview',
+        'customization/web_tools_customizationview_0000001',
         'customization/web_tools_customizationview_colirio',
 		'customization/web_tools_customizationview_tenampa',
 		'customization/web_tools_customizationview_emanuel',
@@ -203,6 +203,7 @@ abstract class _BaseController extends Controller
 		'customization/web_tools_customizationview_carlosluis',
 		'customization/web_tools_customizationview_creditaguil',
 		'customization/web_tools_customizationview_autolavadomaximum_helper',
+		'customization/web_tools_customizationview_pasteleriaballadares_helper',
     ];
 
     /**

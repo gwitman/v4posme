@@ -1659,28 +1659,28 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "J00000000" 
+	tb_company_parameter.value = "2811310730021G" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "J00000000" 
+	tb_company_parameter.value = "2811310730021G" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8565-0393" 
+	tb_company_parameter.value = "TEL: 2315-1797 / 8619-3048 / 8914-4578" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8565-0393" 
+	tb_company_parameter.value = "TEL: 2315-1797 / 8619-3048 / 8914-4578" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1688,15 +1688,15 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Promujer 10vars arriba, Leon" 
+	tb_company_parameter.value = "Iglesia san Jose, 1c al sur, 75 varas al oeste." 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Pasteleria Lizzette' , address = 'Promujer 10vars arriba, Leon' ,
-	flavorID = 728 /*usuarioID*/,type='default'  , abreviature='demo'
+	NAME = 'Pasteleria Balladares Quinteros' , address = 'Iglesia san Jose, 1c al sur, 75 varas al oeste.' ,
+	flavorID = 728 /*usuarioID*/,type='pasteleria_balladares'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
