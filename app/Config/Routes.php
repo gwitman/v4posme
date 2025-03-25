@@ -1531,6 +1531,8 @@ $routes->match(['get','post'],'app_box_share/viewRegisterInstitutoLaVid','app_bo
 $routes->match(['get','post'],'app_box_share/viewRegisterInstitutoLaVid/(:any)','app_box_share::viewRegisterInstitutoLaVid');
 $routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaTicketKhadash','app_box_share::viewRegisterFormatoPaginaTicketKhadash');
 $routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaTicketKhadash/(:any)','app_box_share::viewRegisterFormatoPaginaTicketKhadash');
+$routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaTicketRepuestoCristoRey','app_box_share::viewRegisterFormatoPaginaTicketRepuestoCristoRey');
+$routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaTicketRepuestoCristoRey/(:any)','app_box_share::viewRegisterFormatoPaginaTicketRepuestoCristoRey');
 $routes->match(['get','post'],'core_upgrade/byPop3','core_upgrade::byPop3');
 $routes->match(['get','post'],'core_upgrade/byPop3/(:any)','core_upgrade::byPop3');
 $routes->match(['get','post'],'core_merge/merge_of_posme_merge_to_posme_data_insert_and_update','core_merge::merge_of_posme_merge_to_posme_data_insert_and_update');
