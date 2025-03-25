@@ -1955,7 +1955,22 @@ class app_notification extends _BaseController
 	/********************************************/
 	/********************************************/
 	
-	
+	function sendWhatsappGlobalProRegaliaFrecuency1Meses()
+	{
+
+		$objNotificar = $this->Transaction_Master_Detail_Model->GlobalPro_get_Notification_Regalia_1Meses();
+		if ($objNotificar)
+			foreach ($objNotificar as $i) {
+				echo clearNumero($i->Destino) . "---" . $i->Mensaje . "</br></br>";
+				$this->core_web_whatsap->sendMessageByLiveconnect(
+					APP_COMPANY,
+					replaceSimbol($i->Mensaje),
+					clearNumero($i->Destino)
+				);
+			}
+
+		echo "SUCCESS";
+	}
 	function sendWhatsappGlobalProLaptopMenorA14400Frecuency7Meses()
 	{
 

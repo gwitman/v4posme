@@ -1220,6 +1220,7 @@ $routes->match(['get','post'],'app_notification/sendEmail','app_notification::se
 $routes->match(['get','post'],'app_notification/fillSendWhatsappCustomer','app_notification::fillSendWhatsappCustomer');
 $routes->match(['get','post'],'app_notification/sendWhatsappPosMeCalendar','app_notification::sendWhatsappPosMeCalendar');
 $routes->match(['get','post'],'app_notification/sendWhatsappPosMeSendMessage','app_notification::sendWhatsappPosMeSendMessage');
+$routes->match(['get','post'],'app_notification/sendWhatsappGlobalProRegaliaFrecuency1Meses','app_notification::sendWhatsappGlobalProRegaliaFrecuency1Meses');
 $routes->match(['get','post'],'app_notification/sendWhatsappGlobalProLaptopMenorA14400Frecuency7Meses','app_notification::sendWhatsappGlobalProLaptopMenorA14400Frecuency7Meses');
 $routes->match(['get','post'],'app_notification/sendWhatsappGlobalProLaptopMayoresA14400Frecuency11Meses','app_notification::sendWhatsappGlobalProLaptopMayoresA14400Frecuency11Meses');
 $routes->match(['get','post'],'app_notification/sendWhatsappGlobalProCumpleAnnos','app_notification::sendWhatsappGlobalProCumpleAnnos');
