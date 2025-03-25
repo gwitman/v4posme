@@ -193,7 +193,8 @@ class Remember_Model extends Model  {
             r.companyID = 2 and 
             r.isActive= 1 and 
             sr.isInit = 1 and 
-			r.createdOn = ? 
+			r.createdOn is not null and 
+			DATE(r.createdOn) = ? 
         
         union all 
         
@@ -221,7 +222,8 @@ class Remember_Model extends Model  {
             tm.isActive = 1 and 
             st.isInit = 1 and 
             tm.transactionID in ( 19 /*FAC*/  ) and 
-            tm.nextVisit = ?
+            tm.nextVisit is not null and 
+			DATE(tm.nextVisit) = ? 
 			
 		union all 
 		/*CONSULTAS MEDICAS*/
@@ -247,7 +249,8 @@ class Remember_Model extends Model  {
             tm.isActive = 1 and 
             st.isInit = 1 and 
             tm.transactionID in ( 35 /*CONSULTAS MEDICAS*/  ) and 
-            tm.nextVisit = ?
+            tm.nextVisit is not null and 
+			DATE(tm.nextVisit) = ? 
 			
 			
 		union all 
@@ -274,7 +277,123 @@ class Remember_Model extends Model  {
             tm.isActive = 1 and 
             st.isInit = 1 and 
             tm.transactionID in ( 44 /*TAREAS*/  ) and 
-            tm.nextVisit = ?
+			tm.nextVisit is not null and 
+			DATE(tm.nextVisit) = ? 
+		";
+
+        //Ejecutar Consulta
+        return $db->query($sql, [$date,$date,$date,$date])->getResult();
+    }
+	
+	function getProgrammingByDateNotPreFactura($date)
+    {
+        $db 	= db_connect();
+        $sql = "
+		select
+            CONCAT('REM','',r.rememberID) as rememberID,
+            '' as url,
+            r.title,
+            r.description,	
+            r.createdOn,
+            r.tagID,
+			'yellow' as color,
+			'' as entidad,
+			'' as nombre
+        from 
+            tb_remember r 
+            inner join tb_workflow_stage sr on 
+                sr.workflowStageID = r.statusID 
+        where 
+            r.companyID = 2 and 
+            r.isActive= 1 and 
+            sr.isInit = 1 and 
+			r.createdOn is not null and 
+			DATE(r.createdOn) = ? 
+        
+        union all 
+        
+		
+		/*FACTURAS*/
+        select 
+            tm.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/2/transactionID/19/transactionMasterID/',tm.transactionMasterID,'/codigoMesero/none') as url,
+            'PROFORMA' AS title,
+            tm.note AS description,	
+            tm.nextVisit AS createdOn,
+            0  AS tagID,
+			'yellow' as color,
+			emp.customerNumber  as entidad,
+			nat.firstName as nombre
+        from 
+            tb_transaction_master tm 
+            inner join tb_workflow_stage st on 
+                tm.statusID = st.workflowStageID 
+			inner join tb_naturales nat on 
+				nat.entityID = tm.entityID  
+			inner join tb_customer emp on 
+				emp.entityID = nat.entityID 
+        where 
+            tm.isActive = 1 and 
+            /*st.isInit = 0 and */
+			st.aplicable = 1 and 
+            tm.transactionID in ( 19 /*FAC*/  ) and 
+            tm.nextVisit is not null and 
+			DATE(tm.nextVisit) = ? 
+			
+		union all 
+		/*CONSULTAS MEDICAS*/
+		select 
+            tm.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_med_query/edit/companyID/2/transactionID/35/transactionMasterID/',tm.transactionMasterID) as url,
+            'CONSULTAS' AS title,
+            tm.note AS description,	
+            tm.nextVisit AS createdOn,
+            0  AS tagID,
+			'yellow' as color,
+			emp.customerNumber  as entidad,
+			nat.firstName as nombre
+        from 
+            tb_transaction_master tm 
+            inner join tb_workflow_stage st on 
+                tm.statusID = st.workflowStageID 
+			inner join tb_naturales nat on 
+				nat.entityID = tm.entityID  
+			inner join tb_customer emp on 
+				emp.entityID = nat.entityID 
+        where 
+            tm.isActive = 1 and 
+            st.isInit = 1 and 
+            tm.transactionID in ( 35 /*CONSULTAS MEDICAS*/  ) and 
+            tm.nextVisit is not null and 
+			DATE(tm.nextVisit) = ? 
+			
+			
+		union all 
+		/*TAREAS TASK*/
+		select 
+            tm.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_rrhh_task/edit/companyID/2/transactionID/44/transactionMasterID/',tm.transactionMasterID) as url,
+            'TASK' AS title,
+            tm.reference4 AS description,	
+            tm.nextVisit AS createdOn,
+            0  AS tagID,
+			'yellow' as color,
+			emp.employeNumber  as entidad,
+			nat.firstName as nombre
+        from 
+            tb_transaction_master tm 
+            inner join tb_workflow_stage st on 
+                tm.statusID = st.workflowStageID 
+			inner join tb_naturales nat on 
+				nat.entityID = tm.entityIDSecondary 
+			inner join tb_employee emp on 
+				emp.entityID = nat.entityID 
+        where 
+            tm.isActive = 1 and 
+            st.isInit = 1 and 
+            tm.transactionID in ( 44 /*TAREAS*/  ) and 
+			tm.nextVisit is not null and 
+			DATE(tm.nextVisit) = ? 
 		";
 
         //Ejecutar Consulta
@@ -321,6 +440,99 @@ class Remember_Model extends Model  {
         where 
             tm.isActive = 1 and 
             st.isInit = 1 and 
+            tm.transactionID in ( 19 /*FAC*/  ) and 
+            tm.nextVisit > '1000-01-01 00:00:00'
+			
+		union all 
+		/*CONSULTAS MEDICAS*/
+		select 
+            tm.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_med_query/edit/companyID/2/transactionID/35/transactionMasterID/',tm.transactionMasterID) as url,
+            'CONSULTAS' AS title,
+            tm.note AS description,	
+            tm.nextVisit AS createdOn,
+            0  AS tagID,
+			'red' as color
+        from 
+            tb_transaction_master tm 
+            inner join tb_workflow_stage st on 
+                tm.statusID = st.workflowStageID 
+        where 
+            tm.isActive = 1 and 
+            st.isInit = 1 and 
+            tm.transactionID in ( 35 /*CONSULTAS MEDICAS*/  ) and 
+            tm.nextVisit > '1000-01-01 00:00:00'
+			
+			
+		union all 
+		/*TAREAS TASK*/
+		
+		
+		select 
+            tm.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_rrhh_task/edit/companyID/2/transactionID/44/transactionMasterID/',tm.transactionMasterID) as url,
+            'TASK' AS title,
+            tm.note AS description,	
+            tm.nextVisit AS createdOn,
+            0  AS tagID,
+			'yellow' as color
+        from 
+            tb_transaction_master tm 
+            inner join tb_workflow_stage st on 
+                tm.statusID = st.workflowStageID 
+        where 
+            tm.isActive = 1 and 
+            st.isInit = 1 and 
+            tm.transactionID in ( 44 /*TAREAS*/  ) and 
+            tm.nextVisit  > '1000-01-01 00:00:00'
+			
+		";
+
+        //Ejecutar Consulta
+        return $db->query($sql)->getResult();
+    }
+	
+	function getProgrammingNotPreFactura()
+    {
+        $db 	= db_connect();
+        $sql = "
+		select
+            CONCAT('REM','',r.rememberID) as rememberID,
+            '' as url,
+            r.title,
+            r.description,	
+            r.createdOn,
+            r.tagID,
+			'blue' as color
+        from 
+            tb_remember r 
+            inner join tb_workflow_stage sr on 
+                sr.workflowStageID = r.statusID 
+        where 
+            r.companyID = 2 and 
+            r.isActive= 1 and 
+            sr.isInit = 1 
+        
+        union all 
+        
+		
+		/*FACTURAS*/
+        select 
+            tm.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/2/transactionID/19/transactionMasterID/',tm.transactionMasterID,'/codigoMesero/none') as url,
+            'PROFORMA' AS title,
+            tm.note AS description,	
+            tm.nextVisit AS createdOn,
+            0  AS tagID,
+			'green' as color
+        from 
+            tb_transaction_master tm 
+            inner join tb_workflow_stage st on 
+                tm.statusID = st.workflowStageID 
+        where 
+            tm.isActive = 1 and 
+            /*st.isInit = 0 and */
+			st.aplicable = 1 and 
             tm.transactionID in ( 19 /*FAC*/  ) and 
             tm.nextVisit > '1000-01-01 00:00:00'
 			

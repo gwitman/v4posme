@@ -165,7 +165,17 @@ class app_calendar_programming extends _BaseController
                 if ($resultPermission == PERMISSION_NONE) throw new \Exception(NOT_ACCESS_FUNCTION);
 
             }
-            $result = $this->Remember_Model->getProgramming();
+            
+			if($dataSession['company']->flavorID == 25)
+			{
+				$result = $this->Remember_Model->getProgramming();
+			}
+			else
+			{
+				
+				$result = $this->Remember_Model->getProgrammingNotPreFactura();
+			}
+		
             $events = [];
             foreach ($result as $row) {
                 $events[] = [
@@ -286,7 +296,11 @@ class app_calendar_programming extends _BaseController
             $objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true" ? true : false;
             $date 		= $this->request->getGet("date");
             // Obtener eventos de la base de datos (si es necesario)
-            $eventos 	= $this->Remember_Model->getProgrammingByDate($date);
+			
+			if($dataSession['company']->flavorID == 25)
+			$eventos 	= $this->Remember_Model->getProgrammingByDate($date);
+			else 
+            $eventos 	= $this->Remember_Model->getProgrammingByDateNotPreFactura($date);
 
             // Configurar Dompdf
             $options 	= new Options();
