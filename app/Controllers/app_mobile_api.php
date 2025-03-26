@@ -278,8 +278,8 @@ class app_mobile_api extends _BaseController
     {
         try {
 
-            $nickname 	= /*inicio get post*/ $this->request->getPost("txtNickname");
-            $password 	= /*inicio get post*/ $this->request->getPost("txtPassword");
+            $nickname 	= /*inicio get post*/ $this->request->getPostGet("txtNickname");
+            $password 	= /*inicio get post*/ $this->request->getPostGet("txtPassword");
             $objUser 	= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);
             $companyID 	= $objUser["user"]->companyID;
             $userID 	= $objUser["user"]->userID;
