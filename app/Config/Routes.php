@@ -1129,6 +1129,8 @@ $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNorm
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmBpn/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmBpn');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1PasteleriaLizzette','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1PasteleriaLizzette');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1PasteleriaLizzette/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1PasteleriaLizzette');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1RepuestoCristoRey','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1RepuestoCristoRey');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1RepuestoCristoRey/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1RepuestoCristoRey');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Tenampa','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1Tenampa');
@@ -1508,6 +1510,8 @@ $routes->match(['get','post'],'app_box_share/viewRegisterFormatoA4Ebenezer','app
 $routes->match(['get','post'],'app_box_share/viewRegisterFormatoA4Ebenezer/(:any)','app_box_share::viewRegisterFormatoA4Ebenezer');
 $routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaTicketColirio','app_box_share::viewRegisterFormatoPaginaTicketColirio');
 $routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaTicketColirio/(:any)','app_box_share::viewRegisterFormatoPaginaTicketColirio');
+$routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaTicketPasteleriaLizzette','app_box_share::viewRegisterFormatoPaginaTicketPasteleriaLizzette');
+$routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaTicketPasteleriaLizzette/(:any)','app_box_share::viewRegisterFormatoPaginaTicketPasteleriaLizzette');
 $routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaTicket80mmCarlosLuis','app_box_share::viewRegisterFormatoPaginaTicket80mmCarlosLuis');
 $routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaTicket80mmCarlosLuis/(:any)','app_box_share::viewRegisterFormatoPaginaTicket80mmCarlosLuis');
 $routes->match(['get','post'],'app_box_share/viewRegisterFormatoPaginaTicketInvoiceCancel','app_box_share::viewRegisterFormatoPaginaTicketInvoiceCancel');
