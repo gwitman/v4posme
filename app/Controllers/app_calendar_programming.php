@@ -294,7 +294,7 @@ class app_calendar_programming extends _BaseController
             $objParameterShowDownloadPreview	= $this->core_web_parameter->getParameter("CORE_SHOW_DOWNLOAD_PREVIEW",$companyID);
             $objParameterShowDownloadPreview	= $objParameterShowDownloadPreview->value;
             $objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true" ? true : false;
-            $date 		= $this->request->getGet("date");
+            $date 		                        = $this->request->getGet("date");
             // Obtener eventos de la base de datos (si es necesario)
 			
 			if($dataSession['company']->flavorID == 25)
@@ -376,8 +376,8 @@ class app_calendar_programming extends _BaseController
             $objParameterRuc        = $objParameterRuc->value;
             $objCompany 	        = $this->Company_Model->get_rowByPK($companyID);
             $idevent                = $this->request->getGet("idevent");
-            $id                     = str_replace('REM','', $idevent);
-            $evento = $this->Remember_Model->get_rowByPK($id);
+            $evento 	            = $this->Remember_Model->getProgrammingById($idevent);
+
             $objParameterShowDownloadPreview	= $this->core_web_parameter->getParameter("CORE_SHOW_DOWNLOAD_PREVIEW",$companyID);
             $objParameterShowDownloadPreview	= $objParameterShowDownloadPreview->value;
             $objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true" ? true : false;

@@ -165,6 +165,23 @@
 			fnWaitClose();
 			
         });
+
+        $('#printOpcionEvent').click(function (){
+            let id 		= $('#eventPrintId').val();
+            if (!id) return;
+            let idevent	= id;
+            $('#eventOpcionModal').modal('hide');
+            fnWaitOpen();
+			window.open('<?= base_url()?>/app_calendar_programming/imprimirEvento?idevent='+idevent, "_blank");
+			fnWaitClose();
+			
+        });
+
+        $('#redirectEvent').click(function(){
+            let url = $('#eventUrl').val();
+            window.open(url, '_blank');
+            $('#eventOpcionModal').modal('hide');
+        });
         function handleEventClick(info, isDateClick = false) {
             info.jsEvent.preventDefault(); // don't let the browser navigate
             let event = isDateClick ? null : info.event;
@@ -172,7 +189,10 @@
             $('#printEvent').toggle(!isDateClick);
             if (event){
                 if (info.event.url) {
-                    window.open(info.event.url, '_blank');
+                    $('#eventPrintId').val(event.id);
+                    $('#eventUrl').val(event.url);
+                    $('#eventOpcionModal').modal('show');
+                    //window.open(info.event.url, '_blank');
                     return;
                 }
                 fnWaitOpen();

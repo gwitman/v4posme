@@ -284,6 +284,126 @@ class Remember_Model extends Model  {
         //Ejecutar Consulta
         return $db->query($sql, [$date,$date,$date,$date])->getResult();
     }
+
+    function getProgrammingById($id)
+    {
+        $db 	= db_connect();
+        $sql = "
+        select 
+            programming.rememberID, 
+            programming.url, 
+            programming.title, 
+            programming.description, 
+            programming.createdOn, 
+            programming.tagID, 
+            programming.color, 
+            programming.entidad, 
+            programming.nombre
+        from  
+        (
+            select
+                CONCAT('REM','',r.rememberID) as rememberID,
+                '' as url,
+                r.title,
+                r.description,	
+                r.createdOn,
+                r.tagID,
+                'yellow' as color,
+                '' as entidad,
+                '' as nombre
+            from 
+                tb_remember r 
+                inner join tb_workflow_stage sr on 
+                    sr.workflowStageID = r.statusID 
+            where 
+                r.companyID = 2 and 
+                r.isActive= 1 and 
+                r.createdOn is not null 
+            
+            union all 
+            
+            
+            /*FACTURAS*/
+            select 
+                tm.transactionNumber as rememberID,	
+                CONCAT('" . base_url() . "/app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/2/transactionID/19/transactionMasterID/',tm.transactionMasterID,'/codigoMesero/none') as url,
+                'PROFORMA' AS title,
+                tm.note AS description,	
+                tm.nextVisit AS createdOn,
+                0  AS tagID,
+                'yellow' as color,
+                emp.customerNumber  as entidad,
+                nat.firstName as nombre
+            from 
+                tb_transaction_master tm 
+                inner join tb_workflow_stage st on 
+                    tm.statusID = st.workflowStageID 
+                inner join tb_naturales nat on 
+                    nat.entityID = tm.entityID  
+                inner join tb_customer emp on 
+                    emp.entityID = nat.entityID 
+            where 
+                tm.isActive = 1 and 
+                tm.transactionID in ( 19 /*FAC*/  ) and 
+                tm.nextVisit is not null 
+                
+            union all 
+            /*CONSULTAS MEDICAS*/
+            select 
+                tm.transactionNumber as rememberID,	
+                CONCAT('" . base_url() . "/app_med_query/edit/companyID/2/transactionID/35/transactionMasterID/',tm.transactionMasterID) as url,
+                'CONSULTAS' AS title,
+                tm.note AS description,	
+                tm.nextVisit AS createdOn,
+                0  AS tagID,
+                'yellow' as color,
+                emp.customerNumber  as entidad,
+                nat.firstName as nombre
+            from 
+                tb_transaction_master tm 
+                inner join tb_workflow_stage st on 
+                    tm.statusID = st.workflowStageID 
+                inner join tb_naturales nat on 
+                    nat.entityID = tm.entityID  
+                inner join tb_customer emp on 
+                    emp.entityID = nat.entityID 
+            where 
+                tm.isActive = 1 and
+                tm.transactionID in ( 35 /*CONSULTAS MEDICAS*/  ) and 
+                tm.nextVisit is not null 
+                
+                
+            union all 
+            /*TAREAS TASK*/
+            select 
+                tm.transactionNumber as rememberID,	
+                CONCAT('" . base_url() . "/app_rrhh_task/edit/companyID/2/transactionID/44/transactionMasterID/',tm.transactionMasterID) as url,
+                'TASK' AS title,
+                tm.reference4 AS description,	
+                tm.nextVisit AS createdOn,
+                0  AS tagID,
+                'yellow' as color,
+                emp.employeNumber  as entidad,
+                nat.firstName as nombre
+            from 
+                tb_transaction_master tm 
+                inner join tb_workflow_stage st on 
+                    tm.statusID = st.workflowStageID 
+                inner join tb_naturales nat on 
+                    nat.entityID = tm.entityIDSecondary 
+                inner join tb_employee emp on 
+                    emp.entityID = nat.entityID 
+            where 
+                tm.isActive = 1 and
+                tm.transactionID in ( 44 /*TAREAS*/  ) and 
+                tm.nextVisit is not null
+		) as programming
+		where programming.rememberID = ?
+		";
+
+        //Ejecutar Consulta
+        return $db->query($sql, [$id])->getRow();
+    }
 	
 	function getProgrammingByDateNotPreFactura($date)
     {
