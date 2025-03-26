@@ -192,7 +192,6 @@
                     $('#eventPrintId').val(event.id);
                     $('#eventUrl').val(event.url);
                     $('#eventOpcionModal').modal('show');
-                    //window.open(info.event.url, '_blank');
                     return;
                 }
                 fnWaitOpen();
