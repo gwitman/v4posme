@@ -10436,7 +10436,7 @@ function helper_reporte80mmEventosCalendario(
     $rucCompany = "" /*ruc*/ ,
 ): string
 {
-    $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
+    $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;
 
     $type    = pathinfo($path, PATHINFO_EXTENSION);
     $data    = file_get_contents($path);
