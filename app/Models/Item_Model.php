@@ -331,8 +331,12 @@ class Item_Model extends Model  {
 					i.barCode,
 					i.itemNumber,
 					i.`name`,
-					iw.quantity,
-					(select pp.price from tb_price pp where pp.itemID = i.itemID and pp.typePriceID = 154 /*precio publico*/) as PrecioPublico	
+					ifnull(iw.quantity,0) as quantity,
+					ifnull(
+						(select pp.price from tb_price pp where pp.itemID = i.itemID and pp.typePriceID = 154 /*precio publico*/)
+						,
+						0
+					) as PrecioPublico	
 				from 
 					tb_item i 
 					inner join tb_item_warehouse iw on 
