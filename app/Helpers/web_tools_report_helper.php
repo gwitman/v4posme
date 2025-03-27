@@ -8860,7 +8860,7 @@ function helper_reporte80mmTransactionMasterPasteleriaLizzette(
                                 
                          [[DETALLE]]
                                 
-                         <tr>
+                        <tr>
                           <td colspan='3' style='text-align:center'>
                             &nbsp;
                           </td>
@@ -8897,13 +8897,28 @@ function helper_reporte80mmTransactionMasterPasteleriaLizzette(
                             ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount)."
                           </td>
                         </tr>
-   
+	
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='2'>
+                            RECIBIDO DOL
+                          </td>
+                          <td style='text-align:right'>
+                            $ ".sprintf("%.2f",$objTransactionMasterInfo->receiptAmountDol)."
+                          </td>
+                        </tr>
+						
                         <tr>
                           <td colspan='2'>
                             RECIBIDO
                           </td>
                           <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount + $objTransactionMasterInfo->changeAmount)."
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMasterInfo->receiptAmount)."
                           </td>
                         </tr>
                          <tr>
@@ -14206,7 +14221,23 @@ function helper_reporte80mmTransactionMasterMiranda(
                             &nbsp;
                           </td>
                         </tr>
-                             
+                        
+						<tr>
+                          <td colspan='2'>
+                            SUB TOTAL
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->subAmount)."
+                          </td>
+                        </tr>
+						<tr>
+                          <td colspan='2'>
+                            DESCUENTO 
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->discount)."
+                          </td>
+                        </tr>						
                         <tr>
                           <td colspan='2'>
                             TOTAL
@@ -20835,7 +20866,49 @@ function helper_reporte80mmTransactionMasterInputOutPutCash(
                             &nbsp;
                           </td>
                         </tr>
-
+						
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            REFERENCIA1
+                          </td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".$objTransactionMastser->reference1."
+                          </td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            REFERENCIA2
+                          </td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".$objTransactionMastser->reference2."
+                          </td>
+                        </tr>
+						
+						 <tr>
+                          <td colspan='3' style='text-align:center'>
+                            NOTA
+                          </td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".$objTransactionMastser->note."
+                          </td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+						
                         <tr>
                           <td colspan='3' style='text-align:center'>
                             ".$objCompany->address."
