@@ -170,10 +170,13 @@ class app_calendar_programming extends _BaseController
 			{
 				$result = $this->Remember_Model->getProgramming();
 			}
-			else
+			if($dataSession['company']->flavorID == 26)
 			{
-				
 				$result = $this->Remember_Model->getProgrammingNotPreFactura();
+			}
+			else
+			{				
+				$result = $this->Remember_Model->getProgrammingFacturaAplicadaConHora();
 			}
 		
             $events = [];

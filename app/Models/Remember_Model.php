@@ -171,121 +171,7 @@ class Remember_Model extends Model  {
 		
 	}
 
-    function getProgrammingByDate($date)
-    {
-        $db 	= db_connect();
-        $sql = "
-		select
-            CONCAT('REM','',r.rememberID) as rememberID,
-            '' as url,
-            r.title,
-            r.description,	
-            r.createdOn,
-            r.tagID,
-			'yellow' as color,
-			'' as entidad,
-			'' as nombre
-        from 
-            tb_remember r 
-            inner join tb_workflow_stage sr on 
-                sr.workflowStageID = r.statusID 
-        where 
-            r.companyID = 2 and 
-            r.isActive= 1 and 
-            sr.isInit = 1 and 
-			r.createdOn is not null and 
-			DATE(r.createdOn) = ? 
-        
-        union all 
-        
-		
-		/*FACTURAS*/
-        select 
-            tm.transactionNumber as rememberID,	
-            CONCAT('".base_url()."/app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/2/transactionID/19/transactionMasterID/',tm.transactionMasterID,'/codigoMesero/none') as url,
-            'PROFORMA' AS title,
-            tm.note AS description,	
-            tm.nextVisit AS createdOn,
-            0  AS tagID,
-			'yellow' as color,
-			emp.customerNumber  as entidad,
-			nat.firstName as nombre
-        from 
-            tb_transaction_master tm 
-            inner join tb_workflow_stage st on 
-                tm.statusID = st.workflowStageID 
-			inner join tb_naturales nat on 
-				nat.entityID = tm.entityID  
-			inner join tb_customer emp on 
-				emp.entityID = nat.entityID 
-        where 
-            tm.isActive = 1 and 
-            st.isInit = 1 and 
-            tm.transactionID in ( 19 /*FAC*/  ) and 
-            tm.nextVisit is not null and 
-			DATE(tm.nextVisit) = ? 
-			
-		union all 
-		/*CONSULTAS MEDICAS*/
-		select 
-            tm.transactionNumber as rememberID,	
-            CONCAT('".base_url()."/app_med_query/edit/companyID/2/transactionID/35/transactionMasterID/',tm.transactionMasterID) as url,
-            'CONSULTAS' AS title,
-            tm.note AS description,	
-            tm.nextVisit AS createdOn,
-            0  AS tagID,
-			'yellow' as color,
-			emp.customerNumber  as entidad,
-			nat.firstName as nombre
-        from 
-            tb_transaction_master tm 
-            inner join tb_workflow_stage st on 
-                tm.statusID = st.workflowStageID 
-			inner join tb_naturales nat on 
-				nat.entityID = tm.entityID  
-			inner join tb_customer emp on 
-				emp.entityID = nat.entityID 
-        where 
-            tm.isActive = 1 and 
-            st.isInit = 1 and 
-            tm.transactionID in ( 35 /*CONSULTAS MEDICAS*/  ) and 
-            tm.nextVisit is not null and 
-			DATE(tm.nextVisit) = ? 
-			
-			
-		union all 
-		/*TAREAS TASK*/
-		select 
-            tm.transactionNumber as rememberID,	
-            CONCAT('".base_url()."/app_rrhh_task/edit/companyID/2/transactionID/44/transactionMasterID/',tm.transactionMasterID) as url,
-            'TASK' AS title,
-            tm.reference4 AS description,	
-            tm.nextVisit AS createdOn,
-            0  AS tagID,
-			'yellow' as color,
-			emp.employeNumber  as entidad,
-			nat.firstName as nombre
-        from 
-            tb_transaction_master tm 
-            inner join tb_workflow_stage st on 
-                tm.statusID = st.workflowStageID 
-			inner join tb_naturales nat on 
-				nat.entityID = tm.entityIDSecondary 
-			inner join tb_employee emp on 
-				emp.entityID = nat.entityID 
-        where 
-            tm.isActive = 1 and 
-            st.isInit = 1 and 
-            tm.transactionID in ( 44 /*TAREAS*/  ) and 
-			tm.nextVisit is not null and 
-			DATE(tm.nextVisit) = ? 
-		";
-
-        //Ejecutar Consulta
-        return $db->query($sql, [$date,$date,$date,$date])->getResult();
-    }
-
-    function getProgrammingById($id)
+	function getProgrammingById($id)
     {
         $db 	= db_connect();
         $sql = "
@@ -405,6 +291,125 @@ class Remember_Model extends Model  {
         return $db->query($sql, [$id])->getRow();
     }
 	
+	//Para imprimir todo el dia
+	//Imprimir solo las facturas registradas
+    function getProgrammingByDate($date)
+    {
+        $db 	= db_connect();
+        $sql = "
+		select
+            CONCAT('REM','',r.rememberID) as rememberID,
+            '' as url,
+            r.title,
+            r.description,	
+            r.createdOn,
+            r.tagID,
+			'yellow' as color,
+			'' as entidad,
+			'' as nombre
+        from 
+            tb_remember r 
+            inner join tb_workflow_stage sr on 
+                sr.workflowStageID = r.statusID 
+        where 
+            r.companyID = 2 and 
+            r.isActive= 1 and 
+            sr.isInit = 1 and 
+			r.createdOn is not null and 
+			DATE(r.createdOn) = ? 
+        
+        union all 
+        
+		
+		/*FACTURAS*/
+        select 
+            tm.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/2/transactionID/19/transactionMasterID/',tm.transactionMasterID,'/codigoMesero/none') as url,
+            'PROFORMA' AS title,
+            tm.note AS description,	
+            tm.nextVisit AS createdOn,
+            0  AS tagID,
+			'yellow' as color,
+			emp.customerNumber  as entidad,
+			nat.firstName as nombre
+        from 
+            tb_transaction_master tm 
+            inner join tb_workflow_stage st on 
+                tm.statusID = st.workflowStageID 
+			inner join tb_naturales nat on 
+				nat.entityID = tm.entityID  
+			inner join tb_customer emp on 
+				emp.entityID = nat.entityID 
+        where 
+            tm.isActive = 1 and 
+            st.isInit = 1 and 
+            tm.transactionID in ( 19 /*FAC*/  ) and 
+            tm.nextVisit is not null and 
+			DATE(tm.nextVisit) = ? 
+			
+		union all 
+		/*CONSULTAS MEDICAS*/
+		select 
+            tm.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_med_query/edit/companyID/2/transactionID/35/transactionMasterID/',tm.transactionMasterID) as url,
+            'CONSULTAS' AS title,
+            tm.note AS description,	
+            tm.nextVisit AS createdOn,
+            0  AS tagID,
+			'yellow' as color,
+			emp.customerNumber  as entidad,
+			nat.firstName as nombre
+        from 
+            tb_transaction_master tm 
+            inner join tb_workflow_stage st on 
+                tm.statusID = st.workflowStageID 
+			inner join tb_naturales nat on 
+				nat.entityID = tm.entityID  
+			inner join tb_customer emp on 
+				emp.entityID = nat.entityID 
+        where 
+            tm.isActive = 1 and 
+            st.isInit = 1 and 
+            tm.transactionID in ( 35 /*CONSULTAS MEDICAS*/  ) and 
+            tm.nextVisit is not null and 
+			DATE(tm.nextVisit) = ? 
+			
+			
+		union all 
+		/*TAREAS TASK*/
+		select 
+            tm.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_rrhh_task/edit/companyID/2/transactionID/44/transactionMasterID/',tm.transactionMasterID) as url,
+            'TASK' AS title,
+            tm.reference4 AS description,	
+            tm.nextVisit AS createdOn,
+            0  AS tagID,
+			'yellow' as color,
+			emp.employeNumber  as entidad,
+			nat.firstName as nombre
+        from 
+            tb_transaction_master tm 
+            inner join tb_workflow_stage st on 
+                tm.statusID = st.workflowStageID 
+			inner join tb_naturales nat on 
+				nat.entityID = tm.entityIDSecondary 
+			inner join tb_employee emp on 
+				emp.entityID = nat.entityID 
+        where 
+            tm.isActive = 1 and 
+            st.isInit = 1 and 
+            tm.transactionID in ( 44 /*TAREAS*/  ) and 
+			tm.nextVisit is not null and 
+			DATE(tm.nextVisit) = ? 
+		";
+
+        //Ejecutar Consulta
+        return $db->query($sql, [$date,$date,$date,$date])->getResult();
+    }
+
+    
+	//Para imprimir todo el dia
+	//Imprimir solo las facturas aplicadas
 	function getProgrammingByDateNotPreFactura($date)
     {
         $db 	= db_connect();
@@ -520,6 +525,8 @@ class Remember_Model extends Model  {
         return $db->query($sql, [$date,$date,$date,$date])->getResult();
     }
 
+	//Para mostrar en el calendario
+	//Mostrar las facturas con hora cero, registradas
     function getProgramming()
     {
         $db 	= db_connect();
@@ -612,6 +619,8 @@ class Remember_Model extends Model  {
         return $db->query($sql)->getResult();
     }
 	
+	//Para mostrar en el calendario
+	//Mostrar las facturas con hora cero, y aplicadas
 	function getProgrammingNotPreFactura()
     {
         $db 	= db_connect();
@@ -648,15 +657,16 @@ class Remember_Model extends Model  {
 				tm.note 
 			) AS title,
             tm.note AS description,	
-            tm.nextVisit AS createdOn,
+            tm.createdOn,  
             0  AS tagID,
-			'green' as color
+			'green' as color 
+			
         from 
             tb_transaction_master tm 
             inner join tb_workflow_stage st on 
                 tm.statusID = st.workflowStageID 
 			inner join tb_naturales nat on 
-				nat.entityID = tm.entityID 
+				nat.entityID = tm.entityID 		
         where 
             tm.isActive = 1 and 
             /*st.isInit = 0 and */
@@ -712,5 +722,120 @@ class Remember_Model extends Model  {
         //Ejecutar Consulta
         return $db->query($sql)->getResult();
     }
+	
+	
+	//Para mostrar en el calendario
+	//Mostrar las facturas con hora, y aplicadas
+	function getProgrammingFacturaAplicadaConHora()
+    {
+        $db 	= db_connect();
+        $sql = "
+		select
+            CONCAT('REM','',r.rememberID) as rememberID,
+            '' as url,
+            r.title,
+            r.description,	
+            r.createdOn,
+            r.tagID,
+			'blue' as color
+        from 
+            tb_remember r 
+            inner join tb_workflow_stage sr on 
+                sr.workflowStageID = r.statusID 
+        where 
+            r.companyID = 2 and 
+            r.isActive= 1 and 
+            sr.isInit = 1 
+        
+        union all 
+        
+		
+		/*FACTURAS*/
+        select 
+            tm.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/2/transactionID/19/transactionMasterID/',tm.transactionMasterID,'/codigoMesero/none') as url,
+            concat(
+				tm.transactionNumber,
+				'-' ,
+				nat.firstName,
+				' *** ',
+				tm.note 
+			) AS title,
+            tm.note AS description,	
+            STR_TO_DATE(
+				CONCAT(DATE(tm.nextVisit), ' ', 
+					   TIME_FORMAT(STR_TO_DATE(hora.`name` , '%h:%i %p'), '%H:%i:%s')),
+				'%Y-%m-%d %H:%i:%s'
+			) AS createdOn,  
+            0  AS tagID,
+			'green' as color 
+			
+        from 
+            tb_transaction_master tm 
+            inner join tb_workflow_stage st on 
+                tm.statusID = st.workflowStageID 
+			inner join tb_naturales nat on 
+				nat.entityID = tm.entityID 				
+			inner join tb_transaction_master_info tmi on 
+				tm.transactionMasterID = tmi.transactionMasterID 
+			inner join tb_catalog_item hora  on 
+				hora.catalogItemID = tmi.zoneID 
+		
+        where 
+            tm.isActive = 1 and 
+            /*st.isInit = 0 and */
+			st.aplicable = 1 and 
+            tm.transactionID in ( 19 /*FAC*/  ) and 
+            tm.nextVisit > '1000-01-01 00:00:00'
+			
+		union all 
+		/*CONSULTAS MEDICAS*/
+		select 
+            tm.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_med_query/edit/companyID/2/transactionID/35/transactionMasterID/',tm.transactionMasterID) as url,
+            'CONSULTAS' AS title,
+            tm.note AS description,	
+            tm.nextVisit AS createdOn,
+            0  AS tagID,
+			'red' as color
+        from 
+            tb_transaction_master tm 
+            inner join tb_workflow_stage st on 
+                tm.statusID = st.workflowStageID 
+        where 
+            tm.isActive = 1 and 
+            st.isInit = 1 and 
+            tm.transactionID in ( 35 /*CONSULTAS MEDICAS*/  ) and 
+            tm.nextVisit > '1000-01-01 00:00:00'
+			
+			
+		union all 
+		/*TAREAS TASK*/
+		
+		
+		select 
+            tm.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_rrhh_task/edit/companyID/2/transactionID/44/transactionMasterID/',tm.transactionMasterID) as url,
+            'TASK' AS title,
+            tm.note AS description,	
+            tm.nextVisit AS createdOn,
+            0  AS tagID,
+			'yellow' as color
+        from 
+            tb_transaction_master tm 
+            inner join tb_workflow_stage st on 
+                tm.statusID = st.workflowStageID 
+        where 
+            tm.isActive = 1 and 
+            st.isInit = 1 and 
+            tm.transactionID in ( 44 /*TAREAS*/  ) and 
+            tm.nextVisit  > '1000-01-01 00:00:00'
+			
+		";
+
+        //Ejecutar Consulta
+        return $db->query($sql)->getResult();
+    }
+	
 }
 ?>
