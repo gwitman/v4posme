@@ -10,6 +10,20 @@ function getBehavioPasteleriaBalladares(): array
 		strtolower('pasteleria_balladares_app_invoice_billing_divPrecio')         			=> "hidden",
 		strtolower('pasteleria_balladares_app_invoice_billing_divBodegaHidden')         	=> "hidden",
 		strtolower('pasteleria_balladares_app_invoice_billing_divMesa')			         	=> "hidden",
+		strtolower('pasteleria_balladares_app_invoice_billing_lblReferencia')	         	=> "Entregado",		
+		strtolower('pasteleria_balladares_app_invoice_billing_divTraslateElement')			=> "
+			<script>
+				$(document).ready(function(){
+					if( $('#txtTransactionMasterID').val() == undefined )
+					{
+						$('#txtReference3').val('NO'); 
+					}
+				}); 
+			</script> 
+		",
+		
+		
+		
     );
 }
 
