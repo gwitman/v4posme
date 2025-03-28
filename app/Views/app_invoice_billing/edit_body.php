@@ -378,7 +378,6 @@ echo helper_getHtmlOfPageLanding();
 									</div>
 									
 									<div id="divTxtElementoDisponibleParaMover1" class="hidden" >
-										abc
 									</div>
 									
 									<div class="form-group  <?php echo getBehavio($company->type,"app_invoice_billing","divTxtCedula2",""); ?>" id="divCedula" >
