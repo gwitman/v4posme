@@ -361,7 +361,7 @@ class Remember_Model extends Model  {
             select 
                 tm.transactionNumber as rememberID,	
                 CONCAT('" . base_url() . "/app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/2/transactionID/19/transactionMasterID/',tm.transactionMasterID,'/codigoMesero/none') as url,
-                'PROFORMA' AS title,
+                tm.transactionNumber AS title,
                 concat(
 					tm.note,
 					'<br>',

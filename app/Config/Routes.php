@@ -899,6 +899,8 @@ $routes->match(['get','post'],'app_inventory_report/list_item_by_warehouse','app
 $routes->match(['get','post'],'app_inventory_report/list_item_by_warehouse/(:any)','app_inventory_report::list_item_by_warehouse');
 $routes->match(['get','post'],'app_inventory_report/list_item_width_exist','app_inventory_report::list_item_width_exist');
 $routes->match(['get','post'],'app_inventory_report/list_item_width_exist/(:any)','app_inventory_report::list_item_width_exist');
+$routes->match(['get','post'],'app_inventory_report/list_item_out_exist','app_inventory_report::list_item_out_exist');
+$routes->match(['get','post'],'app_inventory_report/list_item_out_exist/(:any)','app_inventory_report::list_item_out_exist');
 $routes->match(['get','post'],'app_inventory_requestgeneral/getInfoImport','app_inventory_requestGeneral::getInfoImport');
 $routes->match(['get','post'],'app_inventory_requestgeneral/viewRegister','app_inventory_requestGeneral::viewRegister');
 $routes->match(['get','post'],'app_inventory_requestgeneral/viewRegister/(:any)','app_inventory_requestGeneral::viewRegister');
