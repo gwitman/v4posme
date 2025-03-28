@@ -19,10 +19,7 @@ class app_rrhh_employee extends _BaseController {
 				throw new \Exception(NOT_ALL_EDIT);	
 			}
 			
-				
 			
-			
-				
 			
 			
 			//Obtener el Componente de Transacciones Other Input to Inventory
@@ -129,9 +126,11 @@ class app_rrhh_employee extends _BaseController {
 				$this->response->redirect(base_url()."/".'app_rrhh_employee/edit/companyID/'.$companyID_."/branchID/".$branchID_."/entityID/".$entityID_);
 			}
 			else{
-				$db->transRollback();						
-				$this->core_web_notification->set_message(true,$this->db->_error_message());
-				$this->response->redirect(base_url()."/".'app_rrhh_employee/add');	
+				$db->transRollback();	
+				$errorCode 		= $db->error()["code"];
+				$errorMessage 	= $db->error()["message"];				
+				$this->core_web_notification->set_message(true,$errorCode." ".$errorMessage);
+				$this->response->redirect(base_url()."/".'app_rrhh_employee/edit/companyID/'.$companyID_."/branchID/".$branchID_."/entityID/".$entityID_);
 			}
 		}
 		catch(\Exception $ex){
@@ -146,7 +145,7 @@ class app_rrhh_employee extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}			
 	}
 	
@@ -385,7 +384,7 @@ class app_rrhh_employee extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}	
 	}
 	

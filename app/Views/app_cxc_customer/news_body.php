@@ -122,7 +122,7 @@
 											<input class="form-control"  type="text"  name="txtLastName" id="txtLastName" value="">												
 										</div>
 								</div>
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","divTxtNombreLegal",""); ?> ">
 										<label class="col-lg-4 control-label text-primary" for="normal"><?php echo getBehavio($company->type,"app_cxc_customer","lblTxtFullName","*Nombre completo"); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtLegalName" id="txtLegalName" value="">												

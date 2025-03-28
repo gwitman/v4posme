@@ -10,6 +10,8 @@ function getBehavioPasteleriaBalladares(): array
 		strtolower('pasteleria_balladares_app_invoice_billing_divPrecio')         			=> "hidden",
 		strtolower('pasteleria_balladares_app_invoice_billing_divBodegaHidden')         	=> "hidden",
 		strtolower('pasteleria_balladares_app_invoice_billing_divMesa')			         	=> "hidden",
+		strtolower('pasteleria_balladares_app_cxc_customer_divTxtNombreLegal')				=> "hidden",
+		strtolower('pasteleria_balladares_app_cxc_customer_divTxtNombreComercial')			=> "hidden",
 		strtolower('pasteleria_balladares_app_invoice_billing_lblReferencia')	         	=> "Entregado",		
 		strtolower('pasteleria_balladares_app_invoice_billing_divTraslateElement')			=> "
 			<script>
@@ -21,6 +23,12 @@ function getBehavioPasteleriaBalladares(): array
 				}); 
 			</script> 
 		",
+		strtolower('pasteleria_balladares_app_cxc_customer_divScriptValideFunctionPre')			=> "
+				$('#txtLegalName').val($('#txtFirstName').val());
+				$('#txtCommercialName').val($('#txtLastName').val());
+		",
+		
+		
 		
 		
 		
