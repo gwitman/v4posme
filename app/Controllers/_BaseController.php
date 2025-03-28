@@ -204,6 +204,7 @@ abstract class _BaseController extends Controller
 		'customization/web_tools_customizationview_creditaguil',
 		'customization/web_tools_customizationview_autolavadomaximum_helper',
 		'customization/web_tools_customizationview_pasteleriaballadares_helper',
+		'customization/web_tools_customizationview_chic_helper',
     ];
 
     /**

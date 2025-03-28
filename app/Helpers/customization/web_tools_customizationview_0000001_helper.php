@@ -339,15 +339,9 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		strtolower('clinicalarreynaga_app_cxc_customer_divTxtCategoria') 										=> "hidden",
 		strtolower('clinicalarreynaga_app_cxc_customer_divTxtSubCategoria') 			 						=> "hidden",
 		strtolower('clinicalarreynaga_app_cxc_customer_divTxtEstadoCivil') 			 							=> "hidden",
-		strtolower('clinicalarreynaga_app_cxc_customer_divTxtProfesionUFicio') 			 						=> "hidden",
-		strtolower('clinicalarreynaga_app_cxc_customer_divScriptCustom') 										=> "<script> $(document).ready(function(){ $(document).on('focusout','#txtLegalName',function(){ var varLegalName 	= $('#txtLegalName').val(); $('#txtFirstName').val(  varLegalName  ); $('#txtLastName').val(  varLegalName  ); $('#txtCommercialName').val(  varLegalName  ); $('#txtIdentification').val(  'ND'  ); });});</script>",
-					
-					
-					
-		/*Chec extensiones*/			
-		strtolower('chicextensiones_app_invoice_billing_divTxtCedula2') 										=> "hidden", 		
-		strtolower('chicextensiones_app_invoice_billing_divTraslateElement') 									=> "<script>$(document).ready(function(){ /*quitar el atributo de oculto*/  $('#divTxtElementoDisponibleParaMover1').removeClass('hidden'); /*pasar divZone pasar a divTxtElementoDisponibleParaMover1*/ $('#divZone').appendTo('#divTxtElementoDisponibleParaMover1');	}); </script> ", 		
-					
+		strtolower('clinicalarreynaga_app_cxc_customer_divTxtProfesionUFicio') 			 						=> "hidden",		
+        strtolower('clinicalarreynaga_app_cxc_customer_divScriptCustom')                                         => "<script> $(document).ready(function(){ $(document).on('focusout','#txtLegalName',function(){ var varLegalName     = $('#txtLegalName').val(); $('#txtFirstName').val(  varLegalName  ); $('#txtLastName').val(  varLegalName  ); $('#txtCommercialName').val(  varLegalName  ); $('#txtIdentification').val(  'ND'  ); });});</script>",
+		
 		/*Exceso*/			
 		strtolower('exceso_app_inventory_item_labelBarCode')													=> "Barra / IMAI", 
 		strtolower('exceso_app_inventory_item_divTxtCapacidad') 			 									=> "hidden", 
@@ -1346,8 +1340,8 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
     $divs                   = array_merge($divs, $autoLavadoMaximum);
 	$emanuelPizza		    = getBehavioEmanuelPizza();
     $divs                   = array_merge($divs, $emanuelPizza);
-	$pasteleriaBalladarez   = getBehavioPasteleriaBalladares();
-    $divs                   = array_merge($divs, $pasteleriaBalladarez);
+	$pasteleriaChic   		= getBehavioChic();
+    $divs                   = array_merge($divs, $pasteleriaChic);
 
 	//Comanda traducir es para los menu
 	//comportamiento del controlador
