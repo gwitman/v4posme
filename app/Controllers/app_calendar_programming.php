@@ -147,54 +147,7 @@ class app_calendar_programming extends _BaseController
         }
     }
 
-    function events(): ResponseInterface
-    {
-        try {
-            if (!$this->core_web_authentication->isAuthenticated()) throw new \Exception(USER_NOT_AUTENTICATED);
-            $dataSession = $this->session->get();
-
-            //PERMISO SOBRE LA FUNCTION
-            if (APP_NEED_AUTHENTICATION == true) {
-
-                $permited = false;
-                $permited = $this->core_web_permission->urlPermited(get_class($this), "index", URL_SUFFIX, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
-
-                if (!$permited) throw new \Exception(NOT_ACCESS_CONTROL);
-
-                $resultPermission = $this->core_web_permission->urlPermissionCmd(get_class($this), "index", URL_SUFFIX, $dataSession, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
-                if ($resultPermission == PERMISSION_NONE) throw new \Exception(NOT_ACCESS_FUNCTION);
-
-            }
-            
-			if($dataSession['company']->flavorID == 25)
-			{
-				$result = $this->Remember_Model->getProgramming();
-			}
-			if($dataSession['company']->flavorID == 26)
-			{
-				$result = $this->Remember_Model->getProgrammingNotPreFactura();
-			}
-			else
-			{				
-				$result = $this->Remember_Model->getProgrammingFacturaAplicadaConHora();
-			}
-		
-            $events = [];
-            foreach ($result as $row) {
-                $events[] = [
-                    'id'    => $row->rememberID,
-                    'title' => $row->title,
-                    'start' => $row->createdOn,
-                    'url'   => $row->url,
-					'color' => $row->color
-                ];
-            }
-            return $this->response->setJSON($events);
-        } catch (\Exception $exception) {
-            $result = ['status' => 'error', 'message' => $exception->getMessage(), 'code' => 400];
-            return $this->response->setJSON($result);
-        }
-    }
+    
 
     function find($id): ResponseInterface
     {
@@ -268,6 +221,63 @@ class app_calendar_programming extends _BaseController
         }
     }
 
+	function events(): ResponseInterface
+    {
+        try {
+            if (!$this->core_web_authentication->isAuthenticated()) throw new \Exception(USER_NOT_AUTENTICATED);
+            $dataSession = $this->session->get();
+
+            //PERMISO SOBRE LA FUNCTION
+            if (APP_NEED_AUTHENTICATION == true) {
+
+                $permited = false;
+                $permited = $this->core_web_permission->urlPermited(get_class($this), "index", URL_SUFFIX, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
+
+                if (!$permited) throw new \Exception(NOT_ACCESS_CONTROL);
+
+                $resultPermission = $this->core_web_permission->urlPermissionCmd(get_class($this), "index", URL_SUFFIX, $dataSession, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
+                if ($resultPermission == PERMISSION_NONE) throw new \Exception(NOT_ACCESS_FUNCTION);
+
+            }
+            
+			if($dataSession['company']->flavorID == 25)
+			{
+				$result = $this->Remember_Model->getProgrammingFacturaRegistradaSinHora();
+			}
+			if($dataSession['company']->flavorID == 26)
+			{
+				$result = $this->Remember_Model->getProgrammingFacturaAplicadaSinHora();
+			}
+			if($dataSession['company']->type == "chicextensiones")
+			{
+				$result = $this->Remember_Model->getProgrammingFacturaAplicadaSinHora();
+			}
+			if($dataSession['company']->type == "audio_pipe")
+			{
+				$result = $this->Remember_Model->getProgrammingFacturaAplicadaSinHora();
+			}			
+			else
+			{				
+				$result = $this->Remember_Model->getProgrammingFacturaAplicadaConHora();
+			}
+		
+            $events = [];
+            foreach ($result as $row) {
+                $events[] = [
+                    'id'    => $row->rememberID,
+                    'title' => $row->title,
+                    'start' => $row->createdOn,
+                    'url'   => $row->url,
+					'color' => $row->color
+                ];
+            }
+            return $this->response->setJSON($events);
+        } catch (\Exception $exception) {
+            $result = ['status' => 'error', 'message' => $exception->getMessage(), 'code' => 400];
+            return $this->response->setJSON($result);
+        }
+    }
+	
     function imprimirEventos(){
         try {
             if (!$this->core_web_authentication->isAuthenticated()) throw new \Exception(USER_NOT_AUTENTICATED);
@@ -301,9 +311,13 @@ class app_calendar_programming extends _BaseController
             // Obtener eventos de la base de datos (si es necesario)
 			
 			if($dataSession['company']->flavorID == 25)
-			$eventos 	= $this->Remember_Model->getProgrammingByDate($date);
+			$eventos 	= $this->Remember_Model->getProgrammingByDateFacturaRegistradaSinHora($date);
+			else if ($dataSession['company']->type = "chicextensiones")
+			$eventos 	= $this->Remember_Model->getProgrammingByDateFacturaAplicadaSinHora($date);	
+			else if ($dataSession['company']->type = "audio_pipe")
+			$eventos 	= $this->Remember_Model->getProgrammingByDateFacturaAplicadaSinHora($date);	
 			else 
-            $eventos 	= $this->Remember_Model->getProgrammingByDateNotPreFactura($date);
+            $eventos 	= $this->Remember_Model->getProgrammingByDateFacturaAplicadaConHora($date);
 
             // Configurar Dompdf
             $options 	= new Options();
@@ -379,7 +393,19 @@ class app_calendar_programming extends _BaseController
             $objParameterRuc        = $objParameterRuc->value;
             $objCompany 	        = $this->Company_Model->get_rowByPK($companyID);
             $idevent                = $this->request->getGet("idevent");
-            $evento 	            = $this->Remember_Model->getProgrammingById($idevent);
+			
+			if($objCompany->type == "chicextensiones")
+			{
+				$evento 	            = $this->Remember_Model->getProgrammingByIdSinHora($idevent);
+			}
+			if($objCompany->type == "audio_pipe")
+			{
+				$evento 	            = $this->Remember_Model->getProgrammingByIdSinHora($idevent);
+			}
+			else 
+			{
+				$evento 	            = $this->Remember_Model->getProgrammingByIdConHora($idevent);
+			}
 
             $objParameterShowDownloadPreview	= $this->core_web_parameter->getParameter("CORE_SHOW_DOWNLOAD_PREVIEW",$companyID);
             $objParameterShowDownloadPreview	= $objParameterShowDownloadPreview->value;

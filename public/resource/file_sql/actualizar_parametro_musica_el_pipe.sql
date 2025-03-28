@@ -1070,7 +1070,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Audio el Pipe' , address = 'Pali proquinsa 2c.abajo 20v.s' ,
-	flavorID = 0
+	flavorID = 303,type='audio_pipe'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
