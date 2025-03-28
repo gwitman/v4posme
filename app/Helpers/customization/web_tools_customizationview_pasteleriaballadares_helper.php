@@ -12,6 +12,8 @@ function getBehavioPasteleriaBalladares(): array
 		strtolower('pasteleria_balladares_app_invoice_billing_divMesa')			         	=> "hidden",
 		strtolower('pasteleria_balladares_app_cxc_customer_divTxtNombreLegal')				=> "hidden",
 		strtolower('pasteleria_balladares_app_cxc_customer_divTxtNombreComercial')			=> "hidden",
+		strtolower('pasteleria_balladares_app_invoice_billing_divHiddenEmployer')			=> "hidden",
+		strtolower('pasteleria_balladares_app_invoice_billing_txtTraductionPhone')			=> "Facturador",
 		strtolower('pasteleria_balladares_app_invoice_billing_lblReferencia')	         	=> "Entregado",		
 		strtolower('pasteleria_balladares_app_invoice_billing_divTraslateElement')			=> "
 			<script>

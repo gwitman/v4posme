@@ -8770,6 +8770,7 @@ function helper_reporte80mmTransactionMasterPasteleriaLizzette(
                           </td>
 						  <td colspan='2'>
                             ". (strpos($userNickName , "@") === false ? $userNickName : substr($userNickName,0,strpos($userNickName , "@") ) )   ."
+							 | ".$objTransactionMastser->numberPhone."
                           </td>
                         </tr>";
 		  }
@@ -8847,6 +8848,12 @@ function helper_reporte80mmTransactionMasterPasteleriaLizzette(
 						-->
 						
 						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+						
+						<tr>
                           <td colspan='3' style='text-align:left'>".$objTransactionMastser->note."</td>
                         </tr>
                                 
@@ -8920,7 +8927,11 @@ function helper_reporte80mmTransactionMasterPasteleriaLizzette(
                           <td style='text-align:right'>
                             ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMasterInfo->receiptAmount)."
                           </td>
-                        </tr>
+                        </tr>";
+						
+			if($objTransactionMasterInfo->changeAmount >= 0)
+			{
+				$html	= $html."
                          <tr>
                           <td colspan='2'>
                             CAMBIO
@@ -8928,8 +8939,22 @@ function helper_reporte80mmTransactionMasterPasteleriaLizzette(
                           <td style='text-align:right'>
                             ".$objCurrency->simbol." ".sprintf("%.2f", ($objTransactionMasterInfo->changeAmount)  )."
                           </td>
-                        </tr>
-
+                        </tr>";
+			}
+			else 
+			{
+				$html	= $html."
+                         <tr>
+                          <td colspan='2'>
+                            SALDO
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f", ($objTransactionMasterInfo->changeAmount * -1)  )."
+                          </td>
+                        </tr>";
+			}
+			
+		    $html	= $html."
                          <tr>
                           <td colspan='3' style='text-align:center'>
                             &nbsp;
@@ -10470,7 +10495,7 @@ function helper_reporte80mmEventosCalendario(
                         <meta name='viewport' content='width=device-width, initial-scale=1.0' />
                         <style>
                         @page {       
-                            size: 3.15in 7in;                  
+                            size: 3.15in 15in;                  
                             margin-top:0px;
                             margin-left:5px;
                             margin-right:5px;

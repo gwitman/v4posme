@@ -214,12 +214,39 @@ class Remember_Model extends Model  {
                 tm.transactionNumber as rememberID,	
                 CONCAT('" . base_url() . "/app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/2/transactionID/19/transactionMasterID/',tm.transactionMasterID,'/codigoMesero/none') as url,
                 'PROFORMA' AS title,
-                tm.note AS description,	
-                tm.nextVisit AS createdOn,
+                concat(
+					tm.note,
+					'<br>',
+					'<br>',
+					tmi.reference1,
+					'<br>',
+					'<br>',
+					
+					IFNULL(
+						(
+							SELECT
+								GROUP_CONCAT(td.itemNameLog  SEPARATOR ', **** ') AS items
+							FROM 	
+								tb_transaction_master_detail  td 
+							WHERE 
+								td.isActive = 1 and 
+								td.transactionMasterID = tm.transactionMasterID
+						) 
+						,
+						''
+					)
+						
+						
+				) AS description,	
+				STR_TO_DATE(
+					CONCAT(DATE(tm.nextVisit), ' ', 
+						   TIME_FORMAT(STR_TO_DATE(hora.`name` , '%h:%i %p'), '%H:%i:%s')),
+					'%Y-%m-%d %H:%i:%s'
+				) AS createdOn,
                 0  AS tagID,
                 'yellow' as color,
                 emp.customerNumber  as entidad,
-                nat.firstName as nombre
+                nat.firstName as nombre 
             from 
                 tb_transaction_master tm 
                 inner join tb_workflow_stage st on 
@@ -228,6 +255,12 @@ class Remember_Model extends Model  {
                     nat.entityID = tm.entityID  
                 inner join tb_customer emp on 
                     emp.entityID = nat.entityID 
+				inner join tb_transaction_master_info tmi on 
+					tm.transactionMasterID = tmi.transactionMasterID 
+				inner join tb_catalog_item hora  on 
+					hora.catalogItemID = tmi.zoneID 
+					
+					
             where 
                 tm.isActive = 1 and 
                 tm.transactionID in ( 19 /*FAC*/  ) and 
@@ -442,9 +475,37 @@ class Remember_Model extends Model  {
         select 
             tm.transactionNumber as rememberID,	
             CONCAT('".base_url()."/app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/2/transactionID/19/transactionMasterID/',tm.transactionMasterID,'/codigoMesero/none') as url,
-            'PROFORMA' AS title,
-            tm.note AS description,	
-            tm.nextVisit AS createdOn,
+            tm.transactionNumber AS title,
+			concat(
+					tm.note,
+					'<br>',
+					'<br>',
+					tmi.reference1,
+					'<br>',
+					'<br>',
+					
+					IFNULL(
+						(
+							SELECT
+								GROUP_CONCAT(td.itemNameLog  SEPARATOR ', **** ') AS items
+							FROM 	
+								tb_transaction_master_detail  td 
+							WHERE 
+								td.isActive = 1 and 
+								td.transactionMasterID = tm.transactionMasterID
+						) 
+						,
+						''
+					)
+						
+						
+			) AS description,	
+			STR_TO_DATE(
+					CONCAT(DATE(tm.nextVisit), ' ', 
+						   TIME_FORMAT(STR_TO_DATE(hora.`name` , '%h:%i %p'), '%H:%i:%s')),
+					'%Y-%m-%d %H:%i:%s'
+			) AS createdOn,
+				
             0  AS tagID,
 			'yellow' as color,
 			emp.customerNumber  as entidad,
@@ -457,6 +518,10 @@ class Remember_Model extends Model  {
 				nat.entityID = tm.entityID  
 			inner join tb_customer emp on 
 				emp.entityID = nat.entityID 
+			inner join tb_transaction_master_info tmi on 
+				tm.transactionMasterID = tmi.transactionMasterID 
+			inner join tb_catalog_item hora  on 
+				hora.catalogItemID = tmi.zoneID 
         where 
             tm.isActive = 1 and 
             /*st.isInit = 0 and */
