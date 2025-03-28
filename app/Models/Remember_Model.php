@@ -329,6 +329,7 @@ class Remember_Model extends Model  {
             programming.title, 
             programming.description, 
             programming.createdOn, 
+			programming.createdOn2,	
             programming.tagID, 
             programming.color, 
             programming.entidad, 
@@ -341,6 +342,7 @@ class Remember_Model extends Model  {
                 r.title,
                 r.description,	
                 r.createdOn,
+				r.createdOn as createdOn2,	
                 r.tagID,
                 'yellow' as color,
                 '' as entidad,
@@ -363,13 +365,6 @@ class Remember_Model extends Model  {
                 CONCAT('" . base_url() . "/app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/2/transactionID/19/transactionMasterID/',tm.transactionMasterID,'/codigoMesero/none') as url,
                 tm.transactionNumber AS title,
                 concat(
-					tm.note,
-					'<br>',
-					'<br>',
-					tmi.reference1,
-					'<br>',
-					'<br>',
-					
 					IFNULL(
 						(
 							SELECT
@@ -382,8 +377,13 @@ class Remember_Model extends Model  {
 						) 
 						,
 						''
-					)
-						
+					),
+					'<br>',
+					'<br>',
+					tm.note,
+					'<br>',
+					'<br>',
+					tmi.reference1	
 						
 				) AS description,	
 				STR_TO_DATE(
@@ -391,6 +391,7 @@ class Remember_Model extends Model  {
 						   TIME_FORMAT(STR_TO_DATE(hora.`name` , '%h:%i %p'), '%H:%i:%s')),
 					'%Y-%m-%d %H:%i:%s'
 				) AS createdOn,
+				tm.createdOn as createdOn2,	
                 0  AS tagID,
                 'yellow' as color,
                 emp.customerNumber  as entidad,
@@ -422,6 +423,7 @@ class Remember_Model extends Model  {
                 'CONSULTAS' AS title,
                 tm.note AS description,	
                 tm.nextVisit AS createdOn,
+				tm.createdOn as createdOn2,	
                 0  AS tagID,
                 'yellow' as color,
                 emp.customerNumber  as entidad,
@@ -448,6 +450,7 @@ class Remember_Model extends Model  {
                 'TASK' AS title,
                 tm.reference4 AS description,	
                 tm.nextVisit AS createdOn,
+				tm.createdOn as createdOn2,	
                 0  AS tagID,
                 'yellow' as color,
                 emp.employeNumber  as entidad,
@@ -632,7 +635,7 @@ class Remember_Model extends Model  {
         where 
             r.companyID = 2 and 
             r.isActive= 1 and 
-            sr.aplicable = 1 and 
+            sr.isInit = 1 and 
 			r.createdOn is not null and 
 			DATE(r.createdOn) = ? 
         
@@ -764,6 +767,7 @@ class Remember_Model extends Model  {
             r.title,
             r.description,	
             r.createdOn,
+			r.createdOn as createdOn2,
             r.tagID,
 			'yellow' as color,
 			'' as entidad,
@@ -775,7 +779,7 @@ class Remember_Model extends Model  {
         where 
             r.companyID = 2 and 
             r.isActive= 1 and 
-            st.aplicable = 1 and 
+            st.isInit = 1 and 
 			r.createdOn is not null and 
 			DATE(r.createdOn) = ? 
         
@@ -788,13 +792,6 @@ class Remember_Model extends Model  {
             CONCAT('".base_url()."/app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/2/transactionID/19/transactionMasterID/',tm.transactionMasterID,'/codigoMesero/none') as url,
             tm.transactionNumber AS title,
 			concat(
-					tm.note,
-					'<br>',
-					'<br>',
-					tmi.reference1,
-					'<br>',
-					'<br>',
-					
 					IFNULL(
 						(
 							SELECT
@@ -807,16 +804,20 @@ class Remember_Model extends Model  {
 						) 
 						,
 						''
-					)
-						
-						
+					),
+					'<br>',
+					'<br>',
+					tm.note,
+					'<br>',
+					'<br>',
+					tmi.reference1
 			) AS description,	
 			STR_TO_DATE(
 					CONCAT(DATE(tm.nextVisit), ' ', 
 						   TIME_FORMAT(STR_TO_DATE(hora.`name` , '%h:%i %p'), '%H:%i:%s')),
 					'%Y-%m-%d %H:%i:%s'
 			) AS createdOn,
-				
+			tm.createdOn as createdOn2,	
             0  AS tagID,
 			'yellow' as color,
 			emp.customerNumber  as entidad,
@@ -848,6 +849,7 @@ class Remember_Model extends Model  {
             'CONSULTAS' AS title,
             tm.note AS description,	
             tm.nextVisit AS createdOn,
+			tm.createdOn as createdOn2,	
             0  AS tagID,
 			'yellow' as color,
 			emp.customerNumber  as entidad,
@@ -876,6 +878,7 @@ class Remember_Model extends Model  {
             'TASK' AS title,
             tm.reference4 AS description,	
             tm.nextVisit AS createdOn,
+			tm.createdOn as createdOn2,	
             0  AS tagID,
 			'yellow' as color,
 			emp.employeNumber  as entidad,
@@ -1015,7 +1018,7 @@ class Remember_Model extends Model  {
         where 
             r.companyID = 2 and 
             r.isActive= 1 and 
-            st.aplicable = 1 
+            st.isInit = 1 
         
         union all 
         
@@ -1032,7 +1035,7 @@ class Remember_Model extends Model  {
 				tm.note 
 			) AS title,
             tm.note AS description,	
-            tm.createdOn,  
+            tm.nextVisit,  
             0  AS tagID,
 			'green' as color 
 			
@@ -1110,6 +1113,7 @@ class Remember_Model extends Model  {
             r.title,
             r.description,	
             r.createdOn,
+			r.createdOn as createdOn2,
             r.tagID,
 			'blue' as color
         from 
@@ -1119,7 +1123,7 @@ class Remember_Model extends Model  {
         where 
             r.companyID = 2 and 
             r.isActive= 1 and             
-			st.aplicable = 1 
+			st.isInit = 1 
         
         union all 
         
@@ -1141,6 +1145,7 @@ class Remember_Model extends Model  {
 					   TIME_FORMAT(STR_TO_DATE(hora.`name` , '%h:%i %p'), '%H:%i:%s')),
 				'%Y-%m-%d %H:%i:%s'
 			) AS createdOn,  
+			tm.createdOn as createdOn2,
             0  AS tagID,
 			'green' as color 
 			
@@ -1170,6 +1175,7 @@ class Remember_Model extends Model  {
             'CONSULTAS' AS title,
             tm.note AS description,	
             tm.nextVisit AS createdOn,
+			tm.createdOn as createdOn2,
             0  AS tagID,
 			'red' as color
         from 
@@ -1193,6 +1199,7 @@ class Remember_Model extends Model  {
             'TASK' AS title,
             tm.note AS description,	
             tm.nextVisit AS createdOn,
+			tm.createdOn as createdOn2,
             0  AS tagID,
 			'yellow' as color
         from 

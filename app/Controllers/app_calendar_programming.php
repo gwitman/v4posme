@@ -311,14 +311,26 @@ class app_calendar_programming extends _BaseController
             // Obtener eventos de la base de datos (si es necesario)
 			
 			if($dataSession['company']->flavorID == 25)
+			{
+			
 			$eventos 	= $this->Remember_Model->getProgrammingByDateFacturaRegistradaSinHora($date);
-			else if ($dataSession['company']->type = "chicextensiones")
+			}
+			else if ($dataSession['company']->type == "chicextensiones")
+			{
+			
 			$eventos 	= $this->Remember_Model->getProgrammingByDateFacturaAplicadaSinHora($date);	
-			else if ($dataSession['company']->type = "audio_pipe")
+			}
+			else if ($dataSession['company']->type == "audio_pipe")
+			{
+			
 			$eventos 	= $this->Remember_Model->getProgrammingByDateFacturaAplicadaSinHora($date);	
+			}
 			else 
+			{
+			
             $eventos 	= $this->Remember_Model->getProgrammingByDateFacturaAplicadaConHora($date);
-
+			}
+			
             // Configurar Dompdf
             $options 	= new Options();
             $options->set('isHtml5ParserEnabled', true);

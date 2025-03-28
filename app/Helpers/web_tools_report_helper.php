@@ -8854,7 +8854,25 @@ function helper_reporte80mmTransactionMasterPasteleriaLizzette(
                         </tr>
 						
 						<tr>
+                          <td colspan='3' style='text-align:center'>Descripcion</td>
+                        </tr>
+						
+						<tr>
                           <td colspan='3' style='text-align:left'>".$objTransactionMastser->note."</td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style='text-align:center'>Comentario</td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style='text-align:left'>".$objTransactionMasterInfo->reference1."</td>
                         </tr>
                                 
                          <tr>
@@ -8925,9 +8943,34 @@ function helper_reporte80mmTransactionMasterPasteleriaLizzette(
                             RECIBIDO
                           </td>
                           <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMasterInfo->receiptAmount)."
+                            ".
+							$objCurrency->simbol.
+							" ".
+							sprintf(
+								"%.2f",
+								$objTransactionMasterInfo->receiptAmount
+							).
+							"
                           </td>
-                        </tr>";
+                        </tr>
+						
+						<tr>
+                          <td colspan='2'>
+                            TAR NAC.
+                          </td>
+                          <td style='text-align:right'>
+                            ".
+							$objCurrency->simbol.
+							" ".
+							sprintf(
+								"%.2f",
+								$objTransactionMasterInfo->receiptAmountCard
+							).
+							"
+                          </td>
+                        </tr>
+						
+						";
 						
 			if($objTransactionMasterInfo->changeAmount >= 0)
 			{
@@ -10483,8 +10526,9 @@ function helper_reporte80mmEventosCalendario(
     $base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
     // Crear un objeto DateTime a partir de la cadena
     $createdOn = new DateTime($evento->createdOn);
-    $fecha = $createdOn->format('Y-m-d');
-    $hora = $createdOn->format('H:i:s');
+    $fecha 	= $createdOn->format('Y-m-d');
+    $hora 	= $createdOn->format('H:i A');
+	
     $html    = "";
     $html    = "
                     <!DOCTYPE html>
@@ -10547,12 +10591,18 @@ function helper_reporte80mmEventosCalendario(
                             </td>
                         </tr>
                                 
+						
+						<tr style='text-align:center'>
+                            <td>RECP</td>
+                            <td>".explode(" ",$evento->createdOn2)[0] ."</td>
+                        </tr>
+						
                         <tr style='text-align:center'>
-                            <td>FECHA</td>
+                            <td>ENTREGA</td>
                             <td>".$fecha."</td>
                         </tr>
                         <tr style='text-align:center'>
-                            <td>HORA</td>
+                            <td>HORA ENTREGA</td>
                             <td>".$hora."</td>
                         </tr>
                         <tr style='text-align:center'>
@@ -10569,27 +10619,26 @@ function helper_reporte80mmEventosCalendario(
                         </tr>
 						
 						<tr style='text-align:center'>
-                            <td colspan='3' style='text-align: left'>$evento->entidad</td>
+                            <td colspan='3' style='text-align: left'>
+								".$evento->entidad." ".$evento->nombre."
+							</td>
                         </tr>
 						
-						<tr style='text-align:center'>
-                            <td colspan='3' style='text-align: center'>NOMBRE</td>
-                        </tr>
-						
-						<tr style='text-align:center'>
-                            <td colspan='3' style='text-align: left'>$evento->nombre</td>
-                        </tr>
 						<tr>
                           <td colspan='3' style='text-align:center' >
                             &nbsp;
                           </td>
                         </tr>
+						
+						<!--
                         <tr style='text-align:center'>
                             <td colspan='3' style='text-align: center'>TITULO</td>
                         </tr>
                         <tr style='text-align:center'>
                             <td colspan='3' style='text-align: left'>$evento->title</td>
                         </tr>
+						--> 
+						
 						<tr>
                           <td colspan='3' style='text-align:center' >
                             &nbsp;
