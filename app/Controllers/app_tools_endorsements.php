@@ -53,6 +53,7 @@ class app_tools_endorsements extends _BaseController {
             $dataView["objTransactionMaster"]->transactionOn    = date_format(date_create($dataView["objTransactionMaster"]->transactionOn),"Y-m-d");
             $dataView["objTransactionMasterReference"]          = $this->Transaction_Master_References_Model->get_rowByTransactionMaster($transactionMasterID);
             $dataView["catalogID"]		                        = $objCatalog->catalogID;
+			$dataView["objCatalogItem"]							= $this->Catalog_Item_Model->get_rowByCatalogIDAndReference1($objCatalog->catalogID, $dataView["objTransactionMasterReference"]->reference6 ,$dataSession["company"]->flavorID );			
             $dataView["objListWorkflowStage"]	                = $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_endorsements","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
             $dataView["objComponent"]                           = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction");;
             $dataView["tipoTransaccion"]                        = $this->Transaction_Model->getRowByCompanyId($companyID);
@@ -625,6 +626,71 @@ class app_tools_endorsements extends _BaseController {
         }
     }
 
+	function getTransactionMasterOld($transactionNumber,$getValue)
+	{
+		
+		try{
+            //Validar Authentication
+            if(!$this->core_web_authentication->isAuthenticated())
+                throw new Exception(USER_NOT_AUTENTICATED);
+            $dataSession		= $this->session->get();
+            $companyID          = $dataSession["user"]->companyID;
+			
+			$db					= db_connect();
+			$cadena             = $getValue;			
+			$table              = explode('.', $cadena)[0];
+			$campo              = explode('.', $cadena)[1];
+			$typeDocument		= $transactionNumber;
+			
+			if (
+				str_starts_with($typeDocument, "FAC")  &&
+				$table	== "tb_transaction_master"
+			) 
+			{
+				$query 	= " SELECT 
+								".$campo." as Value 
+							FROM  
+								".$table."  
+							WHERE 
+								transactionNumber = ?;
+						  ";
+				$data 	= $db->query($query,[ $transactionNumber ])->getResult();
+			}
+			else if (
+				str_starts_with($typeDocument, "FAC")  &&
+				$table	== "tb_transaction_master_info"
+			) 
+			{
+				$query 	= " SELECT 
+								".$campo." as Value 
+							FROM  
+								".$table."  
+							WHERE 
+								transactionMasterID = (SELECT uu.transactionMasterID FROM tb_transaction_master uu where uu.transactionNumber = ?);
+						  ";
+				$data 	= $db->query($query,[ $transactionNumber ])->getResult();
+			}
+			else 
+				throw new \Exception("Configurar el tipo de endoso en codigo app_tools_endorsement.getTransactionMasterOld ");
+
+			
+            //Obtener Resultados.
+            return $this->response->setJSON(array(
+                'error'   			=> false,
+                'message' 			=> SUCCESS,
+                'data'	 	        => $data
+            ));//--finjson
+
+        }
+        catch(Exception $ex){
+            return $this->response->setJSON(array(
+                'error'   			=> true,
+                'message' 			=> $ex->getMessage(),
+                'data'	 	        => []
+            ));//--finjson
+        }
+		
+	}
     function getTransactionMaster($transactionNumber)
     {
         try{
@@ -633,6 +699,11 @@ class app_tools_endorsements extends _BaseController {
                 throw new Exception(USER_NOT_AUTENTICATED);
             $dataSession		= $this->session->get();
             $companyID          = $dataSession["user"]->companyID;
+			
+		
+			
+			
+			
             $data				= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,$transactionNumber);
 
             //Obtener Resultados.

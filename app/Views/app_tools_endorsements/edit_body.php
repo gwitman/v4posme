@@ -109,6 +109,20 @@
                                 <label class="col-lg-4 control-label" for="txtValorModificar">Valor a Modificar</label>
                                 <div class="col-lg-8">
                                     <select class="select2" id="txtValorModificar" name="txtValorModificar">
+										<option value="0" >Seleccione una opción...</option>
+										<?php 
+										if($objCatalogItem)
+										{
+											foreach($objCatalogItem as $item)
+											{
+											
+												if($item->catalogItemID == $objTransactionMasterReference->reference2 )
+												echo "<option value='".$item->catalogItemID."' selected>".$item->name."</option>";
+												else
+												echo "<option value='".$item->catalogItemID."' >".$item->name."</option>";
+											}
+										}
+										?>
                                     </select>
                                 </div>
                             </div>

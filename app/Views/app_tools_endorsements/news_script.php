@@ -45,6 +45,17 @@
             }
         });
 
+		
+		$(document).on("change", "#txtValorNuevo", function () {
+			var textoSeleccionado = $(this).find("option:selected").text();
+			$("#txtSelectedTextValorNuevo").val(textoSeleccionado);
+		});
+
+		$(document).on("change", "#txtValorAnterior", function () {
+			var textoSeleccionado = $(this).find("option:selected").text();
+			$("#txtSelectedTextValorAnterior").val(textoSeleccionado);
+		});
+		
         $('#btnClearDocument').click(function (){
             fnClearValues(true);
         });
@@ -82,31 +93,34 @@
             ).done(function (data) {
                 if (!data.error){
                     objTransactionMaster=data.data;
+					
+					//buscamos el detalle del catalago de endoso conforme el tipo de documento
+					$.ajax({
+						url     : "<?= base_url(); ?>/app_catalog_api/getCatalogItemByEndosos/catalogID/"+catalogID+"/reference1/"+reference1,
+						type    : 'GET',
+						success : function (respuesta) {
+							// Limpiar el select antes de agregar nuevas opciones
+							$("#txtValorModificar").empty().append('<option value="0" selected>Seleccione una opción...</option>');
+							if (respuesta.data.length > 0) 
+							{
+								listaValoresModificar   =  respuesta.data;
+								$.each(listaValoresModificar, function (index, item) 
+								{
+									let newOption = new Option(item.name, item.catalogItemID, false, false);
+									$("#txtValorModificar").append(newOption).trigger('change');
+								});
+								$("#txtValorModificar").prop("disabled", false);
+							} else {
+								$("#txtValorModificar").html('<option value="">No hay datos disponibles</option>');
+							}
+							fnWaitClose();
+						}
+					});
+				
                 }
             })
 
-            //buscamos el detalle del catalago de endoso conforme el tipo de documento
-            $.ajax({
-                url     : "<?= base_url(); ?>/app_catalog_api/getCatalogItemByEndosos/catalogID/"+catalogID+"/reference1/"+reference1,
-                type    : 'GET',
-                success : function (respuesta) {
-                    // Limpiar el select antes de agregar nuevas opciones
-                    $("#txtValorModificar").empty().append('<option value="0" selected>Seleccione una opción...</option>');
-                    if (respuesta.data.length > 0) 
-					{
-                        listaValoresModificar   =  respuesta.data;
-                        $.each(listaValoresModificar, function (index, item) 
-						{
-                            let newOption = new Option(item.name, item.catalogItemID, false, false);
-                            $("#txtValorModificar").append(newOption).trigger('change');
-                        });
-                        $("#txtValorModificar").prop("disabled", false);
-                    } else {
-                        $("#txtValorModificar").html('<option value="">No hay datos disponibles</option>');
-                    }
-                    fnWaitClose();
-                }
-            });
+            
         }
 
         // Función para mostrar el campo correspondiente
@@ -121,51 +135,64 @@
                 let tipo        = endoso.description;
                 let referencia2 = endoso.reference2;
                 let referencia3 = endoso.reference3;
+				fnWaitOpen();
 				
-                if (objTransactionMaster.hasOwnProperty(campo)) {
-                    valorAnterior = objTransactionMaster[campo];
-                }
-                if (tipo === "datetime") 
-				{
-                    tagContenedorValorAnterior.html('<input readonly type="datetime-local" name="txtValorAnterior" id="txtValorAnterior" class="form-control" value="' + valorAnterior + '">');
-                    tagContenedorValorNuevo.html('<input type="datetime-local" name="txtValorNuevo" id="txtValorNuevo" class="form-control">');
-                } 
-				else if (tipo === "combobox") 
-				{
-                    tagContenedorValorAnterior.html('<select name="txtValorAnterior" id="txtValorAnterior" class="select2"><option value="">Cargando opciones...</option></select>');
-                    tagContenedorValorNuevo.html('<select name="txtValorNuevo" id="txtValorNuevo" class="select2"><option value="">Cargando opciones...</option></select>');
-                    if (referencia2 === "tb_catalog") {
-                        fnCargarOpcionesComboTbCatalog(referencia3,campo);
-                    }
+				
+				//obtener los valores anteriores de la tarnsaccion
+				$.ajax({
+					url     : "<?= base_url(); ?>/app_tools_endorsements/getTransactionMasterOld/"+$("#txtTransactionNumber").val()+"/"+endoso.display,
+					type    : 'GET',
+					success : function (respuesta) {
+						
+						if(respuesta.error == true)
+						{
+							fnWaitClose();
+							fnShowNotification(respuesta.message,"error");
+							return;
+						}
+						
+						valorAnterior = respuesta.data[0].Value;
+						if (tipo === "datetime") 
+						{
+							tagContenedorValorAnterior.html('<input readonly type="datetime-local" name="txtValorAnterior" id="txtValorAnterior" class="form-control" value="' + valorAnterior + '">');
+							tagContenedorValorNuevo.html('<input type="datetime-local" name="txtValorNuevo" id="txtValorNuevo" class="form-control">');
+							fnWaitClose();
+						} 
+						else if (tipo === "combobox") 
+						{
+							tagContenedorValorAnterior.html('<select name="txtValorAnterior" id="txtValorAnterior" class="select2"><option value="">Cargando opciones...</option></select>');
+							tagContenedorValorNuevo.html('<select name="txtValorNuevo" id="txtValorNuevo" class="select2"><option value="">Cargando opciones...</option></select>');
+							$("#txtValorAnterior").prop("disabled", true);
+							
+							if (referencia2 === "tb_catalog") 
+							{
+								fnCargarOpcionesComboTbCatalog(referencia3,campo,valorAnterior,0);
+							}
 
-                    $(document).on("change", "#txtValorNuevo", function () {
-                        var textoSeleccionado = $(this).find("option:selected").text();
-                        $("#txtSelectedTextValorNuevo").val(textoSeleccionado);
-                    });
-
-                    $(document).on("change", "#txtValorAnterior", function () {
-                        var textoSeleccionado = $(this).find("option:selected").text();
-                        $("#txtSelectedTextValorAnterior").val(textoSeleccionado);
-                    });
-
-                } 
-				else if (tipo === "input") 
-				{
-                    tagContenedorValorAnterior.html('<input readonly type="text" id="txtValorAnterior" class="form-control" placeholder="Ingrese un valor" value="' + valorAnterior + '">');
-                    tagContenedorValorNuevo.html('<input type="text" name="txtValorNuevo" id="txtValorNuevo" class="form-control" placeholder="Ingrese un valor">');
-                }
+						} 
+						else if (tipo === "input") 
+						{
+							tagContenedorValorAnterior.html('<input readonly type="text" id="txtValorAnterior" name="txtValorAnterior" class="form-control" placeholder="Ingrese un valor" value="' + valorAnterior + '">');
+							tagContenedorValorNuevo.html('<input type="text" name="txtValorNuevo" id="txtValorNuevo" class="form-control" placeholder="Ingrese un valor">');
+							fnWaitClose();
+						}
+						
+						
+					}
+				});
+				
+				
+                
             }
         }
 
-        function fnCargarOpcionesComboTbCatalog(reference3, campo) {
+        function fnCargarOpcionesComboTbCatalog(reference3, campo,valorAnterior,valorNuevo) {
 			
-            fnWaitOpen();
             let comboValorAnterior  = $("#txtValorAnterior");
             let comboValorNuevo     = $("#txtValorNuevo");
             let valor               = 0;
-            if (objTransactionMaster.hasOwnProperty(campo)) {
-                valor = objTransactionMaster[campo];
-            }
+            valor 					= valorAnterior;
+            
             $.ajax({
                 url         : "<?= base_url()?>/app_catalog_api/getCatalogByName/"+reference3,
                 type        : "GET",
@@ -173,7 +200,7 @@
                 success     : function (respuesta) {
                     if (respuesta.data.length>0){
                         fnFillComboBox(comboValorAnterior,respuesta.data, valor);
-                        fnFillComboBox(comboValorNuevo, respuesta.data, 0);
+                        fnFillComboBox(comboValorNuevo, respuesta.data, valorNuevo);
                     }
                     fnWaitClose();
                 },
@@ -217,6 +244,8 @@
                 fnWaitCloseV2();
                 return false;
             }
+			
+			$("#txtValorAnterior").prop("disabled", false);
             return true;
         }
     });

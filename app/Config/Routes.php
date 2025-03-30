@@ -1627,7 +1627,7 @@ $routes->match(['get','post'],'app_cxp_notecredit/delete','app_cxp_notecredit::d
 $routes->match(['get','post'],'app_cxp_notecredit/delete/(:any)','app_cxp_notecredit::delete');
 $routes->match(['get','post'],'app_cxp_notecredit/searchTransactionMaster','app_cxp_notecredit::searchTransactionMaster');
 $routes->match(['get','post'],'app_cxp_notecredit/viewPrinterFormatoA4/(:any)','app_cxp_notecredit::viewPrinterFormatoA4');
-
+$routes->match(['get','post'],'app_tools_endorsements/getTransactionMasterOld/(:any)/(:any)','app_tools_endorsements::getTransactionMasterOld/$1/$2');
 $routes->match(['get','post'],'app_tools_endorsements/getTransactionMaster/(:any)','app_tools_endorsements::getTransactionMaster/$1');
 $routes->match(['get','post'],'app_tools_endorsements/searchTransactionMaster','app_tools_endorsements::searchTransactionMaster');
 $routes->match(['get','post'],'app_tools_endorsements/index','app_tools_endorsements::index');
@@ -1639,8 +1639,6 @@ $routes->match(['get','post'],'app_tools_endorsements/delete/(:any)','app_tools_
 $routes->match(['get','post'],'app_tools_endorsements/add/(:any)','app_tools_endorsements::add');
 $routes->match(['get','post'],'app_tools_endorsements/save/(:any)','app_tools_endorsements::save/$1');
 $routes->match(['get','post'],'app_tools_endorsements/viewRegisterFormatoPaginaTicket/(:any)/(:any)','app_tools_endorsements::viewRegisterFormatoPaginaTicket/$1/$2');
-
-
 $routes->match(['get','post'],'app_cxp_notecredit/viewPrinterFormatoA4','app_cxp_notecredit::viewPrinterFormatoA4');
 /*
  * --------------------------------------------------------------------
