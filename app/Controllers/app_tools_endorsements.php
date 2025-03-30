@@ -238,15 +238,29 @@ class app_tools_endorsements extends _BaseController {
                 ) &&
                 $oldStatusID != $objTMNew["statusID"]
             ){
-                $cadena             = $objTMRefNew['refernece4'];
-                $dividirReference4  =  explode('.', $cadena);
-                $table              = $dividirReference4[0];
-                $campo              = $dividirReference4[1];
-                $primaryKey         = helper_ObtenerClavePrimaria($db, $table);
-                if ($primaryKey) {
-                    $query = "UPDATE ".$table." SET ".$campo." = ? WHERE ".$primaryKey." = ?;";
-                    $db->query($query,[$objTMRefNew['reference10'], $objTMRefNew['reference1']]);
+                $cadena             	= $objTMRefNew['refernece4'];                
+                $table              	= explode('.', $cadena)[0];
+                $campo              	= explode('.', $cadena)[1];
+				$valueNuevo				= $objTMRefNew['reference10'];
+                $primaryKey         	= helper_ObtenerClavePrimaria($db, $table);
+				$transactionNumberFor		= $objTMRefNew['transactionReferenceNumber'];
+				$transactionMasterIDFor		= $objTMRefNew['reference1'];
+				$typeDocumentFor			= $objTMRefNew['reference6'];
+				
+                if ($table == "tb_transaction_master") 
+				{
+                    $query = "UPDATE ".$table." SET ".$campo." = ? WHERE transactionMasterID = ?;";
+                    $db->query($query,[$valueNuevo, $transactionMasterIDFor ]);
                 }
+				else if ($table == "tb_transaction_master_info") 
+				{
+                    $query = "UPDATE ".$table." SET ".$campo." = ? WHERE transactionMasterID = ?;";
+                    $db->query($query,[$valueNuevo, $transactionMasterIDFor ]);
+                }
+				else
+					throw new \Exception("Configurar el tipo de endoso en codigo app_tools_endorsement.updateElement ");
+				
+				
             }
 
             if($db->transStatus() !== false)
