@@ -1,8 +1,8 @@
 <script>
-    let publicCatalogID         = <?= $publicCatalogID ?? 0 ?>;
+    let catalogID         		= <?= $catalogID ?? 0 ?>;
     let listaValoresModificar   = [];
     let transactionDocument     = "<?= $objTransactionMasterReference->transactionReferenceNumber?>";
-    let publicCatalogDetailID   = "<?= $objTransactionMasterReference->reference2 ?>";
+    let catalogItemID   		= "<?= $objTransactionMasterReference->reference2 ?>";
     let valorNuevoEndosar       = "<?= $objTransactionMasterReference->reference10 ?>";
     let valorAnteriorEndosar    = "<?= $objTransactionMasterReference->referecne9 ?>";
     let objTransactionMaster    = [];
@@ -15,8 +15,7 @@
         $("#txtValorModificar").prop("disabled", true).html('<option value="">Seleccione una opción...</option>');
         $("#txtValorModificar").select2();
         $('#txtTransactionID').select2();
-        $('#txtDate').datepicker({format: "yyyy-mm-dd"});
-        $('#txtDate').val(moment().format("YYYY-MM-DD"));
+        $('#txtDate').datepicker({format: "yyyy-mm-dd"});        
         $("#txtDate").datepicker("update");
 
         fnFillListCampoModificar(transactionDocument);
@@ -89,16 +88,16 @@
         });
 
         $('#txtTransactionID').change(function () {
-            fnClearValues();
+            fnClearValues(true);
         });
 
         // Evento para detectar el cambio en el select del tipo de endoso
         $("#txtValorModificar").change(function () {
             let selectedValue       = $("#txtValorModificar").val();
             let selectTipoEndoso    = listaValoresModificar.filter(function(item) {
-                return item.publicCatalogDetailID === selectedValue;
+                return item.catalogItemID === selectedValue;
             });
-            fnMostrarCampo(selectTipoEndoso[0]);
+            fnMostrarCampoByTypeEndorsements(selectTipoEndoso[0]);
         });
 
         function onCompleteDocument(objResponse){
@@ -126,7 +125,7 @@
 
             //buscamos el detalle del catalago de endoso conforme el tipo de documento
             $.ajax({
-                url     : "<?= base_url(); ?>/app_public_catalog_api/getPublicCatalogDetailEndoso/publicCatalogID/"+publicCatalogID+"/reference1/"+reference1,
+                url     : "<?= base_url(); ?>/app_catalog_api/getCatalogItemByEndosos/catalogID/"+catalogID+"/reference1/"+reference1,
                 type    : 'GET',
                 success : function (respuesta) {
                     // Limpiar el select antes de agregar nuevas opciones
@@ -134,8 +133,8 @@
                     if (respuesta.data.length > 0) {
                         listaValoresModificar   =  respuesta.data;
                         $.each(listaValoresModificar, function (index, item) {
-                            let selected = publicCatalogDetailID === item.publicCatalogDetailID;
-                            let newOption = new Option(item.name, item.publicCatalogDetailID, selected, selected);
+                            let selected = catalogItemID === item.catalogItemID;
+                            let newOption = new Option(item.name, item.catalogItemID, selected, selected);
                             $("#txtValorModificar").append(newOption).trigger('change');
                             if (selected){
                                 $("#txtValorModificar").trigger('change');
@@ -151,7 +150,7 @@
         }
 
         // Función para mostrar el campo correspondiente
-        function fnMostrarCampo(endoso) {
+        function fnMostrarCampoByTypeEndorsements(endoso) {
             if (endoso) {
                 tagContenedorValorAnterior.empty();
                 tagContenedorValorNuevo.empty();
@@ -159,7 +158,7 @@
                 let campo           = endoso.display.split('.').pop();
                 let tipo            = endoso.description;
                 let referencia2     = endoso.reference2;
-                let reference3      = endoso.reference3;
+                let referencia3     = endoso.reference3;
                 if (objTransactionMaster.hasOwnProperty(campo)) {
                     valorAnterior = objTransactionMaster[campo];
                 }
@@ -170,7 +169,7 @@
                     tagContenedorValorAnterior.html('<select name="txtValorAnterior" id="txtValorAnterior" class="select2"><option value="">Cargando opciones...</option></select>');
                     tagContenedorValorNuevo.html('<select name="txtValorNuevo" id="txtValorNuevo" class="select2"><option value="">Cargando opciones...</option></select>');
                     if (referencia2 === "tb_catalog") {
-                        fnCargarOpcionesComboTbCatalog(reference3,campo);
+                        fnCargarOpcionesComboTbCatalog(referencia3,campo);
                     }
                     $(document).on("change", "#txtValorNuevo", function () {
                         var textoSeleccionado = $(this).find("option:selected").text();

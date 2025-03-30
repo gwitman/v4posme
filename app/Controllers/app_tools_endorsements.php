@@ -48,11 +48,11 @@ class app_tools_endorsements extends _BaseController {
 
             $objParameterUrlPrinter					            = $this->core_web_parameter->getParameter("ENDORSEMENTS_URL_PRINTER",$companyID);
             $objParameterUrlPrinter 				            = $objParameterUrlPrinter->value;
-            $publicCatalog                                      = $this->Public_Catalog_Model->getBySystemNameAndFlavorID("tb_transaction_master_endorsements.type_endorsements", $dataSession['company']->flavorID)[0];
+            $objCatalog                                      	= $this->Catalog_Model->get_rowByName("Tipo de Endoso");
             $dataView["objTransactionMaster"]				    = $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
             $dataView["objTransactionMaster"]->transactionOn    = date_format(date_create($dataView["objTransactionMaster"]->transactionOn),"Y-m-d");
             $dataView["objTransactionMasterReference"]          = $this->Transaction_Master_References_Model->get_rowByTransactionMaster($transactionMasterID);
-            $dataView["publicCatalogID"]                        = $publicCatalog->publicCatalogID;
+            $dataView["catalogID"]		                        = $objCatalog->catalogID;
             $dataView["objListWorkflowStage"]	                = $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_endorsements","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
             $dataView["objComponent"]                           = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction");;
             $dataView["tipoTransaccion"]                        = $this->Transaction_Model->getRowByCompanyId($companyID);
@@ -117,7 +117,7 @@ class app_tools_endorsements extends _BaseController {
             if ($resultPermission 	== PERMISSION_ME && ($objTM->createdBy != $dataSession["user"]->userID))
                 throw new \Exception(NOT_DELETE);
 
-            if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_endorsements","statusID",$objTM->statusID,COMMAND_ELIMINABLE,$companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
+            if( !$this->core_web_workflow->validateWorkflowStage("tb_transaction_master_endorsements","statusID",$objTM->statusID,COMMAND_ELIMINABLE,$companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
                 throw new \Exception(NOT_WORKFLOW_DELETE);
 
             $objTMRef = $this->Transaction_Master_References_Model->get_rowByTransactionMaster($transactionMasterID);
@@ -178,9 +178,10 @@ class app_tools_endorsements extends _BaseController {
                 throw new \Exception("EL DOCUMENTO NO PUEDE ACTUALIZARCE, EL CICLO CONTABLE ESTA CERRADO");
 
             //buscamos en el catalogo detail con el id, el campo a editar, y lo guardamos
-            $publicCatalogDetailID                  = /*inicio get post*/ $this->request->getPost("txtValorModificar");
-            $findCatalogoDetail                     = $this->Public_Catalog_Detail_Model->get_rowByDetailID($publicCatalogDetailID);
+            $catalogItemID			                = /*inicio get post*/ $this->request->getPost("txtValorModificar");
+            $findCatalogoDetail                     = $this->Catalog_Item_Model->get_rowByCatalogItemID($catalogItemID);
             $objTMNew["transactionOn"]				= /*inicio get post*/ $this->request->getPost("txtDate");
+			$objTMNew['reference1']                 = /*inicio get post*/ $this->request->getPost("txtTransactionID");
             $objTMNew["statusIDChangeOn"]			= date("Y-m-d H:m:s");
             $objTMNew["statusID"] 					= /*inicio get post*/ $this->request->getPost("txtStatusID");
 
@@ -202,13 +203,13 @@ class app_tools_endorsements extends _BaseController {
             if (empty($valorAnterior)) {
                 $valorAnterior = /*inicio get post*/$this->request->getPost("txtValorAnterior");
             }
-            if (empty($valorAnterior)) {
+            if (empty($valorNuevo)) {
                 $valorNuevo = /*inicio get post*/$this->request->getPost("txtValorNuevo");
             }
 
             $objTMRefNew['transactionReferenceNumber']   = /*inicio get post*/ $this->request->getPost("txtTransactionNumber");;
             $objTMRefNew['reference1']                   = /*inicio get post*/ $this->request->getPost("txtTransactionMasterIDEndoso");
-            $objTMRefNew['reference2']                   = $publicCatalogDetailID;
+            $objTMRefNew['reference2']                   = $catalogItemID;
             $objTMRefNew['reference3']                   = $findCatalogoDetail->name;
             $objTMRefNew['refernece4']                   = $findCatalogoDetail->display;
             $objTMRefNew['refernece5']                   = $findCatalogoDetail->description;
@@ -306,8 +307,8 @@ class app_tools_endorsements extends _BaseController {
             $objT 									= $this->Transaction_Model->getByCompanyAndTransaction($companyID,$transactionID);
 
             //buscamos en el catalogo detail con el id, el campo a editar, y lo guardamos
-            $publicCatalogDetailID                  = /*inicio get post*/ $this->request->getPost("txtValorModificar");
-            $findCatalogoDetail                     = $this->Public_Catalog_Detail_Model->get_rowByDetailID($publicCatalogDetailID);
+            $catalogItemID			                = /*inicio get post*/ $this->request->getPost("txtValorModificar");
+            $findCatalogoDetail                     = $this->Catalog_Item_Model->get_rowByCatalogItemID($catalogItemID);
 
             $objTM["companyID"] 					= $companyID;
             $objTM["transactionID"] 				= $transactionID;
@@ -321,6 +322,7 @@ class app_tools_endorsements extends _BaseController {
             $objTM["amount"] 						= 0;
             $objTM["isApplied"] 					= 0;
             $objTM["journalEntryID"] 				= 0;
+			$objTM['reference1']                    = /*inicio get post*/ $this->request->getPost("txtTransactionID");
             $objTM["classID"] 						= NULL;
             $objTM["sourceWarehouseID"]				= NULL;
             $objTM["targetWarehouseID"]				= NULL;
@@ -335,18 +337,20 @@ class app_tools_endorsements extends _BaseController {
             $transactionMasterID    = $this->Transaction_Master_Model->insert_app_posme($objTM);
             $valorAnterior          = /*inicio get post*/$this->request->getPost("txtSelectedTextValorAnterior");
             $valorNuevo             = /*inicio get post*/$this->request->getPost("txtSelectedTextValorNuevo");
+			
             if (empty($valorAnterior)) {
                 $valorAnterior = /*inicio get post*/$this->request->getPost("txtValorAnterior");
             }
-            if (empty($valorAnterior)) {
+            if (empty($valorNuevo)) {
                 $valorNuevo = /*inicio get post*/$this->request->getPost("txtValorNuevo");
             }
+			
             $objTMRef['transactionMasterID']           = $transactionMasterID;
             $objTMRef['createdOn']                     = date('c');
             $objTMRef['isActive']                      = 1;
             $objTMRef['transactionReferenceNumber']    = /*inicio get post*/ $this->request->getPost("txtTransactionNumber");;
             $objTMRef['reference1']                    = /*inicio get post*/ $this->request->getPost("txtTransactionMasterIDEndoso");
-            $objTMRef['reference2']                    = $publicCatalogDetailID;
+            $objTMRef['reference2']                    = $catalogItemID;
             $objTMRef['reference3']                    = $findCatalogoDetail->name;
             $objTMRef['refernece4']                    = $findCatalogoDetail->display;
             $objTMRef['refernece5']                    = $findCatalogoDetail->description;
@@ -466,7 +470,7 @@ class app_tools_endorsements extends _BaseController {
                     throw new \Exception(NOT_ALL_INSERT);
 
             }
-            $publicCatalog  = $this->Public_Catalog_Model->getBySystemNameAndFlavorID("tb_transaction_master_endorsements.type_endorsements", $dataSession['company']->flavorID)[0];
+            $objCatalog 	= $this->Catalog_Model->get_rowByName("Tipo de Endoso");
             $companyID      = $dataSession["user"]->companyID;
             $branchID       = $dataSession["user"]->branchID;
             $roleID         = $dataSession["role"]->roleID;
@@ -477,7 +481,7 @@ class app_tools_endorsements extends _BaseController {
 
             $dataView["tipoTransaccion"]        = $transacciones;
             $dataView["objComponent"]           = $objComponent;
-            $dataView["publicCatalogID"]        = $publicCatalog->publicCatalogID;
+            $dataView["catalogID"]        		= $objCatalog->catalogID;
             $dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_endorsements","statusID",$companyID,$branchID,$roleID);
 
             //Renderizar Resultado

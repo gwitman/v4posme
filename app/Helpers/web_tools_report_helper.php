@@ -20918,6 +20918,12 @@ function helper_reporte80mmTransactionMasterEndorsements(
                           </td>
                         </tr>
 						
+						 <tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+						
 						<tr>
                           <td colspan='3' style='text-align:center'>
                             VALOR ANTERIOR
@@ -20930,6 +20936,12 @@ function helper_reporte80mmTransactionMasterEndorsements(
                           </td>
                         </tr>
                         
+						 <tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+						
                         <tr>
                           <td colspan='3' style='text-align:center'>
                             VALOR NUEVO

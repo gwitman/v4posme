@@ -1,5 +1,5 @@
 <script>
-    let publicCatalogID         = <?= $publicCatalogID ?? 0 ?>;
+    let catalogID         		= <?= $catalogID ?? 0 ?>;
     let listaValoresModificar   = [];
     let transactionDocument     = "";
     let objTransactionMaster    = [];
@@ -50,16 +50,16 @@
         });
 
         $('#txtTransactionID').change(function () {
-            fnClearValues();
+            fnClearValues(true);
         });
 
         // Evento para detectar el cambio en el select del tipo de endoso
-        $("#txtValorModificar").change(function () {
+        $("#txtValorModificar").change(function () {			
             let selectedValue       = $("#txtValorModificar").val();
             let selectTipoEndoso    = listaValoresModificar.filter(function(item) {
-                return item.publicCatalogDetailID === selectedValue;
+                return item.catalogItemID === selectedValue;
             });
-            fnMostrarCampo(selectTipoEndoso[0]);
+            fnMostrarCampoByTypeEndorsements(selectTipoEndoso[0]);
         });
 
         function onCompleteDocument(objResponse){
@@ -87,15 +87,17 @@
 
             //buscamos el detalle del catalago de endoso conforme el tipo de documento
             $.ajax({
-                url     : "<?= base_url(); ?>/app_public_catalog_api/getPublicCatalogDetailEndoso/publicCatalogID/"+publicCatalogID+"/reference1/"+reference1,
+                url     : "<?= base_url(); ?>/app_catalog_api/getCatalogItemByEndosos/catalogID/"+catalogID+"/reference1/"+reference1,
                 type    : 'GET',
                 success : function (respuesta) {
                     // Limpiar el select antes de agregar nuevas opciones
                     $("#txtValorModificar").empty().append('<option value="0" selected>Seleccione una opción...</option>');
-                    if (respuesta.data.length > 0) {
+                    if (respuesta.data.length > 0) 
+					{
                         listaValoresModificar   =  respuesta.data;
-                        $.each(listaValoresModificar, function (index, item) {
-                            let newOption = new Option(item.name, item.publicCatalogDetailID, false, false);
+                        $.each(listaValoresModificar, function (index, item) 
+						{
+                            let newOption = new Option(item.name, item.catalogItemID, false, false);
                             $("#txtValorModificar").append(newOption).trigger('change');
                         });
                         $("#txtValorModificar").prop("disabled", false);
@@ -108,26 +110,32 @@
         }
 
         // Función para mostrar el campo correspondiente
-        function fnMostrarCampo(endoso) {
+        function fnMostrarCampoByTypeEndorsements(endoso) {
+			
             if (endoso) {
+				debugger;
                 tagContenedorValorAnterior.empty();
                 tagContenedorValorNuevo.empty();
                 let valorAnterior;
                 let campo       = endoso.display.split('.').pop();
                 let tipo        = endoso.description;
                 let referencia2 = endoso.reference2;
-                let reference3  = endoso.reference3;
+                let referencia3 = endoso.reference3;
+				
                 if (objTransactionMaster.hasOwnProperty(campo)) {
                     valorAnterior = objTransactionMaster[campo];
                 }
-                if (tipo === "datetime") {
+                if (tipo === "datetime") 
+				{
                     tagContenedorValorAnterior.html('<input readonly type="datetime-local" name="txtValorAnterior" id="txtValorAnterior" class="form-control" value="' + valorAnterior + '">');
                     tagContenedorValorNuevo.html('<input type="datetime-local" name="txtValorNuevo" id="txtValorNuevo" class="form-control">');
-                } else if (tipo === "combobox") {
+                } 
+				else if (tipo === "combobox") 
+				{
                     tagContenedorValorAnterior.html('<select name="txtValorAnterior" id="txtValorAnterior" class="select2"><option value="">Cargando opciones...</option></select>');
                     tagContenedorValorNuevo.html('<select name="txtValorNuevo" id="txtValorNuevo" class="select2"><option value="">Cargando opciones...</option></select>');
                     if (referencia2 === "tb_catalog") {
-                        fnCargarOpcionesComboTbCatalog(reference3,campo);
+                        fnCargarOpcionesComboTbCatalog(referencia3,campo);
                     }
 
                     $(document).on("change", "#txtValorNuevo", function () {
@@ -140,7 +148,9 @@
                         $("#txtSelectedTextValorAnterior").val(textoSeleccionado);
                     });
 
-                } else if (tipo === "input") {
+                } 
+				else if (tipo === "input") 
+				{
                     tagContenedorValorAnterior.html('<input readonly type="text" id="txtValorAnterior" class="form-control" placeholder="Ingrese un valor" value="' + valorAnterior + '">');
                     tagContenedorValorNuevo.html('<input type="text" name="txtValorNuevo" id="txtValorNuevo" class="form-control" placeholder="Ingrese un valor">');
                 }

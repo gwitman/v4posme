@@ -578,6 +578,7 @@ $routes->match(['get','post'],'app_catalog_api/getCatalogItemByState','app_catal
 $routes->match(['get','post'],'app_catalog_api/getCatalogItemByCity','app_catalog_api::getCatalogItemByCity');
 $routes->match(['get','post'],'app_catalog_api/getCatalogItemByParentCatalogItemID','app_catalog_api::getCatalogItemByParentCatalogItemID');
 $routes->match(['get','post'],'app_catalog_api/getCatalogByName/(:any)','app_catalog_api::getCatalogByName/$1');
+$routes->match(['get','post'],'app_catalog_api/getCatalogItemByEndosos/(:any)','app_catalog_api::getCatalogItemByEndosos');
 $routes->match(['get','post'],'app_collection_manager/delete','app_collection_manager::delete');
 $routes->match(['get','post'],'app_collection_manager/save','app_collection_manager::save');
 $routes->match(['get','post'],'app_collection_manager/save/(:any)','app_collection_manager::save');
@@ -1426,7 +1427,6 @@ $routes->match(['get','post'],'app_public_catalog_api/getPublicCatalogDetail','a
 $routes->match(['get','post'],'app_public_catalog_api/getPublicCatalogDetail/(:any)','app_public_catalog_api::getPublicCatalogDetail');
 $routes->match(['get','post'],'app_public_catalog_api/getPublicCatalogDetailFilter','app_public_catalog_api::getPublicCatalogDetailFilter');
 $routes->match(['get','post'],'app_public_catalog_api/getPublicCatalogDetailFilter/(:any)','app_public_catalog_api::getPublicCatalogDetailFilter');
-$routes->match(['get','post'],'app_public_catalog_api/getPublicCatalogDetailEndoso/(:any)','app_public_catalog_api::getPublicCatalogDetailEndoso');
 $routes->match(['get','post'],'core_testunitary/index','core_testunitary::index');
 $routes->match(['get','post'],'core_elfinder/index','core_elfinder::index');
 $routes->match(['get','post'],'core_elfinder/index/(:any)','core_elfinder::index');

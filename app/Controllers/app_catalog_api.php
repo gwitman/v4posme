@@ -41,6 +41,7 @@ class app_catalog_api extends _BaseController {
 			));//--finjson			
 		}
 	}
+	
 	function getCatalogItemByState(){
 		try{ 
 			//AUTENTICACION
@@ -75,6 +76,7 @@ class app_catalog_api extends _BaseController {
 			));//--finjson			
 		}
 	}
+	
 	function getCatalogItemByCity(){
 		try{ 
 			//AUTENTICACION
@@ -136,5 +138,35 @@ class app_catalog_api extends _BaseController {
             ));//--finjson
         }
     }
+
+	function getCatalogItemByEndosos()
+    {
+        try{
+            //Validar Authentication
+            if(!$this->core_web_authentication->isAuthenticated())
+                throw new Exception(USER_NOT_AUTENTICATED);
+            $dataSession		= $this->session->get();
+
+            $catalogID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"catalogID");//--finuri
+            $reference1	        = /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"reference1");//--finuri
+            $objPCD				= $this->Catalog_Item_Model->get_rowByCatalogIDAndReference1($catalogID, $reference1,$dataSession["company"]->flavorID);
+
+            //Obtener Resultados.
+            return $this->response->setJSON(array(
+                'error'   			=> false,
+                'message' 			=> SUCCESS,
+                'data'	 	        => $objPCD
+            ));//--finjson
+
+        }
+        catch(Exception $ex){
+            return $this->response->setJSON(array(
+                'error'   			=> true,
+                'message' 			=> $ex->getMessage(),
+                'data'	 	        => []
+            ));//--finjson
+        }
+    }
+	
 }
 ?>
