@@ -196,7 +196,7 @@
                 valor = objTransactionMaster[campo];
             }
             $.ajax({
-                url         : "<?= base_url()?>/app_catalog_api/getCatalogByReference3/"+reference3,
+                url         : "<?= base_url()?>/app_catalog_api/getCatalogByName/"+reference3,
                 type        : "GET",
                 dataType    : "json",
                 success     : function (respuesta) {

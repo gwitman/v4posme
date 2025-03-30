@@ -113,7 +113,7 @@
         function fnMostrarCampoByTypeEndorsements(endoso) {
 			
             if (endoso) {
-				debugger;
+				
                 tagContenedorValorAnterior.empty();
                 tagContenedorValorNuevo.empty();
                 let valorAnterior;
@@ -158,6 +158,7 @@
         }
 
         function fnCargarOpcionesComboTbCatalog(reference3, campo) {
+			
             fnWaitOpen();
             let comboValorAnterior  = $("#txtValorAnterior");
             let comboValorNuevo     = $("#txtValorNuevo");
@@ -166,7 +167,7 @@
                 valor = objTransactionMaster[campo];
             }
             $.ajax({
-                url         : "<?= base_url()?>/app_catalog_api/getCatalogByReference3/"+reference3,
+                url         : "<?= base_url()?>/app_catalog_api/getCatalogByName/"+reference3,
                 type        : "GET",
                 dataType    : "json",
                 success     : function (respuesta) {
