@@ -48,7 +48,7 @@ class app_tools_endorsements extends _BaseController {
 
             $objParameterUrlPrinter					            = $this->core_web_parameter->getParameter("ENDORSEMENTS_URL_PRINTER",$companyID);
             $objParameterUrlPrinter 				            = $objParameterUrlPrinter->value;
-            $publicCatalog                                      =$this->Public_Catalog_Model->get_rowBySystemName("tb_transaction_master_endorsements.type_endorsements");
+            $publicCatalog                                      = $this->Public_Catalog_Model->getBySystemNameAndFlavorID("tb_transaction_master_endorsements.type_endorsements", $dataSession['company']->flavorID)[0];
             $dataView["objTransactionMaster"]				    = $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
             $dataView["objTransactionMaster"]->transactionOn    = date_format(date_create($dataView["objTransactionMaster"]->transactionOn),"Y-m-d");
             $dataView["objTransactionMasterReference"]          = $this->Transaction_Master_References_Model->get_rowByTransactionMaster($transactionMasterID);
@@ -466,7 +466,7 @@ class app_tools_endorsements extends _BaseController {
                     throw new \Exception(NOT_ALL_INSERT);
 
             }
-            $publicCatalog  = $this->Public_Catalog_Model->getBySystemNameAndFlavorID("tb_transaction_master_endorsements.type_endorsements", $dataSession['company']->flavorID);
+            $publicCatalog  = $this->Public_Catalog_Model->getBySystemNameAndFlavorID("tb_transaction_master_endorsements.type_endorsements", $dataSession['company']->flavorID)[0];
             $companyID      = $dataSession["user"]->companyID;
             $branchID       = $dataSession["user"]->branchID;
             $roleID         = $dataSession["role"]->roleID;
