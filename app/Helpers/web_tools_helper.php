@@ -44,7 +44,7 @@ function GUIDv4($trim = true)
         $rbrace;
     return $guidv4;
 }
-function helper_obtenerClavePrimaria($db, $table)
+function helper_ObtenerClavePrimaria($db, $table)
 {
     $query = $db->query("
         SELECT COLUMN_NAME 

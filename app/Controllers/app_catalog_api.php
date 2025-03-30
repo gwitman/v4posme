@@ -110,7 +110,7 @@ class app_catalog_api extends _BaseController {
 		}
 	}
 
-    function getCatalogByReference3($reference3)
+    function getCatalogByName($name)
     {
         try{
             //Validar Authentication
@@ -118,7 +118,7 @@ class app_catalog_api extends _BaseController {
                 throw new Exception(USER_NOT_AUTENTICATED);
             $dataSession		= $this->session->get();
             $companyID          = $dataSession["user"]->companyID;
-            $objPCD				= $this->core_web_catalog->getCatalogAllItemByNameCatalogo($reference3, $companyID);
+            $objPCD				= $this->core_web_catalog->getCatalogAllItemByNameCatalogo($name, $companyID);
 
             //Obtener Resultados.
             return $this->response->setJSON(array(
