@@ -53,7 +53,11 @@ class app_tools_endorsements extends _BaseController {
             $dataView["objTransactionMaster"]->transactionOn    = date_format(date_create($dataView["objTransactionMaster"]->transactionOn),"Y-m-d");
             $dataView["objTransactionMasterReference"]          = $this->Transaction_Master_References_Model->get_rowByTransactionMaster($transactionMasterID);
             $dataView["catalogID"]		                        = $objCatalog->catalogID;
+		
 			$dataView["objCatalogItem"]							= $this->Catalog_Item_Model->get_rowByCatalogIDAndReference1($objCatalog->catalogID, $dataView["objTransactionMasterReference"]->reference6 ,$dataSession["company"]->flavorID );			
+			if(!$dataView["objCatalogItem"])
+			$dataView["objCatalogItem"]							= $this->Catalog_Item_Model->get_rowByCatalogIDAndReference1($objCatalog->catalogID, $dataView["objTransactionMasterReference"]->reference6 ,0 );			
+		
             $dataView["objListWorkflowStage"]	                = $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_endorsements","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
             $dataView["objComponent"]                           = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction");;
             $dataView["tipoTransaccion"]                        = $this->Transaction_Model->getRowByCompanyId($companyID);

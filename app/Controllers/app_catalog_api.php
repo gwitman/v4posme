@@ -150,6 +150,9 @@ class app_catalog_api extends _BaseController {
             $catalogID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"catalogID");//--finuri
             $reference1	        = /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"reference1");//--finuri
             $objPCD				= $this->Catalog_Item_Model->get_rowByCatalogIDAndReference1($catalogID, $reference1,$dataSession["company"]->flavorID);
+			
+			if(!$objPCD)
+			$objPCD				= $this->Catalog_Item_Model->get_rowByCatalogIDAndReference1($catalogID, $reference1,0);
 
             //Obtener Resultados.
             return $this->response->setJSON(array(
