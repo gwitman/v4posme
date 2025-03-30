@@ -20762,6 +20762,231 @@ function helper_reporte80mmTransactionMasterAttendance(
     return $html;
 }
 
+/**
+ * @param $titulo
+ * @param $objCompany
+ * @param $objParameterLogo
+ * @param $objTransactionMastser
+ * @param $objTransactionMasterReference
+ * @param $objParameterTelefono
+ * @param $statusName
+ * @param $userNickName
+ * @param $rucCompany
+ * @return array|string|string[]
+ */
+function helper_reporte80mmTransactionMasterEndorsements(
+    $titulo,
+    $objCompany,
+    $objParameterLogo,
+    $objTransactionMastser,
+    $objTransactionMasterReference,
+    $objParameterTelefono, /*telefono*/
+    $statusName = "", /*estado*/
+    $userNickName = "", /*usuario*/
+    $rucCompany = "" /*ruc*/
+)
+{
+    $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
+
+    $type    = pathinfo($path, PATHINFO_EXTENSION);
+    $data    = file_get_contents($path);
+    $base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+    $html    = "";
+    $html    = "
+                    <!--
+                    Online HTML, CSS and JavaScript editor to run code online.
+                    https://www.programiz.com/html/online-compiler/
+                    -->
+                    <!DOCTYPE html>
+                    <html lang='en'>
+        
+                    <head>
+                      <meta charset='UTF-8' />
+                      <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+                      <style>
+                        @page {       
+                          size: 3.15in 6in;                  
+                          margin-top:0px;
+                          margin-left:0px;
+                          margin-right:15px;
+                        }
+                        table{
+                          font-size: x-small;
+                          font-weight: bold;
+                          font-family: Consolas, monaco, monospace;
+                        }
+                        .firma {
+                            text-align: center;
+                            padding-top: 20px;
+                        }
+                      </style>
+                    </head>
+        
+                    <body>
+        
+                      <table style='width:100%'>
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            <img  src='".$base64."' width='110'   alt='logo' />
+                          </td>
+                        </tr>
+                                
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".strtoupper($objCompany->name)."
+                          </td>
+                        </tr>";
+
+
+    if($rucCompany != "")
+    {
+        $html	= $html."<tr>                              
+    						  <td colspan='3' style='text-align:center'>
+                                ".  $rucCompany ."
+                              </td>
+                            </tr>";
+    }
+
+    $html = $html."<tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".strtoupper($titulo)."
+                          </td>
+                        </tr>
+                                
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            # ".strtoupper($objTransactionMastser->transactionNumber)."
+                          </td>
+                        </tr>
+                                
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            FECHA: ".$objTransactionMastser->createdOn."
+                          </td>
+                        </tr>
+                                
+                         <tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>";
+
+    if($userNickName != "")
+    {
+        $html	= $html."<tr>
+                          <td colspan=''>
+                            USUARIO:
+                          </td>
+						  <td colspan='2'>
+                            ". (strpos($userNickName , "@") === false ? $userNickName : substr($userNickName,0,strpos($userNickName , "@") ) )   ."
+                          </td>
+                        </tr>";
+    }
+
+    $html	= $html."    <tr>
+                          <td colspan='1'>
+                            ESTADO
+                          </td>
+						  <td colspan='2'>
+                            ". ($statusName == "CANCELADA" ? "APLICADA" : $statusName ) ."
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan='1'>
+                            DOCUMENTO
+                          </td>
+						  <td colspan='2'>
+                            ". $objTransactionMasterReference->transactionReferenceNumber ."
+                          </td>
+                        </tr>
+                         <tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            TIPO DE ENDOSO
+                          </td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".$objTransactionMasterReference->reference3."
+                          </td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            VALOR ANTERIOR
+                          </td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".$objTransactionMasterReference->reference11."
+                          </td>
+                        </tr>
+                        
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            VALOR NUEVO
+                          </td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".$objTransactionMasterReference->reference12."
+                          </td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+						<tr>
+                            <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                            </td>
+                        </tr>
+                         <tr>
+                            <td colspan='3' style='text-align:center'>
+                                <div class='firma'>
+                                    <p>________________________</p>
+                                    <p>FIRMA</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".$objCompany->address."
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".$objParameterTelefono->value."
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan='3' style='text-align:center' >
+                            sistema 505-8712-5827
+                          </td>
+                        </tr>
+                                
+                        
+
+                                
+                      </table>
+                    </body>
+                                
+                    </html>
+            ";
+    return $html;
+}
 
 function helper_reporte80mmTransactionMasterInputOutPutCash(
     $titulo,

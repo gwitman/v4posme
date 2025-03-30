@@ -178,6 +178,21 @@ class Public_Catalog_Detail_Model extends Model
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
     }
-	
+
+    function get_rowByPublicCatalogIDAndReference1($publicCatalogID, $reference1)
+    {
+        return $this->asObject()
+            ->where("publicCatalogID",$publicCatalogID)
+            ->where("reference1",$reference1)
+            ->where("isActive",1)
+            ->findAll();
+    }
+
+    function get_rowByDetailID($publicCatalogDetailID)
+    {
+        return $this->asObject()
+            ->where("isActive",1)
+            ->find($publicCatalogDetailID);
+    }
 }
 ?>

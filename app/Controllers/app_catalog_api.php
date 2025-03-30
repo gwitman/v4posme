@@ -109,5 +109,32 @@ class app_catalog_api extends _BaseController {
 			));//--finjson			
 		}
 	}
+
+    function getCatalogByReference3($reference3)
+    {
+        try{
+            //Validar Authentication
+            if(!$this->core_web_authentication->isAuthenticated())
+                throw new Exception(USER_NOT_AUTENTICATED);
+            $dataSession		= $this->session->get();
+            $companyID          = $dataSession["user"]->companyID;
+            $objPCD				= $this->core_web_catalog->getCatalogAllItemByNameCatalogo($reference3, $companyID);
+
+            //Obtener Resultados.
+            return $this->response->setJSON(array(
+                'error'   			=> false,
+                'message' 			=> SUCCESS,
+                'data'	 	        => $objPCD
+            ));//--finjson
+
+        }
+        catch(Exception $ex){
+            return $this->response->setJSON(array(
+                'error'   			=> true,
+                'message' 			=> $ex->getMessage(),
+                'data'	 	        => []
+            ));//--finjson
+        }
+    }
 }
 ?>

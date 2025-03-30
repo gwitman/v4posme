@@ -5,9 +5,36 @@ use CodeIgniter\HTTP\ResponseInterface;
 use Exception;
 
 class app_public_catalog_api extends _BaseController {
-	
-    
-	
+
+
+    function getPublicCatalogDetailEndoso()
+    {
+        try{
+            //Validar Authentication
+            if(!$this->core_web_authentication->isAuthenticated())
+                throw new Exception(USER_NOT_AUTENTICATED);
+            $dataSession		= $this->session->get();
+
+            $publicCatalogID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"publicCatalogID");//--finuri
+            $reference1	        = /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"reference1");//--finuri
+            $objPCD				= $this->Public_Catalog_Detail_Model->get_rowByPublicCatalogIDAndReference1($publicCatalogID, $reference1);
+
+            //Obtener Resultados.
+            return $this->response->setJSON(array(
+                'error'   			=> false,
+                'message' 			=> SUCCESS,
+                'data'	 	        => $objPCD
+            ));//--finjson
+
+        }
+        catch(Exception $ex){
+            return $this->response->setJSON(array(
+                'error'   			=> true,
+                'message' 			=> $ex->getMessage(),
+                'data'	 	        => []
+            ));//--finjson
+        }
+    }
 	
 	
 	function getPublicCatalogDetail()

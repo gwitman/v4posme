@@ -64,7 +64,25 @@ class Public_Catalog_Model extends Model
 		return $db->query($sql)->getResult();
 		
     }
-	
-	
+
+    function get_rowBySystemName($systemName)
+    {
+        $db 		= db_connect();
+        $sql="
+        SELECT
+            tpc.publicCatalogID, 
+            tpc.name, 
+            tpc.systemName, 
+            tpc.statusID, 
+            tpc.orden, 
+            tpc.description, 
+            tpc.isActive, 
+            tpc.flavorID 
+        FROM tb_public_catalog tpc
+        WHERE tpc.systemName= ?
+        ";
+
+        return $db->query($sql,[$systemName])->getRow();
+	}
 }
 ?>

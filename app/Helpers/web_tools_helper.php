@@ -44,6 +44,18 @@ function GUIDv4($trim = true)
         $rbrace;
     return $guidv4;
 }
+function helper_obtenerClavePrimaria($db, $table)
+{
+    $query = $db->query("
+        SELECT COLUMN_NAME 
+        FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE 
+        WHERE TABLE_NAME = ? 
+        AND CONSTRAINT_NAME = 'PRIMARY'
+    ", [$table]);
+
+    $row = $query->getRow();
+    return $row ? $row->COLUMN_NAME : null;
+}
 
 function helper_SegmentsValue($objListSegments, $key)
 {

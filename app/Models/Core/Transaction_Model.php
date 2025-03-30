@@ -61,6 +61,24 @@ class Transaction_Model extends Model  {
 		
    		return $db->query($sql)->getRow()->counter;
    }
+
+    function getRowByCompanyId($companyID){
+        $db  = db_connect();
+        $sql = "SELECT 
+                    tt.transactionID, 
+                    tt.companyID, 
+                    tt.name, 
+                    tt.description, 
+                    tt.workflowID 
+                FROM tb_transaction tt 
+                WHERE 
+                    tt.isActive = 1 AND 
+                    tt.companyID = ?
+                ORDER BY 
+                    tt.name
+        ";
+        return $db->query($sql,[$companyID])->getResult();
+    }
    
    function getByCompanyAndTransaction($companyID,$transactionID){
 		$db 	= db_connect();
