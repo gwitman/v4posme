@@ -6,13 +6,12 @@
 
     $( document ).ready(function() {
 
-        let selectValorModificar    = $("#txtValorModificar");
-        let contenedorValorAnterior = $("#contenedorDinamicoValorAnterior");
-        let contenedorValorNuevo    = $("#contenedorDinamicoValorNuevo");
-        let txtTransactionID        = $('#txtTransactionID');
-        selectValorModificar.prop("disabled", true).html('<option value="">Seleccione una opción...</option>');
-        selectValorModificar.select2();
-        txtTransactionID.select2();
+        
+        let tagContenedorValorAnterior = $("#contenedorDinamicoValorAnterior");
+        let tagContenedorValorNuevo    = $("#contenedorDinamicoValorNuevo");        
+        $("#txtValorModificar").prop("disabled", true).html('<option value="">Seleccione una opción...</option>');
+        $("#txtValorModificar").select2();
+        $('#txtTransactionID').select2();
         $('#txtDate').datepicker({format: "yyyy-mm-dd"});
         $('#txtDate').val(moment().format("YYYY-MM-DD"));
         $("#txtDate").datepicker("update");
@@ -29,7 +28,7 @@
         });
 
         $("#btnSearchDocument").click(function () {
-            let transactionId = txtTransactionID.val()
+            let transactionId = $('#txtTransactionID').val()
             if (transactionId){
                 let url_request =
                     "<?php echo base_url(); ?>/core_view/showviewbynamepaginate"+
@@ -50,13 +49,13 @@
             fnClearValues(true);
         });
 
-        txtTransactionID.change(function () {
+        $('#txtTransactionID').change(function () {
             fnClearValues();
         });
 
         // Evento para detectar el cambio en el select del tipo de endoso
-        selectValorModificar.change(function () {
-            let selectedValue       = selectValorModificar.val();
+        $("#txtValorModificar").change(function () {
+            let selectedValue       = $("#txtValorModificar").val();
             let selectTipoEndoso    = listaValoresModificar.filter(function(item) {
                 return item.publicCatalogDetailID === selectedValue;
             });
@@ -92,16 +91,16 @@
                 type    : 'GET',
                 success : function (respuesta) {
                     // Limpiar el select antes de agregar nuevas opciones
-                    selectValorModificar.empty().append('<option value="0" selected>Seleccione una opción...</option>');
+                    $("#txtValorModificar").empty().append('<option value="0" selected>Seleccione una opción...</option>');
                     if (respuesta.data.length > 0) {
                         listaValoresModificar   =  respuesta.data;
                         $.each(listaValoresModificar, function (index, item) {
                             let newOption = new Option(item.name, item.publicCatalogDetailID, false, false);
-                            selectValorModificar.append(newOption).trigger('change');
+                            $("#txtValorModificar").append(newOption).trigger('change');
                         });
-                        selectValorModificar.prop("disabled", false);
+                        $("#txtValorModificar").prop("disabled", false);
                     } else {
-                        selectValorModificar.html('<option value="">No hay datos disponibles</option>');
+                        $("#txtValorModificar").html('<option value="">No hay datos disponibles</option>');
                     }
                     fnWaitClose();
                 }
@@ -111,8 +110,8 @@
         // Función para mostrar el campo correspondiente
         function fnMostrarCampo(endoso) {
             if (endoso) {
-                contenedorValorAnterior.empty();
-                contenedorValorNuevo.empty();
+                tagContenedorValorAnterior.empty();
+                tagContenedorValorNuevo.empty();
                 let valorAnterior;
                 let campo       = endoso.display.split('.').pop();
                 let tipo        = endoso.description;
@@ -122,11 +121,11 @@
                     valorAnterior = objTransactionMaster[campo];
                 }
                 if (tipo === "datetime") {
-                    contenedorValorAnterior.html('<input readonly type="datetime-local" name="txtValorAnterior" id="txtValorAnterior" class="form-control" value="' + valorAnterior + '">');
-                    contenedorValorNuevo.html('<input type="datetime-local" name="txtValorNuevo" id="txtValorNuevo" class="form-control">');
+                    tagContenedorValorAnterior.html('<input readonly type="datetime-local" name="txtValorAnterior" id="txtValorAnterior" class="form-control" value="' + valorAnterior + '">');
+                    tagContenedorValorNuevo.html('<input type="datetime-local" name="txtValorNuevo" id="txtValorNuevo" class="form-control">');
                 } else if (tipo === "combobox") {
-                    contenedorValorAnterior.html('<select name="txtValorAnterior" id="txtValorAnterior" class="select2"><option value="">Cargando opciones...</option></select>');
-                    contenedorValorNuevo.html('<select name="txtValorNuevo" id="txtValorNuevo" class="select2"><option value="">Cargando opciones...</option></select>');
+                    tagContenedorValorAnterior.html('<select name="txtValorAnterior" id="txtValorAnterior" class="select2"><option value="">Cargando opciones...</option></select>');
+                    tagContenedorValorNuevo.html('<select name="txtValorNuevo" id="txtValorNuevo" class="select2"><option value="">Cargando opciones...</option></select>');
                     if (referencia2 === "tb_catalog") {
                         fnCargarOpcionesComboTbCatalog(reference3,campo);
                     }
@@ -142,8 +141,8 @@
                     });
 
                 } else if (tipo === "input") {
-                    contenedorValorAnterior.html('<input readonly type="text" id="txtValorAnterior" class="form-control" placeholder="Ingrese un valor" value="' + valorAnterior + '">');
-                    contenedorValorNuevo.html('<input type="text" name="txtValorNuevo" id="txtValorNuevo" class="form-control" placeholder="Ingrese un valor">');
+                    tagContenedorValorAnterior.html('<input readonly type="text" id="txtValorAnterior" class="form-control" placeholder="Ingrese un valor" value="' + valorAnterior + '">');
+                    tagContenedorValorNuevo.html('<input type="text" name="txtValorNuevo" id="txtValorNuevo" class="form-control" placeholder="Ingrese un valor">');
                 }
             }
         }
@@ -180,13 +179,13 @@
                 $('#txtTransactionNumberDescription').val('');
                 $('#txtTransactionNumber').val('');
             }
-            contenedorValorAnterior.empty();
-            contenedorValorNuevo.empty();
-            selectValorModificar.empty();
-            selectValorModificar.trigger('change');
-            selectValorModificar.prop("disabled", true);
+            tagContenedorValorAnterior.empty();
+            tagContenedorValorNuevo.empty();
+            $("#txtValorModificar").empty();
+            $("#txtValorModificar").trigger('change');
+            $("#txtValorModificar").prop("disabled", true);
             let newOption = new Option('Seleccione una opción...', '0', false, true);
-            selectValorModificar.append(newOption).trigger('change');
+            $("#txtValorModificar").append(newOption).trigger('change');
         }
 
         function fnFillComboBox(comboBox, data, valor){
