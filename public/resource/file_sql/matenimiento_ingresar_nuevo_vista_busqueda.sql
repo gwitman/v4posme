@@ -1,48 +1,55 @@
 
-set @viewName 				:= 'SELECCIONAR_ITEM_SKU';
+set @viewName 				:= 'SELECCIONAR_ITEM_PAGINATED';
 set @componentName 			:= 'tb_item';
-set @viewColumnVisible 		:= 'Producto,Sku,Valor';
-set @viewColumnNoVisible 	:= 'itemID,catalogItemID';
+set @viewColumnVisible 		:= 'Codigo,Nombre,Medida,Cantidad,Costo,Barra';
+set @viewColumnNoVisible 	:= 'companyID,itemID';
 
 
 set @viewScript := "
 select 
+	x.companyID,
 	x.itemID,
-	u.catalogItemID ,
-	x.name as Producto,
-	u.display as Sku ,	
-	ws.value as Valor
+	x.itemNumber as Codigo,
+	x.name as Nombre,
+	ix.name as 'Medida',
+	x.quantity as Cantidad,
+	x.cost as Costo,
+    x.barCode as Barra
 from 
 	tb_item x 
-	inner join tb_item_sku ws on 
-		x.itemID = ws.itemID 
-	inner join tb_catalog_item u on 
-		ws.catalogItemID = u.catalogItemID 
+	inner join tb_catalog_item ix on 
+		x.unitMeasureID = ix.catalogItemID   
 where
 	x.isActive = 1 and 
 	x.companyID = {companyID} and 
-	x.itemNumber like concat('%',REPLACE('{sSearchDB}',' ','%'),'%')   
-order by
-    x.itemNumber desc 
+	x.itemNumber like concat('%',REPLACE('{sSearchDB}',' ','%'),'%')
+order by 
+	x.itemNumber desc 
+limit 
+	{iDisplayStartDB},{iDisplayLength}
 ";
 	   
 	   
 set @viewScriptDisplay := "
-select 
-		count(*) as itemID 
+select 	
+	count(*) as itemID
 from 
 	tb_item x 
+	inner join tb_catalog_item ix on 
+		x.unitMeasureID = ix.catalogItemID   
 where
 	x.isActive = 1 and 
 	x.companyID = {companyID} and 
-	x.itemNumber like concat('%',REPLACE('{sSearchDB}',' ','%'),'%')  
+	x.itemNumber like concat('%',REPLACE('{sSearchDB}',' ','%'),'%')   
 ";
 			 
 set @viewScriptTotal := "
-select 
-		count(*) as itemID 
+select 	
+	count(*) as itemID
 from 
 	tb_item x 
+	inner join tb_catalog_item ix on 
+		x.unitMeasureID = ix.catalogItemID   
 where
 	x.isActive = 1 and 
 	x.companyID = {companyID} 
@@ -81,7 +88,7 @@ set @viewID := (SELECT u.dataViewID from tb_dataview u where u.`name` =  @viewNa
 /*ingrear la vista de la compania normal */
 insert into tb_company_dataview( 
 	companyID,dataViewID,callerID,componentID,
-	`name`,description,sqlScript,visibleColumns,nonVisibleColumns,isActive
+	`name`,description,sqlScript,visibleColumns,nonVisibleColumns,isActive,flavorID
 )
 select 
 	*
@@ -94,10 +101,11 @@ from
 				@componentID as componentID,
 				@viewName as namex,
 				@viewName as desription,
-				'' as sq,'' as vi,'' as nov,1 AS isActive 				
+				'' as sq,'' as vi,'' as nov,1 AS isActive ,
+				0 as flavorID 				
 	) t
 where
-	t.namex not in (select u.`name` from tb_company_dataview u );
+	t.namex not in (select u.`name` from tb_company_dataview u where u.flavorID = 0 );
 	
 	
 UPDATE tb_company_dataview set 
@@ -105,7 +113,7 @@ UPDATE tb_company_dataview set
 	visibleColumns = @viewColumnVisible,
 	nonVisibleColumns = @viewColumnNoVisible
 WHERE
-	dataViewID = @viewID; 
+	dataViewID = @viewID and flavorID = 0; 
 	
 	
 /*ingresar la vista mobile*/
@@ -128,7 +136,7 @@ set @viewID := (SELECT u.dataViewID from tb_dataview u where u.`name` =  CONCAT(
 
 insert into tb_company_dataview( 
 	companyID,dataViewID,callerID,componentID,
-	`name`,description,sqlScript,visibleColumns,nonVisibleColumns,isActive
+	`name`,description,sqlScript,visibleColumns,nonVisibleColumns,isActive,flavorID
 )
 select 
 	*
@@ -141,10 +149,11 @@ from
 				@componentID as componentID,
 				CONCAT(@viewName,'','_MOBILE') as namex,
 				@viewName as desription,
-				'' as sq,'' as vi,'' as nov,1 AS isActive 				
+				'' as sq,'' as vi,'' as nov,1 AS isActive 	,
+				0 as flavorID				
 	) t
 where
-	t.namex not in (select u.`name` from tb_company_dataview u );
+	t.namex not in (select u.`name` from tb_company_dataview u where u.flavorID = 0 );
 	
 	
 UPDATE tb_company_dataview set 
@@ -152,7 +161,7 @@ UPDATE tb_company_dataview set
 	visibleColumns = @viewColumnVisible,
 	nonVisibleColumns = @viewColumnNoVisible
 WHERE
-	dataViewID = @viewID; 
+	dataViewID = @viewID AND flavorID = 0 ; 
 	
 /*ingresar la vista display*/
 set @componentID := (SELECT u.componentID from tb_component u where u.`name` = @componentName );
@@ -174,7 +183,7 @@ set @viewID := (SELECT u.dataViewID from tb_dataview u where u.`name` =  CONCAT(
 
 insert into tb_company_dataview( 
 	companyID,dataViewID,callerID,componentID,
-	`name`,description,sqlScript,visibleColumns,nonVisibleColumns,isActive
+	`name`,description,sqlScript,visibleColumns,nonVisibleColumns,isActive,flavorID
 )
 select 
 	*
@@ -187,17 +196,18 @@ from
 				@componentID as componentID,
 				CONCAT(@viewName,'','_DISPLAY') as namex,
 				@viewName as desription,
-				'' as sq,'' as vi,'' as nov,1 AS isActive 				
+				'' as sq,'' as vi,'' as nov,1 AS isActive ,
+				0 as flavorID 
 	) t
 where
-	t.namex not in (select u.`name` from tb_company_dataview u );
+	t.namex not in (select u.`name` from tb_company_dataview u where u.flavorID = 0 );
 	
 UPDATE tb_company_dataview set 
 	sqlScript = @viewScriptDisplay,
 	visibleColumns = 'itemID',
 	nonVisibleColumns = NULL 
 WHERE
-	dataViewID = @viewID; 
+	dataViewID = @viewID and flavorID = 0; 
 	
 /*ingresar la vista total*/
 set @componentID := (SELECT u.componentID from tb_component u where u.`name` = @componentName );
@@ -220,7 +230,7 @@ set @viewID := (SELECT u.dataViewID from tb_dataview u where u.`name` =  CONCAT(
 
 insert into tb_company_dataview( 
 	companyID,dataViewID,callerID,componentID,
-	`name`,description,sqlScript,visibleColumns,nonVisibleColumns,isActive
+	`name`,description,sqlScript,visibleColumns,nonVisibleColumns,isActive,flavorID 
 )
 select 
 	*
@@ -233,10 +243,11 @@ from
 				@componentID as componentID,
 				CONCAT(@viewName,'','_TOTAL') as namex,
 				@viewName as desription,
-				'' as sq,'' as vi,'' as nov,1 AS isActive 				
+				'' as sq,'' as vi,'' as nov,1 AS isActive ,
+				0 as flavorID 
 	) t
 where
-	t.namex not in (select u.`name` from tb_company_dataview u );
+	t.namex not in (select u.`name` from tb_company_dataview u where u.flavorID = 0 );
 	
 	
 UPDATE tb_company_dataview set 
@@ -244,4 +255,4 @@ UPDATE tb_company_dataview set
 	visibleColumns = 'itemID',
 	nonVisibleColumns = NULL
 WHERE
-	dataViewID = @viewID; 
+	dataViewID = @viewID and flavorID = 0; 

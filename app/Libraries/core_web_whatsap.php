@@ -157,6 +157,9 @@ class core_web_whatsap {
 		$fechaNow  							= \DateTime::createFromFormat('Y-m-d',date("Y-m-d"));
 		$fechaNow							= $fechaNow->format("Y-m")."-01";
 		$fechaNow 							= \DateTime::createFromFormat('Y-m-d',$fechaNow);
+		
+		$fechaNone							= "1900-01-01";
+		$fechaNone 							= \DateTime::createFromFormat('Y-m-d',$fechaNone);
 
 
 		$fechaMonth 						= $objCP_WhatsapMonth->value;
@@ -164,38 +167,32 @@ class core_web_whatsap {
 
 
 
-		//permitod enviar el email
-		if(  ($fechaNow->format("Y-m-d") == $fechaMonth->format("Y-m-d") ) && (intval($objCP_WhatsapCounterMessage->value) <= intval($objCP_WhatsapMessageByMonto->value))  )
+		//no se cobra por saldo, el cliente tiene permito enviar mensajes ilimitados
+		//siempre y cuando el parametro sea igual a 1900-01-01
+		if(   
+			!
+			(
+				$fechaMonth->format("Y-m-d") == $fechaNone->format("Y-m-d") 
+			)
+		)   
 		{
-			//ingrementar el contador
-			$data 			= null;
-			$data["value"]	= intval($objCP_WhatsapCounterMessage->value) + 1;
-			$Company_Parameter_Model->update_app_posme($objCP_WhatsapCounterMessage->companyID,$objCP_WhatsapCounterMessage->parameterID,$data);
-
-			return true;
+			return false;
 		}
-		if( ($fechaNow > $fechaMonth) && (intval($objCP_WhatsapCounterMessage->value) > 0)  )
-		{
-			//actualizar la fecha
-			$data 			= null;
-			$data["value"]	= $fechaNow->format("Y-m-d");
-			$Company_Parameter_Model->update_app_posme($objCP_WhatsapMonth->companyID,$objCP_WhatsapMonth->parameterID,$data);
-
-			//actualizar el contador en 1
-			$data 			= null;
-			$data["value"]	= "1";
-			$Company_Parameter_Model->update_app_posme($objCP_WhatsapCounterMessage->companyID,$objCP_WhatsapCounterMessage->parameterID,$data);
-
-
-
-			return true;
-
+		//validar si tiene saldo para enviar mensaje
+		else if
+		(  
+			intval($objCP_WhatsapCounterMessage->value) > intval($objCP_WhatsapMessageByMonto->value)
+		)
+		{			
+			return false;
 		}
+		
+		//incrementar el contador
+		$data 			= null;
+		$data["value"]	= intval($objCP_WhatsapCounterMessage->value) + 1;
+		$Company_Parameter_Model->update_app_posme($objCP_WhatsapCounterMessage->companyID,$objCP_WhatsapCounterMessage->parameterID,$data);
 
-		//no enviar el whatsapp
-		return false;
-
-
+		return true;
    }
 
    function sendMessage($companyID,$message)
