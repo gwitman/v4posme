@@ -890,6 +890,10 @@ class app_inventory_ajuste extends _BaseController {
 			$objParameterMasive					= $objParameterMasive->value;	
 			$datView["objParameterMasive"]		= $objParameterMasive;
 			
+			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$datView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
+
 			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			=  $this->core_web_notification->get_message();
@@ -986,6 +990,9 @@ class app_inventory_ajuste extends _BaseController {
 			$dataView["objComponentOrdenCompra"]	= $objComponentOrdenCompra;
 			$dataView["objListCurrency"]			= $this->Company_Currency_Model->getByCompany($companyID);
 			$dataView["objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE"]	= $this->core_web_parameter->getParameterValue("CORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE",$companyID);
+			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]		= $this->core_web_error->get_error($dataSession["user"]->userID);

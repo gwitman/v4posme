@@ -1,7 +1,8 @@
 <!-- ./ page heading -->
 <script>	
 	var objTableDetailTransaction = {};
-	$(document).ready(function(){					
+	$(document).ready(function(){			
+		var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';  
 		//Inicializar Controles		
 		$('#txtTransactionOn').datepicker({format:"yyyy-mm-dd"});
 		$('#txtTransactionOn').val(moment().format("YYYY-MM-DD"));						 						
@@ -120,8 +121,7 @@
 				fnShowNotification("Bodega Origen y Destino son Iguales","error");
 				return;
 			}
-			
-			var url_request	= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $componentTranItemID; ?>/onCompleteItem/SELECCIONAR_ITEM_TO_TRANSFEROUPUT/true/"+encodeURI("{\"warehouseSourceID\"|\""+$("#txtWarehouseSourceID").val()+"\"{}\"warehouseTargetID\"|\""+$("#txtWarehouseTargetID").val()+"\"{}\"userID\"|\"<?php echo $userID; ?>\"}") + "/true/not_redirect_when_empty"; 
+			var url_request	= "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?php echo $componentTranItemID; ?>/onCompleteItem/SELECCIONAR_ITEM_TO_TRANSFEROUPUT_PAGINATED/true/"+encodeURI("{\"warehouseSourceID\"|\""+$("#txtWarehouseSourceID").val()+"\"{}\"warehouseTargetID\"|\""+$("#txtWarehouseTargetID").val()+"\"{}\"userID\"|\"<?php echo $userID; ?>\"}") + "/true/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/"; 
 			window.open(url_request,"MsgWindow","width=900,height=450");
 			window.onCompleteItem = onCompleteItem; 
 		});

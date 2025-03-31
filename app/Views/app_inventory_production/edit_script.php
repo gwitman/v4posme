@@ -10,14 +10,32 @@
 						var $mySidebarItemOutput 			= $("#mySidebarItemOutput");
 						var $bodyInputTable 				= $("#body_tb_transaction_master_detail_item_input");
 						var $bodyOutputTable 				= $("#body_tb_transaction_master_detail_item_output");
+						var numberDecimal					= 2;
+						var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';  
 
 						$('#txtDate').datepicker({
 							format: "yyyy-mm-dd"
 						});
 						$('#txtDate').val();
 						$("#txtDate").datepicker("update");
-						$('.txt-numeric').mask('000,000.00', {
-							reverse: true
+						// $('.txt-numeric').mask('000,000.00', {reverse: true}).css('text-align', 'left');
+
+						$('.txt-numeric').css('text-align', 'left');
+
+						$('.txt-numeric').each(function() {
+							let rawValue 		= $(this).val().replace(/,/g, ''); 
+							if (!isNaN(rawValue) && rawValue !== '') {
+								let formattedValue = fnFormatNumber(rawValue, numberDecimal);
+								$(this).val(formattedValue);
+							}
+						});				
+
+						$('.txt-numeric').on('input', function() {
+							let rawValue = $(this).val().replace(/,/g, ''); 
+							if (!isNaN(rawValue) && rawValue !== '') {
+								let formattedValue = fnFormatNumber(rawValue,numberDecimal);
+								$(this).val(formattedValue);
+							}
 						});
 
 						//Regresar a la lista
@@ -34,6 +52,7 @@
 							}
 
 						});
+
 						$(document).on("click", "#btnClickArchivo", function() {
 							window.open("<?php echo base_url() . "/core_elfinder/index/componentID/" . $objComponentProductionOrder->componentID . "/componentItemID/" . $objTM->transactionMasterID; ?>", "blanck");
 						});
@@ -75,7 +94,6 @@
 							fnWaitClose();
 						});
 
-
 						//Buscar colaborador solicitadodr
 						$(document).on("click", "#btnSearchRequestEmployee", function() {
 							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentEmployee->componentID; ?>/onCompleteRequestEmployee/SELECCIONAR_EMPLOYEE/true/empty/false/not_redirect_when_empty";
@@ -116,7 +134,12 @@
 
 						//Buscar producto de insumo
 						$(document).on("click", "#btnSidebarSearchRequestItem", function() {
-							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentItem->componentID; ?>/onCompleteSidebarRequestItem/SELECCIONAR_ITEM/true/empty/false/not_redirect_when_empty";
+							var responseItemWarehouseID = $("#txtSidebarItemSourceWarehouse").val();
+
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteSidebarRequestItem/SELECCIONAR_ITEM_PAGINATED/true/" + 
+								encodeURI('{' + '\"warehouseID\"|\"' + responseItemWarehouseID + '\"' + ',\"currencyID\"|\"' + $("#txtCurrencyID").val() + '\"' + '}') + 
+								"/false/not_redirect_when_empty/1/1/" + varParameterCantidadItemPoup + "/";				
+							
 							window.open(url_request, "MsgWindow", "width=900,height=450");
 							window.onCompleteSidebarRequestItem = onCompleteSidebarRequestItem;
 						});
@@ -129,14 +152,26 @@
 
 						//Buscar producto de destino desde barra lateral de insumos
 						$(document).on("click", "#btnSidebarSearchDestinationItem", function() {
-							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentItem->componentID; ?>/onCompleteSidebarDestinationItem/SELECCIONAR_ITEM/true/empty/false/not_redirect_when_empty";
+							var responseItemWarehouseID = $("#txtSidebarResponseItemTargetWarehouse").val();
+							var currencyID 				= $("#txtCurrencyID").val();
+
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteSidebarDestinationItem/SELECCIONAR_ITEM_PAGINATED/true/" + 
+								encodeURI('{' + '\"warehouseID\"|\"' + responseItemWarehouseID + '\"' + ',\"currencyID\"|\"' + currencyID + '\"' + '}') + 
+								"/false/not_redirect_when_empty/1/1/" + varParameterCantidadItemPoup + "/";
+							
 							window.open(url_request, "MsgWindow", "width=900,height=450");
 							window.onCompleteSidebarDestinationItem = onCompleteSidebarDestinationItem;
 						});
 
 						//Buscar producto de destino desde barra lateral de productos resultantes
 						$(document).on("click", "#btnSidebarSearchResponseItem", function() {
-							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentItem->componentID; ?>/onCompleteSidebarOutputResponseItem/SELECCIONAR_ITEM/true/empty/false/not_redirect_when_empty";
+							var responseItemWarehouseID = $("#txtSidebarResponseItemTargetWarehouse").val();
+							var currencyID = $("#txtCurrencyID").val();
+
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteSidebarOutputResponseItem/SELECCIONAR_ITEM_PAGINATED/true/" + 
+								encodeURI('{' + '\"warehouseID\"|\"' + responseItemWarehouseID + '\"' + ',\"currencyID\"|\"' + currencyID + '\"' + '}') + 
+								"/false/not_redirect_when_empty/1/1/" + varParameterCantidadItemPoup + "/";
+							
 							window.open(url_request, "MsgWindow", "width=900,height=450");
 							window.onCompleteSidebarOutputResponseItem = onCompleteSidebarOutputResponseItem;
 						});
@@ -185,7 +220,7 @@
 							if (isOutputTableOnEditionMode) {
 								$bodyOutputTable.find("tr").each(function(index, obj) {
 									if (index == selectedItemRowInOutputTable) {
-										if(!fnUpdateOutputTableRow(obj)) return;
+										if(!fnUpdateOutputTableRow(obj, index)) return;
 										isOutputTableOnEditionMode = false;
 										selectedItemRowInOutputTable = null;
 									}
@@ -249,6 +284,12 @@
 
 						//Acutalizar el monto total de Barra lateral de Productos Resultados cuando se actualize el input
 						$(document).on("change", "#txtSidebarResponseItemQuantity", fnCalculateSidebarOutputTotal);
+
+						//Limpiar Insumo cuando se cambie la bodega de origen.
+						$(document).on("change", "#txtSidebarItemSourceWarehouse", fnClearSidebarRequestItemInput);
+
+						//Limpiar Producto Resultante cuando se cambie la bodega de destino.
+						$(document).on("change", "#txtSidebarResponseItemTargetWarehouse", fnClearSidebarResponseItemOutput);
 					});
 
 
@@ -323,6 +364,14 @@
 						$("#txtSidebarResponseItemDescription").val("");
 						$("#txtSidebarResponseItemQuantity").val("");
 						$("#txtSidebarOutputTotalCost").val("");
+					}
+
+					function fnClearSidebarRequestItemInput()
+					{
+						$("#txtSidebarRequestItemID").val("");
+						$("#txtSidebarRequestItemDescription").val("");
+						$("#txtSidebarRequestItemQuantity").val("");
+						$("#txtSidebarInputTotalCost").val("");
 					}
 
 					function fnIsOnlyOneRowSelectedInTable($bodyTable, selector) {
@@ -645,14 +694,14 @@
 						return isOutputInInputList;
 					}
 
-					function fnIsOutputItemAlreadyInOutputList() {
+					function fnIsOutputItemAlreadyInOutputList(index = null) {
 						var timerNotification = 15000;
 						var itemID = $("#txtSidebarResponseItemID").val();
 						var isOutputInOutputList = false;
 
-						$("#body_tb_transaction_master_detail_item_output").find("tr").each(function(index, obj) {
+						$("#body_tb_transaction_master_detail_item_output").find("tr").each(function(idx, obj) {
 							var itemOutputID = $(obj).find("#txtItemOutputID").val();
-							if (itemID == itemOutputID) {
+							if (itemID == itemOutputID && (index === null || index !== idx)) {
 								fnShowNotification("El producto destino ya se encuentra registrado", "error", timerNotification);
 								isOutputInOutputList = true;
 								return false;
@@ -740,7 +789,7 @@
 						fnCalculateOutputItemTotalAmountInTable();
 					}
 
-					function fnUpdateOutputTableRow(obj) {
+					function fnUpdateOutputTableRow(obj, index) {
 						var itemResponseID 					= $("#txtSidebarResponseItemID").val();
 						var itemResponseDescription 		= $("#txtSidebarResponseItemDescription").val();
 						var itemResponseQuantity 			= parseFloat($("#txtSidebarResponseItemQuantity").val()) || 0;
@@ -752,10 +801,9 @@
 						if (fnIsOutputItemAlreadyInInputList()) {
 							return false;
 						}
+						
+						if (fnIsOutputItemAlreadyInOutputList(index)) return false;
 
-						if (fnIsOutputItemAlreadyInOutputList()) {
-							return false;
-						}
 
 						$(obj).find("#txtItemOutputID").val(itemResponseID);
 						$(obj).find("#txtItemOutputCode").text(itemResponseDescription.split("|")[0].trim());

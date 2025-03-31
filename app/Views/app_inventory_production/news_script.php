@@ -10,6 +10,7 @@
 						var $mySidebarItemOutput 			= $("#mySidebarItemOutput");
 						var $bodyInputTable 				= $("#body_tb_transaction_master_detail_item_input");
 						var $bodyOutputTable 				= $("#body_tb_transaction_master_detail_item_output");
+						var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';  
 
 						$('#txtDate').datepicker({
 							format: "yyyy-mm-dd"
@@ -75,7 +76,12 @@
 
 						//Buscar producto de insumo
 						$(document).on("click", "#btnSidebarSearchRequestItem", function() {
-							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentItem->componentID; ?>/onCompleteSidebarRequestItem/SELECCIONAR_ITEM/true/empty/false/not_redirect_when_empty";
+							var responseItemWarehouseID = $("#txtSidebarItemSourceWarehouse").val();
+
+							var url_request	= "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteSidebarRequestItem/SELECCIONAR_ITEM_PAGINATED/true/"+
+								encodeURI('{' + '\"warehouseID\"|\"' + responseItemWarehouseID + '\"' + ',\"currencyID\"|\"' + $("#txtCurrencyID").val() + '\"' + '}') + 
+								"/false/not_redirect_when_empty/1/1/" + varParameterCantidadItemPoup + "/";
+
 							window.open(url_request, "MsgWindow", "width=900,height=450");
 							window.onCompleteSidebarRequestItem = onCompleteSidebarRequestItem;
 						});
@@ -88,17 +94,30 @@
 
 						//Buscar producto de destino desde barra lateral de insumos
 						$(document).on("click", "#btnSidebarSearchDestinationItem", function() {
-							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentItem->componentID; ?>/onCompleteSidebarDestinationItem/SELECCIONAR_ITEM/true/empty/false/not_redirect_when_empty";
+							var responseItemWarehouseID = $("#txtSidebarResponseItemTargetWarehouse").val();
+							var currencyID 				= $("#txtCurrencyID").val();
+
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteSidebarDestinationItem/SELECCIONAR_ITEM_PAGINATED/true/" + 
+								encodeURI('{' + '\"warehouseID\"|\"' + responseItemWarehouseID + '\"' + ',\"currencyID\"|\"' + currencyID + '\"' + '}') + 
+								"/false/not_redirect_when_empty/1/1/" + varParameterCantidadItemPoup + "/";
+							
 							window.open(url_request, "MsgWindow", "width=900,height=450");
 							window.onCompleteSidebarDestinationItem = onCompleteSidebarDestinationItem;
 						});
 
 						//Buscar producto de destino desde barra lateral de productos resultantes
 						$(document).on("click", "#btnSidebarSearchResponseItem", function() {
-							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentItem->componentID; ?>/onCompleteSidebarOutputResponseItem/SELECCIONAR_ITEM/true/empty/false/not_redirect_when_empty";
+							var responseItemWarehouseID = $("#txtSidebarResponseItemTargetWarehouse").val();
+							var currencyID = $("#txtCurrencyID").val();
+
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteSidebarOutputResponseItem/SELECCIONAR_ITEM_PAGINATED/true/" + 
+								encodeURI('{' + '\"warehouseID\"|\"' + responseItemWarehouseID + '\"' + ',\"currencyID\"|\"' + currencyID + '\"' + '}') + 
+								"/false/not_redirect_when_empty/1/1/" + varParameterCantidadItemPoup + "/";
+							
 							window.open(url_request, "MsgWindow", "width=900,height=450");
 							window.onCompleteSidebarOutputResponseItem = onCompleteSidebarOutputResponseItem;
 						});
+
 
 						//Eliminar producto de destino en barra lateral de insumos
 						$(document).on("click", "#btnSidebarClearDestinationItem", fnClearSidebarDestinationItemInput);
@@ -218,6 +237,12 @@
 
 						//Acutalizar el monto total de Barra lateral de Productos Resultados cuando se actualize el input
 						$(document).on("change", "#txtSidebarResponseItemQuantity", fnCalculateSidebarOutputTotal);
+
+						//Limpiar Insumo cuando se cambie la bodega de origen.
+						$(document).on("change", "#txtSidebarItemSourceWarehouse", fnClearSidebarRequestItemInput);
+
+						//Limpiar Producto Resultante cuando se cambie la bodega de destino.
+						$(document).on("change", "#txtSidebarResponseItemTargetWarehouse", fnClearSidebarResponseItemOutput);
 					});
 
 
@@ -293,6 +318,14 @@
 						$("#txtSidebarResponseItemDescription").val("");
 						$("#txtSidebarResponseItemQuantity").val("");
 						$("#txtSidebarOutputTotalCost").val("");
+					}
+
+					function fnClearSidebarRequestItemInput()
+					{
+						$("#txtSidebarRequestItemID").val("");
+						$("#txtSidebarRequestItemDescription").val("");
+						$("#txtSidebarRequestItemQuantity").val("");
+						$("#txtSidebarInputTotalCost").val("");
 					}
 
 					function fnIsOnlyOneRowSelectedInTable($bodyTable, selector) {

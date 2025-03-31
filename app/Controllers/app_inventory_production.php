@@ -182,6 +182,9 @@ class app_inventory_production extends _BaseController
 			$dataView["objListWarehouse"] 						= $this->Warehouse_Model->getByCompany($companyID);
 			$dataView["objListCurrency"]						= $this->Company_Currency_Model->getByCompany($companyID);
             $dataView["objCurrency"]                            = $this->core_web_currency->getCurrencyDefault($companyID);
+			$objListComanyParameter								= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]			= $objParameterCantidadItemPoup->value;
 
 			//Renderizar Resultado 
 			$dataSession["notification"]        = $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -410,7 +413,10 @@ class app_inventory_production extends _BaseController
 			$dataView["objSenderEmployeeNatural"]				= $dataView["objTM"]->entityIDSecondary ? $this->Natural_Model->get_rowByPk($companyID, $branchID, $dataView["objTM"]->entityIDSecondary) 	: "";
 			$dataView["objListWarehouse"]						= $this->Warehouse_Model->getByCompany($companyID);
 			$dataView["objListCurrency"]						= $this->Company_Currency_Model->getByCompany($companyID);
-
+			$objListComanyParameter								= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]			= $objParameterCantidadItemPoup->value;
+			
 			//RENDERIZAR RESULTADO
 			$dataSession["notification"]    = $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]         = $this->core_web_notification->get_message();
