@@ -1,5 +1,5 @@
 
-set @viewName 				:= 'SELECCIONAR_ITEM_PAGINATED';
+set @viewName 				:= 'SELECCIONAR_ITEM_TO_TRANSFEROUPUT_PAGINATED';
 set @componentName 			:= 'tb_item';
 set @viewColumnVisible 		:= 'Codigo,Nombre,Medida,Cantidad,Costo,Barra';
 set @viewColumnNoVisible 	:= 'companyID,itemID';

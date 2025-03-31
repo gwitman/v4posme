@@ -49,16 +49,30 @@ class app_inventory_otherinput extends _BaseController {
 			$datView["objWarehouse"]				= $this->Warehouse_Model->get_rowByPK($companyID,$datView["objTM"]->targetWarehouseID);
 			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_otherinput","statusID",$datView["objTM"]->statusID,$companyID,$branchID,$roleID);
 			
-			$html = helper_reporteA4TransactionMasterOutherInputGlobalPro(
-			    "ENTRADA DE INVENTARIO",
-			    $objCompany,
-			    $objParameterLogo,
-			    $datView["objTM"],
-				$datView["objStage"][0]->display, /*estado*/
-				$datView["objTMD"],
-				$datView["objWarehouse"]
-		    );
-			
+			if($dataSession["company"]->flavorID == 728 /*pasteleria balladares*/ )
+			{
+				$html = helper_reporte80mmInventoryInputPasteleriaBalladares(
+					"ENTRADA DE INVENTARIO",
+					$objCompany,
+					$objParameterLogo,
+					$datView["objTM"],
+					$datView["objStage"][0]->display, /*estado*/
+					$datView["objTMD"],
+					$datView["objWarehouse"]
+				);
+			}
+			else				
+			{
+				$html = helper_reporteA4TransactionMasterOutherInputGlobalPro(
+					"ENTRADA DE INVENTARIO",
+					$objCompany,
+					$objParameterLogo,
+					$datView["objTM"],
+					$datView["objStage"][0]->display, /*estado*/
+					$datView["objTMD"],
+					$datView["objWarehouse"]
+				);
+			}
 			
 			//echo $html;
 			$this->dompdf->loadHTML($html);

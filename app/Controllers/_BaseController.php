@@ -194,7 +194,10 @@ abstract class _BaseController extends Controller
     protected $helpers = [
         'url','form','web_tools','cookie','text','path',
         'language',
-        'web_tools_report',
+		
+        'report/web_tools_report_0001',
+		'report/web_tools_report_pasteleriaballadares_helper',
+		
         'customization/web_tools_customizationview_0000001',
         'customization/web_tools_customizationview_colirio',
 		'customization/web_tools_customizationview_tenampa',
@@ -205,6 +208,7 @@ abstract class _BaseController extends Controller
 		'customization/web_tools_customizationview_autolavadomaximum_helper',
 		'customization/web_tools_customizationview_pasteleriaballadares_helper',
 		'customization/web_tools_customizationview_chic_helper',
+		
     ];
 
     /**
