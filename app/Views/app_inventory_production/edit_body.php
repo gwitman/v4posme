@@ -170,7 +170,7 @@
                                     <div class="form-group">
                                         <label class="col-lg-4 control-label" for="normal">Monto Total</label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" readonly type="number" name="txtTransactionTotalAmount" id="txtTransactionTotalAmount" value="<?= $objTM->amount ?>">
+                                            <input class="form-control txt-numeric" readonly type="text" name="txtTransactionTotalAmount" id="txtTransactionTotalAmount" value="<?= $objTM->amount ?>">
                                         </div>
                                     </div>
                                 </div>
@@ -252,13 +252,13 @@
                                                                             <span id="txtItemInputName"><?= $detail->itemName ?></span>
                                                                         </td>
                                                                         <td>
-                                                                            <input class="form-control" readonly type="number" name="txtItemInputQuantity[]" id="txtItemInputQuantity" value="<?= $detail->itemQuantity ?>">
+                                                                            <input class="form-control txt-numeric" readonly type="text" name="txtItemInputQuantity[]" id="txtItemInputQuantity" value="<?= $detail->itemQuantity ?>">
                                                                         </td>
                                                                         <td>
-                                                                            <input class="form-control" readonly type="number" name="txtItemInputUnitaryCost[]" id="txtItemInputUnitaryCost" value="<?= $detail->itemUnitaryCost ?>">
+                                                                            <input class="form-control txt-numeric" readonly type="text" name="txtItemInputUnitaryCost[]" id="txtItemInputUnitaryCost" value="<?= $detail->itemUnitaryCost ?>">
                                                                         </td>
                                                                         <td>
-                                                                            <input class="form-control txtItemInputTotalCost" readonly type="number" name="txtItemInputTotalCost[]" id="txtItemInputTotalCost" value="<?= $detail->itemTotalCost ?>">
+                                                                            <input class="form-control txt-numeric txtItemInputTotalCost" readonly type="text" name="txtItemInputTotalCost[]" id="txtItemInputTotalCost" value="<?= $detail->itemTotalCost ?>">
                                                                         </td>
                                                                         <td>
                                                                             <input class="form-control" readonly type="text" name="txtItemInputWarehouseSource[]" id="txtItemInputWarehouseSource" value="<?= $detail->itemWarehouseSource ?>">
@@ -325,13 +325,13 @@
                                                                             <span id="txtItemOutputName"><?= $detail->itemName ?></span>
                                                                         </td>
                                                                         <td>
-                                                                            <input class="form-control" readonly type="number" name="txtItemOutputQuantity[]" id="txtItemOutputQuantity" value="<?= $detail->itemQuantity ?>">
+                                                                            <input class="form-control txt-numeric" readonly type="text" name="txtItemOutputQuantity[]" id="txtItemOutputQuantity" value="<?= $detail->itemQuantity ?>">
                                                                         </td>
                                                                         <td>
-                                                                            <input class="form-control" readonly type="number" name="txtItemOutputUnitaryCost[]" id="txtItemOutputUnitaryCost" value="<?= $detail->itemUnitaryCost ?>">
+                                                                            <input class="form-control txt-numeric" readonly type="text" name="txtItemOutputUnitaryCost[]" id="txtItemOutputUnitaryCost" value="<?= $detail->itemUnitaryCost ?>">
                                                                         </td>
                                                                         <td>
-                                                                            <input class="form-control txtItemOutputTotalCost" readonly type="number" name="txtItemOutputTotalCost[]" id="txtItemOutputTotalCost" value="<?= $detail->itemTotalCost ?>">
+                                                                            <input class="form-control txt-numeric txtItemOutputTotalCost" readonly type="text" name="txtItemOutputTotalCost[]" id="txtItemOutputTotalCost" value="<?= $detail->itemTotalCost ?>">
                                                                         </td>
                                                                         <td>
                                                                             <input class="form-control" readonly type="text" name="txtItemOutputWarehouseTarget[]" id="txtItemOutputWarehouseTarget" value="<?= $detail->itemWarehouseTarget ?>">
@@ -375,13 +375,13 @@
             <span id="txtItemInputName"></span>
         </td>
         <td>
-            <input class="form-control" readonly type="number" name="txtItemInputQuantity[]" id="txtItemInputQuantity" value="">
+            <input class="form-control txt-numeric" readonly type="text" name="txtItemInputQuantity[]" id="txtItemInputQuantity" value="">
         </td>
         <td>
-            <input class="form-control" readonly type="number" name="txtItemInputUnitaryCost[]" id="txtItemInputUnitaryCost" value="">
+            <input class="form-control txt-numeric" readonly type="text" name="txtItemInputUnitaryCost[]" id="txtItemInputUnitaryCost" value="">
         </td>
         <td>
-            <input class="form-control txtItemInputTotalCost" readonly type="number" name="txtItemInputTotalCost[]" id="txtItemInputTotalCost" value="">
+            <input class="form-control txt-numeric txtItemInputTotalCost" readonly type="text" name="txtItemInputTotalCost[]" id="txtItemInputTotalCost" value="">
         </td>
         <td>
             <input class="form-control" readonly type="text" name="txtItemInputWarehouseSource[]" id="txtItemInputWarehouseSource" value="">
@@ -456,12 +456,12 @@
 
         <div class="form-group">
             <label for="normal">Cantidad</label>
-            <input class="form-control" type="number" name="txtSidebarRequestItemQuantity" id="txtSidebarRequestItemQuantity" value="">
+            <input class="form-control txt-numeric" type="text" name="txtSidebarRequestItemQuantity" id="txtSidebarRequestItemQuantity" value="">
         </div>
 
         <div class="form-group">
             <label for="normal">Monto Total</label>
-            <input class="form-control" readonly type="number" name="txtSidebarInputTotalCost" id="txtSidebarInputTotalCost" value="">
+            <input class="form-control txt-numeric" readonly type="text" name="txtSidebarInputTotalCost" id="txtSidebarInputTotalCost" value="">
         </div>
 
         <button type="button" id="btnSaveSidebarItemInput" class="btn btn-success">Salvar</button>
@@ -487,13 +487,13 @@
             <span id="txtItemOutputName"></span>
         </td>
         <td>
-            <input class="form-control" readonly type="number" name="txtItemOutputQuantity[]" id="txtItemOutputQuantity" value="">
+            <input class="form-control txt-numeric" readonly type="text" name="txtItemOutputQuantity[]" id="txtItemOutputQuantity" value="">
         </td>
         <td>
-            <input class="form-control" readonly type="number" name="txtItemOutputUnitaryCost[]" id="txtItemOutputUnitaryCost" value="">
+            <input class="form-control txt-numeric" readonly type="text" name="txtItemOutputUnitaryCost[]" id="txtItemOutputUnitaryCost" value="">
         </td>
         <td>
-            <input class="form-control" readonly type="text" name="txtItemOutputTotalCost[]" id="txtItemOutputTotalCost" value="">
+            <input class="form-control txt-numeric" readonly type="text" name="txtItemOutputTotalCost[]" id="txtItemOutputTotalCost" value="">
         </td>
         <td>
             <input class="form-control" readonly type="text" name="txtItemOutputWarehouseTarget[]" id="txtItemOutputWarehouseTarget" value="">
@@ -544,12 +544,12 @@
 
         <div class="form-group">
             <label for="normal">Cantidad</label>
-            <input class="form-control" type="number" name="txtSidebarResponseItemQuantity" id="txtSidebarResponseItemQuantity" value="">
+            <input class="form-control txt-numeric" type="number" name="txtSidebarResponseItemQuantity" id="txtSidebarResponseItemQuantity" value="">
         </div>
 
         <div class="form-group">
             <label for="normal">Monto Total</label>
-            <input class="form-control" readonly type="number" name="txtSidebarOutputTotalCost" id="txtSidebarOutputTotalCost" value="">
+            <input class="form-control txt-numeric" readonly type="number" name="txtSidebarOutputTotalCost" id="txtSidebarOutputTotalCost" value="">
         </div>
 
         <button type="button" id="btnSaveSidebarItemOutput" class="btn btn-success">Salvar</button>

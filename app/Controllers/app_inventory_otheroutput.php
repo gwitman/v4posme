@@ -482,7 +482,9 @@ class app_inventory_otheroutput extends _BaseController {
 			$transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
 			
 			//Crear la Carpeta para almacenar los Archivos del Documento
-			mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$transactionMasterID, 0700);
+			if (!file_exists(PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponent->componentID . "/component_item_" . $transactionMasterID)) {
+				mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$transactionMasterID, 0700);
+			}
 			//Recorrer la lista del detalle del documento
 			$arrayListItemID 							= /*inicio get post*/ $this->request->getPost("txtDetailItemID");
 			$arrayListQuantity	 						= /*inicio get post*/ $this->request->getPost("txtDetailQuantity");			
@@ -1014,7 +1016,9 @@ class app_inventory_otheroutput extends _BaseController {
 			$datView["objUser"]					= $dataSession["user"];
 			$datView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_otheroutput","statusID",$datView["objTM"]->statusID,$companyID,$branchID,$roleID);
 			$datView["objTM"]->transactionOn 	= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
-			
+			$objListComanyParameter				= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$datView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
 			
 			$objComponentItem					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
 			if(!$objComponentItem)
@@ -1074,7 +1078,9 @@ class app_inventory_otheroutput extends _BaseController {
 			$userID								= $dataSession["user"]->userID;
 			$dataView["objListWarehouse"]		= $this->Userwarehouse_Model->getRowByUserID($companyID,$userID);
 			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_otheroutput","statusID",$companyID,$branchID,$roleID);
-			
+			$objListComanyParameter				= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
 			//Obtener el componente de Item
 			$objComponent		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
 			if(!$objComponent)

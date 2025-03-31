@@ -4,6 +4,7 @@
 					var objDataSource 			= [];
 					var objDataSource 			= JSON.parse('<?php echo json_encode($objItemDataSheetDetail); ?>');	
 					var objTmpDataSource 		= [];
+					var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';  
 					if(objDataSource != null){
 						for(var i = 0 ; i < objDataSource.length;i++){							
 							//Rellenar Datos
@@ -16,7 +17,7 @@
 								objDataSource[i].itemNumber,
 								objDataSource[i].name,
 								'Unidad',
-								fnFormatNumber(objDataSource[i].quantity,2), /*cantidad */
+								fnFormatNumber(parseFloat(objDataSource[i].quantity).toFixed(2)), /*cantidad */
 								0,
 								0
 							]);
@@ -100,10 +101,42 @@
 										}
 							]							
 						});
+
+						$(document).on("click", "#btnDelete", function() {
+							fnShowConfirm("Confirmar..", "Desea eliminar este Registro...", function() {
+								fnWaitOpen();
+								$.ajax({
+									cache: false,
+									dataType: 'json',
+									type: 'POST',
+									url: "<?php echo base_url(); ?>/app_inventory_datasheet/delete",
+									data: {
+										companyID: 			<?= $objItem->companyID; ?>,
+										itemDataSheetID: 	<?= $objItemDataSheet->itemDataSheetID; ?>,
+										itemID: 			<?= $objItemDataSheet->itemID; ?>
+									},
+									success: function(data) {
+										console.info("complete delete success");
+										fnWaitClose();
+										if (data.error) {
+											fnShowNotification(data.message, "error");
+										} else {
+											// fnShowNotification("success","success");
+											window.location = "<?php echo base_url(); ?>/app_inventory_datasheet/index";
+										}
+									},
+									error: function(xhr, data) {
+										console.info("complete delete error");
+										fnWaitClose();
+										fnShowNotification("Error 505", "error");
+									}
+								});
+							});
+						});
 						
 						//Buscar el Receta
 						$(document).on("click","#txtSearchItemID",function(){
-							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $componentItemID; ?>/onCompleteItemReceta/SELECCIONAR_ITEM_TO_RECETA/true/empty/false/not_redirect_when_empty";
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?php echo $componentItemID; ?>/onCompleteItemReceta/SELECCIONAR_ITEM_TO_RECETA_PAGINATED/true/empty/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
 							window.open(url_request,"MsgWindow","width=900,height=450");
 							window.onCompleteItemReceta = onCompleteItemReceta; 
 						});
@@ -123,7 +156,7 @@
 								return;
 							}
 							
-							var url_request 		= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $componentItemID; ?>/onCompleteItem/SELECCIONAR_ITEM_TO_RECETA/true/empty/false/not_redirect_when_empty";
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?php echo $componentItemID; ?>/onCompleteItem/SELECCIONAR_ITEM_TO_RECETA_PAGINATED/true/empty/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
 							window.open(url_request,"MsgWindow","width=900,height=450");
 							window.onCompleteItem 	= onCompleteItem; 
 							

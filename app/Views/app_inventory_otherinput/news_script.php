@@ -2,7 +2,9 @@
 <script>	
 	
 	var objTableDetailTransaction = {};
-	$(document).ready(function(){					
+	$(document).ready(function(){		
+		var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';  
+
 		//Inicializar Controles		
 		$('#txtTransactionOn').datepicker({format:"yyyy-mm-dd"});
 		$('#txtTransactionOn').val(moment().format("YYYY-MM-DD"));						 						
@@ -129,8 +131,8 @@
 				return;
 			}
 			
-			var url 		= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $componentItemID; ?>/onCompleteItem/SELECCIONAR_ITEM/true/"+encodeURI("{\"familyID\"|\"75\"}") + "/false/not_redirect_when_empty";
-			var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $componentItemID; ?>/onCompleteItem/SELECCIONAR_ITEM_TO_INPUT/true/"+encodeURI("{\"warehouseID\"|\""+$("#txtWarehouseSourceID").val()+"\"}") + "/false/not_redirect_when_empty";
+			var url 		= "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?php echo $componentItemID; ?>/onCompleteItem/SELECCIONAR_ITEM_PAGINATED/true/"+encodeURI("{\"familyID\"|\"75\"}") + "/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
+			var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?php echo $componentItemID; ?>/onCompleteItem/SELECCIONAR_ITEM_TO_INPUT_PAGINATED/true/"+encodeURI("{\"warehouseID\"|\""+$("#txtWarehouseSourceID").val()+"\"}") + "/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
 			window.open(url_request,"MsgWindow","width=900,height=450");
 			window.onCompleteItem = onCompleteItem; 
 			

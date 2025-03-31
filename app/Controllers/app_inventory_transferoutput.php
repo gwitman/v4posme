@@ -359,10 +359,10 @@ class app_inventory_transferoutput extends _BaseController {
 			$objWarehouseTarget  = $this->Warehouse_Model->get_rowByPK($companyID,$objTM["targetWarehouseID"]);
 			$transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
 			
-			//Crear la carpeta de salida por transferencia
-			mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$transactionMasterID, 0700);
-			
-			
+			//Crear la carpeta de salida por transferencia			
+			if (!file_exists(PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponent->componentID . "/component_item_" . $transactionMasterID)) {
+				mkdir(PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponent->componentID . "/component_item_" . $transactionMasterID, 0700, true);
+			}
 			//Crear detalle de salida por transferencia
 			$arrayListItemID 							= /*inicio get post*/ $this->request->getPost("txtDetailItemID");
 			$arrayListQuantity	 						= /*inicio get post*/ $this->request->getPost("txtDetailQuantity");			
@@ -618,7 +618,7 @@ class app_inventory_transferoutput extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}			
 	}
 	function updateElement($dataSession){
@@ -894,7 +894,7 @@ class app_inventory_transferoutput extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}			
 	}
 	function save($mode=""){
@@ -1014,7 +1014,10 @@ class app_inventory_transferoutput extends _BaseController {
 			$datView["objComponentEmployee"]  	= $objComponentEmployee;
 			$datView["objComponentEntity"]  	= $objComponentEntity;
 			$datView["company"]					= $dataSession["company"];
-			
+			$objListComanyParameter				= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$datView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
+
 			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			=  $this->core_web_notification->get_message();
@@ -1097,7 +1100,9 @@ class app_inventory_transferoutput extends _BaseController {
 			$dataView["objComponentEmployee"]  		= $objComponentEmployee;
 			$dataView["objComponentEntity"]  		= $objComponentEntity;
 			$dataView["company"]					= $dataSession["company"];
-			
+			$objListComanyParameter					= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
 			//Renderizar Resultado 
 			$dataSession["notification"]		= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]				= $this->core_web_notification->get_message();

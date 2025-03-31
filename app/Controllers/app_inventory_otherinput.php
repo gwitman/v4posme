@@ -348,8 +348,10 @@ class app_inventory_otherinput extends _BaseController {
 			$db->transStart();
 			$transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
 			
-			//Crear la Carpeta para almacenar los Archivos del Documento
-			mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$transactionMasterID, 0700);
+			//Crear la Carpeta para almacenar los Archivos del Documento			
+			if (!file_exists(PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponent->componentID . "/component_item_" . $transactionMasterID)) {
+				mkdir(PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponent->componentID . "/component_item_" . $transactionMasterID, 0700, true);
+			}
 			//Recorrer la lista del detalle del documento
 			$arrayListItemID 							= /*inicio get post*/ $this->request->getPost("txtDetailItemID");
 			$arrayListQuantity	 						= /*inicio get post*/ $this->request->getPost("txtDetailQuantity");			
@@ -685,8 +687,10 @@ class app_inventory_otherinput extends _BaseController {
 			$datView["objUser"]					= $dataSession["user"];
 			$datView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_otherinput","statusID",$datView["objTM"]->statusID,$companyID,$branchID,$roleID);
 			$datView["objTM"]->transactionOn 	= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
-			
-			
+			$objListComanyParameter				= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$datView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
+
 			$objComponentItem					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
 			if(!$objComponentItem)
 			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
@@ -755,8 +759,11 @@ class app_inventory_otherinput extends _BaseController {
 			$objParameterWarehouseDefault		= $this->core_web_parameter->getParameter("INVENTORY_ITEM_WAREHOUSE_DEFAULT",$companyID);
 			$warehouseDefault 					= $objParameterWarehouseDefault->value;
 			$dataView["warehouseDefault"]		= $warehouseDefault;
-			
 			$dataView["componentItemID"] 		= $objComponent->componentID;
+			$objListComanyParameter				= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
+
 			//Renderizar Resultado
 			$dataSession["notification"]		= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]				= $this->core_web_notification->get_message();

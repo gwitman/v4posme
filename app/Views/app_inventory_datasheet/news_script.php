@@ -1,7 +1,8 @@
 				<!-- ./ page heading -->
 				<script>	
 					var objItemDataSheetDetail = {};
-					$(document).ready(function(){					
+					$(document).ready(function(){		
+						var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';  
 						 //Regresar a la lista
 						$(document).on("click","#btnBack",function(){
 								fnWaitOpen();
@@ -80,7 +81,7 @@
 						
 						//Buscar el Receta
 						$(document).on("click","#txtSearchItemID",function(){
-							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $componentItemID; ?>/onCompleteItemReceta/SELECCIONAR_ITEM_TO_RECETA/true/empty/false/not_redirect_when_empty";
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?php echo $componentItemID; ?>/onCompleteItemReceta/SELECCIONAR_ITEM_TO_RECETA_PAGINATED/true/empty/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
 							window.open(url_request,"MsgWindow","width=900,height=450");
 							window.onCompleteItemReceta = onCompleteItemReceta; 
 						});
@@ -100,7 +101,7 @@
 								return;
 							}
 							
-							var url_request 		= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $componentItemID; ?>/onCompleteItem/SELECCIONAR_ITEM_TO_RECETA/true/empty/false/not_redirect_when_empty";
+							var url_request 		= "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?php echo $componentItemID; ?>/onCompleteItem/SELECCIONAR_ITEM_TO_RECETA_PAGINATED/true/empty/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
 							window.open(url_request,"MsgWindow","width=900,height=450");
 							window.onCompleteItem 	= onCompleteItem; 
 							
@@ -157,26 +158,26 @@
 						return result;
 					}
 					function onCompleteItem(objResponse){
-						debugger;
+
 						console.info("CALL onCompleteItem");
 						var objRow 						= {};
 						
 						objRow.checked 					= false;						
 						objRow.itemDataSheetID			= 0;
-						objRow.itemID 					= 0;
+						objRow.itemID 					= objResponse[0][0];
 						objRow.itemDataSheetDetailID 	= 0;
-						objRow.itemRelatedID 			= objResponse[0][0];
+						objRow.itemRelatedID 			= 0;
 						objRow.itemNumber 				= objResponse[0][1];
 						objRow.itemName 				= objResponse[0][2];
 						objRow.um 						= objResponse[0][3];
 						objRow.quantity 				= 0;
 						objRow.cost 					= objResponse[0][4];
 						objRow.cc 						= 0;
-						
+						debugger;
 						
 						
 						//Berificar que el Item ya esta agregado 
-						if(jLinq.from(objItemDataSheetDetail.fnGetData()).where(function(obj){ return obj[4] == objRow.itemRelatedID;}).select().length > 0 ){
+						if(jLinq.from(objItemDataSheetDetail.fnGetData()).where(function(obj){ return obj[2] == objRow.itemID;}).select().length > 0 ){
 							fnShowNotification("El Item ya esta agregado","error");
 							return;
 						}

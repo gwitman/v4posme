@@ -34,7 +34,9 @@
 								fnShowNotification(data.message,"error");
 							}
 							else{		
-								window.location = "<?php echo base_url(); ?>/app_inventory_datasheet/edit/itemID/"+data.itemID+"/itemDataSheetID/"+data.itemDataSheetID;
+								console.log(data);
+								debugger;
+								window.location = "<?php echo base_url(); ?>/app_inventory_datasheet/edit/companyID/"+data.companyID+"/itemDataSheetID/"+data.itemDataSheetID;
 							}
 						},
 						error:function(xhr,data){	
@@ -50,7 +52,7 @@
 				var data 		= objTableListView.fnGetData(objRowTableListView);	
 				if(data == null)
 				return;
-				
+
 				fnShowConfirm("Confirmar..","Desea eliminar este Registro...",function(){
 					fnWaitOpen();
 					$.ajax({									
@@ -58,7 +60,11 @@
 						dataType    : 'json',
 						type        : 'POST',
 						url  		: "<?php echo base_url(); ?>/app_inventory_datasheet/delete",
-						data 		: {itemID : data[0], itemDataSheetID :data[1]},
+						data 		: {
+							companyID: 			data[0],
+							itemDataSheetID:	data[1],
+							itemID: 			data[2]
+						},
 						success:function(data){
 							console.info("complete delete success");
 							fnWaitClose();
