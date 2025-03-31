@@ -5,7 +5,7 @@
 						 $('#txtDate').val();	
 						 $("#txtDate").datepicker("update");
 						 $('.txt-numeric').mask('000,000.00', {reverse: true});
-
+						 <?php echo getBehavio($company->type,"app_cxp_expenses","scriptReady",""); ?>  
 
 
                         $(document).on("change","#txtDetailAmount,#txtTransactionMasterTax1",function(){

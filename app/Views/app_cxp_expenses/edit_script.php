@@ -6,7 +6,7 @@
 						$("#txtDate").datepicker("update");
 						$('.txt-numeric').mask('000,000.00', {reverse: true});
 						var urlPrinter = '<?php echo $objParameterUrlPrinter; ?>';
-						
+						<?php echo getBehavio($company->type,"app_cxp_expenses","scriptReady",""); ?>  
 						
 						//Regresar a la lista
 						$(document).on("click","#btnBack",function(){

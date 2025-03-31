@@ -204,6 +204,11 @@
 																</select>
 															</div>
 														</div>
+														
+														<div id="panelGeneralRigth">
+															
+														</div>
+														
 													</div>
 												</div>
 											</div>
@@ -212,7 +217,7 @@
 												<input type="hidden" name="txtCustomerCreditDocumentID" id="txtCustomerCreditDocumentID" value="">
 												<div class="row">
 													<div class="col-lg-6 ">
-														<div class="form-group">
+														<div class="form-group" id="divPanelCurrency">
 															<label class="col-lg-4 control-label" for="selectFilter">Moneda</label>
 															<div class="col-lg-8">
 																<select name="txtCurrencyID" id="txtCurrencyID" class="select2">
@@ -229,7 +234,7 @@
 															</div>
 														</div>
 
-														<div class="form-group">
+														<div class="form-group" id="divPanelMonto" >
 															<label class="col-lg-4 control-label" for="normal">Monto</label>
 															<div class="col-lg-8">
 																<input type="hidden" name="txtDetailTransactionDetailID" value="0">
@@ -237,14 +242,14 @@
 															</div>
 														</div>
 
-														<div class="form-group">
+														<div class="form-group" id="divPanelIVA" >
 															<label class="col-lg-4 control-label" for="txtTransactionMasterTax1">IVA</label>
 															<div class="col-lg-8">
 																<input class="form-control" type="text" name="txtTransactionMasterTax1" id="txtTransactionMasterTax1" value="0">
 															</div>
 														</div>
 
-														<div class="form-group">
+														<div class="form-group" id="divPanelTotal" >
 															<label class="col-lg-4 control-label" for="txtTransactionMasterTax2">Total</label>
 															<div class="col-lg-8">
 																<input class="form-control" readonly type="text" name="txtTransactionMasterTax2" id="txtTransactionMasterTax2" value="0">

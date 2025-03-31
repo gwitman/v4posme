@@ -220,13 +220,18 @@
 											</select>
 										</div>
 									</div>
+									
+									<div id="panelGeneralRigth">
+															
+									</div>
+									
 								</div>
 							</div>
 						</div>
 						<div class="tab-pane fade" id="profile">
 							<div class="row">
 								<div class="col-lg-6 ">
-									<div class="form-group">
+									<div class="form-group" id="divPanelCurrency" >
 										<label class="col-lg-4 control-label" for="selectFilter">Moneda</label>
 										<div class="col-lg-8">
 											<select name="txtCurrencyID" id="txtCurrencyID" class="select2">
@@ -243,21 +248,21 @@
 										</div>
 									</div>
 
-									<div class="form-group">
+									<div class="form-group" id="divPanelMonto" >
 										<label class="col-lg-4 control-label" for="normal">Monto</label>
 										<div class="col-lg-8">
 											<input class="form-control" type="text" name="txtDetailAmount" id="txtDetailAmount" value="<?php echo sprintf("%01.2f", $objTransactionMaster->amount); ?>">
 										</div>
 									</div>
 
-									<div class="form-group">
+									<div class="form-group" id="divPanelIVA" >
 										<label class="col-lg-4 control-label" for="txtTransactionMasterTax1">IVA</label>
 										<div class="col-lg-8">
 											<input class="form-control" type="text" name="txtTransactionMasterTax1" id="txtTransactionMasterTax1" value="<?= sprintf("%01.2f", $objTransactionMaster->tax1) ?>">
 										</div>
 									</div>
 
-									<div class="form-group">
+									<div class="form-group" id="divPanelTotal" >
 										<label class="col-lg-4 control-label" for="txtTransactionMasterTax2">Total</label>
 										<div class="col-lg-8">
 											<input class="form-control" readonly type="text" name="txtTransactionMasterTax2" id="txtTransactionMasterTax2" value="<?= sprintf("%01.2f", $objTransactionMaster->tax2) ?>">
