@@ -12,23 +12,23 @@ class app_inventory_production extends _BaseController
 			//AUTENTICADO
 			if (!$this->core_web_authentication->isAuthenticated())
 				throw new Exception(USER_NOT_AUTENTICATED);
-			$dataSession        = $this->session->get();
+			$dataSession        			= $this->session->get();
 
 			//PERMISO SOBRE LA FUNCTION
 			if (APP_NEED_AUTHENTICATION == true) {
 
-				$permited = false;
-				$permited = $this->core_web_permission->urlPermited(get_class($this), "index", URL_SUFFIX, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
+				$permited 					= false;
+				$permited 					= $this->core_web_permission->urlPermited(get_class($this), "index", URL_SUFFIX, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
 
 				if (!$permited)
 					throw new Exception(NOT_ACCESS_CONTROL);
 
-				$resultPermission        = $this->core_web_permission->urlPermissionCmd(get_class($this), "index", URL_SUFFIX, $dataSession, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
-				if ($resultPermission     == PERMISSION_NONE)
+				$resultPermission        	= $this->core_web_permission->urlPermissionCmd(get_class($this), "index", URL_SUFFIX, $dataSession, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
+				if ($resultPermission     	== PERMISSION_NONE)
 					throw new Exception(NOT_ACCESS_FUNCTION);
 			}
 
-			$objComponent        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_production_orden");
+			$objComponent        			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_production_orden");
 			if (!$objComponent)
 				throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_production_orden' NO EXISTE...");
 
@@ -74,7 +74,7 @@ class app_inventory_production extends _BaseController
 			$data["urlBack"]   = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 			$resultView        = view("core_template/email_error_general", $data);
 
-			return $resultView;
+			echo $resultView;
 		}
 	}
 
@@ -135,18 +135,18 @@ class app_inventory_production extends _BaseController
 			//AUTENTICADO
 			if (!$this->core_web_authentication->isAuthenticated())
 				throw new Exception(USER_NOT_AUTENTICATED);
-			$dataSession        = $this->session->get();
+			$dataSession        			= $this->session->get();
 
 			//PERMISO SOBRE LA FUNCTION
 			if (APP_NEED_AUTHENTICATION == true) {
-				$permited = false;
-				$permited = $this->core_web_permission->urlPermited(get_class($this), "index", URL_SUFFIX, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
+				$permited 					= false;
+				$permited 					= $this->core_web_permission->urlPermited(get_class($this), "index", URL_SUFFIX, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
 
 				if (!$permited)
 					throw new Exception(NOT_ACCESS_CONTROL);
 
-				$resultPermission        = $this->core_web_permission->urlPermissionCmd(get_class($this), "add", URL_SUFFIX, $dataSession, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
-				if ($resultPermission     == PERMISSION_NONE)
+				$resultPermission        	= $this->core_web_permission->urlPermissionCmd(get_class($this), "add", URL_SUFFIX, $dataSession, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
+				if ($resultPermission     	== PERMISSION_NONE)
 					throw new Exception(NOT_ALL_INSERT);
 			}
 
@@ -159,17 +159,17 @@ class app_inventory_production extends _BaseController
 				throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_production_orden' NO EXISTE...");
 			}
 
-			$objComponentWarehouse    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_warehouse");
+			$objComponentWarehouse    			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_warehouse");
 			if (!$objComponentWarehouse) {
 				throw new Exception("EL COMPONENTE 'tb_warehouse' NO EXISTE...");
 			}
 
-			$objComponentItem    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			$objComponentItem    				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
 			if (!$objComponentItem) {
 				throw new Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 			}
 
-			$objComponentEmployee    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
+			$objComponentEmployee    			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
 			if (!$objComponentEmployee) {
 				throw new Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
 			}
@@ -207,7 +207,7 @@ class app_inventory_production extends _BaseController
 			$data["urlBack"]   = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 			$resultView        = view("core_template/email_error_general", $data);
 
-			return $resultView;
+			echo $resultView;
 		}
 	}
 
@@ -232,17 +232,17 @@ class app_inventory_production extends _BaseController
 				throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_production_orden' NO EXISTE...");
 			}
 
-			$objComponentWarehouse    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_warehouse");
+			$objComponentWarehouse    			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_warehouse");
 			if (!$objComponentWarehouse) {
 				throw new Exception("EL COMPONENTE 'tb_warehouse' NO EXISTE...");
 			}
 
-			$objComponentItem    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			$objComponentItem    				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
 			if (!$objComponentItem) {
 				throw new Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 			}
 
-			$objComponentEmployee    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
+			$objComponentEmployee    			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
 			if (!$objComponentEmployee) {
 				throw new Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
 			}
@@ -348,7 +348,7 @@ class app_inventory_production extends _BaseController
 			$data["urlBack"]   = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 			$resultView        = view("core_template/email_error_general", $data);
 
-			return $resultView;
+			echo $resultView;
 		}
 	}
 
@@ -362,8 +362,8 @@ class app_inventory_production extends _BaseController
 			$dataSession    = $this->session->get();
 
 			if (APP_NEED_AUTHENTICATION == true) {
-				$permited = false;
-				$permited = $this->core_web_permission->urlPermited(get_class($this), "index", URL_SUFFIX, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
+				$permited 	= false;
+				$permited 	= $this->core_web_permission->urlPermited(get_class($this), "index", URL_SUFFIX, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
 
 				if (!$permited)
 					throw new Exception(NOT_ACCESS_CONTROL);
@@ -384,17 +384,17 @@ class app_inventory_production extends _BaseController
 				throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_production_orden' NO EXISTE...");
 			}
 
-			$objComponentWarehouse    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_warehouse");
+			$objComponentWarehouse    			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_warehouse");
 			if (!$objComponentWarehouse) {
 				throw new Exception("EL COMPONENTE 'tb_warehouse' NO EXISTE...");
 			}
 
-			$objComponentItem    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			$objComponentItem    				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
 			if (!$objComponentItem) {
 				throw new Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 			}
 
-			$objComponentEmployee    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
+			$objComponentEmployee    			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
 			if (!$objComponentEmployee) {
 				throw new Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
 			}
@@ -464,17 +464,17 @@ class app_inventory_production extends _BaseController
 				throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_production_orden' NO EXISTE...");
 			}
 
-			$objComponentWarehouse    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_warehouse");
+			$objComponentWarehouse    			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_warehouse");
 			if (!$objComponentWarehouse) {
 				throw new Exception("EL COMPONENTE 'tb_warehouse' NO EXISTE...");
 			}
 
-			$objComponentItem    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			$objComponentItem   				 = $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
 			if (!$objComponentItem) {
 				throw new Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 			}
 
-			$objComponentEmployee    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
+			$objComponentEmployee    			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
 			if (!$objComponentEmployee) {
 				throw new Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
 			}
@@ -742,7 +742,7 @@ class app_inventory_production extends _BaseController
 				throw new Exception(NOT_PARAMETER);
 			}
 
-			$objTM 	= $this->Transaction_Master_Model->get_rowByTransactionNumber($dataSession["user"]->companyID, $transactionNumber);
+			$objTM 				= $this->Transaction_Master_Model->get_rowByTransactionNumber($dataSession["user"]->companyID, $transactionNumber);
 
 			if (!$objTM)
 				throw new Exception("NO SE ENCONTRO EL DOCUMENTO");
@@ -770,52 +770,52 @@ class app_inventory_production extends _BaseController
 			//AUTENTICADO
 			if (!$this->core_web_authentication->isAuthenticated())
 				throw new Exception(USER_NOT_AUTENTICATED);
-			$dataSession		= $this->session->get();
+			$dataSession					= $this->session->get();
 
 			//PERMISO SOBRE LA FUNCION
 			if (APP_NEED_AUTHENTICATION == true) {
-				$permited = false;
-				$permited = $this->core_web_permission->urlPermited(get_class($this), "index", URL_SUFFIX, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
+				$permited 					= false;
+				$permited 					= $this->core_web_permission->urlPermited(get_class($this), "index", URL_SUFFIX, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
 
 				if (!$permited)
 					throw new Exception(NOT_ACCESS_CONTROL);
 
 
-				$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this), "edit", URL_SUFFIX, $dataSession, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
-				if ($resultPermission 	== PERMISSION_NONE)
+				$resultPermission			= $this->core_web_permission->urlPermissionCmd(get_class($this), "edit", URL_SUFFIX, $dataSession, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
+				if ($resultPermission 		== PERMISSION_NONE)
 					throw new Exception(NOT_ALL_EDIT);
 			}
 
-			$objComponentProductionOrder        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_production_orden");
+			$objComponentProductionOrder	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_production_orden");
 			if (!$objComponentProductionOrder) {
 				throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_production_orden' NO EXISTE...");
 			}
 
-			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "transactionID"); //--finuri			
-			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "transactionMasterID"); //--finuri				
-			$companyID 					= $dataSession["user"]->companyID;
-			$branchID 					= $dataSession["user"]->branchID;
-			$roleID 					= $dataSession["role"]->roleID;
+			$transactionID					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "transactionID"); //--finuri			
+			$transactionMasterID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "transactionMasterID"); //--finuri				
+			$companyID 						= $dataSession["user"]->companyID;
+			$branchID 						= $dataSession["user"]->branchID;
+			$roleID 						= $dataSession["role"]->roleID;
 
-			$objCompany 			    = $this->Company_Model->get_rowByPK($companyID);
-			$objParameterTelefono	    = $this->core_web_parameter->getParameter("CORE_PHONE", $companyID);
-			$objParameterLogo	        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO", $companyID);
-			$objParameterRuc 			= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER", $companyID)->value;
+			$objCompany 			    	= $this->Company_Model->get_rowByPK($companyID);
+			$objParameterTelefono	    	= $this->core_web_parameter->getParameter("CORE_PHONE", $companyID);
+			$objParameterLogo	        	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO", $companyID);
+			$objParameterRuc 				= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER", $companyID)->value;
 
-			$objTM						= $this->Transaction_Master_Model->get_rowByPk($companyID, $transactionID, $transactionMasterID);
-			$objTMD						= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID, $transactionID, $transactionMasterID, $objComponentProductionOrder->componentID);
-			$objTM->transactionOn		= date_format(date_create($objTM->transactionOn), "Y-m-d");
-			$objWorkflowStage			= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($objTM->statusID)[0]->name;
-			$objCurrency				= $this->Currency_Model->get_rowByPK($objTM->currencyID);
-			
-			$objRequestEmployee			= $objTM->entityID 			? $this->Employee_Model->get_rowByPK($companyID, $branchID, $objTM->entityID) 			: "";
-			$objSenderEmployee			= $objTM->entityIDSecondary ? $this->Employee_Model->get_rowByPK($companyID, $branchID, $objTM->entityIDSecondary) 	: "";
-			
-			$objRequestEmployeeNatural	= $objTM->entityID 			? $this->Natural_Model->get_rowByPk($companyID, $branchID, $objTM->entityID) 			: "";
-			$objSenderEmployeeNatural	= $objTM->entityIDSecondary ? $this->Natural_Model->get_rowByPk($companyID, $branchID, $objTM->entityIDSecondary) 	: "";
-			
-			$objRequestEmployeeName		= $objRequestEmployee ? ($objRequestEmployee->employeNumber . " | " . $objRequestEmployeeNatural->firstName . " " . $objRequestEmployeeNatural->lastName) 	: "";
-			$objSenderEmployeeName		= $objSenderEmployee  ? ($objSenderEmployee->employeNumber 	. " | " . $objSenderEmployeeNatural->firstName 	. " " . $objSenderEmployeeNatural->lastName) 	: "";
+			$objTM							= $this->Transaction_Master_Model->get_rowByPk($companyID, $transactionID, $transactionMasterID);
+			$objTMD							= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID, $transactionID, $transactionMasterID, $objComponentProductionOrder->componentID);
+			$objTM->transactionOn			= date_format(date_create($objTM->transactionOn), "Y-m-d");
+			$objWorkflowStage				= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($objTM->statusID)[0]->name;
+			$objCurrency					= $this->Currency_Model->get_rowByPK($objTM->currencyID);
+
+			$objRequestEmployee				= $objTM->entityID 			? $this->Employee_Model->get_rowByPK($companyID, $branchID, $objTM->entityID) 			: "";
+			$objSenderEmployee				= $objTM->entityIDSecondary ? $this->Employee_Model->get_rowByPK($companyID, $branchID, $objTM->entityIDSecondary) 	: "";
+
+			$objRequestEmployeeNatural		= $objTM->entityID 			? $this->Natural_Model->get_rowByPk($companyID, $branchID, $objTM->entityID) 			: "";
+			$objSenderEmployeeNatural		= $objTM->entityIDSecondary ? $this->Natural_Model->get_rowByPk($companyID, $branchID, $objTM->entityIDSecondary) 	: "";
+
+			$objRequestEmployeeName			= $objRequestEmployee ? ($objRequestEmployee->employeNumber . " | " . $objRequestEmployeeNatural->firstName . " " . $objRequestEmployeeNatural->lastName) 	: "";
+			$objSenderEmployeeName			= $objSenderEmployee  ? ($objSenderEmployee->employeNumber 	. " | " . $objSenderEmployeeNatural->firstName 	. " " . $objSenderEmployeeNatural->lastName) 	: "";
 			
 
 			//Generar Reporte
@@ -873,7 +873,7 @@ class app_inventory_production extends _BaseController
 			$data["urlBack"]   = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 			$resultView        = view("core_template/email_error_general", $data);
 
-			return $resultView;
+			echo $resultView;
 		}
 	}
 }

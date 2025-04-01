@@ -1,6 +1,6 @@
 <!-- ./ page heading -->
 <script>	
-	var objTableDetailTransaction = {};
+	var objTableDetailTransaction 			= {};
 	$(document).ready(function(){	
 		var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';  
 		//Inicializar Controles		

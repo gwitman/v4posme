@@ -1,6 +1,6 @@
 				<!-- ./ page heading -->
 				<script>	
-					var objItemDataSheetDetail = {};
+					var objItemDataSheetDetail 				= {};
 					$(document).ready(function(){		
 						var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';  
 						 //Regresar a la lista
@@ -173,7 +173,6 @@
 						objRow.quantity 				= 0;
 						objRow.cost 					= objResponse[0][4];
 						objRow.cc 						= 0;
-						debugger;
 						
 						
 						//Berificar que el Item ya esta agregado 
