@@ -34,8 +34,6 @@
 								fnShowNotification(data.message,"error");
 							}
 							else{		
-								console.log(data);
-								debugger;
 								window.location = "<?php echo base_url(); ?>/app_inventory_datasheet/edit/companyID/"+data.companyID+"/itemDataSheetID/"+data.itemDataSheetID;
 							}
 						},

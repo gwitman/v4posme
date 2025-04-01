@@ -1,15 +1,16 @@
 <!-- ./ page heading -->
 <script>	
-	var numberDecimal				= 2;
-	var numberDecimalSummary		= 2;
-	var numberDecimalSummaryRound	= false;
-	var objListaProductos			= {};	
-	var objListTypePreice			= JSON.parse('<?php echo json_encode($objListTypePreice); ?>');
-	var objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE	= <?php echo $objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE; ?>;
-	var sScrollY = objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE == true ?  "350px" : "auto";
+	var numberDecimal					= 2;
+	var numberDecimalSummary			= 2;
+	var numberDecimalSummaryRound		= false;
+	var objListaProductos				= {};	
+	var objListTypePreice				= JSON.parse('<?php echo json_encode($objListTypePreice); ?>');
 	var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';  
 	
-	var objTableDetailTransaction 	= {};
+	var objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE			= <?php echo $objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE; ?>;
+	var sScrollY = objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE == true ?  "350px" : "auto";
+	
+	var objTableDetailTransaction 		= {};
 	$(document).ready(function(){					
 		//Inicializar Controles		
 		$('#txtTransactionOn').datepicker({format:"yyyy-mm-dd"});

@@ -1,17 +1,18 @@
 <!-- ./ page heading -->
 <script>	
-	var numberDecimal				= 2;
-	var numberDecimalSummary		= 2;
-	var numberDecimalSummaryRound	= false;
-	var objTableDetailTransaction 	= {};
-	var objListaProductos			= {};
-	var objListaProductos2			= {};
-	var objListaProductos3			= {};
-	var objParameterUrlPrinter		= '<?php echo $objParameterUrlPrinter; ?>';
-	var objParameterUrlPrinterCode  = '<?php echo $objParameterMasive; ?>';
-	var objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE	= <?php echo $objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE; ?>;
-	var sScrollY = objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE == true ?  "350px" : "auto";
+	var numberDecimal					= 2;
+	var numberDecimalSummary			= 2;
+	var numberDecimalSummaryRound		= false;
+	var objTableDetailTransaction 		= {};
+	var objListaProductos				= {};
+	var objListaProductos2				= {};
+	var objListaProductos3				= {};
+	var objParameterUrlPrinter			= '<?php echo $objParameterUrlPrinter; ?>';
+	var objParameterUrlPrinterCode  	= '<?php echo $objParameterMasive; ?>';
 	var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';  
+	
+	var objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE			= <?php echo $objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE; ?>;
+	var sScrollY = objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE == true ?  "350px" : "auto";
 	
 	$(document).ready(function(){					
 		//Inicializar Controles		

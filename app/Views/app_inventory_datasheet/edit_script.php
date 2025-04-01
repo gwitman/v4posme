@@ -1,10 +1,11 @@
 				<!-- ./ page heading -->
 				<script>		
-					var objItemDataSheetDetail 	= {};					
-					var objDataSource 			= [];
-					var objDataSource 			= JSON.parse('<?php echo json_encode($objItemDataSheetDetail); ?>');	
-					var objTmpDataSource 		= [];
+					var objItemDataSheetDetail 			= {};					
+					var objDataSource 					= [];
+					var objDataSource 					= JSON.parse('<?php echo json_encode($objItemDataSheetDetail); ?>');	
+					var objTmpDataSource 				= [];
 					var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';  
+					
 					if(objDataSource != null){
 						for(var i = 0 ; i < objDataSource.length;i++){							
 							//Rellenar Datos
