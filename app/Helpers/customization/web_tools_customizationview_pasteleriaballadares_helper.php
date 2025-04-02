@@ -2,7 +2,7 @@
 
 function getBehavioPasteleriaBalladares(): array
 {
-    //company type: maximum
+    
     return array(
 		strtolower('pasteleria_balladares_app_cxc_customer_divScriptReady')         		=> "$('#txtIdentification').val('".date("Y_m_d_h_i")."');",
 		strtolower('pasteleria_balladares_app_invoice_billing_txtTraductionMesa')         	=> "Entregado",
@@ -29,10 +29,6 @@ function getBehavioPasteleriaBalladares(): array
 				$('#txtLegalName').val($('#txtFirstName').val());
 				$('#txtCommercialName').val($('#txtLastName').val());
 		",
-		
-		
-		
-		
 		
     );
 }

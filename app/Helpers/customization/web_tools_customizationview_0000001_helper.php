@@ -1195,6 +1195,8 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
     $divs                   = array_merge($divs, $pasteleriaChic);
 	$globalPro		   		= getBehavioGlobalpro();
     $divs                   = array_merge($divs, $globalPro);
+	$balladaresPasteleria	= getBehavioPasteleriaBalladares();
+	$divs                   = array_merge($divs, $balladaresPasteleria);
 
 	//Comanda traducir es para los menu
 	//comportamiento del controlador

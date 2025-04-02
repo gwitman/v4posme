@@ -1468,11 +1468,11 @@ class app_invoice_billing extends _BaseController {
 																				$objTMInfoNew["receiptAmountBank"] - 																				
 																				$objTMInfoNew["receiptAmountCard"] - 
 																				
-																				round(($objTMInfoNew["receiptAmountBankDol"] * $objTMNew["exchangeRate"]),2) - 
-																				round(($objTMInfoNew["receiptAmountCardDol"] * $objTMNew["exchangeRate"]),2) - 																			
-																				round(($objTMInfoNew["receiptAmountDol"] * $objTMNew["exchangeRate"]),2)  ;
+																				round(($objTMInfoNew["receiptAmountBankDol"] / $objTMNew["exchangeRate"]),2) - 
+																				round(($objTMInfoNew["receiptAmountCardDol"] / $objTMNew["exchangeRate"]),2) - 																			
+																				round(($objTMInfoNew["receiptAmountDol"] / $objTMNew["exchangeRate"]),2)  ;
 																				
-						$objCustomerCreditDocument["balance"] 				= $objCustomerCreditDocument["amount"];
+						$objCustomerCreditDocument["balance"] 				= $objCustomerCreditDocument["amount"];						
 					}
 					
 					if($objParameterAmortizationDuranteFactura == "true" &&  $objTMNew["currencyID"] == 2 /*dolares*/)

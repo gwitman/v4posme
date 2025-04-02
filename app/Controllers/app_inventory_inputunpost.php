@@ -1525,6 +1525,10 @@ class app_inventory_inputunpost extends _BaseController {
 		$objParameterPriceDefault	= $this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID);
 		$listPriceID 				= $objParameterPriceDefault->value;
 		
+		$objComponentItem						= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+		if(!$objComponentItem)
+		throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+	
 		if(!empty($arrayListItemID)){
 			foreach($arrayListItemID as $key => $value){
 				$transactionMasterDetailID				= $listTMD_ID[$key];	

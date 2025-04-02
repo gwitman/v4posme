@@ -70,10 +70,19 @@ class app_cxp_expenses extends _BaseController {
 			$dataView["objTransactionMaster"]->transactionOn 	= date_format(date_create($dataView["objTransactionMaster"]->transactionOn),"Y-m-d");	
 			$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID,$transactionID,$transactionMasterID);
 
-			$objProvider						= $this->Provider_Model->get_rowByEntity($companyID, $dataView["objTransactionMaster"]->entityID);
-			$objLegal							= $this->Legal_Model->get_rowByPK($companyID, $branchID, $dataView["objTransactionMaster"]->entityID);
-			$objAmortization					= $this->Customer_Credit_Amortization_Model->get_rowByPk($dataView["objTransactionMaster"]->tax4);
-			$objDocument 						= $objAmortization ? $this->Customer_Credit_Document_Model->get_rowByPk($objAmortization->customerCreditDocumentID) : NULL;
+
+			$objProvider						= null;
+			$objLegal							= null;
+			
+			if($dataView["objTransactionMaster"]->entityID)
+			{
+				$objProvider						= $this->Provider_Model->get_rowByEntity($companyID, $dataView["objTransactionMaster"]->entityID);
+				$objLegal							= $this->Legal_Model->get_rowByPK($companyID, $branchID, $dataView["objTransactionMaster"]->entityID);			
+			}
+
+			$dataView["objTransactionMaster"]->tax4 	= $dataView["objTransactionMaster"]->tax4 ? $dataView["objTransactionMaster"]->tax4 : 0;
+			$objAmortization							= $this->Customer_Credit_Amortization_Model->get_rowByPk($dataView["objTransactionMaster"]->tax4);
+			$objDocument 								= $objAmortization ? $this->Customer_Credit_Document_Model->get_rowByPk($objAmortization->customerCreditDocumentID) : NULL;
 
 			$dataView["company"]				= $dataSession["company"];
 			$dataView["objListCurrency"]		= $objListCurrency;
