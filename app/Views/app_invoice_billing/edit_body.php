@@ -415,7 +415,7 @@ echo helper_getHtmlOfPageLanding();
 									</div>
 									
 									<div id="divTxtElementoDisponibleParaMove2" class="hidden" >
-										abc
+										
 									</div>
 									
 									
@@ -429,7 +429,7 @@ echo helper_getHtmlOfPageLanding();
 							<div class="row">
 								<div class="col-lg-6" id="divInformacionLeftZone" >
 									<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divTxtZone",""); ?>" id="divZone"  >
-										<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_invoice_billing","divLabelZone","Zona"); ?></label>
+										<label class="col-lg-4 control-label" for="txtZoneID"><?php echo getBehavio($company->type,"app_invoice_billing","divLabelZone","Zona"); ?></label>
 										<div class="col-lg-8">
 											<select name="txtZoneID" id="txtZoneID" class="select2">
 													<option></option>																
@@ -1592,7 +1592,7 @@ echo helper_getHtmlOfPageLanding();
 			<div id="ModalCodigoCajaBody" style="display:none">
 				<h3>Codigo de caja</h3>
 				
-				<input type="input" id="txtClaveOpenCash" autocomplete="off" class="form-control" placeholder="Código de caja" />
+				<input type="text" id="txtClaveOpenCash" autocomplete="off" class="form-control" placeholder="Código de caja" />
 				<span id="errorMessageOpenCash" style="color: red; display: none;">Por favor, ingresa un código.</span>
 					
 				<br/>

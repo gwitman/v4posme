@@ -241,7 +241,7 @@ echo helper_getHtmlOfPageLanding();
 				<!-- titulo de comprobante-->
 				<div class="panel-heading">
 						<div class="icon"><i class="icon20 i-file"></i></div> 
-						<h4>FACTURA:#<span class="invoice-num">00000000</span></h4>
+						<h4>FACTURA:#<span class="invoice-num" id="invoice-num">00000000</span></h4>
 				</div>
 				<!-- /titulo de comprobante-->
 				
@@ -277,59 +277,63 @@ echo helper_getHtmlOfPageLanding();
 						<div class="tab-content">
 							<div class="tab-pane fade in active" id="home">	
 								<div class="row">										
-								<div class="col-lg-6" id="divInformacionLeft" >
-								
-										<input type="hidden" name="txtUserID" value="<?php echo $userID; ?>">
-										<input type="hidden" id="txtCodigoMesero" name="txtCodigoMesero" value="<?php echo $codigoMesero;  ?>">
-										<div class="form-group <?= getBehavio($company->type,"app_invoice_billing","divTxtFecha","") ?>">
-											<label class="col-lg-4 control-label" for="datepicker">Fecha</label>
-											<div class="col-lg-8">
-												<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
-													<input size="16"  class="form-control" type="text" name="txtDate" id="txtDate" >
-													<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
-												</div>
-											</div>
-										</div>
-										
+									<div class="col-lg-6" id="divInformacionLeft" >
 									
-										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divTxtCambio",""); ?> ">
-												<label class="col-lg-4 control-label" for="normal">Cambio</label>
+											<input type="hidden" name="txtUserID" value="<?= $userID; ?>">
+											<input type="hidden" id="txtCompanyID" name="txtCompanyID" value="">
+											<input type="hidden" id="txtTransactionID" name="txtTransactionID" value="">
+											<input type="hidden" id="txtTransactionMasterID" name="txtTransactionMasterID"  value="">
+											<input type="hidden" id="txtCodigoMesero" name="txtCodigoMesero" value="<?= $codigoMesero;  ?>">
+
+											<div class="form-group <?= getBehavio($company->type,"app_invoice_billing","divTxtFecha","") ?>">
+												<label class="col-lg-4 control-label" for="txtDate">Fecha</label>
 												<div class="col-lg-8">
-													<input class="form-control"   type="text" disabled="disabled" name="txtExchangeRate" id="txtExchangeRate" value="<?php echo $exchangeRate; ?>">
+													<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
+														<input size="16"  class="form-control" type="text" name="txtDate" id="txtDate" >
+														<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+													</div>
 												</div>
-										</div>
-										
-										
-										<div class="form-group" id="divNote" >
-											<label class="col-lg-4 control-label" for="normal">Descripcion</label>
-											<div class="col-lg-8">										
-												<input class="form-control"   type="text" name="txtNote" id="txtNote" value="sin comentarios.">
 											</div>
-										</div>
+											
 										
-										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divTxtMoneda",""); ?> " id="divMoneda" >
-											<label class="col-lg-4 control-label" for="selectFilter">Moneda</label>
-											<div class="col-lg-8">
-												<select name="txtCurrencyID" id="txtCurrencyID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
-														<?php
-														$count = 0;
-														if($listCurrency)
-														foreach($listCurrency as $currency){
-															if( $currency->name == $objParameterACCOUNTING_CURRENCY_NAME_IN_BILLING  )
-															echo "<option value='".$currency->currencyID."' selected >".$currency->name."</option>";
-															else
-															echo "<option value='".$currency->currencyID."'  >".$currency->name."</option>";
-															$count++;
-														}
-														?>
-												</select>
+											<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divTxtCambio",""); ?> ">
+													<label class="col-lg-4 control-label" for="normal">Cambio</label>
+													<div class="col-lg-8">
+														<input class="form-control"   type="text" disabled="disabled" name="txtExchangeRate" id="txtExchangeRate" value="<?php echo $exchangeRate; ?>">
+													</div>
 											</div>
-										</div>
+											
+											
+											<div class="form-group" id="divNote" >
+												<label class="col-lg-4 control-label" for="txtNote">Descripcion</label>
+												<div class="col-lg-8">										
+													<input class="form-control"   type="text" name="txtNote" id="txtNote" value="sin comentarios.">
+												</div>
+											</div>
+											
+											<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divTxtMoneda",""); ?> " id="divMoneda" >
+												<label class="col-lg-4 control-label" for="txtCurrencyID">Moneda</label>
+												<div class="col-lg-8">
+													<select name="txtCurrencyID" id="txtCurrencyID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
+															<?php
+															$count = 0;
+															if($listCurrency)
+															foreach($listCurrency as $currency){
+																if( $currency->name == $objParameterACCOUNTING_CURRENCY_NAME_IN_BILLING  )
+																echo "<option value='".$currency->currencyID."' selected >".$currency->name."</option>";
+																else
+																echo "<option value='".$currency->currencyID."'  >".$currency->name."</option>";
+																$count++;
+															}
+															?>
+													</select>
+												</div>
+											</div>
+											
 										
+									</div>
+									<div class="col-lg-6" id="divInformacionRight" >
 									
-								</div>
-								<div class="col-lg-6" id="divInformacionRight" >
-								
 										<div class="form-group <?= getBehavio($company->type,"app_invoice_billing","divTxtCliente","") ?>">
 											<label class="col-lg-4 control-label" for="buttons"><?php echo getBehavio($company->type,"app_invoice_billing","divTxtClienteBeneficiarioPrincipal","Cliente"); ?></label>
 											<div class="col-lg-8">
@@ -362,11 +366,6 @@ echo helper_getHtmlOfPageLanding();
 											</div>
 										</div>
 										
-										
-									
-										
-										
-										
 										<div class="form-group  <?php echo getBehavio($company->type,"app_invoice_billing","divTxtCliente2",""); ?>  " id="divBeneficiario" >
 												<label class="col-lg-4 control-label" for="txtReferenceClientName"><?php echo getBehavio($company->type,"app_invoice_billing","divTxtClienteBeneficiario","Cliente"); ?></label>
 												<div class="col-lg-8">
@@ -375,7 +374,6 @@ echo helper_getHtmlOfPageLanding();
 										</div>
 										
 										<div id="divTxtElementoDisponibleParaMover1" class="hidden" >
-											
 										</div>
 										
 										<div class="form-group   <?php echo getBehavio($company->type,"app_invoice_billing","divTxtCedula2",""); ?> "  id="divCedula"  >
@@ -412,26 +410,19 @@ echo helper_getHtmlOfPageLanding();
 												</select>
 											</div>
 										</div>
-										
-									
-										<div id="divTxtElementoDisponibleParaMove2" class="hidden" >
-											
-										</div>
-										
-										
+										<div id="divTxtElementoDisponibleParaMove2" class="hidden" >											
+										</div>											
+									</div>
 								</div>
-								</div>
-								
 							</div>
 							<div class="tab-pane fade" id="profile">
 								<div class="row">
 									<div class="col-lg-6" id="divInformacionLeftZone" >
 										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divTxtZone",""); ?>" id="divZone"  >
-											<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_invoice_billing","divLabelZone","Zona"); ?></label>
+											<label class="col-lg-4 control-label" for="txtZoneID"><?php echo getBehavio($company->type,"app_invoice_billing","divLabelZone","Zona"); ?></label>
 											<div class="col-lg-8">
 											
-												<select name="txtZoneID" id="txtZoneID" class="select2">
-														<option></option>																
+												<select name="txtZoneID" id="txtZoneID" class="select2">																
 														<?php
 														$count = 0;
 														if($objListZone)
@@ -462,10 +453,9 @@ echo helper_getHtmlOfPageLanding();
 										
 											
 										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divPrecio",""); ?>  ">
-											<label class="col-lg-4 control-label" for="selectFilter">Precio</label>
+											<label class="col-lg-4 control-label" for="txtTypePriceID">Precio</label>
 											<div class="col-lg-8">
-												<select name="txtTypePriceID" id="txtTypePriceID" class="select2">
-														<option></option>																
+												<select name="txtTypePriceID" id="txtTypePriceID" class="select2">															
 														<?php
 														$count = 0;
 														if($objListTypePrice)
@@ -482,10 +472,9 @@ echo helper_getHtmlOfPageLanding();
 										</div>
 										
 										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divBodegaHidden",""); ?> " id="divBodega" >
-											<label class="col-lg-4 control-label" for="selectFilter">Bodega</label>
+											<label class="col-lg-4 control-label" for="txtWarehouseID">Bodega</label>
 											<div class="col-lg-8">
-												<select name="txtWarehouseID" id="txtWarehouseID" class="select2">
-														<option></option>																
+												<select name="txtWarehouseID" id="txtWarehouseID" class="select2">															
 														<?php
 														$count = 0;
 														if($objListWarehouse)
@@ -500,40 +489,35 @@ echo helper_getHtmlOfPageLanding();
 												</select>
 											</div>
 										</div>
-					
 									</div>
 									
-									<div class="col-lg-6" id="divInformacionRightZone"  >
-										
-									
-										
+									<div class="col-lg-6" id="divInformacionRightZone"  >										
 										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divHiddenReference",""); ?> " id="divReferencia">
-												<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","lblReferencia","Referencia"); ?></label>
-												<div class="col-lg-8">
-													<input class="form-control"  type="text"  name="txtReference3" id="txtReference3" value="<?php echo ($objEmployeeNatural ? $objEmployeeNatural->firstName : "N/D"); ?>">
-												</div>
+											<label class="col-lg-4 control-label" for="txtReference3"><?php echo getBehavio($company->type,"app_invoice_billing","lblReferencia","Referencia"); ?></label>
+											<div class="col-lg-8">
+												<input class="form-control"  type="text"  name="txtReference3" id="txtReference3" value="<?php echo ($objEmployeeNatural ? $objEmployeeNatural->firstName : "N/D"); ?>">
+											</div>
 										</div>
 										
 										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divHiddenEmployer",""); ?> " id="divVendedor">
-												<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionVendedor","Vendedor"); ?></label>
-												<div class="col-lg-8">
-													<select name="txtEmployeeID" id="txtEmployeeID" class="select2">
-															<option></option>																
-															<?php
-															$count					= 0;
-															$employerDefault 		= "true"; //$objParameterINVOICE_BILLING_EMPLOYEE_DEFAULT;
-															
-															if($objListEmployee)
-															foreach($objListEmployee as $employee){
-																if($count == 0 && $employerDefault == "true")
-																	echo "<option value='".$employee->entityID."' selected >".$employee->firstName."</option>";
-																else
-																	echo "<option value='".$employee->entityID."'  >".$employee->firstName."</option>";
-																$count++;
-															}
-															?>
-													</select>
-												</div>
+											<label class="col-lg-4 control-label" for="txtEmployeeID"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionVendedor","Vendedor"); ?></label>
+											<div class="col-lg-8">
+												<select name="txtEmployeeID" id="txtEmployeeID" class="select2">															
+														<?php
+														$count					= 0;
+														$employerDefault 		= "true"; //$objParameterINVOICE_BILLING_EMPLOYEE_DEFAULT;
+														
+														if($objListEmployee)
+														foreach($objListEmployee as $employee){
+															if($count == 0 && $employerDefault == "true")
+																echo "<option value='".$employee->entityID."' selected >".$employee->firstName."</option>";
+															else
+																echo "<option value='".$employee->entityID."'  >".$employee->firstName."</option>";
+															$count++;
+														}
+														?>
+												</select>
+											</div>
 										</div>
 
 										<div id="divTransactionPhoneBefore">
@@ -582,7 +566,7 @@ echo helper_getHtmlOfPageLanding();
 										</div>
 										
 										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divNextVisitHidden",""); ?> " id="divSiguienteVisita">
-											<label class="col-lg-4 control-label" for="datepicker">Siguiente Visita</label>
+											<label class="col-lg-4 control-label" for="txtNextVisit">Siguiente Visita</label>
 											<div class="col-lg-8">
 												<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
 													<input size="16"  class="form-control" type="text" name="txtNextVisit" id="txtNextVisit" >
@@ -590,9 +574,6 @@ echo helper_getHtmlOfPageLanding();
 												</div>
 											</div>
 										</div>
-										
-										
-										
 									</div>
 								</div>
 							</div>
@@ -600,9 +581,8 @@ echo helper_getHtmlOfPageLanding();
 							<div class="tab-pane fade" id="credit">
 								<div class="row">
 										<div class="col-lg-6" id="divInformacionLeftReference" >
-											
 											<div class="form-group">
-												<label class="col-lg-4 control-label" for="datepicker">Primer Pago</label>
+												<label class="col-lg-4 control-label" for="txtDateFirst">Primer Pago</label>
 												<div class="col-lg-8">
 													<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
 														<input size="16"  class="form-control" type="text" name="txtDateFirst" id="txtDateFirst" value=""      >
@@ -612,21 +592,20 @@ echo helper_getHtmlOfPageLanding();
 											</div>
 											
 											<div class="form-group <?php echo $objParameterINVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE=="true" ? "" : "hidden"; ?>  ">
-													<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","txtTermReference","Plazo ó Referencia2"); ?></label>
-													<div class="col-lg-8">
-														<input class="form-control"  type="text"  name="txtReference2" id="txtReference2" value="<?php echo  $objParameterCXC_PLAZO_DEFAULT; ?>">												
-													</div>
+												<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","txtTermReference","Plazo ó Referencia2"); ?></label>
+												<div class="col-lg-8">
+													<input class="form-control"  type="text"  name="txtReference2" id="txtReference2" value="<?php echo  $objParameterCXC_PLAZO_DEFAULT; ?>">												
+												</div>
 											</div>	
 											
 											
 											<div class="form-group <?php echo $objParameterINVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE=="true" ? "" : "hidden"; ?> ">
-													<label class="col-lg-4 control-label" for="normal">Frecuencia</label>
+													<label class="col-lg-4 control-label" for="txtPeriodPay">Frecuencia</label>
 													<div class="col-lg-8">
 														<!--
 														<input class="form-control"  type="text"  name="txtReference1" id="txtReference1" value="">												
 														-->
-														<select name="txtPeriodPay" id="txtPeriodPay" class="<?php echo ($useMobile == "1" ? "" : "select2");  ?>">
-																<option value="0"></option>		
+														<select name="txtPeriodPay" id="txtPeriodPay" class="<?php echo ($useMobile == "1" ? "" : "select2");  ?>">	
 																<?php
 																$index = -1;
 																if($objListPay)
@@ -644,13 +623,12 @@ echo helper_getHtmlOfPageLanding();
 											
 											
 											<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divProviderCredit",""); ?> ">
-													<label class="col-lg-4 control-label" for="normal">Proveedor de Credito</label>
+													<label class="col-lg-4 control-label" for="txtReference1">Proveedor de Credito</label>
 													<div class="col-lg-8">
 														<!--
 														<input class="form-control"  type="text"  name="txtReference1" id="txtReference1" value="">												
 														-->
 														<select name="txtReference1" id="txtReference1" class="<?php echo ($useMobile == "1" ? "" : "select2");  ?>">
-																<option value="0"></option>		
 																<?php
 																$index = -1;
 																if($listProvider)
@@ -667,10 +645,9 @@ echo helper_getHtmlOfPageLanding();
 											</div>
 											
 											<div class="form-group <?php echo $objParameterINVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE=="true" ? "" : "hidden"; ?> ">
-													<label class="col-lg-4 control-label" for="normal">Dias Excluidos</label>
+													<label class="col-lg-4 control-label" for="txtDayExcluded">Dias Excluidos</label>
 													<div class="col-lg-8">												
-														<select name="txtDayExcluded" id="txtDayExcluded" class="<?php echo ($useMobile == "1" ? "" : "select2");  ?>">
-																<option value="0"></option>		
+														<select name="txtDayExcluded" id="txtDayExcluded" class="<?php echo ($useMobile == "1" ? "" : "select2");  ?>">		
 																<?php
 																$index = -1;
 																if($objListDayExcluded)
@@ -690,14 +667,14 @@ echo helper_getHtmlOfPageLanding();
 										<div class="col-lg-6" id="divInformacionRightReference"  >
 										
 											<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divApplied",""); ?>  ">
-													<label class="col-lg-4 control-label" for="normal">Aplicado</label>
-													<div class="col-lg-8">
-														<input type="checkbox" disabled   name="txtIsApplied" id="txtIsApplied" value="1" >
-													</div>
+												<label class="col-lg-4 control-label" for="txtIsApplied">Aplicado</label>
+												<div class="col-lg-8">
+													<input type="checkbox" disabled   name="txtIsApplied" id="txtIsApplied" value="1" >
+												</div>
 											</div>
 										
 											<div class="form-group " id="divFixedExpenses">
-													<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionExpenseLabel","% Interes."); ?></label>
+													<label class="col-lg-4 control-label" for="txtFixedExpenses"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionExpenseLabel","% Interes."); ?></label>
 													<div class="col-lg-8">
 														<input class="form-control"   type="text" name="txtFixedExpenses" id="txtFixedExpenses" value="0">
 														<!--
@@ -712,76 +689,68 @@ echo helper_getHtmlOfPageLanding();
 											<div  id="divPanelExoneracion" class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divApplyExoneracion",""); ?> ">
 													<label class="col-lg-4 control-label" for="normal"></label>
 													<div class="col-lg-8">
-														 <label class="label-change-switch" id="txtLabelApplyExoneracion">Aplica exoneración?</label>
+														 <label class="label-change-switch" id="txtLabelApplyExoneracion" for="txtCheckApplyExoneracion">Aplica exoneración?</label>
 														 <br/>
 														 <div class="switch" data-on="success" data-off="warning">
-															<input class="toggle"controls-row type="checkbox" id="txtCheckApplyExoneracion"  name="txtCheckApplyExoneracion" />
+															<input class="toggle controls-row" type="checkbox" id="txtCheckApplyExoneracion"  name="txtCheckApplyExoneracion" />
 															<input type="hidden" id="txtCheckApplyExoneracionValue"  name="txtCheckApplyExoneracionValue" value="0" />
 														 </div>																
 													</div>
 											</div>
 											
 											<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divExoneracion",""); ?>">
-													<label class="col-lg-4 control-label" for="normal">Codigo de exoneración.</label>
-													<div class="col-lg-8">
-														<input class="form-control"   type="text" name="txtLayFirstLineProtocolo" id="txtLayFirstLineProtocolo" value="">
-														
-														<!--
-														<a href="javascript:void(0);" class="btn btn-primary  gap-right10" data-toggle="popover" data-placement="bottom" 
-														data-content="Ejemplo:  5" title="" 
-														data-original-title="Tenor:">Ayuda:</a>
-														-->
-														
-													</div>
+												<label class="col-lg-4 control-label" for="txtLayFirstLineProtocolo">Codigo de exoneración.</label>
+												<div class="col-lg-8">
+													<input class="form-control"   type="text" name="txtLayFirstLineProtocolo" id="txtLayFirstLineProtocolo" value="">
+													
+													<!--
+													<a href="javascript:void(0);" class="btn btn-primary  gap-right10" data-toggle="popover" data-placement="bottom" 
+													data-content="Ejemplo:  5" title="" 
+													data-original-title="Tenor:">Ayuda:</a>
+													-->
+													
+												</div>
 											</div>
 											
 											<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divDesembolsoEfectivo",""); ?> ">
-													<label class="col-lg-4 control-label" for="normal"></label>
-													<div class="col-lg-8">
-														 <label class="label-change-switch" id="txtLabelIsDesembolsoEfectivo">Es un desembolso en efectivo?</label>
-														 <br/>
-														 <div class="switch" data-on="success" data-off="warning">
-															<input class="toggle"controls-row type="checkbox" checked id="txtCheckDeEfectivo" />
-														</div>																
+												<label class="col-lg-4 control-label" for="txtCheckDeEfectivo"></label>
+												<div class="col-lg-8">
+													<label class="label-change-switch" for="txtCheckDeEfectivo" id="txtLabelIsDesembolsoEfectivo">Es un desembolso en efectivo?</label>
+													<br/>
+													<div class="switch" data-on="success" data-off="warning">
+													<input class="toggle controls-row" type="checkbox" checked id="txtCheckDeEfectivo" />
 													</div>
+												</div>
 											</div>
 											
 											<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divReportSinRiesgo",""); ?>">
-													<label class="col-lg-4 control-label" for="normal"></label>
-													<div class="col-lg-8">
-														
-														<label class="label-change-switch" id="txtLabelIsReportSinRiesgo">Reportar a SinRiesgo</label>
-														<br/>
-														
-														<div class="switch" data-on="success" data-off="warning">												
-															<input class="toggle"controls-row type="checkbox" checked id="txtCheckReportSinRiesgo" name="txtCheckReportSinRiesgo" value="1"  />
-														</div>																
-													</div>
-													
+												<label class="col-lg-4 control-label" for="normal"></label>
+												<div class="col-lg-8">
+													<label class="label-change-switch" for="txtCheckReportSinRiesgo" id="txtLabelIsReportSinRiesgo">Reportar a SinRiesgo</label>
+													<br/>
+															<!-- Este valor cambia el checked en el news_script, siguiendo el modelo el edit_bodoy-->
+													<div class="switch" data-on="success" data-off="warning">												
+														<input class="toggle controls-row" type="checkbox" checked id="txtCheckReportSinRiesgo" name="txtCheckReportSinRiesgo" value="1"  />
+													</div>																
+												</div>													
 											</div>									
 										</div>
-								</div>
-								
-								
+								</div>								
 							</div>
-							
 							
 							<div class="tab-pane fade" id="dropdown">
 								<div class="form-group">
-										<label class="col-lg-2 control-label" for="normal">Procedimiento</label>
-										<div class="col-lg-10">
-											<textarea class="form-control" type="text"  name="txtTMIReference1" id="txtTMIReference1" ></textarea>
-										</div>
+									<label class="col-lg-2 control-label" for="txtTMIReference1">Procedimiento</label>
+									<div class="col-lg-10">
+										<textarea class="form-control" type="text"  name="txtTMIReference1" id="txtTMIReference1" ></textarea>
+									</div>
 								</div>						
 							</div>
-							<div class="tab-pane fade" id="dropdown-file">
-								
-							</div>
-						</div>    
 
-				
+							<div class="tab-pane fade" id="dropdown-file">							
+							</div>    
+						</div>
 						<br/>
-						
 						<div class="row" id="panelContainterDetailInvoice" >
 							<div class="col-lg-12">
 								<h3 id="labelTitleDetalle" >Detalle:</h3>
@@ -829,16 +798,12 @@ echo helper_getHtmlOfPageLanding();
 								$valueWorkflowFirst = $ws->workflowStageID;
 						}
 						?>
-						
+						<input class="form-control"  type="hidden"  name="txtStatusIDOld" id="txtStatusIDOld" value="" >
 						<input class="form-control"  type="hidden"  name="txtStatusID" id="txtStatusID" value="<?php echo $valueWorkflowFirst; ?>" >
 						
 						<br id="saltoDeLineaFila0" />
 						
-						<?php
-						if($useMobile != "1")
-						{
-							?>
-								
+						<?php if($useMobile != "1")	{ ?>								
 								<div class="row" id="rowBotoneraFacturaFila1">
 									<div class="col col-lg-2">
 										<a href="javascript:void(0);" class="btn btn-flat btn-info   btn-block hidden btn-comando-factura" id="btnNewItem" ><i class="icon16 i-plus"></i> AGREGAR PRO</a>
@@ -861,6 +826,7 @@ echo helper_getHtmlOfPageLanding();
 											<ul class="dropdown-menu">
 												<li><a href="javascript:void(0);" id="btnBack"  >REGRESAR</a></li>
 												<li><a href="javascript:void(0);" id="btnSelectInvoice"  >SELECCIONAR</a></li>
+                                                <li><a href="javascript:void(0);" id="btnLinkPayment"  > LINK DE PAGO</a></li>
 											</ul>
 										</div>
 									</div>
@@ -880,17 +846,20 @@ echo helper_getHtmlOfPageLanding();
 									</div>
 								<?php 
 								}
-								?>
-								
-								<br/>
-								
-								<div class="row" id="rowBotoneraFacturaFila4">
+								?>   
+							<br>                   
+							<div class="row" id="rowBotoneraFacturaFila3">
 								
 									<div class="col col-lg-2">
-										<a href="<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>" class="btn btn-flat btn-info btn-block hidden btn-comando-factura" id="btnNew"><i class="icon16 i-checkmark-4"></i> NUEVA FAC</a>
+										<a href="#" class="btn btn-flat btn-info btn-block hidden btn-comando-factura" id="btnNew"><i class="icon16 i-checkmark-4"></i> NUEVA FAC</a>
 									</div>
-									
-									<div class="col col-lg-2">
+									<div class="col col-lg-2 showComandoDeCocina">
+										<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnOptionPago"><i class="icon16 i-arrow-down-12 "></i> PROCESAR PAGO</a>
+									</div>
+									<div class="col col-lg-2 showComandoDeCocina">
+										<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunVerDetalle","DETALLE"); ?>  </a>
+									</div>
+									<div class="col col-lg-2" id="registrarFacturaNueva">
 											
 											<?php 
 											if ($objParameterInvoiceAutoApply == "true"){
@@ -910,8 +879,40 @@ echo helper_getHtmlOfPageLanding();
 											?>
 										
 									</div>
-								</div>
+									<div class="col col-lg-2 showPanelEdicion">
+                                        <a href="javascript:void(0);" class="btn btn-flat btn-danger btn-block hidden btn-comando-factura" id="btnDelete"><i class="icon16 i-remove "></i> ELIMINAR FAC</a>
+                                    </div>
+                                    <div class="col col-lg-2 showPanelEdicion">
+                                        <a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnPrinter"><i class="icon16 i-print "></i> IMPRIMIR</a>
+                                    </div>
 
+                                    <div class="col col-lg-2 showComandoDeCocina">
+                                        <a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnFooter"><i class="icon16 i-print "></i> COCINA</a>
+                                    </div>
+
+
+                                    <?php
+                                    if($objParameterINVOICE_BILLING_SHOW_COMMAND_BAR == 'true' ){
+                                        ?>
+                                        <div class="col col-lg-2">
+                                            <a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnBar"><i class="icon16 i-print "></i> BAR</a>
+                                        </div>
+                                        <?php
+                                    }
+                                    ?>
+								</div>
+                            <div class="showPanelEdicion">
+                                <br/>
+                                <div class="row" id="rowBotoneraFacturaFila4">
+                                    <div id="workflowLink">
+                                    </div>
+                                    <div class="objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE">
+                                        <div class="col col-lg-2">
+                                            <a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnAbrirCaja"><i class="icon16 i-print "></i> ABRIR CAJA</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 								
 
 							<?php
@@ -932,10 +933,11 @@ echo helper_getHtmlOfPageLanding();
 									<div class="col col-lg-6 col-md-6 col-sm-6 col-xs-6">
 										<div class="btn-group  btn-block hidden btn-comando-factura">
 											<button type="button" class="btn btn-flat btn-danger dropdown-toggle  btn-block" data-toggle="dropdown">FAC <span class="caret"></span></button>
-											<ul class="dropdown-menu">											
+											<ul class="dropdown-menu">
 													<li><a href="javascript:void(0);" id="btnBack" >REGRESAR</a></li>
 													<li><a href="<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>" id="btnNew">NUEVA FAC</a></li>
 													<li><a href="javascript:void(0);" id="btnSelectInvoice"  > SELECCIONAR</a></li>
+                                                    <li><a href="javascript:void(0);" id="btnLinkPayment"  > LINK DE PAGO</a></li>
 											</ul>
 										</div>
 									</div>
@@ -1306,7 +1308,7 @@ echo helper_getHtmlOfPageLanding();
 								<div class="row">
 									<?php
 									if (isset($objListInventoryItemsRestaurant)):
-										foreach ($objListInventoryItemsRestaurant as $k=>$item):
+										foreach ($objListInventoryItemsRestaurant  as $k=>$item):
 									?>
 											<?php
 										if ($k== 0):

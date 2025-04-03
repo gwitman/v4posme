@@ -15,12 +15,10 @@
 	*/
 	
 	
-	var heigthTop				= 0;
-	var objTableDetail 			= {};		
-	var tmpData 				= [];
-	var tmpInfoClient			= 0;
-	
-	
+	var heigthTop				            = 0;
+	var objTableDetail 			            = {};
+	var tmpData 				            = [];
+	var tmpInfoClient			            = 0;
 	var scrollPosition						= 0;
 	var warehouseID 						= $("#txtWarehouseID").val();
 	var isAdmin								= '<?php echo $isAdmin; ?>';
