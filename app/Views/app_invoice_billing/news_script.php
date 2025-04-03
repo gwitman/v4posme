@@ -36,12 +36,10 @@
 	var varParameterAlturaDelModalDeSeleccionProducto	= '<?php echo $objParameterAlturaDelModalDeSeleccionProducto; ?>';
 	var varParameterScrollDelModalDeSeleccionProducto	= '<?php echo $objParameterScrollDelModalDeSeleccionProducto; ?>';
 	var varParameterINVOICE_BILLING_SELECTITEM			= '<?php echo $objParameterINVOICE_BILLING_SELECTITEM; ?>';
-
-    var varUrlPrinter			= '<?php echo $urlPrinterDocument; ?>';
+    var varUrlPrinter									= '<?php echo $urlPrinterDocument; ?>';
 
     var varParameterInvoiceBillingPrinterDirectBarUrl		= '<?php echo $objParameterINVOICE_BILLING_PRINTER_DIRECT_URL_BAR; ?>';
-    var varTransactionCausalID	= 0;
-
+    var varTransactionCausalID								= 0;
     var varParameterMostrarImagenEnSeleccion 				= '<?php echo $objParameterMostrarImagenEnSeleccion; ?>';
 	var varPermisos											= JSON.parse('<?php echo json_encode($objListaPermisos); ?>');
 	var varParameterInvoiceBillingPrinterDataLocal			= '<?php echo $dataPrinterLocal; ?>';
@@ -68,7 +66,8 @@
 	var objCausalTypeCredit 		= JSON.parse('<?php echo json_encode($objCausalTypeCredit); ?>');
 	var objCurrencyCordoba 			= JSON.parse('<?php echo json_encode($objCurrencyCordoba); ?>');	
 	var varCustomerCrediLineID		= 0;
-    var objRenderInit							= true;
+    var objRenderInit				= true;
+	let loadEdicion 				= false;
     let $grid;
     let selectedFilaInfoProducto;
     let selectedDataInfoProducto;
@@ -92,7 +91,7 @@
     let objTransactionMasterItemConcepto;
     let objTransactionMasterItemSku;
     let objTransactionMasterItem;
-    let loadEdicion = false;
+    
 
     let columnasTableDetail = {
         precio1 : 22,
@@ -101,10 +100,10 @@
     };
 
 	const Toast = Swal.mixin({
-		toast: true,
-		position: "bottom-end",
-		showConfirmButton: false,
-		timer: 3000,
+		toast				: true,
+		position			: "bottom-end",
+		showConfirmButton	: false,
+		timer				: 3000,
 		timerProgressBar: true,
 		didOpen: (toast) => {
 			toast.onmouseenter = Swal.stopTimer;
@@ -119,23 +118,19 @@
 		quantity	 = quantity + 1;
 		$(this).parent().parent().parent().find(".txtQuantity").val(quantity);
 		fnRecalculateDetail(true,"");				
-	});
-	
+	});	
 	
 	$('#txtCheckApplyExoneracion').parent().parent().on('change', function() {
 		
-		var exoneracion = $('#txtCheckApplyExoneracion').parent().hasClass("switch-on");
-		
+		var exoneracion = $('#txtCheckApplyExoneracion').parent().hasClass("switch-on");		
 		if(exoneracion)
 			$("#txtCheckApplyExoneracionValue").val("0");
 		else
-			$("#txtCheckApplyExoneracionValue").val("1");
-		
+			$("#txtCheckApplyExoneracionValue").val("1");	
 		
 		
 		var listRow = objTableDetail.fnGetData();							
-		var length 	= listRow.length;
-		
+		var length 	= listRow.length;		
 		var i 		= 0;
 		while (i < length )
 		{	
@@ -253,13 +248,9 @@
 	});	
 	
 	$("#btnAceptarDialogBarV2").click(function(){
-				
-		
 	});	
 	
 	$("#btnAceptarDialogCocinaV2").click(function(){
-		
-		
 	});	
 	
 	$(document).on("click","#btnAbrirCaja",function(){
@@ -279,8 +270,8 @@
 		});
 		fnClearForm();
 		Swal.fire({
-			title: "Nueva Factura",
-			text: "Datos cargados correctamente...",
+			title	: "Nueva Factura",
+			text	: "Datos cargados correctamente...",
 		});
 	});
 
@@ -320,7 +311,6 @@
 	$(document).on("click",".img_row",function(){				
 			window.open($(this).data("src"), '_blank');
 	});
-
 	
 	//Pago
 	$(document).on("click","#btnOptionPago",function(){		
@@ -368,21 +358,16 @@
 		sidebar.addClass("hidden");
 		$("#mySidebarZona").css("width","100%");
 		$("#mySidebarZona").removeClass("hidden");
-	});
-	
-	 
-	
+	});	
 	$(document).on("focus",'#txtReceiptAmount', function(e) {	
 		$(this).val("");	
-	});
-	
-	
+	});	
 	$(document).on("keypress",'#txtReceiptAmount', function(e) {	
 		var code = e.keyCode || e.which;
-		 if(code != 13) { 
+		if(code != 13) 
+		{ 
 			 return;
-		 }		 
-		 
+		}	
 		document.getElementById("txtReceiptAmountDol").focus();
 		return;
 			
@@ -500,9 +485,6 @@
 			e.stopPropagation();
 		}
 
-		
-		
-		
 	});
 	
 	
@@ -518,8 +500,6 @@
 		var codigoABuscar 	= $("#txtScanerCodigo").val();
 		codigoABuscar 		= codigoABuscar.toUpperCase();
 		$("#txtScanerCodigo").val("");
-		
-		
 		
 		
 		//++Abrir popup de productos
@@ -632,7 +612,6 @@
 			
 		);
 		
-		
 	});
 	
 	//Buscar Factura 
@@ -676,12 +655,9 @@
 	$(document).on("change","#txtTypePriceID",function(){
 		fnActualizarPrecio();
 	});
-
-
 	$(document).on("change","#txtCausalID",function(){
 		fnRenderLineaCreditoDiv();
-	});
-	
+	});	
 	//mostrar dialogo de informacion de producto
     $(document).on('click', '.btnInfoProducto',function(e){
         e.preventDefault();
@@ -700,7 +676,7 @@
         //establecer precios
         if (precio>0) {
             precios.forEach(function(p) {
-                let option = new Option(p, p);
+                let option 		= new Option(p, p);
                 option.selected = (p === precio); // Marcar como seleccionado si coincide
                 selectPrecio.append(option);
             });
@@ -723,10 +699,10 @@
             $('#selectVendedor').val("0").trigger('change');
         }
         //establecer serie
-        let serie = selectedDataInfoProducto[20];
+        let serie 			= selectedDataInfoProducto[20];
         $('#txtSerieProducto').val(serie);
         //establecer referencia
-        let infoReferencia = selectedDataInfoProducto[21];
+        let infoReferencia 	= selectedDataInfoProducto[21];
         $('#txtReferenciaProducto').val(infoReferencia);
         refreschChecked();
         mostrarModal('ModalInfoProducto');
@@ -736,7 +712,7 @@
 	$("#btnBack").click(function(e){
         e.preventDefault();
         let listRow = objTableDetail.fnGetData();
-        let length = listRow.length;
+        let length 	= listRow.length;
         if(length > 0)
         {
             mostrarModal('ModalBackToList');
@@ -756,16 +732,15 @@
 
 	$(document).on("click",".btnAcept",function(e){
 			
-			e.preventDefault();
-			var valueWorkflow = $(this).data("valueworkflow");
-			$("#txtStatusID").val(valueWorkflow);			
-			fnEnviarFactura();
+		e.preventDefault();
+		var valueWorkflow = $(this).data("valueworkflow");
+		$("#txtStatusID").val(valueWorkflow);			
+		fnEnviarFactura();
 		
 	});
 
-	$(document).on("click","#btnSaveInvoice",function(e){
-			
-			
+	$(document).on("click","#btnSaveInvoice",function(e)
+	{
 			e.preventDefault();
 			if(loadEdicion){
 				var valueWorkflow = $(".btnAcept").data("valueworkflow");
@@ -779,13 +754,13 @@
 	$(document).on("click","#btnDelete",function(){	
 		if(objTransactionMaster && objTransactionMaster.transactionMasterID > 0){
 			Swal.fire({
-				title: "Eliminar",
-				text: "¿Seguro desea eliminar el documento actual?",
-				icon: "warning",
-				showCancelButton: true,
-				confirmButtonColor: "#3085d6",
-				cancelButtonColor: "#d33",
-				confirmButtonText: "Eliminar!"
+				title		: "Eliminar",
+				text		: "¿Seguro desea eliminar el documento actual?",
+				icon					: "warning",
+				showCancelButton		: true,
+				confirmButtonColor		: "#3085d6",
+				cancelButtonColor		: "#d33",
+				confirmButtonText		: "Eliminar!"
 				}).then((result) => {
 				if (result.isConfirmed) {
 					let data = {
@@ -794,8 +769,8 @@
 						transactionMasterID : objTransactionMaster.transactionMasterID
 					};
 					Swal.fire({
-						title: "Eliminar!",
-						text: "Anulando documento, por favor espere...",
+						title	: "Eliminar!",
+						text	: "Anulando documento, por favor espere...",
 						allowOutsideClick: false,
 						showConfirmButton: false,
 						willOpen: function() {
@@ -823,9 +798,9 @@
 						}
 					});
 					Swal.fire({
-					title: "Eliminado!",
-					text: "El documento ha sido anulado de forma correcta.",
-					icon: "success"
+					title	: "Eliminado!",
+					text	: "El documento ha sido anulado de forma correcta.",
+					icon	: "success"
 					});
 				}
 				});
@@ -845,24 +820,23 @@
 
 	$(document).on("keydown",'#txtReceiptAmountDol', function(e) {		
 	
-	var code = e.keyCode || e.which;			
-	//Aplicar
-	if(e.key === "a"  && e.ctrlKey) { 							
-		var valueWorkflow = $(".btnAceptAplicar").data("valueworkflow");
-		$("#txtStatusID").val(valueWorkflow);			
-		fnEnviarFactura();				 
-	}		
-	
-	//Regresar al scaner
-	if(e.key === "b"  && e.ctrlKey) { 		
-		$("#txtScanerCodigo").focus();				
-	}		
-	
-	
-	//e.preventDefault();
-	//e.stopPropagation();
-	
-});	
+		var code = e.keyCode || e.which;			
+		//Aplicar
+		if(e.key === "a"  && e.ctrlKey) { 							
+			var valueWorkflow = $(".btnAceptAplicar").data("valueworkflow");
+			$("#txtStatusID").val(valueWorkflow);			
+			fnEnviarFactura();				 
+		}		
+		
+		//Regresar al scaner
+		if(e.key === "b"  && e.ctrlKey) { 		
+			$("#txtScanerCodigo").focus();				
+		}		
+		
+		//e.preventDefault();
+		//e.stopPropagation();
+		
+	});	
 	
 	$(document).on("click","#btnNewItem",function(){
 		
@@ -920,12 +894,10 @@
 		
 		//si el nuevo precio no es menor a los tres presos
 		//respetar el valor escribo por el usuario
-	
-	
 		fnRecalculateDetail(true,"txtPrice");		
 	});
 	$(document).on("change","select.txtSku",function(){
-		fnRecalculateDetail(true,"");		
+			fnRecalculateDetail(true,"");		
 	});
 	
 	$(document).on("change","input#txtReceiptAmount",function(){	
@@ -988,8 +960,7 @@
     });
 	
 
-	$("#btnAceptarDialogPrinterV2AceptarTabla").click(function(){
-		
+	$("#btnAceptarDialogPrinterV2AceptarTabla").click(function(){		
 	});
 	
 	$("#btnAceptarDialogPrinterV2AceptarDocument").click(function(){			
@@ -1002,12 +973,8 @@
 		cerrarModal("ModalOpcionesImpresion");
 	});
 	
-	$("#btnAceptarDialogPrinterV2AceptarDirect").click(function(){
-		
+	$("#btnAceptarDialogPrinterV2AceptarDirect").click(function(){		
 	});
-	
-	
-	
 	
 
 	$('#txtPorcentajeDescuento').on('input', function() {
@@ -1144,7 +1111,6 @@
 			mostrarModal("ModalOpcionesImpresion");
 			return
 		}
-		
 		
 		
 		mostrarModal("ModalOpcionesImpresion");
@@ -1290,27 +1256,27 @@
 		
 		if(objParameterPantallaParaFacturar == "-")	{
 			$.ajax({
-				url: varBaseUrl + '/app_invoice_billing/edit/'+ data[0] + '/' + data[1] +'/' + data[2] + '/' + $("#txtCodigoMesero").val(),
-				success: function(response){
+				url		: varBaseUrl + '/app_invoice_billing/edit/'+ data[0] + '/' + data[1] +'/' + data[2] + '/' + $("#txtCodigoMesero").val(),
+				success	: function(response){
 					console.log(response);
 					fnUpdateInvoiceView(response.data);
 					Swal.fire({
-						title: "Guardar",
-						text: "DATOS CARGADOS CORRECTAMENTE...",
-						icon: "success"
+						title	: "Guardar",
+						text	: "DATOS CARGADOS CORRECTAMENTE...",
+						icon	: "success"
 					});
 				}
 			});
 		}
 		else{
 			$.ajax({
-				url: varBaseUrl + '/app_invoice_billing/' + objParameterPantallaParaFacturar +'/'+ data[0] + '/' + data[1] +'/' + data[2] + '/' + $("#txtCodigoMesero").val(),
-				success: function(response){
+				url		: varBaseUrl + '/app_invoice_billing/' + objParameterPantallaParaFacturar +'/'+ data[0] + '/' + data[1] +'/' + data[2] + '/' + $("#txtCodigoMesero").val(),
+				success	: function(response){
 					fnUpdateInvoiceView(response.data);
 					Swal.fire({
-						title: "Guardar",
-						text: "DATOS CARGADOS CORRECTAMENTE...",
-						icon: "success"
+						title	: "Guardar",
+						text	: "DATOS CARGADOS CORRECTAMENTE...",
+						icon	: "success"
 					});
 				}
 			});
@@ -1434,8 +1400,8 @@
 	function validateFormAndSubmit(){
 	
 		Swal.fire({
-			title: "Guardar",
-			text: "Registrando valores...",
+			title	: "Guardar",
+			text	: "Registrando valores...",
 			allowOutsideClick: false,
 			showConfirmButton: false,
 			willOpen: function() {
@@ -1521,8 +1487,8 @@
 		{
 			if(cantidadTotalesEnZero > 0){
 				Toast.fire({
-					icon: "warning",
-					title: "No pueden haber totales en 0"
+					icon	: "warning",
+					title	: "No pueden haber totales en 0"
 				});
 				result = false;
 			}
@@ -1532,8 +1498,8 @@
 		var cantidadTotalesEnZero = jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[6] == 0;}).select().length ;
 		if(cantidadTotalesEnZero > 0){
 			Toast.fire({
-				icon: "warning",
-				title: "No pueden haber cantidades en 0"
+				icon	: "warning",
+				title	: "No pueden haber cantidades en 0"
 			});
 			result = false;
 		}
@@ -1541,8 +1507,8 @@
 		
 		if( /*varAutoAPlicar == "true" && */ objTableDetail.fnGetData().length == 0){
 			Toast.fire({
-				icon: "warning",
-				title: "La factura no puede estar vacia"
+				icon	: "warning",
+				title	: "La factura no puede estar vacia"
 			});
 			result = false;
 		}
@@ -1610,8 +1576,8 @@
 			if($("#txtDateFirst").val() == "" && switchDesembolso){
 				result = false;
 				Toast.fire({
-					icon: "warning",
-					title: "Seleccionar la Fecha del Primer Pago"
+					icon	: "warning",
+					title	: "Seleccionar la Fecha del Primer Pago"
 				});
 			}
 			
@@ -1621,8 +1587,8 @@
 				fnShowNotification("Asignarle una nota al documento","error",timerNotification);
 				result = false;
 				Toast.fire({
-					icon: "warning",
-					title: "Asignarle una nota al documento"
+					icon	: "warning",
+					title	: "Asignarle una nota al documento"
 				});
 			}
 			
@@ -1631,8 +1597,8 @@
 				fnShowNotification("Ingresar el Porcentaje de Gastos Fijo por Desembolso","error",timerNotification);
 				result = false;
 				Toast.fire({
-					icon: "warning",
-					title: "Ingresar el Porcentaje de Gastos Fijo por Desembolso"
+					icon	: "warning",
+					title	: "Ingresar el Porcentaje de Gastos Fijo por Desembolso"
 				});
 			}
 			
@@ -1654,8 +1620,8 @@
 			if(balanceCredit < montoTotalInvoice &&  balanceCredit != 0 ){
 				result = false;
 				Toast.fire({
-					icon: "warning",
-					title: "La factura no puede ser facturada al credito. Balance del cliente: " + balanceCredit
+					icon	: "warning",
+					title	: "La factura no puede ser facturada al credito. Balance del cliente: " + balanceCredit
 				});
 			}
 			
@@ -1666,8 +1632,8 @@
 			if( parseFloat( $("#txtChangeAmount").val() )  < 0 ){
 				result = false;
 				Toast.fire({
-					icon: "warning",
-					title: "El cambio de la factura no puede ser menor a 0"
+					icon	: "warning",
+					title	: "El cambio de la factura no puede ser menor a 0"
 				});
 			}
 		}
@@ -1708,8 +1674,8 @@
 										"error"
 									);
 									Toast.fire({
-										icon: "warning",
-										title: "" + 
+										icon	: "warning",
+										title	: "" + 
 											result.resultValidate[ie].Codigo + " " + 
 											result.resultValidate[ie].Nombre + " cantidad en bodega   " + 
 											result.resultValidate[ie].QuantityInWarehouse +  "  " + 
@@ -1723,8 +1689,8 @@
 					error: function(result){							
 						fnWaitCloseV2();
 						Toast.fire({
-							icon: "error",
-							title: "Error al realizar la petición en el servidor, 500"
+							icon	: "error",
+							title	: "Error al realizar la petición en el servidor, 500"
 						});
 					}
 				}
@@ -1741,22 +1707,11 @@
 	
         $("#btnAcept").prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Procesando...');
         $.ajax({
-            url: $(this).attr('action'),
-            type: $(this).attr('method'),
+            url		: $(this).attr('action'),
+            type	: $(this).attr('method'),
             dataType: 'json',
-            data: formData,
-            /*beforeSend: function() {
-                Swal.fire({
-                    title: "Guardar",
-                    text: "Registrando valores...",
-                    allowOutsideClick: false,
-                    showConfirmButton: false,
-                    willOpen: function() {
-                        Swal.showLoading();
-                    }
-                });
-            },*/
-            success: function(response) {
+            data	: formData,         
+            success	: function(response) {
                 // Restaurar botón
                 $("#btnAcept").prop('disabled', false).html('Registrar');
                 if(response.success) {
@@ -1769,9 +1724,9 @@
                 } else {
                     // Manejar error
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        html: '<b>Código:</b> ' + response.error.code + '<br>' +
+                        icon	: 'error',
+                        title	: 'Error',
+                        html	: '<b>Código:</b> ' + response.error.code + '<br>' +
                             '<b>Mensaje:</b> ' + response.error.message
                     });
                 }
@@ -1782,9 +1737,9 @@
 
                 // Manejar error de conexión
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error de conexión',
-                    text: 'No se pudo conectar con el servidor'
+                    icon	: 'error',
+                    title	: 'Error de conexión',
+                    text	: 'No se pudo conectar con el servidor'
                 });
 
                 console.error("Error en AJAX:", xhr.responseText);
@@ -1883,15 +1838,15 @@
             $('#objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE').css('display', 'none');
         }
 
-        var counter = 0;
+        var counter 			= 0;
         let objListWorkflowStage=data.objListWorkflowStage;
         if(objListWorkflowStage.length > 0){
 			$("#workflowLink").empty();
             for(let w=0; w < objListWorkflowStage.length; w++){
-                let nameWorkflow = data.objListWorkflowStageNames[w];
-                let ws = objListWorkflowStage[w];
-                let buttonClass = w === 0 ? 'btn-comando-factura' : 'btnAceptAplicar btn-comando-factura';
-                let buttonHtml = '<div class="col col-lg-2">'+
+                let nameWorkflow 	= data.objListWorkflowStageNames[w];
+                let ws 				= objListWorkflowStage[w];
+                let buttonClass 	= w === 0 ? 'btn-comando-factura' : 'btnAceptAplicar btn-comando-factura';
+                let buttonHtml 		= '<div class="col col-lg-2">'+
                     '<a href="#" class="btn btn-flat btn-warning btnAcept btn-block '+ buttonClass +'" data-valueworkflow="'+ ws.workflowStageID+ '">' +
                         '<i class="icon16 i-checkmark-4"></i> '+ nameWorkflow.trim() +
                     '</a>'+
@@ -1995,11 +1950,16 @@
 		$('#txtNote').val(objTransactionMaster.note);
 		$('#txtCurrencyID').val(objTransactionMaster.currencyID);
 		$('#txtCustomerID').val(objTransactionMaster.entityID);
-		if(objNaturalDefault !== null && objNaturalDefault.length > 0){
+		
+		if(objNaturalDefault !== null && objNaturalDefault.length > 0)
+		{
 			$('#txtCustomerDescription').val(objCustomerDefault.customerNumber.toUpperCase() + " " + objNaturalDefault.firstName.toUpperCase() + " " + $objNaturalDefault.lastName.toUpperCase());
-		}else{
+		}
+		else
+		{
 			$('#txtCustomerDescription').val(objCustomerDefault.customerNumber.toUpperCase() +" " + objLegalDefault.comercialName.toUpperCase());
 		}
+		
 		$('#txtReferenceClientName').val(objTransactionMasterInfo.referenceClientName);
 		$('#txtReferenceClientIdentifier').val(objTransactionMasterInfo.referenceClientIdentifier);
         $('#txtCheckReportSinRiesgo').prop('checked', objTransactionMasterDetailCredit.reference2 === "1");
@@ -2190,7 +2150,8 @@
         }
 	}
 	
-	function fnSelectCellCategoryInventory(cell) {		
+	function fnSelectCellCategoryInventory(cell) 
+	{		
 		var inventoryCategoryID = $(cell).data("value");
 
 		$(".custom-table-container-categorias").hide();
@@ -2402,9 +2363,10 @@
 			
 			
 			objTableDetail.fnUpdate( fnFormatNumber(subtotal,2), i, 8 );
-		}	
-        let descuento = subtotalGeneral * (porcentajeDescuento / 100);
-        totalGeneral = subtotalGeneral + serviceGeneral + ivaGeneral - descuento;
+		}
+		
+        let descuento 	= subtotalGeneral * (porcentajeDescuento / 100);
+        totalGeneral 	= subtotalGeneral + serviceGeneral + ivaGeneral - descuento;
         
 		$("#txtSubTotal").val(fnFormatNumber(subtotalGeneral,2));
 		$('#txtDescuento').val(fnFormatNumber(descuento, 2));
@@ -3173,8 +3135,8 @@
         if (varColumn === "all") {
             request = requestStore.getAll();
         } else {
-            varIndex = requestStore.index(varColumn);
-            request = varIndex.getAll(varValue);
+            varIndex 	= requestStore.index(varColumn);
+            request 	= varIndex.getAll(varValue);
         }
 
         request.onsuccess = function() {
@@ -3200,22 +3162,21 @@
 	
 	
 	function addDataDB(varTable,varDatos){
-		const transaction = db.transaction(varTable, 'readwrite');
-		
-		transaction.oncomplete = function(event) {
+		const transaction 		= db.transaction(varTable, 'readwrite');		
+		transaction.oncomplete 	= function(event) {
 			//...
 		};
 		
-		transaction.onerror = function(event) {
+		transaction.onerror 	= function(event) {
 		  //...
 		};
 		
 		const objectStore = transaction.objectStore(varTable);
 		
 		// Se agrega un nuevo estudiante
-		const request = objectStore.add({"name":varDatos});
+		const request 		= objectStore.add({"name":varDatos});
 		
-		request.onsuccess = ()=> {
+		request.onsuccess 	= ()=> {
 			// request.result contiene el key del objeto agregado
 			console.log('success');
 		}
@@ -3241,10 +3202,10 @@
 	}
 
 	function fnAceptarModalInfoProducto(){
-        let precioRecomendado = $('#selectPrecio').val();
-        let vendedor = $('#selectVendedor').val();
-        let serie = $('#txtSerieProducto').val();
-        let referencia = $('#txtReferenciaProducto').val();
+        let precioRecomendado 	= $('#selectPrecio').val();
+        let vendedor 			= $('#selectVendedor').val();
+        let serie 				= $('#txtSerieProducto').val();
+        let referencia 			= $('#txtReferenciaProducto').val();
         selectedDataInfoProducto[7]=precioRecomendado;
         selectedDataInfoProducto[19]=vendedor;
         selectedDataInfoProducto[20]=serie;
