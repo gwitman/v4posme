@@ -12,9 +12,9 @@ class app_invoice_billing extends _BaseController {
     function edit($companyID, $transactionID, $transactionMasterID, $codigoMesero)
     {
         $response = [
-            'success' => false,
-            'message' => '',
-            'data' => []
+            'success' 	=> false,
+            'message' 	=> '',
+            'data' 		=> []
         ];
         try
         {
@@ -287,7 +287,7 @@ class app_invoice_billing extends _BaseController {
             $dataView["listCurrency"]			= $objListCurrency;
             $dataView["listProvider"]			= $this->Provider_Model->get_rowByCompany($companyID);
             $dataView["objListaPermisos"]		= $dataSession["menuHiddenPopup"];
-            $dataView["useMobile"]												= $dataSession["user"]->useMobile;
+            $dataView["useMobile"]																	= $dataSession["user"]->useMobile;
             $dataView["objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE"] 						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE")->value;
             $dataView["objParameterINVOICE_OPEN_CASH_PASSWORD"] 									= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_OPEN_CASH_PASSWORD")->value;
             $dataView["objParameterCustomPopupFacturacion"]											= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CORE_VIEW_CUSTOM_PANTALLA_DE_FACTURACION_POPUP_SELECCION_PRODUCTO_FORMA_MOSTRAR")->value;
@@ -413,13 +413,13 @@ class app_invoice_billing extends _BaseController {
 
             //Variable para validar si es un mesero
             $esMesero 					        = false;
-            $eliminarProductos 			    = false;
+            $eliminarProductos 			    	= false;
             $esMesero 					        = $this->core_web_permission->urlPermited("es_mesero","index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-            $eliminarProductos 		        = $this->core_web_permission->urlPermited("no_permitir_eliminar_productos_de_factura","index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+            $eliminarProductos 		        	= $this->core_web_permission->urlPermited("no_permitir_eliminar_productos_de_factura","index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
 
             $esMesero					        = !$esMesero ? "0" : $esMesero;
             $esMesero					        = $dataSession["role"]->isAdmin ? "0" : $esMesero;
-            $eliminarProductos                 = !$eliminarProductos ? "0" : $eliminarProductos;
+            $eliminarProductos                 	= !$eliminarProductos ? "0" : $eliminarProductos;
             $eliminarProductos					= $dataSession["role"]->isAdmin ? "0" : $eliminarProductos;
             $dataView["esMesero"]	            = $esMesero;
             $dataView["eliminarProducto"]	    = $eliminarProductos;
@@ -474,9 +474,6 @@ class app_invoice_billing extends _BaseController {
 			
 			
 			//Redireccionar datos
-				
-			
-			
 			$companyID				= $dataSession["company"]->companyID;
 			$transactionMasterID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri
 			$transactionID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri
@@ -1611,21 +1608,20 @@ class app_invoice_billing extends _BaseController {
 					$url = (base_url()."/".'app_invoice_billing/edit/transactionMasterIDToPrinter/'.$transactionMasterID.'/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID."/codigoMesero/".$codigoMesero);
 
                 $response = [
-                    'success' => true,
-                    'message' => SUCCESS,
-                    'redirect' => $url
+                    'success' 	=> true,
+                    'message' 	=> SUCCESS,
+                    'redirect' 	=> $url
                 ];
 
                 return $this->edit($companyID, $transactionID, $transactionMasterID, $codigoMesero);
 			}
 			else{
 				$db->transRollback();						
-				$this->core_web_notification->set_message(true,$db->error());
-				//$this->response->redirect(base_url()."/".'app_invoice_billing/add/transactionMasterIDToPrinter/0'."/codigoMesero/".$codigoMesero);
+				$this->core_web_notification->set_message(true,$db->error());				
                 $response = [
-                    'success' => true,
-                    'message' => SUCCESS,
-                    'redirect' => (base_url()."/".'app_invoice_billing/add/transactionMasterIDToPrinter/0'."/codigoMesero/".$codigoMesero)
+                    'success' 	=> true,
+                    'message' 	=> SUCCESS,
+                    'redirect' 	=> (base_url()."/".'app_invoice_billing/add/transactionMasterIDToPrinter/0'."/codigoMesero/".$codigoMesero)
                 ];
                 return $this->response->setJSON($response);
 			}
@@ -1633,12 +1629,12 @@ class app_invoice_billing extends _BaseController {
 		}
         catch (DatabaseException $e) {
             $response = [
-                'success' => false,
-                'error' => [
-                    'code' => $e->getLine(),
-                    'message' => $e->getMessage()
+                'success' 	=> false,
+                'error' 	=> [
+								'code' 		=> $e->getLine(),
+								'message' 	=> $e->getMessage()
                 ],
-                'data' => [
+                'data' 		=> [
                     'codigoMesero' => ''
                 ]
             ];
@@ -1667,12 +1663,12 @@ class app_invoice_billing extends _BaseController {
 
 
             $response = [
-                'success' => false,
-                'error' => [
-                    'code' => $ex->getLine(),
-                    'message' => $ex->getMessage()
+                'success' 	=> false,
+                'error' 	=> [
+								'code' 		=> $ex->getLine(),
+								'message' 	=> $ex->getMessage()
                 ],
-                'data' => [
+                'data' 		=> [
                     'codigoMesero' => $codigoMesero
                 ]
             ];
@@ -2138,9 +2134,9 @@ class app_invoice_billing extends _BaseController {
 				$db->transCommit();
     
 				$response = [
-					'success' => true,
-					'message' => SUCCESS,
-					'redirect' => base_url()."/".'app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/'.$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID."/codigoMesero/".$codigoMesero
+					'success' 	=> true,
+					'message' 	=> SUCCESS,
+					'redirect' 	=> base_url()."/".'app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/'.$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID."/codigoMesero/".$codigoMesero
 				];
 				
 				return $this->edit($companyID, $objTM["transactionID"], $transactionMasterID, $codigoMesero);
@@ -2151,9 +2147,9 @@ class app_invoice_billing extends _BaseController {
 				$db->transCommit();
 
 				$response = [
-					'success' => true,
-					'message' => SUCCESS,
-					'redirect' => base_url()."/".'app_invoice_billing/add/transactionMasterIDToPrinter/'.$transactionMasterID."/codigoMesero/".$codigoMesero
+					'success' 	=> true,
+					'message' 	=> SUCCESS,
+					'redirect' 	=> base_url()."/".'app_invoice_billing/add/transactionMasterIDToPrinter/'.$transactionMasterID."/codigoMesero/".$codigoMesero
 				];
 				
 				return $this->response->setJSON($response);
@@ -2162,16 +2158,16 @@ class app_invoice_billing extends _BaseController {
 			else
 			{				
 				$db->transRollback();						
-				$errorCode = $db->error()["code"];
-				$errorMessage = $db->error()["message"];
+				$errorCode 		= $db->error()["code"];
+				$errorMessage 	= $db->error()["message"];
 
 				$response = [
-					'success' => false,
-					'error' => [
-						'code' => $errorCode,
-						'message' => $errorMessage
+					'success' 	=> false,
+					'error' 	=> [
+							'code' 		=> $errorCode,
+							'message'	=> $errorMessage
 					],
-					'data' => [
+					'data' 		=> [
 						'codigoMesero' => $codigoMesero
 					]
 				];
@@ -2180,13 +2176,13 @@ class app_invoice_billing extends _BaseController {
 		}
 		catch (DatabaseException $e) {
             $response = [
-				'success' => false,
-				'error' => [
-					'code' => $e->getLine(),
-					'message' => $e->getMessage()
+				'success' 	=> false,
+				'error' 	=> [
+									'code' 			=> $e->getLine(),
+									'message' 		=> $e->getMessage()
 				],
-				'data' => [
-					'codigoMesero' => $codigoMesero
+				'data' 		=> [
+									'codigoMesero' => $codigoMesero
 				]
 			];
 			return $this->response->setJSON($response);	
@@ -2214,12 +2210,12 @@ class app_invoice_billing extends _BaseController {
 		    
 		    
 		    $response = [
-                'success' => false,
-                'error' => [
-                    'code' => $ex->getLine(),
-                    'message' => $ex->getMessage()
+                'success' 	=> false,
+                'error' 	=> [
+                    'code' 		=> $ex->getLine(),
+                    'message' 	=> $ex->getMessage()
                 ],
-                'data' => [
+                'data' 		=> [
                     'codigoMesero' => $codigoMesero
                 ]
             ];
@@ -3282,12 +3278,12 @@ class app_invoice_billing extends _BaseController {
 			
 			
 			return $this->response->setJSON(array(
-				'error'   => false,
-				'message' => $transactionNumber,
-				'transactionMasterID' => $transactionMasterID,
-				'transactionNumber' => $transactionNumber,
-				'companyID' => $companyID,
-				'transactionID' => $transactionID
+				'error'   				=> false,
+				'message' 				=> $transactionNumber,
+				'transactionMasterID' 	=> $transactionMasterID,
+				'transactionNumber' 	=> $transactionNumber,
+				'companyID' 			=> $companyID,
+				'transactionID' 		=> $transactionID
 			));//--finjson	
 			
 		}
@@ -3369,12 +3365,12 @@ class app_invoice_billing extends _BaseController {
 
 
             $response = [
-                'success' => false,
-                'error' => [
-                    'code' => $ex->getLine(),
-                    'message' => $ex->getMessage()
+                'success' 	=> false,
+                'error' 	=> [
+                    'code' 		=> $ex->getLine(),
+                    'message' 	=> $ex->getMessage()
                 ],
-                'data' => [
+                'data' 		=> [
                     'codigoMesero' => ''
                 ]
             ];
@@ -3388,8 +3384,7 @@ class app_invoice_billing extends _BaseController {
 		try{ 
 			
 			
-			//$this->cachePage( TIME_CACHE_APP  );
-			
+			//$this->cachePage( TIME_CACHE_APP  );			
 			//AUTENTICADO
 			if(!$this->core_web_authentication->isAuthenticated())
 			throw new \Exception(USER_NOT_AUTENTICATED);
