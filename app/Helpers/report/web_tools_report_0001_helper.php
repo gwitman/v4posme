@@ -8667,6 +8667,7 @@ function helper_reporte80mmTransactionMasterPasteleriaLizzette(
     $tipoCambio,
     $objCurrency,
     $objTransactionMasterInfo, 
+	$objOrderDeliveryTime,
     $confiDetalle, /**/
     $arrayDetalle, /**/
     $objParameterTelefono, /*telefono*/
@@ -8774,16 +8775,7 @@ function helper_reporte80mmTransactionMasterPasteleriaLizzette(
                           </td>
                         </tr>";
 		  }
-						
-          $html	= $html."<tr>
-                          <td colspan=''>
-                            Codigo:
-                          </td>
-						  <td colspan='2'>
-                            ".$objEntidadCustomer->customerNumber."
-                          </td>
-                        </tr>";
-			
+
 			
 		  if($causalName != ""){
 			$html	= $html."<tr>
@@ -8820,24 +8812,23 @@ function helper_reporte80mmTransactionMasterPasteleriaLizzette(
 						  <td colspan='2'>
                             ".$objCurrency->simbol."
                           </td>
-                        </tr>";
+                        </tr>
+						 <tr>
+                            <td colspan='1'>
+								Entrega:
+							</td>
+                            <td colspan='2'>". explode(" ", $objTransactionMastser->nextVisit)[0] ."</td>
+                        </tr>
+						<tr>
+							<td colspan='1'>
+								Hora Entrega:
+							</td>
+							<td colspan='2'>". $objOrderDeliveryTime->name ."</td>
+						</tr>";
 			
 		
 						
           $html	= $html."
-						<tr>
-						  <td colspan='1'>
-							Cliente:
-                          <td colspan='2'>
-                          </td>
-                        </tr>
-						
-						<tr>
-						  <td colspan='3'>							
-                            ". ( $objTransactionMasterInfo->referenceClientName == "" ?   $objEntidadNatural->firstName." ".$objEntidadNatural->lastName  :  $objTransactionMasterInfo->referenceClientName)  ."
-                          </td>
-                        </tr>
-
 						
 						<!--
                         <tr>
@@ -8849,6 +8840,31 @@ function helper_reporte80mmTransactionMasterPasteleriaLizzette(
 						
 						<tr>
                           <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+
+						<tr>
+                          <td colspan='3' style='text-align:center'>Datos del Cliente</td>
+                        </tr>
+						
+						<tr>
+							<td colspan='1' style='text-align:left'>Codigo: </td>
+                          	<td colspan='2' style='text-align:left'>".( $objTransactionMasterInfo->referenceClientName == "" ? $objEntidadCustomer->customerNumber  :  $objTransactionMasterInfo->referenceClientName)."</td>
+                        </tr>
+
+						<tr>
+							<td colspan='1' style='text-align:left'>Nombre: </td>
+                          	<td colspan='2' style='text-align:left'>".( $objTransactionMasterInfo->referenceClientName == "" ? $objEntidadNatural->firstName." ".$objEntidadNatural->lastName  :  $objTransactionMasterInfo->referenceClientName)."</td>
+                        </tr>
+
+						<tr>
+							<td colspan='1' style='text-align:left'>Telefono: </td>
+                          	<td colspan='2' style='text-align:left'>".( $objEntidadCustomer->phoneNumber)."</td>
+                        </tr>
+
+						<tr>
+                          <td colspan='3' style='text-align:center' >
                             &nbsp;
                           </td>
                         </tr>

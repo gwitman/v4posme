@@ -7348,8 +7348,7 @@ class app_invoice_billing extends _BaseController {
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
 			$datView["objUser"]						= $this->User_Model->get_rowByPK($companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
 			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 
-			
-			
+			$objOrderDeliveryTime					= $this->Catalog_Item_Model->get_rowByCatalogItemID($datView["objTMI"]->zoneID);
 		
 			//Configurar Detalle Header
 			$confiDetalleHeader = array();
@@ -7426,6 +7425,7 @@ class app_invoice_billing extends _BaseController {
 			    $datView["tipoCambio"],
 			    $datView["objCurrency"],
 			    $datView["objTMI"],
+				$objOrderDeliveryTime,
 			    $confiDetalleHeader,
 			    $detalle,
 			    $objParameterTelefono, /*telefono*/
