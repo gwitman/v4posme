@@ -1,461 +1,455 @@
 <?php
 //posme:2023-02-27
 namespace App\Controllers;
+
+use CodeIgniter\HTTP\RedirectResponse;
+use CodeIgniter\HTTP\ResponseInterface;
 use Config\Services;
+use CodeIgniter\Database\Exceptions\DatabaseException;
+
 class app_invoice_billing extends _BaseController {
-	
-   
-    function edit()
-	{ 
-		 try
-		 { 
-			//AUTENTICADO
-			if(!$this->core_web_authentication->isAuthenticated())
-			throw new \Exception(USER_NOT_AUTENTICATED);
-			$dataSession		= $this->session->get();
-			
-			//PERMISO SOBRE LA FUNCTION  aa
-			if(APP_NEED_AUTHENTICATION == true){
-						$permited = false;
-						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-						
-						if(!$permited)
-						throw new \Exception(NOT_ACCESS_CONTROL);
-						
-						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-						if ($resultPermission 	== PERMISSION_NONE)
-						throw new \Exception(NOT_ALL_EDIT);			
-			
-			}	
-			
-			//Librerias		
-			//
-			////////////////////////////////////////
-			////////////////////////////////////////
-			////////////////////////////////////////
-			
-			//Redireccionar datos	
-			$companyID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"companyID");//--finuri
-			$transactionID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri	
-			$transactionMasterID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri	
-			$codigoMesero			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"codigoMesero");//--finuri	
-			$branchID 				= $dataSession["user"]->branchID;
-			$roleID 				= $dataSession["role"]->roleID;			
-			$userID					= $dataSession["user"]->userID;
-			
-		
-			
-			if((!$companyID || !$transactionID  || !$transactionMasterID))
-			{ 
-				$this->response->redirect(base_url()."/".'app_invoice_billing/add');	
-			} 		
-			
-			//Obtener el componente de Item
-			$objComponentCustomer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
-			if(!$objComponentCustomer)
-			throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
-			
-			//Componente de facturacion
-			$objComponentTransactionBilling	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_billing");
-			if(!$objComponentTransactionBilling)
-			throw new \Exception("EL COMPONENTE 'tb_transaction_master_billing' NO EXISTE...");
-			
-			//Obtener el componente de Item
-			$objComponentItem	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
-			if(!$objComponentItem)
-			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
-			
-			
-			
-			$objCurrency						= $this->core_web_currency->getCurrencyDefault($companyID);
-			$targetCurrency						= $this->core_web_currency->getCurrencyExternal($companyID);						
-			$objListPrice 						= $this->List_Price_Model->getListPriceToApply($companyID);
-			$objListCurrency					= $this->Company_Currency_Model->getByCompany($companyID);
-			
-			
-			if(!$objListPrice)
-			throw new \Exception("NO EXISTE UNA LISTA DE PRECIO PARA SER APLICADA");			
-			
-			/** ZONAS O SALONES */
-			$objPublicCatalogIdZonas					= 0;
-			$objPubliCatalogZonasConfig 				= $this->Public_Catalog_Model->asObject()
-															->where("systemName","tb_transaction_master_billing.zone_x_meseros")
-															->where("isActive",1)
-															->where("flavorID",$dataSession["company"]->flavorID)
-															->find();
-			
-			if($codigoMesero != "none" && !$objPubliCatalogZonasConfig )
-			{
-				throw new \Exception("CONFIGURAR EL CATALOGO DE ZONAS tb_transaction_master_billing.zone_x_meseros");
-			}
-			
-			$objPublicCatalogIdZonas					= $codigoMesero == "none" ? 0 : $objPubliCatalogZonasConfig[0]->publicCatalogID;
-			$objPubliCatalogDetailZonasConfiguradas		= $this->Public_Catalog_Detail_Model->asObject()
-																->where("publicCatalogID",$objPublicCatalogIdZonas)
-																->where( "isActive",1)	
-																->where( "name",$codigoMesero)
-																->findAll();
-			/** MESAS O UBICACIONES DE ZONAS */
-			$objPublicCatalogId							= 0;
-			$objPubliCatalogMesasConfig 				= $this->Public_Catalog_Model->asObject()
-																	->where("systemName","tb_transaction_master_billing.mesas_x_meseros")
-																	->where("isActive",1)
-																	->where("flavorID",$dataSession["company"]->flavorID)
-																	->find();
-			
-			if($codigoMesero != "none" && !$objPubliCatalogMesasConfig )
-			{
-				throw new \Exception("CONFIGURAR EL CATALOGO DE MESAS tb_transaction_master_billing.mesas_x_meseros");
-			}
-			
-			$objPublicCatalogId							= $codigoMesero == "none" ? 0 : $objPubliCatalogMesasConfig[0]->publicCatalogID;
-			$objPubliCatalogDetailMesasConfiguradas		= $this->Public_Catalog_Detail_Model->asObject()
-																->where("publicCatalogID",$objPublicCatalogId)
-																->where( "isActive",1)	
-																->where( "name",$codigoMesero)
-																->findAll();
-			
-			
-			$objListComanyParameter					= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
-			$customerDefault						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_CLIENTDEFAULT");			
-			$urlPrinterDocument						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_URL_PRINTER");
-			$urlPrinterDocumentOpcion2				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_URL_PRINTER_OPCION2");
-			
-			$dataView["codigoMesero"]					= $codigoMesero;
-			$objParameterInvoiceTypeEmployer			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_TYPE_EMPLOYEER");
-			$objParameterInvoiceTypeEmployer			= $objParameterInvoiceTypeEmployer->value;
-			
-			$parameterValue 							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BUTTOM_PRINTER_FIDLOCAL_PAYMENT_AND_AMORTIZACION");
-			$dataView["objParameterInvoiceButtomPrinterFidLocalPaymentAndAmortization"] = $parameterValue->value;
-			$objParameterRestaurant 									= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_IS_RESTAURANT")->value;
-			
-			$objParameterDirect 										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT")->value;
-			$objParameterInvoiceBillingQuantityZero						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_QUANTITY_ZERO");
-			$dataView["objParameterInvoiceBillingQuantityZero"]			= $objParameterInvoiceBillingQuantityZero->value;
-			
-			$objParameterInvoiceBillingPrinterDirect					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT");
-			$dataView["objParameterInvoiceBillingPrinterDirect"]		= $objParameterInvoiceBillingPrinterDirect->value;
-			$objParameterInvoiceBillingPrinterDirectUrl					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_URL");
-			$dataView["objParameterInvoiceBillingPrinterDirectUrl"]		= $objParameterInvoiceBillingPrinterDirectUrl->value;
-			
-			$objParameterShowComandoDeCocina							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SHOW_COMMAND_FOOT");
-			$dataView["objParameterShowComandoDeCocina"]				= $objParameterShowComandoDeCocina->value;			
-			$urlPrinterDocumentCocina									= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_URL_PRINTER_COCINA");
-			$dataView["urlPrinterDocumentCocina"]						= $urlPrinterDocumentCocina->value;
-			$urlPrinterDocumentCocinaDirect								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_URL_PRINTER_COCINA_DIRECT");
-			$dataView["urlPrinterDocumentCocinaDirect"]					= $urlPrinterDocumentCocinaDirect->value;
-			$objParameterImprimirPorCadaFactura							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PRINT_BY_INVOICE");
-			$dataView["objParameterImprimirPorCadaFactura"]				= $objParameterImprimirPorCadaFactura->value;
-			$objParameterRegresarAListaDespuesDeGuardar					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SAVE_AFTER_TO_LIST");
-			$dataView["objParameterRegresarAListaDespuesDeGuardar"]		= $objParameterRegresarAListaDespuesDeGuardar->value;
-			$objParameterScanerProducto									= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_SHOW_POPUP_FIND_PRODUCTO_NOT_SCANER");
-			$objParameterScanerProducto									= $objParameterScanerProducto->value;
-			$dataView["objParameterScanerProducto"] 					= $objParameterScanerProducto;			
-			$objParameterUrlServidorDeImpresion							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_SERVER_PATH");
-			$objParameterUrlServidorDeImpresion							= $objParameterUrlServidorDeImpresion->value;
-			$dataView["objParameterUrlServidorDeImpresion"] 			= $objParameterUrlServidorDeImpresion;
-			
-			
-			$objParameterCantidadItemPoup								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
-			$objParameterCantidadItemPoup								= $objParameterCantidadItemPoup->value;			
-			$dataView["objParameterCantidadItemPoup"] 					= $objParameterCantidadItemPoup;			
-			$objParameterHidenFiledItemNumber							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_HIDEN_ITEMNUMBER_IN_POPUP");
-			$objParameterHidenFiledItemNumber							= $objParameterHidenFiledItemNumber->value;			
-			$dataView["objParameterHidenFiledItemNumber"] 				= $objParameterHidenFiledItemNumber;			
-			$objParameterEsResrarante									= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_IS_RESTAURANT");
-			$objParameterEsResrarante									= $objParameterEsResrarante->value;
-			$dataView["objParameterEsResrarante"] 						= $objParameterEsResrarante;						
-			$objParameterAmortizationDuranteFactura						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE");
-			$objParameterAmortizationDuranteFactura						= $objParameterAmortizationDuranteFactura->value;			
-			$dataView["objParameterAmortizationDuranteFactura"] 		= $objParameterAmortizationDuranteFactura;
-			$objParameterTypePreiceDefault								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_DEFAULT_TYPE_PRICE");
-			$objParameterTypePreiceDefault								= $objParameterTypePreiceDefault->value;
-			
-			$objParameterAlturaDelModalDeSeleccionProducto					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_ALTO_MODAL_DE_SELECCION_DE_PRODUCTO_AL_FACTURAR");
-			$objParameterAlturaDelModalDeSeleccionProducto					= $objParameterAlturaDelModalDeSeleccionProducto->value;			
-			$dataView["objParameterAlturaDelModalDeSeleccionProducto"] 		= $objParameterAlturaDelModalDeSeleccionProducto;
-			
-			$objParameterScrollDelModalDeSeleccionProducto					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_SCROLL_DE_MODAL_EN_SELECCION_DE_PRODUTO_AL_FACTURAR");
-			$objParameterScrollDelModalDeSeleccionProducto					= $objParameterScrollDelModalDeSeleccionProducto->value;
-			$dataView["objParameterScrollDelModalDeSeleccionProducto"] 		= $objParameterScrollDelModalDeSeleccionProducto;
-			
-			$objParameterMostrarImagenEnSeleccion							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SHOW_IMAGE_IN_DETAIL_SELECTION");
-			$objParameterMostrarImagenEnSeleccion							= $objParameterMostrarImagenEnSeleccion->value;	
-			$dataView["objParameterMostrarImagenEnSeleccion"] 				= $objParameterMostrarImagenEnSeleccion;
-			
-			$objParameterPantallaParaFacturar								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PANTALLA_FACTURACION");
-			$objParameterPantallaParaFacturar								= $objParameterPantallaParaFacturar->value;
-			$dataView["objParameterPantallaParaFacturar"] 					= $objParameterPantallaParaFacturar;
 
-			
-			//Tipo de Factura
-			$agent 												= $this->request->getUserAgent();			
-			$dataView["isMobile"]								= $dataSession["user"]->useMobile;
-			$dataView["urlPrinterDocument"]						= $urlPrinterDocument->value;
-			$dataView["urlPrinterDocumentOpcion2"]				= $urlPrinterDocumentOpcion2->value;
-			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
-			$dataView["objTransactionMasterReferences"]			= $this->Transaction_Master_References_Model->get_rowByTransactionMaster($transactionMasterID);
-			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
-			$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
-			$dataView["objTransactionMasterDetailReferences"] 	= $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterIDAndComponentID($transactionMasterID,$objComponentItem->componentID);
-			$dataView["objTransactionMasterDetailWarehouse"]	= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterID);
-			$dataView["objTransactionMasterDetailConcept"]		= $this->Transaction_Master_Concept_Model->get_rowByTransactionMasterConcept($companyID,$transactionID,$transactionMasterID,$objComponentItem->componentID);
-			
-			$dataView["objTransactionMaster"]->transactionOn 	= date_format(date_create($dataView["objTransactionMaster"]->transactionOn),"Y-m-d");
-			$dataView["objTransactionMaster"]->transactionOn2 	= date_format(date_create($dataView["objTransactionMaster"]->transactionOn2),"Y-m-d");
-			$dataView["objTransactionMasterDetailCredit"]		= null;	
-			$dataView["companyID"]				= $dataSession["user"]->companyID;
-			$dataView["userID"]					= $dataSession["user"]->userID;
-			$dataView["userName"]				= $dataSession["user"]->nickname;
-			$dataView["roleID"]					= $dataSession["role"]->roleID;
-			$dataView["roleName"]				= $dataSession["role"]->name;
-			$dataView["isAdmin"]				= $dataSession["role"]->isAdmin;
-			$dataView["branchID"]				= $dataSession["branch"]->branchID;
-			$dataView["branchName"]				= $dataSession["branch"]->name;
-			$dataView["useMobile"]				= $dataSession["user"]->useMobile;
-			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
-			$dataView["objCurrency"]			= $objCurrency;
-			$dataView["company"]				= $dataSession["company"];
-			$dataView["objListEmployee"]		= $this->Employee_Model->get_rowByBranchIDAndType($companyID,$branchID,  $objParameterInvoiceTypeEmployer );
-			$dataView["objListBank"]			= $this->Bank_Model->getByCompany($companyID);
-			$dataView["objListPrice"]			= $objListPrice;
-			$dataView["objComponentBilling"]			= $objComponentTransactionBilling;
-			$dataView["objComponentTransactionBilling"]	= $objComponentTransactionBilling;
-			$dataView["objComponentItem"]		= $objComponentItem;
-			$dataView["objComponentCustomer"]	= $objComponentCustomer;
-			$dataView["objCaudal"]				= $this->Transaction_Causal_Model->getCausalByBranch($companyID,$transactionID,$branchID);			
-			$dataView["warehouseID"]			= $dataView["objCaudal"][0]->warehouseSourceID;
-			$dataView["objListWarehouse"]		= $this->Userwarehouse_Model->getRowByUserIDAndFacturable($companyID,$userID);
-			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_billing","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
-			$dataView["objCustomerDefault"]		= $this->Customer_Model->get_rowByEntity($companyID,$dataView["objTransactionMaster"]->entityID);
-			$dataView["objListTypePrice"]		= $this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID);
-			$dataView["objListZone"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_info_billing","zoneID",$companyID);
-			$dataView["objListMesa"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_info_billing","mesaID",$companyID);			
-			$dataView['transactionID']			= $transactionID;
-			$dataView['objParameterRestaurant']	= $objParameterRestaurant;
-			if($objParameterRestaurant=='true'){
-				$catalogItemIdZonas							= array_column($dataView["objListZone"],'catalogItemID');
-				$dataView['objListZone']					= $this->Transaction_Master_Model->get_ZonasByCatalogItemID($catalogItemIdZonas);
-				$catalogItemIdMesas							= array_column($dataView["objListMesa"],'catalogItemID');
-				$dataView['objListMesa']					= $this->Transaction_Master_Model->get_MesasByCatalogItemID($catalogItemIdMesas);
-			}
-			/** FILTRAR LAS ZONAS O SALONES DONDEL MESERO TIENE PERMISO */
-			$listZonasByMesero = array_map(function($item) {
-				return $item->display;
-			}, $objPubliCatalogDetailZonasConfiguradas);
+    function edit($companyID, $transactionID, $transactionMasterID, $codigoMesero)
+    {
+        $response = [
+            'success' => false,
+            'message' => '',
+            'data' => []
+        ];
+        try
+        {
+            //AUTENTICADO
+            if(!$this->core_web_authentication->isAuthenticated())
+                throw new \Exception(USER_NOT_AUTENTICATED);
+            $dataSession		= $this->session->get();
 
-			
-			$listZonaFiltradas = array_filter($dataView["objListZone"] , function($item) use ($listZonasByMesero) {
-				return in_array($item->name, $listZonasByMesero);
-			});
+            //PERMISO SOBRE LA FUNCTION  aa
+            if(APP_NEED_AUTHENTICATION == true){
+                $permited = false;
+                $permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
 
-			$dataView["objListZone"] = $codigoMesero == "none" ? $dataView["objListZone"]  : $listZonaFiltradas;
-			if(!$dataView["objListZone"])
-			throw new \Exception("NO ES POSIBLE CONTINUAR, CONFIGURAR CATALOGO ZONAS");	
+                if(!$permited)
+                    throw new \Exception(NOT_ACCESS_CONTROL);
 
-			//Filtrar la lista de mesas que el mesero tiene permiso
-			$listMesasByMesero = array_map(function($item) {
-				return $item->display;
-			}, $objPubliCatalogDetailMesasConfiguradas);
+                $resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+                if ($resultPermission 	== PERMISSION_NONE)
+                    throw new \Exception(NOT_ALL_EDIT);
 
-			
-			$listMesaFiltradas = array_filter($dataView["objListMesa"] , function($item) use ($listMesasByMesero) {
-				return in_array($item->name, $listMesasByMesero);
-			});
+            }
 
-			$dataView["objListMesa"] = $codigoMesero == "none" ? $dataView["objListMesa"]  : $listMesaFiltradas;
-			if(!$dataView["objListMesa"])
-			throw new \Exception("NO ES POSIBLE CONTINUAR, CONFIGURAR CATALOGO MESAS");
-		
-			$mesaID = $dataView["objTransactionMasterInfo"]->mesaID;
-			
-			$listMesaFiltradas = array_filter($dataView["objListMesa"] , function($item) use ($mesaID) {
-				return $item->catalogItemID == $mesaID;
-			});
-			if(!$listMesaFiltradas)
-			throw new \Exception("NO TIENE ACCESO A LA MESA SELECCIONADA");	
-			
-			
-			$dataView["objListPay"]				= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","periodPay",$companyID);
-			$dataView["objListDayExcluded"]		= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","dayExcluded",$companyID);
-			$dataView["listCurrency"]			= $objListCurrency;
-			$dataView["listProvider"]			= $this->Provider_Model->get_rowByCompany($companyID);
-			$dataView["objListaPermisos"]		= $dataSession["menuHiddenPopup"];				
-			$dataView["useMobile"]												= $dataSession["user"]->useMobile;			
-			$dataView["objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE"] 						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE")->value;
-			$dataView["objParameterINVOICE_OPEN_CASH_PASSWORD"] 									= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_OPEN_CASH_PASSWORD")->value;
-			$dataView["objParameterCustomPopupFacturacion"]											= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CORE_VIEW_CUSTOM_PANTALLA_DE_FACTURACION_POPUP_SELECCION_PRODUCTO_FORMA_MOSTRAR")->value;
-			$dataView["objParameterTipoPrinterDonwload"]											= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DOWNLOAD")->value;
-			$dataView["objParameterPrinterDirectAndPreview"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_PREVIEW_AND_DIRECT")->value;
-			
-			$dataView["objParameterINVOICE_BILLING_APPLY_TYPE_PRICE_ON_DAY_POR_MAYOR"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_APPLY_TYPE_PRICE_ON_DAY_POR_MAYOR")->value;
-			$dataView["objParameterINVOICE_BILLING_SHOW_COMMAND_BAR"]								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SHOW_COMMAND_BAR")->value;
-			$dataView["objParameterINVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_BAR"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_BAR")->value;
-			$dataView["objParameterINVOICE_BILLING_PRINTER_DIRECT_URL_BAR"]							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_URL_BAR")->value;
-			$dataView["objParameterINVOICE_BILLING_PRINTER_URL_BAR"]								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_URL_BAR")->value;					
-			$dataView["objParameterINVOICE_BILLING_SELECTITEM"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SELECTITEM")->value;
-			$dataView["objListParameterJavaScript"]													= $this->core_web_parameter->getParameterAllToJavaScript($companyID);
-			$dataView["objParameterCXC_DAY_EXCLUDED_IN_CREDIT"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_DAY_EXCLUDED_IN_CREDIT")->value;
-			$dataView["objParameterINVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE")->value;
-			$dataView["objParameterINVOICE_BILLING_VALIDATE_EXONERATION"]							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_VALIDATE_EXONERATION")->value;
-			$dataView["objParameterINVOICE_SHOW_FIELD_PESO"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_SHOW_FIELD_PESO")->value;
-			
-			if(!$dataView["objCustomerDefault"])
-			throw new \Exception("NO EXISTE EL CLIENTE POR DEFECTO");
-			
-			$dataView["objNaturalDefault"]		= $this->Natural_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
-			$dataView["objLegalDefault"]		= $this->Legal_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
-			
-			//Procesar Datos
-			if($dataView["objTransactionMasterDetail"])
-			foreach($dataView["objTransactionMasterDetail"] as $key => $value)
-			{
-				$dataView["objTransactionMasterDetail"][$key]->itemName = htmlentities($value->itemName,ENT_QUOTES);
-				$dataView["objTransactionMasterDetailCredit"]			= $this->Transaction_Master_Detail_Credit_Model->get_rowByPK($value->transactionMasterDetailID);
-			}
-			
-			
-			
-			//Obtener la linea de credito del cliente por defecto
-			$objCurrencyDolares						= $this->core_web_currency->getCurrencyExternal($companyID);
-			$objCurrencyCordoba						= $this->core_web_currency->getCurrencyDefault($companyID);			
-			$parameterCausalTypeCredit 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_CREDIT");			
-			$objCustomerCreditAmoritizationAll		= $this->Customer_Credit_Amortization_Model->get_rowByCustomerID( $dataView["objTransactionMaster"]->entityID );
-			$objListCustomerCreditLine 				= $this->Customer_Credit_Line_Model->get_rowByEntityBalanceMayorCero($companyID,$dataSession["user"]->branchID,$dataView["objTransactionMaster"]->entityID);			
-			
-			
-			$dataView["objListCustomerCreditLine"]	  		=  $objListCustomerCreditLine;				
-			$dataView["objCausalTypeCredit"]				=  $parameterCausalTypeCredit;
-			$dataView["objCurrencyDolares"] 				=  $objCurrencyDolares;
-			$dataView["objCurrencyCordoba"] 				=  $objCurrencyCordoba;
-			$dataView["objCustomerCreditAmoritizationAll"] 	=  $objCustomerCreditAmoritizationAll;
-			
-			//Obtener los datos de precio, sku y conceptos de la transaccoin
-			$dataView["objTransactionMasterItemPrice"]			= $this->Price_Model->get_rowByTransactionMasterID($companyID,$objListPrice->listPriceID, $dataView["objTransactionMaster"]->transactionMasterID );
-			$dataView["objTransactionMasterItemConcepto"]		= $this->Company_Component_Concept_Model->get_rowByTransactionMasterID($companyID,$objComponentItem->componentID, $dataView["objTransactionMaster"]->transactionMasterID );
-			$dataView["objTransactionMasterItemSku"]			= $this->Item_Sku_Model->get_rowByTransactionMasterID($companyID, $dataView["objTransactionMaster"]->transactionMasterID );
-			$dataView["objTransactionMasterItem"]				= $this->Item_Model->get_rowByTransactionMasterID( $dataView["objTransactionMaster"]->transactionMasterID  );
-			
-			//Obtener la categoria de prodcutos y la lista de prodcutos si es restaurante
-			$dataView["objListInventoryCategoryRestaurant"]	 = NULL;
-			$dataView["objListInventoryItemsRestaurant"]	 = NULL;
-			if($objParameterEsResrarante == "true")
-			{
-				$parameterView["{companyID}"]			= $this->session->get('user')->companyID;
-				$parameterView["{currencyID}"] 			= $objCurrency->currencyID;
-				$parameterView["{warehouseID}"]			= $dataView["warehouseID"];
-				$parameterView["{listPriceID}"]			= $objListPrice->listPriceID;				
-				$parameterView["{useMobile}"]			= $this->session->get('user')->useMobile;
-				$parameterView["{fnCallback}"] 			= "";
-				$parameterView["{typePriceID}"] 		= $objParameterTypePreiceDefault;				
-				$parameterView["{iDisplayStartDB}"]		= "0";
-				$parameterView["{iDisplayLength}"]		= $objParameterCantidadItemPoup;
-				$parameterView["{sSearchDB}"]			= "";
-				$parameterView["{isWindowForm}"]		= "0";
-				
-				
-			
-			
-				$dataView["objListInventoryCategoryRestaurant"]  =  $this->Itemcategory_Model->getByCompany($companyID);
-				$dataView["objListInventoryItemsRestaurant"]	 = 	$this->core_web_view->getViewByName(
-						$this->session->get('user'),
-						$objComponentItem->componentID,
-						"SELECCIONAR_ITEM_BILLING_POPUP_INVOICE_RESTAURANT",
-						CALLERID_SEARCH,
-						null,
-						$parameterView
-				)["view_data"];
-				
-										
-			}
-			
-			
-			//Datos para imprimir la factura
-			//------------------------------------------						
-			if($objParameterDirect  == "true")
-			{
-				$dataPostPrinter["objTransactionMaster"]					= $dataView["objTransactionMaster"];
-				$dataPostPrinter["objTransactionMasterInfo"]				= $dataView["objTransactionMasterInfo"];
-				$dataPostPrinter["objTransactionMasterDetail"]				= $dataView["objTransactionMasterDetail"];
-				$dataPostPrinter["objTransactionMasterDetailReferences"]	= $dataView["objTransactionMasterDetailReferences"];
-				$dataPostPrinter["objTransactionMasterDetailWarehouse"]		= $dataView["objTransactionMasterDetailWarehouse"];
-				$dataPostPrinter["objTransactionMasterDetailConcept"]		= $dataView["objTransactionMasterDetailConcept"];
-				$dataPostPrinter["objComponentCompany"]				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
-				$dataPostPrinter["objParameterLogo"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CORE_COMPANY_LOGO");
-				$dataPostPrinter["objParameterPhoneProperty"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CORE_PROPIETARY_PHONE");
-				$dataPostPrinter["objCompany"] 						= $this->Company_Model->get_rowByPK($companyID);			
-				$dataPostPrinter["objUser"] 						= $this->User_Model->get_rowByPK($companyID,$dataPostPrinter["objTransactionMaster"]->createdAt,$dataPostPrinter["objTransactionMaster"]->createdBy);
-				$dataPostPrinter["Identifier"]						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CORE_COMPANY_IDENTIFIER");
-				$dataPostPrinter["objBranch"]						= $this->Branch_Model->get_rowByPK($companyID,$dataPostPrinter["objTransactionMaster"]->branchID);
-				$dataPostPrinter["objTipo"]							= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$dataPostPrinter["objTransactionMaster"]->transactionID,$dataPostPrinter["objTransactionMaster"]->transactionCausalID);
-				$dataPostPrinter["objCustumer"]						= $this->Customer_Model->get_rowByEntity($companyID,$dataPostPrinter["objTransactionMaster"]->entityID);
-				$dataPostPrinter["objCurrency"]						= $this->Currency_Model->get_rowByPK($dataPostPrinter["objTransactionMaster"]->currencyID);
-				$dataPostPrinter["prefixCurrency"]					= $dataPostPrinter["objCurrency"]->simbol." ";
-				$dataPostPrinter["cedulaCliente"] 					= $dataPostPrinter["objTransactionMasterInfo"]->referenceClientIdentifier == "" ? $dataPostPrinter["objCustumer"]->customerNumber :  $dataPostPrinter["objTransactionMasterInfo"]->referenceClientIdentifier;
-				$dataPostPrinter["nombreCliente"] 					= $dataPostPrinter["objTransactionMasterInfo"]->referenceClientName  == "" ? $dataPostPrinter["objCustumer"]->firstName : $dataPostPrinter["objTransactionMasterInfo"]->referenceClientName ;
-				$dataPostPrinter["objStage"]						= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($dataPostPrinter["objTransactionMaster"]->statusID);
-				$dataPostPrinter["objMesa"]							= $this->Catalog_Item_Model->get_rowByCatalogItemID($dataPostPrinter["objTransactionMasterInfo"]->mesaID);
-				$serializedDataPostPrinter 							= serialize($dataPostPrinter);
-				$serializedDataPostPrinter 							= base64_encode($serializedDataPostPrinter);
-				$dataView["dataPrinterLocal"]						= $serializedDataPostPrinter;
-				
-			}
-			else 
-			{
-				$dataView["dataPrinterLocal"]						= "";
-			}
+            $branchID 				= $dataSession["user"]->branchID;
+            $roleID 				= $dataSession["role"]->roleID;
+            $userID					= $dataSession["user"]->userID;
 
-             //Variable para validar si es un mesero
-             $esMesero 					        = false;
-             $eliminarProductos 			    = false;
-             $esMesero 					        = $this->core_web_permission->urlPermited("es_mesero","index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-             $eliminarProductos 		        = $this->core_web_permission->urlPermited("no_permitir_eliminar_productos_de_factura","index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
 
-             $esMesero					        = !$esMesero ? "0" : $esMesero;
-             $esMesero					        = $dataSession["role"]->isAdmin ? "0" : $esMesero;
-             $eliminarProductos                 = !$eliminarProductos ? "0" : $eliminarProductos;
-             $eliminarProductos					= $dataSession["role"]->isAdmin ? "0" : $eliminarProductos;
-             $dataView["esMesero"]	            = $esMesero;
-             $dataView["eliminarProducto"]	    = $eliminarProductos;
 
-			//------------------------------------------
-			//Renderizar Resultado 
-			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
-			$dataSession["message"]			= $this->core_web_notification->get_message();
-			$dataSession["head"]			= /*--inicio view*/ view('app_invoice_billing/edit_head',$dataView);//--finview
-			$dataSession["body"]			= /*--inicio view*/ view('app_invoice_billing/edit_body',$dataView);//--finview
-			$dataSession["script"]			= /*--inicio view*/ view('app_invoice_billing/edit_script',$dataView);//--finview
-			$dataSession["footer"]			= "";
-			
-			
-			return view("core_masterpage/default_popup",$dataSession);//--finview-r	
-			
-		}
-		catch(\Exception $ex){
-			if (empty($dataSession)) {
-				return redirect()->to(base_url("core_acount/login"));
-			}
-			
-		    $data["session"]   = $dataSession;
-		    $data["exception"] = $ex;
-		    $data["urlLogin"]  = base_url();
-		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    $resultView        = view("core_template/email_error_general",$data);
-		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
-		    
-		    
-		    return $resultView;
-		}	
-	}	
-	
+            if((!$companyID || !$transactionID  || !$transactionMasterID))
+            {
+                $this->response->redirect(base_url()."/".'app_invoice_billing/add');
+            }
+
+            //Obtener el componente de Item
+            $objComponentCustomer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
+            if(!$objComponentCustomer)
+                throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
+
+            //Componente de facturacion
+            $objComponentTransactionBilling	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_billing");
+            if(!$objComponentTransactionBilling)
+                throw new \Exception("EL COMPONENTE 'tb_transaction_master_billing' NO EXISTE...");
+
+            //Obtener el componente de Item
+            $objComponentItem	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+            if(!$objComponentItem)
+                throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+
+
+
+            $objCurrency						= $this->core_web_currency->getCurrencyDefault($companyID);
+            $targetCurrency						= $this->core_web_currency->getCurrencyExternal($companyID);
+            $objListPrice 						= $this->List_Price_Model->getListPriceToApply($companyID);
+            $objListCurrency					= $this->Company_Currency_Model->getByCompany($companyID);
+
+
+            if(!$objListPrice)
+                throw new \Exception("NO EXISTE UNA LISTA DE PRECIO PARA SER APLICADA");
+
+            /** ZONAS O SALONES */
+            $objPublicCatalogIdZonas					= 0;
+            $objPubliCatalogZonasConfig 				= $this->Public_Catalog_Model->asObject()
+                ->where("systemName","tb_transaction_master_billing.zone_x_meseros")
+                ->where("isActive",1)
+                ->where("flavorID",$dataSession["company"]->flavorID)
+                ->find();
+
+            if($codigoMesero != "none" && !$objPubliCatalogZonasConfig )
+            {
+                throw new \Exception("CONFIGURAR EL CATALOGO DE ZONAS tb_transaction_master_billing.zone_x_meseros");
+            }
+
+            $objPublicCatalogIdZonas					= $codigoMesero == "none" ? 0 : $objPubliCatalogZonasConfig[0]->publicCatalogID;
+            $objPubliCatalogDetailZonasConfiguradas		= $this->Public_Catalog_Detail_Model->asObject()
+                ->where("publicCatalogID",$objPublicCatalogIdZonas)
+                ->where( "isActive",1)
+                ->where( "name",$codigoMesero)
+                ->findAll();
+            /** MESAS O UBICACIONES DE ZONAS */
+            $objPublicCatalogId							= 0;
+            $objPubliCatalogMesasConfig 				= $this->Public_Catalog_Model->asObject()
+                ->where("systemName","tb_transaction_master_billing.mesas_x_meseros")
+                ->where("isActive",1)
+                ->where("flavorID",$dataSession["company"]->flavorID)
+                ->find();
+
+            if($codigoMesero != "none" && !$objPubliCatalogMesasConfig )
+            {
+                throw new \Exception("CONFIGURAR EL CATALOGO DE MESAS tb_transaction_master_billing.mesas_x_meseros");
+            }
+
+            $objPublicCatalogId							= $codigoMesero == "none" ? 0 : $objPubliCatalogMesasConfig[0]->publicCatalogID;
+            $objPubliCatalogDetailMesasConfiguradas		= $this->Public_Catalog_Detail_Model->asObject()
+                ->where("publicCatalogID",$objPublicCatalogId)
+                ->where( "isActive",1)
+                ->where( "name",$codigoMesero)
+                ->findAll();
+
+
+            $objListComanyParameter					= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+            $customerDefault						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_CLIENTDEFAULT");
+            $urlPrinterDocument						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_URL_PRINTER");
+            $urlPrinterDocumentOpcion2				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_URL_PRINTER_OPCION2");
+
+            $dataView["codigoMesero"]					= $codigoMesero;
+            $objParameterInvoiceTypeEmployer			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_TYPE_EMPLOYEER");
+            $objParameterInvoiceTypeEmployer			= $objParameterInvoiceTypeEmployer->value;
+
+            $parameterValue 							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BUTTOM_PRINTER_FIDLOCAL_PAYMENT_AND_AMORTIZACION");
+            $dataView["objParameterInvoiceButtomPrinterFidLocalPaymentAndAmortization"] = $parameterValue->value;
+            $objParameterRestaurant 									= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_IS_RESTAURANT")->value;
+
+            $objParameterDirect 										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT")->value;
+            $objParameterInvoiceBillingQuantityZero						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_QUANTITY_ZERO");
+            $dataView["objParameterInvoiceBillingQuantityZero"]			= $objParameterInvoiceBillingQuantityZero->value;
+
+            $objParameterInvoiceBillingPrinterDirect					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT");
+            $dataView["objParameterInvoiceBillingPrinterDirect"]		= $objParameterInvoiceBillingPrinterDirect->value;
+            $objParameterInvoiceBillingPrinterDirectUrl					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_URL");
+            $dataView["objParameterInvoiceBillingPrinterDirectUrl"]		= $objParameterInvoiceBillingPrinterDirectUrl->value;
+
+            $objParameterShowComandoDeCocina							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SHOW_COMMAND_FOOT");
+            $dataView["objParameterShowComandoDeCocina"]				= $objParameterShowComandoDeCocina->value;
+            $urlPrinterDocumentCocina									= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_URL_PRINTER_COCINA");
+            $dataView["urlPrinterDocumentCocina"]						= $urlPrinterDocumentCocina->value;
+            $urlPrinterDocumentCocinaDirect								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_URL_PRINTER_COCINA_DIRECT");
+            $dataView["urlPrinterDocumentCocinaDirect"]					= $urlPrinterDocumentCocinaDirect->value;
+            $objParameterImprimirPorCadaFactura							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PRINT_BY_INVOICE");
+            $dataView["objParameterImprimirPorCadaFactura"]				= $objParameterImprimirPorCadaFactura->value;
+            $objParameterRegresarAListaDespuesDeGuardar					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SAVE_AFTER_TO_LIST");
+            $dataView["objParameterRegresarAListaDespuesDeGuardar"]		= $objParameterRegresarAListaDespuesDeGuardar->value;
+            $objParameterScanerProducto									= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_SHOW_POPUP_FIND_PRODUCTO_NOT_SCANER");
+            $objParameterScanerProducto									= $objParameterScanerProducto->value;
+            $dataView["objParameterScanerProducto"] 					= $objParameterScanerProducto;
+            $objParameterUrlServidorDeImpresion							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_SERVER_PATH");
+            $objParameterUrlServidorDeImpresion							= $objParameterUrlServidorDeImpresion->value;
+            $dataView["objParameterUrlServidorDeImpresion"] 			= $objParameterUrlServidorDeImpresion;
+
+			$objParameterTipoWarehouseDespacho							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_TYPE_WAREHOUSE_DESPACHO");
+			$objParameterTipoWarehouseDespacho							= $objParameterTipoWarehouseDespacho->value;
+			$dataView['objParameterTipoWarehouseDespacho']				= $objParameterTipoWarehouseDespacho;
+            $objParameterCantidadItemPoup								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+            $objParameterCantidadItemPoup								= $objParameterCantidadItemPoup->value;
+            $dataView["objParameterCantidadItemPoup"] 					= $objParameterCantidadItemPoup;
+            $objParameterHidenFiledItemNumber							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_HIDEN_ITEMNUMBER_IN_POPUP");
+            $objParameterHidenFiledItemNumber							= $objParameterHidenFiledItemNumber->value;
+            $dataView["objParameterHidenFiledItemNumber"] 				= $objParameterHidenFiledItemNumber;
+            $objParameterEsResrarante									= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_IS_RESTAURANT");
+            $objParameterEsResrarante									= $objParameterEsResrarante->value;
+            $dataView["objParameterEsResrarante"] 						= $objParameterEsResrarante;
+            $objParameterAmortizationDuranteFactura						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE");
+            $objParameterAmortizationDuranteFactura						= $objParameterAmortizationDuranteFactura->value;
+            $dataView["objParameterAmortizationDuranteFactura"] 		= $objParameterAmortizationDuranteFactura;
+            $objParameterTypePreiceDefault								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_DEFAULT_TYPE_PRICE");
+            $objParameterTypePreiceDefault								= $objParameterTypePreiceDefault->value;
+
+            $objParameterAlturaDelModalDeSeleccionProducto					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_ALTO_MODAL_DE_SELECCION_DE_PRODUCTO_AL_FACTURAR");
+            $objParameterAlturaDelModalDeSeleccionProducto					= $objParameterAlturaDelModalDeSeleccionProducto->value;
+            $dataView["objParameterAlturaDelModalDeSeleccionProducto"] 		= $objParameterAlturaDelModalDeSeleccionProducto;
+
+            $objParameterScrollDelModalDeSeleccionProducto					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_SCROLL_DE_MODAL_EN_SELECCION_DE_PRODUTO_AL_FACTURAR");
+            $objParameterScrollDelModalDeSeleccionProducto					= $objParameterScrollDelModalDeSeleccionProducto->value;
+            $dataView["objParameterScrollDelModalDeSeleccionProducto"] 		= $objParameterScrollDelModalDeSeleccionProducto;
+
+            $objParameterMostrarImagenEnSeleccion							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SHOW_IMAGE_IN_DETAIL_SELECTION");
+            $objParameterMostrarImagenEnSeleccion							= $objParameterMostrarImagenEnSeleccion->value;
+            $dataView["objParameterMostrarImagenEnSeleccion"] 				= $objParameterMostrarImagenEnSeleccion;
+
+            $objParameterPantallaParaFacturar								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PANTALLA_FACTURACION");
+            $objParameterPantallaParaFacturar								= $objParameterPantallaParaFacturar->value;
+            $dataView["objParameterPantallaParaFacturar"] 					= $objParameterPantallaParaFacturar;
+
+
+            //Tipo de Factura
+            $agent 												= $this->request->getUserAgent();
+            $dataView["isMobile"]								= $dataSession["user"]->useMobile;
+            $dataView["urlPrinterDocument"]						= $urlPrinterDocument->value;
+            $dataView["urlPrinterDocumentOpcion2"]				= $urlPrinterDocumentOpcion2->value;
+            $dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+            $dataView["objTransactionMasterReferences"]			= $this->Transaction_Master_References_Model->get_rowByTransactionMaster($transactionMasterID);
+            $dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+            $dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+            $dataView["objTransactionMasterDetailReferences"] 	= $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterIDAndComponentID($transactionMasterID,$objComponentItem->componentID);
+            $dataView["objTransactionMasterDetailWarehouse"]	= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterID);
+            $dataView["objTransactionMasterDetailConcept"]		= $this->Transaction_Master_Concept_Model->get_rowByTransactionMasterConcept($companyID,$transactionID,$transactionMasterID,$objComponentItem->componentID);
+
+            $dataView["objTransactionMaster"]->transactionOn 	= date_format(date_create($dataView["objTransactionMaster"]->transactionOn),"Y-m-d");
+            $dataView["objTransactionMaster"]->transactionOn2 	= date_format(date_create($dataView["objTransactionMaster"]->transactionOn2),"Y-m-d");
+            $dataView["objTransactionMasterDetailCredit"]		= null;
+            $dataView["companyID"]				= $dataSession["user"]->companyID;
+            $dataView["userID"]					= $dataSession["user"]->userID;
+            $dataView["userName"]				= $dataSession["user"]->nickname;
+            $dataView["roleID"]					= $dataSession["role"]->roleID;
+            $dataView["roleName"]				= $dataSession["role"]->name;
+            $dataView["isAdmin"]				= $dataSession["role"]->isAdmin;
+            $dataView["branchID"]				= $dataSession["branch"]->branchID;
+            $dataView["branchName"]				= $dataSession["branch"]->name;
+            $dataView["useMobile"]				= $dataSession["user"]->useMobile;
+            $dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);
+            $dataView["objCurrency"]			= $objCurrency;
+            $dataView["company"]				= $dataSession["company"];
+            $dataView["objListEmployee"]		= $this->Employee_Model->get_rowByBranchIDAndType($companyID,$branchID,  $objParameterInvoiceTypeEmployer );
+            $dataView["objListBank"]			= $this->Bank_Model->getByCompany($companyID);
+            $dataView["objListPrice"]			= $objListPrice;
+            $dataView["objComponentBilling"]			= $objComponentTransactionBilling;
+            $dataView["objComponentTransactionBilling"]	= $objComponentTransactionBilling;
+            $dataView["objComponentItem"]		= $objComponentItem;
+            $dataView["objComponentCustomer"]	= $objComponentCustomer;
+            $dataView["objCaudal"]				= $this->Transaction_Causal_Model->getCausalByBranch($companyID,$transactionID,$branchID);
+            $dataView["warehouseID"]			= $dataView["objCaudal"][0]->warehouseSourceID;
+            $dataView["objListWarehouse"]		= $this->Userwarehouse_Model->getRowByUserIDAndFacturable($companyID,$userID);
+            $dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_billing","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
+            $objListWorkflowStageNames          = [];
+            foreach($dataView["objListWorkflowStage"] as $ws){
+                $objListWorkflowStageNames[] = getBehavio($dataSession['company']->type,"core_web_language_workflowstage","billing_".$ws->name, $ws->name);
+            }
+            $dataView["objListWorkflowStageNames"] = $objListWorkflowStageNames;
+            $dataView["objCustomerDefault"]		    = $this->Customer_Model->get_rowByEntity($companyID,$dataView["objTransactionMaster"]->entityID);
+            $dataView["objListTypePrice"]		    = $this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID);
+            $dataView["objListZone"]			    = $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_info_billing","zoneID",$companyID);
+            $dataView["objListMesa"]			    = $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_info_billing","mesaID",$companyID);
+            $dataView['transactionID']			    = $transactionID;
+            $dataView['objParameterRestaurant']	    = $objParameterRestaurant;
+
+            if($objParameterRestaurant=='true'){
+                $catalogItemIdZonas							= array_column($dataView["objListZone"],'catalogItemID');
+                $dataView['objListZone']					= $this->Transaction_Master_Model->get_ZonasByCatalogItemID($catalogItemIdZonas);
+                $catalogItemIdMesas							= array_column($dataView["objListMesa"],'catalogItemID');
+                $dataView['objListMesa']					= $this->Transaction_Master_Model->get_MesasByCatalogItemID($catalogItemIdMesas);
+            }
+            /** FILTRAR LAS ZONAS O SALONES DONDEL MESERO TIENE PERMISO */
+            $listZonasByMesero = array_map(function($item) {
+                return $item->display;
+            }, $objPubliCatalogDetailZonasConfiguradas);
+
+
+            $listZonaFiltradas = array_filter($dataView["objListZone"] , function($item) use ($listZonasByMesero) {
+                return in_array($item->name, $listZonasByMesero);
+            });
+
+            $dataView["objListZone"] = $codigoMesero == "none" ? $dataView["objListZone"]  : $listZonaFiltradas;
+            if(!$dataView["objListZone"])
+                throw new \Exception("NO ES POSIBLE CONTINUAR, CONFIGURAR CATALOGO ZONAS");
+
+            //Filtrar la lista de mesas que el mesero tiene permiso
+            $listMesasByMesero = array_map(function($item) {
+                return $item->display;
+            }, $objPubliCatalogDetailMesasConfiguradas);
+
+
+            $listMesaFiltradas = array_filter($dataView["objListMesa"] , function($item) use ($listMesasByMesero) {
+                return in_array($item->name, $listMesasByMesero);
+            });
+
+            $dataView["objListMesa"] = $codigoMesero == "none" ? $dataView["objListMesa"]  : $listMesaFiltradas;
+            if(!$dataView["objListMesa"])
+                throw new \Exception("NO ES POSIBLE CONTINUAR, CONFIGURAR CATALOGO MESAS");
+
+            $mesaID = $dataView["objTransactionMasterInfo"]->mesaID;
+
+            $listMesaFiltradas = array_filter($dataView["objListMesa"] , function($item) use ($mesaID) {
+                return $item->catalogItemID == $mesaID;
+            });
+            if(!$listMesaFiltradas)
+                throw new \Exception("NO TIENE ACCESO A LA MESA SELECCIONADA");
+
+
+            $dataView["objListPay"]				= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","periodPay",$companyID);
+            $dataView["objListDayExcluded"]		= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","dayExcluded",$companyID);
+            $dataView["listCurrency"]			= $objListCurrency;
+            $dataView["listProvider"]			= $this->Provider_Model->get_rowByCompany($companyID);
+            $dataView["objListaPermisos"]		= $dataSession["menuHiddenPopup"];
+            $dataView["useMobile"]												= $dataSession["user"]->useMobile;
+            $dataView["objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE"] 						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE")->value;
+            $dataView["objParameterINVOICE_OPEN_CASH_PASSWORD"] 									= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_OPEN_CASH_PASSWORD")->value;
+            $dataView["objParameterCustomPopupFacturacion"]											= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CORE_VIEW_CUSTOM_PANTALLA_DE_FACTURACION_POPUP_SELECCION_PRODUCTO_FORMA_MOSTRAR")->value;
+            $dataView["objParameterTipoPrinterDonwload"]											= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DOWNLOAD")->value;
+            $dataView["objParameterPrinterDirectAndPreview"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_PREVIEW_AND_DIRECT")->value;
+
+            $dataView["objParameterINVOICE_BILLING_APPLY_TYPE_PRICE_ON_DAY_POR_MAYOR"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_APPLY_TYPE_PRICE_ON_DAY_POR_MAYOR")->value;
+            $dataView["objParameterINVOICE_BILLING_SHOW_COMMAND_BAR"]								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SHOW_COMMAND_BAR")->value;
+            $dataView["objParameterINVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_BAR"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_BAR")->value;
+            $dataView["objParameterINVOICE_BILLING_PRINTER_DIRECT_URL_BAR"]							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_URL_BAR")->value;
+            $dataView["objParameterINVOICE_BILLING_PRINTER_URL_BAR"]								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_URL_BAR")->value;
+            $dataView["objParameterINVOICE_BILLING_SELECTITEM"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SELECTITEM")->value;
+            //$dataView["objListParameterJavaScript"]													= $this->core_web_parameter->getParameterAllToJavaScript($companyID);
+            $dataView["objParameterCXC_DAY_EXCLUDED_IN_CREDIT"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_DAY_EXCLUDED_IN_CREDIT")->value;
+            $dataView["objParameterINVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE")->value;
+            $dataView["objParameterINVOICE_BILLING_VALIDATE_EXONERATION"]							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_VALIDATE_EXONERATION")->value;
+            $dataView["objParameterINVOICE_SHOW_FIELD_PESO"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_SHOW_FIELD_PESO")->value;
+
+            if(!$dataView["objCustomerDefault"])
+                throw new \Exception("NO EXISTE EL CLIENTE POR DEFECTO");
+
+            $dataView["objNaturalDefault"]		= $this->Natural_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
+            $dataView["objLegalDefault"]		= $this->Legal_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
+
+            //Procesar Datos
+            if($dataView["objTransactionMasterDetail"])
+                foreach($dataView["objTransactionMasterDetail"] as $key => $value)
+                {
+                    $dataView["objTransactionMasterDetail"][$key]->itemName = htmlentities($value->itemName,ENT_QUOTES);
+                    $dataView["objTransactionMasterDetailCredit"]			= $this->Transaction_Master_Detail_Credit_Model->get_rowByPK($value->transactionMasterDetailID);
+                }
+
+
+
+            //Obtener la linea de credito del cliente por defecto
+            $objCurrencyDolares						= $this->core_web_currency->getCurrencyExternal($companyID);
+            $objCurrencyCordoba						= $this->core_web_currency->getCurrencyDefault($companyID);
+            $parameterCausalTypeCredit 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_CREDIT");
+            $objCustomerCreditAmoritizationAll		= $this->Customer_Credit_Amortization_Model->get_rowByCustomerID( $dataView["objTransactionMaster"]->entityID );
+            $objListCustomerCreditLine 				= $this->Customer_Credit_Line_Model->get_rowByEntityBalanceMayorCero($companyID,$dataSession["user"]->branchID,$dataView["objTransactionMaster"]->entityID);
+
+
+            $dataView["objListCustomerCreditLine"]	  		=  $objListCustomerCreditLine;
+            $dataView["objCausalTypeCredit"]				=  $parameterCausalTypeCredit;
+            $dataView["objCurrencyDolares"] 				=  $objCurrencyDolares;
+            $dataView["objCurrencyCordoba"] 				=  $objCurrencyCordoba;
+            $dataView["objCustomerCreditAmoritizationAll"] 	=  $objCustomerCreditAmoritizationAll;
+
+            //Obtener los datos de precio, sku y conceptos de la transaccoin
+            $dataView["objTransactionMasterItemPrice"]			= $this->Price_Model->get_rowByTransactionMasterID($companyID,$objListPrice->listPriceID, $dataView["objTransactionMaster"]->transactionMasterID );
+            $dataView["objTransactionMasterItemConcepto"]		= $this->Company_Component_Concept_Model->get_rowByTransactionMasterID($companyID,$objComponentItem->componentID, $dataView["objTransactionMaster"]->transactionMasterID );
+            $dataView["objTransactionMasterItemSku"]			= $this->Item_Sku_Model->get_rowByTransactionMasterID($companyID, $dataView["objTransactionMaster"]->transactionMasterID );
+            $dataView["objTransactionMasterItem"]				= $this->Item_Model->get_rowByTransactionMasterID( $dataView["objTransactionMaster"]->transactionMasterID  );
+
+            //Obtener la categoria de prodcutos y la lista de prodcutos si es restaurante
+            $dataView["objListInventoryCategoryRestaurant"]	 = NULL;
+            $dataView["objListInventoryItemsRestaurant"]	 = NULL;
+            if($objParameterEsResrarante == "true")
+            {
+                $parameterView["{companyID}"]			= $this->session->get('user')->companyID;
+                $parameterView["{currencyID}"] 			= $objCurrency->currencyID;
+                $parameterView["{warehouseID}"]			= $dataView["warehouseID"];
+                $parameterView["{listPriceID}"]			= $objListPrice->listPriceID;
+                $parameterView["{useMobile}"]			= $this->session->get('user')->useMobile;
+                $parameterView["{fnCallback}"] 			= "";
+                $parameterView["{typePriceID}"] 		= $objParameterTypePreiceDefault;
+                $parameterView["{iDisplayStartDB}"]		= "0";
+                $parameterView["{iDisplayLength}"]		= $objParameterCantidadItemPoup;
+                $parameterView["{sSearchDB}"]			= "";
+                $parameterView["{isWindowForm}"]		= "0";
+
+
+
+
+                $dataView["objListInventoryCategoryRestaurant"]  =  $this->Itemcategory_Model->getByCompany($companyID);
+                $dataView["objListInventoryItemsRestaurant"]	 = 	$this->core_web_view->getViewByName(
+                    $this->session->get('user'),
+                    $objComponentItem->componentID,
+                    "SELECCIONAR_ITEM_BILLING_POPUP_INVOICE_RESTAURANT",
+                    CALLERID_SEARCH,
+                    null,
+                    $parameterView
+                )["view_data"];
+
+
+            }
+			$dataView["objParameterTypePreiceDefault"] 		= $objParameterTypePreiceDefault;
+
+            //Datos para imprimir la factura
+            //------------------------------------------
+            if($objParameterDirect  == "true")
+            {
+                $dataPostPrinter["objTransactionMaster"]					= $dataView["objTransactionMaster"];
+                $dataPostPrinter["objTransactionMasterInfo"]				= $dataView["objTransactionMasterInfo"];
+                $dataPostPrinter["objTransactionMasterDetail"]				= $dataView["objTransactionMasterDetail"];
+                $dataPostPrinter["objTransactionMasterDetailReferences"]	= $dataView["objTransactionMasterDetailReferences"];
+                $dataPostPrinter["objTransactionMasterDetailWarehouse"]		= $dataView["objTransactionMasterDetailWarehouse"];
+                $dataPostPrinter["objTransactionMasterDetailConcept"]		= $dataView["objTransactionMasterDetailConcept"];
+                $dataPostPrinter["objComponentCompany"]				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+                $dataPostPrinter["objParameterLogo"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CORE_COMPANY_LOGO");
+                $dataPostPrinter["objParameterPhoneProperty"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CORE_PROPIETARY_PHONE");
+                $dataPostPrinter["objCompany"] 						= $this->Company_Model->get_rowByPK($companyID);
+                $dataPostPrinter["objUser"] 						= $this->User_Model->get_rowByPK($companyID,$dataPostPrinter["objTransactionMaster"]->createdAt,$dataPostPrinter["objTransactionMaster"]->createdBy);
+                $dataPostPrinter["Identifier"]						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CORE_COMPANY_IDENTIFIER");
+                $dataPostPrinter["objBranch"]						= $this->Branch_Model->get_rowByPK($companyID,$dataPostPrinter["objTransactionMaster"]->branchID);
+                $dataPostPrinter["objTipo"]							= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$dataPostPrinter["objTransactionMaster"]->transactionID,$dataPostPrinter["objTransactionMaster"]->transactionCausalID);
+                $dataPostPrinter["objCustumer"]						= $this->Customer_Model->get_rowByEntity($companyID,$dataPostPrinter["objTransactionMaster"]->entityID);
+                $dataPostPrinter["objCurrency"]						= $this->Currency_Model->get_rowByPK($dataPostPrinter["objTransactionMaster"]->currencyID);
+                $dataPostPrinter["prefixCurrency"]					= $dataPostPrinter["objCurrency"]->simbol." ";
+                $dataPostPrinter["cedulaCliente"] 					= $dataPostPrinter["objTransactionMasterInfo"]->referenceClientIdentifier == "" ? $dataPostPrinter["objCustumer"]->customerNumber :  $dataPostPrinter["objTransactionMasterInfo"]->referenceClientIdentifier;
+                $dataPostPrinter["nombreCliente"] 					= $dataPostPrinter["objTransactionMasterInfo"]->referenceClientName  == "" ? $dataPostPrinter["objCustumer"]->firstName : $dataPostPrinter["objTransactionMasterInfo"]->referenceClientName ;
+                $dataPostPrinter["objStage"]						= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($dataPostPrinter["objTransactionMaster"]->statusID);
+                $dataPostPrinter["objMesa"]							= $this->Catalog_Item_Model->get_rowByCatalogItemID($dataPostPrinter["objTransactionMasterInfo"]->mesaID);
+                $serializedDataPostPrinter 							= serialize($dataPostPrinter);
+                $serializedDataPostPrinter 							= base64_encode($serializedDataPostPrinter);
+                $dataView["dataPrinterLocal"]						= $serializedDataPostPrinter;
+
+            }
+            else
+            {
+                $dataView["dataPrinterLocal"]						= "";
+            }
+
+            //Variable para validar si es un mesero
+            $esMesero 					        = false;
+            $eliminarProductos 			    = false;
+            $esMesero 					        = $this->core_web_permission->urlPermited("es_mesero","index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+            $eliminarProductos 		        = $this->core_web_permission->urlPermited("no_permitir_eliminar_productos_de_factura","index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+
+            $esMesero					        = !$esMesero ? "0" : $esMesero;
+            $esMesero					        = $dataSession["role"]->isAdmin ? "0" : $esMesero;
+            $eliminarProductos                 = !$eliminarProductos ? "0" : $eliminarProductos;
+            $eliminarProductos					= $dataSession["role"]->isAdmin ? "0" : $eliminarProductos;
+            $dataView["esMesero"]	            = $esMesero;
+            $dataView["eliminarProducto"]	    = $eliminarProductos;
+
+            // Procesar fechas
+            if(isset($dataView['objTransactionMaster'])) {
+                $dataView['objTransactionMaster']->transactionOn = date_format(date_create($dataView['objTransactionMaster']->transactionOn),"Y-m-d");
+                $dataView['objTransactionMaster']->transactionOn2 = date_format(date_create($dataView['objTransactionMaster']->transactionOn2),"Y-m-d");
+            }
+
+            // Procesar detalles de la transacción
+            if(isset($dataView['objTransactionMasterDetail'])) {
+                foreach($dataView['objTransactionMasterDetail'] as $key => $value) {
+                    $dataView['objTransactionMasterDetail'][$key]->itemName = htmlentities($value->itemName,ENT_QUOTES);
+                    $dataView['objTransactionMasterDetailCredit'] = $this->Transaction_Master_Detail_Credit_Model->get_rowByPK($value->transactionMasterDetailID);
+                }
+            }
+
+            // Configurar respuesta exitosa
+            $response['success']    = true;
+            $response['data']       = $dataView;
+
+        } catch(\Exception $ex) {
+            $response['message'] = $ex->getMessage();
+            log_message('error', $ex->getMessage());
+        }
+
+        return $this->response->setJSON($response);
+    }
+
 	function editv2(){ 
 		 try{ 
 			//AUTENTICADO
@@ -960,7 +954,7 @@ class app_invoice_billing extends _BaseController {
 			
 			
 			$db=db_connect();
-			$db->transStart();
+			$db->transException(true)->transStart();
 			
 			//El Estado solo permite editar el workflow
 			if($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_billing","statusID",$objTM->statusID,COMMAND_EDITABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID)){
@@ -1609,44 +1603,82 @@ class app_invoice_billing extends _BaseController {
 			if($db->transStatus() !== false)
 			{
 				$db->transCommit();					
-			
+			    $url = '';
 				$this->core_web_notification->set_message(false,SUCCESS);				
 				if($objParameterRegrearANuevo == "true")
-					$this->response->redirect(base_url()."/".'app_invoice_billing/add/transactionMasterIDToPrinter/'.$transactionMasterID."/codigoMesero/".$codigoMesero);	
+					$url = (base_url()."/".'app_invoice_billing/add/transactionMasterIDToPrinter/'.$transactionMasterID."/codigoMesero/".$codigoMesero);
 				else
-					$this->response->redirect(base_url()."/".'app_invoice_billing/edit/transactionMasterIDToPrinter/'.$transactionMasterID.'/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID."/codigoMesero/".$codigoMesero);
-			
+					$url = (base_url()."/".'app_invoice_billing/edit/transactionMasterIDToPrinter/'.$transactionMasterID.'/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID."/codigoMesero/".$codigoMesero);
+
+                $response = [
+                    'success' => true,
+                    'message' => SUCCESS,
+                    'redirect' => $url
+                ];
+
+                return $this->edit($companyID, $transactionID, $transactionMasterID, $codigoMesero);
 			}
 			else{
 				$db->transRollback();						
-				$this->core_web_notification->set_message(true,$this->db->_error_message());
-				$this->response->redirect(base_url()."/".'app_invoice_billing/add/transactionMasterIDToPrinter/0'."/codigoMesero/".$codigoMesero);	
+				$this->core_web_notification->set_message(true,$db->error());
+				//$this->response->redirect(base_url()."/".'app_invoice_billing/add/transactionMasterIDToPrinter/0'."/codigoMesero/".$codigoMesero);
+                $response = [
+                    'success' => true,
+                    'message' => SUCCESS,
+                    'redirect' => (base_url()."/".'app_invoice_billing/add/transactionMasterIDToPrinter/0'."/codigoMesero/".$codigoMesero)
+                ];
+                return $this->response->setJSON($response);
 			}
 			
 		}
-		catch(\Exception $ex){
-			if (empty($dataSession)) {
-				return redirect()->to(base_url("core_acount/login"));
-			}
-		
-		    $data["session"]   = $dataSession;
-		    $data["exception"] = $ex;
-		    $data["urlLogin"]  = base_url();
-		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    $resultView        = view("core_template/email_error_general",$data);
-		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
-		    
-		    
-		    echo $resultView;
-		}	
+        catch (DatabaseException $e) {
+            $response = [
+                'success' => false,
+                'error' => [
+                    'code' => $e->getLine(),
+                    'message' => $e->getMessage()
+                ],
+                'data' => [
+                    'codigoMesero' => ''
+                ]
+            ];
+            return $this->response->setJSON($response);
+        }
+        catch(\Exception $ex)
+        {
+            if (empty($dataSession)) {
+                return redirect()->to(base_url("core_acount/login"));
+            }
+
+            $data["session"]   = $dataSession;
+            $data["exception"] = $ex;
+            $data["urlLogin"]  = base_url();
+            $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+            $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+            $resultView        = view("core_template/email_error_general",$data);
+
+            $this->email->setFrom(EMAIL_APP);
+            $this->email->setTo(EMAIL_APP_COPY);
+            $this->email->setSubject("Error");
+            $this->email->setMessage($resultView);
+
+            $resultSend01 = $this->email->send();
+            $resultSend02 = $this->email->printDebugger();
+
+
+            $response = [
+                'success' => false,
+                'error' => [
+                    'code' => $ex->getLine(),
+                    'message' => $ex->getMessage()
+                ],
+                'data' => [
+                    'codigoMesero' => $codigoMesero
+                ]
+            ];
+            return $this->response->setJSON($response);
+
+        }
 	}
 	
 	function insertElement($dataSession){
@@ -1795,7 +1827,7 @@ class app_invoice_billing extends _BaseController {
 			
 			
 			$db=db_connect();
-			$db->transStart();	
+			$db->transException(true)->transStart();	
 
 			$objParameterInvoiceUpdateNameInTransactionOnly		= $this->core_web_parameter->getParameter("INVOICE_UPDATENAME_IN_TRANSACTION_ONLY",$companyID);
 			$objParameterInvoiceUpdateNameInTransactionOnly		= $objParameterInvoiceUpdateNameInTransactionOnly->value;			
@@ -2103,67 +2135,62 @@ class app_invoice_billing extends _BaseController {
 			//No auto aplicar
 			if( $db->transStatus() !== false && $objParameterInvoiceAutoApply == "false"  )
 			{
-				
 				$db->transCommit();
-				$this->core_web_notification->set_message(false,SUCCESS);				
-				$this->response->redirect(base_url()."/".'app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/'.$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID."/codigoMesero/".$codigoMesero);
+    
+				$response = [
+					'success' => true,
+					'message' => SUCCESS,
+					'redirect' => base_url()."/".'app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/'.$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID."/codigoMesero/".$codigoMesero
+				];
+				
+				return $this->edit($companyID, $objTM["transactionID"], $transactionMasterID, $codigoMesero);
 			}			
 			//Si auto aplicar
 			else if( $db->transStatus() !== false && $objParameterInvoiceAutoApply == "true"  ){
 				
 				$db->transCommit();
+
+				$response = [
+					'success' => true,
+					'message' => SUCCESS,
+					'redirect' => base_url()."/".'app_invoice_billing/add/transactionMasterIDToPrinter/'.$transactionMasterID."/codigoMesero/".$codigoMesero
+				];
 				
-				//si es auto aplicadao mandar a imprimir
-				//-wgonzlez-if($objParameterInvoiceAutoApply == "true" && $objParameterImprimirPorCadaFactura == "true" )
-				//-wgonzlez-{
-				//-wgonzlez-	// create a new curl resource					
-				//-wgonzlez-	//wgonzalez-$urlPrinter = base_url()."/".$objParameterUrlPrinterDirect."/companyID/".$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID;
-				//-wgonzlez-	//wgonzalez-// set URL and other appropriate options
-				//-wgonzlez-	//wgonzalez-//$multiCurl = curl_multi_init();					
-				//-wgonzlez-	//wgonzalez-$curl = curl_init();
-				//-wgonzlez-	//wgonzalez-
-				//-wgonzlez-	//wgonzalez-curl_setopt($curl, CURLOPT_URL, $urlPrinter);
-				//-wgonzlez-	//wgonzalez-curl_setopt($curl, CURLOPT_HEADER, 0);
-				//-wgonzlez-	//wgonzalez-curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-				//-wgonzlez-	//wgonzalez-//curl_multi_add_handle($multiCurl, $curl);
-				//-wgonzlez-	//wgonzalez-
-				//-wgonzlez-	//wgonzalez-// grab URL and pass it to the browser
-				//-wgonzlez-	//wgonzalez-// esperar la respuesta
-				//-wgonzlez-	//wgonzalez-curl_exec($curl); 
-				//-wgonzlez-	//wgonzalez-
-				//-wgonzlez-	//wgonzalez-// No esperar la respuesta
-				//-wgonzlez-	//wgonzalez-//$running = 0;
-				//-wgonzlez-	//wgonzalez-//curl_multi_exec($multiCurl, $running);	
-				//-wgonzlez-	//wgonzalez-
-				//-wgonzlez-	//wgonzalez-
-				//-wgonzlez-	//wgonzalez-// close cURL resource, and free up system resources
-				//-wgonzlez-	//wgonzalez-curl_close($curl);
-				//-wgonzlez-	//wgonzalez-//curl_multi_close($multiCurl);
-				//-wgonzlez-	
-				//-wgonzlez-	
-				//-wgonzlez-}
-				
-				
-				$this->core_web_notification->set_message(false,SUCCESS);					
-				$this->response->redirect(base_url()."/".'app_invoice_billing/add/transactionMasterIDToPrinter/'.$transactionMasterID."/codigoMesero/".$codigoMesero);	
-				
-				return;
+				return $this->response->setJSON($response);
 			}
 			//Error 
 			else
-			{
-				
+			{				
 				$db->transRollback();						
-				$errorCode 		= $db->error()["code"];
-				$errorMessage 	= $db->error()["message"];
-				
-				$this->core_web_notification->set_message(true, $errorCode." ".$errorMessage );				
-				$this->response->redirect(base_url()."/".'app_invoice_billing/add/transactionMasterIDToPrinter/0'."/codigoMesero/".$codigoMesero);	
-			}
-			
-			
-			
+				$errorCode = $db->error()["code"];
+				$errorMessage = $db->error()["message"];
+
+				$response = [
+					'success' => false,
+					'error' => [
+						'code' => $errorCode,
+						'message' => $errorMessage
+					],
+					'data' => [
+						'codigoMesero' => $codigoMesero
+					]
+				];
+				return $this->response->setJSON($response);	
+			}		
 		}
+		catch (DatabaseException $e) {
+            $response = [
+				'success' => false,
+				'error' => [
+					'code' => $e->getLine(),
+					'message' => $e->getMessage()
+				],
+				'data' => [
+					'codigoMesero' => $codigoMesero
+				]
+			];
+			return $this->response->setJSON($response);	
+        }
 		catch(\Exception $ex)
 		{
 			if (empty($dataSession)) {
@@ -2186,9 +2213,18 @@ class app_invoice_billing extends _BaseController {
 		    $resultSend02 = $this->email->printDebugger();
 		    
 		    
-		    echo $resultView;
-			
-		}	
+		    $response = [
+                'success' => false,
+                'error' => [
+                    'code' => $ex->getLine(),
+                    'message' => $ex->getMessage()
+                ],
+                'data' => [
+                    'codigoMesero' => $codigoMesero
+                ]
+            ];
+            return $this->response->setJSON($response);
+        }
 	}
 
 	function insertElementMobil($dataSession,$transactionMaster, $transactionMasterDetails){
@@ -3264,8 +3300,8 @@ class app_invoice_billing extends _BaseController {
 			));//--finjson	
 		}		
 	}
-	
-	function save($mode=""){		
+
+    function save($mode=""){
 		 $mode = helper_SegmentsByIndex($this->uri->getSegments(),1,$mode);			 
 		 try{ 
 			//AUTENTICADO
@@ -3297,11 +3333,10 @@ class app_invoice_billing extends _BaseController {
 			
 			//Guardar o Editar Registro						
 			if($mode == "new"){
-				
-				$this->insertElement($dataSession);
+				return $this->insertElement($dataSession);
 			}
 			else if ($mode == "edit"){
-				$this->updateElement($dataSession);
+				return $this->updateElement($dataSession);
 			}
 			else{
 				$stringValidation = "El modo de operacion no es correcto (new|edit)";
@@ -3331,9 +3366,19 @@ class app_invoice_billing extends _BaseController {
 		    
 		    $resultSend01 = $this->email->send();
 		    $resultSend02 = $this->email->printDebugger();
-		    
-		    
-		    return $resultView;
+
+
+            $response = [
+                'success' => false,
+                'error' => [
+                    'code' => $ex->getLine(),
+                    'message' => $ex->getMessage()
+                ],
+                'data' => [
+                    'codigoMesero' => ''
+                ]
+            ];
+            return $this->response->setJSON($response);
 		}		
 			
 	}
