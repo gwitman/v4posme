@@ -615,14 +615,22 @@ class app_inventory_item extends _BaseController
                 }
 
                 //Guardar proveedor por defecto
-                $objParameterProviderDefault	= $this->core_web_parameter->getParameter("INVENTORY_ITEM_PROVIDER_DEFAULT",$companyID);
-                $objParameterProviderDefault 	= $objParameterProviderDefault->value;
-                $objTmpProvider					= [];
-                $objTmpProvider["companyID"]	= $companyID;
-                $objTmpProvider["branchID"]		= $objItem["branchID"];
-                $objTmpProvider["itemID"]		= $itemID;
-                $objTmpProvider["entityID"]		= $objParameterProviderDefault;
-                $this->Provideritem_Model->insert_app_posme($objTmpProvider);
+				$objParameterProviderDefault	= $this->core_web_parameter->getParameter("INVENTORY_ITEM_PROVIDER_DEFAULT",$companyID);
+				$objParameterProviderDefault 	= $objParameterProviderDefault->value;
+				$objListProvider				= $this->Provider_Model->get_rowByCompany($companyID);
+				if($objListProvider)
+                {
+                    foreach($objListProvider as $pro)
+                    {						
+						$objTmpProvider					= [];
+						$objTmpProvider["companyID"]	= $companyID;
+						$objTmpProvider["branchID"]		= $objItem["branchID"];
+						$objTmpProvider["itemID"]		= $itemID;
+						$objTmpProvider["entityID"]		= $pro->entityID;
+						$this->Provideritem_Model->insert_app_posme($objTmpProvider);
+					}
+				}
+                
 
 
                 //Ingresar la configuracion de precios
@@ -939,13 +947,19 @@ class app_inventory_item extends _BaseController
                 //Guardar proveedor por defecto
                 $objParameterProviderDefault	= $this->core_web_parameter->getParameter("INVENTORY_ITEM_PROVIDER_DEFAULT",$companyID);
                 $objParameterProviderDefault 	= $objParameterProviderDefault->value;
-                $objTmpProvider					= [];
-                $objTmpProvider["companyID"]	= $companyID;
-                $objTmpProvider["branchID"]		= $objItem["branchID"];
-                $objTmpProvider["itemID"]		= $itemID;
-                $objTmpProvider["entityID"]		= $objParameterProviderDefault;
-                $this->Provideritem_Model->insert_app_posme($objTmpProvider);
-
+				$objListProvider				= $this->Provider_Model->get_rowByCompany($companyID);
+				if($objListProvider)
+                {
+                    foreach($objListProvider as $pro)
+                    {						
+						$objTmpProvider					= [];
+						$objTmpProvider["companyID"]	= $companyID;
+						$objTmpProvider["branchID"]		= $objItem["branchID"];
+						$objTmpProvider["itemID"]		= $itemID;
+						$objTmpProvider["entityID"]		= $pro->entityID;
+						$this->Provideritem_Model->insert_app_posme($objTmpProvider);
+					}
+				}
 				
 				
                 //Ingresar la configuracion de precios
@@ -1406,12 +1420,20 @@ class app_inventory_item extends _BaseController
                 //Guardar proveedor por defecto
                 $objParameterProviderDefault	= $this->core_web_parameter->getParameter("INVENTORY_ITEM_PROVIDER_DEFAULT",$companyID);
                 $objParameterProviderDefault 	= $objParameterProviderDefault->value;
-                $objTmpProvider					= [];
-                $objTmpProvider["companyID"]	= $companyID;
-                $objTmpProvider["branchID"]		= $objItem["branchID"];
-                $objTmpProvider["itemID"]		= $itemID;
-                $objTmpProvider["entityID"]		= $objParameterProviderDefault;
-                $this->Provideritem_Model->insert_app_posme($objTmpProvider);
+				$objListProvider				= $this->Provider_Model->get_rowByCompany($companyID);
+				if($objListProvider)
+                {
+                    foreach($objListProvider as $pro)
+                    {						
+						$objTmpProvider					= [];
+						$objTmpProvider["companyID"]	= $companyID;
+						$objTmpProvider["branchID"]		= $objItem["branchID"];
+						$objTmpProvider["itemID"]		= $itemID;
+						$objTmpProvider["entityID"]		= $pro->entityID;
+						$this->Provideritem_Model->insert_app_posme($objTmpProvider);
+					}
+				}
+				
 			
 			
                 //Ingresar la configuracion de precios
