@@ -8770,8 +8770,9 @@ function helper_reporte80mmTransactionMasterPasteleriaLizzette(
                             Vendedor:
                           </td>
 						  <td colspan='2'>
-                            ". (strpos($userNickName , "@") === false ? $userNickName : substr($userNickName,0,strpos($userNickName , "@") ) )   ."
-							 | ".$objTransactionMastser->numberPhone."
+                            ". (strpos($userNickName , "@") === false ? $userNickName : substr($userNickName,0,strpos($userNickName , "@") ) ).
+							" | ".$objTransactionMastser->numberPhone.
+							"
                           </td>
                         </tr>";
 		  }
