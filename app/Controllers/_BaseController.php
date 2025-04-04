@@ -196,7 +196,9 @@ abstract class _BaseController extends Controller
         'language',
 		
         'report/web_tools_report_0001',
-		'report/web_tools_report_pasteleriaballadares_helper',
+		'report/web_tools_report_pasteleria_balladares_helper',
+		'report/web_tools_report_licoreria_central_helper',
+		
 		
         'customization/web_tools_customizationview_0000001',
         'customization/web_tools_customizationview_colirio',

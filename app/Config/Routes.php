@@ -1133,6 +1133,8 @@ $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNorm
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmBpn/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmBpn');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1LicoreriaCentral','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1LicoreriaCentral');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1LicoreriaCentral/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1LicoreriaCentral');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1PasteleriaLizzette','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1PasteleriaLizzette');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1PasteleriaLizzette/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1PasteleriaLizzette');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1RepuestoCristoRey','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1RepuestoCristoRey');
