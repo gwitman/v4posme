@@ -457,6 +457,13 @@ class core_web_view {
 			$(document).ready(function() {
 						$('#".$idTable."').dataTable({
 							'Dom'				: \"<'row'<'col-lg-6'l><'col-lg-6'f>r>t<'row'<'col-lg-6'i><'col-lg-6'p>>\",
+							
+							/*
+							'sScrollY'			: '200px',
+							'bPaginate'			: false,
+							'bAutoWidth'		: false,
+							*/
+							
 							'sPaginationType'	: 'bootstrap',							
 							'bJQueryUI'			: false,
 							'bAutoWidth'		: false,							

@@ -7,7 +7,7 @@
 }
 
 #div-container-list {
-  height			: 750px; /* Altura fija */
+  height			: 600px; /* Altura fija */
   overflow-y		: auto; /* Scroll vertical solo si es necesario */
   padding			: 15px;
   border			: 1px solid #ccc;

@@ -749,12 +749,12 @@ function helper_getHtmlOfModalDialog($name,$idDivBody,$fncallBack,$fnShowBotones
 			}
 			
 			.modal-customer1-'.$name.' {
-				display: none;
-				position: fixed;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
+				display		: none;
+				position	: fixed;
+				top			: 0;
+				left		: 0;
+				width		: 100%;
+				height		: 100%;
 				background-color: rgba(0, 0, 0, 0.6); /* Fondo semitransparente */
 				z-index: 1000;
 				justify-content: center;
