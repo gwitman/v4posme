@@ -4,12 +4,18 @@
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/moment.min.js"></script>
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/mask/jquery.mask.min.js"></script>
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jLinq-2.2.1.js"></script>
+				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/charts/pie-chart/jquery.easy-pie-chart.js"></script>
+				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/ui/range-slider/rangeslider.js"></script>
+				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/pages/ui-elements.js"></script>
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jquery.number.min.js"></script>
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/decimal.js"></script>
                 <script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/isotope.pkgd.js"></script>
                 <script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/sweetalert2/sweetalert2.all.min.js"></script>
 
                 <style>
+					#divLoandingCustom{
+						display: none;
+					}
 					input:focus {
 						
 					  color:black;					  
@@ -22,9 +28,6 @@
 					  /*box-sizing: border-box;*/
 					  
 					}
-				</style>
-				
-				<style>
 					@media only screen and (max-width: 480px) 
 					{
 						#heading{

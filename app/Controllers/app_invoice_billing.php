@@ -3378,7 +3378,22 @@ class app_invoice_billing extends _BaseController {
 		}		
 			
 	}
-	
+
+    public function setSessionData(): ResponseInterface
+    {
+        $session = session();
+
+        $session->set([
+            'companyID' => $this->request->getPost('companyID'),
+            'transactionID' => $this->request->getPost('transactionID'),
+            'transactionMasterID' => $this->request->getPost('transactionMasterID'),
+            'codigoMesero' => $this->request->getPost('codigoMesero'),
+            'edicion' => true
+        ]);
+
+        return $this->response->setJSON(['status' => 'ok']);
+    }
+
 	function add(){ 
 	
 		try{ 
@@ -3410,11 +3425,11 @@ class app_invoice_billing extends _BaseController {
 			$branchID 							= $dataSession["user"]->branchID;
 			$roleID 							= $dataSession["role"]->roleID;
 			$userID								= $dataSession["user"]->userID;
-			$transactionMasterIDToPrinter		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterIDToPrinter");//--finuri	
-			$codigoMesero						= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"codigoMesero");//--finuri				
-			
-			
-			
+			$transactionMasterIDToPrinter		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterIDToPrinter");//--finuri
+            $codigoMesero                       = $dataSession['codigoMesero'];
+            $companyID                          = $dataSession['companyID'];
+            $transactionID                      = $dataSession['transactionID'];
+            $transactionMasterID                = array_key_exists('transactionMasterID', $dataSession) ? $dataSession['transactionMasterID'] : null;
 			
 			//Obtener el componente de Item
 			$objComponentCustomer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
@@ -3430,12 +3445,8 @@ class app_invoice_billing extends _BaseController {
 			if(!$objComponentTransactionBilling)
 			throw new \Exception("EL COMPONENTE 'tb_transaction_master_billing' NO EXISTE...");
 			
+			$transactionIDNueva 					= $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID,"tb_transaction_master_billing",0);			
 			
-			//Obtener Tasa de Cambio			
-			$companyID 							= $dataSession["user"]->companyID;
-			$branchID 							= $dataSession["user"]->branchID;
-			$roleID 							= $dataSession["role"]->roleID;
-			$transactionID 						= $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID,"tb_transaction_master_billing",0);
 			$objCurrency						= $this->core_web_currency->getCurrencyDefault($companyID);
 			$targetCurrency						= $this->core_web_currency->getCurrencyExternal($companyID);						
 			$objListPrice 						= $this->List_Price_Model->getListPriceToApply($companyID);
@@ -3555,6 +3566,8 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objListZone"]						= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_info_billing","zoneID",$companyID);
 			$dataView["objListMesa"]						= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_info_billing","mesaID",$companyID);
 			$dataView['transactionID']						= $transactionID;
+			$dataView['transactionIDNueva']					= $transactionIDNueva;
+			$dataView['transactionMasterID']				= empty($transactionMasterID) ? 0 : $transactionMasterID;
 			$dataView['objParameterRestaurant']				= $objParameterRestaurant;
 			if($objParameterRestaurant=='true'){
 				$catalogItemIdZonas							= array_column($dataView["objListZone"],'catalogItemID');
@@ -3776,7 +3789,7 @@ class app_invoice_billing extends _BaseController {
 			$dataSession["body"]			= /*--inicio view*/ view('app_invoice_billing/news_body',$dataView);//--finview
 			$dataSession["script"]			= /*--inicio view*/ view('app_invoice_billing/news_script',$dataView);//--finview
 			$dataSession["footer"]			= "";
-			
+            session()->remove(['transactionMasterID', 'viaBoton']);
 			//return view("core_masterpage/default_masterpage",$dataSession);//--finview-r
 			return view("core_masterpage/default_popup",$dataSession);//--finview-r	
 			
