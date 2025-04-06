@@ -729,6 +729,25 @@ function helper_getHtmlOfModalDialog($name,$idDivBody,$fncallBack,$fnShowBotones
 	$string  =  
 	'
 	<style>
+			.parrafoModalCustomPosMe {
+			  background-color	: #ffeb3b; /* Amarillo vibrante */
+			  color				: #333; /* Texto oscuro para contraste */
+			  padding			: 15px 20px;
+			  border-radius		: 8px;
+			  box-shadow		: 0 2px 8px rgba(0,0,0,0.2);
+			  font-size			: 16px;
+			  font-weight		: bold;
+			  text-align		: center;
+			  margin-top		: 20px;
+			  transition		: background-color 0.3s ease;
+			}
+
+			.parrafoModalCustomPosMe:hover 
+			{
+			  background-color: #ffc107; /* Un tono más oscuro al pasar el mouse */
+			  cursor: pointer;
+			}
+			
 			.modal-customer1-'.$name.' {
 				display: none;
 				position: fixed;

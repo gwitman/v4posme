@@ -25,15 +25,24 @@
 					</div>
 				</div>
 				
+				
+				<div id="ModalMasInformacion" style="display:none">
+					<h3>Información adicional</h3>
+					<p id="txtInformationAdicional" class="parrafoModalCustomPosMe" style="text-align:left">
+					</p>
+					
+				</div>
+				<?php
+					helper_getHtmlOfModalDialog("ModalMasInformacion","ModalMasInformacion","",true);
+				?>
+				
+				
+				<style>
+				
+			  </style>
+			  
 			    <div class="row">  
-					<div class="col-lg-12">					
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<div class="icon"><i class="icon20 i-table"></i></div> 
-								<h4>...</h4>
-								<a href="#" class="minimize"></a>
-							</div>                            
-							<div class="panel-body">
-							
+					<div class="col-lg-12">	
+								<div id="div-container-list">
                                     
 							

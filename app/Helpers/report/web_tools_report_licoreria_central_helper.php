@@ -226,7 +226,7 @@ function helper_reporte80mmTransactionMasterLicoreriaCentral(
                           </td>
                         </tr>
    
-						<!--						
+						
                         <tr>
                           <td colspan='2'>
                             RECIBIDO
@@ -249,7 +249,7 @@ function helper_reporte80mmTransactionMasterLicoreriaCentral(
                             &nbsp;
                           </td>
                         </tr>
-						-->
+						
 						
 						<!--
                         <tr>
