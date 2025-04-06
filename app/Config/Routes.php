@@ -1064,6 +1064,7 @@ $routes->match(['get','post'],'app_mobile_api/getPositionGps','app_mobile_api::g
 $routes->match(['get','post'],'app_mobile_api/getPositionGps/(:any)','app_mobile_api::getPositionGps');
 $routes->match(['get','post'],'app_mobile_api/getUserByCompany','app_mobile_api::getUserByCompany');
 $routes->match(['get','post'],'app_mobile_api/getUserByCompany/(:any)','app_mobile_api::getUserByCompany');
+$routes->match(['get','post'],'app_invoice_billing/setSessionData','app_invoice_billing::setSessionData');
 $routes->match(['get','post'],'app_invoice_billing/edit','app_invoice_billing::edit');
 $routes->match(['get','post'],'app_invoice_billing/edit/(:any)/(:any)/(:any)/(:any)','app_invoice_billing::edit/$1/$2/$3/$4');
 $routes->match(['get','post'],'app_invoice_billing/editv2','app_invoice_billing::editv2');
