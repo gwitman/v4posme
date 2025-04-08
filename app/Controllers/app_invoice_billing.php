@@ -3438,8 +3438,8 @@ class app_invoice_billing extends _BaseController {
 			$userID								= $dataSession["user"]->userID;
 			$transactionMasterIDToPrinter		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterIDToPrinter");//--finuri
             $codigoMesero                       = array_key_exists('codigoMesero', $dataSession) ?  $dataSession['codigoMesero'] : helper_SegmentsValue($this->uri->getSegments(),"codigoMesero");
-            $transactionID                      = array_key_exists('transactionID',$dataSession) ? $dataSession['transactionID'] : 0;
-            $transactionMasterID                = array_key_exists('transactionMasterID', $dataSession) ? $dataSession['transactionMasterID'] : null;
+            $transactionID                      = array_key_exists('transactionID',$dataSession) ? $dataSession['transactionID'] : 19 /*FACTURA*/;
+            $transactionMasterID                = array_key_exists('transactionMasterID', $dataSession) ? $dataSession['transactionMasterID'] : 0;
 			
 			//Obtener el componente de Item
 			$objComponentCustomer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");

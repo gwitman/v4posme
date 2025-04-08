@@ -118,8 +118,7 @@
 		}
 	});
 
-	$(document).on("click",".btnPlus",function(){
-		
+	$(document).on("click",".btnPlus",function(){		
 		var quantity = $(this).parent().parent().parent().find(".txtQuantity").val();
 		quantity 	 = fnFormatFloat(quantity);
 		quantity	 = quantity + 1;
@@ -236,7 +235,6 @@
 			
 	$("#modalDialogClaveOpenCash").click(function()
 	{
-		
 		if( $("#txtClaveOpenCash").val() == objParameterINVOICE_OPEN_CASH_PASSWORD )
 		{
 			 $.ajax({
@@ -252,8 +250,7 @@
 					error: 		function(request, status, error) {
 					  console.log("error form data")
 					}
-			 });
-			
+			 });			
 			cerrarModal("ModalCodigoCaja");
 		}
 	});	
@@ -281,8 +278,7 @@
 		fnAddRowSelected();			
 	});
 	
-	$(document).on("click",".btnMenus",function(){
-		
+	$(document).on("click",".btnMenus",function(){		
 		var quantity = $(this).parent().parent().parent().find(".txtQuantity").val();
 		quantity 	 = fnFormatFloat(quantity);
 		quantity	 = quantity - 1;
@@ -293,9 +289,7 @@
 		var precioRecomendado = $(this).data("precio");
 		$(this).parent().parent().parent().parent().parent().parent().find(".txtPrice").val(precioRecomendado);
 		fnRecalculateDetail(true,"txtPrice");				
-	});
-	
-	
+	});	
 	$(document).on("focus",".txt-numeric",function(){
 		if ( fnFormatFloat( $(this).val()  ) == 0)
 		{
@@ -307,13 +301,10 @@
 		{
 			$(this).val("0.00");
 		}			
-	});
-	
-	
+	});	
 	$(document).on("click",".img_row",function(){				
 			window.open($(this).data("src"), '_blank');
-	});
-	
+	});	
 	//Pago
 	$(document).on("click","#btnOptionPago",function(){		
 		 $("#mySidebar").css("width","100%");		 
@@ -379,8 +370,7 @@
 		$(this).val("");	
 	});
 	
-	$(document).on("keypress",'#txtReceiptAmountDol', function(e) {		
-	
+	$(document).on("keypress",'#txtReceiptAmountDol', function(e) {			
 		var code = e.keyCode || e.which;			
 		if(code != 13) { 
 			 return;
@@ -389,8 +379,7 @@
 		return;
 		 
 	});
-	$(document).on("keydown",'#txtReceiptAmountDol', function(e) {		
-	
+	$(document).on("keydown",'#txtReceiptAmountDol', function(e) {			
 		var code = e.keyCode || e.which;			
 		//Enviar Factura
 		if(e.key === "a"  && e.ctrlKey) { 													
@@ -400,11 +389,8 @@
 		//Regresar al scaner
 		if(e.key === "b"  && e.ctrlKey) { 		
 			document.getElementById("txtScanerCodigo").focus();									
-		}		
+		}				
 		
-		
-		//e.preventDefault();
-		//e.stopPropagation();
 		return;
 	});
 	
@@ -428,8 +414,8 @@
 			e.preventDefault();
 			e.stopPropagation();			
 			
-			var url=varParameterUrlServidorDeImpresion+varParameterInvoiceBillingPrinterDirectUrl;
-			url = url+
+			var url	= varParameterUrlServidorDeImpresion+varParameterInvoiceBillingPrinterDirectUrl;
+			url 	= url+
 			"/companyID/"+"<?php echo $dataPrinterLocalCompanyID; ?>" + 
 			"/transactionID/"+"<?php echo $dataPrinterLocalTransactionID; ?>"+
 			"/transactionMasterID/"+"<?php echo $dataPrinterLocalTransactionMasterID; ?>";
@@ -514,8 +500,6 @@
 			return;
 		}
 		
-		
-		
 		//buscar el producto y agregar por codigo de barra
 		obtenerDataDBProductoArray(
 			"objListaProductosX001",
@@ -523,8 +507,7 @@
 			0,
 			"all",
 			{"codigoABuscar":codigoABuscar},
-			function(e){    
-				
+			function(e){   				
 				
 				//buscar el producto y agregar						
 				var codigoABuscar 	= e.codigoABuscar.toUpperCase();
@@ -614,9 +597,9 @@
 	
 	//Buscar Factura 
 	$(document).on("click","#btnSelectInvoice",function(){
-		var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentTransactionBilling->componentID; ?>/onCompleteSelectInvoice/SELECCIONAR_BILLING_REGISTER/true/empty/false/not_redirect_when_empty";
+		var url_request 				= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentTransactionBilling->componentID; ?>/onCompleteSelectInvoice/SELECCIONAR_BILLING_REGISTER/true/empty/false/not_redirect_when_empty";
 		window.open(url_request,"MsgWindow","width=900,height=450");
-		window.onCompleteSelectInvoice = onCompleteSelectInvoice; 
+		window.onCompleteSelectInvoice 	= onCompleteSelectInvoice; 
 	});
 	
 	//Buscar el Cliente
@@ -676,7 +659,7 @@
         //establecer precios
         if (precio>0) {
             precios.forEach(function(p) {
-                let selected = parseFloat(p) === parseFloat(precio);
+                let selected 	= parseFloat(p) === parseFloat(precio);
 				let option 		= new Option(p, p, selected, selected);
                 selectPrecio.append(option);
             });
@@ -783,9 +766,6 @@
 			$("#txtScanerCodigo").focus();				
 		}		
 		
-		//e.preventDefault();
-		//e.stopPropagation();
-		
 	});	
 	
 	$('#btnDelete').click(function(){
@@ -800,9 +780,9 @@
 
 	$(document).on("click","#btnNewItemCatalog",function(){
 		
-		var url_request 			= "<?php echo base_url(); ?>/app_inventory_item/add/callback/fnObtenerListadoProductos";
+		var url_request 					= "<?php echo base_url(); ?>/app_inventory_item/add/callback/fnObtenerListadoProductos";
 		window.open(url_request,"MsgWindow","width=700,height=600");
-		window.fnObtenerListadoProductos = fnObtenerListadoProductos; 			
+		window.fnObtenerListadoProductos 	= fnObtenerListadoProductos; 			
 	});
 
 	$(document).on("click","#btnRefreshDataCatalogo",function(){
@@ -811,9 +791,9 @@
 
 
 	$(document).on("click","#btnSearchCustomerNew",function(){
-		var url_request 				 = "<?php echo base_url(); ?>/app_cxc_customer/add/callback/fnCustomerNewCompleted";
+		var url_request 				 	= "<?php echo base_url(); ?>/app_cxc_customer/add/callback/fnCustomerNewCompleted";
 		window.open(url_request,"mozillaWindow","width=700,height=600");
-		window.fnCustomerNewCompleted = fnCustomerNewCompleted; 	
+		window.fnCustomerNewCompleted 		= fnCustomerNewCompleted; 	
 	});
 	
 	
@@ -884,12 +864,12 @@
 			fnCalculateAmountPay();			
 	});
 	$('#tb_transaction_master_detail').on('change', 'input', function () {
-		var input = $(this);
-		var inputType = input.attr('type');
-		var tr = input.closest('tr')[0];
-		var td = input.parents('td')[0];
-		var rowIndex = objTableDetail.fnGetPosition(tr);
-		var colIndex = $('td', tr).index(td);
+		var input 		= $(this);
+		var inputType 	= input.attr('type');
+		var tr 			= input.closest('tr')[0];
+		var td 			= input.parents('td')[0];
+		var rowIndex 	= objTableDetail.fnGetPosition(tr);
+		var colIndex 	= $('td', tr).index(td);
 
 		if (inputType === "checkbox") {
 			var isChecked = input.is(':checked');
@@ -1036,8 +1016,8 @@
 		)
 		{
 			
-			var url=varParameterUrlServidorDeImpresion+varParameterInvoiceBillingPrinterDirectUrl;
-			url = url+
+			var url	= varParameterUrlServidorDeImpresion+varParameterInvoiceBillingPrinterDirectUrl;
+			url 	= url+
 			"/companyID/"+ objTransactionMaster.companyID + 
 			"/transactionID/"+ objTransactionMaster.transactionID +
 			"/transactionMasterID/"+ objTransactionMaster.transactionMasterID;
@@ -1099,8 +1079,8 @@
 		if(varParameterInvoiceBillingPrinterDirect == 'true')
 		{
 			
-			var url="<?= base_url(); ?>/"+varParameterInvoiceBillingPrinterDirectBarUrl;
-			url = url+
+			var url	=	"<?= base_url(); ?>/"+varParameterInvoiceBillingPrinterDirectBarUrl;
+			url 	= 	url+
 			"/companyID/"+ objTransactionMaster.companyID + 
 			"/transactionID/"+ objTransactionMaster.transactionID +
 			"/transactionMasterID/"+ objTransactionMaster.transactionMasterID +
@@ -1149,8 +1129,8 @@
 				
 		if(varParameterInvoiceBillingPrinterDirect == 'true'){
 			
-			var url="<?php echo base_url(); ?>/"+varParameterInvoiceBillingPrinterDirectCocinaUrl;
-			url = url+
+			var url	= 	"<?php echo base_url(); ?>/"+varParameterInvoiceBillingPrinterDirectCocinaUrl;
+			url 	= 	url+
 			"/companyID/"+ objTransactionMaster.companyID + 
 			"/transactionID/"+ objTransactionMaster.transactionID +
 			"/transactionMasterID/"+ objTransactionMaster.transactionMasterID +
@@ -1214,8 +1194,8 @@
 			: `${varBaseUrl}/app_invoice_billing/${objParameterPantallaParaFacturar}/${data[0]}/${data[1]}/${data[2]}/${$("#txtCodigoMesero").val()}`;
 
 		$.ajax({
-			url: url,
-			success: function(response) {           
+			url		: url,
+			success	: function(response) {           
 				fnUpdateInvoiceView(response.data);
 			},
 		});
@@ -1725,11 +1705,13 @@
 		$("#txtCheckReportSinRiesgoValue").val(0);
 		$("#txtCheckDeEfectivoValue").val(0);
 		$('#txtCheckReportSinRiesgo').bootstrapSwitch('state', false);
-		$('#txtCheckApplyExoneracion').bootstrapSwitch('state', false);
+		$('#txtCheckApplyExoneracion').bootstrapSwitch('state', false);		
 		$('#txtCheckDeEfectivo').bootstrapSwitch('state', false);
+		
 		setTimeout(()=>{
 			cerrarModal('ModalCargandoDatos');
 		}, 2000);
+		
     }
 
     function fnUpdateInvoiceView(data){
@@ -2018,7 +2000,7 @@
 			"componentItemID",conceptItemID,"none",{},
 			function(e){ 
 					
-					var objConcepto = e;	
+					var objConcepto = e;						
 					var exoneracion = $("#txtCheckApplyExoneracionValue").val();
 					
 					if(exoneracion === "0")
@@ -2120,7 +2102,6 @@
 
 		$(".custom-table-container-categorias").hide();
 		$(".custom-table-container-inventory").show();
-		/*$(".item-producto").find('[data-parent="'+inventoryCategoryID+'"]').removeClass("hidden");*/
 
 	}
 
@@ -2297,9 +2278,6 @@
 			priceTemporal  		=  $(".txtPrice")[i].value;
 			
 			
-			//if(sourceEvent != "txtPrice"){
-			//	priceTemporal  		=   skuValue * skuValuePrimceUnit;				
-			//}
 			
 			objTableDetail.fnUpdate( cantidadTemporal, i, 6 );
 			objTableDetail.fnUpdate( priceTemporal, i, 7 );
@@ -2392,7 +2370,8 @@
 		
 		
 		removeDataDB("objListaProductosX001");		
-		addDataDBArray("objListaProductosX001",objListaProductos);
+		addDataDBArray("objListaProductosX001",objListaProductos);		
+		fnObtenerListadoItemConcept();
 	
 	}
 	
@@ -2403,6 +2382,7 @@
 		console.info("fnFillListaItemConcept success data");
 		removeDataDB("objListaProductosConceptosX001");		
 		addDataDBArray("objListaProductosConceptosX001",data.objGridView);
+		cerrarModal('ModalActualizandoCatalogo'); 
 	
 	}
 	
@@ -2509,6 +2489,7 @@
 			{	
 				console.info("fnObtenerListadoItemConcept data error");	
 				fnShowNotification("Error 505","error");
+				cerrarModal('ModalActualizandoCatalogo'); 
 			}
 		});
 		
@@ -2908,8 +2889,6 @@
 	}
 	
 	function openDataBaseAndCreate(bInicializar,obtenerRegistroDelServer) {
-		//...
-		mostrarModal("ModalActualizandoCatalogo");
 		var indexDB 	= window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 		const request 	= indexDB.open('MyDatabasePosMe', 2);
 		
@@ -2919,20 +2898,10 @@
 			// Se crea la conexion
 			db 				   = request.result;
 			console.info('Database success');		
-			
-			if(bInicializar)
-			{
-				fnReady();
-				setTimeout(function() { cerrarModal('ModalActualizandoCatalogo'); }, 1000);		
-			}
-			
 			if(obtenerRegistroDelServer)
 			{
-				fnObtenerListadoProductos();
-				fnObtenerListadoItemConcept();
-				fnObtenerListadoCustomerCreditLine(); 
-				setTimeout(function() { cerrarModal('ModalActualizandoCatalogo');}, 4000);		
-				
+				mostrarModal("ModalActualizandoCatalogo");
+				fnObtenerListadoProductos();				
 			}
 			
 			
@@ -3114,7 +3083,7 @@
 		  //...
 		};
 		
-		const objectStore = transaction.objectStore(varTable);
+		const objectStore 	= transaction.objectStore(varTable);
 		
 		// Se agrega un nuevo estudiante
 		const request 		= objectStore.add({"name":varDatos});
@@ -3131,11 +3100,11 @@
 	
 	
 	function removeDataDB(varTable){
-		const request = db.transaction(varTable, 'readwrite')
+		const request 		= db.transaction(varTable, 'readwrite')
 							  .objectStore(varTable)
 							  .clear();
 
-		request.onsuccess = ()=> {
+		request.onsuccess 	= ()=> {
 			console.info("success");
 		}
 
@@ -3266,556 +3235,555 @@
 	
 		 
 	
-	openDataBaseAndCreate(true,false);	
 	
-	function fnReady()
+	
+		
+
+	$(document).ready(function()
 	{
-		if(transactionMasterID !== 0){
+		openDataBaseAndCreate(true,false);	
+		if(transactionMasterID !== 0)
+		{
 			loadEdicion = true;
 		}
-
-		$(document).ready(function()
-		{
-			$('#divLoandingCustom').hide();
-            if(!loadEdicion){
-                $('#btnLinkPayment').css('display','none');
-                $('#rowBotoneraFacturaFila5').css('display','none');
-                $('.showComandoDeCocina').css('display', 'none');
-                $('.showPanelEdicion').css('display', 'none');
-				$('#registrarFacturaNueva').css('display','block');
-				$("#txtCheckApplyExoneracion").bootstrapSwitch('state', false);
-				$('#txtCheckDeEfectivo').bootstrapSwitch('state', false);
-				$('#txtCheckReportSinRiesgo').bootstrapSwitch('state', false);
-            }
-			$('#txtClaveOpenCash').css({
-				'webkitTextSecurity': 'disc', 		// Para WebKit browsers
-				'textSecurity'		: 'disc'        // Para otros browsers que lo soporten
-			});
-
-            $grid = $('.custom-table-container-inventory .row').isotope({
-                itemSelector: '.item-producto',
-                layoutMode: 'fitRows',
-                filter: '.item-producto-back'
-            });
-
-            //codigo para cuando carga la pagina y mostrar la zona
-			if(varParameterRestaurante == "true")
-			{
-				$("#mySidebarZona").css("width","100%");
-				$("#mySidebarZona").removeClass("hidden");
-			}
-
-            $(".custom-table-container-inventory").hide();
-            var zonaDefault = $("#txtZoneID").val();
-            $(".custom-table-mesas").find("td").addClass("hidden");
-            $(".custom-table-mesas").find('td[data-parent="'+zonaDefault+'"]').removeClass("hidden");
-
-			var objectParameterButtomsBack		= {};
-			$('#txtDate').datepicker({format:"yyyy-mm-dd"});
-			$('#txtDate').val(moment().format("YYYY-MM-DD"));	
-			$("#txtDate").datepicker("update");
-			$('#txtNextVisit').datepicker({format:"yyyy-mm-dd"});
-			 
-			
-			$('#txtDateFirst').datepicker({format:"yyyy-mm-dd"});						 
-			$('#txtDateFirst').val(moment().add('days', 0).format("YYYY-MM-DD"));			 
-			$("#txtDateFirst").datepicker("update");
 		
-			 
-			 heigthTop							= 300;
-			 
-			 
-			 //Incializar Focos en el codigo de barra
-			if(varParameterScanerProducto != "false" && varUseMobile == "0" )
-			{
-				$("#txtScanerCodigo").focus();			
-			}
-			
-			
-			if(varUseMobile == "0")
-			{
-				// Añade una nueva entrada en el historial para evitar que el usuario regrese
-				history.pushState(null, null, window.location.href);
-
-
-				// Captura el evento popstate que ocurre cuando el usuario intenta volver
-				window.onpopstate = function(event) {
-					// Redirige a la misma página o realiza otra acción
-					history.go(1);
-				};
-
-
-				//window.addEventListener('beforeunload', function (e) {
-				//	// Evita que la página se cierre
-				//	e.preventDefault();  // Necesario para algunos navegadores
-				//
-				//	// Establece el mensaje de advertencia
-				//	e.returnValue = '';  // El mensaje personalizado no es compatible en la mayoría de los navegadores
-				//});
-
-			}
-			
-			
-			
-			if(varParameterScrollDelModalDeSeleccionProducto == "true"){
-				$("#modal_body_popup_productos").css("overflow","auto");
-				$("#modal_body_popup_productos").css("height",varParameterAlturaDelModalDeSeleccionProducto);
-			}
-			
-			
-			//Guardar y regresar a la lista, de una sola ves si
-			//Si es auto aplicar y es regresar a la lista y no es impresion directa 
-			//Y no hay impresion por cada factura			
-			if (
-				
-				(
-					(varParameterInvoiceBillingPrinterDirect == "false"   && varAutoAPlicar == "true" ) || 
-					(varParameterInvoiceBillingPrinterDirect == "false"   && varParameterRegresarAListaDespuesDeGuardar == "true" ) 
-				) && 
-				objCompanyParameter_Key_INVOICE_PRINT_BY_INVOICE == "false" 
-				
-			)
-			{
-				$( "#form-new-invoice" ).submit(function(e){						  
-					e.preventDefault(e);
-					var formData = new FormData(this);
-					//Mandar la factura
-					//Interna mente, se se guarda y se imprimie
-					$.ajax({
-						async: 		true,
-						type: 		$( "#form-new-invoice" ).attr('method'),
-						url: 		$( "#form-new-invoice" ).attr('action'),
-						data: 		formData,
-						cache: 		false,
-						processData:false,
-						contentType:false,				  
-						success: 	function (data) {
-							console.log("success form data")
-						},
-						error: 		function(request, status, error) {
-							console.log("error form data")
-						}
-					});
-					
-					
-					//Mandar abrir la caja de efectivo
-					$.ajax({
-						async: 		true,
-						type: 		"GET",
-						url: 		"<?php echo base_url(); ?>/app_invoice_billing/viewPrinterOpen",
-						data: 		formData,
-						cache: 		false,
-						processData:false,
-						contentType:false,				  
-						success: 	function (data) {
-							console.log("success form data")
-						},
-						error: 		function(request, status, error) {
-							console.log("error form data")
-						}
-					});
-					
-					if(varParameterRegresarAListaDespuesDeGuardar == "true"){
-						window.location	= "<?php echo base_url(); ?>/app_invoice_billing/index";
-					}
-					if(varParameterRegresarAListaDespuesDeGuardar != "true"){
-						window.location	= "<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>";
-					}						  
-				});
-			}
-			
+		$('#divLoandingCustom').hide();
+		$('#btnLinkPayment').css('display','none');
+		$('#rowBotoneraFacturaFila5').css('display','none');
+		$('.showComandoDeCocina').css('display', 'none');
+		$('.showPanelEdicion').css('display', 'none');
+		$('#registrarFacturaNueva').css('display','block');
+		$("#txtCheckApplyExoneracion").bootstrapSwitch('state', false);			
+		$('#txtCheckDeEfectivo').bootstrapSwitch('state', false);
+		$('#txtCheckReportSinRiesgo').bootstrapSwitch('state', false);
 		
-			objTableDetail = $("#tb_transaction_master_detail").dataTable({
-				"bPaginate"		: false,
-				"bFilter"		: false,
-				"bSort"			: false,
-				"bInfo"			: false,				
-				"oLanguage"		: {
-					"sEmptyTable": "", // No mostrar texto cuando está vacía
-					"sZeroRecords": "",
-				},
-				"bAutoWidth"	: false,
-				"aoColumnDefs": [ 
-							{
-								"aTargets"		: [ 0 ],//checked
-								"sWidth"		: "50px",
-								"sClass"		: "td-center",
-								"mRender"		: function ( data, type, full ) {
-                                    var ocultarBoton="";
-                                    if(varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
-                                        ocultarBoton="hidden";
-                                    }
-
-									if (data == false)
-									return '<input type="checkbox"  class="classCheckedDetail '+ocultarBoton+'"  value="0" ></span>';
-									else
-									return '<input type="checkbox"  class="classCheckedDetail '+ocultarBoton+'" checked="checked" value="0" ></span>';
-								}
-							},
-							{
-								"aTargets"		: [ 1 ],//transactionMasterDetailID
-								"bVisible"  	: true,
-								"sClass" 		: "hidden",
-								"bSearchable"	: false,
-								"mRender"		: function ( data, type, full ) {
-									return '<input type="hidden" value="'+data+'" name="txtTransactionMasterDetailID[]" />';
-								}
-							},
-							{
-								"aTargets"		: [ 2 ],//itemID
-								"bVisible"		: true,
-								"sClass" 		: "hidden",
-								"bSearchable"	: false,
-								"mRender"		: function ( data, type, full ) {
-									return '<input type="hidden" value="'+data+'" name="txtItemID[]" />';
-								}
-							},
-							{
-								"aTargets"		: [ 3 ],//itemNumber
-								"sWidth"		: "250px",
-								"mRender"		: function ( data, type, full ) {
-									return '<input type="text"  class="col-lg-12 <?= $useMobile == "1" ? 'hidden' : '' ?>" style="text-align:left; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" value="'+data+'" readonly="true" />';
-								}
-							},
-							{
-								"aTargets"		: [ columnasTableDetail.descripcion ],//descripcion
-								"sWidth"		: "250px",
-								"mRender"		: function ( data, type, full ) 
-								{
-								
-									
-									var classHiddenTex 		= "";
-									var classHiddenSelect 	= "";
-									if(varParameterINVOICE_BILLING_SELECTITEM == "true")									
-									{
-										classHiddenTex = "hidden";
-										classHiddenSelect 	= "";
-									}
-									else 
-									{
-										classHiddenTex = "";
-										classHiddenSelect 	= "hidden";
-									}
-                                    let strFiled = "";
-                                    if (varUseMobile === "1"){
-                                        strFiled        += '<label class="col-lg-12" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>">Descripción: '+full[4]+'</label>';
-                                        strFiled 		+= '<input type="hidden" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"  value="'+full[4]+'" '+NameStatus+' />';
-                                    }else{
-                                        strFiled 		+= '<input type="text" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"  class="col-lg-12 '+classHiddenTex+'" style="text-align:left; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" value="'+full[4]+'" '+NameStatus+' />';
-                                    }
-									let strFiledSelecte = "<select  name='txtItemSelected' class='<?php echo ($useMobile == "1" ? "" : "select2"); ?> txtItemSelected "+classHiddenSelect+" ' >";
-									strFiledSelecte		= strFiledSelecte+"<option value='"+full[2]+"' selected data-itemid='"+full[2]+"' data-codigo='"+full[3]+"' data-name='"+full[4].replace("'","").replace("'","") +"' data-unidadmedida='"+full[5]+"' data-cantidad='"+full[6]+"' data-precio='"+full[7]+"' data-barra='"+full[3]+"'  data-description='"+full[4].replace("'","").replace("'","") + "'    >"+ full[4].replace("'","").replace("'","")  +"</option>";									
-									strFiledSelecte		= strFiledSelecte+"</select>";
-									
-									strFiledSelecte 	=  strFiled + strFiledSelecte ;
-									return strFiledSelecte;
-									
-									
-								}
-							},
-							{
-								"aTargets"		: [ 5 ],//Sku
-								"sWidth"		: "250px",
-								"mRender"		: function ( data, type, full ) {
-										
-										var sel 					= '';
-										var espacio					=  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";								
-										sel 						= '<select name="txtSku[]" id="txtSku'+full[2]+'" class="txtSku col-lg-12 skuStyleNormal <?= $useMobile == "1" ? 'hidden' : '' ?>" style="<?= $useMobile == "1" ? 'width: 100%;' : '' ?>" >';
-										
-										if(varUseMobile == "1")
-											espacio = "";		
-										
-										
-										sel = sel + '<option value="'+full[5]+'" data-skuv="1" data-skupriceunitary="'+full[7]+'"   selected style="font-size:200%" data-description="'+full[13]+'" >'+full[13]+espacio+'</option>';
-										sel = sel + '</select>';																			
-										return sel;
-											
-								}
-							},
-							{
-								"aTargets"		: [ 6 ],//Cantidad
-								"sWidth"		: objParameterINVOICE_SHOW_FIELD_PESO == "true" ? "150px" : "250px",
-								"mRender"		: function ( data, type, full ) {
-                                    if (varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
-                                        str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" readonly />';
-                                    }else{
-                                        str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" />';
-                                    }
-									if (varUseMobile == "1")
-									str = str + " <span class='badge badge-inverse' >Cantidad</span>";
-							
-									return str;
-								}
-							},
-							{
-								"aTargets"		: [ 7 ],//Precio
-								"sWidth"		: "250px",
-								"mRender"		: function ( data, type, full ) {
-									var str =  '<input type="text" class="col-lg-12 txtPrice txt-numeric"   id="txtPriceRow'+full[2]+'"   '+PriceStatus+'  value="'+data+'" name="txtPrice[]" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" />';
-									if (varUseMobile == "1")
-									str = str + " <span class='badge badge-inverse' >Precio</span>";
-									return str;
-								}
-							},
-							{
-								"aTargets"		: [ 8 ],//Total
-								"sWidth"		: "250px",
-								"mRender"		: function ( data, type, full ) {
-                                    let str;
-                                    if (varUseMobile === "1"){
-                                        str = '<input type="hidden" name="txtSubTotal[]" value="'+data+'" />';
-                                    }else{
-                                        str = '<input type="text" class="col-lg-12 txtSubTotal" readonly value="'+data+'" name="txtSubTotal[]" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" />';
-                                    }
-
-									return str;
-								}
-							},
-							{
-								"aTargets"		: [ 9 ],//Iva
-								"bVisible"		: true,
-								"sClass"		: "hidden",
-								"bSearchable"	: false,
-								"mRender"		: function ( data, type, full ) {
-									return '<input type="text" class="col-lg-12 txtIva" value="'+data+'" name="txtIva[]" style="text-align:right" />';
-								}
-							},
-							{
-								"aTargets"		: [ 10 ],//skuQuantityBySku
-								"bVisible"		: true,
-								"sClass"		: "hidden",
-								"bSearchable"	: false,
-								"mRender"		: function ( data, type, full ) {
-									return '<input type="text" class="col-lg-12 skuQuantityBySku" value="'+data+'" name="skuQuantityBySku[]" style="text-align:right" />';
-								}
-							},
-							{
-								"aTargets"		: [ 11 ],//unitaryPriceInvidual
-								"bVisible"		: true,
-								"sClass"		: "hidden",
-								"bSearchable"	: false,
-								"mRender"		: function ( data, type, full ) {
-									return '<input type="text" class="col-lg-12 unitaryPriceInvidual" value="'+data+'" name="unitaryPriceInvidual[]" style="text-align:right" />';
-								}
-							},
-							{
-								"aTargets"		: [ 12 ],//PlusDimus	
-								"sWidth"		: "250px",							
-								"mRender"		: function ( data, type, full ) {	
-									
-									
-												
-										//publico
-										var objProductoPrecio1 	= full[7];
-										//por mayor
-										var objProductoPrecio2 	= full[14];
-										//credito
-										var objProductoPrecio3 	= full[15];
-										
-										
-										//publico
-										objProductoPrecio1 = fnFormatFloat(objProductoPrecio1);
-										//por mayor
-										objProductoPrecio2 = fnFormatFloat(objProductoPrecio2);
-										//credito
-										objProductoPrecio3 = fnFormatFloat(objProductoPrecio3);
-										
-										var styleButtom = "";
-										if(varUseMobile == "1")
-										styleButtom = "style='text-align:right'";
-									
-										var str = "<div "+styleButtom+" >";
-										
-										if(varParameterINVOICE_BILLING_SELECTITEM == "true")
-										{
-											str    	= str + '' + 
-											'<button type="button" class="btn btn-warning btnAddSelectedItem"><span class="icon16 i-archive"></span> </button>';
-										}
-                                        var ocultarBoton="";
-                                        if(varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
-                                            ocultarBoton="hidden";
-                                        }
-
-                                        str    	= str + '' +
-                                        '<button type="button" class="btn btn-primary btnMenus '+ ocultarBoton +'"><span class="icon16 i-minus"></span> </button>';
-										
-										str    	= str + '' + 
-										'<button type="button" class="btn btn-primary btnPlus"><span class="icon16 i-plus"></span> </button>';
-										
-										
-										
-										ocultarBoton="<?= getBehavio($company->type, 'app_invoice_billing','divBtnPrecios','')?>";
-                                        str     = str+'<button type="button" class="btn btn-success btnInfoProducto '+ocultarBoton+' " data-precio1="'+objProductoPrecio1+'" data-precio2="'+objProductoPrecio2+'" data-precio3="'+objProductoPrecio3+'"><i class="icon16 i-info"></i></button>';
-										str		= str+'</div>';
-										
-										return str;
-												
-											
-										
-									
-								}
-							},
-							{
-								"aTargets"		: [ 13 ],//skuFormatoDescription
-								"bVisible"		: true,
-								"sClass"		: "hidden",
-								"bSearchable"	: false,
-								"mRender"		: function ( data, type, full ) {
-									
-									return '<input type="text" class="col-lg-12 skuFormatoDescription" value="'+data+'" name="skuFormatoDescription[]" style="text-align:right" />';
-								}
-								//,
-								//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
-								//{
-								//	  $(td).css("display","block");
-								//}
-							},
-							{
-								"aTargets"		: [ columnasTableDetail.precio2 ],//Precio2
-								"bVisible"		: true,
-								"sClass"		: "hidden",
-								"bSearchable"	: false,
-								"mRender"		: function ( data, type, full ) {
-									return '<input type="hidden" value="'+data+'" name="txtItemPrecio2[]" />';
-								}
-								//,
-								//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
-								//{
-								//	  $(td).css("display","block");
-								//}
-							},
-							{
-								"aTargets"		: [ columnasTableDetail.precio3 ],//Precio3
-								"bVisible"		: true,
-								"sClass"		: "hidden",
-								"bSearchable"	: false,
-								"mRender"		: function ( data, type, full ) {
-									return '<input type="hidden" value="'+data+'" name="txtItemPrecio3[]" />';
-								}
-								//,
-								//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
-								//{
-								//	  $(td).css("display","block");
-								//}
-							},
-							{
-								"aTargets"		: [ 16 ],//itemNameDescription
-								"bVisible"		: true,
-								"sClass"		: "hidden",
-								"bSearchable"	: false,
-								"mRender"		: function ( data, type, full ) {
-									return '<input type="hidden" value="'+data+'" name="txtTransactionDetailNameDescription[]" />';
-								}								
-							},
-							{
-								"aTargets"		: [ 17 ],//TAX_SERVICES
-								"bVisible"		: true,
-								"sClass"		: "hidden",
-								"bSearchable"	: false,
-								"mRender"		: function ( data, type, full ) {
-									return '<input type="text" class="col-lg-12 txtTaxServices" value="'+data+'" name="txtTaxServices[]" style="text-align:right" />';
-								}
-							},
-							{
-								"aTargets"		: [ 18 ],//Peso
-								"bVisible"		: true,
-								"sClass"		: objParameterINVOICE_SHOW_FIELD_PESO == "true" ? "" : "hidden",
-								"bSearchable"	: false,
-								"mRender"		: function ( data, type, full ) {
-									return '<input type="text" class="col-lg-12 txtDetailLote" value="'+data+'" name="txtDetailLote[]" style="text-align:right" />';
-								}
-							},
-                            {
-                                "aTargets"		: [ 19 ],//VENDEDOR SELECCIONADO DEL MODAL
-                                "bVisible"		: true,
-                                "sClass"		: "hidden",
-                                "bSearchable"	: false,
-                                "mRender"		: function ( data, type, full ) {
-                                    return '<input type="text" class="col-lg-12 txtInfoVendedor" value="'+data+'" name="txtInfoVendedor[]" style="text-align:right" />';
-                                }
-                            },
-                            {
-                                "aTargets"		: [ 20 ],//SERIE INGRESADO DESDE EL MODAL
-                                "bVisible"		: true,
-                                "sClass"		: "hidden",
-                                "bSearchable"	: false,
-                                "mRender"		: function ( data, type, full ) {
-                                    return '<input type="text" class="col-lg-12 txtInfoSerie" value="'+data+'" name="txtInfoSerie[]" style="text-align:right" />';
-                                }
-                            },
-                            {
-                                "aTargets"		: [ 21 ],//REFERENCIA INGRESADO DESDE EL MODAL
-                                "bVisible"		: true,
-                                "sClass"		: "hidden",
-                                "bSearchable"	: false,
-                                "mRender"		: function ( data, type, full ) {
-                                    return '<input type="text" class="col-lg-12 txtInfoReferencia" value="'+data+'" name="txtInfoReferencia[]" style="text-align:right" />';
-                                }
-                            },
-                            {
-                                "aTargets"		: [ columnasTableDetail.precio1 ],//Precio1
-                                "bVisible"		: true,
-                                "sClass"		: "hidden",
-                                "bSearchable"	: false,
-                                "mRender"		: function ( data, type, full ) {
-                                    return '<input type="hidden" value="'+data+'" name="txtItemPrecio1[]" />';
-                                }
-                            },
-
-				]							
-			});
-						
-			//Renderizar combobox de las lineas de credito			
-			fnRenderLineaCredit(objListCustomerCreditLine,objCausalTypeCredit);	
-
-			//Mandar a imprimr la factura
-			//Por cada factura nueva
-			//Si que la impresiona sea directa
-			if(
-				varParameterInvoiceBillingPrinterDirect == 'true' && 
-				varParameterImprimirPorCadaFactura == "true" && 
-				varParameterInvoiceBillingPrinterDataLocal != "" 
-			)
-			{
-				mostrarModal("ModalPrinterDocumentDialogCustom");
-				$(".modal-backdrop.fade.in").removeClass("modal-backdrop");
-			}
-			
-			
-			//Mandar a imprimr la factura
-			//Por cada factura
-			//Con el cuadro de dialogo
-			//Con factura en el server 
-			if(
-				varParameterInvoiceBillingPrinterDirect == 'false' && 
-				varParameterImprimirPorCadaFactura == "true"  && 
-				varTransactionMasterIDToPrinter != "" 
-			)
-			{
-				mostrarModal("ModalOpcionesImpresion");
-				$(".modal-backdrop.fade.in").removeClass("modal-backdrop");
-			}
-
-            if(varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
-                $('.btnMenus').addClass('hidden');
-                $('#btnDelete').addClass('hidden');
-                $('#btnDeleteItem').addClass('hidden');
-            }
-
-			if(transactionMasterID !== 0){
-				loadEdicion = true;
-				let url = varBaseUrl + '/app_invoice_billing/edit/' + <?= $companyID ?> + '/' + transactionID + '/' + transactionMasterID + '/' + $("#txtCodigoMesero").val();
-				const resultado = $.ajax({
-					url: url
-				});
-				mostarModalPersonalizado('Cargando datos de factura, por favor espere...');
-				resultado.then(function(response) {
-					fnClearForm();
-					fnUpdateInvoiceView(response.data);
-				});
-			}
+		$('#txtClaveOpenCash').css({
+			'webkitTextSecurity': 'disc', 		// Para WebKit browsers
+			'textSecurity'		: 'disc'        // Para otros browsers que lo soporten
 		});
-	}	
+
+		$grid = $('.custom-table-container-inventory .row').isotope({
+			itemSelector	: '.item-producto',
+			layoutMode		: 'fitRows',
+			filter			: '.item-producto-back'
+		});
+
+		//codigo para cuando carga la pagina y mostrar la zona
+		if(varParameterRestaurante == "true")
+		{
+			$("#mySidebarZona").css("width","100%");
+			$("#mySidebarZona").removeClass("hidden");
+		}
+
+		$(".custom-table-container-inventory").hide();
+		var zonaDefault = $("#txtZoneID").val();
+		$(".custom-table-mesas").find("td").addClass("hidden");
+		$(".custom-table-mesas").find('td[data-parent="'+zonaDefault+'"]').removeClass("hidden");
+
+		var objectParameterButtomsBack		= {};
+		$('#txtDate').datepicker({format:"yyyy-mm-dd"});
+		$('#txtDate').val(moment().format("YYYY-MM-DD"));	
+		$("#txtDate").datepicker("update");
+		$('#txtNextVisit').datepicker({format:"yyyy-mm-dd"});
+		 
+		
+		$('#txtDateFirst').datepicker({format:"yyyy-mm-dd"});						 
+		$('#txtDateFirst').val(moment().add('days', 0).format("YYYY-MM-DD"));			 
+		$("#txtDateFirst").datepicker("update");
+	
+		 
+		 heigthTop							= 300;
+		 //Incializar Focos en el codigo de barra
+		if(varParameterScanerProducto != "false" && varUseMobile == "0" )
+		{
+			$("#txtScanerCodigo").focus();			
+		}
+		
+		
+		if(varUseMobile == "0")
+		{
+			// Añade una nueva entrada en el historial para evitar que el usuario regrese
+			history.pushState(null, null, window.location.href);
+
+
+			// Captura el evento popstate que ocurre cuando el usuario intenta volver
+			window.onpopstate = function(event) {
+				// Redirige a la misma página o realiza otra acción
+				history.go(1);
+			};
+
+
+			//window.addEventListener('beforeunload', function (e) {
+			//	// Evita que la página se cierre
+			//	e.preventDefault();  // Necesario para algunos navegadores
+			//
+			//	// Establece el mensaje de advertencia
+			//	e.returnValue = '';  // El mensaje personalizado no es compatible en la mayoría de los navegadores
+			//});
+
+		}
+		
+		
+		
+		if(varParameterScrollDelModalDeSeleccionProducto == "true"){
+			$("#modal_body_popup_productos").css("overflow","auto");
+			$("#modal_body_popup_productos").css("height",varParameterAlturaDelModalDeSeleccionProducto);
+		}
+		
+		
+		//Guardar y regresar a la lista, de una sola ves si
+		//Si es auto aplicar y es regresar a la lista y no es impresion directa 
+		//Y no hay impresion por cada factura			
+		if (
+			
+			(
+				(varParameterInvoiceBillingPrinterDirect == "false"   && varAutoAPlicar == "true" ) || 
+				(varParameterInvoiceBillingPrinterDirect == "false"   && varParameterRegresarAListaDespuesDeGuardar == "true" ) 
+			) && 
+			objCompanyParameter_Key_INVOICE_PRINT_BY_INVOICE == "false" 
+			
+		)
+		{
+			$( "#form-new-invoice" ).submit(function(e){						  
+				e.preventDefault(e);
+				var formData = new FormData(this);
+				//Mandar la factura
+				//Interna mente, se se guarda y se imprimie
+				$.ajax({
+					async: 		true,
+					type: 		$( "#form-new-invoice" ).attr('method'),
+					url: 		$( "#form-new-invoice" ).attr('action'),
+					data: 		formData,
+					cache: 		false,
+					processData:false,
+					contentType:false,				  
+					success: 	function (data) {
+						console.log("success form data")
+					},
+					error: 		function(request, status, error) {
+						console.log("error form data")
+					}
+				});
+				
+				
+				//Mandar abrir la caja de efectivo
+				$.ajax({
+					async: 		true,
+					type: 		"GET",
+					url: 		"<?php echo base_url(); ?>/app_invoice_billing/viewPrinterOpen",
+					data: 		formData,
+					cache: 		false,
+					processData:false,
+					contentType:false,				  
+					success: 	function (data) {
+						console.log("success form data")
+					},
+					error: 		function(request, status, error) {
+						console.log("error form data")
+					}
+				});
+				
+				if(varParameterRegresarAListaDespuesDeGuardar == "true"){
+					window.location	= "<?php echo base_url(); ?>/app_invoice_billing/index";
+				}
+				if(varParameterRegresarAListaDespuesDeGuardar != "true"){
+					window.location	= "<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>";
+				}						  
+			});
+		}
+		
+	
+		objTableDetail = $("#tb_transaction_master_detail").dataTable({
+			"bPaginate"		: false,
+			"bFilter"		: false,
+			"bSort"			: false,
+			"bInfo"			: false,				
+			"oLanguage"		: {
+				"sEmptyTable": "", // No mostrar texto cuando está vacía
+				"sZeroRecords": "",
+			},
+			"bAutoWidth"	: false,
+			"aoColumnDefs": [ 
+						{
+							"aTargets"		: [ 0 ],//checked
+							"sWidth"		: "50px",
+							"sClass"		: "td-center",
+							"mRender"		: function ( data, type, full ) {
+								var ocultarBoton="";
+								if(varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
+									ocultarBoton="hidden";
+								}
+
+								if (data == false)
+								return '<input type="checkbox"  class="classCheckedDetail '+ocultarBoton+'"  value="0" ></span>';
+								else
+								return '<input type="checkbox"  class="classCheckedDetail '+ocultarBoton+'" checked="checked" value="0" ></span>';
+							}
+						},
+						{
+							"aTargets"		: [ 1 ],//transactionMasterDetailID
+							"bVisible"  	: true,
+							"sClass" 		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="hidden" value="'+data+'" name="txtTransactionMasterDetailID[]" />';
+							}
+						},
+						{
+							"aTargets"		: [ 2 ],//itemID
+							"bVisible"		: true,
+							"sClass" 		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="hidden" value="'+data+'" name="txtItemID[]" />';
+							}
+						},
+						{
+							"aTargets"		: [ 3 ],//itemNumber
+							"sWidth"		: "250px",
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text"  class="col-lg-12 <?= $useMobile == "1" ? 'hidden' : '' ?>" style="text-align:left; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" value="'+data+'" readonly="true" />';
+							}
+						},
+						{
+							"aTargets"		: [ columnasTableDetail.descripcion ],//descripcion
+							"sWidth"		: "250px",
+							"mRender"		: function ( data, type, full ) 
+							{
+							
+								
+								var classHiddenTex 		= "";
+								var classHiddenSelect 	= "";
+								if(varParameterINVOICE_BILLING_SELECTITEM == "true")									
+								{
+									classHiddenTex = "hidden";
+									classHiddenSelect 	= "";
+								}
+								else 
+								{
+									classHiddenTex = "";
+									classHiddenSelect 	= "hidden";
+								}
+								let strFiled = "";
+								if (varUseMobile === "1"){
+									strFiled        += '<label class="col-lg-12" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>">Descripción: '+full[4]+'</label>';
+									strFiled 		+= '<input type="hidden" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"  value="'+full[4]+'" '+NameStatus+' />';
+								}else{
+									strFiled 		+= '<input type="text" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"  class="col-lg-12 '+classHiddenTex+'" style="text-align:left; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" value="'+full[4]+'" '+NameStatus+' />';
+								}
+								let strFiledSelecte = "<select  name='txtItemSelected' class='<?php echo ($useMobile == "1" ? "" : "select2"); ?> txtItemSelected "+classHiddenSelect+" ' >";
+								strFiledSelecte		= strFiledSelecte+"<option value='"+full[2]+"' selected data-itemid='"+full[2]+"' data-codigo='"+full[3]+"' data-name='"+full[4].replace("'","").replace("'","") +"' data-unidadmedida='"+full[5]+"' data-cantidad='"+full[6]+"' data-precio='"+full[7]+"' data-barra='"+full[3]+"'  data-description='"+full[4].replace("'","").replace("'","") + "'    >"+ full[4].replace("'","").replace("'","")  +"</option>";									
+								strFiledSelecte		= strFiledSelecte+"</select>";
+								
+								strFiledSelecte 	=  strFiled + strFiledSelecte ;
+								return strFiledSelecte;
+								
+								
+							}
+						},
+						{
+							"aTargets"		: [ 5 ],//Sku
+							"sWidth"		: "250px",
+							"mRender"		: function ( data, type, full ) {
+									
+									var sel 					= '';
+									var espacio					=  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";								
+									sel 						= '<select name="txtSku[]" id="txtSku'+full[2]+'" class="txtSku col-lg-12 skuStyleNormal <?= $useMobile == "1" ? 'hidden' : '' ?>" style="<?= $useMobile == "1" ? 'width: 100%;' : '' ?>" >';
+									
+									if(varUseMobile == "1")
+										espacio = "";		
+									
+									
+									sel = sel + '<option value="'+full[5]+'" data-skuv="1" data-skupriceunitary="'+full[7]+'"   selected style="font-size:200%" data-description="'+full[13]+'" >'+full[13]+espacio+'</option>';
+									sel = sel + '</select>';																			
+									return sel;
+										
+							}
+						},
+						{
+							"aTargets"		: [ 6 ],//Cantidad
+							"sWidth"		: objParameterINVOICE_SHOW_FIELD_PESO == "true" ? "150px" : "250px",
+							"mRender"		: function ( data, type, full ) {
+								if (varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
+									str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" readonly />';
+								}else{
+									str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" />';
+								}
+								if (varUseMobile == "1")
+								str = str + " <span class='badge badge-inverse' >Cantidad</span>";
+						
+								return str;
+							}
+						},
+						{
+							"aTargets"		: [ 7 ],//Precio
+							"sWidth"		: "250px",
+							"mRender"		: function ( data, type, full ) {
+								var str =  '<input type="text" class="col-lg-12 txtPrice txt-numeric"   id="txtPriceRow'+full[2]+'"   '+PriceStatus+'  value="'+data+'" name="txtPrice[]" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" />';
+								if (varUseMobile == "1")
+								str = str + " <span class='badge badge-inverse' >Precio</span>";
+								return str;
+							}
+						},
+						{
+							"aTargets"		: [ 8 ],//Total
+							"sWidth"		: "250px",
+							"mRender"		: function ( data, type, full ) {
+								let str;
+								if (varUseMobile === "1"){
+									str = '<input type="hidden" name="txtSubTotal[]" value="'+data+'" />';
+								}else{
+									str = '<input type="text" class="col-lg-12 txtSubTotal" readonly value="'+data+'" name="txtSubTotal[]" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" />';
+								}
+
+								return str;
+							}
+						},
+						{
+							"aTargets"		: [ 9 ],//Iva
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12 txtIva" value="'+data+'" name="txtIva[]" style="text-align:right" />';
+							}
+						},
+						{
+							"aTargets"		: [ 10 ],//skuQuantityBySku
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12 skuQuantityBySku" value="'+data+'" name="skuQuantityBySku[]" style="text-align:right" />';
+							}
+						},
+						{
+							"aTargets"		: [ 11 ],//unitaryPriceInvidual
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12 unitaryPriceInvidual" value="'+data+'" name="unitaryPriceInvidual[]" style="text-align:right" />';
+							}
+						},
+						{
+							"aTargets"		: [ 12 ],//PlusDimus	
+							"sWidth"		: "250px",							
+							"mRender"		: function ( data, type, full ) {	
+								
+								
+											
+									//publico
+									var objProductoPrecio1 	= full[7];
+									//por mayor
+									var objProductoPrecio2 	= full[14];
+									//credito
+									var objProductoPrecio3 	= full[15];
+									
+									
+									//publico
+									objProductoPrecio1 = fnFormatFloat(objProductoPrecio1);
+									//por mayor
+									objProductoPrecio2 = fnFormatFloat(objProductoPrecio2);
+									//credito
+									objProductoPrecio3 = fnFormatFloat(objProductoPrecio3);
+									
+									var styleButtom = "";
+									if(varUseMobile == "1")
+									styleButtom = "style='text-align:right'";
+								
+									var str = "<div "+styleButtom+" >";
+									
+									if(varParameterINVOICE_BILLING_SELECTITEM == "true")
+									{
+										str    	= str + '' + 
+										'<button type="button" class="btn btn-warning btnAddSelectedItem"><span class="icon16 i-archive"></span> </button>';
+									}
+									var ocultarBoton="";
+									if(varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
+										ocultarBoton="hidden";
+									}
+
+									str    	= str + '' +
+									'<button type="button" class="btn btn-primary btnMenus '+ ocultarBoton +'"><span class="icon16 i-minus"></span> </button>';
+									
+									str    	= str + '' + 
+									'<button type="button" class="btn btn-primary btnPlus"><span class="icon16 i-plus"></span> </button>';
+									
+									
+									
+									ocultarBoton="<?= getBehavio($company->type, 'app_invoice_billing','divBtnPrecios','')?>";
+									str     = str+'<button type="button" class="btn btn-success btnInfoProducto '+ocultarBoton+' " data-precio1="'+objProductoPrecio1+'" data-precio2="'+objProductoPrecio2+'" data-precio3="'+objProductoPrecio3+'"><i class="icon16 i-info"></i></button>';
+									str		= str+'</div>';
+									
+									return str;
+											
+										
+									
+								
+							}
+						},
+						{
+							"aTargets"		: [ 13 ],//skuFormatoDescription
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								
+								return '<input type="text" class="col-lg-12 skuFormatoDescription" value="'+data+'" name="skuFormatoDescription[]" style="text-align:right" />';
+							}
+							//,
+							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//{
+							//	  $(td).css("display","block");
+							//}
+						},
+						{
+							"aTargets"		: [ columnasTableDetail.precio2 ],//Precio2
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="hidden" value="'+data+'" name="txtItemPrecio2[]" />';
+							}
+							//,
+							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//{
+							//	  $(td).css("display","block");
+							//}
+						},
+						{
+							"aTargets"		: [ columnasTableDetail.precio3 ],//Precio3
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="hidden" value="'+data+'" name="txtItemPrecio3[]" />';
+							}
+							//,
+							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//{
+							//	  $(td).css("display","block");
+							//}
+						},
+						{
+							"aTargets"		: [ 16 ],//itemNameDescription
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="hidden" value="'+data+'" name="txtTransactionDetailNameDescription[]" />';
+							}								
+						},
+						{
+							"aTargets"		: [ 17 ],//TAX_SERVICES
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12 txtTaxServices" value="'+data+'" name="txtTaxServices[]" style="text-align:right" />';
+							}
+						},
+						{
+							"aTargets"		: [ 18 ],//Peso
+							"bVisible"		: true,
+							"sClass"		: objParameterINVOICE_SHOW_FIELD_PESO == "true" ? "" : "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12 txtDetailLote" value="'+data+'" name="txtDetailLote[]" style="text-align:right" />';
+							}
+						},
+						{
+							"aTargets"		: [ 19 ],//VENDEDOR SELECCIONADO DEL MODAL
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12 txtInfoVendedor" value="'+data+'" name="txtInfoVendedor[]" style="text-align:right" />';
+							}
+						},
+						{
+							"aTargets"		: [ 20 ],//SERIE INGRESADO DESDE EL MODAL
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12 txtInfoSerie" value="'+data+'" name="txtInfoSerie[]" style="text-align:right" />';
+							}
+						},
+						{
+							"aTargets"		: [ 21 ],//REFERENCIA INGRESADO DESDE EL MODAL
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12 txtInfoReferencia" value="'+data+'" name="txtInfoReferencia[]" style="text-align:right" />';
+							}
+						},
+						{
+							"aTargets"		: [ columnasTableDetail.precio1 ],//Precio1
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="hidden" value="'+data+'" name="txtItemPrecio1[]" />';
+							}
+						},
+
+			]							
+		});
+					
+		//Renderizar combobox de las lineas de credito			
+		fnRenderLineaCredit(objListCustomerCreditLine,objCausalTypeCredit);	
+
+		//Mandar a imprimr la factura
+		//Por cada factura nueva
+		//Si que la impresiona sea directa
+		if(
+			varParameterInvoiceBillingPrinterDirect == 'true' && 
+			varParameterImprimirPorCadaFactura == "true" && 
+			varParameterInvoiceBillingPrinterDataLocal != "" 
+		)
+		{
+			mostrarModal("ModalPrinterDocumentDialogCustom");
+			$(".modal-backdrop.fade.in").removeClass("modal-backdrop");
+		}
+		
+		
+		//Mandar a imprimr la factura
+		//Por cada factura
+		//Con el cuadro de dialogo
+		//Con factura en el server 
+		if(
+			varParameterInvoiceBillingPrinterDirect == 'false' && 
+			varParameterImprimirPorCadaFactura == "true"  && 
+			varTransactionMasterIDToPrinter != "" 
+		)
+		{
+			mostrarModal("ModalOpcionesImpresion");
+			$(".modal-backdrop.fade.in").removeClass("modal-backdrop");
+		}
+
+		if(varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
+			$('.btnMenus').addClass('hidden');
+			$('#btnDelete').addClass('hidden');
+			$('#btnDeleteItem').addClass('hidden');
+		}
+
+		if(transactionMasterID !== 0){
+			loadEdicion 	= true;
+			let url 		= varBaseUrl + '/app_invoice_billing/edit/' + <?= $companyID ?> + '/' + transactionID + '/' + transactionMasterID + '/' + $("#txtCodigoMesero").val();
+			const resultado = $.ajax({
+				url: url
+			});
+			mostarModalPersonalizado('Cargando datos de factura, por favor espere...');
+			resultado.then(function(response) {
+				fnClearForm();
+				fnUpdateInvoiceView(response.data);
+			});
+		}
+	});
+	
 	
 
 </script>

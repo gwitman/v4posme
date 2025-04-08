@@ -2,14 +2,14 @@
 
 	/* Estilo para ocultar la barra lateral */
 	.sidebar{
-		height: 100%;
-		width: 0;
-		position: fixed;
-		top: 0;
-		right: 0;
+		height		: 100%;
+		width		: 0;
+		position	: fixed;
+		top			: 0;
+		right		: 0;
 		background-color: #fff;
-		overflow-x: hidden;		
-		padding-top: 60px;
+		overflow-x	: hidden;		
+		padding-top	: 60px;
 	}
 
 	/* Estilo para el contenido de la barra lateral */
@@ -27,33 +27,33 @@
 		display: block;
 	}
 	.container-overlay {
-		border: 1px solid #dee2e6;
-		border-radius: 8px;
-		background-size: cover;
+		border			: 1px solid #dee2e6;
+		border-radius	: 8px;
+		background-size	: cover;
 		background-position: center;
-		cursor: pointer;
-		height: 150px;
-		width: 150px;
-		position: relative;		
+		cursor			: pointer;
+		height			: 150px;
+		width			: 150px;
+		position		: relative;		
 	}
 	.container-overlay .overlay {
 		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
+		top		: 0;
+		left	: 0;
+		width	: 100%;
+		height	: 100%;
 		background-color: rgba(0, 0, 0, 0.5);
-		z-index: 1; 
-		display: none;
+		z-index	: 1; 
+		display	: none;
 	}
 	.text-overlay {
-		position: relative;
-		z-index: 2;
-		font-size: 18px;
-		color: #fff;
-		top: 1%; 
-		left: 1%;
-		transform: translate(-1%, -1%);
+		position	: relative;
+		z-index		: 2;
+		font-size	: 18px;
+		color		: #fff;
+		top			: 1%; 
+		left		: 1%;
+		transform	: translate(-1%, -1%);
 	}
 
 	.container-overlay:hover {
@@ -68,9 +68,9 @@
 	/* FIN DISEÑO DE TABLA AL PASAR EL MOUSE Y DAR CLIC EN UNA CELDA */
     <?php if($useMobile == "1"){?>
     #tb_transaction_master_detail {
-        border-collapse: separate; /* Necesario para que border-spacing funcione */
-        border-spacing: 0 3px; /* Espaciado vertical entre filas */
-        width: 100%;
+        border-collapse	: separate; /* Necesario para que border-spacing funcione */
+        border-spacing	: 0 3px; /* Espaciado vertical entre filas */
+        width			: 100%;
     }
 
     #tb_transaction_master_detail td, th {
@@ -82,101 +82,101 @@
 
 <style>
 	.custom-table-container-categorias  {
-		max-height: 400px; /* Ajusta la altura según sea necesario */
-        overflow-y: auto;
-		scrollbar-width:thin;
+		max-height		: 400px; /* Ajusta la altura según sea necesario */
+        overflow-y		: auto;
+		scrollbar-width	:thin;
 	}
     .text-overlay-categoria{
-        position: relative;
-        z-index: 2;
-        font-size: 18px;
-        color: #ffffff;
-		top: 1%; 
-		left: 1%;
-		transform: translate(-1%, -1%);
+        position	: relative;
+        z-index		: 2;
+        font-size	: 18px;
+        color		: #ffffff;
+		top			: 1%; 
+		left		: 1%;
+		transform	: translate(-1%, -1%);
     }
 	.custom-table-categorias .item-categoria {
-		border: 1px solid #dee2e6;
-		border-radius: 8px;
-		background-size: cover;
+		border			: 1px solid #dee2e6;
+		border-radius	: 8px;
+		background-size	: cover;
 		background-position: center;
-		cursor: pointer;
-		min-height: 150px;
+		cursor			: pointer;
+		min-height		: 150px;
 	}
 	.custom-table-categorias .item-categoria:hover {
-		border-color: #007bff;
-        border-radius: 8px;
+		border-color	: #007bff;
+        border-radius	: 8px;
 	}
 	.custom-table-categorias .overlay {
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
+		position	: absolute;
+		top			: 0;
+		bottom		: 0;
+		left		: 0;
+		right		: 0;
         border-radius: 8px;
 		background-color: rgba(0, 0, 0, 0.5);
-		color: white;
-		display: flex;
-		align-items: center;
+		color		: white;
+		display		: flex;
+		align-items	: center;
 		justify-content: center;
-		/*opacity: 0;*/
-		transition: opacity 0.3s;
+		/*opacity	: 0;*/
+		transition	: opacity 0.3s;
 	}
 	.item-categoria:hover .overlay {
 		opacity: 1;
 	}
 	.item-categoria.selected {
-		border-color: #ff0000 !important;
-		border-width: 5px !important;
-        border-radius: 12px;
+		border-color	: #ff0000 !important;
+		border-width	: 5px !important;
+        border-radius	: 12px;
 	}
 </style>
 
 
 <style>
 	.custom-table-container-inventory  {
-        max-height: 550px;
-        overflow-y: auto;
-		scrollbar-width:thin;
+        max-height		: 550px;
+        overflow-y		: auto;
+		scrollbar-width	:thin;
 	}
 
 	.item-producto {
-		border: 1px solid #dee2e6;
+		border		: 1px solid #dee2e6;
 		border-radius: 8px;
 		background-size: cover;
 		background-position: center;
-		cursor: pointer;
-		min-height: 150px;
-		min-width: 150px;
-		position: relative;
+		cursor		: pointer;
+		min-height	: 150px;
+		min-width	: 150px;
+		position	: relative;
 	}
 	.item-producto:hover {
-		border-color: #007bff;
-        border-radius: 8px;
+		border-color	: #007bff;
+        border-radius	: 8px;
 	}
     .item-producto .overlay {
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
+		position	: absolute;
+		top			: 0;
+		bottom		: 0;
+		left		: 0;
+		right		: 0;
         border-radius: 8px;
 		background-color: rgba(0, 0, 0, 0.5);
-		color: white;
-		display: flex;
-		align-items: center;
+		color		: white;
+		display		: flex;
+		align-items	: center;
 		justify-content: center;
-		/*opacity: 0;*/
-		transition: opacity 0.3s;
+		/*opacity	: 0;*/
+		transition	: opacity 0.3s;
 	}
     .item-producto td:hover .overlay {
-		opacity: 1;
-        border-radius: 8px;
+		opacity			: 1;
+        border-radius	: 8px;
 	}
     .item-producto.selected {
-		border-color: #ff0000 !important;
-		border-width: 5px !important;
-        border-radius: 12px;
+		border-color	: #ff0000 !important;
+		border-width	: 5px !important;
+        border-radius	: 12px;
 	}
 </style>
 
@@ -349,15 +349,6 @@ echo helper_getHtmlOfPageLanding();
 														buscar
 													</button>
 												</span>
-												<!--
-												<span class="input-group-btn">
-													<button class="btn btn-success" type="button" id="btnSearchCustomerNew">
-														<i aria-hidden="true" class="i-plus"></i>
-														nuevo
-													</button>
-												</span>
-												-->
-												
 											</div>
 										</div>
 									</div>
@@ -597,10 +588,7 @@ echo helper_getHtmlOfPageLanding();
 										
 										<div class="form-group <?php echo $objParameterINVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE=="true" ? "" : "hidden"; ?> ">
 												<label class="col-lg-4 control-label" for="txtPeriodPay">Frecuencia</label>
-												<div class="col-lg-8">
-													<!--
-													<input class="form-control"  type="text"  name="txtReference1" id="txtReference1" value="">												
-													-->
+												<div class="col-lg-8">													
 													<select name="txtPeriodPay" id="txtPeriodPay" class="<?php echo ($useMobile == "1" ? "" : "select2");  ?>">	
 															<?php
 															$index = -1;
@@ -620,10 +608,7 @@ echo helper_getHtmlOfPageLanding();
 										
 										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divProviderCredit",""); ?> ">
 												<label class="col-lg-4 control-label" for="txtReference1">Proveedor de Credito</label>
-												<div class="col-lg-8">
-													<!--
-													<input class="form-control"  type="text"  name="txtReference1" id="txtReference1" value="">												
-													-->
+												<div class="col-lg-8">													
 													<select name="txtReference1" id="txtReference1" class="<?php echo ($useMobile == "1" ? "" : "select2");  ?>">
 															<?php
 															$index = -1;
@@ -673,10 +658,6 @@ echo helper_getHtmlOfPageLanding();
 												<label class="col-lg-4 control-label" for="txtFixedExpenses"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionExpenseLabel","% Interes."); ?></label>
 												<div class="col-lg-8">
 													<input class="form-control"   type="text" name="txtFixedExpenses" id="txtFixedExpenses" value="0">
-													<!--
-													<a href="javascript:void(0);" class="btn btn-primary  gap-right10" data-toggle="popover" data-placement="bottom" 
-													data-content="Ejemplo: Del Interese de cada cuota, se multiplica por este % para saber de cuanto es la comision para FID-Local, este numero debe ser #0 o mayor que #1" title="" data-original-title="% de Gastos Fijo:">Ayuda:</a>
-													-->
 													
 												</div>
 										</div>
@@ -695,12 +676,7 @@ echo helper_getHtmlOfPageLanding();
 											<div class="col-lg-8">
 												<input class="form-control"   type="text" name="txtLayFirstLineProtocolo" id="txtLayFirstLineProtocolo" value="">
 												
-												<!--
-												<a href="javascript:void(0);" class="btn btn-primary  gap-right10" data-toggle="popover" data-placement="bottom" 
-												data-content="Ejemplo:  5" title="" 
-												data-original-title="Tenor:">Ayuda:</a>
-												-->
-												
+											
 											</div>
 										</div>
 										
@@ -1634,14 +1610,9 @@ echo helper_getHtmlOfPageLanding();
 
 <div class="row"> 
 	<div id="email" class="col-lg-12">
-	
-		
 	</div>
 	<!-- End #email  -->
 </div>
 <!-- End .row-fluid  -->
-
-
-
 <?php echo getBehavio($company->type,"app_invoice_billing","divTraslateElement",""); ?>  
  
