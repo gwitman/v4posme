@@ -3437,7 +3437,7 @@ class app_invoice_billing extends _BaseController {
 			$roleID 							= $dataSession["role"]->roleID;
 			$userID								= $dataSession["user"]->userID;
 			$transactionMasterIDToPrinter		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterIDToPrinter");//--finuri
-            $codigoMesero                       = $dataSession['codigoMesero'];
+            $codigoMesero                       = array_key_exists('codigoMesero', $dataSession) ?  $dataSession['codigoMesero'] : helper_SegmentsValue($this->uri->getSegments(),"codigoMesero");
             $companyID                          = $dataSession['companyID'];
             $transactionID                      = $dataSession['transactionID'];
             $transactionMasterID                = array_key_exists('transactionMasterID', $dataSession) ? $dataSession['transactionMasterID'] : null;
