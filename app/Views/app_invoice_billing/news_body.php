@@ -666,33 +666,37 @@ echo helper_getHtmlOfPageLanding();
 										<div  id="divPanelExoneracion" class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divApplyExoneracion",""); ?> ">
 											<label class="col-lg-4 control-label" id="txtLabelApplyExoneracion" for="txtCheckApplyExoneracion">Aplica exoneración?</label>
 											<div class="col-lg-8">
-												<input class="toggle controls-row" data-on-color="success" data-off-color="warning"  type="checkbox" id="txtCheckApplyExoneracion"  name="txtCheckApplyExoneracion"  />
-												<input type="hidden" id="txtCheckApplyExoneracionValue"  name="txtCheckApplyExoneracionValue" value="0" />
-											</div>
+                                                <div class="switch" data-on="success" data-off="warning">
+                                                    <input class="toggle controls-row" type="checkbox"  id="txtCheckApplyExoneracion" name="txtCheckApplyExoneracion" />
+                                                    <input type="hidden" id="txtCheckApplyExoneracionValue"  name="txtCheckApplyExoneracionValue" value="0" />
+                                                </div>
+                                            </div>
 										</div>
 										
 										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divExoneracion",""); ?>">
 											<label class="col-lg-4 control-label" for="txtLayFirstLineProtocolo">Codigo de exoneración.</label>
 											<div class="col-lg-8">
 												<input class="form-control"   type="text" name="txtLayFirstLineProtocolo" id="txtLayFirstLineProtocolo" value="">
-												
-											
 											</div>
 										</div>
 										
 										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divDesembolsoEfectivo",""); ?> ">
 											<label class="col-lg-4 control-label" for="txtCheckDeEfectivo" id="txtLabelIsDesembolsoEfectivo">Es un desembolso en efectivo?</label>
 											<div class="col-lg-8">
-												<input class="toggle controls-row" data-on-color="success" data-off-color="warning" type="checkbox" id="txtCheckDeEfectivo" />
-												<input type="hidden" name="txtCheckDeEfectivoValue" id="txtCheckDeEfectivoValue" value="0" />
+                                                <div class="switch" data-on="success" data-off="warning">
+                                                    <input class="toggle controls-row" type="checkbox" id="txtCheckDeEfectivo" />
+                                                    <input type="hidden" name="txtCheckDeEfectivoValue" id="txtCheckDeEfectivoValue" value="0" />
+                                                </div>
 											</div>
 										</div>
 										
 										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divReportSinRiesgo",""); ?>">
 											<label class="col-lg-4 control-label" for="txtCheckReportSinRiesgo" id="txtLabelIsReportSinRiesgo">Reportar a SinRiesgo</label>
-											<div class="col-lg-8">											
-												<input data-on-color="success" data-off-color="warning" class="toggle controls-row" type="checkbox" id="txtCheckReportSinRiesgo" name="txtCheckReportSinRiesgo" />															
-												<input type="hidden" name="txtCheckReportSinRiesgoValue" id="txtCheckReportSinRiesgoValue" value="0" />
+											<div class="col-lg-8">
+                                                <div class="switch" data-on="success" data-off="warning">
+                                                    <input class="toggle controls-row" type="checkbox" id="txtCheckReportSinRiesgo" name="txtCheckReportSinRiesgo" />
+                                                    <input type="hidden" name="txtCheckReportSinRiesgoValue" id="txtCheckReportSinRiesgoValue" value="0" />
+                                                </div>
 											</div>													
 										</div>
 									</div>

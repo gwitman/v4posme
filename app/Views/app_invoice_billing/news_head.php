@@ -45,8 +45,10 @@
 						height: 100% !important;
 						min-height:37px !important;
 					}
-					
-					@media only screen and (max-width: 480px) 
+					.switch{
+                        z-index: 0 !important;
+                    }
+                    @media only screen and (max-width: 480px)
 					{
 						#heading{
 							margin:0px 0px 0px 0px !important

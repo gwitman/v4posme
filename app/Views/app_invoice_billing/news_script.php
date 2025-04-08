@@ -124,33 +124,37 @@
 		quantity	 = quantity + 1;
 		$(this).parent().parent().parent().find(".txtQuantity").val(quantity);
 		fnRecalculateDetail(true,"");				
-	});	
+	});
 
-	$('#txtCheckApplyExoneracion').on('switchChange.bootstrapSwitch', function (event, state){
-		if(state)
-			$("#txtCheckApplyExoneracionValue").val(1);
-		else
-			$("#txtCheckApplyExoneracionValue").val(0);
+    $('#txtCheckApplyExoneracion').parent().parent().on('change', function() {
+        let exoneracion = $('#txtCheckApplyExoneracion').parent().hasClass("switch-on");
+        if(exoneracion)
+            $("#txtCheckApplyExoneracionValue").val(1);
+        else
+            $("#txtCheckApplyExoneracionValue").val(0);
 
-		var listRow = objTableDetail.fnGetData();							
-		var length 	= listRow.length;		
-		var i 		= 0;
-		while (i < length )
-		{	
-			fnGetConcept(listRow[i][2],"IVA");			
-			i++;
-		}
-		
+        var listRow = objTableDetail.fnGetData();
+        var length 	= listRow.length;
+
+        var i 		= 0;
+        while (i < length )
+        {
+            fnGetConcept(listRow[i][2],"IVA");
+            i++;
+        }
+
     });
 
-	$('#txtCheckReportSinRiesgo').on('switchChange.bootstrapSwitch', function (event, state){
+    $('#txtCheckReportSinRiesgo').parent().parent().on('change', function() {
+        let state = $('#txtCheckReportSinRiesgo').parent().hasClass("switch-on");
 		if(state)
 			$("#txtCheckReportSinRiesgoValue").val(1);
 		else
 			$("#txtCheckReportSinRiesgoValue").val(0);
     });
 
-	$('#txtCheckDeEfectivo').on('switchChange.bootstrapSwitch', function (event, state){
+	$('#txtCheckDeEfectivo').parent().parent().on('change', function() {
+        let state = $('#txtCheckDeEfectivo').parent().hasClass("switch-on");
 		if(state)
 			$("#txtCheckDeEfectivoValue").val(1);
 		else
@@ -175,14 +179,16 @@
 					var timerNotification 	= 15000;
 					if(e.objTransactionMaster.length > 0 )
 					{
-						$('#txtCheckApplyExoneracion').bootstrapSwitch('state', false);
+                        $('#txtCheckApplyExoneracion').parent().removeClass("switch-on");
+                        $('#txtCheckApplyExoneracion').parent().addClass("switch-off");
 						$("#txtCheckApplyExoneracionValue").val(0);
 						fnShowNotification("El numero de exoneracion ya existe!!","error",timerNotification);
 					}
 					//La exoneracoin no existe si se puede exonerar
 					else
 					{
-						$('#txtCheckApplyExoneracion').bootstrapSwitch('state', true);
+                        $('#txtCheckApplyExoneracion').parent().removeClass("switch-off");
+                        $('#txtCheckApplyExoneracion').parent().addClass("switch-on");
 						$("#txtCheckApplyExoneracionValue").val(1);
 						fnShowNotification("Exoneracion aplicada!!","success",timerNotification);
 					}
@@ -1704,10 +1710,6 @@
 		$("#txtCheckApplyExoneracionValue").val(0);
 		$("#txtCheckReportSinRiesgoValue").val(0);
 		$("#txtCheckDeEfectivoValue").val(0);
-		$('#txtCheckReportSinRiesgo').bootstrapSwitch('state', false);
-		$('#txtCheckApplyExoneracion').bootstrapSwitch('state', false);		
-		$('#txtCheckDeEfectivo').bootstrapSwitch('state', false);
-		
 		setTimeout(()=>{
 			cerrarModal('ModalCargandoDatos');
 		}, 2000);
@@ -1825,9 +1827,9 @@
 		$('#txtCausalID').val(objTransactionMaster.transactionCausalID).trigger("change");
 
 		if(objTransactionMaster.isApplied === "1"){
-			$('#txtIsApplied').bootstrapSwitch('state', true, true);
+			$('#txtIsApplied').bootstrapSwitch('toggleState', true);
 		}else{
-			$('#txtIsApplied').bootstrapSwitch('state', false, true);
+			$('#txtIsApplied').bootstrapSwitch('toggleState', false);
 		}
 
 		$('#txtFixedExpenses').val(objTransactionMasterDetailCredit.reference1);
@@ -1943,7 +1945,7 @@
 		if(data.objParameterInvoiceButtomPrinterFidLocalPaymentAndAmortization === "true"){	
 			$("#btnAceptarDialogPrinterV2AceptarTabla").removeClass("hidden");
 		}
-		if(objParameterPrinterDirectAndPreview == 'true' ){	
+		if(objParameterPrinterDirectAndPreview === 'true' ){
 			$("#btnAceptarDialogPrinterV2AceptarDirect").removeClass("hidden");
 		}
 		$('#btnLinkPayment').css('display','block');
@@ -1965,23 +1967,28 @@
         <?php echo getBehavio($company->type, 'app_invoice_billing', 'btnFooter','') ?>
 
 		if(objTransactionMasterReferences.reference2 === "1"){
-			$('#txtCheckApplyExoneracionValue').val(1);
-			$('#txtCheckApplyExoneracion').bootstrapSwitch('state', true);
+            $('#txtCheckApplyExoneracionValue').val(1);
+            $('#txtCheckApplyExoneracion').parent().removeClass("switch-off");
+            $('#txtCheckApplyExoneracion').parent().addClass("switch-on");
 		}else{
-			$('#txtCheckApplyExoneracion').bootstrapSwitch('state', false);
+            $('#txtCheckApplyExoneracion').parent().removeClass("switch-on");
+            $('#txtCheckApplyExoneracion').parent().addClass("switch-off");
 			$('#txtCheckApplyExoneracionValue').val(0);
 		}
 
 		if(objTransactionMasterDetailCredit.reference2 === "1"){
 			$('#txtCheckReportSinRiesgoValue').val(1);
-			$('#txtCheckReportSinRiesgo').bootstrapSwitch('state', true);
+            $('#txtCheckReportSinRiesgo').parent().removeClass("switch-off");
+            $('#txtCheckReportSinRiesgo').parent().addClass("switch-on");
 		}else{
 			$('#txtCheckReportSinRiesgoValue').val(0);
-			$('#txtCheckReportSinRiesgo').bootstrapSwitch('state', false);
+            $('#txtCheckReportSinRiesgo').parent().removeClass("switch-on");
+            $('#txtCheckReportSinRiesgo').parent().addClass("switch-off");
 		}
 
 		$('#txtCheckDeEfectivoValue').val(0);
-		$('#txtCheckDeEfectivo').bootstrapSwitch('state', false);
+        $('#txtCheckDeEfectivo').parent().removeClass("switch-on");
+        $('#txtCheckDeEfectivo').parent().addClass("switch-off");
 
 		cerrarModal('ModalCargandoDatos');
     }
@@ -3768,12 +3775,39 @@
 			$('#btnDeleteItem').addClass('hidden');
 		}
 
+        if( $('#txtCheckApplyExoneracionValue').val() === "1"  )
+        {
+            $('#txtCheckApplyExoneracion').parent().removeClass("switch-off");
+            $('#txtCheckApplyExoneracion').parent().addClass("switch-on");
+        }
+        else
+        {
+            $('#txtCheckApplyExoneracion').parent().removeClass("switch-on");
+            $('#txtCheckApplyExoneracion').parent().addClass("switch-off");
 
-		
-		$("#txtCheckApplyExoneracion").bootstrapSwitch('state', false);			
-		$('#txtCheckDeEfectivo').bootstrapSwitch('state', false);
-		$('#txtCheckReportSinRiesgo').bootstrapSwitch('state', false);
-		
+        }
+        if( $('#txtCheckDeEfectivoValue').val() === "1"  )
+        {
+            $('#txtCheckDeEfectivo').parent().removeClass("switch-off");
+            $('#txtCheckDeEfectivo').parent().addClass("switch-on");
+        }
+        else
+        {
+            $('#txtCheckDeEfectivo').parent().removeClass("switch-on");
+            $('#txtCheckDeEfectivo').parent().addClass("switch-off");
+
+        }
+        if( $('#txtCheckReportSinRiesgoValue').val() === "1"  )
+        {
+            $('#txtCheckReportSinRiesgo').parent().removeClass("switch-off");
+            $('#txtCheckReportSinRiesgo').parent().addClass("switch-on");
+        }
+        else
+        {
+            $('#txtCheckReportSinRiesgo').parent().removeClass("switch-on");
+            $('#txtCheckReportSinRiesgo').parent().addClass("switch-off");
+
+        }
 		
 		
 		if(transactionMasterID !== 0){
