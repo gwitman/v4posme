@@ -3253,9 +3253,7 @@
 		$('.showComandoDeCocina').css('display', 'none');
 		$('.showPanelEdicion').css('display', 'none');
 		$('#registrarFacturaNueva').css('display','block');
-		$("#txtCheckApplyExoneracion").bootstrapSwitch('state', false);			
-		$('#txtCheckDeEfectivo').bootstrapSwitch('state', false);
-		$('#txtCheckReportSinRiesgo').bootstrapSwitch('state', false);
+		
 		
 		$('#txtClaveOpenCash').css({
 			'webkitTextSecurity': 'disc', 		// Para WebKit browsers
@@ -3770,6 +3768,14 @@
 			$('#btnDeleteItem').addClass('hidden');
 		}
 
+
+		
+		$("#txtCheckApplyExoneracion").bootstrapSwitch('state', false);			
+		$('#txtCheckDeEfectivo').bootstrapSwitch('state', false);
+		$('#txtCheckReportSinRiesgo').bootstrapSwitch('state', false);
+		
+		
+		
 		if(transactionMasterID !== 0){
 			loadEdicion 	= true;
 			let url 		= varBaseUrl + '/app_invoice_billing/edit/' + <?= $companyID ?> + '/' + transactionID + '/' + transactionMasterID + '/' + $("#txtCodigoMesero").val();
@@ -3782,6 +3788,7 @@
 				fnUpdateInvoiceView(response.data);
 			});
 		}
+		
 	});
 	
 	

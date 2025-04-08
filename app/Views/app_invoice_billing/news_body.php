@@ -666,7 +666,7 @@ echo helper_getHtmlOfPageLanding();
 										<div  id="divPanelExoneracion" class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divApplyExoneracion",""); ?> ">
 											<label class="col-lg-4 control-label" id="txtLabelApplyExoneracion" for="txtCheckApplyExoneracion">Aplica exoneración?</label>
 											<div class="col-lg-8">
-												<input class="toggle controls-row" data-on-color="success" data-off-color="warning" type="checkbox" id="txtCheckApplyExoneracion"  name="txtCheckApplyExoneracion" />
+												<input class="toggle controls-row" data-on-color="success" data-off-color="warning"  type="checkbox" id="txtCheckApplyExoneracion"  name="txtCheckApplyExoneracion"  />
 												<input type="hidden" id="txtCheckApplyExoneracionValue"  name="txtCheckApplyExoneracionValue" value="0" />
 											</div>
 										</div>
