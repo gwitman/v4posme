@@ -12,8 +12,8 @@
 		fnWaitCloseV2();
 		
 		$('#txtClaveMesero').css({
-			'webkitTextSecurity': 'disc', // Para WebKit browsers
-			'textSecurity': 'disc'        // Para otros browsers que lo soporten
+			'webkitTextSecurity'	: 'disc', // Para WebKit browsers
+			'textSecurity'			: 'disc'        // Para otros browsers que lo soporten
 		});
 
         if (objEliminarProductos != '0'){
@@ -33,8 +33,7 @@
 		}
 		
 		
-		$('#txtStartOn').datepicker({format:"yyyy-mm-dd"});
-		
+		$('#txtStartOn').datepicker({format:"yyyy-mm-dd"});		
 		$('#modalDialogClaveMesero').on('shown.bs.modal', function () {
 			$('#txtClaveMesero').focus();
 		});
@@ -205,6 +204,7 @@
 		});
 		
 		$(document).on("click","#btnNuevo",function(){
+			debugger;
 			objBoton = "new";
 			if(objEsMesero == "0")
 			{
