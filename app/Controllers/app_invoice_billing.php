@@ -9,7 +9,7 @@ use CodeIgniter\Database\Exceptions\DatabaseException;
 
 class app_invoice_billing extends _BaseController {
 
-    function edit($companyID, $transactionID, $transactionMasterID, $codigoMesero)
+    function edit($companyID, $transactionID, $transactionMasterID, $codigoMesero): ResponseInterface
     {
         $response = [
             'success' 	=> false,
@@ -328,9 +328,22 @@ class app_invoice_billing extends _BaseController {
             $parameterCausalTypeCredit 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_CREDIT");
             $objCustomerCreditAmoritizationAll		= $this->Customer_Credit_Amortization_Model->get_rowByCustomerID( $dataView["objTransactionMaster"]->entityID );
             $objListCustomerCreditLine 				= $this->Customer_Credit_Line_Model->get_rowByEntityBalanceMayorCero($companyID,$dataSession["user"]->branchID,$dataView["objTransactionMaster"]->entityID);
-
+			
+			//Obtener Lineas de Credito
+			$objListCustomerCreditLine2 	= $this->Customer_Credit_Line_Model->get_rowByBranchID($companyID, $dataSession["user"]->branchID);
+			$objListCustomerCreditLineAll	= [];
+			if($objListCustomerCreditLine2)
+			{
+				foreach($objListCustomerCreditLine2 as $key => $value){
+					if($value->balance > 0)
+					{
+						$objListCustomerCreditLine[] = $value;
+					}
+				}
+			}
 
             $dataView["objListCustomerCreditLine"]	  		=  $objListCustomerCreditLine;
+			$dataView["objListCustomerCreditLineAll"]	  	=  $objListCustomerCreditLineAll;
             $dataView["objCausalTypeCredit"]				=  $parameterCausalTypeCredit;
             $dataView["objCurrencyDolares"] 				=  $objCurrencyDolares;
             $dataView["objCurrencyCordoba"] 				=  $objCurrencyCordoba;
@@ -803,14 +816,12 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
-			
+			$this->core_web_notification->set_message(true,$ex->getLine()." ".$ex->getMessage());
 			return $this->response->setJSON(array(
 				'error'   => true,
 				'message' => $ex->getLine()." ".$ex->getMessage()
-			));//--finjson
-			$this->core_web_notification->set_message(true,$ex->getLine()." ".$ex->getMessage());
-		}		
-			
+			));//--finjson			
+		}	
 	}
 	
 	function updateElement($dataSession){
@@ -1238,7 +1249,7 @@ class app_invoice_billing extends _BaseController {
 						$objTMDC["transactionMasterID"]			= $transactionMasterID;
 						$objTMDC["transactionMasterDetailID"]	= $transactionMasterDetailID_;
 						$objTMDC["reference1"]					= /*inicio get post*/ $this->request->getPost("txtFixedExpenses");
-						$objTMDC["reference2"]					= /*inicio get post*/ $this->request->getPost("txtCheckReportSinRiesgo");
+						$objTMDC["reference2"]					= /*inicio get post*/ $this->request->getPost("txtCheckReportSinRiesgoValue");
 						$objTMDC["reference3"]					= "";
 						$objTMDC["reference4"]					= "";
 						$objTMDC["reference5"]					= "";
@@ -1314,7 +1325,7 @@ class app_invoice_billing extends _BaseController {
 						$this->Transaction_Master_Detail_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$transactionMasterDetailID,$objTMDNew);	
 						
 						$objTMDC["reference1"]					= /*inicio get post*/ $this->request->getPost("txtFixedExpenses");
-						$objTMDC["reference2"]					= /*inicio get post*/ $this->request->getPost("txtCheckReportSinRiesgo");
+						$objTMDC["reference2"]					= /*inicio get post*/ $this->request->getPost("txtCheckReportSinRiesgoValue");
 						$objTMDC["reference3"]					= "";
 						$objTMDC["reference4"]					= "";
 						$objTMDC["reference5"]					= "";
@@ -1502,7 +1513,7 @@ class app_invoice_billing extends _BaseController {
 					}
 					
 					$objCustomerCreditDocument["typeAmortization"] 		= $objCustomerCreditLine->typeAmortization;					
-					$objCustomerCreditDocument["reportSinRiesgo"] 	 	= /*inicio get post*/ $this->request->getPost("txtCheckReportSinRiesgo");
+					$objCustomerCreditDocument["reportSinRiesgo"] 	 	= /*inicio get post*/ $this->request->getPost("txtCheckReportSinRiesgoValue");
 					$customerCreditDocumentID 							= $this->Customer_Credit_Document_Model->insert_app_posme($objCustomerCreditDocument);
 					$periodPay 											= $this->Catalog_Item_Model->get_rowByCatalogItemID($objCustomerCreditLine->periodPay);
 					
@@ -2035,7 +2046,7 @@ class app_invoice_billing extends _BaseController {
 					$objTMDC["transactionMasterID"]			= $transactionMasterID;
 					$objTMDC["transactionMasterDetailID"]	= $transactionMasterDetailID_;
 					$objTMDC["reference1"]					= /*inicio get post*/ $this->request->getPost("txtFixedExpenses");
-					$objTMDC["reference2"]					= /*inicio get post*/ $this->request->getPost("txtCheckReportSinRiesgo");
+					$objTMDC["reference2"]					= /*inicio get post*/ $this->request->getPost("txtCheckReportSinRiesgoValue");
 					$objTMDC["reference3"]					= "";
 					$objTMDC["reference4"]					= "";
 					$objTMDC["reference5"]					= "";

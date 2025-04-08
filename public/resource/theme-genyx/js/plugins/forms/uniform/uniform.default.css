@@ -20,8 +20,9 @@ div.selector, div.checker, div.button, div.radio, div.uploader {
   div.selector:focus, div.checker:focus, div.button:focus, div.radio:focus, div.uploader:focus {
     outline: 0; }
 div.selector, div.selector *, div.radio, div.radio *, div.checker, div.checker *, div.uploader, div.uploader *, div.button, div.button * {
-  margin: 0;
-  padding: 0; }
+  /* margin: 0; */
+  padding: 0;
+  }
 
 
 /* Select */
@@ -96,10 +97,12 @@ div.selector {
 
 /* Checkbox */
 div.checker {
-  position: relative; }
+  position: relative;
+  }
   div.checker, div.checker span, div.checker input {
     width: 22px;
-    height: 22px; }
+    height: 22px;
+    }
   div.checker span {
     display: -moz-inline-box;
     display: inline-block;
@@ -263,7 +266,8 @@ div.selector {
 
 /* Checker */
 div.checker {
-  /* margin-right: 5px; */ }
+  /* margin-right: 5px; */
+  }
 
 /* Radio */
 div.radio {

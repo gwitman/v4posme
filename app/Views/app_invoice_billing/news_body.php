@@ -662,13 +662,13 @@ echo helper_getHtmlOfPageLanding();
 									</div>
 									<div class="col-lg-6" id="divInformacionRightReference"  >
 									
-										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divApplied",""); ?>  ">
+										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divApplied","hidden"); ?>  ">
 											<label class="col-lg-4 control-label" for="txtIsApplied">Aplicado</label>
 											<div class="col-lg-8">
-												<input type="checkbox" disabled   name="txtIsApplied" id="txtIsApplied" value="1" >
+												<input type="checkbox" disabled data-on-color="success" data-off-color="warning"  name="txtIsApplied" id="txtIsApplied" value="1" >
 											</div>
+											<br/>	
 										</div>
-									
 										<div class="form-group " id="divFixedExpenses">
 												<label class="col-lg-4 control-label" for="txtFixedExpenses"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionExpenseLabel","% Interes."); ?></label>
 												<div class="col-lg-8">
@@ -683,15 +683,11 @@ echo helper_getHtmlOfPageLanding();
 										
 									
 										<div  id="divPanelExoneracion" class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divApplyExoneracion",""); ?> ">
-												<label class="col-lg-4 control-label" for="normal"></label>
-												<div class="col-lg-8">
-														<label class="label-change-switch" id="txtLabelApplyExoneracion" for="txtCheckApplyExoneracion">Aplica exoneración?</label>
-														<br/>
-														<div class="switch" data-on="success" data-off="warning">
-														<input class="toggle controls-row" type="checkbox" id="txtCheckApplyExoneracion"  name="txtCheckApplyExoneracion" />
-														<input type="hidden" id="txtCheckApplyExoneracionValue"  name="txtCheckApplyExoneracionValue" value="0" />
-														</div>																
-												</div>
+											<label class="col-lg-4 control-label" id="txtLabelApplyExoneracion" for="txtCheckApplyExoneracion">Aplica exoneración?</label>
+											<div class="col-lg-8">
+												<input class="toggle controls-row" data-on-color="success" data-off-color="warning" type="checkbox" id="txtCheckApplyExoneracion"  name="txtCheckApplyExoneracion" />
+												<input type="hidden" id="txtCheckApplyExoneracionValue"  name="txtCheckApplyExoneracionValue" value="0" />
+											</div>
 										</div>
 										
 										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divExoneracion",""); ?>">
@@ -709,27 +705,20 @@ echo helper_getHtmlOfPageLanding();
 										</div>
 										
 										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divDesembolsoEfectivo",""); ?> ">
-											<label class="col-lg-4 control-label" for="txtCheckDeEfectivo"></label>
+											<label class="col-lg-4 control-label" for="txtCheckDeEfectivo" id="txtLabelIsDesembolsoEfectivo">Es un desembolso en efectivo?</label>
 											<div class="col-lg-8">
-												<label class="label-change-switch" for="txtCheckDeEfectivo" id="txtLabelIsDesembolsoEfectivo">Es un desembolso en efectivo?</label>
-												<br/>
-												<div class="switch" data-on="success" data-off="warning">
-												<input class="toggle controls-row" type="checkbox" checked id="txtCheckDeEfectivo" />
-												</div>
+												<input class="toggle controls-row" data-on-color="success" data-off-color="warning" type="checkbox" id="txtCheckDeEfectivo" />
+												<input type="hidden" name="txtCheckDeEfectivoValue" id="txtCheckDeEfectivoValue" value="0" />
 											</div>
 										</div>
 										
 										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divReportSinRiesgo",""); ?>">
-											<label class="col-lg-4 control-label" for="normal"></label>
-											<div class="col-lg-8">
-												<label class="label-change-switch" for="txtCheckReportSinRiesgo" id="txtLabelIsReportSinRiesgo">Reportar a SinRiesgo</label>
-												<br/>
-														<!-- Este valor cambia el checked en el news_script, siguiendo el modelo el edit_bodoy-->
-												<div class="switch" data-on="success" data-off="warning">												
-													<input class="toggle controls-row" type="checkbox" checked id="txtCheckReportSinRiesgo" name="txtCheckReportSinRiesgo" value="1"  />
-												</div>																
+											<label class="col-lg-4 control-label" for="txtCheckReportSinRiesgo" id="txtLabelIsReportSinRiesgo">Reportar a SinRiesgo</label>
+											<div class="col-lg-8">											
+												<input data-on-color="success" data-off-color="warning" class="toggle controls-row" type="checkbox" id="txtCheckReportSinRiesgo" name="txtCheckReportSinRiesgo" />															
+												<input type="hidden" name="txtCheckReportSinRiesgoValue" id="txtCheckReportSinRiesgoValue" value="0" />
 											</div>													
-										</div>									
+										</div>
 									</div>
 							</div>								
 						</div>

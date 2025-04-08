@@ -27,7 +27,7 @@
 		<!-- Plugins stylesheets -->
 		<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/uniform/uniform.default.css" rel="stylesheet" /> 
 		<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/tables/datatables/jquery.dataTables.css" rel="stylesheet" />
-		<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/switch/bootstrapSwitch.css" rel="stylesheet" /> 
+		<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/bootstrap3/bootstrap-switch.css" rel="stylesheet" /> 
 		<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/select2/select2.css" rel="stylesheet" />
 		<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/ui/jgrowl/jquery.jgrowl.css" rel="stylesheet" /> 
 		<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/css/genyx-theme/jquery.ui.progressbar.css" rel="stylesheet" /> 
@@ -67,7 +67,7 @@
 		<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/core/jrespond/jRespond.min.js"></script>
 		<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/jquery.genyxAdmin.js"></script>
 		<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/ui/animated-progress-bar/jquery.progressbar.js"></script>
-		<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/switch/bootstrapSwitch.js"></script>
+		<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/bootstrap-switch.js"></script>
 		<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/jquery.tmpl.js"></script>
 		<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/ui/jgrowl/jquery.jgrowl.min.js"></script>
 		<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/mask/jquery.mask.min.js"></script>

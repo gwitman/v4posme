@@ -61,11 +61,11 @@
 	
 	<?php echo $objListParameterJavaScript; ?>
 	
-	var objListCustomerCreditLine 	= JSON.parse('<?php echo json_encode($objListCustomerCreditLine); ?>');
-	var objCausalTypeCredit 		= JSON.parse('<?php echo json_encode($objCausalTypeCredit); ?>');
-	var objCurrencyCordoba 			= JSON.parse('<?php echo json_encode($objCurrencyCordoba); ?>');	
-	var varCustomerCrediLineID		= 0;
-    var objRenderInit				= true;
+	let objListCustomerCreditLine 	= JSON.parse('<?php echo json_encode($objListCustomerCreditLine); ?>');
+	let objCausalTypeCredit 		= JSON.parse('<?php echo json_encode($objCausalTypeCredit); ?>');
+	let objCurrencyCordoba 			= JSON.parse('<?php echo json_encode($objCurrencyCordoba); ?>');
+	let varCustomerCrediLineID		= 0;
+    let objRenderInit				= true;
 	let loadEdicion 				= false;
 	let transactionMasterID			= <?= $transactionMasterID ?>;
 	let codigoMesero				= '<?= $codigoMesero ?>';
@@ -96,9 +96,10 @@
     
 
     let columnasTableDetail = {
-        precio1 : 22,
-        precio2 : 14,
-        precio3 : 15
+        precio1 	: 22,
+        precio2 	: 14,
+        precio3 	: 15,
+		descripcion : 4
     };
 
 	const Toast = Swal.mixin({
@@ -107,7 +108,7 @@
 		showConfirmButton	: false,
 		timer				: 15000,
 		customClass			: {
-			title			: 'color: white',
+			title			: 'white swal2-title-custom',
 		},
 		background 			: 'red',
 		timerProgressBar	: true,
@@ -125,16 +126,13 @@
 		$(this).parent().parent().parent().find(".txtQuantity").val(quantity);
 		fnRecalculateDetail(true,"");				
 	});	
-	
-	$('#txtCheckApplyExoneracion').parent().parent().on('change', function() {
-		
-		var exoneracion = $('#txtCheckApplyExoneracion').parent().hasClass("switch-on");		
-		if(exoneracion)
-			$("#txtCheckApplyExoneracionValue").val("0");
+
+	$('#txtCheckApplyExoneracion').on('switchChange.bootstrapSwitch', function (event, state){
+		if(state)
+			$("#txtCheckApplyExoneracionValue").val(1);
 		else
-			$("#txtCheckApplyExoneracionValue").val("1");	
-		
-		
+			$("#txtCheckApplyExoneracionValue").val(0);
+
 		var listRow = objTableDetail.fnGetData();							
 		var length 	= listRow.length;		
 		var i 		= 0;
@@ -144,6 +142,20 @@
 			i++;
 		}
 		
+    });
+
+	$('#txtCheckReportSinRiesgo').on('switchChange.bootstrapSwitch', function (event, state){
+		if(state)
+			$("#txtCheckReportSinRiesgoValue").val(1);
+		else
+			$("#txtCheckReportSinRiesgoValue").val(0);
+    });
+
+	$('#txtCheckDeEfectivo').on('switchChange.bootstrapSwitch', function (event, state){
+		if(state)
+			$("#txtCheckDeEfectivoValue").val(1);
+		else
+			$("#txtCheckDeEfectivoValue").val(0);
     });
 	
 	$('#txtLayFirstLineProtocolo').on('change', function() 
@@ -164,17 +176,15 @@
 					var timerNotification 	= 15000;
 					if(e.objTransactionMaster.length > 0 )
 					{
-						$('#txtCheckApplyExoneracion').parent().removeClass("switch-off");
-						$('#txtCheckApplyExoneracion').parent().addClass("switch-on");
-						$("#txtCheckApplyExoneracionValue").val("0");
+						$('#txtCheckApplyExoneracion').bootstrapSwitch('state', false);
+						$("#txtCheckApplyExoneracionValue").val(0);
 						fnShowNotification("El numero de exoneracion ya existe!!","error",timerNotification);
 					}
 					//La exoneracoin no existe si se puede exonerar
 					else
 					{
-						$('#txtCheckApplyExoneracion').parent().removeClass("switch-on");
-						$('#txtCheckApplyExoneracion').parent().addClass("switch-off");
-						$("#txtCheckApplyExoneracionValue").val("1");
+						$('#txtCheckApplyExoneracion').bootstrapSwitch('state', true);
+						$("#txtCheckApplyExoneracionValue").val(1);
 						fnShowNotification("Exoneracion aplicada!!","success",timerNotification);
 					}
 					
@@ -643,9 +653,11 @@
 	$(document).on("change","#txtTypePriceID",function(){
 		fnActualizarPrecio();
 	});
+
 	$(document).on("change","#txtCausalID",function(){
 		fnRenderLineaCreditoDiv();
 	});	
+
 	//mostrar dialogo de informacion de producto
     $(document).on('click', '.btnInfoProducto',function(e){
         e.preventDefault();
@@ -664,8 +676,8 @@
         //establecer precios
         if (precio>0) {
             precios.forEach(function(p) {
-                let option 		= new Option(p, p);
-                option.selected = (p === precio); // Marcar como seleccionado si coincide
+                let selected = parseFloat(p) === parseFloat(precio);
+				let option 		= new Option(p, p, selected, selected);
                 selectPrecio.append(option);
             });
         } else {
@@ -871,14 +883,25 @@
 	$(document).on("change","input#txtReceiptAmountBankDol",function(){							
 			fnCalculateAmountPay();			
 	});
-	
-	//Seleccionar Checke 
-	$(document).on("click",".classCheckedDetail",function(){
-		var objrow_ = $(this).parent().parent().parent().parent()[0];
-		var objind_ = objTableDetail.fnGetPosition(objrow_);
-		var objdat_ = objTableDetail.fnGetData(objind_);								
-		objTableDetail.fnUpdate( !objdat_[0], objind_, 0 );
-		refreschChecked();
+	$('#tb_transaction_master_detail').on('change', 'input', function () {
+		var input = $(this);
+		var inputType = input.attr('type');
+		var tr = input.closest('tr')[0];
+		var td = input.parents('td')[0];
+		var rowIndex = objTableDetail.fnGetPosition(tr);
+		var colIndex = $('td', tr).index(td);
+
+		if (inputType === "checkbox") {
+			var isChecked = input.is(':checked');
+			objTableDetail.fnUpdate(isChecked, rowIndex, colIndex, true);
+			refreschChecked();
+		}
+		else {
+			var newValue = input.val();
+			if (colIndex === columnasTableDetail.descripcion) {
+				objTableDetail.fnUpdate(newValue, rowIndex, columnasTableDetail.descripcion, true);
+			}
+		}
 	});
 
     $('.item-categoria').on('click', function () {
@@ -918,7 +941,6 @@
 	
 	$("#btnAceptarDialogPrinterV2AceptarDirect").click(function(){		
 	});
-	
 
 	$('#txtPorcentajeDescuento').on('input', function() {
 		 //validar que solo sea numero
@@ -929,7 +951,6 @@
 		 }
 		 fnRecalculateDetail(true,"");
     });
-	
 	
 	function fnAceptarModalModalPrinterDocumentDialogCustom()
 	{
@@ -1184,9 +1205,8 @@
 	//Cargar Factura
 	function onCompleteSelectInvoice(objResponse) {
 		console.info("CALL onCompleteSelectInvoice");
-		if (!objResponse || objResponse.length === 0) return; // ⬅ Validación más precisa
+		if (!objResponse || objResponse.length === 0) return;
 		let data = objResponse[0];
-		//debugger;
 		// Muestra la alerta inmediatamente
 		mostarModalPersonalizado("Cargando datos de factura, por favor espere...");
 		let url = objParameterPantallaParaFacturar == "-" 
@@ -1195,7 +1215,7 @@
 
 		$.ajax({
 			url: url,
-			success: function(response) {                
+			success: function(response) {           
 				fnUpdateInvoiceView(response.data);
 			},
 		});
@@ -1205,8 +1225,6 @@
 	function onCompleteCustomer(objResponse){
 		
 		console.info("CALL onCompleteCustomer");
-		debugger;
-	
 		if(objResponse != undefined)
 		{
 			var entityID = objResponse[0][1];
@@ -1215,7 +1233,6 @@
 			fnClearData();
 			fnGetCustomerClient();
 		}
-		
 	}
 	
 	function onCompleteNewItem(objResponse,suma){
@@ -1450,9 +1467,6 @@
 			
 			listItemIDToValid = listItemIDToValid+ ","+rowTableItemID;
 			listQntity = listQntity+ ","+rowTableItemQuantity;
-			
-			
-			
 		}	 
 		
 		
@@ -1670,7 +1684,7 @@
 		$('#title-modal').text(title.toUpperCase());
 		mostrarModal('ModalCargandoDatos');
 	}
-	
+
     function fnClearForm(){
 		loadEdicion = false;
 		mostarModalPersonalizado('Cargando nueva factura, por favor espere...');
@@ -1707,6 +1721,12 @@
 		transactionID = <?= $transactionIDNueva ?>;
 		$('#txtStatusID').val(<?= isset($objListWorkflowStage) ? $objListWorkflowStage[0]->workflowStageID : 0 ?>);
         $('#txtStatusIDOld').val(0);
+		$("#txtCheckApplyExoneracionValue").val(0);
+		$("#txtCheckReportSinRiesgoValue").val(0);
+		$("#txtCheckDeEfectivoValue").val(0);
+		$('#txtCheckReportSinRiesgo').bootstrapSwitch('state', false);
+		$('#txtCheckApplyExoneracion').bootstrapSwitch('state', false);
+		$('#txtCheckDeEfectivo').bootstrapSwitch('state', false);
 		setTimeout(()=>{
 			cerrarModal('ModalCargandoDatos');
 		}, 2000);
@@ -1740,15 +1760,15 @@
         varParameterINVOICE_BILLING_VALIDATE_EXONERATION 	= data.objParameterINVOICE_BILLING_VALIDATE_EXONERATION;
         objParameterINVOICE_SHOW_FIELD_PESO					= data.objParameterINVOICE_SHOW_FIELD_PESO;
 		objParameterPrinterDirectAndPreview					= data.objParameterPrinterDirectAndPreview;
-
-        objTransactionMaster                    = data.objTransactionMaster;
-        objTransactionMasterItemPrice 			= data.objTransactionMasterItemPrice;
-        objTransactionMasterItemConcepto 		= data.objTransactionMasterItemConcepto;
-        objTransactionMasterItemSku 			= data.objTransactionMasterItemSku;
-        objTransactionMasterItem 				= data.objTransactionMasterItem;
-        varParameterUrlServidorDeImpresion      = data.objParameterUrlServidorDeImpresion;
-        varTransactionCausalID	                = objTransactionMaster.transactionCausalID;
-        varCustomerCrediLineID	                = objTransactionMaster.reference4;
+		objListCustomerCreditLine							= data.objListCustomerCreditLine;
+        objTransactionMaster                    			= data.objTransactionMaster;
+        objTransactionMasterItemPrice 						= data.objTransactionMasterItemPrice;
+        objTransactionMasterItemConcepto 					= data.objTransactionMasterItemConcepto;
+        objTransactionMasterItemSku 						= data.objTransactionMasterItemSku;
+        objTransactionMasterItem 							= data.objTransactionMasterItem;
+        varParameterUrlServidorDeImpresion      			= data.objParameterUrlServidorDeImpresion;
+        varTransactionCausalID	                			= objTransactionMaster.transactionCausalID;
+        varCustomerCrediLineID	                			= objTransactionMaster.reference4;
         objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE  = data.objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE;
         
 		let objTransactionMasterDetailCredit 	= data.objTransactionMasterDetailCredit;
@@ -1778,6 +1798,59 @@
                 $("#workflowLink").append(buttonHtml);
             }
         }
+
+		//Renderizar combobox de las lineas de credito
+        fnRenderLineaCredit(data.objListCustomerCreditLine, data.objCausalTypeCredit);
+
+		$('#txtExchangeRate').val(data.exchangeRate);
+		$('#invoice-num').empty().text(objTransactionMaster.transactionNumber);
+		$('#txtDate').val(objTransactionMaster.transactionOn);
+		$('#txtCompanyID').val(objTransactionMaster.companyID);
+		$('#txtDescuento').val(objTransactionMaster.discount);
+		$('#txtPorcentajeDescuento').val(objTransactionMaster.tax4);
+        $('#txtTransactionID').val(objTransactionMaster.transactionID);
+        $('#txtTransactionMasterID').val(objTransactionMaster.transactionMasterID);
+        $('#txtStatusID').val(objTransactionMaster.statusID);
+        $('#txtStatusIDOld').val(objTransactionMaster.statusID);
+		$('#txtNote').val(objTransactionMaster.note);
+		$('#txtCurrencyID').val(objTransactionMaster.currencyID);
+		$('#txtCustomerID').val(objTransactionMaster.entityID);
+
+		if(objNaturalDefault !== null && objNaturalDefault.length > 0)
+		{
+			$('#txtCustomerDescription').val(objCustomerDefault.customerNumber.toUpperCase() + " " + objNaturalDefault.firstName.toUpperCase() + " " + $objNaturalDefault.lastName.toUpperCase());
+		}
+		else
+		{
+			$('#txtCustomerDescription').val(objCustomerDefault.customerNumber.toUpperCase() +" " + objLegalDefault.comercialName.toUpperCase());
+		}
+
+		$('#txtReferenceClientName').val(objTransactionMasterInfo.referenceClientName);
+		$('#txtReferenceClientIdentifier').val(objTransactionMasterInfo.referenceClientIdentifier);
+		$('#txtZoneID').val(objTransactionMasterInfo.zoneID).trigger("change");
+		$('#txtWarehouseID').val(objTransactionMaster.sourceWarehouseID).trigger("change");
+		$('#txtReference3').val(objTransactionMaster.reference3);
+		$('#txtEmployeeID').val(objTransactionMaster.entityIDSecondary).trigger("change");
+		$('#txtTypePriceID').val(0).trigger("change");
+		$('#txtNumberPhone').val(objTransactionMaster.numberPhone);
+		$('#txtMesaID').val(objTransactionMasterInfo.mesaID).trigger("change");
+		$('#txtNextVisit').val(objTransactionMaster.nextVisit);
+		$('#txtDateFirst').val(objTransactionMaster.transactionOn2);
+		$('#txtReference2').val(objTransactionMaster.reference2);
+		$('#txtPeriodPay').val(objTransactionMaster.periodPay);
+		$('#txtReference1').val(objTransactionMaster.reference1).trigger('change');
+		$('#txtDayExcluded').val(objTransactionMaster.dayExcluded).trigger('change');
+		$('#txtCausalID').val(objTransactionMaster.transactionCausalID).trigger("change");
+
+		if(objTransactionMaster.isApplied === "1"){
+			$('#txtIsApplied').bootstrapSwitch('state', true, true);
+		}else{
+			$('#txtIsApplied').bootstrapSwitch('state', false, true);
+		}
+
+		$('#txtFixedExpenses').val(objTransactionMasterDetailCredit.reference1);
+		$('#txtTMIReference1').val(objTransactionMasterInfo.reference1);
+		$('#txtLayFirstLineProtocolo').val(objTransactionMasterReferences.reference1);
 
 		//limpiar tabla de datos
 		objTableDetail.fnClearTable();
@@ -1860,74 +1933,6 @@
 			objTableDetail.fnAddData(tmpData);
 			objTableDetail.fnDraw();
         }
-		
-		$('#txtExchangeRate').val(data.exchangeRate);
-		$('#invoice-num').empty().text(objTransactionMaster.transactionNumber);
-		$('#txtDate').val(objTransactionMaster.transactionOn);
-		$('#txtCompanyID').val(objTransactionMaster.companyID);
-		$('#txtDescuento').val(objTransactionMaster.discount);
-		$('#txtPorcentajeDescuento').val(objTransactionMaster.tax4);
-        $('#txtTransactionID').val(objTransactionMaster.transactionID);
-		
-        $('#txtTransactionMasterID').val(objTransactionMaster.transactionMasterID);
-        $('#txtStatusID').val(objTransactionMaster.statusID);
-        $('#txtStatusIDOld').val(objTransactionMaster.statusID);
-		$('#txtNote').val(objTransactionMaster.note);
-		$('#txtCurrencyID').val(objTransactionMaster.currencyID);
-		$('#txtCustomerID').val(objTransactionMaster.entityID);
-		
-		if(objNaturalDefault !== null && objNaturalDefault.length > 0)
-		{
-			$('#txtCustomerDescription').val(objCustomerDefault.customerNumber.toUpperCase() + " " + objNaturalDefault.firstName.toUpperCase() + " " + $objNaturalDefault.lastName.toUpperCase());
-		}
-		else
-		{
-			$('#txtCustomerDescription').val(objCustomerDefault.customerNumber.toUpperCase() +" " + objLegalDefault.comercialName.toUpperCase());
-		}
-		
-		$('#txtReferenceClientName').val(objTransactionMasterInfo.referenceClientName);
-		$('#txtReferenceClientIdentifier').val(objTransactionMasterInfo.referenceClientIdentifier);
-        $('#txtCheckReportSinRiesgo').prop('checked', objTransactionMasterDetailCredit.reference2 === "1");
-		$('#txtCausalID').val(objTransactionMaster.transactionCausalID);
-		$('#txtZoneID').val(objTransactionMasterInfo.zoneID);
-		$('#txtWarehouseID').val(objTransactionMaster.sourceWarehouseID);
-		$('#txtReference3').val(objTransactionMaster.reference3);
-		$('#txtEmployeeID').val(objTransactionMaster.entityIDSecondary);
-		$('#txtNumberPhone').val(objTransactionMaster.numberPhone);
-		$('#txtMesaID').val(objTransactionMasterInfo.mesaID);
-		$('#txtNextVisit').val(objTransactionMaster.nextVisit);
-		$('#txtDateFirst').val(objTransactionMaster.transactionOn2);
-		$('#txtReference2').val(objTransactionMaster.reference2);
-		$('#txtPeriodPay').val(objTransactionMaster.periodPay);
-		$('#txtReference1').val(objTransactionMaster.reference1);
-		$('#txtDayExcluded').val(objTransactionMaster.dayExcluded);
-
-		if(objTransactionMaster.isApplied === "1"){
-			$('#txtIsApplied').prop("checked", true);
-		}else{
-			$('#txtIsApplied').prop("checked", false);
-		}
-
-		$('#txtFixedExpenses').val(objTransactionMasterDetailCredit.reference1);
-
-		if(objTransactionMasterReferences.reference2 === "1"){
-			$('#txtCheckApplyExoneracionValue').val("1");
-			$('#txtCheckApplyExoneracionValue').prop("checked", true);
-		}else{
-			$('#txtCheckApplyExoneracionValue').val("0");
-			$('#txtCheckApplyExoneracionValue').prop("checked", false);
-		}
-
-		if(objTransactionMasterDetailCredit.reference2 === "1"){
-			$('#txtCheckReportSinRiesgo').val("1");
-			$('#txtCheckAppltxtCheckReportSinRiesgoyExoneracionValue').prop("checked", true);
-		}else{
-			$('#txtCheckReportSinRiesgo').val("0");
-			$('#txtCheckAppltxtCheckReportSinRiesgoyExoneracionValue').prop("checked", false);
-		}
-
-		$('#txtTMIReference1').val(objTransactionMasterInfo.reference1);
-		$('#txtLayFirstLineProtocolo').val(objTransactionMasterReferences.reference1);
 
         $('#txtChangeAmount').val(objTransactionMasterInfo.changeAmount);
         $('#txtReceiptAmount').val(objTransactionMasterInfo.receiptAmount);
@@ -1946,8 +1951,6 @@
         $('#txtReceiptAmountPoint').val(objTransactionMasterInfo.receiptAmountPoint);
 
         fnRecalculateDetail(false,"");
-        //Renderizar combobox de las lineas de credito
-        fnRenderLineaCredit(objListCustomerCreditLine,objCausalTypeCredit);
         objRenderInit = false;
         if(varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
             $('.btnMenus').addClass('hidden');
@@ -1978,6 +1981,26 @@
         }
 
         <?php echo getBehavio($company->type, 'app_invoice_billing', 'btnFooter','') ?>
+
+		if(objTransactionMasterReferences.reference2 === "1"){
+			$('#txtCheckApplyExoneracionValue').val(1);
+			$('#txtCheckApplyExoneracion').bootstrapSwitch('state', true);
+		}else{
+			$('#txtCheckApplyExoneracion').bootstrapSwitch('state', false);
+			$('#txtCheckApplyExoneracionValue').val(0);
+		}
+
+		if(objTransactionMasterDetailCredit.reference2 === "1"){
+			$('#txtCheckReportSinRiesgoValue').val(1);
+			$('#txtCheckReportSinRiesgo').bootstrapSwitch('state', true);
+		}else{
+			$('#txtCheckReportSinRiesgoValue').val(0);
+			$('#txtCheckReportSinRiesgo').bootstrapSwitch('state', false);
+		}
+
+		$('#txtCheckDeEfectivoValue').val(0);
+		$('#txtCheckDeEfectivo').bootstrapSwitch('state', false);
+
 		cerrarModal('ModalCargandoDatos');
     }
 
@@ -2392,15 +2415,11 @@
 	}
 	
 	
-	function fnCompleteGetCustomerCreditLine (data)
+	function fnCompleteGetCustomerCreditLine(data)
 	{		
-	
-	
 		objListCustomerCreditLine 	= data.objListCustomerCreditLine || [];
 		objCausalTypeCredit 		= data.objCausalTypeCredit || [];
 		fnRenderLineaCredit(objListCustomerCreditLine,objCausalTypeCredit);
-		
-		
 	}
 	
 	function fnGetPosition(item,data){
@@ -2429,31 +2448,28 @@
 	}		
 	
 	function fnRenderLineaCreditoDiv(){
-			//Si es de credito que la factura no supere la linea de credito
-			var causalSelect 				= $("#txtCausalID").val();
-			var customerCreditLineID 		= $("#txtCustomerCreditLineID").val();
-			var objCustomerCreditLine 		= jLinq.from(objListCustomerCreditLine).where(function(obj){ return obj.customerCreditLineID == customerCreditLineID; }).select();
-			var causalCredit 				= objCausalTypeCredit.value.split(",");
-			var invoiceTypeCredit 			= false;
-		
-		
-			//Obtener si la factura es al credito						
-			for(var i=0;i<causalCredit.length;i++){
-				if(causalCredit[i] == causalSelect){
-					invoiceTypeCredit = true;
-				}
-			}
-			
-
-			if(invoiceTypeCredit ){
-				$("#divLineaCredit").removeClass("hidden");
-			}
-			else{
-				$("#divLineaCredit").addClass("hidden");
-			}
-			
+		//Si es de credito que la factura no supere la linea de credito
+		var causalSelect 				= $("#txtCausalID").val();
+		var customerCreditLineID 		= $("#txtCustomerCreditLineID").val();
+		var objCustomerCreditLine 		= jLinq.from(objListCustomerCreditLine).where(function(obj){ return obj.customerCreditLineID == customerCreditLineID; }).select();
+		var causalCredit 				= objCausalTypeCredit.value.split(",");
+		var invoiceTypeCredit 			= false;
 
 
+		//Obtener si la factura es al credito
+		for(var i=0;i<causalCredit.length;i++){
+			if(causalCredit[i] == causalSelect){
+				invoiceTypeCredit = true;
+			}
+		}
+
+
+		if(invoiceTypeCredit ){
+			$("#divLineaCredit").removeClass("hidden");
+		}
+		else{
+			$("#divLineaCredit").addClass("hidden");
+		}
 	}	
 	
 	
@@ -2691,24 +2707,20 @@
 	}
 	
 	function fnGetCustomerClient(){
-		
-		
-		
 		$.ajax({									
 			cache       : false,
 			dataType    : 'json',
 			type        : 'POST',
 			url  		: "<?php echo base_url(); ?>/app_invoice_api/getLineByCustomer",
 			data 		: {entityID : $("#txtCustomerID").val()  },
-			success		: fnCompleteGetCustomerCreditLine,
+			success		: function(data){
+				fnRenderLineaCredit(data.objListCustomerCreditLine,data.objCausalTypeCredit);
+			},
 			error:function(xhr,data){	
 				console.info("complete data error");													
 				fnShowNotification("Error 505","error");
 			}
 		});
-		
-		
-		
 	}
 	
 	function fnDeleteCerosIzquierdos(texto){
@@ -2838,9 +2850,10 @@
 			
 	}
 	
-	function fnRenderLineaCredit(objListCustomerCreditLine,objCausalTypeCredit)
+	function fnRenderLineaCredit(listCustomerCreditLine,causalTypeCredit)
 	{
-		
+		objListCustomerCreditLine 	= listCustomerCreditLine;
+		objCausalTypeCredit 		= causalTypeCredit;
 		$("#divTipoFactura").removeClass("<?= getBehavio($company->type,"app_invoice_billing","divTxtCausalIDScript","hidden"); ?>");
 		$("#txtCustomerCreditLineID").html("");
 		$("#txtCustomerCreditLineID").val("");
@@ -2864,7 +2877,6 @@
 		$("#txtCausalID option").removeAttr("disabled");
 		$("#txtCausalID").val("");		
 		
-		
 		var listArrayCausalCredit = objCausalTypeCredit.value.split(",");
 		$.each( $("#txtCausalID option"),function(index,obj){
 			for(var i=0;i<listArrayCausalCredit.length;i++){
@@ -2877,10 +2889,7 @@
 					$("#txtCausalID option[value="+causalIDCredit+"]").removeAttr("disabled");
 			}
 		});
-		
-	
-		
-		
+
 		//Refresh Control
 		if(varUseMobile != "1")
 		{
@@ -3140,12 +3149,11 @@
         let vendedor 			= $('#selectVendedor').val();
         let serie 				= $('#txtSerieProducto').val();
         let referencia 			= $('#txtReferenciaProducto').val();
-        selectedDataInfoProducto[7]=precioRecomendado;
-        selectedDataInfoProducto[19]=vendedor;
-        selectedDataInfoProducto[20]=serie;
-        selectedDataInfoProducto[21]=referencia;
-        objTableDetail.fnUpdate(selectedDataInfoProducto, selectedFilaInfoProducto);
-
+        objTableDetail.fnUpdate(precioRecomendado, selectedFilaInfoProducto, 7, false);
+		objTableDetail.fnUpdate(vendedor, selectedFilaInfoProducto, 19, false);
+		objTableDetail.fnUpdate(serie, selectedFilaInfoProducto, 20, false);
+		objTableDetail.fnUpdate(referencia, selectedFilaInfoProducto, 21, false);
+		refreschChecked();
         fnRecalculateDetail(true,"txtPrice");
         cerrarModal('ModalInfoProducto');
     }
@@ -3262,26 +3270,22 @@
 	
 	function fnReady()
 	{
+		if(transactionMasterID !== 0){
+			loadEdicion = true;
+		}
+
 		$(document).ready(function()
 		{
 			$('#divLoandingCustom').hide();
-			if(transactionMasterID !== 0){
-				loadEdicion = true;
-				let dataX = [
-					[
-						<?= $companyID ?>,
-						transactionID, 
-						transactionMasterID,
-					]
-				];
-				onCompleteSelectInvoice(dataX);
-			}
             if(!loadEdicion){
                 $('#btnLinkPayment').css('display','none');
                 $('#rowBotoneraFacturaFila5').css('display','none');
                 $('.showComandoDeCocina').css('display', 'none');
                 $('.showPanelEdicion').css('display', 'none');
 				$('#registrarFacturaNueva').css('display','block');
+				$("#txtCheckApplyExoneracion").bootstrapSwitch('state', false);
+				$('#txtCheckDeEfectivo').bootstrapSwitch('state', false);
+				$('#txtCheckReportSinRiesgo').bootstrapSwitch('state', false);
             }
 			$('#txtClaveOpenCash').css({
 				'webkitTextSecurity': 'disc', 		// Para WebKit browsers
@@ -3372,12 +3376,9 @@
 				
 			)
 			{
-				$( "#form-new-invoice" ).submit(function(e){
-						  
+				$( "#form-new-invoice" ).submit(function(e){						  
 					e.preventDefault(e);
-
 					var formData = new FormData(this);
-
 					//Mandar la factura
 					//Interna mente, se se guarda y se imprimie
 					$.ajax({
@@ -3415,10 +3416,10 @@
 					});
 					
 					if(varParameterRegresarAListaDespuesDeGuardar == "true"){
-					window.location	= "<?php echo base_url(); ?>/app_invoice_billing/index";
+						window.location	= "<?php echo base_url(); ?>/app_invoice_billing/index";
 					}
 					if(varParameterRegresarAListaDespuesDeGuardar != "true"){
-					window.location	= "<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>";
+						window.location	= "<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>";
 					}						  
 				});
 			}
@@ -3438,6 +3439,7 @@
 							{
 								"aTargets"		: [ 0 ],//checked
 								"sWidth"		: "50px",
+								"sClass"		: "td-center",
 								"mRender"		: function ( data, type, full ) {
                                     var ocultarBoton="";
                                     if(varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
@@ -3476,7 +3478,7 @@
 								}
 							},
 							{
-								"aTargets"		: [ 4 ],//descripcion
+								"aTargets"		: [ columnasTableDetail.descripcion ],//descripcion
 								"sWidth"		: "250px",
 								"mRender"		: function ( data, type, full ) 
 								{
@@ -3762,13 +3764,10 @@
 
 				]							
 			});
-			
-			
+						
 			//Renderizar combobox de las lineas de credito			
 			fnRenderLineaCredit(objListCustomerCreditLine,objCausalTypeCredit);	
 
-			
-			
 			//Mandar a imprimr la factura
 			//Por cada factura nueva
 			//Si que la impresiona sea directa
@@ -3796,32 +3795,28 @@
 				mostrarModal("ModalOpcionesImpresion");
 				$(".modal-backdrop.fade.in").removeClass("modal-backdrop");
 			}
-			
-			
-			if( $('#txtCheckApplyExoneracionValue').val() == "0"  )
-			{
-				$('#txtCheckApplyExoneracion').parent().removeClass("switch-off");
-				$('#txtCheckApplyExoneracion').parent().addClass("switch-on");
-			}
-			else 
-			{
-				$('#txtCheckApplyExoneracion').parent().removeClass("switch-on");
-				$('#txtCheckApplyExoneracion').parent().addClass("switch-off");
-				
-			}
 
             if(varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
                 $('.btnMenus').addClass('hidden');
                 $('#btnDelete').addClass('hidden');
                 $('#btnDeleteItem').addClass('hidden');
             }
-			
+
+			if(transactionMasterID !== 0){
+				loadEdicion = true;
+				let url = varBaseUrl + '/app_invoice_billing/edit/' + <?= $companyID ?> + '/' + transactionID + '/' + transactionMasterID + '/' + $("#txtCodigoMesero").val();
+				const resultado = $.ajax({
+					url: url
+				});
+				mostarModalPersonalizado('Cargando datos de factura, por favor espere...');
+				resultado.then(function(response) {
+					fnClearForm();
+					fnUpdateInvoiceView(response.data);
+				});
+			}
 		});
-	}
-
-
-		
-		
+	}	
+	
 
 </script>
 

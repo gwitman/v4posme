@@ -39,3 +39,6 @@
 #div-container-list::-webkit-scrollbar-thumb:hover {
   background-color: #555;
 }
+.swal2-title-custom{
+  font-size:18px !important;
+}
