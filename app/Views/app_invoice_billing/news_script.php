@@ -1705,7 +1705,9 @@
 		$("#txtCheckApplyExoneracionValue").val(0);
 		$("#txtCheckReportSinRiesgoValue").val(0);
 		$("#txtCheckDeEfectivoValue").val(0);
-		
+		fnSetCheckBoxValue($("#txtCheckApplyExoneracion"), false);
+		fnSetCheckBoxValue($("#txtCheckReportSinRiesgo"), false);
+		fnSetCheckBoxValue($("#txtCheckDeEfectivo"), false);
 		setTimeout(()=>{
 			cerrarModal('ModalCargandoDatos');
 		}, 2000);
