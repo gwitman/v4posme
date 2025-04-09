@@ -1791,8 +1791,6 @@
         $('#txtDateFirst').val(objTransactionMaster.transactionOn2);
         $("#txtDateFirst").datepicker("update");
 		$('#txtCompanyID').val(objTransactionMaster.companyID);
-		$('#txtDescuento').val(objTransactionMaster.discount);
-		$('#txtPorcentajeDescuento').val(objTransactionMaster.tax4);
         $('#txtTransactionID').val(objTransactionMaster.transactionID);
         $('#txtTransactionMasterID').val(objTransactionMaster.transactionMasterID);
         $('#txtStatusID').val(objTransactionMaster.statusID);
@@ -1918,6 +1916,7 @@
         }
         $("#txtDescuento").val(fnFormatNumber(objTransactionMaster.discount, 2));
         $("#txtPorcentajeDescuento").val(fnFormatNumber(objTransactionMaster.tax4,2));
+
         fnRecalculateDetail(false,"");
 
         $('#txtReceiptAmountTarjeta_BankID').val(objTransactionMasterInfo.receiptAmountCardBankID).trigger("change");
