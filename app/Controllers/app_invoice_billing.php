@@ -329,21 +329,9 @@ class app_invoice_billing extends _BaseController {
             $objCustomerCreditAmoritizationAll		= $this->Customer_Credit_Amortization_Model->get_rowByCustomerID( $dataView["objTransactionMaster"]->entityID );
             $objListCustomerCreditLine 				= $this->Customer_Credit_Line_Model->get_rowByEntityBalanceMayorCero($companyID,$dataSession["user"]->branchID,$dataView["objTransactionMaster"]->entityID);
 			
-			//Obtener Lineas de Credito
-			$objListCustomerCreditLine2 	= $this->Customer_Credit_Line_Model->get_rowByBranchID($companyID, $dataSession["user"]->branchID);
-			$objListCustomerCreditLineAll	= [];
-			if($objListCustomerCreditLine2)
-			{
-				foreach($objListCustomerCreditLine2 as $key => $value){
-					if($value->balance > 0)
-					{
-                        $objListCustomerCreditLineAll[] = $value;
-					}
-				}
-			}
+			
 
             $dataView["objListCustomerCreditLine"]	  		=  $objListCustomerCreditLine;
-			$dataView["objListCustomerCreditLineAll"]	  	=  $objListCustomerCreditLineAll;
             $dataView["objCausalTypeCredit"]				=  $parameterCausalTypeCredit;
             $dataView["objCurrencyDolares"] 				=  $objCurrencyDolares;
             $dataView["objCurrencyCordoba"] 				=  $objCurrencyCordoba;

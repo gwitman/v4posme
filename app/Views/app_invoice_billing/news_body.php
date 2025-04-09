@@ -1422,8 +1422,8 @@ echo helper_getHtmlOfPageLanding();
 			</form>
 			<!-- /body -->
 		
-			<div id="modalCargandoDatos" style="display:none">
-				<h3 id="title-modal"><h3/>
+			<div id="modalCargandoDatos" style="display:flex">
+				<h3 id="title-modal">ESPERE UN MOMENTO<h3/>
 				<img class="img-fluid" style="height: 80px;" src="<?=base_url()?>/resource/img/loading.gif" />
 			</div>
 			
@@ -1433,8 +1433,11 @@ echo helper_getHtmlOfPageLanding();
 			<style>
 				.modal-customer1-ModalCargandoDatos{
 					background-color: rgba(0, 0, 0, 1) !important;
+					display			:flex;
 				}
 			</style>
+			
+			
 			<div id="modalActualizandoCatalogo" style="display:none">
 				<h3 id="title-modal">ACTUALIZANDO CATALOGO, POR FAVOR ESPERE...<h3/>
 				<img class="img-fluid" style="height: 80px;" src="<?=base_url()?>/resource/img/loading.gif" />

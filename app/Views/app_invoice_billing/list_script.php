@@ -204,7 +204,6 @@
 		});
 		
 		$(document).on("click","#btnNuevo",function(){
-			debugger;
 			objBoton = "new";
 			if(objEsMesero == "0")
 			{

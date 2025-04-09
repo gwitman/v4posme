@@ -1712,9 +1712,7 @@
 		fnSetCheckBoxValue($("#txtCheckApplyExoneracion"), false);
 		fnSetCheckBoxValue($("#txtCheckReportSinRiesgo"), false);
 		fnSetCheckBoxValue($("#txtCheckDeEfectivo"), false);
-		setTimeout(()=>{
-			cerrarModal('ModalCargandoDatos');
-		}, 2000);
+		setTimeout(()=>{ cerrarModal('ModalCargandoDatos'); }, 1000);
 		
     }
 
@@ -3805,12 +3803,17 @@
 			const resultado = $.ajax({
 				url: url
 			});
-			mostarModalPersonalizado('Cargando datos de factura, por favor espere...');
+			
 			resultado.then(function(response) {
 				fnClearForm();
 				fnUpdateInvoiceView(response.data);
 			});
 		}
+		else 
+		{
+			cerrarModal("ModalCargandoDatos");
+		}
+		
 		
 	});
 	
