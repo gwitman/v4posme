@@ -1219,14 +1219,14 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8125-8230" 
+	tb_company_parameter.value = "TEL: 8173-7735  7878-1990" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8125-8230" 
+	tb_company_parameter.value = "TEL: 8173-7735  7878-1990" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1234,14 +1234,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Frente a Iglesia Catolica San Isidro. El Labrador. La Ceiba" 
+	tb_company_parameter.value = "Frente a iglesia católica San Isidro El Labrador, La Ceiba" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Agro quimico Laceiba' , address = 'Frente a Iglesia Catolica San Isidro. El Labrador. La Ceiba' ,
+	NAME = 'Agro Servicio "El Labrador" La Ceiba' , address = 'Frente a iglesia católica San Isidro El Labrador, La Ceiba' ,
 	flavorID = 454,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
