@@ -1685,8 +1685,12 @@
 				$(this).prop("selected", true);
 				$("#txtCurrencyID").trigger("change");
 			}
-		});	
-		$('#txtDate').datepicker({format:"yyyy-mm-dd"});
+		});
+        $('#txtCustomerCreditLineID').empty();
+        objListCustomerCreditLine 	= JSON.parse('<?php echo json_encode($objListCustomerCreditLine); ?>');
+        objCausalTypeCredit 		= JSON.parse('<?php echo json_encode($objCausalTypeCredit); ?>');
+        fnRenderLineaCredit(objListCustomerCreditLine, objCausalTypeCredit);
+        $('#txtDate').datepicker({format:"yyyy-mm-dd"});
 		$('#txtDate').val(moment().format("YYYY-MM-DD"));	
 		$("#txtDate").datepicker("update");
 		$('#txtNextVisit').datepicker({format:"yyyy-mm-dd"});		
