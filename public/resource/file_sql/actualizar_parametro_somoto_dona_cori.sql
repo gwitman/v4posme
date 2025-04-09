@@ -1,10 +1,116 @@
-use dbbx53ifvwnsq9;
+use dbg7xh7e0dxauj ;
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 
 
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_tools_endorsements/viewRegisterFormatoPaginaTicket" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "ENDORSEMENTS_URL_PRINTER"; ## Url de impresion de endosos
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_MESERO_SCREEN_INDIVIDUAL";## True si cada mesero ocuipa su propio dispositivo
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CORE_TRAKING_GPS";## Valida si es neceasrio llevar el seguimiento del gps
+	
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_SHOW_FIELD_PESO";## Campo de peso en el detalle de la factura visible true
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "https://posme.net/v4posme/posme/app_mobile_api/setPositionGps" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CORE_SEND_GPS_POSITION_TO_POSME";## Url envio de notificaciones
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "20" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_SYNC_GPS";## Enviar la sincronizacion al api cada 20 minutos
+
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "10" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_SHOW_TOP_CUSTOMER";## En la pantalla de cliente en el mobile mostrar el top
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "10" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_SHOW_TOP_ITEMS";## En la pantalla de items en el mobile mostrar el top
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "50" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_SHOW_TOP_CUSTOMER_IN_SHARE";## En la pantalla de cliente en el mobile mostrar el top durante el abono
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_SHOW_BALANCE_IN_SHARE_MOBILE";## Mostrar los saldos en abonos mobiles
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_box_share/viewRegisterFormatoPaginaTicketInvoiceCancel" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "BOX_SHARE_URL_PRINTER_INVOICE_CANCEL";## Imprmir reporte de facturas canceladas con el abono
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "http://localhost/posmev4/app_inventory_report/printer_stiker_sin_precio" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "ITEM_PRINTER_BARCODE_MASIVE_SIN_PRECIO";## Imprmir stiker sin precio
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "http://localhost/posmev4/app_inventory_report/printer_stiker_con_precio" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "ITEM_PRINTER_BARCODE_MASIVE_CON_PRECIO";## Imprimir stiker con precio
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_VALIDATE_EXONERATION";## Validar la exoneracion
+	
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_cxc_report/customer_detail_invoice_printer" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_URL_PRINT_CUSTOMER_DETAIL";## Detalle de la deuda
+	
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "78" 
 WHERE 
@@ -251,7 +357,7 @@ WHERE
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "714" 
+	tb_company_parameter.value = "0" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION_PARAMETERF1";## Parametro 1 para envio de whatsap
@@ -382,27 +488,27 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://api.liveconnect.chat/prod/direct/wa/sendMessage" 
+	tb_company_parameter.value = "https://api.ultramsg.com/instance65915/messages/chat" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WAHTSAP_URL_ENVIO_MENSAJE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "ac697dad7e43b2fc406e5a4877864e22" 
+	tb_company_parameter.value = "n5hb8n1wf0r6e27i" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://api.liveconnect.chat/prod/account/token" 
+	tb_company_parameter.value = "https://api.whaticket.com/api/v1/whatsapps" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "c7385c89eb98340c1bcf656e75607be9" 
+	tb_company_parameter.value = "50584766457" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_CURRENT_PROPIETARY_COMMERSE";## WHATSAPP DEL PRIPIETARIO
@@ -718,7 +824,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "22,24" 
+	tb_company_parameter.value = "22,24,55" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_CREDIT";## ID DE LOS CAUSALES DE CREDITO DE LA FACTURACION. 
@@ -1068,7 +1174,7 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "500" 
+	tb_company_parameter.value = "7" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CUST_PRICE_MAX_USER";## MAXIMO NUMERO DE USUARIOS 
@@ -1545,7 +1651,7 @@ WHERE
 /***************************************************************/
 		
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Eusebia Del Carmen Dumas Ruiz" 
+	tb_company_parameter.value = "Uriel Téllez" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_NAME";## Witman José González Rostran 
@@ -1560,28 +1666,28 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "047-160483-0000C" 
+	tb_company_parameter.value = "321-141088-0004E" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "047-160483-0000C" 
+	tb_company_parameter.value = "3210706011003W" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 7643-3443" 
+	tb_company_parameter.value = "TEL: 2722-0155" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 7643-3443" 
+	tb_company_parameter.value = "TEL: 2722-0155" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1589,15 +1695,15 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Donde fue aserrio santa fe, 2c abajo 15v.sur" 
+	tb_company_parameter.value = "Del Reloj público 2c al Norte, Somoto, Madriz." 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Chocho Mandado' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 571 /*usuarioID*/,type='default'
+	NAME = 'Dispensa Doña Cori' , address = 'Del Reloj público 2c al Norte, Somoto, Madriz.' ,
+	flavorID = 756 /*usuarioID*/,type='default'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
@@ -1609,17 +1715,25 @@ Eliminar o desactivar usuarios
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2, 	/*administrador*/
- 571,  	/*supervisor*/
- 570, 	/*facturador*/
- 569 	/*administrador*/
+ 750,  
+ 751, 
+ 752,
+ 753,  
+ 754, 
+ 755, 
+ 756
 );
 
 update tb_role set isActive = 0; 
 update tb_role set isActive = 1 where roleID in (
 	3,
-	500,
-	499,
-	498	
+	685,
+	686,
+	687,
+	688,
+	689,
+	690,
+	691	
 );
 
 
@@ -1644,8 +1758,17 @@ update tb_item set realStateEmployerAgentID = ifnull(realStateEmployerAgentID,0)
 update tb_item set realStateCityID = ifnull(realStateCityID,0);
 update tb_item set realStateCountryID = ifnull(realStateCountryID,0);
 update tb_item set realStateStateID = ifnull(realStateStateID,0);
+update tb_item set realStateStateID = ifnull(realStateStateID,0);
+update tb_item set realStateRoomBatchServices = ifnull(realStateRoomBatchServices,0);
+update tb_item set realStateRooBatchVisit = ifnull(realStateRooBatchVisit,0);
+update tb_item set realStateRoomServices = ifnull(realStateRoomServices,0);
+
+
+
 update tb_customer set entityContactID = ifnull(entityContactID,0);
 update tb_customer_credit_line set dayExcluded = IFNULL(dayExcluded,2323);
+update tb_customer set balancePoint = ifnull(balancePoint,0);
+update tb_customer set budget = ifnull(budget,0);
 
 
 update tb_currency set `name` = 'Cordoba' where currencyID = 1;
@@ -1654,4 +1777,4 @@ update tb_company_currency set `simb` = 'C$' where currencyID = 1;
 update tb_company_currency set `simb` = 'U$' where currencyID = 2;	
 
 	
-/*BD: dbbx53ifvwnsq9 */
+/*BD: dbg7xh7e0dxauj  */

@@ -1424,7 +1424,7 @@ echo helper_getHtmlOfPageLanding();
 		
 			<div id="modalCargandoDatos" style="display:flex">
 				<h3 id="title-modal">ESPERE UN MOMENTO<h3/>
-				<img class="img-fluid" style="height: 80px;" src="<?=base_url()?>/resource/img/loading.gif" />
+				<img class="img-fluid" style="height: 80px;" src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/img/loading.gif" />
 			</div>
 			
 			<?php
@@ -1440,7 +1440,7 @@ echo helper_getHtmlOfPageLanding();
 			
 			<div id="modalActualizandoCatalogo" style="display:none">
 				<h3 id="title-modal">ACTUALIZANDO CATALOGO, POR FAVOR ESPERE...<h3/>
-				<img class="img-fluid" style="height: 80px;" src="<?=base_url()?>/resource/img/loading.gif" />
+				<img class="img-fluid" style="height: 80px;" src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/img/loading.gif" />
 			</div>
 			<?php
 				helper_getHtmlOfModalDialog("ModalActualizandoCatalogo","modalActualizandoCatalogo","",false);
