@@ -337,7 +337,7 @@ class app_invoice_billing extends _BaseController {
 				foreach($objListCustomerCreditLine2 as $key => $value){
 					if($value->balance > 0)
 					{
-						$objListCustomerCreditLine[] = $value;
+                        $objListCustomerCreditLineAll[] = $value;
 					}
 				}
 			}
