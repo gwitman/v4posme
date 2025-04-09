@@ -118,6 +118,22 @@
 		}
 	});
 
+	const ToastSuccess = Swal.mixin({
+		toast				: true,
+		position			: "bottom-end",
+		showConfirmButton	: false,
+		timer				: 15000,
+		customClass			: {
+			title			: 'white swal2-title-custom',
+		},
+		background 			: 'green',
+		timerProgressBar	: true,
+		didOpen: (toast) => {
+			toast.onmouseenter = Swal.stopTimer;
+			toast.onmouseleave = Swal.resumeTimer;
+		}
+	});
+
 	$(document).on("click",".btnPlus",function(){		
 		var quantity = $(this).parent().parent().parent().find(".txtQuantity").val();
 		quantity 	 = fnFormatFloat(quantity);
@@ -359,6 +375,11 @@
 	$(document).on("focus",'#txtReceiptAmount', function(e) {	
 		$(this).val("");	
 	});	
+	$(document).on("click","#btnLinkPayment",function(){
+		mostarModalPersonalizado('ABRIENDO LINK DE PAGO');	
+		window.open("<?php echo base_url(); ?>/app_invoice_api/getLinkPaymentPagadito/companyID/"+$("#txtCompanyID").val()+"/transactionID/"+$("#txtTransactionID").val() +"/transactionMasterID/"+$("#txtTransactionMasterID").val(),"MsgWindow","width=700,height=600");
+		cerrarModal('ModalCargandoDatos');
+	});
 	$(document).on("keypress",'#txtReceiptAmount', function(e) {	
 		var code = e.keyCode || e.which;
 		if(code != 13) 
@@ -1635,6 +1656,10 @@
                 // Restaurar botón
                 if(response.success) {
                     fnUpdateInvoiceView(response.data);
+					ToastSuccess.fire({
+							icon  : 'success',
+							title : 'Factura aplicada correctamente'
+						});
                 } else {
                     // Manejar error
                     Swal.fire({
@@ -3158,6 +3183,10 @@
 						});
 					}
 					else{
+						ToastSuccess.fire({
+							icon  : 'success',
+							title : 'Factura eliminada correctamente'
+						});
 						fnClearForm();
 					}
 				},
