@@ -611,7 +611,8 @@
 		
 		//Ocultar Boton de Contado
 		$("#divTipoFactura").addClass("hidden");
-		
+		$("#divLineaCredit").addClass("hidden");
+
 		//Redireccion pantalla
 		var url_redirect		= "__app_cxc_customer__add__callback__onCompleteCustomer__comando__pantalla_abierta_desde_la_factura";			
 		url_redirect 			= encodeURIComponent(url_redirect);
@@ -968,47 +969,28 @@
 	
 	function fnCalculateAmountPay()
 	{
-		
-		
-		if( $("#txtCurrencyID").val() == "1" /*Cordoba*/ )
+        let resultTotal     = 0.0;
+        let currencyId      = $("#txtCurrencyID").val();
+        let ingresoCordoba 	= fnFormatFloat($("#txtReceiptAmount").val());
+        let bancoCordoba 	= fnFormatFloat($("#txtReceiptAmountBank").val());
+        let puntoCordoba 	= fnFormatFloat($("#txtReceiptAmountPoint").val());
+        let tarjetaCordoba 	= fnFormatFloat($("#txtReceiptAmountTarjeta").val());
+        let tarejtaDolares 	= fnFormatFloat($("#txtReceiptAmountTarjetaDol").val());
+        let bancoDolares 	= fnFormatFloat($("#txtReceiptAmountBankDol").val());
+        let ingresoDol 	    = fnFormatFloat($("#txtReceiptAmountDol").val());
+        let tipoCambio 	    = fnFormatFloat($("#txtExchangeRate").val());
+        let total 		    = fnFormatFloat($("#txtTotal").val());
+        if( currencyId === "1" /*Cordoba*/ )
 		{
-			var ingresoCordoba 	= fnFormatFloat($("#txtReceiptAmount").val());
-			var bancoCordoba 	= fnFormatFloat($("#txtReceiptAmountBank").val());
-			var puntoCordoba 	= fnFormatFloat($("#txtReceiptAmountPoint").val());
-			
-			var tarjetaCordoba 	= fnFormatFloat($("#txtReceiptAmountTarjeta").val());
-			var tarejtaDolares 	= fnFormatFloat($("#txtReceiptAmountTarjetaDol").val());
-			var bancoDolares 	= fnFormatFloat($("#txtReceiptAmountBankDol").val());
-			
-			var ingresoDol 	= fnFormatFloat($("#txtReceiptAmountDol").val());		
-			var tipoCambio 	= fnFormatFloat($("#txtExchangeRate").val()); 		
-			var total 		= fnFormatFloat($("#txtTotal").val());				
-			
-			var resultTotal =  (ingresoCordoba +  bancoCordoba + puntoCordoba + tarjetaCordoba + ( bancoDolares / tipoCambio ) + ( tarejtaDolares / tipoCambio )   + (ingresoDol / tipoCambio)) - total;
-			var resultTotal = fnFormatNumber(resultTotal,2);
-			$("#txtChangeAmount").val(resultTotal);	
+            resultTotal =  (ingresoCordoba +  bancoCordoba + puntoCordoba + tarjetaCordoba + ( bancoDolares / tipoCambio ) + ( tarejtaDolares / tipoCambio )   + (ingresoDol / tipoCambio)) - total;
+		}else if( currencyId === "2" /*dolares*/ )
+		{
+			resultTotal =  (ingresoCordoba +  bancoCordoba + puntoCordoba + tarjetaCordoba + ( bancoDolares * tipoCambio ) + ( tarejtaDolares * tipoCambio )   + (ingresoDol * tipoCambio)) - total;
 		}
-		
-		if( $("#txtCurrencyID").val() == "2" /*dolares*/ )
-		{
-			var ingresoCordoba 	= fnFormatFloat($("#txtReceiptAmount").val());
-			var bancoCordoba 	= fnFormatFloat($("#txtReceiptAmountBank").val());
-			var puntoCordoba 	= fnFormatFloat($("#txtReceiptAmountPoint").val());			
 
-			var tarjetaCordoba 	= fnFormatFloat($("#txtReceiptAmountTarjeta").val());
-			var tarejtaDolares 	= fnFormatFloat($("#txtReceiptAmountTarjetaDol").val());
-			var bancoDolares 	= fnFormatFloat($("#txtReceiptAmountBankDol").val());
-			
-			var ingresoDol 	= fnFormatFloat($("#txtReceiptAmountDol").val());	
-			var tipoCambio 	= fnFormatFloat($("#txtExchangeRate").val()); 		
-			var total 		= fnFormatFloat($("#txtTotal").val());							
-			
-			var resultTotal =  (ingresoCordoba +  bancoCordoba + puntoCordoba + tarjetaCordoba + ( bancoDolares * tipoCambio ) + ( tarejtaDolares * tipoCambio )   + (ingresoDol * tipoCambio)) - total;
-			var resultTotal = fnFormatNumber(resultTotal,2);
-			$("#txtChangeAmount").val(resultTotal);	
-		}
-		
-	}
+        resultTotal = fnFormatNumber(resultTotal,2);
+        $("#txtChangeAmount").val(resultTotal);
+    }
 	
 	function fnImprimir(){
 		
@@ -1209,8 +1191,9 @@
 	function onCompleteCustomer(objResponse){
 		
 		console.info("CALL onCompleteCustomer");
-		if(objResponse != undefined)
+		if(objResponse !== undefined)
 		{
+            mostarModalPersonalizado('cargando datos del cliente, por favor espere...');
 			var entityID = objResponse[0][1];
 			$("#txtCustomerID").val(objResponse[0][1]);
 			$("#txtCustomerDescription").val(objResponse[0][2] + " " + objResponse[0][3] + " / " + objResponse[0][4]);	
@@ -1802,6 +1785,11 @@
 		$('#txtExchangeRate').val(data.exchangeRate);
 		$('#invoice-num').empty().text(objTransactionMaster.transactionNumber);
 		$('#txtDate').val(objTransactionMaster.transactionOn);
+        $("#txtDate").datepicker("update");
+        $('#txtNextVisit').val(objTransactionMaster.nextVisit);
+        $("#txtNextVisit").datepicker("update");
+        $('#txtDateFirst').val(objTransactionMaster.transactionOn2);
+        $("#txtDateFirst").datepicker("update");
 		$('#txtCompanyID').val(objTransactionMaster.companyID);
 		$('#txtDescuento').val(objTransactionMaster.discount);
 		$('#txtPorcentajeDescuento').val(objTransactionMaster.tax4);
@@ -1831,8 +1819,6 @@
 		$('#txtTypePriceID').val(0).trigger("change");
 		$('#txtNumberPhone').val(objTransactionMaster.numberPhone);
 		$('#txtMesaID').val(objTransactionMasterInfo.mesaID).trigger("change");
-		$('#txtNextVisit').val(objTransactionMaster.nextVisit);
-		$('#txtDateFirst').val(objTransactionMaster.transactionOn2);
 		$('#txtReference2').val(objTransactionMaster.reference2);
 		$('#txtPeriodPay').val(objTransactionMaster.periodPay);
 		$('#txtReference1').val(objTransactionMaster.reference1).trigger('change');
@@ -1930,24 +1916,29 @@
 			objTableDetail.fnAddData(tmpData);
 			objTableDetail.fnDraw();
         }
+        $("#txtDescuento").val(fnFormatNumber(objTransactionMaster.discount, 2));
+        $("#txtPorcentajeDescuento").val(fnFormatNumber(objTransactionMaster.tax4,2));
+        fnRecalculateDetail(false,"");
 
-        $('#txtChangeAmount').val(objTransactionMasterInfo.changeAmount);
-        $('#txtReceiptAmount').val(objTransactionMasterInfo.receiptAmount);
-        $('#txtReceiptAmountDol').val(objTransactionMasterInfo.receiptAmountDol);
-        $('#txtReceiptAmountTarjeta').val(objTransactionMasterInfo.receiptAmountCard);
         $('#txtReceiptAmountTarjeta_BankID').val(objTransactionMasterInfo.receiptAmountCardBankID).trigger("change");
         $('#txtReceiptAmountTarjetaDol_BankID').val(objTransactionMasterInfo.receiptAmountCardBankDolID).trigger("change");
         $('#txtReceiptAmountBank_BankID').val(objTransactionMasterInfo.receiptAmountBankID).trigger("change");
         $('#txtReceiptAmountBankDol_BankID').val(objTransactionMasterInfo.receiptAmountBankDolID).trigger("change");
+
+        $('#txtChangeAmount').val(fnFormatNumber(objTransactionMasterInfo.changeAmount, 2));
+        $('#txtReceiptAmount').val(fnFormatNumber(objTransactionMasterInfo.receiptAmount, 2));
+        $('#txtReceiptAmountDol').val(fnFormatNumber(objTransactionMasterInfo.receiptAmountDol, 2));
+        $('#txtReceiptAmountTarjeta').val(fnFormatNumber(objTransactionMasterInfo.receiptAmountCard, 2));
+        $('#txtReceiptAmountTarjetaDol').val(fnFormatNumber(objTransactionMasterInfo.receiptAmountCardDol, 2));
+        $('#txtReceiptAmountBank').val(fnFormatNumber(objTransactionMasterInfo.receiptAmountBank, 2));
+        $('#txtReceiptAmountBankDol').val(fnFormatNumber(objTransactionMasterInfo.receiptAmountBankDol, 2));
+        $('#txtReceiptAmountPoint').val(fnFormatNumber(objTransactionMasterInfo.receiptAmountPoint, 2));
+
+        $('#txtReceiptAmountBank_Reference').val(objTransactionMasterInfo.receiptAmountBankReference);
+        $('#txtReceiptAmountBankDol_Reference').val(objTransactionMasterInfo.receiptAmountBankDolReference);
         $('#txtReceiptAmountTarjeta_Reference').val(objTransactionMasterInfo.receiptAmountCardBankReference);
         $('#txtReceiptAmountTarjetaDol_Reference').val(objTransactionMasterInfo.receiptAmountCardBankDolReference);
-        $('#txtReceiptAmountBank').val(objTransactionMasterInfo.receiptAmountBank);
-        $('#txtReceiptAmountBank_Reference').val(objTransactionMasterInfo.receiptAmountBankReference);
-        $('#txtReceiptAmountBankDol').val(objTransactionMasterInfo.receiptAmountBankDol);
-        $('#txtReceiptAmountBankDol_Reference').val(objTransactionMasterInfo.receiptAmountBankDolReference);
-        $('#txtReceiptAmountPoint').val(objTransactionMasterInfo.receiptAmountPoint);
 
-        fnRecalculateDetail(false,"");
         objRenderInit = false;
         if(varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
             $('.btnMenus').addClass('hidden');
@@ -1989,14 +1980,14 @@
 
 		if(objTransactionMasterDetailCredit.reference2 === "1"){
 			$('#txtCheckReportSinRiesgoValue').val(1);
-            fnSetCheckBoxValue($('#txtCheckReportSinRiesgoValue'),true);
+            fnSetCheckBoxValue($('#txtCheckReportSinRiesgo'),true);
 		}else{
 			$('#txtCheckReportSinRiesgoValue').val(0);
-            fnSetCheckBoxValue($('#txtCheckReportSinRiesgoValue'),false);
+            fnSetCheckBoxValue($('#txtCheckReportSinRiesgo'),false);
 		}
 
 		$('#txtCheckDeEfectivoValue').val(0);
-        fnSetCheckBoxValue($('#txtCheckDeEfectivoValue'),false);
+        fnSetCheckBoxValue($('#txtCheckDeEfectivo'),false);
 
 		cerrarModal('ModalCargandoDatos');
     }
@@ -2344,37 +2335,28 @@
 		
 		//Obtener si la factura es al credito						
 		for(var i=0;i<causalCredit.length;i++){
-			if(causalCredit[i] == causalSelect){
+			if(causalCredit[i] === causalSelect){
 				invoiceTypeCredit = true;
 			}
 		}
 		
 		
-		if(invoiceTypeCredit == true){
+		if(invoiceTypeCredit === true){
 			$("#txtReceiptAmount").val("0.00");
-			$("#txtReceiptAmountDol").val("0.00");
-			$("#txtChangeAmount").val("0.00");
-			$("#txtReceiptAmountBank").val("0");
-			$("#txtReceiptAmountPoint").val("0");
-			
-			$("#txtReceiptAmountTarjeta").val("0");
-			$("#txtReceiptAmountTarjetaDol").val("0");
-			$("#txtReceiptAmountBankDol").val("0");
-			
 		}
 		else{
 			$("#txtReceiptAmount").val(fnFormatNumber(totalGeneral,2));
-			$("#txtReceiptAmountDol").val("0.00");
-			$("#txtChangeAmount").val("0.00");
-			$("#txtReceiptAmountBank").val("0");
-			$("#txtReceiptAmountPoint").val("0");
-			
-			$("#txtReceiptAmountTarjeta").val("0");
-			$("#txtReceiptAmountTarjetaDol").val("0");
-			$("#txtReceiptAmountBankDol").val("0");
 		}
-		
-			
+        if (clearRecibo){
+            $("#txtReceiptAmountDol").val("0.00");
+            $("#txtChangeAmount").val("0.00");
+            $("#txtReceiptAmountBank").val("0");
+            $("#txtReceiptAmountPoint").val("0");
+
+            $("#txtReceiptAmountTarjeta").val("0");
+            $("#txtReceiptAmountTarjetaDol").val("0");
+            $("#txtReceiptAmountBankDol").val("0");
+        }
 	}
 	
 	function fnFillListaProductos(data)
@@ -2715,7 +2697,10 @@
 			error:function(xhr,data){	
 				console.info("complete data error");													
 				fnShowNotification("Error 505","error");
-			}
+			},
+            complete    : function () {
+                cerrarModal('ModalCargandoDatos');
+            }
 		});
 	}
 	
@@ -2854,10 +2839,9 @@
 		$("#txtCustomerCreditLineID").html("");
 		$("#txtCustomerCreditLineID").val("");
 		
-		
 		if(objListCustomerCreditLine != null)
 		for(var i = 0; i< objListCustomerCreditLine.length;i++){
-			if(i==0 && varCustomerCrediLineID == 0){
+			if(i===0 && varCustomerCrediLineID === 0){
 				$("#txtCustomerCreditLineID").append("<option value='"+objListCustomerCreditLine[i].customerCreditLineID+"' selected>"+ objListCustomerCreditLine[i].accountNumber + " " +objListCustomerCreditLine[i].line  +"</option>");
 				$("#txtCustomerCreditLineID").val(objListCustomerCreditLine[i].customerCreditLineID);
 			}
@@ -2877,9 +2861,9 @@
 		$.each( $("#txtCausalID option"),function(index,obj){
 			for(var i=0;i<listArrayCausalCredit.length;i++){
 				var causalIDCredit = listArrayCausalCredit[i];
-				if( ($(obj).attr("value") == causalIDCredit) && (objListCustomerCreditLine.length > 0))
+				if( ($(obj).attr("value") === causalIDCredit) && (objListCustomerCreditLine.length > 0))
 					$("#txtCausalID option[value="+causalIDCredit+"]").removeAttr("disabled");
-				else if( ($(obj).attr("value") == causalIDCredit) && (objListCustomerCreditLine.length == 0 ))
+				else if( ($(obj).attr("value") === causalIDCredit) && (objListCustomerCreditLine.length === 0 ))
 					$("#txtCausalID option[value="+causalIDCredit+"]").attr("disabled","true");
 				else
 					$("#txtCausalID option[value="+causalIDCredit+"]").removeAttr("disabled");
@@ -2887,7 +2871,7 @@
 		});
 
 		//Refresh Control
-		if(varUseMobile != "1")
+		if(varUseMobile !== "1")
 		{
 			$("#txtCustomerCreditLineID").select2();
 			$("#txtCausalID").select2();
@@ -2895,12 +2879,11 @@
 		}
 		
 		refreschChecked();	
-		if(varParameterINVOICE_BILLING_SELECTITEM == "true")
+		if(varParameterINVOICE_BILLING_SELECTITEM === "true")
 		{
 			fnAddRowSelected(); 
 		}			
 		onCompletePantalla();
-		
 	}
 	
 	function openDataBaseAndCreate(bInicializar,obtenerRegistroDelServer) {
