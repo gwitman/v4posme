@@ -55,7 +55,7 @@ class app_box_sharecapital extends _BaseController {
 			
 			
 			//Obtener el componente de Item
-			$objComponentCustomer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
+			$objComponentCustomer					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
 			if(!$objComponentCustomer)
 			throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
 			
@@ -65,9 +65,13 @@ class app_box_sharecapital extends _BaseController {
 			throw new \Exception("EL COMPONENTE 'tb_transaction_master_share_capital' NO EXISTE...");
 		
 			//Componente de facturacion
-			$objComponentCustomerCreditDocument	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer_credit_document");
+			$objComponentCustomerCreditDocument		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer_credit_document");
 			if(!$objComponentCustomerCreditDocument)
 			throw new \Exception("EL COMPONENTE 'tb_customer_credit_document' NO EXISTE...");
+
+			$objComponentItem						= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 			
 			$objCurrency						= $this->core_web_currency->getCurrencyDefault($companyID);
 			$targetCurrency						= $this->core_web_currency->getCurrencyExternal($companyID);			
@@ -95,7 +99,12 @@ class app_box_sharecapital extends _BaseController {
 			$dataView["objCustomerDefault"]		= $this->Customer_Model->get_rowByEntity($companyID,$dataView["objTransactionMaster"]->entityID);
 			$dataView["objNaturalDefault"]		= $this->Natural_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
 			$dataView["objLegalDefault"]		= $this->Legal_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
-			
+			$dataView["objComponentItem"]		= $objComponentItem;
+
+			$objListComanyParameter								= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]			= $objParameterCantidadItemPoup->value;
+
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
@@ -118,7 +127,7 @@ class app_box_sharecapital extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}	
 	}	
 	function delete(){
@@ -591,7 +600,7 @@ class app_box_sharecapital extends _BaseController {
 			$pathDocument = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShareCapital->componentID."/component_item_".$transactionMasterID;			
 			if(!file_exists ($pathDocument))
 			{
-				mkdir( $pathDocument,0700);
+				mkdir( $pathDocument,0700, true);
 			}
 			
 			
@@ -683,7 +692,7 @@ class app_box_sharecapital extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}	
 	}
 	function save($mode=""){
@@ -734,7 +743,7 @@ class app_box_sharecapital extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}		
 			
 	}
@@ -774,7 +783,7 @@ class app_box_sharecapital extends _BaseController {
 			$userID								= $dataSession["user"]->userID;
 			
 			//Obtener el componente de Item
-			$objComponentCustomer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
+			$objComponentCustomer				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
 			if(!$objComponentCustomer)
 			throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
 			
@@ -782,6 +791,10 @@ class app_box_sharecapital extends _BaseController {
 			$objComponentCustomerCreditDocument	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer_credit_document");
 			if(!$objComponentCustomerCreditDocument)
 			throw new \Exception("EL COMPONENTE 'tb_customer_credit_document' NO EXISTE...");
+
+			$objComponentItem					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 			
 			//Obtener Tasa de Cambio			
 			$companyID 							= $dataSession["user"]->companyID;
@@ -803,9 +816,13 @@ class app_box_sharecapital extends _BaseController {
 			
 			$dataView["objComponentCustomer"]				= $objComponentCustomer;
 			$dataView["objComponentCustomerCreditDocument"]	= $objComponentCustomerCreditDocument;
-			$dataView["objCaudal"]				= $this->Transaction_Causal_Model->getCausalByBranch($companyID,$transactionID,$branchID);			
-			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_share_capital","statusID",$companyID,$branchID,$roleID);
-			
+			$dataView["objCaudal"]							= $this->Transaction_Causal_Model->getCausalByBranch($companyID,$transactionID,$branchID);			
+			$dataView["objListWorkflowStage"]				= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_share_capital","statusID",$companyID,$branchID,$roleID);
+			$dataView["objComponentItem"]					= $objComponentItem;
+
+			$objListComanyParameter							= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]		= $objParameterCantidadItemPoup->value;
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -829,7 +846,7 @@ class app_box_sharecapital extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}	
 			
     }

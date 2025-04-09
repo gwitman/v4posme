@@ -1,7 +1,9 @@
 				<!-- ./ page heading -->
 				<script>		
 					
-					$(document).ready(function(){					
+					$(document).ready(function(){		
+						var varParameterCantidadItemPoup		= '<?php echo $objParameterCantidadItemPoup; ?>';  
+			
 						$('#txtDate').datepicker({format:"yyyy-mm-dd"});						 
 						$("#txtDate").datepicker("update");
 						
@@ -89,7 +91,7 @@
 							url_redirect 			= encodeURIComponent(url_redirect);
 							
 							
-							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCustomer->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_BILLING/true/empty/false/"+url_redirect;
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_BILLING_PAGINATED/true/empty/false/"+url_redirect+"/1/1/"+varParameterCantidadItemPoup+"/";
 							window.open(url_request,"MsgWindow","width=900,height=450");
 							window.onCompleteCustomer = onCompleteCustomer; 
 						});	
@@ -102,7 +104,7 @@
 
 						//Buscar Colagorador
 						$(document).on("click","#btnSearchEmployer",function(){
-							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentEmployer->componentID; ?>/onCompleteEmployee/SELECCIONAR_EMPLOYEE/true/empty/false/not_redirect_when_empty";
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteEmployee/SELECCIONAR_EMPLOYEE_PAGINATED/true/empty/true/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
 							window.open(url_request,"MsgWindow","width=900,height=450");
 							window.onCompleteEmployee = onCompleteEmployee; 
 						});
@@ -114,7 +116,7 @@
 						
 						//Buscar Factura
 						$(document).on("click","#btnSearchNote",function(){
-							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentBilling->componentID; ?>/onCompleteBilling/SELECCIONAR_FACTURA/true/empty/false/not_redirect_when_empty";
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteBilling/SELECCIONAR_FACTURA_PAGINATED/true/empty/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
 							window.open(url_request,"MsgWindow","width=900,height=450");
 							window.onCompleteBilling = onCompleteBilling; 
 						});
@@ -133,12 +135,12 @@
 					function onCompleteBilling(objResponse)
 					{							
 							
-							$("#txtNote").val(objResponse[0][0]);
-							$("#txtNoteDescription").val(objResponse[0][2]);
-							
-							$("#txtCustomerID").val(objResponse[0][1]);
-							$("#txtCustomerDescription").val(objResponse[0][3] + " / " + objResponse[0][4]);								
-							
+						$("#txtNote").val(objResponse[0][2]);
+						$("#txtNoteDescription").val(objResponse[0][2]);
+						
+						$("#txtCustomerID").val(objResponse[0][1]);
+						$("#txtCustomerDescription").val(objResponse[0][3] + " / " + objResponse[0][4]);								
+						
 					}
 					
 					function onCompleteCustomer(objResponse)

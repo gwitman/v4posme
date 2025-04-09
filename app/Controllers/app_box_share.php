@@ -68,6 +68,9 @@ class app_box_share extends _BaseController {
 			if(!$objComponentAmortization)
 			throw new \Exception("EL COMPONENTE 'tb_customer_credit_amoritization' NO EXISTE...");
 			
+			$objComponentItem					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 			
 			$objCurrency						= $this->core_web_currency->getCurrencyDefault($companyID);
 			$targetCurrency						= $this->core_web_currency->getCurrencyExternal($companyID);			
@@ -113,6 +116,10 @@ class app_box_share extends _BaseController {
 			if($dataView["objEmployeeDefault"])			
 			$dataView["objEmployeeNaturalDefault"]		= $this->Natural_Model->get_rowByPK($companyID,$dataView["objEmployeeDefault"]->branchID,$dataView["objEmployeeDefault"]->entityID);
 			
+			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
+			$dataView["objComponentItem"]				= $objComponentItem;
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -1292,6 +1299,10 @@ class app_box_share extends _BaseController {
 			if(!$objComponentCustomerCreditDocument)
 			throw new \Exception("EL COMPONENTE 'tb_customer_credit_document' NO EXISTE...");
 			
+			$objComponentItem					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+
 			//Obtener Tasa de Cambio			
 			$companyID 							= $dataSession["user"]->companyID;
 			$branchID 							= $dataSession["user"]->branchID;
@@ -1321,11 +1332,14 @@ class app_box_share extends _BaseController {
 			$dataView["useMobile"]				= $dataSession["user"]->useMobile;
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
 			
-			$objParameterExchangePurchase		= $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_PURCHASE",$companyID);
-			$dataView["exchangeRatePurchase"]	= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID) - $objParameterExchangePurchase->value;			
-			$objParameterExchangeSales			= $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID);
-			$dataView["exchangeRateSale"]		= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID) + $objParameterExchangeSales->value;		
-			
+			$objParameterExchangePurchase				= $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_PURCHASE",$companyID);
+			$dataView["exchangeRatePurchase"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID) - $objParameterExchangePurchase->value;			
+			$objParameterExchangeSales					= $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID);
+			$dataView["exchangeRateSale"]				= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID) + $objParameterExchangeSales->value;		
+			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
+
 			$dataView["company"]							= $dataSession["company"];
 			$dataView["objComponentCustomer"]				= $objComponentCustomer;
 			$dataView["objComponentCustomerCreditDocument"]	= $objComponentCustomerCreditDocument;
@@ -1338,6 +1352,7 @@ class app_box_share extends _BaseController {
 			$dataView["customerEntityID"]					= $customerEntityID;
 			$dataView["objCustomer"]						= $objCustomer;
 			$dataView["objNatural"]							= $objNatural;
+			$dataView["objComponentItem"]					= $objComponentItem;
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -1361,7 +1376,7 @@ class app_box_share extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}	
 			
     }

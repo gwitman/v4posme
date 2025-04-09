@@ -71,13 +71,17 @@ class app_purchase_taller extends _BaseController {
 			if(!$objComponentBilling)
 			throw new \Exception("EL COMPONENTE 'tb_transaction_master_billing' NO EXISTE...");
 		
-			$objComponentFile	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_file");
+			$objComponentFile		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_file");
 			if(!$objComponentFile)
 			throw new \Exception("EL COMPONENTE 'tb_file' NO EXISTE...");
 
 			$objComponentComments	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_comments");
 			if(is_null($objComponentComments))
 			throw new \Exception("EL COMPONENTE 'tb_comments' NO EXISTE...");
+
+			$objComponentItem		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 		
 			//Tipo de Factura			
 			$dataView["objComponentBilling"]					= $objComponentBilling;
@@ -122,6 +126,7 @@ class app_purchase_taller extends _BaseController {
 			$dataView["objListMarca"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","zoneID",$companyID);
 			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","routeID",$companyID);
 			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","mesaID",$companyID);
+			$dataView["objComponentItem"]		= $objComponentItem;
 			
 			$dataView["objListComments"]		= $this->core_web_catalog->getCatalogAllItem("tb_comments","catalogStatusID",$companyID);
 
@@ -142,6 +147,10 @@ class app_purchase_taller extends _BaseController {
 			$objParameterUrlServerFile 					= $objParameterUrlServerFile->value;
 			$dataView["objParameterUrlServerFile"]	 	= $objParameterUrlServerFile == "" ? base_url() : $objParameterUrlServerFile;
 			
+			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
+
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -165,7 +174,7 @@ class app_purchase_taller extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}	
 	}	
 	function delete(){
@@ -951,7 +960,7 @@ class app_purchase_taller extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}	
 	}
 
@@ -1003,7 +1012,7 @@ class app_purchase_taller extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}		
 			
 	}
@@ -1059,9 +1068,9 @@ class app_purchase_taller extends _BaseController {
 			if(!$objComponentBilling)
 			throw new \Exception("EL COMPONENTE 'tb_transaction_master_billing' NO EXISTE...");
 		
-		
-			
-			
+			$objComponentItem		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 			
 			//Tipo de Factura
 			$dataView["objComponentBilling"]	= $objComponentBilling;
@@ -1078,13 +1087,17 @@ class app_purchase_taller extends _BaseController {
 			$dataView["branchName"]				= $dataSession["branch"]->name;
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
 			$dataView["objListBranch"]			= $this->Branch_Model->getByCompany($companyID);
-			
+			$dataView["objComponentItem"]		= $objComponentItem;
+
 			$objParameterExchangePurchase		= $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_PURCHASE",$companyID);
 			$dataView["exchangeRatePurchase"]	= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID) - $objParameterExchangePurchase->value;			
 			$objParameterExchangeSales			= $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID);
 			$dataView["exchangeRateSale"]		= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID) + $objParameterExchangeSales->value;		
 			
-		
+			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
+
 			$dataView["objCaudal"]				= $this->Transaction_Causal_Model->getCausalByBranch($companyID,$transactionID,$branchID);			
 			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_workshop_taller","statusID",$companyID,$branchID,$roleID);
 			$dataView["objListEstadosEquipo"]	= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","areaID",$companyID);
@@ -1116,7 +1129,7 @@ class app_purchase_taller extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}	
 			
     }

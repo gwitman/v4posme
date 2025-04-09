@@ -1,6 +1,7 @@
 				<!-- ./ page heading -->
 				<script>
-					var objDetail 	= {};
+					var objDetail 						= {};
+					var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';  
 					//$('.txt-numeric').mask('000,000.00', {reverse: true});
 						
 					//Obtener informacion del cliente
@@ -31,7 +32,7 @@
 						
 						//Buscar el Cliente
 						$(document).on("click","#btnSearchCustomer",function(){
-							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objEntity->componentID; ?>/onCompleteCustomer/SELECCIONAR_ENTIDAD/true/empty/false/not_redirect_when_empty";
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteCustomer/SELECCIONAR_ENTIDAD_PAGINATED/true/empty/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
 							window.open(url_request,"MsgWindow","width=900,height=450");
 							window.onCompleteCustomer = onCompleteCustomer; 
 						});						

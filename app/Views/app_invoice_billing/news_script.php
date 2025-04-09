@@ -639,7 +639,7 @@
 		url_redirect 			= encodeURIComponent(url_redirect);
 		
 		
-		var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCustomer->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_ALL/true/empty/false/"+url_redirect;
+		var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_ALL_PAGINATED/true/empty/true/"+url_redirect+"/1/1/"+varParameterCantidadItemPoup+"/";
 		window.open(url_request,"MsgWindow","width=900,height=450");
 		window.onCompleteCustomer = onCompleteCustomer; 
 	});						

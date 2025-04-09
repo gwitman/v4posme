@@ -1,8 +1,9 @@
 				<!-- ./ page heading -->
 				<script>					
-					var objRowListWarehouse		= {};
-					var objTableListWarehouse	= {};
-					var site_url 				= "<?php echo base_url(); ?>/";
+					var objRowListWarehouse				= {};
+					var objTableListWarehouse			= {};
+					var site_url 						= "<?php echo base_url(); ?>/";
+					var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';
 					
 					$(document).ready(function(){	
 						//Inicializar Tabla
@@ -43,7 +44,7 @@
 						});
 						//Buscar el Empleado
 						$(document).on("click","#btnSearchEmployeeParent",function(){
-							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objEntity->componentID; ?>/onCompleteEmployee/SELECCIONAR_ENTIDAD/true/empty/false/not_redirect_when_empty";
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?php echo $objComponentItem->componentID; ?>/onCompleteEmployee/SELECCIONAR_ENTIDAD_PAGINATED/true/empty/true/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
 							window.open(url_request,"MsgWindow","width=900,height=450");
 							window.onCompleteEmployee = onCompleteEmployee; 
 						});

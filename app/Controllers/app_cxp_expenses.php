@@ -53,13 +53,17 @@ class app_cxp_expenses extends _BaseController {
 			if(!$objComponentTransactionShare)
 			throw new \Exception("EL COMPONENTE 'tb_transaction_master_accounting_expenses' NO EXISTE...");
 
-			$objComponentProvider					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_provider");			
+			$objComponentProvider			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_provider");			
 			if(!$objComponentProvider)
 			throw new \Exception("EL COMPONENTE 'tb_provider' NO EXISTE...");
 
-			$objComponentAmortization					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer_credit_amoritization");			
+			$objComponentAmortization		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer_credit_amoritization");			
 			if(!$objComponentAmortization)
 			throw new \Exception("EL COMPONENTE 'tb_customer_credit_amoritization' NO EXISTE...");
+
+			$objComponentItem				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 
 			$objCurrency						= $this->core_web_currency->getCurrencyDefault($companyID);
 			$targetCurrency						= $this->core_web_currency->getCurrencyExternal($companyID);			
@@ -84,26 +88,27 @@ class app_cxp_expenses extends _BaseController {
 			$objAmortization							= $this->Customer_Credit_Amortization_Model->get_rowByPk($dataView["objTransactionMaster"]->tax4);
 			$objDocument 								= $objAmortization ? $this->Customer_Credit_Document_Model->get_rowByPk($objAmortization->customerCreditDocumentID) : NULL;
 
-			$dataView["company"]				= $dataSession["company"];
-			$dataView["objListCurrency"]		= $objListCurrency;
-			$dataView["companyID"]				= $dataSession["user"]->companyID;
-			$dataView["userID"]					= $dataSession["user"]->userID;
-			$dataView["userName"]				= $dataSession["user"]->nickname;
-			$dataView["roleID"]					= $dataSession["role"]->roleID;
-			$dataView["roleName"]				= $dataSession["role"]->name;
-			$dataView["branchID"]				= $dataSession["branch"]->branchID;
-			$dataView["branchName"]				= $dataSession["branch"]->name;
-			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
-			$dataView["objComponentShare"]		= $objComponentTransactionShare;					
-			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_accounting_expenses","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
-			$dataView["objListBranch"]			= $this->Branch_Model->getByCompany($companyID);
-			$dataView["objComponentProvider"]	= $objComponentProvider;
-			$dataView["objProvider"]			= $objProvider;
-			$dataView["objLegal"]				= $objLegal;
-			$dataView["objAmortization"]		= $objAmortization;
-			$dataView["objDocument"]			= $objDocument;
+			$dataView["company"]					= $dataSession["company"];
+			$dataView["objListCurrency"]			= $objListCurrency;
+			$dataView["companyID"]					= $dataSession["user"]->companyID;
+			$dataView["userID"]						= $dataSession["user"]->userID;
+			$dataView["userName"]					= $dataSession["user"]->nickname;
+			$dataView["roleID"]						= $dataSession["role"]->roleID;
+			$dataView["roleName"]					= $dataSession["role"]->name;
+			$dataView["branchID"]					= $dataSession["branch"]->branchID;
+			$dataView["branchName"]					= $dataSession["branch"]->name;
+			$dataView["exchangeRate"]				= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
+			$dataView["objComponentShare"]			= $objComponentTransactionShare;					
+			$dataView["objListWorkflowStage"]		= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_accounting_expenses","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
+			$dataView["objListBranch"]				= $this->Branch_Model->getByCompany($companyID);
+			$dataView["objComponentProvider"]		= $objComponentProvider;
+			$dataView["objProvider"]				= $objProvider;
+			$dataView["objLegal"]					= $objLegal;
+			$dataView["objAmortization"]			= $objAmortization;
+			$dataView["objDocument"]				= $objDocument;
 			$dataView["objComponentAmortization"]	= $objComponentAmortization;
-			
+			$dataView["objComponentItem"]			= $objComponentItem;
+
 			$objPublicCatalogTipoGastos 						= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_accounting_expenses.tipos_gastos")->where("isActive",1)->find();			
 			$objPublicCatalogCategoriaGastos 					= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_accounting_expenses.categoria_gastos")->where("isActive",1)->find();
 			$dataView["objListCatalogoTipoGastos"]				= $this->Public_Catalog_Detail_Model->asObject()->where("publicCatalogID",$objPublicCatalogTipoGastos[0]->publicCatalogID)->where( "isActive",1)->findAll();
@@ -122,14 +127,17 @@ class app_cxp_expenses extends _BaseController {
 																	findAll();
 																	
 																	
-			$objParameterUrlPrinter 				= $this->core_web_parameter->getParameter("CXP_URL_PRINTER_GASTO",$companyID);
-			$objParameterUrlPrinter 				= $objParameterUrlPrinter->value;
-			$dataView["objParameterUrlPrinter"]	 	= $objParameterUrlPrinter;
+			$objParameterUrlPrinter 					= $this->core_web_parameter->getParameter("CXP_URL_PRINTER_GASTO",$companyID);
+			$objParameterUrlPrinter 					= $objParameterUrlPrinter->value;
+			$dataView["objParameterUrlPrinter"]	 		= $objParameterUrlPrinter;
 			
-			$objParameterUrlServerFile 				= $this->core_web_parameter->getParameter("CORE_FILE_SERVER",$companyID);
-			$objParameterUrlServerFile 				= $objParameterUrlServerFile->value;
-			$dataView["objParameterUrlServerFile"]	 = $objParameterUrlServerFile;
+			$objParameterUrlServerFile 					= $this->core_web_parameter->getParameter("CORE_FILE_SERVER",$companyID);
+			$objParameterUrlServerFile					= $objParameterUrlServerFile->value;
+			$dataView["objParameterUrlServerFile"]		= $objParameterUrlServerFile;
 			
+			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -153,7 +161,7 @@ class app_cxp_expenses extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		
+		    echo $resultView;		
 		}	
 	}	
 	function delete(){
@@ -613,7 +621,7 @@ class app_cxp_expenses extends _BaseController {
 				$pathDocument = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID;
 				if(!file_exists ($pathDocument))
 				{
-					mkdir( $pathDocument,0700);
+					mkdir( $pathDocument,0700,true);
 				}
 			}
 			else 
@@ -660,7 +668,7 @@ class app_cxp_expenses extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		
+		    echo $resultView;		
 		}	
 	}
 	function save($mode=""){
@@ -711,8 +719,8 @@ class app_cxp_expenses extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}		
-			
+		    echo $resultView;		
+		}			
 	}
 	
 	function add(){ 
@@ -737,14 +745,18 @@ class app_cxp_expenses extends _BaseController {
 			
 			}	
 			
-			$objComponentProvider					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_provider");			
+			$objComponentProvider			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_provider");			
 			if(!$objComponentProvider)
 			throw new \Exception("EL COMPONENTE 'tb_provider' NO EXISTE...");
 
-			$objComponentAmortization					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer_credit_amoritization");			
+			$objComponentAmortization		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer_credit_amoritization");			
 			if(!$objComponentAmortization)
 			throw new \Exception("EL COMPONENTE 'tb_customer_credit_amoritization' NO EXISTE...");
 			
+			$objComponentItem				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+
 			$companyID 							= $dataSession["user"]->companyID;
 			$branchID 							= $dataSession["user"]->branchID;
 			$roleID 							= $dataSession["role"]->roleID;
@@ -782,20 +794,25 @@ class app_cxp_expenses extends _BaseController {
 			$dataView["objComponentProvider"]	= $objComponentProvider;
 			$dataView["objCaudal"]				= $this->Transaction_Causal_Model->getCausalByBranch($companyID,$transactionID,$branchID);			
 			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_accounting_expenses","statusID",$companyID,$branchID,$roleID);
-			
+			$dataView["objComponentItem"]		= $objComponentItem;
+
 			$dataView["objComponentAmortization"]	= $objComponentAmortization;
-			$objPublicCatalogTipoGastos 	= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_accounting_expenses.tipos_gastos")->where("isActive",1)->find();
+			$objPublicCatalogTipoGastos 			= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_accounting_expenses.tipos_gastos")->where("isActive",1)->find();
 			if(!$objPublicCatalogTipoGastos)
 			{
 				throw new \Exception("CONFIGURAR EL CATALOGO DE TIPOS DE GASTOS tb_transaction_master_accounting_expenses.tipos_gastos");
 			}
 			
-			$objPublicCatalogCategoriaGastos 	= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_accounting_expenses.categoria_gastos")->where("isActive",1)->find();
+			$objPublicCatalogCategoriaGastos 		= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_accounting_expenses.categoria_gastos")->where("isActive",1)->find();
 			if(!$objPublicCatalogCategoriaGastos)
 			{
 				throw new \Exception("CONFIGURAR EL CATALOGO DE CATEGORIA DE GASTOS tb_transaction_master_accounting_expenses.categoria_gastos");
 			}
             $dataView["objListCatalogItemClasificacion"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_accounting_expenses","classID",$companyID);
+
+			$objListComanyParameter								= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]			= $objParameterCantidadItemPoup->value;
 
             $dataView["objListCatalogoTipoGastos"]				= $this->Public_Catalog_Detail_Model->asObject()->where("publicCatalogID",$objPublicCatalogTipoGastos[0]->publicCatalogID)->where( "isActive",1)->findAll();
 			$dataView["objListCatalogoCategoriaGastos"]			= $this->Public_Catalog_Detail_Model->
@@ -827,7 +844,7 @@ class app_cxp_expenses extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		
+		    echo $resultView;		
 		}	
 			
     }
@@ -906,7 +923,8 @@ class app_cxp_expenses extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}
+		    echo $resultView;		
+		}
 	}	
 
 	function viewPrinterFormatoA4(){

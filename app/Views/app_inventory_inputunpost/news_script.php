@@ -155,7 +155,7 @@
 		
 		//Buscar el Proveedor
 		$(document).on("click","#btnSearchProvider",function(){
-			var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentProvider->componentID; ?>/onCompleteProvider/SELECCIONAR_PROVEEDOR/true/empty/false/not_redirect_when_empty";
+			var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?php echo $objComponentItem->componentID; ?>/onCompleteProvider/SELECCIONAR_PROVEEDOR_PAGINATED/true/empty/true/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
 			window.open(url_request,"MsgWindow","width=900,height=450");
 			window.onCompleteProvider = onCompleteProvider; 
 		});		

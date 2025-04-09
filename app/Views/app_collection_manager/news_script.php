@@ -1,7 +1,9 @@
 				<!-- ./ page heading -->
 				<script>					
 					
-					$(document).ready(function(){					
+					$(document).ready(function(){				
+						var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';  
+	
 						//Regresar a la lista
 						$(document).on("click","#btnBack",function(){
 								fnWaitOpen();
@@ -16,7 +18,7 @@
 						
 						//Buscar Colagorador
 						$(document).on("click","#btnSearchEmployee",function(){
-							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $componentEmployeeID; ?>/onCompleteEmployee/SELECCIONAR_EMPLOYEE/true/empty/false/not_redirect_when_empty";
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteEmployee/SELECCIONAR_EMPLOYEE_PAGINATED/true/empty/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
 							window.open(url_request,"MsgWindow","width=900,height=450");
 							window.onCompleteEmployee = onCompleteEmployee; 
 						});
@@ -35,7 +37,7 @@
 						
 						//Buscar Cliente
 						$(document).on("click","#btnSearchCustomer",function(){
-							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $componentCustomerID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_ALL/true/empty/false/not_redirect_when_empty";
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_ALL_PAGINATED/true/empty/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
 							window.open(url_request,"MsgWindow","width=900,height=450");
 							window.onCompleteCustomer = onCompleteCustomer; 
 						});

@@ -124,7 +124,7 @@ class app_collection_manager extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}		
 			
 	}
@@ -166,10 +166,19 @@ class app_collection_manager extends _BaseController {
 			$objComponentCustomer		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
 			if(!$objComponentCustomer)
 			throw new \Exception("00409 EL COMPONENTE 'tb_customer' NO EXISTE...");
+
+			$objComponentItem			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 		
 			$objData["componentEmployeeID"]	= $objComponentEmployee->componentID;
 			$objData["componentCustomerID"]	= $objComponentCustomer->componentID;
-			$objData["company"]				= $dataSession["company"];			
+			$objData["company"]				= $dataSession["company"];		
+			$objData["objComponentItem"]	= $objComponentItem;
+
+			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$objData["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;	
 			
 			//Renderizar Resultado			
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -193,7 +202,7 @@ class app_collection_manager extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}	
 			
     }
@@ -262,7 +271,7 @@ class app_collection_manager extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}
 	}	
 }
