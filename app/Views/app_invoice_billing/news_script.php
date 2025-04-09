@@ -1818,7 +1818,7 @@
 		$('#txtNumberPhone').val(objTransactionMaster.numberPhone);
 		$('#txtMesaID').val(objTransactionMasterInfo.mesaID).trigger("change");
 		$('#txtReference2').val(objTransactionMaster.reference2);
-		$('#txtPeriodPay').val(objTransactionMaster.periodPay);
+		$('#txtPeriodPay').val(objTransactionMaster.periodPay).trigger('change');
 		$('#txtReference1').val(objTransactionMaster.reference1).trigger('change');
 		$('#txtDayExcluded').val(objTransactionMaster.dayExcluded).trigger('change');
 		$('#txtCausalID').val(objTransactionMaster.transactionCausalID).trigger("change");
