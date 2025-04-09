@@ -18,32 +18,32 @@
 					}
 					input:focus {
 						
-					  color:black;					  
-					  font-weight: bold;
-					  background: 	#00cb72;
+					  color			:black;					  
+					  font-weight	: bold;
+					  background	: 	#00cb72;
 					  
-					  /*width: 100%;*/
-					  /*padding: 0px 50px;*/
-					  /*margin: 8px 0;*/
-					  /*box-sizing: border-box;*/
+					  /*width		: 100%;*/
+					  /*padding		: 0px 50px;*/
+					  /*margin		: 8px 0;*/
+					  /*box-sizing	: border-box;*/
 					  
 					}
 					/*.td-center {
-						text-align: center;
-						vertical-align: middle;
+						text-align		: center;
+						vertical-align	: middle;
 					}*/
 					.td-center input[type="checkbox"] {
-						display: inline-block;
-						margin: auto;
+						display	: inline-block;
+						margin	: auto;
 					}
 
 					.td-center{
-						display: flex !important;
-						justify-content: center !important;
-						align-items: center !important;
-						width: 100% !important;
-						height: 100% !important;
-						min-height:37px !important;
+						display			: flex !important;
+						justify-content	: center !important;
+						align-items		: center !important;
+						width			: 100% !important;
+						height			: 100% !important;
+						min-height		: 37px !important;
 					}
 					.switch{
                         z-index: 0 !important;

@@ -179,16 +179,14 @@
 					var timerNotification 	= 15000;
 					if(e.objTransactionMaster.length > 0 )
 					{
-                        $('#txtCheckApplyExoneracion').parent().removeClass("switch-on");
-                        $('#txtCheckApplyExoneracion').parent().addClass("switch-off");
+						fnSetCheckBoxValue($('#txtCheckApplyExoneracion'),false);
 						$("#txtCheckApplyExoneracionValue").val(0);
 						fnShowNotification("El numero de exoneracion ya existe!!","error",timerNotification);
 					}
 					//La exoneracoin no existe si se puede exonerar
 					else
 					{
-                        $('#txtCheckApplyExoneracion').parent().removeClass("switch-off");
-                        $('#txtCheckApplyExoneracion').parent().addClass("switch-on");
+                        fnSetCheckBoxValue($('#txtCheckApplyExoneracion'),true);
 						$("#txtCheckApplyExoneracionValue").val(1);
 						fnShowNotification("Exoneracion aplicada!!","success",timerNotification);
 					}
@@ -1319,6 +1317,20 @@
 		
 	}
 	
+	function fnSetCheckBoxValue(element,value)
+	{
+		if(value)
+		{
+			element.parent().removeClass("switch-off");
+			element.parent().addClass("switch-on");
+		}
+		else
+		{
+			element.parent().removeClass("switch-on");
+			element.parent().addClass("switch-off");
+		}
+	}
+
 	function validateFormAndSubmit(){	
 		let result 				= true;		
 		let timerNotification 	= 15000;
@@ -1710,6 +1722,7 @@
 		$("#txtCheckApplyExoneracionValue").val(0);
 		$("#txtCheckReportSinRiesgoValue").val(0);
 		$("#txtCheckDeEfectivoValue").val(0);
+		
 		setTimeout(()=>{
 			cerrarModal('ModalCargandoDatos');
 		}, 2000);
@@ -1968,27 +1981,22 @@
 
 		if(objTransactionMasterReferences.reference2 === "1"){
             $('#txtCheckApplyExoneracionValue').val(1);
-            $('#txtCheckApplyExoneracion').parent().removeClass("switch-off");
-            $('#txtCheckApplyExoneracion').parent().addClass("switch-on");
+            fnSetCheckBoxValue($('#txtCheckApplyExoneracion'),true);
 		}else{
-            $('#txtCheckApplyExoneracion').parent().removeClass("switch-on");
-            $('#txtCheckApplyExoneracion').parent().addClass("switch-off");
+            fnSetCheckBoxValue($('#txtCheckApplyExoneracion'),false);
 			$('#txtCheckApplyExoneracionValue').val(0);
 		}
 
 		if(objTransactionMasterDetailCredit.reference2 === "1"){
 			$('#txtCheckReportSinRiesgoValue').val(1);
-            $('#txtCheckReportSinRiesgo').parent().removeClass("switch-off");
-            $('#txtCheckReportSinRiesgo').parent().addClass("switch-on");
+            fnSetCheckBoxValue($('#txtCheckReportSinRiesgoValue'),true);
 		}else{
 			$('#txtCheckReportSinRiesgoValue').val(0);
-            $('#txtCheckReportSinRiesgo').parent().removeClass("switch-on");
-            $('#txtCheckReportSinRiesgo').parent().addClass("switch-off");
+            fnSetCheckBoxValue($('#txtCheckReportSinRiesgoValue'),false);
 		}
 
 		$('#txtCheckDeEfectivoValue').val(0);
-        $('#txtCheckDeEfectivo').parent().removeClass("switch-on");
-        $('#txtCheckDeEfectivo').parent().addClass("switch-off");
+        fnSetCheckBoxValue($('#txtCheckDeEfectivoValue'),false);
 
 		cerrarModal('ModalCargandoDatos');
     }
@@ -3777,36 +3785,29 @@
 
         if( $('#txtCheckApplyExoneracionValue').val() === "1"  )
         {
-            $('#txtCheckApplyExoneracion').parent().removeClass("switch-off");
-            $('#txtCheckApplyExoneracion').parent().addClass("switch-on");
+            fnSetCheckBoxValue($('#txtCheckApplyExoneracion'),true);
         }
         else
         {
-            $('#txtCheckApplyExoneracion').parent().removeClass("switch-on");
-            $('#txtCheckApplyExoneracion').parent().addClass("switch-off");
+            fnSetCheckBoxValue($('#txtCheckApplyExoneracion'),false);
 
         }
         if( $('#txtCheckDeEfectivoValue').val() === "1"  )
         {
-            $('#txtCheckDeEfectivo').parent().removeClass("switch-off");
-            $('#txtCheckDeEfectivo').parent().addClass("switch-on");
+            fnSetCheckBoxValue($('#txtCheckDeEfectivoValue'),true);
         }
         else
         {
-            $('#txtCheckDeEfectivo').parent().removeClass("switch-on");
-            $('#txtCheckDeEfectivo').parent().addClass("switch-off");
+            fnSetCheckBoxValue($('#txtCheckDeEfectivoValue'),false);
 
         }
         if( $('#txtCheckReportSinRiesgoValue').val() === "1"  )
         {
-            $('#txtCheckReportSinRiesgo').parent().removeClass("switch-off");
-            $('#txtCheckReportSinRiesgo').parent().addClass("switch-on");
+            fnSetCheckBoxValue($('#txtCheckReportSinRiesgoValue'),true);
         }
         else
         {
-            $('#txtCheckReportSinRiesgo').parent().removeClass("switch-on");
-            $('#txtCheckReportSinRiesgo').parent().addClass("switch-off");
-
+            fnSetCheckBoxValue($('#txtCheckReportSinRiesgoValue'),false);
         }
 		
 		
