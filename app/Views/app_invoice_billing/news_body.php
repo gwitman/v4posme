@@ -797,11 +797,13 @@ echo helper_getHtmlOfPageLanding();
 								</div>
 								
 							</div>
-							<br id="saltoDeLineaFila2" />
+							
 							<div class="row" id="rowBotoneraFacturaFila2">
+								<br id="saltoDeLineaFila2" />
 								<div class="col col-lg-2">
 									<a href="#" class="btn btn-flat btn-info btn-block hidden btn-comando-factura" id="btnNew"><i class="icon16 i-checkmark-4"></i> NUEVA FAC</a>
 								</div>
+								
 								<div class="col col-lg-2" id="registrarFacturaNueva">									
 									<?php 
 									if ($objParameterInvoiceAutoApply == "true"){
@@ -820,6 +822,7 @@ echo helper_getHtmlOfPageLanding();
 									}
 									?>								
 								</div>
+								
 								<div class="col col-lg-2 showPanelEdicion">
 									<a href="javascript:void(0);" class="btn btn-flat btn-danger btn-block hidden btn-comando-factura" id="btnDelete"><i class="icon16 i-remove "></i> ELIMINAR FAC</a>
 								</div>
@@ -832,30 +835,31 @@ echo helper_getHtmlOfPageLanding();
 								<div class="col col-lg-2" id="showCommandBar">
 									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnBar"><i class="icon16 i-print "></i> BAR</a>
 								</div>
+								
+								
+								
+								
 							</div>      
 							
-						<div class="row" id="rowBotoneraFacturaFila3">			
-							<br id="saltoDeLineaFila3" />					
-							<div class="col col-lg-2 showComandoDeCocina">
-								<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnOptionPago"><i class="icon16 i-arrow-down-12 "></i> PROCESAR PAGO</a>
+							<div class="row" id="rowBotoneraFacturaFila3">			
+								<br id="saltoDeLineaFila3" />					
+								<div class="col col-lg-2 showComandoDeCocina">
+									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnOptionPago"><i class="icon16 i-arrow-down-12 "></i> PROCESAR PAGO</a>
+								</div>
+								<div class="col col-lg-2 showComandoDeCocina">
+									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunVerDetalle","DETALLE"); ?>  </a>
+								</div>							
 							</div>
-							<div class="col col-lg-2 showComandoDeCocina">
-								<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunVerDetalle","DETALLE"); ?>  </a>
-							</div>							
-						</div>
 						
-						<div class="row" id="rowBotoneraFacturaFila4">
-						
-							<div id="workflowLink">
-							</div>
-							
-							<div id="divPanelOpenCash">
-								<div class="col col-lg-2">
-									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnAbrirCaja"><i class="icon16 i-print "></i> ABRIR CAJA</a>
+							<div class="row" id="rowBotoneraFacturaFila4">
+								<div id="workflowLink">
+								</div>
+								<div id="divPanelOpenCash">
+									<div class="col col-lg-2">
+										<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnAbrirCaja"><i class="icon16 i-print "></i> ABRIR CAJA</a>
+									</div>
 								</div>
 							</div>
-							
-						</div>
 
 						<?php
 					}
@@ -887,6 +891,7 @@ echo helper_getHtmlOfPageLanding();
 									</div>
 								</div>
 						</div>
+						
 						</br>
 						<div class="row" >
 								<div class="col col-lg-6 col-md-6 col-sm-6 col-xs-6">
@@ -894,6 +899,8 @@ echo helper_getHtmlOfPageLanding();
 										<button type="button" class="btn btn-flat btn-primary dropdown-toggle  btn-block" data-toggle="dropdown">SALV <span class="caret"></span></button>
 										<!-- Se añadiran de forma dinamica-->
 										<ul class="dropdown-menu" id="linkMobile"> 
+											<li><a href="javascript:void(0);"  id="btnFooterMobile">COCINA</a></li>
+											<li><a href="javascript:void(0);"  id="btnBarMobile">BAR</a></li>
 										</ul>
 									</div>
 								</div>
@@ -910,6 +917,7 @@ echo helper_getHtmlOfPageLanding();
 									</div>
 								</div>							
 						</div>
+						
 						<br/>	
 						<br/>	
 						<br/>	
