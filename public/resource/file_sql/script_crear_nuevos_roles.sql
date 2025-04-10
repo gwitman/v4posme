@@ -1,4 +1,4 @@
-set @nameCompany        := 'BAR_EXIST';
+set @nameCompany        := 'TISEY';
 set @domainDestino 			:= CONCAT('@',LOWER( @nameCompany));
 
 
