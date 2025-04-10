@@ -82,7 +82,7 @@
     let varUrlPrinterOpcion2;
     let varUrlPrinterCocina;
     let varUrlPrinterBar;
-    let objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE;
+    let objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE = '<?= $objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE ?>';
     let objParameterINVOICE_OPEN_CASH_PASSWORD;
     let varDetail;
     let varDetailReferences;
@@ -1732,6 +1732,11 @@
 				$("#txtCurrencyID").trigger("change");
 			}
 		});
+		if(objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE==="false"){
+            $('#divPanelOpenCash').css('display','block');
+        }else{
+            $('#divPanelOpenCash').css('display', 'none');
+        }
         $('#txtCustomerCreditLineID').empty();
         objListCustomerCreditLine 	= JSON.parse('<?php echo json_encode($objListCustomerCreditLine); ?>');
         objCausalTypeCredit 		= JSON.parse('<?php echo json_encode($objCausalTypeCredit); ?>');
@@ -1749,7 +1754,7 @@
 		$('.showComandoDeCocina').css('display', 'none');
 		$('.showPanelEdicion').css('display', 'none');
 		$('#registrarFacturaNueva').css('display','block');
-		$('#showCommandBar').hide();
+		$('#showCommandBar').css('display', 'none');
 		$("#workflowLink").empty();
 		transactionID = <?= $transactionIDNueva ?>;
 		$('#txtStatusID').val(<?= isset($objListWorkflowStage) ? $objListWorkflowStage[0]->workflowStageID : 0 ?>);
@@ -2015,15 +2020,17 @@
         $('.showPanelEdicion').css('display','block');
         $('#rowBotoneraFacturaFila5').css('display','block');
         $('#registrarFacturaNueva').css('display','none');
+
 		if(varParameterShowComandoDeCocina === "true"){
             $('.showComandoDeCocina').show();
         }else{
             $('.showComandoDeCocina').hide();
         }
+
         if(objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE==="false"){
-            $('#objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE').css('display', 'block');
+            $('#divPanelOpenCash').css('display','block');
         }else{
-            $('#objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE').css('display', 'none');
+            $('#divPanelOpenCash').css('display', 'none');
         }
 
         <?php echo getBehavio($company->type, 'app_invoice_billing', 'btnFooter','') ?>
@@ -3307,14 +3314,18 @@
 			loadEdicion = true;
 		}
 		
-		$('#divLoandingCustom').hide();
+		$('#divLoandingCustom').css('display','none');
 		$('#btnLinkPayment').css('display','none');
 		$('#rowBotoneraFacturaFila5').css('display','none');
 		$('.showComandoDeCocina').css('display', 'none');
 		$('.showPanelEdicion').css('display', 'none');
 		$('#registrarFacturaNueva').css('display','block');
-		$('#showCommandBar').hide();
-		
+		$('#showCommandBar').css('display', 'none');
+		if(objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE==="false"){
+            $('#divPanelOpenCash').css('display','block');
+        }else{
+            $('#divPanelOpenCash').css('display', 'none');
+        }
 		$('#txtClaveOpenCash').css({
 			'webkitTextSecurity': 'disc', 		// Para WebKit browsers
 			'textSecurity'		: 'disc'        // Para otros browsers que lo soporten
