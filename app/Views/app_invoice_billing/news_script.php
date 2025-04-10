@@ -251,9 +251,23 @@
 		window.location.href 	= "<?=base_url()."/"."app_invoice_billing/edit/companyID/".$companyID."/transactionID/".$transactionID."/transactionMasterID/"?>"+value+"<?="/codigoMesero/".$codigoMesero ?>";			
 		cerrarModal("ModalIrMesaDocumentDialogCustom");
 	});	
-			
-			
-	$("#modalDialogClaveOpenCash").click(function()
+	
+	$("#btnAceptarDialogBarV2").click(function(){
+	});	
+	
+	$("#btnAceptarDialogCocinaV2").click(function(){
+	});	
+	
+	$(document).on("click","#btnAbrirCaja",function(){
+		$("#txtClaveOpenCash").val("");
+		mostrarModal("ModalCodigoCaja");
+	});
+	
+	$('#btnCancelarCashOpen').click(function () {
+		cerrarModal('ModalCodigoCaja');
+	});
+
+	$("#btnAceptarClaveOpenCash").click(function()
 	{
 		if( $("#txtClaveOpenCash").val() == objParameterINVOICE_OPEN_CASH_PASSWORD )
 		{
@@ -275,20 +289,6 @@
 		}
 	});	
 	
-	$("#btnAceptarDialogBarV2").click(function(){
-	});	
-	
-	$("#btnAceptarDialogCocinaV2").click(function(){
-	});	
-	
-	$(document).on("click","#btnAbrirCaja",function(){
-		$("#txtClaveOpenCash").val("");
-		mostrarModal("ModalCodigoCaja");
-	});
-	
-	$('#btnCancelarCashOpen').click(function () {
-		cerrarModal('ModalCodigoCaja');
-	});
 	$('#btnNew').click(function(){
 		mostarModalPersonalizado("Cargando datos de nueva factura, por favor espere...")
 		fnClearForm();
@@ -957,6 +957,27 @@
 		 }
 		 fnRecalculateDetail(true,"");
     });
+
+	//Pago
+	$(document).on("click","#btnOptionPago",function(){		
+		 $("#mySidebar").css("width","100%");
+		 
+	});				
+	$(document).on("click","#btnRollbackPayment",function(){
+		var sidebar = $("#mySidebar");		
+		sidebar.css("width", "0");		
+		 
+	});
+	
+	//Detalle de factura
+	$(document).on("click","#btnVeDetalleFactura",function(){		
+		 $("#mySidebarFactura").css("width","100%");
+		 
+	});				
+	$(document).on("click","#btnRollbackFactura",function(){
+		var sidebar = $("#mySidebarFactura");		
+		sidebar.css("width", "0");
+	});
 	
 	function fnAceptarModalModalPrinterDocumentDialogCustom()
 	{
@@ -1744,10 +1765,10 @@
     function fnUpdateInvoiceView(data){
         console.info("LOAD INVOICE");
         loadEdicion = true;
-        varParameterTipoPrinterDownload     = data.objParameterTipoPrinterDonwload;
-        objParameterPrinterDirectAndPreview = data.objParameterPrinterDirectAndPreview;
-        varParameterShowComandoDeCocina     = data.objParameterINVOICE_BILLING_SHOW_COMMAND_BAR;
-        varParameterShowComandoDeCocina     = data.objParameterShowComandoDeCocina;
+		objParameterINVOICE_BILLING_SHOW_COMMAND_BAR    = data.objParameterINVOICE_BILLING_SHOW_COMMAND_BAR;
+        varParameterTipoPrinterDownload     			= data.objParameterTipoPrinterDonwload;
+        objParameterPrinterDirectAndPreview 			= data.objParameterPrinterDirectAndPreview;        
+        varParameterShowComandoDeCocina     			= data.objParameterShowComandoDeCocina;
         varUrlPrinterOpcion2    = data.urlPrinterDocumentOpcion2;
         varUrlPrinterCocina	    = data.urlPrinterDocumentCocina;
         varUrlPrinterBar        = data.objParameterINVOICE_BILLING_PRINTER_URL_BAR;
@@ -1778,7 +1799,6 @@
         varParameterUrlServidorDeImpresion      			= data.objParameterUrlServidorDeImpresion;
         varTransactionCausalID	                			= objTransactionMaster.transactionCausalID;
         varCustomerCrediLineID	                			= objTransactionMaster.reference4;
-        objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE  = data.objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE;
         
 		let objTransactionMasterDetailCredit 	= data.objTransactionMasterDetailCredit;
         let objTransactionMasterInfo            = data.objTransactionMasterInfo;
@@ -1793,6 +1813,13 @@
 	
         let counter 				= 0;
         let objListWorkflowStage 	= data.objListWorkflowStage;
+		$('#linkMobile').empty();
+		if(varParameterShowComandoDeCocina === "true"){
+			$('#linkMobile').append('<li><a href="#"  id="btnFooter">COCINA</a></li>');
+		}
+		if(objParameterINVOICE_BILLING_SHOW_COMMAND_BAR == "true"){
+			$('#linkMobile').append('<li><a href="#"  id="btnBar">BAR</a></li>');
+		}
         if(objListWorkflowStage.length > 0){
 			$("#workflowLink").empty();
             for(let w=0; w < objListWorkflowStage.length; w++){
@@ -1804,6 +1831,7 @@
                         '<i class="icon16 i-checkmark-4"></i> ' + nameWorkflow.trim() +
                     '</a>'+
                 '</div>';
+				$('#linkMobile').append('<li><a href="#" class="btnAcept "' + buttonClass + '" data-valueworkflow="' + ws.workflowStageID + '"> ' + nameWorkflow.trim() + '</a></li>');
                 $("#workflowLink").append(buttonHtml);
             }
         }
