@@ -2082,7 +2082,8 @@ class app_inventory_inputunpost extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		}
+		    echo $resultView;		
+		}
 	}
 	function add(){
 		try{ 

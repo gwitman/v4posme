@@ -1,6 +1,8 @@
 				<!-- ./ page heading -->
 				<script>
-					$(document).ready(function(){						 
+					$(document).ready(function(){		
+						var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';  
+				 
 						 $('#txtDate').datepicker({format:"yyyy-mm-dd"});
 						 $('#txtDate').val(moment().format("YYYY-MM-DD"));	
 						 $("#txtDate").datepicker("update");
@@ -9,7 +11,7 @@
 						
 						//Buscar el Cliente
 						$(document).on("click","#btnSearchCustomer",function(){
-							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCustomer->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_BILLING/true/empty/false/not_redirect_when_empty";
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_BILLING_PAGINATED/true/empty/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
 							window.open(url_request,"MsgWindow","width=900,height=450");
 							window.onCompleteCustomer = onCompleteCustomer; 
 						});						

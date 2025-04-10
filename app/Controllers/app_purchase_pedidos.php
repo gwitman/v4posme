@@ -77,16 +77,20 @@ class app_purchase_pedidos extends _BaseController {
 			if(!$objComponentBilling)
 			throw new \Exception("EL COMPONENTE 'tb_transaction_master_billing' NO EXISTE...");
 		
-			$objComponentFile	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_file");
+			$objComponentFile		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_file");
 			if(!$objComponentFile)
 			throw new \Exception("EL COMPONENTE 'tb_file' NO EXISTE...");
 		
+			$objComponentItem		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 		
 			//Tipo de Factura		
 			$dataView["objComponentBilling"]					= $objComponentBilling;
 			$dataView["objComponentCustomer"]					= $objComponentCustomer;
 			$dataView["objComponentEmployer"]					= $objComponentEmployer;
-			
+			$dataView["objComponentItem"]						= $objComponentItem;
+
 			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);									
 			$dataView["objTransactionMaster"]->transactionOn 	= date_format(date_create($dataView["objTransactionMaster"]->transactionOn),"Y-m-d");
 			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
@@ -135,7 +139,9 @@ class app_purchase_pedidos extends _BaseController {
 			$objParameterUrlServerFile 					= $objParameterUrlServerFile->value;
 			$dataView["objParameterUrlServerFile"]	 	= $objParameterUrlServerFile == "" ? base_url() : $objParameterUrlServerFile;
 			
-			
+			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -159,7 +165,7 @@ class app_purchase_pedidos extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}	
 	}	
 	function delete(){
@@ -532,7 +538,7 @@ class app_purchase_pedidos extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}
 		
 	}
@@ -646,7 +652,7 @@ class app_purchase_pedidos extends _BaseController {
 					
 					if(!file_exists ($pathDocument))
 					{
-						mkdir( $pathDocument,0700);
+						mkdir( $pathDocument,0700,true);
 					}	
 					
 					//crear carpeta server
@@ -753,7 +759,7 @@ class app_purchase_pedidos extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}	
 	}
 	function save($mode=""){
@@ -861,6 +867,9 @@ class app_purchase_pedidos extends _BaseController {
 			if(!$objComponentBilling)
 			throw new \Exception("EL COMPONENTE 'tb_transaction_master_billing' NO EXISTE...");
 		
+			$objComponentItem		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 		
 			//Tipo de Factura
 			$dataView["company"]				= $dataSession["company"];
@@ -877,12 +886,16 @@ class app_purchase_pedidos extends _BaseController {
 			$dataView["branchName"]				= $dataSession["branch"]->name;
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
 			$dataView["objListBranch"]			= $this->Branch_Model->getByCompany($companyID);
-			
+			$dataView["objComponentItem"]		= $objComponentItem;
+
 			$objParameterExchangePurchase		= $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_PURCHASE",$companyID);
 			$dataView["exchangeRatePurchase"]	= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID) - $objParameterExchangePurchase->value;			
 			$objParameterExchangeSales			= $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID);
 			$dataView["exchangeRateSale"]		= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID) + $objParameterExchangeSales->value;		
 			
+			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
 		
 			$dataView["objCaudal"]				= $this->Transaction_Causal_Model->getCausalByBranch($companyID,$transactionID,$branchID);			
 			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_workshop_pedido","statusID",$companyID,$branchID,$roleID);
@@ -913,7 +926,7 @@ class app_purchase_pedidos extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}	
 			
     }

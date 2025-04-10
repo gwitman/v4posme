@@ -445,6 +445,9 @@ class core_user extends _BaseController {
 			if(!$objComponentEntity)
 			throw new \Exception("EL COMPONENTE 'tb_entity' NO EXISTE...");
 		
+			$objComponentItem					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 			
 			//Obtener el Registro			
 			$datView["objUser"]	 				= $this->User_Model->get_rowByPK($companyID,$branchID,$userID);
@@ -478,6 +481,11 @@ class core_user extends _BaseController {
 			//Obtener El Natural
 			$datView["objNatural"]				= $datView["objEntity"] == null ? null : $this->Natural_Model->get_rowByPK($datView["objEntity"]->companyID,$datView["objEntity"]->branchID,$datView["objEntity"]->entityID);
 			
+			$datView["objComponentItem"]				= $objComponentItem;
+			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$datView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
+
 			
 			//Lista de cajas
 			$datView["objListCash"]	 				= $this->Cash_Box_Model->asObject()->where("companyID",$this->session->get('user')->companyID)->findAll();
@@ -506,7 +514,7 @@ class core_user extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}	
 	}
     function add(){
@@ -532,7 +540,7 @@ class core_user extends _BaseController {
 			}
 			
 			//Load Modelos
-			 
+			$companyID 							= $dataSession["user"]->companyID;
 			
 			$objComponent						= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");			
 			if(!$objComponent)
@@ -543,17 +551,25 @@ class core_user extends _BaseController {
 			throw new \Exception("EL COMPONENTE 'tb_entity' NO EXISTE...");
 		
 		
+			$objComponentItem					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 			
 			
 			//Obtener los Roles
-			$datView["objListRoles"] = $this->Role_Model->get_rowByCompanyIDyBranchID($this->session->get('user')->companyID,$this->session->get('user')->branchID);
-			$datView["objEmployee"]  = $objComponent;
-			$datView["objEntity"]  	 = $objComponentEntity;
-			$datView["objBranch"]	 = $this->Branch_Model->getByCompany($this->session->get('user')->companyID);
-			
+			$datView["objListRoles"] 		= $this->Role_Model->get_rowByCompanyIDyBranchID($this->session->get('user')->companyID,$this->session->get('user')->branchID);
+			$datView["objEmployee"]  		= $objComponent;
+			$datView["objEntity"]  	 		= $objComponentEntity;
+			$datView["objBranch"]	 		= $this->Branch_Model->getByCompany($this->session->get('user')->companyID);
+			$datView["objComponentItem"]	= $objComponentItem;
+
 			//Lista de cajas
 			$datView["objListCash"]	 = $this->Cash_Box_Model->asObject()->where("companyID",$this->session->get('user')->companyID)->findAll();
 			
+			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$datView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
+
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
@@ -576,7 +592,7 @@ class core_user extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}	
 			
     }

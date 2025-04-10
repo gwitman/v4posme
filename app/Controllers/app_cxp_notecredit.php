@@ -74,7 +74,7 @@ class app_cxp_notecredit extends _BaseController
 			$data["urlBack"]   = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 			$resultView        = view("core_template/email_error_general", $data);
 
-			return $resultView;
+			echo $resultView;
 		}
 	}
 
@@ -107,9 +107,13 @@ class app_cxp_notecredit extends _BaseController
 			$roleID 							= $dataSession["role"]->roleID;
 			$userID								= $dataSession["user"]->userID;
 
-			$objComponentProvider					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_provider");
+			$objComponentProvider				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_provider");
 			if (!$objComponentProvider)
-				throw new \Exception("EL COMPONENTE 'tb_provider' NO EXISTE...");
+			throw new \Exception("EL COMPONENTE 'tb_provider' NO EXISTE...");
+
+			$objComponentItem					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 
 			//Obtener Tasa de Cambio			
 			$companyID 							= $dataSession["user"]->companyID;
@@ -138,11 +142,16 @@ class app_cxp_notecredit extends _BaseController
 			$dataView["branchName"]				= $dataSession["branch"]->name;
 			$dataView["useMobile"]				= $dataSession["user"]->useMobile;
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID, date("Y-m-d"), 1, $targetCurrency->currencyID, $objCurrency->currencyID);
+			$dataView["objComponentItem"]		= $objComponentItem;
 
 			$objParameterExchangePurchase		= $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_PURCHASE", $companyID);
 			$dataView["exchangeRatePurchase"]	= $this->core_web_currency->getRatio($companyID, date("Y-m-d"), 1, $targetCurrency->currencyID, $objCurrency->currencyID) - $objParameterExchangePurchase->value;
 			$objParameterExchangeSales			= $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE", $companyID);
 			$dataView["exchangeRateSale"]		= $this->core_web_currency->getRatio($companyID, date("Y-m-d"), 1, $targetCurrency->currencyID, $objCurrency->currencyID) + $objParameterExchangeSales->value;
+
+			$objListComanyParameter							= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]		= $objParameterCantidadItemPoup->value;
 
 			$dataView["company"]							= $dataSession["company"];
 			$dataView["objComponentProvider"]				= $objComponentProvider;
@@ -176,7 +185,7 @@ class app_cxp_notecredit extends _BaseController
 			$data["urlBack"]   = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 			$resultView        = view("core_template/email_error_general", $data);
 
-			return $resultView;
+			echo $resultView;
 		}
 	}
 
@@ -226,7 +235,7 @@ class app_cxp_notecredit extends _BaseController
 			$data["urlBack"]   = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 			$resultView        = view("core_template/email_error_general", $data);
 
-			return $resultView;
+			echo $resultView;
 		}
 	}
 
@@ -259,18 +268,22 @@ class app_cxp_notecredit extends _BaseController
 			$branchID 				= $dataSession["user"]->branchID;
 			$roleID 				= $dataSession["role"]->roleID;
 
-			$objComponentNoteCredit        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_cxp_notacredito");
+			$objComponentNoteCredit	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_cxp_notacredito");
 			if (!$objComponentNoteCredit)
 				throw new \Exception("00409 EL COMPONENTE 'tb_transaction_master_cxp_notacredito' NO EXISTE...");
 
 
-			$objComponentCustomer    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
+			$objComponentCustomer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
 			if (!$objComponentCustomer)
 				throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
 
-			$objComponentProvider					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_provider");
+			$objComponentProvider	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_provider");
 			if (!$objComponentProvider)
-				throw new \Exception("EL COMPONENTE 'tb_provider' NO EXISTE...");
+			throw new \Exception("EL COMPONENTE 'tb_provider' NO EXISTE...");
+
+			$objComponentItem		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 
 			if ((!$companyID) || (!$transactionID) || (!$transactionMasterID)) {
 				$this->response->redirect(base_url() . "/" . 'app_cxp_notecredit/add');
@@ -293,10 +306,15 @@ class app_cxp_notecredit extends _BaseController
 			$dataView["objListCurrencyDefault"]				= $this->core_web_currency->getCurrencyDefault($companyID);
 			$dataView["customerEntityID"]					= $customerEntityID;
 			$dataView["objNatural"]							= $objNatural;
-			$dataView["objComponentCustomer"]   = $objComponentCustomer;
-			$dataView["objComponentNoteCredit"]	= $objComponentNoteCredit;
-			$dataView["objListCurrency"]        = $this->Company_Currency_Model->getByCompany($companyID);
-			$dataView["objListWorkflowStage"]   = $this->core_web_workflow->getWorkflowAllStage("tb_transaction_master_cxp_notacredito", "statusID", $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID);
+			$dataView["objComponentCustomer"]   			= $objComponentCustomer;
+			$dataView["objComponentNoteCredit"]				= $objComponentNoteCredit;
+			$dataView["objListCurrency"]        			= $this->Company_Currency_Model->getByCompany($companyID);
+			$dataView["objListWorkflowStage"]   			= $this->core_web_workflow->getWorkflowAllStage("tb_transaction_master_cxp_notacredito", "statusID", $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID);
+			$dataView["objComponentItem"]					= $objComponentItem;
+
+			$objListComanyParameter							= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]		= $objParameterCantidadItemPoup->value;
 
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -319,7 +337,7 @@ class app_cxp_notecredit extends _BaseController
 			$data["urlBack"]   = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 			$resultView        = view("core_template/email_error_general", $data);
 
-			return $resultView;
+			echo $resultView;
 		}
 	}
 
@@ -419,7 +437,7 @@ class app_cxp_notecredit extends _BaseController
 			$data["urlBack"]   = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 			$resultView        = view("core_template/email_error_general", $data);
 
-			return $resultView;
+			echo $resultView;
 		}
 	}
 

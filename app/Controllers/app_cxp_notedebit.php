@@ -75,7 +75,7 @@ class app_cxp_notedebit extends _BaseController
 			$data["urlBack"]   = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 			$resultView        = view("core_template/email_error_general", $data);
 
-			return $resultView;
+			echo $resultView;
 		}
 	}
 
@@ -125,7 +125,7 @@ class app_cxp_notedebit extends _BaseController
 			$data["urlBack"]   = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 			$resultView        = view("core_template/email_error_general", $data);
 
-			return $resultView;
+			echo $resultView;
 		}
 	}
 
@@ -154,16 +154,17 @@ class app_cxp_notedebit extends _BaseController
 			$branchID       = $dataSession["user"]->branchID;
 			$roleID         = $dataSession["role"]->roleID;
 
-			$objComponentNoteDebit        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_cxp_notadebito");
+			$objComponentNoteDebit	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_cxp_notadebito");
 			if (!$objComponentNoteDebit)
-				throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_cxp_notadebito' NO EXISTE...");
+			throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_cxp_notadebito' NO EXISTE...");
 
-
-			//Obtener el componente de Item
-			$objComponentProvider    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_Provider");
+			$objComponentProvider	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_Provider");
 			if (!$objComponentProvider)
-				throw new Exception("EL COMPONENTE 'tb_Provider' NO EXISTE...");
+			throw new Exception("EL COMPONENTE 'tb_Provider' NO EXISTE...");
 
+			$objComponentItem		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 
 			$objCurrency						                = $this->core_web_currency->getCurrencyDefault($companyID);
 			$dataView["company"]                                = $dataSession["company"];
@@ -174,6 +175,11 @@ class app_cxp_notedebit extends _BaseController
 			$dataView["objListCurrency"]                        = $this->Company_Currency_Model->getByCompany($companyID);
 			$dataView["objListCurrencyDefault"]                 = $this->core_web_currency->getCurrencyDefault($companyID);
 			$dataView["objCurrency"]                            = $objCurrency;
+			$dataView["objComponentItem"]						= $objComponentItem;
+
+			$objListComanyParameter								= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]			= $objParameterCantidadItemPoup->value;
 
 			//Renderizar Resultado 
 			$dataSession["notification"]        = $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -227,16 +233,18 @@ class app_cxp_notedebit extends _BaseController
 			$branchID 				= $dataSession["user"]->branchID;
 
 
-			$objComponentNoteDebit        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_cxp_notadebito");
+			$objComponentNoteDebit	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_cxp_notadebito");
 			if (!$objComponentNoteDebit)
 				throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_cxp_notadebito' NO EXISTE...");
 
 
-			$objComponentProvider    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_Provider");
+			$objComponentProvider	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_Provider");
 			if (!$objComponentProvider)
-				throw new Exception("EL COMPONENTE 'tb_Provider' NO EXISTE...");
+			throw new Exception("EL COMPONENTE 'tb_Provider' NO EXISTE...");
 
-
+			$objComponentItem		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 
 			if ((!$companyID) || (!$transactionID) || (!$transactionMasterID)) {
 				$this->response->redirect(base_url() . "/" . 'app_cxp_notedebit/add');
@@ -250,7 +258,12 @@ class app_cxp_notedebit extends _BaseController
 			$dataView["objComponentNoteDebit"]	= $objComponentNoteDebit;
 			$dataView["objListCurrency"]        = $this->Company_Currency_Model->getByCompany($companyID);
 			$dataView["objListWorkflowStage"]   = $this->core_web_workflow->getWorkflowAllStage("tb_transaction_master_cxp_notadebito", "statusID", $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID);
+			$dataView["objComponentItem"]		= $objComponentItem;
 
+			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
+			
 			//RENDERIZAR RESULTADO
 			$dataSession["notification"]    = $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]         = $this->core_web_notification->get_message();
@@ -271,7 +284,7 @@ class app_cxp_notedebit extends _BaseController
 			$data["urlBack"]   = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 			$resultView        = view("core_template/email_error_general", $data);
 
-			return $resultView;
+			echo $resultView;
 		}
 	}
 
@@ -370,7 +383,7 @@ class app_cxp_notedebit extends _BaseController
 			$data["urlBack"]   = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 			$resultView        = view("core_template/email_error_general", $data);
 
-			return $resultView;
+			echo $resultView;
 		}
 	}
 

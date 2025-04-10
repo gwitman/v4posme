@@ -56,7 +56,7 @@
 									<input type="hidden" name="txtTransactionID" value="<?php echo $objTransactionMaster->transactionID; ?>">
 									<input type="hidden" name="txtTransactionMasterID" value="<?php echo $objTransactionMaster->transactionMasterID; ?>">
 									
-									<?
+									<?php
 										$TMDcomponentItemID 			= 0 ;
 										$TMDreference1 					= "";
 										$TMDtransactionMasterDetailID 	= 0; 
@@ -65,7 +65,7 @@
 										{
 											$TMDcomponentItemID  			= $objTransactionMasterDetail[0]->componentItemID;
 											$TMDreference1  				= $objTransactionMasterDetail[0]->reference1;
-											$TMDtransactionMasterDetailID 	= $objTransactionMasterDetail[0]->transactionMasterDetailID ;
+											$TMDtransactionMasterDetailID 	= $objTransactionMasterDetail[0]->transactionMasterDetailID;
 										}
 									?>
 									<input type="hidden" name="txtCustomerCreditDocumentID" id="txtCustomerCreditDocumentID" value="<?php echo $TMDcomponentItemID; ?>">
