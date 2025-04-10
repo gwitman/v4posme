@@ -1749,6 +1749,8 @@
 		$('.showComandoDeCocina').css('display', 'none');
 		$('.showPanelEdicion').css('display', 'none');
 		$('#registrarFacturaNueva').css('display','block');
+		$('#showCommandBar').hide();
+		$("#workflowLink").empty();
 		transactionID = <?= $transactionIDNueva ?>;
 		$('#txtStatusID').val(<?= isset($objListWorkflowStage) ? $objListWorkflowStage[0]->workflowStageID : 0 ?>);
         $('#txtStatusIDOld').val(0);
@@ -1818,6 +1820,7 @@
 			$('#linkMobile').append('<li><a href="#"  id="btnFooter">COCINA</a></li>');
 		}
 		if(objParameterINVOICE_BILLING_SHOW_COMMAND_BAR == "true"){
+			$('#showCommandBar').show();
 			$('#linkMobile').append('<li><a href="#"  id="btnBar">BAR</a></li>');
 		}
         if(objListWorkflowStage.length > 0){
@@ -2017,7 +2020,6 @@
         }else{
             $('.showComandoDeCocina').hide();
         }
-
         if(objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE==="false"){
             $('#objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE').css('display', 'block');
         }else{
@@ -3311,7 +3313,7 @@
 		$('.showComandoDeCocina').css('display', 'none');
 		$('.showPanelEdicion').css('display', 'none');
 		$('#registrarFacturaNueva').css('display','block');
-		
+		$('#showCommandBar').hide();
 		
 		$('#txtClaveOpenCash').css({
 			'webkitTextSecurity': 'disc', 		// Para WebKit browsers
@@ -3869,9 +3871,7 @@
 		else 
 		{
 			cerrarModal("ModalCargandoDatos");
-		}
-		
-		
+		}		
 	});
 	
 	

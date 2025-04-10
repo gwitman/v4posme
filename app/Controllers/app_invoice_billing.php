@@ -3603,7 +3603,7 @@ class app_invoice_billing extends _BaseController {
 			throw new \Exception("NO ES POSIBLE CONTINUAR CONFIGURAR CATALOGO MESAS");
 			
 			
-			
+			$dataView["objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE"] 						= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE")->value;
 			$dataView["codigoMesero"]						= $codigoMesero;
 			$dataView["objListPay"]							= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","periodPay",$companyID);
 			$dataView["objListDayExcluded"]					= $this->core_web_catalog->getCatalogAllItem("tb_customer_credit_line","dayExcluded",$companyID);

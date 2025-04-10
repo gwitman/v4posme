@@ -780,8 +780,8 @@ echo helper_getHtmlOfPageLanding();
 									<div class="btn-group  btn-block">
 										<button type="button" class="btn btn-flat btn-success dropdown-toggle  btn-block hidden btn-comando-factura" data-toggle="dropdown" id="btnGroupdProducto"  ><i class="icon16 i-box"></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunConfiguracion","PRODUCTO"); ?>  <span class="caret"></span></button>
 										<ul class="dropdown-menu">
-												<li class="<?= getBehavio($company->type,"app_invoice_billing","btnNewItemCatalog",""); ?>"><a href="javascript:void(0);" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>
-												<li><a href="javascript:void(0);" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>											
+											<li class="<?= getBehavio($company->type,"app_invoice_billing","btnNewItemCatalog",""); ?>"><a href="javascript:void(0);" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>
+											<li><a href="javascript:void(0);" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>											
 										</ul>
 									</div>
 								</div>
@@ -797,99 +797,61 @@ echo helper_getHtmlOfPageLanding();
 								</div>
 								
 							</div>
-							
-						
-							<?php 
-							if( $objParameterEsResrarante == "true")
-							{
-								?>
-								<br id="saltoDeLineaFila3" />
-								<div class="row" id="rowBotoneraFacturaFila3">		
-									<div class="col col-lg-2">
-										<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnOptionPago"><i class="icon16 i-arrow-down-12 "></i> PROCESAR PAGO</a>
-									</div>							
-									<div class="col col-lg-2">
-										<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunVerDetalle","DETALLE"); ?>  </a>
-									</div>
-								</div>
-							<?php 
-							}
-							?>   
-						<br>                   
-						<div class="row" id="rowBotoneraFacturaFila3">
-							
+							<br id="saltoDeLineaFila2" />
+							<div class="row" id="rowBotoneraFacturaFila2">
 								<div class="col col-lg-2">
 									<a href="#" class="btn btn-flat btn-info btn-block hidden btn-comando-factura" id="btnNew"><i class="icon16 i-checkmark-4"></i> NUEVA FAC</a>
 								</div>
-								<div class="col col-lg-2 showComandoDeCocina">
-									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnOptionPago"><i class="icon16 i-arrow-down-12 "></i> PROCESAR PAGO</a>
-								</div>
-								<div class="col col-lg-2 showComandoDeCocina">
-									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunVerDetalle","DETALLE"); ?>  </a>
-								</div>
-								<div class="col col-lg-2" id="registrarFacturaNueva">
-										
-										<?php 
-										if ($objParameterInvoiceAutoApply == "true"){
-											?>
-											<a href="javascript:void(0);" class="btn btn-warning  btn-block hidden btn-comando-factura" id="btnAcept"><i class="icon16 i-checkmark-4"></i>
-											<?php echo getBehavio($company->type,"core_web_language_workflowstage","billing_APLICAR","APLICAR" ) ?>
-											</a>
-											<?php
-										}
-										else{
-											?>
-											<a href="javascript:void(0);" class="btn btn-warning  btn-block hidden btn-comando-factura" id="btnAcept"><i class="icon16 i-checkmark-4"></i>
-											<?php echo getBehavio($company->type,"core_web_language_workflowstage","billing_REGISTRAR","REGISTRAR") ?>
-											</a>
-											<?php 
-										}
+								<div class="col col-lg-2" id="registrarFacturaNueva">									
+									<?php 
+									if ($objParameterInvoiceAutoApply == "true"){
 										?>
-									
+										<a href="javascript:void(0);" class="btn btn-warning  btn-block hidden btn-comando-factura" id="btnAcept"><i class="icon16 i-checkmark-4"></i>
+										<?php echo getBehavio($company->type,"core_web_language_workflowstage","billing_APLICAR","APLICAR" ) ?>
+										</a>
+										<?php
+									}
+									else{
+										?>
+										<a href="javascript:void(0);" class="btn btn-warning  btn-block hidden btn-comando-factura" id="btnAcept"><i class="icon16 i-checkmark-4"></i>
+										<?php echo getBehavio($company->type,"core_web_language_workflowstage","billing_REGISTRAR","REGISTRAR") ?>
+										</a>
+										<?php 
+									}
+									?>								
 								</div>
 								<div class="col col-lg-2 showPanelEdicion">
 									<a href="javascript:void(0);" class="btn btn-flat btn-danger btn-block hidden btn-comando-factura" id="btnDelete"><i class="icon16 i-remove "></i> ELIMINAR FAC</a>
 								</div>
 								<div class="col col-lg-2 showPanelEdicion">
 									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnPrinter"><i class="icon16 i-print "></i> IMPRIMIR</a>
-								</div>
-
+								</div>								
 								<div class="col col-lg-2 showComandoDeCocina">
 									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnFooter"><i class="icon16 i-print "></i> COCINA</a>
 								</div>
-
-
-								<?php
-								if($objParameterINVOICE_BILLING_SHOW_COMMAND_BAR == 'true' ){
-									?>
-									<div class="col col-lg-2">
-										<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnBar"><i class="icon16 i-print "></i> BAR</a>
-									</div>
-									<?php
-								}
-								?>
-								<?php if( $objParameterEsResrarante == "true"){ ?>
-									<div class="col col-lg-2">
-										<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnOptionPago"><i class="icon16 i-arrow-down-12 "></i> PROCESAR PAGO</a>
-									</div>
-									<div class="col col-lg-2">
-										<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunVerDetalle","DETALLE"); ?>  </a>
-									</div>
-								<?php } ?>	
-							</div>
-						<div class="showPanelEdicion">
-							<br/>
-							<div class="row" id="rowBotoneraFacturaFila4">
-								<div id="workflowLink">
+								<div class="col col-lg-2" id="showCommandBar">
+									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnBar"><i class="icon16 i-print "></i> BAR</a>
 								</div>
-								<div class="objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE">
-									<div class="col col-lg-2">
-										<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnAbrirCaja"><i class="icon16 i-print "></i> ABRIR CAJA</a>
-									</div>
-								</div>
+							</div>                   
+						<div class="row" id="rowBotoneraFacturaFila3">			
+							<br id="saltoDeLineaFila3" />					
+							<div class="col col-lg-2 showComandoDeCocina">
+								<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnOptionPago"><i class="icon16 i-arrow-down-12 "></i> PROCESAR PAGO</a>
 							</div>
+							<div class="col col-lg-2 showComandoDeCocina">
+								<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunVerDetalle","DETALLE"); ?>  </a>
+							</div>							
 						</div>
-							
+						<div class="row" id="rowBotoneraFacturaFila4">
+							<div id="workflowLink">
+							</div>
+							<?php 
+							if($objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE == 'false' ){ ?>
+								<div class="col col-lg-2">
+									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnAbrirCaja"><i class="icon16 i-print "></i> ABRIR CAJA</a>
+								</div>
+							<?php } ?>
+						</div>
 
 						<?php
 					}
@@ -913,8 +875,8 @@ echo helper_getHtmlOfPageLanding();
 										<ul class="dropdown-menu">											
 											<li><a href="javascript:void(0);" id="btnBack" >REGRESAR</a></li>
 											<li><a href="<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>" id="btnNew">NUEVA FAC</a></li>
-											<li><a href="javascript:void(0);" id="btnDelete">ELIMINAR FAC</a></li>		
-											<li><a href="javascript:void(0);" id="btnPrinter">IMPRIMIR</a></li>	
+											<li class="showPanelEdicion"><a href="javascript:void(0);" id="btnDelete">ELIMINAR FAC</a></li>		
+											<li class="showPanelEdicion"><a href="javascript:void(0);" id="btnPrinter">IMPRIMIR</a></li>	
 											<li><a href="javascript:void(0);" id="btnSelectInvoice"  > SELECCIONAR</a></li>
 											<li><a href="javascript:void(0);" id="btnLinkPayment"  > LINK DE PAGO</a></li>
 										</ul>
