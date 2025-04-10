@@ -804,10 +804,13 @@ echo helper_getHtmlOfPageLanding();
 							{
 								?>
 								<br id="saltoDeLineaFila3" />
-								<div class="row" id="rowBotoneraFacturaFila3">									
-										<div class="col col-lg-2">
-											<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunVerDetalle","DETALLE"); ?>  </a>
-										</div>
+								<div class="row" id="rowBotoneraFacturaFila3">		
+									<div class="col col-lg-2">
+										<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnOptionPago"><i class="icon16 i-arrow-down-12 "></i> PROCESAR PAGO</a>
+									</div>							
+									<div class="col col-lg-2">
+										<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunVerDetalle","DETALLE"); ?>  </a>
+									</div>
 								</div>
 							<?php 
 							}
