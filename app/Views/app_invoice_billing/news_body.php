@@ -832,7 +832,8 @@ echo helper_getHtmlOfPageLanding();
 								<div class="col col-lg-2" id="showCommandBar">
 									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnBar"><i class="icon16 i-print "></i> BAR</a>
 								</div>
-							</div>                   
+							</div>      
+							
 						<div class="row" id="rowBotoneraFacturaFila3">			
 							<br id="saltoDeLineaFila3" />					
 							<div class="col col-lg-2 showComandoDeCocina">
@@ -842,15 +843,18 @@ echo helper_getHtmlOfPageLanding();
 								<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunVerDetalle","DETALLE"); ?>  </a>
 							</div>							
 						</div>
+						
 						<div class="row" id="rowBotoneraFacturaFila4">
+						
 							<div id="workflowLink">
 							</div>
-							<?php 
-							if($objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE == 'false' ){ ?>
+							
+							<div id="divPanelOpenCash">
 								<div class="col col-lg-2">
 									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnAbrirCaja"><i class="icon16 i-print "></i> ABRIR CAJA</a>
 								</div>
-							<?php } ?>
+							</div>
+							
 						</div>
 
 						<?php
