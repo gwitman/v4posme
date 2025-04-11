@@ -108,10 +108,14 @@
 			updateSummary();
 			updateCalculateChange();
 		});
+		//Monto
 		$(document).on("change","#txtReceiptAmount",function(){
 			updateCalculateChange();
 		});
-
+		//Monto Dol
+		$(document).on("change","#txtReceiptAmountDol",function(){
+			updateCalculateChange();
+		});
 		//Descuento
 		$(document).on("change","#txtDiscountAmount",function(){
 			updateCalculateChange();
@@ -154,13 +158,27 @@
 		
 		
 	});
-	function updateCalculateChange(){
-		console.info("updateCalculateChange");
-		var i = fnFormatFloat($("#txtTotal").val());
-		var x = fnFormatFloat($("#txtReceiptAmount").val());
-		const x2 = fnFormatFloat($("#txtDiscountAmount").val());
-
-		$("#txtChangeAmount").val(fnFormatNumber(((x + x2) - i),2));		
+	function updateCalculateChange()
+	{
+		var currencyID 		= parseFloat(fnFormatFloat($("#txtCurrencyID").val()));
+		var exchangeRate 	= parseFloat(fnFormatFloat($("#txtExchangeRate").val()));
+		var amountIng		= parseFloat(fnFormatFloat($("#txtReceiptAmount").val()));
+		var amountIngDol	= parseFloat(fnFormatFloat($("#txtReceiptAmountDol").val()));
+		var amountDiscount	= parseFloat(fnFormatFloat($("#txtDiscountAmount").val()));
+		var total			= parseFloat(fnFormatFloat($("#txtTotal").val()));
+		var change			= 0;
+		debugger;
+		
+		if(currencyID == "1" /*cordoba*/)
+		{
+			change = total - (amountIng + (amountIngDol / exchangeRate) + amountDiscount);
+		}
+		else 
+		{
+			change = total - (amountIng + (amountIngDol * exchangeRate) + amountDiscount);
+		}
+		
+		$("#txtChangeAmount").val( fnFormatNumber(change,2) );	
 	}
 	function onCompleteCustomer(objResponse){
 		console.info("CALL onCompleteCustomer");
@@ -315,19 +333,18 @@
 		
 		return result;
 	}
-	
 	function refreschChecked(){
 		$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();
 		//$('.txtDebit').mask('000,000.00', {reverse: true});
 		//$('.txtCredit').mask('000,000.00', {reverse: true});
 		$('.txt-numeric').mask('000,000.00', {reverse: true});
 	}
-	
 	function onCompletePantalla(){	
 		if(varUseMobile == "1" ){		   
 		   $("#tb_transaction_master_detail th").css("display","none");
 		   $("#tb_transaction_master_detail td").css("display","block");		   
 	    }		
 	}
+	
 	
 </script>

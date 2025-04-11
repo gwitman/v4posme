@@ -307,9 +307,15 @@
                                             <table class="table table-bordered">
                                                 <tbody>
                                                     <tr>
-                                                        <th>INGRESO</th>
+                                                        <th>ING NAC</th>
                                                         <td >
 															<input type="text" id="txtReceiptAmount" name="txtReceiptAmount"  class="col-lg-12 txt-numeric" value="0" style="text-align:right"/>
+														</td>
+                                                    </tr>
+													<tr>
+                                                        <th>ING EXT</th>
+                                                        <td >
+															<input type="text" id="txtReceiptAmountDol" name="txtReceiptAmountDol"  class="col-lg-12 txt-numeric" value="0" style="text-align:right"/>
 														</td>
                                                     </tr>
 													<tr>

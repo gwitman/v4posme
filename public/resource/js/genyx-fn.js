@@ -349,3 +349,26 @@ function fnPostUsersCurrentLocation(userName, userPassword, url, location, compa
     },
   });
 }
+
+function fnExtraerValoresUrl(cadena, coincidencia) {
+	// Buscar la primera coincidencia
+	const index = cadena.indexOf(coincidencia);
+
+	// Si no se encuentra la coincidencia, devolver null o lo que prefieras
+	if (index === -1) {
+		return null;
+	}
+
+	// Cortar la cadena desde donde empieza la coincidencia en adelante
+	const cortada = cadena.substring(index);
+
+	// Dividir por el carácter "/"
+	const partes = cortada.split("/");
+
+	// Tomar el primer y segundo valor del split
+	const valor1 = partes[0] || null;
+	const valor2 = partes[1] || null;
+
+	return { valor1, valor2 };
+}
+

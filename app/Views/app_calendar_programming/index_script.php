@@ -177,11 +177,29 @@
 			
         });
 
+		
+
         $('#redirectEvent').click(function(){
             let url = $('#eventUrl').val();
-            window.open(url, '_blank');
             $('#eventOpcionModal').modal('hide');
+			$.post(
+				"<?= base_url(); ?>/app_invoice_billing/setSessionData", 
+				{
+					companyID           : fnExtraerValoresUrl(url,"companyID").valor2,
+					transactionID       : fnExtraerValoresUrl(url,"transactionID").valor2,
+					transactionMasterID : fnExtraerValoresUrl(url,"transactionMasterID/").valor2,
+					codigoMesero        : "none",
+					edicion             : true
+				}, 
+				function () 
+				{
+					window.open("<?= base_url(); ?>/app_invoice_billing/add/codigoMesero/none", '_blank');
+				}
+			);
+			
         });
+		
+		
         function handleEventClick(info, isDateClick = false) {
             info.jsEvent.preventDefault(); // don't let the browser navigate
             let event = isDateClick ? null : info.event;
@@ -257,6 +275,12 @@
 
             return isValid;
         }
+		
+		
+		
+		
 
     });
+	
+	
 </script>

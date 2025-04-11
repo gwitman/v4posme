@@ -397,6 +397,7 @@ class app_box_share extends _BaseController {
 			$objTMInfoNew["referenceClientName"]		= /*inicio get post*/ $this->request->getPost("txtReferenceClientName");
 			$objTMInfoNew["referenceClientIdentifier"]	= /*inicio get post*/ $this->request->getPost("txtReferenceClientIdentifier");
 			$objTMInfoNew["receiptAmount"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmount"));
+			$objTMInfoNew["receiptAmountDol"]			= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountDol"));
 			$objTMInfoNew["changeAmount"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtChangeAmount"));
 			$objTMInfoNew["reference1"]					= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtBalanceStart"));
 			$objTMInfoNew["reference2"]					= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtBalanceFinish"));
@@ -845,6 +846,7 @@ class app_box_share extends _BaseController {
 			$objTMInfo["referenceClientName"]		= /*inicio get post*/ $this->request->getPost("txtReferenceClientName");
 			$objTMInfo["referenceClientIdentifier"]	= /*inicio get post*/ $this->request->getPost("txtReferenceClientIdentifier");
 			$objTMInfo["receiptAmount"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmount"));
+			$objTMInfo["receiptAmountDol"]			= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountDol"));
 			$objTMInfo["reference1"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtBalanceStart"));
 			$objTMInfo["reference2"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtBalanceFinish"));
 			$objTMInfo["changeAmount"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtChangeAmount"));
