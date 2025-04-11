@@ -156,7 +156,12 @@
 										".($comandoProcess == "Default" ?  round($i["cantidad"],2) : $i["cantidad"])."
 									</td>
 									<td colspan='1' style='text-align:right;width:20%'>
-										".($comandoProcess == "Default" ?  round($i["subtotal"],2) : $i["subtotal"])."
+										".number_format( 	
+											(float)($comandoProcess == "Default" ?  $i["subtotal"] : $i["subtotal"]),
+											2,
+											".",
+											"," 
+										)."
 									</td>
 								</tr>
 							</table>      
