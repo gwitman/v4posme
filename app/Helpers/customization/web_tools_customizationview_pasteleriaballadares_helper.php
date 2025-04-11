@@ -18,14 +18,17 @@ function getBehavioPasteleriaBalladares(): array
 		strtolower('pasteleria_balladares_app_invoice_billing_divTraslateElement')			=> "
 			<script>
 				$(document).ready(function(){
-					if( $('#txtTransactionMasterID').val() == undefined )
+					if( $('#txtTransactionMasterID').val() == '' )
 					{
 						$('#txtReference3').val('NO'); 
 					}
 				}); 
 			</script> 
 		",
-		strtolower('pasteleria_balladares_app_cxc_customer_divScriptValideFunctionPre')			=> "
+		strtolower('pasteleria_balladares_app_invoice_billing_jsClearForm')					=> "			
+			$('#txtReference3').val('NO');
+		",
+		strtolower('pasteleria_balladares_app_cxc_customer_divScriptValideFunctionPre')		=> "
 				$('#txtLegalName').val($('#txtFirstName').val());
 				$('#txtCommercialName').val($('#txtLastName').val());
 		",

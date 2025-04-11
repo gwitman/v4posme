@@ -1713,6 +1713,7 @@
 	}
 
     function fnClearForm(){
+		
 		loadEdicion = false;
 		mostarModalPersonalizado('Cargando nueva factura, por favor espere...');
         $("#form-new-invoice")[0].reset();
@@ -1765,6 +1766,9 @@
 		fnSetCheckBoxValue($("#txtCheckApplyExoneracion"), false);
 		fnSetCheckBoxValue($("#txtCheckReportSinRiesgo"), false);
 		fnSetCheckBoxValue($("#txtCheckDeEfectivo"), false);
+		
+		
+		<?php echo getBehavio($company->type, 'app_invoice_billing', 'jsClearForm','') ?>
 		setTimeout(()=>{ cerrarModal('ModalCargandoDatos'); }, 1000);
 		
     }
