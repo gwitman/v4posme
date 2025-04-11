@@ -2448,7 +2448,7 @@ class app_box_share extends _BaseController {
 			//Get Component
 			$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
 			//Get Logo
-			$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$objParameter			= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
 			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
 			//Get Company
 			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);			
@@ -2550,10 +2550,12 @@ class app_box_share extends _BaseController {
 			    $datView["tipoCambio"],
 			    $datView["objCurrency"],
 			    $datView["objTMI"],
+				"",
 			    $confiDetalle,
 			    $detalle,
 			    $objParameterTelefono,
 				$datView["objStage"][0]->display,
+				"",
 				"",
 				""
 			);

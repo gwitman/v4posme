@@ -2332,7 +2332,8 @@ class app_invoice_billing extends _BaseController {
 			$objTM["numberPhone"]					= "";
 			$objTM["entityIDSecondary"]				= $employee->entityID;
 			$objTM["dayExcluded"]					= $objParameterCXC_DAY_EXCLUDED_IN_CREDIT;
-			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);			
+			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);	
+			
 
 
 			$db=db_connect();
@@ -2387,7 +2388,7 @@ class app_invoice_billing extends _BaseController {
 			$objTMInfo["receiptAmountCardBankID"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_BANKID_DEFAULT")->value; //INVOICE_BILLING_BANKID_DEFAULT
 			$objTMInfo["receiptAmountCardBankDolID"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_BANKID_DEFAULT")->value; //INVOICE_BILLING_BANKID_DEFAULT
 			$objTMInfo["reference1"]								= 0;
-			$objTMInfo["reference2"]								= "not_used";
+			$objTMInfo["reference2"]								= $transactionMaster->TransactionNumber;
 
 
 			$this->Transaction_Master_Info_Model->insert_app_posme($objTMInfo);

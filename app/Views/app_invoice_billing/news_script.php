@@ -937,7 +937,7 @@
 	
 	$("#btnAceptarDialogPrinterV2AceptarDocument").click(function(){			
 		mostarModalPersonalizado('Cargando impresión, por favor espere...');
-		window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/2/transactionID/19/transactionMasterID/"+varTransactionMasterIDToPrinter, '_blank');
+		window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/2/transactionID/19/transactionMasterID/"+$("#txtTransactionMasterID").val(), '_blank');
 		cerrarModal('ModalCargandoDatos');
 		cerrarModal("ModalOpcionesImpresion");
 	});

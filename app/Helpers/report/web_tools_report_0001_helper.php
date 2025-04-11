@@ -9031,12 +9031,13 @@ function helper_reporte80mmTransactionMasterPasteleriaLizzette(
     $confiDetalle, /**/
     $arrayDetalle, /**/
     $objParameterTelefono, /*telefono*/
-    $statusName = "", /*estado*/
-    $causalName = "", /*causal*/
-	$userNickName = "", /*vendedor*/
-    $rucCompany = "" /*ruc*/
+    $statusName 	= "", /*estado*/
+    $causalName 	= "", /*causal*/
+	$userNickName 	= "", /*vendedor*/
+    $rucCompany 	= "" /*ruc*/
 )
 {
+	
     $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;
     
     $type    = pathinfo($path, PATHINFO_EXTENSION);
@@ -9180,12 +9181,18 @@ function helper_reporte80mmTransactionMasterPasteleriaLizzette(
 							</td>
                             <td colspan='2'>". explode(" ", $objTransactionMastser->nextVisit)[0] ."</td>
                         </tr>
+						";
+						
+		  if($titulo != "ABONO")
+		  {
+		  $html	= $html."
 						<tr>
 							<td colspan='1'>
 								Hora Entrega:
 							</td>
 							<td colspan='2'>". $objOrderDeliveryTime->name ."</td>
 						</tr>";
+		  }
 			
 		
 						
