@@ -1674,24 +1674,24 @@
             dataType: 'json',
             data	: formData,         
             success	: function(response) {
+				
                 // Restaurar botón
                 if(response.success) {
                     fnUpdateInvoiceView(response.data);
 					ToastSuccess.fire({
 							icon  : 'success',
 							title : 'Factura aplicada correctamente'
-						});
+					});
                 } else {
                     // Manejar error
-                    Swal.fire({
-                        icon	: 'error',
-                        title	: 'Error',
-                        html	: '<b>Código:</b> ' + response.error.code + '<br>' +
-                            '<b>Mensaje:</b> ' + response.error.message
-                    });
+					Toast.fire({
+							icon  : 'error',
+							title : 'Codigo:' + response.error.code + " , " + response.error.message 
+					});
                 }
             },
             error: function(xhr) {
+				
                 // Manejar error de conexión
                 Swal.fire({
                     icon	: 'error',

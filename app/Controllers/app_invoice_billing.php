@@ -1335,13 +1335,18 @@ class app_invoice_billing extends _BaseController {
 							
 						}
 
-                        /*$quantityRestaranteTraking                  = $objTMDNew["quantity"];
-                        if ( $objParameterINVOICE_BILLING_TRAKING_BAR == "true" && $objTMDNew["quantity"] > $objTMDOld->quantity )
+                        /*
+						$quantityRestaranteTraking                  = $objTMDNew["quantity"];
+                        if ( 
+							$objParameterINVOICE_BILLING_TRAKING_BAR == "true" && 
+							$objTMDNew["quantity"] > $objTMDOld->quantity 
+						)
                         {
                             $quantityRestaranteTraking 				= $objTMDNew["quantity"] - $objTMDOld->quantity;
                         }else{
                             $quantityRestaranteTraking              = $objTMDNew["quantity"];
-                        }*/
+                        }
+						*/
                         $objTMDROld                                 = $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterDetailID($transactionMasterDetailID);
                         $objTMDRNew["isActive"] 					= 1;
                         $objTMDRNew["createdOn"] 					= date("Y-m-d H:m:s");
@@ -1406,10 +1411,17 @@ class app_invoice_billing extends _BaseController {
 					$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint + $amountTotal;
 					$this->Customer_Model->update_app_posme($objCustomer->companyID,$objCustomer->branchID,$objCustomer->entityID,$objCustomerNew);
 				}
+				
+				
 				//Es pago con punto restar puntos
 				if($objTMInfoNew["receiptAmountPoint"] > 0 && $objTMNew["currencyID"]  ==  $objCurrencyCordoba->currencyID )
 				{
-					$objCustomer 					= $this->Customer_Model->get_rowByEntity($companyID, $objTMNew["entityID"] );
+					$objCustomer 					= $this->Customer_Model->get_rowByEntity($companyID, $objTMNew["entityID"] );					
+					//Validar si existe los suficiente puntos para pagar
+					if( $objCustomer->balancePoint <=  $objTMInfoNew["receiptAmountPoint"])
+					{
+						throw new \Exception("Su balance en punto es : PT ". number_format( $objCustomer->balancePoint,2) ." , no se puede aplicar la factura." );
+					}
 					$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint - $objTMInfoNew["receiptAmountPoint"];
 					$this->Customer_Model->update_app_posme($objCustomer->companyID,$objCustomer->branchID,$objCustomer->entityID,$objCustomerNew);
 				}
