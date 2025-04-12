@@ -36,14 +36,14 @@
 
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="normal">Nombre</label>
+															<label class="col-lg-4 control-label" for="txtName">Nombre</label>
 															<div class="col-lg-8">
 																<input class="form-control" type="text" name="txtName" id="txtName" value="<?php echo $objBank->name; ?>">
 															</div>
 														</div>
 
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="selectFilter">Moneda</label>
+															<label class="col-lg-4 control-label" for="txtCurrencyID">Moneda</label>
 															<div class="col-lg-8">
 																<select name="txtCurrencyID" id="txtCurrencyID" class="select2">
 																	<?php
@@ -60,14 +60,14 @@
 														</div>
 
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="normal">Balance</label>
+															<label class="col-lg-4 control-label" for="txtBalance">Balance</label>
 															<div class="col-lg-8">
 																<input class="form-control" type="text" name="txtBalance" id="txtBalance" value="<?php echo $objBank->balance; ?>" readonly>
 															</div>
 														</div>
 
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="normal">Administrador</label>
+															<label class="col-lg-4 control-label" for="txtCustomer">Administrador</label>
 															<div class="col-lg-8">
 																<div class="input-group">
 																	<input type="hidden" id="txtCustomerEntityID" name="txtCustomerEntityID" value="<?php echo $objBank->managerID?>">
@@ -100,21 +100,21 @@
 														</div>
 
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="normal">Numero de tarjeta asociada</label>
+															<label class="col-lg-4 control-label" for="txtTarjeta">Numero de tarjeta asociada</label>
 															<div class="col-lg-8">
 																<input class="form-control" type="text" name="txtTarjeta" id="txtTarjeta" value="<?php echo $objBank->cardNumber; ?>">
 															</div>
 														</div>
 
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="normal">Fecha de expiracion</label>
+															<label class="col-lg-4 control-label" for="txtDate">Fecha de expiracion</label>
 															<div class="col-lg-8">
 																<input class="form-control" type="text" name="txtDate" id="txtDate" value="<?php echo $objBank->dateExpired; ?>">
 															</div>
 														</div>
 
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="selectFilter">Estado</label>
+															<label class="col-lg-4 control-label" for="txtStatusID">Estado</label>
 															<div class="col-lg-8">
 																<select name="txtStatusID" id="txtStatusID" class="select2">
 																	<option></option>
@@ -123,12 +123,23 @@
 																		foreach ($objListWorkflowStage as $ws) {
 																			if ($ws->workflowStageID == $objBank->statusID)
 																				echo "<option value='" . $ws->workflowStageID . "' selected>" . $ws->name . "</option>";
-
 																			else
-																			echo "<option  value='" . $ws->workflowStageID . "'>" . $ws->name . "</option>";
+																				echo "<option  value='" . $ws->workflowStageID . "'>" . $ws->name . "</option>";
 																		}
 																	?>
 																</select>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="txtComisionPos">Comision POS</label>
+															<div class="col-lg-8">
+																<input class="form-control" type="text" name="txtComisionPos" id="txtComisionPos" value="<?= $objBank->comisionPos ?>">
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="txtComisionSave">Comision Ahorro</label>
+															<div class="col-lg-8">
+																<input class="form-control" type="text" name="txtComisionSave" id="txtComisionSave" value="<?= $objBank->comisionSave ?>">
 															</div>
 														</div>
 													</div>

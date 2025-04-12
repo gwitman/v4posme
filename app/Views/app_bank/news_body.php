@@ -94,19 +94,19 @@
 														</div>
 
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="normal">Fecha de expiracion</label>
+															<label class="col-lg-4 control-label" for="txtDate">Fecha de expiracion</label>
 															<div class="col-lg-8">
 																<input class="form-control" type="text" name="txtDate" id="txtDate">
 															</div>
 														</div>
 
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="selectFilter">Estado</label>
+															<label class="col-lg-4 control-label" for="txtStatusID">Estado</label>
 															<div class="col-lg-8">
 																<select name="txtStatusID" id="txtStatusID" class="select2">
 																	<option></option>
 																	<?php
-																	if ($objListWorkflowStage)
+																	if (isset($objListWorkflowStage))
 																		foreach ($objListWorkflowStage as $ws) {
 																			echo "<option value='" . $ws->workflowStageID . "' selected>" . $ws->name . "</option>";
 																		}
@@ -114,11 +114,23 @@
 																</select>
 															</div>
 														</div>
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="txtComisionPos">Comision POS</label>
+															<div class="col-lg-8">
+																<input class="form-control" type="text" name="txtComisionPos" id="txtComisionPos" value="">
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="txtComisionSave">Comision Ahorro</label>
+															<div class="col-lg-8">
+																<input class="form-control" type="text" name="txtComisionSave" id="txtComisionSave" value="">
+															</div>
+														</div>
 													</div>
 
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="normal">Referencia 1</label>
+															<label class="col-lg-4 control-label" for="txtReference1">Referencia 1</label>
 															<div class="col-lg-8">
 																<input class="form-control" type="text" name="txtReference1" id="txtReference1" value="">
 															</div>

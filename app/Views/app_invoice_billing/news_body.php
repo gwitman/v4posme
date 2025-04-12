@@ -1018,17 +1018,17 @@ echo helper_getHtmlOfPageLanding();
 										</td>
 										<td>
 											<select name="txtReceiptAmountTarjeta_BankID" id="txtReceiptAmountTarjeta_BankID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
-													<?php
-													$count = 0;
-													if($objListBank)
-													foreach($objListBank as $bank){
-														if($count == 0 )
-														echo "<option value='".$bank->bankID."' selected >".$bank->name."</option>";
-														else
-														echo "<option value='".$bank->bankID."'  >".$bank->name."</option>";
-														$count++;
-													}
-													?>
+												<?php
+												if (!empty($objListBank)) {
+												    foreach ($objListBank as $k => $bank) {
+												        $comisionPos    = htmlspecialchars($bank->comisionPos);
+												        $comisionSave   = htmlspecialchars($bank->comisionSave);
+												        $bankID         = htmlspecialchars($bank->bankID);
+												        $bankName       = htmlspecialchars($bank->name);
+												        echo "<option data-comision-pos='{$comisionPos}' data-comision-save='{$comisionSave}' value='{$bankID}'>{$bankName}</option>";
+												    }
+												}
+												?>
 											</select>
 										</td>
 										<td>
@@ -1042,17 +1042,17 @@ echo helper_getHtmlOfPageLanding();
 										</td>
 										<td>
 											<select name="txtReceiptAmountTarjetaDol_BankID" id="txtReceiptAmountTarjetaDol_BankID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
-													<?php
-													$count = 0;
-													if($objListBank)
-													foreach($objListBank as $bank){
-														if($count == 0 )
-														echo "<option value='".$bank->bankID."' selected >".$bank->name."</option>";
-														else
-														echo "<option value='".$bank->bankID."'  >".$bank->name."</option>";
-														$count++;
-													}
-													?>
+												<?php
+												if (!empty($objListBank)) {
+												    foreach ($objListBank as $k => $bank) {
+                                                        $comisionPos    = htmlspecialchars($bank->comisionPos);
+                                                        $comisionSave   = htmlspecialchars($bank->comisionSave);
+												        $bankID         = htmlspecialchars($bank->bankID);
+												        $bankName       = htmlspecialchars($bank->name);
+												        echo "<option data-comision-pos='{$comisionPos}' data-comision-save='{$comisionSave}' value='{$bankID}'>{$bankName}</option>";
+												    }
+												}
+												?>
 											</select>
 										</td>
 										<td>
@@ -1067,17 +1067,17 @@ echo helper_getHtmlOfPageLanding();
 										</td>
 										<td>
 											<select name="txtReceiptAmountBank_BankID" id="txtReceiptAmountBank_BankID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
-													<?php
-													$count = 0;
-													if($objListBank)
-													foreach($objListBank as $bank){
-														if($count == 0 )
-														echo "<option value='".$bank->bankID."' selected >".$bank->name."</option>";
-														else
-														echo "<option value='".$bank->bankID."'  >".$bank->name."</option>";
-														$count++;
-													}
-													?>
+												<?php
+												if (!empty($objListBank)) {
+												    foreach ($objListBank as $k => $bank) {
+                                                        $comisionPos    = htmlspecialchars($bank->comisionPos);
+                                                        $comisionSave   = htmlspecialchars($bank->comisionSave);
+												        $bankID         = htmlspecialchars($bank->bankID);
+												        $bankName       = htmlspecialchars($bank->name);
+												        echo "<option data-comision-pos='{$comisionPos}' data-comision-save='{$comisionSave}' value='{$bankID}'>{$bankName}</option>";
+												    }
+												}
+												?>
 											</select>
 										</td>
 										<td>
@@ -1091,17 +1091,17 @@ echo helper_getHtmlOfPageLanding();
 										</td>
 										<td>										
 											<select name="txtReceiptAmountBankDol_BankID" id="txtReceiptAmountBankDol_BankID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
-													<?php
-													$count = 0;
-													if($objListBank)
-													foreach($objListBank as $bank){
-														if($count == 0 )
-														echo "<option value='".$bank->bankID."' selected >".$bank->name."</option>";
-														else
-														echo "<option value='".$bank->bankID."'  >".$bank->name."</option>";
-														$count++;
-													}
-													?>
+												<?php
+												if (!empty($objListBank)) {
+												    foreach ($objListBank as $k => $bank) {
+                                                        $comisionPos    = htmlspecialchars($bank->comisionPos);
+                                                        $comisionSave   = htmlspecialchars($bank->comisionSave);
+												        $bankID         = htmlspecialchars($bank->bankID);
+												        $bankName       = htmlspecialchars($bank->name);
+												        echo "<option data-comision-pos='{$comisionPos}' data-comision-save='{$comisionSave}' value='{$bankID}'>{$bankName}</option>";
+												    }
+												}
+												?>
 											</select>										
 										</td>
 										<td>

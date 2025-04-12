@@ -370,6 +370,8 @@ class app_bank extends _BaseController
 			$obj["password"]			= $this->request->getPost('txtPassword');
 			$obj["pin"]					= $this->request->getPost('txtPin');
 			$obj["user"]				= $this->request->getPost('txtUsuario');
+			$obj["comisionPos"]		    = $this->request->getPost('txtComisionPos');
+			$obj["comisionSave"]		= $this->request->getPost('txtComisionSave');
 
 
 			//Ingresar
@@ -444,7 +446,9 @@ class app_bank extends _BaseController
 			$obj["password"]			= $this->request->getPost('txtPassword');
 			$obj["pin"]					= $this->request->getPost('txtPin');
 			$obj["user"]				= $this->request->getPost('txtUsuario');
-
+			$obj["comisionPos"]		    = $this->request->getPost('txtComisionPos');
+			$obj["comisionSave"]		= $this->request->getPost('txtComisionSave');
+			
 			//Validar si el estado permite editar
 			if (!$this->core_web_workflow->validateWorkflowStage("tb_bank", "statusID", $statusID, COMMAND_EDITABLE_TOTAL, $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID))
 				throw new \Exception(NOT_WORKFLOW_EDIT);

@@ -96,6 +96,7 @@
     
 
     let columnasTableDetail = {
+		precio		: 7,
         precio1 	: 22,
         precio2 	: 14,
         precio3 	: 15,
@@ -141,7 +142,22 @@
 		$(this).parent().parent().parent().find(".txtQuantity").val(quantity);
 		fnRecalculateDetail(true,"");				
 	});
-
+	$('#txtReceiptAmountTarjeta_BankID').on('change', function(){
+		let value = $('#txtReceiptAmountTarjeta_BankID').find(':selected').data('comision-pos');
+		fnRecalcularMontoComision(value);
+	});
+	$('#txtReceiptAmountTarjetaDol_BankID').on('change', function(){
+		let value = $('#txtReceiptAmountTarjetaDol_BankID').find(':selected').data('comision-pos');
+		fnRecalcularMontoComision(value);
+	});
+	$('#txtReceiptAmountBank_BankID').on('change', function(){
+		let value = $('#txtReceiptAmountBank_BankID').find(':selected').data('comision-pos');
+		fnRecalcularMontoComision(value);
+	});
+	$('#txtReceiptAmountBankDol_BankID').on('change', function(){
+		let value = $('#txtReceiptAmountBankDol_BankID').find(':selected').data('comision-pos');
+		fnRecalcularMontoComision(value);
+	});
     $('#txtCheckApplyExoneracion').parent().parent().on('change', function() {
         let exoneracion = $('#txtCheckApplyExoneracion').parent().hasClass("switch-on");
         if(exoneracion)
@@ -419,9 +435,6 @@
 		return;
 	});
 	
-	
-	
-
 	$(document).on("keydown",'#txtScanerCodigo', function(e) {
 		var code = e.keyCode || e.which;						
 		
@@ -537,13 +550,15 @@
 				//buscar el producto y agregar						
 				var codigoABuscar 	= e.codigoABuscar.toUpperCase();
 				let data			= e.all;
-				var encontrado		= false;				
-				for(var i = 0 ; i < e.length ; i++)
+				let encontrado		= false;
+				let index			= -1;
+				for(let i = 0 ; i < data.length ; i++)
 				{
 					
 					if(encontrado == true)
 					{
 						i--;
+						index = i;
 						break;
 					}
 					
@@ -565,7 +580,6 @@
 						break;
 					}
 					
-					
 					//buscar por codigo de barra
 					var listCodigTmp 	= data[i].Barra.split(",");
 					currencyTemp		= data[i].currencyID;
@@ -574,7 +588,7 @@
 							
 					if(encontrado == false )
 					{
-						for(var ii = 0 ; ii < listCodigTmp.length; ii++)
+						for(let ii = 0 ; ii < listCodigTmp.length; ii++)
 						{
 							if( 
 								fnDeleteCerosIzquierdos(listCodigTmp[ii].toUpperCase()) == fnDeleteCerosIzquierdos(codigoABuscar) && 
@@ -582,8 +596,8 @@
 								warehouseID == warehouseIDTemp
 							)
 							{
-								
-								encontrado 		= true;
+								index       = i;
+								encontrado 	= true;
 								break;
 							}
 						}
@@ -597,7 +611,7 @@
 				{
 					
 					var sumar				= true;
-					var filterResult 		= data[i];						
+					var filterResult 		= data[index];						
 					var filterResultArray 	= [];					
 					filterResultArray[5]  	= filterResult.itemID;
 					filterResultArray[17] 	= filterResult.Codigo;
@@ -679,7 +693,7 @@
         let precio3 				= selectedDataInfoProducto[columnasTableDetail.precio3];
         let precios 				= [fnFormatNumber(precio1, 2), fnFormatNumber(precio2, 2), fnFormatNumber(precio3, 2)];
         let selectPrecio 			= $('#selectPrecio');
-        let precio 					= selectedDataInfoProducto[7];
+        let precio 					= selectedDataInfoProducto[columnasTableDetail.precio];
         selectPrecio.empty();
 
         //establecer precios
@@ -906,6 +920,9 @@
 			var newValue = input.val();
 			if (colIndex === columnasTableDetail.descripcion) {
 				objTableDetail.fnUpdate(newValue, rowIndex, columnasTableDetail.descripcion, true);
+			}
+			if(colIndex === columnasTableDetail.precio){
+				objTableDetail.fnUpdate(newValue, rowIndex, columnasTableDetail.precio, true);
 			}
 		}
 	});
@@ -2104,7 +2121,21 @@
 		);		
 	}
 	
-	
+	function fnRecalcularMontoComision(monto) {
+		let listRow = objTableDetail.fnGetData();
+		monto 		= parseFloat(monto);
+		if (isNaN(monto)) {
+			monto = 0;
+		}
+		if(listRow.length > 0){
+			for(let i=0; i<listRow.length; i++){
+				let oldPrice = listRow[i][columnasTableDetail.precio1];
+				let newPrice = oldPrice * (1 + (monto / 100));
+				objTableDetail.fnUpdate(fnFormatNumber(newPrice, 2), i, columnasTableDetail.precio);
+			}
+		}
+		fnRecalculateDetail(true, "");
+	}
 	
 	function refreschChecked()
 	{
@@ -3589,10 +3620,10 @@
 							}
 						},
 						{
-							"aTargets"		: [ 7 ],//Precio
+							"aTargets"		: [ columnasTableDetail.precio ],//Precio
 							"sWidth"		: "250px",
 							"mRender"		: function ( data, type, full ) {
-								var str =  '<input type="text" class="col-lg-12 txtPrice txt-numeric"   id="txtPriceRow'+full[2]+'"   '+PriceStatus+'  value="'+data+'" name="txtPrice[]" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" />';
+								var str =  '<input type="text" class="col-lg-12 txtPrice txt-numeric"   id="txtPriceRow'+full[2]+'"   '+PriceStatus+' value="'+data+'" name="txtPrice[]" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" />';
 								if (varUseMobile == "1")
 								str = str + " <span class='badge badge-inverse' >Precio</span>";
 								return str;

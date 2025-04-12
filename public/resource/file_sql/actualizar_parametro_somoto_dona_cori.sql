@@ -1702,7 +1702,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Dispensa Doña Cori' , address = 'Del Reloj público 2c al Norte, Somoto, Madriz.' ,
+	NAME = 'Despensa Doña Cori' , address = 'Del Reloj público 2c al Norte, Somoto, Madriz.' ,
 	flavorID = 756 /*usuarioID*/,type='default'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
