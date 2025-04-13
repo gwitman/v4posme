@@ -1617,65 +1617,16 @@
 		
 		
 		
-		if(varPermitirFacturarProductosEnZero === "true" && result )
+		if(result)
 		{			
 			$("#form-new-invoice" ).submit();
 			return;
-			
 		}
-		
-		//Validar en el servidor	
-		if(result){			
-			$.ajax(
-				{									
-					cache       : false,
-					dataType    : 'json',
-					async		: false,
-					type        : 'GET',																	
-					url  		: "<?php echo base_url(); ?>/app_invoice_api/getValidExistencia/warehouseID/"+$("#txtWarehouseID").val() +'/itemID/'+listItemIDToValid+"/quantity/"+listQntity,
-					success		: function(result){						
-													
-							if(result.resultValidate.length == 0){								
-								$("#form-new-invoice").submit();
-							}
-							else{
-								cerrarModal('ModalCargandoDatos');	
-								for(var ie = 0 ; ie < result.resultValidate.length ; ie++){								
-									fnShowNotification(
-										"" + 
-										result.resultValidate[ie].Codigo + " " + 
-										result.resultValidate[ie].Nombre + " cantidad en bodega   " + 
-										result.resultValidate[ie].QuantityInWarehouse +  "  " + 
-										result.resultValidate[ie].Mensaje,
-										"error"
-									);
-									Toast.fire({
-										icon	: "warning",
-										title	: "" + 
-											result.resultValidate[ie].Codigo + " " + 
-											result.resultValidate[ie].Nombre + " cantidad en bodega   " + 
-											result.resultValidate[ie].QuantityInWarehouse +  "  " + 
-											result.resultValidate[ie].Mensaje
-									});
-								}
-							}
-							
-							
-					},
-					error: function(result){
-						Toast.fire({
-							icon	: "error",
-							title	: "Error al realizar la petición en el servidor, 500"
-						});
-					},
-					complete: function(){
-						cerrarModal('ModalCargandoDatos');
-					}
-				}
-			);
-		}else{
+		else
+		{		
 			cerrarModal('ModalCargandoDatos');
 		}
+		
 	}
 
     // Evitar el envío tradicional y manejar con AJAX

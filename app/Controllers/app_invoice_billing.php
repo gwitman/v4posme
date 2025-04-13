@@ -1979,7 +1979,7 @@ class app_invoice_billing extends _BaseController {
 						$this->Item_Model->update_app_posme($companyID,$itemID,$objItemNew);
 					}
 					
-					
+					//Validar Cantidades
 					if(
 						$objItemWarehouse->quantity < $quantity 
 						&& 
