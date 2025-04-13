@@ -102,7 +102,7 @@ class Customer_Model extends Model  {
 		$sql = $sql.sprintf(" from tb_customer i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
 		$sql = $sql.sprintf(" and i.identification = '$identification' ");		
-		$sql = $sql.sprintf(" and i.isActive= 1");	
+		$sql = $sql.sprintf(" and i.isActive= 1 order by i.entityID asc limit 1");	
 
 		
 		

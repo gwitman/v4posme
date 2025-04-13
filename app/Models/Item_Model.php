@@ -93,7 +93,7 @@ class Item_Model extends Model  {
 		$sql = $sql.sprintf(" from tb_item i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
 		$sql = $sql.sprintf(" and i.barCode = '$itemNumber' ");
-		$sql = $sql.sprintf(" and i.isActive= 1");		
+		$sql = $sql.sprintf(" and i.isActive= 1 order by i.itemID asc ");		
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();

@@ -40,7 +40,46 @@ class User_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
 	}
-
+	function get_rowByRoleAdmin($companyID)
+	{
+		
+		$db 	= db_connect();
+		$sql = "";
+		$sql = "
+			select 
+				u.companyID,
+				u.branchID,
+				u.userID,
+				u.nickname,
+				u.`password`,
+				u.createdOn,
+				u.isActive,
+				u.email,
+				u.createdBy,
+				u.employeeID,
+				u.useMobile,
+				u.phone,
+				u.lastPayment,
+				u.comercio,
+				u.foto,
+				u.token_google_calendar,
+				u.locationID 
+			from 
+				tb_user  u 
+				inner join tb_membership p on
+					u.userID = p.userID 
+				inner join tb_role  r on 
+					p.roleID = r.roleID 
+			where 
+				u.isActive = 1 and 
+				r.`name` like '%admin%' and 
+				u.companyID = ".$companyID." 
+		";
+		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+	}
 	function get_rowByFoto($foto){
 		$db 	= db_connect();
 		$sql = "";

@@ -921,13 +921,24 @@ class app_cxc_customer extends _BaseController {
 			
 			
 			//Asociar el cliente al colaborador
-			$dataRelationShip["employeeID"]	= $dataSession["user"]->employeeID;
-			$dataRelationShip["customerID"]	= $entityID;
-			$dataRelationShip["isActive"]	= 1;
-			$dataRelationShip["startOn"]	= date("Y-m-d");
-			$dataRelationShip["endOn"]		= date("Y-m-d");
-			$this->Relationship_Model->insert_app_posme($dataRelationShip);
-			
+			$objUserAdmin					=  $this->User_Model->get_rowByRoleAdmin($dataSession["user"]->companyID);			
+			if($objUserAdmin)
+			{
+				$objListEmployerID 		= array_map(function($i) { return $i->employeeID; }, $objUserAdmin);
+				$objListEmployerID[] 	= $dataSession["user"]->employeeID;
+				$objListEmployerID 		= array_unique($objListEmployerID);
+				
+				foreach ($objListEmployerID as $employerIDT)
+				{
+					$dataRelationShip				= NULL;
+					$dataRelationShip["employeeID"]	= $employerIDT;
+					$dataRelationShip["customerID"]	= $entityID;
+					$dataRelationShip["isActive"]	= 1;
+					$dataRelationShip["startOn"]	= date("Y-m-d");
+					$dataRelationShip["endOn"]		= date("Y-m-d");
+					$this->Relationship_Model->insert_app_posme($dataRelationShip);					
+				}
+			}
 			
 			//Ingresar Customer Credit
 			$objCustomerCredit["companyID"] 		= $objEntity["companyID"];
@@ -1372,12 +1383,24 @@ class app_cxc_customer extends _BaseController {
 			
 			
 			//Asociar el cliente al colaborador
-			$dataRelationShip["employeeID"]	= $dataSession["user"]->employeeID;
-			$dataRelationShip["customerID"]	= $entityID;
-			$dataRelationShip["isActive"]	= 1;
-			$dataRelationShip["startOn"]	= date("Y-m-d");
-			$dataRelationShip["endOn"]		= date("Y-m-d");
-			$this->Relationship_Model->insert_app_posme($dataRelationShip);
+			$objUserAdmin					=  $this->User_Model->get_rowByRoleAdmin($dataSession["user"]->companyID);			
+			if($objUserAdmin)
+			{
+				$objListEmployerID 		= array_map(function($i) { return $i->employeeID; }, $objUserAdmin);
+				$objListEmployerID[] 	= $dataSession["user"]->employeeID;
+				$objListEmployerID 		= array_unique($objListEmployerID);
+				
+				foreach ($objListEmployerID as $employerIDT)
+				{
+					$dataRelationShip				= NULL;
+					$dataRelationShip["employeeID"]	= $employerIDT;
+					$dataRelationShip["customerID"]	= $entityID;
+					$dataRelationShip["isActive"]	= 1;
+					$dataRelationShip["startOn"]	= date("Y-m-d");
+					$dataRelationShip["endOn"]		= date("Y-m-d");
+					$this->Relationship_Model->insert_app_posme($dataRelationShip);					
+				}
+			}
 			
 
             //Crear la Carpeta para almacenar los Archivos del Cliente

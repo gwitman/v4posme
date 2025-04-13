@@ -21,7 +21,17 @@ function getBehavioCreditAguil(): array
         strtolower('creditaguil_app_cxc_customer_divTxtCategoria')			 			=> "hidden",
         strtolower('creditaguil_app_cxc_customer_divTxtFullNameCommercial')				=> "Categoria",
         strtolower('creditaguil_app_cxc_customer_lblTxtPhoneTemp')						=> "Prefesion u Oficio",
-        strtolower('creditaguil_app_cxc_customer_divTxtProfesionUFicio')				=> "hidden",		
+        strtolower('creditaguil_app_cxc_customer_divTxtProfesionUFicio')				=> "hidden",	
+		strtolower('creditaguil_app_cxc_customer_divTxtNombreLegal') 					=> "hidden",
+		strtolower('creditaguil_app_cxc_customer_divScriptValideFunctionPre') 			=> "
+		
+			var firstName 	= $('#txtFirstName').val();
+			var lastName 	= $('#txtLastName').val();
+			$('#txtLegalName').val(firstName + ' ' + lastName );
+			
+		
+		",
+		
 		strtolower('creditaguil_app_invoice_billing_divTraslateElement')				=> "
 		<script>
 			$(document).ready(function(){       
