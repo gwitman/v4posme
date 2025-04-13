@@ -9,7 +9,9 @@
 			if(objRowTableListView != undefined){
 				fnWaitOpen();
 				var data 		= objTableListView.fnGetData(objRowTableListView);			
-				window.location	= "<?php echo base_url(); ?>/app_rrhh_task/edit/companyID/"+data[0]+"/transactionID/"+data[1]+"/transactionMasterID/"+data[2];
+				var url			= "<?php echo base_url(); ?>/app_rrhh_task/edit/companyID/"+data[0]+"/transactionID/"+data[1]+"/transactionMasterID/"+data[2];				
+				window.open(url, "_blank");
+				fnWaitClose();
 			}
 			else{
 				fnShowNotification("Seleccionar el Registro...","error");
