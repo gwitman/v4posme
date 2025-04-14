@@ -213,37 +213,59 @@ class Customer_Model extends Model  {
 		$sql = "";
 		$sql = sprintf("
 		select 
-				i.companyID, 
-				i.branchID, 
-				i.entityID, 
-				i.customerNumber, 
-				i.identification, 
-				nat.firstName,
-				nat.lastName,
-				cur.simbol as currencyName,
-				cl.currencyID as currencyID,
-				cl.customerCreditLineID,
-				IFNULL(sum(cdd.balance),0) as balance
+			k.companyID, 
+			k.branchID, 
+			k.entityID, 
+			k.customerNumber, 
+			k.identification, 
+			k.firstName,
+			k.lastName,
+			k.currencyName,
+			k.currencyID,
+			k.customerCreditLineID,
+			k.location,
+			k.phone , 
+			sum(k.balance) as balance 
 		from 
-				tb_customer i
-				inner join  tb_naturales nat on nat.entityID = i.entityID 
-				inner join  tb_customer_credit_line cl on cl.entityID = i.entityID 
-				inner join tb_currency cur on  cur.currencyID = cl.currencyID 					
-				left join  tb_customer_credit_document cdd on cdd.entityID = i.entityID and cdd.balance > 0 
-		where 
-				i.companyID = $companyID 
-				and i.isActive= 1
+			(
+				select 
+						i.companyID, 
+						i.branchID, 
+						i.entityID, 
+						i.customerNumber, 
+						i.identification, 
+						nat.firstName,
+						nat.lastName,
+						cur.simbol as currencyName,
+						cl.currencyID as currencyID,
+						cl.customerCreditLineID,
+						ifnull(i.location,'') as location,
+						ifnull((select ep.number from tb_entity_phone ep  where ep.entityID = i.entityID limit 1 ),'') as phone , 
+						IFNULL(cdd.balance,0) as balance
+				from 
+						tb_customer i
+						inner join  tb_naturales nat on nat.entityID = i.entityID 
+						inner join  tb_customer_credit_line cl on cl.entityID = i.entityID 
+						inner join tb_currency cur on  cur.currencyID = cl.currencyID 					
+						left join  tb_customer_credit_document cdd on cdd.entityID = i.entityID and cdd.balance > 0 
+				where 
+						i.companyID = $companyID 
+						and i.isActive= 1
+				
+				) k 
 		group by 
-				i.companyID, 
-				i.branchID, 
-				i.entityID, 
-				i.customerNumber, 
-				i.identification, 
-				nat.firstName,
-				nat.lastName,
-				cur.simbol,
-				cl.currencyID ,
-				cl.customerCreditLineID
+			k.companyID, 
+			k.branchID, 
+			k.entityID, 
+			k.customerNumber, 
+			k.identification, 
+			k.firstName,
+			k.lastName,
+			k.currencyName,
+			k.currencyID,
+			k.customerCreditLineID,
+			k.location,
+			k.phone
 		");		
 		
 		//Ejecutar Consulta

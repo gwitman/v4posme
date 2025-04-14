@@ -258,7 +258,7 @@ class Customer_Credit_Document_Model extends Model  {
 					where 
 						uu.customerCreditDocumentID = k.customerCreditDocumentID and 
 						uu.remaining > 0 		
-				) as  balance,
+				) as  balance /*sirver para ver cual es la menta a cobrar*/,
 				(
 					select 
 						sum(uu.remaining) 
@@ -267,7 +267,7 @@ class Customer_Credit_Document_Model extends Model  {
 					where 
 						uu.customerCreditDocumentID = k.customerCreditDocumentID and 
 						uu.remaining > 0 		
-				) as  remaining,
+				) as  remaining /*se modifica en cada cuota mobile*/,
 				k.statusAmotization,
 				k.statusAmortizatonName
 			from 

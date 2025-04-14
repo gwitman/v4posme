@@ -332,7 +332,7 @@ class app_mobile_api extends _BaseController
             $objCompany = $objUser["company"];
 
             //Obtener listado de productos
-            $objWarehouse 	= $this->Userwarehouse_Model->getRowByUserIDAndFacturable($companyID, $userID);
+            $objWarehouse 	= $this->Userwarehouse_Model->getRowByUserIDAndFacturable($companyID, $userID);			
             $objWarehouseID = array_map(fn($warehouseItem) => $warehouseItem->warehouseID, $objWarehouse);
             $objListItem 	= $this->Item_Model->get_rowByCompanyIDToMobile($objWarehouseID);
 
