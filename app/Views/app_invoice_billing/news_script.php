@@ -949,7 +949,10 @@
     });
 	
 
-	$("#btnAceptarDialogPrinterV2AceptarTabla").click(function(){		
+	$("#btnAceptarDialogPrinterV2AceptarTabla").click(function(){	
+		mostarModalPersonalizado('Cargando datos ....');
+		window.open("<?php echo base_url(); ?>/app_cxc_report/document_credit/viewReport/true/documentNumber/"+$("#invoice-num").text(), '_blank');			
+		cerrarModal('ModalCargandoDatos');
 	});
 	
 	$("#btnAceptarDialogPrinterV2AceptarDocument").click(function(){			
