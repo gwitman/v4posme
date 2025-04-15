@@ -166,7 +166,7 @@
 													<div class="col-lg-6">	
 													
 														<div class="form-group">
-															<label class="col-lg-2 control-label" for="buttons">Envia</label>
+															<label class="col-lg-4 control-label" for="buttons">Envia</label>
 															<div class="col-lg-8">
 																<div class="input-group">
 																	<input type="hidden" id="txtEmployeeID" name="txtEmployeeID" value="<?php echo ($objEmployeeNaturalSource ? $objEmployeeNaturalSource->entityID : "0");  ?>">
@@ -190,7 +190,7 @@
 														</div>
 														
 														<div class="form-group">
-															<label class="col-lg-2 control-label" for="buttons">Recibe</label>
+															<label class="col-lg-4 control-label" for="buttons">Recibe</label>
 															<div class="col-lg-8">
 																<div class="input-group">
 																	<input type="hidden" id="txtEmployeeIDTarget" name="txtEmployeeIDTarget" value="<?php echo ($objEmployeeNaturalTarget ? $objEmployeeNaturalTarget->entityID : "0");  ?>"  >
@@ -211,6 +211,14 @@
 																	
 																</div>
 															</div>
+														</div>
+														
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="chkIsTemplate">Es plantilla</label>
+																<div class="col-lg-8">
+																	<input type="checkbox"   name="chkIsTemplate" id="chkIsTemplate"  <?php echo $objTM->isTemplate == 1 ? "checked" : ""; ?> >
+																	<input type="hidden"   name="txtIsTemplate" id="txtIsTemplate" value="<?php echo $objTM->isTemplate == 1 ? "true" : "false"; ?>"  >
+																</div>
 														</div>
 														
 														

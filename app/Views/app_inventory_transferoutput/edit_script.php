@@ -145,6 +145,23 @@
 				
 		});	
 		
+		$('#chkIsTrnasferAll').change(function() {
+			if ($(this).is(':checked')) {
+				$("#txtIsTrnasferAll").val("true");
+			} else {
+				$("#txtIsTrnasferAll").val("false");
+			}
+		});
+		$('#chkIsTemplate').change(function() {
+			if ($(this).is(':checked')) {
+				$("#txtIsTemplate").val("true");
+			} else {
+				$("#txtIsTemplate").val("false");
+			}
+		});
+		
+		
+		
 		//Agregar Item
 		$(document).on("click","#btnNewDetailTransaction",function(){							
 			if($("#txtWarehouseSourceID").val() == "")
@@ -247,6 +264,7 @@
 			window.open(url_request,"MsgWindow","width=900,height=450");
 			window.onCompleteEmployee = onCompleteEmployee; 
 		});
+		
 		//Eliminar Empleado
 		$(document).on("click","#btnClearEmployeeParent",function(){
 					$("#txtEmployeeID").val("");

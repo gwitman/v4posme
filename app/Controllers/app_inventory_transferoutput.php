@@ -308,6 +308,9 @@ class app_inventory_transferoutput extends _BaseController
 			$objTM["reference2"] 					= "";
 			$objTM["reference3"] 					= "";
 			$objTM["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtReference1");
+			$objTM["isTemplate"] 					= /*inicio get post*/ $this->request->getPost("txtIsTemplate") == "true" ? 1 : 0 ;
+			
+			
 			$workflowStageOutput 					= 0;
 			$workflowStageInput 					= 0;
 			$inventoryTransferAutoApply				= "";
@@ -351,7 +354,60 @@ class app_inventory_transferoutput extends _BaseController
 			$arrayListQuantity	 							= /*inicio get post*/ $this->request->getPost("txtDetailQuantity");
 			$arrayListLote	 								= /*inicio get post*/ $this->request->getPost("txtDetailLote");
 			$arrayListVencimiento							= /*inicio get post*/ $this->request->getPost("txtDetailVencimiento");
-
+			$txtIsTrnasferAll 								= $this->request->getPost("txtIsTrnasferAll");
+			$txtTransactionNumberTemplate					= $this->request->getPost("txtTransactionNumberTemplate");
+			
+			//Obtener el detalle de las cantidades en base a una plantilla
+			if(
+				empty($arrayListItemID)
+				&& 
+				$txtTransactionNumberTemplate != ""
+			)
+			{
+				$arrayListItemID 								= [];
+				$arrayListQuantity	 							= [];
+				$arrayListLote	 								= [];
+				$arrayListVencimiento							= [];				
+				$objListItemWarehouseProcess					= $this->Transaction_Master_Detail_Model->get_rowByTransactionTo_TransactionNumberAnd_WarehouseSourceAnd_WarehuseTareget($objTM["companyID"],$txtTransactionNumberTemplate,$objTM["sourceWarehouseID"], $objTM["targetWarehouseID"] );
+				if($objListItemWarehouseProcess)
+				{
+					foreach($objListItemWarehouseProcess as $itemWare)
+					{
+						$arrayListItemID[]			= $itemWare->itemID;
+						$arrayListQuantity[]		= $itemWare->quantity;
+						$arrayListLote[]			= "";
+						$arrayListVencimiento[]		= "";
+					}
+				}
+			}
+			
+			
+			//Obtene el detalle de las cantidades en bodegas
+			//Para aplicar la salida
+			if(
+				empty($arrayListItemID)
+				&& 
+				$txtIsTrnasferAll == "true"
+			)
+			{
+				$arrayListItemID 								= [];
+				$arrayListQuantity	 							= [];
+				$arrayListLote	 								= [];
+				$arrayListVencimiento							= [];				
+				$objListItemWarehouseProcess					= $this->Itemwarehouse_Model->getByWarehouseSourceAndTarget($objTM["companyID"],$objTM["sourceWarehouseID"], $objTM["targetWarehouseID"] );
+				if($objListItemWarehouseProcess)
+				{
+					foreach($objListItemWarehouseProcess as $itemWare)
+					{
+						$arrayListItemID[]			= $itemWare->itemID;
+						$arrayListQuantity[]		= $itemWare->quantity;
+						$arrayListLote[]			= "";
+						$arrayListVencimiento[]		= "";
+					}
+				}
+			}
+			
+			//Obtener el detalle de los productos agregados en pantalla
 			if (!empty($arrayListItemID)) {
 				foreach ($arrayListItemID as $key => $value) {
 					$objItem 								= $this->Item_Model->get_rowByPK($objTM["companyID"], $value);
@@ -396,6 +452,8 @@ class app_inventory_transferoutput extends _BaseController
 			}
 
 
+			//Enviar reporte de salida por transferencia
+			//Si la transccion es aplicable
 			if ($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_transferoutput", "statusID", $objTM["statusID"], COMMAND_APLICABLE, $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID)) {
 
 				//Enviar reporte de salida por transferencia
@@ -474,6 +532,56 @@ class app_inventory_transferoutput extends _BaseController
 				$arrayListLote	 									= /*inicio get post*/ $this->request->getPost("txtDetailLote");
 				$arrayListVencimiento								= /*inicio get post*/ $this->request->getPost("txtDetailVencimiento");
 
+
+				//Obtener el detalle de las cantidades en base a una plantilla
+				if(
+					empty($arrayListItemID)
+					&& 
+					$txtTransactionNumberTemplate != ""
+				)
+				{
+					$arrayListItemID 								= [];
+					$arrayListQuantity	 							= [];
+					$arrayListLote	 								= [];
+					$arrayListVencimiento							= [];				
+					$objListItemWarehouseProcess					= $this->Transaction_Master_Detail_Model->get_rowByTransactionTo_TransactionNumberAnd_WarehouseSourceAnd_WarehuseTareget($objTM["companyID"],$txtTransactionNumberTemplate,$objTM["sourceWarehouseID"], $objTM["targetWarehouseID"] );
+					if($objListItemWarehouseProcess)
+					{
+						foreach($objListItemWarehouseProcess as $itemWare)
+						{
+							$arrayListItemID[]			= $itemWare->itemID;
+							$arrayListQuantity[]		= $itemWare->quantity;
+							$arrayListLote[]			= "";
+							$arrayListVencimiento[]		= "";
+						}
+					}
+				}
+				
+				//Obtene el detalle de las cantidades en bodegas
+				//Para aplicar la entrada
+				if(
+					empty($arrayListItemID)
+					&& 
+					$txtIsTrnasferAll == "true"
+				)
+				{
+					$arrayListItemID 								= [];
+					$arrayListQuantity	 							= [];
+					$arrayListLote	 								= [];
+					$arrayListVencimiento							= [];
+					$objListItemWarehouseProcess					= $this->Itemwarehouse_Model->getByWarehouseSourceAndTarget($objTM["companyID"],$objTM["sourceWarehouseID"], $objTM["targetWarehouseID"] );
+					if($objListItemWarehouseProcess)
+					{
+						foreach($objListItemWarehouseProcess as $itemWare)
+						{
+							$arrayListItemID[]			= $itemWare->itemID;
+							$arrayListQuantity[]		= $itemWare->quantity;
+							$arrayListLote[]			= "";
+							$arrayListVencimiento[]		= "";
+						}
+					}
+				}
+				
 				if (!empty($arrayListItemID)) {
 					foreach ($arrayListItemID as $key => $value) {
 						$objItem 									= $this->Item_Model->get_rowByPK($objTMInput["companyID"], $value);
@@ -575,6 +683,10 @@ class app_inventory_transferoutput extends _BaseController
 				$this->core_web_notification->set_message(true, $this->db->_error_message());
 				$this->response->redirect(base_url() . "/" . 'app_inventory_transferoutput/add');
 			}
+			
+			
+			
+			
 		} catch (\Exception $ex) {
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
@@ -647,6 +759,8 @@ class app_inventory_transferoutput extends _BaseController
 			$objTMNew["statusID"] 					= /*inicio get post*/ $this->request->getPost("txtStatusID");
 			$objTMNew["sourceWarehouseID"]			= /*inicio get post*/ $this->request->getPost("txtWarehouseSourceID"); //--fin peticion get o post
 			$objTMNew["targetWarehouseID"]			= /*inicio get post*/ $this->request->getPost("txtWarehouseTargetID"); //--fin peticion get o post
+			$objTMNew["isTemplate"] 				= /*inicio get post*/ $this->request->getPost("txtIsTemplate") == "true" ? 1 : 0 ;
+			
 			$db = db_connect();
 			$db->transStart();
 			//El Estado solo permite editar el workflow
@@ -1035,6 +1149,11 @@ class app_inventory_transferoutput extends _BaseController
 			$componentTranItem					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
 			if (!$componentTranItem)
 				throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+			
+			//Obtener el componente de Item
+			$componentTransfer					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_transferoutput");
+			if (!$componentTransfer)
+				throw new \Exception("EL COMPONENTE 'tb_transaction_master_transferoutput' NO EXISTE...");
 
 
 			$objComponentEmployee				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
@@ -1046,6 +1165,7 @@ class app_inventory_transferoutput extends _BaseController
 				throw new \Exception("EL COMPONENTE 'tb_entity' NO EXISTE...");
 
 
+			
 			$transactionID 								= $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID, "tb_transaction_master_transferoutput", 0);
 			$dataView["componentTranItemID"] 			= $componentTranItem->componentID;
 			$dataView["userID"] 						= $userID;
@@ -1055,6 +1175,9 @@ class app_inventory_transferoutput extends _BaseController
 			$dataView["objComponentEmployee"]  			= $objComponentEmployee;
 			$dataView["objComponentEntity"]  			= $objComponentEntity;
 			$dataView["company"]						= $dataSession["company"];
+			$dataView["componentTransfer"]				= $componentTransfer;			
+			
+			
 			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
 			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "INVOICE_CANTIDAD_ITEM");
 			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;

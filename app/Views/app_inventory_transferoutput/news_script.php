@@ -1,6 +1,8 @@
 <!-- ./ page heading -->
 <script>	
 	var objTableDetailTransaction 			= {};
+	var varParameterCantidadItemPoup 		= '<?php echo $objParameterCantidadItemPoup; ?>';
+	
 	$(document).ready(function(){			
 		var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';  
 		//Inicializar Controles		
@@ -103,6 +105,21 @@
 				
 		});	
 		
+		$('#chkIsTrnasferAll').change(function() {
+			if ($(this).is(':checked')) {
+				$("#txtIsTrnasferAll").val("true");
+			} else {
+				$("#txtIsTrnasferAll").val("false");
+			}
+		});
+		$('#chkIsTemplate').change(function() {
+			if ($(this).is(':checked')) {
+				$("#txtIsTemplate").val("true");
+			} else {
+				$("#txtIsTemplate").val("false");
+			}
+		});
+		
 		//Agregar Item
 		$(document).on("click","#btnNewDetailTransaction",function(){
 			if($("#txtWarehouseSourceID").val() == "")
@@ -204,6 +221,12 @@
 			window.open(url_request,"MsgWindow","width=900,height=450");
 			window.onCompleteEmployee = onCompleteEmployee; 
 		});
+		//Buscar plantilla
+		$(document).on("click","#btnSearchTransactionNumberTemplate",function(){
+			var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?php echo $componentTransfer->componentID; ?>/onCompleteTransacionTemplate/SELECCIONAR_TRANSACTIONMASTER_TRANSFEROUPUT_PAGINATED/true/empty/false/not_redirect_when_empty/1/1/" + varParameterCantidadItemPoup + "/";
+			window.open(url_request,"MsgWindow","width=900,height=450");
+			window.onCompleteTransacionTemplate = onCompleteTransacionTemplate; 
+		});
 		//Eliminar Empleado
 		$(document).on("click","#btnClearEmployeeParent",function(){
 					$("#txtEmployeeID").val("");
@@ -214,6 +237,11 @@
 		$(document).on("click","#btnClearEmployeeParentTarget",function(){
 					$("#txtEmployeeIDTarget").val("");
 					$("#txtEmployeeDescriptionTarget").val("");
+		});
+		//Eliminar Factura de plantilla
+		$(document).on("click","#btnClearTransactionNumberTemplate",function(){
+					$("#txtTransactionNumberTemplate").val("");
+					$("#labelTransactionNumberTemplate").val("");
 		});
 		
 		
@@ -229,6 +257,12 @@
 		$("#txtEmployeeDescription").val(objResponse[0][3] + " / " + objResponse[0][4]);
 		
 	}
+	function onCompleteTransacionTemplate(objResponse)
+	{
+		$("#txtTransactionNumberTemplate").val(objResponse[0][2]);
+		$("#labelTransactionNumberTemplate").val(objResponse[0][2]);
+	}
+	
 	function onCompleteEmployeeTarget(objResponse){
 		console.info("CALL onCompleteEmployee");
 		
@@ -267,13 +301,6 @@
 			result = false;
 		}
 		
-		
-		//Detalle
-		var lengthRow = objTableDetailTransaction.fnGetData().length;		
-		if(lengthRow == 0){
-			fnShowNotification("Agregar el Detalle del Documento","error",timerNotification);
-			result = false;
-		}
 		
 		var validarEnvioDestino = '<?php echo getBehavio($company->type,"app_inventory_transferoutput","parameterValidarEnvioDestino",""); ?>';
 		if(validarEnvioDestino == "true")

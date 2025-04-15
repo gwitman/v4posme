@@ -38,13 +38,47 @@ class ItemWarehouse_Model extends Model  {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_item_warehouse");
 		$sql = "";
-		$sql = sprintf("select i.itemNumber as CODIGO,i.name AS PRODUCTO,ci.display as UM,i.itemID,w.quantity,i.cost");
+		$sql = sprintf("select 
+			i.itemNumber as CODIGO,
+			i.name AS PRODUCTO,
+			ci.display as UM,
+			i.itemID,
+			w.quantity,
+			i.cost
+		");
 		$sql = $sql.sprintf(" from tb_item i");
 		$sql = $sql.sprintf(" inner join  tb_item_warehouse w on i.itemID = w.itemID");
 		$sql = $sql.sprintf(" inner join  tb_catalog_item  ci on i.unitMeasureID = ci.catalogItemID");
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
 		$sql = $sql.sprintf(" and w.warehouseID = $warehouseID");		
 		$sql = $sql.sprintf(" and i.isActive= 1");		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+		
+   }
+   function getByWarehouseSourceAndTarget($companyID,$warehouseSource,$warehouseTarget){
+		$db 	= db_connect();
+		$builder	= $db->table("tb_item_warehouse");
+		$sql = "";
+		$sql = sprintf("
+			select
+				i.itemID,
+				w.quantity,
+				i.cost
+			from 
+				tb_item i 
+				inner join tb_item_warehouse w on i.itemID = w.itemID 
+			where 
+				i.isActive 		= 1 and 
+				w.warehouseID 	= $warehouseSource and 
+				i.companyID 	= $companyID and 
+				w.quantity > 0 and 
+				i.itemID in (
+					select pp.itemID  from tb_item_warehouse pp where pp.warehouseID = $warehouseTarget 
+				)
+		");
+			
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
@@ -102,7 +136,6 @@ class ItemWarehouse_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
    }
-   
    function warehouseIsEmpty($companyID,$warehouseID){
 		$db 	= db_connect();
 		$builder	= $db->table("tb_item_warehouse");

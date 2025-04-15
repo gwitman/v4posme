@@ -165,7 +165,7 @@
 												<div class="row">										
 													<div class="col-lg-6">	
 															<div class="form-group">
-																<label class="col-lg-2 control-label" for="buttons">Envia</label>
+																<label class="col-lg-4 control-label" for="buttons">Envia</label>
 																<div class="col-lg-8">
 																	<div class="input-group">
 																		<input type="hidden" id="txtEmployeeID" name="txtEmployeeID">
@@ -189,7 +189,7 @@
 															</div>
 															
 															<div class="form-group">
-																<label class="col-lg-2 control-label" for="buttons">Recibe</label>
+																<label class="col-lg-4 control-label" for="buttons">Recibe</label>
 																<div class="col-lg-8">
 																	<div class="input-group">
 																		<input type="hidden" id="txtEmployeeIDTarget" name="txtEmployeeIDTarget">
@@ -203,6 +203,46 @@
 																		</span>
 																		<span class="input-group-btn">
 																			<button class="btn btn-primary" type="button" id="btnSearchEmployeeParentTarget">
+																				<i aria-hidden="true" class="i-search-5"></i>
+																				buscar
+																			</button>
+																		</span>
+																		
+																	</div>
+																</div>
+															</div>
+															
+															<div class="form-group">
+																	<label class="col-lg-4 control-label" for="chkIsTemplate">Es plantilla</label>
+																	<div class="col-lg-8">
+																		<input type="checkbox"   name="chkIsTemplate" id="chkIsTemplate"  >
+																		<input type="hidden"   name="txtIsTemplate" id="txtIsTemplate" value="false"  >
+																	</div>
+															</div>
+															
+															<div class="form-group">
+																	<label class="col-lg-4 control-label" for="chkIsTrnasferAll">Dar salida a lo existente en la bodega</label>
+																	<div class="col-lg-8">
+																		<input type="checkbox"   name="chkIsTrnasferAll" id="chkIsTrnasferAll"  >
+																		<input type="hidden"   name="txtIsTrnasferAll" id="txtIsTrnasferAll" value="false"  >
+																	</div>
+															</div>
+															
+															<div class="form-group">
+																<label class="col-lg-4 control-label" for="buttons">Dar salida en base a una plantilla</label>
+																<div class="col-lg-8">
+																	<div class="input-group">
+																		<input type="hidden" id="txtTransactionNumberTemplate" name="txtTransactionNumberTemplate">
+																		<input class="form-control" readonly id="labelTransactionNumberTemplate" type="labelTransactionNumberTemplate">
+																		
+																		<span class="input-group-btn">
+																			<button class="btn btn-danger" type="button" id="btnClearTransactionNumberTemplate">
+																				<i aria-hidden="true" class="i-undo-2"></i>
+																				clear
+																			</button>
+																		</span>
+																		<span class="input-group-btn">
+																			<button class="btn btn-primary" type="button" id="btnSearchTransactionNumberTemplate">
 																				<i aria-hidden="true" class="i-search-5"></i>
 																				buscar
 																			</button>

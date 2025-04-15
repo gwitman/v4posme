@@ -432,6 +432,39 @@ class Transaction_Master_Detail_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
+   function get_rowByTransactionTo_TransactionNumberAnd_WarehouseSourceAnd_WarehuseTareget($companyID,$transactionNumber,$warehouseSourceID,$warehouseTargetID)
+   {
+		$db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+		$sql = "";
+		$sql = sprintf("
+			select 
+				td.companyID, 
+				td.componentItemID as itemID ,
+				td.quantity,
+				i.cost 
+			from 
+				tb_transaction_master tm 
+				inner join tb_transaction_master_detail td on 
+					tm.transactionMasterID = td.transactionMasterID 
+				inner join tb_item i on 
+					td.componentItemID = i.itemID 
+			where 
+				tm.isActive = 1 and 
+				td.isActive = 1 and 
+				td.quantity > 0 and 
+				tm.companyID = $companyID and 
+				tm.transactionNumber = '$transactionNumber' and 
+				i.itemID in (select k.itemID  from tb_item_warehouse k where k.warehouseID = $warehouseSourceID ) and 
+				i.itemID in (select k.itemID  from tb_item_warehouse k where k.warehouseID = $warehouseTargetID )
+		");
+		
+		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+
 
    function get_rowByTransactionToAdvanceOfPayroll($companyID,$transactionID,$transactionMasterID){
 	$db 	= db_connect();
