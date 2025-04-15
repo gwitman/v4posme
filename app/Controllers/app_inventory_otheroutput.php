@@ -583,6 +583,14 @@ class app_inventory_otheroutput extends _BaseController
 			$warehouseDefault 						= $objParameterWarehouseDefault->value;
 			//buscar el id de la bodega por number
 			$warehouseID 							= $this->Warehouse_Model->getByCode($companyID, $warehouseDefault)->warehouseID;
+			$objListWarehouseTipoDespacho			= $this->Userwarehouse_Model->getRowByUserIDAndFacturable($companyID,$dataSession["user"]->userID);
+			if(!$objListWarehouseTipoDespacho)
+			{
+				log_message("error","El usuario no tiene una bodega tipo despacho configurada");
+				throw new \Exception("El usuario no tiene una bodega tipo despacho configurada");
+			}
+			
+			$warehouseID							= $objListWarehouseTipoDespacho[0]->warehouseID;			
 			$objParameterProviderDefault			= $this->core_web_parameter->getParameter("CXP_PROVIDER_DEFAULT", $companyID);
 			$objParameterProviderDefault 			= $objParameterProviderDefault->value;
 

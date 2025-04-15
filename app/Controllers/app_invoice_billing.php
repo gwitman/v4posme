@@ -2255,7 +2255,7 @@ class app_invoice_billing extends _BaseController {
 			$objListComanyParameter					= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
 			//Obtener transaccion
 			$transactionID 							= $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_billing",0);
-			$companyID 								= $dataSession["user"]->companyID;
+			$companyID 								= $dataSession["user"]->companyID;			
 			$objT 									= $this->Transaction_Model->getByCompanyAndTransaction($companyID,$transactionID);		
 			$employee								= $this->Employee_Model->get_rowByEntityID($companyID,$dataSession["user"]->employeeID );
 			
@@ -2306,7 +2306,15 @@ class app_invoice_billing extends _BaseController {
 			$customer 								= $this->Customer_Model->get_rowByIdentification($companyID, $transactionMaster->CustomerIdentification);
 			$objParameterWarehouseDefault			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "INVENTORY_ITEM_WAREHOUSE_DEFAULT");			
 			$warehouseDefault 						= $objParameterWarehouseDefault->value;
+			$objListWarehouseTipoDespacho			= $this->Userwarehouse_Model->getRowByUserIDAndFacturable($companyID,$dataSession["user"]->userID);
+			if(!$objListWarehouseTipoDespacho)
+			{
+				log_message("error","El usuario no tiene una bodega tipo despacho configurada");
+				throw new \Exception("El usuario no tiene una bodega tipo despacho configurada");
+			}
+				
 			$warehouseID 							= $this->Warehouse_Model->getByCode($companyID, $warehouseDefault)->warehouseID;
+			$warehouseID							= $objListWarehouseTipoDespacho[0]->warehouseID;
 			$objTM["companyID"] 					= $companyID;
 			$objTM["transactionID"] 				= $transactionID;			
 			$objTM["branchID"]						= $branchID;			
