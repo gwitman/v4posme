@@ -26,6 +26,7 @@
 	var varParameterRestaurante				= '<?php echo $objParameterRestaurant; ?>';
 	var varTransactionMasterIDToPrinter  	= '<?php echo $transactionMasterIDToPrinter; ?>';
 
+	var cargaCompletada						= false;
 	var varAutoAPlicar						= '<?php echo $objParameterInvoiceAutoApply; ?>';
 	var varParameterHidenFiledItemNumber	= <?php echo $objParameterHidenFiledItemNumber; ?>;  
 	var objParameterPantallaParaFacturar 	= '<?php echo $objParameterPantallaParaFacturar; ?>';	
@@ -1746,7 +1747,8 @@
 
     function fnUpdateInvoiceView(data){
         console.info("LOAD INVOICE");
-        loadEdicion = true;
+        loadEdicion 		= true;
+		cargaCompletada 	= true;
 		objParameterINVOICE_BILLING_SHOW_COMMAND_BAR    = data.objParameterINVOICE_BILLING_SHOW_COMMAND_BAR;
         varParameterTipoPrinterDownload     			= data.objParameterTipoPrinterDonwload;
         objParameterPrinterDirectAndPreview 			= data.objParameterPrinterDirectAndPreview;        
@@ -1954,6 +1956,7 @@
 			objTableDetail.fnAddData(tmpData);
 			objTableDetail.fnDraw();
         }
+		
         $("#txtDescuento").val(fnFormatNumber(objTransactionMaster.discount, 2));
         $("#txtPorcentajeDescuento").val(fnFormatNumber(objTransactionMaster.tax4,2));
 
@@ -2029,7 +2032,9 @@
 		$('#txtCheckDeEfectivoValue').val(0);
         fnSetCheckBoxValue($('#txtCheckDeEfectivo'),false);
 
+		cargaCompletada 	= false;
 		cerrarModal('ModalCargandoDatos');
+		
     }
 
 	function fnGetConcept(conceptItemID,nameConcept){
@@ -2076,13 +2081,22 @@
 	}
 	
 	function fnRecalcularMontoComision(monto) {
-		let listRow = objTableDetail.fnGetData();
-		monto 		= parseFloat(monto);
-		if (isNaN(monto)) {
+		var cargandoDatosDeFactura 	= cargaCompletada;
+		let listRow 				= objTableDetail.fnGetData();
+		monto 						= parseFloat(monto);
+		
+		if(cargandoDatosDeFactura == true )
+			return;
+		
+		if (isNaN(monto)) 
+		{
 			monto = 0;
 		}
-		if(listRow.length > 0){
-			for(let i=0; i<listRow.length; i++){
+		
+		if(listRow.length > 0)
+		{
+			for(let i=0; i<listRow.length; i++)
+			{
 				let oldPrice = listRow[i][columnasTableDetail.precio1];
 				let newPrice = oldPrice * (1 + (monto / 100));
 				objTableDetail.fnUpdate(fnFormatNumber(newPrice, 2), i, columnasTableDetail.precio);

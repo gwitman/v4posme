@@ -250,6 +250,9 @@ class Customer_Credit_Document_Model extends Model  {
 				k.exchangeRate,
 				k.creditAmortizationID,
 				k.dateApply,
+				k.statusAmotization,
+				k.statusAmortizatonName,
+				
 				(
 					select 
 						sum(uu.remaining) 
@@ -259,6 +262,7 @@ class Customer_Credit_Document_Model extends Model  {
 						uu.customerCreditDocumentID = k.customerCreditDocumentID and 
 						uu.remaining > 0 		
 				) as  balance /*sirver para ver cual es la menta a cobrar*/,
+				
 				(
 					select 
 						sum(uu.remaining) 
@@ -268,8 +272,28 @@ class Customer_Credit_Document_Model extends Model  {
 						uu.customerCreditDocumentID = k.customerCreditDocumentID and 
 						uu.remaining > 0 		
 				) as  remaining /*se modifica en cada cuota mobile*/,
-				k.statusAmotization,
-				k.statusAmortizatonName
+				
+				(
+					select 
+						max(amor.share)
+					from 
+						tb_customer_credit_amoritization amor 
+					where 
+						amor.customerCreditDocumentID = k.customerCreditDocumentID  and 
+						amor.isActive = 1 
+				) as CuotaPactada , 
+				
+				(
+					select 
+						count(amor.creditAmortizationID)
+					from 
+						tb_customer_credit_amoritization amor 
+					where 
+						amor.customerCreditDocumentID = k.customerCreditDocumentID  and 
+						amor.isActive = 1 
+				) as CantidadCuotas 
+				
+				
 			from 
 				(
 				select 
@@ -284,7 +308,7 @@ class Customer_Credit_Document_Model extends Model  {
 								min(a.creditAmortizationID) as creditAmortizationID,
 								min(a.dateApply) as dateApply,					
 								sum(a.remaining) as balance,
-								sum(a.remaining) as remaining,
+								sum(a.remaining) as remaining,								
 								min(a.statusID) as statusAmotization,
 								min(wsa.name) as statusAmortizatonName
 							from 

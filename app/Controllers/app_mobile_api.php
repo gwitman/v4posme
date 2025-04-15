@@ -114,6 +114,13 @@ class app_mobile_api extends _BaseController
 				throw new \Exception("El usuario no tiene un colaborador asignado");
 			}
 			
+			// 002 validar bodega despacho del usuario
+			$objListWarehouseTipoDespacho	= $this->Userwarehouse_Model->getRowByUserIDAndFacturable($companyID,$objUser["user"]->userID);
+			if(!$objListWarehouseTipoDespacho)
+			{
+				throw new \Exception("El usuario no tiene una bodega tipo despacho configurada");
+			}
+			
 			
 			
 			log_message("error",print_r("0004",true));
