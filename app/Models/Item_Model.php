@@ -343,6 +343,7 @@ class Item_Model extends Model  {
 						i.itemID  = iw.itemID  
 				where 
 					i.isActive = 1 and 
+					i.isInvoice = 1 and  
 					iw.warehouseID in (".implode(",", $listWarehouseID).")
 				order by 
 					i.barCode
