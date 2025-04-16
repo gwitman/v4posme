@@ -206,7 +206,7 @@ class Customer_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
    }
-   function get_rowByCompanyIDToMobile($companyID){
+   function get_rowByCompanyIDToMobile($companyID,$userID){
 		$db 	= db_connect();
 		$builder	= $db->table("tb_customer");
 			
@@ -225,6 +225,7 @@ class Customer_Model extends Model  {
 			k.customerCreditLineID,
 			k.location,
 			k.phone , 
+			k.me, 
 			sum(k.balance) as balance 
 		from 
 			(
@@ -241,7 +242,26 @@ class Customer_Model extends Model  {
 						cl.customerCreditLineID,
 						ifnull(i.location,'') as location,
 						ifnull((select ep.number from tb_entity_phone ep  where ep.entityID = i.entityID limit 1 ),'') as phone , 
-						IFNULL(cdd.balance,0) as balance
+						IFNULL(cdd.balance,0) as balance,
+						IFNULL(
+							(
+								select 
+									1 
+								from 
+									tb_customer custp
+									inner join tb_relationship rrp on 
+										rrp.customerID = custp.entityID 
+									inner join tb_employee empp on 
+										empp.entityID = rrp.employeeID 
+									inner join tb_user usrp on 
+										usrp.employeeID = empp.entityID 
+								where 
+									custp.entityID = i.entityID and 
+									usrp.userID = $userID 
+								limit 1 
+							),
+							0 
+						) as me 
 				from 
 						tb_customer i
 						inner join  tb_naturales nat on nat.entityID = i.entityID 
@@ -251,6 +271,7 @@ class Customer_Model extends Model  {
 				where 
 						i.companyID = $companyID 
 						and i.isActive= 1
+							
 				
 				) k 
 		group by 
@@ -265,7 +286,8 @@ class Customer_Model extends Model  {
 			k.currencyID,
 			k.customerCreditLineID,
 			k.location,
-			k.phone
+			k.phone,
+			k.me 
 		");		
 		
 		//Ejecutar Consulta

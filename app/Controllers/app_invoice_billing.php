@@ -1547,7 +1547,9 @@ class app_invoice_billing extends _BaseController {
 					$tableAmortization = $this->financial_amort->getTable();
 					if($tableAmortization["detail"])
 					{
+						$sequence = 0;
 						foreach($tableAmortization["detail"] as $key => $itemAmortization){
+							$sequence 												= $sequence + 1;
 							$objCustomerAmoritizacion["customerCreditDocumentID"]	= $customerCreditDocumentID;
 							$objCustomerAmoritizacion["balanceStart"]				= $itemAmortization["saldoInicial"];
 							$objCustomerAmoritizacion["dateApply"]					= $itemAmortization["date"];
@@ -1560,6 +1562,7 @@ class app_invoice_billing extends _BaseController {
 							$objCustomerAmoritizacion["note"]						= '';
 							$objCustomerAmoritizacion["statusID"]					= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_amoritization","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
 							$objCustomerAmoritizacion["isActive"]					= 1;
+							$objCustomerAmoritizacion["sequence"]					= $sequence;
 							$objCustomerAmortizationID 								= $this->Customer_Credit_Amortization_Model->insert_app_posme($objCustomerAmoritizacion);
 						}
 					}
@@ -2694,7 +2697,9 @@ class app_invoice_billing extends _BaseController {
 					$tableAmortization = $this->financial_amort->getTable();
 					if($tableAmortization["detail"])
 					{
+						$sequence = 0;
 						foreach($tableAmortization["detail"] as $key => $itemAmortization){
+							$sequence 												= $sequence + 1;
 							$objCustomerAmoritizacion["customerCreditDocumentID"]	= $customerCreditDocumentID;
 							$objCustomerAmoritizacion["balanceStart"]				= $itemAmortization["saldoInicial"];
 							$objCustomerAmoritizacion["dateApply"]					= $itemAmortization["date"];
@@ -2707,6 +2712,7 @@ class app_invoice_billing extends _BaseController {
 							$objCustomerAmoritizacion["note"]						= '';
 							$objCustomerAmoritizacion["statusID"]					= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_amoritization","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
 							$objCustomerAmoritizacion["isActive"]					= 1;
+							$objCustomerAmoritizacion["sequence"]					= $sequence;
 							$objCustomerAmortizationID 								= $this->Customer_Credit_Amortization_Model->insert_app_posme($objCustomerAmoritizacion);
 						}
 					}
@@ -3228,20 +3234,25 @@ class app_invoice_billing extends _BaseController {
 					
 					$tableAmortization = $this->financial_amort->getTable();
 					if($tableAmortization["detail"])
-					foreach($tableAmortization["detail"] as $key => $itemAmortization){
-						$objCustomerAmoritizacion["customerCreditDocumentID"]	= $customerCreditDocumentID;
-						$objCustomerAmoritizacion["balanceStart"]				= $itemAmortization["saldoInicial"];
-						$objCustomerAmoritizacion["dateApply"]					= $itemAmortization["date"];
-						$objCustomerAmoritizacion["interest"]					= $itemAmortization["interes"];
-						$objCustomerAmoritizacion["capital"]					= $itemAmortization["principal"];
-						$objCustomerAmoritizacion["share"]						= $itemAmortization["cuota"];
-						$objCustomerAmoritizacion["balanceEnd"]					= $itemAmortization["saldo"];
-						$objCustomerAmoritizacion["remaining"]					= $itemAmortization["cuota"];
-						$objCustomerAmoritizacion["dayDelay"]					= 0;
-						$objCustomerAmoritizacion["note"]						= '';
-						$objCustomerAmoritizacion["statusID"]					= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_amoritization","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
-						$objCustomerAmoritizacion["isActive"]					= 1;
-						$objCustomerAmortizationID 								= $this->Customer_Credit_Amortization_Model->insert_app_posme($objCustomerAmoritizacion);
+					{
+						$sequence = 0;
+						foreach($tableAmortization["detail"] as $key => $itemAmortization){
+							$sequence 												= $sequence + 1;
+							$objCustomerAmoritizacion["customerCreditDocumentID"]	= $customerCreditDocumentID;
+							$objCustomerAmoritizacion["balanceStart"]				= $itemAmortization["saldoInicial"];
+							$objCustomerAmoritizacion["dateApply"]					= $itemAmortization["date"];
+							$objCustomerAmoritizacion["interest"]					= $itemAmortization["interes"];
+							$objCustomerAmoritizacion["capital"]					= $itemAmortization["principal"];
+							$objCustomerAmoritizacion["share"]						= $itemAmortization["cuota"];
+							$objCustomerAmoritizacion["balanceEnd"]					= $itemAmortization["saldo"];
+							$objCustomerAmoritizacion["remaining"]					= $itemAmortization["cuota"];
+							$objCustomerAmoritizacion["dayDelay"]					= 0;
+							$objCustomerAmoritizacion["note"]						= '';
+							$objCustomerAmoritizacion["statusID"]					= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_amoritization","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
+							$objCustomerAmoritizacion["isActive"]					= 1;
+							$objCustomerAmoritizacion["sequence"]					= $sequence;
+							$objCustomerAmortizationID 								= $this->Customer_Credit_Amortization_Model->insert_app_posme($objCustomerAmoritizacion);
+						}
 					}
 					
 					//Crear las personas relacionadas a la factura

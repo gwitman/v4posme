@@ -35,7 +35,7 @@ class Customer_Credit_Amortization_Model extends Model  {
 		$db 	= db_connect();
 		
 	    $sql = "";
-		$sql = sprintf("select creditAmortizationID, customerCreditDocumentID, balanceStart,dateApply, interest, capital, `share`, balanceEnd, remaining, dayDelay, note, statusID, isActive,shareCapital");
+		$sql = sprintf("select creditAmortizationID, customerCreditDocumentID, balanceStart,dateApply, interest, capital, `share`, balanceEnd, remaining, dayDelay, note, statusID, isActive,shareCapital,sequence");
 		$sql = $sql.sprintf(" from tb_customer_credit_amoritization i");		
 		$sql = $sql.sprintf(" where i.creditAmortizationID = $creditAmortizationID");
 		$sql = $sql.sprintf(" and i.isActive= 1");		
@@ -47,7 +47,7 @@ class Customer_Credit_Amortization_Model extends Model  {
 		$db 	= db_connect();
 		    
 		$sql = "";
-		$sql = sprintf("select creditAmortizationID, customerCreditDocumentID,balanceStart, dateApply, interest, capital, `share`, balanceEnd, remaining, dayDelay, note, statusID, isActive,shareCapital");
+		$sql = sprintf("select creditAmortizationID, customerCreditDocumentID,balanceStart, dateApply, interest, capital, `share`, balanceEnd, remaining, dayDelay, note, statusID, isActive,shareCapital,sequence ");
 		$sql = $sql.sprintf(" from tb_customer_credit_amoritization i");		
 		$sql = $sql.sprintf(" where i.customerCreditDocumentID = $customerCreditDocumentID");
 		$sql = $sql.sprintf(" and i.isActive= 1");		
@@ -61,7 +61,7 @@ class Customer_Credit_Amortization_Model extends Model  {
 		    
 		
 		$sql = "";
-		$sql = sprintf("select i.creditAmortizationID, i.customerCreditDocumentID,i.balanceStart, i.dateApply, i.interest, i.capital, i.`share`, i.balanceEnd, i.remaining, i.dayDelay, i.note, i.statusID, i.isActive,i.shareCapital");
+		$sql = sprintf("select i.creditAmortizationID, i.customerCreditDocumentID,i.balanceStart, i.dateApply, i.interest, i.capital, i.`share`, i.balanceEnd, i.remaining, i.dayDelay, i.note, i.statusID, i.isActive,i.shareCapital,i.sequence");
 		$sql = $sql.sprintf(" from tb_customer_credit_amoritization i");		
 		$sql = $sql.sprintf(" inner join  tb_workflow_stage ws on i.statusID = ws.workflowStageID");		
 		$sql = $sql.sprintf(" where i.customerCreditDocumentID = $customerCreditDocumentID");
@@ -78,7 +78,7 @@ class Customer_Credit_Amortization_Model extends Model  {
 		    
 		
 		$sql = "";
-		$sql = sprintf("select i.creditAmortizationID, i.customerCreditDocumentID,i.balanceStart, i.dateApply, i.interest, i.capital, i.`share`, i.balanceEnd, i.remaining, i.dayDelay, i.note, i.statusID, i.isActive,i.shareCapital");
+		$sql = sprintf("select i.creditAmortizationID, i.customerCreditDocumentID,i.balanceStart, i.dateApply, i.interest, i.capital, i.`share`, i.balanceEnd, i.remaining, i.dayDelay, i.note, i.statusID, i.isActive,i.shareCapital,i.sequence ");
 		$sql = $sql.sprintf(" from tb_customer_credit_amoritization i");		
 		$sql = $sql.sprintf(" inner join  tb_workflow_stage ws on i.statusID = ws.workflowStageID");		
 		$sql = $sql.sprintf(" where i.customerCreditDocumentID = $customerCreditDocumentID");
@@ -129,7 +129,7 @@ class Customer_Credit_Amortization_Model extends Model  {
 		
 		
 	    $sql = "";
-		$sql = sprintf("select c.customerNumber,n.firstName,n.lastName,c.birthDate,ccd.documentNumber,ccd.currencyID,ccd.reportSinRiesgo,cca.dateApply,cca.remaining,cca.shareCapital");
+		$sql = sprintf("select c.customerNumber,n.firstName,n.lastName,c.birthDate,ccd.documentNumber,ccd.currencyID,ccd.reportSinRiesgo,cca.dateApply,cca.remaining,cca.shareCapital,cca.sequence ");
 		$sql = $sql.sprintf(" from tb_customer c");
 		$sql = $sql.sprintf(" inner join  tb_naturales n on n.entityID = c.entityID");		
 		$sql = $sql.sprintf(" inner join  tb_customer_credit_document ccd on c.entityID = ccd.entityID");		
@@ -153,11 +153,18 @@ class Customer_Credit_Amortization_Model extends Model  {
 	    $sql = "";
 		$sql = sprintf("
 				select 
-						c.customerNumber,n.firstName,n.lastName,
-						c.birthDate,ccd.documentNumber,ccd.currencyID,
-						ccd.reportSinRiesgo,cca.creditAmortizationID,cca.dateApply,
+						c.customerNumber,
+						n.firstName,
+						n.lastName,
+						c.birthDate,
+						ccd.documentNumber,
+						ccd.currencyID,
+						ccd.reportSinRiesgo,
+						cca.creditAmortizationID,
+						cca.dateApply,
 						cca.remaining as balance,
-						cca.remaining
+						cca.remaining,
+						cca.sequence 
 				from 
 					tb_customer c
 					inner join  tb_naturales n on n.entityID = c.entityID

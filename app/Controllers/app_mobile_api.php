@@ -346,7 +346,7 @@ class app_mobile_api extends _BaseController
             $objListItem 	= $this->Item_Model->get_rowByCompanyIDToMobile($objWarehouseID);
 
             //Obtener lista de clients
-            $objListCustomer = $this->Customer_Model->get_rowByCompanyIDToMobile($companyID);
+            $objListCustomer = $this->Customer_Model->get_rowByCompanyIDToMobile($companyID, $userID );
 
             //Obtener lisa de paramtros
             $objListParameter = $this->Company_Parameter_Model->get_rowByCompanyID($companyID);

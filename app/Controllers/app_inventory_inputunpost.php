@@ -1449,7 +1449,9 @@ class app_inventory_inputunpost extends _BaseController {
 					$tableAmortization = $this->financial_amort->getTable();
 					if($tableAmortization["detail"])
 					{
+						$sequence = 0;
 						foreach($tableAmortization["detail"] as $key => $itemAmortization){
+							$sequence 												= $sequence + 1;
 							$objCustomerAmoritizacion["customerCreditDocumentID"]	= $customerCreditDocumentID;
 							$objCustomerAmoritizacion["balanceStart"]				= $itemAmortization["saldoInicial"];
 							$objCustomerAmoritizacion["dateApply"]					= $itemAmortization["date"];
@@ -1462,6 +1464,7 @@ class app_inventory_inputunpost extends _BaseController {
 							$objCustomerAmoritizacion["note"]						= '';
 							$objCustomerAmoritizacion["statusID"]					= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_amoritization","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
 							$objCustomerAmoritizacion["isActive"]					= 1;
+							$objCustomerAmoritizacion["sequence"]					= $sequence;
 							$objCustomerAmortizationID 								= $this->Customer_Credit_Amortization_Model->insert_app_posme($objCustomerAmoritizacion);
 						}
 					}
