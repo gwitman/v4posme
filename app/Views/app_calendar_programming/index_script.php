@@ -5,10 +5,11 @@
         fnWaitOpen();
         var calendarEl 	= document.getElementById('calendario');
         var calendar 	= new FullCalendar.Calendar(calendarEl, {
-            initialView: 	'dayGridMonth', // Vista mensual
-			height: 		600, // Establece la altura en píxeles
-            locale: 		'es', // Español
-            themeSystem: 	'bootstrap',
+            initialView: 		'dayGridMonth', // Vista mensual
+			dayMaxEventRows: 	true,
+			height: 			600, // Establece la altura en píxeles
+            locale: 			'es', // Español
+            themeSystem: 		'bootstrap',
             customButtons: {
                 btnAdd: {
                     text: 'Agregar',
