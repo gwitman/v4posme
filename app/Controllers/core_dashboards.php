@@ -707,18 +707,21 @@ class core_dashboards extends _BaseController {
 		
 		//Obtener los pedidos entregados / no entregados
 		//Semana en curso
+		$objListPedidosEntregados 	= $this->Transaction_Master_Detail_Model->Balladares_PedidosEntregados_Semanales($dataSession["user"]->companyID);
 		
 		
 		//Obtener los pedidos cancelados / no cancelados
 		//Mes en curso
-		
+		$objListPedidosPagados	 	= $this->Transaction_Master_Detail_Model->Balladares_PedidosPagados_Mes($dataSession["user"]->companyID);
 
 
         //Renderizar Resultado
-        $dataSession["objPagosMensuales"]					= $objPagosMensuales;
-        $dataSession["objListVentasCreditoMensuales"]		= $objListVentasCreditoMensuales;
-        $dataSession["objListVentasContadoMesActual"]		= $objListVentasContadoMesActual;
-        $dataSession["objListVentaContadoMensuales"]		= $objListVentaContadoMensuales;
+		$dataSession["objListPedidosEntregados"]					= $objListPedidosEntregados;
+		$dataSession["objListPedidosPagados"]						= $objListPedidosPagados;
+        $dataSession["objPagosMensuales"]							= $objPagosMensuales;
+        $dataSession["objListVentasCreditoMensuales"]				= $objListVentasCreditoMensuales;
+        $dataSession["objListVentasContadoMesActual"]				= $objListVentasContadoMesActual;
+        $dataSession["objListVentaContadoMensuales"]				= $objListVentaContadoMensuales;
         return $dataSession;
     }
 

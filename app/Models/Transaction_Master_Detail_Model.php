@@ -2329,5 +2329,68 @@ class Transaction_Master_Detail_Model extends Model  {
 
 		return $db->query($sql)->getResult();
 	}
+	
+	
+	function Balladares_PedidosEntregados_Semanales($companyID)
+	{
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+			select 
+				c.reference3 as Entidad,
+				count(*) as Valor 
+			from 
+				tb_transaction_master c
+				inner join tb_workflow_stage ws on 
+					ws.workflowStageID = c.statusID 
+			where 
+				c.isActive = 1 and 
+				c.transactionID = 19 and 
+				ws.aplicable = 1  and 
+				c.transactionOn BETWEEN DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY) AND CURDATE() and 
+				
+				c.nextVisit is not null and  
+				c.nextVisit > '2025-01-01'
+	
+			group by 
+				c.reference3 
+		");
+
+		return $db->query($sql)->getResult();
+	}
+	
+	function Balladares_PedidosPagados_Mes($companyID)
+	{
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+				select 
+					IF(
+						d.balance <= 0 ,
+						'PAGADO',
+						'PENDIENTE'
+					) AS Entidad,
+					COUNT(*) as Valor 
+				from 
+					tb_transaction_master c
+					inner join tb_workflow_stage ws on 
+						ws.workflowStageID = c.statusID 
+					inner join tb_customer_credit_document d on 
+						d.documentNumber = c.transactionNumber 
+				where 
+					c.isActive = 1 and 
+					c.transactionID = 19 and 
+					ws.aplicable = 1  and 
+					YEAR(c.transactionOn) = YEAR(CURDATE()) AND 
+					MONTH(c.transactionOn) = MONTH(CURDATE()) 
+				group by 
+					1 
+		");
+
+		return $db->query($sql)->getResult();
+	}
+	
 }
 ?>

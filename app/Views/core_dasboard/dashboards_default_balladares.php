@@ -46,6 +46,29 @@
 						<div class="panel" style="margin-bottom:20px;">
 							<div class="panel-heading">
 								<div class="icon"><i class="icon20 i-health"></i></div> 
+								<h4> Pedidos Pagados Mes actual</h4>
+								<a href="#" class="minimize"></a>
+							</div><!-- End .panel-heading -->
+							<div class="panel-body">								
+								<div id="graficoPedidosPagados" style="height:150px" ></div>
+							</div><!-- End .panel-body -->
+						</div><!-- End .widget -->	
+						
+						<div class="panel" style="margin-bottom:20px;">
+							<div class="panel-heading">
+								<div class="icon"><i class="icon20 i-health"></i></div> 
+								<h4> Pedidos Entregados Semana actual</h4>
+								<a href="#" class="minimize"></a>
+							</div><!-- End .panel-heading -->
+							<div class="panel-body">								
+								<div id="graficoPedidosEntregados" style="height:150px" ></div>
+							</div><!-- End .panel-body -->
+						</div><!-- End .widget -->	
+						
+						
+						<div class="panel" style="margin-bottom:20px;">
+							<div class="panel-heading">
+								<div class="icon"><i class="icon20 i-health"></i></div> 
 								<h4> Ventas diarias (Mes actual)</h4>
 								<a href="#" class="minimize"></a>
 							</div><!-- End .panel-heading -->
@@ -232,10 +255,15 @@
 					var objVentasCreditoMensuales			 		= JSON.parse('<?php echo json_encode($objListVentasCreditoMensuales); ?>');	
 					var objVentasDeContadoMesActual		 			= JSON.parse('<?php echo json_encode($objListVentasContadoMesActual); ?>');	
 					var objVentaContadoMensuales			 		= JSON.parse('<?php echo json_encode($objListVentaContadoMensuales); ?>');	
+					var objListPedidosEntregados			 		= JSON.parse('<?php echo json_encode($objListPedidosEntregados); ?>');	
+					var objListPedidosPagados			 			= JSON.parse('<?php echo json_encode($objListPedidosPagados); ?>');	
+					
 					var objDataPagosMensuales	 					= new Array();
 					var objDataSourceVentasCreditoMensuales	 		= new Array();
 					var objDataSourceVentasDeContadoMesActual	 	= new Array();
 					var objDataSourceVentasContadoMensuales	 		= new Array();
+					var objDataSourceListPedidosEntregados	 		= new Array();
+					var objDataSourceListPedidosPagados	 			= new Array();
 					
 					objDataSourceVentasDeContadoMesActual.push(new Array("Dia","Ventas"));
 					for(var i = 0 ; i < objVentasDeContadoMesActual.length;i++)
@@ -256,6 +284,30 @@
 							new Array(
 								objVentaContadoMensuales[i].Mes,
 								parseInt(objVentaContadoMensuales[i].Venta)
+							)
+						);	
+					}
+					
+					
+					
+					for(var i = 0 ; i < objListPedidosEntregados.length;i++)
+					{
+						objDataSourceListPedidosEntregados.push(
+							new Array(
+								objListPedidosEntregados[i].Entidad,
+								parseInt(objListPedidosEntregados[i].Valor)
+							)
+						);	
+					}
+					
+					
+					
+					for(var i = 0 ; i < objListPedidosPagados.length;i++)
+					{
+						objDataSourceListPedidosPagados.push(
+							new Array(
+								objListPedidosPagados[i].Entidad,
+								parseInt(objListPedidosPagados[i].Valor)
 							)
 						);	
 					}
@@ -293,7 +345,116 @@
 						google.charts.setOnLoadCallback(drawChartPastelVentasContadoMensuales);		
 						google.charts.setOnLoadCallback(drawChartPastelVentasCreditoMensuales);		
 						google.charts.setOnLoadCallback(drawChartBarraCapitalMensual);		
+						google.charts.setOnLoadCallback(drawChartPedidosPagados);		
+						google.charts.setOnLoadCallback(drawChartPedidosEntregados);		
 					});		
+					
+					function drawChartPedidosPagados() {
+
+						var data = new google.visualization.DataTable();
+						data.addColumn('string', 'Categoría');
+						data.addColumn('number', 'Cantidad');
+						data.addColumn({ type: 'string', role: 'style' }); // Columna para colores
+						data.addColumn({type: 'string', role: 'annotation'});  // Para mostrar texto sobre la barra
+						
+						
+						let total = 0;
+						objDataSourceListPedidosPagados.forEach( r=> {
+							total = total + r[1];
+						});
+						
+						objDataSourceListPedidosPagados.forEach( r=> {
+							let porcentaje 	= ((r[1] / total) * 100).toFixed(2) + '%';
+							let texto 		= `${r[1]} (${porcentaje})`;
+						  
+						    if(r[0] == "PENDIENTE")
+							{
+								r.color = '#FF5733';
+							}
+							else
+							{
+								r.color = '#33C1FF';
+							}
+							
+							data.addRow([r[0], r[1],`color: ${r.color}`, texto]);
+						});
+						
+						
+						
+						var options = {
+						  legend: { 
+								position: 'none' 
+							},
+							annotations: {
+								alwaysOutside: true,
+								textStyle: {
+								  fontSize: 	12,
+								  color: 		'#000',
+								  auraColor: 	'none'
+								}
+							},
+							hAxis:{
+								minValue: 0
+							}
+						};
+
+						var chart = new google.visualization.BarChart(document.getElementById('graficoPedidosPagados'));
+						chart.draw(data, options);
+
+					}
+					
+					function drawChartPedidosEntregados() {
+
+						var data = new google.visualization.DataTable();
+						data.addColumn('string', 'Categoría');
+						data.addColumn('number', 'Cantidad');
+						data.addColumn({ type: 'string', role: 'style' }); // Columna para colores
+						data.addColumn({type: 'string', role: 'annotation'});  // Para mostrar texto sobre la barra
+						
+						
+						let total = 0;
+						objDataSourceListPedidosEntregados.forEach( r=> {
+							total = total + r[1];
+						});
+						
+						objDataSourceListPedidosEntregados.forEach( r=> {
+							let porcentaje 	= ((r[1] / total) * 100).toFixed(2) + '%';
+							let texto 		= `${r[1]} (${porcentaje})`;
+						  
+						    if(r[0] == "SI")
+							{
+								r.color = '#FFC300';
+							}
+							else
+							{
+								r.color = '#28B463';
+							}
+							
+							data.addRow([r[0], r[1], `color: ${r.color}`, texto]);
+						});
+						
+						
+						var options = {
+							legend: { 
+								position: 'none' 
+							},
+							annotations: {
+								alwaysOutside: true,
+								textStyle: {
+								  fontSize: 	12,
+								  color: 		'#000',
+								  auraColor: 	'none'
+								}
+							},
+							hAxis:{
+								minValue: 0
+							}
+						};
+
+						var chart = new google.visualization.BarChart(document.getElementById('graficoPedidosEntregados'));
+						chart.draw(data, options);
+
+					}
 					
 					function drawChartBarraVentasContadoMesActual() {
 
