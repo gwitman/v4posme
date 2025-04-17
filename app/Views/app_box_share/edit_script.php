@@ -267,11 +267,11 @@
 		
 		if(currencyID == "1" /*cordoba*/)
 		{
-			change = total - (amountIng + (amountIngDol / exchangeRate) + amountDiscount);
+			change = (amountIng + (amountIngDol / exchangeRate) + amountDiscount) - total;
 		}
 		else 
 		{
-			change = total - (amountIng + (amountIngDol * exchangeRate) + amountDiscount);
+			change = (amountIng + (amountIngDol * exchangeRate) + amountDiscount) - total;
 		}
 		
 		$("#txtChangeAmount").val( fnFormatNumber(change,2) );
@@ -427,6 +427,21 @@
 			result = false;
 		}
 
+		if($("#txtDiscountAmount").val() == ""){
+			fnShowNotification("Descuento, no puede estar vacio dejar en 0 !!","error",timerNotification);
+			result = false;
+		}
+		
+		if($("#txtReceiptAmountDol").val() == ""){
+			fnShowNotification("Mont EXT, no puede estar vacio dejar en 0 !!","error",timerNotification);
+			result = false;
+		}
+		
+		if($("#txtReceiptAmount").val() == ""){
+			fnShowNotification("Monto NAC, no puede estar vacio dejar en 0 !!","error",timerNotification);
+			result = false;
+		}
+		
 		if(fnFormatFloat($("#txtChangeAmount").val()) < 0){
 			fnShowNotification("Monto insuficiente para aplicar el abono","error",timerNotification);
 			result = false;
