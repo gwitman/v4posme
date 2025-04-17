@@ -763,4 +763,3 @@ where
 	currencyID = 1
 	and targetCurrencyID = 2; 
 	
-/*BD	dbs3obkhhc1pgu  */

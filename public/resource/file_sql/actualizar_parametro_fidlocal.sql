@@ -766,4 +766,3 @@ where
 	currencyID = 1
 	and targetCurrencyID = 2; 
 	
-/*BD	dbejsigav9rp6v  */

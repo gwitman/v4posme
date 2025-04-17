@@ -1,4 +1,4 @@
-use dbkroqnguhldo1;
+/*use dbkroqnguhldo1;*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -1715,13 +1715,14 @@ WHERE
 	companyID = 2; ##Actualizar el nombre de la compania
 
 
-
 /*
 Eliminar o desactivar usuarios
 */
+
+/*
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/
+ 2, 	
  581,  
  582, 
  583,
@@ -1742,6 +1743,8 @@ update tb_role set isActive = 1 where roleID in (
 	515,
 	516	
 );
+*/
+
 
 
 
@@ -1784,4 +1787,3 @@ update tb_company_currency set `simb` = 'C$' where currencyID = 1;
 update tb_company_currency set `simb` = 'U$' where currencyID = 2;	
 
 	
-/*BD: dbkroqnguhldo1 */
