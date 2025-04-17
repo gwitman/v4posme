@@ -49,6 +49,7 @@
 	</div>
 </div>
 
+
 <?php if($useMobile != "1"){?>
 <div class="row">  
 	<div class="col-lg-<?php echo ($objParameterShowPreview == "true" ? 7 : 12)?>">					
