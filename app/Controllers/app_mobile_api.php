@@ -163,9 +163,11 @@ class app_mobile_api extends _BaseController
 				log_message("error",print_r("0005.001",true));
                 foreach ($customers as $cus)
                 {
-                    $companyID	=$cus->companyID;
-                    $branchID	=$cus->branchID;
-                    $entityID	=$cus->entityID;
+                    $companyID	= $cus->companyID;
+                    $branchID	= $cus->branchID;
+                    $entityID	= $cus->entityID;
+					$location   = $cus->location;
+					$phone		= $cus->phone;
 					log_message("error",print_r("0005.006",true));
                     //si entityid es null o 0, es nuevo, sino un update
                     $objCustomer				= $this->Customer_Model->get_rowByPK($companyID,$branchID,$entityID);
@@ -201,8 +203,10 @@ class app_mobile_api extends _BaseController
                         $objCustomer			=json_decode(json_encode($objCustomer));
 						$objCustomerCreditLine 	=$this->Customer_Credit_Line_Model->get_rowByEntity($objCustomer->companyID,$objCustomer->branchID,$objCustomer->entityID);
 						log_message("error",print_r("0005.010",true));
-                        $objCustomer->firstName = $cus->firstName;
-                        $objCustomer->lastName	= $cus->lastName;
+                        $objCustomer->firstName 	= $cus->firstName;
+                        $objCustomer->lastName		= $cus->lastName;
+						$objCustomer->location		= $cus->location;
+						$objCustomer->phoneNumber	= $cus->phone;
                         $controller->updateElementMobile($dataSession, $objCustomer);
 						log_message("error",print_r("0005.011",true));
 						

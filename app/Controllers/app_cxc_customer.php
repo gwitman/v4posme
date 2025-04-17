@@ -1211,7 +1211,7 @@ class app_cxc_customer extends _BaseController {
             $objCustomer["countryID"]			= $paisID;
             $objCustomer["stateID"]				= $departamentoId;
             $objCustomer["cityID"]				= $municipioId;
-            $objCustomer["location"]			= "";
+            $objCustomer["location"]			= $customer->location;
             $objCustomer["address"]				= "";
             $objCustomer["currencyID"]			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVENTORY_CURRENCY_ID_DEFAULT")->value;
             $objCustomer["clasificationID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CLASIFICATION_ID_DEFAULT")->value;
@@ -1230,7 +1230,7 @@ class app_cxc_customer extends _BaseController {
             $objCustomer["reference4"]			= "";
             $objCustomer["reference5"]			= "";
             $objCustomer["balancePoint"]		= 0;
-            $objCustomer["phoneNumber"]			= "";
+            $objCustomer["phoneNumber"]			= $customer->phone;
             $objCustomer["typeFirm"]			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_TYPE_FIRM_ID_DEFAULT")->value;
             $objCustomer["budget"]				= 0;
             $objCustomer["isActive"]			= true;
