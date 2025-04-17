@@ -9213,7 +9213,7 @@ function helper_reporte80mmTransactionMasterPasteleriaLizzette(
                         </tr>
 
 						<tr>
-                          <td colspan='3' style='text-align:center'>Datos del Cliente</td>
+                          <td colspan='3' style='text-align:center'>DATOS DEL CLIENTE</td>
                         </tr>
 						
 						<tr>
@@ -9238,7 +9238,7 @@ function helper_reporte80mmTransactionMasterPasteleriaLizzette(
                         </tr>
 						
 						<tr>
-                          <td colspan='3' style='text-align:center'>Descripcion</td>
+                          <td colspan='3' style='text-align:center'>DESCRIPCION</td>
                         </tr>
 						
 						<tr>
@@ -9252,7 +9252,7 @@ function helper_reporte80mmTransactionMasterPasteleriaLizzette(
                         </tr>
 						
 						<tr>
-                          <td colspan='3' style='text-align:center'>Comentario</td>
+                          <td colspan='3' style='text-align:center'>COMENTARIO</td>
                         </tr>
 						
 						<tr>
@@ -9274,6 +9274,7 @@ function helper_reporte80mmTransactionMasterPasteleriaLizzette(
                             &nbsp;
                           </td>
                         </tr>
+						<!--
                         <tr>
                           <td colspan='2'>
                             SUB-TOTAL
@@ -9306,7 +9307,8 @@ function helper_reporte80mmTransactionMasterPasteleriaLizzette(
                             ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount)."
                           </td>
                         </tr>
-	
+						-->
+						
 						<tr>
                           <td colspan='3' style='text-align:center'>
                             &nbsp;
@@ -10976,6 +10978,12 @@ function helper_reporte80mmEventosCalendario(
                         </tr>
                                 
 						
+						
+						<tr>
+                          <td colspan='3' style='text-align:center' >
+                            &nbsp;
+                          </td>
+                        </tr>
 						<tr style='text-align:center'>
                             <td>RECP</td>
                             <td>".explode(" ",$evento->createdOn2)[0] ."</td>
@@ -10986,12 +10994,16 @@ function helper_reporte80mmEventosCalendario(
                             <td>".$fecha."</td>
                         </tr>
                         <tr style='text-align:center'>
-                            <td>HORA ENTREGA</td>
+                            <td>H. ENTREGA</td>
                             <td>".$hora."</td>
                         </tr>
+						 <tr style='text-align:center'>
+                            <td>TELEFONO</td>
+                            <td>".$evento->telefono."</td>
+                        </tr>
                         <tr style='text-align:center'>
-                            <td>ESTADO</td>
-                            <td>REGISTRADA</td>
+                            <td>ENTREGADO</td>
+                            <td>".$evento->entregado."</td>
                         </tr>
 						<tr>
                           <td colspan='3' style='text-align:center' >

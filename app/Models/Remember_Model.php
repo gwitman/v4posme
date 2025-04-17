@@ -333,142 +333,154 @@ class Remember_Model extends Model  {
             programming.tagID, 
             programming.color, 
             programming.entidad, 
-            programming.nombre
+            programming.nombre,
+			programming.telefono,
+			programming.entregado
+			
         from  
-        (
-            select
-                CONCAT('REM','',r.rememberID) as rememberID,
-                '' as url,
-                r.title,
-                r.description,	
-                r.createdOn,
-				r.createdOn as createdOn2,	
-                r.tagID,
-                'yellow' as color,
-                '' as entidad,
-                '' as nombre
-            from 
-                tb_remember r 
-                inner join tb_workflow_stage sr on 
-                    sr.workflowStageID = r.statusID 
-            where 
-                r.companyID = 2 and 
-                r.isActive= 1 and 
-                r.createdOn is not null 
-            
-            union all 
-            
-            
-            /*FACTURAS*/
-            select 
-                tm.transactionNumber as rememberID,	
-                CONCAT('" . base_url() . "/app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/2/transactionID/19/transactionMasterID/',tm.transactionMasterID,'/codigoMesero/none') as url,
-                tm.transactionNumber AS title,
-                concat(
-					IFNULL(
-						(
-							SELECT
-								GROUP_CONCAT(td.itemNameLog  SEPARATOR ', **** ') AS items
-							FROM 	
-								tb_transaction_master_detail  td 
-							WHERE 
-								td.isActive = 1 and 
-								td.transactionMasterID = tm.transactionMasterID
-						) 
-						,
-						''
-					),
-					'<br>',
-					'<br>',
-					tm.note,
-					'<br>',
-					'<br>',
-					tmi.reference1	
+			(
+				select
+					CONCAT('REM','',r.rememberID) as rememberID,
+					'' as url,
+					r.title,
+					r.description,	
+					r.createdOn,
+					r.createdOn as createdOn2,	
+					r.tagID,
+					'yellow' as color,
+					'' as entidad,
+					'' as nombre,
+					'' as telefono,
+					'' as entregado
+				from 
+					tb_remember r 
+					inner join tb_workflow_stage sr on 
+						sr.workflowStageID = r.statusID 
+				where 
+					r.companyID = 2 and 
+					r.isActive= 1 and 
+					r.createdOn is not null 
+				
+				union all 
+				
+				
+				/*FACTURAS*/
+				select 
+					tm.transactionNumber as rememberID,	
+					CONCAT('" . base_url() . "/app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/2/transactionID/19/transactionMasterID/',tm.transactionMasterID,'/codigoMesero/none') as url,
+					tm.transactionNumber AS title,
+					concat(
+						IFNULL(
+							(
+								SELECT
+									GROUP_CONCAT(td.itemNameLog  SEPARATOR ', **** ') AS items
+								FROM 	
+									tb_transaction_master_detail  td 
+								WHERE 
+									td.isActive = 1 and 
+									td.transactionMasterID = tm.transactionMasterID
+							) 
+							,
+							''
+						),
+						'<br>',
+						'<br>',
+						tm.note,
+						'<br>',
+						'<br>',
+						tmi.reference1	
+							
+					) AS description,	
+					STR_TO_DATE(
+						CONCAT(DATE(tm.nextVisit), ' ', 
+							   TIME_FORMAT(STR_TO_DATE(hora.`name` , '%h:%i %p'), '%H:%i:%s')),
+						'%Y-%m-%d %H:%i:%s'
+					) AS createdOn,
+					tm.createdOn as createdOn2,	
+					0  AS tagID,
+					'yellow' as color,
+					emp.customerNumber  as entidad,
+					nat.firstName as nombre ,
+					emp.phoneNumber as telefono,
+					tm.reference3 as entregado
+				from 
+					tb_transaction_master tm 
+					inner join tb_workflow_stage st on 
+						tm.statusID = st.workflowStageID 
+					inner join tb_naturales nat on 
+						nat.entityID = tm.entityID  
+					inner join tb_customer emp on 
+						emp.entityID = nat.entityID 
+					inner join tb_transaction_master_info tmi on 
+						tm.transactionMasterID = tmi.transactionMasterID 
+					inner join tb_catalog_item hora  on 
+						hora.catalogItemID = tmi.zoneID 
 						
-				) AS description,	
-				STR_TO_DATE(
-					CONCAT(DATE(tm.nextVisit), ' ', 
-						   TIME_FORMAT(STR_TO_DATE(hora.`name` , '%h:%i %p'), '%H:%i:%s')),
-					'%Y-%m-%d %H:%i:%s'
-				) AS createdOn,
-				tm.createdOn as createdOn2,	
-                0  AS tagID,
-                'yellow' as color,
-                emp.customerNumber  as entidad,
-                nat.firstName as nombre 
-            from 
-                tb_transaction_master tm 
-                inner join tb_workflow_stage st on 
-                    tm.statusID = st.workflowStageID 
-                inner join tb_naturales nat on 
-                    nat.entityID = tm.entityID  
-                inner join tb_customer emp on 
-                    emp.entityID = nat.entityID 
-				inner join tb_transaction_master_info tmi on 
-					tm.transactionMasterID = tmi.transactionMasterID 
-				inner join tb_catalog_item hora  on 
-					hora.catalogItemID = tmi.zoneID 
+						
+				where 
+					tm.isActive = 1 and 
+					tm.transactionID in ( 19 /*FAC*/  ) and 
+					tm.nextVisit is not null 
+					
+				union all 
+				/*CONSULTAS MEDICAS*/
+				select 
+					tm.transactionNumber as rememberID,	
+					CONCAT('" . base_url() . "/app_med_query/edit/companyID/2/transactionID/35/transactionMasterID/',tm.transactionMasterID) as url,
+					'CONSULTAS' AS title,
+					tm.note AS description,	
+					tm.nextVisit AS createdOn,
+					tm.createdOn as createdOn2,	
+					0  AS tagID,
+					'yellow' as color,
+					emp.customerNumber  as entidad,
+					nat.firstName as nombre,
+					'' as telefono,
+					'' as entregado
+				from 
+					tb_transaction_master tm 
+					inner join tb_workflow_stage st on 
+						tm.statusID = st.workflowStageID 
+					inner join tb_naturales nat on 
+						nat.entityID = tm.entityID  
+					inner join tb_customer emp on 
+						emp.entityID = nat.entityID 
+				where 
+					tm.isActive = 1 and
+					tm.transactionID in ( 35 /*CONSULTAS MEDICAS*/  ) and 
+					tm.nextVisit is not null 
 					
 					
-            where 
-                tm.isActive = 1 and 
-                tm.transactionID in ( 19 /*FAC*/  ) and 
-                tm.nextVisit is not null 
-                
-            union all 
-            /*CONSULTAS MEDICAS*/
-            select 
-                tm.transactionNumber as rememberID,	
-                CONCAT('" . base_url() . "/app_med_query/edit/companyID/2/transactionID/35/transactionMasterID/',tm.transactionMasterID) as url,
-                'CONSULTAS' AS title,
-                tm.note AS description,	
-                tm.nextVisit AS createdOn,
-				tm.createdOn as createdOn2,	
-                0  AS tagID,
-                'yellow' as color,
-                emp.customerNumber  as entidad,
-                nat.firstName as nombre
-            from 
-                tb_transaction_master tm 
-                inner join tb_workflow_stage st on 
-                    tm.statusID = st.workflowStageID 
-                inner join tb_naturales nat on 
-                    nat.entityID = tm.entityID  
-                inner join tb_customer emp on 
-                    emp.entityID = nat.entityID 
-            where 
-                tm.isActive = 1 and
-                tm.transactionID in ( 35 /*CONSULTAS MEDICAS*/  ) and 
-                tm.nextVisit is not null 
-                
-                
-            union all 
-            /*TAREAS TASK*/
-            select 
-                tm.transactionNumber as rememberID,	
-                CONCAT('" . base_url() . "/app_rrhh_task/edit/companyID/2/transactionID/44/transactionMasterID/',tm.transactionMasterID) as url,
-                'TASK' AS title,
-                tm.reference4 AS description,	
-                tm.nextVisit AS createdOn,
-				tm.createdOn as createdOn2,	
-                0  AS tagID,
-                'yellow' as color,
-                emp.employeNumber  as entidad,
-                nat.firstName as nombre
-            from 
-                tb_transaction_master tm 
-                inner join tb_workflow_stage st on 
-                    tm.statusID = st.workflowStageID 
-                inner join tb_naturales nat on 
-                    nat.entityID = tm.entityIDSecondary 
-                inner join tb_employee emp on 
-                    emp.entityID = nat.entityID 
-            where 
-                tm.isActive = 1 and
-                tm.transactionID in ( 44 /*TAREAS*/  ) and 
-                tm.nextVisit is not null
-		) as programming
-		where programming.rememberID = ?
+				union all 
+				/*TAREAS TASK*/
+				select 
+					tm.transactionNumber as rememberID,	
+					CONCAT('" . base_url() . "/app_rrhh_task/edit/companyID/2/transactionID/44/transactionMasterID/',tm.transactionMasterID) as url,
+					'TASK' AS title,
+					tm.reference4 AS description,	
+					tm.nextVisit AS createdOn,
+					tm.createdOn as createdOn2,	
+					0  AS tagID,
+					'yellow' as color,
+					emp.employeNumber  as entidad,
+					nat.firstName as nombre,
+					'' as telefono,
+					'' as entregado
+				from 
+					tb_transaction_master tm 
+					inner join tb_workflow_stage st on 
+						tm.statusID = st.workflowStageID 
+					inner join tb_naturales nat on 
+						nat.entityID = tm.entityIDSecondary 
+					inner join tb_employee emp on 
+						emp.entityID = nat.entityID 
+				where 
+					tm.isActive = 1 and
+					tm.transactionID in ( 44 /*TAREAS*/  ) and 
+					tm.nextVisit is not null
+			) as programming
+		where 
+			programming.rememberID = ?
 		";
 
         //Ejecutar Consulta
@@ -771,7 +783,9 @@ class Remember_Model extends Model  {
             r.tagID,
 			'yellow' as color,
 			'' as entidad,
-			'' as nombre
+			'' as nombre,
+			'' as telefono,
+			'' as entregado
         from 
             tb_remember r 
             inner join tb_workflow_stage st on 
@@ -821,7 +835,9 @@ class Remember_Model extends Model  {
             0  AS tagID,
 			'yellow' as color,
 			emp.customerNumber  as entidad,
-			nat.firstName as nombre
+			nat.firstName as nombre,
+			emp.phoneNumber as telefono,
+			tm.reference3 as entregado
         from 
             tb_transaction_master tm 
             inner join tb_workflow_stage st on 
@@ -853,7 +869,9 @@ class Remember_Model extends Model  {
             0  AS tagID,
 			'yellow' as color,
 			emp.customerNumber  as entidad,
-			nat.firstName as nombre
+			nat.firstName as nombre,
+			'' as telefono,
+			'' as entregado
         from 
             tb_transaction_master tm 
             inner join tb_workflow_stage st on 
@@ -882,7 +900,9 @@ class Remember_Model extends Model  {
             0  AS tagID,
 			'yellow' as color,
 			emp.employeNumber  as entidad,
-			nat.firstName as nombre
+			nat.firstName as nombre,
+			'' as telefono,
+			'' as entregado
         from 
             tb_transaction_master tm 
             inner join tb_workflow_stage st on 
@@ -1147,7 +1167,14 @@ class Remember_Model extends Model  {
 			) AS createdOn,  
 			tm.createdOn as createdOn2,
             0  AS tagID,
-			'green' as color 
+			
+			case 
+				when tm.reference3 != 'NO'  then 
+					'green'
+				else 
+					'orange'
+				
+			end as color 
 			
         from 
             tb_transaction_master tm 

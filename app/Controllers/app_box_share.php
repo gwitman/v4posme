@@ -2473,45 +2473,43 @@ class app_box_share extends _BaseController {
 			
 			//Configurar Detalle			
 			$confiDetalle = array();
-			if($saldos != "Basico"){
-				$row = array(
-					"style"		=>"text-align:left;width:50%",
-					"colspan"	=>'1',
-					"prefix"	=>'',
-					
-					
-					"style_row_data"		=>"text-align:left;width:50%",
-					"colspan_row_data"		=>'1',
-					"prefix_row_data"		=>'',
-					"nueva_fila_row_data"	=>0
-				);
-				array_push($confiDetalle,$row);
+			$row = array(
+				"style"		=>"text-align:left;width:50%",
+				"colspan"	=>'1',
+				"prefix"	=>'',
 				
-				$row = array(
-					"style"		=>"text-align:left;width:10%",
-					"colspan"	=>'1',
-					"prefix"	=>'',
-					
-					"style_row_data"		=>"text-align:left;width:10%",
-					"colspan_row_data"		=>'1',
-					"prefix_row_data"		=>'',
-					"nueva_fila_row_data"	=>0
-				);
-				array_push($confiDetalle,$row);
 				
-				$row = array(
-					"style"		=>"text-align:right",
-					"colspan"	=>'1',
-					"prefix"	=>$datView["objCurrency"]->simbol,
-					
-					"style_row_data"		=>"text-align:right",
-					"colspan_row_data"		=>'1',
-					"prefix_row_data"		=>$datView["objCurrency"]->simbol,
-					"nueva_fila_row_data"	=>0
-				);
-				array_push($confiDetalle,$row);
-			}
+				"style_row_data"		=>"text-align:left;width:50%",
+				"colspan_row_data"		=>'1',
+				"prefix_row_data"		=>'',
+				"nueva_fila_row_data"	=>0
+			);
+			array_push($confiDetalle,$row);
 			
+			$row = array(
+				"style"		=>"text-align:left;width:10%",
+				"colspan"	=>'1',
+				"prefix"	=>'',
+				
+				"style_row_data"		=>"text-align:left;width:10%",
+				"colspan_row_data"		=>'1',
+				"prefix_row_data"		=>'',
+				"nueva_fila_row_data"	=>0
+			);
+			array_push($confiDetalle,$row);
+			
+			$row = array(
+				"style"		=>"text-align:right",
+				"colspan"	=>'1',
+				"prefix"	=>$datView["objCurrency"]->simbol,
+				
+				"style_row_data"		=>"text-align:right",
+				"colspan_row_data"		=>'1',
+				"prefix_row_data"		=>$datView["objCurrency"]->simbol,
+				"nueva_fila_row_data"	=>0
+			);
+			array_push($confiDetalle,$row);
+					
 			//Inicializar Detalle
 			$saldoInicial = array_sum(array_column($datView["objTMD"], 'reference2'));
 			$saldoFinal   = array_sum(array_column($datView["objTMD"], 'reference4'));
@@ -2525,20 +2523,17 @@ class app_box_share extends _BaseController {
 			$saldoFinal 	= $saldos == "Individuales"? $saldoFinal: $saldoFinalGeneral ;
 			
 			$detalle = array();
-			if($saldos != "Basico"){
-				$row = array("SALDO INICIAL", '', $datView["objCurrency"]->simbol. sprintf("%.2f", $saldoInicial));
-				array_push($detalle,$row);
-				
-				foreach($datView["objTMD"] as $detail_){
-					$row = array("ABONO", '', sprintf('%.2f',round($detail_->amount,2)));
-					array_push($detalle,$row);
-				}
-				
-				$row = array("SALDO FINAL", '', sprintf('%.2f', $saldoFinal) );
+			
+			$row = array("SALDO INICIAL", '', $datView["objCurrency"]->simbol. sprintf("%.2f", $saldoInicial));
+			array_push($detalle,$row);
+			
+			foreach($datView["objTMD"] as $detail_){
+				$row = array("ABONO", '', sprintf('%.2f',round($detail_->amount,2)));
 				array_push($detalle,$row);
 			}
 			
-			
+			$row = array("SALDO FINAL", '', sprintf('%.2f', $saldoFinal) );
+			array_push($detalle,$row);
 			
 			
 			//Generar Reporte

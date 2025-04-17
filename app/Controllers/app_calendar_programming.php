@@ -410,7 +410,7 @@ class app_calendar_programming extends _BaseController
 			{
 				$evento 	            = $this->Remember_Model->getProgrammingByIdSinHora($idevent);
 			}
-			if($objCompany->type == "audio_pipe")
+			else if($objCompany->type == "audio_pipe")
 			{
 				$evento 	            = $this->Remember_Model->getProgrammingByIdSinHora($idevent);
 			}

@@ -132,6 +132,11 @@ class core_dashboards extends _BaseController {
                 $dataSession					= $this->getIndexGlobalPro($dataSession);
                 $dataSession["body"]			= /*--inicio view*/ view('core_dasboard/dashboards_default_globalpro',$dataSession);//--finview
             }
+			else if($objCompany->type == "pasteleria_balladares")
+            {
+                $dataSession					= $this->getIndexBalladares($dataSession);
+                $dataSession["body"]			= /*--inicio view*/ view('core_dasboard/dashboards_default_balladares',$dataSession);//--finview
+            }
             else
             {
                 $dataSession 					= $this->getIndexDefault($dataSession);
@@ -630,6 +635,83 @@ class core_dashboards extends _BaseController {
             }
             $objFirstYearDate->modify('+1 month');
         }
+
+
+        //Renderizar Resultado
+        $dataSession["objPagosMensuales"]					= $objPagosMensuales;
+        $dataSession["objListVentasCreditoMensuales"]		= $objListVentasCreditoMensuales;
+        $dataSession["objListVentasContadoMesActual"]		= $objListVentasContadoMesActual;
+        $dataSession["objListVentaContadoMensuales"]		= $objListVentaContadoMensuales;
+        return $dataSession;
+    }
+	
+	function getIndexBalladares($dataSession)
+    {
+
+        $firstDateYear					= helper_PrimerDiaDelYear();
+        $lastDateYear					= helper_UltimoDiaDelMes();
+        $firstDate						= helper_PrimerDiaDelMes();
+        $lastDate						= helper_UltimoDiaDelMes();
+
+
+        //Obtener las Ventas de Contado del Mes Actual
+        $objFirstDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
+        $objFirstDate->setTime(0, 0, 0);
+        $objLastDate 		= \DateTime::createFromFormat('Y-m-d H:i:s', $lastDate);
+        $objLastDate->setTime(0, 0, 0);
+        $objNowDate 		= \DateTime::createFromFormat('Y-m-d H:i:s', helper_getDate());
+        $objNowDate->setTime(0, 0, 0);
+        $objListVentasContadoMesActual = array();		
+        $objListVentasContadoMesActual = $this->Transaction_Master_Detail_Model->Default_Ventas_De_Contado_Mes_Actual($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objLastDate->format("Y-m-d") );
+
+
+        //Obtener Ventas de Contado Mensuales
+        $objFirstYearDate 				= \DateTime::createFromFormat('Y-m-d', $firstDateYear);
+        $objFirstYearDate->setTime(0, 0, 0);
+        $objFirstDate 					= \DateTime::createFromFormat('Y-m-d', $firstDate);
+        $objFirstDate->setTime(0, 0, 0);
+        $objListVentaContadoMensuales 	= array();
+		$objListVentaContadoMensuales 	= $this->Transaction_Master_Detail_Model->Default_Ventas_De_Contado_Mensuales($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objLastDate->format("Y-m-d") );
+		
+
+        //Obtener Ventas al Credito Mensuales
+        $objFirstYearDate 		= \DateTime::createFromFormat('Y-m-d', $firstDateYear);
+        $objFirstYearDate->setTime(0, 0, 0);
+        $objFirstDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
+        $objFirstDate->setTime(0, 0, 0);
+        $objListVentasCreditoMensuales = array();
+		$objListVentasCreditoMensuales = $this->Transaction_Master_Detail_Model->Default_Ventas_De_Credito_Mes_Actual($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDate->format("Y-m-d") );
+		
+		
+       
+
+        //Obtener Capital Mensual
+        $objFirstYearDate 		= \DateTime::createFromFormat('Y-m-d', $firstDateYear);
+        $objFirstYearDate->setTime(0, 0, 0);
+        $objFirstDate 			= \DateTime::createFromFormat('Y-m-d', $firstDate);
+        $objFirstDate->setTime(0, 0, 0);
+        $objPagosMensuales 		= array();
+        while($objFirstYearDate <= $objFirstDate)
+        {
+            $objLastDayMont =  \DateTime::createFromFormat('Y-m-d', $objFirstYearDate->format("Y-m-d"));
+            $objLastDayMont->modify('+1 month');
+            $objLastDayMont->modify('-1 day');
+            $objListCapitalMensualTemporal = $this->Transaction_Master_Detail_Model->Default_Pagos_Mensuales($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDayMont->format("Y-m-d") );
+            if($objListCapitalMensualTemporal)
+            {
+                array_push($objPagosMensuales, $objListCapitalMensualTemporal[0]);
+            }
+            $objFirstYearDate->modify('+1 month');
+        }
+		
+		
+		//Obtener los pedidos entregados / no entregados
+		//Semana en curso
+		
+		
+		//Obtener los pedidos cancelados / no cancelados
+		//Mes en curso
+		
 
 
         //Renderizar Resultado

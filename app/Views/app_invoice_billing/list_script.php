@@ -65,15 +65,19 @@
                     mostrarModal('ModalCargandoDatos');
                     let data = objTableListView.fnGetData(objRowTableListView);
 
-                    $.post("<?= base_url(); ?>/app_invoice_billing/setSessionData", {
-                        companyID           : data[0],
-                        transactionID       : data[1],
-                        transactionMasterID : data[2],
-                        codigoMesero        : "none",
-                        edicion             : true
-                    }, function () {
-                        window.location.href = "<?= base_url(); ?>/app_invoice_billing/add/codigoMesero/none";
-                    });
+                    $.post(
+						"<?= base_url(); ?>/app_invoice_billing/setSessionData", 
+							{
+							companyID           : data[0],
+							transactionID       : data[1],
+							transactionMasterID : data[2],
+							codigoMesero        : "none",
+							edicion             : true
+						}, function () {
+							window.location.href = "<?= base_url(); ?>/app_invoice_billing/add/codigoMesero/none";
+						}
+					);
+					
                 } else {
                     fnShowNotification("Seleccionar el Registro...", "error");
                 }
@@ -97,10 +101,18 @@
 					mostrarModal('ModalCargandoDatos');
 					var data 		= objTableListView.fnGetData(objRowTableListView);		
 
-					if(objParameterPantallaParaFacturar == "-")	
-						window.location	= "<?= base_url() ?>/app_invoice_billing/edit/companyID/"+data[0]+"/transactionID/"+data[1]+"/transactionMasterID/"+data[2]+"/codigoMesero/none";
-					else
-						window.location	= "<?= base_url() ?>/app_invoice_billing/"+objParameterPantallaParaFacturar+"/companyID/"+data[0]+"/transactionID/"+data[1]+"/transactionMasterID/"+data[2]+"/codigoMesero/none";
+					 $.post(
+						"<?= base_url(); ?>/app_invoice_billing/setSessionData", 
+						{
+							companyID           : data[0],
+							transactionID       : data[1],
+							transactionMasterID : data[2],
+							codigoMesero        : "none",
+							edicion             : true
+						}, function () {
+							window.location.href = "<?= base_url(); ?>/app_invoice_billing/add/codigoMesero/none";
+						}
+					);
 				}
 				else{
 					fnShowNotification("Seleccionar el Registro...","error");
