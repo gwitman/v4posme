@@ -673,14 +673,15 @@ class app_cxc_customer extends _BaseController {
 			$db->transStart();			
 			//El Estado solo permite editar el workflow
 			if($this->core_web_workflow->validateWorkflowStage("tb_customer","statusID",$oldStatusID,COMMAND_EDITABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID)){				
-				$objCustomer["statusID"] 		=$customer->statusID;
-				$this->Customer_Model->update_app_posme($companyID,$branchID,$entityID,$objCustomer);
+				$objCustomerNew 				= null;
+				$objCustomerNew["statusID"]		=$customer->statusID;				
+				$this->Customer_Model->update_app_posme($companyID,$branchID,$entityID,$objCustomerNew);
 			}
 			else{
-				
-				$objCustomer["phoneNumber"] 		=$customer->phoneNumber;
-				$objCustomer["location"] 			=$customer->location;
-				$this->Customer_Model->update_app_posme($companyID,$branchID,$entityID,$objCustomer);
+				$objCustomerNew 						= null;
+				$objCustomerNew["phoneNumber"] 			=$customer->phoneNumber;
+				$objCustomerNew["location"] 			=$customer->location;
+				$this->Customer_Model->update_app_posme($companyID,$branchID,$entityID,$objCustomerNew);
 				
 				
 				$objNatural["isActive"]		= true;

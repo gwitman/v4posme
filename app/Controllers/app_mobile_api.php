@@ -70,10 +70,10 @@ class app_mobile_api extends _BaseController
 
 
 			log_message("error",print_r("0001",true));
-            //$nickname 						= "facmob";
-            //$password 						= "fac789";
-			$nickname 					= /*inicio get post*/ $this->request->getPost("txtNickname");
-            $password 					= /*inicio get post*/ $this->request->getPost("txtPassword");
+            $nickname 						= "facmob";
+            $password 						= "fac789";
+			//$nickname 					= /*inicio get post*/ $this->request->getPost("txtNickname");
+            //$password 					= /*inicio get post*/ $this->request->getPost("txtPassword");
 			
             $objUser 					= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);
 			$objListCustomerMap			= [];
