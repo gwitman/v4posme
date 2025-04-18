@@ -677,9 +677,15 @@ class app_cxc_customer extends _BaseController {
 				$this->Customer_Model->update_app_posme($companyID,$branchID,$entityID,$objCustomer);
 			}
 			else{
+				
+				$objCustomer["phoneNumber"] 		=$customer->phoneNumber;
+				$objCustomer["location"] 			=$customer->location;
+				$this->Customer_Model->update_app_posme($companyID,$branchID,$entityID,$objCustomer);
+				
+				
 				$objNatural["isActive"]		= true;
 				$objNatural["firstName"]	= $customer->firstName;
-				$objNatural["lastName"]		= $customer->lastName;		
+				$objNatural["lastName"]		= $customer->lastName;						
 				$this->Natural_Model->update_app_posme($companyID,$branchID,$entityID,$objNatural);
 
 				$objLegal["isActive"]		= true;
