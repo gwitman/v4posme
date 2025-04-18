@@ -290,6 +290,7 @@ class Customer_Model extends Model  {
 			k.me 
 		");		
 		
+		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
 	}
