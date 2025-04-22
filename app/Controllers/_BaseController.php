@@ -210,6 +210,7 @@ abstract class _BaseController extends Controller
 		'customization/web_tools_customizationview_autolavadomaximum_helper',
 		'customization/web_tools_customizationview_pasteleriaballadares_helper',
 		'customization/web_tools_customizationview_chic_helper',
+		'customization/web_tools_customizationview_majo_helper',
 		'customization/web_tools_customizationview_globalpro_helper',
 		'customization/web_tools_customizationview_tisey_helper',
 		
