@@ -255,6 +255,10 @@ class app_calendar_programming extends _BaseController
 			if($dataSession['company']->type == "audio_pipe")
 			{
 				$result = $this->Remember_Model->getProgrammingFacturaAplicadaSinHora();
+			}
+			if($dataSession['company']->type == "majo")
+			{
+				$result = $this->Remember_Model->getProgrammingFacturaRegistradaConHora();
 			}			
 			else
 			{				

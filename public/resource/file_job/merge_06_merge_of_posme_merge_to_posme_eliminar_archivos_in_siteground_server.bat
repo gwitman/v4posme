@@ -11,15 +11,14 @@ curl https://posme.net/v4posme/carlos/public/core_merge/merge_of_posme_merge_to_
 curl https://posme.net/v4posme/chic/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/chocho_mandado/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/compu_matt/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/cori/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/creditaguil/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/daleska/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/demo/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
-curl https://posme.net/v4posme/distri_carvajal/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/ebenezer/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/emanuel/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
-curl https://posme.net/v4posme/emanuel_pizza/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
-curl https://posme.net/v4posme/eve3/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/exceso/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/farma_ley/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/farma_ticuan/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/ferreteria_fer/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/fidlocal/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
@@ -29,8 +28,7 @@ curl https://posme.net/v4posme/glamcus/public/core_merge/merge_of_posme_merge_to
 curl https://posme.net/v4posme/globalpro/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/jireth/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/lesly/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
-curl https://posme.net/v4posme/lirio/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
-curl https://posme.net/v4posme/maximum/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/majo/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/miranda/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/miranda_comida/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/nica_verde/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
@@ -44,4 +42,5 @@ curl https://posme.net/v4posme/repuesto_cristo_rey/public/core_merge/merge_of_po
 curl https://posme.net/v4posme/repuesto_purito/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/shalom/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/tenampa/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/tisey/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/visteme/public/core_merge/merge_of_posme_merge_to_posme_initialize/2

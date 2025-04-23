@@ -1204,9 +1204,9 @@ class core_merge extends _BaseController {
 											echo "Fecha archivo:".$daysDiff."</br>";
 											
 											
-											if( strtoupper($fileLastExtention) == strtoupper("sql") && $daysDiff <= 30   )
+											if( strtoupper($fileLastExtention) == strtoupper("sql") && $daysDiff <= 5   )
 											{										
-												echo "Archivos SQL No se eliminaran si son menores a 30 dias:".$fileLast."</br>";
+												echo "Archivos SQL No se eliminaran si son menores a 5 dias:".$fileLast."</br>";
 											}
 											else 
 											{											

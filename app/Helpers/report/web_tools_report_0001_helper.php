@@ -549,6 +549,10 @@ function helper_reporteGeneralCreateTable($objDetail,$configColumn,$widht,$titul
 						$valueField = (date_format(date_create($valueField),"Y-m-d"));
 						$valueField = str_replace("-0001-11-30","0001-11-30",$valueField);
 					}
+					else if($tipoData == "DateTime"){
+						$valueField = (date_format(date_create($valueField),"Y-m-d H:i A"));
+						$valueField = str_replace("-0001-11-30","0001-11-30",$valueField);
+					}
 					
 					//Sumaryzar datos
 					if($sumaryzar){
@@ -8339,7 +8343,7 @@ function helper_reporte80mmTransactionMaster(
                       <meta name='viewport' content='width=device-width, initial-scale=1.0' />
                       <style>
                         @page {       
-                          size: 2.7in 60in;                  
+                          size: 2.7in 11in;                  
                           margin-top:0px;
                           margin-left:10px;
                           margin-right:0px;

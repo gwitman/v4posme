@@ -1018,6 +1018,130 @@ class Remember_Model extends Model  {
     }
 	
 	//Para mostrar en el calendario
+	//Mostrar las facturas con hora, y aplicadas
+	function getProgrammingFacturaRegistradaConHora()
+    {
+        $db 	= db_connect();
+        $sql = "
+		select
+            CONCAT('REM','',r.rememberID) as rememberID,
+            '' as url,
+            r.title,
+            r.description,	
+            r.createdOn,
+			r.createdOn as createdOn2,
+            r.tagID,
+			'blue' as color
+        from 
+            tb_remember r 
+            inner join tb_workflow_stage st on 
+                st.workflowStageID = r.statusID 
+        where 
+            r.companyID = 2 and 
+            r.isActive= 1 and             
+			st.isInit = 1 
+        
+        union all 
+        
+		
+		/*FACTURAS*/
+        select 
+            tm.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/2/transactionID/19/transactionMasterID/',tm.transactionMasterID,'/codigoMesero/none') as url,
+            concat(
+				tm.transactionNumber,
+				'-' ,
+				nat.firstName,
+				' *** ',
+				tm.note 
+			) AS title,
+            tm.note AS description,	
+            STR_TO_DATE(
+				CONCAT(DATE(tm.nextVisit), ' ', 
+					   TIME_FORMAT(STR_TO_DATE(hora.`name` , '%h:%i %p'), '%H:%i:%s')),
+				'%Y-%m-%d %H:%i:%s'
+			) AS createdOn,  
+			tm.createdOn as createdOn2,
+            0  AS tagID,
+			
+			case 
+				when tm.reference3 != 'NO'  then 
+					'green'
+				else 
+					'orange'
+				
+			end as color 
+			
+        from 
+            tb_transaction_master tm 
+            inner join tb_workflow_stage st on 
+                tm.statusID = st.workflowStageID 
+			inner join tb_naturales nat on 
+				nat.entityID = tm.entityID 				
+			inner join tb_transaction_master_info tmi on 
+				tm.transactionMasterID = tmi.transactionMasterID 
+			inner join tb_catalog_item hora  on 
+				hora.catalogItemID = tmi.zoneID 
+		
+        where 
+            tm.isActive = 1 and            
+			st.isInit = 1 and 
+            tm.transactionID in ( 19 /*FAC*/  ) and 
+            tm.nextVisit > '1000-01-01 00:00:00'
+			
+		union all 
+		
+		/*CONSULTAS MEDICAS*/
+		select 
+            tm.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_med_query/edit/companyID/2/transactionID/35/transactionMasterID/',tm.transactionMasterID) as url,
+            'CONSULTAS' AS title,
+            tm.note AS description,	
+            tm.nextVisit AS createdOn,
+			tm.createdOn as createdOn2,
+            0  AS tagID,
+			'red' as color
+        from 
+            tb_transaction_master tm 
+            inner join tb_workflow_stage st on 
+                tm.statusID = st.workflowStageID 
+        where 
+            tm.isActive = 1 and 
+            st.aplicable = 1 and 
+            tm.transactionID in ( 35 /*CONSULTAS MEDICAS*/  ) and 
+            tm.nextVisit > '1000-01-01 00:00:00'
+			
+			
+		union all 
+		/*TAREAS TASK*/
+		
+		
+		select 
+            tm.transactionNumber as rememberID,	
+            CONCAT('".base_url()."/app_rrhh_task/edit/companyID/2/transactionID/44/transactionMasterID/',tm.transactionMasterID) as url,
+            'TASK' AS title,
+            tm.note AS description,	
+            tm.nextVisit AS createdOn,
+			tm.createdOn as createdOn2,
+            0  AS tagID,
+			'yellow' as color
+        from 
+            tb_transaction_master tm 
+            inner join tb_workflow_stage st on 
+                tm.statusID = st.workflowStageID 
+        where 
+            tm.isActive = 1 and 
+            st.aplicable = 1 and 
+            tm.transactionID in ( 44 /*TAREAS*/  ) and 
+            tm.nextVisit  > '1000-01-01 00:00:00'
+			
+		";
+
+        //Ejecutar Consulta
+        return $db->query($sql)->getResult();
+    }
+	
+	//Para mostrar en el calendario
 	//Mostrar las facturas con hora cero, y aplicadas
 	function getProgrammingFacturaAplicadaSinHora()
     {
