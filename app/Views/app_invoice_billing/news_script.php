@@ -548,6 +548,7 @@
 			{"codigoABuscar":codigoABuscar},
 			function(e){   				
 				
+				
 				//buscar el producto y agregar						
 				var codigoABuscar 	= e.codigoABuscar.toUpperCase();
 				let data			= e.all;
@@ -1746,6 +1747,7 @@
     }
 
     function fnUpdateInvoiceView(data){
+		
         console.info("LOAD INVOICE");
         loadEdicion 		= true;
 		cargaCompletada 	= true;
@@ -1926,12 +1928,24 @@
                     infoPrecio3     = objDetailReference[0].precio3;
                 }
 
+
+				var itemNumber 			= "";				
+				var mostrarCodigoBarra 	= '<?= getBehavio($company->type, 'app_invoice_billing','javaScriptShowCodeBarra','false')?>';
+				if(mostrarCodigoBarra == "false")
+				{
+					itemNumber 			= varDetail[i].itemNumber;				
+				}
+				else
+				{
+					itemNumber 			= varDetail[i].barCode + " " + varDetail[i].itemNumber;
+				}
+				
                 //Rellenar Datos
                 tmpData.push([
                     0,
                     varDetail[i].transactionMasterDetailID,
                     varDetail[i].componentItemID,
-                    varDetail[i].itemNumber,
+                    itemNumber,
                     "'"+varDetail[i].itemNameLog + "'",
                     varDetail[i].skuCatalogItemID,
                     fnFormatNumber(varDetail[i].skuQuantity,2),
@@ -3270,6 +3284,8 @@
                 element[8]   = 1 ;//Cantidad
             }
 			
+			
+			var mostrarCodigoBarra = '<?= getBehavio($company->type, 'app_invoice_billing','javaScriptShowCodeBarra','false')?>';			
             dataResponse[0]  = element[0];
             dataResponse[1]  = element[0];
             dataResponse[2]  = element[0];
@@ -3287,8 +3303,18 @@
             dataResponse[14] = element[0];
             dataResponse[15] = element[0];
             dataResponse[16] = element[0];
-            dataResponse[17] = element[4];//Codigo
-            dataResponse[18] = element[5];//Nombre
+			
+			
+			if(mostrarCodigoBarra == "false")
+			{
+				dataResponse[17] = element[4];//Codigo
+			}
+			else
+			{				
+				dataResponse[17] = element[6] + " " + element[4];//Barra + Codigo
+			}
+            
+			dataResponse[18] = element[5];//Nombre
             dataResponse[19] = element[0];
             dataResponse[20] = element[7];//Unidad de medida
             dataResponse[21] = element[8];//Cantidad
