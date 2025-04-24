@@ -325,12 +325,26 @@ class Customer_Credit_Document_Model extends Model  {
 									crd.customerCreditLineID = d.customerCreditLineID 
 								inner join tb_customer cust on 
 									cust.entityID = d.entityID
-								inner join tb_relationship rr on 
-									rr.customerID = cust.entityID 
-								inner join tb_employee emp on 
-									emp.entityID = rr.employeeID 
-								inner join tb_user usr on 
-									usr.employeeID = emp.entityID 
+									
+									
+								inner join  (
+									select 
+										distinct 
+										usrx.userID,
+										usrx.employeeID,
+										ccx.entityID,
+										ccx.customerID 
+									from 
+										tb_user usrx 
+										inner join tb_relationship rrx on 
+											usrx.employeeID = rrx.employeeID 
+										inner join tb_customer ccx on 
+											rrx.customerID = ccx.entityID 
+									where 
+										rrx.isActive = 1 
+								) as usr  on 
+									usr.customerID = cust.customerID 
+									
 								left join tb_exchange_rate ex on 
 									ex.currencyID = 1 and 
 									ex.targetCurrencyID = 2 and 

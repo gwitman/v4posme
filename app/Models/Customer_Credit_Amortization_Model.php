@@ -169,18 +169,35 @@ class Customer_Credit_Amortization_Model extends Model  {
 					tb_customer c
 					inner join  tb_naturales n on n.entityID = c.entityID
 					inner join  tb_customer_credit_document ccd on c.entityID = ccd.entityID
+					inner join  tb_transaction_master tm on tm.transactionNumber = ccd.documentNumber 
 					inner join  tb_customer_credit_amoritization cca on ccd.customerCreditDocumentID = cca.customerCreditDocumentID
 					inner join  tb_workflow_stage cca_status on cca_status.workflowStageID = cca.statusID
-					inner join  tb_workflow_stage ccd_status on ccd_status.workflowStageID = ccd.statusID 
-					inner join  tb_relationship rr on rr.customerID = c.entityID 
-					inner join  tb_employee emp on emp.entityID = rr.employeeID 
-					inner join  tb_user usr on usr.employeeID = emp.entityID 
-				where 
-					c.companyID = $companyID
+					inner join  tb_workflow_stage ccd_status on ccd_status.workflowStageID = ccd.statusID 					
+					inner join  (
+						select 
+							distinct 
+							usrx.userID,
+							usrx.employeeID,
+							ccx.entityID,
+							ccx.customerID 
+						from 
+							tb_user usrx 
+							inner join tb_relationship rrx on 
+								usrx.employeeID = rrx.employeeID 
+							inner join tb_customer ccx on 
+								rrx.customerID = ccx.entityID 
+						where 
+							rrx.isActive = 1 
+					) as usr  on 
+						usr.customerID = c.customerID 
+					
+				where
+					tm.isActive = 1 
 					and ccd_status.vinculable= 1
 					and c.isActive= 1
 					and cca.remaining > 0 
 					and usr.userID = $userID 
+					and c.companyID = $companyID
 			");
 		
 		//Ejecutar Consulta
