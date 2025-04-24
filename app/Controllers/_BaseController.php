@@ -198,6 +198,8 @@ abstract class _BaseController extends Controller
         'report/web_tools_report_0001',
 		'report/web_tools_report_pasteleria_balladares_helper',
 		'report/web_tools_report_licoreria_central_helper',
+		'report/web_tools_report_majo_helper',
+		'report/web_tools_report_farma_ley_helper',
 		
 		
         'customization/web_tools_customizationview_0000001',
@@ -214,6 +216,7 @@ abstract class _BaseController extends Controller
 		'customization/web_tools_customizationview_globalpro_helper',
 		'customization/web_tools_customizationview_tisey_helper',
 		'customization/web_tools_customizationview_cristo_rey_helper',
+		'customization/web_tools_customizationview_farma_ley_helper',
 		
 		
     ];

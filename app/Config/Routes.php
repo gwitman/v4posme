@@ -1134,6 +1134,8 @@ $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNorm
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmBpn/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmBpn');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1FarmaLey','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1FarmaLey');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1FarmaLey/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1FarmaLey');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1LaCeiba','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1LaCeiba');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1LaCeiba/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1LaCeiba');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1LicoreriaCentral','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1LicoreriaCentral');
@@ -1387,6 +1389,8 @@ $routes->match(['get','post'],'app_sales_report/index','app_sales_report::index'
 $routes->match(['get','post'],'app_sales_report/index/(:any)','app_sales_report::index');
 $routes->match(['get','post'],'app_sales_report/sales_detail','app_sales_report::sales_detail');
 $routes->match(['get','post'],'app_sales_report/sales_detail/(:any)','app_sales_report::sales_detail');
+$routes->match(['get','post'],'app_sales_report/sales_detail_commission','app_sales_report::sales_detail_commission');
+$routes->match(['get','post'],'app_sales_report/sales_detail_commission/(:any)','app_sales_report::sales_detail_commission');
 $routes->match(['get','post'],'app_sales_report/sales_commision','app_sales_report::sales_commision');
 $routes->match(['get','post'],'app_sales_report/sales_commision/(:any)','app_sales_report::sales_commision');
 $routes->match(['get','post'],'app_sales_report/sales_summary','app_sales_report::sales_summary');

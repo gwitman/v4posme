@@ -330,7 +330,7 @@
 									</div>
 								</div>
 								
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divPanelMoneda",""); ?> ">
 									<label class="col-lg-4 control-label" for="selectFilter">Moneda</label>
 									<div class="col-lg-8">
 										<select name="txtCurrencyID" id="txtCurrencyID" class="select2">

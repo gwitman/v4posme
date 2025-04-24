@@ -101,7 +101,7 @@
 								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtPerecedero",""); ?>">
 										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Perecedero",""); ?></label>
 										<div class="col-lg-8">
-											<input type="checkbox"   name="txtIsPerishable" id="txtIsPerishable" value="1" >
+											<input type="checkbox"   name="txtIsPerishable" id="txtIsPerishable" value="1" <?php echo getBehavio($company->type,"app_inventory_item","chkPerecedero",""); ?> >
 										</div>
 								</div>
 								
@@ -286,10 +286,12 @@
 										<select name="txtFamilyID" id="txtFamilyID" class="select2">
 												<option></option>																
 												<?php
-												$count = 0;
+												$count 					= 0;
+												$selectedDefaultFamiliy	= getBehavio($company->type,"app_inventory_item","selectedFamilyDefault","true");
+												
 												if($objListFamily)
 												foreach($objListFamily as $ws){
-													if($count == 0 )
+													if($count == 0 && $selectedDefaultFamiliy == "true" )
 													echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
 													else
 													echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
@@ -305,10 +307,12 @@
 										<select name="txtUnitMeasureID" id="txtUnitMeasureID" class="select2">
 												<option></option>
 												<?php
-												$count = 0;
+												$count 					= 0;
+												$selectedDefaultUM		= getBehavio($company->type,"app_inventory_item","selectedUM","true");
+												
 												if($objListUnitMeasure)
 												foreach($objListUnitMeasure as $ws){
-													if($count == 0 )
+													if($count == 0 && $selectedDefaultUM == "true" )
 													echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
 													else
 													echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";																		
@@ -326,10 +330,12 @@
 										<select name="txtDisplayID" id="txtDisplayID" class="select2">
 												<option></option>
 												<?php
-												$count = 0;
+												$count 							= 0;
+												$selectedDefaultDisplayUM		= getBehavio($company->type,"app_inventory_item","selectedDisplayUM","true");
+												
 												if($objListDisplay)
 												foreach($objListDisplay as $ws){
-													if($count == 0 )
+													if($count == 0  && $selectedDefaultDisplayUM == "true" )
 													echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
 													else
 													echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
@@ -383,7 +389,7 @@
 									</div>
 								</div>
 								
-								<div class="form-group">
+								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divPanelMoneda",""); ?> ">
 									<label class="col-lg-4 control-label" for="selectFilter">Moneda</label>
 									<div class="col-lg-8">
 										<select name="txtCurrencyID" id="txtCurrencyID" class="select2">

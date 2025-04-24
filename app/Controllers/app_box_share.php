@@ -978,7 +978,7 @@ class app_box_share extends _BaseController {
 			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($companyID,$branchID,"tb_transaction_master_share",0);
 			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($companyID,$transactionID);
 			$objTM["entityID"] 						= $customer->entityID;
-			$objTM["transactionOn"]					= date("Y-m-d H:i:s");
+			$objTM["transactionOn"]					= $transactionMaster->TransactionOn;
 			$objTM["statusIDChangeOn"]				= date("Y-m-d H:i:s");
 			$objTM["componentID"] 					= $objComponentShare->componentID;
 			$objTM["note"] 							= $transactionMaster->Comment;

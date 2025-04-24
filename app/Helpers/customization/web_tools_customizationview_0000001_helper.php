@@ -1203,6 +1203,8 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 	$divs                   = array_merge($divs, $majo);
 	$cristoRey				= getBehavioCristoRey();
 	$divs                   = array_merge($divs, $cristoRey);
+	$farmaLey				= getBehavioFarmaLey();
+	$divs                   = array_merge($divs, $farmaLey);
 
 	//Comanda traducir es para los menu
 	//comportamiento del controlador

@@ -163,6 +163,181 @@ class app_sales_report extends _BaseController {
 		}
 	}
 	
+	function sales_detail_commission(){
+		try{ 
+		
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+		
+			//PERMISOS SOBRE LAS FUNCIONES
+			if(APP_NEED_AUTHENTICATION == true){				
+				
+				$permited = false;
+				$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				
+				if(!$permited)
+				throw new \Exception(NOT_ACCESS_CONTROL);
+				
+				$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"index",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				if ($resultPermission 	== PERMISSION_NONE)
+				throw new \Exception(NOT_ACCESS_FUNCTION);			
+			}	
+			
+								
+			$viewReport			= false;
+			$startOn			= false;
+			$endOn				= false;
+			$companyID			= $dataSession["user"]->companyID;
+			$branchID			= $dataSession["user"]->branchID;
+			$userID				= $dataSession["user"]->userID;
+			$tocken				= '';
+			
+			$viewReport				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"viewReport");//--finuri
+			$startOn				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"startOn");//--finuri
+			$endOn					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri
+			$inventoryCategoryID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"inventoryCategoryID");//--finuri
+			$warehouseID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"warehouseID");//--finuri
+			$userIDFilter			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"userIDFilter");//--finuri
+			$texto					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"texto");//--finuri
+			
+			if(!($viewReport && $startOn && $endOn  )){
+				
+				//Renderizar Resultado 
+				$objListaUsuarios 						= $this->User_Model->get_All($dataSession["user"]->companyID);
+				$dataSession["objListaUsuarios"] 		= $objListaUsuarios;				
+				$dataSession["objListCategoryItem"]		= $this->Itemcategory_Model->getByCompany($companyID);
+				$dataSession["objListWarehouse"]		= $this->Userwarehouse_Model->getRowByUserID($companyID,$userID);
+				$dataSession["message"]					= $this->core_web_notification->get_message();
+				$dataSession["head"]					= /*--inicio view*/ view('app_sales_report/sales_detail_commission/view_head');//--finview
+				$dataSession["body"]					= /*--inicio view*/ view('app_sales_report/sales_detail_commission/view_body',$dataSession);//--finview
+				$dataSession["script"]					= /*--inicio view*/ view('app_sales_report/sales_detail_commission/view_script');//--finview
+				$dataSession["footer"]					= "";			
+				return view("core_masterpage/default_report",$dataSession);//--finview-r	
+			}
+			else{				
+				
+				//Obtener el tipo de Comprobante
+				$companyID 		= $dataSession["user"]->companyID;
+				//Get Component
+				$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+				//Get Logo
+				$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+				//Get Company
+				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
+				//Get Datos
+				$query			= "CALL pr_sales_get_report_sales_detail_commission(?,?,?,?,?,?,?,?,?);";		
+				$objData		= $this->Bd_Model->executeRender(
+					$query,
+					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID,$userIDFilter,$texto]
+				);
+				
+				
+				if(isset($objData)){
+					$objDataResult["objDetail"]				= $objData;
+				}
+				else{
+					$objDataResult["objDetail"]				= $objData;
+				}
+				
+				
+				$objDataResult["objCompany"] 				= $objCompany;
+				$objDataResult["objStartOn"] 				= $startOn;
+				$objDataResult["objEndOn"] 					= $endOn;
+				$objDataResult["texto"] 					= $texto;
+				$objDataResult["objLogo"] 					= $objParameter;
+				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_sales_get_report_sales_detail" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
+				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
+				log_message("error","CALL pr_sales_get_report_sales_detail(2,'',2,'".$startOn."','".$endOn."',".$inventoryCategoryID.",'".$warehouseID."'); 003");
+				
+				
+				if($dataSession["company"]->type == "majo")
+				{
+					$html = helper_reporte80mmSalesCommission($objDataResult);
+					
+					//echo $html;
+					$this->dompdf->loadHTML($html);
+					
+					//1cm = 29.34666puntos
+					//a4: 210 ancho x 297
+					//a4: 21cm x 29.7cm
+					//a4: 595.28puntos x 841.59puntos
+					
+					//$this->dompdf->setPaper('A4','portrait');
+					//$this->dompdf->setPaper(array(0,0,234.76,6000));
+					
+					$this->dompdf->render();
+					
+					
+					
+					
+					$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+					$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+					$objParameterShowDownloadPreview	= $this->core_web_parameter->getParameter("CORE_SHOW_DOWNLOAD_PREVIEW",$companyID);
+					$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview->value;
+					$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true" ? true : false;
+					
+					$fileNamePut 	= "commisiones_".date("dmYhis").".pdf";
+					$path        	= "./resource/file_company/company_".$companyID."/component_1/component_item_0/".$fileNamePut;
+					$patdir         = "./resource/file_company/company_".$companyID."/component_1/component_item_0";	
+					
+					if (!file_exists($patdir))
+					{
+						mkdir($patdir, 0755);
+						chmod($patdir, 0755);
+					}
+					
+					
+					file_put_contents(
+						$path,
+						$this->dompdf->output()					
+					);						
+					
+					chmod($path, 644);					
+					if($objParameterShowLinkDownload == "true")
+					{			
+						echo "<a 
+							href='".base_url()."/resource/file_company/company_".$companyID."/component_1/component_item_0/".
+							$fileNamePut."'>download factura</a>
+						"; 				
+					
+					}
+					else{			
+						//visualizar				
+						$this->dompdf->stream($fileNamePut, ['Attachment' => $objParameterShowDownloadPreview ]);
+					}
+					
+					
+					
+					//descargar
+					//$this->dompdf->stream();
+					
+					
+				}
+				else
+				{					
+					return view("app_sales_report/sales_detail_commission/view_a_disemp",$objDataResult);//--finview-r
+				}
+				
+			}
+		}
+		catch(\Exception $ex){
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;
+		}
+	}
+	
 	function sales_summary_by_client()
     {
         try{
