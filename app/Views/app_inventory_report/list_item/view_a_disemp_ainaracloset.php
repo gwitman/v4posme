@@ -91,18 +91,31 @@
 			</thead>				
 			<tbody>
 				<?php
-				$count 			= 0;
-				$costoTotal		= 0;
-				$precioTotal 	= 0;
+				$count 				= 0;
+				$costoTotal			= 0;
+				$precioTotal 		= 0;				
+				$costoTotalDol		= 0;
+				$precioTotalDol 	= 0;
 				
 				if($objDetail){
 					$category   = $objDetail[0]["categoryName"];
 					
 					foreach($objDetail as $i){
 						$count++;	
-						$costoTotal 	= $costoTotal +  ($i["cost"] * $i["quantity"] );
-						$precioTotal 	= $precioTotal +  ($i["price"] * $i["quantity"] );
 						$category 		= $i["categoryName"];
+						$moneda 		= $i["Moneda"];
+						
+						if($moneda == "Cordoba" || $moneda == "C$")
+						{
+							$costoTotal 	= $costoTotal +  ($i["cost"] * $i["quantity"] );
+							$precioTotal 	= $precioTotal +  ($i["price"] * $i["quantity"] );
+						}
+						else
+						{
+							$costoTotalDol 		= $costoTotalDol +  ($i["cost"] * $i["quantity"] );
+							$precioTotalDol 	= $precioTotalDol +  ($i["price"] * $i["quantity"] );
+						}
+						
 						
 						
 						echo "<tr style='height:".$objParameterAltoDeLaFila."' >";	
@@ -156,8 +169,16 @@
 					
 					<th  style="text-align:right;width:80px;" colspan="1"   class="border">Cantidad</th>
 					<th  style="text-align:left;width:80px;" class="border">Costo</th>
-					<th  style="text-align:left;width:80px;" class="border"><?php echo number_format($costoTotal,2,'.',',');  ?></th>
-					<th  style="text-align:left;width:80px;" class="border"><?php echo number_format($precioTotal,2,'.',',');  ?></th>						
+					<th  style="text-align:left;width:80px;" class="border">
+						C$ <?php echo number_format($costoTotal,2,'.',',');  ?>
+						</br>
+						$ <?php echo number_format($costoTotalDol,2,'.',',');  ?>
+					</th>
+					<th  style="text-align:left;width:80px;" class="border">
+						C$ <?php echo number_format($precioTotal,2,'.',',');  ?>
+						</br>
+						$ <?php echo number_format($precioTotalDol,2,'.',',');  ?>
+					</th>						
 					<th  style="text-align:left;width:80px;" class="border">Fisico</th>		
 				</tr>
 				
