@@ -131,7 +131,7 @@ class app_cxp_provider extends _BaseController {
 				$objEntityPhone["isPrimary"]	= $arrayListEntityPhoneIsPrimary[$key];
 				$this->Entity_Phone_Model->insert_app_posme($objEntityPhone);
 			}	
-
+			
 			//Lineas de Creditos
 			$arrayListProviderCreditLineID	= /*inicio get post*/ $this->request->getPost("txtProviderCreditLineID");
 			$arrayListCreditLineID			= /*inicio get post*/ $this->request->getPost("txtCreditLineID");
@@ -155,9 +155,12 @@ class app_cxp_provider extends _BaseController {
 			$arrayListDayExcluded			= /*inicio get post*/ $this->request->getPost("txtDayExcluded");
 			
 			$limitCreditLine 				= 0;
-			//Limpiar Lineas de Creditos
-			$this->Customer_Credit_Line_Model->deleteWhereIDNotIn($companyID_,$branchID_,$entityID_,$arrayListProviderCreditLineID);
-			
+			if($arrayListProviderCreditLineID)
+			{
+				//Limpiar Lineas de Creditos
+				$this->Customer_Credit_Line_Model->deleteWhereIDNotIn($companyID_,$branchID_,$entityID_,$arrayListProviderCreditLineID);
+				
+			}
 			
 			if(!empty($arrayListProviderCreditLineID))
 			foreach($arrayListProviderCreditLineID as $key => $value){
@@ -241,7 +244,7 @@ class app_cxp_provider extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;		
+		    echo $resultView;		
 		}			
 	}
 	function insertElement($dataSession){
