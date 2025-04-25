@@ -221,7 +221,7 @@ class app_inventory_expireddate extends _BaseController
 				throw new Exception("NO SE PUDO ABRIR EL ARCHIVO {$fileName}");
 			}
 
-			//---OBTENER REGISTROS DE ITEMS DESDE EXCEL
+			//1- LEER REGISTROS DEL EXCEL
 			$csvRowCounter = 0;
 
 			while (($line = fgets($file)) !== false)
@@ -256,46 +256,60 @@ class app_inventory_expireddate extends _BaseController
 			}
 
 			//Crear array indexado por campo Sistema
-			$csvItemsIndexed = [];
+			$csvItemsIndexed 	= [];
 			foreach ($objListExpiredItemsFromCSV as $csvItem) 
 			{
-				$key 					= trim($csvItem["Sistema"], '"'); 
-				$csvItemsIndexed[$key] 	= $csvItem;
+				$key					= trim($csvItem["Sistema"], '"'); 
+				array_push($csvItemsIndexed, $csvItem);
 			}
 
-			//Obtener el itemID de los items ingresados en el CSV
+			//2- OBTENER LOS itemID DE LOS REGISTROS PROVENIENTES DEL EXCEL
 			$counter 				= 0;
 			$itemIDList				= [];
 			$objListItemsToInsert 	= [];
+			$keyBackup				= 0;	
+			$csvIndexedItemsLength	= count($csvItemsIndexed);
 
 			foreach ($objListExpiredItems as $expiredItem) 
 			{
 				$key = $expiredItem->Sistema;
-				
-				if (isset($csvItemsIndexed[$key])) 
+
+				if($keyBackup == $key)
 				{
-					$itemIDList[$counter] 			= $expiredItem->itemID;
-					$counter++;
-					
-					$csvItem 						= $csvItemsIndexed[$key];
-					$itemToInsert 					= [];
-					$itemToInsert["warehouseID"] 	= $expiredItem->Codigo_Bodega;
-					$itemToInsert["itemID"]      	= $expiredItem->itemID;
-					$itemToInsert["companyID"]   	= $companyID;
-					$itemToInsert["lote"]        	= "";
-					$itemToInsert["quantity"]    	= $csvItem["Cantidad"];
-					$itemToInsert["dateExpired"] 	= date("Y-m-d", strtotime(trim($csvItem["Expiracion"], '"')));
-			
-					array_push($objListItemsToInsert, $itemToInsert);
+					continue;
 				}
+
+				$keyBackup = $key;
+
+				for($i = 0; $i < $csvIndexedItemsLength; $i++)
+				{
+					if ($key == $csvItemsIndexed[$i]["Sistema"]) 
+					{
+						$csvItem 						= $csvItemsIndexed[$i];
+						$itemToInsert 					= [];
+						$itemToInsert["warehouseID"] 	= $expiredItem->Codigo_Bodega;
+						$itemToInsert["itemID"]      	= $expiredItem->itemID;
+						$itemToInsert["companyID"]   	= $companyID;
+						$itemToInsert["lote"]        	= "";
+						$itemToInsert["quantity"]    	= $csvItem["Cantidad"];
+						$itemToInsert["dateExpired"] 	= date("Y-m-d", strtotime(trim($csvItem["Expiracion"], '"')));
+				
+						array_push($objListItemsToInsert, $itemToInsert);
+					}
+				}
+
+				$itemIDList[$counter] = $expiredItem->itemID;
+				$counter++;			
 			}
 			
 
 			$db = db_connect();
 			$db->transStart();
 
+			//3- ELIMINAR LOS REGISTROS QUE ESTAN EN EL CSV
 			$this->Item_Warehouse_Expired_Model->delete_byItemIDInList($companyID, $warehouseID, $itemIDList);
 
+			//4- INSERTAR NUEVAMENTE LOS REGISTROS DEL CSV PERO YA ACTUALIZADOS
 			foreach($objListItemsToInsert as $item)
 			{
 				$this->Item_Warehouse_Expired_Model->insert_app_posme($item);
