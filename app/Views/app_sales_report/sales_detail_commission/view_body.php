@@ -89,7 +89,26 @@
 											</div>
 											
 											<div class="form-group">
-												<label class="col-lg-6 control-label" for="selectFilter">Vendedor</label>
+												<label class="col-lg-6 control-label" for="selectFilter">Colaborador</label>
+												<div class="col-lg-6"> 
+													<div class="col-lg-6">
+													</div>
+													<div class="col-lg-6">
+														<select name="txtEmployerID" id="txtEmployerID" class="select2">
+																<option value="0">TODOS</option>
+																<?php
+																if($objListEmployer)
+																foreach($objListEmployer as $i){
+																	echo "<option value='".$i->entityID."'>".$i->firstName." ".$i->firstName."</option>";
+																}
+																?>
+														</select>
+													</div>													
+												</div>
+											</div>
+											
+											<div class="form-group">
+												<label class="col-lg-6 control-label" for="selectFilter">Filtro</label>
 												<div class="col-lg-6"> 
 													<div class="col-lg-6">
 													</div>

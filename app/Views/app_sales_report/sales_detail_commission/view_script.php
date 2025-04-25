@@ -15,6 +15,11 @@
 							var warehouseID				=	$("#txtWarehouseID").val();	
 							var userID					=	$("#txtUserID").val();	
 							var texto					=	$("#txtTexto").val();	
+							var txtEmployerID			=	$("#txtEmployerID").val();	
+							
+							if(texto == "")
+								texto = "abc";
+							
 							
 							if(!( startOn == "" || endOn == "" ) ){
 								fnWaitOpen();
@@ -22,7 +27,8 @@
 													startOn+"/endOn/"+endOn+"/inventoryCategoryID/"+
 													inventoryCategoryID+"/warehouseID/"+
 													warehouseID+"/userIDFilter/"+
-													userID+"/texto/"+
+													userID+"/txtEmployerID/"+
+													txtEmployerID+"/texto/"+
 													texto;
 							}
 							else{

@@ -201,12 +201,14 @@ class app_sales_report extends _BaseController {
 			$warehouseID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"warehouseID");//--finuri
 			$userIDFilter			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"userIDFilter");//--finuri
 			$texto					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"texto");//--finuri
+			$txtEmployerID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"txtEmployerID");//--finuri
 			
 			if(!($viewReport && $startOn && $endOn  )){
 				
 				//Renderizar Resultado 
 				$objListaUsuarios 						= $this->User_Model->get_All($dataSession["user"]->companyID);
-				$dataSession["objListaUsuarios"] 		= $objListaUsuarios;				
+				$dataSession["objListaUsuarios"] 		= $objListaUsuarios;		
+				$dataSession["objListEmployer"]			= $this->Employee_Model->get_rowByCompanyID($dataSession["user"]->companyID);
 				$dataSession["objListCategoryItem"]		= $this->Itemcategory_Model->getByCompany($companyID);
 				$dataSession["objListWarehouse"]		= $this->Userwarehouse_Model->getRowByUserID($companyID,$userID);
 				$dataSession["message"]					= $this->core_web_notification->get_message();
@@ -227,10 +229,10 @@ class app_sales_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_sales_get_report_sales_detail_commission(?,?,?,?,?,?,?,?,?);";		
+				$query			= "CALL pr_sales_get_report_sales_detail_commission(?,?,?,?,?,?,?,?,?,?);";		
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID,$userIDFilter,$texto]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID,$userIDFilter,$texto,$txtEmployerID]
 				);
 				
 				
