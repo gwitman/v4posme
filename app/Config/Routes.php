@@ -944,6 +944,9 @@ $routes->match(['get','post'],'app_inventory_warehouse/save/(:any)','app_invento
 $routes->match(['get','post'],'app_inventory_warehouse/add','app_inventory_warehouse::add');
 $routes->match(['get','post'],'app_inventory_warehouse/index','app_inventory_warehouse::index');
 $routes->match(['get','post'],'app_inventory_warehouse/index/(:any)','app_inventory_warehouse::index');
+$routes->match(['get','post'],'app_inventory_expireddate/index','app_inventory_expireddate::index');
+$routes->match(['get','post'],'app_inventory_expireddate/download','app_inventory_expireddate::download');
+$routes->match(['get','post'],'app_inventory_expireddate/process','app_inventory_expireddate::process');
 $routes->match(['get','post'],'app_branch/edit','app_branch::edit');
 $routes->match(['get','post'],'app_branch/edit/(:any)','app_branch::edit');
 $routes->match(['get','post'],'app_branch/delete','app_branch::delete');
