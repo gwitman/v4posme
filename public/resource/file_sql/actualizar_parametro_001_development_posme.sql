@@ -9,7 +9,7 @@ UPDATE  tb_company_parameter,tb_parameter SET
 	tb_company_parameter.value = "DEFAULT" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "CXC_TYPE_PRINTER_SHARE_MOBILE"; ## Tipo de impresion en mobile
+	tb_parameter.name = "CXC_TYPE_PRINTER_SHARE_MOBILE"; ## Tipo de impresion en mobile:  DEFAULT | FINANCIAL
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 

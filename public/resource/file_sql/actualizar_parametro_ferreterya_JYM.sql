@@ -1,4 +1,4 @@
-use dbgmnukewvzncj;
+/*use dbbkibmwpxtzpt ;*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -6,10 +6,17 @@ use dbgmnukewvzncj;
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "FINANCIAL" 
+	tb_company_parameter.value = "DEFAULT" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CXC_TYPE_PRINTER_SHARE_MOBILE"; ## Tipo de impresion en mobile:  DEFAULT | FINANCIAL
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_tools_endorsements/viewRegisterFormatoPaginaTicket" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "ENDORSEMENTS_URL_PRINTER"; ## Url de impresion de endosos
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
@@ -20,7 +27,7 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_TRAKING_GPS";## Valida si es neceasrio llevar el seguimiento del gps
@@ -1174,7 +1181,7 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "10" 
+	tb_company_parameter.value = "7" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CUST_PRICE_MAX_USER";## MAXIMO NUMERO DE USUARIOS 
@@ -1291,7 +1298,7 @@ WHERE
 	tb_parameter.name = "INVOICE_BILLING_QUANTITY_ZERO";## Permite facturar productos, aunque las existencias esten en 0 unidades 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
+	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BUTTOM_PRINTER_FIDLOCAL_PAYMENT_AND_AMORTIZACION";## Mostrar Calendario de Pago , al momento de imprimir una factura
@@ -1479,7 +1486,7 @@ WHERE
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE";## Aplicar tabla de amortizacoin segun parametros durante la facturacion.
@@ -1651,14 +1658,14 @@ WHERE
 /***************************************************************/
 		
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Yader Toruño" 
+	tb_company_parameter.value = "Eusebia Del Carmen Dumas Ruiz" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_NAME";## Witman José González Rostran 
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "itorunoa23@gmail.com" 
+	tb_company_parameter.value = "gwitman@yahoo.com" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_EMAIL";## CORREO DEL PROPIETARIO
@@ -1666,28 +1673,28 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "281-230686-0006Q" 
+	tb_company_parameter.value = "291 241081 0003R" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "281-230686-0006Q" 
+	tb_company_parameter.value = "291 241081 0003R" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8601-5845" 
+	tb_company_parameter.value = "TEL: 8515-1894" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8601-5845" 
+	tb_company_parameter.value = "TEL: 8515-1894" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1695,46 +1702,49 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Barrio Guadalupe Puente nuevo, 10v arriba" 
+	tb_company_parameter.value = "Costado sur cementerio municipal" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'CrediT-Aguil' , address = 'Barrio Guadalupe Puente nuevo, 10v arriba' ,
-	flavorID = 665 /*usuarioID*/,type='creditaguil'  , abreviature='demo'
+	NAME = 'Ferreteria J/M' , address = 'Costado sur cementerio municipal' ,
+	flavorID = 777 /*usuarioID*/,type='ferre_jm'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
-
 
 
 /*
 Eliminar o desactivar usuarios
 */
+
+/*
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/
- 666,  
- 667, 
- 668,
- 669,  
- 670, 
- 671, 
- 672
+ 2, 	
+ 771,  
+ 772, 
+ 773,
+ 774,  
+ 775, 
+ 776, 
+ 777
 );
 
 update tb_role set isActive = 0; 
 update tb_role set isActive = 1 where roleID in (
 	3,
-	601,
-	602,
-	603,
-	604,
-	605,
-	606,
-	607	
+	706,
+	707,
+	708,
+	709,
+	710,
+	711,
+	712	
 );
+*/
+
 
 
 
@@ -1777,4 +1787,3 @@ update tb_company_currency set `simb` = 'C$' where currencyID = 1;
 update tb_company_currency set `simb` = 'U$' where currencyID = 2;	
 
 	
-/*BD: dbgmnukewvzncj */

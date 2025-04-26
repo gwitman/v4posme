@@ -70,10 +70,13 @@ class app_mobile_api extends _BaseController
 
 
 			log_message("error",print_r("0001",true));
+			log_message("error",print_r("datos cargados----->",true));
             $nickname 						= "facmob";
             $password 						= "fac789";
 			$nickname 					= /*inicio get post*/ $this->request->getPost("txtNickname");
             $password 					= /*inicio get post*/ $this->request->getPost("txtPassword");
+			log_message("error",print_r("usuario: ".$nickname,true));
+			log_message("error",print_r("password: ".$password,true));
 			
             $objUser 					= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);
 			$objListCustomerMap			= [];
@@ -91,9 +94,6 @@ class app_mobile_api extends _BaseController
 			
 			$objItemsJson 				= $this->request->getPost("txtData");			
             $data 						= json_decode($objItemsJson, false);
-			
-			
-			log_message("error",print_r("datos cargados----->",true));
 			log_message("error",print_r($objItemsJson,true));
 			
 			
