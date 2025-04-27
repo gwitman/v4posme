@@ -1303,14 +1303,18 @@ class app_inventory_inputunpost extends _BaseController {
 			$objTMNew["discount"]					= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtDiscount"));
 			$objTMNew["amount"]						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtTotal"));
 			$objTMNew["isTemplate"] 				= is_null(/*inicio get post*/ $this->request->getPost("txtIsTemplate")) ? "0" : /*inicio get post*/ $this->request->getPost("txtIsTemplate");
+			$archivoCSV 							= /*inicio get post*/ $this->request->getPost("txtFileImport");			
 			
 			/*****************************
 			///Las transacciones no se usan en esta pantalla con el objetivo de qeu se puedan importar muchos item
 			///
 			///
 			*****************************/
-			//$db=db_connect();
-			//$db->transStart();
+			if($archivoCSV == ".csv")
+			{
+				$db=db_connect();
+				$db->transStart();
+			}
 			
 			//El Estado solo permite editar el workflow
 			if($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_inputunpost","statusID",$objTM->statusID,COMMAND_EDITABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID)){
@@ -1412,7 +1416,7 @@ class app_inventory_inputunpost extends _BaseController {
 				{
 					foreach($objTMDValidateExpired as $p)
 					{
-						$objItemExpire 	= $this->Item_Model->get_rowByPK($p->companyID,$p->componentItmeID);
+						$objItemExpire 	= $this->Item_Model->get_rowByPK($p->companyID,$p->componentItemID);
 						if(
 							(
 								$p->expirationDate == null ||
@@ -1520,17 +1524,24 @@ class app_inventory_inputunpost extends _BaseController {
 			///Las transacciones no se usan en esta pantalla con el objetivo de qeu se puedan importar muchos item
 			///
 			///
-			*****************************/			
-			//if($db->transStatus() !== false){
-			//	$db->transCommit();						
-			//	$this->core_web_notification->set_message(false,SUCCESS);
-			//	$this->response->redirect(base_url()."/".'app_inventory_inputunpost/edit/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID);
-			//}
-			//else{
-			//	$db->transRollback();						
-			//	$this->core_web_notification->set_message(true,$this->db->_error_message());
-			//	$this->response->redirect(base_url()."/".'app_inventory_inputunpost/add');	
-			//}
+			*****************************/		
+			if($archivoCSV == ".csv")
+			{
+				if($db->transStatus() !== false)
+				{
+					$db->transCommit();						
+					$this->core_web_notification->set_message(false,SUCCESS);
+					$this->response->redirect(base_url()."/".'app_inventory_inputunpost/edit/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID);
+				}
+				else
+				{
+					$db->transRollback();						
+					$this->core_web_notification->set_message(true,$this->db->_error_message());
+					$this->response->redirect(base_url()."/".'app_inventory_inputunpost/add');	
+				}
+			}
+			
+			
 			$this->core_web_notification->set_message(false,SUCCESS);
 			$this->response->redirect(base_url()."/".'app_inventory_inputunpost/edit/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID);
 			
