@@ -378,16 +378,42 @@ class Transaction_Master_Detail_Model extends Model  {
 	   		
 		$sql = "";
 		$sql = sprintf("select 
-							td.companyID, td.transactionID, td.transactionMasterID, 
-							td.transactionMasterDetailID, td.componentID, td.componentItemID,
-							td.promotionID, td.amount, td.cost, td.quantity, td.discount,
-							td.unitaryAmount, td.unitaryCost, td.unitaryPrice,td.tax1,td.tax2,td.tax3,td.tax4,
-							td.reference1, td.reference2, td.reference3,td.reference4,
-							td.reference5,td.reference6,td.reference7,
-							td.catalogStatusID, td.inventoryStatusID, td.isActive,
-							td.quantityStock, td.quantiryStockInTraffic, td.quantityStockUnaswared, 
-							td.remaingStock, td.expirationDate, td.inventoryWarehouseSourceID, 
-							td.inventoryWarehouseTargetID,i.itemNumber,
+							td.companyID, 
+							td.transactionID, 
+							td.transactionMasterID, 
+							td.transactionMasterDetailID, 
+							td.componentID, 
+							td.componentItemID,
+							td.promotionID, 
+							td.amount, 
+							td.cost, 
+							td.quantity, 
+							td.discount,
+							td.unitaryAmount, 
+							td.unitaryCost, 
+							td.unitaryPrice,
+							td.tax1,
+							td.tax2,
+							td.tax3,
+							td.tax4,
+							td.reference1, 
+							td.reference2, 
+							td.reference3,
+							td.reference4,
+							td.reference5,
+							td.reference6,
+							td.reference7,
+							td.catalogStatusID, 
+							td.inventoryStatusID, 
+							td.isActive,
+							td.quantityStock, 
+							td.quantiryStockInTraffic, 
+							td.quantityStockUnaswared, 
+							td.remaingStock, 
+							td.expirationDate, 
+							td.inventoryWarehouseSourceID, 
+							td.inventoryWarehouseTargetID,
+							i.itemNumber,
 							case 
 								when LOCATE(',',i.barCode) > 1 then 
 									CONCAT(SUBSTRING(i.barCode,1,LOCATE(',',i.barCode)+1),'...') 
@@ -395,13 +421,21 @@ class Transaction_Master_Detail_Model extends Model  {
 									i.barCode 
 							end  as barCode,
 							i.name as itemName,
-							ci.name as unitMeasureName,td.descriptionReference,td.exchangeRateReference,
-							td.lote,td.typePriceID,td.skuCatalogItemID,td.skuQuantity,
-							td.skuQuantityBySku,td.skuFormatoDescription,
+							ci.name as unitMeasureName,
+							td.descriptionReference,
+							td.exchangeRateReference,
+							td.lote,
+							td.typePriceID,
+							td.skuCatalogItemID,
+							td.skuQuantity,
+							td.skuQuantityBySku,
+							td.skuFormatoDescription,
 							ic.name as categoryName,
-							REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(replace(td.itemNameLog,'\"',''), '\r\n', ''), '\n\r', ''),'\n', ''),'\t','') , '?', '')  as itemNameLog,
+							REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(replace(td.itemNameLog,'\"',''), '\r\n', ''), '\n\r', ''),'\n', ''),'\t','') , '?', '')  
+								as itemNameLog,
 							td.amountCommision,
-							REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(replace(td.itemNameDescriptionLog,'\"',''), '\r\n', ''), '\n\r', ''),'\n', ''),'\t','') , '?', '')   as itemNameDescriptionLog
+							REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(replace(td.itemNameDescriptionLog,'\"',''), '\r\n', ''), '\n\r', ''),'\n', ''),'\t','') , '?', '')   
+								as itemNameDescriptionLog
 							
 						");
 		$sql = $sql.sprintf(" from tb_transaction_master_detail td");
