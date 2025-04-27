@@ -618,17 +618,30 @@ class app_inventory_item extends _BaseController
 				$objParameterProviderDefault	= $this->core_web_parameter->getParameter("INVENTORY_ITEM_PROVIDER_DEFAULT",$companyID);
 				$objParameterProviderDefault 	= $objParameterProviderDefault->value;
 				$objListProvider				= $this->Provider_Model->get_rowByCompany($companyID);
-				if($objListProvider)
-                {
-                    foreach($objListProvider as $pro)
-                    {						
-						$objTmpProvider					= [];
-						$objTmpProvider["companyID"]	= $companyID;
-						$objTmpProvider["branchID"]		= $objItem["branchID"];
-						$objTmpProvider["itemID"]		= $itemID;
-						$objTmpProvider["entityID"]		= $pro->entityID;
-						$this->Provideritem_Model->insert_app_posme($objTmpProvider);
+				$asociarTodosLosProveedores		= getBehavio($dataSession["company"]->type,"app_inventory_item","asociarTodosLosProveedores","false");
+				if($asociarTodosLosProveedores == "true")
+				{
+					if($objListProvider)
+					{
+						foreach($objListProvider as $pro)
+						{						
+							$objTmpProvider					= [];
+							$objTmpProvider["companyID"]	= $companyID;
+							$objTmpProvider["branchID"]		= $objItem["branchID"];
+							$objTmpProvider["itemID"]		= $itemID;
+							$objTmpProvider["entityID"]		= $pro->entityID;
+							$this->Provideritem_Model->insert_app_posme($objTmpProvider);
+						}
 					}
+				}
+				else 
+				{
+					$objTmpProvider					= [];
+					$objTmpProvider["companyID"]	= $companyID;
+					$objTmpProvider["branchID"]		= $objItem["branchID"];
+					$objTmpProvider["itemID"]		= $itemID;
+					$objTmpProvider["entityID"]		= $objParameterProviderDefault;
+					$this->Provideritem_Model->insert_app_posme($objTmpProvider);
 				}
                 
 
@@ -948,17 +961,30 @@ class app_inventory_item extends _BaseController
                 $objParameterProviderDefault	= $this->core_web_parameter->getParameter("INVENTORY_ITEM_PROVIDER_DEFAULT",$companyID);
                 $objParameterProviderDefault 	= $objParameterProviderDefault->value;
 				$objListProvider				= $this->Provider_Model->get_rowByCompany($companyID);
-				if($objListProvider)
-                {
-                    foreach($objListProvider as $pro)
-                    {						
-						$objTmpProvider					= [];
-						$objTmpProvider["companyID"]	= $companyID;
-						$objTmpProvider["branchID"]		= $objItem["branchID"];
-						$objTmpProvider["itemID"]		= $itemID;
-						$objTmpProvider["entityID"]		= $pro->entityID;
-						$this->Provideritem_Model->insert_app_posme($objTmpProvider);
+				$asociarTodosLosProveedores		= getBehavio($dataSession["company"]->type,"app_inventory_item","asociarTodosLosProveedores","false");
+				if($asociarTodosLosProveedores == "true")
+				{
+					if($objListProvider)
+					{
+						foreach($objListProvider as $pro)
+						{						
+							$objTmpProvider					= [];
+							$objTmpProvider["companyID"]	= $companyID;
+							$objTmpProvider["branchID"]		= $objItem["branchID"];
+							$objTmpProvider["itemID"]		= $itemID;
+							$objTmpProvider["entityID"]		= $pro->entityID;
+							$this->Provideritem_Model->insert_app_posme($objTmpProvider);
+						}
 					}
+				}
+				else 
+				{
+					$objTmpProvider					= [];
+					$objTmpProvider["companyID"]	= $companyID;
+					$objTmpProvider["branchID"]		= $objItem["branchID"];
+					$objTmpProvider["itemID"]		= $itemID;
+					$objTmpProvider["entityID"]		= $objParameterProviderDefault;
+					$this->Provideritem_Model->insert_app_posme($objTmpProvider);
 				}
 				
 				
@@ -1292,8 +1318,8 @@ class app_inventory_item extends _BaseController
             }
 			if ($method=="new_customer_mobile")
 			{
-                $companyID 	= $dataSession["user"]->companyID;
-                $branchID   = $dataSession["user"]->branchID;
+                $companyID 	 = $dataSession["user"]->companyID;
+                $branchID    = $dataSession["user"]->branchID;
                 $roleID      = $dataSession["role"]->roleID;
 			
                 $objListComanyParameter			 = $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
@@ -1421,17 +1447,30 @@ class app_inventory_item extends _BaseController
                 $objParameterProviderDefault	= $this->core_web_parameter->getParameter("INVENTORY_ITEM_PROVIDER_DEFAULT",$companyID);
                 $objParameterProviderDefault 	= $objParameterProviderDefault->value;
 				$objListProvider				= $this->Provider_Model->get_rowByCompany($companyID);
-				if($objListProvider)
-                {
-                    foreach($objListProvider as $pro)
-                    {						
-						$objTmpProvider					= [];
-						$objTmpProvider["companyID"]	= $companyID;
-						$objTmpProvider["branchID"]		= $objItem["branchID"];
-						$objTmpProvider["itemID"]		= $itemID;
-						$objTmpProvider["entityID"]		= $pro->entityID;
-						$this->Provideritem_Model->insert_app_posme($objTmpProvider);
+				$asociarTodosLosProveedores		= getBehavio($dataSession["company"]->type,"app_inventory_item","asociarTodosLosProveedores","false");
+				if($asociarTodosLosProveedores == "true")
+				{
+					if($objListProvider)
+					{
+						foreach($objListProvider as $pro)
+						{						
+							$objTmpProvider					= [];
+							$objTmpProvider["companyID"]	= $companyID;
+							$objTmpProvider["branchID"]		= $objItem["branchID"];
+							$objTmpProvider["itemID"]		= $itemID;
+							$objTmpProvider["entityID"]		= $pro->entityID;
+							$this->Provideritem_Model->insert_app_posme($objTmpProvider);
+						}
 					}
+				}
+				else 
+				{
+					$objTmpProvider					= [];
+					$objTmpProvider["companyID"]	= $companyID;
+					$objTmpProvider["branchID"]		= $objItem["branchID"];
+					$objTmpProvider["itemID"]		= $itemID;
+					$objTmpProvider["entityID"]		= $objParameterProviderDefault;
+					$this->Provideritem_Model->insert_app_posme($objTmpProvider);
 				}
 				
 			

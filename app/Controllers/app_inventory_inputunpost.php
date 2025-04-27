@@ -954,6 +954,7 @@ class app_inventory_inputunpost extends _BaseController {
 					$objTMD["inventoryWarehouseTargetID"]	= $objTM["targetWarehouseID"];
 					
 					$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
+					
 				}
 			}
 			else
@@ -1384,6 +1385,24 @@ class app_inventory_inputunpost extends _BaseController {
 					$archivoCSV
 				);
 			}
+			
+			//Asociar los item al proveedor
+			$objTMDProvider 				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+			if($objTMDProvider)
+			{
+				foreach($objTMDProvider as $p)
+				{
+					$objTmpProvider					= [];
+					$objTmpProvider["companyID"]	= $dataSession["company"]->companyID;
+					$objTmpProvider["branchID"]		= $dataSession["user"]->branchID;
+					$objTmpProvider["itemID"]		= $p->componentItemID;
+					$objTmpProvider["entityID"]		= $objTMNew["entityID"];
+					
+					$this->Provideritem_Model->deleteWhereItemIdyProviderId($companyID,$p->componentItemID,$objTMNew["entityID"]);
+					$this->Provideritem_Model->insert_app_posme($objTmpProvider);
+				}
+			}
+			
 			
 			//Aplicar el Documento?
 			if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_inputunpost","statusID",$objTMNew["statusID"],COMMAND_APLICABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID) &&  $oldStatusID != $objTMNew["statusID"] ){

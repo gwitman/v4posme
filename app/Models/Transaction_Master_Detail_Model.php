@@ -412,7 +412,8 @@ class Transaction_Master_Detail_Model extends Model  {
 		$sql = $sql.sprintf(" and td.transactionID = $transactionID");		
 		$sql = $sql.sprintf(" and td.transactionMasterID = $transactionMasterID");		
 		$sql = $sql.sprintf(" and td.isActive= 1");		
-	
+		
+		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
