@@ -1408,26 +1408,30 @@ class app_inventory_inputunpost extends _BaseController {
 			}
 			
 			//Validar la fecha de vencimientos
+			//Siempre y cuando el estado sea aplicable
 			$validarDateExpired			= getBehavio($dataSession["company"]->type,"app_inventory_inputunpost","validarDateExpired","false");
 			$objTMDValidateExpired 		= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
-			if($validarDateExpired == "true")
+			if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_inputunpost","statusID",$objTMNew["statusID"],COMMAND_APLICABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID) &&  $oldStatusID != $objTMNew["statusID"] )
 			{
-				if($objTMDValidateExpired)
+				if($validarDateExpired == "true")
 				{
-					foreach($objTMDValidateExpired as $p)
+					if($objTMDValidateExpired)
 					{
-						$objItemExpire 	= $this->Item_Model->get_rowByPK($p->companyID,$p->componentItemID);
-						if(
-							(
-								$p->expirationDate == null ||
-								$p->expirationDate == "0000-00-00 00:00:00"
-							) and 
-							$objItemExpire->isPerishable == 1
-						)
+						foreach($objTMDValidateExpired as $p)
 						{
-							throw new \Exception("El producto ".$objItemExpire->itemNumber." ".$objItemExpire->name." no posee fecha de vencimiento revisar.!! " );
+							$objItemExpire 	= $this->Item_Model->get_rowByPK($p->companyID,$p->componentItemID);
+							if(
+								(
+									$p->expirationDate == null ||
+									$p->expirationDate == "0000-00-00 00:00:00"
+								) and 
+								$objItemExpire->isPerishable == 1
+							)
+							{
+								throw new \Exception("El producto ".$objItemExpire->itemNumber." ".$objItemExpire->name." no posee fecha de vencimiento revisar.!! " );
+							}
+							
 						}
-						
 					}
 				}
 			}
