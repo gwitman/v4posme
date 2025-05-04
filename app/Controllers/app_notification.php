@@ -2157,17 +2157,20 @@ class app_notification extends _BaseController
 		$mensaje			= "";
 		$mensageByPage		= 100;
 		
+		
 		//Si no existe la variable session obtener los chat
-		if (!$session->has('chatSend')) 
+		if ( !$session->has('chatSend') )
 		{
+			
 			if(!$objListRemember)
 			return;
 		
-		
+			
 			foreach($objListRemember as $objRemember)
 			{
 				if($objRemember->leerFile == 0)
 					continue;
+				
 				
 				
 				//Obtener la lista de mensajes
@@ -2176,9 +2179,11 @@ class app_notification extends _BaseController
 				if (!file_exists($path))
 					continue;
 				
+				
 				$this->csvreader->separator = $characterSplie;
 				$table 						= $this->csvreader->parse_file($path);
 
+				echo "est";
 				if (!$table)
 					continue;
 				
@@ -2297,8 +2302,10 @@ class app_notification extends _BaseController
 											$('html, body').animate({ scrollTop: $(document).height() }, 'slow');
 											
 											// Esperar 5 segundos y recargar la página
-											setTimeout(function() {
+											setTimeout(function() {												
+												//window.open('".base_url()."/app_notification/sendWhatsappDiarioChochoMandado/procesarExcel/false', '_blank');
 												location.reload();
+												
 											}, 5000);
 										});
 			";
