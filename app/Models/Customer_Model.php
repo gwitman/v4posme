@@ -213,81 +213,102 @@ class Customer_Model extends Model  {
 		$sql = "";
 		$sql = sprintf("
 		select 
-			k.companyID, 
-			k.branchID, 
-			k.entityID, 
-			k.customerNumber, 
-			k.identification, 
-			k.firstName,
-			k.lastName,
-			k.currencyName,
-			k.currencyID,
-			k.customerCreditLineID,
-			k.location,
-			k.phone , 
-			k.me, 
-			sum(k.balance) as balance 
+			cp.companyID, 
+			cp.branchID, 
+			cp.entityID, 
+			cp.customerNumber, 
+			cp.identification, 
+			cp.firstName,
+			cp.lastName,
+			cp.currencyName,
+			cp.currencyID,
+			cp.customerCreditLineID,
+			cp.location,
+			cp.phone , 
+			cp.me, 
+			cp.balance 
 		from 
 			(
-				select 
-						i.companyID, 
-						i.branchID, 
-						i.entityID, 
-						i.customerNumber, 
-						i.identification, 
-						nat.firstName,
-						nat.lastName,
-						cur.simbol as currencyName,
-						cl.currencyID as currencyID,
-						cl.customerCreditLineID,
-						ifnull(i.location,'') as location,
-						ifnull((select ep.number from tb_entity_phone ep  where ep.entityID = i.entityID limit 1 ),'') as phone , 
-						IFNULL(cdd.balance,0) as balance,
-						IFNULL(
-							(
-								select 
-									1 
-								from 
-									tb_customer custp
-									inner join tb_relationship rrp on 
-										rrp.customerID = custp.entityID 
-									inner join tb_employee empp on 
-										empp.entityID = rrp.employeeID 
-									inner join tb_user usrp on 
-										usrp.employeeID = empp.entityID 
-								where 
-									custp.entityID = i.entityID and 
-									usrp.userID = $userID 
-								limit 1 
-							),
-							0 
-						) as me 
-				from 
-						tb_customer i
-						inner join  tb_naturales nat on nat.entityID = i.entityID 
-						inner join  tb_customer_credit_line cl on cl.entityID = i.entityID 
-						inner join tb_currency cur on  cur.currencyID = cl.currencyID 					
-						left join  tb_customer_credit_document cdd on cdd.entityID = i.entityID and cdd.balance > 0 
-				where 
-						i.companyID = $companyID 
-						and i.isActive= 1
-							
-				
-				) k 
-		group by 
-			k.companyID, 
-			k.branchID, 
-			k.entityID, 
-			k.customerNumber, 
-			k.identification, 
-			k.firstName,
-			k.lastName,
-			k.currencyName,
-			k.currencyID,
-			k.customerCreditLineID,
-			k.location,
-			k.phone,
-			k.me 
+			select 
+				k.companyID, 
+				k.branchID, 
+				k.entityID, 
+				k.customerNumber, 
+				k.identification, 
+				k.firstName,
+				k.lastName,
+				k.currencyName,
+				k.currencyID,
+				k.customerCreditLineID,
+				k.location,
+				k.phone , 
+				k.me, 
+				sum(k.balance) as balance 
+			from 
+				(
+					select 
+							i.companyID, 
+							i.branchID, 
+							i.entityID, 
+							i.customerNumber, 
+							i.identification, 
+							nat.firstName,
+							nat.lastName,
+							cur.simbol as currencyName,
+							cl.currencyID as currencyID,
+							cl.customerCreditLineID,
+							ifnull(i.location,'') as location,
+							ifnull((select ep.number from tb_entity_phone ep  where ep.entityID = i.entityID limit 1 ),'') as phone , 
+							IFNULL(cdd.balance,0) as balance,
+							IFNULL(
+								(
+									select 
+										1 
+									from 
+										tb_customer custp
+										inner join tb_relationship rrp on 
+											rrp.customerID = custp.entityID 
+										inner join tb_employee empp on 
+											empp.entityID = rrp.employeeID 
+										inner join tb_user usrp on 
+											usrp.employeeID = empp.entityID 
+									where 
+										custp.entityID = i.entityID and 
+										usrp.userID = $userID 
+									limit 1 
+								),
+								0 
+							) as me 
+					from 
+							tb_customer i
+							inner join  tb_naturales nat on nat.entityID = i.entityID 
+							inner join  tb_customer_credit_line cl on cl.entityID = i.entityID 
+							inner join tb_currency cur on  cur.currencyID = cl.currencyID 					
+							left join  tb_customer_credit_document cdd on cdd.entityID = i.entityID and cdd.balance > 0 
+					where 
+							i.companyID = $companyID 
+							and i.isActive= 1
+								
+					
+					) k 
+			group by 
+				k.companyID, 
+				k.branchID, 
+				k.entityID, 
+				k.customerNumber, 
+				k.identification, 
+				k.firstName,
+				k.lastName,
+				k.currencyName,
+				k.currencyID,
+				k.customerCreditLineID,
+				k.location,
+				k.phone,
+				k.me 
+			) cp
+		order by 
+			cp.me desc,
+			cp.firstName
 		");		
 		
 		

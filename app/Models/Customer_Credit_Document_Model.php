@@ -291,7 +291,17 @@ class Customer_Credit_Document_Model extends Model  {
 					where 
 						amor.customerCreditDocumentID = k.customerCreditDocumentID  and 
 						amor.isActive = 1 
-				) as CantidadCuotas 
+				) as CantidadCuotas ,
+				
+				(
+					select 
+						min(uu.dateApply) 
+					from 
+						tb_customer_credit_amoritization uu 
+					where 
+						uu.customerCreditDocumentID = k.customerCreditDocumentID and 
+						uu.remaining > 0 		
+				) as  MinFechaPago /*primer fecha de pago*/ 
 				
 				
 			from 
@@ -356,8 +366,7 @@ class Customer_Credit_Document_Model extends Model  {
 								a.isActive = 1 and 
 								wsa.aplicable = 1 and 
 								wsd.aplicable = 1 and 
-								a.remaining > 0  and 
-								a.dateApply <= DATE(now())  
+								a.remaining > 0  
 							group by 
 								d.entityID,
 								d.customerCreditDocumentID,
@@ -369,6 +378,9 @@ class Customer_Credit_Document_Model extends Model  {
 							order by 
 								d.customerCreditDocumentID 
 				) k 
+			order by 
+				MinFechaPago,
+				k.entityID
 		");
 		
 		

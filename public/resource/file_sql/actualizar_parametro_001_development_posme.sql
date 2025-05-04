@@ -57,7 +57,7 @@ WHERE
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "10" 
+	tb_company_parameter.value = "60" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "MOBILE_SHOW_TOP_CUSTOMER";## En la pantalla de cliente en el mobile mostrar el top

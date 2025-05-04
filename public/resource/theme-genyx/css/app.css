@@ -604,7 +604,12 @@ label.error {color: #f40a0a;font-weight: bold;margin-bottom: 0;font-size: 13px;}
 	margin-top: -20px;
 	text-align: left;
 }
+
+.select2-container {margin-bottom: 0px;}
+
+/*
 .select2-container {margin-bottom: 15px;}
+*/
 
 /* Tables */
 .table {border-color: #c9c9c9;}

@@ -784,16 +784,18 @@ class app_sales_report extends _BaseController {
 			$startOn			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"startOn");//--finuri				
 			$endOn				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri				
 			$tax1				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"tax1");//--finuri				
+			$warehouseID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"warehouseID");//--finuri				
 				
 				
 			if(!($viewReport && $startOn && $endOn  )){
 				
 				//Renderizar Resultado 
-				$dataSession["message"]		= $this->core_web_notification->get_message();
-				$dataSession["head"]		= /*--inicio view*/ view('app_sales_report/sales_summary/view_head');//--finview
-				$dataSession["body"]		= /*--inicio view*/ view('app_sales_report/sales_summary/view_body');//--finview
-				$dataSession["script"]		= /*--inicio view*/ view('app_sales_report/sales_summary/view_script');//--finview
-				$dataSession["footer"]		= "";			
+				$dataSession["objListWarehouse"]		= $this->Userwarehouse_Model->getRowByUserID($companyID,$userID);
+				$dataSession["message"]					= $this->core_web_notification->get_message();
+				$dataSession["head"]					= /*--inicio view*/ view('app_sales_report/sales_summary/view_head',$dataSession);//--finview
+				$dataSession["body"]					= /*--inicio view*/ view('app_sales_report/sales_summary/view_body',$dataSession);//--finview
+				$dataSession["script"]					= /*--inicio view*/ view('app_sales_report/sales_summary/view_script',$dataSession);//--finview
+				$dataSession["footer"]					= "";			
 				return view("core_masterpage/default_report",$dataSession);//--finview-r	
 			}
 			else{				
@@ -807,14 +809,14 @@ class app_sales_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?);";
+				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?,?);";
 				
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,0,"-1",$tax1,0] 
+					[$companyID,$tocken,$userID,$startOn,$endOn." 23:59:59",0,"-1",$tax1,0,$warehouseID] 
 				);			
 				
-				log_message("error","CALL pr_sales_get_report_sales_summary(2,'',2,'".$startOn."','".$endOn."',0,-1,'".$tax1."',0);");
+				
 				if(isset($objData)){
 					$objDataResult["objDetail"]				= $objData;
 				}

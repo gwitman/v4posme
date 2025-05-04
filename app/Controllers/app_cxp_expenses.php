@@ -226,65 +226,72 @@ class app_cxp_expenses extends _BaseController {
 			}
 			else if($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_accounting_expenses","statusID",$objTM->statusID,COMMAND_ELIMINABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
 			{
-				if(empty($objTM->tax4) || $objTM->tax4 == 0)
-				{
-					throw new \Exception("ESTE REGISTRO NO TIENE UNA DEUDA ASIGNADA");
-				}
-
-				if(!$dataSession["role"]->isAdmin)
-				{
-					throw new \Exception(NOT_WORKFLOW_DELETE);
-				}
-
+				
 				//Obtener datos
 				$objTMDR	= $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterID($transactionMasterID);
 				$objTMSOld	= $this->Transaction_Master_Model->get_rowByTransactionID_And_EntityID($companyID,$transactionID,$objTM->entityID);
 				$objTMDC	= $this->Transaction_Master_Detail_Credit_Model->get_rowByPK($objTMD->transactionMasterDetailID);
 				
+				
 				//Validar gasto a eliminar
 				if($objTMSOld)
 				{
-					if($objTMSOld[0]->transactionMasterID != $transactionMasterID)
+					if(
+						$objTMSOld[0]->transactionMasterID != $transactionMasterID &&
+						$objTM->entityID > 0 
+					)
 					{
 						throw new \Exception("SOLO PUEDE ELIMINAR EL ULTIMO GASTO DEL CLIENTE...");
 					}
 				}
-
-				//Recorrare las cuotas a regresar
-				foreach($objTMDR as $key => $amRef)
-				{
-					//Actualizarion Amortizacion
-					$objCCA 				= $this->Customer_Credit_Amortization_Model->get_rowByPK($amRef->componentItemID);
-					$amorNew["remaining"]	= $objCCA->remaining + $amRef->quantity;
-					$amorNew["statusID"] 	= $workflowStageAmortizationRegister;
-					$amorNew["dayDelay"] 	= 0;
-					$this->Customer_Credit_Amortization_Model->update_app_posme($amRef->componentItemID,$amorNew);
-				}	
-
-				//Actualizar Documento
-				$objCC					= $this->Customer_Credit_Document_Model->get_rowByPK($objCCA->customerCreditDocumentID);					
-				$cdcNew["statusID"]		= $workflowStageDocumentRegister;
-				$cdcNew["balance"]		= $objCC->balance + $objTMDC->capital;
-				$this->Customer_Credit_Document_Model->update_app_posme($objCCA->customerCreditDocumentID,$cdcNew);
-
-				//Obtener Linea de Credito
-				$objCustomerCreditLine   = $this->Customer_Credit_Line_Model->get_rowByPK($objCC->customerCreditLineID);
-					
-				//Actualizar Linea de Credito
-				$montoTotalCordobaCredit = $objTM->currencyID == 1 /*cordoba*/ ? $objTMDC->capital : round(($objTMDC->capital * $objTM->exchangeRate),2) ;
-				$montoTotalDolaresCredit = $objTM->currencyID == 2 /*dolares*/ ? $objTMDC->capital : round(($objTMDC->capital / $objTM->exchangeRate),2) ;
 				
-				//aumentar el balance de linea
-				if($objCustomerCreditLine->currencyID == $objCurrencyCordoba->currencyID)
-					$objCustomerCreditLineNew["balance"]	= $objCustomerCreditLine->balance - $montoTotalCordobaCredit;
-				else
-					$objCustomerCreditLineNew["balance"]	= $objCustomerCreditLine->balance - $montoTotalDolaresCredit;
+				
+				//No hay una tabla de amortizacion
+				if(empty($objTM->tax4) || $objTM->tax4 == 0)
+				{
 					
-				$this->Customer_Credit_Line_Model->update_app_posme($objCustomerCreditLine->customerCreditLineID,$objCustomerCreditLineNew);
+				}
+				//Si hay una tabla de amortizacion
+				else
+				{
+					//Recorrare las cuotas a regresar
+					foreach($objTMDR as $key => $amRef)
+					{
+						//Actualizarion Amortizacion
+						$objCCA 				= $this->Customer_Credit_Amortization_Model->get_rowByPK($amRef->componentItemID);
+						$amorNew["remaining"]	= $objCCA->remaining + $amRef->quantity;
+						$amorNew["statusID"] 	= $workflowStageAmortizationRegister;
+						$amorNew["dayDelay"] 	= 0;
+						$this->Customer_Credit_Amortization_Model->update_app_posme($amRef->componentItemID,$amorNew);
+					}	
 
+					//Actualizar Documento
+					$objCC					= $this->Customer_Credit_Document_Model->get_rowByPK($objCCA->customerCreditDocumentID);					
+					$cdcNew["statusID"]		= $workflowStageDocumentRegister;
+					$cdcNew["balance"]		= $objCC->balance + $objTMDC->capital;
+					$this->Customer_Credit_Document_Model->update_app_posme($objCCA->customerCreditDocumentID,$cdcNew);
+
+					//Obtener Linea de Credito
+					$objCustomerCreditLine   = $this->Customer_Credit_Line_Model->get_rowByPK($objCC->customerCreditLineID);
+						
+					//Actualizar Linea de Credito
+					$montoTotalCordobaCredit = $objTM->currencyID == 1 /*cordoba*/ ? $objTMDC->capital : round(($objTMDC->capital * $objTM->exchangeRate),2) ;
+					$montoTotalDolaresCredit = $objTM->currencyID == 2 /*dolares*/ ? $objTMDC->capital : round(($objTMDC->capital / $objTM->exchangeRate),2) ;
+					
+					//aumentar el balance de linea
+					if($objCustomerCreditLine->currencyID == $objCurrencyCordoba->currencyID)
+						$objCustomerCreditLineNew["balance"]	= $objCustomerCreditLine->balance - $montoTotalCordobaCredit;
+					else
+						$objCustomerCreditLineNew["balance"]	= $objCustomerCreditLine->balance - $montoTotalDolaresCredit;
+						
+					$this->Customer_Credit_Line_Model->update_app_posme($objCustomerCreditLine->customerCreditLineID,$objCustomerCreditLineNew);
+
+				}
+				
 				//Eliminar el Registro			
 				$this->Transaction_Master_Model->delete_app_posme($companyID,$transactionID,$transactionMasterID);
 				$this->Transaction_Master_Detail_Model->deleteWhereTM($companyID,$transactionID,$transactionMasterID);	
+				
 			}
 			
 			

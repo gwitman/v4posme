@@ -185,10 +185,10 @@ class app_box_report extends _BaseController {
 					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,0]
 				);			
 				//Get Datos de Facturacion				
-				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?);";
+				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?,?);";
 				$objDataSales	= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,$categoryItem,0,0]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,$categoryItem,0,0,0]
 				);	
 
 				$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?,?);";
@@ -479,10 +479,10 @@ class app_box_report extends _BaseController {
 				[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,$branchIDFiltered]
 			);			
 			//Get Datos de Facturacion				
-			$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?);";
+			$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?,?);";
 			$objDataSales	= $this->Bd_Model->executeRender(
 				$query,
-				[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,$categoryItem,0,$branchIDFiltered]
+				[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,$categoryItem,0,$branchIDFiltered,0]
 			);	
 
 			$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?,?);";
@@ -571,10 +571,10 @@ class app_box_report extends _BaseController {
 					[$userID,$tocken,$companyID,$authorization,$startOn_,$endOn_,$userIDFilter,$branchIDFiltered]
 				);			
 				//Get Datos de Facturacion				
-				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?);";
+				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?,?);";
 				$objDataSales	= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn_,$endOn_,$userIDFilter,$categoryItem,0,$branchIDFiltered]
+					[$companyID,$tocken,$userID,$startOn_,$endOn_,$userIDFilter,$categoryItem,0,$branchIDFiltered,0]
 				);	
 
 				$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?,?);";
@@ -756,10 +756,10 @@ class app_box_report extends _BaseController {
 				);
 				
 				//Get Datos de Facturacion				
-				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?);";
+				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?,?);";
 				$objDataSales	= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,"-1",0,0]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,"-1",0,0,0]
 				);	
 
 				
@@ -998,10 +998,10 @@ class app_box_report extends _BaseController {
 				);
 				
 				//Get Datos de Facturacion de contado		
-				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?);";
+				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?,?);";
 				$objDataSales	= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,"-1",0,0]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,"-1",0,0,0]
 				);	
 
 				//Get Datos de Facturas de credito
@@ -1682,10 +1682,10 @@ class app_box_report extends _BaseController {
 				);
 				
 				//Get Datos de Facturacion				
-				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?);";
+				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?,?);";
 				$objDataSales	= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,"-1",0,0]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,"-1",0,0,0]
 				);		
 
 				
