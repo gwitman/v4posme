@@ -486,6 +486,8 @@ $routes->match(['get','post'],'app_cxp_report/expenses','app_cxp_report::expense
 $routes->match(['get','post'],'app_cxp_report/expenses/(:any)','app_cxp_report::expenses');
 $routes->match(['get','post'],'app_cxp_report/expenses_summary','app_cxp_report::expenses_summary');
 $routes->match(['get','post'],'app_cxp_report/expenses_summary/(:any)','app_cxp_report::expenses_summary');
+$routes->match(['get','post'],'app_cxp_report/detail_purchase','app_cxp_report::detail_purchase');
+$routes->match(['get','post'],'app_cxp_report/detail_purchase/(:any)','app_cxp_report::detail_purchase');
 $routes->match(['get','post'],'app_med_query/edit','app_med_query::edit');
 $routes->match(['get','post'],'app_med_query/edit/(:any)','app_med_query::edit');
 $routes->match(['get','post'],'app_med_query/delete','app_med_query::delete');
