@@ -785,12 +785,30 @@ class app_sales_report extends _BaseController {
 			$endOn				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri				
 			$tax1				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"tax1");//--finuri				
 			$warehouseID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"warehouseID");//--finuri				
+			$entityID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"customerID");//--finuri				
 				
-				
+			
+			//Obtener el componente de Item
+            $objComponentCustomer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
+            if(!$objComponentCustomer)
+                throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
+			
+			$objComponentItem	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+            if(!$objComponentItem)
+                throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+			
+			$objListComanyParameter							= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+            $objParameterCantidadItemPoup					= $objParameterCantidadItemPoup->value;
+            $dataSession["objParameterCantidadItemPoup"] 	= $objParameterCantidadItemPoup;
+			
+			
 			if(!($viewReport && $startOn && $endOn  )){
 				
 				//Renderizar Resultado 
 				$dataSession["objListWarehouse"]		= $this->Userwarehouse_Model->getRowByUserID($companyID,$userID);
+				$dataSession["objComponentCustomer"]	= $objComponentCustomer;
+				$dataSession["objComponentItem"]		= $objComponentItem;
 				$dataSession["message"]					= $this->core_web_notification->get_message();
 				$dataSession["head"]					= /*--inicio view*/ view('app_sales_report/sales_summary/view_head',$dataSession);//--finview
 				$dataSession["body"]					= /*--inicio view*/ view('app_sales_report/sales_summary/view_body',$dataSession);//--finview
@@ -809,11 +827,11 @@ class app_sales_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?,?);";
+				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?,?,?);";
 				
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn." 23:59:59",0,"-1",$tax1,0,$warehouseID] 
+					[$companyID,$tocken,$userID,$startOn,$endOn." 23:59:59",0,"-1",$tax1,0,$warehouseID,$entityID] 
 				);			
 				
 				

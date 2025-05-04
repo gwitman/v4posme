@@ -955,10 +955,10 @@ class app_notification extends _BaseController
 			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaNow, $fechaBefore, 0,0]
 		);
 		//Get Datos de Facturacion				
-		$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?,?);";
+		$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?,?,?);";
 		$objDataSales	= $this->Bd_Model->executeRender(
 			$query,
-			[APP_COMPANY, $tocken, APP_USERADMIN, $fechaNow, $fechaBefore, 0, "-1", 0,0,0]
+			[APP_COMPANY, $tocken, APP_USERADMIN, $fechaNow, $fechaBefore, 0, "-1", 0,0,0,0]
 		);
 
 		$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?,?);";
@@ -1544,10 +1544,10 @@ class app_notification extends _BaseController
 			[APP_USERADMIN, $tocken, APP_COMPANY, $authorization, $fechaStart, $fechaEnd, 0,0]
 		);
 		//Get Datos de Facturacion				
-		$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?,?);";
+		$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?,?,?);";
 		$objDataSales	= $this->Bd_Model->executeRender(
 			$query,
-			[APP_COMPANY, $tocken, APP_USERADMIN, $fechaStart, $fechaEnd, 0, "-1", 0,0,0]
+			[APP_COMPANY, $tocken, APP_USERADMIN, $fechaStart, $fechaEnd, 0, "-1", 0,0,0,0]
 		);
 
 		$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?,?);";

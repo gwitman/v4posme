@@ -38,9 +38,9 @@
 													</div>
 													<div class="col-lg-6">
 														<select name="txtTax1" id="txtTax1" class="select2">
-																<option value="0">Todas</option>
-																<option value="-1">No</option>
-																<option value="1">Sin</option>
+																<option value="0">TODAS</option>
+																<option value="-1">NO</option>
+																<option value="1">SIN</option>
 														</select>
 													</div>													
 												</div>
@@ -61,6 +61,31 @@
 																}
 																?>
 														</select>
+													</div>													
+												</div>
+											</div>
+											
+											<div class="form-group">
+												<label class="col-lg-6 control-label" for="selectFilter">Cliente</label>
+												<div class="col-lg-6"> 													
+													<div class="col-lg-12">
+														<div class="input-group">
+															<input type="hidden" id="txtCustomerID" name="txtCustomerID" value="0">
+															<input class="form-control" readonly id="txtCustomerDescription" type="txtCustomerDescription" value="TODOS">
+															
+															<span class="input-group-btn">
+																<button class="btn btn-danger" type="button" id="btnClearCustomer">
+																	<i aria-hidden="true" class="i-undo-2"></i>
+																	clear
+																</button>
+															</span>
+															<span class="input-group-btn">
+																<button class="btn btn-primary" type="button" id="btnSearchCustomer">
+																	<i aria-hidden="true" class="i-search-5"></i>
+																	buscar
+																</button>
+															</span>
+														</div>
 													</div>													
 												</div>
 											</div>
