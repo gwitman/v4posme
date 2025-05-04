@@ -78,11 +78,11 @@
 			<thead>
 				<tr style="background-color:#00628e;color:white;">
 					<!--812-->
-					<th style="text-align:left;width:90px;"  colspan="2" class="border">Codigo</th>
+					<th style="text-align:left;width:50px;"  colspan="2" class="border">Codigo</th>
 					<th style="text-align:left;width:222px;"  colspan="2" class="border">Nombre</th>											
 					<th style="text-align:left;width:180px;"  colspan="2" class="border">Proveedor</th>					
 					<th style="text-align:left;width:150px;" class="border">Bodega</th>
-					<th style="text-align:left;width:90px;" class="border">Ven.</th>
+					<th style="text-align:left;width:150px;" class="border">Ven.</th>
 					<th style="text-align:left;width:80px;" class="border">Cantidad</th>
 				</tr>
 			</thead>				
@@ -106,7 +106,9 @@
 							echo ($i["warehouseName"]);								
 						echo "</td>";
 						echo "<td style='text-align:left' class='border'>";
-							echo (date_format(date_create($i["dateExpired"]),"Y-m-d"));								
+							echo (date_format(date_create($i["dateExpired"]),"Y-m-d")).
+							     " ".
+								 ("(".$i["dateExpiredInDay"]." dias)");								
 						echo "</td>";
 						echo "<td style='text-align:right' class='border' >";
 							echo (number_format($i["quantityExpired"],2,'.',","));
