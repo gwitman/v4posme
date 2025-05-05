@@ -232,20 +232,18 @@ class app_purchase_report extends _BaseController {
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
 				$query			= "CALL pr_purchase_get_report_purchase_taller(?,?,?,?,?,?);";
-				$objData		= $this->Bd_Model->executeRender(
+				$objData		= $this->Bd_Model->executeRenderMultipleNative(
 					$query,
 					[$userID,$tocken,$companyID,$employerListID, $startOn,$endOn." 23:59:59" ]
 				);			
 				
-				if(isset($objData))
+				if(isset($objData[0]))
 				{
-					$objDataResult["objDetail"]					= $objData;					
+					$objDataResult["objDetail"]					= $objData[0];								
+					$objDataResult["objTransaccionMaster"]		= $objData[1];	
 					$objDataResult["objListItem"] 				= array_unique(array_map(function($elem){
 																	return $elem["Estado"];
 																}, $objDataResult["objDetail"] ));
-					
-					
-				
 				}
 				else
 				{

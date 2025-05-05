@@ -74,7 +74,7 @@
 			<thead >
 				<tr style="background-color:#00628e;color:white">
 					<!--812-->
-					<th  style="text-align:left;text-align:left;width:80px;"   colspan="1" class="border">Estado</th>
+					<th  style="text-align:left;text-align:left;width:220px;"   colspan="1" class="border">Estado</th>
 					<?php
 						
 						$bodegasArray 		= explode(",", $employerListID);
@@ -82,7 +82,11 @@
 						foreach($objListEmployeer as $iele)
 						{
 							if($bodegasArrayTodas == "true" || in_array($iele->entityID,$bodegasArray ) )
-							echo '<th  style="text-align:right;width:120px;"  colspan="1"   class="border">'.$iele->firstName.'</th>';
+							{
+							echo '<th  style="text-align:right;width:120px;"  colspan="1"   class="border">';
+								echo $iele->employeNumber."</br>".$iele->firstName;
+							echo '</th>';
+							}
 						}
 					?>
 				</tr>
@@ -106,7 +110,7 @@
 						$i = reset($i);						
 						
 						echo "<tr >";
-							echo "<td style='text-align:left;'  colspan='1'  class='border' >";
+							echo "<td style='text-align:left;width:220px;'  colspan='1'  class='border' >";
 								echo $ielement;
 							echo "</td>";
 							foreach($objListEmployeer as $iele)
@@ -156,6 +160,66 @@
 		
 		
 		<br/>		
+		
+		<table style="
+			width:100%;order-spacing: 10px;
+		" >
+			<thead >
+				<tr style="background-color:#00628e;color:white">
+					<!--812-->
+					<th  style="text-align:left;text-align:left;width:220px;"   colspan="1" class="border">Documento</th>
+					<th  style="text-align:left;text-align:left;width:220px;"   colspan="1" class="border">Fecha</th>
+					<th  style="text-align:left;text-align:left;width:220px;"   colspan="1" class="border">Cod Cliente</th>
+					<th  style="text-align:left;text-align:left;width:220px;"   colspan="1" class="border">Cliente</th>
+					<th  style="text-align:left;text-align:left;width:220px;"   colspan="1" class="border">Colaborador</th>
+					<th  style="text-align:left;text-align:left;width:220px;"   colspan="1" class="border">Factura</th>					
+				</tr>
+				
+			</thead>				
+			<tbody>
+				<?php
+					if($objTransaccionMaster)
+					{
+						foreach($objTransaccionMaster as $w)
+						{
+							echo "<tr style='background-color: antiquewhite;' >";
+								echo "<td style='text-align:right;' colspan='1'  class='border' >";							
+										echo $w["transactionNumber"];
+								echo "</td>";
+								echo "<td style='text-align:right;' colspan='1'  class='border' >";							
+										echo $w["transactionOn"];
+								echo "</td>";
+								echo "<td style='text-align:right;' colspan='1'  class='border' >";							
+										echo $w["customerNumber"];
+								echo "</td>";
+								echo "<td style='text-align:right;' colspan='1'  class='border' >";							
+										echo $w["firstName"];
+								echo "</td>";
+								echo "<td style='text-align:right;' colspan='1'  class='border' >";							
+										echo $w["employeNumber"]." ".$w["firstNameEmployer"];
+								echo "</td>";
+								echo "<td style='text-align:right;' colspan='1'  class='border' >";							
+										echo $w["note"];
+								echo "</td>";
+							echo "</tr>";
+							echo "<tr>";
+								echo "<td style='text-align:left;' colspan='6'  class='border' >";							
+										echo "<b>Problema:</b>".$w["reference2"];
+								echo "</td>";
+							echo "</tr>";
+							echo "<tr>";
+								echo "<td style='text-align:left;' colspan='6'  class='border' >";							
+										echo "<b>Solucion:</b>".$w["reference3"];
+								echo "</td>";
+							echo "</tr>";
+						}
+					}
+				?>
+			</tbody>
+			
+		</table>
+		
+		</br>
 
 		<table style="width:100%">
 			<thead>
