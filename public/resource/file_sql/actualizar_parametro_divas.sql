@@ -1,4 +1,4 @@
-/*use db3a7sqz3tbcln;*/
+/*use dbcz6tuq9bx0dg;*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -1673,14 +1673,14 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "042-230476-0000T" 
+	tb_company_parameter.value = "047-160483-0000C" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "042-230476-0000T" 
+	tb_company_parameter.value = "047-160483-0000C" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
@@ -1702,15 +1702,15 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Aserrio Santa Fe, 2 cuadras abajo 15vras al sur" 
+	tb_company_parameter.value = "Donde fue aserrio santa fe, 2c abajo 15v.sur" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Chicharrones Caraceños' , address = 'Aserrio Santa Fe, 2 cuadras abajo 15vras al sur' ,
-	flavorID = 784 /*usuarioID*/,type='default'  , abreviature='chicharrones'
+	NAME = 'Divas' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
+	flavorID = 791 /*usuarioID*/,type='default'  , abreviature='divas_bello'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
@@ -1719,31 +1719,31 @@ WHERE
 Eliminar o desactivar usuarios
 */
 
-/*
+
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2, 	
- 778,  
- 779, 
- 780,
- 781,  
- 782, 
- 783, 
- 784
+ 785,  
+ 786, 
+ 787,
+ 788,  
+ 789, 
+ 790, 
+ 791
 );
 
 update tb_role set isActive = 0; 
 update tb_role set isActive = 1 where roleID in (
 	3,
-	713,
-	714,
-	715,
-	716,
-	717,
-	718,
-	719	
+	720,
+	721,
+	722,
+	723,
+	724,
+	725,
+	726	
 );
-*/
+
 
 
 
