@@ -1,15 +1,16 @@
 <!-- ./ page heading -->
 <script>	
-	var numberDecimal				= 2;
-	var numberDecimalSummary		= 2;
-	var numberDecimalSummaryRound	= false;
-	var objListaProductos			= {};	
-	var varUseMobile				= '<?php echo $useMobile; ?>';
+	var numberDecimal												= 2;
+	var numberDecimalSummary										= 2;
+	var numberDecimalSummaryRound									= false;
+	var objListaProductos											= {};	
+	var varUseMobile												= '<?php echo $useMobile; ?>';
 	var objWindowSearchProduct;
-	var objListTypePreice			= JSON.parse('<?php echo json_encode($objListTypePreice); ?>');
+	var objListTypePreice											= JSON.parse('<?php echo json_encode($objListTypePreice); ?>');
 	var objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE	= <?php echo $objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE; ?>;
-	var sScrollY = objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE == true ?  "350px" : "auto";
-	var varParameterCantidadItemPoup		= '<?php echo $objParameterCantidadItemPoup; ?>';  
+	var sScrollY 													= objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE == true ?  "350px" : "auto";
+	var varParameterCantidadItemPoup								= '<?php echo $objParameterCantidadItemPoup; ?>';  
+	var columnIndexSubTotal											= 15;
 	
 	var objTableDetailTransaction 	= {};
 	$(document).ready(function(){					
@@ -55,7 +56,10 @@
 						},
 						{
 							"aTargets"	: [4], //nombre
-							"sWidth"	: "20%"
+							"sWidth"	: "120px",
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" value="'+data+'"  />';
+							}
 						},
 						{
 							"aTargets"	: [5], //unidad
@@ -145,6 +149,15 @@
 							"bSearchable"	: false,
 							"mRender"	: function ( data, type, full ) {
 								return '<input type="text" class="col-lg-12 txtReference4TransactionMasterDetail" value="'+data+'" name="txtReference4TransactionMasterDetail[]" />';
+							}
+						},
+						{
+							"aTargets"		: [ columnIndexSubTotal ],//Sub Total
+							"bVisible"		: true,
+							"sWidth"		: "120px",
+							"bSearchable"	: false,
+							"mRender"	: function ( data, type, full ) {
+								return '<div style="text-align:right" ><span class="badge badge-success" >'+data+'</span></div>';
 							}
 						}
 			]							
@@ -319,13 +332,15 @@
 			
 			
 		});
+		
 		//Cambio en la cantidades
 		$(document).on("blur",".txtDetailQuantity",function(){
 			$(this).val(fnFormatFloat(fnFormatNumber(fnFormatFloat($(this).val()),numberDecimal)));
 			var objrow_ = $(this).parent().parent()[0];
 			var objind_ = objTableDetailTransaction.fnGetPosition(objrow_);
 			var objdat_ = objTableDetailTransaction.fnGetData(objind_);								
-			objTableDetailTransaction.fnUpdate( $(this).val(), objind_, 6 );
+			objTableDetailTransaction.fnUpdate( $(this).val(), objind_, 6 );			
+			objTableDetailTransaction.fnUpdate(  parseFloat($(this).val()) * parseFloat(objdat_[7]), objind_, columnIndexSubTotal );
 			fnUpdateDetail();
 			refreschChecked();
 		})
@@ -336,6 +351,7 @@
 			var objind_ = objTableDetailTransaction.fnGetPosition(objrow_);
 			var objdat_ = objTableDetailTransaction.fnGetData(objind_);								
 			objTableDetailTransaction.fnUpdate(  $(this).val(), objind_, 7 );
+			objTableDetailTransaction.fnUpdate(  parseFloat($(this).val()) * parseFloat(objdat_[6]), objind_, columnIndexSubTotal );
 			fnUpdateDetail();
 			refreschChecked();
 		})
@@ -518,6 +534,7 @@
 			objRow.precio1					= objResponse[i][4];
 			objRow.precio2					= objResponse[i][5];
 			objRow.barCodeExtende			= "";
+			objRow.subTotal					= cantidad * objResponse[i][2];
 			
 			//Berificar que el Item ya esta agregado 
 			if(jLinq.from(objTableDetailTransaction.fnGetData()).where(function(obj){ return obj[1] == objRow.itemID;}).select().length > 0 )
@@ -534,7 +551,8 @@
 						objRow.quantity,objRow.cost,objRow.price,
 						objRow.lote,objRow.vencimiento,
 						objRow.masinfor,objRow.precio1,objRow.precio2,
-						objRow.barCodeExtende
+						objRow.barCodeExtende,
+						objRow.subTotal
 					]
 				);
 			}
@@ -609,7 +627,7 @@
 		total			= fnFormatFloat(fnFormatNumber(total,numberDecimalSummary));
 		$("#txtSubTotal").val(subtotal);
 		$("#txtTotal").val(total);		
-		fnShowNotification("TOTAL: C$ " +  $.number(total) ,"success");
+		//fnShowNotification("TOTAL: C$ " +  $.number(total) ,"success");
 		
 	}
 	

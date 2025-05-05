@@ -1,22 +1,23 @@
 <!-- ./ page heading -->
 <script>	
-	var numberDecimal				= 2;
-	var numberDecimalSummary		= 2;
-	var numberDecimalSummaryRound	= false;
-	var objTableDetailTransaction 	= {};
-	var objListaProductos			= {};
-	var objWindowSearchProduct;
-	var objListaProductos2			= {};
-	var objListaProductos3			= {};
-	var objectParameterButtoms 		= {};
-	var objParameterUrlPrinter		= '<?php echo $objParameterUrlPrinter; ?>';
-	var objParameterUrlPrinterCode  = '<?php echo $objParameterMasive; ?>';
-	var varUseMobile				= '<?php echo $useMobile; ?>';
+	var numberDecimal												= 2;
+	var numberDecimalSummary										= 2;
+	var numberDecimalSummaryRound									= false;
+	var objTableDetailTransaction 									= {};
+	var objListaProductos											= {};
+	var objWindowSearchProduct;								
+	var objListaProductos2											= {};
+	var objListaProductos3											= {};
+	var objectParameterButtoms 										= {};
+	var objParameterUrlPrinter										= '<?php echo $objParameterUrlPrinter; ?>';
+	var objParameterUrlPrinterCode  								= '<?php echo $objParameterMasive; ?>';
+	var varUseMobile												= '<?php echo $useMobile; ?>';
 	var objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE	= <?php echo $objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE; ?>;
 	var objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_ONLY_QUANTITY	= '<?php echo $objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_ONLY_QUANTITY; ?>';
 	var objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES	= '<?php echo $objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES; ?>';
-	var sScrollY = objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE == true ?  "350px" : "auto";
-	var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';  
+	var sScrollY 													= objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE == true ?  "350px" : "auto";
+	var varParameterCantidadItemPoup								= '<?php echo $objParameterCantidadItemPoup; ?>';  
+	var columnIndexSubTotal											= 15;
 	
 	$(document).ready(function(){					
 		//Inicializar Controles		
@@ -52,7 +53,8 @@
 								'mas informacion',
 								'".explode("|",helper_RequestGetValue($i->reference3,'0|0'))[0]."',
 								'".explode("|",helper_RequestGetValue($i->reference3,'0|0'))[1]."',
-								'".helper_RequestGetValue($i->reference4,'')."'
+								'".helper_RequestGetValue($i->reference4,'')."',
+								fnFormatNumber(".($i->quantity * $i->unitaryCost).",numberDecimal) 
 							]";
 						}
 						echo implode(",",$listrow);
@@ -88,7 +90,10 @@
 						},
 						{
 							"aTargets"	: [4], //nombre
-							"sWidth"	: "20%"
+							"sWidth"	: "120px",
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="text" value="'+data+'"  />';
+							}
 						},
 						{
 							"aTargets"	: [5], //unidad
@@ -178,6 +183,15 @@
 							"bSearchable"	: false,
 							"mRender"	: function ( data, type, full ) {
 								return '<input type="text" class="col-lg-12 txtReference4TransactionMasterDetail " value="'+data+'" name="txtReference4TransactionMasterDetail[]" />';
+							}
+						},
+						{
+							"aTargets"		: [ columnIndexSubTotal ],//Sub Total
+							"bVisible"		: true,
+							"sWidth"		: "120px",
+							"bSearchable"	: false,
+							"mRender"	: function ( data, type, full ) {
+								return '<div style="text-align:right"  ><span class="badge badge-success">'+data+'</span></div>';
 							}
 						}
 			]							
@@ -459,6 +473,8 @@
 			var objind_ = objTableDetailTransaction.fnGetPosition(objrow_);
 			var objdat_ = objTableDetailTransaction.fnGetData(objind_);								
 			objTableDetailTransaction.fnUpdate( $(this).val(), objind_, 6 );
+			objTableDetailTransaction.fnUpdate(  parseFloat($(this).val()) * parseFloat(objdat_[7]), objind_, columnIndexSubTotal );
+			objTableDetailTransaction.fnUpdate(  parseFloat($(this).val()) * parseFloat(objdat_[6]), objind_, columnIndexSubTotal );
 			fnUpdateDetail();
 			refreschChecked();
 		})
@@ -648,6 +664,7 @@
 			objRow.precio1					= objResponse[i][4];
 			objRow.precio2					= objResponse[i][5];
 			objRow.barCodeExtende			= "";
+			objRow.subTotal					= cantidad * objResponse[i][2];
 			
 			//Berificar que el Item ya esta agregado 
 			if(jLinq.from(objTableDetailTransaction.fnGetData()).where(function(obj){ return obj[1] == objRow.itemID;}).select().length > 0 )
@@ -666,7 +683,8 @@
 					objRow.quantity,objRow.cost,objRow.price,
 					objRow.lote,objRow.vencimiento,objRow.masinfor,
 					objRow.precio1,objRow.precio2,
-					objRow.barCodeExtende
+					objRow.barCodeExtende,
+					objRow.subTotal
 					]
 				);
 				
@@ -745,7 +763,7 @@
 		$("#txtTotal").val(total);
 		
 		
-		fnShowNotification("TOTAL: C$ " +  $.number(total) ,"success");
+		//fnShowNotification("TOTAL: C$ " +  $.number(total) ,"success");
 	}
 	
 	function onCompletePantalla(){
