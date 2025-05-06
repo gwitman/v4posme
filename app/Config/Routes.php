@@ -1139,6 +1139,8 @@ $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNorm
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmBpn/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmBpn');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Caracenos','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1Caracenos');
+$routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Caracenos/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1Caracenos');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1FarmaLey','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1FarmaLey');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1FarmaLey/(:any)','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1FarmaLey');
 $routes->match(['get','post'],'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1LaCeiba','app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1LaCeiba');

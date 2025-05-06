@@ -200,6 +200,7 @@ abstract class _BaseController extends Controller
 		'report/web_tools_report_licoreria_central_helper',
 		'report/web_tools_report_majo_helper',
 		'report/web_tools_report_farma_ley_helper',
+		'report/web_tools_report_chicharrones_caracenos_helper',
 		
 		
         'customization/web_tools_customizationview_0000001',
