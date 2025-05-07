@@ -2045,6 +2045,7 @@
 
 		$('#txtCheckDeEfectivoValue').val(0);
         fnSetCheckBoxValue($('#txtCheckDeEfectivo'),false);
+		<?php echo getBehavio($company->type, 'app_invoice_billing', 'jsPostUpdateInvoiceView','') ?>
 
 		cargaCompletada 	= false;
 		cerrarModal('ModalCargandoDatos');

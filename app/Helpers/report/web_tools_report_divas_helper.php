@@ -1,5 +1,5 @@
 <?php
-function helper_reporte80mmTransactionMasterCaracenos(
+function helper_reporte80mmTransactionMasterDivas(
     $titulo,
     $objCompany,
     $objParameterLogo,
@@ -64,92 +64,171 @@ function helper_reporte80mmTransactionMasterCaracenos(
                           <td colspan='3' style='text-align:center'>
                             ".strtoupper($objCompany->name)."
                           </td>
-                        </tr>
-						
-						<tr>
+                        </tr>";
+    
+
+          if($userNickName != "")
+          {
+            $html	= $html."<tr>                              
+    						  <td colspan='3' style='text-align:center'>
+                                RUC : ".  $rucCompany ."
+                              </td>
+                            </tr>";
+          }
+    
+          $html = $html."<tr>
                           <td colspan='3' style='text-align:center'>
-                            RUC: 042-230476-0000T
+                            ".strtoupper($titulo)."
                           </td>
                         </tr>
-						<tr>
+                                
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            # ".strtoupper($objTransactionMastser->transactionNumber)."
+                          </td>
+                        </tr>
+                                
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            FECHA: ".$objTransactionMastser->createdOn."
+                          </td>
+                        </tr>
+                                
+                         <tr>
                           <td colspan='3' style='text-align:center'>
                             &nbsp;
                           </td>
+                        </tr>";
+						
+          if($userNickName != "")
+		  {      
+			$html	= $html."
+						<tr>
+                          <td colspan=''>
+                            Formato:
+                          </td>
+						  <td colspan='2'>
+                             [[FORMATO]]
+                          </td>
                         </tr>
-                        
-						";
-    
+						<tr>
+                          <td colspan=''>
+                            Vendedor:
+                          </td>
+						  <td colspan='2'>
+                            ". (strpos($userNickName , "@") === false ? $userNickName : substr($userNickName,0,strpos($userNickName , "@") ) )   ."
+                          </td>
+                        </tr>";
+		  }
+						
+          $html	= $html."<tr>
+                          <td colspan=''>
+                            Codigo:
+                          </td>
+						  <td colspan='2'>
+                            ".$objEntidadCustomer->customerNumber."
+                          </td>
+                        </tr>";
+			
+			
+		  if($causalName != ""){
+			$html	= $html."<tr>
+							<td colspan='1'>
+								Tipo:
+							</td>
+							<td colspan='2'>
+								".$causalName."
+							</td>
+						</tr>";
+		  }
+			
+			
+		  $html	= $html."<tr>
+                          <td colspan='1'>
+                            Estado
+                          </td>
+						  <td colspan='2'>
+                            ". ($statusName == "CANCELADA" ? "APLICADA" : $statusName ) ."
+                          </td>
+                        </tr>
+                            
+						<tr>
+                          <td colspan='1'>
+                            Moneda:
+                          </td>
+						  <td colspan='2'>
+                            ".$objCurrency->simbol."
+                          </td>
+                        </tr>";
+			
+		
+						
+          $html	= $html."
+						<tr>
+						  <td colspan='1'>
+							Cliente:
+                          <td colspan='2'>
+                          </td>
+                        </tr>
+						
+						<tr>
+						  <td colspan='3'>							
+                            ". ( $objTransactionMasterInfo->referenceClientName == "" ?   $objEntidadNatural->firstName." ".$objEntidadNatural->lastName  :  $objTransactionMasterInfo->referenceClientName)  ."
+                          </td>
+                        </tr>
 
-        
-    
-          $html = $html."
-		  
-						<tr>
-                          <td colspan='3' style='text-align:center'>
-                            ".strtoupper($objCompany->address)."
-                          </td>
-                        </tr>   
-						<tr>
-                          <td colspan='3' style='text-align:center'>
-                            LEON
+						
+						<!--
+                        <tr>
+                          <td colspan='3'>
+                            Tipo de Cambio: ".$tipoCambio."
                           </td>
                         </tr>
+						-->
+						
 						<tr>
-                          <td colspan='3' style='text-align:center'>
-                            +(505) 8505-7109
-                          </td>
-                        </tr>						
+                          <td colspan='3' style='text-align:left'>".$objTransactionMastser->note."</td>
+                        </tr>
                                 
                          <tr>
                           <td colspan='3' style='text-align:center'>
                             &nbsp;
                           </td>
                         </tr>
-						";
-						
-            
-		 $html	= $html."<tr>
-                          <td colspan=''>
-                            EMPLEADO:
-                          </td>
-						  <td colspan='2'>
-                            PROPIETARIO
-                          </td>
-                        </tr>
-						
-						 <tr>
-                          <td colspan='3' style='text-align:center'>
-                            &nbsp;
-                          </td>
-                        </tr>
-						
-						";
-		  
-		
-			
-						
-          $html	= $html."
-                        
-						<tr>
-                          <td colspan='3' style='text-align:left'>
-                            ----------------------------
-                          </td>
-                        </tr>
-						
+                                
+                     
+                                
                          [[DETALLE]]
                                 
-                        <tr>
+                         <tr>
                           <td colspan='3' style='text-align:center'>
                             &nbsp;
                           </td>
                         </tr>
-                        
-						<tr>
-                          <td colspan='3' style='text-align:left'>
-                            ----------------------------
+                        <tr>
+                          <td colspan='2'>
+                            SUB-TOTAL
                           </td>
-                        </tr>
-						
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->subAmount)."
+                          </td>
+                        </tr>  
+						<tr>
+                          <td colspan='2'>
+                            IVA
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->tax1)."
+                          </td>
+                        </tr> 
+                        <tr>
+                          <td colspan='2'>
+                            DESC
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->discount)."
+                          </td>
+                        </tr>                              
                         <tr>
                           <td colspan='2'>
                             TOTAL
@@ -158,55 +237,44 @@ function helper_reporte80mmTransactionMasterCaracenos(
                             ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount)."
                           </td>
                         </tr>
-						<tr>
-                          <td colspan='2'>
-                            EFECTIVO
-                          </td>
-                          <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount)."
-                          </td>
-                        </tr>
-						
-						<tr>
-                          <td colspan='3' style='text-align:left'>
-                            ----------------------------
-                          </td>
-                        </tr>
    
                         <tr>
+                          <td colspan='2'>
+                            RECIBIDO
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount + $objTransactionMasterInfo->changeAmount)."
+                          </td>
+                        </tr>
+                         <tr>
+                          <td colspan='2'>
+                            CAMBIO
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f", ($objTransactionMasterInfo->changeAmount)  )."
+                          </td>
+                        </tr>
+
+                         <tr>
                           <td colspan='3' style='text-align:center'>
                             &nbsp;
                           </td>
                         </tr>
-                        
+
                         <tr>
                           <td colspan='3' style='text-align:center'>
-                            ".strtoupper("No somos los únicos pero marcamos la diferencia con todos")."
+                            ".$objCompany->address."
                           </td>
                         </tr>
-						<tr>
+
+                        <tr>
                           <td colspan='3' style='text-align:center'>
-                            ".strtoupper("Gracias por su compra")."
+                            ".$objParameterTelefono->value."
                           </td>
                         </tr>
 						
-						 <tr>
-                          <td colspan='3' style='text-align:center'>
-                            &nbsp;
-                          </td>
-                        </tr>
-						
-						<tr>
-                          <td colspan='2' style='text-align:left'>
-                            ".(new DateTime($objTransactionMastser->createdOn))->format('Y-m-d h:i a')."
-                          </td>
-						  
-						  <td colspan='1' style='text-align:left'>
-                            ".substr(strtoupper($objTransactionMastser->transactionNumber),-6)."
-                          </td>
-                        </tr>
-						
-			
+						".getBehavio($objCompany->type,"web_tools_report_helper","reporte80mmTransactionMaster_Devolucion","")."
+
                         <tr>
                           <td colspan='3' style='text-align:center' >
                             posMe PRO Premium 3.1
@@ -257,7 +325,7 @@ function helper_reporte80mmTransactionMasterCaracenos(
 						$cuerpo 		= $cuerpo."<tr >";							
 						
 						$cuerpo = $cuerpo."<td style=".$confiDetalle[$colun]["style_row_data"]." colspan='". $colunCantidad ."' >";
-						$cuerpo = $cuerpo.strtoupper($confiDetalle[$colun]["prefix_row_data"]." ". str_replace("-comand-new-row", "", $key ));
+						$cuerpo = $cuerpo.$confiDetalle[$colun]["prefix_row_data"]." ". str_replace("-comand-new-row", "", $key );
 						$cuerpo = $cuerpo."</td>";
 						
 						$cuerpo 		= $cuerpo."</tr >";	
@@ -271,7 +339,7 @@ function helper_reporte80mmTransactionMasterCaracenos(
 						$cuerpo 	= $cuerpo."<tr >";								
 						
 						$cuerpo = $cuerpo."<td style=".$confiDetalle[$colun]["style_row_data"]." colspan='".$confiDetalle[$colun]["colspan_row_data"]."' >";
-						$cuerpo = $cuerpo.strtoupper($confiDetalle[$colun]["prefix_row_data"]." ".$key);
+						$cuerpo = $cuerpo.$confiDetalle[$colun]["prefix_row_data"]." ".$key;
 						$cuerpo = $cuerpo."</td>";								
 						
 						if($colun == $colunCantidad)
@@ -293,9 +361,23 @@ function helper_reporte80mmTransactionMasterCaracenos(
     
 	
     
-    $html = str_replace("[[DETALLE]]", $cuerpo, $html);
-    return $html;
+    $html 			= str_replace("[[DETALLE]]", $cuerpo, $html);
+	$html_copia 	= $html;
+	$html_original 	= $html;
+	
+	
+	if($statusName != "APLICADA")
+	{
+		return $html;
+	}
+	else 
+	{
+		$html_copia 	= str_replace("[[FORMATO]]","COPIA",$html_copia);
+		$html_original 	= str_replace("[[FORMATO]]","ORIGINAL",$html_original);
+		$resultado 		= $html_original."<div style='page-break-before:always;' ></div>".$html_copia;
+		return $resultado;
+	}
+	
 }
-
 
 ?>

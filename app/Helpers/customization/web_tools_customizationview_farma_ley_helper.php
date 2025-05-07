@@ -3,6 +3,8 @@ function getBehavioFarmaLey(){
     $farmaLey = array(
 	
 		/*Farma Ley*/
+		strtolower('farma_ley_core_web_menu_O. SALIDAS')			 			=> "AJUSTE SALIDA",
+		strtolower('farma_ley_core_web_menu_O. ENTRADAS')			 			=> "AJUSTE ENTRADA",
 		strtolower('farma_ley_app_inventory_inputunpost_validarDateExpired')	=> "true",
 		strtolower('farma_ley_app_inventory_item_chkPerecedero')				=> "checked",
 		strtolower('farma_ley_app_inventory_item_divTxtCapacidad')				=> "hidden",
@@ -16,6 +18,13 @@ function getBehavioFarmaLey(){
 		strtolower('farma_ley_app_inventory_item_selectedDisplayUM')			=> "false",		
 		strtolower('farma_ley_app_invoice_billing_divTxtCausalID')				=> "hidden",		
 		strtolower('farma_ley_app_invoice_billing_divTxtCausalIDScript')		=> "",		
+		strtolower('farma_ley_app_invoice_billing_jsPostUpdateInvoiceView')		=> "			
+			if(objTransactionMaster.statusID == '66' /*registrada*/)
+			{
+				$('#btnPrinter').addClass('hidden');
+			}
+			
+		",
 		strtolower('farma_ley_app_invoice_billing_divTraslateElement') 			=> "
 		<script>
 			$(document).ready(function(){						
