@@ -18,7 +18,7 @@ function helper_reporte80mmTransactionMasterDivas(
     $rucCompany = "" /*ruc*/
 )
 {
-    $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
+    $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-logo-micro-finanza.jpg';
     
     $type    = pathinfo($path, PATHINFO_EXTENSION);
     $data    = file_get_contents($path);

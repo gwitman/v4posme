@@ -38,13 +38,13 @@ function helper_reporte80mmTransactionMasterCaracenos(
                       <meta name='viewport' content='width=device-width, initial-scale=1.0' />
                       <style>
                         @page {       
-                          size: 2.7in 11in;                  
+                          size: 2.7in 11in;
                           margin-top:0px;
-                          margin-left:10px;
-                          margin-right:0px;
+                          margin-left:5px;
+                          margin-right:10px;
                         }
                         table{
-                          font-size: x-small;
+                          font-size: medium ;
                           font-weight: bold;
                           font-family: Consolas, monaco, monospace;
                         }
@@ -114,6 +114,14 @@ function helper_reporte80mmTransactionMasterCaracenos(
                           </td>
 						  <td colspan='2'>
                             PROPIETARIO
+                          </td>
+                        </tr>
+						<tr>
+                          <td colspan=''>
+                            CLIENTE:
+                          </td>
+						  <td colspan='2'>
+                            ". ( $objTransactionMasterInfo->referenceClientName == "" ?   $objEntidadNatural->firstName." ".$objEntidadNatural->lastName  :  $objTransactionMasterInfo->referenceClientName)  ."
                           </td>
                         </tr>
 						
@@ -197,25 +205,15 @@ function helper_reporte80mmTransactionMasterCaracenos(
                         </tr>
 						
 						<tr>
-                          <td colspan='2' style='text-align:left'>
+                          <td colspan='3' style='text-align:left'>
                             ".(new DateTime($objTransactionMastser->createdOn))->format('Y-m-d h:i a')."
+							</br>
+							".strtoupper($objTransactionMastser->transactionNumber)."
                           </td>
 						  
-						  <td colspan='1' style='text-align:left'>
-                            ".substr(strtoupper($objTransactionMastser->transactionNumber),-6)."
-                          </td>
                         </tr>
 						
-			
-                        <tr>
-                          <td colspan='3' style='text-align:center' >
-                            posMe PRO Premium 3.1
-                          </td>
-                        </tr>
-                                
-                        
-
-                                
+			                    
                       </table>					  
                     </body>
                                 
