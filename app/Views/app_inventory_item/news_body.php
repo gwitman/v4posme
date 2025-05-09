@@ -455,7 +455,7 @@
 					
 							<div class="row">	
 								<div class="col-lg-6">
-									<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldEquiposMarca",""); ?> ">
+									<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldEquiposMarca",""); ?> " id="panelDivMarca" >
 											<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Marca",""); ?></label>
 											<div class="col-lg-8">
 												<input class="form-control"  type="text"  name="txtReference1" id="txtReference1" value="">												
@@ -787,8 +787,8 @@
 					<div class="tab-pane fade" id="dropdown">
 						
 							<div class="form-group">
-								<label class="col-lg-2 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Descripcion",""); ?></label>
-								<div class="col-lg-6">
+								<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Descripcion",""); ?></label>
+								<div class="col-lg-8">
 									<textarea class="form-control"  id="txtDescription" name="txtDescription" rows="6"></textarea>
 								</div>
 							</div>

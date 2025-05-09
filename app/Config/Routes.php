@@ -790,6 +790,10 @@ $routes->match(['get','post'],'app_inventory_inputunpost/viewPrinterDirectCompra
 $routes->match(['get','post'],'app_inventory_inputunpost/viewPrinterDirectCompra58mm/(:any)','app_inventory_inputunpost::viewPrinterDirectCompra58mm');
 $routes->match(['get','post'],'app_inventory_inputunpost/viewRegisterFormatoA4GlobalproOnlyQuantity','app_inventory_inputunpost::viewRegisterFormatoA4GlobalproOnlyQuantity');
 $routes->match(['get','post'],'app_inventory_inputunpost/viewRegisterFormatoA4GlobalproOnlyQuantity/(:any)','app_inventory_inputunpost::viewRegisterFormatoA4GlobalproOnlyQuantity');
+$routes->match(['get','post'],'app_inventory_inputunpost/viewRegisterFormato80mmFarmaLey','app_inventory_inputunpost::viewRegisterFormato80mmFarmaLey');
+$routes->match(['get','post'],'app_inventory_inputunpost/viewRegisterFormato80mmFarmaLey/(:any)','app_inventory_inputunpost::viewRegisterFormato80mmFarmaLey');
+$routes->match(['get','post'],'app_inventory_inputunpost/viewRegisterFormato80mmFarmaLeyOnlyQuantity','app_inventory_inputunpost::viewRegisterFormato80mmFarmaLeyOnlyQuantity');
+$routes->match(['get','post'],'app_inventory_inputunpost/viewRegisterFormato80mmFarmaLeyOnlyQuantity/(:any)','app_inventory_inputunpost::viewRegisterFormato80mmFarmaLeyOnlyQuantity');
 $routes->match(['get','post'],'app_inventory_inputunpost/delete','app_inventory_inputunpost::delete');
 $routes->match(['get','post'],'app_inventory_inputunpost/insertElement','app_inventory_inputunpost::insertElement');
 $routes->match(['get','post'],'app_inventory_inputunpost/insertElement/(:any)','app_inventory_inputunpost::insertElement');

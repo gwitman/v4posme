@@ -15,6 +15,16 @@ function getBehavioFarmaLey(){
 		strtolower('farma_ley_app_inventory_item_divTxtPresentacionUM')			=> "hidden",
 		strtolower('farma_ley_app_inventory_item_selectedFamilyDefault')		=> "false",
 		strtolower('farma_ley_app_inventory_item_selectedUM')					=> "false",
+		strtolower('farma_ley_app_inventory_item_Marca')						=> "Uso",
+		strtolower('farma_ley_app_inventory_item_divTraslate')					=> "
+		<script>
+			$(document).ready(function(){
+				$('#panelDivMarca').appendTo('#dropdown');
+			});
+		</script>
+		",
+		
+		
 		strtolower('farma_ley_app_inventory_item_selectedDisplayUM')			=> "false",		
 		strtolower('farma_ley_app_invoice_billing_divTxtCausalID')				=> "hidden",		
 		strtolower('farma_ley_app_invoice_billing_divTxtCausalIDScript')		=> "",		

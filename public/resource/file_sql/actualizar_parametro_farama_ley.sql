@@ -1335,7 +1335,7 @@ WHERE
 
 /*--Imprimir de orden de compra*/
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_inventory_inputunpost/viewRegisterFormato80mm" 
+	tb_company_parameter.value = "app_inventory_inputunpost/viewRegisterFormato80mmFarmaLey" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVENTORY_URL_PRINTER_INPUTUNPOST";## URL PARA LA IMPRESION DE ORDEN DE COMPRA
@@ -1343,7 +1343,7 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_inventory_inputunpost/viewRegisterFormato80mm" 
+	tb_company_parameter.value = "app_inventory_inputunpost/viewRegisterFormato80mmFarmaLeyOnlyQuantity" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVENTORY_URL_PRINTER_INPUTUNPOST_ONLY_QUANTITY";## URL PARA LA IMPRESION DE ORDEN DE COMPRA
