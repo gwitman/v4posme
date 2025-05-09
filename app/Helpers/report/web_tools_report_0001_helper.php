@@ -8631,15 +8631,31 @@ function helper_reporte80mmTransactionMaster(
 					else
 					{	
 						
+						$texto 		= $key;
 						if($rowin > 0 && $colun == 0)
-						$cuerpo 	= $cuerpo."<tr >";								
+						{
+							$cuerpo 	= $cuerpo."<tr >";															
+							$cuerpo = $cuerpo."<td colspan='3' >";
+							$cuerpo = $cuerpo.$confiDetalle[$colun]["prefix_row_data"]." ".$texto;
+							$cuerpo = $cuerpo."</td>";								
+							$cuerpo = $cuerpo."</tr >";
+						}
+						else 
+						{
+							if($colun == 1)
+							$cuerpo 	= $cuerpo."<tr >";								
+							
+							if($colun == 1)
+							$cuerpo = $cuerpo."<td colspan='1' >";
+							else 
+							$cuerpo = $cuerpo."<td colspan='2' >";
 						
-						$cuerpo = $cuerpo."<td style=".$confiDetalle[$colun]["style_row_data"]." colspan='".$confiDetalle[$colun]["colspan_row_data"]."' >";
-						$cuerpo = $cuerpo.$confiDetalle[$colun]["prefix_row_data"]." ".$key;
-						$cuerpo = $cuerpo."</td>";								
-						
-						if($colun == $colunCantidad)
-						$cuerpo 	= $cuerpo."</tr >";
+							$cuerpo = $cuerpo.$confiDetalle[$colun]["prefix_row_data"]." ".$texto;
+							$cuerpo = $cuerpo."</td>";								
+							
+							if($colun == 2)
+							$cuerpo 	= $cuerpo."</tr ></br>";
+						}
 							
 					}
 						

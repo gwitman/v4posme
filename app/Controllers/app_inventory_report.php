@@ -800,6 +800,9 @@ class app_inventory_report extends _BaseController {
 				$objDataResult["typeCompay"]				= $objCompany->type;
 				$objDataResult["flavorIDCompay"]			= $objCompany->flavorID;
 				
+				if($objCompany->type == "chic")
+				return view("app_inventory_report/list_item_by_warehouse/view_a_disemp_chic",$objDataResult);//--finview-r
+				else 
 				return view("app_inventory_report/list_item_by_warehouse/view_a_disemp",$objDataResult);//--finview-r
 			}
 			
