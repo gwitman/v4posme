@@ -90,54 +90,21 @@
 					</div>
 					<div class="col-lg-6">	
 						
-						
-						
 						<div class="panel" style="margin-bottom:20px;">
 							<div class="panel-heading">
 								<div class="icon"><i class="icon20 i-health"></i></div> 
-								<h4>Ventas por usuario (Mes actual)</h4>
+								<h4>Estadistica</h4>
 								<a href="#" class="minimize"></a>
 							</div><!-- End .panel-heading -->
-							
+						
 							<div class="panel-body">								
-								<div id="grafico2" style="height:300px" ></div>
+								<div id="grafico4" style="height:300px" ></div>
 							</div><!-- End .panel-body -->
 						</div><!-- End .widget -->		
+						
+					
+						
 							
-						
-						
-						<div class="panel" style="margin-bottom:20px;">
-							<div class="panel-heading">
-								<div class="icon"><i class="icon20 i-health"></i></div> 
-								<h4>Pagos por dia (Mes actual)</h4>
-								<a href="#" class="minimize"></a>
-							</div><!-- End .panel-heading -->
-							<div class="panel-body">								
-								<div id="grafico4" style="height:150px" ></div>
-							</div><!-- End .panel-body -->
-						</div><!-- End .widget -->	
-						
-						<div class="panel" style="margin-bottom:20px;">
-							<div class="panel-heading">
-								<div class="icon"><i class="icon20 i-quotes-left"></i></div> 
-								<h4>Tipo de cambio</h4>
-								<a href="#" class="minimize"></a>
-							</div><!-- End .panel-heading -->
-						
-							<div class="panel-body">
-								<blockquote>
-									<p class="text-success">VALOR: <?php echo number_format($objExchangeRateCordobaDolar,2); ?></p>									
-									<small>Dolar a Cordoba</small>
-								</blockquote>
-								
-							   <blockquote>
-									<p class="text-danger">VALOR: <?php echo number_format($objExchangeRateDolarACordoba,4); ?></p>									
-									<small>Cordoba al Dolar</small>
-								</blockquote>
-							</div><!-- End .panel-body -->
-						</div><!-- End .widget -->	
-						
-						
 						<div class="panel <?php echo getBehavio($company->type,"core_dashboards","divPanelFormaPago","hidden"); ?>" style="margin-bottom:20px;display:none">
 							<div class="panel-heading">
 								<div class="icon"><i class="icon20 i-quotes-left"></i></div> 
@@ -226,77 +193,30 @@
 				</div>
 
 				<script>	
-					// https://www.w3schools.com/js/js_graphics_google_chart.asp
-					
-					var objPagosMensuales 				 			= JSON.parse('<?php echo json_encode($objPagosMensuales); ?>');	
-					var objVentasCreditoMensuales			 		= JSON.parse('<?php echo json_encode($objListVentasCreditoMensuales); ?>');	
-					var objVentasDeContadoMesActual		 			= JSON.parse('<?php echo json_encode($objListVentasContadoMesActual); ?>');	
-					var objVentaContadoMensuales			 		= JSON.parse('<?php echo json_encode($objListVentaContadoMensuales); ?>');	
-					var objDataPagosMensuales	 					= new Array();
-					var objDataSourceVentasCreditoMensuales	 		= new Array();
-					var objDataSourceVentasDeContadoMesActual	 	= new Array();
-					var objDataSourceVentasContadoMensuales	 		= new Array();
-					
-					objDataSourceVentasDeContadoMesActual.push(new Array("Dia","Ventas"));
-					for(var i = 0 ; i < objVentasDeContadoMesActual.length;i++)
-					{
-						objDataSourceVentasDeContadoMesActual.push(
-							new Array(
-								objVentasDeContadoMesActual[i].Dia,
-								parseInt(objVentasDeContadoMesActual[i].Venta)
-							)
-						);	
-					}
-					
-					
-					objDataSourceVentasContadoMensuales.push(new Array("Mes","Ventas"));
-					for(var i = 0 ; i < objVentaContadoMensuales.length;i++)
-					{
-						objDataSourceVentasContadoMensuales.push(
-							new Array(
-								objVentaContadoMensuales[i].Mes,
-								parseInt(objVentaContadoMensuales[i].Venta)
-							)
-						);	
-					}
-					
-					
-					
-					objDataPagosMensuales.push(new Array("Mes","Pagos"));
-					for(var i = 0 ; i < objPagosMensuales.length;i++)
-					{
-						objDataPagosMensuales.push(
-							new Array(
-								objPagosMensuales[i].Mes,
-								parseInt(objPagosMensuales[i].Pagos)
-							)
-						);	
-					}
-					
-					objDataSourceVentasCreditoMensuales.push(new Array("Mes","Ventas"));
-					for(var i = 0 ; i < objVentasCreditoMensuales.length;i++)
-					{
-						objDataSourceVentasCreditoMensuales.push(
-							new Array(
-								objVentasCreditoMensuales[i].Mes,
-								parseInt(objVentasCreditoMensuales[i].Venta)
-							)
-						);	
-					}
-					
-					
-					
-					
+					// https://www.w3schools.com/js/js_graphics_google_chart.asp					
 					$(document).ready(function(){
 						google.charts.load('current',{packages:['corechart']});							
-						google.charts.setOnLoadCallback(drawChartBarraVentasContadoMesActual);		
-						google.charts.setOnLoadCallback(drawChartPastelVentasContadoMensuales);		
+						google.charts.setOnLoadCallback(drawChartBarraVentasContadoMesActual);	
 						google.charts.setOnLoadCallback(drawChartPastelVentasCreditoMensuales);		
-						google.charts.setOnLoadCallback(drawChartBarraCapitalMensual);		
+						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasVendidos);	
 					});		
 					
 					function drawChartBarraVentasContadoMesActual() {
 
+						var objVentasDeContadoMesActual		 			= JSON.parse('<?php echo json_encode($objListVentasContadoMesActual); ?>');	
+						var objDataSourceVentasDeContadoMesActual	 	= new Array();					
+						objDataSourceVentasDeContadoMesActual.push(new Array("Dia","Ventas"));
+						
+						for(var i = 0 ; i < objVentasDeContadoMesActual.length;i++)
+						{
+							objDataSourceVentasDeContadoMesActual.push(
+								new Array(
+									objVentasDeContadoMesActual[i].Dia,
+									parseInt(objVentasDeContadoMesActual[i].Venta)
+								)
+							);	
+						}
+						
 						var data = google.visualization.arrayToDataTable(
 							objDataSourceVentasDeContadoMesActual
 						);
@@ -312,24 +232,22 @@
 
 					}
 					
-					function drawChartPastelVentasContadoMensuales() {
-
-						var data = google.visualization.arrayToDataTable(
-							objDataSourceVentasContadoMensuales
-						);
-
-						var options = {
-						  title: '',
-						  colors: ['#00C868', '#006E98', '#ec8f6e', '#f3b49f', '#f6c7b6'],
-						};
-
-						var chart = new google.visualization.PieChart(document.getElementById('grafico2'));
-						chart.draw(data, options);
-
-					}
-
 					function drawChartPastelVentasCreditoMensuales() {
 
+						var objDataSourceVentasCreditoMensuales	 		= new Array();
+						var objVentasCreditoMensuales			 		= JSON.parse('<?php echo json_encode($objListVentasCreditoMensuales); ?>');	
+						objDataSourceVentasCreditoMensuales.push(new Array("Mes","Ventas"));
+						for(var i = 0 ; i < objVentasCreditoMensuales.length;i++)
+						{
+							objDataSourceVentasCreditoMensuales.push(
+								new Array(
+									objVentasCreditoMensuales[i].Mes,
+									parseInt(objVentasCreditoMensuales[i].Venta)
+								)
+							);	
+						}
+						
+						
 						var data = google.visualization.arrayToDataTable(
 							objDataSourceVentasCreditoMensuales
 						);
@@ -344,23 +262,38 @@
 						chart.draw(data, options);
 
 					}
-							
 					
-					function drawChartBarraCapitalMensual() {
-
+					function drawChartBarraHorizontalProductosMasVendidos() {
+						var objDataSourceProductosMasVendidos	 	= new Array();
+						var objTransactionMaster 				 	= JSON.parse('<?php echo json_encode($objListVentas); ?>');	
+						
+						objDataSourceProductosMasVendidos.push(new Array("Colaborador","Venta"));
+						for(var i = 0 ; i < objTransactionMaster.length;i++)
+						{
+							objDataSourceProductosMasVendidos.push(
+								new Array(
+									objTransactionMaster[i].firtsName,
+									parseInt(objTransactionMaster[i].monto)
+								)
+							);	
+						}
+						
 						var data = google.visualization.arrayToDataTable(
-							objDataPagosMensuales
+							objDataSourceProductosMasVendidos
 						);
 
 						var options = {
-						  title: '',
+						  title: 'Colaboradores vs Venta',
 						  colors: ['#006E98', '#00C868', '#ec8f6e', '#f3b49f', '#f6c7b6'],
 						};
 
-						var chart = new google.visualization.ComboChart(document.getElementById('grafico4'));
+						var chart = new google.visualization.BarChart(document.getElementById('grafico4'));
 						chart.draw(data, options);
 
 					}
+					
+					
+
 											
 				</script>
 				

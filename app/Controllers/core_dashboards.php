@@ -598,56 +598,30 @@ class core_dashboards extends _BaseController {
         $objLastDate->setTime(0, 0, 0);
         $objNowDate 		= \DateTime::createFromFormat('Y-m-d H:i:s', helper_getDate());
         $objNowDate->setTime(0, 0, 0);
-        $objListVentasContadoMesActual = array();		
-        $objListVentasContadoMesActual = $this->Transaction_Master_Detail_Model->Default_Ventas_De_Contado_Mes_Actual($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objLastDate->format("Y-m-d") );
-
-
-        //Obtener Ventas de Contado Mensuales
-        $objFirstYearDate 				= \DateTime::createFromFormat('Y-m-d', $firstDateYear);
-        $objFirstYearDate->setTime(0, 0, 0);
-        $objFirstDate 					= \DateTime::createFromFormat('Y-m-d', $firstDate);
-        $objFirstDate->setTime(0, 0, 0);
-        $objListVentaContadoMensuales 	= array();
-		$objListVentaContadoMensuales 	= $this->Transaction_Master_Detail_Model->Default_Ventas_De_Contado_Mensuales($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objLastDate->format("Y-m-d") );
-		
+        $objListVentasContadoMesActual 						= array();		
+        $objListVentasContadoMesActual 						= $this->Transaction_Master_Detail_Model->Default_Ventas_De_Contado_Mes_Actual($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objLastDate->format("Y-m-d") );
+		$dataSession["objListVentasContadoMesActual"]		= $objListVentasContadoMesActual;
 
         //Obtener Ventas al Credito Mensuales
         $objFirstYearDate 		= \DateTime::createFromFormat('Y-m-d', $firstDateYear);
         $objFirstYearDate->setTime(0, 0, 0);
         $objFirstDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
         $objFirstDate->setTime(0, 0, 0);
-        $objListVentasCreditoMensuales = array();
-		$objListVentasCreditoMensuales = $this->Transaction_Master_Detail_Model->Default_Ventas_De_Credito_Mes_Actual($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDate->format("Y-m-d") );
+        $objListVentasCreditoMensuales 						= array();
+		$objListVentasCreditoMensuales 						= $this->Transaction_Master_Detail_Model->Default_Ventas_De_Credito_Mes_Actual($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDate->format("Y-m-d") );
+		$dataSession["objListVentasCreditoMensuales"]		= $objListVentasCreditoMensuales;
 		
 		
-       
-
-        //Obtener Capital Mensual
-        $objFirstYearDate 		= \DateTime::createFromFormat('Y-m-d', $firstDateYear);
-        $objFirstYearDate->setTime(0, 0, 0);
-        $objFirstDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
-        $objFirstDate->setTime(0, 0, 0);
-        $objPagosMensuales = array();
-        while($objFirstYearDate <= $objFirstDate)
-        {
-            $objLastDayMont =  \DateTime::createFromFormat('Y-m-d', $objFirstYearDate->format("Y-m-d"));
-            $objLastDayMont->modify('+1 month');
-            $objLastDayMont->modify('-1 day');
-            $objListCapitalMensualTemporal = $this->Transaction_Master_Detail_Model->Default_Pagos_Mensuales($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDayMont->format("Y-m-d") );
-            if($objListCapitalMensualTemporal)
-            {
-                array_push($objPagosMensuales, $objListCapitalMensualTemporal[0]);
-            }
-            $objFirstYearDate->modify('+1 month');
-        }
-
-
-        //Renderizar Resultado
-        $dataSession["objPagosMensuales"]					= $objPagosMensuales;
-        $dataSession["objListVentasCreditoMensuales"]		= $objListVentasCreditoMensuales;
-        $dataSession["objListVentasContadoMesActual"]		= $objListVentasContadoMesActual;
-        $dataSession["objListVentaContadoMensuales"]		= $objListVentaContadoMensuales;
+		
+		
+		$firstDate						= helper_PrimerDiaDelMes();
+		$lastDate						= helper_UltimoDiaDelMes();			
+		$objListVentas					= $this->Transaction_Master_Detail_Model->FarmaLey_get_rowBySalesByEmployeerMonthOnly_Sales($dataSession["user"]->companyID,$firstDate,$lastDate);
+		$dataSession["objListVentas"]	= $objListVentas;
+		
+		
         return $dataSession;
+		
     }
 	
     function getIndexDefault($dataSession)

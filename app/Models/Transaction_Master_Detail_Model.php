@@ -651,8 +651,62 @@ class Transaction_Master_Detail_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
+   function FarmaLey_get_rowBySalesByEmployeerMonthOnly_Sales($companyID,$dateFirst,$dateLast)
+   {
+	   
+	    $db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+	   		
+		$sql = "";
+		$sql = sprintf("
+			 select	
+				ifnull(nat.firstName,'ND') as firtsName,
+				sum(
+					case 
+						when t.transactionID = 19 then 
+							td.unitaryPrice * td.quantity	
+						else 
+							td.unitaryPrice * td.quantity	 * -1
+					end 
+				) as monto 
+			from 
+				tb_transaction_master t 
+				inner join tb_workflow_stage ws on 
+					t.statusID = ws.workflowStageID
+				left join tb_naturales nat on 
+					nat.entityID = t.entityIDSecondary 
+				inner join tb_transaction_master_detail td on 
+					td.transactionMasterID = t.transactionMasterID
+				inner join tb_item i on 
+					i.itemID = td.componentItemID
+			where 
+				t.transactionID in (19,20) and   
+				t.isActive = 1  and 
+				t.companyID = 2  and 
+				td.isActive = 1 and 
+				t.transactionOn between '$dateFirst' and '$dateLast' and 
+				i.name NOT LIKE '%s' and 
+				(
+					(
+						t.transactionID = 19 and 
+						t.statusID in ( 67 /*aplicada*/,68 /*anulada*/  )
+					)
+					or 
+					(
+						t.transactionID = 20 
+					)				
+				)
+			group by  
+				nat.firstName
+		","%repara%");
+	
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+			
+   }
    
-    function GlobalPro_get_rowBySalesByEmployeerMonthOnly_Sales($companyID,$dateFirst,$dateLast)
+   function GlobalPro_get_rowBySalesByEmployeerMonthOnly_Sales($companyID,$dateFirst,$dateLast)
    {
 	   
 	    $db 	= db_connect();
