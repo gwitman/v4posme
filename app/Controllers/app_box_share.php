@@ -212,9 +212,17 @@ class app_box_share extends _BaseController {
 			else 
 			{
 				
-				if(!$dataSession["role"]->isAdmin)
+				//Solo puede eliminar abonos si es administrador
+				//O si es administrador
+				if(
+					!(
+					$dataSession["role"]->isAdmin ||
+					str_contains($dataSession["role"]->name, "ADMINISTRADOR")
+					)
+				)
+				{
 					throw new \Exception(NOT_WORKFLOW_DELETE);
-					
+				}	
 				
 				//Obtener datos
 				$objTM 		= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
