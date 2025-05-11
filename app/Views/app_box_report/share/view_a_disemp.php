@@ -12,12 +12,40 @@
 		?>
 		
 	</head>
-	<body style="font-family:monospace;font-size:<?php echo $fontSize; ?>;margin:0px 0px 0px 0px"> 
+	<body style="font-family:monospace;font-size:smaller;margin:0px 0px 0px 0px"> 
 		
 		
 		<?php
-		$totalCordoba 							= 0;
-		$totalDolares 							= 0;
+		$width0  		= "1050px";//99
+		$width1  		= "0px";//480
+		$width2  		= "0px";//480
+		$width3  		= "0px";//480
+		$width4  		= "0px";//97
+		$width5  		= "0px";//150
+		$width6  		= "0px";//98
+		$width7  		= "0px";//110
+		$width8  		= "0px";//96
+		$width9  		= "0px";//115
+		$width10  		= "0px";//480
+		$width11  		= "0px";//0
+		$width12  		= "0px";//0
+		
+		
+		$totalCordoba 	= 0;
+		$totalDolares 	= 0;
+		$widthX 		= 1050;
+		$columnX 		= 13;
+		
+		echo helper_reporteGeneralCreateEncabezado(
+			'MOVIMIENTOS DE CAJA',
+			$objCompany->name,
+			$columnX,
+			'DEL '.$startOn.' AL '.$endOn,
+			"",
+			"",
+			$widthX."px"
+		);
+		
 		$configColumnAbonos["0"]["Titulo"] 		= "Codigo";		
 		$configColumnAbonos["1"]["Titulo"] 		= "Cliente";		
 		$configColumnAbonos["2"]["Titulo"] 		= "Moneda";		
@@ -46,8 +74,6 @@
 		$configColumnAbonos["11"]["FiledSouce"] 	= "conceptosName";	
 		$configColumnAbonos["12"]["FiledSouce"] 	= "conceptosSubName";	
 		
-		
-		
 		$configColumnAbonos["0"]["Formato"] 		= "";		
 		$configColumnAbonos["1"]["Formato"] 		= "";		
 		$configColumnAbonos["2"]["Formato"] 		= "";		
@@ -63,19 +89,19 @@
 		$configColumnAbonos["12"]["Formato"] 		= "";	
 		
 		
-		$configColumnAbonos["0"]["Width"] 		= "20px";		
-		$configColumnAbonos["1"]["Width"] 		= "220px";		
-		$configColumnAbonos["2"]["Width"] 		= "20px";		
-		$configColumnAbonos["3"]["Width"] 		= "500px";		
-		$configColumnAbonos["4"]["Width"] 		= "20px";		
-		$configColumnAbonos["5"]["Width"] 		= "200px";		
-		$configColumnAbonos["6"]["Width"] 		= "20px";		
-		$configColumnAbonos["7"]["Width"] 		= "20px";		
-		$configColumnAbonos["8"]["Width"] 		= "120px";		
-		$configColumnAbonos["9"]["Width"] 		= "120px";		
-		$configColumnAbonos["10"]["Width"] 		= "220px";	
-		$configColumnAbonos["11"]["Width"] 		= "80px";	
-		$configColumnAbonos["12"]["Width"] 		= "80px";	
+		$configColumnAbonos["0"]["Width"] 		= $width0;		
+		$configColumnAbonos["1"]["Width"] 		= $width1;		
+		$configColumnAbonos["2"]["Width"] 		= $width2;		
+		$configColumnAbonos["3"]["Width"] 		= $width3;		
+		$configColumnAbonos["4"]["Width"] 		= $width4;		
+		$configColumnAbonos["5"]["Width"] 		= $width5;		
+		$configColumnAbonos["6"]["Width"] 		= $width6;		
+		$configColumnAbonos["7"]["Width"] 		= $width7;		
+		$configColumnAbonos["8"]["Width"] 		= $width8;		
+		$configColumnAbonos["9"]["Width"] 		= $width9;		
+		$configColumnAbonos["10"]["Width"] 		= $width10;	
+		$configColumnAbonos["11"]["Width"] 		= $width11;	
+		$configColumnAbonos["12"]["Width"] 		= $width12;	
 		
 		$configColumnAbonos["0"]["Total"] 		= False;		
 		$configColumnAbonos["1"]["Total"] 		= False;		
@@ -91,93 +117,12 @@
 		$configColumnAbonos["11"]["Total"] 		= False;	
 		$configColumnAbonos["12"]["Total"] 		= False;	
 		
-		/********************************/
-		$configColumnAbonosDolares["0"]["Titulo"] 		= "Codigo";		
-		$configColumnAbonosDolares["1"]["Titulo"] 		= "Cliente";		
-		$configColumnAbonosDolares["2"]["Titulo"] 		= "Moneda";		
-		$configColumnAbonosDolares["3"]["Titulo"] 		= "Fecha";		
-		$configColumnAbonosDolares["4"]["Titulo"] 		= "Fac";		
-		$configColumnAbonosDolares["5"]["Titulo"] 		= "Transaccion";		
-		$configColumnAbonosDolares["6"]["Titulo"] 		= "Tran. Numero";		
-		$configColumnAbonosDolares["7"]["Titulo"] 		= "Estado";		
-		$configColumnAbonosDolares["8"]["Titulo"] 		= "Monto";		
-		$configColumnAbonosDolares["9"]["Titulo"] 		= "Usuario";		
-		$configColumnAbonosDolares["10"]["Titulo"] 		= "Nota";		
-		$configColumnAbonosDolares["11"]["Titulo"] 		= "Categoria";
-		$configColumnAbonosDolares["12"]["Titulo"] 		= "Sub Categoria";
-						   
-		$configColumnAbonosDolares["0"]["FiledSouce"] 		= "customerNumber";		
-		$configColumnAbonosDolares["1"]["FiledSouce"] 		= "firstName";		
-		$configColumnAbonosDolares["2"]["FiledSouce"] 		= "moneda";		
-		$configColumnAbonosDolares["3"]["FiledSouce"] 		= "transactionOn";		
-		$configColumnAbonosDolares["4"]["FiledSouce"] 		= "Fac";		
-		$configColumnAbonosDolares["5"]["FiledSouce"] 		= "transactionName";		
-		$configColumnAbonosDolares["6"]["FiledSouce"] 		= "transactionNumber";		
-		$configColumnAbonosDolares["7"]["FiledSouce"] 		= "estado";		
-		$configColumnAbonosDolares["8"]["FiledSouce"] 		= "montoFac";		
-		$configColumnAbonosDolares["9"]["FiledSouce"] 		= "nickname";		
-		$configColumnAbonosDolares["10"]["FiledSouce"] 		= "note";	
-		$configColumnAbonosDolares["11"]["FiledSouce"] 		= "conceptosName";	
-		$configColumnAbonosDolares["12"]["FiledSouce"] 		= "conceptosSubName";	
-						   
-		$configColumnAbonosDolares["0"]["Formato"] 		= "";		
-		$configColumnAbonosDolares["1"]["Formato"] 		= "";		
-		$configColumnAbonosDolares["2"]["Formato"] 		= "";		
-		$configColumnAbonosDolares["3"]["Formato"] 		= "DateTime";		
-		$configColumnAbonosDolares["4"]["Formato"] 		= "";		
-		$configColumnAbonosDolares["5"]["Formato"] 		= "";		
-		$configColumnAbonosDolares["6"]["Formato"] 		= "";		
-		$configColumnAbonosDolares["7"]["Formato"] 		= "";		
-		$configColumnAbonosDolares["8"]["Formato"] 		= "Number";		
-		$configColumnAbonosDolares["9"]["Formato"] 		= "";		
-		$configColumnAbonosDolares["10"]["Formato"] 	= "";	
-		$configColumnAbonosDolares["11"]["Formato"] 	= "";	
-		$configColumnAbonosDolares["12"]["Formato"] 	= "";	
-						   
-		$configColumnAbonosDolares["0"]["Width"] 		= "20px";		
-		$configColumnAbonosDolares["1"]["Width"] 		= "220px";		
-		$configColumnAbonosDolares["2"]["Width"] 		= "20px";		
-		$configColumnAbonosDolares["3"]["Width"] 		= "500px";		
-		$configColumnAbonosDolares["4"]["Width"] 		= "20px";		
-		$configColumnAbonosDolares["5"]["Width"] 		= "200px";		
-		$configColumnAbonosDolares["6"]["Width"] 		= "20px";		
-		$configColumnAbonosDolares["7"]["Width"] 		= "20px";		
-		$configColumnAbonosDolares["8"]["Width"] 		= "120px";		
-		$configColumnAbonosDolares["9"]["Width"] 		= "120px";		
-		$configColumnAbonosDolares["10"]["Width"] 		= "220px";	
-		$configColumnAbonosDolares["11"]["Width"] 		= "80px";	
-		$configColumnAbonosDolares["12"]["Width"] 		= "80px";	
-						   
-		$configColumnAbonosDolares["0"]["Total"] 		= False;		
-		$configColumnAbonosDolares["1"]["Total"] 		= False;		
-		$configColumnAbonosDolares["2"]["Total"] 		= False;		
-		$configColumnAbonosDolares["3"]["Total"] 		= False;		
-		$configColumnAbonosDolares["4"]["Total"] 		= False;		
-		$configColumnAbonosDolares["5"]["Total"] 		= False;		
-		$configColumnAbonosDolares["6"]["Total"] 		= False;		
-		$configColumnAbonosDolares["7"]["Total"] 		= False;		
-		$configColumnAbonosDolares["8"]["Total"] 		= True;		
-		$configColumnAbonosDolares["9"]["Total"] 		= False;		
-		$configColumnAbonosDolares["10"]["Total"] 		= False;	
-		$configColumnAbonosDolares["11"]["Total"] 		= False;	
-		$configColumnAbonosDolares["12"]["Total"] 		= False;	
-		/*******************************/
-		
-		$objDetailDolar 	= $objDetail;
 		$objDetailCordoba 	= $objDetail;
-		
 		if($objDetailCordoba != null)
 		$objDetailCordoba 	= array_filter($objDetailCordoba,function($var){
 			if (strtoupper($var["moneda"]) == "CORDOBA")
 				return true;
 		});
-		
-		if($objDetailDolar != null)
-		$objDetailDolar 	= array_filter($objDetailDolar,function($var){
-			if (strtoupper($var["moneda"]) == "DOLAR")
-				return true;
-		});
-		
 		
 		$resultadoAbonosCordoba = helper_reporteGeneralCreateTable(
 			$objDetailCordoba,
@@ -186,20 +131,18 @@
 			"CORDOBA = LISTA DE ABONOS/ ABONOS AL CAPITAL / CANCELACION ANTICIPADA "
 		);
 		
-		$resultadoAbonosDolar = helper_reporteGeneralCreateTable(
-			$objDetailDolar,
-			$configColumnAbonosDolares,
-			'0px',
-			"DOLARES = LISTA DE ABONOS/ ABONOS AL CAPITAL / CANCELACION ANTICIPADA ",
-			'68c778',
-			'black'
-		);
-		
 		$totalCordoba = 0 + ($resultadoAbonosCordoba["table"] === 0 ? 0 : $resultadoAbonosCordoba["configColumn"][8]["TotalValor"]);
-		$totalDolares = 0 + ($resultadoAbonosDolar["table"] === 0 ? 0 : $resultadoAbonosDolar["configColumn"][8]["TotalValor"]);
+		
 		
 		
 		?>
+		
+		<?php 
+		if($resultadoAbonosCordoba["table"] !== 0)
+		echo $resultadoAbonosCordoba["table"];
+		?>
+		<br/>
+		
 		
 		
 		<?php
@@ -247,19 +190,19 @@
 		$configColumnVentaContado["11"]["Formato"] 		= "";	
 		$configColumnVentaContado["12"]["Formato"] 		= "";	
 
-		$configColumnVentaContado["0"]["Width"] 		= "20px";		
-		$configColumnVentaContado["1"]["Width"] 		= "220px";		
-		$configColumnVentaContado["2"]["Width"] 		= "20px";		
-		$configColumnVentaContado["3"]["Width"] 		= "500px";		
-		$configColumnVentaContado["4"]["Width"] 		= "20px";		
-		$configColumnVentaContado["5"]["Width"] 		= "200px";		
-		$configColumnVentaContado["6"]["Width"] 		= "20px";		
-		$configColumnVentaContado["7"]["Width"] 		= "20px";		
-		$configColumnVentaContado["8"]["Width"] 		= "120px";		
-		$configColumnVentaContado["9"]["Width"] 		= "120px";		
-		$configColumnVentaContado["10"]["Width"] 		= "220px";			
-		$configColumnVentaContado["11"]["Width"] 		= "80px";			
-		$configColumnVentaContado["12"]["Width"] 		= "80px";	
+		$configColumnVentaContado["0"]["Width"] 		= $width0;	
+		$configColumnVentaContado["1"]["Width"] 		= $width1;	
+		$configColumnVentaContado["2"]["Width"] 		= $width2;	
+		$configColumnVentaContado["3"]["Width"] 		= $width3;	
+		$configColumnVentaContado["4"]["Width"] 		= $width4;	
+		$configColumnVentaContado["5"]["Width"] 		= $width5;	
+		$configColumnVentaContado["6"]["Width"] 		= $width6;	
+		$configColumnVentaContado["7"]["Width"] 		= $width7;	
+		$configColumnVentaContado["8"]["Width"] 		= $width8;	
+		$configColumnVentaContado["9"]["Width"] 		= $width9;	
+		$configColumnVentaContado["10"]["Width"] 		= $width10;		
+		$configColumnVentaContado["11"]["Width"] 		= $width11;		
+		$configColumnVentaContado["12"]["Width"] 		= $width12;
 		
 		
 		$configColumnVentaContado["0"]["Total"] 		= False;		
@@ -276,95 +219,12 @@
 		$configColumnVentaContado["11"]["Total"] 		= False;	
 		$configColumnVentaContado["12"]["Total"] 		= False;
 	
-		$configColumnVentaContadoDolares["0"]["Titulo"] 		= "Codigo";		
-		$configColumnVentaContadoDolares["1"]["Titulo"] 		= "Cliente";		
-		$configColumnVentaContadoDolares["2"]["Titulo"] 		= "Moneda";		
-		$configColumnVentaContadoDolares["3"]["Titulo"] 		= "Fecha";		
-		$configColumnVentaContadoDolares["4"]["Titulo"] 		= "Fac";		
-		$configColumnVentaContadoDolares["5"]["Titulo"] 		= "Transaccion";		
-		$configColumnVentaContadoDolares["6"]["Titulo"] 		= "Tran. Numero";		
-		$configColumnVentaContadoDolares["7"]["Titulo"] 		= "Estado";		
-		$configColumnVentaContadoDolares["8"]["Titulo"] 		= "Monto";		
-		$configColumnVentaContadoDolares["9"]["Titulo"] 		= "Usuario";		
-		$configColumnVentaContadoDolares["10"]["Titulo"] 		= "Nota";		
-		$configColumnVentaContadoDolares["11"]["Titulo"] 		= "Categoria";		
-		$configColumnVentaContadoDolares["12"]["Titulo"] 		= "Sub Categoria";		
-								 
-		$configColumnVentaContadoDolares["0"]["FiledSouce"] 		= "customerNumber";		
-		$configColumnVentaContadoDolares["1"]["FiledSouce"] 		= "firstName";		
-		$configColumnVentaContadoDolares["2"]["FiledSouce"] 		= "currencyName";		
-		$configColumnVentaContadoDolares["3"]["FiledSouce"] 		= "transactionOn";		
-		$configColumnVentaContadoDolares["4"]["FiledSouce"] 		= "transactionNumber";		
-		$configColumnVentaContadoDolares["5"]["FiledSouce"] 		= "tipo";		
-		$configColumnVentaContadoDolares["6"]["FiledSouce"] 		= "transactionNumber";		
-		$configColumnVentaContadoDolares["7"]["FiledSouce"] 		= "statusName";		
-		$configColumnVentaContadoDolares["8"]["FiledSouce"] 		= "totalDocument";		
-		$configColumnVentaContadoDolares["9"]["FiledSouce"] 		= "nickname";		
-		$configColumnVentaContadoDolares["10"]["FiledSouce"] 		= "";	
-		$configColumnVentaContadoDolares["11"]["FiledSouce"] 		= "categoryName";		
-		$configColumnVentaContadoDolares["12"]["FiledSouce"] 		= "categorySubName";		
-								 
-		$configColumnVentaContadoDolares["0"]["Formato"] 		= "";		
-		$configColumnVentaContadoDolares["1"]["Formato"] 		= "";		
-		$configColumnVentaContadoDolares["2"]["Formato"] 		= "";		
-		$configColumnVentaContadoDolares["3"]["Formato"] 		= "DateTime";		
-		$configColumnVentaContadoDolares["4"]["Formato"] 		= "";		
-		$configColumnVentaContadoDolares["5"]["Formato"] 		= "";		
-		$configColumnVentaContadoDolares["6"]["Formato"] 		= "";		
-		$configColumnVentaContadoDolares["7"]["Formato"] 		= "";		
-		$configColumnVentaContadoDolares["8"]["Formato"] 		= "Number";		
-		$configColumnVentaContadoDolares["9"]["Formato"] 		= "";		
-		$configColumnVentaContadoDolares["10"]["Formato"] 		= "";		
-		$configColumnVentaContadoDolares["11"]["Formato"] 		= "";		
-		$configColumnVentaContadoDolares["12"]["Formato"] 		= "";		
-								 
-		$configColumnVentaContadoDolares["0"]["Width"] 		= "20px";		
-		$configColumnVentaContadoDolares["1"]["Width"] 		= "220px";		
-		$configColumnVentaContadoDolares["2"]["Width"] 		= "20px";		
-		$configColumnVentaContadoDolares["3"]["Width"] 		= "500px";		
-		$configColumnVentaContadoDolares["4"]["Width"] 		= "20px";		
-		$configColumnVentaContadoDolares["5"]["Width"] 		= "200px";		
-		$configColumnVentaContadoDolares["6"]["Width"] 		= "20px";		
-		$configColumnVentaContadoDolares["7"]["Width"] 		= "20px";		
-		$configColumnVentaContadoDolares["8"]["Width"] 		= "120px";		
-		$configColumnVentaContadoDolares["9"]["Width"] 		= "120px";		
-		$configColumnVentaContadoDolares["10"]["Width"] 	= "220px";			
-		$configColumnVentaContadoDolares["11"]["Width"] 	= "80px";			
-		$configColumnVentaContadoDolares["12"]["Width"] 	= "80px";			
-								 
-								 
-		$configColumnVentaContadoDolares["0"]["Total"] 		= False;		
-		$configColumnVentaContadoDolares["1"]["Total"] 		= False;		
-		$configColumnVentaContadoDolares["2"]["Total"] 		= False;		
-		$configColumnVentaContadoDolares["3"]["Total"] 		= False;		
-		$configColumnVentaContadoDolares["4"]["Total"] 		= False;		
-		$configColumnVentaContadoDolares["5"]["Total"] 		= False;		
-		$configColumnVentaContadoDolares["6"]["Total"] 		= False;		
-		$configColumnVentaContadoDolares["7"]["Total"] 		= False;		
-		$configColumnVentaContadoDolares["8"]["Total"] 		= True;		
-		$configColumnVentaContadoDolares["9"]["Total"] 		= False;		
-		$configColumnVentaContadoDolares["10"]["Total"] 	= False;	
-		$configColumnVentaContadoDolares["11"]["Total"] 	= False;	
-		$configColumnVentaContadoDolares["12"]["Total"] 	= False;	
-		
-		
-		$objSalesDolar 		= $objSales;
-		$objSalesCordoba 	= $objSales;
-		
+		$objSalesCordoba 	= $objSales;		
 		if($objSalesCordoba != null)
 		$objSalesCordoba = array_filter($objSalesCordoba,function($var){
 			
 			if (
 				strtoupper($var["currencyName"]) == "CORDOBA" && 
-				strtoupper($var["tipo"]) != "CREDITO"
-			)
-				return true;
-		});
-		
-		if($objSalesDolar != null)
-		$objSalesDolar = array_filter($objSalesDolar,function($var){
-			if (
-				strtoupper($var["currencyName"]) == "DOLAR" && 
 				strtoupper($var["tipo"]) != "CREDITO"
 			)
 				return true;
@@ -376,20 +236,16 @@
 			'0px',
 			'CORDOBA = VENTAS DE CONTADO'
 		);
+
 		
-		$resultadoVentaContadoDolar = helper_reporteGeneralCreateTable(
-			$objSalesDolar,
-			$configColumnVentaContadoDolares,
-			'0px',
-			'DOLARES = VENTAS DE CONTADO',
-			'68c778',
-			'black'
-		);
-		
-		$totalCordoba = $totalCordoba + ($resultadoVentaContadoCordoba["table"] === 0 ? 0 : $resultadoVentaContadoCordoba["configColumn"][8]["TotalValor"]);
-		$totalDolares = $totalDolares + ($resultadoVentaContadoDolar["table"] === 0 ? 0 : $resultadoVentaContadoDolar["configColumn"][8]["TotalValor"]);
-		
+		$totalCordoba = $totalCordoba + ($resultadoVentaContadoCordoba["table"] === 0 ? 0 : $resultadoVentaContadoCordoba["configColumn"][8]["TotalValor"]);		
 		?>
+		
+		<?php 
+		if($resultadoVentaContadoCordoba["table"] !== 0)
+		echo $resultadoVentaContadoCordoba["table"];
+		?>
+		<br/>
 		
 	
 		<?php
@@ -436,19 +292,19 @@
 		$configColumnVentaCredito["11"]["Formato"] 		= "";			
 		$configColumnVentaCredito["12"]["Formato"] 		= "";			
 
-		$configColumnVentaCredito["0"]["Width"] 		= "20px";		
-		$configColumnVentaCredito["1"]["Width"] 		= "220px";		
-		$configColumnVentaCredito["2"]["Width"] 		= "20px";		
-		$configColumnVentaCredito["3"]["Width"] 		= "500px";		
-		$configColumnVentaCredito["4"]["Width"] 		= "20px";		
-		$configColumnVentaCredito["5"]["Width"] 		= "200px";		
-		$configColumnVentaCredito["6"]["Width"] 		= "20px";		
-		$configColumnVentaCredito["7"]["Width"] 		= "20px";		
-		$configColumnVentaCredito["8"]["Width"] 		= "120px";		
-		$configColumnVentaCredito["9"]["Width"] 		= "120px";		
-		$configColumnVentaCredito["10"]["Width"] 		= "220px";	
-		$configColumnVentaCredito["11"]["Width"] 		= "80px";					
-		$configColumnVentaCredito["12"]["Width"] 		= "80px";					
+		$configColumnVentaCredito["0"]["Width"] 		= $width0;	
+		$configColumnVentaCredito["1"]["Width"] 		= $width1;	
+		$configColumnVentaCredito["2"]["Width"] 		= $width2;	
+		$configColumnVentaCredito["3"]["Width"] 		= $width3;	
+		$configColumnVentaCredito["4"]["Width"] 		= $width4;	
+		$configColumnVentaCredito["5"]["Width"] 		= $width5;	
+		$configColumnVentaCredito["6"]["Width"] 		= $width6;	
+		$configColumnVentaCredito["7"]["Width"] 		= $width7;	
+		$configColumnVentaCredito["8"]["Width"] 		= $width8;	
+		$configColumnVentaCredito["9"]["Width"] 		= $width9;	
+		$configColumnVentaCredito["10"]["Width"] 		= $width10;
+		$configColumnVentaCredito["11"]["Width"] 		= $width11;				
+		$configColumnVentaCredito["12"]["Width"] 		= $width12;				
 						  
 		$configColumnVentaCredito["0"]["Total"] 		= False;		
 		$configColumnVentaCredito["1"]["Total"] 		= False;		
@@ -464,82 +320,7 @@
 		$configColumnVentaCredito["11"]["Total"] 		= False;
 		$configColumnVentaCredito["12"]["Total"] 		= False;
 		
-	
-		$configColumnVentaCreditoDolares["0"]["Titulo"] 		= "Codigo";		
-		$configColumnVentaCreditoDolares["1"]["Titulo"] 		= "Cliente";		
-		$configColumnVentaCreditoDolares["2"]["Titulo"] 		= "Moneda";		
-		$configColumnVentaCreditoDolares["3"]["Titulo"] 		= "Fecha";		
-		$configColumnVentaCreditoDolares["4"]["Titulo"] 		= "Fac";		
-		$configColumnVentaCreditoDolares["5"]["Titulo"] 		= "Transaccion";		
-		$configColumnVentaCreditoDolares["6"]["Titulo"] 		= "Tran. Numero";		
-		$configColumnVentaCreditoDolares["7"]["Titulo"] 		= "Estado";		
-		$configColumnVentaCreditoDolares["8"]["Titulo"] 		= "Monto";		
-		$configColumnVentaCreditoDolares["9"]["Titulo"] 		= "Usuario";		
-		$configColumnVentaCreditoDolares["10"]["Titulo"] 		= "Nota";		
-		$configColumnVentaCreditoDolares["11"]["Titulo"] 		= "Categoria";		
-		$configColumnVentaCreditoDolares["12"]["Titulo"] 		= "Sub Categoria";		
-							
-		$configColumnVentaCreditoDolares["0"]["FiledSouce"] 		= "customerNumber";		
-		$configColumnVentaCreditoDolares["1"]["FiledSouce"] 		= "firstName";		
-		$configColumnVentaCreditoDolares["2"]["FiledSouce"] 		= "currencyName";		
-		$configColumnVentaCreditoDolares["3"]["FiledSouce"] 		= "transactionOn";		
-		$configColumnVentaCreditoDolares["4"]["FiledSouce"] 		= "transactionNumber";		
-		$configColumnVentaCreditoDolares["5"]["FiledSouce"] 		= "tipo";		
-		$configColumnVentaCreditoDolares["6"]["FiledSouce"] 		= "transactionNumber";		
-		$configColumnVentaCreditoDolares["7"]["FiledSouce"] 		= "statusName";		
-		$configColumnVentaCreditoDolares["8"]["FiledSouce"] 		= "receiptAmount";		
-		$configColumnVentaCreditoDolares["9"]["FiledSouce"] 		= "nickname";		
-		$configColumnVentaCreditoDolares["10"]["FiledSouce"] 		= "";	
-		$configColumnVentaCreditoDolares["11"]["FiledSouce"] 		= "categoryName";		
-		$configColumnVentaCreditoDolares["12"]["FiledSouce"] 		= "categorySubName";		
-		
-		$configColumnVentaCreditoDolares["0"]["Formato"] 		= "";		
-		$configColumnVentaCreditoDolares["1"]["Formato"] 		= "";		
-		$configColumnVentaCreditoDolares["2"]["Formato"] 		= "";		
-		$configColumnVentaCreditoDolares["3"]["Formato"] 		= "DateTime";		
-		$configColumnVentaCreditoDolares["4"]["Formato"] 		= "";		
-		$configColumnVentaCreditoDolares["5"]["Formato"] 		= "";		
-		$configColumnVentaCreditoDolares["6"]["Formato"] 		= "";		
-		$configColumnVentaCreditoDolares["7"]["Formato"] 		= "";		
-		$configColumnVentaCreditoDolares["8"]["Formato"] 		= "Number";		
-		$configColumnVentaCreditoDolares["9"]["Formato"] 		= "";		
-		$configColumnVentaCreditoDolares["10"]["Formato"] 		= "";		
-		$configColumnVentaCreditoDolares["11"]["Formato"] 		= "";		
-		$configColumnVentaCreditoDolares["12"]["Formato"] 		= "";		
-							
-		$configColumnVentaCreditoDolares["0"]["Width"] 		= "20px";		
-		$configColumnVentaCreditoDolares["1"]["Width"] 		= "220px";		
-		$configColumnVentaCreditoDolares["2"]["Width"] 		= "20px";		
-		$configColumnVentaCreditoDolares["3"]["Width"] 		= "500px";		
-		$configColumnVentaCreditoDolares["4"]["Width"] 		= "20px";		
-		$configColumnVentaCreditoDolares["5"]["Width"] 		= "200px";		
-		$configColumnVentaCreditoDolares["6"]["Width"] 		= "20px";		
-		$configColumnVentaCreditoDolares["7"]["Width"] 		= "20px";		
-		$configColumnVentaCreditoDolares["8"]["Width"] 		= "120px";		
-		$configColumnVentaCreditoDolares["9"]["Width"] 		= "120px";		
-		$configColumnVentaCreditoDolares["10"]["Width"] 	= "220px";	
-		$configColumnVentaCreditoDolares["11"]["Width"] 	= "80px";				
-		$configColumnVentaCreditoDolares["12"]["Width"] 	= "80px";				
-								 
-								 
-		$configColumnVentaCreditoDolares["0"]["Total"] 		= False;		
-		$configColumnVentaCreditoDolares["1"]["Total"] 		= False;		
-		$configColumnVentaCreditoDolares["2"]["Total"] 		= False;		
-		$configColumnVentaCreditoDolares["3"]["Total"] 		= False;		
-		$configColumnVentaCreditoDolares["4"]["Total"] 		= False;		
-		$configColumnVentaCreditoDolares["5"]["Total"] 		= False;		
-		$configColumnVentaCreditoDolares["6"]["Total"] 		= False;		
-		$configColumnVentaCreditoDolares["7"]["Total"] 		= False;		
-		$configColumnVentaCreditoDolares["8"]["Total"] 		= True;		
-		$configColumnVentaCreditoDolares["9"]["Total"] 		= False;		
-		$configColumnVentaCreditoDolares["10"]["Total"] 	= False;	
-		$configColumnVentaCreditoDolares["11"]["Total"] 	= False;	
-		$configColumnVentaCreditoDolares["12"]["Total"] 	= False;	
-	
-		
-		$objSalesCreditoDolar 		= $objSalesCredito;
 		$objSalesCreditoCordoba 	= $objSalesCredito;
-		
 		if($objSalesCreditoCordoba != null)
 		$objSalesCreditoCordoba = array_filter($objSalesCreditoCordoba,function($var){
 			
@@ -549,39 +330,22 @@
 			)
 				return true;
 		});
-		
-		if($objSalesCreditoDolar != null)
-		$objSalesCreditoDolar = array_filter($objSalesCreditoDolar,function($var){
-			if (
-				strtoupper($var["currencyName"]) == "DOLAR" && 
-				strtoupper($var["tipo"]) == "CREDITO"
-			)
-				return true;
-		});
-		
 		$resultadoVentaCreditoCordoba = helper_reporteGeneralCreateTable(
 			$objSalesCreditoCordoba,
 			$configColumnVentaCredito,
 			'0px',
 			'CORDOBA = CREDITO PRIMA'
 		);
-		
-		$resultadoVentaCreditoDolar = helper_reporteGeneralCreateTable(
-			$objSalesCreditoDolar,
-			$configColumnVentaCreditoDolares,
-			'0px',
-			'DOLARES = CREDITO PRIMA',
-			'68c778',
-			'black'
-		);
-		
 		$totalCordoba = $totalCordoba + ($resultadoVentaCreditoCordoba["table"] === 0 ? 0 : $resultadoVentaCreditoCordoba["configColumn"][8]["TotalValor"]);
-		$totalDolares = $totalDolares + ($resultadoVentaCreditoDolar["table"] === 0 ? 0 : $resultadoVentaCreditoDolar["configColumn"][8]["TotalValor"]);
-		
 		?>
 		
+		<?php 
+		if($resultadoVentaCreditoCordoba["table"] !== 0)
+		echo $resultadoVentaCreditoCordoba["table"];
+		?>
+		<br/>
+
 		<?php
-		
 		$configColumnIngresoCaja["0"]["Titulo"] 		= "Codigo";		
 		$configColumnIngresoCaja["1"]["Titulo"] 		= "Cliente";		
 		$configColumnIngresoCaja["2"]["Titulo"] 		= "Moneda";		
@@ -624,19 +388,19 @@
 		$configColumnIngresoCaja["11"]["Formato"] 		= "";		
 		$configColumnIngresoCaja["12"]["Formato"] 		= "";		
 
-		$configColumnIngresoCaja["0"]["Width"] 		= "20px";		
-		$configColumnIngresoCaja["1"]["Width"] 		= "220px";		
-		$configColumnIngresoCaja["2"]["Width"] 		= "20px";		
-		$configColumnIngresoCaja["3"]["Width"] 		= "500px";		
-		$configColumnIngresoCaja["4"]["Width"] 		= "20px";		
-		$configColumnIngresoCaja["5"]["Width"] 		= "200px";		
-		$configColumnIngresoCaja["6"]["Width"] 		= "20px";		
-		$configColumnIngresoCaja["7"]["Width"] 		= "20px";		
-		$configColumnIngresoCaja["8"]["Width"] 		= "120px";		
-		$configColumnIngresoCaja["9"]["Width"] 		= "120px";		
-		$configColumnIngresoCaja["10"]["Width"] 	= "220px";	
-		$configColumnIngresoCaja["11"]["Width"] 	= "80px";				
-		$configColumnIngresoCaja["12"]["Width"] 	= "80px";				
+		$configColumnIngresoCaja["0"]["Width"] 		= $width0;	
+		$configColumnIngresoCaja["1"]["Width"] 		= $width1;	
+		$configColumnIngresoCaja["2"]["Width"] 		= $width2;	
+		$configColumnIngresoCaja["3"]["Width"] 		= $width3;	
+		$configColumnIngresoCaja["4"]["Width"] 		= $width4;	
+		$configColumnIngresoCaja["5"]["Width"] 		= $width5;	
+		$configColumnIngresoCaja["6"]["Width"] 		= $width6;	
+		$configColumnIngresoCaja["7"]["Width"] 		= $width7;	
+		$configColumnIngresoCaja["8"]["Width"] 		= $width8;	
+		$configColumnIngresoCaja["9"]["Width"] 		= $width9;	
+		$configColumnIngresoCaja["10"]["Width"] 	= $width10;
+		$configColumnIngresoCaja["11"]["Width"] 	= $width11;			
+		$configColumnIngresoCaja["12"]["Width"] 	= $width12;			
 		
 		$configColumnIngresoCaja["0"]["Total"] 		= False;		
 		$configColumnIngresoCaja["1"]["Total"] 		= False;		
@@ -652,116 +416,28 @@
 		$configColumnIngresoCaja["11"]["Total"] 	= False;				
 		$configColumnIngresoCaja["12"]["Total"] 	= False;				
 		
-		
-		
-		$configColumnIngresoCajaDolares["0"]["Titulo"] 		= "Codigo";		
-		$configColumnIngresoCajaDolares["1"]["Titulo"] 		= "Cliente";		
-		$configColumnIngresoCajaDolares["2"]["Titulo"] 		= "Moneda";		
-		$configColumnIngresoCajaDolares["3"]["Titulo"] 		= "Fecha";		
-		$configColumnIngresoCajaDolares["4"]["Titulo"] 		= "Fac";		
-		$configColumnIngresoCajaDolares["5"]["Titulo"] 		= "Transaccion";		
-		$configColumnIngresoCajaDolares["6"]["Titulo"] 		= "Tran. Numero";		
-		$configColumnIngresoCajaDolares["7"]["Titulo"] 		= "Estado";		
-		$configColumnIngresoCajaDolares["8"]["Titulo"] 		= "Monto";		
-		$configColumnIngresoCajaDolares["9"]["Titulo"] 		= "Usuario";		
-		$configColumnIngresoCajaDolares["10"]["Titulo"] 		= "Nota";		
-		$configColumnIngresoCajaDolares["11"]["Titulo"] 		= "Tipo";		
-		$configColumnIngresoCajaDolares["12"]["Titulo"] 		= "Sub Tipo";		
-								
-		$configColumnIngresoCajaDolares["0"]["FiledSouce"] 		= "transactionNumber";		
-		$configColumnIngresoCajaDolares["1"]["FiledSouce"] 		= "transactionNumber";		
-		$configColumnIngresoCajaDolares["2"]["FiledSouce"] 		= "moneda";		
-		$configColumnIngresoCajaDolares["3"]["FiledSouce"] 		= "transactionOn";		
-		$configColumnIngresoCajaDolares["4"]["FiledSouce"] 		= "transactionNumber";		
-		$configColumnIngresoCajaDolares["5"]["FiledSouce"] 		= "transactionName";		
-		$configColumnIngresoCajaDolares["6"]["FiledSouce"] 		= "transactionNumber";		
-		$configColumnIngresoCajaDolares["7"]["FiledSouce"] 		= "estado";		
-		$configColumnIngresoCajaDolares["8"]["FiledSouce"] 		= "montoTransaccion";		
-		$configColumnIngresoCajaDolares["9"]["FiledSouce"] 		= "nickname";		
-		$configColumnIngresoCajaDolares["10"]["FiledSouce"] 	= "note";	
-		$configColumnIngresoCajaDolares["11"]["FiledSouce"] 	= "tipoEntrada";								
-		$configColumnIngresoCajaDolares["12"]["FiledSouce"] 	= "tipoSubEntrada";								
-								
-		$configColumnIngresoCajaDolares["0"]["Formato"] 		= "";		
-		$configColumnIngresoCajaDolares["1"]["Formato"] 		= "";		
-		$configColumnIngresoCajaDolares["2"]["Formato"] 		= "";		
-		$configColumnIngresoCajaDolares["3"]["Formato"] 		= "DateTime";		
-		$configColumnIngresoCajaDolares["4"]["Formato"] 		= "";		
-		$configColumnIngresoCajaDolares["5"]["Formato"] 		= "";		
-		$configColumnIngresoCajaDolares["6"]["Formato"] 		= "";		
-		$configColumnIngresoCajaDolares["7"]["Formato"] 		= "";		
-		$configColumnIngresoCajaDolares["8"]["Formato"] 		= "Number";		
-		$configColumnIngresoCajaDolares["9"]["Formato"] 		= "";		
-		$configColumnIngresoCajaDolares["10"]["Formato"] 		= "";	
-		$configColumnIngresoCajaDolares["11"]["Formato"] 		= "";	
-		$configColumnIngresoCajaDolares["12"]["Formato"] 		= "";	
-								
-		$configColumnIngresoCajaDolares["0"]["Width"] 		= "20px";		
-		$configColumnIngresoCajaDolares["1"]["Width"] 		= "220px";		
-		$configColumnIngresoCajaDolares["2"]["Width"] 		= "20px";		
-		$configColumnIngresoCajaDolares["3"]["Width"] 		= "500px";		
-		$configColumnIngresoCajaDolares["4"]["Width"] 		= "20px";		
-		$configColumnIngresoCajaDolares["5"]["Width"] 		= "200px";		
-		$configColumnIngresoCajaDolares["6"]["Width"] 		= "20px";		
-		$configColumnIngresoCajaDolares["7"]["Width"] 		= "20px";		
-		$configColumnIngresoCajaDolares["8"]["Width"] 		= "120px";		
-		$configColumnIngresoCajaDolares["9"]["Width"] 		= "120px";		
-		$configColumnIngresoCajaDolares["10"]["Width"] 		= "220px";		
-		$configColumnIngresoCajaDolares["11"]["Width"] 		= "80px";			
-		$configColumnIngresoCajaDolares["12"]["Width"] 		= "80px";			
-								
-		$configColumnIngresoCajaDolares["0"]["Total"] 		= False;		
-		$configColumnIngresoCajaDolares["1"]["Total"] 		= False;		
-		$configColumnIngresoCajaDolares["2"]["Total"] 		= False;		
-		$configColumnIngresoCajaDolares["3"]["Total"] 		= False;		
-		$configColumnIngresoCajaDolares["4"]["Total"] 		= False;		
-		$configColumnIngresoCajaDolares["5"]["Total"] 		= False;		
-		$configColumnIngresoCajaDolares["6"]["Total"] 		= False;		
-		$configColumnIngresoCajaDolares["7"]["Total"] 		= False;		
-		$configColumnIngresoCajaDolares["8"]["Total"] 		= True;		
-		$configColumnIngresoCajaDolares["9"]["Total"] 		= False;		
-		$configColumnIngresoCajaDolares["10"]["Total"] 		= False;	
-		$configColumnIngresoCajaDolares["11"]["Total"] 		= False;			
-		$configColumnIngresoCajaDolares["12"]["Total"] 		= False;			
-		
-		
-		
-		$objCashDolar 	= $objCash;
-		$objCashCordoba = $objCash;
-		
+		$objCashCordoba = $objCash;		
 		if($objCashCordoba != null)
 		$objCashCordoba = array_filter($objCashCordoba,function($var){
 			if (strtoupper($var["moneda"]) == "CORDOBA")
 				return true;
 		});
-		
-		if($objCashDolar != null)
-		$objCashDolar = array_filter($objCashDolar,function($var){
-			if (strtoupper($var["moneda"]) == "DOLAR")
-				return true;
-		});
-		
 		$resultadoIngresoCajaCordoba = helper_reporteGeneralCreateTable(
 			$objCashCordoba,
 			$configColumnIngresoCaja,
 			'0px',
 			'CORDOBA = INGRESO DE CAJA'
 		);
-		
-		$resultadoIngresoCajaDolares = helper_reporteGeneralCreateTable(
-			$objCashDolar,
-			$configColumnIngresoCajaDolares,
-			'0px',
-			'DOLARES = INGRESO DE CAJA',
-			'68c778',
-			'black'
-		);
-		
-		
 		$totalCordoba = $totalCordoba + ($resultadoIngresoCajaCordoba["table"] === 0 ? 0 : $resultadoIngresoCajaCordoba["configColumn"][8]["TotalValor"]);
-		$totalDolares = $totalDolares + ($resultadoIngresoCajaDolares["table"] === 0 ? 0 : $resultadoIngresoCajaDolares["configColumn"][8]["TotalValor"]);
+		
 		
 		?>
+		
+		<?php 
+		if($resultadoIngresoCajaCordoba["table"] !== 0)
+		echo $resultadoIngresoCajaCordoba["table"];
+		?>
+		<br/>
 		
 		
 		<?php
@@ -808,19 +484,19 @@
 		$configColumnSalidaCaja["11"]["Formato"] 		= "";				
 		$configColumnSalidaCaja["12"]["Formato"] 		= "";				
 		
-		$configColumnSalidaCaja["0"]["Width"] 		= "20px";		
-		$configColumnSalidaCaja["1"]["Width"] 		= "220px";		
-		$configColumnSalidaCaja["2"]["Width"] 		= "20px";		
-		$configColumnSalidaCaja["3"]["Width"] 		= "500px";		
-		$configColumnSalidaCaja["4"]["Width"] 		= "20px";		
-		$configColumnSalidaCaja["5"]["Width"] 		= "200px";		
-		$configColumnSalidaCaja["6"]["Width"] 		= "20px";		
-		$configColumnSalidaCaja["7"]["Width"] 		= "20px";		
-		$configColumnSalidaCaja["8"]["Width"] 		= "120px";		
-		$configColumnSalidaCaja["9"]["Width"] 		= "120px";		
-		$configColumnSalidaCaja["10"]["Width"] 		= "220px";	
-		$configColumnSalidaCaja["11"]["Width"] 		= "80px";	
-		$configColumnSalidaCaja["12"]["Width"] 		= "80px";	
+		$configColumnSalidaCaja["0"]["Width"] 		= $width0;	
+		$configColumnSalidaCaja["1"]["Width"] 		= $width1;	
+		$configColumnSalidaCaja["2"]["Width"] 		= $width2;	
+		$configColumnSalidaCaja["3"]["Width"] 		= $width3;	
+		$configColumnSalidaCaja["4"]["Width"] 		= $width4;	
+		$configColumnSalidaCaja["5"]["Width"] 		= $width5;	
+		$configColumnSalidaCaja["6"]["Width"] 		= $width6;	
+		$configColumnSalidaCaja["7"]["Width"] 		= $width7;	
+		$configColumnSalidaCaja["8"]["Width"] 		= $width8;	
+		$configColumnSalidaCaja["9"]["Width"] 		= $width9;	
+		$configColumnSalidaCaja["10"]["Width"] 		= $width10;
+		$configColumnSalidaCaja["11"]["Width"] 		= $width11;
+		$configColumnSalidaCaja["12"]["Width"] 		= $width12;
 		
 		$configColumnSalidaCaja["0"]["Total"] 		= False;		
 		$configColumnSalidaCaja["1"]["Total"] 		= False;		
@@ -835,7 +511,459 @@
 		$configColumnSalidaCaja["10"]["Total"] 		= False;	
 		$configColumnSalidaCaja["11"]["Total"] 		= False;	
 		$configColumnSalidaCaja["12"]["Total"] 		= False;	
+
+		$objCashOutCordoba 	= $objCashOut;
+		if($objCashOutCordoba != null)
+		$objCashOutCordoba = array_filter($objCashOutCordoba,function($var){
+			if (strtoupper($var["moneda"]) == "CORDOBA")
+				return true;
+		});
+		$resultadoSalidaCajaCordoba = helper_reporteGeneralCreateTable(
+				$objCashOutCordoba,
+				$configColumnSalidaCaja,
+				'0px',
+				'CORDOBA = SALIDA DE CAJA'
+		);
+		
+		$totalCordoba = $totalCordoba - ($resultadoSalidaCajaCordoba["table"] === 0 ? 0 : $resultadoSalidaCajaCordoba["configColumn"][8]["TotalValor"]);
+		?>
+		
+		<br/>			
 	
+		<?php 
+		if($resultadoSalidaCajaCordoba["table"] !== 0)
+		echo $resultadoSalidaCajaCordoba["table"];
+		?>
+		<br/>
+		
+	
+	
+		<?php 		
+		$configTotalesColumns[0]["Titulo"] 		= "Total Cordoba";			
+		$configTotalesColumns[0]["FiledSouce"] 	= "total";
+		$configTotalesColumns[0]["Formato"] 	= "Number";
+		$configTotalesColumns[0]["Colspan"] 	= $columnX;		
+		$configTotalesColumns[0]["Width"] 		= $widthX."px";
+		$detailTotales[0]["total"] 				= $totalCordoba;
+		
+		
+		$rosTotales = helper_reporteGeneralCreateTable(
+				$detailTotales,
+				$configTotalesColumns,
+				'0',
+				NULL
+				
+		);
+		
+		echo $rosTotales["table"];
+		
+		?>
+		
+		
+				<?php 
+		/********************************/
+		$configColumnAbonosDolares["0"]["Titulo"] 		= "Codigo";		
+		$configColumnAbonosDolares["1"]["Titulo"] 		= "Cliente";		
+		$configColumnAbonosDolares["2"]["Titulo"] 		= "Moneda";		
+		$configColumnAbonosDolares["3"]["Titulo"] 		= "Fecha";		
+		$configColumnAbonosDolares["4"]["Titulo"] 		= "Fac";		
+		$configColumnAbonosDolares["5"]["Titulo"] 		= "Transaccion";		
+		$configColumnAbonosDolares["6"]["Titulo"] 		= "Tran. Numero";		
+		$configColumnAbonosDolares["7"]["Titulo"] 		= "Estado";		
+		$configColumnAbonosDolares["8"]["Titulo"] 		= "Monto";		
+		$configColumnAbonosDolares["9"]["Titulo"] 		= "Usuario";		
+		$configColumnAbonosDolares["10"]["Titulo"] 		= "Nota";		
+		$configColumnAbonosDolares["11"]["Titulo"] 		= "Categoria";
+		$configColumnAbonosDolares["12"]["Titulo"] 		= "Sub Categoria";
+						   
+		$configColumnAbonosDolares["0"]["FiledSouce"] 		= "customerNumber";		
+		$configColumnAbonosDolares["1"]["FiledSouce"] 		= "firstName";		
+		$configColumnAbonosDolares["2"]["FiledSouce"] 		= "moneda";		
+		$configColumnAbonosDolares["3"]["FiledSouce"] 		= "transactionOn";		
+		$configColumnAbonosDolares["4"]["FiledSouce"] 		= "Fac";		
+		$configColumnAbonosDolares["5"]["FiledSouce"] 		= "transactionName";		
+		$configColumnAbonosDolares["6"]["FiledSouce"] 		= "transactionNumber";		
+		$configColumnAbonosDolares["7"]["FiledSouce"] 		= "estado";		
+		$configColumnAbonosDolares["8"]["FiledSouce"] 		= "montoFac";		
+		$configColumnAbonosDolares["9"]["FiledSouce"] 		= "nickname";		
+		$configColumnAbonosDolares["10"]["FiledSouce"] 		= "note";	
+		$configColumnAbonosDolares["11"]["FiledSouce"] 		= "conceptosName";	
+		$configColumnAbonosDolares["12"]["FiledSouce"] 		= "conceptosSubName";	
+						   
+		$configColumnAbonosDolares["0"]["Formato"] 		= "";		
+		$configColumnAbonosDolares["1"]["Formato"] 		= "";		
+		$configColumnAbonosDolares["2"]["Formato"] 		= "";		
+		$configColumnAbonosDolares["3"]["Formato"] 		= "DateTime";		
+		$configColumnAbonosDolares["4"]["Formato"] 		= "";		
+		$configColumnAbonosDolares["5"]["Formato"] 		= "";		
+		$configColumnAbonosDolares["6"]["Formato"] 		= "";		
+		$configColumnAbonosDolares["7"]["Formato"] 		= "";		
+		$configColumnAbonosDolares["8"]["Formato"] 		= "Number";		
+		$configColumnAbonosDolares["9"]["Formato"] 		= "";		
+		$configColumnAbonosDolares["10"]["Formato"] 	= "";	
+		$configColumnAbonosDolares["11"]["Formato"] 	= "";	
+		$configColumnAbonosDolares["12"]["Formato"] 	= "";	
+						   
+		$configColumnAbonosDolares["0"]["Width"] 		= $width0;	
+		$configColumnAbonosDolares["1"]["Width"] 		= $width1;	
+		$configColumnAbonosDolares["2"]["Width"] 		= $width2;	
+		$configColumnAbonosDolares["3"]["Width"] 		= $width3;	
+		$configColumnAbonosDolares["4"]["Width"] 		= $width4;	
+		$configColumnAbonosDolares["5"]["Width"] 		= $width5;	
+		$configColumnAbonosDolares["6"]["Width"] 		= $width6;	
+		$configColumnAbonosDolares["7"]["Width"] 		= $width7;	
+		$configColumnAbonosDolares["8"]["Width"] 		= $width8;	
+		$configColumnAbonosDolares["9"]["Width"] 		= $width9;	
+		$configColumnAbonosDolares["10"]["Width"] 		= $width10;
+		$configColumnAbonosDolares["11"]["Width"] 		= $width11;
+		$configColumnAbonosDolares["12"]["Width"] 		= $width12;
+						   
+		$configColumnAbonosDolares["0"]["Total"] 		= False;		
+		$configColumnAbonosDolares["1"]["Total"] 		= False;		
+		$configColumnAbonosDolares["2"]["Total"] 		= False;		
+		$configColumnAbonosDolares["3"]["Total"] 		= False;		
+		$configColumnAbonosDolares["4"]["Total"] 		= False;		
+		$configColumnAbonosDolares["5"]["Total"] 		= False;		
+		$configColumnAbonosDolares["6"]["Total"] 		= False;		
+		$configColumnAbonosDolares["7"]["Total"] 		= False;		
+		$configColumnAbonosDolares["8"]["Total"] 		= True;		
+		$configColumnAbonosDolares["9"]["Total"] 		= False;		
+		$configColumnAbonosDolares["10"]["Total"] 		= False;	
+		$configColumnAbonosDolares["11"]["Total"] 		= False;	
+		$configColumnAbonosDolares["12"]["Total"] 		= False;	
+		
+		$objDetailDolar 	= $objDetail;
+		if($objDetailDolar != null)
+		$objDetailDolar 	= array_filter($objDetailDolar,function($var){
+			if (strtoupper($var["moneda"]) == "DOLAR")
+				return true;
+		});
+		
+		$resultadoAbonosDolar = helper_reporteGeneralCreateTable(
+			$objDetailDolar,
+			$configColumnAbonosDolares,
+			'0px',
+			"DOLARES = LISTA DE ABONOS/ ABONOS AL CAPITAL / CANCELACION ANTICIPADA ",
+			'68c778',
+			'black'
+		);
+		
+		$totalDolares = 0 + ($resultadoAbonosDolar["table"] === 0 ? 0 : $resultadoAbonosDolar["configColumn"][8]["TotalValor"]);
+		?>
+		
+		<?php 
+		if($resultadoAbonosDolar["table"] !== 0)
+		echo $resultadoAbonosDolar["table"];
+		?>
+		<br/>
+		
+		
+		<?php
+		
+		$configColumnVentaContadoDolares["0"]["Titulo"] 		= "Codigo";		
+		$configColumnVentaContadoDolares["1"]["Titulo"] 		= "Cliente";		
+		$configColumnVentaContadoDolares["2"]["Titulo"] 		= "Moneda";		
+		$configColumnVentaContadoDolares["3"]["Titulo"] 		= "Fecha";		
+		$configColumnVentaContadoDolares["4"]["Titulo"] 		= "Fac";		
+		$configColumnVentaContadoDolares["5"]["Titulo"] 		= "Transaccion";		
+		$configColumnVentaContadoDolares["6"]["Titulo"] 		= "Tran. Numero";		
+		$configColumnVentaContadoDolares["7"]["Titulo"] 		= "Estado";		
+		$configColumnVentaContadoDolares["8"]["Titulo"] 		= "Monto";		
+		$configColumnVentaContadoDolares["9"]["Titulo"] 		= "Usuario";		
+		$configColumnVentaContadoDolares["10"]["Titulo"] 		= "Nota";		
+		$configColumnVentaContadoDolares["11"]["Titulo"] 		= "Categoria";		
+		$configColumnVentaContadoDolares["12"]["Titulo"] 		= "Sub Categoria";		
+								 
+		$configColumnVentaContadoDolares["0"]["FiledSouce"] 		= "customerNumber";		
+		$configColumnVentaContadoDolares["1"]["FiledSouce"] 		= "firstName";		
+		$configColumnVentaContadoDolares["2"]["FiledSouce"] 		= "currencyName";		
+		$configColumnVentaContadoDolares["3"]["FiledSouce"] 		= "transactionOn";		
+		$configColumnVentaContadoDolares["4"]["FiledSouce"] 		= "transactionNumber";		
+		$configColumnVentaContadoDolares["5"]["FiledSouce"] 		= "tipo";		
+		$configColumnVentaContadoDolares["6"]["FiledSouce"] 		= "transactionNumber";		
+		$configColumnVentaContadoDolares["7"]["FiledSouce"] 		= "statusName";		
+		$configColumnVentaContadoDolares["8"]["FiledSouce"] 		= "totalDocument";		
+		$configColumnVentaContadoDolares["9"]["FiledSouce"] 		= "nickname";		
+		$configColumnVentaContadoDolares["10"]["FiledSouce"] 		= "";	
+		$configColumnVentaContadoDolares["11"]["FiledSouce"] 		= "categoryName";		
+		$configColumnVentaContadoDolares["12"]["FiledSouce"] 		= "categorySubName";		
+								 
+		$configColumnVentaContadoDolares["0"]["Formato"] 		= "";		
+		$configColumnVentaContadoDolares["1"]["Formato"] 		= "";		
+		$configColumnVentaContadoDolares["2"]["Formato"] 		= "";		
+		$configColumnVentaContadoDolares["3"]["Formato"] 		= "DateTime";		
+		$configColumnVentaContadoDolares["4"]["Formato"] 		= "";		
+		$configColumnVentaContadoDolares["5"]["Formato"] 		= "";		
+		$configColumnVentaContadoDolares["6"]["Formato"] 		= "";		
+		$configColumnVentaContadoDolares["7"]["Formato"] 		= "";		
+		$configColumnVentaContadoDolares["8"]["Formato"] 		= "Number";		
+		$configColumnVentaContadoDolares["9"]["Formato"] 		= "";		
+		$configColumnVentaContadoDolares["10"]["Formato"] 		= "";		
+		$configColumnVentaContadoDolares["11"]["Formato"] 		= "";		
+		$configColumnVentaContadoDolares["12"]["Formato"] 		= "";		
+								 
+		$configColumnVentaContadoDolares["0"]["Width"] 		= $width0;	
+		$configColumnVentaContadoDolares["1"]["Width"] 		= $width1;	
+		$configColumnVentaContadoDolares["2"]["Width"] 		= $width2;	
+		$configColumnVentaContadoDolares["3"]["Width"] 		= $width3;	
+		$configColumnVentaContadoDolares["4"]["Width"] 		= $width4;	
+		$configColumnVentaContadoDolares["5"]["Width"] 		= $width5;	
+		$configColumnVentaContadoDolares["6"]["Width"] 		= $width6;	
+		$configColumnVentaContadoDolares["7"]["Width"] 		= $width7;	
+		$configColumnVentaContadoDolares["8"]["Width"] 		= $width8;	
+		$configColumnVentaContadoDolares["9"]["Width"] 		= $width9;	
+		$configColumnVentaContadoDolares["10"]["Width"] 	= $width10;		
+		$configColumnVentaContadoDolares["11"]["Width"] 	= $width11;		
+		$configColumnVentaContadoDolares["12"]["Width"] 	= $width12;		
+								 
+								 
+		$configColumnVentaContadoDolares["0"]["Total"] 		= False;		
+		$configColumnVentaContadoDolares["1"]["Total"] 		= False;		
+		$configColumnVentaContadoDolares["2"]["Total"] 		= False;		
+		$configColumnVentaContadoDolares["3"]["Total"] 		= False;		
+		$configColumnVentaContadoDolares["4"]["Total"] 		= False;		
+		$configColumnVentaContadoDolares["5"]["Total"] 		= False;		
+		$configColumnVentaContadoDolares["6"]["Total"] 		= False;		
+		$configColumnVentaContadoDolares["7"]["Total"] 		= False;		
+		$configColumnVentaContadoDolares["8"]["Total"] 		= True;		
+		$configColumnVentaContadoDolares["9"]["Total"] 		= False;		
+		$configColumnVentaContadoDolares["10"]["Total"] 	= False;	
+		$configColumnVentaContadoDolares["11"]["Total"] 	= False;	
+		$configColumnVentaContadoDolares["12"]["Total"] 	= False;	
+		
+		
+		$objSalesDolar 		= $objSales;
+		if($objSalesDolar != null)
+		$objSalesDolar = array_filter($objSalesDolar,function($var){
+			if (
+				strtoupper($var["currencyName"]) == "DOLAR" && 
+				strtoupper($var["tipo"]) != "CREDITO"
+			)
+				return true;
+		});
+		
+		$resultadoVentaContadoDolar = helper_reporteGeneralCreateTable(
+			$objSalesDolar,
+			$configColumnVentaContadoDolares,
+			'0px',
+			'DOLARES = VENTAS DE CONTADO',
+			'68c778',
+			'black'
+		);
+		
+		$totalDolares = $totalDolares + ($resultadoVentaContadoDolar["table"] === 0 ? 0 : $resultadoVentaContadoDolar["configColumn"][8]["TotalValor"]);
+		
+		
+		?>
+		
+		<?php 
+		if($resultadoVentaContadoDolar["table"] !== 0)
+		echo $resultadoVentaContadoDolar["table"];
+		?>
+		<br/>
+		
+		<?php
+		$configColumnVentaCreditoDolares["0"]["Titulo"] 		= "Codigo";		
+		$configColumnVentaCreditoDolares["1"]["Titulo"] 		= "Cliente";		
+		$configColumnVentaCreditoDolares["2"]["Titulo"] 		= "Moneda";		
+		$configColumnVentaCreditoDolares["3"]["Titulo"] 		= "Fecha";		
+		$configColumnVentaCreditoDolares["4"]["Titulo"] 		= "Fac";		
+		$configColumnVentaCreditoDolares["5"]["Titulo"] 		= "Transaccion";		
+		$configColumnVentaCreditoDolares["6"]["Titulo"] 		= "Tran. Numero";		
+		$configColumnVentaCreditoDolares["7"]["Titulo"] 		= "Estado";		
+		$configColumnVentaCreditoDolares["8"]["Titulo"] 		= "Monto";		
+		$configColumnVentaCreditoDolares["9"]["Titulo"] 		= "Usuario";		
+		$configColumnVentaCreditoDolares["10"]["Titulo"] 		= "Nota";		
+		$configColumnVentaCreditoDolares["11"]["Titulo"] 		= "Categoria";		
+		$configColumnVentaCreditoDolares["12"]["Titulo"] 		= "Sub Categoria";		
+							
+		$configColumnVentaCreditoDolares["0"]["FiledSouce"] 		= "customerNumber";		
+		$configColumnVentaCreditoDolares["1"]["FiledSouce"] 		= "firstName";		
+		$configColumnVentaCreditoDolares["2"]["FiledSouce"] 		= "currencyName";		
+		$configColumnVentaCreditoDolares["3"]["FiledSouce"] 		= "transactionOn";		
+		$configColumnVentaCreditoDolares["4"]["FiledSouce"] 		= "transactionNumber";		
+		$configColumnVentaCreditoDolares["5"]["FiledSouce"] 		= "tipo";		
+		$configColumnVentaCreditoDolares["6"]["FiledSouce"] 		= "transactionNumber";		
+		$configColumnVentaCreditoDolares["7"]["FiledSouce"] 		= "statusName";		
+		$configColumnVentaCreditoDolares["8"]["FiledSouce"] 		= "receiptAmount";		
+		$configColumnVentaCreditoDolares["9"]["FiledSouce"] 		= "nickname";		
+		$configColumnVentaCreditoDolares["10"]["FiledSouce"] 		= "";	
+		$configColumnVentaCreditoDolares["11"]["FiledSouce"] 		= "categoryName";		
+		$configColumnVentaCreditoDolares["12"]["FiledSouce"] 		= "categorySubName";		
+		
+		$configColumnVentaCreditoDolares["0"]["Formato"] 		= "";		
+		$configColumnVentaCreditoDolares["1"]["Formato"] 		= "";		
+		$configColumnVentaCreditoDolares["2"]["Formato"] 		= "";		
+		$configColumnVentaCreditoDolares["3"]["Formato"] 		= "DateTime";		
+		$configColumnVentaCreditoDolares["4"]["Formato"] 		= "";		
+		$configColumnVentaCreditoDolares["5"]["Formato"] 		= "";		
+		$configColumnVentaCreditoDolares["6"]["Formato"] 		= "";		
+		$configColumnVentaCreditoDolares["7"]["Formato"] 		= "";		
+		$configColumnVentaCreditoDolares["8"]["Formato"] 		= "Number";		
+		$configColumnVentaCreditoDolares["9"]["Formato"] 		= "";		
+		$configColumnVentaCreditoDolares["10"]["Formato"] 		= "";		
+		$configColumnVentaCreditoDolares["11"]["Formato"] 		= "";		
+		$configColumnVentaCreditoDolares["12"]["Formato"] 		= "";		
+							
+		$configColumnVentaCreditoDolares["0"]["Width"] 		= $width0;	
+		$configColumnVentaCreditoDolares["1"]["Width"] 		= $width1;	
+		$configColumnVentaCreditoDolares["2"]["Width"] 		= $width2;	
+		$configColumnVentaCreditoDolares["3"]["Width"] 		= $width3;	
+		$configColumnVentaCreditoDolares["4"]["Width"] 		= $width4;	
+		$configColumnVentaCreditoDolares["5"]["Width"] 		= $width5;	
+		$configColumnVentaCreditoDolares["6"]["Width"] 		= $width6;	
+		$configColumnVentaCreditoDolares["7"]["Width"] 		= $width7;	
+		$configColumnVentaCreditoDolares["8"]["Width"] 		= $width8;	
+		$configColumnVentaCreditoDolares["9"]["Width"] 		= $width9;	
+		$configColumnVentaCreditoDolares["10"]["Width"] 	= $width10;
+		$configColumnVentaCreditoDolares["11"]["Width"] 	= $width11;			
+		$configColumnVentaCreditoDolares["12"]["Width"] 	= $width12;			
+								 
+								 
+		$configColumnVentaCreditoDolares["0"]["Total"] 		= False;		
+		$configColumnVentaCreditoDolares["1"]["Total"] 		= False;		
+		$configColumnVentaCreditoDolares["2"]["Total"] 		= False;		
+		$configColumnVentaCreditoDolares["3"]["Total"] 		= False;		
+		$configColumnVentaCreditoDolares["4"]["Total"] 		= False;		
+		$configColumnVentaCreditoDolares["5"]["Total"] 		= False;		
+		$configColumnVentaCreditoDolares["6"]["Total"] 		= False;		
+		$configColumnVentaCreditoDolares["7"]["Total"] 		= False;		
+		$configColumnVentaCreditoDolares["8"]["Total"] 		= True;		
+		$configColumnVentaCreditoDolares["9"]["Total"] 		= False;		
+		$configColumnVentaCreditoDolares["10"]["Total"] 	= False;	
+		$configColumnVentaCreditoDolares["11"]["Total"] 	= False;	
+		$configColumnVentaCreditoDolares["12"]["Total"] 	= False;	
+	
+		$objSalesCreditoDolar 		= $objSalesCredito;
+		if($objSalesCreditoDolar != null)
+		$objSalesCreditoDolar = array_filter($objSalesCreditoDolar,function($var){
+			if (
+				strtoupper($var["currencyName"]) == "DOLAR" && 
+				strtoupper($var["tipo"]) == "CREDITO"
+			)
+				return true;
+		});
+		
+		$resultadoVentaCreditoDolar = helper_reporteGeneralCreateTable(
+			$objSalesCreditoDolar,
+			$configColumnVentaCreditoDolares,
+			'0px',
+			'DOLARES = CREDITO PRIMA',
+			'68c778',
+			'black'
+		);
+		
+		$totalDolares = $totalDolares + ($resultadoVentaCreditoDolar["table"] === 0 ? 0 : $resultadoVentaCreditoDolar["configColumn"][8]["TotalValor"]);
+		
+		
+		?>
+		
+		<?php 
+		if($resultadoVentaCreditoDolar["table"] !== 0)
+		echo $resultadoVentaCreditoDolar["table"];
+		?>
+		
+		<br/>
+		
+		
+		<?php
+		
+		$configColumnIngresoCajaDolares["0"]["Titulo"] 		= "Codigo";		
+		$configColumnIngresoCajaDolares["1"]["Titulo"] 		= "Cliente";		
+		$configColumnIngresoCajaDolares["2"]["Titulo"] 		= "Moneda";		
+		$configColumnIngresoCajaDolares["3"]["Titulo"] 		= "Fecha";		
+		$configColumnIngresoCajaDolares["4"]["Titulo"] 		= "Fac";		
+		$configColumnIngresoCajaDolares["5"]["Titulo"] 		= "Transaccion";		
+		$configColumnIngresoCajaDolares["6"]["Titulo"] 		= "Tran. Numero";		
+		$configColumnIngresoCajaDolares["7"]["Titulo"] 		= "Estado";		
+		$configColumnIngresoCajaDolares["8"]["Titulo"] 		= "Monto";		
+		$configColumnIngresoCajaDolares["9"]["Titulo"] 		= "Usuario";		
+		$configColumnIngresoCajaDolares["10"]["Titulo"] 		= "Nota";		
+		$configColumnIngresoCajaDolares["11"]["Titulo"] 		= "Tipo";		
+		$configColumnIngresoCajaDolares["12"]["Titulo"] 		= "Sub Tipo";		
+								
+		$configColumnIngresoCajaDolares["0"]["FiledSouce"] 		= "transactionNumber";		
+		$configColumnIngresoCajaDolares["1"]["FiledSouce"] 		= "transactionNumber";		
+		$configColumnIngresoCajaDolares["2"]["FiledSouce"] 		= "moneda";		
+		$configColumnIngresoCajaDolares["3"]["FiledSouce"] 		= "transactionOn";		
+		$configColumnIngresoCajaDolares["4"]["FiledSouce"] 		= "transactionNumber";		
+		$configColumnIngresoCajaDolares["5"]["FiledSouce"] 		= "transactionName";		
+		$configColumnIngresoCajaDolares["6"]["FiledSouce"] 		= "transactionNumber";		
+		$configColumnIngresoCajaDolares["7"]["FiledSouce"] 		= "estado";		
+		$configColumnIngresoCajaDolares["8"]["FiledSouce"] 		= "montoTransaccion";		
+		$configColumnIngresoCajaDolares["9"]["FiledSouce"] 		= "nickname";		
+		$configColumnIngresoCajaDolares["10"]["FiledSouce"] 	= "note";	
+		$configColumnIngresoCajaDolares["11"]["FiledSouce"] 	= "tipoEntrada";								
+		$configColumnIngresoCajaDolares["12"]["FiledSouce"] 	= "tipoSubEntrada";								
+								
+		$configColumnIngresoCajaDolares["0"]["Formato"] 		= "";		
+		$configColumnIngresoCajaDolares["1"]["Formato"] 		= "";		
+		$configColumnIngresoCajaDolares["2"]["Formato"] 		= "";		
+		$configColumnIngresoCajaDolares["3"]["Formato"] 		= "DateTime";		
+		$configColumnIngresoCajaDolares["4"]["Formato"] 		= "";		
+		$configColumnIngresoCajaDolares["5"]["Formato"] 		= "";		
+		$configColumnIngresoCajaDolares["6"]["Formato"] 		= "";		
+		$configColumnIngresoCajaDolares["7"]["Formato"] 		= "";		
+		$configColumnIngresoCajaDolares["8"]["Formato"] 		= "Number";		
+		$configColumnIngresoCajaDolares["9"]["Formato"] 		= "";		
+		$configColumnIngresoCajaDolares["10"]["Formato"] 		= "";	
+		$configColumnIngresoCajaDolares["11"]["Formato"] 		= "";	
+		$configColumnIngresoCajaDolares["12"]["Formato"] 		= "";	
+								
+		$configColumnIngresoCajaDolares["0"]["Width"] 		= $width0;	
+		$configColumnIngresoCajaDolares["1"]["Width"] 		= $width1;	
+		$configColumnIngresoCajaDolares["2"]["Width"] 		= $width2;	
+		$configColumnIngresoCajaDolares["3"]["Width"] 		= $width3;	
+		$configColumnIngresoCajaDolares["4"]["Width"] 		= $width4;	
+		$configColumnIngresoCajaDolares["5"]["Width"] 		= $width5;	
+		$configColumnIngresoCajaDolares["6"]["Width"] 		= $width6;	
+		$configColumnIngresoCajaDolares["7"]["Width"] 		= $width7;	
+		$configColumnIngresoCajaDolares["8"]["Width"] 		= $width8;	
+		$configColumnIngresoCajaDolares["9"]["Width"] 		= $width9;	
+		$configColumnIngresoCajaDolares["10"]["Width"] 		= $width10;	
+		$configColumnIngresoCajaDolares["11"]["Width"] 		= $width11;		
+		$configColumnIngresoCajaDolares["12"]["Width"] 		= $width12;		
+								
+		$configColumnIngresoCajaDolares["0"]["Total"] 		= False;		
+		$configColumnIngresoCajaDolares["1"]["Total"] 		= False;		
+		$configColumnIngresoCajaDolares["2"]["Total"] 		= False;		
+		$configColumnIngresoCajaDolares["3"]["Total"] 		= False;		
+		$configColumnIngresoCajaDolares["4"]["Total"] 		= False;		
+		$configColumnIngresoCajaDolares["5"]["Total"] 		= False;		
+		$configColumnIngresoCajaDolares["6"]["Total"] 		= False;		
+		$configColumnIngresoCajaDolares["7"]["Total"] 		= False;		
+		$configColumnIngresoCajaDolares["8"]["Total"] 		= True;		
+		$configColumnIngresoCajaDolares["9"]["Total"] 		= False;		
+		$configColumnIngresoCajaDolares["10"]["Total"] 		= False;	
+		$configColumnIngresoCajaDolares["11"]["Total"] 		= False;			
+		$configColumnIngresoCajaDolares["12"]["Total"] 		= False;			
+		
+		$objCashDolar 	= $objCash;
+		if($objCashDolar != null)
+		$objCashDolar = array_filter($objCashDolar,function($var){
+			if (strtoupper($var["moneda"]) == "DOLAR")
+				return true;
+		});
+		$resultadoIngresoCajaDolares = helper_reporteGeneralCreateTable(
+			$objCashDolar,
+			$configColumnIngresoCajaDolares,
+			'0px',
+			'DOLARES = INGRESO DE CAJA',
+			'68c778',
+			'black'
+		);
+		$totalDolares = $totalDolares + ($resultadoIngresoCajaDolares["table"] === 0 ? 0 : $resultadoIngresoCajaDolares["configColumn"][8]["TotalValor"]);
+		
+		?>
+
+		
+		<?php 
+		if($resultadoIngresoCajaDolares["table"] !== 0)
+		echo $resultadoIngresoCajaDolares["table"];
+		?>
+		<br/>
+		
+		<?php
 		$configColumnSalidaCajaDolares["0"]["Titulo"] 		= "Codigo";		
 		$configColumnSalidaCajaDolares["1"]["Titulo"] 		= "Cliente";		
 		$configColumnSalidaCajaDolares["2"]["Titulo"] 		= "Moneda";		
@@ -878,19 +1006,19 @@
 		$configColumnSalidaCajaDolares["11"]["Formato"] 	= "";				
 		$configColumnSalidaCajaDolares["12"]["Formato"] 	= "";				
 							   
-		$configColumnSalidaCajaDolares["0"]["Width"] 		= "20px";		
-		$configColumnSalidaCajaDolares["1"]["Width"] 		= "220px";		
-		$configColumnSalidaCajaDolares["2"]["Width"] 		= "20px";		
-		$configColumnSalidaCajaDolares["3"]["Width"] 		= "500px";		
-		$configColumnSalidaCajaDolares["4"]["Width"] 		= "20px";		
-		$configColumnSalidaCajaDolares["5"]["Width"] 		= "200px";		
-		$configColumnSalidaCajaDolares["6"]["Width"] 		= "20px";		
-		$configColumnSalidaCajaDolares["7"]["Width"] 		= "20px";		
-		$configColumnSalidaCajaDolares["8"]["Width"] 		= "120px";		
-		$configColumnSalidaCajaDolares["9"]["Width"] 		= "120px";		
-		$configColumnSalidaCajaDolares["10"]["Width"] 		= "220px";	
-		$configColumnSalidaCajaDolares["11"]["Width"] 		= "80px";	
-		$configColumnSalidaCajaDolares["12"]["Width"] 		= "80px";	
+		$configColumnSalidaCajaDolares["0"]["Width"] 		= $width0;		
+		$configColumnSalidaCajaDolares["1"]["Width"] 		= $width1;		
+		$configColumnSalidaCajaDolares["2"]["Width"] 		= $width2;		
+		$configColumnSalidaCajaDolares["3"]["Width"] 		= $width3;	
+		$configColumnSalidaCajaDolares["4"]["Width"] 		= $width4;	
+		$configColumnSalidaCajaDolares["5"]["Width"] 		= $width5;	
+		$configColumnSalidaCajaDolares["6"]["Width"] 		= $width6;	
+		$configColumnSalidaCajaDolares["7"]["Width"] 		= $width7;	
+		$configColumnSalidaCajaDolares["8"]["Width"] 		= $width8;	
+		$configColumnSalidaCajaDolares["9"]["Width"] 		= $width9;	
+		$configColumnSalidaCajaDolares["10"]["Width"] 		= $width10;
+		$configColumnSalidaCajaDolares["11"]["Width"] 		= $width11;
+		$configColumnSalidaCajaDolares["12"]["Width"] 		= $width12;
 							   
 		$configColumnSalidaCajaDolares["0"]["Total"] 		= False;		
 		$configColumnSalidaCajaDolares["1"]["Total"] 		= False;		
@@ -906,29 +1034,12 @@
 		$configColumnSalidaCajaDolares["11"]["Total"] 		= False;	
 		$configColumnSalidaCajaDolares["12"]["Total"] 		= False;	
 		
-
-
-		$objCashOutCordoba 	= $objCashOut;
 		$objCashOutDolar 	= $objCashOut;
-		
-		if($objCashOutCordoba != null)
-		$objCashOutCordoba = array_filter($objCashOutCordoba,function($var){
-			if (strtoupper($var["moneda"]) == "CORDOBA")
-				return true;
-		});
-		
 		if($objCashOutDolar != null)
 		$objCashOutDolar = array_filter($objCashOutDolar,function($var){
 			if (strtoupper($var["moneda"]) == "DOLAR")
 				return true;
 		});
-		
-		$resultadoSalidaCajaCordoba = helper_reporteGeneralCreateTable(
-				$objCashOutCordoba,
-				$configColumnSalidaCaja,
-				'0px',
-				'CORDOBA = SALIDA DE CAJA'
-		);
 		
 		$resultadoSalidaCajaDolares = helper_reporteGeneralCreateTable(
 				$objCashOutDolar,
@@ -938,183 +1049,9 @@
 				'68c778',
 				'black'
 		);
-		
-		
-		
-		
-		$totalCordoba = $totalCordoba - ($resultadoSalidaCajaCordoba["table"] === 0 ? 0 : $resultadoSalidaCajaCordoba["configColumn"][8]["TotalValor"]);
 		$totalDolares = $totalDolares - ($resultadoSalidaCajaDolares["table"] === 0 ? 0 : $resultadoSalidaCajaDolares["configColumn"][8]["TotalValor"]);
 		
-		
-		
 		?>
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-
-
-		<?php 
-		$widthX 	= 0;
-		$columnX 	= 0;
-		
-		
-		if($resultadoAbonosCordoba["columnas"] != 0 ){
-			$widthX 	= $resultadoAbonosCordoba["width"];
-			$columnX 	= $resultadoAbonosCordoba["columnas"];
-			
-		}
-		else if($resultadoAbonosDolar["columnas"] != 0 ){
-			$widthX 	= $resultadoAbonosDolar["width"];
-			$columnX 	= $resultadoAbonosDolar["columnas"];
-		}
-		else if($resultadoVentaContadoCordoba["columnas"] != 0 ){
-			$widthX 	= $resultadoVentaContadoCordoba["width"];
-			$columnX 	= $resultadoVentaContadoCordoba["columnas"];
-		}
-		else if($resultadoVentaContadoDolar["columnas"] != 0 ){
-			$widthX 	= $resultadoVentaContadoDolar["width"];
-			$columnX 	= $resultadoVentaContadoDolar["columnas"];
-		}
-		else if($resultadoVentaCreditoCordoba["columnas"] != 0 ){
-			$widthX 	= $resultadoVentaCreditoCordoba["width"];
-			$columnX 	= $resultadoVentaCreditoCordoba["columnas"];
-		}
-		else if($resultadoVentaCreditoDolar["columnas"] != 0 ){
-			$widthX 	= $resultadoVentaCreditoDolar["width"];
-			$columnX 	= $resultadoVentaCreditoDolar["columnas"];
-		}
-		else if($resultadoIngresoCajaCordoba["columnas"] != 0 ){
-			$widthX 	= $resultadoIngresoCajaCordoba["width"];
-			$columnX 	= $resultadoIngresoCajaCordoba["columnas"];
-		}
-		else if($resultadoIngresoCajaDolares["columnas"] != 0 ){
-			$widthX 	= $resultadoIngresoCajaDolares["width"];
-			$columnX 	= $resultadoIngresoCajaDolares["columnas"];
-		}
-		else if($resultadoSalidaCajaCordoba["columnas"] != 0 ){
-			$widthX 	= $resultadoSalidaCajaCordoba["width"];
-			$columnX 	= $resultadoSalidaCajaCordoba["columnas"];
-		}
-		else if($resultadoSalidaCajaDolares["columnas"] != 0 ){
-			$widthX 	= $resultadoSalidaCajaDolares["width"];
-			$columnX 	= $resultadoSalidaCajaDolares["columnas"];
-		}
-		else{
-			$widthX 	= "0px";
-			$columnX 	= 0;
-		}
-		
-		
-		echo helper_reporteGeneralCreateEncabezado(
-			'MOVIMIENTOS DE CAJA',
-			$objCompany->name,
-			$columnX,
-			'DEL '.$startOn.' AL '.$endOn,
-			"",
-			"",
-			"1000px" 
-		);
-		
-		?>
-		<br/>			
-		
-		
-		<?php 
-		if($resultadoAbonosCordoba["table"] !== 0)
-		echo $resultadoAbonosCordoba["table"];
-		?>
-		<br/>
-		<?php 
-		if($resultadoVentaContadoCordoba["table"] !== 0)
-		echo $resultadoVentaContadoCordoba["table"];
-		?>
-		<br/>
-		<?php 
-		if($resultadoVentaCreditoCordoba["table"] !== 0)
-		echo $resultadoVentaCreditoCordoba["table"];
-		?>
-		
-		<br/>
-		<?php 
-		if($resultadoIngresoCajaCordoba["table"] !== 0)
-		echo $resultadoIngresoCajaCordoba["table"];
-		?>
-		<br/>
-		
-		<?php 
-		if($resultadoSalidaCajaCordoba["table"] !== 0)
-		echo $resultadoSalidaCajaCordoba["table"];
-		?>
-		<br/>
-		
-	
-	
-		<?php 		
-		$configTotalesColumns[0]["Titulo"] = "Total Cordoba";			
-		$configTotalesColumns[0]["FiledSouce"] = "total";
-		$configTotalesColumns[0]["Formato"] = "Number";
-		$configTotalesColumns[0]["Colspan"] = $columnX;		
-		$configTotalesColumns[0]["Width"] = "600px";
-		$detailTotales[0]["total"] = $totalCordoba;
-		
-		
-		$rosTotales = helper_reporteGeneralCreateTable(
-				$detailTotales,
-				$configTotalesColumns,
-				'0',
-				NULL
-				
-		);
-		
-		echo $rosTotales["table"];
-		
-		?>
-		
-		
-		
-		<?php 
-		if($resultadoAbonosDolar["table"] !== 0)
-		echo $resultadoAbonosDolar["table"];
-		?>
-		<br/>
-
-		<?php 
-		if($resultadoVentaContadoDolar["table"] !== 0)
-		echo $resultadoVentaContadoDolar["table"];
-		?>
-		<br/>
-		
-		<?php 
-		if($resultadoVentaCreditoDolar["table"] !== 0)
-		echo $resultadoVentaCreditoDolar["table"];
-		?>
-		
-		<br/>
-
-		<?php 
-		if($resultadoIngresoCajaDolares["table"] !== 0)
-		echo $resultadoIngresoCajaDolares["table"];
-		?>
-		<br/>
 		
 		<?php 
 		if($resultadoSalidaCajaDolares["table"] !== 0)
@@ -1122,15 +1059,21 @@
 		?>
 		<br/>
 	
+		
+
+	
+		
+		
+		
 
 		<?php 		
 		
-		$configTotalesColumns[0]["Titulo"] = "Total Dolares";			
-		$configTotalesColumns[0]["FiledSouce"] = "total";
-		$configTotalesColumns[0]["Formato"] = "Number";
-		$configTotalesColumns[0]["Colspan"] = $columnX;		
-		$configTotalesColumns[0]["Width"] = "600px";
-		$detailTotales[0]["total"] = $totalDolares;
+		$configTotalesColumns[0]["Titulo"] 		= "Total Dolares";			
+		$configTotalesColumns[0]["FiledSouce"] 	= "total";
+		$configTotalesColumns[0]["Formato"] 	= "Number";
+		$configTotalesColumns[0]["Colspan"] 	= $columnX;		
+		$configTotalesColumns[0]["Width"] 		= $widthX."px";
+		$detailTotales[0]["total"] 				= $totalDolares;
 		
 		$rosTotales = helper_reporteGeneralCreateTable(
 				$detailTotales,
@@ -1141,17 +1084,12 @@
 				'black'
 		);
 		
+		if($totalDolares > 0)
 		echo $rosTotales["table"];
 		
 		?>
 		
-		<?php 
-		echo helper_reporteGeneralCreateFirma(	
-			$objFirmaEncription,
-			$columnX,
-			"1000px" 
-		);
-		?>
+		
 		
 		
 	</body>	
