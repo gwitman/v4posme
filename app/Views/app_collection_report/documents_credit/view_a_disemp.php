@@ -131,13 +131,20 @@
 			foreach ($objRowDetail as $key => $valor) 
 			{
 				
-				if(!in_array($key, $FiledSources))
+				if(
+					!in_array($key, $FiledSources)
+					&& 
+					!(
+						$key == "currencyID"  ||
+						$key == "customerCreditDocumentID"
+					)
+				)
 				{
 					
 					$configColumn[$indexNew]["Titulo"] 		= $key;		
 					$configColumn[$indexNew]["FiledSouce"] 	= $key;						
 					$configColumn[$indexNew]["Formato"] 	= "Number";	
-					$configColumn[$indexNew]["Total"] 		= True;	
+					$configColumn[$indexNew]["Total"] 		= False;	
 					$configColumn[$indexNew]["Width"] 		= "0px";		
 					$indexNew 								= $indexNew + 1;
 				}
