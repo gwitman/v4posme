@@ -16,7 +16,7 @@
 		
 		
 		<?php
-		$width0  		= "1550px";//99
+		$width0  		= "3550px";//99
 		$width1  		= "0px";//480
 		$width2  		= "0px";//480
 		$width3  		= "0px";//480
@@ -34,87 +34,115 @@
 		$totalCordoba 	= 0;
 		$totalDolares 	= 0;
 		$widthX 		= 1550;
-		$columnX 		= 13;
+		$columnX 		= 11;
 		
 		echo helper_reporteGeneralCreateEncabezado(
 			'SABANA DE CREDITOS',
 			$objCompany->name,
-			$columnX,
+			$columnX+10,
 			'DEL '.$startOn.' AL '.$endOn,
 			"",
 			"",
 			$widthX."px"
 		);
 		
-		$configColumn["0"]["Titulo"] 		= "Usuario";		
-		$configColumn["1"]["Titulo"] 		= "Cod. Cliente";		
-		$configColumn["2"]["Titulo"] 		= "Cliente";		
-		$configColumn["3"]["Titulo"] 		= "Desembolso";		
-		$configColumn["4"]["Titulo"] 		= "Plazo";		
-		$configColumn["5"]["Titulo"] 		= "Interes";		
-		$configColumn["6"]["Titulo"] 		= "Desembolso";		
-		$configColumn["7"]["Titulo"] 		= "F. Desembolso";		
-		$configColumn["8"]["Titulo"] 		= "F. Ultimo abono";				
-		$configColumn["10"]["Titulo"] 		= "Estado";		
-		$configColumn["11"]["Titulo"] 		= "Frecuencia de pago";		
-		
-					 
-		$configColumn["0"]["FiledSouce"] 		= "nickname";		
-		$configColumn["1"]["FiledSouce"] 		= "customerNumber";		
-		$configColumn["2"]["FiledSouce"] 		= "customerName";		
-		$configColumn["3"]["FiledSouce"] 		= "documentNumber";		
-		$configColumn["4"]["FiledSouce"] 		= "term";		
-		$configColumn["5"]["FiledSouce"] 		= "interes";		
-		$configColumn["6"]["FiledSouce"] 		= "amountDocument";		
-		$configColumn["7"]["FiledSouce"] 		= "dateDocument";		
-		$configColumn["8"]["FiledSouce"] 		= "dateLastShareDocument";				
-		$configColumn["10"]["FiledSouce"] 		= "statusName";	
-		$configColumn["11"]["FiledSouce"] 		= "periodPay";	
-		
-		$configColumn["0"]["Formato"] 		= "";		
-		$configColumn["1"]["Formato"] 		= "";		
-		$configColumn["2"]["Formato"] 		= "";		
-		$configColumn["3"]["Formato"] 		= "";		
-		$configColumn["4"]["Formato"] 		= "Number";		
-		$configColumn["5"]["Formato"] 		= "Number";		
-		$configColumn["6"]["Formato"] 		= "Number";		
-		$configColumn["7"]["Formato"] 		= "Date";		
-		$configColumn["8"]["Formato"] 		= "Date";		
-		$configColumn["10"]["Formato"] 		= "";	
-		$configColumn["11"]["Formato"] 		= "";	
-		
-		
-		
-		$configColumn["0"]["Width"] 		= $width0;		
-		$configColumn["1"]["Width"] 		= $width1;		
-		$configColumn["2"]["Width"] 		= $width2;		
-		$configColumn["3"]["Width"] 		= $width3;		
-		$configColumn["4"]["Width"] 		= $width4;		
-		$configColumn["5"]["Width"] 		= $width5;		
-		$configColumn["6"]["Width"] 		= $width6;		
-		$configColumn["7"]["Width"] 		= $width7;		
-		$configColumn["8"]["Width"] 		= $width8;		
-		$configColumn["10"]["Width"] 		= $width10;	
-		$configColumn["11"]["Width"] 		= $width11;	
-		
-		
-		$configColumn["0"]["Total"] 		= False;		
-		$configColumn["1"]["Total"] 		= False;		
-		$configColumn["2"]["Total"] 		= False;		
-		$configColumn["3"]["Total"] 		= False;		
-		$configColumn["4"]["Total"] 		= False;		
-		$configColumn["5"]["Total"] 		= False;		
-		$configColumn["6"]["Total"] 		= False;		
-		$configColumn["7"]["Total"] 		= False;		
-		$configColumn["8"]["Total"] 		= False;		
-		$configColumn["10"]["Total"] 		= False;	
-		$configColumn["11"]["Total"] 		= False;	
+		$configColumn[0]["Titulo"] 		= "Usuario";		
+		$configColumn[1]["Titulo"] 		= "Cod. Cliente";		
+		$configColumn[2]["Titulo"] 		= "Cliente";		
+		$configColumn[3]["Titulo"] 		= "Desembolso";		
+		$configColumn[4]["Titulo"] 		= "Plazo";		
+		$configColumn[5]["Titulo"] 		= "Interes";		
+		$configColumn[6]["Titulo"] 		= "Desembolso";		
+		$configColumn[7]["Titulo"] 		= "F. Desembolso";		
+		$configColumn[8]["Titulo"] 		= "F. Ultimo abono";				
+		$configColumn[9]["Titulo"] 		= "Estado";		
+		$configColumn[10]["Titulo"] 		= "Frecuencia de pago";		
+					  
+					  
+		$configColumn[0]["FiledSouce"] 		= "nickname";		
+		$configColumn[1]["FiledSouce"] 		= "customerNumber";		
+		$configColumn[2]["FiledSouce"] 		= "customerName";		
+		$configColumn[3]["FiledSouce"] 		= "documentNumber";		
+		$configColumn[4]["FiledSouce"] 		= "term";		
+		$configColumn[5]["FiledSouce"] 		= "interes";		
+		$configColumn[6]["FiledSouce"] 		= "amountDocument";		
+		$configColumn[7]["FiledSouce"] 		= "dateDocument";		
+		$configColumn[8]["FiledSouce"] 		= "dateLastShareDocument";				
+		$configColumn[9]["FiledSouce"] 		= "statusName";	
+		$configColumn[10]["FiledSouce"] 		= "periodPay";	
+					  
+		$configColumn[0]["Formato"] 		= "";		
+		$configColumn[1]["Formato"] 		= "";		
+		$configColumn[2]["Formato"] 		= "";		
+		$configColumn[3]["Formato"] 		= "";		
+		$configColumn[4]["Formato"] 		= "Number";		
+		$configColumn[5]["Formato"] 		= "Number";		
+		$configColumn[6]["Formato"] 		= "Number";		
+		$configColumn[7]["Formato"] 		= "Date";		
+		$configColumn[8]["Formato"] 		= "Date";		
+		$configColumn[9]["Formato"] 		= "";	
+		$configColumn[10]["Formato"] 		= "";	
+					  
+					  
+					  
+		$configColumn[0]["Width"] 		= $width0;		
+		$configColumn[1]["Width"] 		= $width1;		
+		$configColumn[2]["Width"] 		= $width2;		
+		$configColumn[3]["Width"] 		= $width3;		
+		$configColumn[4]["Width"] 		= $width4;		
+		$configColumn[5]["Width"] 		= $width5;		
+		$configColumn[6]["Width"] 		= $width6;		
+		$configColumn[7]["Width"] 		= $width7;		
+		$configColumn[8]["Width"] 		= $width8;		
+		$configColumn[9]["Width"] 		= $width10;	
+		$configColumn[10]["Width"] 		= $width11;	
+					  
+					  
+		$configColumn[0]["Total"] 		= False;		
+		$configColumn[1]["Total"] 		= False;		
+		$configColumn[2]["Total"] 		= False;		
+		$configColumn[3]["Total"] 		= False;		
+		$configColumn[4]["Total"] 		= False;		
+		$configColumn[5]["Total"] 		= False;		
+		$configColumn[6]["Total"] 		= False;		
+		$configColumn[7]["Total"] 		= False;		
+		$configColumn[8]["Total"] 		= False;		
+		$configColumn[9]["Total"] 		= False;	
+		$configColumn[10]["Total"] 		= False;	
 		
 		
 		//Llenar las columnas dinamicas
 		
 		
 		//Calcular lso datos dinamicos
+		if($objDetail)
+		{
+			//Obtener los campos mapeados
+			$FiledSources = [];
+			foreach ($configColumn as $key => $column) {
+				if (isset($column['FiledSouce'])) {
+					$FiledSources[$key] = $column['FiledSouce'];
+				}
+			}
+
+
+			$indexNew		= $columnX;
+			$objRowDetail 	= $objDetail[0];
+			foreach ($objRowDetail as $key => $valor) 
+			{
+				
+				if(!in_array($key, $FiledSources))
+				{
+					
+					$configColumn[$indexNew]["Titulo"] 		= $key;		
+					$configColumn[$indexNew]["FiledSouce"] 	= $key;						
+					$configColumn[$indexNew]["Formato"] 	= "Number";	
+					$configColumn[$indexNew]["Total"] 		= True;	
+					$configColumn[$indexNew]["Width"] 		= "0px";		
+					$indexNew 								= $indexNew + 1;
+				}
+			}
+		}
 		
 		
 		
