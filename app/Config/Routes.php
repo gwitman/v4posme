@@ -596,6 +596,10 @@ $routes->match(['get','post'],'app_collection_report/document_credit/(:any)','ap
 $routes->match(['get','post'],'app_collection_report/customer','app_collection_report::customer');
 $routes->match(['get','post'],'app_collection_report/commission','app_collection_report::commission');
 $routes->match(['get','post'],'app_collection_report/commission/(:any)','app_collection_report::commission');
+$routes->match(['get','post'],'app_collection_report/documents_credit','app_collection_report::documents_credit');
+$routes->match(['get','post'],'app_collection_report/documents_credit/(:any)','app_collection_report::documents_credit');
+$routes->match(['get','post'],'app_collection_report/sumary_credit','app_collection_report::sumary_credit');
+$routes->match(['get','post'],'app_collection_report/sumary_credit/(:any)','app_collection_report::sumary_credit');
 $routes->match(['get','post'],'app_cxc_creditline/edit','app_cxc_creditline::edit');
 $routes->match(['get','post'],'app_cxc_creditline/edit/(:any)','app_cxc_creditline::edit');
 $routes->match(['get','post'],'app_cxc_creditline/delete','app_cxc_creditline::delete');
