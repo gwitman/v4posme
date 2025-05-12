@@ -29,12 +29,13 @@
 		$width10  		= "0px";//480
 		$width11  		= "0px";//0
 		$width12  		= "0px";//0
+		$width13  		= "0px";//0
 		
 		
 		$totalCordoba 	= 0;
 		$totalDolares 	= 0;
 		$widthX 		= 1550;
-		$columnX 		= 11;
+		$columnX 		= 14;
 		
 		echo helper_reporteGeneralCreateEncabezado(
 			'SABANA DE CREDITOS',
@@ -51,12 +52,15 @@
 		$configColumn[2]["Titulo"] 		= "Cliente";		
 		$configColumn[3]["Titulo"] 		= "Desembolso";		
 		$configColumn[4]["Titulo"] 		= "Plazo";		
-		$configColumn[5]["Titulo"] 		= "Interes";		
-		$configColumn[6]["Titulo"] 		= "Desembolso";		
-		$configColumn[7]["Titulo"] 		= "F. Desembolso";		
-		$configColumn[8]["Titulo"] 		= "F. Ultimo abono";				
-		$configColumn[9]["Titulo"] 		= "Estado";		
-		$configColumn[10]["Titulo"] 		= "Frecuencia de pago";		
+		$configColumn[5]["Titulo"] 		= "Interes";				
+		$configColumn[6]["Titulo"] 		= "F. Desembolso";		
+		$configColumn[7]["Titulo"] 		= "F. Ultimo abono";				
+		$configColumn[8]["Titulo"] 		= "Estado";		
+		$configColumn[9]["Titulo"] 		= "Frecuencia de pago";
+		$configColumn[10]["Titulo"] 	= "Desembolso";		
+		$configColumn[11]["Titulo"] 	= "Monto Pagado";		
+		$configColumn[12]["Titulo"] 	= "Avance";		
+		$configColumn[13]["Titulo"] 	= "Saldo";
 					  
 					  
 		$configColumn[0]["FiledSouce"] 		= "nickname";		
@@ -64,24 +68,30 @@
 		$configColumn[2]["FiledSouce"] 		= "customerName";		
 		$configColumn[3]["FiledSouce"] 		= "documentNumber";		
 		$configColumn[4]["FiledSouce"] 		= "term";		
-		$configColumn[5]["FiledSouce"] 		= "interes";		
-		$configColumn[6]["FiledSouce"] 		= "amountDocument";		
-		$configColumn[7]["FiledSouce"] 		= "dateDocument";		
-		$configColumn[8]["FiledSouce"] 		= "dateLastShareDocument";				
-		$configColumn[9]["FiledSouce"] 		= "statusName";	
-		$configColumn[10]["FiledSouce"] 		= "periodPay";	
+		$configColumn[5]["FiledSouce"] 		= "interes";	
+		$configColumn[6]["FiledSouce"] 		= "dateDocument";		
+		$configColumn[7]["FiledSouce"] 		= "dateLastShareDocument";				
+		$configColumn[8]["FiledSouce"] 		= "statusName";	
+		$configColumn[9]["FiledSouce"] 		= "periodPay";	
+		$configColumn[10]["FiledSouce"] 	= "amountDocument";	
+		$configColumn[11]["FiledSouce"] 	= "montoPagado";	
+		$configColumn[12]["FiledSouce"] 	= "avance";	
+		$configColumn[13]["FiledSouce"] 	= "saldo";	
 					  
 		$configColumn[0]["Formato"] 		= "";		
 		$configColumn[1]["Formato"] 		= "";		
 		$configColumn[2]["Formato"] 		= "";		
 		$configColumn[3]["Formato"] 		= "";		
 		$configColumn[4]["Formato"] 		= "Number";		
-		$configColumn[5]["Formato"] 		= "Number";		
-		$configColumn[6]["Formato"] 		= "Number";		
+		$configColumn[5]["Formato"] 		= "Number";				
+		$configColumn[6]["Formato"] 		= "Date";		
 		$configColumn[7]["Formato"] 		= "Date";		
-		$configColumn[8]["Formato"] 		= "Date";		
+		$configColumn[8]["Formato"] 		= "";	
 		$configColumn[9]["Formato"] 		= "";	
-		$configColumn[10]["Formato"] 		= "";	
+		$configColumn[10]["Formato"] 		= "Number";		
+		$configColumn[11]["Formato"] 		= "Number";	
+		$configColumn[12]["Formato"] 		= "Number";	
+		$configColumn[13]["Formato"] 		= "Number";	
 					  
 					  
 					  
@@ -94,8 +104,11 @@
 		$configColumn[6]["Width"] 		= $width6;		
 		$configColumn[7]["Width"] 		= $width7;		
 		$configColumn[8]["Width"] 		= $width8;		
-		$configColumn[9]["Width"] 		= $width10;	
-		$configColumn[10]["Width"] 		= $width11;	
+		$configColumn[9]["Width"] 		= $width9;	
+		$configColumn[10]["Width"] 		= $width10;	
+		$configColumn[11]["Width"] 		= $width11;	
+		$configColumn[12]["Width"] 		= $width12;	
+		$configColumn[13]["Width"] 		= $width13;	
 					  
 					  
 		$configColumn[0]["Total"] 		= False;		
@@ -109,6 +122,9 @@
 		$configColumn[8]["Total"] 		= False;		
 		$configColumn[9]["Total"] 		= False;	
 		$configColumn[10]["Total"] 		= False;	
+		$configColumn[11]["Total"] 		= False;	
+		$configColumn[12]["Total"] 		= False;	
+		$configColumn[13]["Total"] 		= False;	
 		
 		
 		//Llenar las columnas dinamicas
