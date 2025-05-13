@@ -69,6 +69,7 @@
 											<input class="form-control"  type="text"  name="txtName" id="txtName" value="<?php  echo $app_inventory_item_last_inventory_name;  ?>">		
 											<input type="hidden" name="txtCallback" value="<?php echo $callback; ?>"/>
 											<input type="hidden" name="txtComando" value="<?php echo $comando; ?>"/>
+											<input type="hidden" name="txtRolNameSession" id="txtRolNameSession" value="<?php echo $objRolName; ?>"/>
 										</div>
 								</div>
 								

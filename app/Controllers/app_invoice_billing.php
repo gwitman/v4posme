@@ -7897,7 +7897,31 @@ class app_invoice_billing extends _BaseController {
 		    
 			foreach($datView["objTMD"] as $detail_){
 				$row = array(
+					"_________________________________"."-comand-new-row",  				
+					"none",
+					"none"
+				);
+			    array_push($detalle,$row);
+				
+				$row = array(
 					$detail_->itemName. " ". strtolower($detail_->skuFormatoDescription)."-comand-new-row",  				
+					"none",
+					"none"
+				);
+			    array_push($detalle,$row);
+				
+				
+				//
+				$objTMDReference 	= $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterDetailID($detail_->transactionMasterDetailID);
+				$precio 			= $detail_->unitaryPrice;
+				$minsa	 			= $objTMDReference[0]->precio2;
+				$descuento			= $minsa - $precio;
+				$precio 			= sprintf("%01.2f",round($precio,2));
+				$minsa	 			= sprintf("%01.2f",round($minsa,2));
+				$descuento			= sprintf("%01.2f",round($descuento,2));
+				
+				$row = array(
+					"PM: ".$minsa." (DESC: ".$descuento.") PF: ".$precio."-comand-new-row",  				
 					"none",
 					"none"
 				);
@@ -7905,10 +7929,13 @@ class app_invoice_billing extends _BaseController {
 				
 			    $row = array(					
 					sprintf("%01.2f",round($detail_->quantity,2)), 					
-					sprintf("%01.2f",round($detail_->unitaryPrice,2)),
+					$precio,
 					sprintf("%01.2f",round($detail_->amount,2))					
 				);
 			    array_push($detalle,$row);
+				
+				
+				
 			}
 			
 			

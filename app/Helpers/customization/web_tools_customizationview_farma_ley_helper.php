@@ -16,10 +16,38 @@ function getBehavioFarmaLey(){
 		strtolower('farma_ley_app_inventory_item_selectedFamilyDefault')		=> "false",
 		strtolower('farma_ley_app_inventory_item_selectedUM')					=> "false",
 		strtolower('farma_ley_app_inventory_item_Marca')						=> "Uso",
+		strtolower('farma_ley_app_inventory_item_label_price_PUBLICO')			=> "General",
+		strtolower('farma_ley_app_inventory_item_label_price_POR MAYOR')		=> "Minsa",
 		strtolower('farma_ley_app_inventory_item_divTraslate')					=> "
 		<script>
 			$(document).ready(function(){
 				$('#panelDivMarca').appendTo('#dropdown');
+				
+				/*ocultar campo si el usurio es facturadora*/
+				
+				if( $('#txtRolNameSession').val() == 'Despachador' )
+				{
+					//Ocultar Costo
+					$('#txtCost').parent().parent().addClass('hidden');
+					//Ocutlar precio 4
+					$('input.txtDetailTypePriceID[value=\'478\']').parent().parent().addClass('hidden');
+					//Ocutlar precio 3
+					$('input.txtDetailTypePriceID[value=\'477\']').parent().parent().addClass('hidden');
+					//Ocutlar precio 1
+					$('input.txtDetailTypePriceID[value=\'156\']').parent().parent().addClass('hidden');
+					//Ocutlar precio 1
+					$('input.txtDetailTypePriceID[value=\'154\']').parent().parent().addClass('hidden');
+					
+					
+					//Ocultar la comision
+					$('#tblPrecios thead th:nth-child(3)').hide();
+					$('#tblPrecios tbody td:nth-child(3)').hide();
+					
+					//Acttivar el only
+					$('#txtName').prop('readonly', true);
+					
+				}
+				
 			});
 		</script>
 		",

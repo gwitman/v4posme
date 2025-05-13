@@ -574,10 +574,10 @@ function helper_reporteA4mmTransactionMasterInputUnpostFarmaLey(
 				<tr>
 					<td style='text-align:left;width:70px' >".$objDetail[$i]->itemNumber."</td>
 					<td style='text-align:left;' >".$objDetail[$i]->itemName."</td>
-					<td style='text-align:center;width:70px' >".$objCurrency->simbol." ".number_format(round($objDetail[$i]->unitaryCost,2),2,".",",")."</td>
-					<td style='text-align:center;width:70px' >".number_format(round($objDetail[$i]->quantity,2),2,".",",")."</td>
-					<td style='text-align:center;width:70px' >".$objCurrency->simbol." 0.00</td>
-					<td style='text-align:center;width:70px' >".$objCurrency->simbol." ".number_format(round($objDetail[$i]->cost,2),2,".",",")."</td>
+					<td style='text-align:right;width:70px' >".$objCurrency->simbol." 0.00". /*number_format(round($objDetail[$i]->unitaryCost,2),2,".",",")*/  "</td>
+					<td style='text-align:right;width:70px' >".number_format(round($objDetail[$i]->quantity,2),2,".",",")."</td>
+					<td style='text-align:right;width:70px' >".$objCurrency->simbol." 0.00</td>
+					<td style='text-align:right;width:70px' >".$objCurrency->simbol." 0.00". /*number_format(round($objDetail[$i]->cost,2),2,".",",").*/ "</td>
 				<tr>
 			";
 		}

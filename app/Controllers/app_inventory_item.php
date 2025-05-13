@@ -96,6 +96,7 @@ class app_inventory_item extends _BaseController
             }
 
             //Obtener Informacion
+			$dataView["objRolName"] 					= $dataSession["role"]->name;
             $dataView["objComponentEmployer"] 			= $objComponentEmployer;
             $dataView["objComponent"] 					= $objComponent;
             $dataView["componentProviderID"] 			= $objComponentProvider->componentID;
@@ -1611,18 +1612,16 @@ class app_inventory_item extends _BaseController
             }
 
 
-            $companyID = $dataSession["user"]->companyID;
-            $branchID = $dataSession["user"]->branchID;
-            $roleID = $dataSession["role"]->roleID;
-            $callback = /*--ini uri*/
-                helper_SegmentsValue($this->uri->getSegments(), "callback");//--finuri
-            $callback = $callback === "" ? "false" : $callback;
-            $comando = /*--ini uri*/
-                helper_SegmentsValue($this->uri->getSegments(), "comando");//--finuri
-            $comando = $comando === "" ? "false" : $comando;
+            $companyID 	= $dataSession["user"]->companyID;
+            $branchID 	= $dataSession["user"]->branchID;
+            $roleID 	= $dataSession["role"]->roleID;
+            $callback 	= /*--ini uri*/   helper_SegmentsValue($this->uri->getSegments(), "callback");//--finuri
+            $callback 	= $callback === "" ? "false" : $callback;
+            $comando 	= /*--ini uri*/  helper_SegmentsValue($this->uri->getSegments(), "comando");//--finuri
+            $comando 	= $comando === "" ? "false" : $comando;
 
-            $objParameterWarehouseDefault = $this->core_web_parameter->getParameter("INVENTORY_ITEM_WAREHOUSE_DEFAULT", $companyID);
-            $warehouseDefault = $objParameterWarehouseDefault->value;
+            $objParameterWarehouseDefault 	= $this->core_web_parameter->getParameter("INVENTORY_ITEM_WAREHOUSE_DEFAULT", $companyID);
+            $warehouseDefault 				= $objParameterWarehouseDefault->value;
 
             $objParameterTypePreiceDefault = $this->core_web_parameter->getParameter("INVOICE_DEFAULT_TYPE_PRICE", $companyID);
             $objParameterTypePreiceDefault = $objParameterTypePreiceDefault->value;
@@ -1630,51 +1629,49 @@ class app_inventory_item extends _BaseController
             $objParameterListPreiceDefault = $objParameterListPreiceDefault->value;
             $objParameterInvoiceBillingQuantityZero = $this->core_web_parameter->getParameter("INVOICE_BILLING_QUANTITY_ZERO", $companyID);
             $objParameterInvoiceBillingQuantityZero = $objParameterInvoiceBillingQuantityZero->value;
-            $objParameterAll = $this->core_web_parameter->getParameterAll($companyID);
+            $objParameterAll 						= $this->core_web_parameter->getParameterAll($companyID);
 
 
             $objComponentEmployer = $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
             if (!$objComponentEmployer)
                 throw new \Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
 
-            $dataView["objListCountry"] = $this->core_web_catalog->getCatalogAllItem("tb_item", "realStateCountryID", $companyID);
-            $dataView["objComponentEmployer"] = $objComponentEmployer;
-            $dataView["objListWarehouse"] = $this->Warehouse_Model->getByCompany($companyID);
-            $dataView["objListInventoryCategory"] = $this->Itemcategory_Model->getByCompany($companyID);
-            $dataView["objListWorkflowStage"] = $this->core_web_workflow->getWorkflowInitStage("tb_item", "statusID", $companyID, $branchID, $roleID);
-            $dataView["objListFamily"] = $this->core_web_catalog->getCatalogAllItem("tb_item", "familyID", $companyID);
-            $dataView["objListUnitMeasure"] = $this->core_web_catalog->getCatalogAllItem("tb_item", "unitMeasureID", $companyID);
-            $dataView["objListDisplay"] = $this->core_web_catalog->getCatalogAllItem("tb_item", "displayID", $companyID);
-            $dataView["objListDisplayUnitMeasure"] = $this->core_web_catalog->getCatalogAllItem("tb_item", "displayUnitMeasureID", $companyID);
-            $dataView["objListDisplayGerenciaExcl"] = $this->core_web_catalog->getCatalogAllItem("tb_item", "realStateGerenciaExclusive", $companyID);
-            $dataView["objListTypePreice"] = $this->core_web_catalog->getCatalogAllItem("tb_price", "typePriceID", $companyID);
-            $dataView["objListCurrency"] = $this->Company_Currency_Model->getByCompany($companyID);
-            $dataView["warehouseDefault"] = $warehouseDefault;
-            $dataView["company"] = $dataSession["company"];
+			$dataView["objRolName"] 					= $dataSession["role"]->name;
+            $dataView["objListCountry"] 				= $this->core_web_catalog->getCatalogAllItem("tb_item", "realStateCountryID", $companyID);
+            $dataView["objComponentEmployer"] 			= $objComponentEmployer;
+            $dataView["objListWarehouse"] 				= $this->Warehouse_Model->getByCompany($companyID);
+            $dataView["objListInventoryCategory"] 		= $this->Itemcategory_Model->getByCompany($companyID);
+            $dataView["objListWorkflowStage"] 			= $this->core_web_workflow->getWorkflowInitStage("tb_item", "statusID", $companyID, $branchID, $roleID);
+            $dataView["objListFamily"] 					= $this->core_web_catalog->getCatalogAllItem("tb_item", "familyID", $companyID);
+            $dataView["objListUnitMeasure"] 			= $this->core_web_catalog->getCatalogAllItem("tb_item", "unitMeasureID", $companyID);
+            $dataView["objListDisplay"] 				= $this->core_web_catalog->getCatalogAllItem("tb_item", "displayID", $companyID);
+            $dataView["objListDisplayUnitMeasure"] 		= $this->core_web_catalog->getCatalogAllItem("tb_item", "displayUnitMeasureID", $companyID);
+            $dataView["objListDisplayGerenciaExcl"] 	= $this->core_web_catalog->getCatalogAllItem("tb_item", "realStateGerenciaExclusive", $companyID);
+            $dataView["objListTypePreice"] 				= $this->core_web_catalog->getCatalogAllItem("tb_price", "typePriceID", $companyID);
+            $dataView["objListCurrency"] 				= $this->Company_Currency_Model->getByCompany($companyID);
+            $dataView["warehouseDefault"] 				= $warehouseDefault;
+            $dataView["company"] 						= $dataSession["company"];
 
-            $cache = Services::cache();
-            $dataView["app_inventory_item_last_inventory_category"] = $cache->get('app_inventory_item_last_inventory_category');
-            $dataView["app_inventory_item_last_inventory_name"] = $cache->get('app_inventory_item_last_inventory_name');
-            $dataView["app_inventory_item_add_producto_al_detalle_compra"] = $cache->get('app_inventory_item_add_producto_al_detalle_compra');
+            $cache 															= Services::cache();
+            $dataView["app_inventory_item_last_inventory_category"] 		= $cache->get('app_inventory_item_last_inventory_category');
+            $dataView["app_inventory_item_last_inventory_name"] 			= $cache->get('app_inventory_item_last_inventory_name');
+            $dataView["app_inventory_item_add_producto_al_detalle_compra"] 	= $cache->get('app_inventory_item_add_producto_al_detalle_compra');
 
-            $dataView["objParameterTypePreiceDefault"] = $objParameterTypePreiceDefault;
-            $dataView["objParameterListPreiceDefault"] = $objParameterListPreiceDefault;
+            $dataView["objParameterTypePreiceDefault"] 			= $objParameterTypePreiceDefault;
+            $dataView["objParameterListPreiceDefault"] 			= $objParameterListPreiceDefault;
             $dataView["objParameterInvoiceBillingQuantityZero"] = $objParameterInvoiceBillingQuantityZero;
-            $dataView["callback"] = $callback;
-            $dataView["comando"] = $comando;
-            $dataView["objParameterAll"] = $objParameterAll;
-            $dataView["useMobile"] = $dataSession["user"]->useMobile;
+            $dataView["callback"] 								= $callback;
+            $dataView["comando"] 								= $comando;
+            $dataView["objParameterAll"] 						= $objParameterAll;
+            $dataView["useMobile"] 								= $dataSession["user"]->useMobile;
 
             //Renderizar Resultado
-            $dataSession["notification"] = $this->core_web_error->get_error($dataSession["user"]->userID);
-            $dataSession["message"] = $this->core_web_notification->get_message();
-            $dataSession["head"] = /*--inicio view*/
-                view('app_inventory_item/news_head', $dataView);//--finview
-            $dataSession["body"] = /*--inicio view*/
-                view('app_inventory_item/news_body', $dataView);//--finview
-            $dataSession["script"] = /*--inicio view*/
-                view('app_inventory_item/news_script', $dataView);//--finview
-            $dataSession["footer"] = "";
+            $dataSession["notification"] 	= $this->core_web_error->get_error($dataSession["user"]->userID);
+            $dataSession["message"] 		= $this->core_web_notification->get_message();
+            $dataSession["head"] 			= /*--inicio view*/ view('app_inventory_item/news_head', $dataView);//--finview
+            $dataSession["body"] 			= /*--inicio view*/ view('app_inventory_item/news_body', $dataView);//--finview
+            $dataSession["script"] 			= /*--inicio view*/ view('app_inventory_item/news_script', $dataView);//--finview
+            $dataSession["footer"] 			= ""; 
             $cache->save('app_inventory_item_add_producto_al_detalle_compra', "", TIME_CACHE_APP);
 
             if ($callback == "false")

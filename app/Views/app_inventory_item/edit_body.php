@@ -81,6 +81,7 @@
 											<input type="hidden" name="txtCompanyID" value="<?php echo $objItem->companyID; ?>"/>
 											<input type="hidden" name="txtCallback" value="<?php echo $callback; ?>"/>
 											<input type="hidden" name="txtComando" value="<?php echo $comando; ?>"/>
+											<input type="hidden" name="txtRolNameSession" id="txtRolNameSession" value="<?php echo $objRolName; ?>"/>
 										</div>
 								</div>
 								
