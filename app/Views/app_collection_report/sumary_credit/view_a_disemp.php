@@ -50,9 +50,9 @@
 		$configColumn[0]["Titulo"] 		= "Usuario";		
 		$configColumn[1]["Titulo"] 		= "# De Clientes";		
 		$configColumn[2]["Titulo"] 		= "# De Creditos";		
-		$configColumn[3]["Titulo"] 		= "# De Clienes Cancelados";		
-		$configColumn[4]["Titulo"] 		= "# De Clienes Nuevos";		
-		$configColumn[5]["Titulo"] 		= "# De Clienes Recuperados";				
+		$configColumn[3]["Titulo"] 		= "# De Clientes Cancelados";		
+		$configColumn[4]["Titulo"] 		= "# De Clientes Nuevos";		
+		$configColumn[5]["Titulo"] 		= "# De Clientes Recuperados";				
 		$configColumn[6]["Titulo"] 		= "C$ Monto de Cartera";		
 					  
 					  

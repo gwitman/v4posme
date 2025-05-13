@@ -66,12 +66,47 @@
 	</div>
 </div>
 
+<div class="table-responsive">
+	<table class="table table-bordered table-hover table-striped align-middle">
+	  <thead class="table-dark text-center">
+		<tr>
+		  <th>Usuario</th>
+		  <th>No. Cli</th>
+		  <th>No. Cre</th>
+		  <th>No. Cli Can</th>
+		  <th>No. Cli Nue</th>
+		  <th>No. Cli Rec</th>
+		  <th>Cartera (C$)</th>
+		</tr>
+	  </thead>
+	  <tbody>
+		<?php
+		$data = $objListSummaryCredit;
+		?>
+		<?php foreach ($data as $row): ?>
+		  <tr>
+			<td class="fw-bold text-primary"><?= htmlspecialchars($row['nickname']) ?></td>
+			<td class="text-end"><?= number_format($row['countCustomer']) ?></td>
+			<td class="text-end"><?= number_format($row['countCredit']) ?></td>
+			<td class="text-end text-danger"><?= number_format($row['countCustomerCancel']) ?></td>
+			<td class="text-end text-success"><?= number_format($row['countCustomerNew']) ?></td>
+			<td class="text-end text-success"><?= number_format($row['countCustomerRecuperation']) ?></td>
+			<td class="text-end text-info fw-semibold">C$ <?= number_format($row['amountCartera'], 2) ?></td>
+		  </tr>
+		<?php endforeach; ?>
+	  </tbody>
+	</table>
+</div>
+
+<br/>
+<br/>
+
 <div class="row">
 	 <div class="col-lg-12">	
 		<div class="panel" style="margin-bottom:20px;">
 			<div class="panel-heading">
 				<div class="icon"><i class="icon20 i-health"></i></div> 
-				<h4> Estadistica de Credito</h4>
+				<h4> No. Clientes</h4>
 				<a href="#" class="minimize"></a>
 			</div><!-- End .panel-heading -->
 			<div class="panel-body">								
@@ -81,28 +116,106 @@
 	</div>
 </div>
 
+<div class="row">
+	 <div class="col-lg-12">	
+		<div class="panel" style="margin-bottom:20px;">
+			<div class="panel-heading">
+				<div class="icon"><i class="icon20 i-health"></i></div> 
+				<h4> No. Creditos Activos</h4>
+				<a href="#" class="minimize"></a>
+			</div><!-- End .panel-heading -->
+			<div class="panel-body">								
+				<div id="grafico2" style="height:350px" ></div>
+			</div><!-- End .panel-body -->
+		</div><!-- End .widget -->	
+	</div>
+</div>
+
+<div class="row">
+	 <div class="col-lg-12">	
+		<div class="panel" style="margin-bottom:20px;">
+			<div class="panel-heading">
+				<div class="icon"><i class="icon20 i-health"></i></div> 
+				<h4> No. Creditos Cancelados</h4>
+				<a href="#" class="minimize"></a>
+			</div><!-- End .panel-heading -->
+			<div class="panel-body">								
+				<div id="grafico3" style="height:350px" ></div>
+			</div><!-- End .panel-body -->
+		</div><!-- End .widget -->	
+	</div>
+</div>
+
+<div class="row">
+	 <div class="col-lg-12">	
+		<div class="panel" style="margin-bottom:20px;">
+			<div class="panel-heading">
+				<div class="icon"><i class="icon20 i-health"></i></div> 
+				<h4> No. Creditos Nuevos</h4>
+				<a href="#" class="minimize"></a>
+			</div><!-- End .panel-heading -->
+			<div class="panel-body">								
+				<div id="grafico4" style="height:350px" ></div>
+			</div><!-- End .panel-body -->
+		</div><!-- End .widget -->	
+	</div>
+</div>
+
+<div class="row">
+	 <div class="col-lg-12">	
+		<div class="panel" style="margin-bottom:20px;">
+			<div class="panel-heading">
+				<div class="icon"><i class="icon20 i-health"></i></div> 
+				<h4> No. Creditos Recuperados</h4>
+				<a href="#" class="minimize"></a>
+			</div><!-- End .panel-heading -->
+			<div class="panel-body">								
+				<div id="grafico5" style="height:350px" ></div>
+			</div><!-- End .panel-body -->
+		</div><!-- End .widget -->	
+	</div>
+</div>
+
+<div class="row">
+	 <div class="col-lg-12">	
+		<div class="panel" style="margin-bottom:20px;">
+			<div class="panel-heading">
+				<div class="icon"><i class="icon20 i-health"></i></div> 
+				<h4> Valor de Cartera</h4>
+				<a href="#" class="minimize"></a>
+			</div><!-- End .panel-heading -->
+			<div class="panel-body">								
+				<div id="grafico6" style="height:350px" ></div>
+			</div><!-- End .panel-body -->
+		</div><!-- End .widget -->	
+	</div>
+</div>
+
+
+
 <script>	
 	// https://www.w3schools.com/js/js_graphics_google_chart.asp					
 	$(document).ready(function(){
 		google.charts.load('current',{packages:['corechart']});							
-		google.charts.setOnLoadCallback(drawChartStadisticaCredito);			
+		google.charts.setOnLoadCallback(drawClientes);			
+		google.charts.setOnLoadCallback(drawCreditosActivos);	
+		google.charts.setOnLoadCallback(drawMontoDesembolso);	
+		google.charts.setOnLoadCallback(drawClientesCancelados);	
+		google.charts.setOnLoadCallback(drawClientesNuevos);	
+		google.charts.setOnLoadCallback(drawClientesRecuperados);	
 	});		
 	
-	function drawChartStadisticaCredito() {
+	function drawClientesRecuperados() {
 		const dataObj  = JSON.parse('<?php echo json_encode($objListSummaryCredit); ?>');	
 
 		 // Estructura de columnas para el gráfico
         const dataArray = [
-          ['Usuario', 'Clientes', 'Créditos', 'Cancelados', 'Nuevos', 'Recuperados']
+          ['Usuario', 'No. CLI REC']
         ];
 
         dataObj.forEach(item => {
           dataArray.push([
             item.nickname,
-            parseInt(item.countCustomer),
-            parseInt(item.countCredit),
-            parseInt(item.countCustomerCancel),
-            parseInt(item.countCustomerNew),
             parseInt(item.countCustomerRecuperation)
           ]);
         });
@@ -110,7 +223,83 @@
         const data = google.visualization.arrayToDataTable(dataArray);
 
         const options = {
-          title: 'Resumen de Clientes y Créditos por Usuario',
+          title: 'Clientes recuperados',
+          isStacked: true,
+          hAxis: {
+            title: 'Total por categoría',
+            minValue: 0
+          },
+          vAxis: {
+            title: 'Usuario'
+          },
+          chartArea: {width: '70%'},
+		  colors: ['#3cb44b']
+        };
+
+        const chart = new google.visualization.BarChart(document.getElementById('grafico5'));
+        chart.draw(data, options);
+		
+		
+	}
+	
+	
+	function drawClientesNuevos() {
+		const dataObj  = JSON.parse('<?php echo json_encode($objListSummaryCredit); ?>');	
+
+		 // Estructura de columnas para el gráfico
+        const dataArray = [
+          ['Usuario', 'No. CRE NUE']
+        ];
+
+        dataObj.forEach(item => {
+          dataArray.push([
+            item.nickname,
+            parseInt(item.countCustomerNew)
+          ]);
+        });
+
+        const data = google.visualization.arrayToDataTable(dataArray);
+
+        const options = {
+          title: 'Clientes nuevos',
+          isStacked: true,
+          hAxis: {
+            title: 'Total por categoría',
+            minValue: 0
+          },
+          vAxis: {
+            title: 'Usuario'
+          },
+          chartArea: {width: '70%'},
+		  colors: ['#911eb4']
+        };
+
+        const chart = new google.visualization.BarChart(document.getElementById('grafico4'));
+        chart.draw(data, options);
+		
+		
+	}
+	
+	
+	function drawClientesCancelados() {
+		const dataObj  = JSON.parse('<?php echo json_encode($objListSummaryCredit); ?>');	
+
+		 // Estructura de columnas para el gráfico
+        const dataArray = [
+          ['Usuario', 'No. CLI CAN']
+        ];
+
+        dataObj.forEach(item => {
+          dataArray.push([
+            item.nickname,
+            parseInt(item.countCustomerCancel)
+          ]);
+        });
+
+        const data = google.visualization.arrayToDataTable(dataArray);
+
+        const options = {
+          title: 'No de clientes cencelados',
           isStacked: true,
           hAxis: {
             title: 'Total por categoría',
@@ -122,9 +311,139 @@
           chartArea: {width: '70%'}
         };
 
+        const chart = new google.visualization.BarChart(document.getElementById('grafico3'));
+        chart.draw(data, options);
+		
+		
+	}
+	
+	
+	function drawMontoDesembolso() {
+		const dataObj  = JSON.parse('<?php echo json_encode($objListSummaryCredit); ?>');	
+
+		 // Estructura de columnas para el gráfico
+        const dataArray = [
+          ['Usuario', 'C$ Monto Desembolso']
+        ];
+
+        dataObj.forEach(item => {
+          dataArray.push([
+            item.nickname,            
+            parseInt(item.amountCartera),
+          ]);
+        });
+
+        const data = google.visualization.arrayToDataTable(dataArray);
+
+		//Aplicar formato con prefijo C$
+		const formatter = new google.visualization.NumberFormat({
+		  prefix: 'C$. ',
+		  groupingSymbol: ',',
+		  fractionDigits: 2
+		});
+		formatter.format(data, 1); // Aplica el formato a la columna 1 (valores)
+
+        const options = {
+          title: 'Valor de la cartera',
+          isStacked: true,
+          hAxis: {
+            title: 'Total por categoría',
+            minValue: 0
+          },
+          vAxis: {
+            title: 'Usuario'
+          },
+          chartArea: {width: '70%'},
+		  colors: ['#f58231']
+        };
+
+        const chart = new google.visualization.BarChart(document.getElementById('grafico6'));
+        chart.draw(data, options);
+		
+		
+	}
+	
+	function drawCreditosActivos() {
+		const dataObj  = JSON.parse('<?php echo json_encode($objListSummaryCredit); ?>');	
+
+		 // Estructura de columnas para el gráfico
+        const dataArray = [
+          ['Usuario', 'No. CRE']
+        ];
+
+        dataObj.forEach(item => {
+          dataArray.push([
+            item.nickname,            
+            parseInt(item.countCredit),
+          ]);
+        });
+
+        const data = google.visualization.arrayToDataTable(dataArray);
+
+		//Aplicar formato con prefijo C$
+		const formatter = new google.visualization.NumberFormat({
+		  prefix: 'Cant. ',
+		  groupingSymbol: ',',
+		  fractionDigits: 2
+		});
+		formatter.format(data, 1); // Aplica el formato a la columna 1 (valores)
+
+        const options = {
+          title: 'No creditos activos',
+          isStacked: true,
+          hAxis: {
+            title: 'Total por categoría',
+            minValue: 0
+          },
+          vAxis: {
+            title: 'Usuario'
+          },
+          chartArea: {width: '70%'},
+		  colors: ['#e6194b']
+        };
+
+        const chart = new google.visualization.BarChart(document.getElementById('grafico2'));
+        chart.draw(data, options);
+		
+		
+	}
+	
+	function drawClientes() {
+		const dataObj  = JSON.parse('<?php echo json_encode($objListSummaryCredit); ?>');	
+
+		 // Estructura de columnas para el gráfico
+        const dataArray = [
+          ['Usuario', 'No. CLI']
+        ];
+
+        dataObj.forEach(item => {
+          dataArray.push([
+            item.nickname,
+            parseInt(item.countCustomer)
+          ]);
+        });
+
+        const data = google.visualization.arrayToDataTable(dataArray);
+
+        const options = {
+          title: 'Clientes por usuario',
+          isStacked: true,
+          hAxis: {
+            title: 'Total por categoría',
+            minValue: 0
+          },
+          vAxis: {
+            title: 'Usuario'
+          },
+          chartArea: {width: '70%'},
+		  colors: ['#ffe119']
+        };
+
         const chart = new google.visualization.BarChart(document.getElementById('grafico1'));
         chart.draw(data, options);
 		
 		
 	}
+	
+	
 </script>
