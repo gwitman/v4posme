@@ -142,6 +142,11 @@ class core_dashboards extends _BaseController {
                 $dataSession					= $this->getIndexFarmaLey($dataSession);
                 $dataSession["body"]			= /*--inicio view*/ view('core_dasboard/dashboards_default_farma_ley',$dataSession);//--finview
             }
+			else if($objCompany->type == "creditaguil")
+            {
+                $dataSession					= $this->getIndexCreditAguil($dataSession);
+                $dataSession["body"]			= /*--inicio view*/ view('core_dasboard/dashboards_default_creditaguil',$dataSession);//--finview
+            }
             else
             {
                 $dataSession 					= $this->getIndexDefault($dataSession);
@@ -582,6 +587,36 @@ class core_dashboards extends _BaseController {
         return $dataSession;
     }
 	
+	function getIndexCreditAguil($dataSession)
+	{
+
+        $firstDateYear					= helper_PrimerDiaDelYear();
+        $lastDateYear					= helper_UltimoDiaDelMes();
+        $firstDate						= helper_PrimerDiaDelMes();
+        $lastDate						= helper_UltimoDiaDelMes();
+
+
+		$query			= "CALL pr_collection_get_report_summary_credit(?,?,?,?);";
+		$objData		= $this->Bd_Model->executeRender(
+			$query,
+			[$dataSession["user"]->companyID,'',$dataSession["user"]->userID,$lastDate]
+		);			
+		
+
+		if(isset($objData))
+		{
+			$objDataResult["objDetail"]					= $objData;
+		}
+		else
+		{
+			$objDataResult["objDetail"]					= NULL;
+		}
+	
+	
+		$dataSession["objListSummaryCredit"]			= $objDataResult["objDetail"];
+        return $dataSession;
+		
+    }
 	function getIndexFarmaLey($dataSession)
     {
 
