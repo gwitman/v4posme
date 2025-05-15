@@ -1,0 +1,2 @@
+				<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/sweetalert2/sweetalert2.all.min.js"></script>

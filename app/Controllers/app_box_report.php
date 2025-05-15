@@ -1,6 +1,8 @@
 <?php
 //posme:2023-02-27
 namespace App\Controllers;
+use DateTime;
+
 class app_box_report extends _BaseController {
 	
    
@@ -1890,6 +1892,130 @@ class app_box_report extends _BaseController {
 		    return $resultView;		
 		}
 	}
-	
+
+    public function closed_operation()
+    {
+        try {
+            //AUTENTICADO
+            if (! $this->core_web_authentication->isAuthenticated()) {
+                throw new \Exception(USER_NOT_AUTENTICATED);
+            }
+
+            $dataSession = $this->session->get();
+
+            //PERMISOS SOBRE LAS FUNCIONES
+            if (APP_NEED_AUTHENTICATION == true) {
+
+                $permited = false;
+                $permited = $this->core_web_permission->urlPermited(get_class($this), "index", URL_SUFFIX, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
+
+                if (! $permited) {
+                    throw new \Exception(NOT_ACCESS_CONTROL);
+                }
+
+                $resultPermission = $this->core_web_permission->urlPermissionCmd(get_class($this), "index", URL_SUFFIX, $dataSession, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
+                if ($resultPermission == PERMISSION_NONE) {
+                    throw new \Exception(NOT_ACCESS_FUNCTION);
+                }
+
+            }
+
+            $viewReport     = false;
+            $employeeNumber = false;
+            $companyID      = $dataSession["user"]->companyID;
+            $branchID       = $dataSession["user"]->branchID;
+            $userID         = $dataSession["user"]->userID;
+            $tocken         = '';
+
+            $viewReport = /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "viewReport"); //--finuri
+            $user       = /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "user");       //--finuri
+            $startOn    = /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "startOn");    //--finuri
+            $endOn      = /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "endOn");      //--finuri
+            $hourStart  = /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "hourStart");  //--finuri
+            $hourEnd    = /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "hourEnd");    //--finuri
+            $verDetalle = /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "verDetalle"); //--finuri
+            $formato    = /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "formato");    //--finuri
+
+            //Cargar Libreria
+            if (! ($viewReport && $startOn && $endOn)) {
+
+                //Obtener lista de usuarios
+                $objListaUsuarios             = $this->User_Model->get_All($companyID);
+                $objListBox                   = $this->Cash_Box_Model->get_All($companyID);
+                $dataView["objListaUsuarios"] = $objListaUsuarios;
+                $dataView["objListBox"]       = $objListBox;
+
+                //Renderizar Resultado
+                $dataSession["message"] = $this->core_web_notification->get_message();
+                $dataSession["head"]    = /*--inicio view*/view('app_box_report/closed_operation/view_head');            //--finview
+                $dataSession["body"]    = /*--inicio view*/view('app_box_report/closed_operation/view_body', $dataView); //--finview
+                $dataSession["script"]  = /*--inicio view*/view('app_box_report/closed_operation/view_script');          //--finview
+                $dataSession["footer"]  = "";
+                return view("core_masterpage/default_report", $dataSession); //--finview-r
+            } else {
+                $startDateTime = trim($startOn . ' ' . ($hourStart !== null ? $hourStart : '00:00:00'));
+                $startDateTime = (new DateTime($startDateTime))->format('Y-m-d H:i:s');
+                $endDateTime   = trim($endOn . ' ' . ($hourEnd !== null ? $hourEnd : '23:59:59'));
+                $endDateTime   = (new DateTime($endDateTime))->format('Y-m-d H:i:s');
+                //Obtener el tipo de Comprobante
+                $companyID = $dataSession["user"]->companyID;
+                //Get Component
+                $objComponent = $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+                //Get Logo
+                $objParameter      = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO", $companyID);
+                $objPropietaryName = $this->core_web_parameter->getParameter("CORE_PROPIETARY_NAME", $companyID);
+                //Get Company
+                $objCompany = $this->Company_Model->get_rowByPK($companyID);
+                //Get Datos
+                $query = "CALL pr_box_get_report_closed_operation(?,?,?,?,?,?);";
+
+                $objData = $this->Bd_Model->executeRenderMultipleNative(
+                    $query,
+                    [$userID, $tocken, $companyID, $user, $startDateTime, $endDateTime]
+                );
+                $usuarios = 'TODOS';
+                if ($user != 0) {
+                    $usuarios = $this->User_Model->get_rowByPK($companyID, $branchID, $user)->nickname;
+                }
+                if (isset($objData)) {
+                    $objDataResult["objFacturas"] = $objData[0] ?? null;
+                    $objDataResult["objAbonos"]   = $objData[1] ?? null;
+                    $objDataResult["objIngCaja"]  = $objData[2] ?? null;
+                    $objDataResult["objEgrCaja"]  = $objData[3] ?? null;
+                    $objDataResult["objGastos"]   = $objData[4] ?? null;
+                } else {
+                    $objDataResult["objFacturas"] = null;
+                    $objDataResult["objAbonos"]   = null;
+                    $objDataResult["objIngCaja"]  = null;
+                    $objDataResult["objEgrCaja"]  = null;
+                    $objDataResult["objGastos"]   = null;
+                }
+                $objDataResult["fechaInicio"]        = $startDateTime;
+                $objDataResult["fechaFin"]           = $endDateTime;
+                $objDataResult["user"]               = $usuarios;
+                $objDataResult["objCompany"]         = $objCompany;
+                $objDataResult["objLogo"]            = $objParameter;
+                $objDataResult["objPropietaryName"]  = $objPropietaryName;
+                $objDataResult["objFirma"]           = "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_document_credit" . ",ip:" . $this->request->getIPAddress() . ",sessionID:" . session_id() . ",agenteID:" . $this->request->getUserAgent()->getAgentString() . ",lastActivity:" . /*inicio last_activity */"activity" /*fin last_activity*/ . "}";
+                $objDataResult["objFirmaEncription"] = md5($objDataResult["objFirma"]);
+
+                return view("app_box_report/closed_operation/view_a_disemp", $objDataResult); //--finview-r
+            }
+        } catch (\Exception $ex) {
+            if (empty($dataSession)) {
+                return redirect()->to(base_url("core_acount/login"));
+            }
+
+            $data["session"]   = $dataSession;
+            $data["exception"] = $ex;
+            $data["urlLogin"]  = base_url();
+            $data["urlIndex"]  = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . "index";
+            $data["urlBack"]   = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+            $resultView        = view("core_template/email_error_general", $data);
+
+            return $resultView;
+        }
+    }
+
 }
 ?>

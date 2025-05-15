@@ -1,10 +1,10 @@
-<?php 
+<?php
 //posme:2023-02-27
 namespace App\Models;
+
 use CodeIgniter\Model;
 
-
-class Cash_Box_Model extends Model  
+class Cash_Box_Model extends Model
 {
     protected $table      = 'tb_cash_box';
     protected $primaryKey = 'cashBoxID';
@@ -13,7 +13,7 @@ class Cash_Box_Model extends Model
 
     protected $returnType     = 'array';
     protected $useSoftDeletes = false;
-    protected $allowedFields = ['cashBoxID', 'companyID','branchID','cashBoxCode','name','description','statusID','isActive' ];
+    protected $allowedFields  = ['cashBoxID', 'companyID', 'branchID', 'cashBoxCode', 'name', 'description', 'statusID', 'isActive'];
 
     // Dates
     protected $useTimestamps = false;
@@ -38,7 +38,51 @@ class Cash_Box_Model extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
-	
-   
+
+    public function insert_app_posme($data)
+    {
+        $db      = db_connect();
+        $builder = $db->table("tb_cash_box");
+        $result  = $builder->insert($data);
+        return $db->insertID();
+    }
+
+    public function delete_app_posme($companyID, $cashBoxID)
+    {
+        $db      = db_connect();
+        $builder = $db->table("tb_cash_box");
+
+        $data["isActive"] = 0;
+        $builder->where("companyID", $companyID);
+        $builder->where("cashBoxID", $cashBoxID);
+        return $builder->update($data);
+    }
+
+    public function update_app_posme($companyID, $cashBoxID, $data)
+    {
+        $db      = db_connect();
+        $builder = $db->table("tb_cash_box");
+
+        $builder->where("companyID", $companyID);
+        $builder->where("cashBoxID", $cashBoxID);
+        return $builder->update($data);
+    }
+
+    public function get_rowByPK($companyID, $cashBoxID)
+    {
+        $db      = db_connect();
+        $builder = $db->table("tb_cash_box");
+        $filtros = ['companyID' => $companyID, 'cashBoxID' => $cashBoxID, 'isActive' => 1];
+        $builder = $builder->where($filtros);
+        return $builder->get()->getRow();
+    }
+
+    public function get_All($companyID)
+    {
+        $db      = db_connect();
+        $builder = $db->table("tb_cash_box");
+        $filtros = ['companyID' => $companyID, 'isActive' => 1];
+        $builder = $builder->where($filtros);
+        return $builder->get()->getResultObject();
+    }
 }
-?>
