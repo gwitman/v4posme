@@ -561,7 +561,7 @@ function helper_reporteA4mmTransactionMasterInputUnpostFarmaLey(
 	$iva 		= 0;
 	$descuento 	= 0;
 	
-	for($i = 0 ; $i < 22 ; $i++)
+	for($i = 0 ; $i < 150 ; $i++)
 	{
 		$count = count($objDetail);
 		if($i < $count)

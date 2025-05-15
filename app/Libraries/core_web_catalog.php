@@ -181,7 +181,8 @@ class core_web_catalog {
 		if(!$objPublicCatalog)
 			return $objCatalogItem;		
 			
-		$objPublicCatalogItem 	= $Public_Catalog_Detail_Model->getView($objPublicCatalog->publicCatalogID);
+		
+		$objPublicCatalogItem 	= $Public_Catalog_Detail_Model->getView($objPublicCatalog[0]->publicCatalogID);
 		if(!$objPublicCatalogItem)
 			return $objCatalogItem;		
 			
