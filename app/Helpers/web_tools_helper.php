@@ -486,6 +486,26 @@ function helper_GetFechaNacimiento($fechaString)
     return $diferencia->y;
 }
 
+function helper_InsertarEntrePartes($original, $insertar, $n) {
+    if ($n < 2) return $original; // No tiene sentido dividir en menos de 2 partes
+
+    $longitud = strlen($original);
+    $tamanoParte = intdiv($longitud, $n);
+    $resto = $longitud % $n;
+
+    $partes = [];
+    $inicio = 0;
+
+    for ($i = 0; $i < $n; $i++) {
+        $extra = $i < $resto ? 1 : 0; // Reparte el sobrante
+        $longitudParte = $tamanoParte + $extra;
+        $partes[] = substr($original, $inicio, $longitudParte);
+        $inicio += $longitudParte;
+    }
+
+    return implode($insertar, $partes);
+}
+
 //END FUNCTION
 function helper_GetNumberLetras($xcifra, $moneda, $centavos)
 {

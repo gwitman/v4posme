@@ -496,6 +496,10 @@ class app_inventory_report extends _BaseController {
 				{
 					return view("app_inventory_report/list_item/view_a_disemp_galmcuts",$objDataResult);//--finview-r
 				}
+				else if($objCompany->type == "farma_ley")
+				{
+					return view("app_inventory_report/list_item/view_a_disemp_farma_ley",$objDataResult);//--finview-r
+				}
 				else
 				{
 					return view("app_inventory_report/list_item/view_a_disemp",$objDataResult);//--finview-r
