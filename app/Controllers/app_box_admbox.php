@@ -268,7 +268,6 @@ class app_box_admbox extends _BaseController
             return;
         }
 
-        $objBox['cashBoxCode'] = /*inicio get post*/$this->request->getPost("txtCodeBox");
         $objBox['name']        = /*inicio get post*/$this->request->getPost("txtNameBox");
         $objBox['description'] = /*inicio get post*/$this->request->getPost("txtDescriptionBox");
         $objBox['statusID']    = /*inicio get post*/$this->request->getPost("txtStatusID");
