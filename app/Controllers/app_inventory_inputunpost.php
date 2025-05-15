@@ -1081,7 +1081,7 @@ class app_inventory_inputunpost extends _BaseController {
 			$objTM["companyID"] 					= $dataSession["user"]->companyID;
 			$objTM["transactionID"] 				= $transactionID;			
 			$objTM["branchID"]						= $dataSession["user"]->branchID;			
-			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_inputunpost",0);
+			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_pre_inputunpost",0);
 			$objTM["transactionCausalID"] 			= /*inicio get post*/ $this->request->getPost("txtCausalID");
 			$objTM["entityID"]						= /*inicio get post*/ $this->request->getPost("txtProviderID");
 			$objTM["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtTransactionOn");
@@ -1686,6 +1686,12 @@ class app_inventory_inputunpost extends _BaseController {
 			
 			//Aplicar el Documento?
 			if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_inputunpost","statusID",$objTMNew["statusID"],COMMAND_APLICABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID) &&  $oldStatusID != $objTMNew["statusID"] ){
+				
+				//Actualizar el codigo de la factura
+				$transactionNumber								= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_inputunpost",0);
+				$objTMUpdatem_["transactionNumber"]				= $transactionNumber;
+				$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMUpdatem_);
+				
 				//Ingresar en Kardex.
 				$this->core_web_inventory->calculateKardexNewInput($companyID,$transactionID,$transactionMasterID);			
 			
