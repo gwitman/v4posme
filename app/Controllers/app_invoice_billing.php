@@ -7894,7 +7894,7 @@ class app_invoice_billing extends _BaseController {
 		    $row = array("CANT", 'PREC', "TOTAL");
 		    array_push($detalle,$row);
 		    
-		    
+		    $discountTotal = 0;
 			foreach($datView["objTMD"] as $detail_){
 				$row = array(
 					"_________________________________"."-comand-new-row",  				
@@ -7920,8 +7920,13 @@ class app_invoice_billing extends _BaseController {
 				$minsa	 			= sprintf("%01.2f",round($minsa,2));
 				$descuento			= sprintf("%01.2f",round($descuento,2));
 				
+				if($descuento > 0)
+				{
+					$discountTotal = $discountTotal + ($descuento * $detail_->quantity);
+				}
+				
 				$row = array(
-					"PM: ".$minsa." (DESC: ".$descuento.") PF: ".$precio."-comand-new-row",  				
+					"PM: ".$minsa." (DS: ".$descuento.") PF: ".$precio."-comand-new-row",  				
 					"none",
 					"none"
 				);
@@ -7938,7 +7943,7 @@ class app_invoice_billing extends _BaseController {
 				
 			}
 			
-			
+			$datView["objTM"]->discount = $discountTotal;
 			//Generar Reporte
 			$html = helper_reporte80mmTransactionMasterFarmaLey(
 			    "FACTURA",

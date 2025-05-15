@@ -610,6 +610,7 @@ function helper_reporteA4mmTransactionMasterInputUnpostFarmaLey(
 				
 	
 	$f_html = $f_html."
+				  <!--
 				  <table style='width:98%;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom."' >
 						<tr>
 							<td  style='text-align:left;vertical-align:top;widht:auto;' >
@@ -677,7 +678,8 @@ function helper_reporteA4mmTransactionMasterInputUnpostFarmaLey(
 						</tr>
 						
 						
-				   </table>";
+				   </table>
+				   -->";
 				   
 				   
 	$f_html = $f_html."
@@ -693,7 +695,7 @@ function helper_reporteA4mmTransactionMasterInputUnpostFarmaLey(
 				  <table style='width:98%' >
 						<tr>
 							<td style='text-align:center;text-decoration:underline;font-weight: bold;font-size:14px'>
-								".getBehavio($objCompany->type,"app_invoice_billing","lblRptInvoiceOpcion2","La salud es lo mas importante!")."
+								".getBehavio($objCompany->type,"app_invoice_billing","lblRptInvoiceOpcion2","TU BIENESTAR EN LAS MEJORES MANOS!")."
 							</td>
 						</tr>
 				   </table>";

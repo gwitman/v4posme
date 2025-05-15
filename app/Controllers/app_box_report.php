@@ -266,6 +266,11 @@ class app_box_report extends _BaseController {
 				{
 					return view("app_box_report/share/view_a_disemp_raptor",$objDataResult);//--finview-r
 				}
+				//credit aguil
+				else if( $objCompany->flavorID == 665 ) 
+				{
+					return view("app_box_report/share/view_a_disemp_creditaguil",$objDataResult);//--finview-r
+				}
 				else 
 				{
 					return view("app_box_report/share/view_a_disemp",$objDataResult);//--finview-r

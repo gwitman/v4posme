@@ -16,7 +16,7 @@
 		
 		
 		<?php
-		$width0  		= "1600px";//99
+		$width0  		= "1700px";//99
 		$width1  		= "0px";//480
 		$width2  		= "0px";//480
 		$width3  		= "0px";//480
@@ -29,12 +29,13 @@
 		$width10  		= "0px";//480
 		$width11  		= "0px";//0
 		$width12  		= "0px";//0
+		$width13  		= "0px";//0
 		
 		
 		$totalCordoba 	= 0;
 		$totalDolares 	= 0;
-		$widthX 		= 1600;
-		$columnX 		= 13;
+		$widthX 		= 1700;
+		$columnX 		= 14;
 		
 		echo helper_reporteGeneralCreateEncabezado(
 			'MOVIMIENTOS DE CAJA',
@@ -46,50 +47,54 @@
 			$widthX."px"
 		);
 		
-		$configColumnAbonos["0"]["Titulo"] 		= "Codigo";		
-		$configColumnAbonos["1"]["Titulo"] 		= "Cliente";		
-		$configColumnAbonos["2"]["Titulo"] 		= "Moneda";		
-		$configColumnAbonos["3"]["Titulo"] 		= "Fecha";		
-		$configColumnAbonos["4"]["Titulo"] 		= "Fac";		
-		$configColumnAbonos["5"]["Titulo"] 		= "Transaccion";		
-		$configColumnAbonos["6"]["Titulo"] 		= "Tran. Numero";		
-		$configColumnAbonos["7"]["Titulo"] 		= "Estado";		
-		$configColumnAbonos["8"]["Titulo"] 		= "Monto";		
-		$configColumnAbonos["9"]["Titulo"] 		= "Usuario";		
-		$configColumnAbonos["10"]["Titulo"] 	= "Nota";		
-		$configColumnAbonos["11"]["Titulo"] 	= "Categoria";		
-		$configColumnAbonos["12"]["Titulo"] 	= "Sub Categoria";
-					 
-		$configColumnAbonos["0"]["FiledSouce"] 		= "customerNumber";		
-		$configColumnAbonos["1"]["FiledSouce"] 		= "firstName";		
-		$configColumnAbonos["2"]["FiledSouce"] 		= "moneda";		
-		$configColumnAbonos["3"]["FiledSouce"] 		= "transactionOn";		
-		$configColumnAbonos["4"]["FiledSouce"] 		= "Fac";		
-		$configColumnAbonos["5"]["FiledSouce"] 		= "transactionName";		
-		$configColumnAbonos["6"]["FiledSouce"] 		= "transactionNumber";		
-		$configColumnAbonos["7"]["FiledSouce"] 		= "estado";		
-		$configColumnAbonos["8"]["FiledSouce"] 		= "montoFac";		
-		$configColumnAbonos["9"]["FiledSouce"] 		= "nickname";		
-		$configColumnAbonos["10"]["FiledSouce"] 	= "note";	
-		$configColumnAbonos["11"]["FiledSouce"] 	= "conceptosName";	
-		$configColumnAbonos["12"]["FiledSouce"] 	= "conceptosSubName";	
+		$configColumnAbonos["0"]["AutoIncrement"] 		= True;		
 		
-		$configColumnAbonos["0"]["Formato"] 		= "";		
+		$configColumnAbonos["0"]["Titulo"] 		= "No";		
+		$configColumnAbonos["1"]["Titulo"] 		= "Codigo";		
+		$configColumnAbonos["2"]["Titulo"] 		= "Cliente";		
+		$configColumnAbonos["3"]["Titulo"] 		= "Moneda";		
+		$configColumnAbonos["4"]["Titulo"] 		= "Fecha";		
+		$configColumnAbonos["5"]["Titulo"] 		= "Fac";		
+		$configColumnAbonos["6"]["Titulo"] 		= "Transaccion";		
+		$configColumnAbonos["7"]["Titulo"] 		= "Tran. Numero";		
+		$configColumnAbonos["8"]["Titulo"] 		= "Estado";		
+		$configColumnAbonos["9"]["Titulo"] 		= "Monto";		
+		$configColumnAbonos["10"]["Titulo"] 	= "Usuario";		
+		$configColumnAbonos["11"]["Titulo"] 	= "Nota";		
+		$configColumnAbonos["12"]["Titulo"] 	= "Categoria";		
+		$configColumnAbonos["13"]["Titulo"] 	= "Sub Categoria";
+		
+		$configColumnAbonos["0"]["FiledSouce"] 		= "customerNumber";				
+		$configColumnAbonos["1"]["FiledSouce"] 		= "customerNumber";		
+		$configColumnAbonos["2"]["FiledSouce"] 		= "firstName";		
+		$configColumnAbonos["3"]["FiledSouce"] 		= "moneda";		
+		$configColumnAbonos["4"]["FiledSouce"] 		= "transactionOn";		
+		$configColumnAbonos["5"]["FiledSouce"] 		= "Fac";		
+		$configColumnAbonos["6"]["FiledSouce"] 		= "transactionName";		
+		$configColumnAbonos["7"]["FiledSouce"] 		= "transactionNumber";		
+		$configColumnAbonos["8"]["FiledSouce"] 		= "estado";		
+		$configColumnAbonos["9"]["FiledSouce"] 		= "montoFac";		
+		$configColumnAbonos["10"]["FiledSouce"] 		= "nickname";		
+		$configColumnAbonos["11"]["FiledSouce"] 	= "note";	
+		$configColumnAbonos["12"]["FiledSouce"] 	= "conceptosName";	
+		$configColumnAbonos["13"]["FiledSouce"] 	= "conceptosSubName";	
+		
+		$configColumnAbonos["0"]["Formato"] 		= "";	
 		$configColumnAbonos["1"]["Formato"] 		= "";		
 		$configColumnAbonos["2"]["Formato"] 		= "";		
-		$configColumnAbonos["3"]["Formato"] 		= "DateTime";		
-		$configColumnAbonos["4"]["Formato"] 		= "";		
+		$configColumnAbonos["3"]["Formato"] 		= "";		
+		$configColumnAbonos["4"]["Formato"] 		= "DateTime";		
 		$configColumnAbonos["5"]["Formato"] 		= "";		
 		$configColumnAbonos["6"]["Formato"] 		= "";		
 		$configColumnAbonos["7"]["Formato"] 		= "";		
-		$configColumnAbonos["8"]["Formato"] 		= "Number";		
-		$configColumnAbonos["9"]["Formato"] 		= "";		
-		$configColumnAbonos["10"]["Formato"] 		= "";	
+		$configColumnAbonos["8"]["Formato"] 		= "";		
+		$configColumnAbonos["9"]["Formato"] 		= "Number";		
+		$configColumnAbonos["10"]["Formato"] 		= "";		
 		$configColumnAbonos["11"]["Formato"] 		= "";	
 		$configColumnAbonos["12"]["Formato"] 		= "";	
+		$configColumnAbonos["13"]["Formato"] 		= "";			
 		
-		
-		$configColumnAbonos["0"]["Width"] 		= $width0;		
+		$configColumnAbonos["0"]["Width"] 		= $width0;	
 		$configColumnAbonos["1"]["Width"] 		= $width1;		
 		$configColumnAbonos["2"]["Width"] 		= $width2;		
 		$configColumnAbonos["3"]["Width"] 		= $width3;		
@@ -99,9 +104,10 @@
 		$configColumnAbonos["7"]["Width"] 		= $width7;		
 		$configColumnAbonos["8"]["Width"] 		= $width8;		
 		$configColumnAbonos["9"]["Width"] 		= $width9;		
-		$configColumnAbonos["10"]["Width"] 		= $width10;	
+		$configColumnAbonos["10"]["Width"] 		= $width10;		
 		$configColumnAbonos["11"]["Width"] 		= $width11;	
 		$configColumnAbonos["12"]["Width"] 		= $width12;	
+		$configColumnAbonos["13"]["Width"] 		= $width13;	
 		
 		$configColumnAbonos["0"]["Total"] 		= False;		
 		$configColumnAbonos["1"]["Total"] 		= False;		
@@ -111,11 +117,12 @@
 		$configColumnAbonos["5"]["Total"] 		= False;		
 		$configColumnAbonos["6"]["Total"] 		= False;		
 		$configColumnAbonos["7"]["Total"] 		= False;		
-		$configColumnAbonos["8"]["Total"] 		= True;		
-		$configColumnAbonos["9"]["Total"] 		= False;		
-		$configColumnAbonos["10"]["Total"] 		= False;	
+		$configColumnAbonos["8"]["Total"] 		= False;		
+		$configColumnAbonos["9"]["Total"] 		= True;		
+		$configColumnAbonos["10"]["Total"] 		= False;		
 		$configColumnAbonos["11"]["Total"] 		= False;	
 		$configColumnAbonos["12"]["Total"] 		= False;	
+		$configColumnAbonos["13"]["Total"] 		= False;	
 		
 		$objDetailCordoba 	= $objDetail;
 		if($objDetailCordoba != null)
