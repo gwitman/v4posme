@@ -1399,6 +1399,15 @@ class app_invoice_billing extends _BaseController {
 			){
 				
 				//Actualizar el numero de factura
+				$ratioPont					= $this->core_web_parameter->getParameter("INVOICE_RATIO_OF_POINT_BY_BILLING",$companyID);
+				$ratioPont 					= $ratioPont->value;
+				$sendWhatappByPoint			= $this->core_web_parameter->getParameter("INVOICE_SEND_WHATAPP_BY_POINT",$companyID);
+				$sendWhatappByPoint 		= $sendWhatappByPoint->value;
+				$sendWhatappTemplate		= $this->core_web_parameter->getParameter("INVOICE_SEND_WHATAPP_BY_POINT_TEMPLATE",$companyID);
+				$sendWhatappTemplate 		= $sendWhatappTemplate->value;
+				
+				
+			
 				$objTMNew003["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_billing",0);
 				$objTMNew003["createdOn"]						= date("Y-m-d H:m:s");
 				$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMNew003);
@@ -1408,8 +1417,19 @@ class app_invoice_billing extends _BaseController {
 				if($objTMInfoNew["receiptAmountPoint"] <= 0 && $objTMNew["currencyID"]  == $objCurrencyCordoba->currencyID )
 				{
 					$objCustomer 					= $this->Customer_Model->get_rowByEntity($companyID, $objTMNew["entityID"] );
-					$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint + $amountTotal;
+					$objNatural						= $this->Customer_Model->get_rowByPK($companyID,$dataSession["user"]->branchID,$objTMNew["entityID"]);					
+					$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint + ($amountTotal * $ratioPont);
 					$this->Customer_Model->update_app_posme($objCustomer->companyID,$objCustomer->branchID,$objCustomer->entityID,$objCustomerNew);
+					
+					//Enviar whatapp
+					if($sendWhatappByPoint == "true")
+					{
+						$phoneDestino 			= $objCustomer->phoneNumber;
+						$phoneDestino 			= clearNumero($phoneDestino);
+						$sendWhatappTemplate 	= str_replace("{firstName}", $objNatural->firstName, $sendWhatappTemplate);
+						$sendWhatappTemplate 	= str_replace("{amount}",  number_format($objCustomerNew["balancePoint"] , 2), $sendWhatappTemplate);
+						$this->core_web_whatsap->sendMessageByWaapi($companyID, $sendWhatappTemplate, $phoneDestino)
+					}
 				}
 				
 				

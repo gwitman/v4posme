@@ -4,7 +4,26 @@ use db5qqn2mvepnkv ;
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "Gracias por su compra {firstName}, le recordamos que por cada compra acumula puntos! Su puntos acumulados son {amount}" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_SEND_WHATAPP_BY_POINT_TEMPLATE"; ## Plantilla de envio de whatapp al comprar por puntos
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_SEND_WHATAPP_BY_POINT"; ## Enviar whatapp por puntos
+	
 
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "0.03" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_RATIO_OF_POINT_BY_BILLING"; ## Configuracion de los puntos ganados por cada cordoba vendido
+	
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "app_tools_endorsements/viewRegisterFormatoPaginaTicket" 
 WHERE 

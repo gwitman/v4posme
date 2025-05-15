@@ -83,7 +83,40 @@ function getBehavioFarmaLey(){
 		strtolower('farma_ley_app_cxc_customer_divTxtNombres')					=> "hidden",		
 		strtolower('farma_ley_app_cxc_customer_divTxtApellidos')				=> "hidden",		
 		strtolower('farma_ley_app_cxc_customer_divTxtNombreComercial')			=> "hidden",		
-		strtolower('farma_ley_app_cxc_customer_divRigthHome')					=> "hidden",		
+		strtolower('farma_ley_app_cxc_customer_divRigthHome')					=> "hidden",	
+		strtolower('farma_ley_app_cxc_customer_divScriptCustom') 				=> "
+			<script>
+			$(document).ready(function(){ 		
+				$('#txtIdentification').on('input', function () {
+					  const inputVal 	= $(this).val();
+					  var cumple 		= false;
+					  if (
+						inputVal.length === 14 &&
+						/^\d{13}[^\d]$/.test(inputVal)
+					  ) {
+						cumple = true;
+					  } else {
+						cumple = false;
+					  }
+					  
+					  if(cumple == false)
+						  return;
+					  
+					  
+					  
+
+					  const dia 			= inputVal.substring(3, 5);
+					  const mes 			= inputVal.substring(5, 7);
+					  const anioCorto 		= inputVal.substring(7, 9);
+					  const anioCompleto 	= 1900 + parseInt(anioCorto, 10);
+					  var stringYear		=  anioCompleto+'-'+mes+'-'+dia;
+					  $('#txtBirthDate').val(stringYear);  
+					  
+				});
+			}); 
+			</script> ",
+
+			
 		strtolower('farma_ley_app_cxc_customer_divScriptValideFunctionPre')		=> "
 			
 			var txtLegalName_ = $('#txtLegalName').val();
