@@ -963,11 +963,49 @@
 		cerrarModal('ModalCargandoDatos');
 		cerrarModal("ModalOpcionesImpresion");
 	});
+	$("#btnAceptarDialogPrinterV2AceptarDocumentA4").click(function(){
+		mostarModalPersonalizado('Cargando impresión, por favor espere...');
+		window.open("<?php echo base_url(); ?>/"+varUrlPrinterOpcion2+"/companyID/2/transactionID/19/transactionMasterID/"+$("#txtTransactionMasterID").val(), '_blank');
+		cerrarModal('ModalCargandoDatos');
+		cerrarModal("ModalOpcionesImpresion");
+	});
+	
+	
+	
 	$("#btnCloseModalOpcionesImpresion").click(function(){		
 		cerrarModal("ModalOpcionesImpresion");
 	});
 	
-	$("#btnAceptarDialogPrinterV2AceptarDirect").click(function(){		
+	$("#btnAceptarDialogPrinterV2AceptarDirect").click(function(){	
+		
+		cerrarModal("ModalOpcionesImpresion");
+		mostarModalPersonalizado('Cargando impresión, por favor espere...');		
+		var url	= varParameterUrlServidorDeImpresion+varParameterInvoiceBillingPrinterDirectUrl;
+			url = url+
+			"/companyID/"+"2" + 
+			"/transactionID/"+"19"+
+			"/transactionMasterID/"+$("#txtTransactionMasterID").val();
+		
+		fnWaitOpenV2();	
+		$.ajax({									
+			cache       : false,
+			dataType    : 'json',
+			type        : 'POST',
+			data		: { "fromServer" : varParameterInvoiceBillingPrinterDataLocal },
+			url  		: url,
+			success		: function(){
+				cerrarModal('ModalCargandoDatos');
+			},
+			error:function(xhr,data){
+				console.info("complete data error");									
+				console.info(data);
+				console.info(xhr);
+				cerrarModal('ModalCargandoDatos');
+			}
+		});
+		
+		
+		
 	});
 
 	$('#txtPorcentajeDescuento').on('input', function() {
