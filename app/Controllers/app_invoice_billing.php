@@ -1422,12 +1422,14 @@ class app_invoice_billing extends _BaseController {
 					$this->Customer_Model->update_app_posme($objCustomer->companyID,$objCustomer->branchID,$objCustomer->entityID,$objCustomerNew);
 					
 					//Enviar whatapp
-					if($sendWhatappByPoint == "true")
+					if($sendWhatappByPoint == "true" && $dataSession["company"]->type == "farma_ley" )
 					{	
+					    $amountPoint			= $objCustomerNew["balancePoint"] / $ratioPont;
+						$amountPoint			= number_format($amountPoint , 2);
 						$phoneDestino 			= $objCustomer->phoneNumber;
 						$phoneDestino 			= clearNumero($phoneDestino);
 						$sendWhatappTemplate 	= str_replace("{firstName}", $objNatural->firstName, $sendWhatappTemplate);
-						$sendWhatappTemplate 	= str_replace("{amount}",  " ".number_format($objCustomerNew["balancePoint"] , 2)." pt ", $sendWhatappTemplate);
+						$sendWhatappTemplate 	= str_replace("{amount}",  " ".$amountPoint." pt ", $sendWhatappTemplate);
 						$sendWhatappTemplate 	= replaceSimbol($sendWhatappTemplate);
 						$this->core_web_whatsap->sendMessageByWaapi($companyID, $sendWhatappTemplate, $phoneDestino);
 					}
