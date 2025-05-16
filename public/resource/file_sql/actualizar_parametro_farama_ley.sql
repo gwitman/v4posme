@@ -5,7 +5,7 @@ use db5qqn2mvepnkv ;
 /******************************************************************/	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Gracias por su compra {firstName}, le recordamos que por cada compra acumula puntos! Su puntos acumulados son {amount}" 
+	tb_company_parameter.value = "!Hola {firstName}!.[simbol-enter][simbol-enter]!Gracias por tu compra en Farma Ley![simbol-estetoscopio] [simbol-enter]Has acumulado ({amount}) puntos que podras canjear en tu proxima visita.[simbol-enter][simbol-pildora] Recorda que en nuestra farmacia siempre encontraras medicamentos y atencion de calidad.[simbol-enter] Guarda este mensaje para futuras consultas [simbol-telefono]" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_SEND_WHATAPP_BY_POINT_TEMPLATE"; ## Plantilla de envio de whatapp al comprar por puntos
@@ -507,14 +507,14 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://api.ultramsg.com/instance65915/messages/chat" 
+	tb_company_parameter.value = "https://waapi.app/api/v1/instances/67049/client/action/send-message" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WAHTSAP_URL_ENVIO_MENSAJE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "n5hb8n1wf0r6e27i" 
+	tb_company_parameter.value = "61oGNnAg3Ed1xULC9nmyIJJMtcE1KifyoX9D2x6h458fa805" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema

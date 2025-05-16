@@ -612,7 +612,7 @@ class core_web_whatsap {
 		$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
 
 		//https://api.ultramsg.com/instance65915/messages/chat
-		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WHATSAP_URL_ENVIO_MENSAJE");
+		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
 		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
 		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
 
@@ -621,6 +621,10 @@ class core_web_whatsap {
 		$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;
 		$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
 		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
+		$data 			= [
+			'chatId'  => $phoneDestino . '@c.us',
+			'message' => $message // Asegúrate de que $message esté en UTF-8
+		];
 
 
 		$clientCurlRequest		= Services::curlrequest();
@@ -628,7 +632,7 @@ class core_web_whatsap {
 			'POST',
 			$objCP_WhatsapUrlSendMessage->value,
 			[
-				'body' => '{"chatId":"'.$phoneDestino.'@c.us","message":"'.$message.'"}',
+				'body' => json_encode($data, JSON_UNESCAPED_UNICODE),
 				'headers' 		=> [
 					'accept'     	=> 'application/json',
 					'authorization' => 'Bearer '.$objCP_WhatsapToken->value,
@@ -636,6 +640,8 @@ class core_web_whatsap {
 				]
 			]
 		);
+		
+		
 
 
    }
