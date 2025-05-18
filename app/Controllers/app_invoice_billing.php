@@ -7865,6 +7865,7 @@ class app_invoice_billing extends _BaseController {
 			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
 			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
 			$datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
+			$datView["objNaturalEmployer"]			= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objTM"]->entityIDSecondary);			
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
 			$datView["objUser"]						= $this->User_Model->get_rowByPK($companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
 			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 
@@ -7949,7 +7950,7 @@ class app_invoice_billing extends _BaseController {
 				}
 				
 				$row = array(
-					"PM: ".$minsa." (DS: ".$descuento.") PF: ".$precio."-comand-new-row",  				
+					"C$:".$minsa."(Desc:C$".$descuento.")T:C$".$precio."-comand-new-row",  				
 					"none",
 					"none"
 				);
@@ -7967,6 +7968,11 @@ class app_invoice_billing extends _BaseController {
 			}
 			
 			$datView["objTM"]->discount = $discountTotal;
+			if($discountTotal > 0 )
+			{
+				$datView["objTM"]->subAmount = $datView["objTM"]->subAmount + $discountTotal;
+			}
+			
 			//Generar Reporte
 			$html = helper_reporte80mmTransactionMasterFarmaLey(
 			    "FACTURA",
@@ -7984,7 +7990,8 @@ class app_invoice_billing extends _BaseController {
 				$datView["objStage"][0]->display, /*estado*/
 				$datView["objTC"]->name /*causal*/,
 				$datView["objUser"]->nickname,
-			    $objParameterRuc /*ruc*/
+			    $objParameterRuc /*ruc*/,
+				$datView
 			);
 			$this->dompdf->loadHTML($html);
 			

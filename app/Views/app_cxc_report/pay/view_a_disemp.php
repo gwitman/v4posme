@@ -18,7 +18,7 @@
 		
 		$configColumn["-1"]["Titulo"]		= "#";
 		$configColumn["-1"]["FiledSouce"]	= "contador";
-		$configColumn["-1"]["Width"]			= "20px";
+		$configColumn["-1"]["Width"]		= "20px";
 		$configColumn["-1"]["Formato"]		= "";
 		
 		
@@ -31,35 +31,39 @@
 		$configColumn["1"]["FiledSouce"]	= "transactionNumber";
 		$configColumn["1"]["Width"]			= "80px";
 		
-		$configColumn["2"]["Titulo"]		= "Referencia";
-		$configColumn["2"]["FiledSouce"]	= "reference1";
+		$configColumn["2"]["Titulo"]		= "Colaborador";
+		$configColumn["2"]["FiledSouce"]	= "userName";
 		$configColumn["2"]["Width"]			= "80px";
 		
-		$configColumn["3"]["Titulo"]		= "Moneda";
-		$configColumn["3"]["FiledSouce"]	= "MonedaDesembolso";
+		$configColumn["3"]["Titulo"]		= "Referencia";
+		$configColumn["3"]["FiledSouce"]	= "reference1";
 		$configColumn["3"]["Width"]			= "80px";
 		
-		$configColumn["4"]["Titulo"]		= "Abono";
-		$configColumn["4"]["FiledSouce"]	= "Pago";
-		$configColumn["4"]["Width"]			= "120px";
-		$configColumn["4"]["Formato"]		= "Number";
-		$configColumn["4"]["Total"]			= False;
+		$configColumn["4"]["Titulo"]		= "Moneda";
+		$configColumn["4"]["FiledSouce"]	= "MonedaDesembolso";
+		$configColumn["4"]["Width"]			= "80px";
 		
-		$configColumn["5"]["Titulo"]		= "Saldo Anterior";
-		$configColumn["5"]["FiledSouce"]	= "SaldoAterior";
+		$configColumn["5"]["Titulo"]		= "Abono";
+		$configColumn["5"]["FiledSouce"]	= "Pago";
 		$configColumn["5"]["Width"]			= "120px";
 		$configColumn["5"]["Formato"]		= "Number";
 		$configColumn["5"]["Total"]			= False;
 		
-		$configColumn["6"]["Titulo"]		= "Saldo Nuevo";
-		$configColumn["6"]["FiledSouce"]	= "SaldoNuevo";
+		$configColumn["6"]["Titulo"]		= "Saldo Anterior";
+		$configColumn["6"]["FiledSouce"]	= "SaldoAterior";
 		$configColumn["6"]["Width"]			= "120px";
 		$configColumn["6"]["Formato"]		= "Number";
 		$configColumn["6"]["Total"]			= False;
 		
-		$configColumn["7"]["Titulo"]		= "Nota";		
-		$configColumn["7"]["FiledSouce"]	= "note";
-		$configColumn["7"]["Width"]			= "210px";
+		$configColumn["7"]["Titulo"]		= "Saldo Nuevo";
+		$configColumn["7"]["FiledSouce"]	= "SaldoNuevo";
+		$configColumn["7"]["Width"]			= "120px";
+		$configColumn["7"]["Formato"]		= "Number";
+		$configColumn["7"]["Total"]			= False;
+		
+		$configColumn["8"]["Titulo"]		= "Nota";		
+		$configColumn["8"]["FiledSouce"]	= "note";
+		$configColumn["8"]["Width"]			= "210px";
 		
 		
 		$resultado = helper_reporteGeneralCreateTable($objPayList,$configColumn,'0');

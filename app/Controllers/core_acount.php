@@ -219,34 +219,37 @@ class core_acount extends _BaseController {
 			$subject 	= "Inicio de session: ".$objCompany->name." ".$nickname;
 			$body  		= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview
 			
-			
-			$this->email->setFrom(EMAIL_APP);
-			$this->email->setTo(EMAIL_APP_COPY);
-			$this->email->setSubject($subject);			
-			$this->email->setMessage($body); 
-			
-			$resultSend01 = $this->email->send();
-			$resultSend02 = $this->email->printDebugger();
-			
-			
-			//Guardar Log			
-			$objLogSessionModel["session_id"] 		= session_id();
-			$objLogSessionModel["ip_address"] 		= $this->request->getIPAddress();
-			$objLogSessionModel["user_agent"] 		= $this->request->getUserAgent()->getPlatform();
-			$objLogSessionModel["last_activity"] 	= \DateTime::createFromFormat("Y-m-d H:i:s",helper_getDateTime())->format("YmdHis");
-			$objLogSessionModel["user_data"] 		= $objUser["user"]->nickname." create session";
-			
-			
-			$objLogSessionModel2 					= $this->Log_Session_Model->asObject()->where("session_id",$objLogSessionModel["session_id"])->find();
-			if(!$objLogSessionModel2)			
-			$this->Log_Session_Model->insert($objLogSessionModel);			
-			else 			
-			$this->Log_Session_Model->upsert($objLogSessionModel);
-		
-		
-			
-			$this->response->redirect(base_url()."/".$objUser["role"]->urlDefault."/index");
-			
+			if($objCompany->type == "emanuel")
+			{
+				$this->response->redirect(base_url()."/".$objUser["role"]->urlDefault."/index");
+			}
+			else 
+			{
+				$this->email->setFrom(EMAIL_APP);
+				$this->email->setTo(EMAIL_APP_COPY);
+				$this->email->setSubject($subject);			
+				$this->email->setMessage($body); 
+				
+				$resultSend01 = $this->email->send();
+				$resultSend02 = $this->email->printDebugger();
+				
+				
+				//Guardar Log			
+				$objLogSessionModel["session_id"] 		= session_id();
+				$objLogSessionModel["ip_address"] 		= $this->request->getIPAddress();
+				$objLogSessionModel["user_agent"] 		= $this->request->getUserAgent()->getPlatform();
+				$objLogSessionModel["last_activity"] 	= \DateTime::createFromFormat("Y-m-d H:i:s",helper_getDateTime())->format("YmdHis");
+				$objLogSessionModel["user_data"] 		= $objUser["user"]->nickname." create session";
+				
+				
+				$objLogSessionModel2 					= $this->Log_Session_Model->asObject()->where("session_id",$objLogSessionModel["session_id"])->find();
+				if(!$objLogSessionModel2)			
+				$this->Log_Session_Model->insert($objLogSessionModel);			
+				else 			
+				$this->Log_Session_Model->upsert($objLogSessionModel);
+				
+				$this->response->redirect(base_url()."/".$objUser["role"]->urlDefault."/index");
+			}
 			
 		
 		}
