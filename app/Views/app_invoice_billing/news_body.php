@@ -1018,7 +1018,7 @@ echo helper_getHtmlOfPageLanding();
 										<td>
 											<input type="text" id="txtReceiptAmountTarjeta" name="txtReceiptAmountTarjeta"   class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
 										</td>
-										<td>
+										<td style="min-width: 100px;">
 											<select name="txtReceiptAmountTarjeta_BankID" id="txtReceiptAmountTarjeta_BankID"  class="">
 												<?php
 												if (!empty($objListBank)) {
