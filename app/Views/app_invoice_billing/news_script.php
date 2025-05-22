@@ -934,6 +934,9 @@
 					 // Manejar el evento de selección
 					select.on('change', function() {
 						let precio = $(this).find('option:selected').data('price');
+						if(precio === 0){
+							precio = data[columnasTableDetail.precio1];
+						}
 						let catalogItemID = $(this).val();
 						let nombreSeleccionado = $(this).find('option:selected').text();
 						let ratio = $(this).find('option:selected').data('ratio');
