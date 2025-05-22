@@ -71,6 +71,7 @@ $routes->match(['get', 'post'], 'app_cxc_report/posMeGetRutasOfController', 'app
 $routes->match(['get', 'post'], 'app_cxc_simulation/posMeGetRutasOfController', 'app_cxc_simulation::posMeGetRutasOfController');
 $routes->match(['get', 'post'], 'app_cxp_provider/posMeGetRutasOfController', 'app_cxp_provider::posMeGetRutasOfController');
 $routes->match(['get', 'post'], 'app_inventory_api/posMeGetRutasOfController', 'app_inventory_api::posMeGetRutasOfController');
+$routes->match(['get', 'post'], 'app_inventory_api/getSkuAllProduct', 'app_inventory_api::getSkuAllProduct');
 $routes->match(['get', 'post'], 'app_inventory_category/posMeGetRutasOfController', 'app_inventory_category::posMeGetRutasOfController');
 $routes->match(['get', 'post'], 'app_inventory_dashboards/posMeGetRutasOfController', 'app_inventory_dashboards::posMeGetRutasOfController');
 $routes->match(['get', 'post'], 'app_inventory_datasheet/posMeGetRutasOfController', 'app_inventory_datasheetposMeGetRutasOfController');

@@ -988,6 +988,11 @@ class app_invoice_billing extends _BaseController {
 				$arrayListTaxServices						= array();
 				$arrayListLote	 							= array();
 				$arrayListVencimiento						= array();
+				$arrayListIdSku								= array();
+				$arrayListSkuDescription					= array();
+				$arrayListSkuRatio							= array();
+				$arrayListSkuQuantity						= array();
+				$arrayListSkuFormatoDescription				= array();
 				$arrayListSku								= array();
 				$arrayListSkuFormatoDescription 			= array();
 				$arrayListInfoSales			                = array();
@@ -1027,7 +1032,13 @@ class app_invoice_billing extends _BaseController {
 					//$arrayListIva		 		= IVA ES UN SOLO NUMERO POR QUE ES EL TOTAL
 					array_push($arrayListLote, '');
 					array_push($arrayListVencimiento, '');
+
 					array_push($arrayListSku,0);
+					array_push($arrayListIdSku,0);
+					array_push($arrayListSkuDescription,0);
+					array_push($arrayListSkuRatio,0);
+					array_push($arrayListSkuQuantity,0);
+				
 					array_push($arrayListSkuFormatoDescription,'');
 					array_push($arrayListInfoSales,'');
 					array_push($arrayListInfoSerie,'');
@@ -1050,8 +1061,11 @@ class app_invoice_billing extends _BaseController {
 				$arrayListIva		 						= /*inicio get post*/ $this->request->getPost("txtIva");
 				$arrayListTaxServices 						= /*inicio get post*/ $this->request->getPost("txtTaxServices");
 				$arrayListLote	 							= /*inicio get post*/ $this->request->getPost("txtDetailLote");			
-				$arrayListVencimiento						= /*inicio get post*/ $this->request->getPost("txtDetailVencimiento");	
-				$arrayListSku								= /*inicio get post*/ $this->request->getPost("txtSku");
+				$arrayListVencimiento						= /*inicio get post*/ $this->request->getPost("txtDetailVencimiento");
+				$arrayListIdSku								= /*inicio get post*/ $this->request->getPost("txtCatalogItemIDSku");
+				$arrayListSkuDescription					= /*inicio get post*/ $this->request->getPost("txtSku");
+				$arrayListSkuRatio							= /*inicio get post*/ $this->request->getPost("txtRatioSku");
+				$arrayListSkuQuantity						= /*inicio get post*/ $this->request->getPost("skuQuantityBySku");
 				$arrayListSkuFormatoDescription				= /*inicio get post*/ $this->request->getPost("skuFormatoDescription");
                 $arrayListInfoSales				            = /*inicio get post*/ $this->request->getPost("txtInfoVendedor");
                 $arrayListInfoSerie				            = /*inicio get post*/ $this->request->getPost("txtInfoSerie");
@@ -1102,15 +1116,16 @@ class app_invoice_billing extends _BaseController {
 					$objPrice 								= $this->Price_Model->get_rowByPK($companyID,$objListPrice->listPriceID,$itemID,$typePriceID);
 					$objCompanyComponentConcept 			= $this->Company_Component_Concept_Model->get_rowByPK($companyID,$objComponentItem->componentID,$itemID,"IVA");
 					$objCompanyComponentConceptTaxServices	= $this->Company_Component_Concept_Model->get_rowByPK($companyID,$objComponentItem->componentID,$itemID,"TAX_SERVICES");
-					$skuCatalogItemID						= $arrayListSku[$key];
 					$itemNameDetail							= str_replace('"',"",str_replace("'","",$arrayListItemName[$key]));
 					$itemNameDetailDecription				= str_replace('"',"",str_replace("'","",$arrayListItemNameDescription[$key]));
 					
-					
-					
-					$objItemSku								= $this->Item_Sku_Model->getByPK($itemID,$skuCatalogItemID);
-					$price 									= $arrayListPrice[$key] / ($objItemSku->value) ;
+					$skuCatalogItemID						= $arrayListIdSku[$key];
+					$skuQuantityBySku						= $arrayListSkuQuantity[$key];
+					$skuRatio								= $arrayListSkuRatio[$key];
 					$skuFormatoDescription					= $arrayListSkuFormatoDescription[$key];
+					$objItemSku								= $this->Item_Sku_Model->getByPK($itemID,$skuCatalogItemID);
+					$price 									= $arrayListPrice[$key];
+					
 					$ivaPercentage							= ($objCompanyComponentConcept != null ? $objCompanyComponentConcept->valueOut : 0 );	
 					$taxServicesPorcentage					= ($objCompanyComponentConceptTaxServices != null ? $objCompanyComponentConceptTaxServices->valueOut : 0 );						
 					$ivaPercentage 							= $objTMReferenceNew["reference2"] == "0" ? $ivaPercentage : 0;
@@ -1190,9 +1205,9 @@ class app_invoice_billing extends _BaseController {
 						$objTMD["componentID"]					= $objComponentItem->componentID;
 						$objTMD["componentItemID"] 				= $itemID;
 						
-						$objTMD["quantity"] 					= $quantity * $objItemSku->value;	//cantidad
-						$objTMD["skuQuantity"] 					= $quantity;						//cantidad
-						$objTMD["skuQuantityBySku"]				= $objItemSku->value;				//cantidad
+						$objTMD["quantity"] 					= $quantity;	//cantidad
+						$objTMD["skuQuantity"] 					= $skuRatio;						//cantidad
+						$objTMD["skuQuantityBySku"]				= $skuQuantityBySku;				//cantidad
 					
 						
 						$objTMD["unitaryCost"]					= $unitaryCost;								//costo
@@ -1281,9 +1296,9 @@ class app_invoice_billing extends _BaseController {
 						
 						$objTMDNew 								= null;
 						
-						$objTMDNew["quantity"] 					= $quantity * $objItemSku->value;	//cantidad
-						$objTMDNew["skuQuantity"] 				= $quantity;						//cantidad
-						$objTMDNew["skuQuantityBySku"]			= $objItemSku->value;				//cantidad
+						$objTMDNew["quantity"] 					= $quantity;	//cantidad
+						$objTMDNew["skuQuantity"] 				= $skuRatio;						//cantidad
+						$objTMDNew["skuQuantityBySku"]			= $skuQuantityBySku;				//cantidad
 					
 						
 						$objTMDNew["unitaryCost"]				= $unitaryCost;								//costo
@@ -1928,7 +1943,10 @@ class app_invoice_billing extends _BaseController {
 			$arrayListTaxServices 						= /*inicio get post*/ $this->request->getPost("txtTaxServices");
 			$arrayListLote	 							= /*inicio get post*/ $this->request->getPost("txtDetailLote");
 			$arrayListVencimiento						= /*inicio get post*/ $this->request->getPost("txtDetailVencimiento");			
-			$arrayListSku								= /*inicio get post*/ $this->request->getPost("txtSku");
+			$arrayListIdSku								= /*inicio get post*/ $this->request->getPost("txtCatalogItemIDSku");
+			$arrayListSkuDescription					= /*inicio get post*/ $this->request->getPost("txtSku");
+			$arrayListSkuRatio							= /*inicio get post*/ $this->request->getPost("txtRatioSku");
+			$arrayListSkuQuantity						= /*inicio get post*/ $this->request->getPost("skuQuantityBySku");
 			$arrayListSkuFormatoDescription				= /*inicio get post*/ $this->request->getPost("skuFormatoDescription");
 			$arrayListInfoSales				            = /*inicio get post*/ $this->request->getPost("txtInfoVendedor");
 			$arrayListInfoSerie				            = /*inicio get post*/ $this->request->getPost("txtInfoSerie");
@@ -1972,14 +1990,18 @@ class app_invoice_billing extends _BaseController {
 					$objPrice 								= $this->Price_Model->get_rowByPK($companyID,$objListPrice->listPriceID,$itemID,$typePriceID);
 					$objCompanyComponentConcept 			= $this->Company_Component_Concept_Model->get_rowByPK($companyID,$objComponentItem->componentID,$itemID,"IVA");
 					$objCompanyComponentConceptTaxServices	= $this->Company_Component_Concept_Model->get_rowByPK($companyID,$objComponentItem->componentID,$itemID,"TAX_SERVICES");
-					$skuCatalogItemID						= $arrayListSku[$key];
+					$skuCatalogItemID						= $arrayListIdSku[$key];
+					$skuFormatoDescription					= $arrayListSkuDescription[$key];
+					$skuRatio								= $arrayListSkuRatio[$key];
+					$skuQuantityBySku						= $arrayListSkuQuantity[$key];
+
 					$itemNameDetail							= str_replace("'","",$arrayListItemName[$key]);
 					$itemNameDetailDescription				= str_replace("'","",$arrayListItemNameDescription[$key]);
 					$objItemSku								= $this->Item_Sku_Model->getByPK($itemID,$skuCatalogItemID);
 					
 					//$price								= $objItem->cost * ( 1 + ($objPrice->percentage/100));
-					$price 									= $arrayListPrice[$key] / ($objItemSku->value) ;
-					$skuFormatoDescription					= $arrayListSkuFormatoDescription[$key];
+					$price 									= $arrayListPrice[$key];
+					
 					$ivaPercentage							= ($objCompanyComponentConcept != null ? $objCompanyComponentConcept->valueOut : 0 );
 					$taxServicesPercentage					= ($objCompanyComponentConceptTaxServices != null ? $objCompanyComponentConceptTaxServices->valueOut : 0 );
 					$ivaPercentage 							= $objTMReference["reference2"] == "0" ? $ivaPercentage : 0;
@@ -2023,9 +2045,9 @@ class app_invoice_billing extends _BaseController {
 					$objTMD["componentID"]					= $objComponentItem->componentID;
 					$objTMD["componentItemID"] 				= $itemID;
 					
-					$objTMD["quantity"] 					= $quantity * $objItemSku->value;	//cantidad
-					$objTMD["skuQuantity"] 					= $quantity;						//cantidad
-					$objTMD["skuQuantityBySku"]				= $objItemSku->value;				//cantidad
+					$objTMD["quantity"] 					= $quantity;	//cantidad
+					$objTMD["skuQuantity"] 					= $skuRatio;						//ratio del sqku
+					$objTMD["skuQuantityBySku"]				= $skuQuantityBySku;				//cantidad del sku * quantity
 					
 					$objTMD["unitaryCost"]					= $objItem->cost;					//costo
 					$objTMD["cost"] 						= $objTMD["quantity"]  * $objItem->cost;		//cantidad por costo

@@ -722,29 +722,31 @@ echo helper_getHtmlOfPageLanding();
 							<table id="tb_transaction_master_detail" class="<?= $useMobile=="1" ? '' : 'table table-bordered' ?>"  >
 								<thead>
 									<tr>
-									<th></th>
-									<th></th>
-									<th></th>
-									<th>Codigo</th>
-									<th>Descripcion</th>
-									<th>U/M</th>
-									<th>Cantidad</th>
-									<th>Precio</th>
-									<th>Total</th>
-									<th></th>
-									<th>skuQuantityBySku</th>
-									<th>unitaryPriceInvidual</th>
-									<th>Accion</th>
-									<th>skuFormatoDescription</th>
-									<th>Precio2</th>
-									<th>Precio3</th>
-									<th>itemNameDescription</th>
-									<th>TAX_SERVICES</th>
-									<th>Peso</th>
-									<th>Vendedor</th>
-									<th>Serie</th>
-									<th>Referencia</th>
-									<th>Precio1</th>
+										<th></th>
+										<th></th>
+										<th></th>
+										<th>Codigo</th>
+										<th>Descripcion</th>
+										<th>U/M</th>
+										<th>Cantidad</th>
+										<th>Precio</th>
+										<th>Total</th>
+										<th></th>
+										<th>skuQuantityBySku</th>
+										<th>unitaryPriceInvidual</th>
+										<th>Accion</th>
+										<th>skuFormatoDescription</th>
+										<th>Precio2</th>
+										<th>Precio3</th>
+										<th>itemNameDescription</th>
+										<th>TAX_SERVICES</th>
+										<th>Peso</th>
+										<th>Vendedor</th>
+										<th>Serie</th>
+										<th>Referencia</th>
+										<th>Precio1</th>
+										<th>Value Sku</th>
+										<th>Ratio Sku</th>
 									</tr>
 								</thead>
 								<tbody id="body_tb_transaction_master_detail">
@@ -1017,7 +1019,7 @@ echo helper_getHtmlOfPageLanding();
 											<input type="text" id="txtReceiptAmountTarjeta" name="txtReceiptAmountTarjeta"   class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
 										</td>
 										<td>
-											<select name="txtReceiptAmountTarjeta_BankID" id="txtReceiptAmountTarjeta_BankID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
+											<select name="txtReceiptAmountTarjeta_BankID" id="txtReceiptAmountTarjeta_BankID"  class="">
 												<?php
 												if (!empty($objListBank)) {
 												    foreach ($objListBank as $k => $bank) {
@@ -1041,7 +1043,7 @@ echo helper_getHtmlOfPageLanding();
 											<input type="text" id="txtReceiptAmountTarjetaDol" name="txtReceiptAmountTarjetaDol"   class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
 										</td>
 										<td>
-											<select name="txtReceiptAmountTarjetaDol_BankID" id="txtReceiptAmountTarjetaDol_BankID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
+											<select name="txtReceiptAmountTarjetaDol_BankID" id="txtReceiptAmountTarjetaDol_BankID"  class="">
 												<?php
 												if (!empty($objListBank)) {
 												    foreach ($objListBank as $k => $bank) {
@@ -1066,7 +1068,7 @@ echo helper_getHtmlOfPageLanding();
 											<input type="text" id="txtReceiptAmountBank" name="txtReceiptAmountBank"  class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
 										</td>
 										<td>
-											<select name="txtReceiptAmountBank_BankID" id="txtReceiptAmountBank_BankID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
+											<select name="txtReceiptAmountBank_BankID" id="txtReceiptAmountBank_BankID"  class="">
 												<?php
 												if (!empty($objListBank)) {
 												    foreach ($objListBank as $k => $bank) {
@@ -1090,7 +1092,7 @@ echo helper_getHtmlOfPageLanding();
 											<input type="text" id="txtReceiptAmountBankDol" name="txtReceiptAmountBankDol"  class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
 										</td>
 										<td>										
-											<select name="txtReceiptAmountBankDol_BankID" id="txtReceiptAmountBankDol_BankID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
+											<select name="txtReceiptAmountBankDol_BankID" id="txtReceiptAmountBankDol_BankID"  class="">
 												<?php
 												if (!empty($objListBank)) {
 												    foreach ($objListBank as $k => $bank) {

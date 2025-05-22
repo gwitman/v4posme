@@ -1,25 +1,25 @@
 <!-- ./ page heading -->
-<script>					
+<script>
     var heigthTop							= 0;
 	var objTableDetail 						= {};
     var tmpData 				            = [];
     var tmpInfoClient			            = 0;
 	var scrollPosition						= 0;
     var warehouseID 						= $("#txtWarehouseID").val();
-	let transactionID						= <?= $transactionID?>;
+	let transactionID						=	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						  <?php echo $transactionID ?>;
 	var isAdmin								= '<?php echo $isAdmin; ?>';
 	var esMesero							= '<?php echo $esMesero; ?>';
 	var openedSearchWindow					= false;
 	var objWindowSearchProduct;
-	var objTableProductosSearch 			= null;	
-	var objRowTableProductosSearch 			= null;	
+	var objTableProductosSearch 			= null;
+	var objRowTableProductosSearch 			= null;
 	var varBaseUrl							= '<?php echo base_url(); ?>';
     var varStatusInvoiceAplicado			= 67; //Estado Aplicada
     var varStatusInvoiceAnular				= 68; //Anular
 	var varCurrencyDefaultSimbol			= '<?php echo $objCurrency->simbol; ?>';
 	var varIsMobile							= '<?php echo $isMobile; ?>';
 	var varUseMobile						= '<?php echo $useMobile; ?>';
-	var varParameterCustomPopupFacturacion	= '<?php echo $objParameterCustomPopupFacturacion; ?>';	
+	var varParameterCustomPopupFacturacion	= '<?php echo $objParameterCustomPopupFacturacion; ?>';
 	var varParameterScanerProducto			= '<?php echo $objParameterScanerProducto; ?>';
     var varPermitirFacturarProductosEnZero	= '<?php echo $objParameterInvoiceBillingQuantityZero; ?>';
     var varParameterCantidadItemPoup		= '<?php echo $objParameterCantidadItemPoup; ?>';
@@ -28,9 +28,9 @@
 
 	var cargaCompletada						= false;
 	var varAutoAPlicar						= '<?php echo $objParameterInvoiceAutoApply; ?>';
-	var varParameterHidenFiledItemNumber	= <?php echo $objParameterHidenFiledItemNumber; ?>;  
-	var objParameterPantallaParaFacturar 	= '<?php echo $objParameterPantallaParaFacturar; ?>';	
-	var varParameterAmortizationDuranteFactura		= <?php echo $objParameterAmortizationDuranteFactura; ?>;  
+	var varParameterHidenFiledItemNumber	=	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	  <?php echo $objParameterHidenFiledItemNumber; ?>;
+	var objParameterPantallaParaFacturar 	= '<?php echo $objParameterPantallaParaFacturar; ?>';
+	var varParameterAmortizationDuranteFactura		=	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		  <?php echo $objParameterAmortizationDuranteFactura; ?>;
 	var varParameterImprimirPorCadaFactura			= '<?php echo $objParameterImprimirPorCadaFactura; ?>';
 	var varParameterRegresarAListaDespuesDeGuardar	= '<?php echo $objParameterRegresarAListaDespuesDeGuardar; ?>';
 	var varParameterAlturaDelModalDeSeleccionProducto	= '<?php echo $objParameterAlturaDelModalDeSeleccionProducto; ?>';
@@ -47,8 +47,8 @@
 	var varParameterINVOICE_BILLING_VALIDATE_EXONERATION 	= '<?php echo $objParameterINVOICE_BILLING_VALIDATE_EXONERATION; ?>';
 	var objParameterINVOICE_SHOW_FIELD_PESO					= '<?php echo $objParameterINVOICE_SHOW_FIELD_PESO; ?>';
 
-	
-	var varPermisosEsPermitidoModificarPrecio 			= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_MODIFICAR_PRECIO_EN_FACTURACION"}).select().length > 0 ? true:	false;	
+
+	var varPermisosEsPermitidoModificarPrecio 			= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_MODIFICAR_PRECIO_EN_FACTURACION"}).select().length > 0 ? true:	false;
 	var varPermisosEsPermitidoModificarNombre 			= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_MODIFICAR_NOMBRE_EN_FACTURACION"}).select().length > 0 ? true:	false;
 	var varPermisosEsPermitidoSeleccionarPrecioPublico 	= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_SELECCIONAR_PRECIO_PUBLICO"}).select().length > 0 ? true:	false;
 	var varPermisosEsPermitidoSeleccionarPrecioPormayor	= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_SELECCIONAR_PRECIO_PORMAYOR"}).select().length > 0 ? true:	false;
@@ -57,19 +57,19 @@
 
 	var PriceStatus = varPermisosEsPermitidoModificarPrecio == true ? "":"readonly";
 	var NameStatus  = varPermisosEsPermitidoModificarNombre == true ? "":"readonly";
-	var varParameterInvoiceBillingPrinterDirect				= '<?php echo $objParameterInvoiceBillingPrinterDirect; ?>';	
-	var varParameterInvoiceBillingPrinterDirectUrl			= '<?php echo $objParameterInvoiceBillingPrinterDirectUrl; ?>';	
-	
+	var varParameterInvoiceBillingPrinterDirect				= '<?php echo $objParameterInvoiceBillingPrinterDirect; ?>';
+	var varParameterInvoiceBillingPrinterDirectUrl			= '<?php echo $objParameterInvoiceBillingPrinterDirectUrl; ?>';
+
 	<?php echo $objListParameterJavaScript; ?>
-	
+
 	let objListCustomerCreditLine 	= JSON.parse('<?php echo json_encode($objListCustomerCreditLine); ?>');
 	let objCausalTypeCredit 		= JSON.parse('<?php echo json_encode($objCausalTypeCredit); ?>');
 	let objCurrencyCordoba 			= JSON.parse('<?php echo json_encode($objCurrencyCordoba); ?>');
 	let varCustomerCrediLineID		= 0;
     let objRenderInit				= true;
 	let loadEdicion 				= false;
-	let transactionMasterID			= <?= $transactionMasterID ?>;
-	let codigoMesero				= '<?= $codigoMesero ?>';
+	let transactionMasterID			=	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			  <?php echo $transactionMasterID ?>;
+	let codigoMesero				= '<?php echo $codigoMesero ?>';
     let $grid;
     let selectedFilaInfoProducto;
     let selectedDataInfoProducto;
@@ -83,7 +83,7 @@
     let varUrlPrinterOpcion2;
     let varUrlPrinterCocina;
     let varUrlPrinterBar;
-    let objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE = '<?= $objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE ?>';
+    let objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE = '<?php echo $objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE ?>';
     let objParameterINVOICE_OPEN_CASH_PASSWORD;
     let varDetail;
     let varDetailReferences;
@@ -94,14 +94,19 @@
     let objTransactionMasterItemConcepto;
     let objTransactionMasterItemSku;
     let objTransactionMasterItem;
-    
+
 
     let columnasTableDetail = {
-		precio		: 7,
-        precio1 	: 22,
-        precio2 	: 14,
-        precio3 	: 15,
-		descripcion : 4
+		descripcion 			: 4,
+		cantidad				: 6,
+		precio					: 7,
+		skuQuantityBySku 		: 10,
+		skuFormatoDescription 	: 13,
+        precio2 				: 14,
+        precio3 				: 15,
+		precio1 				: 22,
+		valueSku				: 23,
+		ratioSku				: 24
     };
 
 	const Toast = Swal.mixin({
@@ -136,13 +141,6 @@
 		}
 	});
 
-	$(document).on("click",".btnPlus",function(){		
-		var quantity = $(this).parent().parent().parent().find(".txtQuantity").val();
-		quantity 	 = fnFormatFloat(quantity);
-		quantity	 = quantity + 1;
-		$(this).parent().parent().parent().find(".txtQuantity").val(quantity);
-		fnRecalculateDetail(true,"");				
-	});
 	$('#txtReceiptAmountTarjeta_BankID').on('change', function(){
 		let value = $('#txtReceiptAmountTarjeta_BankID').find(':selected').data('comision-pos');
 		fnRecalcularMontoComision(value);
@@ -193,21 +191,21 @@
 		else
 			$("#txtCheckDeEfectivoValue").val(0);
     });
-	
-	$('#txtLayFirstLineProtocolo').on('change', function() 
+
+	$('#txtLayFirstLineProtocolo').on('change', function()
 	{
-		
+
 		var urlExoneration="<?php echo base_url(); ?>/app_invoice_api/getNumberExoneration/value/"+$("#txtLayFirstLineProtocolo").val();
 		if(varParameterINVOICE_BILLING_VALIDATE_EXONERATION == "true")
 		{
 			mostarModalPersonalizado('Cargando recursos de linea de protocolo...');
-			$.ajax({									
+			$.ajax({
 				cache       : false,
 				dataType    : 'json',
 				type        : 'GET',
 				url  		: urlExoneration,
 				success		: function(e,o){
-					
+
 					//La exoneracion ya existe no exonerar
 					var timerNotification 	= 15000;
 					if(e.objTransactionMaster.length > 0 )
@@ -223,30 +221,30 @@
 						$("#txtCheckApplyExoneracionValue").val(1);
 						fnShowNotification("Exoneracion aplicada!!","success",timerNotification);
 					}
-					
+
 					//Aplicar exoneracion
-					var listRow = objTableDetail.fnGetData();							
-					var length 	= listRow.length;		
+					var listRow = objTableDetail.fnGetData();
+					var length 	= listRow.length;
 					var i 		= 0;
 					while (i < length )
-					{	
-						fnGetConcept(listRow[i][2],"IVA");			
+					{
+						fnGetConcept(listRow[i][2],"IVA");
 						i++;
-					}								
+					}
 				},
 				complete:function(){
 					cerrarModal('ModalCargandoDatos');
 				}
-			});	
+			});
 		}
     });
-	
+
 	$(document).on("click","#txtToolCalcular",function(){
-		
+
 		var valor 	= $("#txtToolMontoConIva").val();
 		valor 		= fnFormatNumber(valor / 1.15,2);
 		$("#txtToolMontoSinIva").val(valor);
-		
+
 		//copiar texto al portapapeles
 		navigator.clipboard.writeText(valor)
 		.then(() => {
@@ -255,31 +253,31 @@
 		.catch(err => {
 			console.error('Error al copiar al portapapeles:', err)
 		});
-		  
+
 	});
-	
-	$("#btnCancelarIrMesa").click(function(){		
+
+	$("#btnCancelarIrMesa").click(function(){
 		cerrarModal("ModalIrMesaDocumentDialogCustom");
-	});	
-	
+	});
+
 	$("#btnAceptarMesaBussyV2").click(function(){
 		mostarModalPersonalizado('Cargando...');
 		var value 				= $("#txtMesaOcupada").val();
-		window.location.href 	= "<?=base_url()."/"."app_invoice_billing/edit/companyID/".$companyID."/transactionID/".$transactionID."/transactionMasterID/"?>"+value+"<?="/codigoMesero/".$codigoMesero ?>";			
+		window.location.href 	= "<?php echo base_url() . "/" . "app_invoice_billing/edit/companyID/" . $companyID . "/transactionID/" . $transactionID . "/transactionMasterID/" ?>"+value+"<?php echo "/codigoMesero/" . $codigoMesero ?>";
 		cerrarModal("ModalIrMesaDocumentDialogCustom");
-	});	
-	
+	});
+
 	$("#btnAceptarDialogBarV2").click(function(){
-	});	
-	
+	});
+
 	$("#btnAceptarDialogCocinaV2").click(function(){
-	});	
-	
+	});
+
 	$(document).on("click","#btnAbrirCaja",function(){
 		$("#txtClaveOpenCash").val("");
 		mostrarModal("ModalCodigoCaja");
 	});
-	
+
 	$('#btnCancelarCashOpen').click(function () {
 		cerrarModal('ModalCodigoCaja');
 	});
@@ -291,200 +289,215 @@
 			 $.ajax({
 					async: 		true,
 					type: 		"GET",
-					url: 		"<?php echo base_url(); ?>/app_invoice_billing/viewPrinterOpen",						
+					url: 		"<?php echo base_url(); ?>/app_invoice_billing/viewPrinterOpen",
 					cache: 		false,
 					processData:false,
-					contentType:false,				  
+					contentType:false,
 					success: 	function (data) {
 					  console.log("success form data")
 					},
 					error: 		function(request, status, error) {
 					  console.log("error form data")
 					}
-			 });			
+			 });
 			cerrarModal("ModalCodigoCaja");
 		}
-	});	
-	
+	});
+
 	$('#btnNew').click(function(){
 		mostarModalPersonalizado("Cargando datos de nueva factura, por favor espere...")
 		fnClearForm();
 	});
 
 	$(document).on("click",".btnAddSelectedItem",function(){
-		fnAddRowSelected();			
+		fnAddRowSelected();
 	});
-	
-	$(document).on("click",".btnMenus",function(){		
+
+	$(document).on("click",".btnPlus",function(){
+		let trSelected =  $(this).parent().parent().parent();
+		var quantity = trSelected.find(".txtQuantity").val();
+		quantity 	 = parseFloat(quantity);
+		quantity	 = quantity + 1;
+		trSelected.find(".txtQuantity").val(quantity);
+		let aPos = objTableDetail.fnGetPosition(trSelected[0]);
+		objTableDetail.fnUpdate(quantity, aPos, columnasTableDetail.cantidad);
+		fnRecalculateDetail(true,"", aPos);
+	});
+
+	$(document).on("click",".btnMenus",function(){
+		let trSelected =  $(this).parent().parent().parent();
 		var quantity = $(this).parent().parent().parent().find(".txtQuantity").val();
-		quantity 	 = fnFormatFloat(quantity);
+		quantity 	 = parseFloat(quantity);
 		quantity	 = quantity - 1;
 		$(this).parent().parent().parent().find(".txtQuantity").val(quantity);
-		fnRecalculateDetail(true,"");				
+		let aPos = objTableDetail.fnGetPosition(trSelected[0]);
+		objTableDetail.fnUpdate(quantity, aPos, columnasTableDetail.cantidad);
+		fnRecalculateDetail(true,"", aPos);
 	});
-	$(document).on("click",".btnPrecioRecomendado",function(){					
+	$(document).on("click",".btnPrecioRecomendado",function(){
 		var precioRecomendado = $(this).data("precio");
+		let trSelected =  $(this).parent().parent().parent();
 		$(this).parent().parent().parent().parent().parent().parent().find(".txtPrice").val(precioRecomendado);
-		fnRecalculateDetail(true,"txtPrice");				
-	});	
+		fnRecalculateDetail(true,"txtPrice");
+	});
 	$(document).on("focus",".txt-numeric",function(){
-		if ( fnFormatFloat( $(this).val()  ) == 0)
+		if ( fnFormatNumber( $(this).val()  ) == 0)
 		{
 			$(this).val("");
-		}			
+		}
 	});
 	$(document).on("blur",".txt-numeric",function(){
 		if( $(this).val()   == "")
 		{
 			$(this).val("0.00");
-		}			
-	});	
-	$(document).on("click",".img_row",function(){				
+		}
+	});
+	$(document).on("click",".img_row",function(){
 			window.open($(this).data("src"), '_blank');
-	});	
+	});
 	//Pago
-	$(document).on("click","#btnOptionPago",function(){		
-		 $("#mySidebar").css("width","100%");		 
-	});				
+	$(document).on("click","#btnOptionPago",function(){
+		 $("#mySidebar").css("width","100%");
+	});
 	$(document).on("click","#btnRollbackPayment",function(){
-		var sidebar = $("#mySidebar");		
+		var sidebar = $("#mySidebar");
 		sidebar.css("width", "0");
 	});
 
 	//Detalle de factura
-	$(document).on("click","#btnVeDetalleFactura",function(){		
+	$(document).on("click","#btnVeDetalleFactura",function(){
 		 $("#mySidebarFactura").css("width","100%");
-	});				
+	});
 	$(document).on("click","#btnRollbackFactura",function(){
-		var sidebar = $("#mySidebarFactura");		
+		var sidebar = $("#mySidebarFactura");
 		sidebar.css("width", "0");
 	});
-	
+
 	//Zona
-	$(document).on("click","#btnShowZona",function(){		
+	$(document).on("click","#btnShowZona",function(){
 		 $("#mySidebarZona").css("width","100%");
 		 $("#mySidebarZona").removeClass("hidden");
-	});				
+	});
 	$(document).on("click","#btnRollbackZona",function(){
-		var sidebar = $("#mySidebarZona");		
+		var sidebar = $("#mySidebarZona");
 		sidebar.css("width", "0");
 		sidebar.addClass("hidden");
 	});
-	
+
 	//Mesa
-	$(document).on("click","#btnShowMesa",function(){		
+	$(document).on("click","#btnShowMesa",function(){
 		 $("#mySidebarMesa").css("width","100%");
 		 $("#mySidebarMesa").removeClass("hidden");
-	});				
+	});
 	$(document).on("click","#btnRollbackMesa",function(){
 		var sidebar = $("#mySidebarMesa");
 		sidebar.css("width", "0");
 		sidebar.addClass("hidden");
 	});
-	
+
 	$(document).on("click","#btnRollbackZonas",function(){
 		var sidebar = $("#mySidebarMesa");
 		sidebar.css("width", "0");
 		sidebar.addClass("hidden");
 		$("#mySidebarZona").css("width","100%");
 		$("#mySidebarZona").removeClass("hidden");
-	});	
-	$(document).on("focus",'#txtReceiptAmount', function(e) {	
-		$(this).val("");	
-	});	
+	});
+	$(document).on("focus",'#txtReceiptAmount', function(e) {
+		$(this).val("");
+	});
 	$(document).on("click","#btnLinkPayment",function(){
-		mostarModalPersonalizado('ABRIENDO LINK DE PAGO');	
+		mostarModalPersonalizado('ABRIENDO LINK DE PAGO');
 		window.open("<?php echo base_url(); ?>/app_invoice_api/getLinkPaymentPagadito/companyID/"+$("#txtCompanyID").val()+"/transactionID/"+$("#txtTransactionID").val() +"/transactionMasterID/"+$("#txtTransactionMasterID").val(),"MsgWindow","width=700,height=600");
 		cerrarModal('ModalCargandoDatos');
 	});
-	$(document).on("keypress",'#txtReceiptAmount', function(e) {	
+	$(document).on("keypress",'#txtReceiptAmount', function(e) {
 		var code = e.keyCode || e.which;
-		if(code != 13) 
-		{ 
+		if(code != 13)
+		{
 			 return;
-		}	
+		}
 		document.getElementById("txtReceiptAmountDol").focus();
 		return;
-			
+
 	});
-	
-	$(document).on("focus",'#txtReceiptAmountDol', function(e) {	
-		$(this).val("");	
+
+	$(document).on("focus",'#txtReceiptAmountDol', function(e) {
+		$(this).val("");
 	});
-	
-	$(document).on("keypress",'#txtReceiptAmountDol', function(e) {			
-		var code = e.keyCode || e.which;			
-		if(code != 13) { 
+
+	$(document).on("keypress",'#txtReceiptAmountDol', function(e) {
+		var code = e.keyCode || e.which;
+		if(code != 13) {
 			 return;
-		}					 
+		}
 		fnEnviarFactura();
 		return;
-		 
+
 	});
-	$(document).on("keydown",'#txtReceiptAmountDol', function(e) {			
-		var code = e.keyCode || e.which;			
+	$(document).on("keydown",'#txtReceiptAmountDol', function(e) {
+		var code = e.keyCode || e.which;
 		//Enviar Factura
-		if(e.key === "a"  && e.ctrlKey) { 													
-			fnEnviarFactura();				 
-		}		
-		
+		if(e.key === "a"  && e.ctrlKey) {
+			fnEnviarFactura();
+		}
+
 		//Regresar al scaner
-		if(e.key === "b"  && e.ctrlKey) { 		
-			document.getElementById("txtScanerCodigo").focus();									
-		}				
-		
+		if(e.key === "b"  && e.ctrlKey) {
+			document.getElementById("txtScanerCodigo").focus();
+		}
+
 		return;
 	});
-	
+
 	$(document).on("keydown",'#txtScanerCodigo', function(e) {
-		var code = e.keyCode || e.which;						
-		
+		var code = e.keyCode || e.which;
+
 		//Nueva
-		if(e.key === "k" && e.ctrlKey) { 		
+		if(e.key === "k" && e.ctrlKey) {
 			e.preventDefault();
-			e.stopPropagation();			
-			window.location = "<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>";			 
+			e.stopPropagation();
+			window.location = "<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>";
 		}
-		
+
 		//Imprimir Factura Anterior
 		if(e.key === "m" && e.ctrlKey && varParameterInvoiceBillingPrinterDataLocal != "" )
 		{
-			
+
 			e.preventDefault();
-			e.stopPropagation();			
-			
+			e.stopPropagation();
+
 			var url	= varParameterUrlServidorDeImpresion+varParameterInvoiceBillingPrinterDirectUrl;
 			url 	= url+
-			"/companyID/"+"<?php echo $dataPrinterLocalCompanyID; ?>" + 
+			"/companyID/"+"<?php echo $dataPrinterLocalCompanyID; ?>" +
 			"/transactionID/"+"<?php echo $dataPrinterLocalTransactionID; ?>"+
 			"/transactionMasterID/"+"<?php echo $dataPrinterLocalTransactionMasterID; ?>";
-			
-			$.ajax({									
+
+			$.ajax({
 				cache       : false,
 				dataType    : 'json',
 				type        : 'POST',
 				data		: { "fromServer" : varParameterInvoiceBillingPrinterDataLocal },
 				url  		: url,
 				success		: function(){
-									
+
 				},
 				error:function(xhr,data){
-					console.info("complete data error");									
+					console.info("complete data error");
 					console.info(data);
 					console.info(xhr);
 				}
-			});	
-			
-			
-		}
-		
-		
-		
-		//Abrir Caja
-		if(e.key === "i" && e.ctrlKey) 
-		{ 		
+			});
 
-			$.ajax({									
+
+		}
+
+
+
+		//Abrir Caja
+		if(e.key === "i" && e.ctrlKey)
+		{
+
+			$.ajax({
 				cache       : false,
 				dataType    : 'json',
 				type        : 'POST',
@@ -499,7 +512,7 @@
 						window.location = "<?php echo base_url(); ?>/app_invoice_billing/index";
 					}
 				},
-				error:function(xhr,data){	
+				error:function(xhr,data){
 					console.info("complete delete error");
 					fnShowNotification("Error 505","error");
 				}
@@ -509,36 +522,36 @@
 		}
 
 	});
-	
-	
+
+
 	$(document).on("keypress",'#txtScanerCodigo', function(e) {
-		
+
 		var code = e.keyCode || e.which;
-		 if(code != 13) { 
+		 if(code != 13) {
 			 return;
-		 }		 
-		
+		 }
+
 		e.preventDefault();
 		var currencyID 		= $("#txtCurrencyID").val();
 		var codigoABuscar 	= $("#txtScanerCodigo").val();
 		codigoABuscar 		= codigoABuscar.toUpperCase();
 		$("#txtScanerCodigo").val("");
-		
-		
+
+
 		//++Abrir popup de productos
 		if(  codigoABuscar.includes("++")  ){
 			codigoABuscar = codigoABuscar.replace("++","");
 			fnCreateTableSearchProductos(codigoABuscar);
 			return;
 		}
-		
+
 		//Mover a ingreso de dinero Cordoba
 		if(codigoABuscar == ""){
 			$("#txtReceiptAmount").focus();
 			$("#txtReceiptAmount").val("");
 			return;
 		}
-		
+
 		//buscar el producto y agregar por codigo de barra
 		obtenerDataDBProductoArray(
 			"objListaProductosX001",
@@ -546,54 +559,54 @@
 			0,
 			"all",
 			{"codigoABuscar":codigoABuscar},
-			function(e){   				
-				
-				
-				//buscar el producto y agregar						
+			function(e){
+
+
+				//buscar el producto y agregar
 				var codigoABuscar 	= e.codigoABuscar.toUpperCase();
 				let data			= e.all;
 				let encontrado		= false;
 				let index			= -1;
 				for(let i = 0 ; i < data.length ; i++)
 				{
-					
+
 					if(encontrado == true)
 					{
 						i--;
 						index = i;
 						break;
 					}
-					
-					//buscar por codigo de sistema					
+
+					//buscar por codigo de sistema
 					var currencyTemp	= data[i].currencyID;
 					var currencyID 		= $("#txtCurrencyID").val();
-					
+
 					var warehouseIDTemp		= data[i].warehouseID;
 					var warehouseID			= $("#txtWarehouseID").val();
-					
-					if(  
-						currencyID == currencyTemp && 
-						fnDeleteCerosIzquierdos(codigoABuscar) == fnDeleteCerosIzquierdos(data[i].Codigo.replace("BITT","").replace("ITT","").toUpperCase())  && 
+
+					if(
+						currencyID == currencyTemp &&
+						fnDeleteCerosIzquierdos(codigoABuscar) == fnDeleteCerosIzquierdos(data[i].Codigo.replace("BITT","").replace("ITT","").toUpperCase())  &&
 						warehouseID == warehouseIDTemp
 					)
 					{
-						
+
 						encontrado 		= true;
 						break;
 					}
-					
+
 					//buscar por codigo de barra
 					var listCodigTmp 	= data[i].Barra.split(",");
 					currencyTemp		= data[i].currencyID;
 					currencyID 			= $("#txtCurrencyID").val();
 					encontrado			= false;
-							
+
 					if(encontrado == false )
 					{
 						for(let ii = 0 ; ii < listCodigTmp.length; ii++)
 						{
-							if( 
-								fnDeleteCerosIzquierdos(listCodigTmp[ii].toUpperCase()) == fnDeleteCerosIzquierdos(codigoABuscar) && 
+							if(
+								fnDeleteCerosIzquierdos(listCodigTmp[ii].toUpperCase()) == fnDeleteCerosIzquierdos(codigoABuscar) &&
 								currencyID == currencyTemp  &&
 								warehouseID == warehouseIDTemp
 							)
@@ -604,17 +617,17 @@
 							}
 						}
 					}
-					
-					
-					
+
+
+
 				}
-				
+
 				if(encontrado == true)
 				{
-					
+
 					var sumar				= true;
-					var filterResult 		= data[index];						
-					var filterResultArray 	= [];					
+					var filterResult 		= data[index];
+					var filterResultArray 	= [];
 					filterResultArray[5]  	= filterResult.itemID;
 					filterResultArray[17] 	= filterResult.Codigo;
 					filterResultArray[18] 	= filterResult.Nombre;
@@ -625,63 +638,63 @@
 					filterResultArray[24] 	= filterResult.Descripcion;
 					filterResultArray[25] 	= filterResult.Precio2;
 					filterResultArray[26] 	= filterResult.Precio3;
-					
-					//Agregar el Item a la Fila					
+
+					//Agregar el Item a la Fila
 					onCompleteNewItem(filterResultArray,sumar);
 				}
-				 
+
 			}
-			
+
 		);
-		
+
 	});
-	
-	//Buscar Factura 
+
+	//Buscar Factura
 	$(document).on("click","#btnSelectInvoice",function(){
 		var url_request 				= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentTransactionBilling->componentID; ?>/onCompleteSelectInvoice/SELECCIONAR_BILLING_REGISTER/true/empty/false/not_redirect_when_empty";
 		window.open(url_request,"MsgWindow","width=900,height=450");
-		window.onCompleteSelectInvoice 	= onCompleteSelectInvoice; 
+		window.onCompleteSelectInvoice 	= onCompleteSelectInvoice;
 	});
-	
+
 	//Buscar el Cliente
 	$(document).on("click","#btnSearchCustomer",function(){
-		
+
 		//Ocultar Boton de Contado
 		$("#divTipoFactura").addClass("hidden");
 		$("#divLineaCredit").addClass("hidden");
 
 		//Redireccion pantalla
-		var url_redirect		= "__app_cxc_customer__add__callback__onCompleteCustomer__comando__pantalla_abierta_desde_la_factura";			
+		var url_redirect		= "__app_cxc_customer__add__callback__onCompleteCustomer__comando__pantalla_abierta_desde_la_factura";
 		url_redirect 			= encodeURIComponent(url_redirect);
-		
-		
-		var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_ALL_PAGINATED/true/empty/true/"+url_redirect+"/1/1/"+varParameterCantidadItemPoup+"/";
+
+
+		var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?php echo $objComponentItem->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_ALL_PAGINATED/true/empty/true/"+url_redirect+"/1/1/"+varParameterCantidadItemPoup+"/";
 		window.open(url_request,"MsgWindow","width=900,height=450");
-		window.onCompleteCustomer = onCompleteCustomer; 
-	});						
+		window.onCompleteCustomer = onCompleteCustomer;
+	});
 
 	//Eliminar Cliente
 	$(document).on("click","#btnClearCustomer",function(){
 				$("#txtCustomerID").val("");
 				$("#txtCustomerDescription").val("");
 	});
-	
+
 	$(document).on("change","#txtCausalID,#txtCustomerCreditLineID,#txtCurrencyID,#txtWarehouseID",function(){
 		objWindowSearchProduct = null;
 		fnClearData();
 	});
-	
-	$(document).on("change",".txtItemSelected",function(e,o){			
+
+	$(document).on("change",".txtItemSelected",function(e,o){
 		fnActualizarProducto(this);
 	});
-	
+
 	$(document).on("change","#txtTypePriceID",function(){
 		fnActualizarPrecio();
 	});
 
 	$(document).on("change","#txtCausalID",function(){
 		fnRenderLineaCreditoDiv();
-	});	
+	});
 
 	//mostrar dialogo de informacion de producto
     $(document).on('click', '.btnInfoProducto',function(e){
@@ -732,7 +745,7 @@
         refreschChecked();
         mostrarModal('ModalInfoProducto');
     });
-	
+
 	//Regresar a la lista
 	$("#btnBack").click(function(e){
         e.preventDefault();
@@ -750,97 +763,97 @@
 	});
 
 	//Evento Agregar el Usuario
-	$(document).on("click","#btnAcept",function(e){	
+	$(document).on("click","#btnAcept",function(e){
 		e.preventDefault();
 		fnEnviarFactura();
 	});
 
-	$(document).on("click",".btnAcept",function(e){			
+	$(document).on("click",".btnAcept",function(e){
 		e.preventDefault();
 		var valueWorkflow = $(this).data("valueworkflow");
-		$("#txtStatusID").val(valueWorkflow);			
+		$("#txtStatusID").val(valueWorkflow);
 		fnEnviarFactura();
-		
+
 	});
 
 	$(document).on("click","#btnSaveInvoice",function(e)
 	{
 		e.preventDefault();
-		Swal.fire({ 
-			title: '<strong>CARGANDO DATOS DE FACTURA...</strong>', 
-			allowOutsideClick: false, 
+		Swal.fire({
+			title: '<strong>CARGANDO DATOS DE FACTURA...</strong>',
+			allowOutsideClick: false,
 			timer: 20000,
-			didOpen: () => { 
-				Swal.showLoading(); 
-			} 
+			didOpen: () => {
+				Swal.showLoading();
+			}
 		});
 		if(loadEdicion){
 			var valueWorkflow = $(".btnAcept").data("valueworkflow");
-			$("#txtStatusID").val(valueWorkflow);	
-		}					
+			$("#txtStatusID").val(valueWorkflow);
+		}
 		fnEnviarFactura();
-		
+
 	});
 
 	//Imprimir Documento
-	$(document).on("click","#btnPrinter",function(){	
+	$(document).on("click","#btnPrinter",function(){
 		fnImprimir();
 	});
-	$(document).on("click","#btnFooter",function(){	
+	$(document).on("click","#btnFooter",function(){
 		fnImprimirCocina();
 	});
-	$(document).on("click","#btnBar",function(){	
+	$(document).on("click","#btnBar",function(){
 		fnImprimirBar();
 	});
 
-	$(document).on("keydown",'#txtReceiptAmountDol', function(e) {		
-	
-		var code = e.keyCode || e.which;			
+	$(document).on("keydown",'#txtReceiptAmountDol', function(e) {
+
+		var code = e.keyCode || e.which;
 		//Aplicar
-		if(e.key === "a"  && e.ctrlKey) { 							
+		if(e.key === "a"  && e.ctrlKey) {
 			var valueWorkflow = $(".btnAceptAplicar").data("valueworkflow");
-			$("#txtStatusID").val(valueWorkflow);			
-			fnEnviarFactura();				 
-		}		
-		
+			$("#txtStatusID").val(valueWorkflow);
+			fnEnviarFactura();
+		}
+
 		//Regresar al scaner
-		if(e.key === "b"  && e.ctrlKey) { 		
-			$("#txtScanerCodigo").focus();				
-		}		
-		
-	});	
-	
+		if(e.key === "b"  && e.ctrlKey) {
+			$("#txtScanerCodigo").focus();
+		}
+
+	});
+
 	$('#btnDelete').click(function(){
 		mostrarModal('ModalDeleteInvoice');
 	});
 	$(document).on("click","#btnNewItem",function(){
-		
+
 		var CodigoBuscar = "";
 		fnCreateTableSearchProductos(CodigoBuscar);
-	
+
 	});
 
 	$(document).on("click","#btnNewItemCatalog",function(){
-		
+
 		var url_request 					= "<?php echo base_url(); ?>/app_inventory_item/add/callback/fnObtenerListadoProductos";
 		window.open(url_request,"MsgWindow","width=700,height=600");
-		window.fnObtenerListadoProductos 	= fnObtenerListadoProductos; 			
+		window.fnObtenerListadoProductos 	= fnObtenerListadoProductos;
 	});
 
 	$(document).on("click","#btnRefreshDataCatalogo",function(){
-		openDataBaseAndCreate(false,true);		
+		openDataBaseAndCreate(false,true);
 	});
 
 
 	$(document).on("click","#btnSearchCustomerNew",function(){
 		var url_request 				 	= "<?php echo base_url(); ?>/app_cxc_customer/add/callback/fnCustomerNewCompleted";
 		window.open(url_request,"mozillaWindow","width=700,height=600");
-		window.fnCustomerNewCompleted 		= fnCustomerNewCompleted; 	
+		window.fnCustomerNewCompleted 		= fnCustomerNewCompleted;
 	});
-	
-	
+
+
 	$(document).on("click","#btnDeleteItem",function(){
-			var listRow = objTableDetail.fnGetData();							
+			var listRow = objTableDetail.fnGetData();
 			var length 	= listRow.length;
 			var i 		= 0;
 			var itemid 	= 0;
@@ -851,59 +864,107 @@
 				}
 				i++;
 			}
-			fnRecalculateDetail(true,"");									
+			fnRecalculateDetail(true,"");
 	});
-	$(document).on("change","input.txtQuantity",function(){			
-		fnRecalculateDetail(true,"");		
-	});
-	$(document).on("change","input.txtPrice",function(){
-		
-		//obtener el nuevo valor
-		//obtener el precio 1
-		//obtener el precio 2
-		//obtener el precio 3
-		
-		//si el nuevo precio es menor a todos los precios 
-		//dejar como nuevo precio el menos de los 3 precios
-		
-		//si el nuevo precio no es menor a los tres presos
-		//respetar el valor escribo por el usuario
-		fnRecalculateDetail(true,"txtPrice");		
-	});
-	$(document).on("change","select.txtSku",function(){
-			fnRecalculateDetail(true,"");		
-	});
+
 	//Ir a archivos
 	$(document).on("click","#btnClickArchivo",function(){
 		if(objComponentBilling.componentID)
 			window.open(varBaseUrl + "/core_elfinder/index/componentID/" + objComponentBilling.componentID + "/componentItemID/" + objTransactionMaster.transactionMasterID,"blanck");
 	});
-	$(document).on("change","input#txtReceiptAmount",function(){	
-			fnCalculateAmountPay();			
+	$(document).on("change","input#txtReceiptAmount",function(){
+			fnCalculateAmountPay();
 	});
-	$(document).on("change","input#txtReceiptAmountDol",function(){							
-			fnCalculateAmountPay();			
+	$(document).on("change","input#txtReceiptAmountDol",function(){
+			fnCalculateAmountPay();
 	});
-	$(document).on("change","input#txtReceiptAmountBank",function(){	
-			fnCalculateAmountPay();			
+	$(document).on("change","input#txtReceiptAmountBank",function(){
+			fnCalculateAmountPay();
 	});
-	$(document).on("change","input#txtReceiptAmountPoint",function(){							
-			fnCalculateAmountPay();			
+	$(document).on("change","input#txtReceiptAmountPoint",function(){
+			fnCalculateAmountPay();
 	});
-	$(document).on("focus","input#txtReceiptAmountTarjeta",function(){							
-			$(this).val("");			
+	$(document).on("focus","input#txtReceiptAmountTarjeta",function(){
+			$(this).val("");
 	});
-	$(document).on("change","input#txtReceiptAmountTarjeta",function(){							
-			fnCalculateAmountPay();			
+	$(document).on("change","input#txtReceiptAmountTarjeta",function(){
+			fnCalculateAmountPay();
 	});
-	$(document).on("focus","input#txtReceiptAmountTarjetaDol",function(){							
-			$(this).val("");		
+	$(document).on("focus","input#txtReceiptAmountTarjetaDol",function(){
+			$(this).val("");
 	});
-	$(document).on("change","input#txtReceiptAmountTarjetaDol",function(){							
-			fnCalculateAmountPay();			
+	$(document).on("change","input#txtReceiptAmountTarjetaDol",function(){
+			fnCalculateAmountPay();
 	});
-	$(document).on("change","input#txtReceiptAmountBankDol",function(){							
-			fnCalculateAmountPay();			
+	$(document).on("change","input#txtReceiptAmountBankDol",function(){
+			fnCalculateAmountPay();
+	});
+	$('#tb_transaction_master_detail tbody').on('click', '.label-sku', function() {
+		var fila = $(this).closest('tr')[0];
+		var data = objTableDetail.fnGetData( fila );
+		var label = $(this);
+		obtenerDataDBProductoArray(
+			"objListaProductosSkuX001",
+			"all",
+			0,
+			'all',
+			{'itemID': data[2]},
+			function(e){
+				let itemID = e['itemID'];
+				let allData = e['all'];
+				var resultado = allData.filter(function(producto) {
+					return producto.itemID == itemID;
+				});
+				if (resultado.length > 0) {
+					var aPos 					= objTableDetail.fnGetPosition(fila);
+					let catalogItemIDSelected 	= data[columnasTableDetail.valueSku];
+					let cantidad 				= data[columnasTableDetail.cantidad];
+					// Crear el select dinámico
+					var currentText = label.text().trim();
+    				var select = $('<select>');
+					select.css('width','100%');
+					resultado.forEach(function(producto) {
+						var selected = (producto.catalogItemID === catalogItemIDSelected) ? 'selected' : '';
+						select.append(`<option value="${producto.catalogItemID}" ${selected} data-price="${producto.price}" data-ratio="${producto.value}">${producto.name}</option>`);
+					});
+					// Reemplazar el label por el select temporalmente
+					label.hide();
+					label.after(select);
+
+					 // Manejar el evento de selección
+					select.on('change', function() {
+						let precio = $(this).find('option:selected').data('price');
+						let catalogItemID = $(this).val();
+						let nombreSeleccionado = $(this).find('option:selected').text();
+						let ratio = $(this).find('option:selected').data('ratio');
+						let skuQuantityBySku = ratio * cantidad;
+						if (catalogItemID) {
+							objTableDetail.fnUpdate( catalogItemID, aPos, columnasTableDetail.valueSku );
+							objTableDetail.fnUpdate( skuQuantityBySku, aPos, columnasTableDetail.skuQuantityBySku );
+							objTableDetail.fnUpdate( ratio, aPos, columnasTableDetail.ratioSku );
+							objTableDetail.fnUpdate( nombreSeleccionado, aPos, columnasTableDetail.skuFormatoDescription );
+							objTableDetail.fnUpdate( precio, aPos, columnasTableDetail.precio );
+							$(fila).find('.txtSku').val(nombreSeleccionado);
+							fnRecalculateDetail(true, "sku", aPos);
+							// Restaurar el label con el nombre seleccionado
+							label.text(nombreSeleccionado).show();
+							$(this).remove();
+						}
+					});
+
+					select.on('blur', function(){
+						let nombreSeleccionado = $(this).find('option:selected').text();
+						label.text(nombreSeleccionado).show();
+						$(this).remove();
+					});
+
+					// Forzar el foco en el select para que se abra automáticamente
+					select.focus();
+				} else {
+					console.log("Producto no encontrado");
+				}
+			}
+		);
 	});
 	$('#tb_transaction_master_detail').on('change', 'input', function () {
 		var input 		= $(this);
@@ -923,8 +984,13 @@
 			if (colIndex === columnasTableDetail.descripcion) {
 				objTableDetail.fnUpdate(newValue, rowIndex, columnasTableDetail.descripcion, true);
 			}
+			if(colIndex === columnasTableDetail.cantidad){
+				objTableDetail.fnUpdate( newValue, rowIndex, columnasTableDetail.cantidad, true);
+				fnRecalculateDetail(true,"", rowIndex);
+			}
 			if(colIndex === columnasTableDetail.precio){
 				objTableDetail.fnUpdate(newValue, rowIndex, columnasTableDetail.precio, true);
+				fnRecalculateDetail(true,"txtPrice", rowIndex);
 			}
 		}
 	});
@@ -932,7 +998,7 @@
     $('.item-categoria').on('click', function () {
 		mostarModalPersonalizado('Cargando, por favor espere...');
         $(".custom-table-container-inventory").show();
-        var filterValue = $(this).attr('data-filter');        
+        var filterValue = $(this).attr('data-filter');
         $grid.isotope({ filter: filterValue + ', .item-producto-back' });
         $(".item-categoria").removeClass('selected');
         $(this).addClass("selected");
@@ -949,15 +1015,15 @@
         $(".container-overlay").removeClass('selected');
         $(this).addClass("selected");
     });
-	
 
-	$("#btnAceptarDialogPrinterV2AceptarTabla").click(function(){	
+
+	$("#btnAceptarDialogPrinterV2AceptarTabla").click(function(){
 		mostarModalPersonalizado('Cargando datos ....');
-		window.open("<?php echo base_url(); ?>/app_cxc_report/document_credit/viewReport/true/documentNumber/"+$("#invoice-num").text(), '_blank');			
+		window.open("<?php echo base_url(); ?>/app_cxc_report/document_credit/viewReport/true/documentNumber/"+$("#invoice-num").text(), '_blank');
 		cerrarModal('ModalCargandoDatos');
 	});
-	
-	$("#btnAceptarDialogPrinterV2AceptarDocument").click(function(){			
+
+	$("#btnAceptarDialogPrinterV2AceptarDocument").click(function(){
 		mostarModalPersonalizado('Cargando impresión, por favor espere...');
 		window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/2/transactionID/19/transactionMasterID/"+$("#txtTransactionMasterID").val(), '_blank');
 		cerrarModal('ModalCargandoDatos');
@@ -969,25 +1035,25 @@
 		cerrarModal('ModalCargandoDatos');
 		cerrarModal("ModalOpcionesImpresion");
 	});
-	
-	
-	
-	$("#btnCloseModalOpcionesImpresion").click(function(){		
+
+
+
+	$("#btnCloseModalOpcionesImpresion").click(function(){
 		cerrarModal("ModalOpcionesImpresion");
 	});
-	
-	$("#btnAceptarDialogPrinterV2AceptarDirect").click(function(){	
-		
+
+	$("#btnAceptarDialogPrinterV2AceptarDirect").click(function(){
+
 		cerrarModal("ModalOpcionesImpresion");
-		mostarModalPersonalizado('Cargando impresión, por favor espere...');		
+		mostarModalPersonalizado('Cargando impresión, por favor espere...');
 		var url	= varParameterUrlServidorDeImpresion+varParameterInvoiceBillingPrinterDirectUrl;
 			url = url+
-			"/companyID/"+"2" + 
+			"/companyID/"+"2" +
 			"/transactionID/"+"19"+
 			"/transactionMasterID/"+$("#txtTransactionMasterID").val();
-		
-		fnWaitOpenV2();	
-		$.ajax({									
+
+		fnWaitOpenV2();
+		$.ajax({
 			cache       : false,
 			dataType    : 'json',
 			type        : 'POST',
@@ -997,15 +1063,15 @@
 				cerrarModal('ModalCargandoDatos');
 			},
 			error:function(xhr,data){
-				console.info("complete data error");									
+				console.info("complete data error");
 				console.info(data);
 				console.info(xhr);
 				cerrarModal('ModalCargandoDatos');
 			}
 		});
-		
-		
-		
+
+
+
 	});
 
 	$('#txtPorcentajeDescuento').on('input', function() {
@@ -1019,69 +1085,69 @@
     });
 
 	//Pago
-	$(document).on("click","#btnOptionPago",function(){		
+	$(document).on("click","#btnOptionPago",function(){
 		 $("#mySidebar").css("width","100%");
-		 
-	});				
-	$(document).on("click","#btnRollbackPayment",function(){
-		var sidebar = $("#mySidebar");		
-		sidebar.css("width", "0");		
-		 
+
 	});
-	
+	$(document).on("click","#btnRollbackPayment",function(){
+		var sidebar = $("#mySidebar");
+		sidebar.css("width", "0");
+
+	});
+
 	//Detalle de factura
-	$(document).on("click","#btnVeDetalleFactura",function(){		
+	$(document).on("click","#btnVeDetalleFactura",function(){
 		 $("#mySidebarFactura").css("width","100%");
-		 
-	});				
+
+	});
 	$(document).on("click","#btnRollbackFactura",function(){
-		var sidebar = $("#mySidebarFactura");		
+		var sidebar = $("#mySidebarFactura");
 		sidebar.css("width", "0");
 	});
-	
+
 	function fnAceptarModalModalPrinterDocumentDialogCustom()
 	{
 		mostarModalPersonalizado('Cargando, por favor espere...');
 		var url=varParameterUrlServidorDeImpresion+varParameterInvoiceBillingPrinterDirectUrl;
 			url = url+
-			"/companyID/"+"<?php echo $dataPrinterLocalCompanyID; ?>" + 
+			"/companyID/"+"<?php echo $dataPrinterLocalCompanyID; ?>" +
 			"/transactionID/"+"<?php echo $dataPrinterLocalTransactionID; ?>"+
 			"/transactionMasterID/"+"<?php echo $dataPrinterLocalTransactionMasterID; ?>";
-									
-		$.ajax({									
+
+		$.ajax({
 			cache       : false,
 			dataType    : 'json',
 			type        : 'POST',
 			data		: { "fromServer" : varParameterInvoiceBillingPrinterDataLocal },
 			url  		: url,
 			success		: function(){
-								
+
 			},
 			error:function(xhr,data){
-				console.info("complete data error");									
+				console.info("complete data error");
 				console.info(data);
 				console.info(xhr);
 			}
-		});	
-			
-		
+		});
+
+
 		cerrarModal("ModalPrinterDocumentDialogCustom");
-		cerrarModal('ModalCargandoDatos');		
+		cerrarModal('ModalCargandoDatos');
 	}
-	
+
 	function fnCalculateAmountPay()
 	{
         let resultTotal     = 0.0;
         let currencyId      = $("#txtCurrencyID").val();
-        let ingresoCordoba 	= fnFormatFloat($("#txtReceiptAmount").val());
-        let bancoCordoba 	= fnFormatFloat($("#txtReceiptAmountBank").val());
-        let puntoCordoba 	= fnFormatFloat($("#txtReceiptAmountPoint").val());
-        let tarjetaCordoba 	= fnFormatFloat($("#txtReceiptAmountTarjeta").val());
-        let tarejtaDolares 	= fnFormatFloat($("#txtReceiptAmountTarjetaDol").val());
-        let bancoDolares 	= fnFormatFloat($("#txtReceiptAmountBankDol").val());
-        let ingresoDol 	    = fnFormatFloat($("#txtReceiptAmountDol").val());
-        let tipoCambio 	    = fnFormatFloat($("#txtExchangeRate").val());
-        let total 		    = fnFormatFloat($("#txtTotal").val());
+        let ingresoCordoba 	= fnFormatNumber($("#txtReceiptAmount").val());
+        let bancoCordoba 	= fnFormatNumber($("#txtReceiptAmountBank").val());
+        let puntoCordoba 	= fnFormatNumber($("#txtReceiptAmountPoint").val());
+        let tarjetaCordoba 	= fnFormatNumber($("#txtReceiptAmountTarjeta").val());
+        let tarejtaDolares 	= fnFormatNumber($("#txtReceiptAmountTarjetaDol").val());
+        let bancoDolares 	= fnFormatNumber($("#txtReceiptAmountBankDol").val());
+        let ingresoDol 	    = fnFormatNumber($("#txtReceiptAmountDol").val());
+        let tipoCambio 	    = fnFormatNumber($("#txtExchangeRate").val());
+        let total 		    = fnFormatNumber($("#txtTotal").val());
         if( currencyId === "1" /*Cordoba*/ )
 		{
             resultTotal =  (ingresoCordoba +  bancoCordoba + puntoCordoba + tarjetaCordoba + ( bancoDolares / tipoCambio ) + ( tarejtaDolares / tipoCambio )   + (ingresoDol / tipoCambio)) - total;
@@ -1093,33 +1159,33 @@
         resultTotal = fnFormatNumber(resultTotal,2);
         $("#txtChangeAmount").val(resultTotal);
     }
-	
+
 	function fnImprimir(){
-		
-		
+
+
 		if(
-			varParameterInvoiceBillingPrinterDirect == 'true' && 
-			objParameterPrinterDirectAndPreview == 'false' && 
-			varParameterTipoPrinterDownload == 'false' 
+			varParameterInvoiceBillingPrinterDirect == 'true' &&
+			objParameterPrinterDirectAndPreview == 'false' &&
+			varParameterTipoPrinterDownload == 'false'
 		)
 		{
-			
+
 			var url	= varParameterUrlServidorDeImpresion+varParameterInvoiceBillingPrinterDirectUrl;
 			url 	= url+
-			"/companyID/"+ objTransactionMaster.companyID + 
+			"/companyID/"+ objTransactionMaster.companyID +
 			"/transactionID/"+ objTransactionMaster.transactionID +
 			"/transactionMasterID/"+ objTransactionMaster.transactionMasterID;
 			mostarModalPersonalizado('Imprimiendo, por favor espere...');
-			$.ajax({									
+			$.ajax({
 				cache       : false,
 				dataType    : 'json',
 				type        : 'POST',
 				data		: { "fromServer" : varParameterInvoiceBillingPrinterDataLocal },
 				url  		: url,
-				success		: function(){					
+				success		: function(){
 				},
 				error:function(xhr,data){
-					console.info("complete data error");									
+					console.info("complete data error");
 					console.info(data);
 					console.info(xhr);
 					//fnShowNotification("Error 505","error");
@@ -1127,7 +1193,7 @@
 				complete: function(){
 					cerrarModal('ModalCargandoDatos');
 				}
-			});	
+			});
 			return;
 		}
 		if ( varParameterTipoPrinterDownload == 'true' )
@@ -1142,54 +1208,54 @@
 			mostrarModal("ModalOpcionesImpresion");
 			return
 		}
-		
-		
+
+
 		mostrarModal("ModalOpcionesImpresion");
-		
+
 	}
-	
+
 	function fnImprimirBar(){
-		
-		var listRow = objTableDetail.fnGetData();							
+
+		var listRow = objTableDetail.fnGetData();
 		var length 	= listRow.length;
-		
+
 		var i 		= 0;
 		var itemid 	= "-1";
-		
+
 		while (i < length ){
 			if(listRow[i][0] == true){
-				itemid = itemid + ","+listRow[i][2];				
+				itemid = itemid + ","+listRow[i][2];
 			}
 			i++;
 		}
-		
-				
+
+
 		if(varParameterInvoiceBillingPrinterDirect == 'true')
 		{
-			
-			var url	=	"<?= base_url(); ?>/"+varParameterInvoiceBillingPrinterDirectBarUrl;
+
+			var url	=	"<?php echo base_url(); ?>/"+varParameterInvoiceBillingPrinterDirectBarUrl;
 			url 	= 	url+
-			"/companyID/"+ objTransactionMaster.companyID + 
+			"/companyID/"+ objTransactionMaster.companyID +
 			"/transactionID/"+ objTransactionMaster.transactionID +
 			"/transactionMasterID/"+ objTransactionMaster.transactionMasterID +
 			"/itemID/"+itemid;
-			mostarModalPersonalizado('Imprimiendo, por favor espe...');	
-			$.ajax({									
+			mostarModalPersonalizado('Imprimiendo, por favor espe...');
+			$.ajax({
 				cache       : false,
 				dataType    : 'json',
 				type        : 'GET',
 				url  		: url,
-				success		: function(){						
+				success		: function(){
 				},
 				error:function(xhr,data){
-					console.info("complete data error");									
+					console.info("complete data error");
 					console.info(data);
 					console.info(xhr);
 				},
 				complete: function(){
 					cerrarModal('ModalCargandoDatos');
 				}
-			});	
+			});
 			return;
 		}
 		else{
@@ -1197,43 +1263,43 @@
 			return
 		}
 	}
-	
+
 	function fnImprimirCocina(){
-		
-		var listRow 	= objTableDetail.fnGetData();							
+
+		var listRow 	= objTableDetail.fnGetData();
 		var length 		= listRow.length;
 		var comentario 	= $("#txtNote").val();
-		
+
 		var i 		= 0;
 		var itemid 	= "-1";
-		
+
 		while (i < length ){
 			if(listRow[i][0] == true){
-				itemid = itemid + ","+listRow[i][2];				
+				itemid = itemid + ","+listRow[i][2];
 			}
 			i++;
 		}
-		
-				
+
+
 		if(varParameterInvoiceBillingPrinterDirect == 'true'){
-			
+
 			var url	= 	"<?php echo base_url(); ?>/"+varParameterInvoiceBillingPrinterDirectCocinaUrl;
 			url 	= 	url+
-			"/companyID/"+ objTransactionMaster.companyID + 
+			"/companyID/"+ objTransactionMaster.companyID +
 			"/transactionID/"+ objTransactionMaster.transactionID +
 			"/transactionMasterID/"+ objTransactionMaster.transactionMasterID +
 			"/itemID/"+itemid+"/transactionMasterComment/"+comentario;
-			
+
 			mostarModalPersonalizado('Imprimiendo, por favor espere...');
-			$.ajax({									
+			$.ajax({
 				cache       : false,
 				dataType    : 'json',
 				type        : 'GET',
 				url  		: url,
-				success		: function(){						
+				success		: function(){
 				},
 				error:function(xhr,data){
-					console.info("complete data error");									
+					console.info("complete data error");
 					console.info(data);
 					console.info(xhr);
 					//fnShowNotification("Error 505","error");
@@ -1241,7 +1307,7 @@
 				complete: function(){
 					cerrarModal('ModalCargandoDatos');
 				}
-			});	
+			});
 			return;
 		}
 		else{
@@ -1249,27 +1315,27 @@
 			return
 		}
 	}
-	
+
 	function onCompletePantalla(){
 		$(".btn-comando-factura").removeClass("hidden");
-		
-		
+
+
 		if(varUseMobile == "1" ){
-		   $(".elementMovilOculto").addClass("hidden");		
+		   $(".elementMovilOculto").addClass("hidden");
 		   $("#table-resumen").css("width", ( $( window ).width() )+"px");
 		   $("#table-resumen th").css("display","block");
-		   $("#table-resumen td").css("display","block");		   
-		   
+		   $("#table-resumen td").css("display","block");
+
 		   $("#table-resumen-pago").css("width", ( $( window ).width() )+"px");
 		   $("#table-resumen-pago th").css("display","block");
 		   $("#table-resumen-pago td").css("display","block");
-		   
+
 		   $("#tb_transaction_master_detail th").css("display","none");
 		   $("#tb_transaction_master_detail td").css("display","block");
-		   
+
 	    }
 	}
-	
+
 	//Cargar Factura
 	function onCompleteSelectInvoice(objResponse) {
 		console.info("CALL onCompleteSelectInvoice");
@@ -1277,38 +1343,38 @@
 		let data = objResponse[0];
 		// Muestra la alerta inmediatamente
 		mostarModalPersonalizado("Cargando datos de factura, por favor espere...");
-		let url = objParameterPantallaParaFacturar == "-" 
+		let url = objParameterPantallaParaFacturar == "-"
 			? `${varBaseUrl}/app_invoice_billing/edit/${data[0]}/${data[1]}/${data[2]}/${$("#txtCodigoMesero").val()}`
 			: `${varBaseUrl}/app_invoice_billing/${objParameterPantallaParaFacturar}/${data[0]}/${data[1]}/${data[2]}/${$("#txtCodigoMesero").val()}`;
 
 		$.ajax({
 			url		: url,
-			success	: function(response) {           
+			success	: function(response) {
 				fnUpdateInvoiceView(response.data);
 			},
 		});
 	}
 
-	
+
 	function onCompleteCustomer(objResponse){
-		
+
 		console.info("CALL onCompleteCustomer");
 		if(objResponse !== undefined)
 		{
             mostarModalPersonalizado('cargando datos del cliente, por favor espere...');
 			var entityID = objResponse[0][1];
 			$("#txtCustomerID").val(objResponse[0][1]);
-			$("#txtCustomerDescription").val(objResponse[0][2] + " " + objResponse[0][3] + " / " + objResponse[0][4]);	
+			$("#txtCustomerDescription").val(objResponse[0][2] + " " + objResponse[0][3] + " / " + objResponse[0][4]);
 			fnClearData();
 			fnGetCustomerClient();
 		}
 	}
-	
+
 	function onCompleteNewItem(objResponse,suma){
 		console.info("CALL onCompleteNewItem");
-		
-		var objRow 							= {};	
-		objRow.checked 						= false;						
+		console.info(objResponse);
+		var objRow 							= {};
+		objRow.checked 						= false;
 		objRow.transactionMasterDetailID 	= 0;
 		objRow.itemID						= objResponse[5];
 		objRow.codigo						= objResponse[17];
@@ -1318,7 +1384,7 @@
 		objRow.quantity 					= fnFormatNumber(objResponse[21],2);
 		objRow.bquantity 					= fnFormatNumber(objResponse[21],2);
 		objRow.price 						= fnFormatNumber(objResponse[22],2);
-		objRow.total 						= fnFormatNumber(objRow.quantity * objRow.price,2);						
+		objRow.total 						= fnFormatNumber(objRow.quantity * objRow.price,2);
 		objRow.iva 							= 0;
 		objRow.lote 						= "";
 		objRow.vencimiento					= "";
@@ -1331,77 +1397,100 @@
 		objRow.serie 						= "";
 		objRow.referencia 					= "";
 		objRow.price1 					    = fnFormatNumber(objResponse[22],2);
+		objRow.skuRatio						= 1;
 
 		//Actualizar
 		if(jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[2] == objRow.itemID;}).select().length > 0 ){
-			
+
 			var x_ 			=  jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[2] == objRow.itemID;}).select();
 			var newCantidad =  0;
-			
+
 			if (suma == true)
 			newCantidad =  parseFloat(fnFormatNumber(x_[0][6],2)) + parseFloat(objRow.bquantity);
 			else
 			newCantidad =  parseFloat(fnFormatNumber(x_[0][6],2)) - parseFloat(objRow.bquantity);
-			
+
 			var objind_ 	= fnGetPosition(x_,objTableDetail.fnGetData());
 			objTableDetail.fnUpdate( fnFormatNumber(newCantidad,2)  , objind_, 6 );
-			
-			
+
+
 			if(varUseMobile != "1"){
-				$("#body_tb_transaction_master_detail tr")[objind_].animate({ 
+				$("#body_tb_transaction_master_detail tr")[objind_].animate({
 				backgroundColor : "#4eacc8" },100);
-				$("#body_tb_transaction_master_detail tr")[objind_].animate({ 
+				$("#body_tb_transaction_master_detail tr")[objind_].animate({
 				backgroundColor : "" },100);
 			}
-			
+			fnGetConcept(objRow.itemID,"IVA");
 		}
 		//Agregar
 		else{
-			objTableDetail.fnAddData([
-				objRow.checked,
-				objRow.transactionMasterDetailID,
-				objRow.itemID,
-				objRow.codigo,
-				objRow.description,
-				objRow.um,
-				objRow.quantity,
-				objRow.price,
-				objRow.total,
-				objRow.iva,
-				0,
-				0,
-				"",
-				objRow.umDescription,
-				objRow.price2,
-				objRow.price3,
-				objRow.itemNameDescription /*itemDescriptionLog*/,
-				objRow.taxServices,
-				objRow.peso,
-                objRow.vendedor,
-                objRow.serie,
-                objRow.referencia,
-                objRow.price1
-			]);
-			
-			
-			if(varUseMobile != "1"){
-				$("#body_tb_transaction_master_detail tr")[objTableDetail.fnGetData().length - 1].animate({ 
-				backgroundColor : "#4eacc8" },100);
-				$("#body_tb_transaction_master_detail tr")[objTableDetail.fnGetData().length - 1].animate({ 
-				backgroundColor : "" },100);
-			}
+			obtenerDataDBProductoArray(
+			"objListaProductosSkuX001",
+			"all",
+			0,
+			'all',
+			{'itemID': objRow.itemID},
+			function(e){
+				let itemID = e['itemID'];
+				let allData = e['all'];
+				var resultado = allData.filter(function(producto) {
+					return producto.itemID == itemID;
+				});
+				if (resultado.length > 0) {
+					resultado.forEach(function(producto) {
+						let selected = parseInt(producto.predeterminado, 10);
+						if(selected === 1){
+							console.info(producto);
+							objRow.um=producto.catalogItemID;
+							objRow.umDescription=producto.name;
+							objRow.price = producto.price;
+							objRow.skuRatio = producto.value;
+						}
+					});
+				}
+				objTableDetail.fnAddData([
+					objRow.checked,
+					objRow.transactionMasterDetailID,
+					objRow.itemID,
+					objRow.codigo,
+					objRow.description,
+					objRow.um,
+					objRow.quantity,
+					objRow.price,
+					objRow.total,
+					objRow.iva,
+					objRow.quantity*objRow.skuRatio,
+					0,
+					"",
+					objRow.umDescription,
+					objRow.price2,
+					objRow.price3,
+					objRow.itemNameDescription /*itemDescriptionLog*/,
+					objRow.taxServices,
+					objRow.peso,
+					objRow.vendedor,
+					objRow.serie,
+					objRow.referencia,
+					objRow.price1,
+					objRow.um,
+					objRow.skuRatio
+				]);
+
+				fnGetConcept(objRow.itemID,"IVA");
+
+				if(varUseMobile != "1"){
+					$("#body_tb_transaction_master_detail tr")[objTableDetail.fnGetData().length - 1].animate({
+					backgroundColor : "#4eacc8" },100);
+					$("#body_tb_transaction_master_detail tr")[objTableDetail.fnGetData().length - 1].animate({
+					backgroundColor : "" },100);
+				}
+			});
 		}
-		
-		
-		
-		fnGetConcept(objRow.itemID,"IVA");		
+
 		refreschChecked();
 		$("#txtScanerCodigo").focus();
-		
-		
-		
 	}
-	
+
 	function fnSetCheckBoxValue(element,value)
 	{
 		if(value)
@@ -1416,31 +1505,31 @@
 		}
 	}
 
-	function validateFormAndSubmit(){	
-		let result 				= true;		
+	function validateFormAndSubmit(){
+		let result 				= true;
 		let timerNotification 	= 15000;
 		let switchDesembolso	= !$("#txtLabelIsDesembolsoEfectivo").parent().find(".switch.has-switch").children().hasClass("switch-off");
-		
+
 		//Validar bodega de despacho
-		if($("#txtWarehouseID").val() == ""){		
+		if($("#txtWarehouseID").val() == ""){
 			Toast.fire({
 				icon: "warning",
 				title: "Seleccionar bodega de desapcho"
-			});	
-			result = false;	
+			});
+			result = false;
 		}
-		
-		
-		//Validar Fecha		
+
+
+		//Validar Fecha
 		if($("#txtDate").val() == ""){
 			Toast.fire({
 				icon: "warning",
 				title: "Establecer Fecha al Documento"
-			});	
+			});
 			result = false;
 		}
-		
-		//Validar Cliente		
+
+		//Validar Cliente
 		if($("#txtCustomerID").val() == ""){
 			Toast.fire({
 				icon: "warning",
@@ -1472,7 +1561,7 @@
 			});
 			result = false;
 		}
-		
+
 		//Validar monto descuento en rango de 0 a 100
 		let porcentajeDescuento = parseFloat($('#txtPorcentajeDescuento').val()) || 0;
 		if (porcentajeDescuento < 0 || porcentajeDescuento > 100) {
@@ -1491,7 +1580,7 @@
 			});
 			result = false;
 		}
-		
+
 		//Validar estado anulado
 		if($("#txtStatusID").val() ==  varStatusInvoiceAnular){
 			Toast.fire({
@@ -1500,13 +1589,13 @@
 			});
 			result = false;
 		}
-		
+
 		//Validar Detalle
 		//
-		///////////////////////////////////////////////		
+		///////////////////////////////////////////////
 		var cantidadTotalesEnZero 	= jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[8] == 0;}).select().length ;
 		var validateTotalesZero 	= true;
-		<?php echo getBehavio($company->type,"app_invoice_billing","scriptValidateTotalesZero",""); ?>  
+		<?php echo getBehavio($company->type, "app_invoice_billing", "scriptValidateTotalesZero", ""); ?>
 
 		if(validateTotalesZero == true)
 		{
@@ -1518,8 +1607,8 @@
 				result = false;
 			}
 		}
-		
-		
+
+
 		var cantidadTotalesEnZero = jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[6] == 0;}).select().length ;
 		if(cantidadTotalesEnZero > 0){
 			Toast.fire({
@@ -1528,8 +1617,8 @@
 			});
 			result = false;
 		}
-		
-		
+
+
 		if( /*varAutoAPlicar == "true" && */ objTableDetail.fnGetData().length == 0){
 			Toast.fire({
 				icon	: "warning",
@@ -1537,42 +1626,42 @@
 			});
 			result = false;
 		}
-		
+
 		var listItemIDToValid 	= "-1";
 		var listQntity 			= "-1"
 		for(var i = 0; i < objTableDetail.fnGetData().length; i++){
-			
+
 			var rowTable 				= objTableDetail.fnGetData()[i];
 			var rowTableItemID 		 	= rowTable[2];
 			var rowTableItemQuantity 	= rowTable[6];
-			var rowTableItemNombre 		= rowTable[4];			
-			
-			
+			var rowTableItemNombre 		= rowTable[4];
+
+
 			listItemIDToValid = listItemIDToValid+ ","+rowTableItemID;
 			listQntity = listQntity+ ","+rowTableItemQuantity;
-		}	 
-		
-		
+		}
+
+
 		//Si es de credito que la factura no supere la linea de credito
 		var causalSelect 				= $("#txtCausalID").val();
 		var customerCreditLineID 		= $("#txtCustomerCreditLineID").val();
 		var objCustomerCreditLine 		= jLinq.from(objListCustomerCreditLine).where(function(obj){ return obj.customerCreditLineID == customerCreditLineID; }).select();
 		var causalCredit 				= objCausalTypeCredit.value.split(",");
 		var invoiceTypeCredit 			= false;
-		
-		
-		//Obtener si la factura es al credito						
+
+
+		//Obtener si la factura es al credito
 		for(var i=0;i<causalCredit.length;i++){
 			if(causalCredit[i] == causalSelect){
 				invoiceTypeCredit = true;
 			}
 		}
-		
+
 		if(varParameterAmortizationDuranteFactura && $("#txtReference2").val() == "" && invoiceTypeCredit ){
 			fnShowNotification("Seleccionar el plazo","error",timerNotification);
 			result = false;
 		}
-		
+
 		//No puede haber cambio, si la factura es de credito
 		if(invoiceTypeCredit && $("#txtChangeAmount").val() > 0 )
 		{
@@ -1582,16 +1671,16 @@
 				title: "No puede haber cambio si la factura es de credito"
 			});
 		}
-		
-		
-		<?php echo getBehavio($company->type,"app_invoice_billing","scriptValidateCustomer",""); ?>  
-		
-		
+
+
+		<?php echo getBehavio($company->type, "app_invoice_billing", "scriptValidateCustomer", ""); ?>
+
+
 		//Validaciones si la factura es al credito.
 		if(invoiceTypeCredit){
-			
-			<?php echo getBehavio($company->type,"app_invoice_billing","scriptValidateInCredit",""); ?>  
-			
+
+			<?php echo getBehavio($company->type, "app_invoice_billing", "scriptValidateInCredit", ""); ?>
+
 			//Validar Fecha del Primer Pago si es de Credito
 			if($("#txtDateFirst").val() == "" && switchDesembolso){
 				result = false;
@@ -1600,8 +1689,8 @@
 					title	: "Seleccionar la Fecha del Primer Pago"
 				});
 			}
-			
-			
+
+
 			//Validar Notas
 			if($("#txtNote").val() == "" && switchDesembolso){
 				fnShowNotification("Asignarle una nota al documento","error",timerNotification);
@@ -1611,7 +1700,7 @@
 					title	: "Asignarle una nota al documento"
 				});
 			}
-			
+
 			//Validar Escritura Publica
 			if($("#txtFixedExpenses").val() == "" && switchDesembolso){
 				fnShowNotification("Ingresar el Porcentaje de Gastos Fijo por Desembolso","error",timerNotification);
@@ -1621,21 +1710,21 @@
 					title	: "Ingresar el Porcentaje de Gastos Fijo por Desembolso"
 				});
 			}
-			
-			
-			
-			var montoTotalInvoice 	= fnFormatFloat(fnFormatNumber($("#txtTotal").val(),"4"));
+
+
+
+			var montoTotalInvoice 	= fnFormatNumber(fnFormatNumber($("#txtTotal").val(),"4"));
 			var balanceCredit 		= 0;
-			
+
 			if(objCurrencyCordoba.currencyID == objCustomerCreditLine[0].currencyID)
-				balanceCredit =  fnFormatFloat(fnFormatNumber(objCustomerCreditLine[0].balance,"4"));
+				balanceCredit =  fnFormatNumber(fnFormatNumber(objCustomerCreditLine[0].balance,"4"));
 			else{
 				balanceCredit = (
-									fnFormatFloat(fnFormatNumber(objCustomerCreditLine[0].balance,"4")) * 
-									fnFormatFloat(fnFormatNumber(objCustomerCreditLine[0].objExchangeRate,"4")) 
+									fnFormatNumber(fnFormatNumber(objCustomerCreditLine[0].balance,"4")) *
+									fnFormatNumber(fnFormatNumber(objCustomerCreditLine[0].objExchangeRate,"4"))
 								);
 			}
-			
+
 			//Validar Limite
 			if(balanceCredit < montoTotalInvoice &&  balanceCredit != 0 ){
 				result = false;
@@ -1644,10 +1733,10 @@
 					title	: "La factura no puede ser facturada al credito. Balance del cliente: " + balanceCredit
 				});
 			}
-			
-			
+
+
 		}
-		else{			
+		else{
 			//Validar Pago
 			if( parseFloat( $("#txtChangeAmount").val() )  < 0 ){
 				result = false;
@@ -1657,19 +1746,19 @@
 				});
 			}
 		}
-		
-		
-		
+
+
+
 		if(result)
-		{			
+		{
 			$("#form-new-invoice" ).submit();
 			return;
 		}
 		else
-		{		
+		{
 			cerrarModal('ModalCargandoDatos');
 		}
-		
+
 	}
 
     // Evitar el envío tradicional y manejar con AJAX
@@ -1683,9 +1772,9 @@
             url		: $(this).attr('action'),
             type	: $(this).attr('method'),
             dataType: 'json',
-            data	: formData,         
+            data	: formData,
             success	: function(response) {
-				
+
                 // Restaurar botón
                 if(response.success) {
                     fnUpdateInvoiceView(response.data);
@@ -1697,12 +1786,12 @@
                     // Manejar error
 					Toast.fire({
 							icon  : 'error',
-							title : 'Codigo:' + response.error.code + " , " + response.error.message 
+							title : 'Codigo:' + response.error.code + " , " + response.error.message
 					});
                 }
             },
             error: function(xhr) {
-				
+
                 // Manejar error de conexión
                 Swal.fire({
                     icon	: 'error',
@@ -1724,22 +1813,22 @@
 	}
 
     function fnClearForm(){
-		
+
 		loadEdicion = false;
 		mostarModalPersonalizado('Cargando nueva factura, por favor espere...');
         $("#form-new-invoice")[0].reset();
-		$('#invoice-num').text("00000000");		
+		$('#invoice-num').text("00000000");
 		$("select").each(function() {
-			let firstValue = $(this).find("option:first").val(); 
+			let firstValue = $(this).find("option:first").val();
 			if(firstValue !== undefined){
 				$(this).val(firstValue).trigger("change"); // Asigna el valor y dispara el evento 'change'
-			}			
+			}
 		});
-		
-		$('#txtTypePriceID').val(<?= $objParameterTypePreiceDefault?>);		
-		$('#txtWarehouseID').val(<?= $objParameterTipoWarehouseDespacho?>);
+
+		$('#txtTypePriceID').val(<?php echo $objParameterTypePreiceDefault ?>);
+		$('#txtWarehouseID').val(<?php echo $objParameterTipoWarehouseDespacho ?>);
 		$("#txtCurrencyID option").each(function() {
-			if ($(this).text().trim() === '<?= $objParameterACCOUNTING_CURRENCY_NAME_IN_BILLING ?>') {
+			if ($(this).text().trim() === '<?php echo $objParameterACCOUNTING_CURRENCY_NAME_IN_BILLING ?>') {
 				$(this).prop("selected", true);
 				$("#txtCurrencyID").trigger("change");
 			}
@@ -1754,13 +1843,13 @@
         objCausalTypeCredit 		= JSON.parse('<?php echo json_encode($objCausalTypeCredit); ?>');
         fnRenderLineaCredit(objListCustomerCreditLine, objCausalTypeCredit);
         $('#txtDate').datepicker({format:"yyyy-mm-dd"});
-		$('#txtDate').val(moment().format("YYYY-MM-DD"));	
+		$('#txtDate').val(moment().format("YYYY-MM-DD"));
 		$("#txtDate").datepicker("update");
-		$('#txtNextVisit').datepicker({format:"yyyy-mm-dd"});		
-		$('#txtDateFirst').datepicker({format:"yyyy-mm-dd"});						 
-		$('#txtDateFirst').val(moment().add('days', 0).format("YYYY-MM-DD"));			 
+		$('#txtNextVisit').datepicker({format:"yyyy-mm-dd"});
+		$('#txtDateFirst').datepicker({format:"yyyy-mm-dd"});
+		$('#txtDateFirst').val(moment().add('days', 0).format("YYYY-MM-DD"));
 		$("#txtDateFirst").datepicker("update");
-		$('#txtCustomerID').val(<?= $objCustomerDefault->entityID;  ?>);
+		$('#txtCustomerID').val(<?php echo $objCustomerDefault->entityID; ?>);
 		$('#btnLinkPayment').css('display','none');
 		$('#rowBotoneraFacturaFila5').css('display','none');
 		$('.showComandoDeCocina').css('display', 'none');
@@ -1768,8 +1857,8 @@
 		$('#registrarFacturaNueva').css('display','block');
 		$('#showCommandBar').css('display', 'none');
 		$("#workflowLink").empty();
-		transactionID = <?= $transactionIDNueva ?>;
-		$('#txtStatusID').val(<?= isset($objListWorkflowStage) ? $objListWorkflowStage[0]->workflowStageID : 0 ?>);
+		transactionID =		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		                <?php echo $transactionIDNueva ?>;
+		$('#txtStatusID').val(<?php echo isset($objListWorkflowStage) ? $objListWorkflowStage[0]->workflowStageID : 0 ?>);
         $('#txtStatusIDOld').val(0);
 		$("#txtCheckApplyExoneracionValue").val(0);
 		$("#txtCheckReportSinRiesgoValue").val(0);
@@ -1777,21 +1866,21 @@
 		fnSetCheckBoxValue($("#txtCheckApplyExoneracion"), false);
 		fnSetCheckBoxValue($("#txtCheckReportSinRiesgo"), false);
 		fnSetCheckBoxValue($("#txtCheckDeEfectivo"), false);
-		
-		
-		<?php echo getBehavio($company->type, 'app_invoice_billing', 'jsClearForm','') ?>
+
+
+		<?php echo getBehavio($company->type, 'app_invoice_billing', 'jsClearForm', '') ?>
 		setTimeout(()=>{ cerrarModal('ModalCargandoDatos'); }, 1000);
-		
+
     }
 
     function fnUpdateInvoiceView(data){
-		
+
         console.info("LOAD INVOICE");
         loadEdicion 		= true;
 		cargaCompletada 	= true;
 		objParameterINVOICE_BILLING_SHOW_COMMAND_BAR    = data.objParameterINVOICE_BILLING_SHOW_COMMAND_BAR;
         varParameterTipoPrinterDownload     			= data.objParameterTipoPrinterDonwload;
-        objParameterPrinterDirectAndPreview 			= data.objParameterPrinterDirectAndPreview;        
+        objParameterPrinterDirectAndPreview 			= data.objParameterPrinterDirectAndPreview;
         varParameterShowComandoDeCocina     			= data.objParameterShowComandoDeCocina;
         varUrlPrinterOpcion2    = data.urlPrinterDocumentOpcion2;
         varUrlPrinterCocina	    = data.urlPrinterDocumentCocina;
@@ -1823,7 +1912,7 @@
         varParameterUrlServidorDeImpresion      			= data.objParameterUrlServidorDeImpresion;
         varTransactionCausalID	                			= objTransactionMaster.transactionCausalID;
         varCustomerCrediLineID	                			= objTransactionMaster.reference4;
-        
+
 		let objTransactionMasterDetailCredit 	= data.objTransactionMasterDetailCredit;
         let objTransactionMasterInfo            = data.objTransactionMasterInfo;
 		let objNaturalDefault 					= data.objNaturalDefault;
@@ -1834,7 +1923,7 @@
 		transactionID 			= objTransactionMaster.transactionID;
 		transactionMasterID 	= objTransactionMaster.transactionMasterID;
 		objComponentBilling		= data.objComponentBilling;
-	
+
         let counter 				= 0;
         let objListWorkflowStage 	= data.objListWorkflowStage;
 		$('#linkMobile').empty();
@@ -1913,7 +2002,11 @@
 
 		$('#txtFixedExpenses').val(objTransactionMasterDetailCredit.reference1);
 		$('#txtTMIReference1').val(objTransactionMasterInfo.reference1);
-		$('#txtLayFirstLineProtocolo').val(objTransactionMasterReferences.reference1);
+		if(objTransactionMasterReferences){
+			$('#txtLayFirstLineProtocolo').val(objTransactionMasterReferences.reference1);
+		}else{
+			$('#txtLayFirstLineProtocolo').val("");
+		}
 
 		//limpiar tabla de datos
 		objTableDetail.fnClearTable();
@@ -1929,6 +2022,12 @@
                 var Precio2 		= jLinq.from(objTransactionMasterItemPrice).where(function(obj){ return (obj.itemID === varDetail[i].componentItemID && obj.typePriceID === "155"); }).select()[0].Precio;
                 var Precio3 		= jLinq.from(objTransactionMasterItemPrice).where(function(obj){ return (obj.itemID === varDetail[i].componentItemID && obj.typePriceID === "156"); }).select()[0].Precio;
                 var tax2			= varDetail[i].tax2;
+
+				let skuFormatoDescription   = varDetail[i].skuFormatoDescription;
+				let skuQuantityBySku		= varDetail[i].skuQuantityBySku;
+				let skuCatalogItemID		= varDetail[i].skuCatalogItemID;
+				let skuQuantity				= varDetail[i].skuQuantity;
+
                 var taxServices 	= 0;
 
                 //Validar impuesto IVA
@@ -1967,17 +2066,17 @@
                 }
 
 
-				var itemNumber 			= "";				
-				var mostrarCodigoBarra 	= '<?= getBehavio($company->type, 'app_invoice_billing','javaScriptShowCodeBarra','false')?>';
+				var itemNumber 			= "";
+				var mostrarCodigoBarra 	= '<?php echo getBehavio($company->type, 'app_invoice_billing', 'javaScriptShowCodeBarra', 'false') ?>';
 				if(mostrarCodigoBarra == "false")
 				{
-					itemNumber 			= varDetail[i].itemNumber;				
+					itemNumber 			= varDetail[i].itemNumber;
 				}
 				else
 				{
 					itemNumber 			= varDetail[i].barCode + " " + varDetail[i].itemNumber;
 				}
-				
+
                 //Rellenar Datos
                 tmpData.push([
                     0,
@@ -1985,15 +2084,15 @@
                     varDetail[i].componentItemID,
                     itemNumber,
                     "'"+varDetail[i].itemNameLog + "'",
-                    varDetail[i].skuCatalogItemID,
-                    fnFormatNumber(varDetail[i].skuQuantity,2),
-                    fnFormatNumber(varDetail[i].unitaryPrice *  varDetail[i].skuQuantityBySku, 4),/*precio sistema*/
-                    fnFormatNumber(varDetail[i].unitaryPrice *  varDetail[i].skuQuantityBySku * varDetail[i].skuQuantity,2), /*precio por cantidad*/
+                    skuFormatoDescription,
+                    fnFormatNumber(varDetail[i].quantity,2),
+                    fnFormatNumber(varDetail[i].unitaryPrice, 4),/*precio sistema*/
+                    fnFormatNumber(varDetail[i].unitaryPrice *  varDetail[i].quantity,2), /*precio por cantidad*/
                     fnFormatNumber(iva_,2),
-                    fnFormatNumber(varDetail[i].skuQuantityBySku, 4),
+                    fnFormatNumber(skuQuantityBySku, 4),
                     fnFormatNumber(varDetail[i].unitaryPrice, 4),
                     "",//acciones
-                    varDetail[i].skuFormatoDescription,
+                    skuFormatoDescription,
                     fnFormatNumber(infoPrecio2, 2),
                     fnFormatNumber(infoPrecio3, 2),
                     "'"+varDetail[i].itemNameDescriptionLog + "'",
@@ -2002,13 +2101,15 @@
                     infoSales,
                     infoSerie,
                     infoReferencia,
-                    fnFormatNumber(infoPrecio1, 2)
+                    fnFormatNumber(infoPrecio1, 2),
+					skuCatalogItemID,
+					skuQuantity
                 ]);
             }
 			objTableDetail.fnAddData(tmpData);
 			objTableDetail.fnDraw();
         }
-		
+
         $("#txtDescuento").val(fnFormatNumber(objTransactionMaster.discount, 2));
         $("#txtPorcentajeDescuento").val(fnFormatNumber(objTransactionMaster.tax4,2));
 
@@ -2040,7 +2141,7 @@
             $('#btnDeleteItem').addClass('hidden');
         }
 
-		if(data.objParameterInvoiceButtomPrinterFidLocalPaymentAndAmortization === "true"){	
+		if(data.objParameterInvoiceButtomPrinterFidLocalPaymentAndAmortization === "true"){
 			$("#btnAceptarDialogPrinterV2AceptarTabla").removeClass("hidden");
 		}
 		if(objParameterPrinterDirectAndPreview === 'true' ){
@@ -2063,13 +2164,18 @@
             $('#divPanelOpenCash').css('display', 'none');
         }
 
-        <?php echo getBehavio($company->type, 'app_invoice_billing', 'btnFooter','') ?>
+        <?php echo getBehavio($company->type, 'app_invoice_billing', 'btnFooter', '') ?>
 
-		if(objTransactionMasterReferences.reference2 === "1"){
-            $('#txtCheckApplyExoneracionValue').val(1);
-            fnSetCheckBoxValue($('#txtCheckApplyExoneracion'),true);
+		if(objTransactionMasterReferences){
+			if(objTransactionMasterReferences.reference2 === "1"){
+				$('#txtCheckApplyExoneracionValue').val(1);
+				fnSetCheckBoxValue($('#txtCheckApplyExoneracion'),true);
+			}else{
+				fnSetCheckBoxValue($('#txtCheckApplyExoneracion'),false);
+				$('#txtCheckApplyExoneracionValue').val(0);
+			}
 		}else{
-            fnSetCheckBoxValue($('#txtCheckApplyExoneracion'),false);
+			fnSetCheckBoxValue($('#txtCheckApplyExoneracion'),false);
 			$('#txtCheckApplyExoneracionValue').val(0);
 		}
 
@@ -2083,69 +2189,64 @@
 
 		$('#txtCheckDeEfectivoValue').val(0);
         fnSetCheckBoxValue($('#txtCheckDeEfectivo'),false);
-		<?php echo getBehavio($company->type, 'app_invoice_billing', 'jsPostUpdateInvoiceView','') ?>
+		<?php echo getBehavio($company->type, 'app_invoice_billing', 'jsPostUpdateInvoiceView', '') ?>
 
 		cargaCompletada 	= false;
 		cerrarModal('ModalCargandoDatos');
-		
+
     }
 
 	function fnGetConcept(conceptItemID,nameConcept){
-		
-		
-		//Recalculoa el concepto via AJAX 2023-12-05 Inicio		
-		var x_			= jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[2] === conceptItemID ;}).select();
-		var objind_ 	= fnGetPosition(x_,objTableDetail.fnGetData());
-		
-		
+
+		//Recalculoa el concepto via AJAX 2023-12-05 Inicio
+		let getData 	= objTableDetail.fnGetData();
+		var x_			= getData.filter(item => item[2] === conceptItemID);
+		var objind_ 	= fnGetPosition(x_,getData);
+
 		//Obtener el concepto de la base de datos del navegador y calcular nuevamente
 		obtenerDataDBProductoArray(
 			"objListaProductosConceptosX001",
 			"componentItemID",conceptItemID,"none",{},
-			function(e){ 
-					
-					var objConcepto = e;						
-					var exoneracion = $("#txtCheckApplyExoneracionValue").val();
-					
-					if(exoneracion === "0")
+			function(e){
+				var objConcepto = e;
+				var exoneracion = $("#txtCheckApplyExoneracionValue").val();
+
+				if(exoneracion === "0")
+				{
+					objConcepto1 	= jLinq.from(objConcepto).where(function(obj){ return (obj.name === "IVA"); }).select();
+					if( objConcepto1.length > 0 )
 					{
-						objConcepto1 	= jLinq.from(objConcepto).where(function(obj){ return (obj.name === "IVA"); }).select();
-						if( objConcepto1.length > 0 )
-						{
-							
-							objTableDetail.fnUpdate( fnFormatNumber(objConcepto1[0].valueOut,2), objind_, 9 );			
-						}
-						objConcepto2 	= jLinq.from(objConcepto).where(function(obj){ return (obj.name === "TAX_SERVICES"); }).select();
-						if( objConcepto2.length > 0 )
-						{
-							
-							objTableDetail.fnUpdate( fnFormatNumber(objConcepto2[0].valueOut,2), objind_, 17 );			
-						}
-					}	
-					else 
-					{
-						objTableDetail.fnUpdate( 0, objind_, 9 );		//IVA	
-						objTableDetail.fnUpdate( 0, objind_, 17 );		//TAX_SERVICES
+						objTableDetail.fnUpdate( fnFormatNumber(objConcepto1[0].valueOut,2), objind_, 9 );
 					}
-					fnRecalculateDetail(true,"");
-					
+					objConcepto2 	= jLinq.from(objConcepto).where(function(obj){ return (obj.name === "TAX_SERVICES"); }).select();
+					if( objConcepto2.length > 0 )
+					{
+						objTableDetail.fnUpdate( fnFormatNumber(objConcepto2[0].valueOut,2), objind_, 17 );
+					}
+				}
+				else
+				{
+					objTableDetail.fnUpdate( 0, objind_, 9 );		//IVA
+					objTableDetail.fnUpdate( 0, objind_, 17 );		//TAX_SERVICES
+				}
+				fnRecalculateDetail(true,"");
 			}
-		);		
+		);
 	}
-	
+
 	function fnRecalcularMontoComision(monto) {
 		var cargandoDatosDeFactura 	= cargaCompletada;
 		let listRow 				= objTableDetail.fnGetData();
 		monto 						= parseFloat(monto);
-		
+
 		if(cargandoDatosDeFactura == true )
 			return;
-		
-		if (isNaN(monto)) 
+
+		if (isNaN(monto))
 		{
 			monto = 0;
 		}
-		
+
 		if(listRow.length > 0)
 		{
 			for(let i=0; i<listRow.length; i++)
@@ -2157,10 +2258,10 @@
 		}
 		fnRecalculateDetail(true, "");
 	}
-	
+
 	function refreschChecked()
 	{
-		
+
 		if(varUseMobile === "0")
 		{
 			var cantidaRow = $(".txtItemSelected").length;
@@ -2171,48 +2272,48 @@
 					$($(".txtItemSelected")[i]).select2();
 			}
 		}
-		
-		
+
+
 		$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect, .skuStyleNormal').uniform();
 		if(varUseMobile === "1")
 		{
 			$("#tb_transaction_master_detail td").css("display","block");
 		}
-		
+
 	}
-	
-	function fnSelectCellZone(cell) {		
-		
+
+	function fnSelectCellZone(cell) {
+
 		var catalogItemIDZone = $(cell).data("value");
 		$(".custom-table-zalones").find("td").removeClass("selected");
 		$(cell).addClass("selected");
 		$("#txtZoneID").val( catalogItemIDZone );
 		$("#txtZoneID").select2();
 		$(".custom-table-mesas").find("td").addClass("hidden");
-		$(".custom-table-mesas").find('td[data-parent="'+catalogItemIDZone+'"]').removeClass("hidden");	
-		var sidebar = $("#mySidebarZona");		
-		sidebar.css("width", "0");	
+		$(".custom-table-mesas").find('td[data-parent="'+catalogItemIDZone+'"]').removeClass("hidden");
+		var sidebar = $("#mySidebarZona");
+		sidebar.css("width", "0");
 		sidebar.addClass("hidden");
 		$("#mySidebarMesa").css("width","100%");
 		$("#mySidebarMesa").removeClass("hidden");
 	}
-	
-	function fnSelectCellMesa(cell) {		
+
+	function fnSelectCellMesa(cell) {
 		$(".custom-table-mesas").find("td").removeClass("selected");
 		$(cell).addClass("selected");
 		$("#txtMesaID").val( $(cell).data("value") );
 		$("#txtMesaID").select2();
-		
+
 	}
 
-	function fnSelectCellMesaDoubleClick(cell,value) {		
-		
+	function fnSelectCellMesaDoubleClick(cell,value) {
+
 		$(".custom-table-mesas").find("td").removeClass("selected");
 		$(cell).addClass("selected");
 		$("#txtMesaID").val( $(cell).data("value") );
 		$("#txtMesaID").select2();
 		if(value !== 0 && value !== 'undefined'){
-			
+
 			mostrarModal("ModalIrMesaDocumentDialogCustom");
 			$("#txtMesaOcupada").val(value);
 			$(".modal-backdrop.fade.in").removeClass("modal-backdrop");
@@ -2222,9 +2323,9 @@
 			$("#mySidebarMesa").addClass("hidden");
         }
 	}
-	
-	function fnSelectCellCategoryInventory(cell) 
-	{		
+
+	function fnSelectCellCategoryInventory(cell)
+	{
 		var inventoryCategoryID = $(cell).data("value");
 
 		$(".custom-table-container-categorias").hide();
@@ -2241,19 +2342,19 @@
         $(".item-producto").removeClass('selected');
         $(cell).addClass("selected");
 	}
-	
+
 	function fnSelectDoubleCellInventory(cell) {
-		
+
 		$(cell).addClass("selected");
-		var codigoProducto = $(cell).data("codigo");		
-		
+		var codigoProducto = $(cell).data("codigo");
+
 		if(codigoProducto === "0" )
 		{
 			$(".custom-table-container-categorias").removeClass("hidden");
 			$(".custom-table-container-inventory").addClass("hidden");
 			return;
 		}
-		
+
 		//buscar el producto y agregar por codigo de barra
 		obtenerDataDBProductoArray(
 			"objListaProductosX001",
@@ -2261,74 +2362,74 @@
 			0,
 			"all",
 			{"codigoABuscar":""+codigoProducto+""},
-			function(e){    
-				
-				
-				//buscar el producto y agregar						
+			function(e){
+
+
+				//buscar el producto y agregar
 				var codigoABuscar 	= e.codigoABuscar.toUpperCase();
 				e 					= e.all;
-				var encontrado		= false;				
+				var encontrado		= false;
 				for(var i = 0 ; i < e.length ; i++)
 				{
-					
+
 					if(encontrado == true)
 					{
 						i--;
 						break;
 					}
-					
-					//buscar por codigo de sistema					
+
+					//buscar por codigo de sistema
 					var currencyTemp	= e[i].currencyID;
 					var currencyID 		= $("#txtCurrencyID").val();
-					
+
 					var warehouseIDTemp		= e[i].warehouseID;
 					var warehouseID			= $("#txtWarehouseID").val();
-					
-					if(  
-						currencyID == currencyTemp && 
-						fnDeleteCerosIzquierdos(codigoABuscar.replace("BITT","").replace("ITT","") ) == fnDeleteCerosIzquierdos(e[i].Codigo.replace("BITT","").replace("ITT","").toUpperCase())  && 
+
+					if(
+						currencyID == currencyTemp &&
+						fnDeleteCerosIzquierdos(codigoABuscar.replace("BITT","").replace("ITT","") ) == fnDeleteCerosIzquierdos(e[i].Codigo.replace("BITT","").replace("ITT","").toUpperCase())  &&
 						warehouseID == warehouseIDTemp
 					)
 					{
-						
+
 						encontrado 		= true;
 						break;
 					}
-					
-					
+
+
 					//buscar por codigo de barra
 					var listCodigTmp 	= e[i].Barra.split(",");
 					currencyTemp		= e[i].currencyID;
 					currencyID 			= $("#txtCurrencyID").val();
 					encontrado			= false;
-							
+
 					if(encontrado == false )
 					{
 						for(var ii = 0 ; ii < listCodigTmp.length; ii++)
 						{
-							if( 
-								fnDeleteCerosIzquierdos(listCodigTmp[ii].toUpperCase()) == fnDeleteCerosIzquierdos(codigoABuscar) && 
+							if(
+								fnDeleteCerosIzquierdos(listCodigTmp[ii].toUpperCase()) == fnDeleteCerosIzquierdos(codigoABuscar) &&
 								currencyID == currencyTemp  &&
 								warehouseID == warehouseIDTemp
 							)
 							{
-								
+
 								encontrado 		= true;
 								break;
 							}
 						}
 					}
-					
-					
-					
+
+
+
 				}
-				
+
 				if(encontrado == true)
 				{
-					
+
 					var sumar				= true;
-					var filterResult 		= e[i];						
-					var filterResultArray 	= [];					
+					var filterResult 		= e[i];
+					var filterResultArray 	= [];
 					filterResultArray[5]  	= filterResult.itemID;
 					filterResultArray[17] 	= filterResult.Codigo;
 					filterResultArray[18] 	= filterResult.Nombre;
@@ -2339,16 +2440,16 @@
 					filterResultArray[24] 	= filterResult.Descripcion;
 					filterResultArray[25] 	= filterResult.Precio2;
 					filterResultArray[26] 	= filterResult.Precio3;
-					
-					//Agregar el Item a la Fila					
-					onCompleteNewItem(filterResultArray,sumar); 
+
+					//Agregar el Item a la Fila
+					onCompleteNewItem(filterResultArray,sumar);
 				}
-				 
+
 			}
-		);	
+		);
 	}
-	
-	
+
+
 	function fnClearData(){
 			console.info("fnClearData");
 			objTableDetail.fnClearTable();
@@ -2370,104 +2471,155 @@
 			$("#txtReceiptAmountTarjetaDol").val("0");
 			$("#txtReceiptAmountBankDol").val("0");
 	}
-	
-	function fnRecalculateDetail(clearRecibo,sourceEvent){
-		
-		var typePriceID 			= $("#txtTypePriceID").val();
-		var cantidad 				= 0;
-		var iva 					= 0;
-		var taxServices				= 0;
-		var precio					= 0;		
-		var subtotal 				= 0;		
-		var total 					= 0;
-		var porcentajeDescuento 	= parseFloat($('#txtPorcentajeDescuento').val()) || 0;
-		var cantidadGeneral 				= 0;
-		var ivaGeneral 						= 0;
-		var serviceGeneral					= 0;
-		var precioGeneral					= 0;		
-		var subtotalGeneral 				= 0;		
-		var totalGeneral 					= 0;
-		
-		var priceTemporal		= 0;
-		var cantidadTemporal	= 0;
-	
-		var NSSystemDetailInvoice	= objTableDetail.fnGetData();		
-		for(var i = 0; i < NSSystemDetailInvoice.length; i++){
-			
-			var skuSelecte 			= $($(".txtSku")[i]);
-			var skuCatalogItemID 	= skuSelecte.val();
-			var skuSelecteOption	= $($(".txtSku")[i]).find("option[value='"+skuCatalogItemID+"']").first();						
-			var skuValue 			= skuSelecteOption.data("skuv");
-			var skuValuePrimceUnit	= skuSelecteOption.data("skupriceunitary");
-			var skuValueDescription	= skuSelecteOption.data("description");
-		
-			cantidadTemporal 	=  $(".txtQuantity")[i].value;
-			priceTemporal  		=  $(".txtPrice")[i].value;
-			
-			
-			
-			objTableDetail.fnUpdate( cantidadTemporal, i, 6 );
-			objTableDetail.fnUpdate( priceTemporal, i, 7 );
-			objTableDetail.fnUpdate(skuValueDescription , i, 13 );
-		
-			cantidad 	= parseFloat(NSSystemDetailInvoice[i][6]);
-			precio 		= parseFloat(NSSystemDetailInvoice[i][7]);
-			iva 		= parseFloat(NSSystemDetailInvoice[i][9]);
-			taxServices	= parseFloat(NSSystemDetailInvoice[i][17]);
-			
-			
-			
-			subtotal    = precio * cantidad;
-			iva 		= (precio * cantidad) * iva;
-			taxServices = (precio * cantidad) * taxServices;
-			total 		= iva + taxServices + subtotal ;
-			
-			
-			cantidadGeneral 	= cantidadGeneral + cantidad;
-			precioGeneral 		= precioGeneral + precio;
-			ivaGeneral 			= ivaGeneral + iva;	
-			serviceGeneral		= serviceGeneral + taxServices;			
-			subtotalGeneral 	= subtotalGeneral + subtotal;
-			totalGeneral 		= totalGeneral + total;
-			
-			
-			objTableDetail.fnUpdate( fnFormatNumber(subtotal,2), i, 8 );
-		}
-		
-        let descuento 	= subtotalGeneral * (porcentajeDescuento / 100);
-        totalGeneral 	= subtotalGeneral + serviceGeneral + ivaGeneral - descuento;
-        
-		$("#txtSubTotal").val(fnFormatNumber(subtotalGeneral,2));
-		$('#txtDescuento').val(fnFormatNumber(descuento, 2));
-		$("#txtIva").val(fnFormatNumber(ivaGeneral,2));
-		$("#txtServices").val(fnFormatNumber(serviceGeneral,2));
-		$("#txtTotal").val(fnFormatNumber(totalGeneral,2));
-		$("#txtTotalAlternativo").text(fnFormatNumber(totalGeneral,2));
 
-		
-	
-		//Si es de credito que la factura no supere la linea de credito
-		var causalSelect 				= $("#txtCausalID").val();
-		var customerCreditLineID 		= $("#txtCustomerCreditLineID").val();
-		var objCustomerCreditLine 		= jLinq.from(objListCustomerCreditLine).where(function(obj){ return obj.customerCreditLineID == customerCreditLineID; }).select();
-		var causalCredit 				= objCausalTypeCredit.value.split(",");
-		var invoiceTypeCredit 			= false;
-		
-		
-		//Obtener si la factura es al credito						
-		for(var i=0;i<causalCredit.length;i++){
-			if(causalCredit[i] === causalSelect){
-				invoiceTypeCredit = true;
+	function fnRecalculateDetail(clearRecibo,sourceEvent, index=-1){
+		var porcentajeDescuento 	= parseFloat($('#txtPorcentajeDescuento').val()) || 0;
+		var typePriceID 			= $("#txtTypePriceID").val();
+		if(index < 0){
+
+			var cantidad 				= 0;
+			var iva 					= 0;
+			var taxServices				= 0;
+			var precio					= 0;
+			var subtotal 				= 0;
+			var total 					= 0;
+			var cantidadGeneral 		= 0;
+			var ivaGeneral 				= 0;
+			var serviceGeneral			= 0;
+			var precioGeneral			= 0;
+			var subtotalGeneral 		= 0;
+			var totalGeneral 			= 0;
+			let skuRatio				= 0;
+			var priceTemporal			= 0;
+			var cantidadTemporal		= 0;
+			var NSSystemDetailInvoice	= objTableDetail.fnGetData();
+			for(var i = 0; i < NSSystemDetailInvoice.length; i++){
+
+				cantidadTemporal 	 =  $(".txtQuantity")[i].value;
+				priceTemporal  		 =  $(".txtPrice")[i].value;
+				objTableDetail.fnUpdate( cantidadTemporal, i, 6 );
+				objTableDetail.fnUpdate( priceTemporal, i, 7 );
+
+				cantidad 	= parseFloat(NSSystemDetailInvoice[i][6]);
+				precio 		= parseFloat(NSSystemDetailInvoice[i][7]);
+				iva 		= parseFloat(NSSystemDetailInvoice[i][9]);
+				taxServices	= parseFloat(NSSystemDetailInvoice[i][17]);
+				skuRatio    = parseFloat(NSSystemDetailInvoice[i][24]);
+
+				subtotal    = precio * cantidad;
+				iva 		= (precio * cantidad) * iva;
+				taxServices = (precio * cantidad) * taxServices;
+				total 		= iva + taxServices + subtotal ;
+
+
+				cantidadGeneral 	= cantidadGeneral + cantidad;
+				precioGeneral 		= precioGeneral + precio;
+				ivaGeneral 			= ivaGeneral + iva;
+				serviceGeneral		= serviceGeneral + taxServices;
+				subtotalGeneral 	= subtotalGeneral + subtotal;
+				totalGeneral 		= totalGeneral + total;
+
+				let skuQuantityBySku = cantidad * skuRatio;
+				objTableDetail.fnUpdate( skuQuantityBySku, i, columnasTableDetail.skuQuantityBySku );
+				objTableDetail.fnUpdate( fnFormatNumber(subtotal,2), i, 8 );
+			}
+
+			let descuento 	= subtotalGeneral * (porcentajeDescuento / 100);
+			totalGeneral 	= subtotalGeneral + serviceGeneral + ivaGeneral - descuento;
+
+			$("#txtSubTotal").val(fnFormatNumber(subtotalGeneral,2));
+			$('#txtDescuento').val(fnFormatNumber(descuento, 2));
+			$("#txtIva").val(fnFormatNumber(ivaGeneral,2));
+			$("#txtServices").val(fnFormatNumber(serviceGeneral,2));
+			$("#txtTotal").val(fnFormatNumber(totalGeneral,2));
+			$("#txtTotalAlternativo").text(fnFormatNumber(totalGeneral,2));
+
+
+
+			//Si es de credito que la factura no supere la linea de credito
+			var causalSelect 				= $("#txtCausalID").val();
+			var customerCreditLineID 		= $("#txtCustomerCreditLineID").val();
+			var objCustomerCreditLine 		= jLinq.from(objListCustomerCreditLine).where(function(obj){ return obj.customerCreditLineID == customerCreditLineID; }).select();
+			var causalCredit 				= objCausalTypeCredit.value.split(",");
+			var invoiceTypeCredit 			= false;
+
+
+			//Obtener si la factura es al credito
+			for(var i=0;i<causalCredit.length;i++){
+				if(causalCredit[i] === causalSelect){
+					invoiceTypeCredit = true;
+				}
+			}
+
+
+			if(invoiceTypeCredit === true){
+				$("#txtReceiptAmount").val("0.00");
+			}
+			else{
+				$("#txtReceiptAmount").val(fnFormatNumber(totalGeneral,2));
+			}
+		}else{
+			let getRowDetail 			= objTableDetail.fnGetData(index);
+			let skuRatio    			= parseFloat(getRowDetail[columnasTableDetail.ratioSku]) || 0;
+			var cantidad 				= parseFloat(getRowDetail[columnasTableDetail.cantidad]) || 0;
+			var iva 					= parseFloat(getRowDetail[9]) || 0;
+			let	taxServices				= parseFloat(getRowDetail[17]) || 0;
+			var precio					= parseFloat(getRowDetail[columnasTableDetail.precio]) || 0;
+			let importeAnterior			= parseFloat(getRowDetail[8]) || 0;
+			let ivaAnterior				= iva * importeAnterior;
+			let taxServicesAnterior     = taxServices * importeAnterior;
+			let ivaGeneral 				= parseFloat($("#txtIva").val()) || 0;
+			let serviceGeneral			= parseFloat($("#txtServices").val()) || 0;
+			var subTotalAnterior		= parseFloat($('#txtSubTotal').val()) || 0;
+			var totalAnterior			= parseFloat($('#txtTotal').val()) || 0;
+			let importeNuevo    		= precio * cantidad;
+			let ivaNuevo 				= importeNuevo * iva;
+			let taxServicesNuevo    	= importeNuevo * taxServices;
+			let skuQuantityBySku 		= skuRatio*cantidad;
+
+			let subTotalNuevo 			= 0;
+			if(subTotalAnterior === 0){
+				subTotalNuevo = importeNuevo;
+			}else{
+				subTotalNuevo 			= subTotalAnterior + importeNuevo - importeAnterior;
+			}
+
+			let descuentoNuevo 			= subTotalNuevo * (porcentajeDescuento / 100);
+
+			let ivaGeneralNuevo 		= 0;
+			if(ivaGeneral === 0){
+				ivaGeneralNuevo 		= ivaGeneral + ivaNuevo;
+			}else{
+				ivaGeneralNuevo 		= ivaGeneral + ivaNuevo - ivaAnterior;
+			}
+
+			let serviceNuevo 			= 0;
+			if(serviceGeneral === 0){
+				serviceNuevo 			= serviceGeneral + taxServicesNuevo;
+			}else{
+				serviceNuevo 			= serviceGeneral + taxServicesNuevo - taxServicesAnterior;
+			}
+
+			let totalNuevo	 			= subTotalNuevo + serviceNuevo + ivaGeneralNuevo - descuentoNuevo;
+
+			$('#txtSubTotal').val(fnFormatNumber(subTotalNuevo, 2));
+			$('#txtDescuento').val(fnFormatNumber(descuentoNuevo, 2));
+			$("#txtIva").val(fnFormatNumber(ivaGeneralNuevo,2));
+			$("#txtServices").val(fnFormatNumber(serviceNuevo,2));
+			$("#txtTotal").val(fnFormatNumber(totalNuevo,2));
+			$("#txtTotalAlternativo").text(fnFormatNumber(totalNuevo,2));
+
+			objTableDetail.fnUpdate( skuQuantityBySku, index, columnasTableDetail.skuQuantityBySku );
+			objTableDetail.fnUpdate( fnFormatNumber(importeNuevo,2), index, 8 );
+
+			if(invoiceTypeCredit === true){
+				$("#txtReceiptAmount").val("0.00");
+			}
+			else{
+				$("#txtReceiptAmount").val(fnFormatNumber(totalNuevo,2));
 			}
 		}
-		
-		
-		if(invoiceTypeCredit === true){
-			$("#txtReceiptAmount").val("0.00");
-		}
-		else{
-			$("#txtReceiptAmount").val(fnFormatNumber(totalGeneral,2));
-		}
+
         if (clearRecibo){
             $("#txtReceiptAmountDol").val("0.00");
             $("#txtChangeAmount").val("0.00");
@@ -2479,59 +2631,62 @@
             $("#txtReceiptAmountBankDol").val("0");
         }
 	}
-	
+
 	function fnFillListaProductos(data)
-	{			
-		
+	{
+
 		console.info("fnFillListaProductos success data");
-		var objListaProductos 			= data.objGridView;		
-		
-		
-		removeDataDB("objListaProductosX001");		
-		addDataDBArray("objListaProductosX001",objListaProductos);		
+		var objListaProductos 			= data.objGridView;
+
+
+		removeDataDB("objListaProductosX001");
+		addDataDBArray("objListaProductosX001",objListaProductos);
+		fnObtenerListadoItemSku();
 		fnObtenerListadoItemConcept();
-	
+
 	}
-	
-	
+
+	function fnFillListaItemSku(data)
+	{
+
+		console.info("fnFillListaItemSku success data");
+		removeDataDB("objListaProductosSkuX001");
+		addDataDBArray("objListaProductosSkuX001",data.objListItemSku);
+		cerrarModal('ModalActualizandoCatalogo');
+
+	}
+
 	function fnFillListaItemConcept(data)
-	{		
-		
+	{
+
 		console.info("fnFillListaItemConcept success data");
-		removeDataDB("objListaProductosConceptosX001");		
+		removeDataDB("objListaProductosConceptosX001");
 		addDataDBArray("objListaProductosConceptosX001",data.objGridView);
-		cerrarModal('ModalActualizandoCatalogo'); 
-	
+		cerrarModal('ModalActualizandoCatalogo');
+
 	}
-	
+
 	function fnFillListaCreditLine(data)
-	{		
+	{
 		console.info("fnFillListaCreditLine success data");
-		removeDataDB("objListaCustomerCreditLineX001");		
-		addDataDBArray("objListaCustomerCreditLineX001",data.objListCustomerCreditLine);		
-	
+		removeDataDB("objListaCustomerCreditLineX001");
+		addDataDBArray("objListaCustomerCreditLineX001",data.objListCustomerCreditLine);
+
 	}
-	
-	
+
+
 	function fnCompleteGetCustomerCreditLine(data)
-	{		
+	{
 		objListCustomerCreditLine 	= data.objListCustomerCreditLine || [];
 		objCausalTypeCredit 		= data.objCausalTypeCredit || [];
 		fnRenderLineaCredit(objListCustomerCreditLine,objCausalTypeCredit);
 	}
-	
-	function fnGetPosition(item,data){
-		
-		var i = 0;
-		for(i = 0 ; i < data.length; i++){			
-			if(data[i][2] == item[0][2])
-			return i;							
-		}
-		
-		return i;
+
+	function fnGetPosition(item, data){
+		return data.findIndex(value => value[2] === item[0][2])
 	}
-	
-					
+
+
 	function fnEnviarFactura()
 	{
 		mostarModalPersonalizado('GUARDANDO DATOS DE FACTURA, POR FAVOR ESPERE...');
@@ -2543,8 +2698,8 @@
         }
 
 		validateFormAndSubmit();
-	}		
-	
+	}
+
 	function fnRenderLineaCreditoDiv(){
 		//Si es de credito que la factura no supere la linea de credito
 		var causalSelect 				= $("#txtCausalID").val();
@@ -2568,167 +2723,184 @@
 		else{
 			$("#divLineaCredit").addClass("hidden");
 		}
-	}	
-	
-	
-	//obtener informacion de los productos	
-	function fnObtenerListadoProductos(){		
+	}
+
+
+	//obtener informacion de los productos
+	function fnObtenerListadoProductos(){
 
 		/*TIPO PRECIO 1 -- 154 -- PUBLICO */
 		$.ajax(
-		{									
+		{
 			cache       : false,
 			dataType    : 'json',
-			type        : 'GET',																				
-			url  		: "<?= base_url(); ?>/app_invoice_api/getViewApi/<?= $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING_BACKGROUND/"+encodeURI('{"warehouseID"|"'+ $("#txtWarehouseID").val() +'"{}"listPriceID"|"<?= $objListPrice->listPriceID; ?>"{}"typePriceID"|"'+154+'"}'),		
+			type        : 'GET',
+			url  		: "<?php echo base_url(); ?>/app_invoice_api/getViewApi/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING_BACKGROUND/"+encodeURI('{"warehouseID"|"'+ $("#txtWarehouseID").val() +'"{}"listPriceID"|"<?php echo $objListPrice->listPriceID; ?>"{}"typePriceID"|"'+154+'"}'),
 			success		: fnFillListaProductos,
 			error:function(xhr,data)
-			{	
-				console.info("fnObtenerListadoProductos data error");	
+			{
+				console.info("fnObtenerListadoProductos data error");
 				fnShowNotification("Error 505","error");
 			}
 		});
-		
-		
+
+
 	}
-	
-	
-	
-	function fnObtenerListadoItemConcept(){	
+
+	function fnObtenerListadoItemSku(){
 
 		$.ajax(
-		{									
+		{
+			cache       : false,
+			dataType    : 'json',
+			type        : 'GET',
+			url  		: "<?php echo base_url(); ?>/app_inventory_api/getSkuAllProduct",
+			success		: fnFillListaItemSku,
+			error:function(xhr,data)
+			{
+				console.info("fnObtenerListadoItemSku data error");
+				fnShowNotification("Error 505","error");
+				cerrarModal('ModalActualizandoCatalogo');
+			}
+		});
+
+	}
+
+	function fnObtenerListadoItemConcept(){
+
+		$.ajax(
+		{
 			cache       : false,
 			dataType    : 'json',
 			type        : 'GET',
 			url  		: "<?php echo base_url(); ?>/core_concept_api/getConceptAllProduct",
 			success		: fnFillListaItemConcept,
 			error:function(xhr,data)
-			{	
-				console.info("fnObtenerListadoItemConcept data error");	
+			{
+				console.info("fnObtenerListadoItemConcept data error");
 				fnShowNotification("Error 505","error");
-				cerrarModal('ModalActualizandoCatalogo'); 
+				cerrarModal('ModalActualizandoCatalogo');
 			}
 		});
-		
+
 	}
-	
-	function fnObtenerListadoCustomerCreditLine(){	
+
+	function fnObtenerListadoCustomerCreditLine(){
 
 		$.ajax(
-		{									
+		{
 			cache       : false,
 			dataType    : 'json',
 			type        : 'GET',
 			url  		: "<?php echo base_url(); ?>/app_invoice_api/getLineByCustomerAll",
 			success		: fnFillListaCreditLine,
 			error:function(xhr,data)
-			{	
-				console.info("fnObtenerListadoCustomerCreditLine data error");	
+			{
+				console.info("fnObtenerListadoCustomerCreditLine data error");
 				fnShowNotification("Error 505","error");
 			}
 		});
-		
+
 	}
-	
+
 	function fnValidateSiAplicaPrecioPublico()
 	{
-		
-		var parameter 	= objCompanyParameter_Key_INVOICE_BILLING_APPLY_TYPE_PRICE_ON_DAY_POR_MAYOR;	
+
+		var parameter 	= objCompanyParameter_Key_INVOICE_BILLING_APPLY_TYPE_PRICE_ON_DAY_POR_MAYOR;
 		var parameter 	= parameter.split(",");
 		var parameterI 	= "";
 		var now 		= moment().format("YYYY-MM-DD");
-		
+
 		for(var i = 0 ; i < parameter.length ; i++)
 		{
 			var parameterI = parameter[i].toUpperCase();
 			var dayName	   = moment().format("dddd").toUpperCase();
-			
+
 			if( parameterI == now)
 			{
 				return true;
 			}
-			
+
 			if(parameterI == "0")
 			{
 				return true;
 			}
-			
+
 			if
-			( 
-				parameterI ==  		
+			(
+				parameterI ==
 				(dayName == "MONDAY" ? "LUNES" : dayName )
 			)
 			{
-				return true;				
+				return true;
 			}
-			
+
 			if
-			( 
-				parameterI ==  		
+			(
+				parameterI ==
 				(dayName == "TUESDAY" ? "MARTES" : dayName )
 			)
 			{
-				return true;				
+				return true;
 			}
-			
+
 			if
-			( 
-				parameterI ==  		
+			(
+				parameterI ==
 				(dayName == "THURESDAY" ? "MIERCOLES" : dayName )
 			)
 			{
-				return true;				
+				return true;
 			}
-			
+
 			if
-			( 
-				parameterI ==  		
+			(
+				parameterI ==
 				(dayName == "THURSDAY" ? "JUEVES" : dayName )
 			)
 			{
-				return true;				
+				return true;
 			}
-			
+
 			if
-			( 
-				parameterI ==  		
+			(
+				parameterI ==
 				(dayName == "FRIDAY" ? "VIERNES" : dayName )
 			)
 			{
-				return true;				
+				return true;
 			}
-			
+
 			if
-			( 
-				parameterI ==  		
+			(
+				parameterI ==
 				(dayName == "SATURDAY" ? "SABADO" : dayName )
 			)
 			{
-				return true;				
+				return true;
 			}
-			
+
 			if
-			( 
-				parameterI ==  		
+			(
+				parameterI ==
 				(dayName == "SUNDAY" ? "DOMINGO" : dayName )
 			)
 			{
-				return true;				
+				return true;
 			}
-			
+
 		}
-		
+
 	}
 	function fnActualizarProducto(obj)
 	{
-		
+
 		var index 		= $(".select2.txtItemSelected.select2-offscreen").length;
 		var selectes    = $(".select2.txtItemSelected.select2-offscreen");
 		var rowss      	= 0;
 		for(var i = 0 ; i < index ; i++)
 		{
-			var itemselected = $(selectes[i]).val();			
+			var itemselected = $(selectes[i]).val();
 			if(itemselected == $(obj).val())
 			{
 				break;
@@ -2737,8 +2909,8 @@
 				rowss++;
 			}
 		}
-		
-		
+
+
 		var itemid 		= $(obj).val();
 		var codigo 		= $($(obj).find("option:selected")[0]).data("codigo");
 		var name 		= $($(obj).find("option:selected")[0]).data("name");
@@ -2747,35 +2919,35 @@
 		var unidad 		= $($(obj).find("option:selected")[0]).data("unidadmedida");
 		var description = $($(obj).find("option:selected")[0]).data("description");
 		var barra  		= $($(obj).find("option:selected")[0]).data("barra");
-		
+
 		objTableDetail.fnUpdate( itemid, rowss, 2 );
 		objTableDetail.fnUpdate( codigo, rowss, 3 );
 		objTableDetail.fnUpdate( name, rowss, 4 );
 		objTableDetail.fnUpdate( unidad, rowss, 5 );
 		objTableDetail.fnUpdate( fnFormatNumber(precio,2) , rowss, 7 );
-		fnRecalculateDetail(true,"");
+		fnRecalculateDetail(true,"", rowss);
 		refreschChecked();
-		
+
 	}
-	
+
 	function fnActualizarPrecio()
 	{
-		
+
 		var typePriceID 			= $("#txtTypePriceID").val();
-		var NSSystemDetailInvoice	= objTableDetail.fnGetData();	
+		var NSSystemDetailInvoice	= objTableDetail.fnGetData();
 		for(var i = 0; i < NSSystemDetailInvoice.length; i++)
-		{			
-			var itemID 			= NSSystemDetailInvoice[i][2];			
+		{
+			var itemID 			= NSSystemDetailInvoice[i][2];
 			obtenerDataDBProductoArrayUniByItemID(
 				itemID,
 				{
 					"all":itemID,
 					"index":i,
-					"callback":function(e){ 
-						
-						
+					"callback":function(e){
+
+
 						var filterResult 	= {};
-						
+
 						//precio 1 ---> 154 --> precio publico
 						if(typePriceID == 154){
 							filterResult = e.producto1[0].Precio;
@@ -2788,25 +2960,25 @@
 						if(typePriceID == 156){
 							filterResult = e.producto1[0].Precio;
 						}
-						
+
 						//Actualizar Precio
 						objTableDetail.fnUpdate(fnFormatNumber( filterResult,2) , e.index, 7 );
-						
+
 					}
 				}
 			);
-			
-	
+
+
 		}
 	}
-	
-	
+
+
 	function fnCustomerNewCompleted(){
 		console.info("cliente completado");
 	}
-	
+
 	function fnGetCustomerClient(){
-		$.ajax({									
+		$.ajax({
 			cache       : false,
 			dataType    : 'json',
 			type        : 'POST',
@@ -2815,8 +2987,8 @@
 			success		: function(data){
 				fnRenderLineaCredit(data.objListCustomerCreditLine,data.objCausalTypeCredit);
 			},
-			error:function(xhr,data){	
-				console.info("complete data error");													
+			error:function(xhr,data){
+				console.info("complete data error");
 				fnShowNotification("Error 505","error");
 			},
             complete    : function () {
@@ -2824,69 +2996,69 @@
             }
 		});
 	}
-	
+
 	function fnDeleteCerosIzquierdos(texto){
-		
+
 		var array 						= texto.split("");
 		var newTexto 				 	= "";
 		var encontradoPrimerElemento 	= false;
-		
+
 		for(var i = 0 ; i<array.length;i++){
 			if(array[i] != "0" && encontradoPrimerElemento == false)
 			{
 				newTexto = newTexto + array[i];
 				encontradoPrimerElemento = true;
 			}
-			else{				
+			else{
 				if(encontradoPrimerElemento == true){
 					newTexto = newTexto + array[i];
 				}
 			}
-		}	
-		
+		}
+
 		return newTexto;
 	}
-	
+
 	function fnAddRowSelected()
 	{
-		
+
 		obtenerDataDBProductoArray(
 			"objListaProductosX001",
 			"all",
 			0,
 			"none",
 			{},
-			function(e){    
-				
-				
-				var data		 = {};	
+			function(e){
+
+
+				var data		 = {};
 				var length2		 = objTableDetail.fnGetData().length;
 				var data2		 = objTableDetail.fnGetData();
-				
+
 				var length		 = e.length;
 				var data		 = e;
 				var index		 = 0;
-				
+
 				for(var i = 0 ; i < length; i++ )
-				{		
+				{
 					var objDatItem 			= data[i];
 					var currencyTemp		= objDatItem.currencyID;
 					var currencyID 			= $("#txtCurrencyID").val();
-					
+
 					var warehouseIDTemp		= objDatItem.warehouseID;
 					var warehouseID			= $("#txtWarehouseID").val();
-					
-					var existe 				= jLinq.from(data2).where(function(obj){   return obj[2] == objDatItem.itemID; }).select().length;			
+
+					var existe 				= jLinq.from(data2).where(function(obj){   return obj[2] == objDatItem.itemID; }).select().length;
 					if(existe == 0 && (currencyID == currencyTemp) &&  (warehouseIDTemp == warehouseID) )
 						break;
-					
+
 					index++;
-					
+
 				}
-				
-				
+
+
 				var dataResponse = [];
-				data			= data[index];								
+				data			= data[index];
 				dataResponse[0] = data[0];
 				dataResponse[1] = data[0];
 				dataResponse[2] = data[0];
@@ -2910,56 +3082,56 @@
 				dataResponse[20] = data.Medida;//Unidad de medida
 				dataResponse[21] = data.Cantidad;//Cantidad
 				dataResponse[22] = data.Precio;//Precio
-				dataResponse[23] = data.unitMeasureID;//6:Barra 
+				dataResponse[23] = data.unitMeasureID;//6:Barra
 				dataResponse[24] = data.Descripcion;//7:Descripcion
 				dataResponse[25] = data.Precio2;
-				dataResponse[26] = data.Precio3;		
+				dataResponse[26] = data.Precio3;
 				onCompleteNewItem(dataResponse,true);
 			}
 		);
-		
-		
+
+
 	}
-	
-	
-	
+
+
+
 	function fnCreateTableSearchProductos(codigoBuscar){
-			var autoClose 			= '<?php echo getBehavio($company->type,"app_invoice_billing","autoCloseSelectItem","false"); ?>';			
-			var url_request 		= 
+			var autoClose 			= '<?php echo getBehavio($company->type, "app_invoice_billing", "autoCloseSelectItem", "false"); ?>';
+			var url_request 		=
 					"<?php echo base_url(); ?>/core_view/showviewbynamepaginate"+
 					"/<?php echo $objComponentItem->componentID; ?>"+
 					"/onCompleteNewItemPopPub/SELECCIONAR_ITEM_BILLING_POPUP_INVOICE/"+autoClose+"/"+
 					encodeURI(
 						'{'+
 						'\"warehouseID\"|\"'+$("#txtWarehouseID").val()+'\"'+
-						',\"listPriceID\"|\"<?php echo $objListPrice->listPriceID; ?>\"'+						
+						',\"listPriceID\"|\"<?php echo $objListPrice->listPriceID; ?>\"'+
 						',\"typePriceID\"|\"'+$("#txtTypePriceID").val()+'\"'+
 						',\"currencyID\"|\"'+$("#txtCurrencyID").val()+'\"'+
-						'}' 
-					) + 
+						'}'
+					) +
 					"/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/"+codigoBuscar+"/";
-					
+
 			 // Verificar si la ventana ya está abierta
-			if (objWindowSearchProduct && !objWindowSearchProduct.closed) 
+			if (objWindowSearchProduct && !objWindowSearchProduct.closed)
 			{
 				objWindowSearchProduct.focus();
-			} 
-			else 
-			{
-				objWindowSearchProduct 							= window.open(url_request,"MsgWindow","width=900,height=450");				
-				objWindowSearchProduct.onCompleteNewItemPopPub 	= onCompleteNewItemPopPub; 
 			}
-			
+			else
+			{
+				objWindowSearchProduct 							= window.open(url_request,"MsgWindow","width=900,height=450");
+				objWindowSearchProduct.onCompleteNewItemPopPub 	= onCompleteNewItemPopPub;
+			}
+
 	}
-	
+
 	function fnRenderLineaCredit(listCustomerCreditLine,causalTypeCredit)
 	{
 		objListCustomerCreditLine 	= listCustomerCreditLine;
 		objCausalTypeCredit 		= causalTypeCredit;
-		$("#divTipoFactura").removeClass("<?= getBehavio($company->type,"app_invoice_billing","divTxtCausalIDScript","hidden"); ?>");
+		$("#divTipoFactura").removeClass("<?php echo getBehavio($company->type, "app_invoice_billing", "divTxtCausalIDScript", "hidden"); ?>");
 		$("#txtCustomerCreditLineID").html("");
 		$("#txtCustomerCreditLineID").val("");
-		
+
 		if(objListCustomerCreditLine != null)
 		for(var i = 0; i< objListCustomerCreditLine.length;i++){
 			if(i===0 && varCustomerCrediLineID === 0){
@@ -2973,11 +3145,11 @@
 			else
 				$("#txtCustomerCreditLineID").append("<option  value='"+objListCustomerCreditLine[i].customerCreditLineID+"'>"+ objListCustomerCreditLine[i].accountNumber + " " +objListCustomerCreditLine[i].line  +"</option>");
 		}
-		
+
 		//Habilitar la compra al contado o al credito
 		$("#txtCausalID option").removeAttr("disabled");
-		$("#txtCausalID").val("");		
-		
+		$("#txtCausalID").val("");
+
 		var listArrayCausalCredit = objCausalTypeCredit.value.split(",");
 		$.each( $("#txtCausalID option"),function(index,obj){
 			for(var i=0;i<listArrayCausalCredit.length;i++){
@@ -2998,40 +3170,40 @@
 			$("#txtCausalID").select2();
 			$("#txtPeriodPay").select2();
 		}
-		
-		refreschChecked();	
+
+		refreschChecked();
 		if(varParameterINVOICE_BILLING_SELECTITEM === "true")
 		{
-			fnAddRowSelected(); 
-		}			
+			fnAddRowSelected();
+		}
 		onCompletePantalla();
 	}
-	
+
 	function openDataBaseAndCreate(bInicializar,obtenerRegistroDelServer) {
 		var indexDB 	= window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 		const request 	= indexDB.open('MyDatabasePosMe', 2);
-		
-		request.onsuccess = (e) => 
+
+		request.onsuccess = (e) =>
 		{
-			
+
 			// Se crea la conexion
 			db 				   = request.result;
-			console.info('Database success');		
+			console.info('Database success');
 			if(obtenerRegistroDelServer)
 			{
 				mostrarModal("ModalActualizandoCatalogo");
-				fnObtenerListadoProductos();				
+				fnObtenerListadoProductos();
 			}
-			
-			
+
+
 		};
-		
+
 		request.onupgradeneeded  = (e) => {
 			console.info('Database created');
-			
+
 			const db = request.result;
 			//...
-			
+
 			const objectStoreX001  = db.createObjectStore('objListaProductosX001' , { keyPath : 'id',autoIncrement: true } );
 			objectStoreX001.createIndex("Barra", "Barra", { unique: false });
 			objectStoreX001.createIndex("Cantidad", "Cantidad", { unique: false });
@@ -3040,89 +3212,95 @@
 			objectStoreX001.createIndex("Medida", "Medida", { unique: false });
 			objectStoreX001.createIndex("Precio", "Precio", { unique: false });
 			objectStoreX001.createIndex("cost", "cost", { unique: false });
-			objectStoreX001.createIndex("currencyID", "currencyID", { unique: false });						
+			objectStoreX001.createIndex("currencyID", "currencyID", { unique: false });
 			objectStoreX001.createIndex("warehouseID", "warehouseID", { unique: false });
 			objectStoreX001.createIndex("isInvoice", "isInvoice", { unique: false });
 			objectStoreX001.createIndex("isInvoiceQuantityZero", "isInvoiceQuantityZero", { unique: false });
 			objectStoreX001.createIndex("itemID", "itemID", { unique: false });
 			objectStoreX001.createIndex("iwCost", "iwCost", { unique: false });
 			objectStoreX001.createIndex("iwQuantityMax", "iwQuantityMax", { unique: false });
-			objectStoreX001.createIndex("iwQuantityMin", "iwQuantityMin", { unique: false });			
+			objectStoreX001.createIndex("iwQuantityMin", "iwQuantityMin", { unique: false });
 			objectStoreX001.createIndex("quantity", "quantity", { unique: false });
 			objectStoreX001.createIndex("quantityMax", "quantityMax", { unique: false });
 			objectStoreX001.createIndex("quantityMin", "quantityMin", { unique: false });
 			objectStoreX001.createIndex("unitMeasureID", "unitMeasureID", { unique: false });
 			objectStoreX001.createIndex("Precio2", "Precio2", { unique: false });
 			objectStoreX001.createIndex("Precio3", "Precio3", { unique: false });
-			
-			
-			
+
+			const objectStoreSkuX001  = db.createObjectStore('objListaProductosSkuX001' , { keyPath : 'id',autoIncrement: true } );
+			objectStoreSkuX001.createIndex("itemID", "itemID", { unique: false });
+			objectStoreSkuX001.createIndex("catalogItemID", "catalogItemID", { unique: false });
+			objectStoreSkuX001.createIndex("value", "value", { unique: false });
+			objectStoreSkuX001.createIndex("name", "name", { unique: false });
+			objectStoreSkuX001.createIndex("price", "precio", { unique: false });
+			objectStoreSkuX001.createIndex("predeterminado", "predeterminado", { unique: false });
+
 			const objectStoreConceptX001  = db.createObjectStore('objListaProductosConceptosX001' , { keyPath : 'id',autoIncrement: true } );
 			objectStoreConceptX001.createIndex("companyComponentConceptID", "companyComponentConceptID", { unique: false });
 			objectStoreConceptX001.createIndex("companyID", "companyID", { unique: false });
 			objectStoreConceptX001.createIndex("componentID", "componentID", { unique: false });
 			objectStoreConceptX001.createIndex("componentItemID", "componentItemID", { unique: false });
-			objectStoreConceptX001.createIndex("isActive", "isActive", { unique: false });	
-			objectStoreConceptX001.createIndex("valueIn", "valueIn", { unique: false });	
-			objectStoreConceptX001.createIndex("valueOut", "valueOut", { unique: false });	
-			
-			
-			
+			objectStoreConceptX001.createIndex("isActive", "isActive", { unique: false });
+			objectStoreConceptX001.createIndex("valueIn", "valueIn", { unique: false });
+			objectStoreConceptX001.createIndex("valueOut", "valueOut", { unique: false });
+
+
+
 			const objectStoreCustomerCreditLineX001  = db.createObjectStore('objListaCustomerCreditLineX001' , { keyPath : 'id',autoIncrement: true } );
-			objectStoreCustomerCreditLineX001.createIndex("accountNumber","accountNumber", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("balance","balance", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("branchID","branchID", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("companyID","companyID", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("creditLineID","creditLineID", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("currencyID","currencyID", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("currencyName","currencyName", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("customerCreditLineID","customerCreditLineID", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("dateLastPay","dateLastPay", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("dateOpen","dateOpen", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("entityID","entityID", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("interestPay","interestPay", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("interestYear","interestYear", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("isActive","isActive", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("limitCredit","limitCredit", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("line","line", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("note","note", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("periodPay","periodPay", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("periodPayLabel","periodPayLabel", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("statusID","statusID", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("statusName","statusName", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("term","term", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("totalDefeated","totalDefeated", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("totalPay","totalPay", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("typeAmortization","typeAmortization", { unique: false });		
-			objectStoreCustomerCreditLineX001.createIndex("typeAmortizationLabel","typeAmortizationLabel", { unique: false });		
-				
+			objectStoreCustomerCreditLineX001.createIndex("accountNumber","accountNumber", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("balance","balance", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("branchID","branchID", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("companyID","companyID", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("creditLineID","creditLineID", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("currencyID","currencyID", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("currencyName","currencyName", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("customerCreditLineID","customerCreditLineID", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("dateLastPay","dateLastPay", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("dateOpen","dateOpen", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("entityID","entityID", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("interestPay","interestPay", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("interestYear","interestYear", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("isActive","isActive", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("limitCredit","limitCredit", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("line","line", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("note","note", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("periodPay","periodPay", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("periodPayLabel","periodPayLabel", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("statusID","statusID", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("statusName","statusName", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("term","term", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("totalDefeated","totalDefeated", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("totalPay","totalPay", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("typeAmortization","typeAmortization", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("typeAmortizationLabel","typeAmortizationLabel", { unique: false });
+
 		};
 		//...
 	}
-	
-	
+
+
 	function addDataDBArray(varTable,varDatos){
 		const transaction = db.transaction(varTable, 'readwrite');
-		
-		
-		
+
+
+
 		const objectStore = transaction.objectStore(varTable);
-		
-		// Se agrega un nuevo estudiante		
+
+		// Se agrega un nuevo estudiante
 		for ( var intx = 0 ; intx < varDatos.length ; intx++)
 		{
 		objectStore.add(varDatos[intx]);
         }
-		
+
 		transaction.oncomplete = function(event) {
 			//...
 		};
-		
+
 		transaction.onerror = function(event) {
 		  //...
 		};
-			
-		//request.onsuccess = ()=> {			
+
+		//request.onsuccess = ()=> {
 		//	console.log('success');
 		//}
 		//
@@ -3130,7 +3308,7 @@
 		//	console.log('error');
 		//}
 	}
-	
+
 	function obtenerDataDBProductoArrayUniByItemID(varItemID,varFunctionI)
 	{
 		obtenerDataDBProductoArray(
@@ -3139,8 +3317,8 @@
 			varItemID,
 			"producto1",
 			varFunctionI,
-			function(e,u){    
-				
+			function(e,u){
+
 				var valuex=0;
 				try
 				{
@@ -3151,8 +3329,8 @@
 					valuex = 0;
 				}
 				e.itemID = valuex;
-				e.callback(e);	
-				     
+				e.callback(e);
+
 			}
 		)
 	}
@@ -3190,34 +3368,34 @@
             }
         }
     }
-	
-	
+
+
 	function addDataDB(varTable,varDatos){
-		const transaction 		= db.transaction(varTable, 'readwrite');		
+		const transaction 		= db.transaction(varTable, 'readwrite');
 		transaction.oncomplete 	= function(event) {
 			//...
 		};
-		
+
 		transaction.onerror 	= function(event) {
 		  //...
 		};
-		
+
 		const objectStore 	= transaction.objectStore(varTable);
-		
+
 		// Se agrega un nuevo estudiante
 		const request 		= objectStore.add({"name":varDatos});
-		
+
 		request.onsuccess 	= ()=> {
 			// request.result contiene el key del objeto agregado
 			console.log('success');
 		}
-		
+
 		request.onerror = (err)=> {
 			console.log('error');
 		}
 	}
-	
-	
+
+
 	function removeDataDB(varTable){
 		const request 		= db.transaction(varTable, 'readwrite')
 							  .objectStore(varTable)
@@ -3242,7 +3420,7 @@
 		objTableDetail.fnUpdate(serie, selectedFilaInfoProducto, 20, false);
 		objTableDetail.fnUpdate(referencia, selectedFilaInfoProducto, 21, false);
 		refreschChecked();
-        fnRecalculateDetail(true,"txtPrice");
+        fnRecalculateDetail(true,"txtPrice",selectedFilaInfoProducto);
         cerrarModal('ModalInfoProducto');
     }
 
@@ -3250,22 +3428,22 @@
 	{
 		cerrarModal('ModalBackToList');
 		mostarModalPersonalizado('Regresando a la lista principal...')
-		window.location.href = '<?php echo base_url(); ?>/app_invoice_billing/index'; 	
+		window.location.href = '<?php echo base_url(); ?>/app_invoice_billing/index';
 	}
-	
+
 	function fnAceptarModalDeleteInvoice(){
 		cerrarModal('ModalDeleteInvoice');
 		if(objTransactionMaster && objTransactionMaster.transactionMasterID > 0){
 			mostarModalPersonalizado('Anulando factura, por favor espere...');
-			$.ajax({									
+			$.ajax({
 				cache       : false,
 				dataType    : 'json',
 				type        : 'POST',
-				url  		: "<?php echo base_url(); ?>/app_invoice_billing/delete",					
+				url  		: "<?php echo base_url(); ?>/app_invoice_billing/delete",
 				data 		: {
-					companyID 			: objTransactionMaster.companyID, 
+					companyID 			: objTransactionMaster.companyID,
 					transactionID 		: objTransactionMaster.transactionID,
-					transactionMasterID : objTransactionMaster.transactionMasterID  
+					transactionMasterID : objTransactionMaster.transactionMasterID
 				},
 				success:function(data){
 					console.info("complete delete " + data.error);
@@ -3283,7 +3461,7 @@
 						fnClearForm();
 					}
 				},
-				error:function(xhr,data){	
+				error:function(xhr,data){
 					console.info("complete delete error");
 					fnShowNotification("Error 505","error");
 				},
@@ -3298,17 +3476,17 @@
 			});
 		}
 	}
-	
+
 	function onCompleteNewItemPopPub (ee,uu,zz){
 
         var data		 = {};
         var dataResponse = [];
         data			 = ee;
-		
+
         if(data.length < 0) return;
         for(let i=0; i < data.length; i++)
 		{
-			//si no hay ningun string input o select 
+			//si no hay ningun string input o select
 			//dejar por defecto cantidad igual a 1
             let element 				= data[i];
             const containsInputOrSelect = element.some(item => {
@@ -3317,14 +3495,14 @@
                 }
                 return false;
             });
-			
+
             if (containsInputOrSelect === false)
 			{
                 element[8]   = 1 ;//Cantidad
             }
-			
-			
-			var mostrarCodigoBarra = '<?= getBehavio($company->type, 'app_invoice_billing','javaScriptShowCodeBarra','false')?>';			
+
+
+			var mostrarCodigoBarra = '<?php echo getBehavio($company->type, 'app_invoice_billing', 'javaScriptShowCodeBarra', 'false') ?>';
             dataResponse[0]  = element[0];
             dataResponse[1]  = element[0];
             dataResponse[2]  = element[0];
@@ -3342,17 +3520,17 @@
             dataResponse[14] = element[0];
             dataResponse[15] = element[0];
             dataResponse[16] = element[0];
-			
-			
+
+
 			if(mostrarCodigoBarra == "false")
 			{
 				dataResponse[17] = element[4];//Codigo
 			}
 			else
-			{				
+			{
 				dataResponse[17] = element[6] + " " + element[4];//Barra + Codigo
 			}
-            
+
 			dataResponse[18] = element[5];//Nombre
             dataResponse[19] = element[0];
             dataResponse[20] = element[7];//Unidad de medida
@@ -3365,23 +3543,23 @@
 
             onCompleteNewItem(dataResponse, true);
         }
-			
+
 	}
-	
-		 
-	
-	
-	
-		
+
+
+
+
+
+
 
 	$(document).ready(function()
 	{
-		openDataBaseAndCreate(true,false);	
+		openDataBaseAndCreate(true,false);
 		if(transactionMasterID !== 0)
 		{
 			loadEdicion = true;
 		}
-		
+
 		$('#divLoandingCustom').css('display','none');
 		$('#btnLinkPayment').css('display','none');
 		$('#rowBotoneraFacturaFila5').css('display','none');
@@ -3419,24 +3597,24 @@
 
 		var objectParameterButtomsBack		= {};
 		$('#txtDate').datepicker({format:"yyyy-mm-dd"});
-		$('#txtDate').val(moment().format("YYYY-MM-DD"));	
+		$('#txtDate').val(moment().format("YYYY-MM-DD"));
 		$("#txtDate").datepicker("update");
 		$('#txtNextVisit').datepicker({format:"yyyy-mm-dd"});
-		 
-		
-		$('#txtDateFirst').datepicker({format:"yyyy-mm-dd"});						 
-		$('#txtDateFirst').val(moment().add('days', 0).format("YYYY-MM-DD"));			 
+
+
+		$('#txtDateFirst').datepicker({format:"yyyy-mm-dd"});
+		$('#txtDateFirst').val(moment().add('days', 0).format("YYYY-MM-DD"));
 		$("#txtDateFirst").datepicker("update");
-	
-		 
+
+
 		 heigthTop							= 300;
 		 //Incializar Focos en el codigo de barra
 		if(varParameterScanerProducto != "false" && varUseMobile == "0" )
 		{
-			$("#txtScanerCodigo").focus();			
+			$("#txtScanerCodigo").focus();
 		}
-		
-		
+
+
 		if(varUseMobile == "0")
 		{
 			// Añade una nueva entrada en el historial para evitar que el usuario regrese
@@ -3459,29 +3637,29 @@
 			//});
 
 		}
-		
-		
-		
+
+
+
 		if(varParameterScrollDelModalDeSeleccionProducto == "true"){
 			$("#modal_body_popup_productos").css("overflow","auto");
 			$("#modal_body_popup_productos").css("height",varParameterAlturaDelModalDeSeleccionProducto);
 		}
-		
-		
+
+
 		//Guardar y regresar a la lista, de una sola ves si
-		//Si es auto aplicar y es regresar a la lista y no es impresion directa 
-		//Y no hay impresion por cada factura			
+		//Si es auto aplicar y es regresar a la lista y no es impresion directa
+		//Y no hay impresion por cada factura
 		if (
-			
+
 			(
-				(varParameterInvoiceBillingPrinterDirect == "false"   && varAutoAPlicar == "true" ) || 
-				(varParameterInvoiceBillingPrinterDirect == "false"   && varParameterRegresarAListaDespuesDeGuardar == "true" ) 
-			) && 
-			objCompanyParameter_Key_INVOICE_PRINT_BY_INVOICE == "false" 
-			
+				(varParameterInvoiceBillingPrinterDirect == "false"   && varAutoAPlicar == "true" ) ||
+				(varParameterInvoiceBillingPrinterDirect == "false"   && varParameterRegresarAListaDespuesDeGuardar == "true" )
+			) &&
+			objCompanyParameter_Key_INVOICE_PRINT_BY_INVOICE == "false"
+
 		)
 		{
-			$( "#form-new-invoice" ).submit(function(e){						  
+			$( "#form-new-invoice" ).submit(function(e){
 				e.preventDefault(e);
 				var formData = new FormData(this);
 				//Mandar la factura
@@ -3493,7 +3671,7 @@
 					data: 		formData,
 					cache: 		false,
 					processData:false,
-					contentType:false,				  
+					contentType:false,
 					success: 	function (data) {
 						console.log("success form data")
 					},
@@ -3501,8 +3679,8 @@
 						console.log("error form data")
 					}
 				});
-				
-				
+
+
 				//Mandar abrir la caja de efectivo
 				$.ajax({
 					async: 		true,
@@ -3511,7 +3689,7 @@
 					data: 		formData,
 					cache: 		false,
 					processData:false,
-					contentType:false,				  
+					contentType:false,
 					success: 	function (data) {
 						console.log("success form data")
 					},
@@ -3519,28 +3697,28 @@
 						console.log("error form data")
 					}
 				});
-				
+
 				if(varParameterRegresarAListaDespuesDeGuardar == "true"){
 					window.location	= "<?php echo base_url(); ?>/app_invoice_billing/index";
 				}
 				if(varParameterRegresarAListaDespuesDeGuardar != "true"){
 					window.location	= "<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>";
-				}						  
+				}
 			});
 		}
-		
-	
+
+
 		objTableDetail = $("#tb_transaction_master_detail").dataTable({
 			"bPaginate"		: false,
 			"bFilter"		: false,
 			"bSort"			: false,
-			"bInfo"			: false,				
+			"bInfo"			: false,
 			"oLanguage"		: {
 				"sEmptyTable": "", // No mostrar texto cuando está vacía
 				"sZeroRecords": "",
 			},
 			"bAutoWidth"	: false,
-			"aoColumnDefs": [ 
+			"aoColumnDefs": [
 						{
 							"aTargets"		: [ 0 ],//checked
 							"sWidth"		: "50px",
@@ -3579,76 +3757,79 @@
 							"aTargets"		: [ 3 ],//itemNumber
 							"sWidth"		: "250px",
 							"mRender"		: function ( data, type, full ) {
-								return '<input type="text"  class="col-lg-12 <?= $useMobile == "1" ? 'hidden' : '' ?>" style="text-align:left; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" value="'+data+'" readonly="true" />';
+								return '<input type="text"  class="col-lg-12								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                            								                                             <?php echo $useMobile == "1" ? 'hidden' : '' ?>" style="text-align:left;<?php echo $useMobile == "1" ? 'width: 100%;' : '' ?>" value="'+data+'" readonly="true" />';
 							}
 						},
 						{
 							"aTargets"		: [ columnasTableDetail.descripcion ],//descripcion
 							"sWidth"		: "250px",
-							"mRender"		: function ( data, type, full ) 
+							"mRender"		: function ( data, type, full )
 							{
-							
-								
+
+
 								var classHiddenTex 		= "";
 								var classHiddenSelect 	= "";
-								if(varParameterINVOICE_BILLING_SELECTITEM == "true")									
+								if(varParameterINVOICE_BILLING_SELECTITEM == "true")
 								{
 									classHiddenTex = "hidden";
 									classHiddenSelect 	= "";
 								}
-								else 
+								else
 								{
 									classHiddenTex = "";
 									classHiddenSelect 	= "hidden";
 								}
 								let strFiled = "";
 								if (varUseMobile === "1"){
-									strFiled        += '<label class="col-lg-12" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>">Descripción: '+full[4]+'</label>';
+									strFiled        += '<label class="col-lg-12" style="text-align:right;									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                      <?php echo $useMobile == "1" ? 'width: 100%;' : '' ?>">Descripción: '+full[4]+'</label>';
 									strFiled 		+= '<input type="hidden" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"  value="'+full[4]+'" '+NameStatus+' />';
 								}else{
-									strFiled 		+= '<input type="text" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"  class="col-lg-12 '+classHiddenTex+'" style="text-align:left; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" value="'+full[4]+'" '+NameStatus+' />';
+									strFiled 		+= '<input type="text" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"  class="col-lg-12 '+classHiddenTex+'" style="text-align:left;									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                                <?php echo $useMobile == "1" ? 'width: 100%;' : '' ?>" value="'+full[4]+'" '+NameStatus+' />';
 								}
-								let strFiledSelecte = "<select  name='txtItemSelected' class='<?php echo ($useMobile == "1" ? "" : "select2"); ?> txtItemSelected "+classHiddenSelect+" ' >";
-								strFiledSelecte		= strFiledSelecte+"<option value='"+full[2]+"' selected data-itemid='"+full[2]+"' data-codigo='"+full[3]+"' data-name='"+full[4].replace("'","").replace("'","") +"' data-unidadmedida='"+full[5]+"' data-cantidad='"+full[6]+"' data-precio='"+full[7]+"' data-barra='"+full[3]+"'  data-description='"+full[4].replace("'","").replace("'","") + "'    >"+ full[4].replace("'","").replace("'","")  +"</option>";									
+								let strFiledSelecte = "<select  name='txtItemSelected' class='<?php echo($useMobile == "1" ? "" : "select2"); ?> txtItemSelected "+classHiddenSelect+" ' >";
+								strFiledSelecte		= strFiledSelecte+"<option value='"+full[2]+"' selected data-itemid='"+full[2]+"' data-codigo='"+full[3]+"' data-name='"+full[4].replace("'","").replace("'","") +"' data-unidadmedida='"+full[5]+"' data-cantidad='"+full[6]+"' data-precio='"+full[7]+"' data-barra='"+full[3]+"'  data-description='"+full[4].replace("'","").replace("'","") + "'    >"+ full[4].replace("'","").replace("'","")  +"</option>";
 								strFiledSelecte		= strFiledSelecte+"</select>";
-								
+
 								strFiledSelecte 	=  strFiled + strFiledSelecte ;
 								return strFiledSelecte;
-								
-								
+
+
 							}
 						},
 						{
 							"aTargets"		: [ 5 ],//Sku
 							"sWidth"		: "250px",
+							"sClass": "td-sku",
 							"mRender"		: function ( data, type, full ) {
-									
-									var sel 					= '';
-									var espacio					=  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";								
-									sel 						= '<select name="txtSku[]" id="txtSku'+full[2]+'" class="txtSku col-lg-12 skuStyleNormal <?= $useMobile == "1" ? 'hidden' : '' ?>" style="<?= $useMobile == "1" ? 'width: 100%;' : '' ?>" >';
-									
+
+									var sel = '';
+
+									sel     = '<label data-catalog-id="' + full[5] + '" class="label-sku col-lg-12 skuStyleNormal <?php echo $useMobile == "1" ? 'hidden' : '' ?>" style="<?php echo $useMobile == "1" ? 'width: 100%;' : '' ?>" >';
+
 									if(varUseMobile == "1")
-										espacio = "";		
-									
-									
-									sel = sel + '<option value="'+full[5]+'" data-skuv="1" data-skupriceunitary="'+full[7]+'"   selected style="font-size:200%" data-description="'+full[13]+'" >'+full[13]+espacio+'</option>';
-									sel = sel + '</select>';																			
+										espacio = "";
+
+									//sel = sel + '<option value="'+full[5]+'" data-skuv="1" data-skupriceunitary="'+full[7]+'"   selected style="font-size:200%" data-description="'+full[13]+'" >'+full[13]+espacio+'</option>';
+									sel = sel + full[13];
+									sel = sel + '</label>';
+									sel = sel + '<input type="hidden" class="txtSku" name="txtSku[]" id="txtSku'+full[2]+'" value="' + full[13] + '" />';
 									return sel;
-										
+
 							}
 						},
 						{
-							"aTargets"		: [ 6 ],//Cantidad
+							"aTargets"		: [ columnasTableDetail.cantidad ],//Cantidad
 							"sWidth"		: objParameterINVOICE_SHOW_FIELD_PESO == "true" ? "150px" : "250px",
 							"mRender"		: function ( data, type, full ) {
+								let str = "";
 								if (varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
-									str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" readonly />';
+									str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right; <?php echo $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" readonly />';
 								}else{
-									str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" />';
+									str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right; <?php echo $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" />';
 								}
 								if (varUseMobile == "1")
 								str = str + " <span class='badge badge-inverse' >Cantidad</span>";
-						
+
 								return str;
 							}
 						},
@@ -3656,9 +3837,8 @@
 							"aTargets"		: [ columnasTableDetail.precio ],//Precio
 							"sWidth"		: "250px",
 							"mRender"		: function ( data, type, full ) {
-								var str =  '<input type="text" class="col-lg-12 txtPrice txt-numeric"   id="txtPriceRow'+full[2]+'"   '+PriceStatus+' value="'+data+'" name="txtPrice[]" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" />';
-								if (varUseMobile == "1")
-								str = str + " <span class='badge badge-inverse' >Precio</span>";
+								let str =  '<input type="text" class="col-lg-12 txtPrice txt-numeric" id="txtPriceRow'+full[2]+'" '+PriceStatus+' value="'+data+'" name="txtPrice[]" style="text-align:right; <?php echo $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" />';
+								if (varUseMobile == "1") str = str + " <span class='badge badge-inverse' >Precio</span>";
 								return str;
 							}
 						},
@@ -3670,7 +3850,7 @@
 								if (varUseMobile === "1"){
 									str = '<input type="hidden" name="txtSubTotal[]" value="'+data+'" />';
 								}else{
-									str = '<input type="text" class="col-lg-12 txtSubTotal" readonly value="'+data+'" name="txtSubTotal[]" style="text-align:right; <?= $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" />';
+									str = '<input type="text" class="col-lg-12 txtSubTotal" readonly value="'+data+'" name="txtSubTotal[]" style="text-align:right;	<?php echo $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" />';
 								}
 
 								return str;
@@ -3686,12 +3866,12 @@
 							}
 						},
 						{
-							"aTargets"		: [ 10 ],//skuQuantityBySku
+							"aTargets"		: [ columnasTableDetail.skuQuantityBySku ],//skuQuantityBySku
 							"bVisible"		: true,
 							"sClass"		: "hidden",
 							"bSearchable"	: false,
 							"mRender"		: function ( data, type, full ) {
-								return '<input type="text" class="col-lg-12 skuQuantityBySku" value="'+data+'" name="skuQuantityBySku[]" style="text-align:right" />';
+								return '<input type="text" class="col-lg-12 skuQuantityBySku" value="'+ data +'" name="skuQuantityBySku[]" style="text-align:right" />';
 							}
 						},
 						{
@@ -3704,36 +3884,36 @@
 							}
 						},
 						{
-							"aTargets"		: [ 12 ],//PlusDimus	
-							"sWidth"		: "250px",							
-							"mRender"		: function ( data, type, full ) {	
-								
-								
-											
+							"aTargets"		: [ 12 ],//PlusDimus
+							"sWidth"		: "250px",
+							"mRender"		: function ( data, type, full ) {
+
+
+
 									//publico
 									var objProductoPrecio1 	= full[7];
 									//por mayor
 									var objProductoPrecio2 	= full[14];
 									//credito
 									var objProductoPrecio3 	= full[15];
-									
-									
+
+
 									//publico
-									objProductoPrecio1 = fnFormatFloat(objProductoPrecio1);
+									objProductoPrecio1 = fnFormatNumber(objProductoPrecio1);
 									//por mayor
-									objProductoPrecio2 = fnFormatFloat(objProductoPrecio2);
+									objProductoPrecio2 = fnFormatNumber(objProductoPrecio2);
 									//credito
-									objProductoPrecio3 = fnFormatFloat(objProductoPrecio3);
-									
+									objProductoPrecio3 = fnFormatNumber(objProductoPrecio3);
+
 									var styleButtom = "";
 									if(varUseMobile == "1")
 									styleButtom = "style='text-align:right'";
-								
+
 									var str = "<div "+styleButtom+" >";
-									
+
 									if(varParameterINVOICE_BILLING_SELECTITEM == "true")
 									{
-										str    	= str + '' + 
+										str    	= str + '' +
 										'<button type="button" class="btn btn-warning btnAddSelectedItem"><span class="icon16 i-archive"></span> </button>';
 									}
 									var ocultarBoton="";
@@ -3743,37 +3923,32 @@
 
 									str    	= str + '' +
 									'<button type="button" class="btn btn-primary btnMenus '+ ocultarBoton +'"><span class="icon16 i-minus"></span> </button>';
-									
-									str    	= str + '' + 
+
+									str    	= str + '' +
 									'<button type="button" class="btn btn-primary btnPlus"><span class="icon16 i-plus"></span> </button>';
-									
-									
-									
-									ocultarBoton="<?= getBehavio($company->type, 'app_invoice_billing','divBtnPrecios','')?>";
+
+
+
+									ocultarBoton="<?php echo getBehavio($company->type, 'app_invoice_billing', 'divBtnPrecios', '') ?>";
 									str     = str+'<button type="button" class="btn btn-success btnInfoProducto '+ocultarBoton+' " data-precio1="'+objProductoPrecio1+'" data-precio2="'+objProductoPrecio2+'" data-precio3="'+objProductoPrecio3+'"><i class="icon16 i-info"></i></button>';
 									str		= str+'</div>';
-									
+
 									return str;
-											
-										
-									
-								
+
+
+
+
 							}
 						},
 						{
-							"aTargets"		: [ 13 ],//skuFormatoDescription
+							"aTargets"		: [ columnasTableDetail.skuFormatoDescription ],//skuFormatoDescription
 							"bVisible"		: true,
 							"sClass"		: "hidden",
 							"bSearchable"	: false,
 							"mRender"		: function ( data, type, full ) {
-								
-								return '<input type="text" class="col-lg-12 skuFormatoDescription" value="'+data+'" name="skuFormatoDescription[]" style="text-align:right" />';
+
+								return '<input type="text" class="col-lg-12 skuFormatoDescription" value="'+full[13]+'" name="skuFormatoDescription[]" style="text-align:right" />';
 							}
-							//,
-							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
-							//{
-							//	  $(td).css("display","block");
-							//}
 						},
 						{
 							"aTargets"		: [ columnasTableDetail.precio2 ],//Precio2
@@ -3784,7 +3959,7 @@
 								return '<input type="hidden" value="'+data+'" name="txtItemPrecio2[]" />';
 							}
 							//,
-							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col)
 							//{
 							//	  $(td).css("display","block");
 							//}
@@ -3798,7 +3973,7 @@
 								return '<input type="hidden" value="'+data+'" name="txtItemPrecio3[]" />';
 							}
 							//,
-							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col) 
+							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col)
 							//{
 							//	  $(td).css("display","block");
 							//}
@@ -3810,7 +3985,7 @@
 							"bSearchable"	: false,
 							"mRender"		: function ( data, type, full ) {
 								return '<input type="hidden" value="'+data+'" name="txtTransactionDetailNameDescription[]" />';
-							}								
+							}
 						},
 						{
 							"aTargets"		: [ 17 ],//TAX_SERVICES
@@ -3866,35 +4041,53 @@
 								return '<input type="hidden" value="'+data+'" name="txtItemPrecio1[]" />';
 							}
 						},
+						{
+							"aTargets"		: [ columnasTableDetail.valueSku ],//CATALOG ITEM ID DEL SKU
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="hidden" value="'+data+'" name="txtCatalogItemIDSku[]" />';
+							}
+						},
+						{
+							"aTargets"		: [ columnasTableDetail.ratioSku ],//RATIO DEL SKU
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="hidden" value="'+data+'" name="txtRatioSku[]" />';
+							}
+						},
 
-			]							
+			]
 		});
-					
-		//Renderizar combobox de las lineas de credito			
-		fnRenderLineaCredit(objListCustomerCreditLine,objCausalTypeCredit);	
+
+		//Renderizar combobox de las lineas de credito
+		fnRenderLineaCredit(objListCustomerCreditLine,objCausalTypeCredit);
 
 		//Mandar a imprimr la factura
 		//Por cada factura nueva
 		//Si que la impresiona sea directa
 		if(
-			varParameterInvoiceBillingPrinterDirect == 'true' && 
-			varParameterImprimirPorCadaFactura == "true" && 
-			varParameterInvoiceBillingPrinterDataLocal != "" 
+			varParameterInvoiceBillingPrinterDirect == 'true' &&
+			varParameterImprimirPorCadaFactura == "true" &&
+			varParameterInvoiceBillingPrinterDataLocal != ""
 		)
 		{
 			mostrarModal("ModalPrinterDocumentDialogCustom");
 			$(".modal-backdrop.fade.in").removeClass("modal-backdrop");
 		}
-		
-		
+
+
 		//Mandar a imprimr la factura
 		//Por cada factura
 		//Con el cuadro de dialogo
-		//Con factura en el server 
+		//Con factura en el server
 		if(
-			varParameterInvoiceBillingPrinterDirect == 'false' && 
-			varParameterImprimirPorCadaFactura == "true"  && 
-			varTransactionMasterIDToPrinter != "" 
+			varParameterInvoiceBillingPrinterDirect == 'false' &&
+			varParameterImprimirPorCadaFactura == "true"  &&
+			varTransactionMasterIDToPrinter != ""
 		)
 		{
 			mostrarModal("ModalOpcionesImpresion");
@@ -3933,27 +4126,27 @@
         {
             fnSetCheckBoxValue($('#txtCheckReportSinRiesgoValue'),false);
         }
-		
-		
+
+
 		if(transactionMasterID !== 0){
 			loadEdicion 	= true;
-			let url 		= varBaseUrl + '/app_invoice_billing/edit/' + <?= $companyID ?> + '/' + transactionID + '/' + transactionMasterID + '/' + $("#txtCodigoMesero").val();
+			let url 		= varBaseUrl + '/app_invoice_billing/edit/' +			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                              <?php echo $companyID ?> + '/' + transactionID + '/' + transactionMasterID + '/' + $("#txtCodigoMesero").val();
 			const resultado = $.ajax({
 				url: url
 			});
-			
+
 			resultado.then(function(response) {
 				fnClearForm();
 				fnUpdateInvoiceView(response.data);
 			});
 		}
-		else 
+		else
 		{
 			cerrarModal("ModalCargandoDatos");
-		}		
+		}
 	});
-	
-	
+
+
 
 </script>
 

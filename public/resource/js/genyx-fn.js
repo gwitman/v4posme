@@ -211,7 +211,7 @@ function fnFormatFloat(number) {
   );
   return flo;
 }
-function fnFormatNumber(number, decimal) {
+function fnFormatNumber(number, decimal=2) {
   //Validar Decimales
   if (parseFloat(decimal) == NaN) decimal = 0;
 
