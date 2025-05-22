@@ -2250,6 +2250,10 @@
 			monto = 0;
 		}
 
+		if(monto == 0)
+			return;
+		
+		
 		if(listRow.length > 0)
 		{
 			for(let i=0; i<listRow.length; i++)
