@@ -860,7 +860,7 @@
 									${txtDetailSkuPrecio}
 								</td>
 								<td>
-									<input type="checkbox" class="sku-default" id="sku-default-${txtDetailSkuID}" ${txtDetailSkuDefault ? "checked=checked" : ""} />
+									<input type="checkbox" class="sku-default" id="sku-default-${txtDetailSkuID}" value="${txtDetailSkuDefault}" ${txtDetailSkuDefault ? "checked=checked" : ""} />
 								</td>                
 							</tr>
 						</script>
@@ -906,8 +906,8 @@
 														<input type="hidden" class="txtDetailSkuItemID" name="txtDetailSkuItemID[]" value="0"></input>
 														<input type="hidden" class="txtDetailSkuCatalogItemID" name="txtDetailSkuCatalogItemID[]" value="<?php echo $ws->catalogItemID; ?>"></input>
 														<input type="hidden" class="txtDetailSkuValue" name="txtDetailSkuValue[]" value="1"></input>
-														<input type="hidden" class="txtDetailSkuPrecio" name="txtDetailSkuPrecio[]" value=""></input>
-														<input type="hidden" class="txtDetailSkuDefault" name="txtDetailSkuDefault[]" value=""></input>
+														<input type="hidden" class="txtDetailSkuPrecio" name="txtDetailSkuPrecio[]" value="0"></input>
+														<input type="hidden" class="txtDetailSkuDefault" name="txtDetailSkuDefault[]" value="1"></input>
 														<?php echo $ws->display; ?>
 													</td>
 													<td>

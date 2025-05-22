@@ -169,6 +169,7 @@
 					$(this).prop('checked', false).val('0');
 					$(this).closest('tr').find('.txtDetailSkuDefault').val('0');
 					$(this).closest('tr').find('.txtTmpSkuDefault').val('0');
+					
 					// Si hay clases visuales
 					$(this).parent().removeClass('checked row-selected');
 				});
