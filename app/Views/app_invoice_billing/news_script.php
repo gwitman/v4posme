@@ -848,7 +848,8 @@
 	});
 
 	$(document).on("click","#btnRefreshDataCatalogo",function(){
-		openDataBaseAndCreate(false,true);
+		var obtenerRegistrosDelServer = true;
+		openDataBaseAndCreate(obtenerRegistrosDelServer);
 	});
 
 
@@ -3257,7 +3258,7 @@
 		onCompletePantalla();
 	}
 
-	function openDataBaseAndCreate(bInicializar,obtenerRegistroDelServer) {
+	function openDataBaseAndCreate(obtenerRegistroDelServer) {
 		var indexDB 	= window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 		const request 	= indexDB.open('MyDatabasePosMe', 2);
 
@@ -3632,7 +3633,8 @@
 
 	$(document).ready(function()
 	{
-		openDataBaseAndCreate(true,false);
+		var obtenerRegistrosDelServer = false;
+		openDataBaseAndCreate(obtenerRegistrosDelServer);
 		if(transactionMasterID !== 0)
 		{
 			loadEdicion = true;
