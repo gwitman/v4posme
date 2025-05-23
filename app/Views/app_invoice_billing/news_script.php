@@ -100,10 +100,13 @@
 		descripcion 			: 4,
 		cantidad				: 6,
 		precio					: 7,
+		total					: 8,
+		iva						: 9,
 		skuQuantityBySku 		: 10,
 		skuFormatoDescription 	: 13,
         precio2 				: 14,
         precio3 				: 15,
+		taxServices				: 17,
 		precio1 				: 22,
 		valueSku				: 23,
 		ratioSku				: 24,
@@ -169,12 +172,19 @@
         var listRow = objTableDetail.fnGetData();
         var length 	= listRow.length;
 
+		
         var i 		= 0;
         while (i < length )
         {
             fnGetConcept(listRow[i][2],"ALL");
             i++;
         }
+		
+		mostarModalPersonalizado('Calculando conceptos');
+		setTimeout(() => {
+		  cerrarModal('ModalCargandoDatos');
+		}, (length * 1000) * 0.2 );
+		
 
     });
 
@@ -336,12 +346,7 @@
 		objTableDetail.fnUpdate(quantity, aPos, columnasTableDetail.cantidad);
 		fnRecalculateDetail(true,"", aPos);
 	});
-	$(document).on("click",".btnPrecioRecomendado",function(){
-		var precioRecomendado 	= $(this).data("precio");
-		let trSelected 			=  $(this).parent().parent().parent();
-		$(this).parent().parent().parent().parent().parent().parent().find(".txtPrice").val(precioRecomendado);
-		fnRecalculateDetail(true,"txtPrice");
-	});
+	
 	$(document).on("focus",".txt-numeric",function(){
 		if ( fnFormatNumber( $(this).val()  ) == 0)
 		{
@@ -866,7 +871,7 @@
 				}
 				i++;
 			}
-			fnRecalculateDetail(true,"");
+			fnRecalculateDetail(true,"sumarizar");
 	});
 
 	//Ir a archivos
@@ -953,7 +958,7 @@
 							objTableDetail.fnUpdate( nombreSeleccionado, aPos, columnasTableDetail.skuFormatoDescription );
 							objTableDetail.fnUpdate( precio, aPos, columnasTableDetail.precio );
 							$(fila).find('.txtSku').val(nombreSeleccionado);
-							fnRecalculateDetail(true, "sku", aPos);
+							fnRecalculateDetail(true, "", aPos);
 							// Restaurar el label con el nombre seleccionado
 							label.text(nombreSeleccionado).show();
 							$(this).remove();
@@ -1001,7 +1006,7 @@
 			}
 			if(colIndex === columnasTableDetail.precio){
 				objTableDetail.fnUpdate(newValue, rowIndex, columnasTableDetail.precio, true);
-				fnRecalculateDetail(true,"txtPrice", rowIndex);
+				fnRecalculateDetail(true,"", rowIndex);
 			}
 		}
 	});
@@ -1092,7 +1097,15 @@
 		 if (!expresion.test(valor)) {
 			$(this).val(valor.slice(0, -1));
 		 }
+		 
+		 
+    });
+	$('#txtPorcentajeDescuento').on('blur', function() {	
+		 
+		 mostarModalPersonalizado('Calculando conceptos');
 		 fnRecalculateDetail(true,"");
+		 cerrarModal('ModalCargandoDatos');
+		 
     });
 
 	//Pago
@@ -1148,6 +1161,7 @@
 
 	function fnCalculateAmountPay()
 	{
+		
         let resultTotal     = 0.0;
         let currencyId      = $("#txtCurrencyID").val();
         let ingresoCordoba 	= fnFormatNumber($("#txtReceiptAmount").val());
@@ -1161,10 +1175,46 @@
         let total 		    = fnFormatNumber($("#txtTotal").val());
         if( currencyId === "1" /*Cordoba*/ )
 		{
-            resultTotal =  (ingresoCordoba +  bancoCordoba + puntoCordoba + tarjetaCordoba + ( bancoDolares / tipoCambio ) + ( tarejtaDolares / tipoCambio )   + (ingresoDol / tipoCambio)) - total;
+            resultTotal =  
+				(
+					parseFloat(ingresoCordoba) +  
+					parseFloat(bancoCordoba) + 
+					parseFloat(puntoCordoba) + 
+					parseFloat(tarjetaCordoba) + 
+					( 
+						parseFloat(bancoDolares) / 
+						parseFloat(tipoCambio) 
+					) + 
+					( 
+						parseFloat(tarejtaDolares) / 
+						parseFloat(tipoCambio) 
+					)  + 
+					(
+						parseFloat(ingresoDol) / 
+						parseFloat(tipoCambio)
+					)
+				) - parseFloat(total);
 		}else if( currencyId === "2" /*dolares*/ )
 		{
-			resultTotal =  (ingresoCordoba +  bancoCordoba + puntoCordoba + tarjetaCordoba + ( bancoDolares * tipoCambio ) + ( tarejtaDolares * tipoCambio )   + (ingresoDol * tipoCambio)) - total;
+			resultTotal =  
+				(
+					parseFloat(ingresoCordoba) +  
+					parseFloat(bancoCordoba) + 
+					parseFloat(puntoCordoba) + 
+					parseFloat(tarjetaCordoba) + 
+					( 
+						parseFloat(bancoDolares) * 
+						parseFloat(tipoCambio) 
+					) + 
+					( 
+						parseFloat(tarejtaDolares) * 
+						parseFloat(tipoCambio) 
+					)  + 
+					(
+						parseFloat(ingresoDol) * 
+						parseFloat(tipoCambio)
+					)
+				) - parseFloat(total);
 		}
 
         resultTotal = fnFormatNumber(resultTotal,2);
@@ -1890,6 +1940,7 @@
 
     function fnUpdateInvoiceView(data){
 
+		
         console.info("LOAD INVOICE");
         loadEdicion 		= true;
 		cargaCompletada 	= true;
@@ -2119,8 +2170,8 @@
                     fnFormatNumber(infoPrecio1, 2),
 					skuCatalogItemID,
 					skuQuantity,
-					0, /*discount by item*/
-					0  /*comision bank by item*/
+					varDetail[i].discount, /*discount by item*/
+					varDetail[i].tax3  /*comision bank by item*/
                 ]);
             }
 			objTableDetail.fnAddData(tmpData);
@@ -2130,7 +2181,7 @@
         $("#txtDescuento").val(fnFormatNumber(objTransactionMaster.discount, 2));
         $("#txtPorcentajeDescuento").val(fnFormatNumber(objTransactionMaster.tax4,2));
 
-        fnRecalculateDetail(false,"");
+        fnRecalculateDetail(false,"sumarizar");
 
         $('#txtReceiptAmountTarjeta_BankID').val(objTransactionMasterInfo.receiptAmountCardBankID).trigger("change");
         $('#txtReceiptAmountTarjetaDol_BankID').val(objTransactionMasterInfo.receiptAmountCardBankDolID).trigger("change");
@@ -2215,7 +2266,7 @@
 
 	function fnGetConcept(conceptItemID,nameConcept){
 
-		//Recalculoa el concepto via AJAX 2023-12-05 Inicio
+		
 		let getData 	= objTableDetail.fnGetData();
 		var x_			= getData.filter(item => item[2] === conceptItemID);
 		var objind_ 	= fnGetPosition(x_,getData);
@@ -2233,25 +2284,27 @@
 					objConcepto1 	= jLinq.from(objConcepto).where(function(obj){ return (obj.name === "IVA"); }).select();
 					if( objConcepto1.length > 0 )
 					{
-						objTableDetail.fnUpdate( fnFormatNumber(objConcepto1[0].valueOut,2), objind_, 9 );
+						objTableDetail.fnUpdate( fnFormatNumber(objConcepto1[0].valueOut,2), objind_, columnasTableDetail.iva );
 					}
 					objConcepto2 	= jLinq.from(objConcepto).where(function(obj){ return (obj.name === "TAX_SERVICES"); }).select();
 					if( objConcepto2.length > 0 )
 					{
-						objTableDetail.fnUpdate( fnFormatNumber(objConcepto2[0].valueOut,2), objind_, 17 );
+						objTableDetail.fnUpdate( fnFormatNumber(objConcepto2[0].valueOut,2), objind_, columnasTableDetail.taxServices );
 					}
 				}
 				else
 				{
-					objTableDetail.fnUpdate( 0, objind_, 9 );		//IVA
-					objTableDetail.fnUpdate( 0, objind_, 17 );		//TAX_SERVICES
+					objTableDetail.fnUpdate( 0, objind_, columnasTableDetail.iva );				//IVA
+					objTableDetail.fnUpdate( 0, objind_, columnasTableDetail.taxServices );		//TAX_SERVICES
 				}
 				fnRecalculateDetail(true,"",objind_);
+				
 			}
 		);
 	}
 
 	function fnRecalcularMontoComision(monto) {
+		
 		var cargandoDatosDeFactura 	= cargaCompletada;
 		let listRow 				= objTableDetail.fnGetData();
 		monto 						= parseFloat(monto);
@@ -2272,12 +2325,12 @@
 		{
 			for(let i=0; i<listRow.length; i++)
 			{
-				let oldPrice = listRow[i][columnasTableDetail.precio1];
-				let newPrice = oldPrice * (1 + (monto / 100));
-				objTableDetail.fnUpdate(fnFormatNumber(newPrice, 2), i, columnasTableDetail.precio);
+				let oldPrice = listRow[i][columnasTableDetail.total];
+				let newPrice = oldPrice * ( monto / 100 );
+				objTableDetail.fnUpdate(fnFormatNumber(newPrice, 2), i, columnasTableDetail.comisionPosBanck);
 			}
 		}
-		fnRecalculateDetail(true, "");
+		
 	}
 
 	function refreschChecked()
@@ -2493,12 +2546,12 @@
 			$("#txtReceiptAmountBankDol").val("0");
 	}
 
-	function fnRecalculateDetail(clearRecibo,sourceEvent, index=-1){
-		
+	function fnRecalculateDetail(clearRecibo,tipo_calculate, index=-1){
+		debugger;
 		var porcentajeDescuento 	= parseFloat($('#txtPorcentajeDescuento').val()) || 0;
 		var typePriceID 			= $("#txtTypePriceID").val();
-		if(index < 0){
-
+        if(index == -1 && tipo_calculate != "sumarizar")
+		{
 			var cantidad 				= 0;
 			var iva 					= 0;
 			var taxServices				= 0;
@@ -2514,24 +2567,26 @@
 			let skuRatio				= 0;
 			var priceTemporal			= 0;
 			var cantidadTemporal		= 0;
+			var descuento				= 0;
 			var NSSystemDetailInvoice	= objTableDetail.fnGetData();
 			for(var i = 0; i < NSSystemDetailInvoice.length; i++){
 				
 				cantidadTemporal 	 =  $(".txtQuantity")[i].value;
 				priceTemporal  		 =  $(".txtPrice")[i].value;
-				objTableDetail.fnUpdate( cantidadTemporal, i, 6 );
-				objTableDetail.fnUpdate( priceTemporal, i, 7 );
+				objTableDetail.fnUpdate( cantidadTemporal, i, columnasTableDetail.cantidad );
+				objTableDetail.fnUpdate( priceTemporal, i, columnasTableDetail.precio );
 
-				cantidad 	= parseFloat(NSSystemDetailInvoice[i][6]);
-				precio 		= parseFloat(NSSystemDetailInvoice[i][7]);
-				iva 		= parseFloat(NSSystemDetailInvoice[i][9]);
-				taxServices	= parseFloat(NSSystemDetailInvoice[i][17]);
-				skuRatio    = parseFloat(NSSystemDetailInvoice[i][24]);
+				cantidad 	= parseFloat(NSSystemDetailInvoice[i][columnasTableDetail.cantidad]);
+				precio 		= parseFloat(NSSystemDetailInvoice[i][columnasTableDetail.precio]);
+				iva 		= parseFloat(NSSystemDetailInvoice[i][columnasTableDetail.iva]);
+				taxServices	= parseFloat(NSSystemDetailInvoice[i][columnasTableDetail.taxServices]);
+				skuRatio    = parseFloat(NSSystemDetailInvoice[i][columnasTableDetail.ratioSku]);
 
 				subtotal    = precio * cantidad;
 				iva 		= (precio * cantidad) * iva;
 				taxServices = (precio * cantidad) * taxServices;
 				total 		= iva + taxServices + subtotal ;
+				descuento	= subtotal * (porcentajeDescuento / 100);
 
 
 				cantidadGeneral 	= cantidadGeneral + cantidad;
@@ -2543,10 +2598,11 @@
 
 				let skuQuantityBySku = cantidad * skuRatio;
 				objTableDetail.fnUpdate( skuQuantityBySku, i, columnasTableDetail.skuQuantityBySku );
-				objTableDetail.fnUpdate( fnFormatNumber(subtotal,2), i, 8 );
+				objTableDetail.fnUpdate( fnFormatNumber(subtotal,2), i, columnasTableDetail.total );
+				objTableDetail.fnUpdate( fnFormatNumber(descuento,2) , i, columnasTableDetail.discount );
 			}
 
-			let descuento 	= subtotalGeneral * (porcentajeDescuento / 100);
+			descuento 		= subtotalGeneral * (porcentajeDescuento / 100);
 			totalGeneral 	= subtotalGeneral + serviceGeneral + ivaGeneral - descuento;
 
 			$("#txtSubTotal").val(fnFormatNumber(subtotalGeneral,2));
@@ -2580,79 +2636,78 @@
 			else{
 				$("#txtReceiptAmount").val(fnFormatNumber(totalGeneral,2));
 			}
-		}else{
+		
+
 			
-			let getRowDetail 			= objTableDetail.fnGetData(index);
-			let skuRatio    			= parseFloat(getRowDetail[columnasTableDetail.ratioSku]) || 0;
-			var cantidad 				= parseFloat(getRowDetail[columnasTableDetail.cantidad]) || 0;
-			var iva 					= parseFloat(getRowDetail[9]) || 0;
-			let	taxServices				= parseFloat(getRowDetail[17]) || 0;
-			var precio					= parseFloat(getRowDetail[columnasTableDetail.precio]) || 0;
-			let importeAnterior			= parseFloat(getRowDetail[8]) || 0;
-			let ivaAnterior				= iva * importeAnterior;
-			let taxServicesAnterior     = taxServices * importeAnterior;
-			let ivaGeneral 				= parseFloat($("#txtIva").val()) || 0;
-			let serviceGeneral			= parseFloat($("#txtServices").val()) || 0;
-			var subTotalAnterior		= parseFloat($('#txtSubTotal').val()) || 0;
-			var totalAnterior			= parseFloat($('#txtTotal').val()) || 0;
-			let importeNuevo    		= precio * cantidad;
-			let ivaNuevo 				= importeNuevo * iva;
-			let taxServicesNuevo    	= importeNuevo * taxServices;
-			let skuQuantityBySku 		= skuRatio*cantidad;
-
-			let subTotalNuevo 			= 0;
-			if(subTotalAnterior === 0){
-				subTotalNuevo = importeNuevo;
-			}else{
-				subTotalNuevo 			= subTotalAnterior + importeNuevo - importeAnterior;
-			}
-
-			let descuentoNuevo 			= subTotalNuevo * (porcentajeDescuento / 100);
-
-			let ivaGeneralNuevo 		= 0;
-			if(ivaGeneral === 0){
-				ivaGeneralNuevo 		= ivaGeneral + ivaNuevo;
-			}else{
-				ivaGeneralNuevo 		= ivaGeneral + ivaNuevo - ivaAnterior;
-			}
-
-			let serviceNuevo 			= 0;
-			if(serviceGeneral === 0){
-				serviceNuevo 			= serviceGeneral + taxServicesNuevo;
-			}else{
-				serviceNuevo 			= serviceGeneral + taxServicesNuevo - taxServicesAnterior;
-			}
-
-			let totalNuevo	 			= subTotalNuevo + serviceNuevo + ivaGeneralNuevo - descuentoNuevo;
-
-			$('#txtSubTotal').val(fnFormatNumber(subTotalNuevo, 2));
-			$('#txtDescuento').val(fnFormatNumber(descuentoNuevo, 2));
-			$("#txtIva").val(fnFormatNumber(ivaGeneralNuevo,2));
-			$("#txtServices").val(fnFormatNumber(serviceNuevo,2));
-			$("#txtTotal").val(fnFormatNumber(totalNuevo,2));
-			$("#txtTotalAlternativo").text(fnFormatNumber(totalNuevo,2));
-
-			objTableDetail.fnUpdate( skuQuantityBySku, index, columnasTableDetail.skuQuantityBySku );
-			objTableDetail.fnUpdate( fnFormatNumber(importeNuevo,2), index, 8 );
-
-			if(invoiceTypeCredit === true){
-				$("#txtReceiptAmount").val("0.00");
-			}
-			else{
-				$("#txtReceiptAmount").val(fnFormatNumber(totalNuevo,2));
-			}
 		}
+		if(index > -1 && tipo_calculate != "sumarizar")
+		{
+			var NSSystemDetailInvoice		= objTableDetail.fnGetData();
+			var cantidadTemporal 	 		=  $(".txtQuantity")[index].value;
+			var priceTemporal  		 		=  $(".txtPrice")[index].value;
+			objTableDetail.fnUpdate( cantidadTemporal, index, columnasTableDetail.cantidad );
+			objTableDetail.fnUpdate( priceTemporal, index, columnasTableDetail.precio );
+			
+			var cantidad 				= parseFloat(NSSystemDetailInvoice[index][columnasTableDetail.cantidad]);
+			var skuRatio    			= parseFloat(NSSystemDetailInvoice[index][columnasTableDetail.ratioSku]);
+			let skuQuantityBySku 		= cantidad * skuRatio;
+			objTableDetail.fnUpdate( skuQuantityBySku, index, columnasTableDetail.skuQuantityBySku );
+			
+			var precio 					= parseFloat(NSSystemDetailInvoice[index][columnasTableDetail.precio]);
+			var subtotal    			= precio * cantidad;
+			objTableDetail.fnUpdate( fnFormatNumber(subtotal,2), index, columnasTableDetail.total );
+			
+			var descuento				= subtotal * (porcentajeDescuento / 100);
+			objTableDetail.fnUpdate( fnFormatNumber(descuento,2) , index, columnasTableDetail.discount );
+			
+			
+			var NSSystemDetailInvoice		= objTableDetail.fnGetData();
+			var subtotalGeneral 			= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.total]); })).sum().result;			
+			var descuento		 			= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.discount]); })).sum().result;			
+			var ivaGeneral		 			= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.iva]); })).sum().result;			
+			var serviceGeneral		 		= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.taxServices]); })).sum().result;			
+			var totalGeneral				= subtotalGeneral + ivaGeneral + serviceGeneral - descuento;
+			
+			$("#txtSubTotal").val(fnFormatNumber(subtotalGeneral,2));
+			$('#txtDescuento').val(fnFormatNumber(descuento, 2));
+			$("#txtIva").val(fnFormatNumber(ivaGeneral,2));
+			$("#txtServices").val(fnFormatNumber(serviceGeneral,2));
+			$("#txtTotal").val(fnFormatNumber(totalGeneral,2));
+			$("#txtTotalAlternativo").text(fnFormatNumber(totalGeneral,2));
+			
+		}
+		
+		if(tipo_calculate == "sumarizar")
+		{
+			
+			var NSSystemDetailInvoice		= objTableDetail.fnGetData();
+			var subtotalGeneral 			= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.total]); })).sum().result;			
+			var descuento		 			= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.discount]); })).sum().result;			
+			var ivaGeneral		 			= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.iva]); })).sum().result;			
+			var serviceGeneral		 		= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.taxServices]); })).sum().result;			
+			var totalGeneral				= subtotalGeneral + ivaGeneral + serviceGeneral - descuento;
+			
+			$("#txtSubTotal").val(fnFormatNumber(subtotalGeneral,2));
+			$('#txtDescuento').val(fnFormatNumber(descuento, 2));
+			$("#txtIva").val(fnFormatNumber(ivaGeneral,2));
+			$("#txtServices").val(fnFormatNumber(serviceGeneral,2));
+			$("#txtTotal").val(fnFormatNumber(totalGeneral,2));
+			$("#txtTotalAlternativo").text(fnFormatNumber(totalGeneral,2));
+		}
+		
+		
+		if (clearRecibo)
+		{
+				$("#txtReceiptAmountDol").val("0.00");
+				$("#txtChangeAmount").val("0.00");
+				$("#txtReceiptAmountBank").val("0");
+				$("#txtReceiptAmountPoint").val("0");
 
-        if (clearRecibo){
-            $("#txtReceiptAmountDol").val("0.00");
-            $("#txtChangeAmount").val("0.00");
-            $("#txtReceiptAmountBank").val("0");
-            $("#txtReceiptAmountPoint").val("0");
-
-            $("#txtReceiptAmountTarjeta").val("0");
-            $("#txtReceiptAmountTarjetaDol").val("0");
-            $("#txtReceiptAmountBankDol").val("0");
-        }
+				$("#txtReceiptAmountTarjeta").val("0");
+				$("#txtReceiptAmountTarjetaDol").val("0");
+				$("#txtReceiptAmountBankDol").val("0");
+		}
+		
 	}
 
 	function fnFillListaProductos(data)
@@ -3443,7 +3498,7 @@
 		objTableDetail.fnUpdate(serie, selectedFilaInfoProducto, 20, false);
 		objTableDetail.fnUpdate(referencia, selectedFilaInfoProducto, 21, false);
 		refreschChecked();
-        fnRecalculateDetail(true,"txtPrice",selectedFilaInfoProducto);
+        fnRecalculateDetail(true,"",selectedFilaInfoProducto);
         cerrarModal('ModalInfoProducto');
     }
 
@@ -3870,7 +3925,7 @@
 							}
 						},
 						{
-							"aTargets"		: [ 8 ],//Total
+							"aTargets"		: [ columnasTableDetail.total ],//Total
 							"sWidth"		: "250px",
 							"mRender"		: function ( data, type, full ) {
 								let str;
@@ -3884,7 +3939,7 @@
 							}
 						},
 						{
-							"aTargets"		: [ 9 ],//Iva
+							"aTargets"		: [ columnasTableDetail.iva ],//Iva
 							"bVisible"		: true,
 							"sClass"		: "hidden",
 							"bSearchable"	: false,
@@ -4005,7 +4060,7 @@
 							}
 						},
 						{
-							"aTargets"		: [ 17 ],//TAX_SERVICES
+							"aTargets"		: [ columnasTableDetail.taxServices ],//TAX_SERVICES
 							"bVisible"		: true,
 							"sClass"		: "hidden",
 							"bSearchable"	: false,
