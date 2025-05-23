@@ -106,7 +106,9 @@
         precio3 				: 15,
 		precio1 				: 22,
 		valueSku				: 23,
-		ratioSku				: 24
+		ratioSku				: 24,
+		discount				: 25,
+		comisionPosBanck		: 26
     };
 
 	const Toast = Swal.mixin({
@@ -170,7 +172,7 @@
         var i 		= 0;
         while (i < length )
         {
-            fnGetConcept(listRow[i][2],"IVA");
+            fnGetConcept(listRow[i][2],"ALL");
             i++;
         }
 
@@ -228,7 +230,7 @@
 					var i 		= 0;
 					while (i < length )
 					{
-						fnGetConcept(listRow[i][2],"IVA");
+						fnGetConcept(listRow[i][2],"ALL");
 						i++;
 					}
 				},
@@ -314,29 +316,29 @@
 	});
 
 	$(document).on("click",".btnPlus",function(){
-		let trSelected =  $(this).parent().parent().parent();
-		var quantity = trSelected.find(".txtQuantity").val();
-		quantity 	 = parseFloat(quantity);
-		quantity	 = quantity + 1;
+		let trSelected 	=  $(this).parent().parent().parent();
+		var quantity 	= trSelected.find(".txtQuantity").val();
+		quantity 	 	= parseFloat(quantity);
+		quantity	 	= quantity + 1;
 		trSelected.find(".txtQuantity").val(quantity);
-		let aPos = objTableDetail.fnGetPosition(trSelected[0]);
+		let aPos 		= objTableDetail.fnGetPosition(trSelected[0]);
 		objTableDetail.fnUpdate(quantity, aPos, columnasTableDetail.cantidad);
 		fnRecalculateDetail(true,"", aPos);
 	});
 
 	$(document).on("click",".btnMenus",function(){
-		let trSelected =  $(this).parent().parent().parent();
-		var quantity = $(this).parent().parent().parent().find(".txtQuantity").val();
-		quantity 	 = parseFloat(quantity);
-		quantity	 = quantity - 1;
+		let trSelected 	=  $(this).parent().parent().parent();
+		var quantity 	= $(this).parent().parent().parent().find(".txtQuantity").val();
+		quantity 	 	= parseFloat(quantity);
+		quantity	 	= quantity - 1;
 		$(this).parent().parent().parent().find(".txtQuantity").val(quantity);
-		let aPos = objTableDetail.fnGetPosition(trSelected[0]);
+		let aPos 		= objTableDetail.fnGetPosition(trSelected[0]);
 		objTableDetail.fnUpdate(quantity, aPos, columnasTableDetail.cantidad);
 		fnRecalculateDetail(true,"", aPos);
 	});
 	$(document).on("click",".btnPrecioRecomendado",function(){
-		var precioRecomendado = $(this).data("precio");
-		let trSelected =  $(this).parent().parent().parent();
+		var precioRecomendado 	= $(this).data("precio");
+		let trSelected 			=  $(this).parent().parent().parent();
 		$(this).parent().parent().parent().parent().parent().parent().find(".txtPrice").val(precioRecomendado);
 		fnRecalculateDetail(true,"txtPrice");
 	});
@@ -900,9 +902,9 @@
 			fnCalculateAmountPay();
 	});
 	$('#tb_transaction_master_detail tbody').on('click', '.label-sku', function() {
-		var fila = $(this).closest('tr')[0];
-		var data = objTableDetail.fnGetData( fila );
-		var label = $(this);
+		var fila 	= $(this).closest('tr')[0];
+		var data 	= objTableDetail.fnGetData( fila );
+		var label 	= $(this);
 		obtenerDataDBProductoArray(
 			"objListaProductosSkuX001",
 			"all",
@@ -910,18 +912,20 @@
 			'all',
 			{'itemID': data[2]},
 			function(e){
-				let itemID = e['itemID'];
-				let allData = e['all'];
-				var resultado = allData.filter(function(producto) {
+				let itemID 		= e['itemID'];
+				let allData 	= e['all'];
+				var resultado 	= allData.filter(function(producto) 
+				{
 					return producto.itemID == itemID;
 				});
+				
 				if (resultado.length > 0) {
 					var aPos 					= objTableDetail.fnGetPosition(fila);
 					let catalogItemIDSelected 	= data[columnasTableDetail.valueSku];
 					let cantidad 				= data[columnasTableDetail.cantidad];
 					// Crear el select dinámico
-					var currentText = label.text().trim();
-    				var select = $('<select>');
+					var currentText 	= label.text().trim();
+    				var select 			= $('<select>');
 					select.css('width','100%');
 					resultado.forEach(function(producto) {
 						var selected = (producto.catalogItemID === catalogItemIDSelected) ? 'selected' : '';
@@ -932,15 +936,16 @@
 					label.after(select);
 
 					 // Manejar el evento de selección
-					select.on('change', function() {
+					select.on('change', function() 
+					{
 						let precio = $(this).find('option:selected').data('price');
 						if(precio === 0){
 							precio = data[columnasTableDetail.precio1];
 						}
-						let catalogItemID = $(this).val();
-						let nombreSeleccionado = $(this).find('option:selected').text();
-						let ratio = $(this).find('option:selected').data('ratio');
-						let skuQuantityBySku = ratio * cantidad;
+						let catalogItemID 		= $(this).val();
+						let nombreSeleccionado 	= $(this).find('option:selected').text();
+						let ratio 				= $(this).find('option:selected').data('ratio');
+						let skuQuantityBySku 	= ratio * cantidad;
 						if (catalogItemID) {
 							objTableDetail.fnUpdate( catalogItemID, aPos, columnasTableDetail.valueSku );
 							objTableDetail.fnUpdate( skuQuantityBySku, aPos, columnasTableDetail.skuQuantityBySku );
@@ -963,7 +968,9 @@
 
 					// Forzar el foco en el select para que se abra automáticamente
 					select.focus();
-				} else {
+				} 
+				else 
+				{
 					console.log("Producto no encontrado");
 				}
 			}
@@ -982,7 +989,8 @@
 			objTableDetail.fnUpdate(isChecked, rowIndex, colIndex, true);
 			refreschChecked();
 		}
-		else {
+		else 
+		{
 			var newValue = input.val();
 			if (colIndex === columnasTableDetail.descripcion) {
 				objTableDetail.fnUpdate(newValue, rowIndex, columnasTableDetail.descripcion, true);
@@ -1401,6 +1409,8 @@
 		objRow.referencia 					= "";
 		objRow.price1 					    = fnFormatNumber(objResponse[22],2);
 		objRow.skuRatio						= 1;
+		objRow.discount						= 0;
+		objRow.commisionBank				= 0;
 
 		//Actualizar
 		if(jLinq.from(objTableDetail.fnGetData()).where(function(obj){ return obj[2] == objRow.itemID;}).select().length > 0 ){
@@ -1423,7 +1433,7 @@
 				$("#body_tb_transaction_master_detail tr")[objind_].animate({
 				backgroundColor : "" },100);
 			}
-			fnGetConcept(objRow.itemID,"IVA");
+			fnGetConcept(objRow.itemID,"ALL");
 		}
 		//Agregar
 		else{
@@ -1434,9 +1444,9 @@
 			'all',
 			{'itemID': objRow.itemID},
 			function(e){
-				let itemID = e['itemID'];
-				let allData = e['all'];
-				var resultado = allData.filter(function(producto) {
+				let itemID 		= e['itemID'];
+				let allData 	= e['all'];
+				var resultado 	= allData.filter(function(producto) {
 					return producto.itemID == itemID;
 				});
 				if (resultado.length > 0) {
@@ -1444,10 +1454,10 @@
 						let selected = parseInt(producto.predeterminado, 10);
 						if(selected === 1){
 							console.info(producto);
-							objRow.um=producto.catalogItemID;
-							objRow.umDescription=producto.name;
-							objRow.price = producto.price;
-							objRow.skuRatio = producto.value;
+							objRow.um				=producto.catalogItemID;
+							objRow.umDescription	=producto.name;
+							objRow.price 			=producto.price;
+							objRow.skuRatio 		=producto.value;
 						}
 					});
 				}
@@ -1476,10 +1486,12 @@
 					objRow.referencia,
 					objRow.price1,
 					objRow.um,
-					objRow.skuRatio
+					objRow.skuRatio,
+					objRow.discount,
+					objRow.commisionBank
 				]);
-
-				fnGetConcept(objRow.itemID,"IVA");
+				
+				fnGetConcept(objRow.itemID,"ALL");
 
 				if(varUseMobile != "1"){
 					$("#body_tb_transaction_master_detail tr")[objTableDetail.fnGetData().length - 1].animate({
@@ -2106,7 +2118,9 @@
                     infoReferencia,
                     fnFormatNumber(infoPrecio1, 2),
 					skuCatalogItemID,
-					skuQuantity
+					skuQuantity,
+					0, /*discount by item*/
+					0  /*comision bank by item*/
                 ]);
             }
 			objTableDetail.fnAddData(tmpData);
@@ -2232,7 +2246,7 @@
 					objTableDetail.fnUpdate( 0, objind_, 9 );		//IVA
 					objTableDetail.fnUpdate( 0, objind_, 17 );		//TAX_SERVICES
 				}
-				fnRecalculateDetail(true,"");
+				fnRecalculateDetail(true,"",objind_);
 			}
 		);
 	}
@@ -2480,6 +2494,7 @@
 	}
 
 	function fnRecalculateDetail(clearRecibo,sourceEvent, index=-1){
+		
 		var porcentajeDescuento 	= parseFloat($('#txtPorcentajeDescuento').val()) || 0;
 		var typePriceID 			= $("#txtTypePriceID").val();
 		if(index < 0){
@@ -2501,7 +2516,7 @@
 			var cantidadTemporal		= 0;
 			var NSSystemDetailInvoice	= objTableDetail.fnGetData();
 			for(var i = 0; i < NSSystemDetailInvoice.length; i++){
-
+				
 				cantidadTemporal 	 =  $(".txtQuantity")[i].value;
 				priceTemporal  		 =  $(".txtPrice")[i].value;
 				objTableDetail.fnUpdate( cantidadTemporal, i, 6 );
@@ -2566,6 +2581,7 @@
 				$("#txtReceiptAmount").val(fnFormatNumber(totalGeneral,2));
 			}
 		}else{
+			
 			let getRowDetail 			= objTableDetail.fnGetData(index);
 			let skuRatio    			= parseFloat(getRowDetail[columnasTableDetail.ratioSku]) || 0;
 			var cantidad 				= parseFloat(getRowDetail[columnasTableDetail.cantidad]) || 0;
@@ -3730,10 +3746,11 @@
 							"aTargets"		: [ 0 ],//checked
 							"sWidth"		: "50px",
 							"sClass"		: "td-center",
-							"mRender"		: function ( data, type, full ) {
-								var ocultarBoton="";
+							"mRender"		: function ( data, type, full ) 
+							{
+								var ocultarBoton	=	"";
 								if(varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
-									ocultarBoton="hidden";
+									ocultarBoton	=	"hidden";
 								}
 
 								if (data == false)
@@ -3778,21 +3795,25 @@
 								var classHiddenSelect 	= "";
 								if(varParameterINVOICE_BILLING_SELECTITEM == "true")
 								{
-									classHiddenTex = "hidden";
+									classHiddenTex 		= "hidden";
 									classHiddenSelect 	= "";
 								}
 								else
 								{
-									classHiddenTex = "";
+									classHiddenTex 		= "";
 									classHiddenSelect 	= "hidden";
 								}
-								let strFiled = "";
-								if (varUseMobile === "1"){
-									strFiled        += '<label class="col-lg-12" style="text-align:right;									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                     									                                                                      <?php echo $useMobile == "1" ? 'width: 100%;' : '' ?>">Descripción: '+full[4]+'</label>';
+								let strFiled 		= "";
+								if (varUseMobile === "1")
+								{
+									strFiled        += '<label class="col-lg-12" style="text-align:right; <?php echo $useMobile == "1" ? 'width: 100%;' : '' ?>">Descripción: '+full[4]+'</label>';
 									strFiled 		+= '<input type="hidden" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"  value="'+full[4]+'" '+NameStatus+' />';
-								}else{
-									strFiled 		+= '<input type="text" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"  class="col-lg-12 '+classHiddenTex+'" style="text-align:left;									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                               									         		                                                                                                                                                                <?php echo $useMobile == "1" ? 'width: 100%;' : '' ?>" value="'+full[4]+'" '+NameStatus+' />';
 								}
+								else
+								{
+									strFiled 		+= '<input type="text" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"  class="col-lg-12 '+classHiddenTex+'" style="text-align:left; <?php echo $useMobile == "1" ? 'width: 100%;' : '' ?>" value="'+full[4]+'" '+NameStatus+' />';
+								}
+								
 								let strFiledSelecte = "<select  name='txtItemSelected' class='<?php echo($useMobile == "1" ? "" : "select2"); ?> txtItemSelected "+classHiddenSelect+" ' >";
 								strFiledSelecte		= strFiledSelecte+"<option value='"+full[2]+"' selected data-itemid='"+full[2]+"' data-codigo='"+full[3]+"' data-name='"+full[4].replace("'","").replace("'","") +"' data-unidadmedida='"+full[5]+"' data-cantidad='"+full[6]+"' data-precio='"+full[7]+"' data-barra='"+full[3]+"'  data-description='"+full[4].replace("'","").replace("'","") + "'    >"+ full[4].replace("'","").replace("'","")  +"</option>";
 								strFiledSelecte		= strFiledSelecte+"</select>";
@@ -3806,17 +3827,16 @@
 						{
 							"aTargets"		: [ 5 ],//Sku
 							"sWidth"		: "250px",
-							"sClass": "td-sku",
+							"sClass"		: "td-sku",
 							"mRender"		: function ( data, type, full ) {
 
 									var sel = '';
-
-									sel     = '<label data-catalog-id="' + full[5] + '" class="label-sku col-lg-12 skuStyleNormal <?php echo $useMobile == "1" ? 'hidden' : '' ?>" style="<?php echo $useMobile == "1" ? 'width: 100%;' : '' ?>" >';
+									sel     = '<label data-catalog-id="' + full[5] + '" class="label-sku col-lg-12  <?php echo $useMobile == "1" ? 'hidden' : '' ?>" style="<?php echo $useMobile == "1" ? 'width: 100%;' : '' ?>" >';
 
 									if(varUseMobile == "1")
 										espacio = "";
 
-									//sel = sel + '<option value="'+full[5]+'" data-skuv="1" data-skupriceunitary="'+full[7]+'"   selected style="font-size:200%" data-description="'+full[13]+'" >'+full[13]+espacio+'</option>';
+									
 									sel = sel + full[13];
 									sel = sel + '</label>';
 									sel = sel + '<input type="hidden" class="txtSku" name="txtSku[]" id="txtSku'+full[2]+'" value="' + full[13] + '" />';
@@ -3964,12 +3984,7 @@
 							"bSearchable"	: false,
 							"mRender"		: function ( data, type, full ) {
 								return '<input type="hidden" value="'+data+'" name="txtItemPrecio2[]" />';
-							}
-							//,
-							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col)
-							//{
-							//	  $(td).css("display","block");
-							//}
+							}							
 						},
 						{
 							"aTargets"		: [ columnasTableDetail.precio3 ],//Precio3
@@ -3979,11 +3994,6 @@
 							"mRender"		: function ( data, type, full ) {
 								return '<input type="hidden" value="'+data+'" name="txtItemPrecio3[]" />';
 							}
-							//,
-							//"fnCreatedCell": varUseMobile == "0" ? function(){  } :  function (td, cellData, rowData, row, col)
-							//{
-							//	  $(td).css("display","block");
-							//}
 						},
 						{
 							"aTargets"		: [ 16 ],//itemNameDescription
@@ -4064,6 +4074,24 @@
 							"bSearchable"	: false,
 							"mRender"		: function ( data, type, full ) {
 								return '<input type="hidden" value="'+data+'" name="txtRatioSku[]" />';
+							}
+						},
+						{
+							"aTargets"		: [ columnasTableDetail.discount ],//Descuento
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="hidden" value="'+data+'" name="txtDiscountByItem[]" />';
+							}
+						},
+						{
+							"aTargets"		: [ columnasTableDetail.comisionPosBanck ],//Comision por banco
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="hidden" value="'+data+'" name="txtCommisionByBankByItem[]" />';
 							}
 						},
 

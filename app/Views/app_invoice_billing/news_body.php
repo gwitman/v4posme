@@ -722,31 +722,34 @@ echo helper_getHtmlOfPageLanding();
 							<table id="tb_transaction_master_detail" class="<?= $useMobile=="1" ? '' : 'table table-bordered' ?>"  >
 								<thead>
 									<tr>
-										<th></th>
-										<th></th>
-										<th></th>
-										<th>Codigo</th>
-										<th>Descripcion</th>
-										<th>U/M</th>
-										<th>Cantidad</th>
-										<th>Precio</th>
-										<th>Total</th>
-										<th></th>
-										<th>skuQuantityBySku</th>
-										<th>unitaryPriceInvidual</th>
-										<th>Accion</th>
-										<th>skuFormatoDescription</th>
-										<th>Precio2</th>
-										<th>Precio3</th>
-										<th>itemNameDescription</th>
-										<th>TAX_SERVICES</th>
-										<th>Peso</th>
-										<th>Vendedor</th>
-										<th>Serie</th>
-										<th>Referencia</th>
-										<th>Precio1</th>
-										<th>Value Sku</th>
-										<th>Ratio Sku</th>
+										<th></th><!--checked-->
+										<th></th><!--transactionMasterDetail-->
+										<th></th><!--itemID-->
+										<th>Codigo</th><!--itemNumber-->
+										<th>Descripcion</th><!--Nombre del producto-->
+										<th>U/M</th><!--Unidad de medida del producto-->
+										<th>Cantidad</th><!--Cantidad-->
+										<th>Precio</th><!--Precio-->
+										<th>Total</th><!--Sub total-->
+										<th></th><!--Iva-->
+										<th>skuQuantityBySku</th><!--Cantidad en unidades por cada sku es decir 1 paquete = 25 unidades-->
+										<th>unitaryPriceInvidual</th><!--Precio individual-->
+										<th>Accion</th><!--Acciones-->
+										<th>skuFormatoDescription</th><!--Descripcion del sku-->
+										<th>Precio2</th><!--Precio 2-->
+										<th>Precio3</th><!--Precio 3-->
+										<th>itemNameDescription</th><!--Nombre del producto cambiado-->
+										<th>TAX_SERVICES</th><!--Impuesto por servicio-->
+										<th>Peso</th><!--Peso o Lote-->
+										<th>Vendedor</th><!--Vendedor Id-->
+										<th>Serie</th><!--Serie-->
+										<th>Referencia</th> <!--Referencia-->
+										<th>Precio1</th><!--Precio 1-->
+										<th>Value Sku</th><!--catalogItemID SKU-->
+										<th>Ratio Sku</th><!--Ratio SKU-->
+										
+										<th>Descuento</th><!--Descuento-->
+										<th>Comision POS Banco</th><!--Comision Banco-->
 									</tr>
 								</thead>
 								<tbody id="body_tb_transaction_master_detail">
