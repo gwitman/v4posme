@@ -1199,90 +1199,51 @@ echo helper_getHtmlOfPageLanding();
 				<!-- Barra Lateral Factura-->
 				<div id="mySidebarFactura" class="sidebar" style="background-color:white">
 					<div class="sidebar-content"> 
-					<div id="siderbar_content_right_factura">
-					</div>
-					
-					
-					<div class="row" id="divPanelFacturaSideBarComandos" >				
-					</div>
-					</br>
-					<div class="row" id="divPanelFacturaSideBar" >
-						<div class="col col-lg-2">
-							<a href="javascript:void(0);" class="btn btn-flat btn-danger btn-block" id="btnRollbackFactura"><i class="icon16 i-arrow-bottom "></i> REGRESAR</a>						
-						</div>	
-						<div class="col col-lg-2">
-							<a href="javascript:void(0);" class="btn btn-flat btn-success btn-block" id="btnSaveInvoice"><i class="icon16 i-arrow-bottom "></i> GUARDAR MESA</a>
-						</div>	
-					</div>
-					
-					<br/>
+						<div id="siderbar_content_right_factura">
+						</div>
+						
+						
+						<div class="row" id="divPanelFacturaSideBarComandos" >				
+						</div>
+						</br>
+						<div class="row" id="divPanelFacturaSideBar" >
+							<div class="col col-lg-2">
+								<a href="javascript:void(0);" class="btn btn-flat btn-danger btn-block" id="btnRollbackFactura"><i class="icon16 i-arrow-bottom "></i> REGRESAR</a>						
+							</div>	
+							<div class="col col-lg-2">
+								<a href="javascript:void(0);" class="btn btn-flat btn-success btn-block" id="btnSaveInvoice"><i class="icon16 i-arrow-bottom "></i> GUARDAR MESA</a>
+							</div>	
+						</div>
+						
+						<br/>
 
-					<div class="mt-5 custom-table-container-categorias">
-						<div style="width: 98%; margin: 0 auto;">
-							<div class="row custom-table-categorias">
-								<?php
-								if (isset($objListInventoryCategoryRestaurant)):
-									foreach($objListInventoryCategoryRestaurant as $k=>$category):
-										?>
-										<div class="col-md-2 item-categoria"
-												data-value="<?= $category->inventoryCategoryID ?>"
-												data-parent="<?= $category->inventoryCategoryID?>"
-												data-filter="[data-value='<?= $category->inventoryCategoryID ?>']"
-												style="background-image: url('<?= $category->description ?>');"
-												onclick="fnSelectCellCategoryInventory(this)">
-											<span class="badge badge-success text-overlay-categoria"><?= $category->name; ?></span>
-											<div class="overlay">
-											</div>
-										</div>
+						<div class="mt-5 custom-table-container-categorias">
+							<div style="width: 98%; margin: 0 auto;">
+								<div class="row custom-table-categorias">
 									<?php
-									endforeach;
-								endif;
-								?>
-							</div>
-						</div>
-					</div>
-
-					<div class="mt-5 custom-table-container-inventory">
-						<div style="width: 98%; margin: 0 auto;">
-							<div class="row">
-								<?php
-								if (isset($objListInventoryItemsRestaurant)):
-									foreach ($objListInventoryItemsRestaurant  as $k=>$item):
-								?>
-										<?php
-									if ($k== 0):
-										?>
-										<div class="col-md-2 item-producto item-producto-back"
-												data-filter="*"
-												onclick="fnSelectCellInventoryBack(this)" >
-											<span class="badge badge-warning text-overlay-categoria">REGRESAR</span>
-											<div class="overlay">
+									if (isset($objListInventoryCategoryRestaurant)):
+										foreach($objListInventoryCategoryRestaurant as $k=>$category):
+											?>
+											<div class="col-md-2 item-categoria"
+													data-value="<?= $category->inventoryCategoryID ?>"
+													data-parent="<?= $category->inventoryCategoryID?>"
+													data-filter="[data-value='<?= $category->inventoryCategoryID ?>']"
+													style="background-image: url('<?= $category->description ?>');"
+													onclick="fnSelectCellCategoryInventory(this)">
+												<span class="badge badge-success text-overlay-categoria"><?= $category->name; ?></span>
+												<div class="overlay">
+												</div>
 											</div>
-										</div>
 										<?php
+										endforeach;
 									endif;
-										?>
-									<div class="col-md-2 item-producto"
-											style="background-image: url('<?= $item["Imagen"]; ?>');" 
-											onclick="fnSelectCellInventory(this)"
-											ondblclick="fnSelectDoubleCellInventory(this)"
-											data-value="<?= $item["inventoryCategoryID"]; ?>"
-											data-parent="<?= $item["inventoryCategoryID"]; ?>"
-											data-codigo="<?= $item["Codigo"]; ?>" >
-										<span class="badge badge-success text-overlay-categoria" style="display: block; /* Convierte el span en bloque para que respete el ancho */    white-space: normal; /* Permite el salto de línea */" ><?= $item['Nombre']; ?></span>
-										<div class="overlay">
-										</div>
-									</div>
-								<?php
-									endforeach;
-								endif;
-								?>
+									?>
+								</div>
 							</div>
 						</div>
-					</div>
-					
-					
-					
+						<div id="row-items">
+
+						</div>	
 					</div>
 				</div>
 

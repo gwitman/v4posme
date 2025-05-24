@@ -25,12 +25,12 @@
     var varParameterCantidadItemPoup		= '<?php echo $objParameterCantidadItemPoup; ?>';
 	var varParameterRestaurante				= '<?php echo $objParameterRestaurant; ?>';
 	var varTransactionMasterIDToPrinter  	= '<?php echo $transactionMasterIDToPrinter; ?>';
-
+	var objListInventoryItemsRestaurant     = <?= json_encode($objListInventoryItemsRestaurant, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP)?>;
 	var cargaCompletada						= false;
 	var varAutoAPlicar						= '<?php echo $objParameterInvoiceAutoApply; ?>';
-	var varParameterHidenFiledItemNumber	=	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	 	                                    	  <?php echo $objParameterHidenFiledItemNumber; ?>;
+	var varParameterHidenFiledItemNumber	= <?php echo $objParameterHidenFiledItemNumber; ?>;
 	var objParameterPantallaParaFacturar 	= '<?php echo $objParameterPantallaParaFacturar; ?>';
-	var varParameterAmortizationDuranteFactura		=	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		 	                                          		  <?php echo $objParameterAmortizationDuranteFactura; ?>;
+	var varParameterAmortizationDuranteFactura		= <?php echo $objParameterAmortizationDuranteFactura; ?>;
 	var varParameterImprimirPorCadaFactura			= '<?php echo $objParameterImprimirPorCadaFactura; ?>';
 	var varParameterRegresarAListaDespuesDeGuardar	= '<?php echo $objParameterRegresarAListaDespuesDeGuardar; ?>';
 	var varParameterAlturaDelModalDeSeleccionProducto	= '<?php echo $objParameterAlturaDelModalDeSeleccionProducto; ?>';
@@ -2318,6 +2318,49 @@
         }
     }
 
+	function fnGenerateInventoryItems(items) {
+        var $container 	= $('<div>').addClass('mt-5 custom-table-container-inventory');
+        var $innerDiv 	= $('<div>').css({ 'width': '98%', 'margin': '0 auto' }).appendTo($container);
+        var $row 		= $('<div>').addClass('row').appendTo($innerDiv);
+
+        // Agregar botón "REGRESAR" (como en el primer elemento del PHP)
+        $row.append(
+            $('<div>')
+                .addClass('col-md-2 item-producto item-producto-back')
+                .attr('data-filter', '*')
+                .click(function() { fnSelectCellInventoryBack(this); })
+                .append(
+                    $('<span>').addClass('badge badge-warning text-overlay-categoria').text('REGRESAR'),
+                    $('<div>').addClass('overlay')
+                )
+        );
+
+        // Generar elementos dinámicos para cada ítem
+        $.each(items, function(index, item) {
+            $row.append(
+                $('<div>')
+                    .addClass('col-md-2 item-producto')
+                    .css('background-image', 'url("' + item.Imagen + '")')
+                    .click(function() { fnSelectCellInventory(this); })
+                    .dblclick(function() { fnSelectDoubleCellInventory(this); })
+                    .attr({
+                        'data-value': item.inventoryCategoryID,
+                        'data-parent': item.inventoryCategoryID,
+                        'data-codigo': item.Codigo
+                    })
+                    .append(
+                        $('<span>')
+                            .addClass('badge badge-success text-overlay-categoria')
+                            .css({ 'display': 'block', 'white-space': 'normal' })
+                            .text(item.Nombre),
+                        $('<div>').addClass('overlay')
+                    )
+            );
+        });
+
+        return $container;
+    }
+
 	function fnGetConcept(conceptItemID,nameConcept){
 
 		
@@ -2454,8 +2497,13 @@
 
 	function fnSelectCellCategoryInventory(cell)
 	{
-		var inventoryCategoryID = $(cell).data("value");
-
+		$('#row-items').empty();
+		var inventoryCategoryID = String($(cell).data("value"));
+		var filterItems = objListInventoryItemsRestaurant.filter(function(item) {
+			return item.inventoryCategoryID === inventoryCategoryID;
+		});
+		var $inventoryContainer = fnGenerateInventoryItems(filterItems);
+    	$('#row-items').append($inventoryContainer);
 		$(".custom-table-container-categorias").hide();
 		$(".custom-table-container-inventory").show();
 
