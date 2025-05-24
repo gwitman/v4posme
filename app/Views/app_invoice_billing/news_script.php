@@ -275,7 +275,20 @@
 	$("#btnAceptarMesaBussyV2").click(function(){
 		mostarModalPersonalizado('Cargando...');
 		var value 				= $("#txtMesaOcupada").val();
-		window.location.href 	= "<?php echo base_url() . "/" . "app_invoice_billing/edit/companyID/" . $companyID . "/transactionID/" . $transactionID . "/transactionMasterID/" ?>"+value+"<?php echo "/codigoMesero/" . $codigoMesero ?>";
+		loadEdicion 	= true;
+		let url 		= varBaseUrl + '/app_invoice_billing/edit/' + <?php echo $companyID ?> + '/' + transactionID + '/' + transactionMasterID + '/' + $("#txtCodigoMesero").val();
+		const resultado = $.ajax({
+			url: url
+		});
+
+		resultado.then(function(response) {
+			fnClearForm();
+			fnUpdateInvoiceView(response.data);
+		});
+		var sidebar = $("#mySidebarMesa");
+		sidebar.css("width", "0");
+		sidebar.addClass("hidden");
+		$("#mySidebarFactura").css("width","100%");
 		cerrarModal("ModalIrMesaDocumentDialogCustom");
 	});
 
@@ -2017,6 +2030,9 @@
             }
         }
 
+		//renderizar las mesas
+		fnRenderMesas(data.objListMesa);
+
 		//Renderizar combobox de las lineas de credito
         fnRenderLineaCredit(data.objListCustomerCreditLine, data.objCausalTypeCredit);
 
@@ -2178,7 +2194,7 @@
 			objTableDetail.fnAddData(tmpData);
 			objTableDetail.fnDraw();
         }
-
+		
         $("#txtDescuento").val(fnFormatNumber(objTransactionMaster.discount, 2));
         $("#txtPorcentajeDescuento").val(fnFormatNumber(objTransactionMaster.tax4,2));
 
@@ -2263,6 +2279,43 @@
 		cargaCompletada 	= false;
 		cerrarModal('ModalCargandoDatos');
 
+    }
+
+	function fnRenderMesas(mesas) {
+        const $tbody = $('#mesa-body');
+        $tbody.empty(); // Limpia el contenido previo
+        let row = $('<tr></tr>');
+
+        mesas.forEach((item, index) => {
+            const td = $(`
+                <td class="container-overlay"
+                    style="background-image: url('${item.reference1}'); background-size: 180%; background-repeat: no-repeat;"
+                    ondblclick="fnSelectCellMesaDoubleClick(this, ${item.reference2})"
+                    onclick="fnSelectCellMesa(this)"
+                    data-value="${item.catalogItemID}"
+                    data-parent="${item.parentCatalogItemID}">
+                    
+                    <span class="badge badge-success text-overlay">${item.display}</span>
+                    <div class="overlay"></div>
+                </td>
+            `);
+
+            row.append(td);
+
+            if ((index + 1) % 3 === 0) {
+                $tbody.append(row);
+                row = $('<tr></tr>'); // Iniciar nueva fila
+            }
+        });
+
+        // Si la última fila no se completó con 3 columnas
+        const remaining = mesas.length % 3;
+        if (remaining !== 0) {
+            for (let i = 0; i < 3 - remaining; i++) {
+                row.append('<td></td>');
+            }
+            $tbody.append(row); // Agregar última fila incompleta
+        }
     }
 
 	function fnGetConcept(conceptItemID,nameConcept){
@@ -2388,7 +2441,7 @@
 		$("#txtMesaID").val( $(cell).data("value") );
 		$("#txtMesaID").select2();
 		if(value !== 0 && value !== 'undefined'){
-
+			transactionMasterID = value;
 			mostrarModal("ModalIrMesaDocumentDialogCustom");
 			$("#txtMesaOcupada").val(value);
 			$(".modal-backdrop.fade.in").removeClass("modal-backdrop");
@@ -2548,7 +2601,7 @@
 	}
 
 	function fnRecalculateDetail(clearRecibo,tipo_calculate, index=-1){
-		debugger;
+
 		var porcentajeDescuento 	= parseFloat($('#txtPorcentajeDescuento').val()) || 0;
 		var typePriceID 			= $("#txtTypePriceID").val();
         if(index == -1 && tipo_calculate != "sumarizar")
@@ -3633,6 +3686,8 @@
 
 	$(document).ready(function()
 	{
+		var objListMesa = <?= json_encode($objListMesa); ?>;
+		fnRenderMesas(objListMesa);
 		var obtenerRegistrosDelServer = false;
 		openDataBaseAndCreate(obtenerRegistrosDelServer);
 		if(transactionMasterID !== 0)

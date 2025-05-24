@@ -1338,44 +1338,9 @@ echo helper_getHtmlOfPageLanding();
 					
 					<div class="row" id="divPanelFacturaSideMesa" >				
 						<div class="container mt-5">
-						<table class="table custom-table-mesas">
-							<tbody>
-								<?php foreach ($objListMesa as $index => $item): ?>
-									<!-- Abrir una nueva fila si el índice es múltiplo de 3 -->
-									<?php if ($index % 3 == 0): ?>
-										<tr>
-									<?php endif; ?>
-
-									<!-- Crear la celda con contenido dinámico -->
-									<td class="container-overlay" 
-										style="background-image: url('<?= $item->reference1; ?>'); background-size: 180%; background-repeat: no-repeat;" 
-										ondblclick="fnSelectCellMesaDoubleClick(this,<?= $item->reference2 ?>)"
-										onclick="fnSelectCellMesa(this)" 
-										data-value="<?= $item->catalogItemID; ?>"
-										data-parent="<?php echo $item->parentCatalogItemID; ?>" >
-										<span class="badge badge-success text-overlay"><?php echo $item->display; ?></span>
-										<div class="overlay"></div>
-									</td>
-
-									<!-- Cerrar la fila después de cada grupo de 3 celdas -->
-									<?php if ($index % 3 == 2): ?>
-										</tr>
-									<?php endif; ?>
-								<?php endforeach; ?>
-
-								<!-- Si la última fila no se cerró porque no tenía 3 celdas, rellenar con celdas vacías -->
-								<?php if (count($objListMesa) % 3 != 0): ?>
-									<?php 
-										$remainingCells = 3 - (count($objListMesa) % 3); // Calcular cuántas celdas faltan
-										for ($i = 0; $i < $remainingCells; $i++): ?>
-											<td></td> <!-- Celdas vacías para completar la fila -->
-									<?php endfor; ?>
-									</tr>
-								<?php endif; ?>
-							</tbody>
-						</table>
-
-
+							<table class="table custom-table-mesas">
+								<tbody id="mesa-body"></tbody>
+							</table>
 						</div>
 					</div>
 					
