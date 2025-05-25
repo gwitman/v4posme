@@ -2656,7 +2656,6 @@
 	function fnRecalculateDetail(clearRecibo,tipo_calculate, index=-1){
 
 		var porcentajeDescuento 	= parseFloat($('#txtPorcentajeDescuento').val()) || 0;
-		var typePriceID 			= $("#txtTypePriceID").val();
 		var totalGeneral 			= 0;
         if(index == -1 && tipo_calculate != "sumarizar")
 		{
@@ -3119,8 +3118,11 @@
 		for(var i = 0; i < NSSystemDetailInvoice.length; i++)
 		{
 			var itemID 			= NSSystemDetailInvoice[i][2];
-			obtenerDataDBProductoArrayUniByItemID(
+			obtenerDataDBProductoArray(
+				"objListaProductosX001",
+				"itemID",
 				itemID,
+				"producto1",
 				{
 					"all":itemID,
 					"index":i,
@@ -3146,10 +3148,23 @@
 						objTableDetail.fnUpdate(fnFormatNumber( filterResult,2) , e.index, 7 );
 
 					}
+				},
+				function(e,u){
+
+					var valuex=0;
+					try
+					{
+						valuex = e.producto1[0].itemID;
+					}
+					catch(z)
+					{
+						valuex = 0;
+					}
+					e.itemID = valuex;
+					e.callback(e);
+
 				}
 			);
-
-
 		}
 	}
 
@@ -3490,31 +3505,22 @@
 		//}
 	}
 
-	function obtenerDataDBProductoArrayUniByItemID(varItemID,varFunctionI)
-	{
-		obtenerDataDBProductoArray(
-			"objListaProductosX001",
-			"itemID",
-			varItemID,
-			"producto1",
-			varFunctionI,
-			function(e,u){
+	
 
-				var valuex=0;
-				try
-				{
-					valuex = e.producto1[0].itemID;
-				}
-				catch(z)
-				{
-					valuex = 0;
-				}
-				e.itemID = valuex;
-				e.callback(e);
+	function removeDataDB(varTable){
+		const request 		= db.transaction(varTable, 'readwrite')
+							  .objectStore(varTable)
+							  .clear();
 
-			}
-		)
+		request.onsuccess 	= ()=> {
+			console.info("success");
+		}
+
+		request.onerror = (err)=> {
+			console.log('error');
+		}
 	}
+
 
     function obtenerDataDBProductoArray(varTable, varColumn, varValue, valueComando, varDataExt, varFunction) {
         const requestStore = db.transaction(varTable, 'readwrite').objectStore(varTable);
@@ -3551,46 +3557,7 @@
     }
 
 
-	function addDataDB(varTable,varDatos){
-		const transaction 		= db.transaction(varTable, 'readwrite');
-		transaction.oncomplete 	= function(event) {
-			//...
-		};
-
-		transaction.onerror 	= function(event) {
-		  //...
-		};
-
-		const objectStore 	= transaction.objectStore(varTable);
-
-		// Se agrega un nuevo estudiante
-		const request 		= objectStore.add({"name":varDatos});
-
-		request.onsuccess 	= ()=> {
-			// request.result contiene el key del objeto agregado
-			console.log('success');
-		}
-
-		request.onerror = (err)=> {
-			console.log('error');
-		}
-	}
-
-
-	function removeDataDB(varTable){
-		const request 		= db.transaction(varTable, 'readwrite')
-							  .objectStore(varTable)
-							  .clear();
-
-		request.onsuccess 	= ()=> {
-			console.info("success");
-		}
-
-		request.onerror = (err)=> {
-			console.log('error');
-		}
-	}
-
+	
 	function fnAceptarModalInfoProducto(){
         let precioRecomendado 	= $('#selectPrecio').val();
         let vendedor 			= $('#selectVendedor').val();
