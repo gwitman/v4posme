@@ -1,11 +1,12 @@
 <!-- ./ page heading -->
 <script>	
-	var objCallback		= '<?php echo $callback; ?>';				
-	var objTableEmail 	= {};
-	var objTablePhone 	= {};
-	var objTableLine 	= {};
-	var site_url 	  	= "<?php echo base_url(); ?>/";
-	var userMobile		= '<?php echo $useMobile; ?>';
+	var objCallback							= '<?php echo $callback; ?>';				
+	var objTableEmail 						= {};
+	var objTablePhone 						= {};
+	var objTableLine 						= {};
+	var site_url 	  						= "<?php echo base_url(); ?>/";
+	var userMobile							= '<?php echo $useMobile; ?>';
+	var varParameterCantidadItemPoup		= '<?php echo $objParameterCantidadItemPoup; ?>';
 	
 	//este evento es util cuando la pantalla se ejecuta desde la pantalla de facturacion
 	if(objCallback != 'false'){
@@ -55,6 +56,23 @@
 		$(document).on("click","#btnClearEmployer",function(){
 					$("#txtEmployerID").val("");
 					$("#txtEmployerDescription").val("");
+		});
+		
+		$(document).on("click","#btnSearchClienteReferente",function(){
+
+			//Redireccion pantalla
+			var url_redirect		= "__app_cxc_customer__add__callback__onCompleteCustomer__comando__pantalla_abierta_desde_la_factura";
+			url_redirect 			= encodeURIComponent(url_redirect);
+
+
+			var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?php echo $objComponentItem->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_ALL_PAGINATED/true/empty/true/"+url_redirect+"/1/1/"+varParameterCantidadItemPoup+"/";
+			window.open(url_request,"MsgWindow","width=900,height=450");
+			window.onCompleteCustomer = onCompleteCustomer;
+		});
+		
+		$(document).on("click","#btnClearCustomerReferente",function(){
+					$("#txtCustomerIDReference").val("");
+					$("#txtCustomerIDReferenceDescription").val("");
 		});
 		
 		//Traking
@@ -593,6 +611,20 @@
 			$("#txtAccountID").val(objRow.accountID);
 			$("#txtAccountIDDescription").val(objRow.accountName);
 		}
+		
+		function onCompleteCustomer(objResponse)
+		{
+
+			console.info("CALL onCompleteCustomer");
+			if(objResponse !== undefined)
+			{
+				
+				var entityID = objResponse[0][1];
+				$("#txtCustomerIDReference").val(objResponse[0][1]);
+				$("#txtCustomerIDReferenceDescription").val(objResponse[0][2] + " " + objResponse[0][3] + " / " + objResponse[0][4]);				
+			}
+		}
+		
 		//Limpiar Cuenta
 		$(document).on("click","#btnClearAccount",function(){
 			$("#txtAccountID").val("");

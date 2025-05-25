@@ -110,6 +110,20 @@ class app_cxc_customer extends _BaseController {
 			$datView["objEmployerNatural"]			= $this->Natural_Model->get_rowByPK($datView["objCustomer"]->companyID,$datView["objCustomer"]->branchID,$entityEmployeerID);
 			$datView["objEmployerLegal"]			= $this->Legal_Model->get_rowByPK($datView["objCustomer"]->companyID,$datView["objCustomer"]->branchID,$entityEmployeerID);
 			
+			//Obtener Cliente que referencia
+			$datView["objCustomerReferente"]				= null;
+			$datView["objCustomerReferenteNatural"]			= null;
+			$datView["objCustomerReferenteLegal"]			= null;
+			$entityIDCustomerReference 						= $datView["objCustomer"]->entityReferenceID;
+			if(!is_null($entityIDCustomerReference) && is_numeric($entityIDCustomerReference) && floatval($entityIDCustomerReference) > 0 )
+			{
+				
+				$datView["objCustomerReferente"]			= $this->Customer_Model->get_rowByEntity($companyID,$datView["objCustomer"]->entityReferenceID);			
+				$datView["objCustomerReferenteNatural"]		= $this->Natural_Model->get_rowByPK($datView["objCustomer"]->companyID,$datView["objCustomer"]->branchID,$datView["objCustomerReferente"]->entityID);
+				$datView["objCustomerReferenteLegal"]		= $this->Legal_Model->get_rowByPK($datView["objCustomer"]->companyID,$datView["objCustomer"]->branchID,$datView["objCustomerReferente"]->entityID);
+			}
+			
+			
 			$datView["objListSituationID"]			= $this->core_web_catalog->getCatalogAllItem("tb_customer_frecuency_actuations","situationID",$companyID);
 			$datView["objListFrecuencyContactID"]	= $this->core_web_catalog->getCatalogAllItem("tb_customer_frecuency_actuations","frecuencyContactID",$companyID);
 			$datView['objCustomerFrecuency']		= $this->Customer_Frecuency_Actuations_Model->get_rowByEntityID($entityID);
@@ -151,6 +165,16 @@ class app_cxc_customer extends _BaseController {
 										findAll();
 			$datView["objPCItemCategoryLeads"]	= $objPCItemCategoryLeads;
 		
+			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameter("INVOICE_CANTIDAD_ITEM",$companyID);			
+			$objParameterCantidadItemPoup 				= $objParameterCantidadItemPoup->value;
+			$datView["objParameterCantidadItemPoup"] 	= $objParameterCantidadItemPoup;
+			
+			
+			//Obtener el componente de Item
+            $objComponentItem	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+            if(!$objComponentItem)
+                throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+			$datView["objComponentItem"] = $objComponentItem;
 			
 			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -450,6 +474,7 @@ class app_cxc_customer extends _BaseController {
 				$objCustomer["budget"]				= /*inicio get post*/ $this->request->getPost("txtBudget");//--fin peticion get o post
 				$objCustomer["isActive"]			= true;
 				$objCustomer["entityContactID"]		= /*inicio get post*/ $this->request->getPost("txtEmployerID");
+				$objCustomer["entityReferenceID"]	= /*inicio get post*/ $this->request->getPost("txtCustomerIDReference");
 				$objCustomer["modifiedOn"]			= helper_getDateTime();
 				$objCustomer["formContactID"]		= /*inicio get post*/ $this->request->getPost("txtFormContactID");//--fin peticion get o post
 				$this->Customer_Model->update_app_posme($companyID_,$branchID_,$entityID_,$objCustomer);
@@ -881,6 +906,8 @@ class app_cxc_customer extends _BaseController {
 			$objCustomer["budget"]				= /*inicio get post*/ $this->request->getPost("txtBudget");//--fin peticion get o post
 			$objCustomer["isActive"]			= true;
 			$objCustomer["entityContactID"]		= /*inicio get post*/ $this->request->getPost("txtEmployerID");
+			$objCustomer["entityReferenceID"]	= /*inicio get post*/ $this->request->getPost("txtCustomerIDReference");
+			
 			$objCustomer["formContactID"]		= /*inicio get post*/ $this->request->getPost("txtFormContactID");//--fin peticion get o post
 			$this->core_web_auditoria->setAuditCreated($objCustomer,$dataSession,$this->request);
 			$result 							= $this->Customer_Model->insert_app_posme($objCustomer);
@@ -1608,7 +1635,17 @@ class app_cxc_customer extends _BaseController {
 			$dataView["objPCItemCategoryLeads"]	
 										= $objPCItemCategoryLeads;
 										
-										
+			
+			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameter("INVOICE_CANTIDAD_ITEM",$companyID);			
+			$objParameterCantidadItemPoup 				= $objParameterCantidadItemPoup->value;
+			$dataView["objParameterCantidadItemPoup"] 	= $objParameterCantidadItemPoup;
+			
+			//Obtener el componente de Item
+            $objComponentItem	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+            if(!$objComponentItem)
+                throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+			$dataView["objComponentItem"] = $objComponentItem;
+			
 			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);			
 			$dataSession["message"]			= $this->core_web_notification->get_message();

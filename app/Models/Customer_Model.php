@@ -43,7 +43,8 @@ class Customer_Model extends Model  {
 		$sql = sprintf("select 
 			c.customerNumber,n.firstName,n.lastName,c.birthDate,c.balancePoint,
 			c.dateContract,c.entityContactID,
-			c.reference3,c.reference4,c.reference5,c.reference6 ,c.budget,c.modifiedOn,c.formContactId
+			c.reference3,c.reference4,c.reference5,c.reference6 ,c.budget,c.modifiedOn,c.formContactId,
+			c.entityReferenceID
 		");
 		$sql = $sql.sprintf(" from tb_customer c");
 		$sql = $sql.sprintf(" inner join  tb_naturales n on n.entityID = c.entityID");				
@@ -71,7 +72,8 @@ class Customer_Model extends Model  {
 			isActive,typeFirm,i.balancePoint,i.phoneNumber,
 			i.dateContract,i.entityContactID,
 			i.reference3,i.reference4,i.reference5,i.reference6,i.budget,
-			i.modifiedOn,i.formContactID
+			i.modifiedOn,i.formContactID,
+			i.entityReferenceID
 		");
 		$sql = $sql.sprintf(" from tb_customer i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
@@ -97,7 +99,8 @@ class Customer_Model extends Model  {
 			createdOn, createdAt, isActive,typeFirm,i.balancePoint,
 			i.phoneNumber,i.dateContract,i.entityContactID,
 			i.reference3,i.reference4,i.reference5,i.reference6,i.budget,
-			i.modifiedOn,i.formContactID
+			i.modifiedOn,i.formContactID,
+			i.entityReferenceID
 		");
 		$sql = $sql.sprintf(" from tb_customer i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
@@ -122,7 +125,8 @@ class Customer_Model extends Model  {
 			i.payConditionID, i.sexoID, i.reference1, i.reference2, i.createdIn, i.createdBy, i.createdOn, i.createdAt, i.isActive,
 			nat.firstName,nat.lastName,i.typeFirm,i.balancePoint,i.phoneNumber,i.dateContract,i.entityContactID,
 			i.reference3,i.reference4,i.reference5,i.reference6,i.budget,
-			i.modifiedOn,i.formContactID
+			i.modifiedOn,i.formContactID,
+			i.entityReferenceID
 		");
 		$sql = $sql.sprintf(" from tb_customer i");
 		$sql = $sql.sprintf(" inner join  tb_naturales nat on nat.entityID = i.entityID");				
@@ -144,7 +148,8 @@ class Customer_Model extends Model  {
 		i.payConditionID, i.sexoID, i.reference1, i.reference2, i.createdIn, i.createdBy, i.createdOn, i.createdAt, i.isActive,
 		nat.firstName,nat.lastName,i.typeFirm,i.balancePoint,i.phoneNumber,i.dateContract,i.entityContactID,
 		i.reference3,i.reference4,i.reference5,i.reference6,i.budget,
-		i.modifiedOn,i.formContactID
+		i.modifiedOn,i.formContactID,
+		i.entityReferenceID
 		");
 		$sql = $sql.sprintf(" from tb_customer i");
 		$sql = $sql.sprintf(" inner join  tb_naturales nat on nat.entityID = i.entityID");				
@@ -171,7 +176,8 @@ class Customer_Model extends Model  {
 			n.firstName,n.lastName,i.balancePoint,i.phoneNumber,
 			i.dateContract,i.entityContactID,
 			i.reference3,i.reference4,i.reference5,i.reference6,i.budget,
-			i.modifiedOn,i.formContactID
+			i.modifiedOn,i.formContactID,
+			i.entityReferenceID
 		");
 		$sql = $sql.sprintf(" from tb_customer i");	
 		$sql = $sql.sprintf(" inner join  tb_naturales n on n.entityID = i.entityID");				
@@ -195,7 +201,8 @@ class Customer_Model extends Model  {
 				createdOn, createdAt, isActive,i.typeFirm,i.balancePoint,
 				i.phoneNumber,i.dateContract,i.entityContactID,
 				i.reference3,i.reference4,i.reference5,i.reference6,i.budget,
-				i.modifiedOn,i.formContactID, i.balanceDol, i.balanceCor
+				i.modifiedOn,i.formContactID, i.balanceDol, i.balanceCor,
+				i.entityReferenceID
 			");
 		$sql = $sql.sprintf(" from tb_customer i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
