@@ -65,6 +65,7 @@
 	let objListCustomerCreditLine 	= JSON.parse('<?php echo json_encode($objListCustomerCreditLine); ?>');
 	let objCausalTypeCredit 		= JSON.parse('<?php echo json_encode($objCausalTypeCredit); ?>');
 	let objCurrencyCordoba 			= JSON.parse('<?php echo json_encode($objCurrencyCordoba); ?>');
+	let objListMesa 				= <?= json_encode($objListMesa); ?>;
 	let varCustomerCrediLineID		= 0;
     let objRenderInit				= true;
 	let loadEdicion 				= false;
@@ -274,7 +275,7 @@
 
 	$("#btnAceptarMesaBussyV2").click(function(){
 		mostarModalPersonalizado('Cargando...');
-		var value 				= $("#txtMesaOcupada").val();
+		var value 		= $("#txtMesaOcupada").val();
 		loadEdicion 	= true;
 		let url 		= varBaseUrl + '/app_invoice_billing/edit/' + <?php echo $companyID ?> + '/' + transactionID + '/' + transactionMasterID + '/' + $("#txtCodigoMesero").val();
 		const resultado = $.ajax({
@@ -3734,7 +3735,6 @@
 
 	$(document).ready(function()
 	{
-		var objListMesa = <?= json_encode($objListMesa); ?>;
 		fnRenderMesas(objListMesa);
 		var obtenerRegistrosDelServer = false;
 		openDataBaseAndCreate(obtenerRegistrosDelServer);
