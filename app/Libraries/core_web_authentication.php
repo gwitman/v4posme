@@ -180,6 +180,7 @@ class core_web_authentication {
 		$data["menuBodyTop"]			= null;
 		$data["menuBodyReport"]			= $menuBodyReport;
 		$data["menuHiddenPopup"]		= $menuHiddenPopup;
+		$data["lastUrl"] 				= "";
 		
 		
 		return $data;

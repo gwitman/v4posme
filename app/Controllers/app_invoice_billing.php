@@ -3916,7 +3916,12 @@ class app_invoice_billing extends _BaseController {
 			//AUTENTICADO
 			if(!$this->core_web_authentication->isAuthenticated())
 			throw new \Exception(USER_NOT_AUTENTICATED);
-			$dataSession		= $this->session->get();
+			$dataSession			= $this->session->get();
+			
+			
+			$dataSession["lastUrl"] = base_url()."/"."app_invoice_billing/index";
+			$this->session->set($dataSession);
+			
 			
 		 
 			//PERMISO SOBRE LA FUNCTION
