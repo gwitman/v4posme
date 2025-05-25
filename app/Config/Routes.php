@@ -580,6 +580,12 @@ $routes->match(['get', 'post'], 'app_collection_manager/delete', 'app_collection
 $routes->match(['get', 'post'], 'app_collection_manager/save', 'app_collection_manager::save');
 $routes->match(['get', 'post'], 'app_collection_manager/save/(:any)', 'app_collection_manager::save');
 $routes->match(['get', 'post'], 'app_collection_manager/add', 'app_collection_manager::add');
+
+$routes->match(['get', 'post'], 'app_collection_manager/edit', 'app_collection_manager::edit');
+$routes->match(['get', 'post'], 'app_collection_manager/edit/(:any)', 'app_collection_manager::edit');   
+$routes->match(['get', 'post'], 'app_collection_manager/updateElement', 'app_collection_manager::updateElement');
+$routes->match(['get', 'post'], 'app_collection_manager/updateElement/(:any)', 'app_collection_manager::updateElement'); 
+
 $routes->match(['get', 'post'], 'app_collection_manager/index', 'app_collection_manager::index');
 $routes->match(['get', 'post'], 'app_collection_manager/index/(:any)', 'app_collection_manager::index');
 $routes->match(['get', 'post'], 'app_collection_report/index', 'app_collection_report::index');

@@ -1,10 +1,94 @@
 <?php
 //posme:2023-02-27
 namespace App\Controllers;
+
+use CodeIgniter\Exceptions\AlertError;
+use CodeIgniter\HTTP\RedirectResponse;
 class app_collection_manager extends _BaseController {
-	
-    
-	
+		
+    function edit() 
+	{				
+		try{
+
+			//AUTENTICACION
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+				$permited = false;
+				$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				
+				if(!$permited)
+				throw new \Exception(NOT_ACCESS_CONTROL);
+				
+				$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"add",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				if ($resultPermission 	== PERMISSION_NONE)
+				throw new \Exception(NOT_ALL_INSERT);			
+			
+			}	
+			
+			//Cargar Librerias
+			$objComponentEmployee		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
+			if(!$objComponentEmployee)
+			throw new \Exception("00409 EL COMPONENTE 'tb_employee' NO EXISTE...");
+		
+			$objComponentCustomer		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
+			if(!$objComponentCustomer)
+			throw new \Exception("00409 EL COMPONENTE 'tb_customer' NO EXISTE...");
+
+			$objComponentItem			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+
+			$employeeID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "employeeID"); //--finuri
+			$customerID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "customerID"); //--finuri	
+
+			$companyID 		= $dataSession["user"]->companyID;
+			$branchID 		= $dataSession["user"]->branchID;
+			$roleID 		= $dataSession["role"]->roleID;
+
+			if ((!$employeeID || !$customerID)) {
+				$this->response->redirect(base_url() . "/" . 'app_collection_manager/add');
+			}
+
+			//Obtener el Registro			
+			$dataView["objRelationship"]		= $this->Relationship_Model->get_rowByPK($employeeID,$customerID);
+			$dataView["objListEmployee"]		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
+			$dataView["objListCustomer"]	    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
+			$dataView["company"]				= $dataSession["company"];	
+			$dataView["objComponentItem"]	    = $objComponentItem;
+
+			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;	
+
+			//Renderizar Resultado
+			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
+			$dataSession["message"]			= $this->core_web_notification->get_message();
+			$dataSession["head"]			= /*--inicio view*/ view('app_collection_manager/edit_head',$dataView);//--finview
+			$dataSession["body"]			= /*--inicio view*/ view('app_collection_manager/edit_body',$dataView);//--finview
+			$dataSession["script"]			= /*--inicio view*/ view('app_collection_manager/edit_script',$dataView);//--finview
+			$dataSession["footer"]			= "";			
+
+			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r			
+
+		} catch (\Exception $ex) {
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+
+			$data["session"]   = $dataSession;
+			$data["exception"] = $ex;
+			$data["urlLogin"]  = base_url();
+			$data["urlIndex"]  = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . "index";
+			$data["urlBack"]   = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+			$resultView        = view("core_template/email_error_general", $data);
+
+			return $resultView;
+		}
+	}	
 	function delete()
 	{
 		try
@@ -74,7 +158,7 @@ class app_collection_manager extends _BaseController {
 			throw new \Exception(USER_NOT_AUTENTICATED);
 			$dataSession		= $this->session->get();
 			
-			
+	
 			 	
 			//Nuevo Registro
 			if( $method == "new"){
@@ -98,6 +182,7 @@ class app_collection_manager extends _BaseController {
 					//Crear Cuenta
 					$obj["employeeID"]			= /*inicio get post*/ $this->request->getPost("txtEmployeeID");
 					$obj["customerID"] 			= /*inicio get post*/ $this->request->getPost("txtCustomerID");
+					$obj["orderNo"] 			= /*inicio get post*/ $this->request->getPost("txtOrderNo");
 					$obj["isActive"] 			= true;
 					$obj["startOn"] 			= date("Y-m-d");
 					$obj["endOn"] 				= date("Y-m-d");
@@ -107,10 +192,15 @@ class app_collection_manager extends _BaseController {
 					
 					$db->transCommit();						
 					$this->core_web_notification->set_message(false,SUCCESS);
-					$this->response->redirect(base_url()."/".'app_collection_manager/index');	
-					
-					 
+					$this->response->redirect(base_url()."/".'app_collection_manager/index');											 
 			} 
+			//Editar Registro
+			else {
+				//PERMISO SOBRE LA FUNCION
+				$this->updateElement($dataSession);
+			}
+
+
 		}
 		catch(\Exception $ex){
 			if (empty($dataSession)) {
@@ -128,9 +218,8 @@ class app_collection_manager extends _BaseController {
 		}		
 			
 	}
-	function add()
-	{ 
-	
+	function add(): RedirectResponse|string
+	{ 				
 		try{ 
 			//AUTENTICACION
 			if(!$this->core_web_authentication->isAuthenticated())
@@ -274,5 +363,65 @@ class app_collection_manager extends _BaseController {
 		    echo $resultView;
 		}
 	}	
+
+	function updateElement($dataSession)
+	{
+		try {
+			if (APP_NEED_AUTHENTICATION == true) {
+				$permited = false;
+				$permited = $this->core_web_permission->urlPermited(get_class($this), "index", URL_SUFFIX, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
+
+				if (!$permited)
+					throw new \Exception(NOT_ACCESS_CONTROL);
+
+				$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this), "edit", URL_SUFFIX, $dataSession, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
+				if ($resultPermission 	== PERMISSION_NONE)
+					throw new \Exception(NOT_ALL_EDIT);
+			}
+
+			//PERMISO SOBRE EL REGISTRO
+			$companyID 			= $dataSession["user"]->companyID;
+			$relationshipID    	= $this->request->getPost("txtRelationshipID");
+			$employeeID         = $this->request->getPost("txtEmployeeID");
+			$customerID         = $this->request->getPost("txtCustomerID");
+
+			$objTM                                  = $this->Relationship_Model->get_rowByID($relationshipID);
+			
+			//$obj["companyID"]			= $companyID;
+			$obj["employeeID"] 			= $this->request->getPost("txtEmployeeID");			
+			$obj["customerID"] 			= $this->request->getPost('txtCustomerID');
+			$obj["orderNo"] 			= $this->request->getPost('txtOrderNo');
+												
+			$db = db_connect();
+			$db->transStart();
+
+			//Actualizar Relationship
+			$result 			= $this->Relationship_Model->update_app_posme($relationshipID, $obj);
+
+			if ($db->transStatus() !== false) {
+				$db->transCommit();
+				$this->core_web_notification->set_message(false, SUCCESS);
+			} else {
+				$db->transRollback();
+				$this->core_web_notification->set_message(true, $db->error()["message"]);
+			}
+
+			$this->response->redirect(base_url() . "/" . 'app_collection_manager/edit/employeeID/' . $employeeID . "/customerID/" . $customerID);
+		} catch (\Exception $ex) {
+
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+
+			$data["session"]   = $dataSession;
+			$data["exception"] = $ex;
+			$data["urlLogin"]  = base_url();
+			$data["urlIndex"]  = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . "index";
+			$data["urlBack"]   = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+			$resultView        = view("core_template/email_error_general", $data);
+
+			echo $resultView;
+		}
+	}
 }
 ?>

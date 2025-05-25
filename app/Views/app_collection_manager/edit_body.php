@@ -1,10 +1,11 @@
-					<div class="row"> 
+	                <div class="row"> 
                         <div id="email" class="col-lg-12">
                         
                         	<!-- botonera -->
                             <div class="email-bar" style="border-left:1px solid #c9c9c9">                                
                                 <div class="btn-group pull-right">                                    
-									<a href="<?php echo base_url(); ?>/app_collection_manager/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>                                    
+									<a href="<?php echo base_url(); ?>/app_collection_manager/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>   
+                                    <a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>                                
                                     <a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>                                    
                                 </div>
                             </div> 
@@ -30,14 +31,14 @@
 											<div class="email-content col-lg-12">
 												<!-- formulario -->
 												<form id="form-new-account-type" name="form-new-rol" class="form-horizontal" role="form">
-													<fieldset>		
-													
+                                                    <input type="hidden" id="txtRelationshipID" name="txtRelationshipID" value="<?php echo $objRelationship->relationshipID; ?>">
+													<fieldset>															
 														<div class="form-group">
 															<label class="col-lg-4 control-label" for="buttons"><?php echo getBehavio($company->type,"app_collection_manager","lblColaborador","Colaborador"); ?></label>
 															<div class="col-lg-8">
 																<div class="input-group">
-																	<input type="hidden" id="txtEmployeeID" name="txtEmployeeID">
-																	<input class="form-control" readonly id="txtEmployeeDescription" type="txtEmployeeDescription">																
+																	<input type="hidden" id="txtEmployeeID" name="txtEmployeeID" value="<?php echo $objRelationship->employeeID; ?>">
+																	<input class="form-control" readonly id="txtEmployeeDescription" type="text" value="<?php echo $objRelationship->firstName; ?>">																
 																	
 																	<span class="input-group-btn">
 																		<button class="btn btn-danger" type="button" id="btnClearEmployee">
@@ -60,8 +61,8 @@
 															<label class="col-lg-4 control-label" for="buttons">Cliente</label>
 															<div class="col-lg-8">
 																<div class="input-group">
-																	<input type="hidden" id="txtCustomerID" name="txtCustomerID">
-																	<input class="form-control" readonly id="txtCustomerDescription" type="txtCustomerDescription">																
+																	<input type="hidden" id="txtCustomerID" name="txtCustomerID" value="<?php echo $objRelationship->customerID; ?>">
+																	<input class="form-control" readonly id="txtCustomerDescription" type="text" value="<?php echo $objRelationship->legalName; ?>">																
 																	
 																	<span class="input-group-btn">
 																		<button class="btn btn-danger" type="button" id="btnClearCustomer">
@@ -84,7 +85,7 @@
 															<label class="col-lg-4 control-label" for="buttons">Orden No</label>
 															<div class="col-lg-8">
 																<div class="input-group">	
-																	<input class="form-control" type="text" name="txtOrderNo" id="txtOrderNo" value="">																																																																																																		
+																	<input class="form-control" type="text" name="txtOrderNo" id="txtOrderNo" value="<?php echo $objRelationship->orderNo; ?>">																																																																																																		
 																</div>
 															</div>
 														</div>

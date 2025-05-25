@@ -1,7 +1,8 @@
-				<!-- ./ page heading -->
+<!-- ./ page heading -->
 				<script>					
 					
-					$(document).ready(function(){				
+					$(document).ready(function(){
+										
 						var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';  
 	
 						//Regresar a la lista
@@ -14,10 +15,40 @@
 								if (validateForm()) {
 									fnWaitOpen();
 									$( "#form-new-account-type" ).attr("method","POST");
-									$( "#form-new-account-type" ).attr("action","<?php echo base_url(); ?>/app_collection_manager/save/new");
+									$( "#form-new-account-type" ).attr("action","<?php echo base_url(); ?>/app_collection_manager/save/edit");
 									$( "#form-new-account-type" ).submit();
 								}
 						});
+
+                        //Comando Eliminar
+		                $(document).on("click","#btnDelete",function(){
+			            fnShowConfirm("Confirmar..","Desea eliminar este Registro...",function(){
+				        fnWaitOpen();
+                                $.ajax({
+                                cache       : false,
+                                dataType    : 'json',
+                                type        : 'POST',
+                                url  		: "<?php echo base_url(); ?>/app_collection_manager/delete",
+                                data 		: {employeeID : <?php echo $objRelationship->employeeID;?>, customerID : <?php echo $objRelationship->customerID;?>  },
+                                success:function(data){
+                                    console.info("complete delete success");
+                                    fnWaitClose();
+                                    if(data.error){
+                                        fnShowNotification(data.message,"error");
+                                    }
+                                    else{
+                                        window.location = "<?php echo base_url(); ?>/app_collection_manager/index";
+                                    }
+                                },
+                                error:function(xhr,data){
+                                    console.info("complete delete error");
+                                    fnWaitClose();
+                                    fnShowNotification("Error 505","error");
+                                }
+                                });
+                            });
+                        });
+
 						
 						//Buscar Colagorador
 						$(document).on("click","#btnSearchEmployee",function(){
@@ -25,11 +56,13 @@
 							window.open(url_request,"MsgWindow","width=900,height=450");
 							window.onCompleteEmployee = onCompleteEmployee; 
 						});
+
 						//Eliminar Colaborador
 						$(document).on("click","#btnClearEmployee",function(){
 									$("#txtEmployeeID").val("");
 									$("#txtEmployeeDescription").val("");
 						});
+
 						function onCompleteEmployee(objResponse){
 							console.info("CALL onCompleteEmployee");
 							
@@ -44,11 +77,13 @@
 							window.open(url_request,"MsgWindow","width=900,height=450");
 							window.onCompleteCustomer = onCompleteCustomer; 
 						});
+                        
 						//Eliminar Cliente
 						$(document).on("click","#btnClearCustomer",function(){
 									$("#txtCustomerID").val("");
 									$("#txtCustomerDescription").val("");
 						});
+
 						function onCompleteCustomer(objResponse){
 							console.info("CALL onCompleteCustomer");
 							
@@ -56,6 +91,7 @@
 							$("#txtCustomerDescription").val(objResponse[0][2] + " / " + objResponse[0][3]); 
 							
 						}
+                    
 																		
 					});
 
@@ -63,7 +99,7 @@
 						var result = true;
 						var timerNotification = 15000;
 
-						//Validar Fecha
+						//Validar Order No.
 						if ($("#txtOrderNo").val() == "") {
 							fnShowNotification("El numero de Orden es requerido", "error", timerNotification);
 							result = false;
