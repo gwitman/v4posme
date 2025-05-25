@@ -1556,7 +1556,7 @@
 				]);
 				
 				fnGetConcept(objRow.itemID,"ALL");
-
+				refreschChecked();
 				if(varUseMobile != "1"){
 					$("#body_tb_transaction_master_detail tr")[objTableDetail.fnGetData().length - 1].animate({
 					backgroundColor : "#4eacc8" },100);
@@ -1566,7 +1566,7 @@
 			});
 		}
 
-		refreschChecked();
+		
 		$("#txtScanerCodigo").focus();
 	}
 
@@ -1992,7 +1992,7 @@
         varParameterUrlServidorDeImpresion      			= data.objParameterUrlServidorDeImpresion;
         varTransactionCausalID	                			= objTransactionMaster.transactionCausalID;
         varCustomerCrediLineID	                			= objTransactionMaster.reference4;
-
+		let objParameterEsRestaurante						= data.objParameterEsResrarante;
 		let objTransactionMasterDetailCredit 	= data.objTransactionMasterDetailCredit;
         let objTransactionMasterInfo            = data.objTransactionMasterInfo;
 		let objNaturalDefault 					= data.objNaturalDefault;
@@ -2242,7 +2242,11 @@
         }else{
             $('.showComandoDeCocina').hide();
         }
-
+		if(objParameterEsRestaurante == "true"){
+			$('.showRestaurante').show();
+		}else{
+			$('.showRestaurante').hide();
+		}
         if(objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE==="false"){
             $('#divPanelOpenCash').css('display','block');
         }else{
@@ -2652,6 +2656,7 @@
 
 		var porcentajeDescuento 	= parseFloat($('#txtPorcentajeDescuento').val()) || 0;
 		var typePriceID 			= $("#txtTypePriceID").val();
+		var totalGeneral 			= 0;
         if(index == -1 && tipo_calculate != "sumarizar")
 		{
 			var cantidad 				= 0;
@@ -2664,8 +2669,7 @@
 			var ivaGeneral 				= 0;
 			var serviceGeneral			= 0;
 			var precioGeneral			= 0;
-			var subtotalGeneral 		= 0;
-			var totalGeneral 			= 0;
+			var subtotalGeneral 		= 0;			
 			let skuRatio				= 0;
 			var priceTemporal			= 0;
 			var cantidadTemporal		= 0;
@@ -2730,18 +2734,8 @@
 					invoiceTypeCredit = true;
 				}
 			}
-
-
-			if(invoiceTypeCredit === true){
-				$("#txtReceiptAmount").val("0.00");
-			}
-			else{
-				$("#txtReceiptAmount").val(fnFormatNumber(totalGeneral,2));
-			}
-		
-
-			
 		}
+
 		if(index > -1 && tipo_calculate != "sumarizar")
 		{
 			var NSSystemDetailInvoice		= objTableDetail.fnGetData();
@@ -2768,7 +2762,7 @@
 			var descuento		 			= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.discount]); })).sum().result;			
 			var ivaGeneral		 			= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.iva]); })).sum().result;			
 			var serviceGeneral		 		= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.taxServices]); })).sum().result;			
-			var totalGeneral				= subtotalGeneral + ivaGeneral + serviceGeneral - descuento;
+			totalGeneral				    = subtotalGeneral + ivaGeneral + serviceGeneral - descuento;
 			
 			$("#txtSubTotal").val(fnFormatNumber(subtotalGeneral,2));
 			$('#txtDescuento').val(fnFormatNumber(descuento, 2));
@@ -2787,7 +2781,7 @@
 			var descuento		 			= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.discount]); })).sum().result;			
 			var ivaGeneral		 			= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.iva]); })).sum().result;			
 			var serviceGeneral		 		= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.taxServices]); })).sum().result;			
-			var totalGeneral				= subtotalGeneral + ivaGeneral + serviceGeneral - descuento;
+			totalGeneral				    = subtotalGeneral + ivaGeneral + serviceGeneral - descuento;
 			
 			$("#txtSubTotal").val(fnFormatNumber(subtotalGeneral,2));
 			$('#txtDescuento').val(fnFormatNumber(descuento, 2));
@@ -2796,7 +2790,13 @@
 			$("#txtTotal").val(fnFormatNumber(totalGeneral,2));
 			$("#txtTotalAlternativo").text(fnFormatNumber(totalGeneral,2));
 		}
-		
+
+		if(invoiceTypeCredit === true){
+			$("#txtReceiptAmount").val("0.00");
+		}
+		else{
+			$("#txtReceiptAmount").val(fnFormatNumber(totalGeneral,2));
+		}
 		
 		if (clearRecibo)
 		{

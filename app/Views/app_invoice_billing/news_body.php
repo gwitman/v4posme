@@ -848,10 +848,10 @@ echo helper_getHtmlOfPageLanding();
 							
 							<div class="row" id="rowBotoneraFacturaFila3">			
 								<br id="saltoDeLineaFila3" />					
-								<div class="col col-lg-2 showComandoDeCocina">
+								<div class="col col-lg-2 showRestaurante">
 									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnOptionPago"><i class="icon16 i-arrow-down-12 "></i> PROCESAR PAGO</a>
 								</div>
-								<div class="col col-lg-2 showComandoDeCocina">
+								<div class="col col-lg-2 showRestaurante">
 									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunVerDetalle","DETALLE"); ?>  </a>
 								</div>							
 							</div>
@@ -884,7 +884,6 @@ echo helper_getHtmlOfPageLanding();
 								<div class="col col-lg-6 col-md-6 col-sm-6 col-xs-6">
 									<div class="btn-group  btn-block hidden btn-comando-factura">
 										<button type="button" class="btn btn-flat btn-danger dropdown-toggle  btn-block" data-toggle="dropdown">FAC <span class="caret"></span></button>
-										<ul class="dropdown-menu">
 										<ul class="dropdown-menu">											
 											<li><a href="javascript:void(0);" id="btnBack" >REGRESAR</a></li>
 											<li><a href="<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>" id="btnNew">NUEVA FAC</a></li>
