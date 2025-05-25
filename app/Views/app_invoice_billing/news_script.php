@@ -45,7 +45,8 @@
 	var varParameterInvoiceBillingPrinterDataLocal			= '<?php echo $dataPrinterLocal; ?>';
 	var varParameterUrlServidorDeImpresion 					= '<?php echo $objParameterUrlServidorDeImpresion; ?>';
 	var varParameterINVOICE_BILLING_VALIDATE_EXONERATION 	= '<?php echo $objParameterINVOICE_BILLING_VALIDATE_EXONERATION; ?>';
-	var objParameterINVOICE_SHOW_FIELD_PESO					= '<?php echo $objParameterINVOICE_SHOW_FIELD_PESO; ?>';
+	var objParameterINVOICE_SHOW_FIELD_PESO					= '<?php echo $objParameterINVOICE_SHOW_FIELD_PESO; ?>';	
+	var objParameterEsRestaurante							= '<?php echo $objParameterEsResrarante; ?>'; 
 
 
 	var varPermisosEsPermitidoModificarPrecio 			= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_MODIFICAR_PRECIO_EN_FACTURACION"}).select().length > 0 ? true:	false;
@@ -1144,6 +1145,52 @@
 		sidebar.css("width", "0");
 	});
 
+	// Evitar el envío tradicional y manejar con AJAX
+    $("#form-new-invoice").on('submit', function(e) {
+        e.preventDefault(); // Esto evita el envío tradicional
+
+        // Serializar los datos del formulario
+        var formData = $(this).serialize();
+
+        $.ajax({
+            url		: $(this).attr('action'),
+            type	: $(this).attr('method'),
+            dataType: 'json',
+            data	: formData,
+            success	: function(response) {
+
+                // Restaurar botón
+                if(response.success) {
+                    fnUpdateInvoiceView(response.data);
+					ToastSuccess.fire({
+							icon  : 'success',
+							title : 'Factura aplicada correctamente'
+					});
+                } else {
+                    // Manejar error
+					Toast.fire({
+							icon  : 'error',
+							title : 'Codigo:' + response.error.code + " , " + response.error.message
+					});
+                }
+            },
+            error: function(xhr) {
+
+                // Manejar error de conexión
+                Swal.fire({
+                    icon	: 'error',
+                    title	: 'Error de conexión',
+                    text	: 'No se pudo conectar con el servidor'
+                });
+
+                console.error("Error en AJAX:", xhr.responseText);
+            },
+			complete: function(){
+				cerrarModal('ModalCargandoDatos');
+			}
+        });
+    });
+	
 	function fnAceptarModalModalPrinterDocumentDialogCustom()
 	{
 		mostarModalPersonalizado('Cargando, por favor espere...');
@@ -1392,25 +1439,7 @@
 		}
 	}
 
-	function onCompletePantalla(){
-		$(".btn-comando-factura").removeClass("hidden");
-
-
-		if(varUseMobile == "1" ){
-		   $(".elementMovilOculto").addClass("hidden");
-		   $("#table-resumen").css("width", ( $( window ).width() )+"px");
-		   $("#table-resumen th").css("display","block");
-		   $("#table-resumen td").css("display","block");
-
-		   $("#table-resumen-pago").css("width", ( $( window ).width() )+"px");
-		   $("#table-resumen-pago th").css("display","block");
-		   $("#table-resumen-pago td").css("display","block");
-
-		   $("#tb_transaction_master_detail th").css("display","none");
-		   $("#tb_transaction_master_detail td").css("display","block");
-
-	    }
-	}
+	
 
 	//Cargar Factura
 	function onCompleteSelectInvoice(objResponse) {
@@ -1841,51 +1870,7 @@
 
 	}
 
-    // Evitar el envío tradicional y manejar con AJAX
-    $("#form-new-invoice").on('submit', function(e) {
-        e.preventDefault(); // Esto evita el envío tradicional
-
-        // Serializar los datos del formulario
-        var formData = $(this).serialize();
-
-        $.ajax({
-            url		: $(this).attr('action'),
-            type	: $(this).attr('method'),
-            dataType: 'json',
-            data	: formData,
-            success	: function(response) {
-
-                // Restaurar botón
-                if(response.success) {
-                    fnUpdateInvoiceView(response.data);
-					ToastSuccess.fire({
-							icon  : 'success',
-							title : 'Factura aplicada correctamente'
-					});
-                } else {
-                    // Manejar error
-					Toast.fire({
-							icon  : 'error',
-							title : 'Codigo:' + response.error.code + " , " + response.error.message
-					});
-                }
-            },
-            error: function(xhr) {
-
-                // Manejar error de conexión
-                Swal.fire({
-                    icon	: 'error',
-                    title	: 'Error de conexión',
-                    text	: 'No se pudo conectar con el servidor'
-                });
-
-                console.error("Error en AJAX:", xhr.responseText);
-            },
-			complete: function(){
-				cerrarModal('ModalCargandoDatos');
-			}
-        });
-    });
+    
 
 	function mostarModalPersonalizado(title){
 		$('#title-modal').text(title.toUpperCase());
@@ -2243,9 +2228,11 @@
         }else{
             $('.showComandoDeCocina').hide();
         }
-		if(objParameterEsRestaurante == "true"){
+		if(objParameterEsRestaurante == "true")
+		{
 			$('.showRestaurante').show();
 		}else{
+			
 			$('.showRestaurante').hide();
 		}
         if(objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE==="false"){
@@ -3697,7 +3684,25 @@
 
 
 
+	function onCompletePantalla(){
+		$(".btn-comando-factura").removeClass("hidden");
 
+
+		if(varUseMobile == "1" ){
+		   $(".elementMovilOculto").addClass("hidden");
+		   $("#table-resumen").css("width", ( $( window ).width() )+"px");
+		   $("#table-resumen th").css("display","block");
+		   $("#table-resumen td").css("display","block");
+
+		   $("#table-resumen-pago").css("width", ( $( window ).width() )+"px");
+		   $("#table-resumen-pago th").css("display","block");
+		   $("#table-resumen-pago td").css("display","block");
+
+		   $("#tb_transaction_master_detail th").css("display","none");
+		   $("#tb_transaction_master_detail td").css("display","block");
+
+	    }
+	}
 
 
 	$(document).ready(function()
@@ -3733,11 +3738,16 @@
 			filter			: '.item-producto-back'
 		});
 
+		
 		//codigo para cuando carga la pagina y mostrar la zona
 		if(varParameterRestaurante == "true")
 		{
 			$("#mySidebarZona").css("width","100%");
 			$("#mySidebarZona").removeClass("hidden");
+		}
+		else 
+		{
+			$('.showRestaurante').hide();
 		}
 
 		$(".custom-table-container-inventory").hide();
