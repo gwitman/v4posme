@@ -3,6 +3,42 @@
 namespace App\Controllers;
 class app_inventory_api extends _BaseController {
 	
+	function getSkuAllProduct(){
+		try{  
+		
+		
+			
+			//Validar Authentication
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+	
+			$dataSession	= $this->session->get();
+			$dataViewData	= $this->Item_Sku_Model->get_rowByAll();
+			
+			//Obtener Resultados.			
+			return $this->response->setJSON(array(
+				'error'   => false,
+				'message' => SUCCESS,			
+				'objListItemSku'	 => $dataViewData
+			));//--finjson			
+			
+		}
+		catch(\Exception $ex){
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;
+		}
+	}
+	
     function uploadDataEncuentra24(){
 		try{ 
 		

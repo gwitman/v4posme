@@ -15,7 +15,8 @@ function helper_reporte80mmTransactionMasterFarmaLey(
     $statusName = "", /*estado*/
     $causalName = "", /*causal*/
 	$userNickName = "", /*vendedor*/
-    $rucCompany = "" /*ruc*/
+    $rucCompany = "" /*ruc*/ ,
+	$fullData = "" 
 )
 {
     $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;
@@ -107,24 +108,23 @@ function helper_reporte80mmTransactionMasterFarmaLey(
                           </td>
                         </tr>";
 						
-          if($userNickName != "")
-		  {      
-			$html	= $html."<tr>
-                          <td colspan=''>
-                            Vendedor:
-                          </td>
-						  <td colspan='2'>
-                            ". (strpos($userNickName , "@") === false ? $userNickName : substr($userNickName,0,strpos($userNickName , "@") ) )   ."
-                          </td>
-                        </tr>";
-		  }
+              
+		$html	= $html."<tr>
+					  <td colspan=''>
+						Vendedor:
+					  </td>
+					  <td colspan='2'>
+						". $fullData["objNaturalEmployer"]->firstName ."
+					  </td>
+					</tr>";
+		  
 						
           $html	= $html."
 						<tr>
 						  <td colspan='1'>
 							Cliente:
                           <td colspan='2'>
-							". ( $objTransactionMasterInfo->referenceClientName == "" ?   $objEntidadNatural->firstName." ".$objEntidadNatural->lastName  :  $objTransactionMasterInfo->referenceClientName)  ."
+							". ( $objTransactionMasterInfo->referenceClientName == "" ?   $objEntidadNatural->firstName :  $objTransactionMasterInfo->referenceClientName)  ."
                           </td>
                         </tr>
 						
@@ -133,7 +133,7 @@ function helper_reporte80mmTransactionMasterFarmaLey(
                             Cedula:
                           </td>
 						  <td colspan='2'>
-                            ".$objEntidadCustomer->identification."
+                            ".strtoupper($objEntidadCustomer->identification)."
                           </td>
                         </tr>
 						<tr>
@@ -272,7 +272,25 @@ function helper_reporte80mmTransactionMasterFarmaLey(
                             &nbsp;
                           </td>
                         </tr>
+						
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            *SU AHORRO FUE DE:".$objCurrency->simbol."".sprintf("%.2f",$objTransactionMastser->discount)."
+                          </td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            *PUNTOS ACUMULADOS: ".sprintf("%.2f",$objEntidadCustomer->balancePoint / 0.03 )." PT
+                          </td>
+                        </tr>
 
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+						
                         <tr>
                           <td colspan='3' style='text-align:center'>
                             ".$objCompany->address."

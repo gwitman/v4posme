@@ -33,18 +33,16 @@ class Item_Sku_Model extends Model  {
    }
    
 
-   function get_rowByItemID($itemID){
+	function get_rowByItemID($itemID) {
 		$db 		= db_connect();
-		$builder	= $db->table("tb_item_sku");
-		$sql = "";
-		$sql = sprintf("select i.skuID, i.itemID,i.catalogItemID,i.value,w.display ");
-		$sql = $sql.sprintf(" from tb_item_sku i");
-		$sql = $sql.sprintf(" inner join  tb_catalog_item w on i.catalogItemID = w.catalogItemID");		
-		$sql = $sql.sprintf(" where i.itemID = $itemID");		
-		
-		//Ejecutar Consulta
-		return $db->query($sql)->getResult();
-   }
+		$builder 	= $db->table('tb_item_sku i');
+		$builder->select('i.skuID, i.itemID, i.catalogItemID, i.value, w.display, i.price, i.predeterminado');
+		$builder->join('tb_catalog_item w', 'i.catalogItemID = w.catalogItemID');
+		$builder->where('i.itemID', $itemID);
+		$result = $builder->get()->getResult();
+		return $result;
+	}
+
    function getByPK($itemID,$catalogItemID){
 		$db 		= db_connect();
 		$builder	= $db->table("tb_item_sku");
@@ -76,7 +74,13 @@ class Item_Sku_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
-   
+   function get_rowByAll(){
+		$db = db_connect();
+		$builder 	= $db->table('tb_item_sku i');
+		$builder->select('i.itemID, i.catalogItemID, i.value, w.name, i.price, i.predeterminado');
+		$builder->join('tb_catalog_item w', 'i.catalogItemID = w.catalogItemID');
+		return $builder->get()->getResult();
+   }
   
 }
 ?>

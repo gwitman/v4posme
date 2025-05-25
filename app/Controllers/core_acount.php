@@ -11,6 +11,79 @@ class core_acount extends _BaseController {
 	//Vista de Login
 	function index(){
 		
+		
+		//Si esta autenticado, solo redirigir
+		//----------------------------------------------
+        if($this->core_web_authentication->isAuthenticated())
+		{
+			$dataSession	= $this->session->get();
+			if($dataSession["lastUrl"] != "")
+			{
+				if($dataSession["company"]->type == "emanuel")
+				{
+					$this->response->redirect($dataSession["lastUrl"]);
+				}
+				else
+				{
+				
+					////Obtener Datos 				
+					$parameterCantidadTransacciones 	= $this->core_web_parameter->getParameter("CORE_QUANTITY_TRANSACCION",$dataSession["user"]->companyID);
+					$parameterCantidadTransacciones 	= $parameterCantidadTransacciones->value;
+					
+					$parameterBalance = $this->core_web_parameter->getParameter("CORE_CUST_PRICE_BALANCE",$dataSession["user"]->companyID);
+					$parameterBalance = $parameterBalance->value;
+					
+					$parameterCORE_PROPIETARY_ADDRESS 			= $this->core_web_parameter->getParameter("CORE_PROPIETARY_ADDRESS",$dataSession["user"]->companyID);
+					$parameterCORE_PROPIETARY_ADDRESS 			= $parameterCORE_PROPIETARY_ADDRESS->value;
+					$parameterCORE_PROPIETARY_PHONE 			= $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE",$dataSession["user"]->companyID);
+					$parameterCORE_PROPIETARY_PHONE 			= $parameterCORE_PROPIETARY_PHONE->value;
+					$parameterCORE_PHONE 						= $this->core_web_parameter->getParameter("CORE_PHONE",$dataSession["user"]->companyID);
+					$parameterCORE_PHONE 						= $parameterCORE_PHONE->value;
+					$parameterCORE_COMPANY_IDENTIFIER 			= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$dataSession["user"]->companyID);
+					$parameterCORE_COMPANY_IDENTIFIER 			= $parameterCORE_COMPANY_IDENTIFIER->value;
+					$parameterCORE_PROPIETARY_EMAIL 			= $this->core_web_parameter->getParameter("CORE_PROPIETARY_EMAIL",$dataSession["user"]->companyID);
+					$parameterCORE_PROPIETARY_EMAIL 			= $parameterCORE_PROPIETARY_EMAIL->value;
+					$parameterCORE_PROPIETARY_NAME 				= $this->core_web_parameter->getParameter("CORE_PROPIETARY_NAME",$dataSession["user"]->companyID);
+					$parameterCORE_PROPIETARY_NAME 				= $parameterCORE_PROPIETARY_NAME->value;
+					
+					//Validar Fecha de Expiracion
+					$objCompany 										= $dataSession["company"];
+					$nickname											= $dataSession["user"]->nickname;
+					//Set Variables			
+					$params_["nickname"]								= $nickname;
+					$params_["objCompany"]								= $objCompany;
+					$params_["parameterBalance"]						= $parameterBalance;
+					$params_["parameterCantidadDeTransacciones"]		= $parameterCantidadTransacciones;
+					$params_["mensaje"]									= "Su balance de uso es:".$parameterBalance.", Cantidad de Transacciones: ".$parameterCantidadTransacciones;
+					$params_["mensaje"]									= $params_["mensaje"]." </br>".
+							" Parametro Direccion: ".$parameterCORE_PROPIETARY_ADDRESS."</br>".
+							" Parametro Telefono: ".$parameterCORE_PROPIETARY_PHONE."</br>".
+							" Parametro Telefono 2: ".$parameterCORE_PHONE."</br>".
+							" Parametro Ruc: ".$parameterCORE_COMPANY_IDENTIFIER."</br>".
+							" Parametro Email: ".$parameterCORE_PROPIETARY_EMAIL."</br>".
+							" Parametro Propietario: ".$parameterCORE_PROPIETARY_NAME."</br>";
+			
+					$subject 	= "Inicio de session: ".$objCompany->name." ".$nickname;
+					$body  		= /*--inicio view*/ view('core_template/email_notificacion',$params_);
+					
+			
+					$this->email->setFrom(EMAIL_APP);
+					$this->email->setTo(EMAIL_APP_COPY);
+					$this->email->setSubject($subject);			
+					$this->email->setMessage($body); 
+					
+					$resultSend01 = $this->email->send();
+					$resultSend02 = $this->email->printDebugger();
+					$this->response->redirect($dataSession["lastUrl"]);
+				}
+			}
+		}
+			
+			
+			
+			
+		//Mostrar pantalla de login
+		//----------------------------------------------	
 		//Obtener Datos 			
 		$parameterSendBox 			= $this->core_web_parameter->getParameter("CORE_PAYMENT_SENDBOX",APP_COMPANY);		
 		$parameterSendBox 			= $parameterSendBox->value;		
@@ -219,34 +292,37 @@ class core_acount extends _BaseController {
 			$subject 	= "Inicio de session: ".$objCompany->name." ".$nickname;
 			$body  		= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview
 			
-			
-			$this->email->setFrom(EMAIL_APP);
-			$this->email->setTo(EMAIL_APP_COPY);
-			$this->email->setSubject($subject);			
-			$this->email->setMessage($body); 
-			
-			$resultSend01 = $this->email->send();
-			$resultSend02 = $this->email->printDebugger();
-			
-			
-			//Guardar Log			
-			$objLogSessionModel["session_id"] 		= session_id();
-			$objLogSessionModel["ip_address"] 		= $this->request->getIPAddress();
-			$objLogSessionModel["user_agent"] 		= $this->request->getUserAgent()->getPlatform();
-			$objLogSessionModel["last_activity"] 	= \DateTime::createFromFormat("Y-m-d H:i:s",helper_getDateTime())->format("YmdHis");
-			$objLogSessionModel["user_data"] 		= $objUser["user"]->nickname." create session";
-			
-			
-			$objLogSessionModel2 					= $this->Log_Session_Model->asObject()->where("session_id",$objLogSessionModel["session_id"])->find();
-			if(!$objLogSessionModel2)			
-			$this->Log_Session_Model->insert($objLogSessionModel);			
-			else 			
-			$this->Log_Session_Model->upsert($objLogSessionModel);
-		
-		
-			
-			$this->response->redirect(base_url()."/".$objUser["role"]->urlDefault."/index");
-			
+			if($objCompany->type == "emanuel")
+			{
+				$this->response->redirect(base_url()."/".$objUser["role"]->urlDefault."/index");
+			}
+			else 
+			{
+				$this->email->setFrom(EMAIL_APP);
+				$this->email->setTo(EMAIL_APP_COPY);
+				$this->email->setSubject($subject);			
+				$this->email->setMessage($body); 
+				
+				$resultSend01 = $this->email->send();
+				$resultSend02 = $this->email->printDebugger();
+				
+				
+				//Guardar Log			
+				$objLogSessionModel["session_id"] 		= session_id();
+				$objLogSessionModel["ip_address"] 		= $this->request->getIPAddress();
+				$objLogSessionModel["user_agent"] 		= $this->request->getUserAgent()->getPlatform();
+				$objLogSessionModel["last_activity"] 	= \DateTime::createFromFormat("Y-m-d H:i:s",helper_getDateTime())->format("YmdHis");
+				$objLogSessionModel["user_data"] 		= $objUser["user"]->nickname." create session";
+				
+				
+				$objLogSessionModel2 					= $this->Log_Session_Model->asObject()->where("session_id",$objLogSessionModel["session_id"])->find();
+				if(!$objLogSessionModel2)			
+				$this->Log_Session_Model->insert($objLogSessionModel);			
+				else 			
+				$this->Log_Session_Model->upsert($objLogSessionModel);
+				
+				$this->response->redirect(base_url()."/".$objUser["role"]->urlDefault."/index");
+			}
 			
 		
 		}

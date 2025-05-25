@@ -988,14 +988,21 @@ class app_invoice_billing extends _BaseController {
 				$arrayListTaxServices						= array();
 				$arrayListLote	 							= array();
 				$arrayListVencimiento						= array();
+				$arrayListIdSku								= array();
+				$arrayListSkuDescription					= array();
+				$arrayListSkuRatio							= array();
+				$arrayListSkuQuantity						= array();
+				$arrayListSkuFormatoDescription				= array();
 				$arrayListSku								= array();
 				$arrayListSkuFormatoDescription 			= array();
 				$arrayListInfoSales			                = array();
 				$arrayListInfoSerie 			            = array();
                 $arrayListInfoReferencia 			        = array();
+				$arrayListDiscount		 			        = array();
                 $arrayListInfoPrecio1				        = array();
                 $arrayListInfoPrecio2				        = array();
                 $arrayListInfoPrecio3				        = array();
+				$arrayListCommisionBank						= array();
 
 				$objParameterDeliminterCsv	= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT",$companyID);
 				$characterSplie = $objParameterDeliminterCsv->value;
@@ -1027,7 +1034,15 @@ class app_invoice_billing extends _BaseController {
 					//$arrayListIva		 		= IVA ES UN SOLO NUMERO POR QUE ES EL TOTAL
 					array_push($arrayListLote, '');
 					array_push($arrayListVencimiento, '');
+
 					array_push($arrayListSku,0);
+					array_push($arrayListIdSku,0);
+					array_push($arrayListSkuDescription,0);
+					array_push($arrayListSkuRatio,0);
+					array_push($arrayListSkuQuantity,0);
+					array_push($arrayListDiscount,0);
+					array_push($arrayListCommisionBank,0);
+				
 					array_push($arrayListSkuFormatoDescription,'');
 					array_push($arrayListInfoSales,'');
 					array_push($arrayListInfoSerie,'');
@@ -1050,8 +1065,13 @@ class app_invoice_billing extends _BaseController {
 				$arrayListIva		 						= /*inicio get post*/ $this->request->getPost("txtIva");
 				$arrayListTaxServices 						= /*inicio get post*/ $this->request->getPost("txtTaxServices");
 				$arrayListLote	 							= /*inicio get post*/ $this->request->getPost("txtDetailLote");			
-				$arrayListVencimiento						= /*inicio get post*/ $this->request->getPost("txtDetailVencimiento");	
-				$arrayListSku								= /*inicio get post*/ $this->request->getPost("txtSku");
+				$arrayListVencimiento						= /*inicio get post*/ $this->request->getPost("txtDetailVencimiento");
+				$arrayListIdSku								= /*inicio get post*/ $this->request->getPost("txtCatalogItemIDSku");
+				$arrayListSkuDescription					= /*inicio get post*/ $this->request->getPost("txtSku");
+				$arrayListSkuRatio							= /*inicio get post*/ $this->request->getPost("txtRatioSku");
+				$arrayListDiscount							= /*inicio get post*/ $this->request->getPost("txtDiscountByItem");				
+				$arrayListCommisionBank						= /*inicio get post*/ $this->request->getPost("txtCommisionByBankByItem");		
+				$arrayListSkuQuantity						= /*inicio get post*/ $this->request->getPost("skuQuantityBySku");
 				$arrayListSkuFormatoDescription				= /*inicio get post*/ $this->request->getPost("skuFormatoDescription");
                 $arrayListInfoSales				            = /*inicio get post*/ $this->request->getPost("txtInfoVendedor");
                 $arrayListInfoSerie				            = /*inicio get post*/ $this->request->getPost("txtInfoSerie");
@@ -1102,15 +1122,19 @@ class app_invoice_billing extends _BaseController {
 					$objPrice 								= $this->Price_Model->get_rowByPK($companyID,$objListPrice->listPriceID,$itemID,$typePriceID);
 					$objCompanyComponentConcept 			= $this->Company_Component_Concept_Model->get_rowByPK($companyID,$objComponentItem->componentID,$itemID,"IVA");
 					$objCompanyComponentConceptTaxServices	= $this->Company_Component_Concept_Model->get_rowByPK($companyID,$objComponentItem->componentID,$itemID,"TAX_SERVICES");
-					$skuCatalogItemID						= $arrayListSku[$key];
 					$itemNameDetail							= str_replace('"',"",str_replace("'","",$arrayListItemName[$key]));
 					$itemNameDetailDecription				= str_replace('"',"",str_replace("'","",$arrayListItemNameDescription[$key]));
 					
+					$skuCatalogItemID						= $arrayListIdSku[$key];
+					$skuQuantityBySku						= $arrayListSkuQuantity[$key];
+					$skuRatio								= $arrayListSkuRatio[$key];
+					$discount								= $arrayListDiscount[$key];
+					$tax3									= $arrayListCommisionBank[$key];
 					
-					
-					$objItemSku								= $this->Item_Sku_Model->getByPK($itemID,$skuCatalogItemID);
-					$price 									= $arrayListPrice[$key] / ($objItemSku->value) ;
 					$skuFormatoDescription					= $arrayListSkuFormatoDescription[$key];
+					$objItemSku								= $this->Item_Sku_Model->getByPK($itemID,$skuCatalogItemID);
+					$price 									= $arrayListPrice[$key];
+					
 					$ivaPercentage							= ($objCompanyComponentConcept != null ? $objCompanyComponentConcept->valueOut : 0 );	
 					$taxServicesPorcentage					= ($objCompanyComponentConceptTaxServices != null ? $objCompanyComponentConceptTaxServices->valueOut : 0 );						
 					$ivaPercentage 							= $objTMReferenceNew["reference2"] == "0" ? $ivaPercentage : 0;
@@ -1190,20 +1214,21 @@ class app_invoice_billing extends _BaseController {
 						$objTMD["componentID"]					= $objComponentItem->componentID;
 						$objTMD["componentItemID"] 				= $itemID;
 						
-						$objTMD["quantity"] 					= $quantity * $objItemSku->value;	//cantidad
-						$objTMD["skuQuantity"] 					= $quantity;						//cantidad
-						$objTMD["skuQuantityBySku"]				= $objItemSku->value;				//cantidad
+						$objTMD["quantity"] 					= $quantity;	//cantidad
+						$objTMD["skuQuantity"] 					= $skuRatio;						//cantidad
+						$objTMD["skuQuantityBySku"]				= $skuQuantityBySku;				//cantidad
 					
 						
 						$objTMD["unitaryCost"]					= $unitaryCost;								//costo
 						$objTMD["cost"] 						= $objTMD["quantity"]  * $unitaryCost;		//costo por unidad
 						
-						$objTMD["unitaryPrice"]					= $price;							//precio de lista
-						$objTMD["unitaryAmount"]				= $unitaryAmount;					//precio de lista con inpuesto
-						$objTMD["tax1"]							= $tax1;							//impuesto de lista
-						$objTMD["tax2"]							= $tax2;							//impuesto de servicio
-						$objTMD["amount"] 						= $objTMD["quantity"] * $unitaryAmount;		//precio de lista con inpuesto por cantidad
-						$objTMD["discount"]						= 0;					
+						$objTMD["unitaryPrice"]					= $price;												//precio de lista
+						$objTMD["unitaryAmount"]				= $unitaryAmount;										//precio de lista con inpuesto
+						$objTMD["tax1"]							= $tax1;												//impuesto de lista
+						$objTMD["tax2"]							= $tax2;												//impuesto de servicio
+						$objTMD["tax3"]							= $tax3;
+						$objTMD["amount"] 						= $objTMD["quantity"] * ($unitaryAmount + $tax2);		//precio de lista con inpuesto por cantidad
+						$objTMD["discount"]						= $discount;					
 						$objTMD["promotionID"] 					= 0;
 						
 						$objTMD["reference1"]					= $lote;
@@ -1281,19 +1306,21 @@ class app_invoice_billing extends _BaseController {
 						
 						$objTMDNew 								= null;
 						
-						$objTMDNew["quantity"] 					= $quantity * $objItemSku->value;	//cantidad
-						$objTMDNew["skuQuantity"] 				= $quantity;						//cantidad
-						$objTMDNew["skuQuantityBySku"]			= $objItemSku->value;				//cantidad
+						$objTMDNew["quantity"] 					= $quantity;	//cantidad
+						$objTMDNew["skuQuantity"] 				= $skuRatio;						//cantidad
+						$objTMDNew["skuQuantityBySku"]			= $skuQuantityBySku;				//cantidad
 					
 						
 						$objTMDNew["unitaryCost"]				= $unitaryCost;								//costo
 						$objTMDNew["cost"] 						= $objTMDNew["quantity"]  * $unitaryCost;	//costo por cantidad
 						
+						$objTMDNew["discount"]					= $discount;
 						$objTMDNew["unitaryPrice"]				= $price;						//precio de lista
 						$objTMDNew["unitaryAmount"]				= $unitaryAmount;				//precio de lista con inpuesto
 						$objTMDNew["tax1"]						= $tax1;						//impuesto de lista
 						$objTMDNew["tax2"]						= $tax2;						//impuesto de servicio
-						$objTMDNew["amount"] 					= $objTMDNew["quantity"]  * $unitaryAmount;	//precio de lista con inpuesto por cantidad
+						$objTMDNew["tax3"]						= $tax3;
+						$objTMDNew["amount"] 					= $objTMDNew["quantity"]  * ($unitaryAmount + $tax2);	//precio de lista con inpuesto por cantidad
 						
 						$objTMDNew["reference1"]				= $lote;
 						$objTMDNew["reference2"]				= $vencimiento;
@@ -1928,7 +1955,12 @@ class app_invoice_billing extends _BaseController {
 			$arrayListTaxServices 						= /*inicio get post*/ $this->request->getPost("txtTaxServices");
 			$arrayListLote	 							= /*inicio get post*/ $this->request->getPost("txtDetailLote");
 			$arrayListVencimiento						= /*inicio get post*/ $this->request->getPost("txtDetailVencimiento");			
-			$arrayListSku								= /*inicio get post*/ $this->request->getPost("txtSku");
+			$arrayListIdSku								= /*inicio get post*/ $this->request->getPost("txtCatalogItemIDSku");
+			$arrayListSkuDescription					= /*inicio get post*/ $this->request->getPost("txtSku");
+			$arrayListSkuRatio							= /*inicio get post*/ $this->request->getPost("txtRatioSku");
+			$arrayListDiscount							= /*inicio get post*/ $this->request->getPost("txtDiscountByItem");			
+			$arrayListCommisionBank						= /*inicio get post*/ $this->request->getPost("txtCommisionByBankByItem");		
+			$arrayListSkuQuantity						= /*inicio get post*/ $this->request->getPost("skuQuantityBySku");
 			$arrayListSkuFormatoDescription				= /*inicio get post*/ $this->request->getPost("skuFormatoDescription");
 			$arrayListInfoSales				            = /*inicio get post*/ $this->request->getPost("txtInfoVendedor");
 			$arrayListInfoSerie				            = /*inicio get post*/ $this->request->getPost("txtInfoSerie");
@@ -1972,14 +2004,20 @@ class app_invoice_billing extends _BaseController {
 					$objPrice 								= $this->Price_Model->get_rowByPK($companyID,$objListPrice->listPriceID,$itemID,$typePriceID);
 					$objCompanyComponentConcept 			= $this->Company_Component_Concept_Model->get_rowByPK($companyID,$objComponentItem->componentID,$itemID,"IVA");
 					$objCompanyComponentConceptTaxServices	= $this->Company_Component_Concept_Model->get_rowByPK($companyID,$objComponentItem->componentID,$itemID,"TAX_SERVICES");
-					$skuCatalogItemID						= $arrayListSku[$key];
+					$skuCatalogItemID						= $arrayListIdSku[$key];
+					$skuFormatoDescription					= $arrayListSkuDescription[$key];
+					$skuRatio								= $arrayListSkuRatio[$key];
+					$discount								= $arrayListDiscount[$key];
+					$tax3									= $arrayListCommisionBank[$key];
+					$skuQuantityBySku						= $arrayListSkuQuantity[$key];
+
 					$itemNameDetail							= str_replace("'","",$arrayListItemName[$key]);
 					$itemNameDetailDescription				= str_replace("'","",$arrayListItemNameDescription[$key]);
 					$objItemSku								= $this->Item_Sku_Model->getByPK($itemID,$skuCatalogItemID);
 					
 					//$price								= $objItem->cost * ( 1 + ($objPrice->percentage/100));
-					$price 									= $arrayListPrice[$key] / ($objItemSku->value) ;
-					$skuFormatoDescription					= $arrayListSkuFormatoDescription[$key];
+					$price 									= $arrayListPrice[$key];
+					
 					$ivaPercentage							= ($objCompanyComponentConcept != null ? $objCompanyComponentConcept->valueOut : 0 );
 					$taxServicesPercentage					= ($objCompanyComponentConceptTaxServices != null ? $objCompanyComponentConceptTaxServices->valueOut : 0 );
 					$ivaPercentage 							= $objTMReference["reference2"] == "0" ? $ivaPercentage : 0;
@@ -2023,20 +2061,21 @@ class app_invoice_billing extends _BaseController {
 					$objTMD["componentID"]					= $objComponentItem->componentID;
 					$objTMD["componentItemID"] 				= $itemID;
 					
-					$objTMD["quantity"] 					= $quantity * $objItemSku->value;	//cantidad
-					$objTMD["skuQuantity"] 					= $quantity;						//cantidad
-					$objTMD["skuQuantityBySku"]				= $objItemSku->value;				//cantidad
+					$objTMD["quantity"] 					= $quantity;						//cantidad
+					$objTMD["skuQuantity"] 					= $skuRatio;						//ratio del sqku
+					$objTMD["skuQuantityBySku"]				= $skuQuantityBySku;				//cantidad del sku * quantity
 					
 					$objTMD["unitaryCost"]					= $objItem->cost;					//costo
 					$objTMD["cost"] 						= $objTMD["quantity"]  * $objItem->cost;		//cantidad por costo
 					
 					$objTMD["unitaryPrice"]					= $price;							//precio de lista
 					$objTMD["unitaryAmount"]				= $unitaryAmount;					//precio de lista con inpuesto					
-					$objTMD["amount"] 						= $objTMD["quantity"] * $unitaryAmount;		//precio de lista con inpuesto por cantidad
+					$objTMD["amount"] 						= $objTMD["quantity"] * ($unitaryAmount + $tax2);		//precio de lista con inpuesto por cantidad
 					$objTMD["tax1"]							= $tax1;							//impuesto de lista
 					$objTMD["tax2"]							= $tax2;							//impuesto de servicio
+					$objTMD["tax3"]							= $tax3;		
 					
-					$objTMD["discount"]						= 0;					
+					$objTMD["discount"]						= $discount;					
 					$objTMD["promotionID"] 					= 0;
 					
 					$objTMD["reference1"]					= $lote;
@@ -3877,7 +3916,12 @@ class app_invoice_billing extends _BaseController {
 			//AUTENTICADO
 			if(!$this->core_web_authentication->isAuthenticated())
 			throw new \Exception(USER_NOT_AUTENTICATED);
-			$dataSession		= $this->session->get();
+			$dataSession			= $this->session->get();
+			
+			
+			$dataSession["lastUrl"] = base_url()."/"."app_invoice_billing/index";
+			$this->session->set($dataSession);
+			
 			
 		 
 			//PERMISO SOBRE LA FUNCTION
@@ -7865,6 +7909,7 @@ class app_invoice_billing extends _BaseController {
 			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
 			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
 			$datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
+			$datView["objNaturalEmployer"]			= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objTM"]->entityIDSecondary);			
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
 			$datView["objUser"]						= $this->User_Model->get_rowByPK($companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
 			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 
@@ -7949,7 +7994,7 @@ class app_invoice_billing extends _BaseController {
 				}
 				
 				$row = array(
-					"PM: ".$minsa." (DS: ".$descuento.") PF: ".$precio."-comand-new-row",  				
+					"C$:".$minsa."(Desc:C$".$descuento.")T:C$".$precio."-comand-new-row",  				
 					"none",
 					"none"
 				);
@@ -7967,6 +8012,11 @@ class app_invoice_billing extends _BaseController {
 			}
 			
 			$datView["objTM"]->discount = $discountTotal;
+			if($discountTotal > 0 )
+			{
+				$datView["objTM"]->subAmount = $datView["objTM"]->subAmount + $discountTotal;
+			}
+			
 			//Generar Reporte
 			$html = helper_reporte80mmTransactionMasterFarmaLey(
 			    "FACTURA",
@@ -7984,7 +8034,8 @@ class app_invoice_billing extends _BaseController {
 				$datView["objStage"][0]->display, /*estado*/
 				$datView["objTC"]->name /*causal*/,
 				$datView["objUser"]->nickname,
-			    $objParameterRuc /*ruc*/
+			    $objParameterRuc /*ruc*/,
+				$datView
 			);
 			$this->dompdf->loadHTML($html);
 			

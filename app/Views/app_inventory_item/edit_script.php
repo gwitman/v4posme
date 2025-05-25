@@ -1,5 +1,5 @@
 <!-- ./ page heading -->
-<script>		
+<script>
 	var objCallback							= '<?php echo $callback; ?>';
 	var objParameterUrlPrinterCode  		 = '<?php echo $objParameterMasive; ?>';
 	var objParameterUrlPrinterCodeSinPrecio  = '<?php echo $objParameterMasiveSinPrecio; ?>';
@@ -10,19 +10,19 @@
 	var objTableDetailConcept 		= {};
 	var site_url 	  				= "<?php echo base_url(); ?>/";
 	var userMobile					= '<?php echo $useMobile; ?>';
-	
-	
+
+
 	//este evento es util cuando la pantalla se ejecuta desde la pantalla de facturacion
 	if(objCallback != 'false'){
 		$(window).unload(function() {
 			//do something
-			window.opener.<?php echo $callback; ?>(); 
+			window.opener.<?php echo $callback; ?>();
 		});
 	}
-	
+
 	$(document).ready(function(){
 
-        <?= getBehavio($company->type,"app_inventory_item","divBirthday",""); ?>
+        <?php echo getBehavio($company->type, "app_inventory_item", "divBirthday", ""); ?>
 
 		objTableDetailProvider = $("#table_provider").dataTable({
 			"bPaginate"		: false,
@@ -30,19 +30,18 @@
 			"bSort"			: false,
 			"bInfo"			: false,
 			"bAutoWidth"	: false,
-			"aaData": [		
-				<?php 
-					$listprovider = [];
-					if($objListProvider){
-						foreach($objListProvider as $i)
-						{
-						$listprovider[] = "[0,".$i->entityID.",'".$i->providerNumber."','".$i->firstName." ".$i->comercialName."']";
-						}
-						echo implode(",",$listprovider);
-					}
-				?>
+			"aaData": [
+				<?php
+                    $listprovider = [];
+                    if ($objListProvider) {
+                        foreach ($objListProvider as $i) {
+                            $listprovider[] = "[0," . $i->entityID . ",'" . $i->providerNumber . "','" . $i->firstName . " " . $i->comercialName . "']";
+                        }
+                        echo implode(",", $listprovider);
+                    }
+                ?>
 			],
-			"aoColumnDefs": [ 
+			"aoColumnDefs": [
 						{
 							"aTargets"	: [ 0 ],//checked
 							"mRender"	: function ( data, type, full ) {
@@ -61,29 +60,28 @@
 								return '<input type="hidden" value="'+data+'" name="txtProviderEntityID[]" />';
 							}
 						}
-			]							
+			]
 		});
-		
-		
+
+
 		objTableDetailConcept = $("#table_concept").dataTable({
 			"bPaginate"		: false,
 			"bFilter"		: false,
 			"bSort"			: false,
 			"bInfo"			: false,
 			"bAutoWidth"	: false,
-			"aaData": [		
-				<?php 
-					$listconcept = [];
-					if($objListConcept){
-						foreach($objListConcept as $i)
-						{
-							$listconcept[] = "[0,'".$i->name."',".$i->valueIn.",".$i->valueOut."]";
-						}
-						echo implode(",",$listconcept);
-					}
-				?>
+			"aaData": [
+				<?php
+                    $listconcept = [];
+                    if ($objListConcept) {
+                        foreach ($objListConcept as $i) {
+                            $listconcept[] = "[0,'" . $i->name . "'," . $i->valueIn . "," . $i->valueOut . "]";
+                        }
+                        echo implode(",", $listconcept);
+                    }
+                ?>
 			],
-			"aoColumnDefs": [ 
+			"aoColumnDefs": [
 						{
 							"aTargets"	: [ 0 ],//checked
 							"mRender"	: function ( data, type, full ) {
@@ -111,21 +109,21 @@
 								return '<input type="text" class="col-lg-12" value="'+data+'" name="txtDetailConceptValueOut[]" />';
 							}
 						}
-			]							
+			]
 		});
 		refreschChecked();
-		
-		
+
+
 		//Evento Regresar a la lista
 		$(document).on("click","#btnBack",function(){
 			fnWaitOpen();
 		});
-		
+
 		//Guardar
 		$(document).on("click","#btnAcept",function(){
 				$( "#form-new-account-journal" ).attr("method","POST");
 				$( "#form-new-account-journal" ).attr("action","<?php echo base_url(); ?>/app_inventory_item/save/edit/item/null/dataSession/null");
-				
+
 				if(validateForm()){
 					fnWaitOpen();
 					$( "#form-new-account-journal" ).submit();
@@ -135,46 +133,46 @@
 		$(document).on("click","#btnSearchEmployer",function(){
 			var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentEmployer->componentID; ?>/onCompleteEmployee/SELECCIONAR_EMPLOYEE/true/empty/false/not_redirect_when_empty";
 			window.open(url_request,"MsgWindow","width=900,height=450");
-			window.onCompleteEmployee = onCompleteEmployee; 
+			window.onCompleteEmployee = onCompleteEmployee;
 		});
 		//Eliminar Colaborador
 		$(document).on("click","#btnClearEmployer",function(){
 					$("#txtEmployerID").val("");
 					$("#txtEmployerDescription").val("");
 		});
-		
+
 		$(document).on("dblclick","#btnPrinterCode",function(){
-			var price 	= <?php echo $objListPriceItemFirst; ?>;			
-			var url 	= objParameterUrlPrinterCode+"/listItem/0-0-0-0-0-0|"+"<?php echo $objItem->itemID."-1-".$objItem->itemNumber."-".$objItem->name."-".$objItem->barCode."-"; ?>"+price;
-			window.open(url, "_blank");	
+			var price 	=			          	 			          	 			          	 			          	 			          	 			          	 			          	 			          	 			          	 			          	 			          	 			          	 			          	 			          	 			          	  <?php echo $objListPriceItemFirst; ?>;
+			var url 	= objParameterUrlPrinterCode+"/listItem/0-0-0-0-0-0|"+"<?php echo $objItem->itemID . "-1-" . $objItem->itemNumber . "-" . $objItem->name . "-" . $objItem->barCode . "-"; ?>"+price;
+			window.open(url, "_blank");
 		});
-		
+
 		$(document).on("click","#btnPrinterSinPrecio",function(){
-			var price 			= <?php echo $objListPriceItemFirst; ?>;	
+			var price 			=			          			 			          			 			          			 			          			 			          			 			          			 			          			 			          			 			          			 			          			 			          			 			          			 			          			 			          			 			          			  <?php echo $objListPriceItemFirst; ?>;
 			var randomDecimal 	= Math.random();
 			var randomInteger 	= Math.floor(randomDecimal * 1000); // Entre 0 y 1000
-			var url 			= objParameterUrlPrinterCodeSinPrecio+"/listItem/"+randomInteger+"-0-0-0-0-0|"+"<?php echo $objItem->itemID."-1-".$objItem->itemNumber."-".urlencode($objItem->name)."-".$objItem->barCode."-"; ?>"+price;
-			window.open(url, "_blank");	
+			var url 			= objParameterUrlPrinterCodeSinPrecio+"/listItem/"+randomInteger+"-0-0-0-0-0|"+"<?php echo $objItem->itemID . "-1-" . $objItem->itemNumber . "-" . urlencode($objItem->name) . "-" . $objItem->barCode . "-"; ?>"+price;
+			window.open(url, "_blank");
 		});
-		
+
 		$(document).on("click","#btnPrinterdConPrecio",function(){
-			var price 			= <?php echo $objListPriceItemFirst; ?>;			
+			var price 			=			          			 			          			 			          			 			          			 			          			 			          			 			          			 			          			 			          			 			          			 			          			 			          			 			          			 			          			 			          			  <?php echo $objListPriceItemFirst; ?>;
 			var randomDecimal 	= Math.random();
 			var randomInteger 	= Math.floor(randomDecimal * 1000); // Entre 0 y 1000
-			var url 			= objParameterUrlPrinterCodeConPrecio+"/listItem/"+randomInteger+"-0-0-0-0-0|"+"<?php echo $objItem->itemID."-1-".$objItem->itemNumber."-".urlencode($objItem->name)."-".$objItem->barCode."-"; ?>"+price;
-			window.open(url, "_blank");	
+			var url 			= objParameterUrlPrinterCodeConPrecio+"/listItem/"+randomInteger+"-0-0-0-0-0|"+"<?php echo $objItem->itemID . "-1-" . $objItem->itemNumber . "-" . urlencode($objItem->name) . "-" . $objItem->barCode . "-"; ?>"+price;
+			window.open(url, "_blank");
 		});
-		
-		
-		$(document).on("click","#btnDelete",function(){							
+
+
+		$(document).on("click","#btnDelete",function(){
 			fnShowConfirm("Confirmar..","Desea eliminar este Registro...",function(){
 				fnWaitOpen();
-				$.ajax({									
+				$.ajax({
 					cache       : false,
 					dataType    : 'json',
 					type        : 'POST',
 					url  		: "<?php echo base_url(); ?>/app_inventory_item/delete",
-					data 		: {companyID : <?php echo $objItem->companyID;?>, itemID : <?php echo $objItem->itemID;?>  },
+					data 		: {companyID :					     		              					     		              					     		              					     		              					     		              					     		              					     		              					     		              					     		              					     		              					     		              					     		              					     		              					     		              					     		               <?php echo $objItem->companyID; ?>, itemID :<?php echo $objItem->itemID; ?>  },
 					success:function(data){
 						console.info("complete delete success");
 						fnWaitClose();
@@ -185,8 +183,8 @@
 							window.location = "<?php echo base_url(); ?>/app_inventory_item/index";
 						}
 					},
-					error:function(xhr,data){	
-						console.info("complete delete error");									
+					error:function(xhr,data){
+						console.info("complete delete error");
 						fnWaitClose();
 						fnShowNotification("Error 505","error");
 					}
@@ -195,28 +193,28 @@
 		});
 		//Ir a Archivo
 		$(document).on("click","#btnClickArchivo",function(){
-			window.open("<?php echo base_url()."/core_elfinder/index/componentID/".$objComponent->componentID."/componentItemID/".$objItem->itemID; ?>","blanck");
+			window.open("<?php echo base_url() . "/core_elfinder/index/componentID/" . $objComponent->componentID . "/componentItemID/" . $objItem->itemID; ?>","blanck");
 		});
-		
+
 		//Agregar Concepto
-		$(document).on("click","#btnNewDetailConcept",function(){	
-			var url_request = "<?php echo base_url(); ?>/app_inventory_item/popup_add_concept"; 
+		$(document).on("click","#btnNewDetailConcept",function(){
+			var url_request = "<?php echo base_url(); ?>/app_inventory_item/popup_add_concept";
 			window.open(url_request,"MsgWindow","width=900,height=450");
-			window.onCompleteConcept = onCompleteConcept; 
+			window.onCompleteConcept = onCompleteConcept;
 		});
-		
-		//Seleccionar Concepto 
+
+		//Seleccionar Concepto
 		$(document).on("click",".classCheckedDetailConcept",function(){
 			var objrow_ = $(this).parent().parent().parent().parent()[0];
 			var objind_ = objTableDetailConcept.fnGetPosition(objrow_);
-			var objdat_ = objTableDetailConcept.fnGetData(objind_);								
+			var objdat_ = objTableDetailConcept.fnGetData(objind_);
 			objTableDetailConcept.fnUpdate( !objdat_[0], objind_, 0 );
 			refreschChecked();
 		});
-		
+
 		//Eliminar Concepto
 		$(document).on("click","#btnDeleteDetailConcept",function(){
-			var listRow = objTableDetailConcept.fnGetData();							
+			var listRow = objTableDetailConcept.fnGetData();
 			var length 	= listRow.length;
 			var i 		= 0;
 			var j 		= 0;
@@ -229,24 +227,24 @@
 				j++;
 			}
 		});
-		
+
 		//Agregar Proveedor
-		$(document).on("click","#btnNewDetailProvider",function(){	
-			var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $componentProviderID; ?>/onCompleteProvider/SELECCIONAR_PROVEEDOR/true/empty/false/not_redirect_when_empty"; 
+		$(document).on("click","#btnNewDetailProvider",function(){
+			var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $componentProviderID; ?>/onCompleteProvider/SELECCIONAR_PROVEEDOR/true/empty/false/not_redirect_when_empty";
 			window.open(url_request,"MsgWindow","width=900,height=450");
-			window.onCompleteProvider = onCompleteProvider; 
+			window.onCompleteProvider = onCompleteProvider;
 		});
-		//Seleccionar Proveedor 
+		//Seleccionar Proveedor
 		$(document).on("click",".classCheckedDetail",function(){
 			var objrow_ = $(this).parent().parent().parent().parent()[0];
 			var objind_ = objTableDetailProvider.fnGetPosition(objrow_);
-			var objdat_ = objTableDetailProvider.fnGetData(objind_);								
+			var objdat_ = objTableDetailProvider.fnGetData(objind_);
 			objTableDetailProvider.fnUpdate( !objdat_[0], objind_, 0 );
 			refreschChecked();
 		});
 		//Eliminar Proveedor
 		$(document).on("click","#btnDeleteDetailProvider",function(){
-			var listRow = objTableDetailProvider.fnGetData();							
+			var listRow = objTableDetailProvider.fnGetData();
 			var length 	= listRow.length;
 			var i 		= 0;
 			var j 		= 0;
@@ -259,47 +257,143 @@
 				j++;
 			}
 		});
-		
+
 		//Nueva Bodega
 		$(document).on("click","#btnNewDetailWarehouse",function(){
 				var objData 					= {};
-				objData.warehouseID 		 	= $("#txtTempWarehouseID").val();								
+				objData.warehouseID 		 	= $("#txtTempWarehouseID").val();
 				objData.warehouseDescription 	= $("#txtTempWarehouseID option:selected").text();
 				objData.quantityMax 			= $("#txtTmpDetailQuantityMax").val();
 				objData.quantityMin 			= $("#txtTmpDetailQuantityMin").val();
 				var objHtml						= $.tmpl($("#tmpl_row_warehouse").html(),objData);
-				
+
 				if($("input[value="+objData.warehouseID+"].txtDetailWarehouseID").length > 0 )
 				return;
-				
+
 				$("#body_detail_warehouse").append(objHtml);
 		});
+
 		//Agregar SKU
-		$(document).on("click","#btnNewDetailSku",function(){
-				var objData 								= {};
-				objData.txtDetailSkuID						= 0;
-				objData.txtDetailSkuItemID					= 0;
-				objData.txtDetailSkuCatalogItemID 		 	= $("#txtTempSkuID").val();								
-				objData.skuDescription 						= $("#txtTempSkuID option:selected").text();
-				objData.txtDetailSkuValue					= $("#txtTmpSkuCantidad").val();
-				
-				var objHtml						= $.tmpl($("#tmpl_row_sku").html(),objData);
-				
-				if($("input[value="+objData.txtDetailSkuCatalogItemID+"].txtDetailSkuCatalogItemID").length > 0 )
-				return;
-				
-				$("#body_detail_sku").append(objHtml);
+		$(document).on("click","#btnNewDetailSku",function(e){
+			e.preventDefault();
+		    const parseValue = (val) => {
+		        if (val === '' || val === null) return NaN;
+		        return parseFloat(val);
+		    };
+			// Validar que se haya seleccionado un SKU
+		    if ($('#txtTempSkuID').val() === null || $('#txtTempSkuID').val() === '') {
+		        fnShowNotification('Debe seleccionar un SKU', 'error', 1500);
+		        return false;
+		    }
+
+		    // Validar que se haya ingresado una cantidad
+		    if ($('#txtTmpSkuCantidad').val() === '') {
+		        fnShowNotification('Debe ingresar una cantidad de SKU', 'error', 1500);
+		        return false;
+		    }
+
+		    // Validar que la cantidad sea numérica
+		    if (isNaN($('#txtTmpSkuCantidad').val())) {
+		        fnShowNotification('La cantidad debe ser un número valido', 'error', 1500);
+		        return false;
+		    }
+
+			// Validar que se haya ingresado un precio
+		    if ($('#txtTmpSkuPrecio').val() === '') {
+		        fnShowNotification('Debe ingresar un precio de SKU', 'error', 1500);
+		        return false;
+		    }
+
+		    // Validar que el precio sea numérico
+		    if (isNaN($('#txtTmpSkuPrecio').val())) {
+		        fnShowNotification('El precio debe ser un número valido', 'error', 1500);
+		        return false;
+		    }
+
+		    // Validación del SKU con valor 1
+		    let countOnes = 0;
+		    const newValue = parseValue($('#txtTmpSkuCantidad').val());
+
+		    // Contar los unos existentes
+		    $('input.txtDetailSkuValue').each(function() {
+		    	let skuValue = parseValue($(this).val());
+		        if (skuValue === 1) countOnes++;
+		    });
+
+		    // Si el nuevo valor es 1, sumarlo al conteo
+		    if (newValue === 1) countOnes++;
+
+		    // Validar que no haya más de un 1
+		    if (countOnes > 1) {
+		        fnShowNotification('Solo puede haber un SKU con valor 1', 'error', 1500);
+		        return false;
+		    }
+
+			var objData 								= {};
+			objData.txtDetailSkuID						= 0;
+			objData.txtDetailSkuItemID					= 0;
+			objData.txtDetailSkuCatalogItemID 		 	= $("#txtTempSkuID").val();
+			objData.skuDescription 						= $("#txtTempSkuID option:selected").text();
+			objData.txtDetailSkuValue					= $("#txtTmpSkuCantidad").val();
+			objData.txtDetailSkuPrecio					= $("#txtTmpSkuPrecio").val();
+			objData.txtDetailSkuDefault					= $("#txtTmpSkuDefault").is(":checked");
+
+			// Si el nuevo viene con "checked", quita todos los anteriores marcados
+			if (objData.txtDetailSkuDefault) {
+				$(".sku-default").prop('checked', false).parent().removeClass('checked');
+			}
+
+			var objHtml	= $.tmpl($("#tmpl_row_sku").html(), objData);
+
+			if($("input[value="+objData.txtDetailSkuCatalogItemID+"].txtDetailSkuCatalogItemID").length > 0 ){
+				fnShowNotification('Ya existe el SKU en la tabla', 'error', 1500);
+				return false;
+			}
+
+			$("#body_detail_sku").append(objHtml);
+			refreschChecked();
+			$('#txtTmpSkuCantidad').val('');
+			$('#txtTmpSkuPrecio').val('');
+			$('#txtTmpSkuDefault').prop('checked', false).parent().removeClass('checked');
+			$('#txtTempSkuID').val(null).trigger('change');
 		});
+
+		$(document).on('change', '.sku-default', function () {
+			if ($(this).is(':checked')) {
+				// Este está marcado → poner valor 1
+				$(this).val('1');
+				$(this).closest('tr').find('.txtDetailSkuDefault').val('1');
+				$(this).closest('tr').find('.txtTmpSkuDefault').val('1');
+				// Desmarcar los demás
+				$('.sku-default').not(this).each(function () {
+					$(this).prop('checked', false).val('0');
+					$(this).closest('tr').find('.txtDetailSkuDefault').val('0');
+					$(this).closest('tr').find('.txtTmpSkuDefault').val('0');
+					// Si hay clases visuales
+					$(this).parent().removeClass('checked row-selected');
+				});
+
+				// Agregar clase visual si aplica
+				$(this).parent().addClass('row-selected');
+
+			} else {
+				// Si lo desmarcan, poner en 0
+				$(this).val('0');
+				$(this).closest('tr').find('.txtDetailSkuDefault').val('0');
+				$(this).parent().removeClass('row-selected');
+			}
+		});
+
 		//Eliminar Bodega
 		$(document).on("click","#btnDeleteDetailWarehouse",function(){
 				var quantity = $(objRowWarehouse).find(".txtDetailQuantity").val();
 				if(quantity == undefined)
 				return;
-				
+
 				quantity  = parseFloat(quantity);
 				if(quantity > 0)
 				return;
-				
+
 				objRowWarehouse.remove();
 		});
 		//Eliminar SKU
@@ -307,18 +401,18 @@
 				objRowSku.remove();
 		});
 		//Seleccionar Bodega
-		$(document).on("click",".row_warehouse",function(event){		
+		$(document).on("click",".row_warehouse",function(event){
 				objRowWarehouse = this;
 				fnTableSelectedRow(this,event);
 		});
 		//Seleccionar sku
-		$(document).on("click",".row_sku",function(event){		
+		$(document).on("click",".row_sku",function(event){
 				objRowSku = this;
 				fnTableSelectedRow(this,event);
 		});
 		$("#txtCountryID").change(function(){
 			fnWaitOpen();
-			$.ajax({									
+			$.ajax({
 				cache       : false,
 				dataType    : 'json',
 				type        : 'POST',
@@ -327,28 +421,28 @@
 				success:function(data){
 					console.info("call app_catalog_api/getCatalogItemByState")
 					fnWaitClose();
-					
-					
+
+
 					$("#txtStateID").html("");
 					$("#txtStateID").append("<option value=''>N/D</option>");
-					
+
 					if(userMobile != '1')
 					$("#txtStateID").select2();
-				
+
 					$("#txtCityID").html("");
-					
+
 					if(userMobile != '1')
 					$("#txtCityID").select2();
-					
-					
+
+
 					if(data.catalogItems == null)
 					return;
-					
-					$.each(data.catalogItems,function(i,obj){						
+
+					$.each(data.catalogItems,function(i,obj){
 						$("#txtStateID").append("<option value='"+obj.catalogItemID+"'>"+obj.name+"</option>");
 					});
 				},
-				error:function(xhr,data){									
+				error:function(xhr,data){
 					fnShowNotification(data.message,"error");
 					fnWaitClose();
 				}
@@ -356,7 +450,7 @@
 		});
 		$("#txtStateID").change(function(){
 			fnWaitOpen();
-			$.ajax({									
+			$.ajax({
 				cache       : false,
 				dataType    : 'json',
 				type        : 'POST',
@@ -367,37 +461,37 @@
 					fnWaitClose();
 					$("#txtCityID").html("");
 					$("#txtCityID").append("<option value=''>N/D</option>");
-					
+
 					if(userMobile != '1')
 					$("#txtCityID").select2();
-					
+
 					if(data.catalogItems == null)
 					return;
-					
+
 					$.each(data.catalogItems,function(i,obj){
 						$("#txtCityID").append("<option value='"+obj.catalogItemID+"'>"+obj.name+"</option>");
 					});
 				},
-				error:function(xhr,data){									
+				error:function(xhr,data){
 					fnShowNotification(data.message,"error");
 					fnWaitClose();
 				}
 			});
 		});
-		
+
 	});
-	
+
 	function onCompleteEmployee(objResponse)
-	{		
+	{
 			$("#txtEmployerID").val(objResponse[0][2]);
-			$("#txtEmployerDescription").val(objResponse[0][3] + " / " + objResponse[0][4]);			
+			$("#txtEmployerDescription").val(objResponse[0][3] + " / " + objResponse[0][4]);
 	}
-	
-	
+
+
 	function validateForm(){
 		var result 				= true;
 		var timerNotification 	= 15000;
-		
+
 		//Nombre
 		if($("#txtName").val()==""){
 			fnShowNotification("El nombre no puede estar vacio","error",timerNotification);
@@ -428,9 +522,9 @@
 			fnShowNotification("La bodega que esta pordefecto debe de estar en el detalle de Bodegas","error",timerNotification);
 			result = false;
 		}
-		
-		<?php echo getBehavio($company->type,"app_inventory_item","scriptValidate",""); ?>
-		
+
+		<?php echo getBehavio($company->type, "app_inventory_item", "scriptValidate", ""); ?>
+
 		return result;
 	}
 	function onCompleteConcept(objResponse){
@@ -440,18 +534,18 @@
 			objRow.name 				= objResponse.txtNameConcept;
 			objRow.valueIn				= objResponse.txtValueIn;
 			objRow.valueOut				= objResponse.txtValueOut;
-			
-			//Berificar que el Item ya esta agregado 
+
+			//Berificar que el Item ya esta agregado
 			if(jLinq.from(objTableDetailConcept.fnGetData()).where(function(obj){ return obj[1] == objRow.name;}).select().length > 0 ){
 				fnShowNotification("El Concepto ya esta agregado","error");
 				return;
 			}
-			
+
 			objTableDetailConcept.fnAddData([objRow.checked,objRow.name,objRow.valueIn,objRow.valueOut]);
 			refreschChecked();
-			
+
 	}
-	
+
 	function onCompleteProvider(objResponse){
 			console.info("CALL onCompleteProvider");
 			var objRow 						= {};
@@ -459,19 +553,19 @@
 			objRow.providerID 				= objResponse[0][1];
 			objRow.providerNumber			= objResponse[0][2];
 			objRow.providerName				= objResponse[0][3];
-			
-			//Berificar que el Item ya esta agregado 
+
+			//Berificar que el Item ya esta agregado
 			if(jLinq.from(objTableDetailProvider.fnGetData()).where(function(obj){ return obj[1] == objRow.providerID;}).select().length > 0 ){
 				fnShowNotification("El Proveedor ya esta agregado","error");
 				return;
 			}
-			
+
 			objTableDetailProvider.fnAddData([objRow.checked,objRow.providerID,objRow.providerNumber,objRow.providerName]);
 			refreschChecked();
-			
+
 	}
 	function refreschChecked(){
 		$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();
 	}
-	
+
 </script>

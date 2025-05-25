@@ -54,6 +54,20 @@
 							margin:0px 0px 0px 0px !important
 						}
 					}
+					.label-sku {
+						cursor: pointer;
+						color: blue;
+						text-decoration: underline;
+						font-family: 'Roboto', sans-serif;
+						padding: 7.5px;
+						-webkit-box-shadow: -0.25px 0.75px 9px -0.25px rgba(85,85,85,0.36);
+						-moz-box-shadow: -0.25px 0.75px 9px -0.25px rgba(85,85,85,0.36);
+						-box-shadow: -0.25px 0.75px 9px -0.25px rgba(85,85,85,0.36);
+					}
+					.td-sku{
+						vertical-align: middle !important; 
+						text-align: left !important; 
+					}
 				</style>
 				
 				<div id="heading" class="page-header"  >

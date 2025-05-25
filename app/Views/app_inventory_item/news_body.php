@@ -842,18 +842,26 @@
 						<br/>
 						<a href="#" class="btn btn-flat btn-info" id="btnNewDetailSku" >Agregar</a>
 						<a href="#" class="btn btn-flat btn-danger" id="btnDeleteDetailSku" >Eliminar</a>									
-						<script type="text/template"  id="tmpl_row_sku">
-							<tr class="row_sku">
+						<script type="text/template" id="tmpl_row_sku">
+							<tr class="">
 								<td>
-									<input type="hidden" class="txtDetailSkuID" name="txtDetailSkuID[]" value="${txtDetailSkuID}"></input>
-									<input type="hidden" class="txtDetailSkuItemID" name="txtDetailSkuItemID[]" value="${txtDetailSkuItemID}"></input>
-									<input type="hidden" class="txtDetailSkuCatalogItemID" name="txtDetailSkuCatalogItemID[]" value="${txtDetailSkuCatalogItemID}"></input>
-									<input type="hidden" class="txtDetailSkuValue" name="txtDetailSkuValue[]" value="${txtDetailSkuValue}"></input>
+									<input type="hidden" class="txtDetailSkuID" name="txtDetailSkuID[]" value="${txtDetailSkuID}" />
+									<input type="hidden" class="txtDetailSkuItemID" name="txtDetailSkuItemID[]" value="${txtDetailSkuItemID}"/>
+									<input type="hidden" class="txtDetailSkuCatalogItemID" name="txtDetailSkuCatalogItemID[]" value="${txtDetailSkuCatalogItemID}"/>
+									<input type="hidden" class="txtDetailSkuValue" name="txtDetailSkuValue[]" value="${txtDetailSkuValue}"/>
+									<input type="hidden" class="txtDetailSkuPrecio" name="txtDetailSkuPrecio[]" value="${txtDetailSkuPrecio}"/>
+									<input type="hidden" class="txtDetailSkuDefault" name="txtDetailSkuDefault[]" value="${txtDetailSkuDefault}"/>
 									${skuDescription}
 								</td>
 								<td>
 									${txtDetailSkuValue}
-								</td>													
+								</td>          
+								<td>
+									${txtDetailSkuPrecio}
+								</td>
+								<td>
+									<input type="checkbox" class="sku-default" id="sku-default-${txtDetailSkuID}" value="${txtDetailSkuDefault}" ${txtDetailSkuDefault ? "checked=checked" : ""} />
+								</td>                
 							</tr>
 						</script>
 						
@@ -861,10 +869,12 @@
 							<div class="col-lg-12">
 								<table class="table table-bordered">
 									<thead>
-									  <tr>															
-										<th>Sku</th>
-										<th>Cantidad</th>
-									  </tr>
+										<tr>															
+											<th>Sku</th>
+											<th>Cantidad</th>
+											<th>Precio</th>
+											<th>Predeterminado</th>
+										</tr>
 									</thead>
 									<tbody id="body_detail_sku">	
 										<tr>
@@ -879,7 +889,9 @@
 														?>
 												</select>
 											</td>																
-											<td><input class="form-control"  type="text"  name="txtTmpSkuCantidad" id="txtTmpSkuCantidad" value=""></td>																
+											<td><input class="form-control"  type="text"  name="txtTmpSkuCantidad" id="txtTmpSkuCantidad" value=""/></td>																
+											<td><input class="form-control"  type="text"  name="txtTmpSkuPrecio" id="txtTmpSkuPrecio" value=""/></td>
+											<td><input type="checkbox" class="sku-default" name="txtTmpSkuDefault" id="txtTmpSkuDefault" value=""/></td>
 										</tr>	
 										<?php
 										$indexc = 0;
@@ -894,11 +906,19 @@
 														<input type="hidden" class="txtDetailSkuItemID" name="txtDetailSkuItemID[]" value="0"></input>
 														<input type="hidden" class="txtDetailSkuCatalogItemID" name="txtDetailSkuCatalogItemID[]" value="<?php echo $ws->catalogItemID; ?>"></input>
 														<input type="hidden" class="txtDetailSkuValue" name="txtDetailSkuValue[]" value="1"></input>
+														<input type="hidden" class="txtDetailSkuPrecio" name="txtDetailSkuPrecio[]" value="0"></input>
+														<input type="hidden" class="txtDetailSkuDefault" name="txtDetailSkuDefault[]" value="1"></input>
 														<?php echo $ws->display; ?>
 													</td>
 													<td>
 														1
 													</td>
+													<td>
+														0
+													</td>
+													<td>
+														<input type="checkbox" class="sku-default" name="txtTmpSkuDefault" id="txtTmpSkuDefault" value="1" checked />
+													</td> 	
 												</tr>
 												<?php
 											}		

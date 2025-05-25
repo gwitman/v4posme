@@ -722,29 +722,34 @@ echo helper_getHtmlOfPageLanding();
 							<table id="tb_transaction_master_detail" class="<?= $useMobile=="1" ? '' : 'table table-bordered' ?>"  >
 								<thead>
 									<tr>
-									<th></th>
-									<th></th>
-									<th></th>
-									<th>Codigo</th>
-									<th>Descripcion</th>
-									<th>U/M</th>
-									<th>Cantidad</th>
-									<th>Precio</th>
-									<th>Total</th>
-									<th></th>
-									<th>skuQuantityBySku</th>
-									<th>unitaryPriceInvidual</th>
-									<th>Accion</th>
-									<th>skuFormatoDescription</th>
-									<th>Precio2</th>
-									<th>Precio3</th>
-									<th>itemNameDescription</th>
-									<th>TAX_SERVICES</th>
-									<th>Peso</th>
-									<th>Vendedor</th>
-									<th>Serie</th>
-									<th>Referencia</th>
-									<th>Precio1</th>
+										<th></th><!--checked-->
+										<th></th><!--transactionMasterDetail-->
+										<th></th><!--itemID-->
+										<th>Codigo</th><!--itemNumber-->
+										<th>Descripcion</th><!--Nombre del producto-->
+										<th>U/M</th><!--Unidad de medida del producto-->
+										<th>Cantidad</th><!--Cantidad-->
+										<th>Precio</th><!--Precio-->
+										<th>Total</th><!--Sub total-->
+										<th></th><!--Iva-->
+										<th>skuQuantityBySku</th><!--Cantidad en unidades por cada sku es decir 1 paquete = 25 unidades-->
+										<th>unitaryPriceInvidual</th><!--Precio individual-->
+										<th>Accion</th><!--Acciones-->
+										<th>skuFormatoDescription</th><!--Descripcion del sku-->
+										<th>Precio2</th><!--Precio 2-->
+										<th>Precio3</th><!--Precio 3-->
+										<th>itemNameDescription</th><!--Nombre del producto cambiado-->
+										<th>TAX_SERVICES</th><!--Impuesto por servicio-->
+										<th>Peso</th><!--Peso o Lote-->
+										<th>Vendedor</th><!--Vendedor Id-->
+										<th>Serie</th><!--Serie-->
+										<th>Referencia</th> <!--Referencia-->
+										<th>Precio1</th><!--Precio 1-->
+										<th>Value Sku</th><!--catalogItemID SKU-->
+										<th>Ratio Sku</th><!--Ratio SKU-->
+										
+										<th>Descuento</th><!--Descuento-->
+										<th>Comision POS Banco</th><!--Comision Banco-->
 									</tr>
 								</thead>
 								<tbody id="body_tb_transaction_master_detail">
@@ -843,10 +848,10 @@ echo helper_getHtmlOfPageLanding();
 							
 							<div class="row" id="rowBotoneraFacturaFila3">			
 								<br id="saltoDeLineaFila3" />					
-								<div class="col col-lg-2 showComandoDeCocina">
+								<div class="col col-lg-2 showRestaurante">
 									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnOptionPago"><i class="icon16 i-arrow-down-12 "></i> PROCESAR PAGO</a>
 								</div>
-								<div class="col col-lg-2 showComandoDeCocina">
+								<div class="col col-lg-2 showRestaurante">
 									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunVerDetalle","DETALLE"); ?>  </a>
 								</div>							
 							</div>
@@ -879,7 +884,6 @@ echo helper_getHtmlOfPageLanding();
 								<div class="col col-lg-6 col-md-6 col-sm-6 col-xs-6">
 									<div class="btn-group  btn-block hidden btn-comando-factura">
 										<button type="button" class="btn btn-flat btn-danger dropdown-toggle  btn-block" data-toggle="dropdown">FAC <span class="caret"></span></button>
-										<ul class="dropdown-menu">
 										<ul class="dropdown-menu">											
 											<li><a href="javascript:void(0);" id="btnBack" >REGRESAR</a></li>
 											<li><a href="<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>" id="btnNew">NUEVA FAC</a></li>
@@ -1016,8 +1020,8 @@ echo helper_getHtmlOfPageLanding();
 										<td>
 											<input type="text" id="txtReceiptAmountTarjeta" name="txtReceiptAmountTarjeta"   class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
 										</td>
-										<td>
-											<select name="txtReceiptAmountTarjeta_BankID" id="txtReceiptAmountTarjeta_BankID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
+										<td style="min-width: 100px;">
+											<select name="txtReceiptAmountTarjeta_BankID" id="txtReceiptAmountTarjeta_BankID"  class="">
 												<?php
 												if (!empty($objListBank)) {
 												    foreach ($objListBank as $k => $bank) {
@@ -1041,7 +1045,7 @@ echo helper_getHtmlOfPageLanding();
 											<input type="text" id="txtReceiptAmountTarjetaDol" name="txtReceiptAmountTarjetaDol"   class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
 										</td>
 										<td>
-											<select name="txtReceiptAmountTarjetaDol_BankID" id="txtReceiptAmountTarjetaDol_BankID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
+											<select name="txtReceiptAmountTarjetaDol_BankID" id="txtReceiptAmountTarjetaDol_BankID"  class="">
 												<?php
 												if (!empty($objListBank)) {
 												    foreach ($objListBank as $k => $bank) {
@@ -1066,7 +1070,7 @@ echo helper_getHtmlOfPageLanding();
 											<input type="text" id="txtReceiptAmountBank" name="txtReceiptAmountBank"  class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
 										</td>
 										<td>
-											<select name="txtReceiptAmountBank_BankID" id="txtReceiptAmountBank_BankID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
+											<select name="txtReceiptAmountBank_BankID" id="txtReceiptAmountBank_BankID"  class="">
 												<?php
 												if (!empty($objListBank)) {
 												    foreach ($objListBank as $k => $bank) {
@@ -1090,7 +1094,7 @@ echo helper_getHtmlOfPageLanding();
 											<input type="text" id="txtReceiptAmountBankDol" name="txtReceiptAmountBankDol"  class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
 										</td>
 										<td>										
-											<select name="txtReceiptAmountBankDol_BankID" id="txtReceiptAmountBankDol_BankID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
+											<select name="txtReceiptAmountBankDol_BankID" id="txtReceiptAmountBankDol_BankID"  class="">
 												<?php
 												if (!empty($objListBank)) {
 												    foreach ($objListBank as $k => $bank) {
@@ -1194,90 +1198,51 @@ echo helper_getHtmlOfPageLanding();
 				<!-- Barra Lateral Factura-->
 				<div id="mySidebarFactura" class="sidebar" style="background-color:white">
 					<div class="sidebar-content"> 
-					<div id="siderbar_content_right_factura">
-					</div>
-					
-					
-					<div class="row" id="divPanelFacturaSideBarComandos" >				
-					</div>
-					</br>
-					<div class="row" id="divPanelFacturaSideBar" >
-						<div class="col col-lg-2">
-							<a href="javascript:void(0);" class="btn btn-flat btn-danger btn-block" id="btnRollbackFactura"><i class="icon16 i-arrow-bottom "></i> REGRESAR</a>						
-						</div>	
-						<div class="col col-lg-2">
-							<a href="javascript:void(0);" class="btn btn-flat btn-success btn-block" id="btnSaveInvoice"><i class="icon16 i-arrow-bottom "></i> GUARDAR MESA</a>
-						</div>	
-					</div>
-					
-					<br/>
+						<div id="siderbar_content_right_factura">
+						</div>
+						
+						
+						<div class="row" id="divPanelFacturaSideBarComandos" >				
+						</div>
+						</br>
+						<div class="row" id="divPanelFacturaSideBar" >
+							<div class="col col-lg-2">
+								<a href="javascript:void(0);" class="btn btn-flat btn-danger btn-block" id="btnRollbackFactura"><i class="icon16 i-arrow-bottom "></i> REGRESAR</a>						
+							</div>	
+							<div class="col col-lg-2">
+								<a href="javascript:void(0);" class="btn btn-flat btn-success btn-block" id="btnSaveInvoice"><i class="icon16 i-arrow-bottom "></i> GUARDAR MESA</a>
+							</div>	
+						</div>
+						
+						<br/>
 
-					<div class="mt-5 custom-table-container-categorias">
-						<div style="width: 98%; margin: 0 auto;">
-							<div class="row custom-table-categorias">
-								<?php
-								if (isset($objListInventoryCategoryRestaurant)):
-									foreach($objListInventoryCategoryRestaurant as $k=>$category):
-										?>
-										<div class="col-md-2 item-categoria"
-												data-value="<?= $category->inventoryCategoryID ?>"
-												data-parent="<?= $category->inventoryCategoryID?>"
-												data-filter="[data-value='<?= $category->inventoryCategoryID ?>']"
-												style="background-image: url('<?= $category->description ?>');"
-												onclick="fnSelectCellCategoryInventory(this)">
-											<span class="badge badge-success text-overlay-categoria"><?= $category->name; ?></span>
-											<div class="overlay">
-											</div>
-										</div>
+						<div class="mt-5 custom-table-container-categorias">
+							<div style="width: 98%; margin: 0 auto;">
+								<div class="row custom-table-categorias">
 									<?php
-									endforeach;
-								endif;
-								?>
-							</div>
-						</div>
-					</div>
-
-					<div class="mt-5 custom-table-container-inventory">
-						<div style="width: 98%; margin: 0 auto;">
-							<div class="row">
-								<?php
-								if (isset($objListInventoryItemsRestaurant)):
-									foreach ($objListInventoryItemsRestaurant  as $k=>$item):
-								?>
-										<?php
-									if ($k== 0):
-										?>
-										<div class="col-md-2 item-producto item-producto-back"
-												data-filter="*"
-												onclick="fnSelectCellInventoryBack(this)" >
-											<span class="badge badge-warning text-overlay-categoria">REGRESAR</span>
-											<div class="overlay">
+									if (isset($objListInventoryCategoryRestaurant)):
+										foreach($objListInventoryCategoryRestaurant as $k=>$category):
+											?>
+											<div class="col-md-2 item-categoria"
+													data-value="<?= $category->inventoryCategoryID ?>"
+													data-parent="<?= $category->inventoryCategoryID?>"
+													data-filter="[data-value='<?= $category->inventoryCategoryID ?>']"
+													style="background-image: url('<?= $category->description ?>');"
+													onclick="fnSelectCellCategoryInventory(this)">
+												<span class="badge badge-success text-overlay-categoria"><?= $category->name; ?></span>
+												<div class="overlay">
+												</div>
 											</div>
-										</div>
 										<?php
+										endforeach;
 									endif;
-										?>
-									<div class="col-md-2 item-producto"
-											style="background-image: url('<?= $item["Imagen"]; ?>');" 
-											onclick="fnSelectCellInventory(this)"
-											ondblclick="fnSelectDoubleCellInventory(this)"
-											data-value="<?= $item["inventoryCategoryID"]; ?>"
-											data-parent="<?= $item["inventoryCategoryID"]; ?>"
-											data-codigo="<?= $item["Codigo"]; ?>" >
-										<span class="badge badge-success text-overlay-categoria" style="display: block; /* Convierte el span en bloque para que respete el ancho */    white-space: normal; /* Permite el salto de línea */" ><?= $item['Nombre']; ?></span>
-										<div class="overlay">
-										</div>
-									</div>
-								<?php
-									endforeach;
-								endif;
-								?>
+									?>
+								</div>
 							</div>
 						</div>
-					</div>
-					
-					
-					
+						<div id="row-items">
+
+						</div>	
 					</div>
 				</div>
 
@@ -1333,44 +1298,9 @@ echo helper_getHtmlOfPageLanding();
 					
 					<div class="row" id="divPanelFacturaSideMesa" >				
 						<div class="container mt-5">
-						<table class="table custom-table-mesas">
-							<tbody>
-								<?php foreach ($objListMesa as $index => $item): ?>
-									<!-- Abrir una nueva fila si el índice es múltiplo de 3 -->
-									<?php if ($index % 3 == 0): ?>
-										<tr>
-									<?php endif; ?>
-
-									<!-- Crear la celda con contenido dinámico -->
-									<td class="container-overlay" 
-										style="background-image: url('<?= $item->reference1; ?>'); background-size: 180%; background-repeat: no-repeat;" 
-										ondblclick="fnSelectCellMesaDoubleClick(this,<?= $item->reference2 ?>)"
-										onclick="fnSelectCellMesa(this)" 
-										data-value="<?= $item->catalogItemID; ?>"
-										data-parent="<?php echo $item->parentCatalogItemID; ?>" >
-										<span class="badge badge-success text-overlay"><?php echo $item->display; ?></span>
-										<div class="overlay"></div>
-									</td>
-
-									<!-- Cerrar la fila después de cada grupo de 3 celdas -->
-									<?php if ($index % 3 == 2): ?>
-										</tr>
-									<?php endif; ?>
-								<?php endforeach; ?>
-
-								<!-- Si la última fila no se cerró porque no tenía 3 celdas, rellenar con celdas vacías -->
-								<?php if (count($objListMesa) % 3 != 0): ?>
-									<?php 
-										$remainingCells = 3 - (count($objListMesa) % 3); // Calcular cuántas celdas faltan
-										for ($i = 0; $i < $remainingCells; $i++): ?>
-											<td></td> <!-- Celdas vacías para completar la fila -->
-									<?php endfor; ?>
-									</tr>
-								<?php endif; ?>
-							</tbody>
-						</table>
-
-
+							<table class="table custom-table-mesas">
+								<tbody id="mesa-body"></tbody>
+							</table>
 						</div>
 					</div>
 					
