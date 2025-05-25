@@ -528,9 +528,9 @@ echo helper_getHtmlOfPageLanding();
 													if($objListMesa)
 													foreach($objListMesa as $ware){
 														if($count == 0)
-														echo "<option value='".$ware->catalogItemID."' selected >".$ware->name."</option>";
+														echo "<option value='".$ware->catalogItemID."' selected data-ratio='".$ware->ratio."' >".$ware->name."</option>";
 														else
-														echo "<option value='".$ware->catalogItemID."'  >".$ware->name."</option>";
+														echo "<option value='".$ware->catalogItemID."' data-ratio='".$ware->ratio."' >".$ware->name."</option>";
 														$count++;
 													}
 													?>

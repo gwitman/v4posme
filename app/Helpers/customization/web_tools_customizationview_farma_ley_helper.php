@@ -56,6 +56,7 @@ function getBehavioFarmaLey(){
 		strtolower('farma_ley_app_inventory_item_selectedDisplayUM')			=> "false",		
 		strtolower('farma_ley_app_invoice_billing_divTxtCausalID')				=> "hidden",		
 		strtolower('farma_ley_app_invoice_billing_divTxtCausalIDScript')		=> "",		
+		strtolower('farma_ley_app_invoice_billing_txtTraductionMesa')			=> "Dr.",	
 		strtolower('farma_ley_app_invoice_billing_jsPostUpdateInvoiceView')		=> "			
 			if(objTransactionMaster.statusID == '66' /*registrada*/)
 			{
@@ -68,6 +69,15 @@ function getBehavioFarmaLey(){
 			$(document).ready(function(){						
 				$('#divTxtElementoDisponibleParaMove2').removeClass('hidden');
 				$('#divVendedor').appendTo('#divTxtElementoDisponibleParaMove2');
+				$('#divMesa').appendTo('#divTxtElementoDisponibleParaMove2');
+				
+				//Seleccionar Dr
+				$('#txtMesaID').on('change', function(){
+					let value 	= $('#txtMesaID').find(':selected').data('ratio');
+					value 		= fnFormatNumber(value);
+					$('#txtPorcentajeDescuento').val(value);
+				});
+				
 			});
 		</script>",
 		strtolower('farma_ley_app_invoice_billing_scriptValidateCustomer') 		=> "
