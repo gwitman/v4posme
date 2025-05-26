@@ -6,33 +6,25 @@ use App\Libraries\core_mysql_dump;
 
 
 class core_acount extends _BaseController {
-
-    // Vista de Login
-    function index() {
-
-        // Si está autenticado, solo redirigir
-        if ($this->core_web_authentication->isAuthenticated()) {
-            $dataSession = $this->session->get();
-
-            // Validar si existe "lastUrl" antes de usarla
-            $lastUrl = isset($dataSession["lastUrl"]) ? $dataSession["lastUrl"] : null;
-
-            // Validar si existe "company" y si es un objeto con propiedad "type"
-            $company = isset($dataSession["company"]) ? $dataSession["company"] : null;
-
-            if (!empty($lastUrl)) {
-                if (is_object($company) && isset($company->type) && $company->type == "emanuel") {
-                    $this->response->redirect($lastUrl);
-                } else {
-                    // Aquí puedes colocar otra redirección o lógica alternativa
-                }
-            }
-        }
-
-        // Aquí puedes continuar con la lógica del login si no está autenticado
-    }
-
-
+	
+	
+	//Vista de Login
+	function index(){
+		
+		
+		//Si esta autenticado, solo redirigir
+		//----------------------------------------------
+        if($this->core_web_authentication->isAuthenticated())
+		{
+			$dataSession	= $this->session->get();
+			if($dataSession["lastUrl"] != "")
+			{
+				if($dataSession["company"]->type == "emanuel")
+				{
+					$this->response->redirect($dataSession["lastUrl"]);
+				}
+				else
+				{
 				
 					////Obtener Datos 				
 					$parameterCantidadTransacciones 	= $this->core_web_parameter->getParameter("CORE_QUANTITY_TRANSACCION",$dataSession["user"]->companyID);
