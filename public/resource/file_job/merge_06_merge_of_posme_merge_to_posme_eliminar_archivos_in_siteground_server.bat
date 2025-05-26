@@ -19,6 +19,7 @@ curl https://posme.net/v4posme/daleska/public/core_merge/merge_of_posme_merge_to
 curl https://posme.net/v4posme/demo/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/divas/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/ebenezer/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/elektroclima/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/emanuel/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/exceso/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/farma_ley/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
