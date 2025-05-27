@@ -38,7 +38,7 @@ function helper_reporte80mmTransactionMasterElektroClima(
                       <meta name='viewport' content='width=device-width, initial-scale=1.0' />
                       <style>
                         @page {       
-                          size: 2.7in 11in;                  
+                          size: 2.7in 50in;                  
                           margin-top:0px;
                           margin-left:10px;
                           margin-right:0px;
@@ -62,17 +62,17 @@ function helper_reporte80mmTransactionMasterElektroClima(
                                 
                         <tr>
                           <td colspan='3' style='text-align:center'>
-                            REFRIGERACION Y AIRE ACONDICIONADO
+                            ELECTRODOMESTICOS Y AIRES ACONDICIONADOS
                           </td>
                         </tr>
 						<tr>
                           <td colspan='3' style='text-align:center'>
-                            Managua, Nicaragua
+                            Semáforo de Lista Vista  3c 1/2c al Sur, Frente a Pali Miraflores
                           </td>
                         </tr>
 						<tr>
                           <td colspan='3' style='text-align:center'>
-                            Tel: 2250-0046 / 2227-4876
+                            Tel: 8617-7707 / 8588-6854
                           </td>
                         </tr>
 						<tr>                              
@@ -80,11 +80,13 @@ function helper_reporte80mmTransactionMasterElektroClima(
 							RUC : ".  $rucCompany ."
 						  </td>
 						</tr>
+						<!--
 						<tr>
                           <td colspan='3' style='text-align:center'>
                             Boucher La Radial
                           </td>
                         </tr>
+						-->
 						<tr>
                           <td colspan='3' style='text-align:center'>
                             &nbsp;
@@ -293,6 +295,7 @@ function helper_reporte80mmTransactionMasterElektroClima(
                             &nbsp;
                           </td>
                         </tr>
+						<!--
 						<tr>
                           <td colspan='3' style='text-align:left'>
                             01. Revise su mercancia por favor, no se aceptan devoluciones.
@@ -313,9 +316,11 @@ function helper_reporte80mmTransactionMasterElektroClima(
                             &nbsp;
                           </td>
                         </tr>
+						-->
 						<tr>
                           <td colspan='3' style='text-align:left'>
-                            03. Garantía de 12 meses en partes eléctricas y 18 meses en el compresor.
+                            01. Este producto cuenta con garantía de 12 meses en partes eléctricas y 24 meses en compresores apartir de la compra o
+							instalación por desperfecto de fabricación.
                           </td>
                         </tr>
 						<tr>
@@ -323,6 +328,7 @@ function helper_reporte80mmTransactionMasterElektroClima(
                             &nbsp;
                           </td>
                         </tr>
+						<!--
 						<tr>
                           <td colspan='3' style='text-align:left'>
                             04. La garantía cubre si el equipo tiene protector de voltaje.
@@ -338,6 +344,24 @@ function helper_reporte80mmTransactionMasterElektroClima(
                             05. Los mantenimientos deben de ser realizados por la empresa en el tiempo que cubre  la garantia por un precio adicional.
                           </td>
                         </tr>
+						-->
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+						<tr>
+                          <td colspan='3' style='text-align:left'>
+                            02. Esta garantía cubre:
+							<ul>
+								<li>Defectos de fabricación en materiales o mano de obra.</li>
+								<li>Reparaciones o remplazos de piezas defectuosas sin costo adicional.</li>
+								<li>Mano de obra y servicios técnicos autorizados.</li>
+							<ul>
+								
+                          </td>
+                        </tr>
+						
 						<!--
                         <tr>
                           <td colspan='3' style='text-align:center'>

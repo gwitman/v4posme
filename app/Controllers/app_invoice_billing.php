@@ -7632,8 +7632,10 @@ class app_invoice_billing extends _BaseController {
 			
 			}
 			else{			
-				//visualizar				
-				$this->dompdf->stream("file.pdf ", ['Attachment' => $objParameterShowDownloadPreview ]);
+				//visualizar	
+				$timestamp 	= date("YmdHis") . "0"; // Resultado: 202505261134000
+				$filename 	= "posme_" . $timestamp . ".pdf";					
+				$this->dompdf->stream($filename, ['Attachment' => false ]);
 			}
 			
 			
