@@ -11,7 +11,8 @@
 			if(objRowTableListView != undefined){
 				fnWaitOpen();
 				var data 		= objTableListView.fnGetData(objRowTableListView);	
-				window.location	= "<?php echo base_url(); ?>/app_collection_manager/edit/employeeID/"+data[0]+"/customerID/"+data[1];													
+				//window.location	= "<?php echo base_url(); ?>/app_collection_manager/edit/employeeID/"+data[0]+"/customerID/"+data[1];	
+				window.location	= "<?php echo base_url(); ?>/app_collection_manager/edit/relationshipID/"+data[0];													
 
 			}
 			else{
@@ -31,7 +32,7 @@
 						dataType    : 'json',
 						type        : 'POST',
 						url  		: "<?php echo base_url(); ?>/app_collection_manager/delete",
-						data 		: {employeeID : data[0], customerID :data[1]},
+						data 		: {relationshipID : data[0]},
 						success:function(data){
 							fnWaitClose();
 							console.info("complete delete success");

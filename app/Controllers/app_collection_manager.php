@@ -42,19 +42,17 @@ class app_collection_manager extends _BaseController {
 			if(!$objComponentItem)
 			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 
-			$employeeID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "employeeID"); //--finuri
-			$customerID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "customerID"); //--finuri	
+			$relationshipID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "relationshipID"); //--finuri
+			$companyID 		    = $dataSession["user"]->companyID;
+			$branchID 			= $dataSession["user"]->branchID;
+			$roleID 			= $dataSession["role"]->roleID;
 
-			$companyID 		= $dataSession["user"]->companyID;
-			$branchID 		= $dataSession["user"]->branchID;
-			$roleID 		= $dataSession["role"]->roleID;
-
-			if ((!$employeeID || !$customerID)) {
+			if ((!$relationshipID )) {
 				$this->response->redirect(base_url() . "/" . 'app_collection_manager/add');
 			}
 
-			//Obtener el Registro			
-			$dataView["objRelationship"]		= $this->Relationship_Model->get_rowByPK($employeeID,$customerID);
+			//Obtener el Registro						
+			$dataView["objRelationship"]		= $this->Relationship_Model->get_rowByPKID($relationshipID);
 			$dataView["objListEmployee"]		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
 			$dataView["objListCustomer"]	    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
 			$dataView["company"]				= $dataSession["company"];	
@@ -120,16 +118,14 @@ class app_collection_manager extends _BaseController {
 			 
 			
 			//Nuevo Registro
-			$employeeID			= /*inicio get post*/ $this->request->getPost("employeeID");
-			$customerID 		= /*inicio get post*/ $this->request->getPost("customerID");				
-			
-			if((!$employeeID && !$customerID)){
+			$relationshipID			= /*inicio get post*/ $this->request->getPost("relationshipID");			
+			if((!$relationshipID)){
 					throw new \Exception(NOT_PARAMETER);			
 					 
 			} 			
 			
 			//Eliminar el Registro
-			$this->Relationship_Model->delete_app_posme($employeeID,$customerID);
+			$this->Relationship_Model->delete_app_posme($relationshipID);
 			
 			return $this->response->setJSON(array(
 				'error'   => false,
@@ -183,6 +179,7 @@ class app_collection_manager extends _BaseController {
 					$obj["employeeID"]			= /*inicio get post*/ $this->request->getPost("txtEmployeeID");
 					$obj["customerID"] 			= /*inicio get post*/ $this->request->getPost("txtCustomerID");
 					$obj["orderNo"] 			= /*inicio get post*/ $this->request->getPost("txtOrderNo");
+					$obj["reference1"]          = $this->request->getPost("txtReference1");
 					$obj["isActive"] 			= true;
 					$obj["startOn"] 			= date("Y-m-d");
 					$obj["endOn"] 				= date("Y-m-d");
@@ -239,15 +236,11 @@ class app_collection_manager extends _BaseController {
 				throw new \Exception(NOT_ALL_INSERT);			
 			
 			}	
-			//Cargar Librerias
-			
-			
-			
+			//Cargar Librerias									
 			$companyID 							= $dataSession["user"]->companyID;
 			$branchID 							= $dataSession["user"]->branchID;
 			$roleID 							= $dataSession["role"]->roleID;
-			
-		
+					
 			$objComponentEmployee		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
 			if(!$objComponentEmployee)
 			throw new \Exception("00409 EL COMPONENTE 'tb_employee' NO EXISTE...");
@@ -384,6 +377,7 @@ class app_collection_manager extends _BaseController {
 			$relationshipID    	= $this->request->getPost("txtRelationshipID");
 			$employeeID         = $this->request->getPost("txtEmployeeID");
 			$customerID         = $this->request->getPost("txtCustomerID");
+			$reference1         = $this->request->getPost("txtReference1");
 
 			$objTM                                  = $this->Relationship_Model->get_rowByID($relationshipID);
 			
@@ -391,6 +385,7 @@ class app_collection_manager extends _BaseController {
 			$obj["employeeID"] 			= $this->request->getPost("txtEmployeeID");			
 			$obj["customerID"] 			= $this->request->getPost('txtCustomerID');
 			$obj["orderNo"] 			= $this->request->getPost('txtOrderNo');
+			$obj["reference1"]          = $this->request->getPost("txtReference1");
 												
 			$db = db_connect();
 			$db->transStart();
@@ -406,7 +401,8 @@ class app_collection_manager extends _BaseController {
 				$this->core_web_notification->set_message(true, $db->error()["message"]);
 			}
 
-			$this->response->redirect(base_url() . "/" . 'app_collection_manager/edit/employeeID/' . $employeeID . "/customerID/" . $customerID);
+			$this->response->redirect(base_url() . "/" . 'app_collection_manager/edit/relationshipID/' . $relationshipID);
+			
 		} catch (\Exception $ex) {
 
 			if (empty($dataSession)) {

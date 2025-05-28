@@ -7,15 +7,16 @@ class Relationship_Model extends Model  {
    function __construct(){		
       parent::__construct();
    } 
-  function delete_app_posme($employeeID,$customerID){
-		$db 	= db_connect();
+
+  function delete_app_posme($relationshipID){
+		$db 	   = db_connect();
 		$builder	= $db->table("tb_relationship");	
 		
-		$builder->where("employeeID",$employeeID);
-		$builder->where("customerID",$customerID);	
+		$builder->where("relationshipID",$relationshipID);			
 		$builder->delete();
 		
    }
+
    function insert_app_posme($data){
 		$db 			= db_connect();
 		$builder		= $db->table("tb_relationship");	
@@ -31,13 +32,12 @@ class Relationship_Model extends Model  {
         $builder    = $db->table("tb_relationship");
 
         $builder->where("relationshipID", $relationshipID);
-
         return $builder->update($data);
     }
 
 	 function get_rowByID($relationshipID)
     {
-        $db         = db_connect();
+        $db          = db_connect();
         $builder     = $db->table('tb_relationship');
 
         $builder->where('relationshipID', $relationshipID);
@@ -46,16 +46,28 @@ class Relationship_Model extends Model  {
         return $recordSet;
     }
 
-
-      function get_rowByPK($employeeID,$customerID){
+   function get_rowByPK($employeeID, $customerID){
 		$db 	= db_connect();
 				
 		$sql = "";
-		$sql = sprintf("select r.relationshipID, r.employeeID, r.customerID, r.orderNo, r.startOn, r.endOn,  r.isActive, concat(n.firstName,' ',n.lastName) as firstName, l.legalName");
-		$sql = $sql.sprintf(" from tb_relationship as r inner join tb_naturales as n on r.employeeID = n.entityID INNER join tb_legal as l on r.customerID = l.entityID");
+		$sql = sprintf("select r.relationshipID, r.employeeID, r.customerID, r.orderNo, r.reference1, r.startOn, r.endOn,  r.isActive, concat(e.employeNumber,' / ',concat(n.firstName,' ',n.lastName)) as firstName, concat(c.customerNumber,' / ' ,l.legalName) as legalName");
+		$sql = $sql.sprintf(" from tb_relationship as r inner join tb_naturales as n on r.employeeID = n.entityID INNER join tb_legal as l on r.customerID = l.entityID INNER join tb_employee e on e.entityID = n.entityID INNER join tb_customer c on c.entityID = l.entityID");
 		$sql = $sql.sprintf(" where r.employeeID = $employeeID");		
 		$sql = $sql.sprintf(" and r.isActive= 1");		
 		$sql = $sql.sprintf(" and r.customerID = $customerID");	
+		
+		//Ejecutar Consulta  
+		return $db->query($sql)->getRow();
+   }
+
+   function get_rowByPKID($relationshipID){
+		$db 	= db_connect();
+				
+		$sql = "";
+		$sql = sprintf("select r.relationshipID, r.employeeID, r.customerID, r.orderNo, r.reference1, r.startOn, r.endOn,  r.isActive, concat(e.employeNumber,' / ',concat(n.firstName,' ',n.lastName)) as firstName, concat(c.customerNumber,' / ' ,l.legalName) as legalName");
+		$sql = $sql.sprintf(" from tb_relationship as r inner join tb_naturales as n on r.employeeID = n.entityID INNER join tb_legal as l on r.customerID = l.entityID INNER join tb_employee e on e.entityID = n.entityID INNER join tb_customer c on c.entityID = l.entityID");
+		$sql = $sql.sprintf(" where r.relationshipID = $relationshipID");		
+		$sql = $sql.sprintf(" and r.isActive= 1");		
 		
 		//Ejecutar Consulta  
 		return $db->query($sql)->getRow();

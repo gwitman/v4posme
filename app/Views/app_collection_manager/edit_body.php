@@ -89,6 +89,15 @@
 																</div>
 															</div>
 														</div>
+
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="buttons">Referencia</label>
+															<div class="col-lg-8">
+																<div class="input-group">	
+																	<input class="form-control" type="text" name="txtReference1" id="txtReference1" value="<?php echo $objRelationship->reference1; ?>">																																																																																																		
+																</div>
+															</div>
+														</div>
 																																									
 													</fieldset> 
 												</form>
