@@ -8,7 +8,7 @@ class Relationship_Model extends Model  {
       parent::__construct();
    } 
 
-  function delete_app_posme($relationshipID){
+   function delete_app_posme($relationshipID){
 		$db 	   = db_connect();
 		$builder	= $db->table("tb_relationship");	
 		
@@ -35,7 +35,7 @@ class Relationship_Model extends Model  {
         return $builder->update($data);
     }
 
-	 function get_rowByID($relationshipID)
+	function get_rowByID($relationshipID)
     {
         $db          = db_connect();
         $builder     = $db->table('tb_relationship');
@@ -46,7 +46,7 @@ class Relationship_Model extends Model  {
         return $recordSet;
     }
 
-   function get_rowByPK($employeeID, $customerID){
+    function get_rowByPK($employeeID, $customerID){
 		$db 	= db_connect();
 				
 		$sql = "";
@@ -58,9 +58,9 @@ class Relationship_Model extends Model  {
 		
 		//Ejecutar Consulta  
 		return $db->query($sql)->getRow();
-   }
+    }
 
-   function get_rowByPKID($relationshipID){
+    function get_rowByPKID($relationshipID){
 		$db 	= db_connect();
 				
 		$sql = "";
@@ -71,7 +71,7 @@ class Relationship_Model extends Model  {
 		
 		//Ejecutar Consulta  
 		return $db->query($sql)->getRow();
-   }
+    }
 
 }
 ?>
