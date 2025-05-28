@@ -7384,6 +7384,7 @@ class app_invoice_billing extends _BaseController {
 				$datView["objUser"]->nickname,
 			    $objParameterRuc /*ruc*/
 			);
+			
 			$this->dompdf->loadHTML($html);
 			
 			//1cm = 29.34666puntos

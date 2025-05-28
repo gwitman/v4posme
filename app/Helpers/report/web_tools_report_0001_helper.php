@@ -8632,7 +8632,7 @@ function helper_reporte80mmTransactionMaster(
 					{	
 						
 						$texto 		= $key;
-						if($rowin > 0 && $colun == 0)
+						if($rowin > 0 && $colun == 0 && !is_numeric($texto) )
 						{
 							$cuerpo 	= $cuerpo."<tr >";															
 							$cuerpo = $cuerpo."<td colspan='3' >";
@@ -8642,19 +8642,24 @@ function helper_reporte80mmTransactionMaster(
 						}
 						else 
 						{
-							if($colun == 1)
-							$cuerpo 	= $cuerpo."<tr >";								
+							if($colun == 0)
+							{
+								$cuerpo = $cuerpo."<tr >";		
+								$cuerpo = $cuerpo."<td colspan='1' style='text-align:left'  >".$confiDetalle[$colun]["prefix_row_data"]." ".$texto."</td>";								
+							}
 							
 							if($colun == 1)
-							$cuerpo = $cuerpo."<td colspan='1' >";
-							else 
-							$cuerpo = $cuerpo."<td colspan='2' >";
-						
-							$cuerpo = $cuerpo.$confiDetalle[$colun]["prefix_row_data"]." ".$texto;
-							$cuerpo = $cuerpo."</td>";								
+							{
+								$cuerpo = $cuerpo."<td colspan='1' style='text-align:right' >".$confiDetalle[$colun]["prefix_row_data"]." ".$texto."</td>";		
+							}
 							
 							if($colun == 2)
-							$cuerpo 	= $cuerpo."</tr ></br>";
+							{
+								$cuerpo		= $cuerpo."<td colspan='1' style='text-align:right'  >".$confiDetalle[$colun]["prefix_row_data"]." ".$texto."</td>";		
+								$cuerpo 	= $cuerpo."</tr ></br>";
+							}
+						
+							
 						}
 							
 					}
