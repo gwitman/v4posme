@@ -1728,7 +1728,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Comercializadora San Francisco S.A' , address = 'RSD. Bolonia #52 OPT. NIC 1C.E. 1/2C. S' ,
+	NAME = 'Farmacia Naturista Cosafra' , address = 'RSD. Bolonia #52 OPT. NIC 1C.E. 1/2C. S' ,
 	flavorID = 826 /*usuarioID*/,type='cosafra'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

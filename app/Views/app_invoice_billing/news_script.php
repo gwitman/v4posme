@@ -1834,8 +1834,9 @@
 								);
 			}
 
+			debugger;
 			//Validar Limite
-			if(balanceCredit < montoTotalInvoice &&  balanceCredit != 0 ){
+			if(parseFloat(balanceCredit) < parseFloat(montoTotalInvoice) &&  parseFloat(balanceCredit) != 0 ){
 				result = false;
 				Toast.fire({
 					icon	: "warning",

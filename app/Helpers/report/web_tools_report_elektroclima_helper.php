@@ -18,7 +18,7 @@ function helper_reporte80mmTransactionMasterElektroClima(
     $rucCompany = "" /*ruc*/
 )
 {
-    $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
+    $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;
     
     $type    = pathinfo($path, PATHINFO_EXTENSION);
     $data    = file_get_contents($path);
@@ -123,7 +123,7 @@ function helper_reporte80mmTransactionMasterElektroClima(
 			
 		
 		$html	= $html."
-					<!--
+					
 					<tr>
 						<td colspan='1'>
 							Tipo:
@@ -132,7 +132,7 @@ function helper_reporte80mmTransactionMasterElektroClima(
 							".$causalName."
 						</td>
 					</tr>
-					-->";
+					";
 	  
 			
 			
@@ -217,7 +217,7 @@ function helper_reporte80mmTransactionMasterElektroClima(
                             SUB-TOTAL
                           </td>
                           <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->subAmount)."
+                            ".$objCurrency->simbol." ".number_format($objTransactionMastser->subAmount,2,".",",")."
                           </td>
                         </tr>  
 						<!--
@@ -226,7 +226,7 @@ function helper_reporte80mmTransactionMasterElektroClima(
                             IVA
                           </td>
                           <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->tax1)."
+                            ".$objCurrency->simbol." ".number_format($objTransactionMastser->tax1,2,".",",")."
                           </td>
                         </tr>
 						-->
@@ -248,7 +248,7 @@ function helper_reporte80mmTransactionMasterElektroClima(
                             TOTAL
                           </td>
                           <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount)."
+                            ".$objCurrency->simbol." ".number_format($objTransactionMastser->amount,2,".",",")."
                           </td>
                         </tr>
 						 <tr>
@@ -256,17 +256,17 @@ function helper_reporte80mmTransactionMasterElektroClima(
                             SALDO
                           </td>
                           <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount)."
+                            ".$objCurrency->simbol." ".number_format($objTransactionMastser->amount,2,".",",")."
                           </td>
                         </tr>
    
-						<!--
+						
                         <tr>
                           <td colspan='2'>
                             RECIBIDO
                           </td>
                           <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount + $objTransactionMasterInfo->changeAmount)."
+                            ".$objCurrency->simbol." ".number_format(($objTransactionMastser->amount + $objTransactionMasterInfo->changeAmount),2,".",",")."
                           </td>
                         </tr>
                          <tr>
@@ -274,10 +274,10 @@ function helper_reporte80mmTransactionMasterElektroClima(
                             CAMBIO
                           </td>
                           <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f", ($objTransactionMasterInfo->changeAmount)  )."
+                            ".$objCurrency->simbol." ".number_format($objTransactionMasterInfo->changeAmount,2,".",",")."
                           </td>
                         </tr>
-						-->
+						
 						
                         <tr>
                           <td colspan='3' style='text-align:center'>
@@ -297,8 +297,9 @@ function helper_reporte80mmTransactionMasterElektroClima(
                         </tr>
 						<!--
 						<tr>
-                          <td colspan='3' style='text-align:left'>
-                            01. Revise su mercancia por favor, no se aceptan devoluciones.
+                          <td colspan='3' style='text-align:center'>
+                            01. GARANTIA PARA AIRES ACONDICIONADOS:</br>
+							Revise su mercancia por favor, no se aceptan devoluciones.
                           </td>
                         </tr>
 						<tr>
@@ -307,7 +308,8 @@ function helper_reporte80mmTransactionMasterElektroClima(
                           </td>
                         </tr>
 						<tr>
-                          <td colspan='3' style='text-align:left'>
+                          <td colspan='3' style='text-align:center'>
+							01. GARANTIA PARA ELECTRODOMESTICOS:</br>
                             02. En casos de reclamos sobres servicios técnicos, debe notificar en las próximas 72 horas para ser válido.
                           </td>
                         </tr>
@@ -319,7 +321,8 @@ function helper_reporte80mmTransactionMasterElektroClima(
 						-->
 						<tr>
                           <td colspan='3' style='text-align:left'>
-                            01. Este producto cuenta con garantía de 12 meses en partes eléctricas y 24 meses en compresores apartir de la compra o
+							GARANTIA PARA AIRES ACONDICIONADOS</br></br>
+                            01. Este producto cuenta con garantía de 12 meses en partes eléctricas apartir de la compra o
 							instalación por desperfecto de fabricación.
                           </td>
                         </tr>
@@ -352,13 +355,47 @@ function helper_reporte80mmTransactionMasterElektroClima(
                         </tr>
 						<tr>
                           <td colspan='3' style='text-align:left'>
-                            02. Esta garantía cubre:
-							<ul>
-								<li>Defectos de fabricación en materiales o mano de obra.</li>
-								<li>Reparaciones o remplazos de piezas defectuosas sin costo adicional.</li>
-								<li>Mano de obra y servicios técnicos autorizados.</li>
-							<ul>
-								
+							GARANTIA PARA ELECTRODOMESTICOS</br></br>
+                            02. Esta garantía cubre:</br>
+							*Defectos de fabricación en materiales o mano de obra.</br>
+							*Reparaciones o remplazos de piezas defectuosas sin costo adicional.</br>
+							*Mano de obra y servicios técnicos autorizados.</br>
+						  </td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+							___________________
+                          </td>
+                        </tr>
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            Recibí  Conforme
+                          </td>
+                        </tr>
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+							___________________
+                          </td>
+                        </tr>
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+							Entregue Conforme
                           </td>
                         </tr>
 						

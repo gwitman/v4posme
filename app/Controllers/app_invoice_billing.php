@@ -1468,7 +1468,7 @@ class app_invoice_billing extends _BaseController {
 				{
 					$objCustomer 					= $this->Customer_Model->get_rowByEntity($companyID, $objTMNew["entityID"] );					
 					//Validar si existe los suficiente puntos para pagar
-					if( $objCustomer->balancePoint <=  $objTMInfoNew["receiptAmountPoint"])
+					if( $objCustomer->balancePoint <  $objTMInfoNew["receiptAmountPoint"])
 					{
 						throw new \Exception("Su balance en punto es : PT ". number_format( $objCustomer->balancePoint,2) ." , no se puede aplicar la factura." );
 					}
@@ -7431,8 +7431,10 @@ class app_invoice_billing extends _BaseController {
 			
 			}
 			else{			
-				//visualizar				
-				$this->dompdf->stream("file.pdf ", ['Attachment' => $objParameterShowDownloadPreview ]);
+				//visualizar		
+				$timestamp 	= date("YmdHis") . "0"; // Resultado: 202505261134000
+				$filename 	= "posme_" . $timestamp . ".pdf";							
+				$this->dompdf->stream($filename, ['Attachment' => $objParameterShowDownloadPreview ]);
 			}
 			
 			
@@ -7558,9 +7560,9 @@ class app_invoice_billing extends _BaseController {
 			    array_push($detalle,$row);
 				
 			    $row = array(					
-					sprintf("%01.2f",round($detail_->quantity,2)), 					
-					sprintf("%01.2f",round($detail_->unitaryPrice,2)),
-					sprintf("%01.2f",round($detail_->amount,2))					
+					number_format($detail_->quantity,2,".",","),
+					number_format($detail_->unitaryPrice,2,".",","),
+					number_format($detail_->amount,2,".",",")			
 				);
 			    array_push($detalle,$row);
 			}

@@ -1426,6 +1426,8 @@ $routes->match(['get', 'post'], 'app_sales_report/sales_detail_format_chart', 'a
 $routes->match(['get', 'post'], 'app_sales_report/sales_detail_format_chart/(:any)', 'app_sales_report::sales_detail_format_chart');
 $routes->match(['get', 'post'], 'app_sales_report/sales_detail_item_sales_globalpro', 'app_sales_report::sales_detail_item_sales_globalpro');
 $routes->match(['get', 'post'], 'app_sales_report/sales_detail_item_sales_globalpro/(:any)', 'app_sales_report::sales_detail_item_sales_globalpro');
+$routes->match(['get', 'post'], 'app_sales_report/restock', 'app_sales_report::restock');
+$routes->match(['get', 'post'], 'app_sales_report/restock/(:any)', 'app_sales_report::restock');
 $routes->match(['get', 'post'], 'app_sales_report/sales_detail_traking_globalpro', 'app_sales_report::sales_detail_traking_globalpro');
 $routes->match(['get', 'post'], 'app_sales_report/sales_detail_traking_globalpro/(:any)', 'app_sales_report::sales_detail_traking_globalpro');
 $routes->match(['get', 'post'], 'app_sales_report/sales_detail_out_of_range', 'app_sales_report::sales_detail_out_of_range');
