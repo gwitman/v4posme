@@ -50,11 +50,46 @@ class Relationship_Model extends Model  {
 		$db 	= db_connect();
 				
 		$sql = "";
-		$sql = sprintf("select r.relationshipID, r.employeeID, r.customerID, r.orderNo, r.reference1, r.startOn, r.endOn,  r.isActive, concat(e.employeNumber,' / ',concat(n.firstName,' ',n.lastName)) as firstName, concat(c.customerNumber,' / ' ,l.legalName) as legalName");
-		$sql = $sql.sprintf(" from tb_relationship as r inner join tb_naturales as n on r.employeeID = n.entityID INNER join tb_legal as l on r.customerID = l.entityID INNER join tb_employee e on e.entityID = n.entityID INNER join tb_customer c on c.entityID = l.entityID");
+		$sql = sprintf("select 
+			r.relationshipID, r.employeeID, r.customerID, r.orderNo, r.reference1, r.startOn, r.endOn,  r.isActive, 
+			concat(e.employeNumber,' / ',concat(n.firstName,' ',n.lastName)) as firstName, 
+			concat(c.customerNumber,' / ' ,l.legalName) as legalName,
+			r.customerIDAfter
+		");
+		$sql = $sql.sprintf(" from 
+									tb_relationship as r 
+									inner join tb_naturales as n on r.employeeID = n.entityID 
+									INNER join tb_legal as l on r.customerID = l.entityID 
+									INNER join tb_employee e on e.entityID = n.entityID 
+									INNER join tb_customer c on c.entityID = l.entityID");
 		$sql = $sql.sprintf(" where r.employeeID = $employeeID");		
 		$sql = $sql.sprintf(" and r.isActive= 1");		
 		$sql = $sql.sprintf(" and r.customerID = $customerID");	
+		
+		//Ejecutar Consulta  
+		return $db->query($sql)->getRow();
+    }
+	
+	function get_rowByPKAndReference1($employeeID, $customerID,$reference1){
+		$db 	= db_connect();
+				
+		$sql = "";
+		$sql = sprintf("select 
+			r.relationshipID, r.employeeID, r.customerID, r.orderNo, r.reference1, r.startOn, r.endOn,  r.isActive, 
+			concat(e.employeNumber,' / ',concat(n.firstName,' ',n.lastName)) as firstName, 
+			concat(c.customerNumber,' / ' ,l.legalName) as legalName,
+			r.customerIDAfter
+		");
+		$sql = $sql.sprintf(" from 
+									tb_relationship as r 
+									inner join tb_naturales as n on r.employeeID = n.entityID 
+									INNER join tb_legal as l on r.customerID = l.entityID 
+									INNER join tb_employee e on e.entityID = n.entityID 
+									INNER join tb_customer c on c.entityID = l.entityID");
+		$sql = $sql.sprintf(" where r.employeeID = $employeeID");		
+		$sql = $sql.sprintf(" and r.isActive= 1");		
+		$sql = $sql.sprintf(" and r.customerID = $customerID");	
+		$sql = $sql.sprintf(" and r.reference1 = '$reference1'");	
 		
 		//Ejecutar Consulta  
 		return $db->query($sql)->getRow();
@@ -64,14 +99,27 @@ class Relationship_Model extends Model  {
 		$db 	= db_connect();
 				
 		$sql = "";
-		$sql = sprintf("select r.relationshipID, r.employeeID, r.customerID, r.orderNo, r.reference1, r.startOn, r.endOn,  r.isActive, concat(e.employeNumber,' / ',concat(n.firstName,' ',n.lastName)) as firstName, concat(c.customerNumber,' / ' ,l.legalName) as legalName");
-		$sql = $sql.sprintf(" from tb_relationship as r inner join tb_naturales as n on r.employeeID = n.entityID INNER join tb_legal as l on r.customerID = l.entityID INNER join tb_employee e on e.entityID = n.entityID INNER join tb_customer c on c.entityID = l.entityID");
+		$sql = sprintf("select 
+						r.relationshipID, r.employeeID, r.customerID, r.orderNo, 
+						r.reference1, r.startOn, r.endOn,  
+						r.isActive, concat(e.employeNumber,' / ',concat(n.firstName,' ',n.lastName)) as firstName, 
+						concat(c.customerNumber,' / ' ,l.legalName) as legalName,
+						r.customerIDAfter
+					");
+		$sql = $sql.sprintf(" from 
+									tb_relationship as r 
+									inner join tb_naturales as n on r.employeeID = n.entityID 
+									INNER join tb_legal as l on r.customerID = l.entityID 
+									INNER join tb_employee e on e.entityID = n.entityID 
+									INNER join tb_customer c on c.entityID = l.entityID");
 		$sql = $sql.sprintf(" where r.relationshipID = $relationshipID");		
 		$sql = $sql.sprintf(" and r.isActive= 1");		
 		
 		//Ejecutar Consulta  
 		return $db->query($sql)->getRow();
     }
+	
+	
 
 }
 ?>

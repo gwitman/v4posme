@@ -53,6 +53,13 @@ class app_collection_manager extends _BaseController {
 
 			//Obtener el Registro						
 			$dataView["objRelationship"]		= $this->Relationship_Model->get_rowByPKID($relationshipID);
+			$dataView["objCustomerAfter"]		= null;
+			
+			if($dataView["objRelationship"]->customerIDAfter)
+			{
+				$dataView["objCustomerAfter"]	= $this->Customer_Model->get_rowByEntity($companyID,$dataView["objRelationship"]->customerIDAfter);
+			}
+			
 			$dataView["objListEmployee"]		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
 			$dataView["objListCustomer"]	    = $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
 			$dataView["company"]				= $dataSession["company"];	
@@ -158,38 +165,7 @@ class app_collection_manager extends _BaseController {
 			 	
 			//Nuevo Registro
 			if( $method == "new"){
-					
-					//PERMISO SOBRE LA FUNCION
-					if(APP_NEED_AUTHENTICATION == true){
-						$permited = false;
-						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-						
-						if(!$permited)
-						throw new \Exception(NOT_ACCESS_CONTROL);
-						
-						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"add",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-						if ($resultPermission 	== PERMISSION_NONE)
-						throw new \Exception(NOT_ALL_INSERT);			
-					
-					}					
-					
-					$db=db_connect();
-					$db->transStart();
-					//Crear Cuenta
-					$obj["employeeID"]			= /*inicio get post*/ $this->request->getPost("txtEmployeeID");
-					$obj["customerID"] 			= /*inicio get post*/ $this->request->getPost("txtCustomerID");
-					$obj["orderNo"] 			= /*inicio get post*/ $this->request->getPost("txtOrderNo");
-					$obj["reference1"]          = $this->request->getPost("txtReference1");
-					$obj["isActive"] 			= true;
-					$obj["startOn"] 			= date("Y-m-d");
-					$obj["endOn"] 				= date("Y-m-d");
-					
-					//Ingresar
-					$relationShipID				= $this->Relationship_Model->insert_app_posme($obj);
-					
-					$db->transCommit();						
-					$this->core_web_notification->set_message(false,SUCCESS);
-					$this->response->redirect(base_url()."/".'app_collection_manager/index');											 
+				$this->insertElement($dataSession);										 
 			} 
 			//Editar Registro
 			else {
@@ -357,6 +333,64 @@ class app_collection_manager extends _BaseController {
 		}
 	}	
 
+	function insertElement($dataSession)
+	{
+		try {
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+				$permited = false;
+				$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				
+				if(!$permited)
+				throw new \Exception(NOT_ACCESS_CONTROL);
+				
+				$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"add",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				if ($resultPermission 	== PERMISSION_NONE)
+				throw new \Exception(NOT_ALL_INSERT);			
+			
+			}					
+			
+			$db=db_connect();
+			$db->transStart();
+			//Crear Cuenta
+			$obj["employeeID"]			= /*inicio get post*/ $this->request->getPost("txtEmployeeID");
+			$obj["customerID"] 			= /*inicio get post*/ $this->request->getPost("txtCustomerID");
+			$obj["customerIDAfter"]		= /*inicio get post*/ $this->request->getPost("txtCustomerIDAfter");
+			$obj["orderNo"] 			= /*inicio get post*/ $this->request->getPost("txtOrderNo");
+			$obj["reference1"]          = $this->request->getPost("txtReference1");
+			$obj["isActive"] 			= true;
+			$obj["startOn"] 			= date("Y-m-d");
+			$obj["endOn"] 				= date("Y-m-d");
+			
+			//Obtener el orden correcto
+			$objAfter 			= $this->Relationship_Model->get_rowByPKAndReference1($obj["employeeID"], $obj["customerIDAfter"],$obj["reference1"]);
+			if($objAfter)
+			{
+				$obj["orderNo"] = is_null($objAfter->orderNo) ? 0 : $objAfter->orderNo + 1 ;
+			}
+			//Ingresar
+			$relationShipID		= $this->Relationship_Model->insert_app_posme($obj);
+			
+			$db->transCommit();						
+			$this->core_web_notification->set_message(false,SUCCESS);
+			$this->response->redirect(base_url()."/".'app_collection_manager/index');	
+		} catch (\Exception $ex) {
+
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+
+			$data["session"]   = $dataSession;
+			$data["exception"] = $ex;
+			$data["urlLogin"]  = base_url();
+			$data["urlIndex"]  = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . "index";
+			$data["urlBack"]   = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+			$resultView        = view("core_template/email_error_general", $data);
+
+			echo $resultView;
+		}
+		
+	}
 	function updateElement($dataSession)
 	{
 		try {
@@ -379,20 +413,27 @@ class app_collection_manager extends _BaseController {
 			$customerID         = $this->request->getPost("txtCustomerID");
 			$reference1         = $this->request->getPost("txtReference1");
 
-			$objTM                                  = $this->Relationship_Model->get_rowByID($relationshipID);
 			
-			//$obj["companyID"]			= $companyID;
 			$obj["employeeID"] 			= $this->request->getPost("txtEmployeeID");			
 			$obj["customerID"] 			= $this->request->getPost('txtCustomerID');
+			$obj["customerIDAfter"]		= $this->request->getPost("txtCustomerIDAfter");
 			$obj["orderNo"] 			= $this->request->getPost('txtOrderNo');
 			$obj["reference1"]          = $this->request->getPost("txtReference1");
-												
+			
+			//Calcular el orden
+			
+			
 			$db = db_connect();
 			$db->transStart();
 
-			//Actualizar Relationship
-			$result 			= $this->Relationship_Model->update_app_posme($relationshipID, $obj);
-
+			//Obtener el orden correcto
+			$objAfter 	= $this->Relationship_Model->get_rowByPKAndReference1($obj["employeeID"], $obj["customerIDAfter"],$obj["reference1"]);			
+			if($objAfter)
+			{
+				$obj["orderNo"] = is_null($objAfter->orderNo) ? 0 : $objAfter->orderNo + 1 ;
+			}
+			$result 	= $this->Relationship_Model->update_app_posme($relationshipID, $obj);
+			
 			if ($db->transStatus() !== false) {
 				$db->transCommit();
 				$this->core_web_notification->set_message(false, SUCCESS);

@@ -97,6 +97,31 @@
 																</div>
 															</div>
 														</div>
+														
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="buttons">Aplicar orden depues de</label>
+															<div class="col-lg-8">
+																<div class="input-group">
+																	<input type="hidden" id="txtCustomerIDAfter" name="txtCustomerIDAfter" value="0">
+																	<input class="form-control" readonly id="txtCustomerDescriptionAfter" name="txtCustomerDescriptionAfter" value="" >
+																	
+																	<span class="input-group-btn">
+																		<button class="btn btn-danger" type="button" id="btnClearCustomerAfter">
+																			<i aria-hidden="true" class="i-undo-2"></i>
+																			clear
+																		</button>
+																	</span>
+																	<span class="input-group-btn">
+																		<button class="btn btn-primary" type="button" id="btnSearchCustomerAfter">
+																			<i aria-hidden="true" class="i-search-5"></i>
+																			buscar
+																		</button>
+																	</span>
+																	
+																</div>
+															</div>
+														</div>
+														
 																																									
 													</fieldset> 
 												</form>

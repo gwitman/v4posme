@@ -91,6 +91,23 @@
 			$("#txtCustomerDescription").val(objResponse[0][2] + " / " + objResponse[0][3]); 
 			
 		}
+		
+		$(document).on("click","#btnSearchCustomerAfter",function(){
+			var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteCustomerAfter/SELECCIONAR_CLIENTES_ALL_PAGINATED/true/empty/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
+			window.open(url_request,"MsgWindow","width=900,height=450");
+			window.onCompleteCustomerAfter = onCompleteCustomerAfter; 
+		});
+		$(document).on("click","#btnClearCustomerAfter",function(){
+					$("#txtCustomerIDAfter").val("0");
+					$("#txtCustomerDescriptionAfter").val("");
+		});
+		function onCompleteCustomerAfter(objResponse){
+			console.info("CALL onCompleteCustomer");
+			
+			$("#txtCustomerIDAfter").val(objResponse[0][1]);
+			$("#txtCustomerDescriptionAfter").val(objResponse[0][2] + " / " + objResponse[0][3]); 
+			
+		}
 	
 														
 	});
@@ -111,11 +128,7 @@
 			result = false;
 		}
 
-		//Validar Order No.
-		if ($("#txtOrderNo").val() == "") {
-			fnShowNotification("El numero de Orden es requerido", "error", timerNotification);
-			result = false;
-		}
+	
 
 		return result;
 
