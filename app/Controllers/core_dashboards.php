@@ -147,6 +147,11 @@ class core_dashboards extends _BaseController {
                 $dataSession					= $this->getIndexCreditAguil($dataSession);
                 $dataSession["body"]			= /*--inicio view*/ view('core_dasboard/dashboards_default_creditaguil',$dataSession);//--finview
             }
+			else if($objCompany->type == "emanuel")
+            {
+                $dataSession 					= $this->getIndexEmanuel($dataSession);
+                $dataSession["body"]			= /*--inicio view*/ view('core_dasboard/dashboards_emanuel',$dataSession);//--finview
+            }
             else
             {
                 $dataSession 					= $this->getIndexDefault($dataSession);
@@ -657,6 +662,163 @@ class core_dashboards extends _BaseController {
 		
         return $dataSession;
 		
+    }
+	
+	function getIndexEmanuel($dataSession)
+    {
+
+		//PERMISOS SOBRE LAS FUNCIONES
+		if(APP_NEED_AUTHENTICATION == true){				
+			
+			$permited = false;
+			$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+			
+			if(!$permited)
+			throw new \Exception(NOT_ACCESS_CONTROL);
+			
+			$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"index",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+			if ($resultPermission 	== PERMISSION_NONE)
+			throw new \Exception(NOT_ACCESS_FUNCTION);	
+
+		}	
+		
+		$authorization					= $resultPermission;
+        $firstDateYear					= helper_PrimerDiaDelYear();
+        $lastDateYear					= helper_UltimoDiaDelMes();
+        $firstDate						= helper_PrimerDiaDelMes();
+        $lastDate						= helper_UltimoDiaDelMes();
+
+
+        //Obtener las Ventas de Contado del Mes Actual
+        $objFirstDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
+        $objFirstDate->setTime(0, 0, 0);
+        $objLastDate 		= \DateTime::createFromFormat('Y-m-d H:i:s', $lastDate);
+        $objLastDate->setTime(0, 0, 0);
+        $objNowDate 		= \DateTime::createFromFormat('Y-m-d H:i:s', helper_getDate());
+        $objNowDate->setTime(0, 0, 0);
+        $objListVentasContadoMesActual = array();		
+        $objListVentasContadoMesActual = $this->Transaction_Master_Detail_Model->Default_Ventas_De_Contado_Mes_Actual($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objLastDate->format("Y-m-d") );
+
+
+        //Obtener Ventas de Contado Mensuales
+        $objFirstYearDate 				= \DateTime::createFromFormat('Y-m-d', $firstDateYear);
+        $objFirstYearDate->setTime(0, 0, 0);
+        $objFirstDate 					= \DateTime::createFromFormat('Y-m-d', $firstDate);
+        $objFirstDate->setTime(0, 0, 0);
+        $objListVentaContadoMensuales 	= array();
+		$objListVentaContadoMensuales 	= $this->Transaction_Master_Detail_Model->Default_Ventas_De_Contado_Mensuales($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objLastDate->format("Y-m-d") );
+		
+
+        //Obtener Ventas al Credito Mensuales
+        $objFirstYearDate 		= \DateTime::createFromFormat('Y-m-d', $firstDateYear);
+        $objFirstYearDate->setTime(0, 0, 0);
+        $objFirstDate 			= \DateTime::createFromFormat('Y-m-d', $firstDate);
+        $objFirstDate->setTime(0, 0, 0);
+        $objListVentasCreditoMensuales = array();
+		$objListVentasCreditoMensuales = $this->Transaction_Master_Detail_Model->Default_Ventas_De_Credito_Mes_Actual($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDate->format("Y-m-d") );
+		
+		
+       
+
+        //Obtener Capital Mensual
+        $objFirstYearDate 		= \DateTime::createFromFormat('Y-m-d', $firstDateYear);
+        $objFirstYearDate->setTime(0, 0, 0);
+        $objFirstDate 			= \DateTime::createFromFormat('Y-m-d', $firstDate);
+        $objFirstDate->setTime(0, 0, 0);
+        $objPagosMensuales 		= array();
+        while($objFirstYearDate <= $objFirstDate)
+        {
+            $objLastDayMont =  \DateTime::createFromFormat('Y-m-d', $objFirstYearDate->format("Y-m-d"));
+            $objLastDayMont->modify('+1 month');
+            $objLastDayMont->modify('-1 day');
+            $objListCapitalMensualTemporal = $this->Transaction_Master_Detail_Model->Default_Pagos_Mensuales($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDayMont->format("Y-m-d") );
+            if($objListCapitalMensualTemporal)
+            {
+                array_push($objPagosMensuales, $objListCapitalMensualTemporal[0]);
+            }
+            $objFirstYearDate->modify('+1 month');
+        }
+
+
+		//Obtener los valores del cierre del dia
+		$userIDFilter 	= 0;
+		$categoryItem	= -1;
+		$conceptoFilter	= -1;
+		$companyID		= $dataSession["company"]->companyID;
+		$userID			= $dataSession["user"]->userID;		
+		$tocken			= '';
+		$startOn		= date('Y-m-d') . ' 00:00:00';		
+		$endOn			= date('Y-m-d') . ' 23:59:59';
+		
+		
+		$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?,?);";
+		$objData		= $this->Bd_Model->executeRender(
+			$query,
+			[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,0]
+		);			
+		
+		
+		//Get Datos de Facturacion				
+		$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?,?,?);";
+		$objDataSales	= $this->Bd_Model->executeRender(
+			$query,
+			[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,$categoryItem,0,0,0,0]
+		);	
+
+		$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?,?);";
+		$objDataSalesCredito	= $this->Bd_Model->executeRender(
+			$query,
+			[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,$categoryItem,0]
+		);					
+		
+		//Get Datos de Entrada de Efectivo y Salida				
+		$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?,?);";
+		$objDataCash	= $this->Bd_Model->executeRender(
+			$query,
+			[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,$conceptoFilter,0]
+		);			
+		
+		$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?,?);";
+		$objDataCashOut	= $this->Bd_Model->executeRender(
+			$query,
+			[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,$conceptoFilter,0]
+		);			
+		
+		if(isset($objData))
+		$objDataResult["objDetail"]					= $objData;
+		else
+		$objDataResult["objDetail"]					= NULL;
+	
+	
+		if(isset($objDataSales))
+		$objDataResult["objSales"]					= $objDataSales;
+		else
+		$objDataResult["objSales"]					= NULL;
+	
+		
+		if(isset($objDataSalesCredito))
+		$objDataResult["objSalesCredito"]			= $objDataSalesCredito;
+		else
+		$objDataResult["objSalesCredito"]			= NULL;
+	
+		if(isset($objDataCash))				
+		$objDataResult["objCash"]					= $objDataCash;
+		else
+		$objDataResult["objCash"]					= NULL;
+	
+		if(isset($objDataCashOut))				
+		$objDataResult["objCashOut"]					= $objDataCashOut;
+		else
+		$objDataResult["objCashOut"]					= NULL;
+	
+		
+        //Renderizar Resultado
+        $dataSession["objPagosMensuales"]					= $objPagosMensuales;
+        $dataSession["objListVentasCreditoMensuales"]		= $objListVentasCreditoMensuales;
+        $dataSession["objListVentasContadoMesActual"]		= $objListVentasContadoMesActual;
+        $dataSession["objListVentaContadoMensuales"]		= $objListVentaContadoMensuales;
+		$dataSession["objSales"] 							= $objDataResult["objSales"];
+        return $dataSession;
     }
 	
     function getIndexDefault($dataSession)

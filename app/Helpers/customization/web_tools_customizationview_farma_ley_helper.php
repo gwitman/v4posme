@@ -53,10 +53,12 @@ function getBehavioFarmaLey(){
 		",
 		
 		
-		strtolower('farma_ley_app_inventory_item_selectedDisplayUM')			=> "false",		
-		strtolower('farma_ley_app_invoice_billing_divTxtCausalID')				=> "hidden",		
-		strtolower('farma_ley_app_invoice_billing_divTxtCausalIDScript')		=> "",		
-		strtolower('farma_ley_app_invoice_billing_txtTraductionMesa')			=> "Dr.",	
+		strtolower('farma_ley_app_inventory_item_selectedDisplayUM')									=> "false",		
+		strtolower('farma_ley_app_invoice_billing_divTxtCausalID')										=> "hidden",		
+		strtolower('farma_ley_app_invoice_billing_divTxtCausalIDScript')								=> "",		
+		strtolower('farma_ley_app_invoice_billing_txtTraductionMesa')									=> "Dr.",	
+		strtolower('farma_ley_app_invoice_billing_despuesDeRecalcularTotalRecibidoIgualCero')			=> "true",	
+		
 		strtolower('farma_ley_app_invoice_billing_jsPostUpdateInvoiceView')		=> "			
 			if(objTransactionMaster.statusID == '66' /*registrada*/)
 			{
@@ -89,6 +91,33 @@ function getBehavioFarmaLey(){
 					});
 					result = false;
 				}
+				
+				
+				//Validar que haya al menos una forma de pago
+				var _recpeitAmout = $('#txtReceiptAmount').val();
+				if (_recpeitAmout == '')
+					_recpeitAmout = 0 ;
+				_recpeitAmout	  = parseFloat(_recpeitAmout);
+				
+				
+				var _receptPoint  = $('#txtReceiptAmountPoint').val();
+				if (_receptPoint == '')
+					_receptPoint = 0 ;
+				_receptPoint	  = parseFloat(_receptPoint);
+					
+				
+				if( 
+					_recpeitAmout == 0 && 
+					_receptPoint == 0
+				)
+				{
+					result = false;
+					Toast.fire({
+						icon: 'warning',
+						title: 'Escribir la forma de pago'
+					});
+				}
+				
 		",
 		strtolower('farma_ley_app_cxc_customer_divTxtNombres')					=> "hidden",		
 		strtolower('farma_ley_app_cxc_customer_divTxtApellidos')				=> "hidden",		

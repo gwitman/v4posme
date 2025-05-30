@@ -1057,7 +1057,17 @@
 
 	$("#btnAceptarDialogPrinterV2AceptarDocument").click(function(){
 		mostarModalPersonalizado('Cargando impresión, por favor espere...');
-		window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/2/transactionID/19/transactionMasterID/"+$("#txtTransactionMasterID").val(), '_blank');
+		
+		var ahora 		= new Date();
+		var año 		= ahora.getFullYear();
+		var mes 		= String(ahora.getMonth() + 1).padStart(2, '0'); // Mes empieza en 0
+		var dia 		= String(ahora.getDate()).padStart(2, '0');
+		var hora 		= String(ahora.getHours()).padStart(2, '0');
+		var minuto 		= String(ahora.getMinutes()).padStart(2, '0');
+		var segundo 	= String(ahora.getSeconds()).padStart(2, '0');
+		var fechaHora 	= `${año}${mes}${dia}${hora}${minuto}${segundo}`;
+		
+		window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/2/transactionID/19/transactionMasterID/"+$("#txtTransactionMasterID").val()+"/"+fechaHora, '_blank');
 		cerrarModal('ModalCargandoDatos');
 		cerrarModal("ModalOpcionesImpresion");
 	});
@@ -1233,7 +1243,7 @@
         let tarejtaDolares 	= fnFormatNumber($("#txtReceiptAmountTarjetaDol").val());
         let bancoDolares 	= fnFormatNumber($("#txtReceiptAmountBankDol").val());
         let ingresoDol 	    = fnFormatNumber($("#txtReceiptAmountDol").val());
-        let tipoCambio 	    = fnFormatNumber($("#txtExchangeRate").val());
+        let tipoCambio 	    = fnFormatNumber($("#txtExchangeRate").val(),6);
         let total 		    = fnFormatNumber($("#txtTotal").val());
         if( currencyId === "1" /*Cordoba*/ )
 		{
@@ -1252,8 +1262,8 @@
 						parseFloat(tipoCambio) 
 					)  + 
 					(
-						parseFloat(ingresoDol) / 
-						parseFloat(tipoCambio)
+						parseFloat(ingresoDol)  * 
+						((1 / parseFloat(tipoCambio)).toFixed(2) * 1)
 					)
 				) - parseFloat(total);
 		}else if( currencyId === "2" /*dolares*/ )
@@ -2643,8 +2653,10 @@
 
 	function fnRecalculateDetail(clearRecibo,tipo_calculate, index=-1){
 
-		var porcentajeDescuento 	= parseFloat($('#txtPorcentajeDescuento').val()) || 0;
-		var totalGeneral 			= 0;
+		var porcentajeDescuento 						= parseFloat($('#txtPorcentajeDescuento').val()) || 0;
+		var totalGeneral 								= 0;
+		var despuesDeRecalcularTotalRecibidoIgualCero	= <?php echo getBehavio($company->type, "app_invoice_billing", "despuesDeRecalcularTotalRecibidoIgualCero", "false"); ?>;
+		
         if(index == -1 && tipo_calculate != "sumarizar")
 		{
 			var cantidad 				= 0;
@@ -2782,7 +2794,12 @@
 		if(invoiceTypeCredit === true){
 			$("#txtReceiptAmount").val("0.00");
 		}
+		else if(despuesDeRecalcularTotalRecibidoIgualCero == true)
+		{
+			$("#txtReceiptAmount").val("0.00");
+		}
 		else{
+			
 			$("#txtReceiptAmount").val(fnFormatNumber(totalGeneral,2));
 		}
 		

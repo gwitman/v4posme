@@ -291,6 +291,30 @@ function helper_reporte80mmTransactionMasterFarmaLey(
                           </td>
                         </tr>
 						
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+						
+						 <tr>
+                          <td colspan='3' style='text-align:center'>
+                            _________________________________
+                          </td>
+                        </tr>
+						
+						 <tr>
+                          <td colspan='3' style='text-align:center'>
+                            Firma de cliente
+                          </td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+						
                         <tr>
                           <td colspan='3' style='text-align:center'>
                             ".$objCompany->address."

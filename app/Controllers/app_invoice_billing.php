@@ -9145,7 +9145,7 @@ class app_invoice_billing extends _BaseController {
             $transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri
             $transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri
             $companyID 					= APP_COMPANY;
-
+			$dataSession				= $this->session->get();
 
 
             //Get Component
@@ -9154,8 +9154,8 @@ class app_invoice_billing extends _BaseController {
             $objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
             $objParameterRuc	    = $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
             $objParameterRuc        = $objParameterRuc->value;
-            $objCompany 	= $this->Company_Model->get_rowByPK($companyID);
-            $spacing 		= 0.5;
+            $objCompany 			= $this->Company_Model->get_rowByPK($companyID);
+            $spacing 				= 0.5;
 
             //Get Documento
             $datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
@@ -9322,8 +9322,12 @@ class app_invoice_billing extends _BaseController {
 
             }
             else{
-                //visualizar
-                $this->dompdf->stream("factura_".$transactionMasterID."_".date("dmYhis"), ['Attachment' => $objParameterShowDownloadPreview ]);
+				
+       			if($dataSession["user"]->nickname=="adminweb")
+					$this->dompdf->stream("posme_factura_".$transactionMasterID."_".date("dmYhis"), ['Attachment' => true ]);
+				else
+					$this->dompdf->stream("posme_factura_".$transactionMasterID."_".date("dmYhis"), ['Attachment' => false ]);
+
             }
 
 

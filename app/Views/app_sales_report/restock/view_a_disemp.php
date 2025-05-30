@@ -21,6 +21,8 @@
 		$configColumn["3"]["Titulo"] 		= "Cantidad Vendida";		
 		$configColumn["4"]["Titulo"] 		= "Cantidad Actual";
 		$configColumn["5"]["Titulo"] 		= "Familia";
+		$configColumn["6"]["Titulo"] 		= "Cantidad Inicial";
+		$configColumn["7"]["Titulo"] 		= "Porcentaje";
 		
 		
 		$configColumn["1"]["FiledSouce"] 		= "itemNumber";
@@ -28,6 +30,8 @@
 		$configColumn["3"]["FiledSouce"] 		= "quantity";		
 		$configColumn["4"]["FiledSouce"] 		= "quantityInAllWarehouse";
 		$configColumn["5"]["FiledSouce"] 		= "family";
+		$configColumn["6"]["FiledSouce"] 		= "quantityInicial";
+		$configColumn["7"]["FiledSouce"] 		= "percentageSales";
 		
 		
 		$configColumn["1"]["Formato"] 		= "";
@@ -35,6 +39,8 @@
 		$configColumn["3"]["Formato"] 		= "Number";		
 		$configColumn["4"]["Formato"] 		= "Number";
 		$configColumn["5"]["Formato"] 		= "";
+		$configColumn["6"]["Formato"] 		= "Number";		
+		$configColumn["7"]["Formato"] 		= "Number";
 		
 		
 		$configColumn["1"]["Width"] 		= "100px";
@@ -42,6 +48,8 @@
 		$configColumn["3"]["Width"] 		= "200px";		
 		$configColumn["4"]["Width"] 		= "200px";
 		$configColumn["5"]["Width"] 		= "300px";
+		$configColumn["6"]["Width"] 		= "300px";
+		$configColumn["7"]["Width"] 		= "300px";
 		
 		
 		$configColumn["1"]["Total"] 		= False;
@@ -49,6 +57,8 @@
 		$configColumn["3"]["Total"] 		= False;		
 		$configColumn["4"]["Total"] 		= False;
 		$configColumn["5"]["Total"] 		= False;
+		$configColumn["6"]["Total"] 		= False;
+		$configColumn["7"]["Total"] 		= False;
 		
 		
 		$resultado 	= helper_reporteGeneralCreateTable($objDetail,$configColumn,'0px',NULL,NULL);
