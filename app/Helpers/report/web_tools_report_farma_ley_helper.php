@@ -254,7 +254,7 @@ function helper_reporte80mmTransactionMasterFarmaLey(
                             TOTAL
                           </td>
                           <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount)."
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount - $objTransactionMasterInfo->receiptAmountPoint)."
                           </td>
                         </tr>
    
@@ -263,7 +263,7 @@ function helper_reporte80mmTransactionMasterFarmaLey(
                             RECIBIDO
                           </td>
                           <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount + $objTransactionMasterInfo->changeAmount)."
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount + $objTransactionMasterInfo->changeAmount - $objTransactionMasterInfo->receiptAmountPoint )."
                           </td>
                         </tr>
                          <tr>

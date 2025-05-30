@@ -17,28 +17,28 @@
 		
 		<?php				
 		$configColumn["1"]["Titulo"] 		= "Codigo Producto";
-		$configColumn["2"]["Titulo"] 		= "Producto";
-		$configColumn["3"]["Titulo"] 		= "Cantidad Vendida";		
-		$configColumn["4"]["Titulo"] 		= "Cantidad Actual";
-		$configColumn["5"]["Titulo"] 		= "Familia";
-		$configColumn["6"]["Titulo"] 		= "Cantidad Inicial";
+		$configColumn["2"]["Titulo"] 		= "Familia";
+		$configColumn["3"]["Titulo"] 		= "Producto";
+		$configColumn["4"]["Titulo"] 		= "Cantidad Inicial";
+		$configColumn["5"]["Titulo"] 		= "Cantidad Vendida";		
+		$configColumn["6"]["Titulo"] 		= "Cantidad Actual";
 		$configColumn["7"]["Titulo"] 		= "Porcentaje";
 		
 		
 		$configColumn["1"]["FiledSouce"] 		= "itemNumber";
-		$configColumn["2"]["FiledSouce"] 		= "itemName";	
-		$configColumn["3"]["FiledSouce"] 		= "quantity";		
-		$configColumn["4"]["FiledSouce"] 		= "quantityInAllWarehouse";
-		$configColumn["5"]["FiledSouce"] 		= "family";
-		$configColumn["6"]["FiledSouce"] 		= "quantityInicial";
+		$configColumn["2"]["FiledSouce"] 		= "family";
+		$configColumn["3"]["FiledSouce"] 		= "itemName";	
+		$configColumn["4"]["FiledSouce"] 		= "quantityInicial";
+		$configColumn["5"]["FiledSouce"] 		= "quantity";		
+		$configColumn["6"]["FiledSouce"] 		= "quantityInAllWarehouse";
 		$configColumn["7"]["FiledSouce"] 		= "percentageSales";
 		
 		
 		$configColumn["1"]["Formato"] 		= "";
-		$configColumn["2"]["Formato"] 		= "";			
+		$configColumn["2"]["Formato"] 		= "";	
+		$configColumn["5"]["Formato"] 		= "";		
 		$configColumn["3"]["Formato"] 		= "Number";		
-		$configColumn["4"]["Formato"] 		= "Number";
-		$configColumn["5"]["Formato"] 		= "";
+		$configColumn["4"]["Formato"] 		= "Number";		
 		$configColumn["6"]["Formato"] 		= "Number";		
 		$configColumn["7"]["Formato"] 		= "Number";
 		
