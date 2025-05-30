@@ -39,7 +39,7 @@ function helper_reporte80mmTransactionMasterFarmaLey(
                       <meta name='viewport' content='width=device-width, initial-scale=1.0' />
                       <style>
                         @page {       
-                          size: 2.7in 11in;                  
+                          size: 2.7in 30in;                  
                           margin-top:0px;
                           margin-left:10px;
                           margin-right:0px;
@@ -233,14 +233,22 @@ function helper_reporte80mmTransactionMasterFarmaLey(
                             ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->tax1)."
                           </td>
                         </tr> 
-                        <tr>
+                         <tr>
                           <td colspan='2'>
                             DESC
                           </td>
                           <td style='text-align:right'>
                             ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->discount)."
                           </td>
-                        </tr>                              
+                        </tr>    
+						<tr>
+                          <td colspan='2'>
+                            PUNTOS CANJEADOS
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMasterInfo->receiptAmountPoint)."
+                          </td>
+                        </tr>   						
                         <tr>
                           <td colspan='2'>
                             TOTAL

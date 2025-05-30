@@ -1441,11 +1441,11 @@ class app_invoice_billing extends _BaseController {
 				
 				
 				//Acumular punto del cliente.
-				if($objTMInfoNew["receiptAmountPoint"] <= 0 && $objTMNew["currencyID"]  == $objCurrencyCordoba->currencyID )
+				if($objTMNew["currencyID"]  == $objCurrencyCordoba->currencyID )
 				{
 					$objCustomer 					= $this->Customer_Model->get_rowByEntity($companyID, $objTMNew["entityID"] );
 					$objNatural						= $this->Natural_Model->get_rowByPK($companyID,$dataSession["user"]->branchID,$objTMNew["entityID"]);					
-					$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint + ($amountTotal * $ratioPont);
+					$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint + ($amountTotal * $ratioPont) - $objTMInfoNew["receiptAmountPoint"];
 					$this->Customer_Model->update_app_posme($objCustomer->companyID,$objCustomer->branchID,$objCustomer->entityID,$objCustomerNew);
 					
 					//Enviar whatapp
