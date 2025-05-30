@@ -1445,7 +1445,27 @@ class app_invoice_billing extends _BaseController {
 				{
 					$objCustomer 					= $this->Customer_Model->get_rowByEntity($companyID, $objTMNew["entityID"] );
 					$objNatural						= $this->Natural_Model->get_rowByPK($companyID,$dataSession["user"]->branchID,$objTMNew["entityID"]);					
-					$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint + ($amountTotal * $ratioPont) - $objTMInfoNew["receiptAmountPoint"];
+										
+					//Reglas unicamente para FarmaLey con respecto al calculo de los Puntos.(maz)					
+					if($dataSession["company"]->type == "farma_ley" )
+					{
+						if($varDescuento == 0)
+						{							
+							$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint + ($amountTotal * $ratioPont) - $objTMInfoNew["receiptAmountPoint"];
+						}
+						else 
+						{
+							$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint;
+						}							
+					}
+					else 
+					{
+						$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint + ($amountTotal * $ratioPont) - $objTMInfoNew["receiptAmountPoint"];
+					}
+
+
+
+					
 					$this->Customer_Model->update_app_posme($objCustomer->companyID,$objCustomer->branchID,$objCustomer->entityID,$objCustomerNew);
 					
 					//Enviar whatapp
