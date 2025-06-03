@@ -36,9 +36,9 @@
 		
 		$configColumn["1"]["Formato"] 		= "";
 		$configColumn["2"]["Formato"] 		= "";	
-		$configColumn["5"]["Formato"] 		= "";		
-		$configColumn["3"]["Formato"] 		= "Number";		
+		$configColumn["3"]["Formato"] 		= "";		
 		$configColumn["4"]["Formato"] 		= "Number";		
+		$configColumn["5"]["Formato"] 		= "Number";		
 		$configColumn["6"]["Formato"] 		= "Number";		
 		$configColumn["7"]["Formato"] 		= "Number";
 		

@@ -174,13 +174,25 @@ class core_web_counter {
 		if(!$objComponente)
 		throw new \Exception("NO EXISTE EL COMPONENTE '".$componentName."' ");
 		
-		//obtener el countador		
+		//obtener el countador por sucursal
 		$objCounter 	= $Counter_Model->get_rowByPK($companyID,$branchID,$objComponente->componentID,$componentItemID); 
 		if(!$objCounter)
-		throw new \Exception("NO EXISTE EL CONTADOR ");
+		{
+			//Si el contador no existe en la sucursal, 
+			//Obtener el contador por sucusal default
+			$objCounter 	= $Counter_Model->get_rowByPK($companyID,APP_BRANCH,$objComponente->componentID,$componentItemID); 
+			$branchID 		= APP_BRANCH;
+			if(!$objCounter)
+			{
+				throw new \Exception("NO EXISTE EL CONTADOR ");
+			}
+		}
+		
+		
 		//actualizar
 		$data["currentValue"] = $objCounter->currentValue + $objCounter->seed;
 		$Counter_Model->update_app_posme($companyID,$branchID,$objComponente->componentID,$componentItemID,$data);
+		
 		
 		//obtener valor
 		$value = str_pad($objCounter->currentValue, $objCounter->length, "0", STR_PAD_LEFT);
@@ -197,7 +209,7 @@ class core_web_counter {
 		
 		if($objBranch)
 		{
-			$serieBranch = $objBranch->serie;
+			$serieBranch = $objBranch->serie ? $objBranch->serie : "" ;
 		}
 			
 		//retornar valor 

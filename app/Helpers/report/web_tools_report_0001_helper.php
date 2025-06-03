@@ -542,8 +542,8 @@ function helper_reporteGeneralCreateTable($objDetail,$configColumn,$widht,$titul
 					
 					
 					//Formato al valor
-					if($tipoData == "Number"){
-						$valueField = number_format($valueField,2,'.',',');						
+					if($tipoData == "Number"){																
+						$valueField = number_format((float)$valueField,2,'.',',');					
 					}
 					else if($tipoData == "Date"){
 						$valueField = (date_format(date_create($valueField),"Y-m-d"));

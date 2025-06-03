@@ -1435,7 +1435,7 @@ class app_invoice_billing extends _BaseController {
 				
 				
 			
-				$objTMNew003["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_billing",0);
+				$objTMNew003["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->locationID,"tb_transaction_master_billing",0);
 				$objTMNew003["createdOn"]						= date("Y-m-d H:m:s");
 				$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMNew003);
 				
