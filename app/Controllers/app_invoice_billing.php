@@ -1712,6 +1712,7 @@ class app_invoice_billing extends _BaseController {
 			
 		}
         catch (DatabaseException $e) {
+			$db->transRollback();
             $response = [
                 'success' 	=> false,
                 'error' 	=> [
