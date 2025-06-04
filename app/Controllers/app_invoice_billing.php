@@ -1410,6 +1410,8 @@ class app_invoice_billing extends _BaseController {
 			$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMNew);
 			
 			
+			
+			
 			//Aplicar el Documento?
 			if( 
 				$this->core_web_workflow->validateWorkflowStage
@@ -1439,6 +1441,11 @@ class app_invoice_billing extends _BaseController {
 				$objTMNew003["createdOn"]						= date("Y-m-d H:m:s");
 				$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMNew003);
 				
+				//Guardar los puntos iniciales
+				$objCustomer 						= $this->Customer_Model->get_rowByEntity($companyID, $objTMNew["entityID"] );
+				$objTMReferenceNew					= "";
+				$objTMReferenceNew["reference3"]	= $objCustomer->balancePoint;
+				$this->Transaction_Master_References_Model->update_app_posme_by_transactionMasterID($transactionMasterID,$objTMReferenceNew);
 				
 				//Acumular punto del cliente.
 				if($objTMNew["currencyID"]  == $objCurrencyCordoba->currencyID )
@@ -1462,10 +1469,6 @@ class app_invoice_billing extends _BaseController {
 					{
 						$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint + ($amountTotal * $ratioPont) - $objTMInfoNew["receiptAmountPoint"];
 					}
-
-
-
-					
 					$this->Customer_Model->update_app_posme($objCustomer->companyID,$objCustomer->branchID,$objCustomer->entityID,$objCustomerNew);
 					
 					//Enviar whatapp
@@ -1495,6 +1498,13 @@ class app_invoice_billing extends _BaseController {
 					$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint - $objTMInfoNew["receiptAmountPoint"];
 					$this->Customer_Model->update_app_posme($objCustomer->companyID,$objCustomer->branchID,$objCustomer->entityID,$objCustomerNew);
 				}
+				
+				
+				//Obtener los puntos finales
+				$objCustomer 						= $this->Customer_Model->get_rowByEntity($companyID, $objTMNew["entityID"] );
+				$objTMReferenceNew					= "";
+				$objTMReferenceNew["reference4"]	= $objCustomer->balancePoint;
+				$this->Transaction_Master_References_Model->update_app_posme_by_transactionMasterID($transactionMasterID,$objTMReferenceNew);
 				
 				
 				//Ingresar en Kardex.
