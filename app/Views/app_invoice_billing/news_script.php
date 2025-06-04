@@ -1844,7 +1844,7 @@
 								);
 			}
 
-			debugger;
+			
 			//Validar Limite
 			if(parseFloat(balanceCredit) < parseFloat(montoTotalInvoice) &&  parseFloat(balanceCredit) != 0 ){
 				result = false;

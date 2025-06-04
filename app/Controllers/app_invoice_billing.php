@@ -1442,8 +1442,8 @@ class app_invoice_billing extends _BaseController {
 				$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMNew003);
 				
 				//Guardar los puntos iniciales
-				$objCustomer 						= $this->Customer_Model->get_rowByEntity($companyID, $objTMNew["entityID"] );
-				$objTMReferenceNew					= "";
+				$objCustomer 						= $this->Customer_Model->get_rowByEntity($companyID, $objTMNew["entityID"] );				
+				$objTMReferenceNew					= null;
 				$objTMReferenceNew["reference3"]	= $objCustomer->balancePoint;
 				$this->Transaction_Master_References_Model->update_app_posme_by_transactionMasterID($transactionMasterID,$objTMReferenceNew);
 				
@@ -1502,8 +1502,8 @@ class app_invoice_billing extends _BaseController {
 				
 				//Obtener los puntos finales
 				$objCustomer 						= $this->Customer_Model->get_rowByEntity($companyID, $objTMNew["entityID"] );
-				$objTMReferenceNew					= "";
-				$objTMReferenceNew["reference4"]	= $objCustomer->balancePoint;
+				$objTMReferenceNew					= null;
+				$objTMReferenceNew["refernece4"]	= $objCustomer->balancePoint;
 				$this->Transaction_Master_References_Model->update_app_posme_by_transactionMasterID($transactionMasterID,$objTMReferenceNew);
 				
 				
