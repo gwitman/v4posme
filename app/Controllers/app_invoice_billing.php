@@ -1458,7 +1458,7 @@ class app_invoice_billing extends _BaseController {
 					{
 						if($varDescuento == 0)
 						{							
-							$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint + ($amountTotal * $ratioPont) - $objTMInfoNew["receiptAmountPoint"];
+							$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint + (($amountTotal - $objTMInfoNew["receiptAmountPoint"]) * $ratioPont);
 						}
 						else 
 						{
@@ -1467,22 +1467,11 @@ class app_invoice_billing extends _BaseController {
 					}
 					else 
 					{
-						$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint + ($amountTotal * $ratioPont) - $objTMInfoNew["receiptAmountPoint"];
+						$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint + (($amountTotal - $objTMInfoNew["receiptAmountPoint"]) * $ratioPont);
 					}
 					$this->Customer_Model->update_app_posme($objCustomer->companyID,$objCustomer->branchID,$objCustomer->entityID,$objCustomerNew);
 					
-					//Enviar whatapp
-					if($sendWhatappByPoint == "true" && $dataSession["company"]->type == "farma_ley" )
-					{	
-					    $amountPoint			= $objCustomerNew["balancePoint"] / $ratioPont;
-						$amountPoint			= number_format($amountPoint , 2);
-						$phoneDestino 			= $objCustomer->phoneNumber;
-						$phoneDestino 			= clearNumero($phoneDestino);
-						$sendWhatappTemplate 	= str_replace("{firstName}", $objNatural->firstName, $sendWhatappTemplate);
-						$sendWhatappTemplate 	= str_replace("{amount}",  " ".$amountPoint." pt ", $sendWhatappTemplate);
-						$sendWhatappTemplate 	= replaceSimbol($sendWhatappTemplate);
-						$this->core_web_whatsap->sendMessageByWaapi($companyID, $sendWhatappTemplate, $phoneDestino);
-					}
+					
 				}
 				
 				
@@ -1505,6 +1494,20 @@ class app_invoice_billing extends _BaseController {
 				$objTMReferenceNew					= null;
 				$objTMReferenceNew["refernece4"]	= $objCustomer->balancePoint;
 				$this->Transaction_Master_References_Model->update_app_posme_by_transactionMasterID($transactionMasterID,$objTMReferenceNew);
+				
+				
+				//Enviar whatapp de puntos
+				if($sendWhatappByPoint == "true" && $dataSession["company"]->type == "farma_ley" )
+				{	
+					$amountPoint			= $objCustomer->balancePoint / $ratioPont;
+					$amountPoint			= number_format($amountPoint , 2);
+					$phoneDestino 			= $objCustomer->phoneNumber;
+					$phoneDestino 			= clearNumero($phoneDestino);
+					$sendWhatappTemplate 	= str_replace("{firstName}", $objNatural->firstName, $sendWhatappTemplate);
+					$sendWhatappTemplate 	= str_replace("{amount}",  " ".$amountPoint." pt ", $sendWhatappTemplate);
+					$sendWhatappTemplate 	= replaceSimbol($sendWhatappTemplate);
+					$this->core_web_whatsap->sendMessageByWaapi($companyID, $sendWhatappTemplate, $phoneDestino);
+				}
 				
 				
 				//Ingresar en Kardex.
@@ -9357,7 +9360,7 @@ class app_invoice_billing extends _BaseController {
        			if($dataSession["user"]->nickname=="adminweb")
 					$this->dompdf->stream("posme_factura_".$transactionMasterID."_".date("dmYhis"), ['Attachment' => true ]);
 				else
-					$this->dompdf->stream("posme_factura_".$transactionMasterID."_".date("dmYhis"), ['Attachment' => false ]);
+					$this->dompdf->stream("posme_factura_".$transactionMasterID."_".date("dmYhis"), ['Attachment' => true ]);
 
             }
 

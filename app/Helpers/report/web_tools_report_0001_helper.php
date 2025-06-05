@@ -10735,7 +10735,7 @@ function helper_reporte80mmTransactionMasterRegistrada(
                       <meta name='viewport' content='width=device-width, initial-scale=1.0' />
                       <style>
                         @page {       
-                          size: 2.7in 60in;                  
+                          size: 2.7in 7in;                  
                           margin-top:0px;
                           margin-left:25px;
                           margin-right:0px;
