@@ -801,16 +801,8 @@
 	$(document).on("click","#btnSaveInvoice",function(e)
 	{
 		e.preventDefault();
-		Swal.fire({
-			title: '<strong>CARGANDO DATOS DE FACTURA...</strong>',
-			allowOutsideClick: false,
-			timer: 20000,
-			didOpen: () => {
-				Swal.showLoading();
-			}
-		});
 		if(loadEdicion){
-			var valueWorkflow = $(".btnAcept").data("valueworkflow");
+			var valueWorkflow = $(".btnAceptAplicar").data("valueworkflow");
 			$("#txtStatusID").val(valueWorkflow);
 		}
 		fnEnviarFactura();
@@ -909,13 +901,13 @@
 	});
 	$(document).on("focus","input#txtReceiptAmountTarjeta",function(){
 			$(this).val("");
-	});
+	}); 
 	$(document).on("change","input#txtReceiptAmountTarjeta",function(){
 			fnCalculateAmountPay();
 	});
 	$(document).on("focus","input#txtReceiptAmountTarjetaDol",function(){
 			$(this).val("");
-	});
+	}); 
 	$(document).on("change","input#txtReceiptAmountTarjetaDol",function(){
 			fnCalculateAmountPay();
 	});

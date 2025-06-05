@@ -1182,17 +1182,17 @@ echo helper_getHtmlOfPageLanding();
 					
 						<div class="row">
 							<div id="siderbar_content_right">
-							</di/v>
+							</div>
 						</div>
 						
 						<div class="row" id="divPanelPaymentSideBar" >
-							<div class="col col-lg-12">
-								<a href="javascript:void(0);" class="btn btn-flat btn-danger btn-block" id="btnRollbackPayment"><i class="icon16 i-arrow-bottom"></i> Regresar</a>
+							<div class="col-md-12">
+								<a href="javascript:void(0);" class="btn btn-flat btn-danger btn-block" id="btnRollbackPayment">
+									<i class="icon16 i-arrow-bottom"></i> Regresar
+								</a>
 							</div>	
 						</div>
-						
-						</div>
-					</div>
+					<div>
 				</div>
 
 
