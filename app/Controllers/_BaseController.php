@@ -206,6 +206,7 @@ abstract class _BaseController extends Controller
 		
 		
         'customization/web_tools_customizationview_0000001',
+		'customization/web_tools_customizationview_bloomoon',
         'customization/web_tools_customizationview_colirio',
 		'customization/web_tools_customizationview_tenampa',
 		'customization/web_tools_customizationview_emanuel',
