@@ -154,10 +154,25 @@
 							fnShowNotification(data.message,"error");
 						}
 						else{	
-							
+							objBoton = "edit";
 							if(objEsMesero == "0")
 							{	
-								window.location = "<?php echo base_url(); ?>/app_invoice_billing/edit/companyID/"+data.companyID+"/transactionID/"+data.transactionID+"/transactionMasterID/"+data.transactionMasterID+"/codigoMesero/none";
+								
+								mostrarModal('ModalCargandoDatos');
+								$.post(
+									"<?= base_url(); ?>/app_invoice_billing/setSessionData", 
+										{
+										companyID           : data.companyID,
+										transactionID       : data.transactionID,
+										transactionMasterID : data.transactionMasterID,
+										codigoMesero        : "none",
+										edicion             : true
+									}, function () {
+										window.location.href = "<?= base_url(); ?>/app_invoice_billing/add/codigoMesero/none";
+									}
+								);
+								
+				
 							}
 							else 
 							{

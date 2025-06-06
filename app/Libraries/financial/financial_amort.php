@@ -186,6 +186,22 @@ class financial_amort{
 		else
 			return 0; /*no hay de otra*/
 	}
+	function validarDecimal($numero,$begin,$end) 
+	{
+		// Obtener la parte decimal
+		$decimal = $numero - floor($numero);
+
+		// Redondear a dos decimales
+		$decimal = round($decimal, 2);
+
+		// Verificar si está dentro del rango [0.01, 0.20]
+		$enRango = ($decimal >= 0.01 && $decimal <= 0.20);
+
+		return [
+			'rango' => $enRango,
+			'valor' => number_format($decimal, 2, '.', '')
+		];
+	}
 	function fechaEsFeriada($fecha)
 	{
 		
@@ -455,6 +471,17 @@ class financial_amort{
 			$nextDate								= $this->getNextDate($nextDate,$this->periodPay);			
 			$balanceInicial							= $balanceInicial - $amort;			
 			$i++;
+		}
+		
+		
+		//Validar si la ultima cuota tiene los decimales en el rango
+		$i 					= $i-1;
+		$validateDecimal 	= $this->validarDecimal($result["detail"][$i]["cuota"],0.01,0.2);
+		if($validateDecimal["rango"] == true)
+		{
+			$result["detail"][$i]["cuota"] 				= $result["detail"][$i]["cuota"] - $validateDecimal["valor"];
+			$result["detail"][$i]["interes"] 			= $result["detail"][$i]["interes"] - $validateDecimal["valor"] - $validateDecimal["valor"];
+			$result["detail"][$i]["principal"] 			= $result["detail"][$i]["principal"] + $validateDecimal["valor"];
 		}
 		
 		return $result;
@@ -815,6 +842,7 @@ class financial_amort{
 		return $result;
 		
 	}
+	
 }
 
 ?>

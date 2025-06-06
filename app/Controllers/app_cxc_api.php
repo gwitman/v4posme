@@ -118,6 +118,7 @@ class app_cxc_api extends _BaseController {
 			
 			$tableAmortization = $this->financial_amort->getTable();
 			
+			
 			return $this->response->setJSON(array(
 				'error'   	=> false,
 				'message' 	=> SUCCESS,			
