@@ -908,6 +908,8 @@ $routes->match(['get', 'post'], 'app_inventory_report/purchase', 'app_inventory_
 $routes->match(['get', 'post'], 'app_inventory_report/purchase/(:any)', 'app_inventory_report::purchase');
 $routes->match(['get', 'post'], 'app_inventory_report/list_item', 'app_inventory_report::list_item');
 $routes->match(['get', 'post'], 'app_inventory_report/list_item/(:any)', 'app_inventory_report::list_item');
+$routes->match(['get', 'post'], 'app_inventory_report/list_info_item', 'app_inventory_report::list_info_item');
+$routes->match(['get', 'post'], 'app_inventory_report/list_info_item/(:any)', 'app_inventory_report::list_info_item');
 $routes->match(['get', 'post'], 'app_inventory_report/list_item_inventory', 'app_inventory_report::list_item_inventory');
 $routes->match(['get', 'post'], 'app_inventory_report/list_item_inventory/(:any)', 'app_inventory_report::list_item_inventory');
 $routes->match(['get', 'post'], 'app_inventory_report/list_item_expired', 'app_inventory_report::list_item_expired');

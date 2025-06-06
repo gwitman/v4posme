@@ -125,7 +125,14 @@ function getBehavioFarmaLey(){
 		strtolower('farma_ley_app_cxc_customer_divRigthHome')					=> "hidden",	
 		strtolower('farma_ley_app_cxc_customer_divScriptCustom') 				=> "
 			<script>
-			$(document).ready(function(){ 		
+			$(document).ready(function(){ 
+
+				//Pasar la direccion al panel principal panel 1 segunda columna
+				var panel1_column2_new =  $('<div class=\"col-lg-6\" id=\"panel1_column2_new\" ></div>');                    
+				$('#home').children().first().append(panel1_column2_new);   
+				$('#txtAddress').parent().parent().appendTo('#panel1_column2_new');
+
+			
 				$('#txtIdentification').on('input', function () {
 					  const inputVal 	= $(this).val();
 					  var cumple 		= false;
