@@ -2648,7 +2648,8 @@
 		var porcentajeDescuento 						= parseFloat($('#txtPorcentajeDescuento').val()) || 0;
 		var totalGeneral 								= 0;
 		var despuesDeRecalcularTotalRecibidoIgualCero	= <?php echo getBehavio($company->type, "app_invoice_billing", "despuesDeRecalcularTotalRecibidoIgualCero", "false"); ?>;
-		
+		var invoiceTypeCredit 							= false;
+
         if(index == -1 && tipo_calculate != "sumarizar")
 		{
 			var cantidad 				= 0;
@@ -2717,8 +2718,6 @@
 			var customerCreditLineID 		= $("#txtCustomerCreditLineID").val();
 			var objCustomerCreditLine 		= jLinq.from(objListCustomerCreditLine).where(function(obj){ return obj.customerCreditLineID == customerCreditLineID; }).select();
 			var causalCredit 				= objCausalTypeCredit.value.split(",");
-			var invoiceTypeCredit 			= false;
-
 
 			//Obtener si la factura es al credito
 			for(var i=0;i<causalCredit.length;i++){
@@ -2762,6 +2761,15 @@
 			$("#txtServices").val(fnFormatNumber(serviceGeneral,2));
 			$("#txtTotal").val(fnFormatNumber(totalGeneral,2));
 			$("#txtTotalAlternativo").text(fnFormatNumber(totalGeneral,2));
+			
+			var causalSelect 				= $("#txtCausalID").val();
+			var causalCredit 				= objCausalTypeCredit.value.split(",");
+			//Obtener si la factura es al credito
+			for(var i=0;i<causalCredit.length;i++){
+				if(causalCredit[i] === causalSelect){
+					invoiceTypeCredit = true;
+				}
+			}
 			
 		}
 		
