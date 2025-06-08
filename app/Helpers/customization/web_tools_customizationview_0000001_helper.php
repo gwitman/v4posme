@@ -990,11 +990,46 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 				$('#labelTitleDetalle').remove();
 				$('#mySidebarFactura').css('padding-top','0px');
 				
-				
-				
+				//Pasar el boton de guardar mensa en nuevo a procesar pago
+				if(loadEdicion == false)
+				{
+					$('#registrarFacturaNueva').children().appendTo($('#btnRollbackPayment').parent());
+				}
+				else 
+				{
+					//Pasar el boton pagar en modo edcion, al panel de proceas pago
+					$('#workflowLink').find('[data-valueworkflow=\"67\"]').appendTo($('#btnRollbackPayment').parent());
+					
+					//Una ves guardado eliminar el boton guardar mensa del panel princial
+					$('#workflowLink').find('[data-valueworkflow=\"66\"]').remove();
+				}
 				
 			});
 		</script>",
+		strtolower('bar_exit_app_invoice_billing_jsPostUpdateInvoiceView') 									=> "
+		if(loadEdicion == false)
+		{
+			$('#registrarFacturaNueva').children().appendTo($('#btnRollbackPayment').parent());
+			$('#btnSaveInvoice').attr('data-valueworkflow', '66');
+		}
+		else 
+		{
+			//Pasar el boton pagar en modo edcion, al panel de proceas pago
+			$('#btnRollbackPayment').parent().find('[data-valueworkflow=\"67\"]').remove();
+			$('#workflowLink').find('[data-valueworkflow=\"67\"]').appendTo($('#btnRollbackPayment').parent());
+			
+			//Una ves guardado eliminar el boton guardar mensa del panel princial
+			$('#workflowLink').find('[data-valueworkflow=\"66\"]').remove();
+			
+			//Eliminar  es espacio vacio
+			$('#workflowLink').empty();
+			
+			
+			//Agregar el atributo workflow en el boton SaveInvoice
+			$('#btnSaveInvoice').attr('data-valueworkflow', '66');
+		}
+		",
+		
 		
 		
 		/*Financiera Erick Corea*/		

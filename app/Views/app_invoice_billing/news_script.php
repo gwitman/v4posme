@@ -802,7 +802,7 @@
 	{
 		e.preventDefault();
 		if(loadEdicion){
-			var valueWorkflow = $(".btnAceptAplicar").data("valueworkflow");
+			var valueWorkflow = $(this).data("valueworkflow");
 			$("#txtStatusID").val(valueWorkflow);
 		}
 		fnEnviarFactura();
