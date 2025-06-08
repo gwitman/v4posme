@@ -233,6 +233,8 @@ class Customer_Model extends Model  {
 			cp.location,
 			cp.phone , 
 			cp.me, 
+			cp.ordenAbono, 
+			cp.isHaveShareNow,
 			cp.balance 
 		from 
 			(
@@ -250,6 +252,8 @@ class Customer_Model extends Model  {
 				k.location,
 				k.phone , 
 				k.me, 
+				k.ordenAbono, 
+				k.isHaveShareNow,
 				sum(k.balance) as balance 
 			from 
 				(
@@ -281,11 +285,49 @@ class Customer_Model extends Model  {
 											usrp.employeeID = empp.entityID 
 									where 
 										custp.entityID = i.entityID and 
-										usrp.userID = $userID 
+										usrp.userID = $userID and 
+										rrp.isActive = 1 
 									limit 1 
 								),
 								0 
-							) as me 
+							) as me ,
+							IFNULL(
+								(
+									select 
+										rrp.orderNo
+									from 
+										tb_customer custp
+										inner join tb_relationship rrp on 
+											rrp.customerID = custp.entityID 
+										inner join tb_employee empp on 
+											empp.entityID = rrp.employeeID 
+										inner join tb_user usrp on 
+											usrp.employeeID = empp.entityID 
+									where 
+										custp.entityID = i.entityID and 
+										usrp.userID = $userID  and 
+										rrp.isActive = 1 
+									limit 1 
+								),
+								0 
+							) as ordenAbono ,
+							(	
+									IF(
+												(
+												select 
+													abono.transactionMasterID
+												from 
+													tb_transaction_master abono 
+												where 
+													abono.isActive = 1 and 
+													abono.transactionID = 23 /*abonos*/  and 
+													abono.entityID = i.entityID and 
+													DATE(NOW() - INTERVAL 6 HOUR) = DATE(abono.transactionOn)
+												) is null , 
+												0  , 
+												1 
+									)
+							) as isHaveShareNow  /*flag que indica si tiene abonos hoy*/
 					from 
 							tb_customer i
 							inner join  tb_naturales nat on nat.entityID = i.entityID 
@@ -311,9 +353,11 @@ class Customer_Model extends Model  {
 				k.customerCreditLineID,
 				k.location,
 				k.phone,
-				k.me 
+				k.me,
+				k.isHaveShareNow,
+				k.ordenAbono  
 			) cp
-		order by 
+		order by  			
 			cp.me desc,
 			cp.firstName
 		");		
