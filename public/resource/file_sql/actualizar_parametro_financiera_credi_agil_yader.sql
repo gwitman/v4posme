@@ -5,7 +5,7 @@ use dbgmnukewvzncj;
 /******************************************************************/	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://posme.net/v4posme/carlos/public/app_cxc_report/pay_by_invoice/viewReport/true/invoiceNumber/{0}" 
+	tb_company_parameter.value = "https://posme.net/v4posme/creditaguil/public/app_cxc_report/pay_by_invoice/viewReport/true/invoiceNumber/{0}" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "MOBILE_SHOW_URL_CUSTOMER_PAY"; ## Indica la url que se debe de mostrar al momento de ver el estado de cuenta de un cliente
