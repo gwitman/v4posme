@@ -1453,6 +1453,68 @@ class app_cxc_report extends _BaseController {
 		    return $resultView;
 		}
 	}
+	function pay_by_invoice(){
+		try{ 
+								
+			
+			$invoiceNumber		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"invoiceNumber");//--finuri	
+			$tocken				= "";
+			
+			//Obtener el tipo de Comprobante
+			$companyID 		= APP_COMPANY;
+			$userID			= APP_USERADMIN;
+			$customerNumber	= "";
+			
+			//Get Component
+			$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			//Get Logo
+			$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			//Get Company
+			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
+			
+			
+			$query			= "CALL pr_cxc_get_report_customer_pay_by_invoice(?,?,?,?,?);";
+			$objData02		= $this->Bd_Model->executeRender(
+				$query,
+				[$companyID,$tocken,$userID,$customerNumber,$invoiceNumber]
+			);			
+			
+			if(isset($objData02[0])){
+				$objDataResult["objClient"]				= $objData02[0][0];
+				$objDataResult["objPayList"]			= $objData02[1];
+			}
+			else{
+				$objDataResult["objClient"]				= NULL;
+				$objDataResult["objLine"]				= NULL;
+				$objDataResult["objDocument"]			= NULL;
+				$objDataResult["objAmortization"]		= NULL;
+				$objDataResult["objPayList"]			= NULL;
+			}
+			
+			$objDataResult["objCompany"] 				= $objCompany;
+			$objDataResult["objLogo"] 					= $objParameter;
+			$objDataResult["objFirma"] 					= "{companyID:"  . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_customer_status}";
+			$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
+			
+			return view("app_cxc_report/pay_by_invoice/view_a_disemp",$objDataResult);//--finview-r
+			
+		
+		}
+		catch(\Exception $ex){
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;
+		}
+	}
 	function collection_manager()
 	{
 		try{ 

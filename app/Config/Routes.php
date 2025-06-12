@@ -653,6 +653,8 @@ $routes->match(['get', 'post'], 'app_cxc_report/proyection', 'app_cxc_report::pr
 $routes->match(['get', 'post'], 'app_cxc_report/proyection/(:any)', 'app_cxc_report::proyection');
 $routes->match(['get', 'post'], 'app_cxc_report/pay', 'app_cxc_report::pay');
 $routes->match(['get', 'post'], 'app_cxc_report/pay/(:any)', 'app_cxc_report::pay');
+$routes->match(['get', 'post'], 'app_cxc_report/pay_by_invoice', 'app_cxc_report::pay_by_invoice');
+$routes->match(['get', 'post'], 'app_cxc_report/pay_by_invoice/(:any)', 'app_cxc_report::pay_by_invoice');
 $routes->match(['get', 'post'], 'app_cxc_report/collection_manager', 'app_cxc_report::collection_manager');
 $routes->match(['get', 'post'], 'app_cxc_report/collection_manager/(:any)', 'app_cxc_report::collection_manager');
 $routes->match(['get', 'post'], 'app_cxc_report/exchange_rate', 'app_cxc_report::exchange_rate');
