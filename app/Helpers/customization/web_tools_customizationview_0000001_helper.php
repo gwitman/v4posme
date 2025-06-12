@@ -1186,9 +1186,10 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 				<li>Favor presentar esta esquela para retirar su equipo.</li>
 				<li>COMPU MATT No se responsabiliza por la pérdida de información. en medios extraibles tales como: disco duro (internos o externos), DVD, Pendriver, cita backup , al momento de realizar cualquier servicio.</li>
 				<li>Nuestra GARANTIA no cubre fallas de software, La garantía por mano de obra es de 7 dias.</li>
-				<li>El valor del diagnóstico es de C$ 450 y es acreditable al monto total del mantenimiento realializado.</li>
+				<li>El valor del diagnóstico es de C$ 460 y es acreditable al monto total del mantenimiento realializado.</li>
+				<li>Diagnostico de equipo de alto rendimiento $20.</li>
 				<li>Para hacer valida su garantía, presentar SIEMPRE su factura Original de compra.</li>
-				<li>Despues de 30 dias de notificado el diagnóstico. no nos hacemos responsables de su equipo.</li>
+				<li>Despues de 30 dias de notificado el diagnóstico. no nos hacemos responsables de su equipo. Dicho equipo pasará al área de almacenamiento después la notificación.</li>
 				<li>Los equipos deben estar siempre conectados a tomas corriente polarizados, con protectores de energia, supresores de picos y UPS de lo contrario perderea su garantía</li>
 				<li>Para cualquier información, llamar al 2311-0234, Correo electronico: soporte@compumattsa.com. WhatsApp :  8249-3098</li>
 			</ul>
