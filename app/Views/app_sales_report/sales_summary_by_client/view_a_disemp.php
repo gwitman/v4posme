@@ -25,7 +25,7 @@
 		$configColumn["4"]["Titulo"] 		= "Monto con IVA";
 		$configColumn["5"]["Titulo"] 		= "Utilidad";		
 		$configColumn["7"]["Titulo"] 		= "IVA TOTAl";
-
+		$configColumn["8"]["Titulo"] 		= "Pagos con Puntos";
 
 		$configColumn["0"]["FiledSouce"] 		= "customerNumber";
 		$configColumn["1"]["FiledSouce"] 		= "legalName";
@@ -34,6 +34,7 @@
 		$configColumn["4"]["FiledSouce"] 		= "amountConIva";
 		$configColumn["5"]["FiledSouce"] 		= "utilidad";		
 		$configColumn["7"]["FiledSouce"] 		= "ivaTotal";
+		$configColumn["8"]["FiledSouce"] 		= "pagoConPuntos";
 
 
 		$configColumn["0"]["Formato"] 		= "";
@@ -43,6 +44,7 @@
 		$configColumn["4"]["Formato"] 		= "Number";
 		$configColumn["5"]["Formato"] 		= "Number";		
 		$configColumn["7"]["Formato"] 		= "Number";
+		$configColumn["8"]["Formato"] 		= "Number";
 
 
 		$configColumn["0"]["Width"] 		= "100px";
@@ -52,6 +54,7 @@
 		$configColumn["4"]["Width"] 		= "100px";
 		$configColumn["5"]["Width"] 		= "100px";		
 		$configColumn["7"]["Width"] 		= "100px";
+		$configColumn["8"]["Width"] 		= "100px";
 
 		$configColumn["0"]["Total"] 		= False;
 		$configColumn["1"]["Total"] 		= False;
@@ -60,6 +63,7 @@
 		$configColumn["4"]["Total"] 		= True;
 		$configColumn["5"]["Total"] 		= True;		
 		$configColumn["7"]["Total"] 		= True;
+		$configColumn["8"]["Total"] 		= True;
 
 		
 		$resultado 	= helper_reporteGeneralCreateTable($objDetail,$configColumn,'0px',NULL,NULL);
