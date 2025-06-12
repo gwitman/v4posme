@@ -1474,14 +1474,16 @@ class app_cxc_report extends _BaseController {
 			
 			
 			$query			= "CALL pr_cxc_get_report_customer_pay_by_invoice(?,?,?,?,?);";
-			$objData02		= $this->Bd_Model->executeRender(
+			$objData02		= $this->Bd_Model->executeRenderMultipleNative(
 				$query,
 				[$companyID,$tocken,$userID,$customerNumber,$invoiceNumber]
 			);			
 			
 			if(isset($objData02[0])){
+				
 				$objDataResult["objClient"]				= $objData02[0][0];
 				$objDataResult["objPayList"]			= $objData02[1];
+				
 			}
 			else{
 				$objDataResult["objClient"]				= NULL;
@@ -1489,6 +1491,7 @@ class app_cxc_report extends _BaseController {
 				$objDataResult["objDocument"]			= NULL;
 				$objDataResult["objAmortization"]		= NULL;
 				$objDataResult["objPayList"]			= NULL;
+				
 			}
 			
 			$objDataResult["objCompany"] 				= $objCompany;
@@ -1501,18 +1504,21 @@ class app_cxc_report extends _BaseController {
 		
 		}
 		catch(\Exception $ex){
-			if (empty($dataSession)) {
-				return redirect()->to(base_url("core_acount/login"));
-			}
-			
-			$data["session"]   = $dataSession;
-		    $data["exception"] = $ex;
-		    $data["urlLogin"]  = base_url();
-		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    $resultView        = view("core_template/email_error_general",$data);
-			
-		    return $resultView;
+			echo print_r($ex->getMessage(),true);
+			echo "</br>";
+			echo print_r($ex->getLine(),true);
+			//--if (empty($dataSession)) {
+			//--	return redirect()->to(base_url("core_acount/login"));
+			//--}
+			//--
+			//--$data["session"]   = $dataSession;
+		    //--$data["exception"] = $ex;
+		    //--$data["urlLogin"]  = base_url();
+		    //--$data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    //--$data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    //--$resultView        = view("core_template/email_error_general",$data);
+			//--
+		    //--return $resultView;
 		}
 	}
 	function collection_manager()

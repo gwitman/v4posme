@@ -42,7 +42,7 @@ class Bd_Model extends Model  {
 		//Ejecutar query
 		$k 					= 0;
 		$array_result_sets 	= array();		
-	
+		
 		if(mysqli_multi_query($db->connID,$query)){
 			do{
 				$result = mysqli_store_result($db->connID);
