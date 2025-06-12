@@ -1,7 +1,6 @@
 <?php
 function getBehavioBlooMoon(){
     $bloomoon = array(
-		/*Bar Exit*/		
 		strtolower('bluemoon_core_web_language_workflowstage_billing_REGISTRADA')			 					=> "GUARDAR MESA",
 		strtolower('bluemoon_core_web_language_workflowstage_billing_APLICADA')				 					=> "PAGAR",
 		strtolower('bluemoon_core_web_language_workflowstage_billing_REGISTRAR')				 				=> "GUARDAR MESA",
@@ -23,19 +22,6 @@ function getBehavioBlooMoon(){
 		strtolower('bluemoon_app_invoice_billing_panelLabelSumaryAlternativo')	 								=> "",
 		strtolower('bluemoon_app_invoice_billing_divTxtCedulaBeneficiario')	 									=> "Dirección",
 		strtolower('bluemoon_app_invoice_billing_divApplyExoneracion')	 										=> "",
-		strtolower('bluemoon_app_invoice_billing_jsPostUpdateInvoiceView')	 									=> "
-		
-				debugger;
-				var p_btn = $('.btnAcept[data-valueworkflow=\"67\"]');
-				if (!p_btn.parent().parent().is('#divPanelPaymentSideBar')) {
-					p_btn.parent().appendTo('#divPanelPaymentSideBar');
-				}
-				
-				$('.btnAcept[data-valueworkflow=\"67\"]').parent().removeClass('col-lg-2');
-				$('.btnAcept[data-valueworkflow=\"67\"]').parent().addClass('col-lg-12');
-				$('#registrarFacturaNueva').appendTo('#rowBotoneraFacturaFila4');	
-				
-		",
 		strtolower('bluemoon_app_invoice_billing_divTraslateElement') 											=> "
 		<script>
 			$(document).ready(function(){		
@@ -57,25 +43,14 @@ function getBehavioBlooMoon(){
 				$('#divPanelShowSummaryNumber').appendTo('#siderbar_content_right');	
 				$('#divPanelShowSummaryNumber').removeClass('col-lg-5');
 				$('#divPanelShowSummaryNumber').addClass('col-lg-6');
-				$('#registrarFacturaNueva').appendTo('#rowBotoneraFacturaFila4');	
+				
 				
 				$('#heading').remove();
 				$('<br/>').appendTo('#divPanelPaymentSideBar');	
-				
-				$('#btnRollbackPayment').removeClass('btn-block');
-				$('#btnRollbackPayment').css('width', '100%');
-				$('#btnRollbackPayment').css('padding-right', '0');
-				$('#btnRollbackPayment').css('padding-left', '0');
-				
-				
-				debugger;
-				var p_btn = $('.btnAcept[data-valueworkflow=\"67\"]');
-				if (!p_btn.parent().parent().is('#divPanelPaymentSideBar')) {
-					p_btn.parent().appendTo('#divPanelPaymentSideBar');
-				}
+				$('.btnAcept[data-valueworkflow=\"67\"]').parent().appendTo('#divPanelPaymentSideBar');	
 				$('.btnAcept[data-valueworkflow=\"67\"]').parent().removeClass('col-lg-2');
 				$('.btnAcept[data-valueworkflow=\"67\"]').parent().addClass('col-lg-12');
-				
+				debugger;
 				$('#panelContainterDetailInvoice').appendTo('#siderbar_content_right_factura');	
 				$('#btnBar').parent().appendTo('#divPanelFacturaSideBarComandos');
 				$('#btnFooter').parent().appendTo('#divPanelFacturaSideBarComandos');
@@ -105,13 +80,49 @@ function getBehavioBlooMoon(){
 				$('#labelTitleDetalle').remove();
 				$('#mySidebarFactura').css('padding-top','0px');
 				
-				
-				
+				//Pasar el boton de guardar mensa en nuevo a procesar pago
+				if(loadEdicion == false)
+				{
+					$('#registrarFacturaNueva').children().appendTo($('#btnRollbackPayment').parent());
+				}
+				else 
+				{
+					//Pasar el boton pagar en modo edcion, al panel de proceas pago
+					$('#workflowLink').find('[data-valueworkflow=\"67\"]').appendTo($('#btnRollbackPayment').parent());
+					
+					//Una ves guardado eliminar el boton guardar mensa del panel princial
+					$('#workflowLink').find('[data-valueworkflow=\"66\"]').remove();
+				}
 				
 			});
-		</script>"
+		</script>",
+		strtolower('bluemoon_app_invoice_billing_jsPostUpdateInvoiceView') 									=> "
+		if(loadEdicion == false)
+		{
+			$('#registrarFacturaNueva').children().appendTo($('#btnRollbackPayment').parent());
+			$('#btnSaveInvoice').attr('data-valueworkflow', '66');
+		}
+		else 
+		{
+			//Pasar el boton pagar en modo edcion, al panel de proceas pago
+			$('#btnRollbackPayment').parent().find('[data-valueworkflow=\"67\"]').remove();
+			$('#workflowLink').find('[data-valueworkflow=\"67\"]').appendTo($('#btnRollbackPayment').parent());
+			
+			//Una ves guardado eliminar el boton guardar mensa del panel princial
+			$('#workflowLink').find('[data-valueworkflow=\"66\"]').remove();
+			
+			//Eliminar  es espacio vacio
+			$('#workflowLink').empty();
+			
+			
+			//Agregar el atributo workflow en el boton SaveInvoice
+			$('#btnSaveInvoice').attr('data-valueworkflow', '66');
+		}
+		"	
+		
+		
     );
 	
-	$bloomoon 	= array();
+	
     return $bloomoon;
 }
