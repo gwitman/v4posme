@@ -323,6 +323,7 @@ class Customer_Model extends Model  {
 													abono.transactionID = 23 /*abonos*/  and 
 													abono.entityID = i.entityID and 
 													DATE(NOW() - INTERVAL 6 HOUR) = DATE(abono.transactionOn)
+												limit 1 
 												) is null , 
 												0  , 
 												1 
