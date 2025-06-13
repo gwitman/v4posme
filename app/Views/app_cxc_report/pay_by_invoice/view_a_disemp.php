@@ -32,6 +32,31 @@
         <p class="font-semibold">Identificación:</p>
         <p><?php echo $objClient["customerNumber"];  ?></p>
       </div>
+	  
+	  <div>
+        <p class="font-semibold">Fecha desembolso:</p>
+        <p><?php echo $objClient["fechaDesembolso"];  ?></p>
+      </div>
+      <div>
+        <p class="font-semibold">Monto desembolso:</p>
+        <p><?php echo $objClient["montoDesembolso"];  ?></p>
+      </div>
+	  
+	  
+	   <div>
+        <p class="font-semibold">Interes:</p>
+        <p><?php echo $objClient["interesDesembolso"];  ?></p>
+      </div>
+      <div>
+        <p class="font-semibold">Plazo:</p>
+        <p><?php echo $objClient["plazo"];  ?></p>
+      </div>
+	  <div>
+        <p class="font-semibold">Frecuencia:</p>
+        <p><?php echo $objClient["frecuenciaDesembolso"];  ?></p>
+      </div>
+	  
+	  
     </div>
 
     <!-- Tabla de pagos -->
@@ -53,12 +78,15 @@
 			{
 				foreach($objPayList as $item)
 				{
-					echo '<tr class="hover:bg-gray-100">';
-					echo '	<td class="py-2 px-2 whitespace-nowrap">'.(new DateTime($item["createdOn"]))->format('Y-m-d h:i A').'</td>';
-					echo '	<td class="py-2 px-2 whitespace-nowrap">'.$item["MonedaDesembolso"]." ".number_format($item["Pago"], 2, '.', ',').'</td>';
-					echo '	<td class="py-2 px-2 whitespace-nowrap">'.$item["userName"].'</td>';
-					echo '	<td class="py-2 px-2 whitespace-nowrap">'.$item["MonedaDesembolso"]." ".number_format($item["SaldoNuevo"], 2, '.', ',').'</td>';
+					$isEmptyUser = empty(trim($item["userName"])) ? 'text-red-600' : '';
+					 
+					echo '<tr class="hover:bg-gray-100 '.$isEmptyUser.'">';
+					echo '  <td class="py-2 px-2 whitespace-nowrap">'.(new DateTime($item["createdOn"]))->format('Y-m-d h:i A').'</td>';
+					echo '  <td class="py-2 px-2 whitespace-nowrap">'.$item["MonedaDesembolso"]." ".number_format($item["Pago"], 2, '.', ',').'</td>';
+					echo '  <td class="py-2 px-2 whitespace-nowrap">'.$item["userName"].'</td>';
+					echo '  <td class="py-2 px-2 whitespace-nowrap">'.$item["MonedaDesembolso"]." ".number_format($item["SaldoNuevo"], 2, '.', ',').'</td>';
 					echo '</tr>';
+					
 				}
 			}
 		  ?>
