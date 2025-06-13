@@ -235,6 +235,8 @@ class Customer_Model extends Model  {
 			cp.me, 
 			cp.ordenAbono, 
 			cp.isHaveShareNow,
+			cp.frecuencyNameIntoShare,
+			cp.showFrecuenciInCustomerIntoShare,
 			cp.balance 
 		from 
 			(
@@ -252,8 +254,15 @@ class Customer_Model extends Model  {
 				k.location,
 				k.phone , 
 				k.me, 
-				k.ordenAbono, 
+				case 
+					when k.ordenAbono = 0 then 
+						9999
+					else 
+						k.ordenAbono
+				end as ordenAbono,				
 				k.isHaveShareNow,
+				k.frecuencyNameIntoShare,
+				k.showFrecuenciInCustomerIntoShare ,
 				sum(k.balance) as balance 
 			from 
 				(
@@ -309,7 +318,7 @@ class Customer_Model extends Model  {
 										rrp.isActive = 1 
 									limit 1 
 								),
-								0 
+								9999 
 							) as ordenAbono ,
 							(	
 									IF(
@@ -328,7 +337,9 @@ class Customer_Model extends Model  {
 												0  , 
 												1 
 									)
-							) as isHaveShareNow  /*flag que indica si tiene abonos hoy*/
+							) as isHaveShareNow  /*flag que indica si tiene abonos hoy*/ ,
+							'N-T' as frecuencyNameIntoShare,
+							0 as showFrecuenciInCustomerIntoShare 
 					from 
 							tb_customer i
 							inner join  tb_naturales nat on nat.entityID = i.entityID 
@@ -356,7 +367,9 @@ class Customer_Model extends Model  {
 				k.phone,
 				k.me,
 				k.isHaveShareNow,
-				k.ordenAbono  
+				k.ordenAbono ,
+				k.frecuencyNameIntoShare,
+				k.showFrecuenciInCustomerIntoShare 
 			) cp
 		order by  			
 			cp.me desc,
