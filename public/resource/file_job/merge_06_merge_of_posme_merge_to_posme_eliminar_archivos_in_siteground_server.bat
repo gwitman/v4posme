@@ -27,7 +27,7 @@ curl https://posme.net/v4posme/exceso/public/core_merge/merge_of_posme_merge_to_
 curl https://posme.net/v4posme/farma_ley/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/farma_ticuan/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/ferreteria_fer/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
-curl https://posme.net/v4posme/farma_jm/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
+curl https://posme.net/v4posme/ferreteria_jm/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/fidlocal/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/financiera_erick_corean/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
 curl https://posme.net/v4posme/freddy/public/core_merge/merge_of_posme_merge_to_posme_initialize/2
