@@ -474,14 +474,26 @@ class financial_amort{
 		}
 		
 		
+		//Sumar el total del principal
+		$totalPrincipal 	= array_sum(array_map('floatval', array_column($result["detail"], "principal")));
+		$dif				= $capitalDesembolsado - $totalPrincipal;
+		
 		//Validar si la ultima cuota tiene los decimales en el rango
 		$i 					= $i-1;
-		$validateDecimal 	= $this->validarDecimal($result["detail"][$i]["cuota"],0.01,0.2);
-		if($validateDecimal["rango"] == true)
+		if($dif > 0)
 		{
-			$result["detail"][$i]["cuota"] 				= $result["detail"][$i]["cuota"] - $validateDecimal["valor"];
-			$result["detail"][$i]["interes"] 			= $result["detail"][$i]["interes"] - $validateDecimal["valor"] - $validateDecimal["valor"];
-			$result["detail"][$i]["principal"] 			= $result["detail"][$i]["principal"] + $validateDecimal["valor"];
+			$result["detail"][$i]["principal"] 			= round($result["detail"][$i]["principal"] + $dif,2);
+			$result["detail"][$i]["interes"] 			= round($result["detail"][$i]["interes"] - $dif,2);
+			$result["detail"][$i]["cuota"] 				= $result["detail"][$i]["principal"] + $result["detail"][$i]["interes"];
+			
+		}
+		if($dif < 0)
+		{
+			$dif										= $dif * -1;
+			$result["detail"][$i]["principal"] 			= round($result["detail"][$i]["principal"] - $dif,2);
+			$result["detail"][$i]["interes"] 			= round($result["detail"][$i]["interes"] + $dif,2);
+			$result["detail"][$i]["cuota"] 				= $result["detail"][$i]["principal"] + $result["detail"][$i]["interes"];
+			
 		}
 		
 		return $result;
