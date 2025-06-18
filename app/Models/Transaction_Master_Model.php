@@ -154,6 +154,34 @@ class Transaction_Master_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
+   function get_rowByCreatedBy_AndCurrentDate($companyID,$userID)
+   {
+	    $db 		= db_connect();
+		$builder	= $db->table("tb_transaction_master");    
+   
+		
+	
+		$sql = "";
+		$sql = sprintf("
+			select 
+				t.transactionID,
+				t.transactionMasterID,
+				t.currencyID,
+				t.amount 
+			from 
+				tb_transaction_master t 
+			where 
+				t.isActive = 1 and 
+				t.companyID = $companyID and 
+				t.createdBy = $userID and 
+				date(t.createdOn) = date(NOW()) 
+		");
+		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+		
+   }
    function get_rowByNumberExoneration($companyID,$exonerationNumber)
    {
 	   	$db 		= db_connect();
@@ -345,7 +373,7 @@ class Transaction_Master_Model extends Model  {
         return $builder->get()->getRow();
     }
 
-
+	
     function get_RowGradeBook($classID, $entityID, $entityIDSecondary, $areaID, $anio, $mes, $transactionON)
     {
         $db 		= db_connect();

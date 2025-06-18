@@ -385,6 +385,8 @@ class app_mobile_api extends _BaseController
             //Obtener lista de amortizaciones
             $objListAmortization 	= $this->Customer_Credit_Amortization_Model->get_rowShareLateByCompanyToMobile($companyID, $userID );
 
+			//Obtener lista de transacciones arribas 
+			$objListServerTransactionMaster = $this->Transaction_Master_Model->get_rowByCreatedBy_AndCurrentDate($companyID, $userID);
 
             return $this->response->setJSON(array(
                 'error' => false,
@@ -394,7 +396,8 @@ class app_mobile_api extends _BaseController
                 'ListCustomer' => $objListCustomer,
                 'ListParameter' => $objListParameter,
                 'ListDocumentCredit' => $objListDocumentCredit,
-                'ListDocumentCreditAmortization' => $objListAmortization
+                'ListDocumentCreditAmortization' => $objListAmortization,
+				'ListServerTransactionMaster' => $objListServerTransactionMaster 
             ));//--finjson
 
         } catch (\Exception $ex) {
