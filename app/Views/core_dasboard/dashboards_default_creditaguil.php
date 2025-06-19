@@ -76,7 +76,8 @@
 		  <th>No. Cli Can</th>
 		  <th>No. Cli Nue</th>
 		  <th>No. Cli Rec</th>
-		  <th>Cartera (C$)</th>
+		  <th>Cap + Int (C$)</th>
+		  <th>Cap (C$)</th>
 		</tr>
 	  </thead>
 	  <tbody>
@@ -92,6 +93,7 @@
 			<td class="text-end text-success"><?= number_format($row['countCustomerNew']) ?></td>
 			<td class="text-end text-success"><?= number_format($row['countCustomerRecuperation']) ?></td>
 			<td class="text-end text-info fw-semibold">C$ <?= number_format($row['amountCartera'], 2) ?></td>
+			<td class="text-end text-info fw-semibold">C$ <?= number_format($row['amountCapital'], 2) ?></td>
 		  </tr>
 		<?php endforeach; ?>
 	  </tbody>
