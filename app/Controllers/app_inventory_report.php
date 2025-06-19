@@ -1641,17 +1641,16 @@ class app_inventory_report extends _BaseController {
 				if ($resultPermission 	== PERMISSION_NONE)
 				throw new \Exception(NOT_ACCESS_FUNCTION);			
 			}	
-			
-								
+											
 			$viewReport			= false;
 			$companyID			= $dataSession["user"]->companyID;
 			$branchID			= $dataSession["user"]->branchID;
 			$userID				= $dataSession["user"]->userID;
 			$warehouseID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"warehouseID");//--finuri				
-			$categoryID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"categoryID");//--finuri				
+			$categoryID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"categoryID");//--finuri			
+
 			$tocken				= '';
-			 
-			
+			 			
 			//Cargar Libreria
 			if($warehouseID == "")
 			{
@@ -1673,9 +1672,7 @@ class app_inventory_report extends _BaseController {
 				$objParameterTamanoLetra	= $objParameterTamanoLetra->value;	
 				$objParameterAltoDeLaFila	= $this->core_web_parameter->getParameter("CORE_VIEW_CUSTOM_REPORT_IN_LIST_ITEM_ALTO_FILA",$companyID);
 				$objParameterAltoDeLaFila	= $objParameterAltoDeLaFila->value;				
-				
-					
-					
+														
 				//Obtener el tipo de Comprobante
 				$companyID 		= $dataSession["user"]->companyID;
 				//Get Component
@@ -1690,26 +1687,25 @@ class app_inventory_report extends _BaseController {
 					$query,
 					[$userID,$tocken,$companyID,$warehouseID,$categoryID]
 				);			
+																
 				
 				if(isset($objData))
-				$objDataResult["objDetail"]					= $objData;
+					$objDataResult["objDetail"]					= $objData;
 				else
-				$objDataResult["objDetail"]					= NULL;
-				$objDataResult["objCompany"] 				= $objCompany;
-				$objDataResult["objLogo"] 					= $objParameter;
-				$objDataResult["objParameterTamanoLetra"] 	= $objParameterTamanoLetra;	
-				$objDataResult["objParameterAltoDeLaFila"] 	= $objParameterAltoDeLaFila;				
-				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_inventory_get_report_list_item" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
-				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
+					$objDataResult["objDetail"]					= NULL;
+					$objDataResult["objCompany"] 				= $objCompany;
+					$objDataResult["objLogo"] 					= $objParameter;
+					$objDataResult["objParameterTamanoLetra"] 	= $objParameterTamanoLetra;	
+					$objDataResult["objParameterAltoDeLaFila"] 	= $objParameterAltoDeLaFila;				
+					$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_inventory_get_report_list_item" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
+					$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
 
-				$objPermissionNotMostrarCosto 					= array_filter($dataSession["menuHiddenPopup"], function($val){  return $val->display == 'NO_ES_PERMITIDO_MOSTRAR_COSTOS'; });
-				$objPermissionNotMostrarCosto 					= count($objPermissionNotMostrarCosto) > 0 ? "true" : "false";				
-				$objPermissionNotMostrarCosto					= $dataSession["role"]->isAdmin ? "false" : $objPermissionNotMostrarCosto;				
-				$objDataResult["objPermissionNotMostrarCosto"] 	= $objPermissionNotMostrarCosto;
-				
-				
-				
-				return view("app_inventory_report/list_info_item/view_a_disemp",$objDataResult);//--finview-r
+					$objPermissionNotMostrarCosto 					= array_filter($dataSession["menuHiddenPopup"], function($val){  return $val->display == 'NO_ES_PERMITIDO_MOSTRAR_COSTOS'; });
+					$objPermissionNotMostrarCosto 					= count($objPermissionNotMostrarCosto) > 0 ? "true" : "false";				
+					$objPermissionNotMostrarCosto					= $dataSession["role"]->isAdmin ? "false" : $objPermissionNotMostrarCosto;				
+					$objDataResult["objPermissionNotMostrarCosto"] 	= $objPermissionNotMostrarCosto;
+
+					return view("app_inventory_report/list_info_item/view_a_disemp",$objDataResult);//--finview-r									
 					
 			}
 		}
@@ -1728,6 +1724,120 @@ class app_inventory_report extends _BaseController {
 		    return $resultView;
 		}
 	}
+
+
+	function download_report_info_producto(){
+		try{ 					
+			//AUTENTICADO 
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE FUNCIONES
+			if(APP_NEED_AUTHENTICATION == true){
+				$permited = false;
+				$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				
+				if(!$permited)
+				throw new \Exception(NOT_ACCESS_CONTROL);
+				
+			}									
+						
+			$companyID			= $dataSession["user"]->companyID;			
+			$userID				= $dataSession["user"]->userID;
+			$warehouseID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"warehouseID");//--finuri				
+			$categoryID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"categoryID");//--finuri					
+			$tocken				= "";
+						
+			$query			= "CALL pr_inventory_get_report_list_item(?,?,?,?,?);";
+			$objData		= $this->Bd_Model->executeRender(
+				$query,
+				[$userID,$tocken,$companyID,$warehouseID,$categoryID]
+			);	
+
+			if(isset($objData)){
+						
+				$resultados2	= array();
+				foreach($objData as $key => $value){
+					$resultados2[$key]	= array_values($value);
+				}
+
+				$objParameterDeliminterCsv	 = $this->core_web_parameter->getParameter("CORE_CSV_SPLIT",$companyID);
+				$objParameterDeliminterCsv	 = $objParameterDeliminterCsv->value;	
+
+				//Descargar Datos
+				//file name 
+				$filename = 'user_'.date('Ymd').'.csv'; 
+				header("Content-Description: File Transfer"); 
+				header("Content-Disposition: attachment; filename=$filename"); 
+				header("Content-Type: application/csv; ");
+						
+				// file creation 
+				$file 	= fopen('php://output', 'w');
+						
+				if($dataSession["company"]->type == "farma_ley" ){
+					//si es farma ley se personaliza sus campos indicados.
+					$header = [
+					1 => "barcode",	
+					0 => "sku",
+					2 => "itemname",
+					7 => "price",
+					5 => "quantity",							
+					15 => "vendors",							
+					14 => "active",						
+					];
+				}
+				else
+				{
+					$header = [
+					0 => "itemNumber",
+					1 => "barCode",
+					3 => "categoryName",
+					2 => "itemName",
+					9 => "price2",
+					8 => "price",
+					13 => "familyName", 
+					12 => "unidadMedidaName"
+					];
+				}	
+						
+				//fputcsv($file, $header,separator: $objParameterDeliminterCsv);
+				fputcsv($file, array_values($header), $objParameterDeliminterCsv);
+
+				foreach ($resultados2 as $line) {
+					$row = [];								
+					foreach (array_keys($header) as $colIndex) {
+        				$value = isset($line[$colIndex]) ? $line[$colIndex] : '';
+        				// Formatear campos específicos
+        				if ($colIndex == 5) { // quantity            				
+							$value = (int)$value;
+        				}
+						if ($colIndex == 7) { // price            				
+							$value = number_format($value,2,'.','');
+        				}
+        				if ($colIndex == 15) { // vendors            				
+							$value = ''.(string)$value.'';							        				
+						}
+        				$row[] = $value;
+    				}
+					fputcsv($file, $row, $objParameterDeliminterCsv);
+				}											
+				fclose($file); 																	
+				exit;																						 
+			}			
+			
+		}
+		catch(\Exception $ex){
+			
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));//--finjson
+		}	 	
+			
+	}
+
+
 
 }
 ?>

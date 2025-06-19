@@ -51,6 +51,20 @@
 													</div>													
 												</div>
 											</div>
+
+											<div class="form-group">
+												<label class="col-lg-6 control-label" for="selectFilter">Formato</label>
+												<div class="col-lg-6"> 
+													<div class="col-lg-6">
+													</div>
+													<div class="col-lg-6">
+														<select name="txtFormatID" id="txtFormatID" class="select2">
+																<option value="0">HTML</option>
+																<option value="1">CSV</option>
+														</select>
+													</div>													
+												</div>
+											</div>
 											
                                         </form>
                                     </div><!-- End .panel-body -->
