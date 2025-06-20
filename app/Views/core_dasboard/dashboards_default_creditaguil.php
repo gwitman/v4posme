@@ -73,7 +73,8 @@
 		  <th>Usuario</th>
 		  <th>No. Cli</th>
 		  <th>No. Cre</th>
-		  <th>No. Cli Can</th>
+		  <th>No. Cli Can A</th>
+		  <th>No. Cli Can H</th>
 		  <th>No. Cli Nue</th>
 		  <th>No. Cli Rec</th>
 		  <th>Cap + Int (C$)</th>
@@ -89,6 +90,7 @@
 			<td class="fw-bold text-primary"><?= htmlspecialchars($row['nickname']) ?></td>
 			<td class="text-end"><?= number_format($row['countCustomer']) ?></td>
 			<td class="text-end"><?= number_format($row['countCredit']) ?></td>
+			<td class="text-end text-danger"><?= number_format($row['countCustomerAcumulados']) ?></td>
 			<td class="text-end text-danger"><?= number_format($row['countCustomerCancel']) ?></td>
 			<td class="text-end text-success"><?= number_format($row['countCustomerNew']) ?></td>
 			<td class="text-end text-success"><?= number_format($row['countCustomerRecuperation']) ?></td>
