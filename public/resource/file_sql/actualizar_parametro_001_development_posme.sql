@@ -4,6 +4,14 @@
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_invoice_billing/add/codigoMesero/none" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CORE_PAYMENT_URL_RESULT"; 
+## Url de resultado pagadito 
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
 WHERE 

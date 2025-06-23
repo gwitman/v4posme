@@ -1508,6 +1508,8 @@ $routes->match(['get', 'post'], 'core_user/payment_user_back', 'core_user::payme
 $routes->match(['get', 'post'], 'core_user/payment_user_back/(:any)', 'core_user::payment_user_back');
 $routes->match(['get', 'post'], 'core_user/payment', 'core_user::payment');
 $routes->match(['get', 'post'], 'core_user/payment/(:any)', 'core_user::payment');
+$routes->match(['get', 'post'], 'core_user/payment_dfrutas', 'core_user::payment_dfrutas');
+$routes->match(['get', 'post'], 'core_user/payment_dfrutas/(:any)', 'core_user::payment_dfrutas');
 $routes->match(['get', 'post'], 'core_user/add', 'core_user::add');
 $routes->match(['get', 'post'], 'core_user/index', 'core_user::index');
 $routes->match(['get', 'post'], 'core_user/index/(:any)', 'core_user::index');

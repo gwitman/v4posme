@@ -789,6 +789,54 @@ class core_user extends _BaseController {
 			
     }
 	
+	function payment_dfrutas(){
+	
+		try{ 
+			
+			
+			$objComponent						= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");			
+			if(!$objComponent)
+			throw new \Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
+		
+			$objComponentEntity					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_entity");			
+			if(!$objComponentEntity)
+			throw new \Exception("EL COMPONENTE 'tb_entity' NO EXISTE...");
+		
+		
+			
+			
+			//Obtener los Roles			
+			$datView["title"] 		 = "Pago";
+			$datView["objEmployee"]  = $objComponent;
+			$datView["objEntity"]  	 = $objComponentEntity;
+			$datView["message"]		 = $this->core_web_notification->get_message_alert();
+			
+			//Renderizar Resultado 			
+			
+			$dataSession["head"]			= /*--inicio view*/ view('core_user/payment_dfrutas_head',$datView);//--finview
+			$dataSession["body"]			= /*--inicio view*/ view('core_user/payment_dfrutas_body',$datView);//--finview
+			$dataSession["script"]			= /*--inicio view*/ view('core_user/payment_dfrutas_script',$datView);//--finview
+			$dataSession["footer"]			= "";
+			return view("core_masterpage/default_masterpage_public",$dataSession);//--finview-r
+			
+		}
+		catch(\Exception $ex){
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = null;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;
+		}	
+			
+    }
+	
 	
 	function payment_user()
 	{
@@ -971,14 +1019,21 @@ class core_user extends _BaseController {
 		
 		//Funcion que procesa el resultado del pago
 		//Orignes de pago 1:	core_user/payment_user
-		//Orignes de pago 2:	core_account/payment
-		//Orignes de pago 3:	posme.net/ (woocommerce posme)
-		//Orignes de pago 4:	app_invoice_api/getLinkPaymentPagadito
+		//PAGO POSME CALENDAR	= AGE__EMAIL__FECHA
 		
-		//PAGO WOOMCOMERCE								= NUMBER
-		//PAGO POSME CALENDAR							= AGE__EMAIL__FECHA
-		//PAGO POSME 									= POS__FLAVORID__FECHA 
+		//Orignes de pago 2:	core_account/payment
+		//PAGO POSME 			= POS__FLAVORID__FECHA 
+		
+		//Orignes de pago 3:	posme.net/ (woocommerce posme)
+		//PAGO WOOMCOMERCE		= NUMBER
+		
+		//Orignes de pago 4:	app_invoice_api/getLinkPaymentPagadito
 		//PAGO DE FACTURA DE CLIENTES Y PARA CLIENTES	= FCCLI_FLAVORID_FECHA
+		
+		
+		
+		
+		
 		
 		
 		
@@ -1000,7 +1055,8 @@ class core_user extends _BaseController {
 		$parameterTemporal1 		= $this->core_web_parameter->getParameter("CORE_TEMPORAL001",APP_COMPANY);
 		$parameterTemporal2 		= $this->core_web_parameter->getParameter("CORE_TEMPORAL002",APP_COMPANY);
 		$parameterTemporal3 		= $this->core_web_parameter->getParameter("CORE_TEMPORAL003",APP_COMPANY);
-		
+		$urlResultadoFacturacion 	= $this->core_web_parameter->getParameter("CORE_PAYMENT_URL_RESULT",APP_COMPANY);
+		$urlResultadoFacturacion 	= $urlResultadoFacturacion->value;
 				
 		
 		$uidt 			= "";
@@ -1046,7 +1102,7 @@ class core_user extends _BaseController {
 		}
 		else if($facturaParteApp == "FCCLI")
 		{
-			$urlRedirect = base_url()."/".'app_invoice_billing/add/codigoMesero/none';
+			$urlRedirect = base_url()."/".$urlResultadoFacturacion;
 		}
 		//woocomerce
 		else 
@@ -1113,10 +1169,59 @@ class core_user extends _BaseController {
 							if($facturaParteApp == "FCCLI")
 							{
 								
-								$msgSecundario = ''.
-								'Gracias por comprar en posMe.</br> '.
-								'NAP: ' .$Pagadito->get_rs_reference(). "</br>" . 
-								'Fecha Respuesta:' .$Pagadito->get_rs_date_trans();
+								$msgSecundario = '
+									<style>
+										table {
+										  border-collapse: collapse;
+										  width: 400px;
+										  margin: 20px auto;
+										  font-family: \'Segoe UI\', sans-serif;
+										  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+										  border-radius: 10px;
+										  overflow: hidden;
+										}
+
+										th {
+										  background: linear-gradient(90deg, #4CAF50, #81C784);
+										  color: white;
+										  font-size: 20px;
+										  padding: 15px;
+										  text-align: center;
+										}
+
+										td {
+										  padding: 12px 20px;
+										  border-bottom: 1px solid #f0f0f0;
+										}
+
+										tr:nth-child(even) td {
+										  background-color: #f9f9f9;
+										}
+
+										tr:last-child td {
+										  border-bottom: none;
+										}
+
+										td:first-child {
+										  font-weight: bold;
+										  color: #333;
+										}
+									</style>
+									  
+									<table>
+										  <tr>
+											<th colspan="2">📋 Gracias por comprar.</th>
+										  </tr>
+										  <tr>
+											<td>🔑 NAP</td>
+											<td>'.$Pagadito->get_rs_reference().'</td>
+										  </tr>
+										  <tr>
+											<td>📌 Valor</td>
+											<td>'.$Pagadito->get_rs_date_trans().'</td>
+										  </tr>
+									</table>
+								';
 								
 							}
 							

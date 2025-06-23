@@ -5,6 +5,14 @@
 /******************************************************************/	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "core_user/payment_dfrutas" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CORE_PAYMENT_URL_RESULT"; 
+## Url de resultado pagadito 
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
@@ -985,14 +993,14 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "56720c930f874d4011ff7f3e2a86eddb" 
+	tb_company_parameter.value = "c1aed25019698cfb68c749f55f8de34d" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PAYMENT_PRUEBA_CLAVE";## Clave para realizar el pago en ambiente de prueba 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "35f6110eb79c3640a9bc35f876fe05f6" 
+	tb_company_parameter.value = "4265b8c918b2d587ded14d7ac65949a1" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PAYMENT_PRUEBA_USUARIO";## Usuario para realizar el pago en ambiente de prueba 
