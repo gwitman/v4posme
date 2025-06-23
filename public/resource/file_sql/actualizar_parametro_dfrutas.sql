@@ -979,14 +979,14 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "12ef04e7197c001b66920797fac63c46" 
+	tb_company_parameter.value = "c1aed25019698cfb68c749f55f8de34d" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PAYMENT_PRODUCCION_CLAVE";## Clave para realizar el pago en ambiente de produccion 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "7be685eb39ed6cac49de29bd36f4665e" 
+	tb_company_parameter.value = "4265b8c918b2d587ded14d7ac65949a1" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PAYMENT_PRODUCCION_USUARIO";## Usuario para realizar el pago en ambiente de produccion 
