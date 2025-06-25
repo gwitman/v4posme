@@ -167,7 +167,7 @@
 		 
     </tbody>
   </table>
-  <h2>TOTAL: C$ <?php echo number_format($totalVenta, 2, '.', ','); ?></h2>
+  <h2>Total: C$ <?php echo number_format($totalVenta, 2, '.', ','); ?></h2>
 
   <h2>📦 Inventario General</h2>
   <table>
