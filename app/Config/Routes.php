@@ -1418,6 +1418,8 @@ $routes->match(['get', 'post'], 'app_sales_report/index', 'app_sales_report::ind
 $routes->match(['get', 'post'], 'app_sales_report/index/(:any)', 'app_sales_report::index');
 $routes->match(['get', 'post'], 'app_sales_report/sales_detail', 'app_sales_report::sales_detail');
 $routes->match(['get', 'post'], 'app_sales_report/sales_detail/(:any)', 'app_sales_report::sales_detail');
+$routes->match(['get', 'post'], 'app_sales_report/sales_detail_traking_subshop', 'app_sales_report::sales_detail_traking_subshop');
+$routes->match(['get', 'post'], 'app_sales_report/sales_detail_traking_subshop/(:any)', 'app_sales_report::sales_detail_traking_subshop');
 $routes->match(['get', 'post'], 'app_sales_report/sales_detail_commission', 'app_sales_report::sales_detail_commission');
 $routes->match(['get', 'post'], 'app_sales_report/sales_detail_commission/(:any)', 'app_sales_report::sales_detail_commission');
 $routes->match(['get', 'post'], 'app_sales_report/sales_commision', 'app_sales_report::sales_commision');

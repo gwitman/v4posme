@@ -50,6 +50,20 @@ class Warehouse_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
    }
+   function getByEmailContainsString($companyID,$key){
+		$db 		= db_connect();
+		
+		
+		$sql = "";
+		$sql = sprintf("select companyID, warehouseID, branchID, number, name, statusID, isActive, typeWarehouse,emailResponsability");
+		$sql = $sql.sprintf(" from tb_warehouse ");
+		$sql = $sql.sprintf(" where companyID = $companyID");		
+		$sql = $sql.sprintf(" and isActive= 1");		
+		$sql = $sql." and emailResponsability LIKE '%".$key."' ";	
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getRow();
+   }
    function get_rowByPK($companyID,$warehouseID){
 		$db 	= db_connect();
 		
