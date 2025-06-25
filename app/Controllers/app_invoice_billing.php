@@ -8258,25 +8258,51 @@ class app_invoice_billing extends _BaseController {
 			}
 			
 			//Generar Reporte
-			$html = helper_reporte80mmTransactionMasterFarmaLey(
-			    "FACTURA",
-			    $objCompany,
-			    $objParameter,
-			    $datView["objTM"],
-			    $datView["objNatural"],
-			    $datView["objCustumer"],
-			    $datView["tipoCambio"],
-			    $datView["objCurrency"],
-			    $datView["objTMI"],
-			    $confiDetalleHeader,
-			    $detalle,
-			    $objParameterTelefono, /*telefono*/
-				$datView["objStage"][0]->display, /*estado*/
-				$datView["objTC"]->name /*causal*/,
-				$datView["objUser"]->nickname,
-			    $objParameterRuc /*ruc*/,
-				$datView
-			);
+			if($datView["objTM"]->sourceWarehouseID == 5 )
+			{
+				$html = helper_reporte80mmTransactionMasterFarmaLey_JerseyShop(
+					"FACTURA",
+					$objCompany,
+					$objParameter,
+					$datView["objTM"],
+					$datView["objNatural"],
+					$datView["objCustumer"],
+					$datView["tipoCambio"],
+					$datView["objCurrency"],
+					$datView["objTMI"],
+					$confiDetalleHeader,
+					$detalle,
+					$objParameterTelefono, /*telefono*/
+					$datView["objStage"][0]->display, /*estado*/
+					$datView["objTC"]->name /*causal*/,
+					$datView["objUser"]->nickname,
+					$objParameterRuc /*ruc*/,
+					$datView
+				);
+			}
+			else 
+			{
+				$html = helper_reporte80mmTransactionMasterFarmaLey(
+					"FACTURA",
+					$objCompany,
+					$objParameter,
+					$datView["objTM"],
+					$datView["objNatural"],
+					$datView["objCustumer"],
+					$datView["tipoCambio"],
+					$datView["objCurrency"],
+					$datView["objTMI"],
+					$confiDetalleHeader,
+					$detalle,
+					$objParameterTelefono, /*telefono*/
+					$datView["objStage"][0]->display, /*estado*/
+					$datView["objTC"]->name /*causal*/,
+					$datView["objUser"]->nickname,
+					$objParameterRuc /*ruc*/,
+					$datView
+				);
+			}
+			
 			$this->dompdf->loadHTML($html);
 			
 			//1cm = 29.34666puntos
