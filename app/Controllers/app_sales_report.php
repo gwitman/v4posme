@@ -209,7 +209,8 @@ class app_sales_report extends _BaseController {
 				$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
-				//Get Datos
+				
+				//Get Datos Detalle de Venta
 				$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?);";						
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
@@ -224,6 +225,23 @@ class app_sales_report extends _BaseController {
 					$objDataResult["objDetail"]				= $objData;
 				}
 				
+				//Get Datos Detalle de Inventario
+				$query					= "CALL pr_inventory_get_report_list_item(?,?,?,?,?);";
+				$objDataInventory		= $this->Bd_Model->executeRender(
+					$query,
+					[$userID,$tocken,$companyID,$warehouseID,$inventoryCategoryID]
+				);
+				
+				
+				if(isset($objDataInventory)){
+					$objDataResult["objDetailInventory"]	= $objDataInventory;
+				}
+				else{
+					$objDataResult["objDetailInventory"]	= $objDataInventory;
+				}
+				
+				$objDataResult["objWarehouse"]				= $objWarehouse;
+				$objDataResult["emailResponsability"]		= explode("__", $objWarehouse->emailResponsability);
 				$objDataResult["objCompany"] 				= $objCompany;
 				$objDataResult["objStartOn"] 				= $startOn;
 				$objDataResult["objEndOn"] 					= $endOn;

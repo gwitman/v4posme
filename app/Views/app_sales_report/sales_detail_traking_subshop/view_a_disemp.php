@@ -1,161 +1,203 @@
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title><?php echo $objFirmaEncription; ?></title>
-		<meta name="viewport" 			content="width=device-width, initial-scale=1.0">
-		<meta name="application-name" 	content="dsemp" /> 
-		
-		<?php 
-		echo helper_reporteGeneralCreateStyle();
-		?>
-		
-	</head>
-	<body style="font-family:monospace;font-size:smaller;margin:0px 0px 0px 0px"> 
-		
-		
-		
-		<?php
-		
-		$configColumn["0"]["IdTable"] 				= "myReport";		
-		
-		
-		if($objCompany->type == "globalpro")
-		$configColumn["0"]["FiltrarRegistroOnLine"] = False;	
-		else
-		$configColumn["0"]["FiltrarRegistroOnLine"] = True;	
-		
-		$configColumn["0"]["Titulo"] 		= "Factura";	
-		$configColumn["1"]["Titulo"] 		= "Tipo";		
-		$configColumn["2"]["Titulo"] 		= "Fecha";		
-		$configColumn["3"]["Titulo"] 		= "Cod Cliente";		
-		$configColumn["4"]["Titulo"] 		= "Cliente";		
-		$configColumn["5"]["Titulo"] 		= "Precio unitario";
-		$configColumn["6"]["Titulo"] 		= "Cantidad";
-		$configColumn["7"]["Titulo"] 		= "Costo unitario";
-		$configColumn["8"]["Titulo"] 		= "Costo Total";
-		$configColumn["9"]["Titulo"] 		= "Precio Total";
-		$configColumn["10"]["Titulo"] 		= "Utilidad";
-		$configColumn["11"]["Titulo"] 		= "Codigo Producto";
-		$configColumn["12"]["Titulo"] 		= "Producto";
-		$configColumn["13"]["Titulo"] 		= "Categoria";
-		$configColumn["14"]["Titulo"] 		= "Vendedor";
-		$configColumn["15"]["Titulo"] 		= "IVA";
-		$configColumn["16"]["Titulo"] 		= "Precio Con Iva";
-		$configColumn["17"]["Titulo"] 		= "Comision";
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reporte de Tienda</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f9f9f9;
+      color: #333;
+    }
 
-		$configColumn["0"]["FiledSouce"] 		= "transactionNumber";		
-		$configColumn["1"]["FiledSouce"] 		= "tipo";		
-		$configColumn["2"]["FiledSouce"] 		= "transactionOn";		
-		$configColumn["3"]["FiledSouce"] 		= "customerNumber";		
-		$configColumn["4"]["FiledSouce"] 		= "legalName";		
-		$configColumn["5"]["FiledSouce"] 		= "unitaryPrice";
-		$configColumn["6"]["FiledSouce"] 		= "quantity";
-		$configColumn["7"]["FiledSouce"] 		= "unitaryCost";
-		$configColumn["8"]["FiledSouce"] 		= "cost";
-		$configColumn["9"]["FiledSouce"] 		= "amount";
-		$configColumn["10"]["FiledSouce"] 		= "utilidad";
-		$configColumn["11"]["FiledSouce"] 		= "itemNumber";
-		$configColumn["12"]["FiledSouce"] 		= "itemName";	
-		$configColumn["13"]["FiledSouce"] 		= "nameCategory";
-		$configColumn["14"]["FiledSouce"] 		= "employerName";
-		$configColumn["15"]["FiledSouce"] 		= "ivaTotal";
-		$configColumn["16"]["FiledSouce"] 		= "amountConIva";
-		$configColumn["17"]["FiledSouce"] 		= "amountCommision";
+    header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 10px;
+    }
+
+    header img {
+      max-width: 100px;
+      margin-right: 20px;
+    }
+
+    .titulo {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .titulo h1 {
+      margin: 0;
+      font-size: 1.8em;
+    }
+
+    .titulo small {
+      font-size: 0.9em;
+      color: #666;
+    }
+
+    h2 {
+      margin-top: 40px;
+      color: #2c3e50;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background-color: white;
+      box-shadow: 0 0 8px rgba(0,0,0,0.05);
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: #3498db;
+      color: white;
+    }
+
+    tfoot td {
+      font-weight: bold;
+      background-color: #ecf0f1;
+    }
+
+	.numero {
+		  text-align: right;
+	}
 		
-		$configColumn["0"]["Formato"] 		= "";		
-		$configColumn["1"]["Formato"] 		= "";		
-		$configColumn["2"]["Formato"] 		= "Date";		
-		$configColumn["3"]["Formato"] 		= "";		
-		$configColumn["4"]["Formato"] 		= "";		
-		$configColumn["5"]["Formato"] 		= "Number";
-		$configColumn["6"]["Formato"] 		= "Number";
-		$configColumn["7"]["Formato"] 		= "Number";
-		$configColumn["8"]["Formato"] 		= "Number";
-		$configColumn["9"]["Formato"] 		= "Number";
-		$configColumn["10"]["Formato"] 		= "Number";
-		$configColumn["11"]["Formato"] 		= "";
-		$configColumn["12"]["Formato"] 		= "";	
-		$configColumn["13"]["Formato"] 		= "";	
-		$configColumn["14"]["Formato"] 		= "";
-		$configColumn["15"]["Formato"] 		= "Number";
-		$configColumn["16"]["Formato"] 		= "Number";
-		$configColumn["17"]["Formato"] 		= "Number";
 		
-		$configColumn["0"]["Width"] 		= "80px";		
-		$configColumn["1"]["Width"] 		= "80px";		
-		$configColumn["2"]["Width"] 		= "80px";		
-		$configColumn["3"]["Width"] 		= "80px";		
-		$configColumn["4"]["Width"] 		= "250px";		
-		$configColumn["5"]["Width"] 		= "100px";
-		$configColumn["6"]["Width"] 		= "100px";
-		$configColumn["7"]["Width"] 		= "100px";
-		$configColumn["8"]["Width"] 		= "100px";
-		$configColumn["9"]["Width"] 		= "100px";
-		$configColumn["10"]["Width"] 		= "100px";
-		$configColumn["11"]["Width"] 		= "100px";
-		$configColumn["12"]["Width"] 		= "220px";	
-		$configColumn["13"]["Width"] 		= "220px";	
-		$configColumn["14"]["Width"] 		= "250px";
-		$configColumn["15"]["Width"] 		= "100px";
-		$configColumn["16"]["Width"] 		= "100px";
-		$configColumn["17"]["Width"] 		= "100px";
+    @media screen and (max-width: 600px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+
+      th {
+        position: absolute;
+        left: -9999px;
+      }
+
+      td {
+        position: relative;
+        padding-left: 50%;
+        border: none;
+        border-bottom: 1px solid #eee;
+      }
+
+      td:before {
+        position: absolute;
+        left: 10px;
+        font-weight: bold;
+        white-space: nowrap;
+      }
+	
+	  .numero {
+		  text-align: right;
+	  }
 		
-		$configColumn["0"]["Total"] 		= False;		
-		$configColumn["1"]["Total"] 		= False;		
-		$configColumn["2"]["Total"] 		= False;		
-		$configColumn["3"]["Total"] 		= False;		
-		$configColumn["4"]["Total"] 		= False;		
-		$configColumn["5"]["Total"] 		= False;
-		$configColumn["6"]["Total"] 		= False;
-		$configColumn["7"]["Total"] 		= False;
-		$configColumn["8"]["Total"] 		= True;
-		$configColumn["9"]["Total"] 		= True;
-		$configColumn["10"]["Total"] 		= True;
-		$configColumn["11"]["Total"] 		= False;
-		$configColumn["12"]["Total"] 		= False;	
-		$configColumn["13"]["Total"] 		= False;	
-		$configColumn["14"]["Total"] 		= False;
-		$configColumn["15"]["Total"] 		= True;
-		$configColumn["16"]["Total"] 		= True;
-		$configColumn["17"]["Total"] 		= True;
-		
-		$resultado 	= helper_reporteGeneralCreateTable($objDetail,$configColumn,'0px',NULL,NULL);
+      
+      td:nth-of-type(1):before { content: "Código"; }
+      td:nth-of-type(2):before { content: "Nombre"; }
+      td:nth-of-type(3):before { content: "Cantidad"; }
+      td:nth-of-type(4):before { content: "Precio"; }
+      td:nth-of-type(5):before { content: "Subtotal"; }
+    }
+  </style>
+</head>
+<body>
+  <?php 
+	$fecha 			= new DateTime();
+	$formateada 	= $fecha->format('Y-m-d  h:i A');
+	$totalVenta		= 0;
+  ?>
+  <header>
+	<!--
+    <img src="ruta-del-logo.png" alt="Logo de la tienda" />
+	-->
+    <div class="titulo">
+      <h1>Reporte de Ventas e Inventario FARMA LEY</h1>
+      <small>
+        Tienda: <strong><?php echo $emailResponsability[0]; ?></strong><br />
+        Fecha de generación: <strong><?php echo $formateada;  ?></strong>
+      </small>
+    </div>
+  </header>
+
+  <h2>📦 Productos Vendidos</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Nombre</th>
+        <th>Cantidad</th>
+        <th>Precio</th>
+        <th>Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+      
+	   <?php 
+			
+			if($objDetail)
+			foreach($objDetail as $item)
+			{
+				echo '<tr>';
+					echo '<td>'.$item["itemNumber"].'</td>';
+					echo '<td>'.$item["itemName"].'</td>';
+					echo '<td class="numero" >C$ '.number_format($item["quantity"], 2, '.', ',').'</td>';
+					echo '<td class="numero" >C$ '.number_format($item["unitaryPrice"], 2, '.', ',').'</td>';
+					echo '<td class="numero" >C$ '.number_format($item["amount"], 2, '.', ',').'</td>';
+				echo '</tr>';
+				
+				$totalVenta = $totalVenta + $item["amount"];
+			}
 		?>
+		 
+		 
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4" style="text-align: right;">Total:</td>
+        <td class="numero"  >C$ <?php echo number_format($totalVenta, 2, '.', ','); ?></td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <h2>📦 Inventario General</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Nombre</th>
+        <th>Existencia Actual</th>
+      </tr>
+    </thead>
+    <tbody>
+	 <?php 
 		
-		
-		
-		
-		<?php 
-		echo helper_reporteGeneralCreateEncabezado(
-			'DETALLE DE VENTA',
-			$objCompany->name,
-			$resultado["columnas"],
-			'VENTAS DEL '.$objStartOn.' AL '.$objEndOn,
-			"",
-			"",
-			$resultado["width"]
-		);
-		?>
-		
-		
-		<br/>	
-		
-		<?php 
-		echo $resultado["table"];
-		?>
-		<br/>	
-		
-		
-		<?php 
-		echo helper_reporteGeneralCreateFirma(	
-			$objFirmaEncription,
-			$resultado["columnas"],
-			$resultado["width"]
-		);
-		?>
-		
-		
-		
-	</body>	
+		if($objDetailInventory)
+		foreach($objDetailInventory as $item)
+		{
+			echo '<tr>';
+				echo '<td>'.$item["itemNumber"].'</td>';
+				echo '<td>'.$item["itemName"].'</td>';
+				echo '<td class="numero" >'.number_format($item["quantity"], 2, '.', ',')  .'</td>';
+			echo '</tr>';
+		}
+	 ?>
+    </tbody>
+  </table>
+
+</body>
 </html>
