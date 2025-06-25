@@ -166,13 +166,8 @@
 		 
 		 
     </tbody>
-    <tfoot>
-      <tr>
-        <td colspan="4" style="text-align: right;">Total:</td>
-        <td class="numero"  >C$ <?php echo number_format($totalVenta, 2, '.', ','); ?></td>
-      </tr>
-    </tfoot>
   </table>
+  <h2>TOTAL: C$ <?php echo number_format($totalVenta, 2, '.', ','); ?></h2>
 
   <h2>📦 Inventario General</h2>
   <table>
