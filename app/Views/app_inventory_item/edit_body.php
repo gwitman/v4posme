@@ -331,7 +331,7 @@
 									</div>
 								</div>
 
-								<div class="form-group								                       <?php echo getBehavio($company->type, "app_inventory_item", "divTxtBodega", ""); ?> ">
+								<div class="form-group	<?php echo getBehavio($company->type, "app_inventory_item", "divTxtBodega", ""); ?> ">
 									<label class="col-lg-4 control-label" for="selectFilter">*Bodega</label>
 									<div class="col-lg-8">
 										<select name="txtDefaultWarehouseID" id="txtDefaultWarehouseID" class="select2">

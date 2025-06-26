@@ -11,7 +11,7 @@ function getBehavioFarmaLey(){
 		strtolower('farma_ley_app_inventory_item_divTxtSKUCompras')				=> "hidden",
 		strtolower('farma_ley_app_inventory_item_divTxtSKUProduccion')			=> "hidden",
 		strtolower('farma_ley_app_inventory_item_divPanelMoneda')				=> "hidden",
-		strtolower('farma_ley_app_inventory_item_divTxtBodega')					=> "hidden",
+		strtolower('farma_ley_app_inventory_item_divTxtBodega')					=> "",
 		strtolower('farma_ley_app_inventory_item_divTxtPresentacionUM')			=> "hidden",
 		strtolower('farma_ley_app_inventory_item_selectedFamilyDefault')		=> "false",
 		strtolower('farma_ley_app_inventory_item_selectedUM')					=> "false",

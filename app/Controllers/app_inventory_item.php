@@ -381,10 +381,11 @@ class app_inventory_item extends _BaseController
                 $branchID  = $dataSession["user"]->branchID;
                 $this->core_web_permission->getValueLicense($companyID, get_class($this) . "/" . "index");
 
-                $paisDefault         = $this->core_web_parameter->getParameterValue("CXC_PAIS_DEFAULT", $companyID);
-                $departamentoDefault = $this->core_web_parameter->getParameterValue("CXC_DEPARTAMENTO_DEFAULT", $companyID);
-                $municipioDefault    = $this->core_web_parameter->getParameterValue("CXC_MUNICIPIO_DEFAULT", $companyID);
-                $validateBarCode     = $this->core_web_parameter->getParameterValue("INVENTORY_BAR_CODE_UNIQUE", $companyID);
+                $paisDefault         											= $this->core_web_parameter->getParameterValue("CXC_PAIS_DEFAULT", $companyID);
+                $departamentoDefault 											= $this->core_web_parameter->getParameterValue("CXC_DEPARTAMENTO_DEFAULT", $companyID);
+                $municipioDefault    											= $this->core_web_parameter->getParameterValue("CXC_MUNICIPIO_DEFAULT", $companyID);
+                $validateBarCode     											= $this->core_web_parameter->getParameterValue("INVENTORY_BAR_CODE_UNIQUE", $companyID);
+				$valueParameter_INVENTORY_INSRT_ALL_WAREHOUSE_IN_NEWITEM     	= $this->core_web_parameter->getParameterValue("INVENTORY_INSRT_ALL_WAREHOUSE_IN_NEWITEM", $companyID);
 
                 $paisID         = empty( /*inicio get post*/$this->request->getPost('txtCountryID') /*//--fin peticion get o post*/) ? $paisDefault : /*inicio get post*/$this->request->getPost('txtCountryID'); /*//--fin peticion get o post*/
                 $departamentoId = empty( /*inicio get post*/$this->request->getPost('txtStateID') /*//--fin peticion get o post*/) ? $departamentoDefault : /*inicio get post*/$this->request->getPost('txtStateID'); /*//--fin peticion get o post*/
@@ -546,25 +547,28 @@ class app_inventory_item extends _BaseController
                 }
 
                 //Agregar las bodegas que no esten
-                $objListWarehouse = $this->Warehouse_Model->getByCompany($companyID);
-                if ($objListWarehouse) {
-                    foreach ($objListWarehouse as $ware) {
-                        $existWarehouse = $this->Itemwarehouse_Model->getByPK($companyID, $itemID, $ware->warehouseID);
-                        if ($existWarehouse) {
-                            continue;
-                        }
+				if($valueParameter_INVENTORY_INSRT_ALL_WAREHOUSE_IN_NEWITEM == "true")
+				{
+					$objListWarehouse = $this->Warehouse_Model->getByCompany($companyID);
+					if ($objListWarehouse) {
+						foreach ($objListWarehouse as $ware) {
+							$existWarehouse = $this->Itemwarehouse_Model->getByPK($companyID, $itemID, $ware->warehouseID);
+							if ($existWarehouse) {
+								continue;
+							}
 
-                        $objItemWarehouse                = null;
-                        $objItemWarehouse["companyID"]   = $companyID;
-                        $objItemWarehouse["branchID"]    = $objItem["branchID"];
-                        $objItemWarehouse["warehouseID"] = $ware->warehouseID;
-                        $objItemWarehouse["itemID"]      = $itemID;
-                        $objItemWarehouse["quantity"]    = 0;
-                        $objItemWarehouse["quantityMax"] = 1000;
-                        $objItemWarehouse["quantityMin"] = 0;
-                        $this->Itemwarehouse_Model->insert_app_posme($objItemWarehouse);
-                    }
-                }
+							$objItemWarehouse                = null;
+							$objItemWarehouse["companyID"]   = $companyID;
+							$objItemWarehouse["branchID"]    = $objItem["branchID"];
+							$objItemWarehouse["warehouseID"] = $ware->warehouseID;
+							$objItemWarehouse["itemID"]      = $itemID;
+							$objItemWarehouse["quantity"]    = 0;
+							$objItemWarehouse["quantityMax"] = 1000;
+							$objItemWarehouse["quantityMin"] = 0;
+							$this->Itemwarehouse_Model->insert_app_posme($objItemWarehouse);
+						}
+					}
+				}
 
                 //Guardar Detalle de sku
                 $objListCatalogItemSKU               = /*inicio get post*/$this->request->getPost("txtDetailSkuCatalogItemID");
@@ -697,12 +701,13 @@ class app_inventory_item extends _BaseController
             }
             if ($method == "apinew") {
 
-                $companyID           = APP_COMPANY;
-                $branchID            = APP_BRANCH;
-                $paisDefault         = $this->core_web_parameter->getParameterValue("CXC_PAIS_DEFAULT", $companyID);
-                $departamentoDefault = $this->core_web_parameter->getParameterValue("CXC_DEPARTAMENTO_DEFAULT", $companyID);
-                $municipioDefault    = $this->core_web_parameter->getParameterValue("CXC_MUNICIPIO_DEFAULT", $companyID);
-                $validateBarCode     = $this->core_web_parameter->getParameterValue("INVENTORY_BAR_CODE_UNIQUE", $companyID);
+                $companyID           											= APP_COMPANY;
+                $branchID            											= APP_BRANCH;
+                $paisDefault         											= $this->core_web_parameter->getParameterValue("CXC_PAIS_DEFAULT", $companyID);
+                $departamentoDefault 											= $this->core_web_parameter->getParameterValue("CXC_DEPARTAMENTO_DEFAULT", $companyID);
+                $municipioDefault    											= $this->core_web_parameter->getParameterValue("CXC_MUNICIPIO_DEFAULT", $companyID);
+                $validateBarCode     											= $this->core_web_parameter->getParameterValue("INVENTORY_BAR_CODE_UNIQUE", $companyID);
+				$valueParameter_INVENTORY_INSRT_ALL_WAREHOUSE_IN_NEWITEM     	= $this->core_web_parameter->getParameterValue("INVENTORY_INSRT_ALL_WAREHOUSE_IN_NEWITEM", $companyID);
 
                 $paisID         = empty( /*inicio get post*/$item['txtCountryID']/*//--fin peticion get o post*/) ? $paisDefault : /*inicio get post*/$item['txtCountryID']; /*//--fin peticion get o post*/
                 $departamentoId = empty( /*inicio get post*/$item['txtStateID']/*//--fin peticion get o post*/) ? $departamentoDefault : /*inicio get post*/$item['txtStateID']; /*//--fin peticion get o post*/
@@ -853,25 +858,28 @@ class app_inventory_item extends _BaseController
                 }
 
                 //Agregar las bodegas que no esten
-                $objListWarehouse = $this->Warehouse_Model->getByCompany($companyID);
-                if ($objListWarehouse) {
-                    foreach ($objListWarehouse as $ware) {
-                        $existWarehouse = $this->Itemwarehouse_Model->getByPK($companyID, $itemID, $ware->warehouseID);
-                        if ($existWarehouse) {
-                            continue;
-                        }
+				if($valueParameter_INVENTORY_INSRT_ALL_WAREHOUSE_IN_NEWITEM == "true")
+				{
+					$objListWarehouse = $this->Warehouse_Model->getByCompany($companyID);
+					if ($objListWarehouse) {
+						foreach ($objListWarehouse as $ware) {
+							$existWarehouse = $this->Itemwarehouse_Model->getByPK($companyID, $itemID, $ware->warehouseID);
+							if ($existWarehouse) {
+								continue;
+							}
 
-                        $objItemWarehouse                = null;
-                        $objItemWarehouse["companyID"]   = $companyID;
-                        $objItemWarehouse["branchID"]    = $objItem["branchID"];
-                        $objItemWarehouse["warehouseID"] = $ware->warehouseID;
-                        $objItemWarehouse["itemID"]      = $itemID;
-                        $objItemWarehouse["quantity"]    = 0;
-                        $objItemWarehouse["quantityMax"] = 1000;
-                        $objItemWarehouse["quantityMin"] = 0;
-                        $this->Itemwarehouse_Model->insert_app_posme($objItemWarehouse);
-                    }
-                }
+							$objItemWarehouse                = null;
+							$objItemWarehouse["companyID"]   = $companyID;
+							$objItemWarehouse["branchID"]    = $objItem["branchID"];
+							$objItemWarehouse["warehouseID"] = $ware->warehouseID;
+							$objItemWarehouse["itemID"]      = $itemID;
+							$objItemWarehouse["quantity"]    = 0;
+							$objItemWarehouse["quantityMax"] = 1000;
+							$objItemWarehouse["quantityMin"] = 0;
+							$this->Itemwarehouse_Model->insert_app_posme($objItemWarehouse);
+						}
+					}
+				}
 
                 //Guardar Detalle de sku
                 $objListCatalogItemSKU      = /*inicio get post*/$item["txtDetailSkuCatalogItemID"];

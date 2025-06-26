@@ -5,6 +5,13 @@ use db5qqn2mvepnkv ;
 /******************************************************************/	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_INSRT_ALL_WAREHOUSE_IN_NEWITEM"; 
+## Agregar todas las bodegas al momento de crear un nuevo item
+
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "!Hola {firstName}!.[simbol-enter][simbol-enter]!Gracias por tu compra en Farma Ley![simbol-estetoscopio] [simbol-enter]Has acumulado ({amount}) puntos que podras canjear en tu proxima visita.[simbol-enter][simbol-pildora] Recorda que en nuestra farmacia siempre encontraras medicamentos y atencion de calidad.[simbol-enter] Guarda este mensaje para futuras consultas [simbol-telefono]" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
