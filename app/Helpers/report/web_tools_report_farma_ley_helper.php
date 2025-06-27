@@ -705,6 +705,7 @@ function helper_reporte80mmTransactionMasterFarmaLey_JerseyShop(
                           </td>
                         </tr>
 						
+						<!--
 						<tr>
                           <td colspan='3' style='text-align:center'>
                             *SU AHORRO FUE DE:".$objCurrency->simbol."".sprintf("%.2f",$objTransactionMastser->discount)."
@@ -716,7 +717,8 @@ function helper_reporte80mmTransactionMasterFarmaLey_JerseyShop(
                             *PUNTOS ACUMULADOS: ".sprintf("%.2f",$objEntidadCustomer->balancePoint / 0.03 )." PT
                           </td>
                         </tr>
-
+						-->
+						
 						<tr>
                           <td colspan='3' style='text-align:center'>
                             &nbsp;
@@ -755,7 +757,7 @@ function helper_reporte80mmTransactionMasterFarmaLey_JerseyShop(
 
                         <tr>
                           <td colspan='3' style='text-align:center'>
-                            ".$objParameterTelefono->value."
+                            TEL:	+505 8511 2552
                           </td>
                         </tr>
 						

@@ -651,49 +651,6 @@ class Transaction_Master_Detail_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
-   function FarmaLey_Ventas_De_Contado_Mes_Actual($companyID,$dateFirst,$dateLast)
-	{
-		$db = db_connect();
-
-		$sql = "";
-		$sql = sprintf("
-		  	SELECT 
-				DAY(c.createdOn) as Dia,
-				SUM(c.amount) as Venta 
-			FROM 
-				tb_transaction_master c 
-			WHERE 
-				c.transactionID = 19 /*factura*/ 
-				AND 
-				c.isActive = 1 
-				AND 
-				c.transactionCausalID in (21 /*Contado*/,23 /*Contado*/) 
-				AND 
-				c.statusID in (67 /*aplicada*/) 
-				AND 
-				c.createdOn between '$dateFirst' and '$dateLast' and 
-				c.transactionMasterID not in (
-					select 
-						su.transactionMasterID
-					from 
-						tb_transaction_master su 
-						inner join tb_transaction_master_detail td on
-							su.transactionMasterID = td.transactionMasterID
-						inner join tb_item ii on 
-							ii.itemID = td.componentItemID
-					where 
-						su.transactionID = 19 /*FACTURA*/ and 
-						ii.inventoryCategoryID IN (60 /*Jersey Shop*/) and 
-						su.isActive = 1
-				)
-			group by 
-				1
-			
-		");
-
-		return $db->query($sql)->getResult();
-	}
-	
    function FarmaLey_Ventas_De_Credito_Mes_Actual($companyID,$dateFirst,$dateLast)
 	{
 		$db = db_connect();
@@ -701,7 +658,7 @@ class Transaction_Master_Detail_Model extends Model  {
 		$sql = "";
 		$sql = sprintf("
 		  	SELECT 
-				MONTH(c.createdOn) as Mes,
+				DAY(c.createdOn) as Dia,
 				SUM(c.amount) as Venta 
 			FROM 
 				tb_transaction_master c 
@@ -737,6 +694,51 @@ class Transaction_Master_Detail_Model extends Model  {
 		return $db->query($sql)->getResult();
 	}
 	
+	
+   function FarmaLey_Ventas_De_Contado_Mes_Actual($companyID,$dateFirst,$dateLast)
+	{
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+		  	SELECT 
+				MONTH(c.createdOn) as Dia,
+				SUM(c.amount) as Venta 
+			FROM 
+				tb_transaction_master c 
+			WHERE 
+				c.transactionID = 19 /*factura*/ 
+				AND 
+				c.isActive = 1 
+				AND 
+				c.transactionCausalID in (21 /*Contado*/,23 /*Contado*/) 
+				AND 
+				c.statusID in (67 /*aplicada*/) 
+				AND 
+				c.createdOn between '$dateFirst' and '$dateLast' and 
+				c.transactionMasterID not in (
+					select 
+						su.transactionMasterID
+					from 
+						tb_transaction_master su 
+						inner join tb_transaction_master_detail td on
+							su.transactionMasterID = td.transactionMasterID
+						inner join tb_item ii on 
+							ii.itemID = td.componentItemID
+					where 
+						su.transactionID = 19 /*FACTURA*/ and 
+						ii.inventoryCategoryID in (60 /*Jersey Shop*/) and 
+						su.isActive = 1
+				)
+			group by 
+				1
+			
+		");
+
+		return $db->query($sql)->getResult();
+	}
+	
+   
    function FarmaLey_get_rowBySalesByEmployeerMonthOnly_Sales($companyID,$dateFirst,$dateLast)
    {
 	   

@@ -639,7 +639,7 @@ class core_dashboards extends _BaseController {
         $objNowDate 		= \DateTime::createFromFormat('Y-m-d H:i:s', helper_getDate());
         $objNowDate->setTime(0, 0, 0);
         $objListVentasContadoMesActual 						= array();		
-        $objListVentasContadoMesActual 						= $this->Transaction_Master_Detail_Model->Default_Ventas_De_Contado_Mes_Actual($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objLastDate->format("Y-m-d") );
+        $objListVentasContadoMesActual 						= $this->Transaction_Master_Detail_Model->FarmaLey_Ventas_De_Credito_Mes_Actual($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objLastDate->format("Y-m-d") );
 		$dataSession["objListVentasContadoMesActual"]		= $objListVentasContadoMesActual;
 
         //Obtener Ventas al Credito Mensuales

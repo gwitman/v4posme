@@ -141,6 +141,20 @@ class core_web_transaction_master_detail {
 		return $unitaryCost;
 			
    }
+   
+   function getAmountCommision($companyID,$listPriceID,$itemID,$price,$quantity,$comisionPorcentage)
+   {
+		$objCompany					= $Company_Model->get_rowByPK($companyID);		
+		
+		if($objCompany->type == "farma_ley")
+		{
+		   return 1;
+		}
+		else 
+		{
+			return ($price * $comisionPorcentage * $quantity);
+		}
+   }
    function getPorcentageComision($companyID,$listPriceID,$itemID,$price)
    {
 	    $Price_Model				= new Price_Model();

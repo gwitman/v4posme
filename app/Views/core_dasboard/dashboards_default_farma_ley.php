@@ -225,6 +225,15 @@
 						  title: '',
 						  colors: ['#ff8000', '#ff8000', '#ff8000', '#ff8000', '#ff8000'],
 						  seriesType: 'bars',
+						  hAxis: {
+							title: 'Mes',
+							slantedText: true,        // Inclina los textos
+							slantedTextAngle: 45      // Ángulo de inclinación
+						  },
+						  vAxis: {
+							title: 'Monto de Ventas'
+						  }
+						  
 						};
 
 						var chart = new google.visualization.ComboChart(document.getElementById('grafico1'));
@@ -233,15 +242,16 @@
 					}
 					
 					function drawChartPastelVentasCreditoMensuales() {
-
-						var objDataSourceVentasCreditoMensuales	 		= new Array();
+						
 						var objVentasCreditoMensuales			 		= JSON.parse('<?php echo json_encode($objListVentasCreditoMensuales); ?>');	
+						var objDataSourceVentasCreditoMensuales	 		= new Array();
 						objDataSourceVentasCreditoMensuales.push(new Array("Mes","Ventas"));
 						for(var i = 0 ; i < objVentasCreditoMensuales.length;i++)
 						{
+							
 							objDataSourceVentasCreditoMensuales.push(
 								new Array(
-									objVentasCreditoMensuales[i].Mes,
+									objVentasCreditoMensuales[i].Dia,
 									parseInt(objVentasCreditoMensuales[i].Venta)
 								)
 							);	
@@ -255,7 +265,17 @@
 						var options = {
 						  title: '',
 						  colors: ['#00C868', '#006E98', '#ec8f6e', '#f3b49f', '#f6c7b6'],
-						  seriesType: 'bars'
+						  seriesType: 'bars',
+						  
+						  hAxis: {
+							title: 'Mes',
+							slantedText: true,        // Inclina los textos
+							slantedTextAngle: 45      // Ángulo de inclinación
+						  },
+						  vAxis: {
+							title: 'Monto de Ventas'
+						  }
+						  
 						};
 
 						var chart = new google.visualization.ComboChart(document.getElementById('grafico3'));

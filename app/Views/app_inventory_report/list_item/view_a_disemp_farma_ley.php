@@ -77,7 +77,7 @@
 		
 		<table style="width:100%;" id="tableContainer" >
 			<tr width="100%">
-				<td width="50%" style="vertical-align:baseline" >
+				<td width="100%" style="vertical-align:baseline" >
 				
 					<table style="width:100%;" id="myReport" >
 						<thead >
@@ -92,7 +92,8 @@
 								<th  style="" class="border notprint">Costo</th>
 								<th  style="" class="border notprint">Costo T.</th>
 								<th  style="" class="border notprint">Precio</th>						
-								<th  style="" class="border">Fisico</th>		
+								<th  style="" class="border">Utilidad</th>		
+								<th  style="" class="border">% Utilidad</th>		
 							</tr>
 							
 						</thead>				
@@ -113,16 +114,13 @@
 									$costoTotal 	= $costoTotal +  ($i["cost"] * $i["quantity"] );
 									$precioTotal 	= $precioTotal +  ($i["price"] * $i["quantity"] );
 									
-								
-									if($count > $countTotal)
-										break;
 									
 									echo "<tr  >";
 										echo "<td style='text-align:left;'    class='border' >";
-											echo ($count."</br>".substr($i["itemNumber"],-15));
+											echo ($count.")".substr($i["itemNumber"],-15));
 										echo "</td>";
 										echo "<td style='text-align:left'   class='border' >";
-											echo (helper_InsertarEntrePartes($i["itemName"],"</br>",2));
+											echo (helper_InsertarEntrePartes($i["itemName"],"</br>",1));
 										echo "</td>";		
 										echo "<td style='text-align:left'   class='border' >";
 											echo ($i["categoryName"]);
@@ -141,7 +139,14 @@
 											echo (number_format( $i["price"],2,'.',','));
 										echo "</td>";	
 										echo "<td style='text-align:right' class='border'  >";								
-										echo "</td>";					
+											echo (number_format( $i["price"] - $i["cost"],2,'.',','));
+										echo "</td>";	
+										echo "<td style='text-align:right' class='border'  >";	
+											if($i["cost"] == 0)
+												echo (number_format( 100 ,2,'.',','));
+											else	
+												echo (number_format( (($i["price"] - $i["cost"]) / $i["cost"]) * 100 ,2,'.',','));
+										echo "</td>";											
 									echo "</tr>";
 								}
 							}
@@ -167,98 +172,7 @@
 					</table>
 				
 				</td>
-				<td style="vertical-align:baseline" >
 				
-				
-					<table style="width:100%;" id="myReport" >
-						<thead >
-							
-							<tr style="background-color:#00628e;color:white;">
-								<!--812-->					
-								<th  style=""  class="border">Codigo</th>
-								<th  style=""  class="border">Nombre</th>						
-								<th  style=""  class="border">Categoria</th>	
-								
-								<th  style="" class="border">Cantidad</th>
-								<th  style="" class="border notprint">Costo</th>
-								<th  style="" class="border notprint">Costo T.</th>
-								<th  style="" class="border notprint">Precio</th>						
-								<th  style="" class="border">Fisico</th>		
-							</tr>
-							
-						</thead>				
-						<tbody>
-							<?php
-							$count 			= 0;
-							$costoTotal		= 0;
-							$precioTotal 	= 0;
-							
-							if($objDetail){
-								$countTotal		= count($objDetail);
-								$countTotal		= floor($countTotal/2);
-								$iter		= 0;
-								$category   = $objDetail[0]["categoryName"];
-								
-								foreach($objDetail as $i){
-									$count++;	
-									$costoTotal 	= $costoTotal +  ($i["cost"] * $i["quantity"] );
-									$precioTotal 	= $precioTotal +  ($i["price"] * $i["quantity"] );
-									
-								
-									if($count <= $countTotal)
-										continue;
-									
-									echo "<tr  >";
-										echo "<td style='text-align:left;'    class='border' >";
-											echo ($count."</br>".substr($i["itemNumber"],-15));
-										echo "</td>";
-										echo "<td style='text-align:left'   class='border' >";
-											echo (helper_InsertarEntrePartes($i["itemName"],"</br>",2));
-										echo "</td>";		
-										echo "<td style='text-align:left'   class='border' >";
-											echo ($i["categoryName"]);
-										echo "</td>";	
-										
-										echo "<td style='text-align:right;'  class='border' >";
-											echo number_format($i["quantity"],2,'.',',');
-										echo "</td>";
-										echo "<td  style='text-align:right' class='border notprint'>";
-											echo number_format( $i["cost"],2,'.',',');
-										echo "</td>";
-										echo "<td style='text-align:right' class='border notprint'>";
-											echo (number_format($i["cost"] * $i["quantity"],2,'.',',' ));;
-										echo "</td>";
-										echo "<td style='text-align:right' class='border notprint' >";
-											echo (number_format( $i["price"],2,'.',','));
-										echo "</td>";	
-										echo "<td style='text-align:right' class='border'  >";								
-										echo "</td>";					
-									echo "</tr>";
-								}
-							}
-							?>
-						</tbody>
-						<tfoot>
-							
-							<tr style="background-color:#00628e;color:white;">
-								<!--812-->					
-								<th  style=""  class="border">Codigo</th>
-								<th  style=""  class="border">Nombre</th>						
-								<th  style=""  class="border">Categoria</th>	
-								
-								<th  style="" class="border">Cantidad</th>
-								<th  style="" class="border notprint">Costo</th>
-								<th  style="" class="border notprint"><?php echo number_format($costoTotal,2,'.',',');  ?></th>
-								<th  style="" class="border notprint"><?php echo number_format($precioTotal,2,'.',',');  ?></th>						
-								<th  style="" class="border">Fisico</th>		
-							</tr>
-							
-							
-						</tfoot>
-					</table>
-
-
-				</td>
 			</tr>
 		</table>
 		
