@@ -148,7 +148,7 @@ class core_web_transaction_master_detail {
 		
 		if($objCompany->type == "farma_ley")
 		{
-		   return 1;
+		    return ($comisionPorcentage * $quantity);
 		}
 		else 
 		{
