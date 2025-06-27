@@ -71,6 +71,19 @@
 		
 		
 		<?php 
+
+		$objClient["customerNumber"]     = isset($objClient["customerNumber"]) ? $objClient["customerNumber"] : '';
+		$objClient["legalName"]          = isset($objClient["legalName"]) ? $objClient["legalName"] : '';
+		$objClient["identificationType"] = isset($objClient["identificationType"]) ? $objClient["identificationType"] : '';
+		$objClient["country"]            = isset($objClient["country"]) ? $objClient["country"] : '';
+		$objClient["state"]              = isset($objClient["state"]) ? $objClient["state"] : '';
+		$objClient["city"]               = isset($objClient["city"]) ? $objClient["city"] : '';
+		$objClient["birth"]              = isset($objClient["birth"]) ? $objClient["birth"] : '';
+		$objClient["statusClient"]       = isset($objClient["statusClient"]) ? $objClient["statusClient"] : '';
+		$objClient["limitCreditCordoba"] = isset($objClient["limitCreditCordoba"]) ? $objClient["limitCreditCordoba"] : 0;
+		$objClient["balanceCordoba"]     = isset($objClient["balanceCordoba"]) ? $objClient["balanceCordoba"] : 0;
+		$objClient["incomeCordoba"]      = isset($objClient["incomeCordoba"]) ? $objClient["incomeCordoba"] : 0;
+
 		echo helper_reporteGeneralCreateEncabezado(
 			'LISTADO DE PAGOS',
 			$objCompany->name,

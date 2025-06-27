@@ -1371,10 +1371,11 @@ class app_cxc_report extends _BaseController {
 			$branchID			= $dataSession["user"]->branchID;
 			$userID				= $dataSession["user"]->userID;
 			$tocken				= '';
+			$reference          = '';
 			
 			$viewReport			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"viewReport");//--finuri	
 			$customerNumber		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"customerNumber");//--finuri	
-				
+			$reference	        = /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"reference");//--finuri	
 				
 			if(!($viewReport && $customerNumber )){
 				
@@ -1403,11 +1404,11 @@ class app_cxc_report extends _BaseController {
 					$query,
 					[$companyID,$tocken,$userID,$customerNumber]
 				);			
-				
-				$query			= "CALL pr_cxc_get_report_customer_pay(?,?,?,?);";
+								
+				$query			= "CALL pr_cxc_get_report_customer_pay(?,?,?,?,?);";
 				$objData02		= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$customerNumber]
+					[$companyID,$tocken,$userID,$customerNumber,$reference]
 				);			
 				
 				if(isset($objData01[0])){
