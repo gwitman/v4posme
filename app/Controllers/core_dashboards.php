@@ -648,7 +648,7 @@ class core_dashboards extends _BaseController {
         $objFirstDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
         $objFirstDate->setTime(0, 0, 0);
         $objListVentasCreditoMensuales 						= array();
-		$objListVentasCreditoMensuales 						= $this->Transaction_Master_Detail_Model->Default_Ventas_De_Credito_Mes_Actual($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDate->format("Y-m-d") );
+		$objListVentasCreditoMensuales 						= $this->Transaction_Master_Detail_Model->FarmaLey_Ventas_De_Contado_Mes_Actual($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDate->format("Y-m-d") );
 		$dataSession["objListVentasCreditoMensuales"]		= $objListVentasCreditoMensuales;
 		
 		

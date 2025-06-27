@@ -463,13 +463,22 @@ echo helper_getHtmlOfPageLanding();
 										<div class="col-lg-8">
 											<select name="txtWarehouseID" id="txtWarehouseID" class="select2">															
 													<?php
-													$count = 0;
+													$count 	= 0;
+													$find	= false;
 													if($objListWarehouse)
 													foreach($objListWarehouse as $ware){
-														if($ware->typeWarehouse == $objParameterTipoWarehouseDespacho)
-														echo "<option value='".$ware->warehouseID."' selected >".$ware->name."</option>";
+														if(
+															$ware->typeWarehouse == $objParameterTipoWarehouseDespacho &&
+															$find == false
+														)
+														{
+															echo "<option value='".$ware->warehouseID."' selected >".$ware->name."</option>";
+															$find = true;
+														}
 														else
-														echo "<option value='".$ware->warehouseID."'  >".$ware->name."</option>";
+														{
+															echo "<option value='".$ware->warehouseID."'  >".$ware->name."</option>";
+														}
 														$count++;
 													}
 													?>

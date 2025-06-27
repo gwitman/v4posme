@@ -443,7 +443,7 @@ function helper_reporte80mmTransactionMasterFarmaLey_JerseyShop(
 	$fullData = "" 
 )
 {
-    $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;
+    $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/jersey_shop_logo-micro-finanza.jpg';
     
     $type    = pathinfo($path, PATHINFO_EXTENSION);
     $data    = file_get_contents($path);
