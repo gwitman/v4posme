@@ -960,32 +960,34 @@
 										</tr>
 										<?php
 
-                                            if ($objItemSku) {
-                                                foreach ($objItemSku as $ws) {
-                                                ?>
-											<tr class="row_sku">
-												<td>
-													<input type="hidden" class="txtDetailSkuID" name="txtDetailSkuID[]" value="<?php echo $ws->skuID; ?>"></input>
-													<input type="hidden" class="txtDetailSkuItemID" name="txtDetailSkuItemID[]" value="<?php echo $ws->itemID; ?>"></input>
-													<input type="hidden" class="txtDetailSkuCatalogItemID" name="txtDetailSkuCatalogItemID[]" value="<?php echo $ws->catalogItemID; ?>"></input>
-													<input type="hidden" class="txtDetailSkuValue" name="txtDetailSkuValue[]" value="<?php echo $ws->value; ?>"></input>
-													<input type="hidden" class="txtDetailSkuPrecio" name="txtDetailSkuPrecio[]" value=""></input>
-													<input type="hidden" class="txtDetailSkuDefault" name="txtDetailSkuDefault[]" value=""></input>
-													<?php echo $ws->display; ?>
-												</td>
-												<td>
-													<?php echo $ws->value; ?>
-												</td>
-												<td>
-													<?= $ws->price ?>
-												</td>
-												<td>
-													<input type="checkbox" class="sku-default" name="txtTmpSkuDefault" id="txtTmpSkuDefault" value="" <?= $ws->predeterminado ? "checked" : "" ?> />
-												</td>
-											</tr>
-											<?php
+                                            if ($objItemSku) 
+											{
+                                                foreach ($objItemSku as $ws) 
+												{
+													?>
+													<tr class="row_sku">
+														<td>
+															<input type="hidden" class="txtDetailSkuID" name="txtDetailSkuID[]" value="<?php echo $ws->skuID; ?>"></input>
+															<input type="hidden" class="txtDetailSkuItemID" name="txtDetailSkuItemID[]" value="<?php echo $ws->itemID; ?>"></input>
+															<input type="hidden" class="txtDetailSkuCatalogItemID" name="txtDetailSkuCatalogItemID[]" value="<?php echo $ws->catalogItemID; ?>"></input>
+															<input type="hidden" class="txtDetailSkuValue" name="txtDetailSkuValue[]" value="<?php echo $ws->value; ?>"></input>
+															<input type="hidden" class="txtDetailSkuPrecio" name="txtDetailSkuPrecio[]" value="<?php echo $ws->price; ?>"></input>
+															<input type="hidden" class="txtDetailSkuDefault" name="txtDetailSkuDefault[]" value="<?php echo $ws->predeterminado; ?>"></input>
+															<?php echo $ws->display; ?>
+														</td>
+														<td>
+															<?php echo $ws->value; ?>
+														</td>
+														<td>
+															<?= $ws->price ?>
+														</td>
+														<td>
+															<input type="checkbox" class="sku-default" name="txtTmpSkuDefault" id="txtTmpSkuDefault" value="<?php echo $ws->predeterminado; ?>" <?= $ws->predeterminado ? "checked" : "" ?> />
+														</td>
+													</tr>
+													<?php
                                                 }
-                                                }
+                                            }
 
                                             ?>
 									</tbody>

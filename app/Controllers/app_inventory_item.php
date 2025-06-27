@@ -1132,7 +1132,7 @@ class app_inventory_item extends _BaseController
                             $objSku["catalogItemID"]  = $value;
                             $objSku["value"]          = $objListCatalogItemSKUValue[$key];
                             $objSku["price"]          = $objListCatalogItemSKUPrice[$key];
-                            $objSku["predeterminado"] = $objListCatalogItemSKUPredeterminado[$key];
+                            $objSku["predeterminado"] = $objListCatalogItemSKUPredeterminado[$key] == "true" || $objListCatalogItemSKUPredeterminado[$key] == "1" ? 1 : 0;
                             $this->Item_Sku_Model->insert_app_posme($objSku);
                         }
                     }
