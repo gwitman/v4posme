@@ -144,6 +144,7 @@ class core_web_transaction_master_detail {
    
    function getAmountCommision($companyID,$listPriceID,$itemID,$price,$quantity,$comisionPorcentage)
    {
+		$Company_Model				= new Company_Model();
 		$objCompany					= $Company_Model->get_rowByPK($companyID);		
 		
 		if($objCompany->type == "farma_ley")
