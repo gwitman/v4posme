@@ -833,11 +833,11 @@ class Transaction_Master_Detail_Model extends Model  {
 				(
 					(
 						t.transactionID = 19 and 
-						t.statusID in ( 67 /*aplicada*/,68 /*anulada*/  )
+						t.statusID in ( 67 /*aplicada*/  ,68  /*anulada*/  )
 					)
 					or 
 					(
-						t.transactionID = 20 
+						t.transactionID = 20 /*anulacion: transactionID = 20*/  
 					)				
 				)
 			group by  
