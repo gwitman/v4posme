@@ -116,8 +116,7 @@ class app_sales_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?);";		
-				log_message("error","CALL pr_sales_get_report_sales_detail(2,'',2,'".$startOn."','".$endOn."',".$inventoryCategoryID.",'".$warehouseID."'); 001");				
+				$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?);";						
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
 					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID]
@@ -131,7 +130,7 @@ class app_sales_report extends _BaseController {
 					$objDataResult["objDetail"]				= $objData;
 				}
 				
-				log_message("error","CALL pr_sales_get_report_sales_detail(2,'',2,'".$startOn."','".$endOn."',".$inventoryCategoryID.",'".$warehouseID."'); 002");
+				
 				$objDataResult["objCompany"] 				= $objCompany;
 				$objDataResult["objStartOn"] 				= $startOn;
 				$objDataResult["objEndOn"] 					= $endOn;
