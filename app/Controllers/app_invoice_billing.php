@@ -8222,7 +8222,7 @@ class app_invoice_billing extends _BaseController {
 				//
 				$objTMDReference 	= $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterDetailID($detail_->transactionMasterDetailID);
 				$precio 			= $detail_->unitaryPrice;
-				$minsa	 			= $objTMDReference[0]->precio2;
+				$minsa	 			= $objTMDReference[0]->precio2 * $detail_->skuQuantity;
 				$descuento			= $minsa - $precio;
 				$precio 			= sprintf("%01.2f",round($precio,2));
 				$minsa	 			= sprintf("%01.2f",round($minsa,2));
@@ -8234,7 +8234,7 @@ class app_invoice_billing extends _BaseController {
 				}
 				
 				$row = array(
-					"C$:".$minsa."(Desc:C$".$descuento.")T:C$".$precio."-comand-new-row",  				
+					"C$:".  ($minsa)."(Desc:C$".$descuento.")T:C$".$precio."-comand-new-row",  				
 					"none",
 					"none"
 				);

@@ -211,7 +211,7 @@
 						{
 							objDataSourceVentasDeContadoMesActual.push(
 								new Array(
-									objVentasDeContadoMesActual[i].Dia,
+									objVentasDeContadoMesActual[i].Dia.toString(),
 									parseInt(objVentasDeContadoMesActual[i].Venta)
 								)
 							);	
@@ -226,7 +226,7 @@
 						  colors: ['#ff8000', '#ff8000', '#ff8000', '#ff8000', '#ff8000'],
 						  seriesType: 'bars',
 						  hAxis: {
-							title: 'Mes',
+							title: 'Dia',
 							slantedText: true,        // Inclina los textos
 							slantedTextAngle: 45      // Ángulo de inclinación
 						  },

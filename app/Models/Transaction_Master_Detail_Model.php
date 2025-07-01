@@ -671,7 +671,7 @@ class Transaction_Master_Detail_Model extends Model  {
 				AND 
 				c.statusID in (67 /*aplicada*/) 
 				AND  
-				c.createdOn between '$dateFirst' and '$dateLast' and 
+				c.transactionOn between '$dateFirst' and '$dateLast' and 
 				c.transactionMasterID not in (
 					select 
 						su.transactionMasterID
@@ -715,7 +715,7 @@ class Transaction_Master_Detail_Model extends Model  {
 				AND 
 				c.statusID in (67 /*aplicada*/) 
 				AND 
-				c.createdOn between '$dateFirst' and '$dateLast' and 
+				c.transactionOn between '$dateFirst' and '$dateLast' and 
 				c.transactionMasterID not in (
 					select 
 						su.transactionMasterID

@@ -630,7 +630,7 @@ class core_dashboards extends _BaseController {
         $firstDate						= helper_PrimerDiaDelMes();
         $lastDate						= helper_UltimoDiaDelMes();
 
-
+		
         //Obtener las Ventas de Contado del Mes Actual
         $objFirstDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
         $objFirstDate->setTime(0, 0, 0);

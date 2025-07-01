@@ -16,7 +16,7 @@
 		
 		
 		<?php
-		$width0  		= "1700px";//99
+		$width0  		= "2500px";//99
 		$width1  		= "0px";//480
 		$width2  		= "0px";//480
 		$width3  		= "0px";//480
@@ -34,7 +34,7 @@
 		
 		$totalCordoba 	= 0;
 		$totalDolares 	= 0;
-		$widthX 		= 1700;
+		$widthX 		= 2500;
 		$columnX 		= 14;
 		
 		echo helper_reporteGeneralCreateEncabezado(
