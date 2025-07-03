@@ -1243,6 +1243,8 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 	$divs                   = array_merge($divs, $farmaLey);
 	$blooMoon				= getBehavioBlooMoon();
 	$divs                   = array_merge($divs, $blooMoon);
+	$frozenMarket			= getBehavioFrozenMarket();
+	$divs                   = array_merge($divs, $frozenMarket);
 
 	//Comanda traducir es para los menu
 	//comportamiento del controlador

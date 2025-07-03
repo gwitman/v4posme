@@ -54,8 +54,8 @@ function getBehavioFarmaLey(){
 		
 		
 		strtolower('farma_ley_app_inventory_item_selectedDisplayUM')									=> "false",		
-		strtolower('farma_ley_app_invoice_billing_divTxtCausalID')										=> "hidden",		
-		strtolower('farma_ley_app_invoice_billing_divTxtCausalIDScript')								=> "",		
+		strtolower('farma_ley_app_invoice_billing_divTxtCausalID')										=> "",		
+		strtolower('farma_ley_app_invoice_billing_divTxtCausalIDScript')								=> "hidden",		
 		strtolower('farma_ley_app_invoice_billing_txtTraductionMesa')									=> "Dr.",	
 		strtolower('farma_ley_app_invoice_billing_despuesDeRecalcularTotalRecibidoIgualCero')			=> "true",	
 		

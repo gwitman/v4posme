@@ -1540,9 +1540,11 @@
 			'all',
 			{'itemID': objRow.itemID},
 			function(e){
-				let itemID 		= e['itemID'];
-				let allData 	= e['all'];
-				var resultado 	= allData.filter(function(producto) {
+				let itemID 			= e['itemID'];
+				let allData 		= e['all'];
+				let priceDefault	= objRow.price;
+				
+				var resultado 		= allData.filter(function(producto) {
 					return producto.itemID == itemID;
 				});
 				if (resultado.length > 0) {
@@ -1557,6 +1559,13 @@
 						}
 					});
 				}
+				
+				
+				if (parseInt(objRow.price) == 0)
+				{
+					objRow.price = priceDefault;
+				}
+				
 				objTableDetail.fnAddData([
 					objRow.checked,
 					objRow.transactionMasterDetailID,

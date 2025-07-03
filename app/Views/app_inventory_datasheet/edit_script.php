@@ -264,7 +264,6 @@
 					}
 					//Refresh
 					function refreschChecked(){
-						$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();
-						$('.txtDetailQuantity').mask('000,000.00000', {reverse: true});
+						$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();						
 					}
 				</script>
