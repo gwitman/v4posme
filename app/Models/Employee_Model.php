@@ -199,6 +199,35 @@ class Employee_Model extends Model  {
 	
 	//Ejecutar Consulta
 	return $query->get()->getResultArray();
-}
+	}
+	
+	
+	function get_rowByItemReference1($reference1){
+		$db 	= db_connect();
+		$builder	= $db->table("tb_item");    
+		$sql = "";
+		$sql = sprintf("
+			select 
+				c.entityID,
+				nat.firstName , 
+				ifnull(
+					(
+						select k.number from tb_entity_phone k where k.entityID = nat.entityID  limit 1 
+					),
+					''
+				)  as phoneNumber 
+			from 
+				tb_employee c 
+				inner join tb_naturales nat on 
+					nat.entityID = c.entityID 
+			where 
+				c.isActive = 1  and 
+				c.reference1  = '".$reference1."'
+		");	
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+   
 }
 ?>

@@ -385,6 +385,38 @@ class Item_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
+   function get_rowByItemReference1($listPriceID,$reference1){
+		$db 	= db_connect();
+		$builder	= $db->table("tb_item");    
+		$sql = "";
+		$sql = sprintf("
+			select 
+				i.itemID,
+				i.itemNumber,
+				i.barCode,
+				i.`name` ,
+				i.quantity,
+				(
+					select 
+						k.price  
+					from 
+						tb_price k 
+					where 
+						k.itemID = i.itemID and 
+						k.listPriceID = $listPriceID and 
+						k.typePriceID = 154  limit 1  
+				) as price1
+			from 
+				tb_item i 
+			where 
+				i.isActive = 1 and 
+				i.reference1 = '".$reference1."'
+		");	
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+   
    
 }
 ?>

@@ -137,6 +137,8 @@ define('APP_HOUR_DIFERENCE_MYSQL_EMBEDDED','-0 HOUR');
 define('APP_URL_RESOURCE_CSS_JS','http://localhost/posmev4');
 define('URL_REDIRECT_CALENDAR_POSME','http://localhost/'.APP_COMERCE_NAME.'/core_user/savepublicgooglereturn');
 define('APP_URL_WOOCOMERCE','https://posme.net');
+define('APP_USERDEFAULT_VALUE','superadmin');
+define('APP_PASSWORDEFAULT_VALUE','jose.');
 
 //BD
 //define("DB_PASSWORD","root1.2Blandon");

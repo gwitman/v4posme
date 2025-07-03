@@ -1258,7 +1258,7 @@ class app_cxc_customer extends _BaseController {
             $objCustomer["typePay"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CUSTOMER_TYPE_PAY_ID_DEFAULT")->value;
             $objCustomer["payConditionID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CUSTOMER_PAY_CONDITION_ID_DEFAULT")->value;
             $objCustomer["sexoID"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CUSTOMER_SEX_ID_DEFAULT")->value;
-            $objCustomer["reference1"]			= "";
+            $objCustomer["reference1"]			= property_exists($customer, 'reference1') ?  $customer->reference1 : "";
             $objCustomer["reference2"]			= "";
             $objCustomer["reference3"]			= "";
             $objCustomer["reference4"]			= "";

@@ -406,6 +406,29 @@ class Customer_Model extends Model  {
 		
    		return $db->query($sql)->getRow();
     }
+	
+	function get_rowByItemReference1($phone,$reference1){
+		$db 	= db_connect();
+		$builder	= $db->table("tb_item");    
+		$sql = "";
+		$sql = sprintf("
+			select 
+				c.entityID,
+				nat.firstName,
+				c.phoneNumber 
+			from 
+				tb_customer c 
+				inner join tb_naturales nat on 
+					nat.entityID = c.entityID 
+			where 
+				c.isActive = 1 and 
+				c.reference1  = '".$reference1."' and 
+				c.phoneNumber = '".$phone."' 
+		");	
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
    
    
 }

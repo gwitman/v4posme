@@ -744,7 +744,7 @@ function helper_getHtmlOfPageLanding()
 	';
 }
 
-function helper_getHtmlOfModalDialog($name,$idDivBody,$fncallBack,$fnShowBotones)
+function helper_getHtmlOfModalDialog($name,$idDivBody,$fncallBack,$fnShowBotonesCerrar = true,$fnShowBotonesAceptar = true)
 {
 	$string  =  
 	'
@@ -834,12 +834,18 @@ function helper_getHtmlOfModalDialog($name,$idDivBody,$fncallBack,$fnShowBotones
 			</div>
 	';
 	
-	 if($fnShowBotones == true)
+	 if($fnShowBotonesCerrar == true)
 	 {
 		 $string = $string.'
-			<button class="btnCerrar'.$name.'"  onclick="event.preventDefault();cerrarModal(\''.$name.'\')">Cerrar</button>
+			<button class="btnCerrar'.$name.'"  onclick="event.preventDefault();cerrarModal(\''.$name.'\')">Cerrar</button>';
+	 }
+	 
+	 if($fnShowBotonesAceptar == true)
+	 {
+		 $string = $string.'
 			<button class="btnAceptar'.$name.'" onclick="event.preventDefault();'.$fncallBack.'(this)">Aceptar</button>';
 	 }
+	 
 	 
 	 $string = $string.'
 	  	</div>

@@ -1095,6 +1095,10 @@ $routes->match(['get', 'post'], 'app_invoice_billing/editv2/(:any)', 'app_invoic
 $routes->match(['get', 'post'], 'app_invoice_billing/delete', 'app_invoice_billing::delete');
 $routes->match(['get', 'post'], 'app_invoice_billing/updateElement', 'app_invoice_billing::updateElement');
 $routes->match(['get', 'post'], 'app_invoice_billing/updateElement/(:any)', 'app_invoice_billing::updateElement');
+$routes->match(['get', 'post'], 'app_invoice_survery/index', 'app_invoice_survery::index');
+$routes->match(['get', 'post'], 'app_invoice_survery/index/(:any)', 'app_invoice_survery::index');
+$routes->match(['get', 'post'], 'app_invoice_survery/insertElement', 'app_invoice_survery::insertElement');
+$routes->match(['get', 'post'], 'app_invoice_survery/insertElement/(:any)', 'app_invoice_survery::insertElement');
 $routes->match(['get', 'post'], 'app_invoice_billing/insertElement', 'app_invoice_billing::insertElement');
 $routes->match(['get', 'post'], 'app_invoice_billing/insertElement/(:any)', 'app_invoice_billing::insertElement');
 $routes->match(['get', 'post'], 'app_invoice_billing/saveApi', 'app_invoice_billing::saveApi');
