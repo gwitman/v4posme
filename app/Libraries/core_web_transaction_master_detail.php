@@ -142,18 +142,18 @@ class core_web_transaction_master_detail {
 			
    }
    
-   function getAmountCommision($companyID,$listPriceID,$itemID,$price,$quantity,$comisionPorcentage)
+   function getAmountCommision($companyID,$listPriceID,$itemID,$price,$quantity,$comisionPorcentage,$skuQuantity)
    {
 		$Company_Model				= new Company_Model();
 		$objCompany					= $Company_Model->get_rowByPK($companyID);		
 		
 		if($objCompany->type == "farma_ley")
 		{
-		    return ($comisionPorcentage * $quantity);
+		    return ($comisionPorcentage * $quantity * $skuQuantity);
 		}
 		else 
 		{
-			return ($price * $comisionPorcentage * $quantity);
+			return ($price * $comisionPorcentage * $quantity * $skuQuantity);
 		}
    }
    function getPorcentageComision($companyID,$listPriceID,$itemID,$price)

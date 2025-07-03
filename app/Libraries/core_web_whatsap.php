@@ -301,9 +301,9 @@ class core_web_whatsap {
         $objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
 
         //id canal
-        $objPWhatsapIdCanal		= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION_PARAMETERF1");
-        $objPWhatsapPrivatekeyId	= $objPWhatsapIdCanal->parameterID;
-        $objPWhatsapIdCanal		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPrivatekeyId);
+        $objPWhatsapIdCanal					= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION_PARAMETERF1");
+        $objPWhatsapPrivatekeyId			= $objPWhatsapIdCanal->parameterID;
+        $objPWhatsapIdCanal					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPrivatekeyId);
 
         $curl = curl_init();
 

@@ -1099,6 +1099,8 @@ $routes->match(['get', 'post'], 'app_invoice_survery/index', 'app_invoice_surver
 $routes->match(['get', 'post'], 'app_invoice_survery/index/(:any)', 'app_invoice_survery::index');
 $routes->match(['get', 'post'], 'app_invoice_survery/insertElement', 'app_invoice_survery::insertElement');
 $routes->match(['get', 'post'], 'app_invoice_survery/insertElement/(:any)', 'app_invoice_survery::insertElement');
+$routes->match(['get', 'post'], 'app_invoice_survery/viewRegisterFormatoPaginaNormal80mmOpcion1', 'app_invoice_survery::viewRegisterFormatoPaginaNormal80mmOpcion1');
+$routes->match(['get', 'post'], 'app_invoice_survery/viewRegisterFormatoPaginaNormal80mmOpcion1/(:any)', 'app_invoice_survery::viewRegisterFormatoPaginaNormal80mmOpcion1');
 $routes->match(['get', 'post'], 'app_invoice_billing/insertElement', 'app_invoice_billing::insertElement');
 $routes->match(['get', 'post'], 'app_invoice_billing/insertElement/(:any)', 'app_invoice_billing::insertElement');
 $routes->match(['get', 'post'], 'app_invoice_billing/saveApi', 'app_invoice_billing::saveApi');

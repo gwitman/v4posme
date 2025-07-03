@@ -1250,7 +1250,7 @@ class app_invoice_billing extends _BaseController {
 						$objTMD["inventoryWarehouseTargetID"]	= $objTM->targetWarehouseID;
 						$objTMD["skuCatalogItemID"] 			= $skuCatalogItemID;
 						$objTMD["skuFormatoDescription"] 		= $skuFormatoDescription;
-						$objTMD["amountCommision"] 				= $this->core_web_transaction_master_detail->getAmountCommision($companyID,$listPriceID,$itemID,$price,$quantity,$comisionPorcentage);
+						$objTMD["amountCommision"] 				= $this->core_web_transaction_master_detail->getAmountCommision($companyID,$listPriceID,$itemID,$price,$quantity,$comisionPorcentage,$skuRatio);
 						
 						
 						$tax1Total								= $tax1Total + ($tax1 * $quantity);
@@ -1330,7 +1330,7 @@ class app_invoice_billing extends _BaseController {
 						$objTMDNew["inventoryWarehouseSourceID"]= $objTMNew["sourceWarehouseID"];
 						$objTMDNew["skuCatalogItemID"] 			= $skuCatalogItemID;
 						$objTMDNew["skuFormatoDescription"] 	= $skuFormatoDescription;						
-						$objTMDNew["amountCommision"] 			= $this->core_web_transaction_master_detail->getAmountCommision($companyID,$listPriceID,$itemID,$price,$quantity,$comisionPorcentage);
+						$objTMDNew["amountCommision"] 			= $this->core_web_transaction_master_detail->getAmountCommision($companyID,$listPriceID,$itemID,$price,$quantity,$comisionPorcentage,$skuRatio );
 						
 						$tax1Total								= $tax1Total + ($tax1 * $quantity);
 						$tax2Total								= $tax2Total + ($tax2 * $quantity);

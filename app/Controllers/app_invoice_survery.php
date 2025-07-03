@@ -56,7 +56,7 @@ class app_invoice_survery extends _BaseController {
 		{
 			
 			//Obtener el key;
-			$key	= $this->request->getPost("key");
+			$key					= $this->request->getPost("key");
 			
 			
 			//Obtener datos
@@ -79,6 +79,7 @@ class app_invoice_survery extends _BaseController {
 			$objUser 					= $this->core_web_authentication->get_UserBy_PasswordAndNickname(APP_USERDEFAULT_VALUE, APP_PASSWORDEFAULT_VALUE);
 			$objCompany 				= $objUser["company"];
 			$dataSession				= null;
+			$dataSession["key"]			= $key;
 			$dataSession['user'] 		= $objUser["user"];
             $dataSession['company'] 	= $objCompany;
             $dataSession['role'] 		= $objUser["role"];
@@ -142,7 +143,7 @@ class app_invoice_survery extends _BaseController {
             $objTM["reference2"]        = "";
             $objTM["reference3"]        = "";
             $objTM["reference4"]        = '';
-            $objTM["statusID"]          = /*inicio get post*/$this->request->getPost("txtStatusID");
+            $objTM["statusID"]          = $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_survery", "statusID", $companyID, $branchID, $roleID)[0]->workflowStageID;
             $objTM["amount"]            = 0;
             $objTM["isApplied"]         = 0;
             $objTM["journalEntryID"]    = 0;
@@ -168,7 +169,7 @@ class app_invoice_survery extends _BaseController {
 			
 			//Ingresar detalle
 			$total = 0;
-			if (!$listItem) {
+			if ($listItem) {
 
 	
 				foreach($listItem  as $key => $value)
@@ -192,7 +193,7 @@ class app_invoice_survery extends _BaseController {
 					$objTMD["cost"]                = 0;
 
 					$objTMD["unitaryPrice"]  = $price;
-					$objTMD["unitaryAmount"] = 0;
+					$objTMD["unitaryAmount"] = $price;
 					$objTMD["amount"]        = $price * $quantity;
 					$objTMD["discount"]      = 0;
 					$objTMD["promotionID"]   = 0;
@@ -226,13 +227,13 @@ class app_invoice_survery extends _BaseController {
 			if ($db->transStatus() !== false) {
 				
 				
-				//Mandar mensjes por whatapp al cliente
-				$mensajeCliente		= "";
-				$this->core_web_whatsap->sendMessageByLiveconnect($companyID, replaceSimbol($mensajeCliente), clearNumero($objCustomer[0]->phoneNumber));
-				
-				//Mandar mensaje por whatapp al propietario
-				$mensajeColaborador	= "";
-				$this->core_web_whatsap->sendMessageByLiveconnect($companyID, replaceSimbol($mensajeColaborador), clearNumero($objColaborador[0]->phoneNumber));
+				////Mandar mensjes por whatapp al cliente
+				//$mensajeCliente		= "Su pedido esta siendo procesado :  [[URL]]";
+				//$this->core_web_whatsap->sendMessageByLiveconnect($companyID, replaceSimbol($mensajeCliente), clearNumero($objCustomer[0]->phoneNumber));
+				//
+				////Mandar mensaje por whatapp al propietario
+				//$mensajeColaborador	= "Hay una nueva orden de trabajo:  [[URL]]";
+				//$this->core_web_whatsap->sendMessageByLiveconnect($companyID, replaceSimbol($mensajeColaborador), clearNumero($objColaborador[0]->phoneNumber));
 				
 				
                 $db->transCommit();
@@ -271,63 +272,200 @@ class app_invoice_survery extends _BaseController {
     
 
 	
-	function searchTransactionMaster(){
+	function viewRegisterFormatoPaginaNormal80mmOpcion1(){
 		try{ 
-			//AUTENTICADO
-			if(!$this->core_web_authentication->isAuthenticated())
-			throw new \Exception(USER_NOT_AUTENTICATED);
-			$dataSession		= $this->session->get();
-			
-			//PERMISO SOBRE LA FUNCTION
-			if(APP_NEED_AUTHENTICATION == true){
-						$permited = false;
-						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-						
-						if(!$permited)
-						throw new \Exception(NOT_ACCESS_CONTROL);
-						
-						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"index",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-						if ($resultPermission 	== PERMISSION_NONE)
-						throw new \Exception(NOT_ACCESS_FUNCTION);			
-			
-			}	
-			
-			//Load Modelos
-			//
-			////////////////////////////////////////
-			////////////////////////////////////////
-			////////////////////////////////////////
-			  
-			
-			//Nuevo Registro
-			$transactionNumber 	= /*inicio get post*/ $this->request->getPost("transactionNumber");
 			
 			
-			if(!$transactionNumber){
-					throw new \Exception(NOT_PARAMETER);			
-			} 			
-			$objTM 	= $this->Transaction_Master_Model->get_rowByTransactionNumber($dataSession["user"]->companyID,$transactionNumber);	
-			
-			if(!$objTM)
-			throw new \Exception("NO SE ENCONTRO EL DOCUMENTO");	
+			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri			
+			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri				
+			$companyID 					= APP_COMPANY;	
 			
 			
 			
-			return $this->response->setJSON(array(
-				'error'   				=> false,
-				'message' 				=> SUCCESS,
-				'companyID' 			=> $objTM->companyID,
-				'transactionID'			=> $objTM->transactionID,
-				'transactionMasterID'	=> $objTM->transactionMasterID
-			));//--finjson
+			//Get Component
+			$objComponent	        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			$objParameter	        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+			$objParameterRuc	    = $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+			$objParameterRuc        = $objParameterRuc->value;
+			$objCompany 			= $this->Company_Model->get_rowByPK($companyID);			
+			$spacing 				= 0.5;
+			
+			//Get Documento					
+			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);			
+			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);						
+			$datView["Identifier"]					= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+			$datView["objBranch"]					= $this->Branch_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->branchID);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_billing","statusID",$datView["objTM"]->statusID,$companyID,$datView["objTM"]->branchID,APP_ROL_SUPERADMIN);			
+			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
+			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
+			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
+			$datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
+			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);			
+			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 
+			
+			
+		
+			//Configurar Detalle Header
+			$confiDetalleHeader = array();
+			$row = array(
+				"style"		=>"text-align:left;width:auto",
+				"colspan"	=>'1',
+				"prefix"	=>'',
+				
+				
+				"style_row_data"		=>"text-align:left;width:auto",
+				"colspan_row_data"		=>'1',
+				"prefix_row_data"		=>'',
+				"nueva_fila_row_data"	=>1
+			);
+			array_push($confiDetalleHeader,$row);
+			
+			$row = array(
+				"style"		=>"text-align:left;width:50px",
+				"colspan"	=>'1',
+				"prefix"	=>'',
+				
+				"style_row_data"		=>"text-align:right;width:auto",
+				"colspan_row_data"		=>'1',
+				"prefix_row_data"		=>'',
+				"nueva_fila_row_data"	=>0
+			);
+			array_push($confiDetalleHeader,$row);
+			
+			
+			$row = array(
+				"style"		=>"text-align:right;width:90px",
+				"colspan"	=>'1',
+				"prefix"	=>$datView["objCurrency"]->simbol,
+				
+				"style_row_data"		=>"text-align:right;width:90px",
+				"colspan_row_data"		=>'1',
+				"prefix_row_data"		=>"",
+				"nueva_fila_row_data"	=>0
+			);
+			array_push($confiDetalleHeader,$row);
+			
+			
+		    
+		    $detalle = array();		    
+		    $row = array("CANT", 'PREC', "TOTAL");
+		    array_push($detalle,$row);
+		    
+		    
+			foreach($datView["objTMD"] as $detail_){
+				$row = array(
+					$detail_->itemName. " ". strtolower($detail_->skuFormatoDescription)."-comand-new-row",  				
+					"none",
+					"none"
+				);
+			    array_push($detalle,$row);
+				
+			    $row = array(					
+					sprintf("%01.2f",round($detail_->quantity,2)), 					
+					sprintf("%01.2f",round($detail_->unitaryPrice,2)),
+					"C$ ".sprintf("%01.2f",round($detail_->amount,2))					
+				);
+			    array_push($detalle,$row);
+			}
+			
+			
+			//Generar Reporte
+			$html = helper_reporte80mmTransactionMasterSurvery(
+			    "FACTURA",
+			    $objCompany,
+			    $objParameter,
+			    $datView["objTM"],
+			    $datView["objNatural"],
+			    $datView["objCustumer"],
+			    $datView["tipoCambio"],
+			    $datView["objCurrency"],
+			    $datView["objTMI"],
+			    $confiDetalleHeader,
+			    $detalle,
+			    $objParameterTelefono, /*telefono*/
+			    $objParameterRuc /*ruc*/
+			);
+			
+			$this->dompdf->loadHTML($html);
+			
+			
+			//1cm = 29.34666puntos
+			//a4: 210 ancho x 297
+			//a4: 21cm x 29.7cm
+			//a4: 595.28puntos x 841.59puntos
+			
+			//$this->dompdf->setPaper('A4','portrait');
+			//$this->dompdf->setPaper(array(0,0,234.76,6000));
+			
+			$this->dompdf->render();
+			
+			$objParameterShowLinkDownload		= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+			$objParameterShowLinkDownload		= $objParameterShowLinkDownload->value;
+			$objParameterShowDownloadPreview	= $this->core_web_parameter->getParameter("CORE_SHOW_DOWNLOAD_PREVIEW",$companyID);
+			$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview->value;
+			$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true" ? true : false;
+			
+			$fileNamePut = "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
+			$path        = "./resource/file_company/company_".$companyID."/component_131/component_item_".$transactionMasterID."/".$fileNamePut;
+				
+				
+			//Crear la Carpeta para almacenar los Archivos del Documento
+			$documentoPath = PATH_FILE_OF_APP."/company_".$companyID."/component_131/component_item_".$transactionMasterID;						
+			if (!file_exists($documentoPath))
+			{
+				mkdir($documentoPath, 0755, true);
+				chmod($documentoPath, 0755);
+			}
+			
+			
+			file_put_contents(
+				$path,
+				$this->dompdf->output()					
+			);						
+			
+			chmod($path, 644);
+			
+			if($objParameterShowLinkDownload == "true")
+			{			
+				echo "<a 
+					href='".base_url()."/resource/file_company/company_".$companyID."/component_131/component_item_".$transactionMasterID."/".
+					$fileNamePut."'>download factura</a>
+				"; 				
+			
+			}
+			else{			
+				//visualizar		
+				$timestamp 	= date("YmdHis") . "0"; // Resultado: 202505261134000
+				$filename 	= "posme_" . $timestamp . ".pdf";							
+				$this->dompdf->stream($filename, ['Attachment' => $objParameterShowDownloadPreview ]);
+			}
+			
+			
+			
 			
 		}
 		catch(\Exception $ex){
-			
-			return $this->response->setJSON(array(
-				'error'   => true,
-				'message' => $ex->getLine()." ".$ex->getMessage()
-			));//--finjson
+		    
+		    //$data["session"] = $dataSession;
+			$data["session"] 	= null;
+		    $data["exception"] 	= $ex;
+		    $data["urlLogin"]  	= base_url();
+		    $data["urlIndex"]  	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        	= view("core_template/email_error_general",$data);
+		    
+		    $this->email->setFrom(EMAIL_APP);
+		    $this->email->setTo(EMAIL_APP_COPY);
+		    $this->email->setSubject("Error");
+		    $this->email->setMessage($resultView);
+		    
+		    $resultSend01 = $this->email->send();
+		    $resultSend02 = $this->email->printDebugger();
+		    
+		    
+		    return $resultView;
 		}
 	}
 		

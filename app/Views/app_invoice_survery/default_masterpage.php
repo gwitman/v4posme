@@ -233,9 +233,9 @@
 						  <label class="col-form-label me-2">Cantidad:</label>
 						</div>
 						<div class="col-4">
-						  <input name="itemID" value="<?php echo $item->itemID; ?>" type="hidden" />
-						  <input name="price" value="<?php echo round($item->price1,2); ?>" type="hidden" />
-						  <input name="quantity" type="number" class="form-control quantity" min="0" max="10" value="0">
+						  <input name="itemID[]" value="<?php echo $item->itemID; ?>" type="hidden" />
+						  <input name="price[]" value="<?php echo round($item->price1,2); ?>" type="hidden" />
+						  <input name="quantity[]" type="number" class="form-control quantity" min="0" max="10" value="0">
 						</div>
 					  </div>
 					</div>
@@ -268,7 +268,7 @@
         <tfoot>
           <tr>
             <th colspan="2">Total</th>
-            <th id="summaryTotal">$0</th>
+            <th id="summaryTotal">C$ 0</th>
           </tr>
         </tfoot>
       </table>
@@ -346,16 +346,17 @@
 
         $('#summaryOptions').empty();
         $.each(options, function(i, option) {
+		  
           $('#summaryOptions').append(
             `<tr>
               <td>${option.name}</td>
               <td>${option.quantity}</td>
-              <td>$${option.subtotal.toFixed(2)}</td>
+              <td>C$${option.subtotal.toFixed(2)}</td>
             </tr>`
           );
         });
 
-        $('#summaryTotal').text('$' + total.toFixed(2));
+        $('#summaryTotal').text('C$' + total.toFixed(2));
         $('#orderForm').slideUp();
         $('.summary-screen').slideDown();
       });

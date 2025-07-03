@@ -8682,6 +8682,323 @@ function helper_reporte80mmTransactionMaster(
     return $html;
 }
 
+function helper_reporte80mmTransactionMasterSurvery(
+    $titulo,
+    $objCompany,
+    $objParameterLogo,
+    $objTransactionMastser,
+    $objEntidadNatural,
+    $objEntidadCustomer,
+    $tipoCambio,
+    $objCurrency,
+    $objTransactionMasterInfo, 
+    $confiDetalle, /**/
+    $arrayDetalle, /**/
+    $objParameterTelefono, /*telefono*/
+    $rucCompany = "" /*ruc*/
+)
+{
+    $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;
+    
+    $type    = pathinfo($path, PATHINFO_EXTENSION);
+    $data    = file_get_contents($path);
+    $base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
+    
+    $html    = "";
+    $html    = "
+                    <!--
+                    Online HTML, CSS and JavaScript editor to run code online.
+                    https://www.programiz.com/html/online-compiler/
+                    -->
+                    <!DOCTYPE html>
+                    <html lang='en'>
+        
+                    <head>
+                      <meta charset='UTF-8' />
+                      <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+                      <style>
+                        @page {       
+                          size: 2.7in 11in;                  
+                          margin-top:0px;
+                          margin-left:10px;
+                          margin-right:0px;
+                        }
+                        table{
+                          font-size: x-small;
+                          font-weight: bold;
+                          font-family: Consolas, monaco, monospace;
+                        }
+                      </style>
+                    </head>
+        
+                    <body>
+        
+                      <table style='width:100%'>
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            <img  src='".$base64."' width='110'  >
+                          </td>
+                        </tr>
+                                
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".strtoupper($objCompany->name)."
+                          </td>
+                        </tr>";
+    
+
+         
+    
+          $html = $html."<tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".strtoupper($titulo)."
+                          </td>
+                        </tr>
+                                
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            # ".strtoupper($objTransactionMastser->transactionNumber)."
+                          </td>
+                        </tr>
+                                
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            FECHA: ".$objTransactionMastser->createdOn."
+                          </td>
+                        </tr>
+                                
+                         <tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>";
+						
+        
+						
+          $html	= $html."<tr>
+                          <td colspan=''>
+                            Codigo:
+                          </td>
+						  <td colspan='2'>
+                            ".$objEntidadCustomer->customerNumber."
+                          </td>
+                        </tr>";
+			
+			
+		 
+			
+		  $html	= $html."<tr>
+                          <td colspan='1'>
+                            Estado
+                          </td>
+						  <td colspan='2'>
+                            EN PROCESO
+                          </td>
+                        </tr>
+                            
+						<tr>
+                          <td colspan='1'>
+                            Moneda:
+                          </td>
+						  <td colspan='2'>
+                            ".$objCurrency->simbol."
+                          </td>
+                        </tr>";
+			
+		
+						
+          $html	= $html."
+						 <tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+						
+						<tr>
+						  <td colspan='1'>
+							Cliente:
+                          <td colspan='2'>
+                          </td>
+                        </tr>
+						
+						<tr>
+						  <td colspan='3'>							
+                            ".   $objEntidadNatural->firstName ."
+                          </td>
+                        </tr>
+
+						
+						<!--
+                        <tr>
+                          <td colspan='3'>
+                            Tipo de Cambio: ".$tipoCambio."
+                          </td>
+                        </tr>
+						-->
+						
+						<tr>
+                          <td colspan='3'>
+                            Direccion:".$objEntidadCustomer->location."
+                          </td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style='text-align:left'>".$objTransactionMastser->note."</td>
+                        </tr>
+                                
+                         <tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+                                
+                     
+                                
+                         [[DETALLE]]
+                                
+                         <tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>                                                     
+                        <tr>
+                          <td colspan='2'>
+                            TOTAL
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount)."
+                          </td>
+                        </tr>
+   
+                       
+
+                         <tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".$objCompany->address."
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            ".$objParameterTelefono->value."
+                          </td>
+                        </tr>
+						
+						".getBehavio($objCompany->type,"web_tools_report_helper","reporte80mmTransactionMaster_Devolucion","")."
+
+                        <tr>
+                          <td colspan='3' style='text-align:center' >
+                            posMe PRO Premium 3.1
+                          </td>
+                        </tr>
+                      </table>					  
+                    </body>
+                                
+                    </html>
+            ";
+    
+    $cuerpo = "";
+    $colun  = 0;
+	$rowin  = 0;
+    foreach($arrayDetalle as $row){
+		
+            $colun  		= 0;
+			$colunCantidad 	= count($row);
+			$nuevaFila		= 0;
+            foreach ($row as $col => $key){				
+			
+			    //encabezado
+				if($rowin == 0){
+					
+					//Mostrar los productos en una sola fila
+					if($colun == 0){
+						$cuerpo 		= $cuerpo."<tr >";							
+					}	
+						
+					$cuerpo = $cuerpo."<td style=".$confiDetalle[$colun]["style"]." colspan='".$confiDetalle[$colun]["colspan"]."' >";
+					$cuerpo = $cuerpo." ".$key;
+					$cuerpo = $cuerpo."</td>";
+						
+					if($colun == $colunCantidad ){
+						$cuerpo 	   = $cuerpo."</tr >";
+					}
+					
+				}
+				//datos
+				else{
+					
+					if( $confiDetalle[$colun]["nueva_fila_row_data"] ==  1 &&  strpos($key, "-comand-new-row") !== false  )
+					{
+						$cuerpo 		= $cuerpo."<tr >";							
+						
+						$cuerpo = $cuerpo."<td style=".$confiDetalle[$colun]["style_row_data"]." colspan='". $colunCantidad ."' >";
+						$cuerpo = $cuerpo.$confiDetalle[$colun]["prefix_row_data"]." ". str_replace("-comand-new-row", "", $key );
+						$cuerpo = $cuerpo."</td>";
+						
+						$cuerpo 		= $cuerpo."</tr >";	
+						break;
+											
+					}	
+					else
+					{	
+						
+						$texto 		= $key;
+						if($rowin > 0 && $colun == 0 && !is_numeric($texto) )
+						{
+							$cuerpo 	= $cuerpo."<tr >";															
+							$cuerpo = $cuerpo."<td colspan='3' >";
+							$cuerpo = $cuerpo.$confiDetalle[$colun]["prefix_row_data"]." ".$texto;
+							$cuerpo = $cuerpo."</td>";								
+							$cuerpo = $cuerpo."</tr >";
+						}
+						else 
+						{
+							if($colun == 0)
+							{
+								$cuerpo = $cuerpo."<tr >";		
+								$cuerpo = $cuerpo."<td colspan='1' style='text-align:left'  >".$confiDetalle[$colun]["prefix_row_data"]." ".$texto."</td>";								
+							}
+							
+							if($colun == 1)
+							{
+								$cuerpo = $cuerpo."<td colspan='1' style='text-align:right' >".$confiDetalle[$colun]["prefix_row_data"]." ".$texto."</td>";		
+							}
+							
+							if($colun == 2)
+							{
+								$cuerpo		= $cuerpo."<td colspan='1' style='text-align:right'  >".$confiDetalle[$colun]["prefix_row_data"]." ".$texto."</td>";		
+								$cuerpo 	= $cuerpo."</tr ></br>";
+							}
+						
+							
+						}
+							
+					}
+						
+				
+				}
+				
+                
+				
+                $colun++;
+            }
+			
+			$rowin++;
+            
+    }
+    
+	
+    
+    $html = str_replace("[[DETALLE]]", $cuerpo, $html);
+    return $html;
+}
+
 function helper_reporte80mmTransactionMasterLaCeiba(
     $titulo,
     $objCompany,
