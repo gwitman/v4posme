@@ -620,7 +620,7 @@
 						//Nuevo Telefono
 						$(document).on("click","#btnNewPhones",function(){
 							console.info("call click_btnNewPhones");
-							window.open(site_url+"app_cxp_provider/add_phone","MsgWindow","width=650,height=500");
+							window.open(site_url+"/app_cxp_provider/add_phone","MsgWindow","width=650,height=500");
 							window.parentNewPhone = parentNewPhone;
 						});
 						//Eliminar Telefono

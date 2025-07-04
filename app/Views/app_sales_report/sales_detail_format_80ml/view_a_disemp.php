@@ -7,7 +7,7 @@
 				
 		<style>
 			 @page {       
-                          size: 2.7in 800in;                  
+                          size: 2.7in 80in;                  
                           margin-top:0px;
                           margin-left:0px;
                           margin-right:15px;
