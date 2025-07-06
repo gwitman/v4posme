@@ -878,479 +878,246 @@ class core_merge extends _BaseController {
 		$targetName						= $this->targetName;
 		$dbConectTarget 				= $this->dbConectTarget;
 		$dbConectSource					= $this->dbConectSource;
-		//$dbConectInformationSchema		= $this->dbConectInformationSchema;
+		//$dbConectInformationSchema	= $this->dbConectInformationSchema;
 		$forge 							= $this->forgeTarget;
 		
 		
 		$sql 			= "";
-		$sql			= "select 'eliminado archivos .sql y .pdf' as x";		
-		echo $sql." SUCCESS";
+		$sql			= "select 'probando conexion' as x";		
+		echo $sql;
+		echo "<br/>SUCCESS";	
+		echo "<br/>";	
 		$dbConectTarget->query($sql);
 		
 		
-		echo "<br/>";	
-		echo "creando carpetas";
-		echo "<br/>";
-		
-		
-		//Crear carpetas		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_1";		
-		if (!file_exists($documentoPath))
+		//Recorrear todas las compañias
+		$dirParent 	= opendir(PATH_FILE_OF_APP."/../../../../");
+		$files 		= array();
+		while ($currentParent = readdir($dirParent))
 		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_1/component_item_0";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_76";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_77";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_78";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_79";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_78";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_80";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_81";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_82";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_78";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_83";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_84";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_85";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_86";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_87";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_88";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_89";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_90";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_91";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_92";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_93";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_94";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_95";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_96";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_97";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_98";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-		$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_99";		
-		if (!file_exists($documentoPath))
-		{
-			mkdir($documentoPath, 0755);
-			chmod($documentoPath, 0755);
-		}
-		
-			
-		//Eliminar archivos de writable/logs
-		$dir 	= opendir(PATH_FILE_OF_APP."/../../../writable/logs");
-		while ($current = readdir($dir))
-		{
-			if( $current != "." && $current != ".." && $current != "index.html" ) 
+			if( $currentParent != "." && $currentParent != ".." && $currentParent != "index.html" ) 
 			{
-				unlink(PATH_FILE_OF_APP."/../../../writable/logs/".$current);
-			}
-		}
-
-		//Eliminar archivos de writable/session
-		$dir = opendir(PATH_FILE_OF_APP . "/../../../writable/session");
-		while ($current = readdir($dir))
-		{
-			if( $current != "." && $current != ".." && $current != "index.html" ) 
-			{
-				unlink(PATH_FILE_OF_APP."/../../../writable/session/".$current);
-			}
-		}
-		
-		
-		//Eliminar archivos de writable/uploads
-		$dir 	= opendir(PATH_FILE_OF_APP."/../../../writable/uploads");
-		while ($current = readdir($dir))
-		{
-			if( $current != "." && $current != ".." && $current != "index.html" ) 
-			{
-				if(is_dir(PATH_FILE_OF_APP."/../../../writable/uploads/".$current)) 
-				{
+				echo "<hr>";
+				$path_file_of_app  = PATH_FILE_OF_APP."/../../../../".$currentParent;
+				echo "Compañia:".$currentParent."</br>".$path_file_of_app."</br>";
+				
+				echo "<br/>";	
+				echo "limpiandos logs";
+				echo "<br/>";
+				
 					
-					$dir2 	= opendir(PATH_FILE_OF_APP."/../../../writable/uploads/".$current);
-					while ($current2 = readdir($dir2))
+				//Eliminar archivos de writable/logs
+				$dir 	= opendir($path_file_of_app."/writable/logs");
+				while ($current = readdir($dir))
+				{
+					if( $current != "." && $current != ".." && $current != "index.html" ) 
 					{
-						if( $current2 != "." && $current2 != "..") 
-						{	
-							echo "Eliminar :".PATH_FILE_OF_APP."/../../../writable/uploads/"."/".$current2."</br>";
-							unlink(PATH_FILE_OF_APP."/../../../writable/uploads/".$current."/".$current2);
-						}					
+						unlink($path_file_of_app."/writable/logs/".$current);
 					}
 				}
-				else 
-				{					
-					echo "Eliminar :".PATH_FILE_OF_APP."/../../../writable/uploads/".$current."</br>";
-					unlink(PATH_FILE_OF_APP."/../../../writable/uploads/".$current);
-				}
-			}
-		}
-		
-		//Eliminar archivos de debubar/debugbar
-		$dir 	= opendir(PATH_FILE_OF_APP."/../../../writable/debugbar");
-		while ($current = readdir($dir))
-		{
-			if( $current != "." && $current != ".." && $current != "index.html" ) 
-			{
-				unlink(PATH_FILE_OF_APP."/../../../writable/debugbar/".$current);
-			}
-		}
-		
-		//Eliminar archivos de: company_2/*.sql *.pdf *.doc *.zip *.etc 
-		//-------------------------------------------------
-		//-------------------------------------------------
-		$dir 	= opendir(PATH_FILE_OF_APP."/company_".APP_COMPANY);
-		$files 	= array();
-		while ($current = readdir($dir))
-		{
-			if( $current != "." && $current != "..") {
 				
-				
-				//componente 				
-				if(is_dir(PATH_FILE_OF_APP."/company_".APP_COMPANY."/".$current)) 
+				echo "<br/>";	
+				echo "limpiando session";
+				echo "<br/>";
+				//Eliminar archivos de writable/session
+				$dir = opendir($path_file_of_app . "/writable/session");
+				while ($current = readdir($dir))
 				{
-					
-					//recorrer item 
-					$dir2 	= opendir(PATH_FILE_OF_APP."/company_".APP_COMPANY."/".$current."/");
-					while ($current2 = readdir($dir2))
+					if( $current != "." && $current != ".." && $current != "index.html" ) 
 					{
-						if( $current2 != "." && $current2 != "..") 
-						{			
+						unlink($path_file_of_app."/writable/session/".$current);
+					}
+				}
+				
+				echo "<br/>";	
+				echo "limpiando uploads";
+				echo "<br/>";
+				//Eliminar archivos de writable/uploads
+				$dir 	= opendir($path_file_of_app."/writable/uploads");
+				while ($current = readdir($dir))
+				{
+					if( $current != "." && $current != ".." && $current != "index.html" ) 
+					{
+						if(is_dir($path_file_of_app."/writable/uploads/".$current)) 
+						{
 							
-							if(is_dir(PATH_FILE_OF_APP."/company_".APP_COMPANY."/".$current."/".$current2)) 
+							$dir2 	= opendir($path_file_of_app."/writable/uploads/".$current);
+							while ($current2 = readdir($dir2))
 							{
-								
-								//archivos
-								//recorrer archivo
-								$dir3 	= opendir(PATH_FILE_OF_APP."/company_".APP_COMPANY."/".$current."/".$current2."/");
-								while ($current3 = readdir($dir3))
-								{
-									if( $current3 != "." && $current3 != "..") 
+								if( $current2 != "." && $current2 != "..") 
+								{	
+									echo "Eliminar :".$path_file_of_app."/writable/uploads/"."/".$current2."</br>";
+									unlink($path_file_of_app."/writable/uploads/".$current."/".$current2);
+								}					
+							}
+						}
+						else 
+						{					
+							echo "Eliminar :".$path_file_of_app."/writable/uploads/".$current."</br>";
+							unlink($path_file_of_app."/writable/uploads/".$current);
+						}
+					}
+				}
+				
+				
+				echo "<br/>";	
+				echo "limpiando debuggers";
+				echo "<br/>";
+				//Eliminar archivos de debubar/debugbar		
+				$dir 	= opendir($path_file_of_app."/writable/debugbar");
+				while ($current = readdir($dir))
+				{
+					if( $current != "." && $current != ".." && $current != "index.html" ) 
+					{
+						unlink($path_file_of_app."/writable/debugbar/".$current);
+					}
+				}
+				
+				
+				
+				echo "<br/>";	
+				echo "limpiando archivos de componentes";
+				echo "<br/>";
+				//Eliminar archivos de: company_2/*.sql *.pdf *.doc *.zip *.etc 
+				//-------------------------------------------------
+				//-------------------------------------------------
+				$dir 	= opendir($path_file_of_app."/public/resource/file_company/company_".APP_COMPANY);
+				$files 	= array();
+				while ($current = readdir($dir))
+				{
+					if( $current != "." && $current != "..") {
+						
+						
+						//componente 				
+						if(is_dir($path_file_of_app."/public/resource/file_company/company_".APP_COMPANY."/".$current)) 
+						{
+							
+							//recorrer item 
+							$dir2 	= opendir($path_file_of_app."/public/resource/file_company/company_".APP_COMPANY."/".$current."/");
+							while ($current2 = readdir($dir2))
+							{
+								if( $current2 != "." && $current2 != "..") 
+								{			
+									
+									if(is_dir($path_file_of_app."/public/resource/file_company/company_".APP_COMPANY."/".$current."/".$current2)) 
 									{
 										
-										if(!is_dir(PATH_FILE_OF_APP."/company_".APP_COMPANY."/".$current."/".$current2."/".$current3)) 
+										//archivos
+										//recorrer archivo de cada componentes
+										$dir3 	= opendir($path_file_of_app."/public/resource/file_company/company_".APP_COMPANY."/".$current."/".$current2."/");
+										while ($current3 = readdir($dir3))
 										{
-											$fileLast 			= PATH_FILE_OF_APP."/company_".APP_COMPANY."/".$current."/".$current2."/".$current3;
-											$fileLastExtention 	= pathinfo($fileLast, PATHINFO_EXTENSION);
-											
-											echo "</br>";
-											echo "</br>";
-											echo "</br>";
-											echo "Scaner :".$fileLast."</br>";
-																						
-											$fechaCreate 	= \DateTime::createFromFormat('Y-m-d',date("Y-m-d",filectime($fileLast)));		
-											$fechaNow  		= \DateTime::createFromFormat('Y-m-d',date("Y-m-d"));  	
-											$diff 			= $fechaNow->diff($fechaCreate);
-											$daysDiff		= $diff->days;
-											$daysDiff		= intval($daysDiff);
-											
-											
-											echo "Fecha ahora:".print_r($fechaNow,true)."</br>";
-											echo "Fecha archivo:".print_r($fechaCreate,true)."</br>";
-											echo "Fecha archivo:".$daysDiff."</br>";
-											
-											
-											if( strtoupper($fileLastExtention) == strtoupper("sql") && $daysDiff <= 5   )
-											{										
-												echo "Archivos SQL No se eliminaran si son menores a 5 dias:".$fileLast."</br>";
-											}
-											else 
-											{											
-												unlink($fileLast);
-												echo "Archivos eliminado :".$fileLast."</br>";
-											}
-											
-											$extensionesEliminar = ["csv", "zip", "txt", "doc", "docx", "mp4", "pdf", "m4a", "xlsx", "rtf"];
-											if (in_array(strtolower($fileLastExtention), $extensionesEliminar) && file_exists($fileLast)) {
-												unlink($fileLast);
-												echo "Archivo eliminado: " . $fileLast . "</br>";
-											}
-
-											
-											
-											if(
-												(
-													strtoupper($fileLastExtention) == strtoupper("jpg") ||
-													strtoupper($fileLastExtention) == strtoupper("jpeg") ||
-													strtoupper($fileLastExtention) == strtoupper("png") 
-												)
-												&& 
-												(											
-													(
-														$current == "component_8" && 
-														DELETE_FILE_COMPONENT_8_tb_user == "true" 
-													) ||
-													$current == "component_16" /*tb_journal*/  || 
-													$current == "component_18" /*0_CORE*/  ||
-													$current == "component_19" /*0_TRANSACCIONES*/  ||
-													$current == "component_20" /*tb_transaction*/  ||
-													$current == "component_21" /*0-INVENTARIO*/  ||
-													$current == "component_22" /*0-COMPRAS*/  ||
-													$current == "component_23" /*0-VENTAS*/  ||
-													$current == "component_24" /*0-FACTURACION*/  ||
-													$current == "component_25" /*0-CXC*/  ||
-													$current == "component_26" /*0-CXP*/  ||
-													$current == "component_27" /*0-RRHH*/  ||
-													$current == "component_28" /*0-PLANILLA*/  ||
-													$current == "component_29" /*0-BANCO*/  ||
-													$current == "component_30" /*0-ACTIVOS-FIJOSS*/  ||
-													$current == "component_31" /*tb_warehouse*/  ||
-													$current == "component_32" /*tb_item_category*/  ||
-													$current == "component_33" /*tb_item*/  ||
-													$current == "component_36" /*tb_customer*/  ||
-													$current == "component_38" /*tb_provideer*/  ||
-													$current == "component_40" /*tb_fixed_assent*/  ||
-													$current == "component_64" /*tb_transaction_master_share*/  ||
-													$current == "component_66" /*tb_transaction_master_share_capital*/ ||  
-													$current == "component_76" /*tb_remember*/   ||
-													$current == "component_91" /*tb_transaction_master_proforma*/  ||
-													$current == "component_92" /*tb_public_catalog*/  ||
-													$current == "component_93" /*tb_cash_box_session*/  ||
-													$current == "component_94" /*0-CALENDARIO*/  ||
-													$current == "component_95" /*tb_notification_citas*/  || 
-													$current == "component_96" /*tb_transaction_master_accounting_expenses*/  ||
-													$current == "component_97" /*tb_transaction_master_workshop_pedido*/  ||
-													$current == "component_98" /*tb_transaction_master_workshop_taller*/  ||
-													$current == "component_99" /*tb_transaction_master_workshop_garantias*/  
-													
-												)
-											)
+											if( $current3 != "." && $current3 != "..") 
 											{
-												if (file_exists($fileLast)) {
-													unlink($fileLast);
-													echo "Archivo eliminado: ".$fileLast."</br>";
-												} else {
-													echo "El archivo no existe: ".$fileLast."</br>";
-												}
 												
+												if(!is_dir($path_file_of_app."/public/resource/file_company/company_".APP_COMPANY."/".$current."/".$current2."/".$current3)) 
+												{
+													$fileLast 			= $path_file_of_app."/public/resource/file_company/company_".APP_COMPANY."/".$current."/".$current2."/".$current3;
+													$fileLastExtention 	= pathinfo($fileLast, PATHINFO_EXTENSION);
+													
+													echo "</br>";
+													echo "</br>";
+													echo "</br>";
+													echo "scaner :".$fileLast."</br>";																						
+													$fechaCreate 	= \DateTime::createFromFormat('Y-m-d',date("Y-m-d",filectime($fileLast)));		
+													$fechaNow  		= \DateTime::createFromFormat('Y-m-d',date("Y-m-d"));  	
+													$diff 			= $fechaNow->diff($fechaCreate);
+													$daysDiff		= $diff->days;
+													$daysDiff		= intval($daysDiff);
+													
+													
+													echo "Fecha ahora:".print_r($fechaNow,true)."</br>";
+													echo "Fecha archivo:".print_r($fechaCreate,true)."</br>";
+													echo "Fecha archivo:".$daysDiff."</br>";
+													
+													
+													//wgonzalez-if( strtoupper($fileLastExtention) == strtoupper("sql") && $daysDiff <= 5   )
+													//wgonzalez-{										
+													//wgonzalez-	echo "Archivos SQL No se eliminaran si son menores a 5 dias:".$fileLast."</br>";
+													//wgonzalez-}
+													//wgonzalez-else 
+													//wgonzalez-{											
+													//wgonzalez-	unlink($fileLast);
+													//wgonzalez-	echo "Archivos eliminado :".$fileLast."</br>";
+													//wgonzalez-}
+													
+													
+													//Eliminando archivos de base de datos
+													unlink($fileLast);											
+													echo "archivos eliminado :".$fileLast."</br>";
+													
+													
+													//Eliminando archivos con extensiones mencionadas
+													$extensionesEliminar = [
+														"csv", "zip", 
+														"txt", "doc", "docx", 
+														"mp4", "pdf", "m4a", 
+														"xlsx", "rtf",
+														"jpg","jpeg","png"
+														
+													];
+													
+													
+													//si existe el archivo
+													//si la extension esta dentro de las permitidas
+													if (												
+														in_array(strtolower($fileLastExtention), $extensionesEliminar) && 
+														file_exists($fileLast)
+													) 
+													{
+														unlink($fileLast);
+														echo "archivo eliminado: " . $fileLast . "</br>";
+													}
+													
+												}
+													
 											}
 										}
+										
+										
+										//eliminando directorios dentro de un compomnente
+										$pathDirectoryComponentItem = $path_file_of_app."/public/resource/file_company/company_".APP_COMPANY."/".$current."/".$current2;
+										$pathDirectoryComponent 	= $current;								
+										echo "limpiando el siguiente componente: ".$pathDirectoryComponentItem."</br>";
+										deleteDir($pathDirectoryComponentItem);
+										
 											
 									}
 								}
-								//fin while archivos de component item 
-								
-								//eliminar directorio								
-								$pathDirectoryComponentItem = PATH_FILE_OF_APP."/company_".APP_COMPANY."/".$current."/".$current2;
-								$pathDirectoryComponent 	= $current;
-								if
-								(	
-									 
-									 $pathDirectoryComponent == "component_16"  /*tb_journal_entry*/ || 
-									 $pathDirectoryComponent == "component_33"  /*tb_item*/ ||  
-									 $pathDirectoryComponent == "component_34"  /*tb_transaction_master_otherinput*/ ||  
-									 $pathDirectoryComponent == "component_35"  /*tb_transaction_master_otheroutput*/ ||  
-									 $pathDirectoryComponent == "component_36"  /*tb_customer*/ || 
-									 $pathDirectoryComponent == "component_37"  /*tb_entity_phone*/ || 	
-									 $pathDirectoryComponent == "component_38"  /*tb_provider*/ || 	
-									 $pathDirectoryComponent == "component_39"  /*tb_employee*/ || 	
-									 $pathDirectoryComponent == "component_40"  /*tb_fixed_assent*/ || 	
-									 $pathDirectoryComponent == "component_41"  /*tb_transaction_master_requestgeneral*/ ||  
-									 $pathDirectoryComponent == "component_42"  /*tb_transaction_master_transferoutput*/ ||  
-									 $pathDirectoryComponent == "component_43"  /*tb_transaction_master_transferinput*/ ||  
-									 $pathDirectoryComponent == "component_44"  /*tb_transaction_master_internalpurchaserequest*/ ||  
-									 $pathDirectoryComponent == "component_45"  /*tb_transaction_master_purchaseorden*/ ||  
-									 $pathDirectoryComponent == "component_46"  /*tb_transaction_master_purchase*/ ||  
-									 $pathDirectoryComponent == "component_47"  /*tb_list_price*/ ||  									 
-									 $pathDirectoryComponent == "component_48"  /*tb_transaction_master_billing*/ ||  
-									 $pathDirectoryComponent == "component_49"  /*tb_transaction_master_billing_revertion*/ ||  
-									 $pathDirectoryComponent == "component_50"  /*tb_transaction_master_info_billing*/ ||  
-									 $pathDirectoryComponent == "component_51"  /*tb_transaction_master_client_note_debito*/ ||  
-									 $pathDirectoryComponent == "component_52"  /*tb_transaction_master_client_note_credito*/ ||  
-									 $pathDirectoryComponent == "component_53"  /*tb_transaction_master_returns_provider*/ ||  
-									 $pathDirectoryComponent == "component_54"  /*tb_credit_line*/ ||  
-									 $pathDirectoryComponent == "component_55"  /*tb_transaction_master_pay_billing*/ ||  
-									 $pathDirectoryComponent == "component_56"  /*tb_transaction_master_inputunpost*/ ||  
-									 $pathDirectoryComponent == "component_60"  /*tb_transaction_master_detail_returns_provider*/ ||  
-									 $pathDirectoryComponent == "component_64"  /*tb_transaction_master_share*/ ||  
-									 $pathDirectoryComponent == "component_65"  /*tb_transaction_master_cancel_invoice*/ ||  
-									 $pathDirectoryComponent == "component_66"  /*tb_transaction_master_share_capital*/ ||  
-									 $pathDirectoryComponent == "component_71"  /*tb_transaction_master_provisioned*/ ||  
-									 $pathDirectoryComponent == "component_72"  /*tb_employee_calendar_pay*/ ||  									 
-									 $pathDirectoryComponent == "component_74"  /*tb_transaction_master_rrhh_adelantos*/ ||  
-									 $pathDirectoryComponent == "component_75"  /*tb_transaction_master_rrhh_payroll*/ ||  
-									 $pathDirectoryComponent == "component_78"  /*tb_customer_consultas_sin_riesgo*/ ||  
-									 $pathDirectoryComponent == "component_80"  /*tb_transaction_master_inputcash*/ ||  
-									 $pathDirectoryComponent == "component_81"  /*tb_transaction_master_outputcash*/ ||  
-									 $pathDirectoryComponent == "component_82"  /*tb_item_masive*/ ||  									 
-									 $pathDirectoryComponent == "component_83"  /*tb_transaction_master_examen_lab*/ ||  
-									 $pathDirectoryComponent == "component_84"  /*tb_transaction_master_attendance*/ ||  
-									 $pathDirectoryComponent == "component_85"  /*tb_transaction_master_denomination*/ ||  
-									 $pathDirectoryComponent == "component_86"  /*tb_transaction_master_inventory_ajust*/ ||  
-									 $pathDirectoryComponent == "component_87"  /*tb_transaction_master_rrhh_asistencia*/ ||  
-									 $pathDirectoryComponent == "component_88"  /*tb_transaction_master_med_asistencia*/ ||  
-									 $pathDirectoryComponent == "component_91"  /*tb_transaction_master_proforma*/  
-									
-								)
-								{
-									echo "Limpiando el siguiente componente: ".$pathDirectoryComponentItem."</br>";
-									deleteDir($pathDirectoryComponentItem);
-								}
-									
 							}
+							//fin while component item 
+							
 						}
 					}
-					//fin while component item 
-					
 				}
+				//fin while component
+				
+				
+				
+				echo "<br/>";	
+				echo "creando componentes";
+				echo "<br/>";
+				//Crear carpetas de componentes
+				for ($i = 1; $i <= 131; $i++) {
+					$documentoPath = $path_file_of_app . "/public/resource/file_company/company_" . APP_COMPANY . "/component_" . $i;
+					if (!file_exists($documentoPath)) {
+						mkdir($documentoPath, 0755, true);
+						chmod($documentoPath, 0755);
+					}
+				}
+				
+				$documentoPath = $path_file_of_app."/public/resource/file_company/company_".APP_COMPANY."/component_1/component_item_0";		
+				if (!file_exists($documentoPath))
+				{
+					mkdir($documentoPath, 0755);
+					chmod($documentoPath, 0755);
+				}
+				
+				
+				
+				
 			}
 		}
-		//fin while component
-		
 		echo "SUCCESS";
 		
 		
