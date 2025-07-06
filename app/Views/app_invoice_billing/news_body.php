@@ -1161,7 +1161,7 @@ echo helper_getHtmlOfPageLanding();
 									<tr class="<?= getBehavio($company->type,"app_invoice_billing","divHiddeValue",""); ?>">
 										<th style="text-align:left;">04) DESC</th>
 										<td>
-											<input type="text" id="txtDescuento" name="txtDescuento" readonly class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>" />
+											<input type="text" id="txtDescuento" name="txtDescuento"   <?= getBehavio($company->type,"app_invoice_billing","attributeTxtDescuento","readonly"); ?>   class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>" />
 										</td>
 									</tr>
 									<tr class="<?= getBehavio($company->type,"app_invoice_billing","divHiddeValue",""); ?>">

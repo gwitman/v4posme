@@ -1120,11 +1120,28 @@
     });
 	$('#txtPorcentajeDescuento').on('blur', function() {	
 		 
+		 
 		 mostarModalPersonalizado('Calculando conceptos');
 		 fnRecalculateDetail(true,"");
 		 cerrarModal('ModalCargandoDatos');
 		 
     });
+	$('#txtDescuento').on('blur', function() {	
+		 
+		 
+		 var amountDiscount 	= parseFloat($('#txtDescuento').val());
+		 var amountSub 			= parseFloat($("#txtSubTotal").val());
+		 var amountIva 			= parseFloat($("#txtIva").val());		 
+		 var discountPercentage = (amountDiscount / (amountSub + amountIva)) * 100 ;
+		 discountPercentage		= fnFormatNumber(discountPercentage,2);
+		 $("#txtPorcentajeDescuento").val(discountPercentage);
+		 
+		 mostarModalPersonalizado('Calculando conceptos');
+		 fnRecalculateDetail(true,"");
+		 cerrarModal('ModalCargandoDatos');
+		 
+    });
+	
 
 	//Pago
 	$(document).on("click","#btnOptionPago",function(){
@@ -2652,8 +2669,9 @@
 			$("#txtReceiptAmountBankDol").val("0");
 	}
 
-	function fnRecalculateDetail(clearRecibo,tipo_calculate, index=-1){
-
+	function fnRecalculateDetail(clearRecibo,tipo_calculate, index=-1)
+	{
+		
 		var porcentajeDescuento 						= parseFloat($('#txtPorcentajeDescuento').val()) || 0;
 		var totalGeneral 								= 0;
 		var despuesDeRecalcularTotalRecibidoIgualCero	= <?php echo getBehavio($company->type, "app_invoice_billing", "despuesDeRecalcularTotalRecibidoIgualCero", "false"); ?>;
