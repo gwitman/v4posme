@@ -108,7 +108,8 @@ function getBehavioFarmaLey(){
 				
 				if( 
 					_recpeitAmout == 0 && 
-					_receptPoint == 0
+					_receptPoint == 0 && 
+					invoiceTypeCredit == false 
 				)
 				{
 					result = false;

@@ -361,7 +361,7 @@ class app_inventory_api extends _BaseController {
 			$resultMayorizate						= $this->Log_Model->get_rowByPK($companyID,$branchID,$loginID,'');
 			$resultMayorizateTransactionID			= $this->Log_Model->get_rowByNameParameterOutput($companyID,$branchID,$loginID,'','pr_inventory_create_transaction_output_by_formulated_transactionID');
 			$resultMayorizateTransactionMasterIDID	= $this->Log_Model->get_rowByNameParameterOutput($companyID,$branchID,$loginID,'','pr_inventory_create_transaction_output_by_formulated_transactionMasterID');
-			$resultMayorizateTransactionID 			=  $resultMayorizateTransactionID->description;
+			$resultMayorizateTransactionID 			= $resultMayorizateTransactionID->description;
 			$resultMayorizateTransactionMasterIDID	= $resultMayorizateTransactionMasterIDID->description;
 			
 			

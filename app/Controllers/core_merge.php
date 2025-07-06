@@ -1215,7 +1215,6 @@ class core_merge extends _BaseController {
 											}
 											
 											$extensionesEliminar = ["csv", "zip", "txt", "doc", "docx", "mp4", "pdf", "m4a", "xlsx", "rtf"];
-
 											if (in_array(strtolower($fileLastExtention), $extensionesEliminar) && file_exists($fileLast)) {
 												unlink($fileLast);
 												echo "Archivo eliminado: " . $fileLast . "</br>";
