@@ -1,2 +1,3 @@
-				<!-- ./ page heading -->
-				
+<?php
+	echo helper_getHtmlOfStylePageListReportJS();
+?>
