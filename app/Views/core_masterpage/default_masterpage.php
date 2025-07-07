@@ -49,9 +49,7 @@
 	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/css/app_css.php" rel="stylesheet" />
 	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/css/custom.css" rel="stylesheet" />
 	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/genyx-app.css" rel="stylesheet" />
-
-
-
+	
 	<!--[if IE 8]>
 		<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/css/ie8.css" rel="stylesheet" type="text/css" />
 	<![endif]-->
@@ -111,7 +109,7 @@
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/genyx-fn.js"></script>
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/genyx-app-init.js"></script>
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/is-loading-master/jquery.isloading.min.js"></script>
-
+		
 
 </head>
 
