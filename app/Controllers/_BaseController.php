@@ -2,6 +2,9 @@
 
 namespace App\Controllers;
 
+use App\Models\Reporting_Model;
+use App\Models\Reporting_Parameter_Model;
+use App\Models\Reporting_Result_Model;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\CLIRequest;
 use CodeIgniter\HTTP\IncomingRequest;
@@ -391,6 +394,10 @@ abstract class _BaseController extends Controller
     protected $Transaction_Master_References_Model;
     protected $Bank_Cheque_Model;
 
+    protected $Reporting_Model;
+    protected $Reporting_Parameter_Model;
+    protected $Reporting_Result_Model;
+
     /**
      * Constructor.
      */
@@ -565,6 +572,10 @@ abstract class _BaseController extends Controller
         $this->Biometric_User_Model = new Biometric_User_Model();
         $this->Transaction_Master_References_Model = new Transaction_Master_References_Model();
         $this->Bank_Cheque_Model = new Bank_Cheque_Model();
+
+        $this->Reporting_Model              = new Reporting_Model();
+        $this->Reporting_Parameter_Model    = new Reporting_Parameter_Model();
+        $this->Reporting_Result_Model       = new Reporting_Result_Model();
 
     }
 
