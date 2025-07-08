@@ -1699,6 +1699,8 @@ $routes->match(['get', 'post'], 'app_box_admbox/delete/(:any)/(:any)', 'app_box_
 $routes->match(['get', 'post'], 'app_box_admbox/save/(:any)', 'app_box_admbox::save/$1');
 $routes->match(['get', 'post'], 'app_box_admbox/edit/(:any)/(:any)', 'app_box_admbox::edit/$1/$2');
 
+$routes->match(['get', 'post'], 'core_report/show/(:any)', 'core_report::show');
+$routes->match(['get', 'post'], 'core_report/process/(:any)', 'core_report::process');
 /*
  * --------------------------------------------------------------------
  * Additional Routing
