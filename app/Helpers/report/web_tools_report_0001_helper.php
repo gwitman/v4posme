@@ -441,7 +441,7 @@ function helper_reporteGeneralCreateTable($objDetail,$configColumn,$widht,$titul
 		}
 		$couterIndexColumn++;
 	}
-	
+    $widthTemporal = is_null($widht) ? $widthTemporal : $widht;
 	//Armar titulo
 	$table1 =  
 	'<table id="'.$idTable.'"  style="
@@ -648,10 +648,10 @@ function helper_reporteGeneralCreateTableVertical($objDetail,$configColumn,$maxC
 	
 	
 	
-    $widht         = str_replace("px","", $widht);
+    //$widht         = str_replace("px","", $widht);
 	$table         =  
 	'<table style="
-			width:'.$widht.'px;order-spacing: 10px;
+			width:'.$widht.';order-spacing: 10px;
 		" >
 			<tbody>
 			';
@@ -661,7 +661,7 @@ function helper_reporteGeneralCreateTableVertical($objDetail,$configColumn,$maxC
 			
 			foreach($configColumn as $key => $value ){
 				
-				$valueField 			= ( $objDetail[ $value["FiledSouce"] ] );					
+				$valueField 			= ( $objDetail[ $value["FiledSouce"] ] );
 				$tipoData				= $value["Formato"] ;
 				$sumaryzar				= $value["Total"] ;
 				$titulo					= $value["Titulo"] ;				
