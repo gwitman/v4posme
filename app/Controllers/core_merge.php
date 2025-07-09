@@ -641,6 +641,10 @@ class core_merge extends _BaseController {
 		array_push($tablasSync,"tb_workflow_stage:workflowStageID");
 		array_push($tablasSync,"tb_workflow:workflowID");
 		array_push($tablasSync,"tb_workflow_stage_affect:workflowStageAffectID");
+		array_push($tablasSync,"tb_reporting:reportID");
+		array_push($tablasSync,"tb_reporting_result:reportResultID");
+		array_push($tablasSync,"tb_reporting_parameter:reportParameterID");
+		array_push($tablasSync,"tb_company_page_setting:customPageID");
 		
 		
 		
@@ -812,6 +816,10 @@ class core_merge extends _BaseController {
 		array_push($tablasSync,"tb_workflow_stage:workflowStageID");
 		array_push($tablasSync,"tb_workflow:workflowID");
 		array_push($tablasSync,"tb_workflow_stage_affect:workflowStageAffectID");
+		array_push($tablasSync,"tb_reporting:reportID");
+		array_push($tablasSync,"tb_reporting_result:reportResultID");
+		array_push($tablasSync,"tb_reporting_parameter:reportParameterID");
+		array_push($tablasSync,"tb_company_page_setting:customPageID");
 		
 		
 		$recordSet = $dbDestino->query("SET FOREIGN_KEY_CHECKS=0;");	
