@@ -239,7 +239,7 @@ class app_invoice_survery extends _BaseController {
                 $db->transCommit();
 				$dataSession["error"] 				= false;
 				$dataSession["transactionNumber"] 	= $objTM["transactionNumber"];				
-				$dataSession["message"] 			= getBahavioDB($key, 'app_invoice_survery', 'confirmacion', "Su pedido ya esta enproceso, le mantendremos informado.");
+				$dataSession["message"] 			= getBahavioDB($dataSession["key"], 'app_invoice_survery', 'confirmacion', "Su pedido ya esta enproceso, le mantendremos informado.");
 				return view("app_invoice_survery/result_body",$dataSession);//--finview-r	
                 
             } else {

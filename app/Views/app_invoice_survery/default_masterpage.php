@@ -227,14 +227,14 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
 						  </label>
 						</div>
 					  </div>
-					  <div class="quantity-row row g-0">
+					  <div class="quantity-row row g-0 <?= getBahavioDB($key, 'app_invoice_survery','ocultar_cantidad','')?>">
 						<div class="col-auto">
 						  <label class="col-form-label me-2">Cantidad:</label>
 						</div>
 						<div class="col-4">
 						  <input name="itemID[]" value="<?php echo $item->itemID; ?>" type="hidden" />
 						  <input name="price[]" value="<?= round($item->price1,2) ?>" type="hidden" />
-						  <input name="quantity[]" type="number" class="form-control quantity" min="0" max="10" value="0" />
+						  <input name="quantity[]" type="number" class="form-control quantity" min="<?= getBahavioDB($key, 'app_invoice_survery','cantidad_default','0')?>" max="10" value="<?= getBahavioDB($key, 'app_invoice_survery','cantidad_default','0')?>" />
 						</div>
 					  </div>
 					</div>
