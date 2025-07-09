@@ -12,13 +12,13 @@ use App\Models\Core\Bd_Model;
         <!-- Tempus Dominus Styles -->
         <link rel="stylesheet" href="<?= APP_URL_RESOURCE_CSS_JS ?>/resource/css/tempus-dominus/tempus-dominus.min.css">
     </head>
-    <body class="text-bg-secondary p-3">
+    <body class="p-3" style="background-color: #006E98">
         <p>&nbsp;</p>
         <div class="container">
             <div class="row">
                 <form id="frm-reporting" method="post" class="col needs-validation" novalidate action="<?= base_url().$reporting->urlReportProcess?>" target="_blank">
                     <div class="mb-3 card">
-                        <div class="card-header bg-primary">
+                        <div class="card-header" style="background-color: #00B772">
                             <h3 class="text-center text-white">
                                 <?= $reporting->name ?>
                             </h3>
@@ -46,11 +46,13 @@ use App\Models\Core\Bd_Model;
                                         switch ($reportingParameterValue->type) {
                                             case 'datetime':
                                                 $id = 'datetimepicker_' . uniqid();
+                                                $hora = $reportingParameterValue->datasource;
+                                                $fecha = date('Y-m-d') . ' ' . $hora;
                                                 ?>
                                                 <div class="col-md-6 mb-3">
                                                     <label for="<?= $id ?>" class="form-label"><?= $reportingParameterValue->display ?></label>
                                                     <div class="input-group datetimepicker-container" id="<?= $id ?>" data-td-target-input="nearest" data-td-target-toggle="nearest">
-                                                        <input type="text" class="form-control" data-td-target="#<?= $id ?>" name="<?= $name ?>" required/>
+                                                        <input type="text" class="form-control" data-td-target="#<?= $id ?>" name="<?= $name ?>" value="<?= $fecha ?>" required/>
                                                         <span class="input-group-text bg-warning" data-td-target="#<?= $id ?>" data-td-toggle="datetimepicker">
                                                             <i class="fa-solid fa-calendar text-white"></i>
                                                         </span>
@@ -166,7 +168,6 @@ use App\Models\Core\Bd_Model;
                             format: 'yyyy-MM-dd HH:mm:ss' // <== Este es el formato MySQL
                         }
                     });
-                    picker.dates.setValue(new tempusDominus.DateTime(new Date()));
                 });
 
                 let form = $('#frm-reporting');
