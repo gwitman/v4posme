@@ -1,17 +1,23 @@
+<?php
+$showPrice      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_precio', 'true');
+$showSubTotal   = getBahavioDB($key, 'app_invoice_survery', 'mostrar_subtotal', 'true');
+$showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'true');
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>¡Vota u Ordena!</title>
+  <link rel="icon" type="image/x-icon" href="<?= APP_URL_RESOURCE_CSS_JS ?>/resource/img/favicon.ico"/>
   <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    href="<?= base_url()?>/resource/css/bootstrap5/bootstrap.min.css"
     rel="stylesheet"
   />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
   <style>
     body {
-      background: linear-gradient(135deg, #FFA07A, #FF7F50);
+      background: <?=getBahavioDB($key, 'app_invoice_survery', 'fondo_encuesta', "linear-gradient(135deg, #FFA07A, #FF7F50)")?>;
       font-family: 'Montserrat', sans-serif;
       min-height: 100vh;
     }
@@ -177,21 +183,14 @@
 </head>
 <body>
   <div class="container">
-    <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-      <circle cx="32" cy="32" r="30" fill="#FFA07A" stroke="#FF6347" stroke-width="2"/>
-      <ellipse cx="32" cy="40" rx="18" ry="12" fill="#fff" stroke="#333" stroke-width="2"/>
-      <circle cx="32" cy="24" r="8" fill="#fff" stroke="#333" stroke-width="2"/>
-      <ellipse cx="26" cy="16" rx="3" ry="5" fill="#fff" stroke="#333" stroke-width="2"/>
-      <ellipse cx="38" cy="16" rx="3" ry="5" fill="#fff" stroke="#333" stroke-width="2"/>
-      <circle cx="30" cy="22" r="2" fill="#333"/>
-      <circle cx="34" cy="26" r="1.5" fill="#333"/>
-      <circle cx="32" cy="38" r="3" fill="#333"/>
-      <circle cx="29" cy="22" r="1" fill="#000"/>
-      <circle cx="35" cy="22" r="1" fill="#000"/>
-      <ellipse cx="32" cy="26" rx="4" ry="2" fill="#FFC0CB" stroke="#333" stroke-width="1"/>
-    </svg>
-    <h1>🐄 ¡Vota u Ordena!</h1>
-    <p class="tagline">¡Elige tus productos favoritos y confirma tu pedido!</p>
+    <div class="logo">
+        <img class="img-fluid" src="<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_logo', 'cow.png')?>" alt="">
+    </div>
+    <h1>
+        <img width="40px" class="img-fluid" src="<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_titulo', 'cow.png')?>" alt="">
+        <?= getBahavioDB($key, 'app_invoice_survery', 'titulo', '¡Vota u Ordena!')?>
+    </h1>
+    <p class="tagline"><?= getBahavioDB($key, 'app_invoice_survery', 'subtitulo', '¡Elige tus productos favoritos y confirma tu pedido!')?></p>
 
     <form id="orderForm" method="POST" action="<?php echo base_url()."/app_invoice_survery/insertElement"; ?>" >
       <div class="mb-3">
@@ -222,9 +221,9 @@
 					  <div class="product-selection-row">
 						<input class="form-check-input option" type="checkbox" value="<?php echo $item->name; ?>" data-price="<?php echo round($item->price1,2); ?>" data-img-src="desayuno.jpg" id="product<?php echo $item->itemID; ?>">
 						<div class="product-details">
-						  <img class="product-image me-2" src="desayuno.jpg" alt="<?php echo $item->name; ?>">
+						  <img class="product-image me-2" src="<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_item', 'cow.png')?>" alt="<?php echo $item->name; ?>">
 						  <label class="form-check-label" for="product<?php echo $item->itemID; ?>">
-							<?php echo $item->name; ?> (C$<?php echo round($item->price1,2); ?>)
+							<?php echo $item->name; ?> <?= $showPrice=='true' ?  '(C$'.round($item->price1,2).')' : ''; ?>
 						  </label>
 						</div>
 					  </div>
@@ -234,8 +233,8 @@
 						</div>
 						<div class="col-4">
 						  <input name="itemID[]" value="<?php echo $item->itemID; ?>" type="hidden" />
-						  <input name="price[]" value="<?php echo round($item->price1,2); ?>" type="hidden" />
-						  <input name="quantity[]" type="number" class="form-control quantity" min="0" max="10" value="0">
+						  <input name="price[]" value="<?= round($item->price1,2) ?>" type="hidden" />
+						  <input name="quantity[]" type="number" class="form-control quantity" min="0" max="10" value="0" />
 						</div>
 					  </div>
 					</div>
@@ -247,11 +246,13 @@
 
       </div>
 
-      <button type="button" class="btn btn-primary w-100 mb-3" id="verifyBtn">Verificar Selección</button>
+      <button type="button" class="btn btn-primary w-100 mb-3" id="verifyBtn">
+          <?= getBahavioDB($key, 'app_invoice_survery', 'boton_verificar', 'Verificar Selección')?>
+      </button>
     </form>
 
     <div class="summary-screen">
-      <h4>📋 Resumen de tu orden</h4>
+      <h4>📋 <?= getBahavioDB($key, 'app_invoice_survery', 'titulo_resumen', 'Resumen de tu orden')?></h4>
       <p><strong>Nombre:</strong> <span id="summaryName"></span></p>
       <p><strong>Dirección:</strong> <span id="summaryAddress"></span></p>
       <p><strong>Teléfono:</strong> <span id="summaryPhone"></span></p>
@@ -261,12 +262,12 @@
           <tr>
             <th>Producto</th>
             <th>Cantidad</th>
-            <th>Subtotal</th>
+            <th class="trSubtotal">Subtotal</th>
           </tr>
         </thead>
         <tbody id="summaryOptions"></tbody>
         <tfoot>
-          <tr>
+          <tr id="trTotal">
             <th colspan="2">Total</th>
             <th id="summaryTotal">C$ 0</th>
           </tr>
@@ -274,8 +275,8 @@
       </table>
 
       <div class="d-flex flex-column flex-md-row gap-2 mt-3">
-        <button id="editOrderBtn" class="btn btn-secondary flex-fill">🔙 Editar Orden</button>
-        <button id="confirmOrderBtn" class="btn btn-success flex-fill">✅ Confirmar Orden</button>
+        <button id="editOrderBtn" class="btn btn-secondary flex-fill">🔙 <?= getBahavioDB($key, 'app_invoice_survery', 'boton_editar', 'Editar Orden')?></button>
+        <button id="confirmOrderBtn" class="btn btn-success flex-fill">✅ <?= getBahavioDB($key, 'app_invoice_survery', 'boton_confirmar', 'Confirmar Orden')?></button>
       </div>
     </div>
   </div>
@@ -290,9 +291,8 @@
 		helper_getHtmlOfModalDialog("ModalValidSurvery","modalValidSurvery","fnAceptarModalValidSurvery",true,false);
 	?>
 
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="<?= base_url()?>/resource/js/jquery-3.7.1.min.js"></script>
+  <script src="<?= base_url()?>/resource/js/bootstrap5/bootstrap.bundle.min.js"></script>
   <script>
     $(document).ready(function() {
       $('.option').change(function() {
@@ -351,10 +351,12 @@
             `<tr>
               <td>${option.name}</td>
               <td>${option.quantity}</td>
-              <td>C$${option.subtotal.toFixed(2)}</td>
+              <td class="trSubtotal">C$${option.subtotal.toFixed(2)}</td>
             </tr>`
           );
         });
+       <?php if($showTotal == 'false') echo "$('#trTotal').hide();" ?>
+       <?php if($showSubTotal == 'false') echo "$('.trSubtotal').hide();" ?>
 
         $('#summaryTotal').text('C$' + total.toFixed(2));
         $('#orderForm').slideUp();

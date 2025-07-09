@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
   <style>
     body {
-      background: linear-gradient(135deg, #FFA07A, #FF7F50);
+      background: <?=getBahavioDB($key, 'app_invoice_survery', 'fondo_confirmado', "linear-gradient(135deg, #FFA07A, #FF7F50)")?>;
       font-family: 'Montserrat', sans-serif;
       min-height: 100vh;
       display: flex;
@@ -73,7 +73,9 @@
     <div class="error-message <?php echo $error ? 'error' : 'success'; ?>">
       <?php echo htmlspecialchars($message); ?>
     </div>
-    <a href="index<?php echo "/key/".$key; ?>" class="btn btn-primary btn-new-order">🛒 Nueva Orden</a>
+    <a href="index<?php echo "/key/".$key; ?>" class="btn btn-primary btn-new-order">
+        🛒 <?=getBahavioDB($key, 'app_invoice_survery', 'boton_confirmado', "Nueva Orden")?>
+    </a>
   </div>
 
 </body>

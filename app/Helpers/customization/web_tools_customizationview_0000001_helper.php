@@ -1,5 +1,8 @@
 <?php
-function getBehavio($type_company,$key_controller,$key_element,$default_value)
+
+use App\Libraries\Company_Page_Setting_Model;
+
+function getBehavio($type_company, $key_controller, $key_element, $default_value)
 {
 	$divs = array(		
 		strtolower('default_core_web_menu_O. SALIDAS')			 												=> "O. SALIDAS",
@@ -1326,4 +1329,15 @@ function getBehavio($type_company,$key_controller,$key_element,$default_value)
 		
 }
 
+function getBahavioDB($type_company, $key_controller, $key_element, $default_value)
+{
+    try {
+        $companyPageSettingModel    = new Company_Page_Setting_Model();
+        $findSetting                = $companyPageSettingModel->get_rowByKeyAndControllerAndEmelement($type_company, $key_controller, $key_element);
+        if(is_null($findSetting)) return $default_value;
+        else return $findSetting->value;
+    }catch (Exception $e) {
+        return $default_value;
+    }
+}
 ?>
