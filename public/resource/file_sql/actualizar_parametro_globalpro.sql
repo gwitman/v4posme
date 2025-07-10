@@ -149,10 +149,11 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://facturacion.globalpronic.com/posme/v4posme/public" 
+	tb_company_parameter.value = "" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "CORE_FILE_SERVER";	## Servidor de archivo
+	tb_parameter.name = "CORE_FILE_SERVER";	## Servidor de archivof
+#https://facturacion.globalpronic.com/posme/v4posme/public
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 

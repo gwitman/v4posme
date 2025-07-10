@@ -1,7 +1,6 @@
 <?php
 
-use App\Libraries\Company_Page_Setting_Model;
-
+use App\Models\Company_Page_Setting_Model;
 function getBehavio($type_company, $key_controller, $key_element, $default_value)
 {
 	$divs = array(		

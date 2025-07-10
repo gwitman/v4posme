@@ -1,7 +1,4 @@
 <?php
-
-namespace App\Libraries;
-
 use CodeIgniter\Model;
 use ReflectionException;
 

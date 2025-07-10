@@ -724,6 +724,7 @@ class app_purchase_taller extends _BaseController {
 				}
 			}
 			
+			
 			//Crear la Carepta en servidor remoto y guardar archivos
 			$dataFileID							=  $this->request->getPost("txtFileID");
 			$dataFileTypeID						=  $this->request->getPost("txtFileTypeID");
@@ -744,6 +745,8 @@ class app_purchase_taller extends _BaseController {
 					$pathDocument		= "";
 					$pathDocument 		= PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID;
 					$urlCreateFolder 	= $dataView["objParameterUrlServerFile"]."/core_elfinder/createFolder/companyID/".$companyID."/componentID/".$objComponentShare->componentID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID;						
+					
+					
 					
 					if(!file_exists ($pathDocument))
 					{
@@ -772,6 +775,7 @@ class app_purchase_taller extends _BaseController {
 					$filePath								= "";
 					$fileName								= "";
 					$filePathDetination						= "";
+					
 					
 					if($file->getSizeByUnit() != 0 )
 					{
@@ -824,7 +828,8 @@ class app_purchase_taller extends _BaseController {
 					
 				}
 			}
-					
+		
+			
 			//Envio de whatsapp
 			$warrning = false;
 			if($this->core_web_whatsap->validSendMessage(APP_COMPANY))
@@ -929,6 +934,9 @@ class app_purchase_taller extends _BaseController {
 				$warrning = true;
 				$this->core_web_notification->set_message(true,"Pedido guardado correctamente, whatsap no enviado, por falta de saldo.");
 			}
+			
+			
+			
 			
 			if($db->transStatus() !== false){
 				$db->transCommit();						

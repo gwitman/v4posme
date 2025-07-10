@@ -636,7 +636,7 @@ class core_web_whatsap {
 				'headers' 		=> [
 					'accept'     	=> 'application/json',
 					'authorization' => 'Bearer '.$objCP_WhatsapToken->value,
-					'content-type' => 'application/json'
+					'content-type' 	=> 'application/json'
 				]
 			]
 		);

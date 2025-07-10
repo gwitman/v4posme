@@ -1499,6 +1499,7 @@ class app_invoice_billing extends _BaseController {
 				//Enviar whatapp de puntos
 				if($sendWhatappByPoint == "true" && $dataSession["company"]->type == "farma_ley" )
 				{	
+					
 					$amountPoint			= $objCustomer->balancePoint / $ratioPont;
 					$amountPoint			= number_format($amountPoint , 2);
 					$phoneDestino 			= $objCustomer->phoneNumber;

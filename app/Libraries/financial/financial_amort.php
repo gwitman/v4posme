@@ -195,7 +195,7 @@ class financial_amort{
 		$decimal = round($decimal, 2);
 
 		// Verificar si está dentro del rango [0.01, 0.20]
-		$enRango = ($decimal >= 0.01 && $decimal <= 0.20);
+		$enRango = ($decimal >= $begin && $decimal <= $end);
 
 		return [
 			'rango' => $enRango,
@@ -475,16 +475,17 @@ class financial_amort{
 		
 		
 		//Sumar el total del principal
-		$totalPrincipal 	= array_sum(array_map('floatval', array_column($result["detail"], "principal")));
-		$dif				= $capitalDesembolsado - $totalPrincipal;
+		$totalPrincipal 			= array_sum(array_map('floatval', array_column($result["detail"], "principal")));
+		$totalShare 				= array_sum(array_map('floatval', array_column($result["detail"], "share")));		
+		$dif						= round($capitalDesembolsado - $totalPrincipal,2);
 		
 		//Validar si la ultima cuota tiene los decimales en el rango
 		$i 					= $i-1;
 		if($dif > 0)
 		{
 			$result["detail"][$i]["principal"] 			= round($result["detail"][$i]["principal"] + $dif,2);
-			$result["detail"][$i]["interes"] 			= round($result["detail"][$i]["interes"] - $dif,2);
-			$result["detail"][$i]["cuota"] 				= $result["detail"][$i]["principal"] + $result["detail"][$i]["interes"];
+			$result["detail"][$i]["interes"] 			= round($result["detail"][$i]["interes"] - $dif - $dif,2);
+			$result["detail"][$i]["cuota"] 				= $result["detail"][$i]["principal"] + $result["detail"][$i]["interes"] - $dif;
 			
 		}
 		if($dif < 0)
@@ -495,6 +496,21 @@ class financial_amort{
 			$result["detail"][$i]["cuota"] 				= $result["detail"][$i]["principal"] + $result["detail"][$i]["interes"];
 			
 		}
+		
+		
+		//Validar si la suma de las cuotas tiene decimales
+		//$totalShareValidateDecimal 	= $this->validarDecimal(round($totalPrincipal,2),0.01,0.5);
+		//$totalShareValidateDecimal 	= $this->validarDecimal(round($totalShare,2),0.01,0.5);
+		//log_message("error",print_r($totalShareValidateDecimal,true));		
+		//$totalPrincipal 			= array_sum(array_map('floatval', array_column($result["detail"], "principal")));
+		//$totalShare 				= array_sum(array_map('floatval', array_column($result["detail"], "share")));		
+		//$dif						= round($capitalDesembolsado - $totalPrincipal,2);
+		
+		log_message("error",print_r($dif,true));
+		log_message("error",print_r($totalPrincipal,true));
+		log_message("error",print_r($totalShare,true));
+		log_message("error",print_r($result["detail"],true));
+		
 		
 		return $result;
 		
