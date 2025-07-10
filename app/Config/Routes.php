@@ -661,6 +661,10 @@ $routes->match(['get', 'post'], 'app_cxc_report/exchange_rate', 'app_cxc_report:
 $routes->match(['get', 'post'], 'app_cxc_report/summary_credit', 'app_cxc_report::summary_credit');
 $routes->match(['get', 'post'], 'app_cxc_report/movement_customer', 'app_cxc_report::movement_customer');
 $routes->match(['get', 'post'], 'app_cxc_report/movement_customer/(:any)', 'app_cxc_report::movement_customer');
+$routes->match(['get', 'post'], 'app_cxc_report/history_purchase_by_customer', 'app_cxc_report::history_purchase_by_customer');
+$routes->match(['get', 'post'], 'app_cxc_report/history_purchase_by_customer/(:any)', 'app_cxc_report::history_purchase_by_customer');
+$routes->match(['get', 'post'], 'app_sales_report/sales_by_references', 'app_sales_report::sales_by_references');
+$routes->match(['get', 'post'], 'app_sales_report/sales_by_references/(:any)', 'app_sales_report::sales_by_references');
 $routes->match(['get', 'post'], 'app_cxc_customer/edit', 'app_cxc_customer::edit');
 $routes->match(['get', 'post'], 'app_cxc_customer/edit/(:any)', 'app_cxc_customer::edit');
 $routes->match(['get', 'post'], 'app_cxc_customer/delete', 'app_cxc_customer::delete');
@@ -1698,9 +1702,10 @@ $routes->match(['get', 'post'], 'app_box_admbox/delete', 'app_box_admbox::delete
 $routes->match(['get', 'post'], 'app_box_admbox/delete/(:any)/(:any)', 'app_box_admbox::delete/$1/$2');
 $routes->match(['get', 'post'], 'app_box_admbox/save/(:any)', 'app_box_admbox::save/$1');
 $routes->match(['get', 'post'], 'app_box_admbox/edit/(:any)/(:any)', 'app_box_admbox::edit/$1/$2');
-
 $routes->match(['get', 'post'], 'core_report/show/(:any)', 'core_report::show');
 $routes->match(['get', 'post'], 'core_report/process/(:any)', 'core_report::process');
+
+
 /*
  * --------------------------------------------------------------------
  * Additional Routing

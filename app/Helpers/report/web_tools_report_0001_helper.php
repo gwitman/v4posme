@@ -23915,3 +23915,262 @@ function helper_reporteA4ProductionOrder(
 
     return $html;
 }
+
+
+function helper_reporteGeneralCreateTableGroupBy($objDetail,$configColumn,$widht,$titulo = NULL,$backgournd = NULL,$color = NULL){
+		
+	//iniciarlizar columnas
+	$cantidadColumnas 		= 0;
+	$resultado["columnas"] 	= 0;
+	$resultado["width"] 	= 0;
+	$resultado["table"] 	= "";
+	$backgournd 			= $backgournd == NULL ? "00628e": $backgournd;
+	$color 					= $color == NULL ? "white": $color;
+	$idTable				= "MyTable";
+	$filtrarRegistroOnLine	= false;
+			
+	foreach($configColumn as $key => $value){
+		$cantidadColumnas = $cantidadColumnas + 1;
+		$configColumn[$key]["Titulo"] 					= array_key_exists("Titulo",$value) ? $value["Titulo"] : "" ;
+		$configColumn[$key]["TituloFoot"] 				= array_key_exists("TituloFoot",$value) ? $value["TituloFoot"] : "" ;
+		$configColumn[$key]["FiledSouce"] 				= array_key_exists("FiledSouce",$value) ? $value["FiledSouce"] : "" ;
+		$configColumn[$key]["Colspan"] 					= array_key_exists("Colspan",$value) ? $value["Colspan"] : "1" ;
+		$configColumn[$key]["Style"] 					= array_key_exists("Style",$value) ? $value["Style"] : "" ;		
+		$configColumn[$key]["Formato"] 					= array_key_exists("Formato",$value) ? $value["Formato"] : "" ;
+		$configColumn[$key]["Total"] 					= array_key_exists("Total",$value) ? $value["Total"] : False ;
+		$configColumn[$key]["Alineacion"] 				= array_key_exists("Alineacion",$value) ? $value["Alineacion"] : "Left" ;
+		$configColumn[$key]["TotalValor"] 				= array_key_exists("TotalValor",$value) ? $value["TotalValor"] : 0 ;
+		$configColumn[$key]["CantidadRegistro"]			= array_key_exists("CantidadRegistro",$value) ? $value["CantidadRegistro"] : 0 ;
+		$configColumn[$key]["FiledSoucePrefix"] 		= array_key_exists("FiledSoucePrefix",$value) ? $value["FiledSoucePrefix"] : "" ;
+		$configColumn[$key]["Width"] 					= array_key_exists("Width",$value) ? $value["Width"] : "auto" ;
+		$configColumn[$key]["AutoIncrement"] 			= array_key_exists("AutoIncrement",$value) ? $value["AutoIncrement"] : False ;
+		$configColumn[$key]["IsUrl"] 					= array_key_exists("IsUrl",$value) ? $value["IsUrl"] : False ;
+		$configColumn[$key]["FiledSouceUrl"] 			= array_key_exists("FiledSouceUrl",$value) ? $value["FiledSouceUrl"] : "" ;
+		$configColumn[$key]["Url"] 						= array_key_exists("Url",$value) ? $value["Url"] : "" ;
+		$configColumn[$key]["FiledSoucePrefixCustom"] 	= array_key_exists("FiledSoucePrefixCustom",$value) ? $value["FiledSoucePrefixCustom"] : "" ;
+		$configColumn[$key]["Promedio"] 				= array_key_exists("Promedio",$value) ? $value["Promedio"] : False ;
+		$configColumn[$key]["Alineacion"] 				= $configColumn[$key]["Formato"] == "Number"? "Right": "Left";
+		$idTable										= array_key_exists("IdTable",$value) ? $value["IdTable"] : $idTable ;
+		$filtrarRegistroOnLine							= array_key_exists("FiltrarRegistroOnLine",$value) ? $value["FiltrarRegistroOnLine"] : $filtrarRegistroOnLine;
+	}
+		
+	$widthTemporal = 0;
+	$table  = "";
+	$table2 = "";
+	$table3 = "";
+	
+	//Armar encabezado
+	foreach($configColumn as $key => $value ){
+		$widthTemporal 	= $widthTemporal + str_replace("px","",$value['Width']);
+		
+		if($value['Colspan'] != "0" )
+		$table2 		= $table2.'<th nowrap style="text-overflow:ellipsis;overflow:hidden;white-space:nowrap;text-align:left;width:'.$value['Width'].'" colspan="'.$value['Colspan'].'" class="border"  >'.$value['Titulo'].'</th>';
+	
+	}
+	$widthTemporal = $widthTemporal."px";
+		
+	$couterIndexColumn = 0;
+	foreach($configColumn as $key => $value ){
+		if($value['Colspan'] != "0" )
+		{
+			$table3 = 
+			$table3.
+			'<th nowrap style="text-overflow:ellipsis;overflow:hidden;white-space:nowrap;text-align:left;width:'.$value['Width'].'" colspan="'.$value['Colspan'].'" class="border"  >
+				<input style="width:80px;height: 10px;margin-top: 5px;margin-bottom: 5px;"  type="text" placeholder="Filtrar" data-index="'.$couterIndexColumn.'" />
+			</th>';
+		}
+		$couterIndexColumn++;
+	}
+	
+	//Armar titulo
+	$table1 =  
+	'<table id="'.$idTable.'"  style="
+			width:'.$widthTemporal.';order-spacing: 10px; table-layout: fixed;
+		" >
+			<thead>
+				';
+					
+				if($titulo != "" && $titulo != NULL){
+					$table1 = $table1."
+						<tr style='background-color:#".$backgournd.";color:".$color.";'>
+							<th colspan='".$cantidadColumnas."' >".$titulo."</th>
+						</tr>
+					";
+				};
+				
+	//Unir Titulo y encabezado de la tabla
+	$table =  	$table.
+				$table1.
+				'<tr style="background-color:#'.$backgournd.';color:'.$color.';">'.
+				$table2.
+				'</tr>'.
+				
+				(
+					$filtrarRegistroOnLine == true ? 
+					(
+					'<tr style="background-color:#'.$backgournd.';color:'.$color.';">'.
+					$table3.
+					'</tr>'
+					)
+					: 
+					""
+				)
+				
+				;
+		
+	//Fin de encabezado
+	$table =  $table.'
+			</tr>				
+		</thead>				
+		<tbody>
+		';
+		
+	
+		
+	//Si no hay datos	
+	if(!$objDetail){
+		//Resultado;
+		$resultado["columnas"] 	= $cantidadColumnas;
+		$resultado["width"] 	= $widthTemporal;
+		$resultado["table"] 	= 0;
+		
+		return $resultado;
+	}
+	
+	
+	//Armar cuerpo
+	$autoIncrementValue 	= 0;
+	$counterRow				= 0;
+	$vendorsFirsts          = "";
+
+	if($objDetail)
+	foreach($objDetail as $i){
+		$autoIncrementValue++;
+		$counterRow++;
+		$table = $table. "<tr>";
+				
+		foreach($configColumn as $key => $value ){
+						
+			if($value['Colspan'] != "0")
+			{							
+					//Codigo Original:
+					$table = $table. "<td nowrap style='text-overflow:ellipsis;overflow:hidden;white-space:nowrap;text-align:".$value["Alineacion"].";".$value["Style"]." ' colspan='".$value['Colspan']."'  class='border'>";										
+					$valueField 			= $value["FiledSouce"] == "" ? "" : ($i[$value["FiledSouce"] ] );
+					//$valueField 			= $value["FiledSouce"] == "" ? "" : ($i[$value["FiledSouce"] ]." - ".$autoIncrementValue++ );
+					$tipoData				= array_key_exists("Formato",$value) ? $value["Formato"] : "" ;
+					$sumaryzar				= array_key_exists("Total",$value) ? $value["Total"] : False ; 
+					$prefix					= array_key_exists("FiledSoucePrefix",$value) ? $value["FiledSoucePrefix"] : "" ;
+					$FiledSoucePrefixCustom	= array_key_exists("FiledSoucePrefixCustom",$value) ? $value["FiledSoucePrefixCustom"] : "" ;										
+					$autoIncrement			= array_key_exists("AutoIncrement",$value) ? $value["AutoIncrement"] : False ;
+					$Promedio				= array_key_exists("Promedio",$value) ? $value["Promedio"] : False ;					
+					$IsUrl					= array_key_exists("IsUrl",$value) ? $value["IsUrl"] : False ;					
+					$Url					= array_key_exists("Url",$value) ? $value["Url"] : "" ;	
+					$FiledSouceUrl			= array_key_exists("FiledSouceUrl",$value) ? $value["FiledSouceUrl"] : "" ;											
+					$valueFieldPrefixValue 	= "";
+					$valueFieldUrlValue 	= "";
+					
+					if($prefix != "")
+					$valueFieldPrefixValue 	= ($i[$value["FiledSoucePrefix"] ]);
+				
+					if($FiledSouceUrl != "")
+					$valueFieldUrlValue 	= ($i[$value["FiledSouceUrl"] ]);
+										
+					//Formato al valor
+					if($tipoData == "Number"){																
+						$valueField = number_format((float)$valueField,2,'.',',');					
+					}
+					else if($tipoData == "Date"){
+						$valueField = (date_format(date_create($valueField),"Y-m-d"));
+						$valueField = str_replace("-0001-11-30","0001-11-30",$valueField);
+					}
+					else if($tipoData == "DateTime"){
+						$valueField = (date_format(date_create($valueField),"Y-m-d H:i A"));
+						$valueField = str_replace("-0001-11-30","0001-11-30",$valueField);
+					}
+					
+					//Sumaryzar datos
+					if($sumaryzar){
+						$configColumn[$key]["TotalValor"] 		= $value["TotalValor"] + str_replace(",","",$valueField);
+						$configColumn[$key]["CantidadRegistro"] = $counterRow;						
+					}
+					if($Promedio){
+						$configColumn[$key]["TotalValor"] = $value["TotalValor"] + str_replace(",","",$valueField);
+						$configColumn[$key]["CantidadRegistro"] = $counterRow;
+					}
+					
+					//Prefix					
+					if($prefix != ""){						
+						$valueField 			= $valueFieldPrefixValue." ".$valueField;
+					}
+					
+					if($FiledSoucePrefixCustom != ""){
+						$valueField 			= $FiledSoucePrefixCustom." ".$valueField;
+					}
+					
+					if($autoIncrement){
+						$valueField = $autoIncrementValue;
+					}
+					
+					if($IsUrl){
+						$valueField = "<a href='".$Url.$valueFieldUrlValue."' >".$valueField."</a>";
+					}
+															
+				$table		= $table. $valueField;
+				$table = $table. "</td>";											
+			}
+			
+		}
+		$table = $table. "</tr>";			
+	}
+		
+	//Armar Pie de Tabla
+	$table = $table.'</tbody>';
+	
+	$table = $table.'<tfoot><tr>';
+			
+				foreach($configColumn as $key => $value ){
+					
+					if($value['Colspan'] != "0" )
+					{
+						$table = $table.'<th nowrap style="text-align:'.$value['Alineacion'].'" colspan="'.$value['Colspan'].'" class="border"  >';
+						
+							$filedValue = $value['TituloFoot'];
+							$sumaryzar	= $value["Total"] ;
+							$totalValor	= $value["TotalValor"] ;
+							$prefix		= $value["FiledSoucePrefix"] ;
+							$Promedio	= $value["Promedio"] ;
+							
+							if($filedValue == ""){
+								$filedValue = "	&nbsp;";
+							}
+							
+							if($sumaryzar){
+								$filedValue = $filedValue."SUMA&nbsp;&nbsp;=&nbsp;&nbsp;".number_format($totalValor,2,'.',',')."<br/>";
+							}
+							if($Promedio){
+								$filedValue = $filedValue."PROMEDIO&nbsp;&nbsp;=&nbsp;&nbsp;".number_format($totalValor / $counterRow  ,2,'.',',') ;
+							}
+							
+							
+							if($prefix != ""){
+								$valueFieldPrefixValue 	= ( $i[ $value["FiledSoucePrefix"] ] );
+								$filedValue = $valueFieldPrefixValue." ".$filedValue;
+							}
+							
+							$table = $table.$filedValue;
+						$table = $table.'</th>';
+					}
+				}
+				
+	$table = $table.'</tr></tfoot>';	
+	$table = $table.'</table>';
+		
+	
+	//Resultado;
+	$resultado["columnas"] 		= $cantidadColumnas;
+	$resultado["width"] 		= $widthTemporal;
+	$resultado["table"] 		= $table;
+	$resultado["configColumn"] 	= $configColumn;
+	
+	return $resultado;
+}
