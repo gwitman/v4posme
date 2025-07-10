@@ -24174,3 +24174,73 @@ function helper_reporteGeneralCreateTableGroupBy($objDetail,$configColumn,$widht
 	
 	return $resultado;
 }
+
+function helper_reporteGeneralCreateTableGroupByVendors($objDetail,$configColumn,$widht,$titulo = NULL,$backgournd = NULL,$color = NULL)
+{
+	
+	$lastEmployerName 		= null;
+	$htmlFinal 				= "";
+	$subtotalAmountConIva 	= 0;
+	$totalAmountConIva 		= 0;
+	if ($objDetail) 
+	{
+		foreach ($objDetail as $i) 
+		{
+			// Detectar cambio de employerName
+			if ($lastEmployerName !== $i['employerName']) {
+				// Si no es el primero, cerrar la tabla anterior y mostrar subtotal
+				if ($lastEmployerName !== null) {
+					// Subtotal row
+					$table 		.= "<tr><td colspan='2' style='text-align:right;font-weight:bold;'>SUBTOTAL:</td><td style='text-align:right;font-weight:bold;'>"
+								. number_format($subtotalAmountConIva, 2, '.', ',') . "</td></tr>";
+					$table 		.= "</tbody></table>";
+					$htmlFinal 	.= $table;
+				}
+
+				// Nueva tabla para el nuevo employerName
+				$table = "<h3> VENDEDOR: " . htmlspecialchars($i['employerName']) . "</h3>";
+				$table .= "<table class='border' style='width:100%;margin-bottom:10px;'>
+				<thead>
+					<tr>
+					<th style='font-weight:bold; text-align:left;'>Numero Factura</th>
+					<th style='font-weight:bold; text-align:left;'>Cliente</th>
+					<th style='font-weight:bold; text-align:right;'>Monto</th>
+					</tr>
+				</thead>
+				<tbody>";
+
+				$subtotalAmountConIva 	= 0;
+				$lastEmployerName 		= $i['employerName'];
+			}
+
+			// Fila de detalle transactionNumber
+			$table .= "<tr>";
+			$table .= "<td>" . htmlspecialchars($i['transactionNumber']) . "</td>";
+			$table .= "<td>" . htmlspecialchars($i['legalName']) . "</td>";
+			$table .= "<td style='text-align:right;'>" . number_format($i['amountConIva'], 2, '.', ',') . "</td>";
+			$table .= "</tr>";
+
+			// Sumar al subtotal
+			$subtotalAmountConIva 	+= floatval($i['amountConIva']);
+			$totalAmountConIva 		+= floatval($i['amountConIva']);
+		}
+
+		// Cerrar la última tabla y mostrar subtotal
+		if ($lastEmployerName !== null) {
+			
+			$table 	.= "<tr><td colspan='2' style='text-align:right;font-weight:bold;'>SUBTOTAL:</td><td style='text-align:right;font-weight:bold;'>"
+					. number_format($subtotalAmountConIva, 2, '.', ',') . "</td></tr>";
+			
+			$table 	.= "<tr><td colspan='2' style='text-align:right;font-weight:bold;'>TOTAL:</td><td style='text-align:right;font-weight:bold;'>"
+					.number_format($totalAmountConIva, 2, '.', ',') . "</td></tr>";
+
+			$table 		.= "</tbody></table>";
+			$htmlFinal 	.= $table;
+		}
+	}
+
+	$resultado["table"] = $htmlFinal;
+	return $resultado;
+
+}
+
