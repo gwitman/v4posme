@@ -1,6 +1,6 @@
 <?php
+namespace App\Models;
 use CodeIgniter\Model;
-use ReflectionException;
 
 class Company_Page_Setting_Model extends Model
 {

@@ -1167,6 +1167,8 @@ $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNo
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmBpn/(:any)', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmBpn');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1/(:any)', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
+$routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1DB', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1DB');
+$routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1DB/(:any)', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1DB');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1ElektroClima', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1ElektroClima');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1ElektroClima/(:any)', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1ElektroClima');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Divas', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1Divas');
