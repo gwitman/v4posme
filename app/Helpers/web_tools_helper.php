@@ -744,7 +744,11 @@ function helper_getHtmlOfPageLanding()
 	';
 }
 
-function helper_getHtmlOfModalDialog($name,$idDivBody,$fncallBack,$fnShowBotonesCerrar = true,$fnShowBotonesAceptar = true)
+function helper_getHtmlOfModalDialog(
+	$name,$idDivBody,$fncallBack,
+	$fnShowBotonesCerrar = true,$fnShowBotonesAceptar = true,
+	$cssModalContent = ""
+)
 {
 	$string  =  
 	'
@@ -788,7 +792,7 @@ function helper_getHtmlOfModalDialog($name,$idDivBody,$fncallBack,$fnShowBotones
 				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 				text-align: center;
 				width: 80%;
-				max-width: 400px;
+				max-width: 400px;'.$cssModalContent.'
 			}
 
 			.modal-content-customer1-'.$name.' h3 {

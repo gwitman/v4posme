@@ -118,7 +118,7 @@
 	<header id="header">
 		<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
 
-			<a class="navbar-brand" href="javascript(0);" style="color:#fff">
+			<a class="navbar-brand" href="javascript:void(0);" style="color:#fff">
 				<?php echo $company->name; ?>
 				<span class="badge badge-success"> (usuario: <?php echo $user->nickname; ?>)</span>
 
@@ -138,6 +138,27 @@
 
 			<div class="collapse navbar-collapse" id="navbar-to-collapse">
 				<ul class="nav navbar-nav pull-right">
+				
+					<li class="dropdown">	
+						<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">		
+							<i class="icon24 i-airplane"></i>									
+						</a>	
+						<ul class="dropdown-menu" role="menu">
+							<li role="presentation" >
+								<a href="javascript:void(0);" class="" id="link-tramites" >
+									<i class="icon16 i-bell-2"></i> tramites 
+								</a>
+							</li>
+							<!--
+							<li role="presentation">
+								<a href="http://localhost/posmev4/index.php/core_notification/index" class="">
+								<i class="icon16 i-bell-2"></i> visita agendada </a>
+							</li>
+							-->							
+						</ul>
+					</li>
+
+
 					<?php echo $notification; ?>
 					<?php echo $menuRenderTop; ?>
 				</ul>
@@ -190,10 +211,135 @@
 
 	<div id="main_content">
 	</div>
+	
+	
+	<div id="modalDialogHtmlTramites" style="display:none">
+		<h3>Acceso a tramites</h3>
+		</br>
+		
+		
+		<table style="width:100%; border-collapse:collapse; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,0.1); font-family:Arial, sans-serif;">
+		  
+		  <tr style="border-bottom:1px solid #eee;">
+			<td style="padding:5px; font-weight:bold; width:200px; color:#333;text-align:left">Tipo de Trámite</td>
+			<td style="padding:5px; color:#555;text-align:left">
+				<select name="txtTypeProcedureID" id="txtTypeProcedureID" class="select2" >
+						<option value="">Seleccionar</option>
+						<?php echo $menuRenderProcedure; ?>
+						
+				</select>
+			</td>
+		  </tr>
+		  <tr style="border-bottom:1px solid #eee;">
+			<td style="padding:5px; font-weight:bold; color:#333;text-align:left">Texto del Trámite</td>
+			<td style="padding:5px; color:#555;text-align:left">
+				<input type="text" name="txtTextProcedure" id="txtTextProcedure"></input>
+			</td>
+		  </tr>
+		  <tr>
+			<td style="padding:5px; font-weight:bold; color:#333;text-align:left">Examinar Entidad</td>
+			<td style="padding:5px; color:#555;text-align:left">
+				
+				<table>
+					<tr>
+						<td>
+							<input type="hidden" id="txtProcedureEntityID" name="txtProcedureEntityID" value="">
+							<input type="hidden" id="txtProcedureEntityName" name="txtProcedureEntityName" value="">
+							<input class="form-control" readonly="" id="txtProcedureEntityDescription" type="text" value="">
+						</td>
+						<td>
+							<button class="btnCerrarModalOpcionesTramites" id="btnCerrarModalOpcionesTramites" style="padding:8px 20px;"  >Limpiar</button>
+						</td>
+						<td>
+							<button class="btnAceptarModalOpcionesTramites" id="btnAceptarModalOpcionesTramites" style="padding:8px 20px;"  >Buscar</button>
+						</td>
+					</tr>
+				</table>				
+			</td>
+		  </tr>
+		</table>
+		
+		</br>
+
+			
+	</div>
+	<?php
+		helper_getHtmlOfModalDialog(
+			"ModalOpcionesTramites","modalDialogHtmlTramites",
+			"fnAceptarModalDialogHtmlTramites",true,true,
+			"max-width: 600px;"
+		);
+	?>
+	
 
 </body>
 <script>
 	selectMenu("<?php echo current_url(); ?>");
+	
+	$(document).on("click", "#link-tramites", function(e) {	  
+	  mostrarModal("ModalOpcionesTramites");
+	});
+	
+	$(document).on("click", "#btnCerrarModalOpcionesTramites", function(e) {	  
+	  fnClearValues();
+	});
+	
+	$(document).on("click", "#btnAceptarModalOpcionesTramites", function(e) {	
+		
+		if($("#txtTypeProcedureID").val() == "")
+			return;
+		
+		let componentID 	= $("#txtTypeProcedureID").val().split("|")[0];
+		let dataViewName 	= $("#txtTypeProcedureID").val().split("|")[1];
+		let url 			= $("#txtTypeProcedureID").val().split("|")[2];
+		
+		let url_request =
+			"<?php echo base_url(); ?>/core_view/showviewbynamepaginate"+
+			"/"+componentID+
+			"/onCompleteDocument/"+dataViewName+"/true/"+
+			encodeURI(
+				'{'+
+				'\"transactionID\"|\"'+0+'\"'+
+				'}'
+			) +
+			"/false/not_redirect_when_empty/1/1/25/";
+			
+		window.open(url_request, "MsgWindow", "width=900,height=450");
+		window.onCompleteDocument = onCompleteDocument;
+			
+	});
+	
+	function fnAceptarModalDialogHtmlTramites()
+	{
+		let componentID 					= $("#txtTypeProcedureID").val().split("|")[0];
+		let dataViewName 					= $("#txtTypeProcedureID").val().split("|")[1];
+		let url 							= $("#txtTypeProcedureID").val().split("|")[2];
+		let txtTextProcedure 				= $("#txtTextProcedure").val();
+		let txtProcedureEntityID 			= $("#txtProcedureEntityID").val();
+		let txtProcedureEntityName 			= $("#txtProcedureEntityName").val();
+		let txtProcedureEntityDescription 	= $("#txtProcedureEntityDescription").val();
+		window.location.href 				= "<?php echo base_url(); ?>"+"/"+url;
+		
+	}
+	
+	function onCompleteDocument(objResponse){
+		console.info("CALL onCompleteDocument");
+		let documento 	= objResponse[0][2];
+		let id			= objResponse[0][1];		
+		$('#txtProcedureEntityID').val(id);
+		$('#txtProcedureEntityName').val(documento);
+		$('#txtProcedureEntityDescription').val(documento);
+		
+	}
+	
+	function fnClearValues(){
+		
+		$('#txtProcedureEntityID').val('');
+		$('#txtProcedureEntityName').val('');
+		$('#txtProcedureEntityDescription').val('');
+	
+	}
+	
 </script>
 <?php echo $script; ?>
 

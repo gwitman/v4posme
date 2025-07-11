@@ -181,6 +181,7 @@ class core_web_authentication {
 		$data["menuBodyReport"]			= $menuBodyReport;
 		$data["menuHiddenPopup"]		= $menuHiddenPopup;
 		$data["lastUrl"] 				= "";
+		$data["menuRenderProcedure"]	= getBahavioDB($objCompany->type,"core_web_authentication","menuRenderProcedure","");
 		
 		
 		return $data;
