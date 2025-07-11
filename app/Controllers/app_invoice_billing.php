@@ -7511,7 +7511,7 @@ class app_invoice_billing extends _BaseController {
 			
 			//Get Component
 			$objComponent	        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
-			$objParameter	        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$objParameterLogo       = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
 			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
 			$objParameterRuc	    = $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
 			$objParameterRuc        = $objParameterRuc->value;
@@ -7523,7 +7523,7 @@ class app_invoice_billing extends _BaseController {
 			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
 			$datView["objTC"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$datView["objTM"]->transactionCausalID);
-			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
+			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d h:i A");
 			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
 			$datView["Identifier"]					= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
 			$datView["objBranch"]					= $this->Branch_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->branchID);
@@ -7545,83 +7545,53 @@ class app_invoice_billing extends _BaseController {
 			
 			//Obtener datos
 			$datViewArray										= array();
-			$datViewArray["title"] 								= "factura";
+			$datViewArray["title"] 								= "FACTURA";
+			$datViewArray["companyRuc"] 						= $objParameterRuc;
 			$datViewArray["transactionMasterDetail"] 			= array();
+			$datViewArray["companyName"] 						= $objCompany->name;
+			$datViewArray["transactionNumber"] 					= $datView["objTM"]->transactionNumber;
+			$datViewArray["transactionOn"] 						= $datView["objTM"]->transactionOn;
+			$datViewArray["userName"]							= $datView["objUser"]->nickname;
+			$datViewArray["currencySimbol"]						= $datView["objCurrency"]->simbol;
+			$datViewArray["phoneNumber"]						= $objParameterTelefono->value;
+			$datViewArray["address"]							= $objCompany->address;
+			$datViewArray["note"]								= $datView["objTM"]->note;
+			$datViewArray["customerName"]						= $datView["objNatural"]->firstName;
+			$datViewArray["customerNameLastName"]				= $datView["objNatural"]->lastName;
+			$datViewArray["statusName"]							= $datView["objStage"][0]->display;
+			$datViewArray["causalName"]							= $datView["objTC"]->name;
+			$datViewArray["customerNumber"]						= $datView["objCustumer"]->customerNumber;
+			$datViewArray["amount_sub_total"]					= sprintf("%.2f",$datView["objTM"]->subAmount);
+			$datViewArray["amount_iva"]							= sprintf("%.2f",$datView["objTM"]->tax1);
+			$datViewArray["amount_discount"]					= sprintf("%.2f",$datView["objTM"]->discount);
+			$datViewArray["amount_total"]						= sprintf("%.2f",$datView["objTM"]->amount);
+			$datViewArray["amount_receipt"]						= sprintf("%.2f",$datView["objTM"]->amount + $datView["objTMI"]->changeAmount);
+			$datViewArray["amount_change"]						= sprintf("%.2f",$datView["objTMI"]->changeAmount);
+			
+			
 			
 			//agregar item
-			$row = array(
-				"itemName"				=>"teclado",
-				"itemNameQuantity"		=>'125.00',
-				"itemNamePrice"			=>'125.25',
-				"itemNameAmount"		=>'125.25'
-			);
-			array_push($datViewArray["transactionMasterDetail"],$row);			
-			$datViewArray["companyName"] 	= $objCompany->name;
+			foreach($datView["objTMD"] as $detail_)
+			{
+				$row = array(
+					"itemName"				=>$detail_->itemName. " ". strtolower($detail_->skuFormatoDescription),
+					"itemNameQuantity"		=>sprintf("%01.2f",round($detail_->quantity,2)),
+					"itemNamePrice"			=>sprintf("%01.2f",round($detail_->unitaryPrice,2)),
+					"itemNameAmount"		=>sprintf("%01.2f",round($detail_->amount,2))	
+				);
+				array_push($datViewArray["transactionMasterDetail"],$row);		
+			}
 			
 			
-			//wg-//Configurar Detalle Header
-			//wg-$confiDetalleHeader = array();
-			//wg-$row = array(
-			//wg-	"style"		=>"text-align:left;width:auto",
-			//wg-	"colspan"	=>'1',
-			//wg-	"prefix"	=>'',
-			//wg-	
-			//wg-	
-			//wg-	"style_row_data"		=>"text-align:left;width:auto",
-			//wg-	"colspan_row_data"		=>'1',
-			//wg-	"prefix_row_data"		=>'',
-			//wg-	"nueva_fila_row_data"	=>1
-			//wg-);
-			//wg-array_push($confiDetalleHeader,$row);
-			//wg-
-			//wg-$row = array(
-			//wg-	"style"		=>"text-align:left;width:50px",
-			//wg-	"colspan"	=>'1',
-			//wg-	"prefix"	=>'',
-			//wg-	
-			//wg-	"style_row_data"		=>"text-align:right;width:auto",
-			//wg-	"colspan_row_data"		=>'1',
-			//wg-	"prefix_row_data"		=>'',
-			//wg-	"nueva_fila_row_data"	=>0
-			//wg-);
-			//wg-array_push($confiDetalleHeader,$row);
-			//wg-
-			//wg-
-			//wg-$row = array(
-			//wg-	"style"		=>"text-align:right;width:90px",
-			//wg-	"colspan"	=>'1',
-			//wg-	"prefix"	=>$datView["objCurrency"]->simbol,
-			//wg-	
-			//wg-	"style_row_data"		=>"text-align:right;width:90px",
-			//wg-	"colspan_row_data"		=>'1',
-			//wg-	"prefix_row_data"		=>"",
-			//wg-	"nueva_fila_row_data"	=>0
-			//wg-);
-			//wg-array_push($confiDetalleHeader,$row);
-			//wg-
-			//wg-
-		    //wg-
-		    //wg-$detalle = array();		    
-		    //wg-$row = array("CANT", 'PREC', "TOTAL");
-		    //wg-array_push($detalle,$row);
-		    //wg-
-		    //wg-
-			//wg-foreach($datView["objTMD"] as $detail_){
-			//wg-	$row = array(
-			//wg-		$detail_->itemName. " ". strtolower($detail_->skuFormatoDescription)."-comand-new-row",  				
-			//wg-		"none",
-			//wg-		"none"
-			//wg-	);
-			//wg-    array_push($detalle,$row);
-			//wg-	
-			//wg-    $row = array(					
-			//wg-		sprintf("%01.2f",round($detail_->quantity,2)), 					
-			//wg-		sprintf("%01.2f",round($detail_->unitaryPrice,2)),
-			//wg-		sprintf("%01.2f",round($detail_->amount,2))					
-			//wg-	);
-			//wg-    array_push($detalle,$row);
-			//wg-}
-			//wg-
+			//Obtener imagen de logo
+			$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;    
+			$type    = pathinfo($path, PATHINFO_EXTENSION);
+			$data    = file_get_contents($path);
+			$base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
+			$datViewArray["imageBase64"]						= $base64;
+			
+			
+			
 			//wg-
 			//wg-//Generar Reporte
 			//wg-$html = helper_reporte80mmTransactionMaster(
@@ -7637,9 +7607,9 @@ class app_invoice_billing extends _BaseController {
 			//wg-    $confiDetalleHeader,
 			//wg-    $detalle,
 			//wg-    $objParameterTelefono, /*telefono*/
-			//wg-	$datView["objStage"][0]->display, /*estado*/
-			//wg-	$datView["objTC"]->name /*causal*/,
-			//wg-	$datView["objUser"]->nickname,
+			//wg-	 $datView["objStage"][0]->display, /*estado*/
+			//wg-	 $datView["objTC"]->name /*causal*/,
+			//wg-	 $datView["objUser"]->nickname,
 			//wg-    $objParameterRuc /*ruc*/
 			//wg-);
 			
