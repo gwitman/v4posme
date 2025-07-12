@@ -1186,13 +1186,13 @@ class core_merge extends _BaseController {
 		if (!file_exists($ruta)) {
 			return "ERROR: El archivo origen no existe.</br>";
 		}
-
+		
 		$sqlString = file_get_contents($ruta);
-
+		
 		if ($sqlString === false) {
 			return "ERROR: No se pudo leer el archivo origen.</br>";
 		}
-
+		
 		//Obtener nombre de base de datos
 		$pattern = '/\/\*BD:\s*(.*?)\s*\*\//';
 		if (preg_match($pattern, $sqlString, $matches)) {
@@ -1208,13 +1208,13 @@ class core_merge extends _BaseController {
 		if (!file_exists($ruta)) {
 			return "ERROR: El archivo destino no existe. </br>";
 		}
-
+		
 		$sqlStringDestino = file_get_contents($ruta);
-
+		
 		if ($sqlString === false) {
 			return "ERROR: No se pudo leer el archivo destino. </br>";
 		}
-
+		
 		//Obtener nombre de base de datos
 		$pattern = '/\/\*BD:\s*(.*?)\s*\*\//';
 		if (preg_match($pattern, $sqlStringDestino, $matches)) {
@@ -1264,14 +1264,15 @@ class core_merge extends _BaseController {
 			} else {
 				echo "Error: " . $mysqli->error;
 			}
-
-
+		
+		
 			
 		}
 		
 		
 		//Crear procedimientos, vistas, funciones
 		$ruta = PATH_FILE_OF_APP."/../../../public/resource/file_sql/script_sincronization_procedure_vista_funciones.sql";
+		echo "</br>Sincronizacion de estructuras y procedimientos, vistas y triger";
 		if (!file_exists($ruta)) {
 			return "ERROR: El archivo origen no existe procedure.</br>";
 		}
@@ -1298,13 +1299,7 @@ class core_merge extends _BaseController {
 		
 		
 		
-		echo "</br>SUCCESS";
-		
-		
-		
-		
-		
-		
+		echo "</br><h1>SUCCESS</h1></br>";
 		
 		
 	}
