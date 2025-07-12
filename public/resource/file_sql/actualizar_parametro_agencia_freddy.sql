@@ -1,4 +1,4 @@
-use dbuwydken46x4g;
+/*BD: 	dbuwydken46x4g;*/
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
@@ -827,22 +827,24 @@ WHERE
 /*
 Eliminar o desactivar usuarios
 */
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/
- 212,  	/*supervisor*/
- 211, 	/*facturador*/
- 210 	/*administrador*/
-);
 
 
-update tb_role set isActive = 0; 
-update tb_role set isActive = 1 where roleID in (
-	3,
-	204,
-	205,
-	206	
-);
+--	update tb_user set isActive = 0;
+--	update tb_user set isActive = 1 WHERE userID in (
+--	 2, 	/*administrador*/
+--	 212,  	/*supervisor*/
+--	 211, 	/*facturador*/
+--	 210 	/*administrador*/
+--	);
+--	
+--	
+--	update tb_role set isActive = 0; 
+--	update tb_role set isActive = 1 where roleID in (
+--		3,
+--		204,
+--		205,
+--		206	
+--	);
 
 
 

@@ -1,4 +1,4 @@
-use dbwcgu1izvyxds;
+/*BD: 	dbwcgu1izvyxds; */
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -1251,21 +1251,22 @@ WHERE
 /*
 Eliminar o desactivar usuarios
 */
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/
- 460,  	/*supervisor*/
- 459, 	/*facturador*/
- 458 	/*administrador*/
-);
 
-update tb_role set isActive = 0; 
-update tb_role set isActive = 1 where roleID in (
-	3,
-	386,
-	385,
-	384	
-);
+--	update tb_user set isActive = 0;
+--	update tb_user set isActive = 1 WHERE userID in (
+--	 2, 	/*administrador*/
+--	 460,  	/*supervisor*/
+--	 459, 	/*facturador*/
+--	 458 	/*administrador*/
+--	);
+--	
+--	update tb_role set isActive = 0; 
+--	update tb_role set isActive = 1 where roleID in (
+--		3,
+--		386,
+--		385,
+--		384	
+--	);
 
 
 

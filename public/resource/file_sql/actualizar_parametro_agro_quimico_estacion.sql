@@ -1,4 +1,4 @@
-/*use dbe116sl6weagr ;*/
+/*BD: 	 dbe116sl6weagr ;*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -1748,29 +1748,29 @@ Eliminar o desactivar usuarios
 */
 
 
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	
- 848,  
- 849, 
- 850,
- 851,  
- 852, 
- 853, 
- 854
-);
-
-update tb_role set isActive = 0; 
-update tb_role set isActive = 1 where roleID in (
-	3,
-	783,
-	784,
-	785,
-	786,
-	787,
-	788,
-	789	
-);
+--	update tb_user set isActive = 0;
+--	update tb_user set isActive = 1 WHERE userID in (
+--	 2, 	
+--	 848,  
+--	 849, 
+--	 850,
+--	 851,  
+--	 852, 
+--	 853, 
+--	 854
+--	);
+--	
+--	update tb_role set isActive = 0; 
+--	update tb_role set isActive = 1 where roleID in (
+--		3,
+--		783,
+--		784,
+--		785,
+--		786,
+--		787,
+--		788,
+--		789	
+--	);
 
 
 

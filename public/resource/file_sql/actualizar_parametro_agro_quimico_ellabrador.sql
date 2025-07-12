@@ -1,4 +1,4 @@
-use dbmryuvstlip3y;
+/*BD: 	dbmryuvstlip3y;  */
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -1251,21 +1251,22 @@ WHERE
 /*
 Eliminar o desactivar usuarios
 */
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/
- 454,  	/*supervisor*/
- 453, 	/*facturador*/
- 452 	/*administrador*/
-);
 
-update tb_role set isActive = 0; 
-update tb_role set isActive = 1 where roleID in (
-	3,
-	380,
-	379,
-	378	
-);
+--	update tb_user set isActive = 0;
+--	update tb_user set isActive = 1 WHERE userID in (
+--	 2, 	/*administrador*/
+--	 454,  	/*supervisor*/
+--	 453, 	/*facturador*/
+--	 452 	/*administrador*/
+--	);
+--	
+--	update tb_role set isActive = 0; 
+--	update tb_role set isActive = 1 where roleID in (
+--		3,
+--		380,
+--		379,
+--		378	
+--	);
 
 
 

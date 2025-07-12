@@ -1,3 +1,5 @@
+/*BD: 	posme*/
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "154" 
 WHERE 
@@ -831,13 +833,13 @@ WHERE
 /*
 Eliminar o desactivar usuarios
 */
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/
- 215,  	/*supervisor*/
- 214, 	/*facturador*/
- 213 	/*administrador*/
-);
+--	update tb_user set isActive = 0;
+--	update tb_user set isActive = 1 WHERE userID in (
+--	 2, 	/*administrador*/
+--	 215,  	/*supervisor*/
+--	 214, 	/*facturador*/
+--	 213 	/*administrador*/
+--	);
 
 /*
 update tb_exchange_rate set 

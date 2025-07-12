@@ -1,4 +1,4 @@
-/*use dbmaaig8e3wjgs ;*/
+/*BD: 	 dbmaaig8e3wjgs ;*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -1720,29 +1720,29 @@ Eliminar o desactivar usuarios
 */
 
 
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	
- 792,  
- 793, 
- 794,
- 795,  
- 796, 
- 797, 
- 798
-);
-
-update tb_role set isActive = 0; 
-update tb_role set isActive = 1 where roleID in (
-	3,
-	727,
-	728,
-	729,
-	730,
-	731,
-	732,
-	733	
-);
+--	update tb_user set isActive = 0;
+--	update tb_user set isActive = 1 WHERE userID in (
+--	 2, 	
+--	 792,  
+--	 793, 
+--	 794,
+--	 795,  
+--	 796, 
+--	 797, 
+--	 798
+--	);
+--	
+--	update tb_role set isActive = 0; 
+--	update tb_role set isActive = 1 where roleID in (
+--		3,
+--		727,
+--		728,
+--		729,
+--		730,
+--		731,
+--		732,
+--		733	
+--	);
 
 
 

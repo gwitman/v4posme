@@ -1,4 +1,4 @@
-use dba48qrimqrnp5;
+/*BD: 	dba48qrimqrnp5; */
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -1251,21 +1251,22 @@ WHERE
 /*
 Eliminar o desactivar usuarios
 */
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/
- 455,  	/*supervisor*/
- 456, 	/*facturador*/
- 457 	/*administrador*/
-);
 
-update tb_role set isActive = 0; 
-update tb_role set isActive = 1 where roleID in (
-	3,
-	381,
-	382,
-	383	
-);
+--	update tb_user set isActive = 0;
+--	update tb_user set isActive = 1 WHERE userID in (
+--	 2, 	/*administrador*/
+--	 455,  	/*supervisor*/
+--	 456, 	/*facturador*/
+--	 457 	/*administrador*/
+--	);
+--	
+--	update tb_role set isActive = 0; 
+--	update tb_role set isActive = 1 where roleID in (
+--		3,
+--		381,
+--		382,
+--		383	
+--	);
 
 
 

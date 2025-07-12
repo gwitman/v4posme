@@ -1,4 +1,4 @@
-use dbsbj1fsg1ccze;
+/*BD: 	dbsbj1fsg1ccze;	*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -1712,29 +1712,30 @@ WHERE
 /*
 Eliminar o desactivar usuarios
 */
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/
- 757,  
- 758, 
- 759,
- 760,  
- 761, 
- 762, 
- 763
-);
 
-update tb_role set isActive = 0; 
-update tb_role set isActive = 1 where roleID in (
-	3,
-	692,
-	693,
-	694,
-	695,
-	696,
-	697,
-	698	
-);
+--	update tb_user set isActive = 0;
+--	update tb_user set isActive = 1 WHERE userID in (
+--	 2, 	/*administrador*/
+--	 757,  
+--	 758, 
+--	 759,
+--	 760,  
+--	 761, 
+--	 762, 
+--	 763
+--	);
+--	
+--	update tb_role set isActive = 0; 
+--	update tb_role set isActive = 1 where roleID in (
+--		3,
+--		692,
+--		693,
+--		694,
+--		695,
+--		696,
+--		697,
+--		698	
+--	);
 
 
 
