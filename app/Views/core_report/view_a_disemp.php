@@ -37,6 +37,7 @@ foreach ($filtros as $key => $value) {
 <div style="margin: 15px">
 
 <?php
+
 echo helper_reporteGeneralCreateEncabezado(
         $title,
         $objCompany->name,
@@ -47,45 +48,48 @@ echo helper_reporteGeneralCreateEncabezado(
         '100%'
 );
 $resultado      = [];
-$configColumn   = [];
-foreach ($groupReportResult as $key => $value) {
-    $tableTitle     = "";
-    $tableWidth     = '0px';
-    $reportStyle    = 'horizontal';
-    foreach ($value as $k => $v) {
-        if ($k == 0) {
-            $configColumn["$k"]["IdTable"]  = "table".$k;
-            $tableWidth                     = $v->tableWidth;
-            $reportStyle                    = strlen($v->reportStyle) > 0 ? $v->reportStyle : "horizontal";
+if (count($objDetail)>0){
+    foreach ($groupReportResult as $key => $value) {
+        $configColumn   = [];
+        $tableTitle     = "";
+        $tableWidth     = '0px';
+        $reportStyle    = 'horizontal';
+        foreach ($value as $k => $v) {
+            if ($k == 0) {
+                $configColumn["$k"]["IdTable"]  = "table".$k;
+                $tableWidth                     = $v->tableWidth;
+                $reportStyle                    = strlen($v->reportStyle) > 0 ? $v->reportStyle : "horizontal";
+                $tableTitle                     = $v->tableTitle;
+            }
+            $configColumn["$k"]["Titulo"]                   = $v->title;
+            $configColumn["$k"]["TituloFoot"]               = "";
+            $configColumn["$k"]["FiledSouce"]               = $v->source;
+            $configColumn["$k"]["Formato"]                  = $v->type;
+            $configColumn["$k"]["Width"]                    = $v->width;
+            $configColumn["$k"]["Total"]                    = $v->sumary == "true";
+            $configColumn["$k"]["Colspan"] 					= "1" ;
+            $configColumn["$k"]["Style"] 					= "" ;
+            $configColumn["$k"]["Alineacion"] 				= "Left";
+            $configColumn["$k"]["TotalValor"] 				= 0;
+            $configColumn["$k"]["CantidadRegistro"]			= 0;
+            $configColumn["$k"]["FiledSoucePrefix"] 		= trim($v->prefix);
+            $configColumn["$k"]["AutoIncrement"] 			= False;
+            $configColumn["$k"]["IsUrl"] 					= False;
+            $configColumn["$k"]["FiledSouceUrl"] 			= "";
+            $configColumn["$k"]["Url"] 						= "";
+            $configColumn["$k"]["FiledSoucePrefixCustom"] 	= "";
+            $configColumn["$k"]["Promedio"] 				= False ;
+            $configColumn["$k"]["Alineacion"] 				= $v->type == "Number" ? "Right": "Left";
         }
-        $configColumn["$k"]["Titulo"]                   = $v->title;
-        $configColumn["$k"]["TituloFoot"]               = "";
-        $configColumn["$k"]["FiledSouce"]               = $v->source;
-        $configColumn["$k"]["Formato"]                  = $v->type;
-        $configColumn["$k"]["Width"]                    = $v->width;
-        $configColumn["$k"]["Total"]                    = $v->sumary == "true";
-        $configColumn["$k"]["Colspan"] 					= "1" ;
-        $configColumn["$k"]["Style"] 					= "" ;
-        $configColumn["$k"]["Alineacion"] 				= "Left";
-        $configColumn["$k"]["TotalValor"] 				= 0;
-        $configColumn["$k"]["CantidadRegistro"]			= 0;
-        $configColumn["$k"]["FiledSoucePrefix"] 		= trim($v->prefix);
-        $configColumn["$k"]["AutoIncrement"] 			= False;
-        $configColumn["$k"]["IsUrl"] 					= False;
-        $configColumn["$k"]["FiledSouceUrl"] 			= "";
-        $configColumn["$k"]["Url"] 						= "";
-        $configColumn["$k"]["FiledSoucePrefixCustom"] 	= "";
-        $configColumn["$k"]["Promedio"] 				= False ;
-        $configColumn["$k"]["Alineacion"] 				= $v->type == "Number" ? "Right": "Left";
+        if ($reportStyle == 'horizontal'){
+            $resultado[] = helper_reporteGeneralCreateTable($objDetail[$key - 1], $configColumn, $tableWidth, $tableTitle, NULL);
+        }else{
+            $resultado[] = helper_reporteGeneralCreateTableVertical($objDetail[$key - 1][0], $configColumn, null, $tableWidth);
+        }
 
-        $tableTitle = $v->tableTitle;
     }
-    if ($reportStyle == 'horizontal'){
-        $resultado[] = helper_reporteGeneralCreateTable($objDetail[$key - 1], $configColumn, $tableWidth, $tableTitle, NULL);
-    }else{
-        $resultado[] = helper_reporteGeneralCreateTableVertical($objDetail[$key - 1][0], $configColumn, null, $tableWidth);
-    }
-
+}else{
+    echo '<p>No hay datos a mostrar con los filtros indicados, intentar nuevamente</p>';
 }
 if (count($resultado) > 0) {
     foreach ($resultado as $result) {

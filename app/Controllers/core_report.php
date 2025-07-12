@@ -80,8 +80,10 @@ class core_report extends _BaseController
                 }
 
             }
+            $query      = $findReporting->queryi;
+            $pattern    = "/@(\w+)/";
             //extraemos los nombres de los parametros q pertenecen a la consulta
-            preg_match_all("/'@([^']+)'/", $findReporting->queryi, $matches);
+            preg_match_all($pattern, $query, $matches);
             $parametrosEnConsulta   = $matches[1];
             $params                 = [];
             foreach ($parametrosEnConsulta as $paramName) {
@@ -89,8 +91,7 @@ class core_report extends _BaseController
                 $params[]       = $valor ?? null;
             }
 
-            $query   = $findReporting->queryi;
-            $query   = preg_replace("/'@[^']+'/", "?", $query);
+            $query   = preg_replace($pattern, "?", $query);
             $result  = $this->Bd_Model->executeRenderMultipleNative($query, $params);
 
             $dataView['params']             = $params;
