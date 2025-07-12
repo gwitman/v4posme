@@ -1270,6 +1270,34 @@ class core_merge extends _BaseController {
 		}
 		
 		
+		//Crear procedimientos, vistas, funciones
+		$ruta = PATH_FILE_OF_APP."/../../../public/resource/file_sql/script_sincronization_procedure_vista_funciones.sql";
+		if (!file_exists($ruta)) {
+			return "ERROR: El archivo origen no existe procedure.</br>";
+		}
+
+		$sqlString = file_get_contents($ruta);
+
+		if ($sqlString === false) {
+			return "ERROR: No se pudo leer el archivo procedure.</br>";
+		}
+		
+		$mysqli = $dbDestino->connID; // conexión mysqli nativa
+		if ($mysqli->multi_query($sqlString)) 
+		{
+			do {
+				// Si hay resultados
+				if ($result = $mysqli->store_result()) {
+					$result->free();
+				}
+			} while ($mysqli->next_result());
+		} else {
+			echo "Error: " . $mysqli->error;
+		}
+		
+		
+		
+		
 		echo "</br>SUCCESS";
 		
 		
