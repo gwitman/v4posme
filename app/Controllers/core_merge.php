@@ -1157,5 +1157,129 @@ class core_merge extends _BaseController {
 		
 	}
 	
+	function merge_of_posme_merge_to_posme_aplicar_parameter()
+	{
+		
+		
+		$this->dbOrigen							= \Config\Database::connect("merge");
+		$this->sourceName						= DB_BDNAME_MERGE;
+		$this->dbDestino						= \Config\Database::connect();
+		$this->targetName						= DB_BDNAME;
+		
+		
+		$this->dbConectTarget 					= $this->dbDestino;
+		$this->dbConectSource					= $this->dbOrigen;
+		$this->dbConectInformationSchema		= \Config\Database::connect("information_schema");		
+		$this->forgeOrigen						= \Config\Database::forge($this->dbOrigen);	
+		$this->forgeTarget						= \Config\Database::forge($this->dbConectTarget);	
+		
+		$dbDestino			= $this->dbDestino;
+		$dbOrigen			= $this->dbOrigen;
+		$forge 				= $this->forgeOrigen;
+		$sourceName 		= $this->request->getGet('sourceName');
+		$targetName 		= $this->request->getGet('targetName');
+		
+		
+		
+		//Leer el archivo origen y obtener base de datos
+		$ruta = PATH_FILE_OF_APP."/../../../public/resource/file_sql/".$sourceName;
+		if (!file_exists($ruta)) {
+			return "ERROR: El archivo origen no existe.</br>";
+		}
+
+		$sqlString = file_get_contents($ruta);
+
+		if ($sqlString === false) {
+			return "ERROR: No se pudo leer el archivo origen.</br>";
+		}
+
+		//Obtener nombre de base de datos
+		$pattern = '/\/\*BD:\s*(.*?)\s*\*\//';
+		if (preg_match($pattern, $sqlString, $matches)) {
+			$sourceName = trim($matches[1]);
+			echo "La base de datos origen es: " . $sourceName."</br>";
+		} else {
+			echo "No se encontró el marcador origen /*BD: ... */ </br> ";
+		}
+		
+		
+		//Lee archivo destino y obtener base de datos
+		$ruta = PATH_FILE_OF_APP."/../../../public/resource/file_sql/".$targetName;
+		if (!file_exists($ruta)) {
+			return "ERROR: El archivo destino no existe. </br>";
+		}
+
+		$sqlStringDestino = file_get_contents($ruta);
+
+		if ($sqlString === false) {
+			return "ERROR: No se pudo leer el archivo destino. </br>";
+		}
+
+		//Obtener nombre de base de datos
+		$pattern = '/\/\*BD:\s*(.*?)\s*\*\//';
+		if (preg_match($pattern, $sqlStringDestino, $matches)) {
+			$targetName = trim($matches[1]);
+			echo "La base de datos destino es: " . $targetName."</br>";
+		} else {
+			echo "No se encontró el marcador  destino /*BD: ... */ </br>";
+		}
+		
+		
+		if ($sourceName !== null || $targetName !== null ) 
+		{
+			echo "Sincronizndo BASE; ".$sourceName." ---> ".$targetName."</br>";						
+			$dbDestino->query("USE ".$targetName.";");
+			
+			echo "</br><h1>String Origen</h1></br>";
+			echo "</br><h1>String Destino</h1></br>";
+			
+			//echo "</br><h1>String Origen</h1>".$sqlString."</br>";
+			//echo "</br><h1>String Destino</h1>".$sqlStringDestino."</br>";
+			
+			//Ejecutar las consultas default
+			$mysqli = $dbDestino->connID; // conexión mysqli nativa
+			if ($mysqli->multi_query($sqlString)) 
+			{
+				do {
+					// Si hay resultados
+					if ($result = $mysqli->store_result()) {
+						$result->free();
+					}
+				} while ($mysqli->next_result());
+			} else {
+				echo "Error: " . $mysqli->error;
+			}
+			
+			
+			//Ejecutar las consultas de company
+			$mysqli = $dbDestino->connID; // conexión mysqli nativa
+			if ($mysqli->multi_query($sqlStringDestino)) 
+			{
+				do {
+					// Si hay resultados
+					if ($result = $mysqli->store_result()) {
+						$result->free();
+					}
+				} while ($mysqli->next_result());
+			} else {
+				echo "Error: " . $mysqli->error;
+			}
+
+
+			
+		}
+		
+		
+		echo "</br>SUCCESS";
+		
+		
+		
+		
+		
+		
+		
+		
+	}
+	
 	
 }

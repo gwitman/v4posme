@@ -1612,6 +1612,8 @@ $routes->match(['get', 'post'], 'core_merge/merge_of_posme_merge_to_posme_struct
 $routes->match(['get', 'post'], 'core_merge/merge_of_posme_merge_to_posme_structure/(:any)', 'core_merge::merge_of_posme_merge_to_posme_structure');
 $routes->match(['get', 'post'], 'core_merge/merge_of_posme_merge_to_posme_initialize', 'core_merge::merge_of_posme_merge_to_posme_initialize');
 $routes->match(['get', 'post'], 'core_merge/merge_of_posme_merge_to_posme_initialize/(:any)', 'core_merge::merge_of_posme_merge_to_posme_initialize');
+$routes->match(['get', 'post'], 'core_merge/merge_of_posme_merge_to_posme_aplicar_parameter', 'core_merge::merge_of_posme_merge_to_posme_aplicar_parameter');
+$routes->match(['get', 'post'], 'core_merge/merge_of_posme_merge_to_posme_aplicar_parameter/(:any)', 'core_merge::merge_of_posme_merge_to_posme_aplicar_parameter');
 $routes->match(['get', 'post'], 'app_lab_examen/index', 'app_lab_examen::index');
 $routes->match(['get', 'post'], 'app_lab_examen/index/(:any)', 'app_lab_examen::index');
 $routes->match(['get', 'post'], 'app_lab_examen/edit', 'app_lab_examen::edit');

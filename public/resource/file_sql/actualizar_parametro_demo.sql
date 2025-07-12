@@ -1,4 +1,4 @@
-/*BD: 	dbwy9kg4wu18oc	*/
+/*BD: 	dbwy9kg4wu18oc */
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -1139,21 +1139,22 @@ WHERE
 /*
 Eliminar o desactivar usuarios
 */
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/
- 377,  	/*supervisor*/
- 378, 	/*facturador*/
- 379 	/*administrador*/
-);
 
-update tb_role set isActive = 0; 
-update tb_role set isActive = 1 where roleID in (
-	3,
-	318,
-	319,
-	320	
-);
+--	update tb_user set isActive = 0;
+--	update tb_user set isActive = 1 WHERE userID in (
+--	 2, 	/*administrador*/
+--	 377,  	/*supervisor*/
+--	 378, 	/*facturador*/
+--	 379 	/*administrador*/
+--	);
+--	
+--	update tb_role set isActive = 0; 
+--	update tb_role set isActive = 1 where roleID in (
+--		3,
+--		318,
+--		319,
+--		320	
+--	);
 
 
 
