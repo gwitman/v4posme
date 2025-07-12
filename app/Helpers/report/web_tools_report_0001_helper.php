@@ -441,7 +441,16 @@ function helper_reporteGeneralCreateTable($objDetail,$configColumn,$widht,$titul
 		}
 		$couterIndexColumn++;
 	}
-    $widthTemporal = is_null($widht) ? $widthTemporal : $widht;
+	
+	if(is_null($widht) || $widht == "" || $widht == "0" || $widht == "0px" )
+	{
+		$widthTemporal = $widthTemporal;
+	}
+	else
+	{
+		$widthTemporal = $widht;
+	}
+    
 	//Armar titulo
 	$table1 =  
 	'<table id="'.$idTable.'"  style="

@@ -607,9 +607,18 @@ class core_merge extends _BaseController {
 		
 		$dbDestino			= $this->dbDestino;
 		$dbOrigen			= $this->dbOrigen;
-		$forge 				= $this->forgeOrigen;	
+		$forge 				= $this->forgeOrigen;			
+		$sourceName 		= $this->request->getGet('sourceName');
+		$targetName 		= $this->request->getGet('targetName');
 		
-		
+		if ($sourceName !== null || $targetName !== null ) 
+		{
+			echo "Sincronizndo BASE; ".$sourceName." ---> ".$targetName."</br>";			
+			$dbOrigen->query("USE ".$sourceName.";");
+			$dbDestino->query("USE ".$targetName.";");
+			
+		}
+		 
 		$tablasSync 		= array();
 		array_push($tablasSync,"tb_catalog_item_convertion:catalogItemConvertionID");
 		array_push($tablasSync,"tb_catalog_item:catalogItemID");
@@ -658,7 +667,7 @@ class core_merge extends _BaseController {
 			echo "merge:".$tabla."</br>";
 			$fields 	= $dbOrigen->getFieldNames($tabla);
 			$columns 	= "";
-
+		
 			foreach ($fields as $field) {
 					$columns = $columns.$field.",";
 			}
@@ -668,17 +677,17 @@ class core_merge extends _BaseController {
 			$columns 	= substr($columns,0,strlen($columns)-1);
 			$sql 		= "";
 			$sql 		= sprintf("select ".$columns." ");		
-			$sql 		= $sql.sprintf(" from ".$tabla." ");		
-		
+			$sql 		= $sql.sprintf(" from ".$tabla." ");	
+
 			
 			//Ejecutar Consulta
 			$recordSet = $dbOrigen->query($sql);
 			$recordSet = $recordSet->getResult();
 			
 			
-			$builder 	= $dbDestino->table($tabla);		
+			$builder   = $dbDestino->table($tabla);		
 			$builder->upsertBatch($recordSet);
-		
+			
 		}
 		$recordSet = $dbDestino->query("SET FOREIGN_KEY_CHECKS=1;");
 		
@@ -700,7 +709,17 @@ class core_merge extends _BaseController {
 		$dbDestino			= $this->dbDestino;
 		$dbOrigen			= $this->dbOrigen;
 		$forge 				= $this->forgeOrigen;	
-
+		$sourceName 		= $this->request->getGet('sourceName');
+		$targetName 		= $this->request->getGet('targetName');
+		
+		if ($sourceName !== null || $targetName !== null ) 
+		{
+			echo "Sincronizndo BASE; ".$sourceName." ---> ".$targetName."</br>";			
+			$dbOrigen->query("USE ".$sourceName.";");
+			$dbDestino->query("USE ".$targetName.";");
+			
+		}
+		
 		//Ingreasr los contadores
 		$sql 			= "select * from tb_counter order by counterID";
 		$objListOrigen 	= $dbOrigen->query($sql)->getResult();
@@ -778,7 +797,16 @@ class core_merge extends _BaseController {
 		$dbDestino			= $this->dbDestino;
 		$dbOrigen			= $this->dbOrigen;
 		$forge 				= $this->forgeOrigen;
+		$sourceName 		= $this->request->getGet('sourceName');
+		$targetName 		= $this->request->getGet('targetName');
+		
+		if ($sourceName !== null || $targetName !== null ) 
+		{
+			echo "Sincronizndo BASE; ".$sourceName." ---> ".$targetName."</br>";			
+			$dbOrigen->query("USE ".$sourceName.";");
+			$dbDestino->query("USE ".$targetName.";");
 			
+		}
 		
 		
 		//tb_counter
@@ -862,8 +890,6 @@ class core_merge extends _BaseController {
 		
 		
 	}
-	
-	
 	function merge_of_posme_merge_to_posme_initialize()
 	{
 		
@@ -891,7 +917,7 @@ class core_merge extends _BaseController {
 		
 		
 		$sql 			= "";
-		$sql			= "select 'probando conexion' as x";		
+		$sql			= "select 'probando conexion -- limpia archivos del servidor para disminuir los inodos' as x";		
 		echo $sql;
 		echo "<br/>SUCCESS";	
 		echo "<br/>";	

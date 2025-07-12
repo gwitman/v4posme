@@ -81,7 +81,7 @@ class core_report extends _BaseController
 
             }
             //extraemos los nombres de los parametros q pertenecen a la consulta
-            preg_match_all("/'@([^']+)'/", $findReporting->query, $matches);
+            preg_match_all("/'@([^']+)'/", $findReporting->queryi, $matches);
             $parametrosEnConsulta   = $matches[1];
             $params                 = [];
             foreach ($parametrosEnConsulta as $paramName) {
@@ -89,7 +89,7 @@ class core_report extends _BaseController
                 $params[]       = $valor ?? null;
             }
 
-            $query   = $findReporting->query;
+            $query   = $findReporting->queryi;
             $query   = preg_replace("/'@[^']+'/", "?", $query);
             $result  = $this->Bd_Model->executeRenderMultipleNative($query, $params);
 

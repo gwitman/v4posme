@@ -39,6 +39,6 @@ class Reporting_Model extends Model
     }
 
     public function get_rowByKey($key){
-        return $this->where(['key' => $key, 'isActive'=>1])->first();
+        return $this->where(['keyi' => $key, 'isActive'=>1])->first();
     }
 }

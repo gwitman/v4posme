@@ -20,7 +20,7 @@ use App\Models\Core\Bd_Model;
                     <div class="mb-3 card">
                         <div class="card-header" style="background-color: #00B772">
                             <h3 class="text-center text-white">
-                                <?= $reporting->name ?>
+                                <?= $reporting->namei ?>
                             </h3>
                         </div>
                         <div class="card-body">

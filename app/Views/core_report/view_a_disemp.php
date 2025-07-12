@@ -1,5 +1,5 @@
 <?php
-$title          = $reporting->name;
+$title          = $reporting->namei;
 $encabezados    = '';
 $contador       = 0;
 

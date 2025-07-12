@@ -1334,7 +1334,7 @@ function getBahavioDB($type_company, $key_controller, $key_element, $default_val
         $companyPageSettingModel    = new Company_Page_Setting_Model();
         $findSetting                = $companyPageSettingModel->get_rowByKeyAndControllerAndEmelement($type_company, $key_controller, $key_element);
         if(is_null($findSetting)) return $default_value;
-        else return $findSetting->value;
+        else return $findSetting->valuei;
     }catch (Exception $e) {
         return $default_value;
     }
