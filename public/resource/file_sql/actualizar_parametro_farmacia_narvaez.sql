@@ -1,4 +1,4 @@
-/*BD: 	posme:farmacia_narvaez*/
+/*BD: 	dbkroqnguhldo1:farmacia_narvaez*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

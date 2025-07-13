@@ -1,4 +1,4 @@
-/*BD: 	posme:nica_verde*/
+/*BD: 	dbkroqnguhldo1:nica_verde*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
