@@ -1373,6 +1373,10 @@ class core_merge extends _BaseController {
                 // Borrar ZIP
                 unlink($zipFilePath);
 				
+				  echo "<div style='padding:15px; background:#f6ffed; border-left:5px solid #52c41a; margin:20px 0; font-size:1.1em;'>
+                        ✅ Archivos descomprimidos y ZIP eliminado correctamente.
+                      </div>";
+					  
 				
 				// 1️⃣ Mover archivo individual
 				$archivoOrigen 	= $kkPath . 'app/Config/Routes.php';
@@ -1388,7 +1392,7 @@ class core_merge extends _BaseController {
 						  </div>";
 				}
 				
-				// 2️⃣ Mover carpeta completa
+				// 2️⃣ Mover carpeta completa Controllers
 				$carpetaOrigen 	= $kkPath . 'app/Controllers';
 				$carpetaDestino = $kkPath . '../../../'.$companyName.'/app/Controllers'; // ejemplo
 				if (is_dir($carpetaOrigen)) {
@@ -1398,10 +1402,10 @@ class core_merge extends _BaseController {
 					}
 				
 					// Copia todo
-					recurse_copy($carpetaOrigen, $carpetaDestino);
+					$this->recurse_copy($carpetaOrigen, $carpetaDestino);
 				
 					// Borra carpeta origen
-					//eliminarDirectorio($carpetaOrigen);
+					$this->eliminarDirectorio($carpetaOrigen);
 				
 					echo "<div style='padding:10px;background:#e6f7ff;border-left:5px solid #1890ff;margin:10px 0;'>
 							✔ Carpeta movida a {$carpetaDestino}
@@ -1412,15 +1416,119 @@ class core_merge extends _BaseController {
 							❌ Carpeta no existe: {$carpetaOrigen}
 						  </div>";
 				}
+				
+				
+				// 2️⃣ Mover carpeta completa Models
+				$carpetaOrigen 	= $kkPath . 'app/Models';
+				$carpetaDestino = $kkPath . '../../../'.$companyName.'/app/Models'; // ejemplo
+				if (is_dir($carpetaOrigen)) {
+					// Crea destino si no existe
+					if (!is_dir($carpetaDestino)) {
+						mkdir($carpetaDestino, 0755, true);
+					}
+				
+					// Copia todo
+					$this->recurse_copy($carpetaOrigen, $carpetaDestino);
+				
+					// Borra carpeta origen
+					$this->eliminarDirectorio($carpetaOrigen);
+				
+					echo "<div style='padding:10px;background:#e6f7ff;border-left:5px solid #1890ff;margin:10px 0;'>
+							✔ Carpeta movida a {$carpetaDestino}
+						  </div>";
+				} 
+				else {
+					echo "<div style='padding:10px;background:#fff1f0;border-left:5px solid #ff4d4f;margin:10px 0;'>
+							❌ Carpeta no existe: {$carpetaOrigen}
+						  </div>";
+				}
+				
+				// 2️⃣ Mover carpeta completa Libraries
+				$carpetaOrigen 	= $kkPath . 'app/Libraries';
+				$carpetaDestino = $kkPath . '../../../'.$companyName.'/app/Libraries'; // ejemplo
+				if (is_dir($carpetaOrigen)) {
+					// Crea destino si no existe
+					if (!is_dir($carpetaDestino)) {
+						mkdir($carpetaDestino, 0755, true);
+					}
+				
+					// Copia todo
+					$this->recurse_copy($carpetaOrigen, $carpetaDestino);
+				
+					// Borra carpeta origen
+					$this->eliminarDirectorio($carpetaOrigen);
+				
+					echo "<div style='padding:10px;background:#e6f7ff;border-left:5px solid #1890ff;margin:10px 0;'>
+							✔ Carpeta movida a {$carpetaDestino}
+						  </div>";
+				} 
+				else {
+					echo "<div style='padding:10px;background:#fff1f0;border-left:5px solid #ff4d4f;margin:10px 0;'>
+							❌ Carpeta no existe: {$carpetaOrigen}
+						  </div>";
+				}
+				
+				
+				// 2️⃣ Mover carpeta completa Helpers
+				$carpetaOrigen 	= $kkPath . 'app/Helpers';
+				$carpetaDestino = $kkPath . '../../../'.$companyName.'/app/Helpers'; // ejemplo
+				if (is_dir($carpetaOrigen)) {
+					// Crea destino si no existe
+					if (!is_dir($carpetaDestino)) {
+						mkdir($carpetaDestino, 0755, true);
+					}
+				
+					// Copia todo
+					$this->recurse_copy($carpetaOrigen, $carpetaDestino);
+				
+					// Borra carpeta origen
+					$this->eliminarDirectorio($carpetaOrigen);
+				
+					echo "<div style='padding:10px;background:#e6f7ff;border-left:5px solid #1890ff;margin:10px 0;'>
+							✔ Carpeta movida a {$carpetaDestino}
+						  </div>";
+				} 
+				else {
+					echo "<div style='padding:10px;background:#fff1f0;border-left:5px solid #ff4d4f;margin:10px 0;'>
+							❌ Carpeta no existe: {$carpetaOrigen}
+						  </div>";
+				}
+				
+				
+				// 2️⃣ Mover carpeta completa Views
+				$carpetaOrigen 	= $kkPath . 'app/Views';
+				$carpetaDestino = $kkPath . '../../../'.$companyName.'/app/Views'; // ejemplo
+				if (is_dir($carpetaOrigen)) {
+					// Crea destino si no existe
+					if (!is_dir($carpetaDestino)) {
+						mkdir($carpetaDestino, 0755, true);
+					}
+				
+					// Copia todo
+					$this->recurse_copy($carpetaOrigen, $carpetaDestino);
+				
+					// Borra carpeta origen
+					$this->eliminarDirectorio($carpetaOrigen);
+				
+					echo "<div style='padding:10px;background:#e6f7ff;border-left:5px solid #1890ff;margin:10px 0;'>
+							✔ Carpeta movida a {$carpetaDestino}
+						  </div>";
+				} 
+				else {
+					echo "<div style='padding:10px;background:#fff1f0;border-left:5px solid #ff4d4f;margin:10px 0;'>
+							❌ Carpeta no existe: {$carpetaOrigen}
+						  </div>";
+				}
+				
 
-				// 3️⃣ Borrar carpeta kk de trabajo				
-				//eliminarDirectorio($kkPath."app");
-
+				// 3️⃣ Borrar carpeta de trabajo				
+				$this->eliminarDirectorio($kkPath."app");
+				echo "<div style='padding:10px;background:#e6f7ff;border-left:5px solid #1890ff;margin:10px 0;'>
+							✔ Carpeta eliminada a {".$kkPath."app"."}
+						  </div>";
 
 		
-                echo "<div style='padding:15px; background:#f6ffed; border-left:5px solid #52c41a; margin:20px 0; font-size:1.1em;'>
-                        ✅ Archivos descomprimidos y ZIP eliminado correctamente.
-                      </div>";
+              
                 echo "<div style='padding:15px; background:#e6f7ff; border-left:5px solid #1890ff; margin:20px 0; font-size:1.1em;'>
                         ✔ <strong>Nombre de la compañía:</strong> {$companyName}
                       </div>";
@@ -1439,15 +1547,21 @@ class core_merge extends _BaseController {
                     ⚠ No se subió un archivo ZIP válido.
                   </div>";
         }
+		
+		
+		
+		
+		
     }
 	
-	function recurse_copy($src, $dst) {
+	
+	public function recurse_copy($src, $dst) {
 		$dir = opendir($src);
 		@mkdir($dst);
 		while (false !== ($file = readdir($dir))) {
 			if (($file != '.') && ($file != '..')) {
 				if (is_dir($src . '/' . $file)) {
-					recurse_copy($src . '/' . $file, $dst . '/' . $file);
+					$this->recurse_copy($src . '/' . $file, $dst . '/' . $file);
 				} else {
 					copy($src . '/' . $file, $dst . '/' . $file);
 				}
@@ -1457,7 +1571,7 @@ class core_merge extends _BaseController {
 	}
 
 	
-	function eliminarDirectorio($dir) {
+	public function eliminarDirectorio($dir) {
 		if (!file_exists($dir)) {
 			return true;
 		}
@@ -1466,10 +1580,12 @@ class core_merge extends _BaseController {
 		}
 		foreach (scandir($dir) as $item) {
 			if ($item == '.' || $item == '..') continue;
-			if (!eliminarDirectorio($dir . DIRECTORY_SEPARATOR . $item)) return false;
+			if (!$this->eliminarDirectorio($dir . DIRECTORY_SEPARATOR . $item)) return false;
 		}
 		return rmdir($dir);
 	}
+	
+	
 
 	
 }
