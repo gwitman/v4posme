@@ -1180,6 +1180,7 @@ class core_merge extends _BaseController {
 		$fileSourceName     = "";
 		$targetName         = $this->request->getGet('targetName');
 		$fileTargetName     = "";
+		$syncStructure      = $this->request->getGet('syncStructure');
 
 		// Leer archivo origen
 		$ruta = PATH_FILE_OF_APP . "/../../../public/resource/file_sql/" . $sourceName;
@@ -1284,37 +1285,40 @@ class core_merge extends _BaseController {
 		}
 
 		// Crear procedimientos, vistas, funciones
-		$ruta = PATH_FILE_OF_APP . "/../../../public/resource/file_sql/script_sincronization_procedure_vista_funciones.sql";
-		echo "<h2 style='color:#faad14;'>⚙ Sincronizando estructuras y procedimientos, vistas y triggers...</h2>";
+		if($syncStructure == "1")
+		{
+			$ruta = PATH_FILE_OF_APP . "/../../../public/resource/file_sql/script_sincronization_procedure_vista_funciones.sql";
+			echo "<h2 style='color:#faad14;'>⚙ Sincronizando estructuras y procedimientos, vistas y triggers...</h2>";
 
-		if (!file_exists($ruta)) {
-			return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
-						❌ ERROR: El archivo de procedimientos no existe.
-					</div>";
-		}
+			if (!file_exists($ruta)) {
+				return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+							❌ ERROR: El archivo de procedimientos no existe.
+						</div>";
+			}
 
-		$sqlString = file_get_contents($ruta);
-		if ($sqlString === false) {
-			return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
-						❌ ERROR: No se pudo leer el archivo de procedimientos.
-					</div>";
-		}
+			$sqlString = file_get_contents($ruta);
+			if ($sqlString === false) {
+				return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+							❌ ERROR: No se pudo leer el archivo de procedimientos.
+						</div>";
+			}
 
-		$mysqli = $dbDestino->connID;
-		if ($mysqli->multi_query($sqlString)) {
-			do {
-				if ($result = $mysqli->store_result()) {
-					$result->free();
-				}
-			} while ($mysqli->next_result());
-		} else {
-			echo "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
-					❌ Error ejecutando procedimientos: {$mysqli->error}
-				  </div>";
+			$mysqli = $dbDestino->connID;
+			if ($mysqli->multi_query($sqlString)) {
+				do {
+					if ($result = $mysqli->store_result()) {
+						$result->free();
+					}
+				} while ($mysqli->next_result());
+			} else {
+				echo "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+						❌ Error ejecutando procedimientos: {$mysqli->error}
+					  </div>";
+			}
 		}
 
 		echo "<div style='padding:15px; background:#f6ffed; border-left:5px solid #52c41a; margin:20px 0; font-size:1.2em;'>
-				✅ <strong>Sincronización COMPLETADA con éxito.</strong>
+				✅ <strong>Sincronización COMPLETADA con éxito.  !cargar app nuevamente:".$base_url('core_merge/submitapp')."</strong>
 			  </div>";
 	}
 
@@ -1348,210 +1352,99 @@ class core_merge extends _BaseController {
     function submitprocesapp()
     {
         helper(['filesystem']);
+		$companyName = $this->request->getPost('company_name');
+		$paramFile   = $this->request->getPost('param_file');
+		$zipFile     = $this->request->getFile('zip_file');
 
-        $companyName 	= $this->request->getPost('company_name');
-        $paramFile 		= $this->request->getPost('param_file');
-        $zipFile 		= $this->request->getFile('zip_file');
+		// Crear carpeta de trabajo
+		$kkPath = WRITEPATH . 'uploads/';
+		if (!is_dir($kkPath)) {
+			mkdir($kkPath, 0755, true);
+		}
 
-        // Crear carpeta de trabajo
-        $kkPath = WRITEPATH . 'uploads/';
-        if (!is_dir($kkPath)) {
-            mkdir($kkPath, 0755, true);
-        }
+		$descomprimido = false;
 
-       
-        // Subir archivo ZIP y descomprimir
-        if ($zipFile->isValid()) {
-            $zipFile->move($kkPath);
-            $zipFilePath = $kkPath . $zipFile->getName();
-		
-            $zip = new \ZipArchive;
-            if ($zip->open($zipFilePath) === TRUE) {
-                $zip->extractTo($kkPath);
-                $zip->close();
-		
-                // Borrar ZIP
-                unlink($zipFilePath);
-				
-				  echo "<div style='padding:15px; background:#f6ffed; border-left:5px solid #52c41a; margin:20px 0; font-size:1.1em;'>
-                        ✅ Archivos descomprimidos y ZIP eliminado correctamente.
-                      </div>";
-					  
-				
-				// 1️⃣ Mover archivo individual
-				$archivoOrigen 	= $kkPath . 'app/Config/Routes.php';
-				$archivoDestino = $kkPath . '../../../'.$companyName.'/app/Config/Routes.php'; // ejemplo
-				if (file_exists($archivoOrigen)) {
-					rename($archivoOrigen, $archivoDestino);
-					echo "<div style='padding:10px;background:#e6f7ff;border-left:5px solid #1890ff;margin:10px 0;'>
-							✔ Archivo movido a {$archivoDestino}
-						  </div>";
-				} else {
-					echo "<div style='padding:10px;background:#fff1f0;border-left:5px solid #ff4d4f;margin:10px 0;'>
-							❌ Archivo no existe: {$archivoOrigen}
-						  </div>";
-				}
-				
-				// 2️⃣ Mover carpeta completa Controllers
-				$carpetaOrigen 	= $kkPath . 'app/Controllers';
-				$carpetaDestino = $kkPath . '../../../'.$companyName.'/app/Controllers'; // ejemplo
-				if (is_dir($carpetaOrigen)) {
-					// Crea destino si no existe
-					if (!is_dir($carpetaDestino)) {
-						mkdir($carpetaDestino, 0755, true);
-					}
-				
-					// Copia todo
-					$this->recurse_copy($carpetaOrigen, $carpetaDestino);
-				
-					// Borra carpeta origen
-					$this->eliminarDirectorio($carpetaOrigen);
-				
-					echo "<div style='padding:10px;background:#e6f7ff;border-left:5px solid #1890ff;margin:10px 0;'>
-							✔ Carpeta movida a {$carpetaDestino}
-						  </div>";
-				} 
-				else {
-					echo "<div style='padding:10px;background:#fff1f0;border-left:5px solid #ff4d4f;margin:10px 0;'>
-							❌ Carpeta no existe: {$carpetaOrigen}
-						  </div>";
-				}
-				
-				
-				// 2️⃣ Mover carpeta completa Models
-				$carpetaOrigen 	= $kkPath . 'app/Models';
-				$carpetaDestino = $kkPath . '../../../'.$companyName.'/app/Models'; // ejemplo
-				if (is_dir($carpetaOrigen)) {
-					// Crea destino si no existe
-					if (!is_dir($carpetaDestino)) {
-						mkdir($carpetaDestino, 0755, true);
-					}
-				
-					// Copia todo
-					$this->recurse_copy($carpetaOrigen, $carpetaDestino);
-				
-					// Borra carpeta origen
-					$this->eliminarDirectorio($carpetaOrigen);
-				
-					echo "<div style='padding:10px;background:#e6f7ff;border-left:5px solid #1890ff;margin:10px 0;'>
-							✔ Carpeta movida a {$carpetaDestino}
-						  </div>";
-				} 
-				else {
-					echo "<div style='padding:10px;background:#fff1f0;border-left:5px solid #ff4d4f;margin:10px 0;'>
-							❌ Carpeta no existe: {$carpetaOrigen}
-						  </div>";
-				}
-				
-				// 2️⃣ Mover carpeta completa Libraries
-				$carpetaOrigen 	= $kkPath . 'app/Libraries';
-				$carpetaDestino = $kkPath . '../../../'.$companyName.'/app/Libraries'; // ejemplo
-				if (is_dir($carpetaOrigen)) {
-					// Crea destino si no existe
-					if (!is_dir($carpetaDestino)) {
-						mkdir($carpetaDestino, 0755, true);
-					}
-				
-					// Copia todo
-					$this->recurse_copy($carpetaOrigen, $carpetaDestino);
-				
-					// Borra carpeta origen
-					$this->eliminarDirectorio($carpetaOrigen);
-				
-					echo "<div style='padding:10px;background:#e6f7ff;border-left:5px solid #1890ff;margin:10px 0;'>
-							✔ Carpeta movida a {$carpetaDestino}
-						  </div>";
-				} 
-				else {
-					echo "<div style='padding:10px;background:#fff1f0;border-left:5px solid #ff4d4f;margin:10px 0;'>
-							❌ Carpeta no existe: {$carpetaOrigen}
-						  </div>";
-				}
-				
-				
-				// 2️⃣ Mover carpeta completa Helpers
-				$carpetaOrigen 	= $kkPath . 'app/Helpers';
-				$carpetaDestino = $kkPath . '../../../'.$companyName.'/app/Helpers'; // ejemplo
-				if (is_dir($carpetaOrigen)) {
-					// Crea destino si no existe
-					if (!is_dir($carpetaDestino)) {
-						mkdir($carpetaDestino, 0755, true);
-					}
-				
-					// Copia todo
-					$this->recurse_copy($carpetaOrigen, $carpetaDestino);
-				
-					// Borra carpeta origen
-					$this->eliminarDirectorio($carpetaOrigen);
-				
-					echo "<div style='padding:10px;background:#e6f7ff;border-left:5px solid #1890ff;margin:10px 0;'>
-							✔ Carpeta movida a {$carpetaDestino}
-						  </div>";
-				} 
-				else {
-					echo "<div style='padding:10px;background:#fff1f0;border-left:5px solid #ff4d4f;margin:10px 0;'>
-							❌ Carpeta no existe: {$carpetaOrigen}
-						  </div>";
-				}
-				
-				
-				// 2️⃣ Mover carpeta completa Views
-				$carpetaOrigen 	= $kkPath . 'app/Views';
-				$carpetaDestino = $kkPath . '../../../'.$companyName.'/app/Views'; // ejemplo
-				if (is_dir($carpetaOrigen)) {
-					// Crea destino si no existe
-					if (!is_dir($carpetaDestino)) {
-						mkdir($carpetaDestino, 0755, true);
-					}
-				
-					// Copia todo
-					$this->recurse_copy($carpetaOrigen, $carpetaDestino);
-				
-					// Borra carpeta origen
-					$this->eliminarDirectorio($carpetaOrigen);
-				
-					echo "<div style='padding:10px;background:#e6f7ff;border-left:5px solid #1890ff;margin:10px 0;'>
-							✔ Carpeta movida a {$carpetaDestino}
-						  </div>";
-				} 
-				else {
-					echo "<div style='padding:10px;background:#fff1f0;border-left:5px solid #ff4d4f;margin:10px 0;'>
-							❌ Carpeta no existe: {$carpetaOrigen}
-						  </div>";
-				}
-				
+		// 👉 Si viene archivo ZIP
+		if ($zipFile && $zipFile->isValid()) {
+			$zipFile->move($kkPath);
+			$zipFilePath = $kkPath . $zipFile->getName();
 
-				// 3️⃣ Borrar carpeta de trabajo				
-				$this->eliminarDirectorio($kkPath."app");
+			$zip = new \ZipArchive;
+			if ($zip->open($zipFilePath) === TRUE) {
+				$zip->extractTo($kkPath);
+				$zip->close();
+				unlink($zipFilePath);
+
+				echo "<div style='padding:15px; background:#f6ffed; border-left:5px solid #52c41a; margin:20px 0;'>
+						✅ Archivos descomprimidos y ZIP eliminado correctamente.
+					  </div>";
+				$descomprimido = true;
+			} else {
+				echo "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+						❌ Error al descomprimir el archivo ZIP.
+					  </div>";
+				return;
+			}
+		} 
+		else 
+		{
+			echo "<div style='padding:10px; background:#fffbe6; border-left:5px solid #faad14; margin:10px 0;'>
+					⚠ No se subió ZIP. Usando archivos existentes en carpeta de trabajo.
+				  </div>";
+		}
+
+		// ✅ Si hay archivos existentes o se descomprimió, hacer copias:
+		// 1️⃣ Archivo individual Routes.php
+		$archivoOrigen  = $kkPath . 'app/Config/Routes.php';
+		$archivoDestino = $kkPath . '../../../' . $companyName . '/app/Config/Routes.php';
+		if (file_exists($archivoOrigen)) {
+			copy($archivoOrigen, $archivoDestino);
+			echo "<div style='padding:10px;background:#e6f7ff;border-left:5px solid #1890ff;margin:10px 0;'>
+					✔ Archivo copiado a {$archivoDestino}
+				  </div>";
+		} else {
+			echo "<div style='padding:10px;background:#fff1f0;border-left:5px solid #ff4d4f;margin:10px 0;'>
+					❌ Archivo no existe: {$archivoOrigen}
+				  </div>";
+		}
+
+		// ✅ Carpetas a copiar
+		$carpetas = ['Controllers', 'Models', 'Libraries', 'Helpers', 'Views'];
+
+		foreach ($carpetas as $carpeta) {
+			$origen  = $kkPath . 'app/' . $carpeta;
+			$destino = $kkPath . '../../../' . $companyName . '/app/' . $carpeta;
+
+			if (is_dir($origen)) {
+				if (!is_dir($destino)) {
+					mkdir($destino, 0755, true);
+				}
+
+				$this->recurse_copy($origen, $destino);
+
 				echo "<div style='padding:10px;background:#e6f7ff;border-left:5px solid #1890ff;margin:10px 0;'>
-							✔ Carpeta eliminada a {".$kkPath."app"."}
-						  </div>";
+						✔ Carpeta copiada a {$destino}
+					  </div>";
+			} else {
+				echo "<div style='padding:10px;background:#fff1f0;border-left:5px solid #ff4d4f;margin:10px 0;'>
+						❌ Carpeta no existe: {$origen}
+					  </div>";
+			}
+		}
 
-		
-              
-                echo "<div style='padding:15px; background:#e6f7ff; border-left:5px solid #1890ff; margin:20px 0; font-size:1.1em;'>
-                        ✔ <strong>Nombre de la compañía:</strong> {$companyName}
-                      </div>";
-                echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
-                        🔗 <a href='" . base_url('core_merge/merge_of_posme_merge_to_posme_aplicar_parameter?sourceName=actualizar_parametro_001_development_posme.sql&targetName='.$paramFile.''). "'>👉 Clic aquí para procesar parámetros y datos</a>
-                      </div>";
-					  
-					  
-            } else {
-                echo "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
-                        ❌ Error al descomprimir el archivo ZIP.
-                      </div>";
-            }
-        } else {
-            echo "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
-                    ⚠ No se subió un archivo ZIP válido.
-                  </div>";
-        }
-		
-		
-		
-		
-		
+		// ✅ Elimina carpeta app de trabajo
+		//$this->eliminarDirectorio($kkPath . 'app');
+		//echo "<div style='padding:10px;background:#f6ffed;border-left:5px solid #52c41a;margin:10px 0;'>
+		//		✔ Carpeta temporal eliminada.
+		//	  </div>";
+
+		// ✅ Mostrar enlace final
+		echo "<div style='padding:15px; background:#e6f7ff; border-left:5px solid #1890ff; margin:20px 0; font-size:1.1em;'>
+				✔ <strong>Nombre de la compañía:</strong> {$companyName}
+			  </div>";
+		echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
+				🔗 <a href='" . base_url('core_merge/merge_of_posme_merge_to_posme_aplicar_parameter?sourceName=actualizar_parametro_001_development_posme.sql&targetName=' . $paramFile) . "&syncStructure=0'>👉 Clic aquí para procesar parámetros y datos</a>
+			  </div>";
     }
 	
 	
