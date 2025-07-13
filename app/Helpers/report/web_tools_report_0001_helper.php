@@ -148,7 +148,7 @@ function helper_reporteGeneralCreateFirma($firma,$column,$width, $elementId = 'm
 					<th colspan="'.$column.'" >'.date("Y-m-d H:i:s").' '.$firma.' posMe</th>
 				</tr>
 				<tr>
-					<th colspan="'.$column.'" ><a id="btnExportToExcel" href="#" >export to excel</a></th>
+					<th colspan="'.$column.'" ><a id="btnExportToExcel'.$elementId.'" href="#" >export to excel</a></th>
 				</tr>
 			</thead>
 		</table>
@@ -158,7 +158,7 @@ function helper_reporteGeneralCreateFirma($firma,$column,$width, $elementId = 'm
 		<script>
 			$(document).ready(function() {
 				
-				  $(document).on("click","#btnExportToExcel",function(e,o){
+				  $(document).on("click","#btnExportToExcel'.$elementId.'",function(e,o){
 					  
 						  
 						  // Obtener el contenido HTML de la tabla

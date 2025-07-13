@@ -54,9 +54,10 @@ if (count($objDetail)>0){
         $tableTitle     = "";
         $tableWidth     = '0px';
         $reportStyle    = 'horizontal';
+        $id             = $key - 1;
         foreach ($value as $k => $v) {
             if ($k == 0) {
-                $configColumn["$k"]["IdTable"]  = "table".$key;
+                $configColumn["$k"]["IdTable"]  = "table".$id;
                 $tableWidth                     = $v->tableWidth;
                 $reportStyle                    = strlen($v->reportStyle) > 0 ? $v->reportStyle : "horizontal";
                 $tableTitle                     = $v->tableTitle;
@@ -83,9 +84,9 @@ if (count($objDetail)>0){
             $configColumn["$k"]["Alineacion"] 				= $v->type == "Number" ? "Right": "Left";
         }
         if ($reportStyle == 'horizontal'){
-            $resultado[] = helper_reporteGeneralCreateTable($objDetail[$key - 1], $configColumn, $tableWidth, $tableTitle, NULL);
+            $resultado[] = helper_reporteGeneralCreateTable($objDetail[$id], $configColumn, $tableWidth, $tableTitle, NULL);
         }else{
-            $resultado[] = helper_reporteGeneralCreateTableVertical($objDetail[$key - 1][0], $configColumn, null, $tableWidth);
+            $resultado[] = helper_reporteGeneralCreateTableVertical($objDetail[$id][0], $configColumn, null, $tableWidth);
         }
 
     }
