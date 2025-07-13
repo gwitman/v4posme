@@ -1325,17 +1325,43 @@ class core_merge extends _BaseController {
 
 	function submitapp()
     {
+		$dir 		= "../../";
+		$folders 	= array_filter(glob($dir . '*'), 'is_dir');
+
+		//Lista de companiñas
+		$companys	= "";
+		foreach ($folders as $folder) {
+			// Extrae solo el nombre de la carpeta
+			$folderName = basename($folder);
+			$companys 	=  $companys.'<option value="' . htmlspecialchars($folderName) . '">' . htmlspecialchars($folderName) . '</option>';
+		}
+
+
+		//Lista de parametros sql
+		$dir 		= "../../public/public/resource/file_sql/";
+		$files 		= glob($dir . 'actualizar_parametro*.sql'); // Busca archivos que empiecen con 'parametro' y terminen en .sql
+		$sqlfile 	= "";
+		foreach ($files as $file) {
+			$fileName = basename($file);
+			$sqlfile  .= '<option value="' . htmlspecialchars($fileName) . '">' . htmlspecialchars($fileName) . '</option>';
+		}
+
+
         echo '
         <div style="padding:20px; max-width:600px; margin:auto; border:1px solid #d9d9d9; border-radius:5px;">
             <h2 style="color:#1890ff;">🚀 Subir parámetros y archivos ZIP</h2>
             <form method="post" action="' . base_url('core_merge/submitprocesapp') . '" enctype="multipart/form-data">
                 <div style="margin-bottom:15px;">
                     <label>Nombre de carpeta ftp:</label><br>
-                    <input type="text" name="company_name" style="width:100%; padding:8px; border:1px solid #d9d9d9; border-radius:4px;">
+					<select name="company_name" style="width:100%; padding:8px; border:1px solid #d9d9d9; border-radius:4px;">
+						'.$companys.'
+					</select>                    
                 </div>
                 <div style="margin-bottom:15px;">
-                    <label>Nombre de archivo .sql de parametro:</label><br>
-                    <input type="text" name="param_file" style="width:100%; padding:8px; border:1px solid #d9d9d9; border-radius:4px;">
+                    <label>Nombre de archivo .sql de parametro:</label><br>                    
+					<select name="param_file" style="width:100%; padding:8px; border:1px solid #d9d9d9; border-radius:4px;">
+						'.$sqlfile.'
+					</select> 
                 </div>
                 <div style="margin-bottom:15px;">
                     <label>Archivo ZIP:</label><br>
