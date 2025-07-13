@@ -1,4 +1,4 @@
-/*use dbbkibmwpxtzpt ;*/
+/*BD: 	dbbkibmwpxtzpt:ferreteria_JYM*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

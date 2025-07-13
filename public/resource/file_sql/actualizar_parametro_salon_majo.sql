@@ -1,4 +1,4 @@
-use dbzrgnyjgcvdbd;
+/*BD: 	dbzrgnyjgcvdbd:salon_majo*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

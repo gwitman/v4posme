@@ -1,4 +1,4 @@
-use dblkzg9eyznwmg;
+/*BD: 	dblkzg9eyznwmg:glomcuts*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

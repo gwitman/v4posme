@@ -1,4 +1,4 @@
-use dbjqgzzu2ai7rh ;
+/*BD: 	dbjqgzzu2ai7rh:leon_urritia_comida*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

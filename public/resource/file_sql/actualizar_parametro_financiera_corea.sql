@@ -1,4 +1,4 @@
-use dbroqdxsicmrel;
+/*BD: 	dbroqdxsicmrel:financiera_corea*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

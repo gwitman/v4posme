@@ -1,4 +1,4 @@
-/*use dbtimkzs6wytp0;*/
+/*BD: 	dbtimkzs6wytp0:panderia_peralta*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

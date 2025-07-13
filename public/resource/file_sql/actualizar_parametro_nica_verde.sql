@@ -1,4 +1,4 @@
-use dbw5xhtwscwdhx;
+/*BD: 	dbw5xhtwscwdhx:neca_verde*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

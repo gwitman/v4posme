@@ -1,4 +1,4 @@
-use dbn89s36gqxmzq;
+/*BD: 	dbn89s36gqxmzq:farma_ticuantepe*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

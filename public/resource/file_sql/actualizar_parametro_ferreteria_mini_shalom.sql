@@ -1,4 +1,4 @@
-use db0yrgpj7ezpk1;
+/*BD: 	db0yrgpj7ezpk1:ferreteria_shalom*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

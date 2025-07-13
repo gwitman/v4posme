@@ -1,4 +1,4 @@
-use db7seekr7fnfju;
+/*BD: 	db7seekr7fnfju:farma_jireth*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

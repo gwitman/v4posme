@@ -1,4 +1,4 @@
-use db22qmjrdbnj4a;
+/*BD: 	db22qmjrdbnj4a:leon_urritia*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

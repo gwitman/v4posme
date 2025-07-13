@@ -1,4 +1,4 @@
-use dbybgupmy9tjqq;
+/*BD: 	dbybgupmy9tjqq:pasteleria_lizzette*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

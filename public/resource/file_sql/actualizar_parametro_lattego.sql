@@ -1,4 +1,4 @@
-/*use dbdg4merwayvpa;*/
+/*BD: 	dbdg4merwayvpa:lattego*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

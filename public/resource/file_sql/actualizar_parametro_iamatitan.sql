@@ -1,4 +1,4 @@
-/*use db9m2jugkxmeqd;*/
+/*BD: 	db9m2jugkxmeqd:iamatitan*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

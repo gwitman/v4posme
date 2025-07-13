@@ -1,4 +1,4 @@
-/*use dby1e9sk0gqaux ;*/
+/*BD: 	dby1e9sk0gqaux:taller_rostran*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

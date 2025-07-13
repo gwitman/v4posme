@@ -1,4 +1,4 @@
-/*use dbkvvapxecvn1z;*/
+/*BD: 	dbkvvapxecvn1z:elektro_clima*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

@@ -1,3 +1,5 @@
+/*BD: 	posme:farma_byb*/
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "2023-12-25" 
 WHERE 

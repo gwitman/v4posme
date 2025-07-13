@@ -1,4 +1,4 @@
-/*BD	dbejsigav9rp6v  */
+/*BD: 	dbejsigav9rp6v:FIDLOCAL  */
 
 	
 UPDATE  tb_company_parameter,tb_parameter SET 

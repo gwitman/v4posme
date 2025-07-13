@@ -1,4 +1,4 @@
-
+/*BD: 	posme:negocios_hermanandez*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

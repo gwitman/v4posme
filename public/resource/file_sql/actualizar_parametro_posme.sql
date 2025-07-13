@@ -1,4 +1,4 @@
-/*BD	dbs3obkhhc1pgu  */
+/*BD	dbs3obkhhc1pgu:posme  */
 
 	
 UPDATE  tb_company_parameter,tb_parameter SET 

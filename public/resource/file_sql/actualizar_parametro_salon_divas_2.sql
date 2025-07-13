@@ -1,4 +1,4 @@
-use dbkroqnguhldo1;
+/*BD: 	dbkroqnguhldo1:salon_divas_2*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

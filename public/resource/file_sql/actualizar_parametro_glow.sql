@@ -1,4 +1,4 @@
-/*use dbtpmgetagnptq ;*/
+/*BD: 	dbtpmgetagnptq:glow*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

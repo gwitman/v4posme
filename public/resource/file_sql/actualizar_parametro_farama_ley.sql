@@ -1,4 +1,4 @@
-use db5qqn2mvepnkv ;
+/*BD: 	db5qqn2mvepnkv:farma_ley*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

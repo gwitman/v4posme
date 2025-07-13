@@ -1,4 +1,4 @@
-use dbg7xh7e0dxauj ;
+/*BD: 	dbg7xh7e0dxauj:cori*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

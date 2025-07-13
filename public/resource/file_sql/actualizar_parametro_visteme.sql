@@ -1,4 +1,4 @@
-/*dbmjtoa2dl3hcu*/
+/*BD: 	dbmjtoa2dl3hcu:vistme*/
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 

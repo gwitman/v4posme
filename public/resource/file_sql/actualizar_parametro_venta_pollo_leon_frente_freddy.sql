@@ -1,4 +1,4 @@
-use dbyz6ido2gqfn4;
+/*BD: 	dbyz6ido2gqfn4:pollos_adrian*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

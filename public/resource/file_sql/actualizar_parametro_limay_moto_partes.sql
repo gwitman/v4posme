@@ -1,4 +1,4 @@
-/*use dbi0ksp7sknxxa;*/
+/*BD: 	dbi0ksp7sknxxa:moto_partes*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

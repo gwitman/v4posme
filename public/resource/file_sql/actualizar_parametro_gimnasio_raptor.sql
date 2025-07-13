@@ -1,3 +1,5 @@
+/*BD: 	posme:gimnasio_raptor*/
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "154" 
 WHERE 

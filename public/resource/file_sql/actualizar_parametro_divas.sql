@@ -1,4 +1,4 @@
-/*use dbcz6tuq9bx0dg;*/
+/*BD: 	dbcz6tuq9bx0dg:divas*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

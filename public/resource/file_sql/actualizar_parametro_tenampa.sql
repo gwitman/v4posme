@@ -1,4 +1,4 @@
-use dbkxs0cvuoq4zw;
+/*BD: 	dbkxs0cvuoq4zw:tenampa*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

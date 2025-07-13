@@ -1,4 +1,4 @@
-use dbjznvjrsdpypf;
+/*BD: 	dbjznvjrsdpypf:globalpro*/
 
 
 /******************************************************************/ 

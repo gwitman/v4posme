@@ -1,4 +1,4 @@
-use db0bv6tjmbcafh;
+/*BD: 	db0bv6tjmbcafh:cristo_rey*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

@@ -1,4 +1,4 @@
-/*BD: 	dbno63gzawe8bk	*/
+/*BD: 	dbno63gzawe8bk:public	*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

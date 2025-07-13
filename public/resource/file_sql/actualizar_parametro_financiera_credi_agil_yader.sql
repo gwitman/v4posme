@@ -1,4 +1,4 @@
-use dbgmnukewvzncj;
+/*BD: 	dbgmnukewvzncj:financiera_credit_aguil*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

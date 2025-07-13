@@ -1,4 +1,4 @@
-use dbvifmzapvsigf;
+/*BD: 	dbvifmzapvsigf:real_state*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

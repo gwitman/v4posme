@@ -1,4 +1,4 @@
-/*use dbsvgzgcemhykg ;*/
+/*BD: 	dbsvgzgcemhykg:market_larreynaga*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

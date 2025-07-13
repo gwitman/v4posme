@@ -1,4 +1,4 @@
-use db73spii9ggork;
+/*BD: 	db73spii9ggork:repuesto_puritos*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
