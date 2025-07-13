@@ -2,5 +2,5 @@
 Prop3=19,2
 [InternetShortcut]
 IDList=
-URL=https://posme.net/v4posme/public/public/core_merge/merge_of_posme_merge_to_posme_aplicar_parameter?sourceName=origenDB&targetName=destinoDB
+URL=https://posme.net/v4posme/public/public/core_merge/merge_of_posme_merge_to_posme_aplicar_parameter?sourceName=actualizar_parametro_001_development_posme.sql&targetName=actualizar_parametro_demo.sql
 HotKey=0

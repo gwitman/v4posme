@@ -1157,152 +1157,169 @@ class core_merge extends _BaseController {
 		
 	}
 	
+	
+	
 	function merge_of_posme_merge_to_posme_aplicar_parameter()
 	{
-		
-		
-		$this->dbOrigen							= \Config\Database::connect("merge");
-		$this->sourceName						= DB_BDNAME_MERGE;
-		$this->dbDestino						= \Config\Database::connect();
-		$this->targetName						= DB_BDNAME;
-		
-		
-		$this->dbConectTarget 					= $this->dbDestino;
-		$this->dbConectSource					= $this->dbOrigen;
-		$this->dbConectInformationSchema		= \Config\Database::connect("information_schema");		
-		$this->forgeOrigen						= \Config\Database::forge($this->dbOrigen);	
-		$this->forgeTarget						= \Config\Database::forge($this->dbConectTarget);	
-		
-		$dbDestino			= $this->dbDestino;
-		$dbOrigen			= $this->dbOrigen;
-		$forge 				= $this->forgeOrigen;
-		$sourceName 		= $this->request->getGet('sourceName');
-		$targetName 		= $this->request->getGet('targetName');
-		
-		
-		
-		//Leer el archivo origen y obtener base de datos
-		$ruta = PATH_FILE_OF_APP."/../../../public/resource/file_sql/".$sourceName;
+		// Conexiones y configuración
+		$this->dbOrigen                         = \Config\Database::connect("merge");
+		$this->sourceName                       = DB_BDNAME_MERGE;
+		$this->dbDestino                        = \Config\Database::connect();
+		$this->targetName                       = DB_BDNAME;
+
+		$this->dbConectTarget                   = $this->dbDestino;
+		$this->dbConectSource                   = $this->dbOrigen;
+		$this->dbConectInformationSchema        = \Config\Database::connect("information_schema");
+		$this->forgeOrigen                      = \Config\Database::forge($this->dbOrigen);
+		$this->forgeTarget                      = \Config\Database::forge($this->dbConectTarget);
+
+		$dbDestino          = $this->dbDestino;
+		$dbOrigen           = $this->dbOrigen;
+		$forge              = $this->forgeOrigen;
+		$sourceName         = $this->request->getGet('sourceName');
+		$fileSourceName     = "";
+		$targetName         = $this->request->getGet('targetName');
+		$fileTargetName     = "";
+
+		// Leer archivo origen
+		$ruta = PATH_FILE_OF_APP . "/../../../public/resource/file_sql/" . $sourceName;
 		if (!file_exists($ruta)) {
-			return "ERROR: El archivo origen no existe.</br>";
+			return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+						❌ ERROR: El archivo origen no existe.
+					</div>";
 		}
-		
+
 		$sqlString = file_get_contents($ruta);
-		
 		if ($sqlString === false) {
-			return "ERROR: No se pudo leer el archivo origen.</br>";
+			return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+						❌ ERROR: No se pudo leer el archivo origen.
+					</div>";
 		}
-		
-		//Obtener nombre de base de datos
+
+		// Obtener nombre de base de datos origen
 		$pattern = '/\/\*BD:\s*(.*?)\s*\*\//';
 		if (preg_match($pattern, $sqlString, $matches)) {
 			$sourceName = trim($matches[1]);
-			echo "La base de datos origen es: " . $sourceName."</br>";
+			echo "<div style='padding:10px; background:#e6f7ff; border-left:5px solid #1890ff; margin:10px 0;'>
+					✔ Base de datos ORIGEN detectada: <strong>{$sourceName}</strong>
+				  </div>";
 		} else {
-			echo "No se encontró el marcador origen /*BD: ... */ </br> ";
+			echo "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+					⚠ No se encontró el marcador origen <code>/*BD: ... */</code>.
+				  </div>";
 		}
-		
-		
-		//Lee archivo destino y obtener base de datos
-		$ruta = PATH_FILE_OF_APP."/../../../public/resource/file_sql/".$targetName;
+
+		// Leer archivo destino
+		$ruta = PATH_FILE_OF_APP . "/../../../public/resource/file_sql/" . $targetName;
 		if (!file_exists($ruta)) {
-			return "ERROR: El archivo destino no existe. </br>";
+			return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+						❌ ERROR: El archivo destino no existe.
+					</div>";
 		}
-		
+
 		$sqlStringDestino = file_get_contents($ruta);
-		
-		if ($sqlString === false) {
-			return "ERROR: No se pudo leer el archivo destino. </br>";
+		if ($sqlStringDestino === false) {
+			return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+						❌ ERROR: No se pudo leer el archivo destino.
+					</div>";
 		}
-		
-		//Obtener nombre de base de datos
-		$pattern = '/\/\*BD:\s*(.*?)\s*\*\//';
+
+		// Obtener nombre de base de datos destino
 		if (preg_match($pattern, $sqlStringDestino, $matches)) {
 			$targetName = trim($matches[1]);
-			echo "La base de datos destino es: " . $targetName."</br>";
+			echo "<div style='padding:10px; background:#e6f7ff; border-left:5px solid #52c41a; margin:10px 0;'>
+					✔ Base de datos DESTINO detectada: <strong>{$targetName}</strong>
+				  </div>";
 		} else {
-			echo "No se encontró el marcador  destino /*BD: ... */ </br>";
+			echo "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+					⚠ No se encontró el marcador destino <code>/*BD: ... */</code>.
+				  </div>";
 		}
-		
-		
-		if ($sourceName !== null || $targetName !== null ) 
-		{
-			echo "Sincronizndo BASE; ".$sourceName." ---> ".$targetName."</br>";						
-			$dbDestino->query("USE ".$targetName.";");
-			
-			echo "</br><h1>String Origen</h1></br>";
-			echo "</br><h1>String Destino</h1></br>";
-			
-			//echo "</br><h1>String Origen</h1>".$sqlString."</br>";
-			//echo "</br><h1>String Destino</h1>".$sqlStringDestino."</br>";
-			
-			//Ejecutar las consultas default
-			$mysqli = $dbDestino->connID; // conexión mysqli nativa
-			if ($mysqli->multi_query($sqlString)) 
-			{
+
+		// Si ambas BD se encontraron
+		if ($sourceName !== null || $targetName !== null) {
+			echo "<div style='padding:10px; background:#f6ffed; border-left:5px solid #52c41a; margin:10px 0;'>
+					🔄 Sincronizando: <strong>{$sourceName}</strong> &rarr; <strong>{$targetName}</strong>
+				  </div>";
+
+			$dbDestino->query("USE " . (explode(":", $targetName)[0]) . ";");
+
+			echo "<h2 style='color:#1890ff;'>📝 String Origen:</h2>";
+			echo "<pre style='background:#f5f5f5; padding:10px; border:1px solid #d9d9d9; overflow:auto; max-height:300px;'>" .
+				htmlentities($sqlString) .
+				"</pre>";
+
+			echo "<h2 style='color:#1890ff;'>📝 String Destino:</h2>";
+			echo "<pre style='background:#f5f5f5; padding:10px; border:1px solid #d9d9d9; overflow:auto; max-height:300px;'>" .
+				htmlentities($sqlStringDestino) .
+				"</pre>";
+
+			// Ejecutar consultas origen
+			$mysqli = $dbDestino->connID;
+			if ($mysqli->multi_query($sqlString)) {
 				do {
-					// Si hay resultados
 					if ($result = $mysqli->store_result()) {
 						$result->free();
 					}
 				} while ($mysqli->next_result());
 			} else {
-				echo "Error: " . $mysqli->error;
+				echo "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+						❌ Error ejecutando origen: {$mysqli->error}
+					  </div>";
 			}
-			
-			
-			//Ejecutar las consultas de company
-			$mysqli = $dbDestino->connID; // conexión mysqli nativa
-			if ($mysqli->multi_query($sqlStringDestino)) 
-			{
+
+			// Ejecutar consultas destino
+			$mysqli = $dbDestino->connID;
+			if ($mysqli->multi_query($sqlStringDestino)) {
 				do {
-					// Si hay resultados
 					if ($result = $mysqli->store_result()) {
 						$result->free();
 					}
 				} while ($mysqli->next_result());
 			} else {
-				echo "Error: " . $mysqli->error;
+				echo "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+						❌ Error ejecutando destino: {$mysqli->error}
+					  </div>";
 			}
-		
-		
-			
 		}
-		
-		
-		//Crear procedimientos, vistas, funciones
-		$ruta = PATH_FILE_OF_APP."/../../../public/resource/file_sql/script_sincronization_procedure_vista_funciones.sql";
-		echo "</br>Sincronizacion de estructuras y procedimientos, vistas y triger";
+
+		// Crear procedimientos, vistas, funciones
+		$ruta = PATH_FILE_OF_APP . "/../../../public/resource/file_sql/script_sincronization_procedure_vista_funciones.sql";
+		echo "<h2 style='color:#faad14;'>⚙ Sincronizando estructuras y procedimientos, vistas y triggers...</h2>";
+
 		if (!file_exists($ruta)) {
-			return "ERROR: El archivo origen no existe procedure.</br>";
+			return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+						❌ ERROR: El archivo de procedimientos no existe.
+					</div>";
 		}
 
 		$sqlString = file_get_contents($ruta);
-
 		if ($sqlString === false) {
-			return "ERROR: No se pudo leer el archivo procedure.</br>";
+			return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+						❌ ERROR: No se pudo leer el archivo de procedimientos.
+					</div>";
 		}
-		
-		$mysqli = $dbDestino->connID; // conexión mysqli nativa
-		if ($mysqli->multi_query($sqlString)) 
-		{
+
+		$mysqli = $dbDestino->connID;
+		if ($mysqli->multi_query($sqlString)) {
 			do {
-				// Si hay resultados
 				if ($result = $mysqli->store_result()) {
 					$result->free();
 				}
 			} while ($mysqli->next_result());
 		} else {
-			echo "Error: " . $mysqli->error;
+			echo "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+					❌ Error ejecutando procedimientos: {$mysqli->error}
+				  </div>";
 		}
-		
-		
-		
-		
-		echo "</br><h1>SUCCESS</h1></br>";
-		
-		
+
+		echo "<div style='padding:15px; background:#f6ffed; border-left:5px solid #52c41a; margin:20px 0; font-size:1.2em;'>
+				✅ <strong>Sincronización COMPLETADA con éxito.</strong>
+			  </div>";
 	}
+
+
+
 	
 	
 }
