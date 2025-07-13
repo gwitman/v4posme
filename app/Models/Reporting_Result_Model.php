@@ -35,6 +35,6 @@ class Reporting_Result_Model extends Model
     }
 
     public function get_rowByReportID($reportID){
-        return $this->where(['reportID' => $reportID, 'isActive'=>1])->findAll();
+        return $this->where(['reportID' => $reportID, 'isActive'=>1])->orderBy('resultNumber', 'asc')->orderBy('sequence','asc')->findAll();
     }
 }

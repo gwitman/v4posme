@@ -40,6 +40,6 @@ class Reporting_Parameter_Model extends Model
 
     public function get_rowByReportID($reportID): array
     {
-        return $this->where(['reportID' => $reportID, 'isActive'=>1])->findAll();
+        return $this->where(['reportID' => $reportID, 'isActive'=>1])->orderBy('orden', 'asc')->findAll();
     }
 }

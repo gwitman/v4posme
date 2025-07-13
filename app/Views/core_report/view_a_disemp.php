@@ -56,7 +56,7 @@ if (count($objDetail)>0){
         $reportStyle    = 'horizontal';
         foreach ($value as $k => $v) {
             if ($k == 0) {
-                $configColumn["$k"]["IdTable"]  = "table".$k;
+                $configColumn["$k"]["IdTable"]  = "table".$key;
                 $tableWidth                     = $v->tableWidth;
                 $reportStyle                    = strlen($v->reportStyle) > 0 ? $v->reportStyle : "horizontal";
                 $tableTitle                     = $v->tableTitle;
@@ -79,6 +79,7 @@ if (count($objDetail)>0){
             $configColumn["$k"]["Url"] 						= "";
             $configColumn["$k"]["FiledSoucePrefixCustom"] 	= "";
             $configColumn["$k"]["Promedio"] 				= False ;
+            $configColumn["$k"]["FiltrarRegistroOnLine"]    = true ;
             $configColumn["$k"]["Alineacion"] 				= $v->type == "Number" ? "Right": "Left";
         }
         if ($reportStyle == 'horizontal'){
@@ -92,13 +93,13 @@ if (count($objDetail)>0){
     echo '<p>No hay datos a mostrar con los filtros indicados, intentar nuevamente</p>';
 }
 if (count($resultado) > 0) {
-    foreach ($resultado as $result) {
+    foreach ($resultado as $k=>$result) {
 
         echo '<br/>';
         if (is_array($result)) {
             echo $result["table"];
             echo '<br/>';
-            helper_reporteGeneralCreateFirma('', $result["columnas"], $result["width"]);
+            helper_reporteGeneralCreateFirma('', $result["columnas"], $result["width"],'table'.$k);
         }else{
             echo $result;
         }

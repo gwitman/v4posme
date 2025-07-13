@@ -131,7 +131,7 @@ function helper_reporteGeneralCreateEncabezado($titulo,$company,$countColumn,$ti
 
 
 
-function helper_reporteGeneralCreateFirma($firma,$column,$width){
+function helper_reporteGeneralCreateFirma($firma,$column,$width, $elementId = 'myReport'){
 	
 		$filterColumn = "[ \"\" ";
 		for($i = 0 ; $i < ($column - 1); $i++)
@@ -164,7 +164,7 @@ function helper_reporteGeneralCreateFirma($firma,$column,$width){
 						  // Obtener el contenido HTML de la tabla
 						  var tablaHTML = 
 										"<div>"+	
-										document.getElementById("myReport").outerHTML + 
+										document.getElementById("'.$elementId.'").outerHTML + 
 										"</div>";
 						  var tablaHTML = $(tablaHTML);
 						  
@@ -201,7 +201,7 @@ function helper_reporteGeneralCreateFirma($firma,$column,$width){
 				  
 
 				  // Aplicar el filtro en cada columna al escribir en el input
-				  $("#myReport thead input").on("keyup", function() {
+				  $("#'.$elementId.' thead input").on("keyup", function() {
 					var index = $(this).data("index");
 					var value = $(this).val().trim().toLowerCase();
 					filtros[index] = value;
@@ -211,7 +211,7 @@ function helper_reporteGeneralCreateFirma($firma,$column,$width){
 				  
 				  //// Función para filtrar la tabla
 				  function filtrarTabla() {
-					$("#myReport tbody tr").each(function() {
+					$("#'.$elementId.' tbody tr").each(function() {
 					  var mostrar = true;
 					  $(this).find("td").each(function(index) {
 						var cellText 	= $(this).text().trim().toLowerCase();
@@ -383,7 +383,7 @@ function helper_reporteGeneralCreateTable($objDetail,$configColumn,$widht,$titul
 	$color 					= $color == NULL ? "white": $color;
 	$idTable				= "MyTable";
 	$filtrarRegistroOnLine	= false;
-	
+
 	
 	
 	foreach($configColumn as $key => $value){
