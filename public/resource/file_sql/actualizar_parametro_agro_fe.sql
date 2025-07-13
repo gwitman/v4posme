@@ -1,4 +1,5 @@
-/*BD: 	posme*/ 
+/*BD: 	posme:parametro_agro_fre	*/
+
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "154" 

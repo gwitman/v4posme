@@ -1,4 +1,4 @@
-/*BD: 	dbuwydken46x4g;*/
+/*BD: 	dbuwydken46x4g:parametro_agencia_freddy	*/
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
