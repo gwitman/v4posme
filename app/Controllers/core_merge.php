@@ -1319,7 +1319,129 @@ class core_merge extends _BaseController {
 	}
 
 
+	function submitapp()
+    {
+        echo '
+        <div style="padding:20px; max-width:600px; margin:auto; border:1px solid #d9d9d9; border-radius:5px;">
+            <h2 style="color:#1890ff;">🚀 Subir parámetros y archivos ZIP</h2>
+            <form method="post" action="' . base_url('core_merge/submitprocesapp') . '" enctype="multipart/form-data">
+                <div style="margin-bottom:15px;">
+                    <label>Nombre de carpeta ftp:</label><br>
+                    <input type="text" name="company_name" style="width:100%; padding:8px; border:1px solid #d9d9d9; border-radius:4px;">
+                </div>
+                <div style="margin-bottom:15px;">
+                    <label>Nombre de archivo .sql de parametro:</label><br>
+                    <input type="text" name="param_file" style="width:100%; padding:8px; border:1px solid #d9d9d9; border-radius:4px;">
+                </div>
+                <div style="margin-bottom:15px;">
+                    <label>Archivo ZIP:</label><br>
+                    <input type="file" name="zip_file" accept=".zip" style="width:100%;">
+                </div>
+                <button type="submit" style="background:#1890ff; color:#fff; border:none; padding:10px 20px; border-radius:4px;">
+                    📤 Subir y procesar
+                </button>
+            </form>
+        </div>
+        ';
+    }
+
+    function submitprocesapp()
+    {
+        helper(['filesystem']);
+
+        $companyName 	= $this->request->getPost('company_name');
+        $paramFile 		= $this->request->getPost('param_file');
+        $zipFile 		= $this->request->getFile('zip_file');
+
+        // Crear carpeta de trabajo
+        $kkPath = WRITEPATH . 'uploads/';
+        if (!is_dir($kkPath)) {
+            mkdir($kkPath, 0755, true);
+        }
+
+       
+        // Subir archivo ZIP y descomprimir
+        if ($zipFile->isValid()) {
+            $zipFile->move($kkPath);
+            $zipFilePath = $kkPath . $zipFile->getName();
+		
+            $zip = new \ZipArchive;
+            if ($zip->open($zipFilePath) === TRUE) {
+                $zip->extractTo($kkPath);
+                $zip->close();
+		
+                // Borrar ZIP
+                unlink($zipFilePath);
+				
+				
+				// 1️⃣ Mover archivo individual
+				$archivoOrigen 	= $kkPath . 'app/Config/Routes.php';
+				$archivoDestino = $kkPath . '../../../'.$companyName.'/app/Config/Routes.php'; // ejemplo
+				if (file_exists($archivoOrigen)) {
+					rename($archivoOrigen, $archivoDestino);
+					echo "<div style='padding:10px;background:#e6f7ff;border-left:5px solid #1890ff;margin:10px 0;'>
+							✔ Archivo movido a {$archivoDestino}
+						  </div>";
+				} else {
+					echo "<div style='padding:10px;background:#fff1f0;border-left:5px solid #ff4d4f;margin:10px 0;'>
+							❌ Archivo no existe: {$archivoOrigen}
+						  </div>";
+				}
+				
+				// 2️⃣ Mover carpeta completa
+				$carpetaOrigen 	= $kkPath . 'app/Controllers';
+				$carpetaDestino = $kkPath . '../../../'.$companyName.'/app/Controllers'; // ejemplo
+				if (is_dir($carpetaOrigen)) {
+					// Crea destino si no existe
+					if (!is_dir($carpetaDestino)) {
+						mkdir($carpetaDestino, 0755, true);
+					}
+				
+					// Copia todo
+					recurse_copy($carpetaOrigen, $carpetaDestino);
+				
+					// Borra carpeta origen
+					//eliminarDirectorio($carpetaOrigen);
+				
+					echo "<div style='padding:10px;background:#e6f7ff;border-left:5px solid #1890ff;margin:10px 0;'>
+							✔ Carpeta movida a {$carpetaDestino}
+						  </div>";
+				} 
+				else {
+					echo "<div style='padding:10px;background:#fff1f0;border-left:5px solid #ff4d4f;margin:10px 0;'>
+							❌ Carpeta no existe: {$carpetaOrigen}
+						  </div>";
+				}
+
+				// 3️⃣ Borrar carpeta kk de trabajo				
+				//eliminarDirectorio($kkPath."app");
+
+
+		
+                echo "<div style='padding:15px; background:#f6ffed; border-left:5px solid #52c41a; margin:20px 0; font-size:1.1em;'>
+                        ✅ Archivos descomprimidos y ZIP eliminado correctamente.
+                      </div>";
+                echo "<div style='padding:15px; background:#e6f7ff; border-left:5px solid #1890ff; margin:20px 0; font-size:1.1em;'>
+                        ✔ <strong>Nombre de la compañía:</strong> {$companyName}
+                      </div>";
+                echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
+                        🔗 <a href='" . base_url('core_merge/merge_of_posme_merge_to_posme_aplicar_parameter?sourceName=actualizar_parametro_001_development_posme.sql&targetName='.$paramFile.''). "'>👉 Clic aquí para procesar parámetros y datos</a>
+                      </div>";
+					  
+					  
+            } else {
+                echo "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+                        ❌ Error al descomprimir el archivo ZIP.
+                      </div>";
+            }
+        } else {
+            echo "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+                    ⚠ No se subió un archivo ZIP válido.
+                  </div>";
+        }
+    }
 
 	
-	
 }
+
+?>
