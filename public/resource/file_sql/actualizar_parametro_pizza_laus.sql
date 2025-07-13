@@ -1341,21 +1341,21 @@ WHERE
 /*
 Eliminar o desactivar usuarios
 */
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/
- 511,  	/*supervisor*/
- 510, 	/*facturador*/
- 509 	/*administrador*/
-);
-
-update tb_role set isActive = 0; 
-update tb_role set isActive = 1 where roleID in (
-	3,
-	440,
-	439,
-	438	
-);
+--	update tb_user set isActive = 0;
+--	update tb_user set isActive = 1 WHERE userID in (
+--	 2, 	/*administrador*/
+--	 511,  	/*supervisor*/
+--	 510, 	/*facturador*/
+--	 509 	/*administrador*/
+--	);
+--	
+--	update tb_role set isActive = 0; 
+--	update tb_role set isActive = 1 where roleID in (
+--		3,
+--		440,
+--		439,
+--		438	
+--	);
 
 
 

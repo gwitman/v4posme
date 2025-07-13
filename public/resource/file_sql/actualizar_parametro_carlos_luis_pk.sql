@@ -787,24 +787,24 @@ WHERE
 /*
 Eliminar o desactivar usuarios
 */
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/
- 0,  	/*supervisor*/
- 176, 	/*facturador*/
- 29 	/*administrador*/
-);
-
-update tb_role set isActive = 0; 
-update tb_role set isActive = 1 where roleID in (
-	3,
-	53,
-	52,
-	51,
-	44,
-	43,
-	34	
-);
+--	update tb_user set isActive = 0;
+--	update tb_user set isActive = 1 WHERE userID in (
+--	 2, 	/*administrador*/
+--	 0,  	/*supervisor*/
+--	 176, 	/*facturador*/
+--	 29 	/*administrador*/
+--	);
+--	
+--	update tb_role set isActive = 0; 
+--	update tb_role set isActive = 1 where roleID in (
+--		3,
+--		53,
+--		52,
+--		51,
+--		44,
+--		43,
+--		34	
+--	);
 
 
 

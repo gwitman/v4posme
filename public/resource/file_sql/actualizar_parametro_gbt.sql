@@ -1162,22 +1162,22 @@ WHERE
 /*
 Eliminar o desactivar usuarios
 */
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/
- 380,  	/*supervisor*/
- 381, 	/*facturador*/
- 382 	/*administrador*/
-);
-
-update tb_role set isActive = 0; 
-update tb_role set isActive = 1 where roleID in (
-	3,
-	321,
-	322,
-	323,
-	396
-);
+--	update tb_user set isActive = 0;
+--	update tb_user set isActive = 1 WHERE userID in (
+--	 2, 	/*administrador*/
+--	 380,  	/*supervisor*/
+--	 381, 	/*facturador*/
+--	 382 	/*administrador*/
+--	);
+--	
+--	update tb_role set isActive = 0; 
+--	update tb_role set isActive = 1 where roleID in (
+--		3,
+--		321,
+--		322,
+--		323,
+--		396
+--	);
 
 
 

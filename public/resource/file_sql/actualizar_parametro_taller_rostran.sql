@@ -1748,29 +1748,29 @@ Eliminar o desactivar usuarios
 */
 
 
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	
- 841,  
- 842, 
- 843,
- 844,  
- 845, 
- 846, 
- 847
-);
-
-update tb_role set isActive = 0; 
-update tb_role set isActive = 1 where roleID in (
-	3,
-	776,
-	777,
-	778,
-	779,
-	780,
-	781,
-	782	
-);
+--	update tb_user set isActive = 0;
+--	update tb_user set isActive = 1 WHERE userID in (
+--	 2, 	
+--	 841,  
+--	 842, 
+--	 843,
+--	 844,  
+--	 845, 
+--	 846, 
+--	 847
+--	);
+--	
+--	update tb_role set isActive = 0; 
+--	update tb_role set isActive = 1 where roleID in (
+--		3,
+--		776,
+--		777,
+--		778,
+--		779,
+--		780,
+--		781,
+--		782	
+--	);
 
 
 

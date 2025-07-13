@@ -1739,29 +1739,29 @@ Eliminar o desactivar usuarios
 */
 
 
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	
- 799,  
- 800, 
- 801,
- 802,  
- 803, 
- 804, 
- 805
-);
-
-update tb_role set isActive = 0; 
-update tb_role set isActive = 1 where roleID in (
-	3,
-	734,
-	735,
-	736,
-	737,
-	738,
-	739,
-	740	
-);
+--	update tb_user set isActive = 0;
+--	update tb_user set isActive = 1 WHERE userID in (
+--	 2, 	
+--	 799,  
+--	 800, 
+--	 801,
+--	 802,  
+--	 803, 
+--	 804, 
+--	 805
+--	);
+--	
+--	update tb_role set isActive = 0; 
+--	update tb_role set isActive = 1 where roleID in (
+--		3,
+--		734,
+--		735,
+--		736,
+--		737,
+--		738,
+--		739,
+--		740	
+--	);
 
 
 

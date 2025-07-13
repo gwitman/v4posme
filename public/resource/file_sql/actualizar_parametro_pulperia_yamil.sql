@@ -796,10 +796,10 @@ WHERE
 /*
 Eliminar o desactivar usuarios
 */
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/
- 206,  	/*supervisor*/
- 205, 	/*facturador*/
- 204 	/*administrador*/
-);
+--	update tb_user set isActive = 0;
+--	update tb_user set isActive = 1 WHERE userID in (
+--	 2, 	/*administrador*/
+--	 206,  	/*supervisor*/
+--	 205, 	/*facturador*/
+--	 204 	/*administrador*/
+--	);

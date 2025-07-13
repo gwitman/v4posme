@@ -789,10 +789,10 @@ WHERE
 /*
 Eliminar o desactivar usuarios
 */
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/
- 192,  	/*supervisor*/
- 193, 	/*facturador*/
- 194 	/*administrador*/
-);
+--	update tb_user set isActive = 0;
+--	update tb_user set isActive = 1 WHERE userID in (
+--	 2, 	/*administrador*/
+--	 192,  	/*supervisor*/
+--	 193, 	/*facturador*/
+--	 194 	/*administrador*/
+--	);

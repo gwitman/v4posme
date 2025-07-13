@@ -1698,29 +1698,29 @@ WHERE
 /*
 Eliminar o desactivar usuarios
 */
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/
- 636,  
- 635, 
- 634,
- 633,  
- 632, 
- 631, 
- 630
-);
-
-update tb_role set isActive = 0; 
-update tb_role set isActive = 1 where roleID in (
-	3,
-	572,
-	571,
-	570,
-	569,
-	568,
-	567,
-	566	
-);
+--	update tb_user set isActive = 0;
+--	update tb_user set isActive = 1 WHERE userID in (
+--	 2, 	/*administrador*/
+--	 636,  
+--	 635, 
+--	 634,
+--	 633,  
+--	 632, 
+--	 631, 
+--	 630
+--	);
+--	
+--	update tb_role set isActive = 0; 
+--	update tb_role set isActive = 1 where roleID in (
+--		3,
+--		572,
+--		571,
+--		570,
+--		569,
+--		568,
+--		567,
+--		566	
+--	);
 
 
 

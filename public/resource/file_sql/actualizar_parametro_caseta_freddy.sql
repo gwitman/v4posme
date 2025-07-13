@@ -887,21 +887,21 @@ WHERE
 /*
 Eliminar o desactivar usuarios
 */
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/
- 257,  	/*supervisor*/
- 256, 	/*facturador*/
- 255 	/*administrador*/
-);
-
-update tb_role set isActive = 0; 
-update tb_role set isActive = 1 where roleID in (
-	3,
-	248,
-	247,
-	246	
-);
+--	update tb_user set isActive = 0;
+--	update tb_user set isActive = 1 WHERE userID in (
+--	 2, 	/*administrador*/
+--	 257,  	/*supervisor*/
+--	 256, 	/*facturador*/
+--	 255 	/*administrador*/
+--	);
+--	
+--	update tb_role set isActive = 0; 
+--	update tb_role set isActive = 1 where roleID in (
+--		3,
+--		248,
+--		247,
+--		246	
+--	);
 
 
 /*tipo de cambio de dolares a cordoba*/

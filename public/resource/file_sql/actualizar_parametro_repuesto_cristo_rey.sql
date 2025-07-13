@@ -1705,29 +1705,29 @@ WHERE
 /*
 Eliminar o desactivar usuarios
 */
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2, 	/*administrador*/
- 715,  
- 716, 
- 717,
- 718,  
- 719, 
- 720, 
- 721
-);
-
-update tb_role set isActive = 0; 
-update tb_role set isActive = 1 where roleID in (
-	3,
-	650,
-	651,
-	652,
-	653,
-	654,
-	655,
-	656	
-);
+--	update tb_user set isActive = 0;
+--	update tb_user set isActive = 1 WHERE userID in (
+--	 2, 	/*administrador*/
+--	 715,  
+--	 716, 
+--	 717,
+--	 718,  
+--	 719, 
+--	 720, 
+--	 721
+--	);
+--	
+--	update tb_role set isActive = 0; 
+--	update tb_role set isActive = 1 where roleID in (
+--		3,
+--		650,
+--		651,
+--		652,
+--		653,
+--		654,
+--		655,
+--		656	
+--	);
 
 
 

@@ -919,24 +919,24 @@ WHERE
 /*
 Eliminar o desactivar usuarios
 */
-update tb_user set isActive = 0;
-update tb_user set isActive = 1 WHERE userID in (
- 2,
- 209,  		/*supervisor*/
- 208, 		/*facturador*/
- 207, 		/*administrador*/
- 222,
- 223,
- 224
-);
-update tb_role set isActive = 0; 
-update tb_role set isActive = 1 where roleID in (
-	3,
-	201,
-	202,
-	203,
-	279
-);
+--	update tb_user set isActive = 0;
+--	update tb_user set isActive = 1 WHERE userID in (
+--	 2,
+--	 209,  		/*supervisor*/
+--	 208, 		/*facturador*/
+--	 207, 		/*administrador*/
+--	 222,
+--	 223,
+--	 224
+--	);
+--	update tb_role set isActive = 0; 
+--	update tb_role set isActive = 1 where roleID in (
+--		3,
+--		201,
+--		202,
+--		203,
+--		279
+--	);
 
 
 
