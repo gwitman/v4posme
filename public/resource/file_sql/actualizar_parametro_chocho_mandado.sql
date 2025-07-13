@@ -1,4 +1,4 @@
-use dbbx53ifvwnsq9;
+/*BD: 	dbbx53ifvwnsq9:chocho_mandado*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

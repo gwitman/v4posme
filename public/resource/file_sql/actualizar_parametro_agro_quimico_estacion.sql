@@ -1,4 +1,4 @@
-/*BD: 	 dbe116sl6weagr ;*/
+/*BD: 	 dbe116sl6weagr:agro_quimico_estacion*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

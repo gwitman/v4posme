@@ -1,4 +1,4 @@
-/*BD: 	 dbmaaig8e3wjgs ;*/
+/*BD: 	 dbmaaig8e3wjgs:agronic*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

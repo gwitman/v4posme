@@ -1,4 +1,4 @@
-/*BD: 	posme*/
+/*BD: 	posme:restaurante_exit*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

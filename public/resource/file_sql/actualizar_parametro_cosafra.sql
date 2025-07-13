@@ -1,4 +1,4 @@
-/*use dberymijkmdgsb;*/
+/*BD: 	dberymijkmdgsb:cosafra*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

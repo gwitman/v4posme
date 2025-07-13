@@ -1,4 +1,4 @@
-use dbda9vmdciutay;
+/*BD: 	dbda9vmdciutay:compu_matt*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

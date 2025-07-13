@@ -1,4 +1,4 @@
-use dbiljiqkweikpe;
+/*BD: 	dbiljiqkweikpe:ebenezer*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

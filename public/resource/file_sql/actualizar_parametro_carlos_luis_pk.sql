@@ -1,4 +1,4 @@
-﻿/*DB:  dbimnhv2es7glt*/
+﻿/*DB:  dbimnhv2es7glt:carlos_luis*/
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "154" 

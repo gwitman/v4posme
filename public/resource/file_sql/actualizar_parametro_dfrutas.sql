@@ -1,4 +1,4 @@
-/*use dbur0rlrgvy2r1 ;*/
+/*BD: 	dbur0rlrgvy2r1:disfruta*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

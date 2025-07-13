@@ -1,4 +1,4 @@
-/*dbq9ypqenultga*/
+/*BD: 	dbq9ypqenultga:hotel_retorno*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

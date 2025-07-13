@@ -1,4 +1,4 @@
-/*use db3a7sqz3tbcln;*/
+/*BD: 	db3a7sqz3tbcln:chicharrones_carasenos*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

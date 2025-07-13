@@ -1,5 +1,4 @@
-use dbctkwo0yqp47s
-go 
+/*BD: 	dbctkwo0yqp47s:bivaly_store*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
