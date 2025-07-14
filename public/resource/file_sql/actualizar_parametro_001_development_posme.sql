@@ -1,4 +1,4 @@
-/*BD: 	dbkroqnguhldo1:parametro_001_development	*/
+/*BD: 	dbkroqnguhldo1:parametro_001_development*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

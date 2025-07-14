@@ -1166,7 +1166,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Ferreteria Socorro' , address = 'Claro 1C.N y 1.5C.O' ,
+	NAME = 'Ferreteria Socorro' , address = 'Claro 1C.N y 1.5C.O Telica' ,
 	flavorID = 0,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

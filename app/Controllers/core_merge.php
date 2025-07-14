@@ -1329,7 +1329,8 @@ class core_merge extends _BaseController {
 		$folders 	= array_filter(glob($dir . '*'), 'is_dir');
 
 		//Lista de companiñas
-		$companys	= "";
+		$companys		= "";
+		$companys    	.= '<option selected value="demo">demo</option>';
 		foreach ($folders as $folder) {
 			// Extrae solo el nombre de la carpeta
 			$folderName = basename($folder);
@@ -1341,6 +1342,7 @@ class core_merge extends _BaseController {
 		$dir 		= "../../public/public/resource/file_sql/";
 		$files 		= glob($dir . 'actualizar_parametro*.sql'); // Busca archivos que empiecen con 'parametro' y terminen en .sql
 		$sqlfile 	= "";
+		$sqlfile    .= '<option selected value="actualizar_parametro_demo">actualizar_parametro_demo</option>';
 		foreach ($files as $file) {
 			$fileName = basename($file);
 			$sqlfile  .= '<option value="' . htmlspecialchars($fileName) . '">' . htmlspecialchars($fileName) . '</option>';
@@ -1469,7 +1471,25 @@ class core_merge extends _BaseController {
 				✔ <strong>Nombre de la compañía:</strong> {$companyName}
 			  </div>";
 		echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
-				🔗 <a href='" . base_url('core_merge/merge_of_posme_merge_to_posme_aplicar_parameter?sourceName=actualizar_parametro_001_development_posme.sql&targetName=' . $paramFile) . "&syncStructure=0'>👉 Clic aquí para procesar parámetros y datos</a>
+				🔗 <a href='" . base_url('core_merge/submitapp').">👉 Clic aquí volver a cargar</a>
+			  </div>";
+		echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
+				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_aplicar_parameter?sourceName=actualizar_parametro_001_development_posme.sql&targetName=' . $paramFile) . "&syncStructure=1'>👉 01) Clic aquí para procesar estructuras</a>
+			  </div>";
+		echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
+				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_data_insert_and_update?sourceName=actualizar_parametro_001_development_posme.sql&targetName=' . $paramFile) . "&syncStructure=0'>👉 02) Clic aquí para procesar insert and update</a>
+			  </div>";
+		echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
+				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_data_onlyinsert?sourceName=actualizar_parametro_001_development_posme.sql&targetName=' . $paramFile) . "&syncStructure=0'>👉 03) Clic aquí para procesar only insert</a>
+			  </div>";
+		echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
+				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_data_delete?sourceName=actualizar_parametro_001_development_posme.sql&targetName=' . $paramFile) . "&syncStructure=0'>👉 04) Clic aquí para procesar delete</a>
+			  </div>";
+		echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
+				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_aplicar_parameter?sourceName=actualizar_parametro_001_development_posme.sql&targetName=' . $paramFile) . "&syncStructure=0'>👉 05) Clic aquí para procesar parámetros y datos</a>
+			  </div>";
+		echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
+				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_initialize/2')."'>👉 06) Clic aquí para procesar limpieza de archivos</a>
 			  </div>";
     }
 	
