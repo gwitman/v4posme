@@ -1407,9 +1407,10 @@ class core_merge extends _BaseController {
 			  </div>";
 			  
 			  
-		echo "<div style='padding:15px; background:#77DD77; border-left:5px solid yellow; margin:20px 0;'>
-				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_aplicar_parameter?sourceName=actualizar_parametro_001_development_posme.sql&targetName=' . $paramFile) . ".sql&syncStructure=1'>👉 01) Clic aquí para procesar estructuras siteground</a>
-			  </div>";			  
+		//echo "<div style='padding:15px; background:#77DD77; border-left:5px solid yellow; margin:20px 0;'>
+		//		🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_aplicar_parameter?sourceName=actualizar_parametro_001_development_posme.sql&targetName=' . $paramFile) . ".sql&syncStructure=1'>👉 01) Clic aquí para procesar estructuras siteground</a>
+		//	  </div>";	
+		
 		echo "<div style='padding:15px; background:#77DD77; border-left:5px solid yellow; margin:20px 0;'>
 				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_data_insert_and_update?sourceName=dbno63gzawe8bk&targetName=' . $targetNameDB) . "'>👉 02) Clic aquí para procesar insert and update siteground</a>
 			  </div>";
@@ -1426,21 +1427,21 @@ class core_merge extends _BaseController {
 				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_initialize/2')."'>👉 06) Clic aquí para procesar limpieza de archivos siteground</a>
 			  </div>";
 			  
-		echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
-				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_structure/2') . "'>👉 01) Clic aquí para procesar estructuras</a>
-			  </div>";			  
-		echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
-				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_data_insert_and_update/2') . "'>👉 02) Clic aquí para procesar insert and update</a>
-			  </div>";		
-		echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
-				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_poeme_data_onlyinsert/2') . "'>👉 03) Clic aquí para procesar only insert</a>
-			  </div>";		
-		echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
-				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_data_delete/2') . "'>👉 04) Clic aquí para procesar delete</a>
-			  </div>";
-		echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
-				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_aplicar_parameter?sourceName=actualizar_parametro_001_development_posme.sql&targetName=' . $paramFile) . ".sql&syncStructure=0'>👉 05) Clic aquí para procesar parámetros</a>
-			  </div>";  
+		//echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
+		//		🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_structure/2') . "'>👉 01) Clic aquí para procesar estructuras</a>
+		//	  </div>";			  
+		//echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
+		//		🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_data_insert_and_update/2') . "'>👉 02) Clic aquí para procesar insert and update</a>
+		//	  </div>";		
+		//echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
+		//		🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_poeme_data_onlyinsert/2') . "'>👉 03) Clic aquí para procesar only insert</a>
+		//	  </div>";		
+		//echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
+		//		🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_data_delete/2') . "'>👉 04) Clic aquí para procesar delete</a>
+		//	  </div>";
+		//echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
+		//		🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_aplicar_parameter?sourceName=actualizar_parametro_001_development_posme.sql&targetName=' . $paramFile) . ".sql&syncStructure=0'>👉 05) Clic aquí para procesar parámetros</a>
+		//	  </div>";  
 		
     }
 	
