@@ -24207,7 +24207,7 @@ function helper_reporteGeneralCreateTableGroupByVendors($objDetail,$configColumn
 				}
 
 				// Nueva tabla para el nuevo employerName
-				$table = "<h3> VENDEDOR: " . htmlspecialchars($i['employerName']) . "</h3>";
+				$table = "<h3> DOCTOR: " . htmlspecialchars($i['employerName']) . "</h3>";
 				$table .= "<table class='border' style='width:100%;margin-bottom:10px;'>
 				<thead>
 					<tr>

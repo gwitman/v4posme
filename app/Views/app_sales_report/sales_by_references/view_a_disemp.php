@@ -14,12 +14,12 @@
 	<body style="font-family:monospace;font-size:smaller;margin:0px 0px 0px 0px"> 
 			
 		<?php				
-		$configColumn["1"]["Titulo"] 		= "Vendedor";
+		$configColumn["1"]["Titulo"] 		= "Doctor";
 		$configColumn["2"]["Titulo"] 		= "Factura Numero";
 		$configColumn["3"]["Titulo"] 		= "Cliente";		
 		$configColumn["4"]["Titulo"] 		= "Monto";
 			
-		$configColumn["1"]["FiledSouce"] 		= "employerName";
+		$configColumn["1"]["FiledSouce"] 		= "doctor";
 		$configColumn["2"]["FiledSouce"] 		= "transactionNumber";	
 		$configColumn["3"]["FiledSouce"] 		= "legalName";		
 		$configColumn["4"]["FiledSouce"] 		= "amountConIva";
@@ -39,7 +39,7 @@
 		$configColumn["3"]["Total"] 		= False;		
 		$configColumn["4"]["Total"] 		= True;			
 				
-		$resultado 	= helper_reporteGeneralCreateTableGroupByVendors($objDetail,$configColumn,'0px',NULL,NULL);
+		$resultado 	= helper_reporteGeneralCreateTableGroupByVendors($objDetail,$configColumn,'100%',NULL,NULL);
 		?>
 								
 		<?php 
@@ -50,7 +50,7 @@
 			'VENTAS DEL '.$objStartOn.' AL '.$objEndOn,
 			"",
 			"",
-			4, //$resultado["width"]
+			"100%", //$resultado["width"]
 		);
 		?>
 				

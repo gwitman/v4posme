@@ -1365,10 +1365,11 @@ class core_merge extends _BaseController {
 
 		// Buscar la base de datos destino
 		// Leer archivo destino
-		$ruta = PATH_FILE_OF_APP . "/../../../public/resource/file_sql/" . $paramFile.".sql";
+		$ruta = PATH_FILE_OF_APP . "/../../../public/resource/file_sql/" . $paramFile."";
+		
 		if (!file_exists($ruta)) {
 			return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
-						❌ ERROR: El archivo destino no existe.
+						❌ ERROR: El archivo destino no existe. {$ruta}
 					</div>";
 		}
 
@@ -1390,7 +1391,17 @@ class core_merge extends _BaseController {
 				  </div>";
 		}
 		
+		//Obtener el dominio
+		$url 	= base_url(); // Ej: https://dominio.com/proyecto/carpeta/
+		$parsed = parse_url($url);
+		$domain = $parsed['scheme'] . '://' . $parsed['host'];
+		if (isset($parsed['port'])) {
+			$domain .= ':' . $parsed['port'];
+		}
+
 		
+
+
 		// ✅ Mostrar enlace final
 		echo "<div style='padding:15px; background:#e6f7ff; border-left:5px solid #1890ff; margin:20px 0; font-size:1.1em;'>
 				✔ <strong>Nombre de la compañía:</strong> {$companyName}
@@ -1399,7 +1410,7 @@ class core_merge extends _BaseController {
 				✔ <strong>Base de datos:</strong> {$targetNameDB}
 			  </div>";
 		echo "<div style='padding:15px; background:#e6f7ff; border-left:5px solid #1890ff; margin:20px 0; font-size:1.1em;'>
-				✔ <strong>Archivo:</strong> {$paramFile}.sql
+				✔ <strong>Archivo:</strong> {$paramFile}
 			  </div>";
 			  
 		echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
@@ -1408,7 +1419,7 @@ class core_merge extends _BaseController {
 			  
 			  
 		//echo "<div style='padding:15px; background:#77DD77; border-left:5px solid yellow; margin:20px 0;'>
-		//		🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_aplicar_parameter?sourceName=actualizar_parametro_001_development_posme.sql&targetName=' . $paramFile) . ".sql&syncStructure=1'>👉 01) Clic aquí para procesar estructuras siteground</a>
+		//		🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_aplicar_parameter?sourceName=actualizar_parametro_001_development_posme.sql&targetName=' . $paramFile) . "&syncStructure=1'>👉 01) Clic aquí para procesar estructuras siteground</a>
 		//	  </div>";	
 		
 		echo "<div style='padding:15px; background:#77DD77; border-left:5px solid yellow; margin:20px 0;'>
@@ -1421,10 +1432,16 @@ class core_merge extends _BaseController {
 				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_data_delete?sourceName=dbno63gzawe8bk&targetName=' . $targetNameDB) . "'>👉 04) Clic aquí para procesar delete siteground</a>
 			  </div>";
 		echo "<div style='padding:15px; background:#77DD77; border-left:5px solid yellow; margin:20px 0;'>
-				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_aplicar_parameter?sourceName=actualizar_parametro_001_development_posme.sql&targetName=' . $paramFile) . ".sql&syncStructure=0'>👉 05) Clic aquí para procesar parámetros de siteground</a>
+				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_aplicar_parameter?sourceName=actualizar_parametro_001_development_posme.sql&targetName=' . $paramFile) . "&syncStructure=0'>👉 05) Clic aquí para procesar parámetros de siteground</a>
 			  </div>";  
 		echo "<div style='padding:15px; background:#77DD77; border-left:5px solid yellow; margin:20px 0;'>
-				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_initialize/2')."'>👉 06) Clic aquí para procesar limpieza de archivos siteground</a>
+				🔗 <a target='_blank' href='" . $domain."/v4posme/".$companyName."/public'>👉 06) Ingresar</a>
+			  </div>
+			  </br></br>
+			  ";
+			  
+		echo "<div style='padding:15px; background:#77DD77; border-left:5px solid yellow; margin:20px 0;'>
+				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_initialize/2')."'>👉 07) Clic aquí para procesar limpieza de archivos siteground</a>
 			  </div>";
 			  
 		//echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>

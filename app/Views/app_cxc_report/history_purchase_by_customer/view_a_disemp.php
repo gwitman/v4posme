@@ -30,7 +30,7 @@
 		
 		$configColumn["3"]["Titulo"]		= "Producto";
 		$configColumn["3"]["FiledSouce"]	= "itemName";
-		$configColumn["3"]["Width"]			= "80px";
+		$configColumn["3"]["Width"]			= "420px";
 		
 		$configColumn["4"]["Titulo"]		= "Cantidad";
 		$configColumn["4"]["FiledSouce"]	= "quantity";
@@ -88,7 +88,7 @@
 		$configColumn1["0"]["Alineacion"] 	= "Left";
 		$configColumn1["0"]["TotalValor"] 	= 0;
 		$configColumn1["0"]["FiledSoucePrefix"]	= "";
-		$configColumn1["0"]["Width"]			= "120px";
+		$configColumn1["0"]["Width"]			= "80px";
 		
 		$configColumn1["1"]["Titulo"] 		= "Tipo de Identificacion";
 		$configColumn1["1"]["TituloFoot"]	= "";

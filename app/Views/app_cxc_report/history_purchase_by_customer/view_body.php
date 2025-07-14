@@ -18,7 +18,7 @@
 							<label class="col-lg-7 control-label" for="txtCustomerNumber">CODIGO CLIENTE:</label>
 							<div class="col-lg-5"> 
 								<div class="col-lg-12">
-									<input type="text" name="txtCustomerNumber" id="txtCustomerNumber" class="text" />
+									<input type="text" name="txtCustomerNumber" id="txtCustomerNumber" class="form-control" />
 								</div>												
 							</div>
 						</div>												
