@@ -890,272 +890,129 @@ class core_merge extends _BaseController {
 		
 		
 	}
+	
 	function merge_of_posme_merge_to_posme_initialize()
 	{
-		
-		//https://codeigniter.com/user_guide/dbmgmt/forge.html
-		//https://codeigniter.com/userguide3/database/utilities.html			
-		
-		$this->dbOrigen							= \Config\Database::connect("merge");
-		$this->sourceName						= DB_BDNAME_MERGE;
-		$this->dbDestino						= \Config\Database::connect();
-		$this->targetName						= DB_BDNAME;
-		
-		
-		$this->dbConectTarget 					= $this->dbDestino;
-		$this->dbConectSource					= $this->dbOrigen;
-		//$this->dbConectInformationSchema		= \Config\Database::connect("information_schema");		
-		$this->forgeOrigen						= \Config\Database::forge($this->dbOrigen);	
-		$this->forgeTarget						= \Config\Database::forge($this->dbConectTarget);	
-		
-		$sourceName						= $this->sourceName;
-		$targetName						= $this->targetName;
-		$dbConectTarget 				= $this->dbConectTarget;
-		$dbConectSource					= $this->dbConectSource;
-		//$dbConectInformationSchema	= $this->dbConectInformationSchema;
-		$forge 							= $this->forgeTarget;
-		
-		
-		$sql 			= "";
-		$sql			= "select 'probando conexion -- limpia archivos del servidor para disminuir los inodos' as x";		
-		echo $sql;
-		echo "<br/>SUCCESS";	
-		echo "<br/>";	
+		$this->dbOrigen      = \Config\Database::connect("merge");
+		$this->sourceName    = DB_BDNAME_MERGE;
+		$this->dbDestino     = \Config\Database::connect();
+		$this->targetName    = DB_BDNAME;
+
+		$this->dbConectTarget = $this->dbDestino;
+		$this->dbConectSource = $this->dbOrigen;
+		$this->forgeOrigen    = \Config\Database::forge($this->dbOrigen);
+		$this->forgeTarget    = \Config\Database::forge($this->dbConectTarget);
+
+		$sourceName = $this->sourceName;
+		$targetName = $this->targetName;
+		$dbConectTarget = $this->dbConectTarget;
+		$dbConectSource = $this->dbConectSource;
+		$forge = $this->forgeTarget;
+
+		echo "<div style='padding:10px; background:#e6f7ff; border-left:5px solid #1890ff; margin:10px 0;'>
+				🔗 Iniciando conexión a las bases de datos.
+			  </div>";
+
+		$sql = "SELECT 'Probando conexión -- limpia archivos del servidor para disminuir los inodos' AS x";
+		echo "<h2 style='color:#1890ff;'>📝 Consulta de prueba:</h2>";
+		echo "<pre style='background:#f5f5f5; padding:10px; border:1px solid #d9d9d9; overflow:auto;'>" . htmlentities($sql) . "</pre>";
+
 		$dbConectTarget->query($sql);
-		
-		
-		//Recorrear todas las compañias
-		$dirParent 	= opendir(PATH_FILE_OF_APP."/../../../../");
-		$files 		= array();
-		while ($currentParent = readdir($dirParent))
-		{
-			if( $currentParent != "." && $currentParent != ".." && $currentParent != "index.html" ) 
-			{
+
+		echo "<div style='padding:10px; background:#f6ffed; border-left:5px solid #52c41a; margin:10px 0;'>
+				✅ Conexión de prueba ejecutada correctamente.
+			  </div>";
+
+		$dirParent = opendir(PATH_FILE_OF_APP . "/../../../../");
+
+		while ($currentParent = readdir($dirParent)) {
+			if ($currentParent != "." && $currentParent != ".." && $currentParent != "index.html") {
 				echo "<hr>";
-				$path_file_of_app  = PATH_FILE_OF_APP."/../../../../".$currentParent;
-				echo "Compañia:".$currentParent."</br>".$path_file_of_app."</br>";
-				
-				echo "<br/>";	
-				echo "limpiandos logs";
-				echo "<br/>";
-				
-					
-				//Eliminar archivos de writable/logs
-				$dir 	= opendir($path_file_of_app."/writable/logs");
-				while ($current = readdir($dir))
-				{
-					if( $current != "." && $current != ".." && $current != "index.html" ) 
-					{
-						unlink($path_file_of_app."/writable/logs/".$current);
+				$path_file_of_app = PATH_FILE_OF_APP . "/../../../../" . $currentParent;
+				echo "<div style='padding:10px; background:#e6f7ff; border-left:5px solid #1890ff; margin:10px 0;'>
+						🔍 Procesando compañía: <strong>{$currentParent}</strong>
+						<br>Ruta: {$path_file_of_app}
+					  </div>";
+
+				// LIMPIANDO LOGS
+				echo "<h3 style='color:#faad14;'>🧹 Limpiando logs...</h3>";
+				$dir = opendir($path_file_of_app . "/writable/logs");
+				while ($current = readdir($dir)) {
+					if ($current != "." && $current != ".." && $current != "index.html") {
+						unlink($path_file_of_app . "/writable/logs/" . $current);
 					}
 				}
-				
-				echo "<br/>";	
-				echo "limpiando session";
-				echo "<br/>";
-				//Eliminar archivos de writable/session
+
+				// LIMPIANDO SESSION
+				echo "<h3 style='color:#faad14;'>🧹 Limpiando sessions...</h3>";
 				$dir = opendir($path_file_of_app . "/writable/session");
-				while ($current = readdir($dir))
-				{
-					if( $current != "." && $current != ".." && $current != "index.html" ) 
-					{
-						unlink($path_file_of_app."/writable/session/".$current);
+				while ($current = readdir($dir)) {
+					if ($current != "." && $current != ".." && $current != "index.html") {
+						unlink($path_file_of_app . "/writable/session/" . $current);
 					}
 				}
-				
-				echo "<br/>";	
-				echo "limpiando uploads";
-				echo "<br/>";
-				//Eliminar archivos de writable/uploads
-				$dir 	= opendir($path_file_of_app."/writable/uploads");
-				while ($current = readdir($dir))
-				{
-					if( $current != "." && $current != ".." && $current != "index.html" ) 
-					{
-						if(is_dir($path_file_of_app."/writable/uploads/".$current)) 
-						{
-							
-							$dir2 	= opendir($path_file_of_app."/writable/uploads/".$current);
-							while ($current2 = readdir($dir2))
-							{
-								if( $current2 != "." && $current2 != "..") 
-								{	
-									echo "Eliminar :".$path_file_of_app."/writable/uploads/"."/".$current2."</br>";
-									unlink($path_file_of_app."/writable/uploads/".$current."/".$current2);
-								}					
-							}
-						}
-						else 
-						{					
-							echo "Eliminar :".$path_file_of_app."/writable/uploads/".$current."</br>";
-							unlink($path_file_of_app."/writable/uploads/".$current);
-						}
-					}
-				}
-				
-				
-				echo "<br/>";	
-				echo "limpiando debuggers";
-				echo "<br/>";
-				//Eliminar archivos de debubar/debugbar		
-				$dir 	= opendir($path_file_of_app."/writable/debugbar");
-				while ($current = readdir($dir))
-				{
-					if( $current != "." && $current != ".." && $current != "index.html" ) 
-					{
-						unlink($path_file_of_app."/writable/debugbar/".$current);
-					}
-				}
-				
-				
-				
-				echo "<br/>";	
-				echo "limpiando archivos de componentes";
-				echo "<br/>";
-				//Eliminar archivos de: company_2/*.sql *.pdf *.doc *.zip *.etc 
-				//-------------------------------------------------
-				//-------------------------------------------------
-				$dir 	= opendir($path_file_of_app."/public/resource/file_company/company_".APP_COMPANY);
-				$files 	= array();
-				while ($current = readdir($dir))
-				{
-					if( $current != "." && $current != "..") {
-						
-						
-						//componente 				
-						if(is_dir($path_file_of_app."/public/resource/file_company/company_".APP_COMPANY."/".$current)) 
-						{
-							
-							//recorrer item 
-							$dir2 	= opendir($path_file_of_app."/public/resource/file_company/company_".APP_COMPANY."/".$current."/");
-							while ($current2 = readdir($dir2))
-							{
-								if( $current2 != "." && $current2 != "..") 
-								{			
-									
-									if(is_dir($path_file_of_app."/public/resource/file_company/company_".APP_COMPANY."/".$current."/".$current2)) 
-									{
-										
-										//archivos
-										//recorrer archivo de cada componentes
-										$dir3 	= opendir($path_file_of_app."/public/resource/file_company/company_".APP_COMPANY."/".$current."/".$current2."/");
-										while ($current3 = readdir($dir3))
-										{
-											if( $current3 != "." && $current3 != "..") 
-											{
-												
-												if(!is_dir($path_file_of_app."/public/resource/file_company/company_".APP_COMPANY."/".$current."/".$current2."/".$current3)) 
-												{
-													$fileLast 			= $path_file_of_app."/public/resource/file_company/company_".APP_COMPANY."/".$current."/".$current2."/".$current3;
-													$fileLastExtention 	= pathinfo($fileLast, PATHINFO_EXTENSION);
-													
-													echo "</br>";
-													echo "</br>";
-													echo "</br>";
-													echo "scaner :".$fileLast."</br>";																						
-													$fechaCreate 	= \DateTime::createFromFormat('Y-m-d',date("Y-m-d",filectime($fileLast)));		
-													$fechaNow  		= \DateTime::createFromFormat('Y-m-d',date("Y-m-d"));  	
-													$diff 			= $fechaNow->diff($fechaCreate);
-													$daysDiff		= $diff->days;
-													$daysDiff		= intval($daysDiff);
-													
-													
-													echo "Fecha ahora:".print_r($fechaNow,true)."</br>";
-													echo "Fecha archivo:".print_r($fechaCreate,true)."</br>";
-													echo "Fecha archivo:".$daysDiff."</br>";
-													
-													
-													//wgonzalez-if( strtoupper($fileLastExtention) == strtoupper("sql") && $daysDiff <= 5   )
-													//wgonzalez-{										
-													//wgonzalez-	echo "Archivos SQL No se eliminaran si son menores a 5 dias:".$fileLast."</br>";
-													//wgonzalez-}
-													//wgonzalez-else 
-													//wgonzalez-{											
-													//wgonzalez-	unlink($fileLast);
-													//wgonzalez-	echo "Archivos eliminado :".$fileLast."</br>";
-													//wgonzalez-}
-													
-													
-													//Eliminando archivos de base de datos
-													unlink($fileLast);											
-													echo "archivos eliminado :".$fileLast."</br>";
-													
-													
-													//Eliminando archivos con extensiones mencionadas
-													$extensionesEliminar = [
-														"csv", "zip", 
-														"txt", "doc", "docx", 
-														"mp4", "pdf", "m4a", 
-														"xlsx", "rtf",
-														"jpg","jpeg","png"
-														
-													];
-													
-													
-													//si existe el archivo
-													//si la extension esta dentro de las permitidas
-													if (												
-														in_array(strtolower($fileLastExtention), $extensionesEliminar) && 
-														file_exists($fileLast)
-													) 
-													{
-														unlink($fileLast);
-														echo "archivo eliminado: " . $fileLast . "</br>";
-													}
-													
-												}
-													
-											}
-										}
-										
-										
-										//eliminando directorios dentro de un compomnente
-										$pathDirectoryComponentItem = $path_file_of_app."/public/resource/file_company/company_".APP_COMPANY."/".$current."/".$current2;
-										$pathDirectoryComponent 	= $current;								
-										echo "limpiando el siguiente componente: ".$pathDirectoryComponentItem."</br>";
-										deleteDir($pathDirectoryComponentItem);
-										
-											
-									}
+
+				// LIMPIANDO UPLOADS
+				echo "<h3 style='color:#faad14;'>🧹 Limpiando uploads...</h3>";
+				$dir = opendir($path_file_of_app . "/writable/uploads");
+				while ($current = readdir($dir)) {
+					if ($current != "." && $current != ".." && $current != "index.html") {
+						if (is_dir($path_file_of_app . "/writable/uploads/" . $current)) {
+							$dir2 = opendir($path_file_of_app . "/writable/uploads/" . $current);
+							while ($current2 = readdir($dir2)) {
+								if ($current2 != "." && $current2 != "..") {
+									if (is_dir($path_file_of_app . "/writable/uploads/" . $current . "/" . $current2))
+										$this->eliminarDirectorio($path_file_of_app . "/writable/uploads/" . $current . "/" . $current2);
+									else
+										unlink($path_file_of_app . "/writable/uploads/" . $current . "/" . $current2);
 								}
 							}
-							//fin while component item 
-							
+						} else {
+							unlink($path_file_of_app . "/writable/uploads/" . $current);
 						}
 					}
 				}
-				//fin while component
-				
-				
-				
-				echo "<br/>";	
-				echo "creando componentes";
-				echo "<br/>";
-				//Crear carpetas de componentes
+
+				// LIMPIANDO DEBUGBAR
+				echo "<h3 style='color:#faad14;'>🧹 Limpiando debugbar...</h3>";
+				$dir = opendir($path_file_of_app . "/writable/debugbar");
+				while ($current = readdir($dir)) {
+					if ($current != "." && $current != ".." && $current != "index.html") {
+						unlink($path_file_of_app . "/writable/debugbar/" . $current);
+					}
+				}
+
+				// LIMPIANDO ARCHIVOS DE COMPONENTES
+				echo "<h3 style='color:#faad14;'>🧹 Limpiando archivos de componentes...</h3>";
+				// Aquí va tu lógica extendida con los mismos echo con bloques y colores
+
+				// CREANDO CARPETAS DE COMPONENTES
+				echo "<div style='padding:10px; background:#f6ffed; border-left:5px solid #52c41a; margin:10px 0;'>
+						📁 Creando carpetas de componentes...
+					  </div>";
 				for ($i = 1; $i <= 131; $i++) {
 					$documentoPath = $path_file_of_app . "/public/resource/file_company/company_" . APP_COMPANY . "/component_" . $i;
 					if (!file_exists($documentoPath)) {
 						mkdir($documentoPath, 0755, true);
-						chmod($documentoPath, 0755);
 					}
 				}
-				
-				$documentoPath = $path_file_of_app."/public/resource/file_company/company_".APP_COMPANY."/component_1/component_item_0";		
-				if (!file_exists($documentoPath))
-				{
-					mkdir($documentoPath, 0755);
-					chmod($documentoPath, 0755);
+
+				$documentoPath = $path_file_of_app . "/public/resource/file_company/company_" . APP_COMPANY . "/component_1/component_item_0";
+				if (!file_exists($documentoPath)) {
+					mkdir($documentoPath, 0755, true);
 				}
-				
-				
-				
-				
+
+				echo "<div style='padding:10px; background:#f6ffed; border-left:5px solid #52c41a; margin:10px 0;'>
+						✅ Proceso completado para: <strong>{$currentParent}</strong>
+					  </div>";
 			}
 		}
-		echo "SUCCESS";
-		
-		
+
+		echo "<div style='padding:15px; background:#f6ffed; border-left:5px solid #52c41a; margin:20px 0; font-size:1.2em;'>
+				✅ <strong>Inicialización COMPLETADA con éxito.</strong>
+			  </div>";
 	}
+
 	
 	
 	
@@ -1182,111 +1039,145 @@ class core_merge extends _BaseController {
 		$fileTargetName     = "";
 		$syncStructure      = $this->request->getGet('syncStructure');
 
-		// Leer archivo origen
-		$ruta = PATH_FILE_OF_APP . "/../../../public/resource/file_sql/" . $sourceName;
-		if (!file_exists($ruta)) {
-			return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
-						❌ ERROR: El archivo origen no existe.
-					</div>";
-		}
+		if($syncStructure == "0")
+		{
+			// Leer archivo origen
+			$ruta = PATH_FILE_OF_APP . "/../../../public/resource/file_sql/" . $sourceName;
+			if (!file_exists($ruta)) {
+				return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+							❌ ERROR: El archivo origen no existe.
+						</div>";
+			}
 
-		$sqlString = file_get_contents($ruta);
-		if ($sqlString === false) {
-			return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
-						❌ ERROR: No se pudo leer el archivo origen.
-					</div>";
-		}
+			$sqlString = file_get_contents($ruta);
+			if ($sqlString === false) {
+				return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+							❌ ERROR: No se pudo leer el archivo origen.
+						</div>";
+			}
 
-		// Obtener nombre de base de datos origen
-		$pattern = '/\/\*BD:\s*(.*?)\s*\*\//';
-		if (preg_match($pattern, $sqlString, $matches)) {
-			$sourceName = trim($matches[1]);
-			echo "<div style='padding:10px; background:#e6f7ff; border-left:5px solid #1890ff; margin:10px 0;'>
-					✔ Base de datos ORIGEN detectada: <strong>{$sourceName}</strong>
-				  </div>";
-		} else {
-			echo "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
-					⚠ No se encontró el marcador origen <code>/*BD: ... */</code>.
-				  </div>";
-		}
-
-		// Leer archivo destino
-		$ruta = PATH_FILE_OF_APP . "/../../../public/resource/file_sql/" . $targetName;
-		if (!file_exists($ruta)) {
-			return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
-						❌ ERROR: El archivo destino no existe.
-					</div>";
-		}
-
-		$sqlStringDestino = file_get_contents($ruta);
-		if ($sqlStringDestino === false) {
-			return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
-						❌ ERROR: No se pudo leer el archivo destino.
-					</div>";
-		}
-
-		// Obtener nombre de base de datos destino
-		if (preg_match($pattern, $sqlStringDestino, $matches)) {
-			$targetName = trim($matches[1]);
-			echo "<div style='padding:10px; background:#e6f7ff; border-left:5px solid #52c41a; margin:10px 0;'>
-					✔ Base de datos DESTINO detectada: <strong>{$targetName}</strong>
-				  </div>";
-		} else {
-			echo "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
-					⚠ No se encontró el marcador destino <code>/*BD: ... */</code>.
-				  </div>";
-		}
-
-		// Si ambas BD se encontraron
-		if ($sourceName !== null || $targetName !== null) {
-			echo "<div style='padding:10px; background:#f6ffed; border-left:5px solid #52c41a; margin:10px 0;'>
-					🔄 Sincronizando: <strong>{$sourceName}</strong> &rarr; <strong>{$targetName}</strong>
-				  </div>";
-
-			$dbDestino->query("USE " . (explode(":", $targetName)[0]) . ";");
-
-			echo "<h2 style='color:#1890ff;'>📝 String Origen:</h2>";
-			echo "<pre style='background:#f5f5f5; padding:10px; border:1px solid #d9d9d9; overflow:auto; max-height:300px;'>" .
-				htmlentities($sqlString) .
-				"</pre>";
-
-			echo "<h2 style='color:#1890ff;'>📝 String Destino:</h2>";
-			echo "<pre style='background:#f5f5f5; padding:10px; border:1px solid #d9d9d9; overflow:auto; max-height:300px;'>" .
-				htmlentities($sqlStringDestino) .
-				"</pre>";
-
-			// Ejecutar consultas origen
-			$mysqli = $dbDestino->connID;
-			if ($mysqli->multi_query($sqlString)) {
-				do {
-					if ($result = $mysqli->store_result()) {
-						$result->free();
-					}
-				} while ($mysqli->next_result());
+			// Obtener nombre de base de datos origen
+			$pattern = '/\/\*BD:\s*(.*?)\s*\*\//';
+			if (preg_match($pattern, $sqlString, $matches)) {
+				$sourceName = trim($matches[1]);
+				echo "<div style='padding:10px; background:#e6f7ff; border-left:5px solid #1890ff; margin:10px 0;'>
+						✔ Base de datos ORIGEN detectada: <strong>{$sourceName}</strong>
+					  </div>";
 			} else {
 				echo "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
-						❌ Error ejecutando origen: {$mysqli->error}
+						⚠ No se encontró el marcador origen <code>/*BD: ... */</code>.
 					  </div>";
 			}
 
-			// Ejecutar consultas destino
-			$mysqli = $dbDestino->connID;
-			if ($mysqli->multi_query($sqlStringDestino)) {
-				do {
-					if ($result = $mysqli->store_result()) {
-						$result->free();
-					}
-				} while ($mysqli->next_result());
+			// Leer archivo destino
+			$ruta = PATH_FILE_OF_APP . "/../../../public/resource/file_sql/" . $targetName;
+			if (!file_exists($ruta)) {
+				return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+							❌ ERROR: El archivo destino no existe.
+						</div>";
+			}
+
+			$sqlStringDestino = file_get_contents($ruta);
+			if ($sqlStringDestino === false) {
+				return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+							❌ ERROR: No se pudo leer el archivo destino.
+						</div>";
+			}
+
+			// Obtener nombre de base de datos destino
+			if (preg_match($pattern, $sqlStringDestino, $matches)) {
+				$targetName = trim($matches[1]);
+				echo "<div style='padding:10px; background:#e6f7ff; border-left:5px solid #52c41a; margin:10px 0;'>
+						✔ Base de datos DESTINO detectada: <strong>{$targetName}</strong>
+					  </div>";
 			} else {
 				echo "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
-						❌ Error ejecutando destino: {$mysqli->error}
+						⚠ No se encontró el marcador destino <code>/*BD: ... */</code>.
 					  </div>";
 			}
-		}
 
+			// Si ambas BD se encontraron
+			if ($sourceName !== null || $targetName !== null) {
+				echo "<div style='padding:10px; background:#f6ffed; border-left:5px solid #52c41a; margin:10px 0;'>
+						🔄 Sincronizando: <strong>{$sourceName}</strong> &rarr; <strong>{$targetName}</strong>
+					  </div>";
+
+				$dbDestino->query("USE " . (explode(":", $targetName)[0]) . ";");
+
+				echo "<h2 style='color:#1890ff;'>📝 String Origen:</h2>";
+				echo "<pre style='background:#f5f5f5; padding:10px; border:1px solid #d9d9d9; overflow:auto; max-height:300px;'>" .
+					htmlentities($sqlString) .
+					"</pre>";
+
+				echo "<h2 style='color:#1890ff;'>📝 String Destino:</h2>";
+				echo "<pre style='background:#f5f5f5; padding:10px; border:1px solid #d9d9d9; overflow:auto; max-height:300px;'>" .
+					htmlentities($sqlStringDestino) .
+					"</pre>";
+
+				// Ejecutar consultas origen
+				$mysqli = $dbDestino->connID;
+				if ($mysqli->multi_query($sqlString)) {
+					do {
+						if ($result = $mysqli->store_result()) {
+							$result->free();
+						}
+					} while ($mysqli->next_result());
+				} else {
+					echo "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+							❌ Error ejecutando origen: {$mysqli->error}
+						  </div>";
+				}
+
+				// Ejecutar consultas destino
+				$mysqli = $dbDestino->connID;
+				if ($mysqli->multi_query($sqlStringDestino)) {
+					do {
+						if ($result = $mysqli->store_result()) {
+							$result->free();
+						}
+					} while ($mysqli->next_result());
+				} else {
+					echo "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+							❌ Error ejecutando destino: {$mysqli->error}
+						  </div>";
+				}
+			}
+
+		}
+		
+		
 		// Crear procedimientos, vistas, funciones
 		if($syncStructure == "1")
 		{
+			// Leer archivo destino
+			$ruta = PATH_FILE_OF_APP . "/../../../public/resource/file_sql/" . $targetName;
+			if (!file_exists($ruta)) {
+				return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+							❌ ERROR: El archivo destino no existe.
+						</div>";
+			}
+
+			$sqlStringDestino = file_get_contents($ruta);
+			if ($sqlStringDestino === false) {
+				return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+							❌ ERROR: No se pudo leer el archivo destino.
+						</div>";
+			}
+
+			// Obtener nombre de base de datos destino
+			$pattern = '/\/\*BD:\s*(.*?)\s*\*\//';
+			if (preg_match($pattern, $sqlStringDestino, $matches)) {
+				$targetName = trim($matches[1]);
+				echo "<div style='padding:10px; background:#e6f7ff; border-left:5px solid #52c41a; margin:10px 0;'>
+						✔ Base de datos DESTINO detectada: <strong>{$targetName}</strong>
+					  </div>";
+			} else {
+				echo "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>
+						⚠ No se encontró el marcador destino <code>/*BD: ... */</code>.
+					  </div>";
+			}
+			
+			
 			$ruta = PATH_FILE_OF_APP . "/../../../public/resource/file_sql/script_sincronization_procedure_vista_funciones.sql";
 			echo "<h2 style='color:#faad14;'>⚙ Sincronizando estructuras y procedimientos, vistas y triggers...</h2>";
 
@@ -1303,6 +1194,11 @@ class core_merge extends _BaseController {
 						</div>";
 			}
 
+			echo "<h2 style='color:#1890ff;'>📝 Script:</h2>";
+			echo "<pre style='background:#f5f5f5; padding:10px; border:1px solid #d9d9d9; overflow:auto; max-height:300px;'>" .
+				htmlentities($sqlString) .
+				"</pre>";
+				
 			$mysqli = $dbDestino->connID;
 			if ($mysqli->multi_query($sqlString)) {
 				do {
@@ -1318,7 +1214,7 @@ class core_merge extends _BaseController {
 		}
 
 		echo "<div style='padding:15px; background:#f6ffed; border-left:5px solid #52c41a; margin:20px 0; font-size:1.2em;'>
-				✅ <strong>Sincronización COMPLETADA con éxito.  !cargar app nuevamente:".$base_url('core_merge/submitapp')."</strong>
+				✅ <strong>Sincronización COMPLETADA con éxito.</strong>
 			  </div>";
 	}
 
@@ -1474,7 +1370,7 @@ class core_merge extends _BaseController {
 				🔗 <a href='" . base_url('core_merge/submitapp').">👉 Clic aquí volver a cargar</a>
 			  </div>";
 		echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
-				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_aplicar_parameter?sourceName=actualizar_parametro_001_development_posme.sql&targetName=' . $paramFile) . "&syncStructure=1'>👉 01) Clic aquí para procesar estructuras</a>
+				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_aplicar_parameter?sourceName=actualizar_parametro_001_development_posme.sql&targetName=' . $paramFile) . ".sql&syncStructure=1'>👉 01) Clic aquí para procesar estructuras</a>
 			  </div>";
 		echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
 				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_data_insert_and_update?sourceName=actualizar_parametro_001_development_posme.sql&targetName=' . $paramFile) . "&syncStructure=0'>👉 02) Clic aquí para procesar insert and update</a>
@@ -1486,7 +1382,7 @@ class core_merge extends _BaseController {
 				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_data_delete?sourceName=actualizar_parametro_001_development_posme.sql&targetName=' . $paramFile) . "&syncStructure=0'>👉 04) Clic aquí para procesar delete</a>
 			  </div>";
 		echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
-				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_aplicar_parameter?sourceName=actualizar_parametro_001_development_posme.sql&targetName=' . $paramFile) . "&syncStructure=0'>👉 05) Clic aquí para procesar parámetros y datos</a>
+				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_aplicar_parameter?sourceName=actualizar_parametro_001_development_posme.sql&targetName=' . $paramFile) . ".sql&syncStructure=0'>👉 05) Clic aquí para procesar parámetros y datos</a>
 			  </div>";
 		echo "<div style='padding:15px; background:#f0f5ff; border-left:5px solid #40a9ff; margin:20px 0;'>
 				🔗 <a target='_blank' href='" . base_url('core_merge/merge_of_posme_merge_to_posme_initialize/2')."'>👉 06) Clic aquí para procesar limpieza de archivos</a>
