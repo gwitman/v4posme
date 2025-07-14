@@ -7556,7 +7556,11 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["phoneNumber"]						= $objParameterTelefono->value;
 			$datViewArray["address"]							= $objCompany->address;
 			$datViewArray["note"]								= $datView["objTM"]->note;
-			$datViewArray["customerName"]						= $datView["objNatural"]->firstName;
+			$datViewArray["customerName"]						= $datView["objTMI"]->referenceClientName == "" ? 
+																		$datView["objNatural"]->firstName :
+																		$datView["objTMI"]->referenceClientName ;
+																		
+																		
 			$datViewArray["customerNameLastName"]				= $datView["objNatural"]->lastName;
 			$datViewArray["statusName"]							= $datView["objStage"][0]->display;
 			$datViewArray["causalName"]							= $datView["objTC"]->name;
