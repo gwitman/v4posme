@@ -432,9 +432,9 @@ class financial_amort{
 		
 		
 		$result["summary"]					= null;
-		$result["summary"]["totalPay"] 		= $montoPorCuota;
-		$result["summary"]["totalIntest"] 	= $montoTotalInteres;
-		$result["summary"]["totalCuotas"] 	= $montoTotalApagar;
+		$result["summary"]["totalPay"] 		= round($montoPorCuota,2);
+		$result["summary"]["totalIntest"] 	= round($montoTotalInteres,2);
+		$result["summary"]["totalCuotas"] 	= round($montoTotalApagar,2);
 		$result["summary"]["pagoMensual"] 	= 0;
 		$result["detail"] 					= null;
 		
@@ -462,11 +462,11 @@ class financial_amort{
 			$result["detail"][$i]	  				= null;
 			$result["detail"][$i]["pnum"] 			= $i;									
 			$result["detail"][$i]["date"] 			= date_format($nextDate,"Y-m-d");		
-			$result["detail"][$i]["principal"] 		= sprintf("%01.2f",$amort) ;				
-			$result["detail"][$i]["interes"] 		= sprintf("%01.2f",$interes) ;			
-			$result["detail"][$i]["cuota"] 			= sprintf("%01.2f",$payment);				
-			$result["detail"][$i]["saldo"] 			= sprintf("%01.2f",$balance) ;				
-			$result["detail"][$i]["saldoInicial"] 	= sprintf("%01.2f",$balanceInicial) ;
+			$result["detail"][$i]["principal"] 		= sprintf("%01.2f",round($amort,2)) ;				
+			$result["detail"][$i]["interes"] 		= sprintf("%01.2f",round($interes,2)) ;			
+			$result["detail"][$i]["cuota"] 			= sprintf("%01.2f",round($payment,2));							
+			$result["detail"][$i]["saldo"] 			= sprintf("%01.2f",round($balance,2)) ;				
+			$result["detail"][$i]["saldoInicial"] 	= sprintf("%01.2f",round($balanceInicial,2)) ;
 			$result["detail"][$i]["cpmnt"] 			= 0;
 			$nextDate								= $this->getNextDate($nextDate,$this->periodPay);			
 			$balanceInicial							= $balanceInicial - $amort;			
@@ -476,14 +476,20 @@ class financial_amort{
 		
 		//Sumar el total del principal
 		$totalPrincipal 			= array_sum(array_map('floatval', array_column($result["detail"], "principal")));
-		$totalShare 				= array_sum(array_map('floatval', array_column($result["detail"], "share")));		
+		$totalShare 				= array_sum(array_map('floatval', array_column($result["detail"], "cuota")));		
 		$dif						= round($capitalDesembolsado - $totalPrincipal,2);
+		
+		log_message("error",print_r($dif,true));
+		log_message("error",print_r($totalPrincipal,true));
+		log_message("error",print_r($totalShare,true));
+		log_message("error",print_r($result["detail"],true));
+		log_message("error","---------------------");
 		
 		//Validar si la ultima cuota tiene los decimales en el rango
 		$i 					= $i-1;
 		if($dif > 0)
 		{
-			$result["detail"][$i]["principal"] 			= round($result["detail"][$i]["principal"] + $dif,2);
+			$result["detail"][$i]["principal"] 			= round($result["detail"][$i]["principal"] - $dif,2);
 			$result["detail"][$i]["interes"] 			= round($result["detail"][$i]["interes"] - $dif - $dif,2);
 			$result["detail"][$i]["cuota"] 				= $result["detail"][$i]["principal"] + $result["detail"][$i]["interes"] - $dif;
 			
@@ -492,7 +498,7 @@ class financial_amort{
 		{
 			$dif										= $dif * -1;
 			$result["detail"][$i]["principal"] 			= round($result["detail"][$i]["principal"] - $dif,2);
-			$result["detail"][$i]["interes"] 			= round($result["detail"][$i]["interes"] + $dif,2);
+			$result["detail"][$i]["interes"] 			= round($result["detail"][$i]["interes"] + $dif + $dif,2);
 			$result["detail"][$i]["cuota"] 				= $result["detail"][$i]["principal"] + $result["detail"][$i]["interes"];
 			
 		}
@@ -502,9 +508,9 @@ class financial_amort{
 		//$totalShareValidateDecimal 	= $this->validarDecimal(round($totalPrincipal,2),0.01,0.5);
 		//$totalShareValidateDecimal 	= $this->validarDecimal(round($totalShare,2),0.01,0.5);
 		//log_message("error",print_r($totalShareValidateDecimal,true));		
-		//$totalPrincipal 			= array_sum(array_map('floatval', array_column($result["detail"], "principal")));
-		//$totalShare 				= array_sum(array_map('floatval', array_column($result["detail"], "share")));		
-		//$dif						= round($capitalDesembolsado - $totalPrincipal,2);
+		$totalPrincipal 			= array_sum(array_map('floatval', array_column($result["detail"], "principal")));
+		$totalShare 				= array_sum(array_map('floatval', array_column($result["detail"], "cuota")));		
+		$dif						= round($capitalDesembolsado - $totalPrincipal,2);
 		
 		log_message("error",print_r($dif,true));
 		log_message("error",print_r($totalPrincipal,true));

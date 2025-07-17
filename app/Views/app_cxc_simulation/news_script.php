@@ -97,13 +97,13 @@
 								
 								var objRow = obj;
 								objDetail.fnAddData([
-									objRow.pnum,
+									fnFormatNumber(objRow.pnum,2),
 									objRow.date,
-									objRow.saldoInicial,
-									objRow.interes,
-									objRow.principal,
-									objRow.cuota,
-									objRow.saldo
+									fnFormatNumber(objRow.saldoInicial,2),
+									fnFormatNumber(objRow.interes,2),
+									fnFormatNumber(objRow.principal,2),
+									fnFormatNumber(objRow.cuota,2),
+									fnFormatNumber(objRow.saldo,2)
 								]);
 								total_capital	= total_capital + parseFloat(objRow.principal);
 								total_interest	= total_interest + parseFloat(objRow.interes);

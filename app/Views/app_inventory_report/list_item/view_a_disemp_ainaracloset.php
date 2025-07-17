@@ -24,6 +24,7 @@
 	</head>
 	<body style="font-family:monospace;font-size:<?php echo $objParameterTamanoLetra; ?>;margin:0px 0px 0px 0px"> 
 		
+		
 		<table style="
 			width:100%;border-spacing: 10px;			
 		">
@@ -68,6 +69,21 @@
 		
 		<br/>		
 		
+		<h1 style="
+			background: linear-gradient(to right, #00bcd4, #4caf50);
+			color: white;
+			padding: 15px;
+			text-align: center;
+			border-radius: 8px;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			font-size: 32px;
+			box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+			margin-bottom: 20px;
+		">
+			Inventario en Córdoba
+		</h1>
+		
+
 		<table style="
 			width:100%;order-spacing: 10px;
 		" >
@@ -75,17 +91,15 @@
 				
 				<tr style="background-color:#00628e;color:white;">
 					<!--812-->					
-					<th  style="text-align:left;width:80px;" class="border">Codigo</th>
-					<th  style="text-align:left;width:80px;" class="border">Barra</th>
-					<th  style="text-align:left;width:80px;" class="border">Moneda</th>
+					<th  style="text-align:left;width:80px;" class="border">Codigo</th>					
 					<th  style="text-align:left;width:400px;" class="border">Nombre</th>						
-					<th  style="text-align:left;width:120px;" class="border">Categoria</th>		
+					<!--<th  style="text-align:left;width:120px;" class="border">Categoria</th>-->	
 					
 					<th  style="text-align:right;width:80px;"  colspan="1"   class="border">Cantidad</th>
 					<th  style="text-align:left;width:80px;" class="border">Costo</th>
 					<th  style="text-align:left;width:80px;" class="border">Costo T.</th>
 					<th  style="text-align:left;width:80px;" class="border">Precio</th>						
-					<th  style="text-align:left;width:80px;" class="border">Fisico</th>		
+					<!--<th  style="text-align:left;width:80px;" class="border">Fisico</th>-->		
 				</tr>
 				
 			</thead>				
@@ -104,36 +118,24 @@
 						$count++;	
 						$category 		= $i["categoryName"];
 						$moneda 		= $i["Moneda"];
-						
-						if($moneda == "Cordoba" || $moneda == "C$")
+						if($moneda == "Dolar")
 						{
-							$costoTotal 	= $costoTotal +  ($i["cost"] * $i["quantity"] );
-							$precioTotal 	= $precioTotal +  ($i["price"] * $i["quantity"] );
-						}
-						else
-						{
-							$costoTotalDol 		= $costoTotalDol +  ($i["cost"] * $i["quantity"] );
-							$precioTotalDol 	= $precioTotalDol +  ($i["price"] * $i["quantity"] );
+							continue;
 						}
 						
-						
+						$costoTotal 	= $costoTotal +  ($i["cost"] * $i["quantity"] );
+						$precioTotal 	= $precioTotal +  ($i["price"] * $i["quantity"] );
 						
 						echo "<tr style='height:".$objParameterAltoDeLaFila."' >";	
 							echo "<td style='text-align:left;'  colspan='1'  class='border' >";
 								echo (substr($i["itemNumber"],-15));
-							echo "</td>";
-							echo "<td style='text-align:left;'  colspan='1'  class='border' >";
-								echo (substr($i["barCode"],-15));
-							echo "</td>";
-							echo "<td style='text-align:left;'  colspan='1'  class='border' >";
-								echo (substr($i["Moneda"],-15));
-							echo "</td>";
+							echo "</td>";							
 							echo "<td style='text-align:left'  colspan='1'  class='border' >";
 								echo ($i["itemName"]);
 							echo "</td>";		
-							echo "<td style='text-align:left'  colspan='1' class='border' >";
+							echo "<!--<td style='text-align:left'  colspan='1' class='border' >";
 								echo ($i["categoryName"]);
-							echo "</td>";	
+							echo "</td>-->";	
 							
 							echo "<td style='text-align:right;' colspan='1'  class='border' >";
 								echo number_format($i["quantity"],2,'.',',');
@@ -147,8 +149,8 @@
 							echo "<td style='text-align:right' class='border' >";
 								echo (number_format( $i["price"],2,'.',','));
 							echo "</td>";	
-							echo "<td style='text-align:right' class='border' colspan='1' >";								
-							echo "</td>";					
+							echo "<!--<td style='text-align:right' class='border' colspan='1' >";								
+							echo "</td>-->";					
 						echo "</tr>";
 					}
 				}
@@ -161,25 +163,19 @@
 					<!--812-->					
 					
 					<th  style="text-align:left;width:80px;" class="border">Codigo</th>
-					<th  style="text-align:left;width:80px;" class="border">Barra</th>
-					<th  style="text-align:left;width:80px;" class="border">Moneda</th>
 					<th  style="text-align:left;width:400px;" class="border">Nombre</th>						
-					<th  style="text-align:left;width:120px;" class="border">Categoria</th>	
+					<!--<th  style="text-align:left;width:120px;" class="border">Categoria</th>-->	
 					
 					
 					<th  style="text-align:right;width:80px;" colspan="1"   class="border">Cantidad</th>
 					<th  style="text-align:left;width:80px;" class="border">Costo</th>
 					<th  style="text-align:left;width:80px;" class="border">
-						C$ <?php echo number_format($costoTotal,2,'.',',');  ?>
-						</br>
-						$ <?php echo number_format($costoTotalDol,2,'.',',');  ?>
+						C$ <?php echo number_format($costoTotal,2,'.',',');  ?>						
 					</th>
 					<th  style="text-align:left;width:80px;" class="border">
-						C$ <?php echo number_format($precioTotal,2,'.',',');  ?>
-						</br>
-						$ <?php echo number_format($precioTotalDol,2,'.',',');  ?>
+						C$ <?php echo number_format($precioTotal,2,'.',',');  ?>						
 					</th>						
-					<th  style="text-align:left;width:80px;" class="border">Fisico</th>		
+					<!--<th  style="text-align:left;width:80px;" class="border">Fisico</th>-->		
 				</tr>
 				
 				
@@ -188,7 +184,124 @@
 
 		
 		
-		<br/>		
+		<br/>	
+
+		
+		<h1 style="
+			background: linear-gradient(to right, #00bcd4, #4caf50);
+			color: white;
+			padding: 15px;
+			text-align: center;
+			border-radius: 8px;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			font-size: 32px;
+			box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+			margin-bottom: 20px;
+		">
+			Inventario en Dolares
+		</h1>
+		
+		<table style="
+			width:100%;order-spacing: 10px;
+		" >
+			<thead >
+				
+				<tr style="background-color:#00628e;color:white;">
+					<!--812-->					
+					<th  style="text-align:left;width:80px;" class="border">Codigo</th>
+					<th  style="text-align:left;width:400px;" class="border">Nombre</th>						
+					<!--<th  style="text-align:left;width:120px;" class="border">Categoria</th>-->		
+					
+					<th  style="text-align:right;width:80px;"  colspan="1"   class="border">Cantidad</th>
+					<th  style="text-align:left;width:80px;" class="border">Costo</th>
+					<th  style="text-align:left;width:80px;" class="border">Costo T.</th>
+					<th  style="text-align:left;width:80px;" class="border">Precio</th>						
+					<!--<th  style="text-align:left;width:80px;" class="border">Fisico</th>-->		
+				</tr>
+				
+			</thead>				
+			<tbody>
+				<?php
+				$count 				= 0;
+				$costoTotal			= 0;
+				$precioTotal 		= 0;				
+				$costoTotalDol		= 0;
+				$precioTotalDol 	= 0;
+				
+				if($objDetail){
+					$category   = $objDetail[0]["categoryName"];
+					
+					foreach($objDetail as $i){
+						$count++;	
+						$category 		= $i["categoryName"];
+						$moneda 		= $i["Moneda"];
+						if($moneda == "Cordoba")
+						{
+							continue;
+						}
+						
+						
+						$costoTotalDol 		= $costoTotalDol +  ($i["cost"] * $i["quantity"] );
+						$precioTotalDol 	= $precioTotalDol +  ($i["price"] * $i["quantity"] );
+						
+						
+						echo "<tr style='height:".$objParameterAltoDeLaFila."' >";	
+							echo "<td style='text-align:left;'  colspan='1'  class='border' >";
+								echo (substr($i["itemNumber"],-15));
+							echo "</td>";
+							echo "<td style='text-align:left'  colspan='1'  class='border' >";
+								echo ($i["itemName"]);
+							echo "</td>";		
+							echo "<!--<td style='text-align:left'  colspan='1' class='border' >";
+								echo ($i["categoryName"]);
+							echo "</td>-->";	
+							
+							echo "<td style='text-align:right;' colspan='1'  class='border' >";
+								echo number_format($i["quantity"],2,'.',',');
+							echo "</td>";
+							echo "<td  style='text-align:right' class='border'>";
+								echo number_format( $i["cost"],2,'.',',');
+							echo "</td>";
+							echo "<td style='text-align:right' class='border'>";
+								echo (number_format($i["cost"] * $i["quantity"],2,'.',',' ));;
+							echo "</td>";
+							echo "<td style='text-align:right' class='border' >";
+								echo (number_format( $i["price"],2,'.',','));
+							echo "</td>";	
+							echo "<!--<td style='text-align:right' class='border' colspan='1' >";								
+							echo "</td>-->";					
+						echo "</tr>";
+					}
+				}
+				?>
+			</tbody>
+			<tfoot>
+				
+				
+				<tr style="background-color:#00628e;color:white;">
+					<!--812-->					
+					
+					<th  style="text-align:left;width:80px;" class="border">Codigo</th>					
+					<th  style="text-align:left;width:400px;" class="border">Nombre</th>						
+					<!--<th  style="text-align:left;width:120px;" class="border">Categoria</th>-->
+					
+					
+					<th  style="text-align:right;width:80px;" colspan="1"   class="border">Cantidad</th>
+					<th  style="text-align:left;width:80px;" class="border">Costo</th>
+					<th  style="text-align:left;width:80px;" class="border">						
+						$ <?php echo number_format($costoTotalDol,2,'.',',');  ?>
+					</th>
+					<th  style="text-align:left;width:80px;" class="border">						
+						$ <?php echo number_format($precioTotalDol,2,'.',',');  ?>
+					</th>						
+					<!--<th  style="text-align:left;width:80px;" class="border">Fisico</th>-->
+				</tr>
+				
+				
+			</tfoot>
+		</table>
+
+		
 
 		<table style="width:100%">
 			<thead>
