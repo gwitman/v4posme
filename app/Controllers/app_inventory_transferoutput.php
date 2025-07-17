@@ -92,6 +92,7 @@ class app_inventory_transferoutput extends _BaseController
 			$htmlTemplateDemo 						= getBahavioDB("demo","app_inventory_transferoutput","templateTransferOutput","");
 			
 			
+			
 			if($htmlTemplateCompany == "" || !htmlTemplateCompany)
 				$htmlTemplateCompany = $htmlTemplateDemo;
 			

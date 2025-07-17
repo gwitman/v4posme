@@ -1730,14 +1730,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "La estacion" 
+	tb_company_parameter.value = "Costado Este Policia Maercado La Estacion." 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Agro quimico la estacion' , address = 'La estacion' ,
+	NAME = 'Agro quimico la estacion' , address = 'Costado Este Policia Maercado La Estacion.' ,
 	flavorID = 854 /*usuarioID*/,type='agro_q_estacion'  , abreviature='agro_q_estacion'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
