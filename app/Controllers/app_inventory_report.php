@@ -504,6 +504,10 @@ class app_inventory_report extends _BaseController {
 				{
 					return view("app_inventory_report/list_item/view_a_disemp_elektro",$objDataResult);//--finview-r
 				}	
+				else if ($objCompany->type == "frozen_market")
+				{
+					return view("app_inventory_report/list_item/view_a_disemp_frozen_market",$objDataResult);//--finview-r
+				}
 				else
 				{
 					return view("app_inventory_report/list_item/view_a_disemp",$objDataResult);//--finview-r

@@ -344,8 +344,8 @@ class app_inventory_api extends _BaseController {
 			$companyID			= $dataSession["user"]->companyID;
 			$branchID 			= $dataSession["user"]->branchID;
 			$loginID			= $dataSession["user"]->userID;
-			$componentPeriodID	= /*inicio get post*/ $this->request->getPost("componentPeriodID");
-			$componentCycleID	= /*inicio get post*/ $this->request->getPost("componentCycleID");
+			$componentPeriodID	= /*inicio get post*/ $this->request->getVar("componentPeriodID");
+			$componentCycleID	= /*inicio get post*/ $this->request->getVar("componentCycleID");
 			
 			
 						

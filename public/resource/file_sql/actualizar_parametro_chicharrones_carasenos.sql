@@ -1702,14 +1702,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Aserrio Santa Fe, 2 cuadras abajo 15vras al sur" 
+	tb_company_parameter.value = "Estadio nuevo de León 200 metros al sur sobre carretera a mano isquierda casa blanca" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Chicharrones Caraceños' , address = 'Aserrio Santa Fe, 2 cuadras abajo 15vras al sur' ,
+	NAME = 'Chicharrones Caraceños' , address = 'Estadio nuevo de León 200 metros al sur sobre carretera a mano isquierda casa blanca' ,
 	flavorID = 784 /*usuarioID*/,type='default'  , abreviature='chicharrones'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

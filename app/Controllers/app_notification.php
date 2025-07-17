@@ -707,6 +707,57 @@ class app_notification extends _BaseController
 		return view('core_template/close'); //--finview-r
 
 	}
+	function generatedTransactionOutputByFormulate($companyID = "")
+	{
+		try{ 
+		
+			$companyID			= APP_COMPANY;
+			$branchID 			= APP_BRANCH;
+			$loginID			= APP_USERADMIN;
+			$componentPeriodID	= 0;
+			$componentCycleID	= 0;
+			
+			
+						
+			$query									= "CALL pr_inventory_create_transaction_output_by_formulated(?,?,?,?,?,@resultMayorization);";
+			$resultMayorizate						= $this->Bd_Model->executeRender(
+				$query,[$companyID,$branchID,$loginID,$componentPeriodID,$componentCycleID]
+			);	
+			
+			$query									= "SELECT @resultMayorization as codigo";
+			$resultMayorizate						= $this->Bd_Model->executeRender($query,null);			
+			
+			
+			$resultMayorizate						= $this->Log_Model->get_rowByPK($companyID,$branchID,$loginID,'');
+			$resultMayorizateTransactionID			= $this->Log_Model->get_rowByNameParameterOutput($companyID,$branchID,$loginID,'','pr_inventory_create_transaction_output_by_formulated_transactionID');
+			$resultMayorizateTransactionMasterIDID	= $this->Log_Model->get_rowByNameParameterOutput($companyID,$branchID,$loginID,'','pr_inventory_create_transaction_output_by_formulated_transactionMasterID');
+			$resultMayorizateTransactionID 			= $resultMayorizateTransactionID->description;
+			$resultMayorizateTransactionMasterIDID	= $resultMayorizateTransactionMasterIDID->description;
+			
+			//Ingresar en Kardex.
+			$this->core_web_inventory->calculateKardexNewOutput($companyID,$resultMayorizateTransactionID,$resultMayorizateTransactionMasterIDID);			
+			
+			//Crear Conceptos.
+			$this->core_web_concept->otheroutput($companyID,$resultMayorizateTransactionID,$resultMayorizateTransactionMasterIDID);
+			
+			
+			return $this->response->setJSON(array(
+				'error'   => false,
+				'message' => "SUCCESS",
+				'result'  => $resultMayorizate
+			));//--finjson
+			
+			
+		}
+		catch(\Exception $ex){
+			
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));//--finjson
+		}	
+
+	}
 	function getNotificationShowInApp($userName)
 	{
 		if ($userName !== null) {

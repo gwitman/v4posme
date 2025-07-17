@@ -1692,6 +1692,44 @@ class app_invoice_billing extends _BaseController {
 					
 				}
 				
+				////Ejecutar las formulas al facturar , cuando el producto que se esta
+				////facturando tiene una receta
+				//$parameterINVOICE_EXECUTE_FORMULATED = $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"],"INVOICE_EXECUTE_FORMULATED")->value;
+				//if($parameterINVOICE_EXECUTE_FORMULATED == "true")
+				//{
+				//	$companyID			= $dataSession["user"]->companyID;
+				//	$branchID 			= $dataSession["user"]->branchID;
+				//	$loginID			= $dataSession["user"]->userID;
+				//	$componentPeriodID	= 0;
+				//	$componentCycleID	= 0;
+				//	
+				//	
+				//				
+				//	$query									= "CALL pr_inventory_create_transaction_output_by_formulated(?,?,?,?,?,@resultMayorization);";
+				//	$resultMayorizate						= $this->Bd_Model->executeRender(
+				//		$query,[$companyID,$branchID,$loginID,$componentPeriodID,$componentCycleID]
+				//	);	
+				//	
+				//	$query									= "SELECT @resultMayorization as codigo";
+				//	$resultMayorizate						= $this->Bd_Model->executeRender($query,null);			
+				//	
+				//	
+				//	$resultMayorizate						= $this->Log_Model->get_rowByPK($companyID,$branchID,$loginID,'');
+				//	$resultMayorizateTransactionID			= $this->Log_Model->get_rowByNameParameterOutput($companyID,$branchID,$loginID,'','pr_inventory_create_transaction_output_by_formulated_transactionID');
+				//	$resultMayorizateTransactionMasterIDID	= $this->Log_Model->get_rowByNameParameterOutput($companyID,$branchID,$loginID,'','pr_inventory_create_transaction_output_by_formulated_transactionMasterID');
+				//	$resultMayorizateTransactionID 			= $resultMayorizateTransactionID->description;
+				//	$resultMayorizateTransactionMasterIDID	= $resultMayorizateTransactionMasterIDID->description;
+				//	
+				//	
+				//	//Ingresar en Kardex.
+				//	$this->core_web_inventory->calculateKardexNewOutput($companyID,$resultMayorizateTransactionID,$resultMayorizateTransactionMasterIDID);			
+				//	
+				//	//Crear Conceptos.
+				//	$this->core_web_concept->otheroutput($companyID,$resultMayorizateTransactionID,$resultMayorizateTransactionMasterIDID);					
+				//	
+				//}
+				
+				
 			}
 			
 			
