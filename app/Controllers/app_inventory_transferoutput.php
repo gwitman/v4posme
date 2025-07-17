@@ -51,21 +51,72 @@ class app_inventory_transferoutput extends _BaseController
 			$datView["objNaturalTarget"]			= $datView["objTM"] != NULL ? $this->Natural_Model->get_rowByPK($companyID, $datView["objTM"]->branchID, $datView["objTM"]->entityIDSecondary) : NULL;
 			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_transferoutput", "statusID", $datView["objTM"]->statusID, $companyID, $branchID, $roleID);
 
-			//Generar Reporte
-			$html = helper_reporteA4TransactionMasterTransferOutputGlobalPro(
-				"SALIDA POR TRANSFERENCIA",
-				$objCompany,
-				$objParameterLogo,
-				$datView["objTM"],
-				$datView["objStage"][0]->display, /*estado*/
-				$datView["objTMD"],
-				$datView["objNaturalSource"],
-				$datView["objNaturalTarget"],
-				$datView["objWarehouse"],
-				$datView["objWarehouseTarget"]
-			);
-			//echo $html;
+
+
+			$objParameterTelefono								= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+			$datViewArray["phoneNumber"]						= $objParameterTelefono->value;
+			$datViewArray["address"]							= $objCompany->address;
+			$datViewArray["transactionNumber"]					= $datView["objTM"]->transactionNumber;
+			$objParameterRuc	    							= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+			$datViewArray["ruc"]								= $objParameterRuc->value;
+			$datViewArray["transactionOn"] 						= $datView["objTM"]->transactionOn;
+			$datViewArray["warehouseSourceName"]				= $datView["objWarehouse"]->name;
+			$datViewArray["warehouseTargetName"]				= $datView["objWarehouseTarget"]->name;
+			$datViewArray["employerSourceName"]					= $datView["objNaturalSource"] ? $datView["objNaturalSource"]->firstName 	: "";
+			$datViewArray["employerSourceLastName"]				= $datView["objNaturalSource"] ? $datView["objNaturalSource"]->lastName		: "";
+			$datViewArray["employerTargetName"]					= $datView["objNaturalTarget"] ? $datView["objNaturalTarget"]->firstName	: "";
+			$datViewArray["employerTargetLastName"]				= $datView["objNaturalTarget"] ? $datView["objNaturalTarget"]->lastName		: "";
+			$datViewArray["transactionMasterDetail"] 			= array();
+			
+			foreach($datView["objTMD"] as $detail_)
+			{
+				$row = array(
+					"itemNumber"			=>$detail_->itemNumber,
+					"itemName"				=>$detail_->itemName,
+					"itemNameQuantity"		=>sprintf("%01.2f",round($detail_->quantity,2)),
+					"itemNamePrice"			=>sprintf("%01.2f",round(0,2)),
+					"itemNameAmount"		=>sprintf("%01.2f",round($detail_->amount,2))	
+				);
+				array_push($datViewArray["transactionMasterDetail"],$row);		
+			}
+			
+			
+			//Obtener imagen de logo
+			$path    						= PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;    
+			$type    						= pathinfo($path, PATHINFO_EXTENSION);
+			$data    						= file_get_contents($path);
+			$base64  						= 'data:image/' . $type . ';base64,' . base64_encode($data);
+			$datViewArray["imageBase64"]	= $base64;
+			
+			$htmlTemplateCompany					= getBahavioDB($objCompany->type,"app_inventory_transferoutput","templateTransferOutput","");
+			$htmlTemplateDemo 						= getBahavioDB("demo","app_inventory_transferoutput","templateTransferOutput","");
+			
+			
+			if($htmlTemplateCompany == "" || !htmlTemplateCompany)
+				$htmlTemplateCompany = $htmlTemplateDemo;
+			
+			
+			
+			//Parse plantilla 
+			$parser = \Config\Services::parser();			
+			$html 	= $parser->setData($datViewArray)->renderString($htmlTemplateCompany);
 			$this->dompdf->loadHTML($html);
+			
+			//$html = helper_reporteA4TransactionMasterTransferOutputGlobalPro(
+			//	"SALIDA POR TRANSFERENCIA",
+			//	$objCompany,
+			//	$objParameterLogo,
+			//	$datView["objTM"],
+			//	$datView["objStage"][0]->display, /*estado*/
+			//	$datView["objTMD"],
+			//	$datView["objNaturalSource"],
+			//	$datView["objNaturalTarget"],
+			//	$datView["objWarehouse"],
+			//	$datView["objWarehouseTarget"]
+			//);
+			//echo $html;
+			//return;
+			//$this->dompdf->loadHTML($html);
 
 
 			//1cm = 29.34666puntos
