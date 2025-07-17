@@ -18,7 +18,7 @@
 								objDataSource[i].itemNumber,
 								objDataSource[i].name,
 								'Unidad',
-								fnFormatNumber(parseFloat(objDataSource[i].quantity).toFixed(2)), /*cantidad */
+								parseFloat(objDataSource[i].quantity), /*cantidad */
 								0,
 								0
 							]);
