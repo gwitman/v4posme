@@ -654,6 +654,7 @@ class core_merge extends _BaseController {
 		array_push($tablasSync,"tb_reporting_result:reportResultID");
 		array_push($tablasSync,"tb_reporting_parameter:reportParameterID");
 		array_push($tablasSync,"tb_company_page_setting:customPageID");
+		array_push($tablasSync,"tb_company_page_setting_large:customPageLargeID");
 		
 		
 		
@@ -848,7 +849,7 @@ class core_merge extends _BaseController {
 		array_push($tablasSync,"tb_reporting_result:reportResultID");
 		array_push($tablasSync,"tb_reporting_parameter:reportParameterID");
 		array_push($tablasSync,"tb_company_page_setting:customPageID");
-		
+		array_push($tablasSync,"tb_company_page_setting_large:customPageLargeID");
 		
 		$recordSet = $dbDestino->query("SET FOREIGN_KEY_CHECKS=0;");	
 		foreach($tablasSync as $key => $tabla)
