@@ -183,6 +183,9 @@ class core_web_authentication {
 		$data["lastUrl"] 				= "";
 		$data["menuRenderProcedure"]	= getBahavioLargeDB($objCompany->type,"core_web_authentication","menuRenderProcedure","");
 		
+		if($data["menuRenderProcedure"] == ""){
+			$data["menuRenderProcedure"]	= getBahavioLargeDB("demo","core_web_authentication","menuRenderProcedure","");
+		}
 		
 		return $data;
    }

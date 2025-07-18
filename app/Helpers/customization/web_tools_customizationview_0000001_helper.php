@@ -1249,6 +1249,8 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
 	$divs                   = array_merge($divs, $blooMoon);
 	$frozenMarket			= getBehavioFrozenMarket();
 	$divs                   = array_merge($divs, $frozenMarket);
+	$pasteleriaPeralta		= getBehavioPasteleriaPeralta();
+	$divs                   = array_merge($divs, $pasteleriaPeralta);
 
 	//Comanda traducir es para los menu
 	//comportamiento del controlador
