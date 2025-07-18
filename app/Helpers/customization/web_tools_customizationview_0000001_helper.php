@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\Company_Page_Setting_Model;
+use App\Models\Company_Page_Setting_Large_Model;
+
 function getBehavio($type_company, $key_controller, $key_element, $default_value)
 {
 	$divs = array(		
@@ -1333,6 +1335,17 @@ function getBahavioDB($type_company, $key_controller, $key_element, $default_val
     try {
         $companyPageSettingModel    = new Company_Page_Setting_Model();
         $findSetting                = $companyPageSettingModel->get_rowByKeyAndControllerAndEmelement($type_company, $key_controller, $key_element);
+        if(is_null($findSetting)) return $default_value;
+        else return $findSetting->valuei;
+    }catch (Exception $e) {
+        return $default_value;
+    }
+}
+function getBahavioLargeDB($type_company, $key_controller, $key_element, $default_value)
+{
+    try {
+        $companyPageSettingLargeModel    	= new Company_Page_Setting_Large_Model();
+        $findSetting                		= $companyPageSettingLargeModel->get_rowByKeyAndControllerAndEmelement($type_company, $key_controller, $key_element);
         if(is_null($findSetting)) return $default_value;
         else return $findSetting->valuei;
     }catch (Exception $e) {

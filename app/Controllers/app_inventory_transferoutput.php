@@ -88,8 +88,8 @@ class app_inventory_transferoutput extends _BaseController
 			$base64  						= 'data:image/' . $type . ';base64,' . base64_encode($data);
 			$datViewArray["imageBase64"]	= $base64;
 			
-			$htmlTemplateCompany					= getBahavioDB($objCompany->type,"app_inventory_transferoutput","templateTransferOutput","");
-			$htmlTemplateDemo 						= getBahavioDB("demo","app_inventory_transferoutput","templateTransferOutput","");
+			$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_inventory_transferoutput","templateTransferOutput","");
+			$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_inventory_transferoutput","templateTransferOutput","");
 			
 			
 			

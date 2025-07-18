@@ -7574,8 +7574,8 @@ class app_invoice_billing extends _BaseController {
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
 			$datView["objUser"]						= $this->User_Model->get_rowByPK($companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
 			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 			
-			$htmlTemplateCompany					= getBahavioDB($objCompany->type,"app_invoice_billing","templateInvoice","");
-			$htmlTemplateDemo 						= getBahavioDB("demo","app_invoice_billing","templateInvoice","");
+			$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_invoice_billing","templateInvoice","");
+			$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_invoice_billing","templateInvoice","");
 			if($htmlTemplateCompany == "")
 				$htmlTemplateCompany = $htmlTemplateDemo;
 			
