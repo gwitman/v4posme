@@ -290,8 +290,9 @@
 			return;
 		
 		let componentID 	= $("#txtTypeProcedureID").val().split("|")[0];
-		let dataViewName 	= $("#txtTypeProcedureID").val().split("|")[1];
-		let url 			= $("#txtTypeProcedureID").val().split("|")[2];
+		let dataViewName 	= $("#txtTypeProcedureID").val().split("|")[1];		
+		let typeOpen		= $("#txtTypeProcedureID").val().split("|")[2];
+		let url 			= $("#txtTypeProcedureID").val().split("|")[3];
 		
 		let url_request =
 			"<?php echo base_url(); ?>/core_view/showviewbynamepaginate"+
@@ -311,14 +312,34 @@
 	
 	function fnAceptarModalDialogHtmlTramites()
 	{
+		if($("#txtTypeProcedureID").val() == "")
+			return;
+		
 		let componentID 					= $("#txtTypeProcedureID").val().split("|")[0];
 		let dataViewName 					= $("#txtTypeProcedureID").val().split("|")[1];
-		let url 							= $("#txtTypeProcedureID").val().split("|")[2];
+		let typeOpen						= $("#txtTypeProcedureID").val().split("|")[2];
+		let url 							= $("#txtTypeProcedureID").val().split("|")[3];
+		
 		let txtTextProcedure 				= $("#txtTextProcedure").val();
 		let txtProcedureEntityID 			= $("#txtProcedureEntityID").val();
 		let txtProcedureEntityName 			= $("#txtProcedureEntityName").val();
 		let txtProcedureEntityDescription 	= $("#txtProcedureEntityDescription").val();
-		window.location.href 				= "<?php echo base_url(); ?>"+"/"+url;
+		
+		
+		
+		if(typeOpen == "_blank")
+		{
+			window.open("<?php echo base_url(); ?>"+"/"+url, "_blank");
+		}
+		else if(typeOpen == "_self")
+		{
+			window.location.href 				= "<?php echo base_url(); ?>"+"/"+url;
+		}
+		else
+		{
+			window.location.href 				= "<?php echo base_url(); ?>"+"/"+url;
+		}
+			
 		
 	}
 	
