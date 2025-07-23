@@ -10470,6 +10470,7 @@ class app_invoice_billing extends _BaseController {
 			
 			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri			
 			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri				
+			$direct						= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"direct");//--finuri				
 			$companyID 					= APP_COMPANY;	
 			
 			
@@ -10615,17 +10616,14 @@ class app_invoice_billing extends _BaseController {
 			
 			chmod($path, 644);
 			
-			if($objParameterShowLinkDownload == "true")
+			if($direct == "true")
 			{			
-				echo "<a 
-					href='".base_url()."/resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".
-					$fileNamePut."'>download factura</a>
-				"; 				
-			
+				//visualizar				
+				$this->dompdf->stream("posme_".$fileNamePut, ['Attachment' => true ]);
 			}
 			else{			
 				//visualizar				
-				$this->dompdf->stream("file.pdf ", ['Attachment' => $objParameterShowDownloadPreview ]);
+				$this->dompdf->stream("posme_".$fileNamePut, ['Attachment' => false ]);
 			}
 			
 			

@@ -1078,32 +1078,19 @@
 
 	$("#btnAceptarDialogPrinterV2AceptarDirect").click(function(){
 
+		mostarModalPersonalizado('Cargando impresión, por favor espere...');		
+		var ahora 		= new Date();
+		var año 		= ahora.getFullYear();
+		var mes 		= String(ahora.getMonth() + 1).padStart(2, '0'); // Mes empieza en 0
+		var dia 		= String(ahora.getDate()).padStart(2, '0');
+		var hora 		= String(ahora.getHours()).padStart(2, '0');
+		var minuto 		= String(ahora.getMinutes()).padStart(2, '0');
+		var segundo 	= String(ahora.getSeconds()).padStart(2, '0');
+		var fechaHora 	= `${año}${mes}${dia}${hora}${minuto}${segundo}`;
+		
+		window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/2/transactionID/19/transactionMasterID/"+$("#txtTransactionMasterID").val()+"/direct/true/"+fechaHora, '_blank');
+		cerrarModal('ModalCargandoDatos');
 		cerrarModal("ModalOpcionesImpresion");
-		mostarModalPersonalizado('Cargando impresión, por favor espere...');
-		var url	= varParameterUrlServidorDeImpresion+varParameterInvoiceBillingPrinterDirectUrl;
-			url = url+
-			"/companyID/"+"2" +
-			"/transactionID/"+"19"+
-			"/transactionMasterID/"+$("#txtTransactionMasterID").val();
-
-		fnWaitOpenV2();
-		$.ajax({
-			cache       : false,
-			dataType    : 'json',
-			type        : 'POST',
-			data		: { "fromServer" : varParameterInvoiceBillingPrinterDataLocal },
-			url  		: url,
-			success		: function(){
-				cerrarModal('ModalCargandoDatos');
-			},
-			error:function(xhr,data){
-				console.info("complete data error");
-				console.info(data);
-				console.info(xhr);
-				cerrarModal('ModalCargandoDatos');
-			}
-		});
-
 
 
 	});
