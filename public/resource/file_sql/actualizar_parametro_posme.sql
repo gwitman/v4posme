@@ -1,5 +1,4 @@
-/*BD	dbs3obkhhc1pgu:posme  */
-
+/*BD:	dbs3obkhhc1pgu:posme*/
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "Infac" 

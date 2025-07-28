@@ -1382,7 +1382,7 @@ class core_merge extends _BaseController {
 		}
 
 		// Obtener nombre de base de datos destino
-		$pattern = '/\/\*BD:\s*(.*?)\s*\*\//';
+		$pattern = '/\/\*BD:\s*(.*?)\s*\*\//';		
 		if (preg_match($pattern, $sqlStringDestino, $matches)) {
 			$targetNameDB 	= trim($matches[1]);	
 			$targetNameDB	= explode(":",$targetNameDB)[0];

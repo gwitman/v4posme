@@ -1,4 +1,4 @@
-/*BD: 	db5qqn2mvepnkv:farma_ley*/
+/*BD:db5qqn2mvepnkv:farma_ley*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
