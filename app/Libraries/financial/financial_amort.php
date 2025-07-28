@@ -491,17 +491,15 @@ class financial_amort{
 		{
 			$result["detail"][$i]["principal"] 			= round($result["detail"][$i]["principal"] + $dif,2);
 			$result["detail"][$i]["interes"] 			= round($result["detail"][$i]["interes"] - $dif ,2);
-			$result["detail"][$i]["cuota"] 				= $result["detail"][$i]["principal"] + $result["detail"][$i]["interes"] - $dif;
-			
 		}
 		if($dif < 0)
 		{
 			$dif										= $dif * -1;
 			$result["detail"][$i]["principal"] 			= round($result["detail"][$i]["principal"] - $dif,2);
-			$result["detail"][$i]["interes"] 			= round($result["detail"][$i]["interes"] + $dif,2);
-			$result["detail"][$i]["cuota"] 				= $result["detail"][$i]["principal"] + $result["detail"][$i]["interes"];
-			
-		}
+			$result["detail"][$i]["interes"] 			= round($result["detail"][$i]["interes"] + $dif + $dif,2);
+		}		
+		$result["detail"][$i]["cuota"] 					= $result["detail"][$i]["principal"] + $result["detail"][$i]["interes"];
+		
 		
 		
 		//Validar si la suma de las cuotas tiene decimales

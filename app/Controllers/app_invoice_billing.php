@@ -7588,7 +7588,11 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["transactionMasterDetail"] 			= array();
 			$datViewArray["companyName"] 						= $objCompany->name;
 			$datViewArray["transactionNumber"] 					= $datView["objTM"]->transactionNumber;
-			$datViewArray["transactionOn"] 						= $datView["objTM"]->transactionOn;
+			$datViewArray["transactionOn"] 						= $datView["objTM"]->createdOn;
+			$createdOn 											= new \DateTime($datViewArray["transactionOn"]);
+			$datViewArray["transactionOn"] 						= $createdOn->format('Y-m-d h:i A'); // 12 horas con AM/PM
+
+
 			$datViewArray["userName"]							= $datView["objUser"]->nickname;
 			$datViewArray["currencySimbol"]						= $datView["objCurrency"]->simbol;
 			$datViewArray["phoneNumber"]						= $objParameterTelefono->value;
@@ -7597,6 +7601,9 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["customerName"]						= $datView["objTMI"]->referenceClientName == "" ? 
 																		$datView["objNatural"]->firstName :
 																		$datView["objTMI"]->referenceClientName ;
+			$datViewArray["customerRuc"]						= $datView["objTMI"]->referenceClientIdentifier == "" ? 
+																		$datView["objCustumer"]->identification :
+																		$datView["objTMI"]->referenceClientIdentifier ;
 																		
 																		
 			$datViewArray["customerNameLastName"]				= $datView["objNatural"]->lastName;
