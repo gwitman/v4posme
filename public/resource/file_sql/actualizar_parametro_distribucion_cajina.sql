@@ -1,34 +1,67 @@
-/*BD:db5qqn2mvepnkv:farma_ley*/
+/*BD: 	db1ltrzpes8xgs:parametro_distribucion_cajina*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 
+
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_EXECUTE_FORMULATED"; 
+## Ejecutar las formulas al facturar
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVENTORY_INSRT_ALL_WAREHOUSE_IN_NEWITEM"; 
 ## Agregar todas las bodegas al momento de crear un nuevo item
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "!Hola {firstName}!.[simbol-enter][simbol-enter]!Gracias por tu compra en Farma Ley![simbol-estetoscopio] [simbol-enter]Has acumulado ({amount}) puntos que podras canjear en tu proxima visita.[simbol-enter][simbol-pildora] Recorda que en nuestra farmacia siempre encontraras medicamentos y atencion de calidad.[simbol-enter] Guarda este mensaje para futuras consultas [simbol-telefono]" 
+	tb_company_parameter.value = "app_invoice_billing/add/codigoMesero/none" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CORE_PAYMENT_URL_RESULT"; 
+## Url de resultado pagadito 
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_SHOW_URL_CUSTOMER_PAY"; 
+## Indica la url que se debe de mostrar al momento de ver el estado de cuenta de un cliente	
+## https://posme.net/v4posme/carlos/public/app_cxc_report/pay_by_invoice/viewReport/true/invoiceNumber/{0}
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "Gracias por su compra {firstName}, le recordamos que por cada compra acumula puntos! Su puntos acumulados son {amount}" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_SEND_WHATAPP_BY_POINT_TEMPLATE"; ## Plantilla de envio de whatapp al comprar por puntos
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
+	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_SEND_WHATAPP_BY_POINT"; ## Enviar whatapp por puntos
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "0.03" 
+	tb_company_parameter.value = "1" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_RATIO_OF_POINT_BY_BILLING"; ## Configuracion de los puntos ganados por cada cordoba vendido
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "DEFAULT" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_TYPE_PRINTER_SHARE_MOBILE"; ## Tipo de impresion en mobile:  DEFAULT | FINANCIAL
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
@@ -68,7 +101,7 @@ WHERE
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "20" 
+	tb_company_parameter.value = "2629824000" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "MOBILE_SYNC_GPS";## Enviar la sincronizacion al api cada 20 minutos
@@ -76,7 +109,7 @@ WHERE
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "10" 
+	tb_company_parameter.value = "60" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "MOBILE_SHOW_TOP_CUSTOMER";## En la pantalla de cliente en el mobile mostrar el top
@@ -514,14 +547,14 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://waapi.app/api/v1/instances/67049/client/action/send-message" 
+	tb_company_parameter.value = "https://api.ultramsg.com/instance65915/messages/chat" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WAHTSAP_URL_ENVIO_MENSAJE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "61oGNnAg3Ed1xULC9nmyIJJMtcE1KifyoX9D2x6h458fa805" 
+	tb_company_parameter.value = "n5hb8n1wf0r6e27i" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
@@ -673,7 +706,7 @@ WHERE
 	
 			
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVENTORY_CATEGORY_BY_DEFAULT";## Establecer la categoria por defecto
@@ -1200,7 +1233,7 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "5" 
+	tb_company_parameter.value = "7" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_CUST_PRICE_MAX_USER";## MAXIMO NUMERO DE USUARIOS 
@@ -1353,7 +1386,7 @@ WHERE
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
+	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_SHOW_DOWNLOAD_PREVIEW";#No mostrar previoew, solo descargar
@@ -1361,7 +1394,7 @@ WHERE
 
 /*--Imprimir de orden de compra*/
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_inventory_inputunpost/viewRegisterFormato80mmFarmaLey" 
+	tb_company_parameter.value = "app_inventory_inputunpost/viewRegisterFormato80mm" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVENTORY_URL_PRINTER_INPUTUNPOST";## URL PARA LA IMPRESION DE ORDEN DE COMPRA
@@ -1369,7 +1402,7 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_inventory_inputunpost/viewRegisterFormato80mmFarmaLeyOnlyQuantity" 
+	tb_company_parameter.value = "app_inventory_inputunpost/viewRegisterFormato80mm" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVENTORY_URL_PRINTER_INPUTUNPOST_ONLY_QUANTITY";## URL PARA LA IMPRESION DE ORDEN DE COMPRA
@@ -1538,7 +1571,7 @@ WHERE
 
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1FarmaLey" 
+	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1DB" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_URL_PRINTER";## URLs PARA LA IMPRESION DE FACTURA 	
@@ -1677,7 +1710,7 @@ WHERE
 /***************************************************************/
 		
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Gabriel Arturo Ley Quant" 
+	tb_company_parameter.value = "Stanley José Cajina Zamora" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_NAME";## Witman José González Rostran 
@@ -1692,28 +1725,28 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "001-300359-0017A" 
+	tb_company_parameter.value = "481-210884-0003K" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "001-300359-0017A" 
+	tb_company_parameter.value = "481-210884-0003K" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 5834-3101" 
+	tb_company_parameter.value = "TEL: 8735-5557" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 5834-3101" 
+	tb_company_parameter.value = "TEL: 8735-5557" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1721,46 +1754,49 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Carretera Masaya, fte al Colegio Teresiano" 
+	tb_company_parameter.value = "barrio gracias a Dios, de dónde fue el bombillo rojo 1 cuadra al suave y 1 1/2 al oeste" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Farma Ley' , address = 'Carretera Masaya, fte al Colegio Teresiano' ,
-	flavorID = 742 /*usuarioID*/,type='farma_ley'  , abreviature='demo'
+	NAME = 'Distribucion Cajina' , address = 'barrio gracias a Dios, de dónde fue el bombillo rojo 1 cuadra al suave y 1 1/2 al oeste' ,
+	flavorID = 896 /*usuarioID*/,type='dcajinas'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
-
 
 
 /*
 Eliminar o desactivar usuarios
 */
---	update tb_user set isActive = 0;
---	update tb_user set isActive = 1 WHERE userID in (
---	 2, 	/*administrador*/
---	 736,  
---	 737, 
---	 738,
---	 739,  
---	 740, 
---	 741, 
---	 742
---	);
---	
---	update tb_role set isActive = 0; 
---	update tb_role set isActive = 1 where roleID in (
---		3,
---		671,
---		672,
---		673,
---		674,
---		675,
---		676,
---		677	
---	);
+
+/*
+update tb_user set isActive = 0;
+update tb_user set isActive = 1 WHERE userID in (
+ 2, 	
+ 890,  
+ 891, 
+ 892,
+ 893,  
+ 894, 
+ 895, 
+ 896
+);
+
+update tb_role set isActive = 0; 
+update tb_role set isActive = 1 where roleID in (
+	3,
+	825,
+	826,
+	827,
+	828,
+	829,
+	830,
+	831	
+);
+*/
+
 
 
 
@@ -1803,4 +1839,3 @@ update tb_company_currency set `simb` = 'C$' where currencyID = 1;
 update tb_company_currency set `simb` = 'U$' where currencyID = 2;	
 
 	
-/*BD: db5qqn2mvepnkv  */

@@ -8568,7 +8568,7 @@ class app_invoice_billing extends _BaseController {
 			$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview->value;
 			$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true" ? true : false;
 			
-			$fileNamePut = "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
+			$fileNamePut = "posme_factura_".$transactionMasterID."_".date("dmYhis").".pdf";
 			$path        = "./resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".$fileNamePut;
 				
 				
@@ -8598,7 +8598,7 @@ class app_invoice_billing extends _BaseController {
 			}
 			else{			
 				//visualizar				
-				$this->dompdf->stream("file.pdf ", ['Attachment' => $objParameterShowDownloadPreview ]);
+				$this->dompdf->stream($fileNamePut, ['Attachment' => $objParameterShowDownloadPreview ]);
 			}
 			
 			
