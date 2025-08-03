@@ -13,10 +13,14 @@
 							var endOn					=	$("#txtEndOn").val();
 							var inventoryCategoryID		=	$("#txtInventoryCategoryID").val();	
 							var warehouseID				=	$("#txtWarehouseID").val();	
+							var userID					=	$("#txtUserID").val();	
 							
 							if(!( startOn == "" || endOn == "" ) ){
 								fnWaitOpen();
-								window.location	= "<?php echo base_url(); ?>/app_sales_report/sales_detail/viewReport/true/startOn/"+startOn+"/endOn/"+endOn+"/inventoryCategoryID/"+inventoryCategoryID+"/warehouseID/"+warehouseID;
+								window.location	= "<?php echo base_url(); ?>/app_sales_report/sales_detail/viewReport/true/startOn/"+
+													startOn+"/endOn/"+endOn+"/inventoryCategoryID/"+inventoryCategoryID+
+													"/warehouseID/"+warehouseID+
+													"/userID/"+userID;
 							}
 							else{
 								fnShowNotification("Completar los Parametros","error");

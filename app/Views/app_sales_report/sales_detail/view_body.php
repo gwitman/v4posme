@@ -69,6 +69,25 @@
 												</div>
 											</div>
 											
+											<div class="form-group">
+												<label class="col-lg-6 control-label" for="selectFilter">Usuarios</label>
+												<div class="col-lg-6"> 
+													<div class="col-lg-6">
+													</div>
+													<div class="col-lg-6">
+														<select name="txtUserID" id="txtUserID" class="select2">
+																<option value="0">TODOS</option>
+																<?php
+																if($objListUser)
+																foreach($objListUser as $i){
+																	echo "<option value='".$i->userID."'>".$i->nickname."</option>";
+																}
+																?>
+														</select>
+													</div>													
+												</div>
+											</div>
+											
 											
                                         </form>
                                     </div><!-- End .panel-body -->

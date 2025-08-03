@@ -92,10 +92,12 @@ class app_sales_report extends _BaseController {
 			$endOn					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri
 			$inventoryCategoryID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"inventoryCategoryID");//--finuri
 			$warehouseID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"warehouseID");//--finuri
+			$userIDFilter			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"userID");//--finuri
 			
 			if(!($viewReport && $startOn && $endOn  )){
 				
 				//Renderizar Resultado 
+				$dataSession["objListUser"]				= $this->User_Model->get_All($companyID);
 				$dataSession["objListCategoryItem"]		= $this->Itemcategory_Model->getByCompany($companyID);
 				$dataSession["objListWarehouse"]		= $this->Userwarehouse_Model->getRowByUserID($companyID,$userID);
 				$dataSession["message"]					= $this->core_web_notification->get_message();
@@ -116,10 +118,10 @@ class app_sales_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?);";						
+				$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?,?);";						
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID,$userIDFilter]
 				);
 				
 				
@@ -137,7 +139,7 @@ class app_sales_report extends _BaseController {
 				$objDataResult["objLogo"] 					= $objParameter;
 				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_sales_get_report_sales_detail" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
 				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
-				log_message("error","CALL pr_sales_get_report_sales_detail(2,'',2,'".$startOn."','".$endOn."',".$inventoryCategoryID.",'".$warehouseID."'); 003");
+				
 				
 				if($dataSession["company"]->flavorID == 728)
 				return view("app_sales_report/sales_detail/view_a_disemp_pasteleria_lizzette",$objDataResult);//--finview-r
@@ -210,10 +212,10 @@ class app_sales_report extends _BaseController {
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				
 				//Get Datos Detalle de Venta
-				$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?);";						
+				$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?,?);";						
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID,0]
 				);
 				
 				
@@ -352,8 +354,6 @@ class app_sales_report extends _BaseController {
 				$objDataResult["objLogo"] 					= $objParameter;
 				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_sales_get_report_sales_detail" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
 				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
-				log_message("error","CALL pr_sales_get_report_sales_detail(2,'',2,'".$startOn."','".$endOn."',".$inventoryCategoryID.",'".$warehouseID."'); 003");
-				
 				
 				if($dataSession["company"]->type == "majo")
 				{
@@ -803,10 +803,10 @@ class app_sales_report extends _BaseController {
 			//Get Company
 			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 			//Get Datos
-			$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?);";				
+			$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?,?);";				
 			$objData		= $this->Bd_Model->executeRender(
 				$query,
-				[$companyID,$tocken,$userID,$startOn,$endOn,0,0]
+				[$companyID,$tocken,$userID,$startOn,$endOn,0,0,0]
 			);
 			
 			
@@ -1630,10 +1630,10 @@ class app_sales_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?);";				
+				$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?,?);";				
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID,0]
 				);
 				
 				

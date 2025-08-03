@@ -1223,10 +1223,10 @@ class app_notification extends _BaseController
 		//////////////////////////////////////////////////
 		//////////////////////////////////////////////////
 		//Obtener ventas
-		$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?);";
+		$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?,?);";
 		$objData		= $this->Bd_Model->executeRender(
 			$query,
-			[APP_COMPANY, $tocken, APP_USERADMIN, $fechaNow, $fechaBefore, 0, 0]
+			[APP_COMPANY, $tocken, APP_USERADMIN, $fechaNow, $fechaBefore, 0, 0,0]
 		);
 
 
