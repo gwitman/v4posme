@@ -1754,14 +1754,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "barrio gracias a Dios, de dónde fue el bombillo rojo 1 cuadra al suave y 1 1/2 al oeste" 
+	tb_company_parameter.value = "barrio gracias a Dios, de dónde fue el bombillo rojo 1 cuadra al sur y 1 1/2 al oeste" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Distribucion Cajina Casco' , address = 'barrio gracias a Dios, de dónde fue el bombillo rojo 1 cuadra al suave y 1 1/2 al oeste' ,
+	NAME = 'Distribucion Cajina Casco' , address = 'barrio gracias a Dios, de dónde fue el bombillo rojo 1 cuadra al sur y 1 1/2 al oeste' ,
 	flavorID = 896 /*usuarioID*/,type='dcajinas'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
