@@ -374,7 +374,7 @@
 						//Nuevo Email
 						$(document).on("click","#btnNewEmail",function(){
 							console.info("call click_btnNewEmail");
-							window.open(site_url+"app_cxp_provider/add_email","MsgWindow","width=650,height=500");
+							window.open(site_url+"/app_cxp_provider/add_email","MsgWindow","width=650,height=500");
 							window.parentNewEmail = parentNewEmail;
 						});
 						//Eliminar Email
@@ -405,7 +405,7 @@
 						//Nuevo Telefono
 						$(document).on("click","#btnNewPhones",function(){
 							console.info("call click_btnNewPhones");
-							window.open(site_url+"app_cxp_provider/add_phone","MsgWindow","width=650,height=500");
+							window.open(site_url+"/app_cxp_provider/add_phone","MsgWindow","width=650,height=500");
 							window.parentNewPhone = parentNewPhone;
 						});
 						//Eliminar Telefono

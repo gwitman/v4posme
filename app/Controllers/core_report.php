@@ -53,15 +53,21 @@ class core_report extends _BaseController
             }
             $findReportingParameter = $this->Reporting_Parameter_Model->get_rowByReportID($findReporting->reportID);
             $filtros                = [];
-            foreach ($findReportingParameter as $item){
-                if ($item->name == "@prTypeReport"
+            foreach ($findReportingParameter as $item)
+			{
+                if (
+					$item->name == "@prTypeReport"
                     || $item->name == "@prCompanyID"
                     || $item->name == "@prTokenID"
                     || $item->name == "@prUserID") continue;
+					
                 $valor = ltrim($item->name, '@');
-                if ($valor == 'prCustomerEntityID'){
+                if ($valor == 'prCustomerEntityID')
+				{
                     $filtros[$item->display] = $this->request->getPost('txtDescription');
-                }elseif ($item->type == 'comboboxfull'){
+                }
+				elseif ($item->type == 'comboboxfull')
+				{
                     $queryResult        = $this->Bd_Model->executeRender($item->datasource, '');
                     $id                 = $this->request->getPost($valor);
                     $valorEncontrado    = '';
@@ -75,12 +81,14 @@ class core_report extends _BaseController
                     }
                     $filtros[$item->display] = $valorEncontrado;
                 }
-                else{
+                else
+				{
                     $filtros[$item->display] = $this->request->getPost($valor);
                 }
 
             }
-            $query      = $findReporting->queryi;
+            
+			$query      = $findReporting->queryi;
             $pattern    = "/@(\w+)/";
             //extraemos los nombres de los parametros q pertenecen a la consulta
             preg_match_all($pattern, $query, $matches);
@@ -91,9 +99,29 @@ class core_report extends _BaseController
                 $params[]       = $valor ?? null;
             }
 
-            $query   = preg_replace($pattern, "?", $query);
-            $result  = $this->Bd_Model->executeRenderMultipleNative($query, $params);
+			
+			$isCall = substr($query, 0, 3);    
+			//Es un procedimiento
+			if(stripos($isCall, 'call') !== false)
+			{
+				$query   = preg_replace($pattern, "?", $query);			
+				$result  = $this->Bd_Model->executeRenderMultipleNative($query, $params);
+			}
+			//Es una consulta
+			else 
+			{
+				$newPost = [];
+				foreach ($this->request->getPost() as $clave => $valor) {
+					$newPost['@' . $clave] = $valor;
+				}
 
+				// Reemplazar newPost
+				$query 	 = strtr($query, $newPost);				
+				$result  = $this->Bd_Model->executeRenderMultipleNative($query, $params);
+			}
+	
+	
+            
             $dataView['params']             = $params;
             $dataView['objCompany']         = $dataSession['company'];
             $dataView['objDetail']          = $result;
