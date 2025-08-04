@@ -24,124 +24,31 @@ class Relationship_Model extends Model  {
 		$result			= $builder->insert($data);
 		$autoIncrement	= $db->insertID(); 		
 		
-   }
-
-    function update_app_posme($relationshipID, $data)
-    {
-        $db         = db_connect();
-        $builder    = $db->table("tb_relationship");
-
-        $builder->where("relationshipID", $relationshipID);
-        return $builder->update($data);
-    }
-
-	function get_rowByID($relationshipID)
-    {
-        $db          = db_connect();
-        $builder     = $db->table('tb_relationship');
-
-        $builder->where('relationshipID', $relationshipID);
-        $builder->where('isActive', 1);
-        $recordSet = $builder->get()->getRow();
-        return $recordSet;
-    }
-
-    function get_rowByPK($employeeID, $customerID){
-		$db 	= db_connect();
-				
-		$sql = "";
-		$sql = sprintf("select 
-			r.relationshipID, r.employeeID, r.customerID, r.orderNo, r.reference1, r.startOn, r.endOn,  r.isActive, 
-			concat(e.employeNumber,' / ',concat(n.firstName,' ',n.lastName)) as firstName, 
-			concat(c.customerNumber,' / ' ,l.legalName) as legalName,
-			r.customerIDAfter
-		");
-		$sql = $sql.sprintf(" from 
-									tb_relationship as r 
-									inner join tb_naturales as n on r.employeeID = n.entityID 
-									INNER join tb_legal as l on r.customerID = l.entityID 
-									INNER join tb_employee e on e.entityID = n.entityID 
-									INNER join tb_customer c on c.entityID = l.entityID");
-		$sql = $sql.sprintf(" where r.employeeID = $employeeID");		
-		$sql = $sql.sprintf(" and r.isActive= 1");		
-		$sql = $sql.sprintf(" and r.customerID = $customerID");	
-		
-		//Ejecutar Consulta  
-		return $db->query($sql)->getRow();
     }
 	
-	function get_rowByPKAndReference1($employeeID, $customerID,$reference1){
-		$db 	= db_connect();
-				
-		$sql = "";
-		$sql = sprintf("select 
-			r.relationshipID, r.employeeID, r.customerID, r.orderNo, r.reference1, r.startOn, r.endOn,  r.isActive, 
-			concat(e.employeNumber,' / ',concat(n.firstName,' ',n.lastName)) as firstName, 
-			concat(c.customerNumber,' / ' ,l.legalName) as legalName,
-			r.customerIDAfter
-		");
-		$sql = $sql.sprintf(" from 
-									tb_relationship as r 
-									inner join tb_naturales as n on r.employeeID = n.entityID 
-									INNER join tb_legal as l on r.customerID = l.entityID 
-									INNER join tb_employee e on e.entityID = n.entityID 
-									INNER join tb_customer c on c.entityID = l.entityID");
-		$sql = $sql.sprintf(" where r.employeeID = $employeeID");		
-		$sql = $sql.sprintf(" and r.isActive= 1");		
-		$sql = $sql.sprintf(" and r.customerID = $customerID");	
-		$sql = $sql.sprintf(" and r.reference1 = '$reference1'");	
-		
-		//Ejecutar Consulta  
-		return $db->query($sql)->getRow();
-    }
-
-    function get_rowByPKID($relationshipID){
-		$db 	= db_connect();
-				
-		$sql = "";
-		$sql = sprintf("select 
-						r.relationshipID, r.employeeID, r.customerID, r.orderNo, 
-						r.reference1, r.startOn, r.endOn,  
-						r.isActive, concat(e.employeNumber,' / ',concat(n.firstName,' ',n.lastName)) as firstName, 
-						concat(c.customerNumber,' / ' ,l.legalName) as legalName,
-						r.customerIDAfter
-					");
-		$sql = $sql.sprintf(" from 
-									tb_relationship as r 
-									inner join tb_naturales as n on r.employeeID = n.entityID 
-									INNER join tb_legal as l on r.customerID = l.entityID 
-									INNER join tb_employee e on e.entityID = n.entityID 
-									INNER join tb_customer c on c.entityID = l.entityID");
-		$sql = $sql.sprintf(" where r.relationshipID = $relationshipID");		
-		$sql = $sql.sprintf(" and r.isActive= 1");		
-		
-		//Ejecutar Consulta  
-		return $db->query($sql)->getRow();
-    }
-
-    function insertOrMoveCustomerAfter($employeeID, $customerID, $customerIDAfter, $data)
+	function insert_OrMoveCustomerAfter($employeeID, $customerID, $customerIDAfter, $data)
     {
         $db         = db_connect();
         $builder    = $db->table('tb_relationship');
 
-        $findMaxOrder = $builder->selectMax('orderNo')
-            ->where(['employeeID' => $employeeID, 'isActive' => '1'])
-            ->get()->getRow();
-        $maxOrder = $findMaxOrder->orderNo ?? 0;
+        $findMaxOrder 	= $builder->selectMax('orderNo')
+						->where(['employeeID' => $employeeID, 'isActive' => '1'])
+						->get()->getRow();
+        $maxOrder 		= $findMaxOrder->orderNo ?? 0;
 
         // Buscar si ya existe
-        $existing = $builder->where([
-            'employeeID' => $employeeID,
-            'customerID' => $customerID,
-            'isActive' => '1'
+        $existing 			= $builder->where([
+            'employeeID' 	=> $employeeID,
+            'customerID' 	=> $customerID,
+            'isActive' 		=> '1'
         ])->get()->getRow();
 
         // Obtener la posición del cliente después del cual se insertará
         $after = $builder->select('orderNo')
             ->where([
-                'employeeID' => $employeeID,
-                'customerID' => $customerIDAfter,
-                'isActive' => '1'
+                'employeeID' 	=> $employeeID,
+                'customerID' 	=> $customerIDAfter,
+                'isActive' 		=> '1'
             ])->get()->getRow();
 
         $afterOrder = $after->orderNo ?? null;
@@ -242,7 +149,7 @@ class Relationship_Model extends Model  {
 
 
 
-    function insertOrMoveCustomerToOrder($employeeID, $customerID, $newOrder, $data)
+    function insert_OrMoveCustomerToOrder($employeeID, $customerID, $newOrder, $data)
     {
         $db = db_connect();
         $builder = $db->table('tb_relationship');
@@ -275,7 +182,7 @@ class Relationship_Model extends Model  {
                 }else{
                     // TEMPORAL: deja vacío su posición para evitar conflicto
                     $this->update_app_posme($existing->relationshipID,['orderNo' => null]);
-                    $this::DesplazarOrden($oldOrder, $newOrder,$db, $employeeID);
+                    $this::fn_DesplazarOrden($oldOrder, $newOrder,$db, $employeeID);
                 }
             }
 
@@ -306,8 +213,104 @@ class Relationship_Model extends Model  {
             $this->insert_app_posme($data);
         }
     }
+	
 
-    private function DesplazarOrden($oldOrder, $newOrder, $db, $employeeID)
+    function update_app_posme($relationshipID, $data)
+    {
+        $db         = db_connect();
+        $builder    = $db->table("tb_relationship");
+
+        $builder->where("relationshipID", $relationshipID);
+        return $builder->update($data);
+    }
+
+	function get_rowByID($relationshipID)
+    {
+        $db          = db_connect();
+        $builder     = $db->table('tb_relationship');
+
+        $builder->where('relationshipID', $relationshipID);
+        $builder->where('isActive', 1);
+        $recordSet = $builder->get()->getRow();
+        return $recordSet;
+    }
+
+    function get_rowByPK($employeeID, $customerID){
+		$db 	= db_connect();
+				
+		$sql = "";
+		$sql = sprintf("select 
+			r.relationshipID, r.employeeID, r.customerID, r.orderNo, r.reference1, r.startOn, r.endOn,  r.isActive, 
+			concat(e.employeNumber,' / ',concat(n.firstName,' ',n.lastName)) as firstName, 
+			concat(c.customerNumber,' / ' ,l.legalName) as legalName,
+			r.customerIDAfter
+		");
+		$sql = $sql.sprintf(" from 
+									tb_relationship as r 
+									inner join tb_naturales as n on r.employeeID = n.entityID 
+									INNER join tb_legal as l on r.customerID = l.entityID 
+									INNER join tb_employee e on e.entityID = n.entityID 
+									INNER join tb_customer c on c.entityID = l.entityID");
+		$sql = $sql.sprintf(" where r.employeeID = $employeeID");		
+		$sql = $sql.sprintf(" and r.isActive= 1");		
+		$sql = $sql.sprintf(" and r.customerID = $customerID");	
+		
+		//Ejecutar Consulta  
+		return $db->query($sql)->getRow();
+    }
+	
+	function get_rowByPKAndReference1($employeeID, $customerID,$reference1){
+		$db 	= db_connect();
+				
+		$sql = "";
+		$sql = sprintf("select 
+			r.relationshipID, r.employeeID, r.customerID, r.orderNo, r.reference1, r.startOn, r.endOn,  r.isActive, 
+			concat(e.employeNumber,' / ',concat(n.firstName,' ',n.lastName)) as firstName, 
+			concat(c.customerNumber,' / ' ,l.legalName) as legalName,
+			r.customerIDAfter
+		");
+		$sql = $sql.sprintf(" from 
+									tb_relationship as r 
+									inner join tb_naturales as n on r.employeeID = n.entityID 
+									INNER join tb_legal as l on r.customerID = l.entityID 
+									INNER join tb_employee e on e.entityID = n.entityID 
+									INNER join tb_customer c on c.entityID = l.entityID");
+		$sql = $sql.sprintf(" where r.employeeID = $employeeID");		
+		$sql = $sql.sprintf(" and r.isActive= 1");		
+		$sql = $sql.sprintf(" and r.customerID = $customerID");	
+		$sql = $sql.sprintf(" and r.reference1 = '$reference1'");	
+		
+		//Ejecutar Consulta  
+		return $db->query($sql)->getRow();
+    }
+
+    function get_rowByPKID($relationshipID){
+		$db 	= db_connect();
+				
+		$sql = "";
+		$sql = sprintf("select 
+						r.relationshipID, r.employeeID, r.customerID, r.orderNo, 
+						r.reference1, r.startOn, r.endOn,  
+						r.isActive, concat(e.employeNumber,' / ',concat(n.firstName,' ',n.lastName)) as firstName, 
+						concat(c.customerNumber,' / ' ,l.legalName) as legalName,
+						r.customerIDAfter
+					");
+		$sql = $sql.sprintf(" from 
+									tb_relationship as r 
+									inner join tb_naturales as n on r.employeeID = n.entityID 
+									INNER join tb_legal as l on r.customerID = l.entityID 
+									INNER join tb_employee e on e.entityID = n.entityID 
+									INNER join tb_customer c on c.entityID = l.entityID");
+		$sql = $sql.sprintf(" where r.relationshipID = $relationshipID");		
+		$sql = $sql.sprintf(" and r.isActive= 1");		
+		
+		//Ejecutar Consulta  
+		return $db->query($sql)->getRow();
+    }
+
+    
+
+    private function fn_DesplazarOrden($oldOrder, $newOrder, $db, $employeeID)
     {
         // Primero ajustar los órdenes de los demás elementos
         if ($oldOrder < $newOrder) {
