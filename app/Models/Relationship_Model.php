@@ -118,8 +118,213 @@ class Relationship_Model extends Model  {
 		//Ejecutar Consulta  
 		return $db->query($sql)->getRow();
     }
-	
-	
 
+    function insertOrMoveCustomerAfter($employeeID, $customerID, $customerIDAfter, $data)
+    {
+        $db         = db_connect();
+        $builder    = $db->table('tb_relationship');
+
+        $findMaxOrder = $builder->selectMax('orderNo')
+            ->where(['employeeID' => $employeeID, 'isActive' => '1'])
+            ->get()->getRow();
+        $maxOrder = $findMaxOrder->orderNo ?? 0;
+
+        // Buscar si ya existe
+        $existing = $builder->where([
+            'employeeID' => $employeeID,
+            'customerID' => $customerID,
+            'isActive' => '1'
+        ])->get()->getRow();
+
+        // Obtener la posición del cliente después del cual se insertará
+        $after = $builder->select('orderNo')
+            ->where([
+                'employeeID' => $employeeID,
+                'customerID' => $customerIDAfter,
+                'isActive' => '1'
+            ])->get()->getRow();
+
+        $afterOrder = $after->orderNo ?? null;
+
+        if (!is_null($existing)) {
+            $oldOrder = $existing->orderNo;
+            if(is_null($oldOrder)) {
+                // Nuevo cliente
+                if (!is_null($afterOrder) && $afterOrder > 0) {
+                    $newOrder = $afterOrder + 1;
+
+                    $db->query("
+                        UPDATE tb_relationship
+                        SET orderNo = orderNo + 1
+                        WHERE employeeID = ? AND orderNo >= ? AND isActive = 1
+                    ", [$employeeID, $newOrder]);
+                } else {
+                    $newOrder = $maxOrder + 1;
+                }
+
+                $data["orderNo"] = $newOrder;
+                $this->update_app_posme($existing->relationshipID,$data);
+                return;
+            }
+            // Si no se encuentra el cliente "después de" => agregar al final
+            if (is_null($afterOrder)) {
+                $newOrder = $maxOrder;
+
+                if ($oldOrder == $newOrder) {
+                    return; // ya está al final
+                }
+
+                // Liberar posición
+                $this->update_app_posme($existing->relationshipID, ['orderNo' => null]);
+
+                // Mover hacia arriba todos los que están después del anterior
+                $builder->set('orderNo', 'orderNo - 1', false)
+                    ->where('employeeID', $employeeID)
+                    ->where('isActive', 1)
+                    ->where('orderNo >', $oldOrder)
+                    ->update();
+
+                $data['orderNo'] = $newOrder;
+                $this->update_app_posme($existing->relationshipID, $data);
+                return;
+            }
+
+            // Si ya está justo después de ese cliente, no mover
+            if ($oldOrder == $afterOrder + 1) {
+                return;
+            }
+
+            // Liberar temporalmente
+            $this->update_app_posme($existing->relationshipID, ['orderNo' => null]);
+
+            if ($oldOrder < $afterOrder) {
+                // Mover hacia abajo
+                $builder->set('orderNo', 'orderNo - 1', false)
+                    ->where('employeeID', $employeeID)
+                    ->where('isActive', 1)
+                    ->where('orderNo >', $oldOrder)
+                    ->where('orderNo <=', $afterOrder)
+                    ->update();
+
+                $newOrder = $afterOrder;
+            } else {
+                // Mover hacia arriba
+                $newOrder = $afterOrder + 1;
+
+                $builder->set('orderNo', 'orderNo + 1', false)
+                    ->where('employeeID', $employeeID)
+                    ->where('isActive', 1)
+                    ->where('orderNo >=', $newOrder)
+                    ->where('orderNo <', $oldOrder)
+                    ->update();
+            }
+
+            $data['orderNo'] = $newOrder;
+            $this->update_app_posme($existing->relationshipID, $data);
+        } else {
+            // Nuevo cliente
+            if (!is_null($afterOrder) && $afterOrder > 0) {
+                $newOrder = $afterOrder + 1;
+
+                $db->query("
+                UPDATE tb_relationship
+                SET orderNo = orderNo + 1
+                WHERE employeeID = ? AND orderNo >= ? AND isActive = 1
+            ", [$employeeID, $newOrder]);
+            } else {
+                $newOrder = $maxOrder + 1;
+            }
+
+            $data["orderNo"] = $newOrder;
+            $this->insert_app_posme($data);
+        }
+    }
+
+
+
+    function insertOrMoveCustomerToOrder($employeeID, $customerID, $newOrder, $data)
+    {
+        $db = db_connect();
+        $builder = $db->table('tb_relationship');
+
+        // 1. Buscar si ya existe
+        $existing = $builder->where([
+            'employeeID' => $employeeID,
+            'isActive' => '1',
+            'customerID' => $customerID
+        ])->get()->getRow();
+
+        $occupied = $builder
+            ->where(['employeeID' => $employeeID, 'orderNo' => $newOrder, 'isActive' => '1'])
+            ->countAllResults();
+
+        if ($existing) {
+            $oldOrder = $existing->orderNo;
+
+            if ($oldOrder == $newOrder) {
+                // No hay cambio de posición
+                return;
+            }
+            if ($occupied > 0) {
+                if (is_null($oldOrder) || $oldOrder <= 0) {
+                    $db->query("
+                    UPDATE tb_relationship
+                    SET orderNo = orderNo + 1
+                    WHERE employeeID = ? AND orderNo >= ? AND isActive = 1
+                ", [$employeeID, $newOrder]);
+                }else{
+                    // TEMPORAL: deja vacío su posición para evitar conflicto
+                    $this->update_app_posme($existing->relationshipID,['orderNo' => null]);
+                    $this::DesplazarOrden($oldOrder, $newOrder,$db, $employeeID);
+                }
+            }
+
+            // Asignar nueva posición
+            $data["orderNo"] = $newOrder;
+            $this->update_app_posme($existing->relationshipID, $data);
+
+        } else {
+            // Insertar nuevo cliente
+            if($newOrder <= 0){
+                $findMaxOrder   = $builder->selectMax('orderNo')
+                    ->where(['employeeID'=>$employeeID,'isActive'=>'1'])
+                    ->get()->getRow();
+                $maxOrder       = $findMaxOrder->orderNo ?? 0;
+                $newOrder = $maxOrder + 1;
+            }
+
+            // Mover los demás hacia abajo
+            if ($occupied > 0) {
+                // Solo si está ocupada, mover hacia abajo
+                $db->query("
+                UPDATE tb_relationship
+                SET orderNo = orderNo + 1
+                WHERE employeeID = ? AND orderNo >= ? AND isActive = 1
+            ", [$employeeID, $newOrder]);
+            }
+            $data['orderNo'] = $newOrder;
+            $this->insert_app_posme($data);
+        }
+    }
+
+    private function DesplazarOrden($oldOrder, $newOrder, $db, $employeeID)
+    {
+        // Primero ajustar los órdenes de los demás elementos
+        if ($oldOrder < $newOrder) {
+            // Mover hacia abajo → disminuir los órdenes de los elementos entre old y new
+            $db->query("
+            UPDATE tb_relationship
+            SET orderNo = orderNo - 1
+            WHERE employeeID = ? AND orderNo > ? AND orderNo <= ? AND isActive = 1
+        ", [$employeeID, $oldOrder, $newOrder]);
+        } else {
+            // Mover hacia arriba → aumentar los órdenes de los elementos entre new y old
+            $db->query("
+            UPDATE tb_relationship
+            SET orderNo = orderNo + 1
+            WHERE employeeID = ? AND orderNo >= ? AND orderNo < ? AND isActive = 1
+        ", [$employeeID, $newOrder, $oldOrder]);
+        }
+    }
 }
 ?>

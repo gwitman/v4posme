@@ -84,7 +84,7 @@
 															<label class="col-lg-4 control-label" for="buttons">Orden No</label>
 															<div class="col-lg-8">
 																<div class="input-group">	
-																	<input class="form-control" type="text" name="txtOrderNo" id="txtOrderNo" value="">																																																																																																		
+																	<input class="form-control" type="number" name="txtOrderNo" id="txtOrderNo" value="">
 																</div>
 															</div>
 														</div>

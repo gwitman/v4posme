@@ -85,17 +85,30 @@
 			fnShowNotification("El Colaborador es requerido", "error", timerNotification);
 			result = false;
 		}	
-		
+
 		//Validar Cliente.
 		if ($("#txtCustomerDescription").val() == "") {
 			fnShowNotification("El Cliente es requerido", "error", timerNotification);
 			result = false;
 		}
 
+        let orderText = $('#txtOrderNo').val().trim();
 
+        // Permitir campo vacío → irá de último
+        if (orderText !== '') {
+            let orderVal = parseInt(orderText, 10);
+            if (isNaN(orderVal) || orderVal < 0) {
+                fnShowNotification("No puede ingresar valores negativos en el orden", "error", timerNotification);
+                result = false;
+            }
+        }
+
+		if ($("#txtCustomerIDAfter").val() == $('#txtCustomerID').val()) {
+			fnShowNotification("El Cliente es identico al siguiente orden indicado", "error", timerNotification);
+			result = false;
+		}
 
 		return result;
-
 	}
 
 

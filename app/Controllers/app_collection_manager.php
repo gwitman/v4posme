@@ -362,18 +362,17 @@ class app_collection_manager extends _BaseController {
 			$obj["startOn"] 			= date("Y-m-d");
 			$obj["endOn"] 				= date("Y-m-d");
 			
-			//Obtener el orden correcto
-			$objAfter 			= $this->Relationship_Model->get_rowByPKAndReference1($obj["employeeID"], $obj["customerIDAfter"],$obj["reference1"]);
-			if($objAfter)
+			if($obj["customerIDAfter"]>0)
 			{
-				$obj["orderNo"] = is_null($objAfter->orderNo) ? 0 : $objAfter->orderNo + 1 ;
+				$this->Relationship_Model->insertOrMoveCustomerAfter($obj["employeeID"], $obj["customerID"], $obj["customerIDAfter"], $obj);
+			}else{
+                if(is_null($obj["orderNo"])) $obj["orderNo"] = 0;
+				$this->Relationship_Model->insertOrMoveCustomerToOrder($obj["employeeID"], $obj["customerID"], $obj["orderNo"], $obj);
 			}
-			//Ingresar
-			$relationShipID		= $this->Relationship_Model->insert_app_posme($obj);
 			
 			$db->transCommit();						
 			$this->core_web_notification->set_message(false,SUCCESS);
-			$this->response->redirect(base_url()."/".'app_collection_manager/index');	
+			$this->response->redirect(base_url()."/".'app_collection_manager/index');
 		} catch (\Exception $ex) {
 
 			if (empty($dataSession)) {
@@ -426,13 +425,12 @@ class app_collection_manager extends _BaseController {
 			$db = db_connect();
 			$db->transStart();
 
-			//Obtener el orden correcto
-			$objAfter 	= $this->Relationship_Model->get_rowByPKAndReference1($obj["employeeID"], $obj["customerIDAfter"],$obj["reference1"]);			
-			if($objAfter)
+			if($obj["customerIDAfter"] > 0)
 			{
-				$obj["orderNo"] = is_null($objAfter->orderNo) ? 0 : $objAfter->orderNo + 1 ;
+				$this->Relationship_Model->insertOrMoveCustomerAfter($obj["employeeID"], $obj["customerID"], $obj["customerIDAfter"], $obj);
+			}else{
+				$this->Relationship_Model->insertOrMoveCustomerToOrder($obj["employeeID"], $obj["customerID"], $obj["orderNo"], $obj);
 			}
-			$result 	= $this->Relationship_Model->update_app_posme($relationshipID, $obj);
 			
 			if ($db->transStatus() !== false) {
 				$db->transCommit();

@@ -85,7 +85,7 @@
 															<label class="col-lg-4 control-label" for="buttons">Orden No</label>
 															<div class="col-lg-8">
 																<div class="input-group">	
-																	<input class="form-control" type="text" name="txtOrderNo" id="txtOrderNo" value="<?php echo $objRelationship->orderNo; ?>">																																																																																																		
+																	<input class="form-control" type="number" name="txtOrderNo" id="txtOrderNo" value="<?php echo $objRelationship->orderNo; ?>">
 																</div>
 															</div>
 														</div>

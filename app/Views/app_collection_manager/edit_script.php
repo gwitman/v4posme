@@ -113,8 +113,8 @@
 	});
 
 	function validateForm() {
-		var result = true;
-		var timerNotification = 15000;						
+		let result = true;
+		let timerNotification = 15000;
 
 		//Validar Colaborador.
 		if ($("#txtEmployeeDescription").val() == "") {
@@ -128,7 +128,33 @@
 			result = false;
 		}
 
-	
+		if ($("#txtCustomerIDAfter").val() == $('#txtCustomerID').val()) {
+			fnShowNotification("El Cliente es identico al siguiente orden indicado", "error", timerNotification);
+			result = false;
+		}
+
+		if (
+		    (
+		        $("#txtCustomerIDAfter").val() == "" ||	 $("#txtCustomerIDAfter").val() == "0"
+		    ) &&
+		    (
+		        $('#txtOrderNo').val() == "" || $('#txtOrderNo').val() == "0"
+		    )
+		) {
+		    fnShowNotification("Debe indicar el orden a ingresar el Cliente o debe ser mayor que 0", "error", timerNotification);
+		    result = false;
+		}
+
+        let orderText = $('#txtOrderNo').val().trim();
+
+        // Permitir campo vacío → irá de último
+        if (orderText !== '') {
+            let orderVal = parseInt(orderText, 10);
+            if (isNaN(orderVal) || orderVal < 0) {
+                fnShowNotification("No puede ingresar valores negativos en el orden", "error", timerNotification);
+                result = false;
+            }
+        }
 
 		return result;
 
