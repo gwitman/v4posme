@@ -1214,7 +1214,7 @@ echo helper_getHtmlOfPageLanding();
 						
 						<div class="row" id="divPanelFacturaSideBarComandos" >				
 						</div>
-						</br>
+						<br/>
 						<div class="row" id="divPanelFacturaSideBar" >
 							<div class="col col-lg-2">
 								<a href="javascript:void(0);" class="btn btn-flat btn-danger btn-block" id="btnRollbackFactura"><i class="icon16 i-arrow-bottom "></i> REGRESAR</a>						
@@ -1233,11 +1233,11 @@ echo helper_getHtmlOfPageLanding();
 									if (isset($objListInventoryCategoryRestaurant)):
 										foreach($objListInventoryCategoryRestaurant as $k=>$category):
 											?>
-											<div class="col-md-2 item-categoria"
+											<div class="col-md-2 item-categoria lazy-background"
+													data-bg="<?= $category->description ?>"
 													data-value="<?= $category->inventoryCategoryID ?>"
 													data-parent="<?= $category->inventoryCategoryID?>"
 													data-filter="[data-value='<?= $category->inventoryCategoryID ?>']"
-													style="background-image: url('<?= $category->description ?>');"
 													onclick="fnSelectCellCategoryInventory(this)">
 												<span class="badge badge-success text-overlay-categoria"><?= $category->name; ?></span>
 												<div class="overlay">

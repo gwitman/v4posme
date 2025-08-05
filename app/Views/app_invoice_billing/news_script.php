@@ -379,6 +379,7 @@
 	});
 	//Pago
 	$(document).on("click","#btnOptionPago",function(){
+		 $("#mySidebarFactura").css("width","0");
 		 $("#mySidebar").css("width","100%");
 	});
 	$(document).on("click","#btnRollbackPayment",function(){
@@ -2296,8 +2297,9 @@
 
         mesas.forEach((item, index) => {
             const td = $(`
-                <td class="container-overlay"
-                    style="background-image: url('${item.reference1}'); background-size: 180%; background-repeat: no-repeat;"
+                <td class="container-overlay lazy-background"
+					data-bg="${item.reference1}"
+                    style="background-size: 180%; background-repeat: no-repeat;"
                     ondblclick="fnSelectCellMesaDoubleClick(this, ${item.reference2})"
                     onclick="fnSelectCellMesa(this)"
                     data-value="${item.catalogItemID}"
@@ -3739,6 +3741,21 @@
 
 	$(document).ready(function()
 	{
+		$('.lazy-background').each(function() {
+	        let $td = $(this);
+	        let observer = new IntersectionObserver(function(entries) {
+	            if (entries[0].isIntersecting) {
+	                let bgUrl = $td.attr('data-bg');
+	                $td.css('background-image', 'url(' + bgUrl + ')');
+	                observer.unobserve($td[0]);
+	            }
+	        }, {
+	            rootMargin: '50px',
+	            threshold: 0.01
+	        });
+
+	        observer.observe(this);
+	    });
 		fnRenderMesas(objListMesa);
 		var obtenerRegistrosDelServer = false;
 		openDataBaseAndCreate(obtenerRegistrosDelServer);
