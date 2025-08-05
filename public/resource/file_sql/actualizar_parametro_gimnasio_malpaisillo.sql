@@ -880,14 +880,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Iglesia católica costado noreste, 1/2 C al norte" 
+	tb_company_parameter.value = "Ferreteria Narváez 2C al Oeste." 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Malpaisillo GYM' , address = 'Iglesia católica costado noreste, 1/2 C al norte' ,
+	NAME = 'Malpaisillo GYM' , address = 'Ferreteria Narváez 2C al Oeste.' ,
 	flavorID = 735 , type = 'gym_malpaisillo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
