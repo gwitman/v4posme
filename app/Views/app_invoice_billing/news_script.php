@@ -3741,21 +3741,6 @@
 
 	$(document).ready(function()
 	{
-		$('.lazy-background').each(function() {
-	        let $td = $(this);
-	        let observer = new IntersectionObserver(function(entries) {
-	            if (entries[0].isIntersecting) {
-	                let bgUrl = $td.attr('data-bg');
-	                $td.css('background-image', 'url(' + bgUrl + ')');
-	                observer.unobserve($td[0]);
-	            }
-	        }, {
-	            rootMargin: '50px',
-	            threshold: 0.01
-	        });
-
-	        observer.observe(this);
-	    });
 		fnRenderMesas(objListMesa);
 		var obtenerRegistrosDelServer = false;
 		openDataBaseAndCreate(obtenerRegistrosDelServer);
@@ -3793,6 +3778,21 @@
 		{
 			$("#mySidebarZona").css("width","100%");
 			$("#mySidebarZona").removeClass("hidden");
+            $('.lazy-background').each(function() {
+                let $td = $(this);
+                let observer = new IntersectionObserver(function(entries) {
+                    if (entries[0].isIntersecting) {
+                        let bgUrl = $td.attr('data-bg');
+                        $td.css('background-image', 'url(' + bgUrl + ')');
+                        observer.unobserve($td[0]);
+                    }
+                }, {
+                    rootMargin: '50px',
+                    threshold: 0.01
+                });
+
+                observer.observe(this);
+            });
 		}
 		else 
 		{
