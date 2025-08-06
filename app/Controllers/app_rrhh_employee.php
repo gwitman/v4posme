@@ -358,7 +358,7 @@ class app_rrhh_employee extends _BaseController {
 			
 			
 			//Crear la Carpeta para almacenar los Archivos del Cliente
-			mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$entityID, 0700);
+			mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$entityID, 0700,true);
 			
 			if($db->transStatus() !== false){
 				$db->transCommit();						
