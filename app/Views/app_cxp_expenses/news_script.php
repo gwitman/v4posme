@@ -120,6 +120,8 @@
 							result = false;
 						}
 						
+						<?php echo getBahavioDB($company->type, "app_cxp_expenses", "validateJs", ""); ?>
+						
 						return result;
 					}
 					

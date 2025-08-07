@@ -516,7 +516,7 @@ class app_inventory_item extends _BaseController
                 //Crear la Carpeta para almacenar los Archivos del Item
                 $pathFileFloder = PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponent->componentID . "/component_item_" . $itemID;
                 if (! file_exists($pathFileFloder)) {
-                    mkdir($pathFileFloder, 0700);
+                    mkdir($pathFileFloder, 0700,true);
                 }
 
                 //Obtener la unidad del producto

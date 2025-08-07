@@ -138,7 +138,7 @@
 									</div>
 
 									<div class="form-group">
-										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type, "app_cxp_expenses", "Referencia 1", ""); ?></label>
+										<label class="col-lg-4 control-label" for="normal"><?php echo getBahavioDB($company->type, "app_cxp_expenses", "Referencia 1", "Referencia 1"); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control" type="text" name="txtDetailReference1" id="txtDetailReference1" value="<?php echo $objTransactionMaster->reference1; ?>">
 										</div>

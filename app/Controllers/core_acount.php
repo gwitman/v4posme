@@ -136,6 +136,7 @@ class core_acount extends _BaseController {
 			if(!$objComponentSeguridad)
 			throw new \Exception("EL COMPONENTE '0-SEGURIDAD' NO EXISTE...");
 			
+			
 			$documentoPath = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentSeguridad->componentID."/component_item_0";						
 			chmod($documentoPath, 0755);
 			
