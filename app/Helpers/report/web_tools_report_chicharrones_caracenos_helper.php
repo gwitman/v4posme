@@ -41,7 +41,7 @@ function helper_reporte80mmTransactionMasterCaracenos(
                           size: 2.7in 11in;
                           margin-top:0px;
                           margin-left:5px;
-                          margin-right:10px;
+                          margin-right:20px;
                         }
                         table{
                           font-size: medium ;
