@@ -7590,7 +7590,7 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["transactionNumber"] 					= $datView["objTM"]->transactionNumber;
 			$datViewArray["transactionOn"] 						= $datView["objTM"]->createdOn;
 			$createdOn 											= new \DateTime($datViewArray["transactionOn"]);
-			$datViewArray["transactionOn"] 						= $createdOn->format('Y-m-d h:i A'); // 12 horas con AM/PM
+			$datViewArray["transactionOn"] 						= $createdOn->modify(APP_HOUR_DIFERENCE_PHP)->format('Y-m-d h:i A'); // 12 horas con AM/PM  se resta hora segun la configuracion del sistema
 
 
 			$datViewArray["userName"]							= $datView["objUser"]->nickname;
