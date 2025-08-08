@@ -1,3 +1,11 @@
+server apache:	ec2-3-133-70-113.us-east-2.compute.amazonaws.com
+usuario:		ubuntu
+password:		puty  ec2_apache
+
+serer db:		closter-db-posme.cd4w268yqr8u.us-east-2.rds.amazonaws.com
+user db:		admin
+password:		root1.2Blandon
+
 01)	skyp for now
 
 BD:
