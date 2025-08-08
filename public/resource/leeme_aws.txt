@@ -1,0 +1,203 @@
+01)	skyp for now
+
+BD:
+03) buscar aurora rds
+04) instancias de base de datos
+05) crear base de datos
+06) mysql
+07) crear, nombre de base de datos, usuario:
+		bd:			agenda,
+		usuario:	admin
+		password:	root1.2Blandon
+08) crear base de datos
+09) esperar luego modificar
+10) accesible publicamente
+1)  seleccionar , configuracion adicional. grupo de parametro de base de datos
+11) continuar
+12) aplicar inmediatamente,
+13) modificar
+14) hacer la prueba de acceso a la baes de datos,seleccionadno la base de datos, para ver las credeciales ip y puerto
+
+
+CREAR UN GRUPO DE PARAMETROS
+nombre
+descripcion
+mysql comunity
+mysql  8.0
+crear 
+ingrear, y luego editar
+log_bin_trust_function_creators = 1
+guardar cambios
+
+MAQUINA
+01) Buscar maquina EC2
+02) Lanzar la instancia
+03) Nombre de la instancia:	posme
+04) Para de clave (acceso remoto): 
+05) Crear par de clave
+06) Nombre de la calve: key_posme
+07) Formato de la clave ppk
+08) Tipo de clave RSA
+09) Permitir trafico, HTTPS y HTTP
+10) Configuracion de almacenamiento 30 G
+11) Lanzar istancias
+12) Abrir la llave descagada con putty.exe, ponerlo en la misma carpeta, y el usuari es ubuntu
+
+
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+INSTALACION DEL SERVIDOR APACHE
+Documentacion:		https://www.digitalocean.com/community/tutorials/how-to-install-lamp-stack-on-ubuntu#step-1-installing-apache-and-updating-the-firewall
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+
+//actualizar el sistema operativo, vs repositorios
+>sudo apt update
+
+//instalacion de apache
+>sudo apt install apache2
+
+
+//INSTALACION PHP
+>sudo apt install php libapache2-mod-php php-mysql
+>sudo apt install php-intl
+
+//ver la version
+>php -v
+
+
+
+
+
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+//Instalar el sistema con Git
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+>cd /var/www/
+>sudo mkdir demo
+>sudo chown www-data:www-data /var/www/
+>sudo chmod -R 775 /var/www/
+>cd demo
+>sudo chown -R ubuntu:ubuntu /var/www/demo
+>sudo usermod -aG www-data ubuntu
+>sudo chmod -R 775 /var/www/demo
+>git clone https://github.com/gwitman/v4posme.git
+>sudo chmod -R 777 /var/www/demo/v4posme/writable
+>cd v4posme/public/
+>rm .htaccess
+>nano .htaccess  < public.htaccess_ubuntu
+>sudo chmod -R g+w /var/www/demo
+>sudo a2enmod rewrite
+>sudo systemctl restart apache2
+>sudo nano /etc/apache2/apache2.conf
+		modificar la linea 
+		<Directory /var/www/>
+				Options Indexes FollowSymLinks
+				AllowOverride All
+				Require all granted
+		</Directory>
+>sudo nano /var/www/demo/v4posme/app/Config/Constants.php 
+
+
+
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+//Configurar el Host en apache
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+>cd /etc/apache2/sites-available
+>sudo nano app_public.conf
+//////////////////////////
+<VirtualHost *:80>
+    ServerAdmin ubuntu@localhost
+    DocumentRoot /var/www/html
+    ServerName ec2-18-188-160-197.us-east-2.compute.amazonaws.com
+
+    <Directory /var/www/html>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    Alias /public /var/www/public/v4posme/public
+    <Directory /var/www/public/v4posme/public>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/ci4_error.log
+    CustomLog ${APACHE_LOG_DIR}/ci4_access.log combined
+</VirtualHost>
+
+//////////////////////////
+>sudo a2ensite app_demo.conf
+>sudo systemctl reload apache2
+
+
+
+
+
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+//CONFIGURAR EL EMAIL ENVIO
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+>sudo apt update
+>sudo apt install msmtp msmtp-mta mailutils -y
+
+
+//abrir el archivo de configuracion
+>nano ~/.msmtprc
+
+/////////////////////////////////////////
+# Cuenta por defecto
+defaults
+auth           on
+tls            on
+tls_starttls   on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+logfile         ~/.msmtp.log
+
+# Cuenta Gmail
+account        gmail
+host           smtp.gmail.com
+port           587
+from           posme2022@gmail.com
+user           posme2022@gmail.com
+password       tbxbdwxjcddqptxk
+
+# Usar esta cuenta por defecto
+account default : gmail
+/////////////////////////////////////////
+
+
+//permisos
+>chmod 600 ~/.msmtprc 
+
+>sudo apt update
+>sudo apt install ca-certificates
+>sudo update-ca-certificates
+
+//probar envio
+>echo -e "Subject: Prueba SMTP\n\nEste es un mensaje de prueba" | sendmail -v witman.gonzalez@posme.net
+
+
+
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+//SSL AUTOMATICO CERTIFICADO PARA enviar correo
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+
