@@ -109,7 +109,7 @@ Documentacion:		https://www.digitalocean.com/community/tutorials/how-to-install-
 				AllowOverride All
 				Require all granted
 		</Directory>
->sudo nano /var/www/demo/v4posme/app/Config/Constants.php 
+>sudo nano /var/www/v4posme/public/app/Config/Constants.php 
 
 
 
@@ -134,8 +134,8 @@ Documentacion:		https://www.digitalocean.com/community/tutorials/how-to-install-
         Require all granted
     </Directory>
 
-    Alias /public /var/www/public/v4posme/public
-    <Directory /var/www/public/v4posme/public>
+    Alias /v4posme/public /var/www/v4posme/public/public
+    <Directory /var/www/v4posme/public/public>
         Options Indexes FollowSymLinks
         AllowOverride All
         Require all granted
