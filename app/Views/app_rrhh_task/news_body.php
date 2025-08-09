@@ -190,13 +190,13 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-lg-4 control-label" for="txtReference2">Referencia 2</label>
+                                        <label class="col-lg-4 control-label" for="txtReference2">Despues de</label>
                                         <div class="col-lg-8">
                                             <input class="form-control" type="text" name="txtReference2" id="txtReference2"/>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-lg-4 control-label" for="txtReference3">Referencia 3</label>
+                                        <label class="col-lg-4 control-label" for="txtReference3">Orden</label>
                                         <div class="col-lg-8">
                                             <input class="form-control" type="text" name="txtReference3" id="txtReference3"/>
                                         </div>
