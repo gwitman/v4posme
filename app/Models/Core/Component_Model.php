@@ -18,6 +18,19 @@ class Component_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
    }
-   
+
+    function get_findAll()
+    {
+        $db 	    = db_connect();
+        $builder    = $db->table('tb_component');
+        return $builder->get()->getResult();
+    }
+
+    function get_byPk($componentID)
+    {
+        $db 	    = db_connect();
+        $builder    = $db->table('tb_component');
+        return $builder->where(['componentID'=>$componentID])->get()->getRow();
+    }
 }
 ?>

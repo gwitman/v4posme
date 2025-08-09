@@ -1714,6 +1714,8 @@ $routes->match(['get', 'post'], 'app_box_admbox/edit/(:any)/(:any)', 'app_box_ad
 $routes->match(['get', 'post'], 'core_report/show/(:any)', 'core_report::show');
 $routes->match(['get', 'post'], 'core_report/process/(:any)', 'core_report::process');
 
+$routes->match(['get', 'post'], 'core_generator/create', 'core_generator::create');
+$routes->match(['get', 'post'], 'core_generator/save', 'core_generator::save');
 
 /*
  * --------------------------------------------------------------------
