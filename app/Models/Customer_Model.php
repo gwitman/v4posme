@@ -385,6 +385,7 @@ class Customer_Model extends Model  {
 			) cp
 		order by  			
 			cp.me desc,
+			cp.ordenAbono,
 			cp.firstName
 		");		
 		
