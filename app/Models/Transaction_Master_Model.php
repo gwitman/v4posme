@@ -475,7 +475,8 @@ class Transaction_Master_Model extends Model  {
 					ci2.catalogItemID = c.areaID 
 			where 
 				c.transactionID = 44 /*task*/ and 
-				c.isActive = 1 
+				c.isActive = 1 and
+				c.statusID not  in (146 /*terminada*/) 
 			order by 
 				c.reference3  asc  
 				

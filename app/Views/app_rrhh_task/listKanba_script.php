@@ -130,7 +130,7 @@
 					});
 	
 					
-					debugger;
+					
 					await fetch('<?php echo base_url(); ?>/app_transaction_master_api/updateOrden_TransactionMaster_Task/save/edit/transactionMasterID/0', {
 						method: 'POST',
 						//headers: { 'Content-Type': 'application/json' },
@@ -153,7 +153,7 @@
 			
 			const allTasks 	= await api.fetchTasks();						
 			tasks 			= allTasks.data.filter(task => !filteredResponsible || task.responsable === filteredResponsible);
-			debugger;
+			
 			const uniqueResponsibles = [...new Set(allTasks.data.map(task => task.responsable))];
 			responsibleFilter.innerHTML = `<option value="">Filtrar por Responsable</option>`;
 			uniqueResponsibles.forEach(resp => {
