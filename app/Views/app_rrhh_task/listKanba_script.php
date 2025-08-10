@@ -215,12 +215,13 @@
 				<h3>${task.reference4}</h3>
 				<p>${task.descriptionReference}</p>
 				<div class="meta">
-					<span class="priority ${priorityClass}">Prioridad: ${task.priorityName}</span>
+					<span class="priority ${priorityClass} priority-Alta">Entrega: ${task.nextVisit}</span>
 					<span>Estado: ${task.statusName}</span>
 					<span>Categoría: ${task.categoryName}</span>
 				</div>
 				<div class="task-actions">					
 					<button class="edit-btn">Editar</button>					
+					<button class="delete-btn">${task.transactionNumber}</button>					
 				</div>
 			`;
 
@@ -275,13 +276,16 @@
 						}));
 
 						const changedTask = tasks.find(t => t.transactionMasterID == draggedTask.getAttribute('data-id'));						
-						if (changedTask) {
+						if (changedTask) 
+						{
+							
 							 const updatedTask = {
 								...changedTask,
 								responsable		: responsible,
 								txtReference3	: reorderedTasks.find(t => t.txtTransactionMasterID == changedTask.transactionMasterID).txtReference3,
 							 };
 							 
+							 mostrarModal('ModalCargandoDatos');
 							 //await api.updateTask(changedTask.transactionMasterID, updatedTask);
 							 await api.reorderTasks(reorderedTasks);
 							 renderBoard(responsibleFilter.value);
@@ -314,7 +318,8 @@
 				window.location = "<?php echo base_url(); ?>/app_rrhh_task/index";
 			}
 		);
-		refreshTaskBtn.addEventListener('click', () => {	
+		refreshTaskBtn.addEventListener('click', () => {
+				mostrarModal('ModalCargandoDatos');
 				renderBoard(responsibleFilter.value);
 			}
 		);
