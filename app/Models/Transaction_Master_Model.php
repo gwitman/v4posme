@@ -476,9 +476,9 @@ class Transaction_Master_Model extends Model  {
 			where 
 				c.transactionID = 44 /*task*/ and 
 				c.isActive = 1 and
-				c.statusID not  in (146 /*terminada*/) 
+				c.statusID not  in (146 /*terminada*/, 147 /*cancelada*/) 
 			order by 
-				c.reference3  asc  
+				nat.firstName,CAST(c.reference3 AS UNSIGNED)   asc  
 				
 		");
 		
