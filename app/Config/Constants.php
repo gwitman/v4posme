@@ -151,6 +151,7 @@ define("DB_USER","admin");
 define('DB_BDNAME_MERGE',"posme_merge");
 define('DB_SERVER',"closter-db-posme.cd4w268yqr8u.us-east-2.rds.amazonaws.com");
 
+
 //Tipos de Menu
 define("MENU_TOP",4);
 define("MENU_LEFT",5);

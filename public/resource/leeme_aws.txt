@@ -1,11 +1,3 @@
-server apache:	ec2-3-133-70-113.us-east-2.compute.amazonaws.com
-usuario:		ubuntu
-password:		puty  ec2_apache
-
-serer db:		closter-db-posme.cd4w268yqr8u.us-east-2.rds.amazonaws.com
-user db:		admin
-password:		root1.2Blandon
-
 01)	skyp for now
 
 BD:
@@ -211,3 +203,28 @@ account default : gmail
 >sudo apt install certbot python3-certbot-apache -y
 >sudo crontab -e
 >30 3 * * * /usr/bin/certbot renew --quiet --post-hook "systemctl reload apache2"
+
+
+
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+//CONFIGURAR SFTP
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+>sudo apt update
+>sudo dpkg -l|grep ssh			//debe ser superior a la version 4.9	grupo: www-data
+>sudo useradd -g www-data -d /var/www -s /sbin/nologin developer_sftp
+>sudo passwd developer_sftp
+>sudo nano /etc/ssh/sshd_config
+			#Subsystem      sftp    /usr/lib/openssh/sftp-server
+			Subsystem       sftp    internal-sftp
+			Match group www-data
+					ChrootDirectory /var/www
+					X11Forwarding on
+					AllowTcpForwarding on
+					ForceCommand internal-sftp
+					
+>sudo systemctl restart sshd
+>sudo systemctl status sshd

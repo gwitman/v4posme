@@ -427,5 +427,64 @@ class Transaction_Master_Model extends Model  {
         $builder->orderBy('ttm.entityIDSecondary','desc');
         return $builder->get()->getResult();
     }
+	function get_RowAll_TransactionMaster_Task()
+	{
+		$db 		= db_connect();
+		$builder	= $db->table("tb_transaction_master");    
+   
+		
+	
+		$sql = "";
+		$sql = sprintf("
+			select
+				c.companyID,
+				c.transactionID,				
+				c.transactionMasterID,
+				c.transactionNumber,
+				c.transactionOn,
+				c.transactionOn2,
+				c.nextVisit,
+				c.note,
+				c.reference1,
+				c.reference2,
+				c.reference3,
+				c.reference4,
+				c.entityID,
+				c.entityIDSecondary,
+				c.areaID,
+				c.priorityID,
+				c.statusID,
+				c.note,
+				c.descriptionReference,
+				nat.firstName as responsable ,
+				asig.firstName as asignado ,
+				ws.`name` as statusName,
+				ci.`name` as priorityName,
+				ci2.`name` as categoryName
+			from 
+				tb_transaction_master c
+				inner join tb_naturales nat on 
+					nat.entityID = c.entityID 
+				inner join tb_naturales asig on 
+					asig.entityID = c.entityIDSecondary 
+				inner join tb_workflow_stage ws on 
+					ws.workflowStageID = c.statusID 
+				inner join tb_catalog_item ci on 
+					ci.catalogItemID = c.priorityID 
+				inner join tb_catalog_item ci2 on 
+					ci2.catalogItemID = c.areaID 
+			where 
+				c.transactionID = 44 /*task*/ and 
+				c.isActive = 1 
+			order by 
+				c.reference3  asc  
+				
+		");
+		
+	
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+		
+	}
 }
 ?>

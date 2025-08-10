@@ -388,6 +388,8 @@ $routes->match(['get', 'post'], 'app_rrhh_gps/edit', 'app_rrhh_gps::edit');
 $routes->match(['get', 'post'], 'app_rrhh_gps/edit/(:any)', 'app_rrhh_gps::edit');
 $routes->match(['get', 'post'], 'app_rrhh_task/index', 'app_rrhh_task::index');
 $routes->match(['get', 'post'], 'app_rrhh_task/index/(:any)', 'app_rrhh_task::index');
+$routes->match(['get', 'post'], 'app_rrhh_task/indexKanba', 'app_rrhh_task::indexKanba');
+$routes->match(['get', 'post'], 'app_rrhh_task/indexKanba/(:any)', 'app_rrhh_task::indexKanba');
 $routes->match(['get', 'post'], 'app_rrhh_task/add', 'app_rrhh_task::add');
 $routes->match(['get', 'post'], 'app_rrhh_task/edit', 'app_rrhh_task::edit');
 $routes->match(['get', 'post'], 'app_rrhh_task/edit/(:any)', 'app_rrhh_task::edit');
@@ -1716,6 +1718,13 @@ $routes->match(['get', 'post'], 'core_report/process/(:any)', 'core_report::proc
 
 $routes->match(['get', 'post'], 'core_generator/create', 'core_generator::create');
 $routes->match(['get', 'post'], 'core_generator/save', 'core_generator::save');
+
+$routes->match(['get', 'post'], 'app_transaction_master_api/getAll_TransactionMaster_Task/(:any)', 'app_transaction_master_api::getAll_TransactionMaster_Task');
+$routes->match(['get', 'post'], 'app_transaction_master_api/delete_TransactionMaster_Task/(:any)', 'app_transaction_master_api::delete_TransactionMaster_Task');
+$routes->match(['get', 'post'], 'app_transaction_master_api/create_TransactionMaster_Task/(:any)', 'app_transaction_master_api::create_TransactionMaster_Task');
+$routes->match(['get', 'post'], 'app_transaction_master_api/update_TransactionMaster_Task/(:any)', 'app_transaction_master_api::update_TransactionMaster_Task');
+$routes->match(['get', 'post'], 'app_transaction_master_api/updateOrden_TransactionMaster_Task/(:any)', 'app_transaction_master_api::updateOrden_TransactionMaster_Task');
+
 
 /*
  * --------------------------------------------------------------------

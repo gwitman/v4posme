@@ -549,9 +549,10 @@ class app_rrhh_task extends _BaseController
         }
     }
 
-    function index($dataViewID = null)
+	function index($dataViewID = null)
     {
         try {
+
             //AUTENTICADO
             if (!$this->core_web_authentication->isAuthenticated())
                 throw new \Exception(USER_NOT_AUTENTICATED);
@@ -582,11 +583,13 @@ class app_rrhh_task extends _BaseController
                 $parameter["{companyID}"] 	= $this->session->get('user')->companyID;
                 $dataViewData 				= $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
                 $dataViewRender 			= $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+
             } //Otra vista
             else {
                 $parameter["{companyID}"] 	= $this->session->get('user')->companyID;
                 $dataViewData 				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'), $objComponent->componentID, $dataViewID, CALLERID_LIST, $resultPermission, $parameter);
                 $dataViewRender 			= $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+
             }
 
             //Renderizar Resultado
@@ -597,6 +600,83 @@ class app_rrhh_task extends _BaseController
             $dataSession["footer"] 			= /*--inicio view*/ view('app_rrhh_task/list_footer', $dataView);//--finview
             $dataSession["body"] 			= $dataViewRender;
             $dataSession["script"] 			= /*--inicio view*/ view('app_rrhh_task/list_script', $dataView);//--finview
+            $dataSession["script"] 			= $dataSession["script"] . $this->core_web_javascript->createVar("componentID", $objComponent->componentID);
+            return view("core_masterpage/default_masterpage", $dataSession);//--finview-r
+
+        } catch (\Exception $ex) {
+
+            if (empty($dataSession)) {
+
+                return redirect()->to(base_url("core_acount/login"));
+
+            }
+
+
+
+            $data["session"] = $dataSession;
+
+            $data["exception"] = $ex;
+
+            $data["urlLogin"] = base_url();
+
+            $data["urlIndex"] = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . "index";
+
+            $data["urlBack"] = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+            $resultView = view("core_template/email_error_general", $data);
+            return $resultView;
+
+        }
+    }
+	
+    function indexKanba($dataViewID = null)
+    {
+        try {
+            //AUTENTICADO
+            if (!$this->core_web_authentication->isAuthenticated())
+                throw new \Exception(USER_NOT_AUTENTICATED);
+            $dataSession = $this->session->get();
+
+            //PERMISO SOBRE LA FUNCTION
+            if (APP_NEED_AUTHENTICATION) {
+                $permited = $this->core_web_permission->urlPermited(get_class($this), "index", URL_SUFFIX, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
+
+                if (!$permited)
+                    throw new \Exception(NOT_ACCESS_CONTROL);
+
+                $resultPermission = $this->core_web_permission->urlPermissionCmd(get_class($this), "index", URL_SUFFIX, $dataSession, $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"], $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]);
+                if ($resultPermission == PERMISSION_NONE)
+                    throw new \Exception(NOT_ACCESS_FUNCTION);
+
+            }
+
+            //Obtener el componente para mostrar la lista de tareas
+            $objComponent = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_task");
+            if (!$objComponent)
+                throw new \Exception("00409 EL COMPONENTE 'tb_transaction_master_task' NO EXISTE...");
+
+
+            $companyID 		= $dataSession["user"]->companyID;
+            $branchID 		= $dataSession["user"]->branchID;
+            $roleID 		= $dataSession["role"]->roleID;
+            $userID 		= $dataSession["user"]->userID;
+            $transactionID 	= $this->core_web_transaction->getTransactionID($companyID, "tb_transaction_master_task", 0);
+
+
+		    $dataView["objCaudal"] 				= $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
+            $dataView["objListWorkflowStage"] 	= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_task", "statusID", $companyID, $branchID, $roleID);
+            $dataView["objListPrioridad"] 		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_task", "priorityID", $companyID);
+            $dataView["objListCategoria"] 		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_task", "areaID", $companyID);
+            $dataView["objListComments"] 		= $this->core_web_catalog->getCatalogAllItem("tb_comments", "catalogStatusID", $companyID);
+
+
+            //Renderizar Resultado
+            $dataView["company"] 			= $dataSession["company"];
+            $dataSession["notification"] 	= $this->core_web_error->get_error($dataSession["user"]->userID);
+            $dataSession["message"] 		= $this->core_web_notification->get_message();
+            $dataSession["head"] 			= /*--inicio view*/ view('app_rrhh_task/listKanba_head', $dataView);//--finview
+            $dataSession["footer"] 			= /*--inicio view*/ view('app_rrhh_task/listKanba_footer', $dataView);//--finview
+            $dataSession["body"] 			= "";
+            $dataSession["script"] 			= /*--inicio view*/ view('app_rrhh_task/listKanba_script', $dataView);//--finview
             $dataSession["script"] 			= $dataSession["script"] . $this->core_web_javascript->createVar("componentID", $objComponent->componentID);
             return view("core_masterpage/default_masterpage", $dataSession);//--finview-r
         } catch (\Exception $ex) {
