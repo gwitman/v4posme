@@ -943,6 +943,15 @@ class core_merge extends _BaseController {
 						unlink($path_file_of_app . "/writable/logs/" . $current);
 					}
 				}
+				
+				// LIMPIANDO CACHE
+				echo "<h3 style='color:#faad14;'>🧹 Limpiando cache...</h3>";
+				$dir = opendir($path_file_of_app . "/writable/cache");
+				while ($current = readdir($dir)) {
+					if ($current != "." && $current != ".." && $current != "index.html") {
+						unlink($path_file_of_app . "/writable/cache/" . $current);
+					}
+				}
 
 				// LIMPIANDO SESSION
 				echo "<h3 style='color:#faad14;'>🧹 Limpiando sessions...</h3>";
