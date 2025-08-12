@@ -4,6 +4,39 @@
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "vendor-automation-sftp-live-us.prod.aws.qcommerce.live." 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_SEND_SFTP_PEDIDOSYA_IP"; #Ip de pedidos ya para mandar archivo csv, por sftp
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "PY_NI_81ed0489-4ba2-4266-85f8-083484753194" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_SEND_SFTP_PEDIDOSYA_USERNAME";  #Username de pedidos ya para mandar archivo csv, por sftp
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "hn,U/jF2]#4kwFxZN3{z-S" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_SEND_SFTP_PEDIDOSYA_PASSWORD"; #Password de pedidos ya para mandar archivo csv, por sftp
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "22" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_SEND_SFTP_PEDIDOSYA_PORT"; #Puerto de pedidos ya para mandar archivo csv, por sftp
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "557854" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_SEND_SFTP_PEDIDOSYA_MERCHATID"; #Id del comercio de pedidos ya para mandar archivo csv, por sftp
+
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
 WHERE 

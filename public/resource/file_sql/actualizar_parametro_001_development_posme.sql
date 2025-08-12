@@ -5,6 +5,38 @@
 /******************************************************************/	
 
 
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_SEND_SFTP_PEDIDOSYA_IP"; #Ip de pedidos ya para mandar archivo csv, por sftp
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_SEND_SFTP_PEDIDOSYA_USERNAME";  #Username de pedidos ya para mandar archivo csv, por sftp
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_SEND_SFTP_PEDIDOSYA_PASSWORD"; #Password de pedidos ya para mandar archivo csv, por sftp
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_SEND_SFTP_PEDIDOSYA_PORT"; #Puerto de pedidos ya para mandar archivo csv, por sftp
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_SEND_SFTP_PEDIDOSYA_MERCHATID"; #Id del comercio de pedidos ya para mandar archivo csv, por sftp
+
+
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
