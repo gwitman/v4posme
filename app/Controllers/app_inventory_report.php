@@ -213,23 +213,23 @@ class app_inventory_report extends _BaseController {
 				$itemIDTemporal		= $itemID;
 				//reparar kardes del producto en cada bodega 
 				//para todos los productos
-				//$objListItem		= $this->Item_Model->get_rowByCompany($companyID);				
-				//foreach($objListItem as $i)
-				//{
-				//	$itemID 			= $i->itemID;
-				//	$objListWarehouse 	= $this->Itemwarehouse_Model->get_rowByItemID($companyID,$itemID);
-				//	if($objListWarehouse)
-				//	{
-				//		foreach($objListWarehouse as $objWarehouse)
-				//		{
-				//			$query			= "CALL pr_zerror_reparar_kardex(?,?);";
-				//			$objData		= $this->Bd_Model->executeRender(
-				//				$query,
-				//				[$itemID,$objWarehouse->warehouseID]
-				//			);
-				//		}
-				//	}			
-				//}				
+				//-wg-$objListItem		= $this->Item_Model->get_rowByCompany($companyID);				
+				//-wg-foreach($objListItem as $i)
+				//-wg-{
+				//-wg-	$itemID 			= $i->itemID;
+				//-wg-	$objListWarehouse 	= $this->Itemwarehouse_Model->get_rowByItemID($companyID,$itemID);
+				//-wg-	if($objListWarehouse)
+				//-wg-	{
+				//-wg-		foreach($objListWarehouse as $objWarehouse)
+				//-wg-		{
+				//-wg-			$query			= "CALL pr_zerror_reparar_kardex(?,?);";
+				//-wg-			$objData		= $this->Bd_Model->executeRender(
+				//-wg-				$query,
+				//-wg-				[$itemID,$objWarehouse->warehouseID]
+				//-wg-			);
+				//-wg-		}
+				//-wg-	}			
+				//-wg-}				
 				
 				
 				//reparar kardes del producto en cada bodega
