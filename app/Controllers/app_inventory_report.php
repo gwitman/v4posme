@@ -208,8 +208,32 @@ class app_inventory_report extends _BaseController {
 				$dataSession["footer"]		= "";			
 				return view("core_masterpage/default_report",$dataSession);//--finview-r	
 			}
-			else{				
+			else
+			{				
+				$itemIDTemporal		= $itemID;
+				//reparar kardes del producto en cada bodega 
+				//para todos los productos
+				//$objListItem		= $this->Item_Model->get_rowByCompany($companyID);				
+				//foreach($objListItem as $i)
+				//{
+				//	$itemID 			= $i->itemID;
+				//	$objListWarehouse 	= $this->Itemwarehouse_Model->get_rowByItemID($companyID,$itemID);
+				//	if($objListWarehouse)
+				//	{
+				//		foreach($objListWarehouse as $objWarehouse)
+				//		{
+				//			$query			= "CALL pr_zerror_reparar_kardex(?,?);";
+				//			$objData		= $this->Bd_Model->executeRender(
+				//				$query,
+				//				[$itemID,$objWarehouse->warehouseID]
+				//			);
+				//		}
+				//	}			
+				//}				
 				
+				
+				//reparar kardes del producto en cada bodega
+				$itemID 			= $itemIDTemporal;
 				$objListWarehouse 	= $this->Itemwarehouse_Model->get_rowByItemID($companyID,$itemID);
 				if($objListWarehouse)
 				{
