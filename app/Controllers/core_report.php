@@ -32,7 +32,7 @@ class core_report extends _BaseController
         }
     }
 
-    public function process(): string
+    public function process()
     {
         try {
             $reportID       = $this->request->getPost('reportID');
@@ -46,6 +46,7 @@ class core_report extends _BaseController
             $dataSession        = $this->session->get();
             $reportResult       = $this->Reporting_Result_Model->get_rowByReportID($findReporting->reportID);
             $groupReportResult  = [];
+			$reportType			= 'html';
 
             foreach ($reportResult as $fila) {
                 $numero                         = $fila->resultNumber;
@@ -81,6 +82,10 @@ class core_report extends _BaseController
                     }
                     $filtros[$item->display] = $valorEncontrado;
                 }
+				elseif ($valor == 'prTypeReport')
+				{
+					$reportType				 = $item->value;
+				}
                 else
 				{
                     $filtros[$item->display] = $this->request->getPost($valor);
@@ -122,18 +127,92 @@ class core_report extends _BaseController
 	
 	
             
-            $dataView['params']             = $params;
-            $dataView['objCompany']         = $dataSession['company'];
-            $dataView['objDetail']          = $result;
-            $dataView['reportResult']       = $reportResult;
-            $dataView['groupReportResult']  = $groupReportResult;
-            $dataView['reporting']          = $findReporting;
-            $dataView["companyID"]          = $dataSession['company']->companyID;
-            $dataView["userID"]             = $dataSession['user']->userID;
-            $dataView['reportingParameter'] = $findReportingParameter;
-            $dataView['filtros']            = $filtros;
+            $dataView['params']             	= $params;
+            $dataView['objCompany']         	= $dataSession['company'];
+            $dataView['objDetail']          	= $result;
+            $dataView['reportResult']       	= $reportResult;
+            $dataView['groupReportResult']  	= $groupReportResult;
+            $dataView['reporting']          	= $findReporting;
+            $dataView["companyID"]          	= $dataSession['company']->companyID;
+            $dataView["userID"]             	= $dataSession['user']->userID;
+            $dataView['reportingParameter'] 	= $findReportingParameter;
+            $dataView['filtros']            	= $filtros;
+			
+			// convertir respuesta a csv
+			$typeReport                     	= $this->request->getPost('prTypeReport');
+			$companyID							= $dataView["companyID"];
+            
+			if ($typeReport === 'csv') 
+			{
+				$objParameterDeliminterCsv	 	= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT",$companyID);
+				$objParameterDeliminterCsv	 	= $objParameterDeliminterCsv->value;
+				$rows 							= $dataView['objDetail'];
+				$csvContent 					= helper_toCsv($rows, trim(strtolower($objParameterDeliminterCsv)));
 
-            return view("core_report/view_a_disemp",$dataView);//--finview-r
+				// Enviar CSV
+				return $this->response
+					->setHeader('Content-Type', 'text/csv; charset=UTF-8')
+					->setHeader('Content-Disposition', 'attachment; filename="reporte.csv"')
+					->setBody($csvContent);
+			}
+			elseif (trim(strtolower($typeReport)) === 'ftp_pedidosya') 
+			{
+                // 1. Generar el CSV
+				$objParameterDeliminterCsv	 	= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT",$companyID);
+				$objParameterDeliminterCsv	 	= $objParameterDeliminterCsv->value;
+				$rows 							= $dataView['objDetail'];
+				$csvContent 					= helper_toCsv($rows, trim(strtolower($objParameterDeliminterCsv)));
+				
+				// obtenemos parametros para la conexion ftp del cliente
+				$ftpMerchatId					= $this->core_web_parameter->getParameter("INVENTORY_SEND_SFTP_PEDIDOSYA_MERCHATID",$companyID);
+				$ftpMerchatId					= $ftpMerchatId->value;
+				
+				$ftpIp							= $this->core_web_parameter->getParameter("INVENTORY_SEND_SFTP_PEDIDOSYA_IP",$companyID);
+				$ftpIp							= $ftpIp->value;
+				
+				$ftpUsername					= $this->core_web_parameter->getParameter("INVENTORY_SEND_SFTP_PEDIDOSYA_USERNAME",$companyID);
+				$ftpUsername					= $ftpUsername->value;
+				
+				$ftpPassword					= $this->core_web_parameter->getParameter("INVENTORY_SEND_SFTP_PEDIDOSYA_PASSWORD",$companyID);
+				$ftpPassword					= $ftpPassword->value;
+				
+				$ftpPort						= $this->core_web_parameter->getParameter("INVENTORY_SEND_SFTP_PEDIDOSYA_PORT",$companyID);
+				$ftpPort						= $ftpPort->value;
+				
+				
+				// Validacion si alguno de los campos esta vacio no hay que dejar pasar la solicitud
+				if (!$ftpMerchatId or !$ftpIp or !$ftpUsername or !$ftpPassword or !$ftpPort)
+				{
+					return "No cuenta con las credenciales necesarias para realizar esta accion";
+				}
+				
+				$fileName						= 'catalogo_' . $ftpMerchatId . '.csv';
+				
+				$resultado 						= helper_sendFtp($csvContent, $ftpMerchatId, $ftpIp, $ftpUsername, $ftpPassword, $ftpPort, $fileName);
+				//return $resultado;
+				if ($resultado) 
+				{
+					echo "<script>
+						alert('✅ El archivo fue enviado correctamente al servidor FTP.');
+						window.close();
+					</script>";
+					exit;
+				} 
+				else 
+				{
+					echo "<script>
+						alert('❌ No se pudo enviar el archivo al servidor FTP.');
+						window.close();
+					</script>";
+					exit;
+				}
+
+			}
+			else
+			{
+                // Por defecto, html
+                return view("core_report/view_a_disemp",$dataView);//--finview-r
+			}
         }catch(\Exception $ex){
             return ($ex->getMessage().'; <br>Linea: ' .$ex->getLine());
         }
