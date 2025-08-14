@@ -1203,21 +1203,15 @@ function replaceSimbol($string)
 
 function helper_toCsv(array $data, string $delimiter = ','): string
 {
-
     if (empty($data)) 
 	{
         return '';
     }
-
     $output 							= fopen('php://temp', 'r+');
-
     // Detectar columnas del primer registro
     $columns 							= array_keys($data[0][0]);
-
     // Escribir encabezado
     fputcsv($output, $columns, $delimiter);
-	
-
     // Escribir filas
     foreach ($data[0] as $row) 
 	{
@@ -1245,24 +1239,20 @@ function helper_toCsv(array $data, string $delimiter = ','): string
         }
         fputcsv($output, $line, $delimiter);
     }
-
     rewind($output);
     $csv 								= stream_get_contents($output);
     fclose($output);
-
     $csv = "\xEF\xBB\xBF" . $csv;
 	return $csv;
 }
 
 
-function helper_sendFtp($csvContent, $merchanId, $ftpIp, $ftpUser, $ftpPass, $ftpPort, $fileName)
+function helper_sendFtp($csvContent, $merchanId, $ftpIp, $ftpUser, $ftpPass, $ftpPort, $fileName, $remoteDir)
 {
     $remoteFile 						= $fileName;
-    $localFile  						= WRITEPATH . $fileName;
-	
+    $localFile  						= WRITEPATH . $fileName;	
     // Guardar archivo local
     file_put_contents($localFile, $csvContent);
-
 	// Conectar con SFTP
 	// 1. Conectar por SSH
     $connection 						= ssh2_connect($ftpIp, $ftpPort);
@@ -1270,46 +1260,35 @@ function helper_sendFtp($csvContent, $merchanId, $ftpIp, $ftpUser, $ftpPass, $ft
 	{
         return "No se pudo conectar al servidor SFTP.";
     }
-
     // 2. Autenticar
     if (!ssh2_auth_password($connection, $ftpUser, $ftpPass)) 
 	{
        return "Falló la autenticación SFTP.";
     }
-
     // 3. Inicializar subsistema SFTP
-    $sftp 								= ssh2_sftp($connection);
-	
+    $sftp 								= ssh2_sftp($connection);	
     if (!$sftp) 
 	{
         return "No se pudo inicializar la sesión SFTP.";
-    }
-	
-	$remoteDir 							= "/vendor-automation-sftp-storage-live-us-1/home/" . $ftpUser . "/catalog/";
+    }	
 	ssh2_sftp_mkdir($sftp, $remoteDir, 0777, true); // crea si no existe
 	$remotePath 						= $remoteDir . $remoteFile;
 
     // 4. Subir archivo
-    $stream 							= @fopen("ssh2.sftp://" . intval($sftp) . $remotePath, 'w');
-	
+    $stream 							= @fopen("ssh2.sftp://" . intval($sftp) . $remotePath, 'w');	
     if (!$stream) 
 	{
         return "No se pudo abrir el archivo remoto: ".$remotePath;
-    }
-	
-	$localStream						=@fopen($localFile, 'r');
-	
+    }	
+	$localStream						=@fopen($localFile, 'r');	
 	if (!$localStream) 
 	{
         return "No se pudo abrir el archivo local:" . $localFile;
-    }
-	
+    }	
     $writtenBytes 						= stream_copy_to_stream($localStream, $stream);
 	fclose($localStream);
-    fclose($stream);
-	
+    fclose($stream);	
 	return "exitoso";
-
 }
 
 

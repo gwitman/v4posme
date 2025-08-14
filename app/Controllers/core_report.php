@@ -165,30 +165,25 @@ class core_report extends _BaseController
 				
 				// obtenemos parametros para la conexion ftp del cliente
 				$ftpMerchatId					= $this->core_web_parameter->getParameter("INVENTORY_SEND_SFTP_PEDIDOSYA_MERCHATID",$companyID);
-				$ftpMerchatId					= $ftpMerchatId->value;
-				
+				$ftpMerchatId					= $ftpMerchatId->value;				
 				$ftpIp							= $this->core_web_parameter->getParameter("INVENTORY_SEND_SFTP_PEDIDOSYA_IP",$companyID);
-				$ftpIp							= $ftpIp->value;
-				
+				$ftpIp							= $ftpIp->value;				
 				$ftpUsername					= $this->core_web_parameter->getParameter("INVENTORY_SEND_SFTP_PEDIDOSYA_USERNAME",$companyID);
-				$ftpUsername					= $ftpUsername->value;
-				
+				$ftpUsername					= $ftpUsername->value;				
 				$ftpPassword					= $this->core_web_parameter->getParameter("INVENTORY_SEND_SFTP_PEDIDOSYA_PASSWORD",$companyID);
-				$ftpPassword					= $ftpPassword->value;
-				
+				$ftpPassword					= $ftpPassword->value;				
 				$ftpPort						= $this->core_web_parameter->getParameter("INVENTORY_SEND_SFTP_PEDIDOSYA_PORT",$companyID);
-				$ftpPort						= $ftpPort->value;
-				
+				$ftpPort						= $ftpPort->value;	
+				$ftpDir							= $this->core_web_parameter->getParameter("INVENTORY_SEND_SFTP_PEDIDOSYA_DIRECTORY_TARGET",$companyID);
+				$ftpDir							= $ftpDir->value;
 				
 				// Validacion si alguno de los campos esta vacio no hay que dejar pasar la solicitud
 				if (!$ftpMerchatId or !$ftpIp or !$ftpUsername or !$ftpPassword or !$ftpPort)
 				{
 					return helper_notificationPage("Fallo envio por SFTP","No cuenta con las credenciales necesarias para realizar esta accion","","",true,"red");
-				}
-				
+				}				
 				$fileName						= 'catalogo_' . $ftpMerchatId . '.csv';
-				
-				$resultado 						= helper_sendFtp($csvContent, $ftpMerchatId, $ftpIp, $ftpUsername, $ftpPassword, $ftpPort, $fileName);
+				$resultado 						= helper_sendFtp($csvContent, $ftpMerchatId, $ftpIp, $ftpUsername, $ftpPassword, $ftpPort, $fileName, $ftpDir);
 				//return $resultado;
 				if (trim(strtolower($resultado)) == 'exitoso') 
 				{
@@ -198,7 +193,6 @@ class core_report extends _BaseController
 				{
 					return helper_notificationPage("Fallo envio por SFTP", $resultado,"","",true,"red");
 				}
-
 			}
 			else
 			{
