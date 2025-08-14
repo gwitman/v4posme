@@ -1268,13 +1268,13 @@ function helper_sendFtp($csvContent, $merchanId, $ftpIp, $ftpUser, $ftpPass, $ft
     $connection 						= ssh2_connect($ftpIp, $ftpPort);
     if (!$connection) 
 	{
-        throw new \Exception("? No se pudo conectar al servidor SFTP.");
+        return "No se pudo conectar al servidor SFTP.";
     }
 
     // 2. Autenticar
     if (!ssh2_auth_password($connection, $ftpUser, $ftpPass)) 
 	{
-        throw new \Exception("? Falló la autenticación SFTP.");
+       return "Falló la autenticación SFTP.";
     }
 
     // 3. Inicializar subsistema SFTP
@@ -1282,7 +1282,7 @@ function helper_sendFtp($csvContent, $merchanId, $ftpIp, $ftpUser, $ftpPass, $ft
 	
     if (!$sftp) 
 	{
-        throw new \Exception("? No se pudo inicializar la sesión SFTP.");
+        return "No se pudo inicializar la sesión SFTP.";
     }
 	
 	$remoteDir 							= "/vendor-automation-sftp-storage-live-us-1/home/" . $ftpUser . "/catalog/";
@@ -1294,23 +1294,116 @@ function helper_sendFtp($csvContent, $merchanId, $ftpIp, $ftpUser, $ftpPass, $ft
 	
     if (!$stream) 
 	{
-        throw new \Exception("? No se pudo abrir el archivo remoto: $remotePath");
+        return "No se pudo abrir el archivo remoto: ".$remotePath;
     }
 	
 	$localStream						=@fopen($localFile, 'r');
 	
 	if (!$localStream) 
 	{
-        throw new \Exception("? No se pudo abrir el archivo local: $localFile");
+        return "No se pudo abrir el archivo local:" . $localFile;
     }
 	
     $writtenBytes 						= stream_copy_to_stream($localStream, $stream);
 	fclose($localStream);
     fclose($stream);
 	
-	return $writtenBytes;
+	return "exitoso";
 
 }
 
+
+function helper_notificationPage($titlePage="Title", $summaryPage="Summary", $labelButtonPage="Label", $linkButtonPage="link", $hiddenButtonPage=false, $backgroundHex="#006E98")
+{
+	$htmlPage 							= '
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>' . htmlspecialchars($titlePage) . '</title>
+        <style>
+            body 
+			{
+                margin					: 0;
+                padding					: 0;
+                height					: 100vh;
+                display					: flex;
+                justify-content			: center;
+                align-items				: center;
+                background-color		: ' . $backgroundHex . ';
+				font-family				: "Montserrat", sans-serif;
+				
+            }
+            .container 
+			{
+                background-color		: white;
+                padding					: 30px;
+                border-radius			: 15px;
+                box-shadow				: 0 8px 16px rgba(0,0,0,0.2);
+                max-width				: 500px;
+                text-align				: center;
+            }
+            h1 
+			{
+                margin-top				: 0;
+                color					: #5CE65C;
+				text-transform			: uppercase;
+				font-weight				: bold;
+            }
+            p 
+			{
+                color					: #5CE65C;
+                margin-bottom			: 30px;
+				font-size				: 1.2rem;
+				font-weight				: bold;
+            }
+            .btn 
+			{
+                display					: inline-block;
+                background-color		: #0d6efd;
+                color					: white;
+                padding					: 10px 20px;
+                text-decoration			: none;
+                border-radius			: 5px;
+                font-weight				: bold;
+                transition				: background-color 0.3s ease;
+				font-size				: 1.1rem;
+            }
+            .btn:hover {
+                background-color		: #004f6d;
+            }
+			@media (max-width: 768px) 
+			{
+			  .error-code 
+			  {
+				font-size				: 2.5rem;
+			  }
+			  .error-message 
+			  {
+				font-size				: 1rem;
+			  }
+			}
+        </style>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+		  href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+		  rel="stylesheet"
+		/>
+    </head>
+    <body>
+        <div class="container">
+            <h1>' . htmlspecialchars($titlePage) . '</h1>
+            <p>' . htmlspecialchars($summaryPage) . '</p>';
+    
+    if (!$hiddenButtonPage) 
+	{
+        $htmlPage 						.= '<a href="' . htmlspecialchars($linkButtonPage) . '" class="btn">' . htmlspecialchars($labelButtonPage) . '</a>';
+    }
+
+    $htmlPage 							.= '</div></body></html>';
+
+    return $htmlPage;
+}
 
 ?>

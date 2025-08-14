@@ -155,7 +155,7 @@ class core_report extends _BaseController
 					->setHeader('Content-Disposition', 'attachment; filename="reporte.csv"')
 					->setBody($csvContent);
 			}
-			elseif (trim(strtolower($typeReport)) === 'ftp_pedidosya') 
+			elseif (trim(strtolower($typeReport)) === 'ftp_pedidos_ya') 
 			{
                 // 1. Generar el CSV
 				$objParameterDeliminterCsv	 	= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT",$companyID);
@@ -183,28 +183,20 @@ class core_report extends _BaseController
 				// Validacion si alguno de los campos esta vacio no hay que dejar pasar la solicitud
 				if (!$ftpMerchatId or !$ftpIp or !$ftpUsername or !$ftpPassword or !$ftpPort)
 				{
-					return "No cuenta con las credenciales necesarias para realizar esta accion";
+					return helper_notificationPage("Fallo envio por SFTP","No cuenta con las credenciales necesarias para realizar esta accion","","",true,"red");
 				}
 				
 				$fileName						= 'catalogo_' . $ftpMerchatId . '.csv';
 				
 				$resultado 						= helper_sendFtp($csvContent, $ftpMerchatId, $ftpIp, $ftpUsername, $ftpPassword, $ftpPort, $fileName);
 				//return $resultado;
-				if ($resultado) 
+				if (trim(strtolower($resultado)) == 'exitoso') 
 				{
-					echo "<script>
-						alert('✅ El archivo fue enviado correctamente al servidor FTP.');
-						window.close();
-					</script>";
-					exit;
+					return helper_notificationPage("Envio por SFTP", "El envio del archivo fue ralizado con exito","","",true);
 				} 
 				else 
 				{
-					echo "<script>
-						alert('❌ No se pudo enviar el archivo al servidor FTP.');
-						window.close();
-					</script>";
-					exit;
+					return helper_notificationPage("Fallo envio por SFTP", $resultado,"","",true,"red");
 				}
 
 			}
