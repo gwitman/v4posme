@@ -108,7 +108,11 @@ modificar el siguiente archivo
 				extension=gd
 				extension=soap
 				extension=imap
-				extension=ixed.8.0ts.win
+				extension=ixed.8.0ts.win		C:\xampp\php\ext\ixed.8.0ts.win
+				extension=ssh2					C:\xampp\php\ext\php_ssh2.dll
+				
+				
+		
 		
 modificar los siguiente archivos:
 		C:\xampp\mysql\bin\my.ini
@@ -135,6 +139,10 @@ modificar los siguientes archivos:
 		;force_sender=
 		force_sender=posme2022@gmail.com
 
+
+
+Verificar que exista el archivo:
+		C:\xampp\apache\bin\libssh2.dll		en caso de siteground habilitar en las opciones del desarrollador php :  ssh2
 		
 modificar los siguientes archivos:		
 		apache\config\httpd.confg:  ó   apache/conf/extra/httpd-xampp.conf

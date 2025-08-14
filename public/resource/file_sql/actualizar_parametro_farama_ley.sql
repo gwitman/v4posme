@@ -4,6 +4,12 @@
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "/vendor-automation-sftp-storage-live-us-1/home/PY_NI_81ed0489-4ba2-4266-85f8-083484753194/catalog/" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_SEND_SFTP_PEDIDOSYA_DIRECTORY_TARGET"; #Directorio destino del archivo sftp de pedidos ya
+
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "vendor-automation-sftp-live-us.prod.aws.qcommerce.live." 
