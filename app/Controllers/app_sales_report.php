@@ -145,6 +145,8 @@ class app_sales_report extends _BaseController {
 				return view("app_sales_report/sales_detail/view_a_disemp_pasteleria_lizzette",$objDataResult);//--finview-r
 				else if($dataSession["company"]->type == "san_rafael")
 				return view("app_sales_report/sales_detail/view_a_disemp_san_rafael",$objDataResult);//--finview-r
+				else if($dataSession["company"]->type == "taller_rostran")
+				return view("app_sales_report/sales_detail/view_a_disemp_taller_rostran",$objDataResult);//--finview-r
 				else 
 				return view("app_sales_report/sales_detail/view_a_disemp",$objDataResult);//--finview-r
 				
