@@ -102,7 +102,7 @@ define('EVENT_PRIORITY_HIGH', 10);
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
 //APP
-define('DB_BDNAME',"public");
+define('DB_BDNAME',"posme");
 define('APP_COMERCE_NAME',"posmev4");
 
 define('APP_NEED_AUTHENTICATION',true);
@@ -147,9 +147,9 @@ define('APP_PASSWORDEFAULT_VALUE','jose.');
 //define('DB_BDNAME_MERGE',"posme_merge");
 //define('DB_SERVER',"localhost");
 define("DB_PASSWORD","root1.2Blandon");
-define("DB_USER","admin");
+define("DB_USER","root");
 define('DB_BDNAME_MERGE',"posme_merge");
-define('DB_SERVER',"closter-db-posme.cd4w268yqr8u.us-east-2.rds.amazonaws.com");
+define('DB_SERVER',"localhost");
 
 
 //Tipos de Menu
