@@ -217,7 +217,7 @@
 				<div class="meta">
 					<span class="priority ${priorityClass} priority-Alta">Entrega: ${task.nextVisit}</span>
 					<span>Estado: ${task.statusName}</span>
-					<span>Categoría: ${task.categoryName}</span>
+					<span class="priority ${priorityClass} priority-Baja" >Orden: ${task.reference3}</span>
 				</div>
 				<div class="task-actions">					
 					<button class="edit-btn">Editar</button>					
