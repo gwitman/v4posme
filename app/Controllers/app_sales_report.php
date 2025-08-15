@@ -199,9 +199,11 @@ class app_sales_report extends _BaseController {
 				$dataSession["footer"]					= "";			
 				return view("core_masterpage/default_report",$dataSession);//--finview-r	
 			}
-			else{				
+			else{
 				
 				$objWarehouse 	= $this->Warehouse_Model->getByEmailContainsString($companyID,$warehouseID);
+				if(!$objWarehouse)
+				return helper_notificationPage("Error", "Bodega con la key no encontrada","","",true,"red");
 				
 				$warehouseID	= $objWarehouse->warehouseID;
 				//Obtener el tipo de Comprobante
