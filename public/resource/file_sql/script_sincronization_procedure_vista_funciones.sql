@@ -19222,7 +19222,7 @@ BEGIN
 
 			c.identification,
 
-			ep.number as phone,
+			COALESCE(ep.number,c.phoneNumber) as phone,
 
 			em.email as email ,
 
