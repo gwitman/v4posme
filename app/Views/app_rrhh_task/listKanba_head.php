@@ -94,10 +94,12 @@
 
 /* --- Tablero Kanban (Columnas y Tareas) --- */
 .body_custom #kanban-board {
-    display: flex;
-    gap: 20px;
+    display: 	flex;
+    gap: 		20px;
     overflow-x: auto;
-    padding: 0px;
+    padding: 	0px;
+	overflow-y:	auto;
+	height:		500px;
 }
 
 .body_custom .column {
