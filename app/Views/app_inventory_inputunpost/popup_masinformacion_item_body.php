@@ -58,6 +58,26 @@
 															</div>
 													</div>	
 													
+													<div class="form-group">
+														<label class="col-lg-2 control-label" for="preapend">IVA</label>
+														<div class="col-lg-10">
+															<div class="input-group">
+																<span class="input-group-addon">$</span>
+																<input class="form-control" id="txtIva" type="text" placeholder="" value="<?php echo $iva;?>">
+															</div>
+														</div>
+													</div>
+													
+													<div class="form-group">
+														<label class="col-lg-2 control-label" for="preapend">ISC</label>
+														<div class="col-lg-10">
+															<div class="input-group">
+																<span class="input-group-addon">$</span>
+																<input class="form-control" id="txtIsc" type="text" placeholder="" value="<?php echo $isc;?>">
+															</div>
+														</div>
+													</div>
+													
 												
 												
 										</form>

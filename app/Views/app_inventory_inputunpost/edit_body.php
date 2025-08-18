@@ -322,7 +322,9 @@
 								<th>Precio1</th><!--12-->
 								<th>Precio2</th><!--13-->
 								<th>Expandir BarCode</th><!--14-->
-								<th>Sub Total</th><!--14-->
+								<th>IVA</th><!--15-->
+								<th>ISC</th><!--16-->
+								<th>Sub Total</th><!--17-->
 							  </tr>
 							</thead>
 							<tbody id="body_detail_transaction">             
@@ -373,7 +375,13 @@
 								<tr>
 									<th>IVA</th>
 									<td >
-										<input type="text" id="txtIva" name="txtIva"  class="col-lg-12" value="<?php echo floor($objTM->tax1 * 100) / 100;  ?>" style="text-align:right"/>
+										<input type="text" id="txtIva" name="txtIva"  class="col-lg-12" readonly="readonly" value="<?php echo floor($objTM->tax1 * 100) / 100;  ?>" style="text-align:right"/>
+									</td>
+								</tr>
+								<tr>
+									<th>ISC</th>
+									<td >
+										<input type="text" id="txtIsc" name="txtIsc"  class="col-lg-12" readonly="readonly" value="<?php echo floor($objTM->tax2 * 100) / 100;  ?>" style="text-align:right"/>
 									</td>
 								</tr>
 								<tr>

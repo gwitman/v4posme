@@ -1047,10 +1047,12 @@ class app_inventory_inputunpost extends _BaseController {
 	
 	function insertElement($dataSession){
 		try{
+				
 			//PERMISO SOBRE LA FUNCTION
 			if(APP_NEED_AUTHENTICATION == true){
 				$permited = false;
 				$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				
 				
 				if(!$permited)
 				throw new \Exception(NOT_ACCESS_CONTROL);
@@ -1058,10 +1060,9 @@ class app_inventory_inputunpost extends _BaseController {
 				$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"add",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
 				if ($resultPermission 	== PERMISSION_NONE)
 				throw new \Exception(NOT_ALL_INSERT);	
+				
+				
 			}
-			
-			
-			
 			
 			//Obtener el Componente de Transacciones Other Input to Inventory
 			$objComponent							= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_inputunpost");
@@ -1073,6 +1074,10 @@ class app_inventory_inputunpost extends _BaseController {
 			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 			
 			$this->core_web_permission->getValueLicense($dataSession["user"]->companyID,get_class($this)."/"."index");
+			
+			log_message("error",print_r("prueba 3",true));
+			
+			
 			$companyID 								= $dataSession["user"]->companyID;
 			//Obtener transaccion
 			$transactionID 							= $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID,"tb_transaction_master_inputunpost",0);			
@@ -1105,7 +1110,7 @@ class app_inventory_inputunpost extends _BaseController {
 			$objTM["sourceWarehouseID"]				= NULL;
 			$objTM["targetWarehouseID"]				= /*inicio get post*/ $this->request->getPost("txtWarehouseID");//--fin peticion get o post
 			$objTM["tax1"]							= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtIva"));
-			$objTM["tax2"]							= 0;
+			$objTM["tax2"]							= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtIsc"));
 			$objTM["tax3"]							= 0;
 			$objTM["tax4"]							= /*inicio get post*/ $this->request->getPost("txtCreditLineID");
 			$objTM["subAmount"]						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtSubTotal"));
@@ -1114,6 +1119,8 @@ class app_inventory_inputunpost extends _BaseController {
 			$objTM["isActive"]						= 1;
 			$objTM["isTemplate"] 					= is_null (/*inicio get post*/ $this->request->getPost("txtIsTemplate")) ? "0" : /*inicio get post*/ $this->request->getPost("txtIsTemplate") ;
 			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);			
+			
+			log_message("error",print_r("prueba 4",true));
 			
 			
 			
@@ -1124,7 +1131,7 @@ class app_inventory_inputunpost extends _BaseController {
 			//Crear la Carpeta para almacenar los Archivos del Documento
 			$path_ = PATH_FILE_OF_APP."/company_".$companyID."/component_56/component_item_".$transactionMasterID;						
 			if(!file_exists ($path_)){
-				mkdir($path_, 0755);
+				mkdir($path_, 0755,true);
 				chmod($path_, 0755);
 			}
 			
@@ -1140,10 +1147,7 @@ class app_inventory_inputunpost extends _BaseController {
 			$fieldTemplate 		= ["Codigo","Nombre","Cantidad","Costo","Precio","Lote","Vencimiento"];
 			fputcsv($fppathTemplate, $fieldTemplate,$characterSplie);
 			fclose($fppathTemplate);
-					
-					
-			
-			
+								
 			//Recorrer la lista del detalle del documento
 			$arrayListItemID 							= /*inicio get post*/ $this->request->getPost("txtDetailItemID");
 			$arrayListQuantity	 						= /*inicio get post*/ $this->request->getPost("txtDetailQuantity");	
@@ -1154,8 +1158,10 @@ class app_inventory_inputunpost extends _BaseController {
 			$arrayPrice2 								= /*inicio get post*/ $this->request->getPost("txtDetailPrice2");			
 			$arrayPrice3 								= /*inicio get post*/ $this->request->getPost("txtDetailPrice3");			
 			$arrayReference4TransactionMasterDetail 	= /*inicio get post*/ $this->request->getPost("txtReference4TransactionMasterDetail");
+			$arrayIva 									= /*inicio get post*/ $this->request->getPost("txtDetailIva");			
+			$arrayIsc	 								= /*inicio get post*/ $this->request->getPost("txtDetailIsc");
 			
-			
+					
 			if(!empty($arrayListItemID))
 			{
 				foreach($arrayListItemID as $key => $value)
@@ -1171,6 +1177,8 @@ class app_inventory_inputunpost extends _BaseController {
 					$unitaryPrice 							= $arrayPrice[$key];
 					$unitaryPrice2 							= $arrayPrice2[$key];
 					$unitaryPrice3 							= $arrayPrice3[$key];
+					$tax1 									= $arrayIva[$key];
+					$tax2		 							= $arrayIsc[$key];
 					
 					$objTMD["companyID"] 					= $objTM["companyID"];
 					$objTMD["transactionID"] 				= $objTM["transactionID"];
@@ -1200,6 +1208,8 @@ class app_inventory_inputunpost extends _BaseController {
 					$objTMD["remaingStock"]					= 0;					
 					$objTMD["inventoryWarehouseSourceID"]	= $objTM["sourceWarehouseID"];
 					$objTMD["inventoryWarehouseTargetID"]	= $objTM["targetWarehouseID"];
+					$objTMD["tax1"]							= $tax1;
+					$objTMD["tax2"]							= $tax2;
 					
 					$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
 					
@@ -1244,6 +1254,8 @@ class app_inventory_inputunpost extends _BaseController {
 								$objTMD["remaingStock"]					= 0;					
 								$objTMD["inventoryWarehouseSourceID"]	= $objTM["sourceWarehouseID"];
 								$objTMD["inventoryWarehouseTargetID"]	= $objTM["targetWarehouseID"];
+								$objTMD["tax1"]							= $objTM["tax1"];
+								$objTMD["tax2"]							= $objTM["tax2"];
 								
 								$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
 						   }
@@ -1268,6 +1280,9 @@ class app_inventory_inputunpost extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
+		
+			log_message("error",print_r($ex,true));
+			
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
@@ -1544,7 +1559,7 @@ class app_inventory_inputunpost extends _BaseController {
 			$objTMNew["sourceWarehouseID"]			= NULL;
 			$objTMNew["targetWarehouseID"]			= /*inicio get post*/ $this->request->getPost("txtWarehouseID");//--fin peticion get o post
 			$objTMNew["tax1"]						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtIva"));
-			$objTMNew["tax2"]						= 0;
+			$objTMNew["tax2"]						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtIsc"));
 			$objTMNew["tax3"]						= 0;
 			$objTMNew["tax4"]						= /*inicio get post*/ $this->request->getPost("txtCreditLineID");
 			$objTMNew["subAmount"]					= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtSubTotal"));
@@ -2266,6 +2281,10 @@ class app_inventory_inputunpost extends _BaseController {
 				$this->response->redirect(base_url()."/".'app_inventory_inputunpost/add');
 				exit;
 			} 
+			
+			log_message("error",print_r("prueba w",true));
+			log_message("error",print_r($mode,true));
+			
 			//Guardar o Editar Registro						
 			if($mode == "new"){
 				$this->insertElement($dataSession);
@@ -2614,7 +2633,7 @@ class app_inventory_inputunpost extends _BaseController {
 			
 		    return $resultView;		}
 	}	
-	function add_masinformacion($fnCallback="",$itemID="",$transactionMasterDetailID="",$positionID="",$lote="",$vencimiento="",$precio1="",$precio2="",$txtReference4TransactionMasterDetail = "" ){
+	function add_masinformacion($fnCallback="",$itemID="",$transactionMasterDetailID="",$positionID="",$lote="",$vencimiento="",$precio1="",$precio2="",$iva="",$isc="",$txtReference4TransactionMasterDetail = ""){
 		
 			$fnCallback = helper_SegmentsByIndex($this->uri->getSegments(),1,$fnCallback);	
 			$itemID = helper_SegmentsByIndex($this->uri->getSegments(),2,$itemID);	
@@ -2623,8 +2642,10 @@ class app_inventory_inputunpost extends _BaseController {
 			$lote = helper_SegmentsByIndex($this->uri->getSegments(),5,$lote);	
 			$vencimiento = helper_SegmentsByIndex($this->uri->getSegments(),6,$vencimiento);	
 			$precio1 = helper_SegmentsByIndex($this->uri->getSegments(),7,$precio1);	
-			$precio2 = helper_SegmentsByIndex($this->uri->getSegments(),8,$precio2);	
-			$txtReference4TransactionMasterDetail = helper_SegmentsByIndex($this->uri->getSegments(),9,$txtReference4TransactionMasterDetail);	
+			$precio2 = helper_SegmentsByIndex($this->uri->getSegments(),8,$precio2);		
+			$iva = helper_SegmentsByIndex($this->uri->getSegments(),9,$iva);	
+			$isc = helper_SegmentsByIndex($this->uri->getSegments(),10,$isc);
+			$txtReference4TransactionMasterDetail = helper_SegmentsByIndex($this->uri->getSegments(),11,$txtReference4TransactionMasterDetail);
 		
 			//AUTENTICACION
 			if(!$this->core_web_authentication->isAuthenticated())
@@ -2653,6 +2674,8 @@ class app_inventory_inputunpost extends _BaseController {
 			$data["precio1"] 								= $precio1;
 			$data["precio2"] 								= $precio2;
 			$data["txtReference4TransactionMasterDetail"]	= $txtReference4TransactionMasterDetail;
+			$data["iva"] 									= $iva;
+			$data["isc"] 									= $isc;
 			
 			//Renderizar Resultado
 			$dataSession["message"]		= "";

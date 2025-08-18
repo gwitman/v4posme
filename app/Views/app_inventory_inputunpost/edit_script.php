@@ -17,7 +17,7 @@
 	var objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES	= '<?php echo $objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES; ?>';
 	var sScrollY 													= objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE == true ?  "350px" : "auto";
 	var varParameterCantidadItemPoup								= '<?php echo $objParameterCantidadItemPoup; ?>';  
-	var columnIndexSubTotal											= 15;
+	var columnIndexSubTotal											= 17;
 	
 	$(document).ready(function(){					
 		//Inicializar Controles		
@@ -183,6 +183,24 @@
 							"bSearchable"	: false,
 							"mRender"	: function ( data, type, full ) {
 								return '<input type="text" class="col-lg-12 txtReference4TransactionMasterDetail " value="'+data+'" name="txtReference4TransactionMasterDetail[]" />';
+							}
+						},
+						{
+							"aTargets"		: [ 15 ],//IVA
+							"bVisible"		: true,
+							"sClass" 		: "hidden",
+							"bSearchable"	: false,
+							"mRender"	: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12 txtDetailIva txt-numeric"" value="'+data+'" name="txtDetailIva[]" />';
+							}
+						},
+						{
+							"aTargets"		: [ 16 ],//ISC
+							"bVisible"		: true,
+							"sClass" 		: "hidden",
+							"bSearchable"	: false,
+							"mRender"	: function ( data, type, full ) {
+								return '<input type="text" class="col-lg-12 txtDetailIsc txt-numeric"" value="'+data+'" name="txtDetailIsc[]" />';
 							}
 						},
 						{
@@ -390,23 +408,27 @@
 		});
 		$(document).on("click",".btnMasInformcion",function(){
 			
-			var itemID 						= $(this).data("itemid");
-			var transactionMasterDetailID 	= $(this).data("transactionmasterdetailid");
-			var tr 							= $(this).parent().parent()[0];
-			var index 						= objTableDetailTransaction.fnGetPosition(tr);
-			var objdat_ 					= objTableDetailTransaction.fnGetData(index);		
-			var lote 						= objdat_[9];
-			var vencimiento 				= objdat_[10];
-			var precio1 					= objdat_[12];
+			var itemID 													= $(this).data("itemid");
+			var transactionMasterDetailID 								= $(this).data("transactionmasterdetailid");
+			var tr 														= $(this).parent().parent()[0];
+			var index 													= objTableDetailTransaction.fnGetPosition(tr);
+			var objdat_ 												= objTableDetailTransaction.fnGetData(index);		
+			var lote 													= objdat_[9];
+			var vencimiento 											= objdat_[10];
+			var precio1 												= objdat_[12];
 			var precio2 												= objdat_[13];
 			var txtReference4TransactionMasterDetail 					= objdat_[14];
+			var iva 													= objdat_[15];
+			var isc	 													= objdat_[16];
+			console.log(onjdat_);
 			vencimiento 					= vencimiento.replace(" 00:00:00","");
 			
 			if(lote == "") lote = "0";
 			if(vencimiento == "") vencimiento = moment().format("YYYY-MM-DD");
 			
 			var url_request = "<?php echo base_url(); ?>/app_inventory_inputunpost/add_masinformacion/onCompleteUpdateMasInformacion/"+itemID+"/"+transactionMasterDetailID+"/"+index; 
-			url_request = url_request + "/"+lote+"/"+vencimiento+"/"+precio1+"/"+precio2+"/"+txtReference4TransactionMasterDetail;
+			url_request = url_request + "/"+lote+"/"+vencimiento+"/"+precio1+"/"+precio2+"/"+iva+"/"+isc+"/"+txtReference4TransactionMasterDetail;
+			
 			
 			window.open(url_request,"MsgWindow","width=900,height=500");
 			window.onCompleteUpdateMasInformacion = onCompleteUpdateMasInformacion; 
@@ -494,6 +516,10 @@
 		});
 		//Cambio en el Iva
 		$(document).on("change","input#txtIva",function(){
+			fnUpdateDetail();
+		});
+		//Cambio en el Isc
+		$(document).on("change","input#txtIsc",function(){
 			fnUpdateDetail();
 		});
 		
@@ -611,12 +637,14 @@
 	}
 
 	function onCompleteUpdateMasInformacion(objResponse){
-			var index 		= objResponse.txtPosition;
-			var vencimiento = objResponse.txtVencimiento;
-			var lote 		= objResponse.txtLote;
-			var precio1 		= objResponse.txtPrecio1;
-			var precio2 		= objResponse.txtPrecio2;
+			var index 										= objResponse.txtPosition;
+			var vencimiento 								= objResponse.txtVencimiento;
+			var lote 										= objResponse.txtLote;
+			var precio1 									= objResponse.txtPrecio1;
+			var precio2 									= objResponse.txtPrecio2;
 			var txtReference4TransactionMasterDetail 		= objResponse.txtReference4TransactionMasterDetail;
+			var iva											= objResponse.txtIva;
+			var isc											= objResponse.txtIsc;
 		
 			
 			var objdat_ = objTableDetailTransaction.fnGetData(index);		
@@ -624,7 +652,9 @@
 			objTableDetailTransaction.fnUpdate(  vencimiento, index, 10 );	
 			objTableDetailTransaction.fnUpdate(  precio1, index, 12 );		
 			objTableDetailTransaction.fnUpdate(  precio2, index, 13 );					
-			objTableDetailTransaction.fnUpdate(  txtReference4TransactionMasterDetail, index, 14 );					
+			objTableDetailTransaction.fnUpdate(  txtReference4TransactionMasterDetail, index, 14 );		
+			objTableDetailTransaction.fnUpdate(  iva, index, 15 );		
+			objTableDetailTransaction.fnUpdate(  isc, index, 16 );				
 			
 			
 	}
@@ -665,6 +695,8 @@
 			objRow.precio2					= objResponse[i][5];
 			objRow.barCodeExtende			= "";
 			objRow.subTotal					= cantidad * objResponse[i][2];
+			objRow.iva						= 0;
+			objRow.isc						= 0;
 			
 			//Berificar que el Item ya esta agregado 
 			if(jLinq.from(objTableDetailTransaction.fnGetData()).where(function(obj){ return obj[1] == objRow.itemID;}).select().length > 0 )
@@ -683,7 +715,7 @@
 					objRow.quantity,objRow.cost,objRow.price,
 					objRow.lote,objRow.vencimiento,objRow.masinfor,
 					objRow.precio1,objRow.precio2,
-					objRow.barCodeExtende,
+					objRow.barCodeExtende,objRow.iva,objRow.isc,
 					objRow.subTotal
 					]
 				);
@@ -698,6 +730,7 @@
 		var lastRow 	= $(".txtDetailQuantity").length ;
 		lastRow 		= lastRow - 1;
 		$($(".txtDetailQuantity")[lastRow]).focus();
+		fnUpdateDetail();
 		
 	}
 	//Refresh
@@ -709,6 +742,7 @@
 		
 		$('#txtDiscount').mask('000,000.00', {reverse: true});
 		$('#txtIva').mask('000,000.00', {reverse: true});
+		$('#txtIsc').mask('000,000.00', {reverse: true});
 		*/
 		
 		if(varUseMobile == "1")
@@ -744,24 +778,30 @@
 		var iva			= $("#txtIva").val();
 		var discount	= $("#txtDiscount").val();						
 		var total		= 0;
+		iva				= 0;
+		isc				= 0;
 		
-		iva				= fnFormatFloat(fnFormatNumber(iva,numberDecimal));
 		discount		= fnFormatFloat(fnFormatNumber(discount,numberDecimal));
-		$("#txtIva").val(iva);
 		$("#txtDiscount").val(discount);
 		
 		for(var i = 0; i < objTableDetailTransaction.fnGetData().length; i++){
-			var row 	= objTableDetailTransaction.fnGetData()[i];
-			subtotal 	= subtotal + fnFormatFloat(fnFormatNumber((row[6] * row[7]),numberDecimal));
+			var row 		= objTableDetailTransaction.fnGetData()[i];
+			var quantity 	= row[6];
+			var ivaRow		= row[15];
+			var iscRow		= row[16];
+			subtotal 		= subtotal + fnFormatFloat(fnFormatNumber((row[6] * row[7]),numberDecimal));
+			iva				= iva + fnFormatFloat(fnFormatNumber(ivaRow*quantity,numberDecimal));
+			isc				= isc + fnFormatFloat(fnFormatNumber(iscRow*quantity,numberDecimal));
 		}
 		
 		subtotal		= parseInt(subtotal * 100) / 100;
 		subtotal		= fnFormatFloat(fnFormatNumber(subtotal ,numberDecimalSummary));
-		total			= parseInt(((subtotal + iva) - discount) * 100) / 100;
+		total			= parseInt(((subtotal + iva + isc) - discount) * 100) / 100;
 		total			= fnFormatFloat(fnFormatNumber(total,numberDecimalSummary));
 		$("#txtSubTotal").val(subtotal);
 		$("#txtTotal").val(total);
-		
+		$("#txtIsc").val(isc);		
+		$("#txtIva").val(iva);	
 		
 		//fnShowNotification("TOTAL: C$ " +  $.number(total) ,"success");
 	}
