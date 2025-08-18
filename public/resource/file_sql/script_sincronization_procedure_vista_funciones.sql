@@ -32017,14 +32017,7 @@ BEGIN
 						ELSE 
 							tmd.quantity 
 					END as quantity,
-					case 
-						when varCurrencyReporte = tm.currencyID then 
-							tmd.unitaryPrice 
-						when tm.exchangeRate > 1 then 
-							tm.exchangeRate * (tmd.unitaryPrice)
-						else 
-							(1/tm.exchangeRate) * (tmd.unitaryPrice)
-					end unitaryPrice,
+					tm.unitaryPrice,
 					case 
 						when varCurrencyCompras = varCurrencyReporte  then 				
 							tmd.unitaryCost
