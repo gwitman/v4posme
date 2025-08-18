@@ -481,7 +481,8 @@ function helper_reporte80mmTransactionMasterFarmaLey_JerseyShop(
                       <table style='width:100%'>
                         <tr>
                           <td colspan='3' style='text-align:center'>
-                            <img  src='".$base64."' width='225'  >
+                            <!-- <img  src='".$base64."' width='225'  > -->
+							<br/>
                           </td>
                         </tr>
                         
