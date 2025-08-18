@@ -6088,7 +6088,7 @@ BEGIN
 	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_);	
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_EXCHANGE_SALE",currencyTargetSale);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_EXCHANGE_PURCHASE",currencyTargetPurchase);
-  SET convert_			= (SELECT value FROM tb_company_parameter cp WHERE cp.display LIKE 'ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT');	
+	CALL pr_core_get_parameter_value(prCompanyID, "ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT", convert_);
 
 
 	SELECT 
@@ -10797,7 +10797,7 @@ BEGIN
 	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_);	
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_EXCHANGE_SALE",currencyTargetSale);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_EXCHANGE_PURCHASE",currencyTargetPurchase);
-  SET convert_			= (SELECT value FROM tb_company_parameter cp WHERE cp.display LIKE 'ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT');	
+	CALL pr_core_get_parameter_value(prCompanyID, "ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT", convert_);	
   drop temporary table if exists tb_tmp_split;
 	create temporary table tb_tmp_split( val char(255) );
 	set @sql = concat("insert into tb_tmp_split (val) values ('", replace(prConceptFilter, ",", "'),('"),"');");
@@ -10949,7 +10949,7 @@ BEGIN
 	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_);	
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_EXCHANGE_SALE",currencyTargetSale);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_EXCHANGE_PURCHASE",currencyTargetPurchase);
-  SET convert_			= (SELECT value FROM tb_company_parameter cp WHERE cp.display LIKE 'ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT');	
+	CALL pr_core_get_parameter_value(prCompanyID, "ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT", convert_);	
   drop temporary table if exists tb_tmp_split;
 	create temporary table tb_tmp_split( val char(255) );
 	set @sql = concat("insert into tb_tmp_split (val) values ('", replace(prConceptFilter, ",", "'),('"),"');");
@@ -31883,7 +31883,7 @@ BEGIN
   CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameSource);
   CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_EXTERNAL",currencyIDNameTarget);
   CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_); 
-  SET convert_			= (SELECT value FROM tb_company_parameter cp WHERE cp.display LIKE 'ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT');	
+	CALL pr_core_get_parameter_value(prCompanyID, "ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT", convert_);
 
 	drop temporary table if exists tb_tmp_split;
 	create temporary table tb_tmp_split( val char(255) );
@@ -32017,7 +32017,7 @@ BEGIN
 						ELSE 
 							tmd.quantity 
 					END as quantity,
-					tm.unitaryPrice,
+					tmd.unitaryPrice,
 					case 
 						when varCurrencyCompras = varCurrencyReporte  then 				
 							tmd.unitaryCost
@@ -32196,7 +32196,7 @@ BEGIN
   CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameSource);
   CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_EXTERNAL",currencyIDNameTarget);
   CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_); 
-  SET convert_			= (SELECT value FROM tb_company_parameter cp WHERE cp.display LIKE 'ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT');	
+  CALL pr_core_get_parameter_value(prCompanyID, "ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT", convert_);	
   
 	drop temporary table if exists tb_tmp_split;
 	create temporary table tb_tmp_split( val char(255) );
