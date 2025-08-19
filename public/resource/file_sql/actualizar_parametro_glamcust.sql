@@ -1,4 +1,4 @@
-/*BD: 	dblkzg9eyznwmg:glomcuts*/
+/*BD: 	dblkzg9eyznwmg:glamcuts*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
