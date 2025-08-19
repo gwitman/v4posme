@@ -425,7 +425,9 @@
 		}
 		
 		var lengthRow = objTableDetailTransaction.fnGetData().length;
-		if(lengthRow == 0){
+		var template = $("#txtTransactionMasterIDOrdenCompra").val();
+		console.log(template);
+		if(lengthRow == 0 && template == ''){
 			fnShowNotification("Agregar el Detalle del Documento","error",timerNotification);
 			result = false;
 		}

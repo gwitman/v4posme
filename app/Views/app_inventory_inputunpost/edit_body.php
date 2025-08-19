@@ -322,9 +322,9 @@
 								<th>Precio1</th><!--12-->
 								<th>Precio2</th><!--13-->
 								<th>Expandir BarCode</th><!--14-->
-								<th>IVA</th><!--15-->
-								<th>ISC</th><!--16-->
-								<th>Sub Total</th><!--17-->
+								<th>Sub Total</th><!--15-->
+								<th>IVA</th><!--16-->
+								<th>ISC</th><!--17-->
 							  </tr>
 							</thead>
 							<tbody id="body_detail_transaction">             

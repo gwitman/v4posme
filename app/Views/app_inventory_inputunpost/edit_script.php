@@ -17,7 +17,7 @@
 	var objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES	= '<?php echo $objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES; ?>';
 	var sScrollY 													= objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE == true ?  "350px" : "auto";
 	var varParameterCantidadItemPoup								= '<?php echo $objParameterCantidadItemPoup; ?>';  
-	var columnIndexSubTotal											= 17;
+	var columnIndexSubTotal											= 15;
 	
 	$(document).ready(function(){					
 		//Inicializar Controles		
@@ -54,7 +54,9 @@
 								'".explode("|",helper_RequestGetValue($i->reference3,'0|0'))[0]."',
 								'".explode("|",helper_RequestGetValue($i->reference3,'0|0'))[1]."',
 								'".helper_RequestGetValue($i->reference4,'')."',
-								fnFormatNumber(".($i->quantity * $i->unitaryCost).",numberDecimal) 
+								fnFormatNumber(".($i->quantity * $i->unitaryCost).",numberDecimal),
+								fnFormatNumber(".$i->tax1.",numberDecimal),
+								fnFormatNumber(".$i->tax2.",numberDecimal),
 							]";
 						}
 						echo implode(",",$listrow);
@@ -186,7 +188,7 @@
 							}
 						},
 						{
-							"aTargets"		: [ 15 ],//IVA
+							"aTargets"		: [ 16 ],//IVA
 							"bVisible"		: true,
 							"sClass" 		: "hidden",
 							"bSearchable"	: false,
@@ -195,7 +197,7 @@
 							}
 						},
 						{
-							"aTargets"		: [ 16 ],//ISC
+							"aTargets"		: [ 17 ],//ISC
 							"bVisible"		: true,
 							"sClass" 		: "hidden",
 							"bSearchable"	: false,
@@ -216,6 +218,7 @@
 		});
 		refreschChecked();
 		onCompletePantalla();	
+		fnUpdateDetail();
 		
 		if(objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES == "true"){		
 			objectParameterButtoms.Imprmir_Cantidades=function(){
@@ -418,9 +421,11 @@
 			var precio1 												= objdat_[12];
 			var precio2 												= objdat_[13];
 			var txtReference4TransactionMasterDetail 					= objdat_[14];
-			var iva 													= objdat_[15];
-			var isc	 													= objdat_[16];
-			console.log(onjdat_);
+			var iva 													= objdat_[16];
+			var isc	 													= objdat_[17];
+			
+			
+			
 			vencimiento 					= vencimiento.replace(" 00:00:00","");
 			
 			if(lote == "") lote = "0";
@@ -653,9 +658,9 @@
 			objTableDetailTransaction.fnUpdate(  precio1, index, 12 );		
 			objTableDetailTransaction.fnUpdate(  precio2, index, 13 );					
 			objTableDetailTransaction.fnUpdate(  txtReference4TransactionMasterDetail, index, 14 );		
-			objTableDetailTransaction.fnUpdate(  iva, index, 15 );		
-			objTableDetailTransaction.fnUpdate(  isc, index, 16 );				
-			
+			objTableDetailTransaction.fnUpdate(  iva, index, 16 );		
+			objTableDetailTransaction.fnUpdate(  isc, index, 17 );				
+			fnUpdateDetail();		
 			
 	}
 
@@ -775,25 +780,26 @@
 	function fnUpdateDetail(){
 		console.info("fnUpdateDetail");
 		var subtotal 	= 0;
-		var iva			= $("#txtIva").val();
 		var discount	= $("#txtDiscount").val();						
 		var total		= 0;
-		iva				= 0;
-		isc				= 0;
+		var iva			= 0;
+		var isc			= 0;
 		
 		discount		= fnFormatFloat(fnFormatNumber(discount,numberDecimal));
 		$("#txtDiscount").val(discount);
 		
 		for(var i = 0; i < objTableDetailTransaction.fnGetData().length; i++){
 			var row 		= objTableDetailTransaction.fnGetData()[i];
+			console.log(row);
 			var quantity 	= row[6];
-			var ivaRow		= row[15];
-			var iscRow		= row[16];
+			var ivaRow		= row[16];
+			var iscRow		= row[17];
 			subtotal 		= subtotal + fnFormatFloat(fnFormatNumber((row[6] * row[7]),numberDecimal));
 			iva				= iva + fnFormatFloat(fnFormatNumber(ivaRow*quantity,numberDecimal));
 			isc				= isc + fnFormatFloat(fnFormatNumber(iscRow*quantity,numberDecimal));
 		}
-		
+		console.log("IVA; ",iva);
+		console.log("ISC; ",isc);
 		subtotal		= parseInt(subtotal * 100) / 100;
 		subtotal		= fnFormatFloat(fnFormatNumber(subtotal ,numberDecimalSummary));
 		total			= parseInt(((subtotal + iva + isc) - discount) * 100) / 100;

@@ -659,6 +659,7 @@ class app_invoice_billing extends _BaseController {
 	}	
 	function delete(){
 		try{ 
+			log_message("error",print_r("prueba delete",true));
 			//AUTENTICADO
 			if(!$this->core_web_authentication->isAuthenticated())
 			throw new \Exception(USER_NOT_AUTENTICATED);
@@ -734,14 +735,14 @@ class app_invoice_billing extends _BaseController {
 			//Si el documento esta aplicado crear el contra documento
 			if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_billing","statusID",$objTM->statusID,COMMAND_APLICABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
 			{
-				
+				log_message("error",print_r("prueba crear contra documento",true));
 				//Actualizar fecha en la transacciones oroginal
-				$dataNewTM 									= array();
-				$dataNewTM["statusIDChangeOn"]				= date("Y-m-d H:m:s");
+				$dataNewTM 										= array();
+				$dataNewTM["statusIDChangeOn"]					= date("Y-m-d H:m:s");
 				$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$dataNewTM);
 				
-				$transactionIDRevert = $this->core_web_parameter->getParameter("INVOICE_TRANSACTION_REVERSION_TO_BILLING",$companyID);
-				$transactionIDRevert = $transactionIDRevert->value;
+				$transactionIDRevert 							= $this->core_web_parameter->getParameter("INVOICE_TRANSACTION_REVERSION_TO_BILLING",$companyID);
+				$transactionIDRevert 							= $transactionIDRevert->value;
 				$result = $this->core_web_transaction->createInverseDocumentByTransaccion($companyID,$transactionID,$transactionMasterID,$transactionIDRevert,0);
 				
 				
@@ -750,11 +751,11 @@ class app_invoice_billing extends _BaseController {
 				
 					//Valores de tasa de cambio
 					date_default_timezone_set(APP_TIMEZONE); 
-					$objCurrencyDolares						= $this->core_web_currency->getCurrencyExternal($companyID);
-					$objCurrencyCordoba						= $this->core_web_currency->getCurrencyDefault($companyID);
-					$dateOn 								= date("Y-m-d");
-					$dateOn 								= date_format(date_create($dateOn),"Y-m-d");
-					$exchangeRate 							= $this->core_web_currency->getRatio($companyID,$dateOn,1,$objCurrencyDolares->currencyID,$objCurrencyCordoba->currencyID);
+					$objCurrencyDolares							= $this->core_web_currency->getCurrencyExternal($companyID);
+					$objCurrencyCordoba							= $this->core_web_currency->getCurrencyDefault($companyID);
+					$dateOn 									= date("Y-m-d");
+					$dateOn 									= date_format(date_create($dateOn),"Y-m-d");
+					$exchangeRate 								= $this->core_web_currency->getRatio($companyID,$dateOn,1,$objCurrencyDolares->currencyID,$objCurrencyCordoba->currencyID);
 						
 					//cancelar el documento de credito					
 					$objCustomerCredotDocumentNew["statusID"]	= $this->core_web_parameter->getParameter("SHARE_DOCUMENT_ANULADO",$companyID)->value;
