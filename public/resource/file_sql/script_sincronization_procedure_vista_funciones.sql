@@ -33449,231 +33449,163 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_transaction_revert`(IN `prCompanyID` INT, IN `prTransactionIDOriginal` INT, IN `prTransactionMasterIDOriginal` BIGINT, IN `prTransactionIDRevert` INT, IN `prTransactionMasterIDRevert` BIGINT)
+CREATE PROCEDURE `pr_transaction_revert`(IN `prCompanyID` INT, IN `prTransactionIDOriginal` INT, IN `prTransactionMasterIDOriginal` BIGINT, IN `prTransactionIDRevert` INT, IN `prTransactionMasterIDRevert` BIGINT)
     MODIFIES SQL DATA
     SQL SECURITY INVOKER
     COMMENT 'Procedimiento que se utiliza para revertir una transaccion'
 BEGIN
 
 	DECLARE transactionNumber VARCHAR(50) DEFAULT '';
-
 	DECLARE transactionNumberOriginal VARCHAR(50) DEFAULT '';
-
 	DECLARE statusIDTransactionInit INT DEFAULT 0;
-
 	DECLARE statusIDTransactionAnulada INT DEFAULT 0;
-
 	DECLARE branchID INT DEFAULT 0;
-
-
+	DECLARE transactionInfoNumberOriginal VARCHAR(50) DEFAULT '';
+	DECLARE transactionInfoNumber VARCHAR(50) DEFAULT '';
+	DECLARE prEntityID INT DEFAULT 0;
+	DECLARE prOldPoints INT DEFAULT 0;
+	DECLARE prNewPoints INT DEFAULT 0;
+	DECLARE prTransPoints INT DEFAULT 0;
 
 	SET transactionNumberOriginal = (
-
 			SELECT tm.transactionNumber 
-
 			FROM tb_transaction_master tm 
-
 			where 
-
 				tm.companyID = prCompanyID and 
-
 				tm.transactionID = prTransactionIDOriginal 
-
 				and tm.transactionMasterID = prTransactionMasterIDOriginal limit 1);
 
-	
-
 	SET branchID = (
-
 		SELECT tm.branchID 
-
 		FROM tb_transaction_master tm 
-
 		where 
-
 			tm.companyID = prCompanyID and 
-
 			tm.transactionID = prTransactionIDOriginal and 
-
 			tm.transactionMasterID = prTransactionMasterIDOriginal limit 1);
-
-
+			
+	SET transactionInfoNumberOriginal = COALESCE((
+		SELECT CAST(tmi.transactionMasterInfoID AS UNSIGNED)
+		FROM tb_transaction_master_info tmi
+		WHERE tmi.transactionMasterID = prTransactionMasterIDOriginal
+		LIMIT 1
+		), 0);
 
 	CALL pr_core_get_parameter_value (prCompanyID,'INVOICE_BILLING_ANULADAS',statusIDTransactionAnulada);	
-
 	CALL pr_core_get_workflow_stage_init (prCompanyID,"tb_transaction_master_billing_revertion","statusID",statusIDTransactionInit );		
-
 	CALL pr_core_get_next_number(prCompanyID,'tb_transaction_master_billing_revertion',branchID,0,transactionNumber);							 	
 
-		  
-
-			
-
-			
-
 	INSERT INTO tb_transaction_master (	
-
 		companyID,transactionID,transactionNumber,branchID,transactionCausalID,entityID,
-
 		transactionOn,statusIDChangeOn,componentID,note,sign,currencyID,currencyID2,
-
 		exchangeRate,reference1,reference2,reference3,reference4,statusID,amount,
-
 		isApplied,journalEntryID,classID,areaID,priorityID,sourceWarehouseID,
-
 		targetWarehouseID,createdBy,createdAt,createdOn,createdIn,isActive,
-
 		discount,subAmount,tax1,tax2,tax3,tax4 , entityIDSecondary, 
-
 		transactionOn2,descriptionReference,isTemplate,periodPay, nextVisit,numberPhone,notificationID,printerQuantity,dayExcluded 		
-
 	)	
-
 	select 
-
 		tm.companyID,prTransactionIDRevert,transactionNumber,tm.branchID,tm.transactionCausalID,tm.entityID,
-
 		CURRENT_DATE(),NOW(),tm.componentID,tm.note,(tm.sign * -1),tm.currencyID,tm.currencyID2,
-
 		tm.exchangeRate,prTransactionIDOriginal,prTransactionMasterIDOriginal,transactionNumberOriginal,tm.reference4,statusIDTransactionInit,tm.amount,
-
 		1,0,tm.classID,tm.areaID,tm.priorityID,tm.targetWarehouseID,tm.sourceWarehouseID,
-
 		tm.createdBy,tm.createdAt,tm.createdOn,tm.createdIn,tm.isActive,
-
 		tm.discount,tm.subAmount,tm.tax1,tm.tax2,tm.tax3,tm.tax4 , tm.entityIDSecondary   ,
-
 		tm.transactionOn2,tm.descriptionReference,tm.isTemplate,tm.periodPay, tm.nextVisit,tm.numberPhone,tm.notificationID,tm.printerQuantity,tm.dayExcluded 		
-
 	from 
-
 		tb_transaction_master tm
-
 	where
-
 		tm.companyID = prCompanyID and 
-
 		tm.transactionID = prTransactionIDOriginal and 
-
 		tm.transactionMasterID = prTransactionMasterIDOriginal;
-
-		
-
-		
+	
 
 	SET prTransactionMasterIDRevert = LAST_INSERT_ID();	
 
-	
-
 	INSERT INTO tb_transaction_master_detail (
-
 			companyID,transactionID,transactionMasterID,componentID,componentItemID,
-
 			promotionID,amount,cost,quantity,discount,unitaryAmount,unitaryCost,unitaryPrice,reference1,
-
 			reference2,reference3,catalogStatusID,inventoryStatusID,isActive,quantityStock,
-
 			quantiryStockInTraffic,quantityStockUnaswared,remaingStock,expirationDate,
-
 			inventoryWarehouseSourceID,inventoryWarehouseTargetID,tax1,tax2,tax3,tax4,
-
 			reference4,reference5,reference6,reference7,
-
 			descriptionReference,exchangeRateReference,lote,itemFormulatedApplied,typePriceID,skuCatalogItemID,
-
 			skuQuantity,skuQuantityBySku,skuFormatoDescription,itemNameLog,amountCommision,itemNameDescriptionLog 
-
 	)
-
 	SELECT 
-
 			tm.companyID,prTransactionIDRevert,prTransactionMasterIDRevert,tm.componentID,tm.componentItemID,
-
 			tm.promotionID,tm.amount,tm.cost,tm.quantity,tm.discount,tm.unitaryAmount,tm.unitaryCost,tm.unitaryPrice,tm.reference1,
-
 			tm.reference2,tm.reference3,tm.catalogStatusID,tm.inventoryStatusID,tm.isActive,tm.quantityStock,
-
 			tm.quantiryStockInTraffic,tm.quantityStockUnaswared,tm.remaingStock,tm.expirationDate,
-
 			tm.inventoryWarehouseTargetID,tm.inventoryWarehouseSourceID,tm.tax1,tm.tax2,tm.tax3,tm.tax4,
-
 			tm.reference4,tm.reference5,tm.reference6,tm.reference7,
-
 			tm.descriptionReference,tm.exchangeRateReference,tm.lote,tm.itemFormulatedApplied,tm.typePriceID,tm.skuCatalogItemID,
-
 			tm.skuQuantity,tm.skuQuantityBySku,tm.skuFormatoDescription,tm.itemNameLog,tm.amountCommision,tm.itemNameDescriptionLog 
-
 	FROM 
-
 		tb_transaction_master_detail tm 
-
 	WHERE 
-
 		tm.companyID = prCompanyID and
-
 		tm.transactionID = prTransactionIDOriginal and 
-
 		tm.transactionMasterID = prTransactionMasterIDOriginal; 
-
-		
-
-		
-
-		
-
+	
+	
 	INSERT INTO tb_transaction_master_concept (
-
 		companyID,transactionID,transactionMasterID,
-
 		componentID,componentItemID,conceptID,value,currencyID,exchangeRate )
-
 	select 
-
 		tm.companyID,prTransactionIDRevert,prTransactionMasterIDRevert,
-
 		tm.componentID,tm.componentItemID,tm.conceptID,tm.value,tm.currencyID,tm.exchangeRate 
-
 	from 
-
 		tb_transaction_master_concept tm
-
 	WHERE 
-
 		tm.companyID = prCompanyID and
-
 		tm.transactionID = prTransactionIDOriginal and 
-
 		tm.transactionMasterID = prTransactionMasterIDOriginal; 	
-
+  
+  
+	IF transactionInfoNumberOriginal > 0
+	THEN 
+  
+		/* Crear transaction_master_info_reverse	al anualr una factura*/
+		INSERT INTO tb_transaction_master_info ( companyID, transactionID, transactionMasterID, zoneID, routeID, mesaID, referenceClientName, 
+		referenceClientIdentifier, changeAmount, receiptAmountPoint, receiptAmount, receiptAmountDol, reference1, reference2, receiptAmountBank, receiptAmountBankID, 
+		receiptAmountBankReference, receiptAmountBankDol, receiptAmountBankDolID, receiptAmountBankDolReference, receiptAmountCard, receiptAmountCardBankID, 
+		receiptAmountCardBankReference, receiptAmountCardDol, receiptAmountCardBankDolID, receiptAmountCardBankDolReference)
+		SELECT tmi.companyID, prTransactionIDRevert, prTransactionMasterIDRevert, tmi.zoneID, tmi.routeID, tmi.mesaID, tmi.referenceClientName, 
+		tmi.referenceClientIdentifier, tmi.changeAmount, tmi.receiptAmountPoint, tmi.receiptAmount, tmi.receiptAmountDol, tmi.reference1, tmi.reference2, tmi.receiptAmountBank, 
+		tmi.receiptAmountBankID, tmi.receiptAmountBankReference, tmi.receiptAmountBankDol, tmi.receiptAmountBankDolID, tmi.receiptAmountBankDolReference, tmi.receiptAmountCard, tmi.receiptAmountCardBankID, 
+		tmi.receiptAmountCardBankReference, tmi.receiptAmountCardDol, tmi.receiptAmountCardBankDolID, tmi.receiptAmountCardBankDolReference 
+		FROM tb_transaction_master_info tmi
+		WHERE tmi.transactionMasterInfoID = transactionInfoNumberOriginal limit 1;
+    
+    
+		/*Se hace la reversion de puntos al anular una factura*/
+		SET prEntityID = (SELECT tm.entityID 
+		FROM tb_transaction_master tm 
+		where tm.companyID = prCompanyID and tm.transactionMasterID = prTransactionMasterIDOriginal limit 1);
+        
 		
-
-		
-
-		
+		SET prTransPoints = (SELECT 
+		 tmi.receiptAmountPoint
+		FROM tb_transaction_master_info tmi
+		WHERE tmi.transactionMasterID = prTransactionMasterIDOriginal limit 1);
+    
+		SET prOldPoints = (SELECT c.balancePoint FROM tb_customer c WHERE c.entityID = prEntityID);
+		SET prNewPoints = prOldPoints+prTransPoints;
+    
+		UPDATE tb_customer SET balancePoint = prNewPoints WHERE entityID = prEntityID;  
+    
+	END IF;
 
 	CALL pr_inventory_calculate_kardex_new_input (prCompanyID,prTransactionIDRevert,prTransactionMasterIDRevert);
 
-	
-
-	
-
-	
-
 	UPDATE tb_transaction_master set 
-
 		statusID = statusIDTransactionAnulada 
-
 	where 
-
 			companyID = prCompanyID and 
-
 			transactionID = prTransactionIDOriginal and 
-
 			transactionMasterID = prTransactionMasterIDOriginal;
-
-	
-
-END ;;
+      
+END
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
