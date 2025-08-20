@@ -1084,14 +1084,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Altamira, portón principal UCC 1C al sur, ½C arriba" 
+	tb_company_parameter.value = "Altamira, porton principal UCC 1C al sur, 1/2C arriba" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Chic extensiones' , address = 'Altamira, portón principal UCC 1C al sur, ½C arriba' ,
+	NAME = 'Chic extensiones' , address = 'Altamira, porton principal UCC 1C al sur, 1/2C arriba' ,
 	flavorID = 315,type='chicextensiones'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
