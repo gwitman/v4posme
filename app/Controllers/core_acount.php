@@ -137,7 +137,16 @@ class core_acount extends _BaseController {
 			throw new \Exception("EL COMPONENTE '0-SEGURIDAD' NO EXISTE...");
 			
 			
-			$documentoPath = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentSeguridad->componentID."/component_item_0";						
+			$documentoPath = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentSeguridad->componentID."/component_item_0";	
+			if (!file_exists($documentoPath)) 
+			{
+				// Crear el directorio con permisos 0755 (y recursivo por si faltan subdirectorios)
+				if (!mkdir($documentoPath, 0755, true)) 
+				{
+					throw new \Exception("❌ No se pudo crear el directorio: $documentoPath");
+				}
+			}
+
 			chmod($documentoPath, 0755);
 			
 			$core_mysql_dump	= new core_mysql_dump("mysql:host=".DB_SERVER.";dbname=".DB_BDNAME,DB_USER,DB_PASSWORD);

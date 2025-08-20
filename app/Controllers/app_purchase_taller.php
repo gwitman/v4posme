@@ -411,7 +411,7 @@ class app_purchase_taller extends _BaseController {
 						//Crear las careptas
 						if(!file_exists ($pathDocument))
 						{
-							mkdir( $pathDocument,0700);
+							mkdir( $pathDocument,0700,true);
 						}	
 						
 						
@@ -750,7 +750,7 @@ class app_purchase_taller extends _BaseController {
 					
 					if(!file_exists ($pathDocument))
 					{
-						mkdir( $pathDocument,0700);
+						mkdir( $pathDocument,0700,true);
 					}	
 					
 					//crear carpeta server

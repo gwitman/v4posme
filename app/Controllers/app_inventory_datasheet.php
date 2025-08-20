@@ -445,7 +445,7 @@ class app_inventory_datasheet extends _BaseController
 			//Crear la Carpeta para almacenar los Archivos del Item
 			$documentoPath = PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponentItemDataSheet->componentID . "/component_item_" . $itemDataSheetID;
 			if (!file_exists($documentoPath)) {
-				mkdir($documentoPath, 0755);
+				mkdir($documentoPath, 0755,true);
 				chmod($documentoPath, 0755);
 			}
 

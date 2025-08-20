@@ -947,7 +947,7 @@ class app_cxc_record extends _BaseController {
 			throw new \Exception("LINEAS DE CREDITOS MAL CONFIGURADAS LÍMITE EXCEDIDO");
 			
 			//Crear la Carpeta para almacenar los Archivos del Cliente
-			mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$entityID, 0700);
+			mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$entityID, 0700,true);
 			
 			if($db->transStatus() !== false){
 				$db->transCommit();						

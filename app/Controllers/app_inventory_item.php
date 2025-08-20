@@ -827,7 +827,7 @@ class app_inventory_item extends _BaseController
                 //Crear la Carpeta para almacenar los Archivos del Item
                 $pathFileFloder = PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponent->componentID . "/component_item_" . $itemID;
                 if (! file_exists($pathFileFloder)) {
-                    mkdir($pathFileFloder, 0700);
+                    mkdir($pathFileFloder, 0700,true);
                 }
 
                 //Obtener la unidad del producto
@@ -1010,7 +1010,7 @@ class app_inventory_item extends _BaseController
                 //Crear la Carpeta para almacenar los Archivos del Item
                 $directoryItem = PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponent->componentID . "/component_item_" . $itemID;
                 if (! file_exists($directoryItem)) {
-                    mkdir($directoryItem, 0700);
+                    mkdir($directoryItem, 0700,true);
                 }
 
                 $paisDefault         = $this->core_web_parameter->getParameterValue("CXC_PAIS_DEFAULT", $companyID);
@@ -1317,7 +1317,7 @@ class app_inventory_item extends _BaseController
                 //Crear la Carpeta para almacenar los Archivos del Item
                 $pathFileFloder = PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponent->componentID . "/component_item_" . $itemID;
                 if (! file_exists($pathFileFloder)) {
-                    mkdir($pathFileFloder, 0700);
+                    mkdir($pathFileFloder, 0700,true);
                 }
 
                 //Agregar las bodegas que no esten

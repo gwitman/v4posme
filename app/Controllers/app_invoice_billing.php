@@ -2508,7 +2508,7 @@ class app_invoice_billing extends _BaseController {
 
 			if (!file_exists($documentoPath))
 			{
-				mkdir($documentoPath, 0755);
+				mkdir($documentoPath, 0755,true);
 				chmod($documentoPath, 0755);
 			}
 
@@ -3106,7 +3106,7 @@ class app_invoice_billing extends _BaseController {
 				$transactionMasterID 						= $this->Transaction_Master_Model->insert_app_posme($objTM);				
 				
 				//Crear la Carpeta para almacenar los Archivos del Documento
-				mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentBilling->componentID."/component_item_".$transactionMasterID, 0700);
+				mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentBilling->componentID."/component_item_".$transactionMasterID, 0700,true);
 			}
 			else{
 				$transactionMasterID 		= /*inicio get post*/ $this->request->getPost("transactionMasterID");				
@@ -6609,7 +6609,7 @@ class app_invoice_billing extends _BaseController {
 			
 			if (!file_exists($patdir))
 			{
-				mkdir($patdir, 0755);
+				mkdir($patdir, 0755,true);
 				chmod($patdir, 0755);
 			}
 			
@@ -6779,7 +6779,7 @@ class app_invoice_billing extends _BaseController {
 			
 			if (!file_exists($patdir))
 			{
-				mkdir($patdir, 0755);
+				mkdir($patdir, 0755,true);
 				chmod($patdir, 0755);
 			}
 			
@@ -6945,7 +6945,7 @@ class app_invoice_billing extends _BaseController {
 			
 			if (!file_exists($patdir))
 			{
-				mkdir($patdir, 0755);
+				mkdir($patdir, 0755,true);
 				chmod($patdir, 0755);
 			}
 			
@@ -7112,7 +7112,7 @@ class app_invoice_billing extends _BaseController {
 			
 			if (!file_exists($patdir))
 			{
-				mkdir($patdir, 0755);
+				mkdir($patdir, 0755,true);
 				chmod($patdir, 0755);
 			}
 			
@@ -12989,7 +12989,7 @@ class app_invoice_billing extends _BaseController {
 			
 			if (!file_exists($patdir))
 			{
-				mkdir($patdir, 0755);
+				mkdir($patdir, 0755,true);
 				chmod($patdir, 0755);
 			}
 			

@@ -334,7 +334,7 @@ class app_transaction_master_api extends _BaseController {
 				$documentoPath = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentTask->componentID."/component_item_".$transactionMasterID;
 				if (!file_exists($documentoPath))
 				{
-					mkdir($documentoPath, 0755);
+					mkdir($documentoPath, 0755,true);
 					chmod($documentoPath, 0755);
 				}
 

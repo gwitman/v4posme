@@ -448,7 +448,7 @@ class app_planilla_employee_pay extends _BaseController {
 			
 			//Crear la Carpeta para almacenar los Archivos del Documento
 			if(!file_exists(PATH_FILE_OF_APP."/company_".$objEC["companyID"]."/component_".$objComponentCalendarPay->componentID."/component_item_".$calendarID)){
-				mkdir(PATH_FILE_OF_APP."/company_".$objEC["companyID"]."/component_".$objComponentCalendarPay->componentID."/component_item_".$calendarID, 0700);
+				mkdir(PATH_FILE_OF_APP."/company_".$objEC["companyID"]."/component_".$objComponentCalendarPay->componentID."/component_item_".$calendarID, 0700,true);
 			}
 			
 			//Recorrer la lista del detalle del documento

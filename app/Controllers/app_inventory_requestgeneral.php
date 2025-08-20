@@ -340,7 +340,7 @@ class app_inventory_requestgeneral extends _BaseController {
 			
 			//Crear la Carpeta para almacenar los Archivos del Documento
 			$path_ = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$transactionMasterID;
-			mkdir($path_, 0700);
+			mkdir($path_, 0700,true);
 			//Crear la plantilla de Exportacion
 			$objListItemWarehouse					= $this->Itemwarehouse_Model->getByWarehouse($companyID,$objTM["sourceWarehouseID"]);
 			$this->csvreader->write_file($path_."/default.csv",$objListItemWarehouse);

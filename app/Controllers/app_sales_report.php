@@ -393,7 +393,7 @@ class app_sales_report extends _BaseController {
 					
 					if (!file_exists($patdir))
 					{
-						mkdir($patdir, 0755);
+						mkdir($patdir, 0755,true);
 						chmod($patdir, 0755);
 					}
 					

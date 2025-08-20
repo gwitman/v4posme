@@ -857,7 +857,7 @@ class app_box_report extends _BaseController {
 				
 				$pathFileFloder = "./resource/file_company/company_".$companyID."/component_48/component_item_0";
                 if(!file_exists($pathFileFloder))
-                    mkdir($pathFileFloder, 0700);				
+                    mkdir($pathFileFloder, 0700,true);				
 				
 				$fileNamePut = "caja_0_".date("dmYhis").".pdf";
 				$path        = "./resource/file_company/company_".$companyID."/component_48/component_item_0/".$fileNamePut;
@@ -1549,7 +1549,7 @@ class app_box_report extends _BaseController {
 				$documentoPath = PATH_FILE_OF_APP."/company_".$companyID."/component_48/component_item_0";
 				if (!file_exists($documentoPath))
 				{
-					mkdir($documentoPath, 0755);
+					mkdir($documentoPath, 0755,true);
 					chmod($documentoPath, 0755);
 				}
 			

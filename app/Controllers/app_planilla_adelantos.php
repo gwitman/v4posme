@@ -559,7 +559,7 @@ class app_planilla_adelantos extends _BaseController {
 			$transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
 			
 			//Crear la Carpeta para almacenar los Archivos del Documento
-			mkdir(PATH_FILE_OF_APP."/company_".$objTM["companyID"]."/component_".$objComponent->componentID."/component_item_".$transactionMasterID, 0700);
+			mkdir(PATH_FILE_OF_APP."/company_".$objTM["companyID"]."/component_".$objComponent->componentID."/component_item_".$transactionMasterID, 0700,true);
 			
 			//Recorrer la lista del detalle del documento
 			$arrayListTransactionMasterDetailID	= /*inicio get post*/ $this->request->getPost("txtTransactionMasterDetailID");

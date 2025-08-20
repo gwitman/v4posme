@@ -1111,7 +1111,7 @@ class app_cxc_customer extends _BaseController {
 			
 			if (!file_exists($pathfile))
 			{
-				mkdir($pathfile, 0700);
+				mkdir($pathfile, 0700,true);
 			}
 			
 		
@@ -1442,7 +1442,7 @@ class app_cxc_customer extends _BaseController {
 
             if (!file_exists($pathfile))
             {
-                mkdir($pathfile, 0700);
+                mkdir($pathfile, 0700,true);
             }
 
 

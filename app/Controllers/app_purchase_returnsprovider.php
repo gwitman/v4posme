@@ -273,7 +273,7 @@ class app_purchase_returnsprovider extends _BaseController {
 			
 			//Crear la Carpeta para almacenar los Archivos del Documento
 			$path_ = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$transactionMasterID;
-			mkdir($path_, 0700);
+			mkdir($path_, 0700,true);
 			
 			//Recorrer la lista del detalle del documento
 			

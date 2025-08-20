@@ -165,7 +165,7 @@ class app_inventory_itemmasive extends _BaseController {
 					$pathFileCodeBarra = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentItem->componentID."/component_item_".$objItem->itemID."/barcode.jpg";
 					
 					if(!file_exists($directory))
-					mkdir($directory, 0700);
+					mkdir($directory, 0700,true);
 					
 					$this->core_web_barcode->generate( $pathFileCodeBarra, $objItem->barCode, "40", "horizontal", "code128", false, 3 );
 					for($i = 0; $i < $cantidad ; $i++){
@@ -267,7 +267,7 @@ class app_inventory_itemmasive extends _BaseController {
 					$pathFileCodeBarraPng 	= PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentItem->componentID."/component_item_".$objItem->itemID."/barcode.png";
 					
 					if(!file_exists($directory))
-					mkdir($directory, 0700);
+					mkdir($directory, 0700,true);
 					
 					//$this->core_web_barcode->generate( $pathFileCodeBarra, $objItem->barCode, "40", "horizontal", "code128", false, 3 );
 					$this->core_web_barcode->generate( $pathFileCodeBarra, $objItem->barCode, "40", "horizontal", "code128", false, 2 );
@@ -377,7 +377,7 @@ class app_inventory_itemmasive extends _BaseController {
 				$pathFileCodeBarraPng 	= PATH_FILE_OF_APP."/company_".$companyID."/component_".$componentItemID."/component_item_".$itemID."/barcode.png";
 					
 				if(!file_exists($directory))
-				mkdir($directory, 0700);
+				mkdir($directory, 0700,true);
 					
 				//$this->core_web_barcode->generate( $pathFileCodeBarra, $itemBarCode, "40", "horizontal", "code128", false, 3 );
 				$this->core_web_barcode->generate( $pathFileCodeBarra, $itemBarCode, "40", "horizontal", "code128", false, 2 );

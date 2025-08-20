@@ -437,7 +437,7 @@ class app_invoice_price extends _BaseController {
 			
 			//Crear la Carpeta para almacenar los Archivos del Cliente
 			$path 	= PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$listPriceID;
-			mkdir($path, 0700);
+			mkdir($path, 0700,true);
 			$path 	= $path.'/list_price_default.csv';
 			$fp 	= fopen($path, 'w');
 			

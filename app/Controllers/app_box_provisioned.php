@@ -531,7 +531,7 @@ class app_box_provisioned extends _BaseController {
 			$transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
 			
 			//Crear la Carpeta para almacenar los Archivos del Documento
-			mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentProvisioned->componentID."/component_item_".$transactionMasterID, 0700);
+			mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentProvisioned->componentID."/component_item_".$transactionMasterID, 0700,true);
 			//Ingresar Informacion Adicional
 			$objTMInfo["companyID"]					= $objTM["companyID"];
 			$objTMInfo["transactionID"]				= $objTM["transactionID"];

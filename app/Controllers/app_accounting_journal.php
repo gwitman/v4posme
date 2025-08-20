@@ -342,7 +342,7 @@ class app_accounting_journal extends _BaseController {
 						$journalEntryID						= $this->Journal_Entry_Model->insert_app_posme($objJournalEntry);
 						$companyID 							= $objJournalEntry["companyID"];
 						//Crear la Carpeta para almacenar los Archivos del Comprobante
-						mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$journalEntryID, 0700);
+						mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$journalEntryID, 0700,true);
 						
 						
 						//Guardar el Detalle
@@ -528,7 +528,7 @@ class app_accounting_journal extends _BaseController {
 						//CREAR LA CARPETA
 						$pathFile = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$journalEntryID;
 						if(!file_exists($pathFile))
-						mkdir($pathFile, 0700);
+						mkdir($pathFile, 0700, true);
 						
 						if($db->transStatus() !== false){
 							$db->transCommit();
@@ -889,7 +889,13 @@ class app_accounting_journal extends _BaseController {
 					$path , 
 					$this->dompdf->output()
 				);								
-				
+				if (!file_exists($path)) 
+				{
+					if (!mkdir($path, 644, true)) 
+					{
+						throw new \Exception("❌ No se pudo crear el directorio: $path");
+					}
+				}
 				chmod($path, 644);
 				
 				echo "<a 

@@ -436,7 +436,7 @@ class app_inventory_otheroutput extends _BaseController
 
 			//Crear la Carpeta para almacenar los Archivos del Documento
 			if (!file_exists(PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponent->componentID . "/component_item_" . $transactionMasterID)) {
-				mkdir(PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponent->componentID . "/component_item_" . $transactionMasterID, 0700);
+				mkdir(PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponent->componentID . "/component_item_" . $transactionMasterID, 0700,true);
 			}
 			//Recorrer la lista del detalle del documento
 			$arrayListItemID 								= /*inicio get post*/ $this->request->getPost("txtDetailItemID");
@@ -626,7 +626,7 @@ class app_inventory_otheroutput extends _BaseController
 			$transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
 
 			//Crear la Carpeta para almacenar los Archivos del Documento
-			mkdir(PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponent->componentID . "/component_item_" . $transactionMasterID, 0700);
+			mkdir(PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponent->componentID . "/component_item_" . $transactionMasterID, 0700,true);
 			//Recorrer la lista del detalle del documento			
 			if (!empty($items)) {
 				$amount = 0;

@@ -62,21 +62,21 @@ class core_elfinder extends _BaseController {
 			$documentoPath = PATH_FILE_OF_APP."/company_".$companyID;		
 			if (!file_exists($documentoPath))
 			{
-				mkdir($documentoPath, 0755);
+				mkdir($documentoPath, 0755,true);
 				chmod($documentoPath, 0755);
 			}
 			
 			$documentoPath = PATH_FILE_OF_APP."/company_".$companyID."/component_".$componentID;		
 			if (!file_exists($documentoPath))
 			{
-				mkdir($documentoPath, 0755);
+				mkdir($documentoPath, 0755,true);
 				chmod($documentoPath, 0755);
 			}
 			
 			$documentoPath = PATH_FILE_OF_APP."/company_".$companyID."/component_".$componentID."/component_item_".$transactionMasterID;
 			if (!file_exists($documentoPath))
 			{
-				mkdir($documentoPath, 0755);
+				mkdir($documentoPath, 0755,true);
 				chmod($documentoPath, 0755);
 			}
 			

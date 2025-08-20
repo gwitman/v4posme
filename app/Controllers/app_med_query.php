@@ -439,7 +439,7 @@ class app_med_query extends _BaseController {
 			$path_ = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID;
 			if(!file_exists($path_))
 			{
-				mkdir($path_, 0700);
+				mkdir($path_, 0700,true);
 			}
 			
 			
@@ -538,7 +538,7 @@ class app_med_query extends _BaseController {
 			$path_ 					= PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID;
 			if(!file_exists($path_))
 			{
-				mkdir($path_, 0700);
+				mkdir($path_, 0700,true);
 			}
 			
 			

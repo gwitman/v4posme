@@ -454,7 +454,7 @@ class app_purchase_garantia extends _BaseController {
 			$pathDocument = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID;
 			if(!file_exists ($pathDocument))
 			{
-				mkdir( $pathDocument,0700);
+				mkdir( $pathDocument,0700,true);
 			}
 			
 			

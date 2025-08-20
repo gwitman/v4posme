@@ -366,7 +366,7 @@ class app_rrhh_asistencia extends _BaseController {
 			$transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
 			
 			//Crear la Carpeta para almacenar los Archivos del Documento
-			mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID, 0700);
+			mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID, 0700,true);
 			
 			
 			if($db->transStatus() !== false){

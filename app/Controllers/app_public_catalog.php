@@ -193,13 +193,13 @@ class app_public_catalog extends _BaseController
 			$companyID 								= $dataSession["user"]->companyID;			
 			$path_ = PATH_FILE_OF_APP . "/company_" . $companyID . "/component_92";
 			if (!file_exists($path_)) {
-				mkdir($path_, 0755);
+				mkdir($path_, 0755,true);
 				chmod($path_, 0755);
 			}
 			
 			$path_ = PATH_FILE_OF_APP . "/company_" . $companyID . "/component_92/component_item_" . $publicCatalogID;
 			if (!file_exists($path_)) {
-				mkdir($path_, 0755);
+				mkdir($path_, 0755,true);
 				chmod($path_, 0755);
 			}
 			
@@ -469,7 +469,7 @@ class app_public_catalog extends _BaseController
 			//Crear la Carpeta para almacenar los Archivos del Catálogo
 			$path_ = PATH_FILE_OF_APP . "/company_" . $companyID . "/component_92/component_item_" . $publicCatalogID;
 			if (!file_exists($path_)) {
-				mkdir($path_, 0755);
+				mkdir($path_, 0755,true);
 				chmod($path_, 0755);
 			}
 

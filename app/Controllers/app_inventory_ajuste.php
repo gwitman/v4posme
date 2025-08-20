@@ -200,7 +200,7 @@ class app_inventory_ajuste extends _BaseController
 			//Crear la Carpeta para almacenar los Archivos del Documento
 			$path_ = PATH_FILE_OF_APP . "/company_" . $companyID . "/component_86/component_item_" . $transactionMasterID;
 			if (!file_exists($path_)) {
-				mkdir($path_, 0755);
+				mkdir($path_, 0755,true);
 				chmod($path_, 0755);
 			}
 
