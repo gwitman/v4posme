@@ -11431,20 +11431,18 @@ class app_invoice_billing extends _BaseController {
 		try{ 
 			
 			
-			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri			
-			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri				
-			$companyID 					= APP_COMPANY;	
-			
-			
-			
+			$transactionID							= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri			
+			$transactionMasterID					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri				
+			$companyID 								= APP_COMPANY;	
+						
 			//Get Component
-			$objComponent	        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
-			$objParameter	        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
-			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
-			$objParameterRuc	    = $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
-			$objParameterRuc        = $objParameterRuc->value;
-			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);			
-			$spacing 		= 0.5;
+			$objComponent	        				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			$objParameter	        				= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$objParameterTelefono					= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+			$objParameterRuc	    				= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+			$objParameterRuc        				= $objParameterRuc->value;
+			$objCompany 							= $this->Company_Model->get_rowByPK($companyID);			
+			$spacing 								= 0.5;
 			
 			//Get Documento					
 			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
@@ -11470,40 +11468,36 @@ class app_invoice_billing extends _BaseController {
 			//Configurar Detalle Header
 			$confiDetalleHeader = array();
 			$row = array(
-				"style"		=>"text-align:left;width:auto",
-				"colspan"	=>'1',
-				"prefix"	=>'',
-				
-				
-				"style_row_data"		=>"text-align:left;width:auto",
-				"colspan_row_data"		=>'1',
-				"prefix_row_data"		=>'',
-				"nueva_fila_row_data"	=>1
+				"style"								=>"text-align:left;width:auto",
+				"colspan"							=>'1',
+				"prefix"							=>'',				
+				"style_row_data"					=>"text-align:left;width:auto",
+				"colspan_row_data"					=>'1',
+				"prefix_row_data"					=>'',
+				"nueva_fila_row_data"				=>1
 			);
 			array_push($confiDetalleHeader,$row);
 			
 			$row = array(
-				"style"		=>"text-align:left;width:50px",
-				"colspan"	=>'1',
-				"prefix"	=>'',
-				
-				"style_row_data"		=>"text-align:right;width:auto",
-				"colspan_row_data"		=>'1',
-				"prefix_row_data"		=>'',
-				"nueva_fila_row_data"	=>0
+				"style"								=>"text-align:left;width:50px",
+				"colspan"							=>'1',
+				"prefix"							=>'',				
+				"style_row_data"					=>"text-align:right;width:auto",
+				"colspan_row_data"					=>'1',
+				"prefix_row_data"					=>'',
+				"nueva_fila_row_data"				=>0
 			);
 			array_push($confiDetalleHeader,$row);
 			
 			
 			$row = array(
-				"style"		=>"text-align:right;width:90px",
-				"colspan"	=>'1',
-				"prefix"	=>$datView["objCurrency"]->simbol,
-				
-				"style_row_data"		=>"text-align:right;width:90px",
-				"colspan_row_data"		=>'1',
-				"prefix_row_data"		=>"",
-				"nueva_fila_row_data"	=>0
+				"style"								=>"text-align:right;width:90px",
+				"colspan"							=>'1',
+				"prefix"							=>$datView["objCurrency"]->simbol,
+				"style_row_data"					=>"text-align:right;width:90px",
+				"colspan_row_data"					=>'1',
+				"prefix_row_data"					=>"",
+				"nueva_fila_row_data"				=>0
 			);
 			array_push($confiDetalleHeader,$row);
 			
@@ -11529,7 +11523,6 @@ class app_invoice_billing extends _BaseController {
 				);
 			    array_push($detalle,$row);
 			}
-			
 			
 			//Generar Reporte
 			$html = helper_reporte80mmTransactionMasterBillingChic(
@@ -11562,15 +11555,22 @@ class app_invoice_billing extends _BaseController {
 			
 			$this->dompdf->render();
 			
-			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
-			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
-			$objParameterShowDownloadPreview	= $this->core_web_parameter->getParameter("CORE_SHOW_DOWNLOAD_PREVIEW",$companyID);
-			$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview->value;
-			$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true" ? true : false;
+			$objParameterShowLinkDownload			= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+			$objParameterShowLinkDownload			= $objParameterShowLinkDownload->value;
+			$objParameterShowDownloadPreview		= $this->core_web_parameter->getParameter("CORE_SHOW_DOWNLOAD_PREVIEW",$companyID);
+			$objParameterShowDownloadPreview		= $objParameterShowDownloadPreview->value;
+			$objParameterShowDownloadPreview		= $objParameterShowDownloadPreview == "true" ? true : false;
 			
 			$fileNamePut = "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
-			$path        = "./resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".$fileNamePut;
-				
+			$path        = "./resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/";
+			
+			// Si la carpeta no existe, crearla recursivamente
+			if (!is_dir($path)) {
+				mkdir($path, 0755, true); // true = crea carpetas padre si no existen
+			}
+			
+			$path		= $path.$fileNamePut;
+			
 			file_put_contents(
 				$path,
 				$this->dompdf->output()					
@@ -11597,7 +11597,7 @@ class app_invoice_billing extends _BaseController {
 		}
 		catch(\Exception $ex){
 		    
-		    //$data["session"] = $dataSession;
+		    //$data["session"] 	= $dataSession;
 			$data["session"] 	= null;
 		    $data["exception"] 	= $ex;
 		    $data["urlLogin"]  	= base_url();
@@ -11610,8 +11610,8 @@ class app_invoice_billing extends _BaseController {
 		    $this->email->setSubject("Error");
 		    $this->email->setMessage($resultView);
 		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    $resultSend01 		= $this->email->send();
+		    $resultSend02 		= $this->email->printDebugger();
 		    
 		    
 		    return $resultView;

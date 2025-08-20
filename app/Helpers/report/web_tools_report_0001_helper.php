@@ -15218,6 +15218,49 @@ function helper_reporte80mmTransactionMasterBillingChic(
     $type    = pathinfo($path, PATHINFO_EXTENSION);
     $data    = file_get_contents($path);
     $base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
+	
+	
+	// Inicializar
+	$transactionType = "EFECTIVO";
+	$transactionMax  = 0;
+
+	// Mapeo de campos a etiquetas
+	$map = [
+		'receiptAmount'       		=> 'EFECTIVO',
+		'receiptAmountDol'    		=> 'EFECTIVO DOL',
+		'receiptAmountCard'   		=> 'TARJETA',
+		'receiptAmountCardDol'		=> 'TARJETA DOL',
+		'receiptAmountBank'   		=> 'TRANS',
+		'receiptAmountBankDol'		=> 'TRANS DOL',
+		'receiptAmountPoint'  		=> 'PUNTOS',
+	];
+
+	// Buscar el campo con el monto más alto
+	foreach ($map as $field => $label) {
+		$amount						= $objTransactionMasterInfo->$field ?? 0;
+		if ($amount > $transactionMax) {
+			$transactionMax  		= $amount;
+			$transactionType 		= $label;
+		}
+	}
+
+	// Mapeo de transacción a campo de banco
+	$bankFieldMap = [
+		'TRANS'       				=> 'receiptAmountBankID',
+		'TRANS DOL'   				=> 'receiptAmountBankDolID',
+		'TARJETA'     				=> 'receiptAmountCardBankID',
+		'TARJETA DOL' 				=> 'receiptAmountCardBankDolID',
+	];
+
+	// Obtener banco si aplica
+	$transactionBank = "";
+	if (isset($bankFieldMap[$transactionType])) {
+		$bankID 					= $objTransactionMasterInfo->{$bankFieldMap[$transactionType]} ?? null;
+		if ($bankID) {
+			$bank 					= $this->Bank_Model->get_rowByPK($objCompany->companyID, $bankID);
+			$transactionBank 		= $bank->name ?? "";
+		}
+	}
     
     $html    = "";
     $html    = "
@@ -15406,18 +15449,18 @@ function helper_reporte80mmTransactionMasterBillingChic(
    
                         <tr>
                           <td colspan='2'>
-                            RECIBIDO
+                            PAGO
                           </td>
                           <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount + $objTransactionMasterInfo->changeAmount)."
+                            ".$transactionType."
                           </td>
                         </tr>
                          <tr>
                           <td colspan='2'>
-                            CAMBIO
+                            BANCO
                           </td>
                           <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f", ($objTransactionMasterInfo->changeAmount)  )."
+                            ".$transactionBank."
                           </td>
                         </tr>
 
@@ -15429,7 +15472,7 @@ function helper_reporte80mmTransactionMasterBillingChic(
 
                         <tr>
                           <td colspan='3' style='text-align:center'>
-                            ".$objCompany->address."
+                            ".htmlspecialchars($objCompany->address, ENT_QUOTES, 'UTF-8')."
                           </td>
                         </tr>
 
