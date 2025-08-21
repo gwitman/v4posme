@@ -1719,7 +1719,7 @@ class app_inventory_inputunpost extends _BaseController {
 				$this->core_web_concept->inputunpost($companyID,$transactionID,$transactionMasterID);
 
 				//Si es al credito crear tabla de amortizacion
-				$amountTotal 									= $objTMNew["amount"] - $objTMNew["discount"];
+				$amountTotal 									= (float)$objTMNew["amount"] - (float)$objTMNew["discount"];
 				$causalIDTypeCredit 							= explode(",", $parameterCausalTypeCredit->value);
 				$exisCausalInCredit								= null;
 				$exisCausalInCredit								= array_search($objTMNew["transactionCausalID"] ,$causalIDTypeCredit);
