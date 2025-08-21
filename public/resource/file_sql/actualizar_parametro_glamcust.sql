@@ -920,7 +920,7 @@ WHERE
 				
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Cordoba" 
+	tb_company_parameter.value = "Dolar" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "ACCOUNTING_CURRENCY_NAME_REPORT";## Moneda de Reporte para Presentar los Estados Financieros 
@@ -1260,7 +1260,7 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "glamcuts90@gmail.com" 
+	tb_company_parameter.value = "glamcuts90@gmail.com,anielkadubon11@gmail.com,carmona2485keikol@gmail.com,nanifran_07@icloud.com,stephani45silva@gmail.com" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_EMAIL";## CORREO DEL PROPIETARIO

@@ -259,7 +259,11 @@ class app_calendar_programming extends _BaseController
 			if($dataSession['company']->type == "majo")
 			{
 				$result = $this->Remember_Model->getProgrammingFacturaRegistradaConHora();
-			}			
+			}	
+			if($dataSession['company']->type == "galmcuts")
+			{
+				$result = $this->Remember_Model->getProgrammingFacturaRegistradaConHora();
+			}	
 			else
 			{				
 				$result = $this->Remember_Model->getProgrammingFacturaAplicadaConHora();

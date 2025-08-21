@@ -63,6 +63,8 @@ Documentacion:		https://www.digitalocean.com/community/tutorials/how-to-install-
 //INSTALACION PHP
 >sudo apt install php libapache2-mod-php php-mysql
 >sudo apt install php-intl
+>sudo apt install php8.3-gd
+>sudo apt install php8.3-xml
 
 //ver la version
 >php -v
