@@ -10819,9 +10819,9 @@ BEGIN
 		)  as montoCordoba,
     case 
 			when convert_ = 'Dolar' and cur.name != 'Dolar'  then 
-				tmd.amount * (exchangeRate_  + currencyTargetSale)
+				tmd.amount * (exchangeRate_  )
 			when convert_ = 'Cordoba' and cur.name != 'Cordoba'  then 
-				tmd.amount / (exchangeRate_  + currencyTargetSale)
+				tmd.amount / (exchangeRate_ )
 			else 
 				tmd.amount 
 		end as montoTransaccion,
@@ -10981,9 +10981,9 @@ BEGIN
 		end as montoCordoba,
 		case 
 			when convert_ = 'Dolar' and cur.name != 'Dolar'  then 
-				tmd.amount * (exchangeRate_  + currencyTargetSale)
+				tmd.amount * (exchangeRate_  )
 			when convert_ = 'Cordoba' and cur.name != 'Cordoba'  then 
-				tmd.amount / (exchangeRate_  + currencyTargetSale)
+				tmd.amount / (exchangeRate_  )
 			else 
 				tmd.amount 
 		end as montoTransaccion,
