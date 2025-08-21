@@ -4,7 +4,12 @@
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/	
-
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "Cordoba" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT";## Moneda en que se deben de presntar los reportes
+			
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
@@ -920,7 +925,7 @@ WHERE
 				
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Dolar" 
+	tb_company_parameter.value = "Cordoba" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "ACCOUNTING_CURRENCY_NAME_REPORT";## Moneda de Reporte para Presentar los Estados Financieros 
