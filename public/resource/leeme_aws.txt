@@ -121,6 +121,7 @@ Documentacion:		https://www.digitalocean.com/community/tutorials/how-to-install-
     ServerAdmin ubuntu@localhost
     DocumentRoot /var/www/html
     ServerName ec2-18-188-160-197.us-east-2.compute.amazonaws.com
+	ServerAlias aws.posme.net
 
     <Directory /var/www/html>
         Options Indexes FollowSymLinks
