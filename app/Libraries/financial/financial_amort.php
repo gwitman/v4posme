@@ -217,11 +217,10 @@ class financial_amort{
 		
 		if($this->objCatalogItems_DiasExcluded)
 		{
-			$arrayDiasExcluided	= explode(",", $this->objCatalogItems_DiasExcluded->reference1);
+			$arrayDiasExcluided	= explode(",", $this->objCatalogItems_DiasExcluded->reference1);			
 			//validar dias de semana cobrales 
 			foreach($arrayDiasExcluided as $catalogItem)
 			{
-				
 				if($catalogItem == $diaSemana)
 					return true;
 			}
@@ -348,19 +347,18 @@ class financial_amort{
 		{
 			
 			$fechaReturn = $date;
-			$fechaReturn = date_add($fechaReturn,date_interval_create_from_date_string('1 days'));
+			$fechaReturn = date_add($fechaReturn,date_interval_create_from_date_string('1 days'));			
 			for($ii = 0 ; $ii <= 10 ; $ii++ )
 			{	
 				if($this->fechaEsFeriada($fechaReturn))
 				{
-					$fechaReturn = date_add($fechaReturn,date_interval_create_from_date_string('1 days'));
+					$fechaReturn = date_add($fechaReturn,date_interval_create_from_date_string('1 days'));				
 				}
 				else 
 				{
 					break;
 				}
 			}
-			
 			return $fechaReturn;
 		}
 		/*45 dias*/ 
@@ -820,15 +818,8 @@ class financial_amort{
 		$Totint 	=0;
 		$i 			=1;
 		$nextDate 	=$this->firstDate;		
-
 		
-		
-
-		
-		
-
 		$cuotaAcumulada	= 0;
-
 		while ($i <= $numpay) {
 			$newInterest	=round(round($monthly,2)*round($saldo,2),2);
 			$principal 		=round(round($amount,2)/$numpay,2);

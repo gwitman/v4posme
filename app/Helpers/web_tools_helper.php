@@ -199,6 +199,20 @@ function helper_getDateTime()
     return $fechaActual->format('Y-m-d H:i:s');
 }
 
+function helper_getDateTime_Object()
+{
+
+    // Obtener la fecha actual
+    $fechaActual = new DateTime();
+
+    // Sumar o restar el intervalo de tiempo a la fecha actual
+    $fechaActual->modify(APP_HOUR_DIFERENCE_PHP);
+
+    // Devolver el objeto DateTime modificado
+    return $fechaActual;
+}
+
+
 function helper_PrimerDiaDelMes()
 {
     $date = date("Y-m") . "-01";
