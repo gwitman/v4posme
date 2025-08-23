@@ -16306,7 +16306,7 @@ function helper_reporte80mmTransactionMasterGlamCuts(
                             RECIBIDO
                           </td>
                           <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount + $objTransactionMasterInfo->changeAmount)."
+                            [[RECIBIDO]]
                           </td>
                         </tr>
                          <tr>
@@ -16314,7 +16314,7 @@ function helper_reporte80mmTransactionMasterGlamCuts(
                             CAMBIO
                           </td>
                           <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f", ($objTransactionMasterInfo->changeAmount)  )."
+                            [[CAMBIO]]
                           </td>
                         </tr>
 
@@ -16352,6 +16352,17 @@ function helper_reporte80mmTransactionMasterGlamCuts(
                     </html>
             ";
     
+	//Calculo del monto recibido
+	$amountNac				= $objTransactionMasterInfo->receiptAmount + $objTransactionMasterInfo->receiptAmountBank + $objTransactionMasterInfo->receiptAmountCard + $objTransactionMasterInfo->receiptAmountPoint  ;
+	$amountExt				= $objTransactionMasterInfo->receiptAmountDol + $objTransactionMasterInfo->receiptAmountBankDol + $objTransactionMasterInfo->receiptAmountCardDol + $objTransactionMasterInfo->receiptAmountPoint  ;
+	$amountInvoiceTotal 	= $objTransactionMastser->amount;
+	$amountReceipt			= $amountNac + ($amountExt * $objTransactionMastser->exchangeRate);
+	$amountChange			= $amountReceipt - $amountInvoiceTotal;
+	$html = str_replace("[[RECIBIDO]]", $objCurrency->simbol." ".sprintf("%.2f",$amountReceipt), $html);
+	$html = str_replace("[[CAMBIO]]", $objCurrency->simbol." ".sprintf("%.2f",$amountChange), $html);
+	
+						
+	
     $cuerpo = "";
     $colun  = 0;
 	$rowin  = 0;
