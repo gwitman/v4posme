@@ -1,0 +1,91 @@
+{
+  "Version": 1.3,
+  "General": {
+    "ContinueOnError": false,
+    "IncludeDelete": true,
+    "IncludeInsert": true,
+    "IncludeUpdate": true,
+    "RunMultipleSQL": false,
+    "ShowCompareResultAndDeploymentSQL": true,
+    "ShowDetails": true,
+    "SourceCatalog": "",
+    "SourceCloudInstanceName": "",
+    "SourceProject": "",
+    "SourceProjectOwnerNavicatID": "",
+    "SourceSchema": "posme",
+    "SourceServer": "localhost",
+    "SourceServerServiceProvider": 0,
+    "SourceServerType": "MYSQL",
+    "TargetCatalog": "",
+    "TargetCloudInstanceName": "",
+    "TargetProject": "",
+    "TargetProjectOwnerNavicatID": "",
+    "TargetSchema": "dbejsigav9rp6v",
+    "TargetServer": "posme.net",
+    "TargetServerServiceProvider": 0,
+    "TargetServerType": "MYSQL",
+    "UseTransaction": false
+  },
+  "Tables": [        
+    {
+      "Source": {
+        "Name": "tb_workflow",
+        "ObjectType": "Table_MYSQL"
+      },
+      "Target": {
+        "Name": "tb_workflow",
+        "ObjectType": "Table_MYSQL"
+      },
+      "Keys": [],
+      "Fields": []
+    },
+    {
+      "Source": {
+        "Name": "tb_workflow_stage",
+        "ObjectType": "Table_MYSQL"
+      },
+      "Target": {
+        "Name": "tb_workflow_stage",
+        "ObjectType": "Table_MYSQL"
+      },
+      "Keys": [],
+      "Fields": []
+    },
+    {
+      "Source": {
+        "Name": "tb_workflow_stage_affect",
+        "ObjectType": "Table_MYSQL"
+      },
+      "Target": {
+        "Name": "tb_workflow_stage_affect",
+        "ObjectType": "Table_MYSQL"
+      },
+      "Keys": [],
+      "Fields": []
+    },
+    {
+      "Source": {
+        "Name": "tb_workflow_stage_change_log",
+        "ObjectType": "Table_MYSQL"
+      },
+      "Target": {
+        "Name": "tb_workflow_stage_change_log",
+        "ObjectType": "Table_MYSQL"
+      },
+      "Keys": [],
+      "Fields": []
+    },
+    {
+      "Source": {
+        "Name": "tb_workflow_stage_relation",
+        "ObjectType": "Table_MYSQL"
+      },
+      "Target": {
+        "Name": "tb_workflow_stage_relation",
+        "ObjectType": "Table_MYSQL"
+      },
+      "Keys": [],
+      "Fields": []
+    }
+  ]
+}
