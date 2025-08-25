@@ -2053,9 +2053,9 @@
         $('#txtStatusID').val(objTransactionMaster.statusID);
         $('#txtStatusIDOld').val(objTransactionMaster.statusID);
 		$('#txtNote').val(objTransactionMaster.note);
-		$('#txtCurrencyID').val(objTransactionMaster.currencyID);
+		$('#txtCurrencyID').val(objTransactionMaster.currencyID).trigger('change');
 		$('#txtCustomerID').val(objTransactionMaster.entityID);
-
+		
 		if(objNaturalDefault !== null && objNaturalDefault.length > 0)
 		{
 			$('#txtCustomerDescription').val(objCustomerDefault.customerNumber.toUpperCase() + " " + objNaturalDefault.firstName.toUpperCase() + " " + $objNaturalDefault.lastName.toUpperCase());

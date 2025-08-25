@@ -1659,12 +1659,13 @@ class Transaction_Master_Detail_Model extends Model  {
 						NOW() , 
 						INTERVAL ".APP_HOUR_DIFERENCE_MYSQL_EMBEDDED."
 					), 
-					INTERVAL 18 HOUR
+					INTERVAL 2 HOUR
 				) AND 
 				tat.SiguienteVisita > DATE_ADD(
 						NOW() , 
 						INTERVAL ".APP_HOUR_DIFERENCE_MYSQL_EMBEDDED."
 				)
+				ORDER BY tat.SiguienteVisita ASC
 						
 		");
 	

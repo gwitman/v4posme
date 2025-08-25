@@ -863,6 +863,127 @@ BEGIN
 
 END ;;
 DELIMITER ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP FUNCTION IF EXISTS `fn_translate_transaction_master_info_amounts` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `fn_translate_transaction_master_info_amounts`( 
+	`prCompanyID` INT, 
+	`prFlavorID` INT, 
+	`prTransactionID` INT,
+	`prCurrencyFunction` VARCHAR(50), -- moneda que queremos 
+	`prCurrencyReport` VARCHAR(50), -- no usado en la lógica actual 
+	`prCurrencyReportConvert` VARCHAR(50), -- moneda final para el reporte ('Cordoba', 'Dolar', 'None') 
+	`prTransactionCurrencyID` INT, -- 1 = Córdoba, 2 = Dólar 
+	`prExchangeRate` DECIMAL(18,8), -- tasa USD/C$
+	`prTransactionAmount` DECIMAL(18,6), -- amount 
+	`prTransactionAmountExt` DECIMAL(18,6),-- amountExt
+	`prField` VARCHAR(30) -- 'Amount' o 'AmountExt', 'CurrencyName', Convert indica cuál esperamos recibir 
+) 
+RETURNS VARCHAR(50)
+DETERMINISTIC
+READS SQL DATA 
+BEGIN 
+	DECLARE vTransCurrency VARCHAR(10); 
+	DECLARE vFuncCurrency VARCHAR(10); 
+	DECLARE vConvCurrency VARCHAR(10);
+	DECLARE vBaseAmount DECIMAL(18,6); 
+	DECLARE vResult DECIMAL(18,6);
+	 -- Solo para transactionID = 19 
+	-- IF prTransactionID <> 19 THEN 
+	-- RETURN NULL; 
+	-- END IF; 
+	SET vFuncCurrency 								= UPPER(TRIM(prCurrencyFunction)); 
+	SET vConvCurrency 								= UPPER(TRIM(prCurrencyReportConvert)); 
+	-- Moneda de la transacción y asignación de campos 
+	IF prTransactionCurrencyID 				= 1 THEN 
+		SET vTransCurrency 							= 'CORDOBA'; 
+	ELSEIF prTransactionCurrencyID 		= 2 THEN 
+		SET vTransCurrency 							= 'DOLAR'; 
+	ELSE 
+		RETURN NULL; 
+	END IF; 
+	-- 1) Selección según el campo que esperamos 
+	IF UPPER(TRIM(prField)) 					= 'CURRENCYNAME' THEN
+		IF vConvCurrency 								= 'NONE' THEN
+			RETURN CONCAT(UCASE(LEFT(vTransCurrency, 1)), 
+                             LCASE(SUBSTRING(vTransCurrency, 2)));
+		ELSE
+			RETURN CONCAT(UCASE(LEFT(vConvCurrency, 1)), 
+                             LCASE(SUBSTRING(vConvCurrency, 2)));
+		END IF;
+	ELSEIF UPPER(TRIM(prField)) 			= 'AMOUNT' THEN 
+		SET vBaseAmount 								= prTransactionAmount;
+	ELSEIF UPPER(TRIM(prField)) 			= 'AMOUNTEXT' THEN 
+		SET vBaseAmount									= prTransactionAmountExt; 
+	ELSEIF UPPER(TRIM(prField)) 			= 'CONVERT' THEN 
+		SET vBaseAmount 								= prTransactionAmount; 
+	ELSE 
+		RETURN NULL; -- campo inválido 
+	END IF; 
+	-- 2) Inversión si la moneda de función ≠ moneda de transacción 
+	IF vFuncCurrency 									<> vTransCurrency THEN 
+		IF UPPER(TRIM(prField)) 				= 'AMOUNT' THEN 
+			SET vBaseAmount 							= prTransactionAmountExt; 
+		ELSE 
+			SET vBaseAmount 							= prTransactionAmount; 
+		END IF; 
+	END IF; 
+	-- 3) Conversión final solo si prCurrencyReportConvert <> 'NONE' 
+	IF UPPER(TRIM(prField)) 						= 'CONVERT' THEN 
+		IF vConvCurrency 									= 'NONE' THEN 
+			SET vResult 										= vBaseAmount;
+		ELSEIF vConvCurrency 							= vTransCurrency THEN
+			SET vResult 										= vBaseAmount;
+		ELSE 
+			IF vFuncCurrency 								= 'CORDOBA' 
+			AND vConvCurrency 							= 'DOLAR' THEN 
+				IF prExchangeRate IS NULL 
+				OR prExchangeRate 						= 0 THEN 
+					RETURN NULL; 
+				END IF; 
+				SET vResult 									= vBaseAmount * prExchangeRate; 
+			ELSEIF vFuncCurrency						= 'DOLAR' 
+			AND vConvCurrency 							= 'CORDOBA' THEN 
+				IF prExchangeRate IS NULL 
+				OR prExchangeRate 						= 0 THEN 
+					RETURN NULL; 
+				END IF; 
+				SET vResult 									= vBaseAmount / prExchangeRate; 
+			ELSE -- mismas monedas → no cambiar 
+				IF vFuncCurrency 							<> vTransCurrency THEN
+					IF vFuncCurrency 						= 'CORDOBA' 
+					AND vTransCurrency 					= 'DOLAR' THEN 
+						IF prExchangeRate IS NULL 
+						OR prExchangeRate 				= 0 THEN 
+							RETURN NULL; 
+						END IF; 
+						SET vResult 							= vBaseAmount / prExchangeRate; 
+					ELSEIF vFuncCurrency 				= 'DOLAR' 
+					AND vTransCurrency 					= 'CORDOBA' THEN 
+						IF prExchangeRate IS NULL 
+						OR prExchangeRate 				= 0 THEN 
+							RETURN NULL; 
+						END IF; 
+						SET vResult 							= vBaseAmount * prExchangeRate; 
+					END IF;
+				ELSE 
+					SET vResult 								= vBaseAmount; 
+				END IF;
+			END IF; 
+		END IF; 
+		RETURN ROUND(vResult, 4);
+	ELSE  RETURN ROUND(vBaseAmount, 4);
+	END IF;
+END ;; 
+
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -31856,8 +31977,7 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_sales_get_report_sales_summary`
- (IN `prCompanyID` INT, IN `prTokenID` VARCHAR(50), IN `prUserID` INT, 
+CREATE DEFINER=CURRENT_USER PROCEDURE `pr_sales_get_report_sales_summary`(IN `prCompanyID` INT, IN `prTokenID` VARCHAR(50), IN `prUserID` INT, 
  IN `prStartOn` DATETIME, IN `prEndOn` DATETIME, IN `prUserIDFilter` INT , 
  IN prConceptFilter VARCHAR(150), IN prWithTax1 INT ,IN `prBranchID` INT, 
  IN prWarehouseID INT, IN prEntityIDCustomer INT)
@@ -31874,6 +31994,7 @@ BEGIN
   DECLARE currencyIDNameTarget VARCHAR(250);	
   DECLARE currencyIDNameSource VARCHAR(250);
   DECLARE convert_ VARCHAR(50);	
+	DECLARE prFlavorID INT DEFAULT 0;
 
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameCompra);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",currencyIDNameReporte);
@@ -31884,6 +32005,7 @@ BEGIN
   CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_EXTERNAL",currencyIDNameTarget);
   CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_); 
 	CALL pr_core_get_parameter_value(prCompanyID, "ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT", convert_);
+	SET prFlavorID 								= (SELECT flavorID FROM tb_company c where c.companyID = prCompanyID);
 
 	drop temporary table if exists tb_tmp_split;
 	create temporary table tb_tmp_split( val char(255) );
@@ -31895,6 +32017,7 @@ BEGIN
 	select 
 			rx.userID,
 			rx.nickname,
+			rx.currencyID,
 			rx.transactionNumber,
 			rx.tipo,
 			rx.transactionOn,
@@ -31903,54 +32026,32 @@ BEGIN
 			rx.zone,
 			rx.statusName,
 			rx.firstName,
-      case 
-			when convert_ = 'None'  then 
-      rx.currencyName
-			else 
-				convert_ 
-		end as currencyName,
+      fn_translate_transaction_master_info_amounts( prCompanyID,prFlavorID,rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, 0, 0,  'CurrencyName') as currencyName,
 			rx.categoryName,
 			'' as categorySubName,
 			rx.exchangeRate,
-			avg(rx.receiptAmount) as  EfectivoCordoba,
-			avg(rx.receiptAmountDol) as EfectivoDolares ,
-			avg(rx.receiptAmountCard) as TarjetaCordoba,
-			avg(rx.receiptAmountCardDol) as TarjetaDolares ,
-			avg(rx.receiptAmountBank ) as TansferenciaCordoba,
-			avg(rx.receiptAmountBankDol) as TransferenciaDolares, 
+			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmount, rx.receiptAmountDol,  'Amount'), DECIMAL(10,2)) as  EfectivoCordoba,
+			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmount, rx.receiptAmountDol,  'AmountExt'), DECIMAL(10,2))  as EfectivoDolares ,
+			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmountCard, rx.receiptAmountCardDol,  'Amount'), DECIMAL(10,2))  as TarjetaCordoba,
+			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmountCard, rx.receiptAmountCardDol,  'AmountExt'), DECIMAL(10,2))  as TarjetaDolares ,
+			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmountBank, rx.receiptAmountBankDol,  'Amount'), DECIMAL(10,2))  as TansferenciaCordoba,
+			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmountBank, rx.receiptAmountBankDol,  'AmountExt'), DECIMAL(10,2))  as TransferenciaDolares, 
 			avg(rx.receiptAmountPoint) as receiptAmountPoint , 
 			avg(rx.discount) as discount, 
 			sum((rx.unitaryCost * rx.quantity)) as cost,
-			sum((rx.unitaryPrice  * rx.quantity) +  ifnull(rx.tax2,0) ) as totalSinIva,
-			sum(rx.iva * rx.quantity) as totalIva,
-      case 
-			when convert_ = 'Dolar' and rx.currencyName != 'Dolar'  then 
-				(sum(
+			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, 
+			(sum((rx.unitaryPrice  * rx.quantity) +  ifnull(rx.tax2,0) )), 0,  'Convert') , DECIMAL(10,2))
+			 as totalSinIva,
+			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, 
+			(sum(rx.iva * rx.quantity)), 0,  'Convert'), DECIMAL(10,2)) as totalIva,
+			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, (sum(
 				(rx.unitaryPrice * rx.quantity) + 
 				(rx.iva * rx.quantity ) + 
 				( ifnull(rx.tax2,2) * 1 ) 
         ) - 
         avg(rx.receiptAmountPoint)  - 
-        avg(rx.discount)) 
-        * (exchangeRate_  )
-       when convert_ = 'Cordoba' and rx.currencyName != 'Cordoba'  then 
-				(sum(
-				(rx.unitaryPrice * rx.quantity) + 
-				(rx.iva * rx.quantity ) + 
-				( ifnull(rx.tax2,2) * 1 ) 
-        ) - 
-        avg(rx.receiptAmountPoint)  - 
-        avg(rx.discount) )
-        / (exchangeRate_ )
-			else 
-				sum(
-				(rx.unitaryPrice * rx.quantity) + 
-				(rx.iva * rx.quantity ) + 
-				( ifnull(rx.tax2,2) * 1 ) 
-        ) - 
-        avg(rx.receiptAmountPoint)  - 
-        avg(rx.discount) 
-		end as totalDocument,
+        avg(rx.discount)), 0,  'Convert') , DECIMAL(10,2))
+      as totalDocument,
 			sum((rx.unitaryPrice * rx.quantity) - (rx.unitaryCost * rx.quantity))    as utilidad		
 	from
 		(
@@ -32029,7 +32130,9 @@ BEGIN
 					IFNULL(tmd.tax1,0) as  iva ,
 					IFNULL(tmd.amountCommision,0) as amountCommision,
 					tm.exchangeRate,
-					tm.discount 
+					tm.discount,
+					tm.transactionID,
+					tm.currencyID 
 				from 
 					tb_transaction_master tm  					
 					inner join tb_transaction_master_detail tmd on 
@@ -32158,7 +32261,9 @@ BEGIN
 			rx.firstName,
 			rx.currencyName,
 			rx.exchangeRate,
-			rx.discount ;
+			rx.discount,
+			rx.categoryName,
+			rx.transactionID ;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;

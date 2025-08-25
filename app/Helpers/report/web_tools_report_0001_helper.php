@@ -16291,6 +16291,23 @@ function helper_reporte80mmTransactionMasterGlamCuts(
                             &nbsp;
                           </td>
                         </tr>
+						<tr>
+                          <td colspan='2'>
+                            SUBTOTAL
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f",($objTransactionMastser->subAmount+$objTransactionMastser->tax1))."
+                          </td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='2'>
+                            DESCUENTO
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->discount)."
+                          </td>
+                        </tr>
                              
                         <tr>
                           <td colspan='2'>

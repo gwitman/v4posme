@@ -2099,27 +2099,61 @@ class app_notification extends _BaseController
 
 		$objNotificar = $this->Transaction_Master_Detail_Model->GlamCust_get_Citas(APP_COMPANY);
 		if ($objNotificar)
+		{	
+			// Cabecera de la tabla
+			$tabla = "
+				<table border='1' cellspacing='0' cellpadding='6' style='border-collapse:collapse; width:100%; font-family:Arial, sans-serif;'>
+					<thead style='background:#f2f2f2;'>
+						<tr>
+							<th>Fecha</th>
+							<th>Hora</th>
+							<th>Cliente</th>
+							<th>Descripción</th>
+						</tr>
+					</thead>
+					<tbody>
+			";
 			foreach ($objNotificar as $i) {
+				$dt = \DateTime::createFromFormat('Y-m-d H:i:s', $i->SiguienteVisita);
 
+				$fecha       = $dt->format("Y-m-d");
+				$hora        = $dt->format("h:i A");
+				$cliente     = $i->firstName;
+				$descripcion = $i->descripcion ?? "Cita programada"; // si tienes ese campo en DB úsalo
 
-				$i->SiguienteVisita = \DateTime::createFromFormat('Y-m-d H:i:s', $i->SiguienteVisita)->format("Y-m-d h:i A");
-				echo "Cita de: " . $i->firstName . " programada para : " . $i->SiguienteVisita . "</br>";
-				log_message("error", "Cita de: " . $i->firstName . " programada para : " . $i->SiguienteVisita);
+				$tabla .= "
+					<tr>
+						<td>{$fecha}</td>
+						<td>{$hora}</td>
+						<td>{$cliente}</td>
+						<td>{$descripcion}</td>
+					</tr>
+				";
 
-				$params_["objCompany"]  = $objCompany;
-				$params_["firstName"]  	= $i->firstName;
-				$params_["hour"]  		= $i->SiguienteVisita;
-				$params_["mensaje"]  	= "Cita de: " . $i->firstName . " programada para : " . $i->SiguienteVisita;
-				$subject 				= "Cita de: " . $i->firstName;
-				$body  					= /*--inicio view*/ view('core_template/email_notificacion', $params_); //--finview
-
-				$this->email->setFrom(EMAIL_APP);
-				$this->email->setTo($emailProperty /*"www.witman@gmail.com"*/);
-				$this->email->setSubject($subject);
-				$this->email->setMessage($body);
-				$resultSend01 = $this->email->send();
+				// También lo dejas en log si lo necesitas
+				log_message("info", "Cita de: $cliente programada para: $fecha $hora");
 			}
+			 // Cerrar la tabla
+			$tabla .= "</tbody></table>";
+			
+			log_message("info", print_r($tabla,true));
 
+			// Parámetros para la vista del correo
+			$params_["objCompany"]  = $objCompany;
+			$params_["mensaje"]       = $tabla;
+
+			// Asunto y cuerpo
+			$subject = "Citas programadas";
+			$body    = view('core_template/email_notificacion', $params_);
+
+			// Configuración del correo
+			$this->email->setFrom(EMAIL_APP);
+			$this->email->setTo($emailProperty); // ejemplo: "correo@cliente.com"
+			$this->email->setSubject($subject);
+			$this->email->setMessage($body);
+
+			$this->email->send();
+		}
 		echo "SUCCESS";
 	}
 	function sendEmailGlamCustCitasFrecuency2DayBefore()
