@@ -6,6 +6,13 @@
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_ALLOW_DUPLICATE_DETAIL";## Moneda en que se deben de presntar los reportes
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "Cordoba" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
