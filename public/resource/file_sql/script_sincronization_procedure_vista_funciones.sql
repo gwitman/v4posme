@@ -31977,7 +31977,8 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=CURRENT_USER PROCEDURE `pr_sales_get_report_sales_summary`(IN `prCompanyID` INT, IN `prTokenID` VARCHAR(50), IN `prUserID` INT, 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_sales_get_report_sales_summary`(IN `prCompanyID` INT, 
+IN `prTokenID` VARCHAR(50), IN `prUserID` INT, 
  IN `prStartOn` DATETIME, IN `prEndOn` DATETIME, IN `prUserIDFilter` INT , 
  IN prConceptFilter VARCHAR(150), IN prWithTax1 INT ,IN `prBranchID` INT, 
  IN prWarehouseID INT, IN prEntityIDCustomer INT)
@@ -31989,11 +31990,11 @@ BEGIN
 	DECLARE varCurrencyReporte INT DEFAULT 0;	
 	DECLARE varZoneOraria INT DEFAULT 0;
 	DECLARE currencyIDNameCompra VARCHAR(250);
-  DECLARE currencyIDNameReporte VARCHAR(250);	
-  DECLARE exchangeRate_ DECIMAL(18,4) DEFAULT 0;
-  DECLARE currencyIDNameTarget VARCHAR(250);	
-  DECLARE currencyIDNameSource VARCHAR(250);
-  DECLARE convert_ VARCHAR(50);	
+	DECLARE currencyIDNameReporte VARCHAR(250);	
+	DECLARE exchangeRate_ DECIMAL(18,4) DEFAULT 0;
+	DECLARE currencyIDNameTarget VARCHAR(250);	
+	DECLARE currencyIDNameSource VARCHAR(250);
+	DECLARE convert_ VARCHAR(50);	
 	DECLARE prFlavorID INT DEFAULT 0;
 
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameCompra);
@@ -32001,9 +32002,9 @@ BEGIN
 	CALL pr_core_get_parameter_value(prCompanyID,"CORE_ZONA_HORARIA",varZoneOraria);
 	SET varCurrencyCompras 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameCompra);		
 	SET varCurrencyReporte 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameReporte);
-  CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameSource);
-  CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_EXTERNAL",currencyIDNameTarget);
-  CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_); 
+	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameSource);
+	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_EXTERNAL",currencyIDNameTarget);
+	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_); 
 	CALL pr_core_get_parameter_value(prCompanyID, "ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT", convert_);
 	SET prFlavorID 								= (SELECT flavorID FROM tb_company c where c.companyID = prCompanyID);
 
@@ -32027,7 +32028,7 @@ BEGIN
 			rx.statusName,
 			rx.firstName,
       fn_translate_transaction_master_info_amounts( prCompanyID,prFlavorID,rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, 0, 0,  'CurrencyName') as currencyName,
-			rx.categoryName,
+			GROUP_CONCAT(DISTINCT rx.categoryName ORDER BY rx.categoryName SEPARATOR ', ') as categoryName,
 			'' as categorySubName,
 			rx.exchangeRate,
 			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmount, rx.receiptAmountDol,  'Amount'), DECIMAL(10,2)) as  EfectivoCordoba,
@@ -32262,7 +32263,6 @@ BEGIN
 			rx.currencyName,
 			rx.exchangeRate,
 			rx.discount,
-			rx.categoryName,
 			rx.transactionID ;
 END ;;
 DELIMITER ;
@@ -34664,6 +34664,120 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `_Navicat_Temp_Stored_Proc` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=CURRENT_USER PROCEDURE `pr_sales_get_report_sales_by_payment`(IN `prCompanyID` INT, 	IN `prUserID` INT, IN `prTokenID` VARCHAR(50) , IN `prDateTimeStart` VARCHAR(50),   IN `prDateTimeFinish` VARCHAR(50) )
+    MODIFIES SQL DATA
+    SQL SECURITY INVOKER
+    COMMENT 'Detalle de ventas por metodo de pago'
+BEGIN
+
+	DECLARE vStart DATETIME;
+	DECLARE vEnd DATETIME;
+	DECLARE currencyIDNameCompra VARCHAR(250);
+	DECLARE currencyIDNameReporte VARCHAR(250);	
+	DECLARE currencyIDNameTarget VARCHAR(250);	
+	DECLARE currencyIDNameSource VARCHAR(250);
+	DECLARE exchangeRate_ DECIMAL(18,4) DEFAULT 0;
+	DECLARE convert_ VARCHAR(50);	
+	DECLARE prFlavorID INT DEFAULT 0;
+	
+ 
+
+	SET vStart = STR_TO_DATE(prDateTimeStart, '%Y-%m-%d %H:%i:%s');
+	SET vEnd   = STR_TO_DATE(prDateTimeFinish, '%Y-%m-%d %H:%i:%s');
+	
+	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameCompra);
+	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",currencyIDNameReporte);
+	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameSource);
+	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_EXTERNAL",currencyIDNameTarget);
+	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_); 
+	CALL pr_core_get_parameter_value(prCompanyID, "ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT", convert_);
+	SET prFlavorID 								= (SELECT flavorID FROM tb_company c where c.companyID = prCompanyID);
+
+
+
+	SELECT 
+			COALESCE(b.name, 
+					CASE 
+							WHEN tipo = 'EfectivoCordoba' THEN 'EFECTIVO CORDOBA'
+							WHEN tipo = 'EfectivoDolar'   THEN 'EFECTIVO DOLAR'
+							WHEN tipo = 'Puntos'          THEN 'PUNTOS'
+					END
+			) AS Banco,
+
+			ROUND(SUM(CASE WHEN tipo = 'TransferenciaCordoba' THEN monto ELSE 0 END),2) AS `Transferencia Cordoba`,
+			ROUND(SUM(CASE WHEN tipo = 'TransferenciaDolar'   THEN monto ELSE 0 END),2) AS `Transferencia Dólar`,
+			ROUND(SUM(CASE WHEN tipo = 'TarjetaCordoba'       THEN monto ELSE 0 END),2) AS `Tarjeta Cordoba`,
+			ROUND(SUM(CASE WHEN tipo = 'TarjetaDolar'         THEN monto ELSE 0 END),2) AS `Tarjeta Dólar`,
+			ROUND(SUM(CASE WHEN tipo = 'EfectivoCordoba'      THEN monto ELSE 0 END),2) AS `Efectivo Cordoba`,
+			ROUND(SUM(CASE WHEN tipo = 'EfectivoDolar'        THEN monto ELSE 0 END),2) AS `Efectivo Dólar`,
+			ROUND(SUM(CASE WHEN tipo = 'Puntos'               THEN monto ELSE 0 END),2) AS Puntos,
+
+			-- Totales por fila
+			ROUND(SUM(CASE WHEN moneda = 'Cordoba' THEN monto ELSE 0 END),2) AS `Total Cordoba`,
+			ROUND(SUM(CASE WHEN moneda = 'Dolar'   THEN monto ELSE 0 END),2) AS `Total Dólar`
+
+	FROM (
+			-- Normalizamos todos los pagos
+			SELECT tmi.transactionMasterID, CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, tmi.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, tm.currencyID, exchangeRate_, tmi.receiptAmount, tmi.receiptAmountDol,  'Amount'), DECIMAL(10,2))  AS monto, 'EfectivoCordoba' AS tipo, 'Cordoba' AS moneda, NULL AS bankID
+			FROM tb_transaction_master_info tmi
+			INNER JOIN tb_transaction_master tm
+			ON tm.transactionMasterID = tmi.transactionMasterID
+			UNION ALL
+			SELECT tmi.transactionMasterID, CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, tmi.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, tm.currencyID, exchangeRate_, tmi.receiptAmount, tmi.receiptAmountDol,  'AmountExt'), DECIMAL(10,2))  AS monto,    'EfectivoDolar',   'Dolar',   NULL AS bankID
+			FROM tb_transaction_master_info tmi
+			INNER JOIN tb_transaction_master tm
+			ON tm.transactionMasterID = tmi.transactionMasterID
+			UNION ALL
+			SELECT tmi.transactionMasterID, CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, tmi.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, tm.currencyID, exchangeRate_, tmi.receiptAmountCard, tmi.receiptAmountCardDol,  'Amount'), DECIMAL(10,2))  AS monto,   'TarjetaCordoba',  'Cordoba', tmi.receiptAmountCardBankID
+			FROM tb_transaction_master_info tmi
+			INNER JOIN tb_transaction_master tm
+			ON tm.transactionMasterID = tmi.transactionMasterID
+			UNION ALL
+			SELECT tmi.transactionMasterID, CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, tmi.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, tm.currencyID, exchangeRate_, tmi.receiptAmountCard, tmi.receiptAmountCardDol,  'AmountExt'), DECIMAL(10,2))  AS monto, 'TarjetaDolar',    'Dolar',   tmi.receiptAmountCardBankDolID
+			FROM tb_transaction_master_info tmi
+			INNER JOIN tb_transaction_master tm
+			ON tm.transactionMasterID = tmi.transactionMasterID
+			UNION ALL
+			SELECT tmi.transactionMasterID, CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, tmi.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, tm.currencyID, exchangeRate_, tmi.receiptAmountBank, tmi.receiptAmountBankDol,  'Amount'), DECIMAL(10,2))  AS monto,   'TransferenciaCordoba','Cordoba', tmi.receiptAmountBankID
+			FROM tb_transaction_master_info tmi
+			INNER JOIN tb_transaction_master tm
+			ON tm.transactionMasterID = tmi.transactionMasterID
+			UNION ALL
+			SELECT tmi.transactionMasterID, CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, tmi.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, tm.currencyID, exchangeRate_, tmi.receiptAmountBank, tmi.receiptAmountBankDol,  'AmountExt'), DECIMAL(10,2))  AS monto,'TransferenciaDolar', 'Dolar',   tmi.receiptAmountBankDolID
+			FROM tb_transaction_master_info tmi
+			INNER JOIN tb_transaction_master tm
+			ON tm.transactionMasterID = tmi.transactionMasterID
+			UNION ALL
+			SELECT tmi.transactionMasterID, tmi.receiptAmountPoint, 'Puntos', 'Cordoba', NULL
+			FROM tb_transaction_master_info tmi
+			INNER JOIN tb_transaction_master tm
+			ON tm.transactionMasterID = tmi.transactionMasterID
+	) pagos
+	INNER JOIN tb_transaction_master tm 
+			ON tm.transactionMasterID = pagos.transactionMasterID
+	LEFT JOIN tb_bank b 
+			ON b.bankID = pagos.bankID
+
+	WHERE tm.companyID = prCompanyID and tm.isApplied = 1 
+		AND tm.isActive = 1 
+		AND tm.transactionID = 19
+		AND tm.createdOn BETWEEN vStart and vEnd
+
+	GROUP BY Banco WITH ROLLUP;
+	
+	END;
+	
+	DELIMITER ;;
 
 --
 -- Final view structure for view `vw_contabilidad_comprobantes`
