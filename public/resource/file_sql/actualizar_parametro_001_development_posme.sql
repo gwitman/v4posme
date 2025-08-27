@@ -1,4 +1,5 @@
 /*BD: 	dbno63gzawe8bk:parametro_001_development*/
+/*SERVIDOR:		siteground*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
