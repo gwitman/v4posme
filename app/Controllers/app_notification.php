@@ -2119,7 +2119,7 @@ class app_notification extends _BaseController
 				$fecha       = $dt->format("Y-m-d");
 				$hora        = $dt->format("h:i A");
 				$cliente     = $i->firstName;
-				$descripcion = $i->descripcion ?? "Cita programada"; // si tienes ese campo en DB úsalo
+				$descripcion = $i->note ?? "Cita programada"; // si tienes ese campo en DB úsalo
 
 				$tabla .= "
 					<tr>

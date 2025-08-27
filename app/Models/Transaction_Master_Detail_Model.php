@@ -1623,7 +1623,8 @@ class Transaction_Master_Detail_Model extends Model  {
 			select 
 				tat.firstName,
 				tat.transactionNumber,
-				tat.SiguienteVisita
+				tat.SiguienteVisita,
+				tat.note
 			from 
 				(
 					select 
@@ -1634,6 +1635,7 @@ class Transaction_Master_Detail_Model extends Model  {
 								nat.firstName
 						end  as firstName ,
 						c.transactionNumber ,
+						c.note,
 						DATE_ADD(c.nextVisit , INTERVAL zone.`sequence`  MINUTE) as SiguienteVisita 
 					from 
 						tb_transaction_master c 
