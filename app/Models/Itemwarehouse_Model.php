@@ -144,8 +144,8 @@ class ItemWarehouse_Model extends Model  {
 		$sql = sprintf("select count(*) as counter");
 		$sql = $sql.sprintf(" from tb_item_warehouse");
 		$sql = $sql.sprintf(" where companyID = $companyID");
-		$sql = $sql.sprintf(" where warehouseID = $warehouseID");
-		$sql = $sql.sprintf(" where quantity > 0");		
+		$sql = $sql.sprintf(" and warehouseID = $warehouseID");
+		$sql = $sql.sprintf(" and quantity > 0");		
    		return $db->query($sql)->getRow()->counter;
    }
   

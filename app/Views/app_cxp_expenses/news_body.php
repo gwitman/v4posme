@@ -191,15 +191,19 @@
 																<select name="txtClassID" id="txtClassID" class="select2">
 																	<?php
 																	$counter = 0;
+																	$selected = getBahavioDB($company->type, "app_cxp_expenses", "txtClassID_select", "General"); 
+																	log_message("info",print_r($selected,true));
+																	
 																	if ($objListCatalogItemClasificacion)
-																		foreach ($objListCatalogItemClasificacion as $ws) {
-																			if ($counter == 0)
-																				echo "<option value='" . $ws->catalogItemID . "' selected >" . $ws->display . "</option>";
-																			else
-																				echo "<option value='" . $ws->catalogItemID . "' >" . $ws->display . "</option>";
+																			foreach ($objListCatalogItemClasificacion as $ws) {
+																				if ($selected == $ws->display)
+																					echo "<option value='" . $ws->catalogItemID . "' selected >" . $ws->display . "</option>";
+																				else
+																					echo "<option value='" . $ws->catalogItemID . "' >" . $ws->display . "</option>";
 
-																			$counter++;
-																		}
+																				$counter++;
+																			}
+																		
 																	?>
 																</select>
 															</div>
