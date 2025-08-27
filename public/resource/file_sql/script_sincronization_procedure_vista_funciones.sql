@@ -34666,7 +34666,7 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `_Navicat_Temp_Stored_Proc` */;
+/*!50003 DROP PROCEDURE IF EXISTS `pr_sales_get_report_sales_by_payment` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -34775,9 +34775,8 @@ BEGIN
 
 	GROUP BY Banco WITH ROLLUP;
 	
-	END;
-	
-	DELIMITER ;;
+END;;	
+DELIMITER ;
 
 --
 -- Final view structure for view `vw_contabilidad_comprobantes`
