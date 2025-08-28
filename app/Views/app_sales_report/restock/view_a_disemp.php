@@ -18,38 +18,42 @@
 		<?php				
 		$configColumn["1"]["Titulo"] 		= "Codigo Producto";
 		$configColumn["2"]["Titulo"] 		= "Familia";
-		$configColumn["3"]["Titulo"] 		= "Producto";
-		$configColumn["4"]["Titulo"] 		= "Cantidad Inicial";
-		$configColumn["5"]["Titulo"] 		= "Cantidad Vendida";		
-		$configColumn["6"]["Titulo"] 		= "Cantidad Actual";
-		$configColumn["7"]["Titulo"] 		= "Porcentaje";
+		$configColumn["3"]["Titulo"] 		= "Proveedor";
+		$configColumn["4"]["Titulo"] 		= "Producto";
+		$configColumn["5"]["Titulo"] 		= "Cantidad Inicial";
+		$configColumn["6"]["Titulo"] 		= "Cantidad Vendida";		
+		$configColumn["7"]["Titulo"] 		= "Cantidad Actual";
+		$configColumn["8"]["Titulo"] 		= "Porcentaje";
 		
 		
 		$configColumn["1"]["FiledSouce"] 		= "itemNumber";
 		$configColumn["2"]["FiledSouce"] 		= "family";
-		$configColumn["3"]["FiledSouce"] 		= "itemName";	
-		$configColumn["4"]["FiledSouce"] 		= "quantityInicial";
-		$configColumn["5"]["FiledSouce"] 		= "quantity";		
-		$configColumn["6"]["FiledSouce"] 		= "quantityInAllWarehouse";
-		$configColumn["7"]["FiledSouce"] 		= "percentageSales";
+		$configColumn["3"]["FiledSouce"] 		= "provider";
+		$configColumn["4"]["FiledSouce"] 		= "itemName";	
+		$configColumn["5"]["FiledSouce"] 		= "quantityInicial";
+		$configColumn["6"]["FiledSouce"] 		= "quantity";		
+		$configColumn["7"]["FiledSouce"] 		= "quantityInAllWarehouse";
+		$configColumn["8"]["FiledSouce"] 		= "percentageSales";
 		
 		
 		$configColumn["1"]["Formato"] 		= "";
-		$configColumn["2"]["Formato"] 		= "";	
+		$configColumn["2"]["Formato"] 		= "";
 		$configColumn["3"]["Formato"] 		= "";		
-		$configColumn["4"]["Formato"] 		= "Number";		
+		$configColumn["4"]["Formato"] 		= "";		
 		$configColumn["5"]["Formato"] 		= "Number";		
 		$configColumn["6"]["Formato"] 		= "Number";		
-		$configColumn["7"]["Formato"] 		= "Number";
+		$configColumn["7"]["Formato"] 		= "Number";		
+		$configColumn["8"]["Formato"] 		= "Number";
 		
 		
 		$configColumn["1"]["Width"] 		= "100px";
 		$configColumn["2"]["Width"] 		= "220px";	
-		$configColumn["3"]["Width"] 		= "200px";		
-		$configColumn["4"]["Width"] 		= "200px";
-		$configColumn["5"]["Width"] 		= "300px";
-		$configColumn["6"]["Width"] 		= "300px";
-		$configColumn["7"]["Width"] 		= "300px";
+		$configColumn["3"]["Width"] 		= "220px";
+		$configColumn["4"]["Width"] 		= "220px";		
+		$configColumn["5"]["Width"] 		= "100px";
+		$configColumn["6"]["Width"] 		= "100px";
+		$configColumn["7"]["Width"] 		= "100px";
+		$configColumn["8"]["Width"] 		= "100px";
 		
 		
 		$configColumn["1"]["Total"] 		= False;
@@ -59,6 +63,7 @@
 		$configColumn["5"]["Total"] 		= False;
 		$configColumn["6"]["Total"] 		= False;
 		$configColumn["7"]["Total"] 		= False;
+		$configColumn["8"]["Total"] 		= False;
 		
 		
 		$resultado 	= helper_reporteGeneralCreateTable($objDetail,$configColumn,'0px',NULL,NULL);
