@@ -1331,7 +1331,6 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
 	}
 		
 }
-
 function getBahavioDB($type_company, $key_controller, $key_element, $default_value)
 {
     try {
@@ -1339,6 +1338,35 @@ function getBahavioDB($type_company, $key_controller, $key_element, $default_val
         $findSetting                = $companyPageSettingModel->get_rowByKeyAndControllerAndEmelement($type_company, $key_controller, $key_element);
         if(is_null($findSetting)) return $default_value;
         else return $findSetting->valuei;
+    }catch (Exception $e) {
+        return $default_value;
+    }
+}
+function getBahavioSession($type_company, $key_controller, $key_element, $default_value,$objCompanyPageSetting)
+{
+    try {
+		
+		$findSetting = array_filter($objCompanyPageSetting, function($item) use ($key_controller, $key_element) {
+            // Trim whitespace and convert both strings to lowercase for a case-insensitive comparison
+            $controller_match 	= (strtolower(trim($item->controller)) === strtolower(trim($key_controller)));
+            $element_match 		= (strtolower(trim($item->element)) === strtolower(trim($key_element)));
+
+            return $controller_match && $element_match;
+        });
+		
+		// Si quieres reindexar el array:
+		$findSetting  = array_values($findSetting);
+
+		 // Check if the array is not empty
+        if (!empty($findSetting)) {
+            // Return the 'value' of the first element found
+            return $findSetting[0]->valuei;
+        } else {
+            // Return 'xml' if no element is found
+            return $default_value;
+        }
+		
+		
     }catch (Exception $e) {
         return $default_value;
     }

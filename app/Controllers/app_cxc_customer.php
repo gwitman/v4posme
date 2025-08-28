@@ -1739,7 +1739,8 @@ class app_cxc_customer extends _BaseController {
 			} 
 			 
 			//Renderizar Resultado
-			$dataView["company"]			= $dataSession["company"];
+			$dataView["company"]					= $dataSession["company"];
+			$dataView["companyPageSetting"]			= $dataSession["companyPageSetting"];
 			$dataView["objParameterCORE_VIEW_CUSTOM_SCROLL_IN_LIST_CUSTOMER"]	
 											= $this->core_web_parameter->getParameterValue("CORE_VIEW_CUSTOM_SCROLL_IN_LIST_CUSTOMER",$this->session->get('user')->companyID);
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);

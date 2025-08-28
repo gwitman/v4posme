@@ -38,6 +38,11 @@ class Company_Page_Setting_Model extends Model
     public function get_rowByKey($key){
         return $this->where(['keyi' => $key, 'isActive'=>1])->findAll();
     }
+	
+	public function get_rowByKeyAndController($key, $controller)
+	{
+		return $this->where(['keyi' => $key, 'isActive'=>1,'controller'=> $controller ])->findAll();
+	}
 
     public function get_rowByKeyAndControllerAndEmelement($key, $controller, $element){
         return $this->where([

@@ -100,6 +100,7 @@ use App\Models\Transaction_Profile_Detail_Model;
 use App\Models\Userwarehouse_Model;
 use App\Models\User_Tag_Model;
 use App\Models\Warehouse_Model;
+use App\Models\Company_Page_Setting_Model;
 
 
 class core_web_authentication {
@@ -123,6 +124,7 @@ class core_web_authentication {
 		$User_Model = new User_Model();
 		$Role_Model = new Role_Model();
 		$Membership_Model = new Membership_Model();
+		$Company_Page_Setting_Model = new Company_Page_Setting_Model();
 		$Company_Model = new Company_Model();
 		$Branch_Model = new Branch_Model();
 		$Company_Parameter_Model = new Company_Parameter_Model();
@@ -164,9 +166,9 @@ class core_web_authentication {
 		throw new \Exception('EL ROL DEL USUARIO NO FUE ENCONTRADO...');
 		
 		
-		$parameterLabelSistem = $core_web_parameter->getParameter("CORE_LABEL_SISTEMA_SUPLANTATION",$objMembership->companyID);
-		$parameterLabelSistem = $parameterLabelSistem->value;	
-		
+		$parameterLabelSistem 	= $core_web_parameter->getParameter("CORE_LABEL_SISTEMA_SUPLANTATION",$objMembership->companyID);
+		$parameterLabelSistem 	= $parameterLabelSistem->value;			
+		$objCompanyPageSetting	= $Company_Page_Setting_Model->get_rowByKey($objCompany->type);
 		
 		$data["company"]				= $objCompany;
 		$data["companyParameter"]		= $objListAllParameter;
@@ -182,6 +184,7 @@ class core_web_authentication {
 		$data["menuHiddenPopup"]		= $menuHiddenPopup;
 		$data["lastUrl"] 				= "";
 		$data["menuRenderProcedure"]	= getBahavioLargeDB($objCompany->type,"core_web_authentication","menuRenderProcedure","");
+		$data["companyPageSetting"]		= $objCompanyPageSetting;
 		
 		if($data["menuRenderProcedure"] == ""){
 			$data["menuRenderProcedure"]	= getBahavioLargeDB("demo","core_web_authentication","menuRenderProcedure","");
