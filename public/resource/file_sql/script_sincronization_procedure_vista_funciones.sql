@@ -32038,7 +32038,7 @@ BEGIN
 			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmountBank, rx.receiptAmountBankDol,  'Amount'), DECIMAL(10,2))  as TansferenciaCordoba,
 			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmountBank, rx.receiptAmountBankDol,  'AmountExt'), DECIMAL(10,2))  as TransferenciaDolares, 
 			avg(rx.receiptAmountPoint) as receiptAmountPoint , 
-			avg(rx.discount) as discount, 
+			IFNULL(AVG(rx.discount),0) as discount, 
 			sum((rx.unitaryCost * rx.quantity)) as cost,
 			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, 
 			(sum((rx.unitaryPrice  * rx.quantity) +  ifnull(rx.tax2,0) )), 0,  'Convert') , DECIMAL(10,2))
@@ -32048,10 +32048,10 @@ BEGIN
 			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, (sum(
 				(rx.unitaryPrice * rx.quantity) + 
 				(rx.iva * rx.quantity ) + 
-				( ifnull(rx.tax2,2) * 1 ) 
+				( ifnull(rx.tax2,0) * 1 ) 
         ) - 
         avg(rx.receiptAmountPoint)  - 
-        avg(rx.discount)), 0,  'Convert') , DECIMAL(10,2))
+         IFNULL(AVG(rx.discount),0)), 0,  'Convert') , DECIMAL(10,2))
       as totalDocument,
 			sum((rx.unitaryPrice * rx.quantity) - (rx.unitaryCost * rx.quantity))    as utilidad		
 	from
