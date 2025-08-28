@@ -705,6 +705,7 @@
 	$(document).on("change","#txtCausalID,#txtCustomerCreditLineID,#txtCurrencyID,#txtWarehouseID",function(){
 		objWindowSearchProduct = null;
 		fnClearData();
+		fnLockPayment();
 	});
 
 	$(document).on("change",".txtItemSelected",function(e,o){
@@ -2287,6 +2288,7 @@
 
 		cargaCompletada 	= false;
 		cerrarModal('ModalCargandoDatos');
+		
 
     }
 
@@ -2656,6 +2658,44 @@
 			$("#txtReceiptAmountTarjeta").val("0");
 			$("#txtReceiptAmountTarjetaDol").val("0");
 			$("#txtReceiptAmountBankDol").val("0");
+	}
+	
+	
+	function fnLockPayment()
+	{	
+		var invoiceTypeCredit 							= false;
+		var causalSelect 								= $("#txtCausalID").val();
+		var causalCredit 								= objCausalTypeCredit.value.split(",");
+		var lockPayment									= <?php echo getBahavioDB($company->type, "app_invoice_billing", "lockPayment", "false"); ?>;
+		//Obtener si la factura es al credito
+		for(var i=0;i<causalCredit.length;i++)
+		{
+			if(causalCredit[i] === causalSelect)
+			{
+				invoiceTypeCredit 						= true;
+			}
+		}
+		if(invoiceTypeCredit && lockPayment)
+		{
+			// Inputs → solo lectura
+			$("#divPaymentOption").find("input").prop("readonly", true).css("background-color","#eee");
+
+			// Selects → evitar cambios con evento
+			$("#divPaymentOption").find("select").each(function() {
+				$(this).on("mousedown.disableSelect click.disableSelect", function(e) {
+					e.preventDefault();  // Evita abrir el dropdown
+				}).css("background-color","#eee");
+			});
+		}
+		if(!invoiceTypeCredit && lockPayment)
+		{
+			// Desbloquear
+			$("#divPaymentOption").find("input").prop("readonly", false).css("background-color", "");
+
+			$("#divPaymentOption").find("select").each(function () {
+				$(this).off("mousedown.disableSelect click.disableSelect").css("background-color", "");
+			});
+		}
 	}
 
 	function fnRecalculateDetail(clearRecibo,tipo_calculate, index=-1)
@@ -3394,6 +3434,8 @@
 			fnAddRowSelected();
 		}
 		onCompletePantalla();
+		fnLockPayment();
+		
 	}
 
 	function openDataBaseAndCreate(obtenerRegistroDelServer) {
