@@ -20203,22 +20203,24 @@ function helper_reporteA4TransactionMasterExamenLab(
 	$objMuestra,
 	$objTipoExamen,
 	$objEdad,
-	$objSexo
+	$objSexo,
+	$sello
 )
 {
-    $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
-	$size0	 = '30px';
-    $size1	 = '14px';
-	$size2	 = '16px';
-	$size3	 = '12px';
-	$size4	 = '10px';
-	$color1  = 'black';
-    $type    = pathinfo($path, PATHINFO_EXTENSION);
-    $data    = file_get_contents($path);
-    $base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
-    
-    $html    = "";
-    $html    = "
+    $path    		= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
+	$size0	 		= '30px';
+    $size1	 		= '14px';
+	$size2	 		= '16px';
+	$size3	 		= '12px';
+	$size4	 		= '10px';
+	$color1  		= 'black';
+    $type    		= pathinfo($path, PATHINFO_EXTENSION);
+    $data    		= file_get_contents($path);
+    $base64  		= 'data:image/' . $type . ';base64,' . base64_encode($data);	
+	$selloBase64 	='data:image/jpeg;base64,' . $sello;
+	
+    $html    		= "";
+    $html    		= "
                     <!--
                     Online HTML, CSS and JavaScript editor to run code online.
                     https://www.programiz.com/html/online-compiler/
@@ -20451,7 +20453,7 @@ function helper_reporteA4TransactionMasterExamenLab(
 							<tr><td style='text-align:left;'>&nbsp;</td></tr>													
 						</table>
 						
-                        <table style='width:100%'>
+                        <table style='width:100% '>
 							<tr>
 								<td style='text-align:left;'>_____________________</td>
 								<td style='text-align:left;'>_____________________</td>
@@ -20461,7 +20463,11 @@ function helper_reporteA4TransactionMasterExamenLab(
 								<td style='text-align:left;font-size: ".$size1."; color: ".$color1.";' >Sello</td>
 							</tr>
 						</table>
-                     
+						<div style='position: relative; height:90px; width:170px; '>
+							<img src='". $selloBase64."' 
+								 alt='Sello' 
+								 style='position:absolute; top:-70px; left:550px; opacity:0.5; height:100%; width:auto;' />
+						</div>
 						<table style='width:100%' >
 							<tr><td style='text-align:left;'>&nbsp;</td></tr>							
 							<tr><td style='text-align:left;'>&nbsp;</td></tr>							
