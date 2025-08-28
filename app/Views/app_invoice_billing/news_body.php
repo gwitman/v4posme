@@ -439,7 +439,7 @@ echo helper_getHtmlOfPageLanding();
 									</div>
 									
 										
-									<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divPrecio",""); ?>  ">
+									<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divPrecio",""); ?>  " id="divPrice">
 										<label class="col-lg-4 control-label" for="txtTypePriceID">Precio</label>
 										<div class="col-lg-8">
 											<select name="txtTypePriceID" id="txtTypePriceID" class="select2">															
@@ -1532,4 +1532,6 @@ echo helper_getHtmlOfPageLanding();
 </div>
 <!-- End .row-fluid  -->
 <?php echo getBehavio($company->type,"app_invoice_billing","divTraslateElement",""); ?>  
+
+<?php echo getBahavioDB($company->type,"app_invoice_billing","divTraslateElement",""); ?>  
  
