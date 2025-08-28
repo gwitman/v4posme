@@ -32876,290 +32876,137 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_sales_get_report_venta_de_producto`(IN `prCompanyID` INT, IN `prTokenID` VARCHAR(50), IN `prUserID` INT, IN `prStartOn` DATE, IN `prEndOn` DATE,IN prInventoryCategoryID INT)
+CREATE DEFINER=CURRENT_USER PROCEDURE `pr_sales_get_report_venta_de_producto`(IN `prCompanyID` INT, IN `prTokenID` VARCHAR(50), IN `prUserID` INT, IN `prStartOn` DATE, IN `prEndOn` DATE,IN prInventoryCategoryID INT)
     MODIFIES SQL DATA
     SQL SECURITY INVOKER
     COMMENT 'Detalle de ventas'
 BEGIN
-
-
-
 	DECLARE varCurrencyCompras INT DEFAULT 0;	
-
 	DECLARE varCurrencyReporte INT DEFAULT 0;	
-
-	
-
 	DECLARE currencyIDNameCompra VARCHAR(250);
-
 	DECLARE currencyIDNameReporte VARCHAR(250);	
 
-	
-
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameCompra);
-
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",currencyIDNameReporte);
-
-	
-
 	SET varCurrencyCompras 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameCompra);		
-
 	SET varCurrencyReporte 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameReporte);		
 
-		
-
-	
-
 	select 
-
 		rx.itemID,
-
 		rx.itemNumber,
-
 		rx.itemName,
-
 		ix.quantity as quantityInAllWarehouse,
-
 		if(fam.publicCatalogDetailID is null, famp.`name` , fam.`name` )  as family,		
-
+		GROUP_CONCAT(DISTINCT (CONCAT(nx.firstName," ",nx.lastName)) SEPARATOR ', <br/>') as provider,
 		sum(rx.quantity) as quantity,		
-
 		sum((rx.unitaryCost * rx.quantity)) as cost,
-
 		sum((rx.unitaryPrice * rx.quantity)) as amount,
-
 		sum((rx.unitaryPrice * rx.quantity) - (rx.unitaryCost * rx.quantity))    as utilidad ,
-
-		
-
 		ix.quantity + sum(rx.quantity)  as quantityInicial, 
-
 		IFNULL(
-
 			round(
-
 				(
-
 					sum(rx.quantity) / 
-
 					(ix.quantity + sum(rx.quantity))
-
 				) * 100,
-
 				2
-
 			),
-
 			0
-
-		) as percentageSales
-
-		
-
+		) as percentageSales	
 	from 
-
 		(
-
 				select 
-
 					usr.userID,
-
 					usr.nickname,
-
 					tm.transactionNumber,
-
 					IFNULL(nat_emp.firstName,'') as employerName,
-
 					tc.name as tipo,
-
 					tm.transactionOn,
-
 					cus.customerNumber,
-
 					l.legalName,
-
 					ci.name as zone,
-
 					i.itemID,
-
 					i.itemNumber,
-
 					i.name as itemName,
-
 					cat.`name` as nameCategory,
-
 					tmd.quantity,
-
 					tm.currencyID,
-
 					tm.exchangeRate,
-
 					tm.createdOn,
-
-					
-
 					case 
-
 						when varCurrencyReporte = tm.currencyID then 
-
 							tmd.unitaryPrice 
-
 						when tm.exchangeRate > 1 then 
-
 							tm.exchangeRate * (tmd.unitaryPrice)
-
 						else 
-
 							(1/tm.exchangeRate) * (tmd.unitaryPrice)
-
 					end unitaryPrice,
-
-					
-
-					
-
-					
-
 					case 
-
 						when varCurrencyCompras = varCurrencyReporte  then 				
-
 							tmd.unitaryCost
-
 						when tm.exchangeRate > 1 then 
-
 							tm.exchangeRate *  tmd.unitaryCost														
-
 						else 								
-
 						  (1/tm.exchangeRate) *   tmd.unitaryCost							
-
 					end  unitaryCost ,
-
-					
-
-					
-
 					IFNULL(tmd.tax1,0) as  iva ,
-
 					IFNULL(amountCommision,0) as amountCommision
-
-					
-
 				from 
-
 					tb_transaction_master tm 
-
 					inner join tb_transaction_master_detail tmd on 
-
 						tm.companyID = tmd.companyID and 
-
 						tm.transactionID = tmd.transactionID and 
-
 						tm.transactionMasterID = tmd.transactionMasterID 
-
 					inner join tb_transaction_causal tc on 
-
 						tm.transactionCausalID = tc.transactionCausalID 
-
 					inner join tb_customer cus on 
-
 						tm.entityID = cus.entityID 
-
 					inner join tb_legal l on 
-
 						cus.entityID = l.entityID 
-
 					inner join tb_user usr on 
-
 						tm.createdBy = usr.userID 
-
 					inner join tb_workflow_stage ws on 
-
 						tm.statusID = ws.workflowStageID 
-
 					inner join tb_transaction_master_info tmi on 
-
 						tm.companyID = tmi.companyID and 
-
 						tm.transactionID = tmi.transactionID and 
-
 						tm.transactionMasterID = tmi.transactionMasterID 
-
 					inner join tb_catalog_item ci on 
-
 						tmi.zoneID = ci.catalogItemID 
-
 					inner join tb_item i on 
-
 						tmd.componentItemID = i.itemID 
-
 					inner join tb_item_category cat on 
-
 						cat.inventoryCategoryID = i.inventoryCategoryID 
-
 					left join tb_naturales nat_emp on 
-
 						nat_emp.entityID = tm.entityIDSecondary 
-
 				where
-
 					tm.companyID = prCompanyID and 
-
 					tm.createdOn between prStartOn  and concat(prEndOn,' 23:59:59')   and 
-
 					tm.isActive = 1 and 
-
 					tmd.isActive = 1 and 
-
 					ws.aplicable = 1 and 
-
 					(
-
 						prInventoryCategoryID = 0 
-
 						or 
-
 						(prInventoryCategoryID != 0 and i.inventoryCategoryID = prInventoryCategoryID )
-
 					)
-
 				order by 
-
 					tm.transactionMasterID asc, tmd.transactionMasterDetailID asc
-
-					
-
 		) rx
-
 		inner join  tb_item ix on 
-
 			ix.itemID = rx.itemID  
-
 		left join tb_public_catalog_detail fam on 
-
 			fam.publicCatalogDetailID = ix.familyID 
-
 		left join tb_catalog_item famp on 
-
 			famp.catalogItemID = ix.familyID 
-
+		left join tb_provider_item pix ON pix.itemID = ix.itemID
+		LEFT JOIN tb_naturales nx ON nx.entityID = pix.entityID
 	group by 
-
 		rx.itemID, 
-
 		rx.itemNumber,
-
 		rx.itemName,
-
 		ix.quantity ,
-
 		fam.`name` ; 
-
-		
-
-		
-
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
