@@ -2092,12 +2092,13 @@ class app_notification extends _BaseController
 	}
 	function sendEmailGlamCustCitas()
 	{
-		log_message("error", print_r("sendEmailGlamCustCitas", true));
+		log_message("info", print_r("sendEmailGlamCustCitas", true));
 		$emailProperty = $this->core_web_parameter->getParameter("CORE_PROPIETARY_EMAIL", APP_COMPANY);
 		$emailProperty = $emailProperty->value;
 		$objCompany  	= $this->Company_Model->get_rowByPK(APP_COMPANY);
 
 		$objNotificar = $this->Transaction_Master_Detail_Model->GlamCust_get_Citas(APP_COMPANY);
+		
 		if ($objNotificar)
 		{	
 			// Cabecera de la tabla
