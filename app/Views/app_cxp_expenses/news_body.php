@@ -191,9 +191,7 @@
 																<select name="txtClassID" id="txtClassID" class="select2">
 																	<?php
 																	$counter = 0;
-																	$selected = getBahavioDB($company->type, "app_cxp_expenses", "txtClassID_select", "General"); 
-																	log_message("info",print_r($selected,true));
-																	
+																	$selected = getBahavioDB($company->type, "app_cxp_expenses", "txtClassID_select", "General"); 																																		
 																	if ($objListCatalogItemClasificacion)
 																			foreach ($objListCatalogItemClasificacion as $ws) {
 																				if ($selected == $ws->display)
