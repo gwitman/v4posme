@@ -93,12 +93,24 @@
 						<div class="panel" style="margin-bottom:20px;">
 							<div class="panel-heading">
 								<div class="icon"><i class="icon20 i-health"></i></div> 
-								<h4>Estadistica</h4>
+								<h4>Estadistica Contado</h4>
 								<a href="#" class="minimize"></a>
 							</div><!-- End .panel-heading -->
 						
 							<div class="panel-body">								
 								<div id="grafico4" style="height:300px" ></div>
+							</div><!-- End .panel-body -->
+						</div><!-- End .widget -->		
+						
+						<div class="panel" style="margin-bottom:20px;">
+							<div class="panel-heading">
+								<div class="icon"><i class="icon20 i-health"></i></div> 
+								<h4>Estadistica Credito</h4>
+								<a href="#" class="minimize"></a>
+							</div><!-- End .panel-heading -->
+						
+							<div class="panel-body">								
+								<div id="grafico5" style="height:300px" ></div>
 							</div><!-- End .panel-body -->
 						</div><!-- End .widget -->		
 						
@@ -199,6 +211,7 @@
 						google.charts.setOnLoadCallback(drawChartBarraVentasContadoMesActual);	
 						google.charts.setOnLoadCallback(drawChartPastelVentasCreditoMensuales);		
 						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasVendidos);	
+						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasVendidosCredito);
 					});		
 					
 					function drawChartBarraVentasContadoMesActual() {
@@ -308,6 +321,35 @@
 						};
 
 						var chart = new google.visualization.BarChart(document.getElementById('grafico4'));
+						chart.draw(data, options);
+
+					}
+					
+					function drawChartBarraHorizontalProductosMasVendidosCredito() {
+						var objDataSourceProductosMasVendidos	 	= new Array();
+						var objTransactionMaster 				 	= JSON.parse('<?php echo json_encode($objListVentasCredito); ?>');	
+						
+						objDataSourceProductosMasVendidos.push(new Array("Colaborador","Venta"));
+						for(var i = 0 ; i < objTransactionMaster.length;i++)
+						{
+							objDataSourceProductosMasVendidos.push(
+								new Array(
+									objTransactionMaster[i].firtsName,
+									parseInt(objTransactionMaster[i].monto)
+								)
+							);	
+						}
+						
+						var data = google.visualization.arrayToDataTable(
+							objDataSourceProductosMasVendidos
+						);
+
+						var options = {
+						  title: 'Colaboradores vs Venta',
+						  colors: ['#7FB3D5', '#76D7C4', '#85C1E9', '#5DADE2', '#48C9B0'],
+						};
+
+						var chart = new google.visualization.BarChart(document.getElementById('grafico5'));
 						chart.draw(data, options);
 
 					}
