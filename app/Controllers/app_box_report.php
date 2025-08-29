@@ -1338,13 +1338,31 @@ class app_box_report extends _BaseController {
 			$hourEnd			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"hourEnd");//--finuri
 			$userIDFilter		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"userIDFilter");//--finuri			
 			
-			
+			// fallback si vienen vacíos
+			if (empty($startOn)) 
+			{
+				$startOn 		= date("Y-m-d"); // hoy
+			}
+			if (empty($endOn)) 
+			{
+				$endOn 			= date("Y-m-d"); // hoy
+			}
+			if (empty($hourOn)) 
+			{
+				$hourOn 		= 1; // 1 AM
+			}	
+			if (empty($hourEnd)) 
+			{
+				$hourEnd 		= 23; // 11 PM
+			}
+
 			$startOn			= $startOn." ".$hourOn.":00:00";	
 			$endOn				= $endOn." ".$hourEnd.":59:59";				
 						
 			//calcular las fechas iniciales del reporte
 			$startOn_ 	= \DateTime::createFromFormat('Y-m-d H:i:s',$startOn);		
-			$endOn_ 	= \DateTime::createFromFormat('Y-m-d H:i:s',$endOn);		
+			$endOn_ 	= \DateTime::createFromFormat('Y-m-d H:i:s',$endOn);	
+
 			if($filteredArray != -1){
 				$startOn_Temporal = $endOn_;
 				date_sub($startOn_Temporal, date_interval_create_from_date_string($filteredArray.' days'));
