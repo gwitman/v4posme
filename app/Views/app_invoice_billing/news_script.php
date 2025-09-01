@@ -661,6 +661,7 @@
 					filterResultArray[24] 	= filterResult.Descripcion;
 					filterResultArray[25] 	= filterResult.Precio2;
 					filterResultArray[26] 	= filterResult.Precio3;
+					filterResultArray[27] 	= filterResult.Precio;
 
 					//Agregar el Item a la Fila
 					onCompleteNewItem(filterResultArray,sumar);
@@ -713,7 +714,7 @@
 	});
 
 	$(document).on("change","#txtTypePriceID",function(){
-		fnActualizarPrecio();
+		fnActualizarPrecios();
 	});
 
 	$(document).on("change","#txtCausalID",function(){
@@ -1486,6 +1487,9 @@
 	function onCompleteNewItem(objResponse,suma){
 		console.info("CALL onCompleteNewItem");
 		console.info(objResponse);
+		var prices	 						= { 154: 22, 155: 25, 156: 26 }
+		var typePriceID 					= $("#txtTypePriceID").val();
+		var selectedPrice					= prices[typePriceID];
 		var objRow 							= {};
 		objRow.checked 						= false;
 		objRow.transactionMasterDetailID 	= 0;
@@ -1496,7 +1500,7 @@
 		objRow.umDescription				= objResponse[20];
 		objRow.quantity 					= fnFormatNumber(objResponse[21],2);
 		objRow.bquantity 					= fnFormatNumber(objResponse[21],2);
-		objRow.price 						= fnFormatNumber(objResponse[22],2);
+		objRow.price 						= fnFormatNumber(objResponse[selectedPrice],2);
 		objRow.total 						= fnFormatNumber(objRow.quantity * objRow.price,2);
 		objRow.iva 							= 0;
 		objRow.lote 						= "";
@@ -1509,7 +1513,7 @@
 		objRow.vendedor 					= 0;
 		objRow.serie 						= "";
 		objRow.referencia 					= "";
-		objRow.price1 					    = fnFormatNumber(objResponse[22],2);
+		objRow.price1 					    = fnFormatNumber(objResponse[27],2);
 		objRow.skuRatio						= 1;
 		objRow.discount						= 0;
 		objRow.commisionBank				= 0;
@@ -2614,7 +2618,7 @@
 
 				if(encontrado == true)
 				{
-
+					
 					var sumar				= true;
 					var filterResult 		= e[i];
 					var filterResultArray 	= [];
@@ -2628,6 +2632,7 @@
 					filterResultArray[24] 	= filterResult.Descripcion;
 					filterResultArray[25] 	= filterResult.Precio2;
 					filterResultArray[26] 	= filterResult.Precio3;
+					filterResultArray[27] 	= filterResult.Precio1;
 
 					//Agregar el Item a la Fila
 					onCompleteNewItem(filterResultArray,sumar);
@@ -3171,6 +3176,23 @@
 
 	}
 
+	
+	function fnActualizarPrecios()
+	{
+		var prices	 						= { 154: 22, 155: 14, 156: 15 }
+		var typePriceID 					= $("#txtTypePriceID").val();
+		var selectedPrice					= prices[typePriceID];
+		var NSSystemDetailInvoice			= objTableDetail.fnGetData();
+
+		for(var i = 0; i < NSSystemDetailInvoice.length; i++)
+		{
+			console.log(NSSystemDetailInvoice[i]);
+			var precio						= NSSystemDetailInvoice[i][selectedPrice];
+			objTableDetail.fnUpdate( fnFormatNumber(precio,2), i, columnasTableDetail.precio );
+		}
+		fnRecalculateDetail(false,"");
+		
+	}
 	function fnActualizarPrecio()
 	{
 
@@ -3343,6 +3365,7 @@
 				dataResponse[24] = data.Descripcion;//7:Descripcion
 				dataResponse[25] = data.Precio2;
 				dataResponse[26] = data.Precio3;
+				dataResponse[27] = data.Precio1;
 				onCompleteNewItem(dataResponse,true);
 			}
 		);
@@ -3367,7 +3390,7 @@
 						'}'
 					) +
 					"/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/"+codigoBuscar+"/";
-
+			
 			 // Verificar si la ventana ya está abierta
 			if (objWindowSearchProduct && !objWindowSearchProduct.closed)
 			{
@@ -3587,7 +3610,7 @@
 
     function obtenerDataDBProductoArray(varTable, varColumn, varValue, valueComando, varDataExt, varFunction) {
         const requestStore = db.transaction(varTable, 'readwrite').objectStore(varTable);
-
+		
         let request;
         let varIndex;
 
@@ -3751,6 +3774,7 @@
             dataResponse[24] = element[10];//Description
             dataResponse[25] = element[2];//Precio2
             dataResponse[26] = element[3];//Precio3
+			dataResponse[27] = element[12];//Precio1
 
             onCompleteNewItem(dataResponse, true);
         }

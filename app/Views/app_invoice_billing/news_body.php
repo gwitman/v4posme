@@ -448,9 +448,9 @@ echo helper_getHtmlOfPageLanding();
 													if($objListTypePrice)
 													foreach($objListTypePrice as $price){
 														if($price->catalogItemID == $objParameterTypePreiceDefault )
-														echo "<option value='".$price->catalogItemID."' selected >".$price->display."</option>";
+														echo "<option value='".$price->catalogItemID."' selected >".getBehavio($company->type, "app_inventory_item_label_price", $price->name, "")."</option>";
 														else
-														echo "<option value='".$price->catalogItemID."'  >".$price->display."</option>";
+														echo "<option value='".$price->catalogItemID."'  >".getBehavio($company->type, "app_inventory_item_label_price", $price->name, "")."</option>";
 														$count++;
 													}
 													?>
