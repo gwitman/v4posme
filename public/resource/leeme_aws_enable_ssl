@@ -1,0 +1,167 @@
+# Generacion de certificados ssl
+====================== CERTS ====================================
+> sudo nano /etc/ssl/private/posme.net.key
+>>>>>>>>>>>>>>>>>>> Contenido >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+-----BEGIN RSA PRIVATE KEY-----
+MIIEogIBAAKCAQEA48vER7TgocIcoJUvaklegyjv4s+KNIlneepHbZ1Egd0x/scF
+PQqi+eH++qIYqWGVVcN7uDNI2x9/mg2gYdRyc07LidrBlUiRgKTVKHb0MeLjOQs0
+ylCYOUg9ZMa8YA/n7WD8gODBYnZG9Ekt5534bB9+nsWYO3nxOpJuWlz8Xo410m4F
+YvGrzUSUawNltAMKXocMcgYKdFQ17wmIfxkfCkWE7ui7m4EUb9p6Y/NcOpWLO3uI
+xQW6pU8QJMvgxBeHOo3nb0Cz2TkpVFnFyjAN+dmpkghjJhdcB0y+jVv8ZVapcQb9
+wYv0e0R2nWIJJv9AplqX5xuLwlJH2tHuIKvJFQIDAQABAoIBABkDGr404iVgxvvq
+5ZXqEHKeYBiraSVzoOUGEGm8xvTrcL3k5HJbZKHDatfiTIrsqBUOrdr/5pQI1V34
++Q9E4HxAvqCYYIEfwro5Xx5eUVnY69IrpNRCHTTM9dDG8ZAqrvCloZQVGabSDeBs
+2JmCAvD8VE7iq2B8dzxTL8LESwGmrrImzMyWZOy7rqRl2KCOJSMRgCi1CeydgLBA
+xScuEmJNGgQLGawwEyX/1HkUfng7vqjfgz5fGphv4Lcjh0NwAoetxipdi0on+1FC
+rg8KuS6cfVZDSn3UIS6FJehpkpuv1Xm7/1N6CzjL/epfYsFDlxqpuc/raBHjbb1G
+jQoTlwECgYEA/X8zjiTtuZTrwjmunesSduLhZHulIGYPqnmOlLFzRW7qP5ytTUFc
+KizORu/ghfBeRV8H3XYmK1EmC14poWTc3ds2nlakXDoq3lISX3aOmY1mB9/G+i1y
+qQnLbV7PKmebiZ8I7TDVRUANiH4vJKimOC8Yp7Hg31aEGOdY5ks7HBECgYEA5guY
+/b0egLHZxKvVz6sZpBbN0ANJDm0Pj/M5BE/hj5jQOy1WH2Z2VcSUAsEGMDLMuoa1
+jO5PO2Mn+0bWq9ekUkuM3hSi+LeOvRcgSoRFF+FdJl2QXERBH506AkqaFtH1JFFx
+JhJNJKvNh92NNrh3MBZ2kqhOvQY4WnhfMRQsMMUCgYBZbJj0SOSvtfAhGRYXUUi3
+NbwLJW8P6dEW80CwBZVDZigufofIHAl2O04dShurRCsNT8PHhRlb6ImCMxp+e8VK
+Yj13R9s9Sau7t7oRgRI26uGWX4Oi14t+RB1GHM76B4if2MFeYv6pKjpb7x+UUAYr
+Bbot1hsczjlVS69ZtipI8QKBgDBl6D4Z97zjrgkujcEvIinfklVdG5WpZEjIxwod
+NDtdzxFkLGZWzDanMOyTZ5XkWiY0CSYpTQoVhmfbM3bb23pk4rImbVMeay1lHCoR
+QegQReS4cpK22WypS3cH8vsyGP0XFVMJLqm0a31WI0uL66d2UmPwfQBPurNt97j/
+oXxxAoGARJ8q5jjEjfnEKji0jFlAKggJvQELrTC3IHAnjdrINLA8iLkokt4OAu1L
+Z4tAD83wXE7wORFAC9za/2YVLRdtJ+r8PWpOIjtLO7Lw24RVva5zE6Su1ys4ie6s
+y2hbQHDRjp50hZ4knSkq8xZgeBnqe6V4120ObKwkIefqupyVJ04=
+-----END RSA PRIVATE KEY-----
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+> sudo nano /etc/ssl/certs/posme.net.crt
+>>>>>>>>>>>>>>>> Contenido >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+-----BEGIN CERTIFICATE-----
+MIIE/zCCA+egAwIBAgISBtW4/BXITyZPGmCDiKjdgAPkMA0GCSqGSIb3DQEBCwUA
+MDMxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MQwwCgYDVQQD
+EwNSMTEwHhcNMjUwODE1MDUwMDMyWhcNMjUxMTEzMDUwMDMxWjAWMRQwEgYDVQQD
+DAsqLnBvc21lLm5ldDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOPL
+xEe04KHCHKCVL2pJXoMo7+LPijSJZ3nqR22dRIHdMf7HBT0Kovnh/vqiGKlhlVXD
+e7gzSNsff5oNoGHUcnNOy4nawZVIkYCk1Sh29DHi4zkLNMpQmDlIPWTGvGAP5+1g
+/IDgwWJ2RvRJLeed+Gwffp7FmDt58TqSblpc/F6ONdJuBWLxq81ElGsDZbQDCl6H
+DHIGCnRUNe8JiH8ZHwpFhO7ou5uBFG/aemPzXDqVizt7iMUFuqVPECTL4MQXhzqN
+529As9k5KVRZxcowDfnZqZIIYyYXXAdMvo1b/GVWqXEG/cGL9HtEdp1iCSb/QKZa
+l+cbi8JSR9rR7iCryRUCAwEAAaOCAigwggIkMA4GA1UdDwEB/wQEAwIFoDAdBgNV
+HSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDAYDVR0TAQH/BAIwADAdBgNVHQ4E
+FgQUqigfI+y7lY5fTTmWliIJp2K9InYwHwYDVR0jBBgwFoAUxc9GpOr0w8B6bJXE
+LbBeki8m47kwMwYIKwYBBQUHAQEEJzAlMCMGCCsGAQUFBzAChhdodHRwOi8vcjEx
+LmkubGVuY3Iub3JnLzAhBgNVHREEGjAYggsqLnBvc21lLm5ldIIJcG9zbWUubmV0
+MBMGA1UdIAQMMAowCAYGZ4EMAQIBMC8GA1UdHwQoMCYwJKAioCCGHmh0dHA6Ly9y
+MTEuYy5sZW5jci5vcmcvMTAxLmNybDCCAQUGCisGAQQB1nkCBAIEgfYEgfMA8QB3
+AA3h8jAr0w3BQGISCepVLvxHdHyx1+kw7w5CHrR+Tqo0AAABmKxPbKUAAAQDAEgw
+RgIhANvj+r8bfe2ZvMB3DdzB+hH+GeruT90qbXZzAJ6PjKCqAiEArvAYx/nW63bZ
+oWhR30PW5Z/Kso4bxHIhJj5ds4PNwVQAdgAS8U40vVNyTIQGGcOPP3oT+Oe1YoeI
+nG0wBYTr5YYmOgAAAZisT2y3AAAEAwBHMEUCIQDV4B6ImIgjBMQZZppbMqXH6rOz
+HT5+a52UM7Y4160mhgIgco8yytHPCFqp44TXD7dYNLr1Gqvg6YCC2D5iN1UnuZkw
+DQYJKoZIhvcNAQELBQADggEBAJ8y7gh+C5jbfxGiIfz1xlyiNRmOQ9TGOOsa1MTJ
+zwawckUCoPhFHjroQ5SatB0KotkDmrXXfnqHw/cOUPZI4eSXRPgFRlgOGi7kqSlu
+BfvBDa9xPmxBa8slDyqY5ckzUiyg3jLsI8ovMU1TcUvDVtOTmsHWV2o7k0gCFFWA
+acznhvg75sdHasLQloyC0HfQ9ippa48F5OYBwq56spk2HWsxBo2MGfu09591jIVM
+1efR03H/uELKnB/qlICRR8Ysok+KFBfhV/7FXvw7oL3SIrjom+WtrTVuLow2v+W0
+6vkloRhZbkzsXjnHxLv6BQVIXfRVtGdDzXUvOmbRXyDe1uo=
+-----END CERTIFICATE-----
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+> sudo nano /etc/ssl/certs/posme.net.ca-bundle
+>>>>>>>>>>>>>>>> Contenido >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+-----BEGIN CERTIFICATE-----
+MIIFBjCCAu6gAwIBAgIRAIp9PhPWLzDvI4a9KQdrNPgwDQYJKoZIhvcNAQELBQAw
+TzELMAkGA1UEBhMCVVMxKTAnBgNVBAoTIEludGVybmV0IFNlY3VyaXR5IFJlc2Vh
+cmNoIEdyb3VwMRUwEwYDVQQDEwxJU1JHIFJvb3QgWDEwHhcNMjQwMzEzMDAwMDAw
+WhcNMjcwMzEyMjM1OTU5WjAzMQswCQYDVQQGEwJVUzEWMBQGA1UEChMNTGV0J3Mg
+RW5jcnlwdDEMMAoGA1UEAxMDUjExMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
+CgKCAQEAuoe8XBsAOcvKCs3UZxD5ATylTqVhyybKUvsVAbe5KPUoHu0nsyQYOWcJ
+DAjs4DqwO3cOvfPlOVRBDE6uQdaZdN5R2+97/1i9qLcT9t4x1fJyyXJqC4N0lZxG
+AGQUmfOx2SLZzaiSqhwmej/+71gFewiVgdtxD4774zEJuwm+UE1fj5F2PVqdnoPy
+6cRms+EGZkNIGIBloDcYmpuEMpexsr3E+BUAnSeI++JjF5ZsmydnS8TbKF5pwnnw
+SVzgJFDhxLyhBax7QG0AtMJBP6dYuC/FXJuluwme8f7rsIU5/agK70XEeOtlKsLP
+Xzze41xNG/cLJyuqC0J3U095ah2H2QIDAQABo4H4MIH1MA4GA1UdDwEB/wQEAwIB
+hjAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwEwEgYDVR0TAQH/BAgwBgEB
+/wIBADAdBgNVHQ4EFgQUxc9GpOr0w8B6bJXELbBeki8m47kwHwYDVR0jBBgwFoAU
+ebRZ5nu25eQBc4AIiMgaWPbpm24wMgYIKwYBBQUHAQEEJjAkMCIGCCsGAQUFBzAC
+hhZodHRwOi8veDEuaS5sZW5jci5vcmcvMBMGA1UdIAQMMAowCAYGZ4EMAQIBMCcG
+A1UdHwQgMB4wHKAaoBiGFmh0dHA6Ly94MS5jLmxlbmNyLm9yZy8wDQYJKoZIhvcN
+AQELBQADggIBAE7iiV0KAxyQOND1H/lxXPjDj7I3iHpvsCUf7b632IYGjukJhM1y
+v4Hz/MrPU0jtvfZpQtSlET41yBOykh0FX+ou1Nj4ScOt9ZmWnO8m2OG0JAtIIE38
+01S0qcYhyOE2G/93ZCkXufBL713qzXnQv5C/viOykNpKqUgxdKlEC+Hi9i2DcaR1
+e9KUwQUZRhy5j/PEdEglKg3l9dtD4tuTm7kZtB8v32oOjzHTYw+7KdzdZiw/sBtn
+UfhBPORNuay4pJxmY/WrhSMdzFO2q3Gu3MUBcdo27goYKjL9CTF8j/Zz55yctUoV
+aneCWs/ajUX+HypkBTA+c8LGDLnWO2NKq0YD/pnARkAnYGPfUDoHR9gVSp/qRx+Z
+WghiDLZsMwhN1zjtSC0uBWiugF3vTNzYIEFfaPG7Ws3jDrAMMYebQ95JQ+HIBD/R
+PBuHRTBpqKlyDnkSHDHYPiNX3adPoPAcgdF3H2/W0rmoswMWgTlLn1Wu0mrks7/q
+pdWfS6PJ1jty80r2VKsM/Dj3YIDfbjXKdaFU5C+8bhfJGqU3taKauuz0wHVGT3eo
+6FlWkWYtbt4pgdamlwVeZEW+LM7qZEJEsMNPrfC03APKmZsJgpWCDWOKZvkZcvjV
+uYkQ4omYCTX5ohy+knMjdOmdH9c7SpqEWBDC86fiNex+O0XOMEZSa8DA
+-----END CERTIFICATE-----
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+> sudo chmod 600 /etc/ssl/private/dominio.key
+> sudo chmod 600 /etc/ssl/private/posme.net.key
+
+====================== APACHE ===================================
+> sudo nano /etc/apache2/sites-enabled/app_posme_public.conf
+>>>>>>>>>>>>>>>>>>>>>>>>>> Contenido >>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<VirtualHost *:443>
+    ServerAdmin ubuntu@localhost
+    DocumentRoot /var/www/html
+    ServerName aws.posme.net
+    ServerAlias ec2-3-133-70-113.us-east-2.compute.amazonaws.com
+
+    <Directory /var/www/html>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    Alias /v4posme/public /var/www/v4posme/public/public
+    <Directory /var/www/v4posme/public/public>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    Alias /v4posme/glamcuts /var/www/v4posme/glamcuts/public
+    <Directory /var/www/v4posme/glamcuts/public>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    Alias /v4posme/moda_eve /var/www/v4posme/moda_eve/public
+    <Directory /var/www/v4posme/moda_eve/public>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+
+    Alias /v4posme/farma_byb /var/www/v4posme/farma_byb/public
+    <Directory /var/www/v4posme/farma_byb/public>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/ci4_error.log
+    CustomLog ${APACHE_LOG_DIR}/ci4_access.log combined
+
+   # seccion de ssl
+    SSLEngine on
+    SSLCertificateFile /etc/ssl/certs/posme.net.crt
+    SSLCertificateKeyFile /etc/ssl/private/posme.net.key
+    SSLCertificateChainFile /etc/ssl/certs/posme.net.ca-bundle
+</VirtualHost>
+
+# Redireccionamiento
+<VirtualHost *:80>
+    ServerName aws.posme.net
+    ServerAlias ec2-3-133-70-113.us-east-2.compute.amazonaws.com
+    Redirect permanent / https://aws.posme.net/
+</VirtualHost>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+> sudo a2enmod ssl
+> sudo a2ensite app_posme_public.conf
+> sudo systemctl reload apache2
+
