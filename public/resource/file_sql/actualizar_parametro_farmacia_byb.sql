@@ -1,4 +1,5 @@
-/*BD: 	posme:farma_byb*/
+/*BD: 	jkvutwoyesstzb:farma_byb*/
+/*SERVIDOR:	AWS*/
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "2023-12-25" 
