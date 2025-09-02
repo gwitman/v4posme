@@ -19,6 +19,7 @@ function getBehavioFarmaLey(){
 		strtolower('farma_ley_app_inventory_item_label_price_PUBLICO')			=> "General",
 		strtolower('farma_ley_app_inventory_item_label_price_POR MAYOR')		=> "Minsa",
 		strtolower('farma_ley_app_inventory_item_label_price_CREDITO')			=> "Pedidos YA",
+		strtolower('farma_ley_app_inventory_item_divTxtCosto') 			 		=> "hidden",
 		strtolower('farma_ley_app_inventory_item_divTraslate')					=> "
 		<script>
 			$(document).ready(function(){

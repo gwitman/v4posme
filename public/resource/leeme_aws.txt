@@ -65,6 +65,7 @@ Documentacion:		https://www.digitalocean.com/community/tutorials/how-to-install-
 >sudo apt install php-intl
 >sudo apt install php8.3-gd
 >sudo apt install php8.3-xml
+>sudo apt-get install php-curl -y
 
 //ver la version
 >php -v
