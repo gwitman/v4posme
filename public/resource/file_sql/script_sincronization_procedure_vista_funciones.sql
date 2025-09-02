@@ -33401,7 +33401,7 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE PROCEDURE `pr_transaction_revert`(IN `prCompanyID` INT, IN `prTransactionIDOriginal` INT, IN `prTransactionMasterIDOriginal` BIGINT, IN `prTransactionIDRevert` INT, IN `prTransactionMasterIDRevert` BIGINT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_transaction_revert`(IN `prCompanyID` INT, IN `prTransactionIDOriginal` INT, IN `prTransactionMasterIDOriginal` BIGINT, IN `prTransactionIDRevert` INT, IN `prTransactionMasterIDRevert` BIGINT)
     MODIFIES SQL DATA
     SQL SECURITY INVOKER
     COMMENT 'Procedimiento que se utiliza para revertir una transaccion'
