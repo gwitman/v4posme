@@ -1,4 +1,4 @@
-/*BD:	dbfiocgnuappfa:ruta_pablo */
+/*BD:	dbfiocgnuappfa:dist_carvajal */
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
