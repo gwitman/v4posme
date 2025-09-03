@@ -472,7 +472,9 @@ class financial_amort{
 		}
 		
 		
+		//Validar principal
 		//Sumar el total del principal
+		///////////////////////////////////////////////
 		$totalPrincipal 			= array_sum(array_map('floatval', array_column($result["detail"], "principal")));		
 		$dif						= round($capitalDesembolsado - $totalPrincipal,2);
 		
@@ -494,19 +496,26 @@ class financial_amort{
 		$result["detail"][$i]["cuota"] 					= $result["detail"][$i]["principal"] + $result["detail"][$i]["interes"];
 		
 		
+		//Primera Validacion de interes
+		//Sumar el total interes
+		///////////////////////////////////////////////
 		//validar decimales en el total de interes
 		//si esta dentro del rango
 		$totalInteres 					= array_sum(array_map('floatval', array_column($result["detail"], "interes")));		
-		$totalInteresValidateDecimal 	= $this->validarDecimal(round($totalInteres,2),0.01,0.1);		
-		if($totalInteresValidateDecimal["rango"] == 1)
+		$totalInteresValidateDecimal 	= $this->validarDecimal(round($totalInteres,2),0.01,0.3);		
+		$rango							= $totalInteresValidateDecimal["rango"];
+		$valor							= $totalInteresValidateDecimal["valor"];		
+		if($rango == 1)
 		{
-			$result["detail"][$i]["interes"] 			= round($result["detail"][$i]["interes"] - $dif ,2);
+			$result["detail"][$i]["interes"] 			= round($result["detail"][$i]["interes"] - $valor ,2);
 		}
 		
 		$totalInteresValidateDecimal 	= $this->validarDecimal(round($totalInteres,2),0.90,0.99);		
-		if($totalInteresValidateDecimal["rango"] == 1)
+		$rango							= $totalInteresValidateDecimal["rango"];
+		$valor							= $totalInteresValidateDecimal["valor"];
+		if($rango == 1)
 		{
-			$result["detail"][$i]["interes"] 			= round($result["detail"][$i]["interes"] + $dif ,2);
+			$result["detail"][$i]["interes"] 			= round($result["detail"][$i]["interes"] + $valor ,2);
 		}		
 		$result["detail"][$i]["cuota"] 	= $result["detail"][$i]["principal"] + $result["detail"][$i]["interes"];
 		
