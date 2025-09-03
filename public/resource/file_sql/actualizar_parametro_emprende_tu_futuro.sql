@@ -1813,8 +1813,8 @@ WHERE
 
 
 UPDATE tb_company SET
-                      NAME = 'Emprende tu futuro' , address = 'Del porton de la iglesia el calvario 180v. al norte.' ,
-                      flavorID = 0 /*usuarioID*/,type='tu_futuro'  , abreviature='demo'
+	  NAME = 'Emprende tu futuro' , address = 'Del porton de la iglesia el calvario 180v. al norte.' ,
+	  flavorID = 852 /*usuarioID*/,type='tu_futuro'  , abreviature='demo'
 WHERE
     companyID = 2; ##Actualizar el nombre de la compania
 
@@ -1827,25 +1827,25 @@ Eliminar o desactivar usuarios
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2,
- 581,
- 582,
- 583,
- 584,
- 585,
- 586,
- 587
+ 846,
+ 847,
+ 848,
+ 849,
+ 850,
+ 851,
+ 852
 );
 
 update tb_role set isActive = 0;
 update tb_role set isActive = 1 where roleID in (
 	3,
-	510,
-	511,
-	512,
-	513,
-	514,
-	515,
-	516
+	911,
+	912,
+	913,
+	914,
+	915,
+	916,
+	917
 );
 */
 
