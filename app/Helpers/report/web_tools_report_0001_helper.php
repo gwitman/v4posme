@@ -20463,10 +20463,10 @@ function helper_reporteA4TransactionMasterExamenLab(
 								<td style='text-align:left;font-size: ".$size1."; color: ".$color1.";' >Sello</td>
 							</tr>
 						</table>
-						<div style='position: relative; height:90px; width:170px; '>
+						<div style='position: relative; height:190px; width:400px; '>
 							<img src='". $selloBase64."' 
 								 alt='Sello' 
-								 style='position:absolute; top:-70px; left:550px; opacity:0.5; height:100%; width:auto;' />
+								 style='position:absolute; top:-150px; left:500px;  height:100%; width:auto;' />
 						</div>
 						<table style='width:100%' >
 							<tr><td style='text-align:left;'>&nbsp;</td></tr>							
