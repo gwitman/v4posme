@@ -1827,25 +1827,25 @@ Eliminar o desactivar usuarios
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2,
- 846,
- 847,
- 848,
- 849,
- 850,
- 851,
- 852
+ 911,
+ 912,
+ 913,
+ 914,
+ 915,
+ 916,
+ 917
 );
 
 update tb_role set isActive = 0;
 update tb_role set isActive = 1 where roleID in (
 	3,
-	911,
-	912,
-	913,
-	914,
-	915,
-	916,
-	917
+	846,
+	847,
+	848,
+	849,
+	850,
+	851,
+	852
 );
 */
 
