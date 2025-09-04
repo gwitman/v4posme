@@ -28193,7 +28193,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_inventory_get_report_list_item`(
     COMMENT 'Lista de Productos'
 BEGIN
 	SELECT 
-	 i.itemNumber,
+		i.itemNumber,
 		i.barCode,
 		case
 			when comp.flavorID = 309  then 
@@ -28215,15 +28215,15 @@ BEGIN
 		IF(family.catalogItemID is null,family.`name`,family_cli.`name`) as familyName ,
 		i.isActive,
 		'1254' as vendors,  
-	(
-		SELECT SUM(iwsub.quantity)
-		FROM tb_item_warehouse iwsub
-		WHERE iwsub.itemID = i.itemID
-		  AND (
-				(prWarehouseID = 0)
-				OR (iwsub.warehouseID = prWarehouseID AND prWarehouseID != 0)
-		  )
-	 ) AS quantity
+		(
+			SELECT SUM(iwsub.quantity)
+			FROM tb_item_warehouse iwsub
+			WHERE iwsub.itemID = i.itemID
+			  AND (
+					(prWarehouseID = 0)
+					OR (iwsub.warehouseID = prWarehouseID AND prWarehouseID != 0)
+			  )
+		) AS quantity
 	FROM 
 		tb_item i
 		inner join tb_workflow_stage ws on 
@@ -28272,18 +28272,18 @@ BEGIN
 				ic.inventoryCategoryID = prCategoryID and   prCategoryID != 0  
 			)
 		)
-		GROUP BY 
-    i.itemNumber,
-    i.barCode,
-    cat.`name`,
-    ciu.name,
-    ic.name,
-    i.cost,
-    cur.`name`,
-    ciu.`name`,
-    IF(family.catalogItemID is null,family.`name`,family_cli.`name`),
-    i.isActive,
-    vendors
+	GROUP BY 
+		i.itemNumber,
+		i.barCode,
+		cat.`name`,
+		ciu.name,
+		ic.name,
+		i.cost,
+		cur.`name`,
+		ciu.`name`,
+		IF(family.catalogItemID is null,family.`name`,family_cli.`name`),
+		i.isActive,
+		vendors
 	ORDER BY 
 		ic.`name` , i.`name`; 
 END ;;
