@@ -1623,7 +1623,7 @@ WHERE
 
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1DB" 
+	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1PabloRosales" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_URL_PRINTER";## URLs PARA LA IMPRESION DE FACTURA 	
@@ -1777,14 +1777,14 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "281-230288-0003A" 
+	tb_company_parameter.value = "281-010487-0001T" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "281-230288-0003A" 
+	tb_company_parameter.value = "281-010487-0001T" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
@@ -1806,14 +1806,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Policía la estación media cuadra al sur, frente a la parada de buses la estación" 
+	tb_company_parameter.value = "Dónde era proquinsa 20 varas al sur contiguo a la policía distrito 2" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Distribuidora Rosales' , address = 'Policía la estación media cuadra al sur, frente a la parada de buses la estación' ,
+	NAME = 'Distribuidora Rosales' , address = 'Dónde era proquinsa 20 varas al sur contiguo a la policía distrito 2' ,
 	flavorID = 216 /*usuarioID*/,type='default'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

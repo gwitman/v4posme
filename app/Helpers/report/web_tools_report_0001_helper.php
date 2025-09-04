@@ -17932,7 +17932,7 @@ function helper_reporte80mmTransactionMasterPabloRosales(
                         @page {       
                           size: 2.7in 60in;                  
                           margin-top:0px;
-                          margin-left:15px;
+                          margin-left:30px;
                           margin-right:15px;
                         }
                         table{
