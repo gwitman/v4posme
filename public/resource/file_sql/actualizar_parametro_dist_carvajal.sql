@@ -875,14 +875,14 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8691-5793" 
+	tb_company_parameter.value = "TEL: 7701-9914" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8691-5793" 
+	tb_company_parameter.value = "TEL: 7701-9914" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -890,14 +890,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Estacion San Juan Leon" 
+	tb_company_parameter.value = "San Juan frente a la parada de bus a las comarcas mercado la estacion" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Distribuidora Carvajal' , address = 'Estacion San Juan Leon' , flavorID = 218
+	NAME = 'Distribuidora Carvajal' , address = 'San Juan frente a la parada de bus a las comarcas mercado la estacion' , flavorID = 218
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
