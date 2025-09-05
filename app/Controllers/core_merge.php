@@ -1011,7 +1011,19 @@ class core_merge extends _BaseController {
 				if (!file_exists($documentoPath)) {
 					mkdir($documentoPath, 0755, true);
 				}
-
+				
+				
+				echo "<div style='padding:10px; background:#f6ffed; border-left:5px solid #52c41a; margin:10px 0;'>
+						📁 Eliminandos archivos de backup
+					  </div>";
+				if (file_exists($documentoPath)) {
+					$this->eliminarDirectorio($documentoPath);
+				}
+				if (!file_exists($documentoPath)) {
+					mkdir($documentoPath, 0755, true);
+				}
+				
+				
 				echo "<div style='padding:10px; background:#f6ffed; border-left:5px solid #52c41a; margin:10px 0;'>
 						✅ Proceso completado para: <strong>{$currentParent}</strong>
 					  </div>";
