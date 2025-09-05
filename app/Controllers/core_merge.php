@@ -1005,6 +1005,12 @@ class core_merge extends _BaseController {
 					if (!file_exists($documentoPath)) {
 						mkdir($documentoPath, 0755, true);
 					}
+					
+					//Eliminarlos
+					$this->eliminarDirectorio($documentoPath);
+					
+					//Crearlo
+					mkdir($documentoPath, 0755, true);
 				}
 
 				$documentoPath = $path_file_of_app . "/public/resource/file_company/company_" . APP_COMPANY . "/component_1/component_item_0";
