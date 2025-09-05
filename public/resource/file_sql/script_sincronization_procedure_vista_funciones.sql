@@ -28193,99 +28193,108 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_inventory_get_report_list_item`(
     COMMENT 'Lista de Productos'
 BEGIN
 	SELECT 
-		i.itemNumber,
-		i.barCode,
-		case
-			when comp.flavorID = 309  then 
-				concat(i.`name` , ' ' , i.barCode) 
-			else 
-				i.name 
-		end as itemName,
-		cat.`name` as categoryName, 
-		ciu.name as unitMeasure,
-		ic.name as categoryName,
-	
-		i.cost as cost,
-		(select pp.price from tb_price pp where pp.itemID = i.itemID and pp.typePriceID = 154 limit 1) as price,
-		(select pp.price from tb_price pp where pp.itemID = i.itemID and pp.typePriceID = 155 limit 1) as price2,
-		(select pp.price from tb_price pp where pp.itemID = i.itemID and pp.typePriceID = 156 limit 1) as price3,
-		w.`name` as warehouseName,
-		cur.`name` as Moneda,
-		ciu.`name` as unidadMedidaName ,
-		IF(family.catalogItemID is null,family.`name`,family_cli.`name`) as familyName ,
-		i.isActive,
-		'1254' as vendors,  
-		(
-			SELECT SUM(iwsub.quantity)
-			FROM tb_item_warehouse iwsub
-			WHERE iwsub.itemID = i.itemID
-			  AND (
-					(prWarehouseID = 0)
-					OR (iwsub.warehouseID = prWarehouseID AND prWarehouseID != 0)
-			  )
-		) AS quantity
+		sub.itemNumber,
+		sub.barCode,
+		sub.itemName,
+		sub.categoryName,
+		sub.unitMeasure,
+		sub.cost,
+		sub.price,
+		sub.price2,
+		sub.price3,
+		sub.warehouseName,
+		sub.Moneda,
+		sub.unidadMedidaName,
+		sub.familyName,
+		sub.isActive,
+		sub.vendors,
+		sum(sub.quantity ) as quantity 
 	FROM 
-		tb_item i
-		inner join tb_workflow_stage ws on 
-			i.statusID = ws.workflowStageID 
-		inner join tb_catalog_item ciu on 
-			i.unitMeasureID = ciu.catalogItemID 
-		inner join tb_item_category ic on 
-			i.inventoryCategoryID = ic.inventoryCategoryID 
-			
-		inner join tb_item_category cat on 
-			i.inventoryCategoryID = cat.inventoryCategoryID 
-		inner join tb_currency cur on 
-			cur.currencyID = i.currencyID 
-		inner join tb_company comp on 
-			comp.companyID = i.companyID 
-		
-		inner join tb_item_warehouse iw on 
-			iw.itemID = i.itemID
-		inner join tb_warehouse w on
-			w.warehouseID = iw.warehouseID
-		
-			
-		left join tb_public_catalog_detail family_cli on 
-			family_cli.publicCatalogDetailID = i.familyID 
-		left join tb_catalog_item family on 
-			family.catalogItemID = i.familyID 
-	WHERE
-	 
-		i.isActive = 1 AND 
-		i.companyID = prCompanyID and 
 		(
-			(
-				prWarehouseID = 0 
-			)
-			or 
-			(
-				iw.warehouseID = prWarehouseID and   prWarehouseID != 0  
-			)
-		) and 
-		(
-			(
-				prCategoryID = 0 
-			)
-			or 
-			(
-				ic.inventoryCategoryID = prCategoryID and   prCategoryID != 0  
-			)
-		)
+			SELECT 
+				i.itemNumber,
+				i.barCode,
+				case
+					when comp.flavorID = 309  then 
+						concat(i.`name` , ' ' , i.barCode) 
+					else 
+						i.name 
+				end as itemName,
+				ic.name as categoryName,
+				ciu.name as unitMeasure,
+				i.cost as cost,
+				(select pp.price from tb_price pp where pp.itemID = i.itemID and pp.typePriceID = 154 limit 1) as price,
+				(select pp.price from tb_price pp where pp.itemID = i.itemID and pp.typePriceID = 155 limit 1) as price2,
+				(select pp.price from tb_price pp where pp.itemID = i.itemID and pp.typePriceID = 156 limit 1) as price3,
+				w.`name` as warehouseName,
+				cur.`name` as Moneda,
+				ciu.`name` as unidadMedidaName ,
+				IF(family.catalogItemID is null,family.`name`,family_cli.`name`) as familyName ,
+				i.isActive,
+				'1254' as vendors,  
+				iw.quantity AS quantity
+			FROM 
+				tb_item i
+				inner join tb_workflow_stage ws on 
+					i.statusID = ws.workflowStageID 
+				inner join tb_catalog_item ciu on 
+					i.unitMeasureID = ciu.catalogItemID 
+				inner join tb_item_category ic on 
+					i.inventoryCategoryID = ic.inventoryCategoryID 
+				inner join tb_currency cur on 
+					cur.currencyID = i.currencyID 
+				inner join tb_company comp on 
+					comp.companyID = i.companyID 		
+				left join tb_public_catalog_detail family_cli on 
+					family_cli.publicCatalogDetailID = i.familyID 
+				left join tb_catalog_item family on 
+					family.catalogItemID = i.familyID 
+					
+				inner join tb_item_warehouse iw on 
+					iw.itemID = i.itemID
+				inner join tb_warehouse w on
+					w.warehouseID = iw.warehouseID
+			WHERE
+				iw.quantity > 0 and 
+				i.isActive = 1 AND 
+				i.companyID = prCompanyID and 
+				(
+					(
+						prWarehouseID = 0 
+					)
+					or 
+					(
+						iw.warehouseID = prWarehouseID and   prWarehouseID != 0  
+					)
+				) and 
+				(
+					(
+						prCategoryID = 0 
+					)
+					or 
+					(
+						ic.inventoryCategoryID = prCategoryID and   prCategoryID != 0  
+					)
+				)			
+			ORDER BY 
+				w.`name` , ic.`name` , i.`name`
+		) sub
 	GROUP BY 
-		i.itemNumber,
-		i.barCode,
-		cat.`name`,
-		ciu.name,
-		ic.name,
-		i.cost,
-		cur.`name`,
-		ciu.`name`,
-		IF(family.catalogItemID is null,family.`name`,family_cli.`name`),
-		i.isActive,
-		vendors
-	ORDER BY 
-		ic.`name` , i.`name`; 
+		sub.itemNumber,
+		sub.barCode,
+		sub.itemName,
+		sub.categoryName,
+		sub.unitMeasure,
+		sub.cost,
+		sub.price,
+		sub.price2,
+		sub.price3,
+		sub.warehouseName,
+		sub.Moneda,
+		sub.unidadMedidaName,
+		sub.familyName,
+		sub.isActive,
+		sub.vendors; 
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
