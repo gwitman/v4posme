@@ -473,14 +473,9 @@ class financial_amort{
 		
 		
 		//Validar principal
-		//Sumar el total del principal
 		///////////////////////////////////////////////
 		$totalPrincipal 			= array_sum(array_map('floatval', array_column($result["detail"], "principal")));		
 		$dif						= round($capitalDesembolsado - $totalPrincipal,2);
-		
-
-		
-		//Primera validacon de cuadres de capital
 		$i 					= $i-1;
 		if($dif > 0)
 		{
@@ -496,34 +491,19 @@ class financial_amort{
 		$result["detail"][$i]["cuota"] 					= $result["detail"][$i]["principal"] + $result["detail"][$i]["interes"];
 		
 		
-		//Primera Validacion de interes
-		//Sumar el total interes
-		///////////////////////////////////////////////
-		//validar decimales en el total de interes
-		//si esta dentro del rango
-		$totalInteres 					= array_sum(array_map('floatval', array_column($result["detail"], "interes")));		
-		$totalInteresValidateDecimal 	= $this->validarDecimal(round($totalInteres,2),0.01,0.3);		
-		$rango							= $totalInteresValidateDecimal["rango"];
-		$valor							= $totalInteresValidateDecimal["valor"];		
-		if($rango == 1)
+		//Validar Interes
+		$totalInteres 					= array_sum(array_map('floatval', array_column($result["detail"], "interes")));	
+		$totalInteresCalculado 			= $montoTotalInteres;
+		$dif							= $totalInteresCalculado-$totalInteres;
+		if($dif > 0)
 		{
-			$result["detail"][$i]["interes"] 			= round($result["detail"][$i]["interes"] - $valor ,2);
+			$result["detail"][$i]["interes"] 			= round($result["detail"][$i]["interes"] + abs($dif) ,2);
 		}
-		
-		$totalInteresValidateDecimal 	= $this->validarDecimal(round($totalInteres,2),0.90,0.99);		
-		$rango							= $totalInteresValidateDecimal["rango"];
-		$valor							= $totalInteresValidateDecimal["valor"];
-		if($rango == 1)
+		else
 		{
-			$result["detail"][$i]["interes"] 			= round($result["detail"][$i]["interes"] + $valor ,2);
-		}		
+			$result["detail"][$i]["interes"] 			= round($result["detail"][$i]["interes"] - abs($dif) ,2);
+		}
 		$result["detail"][$i]["cuota"] 	= $result["detail"][$i]["principal"] + $result["detail"][$i]["interes"];
-		
-		
-		
-		
-		
-		
 		return $result;
 		
 	}
