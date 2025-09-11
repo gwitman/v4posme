@@ -504,10 +504,10 @@ class app_collection_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_collection_get_report_documents_credit(?,?,?,?);";
+				$query			= "CALL pr_collection_get_report_documents_credit(?,?,?,?,?);";
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$endOn]
+					[$companyID,$tocken,$userID,$startOn,$endOn]
 				);			
 				
 
