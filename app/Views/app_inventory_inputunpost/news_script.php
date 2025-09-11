@@ -355,23 +355,29 @@
 		
 		//Cambio en la cantidades
 		$(document).on("blur",".txtDetailQuantity",function(){
+			
 			$(this).val(fnFormatFloat(fnFormatNumber(fnFormatFloat($(this).val()),numberDecimal)));
 			var objrow_ = $(this).parent().parent()[0];
 			var objind_ = objTableDetailTransaction.fnGetPosition(objrow_);
 			var objdat_ = objTableDetailTransaction.fnGetData(objind_);								
-			objTableDetailTransaction.fnUpdate( $(this).val(), objind_, 6 );			
-			objTableDetailTransaction.fnUpdate(  parseFloat($(this).val()) * parseFloat(objdat_[7]), objind_, columnIndexSubTotal );
+			objTableDetailTransaction.fnUpdate( $(this).val(), objind_, 6 );		
+			var result 	=  parseFloat($(this).val()) * parseFloat(objdat_[7]);
+			result 		= result.toFixed(2);
+			objTableDetailTransaction.fnUpdate( result , objind_, columnIndexSubTotal );
 			fnUpdateDetail();
 			refreschChecked();
 		})
 		//Cambio en el Costo
 		$(document).on("blur",".txtDetailCost",function(){
+			
 			$(this).val(fnFormatFloat(fnFormatNumber(fnFormatFloat($(this).val()),numberDecimal)));
 			var objrow_ = $(this).parent().parent()[0];
 			var objind_ = objTableDetailTransaction.fnGetPosition(objrow_);
 			var objdat_ = objTableDetailTransaction.fnGetData(objind_);								
 			objTableDetailTransaction.fnUpdate(  $(this).val(), objind_, 7 );
-			objTableDetailTransaction.fnUpdate(  parseFloat($(this).val()) * parseFloat(objdat_[6]), objind_, columnIndexSubTotal );
+			var result 	= parseFloat(objdat_[6]) *  parseFloat($(this).val()) ;
+			result 		= result.toFixed(2);
+			objTableDetailTransaction.fnUpdate( result, objind_, columnIndexSubTotal );
 			fnUpdateDetail();
 			refreschChecked();
 		})
