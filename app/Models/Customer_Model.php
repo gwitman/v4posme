@@ -394,6 +394,7 @@ class Customer_Model extends Model  {
 		return $db->query($sql)->getResult();
 	}
 	
+	
 	function getIdentificationDuplicate($companyID)
     {
 		$db 		= db_connect();

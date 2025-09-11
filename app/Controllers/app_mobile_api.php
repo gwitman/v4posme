@@ -374,14 +374,22 @@ class app_mobile_api extends _BaseController
             $objListItem 	= $this->Item_Model->get_rowByCompanyIDToMobile($objWarehouseID);
 
             //Obtener lista de clients
-            $objListCustomer = $this->Customer_Model->get_rowByCompanyIDToMobile($companyID, $userID );
-
+			$objListCustomer = $this->Customer_Model->get_rowByCompanyIDToMobile($companyID, $userID );
+			
+			
             //Obtener lisa de paramtros
             $objListParameter = $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
 
             //Obtener documentos pendientes
-            $objListDocumentCredit 	= $this->Customer_Credit_Document_Model->get_rowByBalancePendingByCompanyToMobile($companyID, $userID );
-
+			if($objCompany->type=="tu_futuro")
+			{
+				$objListDocumentCredit 	= $this->Customer_Credit_Document_Model->get_rowByBalancePendingByCompanyToMobileTuFuturo($companyID, $userID );
+			}
+			else
+			{
+				$objListDocumentCredit 	= $this->Customer_Credit_Document_Model->get_rowByBalancePendingByCompanyToMobile($companyID, $userID );
+			}
+			
             //Obtener lista de amortizaciones
             $objListAmortization 	= $this->Customer_Credit_Amortization_Model->get_rowShareLateByCompanyToMobile($companyID, $userID );
 

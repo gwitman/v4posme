@@ -1777,14 +1777,14 @@ WHERE
 
 
 UPDATE  tb_company_parameter,tb_parameter SET
-    tb_company_parameter.value = "281-220289-0008U"
+    tb_company_parameter.value = "081-220289-008U"
 WHERE
     tb_company_parameter.parameterID = tb_parameter.parameterID AND
     tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO
 
 
 UPDATE  tb_company_parameter,tb_parameter SET
-    tb_company_parameter.value = "281-220289-0008U"
+    tb_company_parameter.value = "081-220289-008U"
 WHERE
     tb_company_parameter.parameterID = tb_parameter.parameterID AND
     tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC
