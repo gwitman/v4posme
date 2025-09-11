@@ -1261,6 +1261,49 @@ function helper_toCsv(array $data, string $delimiter = ','): string
 }
 
 
+/**
+ * Genera un CSV en memoria y devuelve su contenido como string
+ *
+ * @param array $headers  Encabezados del CSV
+ * @param array $mapping  Llaves del dataset que corresponden a cada columna
+ * @param array $data     Conjunto de registros (array asociativo)
+ * @param string $delimiter  Delimitador del CSV (por defecto coma)
+ * @return string
+ */
+function helper_generarCSV(array $headers, array $mapping, array $data, string $delimiter = ",") {
+    // Crear un flujo de memoria
+    $handle = fopen("php://temp", "w+");
+    
+    if ($handle === false) {
+        throw new Exception("No se pudo abrir el flujo en memoria.");
+    }
+
+    // Escribir encabezados
+    fputcsv($handle, $headers, $delimiter);
+
+    // Escribir filas
+    foreach ($data as $row) {
+        $line = [];
+        foreach ($mapping as $key) {
+            $line[] = isset($row[$key]) ? $row[$key] : "";
+        }
+        fputcsv($handle, $line, $delimiter);
+    }
+
+    // Rewind para leer desde el inicio
+    rewind($handle);
+
+    // Obtener el contenido
+    $csv = stream_get_contents($handle);
+
+    // Cerrar flujo
+    fclose($handle);
+
+    return $csv;
+}
+
+
+
 function helper_sendFtp($csvContent, $merchanId, $ftpIp, $ftpUser, $ftpPass, $ftpPort, $fileName, $remoteDir)
 {
     $remoteFile 						= $fileName;

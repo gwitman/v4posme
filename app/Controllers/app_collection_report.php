@@ -524,17 +524,138 @@ class app_collection_report extends _BaseController {
 				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_customer_credit" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
 				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
 				
-				return view("app_collection_report/documents_credit/view_a_disemp",$objDataResult);//--finview-r
-				
+				if(count($objDataResult["objDetail"]) <= 1500 )
+				{
+					//return view("app_collection_report/documents_credit/view_a_disemp",$objDataResult);//--finview-r
+				}
+				else
+				{
+					$objParameterDeliminterCsv	 = $this->core_web_parameter->getParameter("CORE_CSV_SPLIT",$companyID);
+					$objParameterDeliminterCsv	 = $objParameterDeliminterCsv->value;
+					
+					
+					// Encabezados
+					$headers = [
+						"Usuario",	
+						"Cod. Cliente",
+						"F.R. Cliente",	
+						"Cliente",
+						"Telefono",		
+						"Estado Civil",
+						"Categoria",
+						"Identificacion",
+						"Sexo",
+						"Direccion",
+						"Cod. Desembolso",
+						"Plazo",
+						"Interes",				
+						"F. Desembolso",
+						"F. Ultimo abono",
+						"Estado Cliente",	
+						"Estado Desembolso",
+						"Frecuencia de pago",
+						"Desembolso",
+						"Desembolso + Interes",
+						"Monto Pagado",
+						"Avance",
+						"Saldo"
+					];
+
+					// Mapping de las llaves del dataset
+					$mapping = [
+						"nickname",	
+						"customerNumber",
+						"customerCreatedOn",
+						"customerName",
+						"phoneNumber",	
+						"statusCivil",
+						"comercialName",
+						"identification",
+						"sexo",
+						"location",
+						"documentNumber",
+						"term",
+						"interes",	
+						"dateDocument",
+						"dateLastShareDocument",
+						"statusCustomer",
+						"statusName",
+						"periodPay",	
+						"amountDocument",
+						"deudaTotal",
+						"montoPagado",	
+						"avance",
+						"saldo"	
+					];
+
+					// Generar CSV
+					$csv = helper_generarCSV($headers, $mapping, $objDataResult["objDetail"], ",");
+
+					// Si quieres descargarlo:
+					header("Content-Type: text/csv");
+					header("Content-Disposition: attachment; filename=reporte.csv");
+					echo $csv;
+					exit;
+
+
+
+
+					//-wg-//Descargar Datos
+					//-wg-//file name 
+					//-wg-$filename = 'app_collection_report_documents_credit_'.date('Ymd').'.csv'; 
+					//-wg-header("Content-Description: File Transfer"); 
+					//-wg-header("Content-Disposition: attachment; filename=$filename"); 
+					//-wg-header("Content-Type: application/csv; ");
+					//-wg-
+					//-wg-
+					//-wg-// file creation 
+					//-wg-$file 	= fopen('php://output', 'w');
+					//-wg-$header = array(
+					//-wg-	"Compra"			,
+					//-wg-	"Fecha"				,
+					//-wg-	"Moneda"			,
+					//-wg-	"Proveedor"			,
+					//-wg-	"Bodega"			,
+					//-wg-	"Producto"			,
+					//-wg-	"Descripcion"		,
+					//-wg-	"Cantidad"			,
+					//-wg-	"Costo Unitario"	,
+					//-wg-	"Costo Total"
+					//-wg-); 
+					//-wg-
+					//-wg-//Agregar cabecera
+					//-wg-fputcsv($file, $header,$objParameterDeliminterCsv);
+					//-wg-
+					//-wg-//Agregar fila
+					//-wg-foreach ($objDataResult["objDetail"] as $key=>$line){
+					//-wg-		$row 		= array();
+					//-wg-		$row[0]		= $line["transactionNumber"];
+					//-wg-		$row[1]		= $line["createdOn"];
+					//-wg-		$row[2]		= $line["currencyName"];
+					//-wg-		$row[3]		= $line["providerName"];
+					//-wg-		$row[4]		= $line["warehouseName"];
+					//-wg-		$row[5]		= "'".$line["itemNumber"];
+					//-wg-		$row[6]		= $line["itemName"];
+					//-wg-		$row[7]		= $line["quantity"];
+					//-wg-		$row[8]		= $line["unitaryCost"];
+					//-wg-		$row[9]		= $line["cost"];
+					//-wg-		fputcsv($file,$row,$objParameterDeliminterCsv); 
+					//-wg-}
+					//-wg-
+					//-wg-//retonar
+					//-wg-fclose($file); 
+					//-wg-exit; 
+					
+				}
 				
 			}
 		}
 		catch(\Exception $ex)
 		{
-			if (empty($dataSession)) {
-				return redirect()->to(base_url("core_acount/login"));
-			}
-			
+			//if (empty($dataSession)) {
+			//	return redirect()->to(base_url("core_acount/login"));
+			//}
+			//
 			$data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
