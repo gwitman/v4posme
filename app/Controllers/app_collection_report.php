@@ -523,130 +523,131 @@ class app_collection_report extends _BaseController {
 				$objDataResult["fontSize"]					= "smaller";
 				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_customer_credit" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
 				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
+				return view("app_collection_report/documents_credit/view_a_disemp",$objDataResult);//--finview-r
 				
-				if(count($objDataResult["objDetail"]) <= 1500 )
-				{
-					//return view("app_collection_report/documents_credit/view_a_disemp",$objDataResult);//--finview-r
-				}
-				else
-				{
-					$objParameterDeliminterCsv	 = $this->core_web_parameter->getParameter("CORE_CSV_SPLIT",$companyID);
-					$objParameterDeliminterCsv	 = $objParameterDeliminterCsv->value;
-					
-					
-					// Encabezados
-					$headers = [
-						"Usuario",	
-						"Cod. Cliente",
-						"F.R. Cliente",	
-						"Cliente",
-						"Telefono",		
-						"Estado Civil",
-						"Categoria",
-						"Identificacion",
-						"Sexo",
-						"Direccion",
-						"Cod. Desembolso",
-						"Plazo",
-						"Interes",				
-						"F. Desembolso",
-						"F. Ultimo abono",
-						"Estado Cliente",	
-						"Estado Desembolso",
-						"Frecuencia de pago",
-						"Desembolso",
-						"Desembolso + Interes",
-						"Monto Pagado",
-						"Avance",
-						"Saldo"
-					];
-
-					// Mapping de las llaves del dataset
-					$mapping = [
-						"nickname",	
-						"customerNumber",
-						"customerCreatedOn",
-						"customerName",
-						"phoneNumber",	
-						"statusCivil",
-						"comercialName",
-						"identification",
-						"sexo",
-						"location",
-						"documentNumber",
-						"term",
-						"interes",	
-						"dateDocument",
-						"dateLastShareDocument",
-						"statusCustomer",
-						"statusName",
-						"periodPay",	
-						"amountDocument",
-						"deudaTotal",
-						"montoPagado",	
-						"avance",
-						"saldo"	
-					];
-
-					// Generar CSV
-					$csv = helper_generarCSV($headers, $mapping, $objDataResult["objDetail"], ",");
-
-					// Si quieres descargarlo:
-					header("Content-Type: text/csv");
-					header("Content-Disposition: attachment; filename=reporte.csv");
-					echo $csv;
-					exit;
-
-
-
-
-					//-wg-//Descargar Datos
-					//-wg-//file name 
-					//-wg-$filename = 'app_collection_report_documents_credit_'.date('Ymd').'.csv'; 
-					//-wg-header("Content-Description: File Transfer"); 
-					//-wg-header("Content-Disposition: attachment; filename=$filename"); 
-					//-wg-header("Content-Type: application/csv; ");
-					//-wg-
-					//-wg-
-					//-wg-// file creation 
-					//-wg-$file 	= fopen('php://output', 'w');
-					//-wg-$header = array(
-					//-wg-	"Compra"			,
-					//-wg-	"Fecha"				,
-					//-wg-	"Moneda"			,
-					//-wg-	"Proveedor"			,
-					//-wg-	"Bodega"			,
-					//-wg-	"Producto"			,
-					//-wg-	"Descripcion"		,
-					//-wg-	"Cantidad"			,
-					//-wg-	"Costo Unitario"	,
-					//-wg-	"Costo Total"
-					//-wg-); 
-					//-wg-
-					//-wg-//Agregar cabecera
-					//-wg-fputcsv($file, $header,$objParameterDeliminterCsv);
-					//-wg-
-					//-wg-//Agregar fila
-					//-wg-foreach ($objDataResult["objDetail"] as $key=>$line){
-					//-wg-		$row 		= array();
-					//-wg-		$row[0]		= $line["transactionNumber"];
-					//-wg-		$row[1]		= $line["createdOn"];
-					//-wg-		$row[2]		= $line["currencyName"];
-					//-wg-		$row[3]		= $line["providerName"];
-					//-wg-		$row[4]		= $line["warehouseName"];
-					//-wg-		$row[5]		= "'".$line["itemNumber"];
-					//-wg-		$row[6]		= $line["itemName"];
-					//-wg-		$row[7]		= $line["quantity"];
-					//-wg-		$row[8]		= $line["unitaryCost"];
-					//-wg-		$row[9]		= $line["cost"];
-					//-wg-		fputcsv($file,$row,$objParameterDeliminterCsv); 
-					//-wg-}
-					//-wg-
-					//-wg-//retonar
-					//-wg-fclose($file); 
-					//-wg-exit; 
-					
-				}
+				//wg-rallback-if(count($objDataResult["objDetail"]) <= 1500 )
+				//wg-rallback-{
+				//wg-rallback-	
+				//wg-rallback-}
+				//wg-rallback-else
+				//wg-rallback-{
+				//wg-rallback-	$objParameterDeliminterCsv	 = $this->core_web_parameter->getParameter("CORE_CSV_SPLIT",$companyID);
+				//wg-rallback-	$objParameterDeliminterCsv	 = $objParameterDeliminterCsv->value;
+				//wg-rallback-	
+				//wg-rallback-	
+				//wg-rallback-	// Encabezados
+				//wg-rallback-	$headers = [
+				//wg-rallback-		"Usuario",	
+				//wg-rallback-		"Cod. Cliente",
+				//wg-rallback-		"F.R. Cliente",	
+				//wg-rallback-		"Cliente",
+				//wg-rallback-		"Telefono",		
+				//wg-rallback-		"Estado Civil",
+				//wg-rallback-		"Categoria",
+				//wg-rallback-		"Identificacion",
+				//wg-rallback-		"Sexo",
+				//wg-rallback-		"Direccion",
+				//wg-rallback-		"Cod. Desembolso",
+				//wg-rallback-		"Plazo",
+				//wg-rallback-		"Interes",				
+				//wg-rallback-		"F. Desembolso",
+				//wg-rallback-		"F. Ultimo abono",
+				//wg-rallback-		"Estado Cliente",	
+				//wg-rallback-		"Estado Desembolso",
+				//wg-rallback-		"Frecuencia de pago",
+				//wg-rallback-		"Desembolso",
+				//wg-rallback-		"Desembolso + Interes",
+				//wg-rallback-		"Monto Pagado",
+				//wg-rallback-		"Avance",
+				//wg-rallback-		"Saldo"
+				//wg-rallback-	];
+				//wg-rallback-
+				//wg-rallback-	// Mapping de las llaves del dataset
+				//wg-rallback-	$mapping = [
+				//wg-rallback-		"nickname",	
+				//wg-rallback-		"customerNumber",
+				//wg-rallback-		"customerCreatedOn",
+				//wg-rallback-		"customerName",
+				//wg-rallback-		"phoneNumber",	
+				//wg-rallback-		"statusCivil",
+				//wg-rallback-		"comercialName",
+				//wg-rallback-		"identification",
+				//wg-rallback-		"sexo",
+				//wg-rallback-		"location",
+				//wg-rallback-		"documentNumber",
+				//wg-rallback-		"term",
+				//wg-rallback-		"interes",	
+				//wg-rallback-		"dateDocument",
+				//wg-rallback-		"dateLastShareDocument",
+				//wg-rallback-		"statusCustomer",
+				//wg-rallback-		"statusName",
+				//wg-rallback-		"periodPay",	
+				//wg-rallback-		"amountDocument",
+				//wg-rallback-		"deudaTotal",
+				//wg-rallback-		"montoPagado",	
+				//wg-rallback-		"avance",
+				//wg-rallback-		"saldo"	
+				//wg-rallback-	];
+				//wg-rallback-
+				//wg-rallback-	// Generar CSV
+				//wg-rallback-	$csv = helper_generarCSV($headers, $mapping, $objDataResult["objDetail"], ",");
+				//wg-rallback-
+				//wg-rallback-	// Si quieres descargarlo:
+				//wg-rallback-	header("Content-Type: text/csv");
+				//wg-rallback-	header("Content-Disposition: attachment; filename=reporte.csv");
+				//wg-rallback-	echo $csv;
+				//wg-rallback-	exit;
+				//wg-rallback-
+				//wg-rallback-
+				//wg-rallback-
+				//wg-rallback-
+				//wg-rallback-	//-wg-//Descargar Datos
+				//wg-rallback-	//-wg-//file name 
+				//wg-rallback-	//-wg-$filename = 'app_collection_report_documents_credit_'.date('Ymd').'.csv'; 
+				//wg-rallback-	//-wg-header("Content-Description: File Transfer"); 
+				//wg-rallback-	//-wg-header("Content-Disposition: attachment; filename=$filename"); 
+				//wg-rallback-	//-wg-header("Content-Type: application/csv; ");
+				//wg-rallback-	//-wg-
+				//wg-rallback-	//-wg-
+				//wg-rallback-	//-wg-// file creation 
+				//wg-rallback-	//-wg-$file 	= fopen('php://output', 'w');
+				//wg-rallback-	//-wg-$header = array(
+				//wg-rallback-	//-wg-	"Compra"			,
+				//wg-rallback-	//-wg-	"Fecha"				,
+				//wg-rallback-	//-wg-	"Moneda"			,
+				//wg-rallback-	//-wg-	"Proveedor"			,
+				//wg-rallback-	//-wg-	"Bodega"			,
+				//wg-rallback-	//-wg-	"Producto"			,
+				//wg-rallback-	//-wg-	"Descripcion"		,
+				//wg-rallback-	//-wg-	"Cantidad"			,
+				//wg-rallback-	//-wg-	"Costo Unitario"	,
+				//wg-rallback-	//-wg-	"Costo Total"
+				//wg-rallback-	//-wg-); 
+				//wg-rallback-	//-wg-
+				//wg-rallback-	//-wg-//Agregar cabecera
+				//wg-rallback-	//-wg-fputcsv($file, $header,$objParameterDeliminterCsv);
+				//wg-rallback-	//-wg-
+				//wg-rallback-	//-wg-//Agregar fila
+				//wg-rallback-	//-wg-foreach ($objDataResult["objDetail"] as $key=>$line){
+				//wg-rallback-	//-wg-		$row 		= array();
+				//wg-rallback-	//-wg-		$row[0]		= $line["transactionNumber"];
+				//wg-rallback-	//-wg-		$row[1]		= $line["createdOn"];
+				//wg-rallback-	//-wg-		$row[2]		= $line["currencyName"];
+				//wg-rallback-	//-wg-		$row[3]		= $line["providerName"];
+				//wg-rallback-	//-wg-		$row[4]		= $line["warehouseName"];
+				//wg-rallback-	//-wg-		$row[5]		= "'".$line["itemNumber"];
+				//wg-rallback-	//-wg-		$row[6]		= $line["itemName"];
+				//wg-rallback-	//-wg-		$row[7]		= $line["quantity"];
+				//wg-rallback-	//-wg-		$row[8]		= $line["unitaryCost"];
+				//wg-rallback-	//-wg-		$row[9]		= $line["cost"];
+				//wg-rallback-	//-wg-		fputcsv($file,$row,$objParameterDeliminterCsv); 
+				//wg-rallback-	//-wg-}
+				//wg-rallback-	//-wg-
+				//wg-rallback-	//-wg-//retonar
+				//wg-rallback-	//-wg-fclose($file); 
+				//wg-rallback-	//-wg-exit; 
+				//wg-rallback-	
+				//wg-rallback-}
 				
 			}
 		}
