@@ -470,7 +470,7 @@ class Customer_Credit_Document_Model extends Model  {
 								d.documentNumber,				
 								d.currencyID,
 								cur.simbol as currencyName,
-								d.statusID as statusDocument,
+								d.statusID as statusDocument,	
 								min(ex.ratio) as exchangeRate,
 								min(a.creditAmortizationID) as creditAmortizationID,
 								min(a.dateApply) as dateApply,					
@@ -508,22 +508,7 @@ class Customer_Credit_Document_Model extends Model  {
 										inner join tb_customer ccx on 
 											rrx.customerID = ccx.entityID 
 									where
-										/* 
-										   Se muestran únicamente los registros cuya fecha de pago corresponde a:
-										   - Quincenales
-										   - Mensuales
-										   - Diarios
-
-										   Los registros de tipo semanal solo se muestran si coincide con 
-										   el día de la semana correspondiente.
-										*/
-										rrx.isActive = 1 and 
-										(
-											IFNULL(rrx.reference1,'') = '' or 
-											(
-												UPPER(IFNULL(rrx.reference1,'')) =  UPPER(fn_get_nombre_del_dia(DATE_SUB(NOW(), INTERVAL 3 HOUR)))
-											)
-										)
+										rrx.isActive = 1 
 								) as usr  on 
 									usr.customerID = cust.customerID 
 									
@@ -532,13 +517,24 @@ class Customer_Credit_Document_Model extends Model  {
 									ex.targetCurrencyID = 2 and 
 									ex.date = DATE(now()) 
 							where 
-								d.companyID = $companyID  and 
-								usr.userID = $userID  and 
+								d.companyID = $companyID /*2*/  and 
+								usr.userID = $userID /*913*/ and 
 								d.isActive = 1 and 				
 								a.isActive = 1 and 
 								wsa.aplicable = 1 and 
 								wsd.aplicable = 1 and 
-								a.remaining > 0  
+								a.remaining > 0 and 
+								d.entityID in (
+									select 
+										vcc.entityID 
+									from 
+										tb_customer_credit_document vcc 
+										inner join tb_customer_credit_amoritization vamo on 
+											vamo.customerCreditDocumentID = vcc.customerCreditDocumentID 
+									where 
+										vamo.remaining > 0 and 
+										vamo.dateApply <= NOW() 
+								)
 							group by 
 								d.entityID,
 								d.customerCreditDocumentID,
@@ -546,7 +542,7 @@ class Customer_Credit_Document_Model extends Model  {
 								d.documentNumber,				
 								d.currencyID,
 								cur.name, 
-								d.statusID
+								d.statusID 
 							order by 
 								d.customerCreditDocumentID 
 				) k 
