@@ -33,7 +33,7 @@ use App\Models\Core\Bd_Model;
                                         $name = str_replace("@", "", $reportingParameterValue->name);
 
                                         // Si es un control oculto, no lo mostramos en las columnas
-                                        if (in_array($reportingParameterValue->type, ['userID', 'tocketID', 'companyID'])) {
+                                        if (in_array($reportingParameterValue->type, ['userID', 'tocketID', 'companyID','fixed'])) {
                                             echo '<input type="hidden" id="' . $name . '" name="' . $name . '" value="' . ($reportingParameterValue->type === 'userID' ? $userID : ($reportingParameterValue->type === 'companyID' ? $companyID : $reportingParameterValue->datasource)) . '">';
                                             continue;
                                         }
