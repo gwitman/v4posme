@@ -6,6 +6,20 @@
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "Dolar" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT";## Moneda en que se deben de presntar los reportes
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "Dolar" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "ACCOUNTING_CURRENCY_NAME_REPORT";## Moneda de Reporte para Presentar los Estados Financieros 
+				
+				
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "DEFAULT" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
@@ -1312,12 +1326,6 @@ WHERE
 	tb_parameter.name = "ACCOUNTING_CURRENCY_NAME_EXTERNAL";## MONEXA EXTRAJERA 
 				
 
-UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Cordoba" 
-WHERE 
-	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "ACCOUNTING_CURRENCY_NAME_REPORT";## Moneda de Reporte para Presentar los Estados Financieros 
-				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "Cordoba" 
@@ -1750,7 +1758,7 @@ Eliminar o desactivar usuarios
 
 /*tipo de cambio de dolares a cordoba*/
 update tb_exchange_rate set 
-	ratio = 36 
+	ratio = 36.90 
 where 
 	currencyID = 2
 	and targetCurrencyID = 1; 
@@ -1758,7 +1766,7 @@ where
 	
 /*tipo de cambio de dolares a cordoba*/
 update tb_exchange_rate set 
-	ratio = 0.027777 
+	ratio = 0.02710027
 where 
 	currencyID = 1
 	and targetCurrencyID = 2; 
