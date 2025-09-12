@@ -1762,7 +1762,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Comercial San Jose' , address = 'Centro de salud, 25v. al Oeste' ,
-	flavorID = 889 /*usuarioID*/,type='default'  , abreviature='demo'
+	flavorID = 889 /*usuarioID*/,type='comercialSanJose'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
