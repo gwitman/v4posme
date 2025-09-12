@@ -114,107 +114,11 @@
 		$configColumn["8"]["FiledSoucePrefix"]	= "";
 		$configColumn["8"]["Width"]			= "80px";
 			
-		$configColumn["9"]["Titulo"] 		= "Moneda";
-		$configColumn["9"]["TituloFoot"]	= "";
-		$configColumn["9"]["FiledSouce"]	= "moneda";
-		$configColumn["9"]["Colspan"] 		= "1";
-		$configColumn["9"]["Formato"] 		= "";
-		$configColumn["9"]["Total"] 		= False;
-		$configColumn["9"]["Alineacion"] 	= "Left";
-		$configColumn["9"]["TotalValor"] 	= 0;
-		$configColumn["9"]["FiledSoucePrefix"]	= "";
-		$configColumn["9"]["Width"]			= "60px";
-		
-		$configColumn["10"]["Titulo"] 		= "Capital Saldo";
-		$configColumn["10"]["TituloFoot"]	= "";
-		$configColumn["10"]["FiledSouce"]	= "balanceDocument";
-		$configColumn["10"]["Colspan"] 		= "1";
-		$configColumn["10"]["Formato"] 		= "Number";
-		$configColumn["10"]["Total"] 		= False;
-		$configColumn["10"]["Alineacion"] 	= "Right";
-		$configColumn["10"]["TotalValor"] 	= 0;
-		$configColumn["10"]["FiledSoucePrefix"]	= "";
-		$configColumn["10"]["Width"]			= "130px";
-		
-		$configColumn["11"]["Titulo"] 		= "Dias Atrasados";
-		$configColumn["11"]["TituloFoot"]	= "";
-		$configColumn["11"]["FiledSouce"]	= "dayAtrazo";
-		$configColumn["11"]["Colspan"] 		= "1";
-		$configColumn["11"]["Formato"] 		= "Number";
-		$configColumn["11"]["Total"] 		= False;
-		$configColumn["11"]["Alineacion"] 	= "Right";
-		$configColumn["11"]["TotalValor"] 	= 0;
-		$configColumn["11"]["FiledSoucePrefix"]	= "";
-		$configColumn["11"]["Width"]			= "140px";
-		
-		$configColumn["12"]["Titulo"] 		= "Monto Atrazado";
-		$configColumn["12"]["TituloFoot"]	= "";
-		$configColumn["12"]["FiledSouce"]	= "amountAtrazo";
-		$configColumn["12"]["Colspan"] 		= "1";
-		$configColumn["12"]["Formato"] 		= "Number";
-		$configColumn["12"]["Total"] 		= True;
-		$configColumn["12"]["Alineacion"] 	= "Right";
-		$configColumn["12"]["TotalValor"] 	= 0;
-		$configColumn["12"]["FiledSoucePrefix"]	= "";
-		$configColumn["12"]["Width"]			= "140px";
-		
-		$configColumn["13"]["Titulo"] 		= "Monto Total de Interes del Credito";
-		$configColumn["13"]["TituloFoot"]	= "";
-		$configColumn["13"]["FiledSouce"]	= "interestTotalMontoDocument";
-		$configColumn["13"]["Colspan"] 		= "1";
-		$configColumn["13"]["Formato"] 		= "Number";
-		$configColumn["13"]["Total"] 		= False;
-		$configColumn["13"]["Alineacion"] 	= "Right";
-		$configColumn["13"]["TotalValor"] 		= 0;
-		$configColumn["13"]["FiledSoucePrefix"]	= "";
-		$configColumn["13"]["Width"]			= "260px";
-		
-		$configColumn["14"]["Titulo"] 		= "Vencimiento de Ultima Cuota";
-		$configColumn["14"]["TituloFoot"]	= "";
-		$configColumn["14"]["FiledSouce"]	= "vencimientoUltimaCuota";
-		$configColumn["14"]["Colspan"] 		= "1";
-		$configColumn["14"]["Formato"] 		= "";
-		$configColumn["14"]["Total"] 		= False;
-		$configColumn["14"]["Alineacion"] 	= "Left";
-		$configColumn["14"]["TotalValor"] 		= 0;
-		$configColumn["14"]["FiledSoucePrefix"]	= "";
-		$configColumn["14"]["Width"]			= "260px";
-		
-		$configColumn["15"]["Titulo"] 		= "Promedio de Pago en Dia";
-		$configColumn["15"]["TituloFoot"]	= "";
-		$configColumn["15"]["FiledSouce"]	= "promedioDiaPago";
-		$configColumn["15"]["Colspan"] 		= "1";
-		$configColumn["15"]["Formato"] 		= "Number";
-		$configColumn["15"]["Total"] 		= False;
-		$configColumn["15"]["Alineacion"] 	= "Right";
-		$configColumn["15"]["TotalValor"] 		= 0;
-		$configColumn["15"]["FiledSoucePrefix"]	= "";
-		$configColumn["15"]["Width"]			= "260px";
-		
-		$configColumn["16"]["Titulo"] 		= "La ultima cuota fue cancelada a los X Dias";
-		$configColumn["16"]["TituloFoot"]	= "";
-		$configColumn["16"]["FiledSouce"]	= "atrasoCancelacionDia";
-		$configColumn["16"]["Colspan"] 		= "1";
-		$configColumn["16"]["Formato"] 		= "Number";
-		$configColumn["16"]["Total"] 		= False;
-		$configColumn["16"]["Alineacion"] 	= "Right";
-		$configColumn["16"]["TotalValor"] 		= 0;
-		$configColumn["16"]["FiledSoucePrefix"]	= "";
-		$configColumn["16"]["Width"]			= "320px";
-		
-		$configColumn["17"]["Titulo"] 		= "Nota";
-		$configColumn["17"]["TituloFoot"]	= "";
-		$configColumn["17"]["FiledSouce"]	= "nota";
-		$configColumn["17"]["Colspan"] 		= "1";
-		$configColumn["17"]["Formato"] 		= "";
-		$configColumn["17"]["Total"] 		= False;
-		$configColumn["17"]["Alineacion"] 	= "Left";
-		$configColumn["17"]["TotalValor"] 		= 0;
-		$configColumn["17"]["FiledSoucePrefix"]	= "";
-		$configColumn["17"]["Width"]			= "120px";
 		
 		
-		$resultado = helper_reporteGeneralCreateTable($objDocument,$configColumn,'2700px');
+		$resultado = helper_reporteGeneralCreateTable($objDocument,$configColumn,'1000px');
+		
+		
 		?>
 		
 		<?php 
@@ -225,7 +129,7 @@
 			'ESTADO DE CUENTA DEL CLIENTE '.$objClient["customerNumber"],
 			"",
 			"",
-			$resultado["width"]
+			(str_replace("px","",$resultado["width"]) * 2)."px"
 		); 
 		?>
 		
@@ -332,6 +236,7 @@
 		$configColumn1["11"]["FiledSoucePrefix"]	= "";
 		$configColumn1["11"]["Width"]				= "195px";
 
+		
 		$resultado2 = helper_reporteGeneralCreateTableVertical(
 			$objClient,
 			$configColumn1,
@@ -367,6 +272,136 @@
 		
 		<?php 
 		echo $resultado["table"];
+		
+		
+		$configColumn2["1"]["Titulo"] 		= "Documento";
+		$configColumn2["1"]["TituloFoot"]	= "";
+		$configColumn2["1"]["FiledSouce"]	= "documentNumber";
+		$configColumn2["1"]["Colspan"] 		= "1";
+		$configColumn2["1"]["Formato"] 		= "";
+		$configColumn2["1"]["Total"] 		= False;
+		$configColumn2["1"]["Alineacion"] 	= "Left";
+		$configColumn2["1"]["TotalValor"] 	= 0;
+		$configColumn2["1"]["FiledSoucePrefix"]	= "";
+		$configColumn2["1"]["Width"]			= "83px";
+		
+		$configColumn2["9"]["Titulo"] 		= "Moneda";
+		$configColumn2["9"]["TituloFoot"]	= "";
+		$configColumn2["9"]["FiledSouce"]	= "moneda";
+		$configColumn2["9"]["Colspan"] 		= "1";
+		$configColumn2["9"]["Formato"] 		= "";
+		$configColumn2["9"]["Total"] 		= False;
+		$configColumn2["9"]["Alineacion"] 	= "Left";
+		$configColumn2["9"]["TotalValor"] 	= 0;
+		$configColumn2["9"]["FiledSoucePrefix"]	= "";
+		$configColumn2["9"]["Width"]			= "83px";
+					 
+		$configColumn2["10"]["Titulo"] 		= "Capital Saldo";
+		$configColumn2["10"]["TituloFoot"]	= "";
+		$configColumn2["10"]["FiledSouce"]	= "balanceDocument";
+		$configColumn2["10"]["Colspan"] 		= "1";
+		$configColumn2["10"]["Formato"] 		= "Number";
+		$configColumn2["10"]["Total"] 		= False;
+		$configColumn2["10"]["Alineacion"] 	= "Right";
+		$configColumn2["10"]["TotalValor"] 	= 0;
+		$configColumn2["10"]["FiledSoucePrefix"]	= "";
+		$configColumn2["10"]["Width"]			= "83px";
+					 
+		$configColumn2["11"]["Titulo"] 		= "Dias Atrasados";
+		$configColumn2["11"]["TituloFoot"]	= "";
+		$configColumn2["11"]["FiledSouce"]	= "dayAtrazo";
+		$configColumn2["11"]["Colspan"] 		= "1";
+		$configColumn2["11"]["Formato"] 		= "Number";
+		$configColumn2["11"]["Total"] 		= False;
+		$configColumn2["11"]["Alineacion"] 	= "Right";
+		$configColumn2["11"]["TotalValor"] 	= 0;
+		$configColumn2["11"]["FiledSoucePrefix"]	= "";
+		$configColumn2["11"]["Width"]			= "83px";
+					 
+		$configColumn2["12"]["Titulo"] 		= "Monto Atrazado";
+		$configColumn2["12"]["TituloFoot"]	= "";
+		$configColumn2["12"]["FiledSouce"]	= "amountAtrazo";
+		$configColumn2["12"]["Colspan"] 		= "1";
+		$configColumn2["12"]["Formato"] 		= "Number";
+		$configColumn2["12"]["Total"] 		= True;
+		$configColumn2["12"]["Alineacion"] 	= "Right";
+		$configColumn2["12"]["TotalValor"] 	= 0;
+		$configColumn2["12"]["FiledSoucePrefix"]	= "";
+		$configColumn2["12"]["Width"]			= "83px";
+					 
+		$configColumn2["13"]["Titulo"] 		= "Monto Total de Interes del Credito";
+		$configColumn2["13"]["TituloFoot"]	= "";
+		$configColumn2["13"]["FiledSouce"]	= "interestTotalMontoDocument";
+		$configColumn2["13"]["Colspan"] 		= "1";
+		$configColumn2["13"]["Formato"] 		= "Number";
+		$configColumn2["13"]["Total"] 		= False;
+		$configColumn2["13"]["Alineacion"] 	= "Right";
+		$configColumn2["13"]["TotalValor"] 		= 0;
+		$configColumn2["13"]["FiledSoucePrefix"]	= "";
+		$configColumn2["13"]["Width"]			= "83px";
+					 
+		
+		$resultado3 = helper_reporteGeneralCreateTable($objDocument,$configColumn2,'1000px');
+		echo $resultado3["table"];
+		
+		
+		
+		$configColumn3["1"]["Titulo"] 		= "Documento";
+		$configColumn3["1"]["TituloFoot"]	= "";
+		$configColumn3["1"]["FiledSouce"]	= "documentNumber";
+		$configColumn3["1"]["Colspan"] 		= "1";
+		$configColumn3["1"]["Formato"] 		= "";
+		$configColumn3["1"]["Total"] 		= False;
+		$configColumn3["1"]["Alineacion"] 	= "Left";
+		$configColumn3["1"]["TotalValor"] 	= 0;
+		$configColumn3["1"]["FiledSoucePrefix"]	= "";
+		$configColumn3["1"]["Width"]			= "100px";
+		
+		$configColumn3["14"]["Titulo"] 		= "Vencimiento de Ultima Cuota";
+		$configColumn3["14"]["TituloFoot"]	= "";
+		$configColumn3["14"]["FiledSouce"]	= "vencimientoUltimaCuota";
+		$configColumn3["14"]["Colspan"] 		= "1";
+		$configColumn3["14"]["Formato"] 		= "";
+		$configColumn3["14"]["Total"] 		= False;
+		$configColumn3["14"]["Alineacion"] 	= "Left";
+		$configColumn3["14"]["TotalValor"] 		= 0;
+		$configColumn3["14"]["FiledSoucePrefix"]	= "";
+		$configColumn3["14"]["Width"]			= "100px";
+					 
+		$configColumn3["15"]["Titulo"] 		= "Promedio de Pago en Dia";
+		$configColumn3["15"]["TituloFoot"]	= "";
+		$configColumn3["15"]["FiledSouce"]	= "promedioDiaPago";
+		$configColumn3["15"]["Colspan"] 		= "1";
+		$configColumn3["15"]["Formato"] 		= "Number";
+		$configColumn3["15"]["Total"] 		= False;
+		$configColumn3["15"]["Alineacion"] 	= "Right";
+		$configColumn3["15"]["TotalValor"] 		= 0;
+		$configColumn3["15"]["FiledSoucePrefix"]	= "";
+		$configColumn3["15"]["Width"]			= "100px";
+					 
+		$configColumn3["16"]["Titulo"] 		= "La ultima cuota fue cancelada a los X Dias";
+		$configColumn3["16"]["TituloFoot"]	= "";
+		$configColumn3["16"]["FiledSouce"]	= "atrasoCancelacionDia";
+		$configColumn3["16"]["Colspan"] 		= "1";
+		$configColumn3["16"]["Formato"] 		= "Number";
+		$configColumn3["16"]["Total"] 		= False;
+		$configColumn3["16"]["Alineacion"] 	= "Right";
+		$configColumn3["16"]["TotalValor"] 		= 0;
+		$configColumn3["16"]["FiledSoucePrefix"]	= "";
+		$configColumn3["16"]["Width"]			= "100px";
+					 
+		$configColumn3["17"]["Titulo"] 		= "Nota";
+		$configColumn3["17"]["TituloFoot"]	= "";
+		$configColumn3["17"]["FiledSouce"]	= "nota";
+		$configColumn3["17"]["Colspan"] 		= "1";
+		$configColumn3["17"]["Formato"] 			= "";
+		$configColumn3["17"]["Total"] 			= False;
+		$configColumn3["17"]["Alineacion"] 		= "Left";
+		$configColumn3["17"]["TotalValor"] 		= 0;
+		$configColumn3["17"]["FiledSoucePrefix"]	= "";
+		$configColumn3["17"]["Width"]			= "100px";
+		$resultado3 = helper_reporteGeneralCreateTable($objDocument,$configColumn3,'1000px');
+		echo $resultado3["table"];
 		?>
 		
 		<br/>		

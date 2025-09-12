@@ -657,7 +657,7 @@ function helper_reporteGeneralCreateTableVertical($objDetail,$configColumn,$maxC
 	
 	
 	
-    //$widht         = str_replace("px","", $widht);
+    $widht         = str_replace("px","", $widht);
 	$table         =  
 	'<table style="
 			width:'.$widht.';order-spacing: 10px;
