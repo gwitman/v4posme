@@ -166,6 +166,7 @@ use App\Models\Fingerprints_Model;
 use App\Models\Biometric_User_Model;
 use App\Models\Transaction_Master_References_Model;
 use App\Models\Bank_Cheque_Model;
+use App\Models\Company_Page_Setting_Model;
 
 
 /**
@@ -395,6 +396,7 @@ abstract class _BaseController extends Controller
 
     protected $Transaction_Master_References_Model;
     protected $Bank_Cheque_Model;
+	protected $Company_Page_Setting_Model;
 
     protected $Reporting_Model;
     protected $Reporting_Parameter_Model;
@@ -574,6 +576,7 @@ abstract class _BaseController extends Controller
         $this->Biometric_User_Model = new Biometric_User_Model();
         $this->Transaction_Master_References_Model = new Transaction_Master_References_Model();
         $this->Bank_Cheque_Model = new Bank_Cheque_Model();
+		$this->Company_Page_Setting_Model = new Company_Page_Setting_Model();
 
         $this->Reporting_Model              = new Reporting_Model();
         $this->Reporting_Parameter_Model    = new Reporting_Parameter_Model();

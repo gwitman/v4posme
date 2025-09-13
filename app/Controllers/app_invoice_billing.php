@@ -3952,6 +3952,9 @@ class app_invoice_billing extends _BaseController {
             $dataView["esMesero"]	            													= $esMesero;
             $dataView["eliminarProducto"]	    													= $eliminarProductos;
 			
+			//Obtener el comportamiento
+			$dataView["objListCompanyPageSetting"]													= $this->Company_Page_Setting_Model->get_rowByKeyAndController($dataSession["company"]->type,"app_invoice_billing");
+			
 			//Renderizar Resultado 
 			$dataSession["notification"]															= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]																	= $this->core_web_notification->get_message();

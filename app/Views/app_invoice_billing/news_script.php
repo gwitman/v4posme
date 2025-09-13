@@ -5,6 +5,7 @@
     var tmpData 				            = [];
     var tmpInfoClient			            = 0;
 	var scrollPosition						= 0;
+	var transactionMasterDetailPriceOld		= 0;
     var warehouseID 						= $("#txtWarehouseID").val();
 	let transactionID						=	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						  <?php echo $transactionID ?>;
 	var isAdmin								= '<?php echo $isAdmin; ?>';
@@ -148,6 +149,8 @@
 		}
 	});
 
+	
+	
 	$('#txtReceiptAmountTarjeta_BankID').on('change', function(){
 		let value = $('#txtReceiptAmountTarjeta_BankID').find(':selected').data('comision-pos');
 		fnRecalcularMontoComision(value);
@@ -340,6 +343,43 @@
 		fnAddRowSelected();
 	});
 
+	$(document).on("focus", ".txtPrice",function() {
+		console.log("El usuario hizo clic en el input");		
+		transactionMasterDetailPriceOld = $(this).val();
+	});
+	$(document).on("change", ".txtPrice",function(e,o,u) {
+		console.log("El input perdió el foco");
+		var customerPermitirBajarPrecio 	= <?php echo getBahavioSession($company->type,'app_invoice_billing','eventChangePrice','true',$objListCompanyPageSetting) ?>;		
+		if(customerPermitirBajarPrecio == true)
+			return;
+		
+		var transactionMasterDetailPriceNew = $(this).val();
+		let trSelected 				=  $("#"+e.currentTarget.id).parent().parent()
+		let aPos 					=  objTableDetail.fnGetPosition(trSelected[0]);
+		var NSSystemDetailInvoice	=  objTableDetail.fnGetData();
+		let valores = [];
+		
+		if(varPermisosEsPermitidoSeleccionarPrecioPublico)
+		valores.push(parseFloat(NSSystemDetailInvoice[aPos][22] /*precio1*/));			
+		
+		if(varPermisosEsPermitidoSeleccionarPrecioPormayor)
+		valores.push(parseFloat(NSSystemDetailInvoice[aPos][14] /*precio2*/));			
+		
+		if(varPermisosEsPermitidoSeleccionarPrecioCredito)
+		valores.push(parseFloat(NSSystemDetailInvoice[aPos][15] /*precio3*/));
+		
+		// Obtenemos el menor
+		let menor = Math.min(...valores);
+		transactionMasterDetailPriceNew = parseFloat(transactionMasterDetailPriceNew);
+		transactionMasterDetailPriceOld = parseFloat(transactionMasterDetailPriceOld);
+		
+		if(!(transactionMasterDetailPriceNew  >= menor))		
+		transactionMasterDetailPriceNew = transactionMasterDetailPriceOld;
+		objTableDetail.fnUpdate( fnFormatNumber(transactionMasterDetailPriceNew,2), aPos, columnasTableDetail.precio );
+		fnRecalculateDetail(true,"", aPos);
+	});
+	
+	
 	$(document).on("click",".btnPlus",function(){
 		let trSelected 	=  $(this).parent().parent().parent();
 		var quantity 	= trSelected.find(".txtQuantity").val();
