@@ -216,6 +216,7 @@ abstract class _BaseController extends Controller
 		'customization/web_tools_customizationview_emanuel_pizza',
 		'customization/web_tools_customizationview_carlosluis',
 		'customization/web_tools_customizationview_creditaguil',
+		'customization/web_tools_customizationview_tu_futuro_helper',
 		'customization/web_tools_customizationview_autolavadomaximum_helper',
 		'customization/web_tools_customizationview_pasteleria_balladares_helper',
 		'customization/web_tools_customizationview_pasteleria_peralta_helper',

@@ -37,6 +37,7 @@ class core_report extends _BaseController
         try {
             $reportID       = $this->request->getPost('reportID');
             $findReporting  = $this->Reporting_Model->get_rowByPK($reportID);
+			
 
             if ($findReporting->needAutenticated == 1){
                 //AUTENTICACION
@@ -109,7 +110,7 @@ class core_report extends _BaseController
 			//Es un procedimiento
 			if(stripos($isCall, 'call') !== false)
 			{
-				$query   = preg_replace($pattern, "?", $query);			
+				$query   = preg_replace($pattern, "?", $query);					
 				$result  = $this->Bd_Model->executeRenderMultipleNative($query, $params);
 			}
 			//Es una consulta
@@ -117,11 +118,11 @@ class core_report extends _BaseController
 			{
 				$newPost = [];
 				foreach ($this->request->getPost() as $clave => $valor) {
-					$newPost['@' . $clave] = $valor;
+					$newPost['@' . $clave] = "'".$valor."'";
 				}
 
-				// Reemplazar newPost
-				$query 	 = strtr($query, $newPost);				
+				// Reemplazar newPost 
+				$query 	 = strtr($query, $newPost);								
 				$result  = $this->Bd_Model->executeRenderMultipleNative($query, $params);
 			}
 	

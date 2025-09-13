@@ -663,7 +663,7 @@ class app_cxc_customer extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}			
 	}
 
@@ -1274,17 +1274,21 @@ class app_cxc_customer extends _BaseController {
             $result 							= $this->Customer_Model->insert_app_posme($objCustomer);
 
             //Ingresar registro en el lector biometrico
-            $dataUser["id"]							= $entityID;
-            $dataUser["name"]						= "buscar en otra base";
-            $dataUser["email"]						= "buscar en otra base";
-            $dataUser["email_verified_at"]			= "0000-00-00 00:00:00";
-            $dataUser["password"]					= "buscar en otra base";
-            $dataUser["remember_token"]				= "buscar en otra base";
-            $dataUser["created_at"]					= "0000-00-00 00:00:00";
-            $dataUser["updated_at"]					= "0000-00-00 00:00:00";
-            $dataUser["image"]						= "";
-            $resultUser 							= $this->Biometric_User_Model->delete_app_posme($dataUser["id"]);
-            $resultUser 							= $this->Biometric_User_Model->insert_app_posme($dataUser);
+			$validateBiometric = $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_USE_BIOMETRIC");
+			if(strcmp(strtolower($validateBiometric->value), "true") == 0)
+			{	
+				$dataUser["id"]							= $entityID;
+				$dataUser["name"]						= "buscar en otra base";
+				$dataUser["email"]						= "buscar en otra base";
+				$dataUser["email_verified_at"]			= "0000-00-00 00:00:00";
+				$dataUser["password"]					= "buscar en otra base";
+				$dataUser["remember_token"]				= "buscar en otra base";
+				$dataUser["created_at"]					= "0000-00-00 00:00:00";
+				$dataUser["updated_at"]					= "0000-00-00 00:00:00";
+				$dataUser["image"]						= "";
+				$resultUser 							= $this->Biometric_User_Model->delete_app_posme($dataUser["id"]);
+				$resultUser 							= $this->Biometric_User_Model->insert_app_posme($dataUser);
+			}
 
 
 

@@ -861,12 +861,7 @@ class app_lab_examen extends _BaseController
 			$datView["objTipoExamen"]				= $this->Public_Catalog_Detail_Model->asObject()->find($datView["objTM"]->reference3);
 			$datView["objEdad"]						= $this->Public_Catalog_Detail_Model->asObject()->find($datView["objTM"]->priorityID);
 			$datView["objSexo"]						= $this->Public_Catalog_Detail_Model->asObject()->find($datView["objTM"]->areaID);
-			
-			
-			
-			
-		    
-			
+			$sello		 							= getBahavioLargeDB($objCompany->type, "app_lab_examen", "sello", "");
 			
 			//Generar Reporte
 			$html = helper_reporteA4TransactionMasterExamenLabV1(
@@ -886,7 +881,8 @@ class app_lab_examen extends _BaseController
 				$datView["objMuestra"],
 				$datView["objTipoExamen"],
 				$datView["objEdad"],
-				$datView["objSexo"]
+				$datView["objSexo"],
+				$sello
 			);
 			
 			

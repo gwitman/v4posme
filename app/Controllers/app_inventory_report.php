@@ -536,6 +536,10 @@ class app_inventory_report extends _BaseController {
 				{
 					return view("app_inventory_report/list_item/view_a_disemp_moto_partes",$objDataResult);//--finview-r
 				}
+				else if ($objCompany->type == "comercialSanJose")
+				{
+					return view("app_inventory_report/list_item/view_a_disemp_comercial_san_jose",$objDataResult);//--finview-r
+				}
 				else
 				{
 					return view("app_inventory_report/list_item/view_a_disemp",$objDataResult);//--finview-r
