@@ -1265,7 +1265,7 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "glamcuts90@gmail.com,anielkadubon11@gmail.com,carmona2485keikol@gmail.com,nanifran_07@icloud.com,stephani45silva@gmail.com" 
+	tb_company_parameter.value = "glamcuts90@gmail.com,anielkadubon11@gmail.com,nanifran_07@icloud.com,stephani45silva@gmail.com" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_EMAIL";## CORREO DEL PROPIETARIO
