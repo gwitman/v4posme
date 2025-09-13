@@ -161,7 +161,8 @@ class app_box_inputcash extends _BaseController
             }
 
             //Si el documento esta aplicado crear el contra documento
-            if ($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_inputcash", "statusID", $objTM->statusID, COMMAND_ELIMINABLE, $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID)) {
+			$resultCmd = $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_inputcash", "statusID", $objTM->statusID, COMMAND_ELIMINABLE, $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID);
+            if ($resultCmd == 0) {
                 throw new \Exception(NOT_WORKFLOW_DELETE);
             }
 
@@ -174,7 +175,9 @@ class app_box_inputcash extends _BaseController
                 'message' => SUCCESS,
             ]); //--finjson
 
-        } catch (\Exception $ex) {
+        } 
+		catch (\Exception $ex) 
+		{
 
             return $this->response->setJSON([
                 'error'   => true,

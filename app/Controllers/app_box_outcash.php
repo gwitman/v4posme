@@ -162,14 +162,17 @@ class app_box_outcash extends _BaseController
             }
 
             //Si el documento esta aplicado crear el contra documento
-            if ($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_outputcash", "statusID", $objTM->statusID, COMMAND_ELIMINABLE, $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID)) {
+			$resultCmd = $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_outputcash", "statusID", $objTM->statusID, COMMAND_ELIMINABLE, $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID);
+            if ($resultCmd == 0) 
+			{
                 throw new \Exception(NOT_WORKFLOW_DELETE);
             }
 
+	
             //Eliminar el Registro
             $this->Transaction_Master_Model->delete_app_posme($companyID, $transactionID, $transactionMasterID);
             $this->Transaction_Master_Detail_Model->deleteWhereTM($companyID, $transactionID, $transactionMasterID);
-
+			
             return $this->response->setJSON([
                 'error'   => false,
                 'message' => SUCCESS,
@@ -288,11 +291,13 @@ class app_box_outcash extends _BaseController
             ) {
 
                 //Validar registro de caja
+				/*
                 $objListTMRegister = $this->Transaction_Master_Model->get_rowInStatusRegister($companyID, $transactionMasterID);
                 if ($objListTMRegister) {
                     $continue = false;
                     $mensaje  = "Caja no puede ser cerrada tiene movimientos registrados, o los anula o los aplica.";
                 }
+				*/
 
             }
 
@@ -459,8 +464,9 @@ class app_box_outcash extends _BaseController
                 }
 
                 //Actualizar estado de la sesion si nadie mas tiene la caja abierta
+				
                 if ($objCashBoxSessionMe) {
-                    $objCashBoxSessionMe                              = $objCashBoxSessionMe[0];
+                    $objCashBoxSessionMe                              = $objCashBoxSessionMe[0];					
                     $objCashBoxSessionMe["statusID"]                  = $objWorkflowStageApply[0]->workflowStageID;
                     $objCashBoxSessionMe["endOn"]                     = date("Y-m-d H:i:s");
                     $objCashBoxSessionMe["transactionMasterIDClosed"] = $transactionMasterID;
@@ -474,10 +480,10 @@ class app_box_outcash extends _BaseController
                             $branchID,
                             "",
                             $companyID,
-                            $objCashBoxSessionMe->transactionMasterIDOpen,
-                            $objCashBoxSessionMe->transactionMasterIDClosed,
-                            $objCashBoxSessionMe->cashBoxID,
-                            $objCashBoxSessionMe->cashBoxSessionID,
+                            $objCashBoxSessionMe["transactionMasterIDOpen"],
+                            $objCashBoxSessionMe["transactionMasterIDClosed"],
+                            $objCashBoxSessionMe["cashBoxID"],
+                            $objCashBoxSessionMe["cashBoxSessionID"],
                         ]
                     );
 
