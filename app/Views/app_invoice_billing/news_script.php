@@ -647,13 +647,29 @@
 
 				if(encontrado == true)
 				{
-
 					var sumar				= true;
 					var filterResult 		= data[index];
 					var filterResultArray 	= [];
+					filterResultArray[0]  	= filterResult.itemID;
+					filterResultArray[1]  	= filterResult.itemID;
+					filterResultArray[2]  	= filterResult.itemID;
+					filterResultArray[3]  	= filterResult.itemID;
+					filterResultArray[4]  	= filterResult.itemID;
 					filterResultArray[5]  	= filterResult.itemID;
+					filterResultArray[6]  	= filterResult.itemID;
+					filterResultArray[7]  	= filterResult.itemID;
+					filterResultArray[8]  	= filterResult.itemID;
+					filterResultArray[9]  	= filterResult.itemID;
+					filterResultArray[10]  	= filterResult.itemID;
+					filterResultArray[11]  	= filterResult.itemID;
+					filterResultArray[12]  	= filterResult.itemID;
+					filterResultArray[13]  	= filterResult.itemID;
+					filterResultArray[14]  	= filterResult.itemID;
+					filterResultArray[15]  	= filterResult.itemID;
+					filterResultArray[16]  	= filterResult.itemID;
 					filterResultArray[17] 	= filterResult.Codigo;
 					filterResultArray[18] 	= filterResult.Nombre;
+					filterResultArray[19] 	= 0;
 					filterResultArray[20] 	= filterResult.Medida;
 					filterResultArray[21] 	= 1; //filterResult.Cantidad;
 					filterResultArray[22] 	= filterResult.Precio;
@@ -661,7 +677,18 @@
 					filterResultArray[24] 	= filterResult.Descripcion;
 					filterResultArray[25] 	= filterResult.Precio2;
 					filterResultArray[26] 	= filterResult.Precio3;
+					filterResultArray[27] 	= filterResult.Precio;
 
+
+					//Logica de precio
+					if($("#txtTypePriceID").val() == "154" /*precio1*/)
+						filterResultArray[22] = filterResultArray[27];
+					else if($("#txtTypePriceID").val() == "155" /*precio2*/)
+						filterResultArray[22] = filterResultArray[25];
+					else /*precio3*/
+						filterResultArray[22] = filterResultArray[26];
+						
+						
 					//Agregar el Item a la Fila
 					onCompleteNewItem(filterResultArray,sumar);
 				}
@@ -1509,7 +1536,7 @@
 		objRow.vendedor 					= 0;
 		objRow.serie 						= "";
 		objRow.referencia 					= "";
-		objRow.price1 					    = fnFormatNumber(objResponse[22],2);
+		objRow.price1 					    = fnFormatNumber(objResponse[27],2);
 		objRow.skuRatio						= 1;
 		objRow.discount						= 0;
 		objRow.commisionBank				= 0;
@@ -1973,7 +2000,7 @@
         objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE		= data.objParameterINVOICE_OPEN_CASH_WHEN_PRINTER_INVOICE;
         objParameterINVOICE_OPEN_CASH_PASSWORD					= data.objParameterINVOICE_OPEN_CASH_PASSWORD;
 		objParameterPantallaParaFacturar						= data.objParameterPantallaParaFacturar;
-        varDetail               = data.objTransactionMasterDetail;
+        varDetail               = data.objTransactionMasterDetail;		
         varDetailReferences		= data.objTransactionMasterDetailReferences;
         varDetailWarehouse		= data.objTransactionMasterDetailWarehouse;
         varDetailConcept 		= data.objTransactionMasterDetailConcept;
@@ -2096,12 +2123,14 @@
 		}
 
 		//limpiar tabla de datos
+		var typePriceID =  154; /*publico*/
 		objTableDetail.fnClearTable();
-
-        if(varDetail != null){
+        if(varDetail != null)
+		{
 			tmpData = [];
             for(let i = 0 ; i < varDetail.length;i++){
                 //master detail reference
+				typePriceID			   = varDetail[i].typePriceID;
                 let objDetailReference = jLinq.from(varDetailReferences).where(function(obj){ return obj.transactionMasterDetailID === varDetail[i].transactionMasterDetailID }).select();
                 //Obtener Iva
                 var tmp_ 			= jLinq.from(varDetailConcept).where(function(obj){ return obj.componentItemID === varDetail[i].componentItemID && obj.name === "IVA" }).select();
@@ -2199,6 +2228,8 @@
 			objTableDetail.fnDraw();
         }
 		
+		$("#txtTypePriceID").val(typePriceID);
+		$("#txtTypePriceID").trigger("change");		
         $("#txtDescuento").val(fnFormatNumber(objTransactionMaster.discount, 2));
         $("#txtPorcentajeDescuento").val(fnFormatNumber(objTransactionMaster.tax4,2));
 
@@ -3165,68 +3196,30 @@
 		objTableDetail.fnUpdate( codigo, rowss, 3 );
 		objTableDetail.fnUpdate( name, rowss, 4 );
 		objTableDetail.fnUpdate( unidad, rowss, 5 );
-		objTableDetail.fnUpdate( fnFormatNumber(precio,2) , rowss, 7 );
+		objTableDetail.fnUpdate( fnFormatNumber(precio,2) , rowss, columnasTableDetail.precio );
 		fnRecalculateDetail(true,"", rowss);
 		refreschChecked();
 
 	}
 
 	function fnActualizarPrecio()
-	{
-
-		var typePriceID 			= $("#txtTypePriceID").val();
-		var NSSystemDetailInvoice	= objTableDetail.fnGetData();
+	{	
+		var typePriceID 					= $("#txtTypePriceID").val();		
+		var NSSystemDetailInvoice			= objTableDetail.fnGetData();
 		for(var i = 0; i < NSSystemDetailInvoice.length; i++)
 		{
-			var itemID 			= NSSystemDetailInvoice[i][2];
-			obtenerDataDBProductoArray(
-				"objListaProductosX001",
-				"itemID",
-				itemID,
-				"producto1",
-				{
-					"all":itemID,
-					"index":i,
-					"callback":function(e){
-
-
-						var filterResult 	= {};
-
-						//precio 1 ---> 154 --> precio publico
-						if(typePriceID == 154){
-							filterResult = e.producto1[0].Precio;
-						}
-						//precio 2 ---> 155 --> precio mayorista
-						if(typePriceID == 155){
-							filterResult = e.producto1[0].Precio;
-						}
-						//precio 3 ---> 156 --> precio credito
-						if(typePriceID == 156){
-							filterResult = e.producto1[0].Precio;
-						}
-
-						//Actualizar Precio
-						objTableDetail.fnUpdate(fnFormatNumber( filterResult,2) , e.index, 7 );
-
-					}
-				},
-				function(e,u){
-
-					var valuex=0;
-					try
-					{
-						valuex = e.producto1[0].itemID;
-					}
-					catch(z)
-					{
-						valuex = 0;
-					}
-					e.itemID = valuex;
-					e.callback(e);
-
-				}
-			);
+			
+			var precio		= 0;
+			if(typePriceID == "154" /*precio1*/)
+				precio = NSSystemDetailInvoice[i][22];
+			else if(typePriceID == "155" /*precio2*/)
+				precio = NSSystemDetailInvoice[i][14];
+			else /*precio3*/
+				precio = NSSystemDetailInvoice[i][15];
+		
+			objTableDetail.fnUpdate( fnFormatNumber(precio,2), i, columnasTableDetail.precio );
 		}
+		fnRecalculateDetail(false,"");
 	}
 
 
@@ -3709,7 +3702,7 @@
 
             if (containsInputOrSelect === false)
 			{
-                element[8]   = 1 ;//Cantidad
+                element[12]   = 1 ;//Cantidad
             }
 
 
@@ -3732,26 +3725,34 @@
             dataResponse[15] = element[0];
             dataResponse[16] = element[0];
 
-
 			if(mostrarCodigoBarra == "false")
 			{
-				dataResponse[17] = element[4];//Codigo
+				dataResponse[17] = element[8];//itemNumber
 			}
 			else
 			{
-				dataResponse[17] = element[6] + " " + element[4];//Barra + Codigo
+				dataResponse[17] = element[10] + " " + element[8];//barCode + itemNumber
 			}
 
-			dataResponse[18] = element[5];//Nombre
+			dataResponse[18] = element[9];//Nombre
             dataResponse[19] = element[0];
-            dataResponse[20] = element[7];//Unidad de medida
-            dataResponse[21] = element[8];//Cantidad
-            dataResponse[22] = element[9];//Precio
-            dataResponse[23] = element[1];//UnitMeasuereID
-            dataResponse[24] = element[10];//Description
+            dataResponse[20] = element[11];//Unidad de medida NOMBRE
+            dataResponse[21] = element[12];//Cantidad
+            dataResponse[22] = element[13];//Precio
+            dataResponse[23] = element[7];//UnitMeasuereID
+            dataResponse[24] = element[14];//Description
             dataResponse[25] = element[2];//Precio2
             dataResponse[26] = element[3];//Precio3
-
+			dataResponse[27] = element[1];//Precio1
+			
+			//Logica de precio
+			if($("#txtTypePriceID").val() == "154" /*precio1*/)
+				dataResponse[22] = dataResponse[27];
+			else if($("#txtTypePriceID").val() == "155" /*precio2*/)
+				dataResponse[22] = dataResponse[25];
+			else /*precio3*/
+				dataResponse[22] = dataResponse[26];
+				
             onCompleteNewItem(dataResponse, true);
         }
 
@@ -4408,6 +4409,22 @@
 		{
 			cerrarModal("ModalCargandoDatos");
 		}
+		
+		
+		//Permisos de precios		
+		if(!varPermisosEsPermitidoSeleccionarPrecioPublico)
+			$("#txtTypePriceID option[value='154']").remove();
+
+		if(!varPermisosEsPermitidoSeleccionarPrecioPormayor)
+			$("#txtTypePriceID option[value='155']").remove();
+
+		if(!varPermisosEsPermitidoSeleccionarPrecioCredito)
+			$("#txtTypePriceID option[value='156']").remove();
+			
+		$("#txtTypePriceID").trigger("change");
+
+
+
 	});
 
 

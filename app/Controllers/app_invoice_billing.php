@@ -1253,7 +1253,7 @@ class app_invoice_billing extends _BaseController {
 						$objTMD["skuCatalogItemID"] 			= $skuCatalogItemID;
 						$objTMD["skuFormatoDescription"] 		= $skuFormatoDescription;
 						$objTMD["amountCommision"] 				= $this->core_web_transaction_master_detail->getAmountCommision($companyID,$listPriceID,$itemID,$price,$quantity,$comisionPorcentage,$skuRatio);
-						
+						$objTMD["typePriceID"]					= $typePriceID;
 						
 						$tax1Total								= $tax1Total + ($tax1 * $quantity);
 						$tax2Total								= $tax2Total + ($tax2 * $quantity);
@@ -1333,6 +1333,7 @@ class app_invoice_billing extends _BaseController {
 						$objTMDNew["skuCatalogItemID"] 			= $skuCatalogItemID;
 						$objTMDNew["skuFormatoDescription"] 	= $skuFormatoDescription;						
 						$objTMDNew["amountCommision"] 			= $this->core_web_transaction_master_detail->getAmountCommision($companyID,$listPriceID,$itemID,$price,$quantity,$comisionPorcentage,$skuRatio );
+						$objTMDNew["typePriceID"]				= $typePriceID;
 						
 						$tax1Total								= $tax1Total + ($tax1 * $quantity);
 						$tax2Total								= $tax2Total + ($tax2 * $quantity);
@@ -2158,6 +2159,7 @@ class app_invoice_billing extends _BaseController {
 					$objTMD["reference3"]					= '0';
 					$objTMD["itemNameLog"] 					= $itemNameDetail;
 					$objTMD["itemNameDescriptionLog"] 		= $itemNameDetailDescription;
+					$objTMD["typePriceID"]					= $typePriceID;
 					
 					
 					$objTMD["catalogStatusID"]				= 0;
@@ -2635,6 +2637,7 @@ class app_invoice_billing extends _BaseController {
 					$objTMD["skuCatalogItemID"] 			= $objParameterUnitDefault;
 					$objTMD["skuFormatoDescription"] 		= 'UNIDAD';
 					$objTMD["amountCommision"] 				= $price * $comisionPorcentage * $quantity ;
+					$objTMD["typePriceID"]					= 0 /*publico*/;
 
 					$tax1Total								= $tax1Total + $tax1;
 					$tax2Total								= $tax2Total + $tax2;
