@@ -826,23 +826,23 @@ class core_web_whatsap {
 		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
 		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
 		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
-		$token 								= "oRy77xQImuNSEOr2tguJThbPKFa9Ss";//$objCP_WhatsapToken->value;
+		$token 								= $objCP_WhatsapToken->value;
 		
 		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
 		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
 		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-		$url								= "https://api.posme.es/api/messages/send";//$objCP_WhatsapUrlSendMessage->value;
+		$url								= $objCP_WhatsapUrlSendMessage->value;
 
 		
 		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
 		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
 		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
-		$userId								= "4";//"soporte@posme.net"; //$objCP_WhatsapPropertyNumber->value;
+		$userId								= $objCP_WhatsapPropertyNumber->value;
 
 		$objPWhatsapPropertyCola 			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION_PARAMETERF1");
 		$objPWhatsapPropertyColaId 			= $objPWhatsapPropertyCola->parameterID;
 		$objCP_WhatsapPropertyCola			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyColaId);
-		$queueId							= "2"; //$objCP_WhatsapPropertyCola->value;
+		$queueId							= $objCP_WhatsapPropertyCola->value;
 
 		$sendSignature 	= false;
 		$closeTicket 	= true;
@@ -898,23 +898,23 @@ class core_web_whatsap {
 		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
 		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
 		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
-		$token 								= "oRy77xQImuNSEOr2tguJThbPKFa9Ss";//$objCP_WhatsapToken->value;
+		$token 								= $objCP_WhatsapToken->value;
 		
 		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
 		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
 		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-		$url								= "https://api.posme.es/api/messages/send";//$objCP_WhatsapUrlSendMessage->value;
+		$url								= $objCP_WhatsapUrlSendMessage->value;
 
 		
 		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
 		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
 		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
-		$userId								= "4";//"soporte@posme.net"; //$objCP_WhatsapPropertyNumber->value;
+		$userId								= $objCP_WhatsapPropertyNumber->value;
 
 		$objPWhatsapPropertyCola 			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION_PARAMETERF1");
 		$objPWhatsapPropertyColaId 			= $objPWhatsapPropertyCola->parameterID;
 		$objCP_WhatsapPropertyCola			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyColaId);
-		$queueId							= "2"; //$objCP_WhatsapPropertyCola->value;
+		$queueId							= $objCP_WhatsapPropertyCola->value;
 
 		$sendSignature 	= false;
 		$closeTicket 	= true;
