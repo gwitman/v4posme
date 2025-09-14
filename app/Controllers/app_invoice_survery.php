@@ -29,6 +29,10 @@ class app_invoice_survery extends _BaseController {
 			$objListPrice 				= $this->List_Price_Model->getListPriceToApply($companyID);
 			$dataview["objListItem"]	= $this->Item_Model->get_rowByItemReference1($objListPrice->listPriceID,$key);
 			
+			//Buscar el colaborador
+			$objColaborador				= $this->Employee_Model->get_rowByItemReference1($key);
+			$dataView["objEmployeer"]	= $objColaborador;
+			
 			//Obtener todos los prodcutos con el key
 			$dataSession["head"]								= /*--inicio view*/ view('app_invoice_survery/index_head',$dataview);//--finview
 			$dataSession["footer"]								= /*--inicio view*/ view('app_invoice_survery/index_footer',$dataview);//--finview
@@ -269,10 +273,7 @@ class app_invoice_survery extends _BaseController {
 		
 	}
 
-    
-
-	
-	function viewRegisterFormatoPaginaNormal80mmOpcion1(){
+    function viewRegisterFormatoPaginaNormal80mmOpcion1(){
 		try{ 
 			
 			

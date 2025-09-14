@@ -22,8 +22,9 @@ class core_report extends _BaseController
             $findReportingParameter         = $this->Reporting_Parameter_Model->get_rowByReportID($findReporting->reportID);
             $dataView['reporting']          = $findReporting;
             $dataView["companyID"]          = $dataSession['company']->companyID;
-            $dataView["userID"]             = $dataSession['user']->userID;
+            $dataView["userID"]             = $dataSession['user']->userID;			
             $dataView['reportingParameter'] = $findReportingParameter;
+			$dataView['segments']			= $segments;
 
             return view("core_report/view_body",$dataView);//--finview-r
         }

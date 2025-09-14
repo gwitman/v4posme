@@ -44,6 +44,9 @@ use App\Models\Core\Bd_Model;
                                         }
 
                                         switch ($reportingParameterValue->type) {
+											case 'querystring':
+												echo '<input type="hidden" id="' . $name . '" name="' . $name . '" value="' .helper_SegmentsValue($segments,$reportingParameterValue->datasource). '">';
+												break;
                                             case 'datetime':
                                                 $id = 'datetimepicker_' . uniqid();
                                                 $hora = $reportingParameterValue->datasource;

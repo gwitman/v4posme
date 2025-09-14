@@ -223,7 +223,7 @@ class app_rrhh_employee extends _BaseController {
 			$datView["objListClasificationID"]			= $this->core_web_catalog->getCatalogAllItem("tb_employee","clasificationID",$companyID);			
 			$datView["objListCategoryID"]				= $this->core_web_catalog->getCatalogAllItem("tb_employee","categoryID",$companyID);
 			$datView["objListTypeEmployeeID"]			= $this->core_web_catalog->getCatalogAllItem("tb_employee","typeEmployeeID",$companyID);
-			
+			$datView["objListCompanyPageSetting"]		= $this->Company_Page_Setting_Model->get_rowByKeyAndController($dataSession["company"]->type,"app_rrhh_employee");
 			
 			////Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -268,11 +268,6 @@ class app_rrhh_employee extends _BaseController {
 			}
 			
 				
-			
-			
-				
-			
-			
 			
 			$this->core_web_permission->getValueLicense($dataSession["user"]->companyID,get_class($this)."/"."index");
 			//Obtener el Componente de Transacciones Other Input to Inventory

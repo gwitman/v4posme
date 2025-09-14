@@ -12,6 +12,21 @@
 						$(document).on("click","#btnBack",function(){
 								fnWaitOpen();
 						});
+						$('#btnLinkMenu').click(function(){
+							mostrarModal('ModalMenuDigital');
+						});
+						$(".copiar").click(function(){							
+							var url = $(this).data("url");
+							var tempInput = $("<input>");
+							$("body").append(tempInput);
+							tempInput.val(url).select();
+							document.execCommand("copy");
+							tempInput.remove();
+							$(this).text("✅ Copiado");
+							var btn = $(this);
+							setTimeout(function(){ btn.text("📋 Copiar"); }, 1500);					
+						});
+					  
 						//Eliminar el Documento
 						$(document).on("click","#btnDelete",function(){
 							fnShowConfirm("Confirmar..","Desea eliminar este Registro...",function(){
@@ -41,7 +56,7 @@
 							});
 						});
 						$(document).on("click","#btnClickArchivo",function(){
-							window.open("<?php echo base_url()."core_elfinder/index/componentID/".$objComponent->componentID."/componentItemID/".$objEmployee->entityID; ?>","blanck");
+							window.open("<?php echo base_url()."/core_elfinder/index/componentID/".$objComponent->componentID."/componentItemID/".$objEmployee->entityID; ?>","blanck");
 						});
 						//Evento Agregar el Usuario
 						$(document).on("click","#btnAcept",function(){

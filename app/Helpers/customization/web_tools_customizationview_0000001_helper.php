@@ -1362,10 +1362,13 @@ function getBahavioSession($type_company, $key_controller, $key_element, $defaul
 		$findSetting  = array_values($findSetting);
 
 		 // Check if the array is not empty
-        if (!empty($findSetting)) {
+        if (!empty($findSetting)) 
+		{
+			
             // Return the 'value' of the first element found
             return $findSetting[0]->valuei;
         } else {
+			
             // Return 'xml' if no element is found
             return $default_value;
         }
