@@ -232,12 +232,12 @@ class app_invoice_survery extends _BaseController {
 				
 				
 				////Mandar mensjes por whatapp al cliente
-				//$mensajeCliente		= "Su pedido esta siendo procesado :  [[URL]]";
-				//$this->core_web_whatsap->sendMessageByLiveconnect($companyID, replaceSimbol($mensajeCliente), clearNumero($objCustomer[0]->phoneNumber));
+				$mensajeCliente		= "Su pedido esta siendo procesado :  [[URL]]";
+				$this->core_web_whatsap->sendMessagePosMeConnect($companyID, replaceSimbol($mensajeCliente), clearNumero($objCustomer[0]->phoneNumber));
 				//
 				////Mandar mensaje por whatapp al propietario
-				//$mensajeColaborador	= "Hay una nueva orden de trabajo:  [[URL]]";
-				//$this->core_web_whatsap->sendMessageByLiveconnect($companyID, replaceSimbol($mensajeColaborador), clearNumero($objColaborador[0]->phoneNumber));
+				$mensajeColaborador	= "Hay una nueva orden de trabajo:  [[URL]]";
+				$this->core_web_whatsap->sendMessagePosMeConnect($companyID, replaceSimbol($mensajeColaborador), clearNumero($objColaborador[0]->phoneNumber));
 				
 				
                 $db->transCommit();

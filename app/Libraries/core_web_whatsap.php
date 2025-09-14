@@ -816,6 +816,74 @@ class core_web_whatsap {
 
 
    }
+   
+   
+	function sendMessagePosMeConnect($companyID,$body,$number) 
+	{
+		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
+		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
+		$token 								= $objCP_WhatsapToken->value;
+		
+		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
+		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
+		$url								= $objCP_WhatsapUrlSendMessage->value;
+
+		
+		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
+		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
+		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
+		$userId								= $objCP_WhatsapPropertyNumber->value;
+
+		$objPWhatsapPropertyCola 			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION_PARAMETERF1");
+		$objPWhatsapPropertyColaId 			= $objPWhatsapPropertyCola->parameterID;
+		$objCP_WhatsapPropertyCola			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyColaId);
+		$queueId							= $objCP_WhatsapPropertyCola->value;
+
+		$sendSignature 	= false;
+		$closeTicket 	= true;
+		// Armamos el body como array
+		$data = [
+			"number"        => $number,
+			"body"          => $body,
+			"userId"        => $userId,
+			"queueId"       => $queueId,
+			"sendSignature" => $sendSignature,
+			"closeTicket"   => $closeTicket
+		];
+
+		// Inicializamos cURL
+		$ch = curl_init($url);
+
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, [
+			"Authorization: Bearer " . $token,
+			"Content-Type: application/json"
+		]);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+
+		// Ejecutamos la petición
+		$response = curl_exec($ch);
+		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+		if (curl_errno($ch)) {
+			$error_msg = curl_error($ch);
+			curl_close($ch);
+			return ["success" => false, "error" => $error_msg];
+		}
+
+		curl_close($ch);
+
+		// Devolvemos el resultado como array
+		return [
+			"success"   => $httpCode >= 200 && $httpCode < 300,
+			"status"    => $httpCode,
+			"response"  => json_decode($response, true)
+		];
+	}
+
 
 
 }
