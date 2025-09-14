@@ -1251,6 +1251,7 @@ class Remember_Model extends Model  {
     {
         $db 	= db_connect();
         $sql = "
+		/*RECORDATORIOS*/
 		select
             CONCAT('REM','',r.rememberID) as rememberID,
             '' as url,
@@ -1341,25 +1342,23 @@ class Remember_Model extends Model  {
 			
 			
 		union all 
+		
 		/*TAREAS TASK*/
-		
-		
 		select 
             tm.transactionNumber as rememberID,	
             CONCAT('".base_url()."/app_rrhh_task/edit/companyID/2/transactionID/44/transactionMasterID/',tm.transactionMasterID) as url,
             'TASK' AS title,
             tm.note AS description,	
-            tm.nextVisit AS createdOn,
+			DATE(tm.nextVisit) + INTERVAL FLOOR(RAND() * 24) HOUR + INTERVAL FLOOR(RAND() * 60) MINUTE AS createdOn,
 			tm.createdOn as createdOn2,
             0  AS tagID,
-			'yellow' as color
+			'#FF0000' as color
         from 
             tb_transaction_master tm 
             inner join tb_workflow_stage st on 
                 tm.statusID = st.workflowStageID 
         where 
             tm.isActive = 1 and 
-            st.aplicable = 1 and 
             tm.transactionID in ( 44 /*TAREAS*/  ) and 
             tm.nextVisit  > '1000-01-01 00:00:00'
 			

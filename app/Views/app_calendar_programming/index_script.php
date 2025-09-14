@@ -183,20 +183,29 @@
         $('#redirectEvent').click(function(){
             let url = $('#eventUrl').val();
             $('#eventOpcionModal').modal('hide');
-			$.post(
-				"<?= base_url(); ?>/app_invoice_billing/setSessionData", 
-				{
-					companyID           : fnExtraerValoresUrl(url,"companyID").valor2,
-					transactionID       : fnExtraerValoresUrl(url,"transactionID").valor2,
-					transactionMasterID : fnExtraerValoresUrl(url,"transactionMasterID/").valor2,
-					codigoMesero        : "none",
-					edicion             : true
-				}, 
-				function () 
-				{
-					window.open("<?= base_url(); ?>/app_invoice_billing/add/codigoMesero/none", '_blank');
-				}
-			);
+			debugger;
+			
+			if (url.includes("app_invoice_billing")) 
+			{
+				$.post(
+					"<?= base_url(); ?>/app_invoice_billing/setSessionData", 
+					{
+						companyID           : fnExtraerValoresUrl(url,"companyID").valor2,
+						transactionID       : fnExtraerValoresUrl(url,"transactionID").valor2,
+						transactionMasterID : fnExtraerValoresUrl(url,"transactionMasterID/").valor2,
+						codigoMesero        : "none",
+						edicion             : true
+					}, 
+					function () 
+					{
+						window.open("<?= base_url(); ?>/app_invoice_billing/add/codigoMesero/none", '_blank');
+					}
+				);
+			}
+			else
+			{
+				window.open(url, '_blank');
+			}
 			
         });
 		
