@@ -34,20 +34,27 @@ class app_notification extends _BaseController
 				//Recorrer las Notificaciones
 				if ($objListItem) {
 					foreach ($objListItem as $noti) {
+						
+						
 						$hoy_			= date_format(date_create(), "Y-m-d");
 						$lastNoti 		= $hoy_; //date_format(date_create($noti->lastNotificationOn), "Y-m-d");
 
 						//Recorrer desde la ultima notificacion, hasta la fecha de hoy
+						//Este while solo se ejecuta una ves para la fecha de hoy
 						while ($lastNoti <= $hoy_) {
 							
+							
 							//Validar si se debe ejecutar la notificacion
+							//Validar si la notificacion existe y obtener fechas de ejecucion
 							$objListItemDetail		= $this->Remember_Model->getProcessNotification($noti->rememberID, $lastNoti);
 							if ($objListItemDetail)
 							{
+								//Validar si se debe ejecutar la notificacion
 								if ($objListItemDetail->diaProcesado == $noti->day) 
 								{
 
-									
+									echo "<hr>";
+									echo print_r($noti);									
 									$item 					= $objListItemDetail;
 									$mensaje				= "";
 									$mensaje				.= "<span class='badge badge-important'>OBLIGACION</span>" . $item->title;
