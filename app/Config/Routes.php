@@ -1286,6 +1286,8 @@ $routes->match(['get', 'post'], 'app_notification/sendEmailGlamCustCitasFrecuenc
 $routes->match(['get', 'post'], 'app_notification/sendEmailAudioElPipeCitas', 'app_notification::sendEmailAudioElPipeCitas');
 $routes->match(['get', 'post'], 'app_notification/sendWhatsappDiarioChochoMandado', 'app_notification::sendWhatsappDiarioChochoMandado');
 $routes->match(['get', 'post'], 'app_notification/sendWhatsappDiarioChochoMandado/(:any)', 'app_notification::sendWhatsappDiarioChochoMandado');
+$routes->match(['get', 'post'], 'app_notification/sendWhatsappDiarioMasivePosMeConnect', 'app_notification::sendWhatsappDiarioMasivePosMeConnect');
+$routes->match(['get', 'post'], 'app_notification/sendWhatsappDiarioMasivePosMeConnect/(:any)', 'app_notification::sendWhatsappDiarioMasivePosMeConnect');
 $routes->match(['get', 'post'], 'app_notification/fillTipoCambio', 'app_notification::fillTipoCambio');
 $routes->match(['get', 'post'], 'app_notification/fillInventarioMinimo', 'app_notification::fillInventarioMinimo');
 $routes->match(['get', 'post'], 'app_notification/fillInventarioMinimoNotEmailSiApp', 'app_notification::fillInventarioMinimoNotEmailSiApp');

@@ -859,6 +859,8 @@ class core_web_whatsap {
 		// Inicializamos cURL
 		$ch = curl_init($url);
 
+		curl_setopt($ch, CURLOPT_TIMEOUT, 1);
+		curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, [
@@ -887,7 +889,137 @@ class core_web_whatsap {
 		];
 	}
 
+	function sendMessagePosMeConnectMasive($companyID,$chatSend,$pathRemember) 
+	{
+		
+		$Parameter_Model 			= new Parameter_Model();
+		$Company_Parameter_Model 	= new Company_Parameter_Model();
+			
+		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
+		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
+		$token 								= "oRy77xQImuNSEOr2tguJThbPKFa9Ss";//$objCP_WhatsapToken->value;
+		
+		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
+		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
+		$url								= "https://api.posme.es/api/messages/send";//$objCP_WhatsapUrlSendMessage->value;
 
+		
+		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
+		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
+		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
+		$userId								= "4";//"soporte@posme.net"; //$objCP_WhatsapPropertyNumber->value;
+
+		$objPWhatsapPropertyCola 			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION_PARAMETERF1");
+		$objPWhatsapPropertyColaId 			= $objPWhatsapPropertyCola->parameterID;
+		$objCP_WhatsapPropertyCola			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyColaId);
+		$queueId							= "2"; //$objCP_WhatsapPropertyCola->value;
+
+		$sendSignature 	= false;
+		$closeTicket 	= true;
+		
+		
+		// Inicializamos cURLs
+		$multiHandle = curl_multi_init();
+		$curlHandles = [];
+		foreach ($chatSend as $customer) {
+			
+			//Enviar Mensaje de texto
+			echo "</br>enviar mensaje a ".clearNumero($customer["phoneNumber"])."</br>";
+			$data = [
+				"number"        => clearNumero($customer["phoneNumber"]),
+				"body"          => $customer["mensaje"],
+				"userId"        => $userId,
+				"queueId"       => $queueId,
+				"sendSignature" => $sendSignature,
+				"closeTicket"   => $closeTicket
+			];
+			
+			$ch = curl_init($url);			
+			//curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);  // tiempo máximo para conectar
+			//curl_setopt($ch, CURLOPT_TIMEOUT, 50);        // tiempo máximo total
+			//curl_setopt($ch, CURLOPT_NOSIGNAL, 1);        // para evitar problemas con multi_exec
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, [
+				"Authorization: Bearer " . $token,
+				"Content-Type: application/json; charset=utf-8"
+			]);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_UNICODE));
+			
+			curl_multi_add_handle($multiHandle, $ch);
+			$curlHandles[] = $ch;
+			
+			
+			//Enviar Imagen
+			if($customer["urlImage"] != "")
+			{
+				$filePath	 	= $pathRemember."/".$customer["urlImage"];				
+				$fileName		= $customer["urlImage"];
+				$fileInfo 		= pathinfo($filePath);
+				$fileExtension 	= $fileInfo['extension'];
+				if (!file_exists($filePath)) 
+				{
+				}
+				else
+				{
+					echo "enviar imagen a ".clearNumero($customer["phoneNumber"])." imagen: ".$filePath."</br>";
+					$data 			= [
+						"number"        => clearNumero($customer["phoneNumber"]),
+						"body"          => "--",
+						"userId"        => $userId,
+						"queueId"       => $queueId,
+						"sendSignature" => $sendSignature,
+						"closeTicket"   => $closeTicket,
+						"medias" 		=> new \CURLFile(
+							$filePath,
+							"image/".$fileExtension,
+							$fileName
+						)
+					];
+					$ch = curl_init($url);					
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+					curl_setopt($ch, CURLOPT_POST, true);
+					curl_setopt($ch, CURLOPT_HTTPHEADER, [
+						"Authorization: Bearer " . $token,
+						"Content-Type: multipart/form-data"
+					]);
+					curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+					curl_multi_add_handle($multiHandle, $ch);
+					$curlHandles[] = $ch;
+				}
+			}
+			
+		}
+
+		// Ejecutar todas las requests en paralelo
+		$running = null;
+		do {
+			$mrc = curl_multi_exec($multiHandle, $running);
+			if ($mrc == CURLM_CALL_MULTI_PERFORM) 
+			{
+				continue;
+			}
+			curl_multi_select($multiHandle);			
+		} while ($running > 0);
+			
+
+		 // Recoger resultados
+		$results = [];
+		foreach ($curlHandles as $ch) {
+			$response 	= curl_multi_getcontent($ch);
+			$status   	= curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			$results[] 	= [
+				"status"   => $status,
+				"response" => json_decode($response, true)
+			];
+			curl_multi_remove_handle($multiHandle, $ch);
+			curl_close($ch);
+		}
+		curl_multi_close($multiHandle);
+		return $results;
+	}
 
 }
 ?>
