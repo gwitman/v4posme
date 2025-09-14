@@ -820,26 +820,29 @@ class core_web_whatsap {
    
 	function sendMessagePosMeConnect($companyID,$body,$number) 
 	{
+		$Parameter_Model 			= new Parameter_Model();
+		$Company_Parameter_Model 	= new Company_Parameter_Model();
+			
 		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
 		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
 		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
-		$token 								= $objCP_WhatsapToken->value;
+		$token 								= "oRy77xQImuNSEOr2tguJThbPKFa9Ss";//$objCP_WhatsapToken->value;
 		
 		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
 		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
 		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-		$url								= $objCP_WhatsapUrlSendMessage->value;
+		$url								= "https://api.posme.es/api/messages/send";//$objCP_WhatsapUrlSendMessage->value;
 
 		
 		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
 		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
 		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
-		$userId								= $objCP_WhatsapPropertyNumber->value;
+		$userId								= "4";//"soporte@posme.net"; //$objCP_WhatsapPropertyNumber->value;
 
 		$objPWhatsapPropertyCola 			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION_PARAMETERF1");
 		$objPWhatsapPropertyColaId 			= $objPWhatsapPropertyCola->parameterID;
 		$objCP_WhatsapPropertyCola			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyColaId);
-		$queueId							= $objCP_WhatsapPropertyCola->value;
+		$queueId							= "2"; //$objCP_WhatsapPropertyCola->value;
 
 		$sendSignature 	= false;
 		$closeTicket 	= true;
@@ -860,9 +863,9 @@ class core_web_whatsap {
 		curl_setopt($ch, CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, [
 			"Authorization: Bearer " . $token,
-			"Content-Type: application/json"
+			"Content-Type: application/json; charset=utf-8"
 		]);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_UNICODE));
 
 		// Ejecutamos la petición
 		$response = curl_exec($ch);

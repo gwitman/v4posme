@@ -1198,6 +1198,7 @@ function replaceSimbol($string)
 		"[simbol-exclamacion]" => "❗",
 		"[simbol-estetoscopio]" => "🩺",
 		"[simbol-pildora]" => "💊",
+		"[simbol-link]" => "🔗",
 		"[simbol-a-acento]" => "á",
 		"[simbol-e-acento]" => "é",
 		"[simbol-i-acento]" => "í",

@@ -231,12 +231,14 @@ class app_invoice_survery extends _BaseController {
 			if ($db->transStatus() !== false) {
 				
 				
-				////Mandar mensjes por whatapp al cliente
-				$mensajeCliente		= "Su pedido esta siendo procesado :  [[URL]]";
+				////Mandar mensjes por whatapp al cliente				
+				$url				= base_url()."/app_invoice_survery/viewRegisterFormatoPaginaNormal80mmOpcion1/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID;
+				$mensajeCliente		= "[simbol-mano-derecha] Su pedido esta siendo procesado : ".$objTM["transactionNumber"]."  [simbol-link] ".$url;
 				$this->core_web_whatsap->sendMessagePosMeConnect($companyID, replaceSimbol($mensajeCliente), clearNumero($objCustomer[0]->phoneNumber));
-				//
+				
+				
 				////Mandar mensaje por whatapp al propietario
-				$mensajeColaborador	= "Hay una nueva orden de trabajo:  [[URL]]";
+				$mensajeColaborador	= "[simbol-mano-derecha] Hay una nueva orden de trabajo:  ".$objTM["transactionNumber"].".  [simbol-link] ".$url;
 				$this->core_web_whatsap->sendMessagePosMeConnect($companyID, replaceSimbol($mensajeColaborador), clearNumero($objColaborador[0]->phoneNumber));
 				
 				
