@@ -1252,7 +1252,7 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
 	$pasteleriaPeralta		= getBehavioPasteleriaPeralta();
 	$divs                   = array_merge($divs, $pasteleriaPeralta);
 	$tuFuturo				= getBehavioTuFuturo();
-	$divs                   = array_merge($divs, $tuFuturo);
+	$divs                   = array_merge($divs, $tuFuturo);		
 
 	//Comanda traducir es para los menu
 	//comportamiento del controlador
@@ -1280,8 +1280,9 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
 		
 		if(!array_key_exists( $key, $divs) )
 		{
-			//si el key no existe regrear el elemento
+			//si el key no existe regrear el elemento	
 			return $default_value;
+			//return getBahavioDB($type_company, $key_controller, $key_element, $default_value);
 		}
 		else 
 		{
@@ -1317,6 +1318,7 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
 			if(!array_key_exists( $key, $divs) )
 			{	
 				return $default_value;
+				//return getBahavioDB($type_company, $key_controller, $key_element, $default_value);
 			}
 			else 
 			{
