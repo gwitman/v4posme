@@ -563,7 +563,7 @@
 			objRow.itemName 				= objResponse[i][7];
 			objRow.itemUM 					= objResponse[i][8];
 			objRow.quantity 				= cantidad;
-			objRow.cost 					= objResponse[i][2];
+			objRow.cost 					= objResponse[i][2] == "" ? 0 : objResponse[i][2];
 			objRow.price 					= objResponse[i][3];
 			objRow.lote 					= "";
 			objRow.vencimiento				= "";
