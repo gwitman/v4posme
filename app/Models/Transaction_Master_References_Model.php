@@ -36,10 +36,11 @@ class Transaction_Master_References_Model extends Model  {
    }
    
    function update_app_posme_by_transactionMasterID($transactionMasterID,$data){
-		$db 	= db_connect();
+		$db 		= db_connect();
 		$builder	= $db->table("tb_transaction_master_references");
         $builder->where("transactionMasterID",$transactionMasterID);
-		return $builder->update($data);
+		$result 	=  $builder->update($data);		
+		return  $result;
    }
    
    function get_rowByPK($transactionMasterReferenceID){
