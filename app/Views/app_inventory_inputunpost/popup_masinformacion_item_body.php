@@ -63,7 +63,9 @@
 														<div class="col-lg-10">
 															<div class="input-group">
 																<span class="input-group-addon">$</span>
-																<input class="form-control" id="txtIva" type="text" placeholder="" value="<?php echo $iva;?>">
+																<input type="checkbox"   name="txtCheckIva" id="txtCheckIva" value="1" >
+																<input type="hidden" id="txtCosto"  value="<?php echo $costo;?>" />
+																<input class="form-control" id="txtIva" type="text" placeholder="" value="<?php echo $iva;?>" readonly="true" >
 															</div>
 														</div>
 													</div>

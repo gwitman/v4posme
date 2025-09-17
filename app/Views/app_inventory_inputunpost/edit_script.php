@@ -415,7 +415,8 @@
 			var transactionMasterDetailID 								= $(this).data("transactionmasterdetailid");
 			var tr 														= $(this).parent().parent()[0];
 			var index 													= objTableDetailTransaction.fnGetPosition(tr);
-			var objdat_ 												= objTableDetailTransaction.fnGetData(index);		
+			var objdat_ 												= objTableDetailTransaction.fnGetData(index);	
+			var costo 													= objdat_[7];			
 			var lote 													= objdat_[9];
 			var vencimiento 											= objdat_[10];
 			var precio1 												= objdat_[12];
@@ -429,10 +430,11 @@
 			vencimiento 					= vencimiento.replace(" 00:00:00","");
 			
 			if(lote == "") lote = "0";
-			if(vencimiento == "") vencimiento = moment().format("YYYY-MM-DD");
+			if(vencimiento == "") vencimiento = moment().format("YYYY-MM-DD");			
+			if(txtReference4TransactionMasterDetail == "") 	txtReference4TransactionMasterDetail = "_";
 			
 			var url_request = "<?php echo base_url(); ?>/app_inventory_inputunpost/add_masinformacion/onCompleteUpdateMasInformacion/"+itemID+"/"+transactionMasterDetailID+"/"+index; 
-			url_request = url_request + "/"+lote+"/"+vencimiento+"/"+precio1+"/"+precio2+"/"+iva+"/"+isc+"/"+txtReference4TransactionMasterDetail;
+			url_request = url_request + "/"+lote+"/"+vencimiento+"/"+precio1+"/"+precio2+"/"+iva+"/"+isc+"/"+txtReference4TransactionMasterDetail+"/"+costo;
 			
 			
 			window.open(url_request,"MsgWindow","width=900,height=500");

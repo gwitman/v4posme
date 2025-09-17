@@ -2663,7 +2663,7 @@ class app_inventory_inputunpost extends _BaseController {
 			
 		    return $resultView;		}
 	}	
-	function add_masinformacion($fnCallback="",$itemID="",$transactionMasterDetailID="",$positionID="",$lote="",$vencimiento="",$precio1="",$precio2="",$iva="",$isc="",$txtReference4TransactionMasterDetail = ""){
+	function add_masinformacion($fnCallback="",$itemID="",$transactionMasterDetailID="",$positionID="",$lote="",$vencimiento="",$precio1="",$precio2="",$iva="",$isc="",$txtReference4TransactionMasterDetail = "",$costo=""){
 		
 			$fnCallback = helper_SegmentsByIndex($this->uri->getSegments(),1,$fnCallback);	
 			$itemID = helper_SegmentsByIndex($this->uri->getSegments(),2,$itemID);	
@@ -2676,6 +2676,7 @@ class app_inventory_inputunpost extends _BaseController {
 			$iva = helper_SegmentsByIndex($this->uri->getSegments(),9,$iva);	
 			$isc = helper_SegmentsByIndex($this->uri->getSegments(),10,$isc);
 			$txtReference4TransactionMasterDetail = helper_SegmentsByIndex($this->uri->getSegments(),11,$txtReference4TransactionMasterDetail);
+			$costo = helper_SegmentsByIndex($this->uri->getSegments(),12,$costo);
 		
 			//AUTENTICACION
 			if(!$this->core_web_authentication->isAuthenticated())
@@ -2706,6 +2707,7 @@ class app_inventory_inputunpost extends _BaseController {
 			$data["txtReference4TransactionMasterDetail"]	= $txtReference4TransactionMasterDetail;
 			$data["iva"] 									= $iva;
 			$data["isc"] 									= $isc;
+			$data["costo"]									= $costo;
 			
 			//Renderizar Resultado
 			$dataSession["message"]		= "";
