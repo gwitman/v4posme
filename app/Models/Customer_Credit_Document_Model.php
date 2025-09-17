@@ -399,6 +399,7 @@ class Customer_Credit_Document_Model extends Model  {
 		$sql = sprintf("
 			select 
 				c.customerNumber,
+				c.phoneNumber,
 				nat.firstName,
 				nat.lastName , 
 				ccd.documentNumber,
@@ -427,6 +428,7 @@ class Customer_Credit_Document_Model extends Model  {
 				c.allowWhatsappCollection in  (1 /*cobro por whatapp*/  )  
 			group by 
 				c.customerNumber,
+				c.phoneNumber,
 				nat.firstName,
 				nat.lastName , 
 				ccd.documentNumber,

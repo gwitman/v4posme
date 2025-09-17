@@ -2252,7 +2252,7 @@ class app_notification extends _BaseController
 		{
 $rowx 					= array();
 $rowx["firstName"] 		= $item->firstName;
-$rowx["phoneNumber"] 	= "50584766457";
+$rowx["phoneNumber"] 	= $item->phoneNumber;
 $rowx["mensaje"] 		= "📌/*Mensaje automático de recordatorio de pago*/
 (Este mensaje ha sido generado automáticamente por un bot)
 
