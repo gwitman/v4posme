@@ -399,6 +399,19 @@
 									</div>
 								</div>
 								
+								<div class="form-group">
+										<label class="col-lg-4 control-label" for="normal">Permite WhatsApp Publicidad</label>
+										<div class="col-lg-8">
+											<input type="checkbox"   name="txtAllowWhatsappPromotions" id="txtAllowWhatsappPromotions" value="1" <?php echo ($objCustomer->allowWhatsappPromotions == 1) ? "checked":""; ?>  >
+										</div>
+								</div>
+								<div class="form-group">
+										<label class="col-lg-4 control-label" for="normal">Permite WhatsApp Cobro</label>
+										<div class="col-lg-8">
+											<input type="checkbox"   name="txtAllowWhatsappCollection" id="txtAllowWhatsappCollection" value="1" <?php echo ($objCustomer->allowWhatsappCollection == 1) ? "checked":""; ?>  >
+										</div>
+								</div>
+								
 								
 									
 						</div>

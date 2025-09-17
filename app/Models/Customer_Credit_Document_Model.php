@@ -390,6 +390,59 @@ class Customer_Credit_Document_Model extends Model  {
    }
    
    
+   function get_rowByCobroPorWhatapp($companyID)
+   {
+		$db 		= db_connect();
+		$builder	= $db->table("tb_customer_credit_document");    
+		
+		$sql = "";
+		$sql = sprintf("
+			select 
+				c.customerNumber,
+				nat.firstName,
+				nat.lastName , 
+				ccd.documentNumber,
+				cur.simbol , 
+				sum(cca.remaining) as total ,
+				MAX(ot.nextVisit) AS fechaPrometidaPago 
+			from 
+				tb_customer_credit_amoritization cca 
+				inner join tb_customer_credit_document ccd on 
+					ccd.customerCreditDocumentID = cca.customerCreditDocumentID
+				inner join tb_customer c on 
+					c.entityID = ccd.entityID 
+				inner join tb_naturales nat on 
+					nat.entityID = c.entityID 
+				inner join tb_currency cur on 
+					cur.currencyID = ccd.currencyID 
+				LEFT JOIN tb_transaction_master ot  ON 
+					ot.entityID = c.entityID and 
+					ot.transactionID = 35 /*transaccion de visita*/ and 
+					ot.isActive = 1 				
+			where 
+				cca.remaining > 0 and 
+				cca.dateApply < CURDATE() and 
+				cca.statusID in (78 /*registrado*/) and 
+				ccd.statusID in (77 /*registrado*/ ) and 
+				c.allowWhatsappCollection in  (1 /*cobro por whatapp*/  )  
+			group by 
+				c.customerNumber,
+				nat.firstName,
+				nat.lastName , 
+				ccd.documentNumber,
+				cur.simbol 
+			HAVING 
+				 fechaPrometidaPago IS NULL OR fechaPrometidaPago <= CURDATE();
+		");
+		
+		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+   
+  
+   
    
 }
 ?>

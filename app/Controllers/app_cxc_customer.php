@@ -476,7 +476,17 @@ class app_cxc_customer extends _BaseController {
 				$objCustomer["entityContactID"]		= /*inicio get post*/ $this->request->getPost("txtEmployerID");
 				$objCustomer["entityReferenceID"]	= /*inicio get post*/ $this->request->getPost("txtCustomerIDReference");
 				$objCustomer["modifiedOn"]			= helper_getDateTime();
-				$objCustomer["formContactID"]		= /*inicio get post*/ $this->request->getPost("txtFormContactID");//--fin peticion get o post
+				$objCustomer["formContactID"]		= /*inicio get post*/ $this->request->getPost("txtFormContactID");//--fin peticion get o post				
+				if(isset($_POST['txtAllowWhatsappPromotions']))
+					$objCustomer["allowWhatsappPromotions"]	 	= $this->request->getPost("txtAllowWhatsappPromotions");
+				else 
+					$objCustomer["allowWhatsappPromotions"]		= 0 ;
+						
+				if(isset($_POST['txtAllowWhatsappCollection']))
+					$objCustomer["allowWhatsappCollection"]	 	= $this->request->getPost("txtAllowWhatsappCollection");
+				else 
+					$objCustomer["allowWhatsappCollection"]		= 0 ;
+				
 				$this->Customer_Model->update_app_posme($companyID_,$branchID_,$entityID_,$objCustomer);
 				
 				//Actualizar Customer Credit
@@ -907,6 +917,15 @@ class app_cxc_customer extends _BaseController {
 			$objCustomer["isActive"]			= true;
 			$objCustomer["entityContactID"]		= /*inicio get post*/ $this->request->getPost("txtEmployerID");
 			$objCustomer["entityReferenceID"]	= /*inicio get post*/ $this->request->getPost("txtCustomerIDReference");
+			if(isset($_POST['txtAllowWhatsappPromotions']))
+				$objCustomer["allowWhatsappPromotions"]	 	= $this->request->getPost("txtAllowWhatsappPromotions");
+			else 
+				$objCustomer["allowWhatsappPromotions"]		= 0 ;
+					
+			if(isset($_POST['txtAllowWhatsappCollection']))
+				$objCustomer["allowWhatsappCollection"]	 	= $this->request->getPost("txtAllowWhatsappCollection");
+			else 
+				$objCustomer["allowWhatsappCollection"]		= 0 ;
 			
 			$objCustomer["formContactID"]		= /*inicio get post*/ $this->request->getPost("txtFormContactID");//--fin peticion get o post
 			$this->core_web_auditoria->setAuditCreated($objCustomer,$dataSession,$this->request);
@@ -1270,6 +1289,9 @@ class app_cxc_customer extends _BaseController {
             $objCustomer["isActive"]			= true;
             $objCustomer["entityContactID"]		= 0;
             $objCustomer["formContactID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_FORM_CONTACT_ID_DEFAULT")->value;
+			$objCustomer["allowWhatsappPromotions"]		= 0;
+			$objCustomer["allowWhatsappCollection"]		= 0;
+			
             $this->core_web_auditoria->setAuditCreated($objCustomer,$dataSession,$this->request);
             $result 							= $this->Customer_Model->insert_app_posme($objCustomer);
 

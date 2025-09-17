@@ -2236,6 +2236,51 @@ class app_notification extends _BaseController
 		echo "SUCCESS";
 	}
 	
+	function sendWhatsappDiarioMasivePosMeConnectCobranza()
+	{
+		//Recorrer todos los cobros, 
+		$objListCollections = $this->Customer_Credit_Document_Model->get_rowByCobroPorWhatapp(APP_COMPANY);
+		if(!$objListCollections)
+			return;
+		
+		if(count($objListCollections) <= 0)
+			return;
+		
+		$chatSend			= [];
+		$pathRemember		= "";
+		foreach($objListCollections as $item)
+		{
+$rowx 					= array();
+$rowx["firstName"] 		= $item->firstName;
+$rowx["phoneNumber"] 	= "50584766457";
+$rowx["mensaje"] 		= "📌/*Mensaje automático de recordatorio de pago*/
+(Este mensaje ha sido generado automáticamente por un bot)
+
+👋Un gusto saludarle ".$item->firstName.",
+Le recordamos que tiene un saldo pendiente:
+
+🆔/*Codigo de Cliente:*/ ".$item->customerNumber."
+💰/*Monto:*/ *".number_format(round($item->total,2),2,'.',',')."* *".$item->simbol."*
+🧾/*Factura No:*/ ".$item->documentNumber."
+🏦/*Bac dolares:*/ 369-721-287
+
+📝/*Concepto:*/ Servicios Informaticos.
+
+⚠️Por favor, le solicitamos realizar el pago a la brevedad para mantener su servicio al día.
+🙏Muchas gracias por su atención.
+/*Equipo de posMe*/
+";
+			$rowx["urlImage"] 		= "";
+			$chatSend[]				= $rowx;
+		}
+		
+		
+		$this->core_web_whatsap->sendMessagePosMeConnectMasive(APP_COMPANY,$chatSend,$pathRemember);
+		return;
+		
+		
+	}
+	
 	function sendWhatsappDiarioMasivePosMeConnect()
 	{
 		//Obtener la lista de recordatorios

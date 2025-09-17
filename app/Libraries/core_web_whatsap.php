@@ -915,6 +915,7 @@ class core_web_whatsap {
 		$objPWhatsapPropertyColaId 			= $objPWhatsapPropertyCola->parameterID;
 		$objCP_WhatsapPropertyCola			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyColaId);
 		$queueId							= $objCP_WhatsapPropertyCola->value;
+		
 
 		$sendSignature 	= false;
 		$closeTicket 	= true;
