@@ -1086,7 +1086,11 @@ class app_inventory_report extends _BaseController {
 											)											
 										) 
 										AND 
-										x.isActive = ".$showActivos."   
+										x.isActive = ".$showActivos."   and  										
+										NOT (
+											x.`Proposito` = 'VENTA' and 
+											x.`Disponible` = 'No'
+										)
 										
 								";
 								
