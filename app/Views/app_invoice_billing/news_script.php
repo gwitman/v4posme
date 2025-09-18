@@ -17,6 +17,7 @@
 	var varBaseUrl							= '<?php echo base_url(); ?>';
     var varStatusInvoiceAplicado			= 67; //Estado Aplicada
     var varStatusInvoiceAnular				= 68; //Anular
+	var varStatusInvoiceRegistrado			= 66; //Registrado
 	var varCurrencyDefaultSimbol			= '<?php echo $objCurrency->simbol; ?>';
 	var varIsMobile							= '<?php echo $isMobile; ?>';
 	var varUseMobile						= '<?php echo $useMobile; ?>';
@@ -3246,6 +3247,9 @@
 	{	
 	
 		if($("#txtStatusIDOld").val() ==  varStatusInvoiceAplicado)
+				return;
+			
+		if($("#txtStatusIDOld").val() ==  varStatusInvoiceRegistrado)
 				return;
 			
 		var typePriceID 					= $("#txtTypePriceID").val();		
