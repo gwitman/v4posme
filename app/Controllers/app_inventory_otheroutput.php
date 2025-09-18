@@ -58,8 +58,21 @@ class app_inventory_otheroutput extends _BaseController
 					$datView["objTMD"],
 					$datView["objWarehouse"]
 				);
-			} else {
+			} 
+			else if ( $dataSession["company"]->flavorID ==  306 /*global pro*/)
+			{
 				$html = helper_reporteA4TransactionMasterOutherOutputGlobalPro(
+					"SALIDA DE INVENTARIO",
+					$objCompany,
+					$objParameterLogo,
+					$datView["objTM"],
+					$datView["objStage"][0]->display, /*estado*/
+					$datView["objTMD"],
+					$datView["objWarehouse"]
+				);
+			}
+			else {
+				$html = helper_reporteA4TransactionMasterOutherOutputGeneric(
 					"SALIDA DE INVENTARIO",
 					$objCompany,
 					$objParameterLogo,

@@ -3589,6 +3589,333 @@ function helper_reporteA4TransactionMasterOutherOutputGlobalPro(
     return $html;
 }
 
+function helper_reporteA4TransactionMasterOutherOutputGeneric(
+    $titulo,
+    $objCompany,
+    $objParameterLogo,
+    $objTransactionMastser,
+	$statusName,
+	$objDetail,
+	$objWarehouse
+)
+{
+    $path    		= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
+    
+	$font_size1   	= "18px";
+	$border_left 	= "border-left: 1px solid black;";
+	$border_right 	= "border-right: 1px solid black;";
+	$border_top 	= "border-top: 1px solid black;";
+	$border_bottom 	= "border-bottom: 1px solid black;";
+	$border_radius	= "border-radius: 10px;";
+	$border_colapse = "border-collapse:separate;";
+	
+	
+	
+    $type    		= pathinfo($path, PATHINFO_EXTENSION);
+    $data    		= file_get_contents($path);
+    $base64  		= 'data:image/' . $type . ';base64,' . base64_encode($data);
+    $numberDocument =  str_replace("OSS", "Ajuste de Salida ", strtoupper($objTransactionMastser->transactionNumber) ); ;
+	$tipoDocumento  = "SALIDA DE INVENTARIO";
+	$currencyName	= $objTransactionMastser->currencyID == 1 ? "C$" : "$";
+	
+	
+    $html    = "";
+    $html    = "
+                    <!--
+                    Online HTML, CSS and JavaScript editor to run code online.
+                    https://www.programiz.com/html/online-compiler/
+                    -->
+                    <!DOCTYPE html>
+                    <html lang='en'>
+        
+                    <head>
+                      <meta charset='UTF-8' />
+                      <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+                      <style>
+						
+                        @page {       
+                          size: Legal;   
+						
+						  
+                          margin-top:25px;
+                          margin-left:25px;
+                          margin-right:20px;
+						  margin-bottom: 25px;
+						  
+						  
+						  padding-top: 0px;
+						  padding-right: 0px;
+						  padding-bottom: 0px;
+						  padding-left: 0px;
+						  
+                        }
+                        table{
+                          font-size: xx-small;
+                          font-family: sans-serif, monaco, monospace;						 
+						  border-collapse: collapse;
+                        }
+						td{
+                          font-size: xx-small;
+                          font-family: sans-serif, monaco, monospace;
+						  /*border: 1px solid black;*/
+						  border-collapse: collapse;
+                        }
+                      </style>
+                    </head>
+        
+                    <body>
+					";
+        
+		$f_html = 	  "
+                      <table style='width:98%'>
+                        <tr>
+						  <td  style='text-align:center;width:500px;text-align:left'>
+                            <img  src='".$base64."' width='300'  >
+                          </td>
+                          <td  style='text-align:center;'>
+									<table style='width:100%'>
+										<tr>
+										  <td  style='text-align:center;font-size:".$font_size1."; font-weight: bold;'>
+											". $numberDocument ."
+										  </td>
+										</tr>
+										
+										<tr>
+										  <td style='text-align:center'>
+											Carretera Masaya, Frente al colegio Teresiano 
+										  </td>
+										</tr>
+										<tr>
+										  <td style='text-align:center'>
+											Edificio Delta RUC: 888-080396-0001K
+										  </td>
+										</tr>
+										<tr>
+										  <td style='text-align:center'>
+											&nbsp;
+										  </td>
+										</tr>
+										<tr>
+										  <td style='text-align:center'>
+											AUT.DGI. No. ASFC 02/0009/02/2023/2
+										  </td>
+										</tr>
+									</table>
+                          </td>
+                        </tr>
+					</table>
+					
+						";
+    	   
+	$f_html = $f_html."
+				<table style='width:98%' >
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+				</table>
+			";
+			
+			
+	$f_html = $f_html."
+				<table style='width:98%' >
+					<tr>
+						<td style='text-align:center' colspan='3'>[[TIPO_DOCUMENTO]]</td>
+						<td style='text-align:center;width:70px'>".$statusName."</td>
+						<td style='text-align:center;width:70px; font-weight: bold;'><!--Telefono--></td>
+						<td style='text-align:center; font-weight: bold;'>".  "<!--LXYZLXYZ-->"  ."</td>
+					</tr>
+					<tr>
+						<td style='text-align:center; font-weight: bold;".$border_left.$border_right.$border_top.$border_bottom."'>Bodega:</td>
+						<td style='text-align:left;".$border_left.$border_right.$border_top.$border_bottom."' colspan='3'>". $objWarehouse->name  ."</td>
+						<td style='text-align:center;".$border_left.$border_right.$border_top.$border_bottom."'>Fecha</td>
+						<td style='text-align:center;".$border_left.$border_right.$border_top.$border_bottom."'>".$objTransactionMastser->createdOn."</td>
+					</tr>
+					
+					<tr>
+						<td style='text-align:center;width:70px; font-weight: bold;".$border_left.$border_right.$border_top.$border_bottom."' ><!--Envia:--></td>
+						<td style='text-align:left;".$border_left.$border_right.$border_top.$border_bottom."' colspan='3'>".   "  <!--N/D-->" ."</td>						
+						<td style='text-align:center;".$border_left.$border_right.$border_top.$border_bottom."' ><!--Cedula--></td>
+						<td style='text-align:center;width:250px;".$border_left.$border_right.$border_top.$border_bottom."' >". "<!--LXYZLXYZ-->"  ."</td> 
+					</tr>
+					
+				</table>
+			";
+			
+		   
+	$f_html = $f_html."
+				<table style='width:98%' >
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+				</table>
+			";
+			
+			
+	$f_html = $f_html."
+			<table style='width:98%' > 
+				<tr style='background-color: #ccc;'>
+					<td style='text-align:center;width:70px; font-weight: bold;"."' >ARTICULO</td>
+					<td style='text-align:center; font-weight: bold;"."' >DESCRIPCION</td>
+					<td style='text-align:center;width:70px; font-weight: bold;"."' >Cost. Unit.</td>
+					<td style='text-align:center;width:70px; font-weight: bold;"."' >Cant.</td>
+					<td style='text-align:center;width:70px; font-weight: bold;"."' >Descuento</td>
+					<td style='text-align:center;width:70px; font-weight: bold;"."' >TOTAL</td>
+				<tr>
+			";
+		
+	$cantidad 		= 0;	
+	$subTotal		= 0;
+	for($i = 0 ; $i < 22 ; $i++)
+	{
+		$count 		= count($objDetail);
+		if($i < $count)
+		{
+			$cantidad++;
+			$subTotal	= $subTotal + (round($objDetail[$i]->unitaryCost,2)  * round($objDetail[$i]->quantity,2));
+			$f_html 	= $f_html."			
+				<tr>
+					<td style='text-align:left;width:70px' >".$objDetail[$i]->itemNumber."</td>
+					<td style='text-align:left;' >".$objDetail[$i]->itemName."</td>
+					<td style='text-align:center;width:70px' >".$currencyName." ".number_format(round($objDetail[$i]->unitaryCost,2),2,".",",")."</td>
+					<td style='text-align:center;width:70px' >".number_format(round($objDetail[$i]->quantity,2),2,".",",")."</td>
+					<td style='text-align:center;width:70px' >".$currencyName." 0.00</td>
+					<td style='text-align:center;width:70px' >".$currencyName." ".number_format(round($objDetail[$i]->unitaryCost,2)  * round($objDetail[$i]->quantity,2)   ,2,".",",")."</td>
+				<tr>
+			";
+		}
+		else
+		{
+			$f_html = $f_html."			
+				<tr>
+					<td style='text-align:center;width:70px' >&nbsp;</td>
+					<td style='text-align:center;' >&nbsp;</td>
+					<td style='text-align:center;width:70px' >&nbsp;</td>
+					<td style='text-align:center;width:70px' >&nbsp;</td>
+					<td style='text-align:center;width:70px' >&nbsp;</td>
+					<td style='text-align:center;width:70px' >&nbsp;</td>
+				<tr>
+			";
+		}
+	}
+				
+	$f_html = $f_html."
+			</table>
+			";
+		   
+	$f_html = $f_html."
+				<table style='width:98%' >
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+				</table>
+			";
+				
+	
+	$f_html = $f_html."
+				  <table style='width:98%;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom."' >
+						<tr>
+							<td  style='text-align:left;vertical-align:top;widht:auto;' >
+								<table style='width:100%;'>
+									<tr>
+										<td style='font-size:".$font_size1.";font-weight:bold;' >Nota:</td>
+									</tr>
+									<tr>
+										<td style='height:60px;text-justify: auto;  '>". substr($objTransactionMastser->note,0,450) ."</td>
+									</tr>
+								</table>
+							</td>
+							<td style='width:200px;vertical-align:top;' >									
+								<table style='width:100%;'>
+									<tr>										
+										<td style='text-align:right;vertical-align: top;font-size:".$font_size1."; font-weight: bold;'>Totales:</td>								
+									</tr>
+									<tr>
+										<td>&nbsp;</td>										
+									</tr>
+									<tr>
+										<td>&nbsp;</td>										
+									</tr>
+									<tr>
+										<td>&nbsp;</td>										
+									</tr>																
+									<tr>										
+										<td style='text-align:right;padding-top:5px;'><!--No se aceptan devoluciones.--></td>										
+									</tr>						
+								</table>
+								
+							</td>
+							<td  style='text-align:left;vertical-align:top;widht:100px;' >
+								<table style='width:100%;'>
+									<tr>										
+										<td style='width:70px'>Cantidad</td>
+										<td style='text-align:right;width:70px'>".$currencyName." ".number_format ( round($subTotal,2) , 2 , ".","," ) ."</td>
+									</tr>
+									<tr>
+										<td><!--Descuentos--></td>
+										<td style='text-align:right'><!--0.00--></td>
+									</tr>
+									<tr>
+										<td><!--Subtotal--></td>
+										<td style='text-align:right'><!--0.00--></td>
+									</tr>
+									<tr>
+										<td><!--IVA--></td>
+										<td style='text-align:right'><!--0.00--></td>
+									</tr>
+									<tr>
+										<td style=' font-weight: bold;'><!--TOTAL:--></td>
+										<td style='text-align:right'><!--0.00--></td>
+									</tr>
+									<tr>										
+										<td></td>
+										<td></td>
+									</tr>	
+									<tr>
+										<td colspan='2'><!--*=Equipo seminuevo--></td>
+									</tr>									
+								</table>
+							</td>
+							
+						</tr>
+						
+						
+				   </table>";
+				   
+				   
+	$f_html = $f_html."
+				<table style='width:98%' >
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+				</table>
+			";
+			
+			
+	$f_html = $f_html."
+				  <table style='width:98%' >
+						<tr>
+							<td style='text-align:center;text-decoration:underline;font-weight: bold;font-size:14px'>
+								-
+							</td>
+						</tr>
+				   </table>";
+	
+	
+	$f_html_copia 		= $f_html;
+	$f_html_original 	= $f_html;
+	
+	
+	$f_html_original 	= str_replace("[[TIPO_DOCUMENTO]]","ORIGINAL",$f_html_original);
+	$f_html_copia 		= str_replace("[[TIPO_DOCUMENTO]]","COPIA",$f_html_copia);
+	
+	
+	$f_html				= $f_html_original."<div style='page-break-before:always;' ></div>".$f_html_copia;
+	$html 				= $html.$f_html."</body></html>";	
+	
+    
+    return $html;
+}
+
 
 function helper_reporteA4TransactionMasterOutherInputGlobalPro(
     $titulo,

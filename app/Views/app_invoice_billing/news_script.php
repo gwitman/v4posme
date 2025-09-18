@@ -3244,6 +3244,10 @@
 
 	function fnActualizarPrecio()
 	{	
+	
+		if($("#txtStatusIDOld").val() ==  varStatusInvoiceAplicado)
+				return;
+			
 		var typePriceID 					= $("#txtTypePriceID").val();		
 		var NSSystemDetailInvoice			= objTableDetail.fnGetData();
 		for(var i = 0; i < NSSystemDetailInvoice.length; i++)
