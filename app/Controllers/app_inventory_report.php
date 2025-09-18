@@ -1098,6 +1098,19 @@ class app_inventory_report extends _BaseController {
 				{
 					$query	= str_replace("[[TIPO_FILTRO_FECHA]]", " x.`Fecha de enlistamiento` BETWEEN ? and ? ", $query);
 				}
+				if($typeDate == "ambas")
+				{
+					$query	= str_replace(
+						"[[TIPO_FILTRO_FECHA]]", 
+						" 
+							(
+								(x.`Fecha de actualizacion` BETWEEN '".$startOn."' and '".$endOn."' )  OR 
+								(x.`Fecha de enlistamiento` BETWEEN '".$startOn."' and '".$endOn."' )
+							)
+						", 
+						$query
+					);
+				}
 				
 								
 				

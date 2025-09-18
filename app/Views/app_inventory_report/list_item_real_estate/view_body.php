@@ -23,6 +23,7 @@
 														<select name="txtTypeDate" id="txtTypeDate" class="select2">
 																<option value="actualizacion" selected>Fecha de actualizacion</option>
 																<option value="enlistamiento">Fecha de enlistamiento</option>																
+																<option value="ambas">Ambas</option>																
 														</select>
 													</div>													
 												</div>
