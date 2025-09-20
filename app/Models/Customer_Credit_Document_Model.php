@@ -398,43 +398,72 @@ class Customer_Credit_Document_Model extends Model  {
 		$sql = "";
 		$sql = sprintf("
 			select 
-				c.customerNumber,
-				c.phoneNumber,
-				nat.firstName,
-				nat.lastName , 
-				ccd.documentNumber,
-				cur.simbol , 
-				sum(cca.remaining) as total ,
-				MAX(ot.nextVisit) AS fechaPrometidaPago 
+				res.customerNumber,
+				res.phoneNumber,
+				res.firstName,
+				res.lastName , 				
+				res.simbol , 
+				res.fechaPrometidaPago,
+				SUM(res.total) AS total,
+				GROUP_CONCAT(DISTINCT res.documentNumber ORDER BY res.documentNumber SEPARATOR ', ') AS documentos,
+				GROUP_CONCAT(DISTINCT res.note ORDER BY res.note SEPARATOR ', ') AS notas
 			from 
-				tb_customer_credit_amoritization cca 
-				inner join tb_customer_credit_document ccd on 
-					ccd.customerCreditDocumentID = cca.customerCreditDocumentID
-				inner join tb_customer c on 
-					c.entityID = ccd.entityID 
-				inner join tb_naturales nat on 
-					nat.entityID = c.entityID 
-				inner join tb_currency cur on 
-					cur.currencyID = ccd.currencyID 
-				LEFT JOIN tb_transaction_master ot  ON 
-					ot.entityID = c.entityID and 
-					ot.transactionID = 35 /*transaccion de visita*/ and 
-					ot.isActive = 1 				
-			where 
-				cca.remaining > 0 and 
-				cca.dateApply < CURDATE() and 
-				cca.statusID in (78 /*registrado*/) and 
-				ccd.statusID in (77 /*registrado*/ ) and 
-				c.allowWhatsappCollection in  (1 /*cobro por whatapp*/  )  
+				(
+					select 
+							c.customerNumber,
+							c.phoneNumber,
+							nat.firstName,
+							nat.lastName , 
+							ccd.documentNumber,
+							tm.note,
+							cur.simbol , 
+							cca.remaining as total ,
+							(
+									select 
+											ot.nextVisit 
+									from 
+										tb_transaction_master ot 
+									where 
+										ot.entityID = ccd.entityID and 
+										ot.isActive = 1 and 
+										ot.transactionID = 35 /*siguiente visita */ 
+									order by 
+										ot.transactionMasterID desc 
+									limit 1 
+							) as fechaPrometidaPago 
+						from 
+							tb_customer_credit_amoritization cca 
+							inner join tb_customer_credit_document ccd on 
+								ccd.customerCreditDocumentID = cca.customerCreditDocumentID
+							inner join tb_transaction_master tm on 
+								tm.transactionNumber = ccd.documentNumber and 
+								tm.isActive = 1 
+							inner join tb_customer c on 
+								c.entityID = ccd.entityID 
+							inner join tb_naturales nat on 
+								nat.entityID = c.entityID 
+							inner join tb_currency cur on 
+								cur.currencyID = ccd.currencyID  
+						where 
+							cca.remaining > 0 and 
+							cca.dateApply < CURDATE() and 
+							cca.statusID in (78 /*registrado*/) and 
+							ccd.statusID in (77 /*registrado*/ ) and 
+							c.allowWhatsappCollection in  (1 /*cobro por whatapp*/  )  and 
+							cca.isActive = 1 and 
+							ccd.isActive = 1  
+				) res 
 			group by 
-				c.customerNumber,
-				c.phoneNumber,
-				nat.firstName,
-				nat.lastName , 
-				ccd.documentNumber,
-				cur.simbol 
+				res.customerNumber,
+				res.phoneNumber,
+				res.firstName,
+				res.lastName , 				
+				res.simbol , 
+				res.fechaPrometidaPago
 			HAVING 
-				 fechaPrometidaPago IS NULL OR fechaPrometidaPago <= CURDATE();
+				fechaPrometidaPago IS NULL OR fechaPrometidaPago <= CURDATE()
+			ORDER BY 
+				res.firstName ; 
 		");
 		
 		

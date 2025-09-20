@@ -2261,7 +2261,6 @@ Le recordamos que tiene un saldo pendiente:
 
 🆔/*Codigo de Cliente:*/ ".$item->customerNumber."
 💰/*Monto:*/ *".number_format(round($item->total,2),2,'.',',')."* *".$item->simbol."*
-🧾/*Factura No:*/ ".$item->documentNumber."
 🏦/*Bac dolares:*/ 369-721-287
 
 📝/*Concepto:*/ Servicios Informaticos.
