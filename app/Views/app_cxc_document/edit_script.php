@@ -862,7 +862,7 @@
 	function printEntityFieldStatus(rowData, fieldName) 
 	{
 		var listCustomer				= '<?php echo json_encode($objCatalogLegalName) ?>';		
-		objListFieldName				= JSON.parse(listCustomer.replace(/[\r\n]/g, ""));
+		objListFieldName				= JSON.parse(listCustomer.replace(/[\r\n]/g, "").replace(/[\n\r\t]/g, " "));
 		objListFieldStatus 				= JSON.parse('<?php echo json_encode($objCatalogEntityType) ?>')
 		objListFieldTypeCredit 			= JSON.parse('<?php echo json_encode($objCatalogEntityTypeCredit) ?>');
 		objListFieldStatusCredit 		= JSON.parse('<?php echo json_encode($objCatalogEntityStatusCredit) ?>');
