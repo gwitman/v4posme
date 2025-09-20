@@ -130,24 +130,29 @@ class app_inventory_category extends _BaseController {
 		}		
 			
 	}
-	function save($method = NULL){
-		 $method = helper_SegmentsByIndex($this->uri->getSegments(), 1, $method);
-		 try{ 
+	function save($method = NULL,$objCategory=NULL,$dataSession=NULL){
+		 
+		try{ 
+		 
 			//AUTENTICACION
-			if(!$this->core_web_authentication->isAuthenticated())
-			throw new \Exception(USER_NOT_AUTENTICATED);
-			$dataSession		= $this->session->get();
-			
-			//Validar Formulario						
-			$this->validation->setRule("txtName","Nombre","required");    
-			 	
-			
-			//Validar Formulario
-			if($this->validation->withRequest($this->request)->run() != true){
-				$stringValidation = str_replace("\n","",$this->validation->getErrors());								
-				$this->core_web_notification->set_message(true,$stringValidation);
-				$this->response->redirect(base_url()."/".'app_inventory_category/add');	
-				exit;
+			if($method != "apinew")
+			{
+				$method = helper_SegmentsByIndex($this->uri->getSegments(), 1, $method);
+				if(!$this->core_web_authentication->isAuthenticated())
+				throw new \Exception(USER_NOT_AUTENTICATED);
+				$dataSession		= $this->session->get();
+				
+				//Validar Formulario						
+				$this->validation->setRule("txtName","Nombre","required");    
+					
+				
+				//Validar Formulario
+				if($this->validation->withRequest($this->request)->run() != true){
+					$stringValidation = str_replace("\n","",$this->validation->getErrors());								
+					$this->core_web_notification->set_message(true,$stringValidation);
+					$this->response->redirect(base_url()."/".'app_inventory_category/add');	
+					exit;
+				}
 			}
 			
 			//Nuevo Registro
@@ -169,12 +174,12 @@ class app_inventory_category extends _BaseController {
 					
 					$this->core_web_permission->getValueLicense($dataSession["user"]->companyID,get_class($this)."/"."index");
 					$db=db_connect();
-			$db->transStart();
+					$db->transStart();
 					//Crear Categoria
 					$obj["companyID"]			= $dataSession["user"]->companyID;
 					$obj["branchID"] 			= $dataSession["user"]->branchID;
-					$obj["name"] 				= /*inicio get post*/ $this->request->getPost("txtName");				 
-					$obj["description"] 		= /*inicio get post*/ $this->request->getPost("txtDescription");				 
+					$obj["name"] 				= /*inicio get post*/ helper_QuitarAcentos($this->request->getPost("txtName"));				 
+					$obj["description"] 		= /*inicio get post*/ helper_QuitarAcentos($this->request->getPost("txtDescription"));				 
 					$obj["isActive"] 			= true;
 					$this->core_web_auditoria->setAuditCreated($obj,$dataSession,$this->request);
 					
@@ -196,6 +201,19 @@ class app_inventory_category extends _BaseController {
 					 
 			} 
 			//Editar Registro
+			else if ($method == "apinew")
+			{
+					$obj["companyID"]			= $dataSession["user"]->companyID;
+					$obj["branchID"] 			= $dataSession["user"]->branchID;
+					$obj["name"] 				= /*inicio get post*/ helper_QuitarAcentos($objCategory["txtName"]);
+					$obj["description"] 		= /*inicio get post*/ helper_QuitarAcentos($objCategory["txtDescription"]);
+					$obj["isActive"] 			= true;
+					$this->core_web_auditoria->setAuditCreated($obj,$dataSession,$this->request);
+					
+					//Ingresar					
+					$itemCategoryID				= $this->Itemcategory_Model->insert_app_posme($obj);
+					return $itemCategoryID;
+			}
 			else {
 					//PERMISO SOBRE LA FUNCION
 					if(APP_NEED_AUTHENTICATION == true){
@@ -212,11 +230,11 @@ class app_inventory_category extends _BaseController {
 					
 					//Actualizar Bodega
 					$db=db_connect();
-			$db->transStart();					
+					$db->transStart();					
 					$companyID 			= $dataSession["user"]->companyID;
 					$itemCategoryID 	= /*inicio get post*/ $this->request->getPost("txtItemCategoryID");
-					$obj["name"] 		= /*inicio get post*/ $this->request->getPost("txtName");
-					$obj["description"] = /*inicio get post*/ $this->request->getPost("txtDescription");
+					$obj["name"] 		= /*inicio get post*/ helper_QuitarAcentos($this->request->getPost("txtName"));
+					$obj["description"] = /*inicio get post*/ helper_QuitarAcentos($this->request->getPost("txtDescription"));
 					
 					
 					//Actualizar Bodega

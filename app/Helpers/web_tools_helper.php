@@ -521,6 +521,30 @@ function helper_InsertarEntrePartes($original, $insertar, $n) {
     return implode($insertar, $partes);
 }
 
+function helper_QuitarAcentos($texto) {
+	
+	
+    $acentos = [
+        // Minúsculas
+        'á' => 'a', 'à' => 'a', 'ä' => 'a', 'â' => 'a', 'ã' => 'a',
+        'é' => 'e', 'è' => 'e', 'ë' => 'e', 'ê' => 'e',
+        'í' => 'i', 'ì' => 'i', 'ï' => 'i', 'î' => 'i',
+        'ó' => 'o', 'ò' => 'o', 'ö' => 'o', 'ô' => 'o', 'õ' => 'o',
+        'ú' => 'u', 'ù' => 'u', 'ü' => 'u', 'û' => 'u',
+        'ñ' => 'n', 'ç' => 'c',
+
+        // Mayúsculas
+        'Á' => 'A', 'À' => 'A', 'Ä' => 'A', 'Â' => 'A', 'Ã' => 'A',
+        'É' => 'E', 'È' => 'E', 'Ë' => 'E', 'Ê' => 'E',
+        'Í' => 'I', 'Ì' => 'I', 'Ï' => 'I', 'Î' => 'I',
+        'Ó' => 'O', 'Ò' => 'O', 'Ö' => 'O', 'Ô' => 'O', 'Õ' => 'O',
+        'Ú' => 'U', 'Ù' => 'U', 'Ü' => 'U', 'Û' => 'U',
+        'Ñ' => 'N', 'Ç' => 'C'
+    ];
+
+    return strtr($texto, $acentos);
+}
+
 //END FUNCTION
 function helper_GetNumberLetras($xcifra, $moneda, $centavos)
 {

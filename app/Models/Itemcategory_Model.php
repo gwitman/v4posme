@@ -18,10 +18,9 @@ class ItemCategory_Model extends Model  {
 		
    }
    function insert_app_posme($data){
-		$db 	= db_connect();
-		$builder	= $db->table("tb_item_category");
-		
-		$result = $builder->insert($data);
+		$db 		= db_connect();
+		$builder	= $db->table("tb_item_category");			
+		$result 	= $builder->insert($data);
 		return $db->insertID();		
 		
    }
@@ -57,6 +56,21 @@ class ItemCategory_Model extends Model  {
 		$sql = $sql.sprintf(" where companyID = $companyID");		
 		$sql = $sql.sprintf(" and isActive= 1");		
 		$sql = $sql.sprintf(" and inventoryCategoryID = $itemCategoryID");		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getRow();
+   }
+   function getByName($companyID,$categoryName)
+   {
+		$db 	= db_connect();
+		$builder	= $db->table("tb_item_category");
+		
+		$sql = "";
+		$sql = sprintf("select companyID,branchID,inventoryCategoryID,name,description,isActive");
+		$sql = $sql.sprintf(" from tb_item_category");
+		$sql = $sql.sprintf(" where companyID = $companyID");		
+		$sql = $sql.sprintf(" and isActive= 1");		
+		$sql = $sql.sprintf(" and UPPER(name) = UPPER('$categoryName') ");		
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();

@@ -1142,7 +1142,7 @@ class app_inventory_inputunpost extends _BaseController {
 			$pathTemplate 					= PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$transactionMasterID;
 			$pathTemplate 					= $pathTemplate.'/ejemplo_'.$date.'.csv';
 			$fppathTemplate 				= fopen($pathTemplate, 'w');
-			$fieldTemplate 					= ["Codigo","Nombre","Cantidad","Costo","Precio","Lote","Vencimiento","IVA","ISC"];
+			$fieldTemplate 					= ["Codigo","Nombre","Cantidad","Costo","Precio","Lote","Vencimiento","IVA","ISC","Categoria"];
 			fputcsv($fppathTemplate, $fieldTemplate,$characterSplie);
 			fclose($fppathTemplate);
 			
@@ -1604,6 +1604,7 @@ class app_inventory_inputunpost extends _BaseController {
 			$archivoCSV 								= /*inicio get post*/ $this->request->getPost("txtFileImport");			
 			$arrayIva 									= /*inicio get post*/ $this->request->getPost("txtDetailIva");			
 			$arrayIsc	 								= /*inicio get post*/ $this->request->getPost("txtDetailIsc");
+			$arrayCategoria								= /*inicio get post*/ $this->request->getPost("txtCategoria");
 			
 						
 			if($archivoCSV != ".csv")
@@ -1628,7 +1629,8 @@ class app_inventory_inputunpost extends _BaseController {
 					$arrayReference4TransactionMasterDetail,
 					$archivoCSV,
 					$arrayIva ,
-					$arrayIsc
+					$arrayIsc ,
+					$arrayCategoria
 				);
 				
 			}
@@ -2039,7 +2041,8 @@ class app_inventory_inputunpost extends _BaseController {
 		$arrayReference4TransactionMasterDetail,
 		$archivoCSV,
 		$arrayIva,
-		$arrayIsc
+		$arrayIsc,
+		$arrayCategoria
 	)
 	{
 		$this->Transaction_Master_Detail_Model->deleteWhereTM($companyID,$transactionID,$transactionMasterID);
@@ -2105,6 +2108,9 @@ class app_inventory_inputunpost extends _BaseController {
 				if(!array_key_exists("ISC",$table[0])){
 					throw new \Exception("Columna 'ISC' no existe en el archivo .csv");
 				}
+				if(!array_key_exists("Categoria",$table[0])){
+					throw new \Exception("Columna 'Categoria' no existe en el archivo .csv");
+				}
 			}
 			
 			
@@ -2124,8 +2130,12 @@ class app_inventory_inputunpost extends _BaseController {
 				$precio			= ltrim(rtrim($row["Precio"]));
 				$iva			= ltrim(rtrim($row["IVA"]));
 				$isc			= ltrim(rtrim($row["ISC"]));
+				$categoriaName	= helper_QuitarAcentos(ltrim(rtrim($row["Categoria"])));
 				$objItem		= $this->Item_Model->get_rowByCode($companyID,$codigo);	
 				
+				if($categoriaName == "")
+				   $categoriaName = "General";
+					
 				if($codigo == '' && $description=='' && $cantidad =='' && $costo =='' && $precio=='')
 					continue;
 				
@@ -2134,7 +2144,23 @@ class app_inventory_inputunpost extends _BaseController {
 					
 				}		
 				
-				
+				//Ingresar la categoria
+				$objCategory 						= $this->Itemcategory_Model->getByName($companyID,$categoriaName);								
+				$objNewApiInventoryCategoryID		= 0;
+				if(!$objCategory)
+				{
+					$controllerApi_InventoryCategory 	= new app_inventory_category();
+					$controllerApi_InventoryCategory->initController($this->request, $this->response, $this->logger);
+					$objNewApiInventoryCategory			= [
+						"txtName" 			=> $categoriaName,
+						"txtDescription" 	=> $categoriaName
+					];
+					$objNewApiInventoryCategoryID		= $controllerApi_InventoryCategory->save("apinew", $objNewApiInventoryCategory, $dataSession);	
+				}
+				else 
+				{
+					$objNewApiInventoryCategoryID = $objCategory->inventoryCategoryID;
+				}
 				
 				//Agregar productos nuevos
 				if(!$objItem) 
@@ -2144,7 +2170,7 @@ class app_inventory_inputunpost extends _BaseController {
 					$objItemNewApi 					= [
 								'txtCallback' 						=> 'fnCollback',
 								'txtComando' 						=> 'false',
-								'txtInventoryCategoryID'			=> $this->Itemcategory_Model->getByCompany($companyID)[0]->inventoryCategoryID,
+								'txtInventoryCategoryID'			=> $objNewApiInventoryCategoryID,
 								'txtName'							=> $description,
 								'txtFamilyID'						=> $this->core_web_catalog->getCatalogAllItem("tb_item","familyID",$companyID)[0]->catalogItemID,
 								'txtBarCode'						=> $codigo,
