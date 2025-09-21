@@ -63,7 +63,7 @@ class Item_Model extends Model  {
 		$sql = $sql.sprintf(" and i.itemNumber = '$itemNumber' ");
 		$sql = $sql.sprintf(" and i.isActive= 1");		
 		
-		//Ejecutar Consulta
+		//Ejecutar Consulta		
 		return $db->query($sql)->getRow();
    }
    function get_rowByCodeBarra($companyID,$itemNumber){
