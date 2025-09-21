@@ -28,7 +28,7 @@
 		$configColumn["0"]["Formato"]		= "Date";
 		
 		$configColumn["1"]["Titulo"]		= "No Pago";
-		$configColumn["1"]["FiledSouce"]	= "transactionNumber";
+		$configColumn["1"]["FiledSouce"]	= "transactionNumberLink";
 		$configColumn["1"]["Width"]			= "80px";
 		
 		$configColumn["2"]["Titulo"]		= "Colaborador";
@@ -65,7 +65,12 @@
 		$configColumn["8"]["FiledSouce"]	= "note";
 		$configColumn["8"]["Width"]			= "210px";
 		
-		
+		//Remplazar la url
+		if ($objPayList) {
+			foreach ($objPayList as $key => $row) {
+				$objPayList[$key]["transactionNumberLink"] = str_replace("{base_url}", base_url(), $row["transactionNumberLink"]);
+			}
+		}
 		$resultado = helper_reporteGeneralCreateTable($objPayList,$configColumn,'0');
 		?>
 		
