@@ -1090,7 +1090,7 @@ class Transaction_Master_Detail_Model extends Model  {
 				left join tb_naturales nat on 
 					nat.entityID = t.entityIDSecondary 
 			where 
-				t.transactionID in (19,20) and   
+				t.transactionID in (19) and   
 				t.isActive = 1  and 				
 				t.companyID = 2  and 
 				t.transactionOn between '$dateFirst' and '$dateLast' and 
