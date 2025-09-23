@@ -2256,7 +2256,7 @@ $rowx["phoneNumber"] 	= $item->phoneNumber;
 $rowx["mensaje"] 		= "📌/*Mensaje automático de recordatorio de pago*/
 (Este mensaje ha sido generado automáticamente por un bot)
 
-👋Un gusto saludarle ".$item->firstName.",
+👋Un gusto saludarle /*".$item->firstName."*/,
 Le recordamos que tiene un saldo pendiente:
 
 🆔/*Codigo de Cliente:*/ ".$item->customerNumber."

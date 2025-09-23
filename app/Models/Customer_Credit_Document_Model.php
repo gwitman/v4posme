@@ -396,7 +396,7 @@ class Customer_Credit_Document_Model extends Model  {
 		$builder	= $db->table("tb_customer_credit_document");    
 		
 		$sql = "";
-		$sql = sprintf("
+		$sql = "
 			select 
 				res.customerNumber,
 				res.phoneNumber,
@@ -477,7 +477,7 @@ class Customer_Credit_Document_Model extends Model  {
 				fechaPrometidaPago IS NULL OR fechaPrometidaPago <= CURDATE()
 			ORDER BY 
 				res.firstName ; 
-		");
+		";
 		
 		
 		
