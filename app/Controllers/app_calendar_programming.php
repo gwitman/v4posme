@@ -272,11 +272,12 @@ class app_calendar_programming extends _BaseController
             $events = [];
             foreach ($result as $row) {
                 $events[] = [
-                    'id'    => $row->rememberID,
-                    'title' => $row->title,
-                    'start' => $row->createdOn,
-                    'url'   => $row->url,
-					'color' => $row->color
+                    'id'    		=> $row->rememberID,
+                    'title' 		=> $row->title,
+                    'start' 		=> $row->createdOn,
+                    'url'   		=> $row->url,
+					'color' 		=> $row->color,
+					'description' 	=> property_exists($row, 'description')  ? $row->description : "" 
                 ];
             }
             return $this->response->setJSON($events);

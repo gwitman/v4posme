@@ -79,7 +79,13 @@
                 handleEventClick(info, false);
             },
             navLinks: true,
-            eventBackgroundColor: '#378006'
+            eventBackgroundColor: '#378006',
+			eventDidMount: function(info) {
+				
+				if (info.event.extendedProps.description) {					
+					info.el.setAttribute("title", info.event.extendedProps.description);
+				}
+			}
         });
 
         calendar.render();

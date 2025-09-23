@@ -1347,7 +1347,7 @@ class Remember_Model extends Model  {
 		select 
             tm.transactionNumber as rememberID,	
             CONCAT('".base_url()."/app_rrhh_task/edit/companyID/2/transactionID/44/transactionMasterID/',tm.transactionMasterID) as url,
-            'TASK' AS title,
+            concat('TASK',' ', tm.reference4 ) AS title,
             tm.note AS description,	
 			DATE(tm.nextVisit) + INTERVAL FLOOR(RAND() * 24) HOUR + INTERVAL FLOOR(RAND() * 60) MINUTE AS createdOn,
 			tm.createdOn as createdOn2,
