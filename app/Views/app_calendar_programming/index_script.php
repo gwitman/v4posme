@@ -82,9 +82,21 @@
             eventBackgroundColor: '#378006',
 			eventDidMount: function(info) {
 				
+				
 				if (info.event.extendedProps.description) {					
-					info.el.setAttribute("title", info.event.extendedProps.description);
+					//info.el.setAttribute("title", info.event.extendedProps.description);
+					$(info.el).tooltip({
+						title		: info.event.extendedProps.description.replace(/\n/g, "<br>"),
+						placement	: "top",   // puedes cambiar: top, bottom, left, right
+						trigger		: "hover",
+						container	: "body",
+						html		: true
+					});
+					
 				}
+				
+				
+				
 			}
         });
 

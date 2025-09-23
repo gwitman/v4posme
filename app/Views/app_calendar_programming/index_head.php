@@ -18,4 +18,8 @@
         margin-top: 5px;
     }
 
+	.tooltip-inner {
+		text-align: left !important;
+		white-space: pre-line; /* permite respetar saltos */
+	}
 </style>
