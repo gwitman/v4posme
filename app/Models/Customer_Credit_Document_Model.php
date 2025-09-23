@@ -462,7 +462,9 @@ class Customer_Credit_Document_Model extends Model  {
 							(
 								DAY(DATE_SUB(NOW(), INTERVAL 6 HOUR)) BETWEEN 1 AND 31
 								AND WEEKDAY(DATE_SUB(NOW(), INTERVAL 6 HOUR)) BETWEEN 0 AND 4  -- 0=Lunes, 4=Viernes
+								/*
 								AND DAY(DATE_SUB(NOW(), INTERVAL 6 HOUR)) % 2 = 0
+								*/ 
 							)
 							
 				) res 
