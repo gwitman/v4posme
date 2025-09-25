@@ -1360,7 +1360,9 @@ class Remember_Model extends Model  {
         where 
             tm.isActive = 1 and 
             tm.transactionID in ( 44 /*TAREAS*/  ) and 
-            tm.nextVisit  > '1000-01-01 00:00:00'
+            tm.nextVisit  > '1000-01-01 00:00:00' and 
+			tm.areaID != 2411 /*catalogo 'admin' */ and 
+			tm.statusID != 146 /*Terminada */
 			
 		";
 
