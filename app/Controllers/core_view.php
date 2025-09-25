@@ -247,7 +247,7 @@ class core_view extends _BaseController {
 			$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewnameTemp,CALLERID_SEARCH,null,$parameter);
 			$dataViewDataTotal			= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname."_TOTAL",CALLERID_SEARCH,null,$parameter);
 			$dataViewDataDiplay			= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname."_DISPLAY",CALLERID_SEARCH,null,$parameter); 				
-
+			
 			if(!$dataViewData )
 			{
 				throw new \Exception("No existe la vista '".$viewnameTemp."' revisar en tb_dataview y en tb_company_dataview ");
