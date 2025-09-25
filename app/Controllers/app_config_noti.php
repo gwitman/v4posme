@@ -341,7 +341,7 @@ class app_config_noti extends _BaseController {
 						$pathTemplate 		= PATH_FILE_OF_APP."/company_".$companyID."/component_76/component_item_".$rememberID;
 						$pathTemplate 		= $pathTemplate.'/send.csv';
 						$fppathTemplate 	= fopen($pathTemplate, 'w');
-						$fieldTemplate 		= ["Destino","Mensaje"];
+						$fieldTemplate 		= ["Destino","Mensaje","Imagen"];
 						fputcsv($fppathTemplate, $fieldTemplate,$characterSplie);
 						fclose($fppathTemplate);
 						

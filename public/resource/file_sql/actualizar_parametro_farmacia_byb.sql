@@ -1,6 +1,14 @@
 /*BD: 	jkvutwoyesstzb:farma_byb*/
 /*SERVIDOR:	AWS*/
 
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_SEND_WHATAPP_BY_POINT"; ## Enviar whatapp por puntos
+	
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "2023-12-25" 
 WHERE 
