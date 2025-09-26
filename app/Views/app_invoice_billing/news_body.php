@@ -1359,13 +1359,15 @@ echo helper_getHtmlOfPageLanding();
 				<h3>Opciones de impresion</h3>
 				</br>
 				<button type="button" class="btn btn-flat btn-block btnCerrarModalOpcionesImpresion " data-dismiss="modal" id="btnCloseModalOpcionesImpresion" >Cerrar</button>
-				</br>
+				
 				<a href="javascript:void(0);" class="btn hidden btn-flat btn-block btnAceptarModalOpcionesImpresion" id="btnAceptarDialogPrinterV2AceptarTabla">Tabla</a>
-				</br>
-				<a href="javascript:void(0);" class="btn btn-flat btn-block btnAceptarModalOpcionesImpresion" id="btnAceptarDialogPrinterV2AceptarDocument">Preview</a>
-				</br>
-				<a href="javascript:void(0);" class="btn btn-flat btn-block btnAceptarModalOpcionesImpresion <?php echo getBehavio($company->type,"app_invoice_billing","divOpcionViewA4","hidden"); ?> " id="btnAceptarDialogPrinterV2AceptarDocumentA4">Preview A4</a>
-				</br>
+				
+				<a href="javascript:void(0);" class="btn btn-flat btn-block btnAceptarModalOpcionesImpresion" id="btnAceptarDialogPrinterV2AceptarDocument"><?php echo getBehavio($company->type,"app_invoice_billing","labelPrinterPreview","Preview"); ?></a>
+				
+				<a href="javascript:void(0);" class="btn btn-flat btn-block btnAceptarModalOpcionesImpresion <?php echo getBehavio($company->type,"app_invoice_billing","divOpcionViewA4","hidden"); ?> " id="btnAceptarDialogPrinterV2AceptarDocumentA4"><?php echo getBehavio($company->type,"app_invoice_billing","labelPrinterPreviewA4","Preview A4"); ?></a>
+				
+				<a href="javascript:void(0);" class="btn btn-flat btn-block btnAceptarModalOpcionesImpresion <?php echo getBehavio($company->type,"app_invoice_billing","divOpcionViewA4White","hidden"); ?> " id="btnAceptarDialogPrinterV2AceptarDocumentA4White"><?php echo getBehavio($company->type,"app_invoice_billing","labelPrinterPreviewA4White","Preview A4 Blanco"); ?></a>
+				
 				<a href="javascript:void(0);" class="btn hidden btn-flat btn-block btnAceptarModalOpcionesImpresion" id="btnAceptarDialogPrinterV2AceptarDirect">Directa</a>
 				</br>
 			</div>

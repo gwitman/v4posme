@@ -1253,6 +1253,8 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
 	$divs                   = array_merge($divs, $pasteleriaPeralta);
 	$tuFuturo				= getBehavioTuFuturo();
 	$divs                   = array_merge($divs, $tuFuturo);		
+	$tallerNYS				= getBehavioTallerNYS();
+	$divs                   = array_merge($divs, $tallerNYS);		
 
 	//Comanda traducir es para los menu
 	//comportamiento del controlador

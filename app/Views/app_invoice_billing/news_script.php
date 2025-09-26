@@ -1139,7 +1139,13 @@
 		cerrarModal('ModalCargandoDatos');
 		cerrarModal("ModalOpcionesImpresion");
 	});
-
+	$("#btnAceptarDialogPrinterV2AceptarDocumentA4White").click(function(){
+		mostarModalPersonalizado('Cargando impresión, por favor espere...');
+		window.open("<?php echo base_url(); ?>/"+varUrlPrinterOpcion3+"/companyID/2/transactionID/19/transactionMasterID/"+$("#txtTransactionMasterID").val(), '_blank');
+		cerrarModal('ModalCargandoDatos');
+		cerrarModal("ModalOpcionesImpresion");
+	});
+	
 
 
 	$("#btnCloseModalOpcionesImpresion").click(function(){
@@ -2035,6 +2041,7 @@
         objParameterPrinterDirectAndPreview 			= data.objParameterPrinterDirectAndPreview;
         varParameterShowComandoDeCocina     			= data.objParameterShowComandoDeCocina;
         varUrlPrinterOpcion2    = data.urlPrinterDocumentOpcion2;
+		varUrlPrinterOpcion3	= data.urlPrinterDocumentOpcion3;
         varUrlPrinterCocina	    = data.urlPrinterDocumentCocina;
         varUrlPrinterBar        = data.objParameterINVOICE_BILLING_PRINTER_URL_BAR;
 

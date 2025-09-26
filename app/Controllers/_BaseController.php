@@ -228,6 +228,7 @@ abstract class _BaseController extends Controller
 		'customization/web_tools_customizationview_cristo_rey_helper',
 		'customization/web_tools_customizationview_farma_ley_helper',
 		'customization/web_tools_customizationview_frozen_market_helper',
+		'customization/web_tools_customizationview_taller_nys_helper',
 		
 		
     ];
