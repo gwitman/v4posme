@@ -13087,8 +13087,10 @@ class app_invoice_billing extends _BaseController {
 			
 			//Get Component
 			$objComponent	        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
-			$objParameter	        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$objParameterLogo       = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
 			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+			$objParameterRuc	    = $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+			$objParameterRuc        = $objParameterRuc->value;
 			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);			
 			$spacing 		= 0.5;
 			
@@ -13097,45 +13099,93 @@ class app_invoice_billing extends _BaseController {
 			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
 			$datView["objTC"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$datView["objTM"]->transactionCausalID);
-			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
+			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d h:i A");
 			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
 			$datView["Identifier"]					= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
 			$datView["objBranch"]					= $this->Branch_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->branchID);
-			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_billing","statusID",$datView["objTM"]->statusID,$companyID,$branchID,$roleID);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_billing","statusID",$datView["objTM"]->statusID,$companyID,$datView["objTM"]->branchID,APP_ROL_SUPERADMIN);
 			$datView["objTipo"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$datView["objTM"]->transactionID,$datView["objTM"]->transactionCausalID);
 			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
 			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
 			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
 			$datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
-			$datView["objNaturalEmployer"]			= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objTM"]->entityIDSecondary);
-			$datView["objTelefonoEmployer"]			= $this->Entity_Phone_Model->get_rowByEntity($companyID,$datView["objCustumer"]->branchID,$datView["objTM"]->entityIDSecondary);
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
-			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 
+			$datView["objUser"]						= $this->User_Model->get_rowByPK($companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
+			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 			
+			$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_invoice_billing","templateInvoiceOpcion2DB","");
+			$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_invoice_billing","templateInvoiceOpcion2DB","");
+			if($htmlTemplateCompany == "")
+				$htmlTemplateCompany = $htmlTemplateDemo;
 			
 			
 			
-			//Generar Reporte
-			$html = helper_reporteA4TransactionMasterInvoiceA4Opcion1(
-			    "FACTURA",
-			    $objCompany,
-			    $objParameter,
-			    $datView["objTM"],
-			    $datView["objNatural"],
-			    $datView["objCustumer"],
-			    $datView["tipoCambio"],
-			    $datView["objCurrency"],
-			    $datView["objTMI"],
-				$datView["objTMD"],
-			    $objParameterTelefono, /*telefono*/
-				$datView["objNaturalEmployer"], /*vendedor*/
-				$datView["objTelefonoEmployer"], /*telefono cliente*/
-				$datView["objStage"][0]->display, /*estado*/
-				$datView["objTC"]->name, /*causal*/
-				"",
-				"",
-				$dataSession["companyParameter"]
-			);
-			//echo $html;
+			//Obtener datos
+			$datViewArray										= array();
+			$datViewArray["title"] 								= "FACTURA";
+			$datViewArray["companyRuc"] 						= $objParameterRuc;
+			$datViewArray["transactionMasterDetail"] 			= array();
+			$datViewArray["companyName"] 						= $objCompany->name;
+			$datViewArray["transactionNumber"] 					= $datView["objTM"]->transactionNumber;
+			$datViewArray["transactionOn"] 						= $datView["objTM"]->createdOn;
+			$createdOn 											= new \DateTime($datViewArray["transactionOn"]);
+			$datViewArray["transactionOn"] 						= $createdOn->modify(APP_HOUR_DIFERENCE_PHP)->format('Y-m-d h:i A'); // 12 horas con AM/PM  se resta hora segun la configuracion del sistema
+			$datViewArray["transactionOnDay"]					= $createdOn->modify(APP_HOUR_DIFERENCE_PHP)->format('d');
+			$datViewArray["transactionOnMonth"]					= $createdOn->modify(APP_HOUR_DIFERENCE_PHP)->format('m');
+			$datViewArray["transactionOnYear"]					= $createdOn->modify(APP_HOUR_DIFERENCE_PHP)->format('Y');
+
+
+			$datViewArray["userName"]							= $datView["objUser"]->nickname;
+			$datViewArray["currencySimbol"]						= $datView["objCurrency"]->simbol;
+			$datViewArray["phoneNumber"]						= $objParameterTelefono->value;
+			$datViewArray["address"]							= $objCompany->address;
+			$datViewArray["note"]								= $datView["objTM"]->note;
+			$datViewArray["customerName"]						= $datView["objTMI"]->referenceClientName == "" ? 
+																		$datView["objNatural"]->firstName :
+																		$datView["objTMI"]->referenceClientName ;
+			$datViewArray["customerRuc"]						= $datView["objTMI"]->referenceClientIdentifier == "" ? 
+																		$datView["objCustumer"]->identification :
+																		$datView["objTMI"]->referenceClientIdentifier ;
+																		
+																		
+			$datViewArray["customerNameLastName"]				= $datView["objNatural"]->lastName;
+			$datViewArray["statusName"]							= $datView["objStage"][0]->display;
+			$datViewArray["causalName"]							= $datView["objTC"]->name;
+			$datViewArray["customerNumber"]						= $datView["objCustumer"]->customerNumber;
+			$datViewArray["customerAddress"]					= $datView["objCustumer"]->address;
+			$datViewArray["customerPhoneNumber"]				= $datView["objCustumer"]->phoneNumber;
+			$datViewArray["amount_sub_total"]					= sprintf("%.2f",$datView["objTM"]->subAmount);
+			$datViewArray["amount_iva"]							= sprintf("%.2f",$datView["objTM"]->tax1);
+			$datViewArray["amount_discount"]					= sprintf("%.2f",$datView["objTM"]->discount);
+			$datViewArray["amount_total"]						= sprintf("%.2f",$datView["objTM"]->amount);
+			$datViewArray["amount_receipt"]						= sprintf("%.2f",$datView["objTMI"]->receiptAmount);
+			$datViewArray["amount_change"]						= sprintf("%.2f",$datView["objTMI"]->changeAmount);
+			
+			
+			
+			//agregar item
+			foreach($datView["objTMD"] as $detail_)
+			{
+				$row = array(
+					"itemName"				=>$detail_->itemName. " ". strtolower($detail_->skuFormatoDescription),
+					"itemNameQuantity"		=>sprintf("%01.2f",round($detail_->quantity,2)),
+					"itemNamePrice"			=>sprintf("%01.2f",round($detail_->unitaryPrice,2)),
+					"itemNameAmount"		=>sprintf("%01.2f",round($detail_->amount,2))	
+				);
+				array_push($datViewArray["transactionMasterDetail"],$row);		
+			}
+			
+			
+			//Obtener imagen de logo
+			$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;    
+			$type    = pathinfo($path, PATHINFO_EXTENSION);
+			$data    = file_get_contents($path);
+			$base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
+			$datViewArray["imageBase64"]						= $base64;
+			
+			
+			
+			$parser = \Config\Services::parser();			
+			$html 	= $parser->setData($datViewArray)->renderString($htmlTemplateCompany);			
 			$this->dompdf->loadHTML($html);
 			
 			
@@ -13297,6 +13347,9 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["transactionOn"] 						= $datView["objTM"]->createdOn;
 			$createdOn 											= new \DateTime($datViewArray["transactionOn"]);
 			$datViewArray["transactionOn"] 						= $createdOn->modify(APP_HOUR_DIFERENCE_PHP)->format('Y-m-d h:i A'); // 12 horas con AM/PM  se resta hora segun la configuracion del sistema
+			$datViewArray["transactionOnDay"]					= $createdOn->modify(APP_HOUR_DIFERENCE_PHP)->format('d');
+			$datViewArray["transactionOnMonth"]					= $createdOn->modify(APP_HOUR_DIFERENCE_PHP)->format('m');
+			$datViewArray["transactionOnYear"]					= $createdOn->modify(APP_HOUR_DIFERENCE_PHP)->format('Y');
 
 
 			$datViewArray["userName"]							= $datView["objUser"]->nickname;
@@ -13316,6 +13369,8 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["statusName"]							= $datView["objStage"][0]->display;
 			$datViewArray["causalName"]							= $datView["objTC"]->name;
 			$datViewArray["customerNumber"]						= $datView["objCustumer"]->customerNumber;
+			$datViewArray["customerAddress"]					= $datView["objCustumer"]->address;
+			$datViewArray["customerPhoneNumber"]				= $datView["objCustumer"]->phoneNumber;
 			$datViewArray["amount_sub_total"]					= sprintf("%.2f",$datView["objTM"]->subAmount);
 			$datViewArray["amount_iva"]							= sprintf("%.2f",$datView["objTM"]->tax1);
 			$datViewArray["amount_discount"]					= sprintf("%.2f",$datView["objTM"]->discount);
