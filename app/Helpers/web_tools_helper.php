@@ -164,6 +164,17 @@ function helper_DateToSpanish($date_, $format)
     return strtoupper($return_);
 }
 
+function helper_getStringClear($texto)
+{
+	// Definimos los caracteres a buscar y sus reemplazos
+    $buscar 	= ['<', '|', '>', '"', "'"]; // puedes agregar más
+    $reemplazar = ['',  '',  '',  '',  '']; // reemplazo correspondiente
+
+    // Reemplazamos todos los caracteres
+    $textoReemplazado = str_replace($buscar, $reemplazar, $texto);
+
+    return $textoReemplazado;
+}
 function helper_getDate()
 {
 

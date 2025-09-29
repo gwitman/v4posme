@@ -27,7 +27,7 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "KpSDa2pBT351B1xsUxv7TlrVQDgla0" 
+	tb_company_parameter.value = "S9653xAv28wMqVD5gZxPGfYDnRlK8J" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema

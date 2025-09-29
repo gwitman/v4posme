@@ -7504,7 +7504,7 @@ class app_invoice_billing extends _BaseController {
 				$this->dompdf->output()					
 			);						
 			
-			chmod($path, 644);
+			chmod($path, 0644);
 			
 			if($objParameterShowLinkDownload == "true")
 			{			
@@ -7515,10 +7515,18 @@ class app_invoice_billing extends _BaseController {
 			
 			}
 			else{			
-				//visualizar		
+			
+				//visualizar
+				// Limpiar buffers para evitar texto previo
+				if (ob_get_length()) {
+					ob_end_clean();
+				}
+
+				
 				$timestamp 	= date("YmdHis") . "0"; // Resultado: 202505261134000
 				$filename 	= "posme_" . $timestamp . ".pdf";							
 				$this->dompdf->stream($filename, ['Attachment' => $objParameterShowDownloadPreview ]);
+				exit;
 			}
 			
 			
@@ -7583,6 +7591,7 @@ class app_invoice_billing extends _BaseController {
 			$datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
 			$datView["objUser"]						= $this->User_Model->get_rowByPK($companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
+			$datView["objWorkflowStage"]			= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($datView["objTM"]->statusID);
 			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 			
 			$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_invoice_billing","templateInvoice","");
 			$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_invoice_billing","templateInvoice","");
@@ -7601,7 +7610,7 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["transactionOn"] 						= $datView["objTM"]->createdOn;
 			$createdOn 											= new \DateTime($datViewArray["transactionOn"]);
 			$datViewArray["transactionOn"] 						= $createdOn->modify(APP_HOUR_DIFERENCE_PHP)->format('Y-m-d h:i A'); // 12 horas con AM/PM  se resta hora segun la configuracion del sistema
-
+			$datViewArray["typeTransacton"]						= $datView["objWorkflowStage"][0]->aplicable == 1 ? "FACTURA" : "PROFORMA" ;
 
 			$datViewArray["userName"]							= $datView["objUser"]->nickname;
 			$datViewArray["currencySimbol"]						= $datView["objCurrency"]->simbol;
@@ -13329,6 +13338,7 @@ class app_invoice_billing extends _BaseController {
 			$datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
 			$datView["objUser"]						= $this->User_Model->get_rowByPK($companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
+			$datView["objWorkflowStage"]			= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($datView["objTM"]->statusID);
 			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 			
 			$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_invoice_billing","templateInvoiceOpcion1DB","");
 			$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_invoice_billing","templateInvoiceOpcion1DB","");
@@ -13350,7 +13360,7 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["transactionOnDay"]					= $createdOn->modify(APP_HOUR_DIFERENCE_PHP)->format('d');
 			$datViewArray["transactionOnMonth"]					= $createdOn->modify(APP_HOUR_DIFERENCE_PHP)->format('m');
 			$datViewArray["transactionOnYear"]					= $createdOn->modify(APP_HOUR_DIFERENCE_PHP)->format('Y');
-
+			$datViewArray["typeTransacton"]						= $datView["objWorkflowStage"][0]->aplicable == 1 ? "FACTURA" : "PROFORMA" ;
 
 			$datViewArray["userName"]							= $datView["objUser"]->nickname;
 			$datViewArray["currencySimbol"]						= $datView["objCurrency"]->simbol;
@@ -13394,7 +13404,7 @@ class app_invoice_billing extends _BaseController {
 			
 			
 			//Obtener imagen de logo
-			$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;    
+			$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/a4-direct-ticket-'.$objParameterLogo->value;    
 			$type    = pathinfo($path, PATHINFO_EXTENSION);
 			$data    = file_get_contents($path);
 			$base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
