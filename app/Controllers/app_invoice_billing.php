@@ -7721,7 +7721,7 @@ class app_invoice_billing extends _BaseController {
 				$this->dompdf->output()					
 			);						
 			
-			chmod($path, 644);
+			chmod($path, 0644);
 			
 			if($objParameterShowLinkDownload == "true")
 			{			
@@ -7736,6 +7736,7 @@ class app_invoice_billing extends _BaseController {
 				$timestamp 	= date("YmdHis") . "0"; // Resultado: 202505261134000
 				$filename 	= "posme_" . $timestamp . ".pdf";							
 				$this->dompdf->stream($filename, ['Attachment' => $objParameterShowDownloadPreview ]);
+				exit;
 			}
 			
 			
@@ -7924,7 +7925,7 @@ class app_invoice_billing extends _BaseController {
 				$this->dompdf->output()					
 			);						
 			
-			chmod($path, 644);
+			chmod($path, 0644);
 			
 			if($objParameterShowLinkDownload == "true")
 			{			
@@ -7939,6 +7940,7 @@ class app_invoice_billing extends _BaseController {
 				$timestamp 	= date("YmdHis") . "0"; // Resultado: 202505261134000
 				$filename 	= "posme_" . $timestamp . ".pdf";					
 				$this->dompdf->stream($filename, ['Attachment' => false ]);
+				exit;
 			}
 			
 			
@@ -11971,7 +11973,7 @@ class app_invoice_billing extends _BaseController {
 				$this->dompdf->output()					
 			);						
 			
-			chmod($path, 644);
+			chmod($path, 0644);
 			
 			if($objParameterShowLinkDownload == "true")
 			{			
@@ -11984,6 +11986,7 @@ class app_invoice_billing extends _BaseController {
 			else{			
 				//visualizar				
 				$this->dompdf->stream("file.pdf ", ['Attachment' => $objParameterShowDownloadPreview ]);
+				exit;
 			}
 			
 			
@@ -12684,6 +12687,7 @@ class app_invoice_billing extends _BaseController {
 			
 			//visualizar
 			$this->dompdf->stream("file.pdf", ['Attachment' => !$objParameterShowLinkDownload ]);
+			exit;
 			
 			//descargar
 			//$this->dompdf->stream();
