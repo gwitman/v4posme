@@ -1816,14 +1816,14 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8988-4809" 
+	tb_company_parameter.value = "8639-3266 / 8988-4809" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8988-4809" 
+	tb_company_parameter.value = "8639-3266 / 8988-4809" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1831,14 +1831,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Donde fue aserrio santa fe, 2c abajo 15v.sur" 
+	tb_company_parameter.value = "Gimnasio Ivan Montenegro 1.5c hacia arriba" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Taller NYS' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
+	NAME = 'Centro de repuestos NYS' , address = 'Gimnasio Ivan Montenegro 1.5c hacia arriba' ,
 	flavorID = 932 /*usuarioID*/,type='tallerNys'  , abreviature='tallerNys'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

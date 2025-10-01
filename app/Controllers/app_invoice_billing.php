@@ -7607,6 +7607,8 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["companyRuc"] 						= $objParameterRuc;
 			$datViewArray["transactionMasterDetail"] 			= array();
 			$datViewArray["companyName"] 						= $objCompany->name;
+			$datViewArray["companyName"] 						= str_replace("NYS", "N&S", $datViewArray["companyName"]);
+			
 			$datViewArray["transactionNumber"] 					= $datView["objTM"]->transactionNumber;
 			$datViewArray["transactionOn"] 						= $datView["objTM"]->createdOn;
 			$createdOn 											= new \DateTime($datViewArray["transactionOn"]);
@@ -7658,6 +7660,16 @@ class app_invoice_billing extends _BaseController {
 			$data    = file_get_contents($path);
 			$base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
 			$datViewArray["imageBase64"]						= $base64;
+			
+			//Obtener imagen de logo marca de agua
+			$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-marca-'.$objParameterLogo->value;   
+			if (file_exists($path)) {
+				$type    					 		= pathinfo($path, PATHINFO_EXTENSION);
+				$data    					 		= file_get_contents($path);
+				$base64  					 		= 'data:image/' . $type . ';base64,' . base64_encode($data);
+				$datViewArray["imageBase64Marca"] 	= $base64;
+			} 
+			
 			
 			
 			
