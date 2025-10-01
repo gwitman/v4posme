@@ -1802,14 +1802,14 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "########" 
+	tb_company_parameter.value = "2810211820009C" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "########" 
+	tb_company_parameter.value = "2810211820009C" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
@@ -1838,7 +1838,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Centro de repuestos NYS' , address = 'Gimnasio Ivan Montenegro 1.5c hacia arriba' ,
+	NAME = 'Centro Repuestos N&S' , address = 'Gimnasio Ivan Montenegro 1.5c hacia arriba' ,
 	flavorID = 932 /*usuarioID*/,type='tallerNys'  , abreviature='tallerNys'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

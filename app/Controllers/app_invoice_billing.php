@@ -7607,7 +7607,7 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["companyRuc"] 						= $objParameterRuc;
 			$datViewArray["transactionMasterDetail"] 			= array();
 			$datViewArray["companyName"] 						= $objCompany->name;
-			$datViewArray["companyName"] 						= str_replace("NYS", "N&S", $datViewArray["companyName"]);
+			
 			
 			$datViewArray["transactionNumber"] 					= $datView["objTM"]->transactionNumber;
 			$datViewArray["transactionOn"] 						= $datView["objTM"]->createdOn;
