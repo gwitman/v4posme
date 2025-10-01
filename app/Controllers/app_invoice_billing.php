@@ -6628,7 +6628,7 @@ class app_invoice_billing extends _BaseController {
 				$this->dompdf->output()					
 			);						
 			
-			chmod($path, 644);
+			chmod($path, 0644);
 			
 			if($objParameterShowLinkDownload == "true")
 			{			
@@ -6641,6 +6641,7 @@ class app_invoice_billing extends _BaseController {
 			else{			
 				//visualizar				
 				$this->dompdf->stream($fileNamePdf, ['Attachment' => $objParameterShowDownloadPreview ]);
+				exit;
 			}
 			
 			
@@ -13207,9 +13208,11 @@ class app_invoice_billing extends _BaseController {
 			//a4: 21cm x 29.7cm
 			//a4: 595.28puntos x 841.59puntos
 			
-			//$this->dompdf->setPaper('A4','portrait');
-			//$this->dompdf->setPaper(array(0,0,234.76,6000));
+			//$this->dompdf->setPaper('A4','portrait'); 
 			
+			//$this->dompdf->setPaper(array(0,0,234.76,6000));
+			$this->dompdf->setPaper('A4','landscape'); 
+			$this->dompdf->setPaper('letter', 'landscape');
 			$this->dompdf->render();
 			
 			

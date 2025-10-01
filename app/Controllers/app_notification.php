@@ -1924,6 +1924,7 @@ class app_notification extends _BaseController
 				} else {
 					//visualizar
 					$this->dompdf->stream("file.pdf ", ['Attachment' => $objParameterShowDownloadPreview]);
+					exit;
 				}
 			}
 		} catch (\Exception $ex) {
