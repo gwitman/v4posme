@@ -658,7 +658,7 @@ class Transaction_Master_Detail_Model extends Model  {
 		$sql = "";
 		$sql = sprintf("
 		  	SELECT 
-				DAY(c.createdOn) as Dia,
+				DAY(c.transactionOn) as Dia,
 				SUM(c.amount) as Venta 
 			FROM 
 				tb_transaction_master c 
@@ -702,7 +702,7 @@ class Transaction_Master_Detail_Model extends Model  {
 		$sql = "";
 		$sql = sprintf("
 		  	SELECT 
-				MONTH(c.createdOn) as Dia,
+				MONTH(c.transactionOn) as Dia,
 				SUM(c.amount) as Venta 
 			FROM 
 				tb_transaction_master c 
@@ -711,7 +711,7 @@ class Transaction_Master_Detail_Model extends Model  {
 				AND 
 				c.isActive = 1 
 				AND 
-				c.transactionCausalID in (21 /*Contado*/,23 /*Contado*/) 
+				c.transactionCausalID in (22 /*credito*/,24 /*credito*/) 
 				AND 
 				c.statusID in (67 /*aplicada*/) 
 				AND 
@@ -768,7 +768,7 @@ class Transaction_Master_Detail_Model extends Model  {
 				inner join tb_item i on 
 					i.itemID = td.componentItemID
 			where 
-				t.transactionID in (19,20) and   
+				t.transactionID in (19 /*FACTURA*/ ) and   
 				t.isActive = 1  and 
 				t.companyID = 2  and 
 				td.isActive = 1 and 
@@ -776,12 +776,9 @@ class Transaction_Master_Detail_Model extends Model  {
 				(
 					(
 						t.transactionID = 19 and 
-						t.statusID in ( 67 /*aplicada*/,68 /*anulada*/  )
-					)
-					or 
-					(
-						t.transactionID = 20 
+						t.statusID in ( 67 /*aplicada*/  )
 					)				
+					
 				) and 
 				i.inventoryCategoryID NOT IN (60 /*Categoria de Jersey Shop*/ ) 
 				and t.transactionCausalID in (21 /*Contado*/,23 /*Contado*/) 
