@@ -7592,6 +7592,8 @@ class app_invoice_billing extends _BaseController {
 			$datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
 			$datView["objUser"]						= $this->User_Model->get_rowByPK($companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
+			$datView["objUserNaturales"]			= $this->Natural_Model->get_rowByPK($datView["objUser"]->companyID,$datView["objUser"]->branchID,$datView["objUser"]->employeeID);
+			$datView["objUserEmployer"]				= $this->Employee_Model->get_rowByPK($datView["objUser"]->companyID,$datView["objUser"]->branchID,$datView["objUser"]->employeeID);
 			$datView["objWorkflowStage"]			= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($datView["objTM"]->statusID);
 			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 			
 			$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_invoice_billing","templateInvoice","");
@@ -7609,6 +7611,7 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["companyName"] 						= $objCompany->name;
 			
 			
+			
 			$datViewArray["transactionNumber"] 					= $datView["objTM"]->transactionNumber;
 			$datViewArray["transactionOn"] 						= $datView["objTM"]->createdOn;
 			$createdOn 											= new \DateTime($datViewArray["transactionOn"]);
@@ -7616,6 +7619,8 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["typeTransacton"]						= $datView["objWorkflowStage"][0]->aplicable == 1 ? "FACTURA" : "PROFORMA" ;
 
 			$datViewArray["userName"]							= $datView["objUser"]->nickname;
+			$datViewArray["userNaturalNameFirstName"]			= $datView["objUserNaturales"]->firstName;
+			$datViewArray["userNaturalNameLastName"]			= $datView["objUserNaturales"]->lastName;
 			$datViewArray["currencySimbol"]						= $datView["objCurrency"]->simbol;
 			$datViewArray["phoneNumber"]						= $objParameterTelefono->value;
 			$datViewArray["address"]							= $objCompany->address;

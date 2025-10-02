@@ -2434,6 +2434,7 @@ class app_inventory_inputunpost extends _BaseController {
 			$datView["objListWorkflowStage"]				= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_inputunpost","statusID",$datView["objTM"]->statusID,$companyID,$branchID,$roleID);
 			$datView["objTM"]->transactionOn 				= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
 			$datView["objTMOrdenCompra"]					= $this->Transaction_Master_Model->get_rowByTransactionMasterID($companyID,helper_RequestGetValue($datView["objTM"]->reference4,"0") );
+			$datView["company"]								= $dataSession["company"];
 			
 			$datView["objProvider"]							= $this->Provider_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);			
 			$datView["objNaturalDefault"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objProvider"]->branchID,$datView["objProvider"]->entityID);
@@ -2457,6 +2458,7 @@ class app_inventory_inputunpost extends _BaseController {
 			$objParameterCantidadItemPoup					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
 			$objParameterCantidadItemPoup					= $objParameterCantidadItemPoup->value;
 			$datView["objParameterCantidadItemPoup"] 		= $objParameterCantidadItemPoup;
+			$datView["objListCompanyPageSetting"]			= $this->Company_Page_Setting_Model->get_rowByKeyAndController($dataSession["company"]->type,"app_inventory_inputunpost");
 			
 			//Renderizar Resultado
 			$dataSession["notification"]					= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -2563,6 +2565,7 @@ class app_inventory_inputunpost extends _BaseController {
 			$dataView["objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE"]	= $this->core_web_parameter->getParameterValue("CORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE",$companyID);
 			$dataView["company"]					= $dataSession["company"];
 			$dataView["objListCausal"]				= $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
+			$dataView["objListCompanyPageSetting"]	= $this->Company_Page_Setting_Model->get_rowByKeyAndController($dataSession["company"]->type,"app_inventory_inputunpost");
 			
 			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($dataSession["user"]->companyID);
 			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");

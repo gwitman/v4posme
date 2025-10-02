@@ -10,8 +10,26 @@
 	var objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE	= <?php echo $objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE; ?>;
 	var sScrollY 													= objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE == true ?  "350px" : "auto";
 	var varParameterCantidadItemPoup								= '<?php echo $objParameterCantidadItemPoup; ?>';  
-	var columnIndexSubTotal											= 17;
-	
+	var columnIndexCheck 			= 0;
+	var columnIndexItemID 			= 1;
+	var columnIndexTransactionMasterID = 2;
+	var columnIndexBarCode 			= 3;
+	var columnIndexName 			= 4;
+	var columnIndexUnidad 			= 5;
+	var columnIndexCantidad 		= 6;
+	var columnIndexCostoBruto 		= 7;
+	var columnIndexCostoNeto 		= 8;
+	var columnIndexPrice 			= 9;
+	var columnIndexLote 			= 10;
+	var columnIndexExpiracion 		= 11;
+	var columnIndexMasInformacion 	= 12;
+	var columnIndexPrice2 			= 13;
+	var columnIndexPrice3 			= 14;
+	var columnIndexExpandirCode 	= 15;
+	var columnIndexIVA 				= 16;
+	var columnIndexISC 				= 17;
+	var columnIndexSubTotal 		= 18;
+		
 	var objTableDetailTransaction 	= {};
 	$(document).ready(function(){					
 		//Inicializar Controles		
@@ -28,7 +46,7 @@
 			"bAutoWidth"	: false,
 			"aoColumnDefs": [ 
 						{
-							"aTargets"	: [ 0 ],//checked
+							"aTargets"	: [ columnIndexCheck ],//checked
 							"mRender"	: function ( data, type, full ) {
 								if (data == false)
 								return '<input type="checkbox"  class="classCheckedDetail"  value="0" ></span>';
@@ -37,7 +55,7 @@
 							}
 						},
 						{
-							"aTargets"		: [ 1 ],//itemID
+							"aTargets"		: [ columnIndexItemID ],//itemID
 							"bVisible"		: true,
 							"sClass" 		: "hidden",
 							"bSearchable"	: false,
@@ -46,7 +64,7 @@
 							}
 						},
 						{
-							"aTargets"		: [2],//transactionMasterDetailID
+							"aTargets"		: [columnIndexTransactionMasterID],//transactionMasterDetailID
 							"bVisible"  	: true,
 							"sClass" 		: "hidden",
 							"bSearchable"	: false,
@@ -55,18 +73,18 @@
 							}
 						},
 						{
-							"aTargets"	: [4], //nombre
+							"aTargets"	: [columnIndexName], //nombre
 							"sWidth"	: "120px",
 							"mRender"		: function ( data, type, full ) {
 								return '<input type="text" value="'+data+'"  />';
 							}
 						},
 						{
-							"aTargets"	: [5], //unidad
+							"aTargets"	: [columnIndexUnidad], //unidad
 							"sWidth"	: "130px"
 						},
 						{
-							"aTargets"	: [ 6 ],//cantidad
+							"aTargets"	: [ columnIndexCantidad ],//cantidad
 							"mRender"	: function ( data, type, full ) {
 								var str =  '<input type="text" class="col-lg-12 txtDetailQuantity txt-numeric" value="'+data+'" name="txtDetailQuantity[]" />';
 								if (varUseMobile == "1")
@@ -75,16 +93,25 @@
 							}
 						},
 						{
-							"aTargets"	: [ 7 ],//costo
+							"aTargets"	: [ columnIndexCostoBruto ],//costo bruto
 							"mRender"	: function ( data, type, full ) {
-								var str = '<input type="text" class="col-lg-12 txtDetailCost txt-numeric" value="'+data+'" name="txtDetailCost[]" />';
+								var str = '<input type="text" class="col-lg-12 txtDetailCost txt-numeric" value="'+data+'" name="txtDetailCostBruto[]" />';
 								if (varUseMobile == "1")
 									str = str + " <span class='badge badge-inverse' >Costo</span>";
 								return str;
 							}
 						},
 						{
-							"aTargets"	: [ 8 ],//precio
+							"aTargets"	: [ columnIndexCostoNeto ],//costo net = costo bruto - descuento
+							"bVisible"  	: true,
+							"sClass" 		: "hidden",
+							"mRender"	: function ( data, type, full ) {
+								var str = '<input type="text" class="col-lg-12 txtDetailCost txt-numeric" value="'+data+'" name="txtDetailCost[]" />';								
+								return str;
+							}
+						},
+						{
+							"aTargets"	: [ columnIndexPrice ],//precio
 							"mRender"	: function ( data, type, full ) {
 								var str = '<input type="text" class="col-lg-12 txtDetailPrice txt-numeric" value="'+data+'" name="txtDetailPrice[]" />';
 								if (varUseMobile == "1")
@@ -93,7 +120,7 @@
 							}
 						},
 						{
-							"aTargets"		: [ 9 ],//lote
+							"aTargets"		: [ columnIndexLote ],//lote
 							"bVisible"		: true,
 							"sClass" 		: "hidden",
 							"bSearchable"	: false,
@@ -102,7 +129,7 @@
 							}
 						},
 						{
-							"aTargets"		: [ 10 ],//fecha expiracion
+							"aTargets"		: [ columnIndexExpiracion ],//fecha expiracion
 							"bVisible"		: true,
 							"sClass" 		: "hidden",
 							"bSearchable"	: false,
@@ -111,7 +138,7 @@
 							}
 						},
 						{
-							"aTargets"	: [ 11 ],//mas informacion
+							"aTargets"	: [ columnIndexMasInformacion ],//mas informacion
 							"mRender"	: function ( data, type, full ) {								
 								if (data == false){									
 									var str = '<a class="btn btn-primary btnMasInformcion" data-itemid="'+full[1]+'" data-transactionmasterdetailid="'+full[2]+'"  href="#" >Mas informacion</a>';
@@ -125,7 +152,7 @@
 							}
 						},
 						{
-							"aTargets"		: [ 12 ],//precio 02
+							"aTargets"		: [ columnIndexPrice2 ],//precio 02
 							"bVisible"		: true,
 							"sClass" 		: "hidden",
 							"bSearchable"	: false,
@@ -134,7 +161,7 @@
 							}
 						},
 						{
-							"aTargets"		: [ 13 ],//precio 03
+							"aTargets"		: [ columnIndexPrice3 ],//precio 03
 							"bVisible"		: true,
 							"sClass" 		: "hidden",
 							"bSearchable"	: false,
@@ -143,7 +170,7 @@
 							}
 						},
 						{
-							"aTargets"		: [ 14 ],//txtReference4TransactionMasterDetail expandir barcode
+							"aTargets"		: [ columnIndexExpandirCode ],//txtReference4TransactionMasterDetail expandir barcode
 							"bVisible"		: true,
 							"sClass" 		: "hidden",
 							"bSearchable"	: false,
@@ -152,7 +179,7 @@
 							}
 						},
 						{
-							"aTargets"		: [ 15 ],//IVA
+							"aTargets"		: [ columnIndexIVA ],//IVA
 							"bVisible"		: true,
 							"sClass" 		: "hidden",
 							"bSearchable"	: false,
@@ -161,7 +188,7 @@
 							}
 						},
 						{
-							"aTargets"		: [ 16 ],//ISC
+							"aTargets"		: [ columnIndexISC ],//ISC
 							"bVisible"		: true,
 							"sClass" 		: "hidden",
 							"bSearchable"	: false,
@@ -313,14 +340,14 @@
 			var tr 														= $(this).parent().parent()[0];
 			var index 													= objTableDetailTransaction.fnGetPosition(tr);
 			var objdat_ 												= objTableDetailTransaction.fnGetData(index);				
-			var costo 													= objdat_[7];
-			var lote 													= objdat_[9];
-			var vencimiento 											= objdat_[10];
-			var precio1 												= objdat_[12];
-			var precio2 												= objdat_[13];
-			var txtReference4TransactionMasterDetail 					= objdat_[14];
-			var iva 													= objdat_[15];
-			var isc	 													= objdat_[16];
+			var costo 													= objdat_[columnIndexCostoBruto];
+			var lote 													= objdat_[columnIndexLote];
+			var vencimiento 											= objdat_[columnIndexExpiracion];
+			var precio1 												= objdat_[columnIndexPrice2];
+			var precio2 												= objdat_[columnIndexPrice3];
+			var txtReference4TransactionMasterDetail 					= objdat_[columnIndexExpandirCode];
+			var iva 													= objdat_[columnIndexIVA];
+			var isc	 													= objdat_[columnIndexISC];
 			vencimiento 					= vencimiento.replace(" 00:00:00","");
 					
 			if(lote == "") lote = "0";
@@ -363,8 +390,8 @@
 			var objrow_ = $(this).parent().parent()[0];
 			var objind_ = objTableDetailTransaction.fnGetPosition(objrow_);
 			var objdat_ = objTableDetailTransaction.fnGetData(objind_);								
-			objTableDetailTransaction.fnUpdate( $(this).val(), objind_, 6 );		
-			var result 	=  parseFloat($(this).val()) * parseFloat(objdat_[7]);
+			objTableDetailTransaction.fnUpdate( $(this).val(), objind_, columnIndexCantidad );		
+			var result 	=  parseFloat($(this).val()) * parseFloat(objdat_[columnIndexCostoBruto]);
 			result 		= result.toFixed(2);
 			objTableDetailTransaction.fnUpdate( result , objind_, columnIndexSubTotal );
 			fnUpdateDetail();
@@ -376,10 +403,21 @@
 			$(this).val(fnFormatFloat(fnFormatNumber(fnFormatFloat($(this).val()),numberDecimal)));
 			var objrow_ = $(this).parent().parent()[0];
 			var objind_ = objTableDetailTransaction.fnGetPosition(objrow_);
-			var objdat_ = objTableDetailTransaction.fnGetData(objind_);								
-			objTableDetailTransaction.fnUpdate(  $(this).val(), objind_, 7 );
-			var result 	= parseFloat(objdat_[6]) *  parseFloat($(this).val()) ;
+			var objdat_ = objTableDetailTransaction.fnGetData(objind_);			
+			
+			//actualizar el nuevo precio
+			<?php echo getBahavioSession($company->type, "app_inventory_inputunpost", "scriptCalculatePriceChangeDetail", "",$objListCompanyPageSetting); ?>
+			
+			
+			//actualisar el nuevo costo	neto		
+			objTableDetailTransaction.fnUpdate($(this).val() , objind_, columnIndexCostoNeto );
+			
+			//actualizar el nuevo costo bruto
+			objTableDetailTransaction.fnUpdate(  $(this).val(), objind_, columnIndexCostoBruto );
+			var result 	= parseFloat(objdat_[columnIndexCantidad]) *  parseFloat($(this).val()) ;
 			result 		= result.toFixed(2);
+			
+			//actuaoizar sub total
 			objTableDetailTransaction.fnUpdate( result, objind_, columnIndexSubTotal );
 			fnUpdateDetail();
 			refreschChecked();
@@ -449,10 +487,10 @@
 				
 				if
 				( 
-					iElement[6] == "" || 
-					iElement[7] == "" || 
-					iElement[12] == "" || 
-					iElement[13] == ""
+					iElement[columnIndexCantidad] == "" || 
+					iElement[columnIndexCostoBruto] == "" || 
+					iElement[columnIndexPrice2] == "" || 
+					iElement[columnIndexPrice3] == ""
 				)
 				{
 					fnShowNotification("No puede haber numeros mal formados , revisar producto " + iElement[3],"error",timerNotification);
@@ -461,10 +499,10 @@
 				
 				if
 				( 
-					iElement[6] == "NaN" || 
-					iElement[7] == "NaN" || 
-					iElement[12] == "NaN" || 
-					iElement[13] == "NaN"
+					iElement[columnIndexCantidad] == "NaN" || 
+					iElement[columnIndexCostoBruto] == "NaN" || 
+					iElement[columnIndexPrice2] == "NaN" || 
+					iElement[columnIndexPrice3] == "NaN"
 				)
 				{
 					fnShowNotification("No puede haber numeros mal formados , revisar producto " + iElement[3],"error",timerNotification);
@@ -474,10 +512,10 @@
 				
 				
 				if(
-					parseInt(iElement[6])  < 0  || 
-					parseInt(iElement[7])  < 0  || 
-					parseInt(iElement[12]) < 0  || 
-					parseInt(iElement[13]) < 0
+					parseInt(iElement[columnIndexCantidad])  < 0  || 
+					parseInt(iElement[columnIndexCostoBruto])  < 0  || 
+					parseInt(iElement[columnIndexPrice2]) < 0  || 
+					parseInt(iElement[columnIndexPrice3]) < 0
 				)
 				{
 					fnShowNotification("No puede haber cantidades en negativos " + iElement[3] ,"error",timerNotification);
@@ -526,13 +564,13 @@
 		
 			
 			var objdat_ 									= objTableDetailTransaction.fnGetData(index);		
-			objTableDetailTransaction.fnUpdate( lote, index, 9 );
-			objTableDetailTransaction.fnUpdate(  vencimiento, index, 10 );		
-			objTableDetailTransaction.fnUpdate(  precio1, index, 12 );		
-			objTableDetailTransaction.fnUpdate(  precio2, index, 13 );		
-			objTableDetailTransaction.fnUpdate(  txtReference4TransactionMasterDetail, index, 14 );	
-			objTableDetailTransaction.fnUpdate(  iva, index, 15 );		
-			objTableDetailTransaction.fnUpdate(  isc, index, 16 );	
+			objTableDetailTransaction.fnUpdate( lote, index, columnIndexLote );
+			objTableDetailTransaction.fnUpdate(  vencimiento, index, columnIndexExpiracion );		
+			objTableDetailTransaction.fnUpdate(  precio1, index, columnIndexPrice2 );		
+			objTableDetailTransaction.fnUpdate(  precio2, index, columnIndexPrice3 );		
+			objTableDetailTransaction.fnUpdate(  txtReference4TransactionMasterDetail, index, columnIndexExpandirCode );	
+			objTableDetailTransaction.fnUpdate(  iva, index, columnIndexIVA );		
+			objTableDetailTransaction.fnUpdate(  isc, index, columnIndexISC );	
 			fnUpdateDetail();			
 			
 		
@@ -558,6 +596,8 @@
 				}
 			}
 			
+			
+			
 			var objRow 						= {};
 			objRow.checked 					= false;
 			objRow.itemID 					= objResponse[i][1];
@@ -567,6 +607,7 @@
 			objRow.itemUM 					= objResponse[i][8];
 			objRow.quantity 				= cantidad;
 			objRow.cost 					= objResponse[i][2] == "" ? 0 : objResponse[i][2];
+			objRow.costNeto 				= objRow.cost;
 			objRow.price 					= objResponse[i][3];
 			objRow.lote 					= "";
 			objRow.vencimiento				= "";
@@ -578,6 +619,10 @@
 			objRow.iva						= 0;
 			objRow.isc						= 0;
 			
+			//Calcular el descuento			
+			<?php echo getBahavioSession($company->type, "app_inventory_inputunpost", "scriptCalculatePrice", "",$objListCompanyPageSetting); ?>
+			
+			
 			//Berificar que el Item ya esta agregado 
 			if(jLinq.from(objTableDetailTransaction.fnGetData()).where(function(obj){ return obj[1] == objRow.itemID;}).select().length > 0 )
 			{
@@ -588,12 +633,24 @@
 				objTableDetailTransaction.fnAddData
 				(
 					[
-						objRow.checked,objRow.itemID,objRow.transactionMasterDetail,
-						objRow.itemNumber,objRow.itemName,objRow.itemUM,
-						objRow.quantity,objRow.cost,objRow.price,
-						objRow.lote,objRow.vencimiento,
-						objRow.masinfor,objRow.precio1,objRow.precio2,
-						objRow.barCodeExtende,objRow.iva,objRow.isc,
+						objRow.checked,
+						objRow.itemID,
+						objRow.transactionMasterDetail,
+						objRow.itemNumber,
+						objRow.itemName,
+						objRow.itemUM,
+						objRow.quantity,
+						objRow.cost,
+						objRow.costNeto,
+						objRow.price,
+						objRow.lote,
+						objRow.vencimiento,
+						objRow.masinfor,
+						objRow.precio1,
+						objRow.precio2,
+						objRow.barCodeExtende,
+						objRow.iva,
+						objRow.isc,
 						objRow.subTotal
 					]
 				);
@@ -663,18 +720,25 @@
 		
 		for(var i = 0; i < objTableDetailTransaction.fnGetData().length; i++){
 			var row 		= objTableDetailTransaction.fnGetData()[i];
-			var quantity 	= row[6];
-			var ivaRow		= row[15];
-			var iscRow		= row[16];
+			var quantity 	= row[columnIndexCantidad];
+			var ivaRow		= row[columnIndexIVA];
+			var iscRow		= row[columnIndexISC];
+			
 			console.log("cantidad: ",quantity);
 			console.log("iva row: ",ivaRow);
 			console.log("isc row: ",iscRow);
-			subtotal 		= subtotal + fnFormatFloat(fnFormatNumber((row[6] * row[7]),numberDecimal));
+			
+			subtotal 		= subtotal + fnFormatFloat(fnFormatNumber((row[columnIndexCantidad] * row[columnIndexCostoBruto]),numberDecimal));
 			console.log(row);
+			
 			iva				= iva + fnFormatFloat(fnFormatNumber(ivaRow*quantity,numberDecimal));
 			console.log("IVA: ",iva);
+			
 			isc				= isc + fnFormatFloat(fnFormatNumber(iscRow*quantity,numberDecimal));
 			console.log("ISC: ",isc);
+			
+			
+			
 		}
 				
 		subtotal		= parseInt(subtotal * 100) / 100;

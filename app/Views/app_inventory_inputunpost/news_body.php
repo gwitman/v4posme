@@ -201,7 +201,7 @@
 						<div class="row">
 							<div class="col-lg-12">
 								<div class="form-group">
-										<label class="col-lg-4 control-label" for="normal">Referencia1</label>
+										<label class="col-lg-4 control-label" for="normal"><?php echo getBahavioSession($company->type, "app_inventory_inputunpost", "lblReference1", "Referencia1",$objListCompanyPageSetting); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtReference1" id="txtReference1" value="">			
 										</div>
@@ -258,6 +258,7 @@
 								<th>U/M</th>
 								<th>Cantidad</th>
 								<th>Costo</th>
+								<th>Costo Neto</th>
 								<th>Precio</th>													
 								<th>Lote</th><!--9-->
 								<th>Expiracion</th><!--10-->
