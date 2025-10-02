@@ -70,9 +70,9 @@
 		$configColumn["02"]["Width"] 		= "60px";		
 		$configColumn["03"]["Width"] 		= "60px";		
 		$configColumn["04"]["Width"] 		= "60px";	
-		$configColumn["05"]["Width"] 		= "60px";		
-		$configColumn["06"]["Width"] 		= "60px";
-		$configColumn["07"]["Width"] 		= "60px";
+		$configColumn["05"]["Width"] 		= "120px";		
+		$configColumn["06"]["Width"] 		= "120px";
+		$configColumn["07"]["Width"] 		= "120px";
 		$configColumn["08"]["Width"] 		= "60px";
 		$configColumn["09"]["Width"] 		= "60px";	
 		$configColumn["10"]["Width"] 		= "120px";

@@ -872,6 +872,7 @@ class app_box_report extends _BaseController {
 				else{			
 					//visualizar
 					$this->dompdf->stream("file.pdf ", ['Attachment' => $objParameterShowDownloadPreview ]);
+					exit;
 				}
 				
 				
