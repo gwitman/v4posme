@@ -92,6 +92,7 @@
 								<th  style="" class="border notprint">Costo</th>
 								<th  style="" class="border notprint">Costo T.</th>
 								<th  style="" class="border notprint">Precio</th>						
+								<th  style="" class="border notprint">Precio Pedidos Ya</th>	
 								<th  style="" class="border">Utilidad</th>		
 								<th  style="" class="border">% Utilidad</th>		
 							</tr>
@@ -138,6 +139,9 @@
 										echo "<td style='text-align:right' class='border notprint' >";
 											echo (number_format( $i["price"],2,'.',','));
 										echo "</td>";	
+										echo "<td style='text-align:right' class='border notprint' >";
+											echo (number_format( $i["price3"],2,'.',','));
+										echo "</td>";	
 										echo "<td style='text-align:right' class='border'  >";								
 											echo (number_format( $i["price"] - $i["cost"],2,'.',','));
 										echo "</td>";	
@@ -162,9 +166,11 @@
 								
 								<th  style="" class="border">Cantidad</th>
 								<th  style="" class="border notprint">Costo</th>
-								<th  style="" class="border notprint"><?php echo number_format($costoTotal,2,'.',',');  ?></th>
+								<th  style="" class="border notprint"><?php echo number_format($costoTotal,2,'.',',');  ?></th>								
 								<th  style="" class="border notprint"><?php echo number_format($precioTotal,2,'.',',');  ?></th>						
-								<th  style="" class="border">Fisico</th>		
+								<th  style="" class="border notprint">Precio Pedidos Ya</th>	
+								<th  style="" class="border">Utilidad</th>	
+								<th  style="" class="border">% Utilidad</th>			
 							</tr>
 							
 							

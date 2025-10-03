@@ -1831,14 +1831,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Gimnasio Ivan Montenegro 1.5c hacia arriba" 
+	tb_company_parameter.value = "Gimnasio Iván Montenegro 1 ½ c arriba, León." 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Centro Repuestos N&S' , address = 'Gimnasio Ivan Montenegro 1.5c hacia arriba' ,
+	NAME = 'Centro Repuestos N&S' , address = 'Gimnasio Iván Montenegro 1 ½ c arriba, León.' ,
 	flavorID = 932 /*usuarioID*/,type='tallerNys'  , abreviature='tallerNys'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

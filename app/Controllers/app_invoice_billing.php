@@ -1511,8 +1511,10 @@ class app_invoice_billing extends _BaseController {
 					$phoneDestino 			= clearNumero($phoneDestino);
 					$sendWhatappTemplate 	= str_replace("{firstName}", $objNatural->firstName, $sendWhatappTemplate);
 					$sendWhatappTemplate 	= str_replace("{amount}",  " ".$amountPoint." pt ", $sendWhatappTemplate);
-					$sendWhatappTemplate 	= replaceSimbol($sendWhatappTemplate);
-					$this->core_web_whatsap->sendMessageByWaapi($companyID, $sendWhatappTemplate, $phoneDestino);
+					$sendWhatappTemplate 	= replaceSimbol($sendWhatappTemplate);					
+					$this->core_web_whatsap->sendMessagePosMeConnect($companyID, $sendWhatappTemplate, $phoneDestino );
+					//$this->core_web_whatsap->sendMessageByWaapi($companyID, $sendWhatappTemplate, $phoneDestino);
+					
 				}
 				
 				

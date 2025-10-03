@@ -422,7 +422,7 @@ WHERE
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "0" 
+	tb_company_parameter.value = "50" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION_PARAMETERF1";## Parametro 1 para envio de whatsap
@@ -553,14 +553,14 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://waapi.app/api/v1/instances/67049/client/action/send-message" 
+	tb_company_parameter.value = "https://api.posme.es/api/messages/send" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WAHTSAP_URL_ENVIO_MENSAJE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "61oGNnAg3Ed1xULC9nmyIJJMtcE1KifyoX9D2x6h458fa805" 
+	tb_company_parameter.value = "IYQtrEZN7w1ZosqpuxvGyunowRZ2FT" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
@@ -573,7 +573,7 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "50584766457" 
+	tb_company_parameter.value = "54" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_CURRENT_PROPIETARY_COMMERSE";## WHATSAPP DEL PRIPIETARIO
