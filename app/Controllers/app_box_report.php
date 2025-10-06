@@ -128,7 +128,7 @@ class app_box_report extends _BaseController {
 			//calcular las fechas iniciales del reporte
 			$startOn_ 	= \DateTime::createFromFormat('Y-m-d H:i:s',$startOn);		
 			$endOn_ 	= \DateTime::createFromFormat('Y-m-d H:i:s',$endOn);							
-			if($filteredArray != -1){
+			if($filteredArray != -1 and $userID != APP_USERADMIN ){
 				$startOn_Temporal = $endOn_;						
 				date_sub($startOn_Temporal, date_interval_create_from_date_string($filteredArray.' days'));
 				
