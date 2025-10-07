@@ -1,4 +1,5 @@
-/*BD: 	dbkroqnguhldo1:nica_verde*/
+/*BD: 	xqajlztmhrpedy:nica_verde*/
+/*SERVIDOR:		aws*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -1011,10 +1012,12 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
+	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT";## Imprimir directo en la impresora 
+#INVOICE_BILLING_PRINTER_DIRECT		true
+#INVOICE_BILLING_PRINTER_DIRECT		false
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
@@ -1093,6 +1096,7 @@ UPDATE  tb_company_parameter,tb_parameter SET
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_URL_PRINTER_COCINA_DIRECT";## Símbolo de la Moneda Funcional 
+
 
 
 	

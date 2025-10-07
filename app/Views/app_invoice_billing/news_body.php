@@ -1446,8 +1446,8 @@ echo helper_getHtmlOfPageLanding();
 			<div id="ModalCustomCocinaBodyV2" style="display:none">
 				<h3>Impresion de cocina</h3>
 				</br>	
-				<button type="button" class="btn btn-default btn-flat btn-block" data-dismiss="modal" id="btnCloseModalImpresionCocinV2">Cerrar</button>
-				</br>				
+				<button type="button" class="btn btn-flat btn-block btnCerrarModalCustomCocinaV2 " data-dismiss="modal" id="btnCloseModalImpresionCocinV2">Cerrar</button>
+				</br>
 				<a href="javascript:void(0);" class="btn btn-primary hidden btn-flat btn-block" id="btnAceptarDialogCocinaV2">Aceptar</a>
 			</div>
 			<?php

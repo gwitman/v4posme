@@ -389,6 +389,165 @@ class Customer_Credit_Document_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
+   function get_rowByBalancePendingByCompanyToMobileTuFuturo($companyID,$userID)
+   {
+		$db 		= db_connect();
+		$builder	= $db->table("tb_customer_credit_document");    
+		
+		$sql = "";
+		$sql = sprintf("
+			select 
+				k.entityID,
+				k.customerCreditDocumentID,
+				k.customerCreditLineID,
+				k.documentNumber,
+				k.currencyID,
+				k.currencyName,
+				k.statusDocument,
+				k.exchangeRate,
+				k.creditAmortizationID,
+				k.dateApply,
+				k.statusAmotization,
+				k.statusAmortizatonName,
+				
+				(
+					select 
+						sum(uu.remaining) 
+					from 
+						tb_customer_credit_amoritization uu 
+					where 
+						uu.customerCreditDocumentID = k.customerCreditDocumentID and 
+						uu.remaining > 0 		
+				) as  balance /*sirver para ver cual es la menta a cobrar*/,
+				
+				(
+					select 
+						sum(uu.remaining) 
+					from 
+						tb_customer_credit_amoritization uu 
+					where 
+						uu.customerCreditDocumentID = k.customerCreditDocumentID and 
+						uu.remaining > 0 		
+				) as  remaining /*se modifica en cada cuota mobile*/,
+				
+				(
+					select 
+						max(amor.share)
+					from 
+						tb_customer_credit_amoritization amor 
+					where 
+						amor.customerCreditDocumentID = k.customerCreditDocumentID  and 
+						amor.isActive = 1 
+				) as CuotaPactada , 
+				
+				(
+					select 
+						count(amor.creditAmortizationID)
+					from 
+						tb_customer_credit_amoritization amor 
+					where 
+						amor.customerCreditDocumentID = k.customerCreditDocumentID  and 
+						amor.isActive = 1 
+				) as CantidadCuotas ,
+				
+				(
+					select 
+						min(uu.dateApply) 
+					from 
+						tb_customer_credit_amoritization uu 
+					where 
+						uu.customerCreditDocumentID = k.customerCreditDocumentID and 
+						uu.remaining > 0 		
+				) as  MinFechaPago /*primer fecha de pago*/ 
+				
+				
+			from 
+				(
+				select 
+								d.entityID,
+								d.customerCreditDocumentID,
+								d.customerCreditLineID,
+								d.documentNumber,				
+								d.currencyID,
+								cur.simbol as currencyName,
+								d.statusID as statusDocument,
+								min(ex.ratio) as exchangeRate,
+								min(a.creditAmortizationID) as creditAmortizationID,
+								min(a.dateApply) as dateApply,					
+								sum(a.remaining) as balance,
+								sum(a.remaining) as remaining,								
+								min(a.statusID) as statusAmotization,
+								min(wsa.name) as statusAmortizatonName
+							from 
+								tb_customer_credit_document  d 
+								inner join tb_customer_credit_amoritization a on 
+									d.customerCreditDocumentID = a.customerCreditDocumentID 
+								inner join tb_workflow_stage wsa on 
+									wsa.workflowStageID = a.statusID 
+								inner join tb_workflow_stage wsd on 
+									wsd.workflowStageID = d.statusID 
+								inner join tb_currency cur on 
+									cur.currencyID = d.currencyID 
+								inner join tb_customer_credit_line crd on 
+									crd.customerCreditLineID = d.customerCreditLineID 
+								inner join tb_customer cust on 
+									cust.entityID = d.entityID
+									
+									
+								inner join  (
+									select 
+										distinct 
+										usrx.userID,
+										usrx.employeeID,
+										ccx.entityID,
+										ccx.customerID,
+										IFNULL(rrx.reference1,'') as fac
+									from 
+										tb_user usrx 
+										inner join tb_relationship rrx on 
+											usrx.employeeID = rrx.employeeID 
+										inner join tb_customer ccx on 
+											rrx.customerID = ccx.entityID 
+									where 
+										rrx.isActive = 1 
+								) as usr  on 
+									usr.customerID = cust.customerID and 
+									usr.fac = d.documentNumber 
+									
+								left join tb_exchange_rate ex on 
+									ex.currencyID = 1 and 
+									ex.targetCurrencyID = 2 and 
+									ex.date = DATE(now()) 
+							where 
+								d.companyID = $companyID  and 
+								usr.userID = $userID  and 
+								d.isActive = 1 and 				
+								a.isActive = 1 and 
+								wsa.aplicable = 1 and 
+								wsd.aplicable = 1 and 
+								a.remaining > 0  
+							group by 
+								d.entityID,
+								d.customerCreditDocumentID,
+								d.customerCreditLineID,
+								d.documentNumber,				
+								d.currencyID,
+								cur.name, 
+								d.statusID
+							order by 
+								d.customerCreditDocumentID 
+				) k 
+			order by 
+				MinFechaPago,
+				k.entityID
+		");
+		
+		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+   
    
    function get_rowByCobroPorWhatapp($companyID)
    {

@@ -94,6 +94,7 @@
     let varDetailWarehouse;
     let varDetailConcept;
     let varParameterInvoiceBillingPrinterDirectCocinaUrl;
+	let varParameterInvoiceBillingPrinterCocinaUrl;
     let objTransactionMasterItemPrice;
     let objTransactionMasterItemConcepto;
     let objTransactionMasterItemSku;
@@ -1146,12 +1147,16 @@
 		cerrarModal("ModalOpcionesImpresion");
 	});
 	
+	$("#btnCloseModalImpresionCocinV2").click(function(){
+		cerrarModal("ModalCustomCocinaV2");
+	});
+	
 
 
 	$("#btnCloseModalOpcionesImpresion").click(function(){
 		cerrarModal("ModalOpcionesImpresion");
 	});
-
+	
 	$("#btnAceptarDialogPrinterV2AceptarDirect").click(function(){
 
 		mostarModalPersonalizado('Cargando impresión, por favor espere...');		
@@ -1468,6 +1473,42 @@
 			return
 		}
 	}
+
+	
+	function fnAceptarModalImpresionCocinaV2 ()
+	{
+		cerrarModal("ModalCustomCocinaV2");
+		
+		var listRow 	= objTableDetail.fnGetData();
+		var length 		= listRow.length;
+		var comentario 	= $("#txtNote").val();
+
+		var i 		= 0;
+		var itemid 	= "-1";
+
+		while (i < length ){
+			if(listRow[i][0] == true){
+				itemid = itemid + ","+listRow[i][2];
+			}
+			i++;
+		}
+
+
+		if(varParameterInvoiceBillingPrinterDirect == 'false')
+		{
+
+			var url	= 	"<?php echo base_url(); ?>/"+varParameterInvoiceBillingPrinterCocinaUrl;
+			url 	= 	url+
+			"/companyID/"+ objTransactionMaster.companyID +
+			"/transactionID/"+ objTransactionMaster.transactionID +
+			"/transactionMasterID/"+ objTransactionMaster.transactionMasterID +
+			"/itemID/"+itemid+"/transactionMasterComment/"+comentario;
+			window.open(url, "_blank");
+			
+		}
+		
+	}
+
 
 	function fnImprimirCocina(){
 
@@ -2055,7 +2096,8 @@
 
         varParameterInvoiceBillingPrinterDirect				= data.objParameterInvoiceBillingPrinterDirect;
         varParameterInvoiceBillingPrinterDirectUrl			= data.objParameterInvoiceBillingPrinterDirectUrl;
-        varParameterInvoiceBillingPrinterDirectCocinaUrl	= data.urlPrinterDocumentCocinaDirect;
+        varParameterInvoiceBillingPrinterDirectCocinaUrl	= data.urlPrinterDocumentCocinaDirect;	
+		varParameterInvoiceBillingPrinterCocinaUrl			= data.urlPrinterDocumentCocina;	
         varParameterInvoiceBillingPrinterDirectBarUrl		= data.objParameterINVOICE_BILLING_PRINTER_DIRECT_URL_BAR;
         varParameterInvoiceBillingPrinterDataLocal			= data.dataPrinterLocal;
         varParameterUrlServidorDeImpresion 					= data.objParameterUrlServidorDeImpresion;
