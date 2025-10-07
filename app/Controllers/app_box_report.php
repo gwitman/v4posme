@@ -273,6 +273,11 @@ class app_box_report extends _BaseController {
 				{
 					return view("app_box_report/share/view_a_disemp_creditaguil",$objDataResult);//--finview-r
 				}
+				//farma ley
+				else if( $objCompany->flavorID == 742 ) 
+				{
+					return view("app_box_report/share/view_a_disemp_farma_ley",$objDataResult);//--finview-r
+				}
 				else 
 				{
 					return view("app_box_report/share/view_a_disemp",$objDataResult);//--finview-r
