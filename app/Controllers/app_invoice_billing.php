@@ -13428,6 +13428,22 @@ class app_invoice_billing extends _BaseController {
 				array_push($datViewArray["transactionMasterDetail"],$row);		
 			}
 			
+			// Contar cuántos registros se agregaron
+			$countRow = count($datViewArray["transactionMasterDetail"]);
+
+			// Si hay menos de 10, agregar filas vacías
+			if ($countRow < 23) {
+				for ($i = $countRow; $i < 23; $i++) {
+					$row = array(
+						"itemName"         => " .",
+						"itemNameQuantity" => " .",
+						"itemNamePrice"    => " .",
+						"itemNameAmount"   => " ."
+					);
+					array_push($datViewArray["transactionMasterDetail"], $row);
+				}
+			}
+
 			
 			//Obtener imagen de logo
 			$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/a4-direct-ticket-'.$objParameterLogo->value;    
