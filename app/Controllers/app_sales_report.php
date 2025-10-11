@@ -1102,6 +1102,7 @@ class app_sales_report extends _BaseController {
 				else{			
 					//visualizar
 					$this->dompdf->stream("file.pdf ", ['Attachment' => !$objParameterShowLinkDownload ]);
+					exit;
 				}
 				
 				

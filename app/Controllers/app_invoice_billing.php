@@ -11232,7 +11232,7 @@ class app_invoice_billing extends _BaseController {
 				$this->dompdf->output()					
 			);						
 			
-			chmod($path, 644);
+			chmod($path, 0644);
 			
 			if($objParameterShowLinkDownload == "true")
 			{			
@@ -11245,6 +11245,7 @@ class app_invoice_billing extends _BaseController {
 			else{			
 				//visualizar				
 				$this->dompdf->stream("file.pdf ", ['Attachment' => $objParameterShowDownloadPreview ]);
+				exit;
 			}
 			
 			

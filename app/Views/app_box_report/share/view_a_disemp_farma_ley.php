@@ -579,7 +579,7 @@
 					 font-family:Arial, Helvetica, sans-serif;
 					 color:#008000;
 					 letter-spacing:1px;">
-						C$'.number_format($totalCordoba,2,".",",").'</span>
+						C$'.number_format($totalCordoba + $totalPuntos,2,".",",").'</span>
 
 				</td>
 			</tr>
