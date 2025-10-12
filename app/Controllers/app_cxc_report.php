@@ -1113,6 +1113,11 @@ class app_cxc_report extends _BaseController {
 				$objDataResult["objLogo"] 					= $objParameter;
 				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_customer_credit" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
 				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
+				
+				
+				if($objDataResult["objCompany"]->flavorID == 918 /*marcela*/)
+				return view("app_cxc_report/customer_list/view_a_disemp_marcela",$objDataResult);//--finview-r
+				else
 				return view("app_cxc_report/customer_list/view_a_disemp",$objDataResult);//--finview-r
 			}
 			else 
