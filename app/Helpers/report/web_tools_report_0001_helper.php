@@ -13822,7 +13822,7 @@ function helper_reporte80mmTransactionMasterFarmaGael(
                       <table style='width:100%'>
                         <tr>
                           <td colspan='3' style='text-align:center'>
-                            <img  src='".$base64."' width='110'  >
+                            <img  src='".$base64."' width='80'  >
                           </td>
                         </tr>
 						
@@ -13849,7 +13849,9 @@ function helper_reporte80mmTransactionMasterFarmaGael(
 							";
           }
     
-          $html = $html."<tr>
+          $html = $html."
+						<!--
+						<tr>
                           <td colspan='3' style='text-align:center'>
                             ".strtoupper($titulo)."
                           </td>
@@ -13860,6 +13862,7 @@ function helper_reporte80mmTransactionMasterFarmaGael(
                             # ".strtoupper($objTransactionMastser->transactionNumber)."
                           </td>
                         </tr>
+						-->
                                 
                         <tr>
                           <td colspan='3' style='text-align:center'>

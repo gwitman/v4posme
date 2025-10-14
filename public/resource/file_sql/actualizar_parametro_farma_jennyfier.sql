@@ -1283,14 +1283,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Parada Chalillo Rojas 200 metros al este" 
+	tb_company_parameter.value = "Parada Chalio Rojas 200 metros al este" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'FARMAGAEL' , address = 'Parada Chalillo Rojas 200 metros al este' ,
+	NAME = 'FARMAGAEL' , address = 'Parada Chalio Rojas 200 metros al este' ,
 	flavorID = 496 /*usuarioID*/,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
