@@ -4080,6 +4080,123 @@ class app_box_share extends _BaseController {
 		    return $resultView;
 		}
 	}
+	function viewRegisterFormatoPaginaTicket58mmDirectTiendaJennidier()
+	{
+		try{ 
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+						$permited = false;
+						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						
+						if(!$permited)
+						throw new \Exception(NOT_ACCESS_CONTROL);
+						
+							
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						if ($resultPermission 	== PERMISSION_NONE)
+						throw new \Exception(NOT_ALL_EDIT);		
+			}	 
+			
+			
+			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri			
+			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri				
+			$saldos						= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"saldos");//--finuri	
+			$companyID 					= $dataSession["user"]->companyID;		
+			$branchID 					= $dataSession["user"]->branchID;		
+			$roleID 					= $dataSession["role"]->roleID;		
+			
+			//Get Component
+			$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			//Get Logo
+			$objParameter					= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);			
+			$objParameterTelefono			= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+			//Get Company
+			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);			
+			//Get Documento				
+			
+			//Get Documento
+			//Obtener Datos
+			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
+			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
+			$datView["objBranch"]					= $this->Branch_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->branchID);
+			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
+			$datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
+			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
+			$datView["objCurrency"]                 = $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_share","statusID",$datView["objTM"]->statusID,$companyID,$branchID,$roleID);
+			
+			//Inicializar Detalle
+			$saldoInicial = array_sum(array_column($datView["objTMD"], 'reference2'));
+			$saldoFinal   = array_sum(array_column($datView["objTMD"], 'reference4'));
+			$saldoAbonado = array_sum(array_column($datView["objTMD"], 'amount'));
+			/*Calculo de saldos generales*/
+			$saldoInicialGeneral 		= round($datView["objTMI"]->reference1,0);
+			$saldoFinalGeneral   		= round($datView["objTMI"]->reference2,0);
+			$saldoInicial 				= $saldos == "Individuales"? $saldoInicial: $saldoInicialGeneral ;
+			$saldoFinal 				= $saldos == "Individuales"? $saldoFinal: $saldoFinalGeneral ;
+			$datView["saldoInicial"]	= $datView["objCurrency"]->simbol." ".$saldoInicial;
+			$datView["saldoFinal"]		= $datView["objCurrency"]->simbol." ".$saldoFinal;
+			$datView["saldoAbonado"]	= $datView["objCurrency"]->simbol." ".$saldoAbonado;
+				
+									
+				
+			
+			$datView["Identifier"]						= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);									
+			$datView["prefixCurrency"]					= $datView["objCurrency"]->simbol." ";
+			$datView["cedulaCliente"] 					= $datView["objCustumer"]->customerNumber;
+			$datView["nombreCliente"] 					= $datView["objCustumer"]->firstName ;			
+			
+			
+			$datView["objTransactionMaster"]			= $datView["objTM"];
+			$datView["objParameterLogo"]				= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$datView["objParameterPhoneProperty"]		= $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE",$companyID);
+			$datView["objCompany"] 						= $this->Company_Model->get_rowByPK($companyID);			
+			
+			
+			//obtener nombre de impresora por defecto
+			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT",$companyID);
+			$objParameterPrinterName = $objParameterPrinterName->value;
+			
+			
+			
+			$this->core_web_printer_direct->configurationPrinter($objParameterPrinterName);
+			$this->core_web_printer_direct->executePrinter58mmShareDirectTiendaJennidier($datView);
+			
+			
+		}
+		catch(\Exception $ex){
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+		
+		    $data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+		    
+		    $this->email->setFrom(EMAIL_APP);
+		    $this->email->setTo(EMAIL_APP_COPY);
+		    $this->email->setSubject("Error");
+		    $this->email->setMessage($resultView);
+		    
+		    $resultSend01 = $this->email->send();
+		    $resultSend02 = $this->email->printDebugger();
+		    
+		    
+		    return $resultView;
+		}
+	}
+	
 	function viewRegisterFormatoPaginaTicket58mmDirect(){
 		try{ 
 			//AUTENTICADO

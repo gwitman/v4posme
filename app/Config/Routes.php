@@ -1275,6 +1275,8 @@ $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNo
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmCarlosLuis/(:any)', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmCarlosLuis');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewPrinterDirectFactura58mm', 'app_invoice_billing::viewPrinterDirectFactura58mm');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewPrinterDirectFactura58mm/(:any)', 'app_invoice_billing::viewPrinterDirectFactura58mm');
+$routes->match(['get', 'post'], 'app_invoice_billing/viewPrinterDirectFactura58mmTiendaJennidier', 'app_invoice_billing::viewPrinterDirectFactura58mmTiendaJennidier');
+$routes->match(['get', 'post'], 'app_invoice_billing/viewPrinterDirectFactura58mmTiendaJennidier/(:any)', 'app_invoice_billing::viewPrinterDirectFactura58mmTiendaJennidier');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewPrinterDirectFactura58mmLaTenera', 'app_invoice_billing::viewPrinterDirectFactura58mmLaTenera');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewPrinterDirectFactura58mmLaTenera/(:any)', 'app_invoice_billing::viewPrinterDirectFactura58mmLaTenera');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal58mm', 'app_invoice_billing::viewRegisterFormatoPaginaNormal58mm');
@@ -1642,6 +1644,8 @@ $routes->match(['get', 'post'], 'app_box_share/viewRegisterFormatoPaginaTicket58
 $routes->match(['get', 'post'], 'app_box_share/viewRegisterFormatoPaginaTicket58mm/(:any)', 'app_box_share::viewRegisterFormatoPaginaTicket58mm');
 $routes->match(['get', 'post'], 'app_box_share/viewRegisterFormatoPaginaTicket58mmDirect', 'app_box_share::viewRegisterFormatoPaginaTicket58mmDirect');
 $routes->match(['get', 'post'], 'app_box_share/viewRegisterFormatoPaginaTicket58mmDirect/(:any)', 'app_box_share::viewRegisterFormatoPaginaTicket58mmDirect');
+$routes->match(['get', 'post'], 'app_box_share/viewRegisterFormatoPaginaTicket58mmDirectTiendaJennidier', 'app_box_share::viewRegisterFormatoPaginaTicket58mmDirectTiendaJennidier');
+$routes->match(['get', 'post'], 'app_box_share/viewRegisterFormatoPaginaTicket58mmDirectTiendaJennidier/(:any)', 'app_box_share::viewRegisterFormatoPaginaTicket58mmDirectTiendaJennidier');
 $routes->match(['get', 'post'], 'app_box_share/viewRegisterFormatoPaginaTicketFBlandon', 'app_box_share::viewRegisterFormatoPaginaTicketFBlandon');
 $routes->match(['get', 'post'], 'app_box_share/viewRegisterFormatoPaginaTicketFBlandon/(:any)', 'app_box_share::viewRegisterFormatoPaginaTicketFBlandon');
 $routes->match(['get', 'post'], 'app_box_share/viewRegisterFidLocal', 'app_box_share::viewRegisterFidLocal');
