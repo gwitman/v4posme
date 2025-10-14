@@ -851,7 +851,7 @@ class app_invoice_billing extends _BaseController {
 			$objTM	 								= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$oldStatusID 							= $objTM->statusID;
 			$parameterCausalTypeCredit 				= $this->core_web_parameter->getParameter("INVOICE_BILLING_CREDIT",$companyID);
-			
+			$errorFound								= false;
 			
 			//Valores de tasa de cambio
 			date_default_timezone_set(APP_TIMEZONE); 
@@ -917,6 +917,15 @@ class app_invoice_billing extends _BaseController {
 			$objTMNew["entityIDSecondary"]				= /*inicio get post*/ $this->request->getPost("txtEmployeeID");
 			$objTMNew["dayExcluded"]					= /*inicio get post*/ $this->request->getPost("txtDayExcluded");
 
+			//Validar si la caja esta abierta
+			if(
+				!$this->core_web_authentication->isCashBoxOpen($companyID,$userID,$objTMNew["transactionOn"])
+			)
+			{
+				$errorFound = true;
+				throw new \Exception('La caja asignada al usuario, no se encuentra abierta.');
+			}
+			
 			//Ingresar Informacion Adicional
 			$objTMInfoNew["companyID"]					= $objTM->companyID;
 			$objTMInfoNew["transactionID"]				= $objTM->transactionID;
@@ -1786,37 +1795,39 @@ class app_invoice_billing extends _BaseController {
         }
         catch(\Exception $ex)
         {
-            if (empty($dataSession)) {
-                return redirect()->to(base_url("core_acount/login"));
-            }
+			
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
 
-            $data["session"]   = $dataSession;
-            $data["exception"] = $ex;
-            $data["urlLogin"]  = base_url();
-            $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-            $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-            $resultView        = view("core_template/email_error_general",$data);
+			$data["session"]   = $dataSession;
+			$data["exception"] = $ex;
+			$data["urlLogin"]  = base_url();
+			$data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+			$data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+			$resultView        = view("core_template/email_error_general",$data);
 
-            $this->email->setFrom(EMAIL_APP);
-            $this->email->setTo(EMAIL_APP_COPY);
-            $this->email->setSubject("Error");
-            $this->email->setMessage($resultView);
+			$this->email->setFrom(EMAIL_APP);
+			$this->email->setTo(EMAIL_APP_COPY);
+			$this->email->setSubject("Error");
+			$this->email->setMessage($resultView);
 
-            $resultSend01 = $this->email->send();
-            $resultSend02 = $this->email->printDebugger();
+			$resultSend01 = $this->email->send();
+			$resultSend02 = $this->email->printDebugger();
 
 
-            $response = [
-                'success' 	=> false,
-                'error' 	=> [
+			$response = [
+				'success' 	=> false,
+				'error' 	=> [
 								'code' 		=> $ex->getLine(),
 								'message' 	=> $ex->getMessage()
-                ],
-                'data' 		=> [
-                    'codigoMesero' => $codigoMesero
-                ]
-            ];
-            return $this->response->setJSON($response);
+				],
+				'data' 		=> [
+					'codigoMesero' => $codigoMesero
+				]
+			];
+			return $this->response->setJSON($response);
+		
 
         }
 	}

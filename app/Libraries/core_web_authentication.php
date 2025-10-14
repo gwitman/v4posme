@@ -101,7 +101,8 @@ use App\Models\Userwarehouse_Model;
 use App\Models\User_Tag_Model;
 use App\Models\Warehouse_Model;
 use App\Models\Company_Page_Setting_Model;
-
+use App\Models\Cash_Box_User_Model;
+use App\Models\Cash_Box_Session_Model;
 
 class core_web_authentication {
    
@@ -286,7 +287,7 @@ class core_web_authentication {
 	   // Consultar si hay una sesión activa o válida para la fecha indicada
 	   $result = $Cash_Box_Session_Model->get_rowByCashBoxOpenBy_CashBoxIDAnd_Date(
 		   $companyID,
-		   $objCashBoxUser->cashBoxID,
+		   $objCashBoxUser[0]->cashBoxID,
 		   $dateTimeOn
 	   );
    
