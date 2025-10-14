@@ -270,26 +270,34 @@ class core_web_authentication {
 		
 		return false;			
    }
-   function isCashBoxOpen($companyID,$userID,$dateTimeOn)
+   function isCashBoxOpen($companyID, $userID, $dateTimeOn)
    {
-	   //Obtener la caja del usuario
-	   $Cash_Box_User_Model 		= new Cash_Box_User_Model();
-	   $Cash_Box_Session_Model		= new Cash_Box_Session_Model();
-	   $objListCashBoxUser 			= $Cash_Box_User_Model->get_rowByUserIDAndPrimary($companyID,$userID);
-	   
-	   if(!$objListCashBoxUser)
-			throw new \Exception('EL USUARIO NO TIENE CAJA ASIGNADA...');
-	   
-	   
-	   //Hay caja abierta para la fecha
-	   $result = $Cash_Box_Session_Model->get_rowByCashBoxIDAndDate(
-			$companyID,
-			$objListCashBoxUser->cashBoxID,
-			$dateTimeOn
-		   );
-	   
-	   return  $result;
-	   
+	   // Modelos necesarios
+	   $Cash_Box_User_Model    = new Cash_Box_User_Model();
+	   $Cash_Box_Session_Model = new Cash_Box_Session_Model();
+   
+	   // Obtener la caja asignada al usuario
+	   $objCashBoxUser = $Cash_Box_User_Model->get_rowByUserIDAndPrimary($companyID, $userID);
+   
+	   if (!$objCashBoxUser) {
+		   throw new \Exception('El usuario no tiene una caja asignada.');
+	   }
+   
+	   // Consultar si hay una sesión activa o válida para la fecha indicada
+	   $result = $Cash_Box_Session_Model->get_rowByCashBoxOpenBy_CashBoxIDAnd_Date(
+		   $companyID,
+		   $objCashBoxUser->cashBoxID,
+		   $dateTimeOn
+	   );
+   
+	   // Validar resultado
+	   if (!$result || count($result) == 0) {
+		   return false; // No hay caja abierta o activa en esa fecha
+	   }
+   
+	   // Si encontró una sesión válida
+	   return true;
    }
+
 }
 ?>

@@ -40,12 +40,13 @@ class Cash_Box_Session_Model extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 	
-	public function get_rowByCashBoxIDAndDate($companyID,$cashBoxID,$date)
+	
+	public function get_rowByCashBoxOpenBy_UserID($companyID,$userID,$date)
 	{
-		$db 	= db_connect();		    
-		$sql = "";
-		$sql = sprintf("
-			select 
+		$db = db_connect();
+
+		$sql = "
+			SELECT 
 				c.companyID,
 				c.branchID,
 				c.cashBoxID,
@@ -56,20 +57,69 @@ class Cash_Box_Session_Model extends Model
 				c.isActive,
 				c.userID,
 				c.transactionMasterIDOpen,
-				c.transactionMasterIDClosed 
-			from 
-				tb_cash_box_session c 
-			where 
-				c.cashBoxID = ".$cashBoxID." and 
-				c.companyID = ".$companyID." and 
-				c.isActive = 1 and 
-				c.endOn is null  and 
-				c.startOn >= '$date' 
-			");
-			
-		//Ejecutar Consulta
-		return $db->query($sql)->getResult();
+				c.transactionMasterIDClosed
+			FROM 
+				tb_cash_box_session c
+			WHERE 
+				c.companyID = ? AND
+				c.userID = ? AND
+				c.isActive = 1 AND
+				c.statusID IN (120 /*ABIERTA*/ ) AND 
+				(
+					(
+						c.endOn != '0000-00-00' 
+						AND ? BETWEEN c.startOn AND c.endOn
+					)
+					OR
+					(
+						c.endOn = '0000-00-00' 
+						AND ? >= c.startOn
+					)
+				)
+		";
+
+		return $db->query($sql, [$companyID, $userID, $date, $date])->getResult();
 	}
+	public function get_rowByCashBoxOpenBy_CashBoxIDAnd_Date($companyID, $cashBoxID, $date)
+	{
+		$db = db_connect();
+
+		$sql = "
+			SELECT 
+				c.companyID,
+				c.branchID,
+				c.cashBoxID,
+				c.cashBoxSessionID,
+				c.startOn,
+				c.endOn,
+				c.statusID,
+				c.isActive,
+				c.userID,
+				c.transactionMasterIDOpen,
+				c.transactionMasterIDClosed
+			FROM 
+				tb_cash_box_session c
+			WHERE 
+				c.companyID = ? AND
+				c.cashBoxID = ? AND
+				c.isActive = 1 AND
+				c.statusID IN (120 /*ABIERTA*/ ) AND 
+				(
+					(
+						c.endOn != '0000-00-00' 
+						AND ? BETWEEN c.startOn AND c.endOn
+					)
+					OR
+					(
+						c.endOn = '0000-00-00' 
+						AND ? >= c.startOn
+					)
+				)
+		";
+
+		return $db->query($sql, [$companyID, $cashBoxID, $date, $date])->getResult();
+	}
+
 	
    
 }

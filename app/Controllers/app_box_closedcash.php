@@ -422,26 +422,18 @@ class app_box_closedcash extends _BaseController
             $cashBoxID             = $objListCashUser ? $objListCashUser[0]->cashBoxID : 0;
 
 		
-			//Obtener la sesion de caja abierta por mi
-			$objCashBoxSessionMe = $this->Cash_Box_Session_Model->asArray()->
-				where("userID", $userID)->
-				where("statusID", $objWorkflowStageInit[0]->workflowStageID)->
-				where("cashBoxID", $cashBoxID)->
-				findAll();
+			//Obtener la sesion de caja abierta por mi			
+			$objCashBoxSessionMe 	= $this->Cash_Box_Session_Model->get_rowByCashBoxOpenBy_UserID($companyID,$userID,$objTMNew["transactionOn"]);
 
 			//Obtener otros usuarios que tienen abierta la caja
-			$objCashBoxSessionNotMe = $this->Cash_Box_Session_Model->asArray()->
-				where("userID !=", $userID)->
-				where("statusID", $objWorkflowStageInit[0]->workflowStageID)->
-				where("cashBoxID", $cashBoxID)->
-				findAll();
-
+			$objCashBoxSessionNotMe = $this->Cash_Box_Session_Model->get_rowByCashBoxOpenBy_CashBoxIDAnd_Date($companyID,$cashBoxID,$objTMNew["transactionOn"]);
+			
 			//Obtener el nombre del Usuario que tiene abierta la caja.
 			$cashBoxSessionUserID = $objCashBoxSessionNotMe ?
-			$objCashBoxSessionNotMe[0]["userID"] :
+			$objCashBoxSessionNotMe[0]->userID :
 			(
 				$objCashBoxSessionMe ?
-				$objCashBoxSessionMe[0]["userID"] :
+				$objCashBoxSessionMe[0]->userID :
 				0
 			);
 
@@ -464,14 +456,14 @@ class app_box_closedcash extends _BaseController
 				return;
 			}
 
-			//Actualizar estado de la sesion si nadie mas tiene la caja abierta
-			
-			if ($objCashBoxSessionMe) {
-				$objCashBoxSessionMe                              = $objCashBoxSessionMe[0];					
-				$objCashBoxSessionMe["statusID"]                  = $objWorkflowStageApply[0]->workflowStageID;
-				$objCashBoxSessionMe["endOn"]                     = date("Y-m-d H:i:s");
-				$objCashBoxSessionMe["transactionMasterIDClosed"] = $transactionMasterID;
-				$this->Cash_Box_Session_Model->update($objCashBoxSessionMe["cashBoxSessionID"], $objCashBoxSessionMe);
+			//Actualizar estado de la sesion si solo yo la he abierto, y la caja esta abierta			
+			if ($objCashBoxSessionMe) {				
+				$objCashBoxSessionMe                              	 = $objCashBoxSessionMe[0];					
+				$objCashBoxSessionMeNew							  	 = NULL;
+				$objCashBoxSessionMeNew["statusID"]                  = $objWorkflowStageApply[0]->workflowStageID;
+				$objCashBoxSessionMeNew["endOn"]                     = date("Y-m-d H:i:s");
+				$objCashBoxSessionMeNew["transactionMasterIDClosed"] = $transactionMasterID;
+				$this->Cash_Box_Session_Model->update($objCashBoxSessionMe->cashBoxSessionID, $objCashBoxSessionMeNew);
 
 				$query   = "CALL pr_box_closed_box(?,?,?,?,?,?,?,?);";
 				$objData = $this->Bd_Model->executeRender(
@@ -481,10 +473,10 @@ class app_box_closedcash extends _BaseController
 						$branchID,
 						"",
 						$companyID,
-						$objCashBoxSessionMe["transactionMasterIDOpen"],
-						$objCashBoxSessionMe["transactionMasterIDClosed"],
-						$objCashBoxSessionMe["cashBoxID"],
-						$objCashBoxSessionMe["cashBoxSessionID"],
+						$objCashBoxSessionMe->transactionMasterIDOpen,
+						$objCashBoxSessionMe->transactionMasterIDClosed,
+						$objCashBoxSessionMe->cashBoxID,
+						$objCashBoxSessionMe->cashBoxSessionID,
 					]
 				);
 
