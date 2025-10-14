@@ -138,17 +138,9 @@
 							
 						}
 						
-						if( $("#txtAreaID option:selected").text()  == "Apertura" )
-						{							
-							$("#txtDetailAmount").attr("readonly","true");
-							
-						}
-						else
-						{							
-							$("#txtDetailAmount").removeAttr("readonly");
-							$(".currency-1").addClass("hidden");
-							$(".currency-2").addClass("hidden");
-						}
+												
+						$("#txtDetailAmount").attr("readonly","true");
+						
 						
 						
 						
