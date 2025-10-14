@@ -137,38 +137,39 @@ class core_acount extends _BaseController {
 			throw new \Exception("EL COMPONENTE '0-SEGURIDAD' NO EXISTE...");
 			
 			
-			$documentoPath = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentSeguridad->componentID."/component_item_0";	
-			if (!file_exists($documentoPath)) 
-			{
-				// Crear el directorio con permisos 0755 (y recursivo por si faltan subdirectorios)
-				if (!mkdir($documentoPath, 0755, true)) 
-				{
-					throw new \Exception("❌ No se pudo crear el directorio: $documentoPath");
-				}
-			}
-
-			chmod($documentoPath, 0755);
+			//wgonzalez-desable--$documentoPath = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentSeguridad->componentID."/component_item_0";	
+			//wgonzalez-desable--if (!file_exists($documentoPath)) 
+			//wgonzalez-desable--{
+			//wgonzalez-desable--	// Crear el directorio con permisos 0755 (y recursivo por si faltan subdirectorios)
+			//wgonzalez-desable--	if (!mkdir($documentoPath, 0755, true)) 
+			//wgonzalez-desable--	{
+			//wgonzalez-desable--		throw new \Exception("❌ No se pudo crear el directorio: $documentoPath");
+			//wgonzalez-desable--	}
+			//wgonzalez-desable--}
+			//wgonzalez-desable--
+			//wgonzalez-desable--chmod($documentoPath, 0755);
+			//wgonzalez-desable--
+			//wgonzalez-desable--$core_mysql_dump	= new core_mysql_dump("mysql:host=".DB_SERVER.";dbname=".DB_BDNAME,DB_USER,DB_PASSWORD);
+			//wgonzalez-desable--$sqlBacku           = $documentoPath."/".DB_BDNAME."_DB_".date("Ymd_H_i_s").".sql";
+			//wgonzalez-desable--$core_mysql_dump->start($sqlBacku);
 			
-			$core_mysql_dump	= new core_mysql_dump("mysql:host=".DB_SERVER.";dbname=".DB_BDNAME,DB_USER,DB_PASSWORD);
-			$sqlBacku           = $documentoPath."/".DB_BDNAME."_DB_".date("Ymd_H_i_s").".sql";
-			$core_mysql_dump->start($sqlBacku);
 			
-			//Mandar respaldo
-			if($type=="globalpro")
-			{				
-				$ch 				= curl_init();								
-				$objParameterUrlServerFile 					= $this->core_web_parameter->getParameter("CORE_FILE_SERVER",$companyID);
-				$objParameterUrlServerFile 					= $objParameterUrlServerFile->value;				
-				$urlCreateFolder 							= $objParameterUrlServerFile."/core_elfinder/createFolder/companyID/".$companyID."/componentID/".$objComponentSeguridad->componentID."/transactionID/0/transactionMasterID/0";
-				$filePathDetination							= $sqlBacku;			
-				curl_setopt($ch, CURLOPT_URL, $urlCreateFolder);
-				curl_setopt($ch, CURLOPT_HEADER, 0);
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt($ch, CURLOPT_POSTFIELDS, array('txtFileDocument' => curl_file_create($filePathDetination) ));
-				curl_exec($ch);				
-				curl_close($ch);
-				
-			}
+			//wgonzalez-desable--//Mandar respaldo
+			//wgonzalez-desable--if($type=="globalpro")
+			//wgonzalez-desable--{				
+			//wgonzalez-desable--	$ch 				= curl_init();								
+			//wgonzalez-desable--	$objParameterUrlServerFile 					= $this->core_web_parameter->getParameter("CORE_FILE_SERVER",$companyID);
+			//wgonzalez-desable--	$objParameterUrlServerFile 					= $objParameterUrlServerFile->value;				
+			//wgonzalez-desable--	$urlCreateFolder 							= $objParameterUrlServerFile."/core_elfinder/createFolder/companyID/".$companyID."/componentID/".$objComponentSeguridad->componentID."/transactionID/0/transactionMasterID/0";
+			//wgonzalez-desable--	$filePathDetination							= $sqlBacku;			
+			//wgonzalez-desable--	curl_setopt($ch, CURLOPT_URL, $urlCreateFolder);
+			//wgonzalez-desable--	curl_setopt($ch, CURLOPT_HEADER, 0);
+			//wgonzalez-desable--	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			//wgonzalez-desable--	curl_setopt($ch, CURLOPT_POSTFIELDS, array('txtFileDocument' => curl_file_create($filePathDetination) ));
+			//wgonzalez-desable--	curl_exec($ch);				
+			//wgonzalez-desable--	curl_close($ch);
+			//wgonzalez-desable--	
+			//wgonzalez-desable--}
 			
 			
 			

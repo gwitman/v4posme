@@ -1041,8 +1041,30 @@ class core_merge extends _BaseController {
 			  </div>";
 	}
 
-	
-	
+	function merge_of_posme_merge_to_posme_backup()
+	{
+		$objComponentSeguridad			= $this->core_web_tools->getComponentIDBy_ComponentName("0-SEGURIDAD");
+		if(!$objComponentSeguridad)
+		throw new \Exception("EL COMPONENTE '0-SEGURIDAD' NO EXISTE...");
+		
+		
+		$documentoPath = PATH_FILE_OF_APP."/company_2/component_".$objComponentSeguridad->componentID."/component_item_0";	
+		if (!file_exists($documentoPath)) 
+		{
+			// Crear el directorio con permisos 0755 (y recursivo por si faltan subdirectorios)
+			if (!mkdir($documentoPath, 0755, true)) 
+			{
+				throw new \Exception("❌ No se pudo crear el directorio: $documentoPath");
+			}
+		}
+		
+		chmod($documentoPath, 0755);
+		$core_mysql_dump	= new core_mysql_dump("mysql:host=".DB_SERVER.";dbname=".DB_BDNAME,DB_USER,DB_PASSWORD);
+		$sqlBacku           = $documentoPath."/".DB_BDNAME."_DB_".date("Ymd_H_i_s").".sql";
+		$core_mysql_dump->start($sqlBacku);
+		
+		
+	}
 	
 	function merge_of_posme_merge_to_posme_aplicar_parameter()
 	{
