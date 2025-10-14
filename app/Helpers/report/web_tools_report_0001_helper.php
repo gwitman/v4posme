@@ -8731,7 +8731,7 @@ function helper_reporte80mmTransactionMaster(
                                 
                         <tr>
                           <td colspan='3' style='text-align:center'>
-                            FECHA: ".$objTransactionMastser->createdOn."
+                            FECHA: ".$objTransactionMastser->statusIDChangeOn."
                           </td>
                         </tr>
                                 

@@ -741,7 +741,7 @@ class app_invoice_billing extends _BaseController {
 				log_message("error",print_r("prueba crear contra documento",true));
 				//Actualizar fecha en la transacciones oroginal
 				$dataNewTM 										= array();
-				$dataNewTM["statusIDChangeOn"]					= date("Y-m-d H:m:s");
+				$dataNewTM["statusIDChangeOn"]					= date("Y-m-d H:i:s");
 				$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$dataNewTM);
 				
 				$transactionIDRevert 							= $this->core_web_parameter->getParameter("INVOICE_TRANSACTION_REVERSION_TO_BILLING",$companyID);
@@ -898,7 +898,7 @@ class app_invoice_billing extends _BaseController {
 			$objTMNew["entityID"] 						= /*inicio get post*/ $this->request->getPost("txtCustomerID");
 			$objTMNew["transactionOn"]					= $objParameterUpdateDateAplication == "true" ? date("Y-m-d")  : $this->request->getPost("txtDate");
 			$objTMNew["transactionOn2"]					= /*inicio get post*/ $this->request->getPost("txtDateFirst");//Fecha del Primer Pago, de las facturas al credito
-			$objTMNew["statusIDChangeOn"]				= date("Y-m-d H:m:s");
+			$objTMNew["statusIDChangeOn"]				= date("Y-m-d H:i:s");			
 			$objTMNew["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");//--fin peticion get o post			
 			$objTMNew["reference1"] 					= /*inicio get post*/ $this->request->getPost("txtReference1");
 			$objTMNew["descriptionReference"] 			= "reference1:entityID del proveedor de credito para las facturas al credito,reference4: customerCreditLineID linea de credito del cliente";
@@ -917,14 +917,7 @@ class app_invoice_billing extends _BaseController {
 			$objTMNew["entityIDSecondary"]				= /*inicio get post*/ $this->request->getPost("txtEmployeeID");
 			$objTMNew["dayExcluded"]					= /*inicio get post*/ $this->request->getPost("txtDayExcluded");
 
-			//Validar si la caja esta abierta
-			if(
-				!$this->core_web_authentication->isCashBoxOpen($companyID,$userID,$objTMNew["transactionOn"])
-			)
-			{
-				$errorFound = true;
-				throw new \Exception('La caja asignada al usuario, no se encuentra abierta.');
-			}
+			
 			
 			//Ingresar Informacion Adicional
 			$objTMInfoNew["companyID"]					= $objTM->companyID;
@@ -964,6 +957,15 @@ class app_invoice_billing extends _BaseController {
 			
 			$db=db_connect();
 			$db->transException(true)->transStart();
+			
+			//Validar si la caja esta abierta
+			if(
+				!$this->core_web_authentication->isCashBoxOpen($companyID,$userID,$objTMNew["transactionOn"])
+			)
+			{
+				$errorFound = true;
+				throw new \Exception('La caja asignada al usuario, no se encuentra abierta.');
+			}
 			
 			//El Estado solo permite editar el workflow
 			if($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_billing","statusID",$objTM->statusID,COMMAND_EDITABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID)){
@@ -1297,7 +1299,7 @@ class app_invoice_billing extends _BaseController {
 						}
 
                         $objTMDRNew["isActive"] 					= 1;
-                        $objTMDRNew["createdOn"] 					= date("Y-m-d H:m:s");
+                        $objTMDRNew["createdOn"] 					= date("Y-m-d H:i:s");
                         $objTMDRNew["quantity"] 					= $objTMD["quantity"];
                         $objTMDRNew["componentID"] 					= $objTMD["componentID"];
                         $objTMDRNew["componentItemID"]				= $objTMD["componentItemID"];
@@ -1390,7 +1392,7 @@ class app_invoice_billing extends _BaseController {
 						*/
                         $objTMDROld                                 = $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterDetailID($transactionMasterDetailID);
                         $objTMDRNew["isActive"] 					= 1;
-                        $objTMDRNew["createdOn"] 					= date("Y-m-d H:m:s");
+                        $objTMDRNew["createdOn"] 					= date("Y-m-d H:i:s");
                         $objTMDRNew["quantity"] 					= $objTMDNew["quantity"];;
                         $objTMDRNew["componentID"] 					= $objComponentItem->componentID;
                         $objTMDRNew["componentItemID"]				= $itemID;
@@ -1452,7 +1454,7 @@ class app_invoice_billing extends _BaseController {
 				
 			
 				$objTMNew003["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->locationID,"tb_transaction_master_billing",0);
-				$objTMNew003["createdOn"]						= date("Y-m-d H:m:s");
+				$objTMNew003["createdOn"]						= date("Y-m-d H:i:s");
 				$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMNew003);
 				
 				//Guardar los puntos iniciales
@@ -1948,7 +1950,7 @@ class app_invoice_billing extends _BaseController {
 			$objTM["entityID"] 						= /*inicio get post*/ $this->request->getPost("txtCustomerID");
 			$objTM["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
 			$objTM["transactionOn2"]				= /*inicio get post*/ $this->request->getPost("txtDateFirst");//Fecha del Primer Pago, de las facturas al credito
-			$objTM["statusIDChangeOn"]				= date("Y-m-d H:m:s");
+			$objTM["statusIDChangeOn"]				= date("Y-m-d H:i:s");
 			$objTM["componentID"] 					= $objComponentBilling->componentID;
 			$objTM["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");//--fin peticion get o post			
 			$objTM["sign"] 							= $objT->signInventory;
@@ -2228,7 +2230,7 @@ class app_invoice_billing extends _BaseController {
 					}
 
                     $objTMDRNew["isActive"] 					= 1;
-                    $objTMDRNew["createdOn"] 					= date("Y-m-d H:m:s");
+                    $objTMDRNew["createdOn"] 					= date("Y-m-d H:i:s");
                     $objTMDRNew["quantity"] 					= $objTMD["quantity"];
                     $objTMDRNew["componentID"] 					= $objTMD["componentID"];
                     $objTMDRNew["componentItemID"]				= $objTMD["componentItemID"];
@@ -2677,7 +2679,7 @@ class app_invoice_billing extends _BaseController {
 					if ( $objParameterINVOICE_BILLING_TRAKING_BAR == "true")
 					{
 						$objTMDRNew["isActive"] 					= 1;
-						$objTMDRNew["createdOn"] 					= date("Y-m-d H:m:s");
+						$objTMDRNew["createdOn"] 					= date("Y-m-d H:i:s");
 						$objTMDRNew["quantity"] 					= $objTMD["quantity"];
 						$objTMDRNew["componentID"] 					= $objTMD["componentID"];
 						$objTMDRNew["componentItemID"]				= $objTMD["componentItemID"];
@@ -3091,7 +3093,7 @@ class app_invoice_billing extends _BaseController {
 			$objTM["entityID"] 						= /*inicio get post*/ $this->request->getPost("entityID");
 			$objTM["transactionOn"]					= /*inicio get post*/ $this->request->getPost("transactionOn");
 			$objTM["transactionOn2"]				= /*inicio get post*/ $this->request->getPost("transactionOn");
-			$objTM["statusIDChangeOn"]				= date("Y-m-d H:m:s");
+			$objTM["statusIDChangeOn"]				= date("Y-m-d H:i:s");
 			$objTM["componentID"] 					= $objComponentBilling->componentID;
 			$objTM["note"] 							= /*inicio get post*/ $this->request->getPost("note");//--fin peticion get o post
 			$objTM["sign"] 							= $objTransaction->signInventory;

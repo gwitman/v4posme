@@ -119,13 +119,13 @@ class core_web_auditoria {
    }
    
    function setAuditCreated(&$obj,$dataUser,$request){			
-   			$obj["createdOn"]			= date("Y-m-d H:i:s");	
+   			$obj["createdOn"]			= helper_getDateTime();	
 			$obj["createdBy"]			= $dataUser["user"]->userID ;
 			$obj["createdIn"]			= $request->getIPAddress();
 			$obj["createdAt"]			= $dataUser["user"]->branchID;
    }
    function setAuditCreatedAdmin(&$obj,$request){			
-   			$obj["createdOn"]			= date("Y-m-d H:i:s");	
+   			$obj["createdOn"]			= helper_getDateTime();	
 			$obj["createdBy"]			= APP_USERADMIN;
 			$obj["createdIn"]			= $request->getIPAddress();
 			$obj["createdAt"]			= APP_BRANCH;

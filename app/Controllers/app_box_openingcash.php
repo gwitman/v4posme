@@ -423,7 +423,7 @@ class app_box_openingcash extends _BaseController
 				$objCashBoxSessionMe["isActive"]                  = 1;
 				$objCashBoxSessionMe["statusID"]                  = $objWorkflowStageInit[0]->workflowStageID;
 				$objCashBoxSessionMe["startOn"]                   = $objTMNew["transactionOn"];
-				$objCashBoxSessionMe["endOn"]                     = "0000-00-00";
+				$objCashBoxSessionMe["endOn"]                     = "1900-01-01 00:00:00";
 				$objCashBoxSessionMe["transactionMasterIDOpen"]   = $transactionMasterID;
 				$objCashBoxSessionMe["transactionMasterIDClosed"] = 0;
 				$this->Cash_Box_Session_Model->insert($objCashBoxSessionMe);

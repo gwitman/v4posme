@@ -67,12 +67,12 @@ class Cash_Box_Session_Model extends Model
 				c.statusID IN (120 /*ABIERTA*/ ) AND 
 				(
 					(
-						c.endOn != '0000-00-00' 
+						c.endOn != '1900-01-01' 
 						AND ? BETWEEN c.startOn AND c.endOn
 					)
 					OR
 					(
-						c.endOn = '0000-00-00' 
+						c.endOn = '1900-01-01' 
 						AND ? >= c.startOn
 					)
 				)
@@ -106,12 +106,12 @@ class Cash_Box_Session_Model extends Model
 				c.statusID IN (120 /*ABIERTA*/ ) AND 
 				(
 					(
-						c.endOn != '0000-00-00' 
+						CAST(c.endOn AS CHAR) != '1900-01-01 00:00:00' 
 						AND ? BETWEEN c.startOn AND c.endOn
 					)
 					OR
 					(
-						c.endOn = '0000-00-00' 
+						CAST(c.endOn AS CHAR) = '1900-01-01 00:00:00' 
 						AND ? >= c.startOn
 					)
 				)
