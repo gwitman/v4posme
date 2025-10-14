@@ -1,7 +1,7 @@
-set @componentName   					:= 'tb_transaction_master_workshop_garantias';
-set @workflowName   					:= 'ESTADO DE GARANTIAS';
-set @transactionName 					:= 'GARANTIA';
-set @serieName							:= 'IDG';
+set @componentName   					:= 'tb_transaction_master_closed_cash';
+set @workflowName   					:= 'ESTADO DE CIERRES DE CAJA';
+set @transactionName 					:= 'CIERRE DE CAJA';
+set @serieName							:= 'CDC';
 set @componentID					    := 0;
 set @elementID							:= 0;
 set @workflowID							:= 0;
