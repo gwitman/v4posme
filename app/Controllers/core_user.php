@@ -213,7 +213,24 @@ class core_user extends _BaseController {
 							$this->User_Tag_Model->insert_app_posme($objTag);
 						}
 						
-						//Agregar la caja
+						//Agregar Lista de Caja
+						$objListBox					= /*inicio get post*/ $this->request->getPost("txtDetailCashBoxID");
+						$this->Cash_Box_User_Model->deleteByUser($companyID,$userID);
+						if($objListBox)
+						foreach($objListBox as $key => $value){
+							$objCashBoxUser 				= NULL;		
+							$objCashBoxUser["companyID"] 	= $companyID;
+							$objCashBoxUser["branchID"] 	= $branchID;
+							$objCashBoxUser["userID"] 		= $userID;
+							$objCashBoxUser["cashBoxID"]	= $value;
+							$objCashBoxUser["typeID"] 		= 0;		
+							$objCashBoxUser["isPrimary"] 	= 0;	
+							$objCashBoxUser["isActive"] 	= 1;	
+							$this->Cash_Box_User_Model->insert($objCashBoxUser);
+							
+						}
+						
+						//Agregar la caja por defecto
 						$cashBoxID = helper_RequestGetValue($this->request->getPost("txtCashBoxID"),0);
 						if($cashBoxID > 0)
 						{
@@ -223,7 +240,8 @@ class core_user extends _BaseController {
 							$objCashBoxUser["userID"] 		= $userID;
 							$objCashBoxUser["cashBoxID"]	= $cashBoxID;
 							$objCashBoxUser["typeID"] 		= 0;							
-							
+							$objCashBoxUser["isPrimary"] 	= 1;	
+							$objCashBoxUser["isActive"] 	= 1;								
 							$this->Cash_Box_User_Model->insert($objCashBoxUser);
 							
 						}
@@ -337,15 +355,38 @@ class core_user extends _BaseController {
 							$this->User_Tag_Model->insert_app_posme($objTag);
 						}
 						
-						//Modificar Caja
+						//Agregar Lista de Caja
+						$objListBox					= /*inicio get post*/ $this->request->getPost("txtDetailCashBoxID");
+						$this->Cash_Box_User_Model->deleteByUser($companyID,$userID);
+						if($objListBox)
+						foreach($objListBox as $key => $value){
+							$objCashBoxUser 				= NULL;		
+							$objCashBoxUser["companyID"] 	= $companyID;
+							$objCashBoxUser["branchID"] 	= $branchID;
+							$objCashBoxUser["userID"] 		= $userID;
+							$objCashBoxUser["cashBoxID"]	= $value;
+							$objCashBoxUser["typeID"] 		= 0;		
+							$objCashBoxUser["isPrimary"] 	= 0;	
+							$objCashBoxUser["isActive"] 	= 1;	
+							$this->Cash_Box_User_Model->insert($objCashBoxUser);
+							
+						}
+						
+						//Modificar Caja por defecto
 						$cashBoxID = helper_RequestGetValue($this->request->getPost("txtCashBoxID"),0);
 						if($cashBoxID > 0)
 						{
 							$objCashBoxUser 				= NULL;					
-							$objCashBoxUser					= $this->Cash_Box_User_Model->asArray()->where("userID",$userID)->findAll();							
+							$objCashBoxUser					= $this->Cash_Box_User_Model->asArray()
+								->where("userID",$userID)
+								->where("cashBoxID",$cashBoxID)
+								->where("isActive",1)
+								->findAll();
+							
 							if( $objCashBoxUser )
 							{								
-								$objCashBoxUser[0]["cashBoxID"]	= $cashBoxID;								
+								$objCashBoxUser[0]["cashBoxID"]		= $cashBoxID;	
+								$objCashBoxUser[0]["isPrimary"] 	= 1;	
 								$this->Cash_Box_User_Model->update($objCashBoxUser[0]["cashBoxUserID"],$objCashBoxUser[0]);
 							}
 							else 
@@ -354,7 +395,9 @@ class core_user extends _BaseController {
 								$objCashBoxUser["branchID"] 	= $branchID;
 								$objCashBoxUser["userID"] 		= $userID;
 								$objCashBoxUser["cashBoxID"]	= $cashBoxID;
-								$objCashBoxUser["typeID"] 		= 0;							
+								$objCashBoxUser["typeID"] 		= 0;		
+								$objCashBoxUser["isPrimary"] 	= 1;	
+								$objCashBoxUser["isActive"] 	= 1;	
 								$this->Cash_Box_User_Model->insert($objCashBoxUser);
 							}
 						}
@@ -488,10 +531,18 @@ class core_user extends _BaseController {
 
 			
 			//Lista de cajas
-			$datView["objListCash"]	 				= $this->Cash_Box_Model->asObject()->where("companyID",$this->session->get('user')->companyID)->findAll();
-			$datView["objListCashUser"]	 			= $this->Cash_Box_User_Model->asObject()->where("companyID",$this->session->get('user')->companyID)->where("userID",$userID )->findAll();
+			$datView["objListCash"]	 				= $this->Cash_Box_Model->asObject()
+				->where("companyID",$this->session->get('user')->companyID)
+				->where("isActive",1)
+				->findAll();
+			$datView["objListCashUser"]	 			= $this->Cash_Box_User_Model->asObject()
+						->where("companyID",$this->session->get('user')->companyID)
+						->where("userID",$userID )
+						->where("isActive",1 )
+						->findAll();
 			$datView["cashBoxID"]					= $datView["objListCashUser"] ? $datView["objListCashUser"][0]->cashBoxID : 0;
-			
+			$datView["objListBox"]	 				= $this->Cash_Box_User_Model->get_rowByUserID($companyID,$userID);
+				
 			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
@@ -564,7 +615,10 @@ class core_user extends _BaseController {
 			$datView["objComponentItem"]	= $objComponentItem;
 
 			//Lista de cajas
-			$datView["objListCash"]	 = $this->Cash_Box_Model->asObject()->where("companyID",$this->session->get('user')->companyID)->findAll();
+			$datView["objListCash"]	 = $datView["objListCash"]	 = $this->Cash_Box_Model->asObject()
+				->where("companyID",$this->session->get('user')->companyID)
+				->where("isActive",1)
+				->findAll();
 			
 			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
 			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
@@ -737,6 +791,40 @@ class core_user extends _BaseController {
 			$dataSession["head"]		= /*--inicio view*/ view('core_user/popup_add_head');//--finview
 			$dataSession["body"]		= /*--inicio view*/ view('core_user/popup_add_body',$data);//--finview
 			$dataSession["script"]		= /*--inicio view*/ view('core_user/popup_add_script');//--finview
+			return view("core_masterpage/default_popup",$dataSession);//--finview-r			
+			
+	}
+	function add_box(){
+			//Cargar Libreria
+			
+			
+			//AUTENTICACION
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+				$permited = false;
+				$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				
+				if(!$permited)
+				throw new \Exception(NOT_ACCESS_CONTROL);
+				
+				$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"index",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				if ($resultPermission 	== PERMISSION_NONE)
+				throw new \Exception(NOT_ACCESS_FUNCTION);			
+			}
+			
+			//Obtener la lista de elementos			
+			$objListBox				= $this->Cash_Box_Model->get_All($dataSession["user"]->companyID);
+			$data["objListBox"] 	= $objListBox;
+			
+			//Renderizar Resultado
+			$dataSession["message"]		= "";
+			$dataSession["head"]		= /*--inicio view*/ view('core_user/popup_box_add_head');//--finview
+			$dataSession["body"]		= /*--inicio view*/ view('core_user/popup_box_add_body',$data);//--finview
+			$dataSession["script"]		= /*--inicio view*/ view('core_user/popup_box_add_script');//--finview
 			return view("core_masterpage/default_popup",$dataSession);//--finview-r			
 			
 	}

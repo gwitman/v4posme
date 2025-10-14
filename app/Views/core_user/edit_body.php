@@ -26,6 +26,7 @@
 									<ul id="myTab" class="nav nav-tabs">
                                         <li class="active"><a href="#home1" data-toggle="tab">Informacion General</a></li>
                                         <li><a href="#profile1" data-toggle="tab">Bodegas</a></li>
+										<li><a href="#box1" data-toggle="tab">Cajas</a></li>
 										<li><a href="#profile2" data-toggle="tab">Notificaciones</a></li>
                                     </ul>
 									<form id="form-new-rol" name="form-new-rol" class="form-horizontal" role="form">
@@ -198,6 +199,31 @@
 																echo "<tr>";
 																	echo "<td>";																			
 																			echo "<span><input type='hidden' name='txtDetailWarehouseID[]' value='".$i->warehouseID."' />".$i->number." ".$i->name."</span>";	
+																	echo "</td>";
+																echo "</tr>";
+															}
+															?>
+														</tbody>
+													</table>
+	                                    </div>
+										<!--Cajas-->
+										<div class="tab-pane fade" id="box1">													
+	                                            	<a href="#" class="btn btn-flat btn-info" id="btnNewDetailBox" >Agregar</a>
+													<a href="#" class="btn btn-flat btn-danger" id="btnDeleteDetailBox" >Eliminar</a>
+										
+													<table id="ListElementBox" class="table table-striped">
+														<thead>
+															<tr>
+																<th>Lista de Cajas</th>															
+															</tr>
+														</thead>
+														<tbody id="tbody_detail_box">		
+															<?php
+															if($objListBox)
+															foreach($objListBox as $i){
+																echo "<tr>";
+																	echo "<td>";																			
+																			echo "<span><input type='hidden' name='txtDetailCashBoxID[]' value='".$i->cashBoxID."' />".$i->cashBoxCode." ".$i->name."</span>";	
 																	echo "</td>";
 																echo "</tr>";
 															}

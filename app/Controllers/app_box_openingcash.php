@@ -65,7 +65,7 @@ class app_box_openingcash extends _BaseController
             $dataView["objTransactionMasterDetail"]          = $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID, $transactionID, $transactionMasterID);
             $dataView["objTransactionMasterDenomination"]    = $this->Transaction_Master_Denomination_Model->get_rowByTransactionMaster($companyID, $transactionID, $transactionMasterID);
             $dataView["objTransactionMaster"]->transactionOn = date_format(date_create($dataView["objTransactionMaster"]->transactionOn), "Y-m-d");
-            $dataView["objListCashBox"]                      = $this->Cash_Box_Model->get_All($companyID);
+            $dataView["objListCashBox"]                      = $this->Cash_Box_User_Model->get_rowByUserID($companyID,$dataSession["user"]->userID);
             $dataView["objListCurrency"]                     = $objListCurrency;
             $dataView["companyID"]                           = $dataSession["user"]->companyID;
             $dataView["userID"]                              = $dataSession["user"]->userID;
@@ -769,7 +769,7 @@ class app_box_openingcash extends _BaseController
             $objParameterExchangeSales        = $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE", $companyID);
             $dataView["exchangeRateSale"]     = $this->core_web_currency->getRatio($companyID, date("Y-m-d"), 1, $targetCurrency->currencyID, $objCurrency->currencyID) + $objParameterExchangeSales->value;
 
-            $dataView["objListCashBox"]       = $this->Cash_Box_Model->get_All($companyID);
+            $dataView["objListCashBox"]       = $this->Cash_Box_User_Model->get_rowByUserID($companyID,$dataSession["user"]->userID);
             $dataView["objCaudal"]            = $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
             $dataView["objListWorkflowStage"] = $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_opening_cash", "statusID", $companyID, $branchID, $roleID);
             $dataView["objTipoMovement"]      = $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_opening_cash", "areaID", $companyID);

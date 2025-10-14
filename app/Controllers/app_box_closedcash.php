@@ -61,7 +61,7 @@ class app_box_closedcash extends _BaseController
             $objListCurrency = $this->Company_Currency_Model->getByCompany($companyID);
 
             //Tipo de Factura
-            $dataView["objListCashBox"]                      = $this->Cash_Box_Model->get_All($companyID);
+            $dataView["objListCashBox"]                      = $this->Cash_Box_User_Model->get_rowByUserID($companyID,$dataSession["user"]->userID);
             $dataView["objTransactionMaster"]                = $this->Transaction_Master_Model->get_rowByPK($companyID, $transactionID, $transactionMasterID);
             $dataView["objTransactionMasterDetail"]          = $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID, $transactionID, $transactionMasterID);
             $dataView["objTransactionMasterDenomination"]    = $this->Transaction_Master_Denomination_Model->get_rowByTransactionMaster($companyID, $transactionID, $transactionMasterID);
@@ -794,7 +794,7 @@ class app_box_closedcash extends _BaseController
             $objListCurrency = $this->Company_Currency_Model->getByCompany($companyID);
 
             //Tipo de Factura
-            $dataView["objListCashBox"]  = $this->Cash_Box_Model->get_All($companyID);
+            $dataView["objListCashBox"]  = $this->Cash_Box_User_Model->get_rowByUserID($companyID,$dataSession["user"]->userID);
             $dataView["objListCurrency"] = $objListCurrency;
             $dataView["companyID"]       = $dataSession["user"]->companyID;
             $dataView["userID"]          = $dataSession["user"]->userID;

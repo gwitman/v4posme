@@ -2,6 +2,8 @@
 				<script>					
 					var objRowListWarehouse				= {};
 					var objTableListWarehouse			= {};
+					var objTableListBox					= {};
+					var objRowListBox					= {};
 					var site_url 						= "<?php echo base_url(); ?>/";
 					var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';
 					
@@ -14,6 +16,14 @@
 							"bSort"			: true,
 							"bInfo"			: false,
 							"bAutoWidth"	: true							
+						});	
+						objTableListBox = $("#ListElementBox").dataTable({
+									"bPaginate"		: false,
+									"bLengthChange"	: false,
+									"bFilter"		: false,
+									"bSort"			: true,
+									"bInfo"			: false,
+									"bAutoWidth"	: true
 						});						
 						//Regresar
 						$(document).on("click","#btnBack",function(){
@@ -31,16 +41,32 @@
 								objRowListWarehouse = this;
 								fnTableSelectedRow(this,event);
 						});
+						//Comando  Seleccionar Detalle de Caja
+						$(document).on("click", "#tbody_detail_box tr", function(event) {
+							objRowListBox = this;
+							fnTableSelectedRow(this, event);
+						});
 						//Comando Eliminar Detalle de bodegas
 						$(document).on("click","#btnDeleteDetailWarehouse",function(){	
 							fnShowConfirm("Confirmar..","Desea eliminar la bodega seleccionada?",function(){								
 								objTableListWarehouse.fnDeleteRow(objRowListWarehouse);
 							});							
 						});
+						//Comando Eliminar Detalle de Caja
+						$(document).on("click", "#btnDeleteDetailBox", function() {
+							fnShowConfirm("Confirmar..", "Desea eliminar la caja seleccionada?", function() {
+								objTableListBox.fnDeleteRow(objRowListBox);
+							});
+						});
 						//Comando Agregar Detalle de Bodega
 						$(document).on("click","#btnNewDetailWarehouse",function(){								
 								window.open(site_url+"core_user/add_warehouse","MsgWindow","width=650,height=500");
 								window.parentNewWarehouse = parentNewWarehouse;
+						});
+						//Comando Agregar Detalle de Caja
+						$(document).on("click", "#btnNewDetailBox", function() {
+							window.open(site_url + "core_user/add_box", "MsgWindow", "width=650,height=500");
+							window.parentNewBox = parentNewBox;
 						});
 						//Buscar el Empleado
 						$(document).on("click","#btnSearchEmployeeParent",function(){
@@ -73,5 +99,17 @@
 						
 						var tmp1 =		$.tmpl('<span><input type="hidden" name="txtDetailWarehouseID[]" value="${txtDetailWarehouseID}" /> ${txtDetailWarehouseName}</span>',data).html();
 						objTableListWarehouse.fnAddData([tmp1]);
+					}
+					//Callback Complete: Agregar Caja
+					function parentNewBox(data) {
+						if (data.txtDetailCashBoxID == "") {
+							fnShowNotification("No es posible agregar la caja", "error");
+							return;
+						}
+						if ($("input[name='txtDetailCashBoxID[]'][value=" + data.txtDetailCashBoxID + "]").length > 0)
+							return;
+
+						var tmp1 = $.tmpl('<span><input type="hidden" name="txtDetailCashBoxID[]" value="${txtDetailCashBoxID}" /> ${txtDetailCashBoxName}</span>', data).html();
+						objTableListBox.fnAddData([tmp1]);
 					}
 				</script>

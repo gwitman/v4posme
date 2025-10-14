@@ -14,7 +14,7 @@ class Cash_Box_User_Model extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = false;
 
-    protected $allowedFields = ['cashBoxUserID', 'branchID','companyID','userID','cashBoxID','typeID'];
+    protected $allowedFields = ['cashBoxUserID', 'branchID','companyID','userID','cashBoxID','typeID','isPrimary','isActive'];
 
     // Dates
     protected $useTimestamps = false;
@@ -39,6 +39,85 @@ class Cash_Box_User_Model extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+	
+	public function deleteByUser($companyID,$userID)
+	{	
+		$db      = db_connect();
+        $builder = $db->table("tb_cash_box_user");
+
+        $data["isActive"] = 0;
+        $builder->where("companyID", $companyID);
+        $builder->where("userID", $userID);
+        return $builder->update($data);
+		
+	}
+	
+	public function get_rowByUserID($companyID,$userID)
+	{
+		$db 	= db_connect();		    
+		$sql = "";
+		$sql = sprintf("
+				select 
+					c.companyID,
+					c.branchID,
+					c.cashBoxID,
+					c.userID,
+					c.typeID,
+					c.cashBoxUserID,
+					c.isPrimary,
+					k.cashBoxCode,
+					k.`name`,
+					k.description,
+					k.statusID,
+					k.isActive 
+				from 
+					tb_cash_box_user c 
+					inner join tb_cash_box k on 
+						c.cashBoxID = k.cashBoxID 
+				where 
+					k.isActive = 1 and 
+					c.isActive = 1 and 
+					c.userID = ".$userID." and 
+					k.companyID = ".$companyID." order by k.`name` ;  ");
+						
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+	}
+	
+	public function get_rowByUserIDAndPrimary($companyID,$userID)
+	{
+		$db 	= db_connect();		    
+		$sql = "";
+		$sql = sprintf("
+				select 
+					c.companyID,
+					c.branchID,
+					c.cashBoxID,
+					c.userID,
+					c.typeID,
+					c.cashBoxUserID,
+					c.isPrimary,
+					k.cashBoxCode,
+					k.`name`,
+					k.description,
+					k.statusID,
+					k.isActive 
+				from 
+					tb_cash_box_user c 
+					inner join tb_cash_box k on 
+						c.cashBoxID = k.cashBoxID 
+				where 
+					k.isActive = 1 and 
+					c.isActive = 1 and 
+					c.userID = ".$userID." and 
+					c.isPrimary = 1 and 
+					k.companyID = ".$companyID." order by k.`name` ;  ");
+						
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+	}
 	
    
 }

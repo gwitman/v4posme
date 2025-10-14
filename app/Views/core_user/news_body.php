@@ -25,6 +25,7 @@
 									<ul id="myTab" class="nav nav-tabs">
                                         <li class="active"><a href="#home1" data-toggle="tab">Informacion General</a></li>
                                         <li><a href="#profile1" data-toggle="tab">Bodegas</a></li>
+										<li><a href="#box1" data-toggle="tab">Cajas</a></li>
                                     </ul>
 									<form id="form-new-rol" name="form-new-rol" class="form-horizontal" role="form">
 									<div class="tab-content">
@@ -149,6 +150,21 @@
 																</tr>
 															</thead>
 															<tbody id="tbody_detail_warehouse">		
+															</tbody>
+														</table>
+										</div>
+										<!--Cajas-->
+										<div class="tab-pane fade" id="box1">													
+														<a href="#" class="btn btn-flat btn-info" id="btnNewDetailBox" >Agregar</a>
+														<a href="#" class="btn btn-flat btn-danger" id="btnDeleteDetailBox" >Eliminar</a>
+											
+														<table id="ListElementBox" class="table table-striped">
+															<thead>
+																<tr>
+																	<th>Lista de Cajas</th>															
+																</tr>
+															</thead>
+															<tbody id="tbody_detail_box">		
 															</tbody>
 														</table>
 										</div>

@@ -40,6 +40,37 @@ class Cash_Box_Session_Model extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 	
+	public function get_rowByCashBoxIDAndDate($companyID,$cashBoxID,$date)
+	{
+		$db 	= db_connect();		    
+		$sql = "";
+		$sql = sprintf("
+			select 
+				c.companyID,
+				c.branchID,
+				c.cashBoxID,
+				c.cashBoxSessionID,
+				c.startOn,
+				c.endOn,
+				c.statusID,
+				c.isActive,
+				c.userID,
+				c.transactionMasterIDOpen,
+				c.transactionMasterIDClosed 
+			from 
+				tb_cash_box_session c 
+			where 
+				c.cashBoxID = ".$cashBoxID." and 
+				c.companyID = ".$companyID." and 
+				c.isActive = 1 and 
+				c.endOn is null  and 
+				c.startOn >= '$date' 
+			");
+			
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+	}
+	
    
 }
 ?>

@@ -1585,6 +1585,7 @@ $routes->match(['get', 'post'], 'core_user/add', 'core_user::add');
 $routes->match(['get', 'post'], 'core_user/index', 'core_user::index');
 $routes->match(['get', 'post'], 'core_user/index/(:any)', 'core_user::index');
 $routes->match(['get', 'post'], 'core_user/add_warehouse', 'core_user::add_warehouse');
+$routes->match(['get', 'post'], 'core_user/add_box', 'core_user::add_box');
 $routes->match(['get', 'post'], 'core_user/add_tag', 'core_user::add_tag');
 $routes->match(['get', 'post'], 'core_view/showviewbyname', 'core_view::showviewbyname');
 $routes->match(['get', 'post'], 'core_view/showviewbyname/(:any)', 'core_view::showviewbyname');
