@@ -877,16 +877,17 @@ class app_invoice_billing extends _BaseController {
 			$objParameterInvoiceUpdateNameInTransactionOnly		= $this->core_web_parameter->getParameter("INVOICE_UPDATENAME_IN_TRANSACTION_ONLY",$companyID);
 			$objParameterInvoiceUpdateNameInTransactionOnly		= $objParameterInvoiceUpdateNameInTransactionOnly->value;
 			
-			$objParameterInvoiceBillingQuantityZero		= $this->core_web_parameter->getParameter("INVOICE_BILLING_QUANTITY_ZERO",$companyID);
-			$objParameterInvoiceBillingQuantityZero		= $objParameterInvoiceBillingQuantityZero->value;
-			$objParameterImprimirPorCadaFactura			= $this->core_web_parameter->getParameter("INVOICE_PRINT_BY_INVOICE",$companyID);
-			$objParameterImprimirPorCadaFactura			= $objParameterImprimirPorCadaFactura->value;
-			$objParameterRegrearANuevo					= $this->core_web_parameter->getParameter("INVOICE_BILLING_SAVE_AFTER_TO_ADD",$companyID);
-			$objParameterRegrearANuevo					= $objParameterRegrearANuevo->value;			
-			$objParameterUpdateDateAplication			= $this->core_web_parameter->getParameter("INVOICE_BILLING_UPDATE_DATE_APPLYCATION_IN_MOMENT_APLICATION",$companyID);
-			$objParameterUpdateDateAplication			= $objParameterUpdateDateAplication->value;
-			$objParameterEsRestaurant 					= $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"],"INVOICE_BILLING_IS_RESTAURANT")->value;
-			$objParameterINVOICE_BILLING_TRAKING_BAR	= $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"],"INVOICE_BILLING_TRAKING_BAR")->value;
+			$objParameterInvoiceBillingQuantityZero			= $this->core_web_parameter->getParameter("INVOICE_BILLING_QUANTITY_ZERO",$companyID);
+			$objParameterInvoiceBillingQuantityZero			= $objParameterInvoiceBillingQuantityZero->value;
+			$objParameterImprimirPorCadaFactura				= $this->core_web_parameter->getParameter("INVOICE_PRINT_BY_INVOICE",$companyID);
+			$objParameterImprimirPorCadaFactura				= $objParameterImprimirPorCadaFactura->value;
+			$objParameterRegrearANuevo						= $this->core_web_parameter->getParameter("INVOICE_BILLING_SAVE_AFTER_TO_ADD",$companyID);
+			$objParameterRegrearANuevo						= $objParameterRegrearANuevo->value;			
+			$objParameterUpdateDateAplication				= $this->core_web_parameter->getParameter("INVOICE_BILLING_UPDATE_DATE_APPLYCATION_IN_MOMENT_APLICATION",$companyID);
+			$objParameterUpdateDateAplication				= $objParameterUpdateDateAplication->value;
+			$objParameterEsRestaurant 						= $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"],"INVOICE_BILLING_IS_RESTAURANT")->value;
+			$objParameterINVOICE_BILLING_TRAKING_BAR		= $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"],"INVOICE_BILLING_TRAKING_BAR")->value;
+			$objParameterINVOICE_BILLING_VALID_CASH_OPENING	= $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"],"INVOICE_BILLING_VALID_CASH_OPENING")->value;
 			
 			//Actualizar Maestro
 			$codigoMesero								= /*inicio get post*/ $this->request->getPost("txtCodigoMesero");
@@ -961,6 +962,8 @@ class app_invoice_billing extends _BaseController {
 			//Validar si la caja esta abierta
 			if(
 				!$this->core_web_authentication->isCashBoxOpen($companyID,$userID,$objTMNew["transactionOn"])
+				&&
+				$objParameterINVOICE_BILLING_VALID_CASH_OPENING == "true"
 			)
 			{
 				$errorFound = true;
