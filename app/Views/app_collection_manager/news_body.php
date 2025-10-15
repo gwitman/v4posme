@@ -90,10 +90,19 @@
 														</div>
 
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="buttons">Referencia</label>
+															<label class="col-lg-4 control-label" for="buttons">Referencia FAC</label>
 															<div class="col-lg-8">
 																<div class="input-group">	
 																	<input class="form-control" type="text" name="txtReference1" id="txtReference1">																																																																																																		
+																</div>
+															</div>
+														</div>
+														
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="buttons">Referido</label>
+															<div class="col-lg-8">
+																<div class="input-group">	
+																	<input class="form-control" type="text" name="txtReference2" id="txtReference2">																																																																																																		
 																</div>
 															</div>
 														</div>

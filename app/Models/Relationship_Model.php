@@ -240,7 +240,7 @@ class Relationship_Model extends Model  {
 				
 		$sql = "";
 		$sql = sprintf("select 
-			r.relationshipID, r.employeeID, r.customerID, r.orderNo, r.reference1, r.startOn, r.endOn,  r.isActive, 
+			r.relationshipID, r.employeeID, r.customerID, r.orderNo, r.reference1,r.reference2, r.startOn, r.endOn,  r.isActive, 
 			concat(e.employeNumber,' / ',concat(n.firstName,' ',n.lastName)) as firstName, 
 			concat(c.customerNumber,' / ' ,l.legalName) as legalName,
 			r.customerIDAfter
@@ -264,7 +264,7 @@ class Relationship_Model extends Model  {
 				
 		$sql = "";
 		$sql = sprintf("select 
-			r.relationshipID, r.employeeID, r.customerID, r.orderNo, r.reference1, r.startOn, r.endOn,  r.isActive, 
+			r.relationshipID, r.employeeID, r.customerID, r.orderNo, r.reference1,r.reference2, r.startOn, r.endOn,  r.isActive, 
 			concat(e.employeNumber,' / ',concat(n.firstName,' ',n.lastName)) as firstName, 
 			concat(c.customerNumber,' / ' ,l.legalName) as legalName,
 			r.customerIDAfter
@@ -290,7 +290,7 @@ class Relationship_Model extends Model  {
 		$sql = "";
 		$sql = sprintf("select 
 						r.relationshipID, r.employeeID, r.customerID, r.orderNo, 
-						r.reference1, r.startOn, r.endOn,  
+						r.reference1,r.reference2, r.startOn, r.endOn,  
 						r.isActive, concat(e.employeNumber,' / ',concat(n.firstName,' ',n.lastName)) as firstName, 
 						concat(c.customerNumber,' / ' ,l.legalName) as legalName,
 						r.customerIDAfter
