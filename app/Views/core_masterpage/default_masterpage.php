@@ -274,7 +274,14 @@
 
 </body>
 <script>
+	var varCoreUserName 	= '<?php echo $user->nickname; ?>';
+	var varCoreRoleName 	= '<?php echo $role->name; ?>';
+	var varCoreFlavorID 	= '<?php echo $company->flavorID; ?>';
+	var varCoreCompanyType 	= '<?php echo $company->type; ?>';
+	var varCoreCompanyName 	= '<?php echo $company->name; ?>';
+	
 	selectMenu("<?php echo current_url(); ?>");
+	
 	
 	$(document).on("click", "#link-tramites", function(e) {	  
 	  mostrarModal("ModalOpcionesTramites");

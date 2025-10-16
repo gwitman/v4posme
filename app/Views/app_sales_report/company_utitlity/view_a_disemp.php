@@ -39,7 +39,7 @@
 			$resultado["columnas"],
 			'UTILIDADES DEL '.$objStartOn.' AL '.$objEndOn,
 			"SUCURSAL: ". $branchName,
-			"",
+			"BODEGA: ". $warehouseName,
 			$resultado["width"]
 		);
 		?>

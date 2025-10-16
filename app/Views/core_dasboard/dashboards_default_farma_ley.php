@@ -114,6 +114,18 @@
 							</div><!-- End .panel-body -->
 						</div><!-- End .widget -->		
 						
+						<div class="panel" id="panel6" style="margin-bottom:20px;">
+							<div class="panel-heading">
+								<div class="icon"><i class="icon20 i-health"></i></div> 
+								<h4>Estadistica Credito + Contados</h4>
+								<a href="#" class="minimize"></a>
+							</div><!-- End .panel-heading -->
+						
+							<div class="panel-body">								
+								<div id="grafico6" style="height:300px" ></div>
+							</div><!-- End .panel-body -->
+						</div><!-- End .widget -->	
+						
 					
 						
 							
@@ -207,11 +219,22 @@
 				<script>	
 					// https://www.w3schools.com/js/js_graphics_google_chart.asp					
 					$(document).ready(function(){
+						if( 
+							varCoreRoleName == "DEPENDIENTE"  || 
+							varCoreRoleName == "FARMA_LEY@FACTURADOR_WEB" 
+						)
+						{
+							$("#panel6").addClass("hidden")
+						}
+						
 						google.charts.load('current',{packages:['corechart']});							
 						google.charts.setOnLoadCallback(drawChartBarraVentasContadoMesActual);	
 						google.charts.setOnLoadCallback(drawChartPastelVentasCreditoMensuales);		
 						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasVendidos);	
 						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasVendidosCredito);
+						google.charts.setOnLoadCallback(drawChartBarraHorizontalProductosMasVendidosContadoCredito);
+						
+						
 					});		
 					
 					function drawChartBarraVentasContadoMesActual() {
@@ -350,6 +373,35 @@
 						};
 
 						var chart = new google.visualization.BarChart(document.getElementById('grafico5'));
+						chart.draw(data, options);
+
+					}
+					
+					function drawChartBarraHorizontalProductosMasVendidosContadoCredito() {
+						var objDataSourceProductosMasVendidos	 	= new Array();
+						var objTransactionMaster 				 	= JSON.parse('<?php echo json_encode($objListVentasCredito_MasContado); ?>');	
+						
+						objDataSourceProductosMasVendidos.push(new Array("Colaborador","Venta"));
+						for(var i = 0 ; i < objTransactionMaster.length;i++)
+						{
+							objDataSourceProductosMasVendidos.push(
+								new Array(
+									objTransactionMaster[i].firtsName,
+									parseInt(objTransactionMaster[i].monto)
+								)
+							);	
+						}
+						
+						var data = google.visualization.arrayToDataTable(
+							objDataSourceProductosMasVendidos
+						);
+
+						var options = {
+						  title: 'Ventas de Contado + Credito',
+						  colors: ['#FBC02D', '#FBC02D', '#FBC02D', '#FBC02D', '#FBC02D'],
+						};
+
+						var chart = new google.visualization.BarChart(document.getElementById('grafico6'));
 						chart.draw(data, options);
 
 					}

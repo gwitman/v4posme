@@ -684,6 +684,7 @@ class app_sales_report extends _BaseController {
 			$endOn					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri
 			$txtClassID 			= /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "txtClassID");//--finuri
 			$txtBranchID 			= /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "txtBranchID");//--finuri
+			$txtWarehouseID 		= /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "txtWarehouseID");//--finuri
 			
 			if(!($viewReport && $startOn && $endOn  )){
 				
@@ -704,6 +705,8 @@ class app_sales_report extends _BaseController {
 				//Obtener sucursal  
 				$objBranch						= $this->Branch_Model->get_rowByPK($companyID,$txtBranchID);
 				$objDataResult["branchName"]	= $txtBranchID == 0 ? "TODAS" : $objBranch->name;
+				$objWarehouse					= $this->Warehouse_Model->get_rowByPK($companyID,$txtWarehouseID);
+				$objDataResult["warehouseName"]	= $txtWarehouseID == 0 ? "TODAS" : $objWarehouse->name;
 				
 				//Obtener el tipo de Comprobante
 				$companyID 		= $dataSession["user"]->companyID;
@@ -714,10 +717,10 @@ class app_sales_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_sales_get_report_sales_utility_summary(?,?,?,?,?,?,?);";				
+				$query			= "CALL pr_sales_get_report_sales_utility_summary(?,?,?,?,?,?,?,?);";				
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$txtClassID,$txtBranchID]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$txtClassID,$txtBranchID,$txtWarehouseID]
 				);
 				
 				
