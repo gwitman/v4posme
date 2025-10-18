@@ -10,19 +10,31 @@ class core_report extends _BaseController
         try{
             $segments               = $this->uri->getSegments();
             $key                    = helper_SegmentsValue($segments,'key');
-            $findReporting          = $this->Reporting_Model->get_rowByKey($key);
+            $findReporting          = $this->Reporting_Model->get_rowByKey($key,0);
+			$companyID				= 0;
+			$flavorID				= 0;
+			$userID					= 0;
 
             if ($findReporting->needAutenticated == 1){
                 //AUTENTICACION
                 if(!$this->core_web_authentication->isAuthenticated())
                     throw new \Exception(USER_NOT_AUTENTICATED);
+				
+				$dataSession	= $this->session->get();
+				$companyID 		= $dataSession['company']->companyID;
+				$flavorID 		= $dataSession['company']->flavorID;
+				$userID 		= $dataSession['user']->userID;
             }
 
-            $dataSession		            = $this->session->get();
+            
+			$findReportingFlavor    		= $this->Reporting_Model->get_rowByKey($key,$flavorID);
+			if($findReportingFlavor)
+				$findReporting = $findReportingFlavor;
+				
             $findReportingParameter         = $this->Reporting_Parameter_Model->get_rowByReportID($findReporting->reportID);
             $dataView['reporting']          = $findReporting;
-            $dataView["companyID"]          = $dataSession['company']->companyID;
-            $dataView["userID"]             = $dataSession['user']->userID;			
+            $dataView["companyID"]          = $companyID;
+            $dataView["userID"]             = $userID;			
             $dataView['reportingParameter'] = $findReportingParameter;
 			$dataView['segments']			= $segments;
 
