@@ -537,6 +537,31 @@
 			fnUpdateDetail();
 			refreschChecked();
 		})
+		//Cambio en el Precio
+		$(document).on("blur",".txtDetailPrice",function(){
+			debugger;
+			$(this).val(fnFormatFloat(fnFormatNumber(fnFormatFloat($(this).val()),numberDecimal)));
+			var objrow_ = $(this).parent().parent()[0];
+			var objind_ = objTableDetailTransaction.fnGetPosition(objrow_);
+			var objdat_ = objTableDetailTransaction.fnGetData(objind_);			
+			
+			//actualizar el nuevo precio			
+			<?php echo getBahavioSession($company->type, "app_inventory_inputunpost", "scriptCalculateCostChangeDetail", "",$objListCompanyPageSetting); ?>
+			
+			
+			//actualisar el nuevo costo	neto		
+			objTableDetailTransaction.fnUpdate(  newValue , objind_, columnIndexCostoNeto );
+			
+			//actualizar el nuevo costo bruto
+			objTableDetailTransaction.fnUpdate(  newValue, objind_, columnIndexCostoBruto );
+			var result 	= parseFloat(objdat_[columnIndexCantidad]) *  parseFloat(newValue) ;
+			result 		= result.toFixed(2);
+			
+			//actuaoizar sub total
+			objTableDetailTransaction.fnUpdate( result, objind_, columnIndexSubTotal );
+			fnUpdateDetail();
+			refreschChecked();
+		});
 		//Cambio en el Costo
 		$(document).on("blur",".txtDetailCost",function(){
 			$(this).val(fnFormatFloat(fnFormatNumber(fnFormatFloat($(this).val()),numberDecimal)));
@@ -545,7 +570,7 @@
 			var objdat_ = objTableDetailTransaction.fnGetData(objind_);		
 			
 			//actualizar el nuevo precio
-			<?php echo getBahavioSession($company->type, "app_inventory_inputunpost", "scriptCalculatePriceChangeDetail", "",$objListCompanyPageSetting); ?>
+			<?php echo getBahavioSession($company->type, "app_inventory_inputunpost", "scriptCalculatePriceChangeDetail", "",$objListCompanyPageSetting); ?>			
 			
 			
 			//actualisar el nuevo costo	neto		
@@ -561,7 +586,7 @@
 			objTableDetailTransaction.fnUpdate(  result, objind_, columnIndexSubTotal );
 			fnUpdateDetail();
 			refreschChecked();
-		})
+		});
 		//Cambio en el Descuento
 		$(document).on("change","input#txtDiscount",function(){
 			fnUpdateDetail();
@@ -754,6 +779,7 @@
 			
 			//Calcular el descuento			
 			<?php echo getBahavioSession($company->type, "app_inventory_inputunpost", "scriptCalculatePrice", "",$objListCompanyPageSetting); ?>
+			<?php echo getBahavioSession($company->type, "app_inventory_inputunpost", "scriptCalculateCost",  "",$objListCompanyPageSetting); ?>
 			
 			//Berificar que el Item ya esta agregado 
 			if(jLinq.from(objTableDetailTransaction.fnGetData()).where(function(obj){ return obj[1] == objRow.itemID;}).select().length > 0 )
