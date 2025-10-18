@@ -331,7 +331,7 @@ class Item_Model extends Model  {
 					i.barCode,
 					i.itemNumber,
 					i.`name`,
-					ifnull(iw.quantity,0) as quantity,
+					ifnull(i.quantity,0) as quantity,
 					ifnull(
 						(select pp.price from tb_price pp where pp.itemID = i.itemID and pp.typePriceID = 154 /*precio publico*/)
 						,
@@ -339,12 +339,14 @@ class Item_Model extends Model  {
 					) as PrecioPublico	
 				from 
 					tb_item i 
+					/*
 					inner join tb_item_warehouse iw on 
 						i.itemID  = iw.itemID  
+					*/ 
 				where 
 					i.isActive = 1 and 
-					i.isInvoice = 1 and  
-					iw.warehouseID in (".implode(",", $listWarehouseID).")
+					i.isInvoice = 1 /* and */ 
+					/* iw.warehouseID in (".implode(",", $listWarehouseID).") */ 
 				order by 
 					i.barCode
 			");
