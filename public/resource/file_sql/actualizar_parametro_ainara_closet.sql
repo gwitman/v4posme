@@ -903,14 +903,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Parada chalio roja 200m.e" 
+	tb_company_parameter.value = "PARADA CHALIO ROJAS 200M.E" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Ainara Closet' , address = 'Parada chalio roja 200m.e' ,
+	NAME = 'Ainara Closet' , address = 'PARADA CHALIO ROJAS 200M.E' ,
 	flavorID = 0 , type="ainaracloset"
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

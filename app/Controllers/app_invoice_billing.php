@@ -10889,7 +10889,7 @@ class app_invoice_billing extends _BaseController {
 		    
 			foreach($datView["objTMD"] as $detail_){
 				$row = array(
-					$detail_->itemName. " ". strtolower($detail_->skuFormatoDescription)."-comand-new-row",  				
+					$detail_->itemName. " ". /*strtolower($detail_->skuFormatoDescription)*/ "-comand-new-row",  				
 					"none",
 					"none"
 				);

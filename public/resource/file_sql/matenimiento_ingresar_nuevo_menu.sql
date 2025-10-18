@@ -28,12 +28,12 @@ ORDER BY
 
 
 
-set @menuComponentPrincipal 				:= '0-VENTAS';	
+set @menuComponentPrincipal 				:= '0-INVENTARIO';	
 set @menuElementParent						:= 'REPORTES'; 	
 
-set @menuElement 							:= 'SEGUIMIENTO POSVENTA GLOBAL PRO';
-set @menuElementAddress 					:= 'app_sales_report/sales_detail_traking_globalpro.aspx';
-set @menuElementOrden 						:= '0002.0007.0005.0010.0000';
+set @menuElement 							:= 'PRODUCTOS POR TRANSACCION';
+set @menuElementAddress 					:= 'core_report/show/key/InventoryReport_itemByTransaction/company/companyName/parameter1/123456/parameter2/abcdef';
+set @menuElementOrden 						:= '0002.0005.0011.0014.0000';
 set @menuIcono								:= 'yellow';
 set @menuThemplate							:= 'menu_nivel_body_report_0';
 set @menuType								:= '6';

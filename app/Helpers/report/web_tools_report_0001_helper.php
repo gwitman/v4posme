@@ -13883,7 +13883,7 @@ function helper_reporte80mmTransactionMasterFarmaGael(
                             Vendedor:
                           </td>
 						  <td colspan='2'>
-                            ". (strpos($userNickName , "@") === false ? $userNickName : substr($userNickName,0,strpos($userNickName , "@") ) )   ."
+                            Jennydier" /*(strpos($userNickName , "@") === false ? $userNickName : substr($userNickName,0,strpos($userNickName , "@") ) ) */  ."
                           </td>
                         </tr>";
 		  }

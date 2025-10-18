@@ -4569,18 +4569,19 @@ class core_web_printer_direct {
 		veces a $printer->text()
 		*/
 
-		$this->printer->feed();
+		//$this->printer->feed();
 		//$this->printer->setTextSize(1, 1);
 		//$this->printer->text($dataSetValores["objCompany"]->name);		
 		//$this->printer->text("\n");
 		//$this->printer->setTextSize(1, 1);		
 		//$this->printer->text("\nRUC:".$dataSetValores["Identifier"]->value);
+		
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\n".$dataSetValores["objParameterPhoneProperty"]->value);		
 		$this->printer->setTextSize(1, 1);
-		$this->printer->text("\n#".$dataSetValores["objTransactionMaster"]->transactionNumber);
-		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\n");
+		$this->printer->text("\n#".$dataSetValores["objTransactionMaster"]->transactionNumber);
+		$this->printer->setTextSize(1, 1);		
 		$this->printer->text("\nFecha: ".$dataSetValores["objTransactionMaster"]->createdOn);
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\nEstado: ".$dataSetValores["objStage"][0]->display);
@@ -4599,7 +4600,7 @@ class core_web_printer_direct {
 		$this->printer->text("\nAbono: ".$dataSetValores["saldoAbonado"]);
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\nSaldo final: ".$dataSetValores["saldoFinal"]);
-		$this->printer->text("\n");
+		
 
 		$this->printer->setTextSize(1, 1);
 		$this->printer->text("\nGracias.");
@@ -4615,7 +4616,7 @@ class core_web_printer_direct {
 		//$this->printer->text("\nSistema:+(505) 8712-5827");
 
 		$this->printer->setTextSize(2, 1);
-		$this->printer->feed(8);
+		$this->printer->feed(4);
 		//$this->printer->text("Hola mundo\n\nParzibyte.me\n\nNo olvides suscribirte");
 		/*
 		Hacemos que el papel salga. Es como
