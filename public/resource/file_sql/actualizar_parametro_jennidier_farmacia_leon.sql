@@ -1,5 +1,5 @@
-/*BD: 	posme:parametro_jennidier_farmacia_leon*/
-/*SERVIDOR:		localhost*/
+/*BD: 	xjprteqmwolnsa:parametro_jennidier_farmacia_leon*/
+/*SERVIDOR:		aws*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
