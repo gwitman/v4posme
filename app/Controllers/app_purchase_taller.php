@@ -544,7 +544,7 @@ class app_purchase_taller extends _BaseController {
                                     APP_COMPANY,
                                     $themplate,
                                     $numerDestino
-                                /*"50587125827"*/
+									/*"50587125827"*/
                                 );
                             }
 							else

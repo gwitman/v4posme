@@ -271,7 +271,7 @@ class app_purchase_garantia extends _BaseController {
 			$transactionMasterID					= /*inicio get post*/ $this->request->getPost("txtTransactionMasterID");
 			$objTM	 								= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$oldStatusID 							= $objTM->statusID;
-			
+			$objCompany								= $dataSession["company"];
 			
 			//Valores de tasa de cambio
 			date_default_timezone_set(APP_TIMEZONE); 
@@ -396,33 +396,33 @@ class app_purchase_garantia extends _BaseController {
 							
 							
 							
-							//wg-if($objCompany->type=="globalpro_decline")
-							//wg-{
-							//wg-	$this->core_web_whatsap->sendMessageByWaapi(
-							//wg-		APP_COMPANY, 
-							//wg-		$themplate,
-							//wg-		$numerDestino
-							//wg-		/*"50587125827"*/
-							//wg-	);
-							//wg-}
-							//wg-elseif ($objCompany->type =="globalpro")
-							//wg-{
-                            //wg-    $this->core_web_whatsap->sendMessageByLiveconnect(
-                            //wg-        APP_COMPANY,
-                            //wg-        $themplate,
-                            //wg-        $numerDestino
-							//wg-		/*"50587125827"*/
-                            //wg-    );
-                            //wg-}
-							//wg-else
-							//wg-{
-							//wg-	$this->core_web_whatsap->sendMessageUltramsg(
-							//wg-		APP_COMPANY, 
-							//wg-		$themplate,
-							//wg-		$numerDestino
-							//wg-		/*"50587125827"*/
-							//wg-	);
-							//wg-}
+							if($objCompany->type=="globalpro_decline")
+							{
+								$this->core_web_whatsap->sendMessageByWaapi(
+									APP_COMPANY, 
+									$themplate,
+									$numerDestino
+									/*"50587125827"*/
+								);
+							}
+							elseif ($objCompany->type =="globalpro")
+							{
+                                $this->core_web_whatsap->sendMessageByLiveconnect(
+                                    APP_COMPANY,
+                                    $themplate,
+                                    $numerDestino
+									/*"50587125827"*/ 
+                                );
+                            }
+							else
+							{
+								$this->core_web_whatsap->sendMessageUltramsg(
+									APP_COMPANY, 
+									$themplate,
+									$numerDestino
+									/*"50587125827"*/
+								);
+							}
 							
 						}
 						else 
@@ -477,7 +477,7 @@ class app_purchase_garantia extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}
 		
 	}
@@ -512,6 +512,7 @@ class app_purchase_garantia extends _BaseController {
 			$transactionID 							= $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID,"tb_transaction_master_workshop_garantias",0);
 			$companyID 								= $dataSession["user"]->companyID;
 			$objT 									= $this->Transaction_Model->getByCompanyAndTransaction($dataSession["user"]->companyID,$transactionID);
+			$objCompany								= $dataSession["company"];
 			
 			$objTM["companyID"] 					= $dataSession["user"]->companyID;
 			$objTM["transactionID"] 				= $transactionID;			
@@ -626,33 +627,33 @@ class app_purchase_garantia extends _BaseController {
 							
 							
 							
-							//wg-if($objCompany->type=="globalpro_decline")
-							//wg-{
-							//wg-	$this->core_web_whatsap->sendMessageByWaapi(
-							//wg-		APP_COMPANY, 
-							//wg-		$themplate,
-							//wg-		$numerDestino
-							//wg-		/*"50587125827"*/
-							//wg-	);
-							//wg-}
-							//wg-elseif ($objCompany->type =="globalpro")
-							//wg-{
-                            //wg-    $this->core_web_whatsap->sendMessageByLiveconnect(
-                            //wg-        APP_COMPANY,
-                            //wg-        $themplate,
-                            //wg-        $numerDestino
-							//wg-		/*"50587125827"*/
-                            //wg-    );
-                            //wg-}
-							//wg-else
-							//wg-{
-							//wg-	$this->core_web_whatsap->sendMessageUltramsg(
-							//wg-		APP_COMPANY, 
-							//wg-		$themplate,
-							//wg-		$numerDestino
-							//wg-		/*"50587125827"*/
-							//wg-	);
-							//wg-}
+							if($objCompany->type=="globalpro_decline")
+							{
+								$this->core_web_whatsap->sendMessageByWaapi(
+									APP_COMPANY, 
+									$themplate,
+									$numerDestino
+									/*"50587125827"*/
+								);
+							}
+							elseif ($objCompany->type =="globalpro")
+							{
+                                $this->core_web_whatsap->sendMessageByLiveconnect(
+                                    APP_COMPANY,
+                                    $themplate,
+                                    $numerDestino
+									/*"50587125827"*/
+                                );
+                            }
+							else
+							{
+								$this->core_web_whatsap->sendMessageUltramsg(
+									APP_COMPANY, 
+									$themplate,
+									$numerDestino
+									/*"50587125827"*/
+								);
+							}
 							
 						}
 						else 
