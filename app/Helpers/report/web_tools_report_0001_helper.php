@@ -5775,7 +5775,7 @@ function helper_reporteA4mmTransactionMasterTallerOutputGarantiaGlobalPro(
 							  </tr>
 							  <tr>
 								<td style='text-align:center'>
-								&nbsp;
+								". (new DateTime($objTransactionMastser->statusIDChangeOn))->format('Y-m-d h:i:s A')."
 								</td>
 							  </tr>
 							  <tr>

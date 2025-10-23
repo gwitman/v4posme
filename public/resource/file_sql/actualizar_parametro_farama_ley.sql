@@ -1319,10 +1319,13 @@ WHERE
 	tb_parameter.name = "ACCOUNTING_EXCHANGE_PURCHASE";## ganancia por compra de dolares 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "PROMEDIO" 
+	tb_company_parameter.value = "PROMEDIO COSTO" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "INVENTORY_TYPE_COST";## Tipos de Costo: ULTIMO COSTO; PROMEDIO 
+	tb_parameter.name = "INVENTORY_TYPE_COST";## Tipos de Costo: 
+#PONDERADO COSTO
+#ULTIMO COSTO
+#PROMEDIO COSTO
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
