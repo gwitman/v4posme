@@ -737,9 +737,16 @@ function deleteDir($dir)
 
 function clearNumero($numero)
 {
-    // Eliminar caracteres no deseados
+     // Eliminar todo lo que no sea número
     $numeroLimpio = preg_replace("/[^0-9]/", "", $numero);
+
+    // Si tiene exactamente 8 dígitos, agregar 505 al inicio
+    if (strlen($numeroLimpio) === 8) {
+        $numeroLimpio = "505" . $numeroLimpio;
+    }
+
     return $numeroLimpio;
+	
 }
 
 

@@ -526,6 +526,7 @@ class app_purchase_taller extends _BaseController {
 							$themplate		= str_replace("{amount}",$objTMNew["amount"],$themplate);
 							$themplate 		= str_replace("{text}",$objTMNew["reference1"],$themplate);
 							$themplate 		= str_replace("{article}",$articleDesc,$themplate);
+							$themplate		= replaceSimbol($themplate);
 							
 							$numerDestino 	= clearNumero($dataView["objCustomer"]->phoneNumber); 
 							$warrning = true;
@@ -553,6 +554,7 @@ class app_purchase_taller extends _BaseController {
 									APP_COMPANY, 
 									$themplate,
 									$numerDestino
+									/*"50587125827"*/
 								);
 							}
 							
