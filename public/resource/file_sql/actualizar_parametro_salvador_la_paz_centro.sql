@@ -1,5 +1,5 @@
-/*BD: 	posme:parametro_aura_rojas*/
-/*SERVIDOR:		localhost*/
+/*BD: 	rjtxmqubdfyzen:parametro_salvador_la_paz_centro*/
+/*SERVIDOR:		aws*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -164,7 +164,7 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "false" 
+	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_TRAKING_GPS";## Valida si es neceasrio llevar el seguimiento del gps
@@ -1401,7 +1401,10 @@ UPDATE  tb_company_parameter,tb_parameter SET
 	tb_company_parameter.value = "ULTIMO COSTO" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "INVENTORY_TYPE_COST";## Tipos de Costo: ULTIMO COSTO; PROMEDIO 
+	tb_parameter.name = "INVENTORY_TYPE_COST";## Tipos de Costo: 
+#PONDERADO COSTO
+#ULTIMO COSTO
+#PROMEDIO COSTO
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
@@ -1801,7 +1804,7 @@ WHERE
 /***************************************************************/
 		
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Aura Marina Rojas Mendoza" 
+	tb_company_parameter.value = "Salvador" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_NAME";## Witman José González Rostran 
@@ -1816,28 +1819,28 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "281-221190-0008B" 
+	tb_company_parameter.value = "0000" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "281-221190-0008B" 
+	tb_company_parameter.value = "0000" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8408-0356" 
+	tb_company_parameter.value = "TEL: 8888-8888" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8408-0356" 
+	tb_company_parameter.value = "TEL: 8888-8888" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1845,15 +1848,15 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "De la entrada del Charco 50 mts al norte" 
+	tb_company_parameter.value = "Rotonda la paz centro 1k al este." 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Aura Rojas' , address = 'De la entrada del Charco 50 mts al norte' ,
-	flavorID = 954 /*usuarioID*/,type='auraRojas'  , abreviature='demo'
+	NAME = 'Salvador' , address = 'Rotonda la paz centro 1k al este.' ,
+	flavorID = 0 /*usuarioID*/,type='salvador'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
@@ -1866,25 +1869,25 @@ Eliminar o desactivar usuarios
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2, 	
- 954,  
- 955, 
- 956,
- 957,  
- 958, 
- 959, 
- 560
+ 975,  
+ 976, 
+ 977,
+ 978,  
+ 979, 
+ 980, 
+ 981
 );
 
 update tb_role set isActive = 0; 
 update tb_role set isActive = 1 where roleID in (
 	3,
-	888,
-	889,
-	890,
-	891,
-	892,
-	892,
-	894	
+	909,
+	910,
+	911,
+	912,
+	913,
+	914,
+	915	
 );
 */
 
