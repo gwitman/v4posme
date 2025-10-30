@@ -37,11 +37,12 @@ WHERE
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "557854" 
+	tb_company_parameter.value = "556556" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVENTORY_SEND_SFTP_PEDIDOSYA_MERCHATID"; #Id del comercio de pedidos ya para mandar archivo csv, por sftp
-
+#produccion   	556556
+#prueba		   	557854
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
