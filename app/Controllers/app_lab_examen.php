@@ -202,7 +202,7 @@ class app_lab_examen extends _BaseController
 				$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($objTM["companyID"],$objTM["transactionID"]);
 				$objTM["entityID"]						= /*inicio get post*/ $this->request->getPost("txtCustomerID");
 				$objTM["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");				
-				$objTM["statusIDChangeOn"]				= date("Y-m-d H:m:s");
+				$objTM["statusIDChangeOn"]				= date("Y-m-d H:i:s");
 				$objTM["componentID"] 					= $objComponentTransactionExamenLab->componentID;
 				$objTM["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");//--fin peticion get o post
 				$objTM["sign"] 							= $objT->signInventory;
@@ -248,7 +248,7 @@ class app_lab_examen extends _BaseController
 				$objTM["priorityID"]			= /*inicio get post*/ $this->request->getPost("txtEdadID");//--fin peticion get o post
 				$objTM["areaID"] 				= /*inicio get post*/ $this->request->getPost("txtSexoID");//--fin peticion get o post				
 				$objTM["statusID"] 				= /*inicio get post*/ $this->request->getPost("txtStatusID");
-				$objTM["statusIDChangeOn"]		= date("Y-m-d H:m:s");
+				$objTM["statusIDChangeOn"]		= date("Y-m-d H:i:s");
 				
 				//El Estado solo permite editar el workflow
 				if($statusNewEditableParcial)
