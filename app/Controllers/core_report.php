@@ -121,7 +121,7 @@ class core_report extends _BaseController
 			
 			$isCall = substr($query, 0, 3);    
 			//Es un procedimiento
-			if(stripos($isCall, 'call') !== false)
+			if(stripos(strtoupper($isCall), strtoupper('call')) !== false)
 			{
 				$query   = preg_replace($pattern, "?", $query);					
 				$result  = $this->Bd_Model->executeRenderMultipleNative($query, $params);
@@ -135,8 +135,9 @@ class core_report extends _BaseController
 				}
 
 				// Reemplazar newPost 
-				$query 	 = strtr($query, $newPost);								
-				$result  = $this->Bd_Model->executeRenderMultipleNative($query, $params);
+				$query 	 	= strtr($query, $newPost);						
+				$query 		= str_replace(["\"'", "'\""], "'", $query);
+				$result  	= $this->Bd_Model->executeRenderMultipleNative($query, $params);
 			}
 	
 	
