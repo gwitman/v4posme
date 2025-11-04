@@ -519,8 +519,8 @@ class Customer_Credit_Document_Model extends Model  {
 									ex.targetCurrencyID = 2 and 
 									ex.date = DATE(now()) 
 							where 
-								d.companyID = $companyID  and 
-								usr.userID = $userID  and 
+								d.companyID = $companyID  and /*
+								usr.userID = $userID  and */ 
 								d.isActive = 1 and 				
 								a.isActive = 1 and 
 								wsa.aplicable = 1 and 
