@@ -253,8 +253,8 @@ class Customer_Credit_Amortization_Model extends Model  {
 					tm.isActive = 1 
 					and ccd_status.vinculable= 1
 					and c.isActive= 1
-					and cca.remaining > 0 /*
-					and usr.userID = $userID */ 
+					and cca.remaining > 0 
+					and usr.userID = $userID 
 					and c.companyID = $companyID
 			");
 		

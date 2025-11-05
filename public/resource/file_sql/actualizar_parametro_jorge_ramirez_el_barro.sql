@@ -1833,14 +1833,14 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8980-7162" 
+	tb_company_parameter.value = "8980-7162" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8980-7162" 
+	tb_company_parameter.value = "8980-7162" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1855,7 +1855,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Negocios varios Jorge Ramírez' , address = 'Municipio Larreynaga, Comarca El Barro, del cementerio 300 varas al este 50 varas al norte' ,
+	NAME = 'Negocios varios Jorge Ramírez' , address = 'Del cementerio 300 varas al este 50 varas al norte' ,
 	flavorID = 988 /*usuarioID*/,type='jorgeRamirez'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

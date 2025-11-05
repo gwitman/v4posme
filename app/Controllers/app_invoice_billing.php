@@ -7741,6 +7741,7 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["amount_iva"]							= sprintf("%.2f",$datView["objTM"]->tax1);
 			$datViewArray["amount_discount"]					= sprintf("%.2f",$datView["objTM"]->discount);
 			$datViewArray["amount_total"]						= sprintf("%.2f",$datView["objTM"]->amount);
+			$datViewArray["amount_total_description"]			= helper_GetLetras($datView["objTM"]->amount,$datViewArray["currencySimbol"],"CENTAVOS.");
 			$datViewArray["amount_receipt"]						= sprintf("%.2f",$datView["objTMI"]->receiptAmount);
 			$datViewArray["amount_change"]						= sprintf("%.2f",$datView["objTMI"]->changeAmount);
 			
