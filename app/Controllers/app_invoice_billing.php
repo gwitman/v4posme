@@ -7884,6 +7884,8 @@ class app_invoice_billing extends _BaseController {
 		}
 	}
 	
+	
+	
 	function viewRegisterFormatoPaginaNormal80mmOpcion1ElektroClima(){
 		try{ 
 			

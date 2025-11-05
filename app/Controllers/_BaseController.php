@@ -231,6 +231,7 @@ abstract class _BaseController extends Controller
 		'customization/web_tools_customizationview_taller_nys_helper',
 		'customization/web_tools_customizationview_posme_helper',
 		'customization/web_tools_customizationview_fidlocal_helper',
+		'customization/web_tools_customizationview_jorge_ramirez_helper',
 		
 		
     ];

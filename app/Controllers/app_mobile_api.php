@@ -388,6 +388,9 @@ class app_mobile_api extends _BaseController
 		
 			
             //Obtener lista de amortizaciones
+			if($objCompany->type == "tu_futuro")
+			$objListAmortization 	= $this->Customer_Credit_Amortization_Model->get_rowShareLateByCompanyToMobileTuFuturo($companyID, $userID );
+			else 
             $objListAmortization 	= $this->Customer_Credit_Amortization_Model->get_rowShareLateByCompanyToMobile($companyID, $userID );
 
 			//Obtener lista de transacciones arribas 
