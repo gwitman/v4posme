@@ -132,14 +132,19 @@ class Customer_Credit_Document_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
+   
    function get_rowByDocument($companyID,$entityID,$documentNumber){
 		$db 	= db_connect();
 		$builder	= $db->table("tb_customer_credit_document");
 	    $sql = "";
 		$sql = sprintf("select 
-							customerCreditDocumentID, companyID, entityID, customerCreditLineID,documentNumber, dateOn, 
-							amount, interes, term,exchangeRate, reference1, reference2, reference3, statusID,
-							isActive,balance,i.currencyID,i.reportSinRiesgo,
+							i.customerCreditDocumentID, i.companyID, i.entityID, 
+							i.customerCreditLineID,i.documentNumber, i.dateOn, 
+							amount, interes, term,exchangeRate, i.reference1, 
+							i.reference2, i.reference3, i.statusID,
+							i.isActive,i.balance,i.currencyID,
+							i.reportSinRiesgo,
+							period.`name`  as periodName,
 							(
 								select max(tccda.dateApply) 
 								from 
@@ -148,9 +153,25 @@ class Customer_Credit_Document_Model extends Model  {
 										tccd.customerCreditDocumentID = tccda.customerCreditDocumentID 
 								where 
 									tccd.customerCreditDocumentID = i.customerCreditDocumentID
-							)  as dateFinish
+							)  as dateFinish,
+							(
+								select min(tccda.dateApply) 
+								from 
+									tb_customer_credit_document tccd 
+									inner join tb_customer_credit_amoritization tccda on 
+										tccd.customerCreditDocumentID = tccda.customerCreditDocumentID 
+								where 
+									tccd.customerCreditDocumentID = i.customerCreditDocumentID
+							)  as dateStart 
 					  ");
-		$sql = $sql.sprintf(" from tb_customer_credit_document i");		
+		$sql = $sql.sprintf(" from 
+								tb_customer_credit_document i");		
+		$sql = $sql.sprintf("
+								inner join tb_catalog_item period on 
+									period.catalogItemID   = i.periodPay 
+
+							");
+							
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
 		$sql = $sql.sprintf(" and i.entityID = $entityID");
 		$sql = $sql.sprintf(" and i.documentNumber = '$documentNumber' ");

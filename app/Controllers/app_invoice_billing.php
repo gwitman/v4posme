@@ -13455,6 +13455,7 @@ class app_invoice_billing extends _BaseController {
 			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+			
 			$datView["objTC"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$datView["objTM"]->transactionCausalID);
 			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d h:i A");
 			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
@@ -13518,6 +13519,34 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["amount_receipt"]						= sprintf("%.2f",$datView["objTMI"]->receiptAmount);
 			$datViewArray["amount_change"]						= sprintf("%.2f",$datView["objTMI"]->changeAmount);
 			
+			
+			$datView["objCCD"]									= null;
+			$datView["objCCDAmortization"]						= null;
+			$datViewArray["amount_sumary_interes"]				= "0.00";
+			$datViewArray["amount_count_share"]					= "0";
+			$datViewArray["amount_avg_share"]					= "0.00";
+			$datViewArray["amount_sumary_interes_y_capital"]	= "0.00";
+			$datViewArray["minShareDate"]						= "0000-00-00";
+			$datViewArray["maxShareDate"]						= "0000-00-00";
+			$datViewArray["sharePeriod"]						= "";
+			
+			$datView["objCCD"]						= $this->Customer_Credit_Document_Model->get_rowByDocument($companyID,$datView["objTM"]->entityID,$datView["objTM"]->transactionNumber);						
+			if($datView["objCCD"])
+			{
+				$datView["objCCDAmortization"]					= $this->Customer_Credit_Amortization_Model->get_rowByDocument($datView["objCCD"]->customerCreditDocumentID);			
+				$datViewArray["amount_sumary_interes"]			= array_sum(array_map(fn($item) => $item->interest, $datView["objCCDAmortization"]));
+				$datViewArray["amount_sumary_interes_y_capital"]= array_sum(array_map(fn($item) => $item->share, $datView["objCCDAmortization"]));				
+				$datViewArray["amount_count_share"]				= count($datView["objCCDAmortization"]);
+				$datViewArray["amount_avg_share"]				= $datView["objCCDAmortization"][0]->share;
+				$datViewArray["minShareDate"]					= $datView["objCCD"]->dateStart;
+				$datViewArray["maxShareDate"]					= $datView["objCCD"]->dateFinish;
+				$datViewArray["sharePeriod"]					= $datView["objCCD"]->periodName;
+			
+				$datViewArray["amount_sumary_interes"]			= sprintf("%.2f",$datViewArray["amount_sumary_interes"]);
+				$datViewArray["amount_count_share"]				= sprintf("%.0f",$datViewArray["amount_count_share"]);
+				$datViewArray["amount_avg_share"]				= sprintf("%.2f",$datViewArray["amount_avg_share"]);
+				$datViewArray["amount_sumary_interes_y_capital"]= sprintf("%.2f",$datViewArray["amount_sumary_interes_y_capital"]);
+			}
 			
 			
 			//agregar item
