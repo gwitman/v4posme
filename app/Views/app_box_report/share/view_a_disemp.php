@@ -341,7 +341,11 @@
 		
 		<?php 
 		if($resultadoVentaCreditoCordoba["table"] !== 0)
-		echo $resultadoVentaCreditoCordoba["table"];
+		{
+			if($resultadoVentaCreditoCordoba["configColumn"][8]["TotalValor"] > 0 )
+			echo $resultadoVentaCreditoCordoba["table"];
+		}
+		
 		?>
 		<br/>
 

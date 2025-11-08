@@ -394,7 +394,7 @@ function helper_reporteGeneralCreateTable($objDetail,$configColumn,$widht,$titul
 		$configColumn[$key]["Colspan"] 					= array_key_exists("Colspan",$value) ? $value["Colspan"] : "1" ;
 		$configColumn[$key]["Style"] 					= array_key_exists("Style",$value) ? $value["Style"] : "" ;		
 		$configColumn[$key]["Formato"] 					= array_key_exists("Formato",$value) ? $value["Formato"] : "" ;
-		$configColumn[$key]["Total"] 					= array_key_exists("Total",$value) ? $value["Total"] : False ;
+		$configColumn[$key]["Total"] 					= array_key_exists("Total",$value) ? $value["Total"] : False ;		
 		$configColumn[$key]["Alineacion"] 				= array_key_exists("Alineacion",$value) ? $value["Alineacion"] : "Left" ;
 		$configColumn[$key]["TotalValor"] 				= array_key_exists("TotalValor",$value) ? $value["TotalValor"] : 0 ;
 		$configColumn[$key]["CantidadRegistro"]			= array_key_exists("CantidadRegistro",$value) ? $value["CantidadRegistro"] : 0 ;

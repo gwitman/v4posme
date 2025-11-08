@@ -36,13 +36,14 @@
 		$configColumn["8"]["Titulo"] 		= "Costo Total";
 		$configColumn["9"]["Titulo"] 		= "Precio Total";
 		$configColumn["10"]["Titulo"] 		= "Utilidad";
-		$configColumn["11"]["Titulo"] 		= "Codigo Producto";
-		$configColumn["12"]["Titulo"] 		= "Producto";
-		$configColumn["13"]["Titulo"] 		= "Categoria";
-		$configColumn["14"]["Titulo"] 		= "Vendedor";
-		$configColumn["15"]["Titulo"] 		= "IVA";
-		$configColumn["16"]["Titulo"] 		= "Precio Con Iva";
-		$configColumn["17"]["Titulo"] 		= "Comision";
+		$configColumn["11"]["Titulo"] 		= "Utilidad %";		
+		$configColumn["12"]["Titulo"] 		= "Codigo Producto";
+		$configColumn["13"]["Titulo"] 		= "Producto";
+		$configColumn["14"]["Titulo"] 		= "Categoria";
+		$configColumn["15"]["Titulo"] 		= "Vendedor";
+		$configColumn["16"]["Titulo"] 		= "IVA";
+		$configColumn["17"]["Titulo"] 		= "Precio Con Iva";
+		$configColumn["18"]["Titulo"] 		= "Comision";
 
 		$configColumn["0"]["FiledSouce"] 		= "transactionNumber";		
 		$configColumn["1"]["FiledSouce"] 		= "tipo";		
@@ -55,13 +56,14 @@
 		$configColumn["8"]["FiledSouce"] 		= "cost";
 		$configColumn["9"]["FiledSouce"] 		= "amount";
 		$configColumn["10"]["FiledSouce"] 		= "utilidad";
-		$configColumn["11"]["FiledSouce"] 		= "itemNumber";
-		$configColumn["12"]["FiledSouce"] 		= "itemName";	
-		$configColumn["13"]["FiledSouce"] 		= "nameCategory";
-		$configColumn["14"]["FiledSouce"] 		= "employerName";
-		$configColumn["15"]["FiledSouce"] 		= "ivaTotal";
-		$configColumn["16"]["FiledSouce"] 		= "amountConIva";
-		$configColumn["17"]["FiledSouce"] 		= "amountCommision";
+		$configColumn["11"]["FiledSouce"] 		= "utilidad_porcentual";
+		$configColumn["12"]["FiledSouce"] 		= "itemNumber";
+		$configColumn["13"]["FiledSouce"] 		= "itemName";	
+		$configColumn["14"]["FiledSouce"] 		= "nameCategory";
+		$configColumn["15"]["FiledSouce"] 		= "employerName";
+		$configColumn["16"]["FiledSouce"] 		= "ivaTotal";
+		$configColumn["17"]["FiledSouce"] 		= "amountConIva";
+		$configColumn["18"]["FiledSouce"] 		= "amountCommision";
 		
 		$configColumn["0"]["Formato"] 		= "";		
 		$configColumn["1"]["Formato"] 		= "";		
@@ -74,13 +76,14 @@
 		$configColumn["8"]["Formato"] 		= "Number";
 		$configColumn["9"]["Formato"] 		= "Number";
 		$configColumn["10"]["Formato"] 		= "Number";
-		$configColumn["11"]["Formato"] 		= "";
-		$configColumn["12"]["Formato"] 		= "";	
+		$configColumn["11"]["Formato"] 		= "Number";
+		$configColumn["12"]["Formato"] 		= "";
 		$configColumn["13"]["Formato"] 		= "";	
-		$configColumn["14"]["Formato"] 		= "";
-		$configColumn["15"]["Formato"] 		= "Number";
+		$configColumn["14"]["Formato"] 		= "";	
+		$configColumn["15"]["Formato"] 		= "";
 		$configColumn["16"]["Formato"] 		= "Number";
 		$configColumn["17"]["Formato"] 		= "Number";
+		$configColumn["18"]["Formato"] 		= "Number";
 		
 		$configColumn["0"]["Width"] 		= "80px";		
 		$configColumn["1"]["Width"] 		= "80px";		
@@ -90,16 +93,17 @@
 		$configColumn["5"]["Width"] 		= "100px";
 		$configColumn["6"]["Width"] 		= "100px";
 		$configColumn["7"]["Width"] 		= "100px";
-		$configColumn["8"]["Width"] 		= "100px";
-		$configColumn["9"]["Width"] 		= "100px";
-		$configColumn["10"]["Width"] 		= "100px";
-		$configColumn["11"]["Width"] 		= "100px";
-		$configColumn["12"]["Width"] 		= "220px";	
+		$configColumn["8"]["Width"] 		= "140px";
+		$configColumn["9"]["Width"] 		= "140px";
+		$configColumn["10"]["Width"] 		= "140px";
+		$configColumn["11"]["Width"] 		= "140px";
+		$configColumn["12"]["Width"] 		= "100px";
 		$configColumn["13"]["Width"] 		= "220px";	
-		$configColumn["14"]["Width"] 		= "250px";
-		$configColumn["15"]["Width"] 		= "100px";
+		$configColumn["14"]["Width"] 		= "220px";	
+		$configColumn["15"]["Width"] 		= "250px";
 		$configColumn["16"]["Width"] 		= "100px";
 		$configColumn["17"]["Width"] 		= "100px";
+		$configColumn["18"]["Width"] 		= "100px";
 		
 		$configColumn["0"]["Total"] 		= False;		
 		$configColumn["1"]["Total"] 		= False;		
@@ -113,12 +117,16 @@
 		$configColumn["9"]["Total"] 		= True;
 		$configColumn["10"]["Total"] 		= True;
 		$configColumn["11"]["Total"] 		= False;
-		$configColumn["12"]["Total"] 		= False;	
+		
+		$configColumn["12"]["Total"] 		= False;
 		$configColumn["13"]["Total"] 		= False;	
-		$configColumn["14"]["Total"] 		= False;
-		$configColumn["15"]["Total"] 		= True;
+		$configColumn["14"]["Total"] 		= False;	
+		$configColumn["15"]["Total"] 		= False;
 		$configColumn["16"]["Total"] 		= True;
 		$configColumn["17"]["Total"] 		= True;
+		$configColumn["18"]["Total"] 		= True;
+		
+		$configColumn["11"]["Promedio"] 	= True;
 		
 		$resultado 	= helper_reporteGeneralCreateTable($objDetail,$configColumn,'0px',NULL,NULL);
 		?>

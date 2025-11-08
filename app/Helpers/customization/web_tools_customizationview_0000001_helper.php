@@ -78,17 +78,13 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
 		strtolower('default_app_inventory_item_label_price_CREDITO POR MAYOR')			 						=> "CREDITO POR MAYOR",
 		strtolower('default_app_inventory_item_label_price_ESPECIAL')			 								=> "ESPECIAL",						
 		strtolower('default_app_inventory_item_Conceptos')			 											=> "Conceptos",
-		strtolower('default_app_inventory_item_labelBarCode')													=> "Barra",
-		strtolower('default_app_inventory_item_divTxtPresentacionUM') 											=> "",
-		strtolower('default_app_inventory_item_divTxtPresentacion') 			 								=> "",
-		strtolower('default_app_inventory_item_divTxtUM') 			 											=> "",
+		strtolower('default_app_inventory_item_labelBarCode')													=> "Barra",		
 		strtolower('default_app_inventory_item_divTxtCapacidad') 			 									=> "",
 		strtolower('default_app_inventory_item_divTxtCantidadMinima') 											=> "",
 		strtolower('default_app_inventory_item_divTxtCantidadMaxima') 											=> "",
 		strtolower('default_app_inventory_item_divTxtSKUCompras') 			 									=> "",
 		strtolower('default_app_inventory_item_divTxtSKUProduccion') 											=> "",
-		strtolower('default_app_inventory_item_divTxtEstado') 			 										=> "",
-		strtolower('default_app_inventory_item_divTxtFamilia') 			 										=> "",
+		strtolower('default_app_inventory_item_divTxtEstado') 			 										=> "",		
 		strtolower('default_app_inventory_item_divTxtBarCode') 													=> "",
 		strtolower('default_app_inventory_item_divTxtPerecedero') 			 									=> "",	
 		strtolower('default_app_inventory_item_divTraslateElementTablePrecio') 									=> "",				
@@ -1323,10 +1319,13 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
 			
 			//si el key no existe, buscar el key para la empresa por defecto
 			$key = strtolower("default")."_".strtolower($key_controller)."_".strtolower($key_element);
+			
+				
+			
 			if(!array_key_exists( $key, $divs) )
 			{	
-				return $default_value;
-				//return getBahavioDB($type_company, $key_controller, $key_element, $default_value);
+				//return $default_value;
+				return getBahavioDB($type_company, $key_controller, $key_element, $default_value);
 			}
 			else 
 			{
