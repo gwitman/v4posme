@@ -52,5 +52,50 @@ class Menu_Element_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
+   function get_rowByUserID($companyID,$userID)
+   {
+	   $db 	= db_connect(); 	
+		$sql = "";
+		$sql = sprintf("
+				select 
+					me.menuElementID,
+					me.display,
+					me.address,
+					me.icon,
+					me.typeMenuElementID,
+					up.selected,
+					up.inserted,
+					up.deleted,
+					up.edited 
+				from 
+					tb_element e  
+					inner join tb_menu_element me on 
+						me.elementID = e.elementID 
+					inner join tb_user_permission up on 
+						up.elementID = me.elementID 
+					inner join tb_role r on 
+						r.roleID = up.roleID 
+					inner join tb_membership mem on 
+						mem.roleID = r.roleID 
+					inner join tb_user usr on 
+						usr.userID = mem.userID 
+				where 
+					me.isActive = 1 and 
+					me.typeMenuElementID = 5 /*menu element left*/  and 
+					r.isActive = 1 and 
+					usr.isActive = 1 and 
+					usr.companyID = $companyID and 
+					usr.userID = $userID 
+					/*role , usuario */
+				order by 
+					me.orden 
+					
+					
+
+		");
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
 }
 ?>

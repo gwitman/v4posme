@@ -370,6 +370,10 @@ class app_mobile_api extends _BaseController
             $userID 	= $objUser["user"]->userID;
             $objCompany = $objUser["company"];
 
+			//Obtener listado de menu
+			$objListMenuElement  = $this->Menu_Element_Model->get_rowByUserID($companyID,$userID);
+			
+			
             //Obtener listado de productos
             $objWarehouse 	= $this->Userwarehouse_Model->getRowByUserIDAndFacturable($companyID, $userID);			
             $objWarehouseID = array_map(fn($warehouseItem) => $warehouseItem->warehouseID, $objWarehouse);
@@ -402,6 +406,7 @@ class app_mobile_api extends _BaseController
                 'error' => false,
                 'message' => SUCCESS,
                 'ObjCompany' => $objCompany,
+				'ListMenuElement' => $objListMenuElement,
                 'ListItem' => $objListItem,
                 'ListCustomer' => $objListCustomer,
                 'ListParameter' => $objListParameter,

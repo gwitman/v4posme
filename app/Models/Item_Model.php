@@ -337,11 +337,11 @@ class Item_Model extends Model  {
 						select 
 							sum(iws.quantity)
 						from 
-							tb_item is
+							tb_item isx
 							inner join tb_item_warehouse iws on 
-								iws.itemID = is.itemID 
+								iws.itemID = isx.itemID 
 						where 
-							is.itemID = i.itemID and 
+							isx.itemID = i.itemID and 
 							iws.warehouseID in (".implode(",", $listWarehouseID)." ) 
 						
 					),0) as quantity , 
@@ -359,6 +359,7 @@ class Item_Model extends Model  {
 				order by 
 					i.barCode
 			");
+		
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
