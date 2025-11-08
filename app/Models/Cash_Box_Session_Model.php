@@ -14,7 +14,7 @@ class Cash_Box_Session_Model extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = false;
 
-    protected $allowedFields = ['cashBoxSessionID', 'companyID','branchID','cashBoxID','startOn','endOn','statusID','isActive','userID','transactionMasterIDOpen','transactionMasterIDClosed'];
+    protected $allowedFields = ['cashBoxSessionID', 'companyID','branchID','cashBoxID','startOn','endOn','statusID','isActive','userID','transactionMasterIDOpen','transactionMasterIDClosed','currencyID'];
 
     // Dates
     protected $useTimestamps = false;
@@ -41,7 +41,7 @@ class Cash_Box_Session_Model extends Model
     protected $afterDelete    = [];
 	
 	
-	public function get_rowByCashBoxOpenBy_UserID($companyID,$userID,$date)
+	public function get_rowByCashBoxOpenBy_UserID($companyID,$userID,$date,$currencyID)
 	{
 		$db = db_connect();
 
@@ -80,7 +80,7 @@ class Cash_Box_Session_Model extends Model
 
 		return $db->query($sql, [$companyID, $userID, $date, $date])->getResult();
 	}
-	public function get_rowByCashBoxOpenBy_CashBoxIDAnd_Date($companyID, $cashBoxID, $date)
+	public function get_rowByCashBoxOpenBy_CashBoxIDAnd_Date($companyID, $cashBoxID, $date,$currencyID)
 	{
 		$db = db_connect();
 

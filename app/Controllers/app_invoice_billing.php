@@ -961,7 +961,7 @@ class app_invoice_billing extends _BaseController {
 			
 			//Validar si la caja esta abierta
 			if(
-				!$this->core_web_authentication->isCashBoxOpen($companyID,$userID,$objTMNew["transactionOn"])
+				!$this->core_web_authentication->isCashBoxOpen($companyID,$userID,$objTMNew["transactionOn"],$objTMNew["currencyID"])
 				&&
 				$objParameterINVOICE_BILLING_VALID_CASH_OPENING == "true"
 			)

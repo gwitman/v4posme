@@ -271,7 +271,7 @@ class core_web_authentication {
 		
 		return false;			
    }
-   function isCashBoxOpen($companyID, $userID, $dateTimeOn)
+   function isCashBoxOpen($companyID, $userID, $dateTimeOn,$currencyID)
    {
 	   // Modelos necesarios
 	   $Cash_Box_User_Model    = new Cash_Box_User_Model();
@@ -288,7 +288,8 @@ class core_web_authentication {
 	   $result = $Cash_Box_Session_Model->get_rowByCashBoxOpenBy_CashBoxIDAnd_Date(
 		   $companyID,
 		   $objCashBoxUser[0]->cashBoxID,
-		   $dateTimeOn
+		   $dateTimeOn,
+		   $currencyID
 	   );
    
 	   // Validar resultado

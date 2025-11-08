@@ -423,10 +423,10 @@ class app_box_closedcash extends _BaseController
 
 		
 			//Obtener la sesion de caja abierta por mi			
-			$objCashBoxSessionMe 	= $this->Cash_Box_Session_Model->get_rowByCashBoxOpenBy_UserID($companyID,$userID,$objTMNew["transactionOn"]);
+			$objCashBoxSessionMe 	= $this->Cash_Box_Session_Model->get_rowByCashBoxOpenBy_UserID($companyID,$userID,$objTMNew["transactionOn"],$objTMNew["currencyID"]);
 
 			//Obtener otros usuarios que tienen abierta la caja
-			$objCashBoxSessionNotMe = $this->Cash_Box_Session_Model->get_rowByCashBoxOpenBy_CashBoxIDAnd_Date($companyID,$cashBoxID,$objTMNew["transactionOn"]);
+			$objCashBoxSessionNotMe = $this->Cash_Box_Session_Model->get_rowByCashBoxOpenBy_CashBoxIDAnd_Date($companyID,$cashBoxID,$objTMNew["transactionOn"],$objTMNew["currencyID"]);
 			
 			//Obtener el nombre del Usuario que tiene abierta la caja.
 			$cashBoxSessionUserID = $objCashBoxSessionNotMe ?
