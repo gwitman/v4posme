@@ -88,8 +88,8 @@ class app_mobile_api extends _BaseController
             //$data 					= json_decode(urldecode($objItemsJson), false);
 			
 			
-			//$objItemsJson 				= '{  "ObjCustomers" : [ {    "CustomerId" : 154,    "companyID" : 2,    "branchID" : 2,    "entityID" : 13,    "customerNumber" : "CLI00000000",    "identification" : "000-000000-0000A",    "firstName" : "CLIENTE GENERICO",    "lastName" : "DEFAULT",    "balance" : 0.0,    "currencyID" : 1,    "currencyName" : "C$",    "customerCreditLineID" : 359,    "location" : "PANCASAN 2 Mob",    "phone" : "78945612"  }, {    "CustomerId" : 155,    "companyID" : 2,    "branchID" : 2,    "entityID" : -1,    "customerNumber" : "-3",    "identification" : "000-000000-0000G",    "firstName" : "Test mobil",    "lastName" : "Test mobil",    "balance" : 0.0,    "currencyID" : 1,    "currencyName" : "Cordoba",    "customerCreditLineID" : -2,    "location" : "ciudad sandino",    "phone" : "78945612"  } ],  "ObjItems" : [ ],  "ObjTransactionMaster" : [ ],  "ObjTransactionMasterDetail" : [ ]}';		
-            //$data 						= json_decode($objItemsJson, false);
+			//$objItemsJson 			= '{  "ObjCustomers" : [ {    "CustomerId" : 154,    "companyID" : 2,    "branchID" : 2,    "entityID" : 13,    "customerNumber" : "CLI00000000",    "identification" : "000-000000-0000A",    "firstName" : "CLIENTE GENERICO",    "lastName" : "DEFAULT",    "balance" : 0.0,    "currencyID" : 1,    "currencyName" : "C$",    "customerCreditLineID" : 359,    "location" : "PANCASAN 2 Mob",    "phone" : "78945612"  }, {    "CustomerId" : 155,    "companyID" : 2,    "branchID" : 2,    "entityID" : -1,    "customerNumber" : "-3",    "identification" : "000-000000-0000G",    "firstName" : "Test mobil",    "lastName" : "Test mobil",    "balance" : 0.0,    "currencyID" : 1,    "currencyName" : "Cordoba",    "customerCreditLineID" : -2,    "location" : "ciudad sandino",    "phone" : "78945612"  } ],  "ObjItems" : [ ],  "ObjTransactionMaster" : [ ],  "ObjTransactionMasterDetail" : [ ]}';		
+            //$data 					= json_decode($objItemsJson, false);
 			
 			
 			$objItemsJson 				= $this->request->getPost("txtData");			
@@ -312,6 +312,8 @@ class app_mobile_api extends _BaseController
                 }
             }
 			log_message("error",print_r("0009",true));
+			
+			
             //SINCRONIZACION ABONOS
             if(count($transactionMasters)>0){
                 $shareController = new app_box_share();
