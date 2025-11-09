@@ -88,7 +88,7 @@ class app_mobile_api extends _BaseController
             //$data 					= json_decode(urldecode($objItemsJson), false);
 			
 			
-			//$objItemsJson 			= '{  "ObjCustomers" : [ {    "CustomerId" : 154,    "companyID" : 2,    "branchID" : 2,    "entityID" : 13,    "customerNumber" : "CLI00000000",    "identification" : "000-000000-0000A",    "firstName" : "CLIENTE GENERICO",    "lastName" : "DEFAULT",    "balance" : 0.0,    "currencyID" : 1,    "currencyName" : "C$",    "customerCreditLineID" : 359,    "location" : "PANCASAN 2 Mob",    "phone" : "78945612"  }, {    "CustomerId" : 155,    "companyID" : 2,    "branchID" : 2,    "entityID" : -1,    "customerNumber" : "-3",    "identification" : "000-000000-0000G",    "firstName" : "Test mobil",    "lastName" : "Test mobil",    "balance" : 0.0,    "currencyID" : 1,    "currencyName" : "Cordoba",    "customerCreditLineID" : -2,    "location" : "ciudad sandino",    "phone" : "78945612"  } ],  "ObjItems" : [ ],  "ObjTransactionMaster" : [ ],  "ObjTransactionMasterDetail" : [ ]}';		
+			//$objItemsJson 			= '{"ObjCustomers":[],"ObjItems":[],"ObjTransactionMaster":[{"TransactionId":19,"TypePaymentId":3,"TransactionMasterId":4,"TransactionNumber":"FAC-0004","EntityId":13,"TransactionOn":"2025-11-08T17:35:01.5361105","TransactionOn2":"0001-01-01T00:00:00","NextVisit":"2025-11-08T00:00:00","Plazo":1,"FixedExpenses":0.0,"PeriodPay":190,"EntitySecondaryId":"990","SubAmount":300.0,"Discount":0.0,"Taxi1":0.0,"Amount":300.0,"CustomerCreditLineId":359,"TransactionCausalId":21,"ExchangeRate":0.0,"CurrencyId":1,"Comment":"Sin Comentarios","Reference1":"","Reference2":"","Reference3":"","CustomerIdentification":"000-000000-0000A","Reference4":null,"CuotasPendientes":0}],"ObjTransactionMasterDetail":[{"TransactionMasterDetailId":4,"TransactionMasterId":4,"Componentid":33,"ComponentItemId":29139,"Quantity":2.0,"UnitaryCost":150.0,"UnitaryPrice":150.0,"SubAmount":300.0,"Discount":0.0,"Tax1":0.0,"Amount":300.0,"ItemBarCode":"1","Reference1":"","Reference2":""}]}';		
             //$data 					= json_decode($objItemsJson, false);
 			
 			
@@ -305,7 +305,7 @@ class app_mobile_api extends _BaseController
 					}
 						
 					//buscar el detalle
-                    $resultado = array_filter($transactionMasterDetails, function($tm) use ($transactionMasterId) { return $tm->TransactionMasterId == $transactionMasterId; });
+                    $resultado = array_filter($transactionMasterDetails, function($tm) use ($transactionMasterId) { return $tm->TransactionMasterId == $transactionMasterId; });					
                     $billingController->insertElementMobil($dataSession,$objTm, $resultado);
 					log_message("error",print_r("0008.005",true));
 					$idexCount++;

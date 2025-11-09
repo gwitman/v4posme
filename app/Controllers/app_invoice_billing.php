@@ -2622,8 +2622,8 @@ class app_invoice_billing extends _BaseController {
 					$objTMD["componentID"]					= $objComponentItem->componentID;
 					$objTMD["componentItemID"] 				= $itemID;
 					$objTMD["quantity"] 					= $quantity;	//cantidad
-					$objTMD["skuQuantity"] 					= $quantity;						//cantidad
-					$objTMD["skuQuantityBySku"]				= 1;				//cantidad
+					$objTMD["skuQuantity"] 					= 1;			//cantidad
+					$objTMD["skuQuantityBySku"]				= $quantity;	//cantidad
 
 					$objTMD["unitaryCost"]					= $objItem->cost;					//costo
 					$objTMD["cost"] 						= $quantity  * $objItem->cost;		//cantidad por costo
@@ -2633,6 +2633,7 @@ class app_invoice_billing extends _BaseController {
 					$objTMD["amount"] 						= $quantity * $unitaryAmount;		//precio de lista con inpuesto por cantidad
 					$objTMD["tax1"]							= $tax1;							//impuesto de lista
 					$objTMD["tax2"]							= $tax2; 							//impusto de servicio
+					$objTMD["tax3"]							= 0;
 
 					$objTMD["discount"]						= 0;					
 					$objTMD["promotionID"] 					= 0;
@@ -2657,7 +2658,7 @@ class app_invoice_billing extends _BaseController {
 					$objTMD["skuCatalogItemID"] 			= $objParameterUnitDefault;
 					$objTMD["skuFormatoDescription"] 		= 'UNIDAD';
 					$objTMD["amountCommision"] 				= $price * $comisionPorcentage * $quantity ;
-					$objTMD["typePriceID"]					= 0 /*publico*/;
+					$objTMD["typePriceID"]					= 154 /*publico*/;
 
 					$tax1Total								= $tax1Total + $tax1;
 					$tax2Total								= $tax2Total + $tax2;
