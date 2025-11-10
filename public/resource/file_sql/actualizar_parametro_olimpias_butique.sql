@@ -1,4 +1,6 @@
-/*BD: 	posme:olimpias_butique*/
+/*BD: 	xqjtzlnrbvefuma:olimpias_butique*/
+/*SERVIDOR:		siteground*/
+
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
