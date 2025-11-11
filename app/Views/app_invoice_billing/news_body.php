@@ -1360,7 +1360,7 @@ echo helper_getHtmlOfPageLanding();
 				</br>
 				<button type="button" class="btn btn-flat btn-block btnCerrarModalOpcionesImpresion " data-dismiss="modal" id="btnCloseModalOpcionesImpresion" >Cerrar</button>
 				
-				<a href="javascript:void(0);" class="btn hidden btn-flat btn-block btnAceptarModalOpcionesImpresion" id="btnAceptarDialogPrinterV2AceptarTabla">Tabla</a>
+				<a href="javascript:void(0);" class="btn hidden btn-flat btn-block btnAceptarModalOpcionesImpresion" id="btnAceptarDialogPrinterV2AceptarTabla"><?php echo getBehavio($company->type,"app_invoice_billing","labelPrinterTabla","Tabla"); ?></a>
 				
 				<a href="javascript:void(0);" class="btn btn-flat btn-block btnAceptarModalOpcionesImpresion" id="btnAceptarDialogPrinterV2AceptarDocument"><?php echo getBehavio($company->type,"app_invoice_billing","labelPrinterPreview","Preview"); ?></a>
 				
@@ -1368,7 +1368,7 @@ echo helper_getHtmlOfPageLanding();
 				
 				<a href="javascript:void(0);" class="btn btn-flat btn-block btnAceptarModalOpcionesImpresion <?php echo getBehavio($company->type,"app_invoice_billing","divOpcionViewA4White","hidden"); ?> " id="btnAceptarDialogPrinterV2AceptarDocumentA4White"><?php echo getBehavio($company->type,"app_invoice_billing","labelPrinterPreviewA4White","Preview A4 Blanco"); ?></a>
 				
-				<a href="javascript:void(0);" class="btn hidden btn-flat btn-block btnAceptarModalOpcionesImpresion" id="btnAceptarDialogPrinterV2AceptarDirect">Directa</a>
+				<a href="javascript:void(0);" class="btn hidden btn-flat btn-block btnAceptarModalOpcionesImpresion" id="btnAceptarDialogPrinterV2AceptarDirect"><?php echo getBehavio($company->type,"app_invoice_billing","labelPrinterDirect","Directa"); ?></a>
 				</br>
 			</div>
 			<?php

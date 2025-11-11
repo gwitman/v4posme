@@ -39,6 +39,7 @@
 	var varParameterScrollDelModalDeSeleccionProducto	= '<?php echo $objParameterScrollDelModalDeSeleccionProducto; ?>';
 	var varParameterINVOICE_BILLING_SELECTITEM			= '<?php echo $objParameterINVOICE_BILLING_SELECTITEM; ?>';
     var varUrlPrinter									= '<?php echo $urlPrinterDocument; ?>';
+	var varUrlPrinterPrinterDirect						= '<?php echo $urlPrinterDocumentDirect; ?>';
 
     var varParameterInvoiceBillingPrinterDirectBarUrl		= '<?php echo $objParameterINVOICE_BILLING_PRINTER_DIRECT_URL_BAR; ?>';
     var varTransactionCausalID								= 0;
@@ -1169,7 +1170,7 @@
 		var segundo 	= String(ahora.getSeconds()).padStart(2, '0');
 		var fechaHora 	= `${año}${mes}${dia}${hora}${minuto}${segundo}`;
 		
-		window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/2/transactionID/19/transactionMasterID/"+$("#txtTransactionMasterID").val()+"/direct/true/"+fechaHora, '_blank');
+		window.open("<?php echo base_url(); ?>/"+varUrlPrinterPrinterDirect+"/companyID/2/transactionID/19/transactionMasterID/"+$("#txtTransactionMasterID").val()+"/direct/true/"+fechaHora, '_blank');
 		cerrarModal('ModalCargandoDatos');
 		cerrarModal("ModalOpcionesImpresion");
 

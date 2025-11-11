@@ -1314,14 +1314,13 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
 	else 
 	{		
 		$key = strtolower($type_company)."_".strtolower($key_controller)."_".strtolower($key_element);
+		
+			
 		if(!array_key_exists( $key, $divs) )
 		{
 			
 			//si el key no existe, buscar el key para la empresa por defecto
 			$key = strtolower("default")."_".strtolower($key_controller)."_".strtolower($key_element);
-			
-				
-			
 			if(!array_key_exists( $key, $divs) )
 			{	
 				//return $default_value;
