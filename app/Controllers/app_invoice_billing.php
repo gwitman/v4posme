@@ -8122,12 +8122,31 @@ class app_invoice_billing extends _BaseController {
 	
 	function viewRegisterFormatoPaginaNormal80mmOpcion3DB(){
 		try{ 
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+						$permited = false;
+						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						
+						if(!$permited)
+						throw new \Exception(NOT_ACCESS_CONTROL);
+						
+							
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						if ($resultPermission 	== PERMISSION_NONE)
+						throw new \Exception(NOT_ALL_EDIT);		
+			}	 
 			
 			
 			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri			
 			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri				
-			$companyID 					= APP_COMPANY;	
-			
+			$companyID 					= $dataSession["user"]->companyID;		
+			$branchID 					= $dataSession["user"]->branchID;		
+			$roleID 					= $dataSession["role"]->roleID;		
 			
 			
 			//Get Component
@@ -8143,6 +8162,7 @@ class app_invoice_billing extends _BaseController {
 			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+			
 			$datView["objTC"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$datView["objTM"]->transactionCausalID);
 			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d h:i A");
 			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
@@ -8156,8 +8176,6 @@ class app_invoice_billing extends _BaseController {
 			$datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
 			$datView["objUser"]						= $this->User_Model->get_rowByPK($companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
-			$datView["objUserNaturales"]			= $this->Natural_Model->get_rowByPK($datView["objUser"]->companyID,$datView["objUser"]->branchID,$datView["objUser"]->employeeID);
-			$datView["objUserEmployer"]				= $this->Employee_Model->get_rowByPK($datView["objUser"]->companyID,$datView["objUser"]->branchID,$datView["objUser"]->employeeID);
 			$datView["objWorkflowStage"]			= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($datView["objTM"]->statusID);
 			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 			
 			$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_invoice_billing","templateInvoice3","");
@@ -8173,18 +8191,16 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["companyRuc"] 						= $objParameterRuc;
 			$datViewArray["transactionMasterDetail"] 			= array();
 			$datViewArray["companyName"] 						= $objCompany->name;
-			
-			
-			
 			$datViewArray["transactionNumber"] 					= $datView["objTM"]->transactionNumber;
 			$datViewArray["transactionOn"] 						= $datView["objTM"]->createdOn;
 			$createdOn 											= new \DateTime($datViewArray["transactionOn"]);
 			$datViewArray["transactionOn"] 						= $createdOn->modify(APP_HOUR_DIFERENCE_PHP)->format('Y-m-d h:i A'); // 12 horas con AM/PM  se resta hora segun la configuracion del sistema
+			$datViewArray["transactionOnDay"]					= $createdOn->modify(APP_HOUR_DIFERENCE_PHP)->format('d');
+			$datViewArray["transactionOnMonth"]					= $createdOn->modify(APP_HOUR_DIFERENCE_PHP)->format('m');
+			$datViewArray["transactionOnYear"]					= $createdOn->modify(APP_HOUR_DIFERENCE_PHP)->format('Y');
 			$datViewArray["typeTransacton"]						= $datView["objWorkflowStage"][0]->aplicable == 1 ? "FACTURA" : "PROFORMA" ;
 
 			$datViewArray["userName"]							= $datView["objUser"]->nickname;
-			$datViewArray["userNaturalNameFirstName"]			= $datView["objUserNaturales"]->firstName;
-			$datViewArray["userNaturalNameLastName"]			= $datView["objUserNaturales"]->lastName;
 			$datViewArray["currencySimbol"]						= $datView["objCurrency"]->simbol;
 			$datViewArray["phoneNumber"]						= $objParameterTelefono->value;
 			$datViewArray["address"]							= $objCompany->address;
@@ -8201,14 +8217,43 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["statusName"]							= $datView["objStage"][0]->display;
 			$datViewArray["causalName"]							= $datView["objTC"]->name;
 			$datViewArray["customerNumber"]						= $datView["objCustumer"]->customerNumber;
+			$datViewArray["customerAddress"]					= $datView["objCustumer"]->address;
+			$datViewArray["customerPhoneNumber"]				= $datView["objCustumer"]->phoneNumber;
 			$datViewArray["amount_sub_total"]					= sprintf("%.2f",$datView["objTM"]->subAmount);
 			$datViewArray["amount_iva"]							= sprintf("%.2f",$datView["objTM"]->tax1);
 			$datViewArray["amount_discount"]					= sprintf("%.2f",$datView["objTM"]->discount);
 			$datViewArray["amount_total"]						= sprintf("%.2f",$datView["objTM"]->amount);
-			$datViewArray["amount_total_description"]			= helper_GetLetras($datView["objTM"]->amount,$datViewArray["currencySimbol"],"CENTAVOS.");
 			$datViewArray["amount_receipt"]						= sprintf("%.2f",$datView["objTMI"]->receiptAmount);
 			$datViewArray["amount_change"]						= sprintf("%.2f",$datView["objTMI"]->changeAmount);
 			
+			
+			$datView["objCCD"]									= null;
+			$datView["objCCDAmortization"]						= null;
+			$datViewArray["amount_sumary_interes"]				= "0.00";
+			$datViewArray["amount_count_share"]					= "0";
+			$datViewArray["amount_avg_share"]					= "0.00";
+			$datViewArray["amount_sumary_interes_y_capital"]	= "0.00";
+			$datViewArray["minShareDate"]						= "0000-00-00";
+			$datViewArray["maxShareDate"]						= "0000-00-00";
+			$datViewArray["sharePeriod"]						= "";
+			
+			$datView["objCCD"]						= $this->Customer_Credit_Document_Model->get_rowByDocument($companyID,$datView["objTM"]->entityID,$datView["objTM"]->transactionNumber);						
+			if($datView["objCCD"])
+			{
+				$datView["objCCDAmortization"]					= $this->Customer_Credit_Amortization_Model->get_rowByDocument($datView["objCCD"]->customerCreditDocumentID);			
+				$datViewArray["amount_sumary_interes"]			= array_sum(array_map(fn($item) => $item->interest, $datView["objCCDAmortization"]));
+				$datViewArray["amount_sumary_interes_y_capital"]= array_sum(array_map(fn($item) => $item->share, $datView["objCCDAmortization"]));				
+				$datViewArray["amount_count_share"]				= count($datView["objCCDAmortization"]);
+				$datViewArray["amount_avg_share"]				= $datView["objCCDAmortization"][0]->share;
+				$datViewArray["minShareDate"]					= $datView["objCCD"]->dateStart;
+				$datViewArray["maxShareDate"]					= $datView["objCCD"]->dateFinish;
+				$datViewArray["sharePeriod"]					= $datView["objCCD"]->periodName;
+			
+				$datViewArray["amount_sumary_interes"]			= sprintf("%.2f",$datViewArray["amount_sumary_interes"]);
+				$datViewArray["amount_count_share"]				= sprintf("%.0f",$datViewArray["amount_count_share"]);
+				$datViewArray["amount_avg_share"]				= sprintf("%.2f",$datViewArray["amount_avg_share"]);
+				$datViewArray["amount_sumary_interes_y_capital"]= sprintf("%.2f",$datViewArray["amount_sumary_interes_y_capital"]);
+			}
 			
 			
 			//agregar item
@@ -8223,52 +8268,36 @@ class app_invoice_billing extends _BaseController {
 				array_push($datViewArray["transactionMasterDetail"],$row);		
 			}
 			
+			// Contar cuántos registros se agregaron
+			$countRow = count($datViewArray["transactionMasterDetail"]);
+
+			// Si hay menos de 10, agregar filas vacías
+			if ($countRow < 23) {
+				for ($i = $countRow; $i < 23; $i++) {
+					$row = array(
+						"itemName"         => " .",
+						"itemNameQuantity" => " .",
+						"itemNamePrice"    => " .",
+						"itemNameAmount"   => " ."
+					);
+					array_push($datViewArray["transactionMasterDetail"], $row);
+				}
+			}
+
 			
 			//Obtener imagen de logo
-			$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;    
+			$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/a4-direct-ticket-'.$objParameterLogo->value;    
 			$type    = pathinfo($path, PATHINFO_EXTENSION);
 			$data    = file_get_contents($path);
 			$base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
 			$datViewArray["imageBase64"]						= $base64;
 			
-			//Obtener imagen de logo marca de agua
-			$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-marca-'.$objParameterLogo->value;   
-			if (file_exists($path)) {
-				$type    					 		= pathinfo($path, PATHINFO_EXTENSION);
-				$data    					 		= file_get_contents($path);
-				$base64  					 		= 'data:image/' . $type . ';base64,' . base64_encode($data);
-				$datViewArray["imageBase64Marca"] 	= $base64;
-			} 
 			
 			
-			
-			
-			//wg-
-			//wg-//Generar Reporte
-			//wg-$html = helper_reporte80mmTransactionMaster(
-			//wg-    "FACTURA",
-			//wg-    $objCompany,
-			//wg-    $objParameter,
-			//wg-    $datView["objTM"],
-			//wg-    $datView["objNatural"],
-			//wg-    $datView["objCustumer"],
-			//wg-    $datView["tipoCambio"],
-			//wg-    $datView["objCurrency"],
-			//wg-    $datView["objTMI"],
-			//wg-    $confiDetalleHeader,
-			//wg-    $detalle,
-			//wg-    $objParameterTelefono, /*telefono*/
-			//wg-	 $datView["objStage"][0]->display, /*estado*/
-			//wg-	 $datView["objTC"]->name /*causal*/,
-			//wg-	 $datView["objUser"]->nickname,
-			//wg-    $objParameterRuc /*ruc*/
-			//wg-);
-			
-			
-			//Parse plantilla 
 			$parser = \Config\Services::parser();			
 			$html 	= $parser->setData($datViewArray)->renderString($htmlTemplateCompany);
 			$this->dompdf->loadHTML($html);
+			
 			
 			//1cm = 29.34666puntos
 			//a4: 210 ancho x 297
@@ -8280,6 +8309,9 @@ class app_invoice_billing extends _BaseController {
 			
 			$this->dompdf->render();
 			
+			
+			
+			
 			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
 			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
 			$objParameterShowDownloadPreview	= $this->core_web_parameter->getParameter("CORE_SHOW_DOWNLOAD_PREVIEW",$companyID);
@@ -8287,15 +8319,15 @@ class app_invoice_billing extends _BaseController {
 			$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true" ? true : false;
 			
 			$fileNamePut = "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
-			$path        = "./resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".$fileNamePut;
-				
-				
-			//Crear la Carpeta para almacenar los Archivos del Documento
-			$documentoPath = PATH_FILE_OF_APP."/company_".$companyID."/component_48/component_item_".$transactionMasterID;						
-			if (!file_exists($documentoPath))
+			$fileNamePdf = "FAC_".$datView["objTM"]->transactionNumber."_".str_replace(" ","_", $datView["objNatural"]->firstName).".pdf";
+			
+			$path        	= "./resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".$fileNamePut;
+			$patdir         = "./resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID;	
+			
+			if (!file_exists($patdir))
 			{
-				mkdir($documentoPath, 0755, true);
-				chmod($documentoPath, 0755);
+				mkdir($patdir, 0755,true);
+				chmod($patdir, 0755);
 			}
 			
 			
@@ -8304,7 +8336,7 @@ class app_invoice_billing extends _BaseController {
 				$this->dompdf->output()					
 			);						
 			
-			chmod($path, 0644);
+			chmod($path, 644);
 			
 			if($objParameterShowLinkDownload == "true")
 			{			
@@ -8315,26 +8347,28 @@ class app_invoice_billing extends _BaseController {
 			
 			}
 			else{			
-				//visualizar		
-				$timestamp 	= date("YmdHis") . "0"; // Resultado: 202505261134000
-				$filename 	= "posme_" . $timestamp . ".pdf";							
-				$this->dompdf->stream($filename, ['Attachment' => $objParameterShowDownloadPreview ]);
-				exit;
+				//visualizar				
+				$this->dompdf->stream($fileNamePdf, ['Attachment' => $objParameterShowDownloadPreview ]);
 			}
 			
 			
 			
+			//descargar
+			//$this->dompdf->stream();
+			
 			
 		}
 		catch(\Exception $ex){
-		    
-		    //$data["session"] = $dataSession;
-			$data["session"] 	= null;
-		    $data["exception"] 	= $ex;
-		    $data["urlLogin"]  	= base_url();
-		    $data["urlIndex"]  	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    $resultView        	= view("core_template/email_error_general",$data);
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+		    $data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
 		    
 		    $this->email->setFrom(EMAIL_APP);
 		    $this->email->setTo(EMAIL_APP_COPY);
