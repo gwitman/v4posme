@@ -87,8 +87,27 @@ where
 	i.itemID not in (select u.itemID from tb_price u where u.typePriceID = 478 );
 	
 	
-	
-	
+#Actualizar Cantidades
+update tb_item d , (
+		select 
+			iw.itemID,
+			SUM(iw.quantity) as quantity  
+		from 
+			tb_item_warehouse iw 
+			inner join tb_item i on 
+				i.itemID = iw.itemID 
+			inner join tb_warehouse w on 
+				w.warehouseID = iw.warehouseID 
+		where 
+			i.isActive = 1 and 
+			w.isActive = 1
+		group by 
+			iw.itemID 
+		) as o
+set 
+	d.quantity = o.quantity 
+where 
+	d.itemID = o.itemID ; 
 
 
 #INSERTAR bancos

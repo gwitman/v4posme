@@ -576,6 +576,9 @@ class app_inventory_otheroutput extends _BaseController
 			if (!$validate) {
 				return;
 			}
+			
+			
+			
 			//Obtener el Componente de Transacciones Other Input to Inventory
 			$objComponent							= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_otheroutput");
 			if (!$objComponent)
@@ -704,6 +707,7 @@ class app_inventory_otheroutput extends _BaseController
 				$db->transRollback();
 			}
 		} catch (\Exception $ex) {
+			
 			return $this->response->setJSON(array(
 				'error' => true,
 				'message' => 'Linea: ' . $ex->getLine() . " - Error:" . $ex->getMessage()

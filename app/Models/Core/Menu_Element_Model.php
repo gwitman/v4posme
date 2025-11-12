@@ -81,7 +81,7 @@ class Menu_Element_Model extends Model  {
 						usr.userID = mem.userID 
 				where 
 					me.isActive = 1 and 
-					me.typeMenuElementID = 5 /*menu element left*/  and 
+					me.typeMenuElementID in (5 /*let*/,8 /*popup*/ )  and 
 					r.isActive = 1 and 
 					usr.isActive = 1 and 
 					usr.companyID = $companyID and 
