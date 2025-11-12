@@ -386,7 +386,6 @@ class app_mobile_api extends _BaseController
 						{
 							if(count($itemsProccess) > 0)
 							{
-								echo print_r($itemsProccess,true);
 								$inventoryOutController = new app_inventory_otheroutput();
 								$inventoryOutController->initController($this->request, $this->response, $this->logger);
 								$inventoryOutController->insertElementMobile($dataSession, $itemsProccess);     
