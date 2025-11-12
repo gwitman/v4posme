@@ -24,33 +24,40 @@
 		$configColumn["1"]["FiledSouce"]	= "transactionNumber";
 		$configColumn["1"]["Width"]			= "80px";
 		
-		$configColumn["2"]["Titulo"]		= "Codigo";
-		$configColumn["2"]["FiledSouce"]	= "itemNumber";
+		$configColumn["2"]["Titulo"]		= "Tipo";
+		$configColumn["2"]["FiledSouce"]	= "transactionCausalName";
 		$configColumn["2"]["Width"]			= "80px";
 		
-		$configColumn["3"]["Titulo"]		= "Producto";
-		$configColumn["3"]["FiledSouce"]	= "itemName";
-		$configColumn["3"]["Width"]			= "420px";
+		$configColumn["3"]["Titulo"]		= "Codigo";
+		$configColumn["3"]["FiledSouce"]	= "itemNumber";
+		$configColumn["3"]["Width"]			= "80px";
 		
-		$configColumn["4"]["Titulo"]		= "Cantidad";
-		$configColumn["4"]["FiledSouce"]	= "quantity";
-		$configColumn["4"]["Width"]			= "80px";
+		$configColumn["4"]["Titulo"]		= "Producto";
+		$configColumn["4"]["FiledSouce"]	= "itemName";
+		$configColumn["4"]["Width"]			= "420px";
 		
-		$configColumn["5"]["Titulo"]		= "Precio";
-		$configColumn["5"]["FiledSouce"]	= "unitaryPrice";
-		$configColumn["5"]["Width"]			= "120px";
-		$configColumn["5"]["Formato"]		= "Number";
-		$configColumn["5"]["Total"]			= False;
+		$configColumn["5"]["Titulo"]		= "Cantidad";
+		$configColumn["5"]["FiledSouce"]	= "quantity";
+		$configColumn["5"]["Width"]			= "80px";
 		
-		$configColumn["6"]["Titulo"]		= "Monto";
-		$configColumn["6"]["FiledSouce"]	= "amount";
+		$configColumn["6"]["Titulo"]		= "Precio";
+		$configColumn["6"]["FiledSouce"]	= "unitaryPrice";
 		$configColumn["6"]["Width"]			= "120px";
 		$configColumn["6"]["Formato"]		= "Number";
-		$configColumn["6"]["Total"]			= true;
+		$configColumn["6"]["Total"]			= False;
+		
+		$configColumn["7"]["Titulo"]		= "Monto";
+		$configColumn["7"]["FiledSouce"]	= "amount";
+		$configColumn["7"]["Width"]			= "120px";
+		$configColumn["7"]["Formato"]		= "Number";
+		$configColumn["7"]["Total"]			= true;
 						
 		$resultado = helper_reporteGeneralCreateTable($objPayList,$configColumn,'0');
 		?>
-				
+			
+
+
+			
 		<?php 
 
 		$objClient["customerNumber"]     = isset($objClient["customerNumber"]) ? $objClient["customerNumber"] : '';
@@ -166,6 +173,37 @@
 		
 		echo $resultado2;
 		?>
+		
+		</br>
+		
+		<?php			
+		$configColumnSummary["0"]["Titulo"]			= "Fecha";
+		$configColumnSummary["0"]["FiledSouce"]		= "transactionOn";
+		$configColumnSummary["0"]["Width"]			= "80px";
+		$configColumnSummary["0"]["Formato"]		= "Date";
+		
+		$configColumnSummary["1"]["Titulo"]			= "Factura";
+		$configColumnSummary["1"]["FiledSouce"]		= "transactionNumber";
+		$configColumnSummary["1"]["Width"]			= "80px";
+		
+		$configColumnSummary["2"]["Titulo"]			= "Tipo";
+		$configColumnSummary["2"]["FiledSouce"]		= "transactionCausalName";
+		$configColumnSummary["2"]["Width"]			= "80px";
+		
+		$configColumnSummary["3"]["Titulo"]			= "Colaborador";
+		$configColumnSummary["3"]["FiledSouce"]		= "employerName";
+		$configColumnSummary["3"]["Width"]			= "80px";
+		
+		$configColumnSummary["4"]["Titulo"]			= "Monto";
+		$configColumnSummary["4"]["FiledSouce"]		= "amount";
+		$configColumnSummary["4"]["Width"]			= "120px";
+		$configColumnSummary["4"]["Formato"]		= "Number";
+		$configColumnSummary["4"]["Total"]			= true;
+						
+		$resultadoSummary = helper_reporteGeneralCreateTable($objPayListSummary,$configColumnSummary,'0');
+		echo $resultadoSummary["table"];
+		?>
+			
 				
 		<br/>	
 				

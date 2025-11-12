@@ -1948,10 +1948,13 @@ class app_cxc_report extends _BaseController {
 			$tocken				= '';
 			$reference          = '';
 			
-			$viewReport			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"viewReport");//--finuri	
-			$customerNumber		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"customerNumber");//--finuri			
-				
-			if(!($viewReport && $customerNumber )){
+			$viewReport				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"viewReport");//--finuri	
+			$customerNumber			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"customerNumber");//--finuri			
+			$startOn				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"startOn");//--finuri
+			$endOn					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri
+			$transactionCausalName	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionCausalName");//--finuri
+			
+			if(!($viewReport && $customerNumber &&  $startOn && $endOn )){
 				
 				//Renderizar Resultado 
 				$data["objListCustomer"]	= $this->Customer_Model->get_rowByCompany($companyID);
@@ -1979,10 +1982,11 @@ class app_cxc_report extends _BaseController {
 					[$companyID,$tocken,$userID,$customerNumber]
 				);			
 												
-				$query			= "CALL pr_cxc_get_report_sales_customer(?,?,?,?);";
-				$objData02		= $this->Bd_Model->executeRender(
+				$query			= "CALL pr_cxc_get_report_sales_customer(?,?,?,?,?,?,?);";
+				//$objData02	= $this->Bd_Model->executeRender();
+				$objData02		= $this->Bd_Model->executeRenderMultipleNative(
 					$query,
-					[$companyID,$tocken,$userID,$customerNumber]
+					[$companyID,$tocken,$userID,$customerNumber,$startOn,$endOn,$transactionCausalName]
 				);			
 				
 				if(isset($objData01[0])){
@@ -1991,11 +1995,16 @@ class app_cxc_report extends _BaseController {
 					$objDataResult["objDocument"]			= $objData01[2];
 					$objDataResult["objAmortization"]		= $objData01[3];
 					
-					if(isset($objData02)){
-					$objDataResult["objPayList"]			= $objData02;
+					if(isset($objData02))
+					{
+						$objDataResult["objPayList"]			= $objData02[0];
+						$objDataResult["objPayListSummary"]		= $objData02[1];
 					}
 					else
-					$objDataResult["objPayList"]			= NULL;
+					{
+						$objDataResult["objPayList"]			= NULL;
+						$objDataResult["objPayListSummary"]		= NULL;
+					}
 				}
 				else{
 					$objDataResult["objClient"]				= NULL;
@@ -2003,6 +2012,7 @@ class app_cxc_report extends _BaseController {
 					$objDataResult["objDocument"]			= NULL;
 					$objDataResult["objAmortization"]		= NULL;
 					$objDataResult["objPayList"]			= NULL;
+					$objDataResult["objPayListSummary"]		= NULL;
 				}
 				$objDataResult["objCompany"] 				= $objCompany;
 				$objDataResult["objLogo"] 					= $objParameter;

@@ -12,16 +12,52 @@
 				<!-- End .panel-heading -->
 			
 				<div class="panel-body">
-					<form class="form-horizontal pad15 pad-bottom0" role="form">																		
-
+					<form class="form-horizontal pad15 pad-bottom0" role="form">
 						<div class="form-group">
-							<label class="col-lg-7 control-label" for="txtCustomerNumber">CODIGO CLIENTE:</label>
-							<div class="col-lg-5"> 
-								<div class="col-lg-12">
+							<label class="col-lg-6 control-label" for="selectFilter">Fecha Inicial y Final</label>
+							<div class="col-lg-6"> 
+								<div class="col-lg-6">
+										<div id="datepicker" class="input-group date" data-date="2014-01-30" data-date-format="yyyy-mm-dd">
+											<input size="16"  class="form-control" type="text" name="txtStartOn" id="txtStartOn" value="2014-01-30">
+											<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+										</div>
+								</div>
+								<div class="col-lg-6">
+										<div id="datepicker_v2" class="input-group date" data-date="2014-01-30" data-date-format="yyyy-mm-dd">
+											<input size="16"  class="form-control" type="text" name="txtEndOn" id="txtEndOn" value="2014-01-30">
+											<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+										</div>
+								</div>													
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-lg-6 control-label" for="txtCustomerNumber">Codigo de cliente:</label>
+							<div class="col-lg-6"> 
+								<div class="col-lg-6">
+								</div>
+								<div class="col-lg-6">
 									<input type="text" name="txtCustomerNumber" id="txtCustomerNumber" class="form-control" />
 								</div>												
 							</div>
-						</div>												
+						</div>	
+						
+						<div class="form-group">
+							<label class="col-lg-6 control-label" for="selectFilter">Tipo</label>
+							<div class="col-lg-6"> 
+								<div class="col-lg-6">
+								</div>
+								<div class="col-lg-6">
+									<select name="txtTransactionCausalName" id="txtTransactionCausalName" class="select2">
+											<option value="Todas">TODOS</option>
+											<option value="Contado">Solo Contado</option>
+											<option value="Credito">Solo Credito</option>
+									</select>
+								</div>													
+							</div>
+						</div>
+						
+						
 					</form>
 				</div><!-- End .panel-body -->
 			</div><!-- End .widget -->	

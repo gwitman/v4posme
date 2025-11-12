@@ -137,6 +137,7 @@ class core_report extends _BaseController
 				// Reemplazar newPost 
 				$query 	 	= strtr($query, $newPost);						
 				$query 		= str_replace(["\"'", "'\""], "'", $query);
+				$query 		= str_replace(["''"], "'", $query);				
 				$result  	= $this->Bd_Model->executeRenderMultipleNative($query, $params);
 			}
 	
@@ -219,3 +220,5 @@ class core_report extends _BaseController
         }
     }
 }
+
+?>
