@@ -445,9 +445,11 @@ class app_cxc_report extends _BaseController {
 			
 			$viewReport			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"viewReport");//--finuri	
 			$customerNumber		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"customerNumber");//--finuri		
+			$startOn			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"startOn");//--finuri
+			$endOn				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri
 				
 				
-			if(!($viewReport && $customerNumber )){
+			if(!($viewReport && $customerNumber &&  $startOn && $endOn )){
 				
 				//Renderizar Resultado 
 				$data["objListCustomer"]	= $this->Customer_Model->get_rowByCompany($companyID);
@@ -473,10 +475,10 @@ class app_cxc_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_cxc_get_report_customer_status(?,?,?,?);";
+				$query			= "CALL pr_cxc_get_report_customer_status(?,?,?,?,?,?);";
 				$objData		= $this->Bd_Model->executeRenderMultipleNative(
 					$query,
-					[$companyID,$tocken,$userID,$customerNumber]
+					[$companyID,$tocken,$userID,$customerNumber,$startOn,$endOn]
 				);			
 				
 				
@@ -1414,10 +1416,10 @@ class app_cxc_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_cxc_get_report_customer_status(?,?,?,?);";
+				$query			= "CALL pr_cxc_get_report_customer_status(?,?,?,?,?,?);";
 				$objData01		= $this->Bd_Model->executeRenderMultipleNative(
 					$query,
-					[$companyID,$tocken,$userID,$customerNumber]
+					[$companyID,$tocken,$userID,$customerNumber,'1900-01-01 00:00:00',helper_getDateTime()]
 				);			
 								
 				$query			= "CALL pr_cxc_get_report_customer_pay(?,?,?,?,?);";
@@ -1986,10 +1988,10 @@ class app_cxc_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_cxc_get_report_customer_status(?,?,?,?);";
+				$query			= "CALL pr_cxc_get_report_customer_status(?,?,?,?,?,?);";
 				$objData01		= $this->Bd_Model->executeRenderMultipleNative(
 					$query,
-					[$companyID,$tocken,$userID,$customerNumber]
+					[$companyID,$tocken,$userID,$customerNumber,'1900-01-01 00:00:00',helper_getDateTime()]
 				);			
 												
 				$query			= "CALL pr_cxc_get_report_sales_customer(?,?,?,?,?,?,?);";
