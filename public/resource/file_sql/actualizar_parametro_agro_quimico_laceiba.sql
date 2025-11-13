@@ -1250,7 +1250,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Agro Servicio -El Labrador- La Ceiba' , address = 'Frente a iglesia católica San Isidro El Labrador, La Ceiba' ,
-	flavorID = 454,type='default'
+	flavorID = 454,type='agroQuimicoLaceiba'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

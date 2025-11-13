@@ -501,7 +501,17 @@ class app_cxc_report extends _BaseController {
 				$objDataResult["objFirma"] 								= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_customer_status" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
 				$objDataResult["objFirmaEncription"] 					= md5 ($objDataResult["objFirma"]);
 				
-				return view("app_cxc_report/customer_status/view_a_disemp",$objDataResult);//--finview-r
+				
+				if(
+					$objCompany->type=="agro_el_labrador" ||
+					$objCompany->type=="agro_q_estacion" ||
+					$objCompany->type=="agroQuimicoLaceiba"
+				)
+				{
+					return view("app_cxc_report/customer_status/view_a_disemp_agro_el_labrador",$objDataResult);//--finview-r
+				}
+				else 
+					return view("app_cxc_report/customer_status/view_a_disemp",$objDataResult);//--finview-r
 				
 			}
 		}

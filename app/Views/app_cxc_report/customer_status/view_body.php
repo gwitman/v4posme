@@ -14,21 +14,12 @@
                                     <div class="panel-body">
                                         <form class="form-horizontal pad15 pad-bottom0" role="form">
 											<div class="form-group">
-												<label class="col-lg-7 control-label" for="selectFilter">CLIENTE</label>
-												<div class="col-lg-5"> 
-													<div class="col-lg-12">
-														<select name="txtCustomerNumber" id="txtCustomerNumber" class="select2">
-																<?php
-																if($objListCustomer)
-																foreach($objListCustomer as $i){
-																	echo "<option value='".$i->customerNumber."'>".$i->customerNumber." ".$i->firstName." ".$i->lastName."</option>";
-																}
-																?>
-														</select>
-														<!--
-														<input size="16"  class="form-control" type="text" name="txtCustomerNumber" id="txtCustomerNumber" value="">
-														-->
-													</div>												
+												<label class="col-lg-9 control-label" for="selectFilter">CLIENTE</label>
+												<div class="col-lg-3"> 
+													<input type="text" name="txtCustomerNumber" id="txtCustomerNumber" class="form-control" />
+													<!--
+													<input size="16"  class="form-control" type="text" name="txtCustomerNumber" id="txtCustomerNumber" value="">
+													-->
 												</div>
 											</div>
                                         </form>

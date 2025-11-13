@@ -23,10 +23,13 @@ function getBehavioFarmaLey(){
 		<script>
 			$(document).ready(function(){
 				$('#panelDivMarca').appendTo('#dropdown');
-				
+				debugger;
 				/*ocultar campo si el usurio es facturadora*/
 				
-				if( $('#txtRolNameSession').val() == 'Despachador' )
+				if( 
+					$('#txtRolNameSession').val().toUpperCase() == 'Despachador'.toUpperCase() ||
+					$('#txtRolNameSession').val().toUpperCase() == 'DEPENDIENTE'.toUpperCase() 
+				)
 				{
 					//Ocultar Costo
 					$('#txtCost').parent().parent().addClass('hidden');

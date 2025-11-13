@@ -168,7 +168,7 @@
 								</div>
 								</div>
 
-								<div class="form-group								                       <?php echo getBehavio($company->type, "app_inventory_item", "divTxtCosto", ""); ?> ">
+								<div class="form-group	<?php echo getBehavio($company->type, "app_inventory_item", "divTxtCosto", ""); ?> ">
 										<label class="col-lg-4 control-label" for="normal">Costo</label>
 										<div class="col-lg-8">
 											<input class="form-control" disabled type="text"  name="txtCost" id="txtCost" value="<?php echo $objItem->cost; ?>">
