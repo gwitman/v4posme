@@ -1,5 +1,6 @@
-/*BD: 	xjmrqtwlkpzvhe:parametro_taller_nys_nelson*/
-/*SERVIDOR:		aws*/
+/*BD: 	u654393652_xjmrqtwlkpzvhe:parametro_taller_nys_nelson*/
+/*SERVIDOR: hostinger*/
+/*USUARIO:	u654393652_xjmrqtwlkpzvhe*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

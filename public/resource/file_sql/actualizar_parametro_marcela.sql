@@ -1,5 +1,7 @@
-/*BD: 	ghanpelurgdmbq:parametro_marcela*/
-/*SERVIDOR:		aws*/
+/*BD: 	u654393652_ghanpelurgdmbq:parametro_marcela*/
+/*SERVIDOR: hostinger*/
+/*USUARIO:	u654393652_ghanpelurgdmbq*/
+
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

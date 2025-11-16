@@ -1,5 +1,6 @@
-/*BD: 	htrqzsmwdyknap:tu_futuro*/
-/*SERVIDOR:		aws*/
+/*BD: 	u654393652_htrqzsmwdyknap:tu_futuro*/
+/*SERVIDOR: hostinger*/
+/*USUARIO:	u654393652_htrqzsmwdyknap*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

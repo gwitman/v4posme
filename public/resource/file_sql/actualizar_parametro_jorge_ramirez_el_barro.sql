@@ -1,5 +1,6 @@
-/*BD: 	vjnqplseazmktr:parametro_jorge_ramirez_el_barro*/
-/*SERVIDOR:		aws*/
+/*BD: 	u654393652_vjnqplseazmktr:parametro_jorge_ramirez_el_barro*/
+/*SERVIDOR: hostinger*/
+/*USUARIO:	u654393652_vjnqplseazmktr*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

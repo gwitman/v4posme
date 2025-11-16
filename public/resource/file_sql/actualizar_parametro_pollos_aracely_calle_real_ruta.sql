@@ -1,5 +1,6 @@
-/*BD: 	xjtzqwnblvsecr:parametro_pollos_aracely_calle_real_ruta*/
-/*SERVIDOR:		siteground*/
+/*BD: 	u654393652_xjtzqwnblvsecr:parametro_pollos_aracely_calle_real_ruta*/
+/*SERVIDOR: hostinger*/
+/*USUARIO:	u654393652_xjtzqwnblvsecr*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

@@ -1,5 +1,7 @@
-/*BD: 	xqajlztmhrpedy:nica_verde*/
-/*SERVIDOR:		aws*/
+/*BD: 	u654393652_xqajlztmhrpedy:nica_verde*/
+/*SERVIDOR: hostinger*/
+/*USUARIO:	u654393652_xqajlztmhrpedy*/
+
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

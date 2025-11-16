@@ -1,5 +1,6 @@
-/*BD: 	dblkzg9eyznwmg:glamcuts*/
-/*SERVIDOR: aws*/
+/*BD: 	u654393652_dblkzg9eyznwmg:glamcuts*/
+/*SERVIDOR: hostinger*/
+/*USUARIO:	u654393652_dblkzg9eyznwmg*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

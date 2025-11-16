@@ -1,5 +1,6 @@
-/*BD: 	mdnqztqvxmdjbe:parametro_xcell*/
-/*SERVIDOR:		aws*/
+/*BD: 	u654393652_mdnqztqvxmdjbe:xcell*/
+/*SERVIDOR: hostinger*/
+/*USUARIO:	u654393652_mdnqztqvxmdjbe*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

@@ -1,0 +1,20 @@
+public
+	base de datos
+		base de datos	u654393652_public
+		usuario			u654393652_public
+		password		6105&D#Iq
+		host			srv526.hstgr.io
+		
+	ftp
+		usuario			u654393652
+		puerto			21
+		servidor		ftp://46.202.196.173
+		password		0=sXzyit@vG&vqeN
+		
+		
+	php
+		php.8.2
+		
+	domino
+		https://posme.eu/v4posme/public/public/
+		

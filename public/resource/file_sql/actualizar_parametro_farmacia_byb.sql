@@ -1,6 +1,6 @@
-/*BD: 	jkvutwoyesstzb:farma_byb*/
-/*SERVIDOR:	AWS*/
-
+/*BD: 	u654393652_jkvutwoyesstzb:parametro_farma_byb*/
+/*SERVIDOR: hostinger*/
+/*USUARIO:	u654393652_jkvutwoyesstzb*/
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 

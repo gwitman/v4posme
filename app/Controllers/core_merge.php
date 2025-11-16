@@ -927,7 +927,13 @@ class core_merge extends _BaseController {
 		$dirParent = opendir(PATH_FILE_OF_APP . "/../../../../");
 
 		while ($currentParent = readdir($dirParent)) {
-			if ($currentParent != "." && $currentParent != ".." && $currentParent != "index.html") {
+			if (
+				$currentParent != "." && 
+				$currentParent != ".." && 
+				$currentParent != "tutoriales" &&
+				$currentParent != "index.html" 
+			) 
+			{
 				echo "<hr>";
 				$path_file_of_app = PATH_FILE_OF_APP . "/../../../../" . $currentParent;
 				echo "<div style='padding:10px; background:#e6f7ff; border-left:5px solid #1890ff; margin:10px 0;'>
@@ -943,6 +949,7 @@ class core_merge extends _BaseController {
 						unlink($path_file_of_app . "/writable/logs/" . $current);
 					}
 				}
+			
 				
 				// LIMPIANDO CACHE
 				echo "<h3 style='color:#faad14;'>🧹 Limpiando cache...</h3>";

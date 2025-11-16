@@ -1,5 +1,6 @@
-/*BD: 	qvthzrcapmoyul:parametro_dist_rosales*/
-/*SERVIDOR:		aws*/
+/*BD: 	u654393652_qvthzrcapmoyul:parametro_dist_rosales*/
+/*SERVIDOR: hostinger*/
+/*USUARIO:	u654393652_qvthzrcapmoyul*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

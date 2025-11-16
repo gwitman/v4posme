@@ -1,5 +1,8 @@
-/*BD: 	k9d3xq7m2z1w4p:parametro_moda_eve*/
-/*SERVIDOR: aws*/
+/*BD: 	u654393652_k9d3xq7m2z1w4p:parametro_moda_eve*/
+/*SERVIDOR: hostinger*/
+/*USUARIO:	u654393652_k9d3xq7m2z1w4p*/
+
+
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

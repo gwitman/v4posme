@@ -1,5 +1,6 @@
-/*BD: 	xqjtzlnrbvefuma:olimpias_butique*/
-/*SERVIDOR:		siteground*/
+/*BD: 	u654393652_xqjtzlnrbvefum:olimpias_butique*/
+/*SERVIDOR: hostinger*/
+/*USUARIO:	u654393652_xqjtzlnrbvefum*/
 
 
 /******************************************************************/

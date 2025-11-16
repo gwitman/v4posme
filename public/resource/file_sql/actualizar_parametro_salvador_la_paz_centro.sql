@@ -1,5 +1,7 @@
-/*BD: 	rjtxmqubdfyzen:parametro_salvador_la_paz_centro*/
-/*SERVIDOR:		aws*/
+/*BD: 	u654393652_rjtxmqubdfyzen:parametro_salvador_la_paz_centro*/
+/*SERVIDOR: hostinger*/
+/*USUARIO:	u654393652_rjtxmqubdfyzen*/
+
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

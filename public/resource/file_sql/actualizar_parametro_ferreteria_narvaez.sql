@@ -1,5 +1,7 @@
-/*BD: 	jvvjgypixuzkcl:parametro_ferreteria_narvaez*/
-/*SERVIDOR:		aws*/
+/*BD: 	u654393652_jvvjgypixuzkcl:parametro_ferreteria_narvaez*/
+/*SERVIDOR: hostinger*/
+/*USUARIO:	u654393652_jvvjgypixuzkcl*/
+
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

@@ -1,5 +1,7 @@
-/*BD: 	kqjzrtwpxuhyem:parametro_sepiensa_menu*/
-/*SERVIDOR:		aws*/
+/*BD: 	u654393652_kqjzrtwpxuhyem:sepiensa_menu*/
+/*SERVIDOR: hostinger*/
+/*USUARIO:	u654393652_kqjzrtwpxuhyem*/
+
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
