@@ -354,13 +354,11 @@ class core_web_permission {
 		
    }
    function getValueLicense($companyID,$url)
-   {
-		
-		
-		$core_web_parameter = new core_web_parameter();
-		$User_Permission_Model = new User_Permission_Model();
-		$User_Model = new User_Model();
-		$Company_Parameter_Model = new Company_Parameter_Model();
+   {	
+		$core_web_parameter 		= new core_web_parameter();
+		$User_Permission_Model 		= new User_Permission_Model();
+		$User_Model 				= new User_Model();
+		$Company_Parameter_Model 	= new Company_Parameter_Model();
 		//Validar Parametro de maximo de usuario.
 		$objParameterMAX_USER 		= $core_web_parameter->getParameter("CORE_CUST_PRICE_MAX_USER",$companyID);
 		

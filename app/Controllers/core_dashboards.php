@@ -10,6 +10,7 @@ class core_dashboards extends _BaseController {
         try{
 
 
+			
             //AUTENTICACION
             if(!$this->core_web_authentication->isAuthenticated())
                 throw new \Exception(USER_NOT_AUTENTICATED);
@@ -30,6 +31,13 @@ class core_dashboards extends _BaseController {
                     throw new \Exception(NOT_ACCESS_FUNCTION);
 
             }
+			
+			//Validar Session, que no este en dos dispositivo			
+			$sessionID = $dataSession["sessionID"];						
+			if(!$this->core_web_authentication->isSessionActiva($sessionID))
+			{
+				//return redirect()->to(base_url("core_acount/login?mensaje=Session iniciada en otro dispositivo"));
+			}	
 
             //Validar Parametro de maximo de usuario.
             $objCompany									= $dataSession["company"];

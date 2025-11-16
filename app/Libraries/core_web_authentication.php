@@ -103,6 +103,7 @@ use App\Models\Warehouse_Model;
 use App\Models\Company_Page_Setting_Model;
 use App\Models\Cash_Box_User_Model;
 use App\Models\Cash_Box_Session_Model;
+use App\Models\Log_Session_Model;
 
 class core_web_authentication {
    
@@ -250,6 +251,7 @@ class core_web_authentication {
 		
 		$userdata["menuRenderTop"] 		= $core_web_menu->render_menu_top($data["menuTop"]);			
 		$userdata["menuRenderLeft"] 	= $core_web_menu->render_menu_left($data["company"],$data["menuLeft"]);
+		$userdata["sessionID"]			= session_create_id();
 		$session->set($userdata);
 		
 		
@@ -271,8 +273,15 @@ class core_web_authentication {
 		
 		return false;			
    }
-   function isCashBoxOpen($companyID, $userID, $dateTimeOn,$currencyID)
-   {
+   function isSessionActiva($sessionID){
+	   $Log_Session_Model 	= new Log_Session_Model();
+	   $objResult			= $Log_Session_Model->get_rowBySessionID($sessionID);
+	   if($objResult)
+		   return true;
+	   else 
+		   return false;
+   }
+   function isCashBoxOpen($companyID, $userID, $dateTimeOn,$currencyID){
 	   // Modelos necesarios
 	   $Cash_Box_User_Model    = new Cash_Box_User_Model();
 	   $Cash_Box_Session_Model = new Cash_Box_Session_Model();

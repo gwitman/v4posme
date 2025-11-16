@@ -126,7 +126,6 @@ class core_acount extends _BaseController {
 		try
 		{																
 			
-			
 			$dataSession					= $this->session->get();	
 			$type							= $dataSession["company"]->type;
 			$companyID 						= APP_COMPANY;
@@ -173,22 +172,9 @@ class core_acount extends _BaseController {
 			
 			
 			
-			//Guardar Log			
-			$objLogSessionModel["session_id"] 		= session_id();
-			$objLogSessionModel["ip_address"] 		= $this->request->getIPAddress();
-			$objLogSessionModel["user_agent"] 		= $this->request->getUserAgent()->getPlatform();
-			$objLogSessionModel["last_activity"] 	= \DateTime::createFromFormat("Y-m-d H:i:s",helper_getDateTime())->format("YmdHis");
-			$objLogSessionModel["user_data"] 		= $dataSession["user"]->nickname." destroy session";
-			
-			
-			$objLogSessionModel2 					= $this->Log_Session_Model->asObject()->where("session_id",$objLogSessionModel["session_id"])->find();
-			if(!$objLogSessionModel2)			
-			$this->Log_Session_Model->insert($objLogSessionModel);			
-			else 			
-			$this->Log_Session_Model->upsert($objLogSessionModel);
-		
-		
-			$this->core_web_authentication->destroyLogin();			
+			//Guardar Log
+			$this->Log_Session_Model->delete_app_posme("userID",$dataSession["user"]->userID);
+			$this->core_web_authentication->destroyLogin();
 			$this->response->redirect(base_url());
 			
 						
@@ -216,6 +202,7 @@ class core_acount extends _BaseController {
 		
 		
 		try{ 
+			
 			
 			if(!isset($_POST["txtNickname"]) || !isset($_POST["txtPassword"]))
 			throw new \Exception(NOT_VALID_USER);
@@ -321,20 +308,16 @@ class core_acount extends _BaseController {
 				$resultSend02 = $this->email->printDebugger();
 				
 				
-				//Guardar Log			
-				$objLogSessionModel["session_id"] 		= session_id();
+				//Guardar Log		
+				$this->Log_Session_Model->delete_app_posme("userID",$dataSession["user"]->userID);	
+				
+				$objLogSessionModel["session_id"] 		= $dataSession["sessionID"];
 				$objLogSessionModel["ip_address"] 		= $this->request->getIPAddress();
 				$objLogSessionModel["user_agent"] 		= $this->request->getUserAgent()->getPlatform();
 				$objLogSessionModel["last_activity"] 	= \DateTime::createFromFormat("Y-m-d H:i:s",helper_getDateTime())->format("YmdHis");
 				$objLogSessionModel["user_data"] 		= $objUser["user"]->nickname." create session";
-				
-				
-				$objLogSessionModel2 					= $this->Log_Session_Model->asObject()->where("session_id",$objLogSessionModel["session_id"])->find();
-				if(!$objLogSessionModel2)			
-				$this->Log_Session_Model->insert($objLogSessionModel);			
-				else 			
-				$this->Log_Session_Model->upsert($objLogSessionModel);
-				
+				$objLogSessionModel["userID"]			= $dataSession["user"]->userID;				
+				$this->Log_Session_Model->insert($objLogSessionModel);	
 				$this->response->redirect(base_url()."/".$objUser["role"]->urlDefault."/index");
 			}
 			
