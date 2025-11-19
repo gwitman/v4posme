@@ -1,6 +1,6 @@
-/*BD: 	u654393652_qvthzrcapmoyul:parametro_dist_rosales*/
-/*SERVIDOR: hostinger*/
-/*USUARIO:	u654393652_qvthzrcapmoyul*/
+/*BD: 	dbpufsx80ivelv:parametro_dist_rosales*/
+/*SERVIDOR: siteground*/
+
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

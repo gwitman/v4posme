@@ -368,7 +368,8 @@ class app_mobile_api extends _BaseController
 				{
 					if(count($objListItem) > 0)
 					{
-						$itemsProccess = array();
+						$itemsProccessSalidas 	= array();
+						$itemsProccessEntradas 	= array();
 						foreach($objListItem as $ielement)
 						{
 							if($ielement->quantity > 0)
@@ -378,17 +379,39 @@ class app_mobile_api extends _BaseController
 								$objeto->cantidadSalidas 	 = $ielement->quantity;
 								$objeto->barCode 	 		 = $ielement->barCode;
 								$objeto->itemID 	 		 = $ielement->itemID;
-								$itemsProccess[] = $objeto;
+								$itemsProccessSalidas[] = $objeto;
+							}
+							if($ielement->quantity < 0)
+							{
+								$objeto 		 			 = new \stdClass();
+								$objeto->cantidadEntradas 	 = ($ielement->quantity) * -1;
+								$objeto->cantidadSalidas 	 = 0;
+								$objeto->barCode 	 		 = $ielement->barCode;
+								$objeto->itemID 	 		 = $ielement->itemID;
+								$objeto->precioPublico		 = $ielement->PrecioPublico;
+								$itemsProccessEntradas[] = $objeto;
 							}
 						}
 						
-						if($itemsProccess)
+						log_message("error",print_r($itemsProccessSalidas,true));
+						if($itemsProccessSalidas)
 						{
-							if(count($itemsProccess) > 0)
+							if(count($itemsProccessSalidas) > 0)
 							{
 								$inventoryOutController = new app_inventory_otheroutput();
 								$inventoryOutController->initController($this->request, $this->response, $this->logger);
-								$inventoryOutController->insertElementMobile($dataSession, $itemsProccess);     
+								$inventoryOutController->insertElementMobile($dataSession, $itemsProccessSalidas);     
+							}
+						}
+						log_message("error",print_r($itemsProccessEntradas,true));
+						if($itemsProccessEntradas)
+						{
+							if(count($itemsProccessEntradas) > 0)
+							{
+								$inventoryController  =new app_inventory_inputunpost();
+								$inventoryController->initController($this->request, $this->response, $this->logger);
+								$inventoryController->insertElementMobile($dataSession, $itemsProccessEntradas);
+								
 							}
 						}
 					}

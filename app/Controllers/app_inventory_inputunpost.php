@@ -1425,6 +1425,10 @@ class app_inventory_inputunpost extends _BaseController {
 						$objTMD["quantiryStockInTraffic"]		= 0;
 						$objTMD["quantityStockUnaswared"]		= 0;
 						$objTMD["remaingStock"]					= 0;
+						$objTMD["remaingStock"]					= 0;
+						$objTMD["tax1"]							= 0;
+						$objTMD["tax2"]							= 0;
+						
 		
 						//Obtener lista de precio
 						$objParameterPriceDefault				= $this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID);
@@ -1483,6 +1487,7 @@ class app_inventory_inputunpost extends _BaseController {
 				}
 			}
 			catch(\Exception $ex){
+				log_message("error",print_r($ex->getMessage(),true));
 				return $this->response->setJSON(array(
 					'error' => true,
 					'message' => 'Linea: ' . $ex->getLine() . " - Error:" . $ex->getMessage()
