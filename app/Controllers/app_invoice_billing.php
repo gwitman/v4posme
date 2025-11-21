@@ -812,6 +812,8 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
+			log_message("error",print_r($ex,true));
+			
 			$this->core_web_notification->set_message(true,$ex->getLine()." ".$ex->getMessage());
 			return $this->response->setJSON(array(
 				'error'   => true,
@@ -965,9 +967,11 @@ class app_invoice_billing extends _BaseController {
 			
 			//Validar si la caja esta abierta
 			if(
+				(
 				!$this->core_web_authentication->isCashBoxOpen($companyID,$userID,$objTMNew["transactionOn"],$objTMNew["currencyID"])
 				&&
 				$objParameterINVOICE_BILLING_VALID_CASH_OPENING == "true"
+				) 
 			)
 			{
 				$errorFound = true;
@@ -1789,6 +1793,8 @@ class app_invoice_billing extends _BaseController {
 			
 		}
         catch (DatabaseException $e) {
+			log_message("error",print_r($e,true));
+			
 			$db->transRollback();
             $response = [
                 'success' 	=> false,
@@ -1805,6 +1811,7 @@ class app_invoice_billing extends _BaseController {
         catch(\Exception $ex)
         {
 			
+			log_message("error",print_r($ex,true));
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
@@ -2352,6 +2359,7 @@ class app_invoice_billing extends _BaseController {
 			}		
 		}
 		catch (DatabaseException $e) {
+			log_message("error",print_r($e,true));
             $response = [
 				'success' 	=> false,
 				'error' 	=> [
@@ -2366,6 +2374,7 @@ class app_invoice_billing extends _BaseController {
         }
 		catch(\Exception $ex)
 		{
+			log_message("error",print_r($ex,true));
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
@@ -3540,6 +3549,8 @@ class app_invoice_billing extends _BaseController {
 			
 		}
 		catch(\Exception $ex){
+			log_message("error",print_r($ex,true));
+			
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
