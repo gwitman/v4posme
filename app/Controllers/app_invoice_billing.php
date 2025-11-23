@@ -8360,6 +8360,7 @@ class app_invoice_billing extends _BaseController {
 			else{			
 				//visualizar				
 				$this->dompdf->stream($fileNamePdf, ['Attachment' => $objParameterShowDownloadPreview ]);
+				exit;
 			}
 			
 			
@@ -13887,6 +13888,7 @@ class app_invoice_billing extends _BaseController {
 			else{			
 				//visualizar				
 				$this->dompdf->stream($fileNamePdf, ['Attachment' => $objParameterShowDownloadPreview ]);
+				exit;
 			}
 			
 			
@@ -14151,6 +14153,7 @@ class app_invoice_billing extends _BaseController {
 			else{			
 				//visualizar				
 				$this->dompdf->stream($fileNamePdf, ['Attachment' => $objParameterShowDownloadPreview ]);
+				exit;
 			}
 			
 			
