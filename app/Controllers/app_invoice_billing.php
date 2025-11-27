@@ -2510,7 +2510,7 @@ class app_invoice_billing extends _BaseController {
 			$objTM["reference2"] 					= $transactionMaster->Plazo; 
 			$objTM["reference3"] 					= $this->User_Model->get_UserByUserIDAndCompanyID($companyID, $dataSession["user"]->userID)->firstName;
 			$objTM["reference4"] 					= is_null($transactionMaster->CustomerCreditLineId) ? "0" : $transactionMaster->CustomerCreditLineId;
-			$objTM["statusID"] 						= $statusID[0]->workflowStageID;
+			$objTM["statusID"] 						= $transactionMaster->StatusID; 
 			$objTM["amount"] 						= 0;
 			$objTM["isApplied"] 					= 0;
 			$objTM["journalEntryID"] 				= 0;
@@ -2553,9 +2553,9 @@ class app_invoice_billing extends _BaseController {
 			$objTMInfo["transactionID"]				= $transactionID;
 			$objTMInfo["transactionMasterID"]		= $transactionMasterID;
 			$objTMInfo["zoneID"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_ZONEID_DEFAULT")->value; //INVOICE_BILLING_ZONEID_DEFAULT
-			$objTMInfo["mesaID"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_MESAID_DEFAULT")->value; //INVOICE_BILLING_MESAID_DEFAULT
+			$objTMInfo["mesaID"]					= $transactionMaster->MesaID;
 			$objTMInfo["routeID"]					= 0;
-			$objTMInfo["referenceClientName"]		= "";
+			$objTMInfo["referenceClientName"]		= $transactionMaster->ReferenceClientName;
 			$objTMInfo["referenceClientIdentifier"]	= $customer->identification;
 			$amountDolares							= 0;
 			$amountCordobas							= 0;
