@@ -2709,6 +2709,7 @@ class Transaction_Master_Detail_Model extends Model  {
 					end as  tm_nextVisit,
 					c.statusID as tm_statusID,
 					tmi.mesaID as tm_mesaID,
+					mesa.name as tm_mesaName,
 					tmi.referenceClientIdentifier as tm_referenceClientIdentifier,
 					tmi.referenceClientName as tm_referenceClientName,
 					ifnull(c.reference2,0) as tm_plazo,
@@ -2749,6 +2750,8 @@ class Transaction_Master_Detail_Model extends Model  {
 						tmi.transactionMasterID = c.transactionMasterID 
 					inner join tb_item i on 
 						i.itemID = tmd.componentItemID 
+					inner join tb_catalog_item mesa on 
+						mesa.catalogItemID = tmi.mesaID 
 					left join tb_customer_credit_document ccc on 
 						ccc.documentNumber = c.transactionNumber 
 					

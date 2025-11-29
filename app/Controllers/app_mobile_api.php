@@ -315,6 +315,14 @@ class app_mobile_api extends _BaseController
 						
 					//buscar el detalle
                     $resultado = array_filter($transactionMasterDetails, function($tm) use ($transactionMasterId) { return $tm->TransactionMasterId == $transactionMasterId; });					
+					
+					//antes de ingrear el registro validar si ya existe y eliminarlo
+					$objTmOld = $this->Transaction_Master_Model->get_rowByTransactionNumberAndCreatedBy($dataSession["user"]->companyID,$objTm->TransactionNumber,$dataSession["user"]->userID);
+					if($objTmOld)
+					{
+						$this->Transaction_Master_Model->delete_app_posme($objTmOld->companyID,$objTmOld->transactionID,$objTmOld->transactionMasterID);						
+					}
+					
                     $billingController->insertElementMobil($dataSession,$objTm, $resultado);
 					log_message("error",print_r("0008.005",true));
 					$idexCount++;

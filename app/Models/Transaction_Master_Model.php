@@ -108,6 +108,22 @@ class Transaction_Master_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
    }
+   
+   function get_rowByTransactionNumberAndCreatedBy($companyID,$transactionNumber,$createdBy)
+   {
+		$db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master");    
+		$sql = "";
+		$sql = sprintf("select tm.companyID, tm.transactionID, tm.transactionMasterID, tm.branchID, tm.transactionNumber, tm.transactionCausalID,tm.entityID, tm.transactionOn, tm.statusIDChangeOn, tm.componentID,tm.tax1,tm.tax2,tm.tax3,tm.tax4,tm.discount,tm.subAmount, tm.note, tm.sign, tm.currencyID, tm.currencyID2, tm.exchangeRate, tm.reference1, tm.reference2, tm.reference3, tm.reference4, tm.statusID, tm.amount, tm.isApplied, tm.journalEntryID, tm.classID, tm.areaID, tm.sourceWarehouseID, tm.targetWarehouseID, tm.createdBy, tm.createdAt, tm.createdOn, tm.createdIn, tm.isActive ,tm.priorityID , tm.transactionOn2 , tm.isTemplate, tm.periodPay,tm.nextVisit,tm.numberPhone,tm.printerQuantity,tm.entityIDSecondary , tm.dayExcluded ");
+		$sql = $sql.sprintf(" from tb_transaction_master tm");		
+		$sql = $sql.sprintf(" where tm.transactionNumber = '$transactionNumber' ");
+		$sql = $sql.sprintf(" and tm.companyID = $companyID");
+		$sql = $sql.sprintf(" and tm.createdBy = $createdBy");
+		$sql = $sql.sprintf(" and tm.isActive= 1");		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getRow();
+   }
    function get_rowByNotification($companyID)
    {
 	   $db 	= db_connect();
