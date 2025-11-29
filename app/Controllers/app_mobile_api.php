@@ -446,6 +446,7 @@ class app_mobile_api extends _BaseController
             $objUser 	= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);
             $companyID 	= $objUser["user"]->companyID;
             $userID 	= $objUser["user"]->userID;
+			$flavorID	= $objUser["company"]->flavorID;
             $objCompany = $objUser["company"];
 
 			//Obtener listado de menu
@@ -463,6 +464,9 @@ class app_mobile_api extends _BaseController
 			
             //Obtener lisa de paramtros
             $objListParameter = $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			
+			//Obtener lista de catalogos
+			$ListCatalogItem  = $this->Catalog_Item_Model->get_rowByFlavorID($flavorID);
 
             //Obtener documentos pendientes	
 			if($objCompany->type == "tu_futuro")
@@ -479,18 +483,24 @@ class app_mobile_api extends _BaseController
 
 			//Obtener lista de transacciones arribas 
 			$objListServerTransactionMaster = $this->Transaction_Master_Model->get_rowByCreatedBy_AndCurrentDate($companyID, $userID);
-
+			
+			
+			/*Obtener lista de facturas registradas del usuario*/
+			$objListTransactionMasterRegister = $this->Transaction_Master_Detail_Model->get_rowByUserToMobile($companyID, $userID);
+ 
             return $this->response->setJSON(array(
                 'error' => false,
                 'message' => SUCCESS,
                 'ObjCompany' => $objCompany,
 				'ListMenuElement' => $objListMenuElement,
-                'ListItem' => $objListItem,
+                'ListItem' => $objListItem,				
                 'ListCustomer' => $objListCustomer,
                 'ListParameter' => $objListParameter,
+				'ListCatalogItem' => $ListCatalogItem,
                 'ListDocumentCredit' => $objListDocumentCredit,
                 'ListDocumentCreditAmortization' => $objListAmortization,
-				'ListServerTransactionMaster' => $objListServerTransactionMaster 
+				'ListServerTransactionMaster' => $objListServerTransactionMaster ,
+				'ListTransactionMasterRegister' => $objListTransactionMasterRegister
             ));//--finjson
 
         } catch (\Exception $ex) {

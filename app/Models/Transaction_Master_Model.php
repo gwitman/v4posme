@@ -160,7 +160,7 @@ class Transaction_Master_Model extends Model  {
 		$builder	= $db->table("tb_transaction_master");    
    
 		
-	
+		/*Regresas solo las facturas aplicadas de tipo abono, y de tipo factura*/
 		$sql = "";
 		$sql = sprintf("
 			select 
@@ -172,6 +172,8 @@ class Transaction_Master_Model extends Model  {
 				tb_transaction_master t 
 			where 
 				t.isActive = 1 and 
+				t.transactionId in (19 /*factura*/, 23 /*abonos*/ ) and 
+				t.statusID in (67 /*facturas aplicadas*/ , 80 /*abonos aplicados*/ ) and 
 				t.companyID = $companyID and 
 				t.createdBy = $userID and 
 				date(t.createdOn) = date(NOW()) 

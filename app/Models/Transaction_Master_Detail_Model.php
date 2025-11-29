@@ -2683,5 +2683,87 @@ class Transaction_Master_Detail_Model extends Model  {
 		return $db->query($sql)->getResult();
 	}
 	
+	function get_rowByUserToMobile($companyID,$userID)
+	{
+		$db  = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+				select 
+					tmi.reference1 as tm_transactionMasterMobileID,
+					tmi.reference2 as tm_transactionMasterMobileNumber,
+					c.transactionID as tm_transactionID,
+					c.transactionMasterID as tm_transactionMasterID,
+					c.transactionNumber AS tm_transactionNumber,
+					c.entityID AS tm_entityID,
+					c.entityIDSecondary as tm_entityIDSecondary,
+					c.transactionOn as tm_transactionOn,
+					c.transactionOn2 as tm_transactionOn2,
+					case 
+						when c.nextVisit is null  then 
+							cast('1900-01-01' as datetime)	
+						 WHEN c.nextVisit <= '0001-01-01' THEN 
+						  cast('1900-01-01' as datetime)	
+						else 
+							cast(c.nextVisit as datetime)	
+					end as  tm_nextVisit,
+					c.statusID as tm_statusID,
+					tmi.mesaID as tm_mesaID,
+					tmi.referenceClientIdentifier as tm_referenceClientIdentifier,
+					tmi.referenceClientName as tm_referenceClientName,
+					ifnull(c.reference2,0) as tm_plazo,
+					c.reference1 as tm_reference1,	
+					c.reference3 as tm_reference3,
+					c.note AS tm_note,
+					c.currencyID as tm_currencyID,
+					c.exchangeRate as tm_exchangeRate,
+					c.transactionCausalID as tm_transactionCausalID ,
+					c.amount as tm_Amount,
+					c.subAmount as tm_subAmount,
+					c.tax1 as tm_tax1,
+					c.discount as tm_discount,
+					IFNULL(c.reference4,0) as tm_customerCreditLineID,
+					c.periodPay as tm_periodPay,
+					ifnull(ccc.interes ,0) as tm_fixedExpenses,
+					
+					tmd.transactionMasterDetailID as tmd_transactionMasterDetailID, 
+					tmd.componentID as componentID,
+					tmd.componentItemID as tmd_componentItemID,
+					tmd.quantity as tmd_quantity,
+					tmd.unitaryCost as tmd_unitaryCost,
+					tmd.unitaryPrice as tmd_unitaryPrice,
+					tmd.amount as tmd_SubAmount,
+					tmd.amount as tmd_Amount,
+					tmd.discount as tmd_Discount,
+					tmd.tax1 as tmd_tax1,	
+					i.itemNumber as tmd_itemNumber,
+					i.`name` as tmd_itemName,
+					i.barCode as tmd_barCode,
+					'' as tmd_reference1,
+					'' as tmd_reference2
+				from 
+					tb_transaction_master c 
+					inner join tb_transaction_master_detail tmd on 
+						tmd.transactionMasterID = c.transactionMasterID 
+					inner join tb_transaction_master_info tmi on 
+						tmi.transactionMasterID = c.transactionMasterID 
+					inner join tb_item i on 
+						i.itemID = tmd.componentItemID 
+					left join tb_customer_credit_document ccc on 
+						ccc.documentNumber = c.transactionNumber 
+					
+				where 
+					c.isActive = 1 and 
+					c.companyID = $companyID and 
+					c.createdBy = $userID and 
+					c.transactionID in ( 19 /*factura*/) and 
+					c.statusID in (66 /*facturas registradas*/) and 
+					tmd.isActive = 1 
+					
+		");
+
+		return $db->query($sql)->getResult();
+	}
+	
 }
 ?>

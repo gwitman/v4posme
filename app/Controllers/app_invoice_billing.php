@@ -2582,7 +2582,7 @@ class app_invoice_billing extends _BaseController {
 			$objTMInfo["receiptAmountBankDolID"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_BANKID_DEFAULT")->value; //INVOICE_BILLING_BANKID_DEFAULT
 			$objTMInfo["receiptAmountCardBankID"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_BANKID_DEFAULT")->value; //INVOICE_BILLING_BANKID_DEFAULT
 			$objTMInfo["receiptAmountCardBankDolID"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_BANKID_DEFAULT")->value; //INVOICE_BILLING_BANKID_DEFAULT
-			$objTMInfo["reference1"]								= 0;
+			$objTMInfo["reference1"]								= $transactionMaster->TransactionMasterId;
 			$objTMInfo["reference2"]								= $transactionMaster->TransactionNumber;
 
 

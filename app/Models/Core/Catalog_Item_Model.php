@@ -62,6 +62,38 @@ class Catalog_Item_Model extends Model  {
 		 return $db->query($sql)->getRow();
 		
    }
+   function get_rowByFlavorID($flavorID)
+   {
+	   $db 	= db_connect();
+	   $sql = "";
+	   $sql = sprintf("
+		select 
+			c.catalogID,
+			c.`name` catalogName,
+			c.description as catalogDescription,
+			ci.catalogItemID,
+			ci.`name` as catalogItemName,
+			ci.description as catalogItemDescriptionName,
+			ci.display as catalogItemDisplay,
+			ci.ratio,
+			ci.reference1,
+			ci.reference2
+		from 
+			tb_catalog c 
+			inner join tb_catalog_item ci on 
+				c.catalogID = ci.catalogID 
+		where 
+			c.isActive = 1 and 
+			ci.flavorID = $flavorID 
+		order by 
+			c.`name`,ci.sequence 
+	    ");
+	
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+		 
+	   
+   }
    
 }
 ?>
