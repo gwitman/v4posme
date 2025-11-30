@@ -927,6 +927,7 @@ class app_invoice_billing extends _BaseController {
 			
 			
 			//Ingresar Informacion Adicional
+			$objTMInfoOld 								= $this->Transaction_Master_Info_Model->get_rowByPK($dataSession["user"]->companyID,objTM->transactionID,$transactionMasterID);
 			$objTMInfoNew["companyID"]					= $objTM->companyID;
 			$objTMInfoNew["transactionID"]				= $objTM->transactionID;
 			$objTMInfoNew["transactionMasterID"]		= $transactionMasterID;
@@ -954,7 +955,13 @@ class app_invoice_billing extends _BaseController {
 			$objTMInfoNew["receiptAmountCardBankID"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountTarjeta_BankID"));
 			$objTMInfoNew["receiptAmountCardBankDolID"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountTarjetaDol_BankID"));
 			$objTMInfoNew["reference1"]								= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtTMIReference1"));
-			$objTMInfoNew["reference2"]								= "not_used";
+			$objTMInfoNew["reference2"]								= $objTMInfoOld ? 
+																			(
+																				$objTMInfoOld->reference2 != "not_used" ? 
+																					$objTMInfoOld->reference2 : 
+																					"not_used" 
+																			) : 
+																			"not_used";
 			
 			
 			//Ingresar TransactionMaster Reference			
