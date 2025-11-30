@@ -2409,7 +2409,7 @@ class app_invoice_billing extends _BaseController {
         }
 	}
 
-	function insertElementMobil($dataSession,$transactionMaster, $transactionMasterDetails){
+	function insertElementMobil($dataSession,$transactionNumber,$transactionMaster, $transactionMasterDetails){
 	
 		try
 		{
@@ -2493,7 +2493,7 @@ class app_invoice_billing extends _BaseController {
 			$objTM["companyID"] 					= $companyID;
 			$objTM["transactionID"] 				= $transactionID;			
 			$objTM["branchID"]						= $branchID;			
-			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($companyID,$branchID,"tb_transaction_master_billing",0);
+			$objTM["transactionNumber"]				= $transactionNumber == "" ? $this->core_web_counter->goNextNumber($companyID,$branchID,"tb_transaction_master_billing",0) : $transactionNumber;
 			$objTM["transactionCausalID"] 			= $transactionMaster->TransactionCausalId;
 			$objTM["entityID"] 						= $customer->entityID;
 			$objTM["transactionOn"]					= $transactionMaster->TransactionOn;

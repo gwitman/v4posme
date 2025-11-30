@@ -87,5 +87,34 @@ class Transaction_Master_Info_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
    }
+   
+   function get_rowByTransactionNumberAndCreatedBy($companyID,$transactionNumber,$createdBy)
+   {
+		$db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_info");    
+		$sql = "";
+		$sql = sprintf("
+			select 
+				tm.companyID,
+				tm.transactionID,
+				tm.transactionMasterID,
+				tm.transactionNumber,
+				tmi.reference2 
+			from 
+				tb_transaction_master tm 
+				inner join tb_transaction_master_info tmi on 
+					tm.transactionMasterID = tmi.transactionMasterID 
+			where 
+				tm.isActive = 1 and 
+				tm.companyID = $companyID and 
+				tm.createdBy = $createdBy and 
+				tmi.reference2 = '$transactionNumber'
+				
+		");
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getRow();
+   }
+   
 }
 ?>
