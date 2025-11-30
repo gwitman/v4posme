@@ -283,7 +283,7 @@ class app_invoice_billing extends _BaseController {
             $listMesaFiltradas = array_filter($dataView["objListMesa"] , function($item) use ($mesaID) {
                 return $item->catalogItemID == $mesaID;
             });
-            if(!$listMesaFiltradas)
+            if(!$listMesaFiltradas && $mesaID != 0)
                 throw new \Exception("NO TIENE ACCESO A LA MESA SELECCIONADA");
 
 

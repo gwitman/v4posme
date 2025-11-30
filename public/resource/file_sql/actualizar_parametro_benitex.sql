@@ -1856,7 +1856,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Benitex Steak House' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 996 /*usuarioID*/,type='default'  , abreviature='demo'
+	flavorID = 996 /*usuarioID*/,type='benitex'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
