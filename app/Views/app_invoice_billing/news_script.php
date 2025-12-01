@@ -1483,7 +1483,8 @@
 		var listRow 	= objTableDetail.fnGetData();
 		var length 		= listRow.length;
 		var comentario 	= $("#txtNote").val();
-
+		comentario 		= comentario.replace(/\s+/g, '___');
+		
 		var i 		= 0;
 		var itemid 	= "-1";
 

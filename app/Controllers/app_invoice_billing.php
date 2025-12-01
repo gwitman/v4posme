@@ -14842,6 +14842,7 @@ class app_invoice_billing extends _BaseController {
 			
 			//visualizar
 			$this->dompdf->stream("file.pdf", ['Attachment' => !$objParameterShowLinkDownload ]);
+			exit;
 			
 			//descargar
 			//$this->dompdf->stream();

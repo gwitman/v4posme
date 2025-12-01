@@ -21635,7 +21635,7 @@ function helper_reporte58mmCocina(
 						
 						<tr>
                           <td colspan='3' style=''>
-                            Mesa: ".$dataView["objMesa"]->name."
+                            Mesa: ".($dataView["objMesa"] ? $dataView["objMesa"]->name : "N/D")."
                           </td>
                         </tr>
 						
