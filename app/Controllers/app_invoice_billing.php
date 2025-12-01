@@ -927,7 +927,7 @@ class app_invoice_billing extends _BaseController {
 			
 			
 			//Ingresar Informacion Adicional
-			$objTMInfoOld 								= $this->Transaction_Master_Info_Model->get_rowByPK($dataSession["user"]->companyID,objTM->transactionID,$transactionMasterID);
+			$objTMInfoOld 								= $this->Transaction_Master_Info_Model->get_rowByPK($dataSession["user"]->companyID,$objTM->transactionID,$transactionMasterID);
 			$objTMInfoNew["companyID"]					= $objTM->companyID;
 			$objTMInfoNew["transactionID"]				= $objTM->transactionID;
 			$objTMInfoNew["transactionMasterID"]		= $transactionMasterID;
@@ -14703,6 +14703,9 @@ class app_invoice_billing extends _BaseController {
 			$transactionID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri	
 			$transactionMasterID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri	
 			$itemID					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"itemID");//--finuri	
+			$transactionComment		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterComment");
+			$transactionComment 	= preg_replace("/_+/", " ", $transactionComment);
+			
 			$itemIDArray			= explode(",",$itemID);
 			$itemIDArray			= array_map('intval', $itemIDArray);
 			
@@ -14734,7 +14737,7 @@ class app_invoice_billing extends _BaseController {
 			$dataView["tipoCambio"]						= round($dataView["objTransactionMaster"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);			
 			$dataView["objZone"]						= $this->core_web_catalog->getCatalogItem("tb_transaction_master_info_billing","zoneID",$companyID,$dataView["objTransactionMasterInfo"]->zoneID);
 			$dataView["objMesa"]						= $this->core_web_catalog->getCatalogItem("tb_transaction_master_info_billing","mesaID",$companyID,$dataView["objTransactionMasterInfo"]->mesaID);
-			
+			$dataView["comment"] 						= $transactionComment;
 			
 			//obtener nombre de impresora por defecto
 			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_COCINA",$companyID);

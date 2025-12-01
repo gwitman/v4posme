@@ -21657,7 +21657,19 @@ function helper_reporte58mmCocina(
 						
                                 
                          [[DETALLE]]
-                                
+                               
+						<tr>
+							<td colspan='3'>
+								&nbsp;
+							</td>
+						</tr>
+						
+						<tr>
+							<td colspan='3'>
+								".$dataView["comment"]."
+							</td>
+						</tr>
+						
                         <tr>
                           <td colspan='3' style='text-align:center'>
                             ****************************
