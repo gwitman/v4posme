@@ -7775,6 +7775,8 @@ class app_invoice_billing extends _BaseController {
 			foreach($datView["objTMD"] as $detail_)
 			{
 				$row = array(
+					"itemNumber"			=>$detail_->itemNumber,
+					"itemBarCode"			=>$detail_->barCode,
 					"itemName"				=>$detail_->itemName. " ". strtolower($detail_->skuFormatoDescription),
 					"itemNameQuantity"		=>sprintf("%01.2f",round($detail_->quantity,2)),
 					"itemNamePrice"			=>sprintf("%01.2f",round($detail_->unitaryPrice,2)),
@@ -14737,7 +14739,7 @@ class app_invoice_billing extends _BaseController {
 			$dataView["tipoCambio"]						= round($dataView["objTransactionMaster"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);			
 			$dataView["objZone"]						= $this->core_web_catalog->getCatalogItem("tb_transaction_master_info_billing","zoneID",$companyID,$dataView["objTransactionMasterInfo"]->zoneID);
 			$dataView["objMesa"]						= $this->core_web_catalog->getCatalogItem("tb_transaction_master_info_billing","mesaID",$companyID,$dataView["objTransactionMasterInfo"]->mesaID);
-			$dataView["comment"] 						= $transactionComment;
+			$dataView["comment"] 						= helper_InsertarEntrePartes($transactionComment,"<br/>",13);
 			
 			//obtener nombre de impresora por defecto
 			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_COCINA",$companyID);

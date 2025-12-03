@@ -21665,7 +21665,7 @@ function helper_reporte58mmCocina(
 						</tr>
 						
 						<tr>
-							<td colspan='3'>
+							<td colspan='3' >
 								".$dataView["comment"]."
 							</td>
 						</tr>
