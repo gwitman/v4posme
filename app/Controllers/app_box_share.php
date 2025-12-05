@@ -2292,41 +2292,18 @@ class app_box_share extends _BaseController {
 			$confiDetalle = array();
 			if($saldos != "Basico"){
 				$row = array(
-					"style"		=>"text-align:left;width:50%",
-					"colspan"	=>'1',
+					"style"		=>"text-align:left;width:90%",
+					"colspan"	=>'3',
 					"prefix"	=>'',
 					
 					
-					"style_row_data"		=>"text-align:left;width:50%",
-					"colspan_row_data"		=>'1',
+					"style_row_data"		=>"text-align:left;width:90%",
+					"colspan_row_data"		=>'3',
 					"prefix_row_data"		=>'',
 					"nueva_fila_row_data"	=>0
 				);
 				array_push($confiDetalle,$row);
 				
-				$row = array(
-					"style"		=>"text-align:left;width:10%",
-					"colspan"	=>'1',
-					"prefix"	=>'',
-					
-					"style_row_data"		=>"text-align:left;width:10%",
-					"colspan_row_data"		=>'1',
-					"prefix_row_data"		=>'',
-					"nueva_fila_row_data"	=>0
-				);
-				array_push($confiDetalle,$row);
-				
-				$row = array(
-					"style"		=>"text-align:right",
-					"colspan"	=>'1',
-					"prefix"	=>$datView["objCurrency"]->simbol,
-					
-					"style_row_data"		=>"text-align:right",
-					"colspan_row_data"		=>'1',
-					"prefix_row_data"		=>$datView["objCurrency"]->simbol,
-					"nueva_fila_row_data"	=>0
-				);
-				array_push($confiDetalle,$row);
 			}
 			
 			//Inicializar Detalle
@@ -2343,16 +2320,19 @@ class app_box_share extends _BaseController {
 			
 			$detalle = array();
 			if($saldos != "Basico"){
-				$row = array("SALDO INICIAL", '', $datView["objCurrency"]->simbol. sprintf("%.2f", $saldoInicial));
+				
+				$row = array("SALDO INICIAL ".$datView["objCurrency"]->simbol." ". number_format(sprintf("%.2f", $saldoInicial),2));
 				array_push($detalle,$row);
 				
 				foreach($datView["objTMD"] as $detail_){
-					$row = array("ABONO", '', sprintf('%.2f',round($detail_->amount,2)));
+					$row = array("ABONO ".$datView["objCurrency"]->simbol." ".number_format(sprintf('%.2f',round($detail_->amount,2)),2));
 					array_push($detalle,$row);
 				}
 				
-				$row = array("SALDO FINAL", '', sprintf('%.2f', $saldoFinal) );
+				$row = array("SALDO FINAL \t".$datView["objCurrency"]->simbol." ".number_format(sprintf('%.2f', $saldoFinal),2));
 				array_push($detalle,$row);
+				
+				
 			}
 			
 			
@@ -2376,6 +2356,7 @@ class app_box_share extends _BaseController {
 				"",
 				""
 			);
+			
 			$this->dompdf->loadHTML($html);
 			
 			//1cm = 29.34666puntos
