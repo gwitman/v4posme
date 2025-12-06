@@ -13752,6 +13752,7 @@ class app_invoice_billing extends _BaseController {
 			
 			//Get Documento					
 			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objCCD"]						= $this->Customer_Credit_Document_Model->get_rowByDocument($datView["objTM"]->companyID,$datView["objTM"]->entityID,$datView["objTM"]->transactionNumber);
 			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
 			$datView["objTC"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$datView["objTM"]->transactionCausalID);
@@ -13802,7 +13803,28 @@ class app_invoice_billing extends _BaseController {
 																		$datView["objCustumer"]->identification :
 																		$datView["objTMI"]->referenceClientIdentifier ;
 																		
-																		
+			
+			$datViewArray["creditPercentageInterestYear"]				= 0;
+			$datViewArray["creditPercentageInterestTerm"]				= 0;
+			$datViewArray["creditTerm"]									= 0;
+			$datViewArray["creditBalance"]								= 0;
+			$datViewArray["creditAmount"]								= 0;
+			$datViewArray["creditAmountAndInteres"]						= 0;
+			$datViewArray["creditAmountInteres"]						= 0;
+			if($datView["objCCD"])
+			{
+				$objCCDAmortizacion 										= $this->Customer_Credit_Amortization_Model->get_rowByDocument($datView["objCCD"]->customerCreditDocumentID);
+				$amountAndInterest											= array_sum(array_map(function($item) { return $item->share;}, $objCCDAmortizacion));
+				$amountInterest												= array_sum(array_map(function($item) { return $item->interest;}, $objCCDAmortizacion));
+				$datViewArray["creditPercentageInterestYear"]				= round($datView["objCCD"]->interes,2);
+				$datViewArray["creditTerm"]									= $datView["objCCD"]->term;
+				$datViewArray["creditPercentageInterestTerm"]				= round($datView["objCCD"]->interes / $datView["objCCD"]->term,2) ;
+				$datViewArray["creditBalance"]								= round($datView["objCCD"]->balance,2);
+				$datViewArray["creditAmount"]								= round($datView["objCCD"]->amount,2);
+				$datViewArray["creditAmountAndInteres"]						= round($amountAndInterest,2);
+				$datViewArray["creditAmountInteres"]						= round($amountInterest,2);
+			}
+			
 			$datViewArray["customerNameLastName"]				= $datView["objNatural"]->lastName;
 			$datViewArray["statusName"]							= $datView["objStage"][0]->display;
 			$datViewArray["causalName"]							= $datView["objTC"]->name;

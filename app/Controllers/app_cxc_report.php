@@ -382,6 +382,7 @@ class app_cxc_report extends _BaseController {
 			
 			//visualizar
 			$this->dompdf->stream("file.pdf", ['Attachment' => !$objParameterShowLinkDownload ]);
+			exit;
 			
 			//descargar
 			//$this->dompdf->stream();
