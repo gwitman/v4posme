@@ -2009,8 +2009,16 @@ class app_cxc_report extends _BaseController {
 					
 					if(isset($objData02))
 					{
-						$objDataResult["objPayList"]			= $objData02[0];
-						$objDataResult["objPayListSummary"]		= $objData02[1];
+						if(count($objData02) > 0 )
+						{
+							$objDataResult["objPayList"]			= $objData02[0];
+							$objDataResult["objPayListSummary"]		= $objData02[1];
+						}
+						else 
+						{
+							$objDataResult["objPayList"]			= NULL;
+							$objDataResult["objPayListSummary"]		= NULL;
+						}
 					}
 					else
 					{
