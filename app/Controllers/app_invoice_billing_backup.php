@@ -7,7 +7,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 use Config\Services;
 use CodeIgniter\Database\Exceptions\DatabaseException;
 
-class app_invoice_billing extends _BaseController {
+class app_invoice_billing_backup extends _BaseController {
 
     function edit($companyID, $transactionID, $transactionMasterID, $codigoMesero): ResponseInterface
     {

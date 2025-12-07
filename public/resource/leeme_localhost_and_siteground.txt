@@ -1,3 +1,4 @@
+
 ---------------------------------------
 instalador:
 ---------------------------------------
@@ -44,6 +45,17 @@ instalador:
 		pin					: 180388	PC-POSME-HP
 		
 		
+		
+descargar carpetas que estan en google drive del gmail,   www.witman@gmail.com
+descargarla y descomprimirlas
+	/public/resource/theme-ext-6.2.0/*
+	/public/resource/theme-genyx/*
+	/public/resource/theme-kuta-admin/*
+	/public/resource/theme-remark/*
+	/public/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/*
+
+
+
 modificar los siguientes archivos:		
 		C:\xampp\phpMyAdmin\config.inc.php : password: root1.2Blandon
 		

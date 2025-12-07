@@ -11,3 +11,9 @@ app/Libraries/core_web_qr/temp/*
 .idea/vcs.xml
 /vendor/dompdf/dompdf/lib/fonts/Helvetica-BoldOblique.afm.json
 /vendor/dompdf/dompdf/lib/fonts/Times-BoldItalic.afm.json
+/public/resource/theme-ext-6.2.0/*
+/public/resource/theme-genyx/*
+/public/resource/theme-kuta-admin/*
+/public/resource/theme-remark/*
+/public/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/*
+/public/resource/file_navicate_perfil_sincronization/*.ndsymysql
