@@ -116,6 +116,43 @@ class core_web_view {
    public function __construct(){		
          
    }
+   
+   function getViewConfigurationByName($user,$componentID,$name,$callerID,$permission=null,$parameter=null)
+   {
+	    $Data_View_Model = new Data_View_Model();
+		$Company_Data_View_Model = new Company_Data_View_Model();
+		$Company_Model = new Company_Model();
+		$Bd_Model = new Bd_Model();  
+		
+		//Obtener la vista generica
+		$companyDataView			= $Data_View_Model->getViewByName($componentID,$name,$callerID);
+		if(!$companyDataView) {
+            return null;
+        }
+		
+		//Obtener la compania
+		$objCompany = $Company_Model->get_rowByPK($user->companyID);
+		
+		//Obtener la vista por el flavor		
+		$dataviewID 				= $companyDataView->dataViewID;
+		$companyDataView			= $Company_Data_View_Model->get_rowBy_companyIDDataViewIDAndFlavor($user->companyID,$dataviewID,$callerID,$componentID,$objCompany->flavorID);
+		if(!$companyDataView)
+		{
+			//Obtener la vista unica
+			$dataviewID 				= $dataviewID;
+			$companyDataView			= $Company_Data_View_Model->get_rowBy_companyIDDataViewID($user->companyID,$dataviewID,$callerID,$componentID);
+			if(!$companyDataView)
+			return null;
+		}
+		
+		
+		//
+		$dataRecordSet				= "no executed";
+		$dataResult["view_config"]	= $companyDataView;
+		$dataResult["view_data"]	= $dataRecordSet;
+		return $dataResult;
+   }
+   
    function getViewByName($user,$componentID,$name,$callerID,$permission=null,$parameter=null){
 		$Data_View_Model = new Data_View_Model();
 		$Company_Data_View_Model = new Company_Data_View_Model();

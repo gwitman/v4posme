@@ -166,7 +166,202 @@ class core_view extends _BaseController {
 	}
 
 
+	function showviewbynamepaginateExt620()
+	{
+		$request = service('request');
 
+		// Obtener parámetros básicos
+		$page  = $request->getGet('page');      // 1
+		$start = $request->getGet('start');     // 0
+		$limit = $request->getGet('limit');     // 20
+		$dc    = $request->getGet('_dc');       // 1765223064973
+
+		// Obtener filtro (viene URL-encoded)
+		$filtersRaw = $request->getGet('filter'); 
+		// Convertir JSON a array
+		$filters = json_decode($filtersRaw, true);
+	
+		// Variables individuales
+		$componentid        = null;
+		$fncallback         = null;
+		$viewname           = null;
+		$autoclose          = null;
+		$filter             = null;
+		$multiselect        = null;
+		$urlRedictWhenEmpty = null;
+		$sEcho              = null;
+		$iDisplayStart      = null;
+		$iDisplayLength     = null;
+		$sSearch            = null;
+		$currencyID			= null;
+		$typePriceID		= null;
+		$listPriceID 		= null;
+		$warehouseID		= null;
+		
+		// Asignar cada propiedad a su variable
+		if (is_array($filters)) {
+			foreach ($filters as $f) {
+				switch ($f['property']) {
+
+					case 'componentid':
+						$componentid = $f['value'];
+						break;
+
+					case 'fncallback':
+						$fncallback = $f['value'];
+						break;
+
+					case 'viewname':
+						$viewname = $f['value'];
+						break;
+
+					case 'autoclose':
+						$autoclose = $f['value'];
+						break;
+
+					case 'filter':
+						$filter = $f['value'];
+						break;
+
+					case 'multiselect':
+						$multiselect = $f['value'];
+						break;
+
+					case 'urlRedictWhenEmpty':
+						$urlRedictWhenEmpty = $f['value'];
+						break;
+
+					case 'sEcho':
+						$sEcho = $f['value'];
+						break;
+
+					case 'iDisplayStart':
+						$iDisplayStart = $f['value'];
+						break;
+
+					case 'iDisplayLength':
+						$iDisplayLength = $f['value'];
+						break;
+
+					case 'sSearch':
+						$sSearch = $f['value'];
+						break;
+					case 'currencyID':
+						$currencyID = $f['value'];
+						break;
+					case 'typePriceID':
+						$typePriceID = $f['value'];
+						break;
+					case 'listPriceID':
+						$listPriceID = $f['value'];
+						break;
+					case 'warehouseID':
+						$warehouseID = $f['value'];
+						break;						
+				}
+			}		
+		}
+		
+		
+
+		
+		
+		$parameter["{componentid}"]					= $componentid;
+		$parameter["{fnCallback}"]					= $fncallback;
+		$parameter["{viewname}"]					= $viewname;
+		$parameter["{autoclose}"]					= $autoclose;
+		$parameter["{filter}"]						= $filter;
+		$parameter["{multiselect}"]					= $multiselect;
+		$parameter["{urlRedictWhenEmpty}"]			= $urlRedictWhenEmpty;	
+		$parameter["{sEcho}"]						= $sEcho;
+		$parameter["{iDisplayStart}"]				= $page;
+		$parameter["{iDisplayStartDB}"]				= $start;
+		$parameter["{iDisplayLength}"]				= $limit;
+		$parameter["{sSearchDB}"]					= urldecode($sSearch);
+		$parameter["{sSearch}"]						= $sSearch;
+		$parameter["{isWindowForm}"]				= "0";
+		$parameter["{currencyID}"]					= $currencyID;
+		$parameter["{typePriceID}"]					= $typePriceID;
+		$parameter["{listPriceID}"]					= $listPriceID;
+		$parameter["{warehouseID}"]					= $warehouseID;
+		
+			
+			
+		try
+		{  
+		  
+			
+  
+			//Validar Authentication
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get(); 
+		
+			
+			$parameter["{companyID}"]	= $this->session->get('user')->companyID;
+			$parameter["{useMobile}"]	= $this->session->get('user')->useMobile;
+			$parameter["{fnCallback}"] 	= $fncallback;
+			$viewname 					= urldecode($viewname);
+			$filter 					= urldecode($filter);
+			$result 					= $this->core_web_tools->formatParameter($filter);	
+			
+			
+			
+			
+			//Parsear Parametros
+			if($result)
+			$parameter 	= array_merge($parameter,$result);
+			
+			
+			$viewnameTemp				= $this->session->get('user')->useMobile == "0" ?
+											$viewname:
+											$viewname."_MOBILE";
+											
+			$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewnameTemp,CALLERID_SEARCH,null,$parameter);
+			$dataViewDataTotal			= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname."_TOTAL",CALLERID_SEARCH,null,$parameter);
+			$dataViewDataDiplay			= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname."_DISPLAY",CALLERID_SEARCH,null,$parameter); 				
+			
+			if(!$dataViewData )
+			{
+				throw new \Exception("No existe la vista '".$viewnameTemp."' revisar en tb_dataview y en tb_company_dataview ");
+			}
+			
+			if(!$dataViewDataTotal )
+			{
+				throw new \Exception("No existe la vista '".$viewname."_TOTAL"."' revisar en tb_dataview y en tb_company_dataview ");
+			}
+			
+			if(!$dataViewDataDiplay )
+			{
+				throw new \Exception("No existe la vista '".$viewname."_DISPLAY"."' revisar en tb_dataview y en tb_company_dataview ");
+			}
+				
+			$dataViewDataTotal 			= $dataViewDataTotal["view_data"][0]["itemID"];
+			$dataViewDataDiplay 		= $dataViewDataDiplay["view_data"][0]["itemID"];
+			$parameter["{dataViewDataTotal}"] 	= $dataViewDataTotal;
+			$parameter["{dataViewDataDiplay}"] 	= $dataViewDataDiplay;
+			
+			return $this->response->setJSON([
+				'success' => true,
+				'total'   => $dataViewDataTotal,	 					// total SIN paginar
+				'data'    => $dataViewData["view_data"]    				// array con los registros paginados
+			]);
+
+				
+		}
+		catch(\Exception $ex){
+			return $this->response->setJSON([
+				'success' => false,
+				'total'   => 0, 		// total SIN paginar
+				'data'    => null ,   	// array con los registros paginados
+				'message' => 'Hubo un error al cargar los datos: parámetros inválidos'
+			]);
+		}
+		
+		
+		
+		
+	}
 	//BUSCAR UNA VISTA POR NOMBRE
 	function showviewbynamepaginate(
 		$componentid="",

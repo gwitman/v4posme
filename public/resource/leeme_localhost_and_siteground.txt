@@ -53,6 +53,7 @@ descargarla y descomprimirlas
 	/public/resource/theme-kuta-admin/*
 	/public/resource/theme-remark/*
 	/public/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/*
+	/public/resource/font-awesome-4.7.0/*
 
 
 

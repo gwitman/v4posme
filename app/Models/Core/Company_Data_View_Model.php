@@ -12,7 +12,7 @@ class Company_Data_View_Model extends Model  {
    function get_rowBy_companyIDDataViewID($companyID,$dataViewID,$callerID,$componentID){
 		$db 	= db_connect();    
 		$sql = "";
-		$sql = sprintf("select companyID,componentID,callerID,dataViewID,companyDataViewID,name,description,sqlScript,visibleColumns,nonVisibleColumns,isActive,summaryColumns,formatColumns,flavorID,formatColumnsHeader");
+		$sql = sprintf("select companyID,componentID,callerID,dataViewID,companyDataViewID,name,description,sqlScript,visibleColumns,nonVisibleColumns,isActive,summaryColumns,formatColumns,flavorID,formatColumnsHeader,jsonConfiguration");
 		$sql = $sql.sprintf(" from tb_company_dataview");
 		$sql = $sql.sprintf(" where companyID = $companyID");
 		$sql = $sql.sprintf(" and componentID = $componentID");
@@ -28,7 +28,7 @@ class Company_Data_View_Model extends Model  {
    {
 		$db 	= db_connect();    
 		$sql = "";
-		$sql = sprintf("select companyID,componentID,callerID,dataViewID,companyDataViewID,name,description,sqlScript,visibleColumns,nonVisibleColumns,isActive,summaryColumns,formatColumns,flavorID,formatColumnsHeader");
+		$sql = sprintf("select companyID,componentID,callerID,dataViewID,companyDataViewID,name,description,sqlScript,visibleColumns,nonVisibleColumns,isActive,summaryColumns,formatColumns,flavorID,formatColumnsHeader,jsonConfiguration");
 		$sql = $sql.sprintf(" from tb_company_dataview");
 		$sql = $sql.sprintf(" where companyID = $companyID");
 		$sql = $sql.sprintf(" and componentID = $componentID");

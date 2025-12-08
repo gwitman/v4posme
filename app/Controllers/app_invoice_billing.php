@@ -3939,6 +3939,34 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objCurrencyCordoba"] 														=  $objCurrencyCordoba;
 			$dataView["objCustomerCreditAmoritizationAll"] 											=  $objCustomerCreditAmoritizationAll;
 			
+			//Obtener las configuracion de las vistas
+			$dataView["objCompanyDataView_BuscarClientes"] 											= $this->core_web_view->getViewConfigurationByName(
+																											$this->session->get('user'),
+																											$objComponentItem->componentID,
+																											"SELECCIONAR_CLIENTES_ALL_PAGINATED",
+																											CALLERID_SEARCH,
+																											null,
+																											null
+																									);
+																									
+			$dataView["objCompanyDataView_BuscarFacturas"] 											= $this->core_web_view->getViewConfigurationByName(
+																											$this->session->get('user'),
+																											$objComponentTransactionBilling->componentID,
+																											"SELECCIONAR_BILLING_REGISTER",
+																											CALLERID_SEARCH,
+																											null,
+																											null
+																									);
+																									
+			$dataView["objCompanyDataView_BuscarProductos"] 										= $this->core_web_view->getViewConfigurationByName(
+																											$this->session->get('user'),
+																											$objComponentItem->componentID,
+																											"SELECCIONAR_ITEM_BILLING_POPUP_INVOICE",
+																											CALLERID_SEARCH,
+																											null,
+																											null
+																									);
+			
 			
 			//Obtener los datos de impresion				
 			if($transactionMasterIDToPrinter > 0 && $objParameterDirect  == "true")

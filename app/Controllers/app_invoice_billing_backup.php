@@ -3622,12 +3622,12 @@ class app_invoice_billing_backup extends _BaseController {
 			//PERMISO SOBRE LA FUNCTION
 			if(APP_NEED_AUTHENTICATION == true){
 						$permited = false;
-						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						$permited = $this->core_web_permission->urlPermited(/*get_class($this)*/ "app_invoice_billing","index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
 						
 						if(!$permited)
 						throw new \Exception(NOT_ACCESS_CONTROL);
 						
-						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"add",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(/*get_class($this)*/ "app_invoice_billing","add",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
 						if ($resultPermission 	== PERMISSION_NONE)
 						throw new \Exception(NOT_ALL_INSERT);			
 			
@@ -3939,6 +3939,35 @@ class app_invoice_billing_backup extends _BaseController {
 			$dataView["objCurrencyCordoba"] 														=  $objCurrencyCordoba;
 			$dataView["objCustomerCreditAmoritizationAll"] 											=  $objCustomerCreditAmoritizationAll;
 			
+			//Obtener las configuracion de las vistas
+			$dataView["objCompanyDataView_BuscarClientes"] 											= $this->core_web_view->getViewConfigurationByName(
+																											$this->session->get('user'),
+																											$objComponentItem->componentID,
+																											"SELECCIONAR_CLIENTES_ALL_PAGINATED",
+																											CALLERID_SEARCH,
+																											null,
+																											null
+																									);
+																									
+			$dataView["objCompanyDataView_BuscarFacturas"] 											= $this->core_web_view->getViewConfigurationByName(
+																											$this->session->get('user'),
+																											$objComponentTransactionBilling->componentID,
+																											"SELECCIONAR_BILLING_REGISTER",
+																											CALLERID_SEARCH,
+																											null,
+																											null
+																									);
+																									
+			$dataView["objCompanyDataView_BuscarProductos"] 										= $this->core_web_view->getViewConfigurationByName(
+																											$this->session->get('user'),
+																											$objComponentItem->componentID,
+																											"SELECCIONAR_ITEM_BILLING_POPUP_INVOICE",
+																											CALLERID_SEARCH,
+																											null,
+																											null
+																									);
+																									
+			
 			
 			//Obtener los datos de impresion				
 			if($transactionMasterIDToPrinter > 0 && $objParameterDirect  == "true")
@@ -4002,13 +4031,13 @@ class app_invoice_billing_backup extends _BaseController {
 			//Renderizar Resultado 
 			$dataSession["notification"]															= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]																	= $this->core_web_notification->get_message();
-			$dataSession["head"]																	= /*--inicio view*/ view('app_invoice_billing/news_head',$dataView);//--finview
-			$dataSession["body"]																	= /*--inicio view*/ view('app_invoice_billing/news_body',$dataView);//--finview
-			$dataSession["script"]																	= /*--inicio view*/ view('app_invoice_billing/news_script',$dataView);//--finview
+			$dataSession["head"]																	= /*--inicio view*/ view('app_invoice_billing_backup/news_head',$dataView);//--finview
+			$dataSession["body"]																	= /*--inicio view*/ view('app_invoice_billing_backup/news_body',$dataView);//--finview
+			$dataSession["script"]																	= /*--inicio view*/ view('app_invoice_billing_backup/news_script',$dataView);//--finview
 			$dataSession["footer"]																	= "";
             session()->remove(['transactionMasterID', 'viaBoton']);			
-			return view("core_masterpage/default_popup",$dataSession);//--finview-r	
-			//return view("core_masterpage/default_masterpage_ext_6_2_0",$dataSession);//--finview-r	
+			//return view("core_masterpage/default_popup",$dataSession);//--finview-r	
+			return view("core_masterpage/default_masterpage_ext_6_2_0",$dataSession);//--finview-r	
 			
 		}
 		catch(\Exception $ex){
