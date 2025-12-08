@@ -402,6 +402,12 @@
 									handler: fnBtnActualizarCatalogo
 								},
 								{
+									text: 'Crear bd local',
+									iconCls: 'x-fa fa-database',
+									id: 'btnCrearBDLocal',
+									handler: fnBtnCrearBDLocal
+								},
+								{
 									text: 'Seleccionar factura',
 									iconCls: 'x-fa fa-database',
 									id: 'btnSeleccionarFactura',
@@ -1015,6 +1021,7 @@
 										{
 											xtype: 'grid',
 											flex: 2,
+											itemId: 'gridDetailTransactionMaster',
 											title: 'Detalle de Productos',
 											margin: '0 10 0 0',
 											store: {
@@ -1493,7 +1500,16 @@
 			]
 		});
 		
-		
+		miVentanaEsperando = Ext.create('Ext.window.Window', {
+			title: 'Procesando',
+			closable: false,
+			modal: true,
+			closeAction: 'hide',
+			width: 300,
+			height: 100,
+			bodyPadding: 10,
+			html: '<div style="text-align:center;"><b>Esperando...</b></div>'
+		}); 
 	
 		function fnBtnNuevaFactura() 
 		{
@@ -1512,9 +1528,14 @@
 		{
 			
 		}
+		function fnBtnCrearBDLocal()
+		{
+			indexDBCreate(false);
+		}
 		function fnBtnActualizarCatalogo()
 		{
-			
+			miVentanaEsperando.show();
+			indexDBCreate(true);
 		}
 		function fnBtnSeleccionarFactura()
 		{
@@ -1605,14 +1626,15 @@
 				return;
 			}
 			
-			debugger;
-			var grid = btn.up('grid');  
+			
+			var grid 	= miVentanaPrincipal.down('#gridDetailTransactionMaster'); // buscar por itemId
+			var store 	= grid.getStore();
+
 			seleccion.forEach(function(record) 
 			{	
 				//miVentanaPrincipal.down('#txtCustomerID').setValue(  record.data.entityID  );
 				//miVentanaPrincipal.down('#txtCustomerDescription').setValue(  record.data.Codigo + " " + record.data.Nombre );			
-				debugger;
-				
+			
 				// Ejemplo: agregar fila vacía
 				grid.getStore().add({
 					codigo: '',
@@ -2315,5 +2337,278 @@
 		}
 		
 	}
+	
+	function indexDBCreate(obtenerRegistroDelServer) 
+	{
+		var indexDB 	= window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+		const request 	= indexDB.open('MyDatabasePosMe', 2);
+
+		request.onsuccess = (e) =>
+		{
+
+			// Se crea la conexion
+			db 				   = request.result;
+			console.info('Database success');
+			if(obtenerRegistroDelServer)
+			{
+				indexDBObtenerProductos();
+			}
+
+
+		};
+
+		request.onupgradeneeded  = (e) => {
+			console.info('Database created');
+
+			const db = request.result;
+			//...
+
+			const objectStoreX001  = db.createObjectStore('objListaProductosX001' , { keyPath : 'id',autoIncrement: true } );
+			objectStoreX001.createIndex("Barra", "Barra", { unique: false });
+			objectStoreX001.createIndex("Cantidad", "Cantidad", { unique: false });
+			objectStoreX001.createIndex("Codigo", "Codigo", { unique: false });
+			objectStoreX001.createIndex("Descripcion", "Descripcion", { unique: false });
+			objectStoreX001.createIndex("Medida", "Medida", { unique: false });
+			objectStoreX001.createIndex("Precio", "Precio", { unique: false });
+			objectStoreX001.createIndex("cost", "cost", { unique: false });
+			objectStoreX001.createIndex("currencyID", "currencyID", { unique: false });
+			objectStoreX001.createIndex("warehouseID", "warehouseID", { unique: false });
+			objectStoreX001.createIndex("isInvoice", "isInvoice", { unique: false });
+			objectStoreX001.createIndex("isInvoiceQuantityZero", "isInvoiceQuantityZero", { unique: false });
+			objectStoreX001.createIndex("itemID", "itemID", { unique: false });
+			objectStoreX001.createIndex("iwCost", "iwCost", { unique: false });
+			objectStoreX001.createIndex("iwQuantityMax", "iwQuantityMax", { unique: false });
+			objectStoreX001.createIndex("iwQuantityMin", "iwQuantityMin", { unique: false });
+			objectStoreX001.createIndex("quantity", "quantity", { unique: false });
+			objectStoreX001.createIndex("quantityMax", "quantityMax", { unique: false });
+			objectStoreX001.createIndex("quantityMin", "quantityMin", { unique: false });
+			objectStoreX001.createIndex("unitMeasureID", "unitMeasureID", { unique: false });
+			objectStoreX001.createIndex("Precio2", "Precio2", { unique: false });
+			objectStoreX001.createIndex("Precio3", "Precio3", { unique: false });
+
+			const objectStoreSkuX001  = db.createObjectStore('objListaProductosSkuX001' , { keyPath : 'id',autoIncrement: true } );
+			objectStoreSkuX001.createIndex("itemID", "itemID", { unique: false });
+			objectStoreSkuX001.createIndex("catalogItemID", "catalogItemID", { unique: false });
+			objectStoreSkuX001.createIndex("value", "value", { unique: false });
+			objectStoreSkuX001.createIndex("name", "name", { unique: false });
+			objectStoreSkuX001.createIndex("price", "precio", { unique: false });
+			objectStoreSkuX001.createIndex("predeterminado", "predeterminado", { unique: false });
+
+			const objectStoreConceptX001  = db.createObjectStore('objListaProductosConceptosX001' , { keyPath : 'id',autoIncrement: true } );
+			objectStoreConceptX001.createIndex("companyComponentConceptID", "companyComponentConceptID", { unique: false });
+			objectStoreConceptX001.createIndex("companyID", "companyID", { unique: false });
+			objectStoreConceptX001.createIndex("componentID", "componentID", { unique: false });
+			objectStoreConceptX001.createIndex("componentItemID", "componentItemID", { unique: false });
+			objectStoreConceptX001.createIndex("isActive", "isActive", { unique: false });
+			objectStoreConceptX001.createIndex("valueIn", "valueIn", { unique: false });
+			objectStoreConceptX001.createIndex("valueOut", "valueOut", { unique: false });
+
+
+
+			const objectStoreCustomerCreditLineX001  = db.createObjectStore('objListaCustomerCreditLineX001' , { keyPath : 'id',autoIncrement: true } );
+			objectStoreCustomerCreditLineX001.createIndex("accountNumber","accountNumber", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("balance","balance", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("branchID","branchID", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("companyID","companyID", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("creditLineID","creditLineID", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("currencyID","currencyID", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("currencyName","currencyName", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("customerCreditLineID","customerCreditLineID", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("dateLastPay","dateLastPay", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("dateOpen","dateOpen", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("entityID","entityID", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("interestPay","interestPay", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("interestYear","interestYear", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("isActive","isActive", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("limitCredit","limitCredit", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("line","line", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("note","note", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("periodPay","periodPay", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("periodPayLabel","periodPayLabel", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("statusID","statusID", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("statusName","statusName", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("term","term", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("totalDefeated","totalDefeated", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("totalPay","totalPay", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("typeAmortization","typeAmortization", { unique: false });
+			objectStoreCustomerCreditLineX001.createIndex("typeAmortizationLabel","typeAmortizationLabel", { unique: false });
+
+		};
+		//...
+	}
+	
+	function indexDBRemoveTable(varTable){
+		const request 		= db.transaction(varTable, 'readwrite')
+							  .objectStore(varTable)
+							  .clear();
+
+		request.onsuccess 	= ()=> {
+			console.info("success");
+		}
+
+		request.onerror = (err)=> {
+			console.log('error');
+		}
+	}
+	
+	function indexDBAddTable(varTable,varDatos){
+		const transaction = db.transaction(varTable, 'readwrite');
+
+
+
+		const objectStore = transaction.objectStore(varTable);
+
+		// Se agrega un nuevo estudiante
+		for ( var intx = 0 ; intx < varDatos.length ; intx++)
+		{
+		objectStore.add(varDatos[intx]);
+        }
+
+		transaction.oncomplete = function(event) {
+			//...
+		};
+
+		transaction.onerror = function(event) {
+		  //...
+		};
+
+		//request.onsuccess = ()=> {
+		//	console.log('success');
+		//}
+		//
+		//request.onerror = (err)=> {
+		//	console.log('error');
+		//}
+	}
+	
+	//obtener informacion de los productos
+	function indexDBObtenerProductos(){
+
+		/*TIPO PRECIO 1 -- 154 -- PUBLICO */		
+		Ext.Ajax.request({
+			url		: "<?php echo base_url(); ?>/app_invoice_api/getViewApi/<?php echo $objComponentItem->componentID; ?>/onCompleteNewItem/SELECCIONAR_ITEM_BILLING_BACKGROUND/"+ encodeURI('{"warehouseID"|"'+ miVentanaPrincipal.down("#txtWarehouseID").getValue() +'"{}"listPriceID"|"<?php echo $objListPrice->listPriceID; ?>"{}"typePriceID"|"'+154+'"}'),  
+			method	: 'GET',             // o 'POST'
+			params	: {                  // parámetros opcionales
+				filtro: 'ABC'
+			},
+			success: function(response, opts) {
+				
+				debugger;
+				// response.responseText contiene la respuesta en texto
+				var datos = Ext.decode(response.responseText); // parse JSON
+				console.log('Datos recibidos:', datos);
+				
+				
+				console.info("fnFillListaProductos success data");
+				var objListaProductos 			= datos.objGridView;
+
+
+				indexDBRemoveTable("objListaProductosX001");
+				indexDBAddTable("objListaProductosX001",objListaProductos);
+				
+				
+				Ext.Ajax.request({
+					url		: "<?php echo base_url(); ?>/app_inventory_api/getSkuAllProduct",
+					method	: 'GET',             // o 'POST'
+					async: false,  // bloquea el hilo
+					params	: {                  // parámetros opcionales
+						filtro: 'ABC'
+					},
+					success: function(response, opts) {
+						debugger;
+						// response.responseText contiene la respuesta en texto
+						var datos = Ext.decode(response.responseText); // parse JSON
+						console.log('Datos recibidos:', datos);
+						
+						
+						console.info("fnFillListaItemSku success data");
+						indexDBRemoveTable("objListaProductosSkuX001");
+						indexDBAddTable("objListaProductosSkuX001",datos.objListItemSku);	
+						
+						
+						
+					},
+					failure: function(response, opts) {
+						Ext.Msg.alert('Error', 'No se pudieron cargar los datos');
+						console.log('Server-side failure with status code ' + response.status);
+					}
+				});
+				
+				
+				Ext.Ajax.request({
+					url		: "<?php echo base_url(); ?>/core_concept_api/getConceptAllProduct",
+					method	: 'GET',             // o 'POST'
+					async: false,  // bloquea el hilo
+					params	: {                  // parámetros opcionales
+						filtro: 'ABC'
+					},
+					success: function(response, opts) {
+						debugger;
+						// response.responseText contiene la respuesta en texto
+						var datos = Ext.decode(response.responseText); // parse JSON
+						console.log('Datos recibidos:', datos);
+						
+						console.info("fnFillListaItemConcept success data");
+						indexDBRemoveTable("objListaProductosConceptosX001");
+						indexDBAddTable("objListaProductosConceptosX001",datos.objGridView);
+					},
+					failure: function(response, opts) {
+						Ext.Msg.alert('Error', 'No se pudieron cargar los datos');
+						console.log('Server-side failure with status code ' + response.status);
+					}
+				});
+
+					
+				// Cerrar ventana modal
+				miVentanaEsperando.close();
+				Ext.Msg.alert('Éxito', 'Datos actualizados correctamente');
+			
+				
+				
+			},
+			failure: function(response, opts) {
+				Ext.Msg.alert('Error', 'No se pudieron cargar los datos');
+				console.log('Server-side failure with status code ' + response.status);
+			}
+		});
+
+
+
+	}
+	
+	function indexDBGetInformationLocal(varTable, varColumn, varValue, valueComando, varDataExt, varFunction) {
+        const requestStore = db.transaction(varTable, 'readwrite').objectStore(varTable);
+
+        let request;
+        let varIndex;
+
+        if (varColumn === "all") {
+            request = requestStore.getAll();
+        } else {
+            varIndex 	= requestStore.index(varColumn);
+            request 	= varIndex.getAll(varValue);
+        }
+
+        request.onsuccess = function() {
+            try {
+                if (valueComando !== "none") {
+                    varDataExt[valueComando] = request.result;
+                    varFunction(varDataExt, varDataExt);
+                } else {
+                    varFunction(request.result, varDataExt);
+                }
+            } catch (ex) {
+                console.error("Error in onsuccess:", ex);
+            }
+        }
+
+        request.onerror = function(err) {
+            console.error("Error in request:", err);
+            if (err.target && err.target.error) {
+                console.error("Error message:", err.target.error.message);
+            }
+        }
+    }
+	
 	
 </script>
