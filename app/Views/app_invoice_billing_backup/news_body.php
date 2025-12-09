@@ -52,6 +52,11 @@
 		color: white !important;
 		border-color: #b30000 !important;
 	}
-
+	
+	.columna-pastel {
+		background-color: #dfefff !important; /* pastel azul */
+	}
+	
+	
 </style>
 

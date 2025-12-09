@@ -1,4 +1,4 @@
-<title>Pantalla de Facturación - ExtJS Profesional</title>
+<title>Facturación</title>
 
 <link rel="stylesheet" type="text/css"
 	href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-ext-6.2.0/build/classic/theme-crisp/resources/theme-crisp-all.css">  

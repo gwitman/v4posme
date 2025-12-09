@@ -1,7 +1,8 @@
 <!-- ./ page heading -->
 <script>
-	var baseUrl = '<?php echo base_url(); ?>';
-	var objConfigInit = {
+	var baseUrl 			= '<?php echo base_url(); ?>';
+	let objCausalTypeCredit = JSON.parse('<?php echo json_encode($objCausalTypeCredit); ?>');
+	var objConfigInit 		= {
 		texts: {
 			'txtNombre': 'Nombre completo',
 			'chkActivo': '¿Está activo?'
@@ -161,6 +162,19 @@
 			'txtTransactionID' : '<?php echo $transactionID ?>',
 			'txtTransactionMasterID' : '0',
 			'txtCodigoMesero' : '<?= $codigoMesero;  ?>',
+			'txtStatusID' : '<?php
+					$count 				= 0;
+					$valueWorkflowFirst = 0;
+					if($objListWorkflowStage){
+						foreach($objListWorkflowStage as $ws){
+							if($count == 0)
+								$valueWorkflowFirst = $ws->workflowStageID;
+							$count++;
+						}
+					}
+					?>',
+					
+			'txtStatusIDOld' : 0,			
 			'txtDate': Ext.Date.format(new Date(), 'Y-m-d'),	
 			'txtExchangeRate': '<?php echo $exchangeRate; ?>',	
 			'txtNote' : 'sin comentarios',
@@ -337,7 +351,8 @@
 
 		miVentanaPrincipal = Ext.create('Ext.container.Viewport', {
 			layout: 'fit',
-			id: 'panelPrincipal',
+			id: 'miVentanaPrincipal',
+			itemId: 'miVentanaPrincipal',
 			listeners:{
 				afterrender: function(form) {
 					// Configuración dinámica al "load" del contenedor
@@ -488,6 +503,18 @@
 													value: '12345'
 												},
 												{
+													xtype: 'hiddenfield',
+													name: 'txtStatusID',
+													id:'txtStatusID',
+													value: '12345'
+												},
+												{
+													xtype: 'hiddenfield',
+													name: 'txtStatusIDOld',
+													id:'txtStatusIDOld',
+													value: '12345'
+												},
+												{
 													xtype: 'datefield',
 													fieldLabel: 'Fecha',
 													labelWidth: 100,
@@ -533,6 +560,9 @@
 													editable: false,
 													name: 'txtCurrencyID',
 													id:'txtCurrencyID',
+													listeners: {
+														change: fnChange_CurrencyID_CreditLineID_WarehouseID
+													}
 												}
 											]
 										},
@@ -612,6 +642,9 @@
 													editable: false,
 													name:'txtCausalID',
 													id:'txtCausalID',
+													listeners: {
+														change: fnChange_CausalID
+													}
 												},	
 												{
 													xtype: 'combobox',
@@ -627,7 +660,10 @@
 													queryMode: 'local',
 													editable: false,
 													name: 'txtCustomerCreditLineID',
-													id: 'txtCustomerCreditLineID'
+													id: 'txtCustomerCreditLineID',
+													listeners: {
+														change: fnChange_CurrencyID_CreditLineID_WarehouseID
+													}
 												}
 												
 											]
@@ -703,6 +739,9 @@
 													editable: false,
 													name: 'txtWarehouseID',
 													id:'txtWarehouseID',
+													listeners: {
+														change: fnChange_CurrencyID_CreditLineID_WarehouseID
+													}
 												}
 											]
 										},
@@ -1023,12 +1062,7 @@
 											flex: 2,
 											itemId: 'gridDetailTransactionMaster',
 											title: 'Detalle de Productos',
-											margin: '0 10 0 0',
-											store: {
-												fields: ['producto', 'cantidad', 'precio'],
-												data: 	[]
-											},
-											
+											margin: '0 10 0 0',											
 											tbar: [
 												{
 													text: 'Agregar producto',
@@ -1058,17 +1092,365 @@
 												}
 												
 											],
-											
+											selModel: 'rowmodel', // permite seleccionar filas para eliminar
+											store: {
+												fields: ['producto', 'cantidad', 'precio'],
+												data: 	[]
+											},
 											columns: [
-												{ text: 'Codigo', dataIndex: 'producto',  width: 100  },
-												{ text: 'Producto', dataIndex: 'producto',  width: 100  },
-												{ text: 'U/M', dataIndex: 'producto',  width: 250 },
-												{ text: 'Cantidad', dataIndex: 'cantidad', width: 100 },
-												{ text: 'Precio', dataIndex: 'precio', width: 100 },
-												{ text: 'Sub total', dataIndex: 'precio', width: 100 },
-												{ text: 'Accion', dataIndex: 'precio', width: 100 }
-											],											
-											selModel: 'rowmodel'  // permite seleccionar filas para eliminar
+											
+												// ==========================
+												// 0 CHECKBOX
+												// ==========================
+												{
+													xtype: 'checkcolumn',
+													text: '',
+													dataIndex: 'txtTMD_checked',
+													width: 50,
+													stopSelection: false
+												},
+
+												
+												// ==========================
+												// 1 transactionMasterDetailID (hidden)
+												// ==========================
+												{
+													text: 'txtTransactionMasterDetailID',
+													dataIndex: 'txtTMD_txtTransactionMasterDetailID',
+													width: 120,
+													hidden: true
+												},
+												
+												
+												// ==========================
+												// 2 itemID (hidden)
+												// ==========================
+												{
+													text: 'txtItemID',
+													dataIndex: 'txtTMD_txtItemID',
+													width: 120,
+													hidden: true
+												},
+
+												
+												// ==========================
+												// 3 itemNumber
+												// ==========================
+												{
+													text: 'Código',
+													dataIndex: 'txtTMD_txtTransactionDetailItemNumber',
+													width: 120,
+													align: 'left',
+													tdCls: 'columna-pastel'
+												},
+												
+												// ==========================
+												// 4 itemNumber
+												// ==========================
+												{
+													text: 'Descripcion',
+													dataIndex: 'txtTMD_txtTransactionDetailName',													
+													flex: 1,   // ocupa todo el espacio disponible proporcionalmente
+													align: 'left'
+												},	
+												// ==========================
+												// 5 U/M
+												// ==========================																								
+												{
+													text: 'U/M',
+													dataIndex: 'txtTMD_txtSku',
+													width: 150,
+													xtype: 'widgetcolumn',
+													widget: {
+														xtype: 'combo',
+														store: ['Producto A', 'Producto B', 'Producto C'], // o un store más complejo
+														editable: false,    // no permite escribir, solo seleccionar
+														forceSelection: true,
+														listeners: {
+															select: function(combo, record) {
+																// Actualizar el store del grid con el valor seleccionado
+																var gridRecord = combo.getWidgetRecord();
+																gridRecord.set('txtTMD_txtSku', combo.getValue());
+															}
+														}
+													}
+												},
+												// ==========================
+												// 6 Cantidad
+												// ==========================												
+												{
+													text: 'Cantidad',
+													dataIndex: 'txtTMD_txtQuantity',
+													width: 120,
+													align: 'right',
+													xtype: 'widgetcolumn',
+													widget: {
+														xtype: 'numberfield',
+														minValue: 0.01,   // valores mayores a 0
+														allowBlank: false,
+														decimalPrecision: 2,  // dos decimales
+														hideTrigger: true,    // oculta los botones de subir/bajar
+														enableKeyEvents: true,
+														listeners: {
+															change: function(field, newValue) {
+																// Aquí podés manejar el cambio y actualizar el store
+																var record = field.getWidgetRecord();
+																record.set('txtTMD_txtQuantity', newValue);
+															}
+														}
+													}
+												},
+												// ==========================
+												// 7 Precio
+												// ==========================										
+												{
+													text: 'Precio',
+													dataIndex: 'txtTMD_txtPrice',
+													width: 120,
+													align: 'right',
+													xtype: 'widgetcolumn',
+													widget: {
+														xtype: 'numberfield',
+														minValue: 0.01,   // valores mayores a 0
+														allowBlank: false,
+														decimalPrecision: 2,  // dos decimales
+														hideTrigger: true,    // oculta los botones de subir/bajar
+														enableKeyEvents: true,
+														listeners: {
+															change: function(field, newValue) {
+																// Aquí podés manejar el cambio y actualizar el store
+																var record = field.getWidgetRecord();
+																record.set('txtTMD_txtPrice', newValue);
+															}
+														}
+													}
+												},
+												
+												// ==========================
+												// 8 Total
+												// ==========================	
+												{
+													text: 'Total',
+													dataIndex: 'txtTMD_txtSubTotal',
+													width: 120,
+													align: 'right',
+												},												
+												// ==========================
+												// 9 Iva
+												// ==========================
+												{
+													text: 'txtIva',
+													dataIndex: 'txtTMD_txtIva',
+													width: 120,
+													hidden: true
+												},
+												// ==========================
+												// 10 Cantidad por SKU  Cantidad en unidades por cada sku es decir 1 paquete = 25 unidades
+												// ==========================
+												{
+													text: 'skuQuantityBySku',
+													dataIndex: 'txtTMD_skuQuantityBySku',
+													width: 120,
+													hidden: true
+												},
+												// ==========================
+												// 11 Precio unitario individual
+												// ==========================
+												{
+													text: 'unitaryPriceInvidual',
+													dataIndex: 'txtTMD_unitaryPriceInvidual',
+													width: 120,
+													hidden: true
+												},
+												// ==========================
+												// 12 Acciones
+												// ==========================													
+												// Botón +
+												{
+													text: '+',
+													xtype: 'widgetcolumn',
+													width: 50,
+													align: 'center',
+													widget: {
+														xtype: 'button',
+														scale: 'small',
+														text: '+',
+														tooltip: 'Incrementar',
+														handler: function(btn) {
+															var record = btn.getWidgetRecord();
+															var current = record.get('txtTMD_txtQuantity');
+															record.set('txtTMD_txtQuantity', current + 1);
+														}
+													}
+												},
+
+												// Botón -
+												{
+													text: '-',
+													xtype: 'widgetcolumn',
+													width: 50,
+													align: 'center',
+													widget: {
+														xtype: 'button',
+														scale: 'small',
+														text: '-',
+														tooltip: 'Disminuir',
+														handler: function(btn) {
+															var record = btn.getWidgetRecord();
+															var current = record.get('txtTMD_txtQuantity');
+															if (current > 0) {
+																record.set('txtTMD_txtQuantity', current - 1);
+															}
+														}
+													}
+												},
+
+												// Botón info
+												{
+													text: 'Info',
+													xtype: 'widgetcolumn',
+													width: 50,
+													align: 'center',
+													widget: {
+														xtype: 'button',
+														scale: 'small',
+														text: 'i',
+														tooltip: 'Información',
+														handler: function(btn) {
+															var record = btn.getWidgetRecord();
+															Ext.Msg.alert('Info', 'Producto: ' + record.get('nombre') + '\nCantidad: ' + record.get('txtTMD_txtQuantity'));
+														}
+													}
+												},
+												// ==========================
+												// 13 Descripcion de la sku
+												// ==========================
+												{
+													text: 'skuFormatoDescription',
+													dataIndex: 'txtTMD_skuFormatoDescription',
+													width: 120,
+													hidden: true
+												},
+												// ==========================
+												// 14 Precio 2
+												// ==========================
+												{
+													text: 'txtItemPrecio2',
+													dataIndex: 'txtTMD_txtItemPrecio2',
+													width: 120,
+													hidden: true
+												},
+												// ==========================
+												// 15 Precio 3
+												// ==========================
+												{
+													text: 'txtItemPrecio3',
+													dataIndex: 'txtTMD_txtItemPrecio3',
+													width: 120,
+													hidden: true
+												},
+												// ==========================
+												// 16 Nombre descripcion
+												// ==========================
+												{
+													text: 'txtTransactionDetailNameDescription',
+													dataIndex: 'txtTMD_txtTransactionDetailNameDescription',
+													width: 120,
+													hidden: true
+												},
+												// ==========================
+												// 17 Impuesto por servicio
+												// ==========================
+												{
+													text: 'txtTaxServices',
+													dataIndex: 'txtTMD_txtTaxServices',
+													width: 120,
+													hidden: true
+												},
+												// ==========================
+												// 18 Peso o Lote
+												// ==========================
+												{
+													text: 'txtDetailLote',
+													dataIndex: 'txtTMD_txtDetailLote',
+													width: 120,
+													hidden: true
+												},
+												// ==========================
+												// 19 Vendedor 
+												// ==========================
+												{
+													text: 'txtInfoVendedor',
+													dataIndex: 'txtTMD_txtInfoVendedor',
+													width: 120,
+													hidden: true
+												},
+												// ==========================
+												// 20 Serie
+												// ==========================
+												{
+													text: 'txtInfoSerie',
+													dataIndex: 'txtTMD_txtInfoSerie',
+													width: 120,
+													hidden: true
+												},
+												// ==========================
+												// 21 Referencia
+												// ==========================
+												{
+													text: 'txtInfoReferencia',
+													dataIndex: 'txtTMD_txtInfoReferencia',
+													width: 120,
+													hidden: true
+												},
+												// ==========================
+												// 22 Precio 1
+												// ==========================
+												{
+													text: 'txtItemPrecio1',
+													dataIndex: 'txtTMD_txtItemPrecio1',
+													width: 120,
+													hidden: true
+												},
+												// ==========================
+												// 23 catalogItemID sku
+												// ==========================
+												{
+													text: 'txtCatalogItemIDSku',
+													dataIndex: 'txtTMD_txtCatalogItemIDSku',
+													width: 120,
+													hidden: true
+												},
+												// ==========================
+												// 24 ratio sku
+												// ==========================
+												{
+													text: 'txtRatioSku',
+													dataIndex: 'txtTMD_txtRatioSku',
+													width: 120,
+													hidden: true
+												},
+												// ==========================
+												// 25 descuento
+												// ==========================
+												{
+													text: 'txtDiscountByItem',
+													dataIndex: 'txtTMD_txtDiscountByItem',
+													width: 120,
+													hidden: true
+												},
+												// ==========================
+												// 26 Comision por banco
+												// ==========================
+												{
+													text: 'txtCommisionByBankByItem',
+													dataIndex: 'txtTMD_txtCommisionByBankByItem',
+													width: 120,
+													hidden: true
+												},
+												
+											]										
+											
 										},
 
 										// Columna derecha - Resumen
@@ -1109,6 +1491,8 @@
 
 		miVentanaDePago = Ext.create('Ext.window.Window', {
 			title: 'Opciones de pago',
+			id: 'miVentanaDePago',
+			itemId:'miVentanaDePago',
 			width: 700,
 			height: 350,
 			modal: true,
@@ -1364,6 +1748,8 @@
 		
 		miVentanaImpresion = Ext.create('Ext.window.Window', {
 			title: 'Seleccione Formato de Impresión',
+			id: 'miVentanaImpresion',
+			itemId:'miVentanaImpresion',
 			width: 350,
 			height: 350,
 			modal: true,
@@ -1424,9 +1810,10 @@
 			]
 		});
 
-		miVentanaSeleccionCliente = Ext.create('Ext.window.Window', {
-			/*witman test*/
+		miVentanaSeleccionCliente = Ext.create('Ext.window.Window', {			
 			title: 'Listado de Clientes',
+			id: 'miVentanaSeleccionCliente',
+			itemId:'miVentanaSeleccionCliente',
 			width: 700,
 			height: 400,
 			modal: true,
@@ -1452,6 +1839,8 @@
 		
 		miVentanaSeleccionProducto = Ext.create('Ext.window.Window', {
 			title: 'Listado de Productos',
+			id: 'miVentanaSeleccionProducto',
+			itemId:'miVentanaSeleccionProducto',
 			width: 700,
 			height: 400,
 			modal: true,
@@ -1477,6 +1866,8 @@
 
 		miVentanaSeleccionFactura = Ext.create('Ext.window.Window', {
 			title: 'Listado de Facturas',
+			id: 'miVentanaSeleccionFactura',
+			itemId:'miVentanaSeleccionFactura',
 			width: 900,
 			height: 400,
 			modal: true,
@@ -1502,6 +1893,8 @@
 		
 		miVentanaEsperando = Ext.create('Ext.window.Window', {
 			title: 'Procesando',
+			id: 'miVentanaEsperando',
+			itemId:'miVentanaEsperando',
 			closable: false,
 			modal: true,
 			closeAction: 'hide',
@@ -1511,10 +1904,109 @@
 			html: '<div style="text-align:center;"><b>Esperando...</b></div>'
 		}); 
 	
+		miVentanaInformacionAdicional = Ext.create('Ext.window.Window', {
+			title: 'Informacion adicional',
+			id: 'miVentanaInformacionAdicional',
+			itemId:'miVentanaInformacionAdicional',
+			width: 350,
+			height: 250,
+			modal: true,
+			closeAction: 'hide',
+			hidden: true,
+			// Crear ventana modal														
+			layout: 'vbox',
+			bodyPadding: 10,			
+			listeners:{
+				afterrender: function(form) {
+					// Configuración dinámica al "load" del contenedor
+					fnConfiguracionLoad(form, objConfigInit );
+				}
+			},
+			items: [
+
+				// ✔ COLUMNA 1
+				{
+					width: 350,
+					items: [	
+						{
+							xtype: 'hiddenfield',
+							name: 'ventanaInformacionAdicional_indexTransctionMasterDetail',
+							id:'ventanaInformacionAdicional_indexTransctionMasterDetail',
+							value: '12345'
+						},
+						{
+							xtype: 'combobox',
+							fieldLabel: 'Precios',
+							labelWidth: 100,
+							width: 300,
+							store: ['USD', 'NIO', 'CRC', 'EUR'],
+							store: Ext.create('Ext.data.Store', {
+								fields: ['id', 'name'] 
+							}),
+							displayField: 'name',
+							valueField: 'id',
+							queryMode: 'local',
+							editable: false,
+							name: 'txtSelectPrecio',
+							id:'txtSelectPrecio',
+						},
+						{
+							xtype: 'combobox',
+							fieldLabel: 'Vendedor',
+							labelWidth: 100,
+							width: 300,
+							store: ['USD', 'NIO', 'CRC', 'EUR'],
+							store: Ext.create('Ext.data.Store', {
+								fields: ['id', 'name'] 
+							}),
+							displayField: 'name',
+							valueField: 'id',
+							queryMode: 'local',
+							editable: false,
+							name: 'txtSelectVendedor',
+							id:'txtSelectVendedor',
+						},
+						{
+							xtype: 'textfield',       // tipo texto
+							fieldLabel: 'Serie', // etiqueta
+							labelWidth: 100,          // ancho de la etiqueta
+							width: 300,               // ancho total del campo
+							name: 'txtSerieProducto',     // nombre del campo para enviar al servidor
+							id: 'txtSerieProducto',       // id único
+						},
+						{
+							xtype: 'textfield',       // tipo texto
+							fieldLabel: 'Referencia', // etiqueta
+							labelWidth: 100,          // ancho de la etiqueta
+							width: 300,               // ancho total del campo
+							name: 'txtReferenciaProducto',     // nombre del campo para enviar al servidor
+							id: 'txtReferenciaProducto',       // id único
+						}
+						
+					]
+				}
+			],
+
+			buttons: [
+				{
+					text: 'Aceptar',
+					id: 'btnConfirmarInformacionAdicional',
+					handler: fnBtnConfirmarInformacionAdicional
+				},
+				{
+					text: 'Cancelar',
+					id: 'btnCancelarInformacionAdicional',
+					handler: fnBtnCancelarInformacionAdicional
+				}
+			]
+			
+		});
+
+
+
 		function fnBtnNuevaFactura() 
 		{
 			fnFillFactura(miVentanaPrincipal,null);
-			//Ext.Msg.alert('Nueva', 'Factura guardada');
 		}
 		function fnBtnGuardarFactura()
 		{
@@ -1614,7 +2106,13 @@
 		function fnBtnCancelarSeleccionFactura(btn) {
 			btn.up('window').close();
 		}
-		
+		function fnBtnConfirmarInformacionAdicional()
+		{
+			miVentanaInformacionAdicional.hide();
+		}
+		function fnBtnCancelarInformacionAdicional(btn){
+			btn.up('window').close();
+		}
 		function fnBtnSeleccionProducto(btn) {
 			
 			var grid 		= miVentanaSeleccionProducto.down('grid');
@@ -1670,6 +2168,10 @@
 			});
 			
 			miVentanaSeleccionCliente.hide();
+			miVentanaEsperando.show();
+			fnClearData();
+			fnGetCustomerClient();			
+			
 			
 			
 		}
@@ -1677,8 +2179,19 @@
 			btn.up('window').close();
 		}
 		
+		function fnChange_CurrencyID_CreditLineID_WarehouseID(combo, newValue, oldValue, eOpts) {
+			
+			fnClearData();
+			fnLockPayment();
+		}
+		function fnChange_CausalID(combo, newValue, oldValue, eOpts) {
+			
+			fnClearData();
+			fnLockPayment();
+			fnRenderLineaCreditoDiv();
+		}
 		function fnChangeTypePreiceID(combo, newValue, oldValue, eOpts) {
-			//Ext.Msg.alert('Cambio detectado', 'Valor anterior: ' + oldValue + ', Nuevo valor: ' + newValue);
+			
 		}
 		
 		
@@ -1785,12 +2298,13 @@
 
 			});
 		}
+		
 	});
 	
 	function fnFillFactura(formPanel, obj) 
 	{
 		
-		if(formPanel.id == 'panelPrincipal')
+		if(formPanel.id == 'miVentanaPrincipal')
 		{
 			
 			
@@ -2610,5 +3124,216 @@
         }
     }
 	
+	
+	
+	function fnClearData()
+	{
+		console.info("fnClearData");
+		
+		var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+		if(viewport){
+			var grid = viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
+			grid.getStore().loadData([]);
+	
+	
+			viewport.down("#txtSubTotal").setValue("0.00");
+			viewport.down("#txtDescuento").setValue("0.00");
+			viewport.down("#txtPorcentajeDescuento").setValue("0.00");
+			viewport.down("#txtIva").setValue("0.00");
+			viewport.down("#txtServices").setValue("0.00");
+			viewport.down("#txtTotal").setValue("0.00");
+		}
+		
+		var viewport_miVentanaDePago = Ext.getCmp('miVentanaDePago'); // accede al viewport		
+		if (viewport_miVentanaDePago) {
+			viewport_miVentanaDePago.down("#txtReceiptAmount").setValue("0.00");
+			viewport_miVentanaDePago.down("#txtReceiptAmountDol").setValue("0.00");
+			viewport_miVentanaDePago.down("#txtChangeAmount").setValue("0.00");
+			viewport_miVentanaDePago.down("#txtReceiptAmountBank").setValue("0.00");
+			viewport_miVentanaDePago.down("#txtReceiptAmountPoint").setValue("0.00");
+			viewport_miVentanaDePago.down("#txtReceiptAmountTarjeta").setValue("0.00");
+			viewport_miVentanaDePago.down("#txtReceiptAmountTarjetaDol").setValue("0.00");
+			viewport_miVentanaDePago.down("#txtReceiptAmountBankDol").setValue("0.00");
+		}
+		
+		console.info("fnClearData success");
+		
+	}
+	
+	
+	function fnLockPayment()
+	{	
+		console.info("fnLockPayment");
+		var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+		if(viewport){
+			var invoiceTypeCredit 							= false;
+			var causalSelect 								= viewport.down("#txtCausalID").getValue();
+			
+			var causalCredit 								= objCausalTypeCredit.value.split(",");
+			var lockPayment									= <?php echo getBahavioDB($company->type, "app_invoice_billing", "lockPayment", "false"); ?>;
+			//Obtener si la factura es al credito
+			for(var i=0;i<causalCredit.length;i++)
+			{
+				if(causalCredit[i] === causalSelect)
+				{
+					invoiceTypeCredit 						= true;
+				}
+			}
+			
+			if(invoiceTypeCredit && lockPayment)
+			{				
+				var viewport_miVentanaDePago = Ext.getCmp('miVentanaDePago'); // accede al viewport		
+				if (viewport_miVentanaDePago) {
+					viewport_miVentanaDePago.down("#txtReceiptAmount").setReadOnly(true);
+					viewport_miVentanaDePago.down("#txtReceiptAmountDol").setReadOnly(true);
+					viewport_miVentanaDePago.down("#txtChangeAmount").setReadOnly(true);
+					viewport_miVentanaDePago.down("#txtReceiptAmountBank").setReadOnly(true);
+					viewport_miVentanaDePago.down("#txtReceiptAmountPoint").setReadOnly(true);
+					viewport_miVentanaDePago.down("#txtReceiptAmountTarjeta").setReadOnly(true);
+					viewport_miVentanaDePago.down("#txtReceiptAmountTarjetaDol").setReadOnly(true);
+					viewport_miVentanaDePago.down("#txtReceiptAmountBankDol").setReadOnly(true);
+				}
+				
+			}
+			if(!invoiceTypeCredit && lockPayment)
+			{
+				var viewport_miVentanaDePago = Ext.getCmp('miVentanaDePago'); // accede al viewport		
+				if (viewport_miVentanaDePago) {
+					viewport_miVentanaDePago.down("#txtReceiptAmount").setReadOnly(false);
+					viewport_miVentanaDePago.down("#txtReceiptAmountDol").setReadOnly(false);
+					viewport_miVentanaDePago.down("#txtChangeAmount").setReadOnly(false);
+					viewport_miVentanaDePago.down("#txtReceiptAmountBank").setReadOnly(false);
+					viewport_miVentanaDePago.down("#txtReceiptAmountPoint").setReadOnly(false);
+					viewport_miVentanaDePago.down("#txtReceiptAmountTarjeta").setReadOnly(false);
+					viewport_miVentanaDePago.down("#txtReceiptAmountTarjetaDol").setReadOnly(false);
+					viewport_miVentanaDePago.down("#txtReceiptAmountBankDol").setReadOnly(false);
+				}
+			}
+			
+		
+		}
+		
+		console.info("fnLockPayment fin");
+	}
+	
+	function fnGetCustomerClient(){		
+		var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+		if(viewport){
+			var entityID = viewport.down("#txtCustomerID").getValue();
+			Ext.Ajax.request({
+				url		: "<?php echo base_url(); ?>/app_invoice_api/getLineByCustomer",
+				method	: 'POST',             // o 'POST'
+				params	: {                  // parámetros opcionales
+					entityID: entityID
+				},
+				success: function(response, opts) {
+					
+					var data = Ext.decode(response.responseText); // parse JSON
+					console.log('Datos recibidos:', data);
+					fnRenderLineaCredit(data.objListCustomerCreditLine,data.objCausalTypeCredit);				
+					
+				},
+				failure: function(response, opts) {
+					Ext.Msg.alert('Error', 'No se pudieron cargar los datos');
+					console.log('Server-side failure with status code ' + response.status);
+				}
+			});
+		}
+	}
+	
+	function fnRenderLineaCredit(listCustomerCreditLine,causalTypeCredit)
+	{
+		objListCustomerCreditLine 	= listCustomerCreditLine;
+		objCausalTypeCredit 		= causalTypeCredit;
+		
+		
+		var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+		if(viewport){
+			
+		}
+		
+		var viewport_miVentanaDePago = Ext.getCmp('miVentanaDePago'); // accede al viewport		
+		if (viewport_miVentanaDePago) {
+		}
+		
+		
+		//Llenar las lineas de credito
+		var field = viewport.down("#txtCustomerCreditLineID");
+		field.clearValue();
+		field.getStore().removeAll();
+		
+		if(objListCustomerCreditLine != null)
+		{
+			var elementItem = [];
+			for(var i = 0; i< objListCustomerCreditLine.length;i++)
+			{
+				elementItem.push({name: objListCustomerCreditLine[i].accountNumber + " " +objListCustomerCreditLine[i].line , id: objListCustomerCreditLine[i].customerCreditLineID });
+			}
+			
+			field.getStore().loadData(elementItem);
+		}
+		
+		//Si tienes linea de credito activar el tipo contado y credito
+		var fieldTipoFactura		= viewport.down("#txtCausalID");
+		var listArrayCausalCredit 	= objCausalTypeCredit.value.split(",");
+		var store 					= fieldTipoFactura.getStore();
+		
+		store.each(function(record){		
+			var causalID = record.get('id'); 
+			if (listArrayCausalCredit.indexOf(causalID) !== -1) {
+				if (objListCustomerCreditLine.length > 0) {
+					record.set('disabled', false);
+				} else {
+					record.set('disabled', true);
+				}
+			} else {
+				record.set('disabled', false);
+			}
+		});
+		
+		fieldTipoFactura.setDisabled(false); 
+		fieldTipoFactura.bindStore(store);
+		
+			
+		
+		fnLockPayment();
+		miVentanaEsperando.hide();
+		
+	}
+	function fnRenderLineaCreditoDiv()
+	{
+		var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+		if(viewport){
+			
+		}
+		
+		var viewport_miVentanaDePago = Ext.getCmp('miVentanaDePago'); // accede al viewport		
+		if (viewport_miVentanaDePago) {
+		}
+		
+		
+		//Si es de credito que la factura no supere la linea de credito
+		var causalSelect 				= viewport.down("#txtCausalID").getValue();
+		var customerCreditLineID 		= viewport.down("#txtCustomerCreditLineID").getValue();
+		var causalCredit 				= objCausalTypeCredit.value.split(",");
+		var invoiceTypeCredit 			= false;
+
+		//Obtener si la factura es al credito
+		for(var i=0;i<causalCredit.length;i++){
+			if(causalCredit[i] == causalSelect){
+				invoiceTypeCredit = true;
+			}
+		}
+
+		if(invoiceTypeCredit ){			
+			var field = viewport.down("#txtCustomerCreditLineID");
+			field.setVisible(true);
+		}
+		else{
+			var field = viewport.down("#txtCustomerCreditLineID");
+			field.setVisible(false);
+		}
+		
+	}
 	
 </script>
