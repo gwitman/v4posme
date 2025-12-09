@@ -1,7 +1,15 @@
 <!-- ./ page heading -->
 <script>
-	var baseUrl 			= '<?php echo base_url(); ?>';
-	let objCausalTypeCredit = JSON.parse('<?php echo json_encode($objCausalTypeCredit); ?>');
+	var baseUrl 											= '<?php echo base_url(); ?>';
+	let objCausalTypeCredit 								= JSON.parse('<?php echo json_encode($objCausalTypeCredit); ?>');
+	let objListCustomerCreditLine 							= JSON.parse('<?php echo json_encode($objListCustomerCreditLine); ?>');	
+	let objCurrencyCordoba 									= JSON.parse('<?php echo json_encode($objCurrencyCordoba); ?>');
+	var varParameterINVOICE_BILLING_VALIDATE_EXONERATION 	= '<?php echo $objParameterINVOICE_BILLING_VALIDATE_EXONERATION; ?>';
+	
+	var varStatusInvoiceAplicado			= 67; //Estado Aplicada
+    var varStatusInvoiceAnular				= 68; //Anular
+	var varStatusInvoiceRegistrado			= 66; //Registrado
+	
 	var objConfigInit 		= {
 		texts: {
 			'txtNombre': 'Nombre completo',
@@ -936,14 +944,20 @@
 															boxLabel: 'Si',
 															name: 'txtCheckApplyExoneracion',
 															inputValue: '1',
-															checked: false
+															checked: false,
+															listeners: {
+																change: fnChange_ApplyExoneration
+															}														
 														},
 														{
 															xtype: 'radiofield',
 															boxLabel: 'No',
 															name: 'txtCheckApplyExoneracion',
 															inputValue: '0',
-															checked: true
+															checked: true,
+															listeners: {
+																change: fnChange_ApplyExoneration
+															}
 														}
 													]
 												},
@@ -954,6 +968,9 @@
 													width: 400,
 													name: 'txtLayFirstLineProtocolo',
 													id:'txtLayFirstLineProtocolo',
+													listeners: {
+														change: fnChange_FirstLineProtocolo
+													}
 												},
 												{
 													xtype: 'fieldcontainer',
@@ -1465,7 +1482,15 @@
 											items: [
 												{ fieldLabel: 'Subtotal', value: 0, readOnly: true , name: 'txtSubTotal' , id:'txtSubTotal',},
 												{ fieldLabel: 'Impuesto', value: 0, readOnly: true , name: 'txtIva' ,id:'txtIva', },
-												{ fieldLabel: '% Descuento', value: 0 , name: 'txtPorcentajeDescuento' , id:'txtPorcentajeDescuento', },
+												{ 
+													fieldLabel: '% Descuento', 
+													value: 0 , 
+													name: 'txtPorcentajeDescuento' , 
+													id:'txtPorcentajeDescuento', 
+													listeners: {
+														change: fnChange_PorcentageDescuento
+													}
+												},
 												{ fieldLabel: 'Descuento', value: 0 , name: 'txtDescuento' , id:'txtDescuento', },
 												{ fieldLabel: '% Servicio', value: 0 , name: 'txtServices' , id:'txtServices',},
 												{ fieldLabel: 'Total', value: 0, readOnly: true , name: 'txtTotal' , id:'txtTotal', },
@@ -1540,6 +1565,9 @@
 							mouseWheelEnabled: false,
 							name: 'txtReceiptAmount',
 							id:'txtReceiptAmount',
+							listeners: {
+								change: fnChange_ReceiptAmount
+							}
 						},
 						{
 							xtype: 'numberfield',
@@ -1554,6 +1582,9 @@
 							mouseWheelEnabled: false,
 							name: 'txtReceiptAmountDol',
 							id:'txtReceiptAmountDol',
+							listeners: {
+								change: fnChange_ReceiptAmount
+							}
 						},	
 						{
 							xtype: 'fieldcontainer',
@@ -1568,6 +1599,9 @@
 									margin: '0 5 0 0',
 									name: 'txtReceiptAmountTarjeta',
 									id:'txtReceiptAmountTarjeta',
+									listeners: {
+										change: fnChange_ReceiptAmount
+									}
 								},
 								{
 									xtype: 'combobox',
@@ -1583,6 +1617,9 @@
 									margin: '0 5 0 0',
 									name: 'txtReceiptAmountTarjeta_BankID',
 									id:'txtReceiptAmountTarjeta_BankID',
+									listeners: {
+										change: fnChange_ReceiptAmountTarjeta_BankID
+									}
 								},
 								{
 									xtype: 'textfield',
@@ -1607,6 +1644,9 @@
 									margin: '0 5 0 0',
 									name: 'txtReceiptAmountTarjetaDol',
 									id:'txtReceiptAmountTarjetaDol',
+									listeners: {
+										change: fnChange_ReceiptAmount
+									}
 								},
 								{
 									xtype: 'combobox',
@@ -1622,6 +1662,9 @@
 									margin: '0 5 0 0',
 									name: 'txtReceiptAmountTarjetaDol_BankID',
 									id:'txtReceiptAmountTarjetaDol_BankID',
+									listeners: {
+										change: fnChange_ReceiptAmountTarjeta_BankID
+									}
 								},
 								{
 									xtype: 'textfield',
@@ -1646,6 +1689,9 @@
 									margin: '0 5 0 0',
 									name: 'txtReceiptAmountBank',
 									id:'txtReceiptAmountBank',
+									listeners: {
+										change: fnChange_ReceiptAmount
+									}
 								},
 								{
 									xtype: 'combobox',
@@ -1661,6 +1707,9 @@
 									margin: '0 5 0 0',
 									name: 'txtReceiptAmountBank_BankID',
 									id:'txtReceiptAmountBank_BankID',
+									listeners: {
+										change: fnChange_ReceiptAmountTarjeta_BankID
+									}
 								},
 								{
 									xtype: 'textfield',
@@ -1685,6 +1734,9 @@
 									margin: '0 5 0 0',
 									name: 'txtReceiptAmountBankDol',
 									id:'txtReceiptAmountBankDol',
+									listeners: {
+										change: fnChange_ReceiptAmount
+									}
 								},
 								{
 									xtype: 'combobox',
@@ -1700,6 +1752,9 @@
 									margin: '0 5 0 0',
 									name: 'txtReceiptAmountBankDol_BankID',
 									id:'txtReceiptAmountBankDol_BankID',
+									listeners: {
+										change: fnChange_ReceiptAmountTarjeta_BankID
+									}
 								},
 								{
 									xtype: 'textfield',
@@ -1724,6 +1779,9 @@
 							mouseWheelEnabled: false,
 							name: 'txtReceiptAmountPoint',
 							id:'txtReceiptAmountPoint',
+							listeners: {
+								change: fnChange_ReceiptAmount
+							}
 						}
 						
 					]
@@ -2179,6 +2237,131 @@
 			btn.up('window').close();
 		}
 		
+		function fnChange_ReceiptAmount(field, newValue, oldValue) {
+			console.log('Valor anterior:', oldValue);
+			console.log('Nuevo valor:', newValue);
+			fnCalculateAmountPay();
+		
+		}
+		
+		function fnChange_ReceiptAmountTarjeta_BankID (field, newValue, oldValue) {
+			console.log('Valor anterior:', oldValue);
+			console.log('Nuevo valor:', newValue);
+
+			// Aquí puedes agregar la lógica que necesites
+			// Por ejemplo, recalcular totales según el descuento
+			let value = 0;
+			fnRecalcularMontoComision(value);
+		
+		}
+		
+		function fnChange_PorcentageDescuento (field, newValue, oldValue) 
+		{
+			console.log('Valor anterior:', oldValue);
+			console.log('Nuevo valor:', newValue);
+
+			// Aquí puedes agregar la lógica que necesites
+			// Por ejemplo, recalcular totales según el descuento
+			
+			miVentanaEsperando.show();
+			fnRecalculateDetail(true,"");
+			miVentanaEsperando.hide();
+			 
+		}
+		
+		function fnChange_FirstLineProtocolo (field, newValue, oldValue) 
+		{
+			var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+			if(!viewport){
+				return;
+			}
+			
+			var urlExoneration="<?php echo base_url(); ?>/app_invoice_api/getNumberExoneration/value/"+ viewport.down("#txtLayFirstLineProtocolo").getValue(); 
+			if(varParameterINVOICE_BILLING_VALIDATE_EXONERATION == "true")
+			{
+				miVentanaEsperando.show();
+				Ext.Ajax.request({
+					url		: urlExoneration,
+					method	: 'GET',             // o 'POST'
+					async: false,  // bloquea el hilo
+					params	: {                  // parámetros opcionales
+						filtro: 'ABC'
+					},
+					success: function(response, opts) {
+						debugger;
+						// response.responseText contiene la respuesta en texto
+						var datos = Ext.decode(response.responseText); // parse JSON
+						console.log('Datos recibidos:', datos);
+						
+						
+						//La exoneracion ya existe no exonerar
+						var timerNotification 	= 15000;
+						if(datos.objTransactionMaster.length > 0 )
+						{
+							viewport.down('#txtCheckApplyExoneracion').setValue(false);							
+							Ext.Msg.alert('Error', 'El numero de exoneracion ya existe!!');
+						}
+						//La exoneracoin no existe si se puede exonerar
+						else
+						{
+							viewport.down('#txtCheckApplyExoneracion').setValue(true);
+							Ext.toast({
+								html: 'Exoneración aplicada!!',
+								title: 'Éxito',
+								width: 300,
+								align: 't',      // arriba
+								bodyStyle: 'background-color: #dff0d8; color: #3c763d;', // verde estilo éxito
+								closable: true,
+								slideInDuration: 300,
+								minWidth: 200
+							});
+						}
+
+						var grid 	= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
+						var store 	= grid.getStore();	
+						var length  = grid.count();
+						store.each(function (record) {
+							fnGetConcept(record.get('itemID'),"ALL");
+						});
+						
+						
+					},
+					failure: function(response, opts) {
+						Ext.Msg.alert('Error', 'No se pudieron cargar los datos');
+						console.log('Server-side failure with status code ' + response.status);
+					}
+				});
+				
+				
+				
+			}
+		}
+		
+		function fnChange_ApplyExoneration (field, newValue) {
+			if (newValue === true) {
+				console.log("Seleccionado: SI (1)");
+			}
+			
+			
+
+			var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+			if(!viewport){
+				return;
+			}
+			
+			var grid 	= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
+			var store 	= grid.getStore();	
+			var length  = grid.count();
+			store.each(function (record) {
+				fnGetConcept(record.get('itemID'),"ALL");
+			});
+			
+			miVentanaEsperando.show();
+			setTimeout(() => { miVentanaEsperando.hide(); }, (length * 1000) * 0.2 );
+			
+			
+		}
+		
 		function fnChange_CurrencyID_CreditLineID_WarehouseID(combo, newValue, oldValue, eOpts) {
 			
 			fnClearData();
@@ -2191,7 +2374,7 @@
 			fnRenderLineaCreditoDiv();
 		}
 		function fnChangeTypePreiceID(combo, newValue, oldValue, eOpts) {
-			
+			fnActualizarPrecio();
 		}
 		
 		
@@ -3335,5 +3518,420 @@
 		}
 		
 	}
+	function fnActualizarPrecio()
+	{
+		console.info("fnActualizarPrecio");		
+		var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+		if(viewport){
+			
+		}
+		
+		var varStatusIDOld = viewport.down("#txtStatusIDOld").getValue();
+		if(varStatusIDOld ==  varStatusInvoiceAplicado)
+				return;
+			
+		if(varStatusIDOld ==  varStatusInvoiceRegistrado)
+				return;
+			
+		var typePriceID 	= viewport.down("#txtTypePriceID").getValue();
+		var grid 			= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
+		var store 			= grid.getStore();
+		
+		store.each(function (record) {
+			
+			var precio		= 0;
+			if(typePriceID == "154" /*precio1*/)
+				precio = record.get('price1');
+			else if(typePriceID == "155" /*precio2*/)
+				precio = record.get('price2');
+			else /*precio3*/
+				precio = record.get('price3');
+				
+			record.set('price',  precio);
+		});
+		
+		console.info("fnActualizarPrecio fin");
+		fnRecalculateDetail(false,"");
+		
+	}
+	
+	function fnRecalculateDetail(clearRecibo,tipo_calculate, index=-1)
+	{
+		console.info("fnRecalculateDetail");
+		
+		var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+		if(!viewport){
+			return;
+		}
+		var viewport_miVentanaDePago = Ext.getCmp('miVentanaDePago'); // accede al viewport		
+		if (!viewport_miVentanaDePago)
+			return;
+		
+		
+		var porcentajeDescuento 						= viewport.down('#txtPorcentajeDescuento').getValue() || 0;
+		var totalGeneral 								= 0;
+		var despuesDeRecalcularTotalRecibidoIgualCero	= <?php echo getBehavio($company->type, "app_invoice_billing", "despuesDeRecalcularTotalRecibidoIgualCero", "false"); ?>;
+		var invoiceTypeCredit 							= false;
+
+        if(index == -1 && tipo_calculate != "sumarizar")
+		{
+			var cantidad 				= 0;
+			var iva 					= 0;
+			var taxServices				= 0;
+			var precio					= 0;
+			var subtotal 				= 0;
+			var total 					= 0;
+			var cantidadGeneral 		= 0;
+			var ivaGeneral 				= 0;
+			var serviceGeneral			= 0;
+			var precioGeneral			= 0;
+			var subtotalGeneral 		= 0;			
+			let skuRatio				= 0;
+			var priceTemporal			= 0;
+			var cantidadTemporal		= 0;
+			var descuento				= 0;
+			
+			var grid 			= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
+			var store 			= grid.getStore();
+			store.each(function (record) {
+				
+				cantidad 	= record.get('quantity');
+				precio 		= record.get('unitaryPrice');
+				iva 		= record.get('iva');
+				taxServices	= record.get('taxServices');
+				skuRatio    = record.get('ratioSku');
+
+				subtotal    = precio * cantidad;
+				iva 		= (precio * cantidad) * iva;
+				taxServices = (precio * cantidad) * taxServices;
+				total 		= iva + taxServices + subtotal ;
+				descuento	= subtotal * (porcentajeDescuento / 100);
+
+
+				cantidadGeneral 	= cantidadGeneral + cantidad;
+				precioGeneral 		= precioGeneral + precio;
+				ivaGeneral 			= ivaGeneral + iva;
+				serviceGeneral		= serviceGeneral + taxServices;
+				subtotalGeneral 	= subtotalGeneral + subtotal;
+				totalGeneral 		= totalGeneral + total;
+				let skuQuantityBySku= cantidad * skuRatio;
+				
+				
+				record.set('skuQuantityBySku',  skuQuantityBySku);
+				record.set('total',  subtotal);
+				record.set('discount',  descuento);
+				
+			});
+			
+			
+			
+			descuento 		= subtotalGeneral * (porcentajeDescuento / 100);
+			totalGeneral 	= subtotalGeneral + serviceGeneral + ivaGeneral - descuento;
+
+			viewport.down("#txtSubTotal").setValue(subtotalGeneral);
+			viewport.down("#txtDescuento").setValue(descuento);
+			viewport.down("#txtIva").setValue(ivaGeneral);
+			viewport.down("#txtServices").setValue(serviceGeneral);
+			viewport.down("#txtTotal").setValue(totalGeneral);
+
+			//Si es de credito que la factura no supere la linea de credito
+			var causalSelect 				= viewport.down("#txtCausalID").val();
+			var customerCreditLineID 		= viewport.down("#txtCustomerCreditLineID").val();
+			var objCustomerCreditLine 		= Ext.Array.filter(objListCustomerCreditLine, function (obj) { return obj.customerCreditLineID === customerCreditLineID;});
+			var causalCredit 				= objCausalTypeCredit.value.split(",");
+
+			//Obtener si la factura es al credito
+			for(var i=0;i<causalCredit.length;i++){
+				if(causalCredit[i] === causalSelect){
+					invoiceTypeCredit = true;
+				}
+			}
+		}
+
+		if(index > -1 && tipo_calculate != "sumarizar")
+		{
+			var grid 						= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
+			var store 						= grid.getStore();		
+			
+			var cantidadTemporal 	 		=  store[index].get("quantity");
+			var priceTemporal  		 		=  store[index].get("txtprice");
+			store[index].set("quantity",cantidadTemporal);
+			store[index].set("price",priceTemporal);
+			
+			
+			
+			var cantidad 				= store[index].get("quantity");
+			var skuRatio    			= store[index].get("ratioSku"); 
+			let skuQuantityBySku 		= cantidad * skuRatio;
+			store[index].set("skuQuantityBySku",skuQuantityBySku);
+			
+			
+			var precio 					= store[index].get("price"); 
+			var subtotal    			= precio * cantidad;
+			store[index].set("total",subtotal);
+			
+			var descuento				= subtotal * (porcentajeDescuento / 100);
+			store[index].set("discount",descuento);
+			
+			
+			var grid 						= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
+			var store 						= grid.getStore();	
+			var subtotalGeneral 			= 0;
+			var descuento		 			= 0;	
+			var ivaGeneral		 			= 0;
+			var serviceGeneral		 		= 0;	
+			totalGeneral				    = 0;
+			
+			store.each(function(record){
+				subtotalGeneral += parseFloat(record.get('total')) || 0;
+			});
+			store.each(function(record){
+				descuento += parseFloat(record.get('discount')) || 0;
+			});
+			store.each(function(record){
+				ivaGeneral += parseFloat(record.get('iva')) || 0;
+			});
+			store.each(function(record){
+				serviceGeneral += parseFloat(record.get('taxServies')) || 0;
+			});
+			
+			totalGeneral				    = subtotalGeneral + ivaGeneral + serviceGeneral - descuento;			
+			viewport.down("#txtSubTotal").setValue(subtotalGeneral);
+			viewport.down("#txtDescuento").setValue(descuento);
+			viewport.down("#txtIva").setValue(ivaGeneral);
+			viewport.down("#txtServices").setValue(serviceGeneral);
+			viewport.down("#txtTotal").setValue(totalGeneral);
+			
+			
+			var causalSelect 				= viewport.down("#txtCausalID").getValue();
+			var causalCredit 				= objCausalTypeCredit.value.split(",");
+			//Obtener si la factura es al credito
+			for(var i=0;i<causalCredit.length;i++){
+				if(causalCredit[i] === causalSelect){
+					invoiceTypeCredit = true;
+				}
+			}
+			
+		}
+		
+		if(tipo_calculate == "sumarizar")
+		{
+			var grid 						= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
+			var store 						= grid.getStore();			
+				
+			var subtotalGeneral 			= 0;
+			var descuento		 			= 0;	
+			var ivaGeneral		 			= 0;
+			var serviceGeneral		 		= 0;	
+			totalGeneral				    = 0;			
+			
+			store.each(function(record){
+				subtotalGeneral += parseFloat(record.get('total')) || 0;
+			});
+
+			store.each(function(record){
+				descuento += parseFloat(record.get('discount')) || 0;
+			});
+
+			store.each(function(record){
+				ivaGeneral += parseFloat(record.get('iva')) || 0;
+			});
+
+			store.each(function(record){
+				serviceGeneral += parseFloat(record.get('taxServies')) || 0;
+			});
+
+			totalGeneral				    = subtotalGeneral + ivaGeneral + serviceGeneral - descuento;			
+			viewport.down('#txtSubTotal').setValue(subtotalGeneral);
+			viewport.down('#txtDescuento').setValue(descuento);
+			viewport.down('#txtIva').setValue(ivaGeneral);
+			viewport.down('#txtServices').setValue(serviceGeneral);
+			viewport.down('#txtTotal').setValue(totalGeneral);
+			
+		}
+
+		if(invoiceTypeCredit === true){
+			viewport_miVentanaDePago.down("#txtReceiptAmount").setValue("0.00");
+		}
+		else if(despuesDeRecalcularTotalRecibidoIgualCero == true)
+		{
+			viewport_miVentanaDePago.down("#txtReceiptAmount").setValue("0.00");
+		}
+		else{
+			
+			viewport_miVentanaDePago.down("#txtReceiptAmount").setValue(totalGeneral);
+		}
+		
+		if (clearRecibo)
+		{
+				viewport_miVentanaDePago.down("#txtReceiptAmountDol").setValue("0.00");
+				viewport_miVentanaDePago.down("#txtChangeAmount").setValue("0.00");
+				viewport_miVentanaDePago.down("#txtReceiptAmountBank").setValue("0");
+				viewport_miVentanaDePago.down("#txtReceiptAmountPoint").setValue("0");
+				viewport_miVentanaDePago.down("#txtReceiptAmountTarjeta").setValue("0");
+				viewport_miVentanaDePago.down("#txtReceiptAmountTarjetaDol").setValue("0");
+				viewport_miVentanaDePago.down("#txtReceiptAmountBankDol").setValue("0");
+		}
+		console.info("fnRecalculateDetail fin ");
+	}
+	
+	function fnGetConcept(conceptItemID,nameConcept){
+
+		console.info("fnGetConcept");
+		var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+		if(!viewport){
+			return;
+		}
+		var grid 		= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
+		var store 		= grid.getStore();			
+		var records		= store.queryBy(function(record){ return record.get('itemID') > conceptItemID; }).items;
+
+		//Obtener el concepto de la base de datos del navegador y calcular nuevamente
+		obtenerDataDBProductoArray(
+			"objListaProductosConceptosX001",
+			"componentItemID",conceptItemID,"none",{},
+			function(e){
+				var objConcepto = e;
+				var exoneracion = viewport.down("#txtCheckApplyExoneracionValue").getValue();
+
+				if(exoneracion == false )
+				{
+					objConcepto1 	= Ext.Array.filter(objConcepto, function(obj){ return obj.name === "IVA"; });
+					if( objConcepto1.length > 0 )
+					{
+						records[0].set("iva",iva);
+					}
+					objConcepto2 	= Ext.Array.filter(objConcepto, function(obj){ return obj.name === "TAX_SERVICES"; });
+					if( objConcepto2.length > 0 )
+					{
+						records[0].set("taxServices",taxServices);
+					}
+				}
+				else
+				{
+					
+					records[0].set("iva",iva);
+					records[0].set("taxServices",taxServices);
+				}
+				fnRecalculateDetail(true,"", store.indexOf(records[0]));
+				console.info("fnGetConcept fin");
+				
+			}
+		);
+		
+		
+	}
+	
+	function fnRecalcularMontoComision(monto) {
+		
+		
+		console.info("fnRecalcularMontoComision");
+		var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+		if(!viewport){
+			return;
+		}
+		var grid 		= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
+		var store 		= grid.getStore();			
+		var records		= store.queryBy(function(record){ return record.get('itemID') > conceptItemID; }).items;
+
+		
+		if (isNaN(monto))
+		{
+			monto = 0;
+		}
+
+		if(monto == 0)
+			return;
+		
+		store.each(function (record) {
+			let oldPrice = record.get("total");
+			let newPrice = oldPrice * ( monto / 100 );
+			record.set("comisionPosBanck",newPrice);
+		});
+		
+		
+		
+		console.info("fnRecalcularMontoComision Fin");
+		
+	}
+	
+	
+	function fnCalculateAmountPay()
+	{
+		
+		console.info("fnRecalcularMontoComision");
+		var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+		if(!viewport){
+			return;
+		}
+		var grid 		= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
+		var store 		= grid.getStore();			
+		var records		= store.queryBy(function(record){ return record.get('itemID') > conceptItemID; }).items;
+
+		var viewport_miVentanaDePago = Ext.getCmp('miVentanaDePago'); // accede al viewport		
+		if (!viewport_miVentanaDePago)
+			return;
+		
+		
+		
+        let resultTotal     = 0.0;
+        let currencyId      = viewport.down("#txtCurrencyID").getValue();
+        let ingresoCordoba 	= viewport_miVentanaDePago.down("#txtReceiptAmount").getValue();
+        let bancoCordoba 	= viewport_miVentanaDePago.down("#txtReceiptAmountBank").getValue();
+        let puntoCordoba 	= viewport_miVentanaDePago.down("#txtReceiptAmountPoint").getValue();
+        let tarjetaCordoba 	= viewport_miVentanaDePago.down("#txtReceiptAmountTarjeta").getValue();
+        let tarejtaDolares 	= viewport_miVentanaDePago.down("#txtReceiptAmountTarjetaDol").getValue();
+        let bancoDolares 	= viewport_miVentanaDePago.down("#txtReceiptAmountBankDol").getValue();
+        let ingresoDol 	    = viewport_miVentanaDePago.down("#txtReceiptAmountDol").getValue();
+        let tipoCambio 	    = viewport.down("#txtExchangeRate").getValue();
+        let total 		    = viewport.down("#txtTotal").getValue();
+        if( currencyId === "1" /*Cordoba*/ )
+		{
+            resultTotal =  
+				(
+					parseFloat(ingresoCordoba) +  
+					parseFloat(bancoCordoba) + 
+					parseFloat(puntoCordoba) + 
+					parseFloat(tarjetaCordoba) + 
+					( 
+						parseFloat(bancoDolares) / 
+						parseFloat(tipoCambio) 
+					) + 
+					( 
+						parseFloat(tarejtaDolares) / 
+						parseFloat(tipoCambio) 
+					)  + 
+					(
+						parseFloat(ingresoDol)  * 
+						((1 / parseFloat(tipoCambio)).toFixed(2) * 1)
+					)
+				) - parseFloat(total);
+		}else if( currencyId === "2" /*dolares*/ )
+		{
+			resultTotal =  
+				(
+					parseFloat(ingresoCordoba) +  
+					parseFloat(bancoCordoba) + 
+					parseFloat(puntoCordoba) + 
+					parseFloat(tarjetaCordoba) + 
+					( 
+						parseFloat(bancoDolares) * 
+						parseFloat(tipoCambio) 
+					) + 
+					( 
+						parseFloat(tarejtaDolares) * 
+						parseFloat(tipoCambio) 
+					)  + 
+					(
+						parseFloat(ingresoDol) * 
+						parseFloat(tipoCambio)
+					)
+				) - parseFloat(total);
+		}
+
+        resultTotal = fnFormatNumber(resultTotal,2);
+        viewport_miVentanaDePago.down("#txtChangeAmount").setValue(resultTotal);
+    }
+	
 	
 </script>
