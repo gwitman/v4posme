@@ -3643,6 +3643,8 @@ class app_invoice_billing extends _BaseController {
             $codigoMesero                       = array_key_exists('codigoMesero', $dataSession) ?  $dataSession['codigoMesero'] : helper_SegmentsValue($this->uri->getSegments(),"codigoMesero");
             $transactionID                      = array_key_exists('transactionID',$dataSession) ? $dataSession['transactionID'] : 19 /*FACTURA*/;
             $transactionMasterID                = array_key_exists('transactionMasterID', $dataSession) ? $dataSession['transactionMasterID'] : 0;
+			$versionPantalla					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"versionPantalla");//--finuri
+			echo $versionPantalla."witman.";
 			
 			//Obtener el componente de Item
 			$objComponentCustomer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
@@ -4030,14 +4032,25 @@ class app_invoice_billing extends _BaseController {
 			//Renderizar Resultado 
 			$dataSession["notification"]															= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]																	= $this->core_web_notification->get_message();
-			$dataSession["head"]																	= /*--inicio view*/ view('app_invoice_billing/news_head',$dataView);//--finview
-			$dataSession["body"]																	= /*--inicio view*/ view('app_invoice_billing/news_body',$dataView);//--finview
-			$dataSession["script"]																	= /*--inicio view*/ view('app_invoice_billing/news_script',$dataView);//--finview
-			$dataSession["footer"]																	= "";
-            session()->remove(['transactionMasterID', 'viaBoton']);			
-			return view("core_masterpage/default_popup",$dataSession);//--finview-r	
-			//return view("core_masterpage/default_masterpage_ext_6_2_0",$dataSession);//--finview-r	
 			
+			if($versionPantalla == "ext_6_0_2")
+			{
+				$dataSession["head"]																	= /*--inicio view*/ view('app_invoice_billing/news_backup_head',$dataView);//--finview
+				$dataSession["body"]																	= /*--inicio view*/ view('app_invoice_billing/news_backup_body',$dataView);//--finview
+				$dataSession["script"]																	= /*--inicio view*/ view('app_invoice_billing/news_backup_script',$dataView);//--finview
+				$dataSession["footer"]																	= "";
+				session()->remove(['transactionMasterID', 'viaBoton']);							
+				return view("core_masterpage/default_masterpage_ext_6_2_0",$dataSession);//--finview-r	
+			}
+			else 
+			{
+				$dataSession["head"]																	= /*--inicio view*/ view('app_invoice_billing/news_head',$dataView);//--finview
+				$dataSession["body"]																	= /*--inicio view*/ view('app_invoice_billing/news_body',$dataView);//--finview
+				$dataSession["script"]																	= /*--inicio view*/ view('app_invoice_billing/news_script',$dataView);//--finview
+				$dataSession["footer"]																	= "";
+				session()->remove(['transactionMasterID', 'viaBoton']);			
+				return view("core_masterpage/default_popup",$dataSession);//--finview-r	
+			}
 		}
 		catch(\Exception $ex){
 		    if (empty($dataSession)) {

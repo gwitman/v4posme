@@ -165,11 +165,12 @@
 		},
 		values:
 		{
+			'txtTM_transactionNumber' : 'PRF00000000',
 			'txtUserID': '<?= $userID; ?>',
 			'txtCompanyID' : '<?php echo $companyID ?>',
 			'txtTransactionID' : '<?php echo $transactionID ?>',
 			'txtTransactionMasterID' : '0',
-			'txtCodigoMesero' : '<?= $codigoMesero;  ?>',
+			'txtCodigoMesero' : '<?= $codigoMesero;  ?>',			
 			'txtStatusID' : '<?php
 					$count 				= 0;
 					$valueWorkflowFirst = 0;
@@ -209,6 +210,7 @@
 						$count++;
 					}
 				?>',
+			'txtCustomerCreditLineID' : 0,
 			'txtZoneID' : '<?php
 					$count = 0;
 					if($objListZone)
@@ -264,8 +266,7 @@
 				?>',
 			'txtNextVisit' : '',
 			'txtDateFirst' : Ext.Date.format(new Date(), 'Y-m-d'),
-			'txtReference2' : '<?php echo  $objParameterCXC_PLAZO_DEFAULT; ?>',
-			'txtTMIReference1' : '',
+			'txtReference2' : '<?php echo  $objParameterCXC_PLAZO_DEFAULT; ?>',			
 			'txtPeriodPay' : '<?php
 					$count = 0;
 					if($objListPay)
@@ -292,25 +293,24 @@
 					}
 				?>',
 			'txtFixedExpenses' : 0,
+			'txtCheckApplyExoneracion': 0,			
 			'txtLayFirstLineProtocolo' : '' ,
+			'txtCheckDeEfectivo' : 0,
+			'txtCheckReportSinRiesgoValue' : 0,
+			'txtTMIReference1' : '',
+			
 			'txtSubTotal' : 0.00,
 			'txtIva' : 0.00,
 			'txtPorcentajeDescuento' : 0.00,
 			'txtDescuento' : 0.00,
 			'txtServices' : 0.00,
 			'txtTotal' : 0.00,
+			
 			'txtChangeAmount' : 0.00,
 			'txtReceiptAmount' : 0.00,
-			'txtReceiptAmountDol' : 0.00,			
+			'txtReceiptAmountDol' : 0.00,	
+			
 			'txtReceiptAmountTarjeta' : 0.00,
-			'txtReceiptAmountTarjeta_Reference' : '',			
-			'txtReceiptAmountTarjetaDol' : 0.00,
-			'txtReceiptAmountTarjetaDol_Reference' : '',			
-			'txtReceiptAmountBank' : 0.00,
-			'txtReceiptAmountBank_Reference' : '',
-			'txtReceiptAmountBankDol' : 0.00,
-			'txtReceiptAmountBankDol_Reference' : '',
-			'txtReceiptAmountPoint' : 0.00,
 			'txtReceiptAmountTarjeta_BankID' : '<?php
 					$count = 0;
 					if($objListBank)
@@ -320,6 +320,11 @@
 						$count++;
 					}
 				?>', 
+			'txtReceiptAmountTarjeta_Reference' : '',
+
+			
+			
+			'txtReceiptAmountTarjetaDol' : 0.00,
 			'txtReceiptAmountTarjetaDol_BankID' : '<?php
 					$count = 0;
 					if($objListBank)
@@ -329,6 +334,10 @@
 						$count++;
 					}
 				?>', 
+			'txtReceiptAmountTarjetaDol_Reference' : '',
+
+			
+			'txtReceiptAmountBank' : 0.00,
 			'txtReceiptAmountBank_BankID' : '<?php
 					$count = 0;
 					if($objListBank)
@@ -338,6 +347,10 @@
 						$count++;
 					}
 				?>', 
+			'txtReceiptAmountBank_Reference' : '',
+			
+			
+			'txtReceiptAmountBankDol' : 0.00,
 			'txtReceiptAmountBankDol_BankID' : '<?php
 					$count = 0;
 					if($objListBank)
@@ -347,6 +360,8 @@
 						$count++;
 					}
 				?>', 
+			'txtReceiptAmountBankDol_Reference' : '',
+			'txtReceiptAmountPoint' : 0.00,
 		},
 		labels:{
 			'txtTM_transactionNumber': 'PRF00000000'
@@ -364,7 +379,9 @@
 			listeners:{
 				afterrender: function(form) {
 					// Configuración dinámica al "load" del contenedor
-					fnConfiguracionLoad(form, objConfigInit );
+					indexDBCreate(false);
+					fnConfiguracionLoad(form, objConfigInit );					
+					
 				}
 			},
 			items: [
@@ -395,6 +412,13 @@
 							cls: 'btn-eliminar',
 							id: 'btnEliminarFactura',
 							handler: fnBtnEliminarFactura
+						},
+						{
+							text: 'Imprimir factura',
+							iconCls: 'x-fa fa-trash',
+							cls: 'btn-eliminar',
+							id: 'btnImprimirFactura',
+							handler: fnBtnImprimirFactura
 						},
 						
 						'->',  // 🔥 ENVÍA TODO LO QUE SIGUE A LA DERECHA
@@ -1098,6 +1122,9 @@
 													fieldLabel: 'Escanear',
 													labelAlign: 'right',
 													width: 350,
+													id:'txtScanerCodigo',
+													name:'txtScanerCodigo',
+													itemId:'txtScanerCodigo',
 													enableKeyEvents: true,
 													listeners: {
 														afterrender: function(field) {
@@ -1111,7 +1138,91 @@
 											],
 											selModel: 'rowmodel', // permite seleccionar filas para eliminar
 											store: {
-												fields: ['producto', 'cantidad', 'precio'],
+												fields: [
+													// 0
+													'txtTMD_checked',
+
+													// 1
+													'txtTMD_txtTransactionMasterDetailID',
+
+													// 2
+													'txtTMD_txtItemID',
+
+													// 3
+													'txtTMD_txtTransactionDetailItemNumber',
+
+													// 4
+													'txtTMD_txtTransactionDetailName',
+
+													// 5
+													'txtTMD_txtSku',
+
+													// 6
+													'txtTMD_txtQuantity',
+
+													// 7
+													'txtTMD_txtPrice',
+
+													// 8
+													'txtTMD_txtSubTotal',
+
+													// 9
+													'txtTMD_txtIva',
+
+													// 10
+													'txtTMD_skuQuantityBySku',
+
+													// 11
+													'txtTMD_unitaryPriceInvidual',
+
+													// 12 (no tiene dataIndex: botón +)
+
+													// 13 (no tiene dataIndex: botón -)
+
+													// 14 (no tiene dataIndex: botón info)
+
+													// 15
+													'txtTMD_skuFormatoDescription',
+
+													// 16
+													'txtTMD_txtItemPrecio2',
+
+													// 17
+													'txtTMD_txtItemPrecio3',
+
+													// 18
+													'txtTMD_txtTransactionDetailNameDescription',
+
+													// 19
+													'txtTMD_txtTaxServices',
+
+													// 20
+													'txtTMD_txtDetailLote',
+
+													// 21
+													'txtTMD_txtInfoVendedor',
+
+													// 22
+													'txtTMD_txtInfoSerie',
+
+													// 23
+													'txtTMD_txtInfoReferencia',
+
+													// 24
+													'txtTMD_txtItemPrecio1',
+
+													// 25
+													'txtTMD_txtCatalogItemIDSku',
+
+													// 26
+													'txtTMD_txtRatioSku',
+
+													// 27
+													'txtTMD_txtDiscountByItem',
+
+													// 28
+													'txtTMD_txtCommisionByBankByItem'
+												],
 												data: 	[]
 											},
 											columns: [
@@ -2074,9 +2185,14 @@
 		{
 			Ext.Msg.alert('Eliminar', 'Factura guardada');
 		}
-		function fnBtnActualizarPantalla()
+		function fnBtnImprimirFactura()
 		{
 			
+		}
+		function fnBtnActualizarPantalla()
+		{
+			miVentanaEsperando.show();
+			window.location.reload();
 		}
 		function fnBtnCrearBDLocal()
 		{
@@ -2093,10 +2209,47 @@
 		}
 		function fnBtnNuevoProducto()
 		{
-			
+			var url_request = "<?php echo base_url(); ?>/app_inventory_item/add";
+			window.open(url_request, '_blank');
 		}
 		function fnBtnRegresar()
 		{
+			
+			var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+			if(viewport){
+				var grid = viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
+				grid.getStore().loadData([]);
+				
+				if(grid.getStore().count() < 1 )
+				{
+					miVentanaEsperando.show();
+					window.location.href = '<?php echo base_url(); ?>/app_invoice_billing/index';
+				}
+				else{
+					Ext.Msg.confirm(
+						'Confirmación',
+						'¿Desea recargar la página?',
+						function (btn) {
+							if (btn === 'yes') {
+
+								// Mostrar tu ventana
+								miVentanaEsperando.show();
+
+								// Redirigir / recargar
+								window.location.href = '<?php echo base_url(); ?>/app_invoice_billing/index';
+
+							} else {
+								// No hacer nada si presiona No
+								// Puedes poner un console.log si quieres
+								console.log('Operación cancelada por el usuario');
+							}
+						}
+					);
+				}
+			
+			}
+	
+	
 			
 		}
 		function fnBtnLimpiarCliente (btn) {
@@ -2288,7 +2441,7 @@
 						filtro: 'ABC'
 					},
 					success: function(response, opts) {
-						debugger;
+						
 						// response.responseText contiene la respuesta en texto
 						var datos = Ext.decode(response.responseText); // parse JSON
 						console.log('Datos recibidos:', datos);
@@ -2396,21 +2549,114 @@
 
 
 
-		function fnBtnEnterScaner (field, e) {
-			if (e.getKey() === Ext.EventObject.ENTER) {
-				var codigo = field.getValue();
-				var grid = field.up('grid');
+		function fnBtnEnterScaner (field, e) 
+		{
+			if (e.getKey() === Ext.EventObject.ENTER) 
+			{
+				var codigo 			= field.getValue();
+				var grid 			= field.up('grid');
+				var codigoABuscar 	= codigo;
 
-				// Ejemplo: agregar producto automáticamente al store
-				grid.getStore().add({
-					codigo: codigo,
-					producto: 'Producto escaneado',
-					um: 'UND',
-					cantidad: 1,
-					precio: 0,
-					subtotal: 0
-				});
+				
+				//buscar el producto y agregar por codigo de barra
+				indexDBGetInformationLocal(
+					"objListaProductosX001",
+					"all",
+					0,
+					"all",
+					{"codigoABuscar":codigoABuscar},
+					function(e){
 
+						
+						var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+						if(!viewport){
+							return;
+						}
+
+						//buscar el producto y agregar
+						var codigoABuscar 	= e.codigoABuscar.toUpperCase();
+						let data			= e.all;
+						let encontrado		= false;
+						let index			= -1;
+						for(let i = 0 ; i < data.length ; i++)
+						{
+
+							if(encontrado == true)
+							{
+								i--;
+								index = i;
+								break;
+							}
+
+							
+							//buscar por codigo de sistema
+							var currencyTemp	= data[i].currencyID;
+							var currencyID 		= viewport.down("#txtCurrencyID").getValue();
+
+							var warehouseIDTemp		= data[i].warehouseID;
+							var warehouseID			= viewport.down("#txtWarehouseID").getValue();
+
+							if(
+								currencyID == currencyTemp &&
+								fnDeleteCerosIzquierdos(codigoABuscar) == fnDeleteCerosIzquierdos(data[i].Codigo.replace("BITT","").replace("ITT","").toUpperCase())  &&
+								warehouseID == warehouseIDTemp
+							)
+							{
+
+								encontrado 		= true;
+								break;
+							}
+
+							
+							//buscar por codigo de barra
+							var listCodigTmp 	= data[i].Barra.split(",");
+							currencyTemp		= data[i].currencyID;
+							currencyID 			= viewport.down("#txtCurrencyID").getValue();
+							encontrado			= false;
+
+							if(encontrado == false )
+							{
+								for(let ii = 0 ; ii < listCodigTmp.length; ii++)
+								{
+									if(
+										fnDeleteCerosIzquierdos(listCodigTmp[ii].toUpperCase()) == fnDeleteCerosIzquierdos(codigoABuscar) &&
+										currencyID == currencyTemp  &&
+										warehouseID == warehouseIDTemp
+									)
+									{
+										index       = i;
+										encontrado 	= true;
+										break;
+									}
+								}
+							}
+						}
+
+						
+						if(encontrado == true)
+						{
+							var sumar				= true;
+							var filterResult 		= data[index];
+						
+							//Logica de precio
+							if(viewport.down("#txtTypePriceID").getValue() == "154" /*precio1*/)
+								filterResult.Precio = filterResult.Precio;
+							else if(viewport.down("#txtTypePriceID").getValue() == "155" /*precio2*/)
+								filterResult.Precio = filterResult.Precio2;
+							else /*precio3*/
+								filterResult.Precio = filterResult.Precio3;
+								
+
+							
+							//Agregar el Item a la Fila
+							onCompleteNewItem(filterResult,sumar);
+						}
+
+					}
+
+				);
+				
+				
 				field.setValue(''); // limpia el campo
 			}
 		}
@@ -2488,11 +2734,9 @@
 	{
 		
 		if(formPanel.id == 'miVentanaPrincipal')
-		{
-			
-			
-			
-			
+		{			
+	
+			//txtTM_transactionNumber
 			var campoNombre = miVentanaPrincipal.down('#txtTM_transactionNumber');
 			if(obj == null)
 			{
@@ -2503,6 +2747,7 @@
 				campoNombre.setText( objConfigInit.labels.txtTM_transactionNumber );
 			}
 			
+			//txtUserID
 			var campoNombre = miVentanaPrincipal.down('#txtUserID');
 			if(obj == null)
 			{
@@ -2513,6 +2758,7 @@
 				campoNombre.setValue( objConfigInit.values.txtUserID );
 			}
 			
+			//txtCompanyID
 			var campoNombre = miVentanaPrincipal.down('#txtCompanyID');
 			if(obj == null)
 			{
@@ -2523,6 +2769,7 @@
 				campoNombre.setValue( objConfigInit.values.txtCompanyID );
 			}
 			
+			//txtTransactionID
 			var campoNombre = miVentanaPrincipal.down('#txtTransactionID');
 			if(obj == null)
 			{
@@ -2533,6 +2780,7 @@
 				campoNombre.setValue( objConfigInit.values.txtTransactionID );
 			}
 			
+			//txtTransactionMasterID
 			var campoNombre = miVentanaPrincipal.down('#txtTransactionMasterID');
 			if(obj == null)
 			{
@@ -2543,6 +2791,7 @@
 				campoNombre.setValue( objConfigInit.values.txtTransactionMasterID );
 			}
 			
+			//txtCodigoMesero
 			var campoNombre = miVentanaPrincipal.down('#txtCodigoMesero');
 			if(obj == null)
 			{
@@ -2553,7 +2802,29 @@
 				campoNombre.setValue( objConfigInit.values.txtCodigoMesero );
 			}
 			
+			//txtStatusID
+			var campoNombre = miVentanaPrincipal.down('#txtStatusID');
+			if(obj == null)
+			{
+				campoNombre.setValue( objConfigInit.values.txtStatusID );
+			}
+			else
+			{
+				campoNombre.setValue( objConfigInit.values.txtStatusID );
+			}
 			
+			//txtStatusIDOld
+			var campoNombre = miVentanaPrincipal.down('#txtStatusIDOld');
+			if(obj == null)
+			{
+				campoNombre.setValue( objConfigInit.values.txtStatusIDOld );
+			}
+			else
+			{
+				campoNombre.setValue( objConfigInit.values.txtStatusIDOld );
+			}
+			
+			//txtDate
 			var campoNombre = miVentanaPrincipal.down('#txtDate');
 			if(obj == null)
 			{
@@ -2564,7 +2835,7 @@
 				campoNombre.setValue( objConfigInit.values.txtDate );
 			}
 			
-			
+			//txtExchangeRate
 			var campoNombre = miVentanaPrincipal.down('#txtExchangeRate');
 			if(obj == null)
 			{
@@ -2575,6 +2846,7 @@
 				campoNombre.setValue( objConfigInit.values.txtExchangeRate );
 			}
 			
+			//txtNote
 			var campoNombre = miVentanaPrincipal.down('#txtNote');
 			if(obj == null)
 			{
@@ -2585,7 +2857,7 @@
 				campoNombre.setValue( objConfigInit.values.txtNote );
 			}
 			
-			
+			//txtCurrencyID
 			var campoNombre = miVentanaPrincipal.down('#txtCurrencyID');
 			if(obj == null)
 			{
@@ -2596,7 +2868,7 @@
 				campoNombre.setValue( objConfigInit.values.txtCurrencyID );
 			}
 			
-			
+			//txtCustomerID
 			var campoNombre = miVentanaPrincipal.down('#txtCustomerID');
 			if(obj == null)
 			{
@@ -2607,6 +2879,7 @@
 				campoNombre.setValue( objConfigInit.values.txtCustomerID );
 			}
 			
+			//txtCustomerDescription
 			var campoNombre = miVentanaPrincipal.down('#txtCustomerDescription');
 			if(obj == null)
 			{
@@ -2617,6 +2890,7 @@
 				campoNombre.setValue( objConfigInit.values.txtCustomerDescription );
 			}
 			
+			//txtReferenceClientName
 			var campoNombre = miVentanaPrincipal.down('#txtReferenceClientName');
 			if(obj == null)
 			{
@@ -2627,6 +2901,7 @@
 				campoNombre.setValue( objConfigInit.values.txtReferenceClientName );
 			}
 			
+			//txtReferenceClientIdentifier
 			var campoNombre = miVentanaPrincipal.down('#txtReferenceClientIdentifier');
 			if(obj == null)
 			{
@@ -2637,6 +2912,7 @@
 				campoNombre.setValue( objConfigInit.values.txtReferenceClientIdentifier );
 			}
 			
+			//txtCausalID
 			var campoNombre = miVentanaPrincipal.down('#txtCausalID');
 			if(obj == null)
 			{
@@ -2647,6 +2923,18 @@
 				campoNombre.setValue( objConfigInit.values.txtCausalID );
 			}
 			
+			//txtCustomerCreditLineID
+			var campoNombre = miVentanaPrincipal.down('#txtCustomerCreditLineID');
+			if(obj == null)
+			{
+				campoNombre.setValue( objConfigInit.values.txtCustomerCreditLineID );
+			}
+			else
+			{
+				campoNombre.setValue( objConfigInit.values.txtCustomerCreditLineID );
+			}
+			
+			//txtZoneID
 			var campoNombre = miVentanaPrincipal.down('#txtZoneID');
 			if(obj == null)
 			{
@@ -2657,7 +2945,7 @@
 				campoNombre.setValue( objConfigInit.values.txtZoneID );
 			}
 			
-			
+			//txtTypePriceID
 			var campoNombre = miVentanaPrincipal.down('#txtTypePriceID');
 			if(obj == null)
 			{
@@ -2668,6 +2956,7 @@
 				campoNombre.setValue( objConfigInit.values.txtTypePriceID );
 			}
 			
+			//txtWarehouseID
 			var campoNombre = miVentanaPrincipal.down('#txtWarehouseID');
 			if(obj == null)
 			{
@@ -2678,6 +2967,7 @@
 				campoNombre.setValue( objConfigInit.values.txtWarehouseID );
 			}
 			
+			//txtReference3
 			var campoNombre = miVentanaPrincipal.down('#txtReference3');
 			if(obj == null)
 			{
@@ -2688,6 +2978,7 @@
 				campoNombre.setValue( objConfigInit.values.txtReference3 );
 			}
 			
+			//txtEmployeeID
 			var campoNombre = miVentanaPrincipal.down('#txtEmployeeID');
 			if(obj == null)
 			{
@@ -2698,6 +2989,7 @@
 				campoNombre.setValue( objConfigInit.values.txtEmployeeID );
 			}
 			
+			//txtNumberPhone
 			var campoNombre = miVentanaPrincipal.down('#txtNumberPhone');
 			if(obj == null)
 			{
@@ -2708,6 +3000,7 @@
 				campoNombre.setValue( objConfigInit.values.txtNumberPhone );
 			}
 			
+			//txtMesaID
 			var campoNombre = miVentanaPrincipal.down('#txtMesaID');
 			if(obj == null)
 			{
@@ -2718,6 +3011,7 @@
 				campoNombre.setValue( objConfigInit.values.txtMesaID );
 			}
 			
+			//txtNextVisit
 			var campoNombre = miVentanaPrincipal.down('#txtNextVisit');
 			if(obj == null)
 			{
@@ -2728,6 +3022,7 @@
 				campoNombre.setValue( objConfigInit.values.txtNextVisit );
 			}
 			
+			//txtDateFirst
 			var campoNombre = miVentanaPrincipal.down('#txtDateFirst');
 			if(obj == null)
 			{
@@ -2738,6 +3033,7 @@
 				campoNombre.setValue( objConfigInit.values.txtDateFirst );
 			}
 			
+			//txtReference2
 			var campoNombre = miVentanaPrincipal.down('#txtReference2');
 			if(obj == null)
 			{
@@ -2749,18 +3045,7 @@
 			}
 			
 			
-			
-			var campoNombre = miVentanaPrincipal.down('#txtTMIReference1');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtTMIReference1 );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtTMIReference1 );
-			}
-			
-			
+			//txtPeriodPay
 			var campoNombre = miVentanaPrincipal.down('#txtPeriodPay');
 			if(obj == null)
 			{
@@ -2771,7 +3056,7 @@
 				campoNombre.setValue( objConfigInit.values.txtPeriodPay );
 			}
 			
-			
+			//txtReference1
 			var campoNombre = miVentanaPrincipal.down('#txtReference1');
 			if(obj == null)
 			{
@@ -2782,6 +3067,7 @@
 				campoNombre.setValue( objConfigInit.values.txtReference1 );
 			}
 			
+			//txtDayExcluded
 			var campoNombre = miVentanaPrincipal.down('#txtDayExcluded');
 			if(obj == null)
 			{
@@ -2792,6 +3078,7 @@
 				campoNombre.setValue( objConfigInit.values.txtDayExcluded );
 			}
 			
+			//txtFixedExpenses
 			var campoNombre = miVentanaPrincipal.down('#txtFixedExpenses');
 			if(obj == null)
 			{
@@ -2802,6 +3089,18 @@
 				campoNombre.setValue( objConfigInit.values.txtFixedExpenses );
 			}
 			
+			//txtCheckApplyExoneracion
+			var campoNombre = miVentanaPrincipal.down('#txtCheckApplyExoneracion');
+			if(obj == null)
+			{
+				campoNombre.setValue( objConfigInit.values.txtCheckApplyExoneracion );
+			}
+			else
+			{
+				campoNombre.setValue( objConfigInit.values.txtCheckApplyExoneracion );
+			}
+			
+			//txtLayFirstLineProtocolo
 			var campoNombre = miVentanaPrincipal.down('#txtLayFirstLineProtocolo');
 			if(obj == null)
 			{
@@ -2812,6 +3111,41 @@
 				campoNombre.setValue( objConfigInit.values.txtLayFirstLineProtocolo );
 			}
 			
+			//txtCheckDeEfectivo
+			var campoNombre = miVentanaPrincipal.down('#txtCheckDeEfectivo');
+			if(obj == null)
+			{
+				campoNombre.setValue( objConfigInit.values.txtCheckDeEfectivo );
+			}
+			else
+			{
+				campoNombre.setValue( objConfigInit.values.txtCheckDeEfectivo );
+			}
+			
+			//txtCheckReportSinRiesgoValue
+			var campoNombre = miVentanaPrincipal.down('#txtCheckReportSinRiesgoValue');
+			if(obj == null)
+			{
+				campoNombre.setValue( objConfigInit.values.txtCheckReportSinRiesgoValue );
+			}
+			else
+			{
+				campoNombre.setValue( objConfigInit.values.txtCheckReportSinRiesgoValue );
+			}
+			
+			
+			//txtTMIReference1
+			var campoNombre = miVentanaPrincipal.down('#txtTMIReference1');
+			if(obj == null)
+			{
+				campoNombre.setValue( objConfigInit.values.txtTMIReference1 );
+			}
+			else
+			{
+				campoNombre.setValue( objConfigInit.values.txtTMIReference1 );
+			}
+			
+			//txtSubTotal
 			var campoNombre = miVentanaPrincipal.down('#txtSubTotal');
 			if(obj == null)
 			{
@@ -2822,6 +3156,7 @@
 				campoNombre.setValue( objConfigInit.values.txtSubTotal );
 			}
 			
+			//txtIva
 			var campoNombre = miVentanaPrincipal.down('#txtIva');
 			if(obj == null)
 			{
@@ -2832,6 +3167,7 @@
 				campoNombre.setValue( objConfigInit.values.txtIva );
 			}
 			
+			//txtPorcentajeDescuento
 			var campoNombre = miVentanaPrincipal.down('#txtPorcentajeDescuento');
 			if(obj == null)
 			{
@@ -2842,6 +3178,7 @@
 				campoNombre.setValue( objConfigInit.values.txtPorcentajeDescuento );
 			}
 			
+			//txtDescuento
 			var campoNombre = miVentanaPrincipal.down('#txtDescuento');
 			if(obj == null)
 			{
@@ -2852,6 +3189,7 @@
 				campoNombre.setValue( objConfigInit.values.txtDescuento );
 			}
 			
+			//txtServices
 			var campoNombre = miVentanaPrincipal.down('#txtServices');
 			if(obj == null)
 			{
@@ -2862,6 +3200,7 @@
 				campoNombre.setValue( objConfigInit.values.txtServices );
 			}
 			
+			//txtTotal
 			var campoNombre = miVentanaPrincipal.down('#txtTotal');
 			if(obj == null)
 			{
@@ -2872,7 +3211,7 @@
 				campoNombre.setValue( objConfigInit.values.txtTotal );
 			}
 			
-			
+			//txtChangeAmount
 			var campoNombre = miVentanaDePago.down('#txtChangeAmount');
 			if(obj == null)
 			{
@@ -2883,7 +3222,7 @@
 				campoNombre.setValue( objConfigInit.values.txtChangeAmount );
 			}
 			
-			
+			//txtReceiptAmount
 			var campoNombre = miVentanaDePago.down('#txtReceiptAmount');
 			if(obj == null)
 			{
@@ -2894,6 +3233,7 @@
 				campoNombre.setValue( objConfigInit.values.txtReceiptAmount );
 			}
 			
+			//txtReceiptAmountDol
 			var campoNombre = miVentanaDePago.down('#txtReceiptAmountDol');
 			if(obj == null)
 			{
@@ -2904,7 +3244,7 @@
 				campoNombre.setValue( objConfigInit.values.txtReceiptAmountDol );
 			}
 			
-			
+			//txtReceiptAmountTarjeta
 			var campoNombre = miVentanaDePago.down('#txtReceiptAmountTarjeta');
 			if(obj == null)
 			{
@@ -2915,78 +3255,7 @@
 				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjeta );
 			}
 			
-			var campoNombre = miVentanaDePago.down('#txtReceiptAmountTarjetaDol');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjetaDol );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjetaDol );
-			}
-			
-			
-			var campoNombre = miVentanaDePago.down('#txtReceiptAmountTarjetaDol_Reference');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjetaDol_Reference );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjetaDol_Reference );
-			}
-			
-			var campoNombre = miVentanaDePago.down('#txtReceiptAmountBank');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBank );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBank );
-			}
-			
-			var campoNombre = miVentanaDePago.down('#txtReceiptAmountBank_Reference');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBank_Reference );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBank_Reference );
-			}
-			
-			var campoNombre = miVentanaDePago.down('#txtReceiptAmountBankDol');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBankDol );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBankDol );
-			}
-			
-			var campoNombre = miVentanaDePago.down('#txtReceiptAmountBankDol_Reference');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBankDol_Reference );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBankDol_Reference );
-			}
-			
-			var campoNombre = miVentanaDePago.down('#txtReceiptAmountPoint');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountPoint );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountPoint );
-			}
-			
-			
+			//txtReceiptAmountTarjeta_BankID
 			var campoNombre = miVentanaDePago.down('#txtReceiptAmountTarjeta_BankID');
 			if(obj == null)
 			{
@@ -2997,7 +3266,30 @@
 				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjeta_BankID );
 			}
 			
+			//txtReceiptAmountTarjeta_Reference
+			var campoNombre = miVentanaDePago.down('#txtReceiptAmountTarjeta_Reference');
+			if(obj == null)
+			{
+				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjeta_Reference );
+			}
+			else
+			{
+				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjeta_Reference );
+			}
 			
+			
+			//txtReceiptAmountTarjetaDol
+			var campoNombre = miVentanaDePago.down('#txtReceiptAmountTarjetaDol');
+			if(obj == null)
+			{
+				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjetaDol );
+			}
+			else
+			{
+				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjetaDol );
+			}
+			
+			//txtReceiptAmountTarjetaDol_BankID
 			var campoNombre = miVentanaDePago.down('#txtReceiptAmountTarjetaDol_BankID');
 			if(obj == null)
 			{
@@ -3008,6 +3300,29 @@
 				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjetaDol_BankID );
 			}
 			
+			//txtReceiptAmountTarjetaDol_Reference
+			var campoNombre = miVentanaDePago.down('#txtReceiptAmountTarjetaDol_Reference');
+			if(obj == null)
+			{
+				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjetaDol_Reference );
+			}
+			else
+			{
+				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjetaDol_Reference );
+			}
+			
+			//txtReceiptAmountBank
+			var campoNombre = miVentanaDePago.down('#txtReceiptAmountBank');
+			if(obj == null)
+			{
+				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBank );
+			}
+			else
+			{
+				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBank );
+			}
+			
+			//txtReceiptAmountBank_BankID
 			var campoNombre = miVentanaDePago.down('#txtReceiptAmountBank_BankID');
 			if(obj == null)
 			{
@@ -3019,6 +3334,29 @@
 			}
 			
 			
+			//txtReceiptAmountBank_Reference
+			var campoNombre = miVentanaDePago.down('#txtReceiptAmountBank_Reference');
+			if(obj == null)
+			{
+				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBank_Reference );
+			}
+			else
+			{
+				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBank_Reference );
+			}
+			
+			//txtReceiptAmountBankDol
+			var campoNombre = miVentanaDePago.down('#txtReceiptAmountBankDol');
+			if(obj == null)
+			{
+				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBankDol );
+			}
+			else
+			{
+				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBankDol );
+			}
+			
+			//txtReceiptAmountBankDol_BankID
 			var campoNombre = miVentanaDePago.down('#txtReceiptAmountBankDol_BankID');
 			if(obj == null)
 			{
@@ -3029,7 +3367,35 @@
 				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBankDol_BankID );
 			}
 			
+			//txtReceiptAmountBankDol_Reference
+			var campoNombre = miVentanaDePago.down('#txtReceiptAmountBankDol_Reference');
+			if(obj == null)
+			{
+				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBankDol_Reference );
+			}
+			else
+			{
+				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBankDol_Reference );
+			}
 			
+			//txtReceiptAmountPoint
+			var campoNombre = miVentanaDePago.down('#txtReceiptAmountPoint');
+			if(obj == null)
+			{
+				campoNombre.setValue( objConfigInit.values.txtReceiptAmountPoint );
+			}
+			else
+			{
+				campoNombre.setValue( objConfigInit.values.txtReceiptAmountPoint );
+			}
+			
+			//Limpiar detalle
+			var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+			if(viewport)
+			{
+				var grid = viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
+				grid.getStore().loadData([]);
+			}
 			
 		}
 		
@@ -3190,7 +3556,7 @@
 			},
 			success: function(response, opts) {
 				
-				debugger;
+				
 				// response.responseText contiene la respuesta en texto
 				var datos = Ext.decode(response.responseText); // parse JSON
 				console.log('Datos recibidos:', datos);
@@ -3212,7 +3578,7 @@
 						filtro: 'ABC'
 					},
 					success: function(response, opts) {
-						debugger;
+						
 						// response.responseText contiene la respuesta en texto
 						var datos = Ext.decode(response.responseText); // parse JSON
 						console.log('Datos recibidos:', datos);
@@ -3240,7 +3606,7 @@
 						filtro: 'ABC'
 					},
 					success: function(response, opts) {
-						debugger;
+						
 						// response.responseText contiene la respuesta en texto
 						var datos = Ext.decode(response.responseText); // parse JSON
 						console.log('Datos recibidos:', datos);
@@ -3932,6 +4298,130 @@
         resultTotal = fnFormatNumber(resultTotal,2);
         viewport_miVentanaDePago.down("#txtChangeAmount").setValue(resultTotal);
     }
+	
+	function fnDeleteCerosIzquierdos(texto){
+
+		var array 						= texto.split("");
+		var newTexto 				 	= "";
+		var encontradoPrimerElemento 	= false;
+
+		for(var i = 0 ; i<array.length;i++){
+			if(array[i] != "0" && encontradoPrimerElemento == false)
+			{
+				newTexto = newTexto + array[i];
+				encontradoPrimerElemento = true;
+			}
+			else{
+				if(encontradoPrimerElemento == true){
+					newTexto = newTexto + array[i];
+				}
+			}
+		}
+
+		return newTexto;
+	}
+
+	function onCompleteNewItem(filterResult,suma){
+		console.info("CALL onCompleteNewItem");
+		console.info(filterResult);
+		
+		var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+		if(!viewport){
+			return;
+		}
+		
+		
+		var record = {			
+			txtTMD_checked: false,
+			txtTMD_txtTransactionMasterDetailID: 0,
+			txtTMD_txtItemID: filterResult.itemID,
+			txtTMD_txtTransactionDetailItemNumber: filterResult.Codigo,
+			txtTMD_txtTransactionDetailName: filterResult.Nombre,
+			txtTMD_txtSku: filterResult.unitMeasureID,
+			txtTMD_txtQuantity: 1,
+			txtTMD_txtPrice: filterResult.Precio,
+			txtTMD_txtSubTotal: filterResult.Precio ,
+			txtTMD_txtIva: 0,
+			txtTMD_skuQuantityBySku: 0,
+			txtTMD_unitaryPriceInvidual: filterResult.Precio,
+			txtTMD_skuFormatoDescription: filterResult.Medida,
+			txtTMD_txtItemPrecio2: filterResult.Precio2,
+			txtTMD_txtItemPrecio3: filterResult.Precio3,
+			txtTMD_txtTransactionDetailNameDescription: filterResult.Nombre,
+			txtTMD_txtTaxServices: 0,
+			txtTMD_txtDetailLote: "",
+			txtTMD_txtInfoVendedor: "",
+			txtTMD_txtInfoSerie: "",
+			txtTMD_txtInfoReferencia: "",
+			txtTMD_txtItemPrecio1: filterResult.Precio,
+			txtTMD_txtCatalogItemIDSku: null,
+			txtTMD_txtRatioSku: 1,
+			txtTMD_txtDiscountByItem: 0,
+			txtTMD_txtCommisionByBankByItem: 0
+		};
+		
+		
+		
+		
+		indexDBObtenerProductos
+		(
+			"objListaProductosSkuX001",
+			"all",
+			0,
+			'all',
+			{'itemID': record.txtTMD_txtItemID},
+			function(e){
+				debugger;
+				console.info("objListaProductosSkuX001");
+				let itemID 			= e['itemID'];
+				let allData 		= e['all'];
+				let priceDefault	= record.txtTMD_txtPrice;
+				
+				debugger;
+				var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+				if(!viewport){
+					return;
+				}
+				var grid 		= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
+				var store 		= grid.getStore();	
+			
+				debugger;
+				var resultado 		=  Ext.Array.filter(allData, function (producto) {
+					return producto.itemID == record.txtTMD_txtItemID;
+				});
+				
+				if (resultado.length > 0) {
+					Ext.Array.each(resultado, function (producto) {
+						let selected = parseInt(producto.predeterminado, 10);
+						if(selected === 1){
+							console.info(producto);
+							record.txtTMD_txtCatalogItemIDSku				=producto.catalogItemID;
+							record.txtTMD_skuFormatoDescription				=producto.name;
+							record.txtTMD_txtPrice 							=producto.price;
+							record.txtTMD_txtRatioSku 						=producto.value;
+						}
+					});
+				}
+				
+				
+				if (parseInt(record.txtTMD_txtPrice) == 0)
+				{
+					record.txtTMD_txtPrice = priceDefault;
+				}
+				
+				
+				store.add(record);
+				debugger;
+				fnGetConcept(record.txtTMD_txtItemID,"ALL");
+				debugger;
+				
+			}
+		);
+		
+
+		viewport.down("#txtScanerCodigo").focus(false, 200);
+		console.info("fin onCompleteNewItem");
+	}
 	
 	
 </script>

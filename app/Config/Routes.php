@@ -88,7 +88,6 @@ $routes->match(['get', 'post'], 'app_inventory_transferoutput/posMeGetRutasOfCon
 $routes->match(['get', 'post'], 'app_inventory_warehouse/posMeGetRutasOfController', 'app_inventory_warehouse::posMeGetRutasOfController');
 $routes->match(['get', 'post'], 'app_invoice_api/posMeGetRutasOfController', 'app_invoice_api::posMeGetRutasOfController');
 $routes->match(['get', 'post'], 'app_invoice_billing/posMeGetRutasOfController', 'app_invoice_billing::posMeGetRutasOfController');
-$routes->match(['get', 'post'], 'app_invoice_billing_backup/posMeGetRutasOfController', 'app_invoice_billing_backup::posMeGetRutasOfController');
 $routes->match(['get', 'post'], 'app_invoice_dashboards/posMeGetRutasOfController', 'app_invoice_dashboards::posMeGetRutasOfController');
 $routes->match(['get', 'post'], 'app_invoice_price/posMeGetRutasOfController', 'app_invoice_price::posMeGetRutasOfController');
 $routes->match(['get', 'post'], 'app_notification/posMeGetRutasOfController', 'app_notification::posMeGetRutasOfController');
@@ -1146,26 +1145,6 @@ $routes->match(['get', 'post'], 'app_invoice_survery/insertElement', 'app_invoic
 $routes->match(['get', 'post'], 'app_invoice_survery/insertElement/(:any)', 'app_invoice_survery::insertElement');
 $routes->match(['get', 'post'], 'app_invoice_survery/viewRegisterFormatoPaginaNormal80mmOpcion1', 'app_invoice_survery::viewRegisterFormatoPaginaNormal80mmOpcion1');
 $routes->match(['get', 'post'], 'app_invoice_survery/viewRegisterFormatoPaginaNormal80mmOpcion1/(:any)', 'app_invoice_survery::viewRegisterFormatoPaginaNormal80mmOpcion1');
-
-$routes->match(['get', 'post'], 'app_invoice_billing_backup/setSessionData', 'app_invoice_billing_backup::setSessionData');
-$routes->match(['get', 'post'], 'app_invoice_billing_backup/edit', 'app_invoice_billing_backup::edit');
-$routes->match(['get', 'post'], 'app_invoice_billing_backup/edit/(:any)/(:any)/(:any)/(:any)', 'app_invoice_billing_backup::edit/$1/$2/$3/$4');
-$routes->match(['get', 'post'], 'app_invoice_billing_backup/editv2', 'app_invoice_billing_backup::editv2');
-$routes->match(['get', 'post'], 'app_invoice_billing_backup/editv2/(:any)', 'app_invoice_billing_backup::editv2');
-$routes->match(['get', 'post'], 'app_invoice_billing_backup/delete', 'app_invoice_billing_backup::delete');
-$routes->match(['get', 'post'], 'app_invoice_billing_backup/updateElement', 'app_invoice_billing_backup::updateElement');
-$routes->match(['get', 'post'], 'app_invoice_billing_backup/updateElement/(:any)', 'app_invoice_billing_backup::updateElement');
-$routes->match(['get', 'post'], 'app_invoice_billing_backup/insertElement', 'app_invoice_billing_backup::insertElement');
-$routes->match(['get', 'post'], 'app_invoice_billing_backup/insertElement/(:any)', 'app_invoice_billing_backup::insertElement');
-$routes->match(['get', 'post'], 'app_invoice_billing_backup/saveApi', 'app_invoice_billing_backup::saveApi');
-$routes->match(['get', 'post'], 'app_invoice_billing_backup/save', 'app_invoice_billing_backup::save');
-$routes->match(['get', 'post'], 'app_invoice_billing_backup/save/(:any)', 'app_invoice_billing_backup::save');
-$routes->match(['get', 'post'], 'app_invoice_billing_backup/add', 'app_invoice_billing_backup::add');
-$routes->match(['get', 'post'], 'app_invoice_billing_backup/add/(:any)', 'app_invoice_billing_backup::add');
-$routes->match(['get', 'post'], 'app_invoice_billing_backup/index', 'app_invoice_billing_backup::index');
-$routes->match(['get', 'post'], 'app_invoice_billing_backup/index/(:any)', 'app_invoice_billing_backup::index');
-$routes->match(['get', 'post'], 'app_invoice_billing_backup/searchTransactionMaster', 'app_invoice_billing_backup::searchTransactionMaster');
-
 $routes->match(['get', 'post'], 'app_invoice_billing/setSessionData', 'app_invoice_billing::setSessionData');
 $routes->match(['get', 'post'], 'app_invoice_billing/edit', 'app_invoice_billing::edit');
 $routes->match(['get', 'post'], 'app_invoice_billing/edit/(:any)/(:any)/(:any)/(:any)', 'app_invoice_billing::edit/$1/$2/$3/$4');
