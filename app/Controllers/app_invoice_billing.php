@@ -3644,7 +3644,7 @@ class app_invoice_billing extends _BaseController {
             $transactionID                      = array_key_exists('transactionID',$dataSession) ? $dataSession['transactionID'] : 19 /*FACTURA*/;
             $transactionMasterID                = array_key_exists('transactionMasterID', $dataSession) ? $dataSession['transactionMasterID'] : 0;
 			$versionPantalla					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"versionPantalla");//--finuri
-			echo $versionPantalla."witman.";
+			
 			
 			//Obtener el componente de Item
 			$objComponentCustomer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");

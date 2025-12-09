@@ -369,7 +369,55 @@
 		
 	};
 					
-					
+		
+	var objConfigMappingConfig = 
+	{
+		itemID: 				"txtTMD_txtItemID",
+		catalogItemID: 			"txtTMD_txtCatalogItemIDSku",
+		name: 					"txtTMD_skuFormatoDescription",
+		price: 					"txtTMD_txtPrice",
+		value: 					"txtTMD_txtRatioSku",
+		iva: 					"txtTMD_txtIva",
+		quantity: 				"txtTMD_txtQuantity",
+		subtotal: 				"txtTMD_txtSubTotal"
+	};
+	
+	
+	
+	
+	//-var producto = {
+	//-	itemID: 25,
+	//-	catalogItemID: 99,
+	//-	name: "Coca Cola 600ml",
+	//-	price: 20,
+	//-	value: 6,
+	//-	iva: 3,
+	//-	quantity: 2,
+	//-	subtotal: 40
+	//-};
+	//-
+	//-//pasa un objeto de un tipo a otro, segun la configuraicon
+	//-var detalle = fnMapObjectToNew(producto, objConfigMappingConfig);
+	//-console.info("origen");
+	//-console.log(producto);
+	//-console.info("destino");
+	//-console.log(detalle);
+	//-
+	//-//pasa la configuracion de una a la configuracion inversa
+	//-var mappingInverse = fnMapInvertMapping(objConfigMappingConfig);
+	//-console.info("origen");
+	//-console.log(objConfigMappingConfig);
+	//-console.info("destino");
+	//-console.log(mappingInverse);	
+	//-
+	//-//pasa un objeto de un tipo a otro, segun la configuraicon
+	//-var originalBack = fnMapObjectBack(detalle, mappingInverse);
+	//-console.info("origen");
+	//-console.log(detalle);
+	//-console.info("destino");
+	//-console.log(originalBack);
+
+
 	Ext.onReady(function () {
 
 		miVentanaPrincipal = Ext.create('Ext.container.Viewport', {
@@ -4423,5 +4471,41 @@
 		console.info("fin onCompleteNewItem");
 	}
 	
+	
+	//el objeto pasado como primer parametro , se retorna un objeto, nuevo, basado en la configuracion
+	//que se pasa como segundo parametro
+	function fnMapObjectToNew(objOrigen, mappingJson) {
+		var objDestino = {};
+
+		Ext.Object.each(mappingJson, function(origenKey, destinoKey) {
+			if (objOrigen.hasOwnProperty(origenKey)) {
+				objDestino[destinoKey] = objOrigen[origenKey];
+			}
+		});
+
+		return objDestino;
+	}
+	
+	function fnMapObjectBack(objDestino, mappingJsonInverse) {
+		var objOrigen = {};
+
+		Ext.Object.each(mappingJsonInverse, function(destKey, origenKey) {
+			if (objDestino.hasOwnProperty(destKey)) {
+				objOrigen[origenKey] = objDestino[destKey];
+			}
+		});
+
+		return objOrigen;
+	}
+	
+	function fnMapInvertMapping(mappingJson) {
+		var inverted = {};
+
+		Ext.Object.each(mappingJson, function(key, value) {
+			inverted[value] = key;
+		});
+
+		return inverted;
+	}
 	
 </script>
