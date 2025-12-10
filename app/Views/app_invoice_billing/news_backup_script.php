@@ -2268,7 +2268,7 @@
 				var grid = viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
 				grid.getStore().loadData([]);
 				
-				if(grid.getStore().count() < 1 )
+				if(grid.getStore().getCount() < 1 )
 				{
 					miVentanaEsperando.show();
 					window.location.href = '<?php echo base_url(); ?>/app_invoice_billing/index';
@@ -2520,7 +2520,7 @@
 
 						var grid 	= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
 						var store 	= grid.getStore();	
-						var length  = grid.count();
+						var length  = store.getCount();
 						store.each(function (record) {
 							fnGetConcept(record.get('itemID'),"ALL");
 						});
@@ -2552,7 +2552,9 @@
 			
 			var grid 	= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
 			var store 	= grid.getStore();	
-			var length  = grid.count();
+			var length  = store.getCount();
+			
+			
 			store.each(function (record) {
 				fnGetConcept(record.get('itemID'),"ALL");
 			});
@@ -2621,6 +2623,7 @@
 							return;
 						}
 
+						
 						//buscar el producto y agregar
 						var codigoABuscar 	= e.codigoABuscar.toUpperCase();
 						let data			= e.all;
@@ -3971,6 +3974,8 @@
 	
 	function fnRecalculateDetail(clearRecibo,tipo_calculate, index=-1)
 	{
+		
+		
 		console.info("fnRecalculateDetail");
 		
 		var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
@@ -4005,15 +4010,17 @@
 			var cantidadTemporal		= 0;
 			var descuento				= 0;
 			
+			debugger;
 			var grid 			= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
 			var store 			= grid.getStore();
 			store.each(function (record) {
 				
-				cantidad 	= record.get('quantity');
-				precio 		= record.get('unitaryPrice');
-				iva 		= record.get('iva');
-				taxServices	= record.get('taxServices');
-				skuRatio    = record.get('ratioSku');
+				debugger;
+				cantidad 	= record.get('txtTMD_txtQuantity');
+				precio 		= record.get('txtTMD_txtPrice');
+				iva 		= record.get('txtTMD_txtIva');
+				taxServices	= record.get('txtTMD_txtTaxServices');
+				skuRatio    = record.get('txtTMD_txtRatioSku');
 
 				subtotal    = precio * cantidad;
 				iva 		= (precio * cantidad) * iva;
@@ -4031,9 +4038,9 @@
 				let skuQuantityBySku= cantidad * skuRatio;
 				
 				
-				record.set('skuQuantityBySku',  skuQuantityBySku);
-				record.set('total',  subtotal);
-				record.set('discount',  descuento);
+				record.set('txtTMD_skuQuantityBySku',  skuQuantityBySku);
+				record.set('txtTMD_txtSubTotal',  subtotal);
+				record.set('txtTMD_txtDiscountByItem',  descuento);
 				
 			});
 			
@@ -4064,28 +4071,29 @@
 
 		if(index > -1 && tipo_calculate != "sumarizar")
 		{
+			
 			var grid 						= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
 			var store 						= grid.getStore();		
 			
-			var cantidadTemporal 	 		=  store[index].get("quantity");
-			var priceTemporal  		 		=  store[index].get("txtprice");
-			store[index].set("quantity",cantidadTemporal);
-			store[index].set("price",priceTemporal);
+			var cantidadTemporal 	 		=  store.getAt(index).get("txtTMD_txtQuantity");
+			var priceTemporal  		 		=  store.getAt(index).get("txtTMD_txtPrice");
+			store.getAt(index).set("txtTMD_txtQuantity",cantidadTemporal);
+			store.getAt(index).set("txtTMD_txtPrice",priceTemporal);
 			
 			
 			
-			var cantidad 				= store[index].get("quantity");
-			var skuRatio    			= store[index].get("ratioSku"); 
+			var cantidad 				= store.getAt(index).get("txtTMD_txtQuantity");
+			var skuRatio    			= store.getAt(index).get("txtTMD_txtRatioSku"); 
 			let skuQuantityBySku 		= cantidad * skuRatio;
-			store[index].set("skuQuantityBySku",skuQuantityBySku);
+			store.getAt(index).set("txtTMD_skuQuantityBySku",skuQuantityBySku);
 			
 			
-			var precio 					= store[index].get("price"); 
+			var precio 					= store.getAt(index).get("txtTMD_txtPrice"); 
 			var subtotal    			= precio * cantidad;
-			store[index].set("total",subtotal);
+			store.getAt(index).set("txtTMD_txtSubTotal",subtotal);
 			
 			var descuento				= subtotal * (porcentajeDescuento / 100);
-			store[index].set("discount",descuento);
+			store.getAt(index).set("txtTMD_txtDiscountByItem",descuento);
 			
 			
 			var grid 						= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
@@ -4097,16 +4105,16 @@
 			totalGeneral				    = 0;
 			
 			store.each(function(record){
-				subtotalGeneral += parseFloat(record.get('total')) || 0;
+				subtotalGeneral += parseFloat(record.get('txtTMD_txtSubTotal')) || 0;
 			});
 			store.each(function(record){
-				descuento += parseFloat(record.get('discount')) || 0;
+				descuento += parseFloat(record.get('txtTMD_txtDiscountByItem')) || 0;
 			});
 			store.each(function(record){
-				ivaGeneral += parseFloat(record.get('iva')) || 0;
+				ivaGeneral += parseFloat(record.get('txtTMD_txtIva')) || 0;
 			});
 			store.each(function(record){
-				serviceGeneral += parseFloat(record.get('taxServies')) || 0;
+				serviceGeneral += parseFloat(record.get('txtTMD_txtTaxServices')) || 0;
 			});
 			
 			totalGeneral				    = subtotalGeneral + ivaGeneral + serviceGeneral - descuento;			
@@ -4140,19 +4148,19 @@
 			totalGeneral				    = 0;			
 			
 			store.each(function(record){
-				subtotalGeneral += parseFloat(record.get('total')) || 0;
+				subtotalGeneral += parseFloat(record.get('txtTMD_txtSubTotal')) || 0;
 			});
 
 			store.each(function(record){
-				descuento += parseFloat(record.get('discount')) || 0;
+				descuento += parseFloat(record.get('txtTMD_txtDiscountByItem')) || 0;
 			});
 
 			store.each(function(record){
-				ivaGeneral += parseFloat(record.get('iva')) || 0;
+				ivaGeneral += parseFloat(record.get('txtTMD_txtIva')) || 0;
 			});
 
 			store.each(function(record){
-				serviceGeneral += parseFloat(record.get('taxServies')) || 0;
+				serviceGeneral += parseFloat(record.get('txtTMD_txtTaxServices')) || 0;
 			});
 
 			totalGeneral				    = subtotalGeneral + ivaGeneral + serviceGeneral - descuento;			
@@ -4164,6 +4172,7 @@
 			
 		}
 
+		
 		if(invoiceTypeCredit === true){
 			viewport_miVentanaDePago.down("#txtReceiptAmount").setValue("0.00");
 		}
@@ -4171,8 +4180,7 @@
 		{
 			viewport_miVentanaDePago.down("#txtReceiptAmount").setValue("0.00");
 		}
-		else{
-			
+		else{			
 			viewport_miVentanaDePago.down("#txtReceiptAmount").setValue(totalGeneral);
 		}
 		
@@ -4191,42 +4199,52 @@
 	
 	function fnGetConcept(conceptItemID,nameConcept){
 
+		
 		console.info("fnGetConcept");
 		var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
 		if(!viewport){
 			return;
 		}
+		
+		
 		var grid 		= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
 		var store 		= grid.getStore();			
-		var records		= store.queryBy(function(record){ return record.get('itemID') > conceptItemID; }).items;
+		var records		= store.queryBy(function(record){ return record.get('txtTMD_txtItemID') == conceptItemID; }).items;
 
+		
 		//Obtener el concepto de la base de datos del navegador y calcular nuevamente
-		obtenerDataDBProductoArray(
+		indexDBGetInformationLocal(
 			"objListaProductosConceptosX001",
 			"componentItemID",conceptItemID,"none",{},
 			function(e){
+				
 				var objConcepto = e;
-				var exoneracion = viewport.down("#txtCheckApplyExoneracionValue").getValue();
-
-				if(exoneracion == false )
+				var exoneracion = getValueRadio("miVentanaPrincipal","txtCheckApplyExoneracion");
+				 
+				
+				///si exoneracion es igual a 0 o no esta exonerado, 
+				//calcular impuestos				
+				if(exoneracion == "0" )
 				{
 					objConcepto1 	= Ext.Array.filter(objConcepto, function(obj){ return obj.name === "IVA"; });
 					if( objConcepto1.length > 0 )
 					{
-						records[0].set("iva",iva);
+						records[0].set("txtTMD_txtIva",objConcepto1[0].valueOut);
 					}
 					objConcepto2 	= Ext.Array.filter(objConcepto, function(obj){ return obj.name === "TAX_SERVICES"; });
 					if( objConcepto2.length > 0 )
 					{
-						records[0].set("taxServices",taxServices);
+						records[0].set("txtTMD_txtTaxServices",objConcepto2[0].valueOut);
 					}
 				}
 				else
 				{
 					
-					records[0].set("iva",iva);
-					records[0].set("taxServices",taxServices);
+					records[0].set("txtTMD_txtIva",0);
+					records[0].set("txtTMD_txtTaxServices",0);
 				}
+				
+				
 				fnRecalculateDetail(true,"", store.indexOf(records[0]));
 				console.info("fnGetConcept fin");
 				
@@ -4280,7 +4298,7 @@
 		}
 		var grid 		= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
 		var store 		= grid.getStore();			
-		var records		= store.queryBy(function(record){ return record.get('itemID') > conceptItemID; }).items;
+		
 
 		var viewport_miVentanaDePago = Ext.getCmp('miVentanaDePago'); // accede al viewport		
 		if (!viewport_miVentanaDePago)
@@ -4343,7 +4361,7 @@
 				) - parseFloat(total);
 		}
 
-        resultTotal = fnFormatNumber(resultTotal,2);
+        resultTotal = resultTotal;
         viewport_miVentanaDePago.down("#txtChangeAmount").setValue(resultTotal);
     }
 	
@@ -4372,6 +4390,7 @@
 	function onCompleteNewItem(filterResult,suma){
 		console.info("CALL onCompleteNewItem");
 		console.info(filterResult);
+		
 		
 		var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
 		if(!viewport){
@@ -4411,7 +4430,7 @@
 		
 		
 		
-		indexDBObtenerProductos
+		indexDBGetInformationLocal
 		(
 			"objListaProductosSkuX001",
 			"all",
@@ -4419,13 +4438,13 @@
 			'all',
 			{'itemID': record.txtTMD_txtItemID},
 			function(e){
-				debugger;
+				
 				console.info("objListaProductosSkuX001");
 				let itemID 			= e['itemID'];
 				let allData 		= e['all'];
 				let priceDefault	= record.txtTMD_txtPrice;
 				
-				debugger;
+				
 				var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
 				if(!viewport){
 					return;
@@ -4433,17 +4452,20 @@
 				var grid 		= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
 				var store 		= grid.getStore();	
 			
-				debugger;
+				
 				var resultado 		=  Ext.Array.filter(allData, function (producto) {
 					return producto.itemID == record.txtTMD_txtItemID;
 				});
 				
-				if (resultado.length > 0) {
+				
+				if (resultado.length > 0) 
+				{
 					Ext.Array.each(resultado, function (producto) {
 						let selected = parseInt(producto.predeterminado, 10);
 						if(selected === 1){
 							console.info(producto);
 							record.txtTMD_txtCatalogItemIDSku				=producto.catalogItemID;
+							record.txtTMD_txtSku							=producto.catalogItemID;							
 							record.txtTMD_skuFormatoDescription				=producto.name;
 							record.txtTMD_txtPrice 							=producto.price;
 							record.txtTMD_txtRatioSku 						=producto.value;
@@ -4457,11 +4479,10 @@
 					record.txtTMD_txtPrice = priceDefault;
 				}
 				
-				
+				debugger;
 				store.add(record);
-				debugger;
 				fnGetConcept(record.txtTMD_txtItemID,"ALL");
-				debugger;
+				
 				
 			}
 		);
@@ -4507,5 +4528,43 @@
 
 		return inverted;
 	}
+	
+	// Obtener el valor seleccionado
+	function getValueRadio(formulario,field) {
+		
+		var ventana = Ext.getCmp(formulario);
+	
+		// Obtener todos los radios con el mismo name
+		var radios = ventana.query('radiofield[name=' + field + ']');
+
+		// Buscar el que está seleccionado
+		for (var i = 0; i < radios.length; i++) {
+			if (radios[i].getValue() === true) {
+				return radios[i].inputValue;
+			}
+		}
+
+		return null; // Ninguno seleccionado
+		
+	}
+
+	// Setear el valor del radio
+	function setValueRadio(formulario, field, valor) {
+		var ventana = Ext.getCmp(formulario);
+		if (!ventana) return;
+
+		// Obtener todos los radios con el mismo name
+		var radios = ventana.query('radiofield[name=' + field + ']');
+
+		// Recorrer y setear valor
+		for (var i = 0; i < radios.length; i++) {
+			if (radios[i].inputValue == valor) {
+				radios[i].setValue(true);  // Selecciona el radio
+			} else {
+				radios[i].setValue(false); // Desmarca los demás
+			}
+		}
+	}
+
 	
 </script>
