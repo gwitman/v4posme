@@ -2645,17 +2645,19 @@
 	}
 
     function fnSelectCellInventoryBack() {
+		console.info("fnSelectCellInventoryBack");
         $(".custom-table-container-categorias").show();
         $(".custom-table-container-inventory").hide();
     }
 
 	function fnSelectCellInventory(cell) {
+		console.info("fnSelectCellInventory");
         $(".item-producto").removeClass('selected');
         $(cell).addClass("selected");
 	}
 
 	function fnSelectDoubleCellInventory(cell) {
-
+		console.info("fnSelectDoubleCellInventory");
 		$(cell).addClass("selected");
 		var codigoProducto = $(cell).data("codigo");
 

@@ -1,4 +1,5 @@
 /*BD: 	dbtimkzs6wytp0:panderia_peralta*/
+/*servidor:	siteground*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
