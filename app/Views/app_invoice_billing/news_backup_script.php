@@ -2547,8 +2547,8 @@
 						var grid 	= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
 						var store 	= grid.getStore();	
 						var length  = store.getCount();
-						store.each(function (record) {
-							fnGetConcept(record.get('itemID'),"ALL");
+						store.each(function (record) {						
+							fnGetConcept(record.get('txtTMD_txtItemID'),"ALL");
 						});
 						
 						
@@ -2582,7 +2582,7 @@
 			
 			
 			store.each(function (record) {
-				fnGetConcept(record.get('itemID'),"ALL");
+				fnGetConcept(record.get('txtTMD_txtItemID'),"ALL");
 			});
 			
 			miVentanaEsperando.show();
@@ -2633,106 +2633,55 @@
 				var grid 			= field.up('grid');
 				var codigoABuscar 	= codigo;
 
-				
-				//buscar el producto y agregar por codigo de barra
-				indexDBGetInformationLocal(
-					"objListaProductosX001",
-					"all",
-					0,
-					"all",
-					{"codigoABuscar":codigoABuscar},
-					function(e){
+				indexDBGetLocalProductoByBarra(codigoABuscar, function(resultado) {
+					console.log(resultado);
 
-						
-						var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
-						if(!viewport){
-							return;
-						}
-
-						
-						//buscar el producto y agregar
-						var codigoABuscar 	= e.codigoABuscar.toUpperCase();
-						let data			= e.all;
-						let encontrado		= false;
-						let index			= -1;
-						for(let i = 0 ; i < data.length ; i++)
-						{
-
-							if(encontrado == true)
-							{
-								i--;
-								index = i;
-								break;
-							}
-
-							
-							//buscar por codigo de sistema
-							var currencyTemp	= data[i].currencyID;
-							var currencyID 		= viewport.down("#txtCurrencyID").getValue();
-
-							var warehouseIDTemp		= data[i].warehouseID;
-							var warehouseID			= viewport.down("#txtWarehouseID").getValue();
-
-							if(
-								currencyID == currencyTemp &&
-								fnDeleteCerosIzquierdos(codigoABuscar) == fnDeleteCerosIzquierdos(data[i].Codigo.replace("BITT","").replace("ITT","").toUpperCase())  &&
-								warehouseID == warehouseIDTemp
-							)
-							{
-
-								encontrado 		= true;
-								break;
-							}
-
-							
-							//buscar por codigo de barra
-							var listCodigTmp 	= data[i].Barra.split(",");
-							currencyTemp		= data[i].currencyID;
-							currencyID 			= viewport.down("#txtCurrencyID").getValue();
-							encontrado			= false;
-
-							if(encontrado == false )
-							{
-								for(let ii = 0 ; ii < listCodigTmp.length; ii++)
-								{
-									if(
-										fnDeleteCerosIzquierdos(listCodigTmp[ii].toUpperCase()) == fnDeleteCerosIzquierdos(codigoABuscar) &&
-										currencyID == currencyTemp  &&
-										warehouseID == warehouseIDTemp
-									)
-									{
-										index       = i;
-										encontrado 	= true;
-										break;
-									}
-								}
-							}
-						}
-
-						
-						if(encontrado == true)
-						{
-							var sumar				= true;
-							var filterResult 		= data[index];
-						
-							//Logica de precio
-							if(viewport.down("#txtTypePriceID").getValue() == "154" /*precio1*/)
-								filterResult.Precio = filterResult.Precio;
-							else if(viewport.down("#txtTypePriceID").getValue() == "155" /*precio2*/)
-								filterResult.Precio = filterResult.Precio2;
-							else /*precio3*/
-								filterResult.Precio = filterResult.Precio3;
-								
-
-							
-							//Agregar el Item a la Fila
-							onCompleteNewItem(filterResult,sumar);
-						}
-
+					// resultado.productos → lista filtrada por Barra (contiene)
+					// resultado.conceptos → lista exacta por componentItemID
+					// resultado.skus → lista exacta por itemID
+					var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+					if(!viewport){
+						return;
 					}
 
-				);
+					var currencyID 		= viewport.down("#txtCurrencyID").getValue();
+					var warehouseID		= viewport.down("#txtWarehouseID").getValue();
+					if(resultado.productos.length > 0)
+					{
+						resultado.productos = Ext.Array.filter(resultado.productos, function (obj) { 
+							return (
+								obj.currencyID === currencyID && 
+								obj.warehouseID === warehouseID
+							);
+						});
+						
+						
+						if(resultado.productos.length > 0 )
+						resultado.productos  = resultado.productos[0];
+							
+						var sumar				= true;
+						//Logica de precio
+						if(viewport.down("#txtTypePriceID").getValue() == "154" /*precio1*/)
+							resultado.productos.Precio = resultado.productos.Precio;
+						else if(viewport.down("#txtTypePriceID").getValue() == "155" /*precio2*/)
+							resultado.productos.Precio = resultado.productos.Precio2;
+						else /*precio3*/
+							resultado.productos.Precio = resultado.productos.Precio3;
+							
+						
+						onCompleteNewItem(resultado.productos,sumar,resultado.conceptos,resultado.skus);
+						
+					}
+					
+				});
+
+
 				
+						
+						
+
+					
+
 				
 				field.setValue(''); // limpia el campo
 			}
@@ -3716,41 +3665,98 @@
 
 	}
 	
-	function indexDBGetInformationLocal(varTable, varColumn, varValue, valueComando, varDataExt, varFunction) {
-        const requestStore = db.transaction(varTable, 'readwrite').objectStore(varTable);
+	function indexDBGetLocalProductoByBarra(valorBuscar, callbackFinal) {
+    
+		// 1️⃣ Buscar en objListaProductosX001 por contiene
+		const store1 = db.transaction("objListaProductosX001", "readonly")
+						 .objectStore("objListaProductosX001")
+						 .index("Barra");
 
-        let request;
-        let varIndex;
+		store1.getAll().onsuccess = function(e) {
 
-        if (varColumn === "all") {
-            request = requestStore.getAll();
-        } else {
-            varIndex 	= requestStore.index(varColumn);
-            request 	= varIndex.getAll(varValue);
-        }
+			const all = e.target.result;
+			const buscar = String(valorBuscar).toLowerCase();
 
-        request.onsuccess = function() {
-            try {
-                if (valueComando !== "none") {
-                    varDataExt[valueComando] = request.result;
-                    varFunction(varDataExt, varDataExt);
-                } else {
-                    varFunction(request.result, varDataExt);
-                }
-            } catch (ex) {
-                console.error("Error in onsuccess:", ex);
-            }
-        }
+			// Filtro LIKE %valor%
+			const productos = all.filter(item => {
+				const campo = String(item["Barra"] || "").toLowerCase();
+				return campo.includes(buscar);
+			});
 
-        request.onerror = function(err) {
-            console.error("Error in request:", err);
-            if (err.target && err.target.error) {
-                console.error("Error message:", err.target.error.message);
-            }
-        }
-    }
+			// Si no hay nada → terminar
+			if (productos.length === 0) {
+				callbackFinal({
+					productos: [],
+					conceptos: [],
+					skus: []
+				});
+				return;
+			}
+
+			// EXTRAER itemID para las búsquedas siguientes
+			const listaItemID = productos.map(x => x.itemID);
+
+			//---------------------------------------------------------
+			// 2️⃣ Buscar en objListaProductosConceptosX001 EXACTO
+			//---------------------------------------------------------
+			const store2 = db.transaction("objListaProductosConceptosX001", "readonly")
+							 .objectStore("objListaProductosConceptosX001")
+							 .index("componentItemID");
+
+			store2.getAll().onsuccess = function(e2) {
+
+				const allConceptos = e2.target.result;
+
+				const conceptos = allConceptos.filter(c =>
+					listaItemID.includes(c.componentItemID)
+				);
+
+				//---------------------------------------------------------
+				// 3️⃣ Buscar en objListaProductosSkuX001 EXACTO
+				//---------------------------------------------------------
+				const store3 = db.transaction("objListaProductosSkuX001", "readonly")
+								 .objectStore("objListaProductosSkuX001")
+								 .index("itemID");
+
+				store3.getAll().onsuccess = function(e3) {
+
+					const allSkus = e3.target.result;
+
+					const skus = allSkus.filter(s =>
+						listaItemID.includes(s.itemID)
+					);
+
+					//---------------------------------------------------------
+					// 4️⃣ DEVOLVER RESULTADO FINAL
+					//---------------------------------------------------------
+					callbackFinal({
+						productos: productos,
+						conceptos: conceptos,
+						skus: skus
+					});
+				};
+			};
+		};
+	}
 	
-	
+	function indexDBGetLocalConceptos(valorBuscar, callbackFinal) {
+		const store = db.transaction("objListaProductosConceptosX001", "readonly")
+						.objectStore("objListaProductosConceptosX001")
+						.index("componentItemID");
+
+		store.getAll().onsuccess = function(e) {
+
+			const all = e.target.result;
+
+			// BÚSQUEDA EXACTA
+			const conceptos = all.filter(item => 
+				String(item["componentItemID"]) === String(valorBuscar)
+			);
+
+			callbackFinal(conceptos);
+		};
+	}
+
 	
 	function fnClearData()
 	{
@@ -4223,62 +4229,7 @@
 		console.info("fnRecalculateDetail fin ");
 	}
 	
-	function fnGetConcept(conceptItemID,nameConcept){
-
-		
-		console.info("fnGetConcept");
-		var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
-		if(!viewport){
-			return;
-		}
-		
-		
-		var grid 		= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
-		var store 		= grid.getStore();			
-		var records		= store.queryBy(function(record){ return record.get('txtTMD_txtItemID') == conceptItemID; }).items;
-
-		
-		//Obtener el concepto de la base de datos del navegador y calcular nuevamente
-		indexDBGetInformationLocal(
-			"objListaProductosConceptosX001",
-			"componentItemID",conceptItemID,"none",{},
-			function(e){
-				
-				var objConcepto = e;
-				var exoneracion = getValueRadio("miVentanaPrincipal","txtCheckApplyExoneracion");
-				 
-				
-				///si exoneracion es igual a 0 o no esta exonerado, 
-				//calcular impuestos				
-				if(exoneracion == "0" )
-				{
-					objConcepto1 	= Ext.Array.filter(objConcepto, function(obj){ return obj.name === "IVA"; });
-					if( objConcepto1.length > 0 )
-					{
-						records[0].set("txtTMD_txtIva",objConcepto1[0].valueOut);
-					}
-					objConcepto2 	= Ext.Array.filter(objConcepto, function(obj){ return obj.name === "TAX_SERVICES"; });
-					if( objConcepto2.length > 0 )
-					{
-						records[0].set("txtTMD_txtTaxServices",objConcepto2[0].valueOut);
-					}
-				}
-				else
-				{
-					
-					records[0].set("txtTMD_txtIva",0);
-					records[0].set("txtTMD_txtTaxServices",0);
-				}
-				
-				
-				fnRecalculateDetail(true,"", store.indexOf(records[0]));
-				console.info("fnGetConcept fin");
-				
-			}
-		);
-		
-		
-	}
+	
 	
 	function fnRecalcularMontoComision(monto) {
 		
@@ -4391,29 +4342,9 @@
         viewport_miVentanaDePago.down("#txtChangeAmount").setValue(resultTotal);
     }
 	
-	function fnDeleteCerosIzquierdos(texto){
+	
 
-		var array 						= texto.split("");
-		var newTexto 				 	= "";
-		var encontradoPrimerElemento 	= false;
-
-		for(var i = 0 ; i<array.length;i++){
-			if(array[i] != "0" && encontradoPrimerElemento == false)
-			{
-				newTexto = newTexto + array[i];
-				encontradoPrimerElemento = true;
-			}
-			else{
-				if(encontradoPrimerElemento == true){
-					newTexto = newTexto + array[i];
-				}
-			}
-		}
-
-		return newTexto;
-	}
-
-	function onCompleteNewItem(filterResult,suma){
+	function onCompleteNewItem(filterResult,suma,conceptos,skus){
 		console.info("CALL onCompleteNewItem");
 		console.info(filterResult);
 		
@@ -4455,108 +4386,105 @@
 		
 		
 		
+		let itemID 			= filterResult.itemID;
+		let allData 		= skus;
+		let priceDefault	= record.txtTMD_txtPrice;
 		
-		indexDBGetInformationLocal
-		(
-			"objListaProductosSkuX001",
-			"all",
-			0,
-			'all',
-			{'itemID': record.txtTMD_txtItemID},
-			function(e){
-				
-				console.info("objListaProductosSkuX001");
-				let itemID 			= e['itemID'];
-				let allData 		= e['all'];
-				let priceDefault	= record.txtTMD_txtPrice;
-				
-				
-				var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
-				if(!viewport){
-					return;
+		
+		var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+		if(!viewport){
+			return;
+		}
+		var grid 		= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
+		var store 		= grid.getStore();	
+	
+		var comboStoreData  = [];
+		var resultado 		=  Ext.Array.filter(allData, function (producto) {
+			return producto.itemID == record.txtTMD_txtItemID;
+		});
+		
+		
+		if (resultado.length > 0) 
+		{
+			Ext.Array.each(resultado, function (producto) {
+				let selected = parseInt(producto.predeterminado, 10);
+				if(selected === 1){
+					console.info(producto);
+					record.txtTMD_txtCatalogItemIDSku				=producto.catalogItemID;
+					record.txtTMD_txtSku							=producto.catalogItemID;							
+					record.txtTMD_skuFormatoDescription				=producto.name;
+					record.txtTMD_txtPrice 							=producto.price;
+					record.txtTMD_txtRatioSku 						=producto.value;
 				}
-				var grid 		= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
-				var store 		= grid.getStore();	
-			
-				var comboStoreData  = [];
-				var resultado 		=  Ext.Array.filter(allData, function (producto) {
-					return producto.itemID == record.txtTMD_txtItemID;
+				
+				comboStoreData.push({
+					id: 	producto.catalogItemID,
+					name: 	producto.name
 				});
-				
-				
-				if (resultado.length > 0) 
-				{
-					Ext.Array.each(resultado, function (producto) {
-						let selected = parseInt(producto.predeterminado, 10);
-						if(selected === 1){
-							console.info(producto);
-							record.txtTMD_txtCatalogItemIDSku				=producto.catalogItemID;
-							record.txtTMD_txtSku							=producto.catalogItemID;							
-							record.txtTMD_skuFormatoDescription				=producto.name;
-							record.txtTMD_txtPrice 							=producto.price;
-							record.txtTMD_txtRatioSku 						=producto.value;
-						}
-						
-						comboStoreData.push({
-							id: 	producto.catalogItemID,
-							name: 	producto.name
-						});
-					});
-				}
-				
-				
-				if (parseInt(record.txtTMD_txtPrice) == 0)
-				{
-					record.txtTMD_txtPrice = priceDefault;
-				}
-				
-				
-				var newRecord = store.add(record)[0];
-				
-				//Buscar la columna combobox
-				var comboColumn = null;
-				Ext.Array.each(grid.columns, function(col) {
-					if (col.dataIndex === 'txtTMD_txtSku') {
-						comboColumn = col;
-						return false; // rompe el loop
-					}
-				});
-				if (!comboColumn) {
-					console.error('No se encontró la columna txtTMD_txtSku');
-					return;
-				}
-
-				// Crear un store de Ext JS
-				var storeForCombo = Ext.create('Ext.data.Store', {
-					fields: ['id', 'name'],
-					data: comboStoreData
-				});
-
-				
-				//Agreagar el store al combobox
-				Ext.defer(function() 
-				{
-					var comboWidget = comboColumn.getWidget(newRecord);
-					if (comboWidget) {
-						//comboWidget.setStore(comboStoreData);
-						comboWidget.bindStore(storeForCombo); // vincula el store
-						
-
-						if (comboStoreData.length > 0) {
-							comboWidget.setValue(comboStoreData[0].id );
-							newRecord.set('txtTMD_txtSku', comboStoreData[0].id );
-						}
-					}
-					
-					
-					fnGetConcept(record.txtTMD_txtItemID,"ALL");
-					
-				}, 50); // pequeño delay para que el widget exista
-				
-				
-				
+			});
+		}
+		
+		
+		if (parseInt(record.txtTMD_txtPrice) == 0)
+		{
+			record.txtTMD_txtPrice = priceDefault;
+		}
+		
+		var newRecord 	= store.insert(0, record)[0];
+		//var newRecord = store.add(record)[0];
+		
+		//Buscar la columna combobox
+		var comboColumn = null;
+		Ext.Array.each(grid.columns, function(col) {
+			if (col.dataIndex === 'txtTMD_txtSku') {
+				comboColumn = col;
+				return false; // rompe el loop
 			}
-		);
+		});
+		if (!comboColumn) {
+			console.error('No se encontró la columna txtTMD_txtSku');
+			return;
+		}
+
+		// Crear un store de Ext JS
+		var storeForCombo = Ext.create('Ext.data.Store', {
+			fields: ['id', 'name'],
+			data: comboStoreData
+		});
+
+		
+		//Agreagar el store al combobox
+		Ext.defer(function() 
+		{
+			var comboWidget = comboColumn.getWidget(newRecord);
+			if (comboWidget) {
+				//comboWidget.setStore(comboStoreData);
+				comboWidget.bindStore(storeForCombo); // vincula el store
+				
+
+				if (comboStoreData.length > 0) {
+					comboWidget.setValue(comboStoreData[0].id );
+					newRecord.set('txtTMD_txtSku', comboStoreData[0].id );
+				}
+			}
+			
+			
+			console.info("fnGetConcept");
+			var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+			if(!viewport){
+				return;
+			}
+			
+			
+			var grid 		= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
+			var store 		= grid.getStore();			
+			var records		= store.queryBy(function(record){ return record.get('txtTMD_txtItemID') == filterResult.itemID; }).items;
+			fnGetConcept( filterResult.itemID, "ALL");
+			
+			
+			
+		}, 50); // pequeño delay para que el widget exista
+		
 		
 
 		viewport.down("#txtScanerCodigo").focus(false, 200);
@@ -4635,6 +4563,56 @@
 				radios[i].setValue(false); // Desmarca los demás
 			}
 		}
+	}
+	
+	function fnGetConcept(conceptItemID,nameConcept)
+	{
+		
+		console.info("fnGetConcept");
+		var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+		if(!viewport){
+			return;
+		}
+		
+		
+		var grid 		= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
+		var store 		= grid.getStore();			
+		var records		= store.queryBy(function(record){ return record.get('txtTMD_txtItemID') == conceptItemID; }).items;
+
+		
+		//Obtener el concepto de la base de datos del navegador y calcular nuevamente
+		indexDBGetLocalConceptos(conceptItemID,function (e){
+			var objConcepto = e;
+			var exoneracion = getValueRadio("miVentanaPrincipal","txtCheckApplyExoneracion");
+			 
+			
+			///si exoneracion es igual a 0 o no esta exonerado, 
+			//calcular impuestos				
+			if(exoneracion == "0" )
+			{
+				objConcepto1 	= Ext.Array.filter(objConcepto, function(obj){ return obj.name === "IVA"; });
+				if( objConcepto1.length > 0 )
+				{
+					records[0].set("txtTMD_txtIva",objConcepto1[0].valueOut);
+				}
+				objConcepto2 	= Ext.Array.filter(objConcepto, function(obj){ return obj.name === "TAX_SERVICES"; });
+				if( objConcepto2.length > 0 )
+				{
+					records[0].set("txtTMD_txtTaxServices",objConcepto2[0].valueOut);
+				}
+			}
+			else
+			{
+				
+				records[0].set("txtTMD_txtIva",0);
+				records[0].set("txtTMD_txtTaxServices",0);
+			}
+			
+			
+			fnRecalculateDetail(true,"", store.indexOf(records[0]));
+			console.info("fnGetConcept fin");
+		});
+		
 	}
 
 	
