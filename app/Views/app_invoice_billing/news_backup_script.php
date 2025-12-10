@@ -372,7 +372,7 @@
 		
 	var objConfigMappingConfig = 
 	{
-		itemID: 				"txtTMD_txtItemID",
+		txtTransactionMasterID: "transactionMasterID",
 		catalogItemID: 			"txtTMD_txtCatalogItemIDSku",
 		name: 					"txtTMD_skuFormatoDescription",
 		price: 					"txtTMD_txtPrice",
@@ -420,6 +420,553 @@
 
 	Ext.onReady(function () {
 
+		miVentanaDePago = Ext.create('Ext.window.Window', {
+					title: 'Opciones de pago',
+					id: 'miVentanaDePago',
+					itemId:'miVentanaDePago',
+					width: 700,
+					height: 350,
+					modal: true,
+					closeAction: 'hide',
+					hidden: true,
+					// Crear ventana modal														
+					layout: 'vbox',
+					bodyPadding: 10,			
+					listeners:{
+						afterrender: function(form) {
+							// Configuración dinámica al "load" del contenedor
+							fnConfiguracionLoad(form, objConfigInit );
+						}
+					},
+					items: [
+
+						// ✔ COLUMNA 1
+						{
+							width: 650,
+							items: [	
+								{
+									xtype: 'numberfield',
+									fieldLabel: 'Cambio',
+									labelWidth: 200,
+									width: 300,
+									minValue: 0,
+									decimalPrecision: 4,
+									step: 0.0001,
+									hideTrigger: true,
+									keyNavEnabled: false,
+									mouseWheelEnabled: false,
+									name: 'txtChangeAmount',
+									id:'txtChangeAmount',
+								},
+								{
+									xtype: 'numberfield',
+									fieldLabel: 'Monto Recibido',
+									labelWidth: 200,
+									width: 300,
+									minValue: 0,
+									decimalPrecision: 4,
+									step: 0.0001,
+									hideTrigger: true,
+									keyNavEnabled: false,
+									mouseWheelEnabled: false,
+									name: 'txtReceiptAmount',
+									id:'txtReceiptAmount',
+									listeners: {
+										change: fnChange_ReceiptAmount
+									}
+								},
+								{
+									xtype: 'numberfield',
+									fieldLabel: 'Monto Recibido Extranjero',
+									labelWidth: 200,
+									width: 300,
+									minValue: 0,
+									decimalPrecision: 4,
+									step: 0.0001,
+									hideTrigger: true,
+									keyNavEnabled: false,
+									mouseWheelEnabled: false,
+									name: 'txtReceiptAmountDol',
+									id:'txtReceiptAmountDol',
+									listeners: {
+										change: fnChange_ReceiptAmount
+									}
+								},	
+								{
+									xtype: 'fieldcontainer',
+									fieldLabel: 'Tarjeta nacional:',
+									labelWidth: 200,
+									layout: 'hbox',
+									items: [
+										{
+											xtype: 'numberfield',
+											flex: 1,
+											width:95,
+											margin: '0 5 0 0',
+											name: 'txtReceiptAmountTarjeta',
+											id:'txtReceiptAmountTarjeta',
+											listeners: {
+												change: fnChange_ReceiptAmount
+											}
+										},
+										{
+											xtype: 'combobox',
+											store: ['A','B','C'],
+											store: Ext.create('Ext.data.Store', {
+												fields: ['id', 'name'] 
+											}),
+											displayField: 'name',
+											valueField: 'id',
+											queryMode: 'local',
+											editable: false,
+											width: 150,
+											margin: '0 5 0 0',
+											name: 'txtReceiptAmountTarjeta_BankID',
+											id:'txtReceiptAmountTarjeta_BankID',
+											listeners: {
+												change: fnChange_ReceiptAmountTarjeta_BankID
+											}
+										},
+										{
+											xtype: 'textfield',
+											emptyText: 'Referencia',
+											width: 100,
+											flex: 1,
+											name: 'txtReceiptAmountTarjeta_Reference',
+											id:'txtReceiptAmountTarjeta_Reference',
+										}
+									]
+								},
+								{
+									xtype: 'fieldcontainer',
+									fieldLabel: 'Tarjeta extranjera:',
+									labelWidth: 200,
+									layout: 'hbox',
+									items: [
+										{
+											xtype: 'numberfield',
+											flex: 1,
+											width:95,
+											margin: '0 5 0 0',
+											name: 'txtReceiptAmountTarjetaDol',
+											id:'txtReceiptAmountTarjetaDol',
+											listeners: {
+												change: fnChange_ReceiptAmount
+											}
+										},
+										{
+											xtype: 'combobox',
+											store: ['A','B','C'],
+											store: Ext.create('Ext.data.Store', {
+												fields: ['id', 'name'] 
+											}),
+											displayField: 'name',
+											valueField: 'id',
+											queryMode: 'local',
+											editable: false,
+											width: 150,
+											margin: '0 5 0 0',
+											name: 'txtReceiptAmountTarjetaDol_BankID',
+											id:'txtReceiptAmountTarjetaDol_BankID',
+											listeners: {
+												change: fnChange_ReceiptAmountTarjeta_BankID
+											}
+										},
+										{
+											xtype: 'textfield',
+											emptyText: 'Referencia',
+											width: 100,
+											flex: 1,
+											name: 'txtReceiptAmountTarjetaDol_Reference',
+											id:'txtReceiptAmountTarjetaDol_Reference',
+										}
+									]
+								},
+								{
+									xtype: 'fieldcontainer',
+									fieldLabel: 'Transferencia nacional:',
+									labelWidth: 200,
+									layout: 'hbox',
+									items: [
+										{
+											xtype: 'numberfield',
+											flex: 1,
+											width:95,
+											margin: '0 5 0 0',
+											name: 'txtReceiptAmountBank',
+											id:'txtReceiptAmountBank',
+											listeners: {
+												change: fnChange_ReceiptAmount
+											}
+										},
+										{
+											xtype: 'combobox',
+											store: ['A','B','C'],
+											store: Ext.create('Ext.data.Store', {
+												fields: ['id', 'name'] 
+											}),
+											displayField: 'name',
+											valueField: 'id',
+											queryMode: 'local',
+											editable: false,
+											width: 150,
+											margin: '0 5 0 0',
+											name: 'txtReceiptAmountBank_BankID',
+											id:'txtReceiptAmountBank_BankID',
+											listeners: {
+												change: fnChange_ReceiptAmountTarjeta_BankID
+											}
+										},
+										{
+											xtype: 'textfield',
+											emptyText: 'Referencia',
+											width: 100,
+											flex: 1,
+											name: 'txtReceiptAmountBank_Reference',
+											id:'txtReceiptAmountBank_Reference',
+										}
+									]
+								},
+								{
+									xtype: 'fieldcontainer',
+									fieldLabel: 'Transferencia extranjera:',
+									labelWidth: 200,
+									layout: 'hbox',
+									items: [
+										{
+											xtype: 'numberfield',
+											flex: 1,
+											width:95,
+											margin: '0 5 0 0',
+											name: 'txtReceiptAmountBankDol',
+											id:'txtReceiptAmountBankDol',
+											listeners: {
+												change: fnChange_ReceiptAmount
+											}
+										},
+										{
+											xtype: 'combobox',
+											store: ['A','B','C'],
+											store: Ext.create('Ext.data.Store', {
+												fields: ['id', 'name'] 
+											}),
+											displayField: 'name',
+											valueField: 'id',
+											queryMode: 'local',
+											editable: false,
+											width: 150,
+											margin: '0 5 0 0',
+											name: 'txtReceiptAmountBankDol_BankID',
+											id:'txtReceiptAmountBankDol_BankID',
+											listeners: {
+												change: fnChange_ReceiptAmountTarjeta_BankID
+											}
+										},
+										{
+											xtype: 'textfield',
+											emptyText: 'Referencia',
+											width: 100,
+											flex: 1,
+											name: 'txtReceiptAmountBankDol_Reference',
+											id:'txtReceiptAmountBankDol_Reference',
+										}
+									]
+								},
+								{
+									xtype: 'numberfield',
+									fieldLabel: 'Puntos',
+									labelWidth: 200,
+									width: 300,
+									minValue: 0,
+									decimalPrecision: 4,
+									step: 0.0001,
+									hideTrigger: true,
+									keyNavEnabled: false,
+									mouseWheelEnabled: false,
+									name: 'txtReceiptAmountPoint',
+									id:'txtReceiptAmountPoint',
+									listeners: {
+										change: fnChange_ReceiptAmount
+									}
+								}
+								
+							]
+						}
+					],
+
+					buttons: [
+						{
+							text: 'Confirmar',
+							id: 'btnConfirmarPago',
+							handler: fnBtnConfirmarPago
+						},
+						{
+							text: 'Cancelar',
+							id: 'btnCancelarPago',
+							handler: fnBtnCancelarPago
+						}
+					]
+					
+																
+				});
+				
+		miVentanaImpresion = Ext.create('Ext.window.Window', {
+					title: 'Seleccione Formato de Impresión',
+					id: 'miVentanaImpresion',
+					itemId:'miVentanaImpresion',
+					width: 350,
+					height: 350,
+					modal: true,
+					closeAction: 'hide',
+					layout: 'vbox',
+					bodyPadding: 20,
+					hidden: true,
+
+					items: [
+						{
+							xtype: 'label',
+							text: 'Elija su formato de impresión',
+							style: 'font-size:16px; font-weight:bold; color:green; margin-bottom:20px;'
+						},
+						{
+							xtype: 'container',
+							layout: {
+								type: 'vbox',
+								pack: 'start',
+								align: 'stretch'
+							},
+							defaults: {
+								xtype: 'button',
+								margin: '5 0'
+							},
+							items: [
+								{
+									text: 'Impresión 1',
+									id: 'btnImpresion1',
+									handler: fnBtnImpresion1
+								},
+								{
+									text: 'Impresión 2',
+									id: 'btnImpresion2',
+									handler: fnBtnImpresion2
+								},
+								{
+									text: 'Impresión 3',
+									id: 'btnImpresion3',
+									handler: fnBtnImpresion3
+								},
+								{
+									text: 'Impresión 4',
+									id: 'btnImpresion4',
+									handler: fnBtnImpresion4
+								}
+							]
+						}
+					],
+
+					buttons: [				
+						{
+							text: 'Cancelar',
+							iconCls: 'x-fa fa-times',
+							id: 'btnCancelarImpresion',					
+							handler: fnBtnCancelarImpresion
+						}
+					]
+				});
+
+		miVentanaSeleccionCliente = Ext.create('Ext.window.Window', {			
+					title: 'Listado de Clientes',
+					id: 'miVentanaSeleccionCliente',
+					itemId:'miVentanaSeleccionCliente',
+					width: 700,
+					height: 400,
+					modal: true,
+					layout: 'fit',
+					closeAction: 'hide',
+					items: [<?php echo $objCompanyDataView_BuscarClientes["view_config"]->jsonConfiguration; ?> ],
+					bbar: [
+						'->',
+						{
+							text: 'Aceptar',
+							iconCls: 'x-fa fa-check',
+							id: 'btnSeleccionCliente',
+							handler: fnBtnSeleccionCliente
+						},
+						{
+							text: 'Cancelar',
+							iconCls: 'x-fa fa-times',
+							id: 'btnCancelarSeleccionCliente',
+							handler: fnBtnCancelarSeleccionCliente
+						}
+					]
+				});
+				
+		miVentanaSeleccionProducto = Ext.create('Ext.window.Window', {
+					title: 'Listado de Productos',
+					id: 'miVentanaSeleccionProducto',
+					itemId:'miVentanaSeleccionProducto',
+					width: 700,
+					height: 400,
+					modal: true,
+					layout: 'fit',
+					closeAction: 'hide',
+					items: [<?php echo $objCompanyDataView_BuscarProductos["view_config"]->jsonConfiguration; ?> ],
+					bbar: [
+						'->',
+						{
+							text: 'Aceptar',
+							iconCls: 'x-fa fa-check',
+							id: 'btnSeleccionProducto',
+							handler: fnBtnSeleccionProducto
+						},
+						{
+							text: 'Cancelar',
+							iconCls: 'x-fa fa-times',
+							id: 'btnCancelarSeleccionProducto',
+							handler: fnBtnCancelarSeleccionProducto
+						}
+					]
+				});
+
+		miVentanaSeleccionFactura = Ext.create('Ext.window.Window', {
+					title: 'Listado de Facturas',
+					id: 'miVentanaSeleccionFactura',
+					itemId:'miVentanaSeleccionFactura',
+					width: 900,
+					height: 400,
+					modal: true,
+					layout: 'fit',
+					closeAction: 'hide',
+					items: [<?php echo $objCompanyDataView_BuscarFacturas["view_config"]->jsonConfiguration; ?> ],
+					bbar: [
+						'->',
+						{
+							text: 'Aceptar',
+							iconCls: 'x-fa fa-check',
+							id: 'btnSeleccionFactura',
+							handler: fnBtnSeleccionFactura
+						},
+						{
+							text: 'Cancelar',
+							iconCls: 'x-fa fa-times',
+							id: 'btnCancelarSeleccionFactura',
+							handler: fnBtnCancelarSeleccionFactura
+						}
+					]
+				});
+				
+		miVentanaEsperando = Ext.create('Ext.window.Window', {
+					title: 'Procesando',
+					id: 'miVentanaEsperando',
+					itemId:'miVentanaEsperando',
+					closable: false,
+					modal: true,
+					closeAction: 'hide',
+					width: 300,
+					height: 100,
+					bodyPadding: 10,
+					html: '<div style="text-align:center;"><b>Esperando...</b></div>'
+				}); 
+			
+		miVentanaInformacionAdicional = Ext.create('Ext.window.Window', {
+					title: 'Informacion adicional',
+					id: 'miVentanaInformacionAdicional',
+					itemId:'miVentanaInformacionAdicional',
+					width: 350,
+					height: 250,
+					modal: true,
+					closeAction: 'hide',
+					hidden: true,
+					// Crear ventana modal														
+					layout: 'vbox',
+					bodyPadding: 10,			
+					listeners:{
+						afterrender: function(form) {
+							// Configuración dinámica al "load" del contenedor
+							fnConfiguracionLoad(form, objConfigInit );
+						}
+					},
+					items: [
+
+						// ✔ COLUMNA 1
+						{
+							width: 350,
+							items: [	
+								{
+									xtype: 'hiddenfield',
+									name: 'ventanaInformacionAdicional_indexTransctionMasterDetail',
+									id:'ventanaInformacionAdicional_indexTransctionMasterDetail',
+									value: '12345'
+								},
+								{
+									xtype: 'combobox',
+									fieldLabel: 'Precios',
+									labelWidth: 100,
+									width: 300,
+									store: ['USD', 'NIO', 'CRC', 'EUR'],
+									store: Ext.create('Ext.data.Store', {
+										fields: ['id', 'name'] 
+									}),
+									displayField: 'name',
+									valueField: 'id',
+									queryMode: 'local',
+									editable: false,
+									name: 'txtSelectPrecio',
+									id:'txtSelectPrecio',
+								},
+								{
+									xtype: 'combobox',
+									fieldLabel: 'Vendedor',
+									labelWidth: 100,
+									width: 300,
+									store: ['USD', 'NIO', 'CRC', 'EUR'],
+									store: Ext.create('Ext.data.Store', {
+										fields: ['id', 'name'] 
+									}),
+									displayField: 'name',
+									valueField: 'id',
+									queryMode: 'local',
+									editable: false,
+									name: 'txtSelectVendedor',
+									id:'txtSelectVendedor',
+								},
+								{
+									xtype: 'textfield',       // tipo texto
+									fieldLabel: 'Serie', // etiqueta
+									labelWidth: 100,          // ancho de la etiqueta
+									width: 300,               // ancho total del campo
+									name: 'txtSerieProducto',     // nombre del campo para enviar al servidor
+									id: 'txtSerieProducto',       // id único
+								},
+								{
+									xtype: 'textfield',       // tipo texto
+									fieldLabel: 'Referencia', // etiqueta
+									labelWidth: 100,          // ancho de la etiqueta
+									width: 300,               // ancho total del campo
+									name: 'txtReferenciaProducto',     // nombre del campo para enviar al servidor
+									id: 'txtReferenciaProducto',       // id único
+								}
+								
+							]
+						}
+					],
+
+					buttons: [
+						{
+							text: 'Aceptar',
+							id: 'btnConfirmarInformacionAdicional',
+							handler: fnBtnConfirmarInformacionAdicional
+						},
+						{
+							text: 'Cancelar',
+							id: 'btnCancelarInformacionAdicional',
+							handler: fnBtnCancelarInformacionAdicional
+						}
+					]
+					
+			});
+
+
 		miVentanaPrincipal = Ext.create('Ext.container.Viewport', {
 			layout: 'fit',
 			id: 'miVentanaPrincipal',
@@ -428,7 +975,8 @@
 				afterrender: function(form) {
 					// Configuración dinámica al "load" del contenedor
 					indexDBCreate(false);
-					fnConfiguracionLoad(form, objConfigInit );					
+					fnConfiguracionLoad(form, objConfigInit );	
+					fnLoadInvoiceExistente(null,null);
 					
 				}
 			},
@@ -1704,553 +2252,7 @@
 			]
 		});
 
-		miVentanaDePago = Ext.create('Ext.window.Window', {
-			title: 'Opciones de pago',
-			id: 'miVentanaDePago',
-			itemId:'miVentanaDePago',
-			width: 700,
-			height: 350,
-			modal: true,
-			closeAction: 'hide',
-			hidden: true,
-			// Crear ventana modal														
-			layout: 'vbox',
-			bodyPadding: 10,			
-			listeners:{
-				afterrender: function(form) {
-					// Configuración dinámica al "load" del contenedor
-					fnConfiguracionLoad(form, objConfigInit );
-				}
-			},
-			items: [
-
-				// ✔ COLUMNA 1
-				{
-					width: 650,
-					items: [	
-						{
-							xtype: 'numberfield',
-							fieldLabel: 'Cambio',
-							labelWidth: 200,
-							width: 300,
-							minValue: 0,
-							decimalPrecision: 4,
-							step: 0.0001,
-							hideTrigger: true,
-							keyNavEnabled: false,
-							mouseWheelEnabled: false,
-							name: 'txtChangeAmount',
-							id:'txtChangeAmount',
-						},
-						{
-							xtype: 'numberfield',
-							fieldLabel: 'Monto Recibido',
-							labelWidth: 200,
-							width: 300,
-							minValue: 0,
-							decimalPrecision: 4,
-							step: 0.0001,
-							hideTrigger: true,
-							keyNavEnabled: false,
-							mouseWheelEnabled: false,
-							name: 'txtReceiptAmount',
-							id:'txtReceiptAmount',
-							listeners: {
-								change: fnChange_ReceiptAmount
-							}
-						},
-						{
-							xtype: 'numberfield',
-							fieldLabel: 'Monto Recibido Extranjero',
-							labelWidth: 200,
-							width: 300,
-							minValue: 0,
-							decimalPrecision: 4,
-							step: 0.0001,
-							hideTrigger: true,
-							keyNavEnabled: false,
-							mouseWheelEnabled: false,
-							name: 'txtReceiptAmountDol',
-							id:'txtReceiptAmountDol',
-							listeners: {
-								change: fnChange_ReceiptAmount
-							}
-						},	
-						{
-							xtype: 'fieldcontainer',
-							fieldLabel: 'Tarjeta nacional:',
-							labelWidth: 200,
-							layout: 'hbox',
-							items: [
-								{
-									xtype: 'numberfield',
-									flex: 1,
-									width:95,
-									margin: '0 5 0 0',
-									name: 'txtReceiptAmountTarjeta',
-									id:'txtReceiptAmountTarjeta',
-									listeners: {
-										change: fnChange_ReceiptAmount
-									}
-								},
-								{
-									xtype: 'combobox',
-									store: ['A','B','C'],
-									store: Ext.create('Ext.data.Store', {
-										fields: ['id', 'name'] 
-									}),
-									displayField: 'name',
-									valueField: 'id',
-									queryMode: 'local',
-									editable: false,
-									width: 150,
-									margin: '0 5 0 0',
-									name: 'txtReceiptAmountTarjeta_BankID',
-									id:'txtReceiptAmountTarjeta_BankID',
-									listeners: {
-										change: fnChange_ReceiptAmountTarjeta_BankID
-									}
-								},
-								{
-									xtype: 'textfield',
-									emptyText: 'Referencia',
-									width: 100,
-									flex: 1,
-									name: 'txtReceiptAmountTarjeta_Reference',
-									id:'txtReceiptAmountTarjeta_Reference',
-								}
-							]
-						},
-						{
-							xtype: 'fieldcontainer',
-							fieldLabel: 'Tarjeta extranjera:',
-							labelWidth: 200,
-							layout: 'hbox',
-							items: [
-								{
-									xtype: 'numberfield',
-									flex: 1,
-									width:95,
-									margin: '0 5 0 0',
-									name: 'txtReceiptAmountTarjetaDol',
-									id:'txtReceiptAmountTarjetaDol',
-									listeners: {
-										change: fnChange_ReceiptAmount
-									}
-								},
-								{
-									xtype: 'combobox',
-									store: ['A','B','C'],
-									store: Ext.create('Ext.data.Store', {
-										fields: ['id', 'name'] 
-									}),
-									displayField: 'name',
-									valueField: 'id',
-									queryMode: 'local',
-									editable: false,
-									width: 150,
-									margin: '0 5 0 0',
-									name: 'txtReceiptAmountTarjetaDol_BankID',
-									id:'txtReceiptAmountTarjetaDol_BankID',
-									listeners: {
-										change: fnChange_ReceiptAmountTarjeta_BankID
-									}
-								},
-								{
-									xtype: 'textfield',
-									emptyText: 'Referencia',
-									width: 100,
-									flex: 1,
-									name: 'txtReceiptAmountTarjetaDol_Reference',
-									id:'txtReceiptAmountTarjetaDol_Reference',
-								}
-							]
-						},
-						{
-							xtype: 'fieldcontainer',
-							fieldLabel: 'Transferencia nacional:',
-							labelWidth: 200,
-							layout: 'hbox',
-							items: [
-								{
-									xtype: 'numberfield',
-									flex: 1,
-									width:95,
-									margin: '0 5 0 0',
-									name: 'txtReceiptAmountBank',
-									id:'txtReceiptAmountBank',
-									listeners: {
-										change: fnChange_ReceiptAmount
-									}
-								},
-								{
-									xtype: 'combobox',
-									store: ['A','B','C'],
-									store: Ext.create('Ext.data.Store', {
-										fields: ['id', 'name'] 
-									}),
-									displayField: 'name',
-									valueField: 'id',
-									queryMode: 'local',
-									editable: false,
-									width: 150,
-									margin: '0 5 0 0',
-									name: 'txtReceiptAmountBank_BankID',
-									id:'txtReceiptAmountBank_BankID',
-									listeners: {
-										change: fnChange_ReceiptAmountTarjeta_BankID
-									}
-								},
-								{
-									xtype: 'textfield',
-									emptyText: 'Referencia',
-									width: 100,
-									flex: 1,
-									name: 'txtReceiptAmountBank_Reference',
-									id:'txtReceiptAmountBank_Reference',
-								}
-							]
-						},
-						{
-							xtype: 'fieldcontainer',
-							fieldLabel: 'Transferencia extranjera:',
-							labelWidth: 200,
-							layout: 'hbox',
-							items: [
-								{
-									xtype: 'numberfield',
-									flex: 1,
-									width:95,
-									margin: '0 5 0 0',
-									name: 'txtReceiptAmountBankDol',
-									id:'txtReceiptAmountBankDol',
-									listeners: {
-										change: fnChange_ReceiptAmount
-									}
-								},
-								{
-									xtype: 'combobox',
-									store: ['A','B','C'],
-									store: Ext.create('Ext.data.Store', {
-										fields: ['id', 'name'] 
-									}),
-									displayField: 'name',
-									valueField: 'id',
-									queryMode: 'local',
-									editable: false,
-									width: 150,
-									margin: '0 5 0 0',
-									name: 'txtReceiptAmountBankDol_BankID',
-									id:'txtReceiptAmountBankDol_BankID',
-									listeners: {
-										change: fnChange_ReceiptAmountTarjeta_BankID
-									}
-								},
-								{
-									xtype: 'textfield',
-									emptyText: 'Referencia',
-									width: 100,
-									flex: 1,
-									name: 'txtReceiptAmountBankDol_Reference',
-									id:'txtReceiptAmountBankDol_Reference',
-								}
-							]
-						},
-						{
-							xtype: 'numberfield',
-							fieldLabel: 'Puntos',
-							labelWidth: 200,
-							width: 300,
-							minValue: 0,
-							decimalPrecision: 4,
-							step: 0.0001,
-							hideTrigger: true,
-							keyNavEnabled: false,
-							mouseWheelEnabled: false,
-							name: 'txtReceiptAmountPoint',
-							id:'txtReceiptAmountPoint',
-							listeners: {
-								change: fnChange_ReceiptAmount
-							}
-						}
-						
-					]
-				}
-			],
-
-			buttons: [
-				{
-					text: 'Confirmar',
-					id: 'btnConfirmarPago',
-					handler: fnBtnConfirmarPago
-				},
-				{
-					text: 'Cancelar',
-					id: 'btnCancelarPago',
-					handler: fnBtnCancelarPago
-				}
-			]
-			
-														
-		});
-		
-		miVentanaImpresion = Ext.create('Ext.window.Window', {
-			title: 'Seleccione Formato de Impresión',
-			id: 'miVentanaImpresion',
-			itemId:'miVentanaImpresion',
-			width: 350,
-			height: 350,
-			modal: true,
-			closeAction: 'hide',
-			layout: 'vbox',
-			bodyPadding: 20,
-			hidden: true,
-
-			items: [
-				{
-					xtype: 'label',
-					text: 'Elija su formato de impresión',
-					style: 'font-size:16px; font-weight:bold; color:green; margin-bottom:20px;'
-				},
-				{
-					xtype: 'container',
-					layout: {
-						type: 'vbox',
-						pack: 'start',
-						align: 'stretch'
-					},
-					defaults: {
-						xtype: 'button',
-						margin: '5 0'
-					},
-					items: [
-						{
-							text: 'Impresión 1',
-							id: 'btnImpresion1',
-							handler: fnBtnImpresion1
-						},
-						{
-							text: 'Impresión 2',
-							id: 'btnImpresion2',
-							handler: fnBtnImpresion2
-						},
-						{
-							text: 'Impresión 3',
-							id: 'btnImpresion3',
-							handler: fnBtnImpresion3
-						},
-						{
-							text: 'Impresión 4',
-							id: 'btnImpresion4',
-							handler: fnBtnImpresion4
-						}
-					]
-				}
-			],
-
-			buttons: [				
-				{
-					text: 'Cancelar',
-					iconCls: 'x-fa fa-times',
-					id: 'btnCancelarImpresion',					
-					handler: fnBtnCancelarImpresion
-				}
-			]
-		});
-
-		miVentanaSeleccionCliente = Ext.create('Ext.window.Window', {			
-			title: 'Listado de Clientes',
-			id: 'miVentanaSeleccionCliente',
-			itemId:'miVentanaSeleccionCliente',
-			width: 700,
-			height: 400,
-			modal: true,
-			layout: 'fit',
-			closeAction: 'hide',
-			items: [<?php echo $objCompanyDataView_BuscarClientes["view_config"]->jsonConfiguration; ?> ],
-			bbar: [
-				'->',
-				{
-					text: 'Aceptar',
-					iconCls: 'x-fa fa-check',
-					id: 'btnSeleccionCliente',
-					handler: fnBtnSeleccionCliente
-				},
-				{
-					text: 'Cancelar',
-					iconCls: 'x-fa fa-times',
-					id: 'btnCancelarSeleccionCliente',
-					handler: fnBtnCancelarSeleccionCliente
-				}
-			]
-		});
-		
-		miVentanaSeleccionProducto = Ext.create('Ext.window.Window', {
-			title: 'Listado de Productos',
-			id: 'miVentanaSeleccionProducto',
-			itemId:'miVentanaSeleccionProducto',
-			width: 700,
-			height: 400,
-			modal: true,
-			layout: 'fit',
-			closeAction: 'hide',
-			items: [<?php echo $objCompanyDataView_BuscarProductos["view_config"]->jsonConfiguration; ?> ],
-			bbar: [
-				'->',
-				{
-					text: 'Aceptar',
-					iconCls: 'x-fa fa-check',
-					id: 'btnSeleccionProducto',
-					handler: fnBtnSeleccionProducto
-				},
-				{
-					text: 'Cancelar',
-					iconCls: 'x-fa fa-times',
-					id: 'btnCancelarSeleccionProducto',
-					handler: fnBtnCancelarSeleccionProducto
-				}
-			]
-		});
-
-		miVentanaSeleccionFactura = Ext.create('Ext.window.Window', {
-			title: 'Listado de Facturas',
-			id: 'miVentanaSeleccionFactura',
-			itemId:'miVentanaSeleccionFactura',
-			width: 900,
-			height: 400,
-			modal: true,
-			layout: 'fit',
-			closeAction: 'hide',
-			items: [<?php echo $objCompanyDataView_BuscarFacturas["view_config"]->jsonConfiguration; ?> ],
-			bbar: [
-				'->',
-				{
-					text: 'Aceptar',
-					iconCls: 'x-fa fa-check',
-					id: 'btnSeleccionFactura',
-					handler: fnBtnSeleccionFactura
-				},
-				{
-					text: 'Cancelar',
-					iconCls: 'x-fa fa-times',
-					id: 'btnCancelarSeleccionFactura',
-					handler: fnBtnCancelarSeleccionFactura
-				}
-			]
-		});
-		
-		miVentanaEsperando = Ext.create('Ext.window.Window', {
-			title: 'Procesando',
-			id: 'miVentanaEsperando',
-			itemId:'miVentanaEsperando',
-			closable: false,
-			modal: true,
-			closeAction: 'hide',
-			width: 300,
-			height: 100,
-			bodyPadding: 10,
-			html: '<div style="text-align:center;"><b>Esperando...</b></div>'
-		}); 
 	
-		miVentanaInformacionAdicional = Ext.create('Ext.window.Window', {
-			title: 'Informacion adicional',
-			id: 'miVentanaInformacionAdicional',
-			itemId:'miVentanaInformacionAdicional',
-			width: 350,
-			height: 250,
-			modal: true,
-			closeAction: 'hide',
-			hidden: true,
-			// Crear ventana modal														
-			layout: 'vbox',
-			bodyPadding: 10,			
-			listeners:{
-				afterrender: function(form) {
-					// Configuración dinámica al "load" del contenedor
-					fnConfiguracionLoad(form, objConfigInit );
-				}
-			},
-			items: [
-
-				// ✔ COLUMNA 1
-				{
-					width: 350,
-					items: [	
-						{
-							xtype: 'hiddenfield',
-							name: 'ventanaInformacionAdicional_indexTransctionMasterDetail',
-							id:'ventanaInformacionAdicional_indexTransctionMasterDetail',
-							value: '12345'
-						},
-						{
-							xtype: 'combobox',
-							fieldLabel: 'Precios',
-							labelWidth: 100,
-							width: 300,
-							store: ['USD', 'NIO', 'CRC', 'EUR'],
-							store: Ext.create('Ext.data.Store', {
-								fields: ['id', 'name'] 
-							}),
-							displayField: 'name',
-							valueField: 'id',
-							queryMode: 'local',
-							editable: false,
-							name: 'txtSelectPrecio',
-							id:'txtSelectPrecio',
-						},
-						{
-							xtype: 'combobox',
-							fieldLabel: 'Vendedor',
-							labelWidth: 100,
-							width: 300,
-							store: ['USD', 'NIO', 'CRC', 'EUR'],
-							store: Ext.create('Ext.data.Store', {
-								fields: ['id', 'name'] 
-							}),
-							displayField: 'name',
-							valueField: 'id',
-							queryMode: 'local',
-							editable: false,
-							name: 'txtSelectVendedor',
-							id:'txtSelectVendedor',
-						},
-						{
-							xtype: 'textfield',       // tipo texto
-							fieldLabel: 'Serie', // etiqueta
-							labelWidth: 100,          // ancho de la etiqueta
-							width: 300,               // ancho total del campo
-							name: 'txtSerieProducto',     // nombre del campo para enviar al servidor
-							id: 'txtSerieProducto',       // id único
-						},
-						{
-							xtype: 'textfield',       // tipo texto
-							fieldLabel: 'Referencia', // etiqueta
-							labelWidth: 100,          // ancho de la etiqueta
-							width: 300,               // ancho total del campo
-							name: 'txtReferenciaProducto',     // nombre del campo para enviar al servidor
-							id: 'txtReferenciaProducto',       // id único
-						}
-						
-					]
-				}
-			],
-
-			buttons: [
-				{
-					text: 'Aceptar',
-					id: 'btnConfirmarInformacionAdicional',
-					handler: fnBtnConfirmarInformacionAdicional
-				},
-				{
-					text: 'Cancelar',
-					id: 'btnCancelarInformacionAdicional',
-					handler: fnBtnCancelarInformacionAdicional
-				}
-			]
-			
-		});
-
-
 
 		function fnBtnNuevaFactura() 
 		{
@@ -2495,9 +2497,17 @@
 			// Aquí puedes agregar la lógica que necesites
 			// Por ejemplo, recalcular totales según el descuento
 			
-			miVentanaEsperando.show();
+			if (window.miVentanaEsperando && miVentanaEsperando.show) {
+				miVentanaEsperando.show();
+			}
+
 			fnRecalculateDetail(true,"");
-			miVentanaEsperando.hide();
+			
+			if (window.miVentanaEsperando ) {
+				miVentanaEsperando.hide();
+			}
+
+	
 			 
 		}
 		
@@ -2589,6 +2599,13 @@
 			store.each(function (record) {
 				fnGetConcept(record.get('txtTMD_txtItemID'),"ALL");
 			});
+			
+			//Validar variable
+			if (window.miVentanaEsperando && miVentanaEsperando.show) {
+				
+			}
+			else
+				return;
 			
 			miVentanaEsperando.show();
 			setTimeout(() => { miVentanaEsperando.hide(); }, (length * 1000) * 0.2 );
@@ -2764,672 +2781,667 @@
 	function fnFillFactura(formPanel, obj) 
 	{
 		
-		if(formPanel.id == 'miVentanaPrincipal')
-		{			
-	
-			//txtTM_transactionNumber
-			var campoNombre = miVentanaPrincipal.down('#txtTM_transactionNumber');
-			if(obj == null)
-			{
-				campoNombre.setText( objConfigInit.labels.txtTM_transactionNumber );
-			}
-			else
-			{
-				campoNombre.setText( objConfigInit.labels.txtTM_transactionNumber );
-			}
-			
-			//txtUserID
-			var campoNombre = miVentanaPrincipal.down('#txtUserID');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtUserID );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtUserID );
-			}
-			
-			//txtCompanyID
-			var campoNombre = miVentanaPrincipal.down('#txtCompanyID');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtCompanyID );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtCompanyID );
-			}
-			
-			//txtTransactionID
-			var campoNombre = miVentanaPrincipal.down('#txtTransactionID');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtTransactionID );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtTransactionID );
-			}
-			
-			//txtTransactionMasterID
-			var campoNombre = miVentanaPrincipal.down('#txtTransactionMasterID');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtTransactionMasterID );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtTransactionMasterID );
-			}
-			
-			//txtCodigoMesero
-			var campoNombre = miVentanaPrincipal.down('#txtCodigoMesero');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtCodigoMesero );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtCodigoMesero );
-			}
-			
-			//txtStatusID
-			var campoNombre = miVentanaPrincipal.down('#txtStatusID');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtStatusID );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtStatusID );
-			}
-			
-			//txtStatusIDOld
-			var campoNombre = miVentanaPrincipal.down('#txtStatusIDOld');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtStatusIDOld );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtStatusIDOld );
-			}
-			
-			//txtDate
-			var campoNombre = miVentanaPrincipal.down('#txtDate');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtDate );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtDate );
-			}
-			
-			//txtExchangeRate
-			var campoNombre = miVentanaPrincipal.down('#txtExchangeRate');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtExchangeRate );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtExchangeRate );
-			}
-			
-			//txtNote
-			var campoNombre = miVentanaPrincipal.down('#txtNote');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtNote );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtNote );
-			}
-			
-			//txtCurrencyID
-			var campoNombre = miVentanaPrincipal.down('#txtCurrencyID');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtCurrencyID );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtCurrencyID );
-			}
-			
-			//txtCustomerID
-			var campoNombre = miVentanaPrincipal.down('#txtCustomerID');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtCustomerID );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtCustomerID );
-			}
-			
-			//txtCustomerDescription
-			var campoNombre = miVentanaPrincipal.down('#txtCustomerDescription');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtCustomerDescription );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtCustomerDescription );
-			}
-			
-			//txtReferenceClientName
-			var campoNombre = miVentanaPrincipal.down('#txtReferenceClientName');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReferenceClientName );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReferenceClientName );
-			}
-			
-			//txtReferenceClientIdentifier
-			var campoNombre = miVentanaPrincipal.down('#txtReferenceClientIdentifier');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReferenceClientIdentifier );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReferenceClientIdentifier );
-			}
-			
-			//txtCausalID
-			var campoNombre = miVentanaPrincipal.down('#txtCausalID');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtCausalID );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtCausalID );
-			}
-			
-			//txtCustomerCreditLineID
-			var campoNombre = miVentanaPrincipal.down('#txtCustomerCreditLineID');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtCustomerCreditLineID );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtCustomerCreditLineID );
-			}
-			
-			//txtZoneID
-			var campoNombre = miVentanaPrincipal.down('#txtZoneID');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtZoneID );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtZoneID );
-			}
-			
-			//txtTypePriceID
-			var campoNombre = miVentanaPrincipal.down('#txtTypePriceID');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtTypePriceID );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtTypePriceID );
-			}
-			
-			//txtWarehouseID
-			var campoNombre = miVentanaPrincipal.down('#txtWarehouseID');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtWarehouseID );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtWarehouseID );
-			}
-			
-			//txtReference3
-			var campoNombre = miVentanaPrincipal.down('#txtReference3');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReference3 );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReference3 );
-			}
-			
-			//txtEmployeeID
-			var campoNombre = miVentanaPrincipal.down('#txtEmployeeID');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtEmployeeID );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtEmployeeID );
-			}
-			
-			//txtNumberPhone
-			var campoNombre = miVentanaPrincipal.down('#txtNumberPhone');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtNumberPhone );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtNumberPhone );
-			}
-			
-			//txtMesaID
-			var campoNombre = miVentanaPrincipal.down('#txtMesaID');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtMesaID );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtMesaID );
-			}
-			
-			//txtNextVisit
-			var campoNombre = miVentanaPrincipal.down('#txtNextVisit');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtNextVisit );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtNextVisit );
-			}
-			
-			//txtDateFirst
-			var campoNombre = miVentanaPrincipal.down('#txtDateFirst');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtDateFirst );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtDateFirst );
-			}
-			
-			//txtReference2
-			var campoNombre = miVentanaPrincipal.down('#txtReference2');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReference2 );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReference2 );
-			}
-			
-			
-			//txtPeriodPay
-			var campoNombre = miVentanaPrincipal.down('#txtPeriodPay');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtPeriodPay );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtPeriodPay );
-			}
-			
-			//txtReference1
-			var campoNombre = miVentanaPrincipal.down('#txtReference1');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReference1 );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReference1 );
-			}
-			
-			//txtDayExcluded
-			var campoNombre = miVentanaPrincipal.down('#txtDayExcluded');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtDayExcluded );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtDayExcluded );
-			}
-			
-			//txtFixedExpenses
-			var campoNombre = miVentanaPrincipal.down('#txtFixedExpenses');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtFixedExpenses );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtFixedExpenses );
-			}
-			
-			//txtCheckApplyExoneracion
-			var campoNombre = miVentanaPrincipal.down('#txtCheckApplyExoneracion');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtCheckApplyExoneracion );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtCheckApplyExoneracion );
-			}
-			
-			//txtLayFirstLineProtocolo
-			var campoNombre = miVentanaPrincipal.down('#txtLayFirstLineProtocolo');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtLayFirstLineProtocolo );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtLayFirstLineProtocolo );
-			}
-			
-			//txtCheckDeEfectivo
-			var campoNombre = miVentanaPrincipal.down('#txtCheckDeEfectivo');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtCheckDeEfectivo );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtCheckDeEfectivo );
-			}
-			
-			//txtCheckReportSinRiesgoValue
-			var campoNombre = miVentanaPrincipal.down('#txtCheckReportSinRiesgoValue');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtCheckReportSinRiesgoValue );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtCheckReportSinRiesgoValue );
-			}
-			
-			
-			//txtTMIReference1
-			var campoNombre = miVentanaPrincipal.down('#txtTMIReference1');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtTMIReference1 );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtTMIReference1 );
-			}
-			
-			//txtSubTotal
-			var campoNombre = miVentanaPrincipal.down('#txtSubTotal');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtSubTotal );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtSubTotal );
-			}
-			
-			//txtIva
-			var campoNombre = miVentanaPrincipal.down('#txtIva');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtIva );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtIva );
-			}
-			
-			//txtPorcentajeDescuento
-			var campoNombre = miVentanaPrincipal.down('#txtPorcentajeDescuento');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtPorcentajeDescuento );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtPorcentajeDescuento );
-			}
-			
-			//txtDescuento
-			var campoNombre = miVentanaPrincipal.down('#txtDescuento');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtDescuento );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtDescuento );
-			}
-			
-			//txtServices
-			var campoNombre = miVentanaPrincipal.down('#txtServices');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtServices );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtServices );
-			}
-			
-			//txtTotal
-			var campoNombre = miVentanaPrincipal.down('#txtTotal');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtTotal );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtTotal );
-			}
-			
-			//txtChangeAmount
-			var campoNombre = miVentanaDePago.down('#txtChangeAmount');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtChangeAmount );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtChangeAmount );
-			}
-			
-			//txtReceiptAmount
-			var campoNombre = miVentanaDePago.down('#txtReceiptAmount');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmount );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmount );
-			}
-			
-			//txtReceiptAmountDol
-			var campoNombre = miVentanaDePago.down('#txtReceiptAmountDol');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountDol );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountDol );
-			}
-			
-			//txtReceiptAmountTarjeta
-			var campoNombre = miVentanaDePago.down('#txtReceiptAmountTarjeta');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjeta );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjeta );
-			}
-			
-			//txtReceiptAmountTarjeta_BankID
-			var campoNombre = miVentanaDePago.down('#txtReceiptAmountTarjeta_BankID');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjeta_BankID );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjeta_BankID );
-			}
-			
-			//txtReceiptAmountTarjeta_Reference
-			var campoNombre = miVentanaDePago.down('#txtReceiptAmountTarjeta_Reference');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjeta_Reference );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjeta_Reference );
-			}
-			
-			
-			//txtReceiptAmountTarjetaDol
-			var campoNombre = miVentanaDePago.down('#txtReceiptAmountTarjetaDol');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjetaDol );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjetaDol );
-			}
-			
-			//txtReceiptAmountTarjetaDol_BankID
-			var campoNombre = miVentanaDePago.down('#txtReceiptAmountTarjetaDol_BankID');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjetaDol_BankID );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjetaDol_BankID );
-			}
-			
-			//txtReceiptAmountTarjetaDol_Reference
-			var campoNombre = miVentanaDePago.down('#txtReceiptAmountTarjetaDol_Reference');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjetaDol_Reference );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjetaDol_Reference );
-			}
-			
-			//txtReceiptAmountBank
-			var campoNombre = miVentanaDePago.down('#txtReceiptAmountBank');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBank );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBank );
-			}
-			
-			//txtReceiptAmountBank_BankID
-			var campoNombre = miVentanaDePago.down('#txtReceiptAmountBank_BankID');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBank_BankID );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBank_BankID );
-			}
-			
-			
-			//txtReceiptAmountBank_Reference
-			var campoNombre = miVentanaDePago.down('#txtReceiptAmountBank_Reference');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBank_Reference );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBank_Reference );
-			}
-			
-			//txtReceiptAmountBankDol
-			var campoNombre = miVentanaDePago.down('#txtReceiptAmountBankDol');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBankDol );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBankDol );
-			}
-			
-			//txtReceiptAmountBankDol_BankID
-			var campoNombre = miVentanaDePago.down('#txtReceiptAmountBankDol_BankID');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBankDol_BankID );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBankDol_BankID );
-			}
-			
-			//txtReceiptAmountBankDol_Reference
-			var campoNombre = miVentanaDePago.down('#txtReceiptAmountBankDol_Reference');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBankDol_Reference );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountBankDol_Reference );
-			}
-			
-			//txtReceiptAmountPoint
-			var campoNombre = miVentanaDePago.down('#txtReceiptAmountPoint');
-			if(obj == null)
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountPoint );
-			}
-			else
-			{
-				campoNombre.setValue( objConfigInit.values.txtReceiptAmountPoint );
-			}
-			
-			//Limpiar detalle
-			var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
-			if(viewport)
-			{
-				var grid = viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
-				grid.getStore().loadData([]);
-			}
-			
+		
+		//txtTM_transactionNumber
+		var miVentanaPrincipal_ 	= Ext.getCmp('miVentanaPrincipal');
+		var miVentanaDePago_		= Ext.getCmp('miVentanaDePago');
+		var campoNombre 			= miVentanaPrincipal_.down('#txtTM_transactionNumber');
+		if(obj == null)
+		{
+			campoNombre.setText( objConfigInit.labels.txtTM_transactionNumber );
+		}
+		else
+		{
+			campoNombre.setText( obj.txtTM_transactionNumber );
 		}
 		
+		//txtUserID
+		var campoNombre = miVentanaPrincipal_.down('#txtUserID');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtUserID );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtUserID );
+		}
+		
+		//txtCompanyID
+		var campoNombre = miVentanaPrincipal_.down('#txtCompanyID');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtCompanyID );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtCompanyID );
+		}
+		
+		//txtTransactionID
+		var campoNombre = miVentanaPrincipal_.down('#txtTransactionID');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtTransactionID );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtTransactionID );
+		}
+		
+		//txtTransactionMasterID
+		var campoNombre = miVentanaPrincipal_.down('#txtTransactionMasterID');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtTransactionMasterID );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtTransactionMasterID );
+		}
+		
+		//txtCodigoMesero
+		var campoNombre = miVentanaPrincipal_.down('#txtCodigoMesero');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtCodigoMesero );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtCodigoMesero );
+		}
+		
+		//txtStatusID
+		var campoNombre = miVentanaPrincipal_.down('#txtStatusID');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtStatusID );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtStatusID );
+		}
+		
+		//txtStatusIDOld
+		var campoNombre = miVentanaPrincipal_.down('#txtStatusIDOld');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtStatusIDOld );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtStatusIDOld );
+		}
+		
+		//txtDate
+		var campoNombre = miVentanaPrincipal_.down('#txtDate');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtDate );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtDate );
+		}
+		
+		//txtExchangeRate
+		var campoNombre = miVentanaPrincipal_.down('#txtExchangeRate');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtExchangeRate );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtExchangeRate );
+		}
+		
+		//txtNote
+		var campoNombre = miVentanaPrincipal_.down('#txtNote');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtNote );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtNote );
+		}
+		
+		//txtCurrencyID
+		var campoNombre = miVentanaPrincipal_.down('#txtCurrencyID');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtCurrencyID );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtCurrencyID );
+		}
+		
+		//txtCustomerID
+		var campoNombre = miVentanaPrincipal_.down('#txtCustomerID');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtCustomerID );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtCustomerID );
+		}
+		
+		//txtCustomerDescription
+		var campoNombre = miVentanaPrincipal_.down('#txtCustomerDescription');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtCustomerDescription );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtCustomerDescription );
+		}
+		
+		//txtReferenceClientName
+		var campoNombre = miVentanaPrincipal_.down('#txtReferenceClientName');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtReferenceClientName );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtReferenceClientName );
+		}
+		
+		//txtReferenceClientIdentifier
+		var campoNombre = miVentanaPrincipal_.down('#txtReferenceClientIdentifier');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtReferenceClientIdentifier );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtReferenceClientIdentifier );
+		}
+		
+		//txtCausalID
+		var campoNombre = miVentanaPrincipal_.down('#txtCausalID');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtCausalID );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtCausalID );
+		}
+		
+		//txtCustomerCreditLineID
+		var campoNombre = miVentanaPrincipal_.down('#txtCustomerCreditLineID');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtCustomerCreditLineID );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtCustomerCreditLineID );
+		}
+		
+		//txtZoneID
+		var campoNombre = miVentanaPrincipal_.down('#txtZoneID');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtZoneID );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtZoneID );
+		}
+		
+		//txtTypePriceID
+		var campoNombre = miVentanaPrincipal_.down('#txtTypePriceID');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtTypePriceID );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtTypePriceID );
+		}
+		
+		//txtWarehouseID
+		var campoNombre = miVentanaPrincipal_.down('#txtWarehouseID');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtWarehouseID );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtWarehouseID );
+		}
+		
+		//txtReference3
+		var campoNombre = miVentanaPrincipal_.down('#txtReference3');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtReference3 );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtReference3 );
+		}
+		
+		//txtEmployeeID
+		var campoNombre = miVentanaPrincipal_.down('#txtEmployeeID');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtEmployeeID );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtEmployeeID );
+		}
+		
+		//txtNumberPhone
+		var campoNombre = miVentanaPrincipal_.down('#txtNumberPhone');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtNumberPhone );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtNumberPhone );
+		}
+		
+		//txtMesaID
+		var campoNombre = miVentanaPrincipal_.down('#txtMesaID');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtMesaID );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtMesaID );
+		}
+		
+		//txtNextVisit
+		var campoNombre = miVentanaPrincipal_.down('#txtNextVisit');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtNextVisit );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtNextVisit );
+		}
+		
+		//txtDateFirst
+		var campoNombre = miVentanaPrincipal_.down('#txtDateFirst');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtDateFirst );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtDateFirst );
+		}
+		
+		//txtReference2
+		var campoNombre = miVentanaPrincipal_.down('#txtReference2');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtReference2 );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtReference2 );
+		}
+		
+		
+		//txtPeriodPay
+		var campoNombre = miVentanaPrincipal_.down('#txtPeriodPay');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtPeriodPay );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtPeriodPay );
+		}
+		
+		//txtReference1
+		var campoNombre = miVentanaPrincipal_.down('#txtReference1');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtReference1 );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtReference1 );
+		}
+		
+		//txtDayExcluded
+		var campoNombre = miVentanaPrincipal_.down('#txtDayExcluded');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtDayExcluded );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtDayExcluded );
+		}
+		
+		//txtFixedExpenses
+		var campoNombre = miVentanaPrincipal_.down('#txtFixedExpenses');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtFixedExpenses );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtFixedExpenses );
+		}
+		
+		//txtCheckApplyExoneracion
+		var campoNombre = miVentanaPrincipal_.down('#txtCheckApplyExoneracion');
+		if(obj == null)
+		{
+			setValueRadio("miVentanaPrincipal","txtCheckApplyExoneracion",objConfigInit.values.txtCheckApplyExoneracion );
+		}
+		else
+		{
+			setValueRadio("miVentanaPrincipal","txtCheckApplyExoneracion",obj.txtCheckApplyExoneracion);
+		}
+		
+		//txtLayFirstLineProtocolo
+		var campoNombre = miVentanaPrincipal_.down('#txtLayFirstLineProtocolo');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtLayFirstLineProtocolo );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtLayFirstLineProtocolo );
+		}
+		
+		//txtCheckDeEfectivo
+		var campoNombre = miVentanaPrincipal_.down('#txtCheckDeEfectivo');
+		if(obj == null)
+		{
+			setValueRadio("miVentanaPrincipal","txtCheckDeEfectivo",objConfigInit.values.txtCheckDeEfectivo );
+		}
+		else
+		{
+			setValueRadio("miVentanaPrincipal","txtCheckDeEfectivo",obj.txtCheckDeEfectivo );
+		}
+		
+		//txtCheckReportSinRiesgoValue
+		var campoNombre = miVentanaPrincipal_.down('#txtCheckReportSinRiesgoValue');
+		if(obj == null)
+		{
+			setValueRadio("miVentanaPrincipal","txtCheckReportSinRiesgoValue",objConfigInit.values.txtCheckReportSinRiesgoValue );
+		}
+		else
+		{
+			setValueRadio("miVentanaPrincipal","txtCheckReportSinRiesgoValue",obj.txtCheckReportSinRiesgoValue );
+		}
+		
+		
+		//txtTMIReference1
+		var campoNombre = miVentanaPrincipal_.down('#txtTMIReference1');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtTMIReference1 );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtTMIReference1 );
+		}
+		
+		//txtSubTotal
+		var campoNombre = miVentanaPrincipal_.down('#txtSubTotal');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtSubTotal );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtSubTotal );
+		}
+		
+		//txtIva
+		var campoNombre = miVentanaPrincipal_.down('#txtIva');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtIva );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtIva );
+		}
+		
+		//txtPorcentajeDescuento
+		var campoNombre = miVentanaPrincipal_.down('#txtPorcentajeDescuento');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtPorcentajeDescuento );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtPorcentajeDescuento );
+		}
+		
+		//txtDescuento
+		var campoNombre = miVentanaPrincipal_.down('#txtDescuento');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtDescuento );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtDescuento );
+		}
+		
+		//txtServices
+		var campoNombre = miVentanaPrincipal_.down('#txtServices');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtServices );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtServices );
+		}
+		
+		//txtTotal
+		var campoNombre = miVentanaPrincipal_.down('#txtTotal');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtTotal );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtTotal );
+		}
+		
+		//txtChangeAmount
+		var campoNombre = miVentanaDePago_.down('#txtChangeAmount');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtChangeAmount );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtChangeAmount );
+		}
+		
+		//txtReceiptAmount
+		var campoNombre = miVentanaDePago_.down('#txtReceiptAmount');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtReceiptAmount );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtReceiptAmount );
+		}
+		
+		//txtReceiptAmountDol
+		var campoNombre = miVentanaDePago_.down('#txtReceiptAmountDol');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtReceiptAmountDol );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtReceiptAmountDol );
+		}
+		
+		//txtReceiptAmountTarjeta
+		var campoNombre = miVentanaDePago_.down('#txtReceiptAmountTarjeta');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjeta );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtReceiptAmountTarjeta );
+		}
+		
+		//txtReceiptAmountTarjeta_BankID
+		var campoNombre = miVentanaDePago_.down('#txtReceiptAmountTarjeta_BankID');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjeta_BankID );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtReceiptAmountTarjeta_BankID );
+		}
+		
+		//txtReceiptAmountTarjeta_Reference
+		var campoNombre = miVentanaDePago_.down('#txtReceiptAmountTarjeta_Reference');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjeta_Reference );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtReceiptAmountTarjeta_Reference );
+		}
+		
+		
+		//txtReceiptAmountTarjetaDol
+		var campoNombre = miVentanaDePago_.down('#txtReceiptAmountTarjetaDol');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjetaDol );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtReceiptAmountTarjetaDol );
+		}
+		
+		//txtReceiptAmountTarjetaDol_BankID
+		var campoNombre = miVentanaDePago_.down('#txtReceiptAmountTarjetaDol_BankID');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjetaDol_BankID );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtReceiptAmountTarjetaDol_BankID );
+		}
+		
+		//txtReceiptAmountTarjetaDol_Reference
+		var campoNombre = miVentanaDePago_.down('#txtReceiptAmountTarjetaDol_Reference');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtReceiptAmountTarjetaDol_Reference );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtReceiptAmountTarjetaDol_Reference );
+		}
+		
+		//txtReceiptAmountBank
+		var campoNombre = miVentanaDePago_.down('#txtReceiptAmountBank');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtReceiptAmountBank );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtReceiptAmountBank );
+		}
+		
+		//txtReceiptAmountBank_BankID
+		var campoNombre = miVentanaDePago_.down('#txtReceiptAmountBank_BankID');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtReceiptAmountBank_BankID );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtReceiptAmountBank_BankID );
+		}
+		
+		
+		//txtReceiptAmountBank_Reference
+		var campoNombre = miVentanaDePago_.down('#txtReceiptAmountBank_Reference');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtReceiptAmountBank_Reference );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtReceiptAmountBank_Reference );
+		}
+		
+		//txtReceiptAmountBankDol
+		var campoNombre = miVentanaDePago_.down('#txtReceiptAmountBankDol');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtReceiptAmountBankDol );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtReceiptAmountBankDol );
+		}
+		
+		//txtReceiptAmountBankDol_BankID
+		var campoNombre = miVentanaDePago_.down('#txtReceiptAmountBankDol_BankID');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtReceiptAmountBankDol_BankID );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtReceiptAmountBankDol_BankID );
+		}
+		
+		//txtReceiptAmountBankDol_Reference
+		var campoNombre = miVentanaDePago_.down('#txtReceiptAmountBankDol_Reference');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtReceiptAmountBankDol_Reference );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtReceiptAmountBankDol_Reference );
+		}
+		
+		//txtReceiptAmountPoint
+		var campoNombre = miVentanaDePago_.down('#txtReceiptAmountPoint');
+		if(obj == null)
+		{
+			campoNombre.setValue( objConfigInit.values.txtReceiptAmountPoint );
+		}
+		else
+		{
+			campoNombre.setValue( obj.txtReceiptAmountPoint );
+		}
+		
+		//Limpiar detalle		
+		var grid = miVentanaPrincipal_.down('#gridDetailTransactionMaster'); // encuentra el grid
+		grid.getStore().loadData([]);
+	
+			
 	}
 	
 	function indexDBCreate(obtenerRegistroDelServer) 
@@ -4619,6 +4631,104 @@
 		});
 		
 	}
+	function fnLoadInvoiceExistente(transactionMasterID,codigoMesero)
+	{
+		
+		if(transactionMasterID == null)
+			transactionMasterID = '<?php echo $transactionMasterID ?>';
+		
+		if(codigoMesero == null)
+			codigoMesero = '<?php echo $codigoMesero ?>';
+		
+		// 🔵 Ventana global (fuera de cualquier función)
+		miVentanaEsperandoTemporal = Ext.create('Ext.window.Window', {
+			title: '⏳ Procesando...',
+			width: 320,
+			height: 160,
+			modal: true,
+			closable: false,
+			draggable: false,
+			resizable: false,
+			bodyPadding: 20,
+			layout: 'vbox',
+			bodyStyle: 'background-color:#1A73E8; color:white; text-align:center;',
+
+			items: [
+				{
+					xtype: 'component',
+					html: `
+						<div style="font-size: 22px; font-weight: bold; margin-bottom: 10px;text-align:left">
+							....
+						</div>
+						<div style="font-size:16px;">
+							Por favor espere un momento<br>
+							<span style="font-size:50px;"></span>
+						</div>
+					`
+				}
+			]
+		});
+
+		miVentanaEsperandoTemporal.show();		
+		var urlRequest =  baseUrl + '/app_invoice_billing/edit/2/19/' + transactionMasterID + '/' +codigoMesero;
+		var urlRequest = 'http://localhost/posmev4/app_invoice_billing/edit/2/19/2156/none';
+		
+		Ext.Ajax.request({
+			url		: urlRequest,
+			method	: 'GET',             // o 'POST'
+			async	: false,  				 // bloquea el hilo
+			params	: {                  // parámetros opcionales
+				filtro: 'ABC'
+			},
+			success: function(response, opts) {
+				
+				// response.responseText contiene la respuesta en texto
+				var datos = Ext.decode(response.responseText); // parse JSON
+				console.log('Datos recibidos:', datos);
+				fnUpdateInvoiceView(datos);
+				
+			},
+			failure: function(response, opts) {
+				miVentanaEsperando.hide();
+				Ext.Msg.alert('Error', 'No se pudieron cargar los datos');
+				console.log('Server-side failure with status code ' + response.status);
+			}
+		});
+		
+		
+		
+	}
+	
+	
+	function fnUpdateInvoiceView(datos)
+	{
+		console.info(datos);
+		if(datos.success == false)
+		{
+			miVentanaEsperandoTemporal.hide();
+			return;
+		}
+		
+		console.info(datos.data.objTransactionMaster);
+		var objFormulario 							= {};
+		objFormulario.txtTM_transactionNumber		= datos.data.objTransactionMaster.transactionNumber;
+		objFormulario.txtUserID						= datos.data.objTransactionMaster.createdBy;
+		objFormulario.txtCompanyID					= datos.data.objTransactionMaster.companyID;
+		objFormulario.txtTransactionID				= datos.data.objTransactionMaster.transactionID;
+		objFormulario.txtTransactionMasterID		= datos.data.objTransactionMaster.transactionMasterID;
+		objFormulario.txtCodigoMesero				= datos.data.codigoMesero;
+		objFormulario.txtStatusID					= datos.data.objTransactionMaster.statusID;
+		objFormulario.txtStatusIDOld				= datos.data.objTransactionMaster.statusID;
+		objFormulario.txtDate						= datos.data.objTransactionMaster.transactionOn;
+		debugger;
+		
+		
+		//cargar lso datos en pantalla		
+		fnFillFactura("miVentanaPrincipal", objFormulario );
+		miVentanaEsperandoTemporal.hide();
+	}
+	
+		
 
 	
 </script>
