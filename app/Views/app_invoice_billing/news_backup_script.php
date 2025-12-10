@@ -1151,7 +1151,13 @@
 											flex: 2,
 											itemId: 'gridDetailTransactionMaster',
 											title: 'Detalle de Productos',
-											margin: '0 10 0 0',											
+											margin: '0 10 0 0',		
+											selModel: 'rowmodel', // permite seleccionar filas para eliminar	
+											maxHeight: 40 * 10,       // altura aproximada para 15 filas
+											scrollable: true,     // permite scroll interno al grid
+											bodyBorder: true,
+											frame: true,
+	
 											tbar: [
 												{
 													text: 'Agregar producto',
@@ -1184,7 +1190,6 @@
 												}
 												
 											],
-											selModel: 'rowmodel', // permite seleccionar filas para eliminar
 											store: {
 												fields: [
 													// 0
