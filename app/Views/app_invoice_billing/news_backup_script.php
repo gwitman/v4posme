@@ -1338,8 +1338,14 @@
 													width: 150,
 													xtype: 'widgetcolumn',
 													widget: {
-														xtype: 'combo',
-														store: ['Producto A', 'Producto B', 'Producto C'], // o un store más complejo
+														xtype: 'combo',														
+														store: Ext.create('Ext.data.Store', {
+															fields: ['id', 'name'] ,
+															data: [ ] 
+														}),
+														displayField: 'name',
+														valueField: 'id',
+														queryMode: 'local',
 														editable: false,    // no permite escribir, solo seleccionar
 														forceSelection: true,
 														listeners: {
@@ -1372,6 +1378,13 @@
 																// Aquí podés manejar el cambio y actualizar el store
 																var record = field.getWidgetRecord();
 																record.set('txtTMD_txtQuantity', newValue);
+																
+																
+																var grid 		= field.up('grid');          // obtiene el grid
+																var store 		= grid.getStore();          // obtiene el store
+																var rowIndex 	= store.indexOf(record); // índice del record en el store
+
+																fnRecalculateDetail(true,"", rowIndex);
 															}
 														}
 													}
@@ -1396,7 +1409,20 @@
 															change: function(field, newValue) {
 																// Aquí podés manejar el cambio y actualizar el store
 																var record = field.getWidgetRecord();
-																record.set('txtTMD_txtPrice', newValue);
+																
+																if (record) {  // se asegura que record NO sea undefined ni null
+																	record.set('txtTMD_txtPrice', newValue);
+																	
+																			
+																	
+																	var grid 		= field.up('grid');          // obtiene el grid
+																	var store 		= grid.getStore();          // obtiene el store
+																	var rowIndex 	= store.indexOf(record); // índice del record en el store
+
+																	fnRecalculateDetail(true,"", rowIndex);
+																	
+																}
+																
 															}
 														}
 													}
@@ -4010,12 +4036,12 @@
 			var cantidadTemporal		= 0;
 			var descuento				= 0;
 			
-			debugger;
+			
 			var grid 			= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
 			var store 			= grid.getStore();
 			store.each(function (record) {
 				
-				debugger;
+				
 				cantidad 	= record.get('txtTMD_txtQuantity');
 				precio 		= record.get('txtTMD_txtPrice');
 				iva 		= record.get('txtTMD_txtIva');
@@ -4056,8 +4082,8 @@
 			viewport.down("#txtTotal").setValue(totalGeneral);
 
 			//Si es de credito que la factura no supere la linea de credito
-			var causalSelect 				= viewport.down("#txtCausalID").val();
-			var customerCreditLineID 		= viewport.down("#txtCustomerCreditLineID").val();
+			var causalSelect 				= viewport.down("#txtCausalID").getValue();
+			var customerCreditLineID 		= viewport.down("#txtCustomerCreditLineID").getValue();
 			var objCustomerCreditLine 		= Ext.Array.filter(objListCustomerCreditLine, function (obj) { return obj.customerCreditLineID === customerCreditLineID;});
 			var causalCredit 				= objCausalTypeCredit.value.split(",");
 
@@ -4452,7 +4478,7 @@
 				var grid 		= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
 				var store 		= grid.getStore();	
 			
-				
+				var comboStoreData  = [];
 				var resultado 		=  Ext.Array.filter(allData, function (producto) {
 					return producto.itemID == record.txtTMD_txtItemID;
 				});
@@ -4470,6 +4496,11 @@
 							record.txtTMD_txtPrice 							=producto.price;
 							record.txtTMD_txtRatioSku 						=producto.value;
 						}
+						
+						comboStoreData.push({
+							id: 	producto.catalogItemID,
+							name: 	producto.name
+						});
 					});
 				}
 				
@@ -4479,9 +4510,49 @@
 					record.txtTMD_txtPrice = priceDefault;
 				}
 				
-				debugger;
-				store.add(record);
-				fnGetConcept(record.txtTMD_txtItemID,"ALL");
+				
+				var newRecord = store.add(record)[0];
+				
+				//Buscar la columna combobox
+				var comboColumn = null;
+				Ext.Array.each(grid.columns, function(col) {
+					if (col.dataIndex === 'txtTMD_txtSku') {
+						comboColumn = col;
+						return false; // rompe el loop
+					}
+				});
+				if (!comboColumn) {
+					console.error('No se encontró la columna txtTMD_txtSku');
+					return;
+				}
+
+				// Crear un store de Ext JS
+				var storeForCombo = Ext.create('Ext.data.Store', {
+					fields: ['id', 'name'],
+					data: comboStoreData
+				});
+
+				
+				//Agreagar el store al combobox
+				Ext.defer(function() 
+				{
+					var comboWidget = comboColumn.getWidget(newRecord);
+					if (comboWidget) {
+						//comboWidget.setStore(comboStoreData);
+						comboWidget.bindStore(storeForCombo); // vincula el store
+						
+
+						if (comboStoreData.length > 0) {
+							comboWidget.setValue(comboStoreData[0].id );
+							newRecord.set('txtTMD_txtSku', comboStoreData[0].id );
+						}
+					}
+					
+					
+					fnGetConcept(record.txtTMD_txtItemID,"ALL");
+					
+				}, 50); // pequeño delay para que el widget exista
+				
 				
 				
 			}
