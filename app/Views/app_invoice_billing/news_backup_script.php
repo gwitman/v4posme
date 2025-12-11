@@ -9,6 +9,7 @@
 	var varStatusInvoiceAplicado			= 67; //Estado Aplicada
     var varStatusInvoiceAnular				= 68; //Anular
 	var varStatusInvoiceRegistrado			= 66; //Registrado
+	var isLoading 							= true;
 	
 	var objConfigInit 		= {
 		texts: {
@@ -362,6 +363,7 @@
 				?>', 
 			'txtReceiptAmountBankDol_Reference' : '',
 			'txtReceiptAmountPoint' : 0.00,
+			'txtTransactionMasterDetail': [] 
 		},
 		labels:{
 			'txtTM_transactionNumber': 'PRF00000000'
@@ -976,7 +978,16 @@
 					// Configuración dinámica al "load" del contenedor
 					indexDBCreate(false);
 					fnConfiguracionLoad(form, objConfigInit );	
-					fnLoadInvoiceExistente(null,null);
+					
+					//mandar a cargar la factura cuando es en modo edicion
+					//var transactionMasterID 	= '<?php echo $transactionMasterID ?>'
+					//var codigoMesero 			= '<?php echo $codigoMesero ?>';
+		
+					var transactionMasterID = 2102;
+					var codigoMesero 		= 'none';
+		
+					if(transactionMasterID > 0)
+					fnLoadInvoiceExistente(transactionMasterID,codigoMesero);
 					
 				}
 			},
@@ -1903,6 +1914,9 @@
 														forceSelection: true,
 														listeners: {
 															select: function(combo, record) {
+																
+																if (isLoading) return; // Detener evento
+																
 																// Actualizar el store del grid con el valor seleccionado
 																var gridRecord = combo.getWidgetRecord();
 																gridRecord.set('txtTMD_txtSku', combo.getValue());
@@ -1928,6 +1942,9 @@
 														enableKeyEvents: true,
 														listeners: {
 															change: function(field, newValue) {
+																
+																if (isLoading) return; // Detener evento
+																
 																// Aquí podés manejar el cambio y actualizar el store
 																var record = field.getWidgetRecord();
 																record.set('txtTMD_txtQuantity', newValue);
@@ -1960,6 +1977,9 @@
 														enableKeyEvents: true,
 														listeners: {
 															change: function(field, newValue) {
+																
+																if (isLoading) return; // Detener evento
+																
 																// Aquí podés manejar el cambio y actualizar el store
 																var record = field.getWidgetRecord();
 																
@@ -2260,11 +2280,81 @@
 		}
 		function fnBtnGuardarFactura()
 		{
-			Ext.Msg.alert('Guardar', 'Factura guardada');
+			miVentanaEsperando.show();
+			Ext.Ajax.request({
+				url		: "<?php echo base_url(); ?>/app_invoice_billing/delete",
+				method	: 'GET',            // o 'POST'
+				async: true,  				// bloquea el hilo
+				params	: {                 // parámetros opcionales
+					companyID 			: Ext.getCmp('miVentanaPrincipal').down('#txtCompanyID').getValue(),
+					transactionID 		: Ext.getCmp('miVentanaPrincipal').down('#txtTransactionID').getValue(),
+					transactionMasterID : Ext.getCmp('miVentanaPrincipal').down('#txtTransactionMasterID').getValue(),
+				},
+				success: function(response, opts) {
+					
+					// response.responseText contiene la respuesta en texto
+					var datos = Ext.decode(response.responseText); // parse JSON
+					console.log('Datos recibidos fnBtnEliminarFactura:', datos);
+					miVentanaEsperando.hide();
+					
+					if(datos.error){
+						Ext.Msg.alert('Error',datos.message );						
+					}
+					else{
+						Ext.Msg.show({
+							title: 'Operación realizada',
+							message: datos.message,
+							icon: Ext.Msg.INFO,
+							buttons: Ext.Msg.OK
+						});
+					}
+				},
+				failure: function(response, opts) {
+					miVentanaEsperando.hide();
+					Ext.Msg.alert('Error', 'No se pudieron cargar los datos');
+					console.log('Server-side failure with status code ' + response.status);
+				}
+			});
 		}
 		function fnBtnEliminarFactura()
 		{
-			Ext.Msg.alert('Eliminar', 'Factura guardada');
+			miVentanaEsperando.show();
+			Ext.Ajax.request({
+				url		: "<?php echo base_url(); ?>/app_invoice_billing/delete",
+				method	: 'POST',            // o 'POST'
+				async: true,  				// bloquea el hilo
+				params	: {                 // parámetros opcionales
+					companyID 			: Ext.getCmp('miVentanaPrincipal').down('#txtCompanyID').getValue(),
+					transactionID 		: Ext.getCmp('miVentanaPrincipal').down('#txtTransactionID').getValue(),
+					transactionMasterID : Ext.getCmp('miVentanaPrincipal').down('#txtTransactionMasterID').getValue(),
+				},
+				success: function(response, opts) {
+					
+					// response.responseText contiene la respuesta en texto
+					var datos = Ext.decode(response.responseText); // parse JSON
+					console.log('Datos recibidos fnBtnEliminarFactura:', datos);
+					miVentanaEsperando.hide();
+					
+					if(datos.error){
+						Ext.Msg.alert('Error',datos.message );						
+					}
+					else{
+						Ext.Msg.show({
+							title: 'Operación realizada',
+							message: datos.message,
+							icon: Ext.Msg.INFO,
+							buttons: Ext.Msg.OK
+						});
+					}
+				},
+				failure: function(response, opts) {
+					miVentanaEsperando.hide();
+					Ext.Msg.alert('Error', 'No se pudieron cargar los datos');
+					console.log('Server-side failure with status code ' + response.status);
+				}
+			});
+			
+			
 		}
 		function fnBtnImprimirFactura()
 		{
@@ -2376,6 +2466,7 @@
 		}
 		function fnBtnSeleccionFactura() {
 			
+			
 			var grid 		= miVentanaSeleccionFactura.down('grid');
 			var seleccion 	= grid.getSelection();
 
@@ -2385,14 +2476,9 @@
 				return;
 			}
 			
-			//seleccion.forEach(function(record) 
-			//{	
-			//	miVentanaPrincipal.down('#txtCustomerID').setValue(  record.data.entityID  );
-			//	miVentanaPrincipal.down('#txtCustomerDescription').setValue(  record.data.Codigo + " " + record.data.Nombre );			
-			//});
-			
+			miVentanaEsperando.show();
 			miVentanaSeleccionFactura.hide();
-			
+			fnLoadInvoiceExistente(seleccion[0].data.transactionMasterID,"none");
 			
 		}
 		function fnBtnCancelarSeleccionFactura(btn) {
@@ -2422,18 +2508,52 @@
 
 			seleccion.forEach(function(record) 
 			{	
-				//miVentanaPrincipal.down('#txtCustomerID').setValue(  record.data.entityID  );
-				//miVentanaPrincipal.down('#txtCustomerDescription').setValue(  record.data.Codigo + " " + record.data.Nombre );			
-			
-				// Ejemplo: agregar fila vacía
-				grid.getStore().add({
-					codigo: '',
-					producto: '',
-					um: '',
-					cantidad: 1,
-					precio: 0,
-					subtotal: 0
+				var itemID = record.data.itemID;
+				indexDBGetLocalProductoByItemID(itemID, function(resultado) 
+				{
+					
+					console.log(resultado);
+
+					// resultado.productos → lista filtrada por Barra (contiene)
+					// resultado.conceptos → lista exacta por componentItemID
+					// resultado.skus → lista exacta por itemID
+					var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+					if(!viewport){
+						return;
+					}
+
+					var currencyID 		= viewport.down("#txtCurrencyID").getValue();
+					var warehouseID		= viewport.down("#txtWarehouseID").getValue();
+					if(resultado.productos.length > 0)
+					{
+						resultado.productos = Ext.Array.filter(resultado.productos, function (obj) { 
+							return (
+								obj.currencyID === currencyID && 
+								obj.warehouseID === warehouseID
+							);
+						});
+						
+						
+						if(resultado.productos.length > 0 )
+						resultado.productos  = resultado.productos[0];
+							
+						var sumar				= true;
+						//Logica de precio
+						if(viewport.down("#txtTypePriceID").getValue() == "154" /*precio1*/)
+							resultado.productos.Precio = resultado.productos.Precio;
+						else if(viewport.down("#txtTypePriceID").getValue() == "155" /*precio2*/)
+							resultado.productos.Precio = resultado.productos.Precio2;
+						else /*precio3*/
+							resultado.productos.Precio = resultado.productos.Precio3;
+							
+						
+						onCompleteNewItem(resultado.productos,sumar,resultado.conceptos,resultado.skus);
+						
+					}
+					
 				});
+				
+				
 			});
 			
 			miVentanaSeleccionProducto.hide();
@@ -2472,16 +2592,22 @@
 		}
 		
 		function fnChange_ReceiptAmount(field, newValue, oldValue) {
+			
+			
+			if (isLoading) return; // Detener evento
 			console.log('Valor anterior:', oldValue);
 			console.log('Nuevo valor:', newValue);
+			
 			fnCalculateAmountPay();
 		
 		}
 		
 		function fnChange_ReceiptAmountTarjeta_BankID (field, newValue, oldValue) {
+			
+			if (isLoading) return; // Detener evento
+			
 			console.log('Valor anterior:', oldValue);
 			console.log('Nuevo valor:', newValue);
-
 			// Aquí puedes agregar la lógica que necesites
 			// Por ejemplo, recalcular totales según el descuento
 			let value = 0;
@@ -2491,9 +2617,11 @@
 		
 		function fnChange_PorcentageDescuento (field, newValue, oldValue) 
 		{
+			
+			if (isLoading) return; // Detener evento
 			console.log('Valor anterior:', oldValue);
 			console.log('Nuevo valor:', newValue);
-
+			
 			// Aquí puedes agregar la lógica que necesites
 			// Por ejemplo, recalcular totales según el descuento
 			
@@ -2513,6 +2641,8 @@
 		
 		function fnChange_FirstLineProtocolo (field, newValue, oldValue) 
 		{
+			if (isLoading) return; // Detener evento
+			
 			var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
 			if(!viewport){
 				return;
@@ -2533,7 +2663,7 @@
 						
 						// response.responseText contiene la respuesta en texto
 						var datos = Ext.decode(response.responseText); // parse JSON
-						console.log('Datos recibidos:', datos);
+						console.log('Datos recibidos fnChange_FirstLineProtocolo:', datos);
 						
 						
 						//La exoneracion ya existe no exonerar
@@ -2580,6 +2710,9 @@
 		}
 		
 		function fnChange_ApplyExoneration (field, newValue) {
+			
+			if (isLoading) return; // Detener evento
+			
 			if (newValue === true) {
 				console.log("Seleccionado: SI (1)");
 			}
@@ -2615,16 +2748,20 @@
 		
 		function fnChange_CurrencyID_CreditLineID_WarehouseID(combo, newValue, oldValue, eOpts) {
 			
+			if (isLoading) return; // Detener evento
 			fnClearData();
 			fnLockPayment();
 		}
 		function fnChange_CausalID(combo, newValue, oldValue, eOpts) {
 			
+			if (isLoading) return; // Detener evento
 			fnClearData();
 			fnLockPayment();
 			fnRenderLineaCreditoDiv();
 		}
 		function fnChangeTypePreiceID(combo, newValue, oldValue, eOpts) {
+			
+			if (isLoading) return; // Detener evento
 			fnActualizarPrecio();
 		}
 		
@@ -3438,8 +3575,66 @@
 		}
 		
 		//Limpiar detalle		
-		var grid = miVentanaPrincipal_.down('#gridDetailTransactionMaster'); // encuentra el grid
-		grid.getStore().loadData([]);
+		var grid = miVentanaPrincipal_.down('#gridDetailTransactionMaster'); // encuentra el grid		
+		if(obj == null)
+		{
+			grid.getStore().loadData([]);
+		}
+		else 
+		{
+			grid.getStore().loadData(obj.txtTransactionMasterDetail); 
+			
+			
+			// Buscar columna widgetColumn
+			var comboColumn = null;
+			Ext.Array.each(grid.columns, function (col) {
+				if (col.dataIndex === 'txtTMD_txtSku') {
+					comboColumn = col;
+					return false;
+				}
+			});
+
+			if (!comboColumn) {
+				console.error('No se encontró la columna txtTMD_txtSku');
+				return;
+			}
+
+
+			// Aplicar store y valor a CADA FILA del grid
+			grid.getStore().each(function (record) {
+				
+				// Crear store para el combo
+				var comboStoreData 	= [{ id: record.get("txtTMD_txtCatalogItemIDSku") , name : record.get("txtTMD_txtSku") }];
+				var storeForCombo 	= Ext.create('Ext.data.Store', {
+					fields: ['id', 'name'],
+					data: comboStoreData
+				});
+				
+				var widget = comboColumn.getWidget(record);
+				if (widget) {
+					widget.bindStore(storeForCombo);
+					if (comboStoreData.length > 0) {
+						widget.setValue(comboStoreData[0].id);
+						record.set('txtTMD_txtSku', comboStoreData[0].id);
+					}
+				}
+				
+			});
+
+			
+			
+
+			var viewport = Ext.getCmp('miVentanaPrincipal');
+			if (!viewport) return;
+
+			var gridDetail = viewport.down('#gridDetailTransactionMaster');
+			var storeDetail = gridDetail.getStore();
+			
+			
+			//recalcular detalle
+			fnRecalculateDetail(false,"");
+			
+		}
 	
 			
 	}
@@ -3454,7 +3649,7 @@
 
 			// Se crea la conexion
 			db 				   = request.result;
-			console.info('Database success');
+			console.info('fnDatabaseInicializada');
 			if(obtenerRegistroDelServer)
 			{
 				indexDBObtenerProductos();
@@ -3464,7 +3659,7 @@
 		};
 
 		request.onupgradeneeded  = (e) => {
-			console.info('Database created');
+			console.info('Database table created');
 
 			const db = request.result;
 			//...
@@ -3602,7 +3797,7 @@
 				
 				// response.responseText contiene la respuesta en texto
 				var datos = Ext.decode(response.responseText); // parse JSON
-				console.log('Datos recibidos:', datos);
+				console.log('Datos recibidos indexDBObtenerProductos:', datos);
 				
 				
 				console.info("fnFillListaProductos success data");
@@ -3756,6 +3951,90 @@
 		};
 	}
 	
+	function indexDBGetLocalProductoByItemID(valorBuscar, callbackFinal) 
+	{
+
+		// Convertir valor a número si aplica (según tu BD)
+		const valorExacto = String(valorBuscar).trim();
+
+		//---------------------------------------------------------
+		// 1️⃣ Buscar PRODUCTOS por itemID (EQUAL)
+		//---------------------------------------------------------
+
+		const store1 = db.transaction("objListaProductosX001", "readonly")
+						 .objectStore("objListaProductosX001")
+						 .index("itemID");
+
+		store1.getAll().onsuccess = function (e) {
+
+			const all = e.target.result;
+
+			// FILTRO POR IGUAL (EQUAL)
+			const productos = all.filter(item =>
+				String(item["itemID"]) === valorExacto
+			);
+
+			// Si no hay nada → terminar
+			if (productos.length === 0) {
+				callbackFinal({
+					productos: [],
+					conceptos: [],
+					skus: []
+				});
+				return;
+			}
+
+			// EXTRAER itemID para las búsquedas siguientes
+			const listaItemID = productos.map(x => x.itemID);
+
+			//---------------------------------------------------------
+			// 2️⃣ Buscar CONCEPTOS por componentItemID (EQUAL)
+			//---------------------------------------------------------
+
+			const store2 = db.transaction("objListaProductosConceptosX001", "readonly")
+							 .objectStore("objListaProductosConceptosX001")
+							 .index("componentItemID");
+
+			store2.getAll().onsuccess = function (e2) {
+
+				const allConceptos = e2.target.result;
+
+				const conceptos = allConceptos.filter(c =>
+					listaItemID.includes(c.componentItemID)
+				);
+
+				//---------------------------------------------------------
+				// 3️⃣ Buscar SKUS por itemID (EQUAL)
+				//---------------------------------------------------------
+
+				const store3 = db.transaction("objListaProductosSkuX001", "readonly")
+								 .objectStore("objListaProductosSkuX001")
+								 .index("itemID");
+
+				store3.getAll().onsuccess = function (e3) {
+
+					const allSkus = e3.target.result;
+
+					const skus = allSkus.filter(s =>
+						listaItemID.includes(s.itemID)
+					);
+
+					//---------------------------------------------------------
+					// 4️⃣ DEVOLVER RESULTADO FINAL
+					//---------------------------------------------------------
+
+					callbackFinal({
+						productos: productos,
+						conceptos: conceptos,
+						skus: skus
+					});
+				};
+			};
+		};
+	}
+
+
+
 	function indexDBGetLocalConceptos(valorBuscar, callbackFinal) {
 		const store = db.transaction("objListaProductosConceptosX001", "readonly")
 						.objectStore("objListaProductosConceptosX001")
@@ -3812,6 +4091,8 @@
 	
 	function fnLockPayment()
 	{	
+		if(isLoading) return ;
+		
 		console.info("fnLockPayment");
 		var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
 		if(viewport){
@@ -4248,9 +4529,10 @@
 	
 	
 	
-	function fnRecalcularMontoComision(monto) {
+	function fnRecalcularMontoComision(monto) 
+	{
 		
-		
+		if(isLoading) return ;
 		console.info("fnRecalcularMontoComision");
 		var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
 		if(!viewport){
@@ -4378,12 +4660,12 @@
 			txtTMD_txtItemID: filterResult.itemID,
 			txtTMD_txtTransactionDetailItemNumber: filterResult.Codigo,
 			txtTMD_txtTransactionDetailName: filterResult.Nombre,
-			txtTMD_txtSku: filterResult.unitMeasureID,
+			txtTMD_txtSku: filterResult.Medida,
 			txtTMD_txtQuantity: 1,
 			txtTMD_txtPrice: filterResult.Precio,
 			txtTMD_txtSubTotal: filterResult.Precio ,
 			txtTMD_txtIva: 0,
-			txtTMD_skuQuantityBySku: 0,
+			txtTMD_skuQuantityBySku: 0,//?
 			txtTMD_unitaryPriceInvidual: filterResult.Precio,
 			txtTMD_skuFormatoDescription: filterResult.Medida,
 			txtTMD_txtItemPrecio2: filterResult.Precio2,
@@ -4395,8 +4677,8 @@
 			txtTMD_txtInfoSerie: "",
 			txtTMD_txtInfoReferencia: "",
 			txtTMD_txtItemPrecio1: filterResult.Precio,
-			txtTMD_txtCatalogItemIDSku: null,
-			txtTMD_txtRatioSku: 1,
+			txtTMD_txtCatalogItemIDSku: filterResult.unitMeasureID,
+			txtTMD_txtRatioSku: 1, //?
 			txtTMD_txtDiscountByItem: 0,
 			txtTMD_txtCommisionByBankByItem: 0
 		};
@@ -4447,8 +4729,9 @@
 			record.txtTMD_txtPrice = priceDefault;
 		}
 		
-		var newRecord 	= store.insert(0, record)[0];
-		//var newRecord = store.add(record)[0];
+		record.txtTMD_txtPrice		= record.txtTMD_txtQuantity  * record.txtTMD_txtRatioSku;
+		var newRecord 				= store.insert(0, record)[0];
+		//var newRecord 			= store.add(record)[0];
 		
 		//Buscar la columna combobox
 		var comboColumn = null;
@@ -4474,8 +4757,7 @@
 		Ext.defer(function() 
 		{
 			var comboWidget = comboColumn.getWidget(newRecord);
-			if (comboWidget) {
-				//comboWidget.setStore(comboStoreData);
+			if (comboWidget) {				
 				comboWidget.bindStore(storeForCombo); // vincula el store
 				
 
@@ -4633,46 +4915,7 @@
 	}
 	function fnLoadInvoiceExistente(transactionMasterID,codigoMesero)
 	{
-		
-		if(transactionMasterID == null)
-			transactionMasterID = '<?php echo $transactionMasterID ?>';
-		
-		if(codigoMesero == null)
-			codigoMesero = '<?php echo $codigoMesero ?>';
-		
-		// 🔵 Ventana global (fuera de cualquier función)
-		miVentanaEsperandoTemporal = Ext.create('Ext.window.Window', {
-			title: '⏳ Procesando...',
-			width: 320,
-			height: 160,
-			modal: true,
-			closable: false,
-			draggable: false,
-			resizable: false,
-			bodyPadding: 20,
-			layout: 'vbox',
-			bodyStyle: 'background-color:#1A73E8; color:white; text-align:center;',
-
-			items: [
-				{
-					xtype: 'component',
-					html: `
-						<div style="font-size: 22px; font-weight: bold; margin-bottom: 10px;text-align:left">
-							....
-						</div>
-						<div style="font-size:16px;">
-							Por favor espere un momento<br>
-							<span style="font-size:50px;"></span>
-						</div>
-					`
-				}
-			]
-		});
-
-		miVentanaEsperandoTemporal.show();		
 		var urlRequest =  baseUrl + '/app_invoice_billing/edit/2/19/' + transactionMasterID + '/' +codigoMesero;
-		var urlRequest = 'http://localhost/posmev4/app_invoice_billing/edit/2/19/2156/none';
-		
 		Ext.Ajax.request({
 			url		: urlRequest,
 			method	: 'GET',             // o 'POST'
@@ -4684,12 +4927,20 @@
 				
 				// response.responseText contiene la respuesta en texto
 				var datos = Ext.decode(response.responseText); // parse JSON
-				console.log('Datos recibidos:', datos);
+				console.log('fnLoadInvoiceExistente');
 				fnUpdateInvoiceView(datos);
+				isLoading	   = false;
 				
+				if(window.miVentanaEsperando)
+					if(miVentanaEsperando.show)
+						miVentanaEsperando.hide();
 			},
 			failure: function(response, opts) {
-				miVentanaEsperando.hide();
+				
+				if(window.miVentanaEsperando)
+					if(miVentanaEsperando.show)
+						miVentanaEsperando.hide();
+					
 				Ext.Msg.alert('Error', 'No se pudieron cargar los datos');
 				console.log('Server-side failure with status code ' + response.status);
 			}
@@ -4702,14 +4953,13 @@
 	
 	function fnUpdateInvoiceView(datos)
 	{
-		console.info(datos);
+		
 		if(datos.success == false)
 		{
-			miVentanaEsperandoTemporal.hide();
 			return;
 		}
 		
-		console.info(datos.data.objTransactionMaster);
+		
 		var objFormulario 							= {};
 		objFormulario.txtTM_transactionNumber		= datos.data.objTransactionMaster.transactionNumber;
 		objFormulario.txtUserID						= datos.data.objTransactionMaster.createdBy;
@@ -4720,15 +4970,190 @@
 		objFormulario.txtStatusID					= datos.data.objTransactionMaster.statusID;
 		objFormulario.txtStatusIDOld				= datos.data.objTransactionMaster.statusID;
 		objFormulario.txtDate						= datos.data.objTransactionMaster.transactionOn;
-		debugger;
+		objFormulario.txtExchangeRate				= datos.data.objTransactionMaster.exchangeRate;
+		objFormulario.txtNote						= datos.data.objTransactionMaster.note;
+		objFormulario.txtCurrencyID					= datos.data.objTransactionMaster.currencyID;
+		objFormulario.txtCustomerID					= datos.data.objTransactionMaster.entityID;
+		objFormulario.txtCustomerDescription		= datos.data.objCustomerDefault.customerNumber + " / " + datos.data.objNaturalDefault.firstName; 
+		objFormulario.txtReferenceClientName		= datos.data.objTransactionMasterInfo.referenceClientName;
+		objFormulario.txtReferenceClientIdentifier	= datos.data.objTransactionMasterInfo.referenceClientIdentifier;
+		objFormulario.txtCausalID					= datos.data.objTransactionMaster.transactionCausalID;
+		objFormulario.txtCustomerCreditLineID		= datos.data.objTransactionMaster.reference4; 
+		objFormulario.txtZoneID						= datos.data.objTransactionMasterInfo.zoneID; 		
+		if(datos.data.objTransactionMasterDetail.length > 0)
+			objFormulario.txtTypePriceID				= datos.data.objTransactionMasterDetail[0].typePriceID; 
+		else
+			objFormulario.txtTypePriceID				= 0;		
+		objFormulario.txtWarehouseID						= datos.data.objTransactionMaster.sourceWarehouseID; 
+		objFormulario.txtReference3							= datos.data.objTransactionMaster.reference3; 
+		objFormulario.txtEmployeeID							= datos.data.objTransactionMaster.entityIDSecondary; 
+		objFormulario.txtNumberPhone						= datos.data.objTransactionMaster.numberPhone; 
+		objFormulario.txtMesaID								= datos.data.objTransactionMasterInfo.mesaID; 
+		objFormulario.txtNextVisit							= datos.data.objTransactionMaster.nextVisit; 
+		objFormulario.txtDateFirst							= datos.data.objTransactionMaster.transactionOn2; 
+		objFormulario.txtReference2							= datos.data.objTransactionMaster.reference2; 		
+		objFormulario.txtPeriodPay							= datos.data.objTransactionMaster.periodPay; 
+		objFormulario.txtReference1							= datos.data.objTransactionMaster.reference1; 
+		objFormulario.txtDayExcluded						= datos.data.objTransactionMaster.dayExcluded; 
+		objFormulario.txtFixedExpenses						= datos.data.objTransactionMasterDetailCredit.reference1; 
+		objFormulario.txtCheckApplyExoneracion				= datos.data.objTransactionMasterReferences.reference2; 
+		objFormulario.txtLayFirstLineProtocolo				= datos.data.objTransactionMasterReferences.reference1; 
+		objFormulario.txtCheckDeEfectivo					= 0;
+		objFormulario.txtCheckReportSinRiesgoValue			= datos.data.objTransactionMasterDetailCredit.reference2; 		
+		objFormulario.txtTMIReference1						= datos.data.objTransactionMasterInfo.reference1;
 		
+		objFormulario.txtSubTotal							= 0;
+		objFormulario.txtIva								= 0;
+		objFormulario.txtPorcentajeDescuento				= datos.data.objTransactionMaster.tax4; 
+		objFormulario.txtDescuento							= datos.data.objTransactionMaster.discount; 
+		objFormulario.txtServices							= 0;
+		objFormulario.txtTotal								= 0;
+		
+		objFormulario.txtChangeAmount						= datos.data.objTransactionMasterInfo.changeAmount; 
+		objFormulario.txtReceiptAmount						= datos.data.objTransactionMasterInfo.receiptAmount; 		
+		objFormulario.txtReceiptAmountDol					= datos.data.objTransactionMasterInfo.receiptAmountDol; 
+		objFormulario.txtReceiptAmountTarjeta				= datos.data.objTransactionMasterInfo.receiptAmountCard; 
+		objFormulario.txtReceiptAmountTarjeta_BankID		= datos.data.objTransactionMasterInfo.receiptAmountCardBankID; 
+		objFormulario.txtReceiptAmountTarjeta_Reference		= datos.data.objTransactionMasterInfo.receiptAmountCardBankReference; 
+		objFormulario.txtReceiptAmountTarjetaDol			= datos.data.objTransactionMasterInfo.receiptAmountCardDol; 
+		objFormulario.txtReceiptAmountTarjetaDol_BankID		= datos.data.objTransactionMasterInfo.receiptAmountCardDolBankID; 
+		objFormulario.txtReceiptAmountTarjetaDol_Reference	= datos.data.objTransactionMasterInfo.receiptAmountCardDolBankReference; 
+		objFormulario.txtReceiptAmountBank					= datos.data.objTransactionMasterInfo.receiptAmountBank; 		
+		objFormulario.txtReceiptAmountBank_BankID			= datos.data.objTransactionMasterInfo.receiptAmountBankID; 
+		objFormulario.txtReceiptAmountBank_Reference		= datos.data.objTransactionMasterInfo.receiptAmountBankReference; 
+		objFormulario.txtReceiptAmountBankDol				= datos.data.objTransactionMasterInfo.receiptAmountBankDol; 
+		objFormulario.txtReceiptAmountBankDol_BankID		= datos.data.objTransactionMasterInfo.receiptAmountBankDolID; 
+		objFormulario.txtReceiptAmountBankDol_Reference		= datos.data.objTransactionMasterInfo.receiptAmountBankDolReference; 
+		objFormulario.txtReceiptAmountPoint					= datos.data.objTransactionMasterInfo.receiptAmountPoint; 
+		
+		
+		
+		//cargar detalle
+		objFormulario.txtTransactionMasterDetail			= [];
+		var typePriceID 									=  154; /*publico*/
+		var varDetailReferences								= datos.data.objTransactionMasterDetailReferences;
+		var varDetailConcept 								= datos.data.objTransactionMasterDetailConcept;
+		var objTransactionMasterItemPrice 					= datos.data.objTransactionMasterItemPrice;
+		if(datos.data.objTransactionMasterDetail.length > 0 )
+		{
+			for(var i = 0 ; i < datos.data.objTransactionMasterDetail.length ; i++)
+			{
+				
+				//master detail reference
+				var row 			   = datos.data.objTransactionMasterDetail[i];
+				typePriceID			   = row.typePriceID;
+                let objDetailReference = Ext.Array.filter(varDetailReferences, function (obj) { return obj.transactionMasterDetailID === row.transactionMasterDetailID;});
+                //Obtener Iva
+                var tmp_ 				= Ext.Array.filter(varDetailConcept, function (obj) {  return obj.componentItemID === row.componentItemID && obj.name === "IVA";}); 				
+                var iva_ 				= (tmp_.length <= 0 ? 0 : parseFloat(tmp_[0].valueOut));
+                
+				//obtener el precio  2
+				var resultado = Ext.Array.filter(objTransactionMasterItemPrice, function (obj) {
+					return obj.itemID === row.componentItemID &&
+						   obj.typePriceID === "155";
+				});
+				var Precio2 		= resultado.length > 0 ? resultado[0].Precio : null;
+
+
+				//obtener el precio  3
+				var resultado = Ext.Array.filter(objTransactionMasterItemPrice, function (obj) {
+					return obj.itemID === row.componentItemID &&
+						   obj.typePriceID === "156";
+				});
+				var Precio3 		= resultado.length > 0 ? resultado[0].Precio : null;
+				
+                
+                var tax2					= row.tax2;
+				let skuFormatoDescription   = row.skuFormatoDescription;
+				let skuQuantityBySku		= row.skuQuantityBySku;
+				let skuCatalogItemID		= row.skuCatalogItemID;
+				let skuQuantity				= row.skuQuantity;
+
+                var taxServices 	= 0;
+
+                //Validar impuesto IVA
+                if (  isNaN(row.tax1 / row.unitaryPrice)  )
+                {
+                    iva_  = 0 ;
+                }
+                else
+                {
+                    iva_  = row.tax1 / row.unitaryPrice ;
+                }
+
+                //Validar servicio TAX_SERVICES
+                if (  isNaN(row.tax2 / row.unitaryPrice)  )
+                {
+                    taxServices  = 0 ;
+                }
+                else
+                {
+                    taxServices  = row.tax2 / row.unitaryPrice ;
+                }
+                let infoSales       = '';
+                let infoSerie       = '';
+                let infoReferencia  = '';
+                let infoPrecio1     = 0;
+                let infoPrecio2     = 0;
+                let infoPrecio3     = 0;
+
+                if (objDetailReference && objDetailReference.length > 0) {
+                    infoSales       = objDetailReference[0].sales;
+                    infoSerie       = objDetailReference[0].reference1;
+                    infoReferencia  = objDetailReference[0].reference2;
+                    infoPrecio1     = objDetailReference[0].precio1;
+                    infoPrecio2     = objDetailReference[0].precio2;
+                    infoPrecio3     = objDetailReference[0].precio3;
+                }
+
+
+				var itemNumber 			= "";
+				var mostrarCodigoBarra 	= '<?php echo getBehavio($company->type, 'app_invoice_billing', 'javaScriptShowCodeBarra', 'false') ?>';
+				if(mostrarCodigoBarra == "false")
+				{
+					itemNumber 			= row.itemNumber;
+				}
+				else
+				{
+					itemNumber 			= row.barCode + " " + row.itemNumber;
+				}
+
+				var record 	= {			
+					txtTMD_checked: false,
+					txtTMD_txtTransactionMasterDetailID: row.transactionMasterDetailID,
+					txtTMD_txtItemID: row.componentItemID,
+					txtTMD_txtTransactionDetailItemNumber: itemNumber,
+					txtTMD_txtTransactionDetailName: row.itemNameLog,
+					txtTMD_txtSku: skuFormatoDescription,
+					txtTMD_txtQuantity: row.quantity,
+					txtTMD_txtPrice: row.unitaryPrice,
+					txtTMD_txtSubTotal: row.unitaryPrice * row.quantity ,
+					txtTMD_txtIva: iva_,
+					txtTMD_skuQuantityBySku: skuQuantityBySku,
+					txtTMD_unitaryPriceInvidual: row.unitaryPrice,
+					txtTMD_skuFormatoDescription: skuFormatoDescription,
+					txtTMD_txtItemPrecio2: infoPrecio2,
+					txtTMD_txtItemPrecio3: infoPrecio3,
+					txtTMD_txtTransactionDetailNameDescription: row.itemNameDescriptionLog,
+					txtTMD_txtTaxServices:taxServices,
+					txtTMD_txtDetailLote: row.reference1,
+					txtTMD_txtInfoVendedor: infoSales,
+					txtTMD_txtInfoSerie: infoSerie,
+					txtTMD_txtInfoReferencia: infoReferencia,
+					txtTMD_txtItemPrecio1: infoPrecio1,
+					txtTMD_txtCatalogItemIDSku: skuCatalogItemID,
+					txtTMD_txtRatioSku: skuQuantity,
+					txtTMD_txtDiscountByItem: row.discount,
+					txtTMD_txtCommisionByBankByItem: row.tax3 
+				};
+				
+				
+				objFormulario.txtTransactionMasterDetail.push(record);
+			}
+		}
 		
 		//cargar lso datos en pantalla		
 		fnFillFactura("miVentanaPrincipal", objFormulario );
-		miVentanaEsperandoTemporal.hide();
-	}
-	
 		
-
-	
+	}
 </script>
