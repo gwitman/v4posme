@@ -74,7 +74,7 @@
 							codigoMesero        : "none",
 							edicion             : true
 						}, function () {
-							window.location.href = "<?= base_url(); ?>/app_invoice_billing/add/codigoMesero/none";
+							window.location.href = "<?= base_url(); ?>/app_invoice_billing/add/codigoMesero/none<?php echo getBahavioSession($company->type,'app_invoice_billing','versionPantallaFacturacion','',$objListCompanyPageSetting) ?>";
 						}
 					);
 					
@@ -110,7 +110,7 @@
 							codigoMesero        : "none",
 							edicion             : true
 						}, function () {
-							window.location.href = "<?= base_url(); ?>/app_invoice_billing/add/codigoMesero/none";
+							window.location.href = "<?= base_url(); ?>/app_invoice_billing/add/codigoMesero/none<?php echo getBahavioSession($company->type,'app_invoice_billing','versionPantallaFacturacion','',$objListCompanyPageSetting) ?>";
 						}
 					);
 				}
@@ -168,7 +168,7 @@
 										codigoMesero        : "none",
 										edicion             : true
 									}, function () {
-										window.location.href = "<?= base_url(); ?>/app_invoice_billing/add/codigoMesero/none";
+										window.location.href = "<?= base_url(); ?>/app_invoice_billing/add/codigoMesero/none<?php echo getBahavioSession($company->type,'app_invoice_billing','versionPantallaFacturacion','',$objListCompanyPageSetting) ?>";
 									}
 								);
 								
@@ -236,9 +236,9 @@
 			{
 				mostrarModal('ModalCargandoDatos');
 				if(objParameterPantallaParaFacturar == "-")
-					window.location	= "<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/none";
+					window.location	= "<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/none<?php echo getBahavioSession($company->type,'app_invoice_billing','versionPantallaFacturacion','',$objListCompanyPageSetting) ?>";
 				else 
-					window.location	= "<?php echo base_url(); ?>/app_invoice_billing/"+objParameterPantallaParaFacturar+"/companyID/0/transactionID/19/transactionMasterID/0/codigoMesero/none";
+					window.location	= "<?php echo base_url(); ?>/app_invoice_billing/"+objParameterPantallaParaFacturar+"/companyID/0/transactionID/19/transactionMasterID/0/codigoMesero/none<?php echo getBahavioSession($company->type,'app_invoice_billing','versionPantallaFacturacion','',$objListCompanyPageSetting) ?>";
 				
 			}
 			else 

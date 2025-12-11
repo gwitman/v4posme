@@ -4220,6 +4220,9 @@ class app_invoice_billing extends _BaseController {
 				}
 			}
 			
+			//Obtener variables de personalizacion de base de datos
+			
+			
 			//Variable para validar si es un mesero
 			$esMesero 					= false;
             $eliminarProductos 			= false;
@@ -4236,6 +4239,7 @@ class app_invoice_billing extends _BaseController {
 			$dataViewJava["objPasswordMesero"] 					= $dataSession["user"]->password;
 
 			//Renderizar Resultado
+			$dataViewJava["objListCompanyPageSetting"]			= $this->Company_Page_Setting_Model->get_rowByKeyAndController($dataSession["company"]->type,"app_invoice_billing");
 			$dataViewJava["objParameterPantallaParaFacturar"]	= $objParameterPantallaParaFacturar;
 			$dataViewJava["objParameterShowPreview"]			= $objParameterShowPreview;
 			$dataViewJava["useMobile"]							= $dataSession["user"]->useMobile;

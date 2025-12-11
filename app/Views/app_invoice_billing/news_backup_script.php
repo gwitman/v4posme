@@ -422,6 +422,21 @@
 
 	Ext.onReady(function () {
 
+		miVentanaEsperando = Ext.create('Ext.window.Window', {
+					title: 'Procesando',
+					id: 'miVentanaEsperando',
+					itemId:'miVentanaEsperando',
+					closable: false,
+					modal: true,
+					closeAction: 'hide',
+					width: 300,
+					height: 100,
+					bodyPadding: 10,
+					html: '<div style="text-align:center;"><b>Esperando...</b></div>'
+				}); 
+			
+		miVentanaEsperando.show();
+		
 		miVentanaDePago = Ext.create('Ext.window.Window', {
 					title: 'Opciones de pago',
 					id: 'miVentanaDePago',
@@ -857,19 +872,7 @@
 					]
 				});
 				
-		miVentanaEsperando = Ext.create('Ext.window.Window', {
-					title: 'Procesando',
-					id: 'miVentanaEsperando',
-					itemId:'miVentanaEsperando',
-					closable: false,
-					modal: true,
-					closeAction: 'hide',
-					width: 300,
-					height: 100,
-					bodyPadding: 10,
-					html: '<div style="text-align:center;"><b>Esperando...</b></div>'
-				}); 
-			
+		
 		miVentanaInformacionAdicional = Ext.create('Ext.window.Window', {
 					title: 'Informacion adicional',
 					id: 'miVentanaInformacionAdicional',
@@ -983,9 +986,10 @@
 					//var transactionMasterID 	= '<?php echo $transactionMasterID ?>'
 					//var codigoMesero 			= '<?php echo $codigoMesero ?>';
 		
-					var transactionMasterID = 2102;
-					var codigoMesero 		= 'none';
-		
+					var transactionMasterID 	= 2102;
+					var codigoMesero 			= 'none';
+					
+					
 					if(transactionMasterID > 0)
 					fnLoadInvoiceExistente(transactionMasterID,codigoMesero);
 					
@@ -2280,7 +2284,7 @@
 		}
 		function fnBtnGuardarFactura()
 		{
-			//fnUpdateInvoiceView
+			
 			miVentanaEsperando.show();
 			
 			// 2️⃣ Serializar datos (igual a jQuery serialize)
@@ -2289,8 +2293,8 @@
 			var grid 									= miVentanaPrincipal_.down('#gridDetailTransactionMaster'); // encuentra el grid		
 			var store 									= grid.getStore();
 			var formData								= {};
-			debugger;
-			formData.txtTM_transactionNumber					= miVentanaPrincipal_.down("#txtTM_transactionNumber").getValue(); 
+			
+			formData.txtTransactionNumber						= miVentanaPrincipal_.down("#txtTM_transactionNumber").text;
 			formData.txtUserID									= miVentanaPrincipal_.down("#txtUserID").getValue(); 
 			formData.txtCompanyID								= miVentanaPrincipal_.down("#txtCompanyID").getValue(); 
 			formData.txtTransactionID							= miVentanaPrincipal_.down("#txtTransactionID").getValue(); 
@@ -2317,72 +2321,149 @@
 			formData.txtMesaID									= miVentanaPrincipal_.down("#txtMesaID").getValue(); 
 			formData.txtNextVisit								= miVentanaPrincipal_.down("#txtNextVisit").getValue(); 
 			formData.txtDateFirst								= miVentanaPrincipal_.down("#txtDateFirst").getValue(); 
-			formData.txtReference2								= miVentanaPrincipal_.down("#txtReference2").getValue(); 
-			
+			formData.txtReference2								= miVentanaPrincipal_.down("#txtReference2").getValue(); 			
 			formData.txtPeriodPay								= miVentanaPrincipal_.down("#txtPeriodPay").getValue(); 
 			formData.txtReference1								= miVentanaPrincipal_.down("#txtReference1").getValue(); 
 			formData.txtDayExcluded								= miVentanaPrincipal_.down("#txtDayExcluded").getValue(); 
 			formData.txtFixedExpenses							= miVentanaPrincipal_.down("#txtFixedExpenses").getValue(); 
-			formData.txtCheckApplyExoneracion					= miVentanaPrincipal_.down("#txtCheckApplyExoneracion").getValue(); 
+			formData.txtCheckApplyExoneracion					= getValueRadio("miVentanaPrincipal","txtCheckApplyExoneracion");
 			formData.txtLayFirstLineProtocolo					= miVentanaPrincipal_.down("#txtLayFirstLineProtocolo").getValue(); 
-			formData.txtCheckDeEfectivo							= miVentanaPrincipal_.down("#txtCheckDeEfectivo").getValue(); 
-			formData.txtCheckReportSinRiesgoValue				= miVentanaPrincipal_.down("#txtCheckReportSinRiesgoValue").getValue(); 
-			formData.txtTMIReference1							= miVentanaPrincipal_.down("#txtTMIReference1").getValue(); 
+			formData.txtCheckDeEfectivo							= getValueRadio("miVentanaPrincipal","txtCheckDeEfectivo");
+			formData.txtCheckReportSinRiesgoValue				= getValueRadio("miVentanaPrincipal","txtCheckReportSinRiesgoValue"); 			
+			formData.txtTMIReference1							= miVentanaPrincipal_.down("#txtTMIReference1").getValue();
 			formData.txtSubTotal								= miVentanaPrincipal_.down("#txtSubTotal").getValue(); 
 			formData.txtIva										= miVentanaPrincipal_.down("#txtIva").getValue(); 
 			formData.txtPorcentajeDescuento						= miVentanaPrincipal_.down("#txtPorcentajeDescuento").getValue(); 
 			formData.txtDescuento								= miVentanaPrincipal_.down("#txtDescuento").getValue(); 
 			formData.txtServices								= miVentanaPrincipal_.down("#txtServices").getValue(); 
 			formData.txtTotal									= miVentanaPrincipal_.down("#txtTotal").getValue(); 
-			formData.txtChangeAmount							= miVentanaPrincipal_.down("#txtChangeAmount").getValue(); 
-			formData.txtReceiptAmount							= miVentanaPrincipal_.down("#txtReceiptAmount").getValue(); 
-			formData.txtReceiptAmountDol						= miVentanaPrincipal_.down("#txtReceiptAmountDol").getValue(); 
-			formData.txtReceiptAmountTarjeta					= miVentanaPrincipal_.down("#txtReceiptAmountTarjeta").getValue(); 
-			formData.txtReceiptAmountTarjeta_BankID				= miVentanaPrincipal_.down("#txtReceiptAmountTarjeta_BankID").getValue(); 
 			
-			formData.txtReceiptAmountTarjeta_Reference			= miVentanaPrincipal_.down("#txtReceiptAmountTarjeta_Reference").getValue(); 
-			formData.txtReceiptAmountTarjetaDol					= miVentanaPrincipal_.down("#txtReceiptAmountTarjetaDol").getValue(); 
-			formData.txtReceiptAmountTarjetaDol_BankID			= miVentanaPrincipal_.down("#txtReceiptAmountTarjetaDol_BankID").getValue(); 
-			formData.txtReceiptAmountTarjetaDol_Reference		= miVentanaPrincipal_.down("#txtReceiptAmountTarjetaDol_Reference").getValue(); 
-			formData.txtReceiptAmountBank						= miVentanaPrincipal_.down("#txtReceiptAmountBank").getValue(); 
-			formData.txtReceiptAmountBank_BankID				= miVentanaPrincipal_.down("#txtReceiptAmountBank_BankID").getValue(); 
-			formData.txtReceiptAmountBank_Reference				= miVentanaPrincipal_.down("#txtReceiptAmountBank_Reference").getValue(); 
-			formData.txtReceiptAmountBankDol					= miVentanaPrincipal_.down("#txtReceiptAmountBankDol").getValue(); 
-			formData.txtReceiptAmountBankDol_BankID				= miVentanaPrincipal_.down("#txtReceiptAmountBankDol_BankID").getValue(); 
-			formData.txtReceiptAmountBankDol_Reference			= miVentanaPrincipal_.down("#txtReceiptAmountBankDol_Reference").getValue(); 
-			formData.txtReceiptAmountPoint						= miVentanaPrincipal_.down("#txtReceiptAmountPoint").getValue(); 
+			formData.txtChangeAmount							= miVentanaDePago_.down("#txtChangeAmount").getValue(); 
+			formData.txtReceiptAmount							= miVentanaDePago_.down("#txtReceiptAmount").getValue(); 
+			formData.txtReceiptAmountDol						= miVentanaDePago_.down("#txtReceiptAmountDol").getValue(); 
+			formData.txtReceiptAmountTarjeta					= miVentanaDePago_.down("#txtReceiptAmountTarjeta").getValue(); 
+			formData.txtReceiptAmountTarjeta_BankID				= miVentanaDePago_.down("#txtReceiptAmountTarjeta_BankID").getValue(); 			
+			formData.txtReceiptAmountTarjeta_Reference			= miVentanaDePago_.down("#txtReceiptAmountTarjeta_Reference").getValue(); 
+			formData.txtReceiptAmountTarjetaDol					= miVentanaDePago_.down("#txtReceiptAmountTarjetaDol").getValue(); 
+			formData.txtReceiptAmountTarjetaDol_BankID			= miVentanaDePago_.down("#txtReceiptAmountTarjetaDol_BankID").getValue(); 
+			formData.txtReceiptAmountTarjetaDol_Reference		= miVentanaDePago_.down("#txtReceiptAmountTarjetaDol_Reference").getValue(); 
+			formData.txtReceiptAmountBank						= miVentanaDePago_.down("#txtReceiptAmountBank").getValue(); 
+			formData.txtReceiptAmountBank_BankID				= miVentanaDePago_.down("#txtReceiptAmountBank_BankID").getValue(); 
+			formData.txtReceiptAmountBank_Reference				= miVentanaDePago_.down("#txtReceiptAmountBank_Reference").getValue(); 
+			formData.txtReceiptAmountBankDol					= miVentanaDePago_.down("#txtReceiptAmountBankDol").getValue(); 
+			formData.txtReceiptAmountBankDol_BankID				= miVentanaDePago_.down("#txtReceiptAmountBankDol_BankID").getValue(); 
+			formData.txtReceiptAmountBankDol_Reference			= miVentanaDePago_.down("#txtReceiptAmountBankDol_Reference").getValue(); 
+			formData.txtReceiptAmountPoint						= miVentanaDePago_.down("#txtReceiptAmountPoint").getValue(); 
+			
+			var txtTransactionMasterDetailID 				= [];
+			var txtItemID 									= [];
+			var txtTransactionDetailName					= [];
+			var txtSku										= [];
+			var txtQuantity									= [];
+			var txtPrice									= [];
+			var txtSubTotal									= [];
+			var txtIva										= [];
+			var skuQuantityBySku							= [];
+			var unitaryPriceInvidual						= [];
+			var skuFormatoDescription						= [];
+			var txtItemPrecio2								= [];
+			var txtItemPrecio3								= [];
+			var txtTransactionDetailNameDescription			= [];
+			var txtTaxServices								= [];
+			var txtDetailLote								= [];
+			var txtInfoVendedor								= [];
+			var txtInfoSerie								= [];
+			var txtInfoReferencia							= [];
+			var txtItemPrecio1								= [];
+			var txtCatalogItemIDSku							= [];
+			var txtRatioSku									= [];
+			var txtDiscountByItem							= [];
+			var txtCommisionByBankByItem					= [];
 			
 			
+			store.each(function (record) 
+			{	
+				
+				txtTransactionMasterDetailID.push(record.get('txtTMD_txtTransactionMasterDetailID'));
+				txtItemID.push(record.get('txtTMD_txtItemID'));
+				txtTransactionDetailName.push(record.get('txtTMD_txtTransactionDetailName'));
+				txtSku.push(record.get('txtTMD_txtSku'));
+				txtQuantity.push(record.get('txtTMD_txtQuantity'));
+				txtPrice.push(record.get('txtTMD_txtPrice'));
+				txtSubTotal.push(record.get('txtTMD_txtSubTotal'));
+				txtIva.push(record.get('txtTMD_txtIva'));
+				skuQuantityBySku.push(record.get('txtTMD_skuQuantityBySku'));
+				unitaryPriceInvidual.push(record.get('txtTMD_unitaryPriceInvidual'));
+				skuFormatoDescription.push(record.get('txtTMD_skuFormatoDescription'));
+				txtItemPrecio2.push(record.get('txtTMD_txtItemPrecio2'));
+				txtItemPrecio3.push(record.get('txtTMD_txtItemPrecio3'));
+				txtTransactionDetailNameDescription.push(record.get('txtTMD_txtTransactionDetailNameDescription'));
+				txtTaxServices.push(record.get('txtTMD_txtTaxServices'));
+				txtDetailLote.push(record.get('txtTMD_txtDetailLote'));
+				txtInfoVendedor.push(record.get('txtTMD_txtInfoVendedor'));
+				txtInfoSerie.push(record.get('txtTMD_txtInfoSerie'));
+				txtInfoReferencia.push(record.get('txtTMD_txtInfoReferencia'));
+				txtItemPrecio1.push(record.get('txtTMD_txtItemPrecio1'));
+				txtCatalogItemIDSku.push(record.get('txtTMD_txtCatalogItemIDSku'));
+				txtRatioSku.push(record.get('txtTMD_txtRatioSku'));
+				txtDiscountByItem.push(record.get('txtTMD_txtDiscountByItem'));
+				txtCommisionByBankByItem.push(record.get('txtTMD_txtCommisionByBankByItem'));
+				
+			});
 			
+			formData["txtTransactionMasterDetailID[]"] 			= txtTransactionMasterDetailID;
+			formData["txtItemID[]"] 							= txtItemID;
+			formData["txtTransactionDetailName[]"] 				= txtTransactionDetailName;
+			formData["txtSku[]"] 								= txtSku;
+			formData["txtQuantity[]"] 							= txtQuantity;
+			formData["txtPrice[]"] 								= txtPrice;
+			formData["txtSubTotal[]"] 							= txtSubTotal;
+			formData["txtIva[]"] 								= txtIva;
+			formData["skuQuantityBySku[]"] 						= skuQuantityBySku;
+			formData["unitaryPriceInvidual[]"] 					= unitaryPriceInvidual;
+			formData["skuFormatoDescription[]"] 				= skuFormatoDescription;
+			formData["txtItemPrecio2[]"] 						= txtItemPrecio2;
+			formData["txtItemPrecio3[]"] 						= txtItemPrecio3;
+			formData["txtTransactionDetailNameDescription[]"] 	= txtTransactionDetailNameDescription;
+			formData["txtTaxServices[]"] 						= txtTaxServices;
+			formData["txtDetailLote[]"] 						= txtDetailLote;
+			formData["txtInfoVendedor[]"] 						= txtInfoVendedor;
+			formData["txtInfoSerie[]"] 							= txtInfoSerie;
+			formData["txtInfoReferencia[]"] 					= txtInfoReferencia;
+			formData["txtItemPrecio1[]"] 						= txtItemPrecio1;
+			formData["txtCatalogItemIDSku[]"] 					= txtCatalogItemIDSku;
+			formData["txtRatioSku[]"] 							= txtRatioSku;
+			formData["txtDiscountByItem[]"] 					= txtDiscountByItem;
+			formData["txtCommisionByBankByItem[]"] 				= txtCommisionByBankByItem;
 			
 			
 			Ext.Ajax.request({
 				url		: "<?php echo base_url(); ?>/app_invoice_billing/save/edit",
 				method	: 'POST',           // o 'POST'
-				async	: true,  			// bloquea el hilo
+				async	: true,  			// true, no bloquea el hilo
 				params	: formData,
 				success: function(response, opts) 
 				{
-					debugger;
-					// response.responseText contiene la respuesta en texto
+					
+					
 					var datos = Ext.decode(response.responseText); // parse JSON
-					console.log('Datos recibidos fnBtnEliminarFactura:', datos);
+					console.log('Datos recibidos fnBtnGuardarFactura:', datos);
 					miVentanaEsperando.hide();
 					
 					 // Restaurar botón
 					if(datos.success) 
 					{
-						fnUpdateInvoiceView(datos.data);
+						fnUpdateInvoiceView(datos);
 						Ext.Msg.show({
-							title: 'Operación realizada',
-							message: datos.message,
-							icon: Ext.Msg.INFO,
-							buttons: Ext.Msg.OK
+							title: 		'Operación realizada',
+							message: 	"Operacion exitosa",
+							icon: 		Ext.Msg.INFO,
+							buttons: 	Ext.Msg.OK
 						});
 					} 
 					else 
 					{
-						Ext.Msg.alert('Error',datos.message );	
+						Ext.Msg.alert('Error',datos.error.message );	
 					}
 					
 				},
@@ -4997,7 +5078,7 @@
 		Ext.Ajax.request({
 			url		: urlRequest,
 			method	: 'GET',             // o 'POST'
-			async	: false,  				 // bloquea el hilo
+			async	: true,				 // true no bloquea el hilo
 			params	: {                  // parámetros opcionales
 				filtro: 'ABC'
 			},
