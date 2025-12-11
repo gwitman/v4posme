@@ -2280,36 +2280,114 @@
 		}
 		function fnBtnGuardarFactura()
 		{
+			//fnUpdateInvoiceView
 			miVentanaEsperando.show();
+			
+			// 2️⃣ Serializar datos (igual a jQuery serialize)
+			var miVentanaPrincipal_ 					= Ext.getCmp('miVentanaPrincipal');
+			var miVentanaDePago_						= Ext.getCmp('miVentanaDePago');
+			var grid 									= miVentanaPrincipal_.down('#gridDetailTransactionMaster'); // encuentra el grid		
+			var store 									= grid.getStore();
+			var formData								= {};
+			debugger;
+			formData.txtTM_transactionNumber					= miVentanaPrincipal_.down("#txtTM_transactionNumber").getValue(); 
+			formData.txtUserID									= miVentanaPrincipal_.down("#txtUserID").getValue(); 
+			formData.txtCompanyID								= miVentanaPrincipal_.down("#txtCompanyID").getValue(); 
+			formData.txtTransactionID							= miVentanaPrincipal_.down("#txtTransactionID").getValue(); 
+			formData.txtTransactionMasterID						= miVentanaPrincipal_.down("#txtTransactionMasterID").getValue(); 
+			formData.txtCodigoMesero							= miVentanaPrincipal_.down("#txtCodigoMesero").getValue(); 
+			formData.txtStatusID								= miVentanaPrincipal_.down("#txtStatusID").getValue(); 
+			formData.txtStatusIDOld								= miVentanaPrincipal_.down("#txtStatusIDOld").getValue(); 
+			formData.txtDate									= miVentanaPrincipal_.down("#txtDate").getValue(); 
+			formData.txtExchangeRate							= miVentanaPrincipal_.down("#txtExchangeRate").getValue(); 
+			formData.txtNote									= miVentanaPrincipal_.down("#txtNote").getValue(); 
+			formData.txtCurrencyID								= miVentanaPrincipal_.down("#txtCurrencyID").getValue(); 
+			formData.txtCustomerID								= miVentanaPrincipal_.down("#txtCustomerID").getValue(); 
+			formData.txtCustomerDescription						= miVentanaPrincipal_.down("#txtCustomerDescription").getValue(); 
+			formData.txtReferenceClientName						= miVentanaPrincipal_.down("#txtReferenceClientName").getValue(); 
+			formData.txtReferenceClientIdentifier				= miVentanaPrincipal_.down("#txtReferenceClientIdentifier").getValue(); 
+			formData.txtCausalID								= miVentanaPrincipal_.down("#txtCausalID").getValue(); 
+			formData.txtCustomerCreditLineID					= miVentanaPrincipal_.down("#txtCustomerCreditLineID").getValue(); 
+			formData.txtZoneID									= miVentanaPrincipal_.down("#txtZoneID").getValue(); 
+			formData.txtTypePriceID								= miVentanaPrincipal_.down("#txtTypePriceID").getValue(); 
+			formData.txtWarehouseID								= miVentanaPrincipal_.down("#txtWarehouseID").getValue(); 
+			formData.txtReference3								= miVentanaPrincipal_.down("#txtReference3").getValue(); 
+			formData.txtEmployeeID								= miVentanaPrincipal_.down("#txtEmployeeID").getValue(); 
+			formData.txtNumberPhone								= miVentanaPrincipal_.down("#txtNumberPhone").getValue(); 
+			formData.txtMesaID									= miVentanaPrincipal_.down("#txtMesaID").getValue(); 
+			formData.txtNextVisit								= miVentanaPrincipal_.down("#txtNextVisit").getValue(); 
+			formData.txtDateFirst								= miVentanaPrincipal_.down("#txtDateFirst").getValue(); 
+			formData.txtReference2								= miVentanaPrincipal_.down("#txtReference2").getValue(); 
+			
+			formData.txtPeriodPay								= miVentanaPrincipal_.down("#txtPeriodPay").getValue(); 
+			formData.txtReference1								= miVentanaPrincipal_.down("#txtReference1").getValue(); 
+			formData.txtDayExcluded								= miVentanaPrincipal_.down("#txtDayExcluded").getValue(); 
+			formData.txtFixedExpenses							= miVentanaPrincipal_.down("#txtFixedExpenses").getValue(); 
+			formData.txtCheckApplyExoneracion					= miVentanaPrincipal_.down("#txtCheckApplyExoneracion").getValue(); 
+			formData.txtLayFirstLineProtocolo					= miVentanaPrincipal_.down("#txtLayFirstLineProtocolo").getValue(); 
+			formData.txtCheckDeEfectivo							= miVentanaPrincipal_.down("#txtCheckDeEfectivo").getValue(); 
+			formData.txtCheckReportSinRiesgoValue				= miVentanaPrincipal_.down("#txtCheckReportSinRiesgoValue").getValue(); 
+			formData.txtTMIReference1							= miVentanaPrincipal_.down("#txtTMIReference1").getValue(); 
+			formData.txtSubTotal								= miVentanaPrincipal_.down("#txtSubTotal").getValue(); 
+			formData.txtIva										= miVentanaPrincipal_.down("#txtIva").getValue(); 
+			formData.txtPorcentajeDescuento						= miVentanaPrincipal_.down("#txtPorcentajeDescuento").getValue(); 
+			formData.txtDescuento								= miVentanaPrincipal_.down("#txtDescuento").getValue(); 
+			formData.txtServices								= miVentanaPrincipal_.down("#txtServices").getValue(); 
+			formData.txtTotal									= miVentanaPrincipal_.down("#txtTotal").getValue(); 
+			formData.txtChangeAmount							= miVentanaPrincipal_.down("#txtChangeAmount").getValue(); 
+			formData.txtReceiptAmount							= miVentanaPrincipal_.down("#txtReceiptAmount").getValue(); 
+			formData.txtReceiptAmountDol						= miVentanaPrincipal_.down("#txtReceiptAmountDol").getValue(); 
+			formData.txtReceiptAmountTarjeta					= miVentanaPrincipal_.down("#txtReceiptAmountTarjeta").getValue(); 
+			formData.txtReceiptAmountTarjeta_BankID				= miVentanaPrincipal_.down("#txtReceiptAmountTarjeta_BankID").getValue(); 
+			
+			formData.txtReceiptAmountTarjeta_Reference			= miVentanaPrincipal_.down("#txtReceiptAmountTarjeta_Reference").getValue(); 
+			formData.txtReceiptAmountTarjetaDol					= miVentanaPrincipal_.down("#txtReceiptAmountTarjetaDol").getValue(); 
+			formData.txtReceiptAmountTarjetaDol_BankID			= miVentanaPrincipal_.down("#txtReceiptAmountTarjetaDol_BankID").getValue(); 
+			formData.txtReceiptAmountTarjetaDol_Reference		= miVentanaPrincipal_.down("#txtReceiptAmountTarjetaDol_Reference").getValue(); 
+			formData.txtReceiptAmountBank						= miVentanaPrincipal_.down("#txtReceiptAmountBank").getValue(); 
+			formData.txtReceiptAmountBank_BankID				= miVentanaPrincipal_.down("#txtReceiptAmountBank_BankID").getValue(); 
+			formData.txtReceiptAmountBank_Reference				= miVentanaPrincipal_.down("#txtReceiptAmountBank_Reference").getValue(); 
+			formData.txtReceiptAmountBankDol					= miVentanaPrincipal_.down("#txtReceiptAmountBankDol").getValue(); 
+			formData.txtReceiptAmountBankDol_BankID				= miVentanaPrincipal_.down("#txtReceiptAmountBankDol_BankID").getValue(); 
+			formData.txtReceiptAmountBankDol_Reference			= miVentanaPrincipal_.down("#txtReceiptAmountBankDol_Reference").getValue(); 
+			formData.txtReceiptAmountPoint						= miVentanaPrincipal_.down("#txtReceiptAmountPoint").getValue(); 
+			
+			
+			
+			
+			
 			Ext.Ajax.request({
-				url		: "<?php echo base_url(); ?>/app_invoice_billing/delete",
-				method	: 'GET',            // o 'POST'
-				async: true,  				// bloquea el hilo
-				params	: {                 // parámetros opcionales
-					companyID 			: Ext.getCmp('miVentanaPrincipal').down('#txtCompanyID').getValue(),
-					transactionID 		: Ext.getCmp('miVentanaPrincipal').down('#txtTransactionID').getValue(),
-					transactionMasterID : Ext.getCmp('miVentanaPrincipal').down('#txtTransactionMasterID').getValue(),
-				},
-				success: function(response, opts) {
-					
+				url		: "<?php echo base_url(); ?>/app_invoice_billing/save/edit",
+				method	: 'POST',           // o 'POST'
+				async	: true,  			// bloquea el hilo
+				params	: formData,
+				success: function(response, opts) 
+				{
+					debugger;
 					// response.responseText contiene la respuesta en texto
 					var datos = Ext.decode(response.responseText); // parse JSON
 					console.log('Datos recibidos fnBtnEliminarFactura:', datos);
 					miVentanaEsperando.hide();
 					
-					if(datos.error){
-						Ext.Msg.alert('Error',datos.message );						
-					}
-					else{
+					 // Restaurar botón
+					if(datos.success) 
+					{
+						fnUpdateInvoiceView(datos.data);
 						Ext.Msg.show({
 							title: 'Operación realizada',
 							message: datos.message,
 							icon: Ext.Msg.INFO,
 							buttons: Ext.Msg.OK
 						});
+					} 
+					else 
+					{
+						Ext.Msg.alert('Error',datos.message );	
 					}
+					
 				},
 				failure: function(response, opts) {
+					debugger;
 					miVentanaEsperando.hide();
 					Ext.Msg.alert('Error', 'No se pudieron cargar los datos');
 					console.log('Server-side failure with status code ' + response.status);
