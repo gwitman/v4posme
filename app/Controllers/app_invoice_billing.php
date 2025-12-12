@@ -3531,8 +3531,7 @@ class app_invoice_billing extends _BaseController {
 			//echo print_r($this->validation->getError("txtStatusID"),true);
 			
 			 //Validar Formulario
-			if(!$this->validation->withRequest($this->request)->run()){				
-				
+			if(!$this->validation->withRequest($this->request)->run()){								
 				$stringValidation = $this->core_web_tools->formatMessageError($this->validation->getErrors());	
 				$this->core_web_notification->set_message(true,$stringValidation);
 				$this->response->redirect(base_url()."/".'app_invoice_billing/add');

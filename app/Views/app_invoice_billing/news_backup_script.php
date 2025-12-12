@@ -6,6 +6,7 @@
 	let objCurrencyCordoba 									= JSON.parse('<?php echo json_encode($objCurrencyCordoba); ?>');
 	var varParameterINVOICE_BILLING_VALIDATE_EXONERATION 	= '<?php echo $objParameterINVOICE_BILLING_VALIDATE_EXONERATION; ?>';	
 	var varUrlPrinter										= '<?php echo $urlPrinterDocument; ?>';
+	var varParameterAmortizationDuranteFactura				= <?php echo $objParameterAmortizationDuranteFactura; ?>;
 	
 	var varStatusInvoiceAplicado			= 67; //Estado Aplicada
     var varStatusInvoiceAnular				= 68; //Anular
@@ -173,17 +174,7 @@
 			'txtTransactionID' : '<?php echo $transactionID ?>',
 			'txtTransactionMasterID' : '0',
 			'txtCodigoMesero' : '<?= $codigoMesero;  ?>',			
-			'txtStatusID' : '<?php
-					$count 				= 0;
-					$valueWorkflowFirst = 0;
-					if($objListWorkflowStage){
-						foreach($objListWorkflowStage as $ws){
-							if($count == 0)
-								$valueWorkflowFirst = $ws->workflowStageID;
-							$count++;
-						}
-					}
-					?>',
+			'txtStatusID' : varStatusInvoiceRegistrado,
 					
 			'txtStatusIDOld' : 0,			
 			'txtDate': Ext.Date.format(new Date(), 'Y-m-d'),	
@@ -475,6 +466,12 @@
 									mouseWheelEnabled: false,
 									name: 'txtChangeAmount',
 									id:'txtChangeAmount',
+									itemId: 'txtChangeAmount',  // Mejor usar itemId
+									style: 'font-weight:bold; border-width: 2px;',  // resalta el cuadro
+									listeners: {
+										change: fnChange_ChangeAmount
+									}
+									
 								},
 								{
 									xtype: 'numberfield',
@@ -987,15 +984,18 @@
 					fnConfiguracionLoad(form, objConfigInit );	
 					
 					//mandar a cargar la factura cuando es en modo edicion
-					//var transactionMasterID 	= '<?php echo $transactionMasterID ?>'
-					//var codigoMesero 			= '<?php echo $codigoMesero ?>';
+					var transactionMasterID 	= '<?php echo $transactionMasterID ?>'
+					var codigoMesero 			= '<?php echo $codigoMesero ?>';
 		
-					var transactionMasterID 	= 2080;
-					var codigoMesero 			= 'none';
 					
-					
-					if(transactionMasterID > 0)
-					fnLoadInvoiceExistente(transactionMasterID,codigoMesero);
+					if(transactionMasterID > 0){
+						fnLoadInvoiceExistente(transactionMasterID,codigoMesero);
+					}
+					else
+					{
+						isLoading = false;
+						miVentanaEsperando.hide();
+					}
 					
 				}
 			},
@@ -2284,15 +2284,24 @@
 
 		function fnBtnNuevaFactura() 
 		{
+			objListCustomerCreditLine 	= JSON.parse('<?php echo json_encode($objListCustomerCreditLine); ?>');
 			var miVentanaPrincipal_ 	= Ext.getCmp('miVentanaPrincipal');
 			var miVentanaDePago_		= Ext.getCmp('miVentanaDePago');			
 			fnConfiguracionLoad(miVentanaPrincipal_, objConfigInit );
 			fnConfiguracionLoad(miVentanaDePago_, objConfigInit );
 		}
-		function fnBtnGuardarFactura()
+		
+		
+		function fnEnviarFactura()
 		{
-			
 			miVentanaEsperando.show();
+			var esValida = fnValidateFormAndSubmit();
+			if(!esValida)
+			{
+				miVentanaEsperando.hide();
+				return;
+			}
+			
 			
 			// 2️⃣ Serializar datos (igual a jQuery serialize)
 			var miVentanaPrincipal_ 					= Ext.getCmp('miVentanaPrincipal');
@@ -2443,19 +2452,20 @@
 			formData["txtDiscountByItem[]"] 					= txtDiscountByItem;
 			formData["txtCommisionByBankByItem[]"] 				= txtCommisionByBankByItem;
 			
+			var typeSave	= "new";
+			if(miVentanaPrincipal_.down("#txtTransactionMasterID").getValue() > 0 )
+				typeSave	= "edit";
 			
 			Ext.Ajax.request({
-				url		: "<?php echo base_url(); ?>/app_invoice_billing/save/edit",
+				url		: "<?php echo base_url(); ?>/app_invoice_billing/save/"+typeSave,
 				method	: 'POST',           // o 'POST'
 				async	: true,  			// true, no bloquea el hilo
 				params	: formData,
 				success: function(response, opts) 
 				{
-					
-					
-					var datos = Ext.decode(response.responseText); // parse JSON
 					console.log('Datos recibidos fnBtnGuardarFactura:', datos);
 					miVentanaEsperando.hide();
+					var datos = Ext.decode(response.responseText); // parse JSON
 					
 					 // Restaurar botón
 					if(datos.success) 
@@ -2475,12 +2485,18 @@
 					
 				},
 				failure: function(response, opts) {
-					debugger;
 					miVentanaEsperando.hide();
 					Ext.Msg.alert('Error', 'No se pudieron cargar los datos');
 					console.log('Server-side failure with status code ' + response.status);
 				}
 			});
+			
+			
+		}
+		
+		function fnBtnGuardarFactura()
+		{	
+			fnEnviarFactura();
 		}
 		function fnBtnEliminarFactura()
 		{
@@ -2500,8 +2516,8 @@
 					var datos = Ext.decode(response.responseText); // parse JSON
 					console.log('Datos recibidos fnBtnEliminarFactura:', datos);
 					miVentanaEsperando.hide();
-					debugger;
 					
+					objListCustomerCreditLine 	= JSON.parse('<?php echo json_encode($objListCustomerCreditLine); ?>');
 					var miVentanaPrincipal_ 	= Ext.getCmp('miVentanaPrincipal');
 					var miVentanaDePago_		= Ext.getCmp('miVentanaDePago');			
 					fnConfiguracionLoad(miVentanaPrincipal_, objConfigInit );
@@ -2611,9 +2627,13 @@
 			var total = 50;			
 			miVentanaDePago.show();													
 		}
-		function fnBtnConfirmarPago(winBtn) {
-			Ext.Msg.alert('Pago', 'Pago registrado correctamente.');
-			winBtn.up('window').close();
+		function fnBtnConfirmarPago(winBtn) {			
+			winBtn.up('window').close();	
+			
+			
+			var miVentanaPrincipal_ = Ext.getCmp('miVentanaPrincipal');
+			miVentanaPrincipal_.down('#txtStatusID').setValue(varStatusInvoiceAplicado);
+			fnEnviarFactura();
 		}
 		function fnBtnCancelarPago(winBtn) {
 			winBtn.up('window').close();
@@ -2813,6 +2833,19 @@
 		}
 		function fnBtnCancelarSeleccionCliente(btn) {
 			btn.up('window').close();
+		}
+		
+		
+		function fnChange_ChangeAmount(field, newValue) {
+			if (newValue < 0) {
+				field.setFieldStyle('color:red; font-weight:bold; border:2px solid red;');
+			}
+			else if (newValue > 0) {
+				field.setFieldStyle('color:green; font-weight:bold; border:2px solid green;');
+			}
+			else {
+				field.setFieldStyle('color:black; font-weight:bold; border:2px solid black;');
+			}
 		}
 		
 		function fnChange_ReceiptAmount(field, newValue, oldValue) {
@@ -4763,10 +4796,7 @@
 			return;
 		}
 		var grid 		= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
-		var store 		= grid.getStore();			
-		var records		= store.queryBy(function(record){ return record.get('itemID') > conceptItemID; }).items;
-
-		
+		var store 		= grid.getStore();		
 		if (isNaN(monto))
 		{
 			monto = 0;
@@ -4776,9 +4806,9 @@
 			return;
 		
 		store.each(function (record) {
-			let oldPrice = record.get("total");
+			let oldPrice = record.get("txtTMD_txtSubTotal");
 			let newPrice = oldPrice * ( monto / 100 );
-			record.set("comisionPosBanck",newPrice);
+			record.set("txtTMD_txtCommisionByBankByItem",newPrice);
 		});
 		
 		
@@ -4869,7 +4899,7 @@
 
 	function onCompleteNewItem(filterResult,suma,conceptos,skus){
 		console.info("CALL onCompleteNewItem");
-		console.info(filterResult);
+		
 		
 		
 		var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
@@ -4889,15 +4919,15 @@
 			txtTMD_txtPrice: filterResult.Precio,
 			txtTMD_txtSubTotal: filterResult.Precio ,
 			txtTMD_txtIva: 0,
-			txtTMD_skuQuantityBySku: 0,//?
-			txtTMD_unitaryPriceInvidual: filterResult.Precio,
+			txtTMD_skuQuantityBySku: 0,
+			txtTMD_unitaryPriceInvidual: 0,
 			txtTMD_skuFormatoDescription: filterResult.Medida,
 			txtTMD_txtItemPrecio2: filterResult.Precio2,
 			txtTMD_txtItemPrecio3: filterResult.Precio3,
-			txtTMD_txtTransactionDetailNameDescription: filterResult.Nombre,
+			txtTMD_txtTransactionDetailNameDescription: "",
 			txtTMD_txtTaxServices: 0,
-			txtTMD_txtDetailLote: "",
-			txtTMD_txtInfoVendedor: "",
+			txtTMD_txtDetailLote: 0,
+			txtTMD_txtInfoVendedor: 0,
 			txtTMD_txtInfoSerie: "",
 			txtTMD_txtInfoReferencia: "",
 			txtTMD_txtItemPrecio1: filterResult.Precio,
@@ -4953,7 +4983,7 @@
 			record.txtTMD_txtPrice = priceDefault;
 		}
 		
-		record.txtTMD_txtPrice		= record.txtTMD_txtQuantity  * record.txtTMD_txtRatioSku;
+		
 		var newRecord 				= store.insert(0, record)[0];
 		//var newRecord 			= store.add(record)[0];
 		
@@ -5185,6 +5215,7 @@
 		
 		
 		var objFormulario 							= {};
+		objListCustomerCreditLine					= datos.data.objListCustomerCreditLine;
 		objFormulario.txtTM_transactionNumber		= datos.data.objTransactionMaster.transactionNumber;
 		objFormulario.txtUserID						= datos.data.objTransactionMaster.createdBy;
 		objFormulario.txtCompanyID					= datos.data.objTransactionMaster.companyID;
@@ -5380,4 +5411,229 @@
 		fnFillFactura("miVentanaPrincipal", objFormulario );
 		
 	}
+	
+	function fnValidateFormAndSubmit()
+	{
+		
+		let result 				= true;		
+		var miVentanaPrincipal_ = Ext.getCmp('miVentanaPrincipal');
+		var miVentanaDePago_	= Ext.getCmp('miVentanaDePago');
+		var grid 				= miVentanaPrincipal_.down('#gridDetailTransactionMaster'); // encuentra el grid		
+		var store 				= grid.getStore();
+			
+			
+		let switchDesembolso	= getValueRadio("miVentanaPrincipal","txtCheckDeEfectivo");
+		if(switchDesembolso === "0")
+			switchDesembolso = false;
+		else
+			switchDesembolso = true;
+		
+		
+		//Validar Factura status
+		if(
+			miVentanaPrincipal_.down("#txtStatusID").getValue() == varStatusInvoiceAplicado && 
+			miVentanaPrincipal_.down("#txtTransactionMasterID").getValue() == "0"
+		)
+		{
+			Ext.Msg.alert('Error',"Debe registrar la factura primeramente" );	
+			result = false;
+		}
+		
+		//Validar bodega de despacho
+		if(miVentanaPrincipal_.down("#txtWarehouseID").getValue() == ""){			
+			Ext.Msg.alert('Error',"Seleccionar bodega de despacho" );	
+			result = false;
+		}
+
+
+		//Validar Fecha
+		if(miVentanaPrincipal_.down("#txtDate").getValue() == ""){
+			Ext.Msg.alert('Error',"Establecer fecha al documento" );	
+			result = false;
+		}
+
+		//Validar Cliente
+		if(miVentanaPrincipal_.down("#txtCustomerID").getValue() == ""){
+			Ext.Msg.alert('Error',"Seleccionar el cliente" );	
+			result = false;
+		}
+		//Validar Proveedor de Credito
+		if(miVentanaPrincipal_.down("#txtReference1").getValue() == "0" && switchDesembolso){
+			Ext.Msg.alert('Error',"Seleccionar el proveedor de credito" );	
+			result = false;
+		}
+		//Validar Zona
+		if(miVentanaPrincipal_.down("#txtZoneID").getValue() == "" && switchDesembolso){
+			Ext.Msg.alert('Error',"Seleccionar la zona de la factura" );	
+			result = false;
+		}
+		//Validar Vendedor
+		if(miVentanaPrincipal_.down("#txtEmployeeID").getValue() == "" && switchDesembolso){
+			Ext.Msg.alert('Error',"Seleccionar el vendedor de la factura" );	
+			result = false;
+		}
+
+		//Validar monto descuento en rango de 0 a 100
+		let porcentajeDescuento = parseFloat(miVentanaPrincipal_.down('#txtPorcentajeDescuento').getValue()) || 0;
+		if (porcentajeDescuento < 0 || porcentajeDescuento > 100) {
+			Ext.Msg.alert('Error',"El porcentaje de descuento no es valido" );	
+			result = false;
+		}
+
+		//Validar Estado de la factura
+		if(miVentanaPrincipal_.down("#txtStatusIDOld").getValue() ==  varStatusInvoiceAplicado){
+			Ext.Msg.alert('Error',"Crear una nueva factura, por que la actual esta aplicada, no puede ser modificada" );	
+			result = false;
+		}
+
+		//Validar estado anulado
+		if(miVentanaPrincipal_.down("#txtStatusID").getValue() ==  varStatusInvoiceAnular){
+			Ext.Msg.alert('Error',"No puede pasar a estado anulada" );	
+			result = false;
+		}
+
+		//Validar Detalle
+		//
+		///////////////////////////////////////////////		
+		var cantidadTotalesEnZero 	= store.queryBy(function(record) { return record.get('txtTMD_txtSubTotal') == 0; }).getCount();
+		var validateTotalesZero 	= true;
+		<?php echo getBehavio($company->type, "app_invoice_billing", "scriptValidateTotalesZero", ""); ?>
+
+		if(validateTotalesZero == true)
+		{
+			if(cantidadTotalesEnZero > 0){
+				Ext.Msg.alert('Error',"No puede haber totales en 0" );	
+				result = false;
+			}
+		}
+
+
+		var cantidadTotalesEnZero = store.queryBy(function(record) { return record.get('txtTMD_txtQuantity') == 0; }).getCount();
+		if(cantidadTotalesEnZero > 0){
+			Ext.Msg.alert('Error',"No puede haber cantidades en 0" );	
+			result = false;
+		}
+
+		
+		if( /*varAutoAPlicar == "true" && */ store.getCount() == 0){
+			Ext.Msg.alert('Error',"La factura no puede estar vacia" );	
+			result = false;
+		}
+
+		var listItemIDToValid 	= "-1";
+		var listQntity 			= "-1"
+		store.each(function (record) {
+			listItemIDToValid 	= listItemIDToValid+ ","+record.get('txtTMD_txtItemID');
+			listQntity 			= listQntity+ ","+record.get('txtTMD_txtQuantity');
+			
+		});
+		
+		//Si es de credito que la factura no supere la linea de credito		
+		var causalSelect 				= miVentanaPrincipal_.down("#txtCausalID").getValue();
+		var causalCredit 				= objCausalTypeCredit.value.split(",");
+		var invoiceTypeCredit 			= false;
+
+
+		//Obtener si la factura es al credito
+		for(var i=0;i<causalCredit.length;i++){
+			if(causalCredit[i] == causalSelect){
+				invoiceTypeCredit = true;
+			}
+		}
+		
+		
+		//Validar si es de credito debe de seleccionar una linea de credito
+		var customerCreditLineID 		= miVentanaPrincipal_.down("#txtCustomerCreditLineID").getValue();
+		if(invoiceTypeCredit && customerCreditLineID == null)
+		{
+			Ext.Msg.alert('Error',"Debe seleccionar una linea de credito" );	
+			result = false;
+		}
+			
+		
+		var objCustomerCreditLine 		= objListCustomerCreditLine.filter(function(obj){ return obj.customerCreditLineID == customerCreditLineID; }); 
+		if(varParameterAmortizationDuranteFactura && miVentanaPrincipal_.down("#txtReference2").getValue() == "" && invoiceTypeCredit ){			
+			Ext.Msg.alert('Error',"Seleccionar el plazo" );	
+			result = false;
+		}
+
+		//No puede haber cambio, si la factura es de credito
+		if(invoiceTypeCredit && miVentanaDePago_.down("#txtChangeAmount").getValue() > 0 )
+		{
+			Ext.Msg.alert('Error',"No puede haber cambio si la factura es de credito" );	
+			result = false;
+		}
+
+		
+		<?php echo getBehavio($company->type, "app_invoice_billing", "scriptValidateCustomer", ""); ?>
+
+
+		//Validaciones si la factura es al credito.
+		if(invoiceTypeCredit){
+
+			<?php echo getBehavio($company->type, "app_invoice_billing", "scriptValidateInCredit", ""); ?>
+
+			//Validar Fecha del Primer Pago si es de Credito
+			if(miVentanaPrincipal_.down("#txtDateFirst").getValue() == "" && switchDesembolso){
+				Ext.Msg.alert('Error',"Seleccionar la fecha del primer pago" );	
+				result = false;
+			}
+
+
+			//Validar Notas
+			if(miVentanaPrincipal_.down("#txtNote").getValue() == "" && switchDesembolso){
+				Ext.Msg.alert('Error',"Asignarle una nota al documento" );	
+				result = false;
+			}
+
+			//Validar Escritura Publica
+			if(miVentanaPrincipal_.down("#txtFixedExpenses").getValue() == "" && switchDesembolso){
+				Ext.Msg.alert('Error',"Ingresar el porcentaje de gasto fijo por desembolso" );	
+				result = false;
+			}
+
+
+
+			var montoTotalInvoice 	= miVentanaPrincipal_.down("#txtTotal").getValue();
+			var balanceCredit 		= 0;
+
+			if(objCurrencyCordoba.currencyID == objCustomerCreditLine[0].currencyID)
+				balanceCredit =  objCustomerCreditLine[0].balance;
+			else{
+				balanceCredit = (
+									objCustomerCreditLine[0].balance *
+									objCustomerCreditLine[0].objExchangeRate
+								);
+			}
+
+			
+			//Validar Limite
+			if(parseFloat(balanceCredit) < parseFloat(montoTotalInvoice) &&  parseFloat(balanceCredit) != 0 ){
+				result = false;
+				Ext.Msg.alert('Error',"La factura no puede ser facturada al credito, balance del cliente" + balanceCredit  );	
+			}
+
+
+		}
+		else{
+			//Validar Pago
+			if( parseFloat( miVentanaDePago_.down("#txtChangeAmount").getValue() )  < 0 ){
+				result = false;
+				Ext.Msg.alert('Error',"El cambio de la factura no puede ser menor a 0" );	
+			}
+		}
+
+
+		
+		if(result == false)
+		{
+			miVentanaEsperando.hide();
+		}
+		
+		return result;
+
+	}
+	
+	
+		
 </script>
