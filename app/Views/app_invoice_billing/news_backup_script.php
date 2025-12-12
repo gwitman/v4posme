@@ -4,7 +4,8 @@
 	let objCausalTypeCredit 								= JSON.parse('<?php echo json_encode($objCausalTypeCredit); ?>');
 	let objListCustomerCreditLine 							= JSON.parse('<?php echo json_encode($objListCustomerCreditLine); ?>');	
 	let objCurrencyCordoba 									= JSON.parse('<?php echo json_encode($objCurrencyCordoba); ?>');
-	var varParameterINVOICE_BILLING_VALIDATE_EXONERATION 	= '<?php echo $objParameterINVOICE_BILLING_VALIDATE_EXONERATION; ?>';
+	var varParameterINVOICE_BILLING_VALIDATE_EXONERATION 	= '<?php echo $objParameterINVOICE_BILLING_VALIDATE_EXONERATION; ?>';	
+	var varUrlPrinter										= '<?php echo $urlPrinterDocument; ?>';
 	
 	var varStatusInvoiceAplicado			= 67; //Estado Aplicada
     var varStatusInvoiceAnular				= 68; //Anular
@@ -423,7 +424,7 @@
 	Ext.onReady(function () {
 
 		miVentanaEsperando = Ext.create('Ext.window.Window', {
-					title: 'Procesando',
+					title: 'Procesando... .. .',
 					id: 'miVentanaEsperando',
 					itemId:'miVentanaEsperando',
 					closable: false,
@@ -432,7 +433,7 @@
 					width: 300,
 					height: 100,
 					bodyPadding: 10,
-					html: '<div style="text-align:center;"><b>Esperando...</b></div>'
+					html: '<div style="text-align:center;"><b>Espere un momento...</b></div>'
 				}); 
 			
 		miVentanaEsperando.show();
@@ -758,23 +759,26 @@
 							},
 							items: [
 								{
-									text: 'Impresión 1',
+									text: 'Preview printer',
 									id: 'btnImpresion1',
 									handler: fnBtnImpresion1
 								},
 								{
 									text: 'Impresión 2',
 									id: 'btnImpresion2',
+									hidden: true,
 									handler: fnBtnImpresion2
 								},
 								{
 									text: 'Impresión 3',
 									id: 'btnImpresion3',
+									hidden: true,
 									handler: fnBtnImpresion3
 								},
 								{
 									text: 'Impresión 4',
 									id: 'btnImpresion4',
+									hidden: true,
 									handler: fnBtnImpresion4
 								}
 							]
@@ -986,7 +990,7 @@
 					//var transactionMasterID 	= '<?php echo $transactionMasterID ?>'
 					//var codigoMesero 			= '<?php echo $codigoMesero ?>';
 		
-					var transactionMasterID 	= 2102;
+					var transactionMasterID 	= 2080;
 					var codigoMesero 			= 'none';
 					
 					
@@ -2280,7 +2284,10 @@
 
 		function fnBtnNuevaFactura() 
 		{
-			fnFillFactura(miVentanaPrincipal,null);
+			var miVentanaPrincipal_ 	= Ext.getCmp('miVentanaPrincipal');
+			var miVentanaDePago_		= Ext.getCmp('miVentanaDePago');			
+			fnConfiguracionLoad(miVentanaPrincipal_, objConfigInit );
+			fnConfiguracionLoad(miVentanaDePago_, objConfigInit );
 		}
 		function fnBtnGuardarFactura()
 		{
@@ -2493,8 +2500,15 @@
 					var datos = Ext.decode(response.responseText); // parse JSON
 					console.log('Datos recibidos fnBtnEliminarFactura:', datos);
 					miVentanaEsperando.hide();
+					debugger;
+					
+					var miVentanaPrincipal_ 	= Ext.getCmp('miVentanaPrincipal');
+					var miVentanaDePago_		= Ext.getCmp('miVentanaDePago');			
+					fnConfiguracionLoad(miVentanaPrincipal_, objConfigInit );
+					fnConfiguracionLoad(miVentanaDePago_, objConfigInit );
 					
 					if(datos.error){
+						
 						Ext.Msg.alert('Error',datos.message );						
 					}
 					else{
@@ -2517,7 +2531,7 @@
 		}
 		function fnBtnImprimirFactura()
 		{
-			
+			miVentanaImpresion.show();
 		}
 		function fnBtnActualizarPantalla()
 		{
@@ -2605,23 +2619,74 @@
 			winBtn.up('window').close();
 		}
 		function fnBtnCancelarImpresion () {
-			ventanaImpresion.hide();
+			miVentanaImpresion.hide()
 		}
 		function fnBtnImpresion1()
 		{
 			
+			miVentanaImpresion.hide();
+			var miVentanaPrincipal_ 	= Ext.getCmp('miVentanaPrincipal');
+			var ahora 					= new Date();
+			var año 					= ahora.getFullYear();
+			var mes 					= String(ahora.getMonth() + 1).padStart(2, '0'); // Mes empieza en 0
+			var dia 					= String(ahora.getDate()).padStart(2, '0');
+			var hora 					= String(ahora.getHours()).padStart(2, '0');
+			var minuto 					= String(ahora.getMinutes()).padStart(2, '0');
+			var segundo 				= String(ahora.getSeconds()).padStart(2, '0');
+			var fechaHora 				= `${año}${mes}${dia}${hora}${minuto}${segundo}`;	
+			var transactionMasterID		= miVentanaPrincipal_.down("#txtTransactionMasterID").getValue();
+			var url						= "<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/2/transactionID/19/transactionMasterID/"+transactionMasterID+"/"+fechaHora;
+			window.open(url, '_blank');
+		
+		
 		}
 		function fnBtnImpresion2()
 		{
-			
+			miVentanaImpresion.hide();
+			var miVentanaPrincipal_ 	= Ext.getCmp('miVentanaPrincipal');
+			var ahora 					= new Date();
+			var año 					= ahora.getFullYear();
+			var mes 					= String(ahora.getMonth() + 1).padStart(2, '0'); // Mes empieza en 0
+			var dia 					= String(ahora.getDate()).padStart(2, '0');
+			var hora 					= String(ahora.getHours()).padStart(2, '0');
+			var minuto 					= String(ahora.getMinutes()).padStart(2, '0');
+			var segundo 				= String(ahora.getSeconds()).padStart(2, '0');
+			var fechaHora 				= `${año}${mes}${dia}${hora}${minuto}${segundo}`;	
+			var transactionMasterID		= miVentanaPrincipal_.down("#txtTransactionMasterID").getValue();
+			var url						= "<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/2/transactionID/19/transactionMasterID/"+transactionMasterID+"/"+fechaHora;
+			window.open(url, '_blank');
 		}
 		function fnBtnImpresion3()
 		{
-			
+			miVentanaImpresion.hide();
+			var miVentanaPrincipal_ 	= Ext.getCmp('miVentanaPrincipal');
+			var ahora 					= new Date();
+			var año 					= ahora.getFullYear();
+			var mes 					= String(ahora.getMonth() + 1).padStart(2, '0'); // Mes empieza en 0
+			var dia 					= String(ahora.getDate()).padStart(2, '0');
+			var hora 					= String(ahora.getHours()).padStart(2, '0');
+			var minuto 					= String(ahora.getMinutes()).padStart(2, '0');
+			var segundo 				= String(ahora.getSeconds()).padStart(2, '0');
+			var fechaHora 				= `${año}${mes}${dia}${hora}${minuto}${segundo}`;	
+			var transactionMasterID		= miVentanaPrincipal_.down("#txtTransactionMasterID").getValue();
+			var url						= "<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/2/transactionID/19/transactionMasterID/"+transactionMasterID+"/"+fechaHora;
+			window.open(url, '_blank');
 		}
 		function fnBtnImpresion4()
 		{
-			
+			miVentanaImpresion.hide();
+			var miVentanaPrincipal_ 	= Ext.getCmp('miVentanaPrincipal');
+			var ahora 					= new Date();
+			var año 					= ahora.getFullYear();
+			var mes 					= String(ahora.getMonth() + 1).padStart(2, '0'); // Mes empieza en 0
+			var dia 					= String(ahora.getDate()).padStart(2, '0');
+			var hora 					= String(ahora.getHours()).padStart(2, '0');
+			var minuto 					= String(ahora.getMinutes()).padStart(2, '0');
+			var segundo 				= String(ahora.getSeconds()).padStart(2, '0');
+			var fechaHora 				= `${año}${mes}${dia}${hora}${minuto}${segundo}`;	
+			var transactionMasterID		= miVentanaPrincipal_.down("#txtTransactionMasterID").getValue();
+			var url						= "<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/2/transactionID/19/transactionMasterID/"+transactionMasterID+"/"+fechaHora;
+			window.open(url, '_blank');
 		}
 		function fnBtnSeleccionFactura() {
 			
