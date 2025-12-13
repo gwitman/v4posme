@@ -1856,7 +1856,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Canand' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 1010 /*usuarioID*/,type='default'  , abreviature='demo'
+	flavorID = 1010 /*usuarioID*/,type='canand'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
