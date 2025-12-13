@@ -641,6 +641,8 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
 		strtolower('galmcuts_app_invoice_billing_txtTraductionMesa') 		 										=> "Sala",
 		strtolower('galmcuts_app_invoice_billing_divLabelZone') 		 											=> "Hora",
 		strtolower('galmcuts_app_invoice_billing_divMesa') 		 													=> "hidden",
+		strtolower('galmcuts_app_invoice_billing_rowOptionPaymentExtrasTarjeta')									=> "hidden",
+		strtolower('galmcuts_app_invoice_billing_rowOptionPaymentExtras')											=> "hidden",
 		strtolower('galmcuts_app_invoice_billing_divTraslateElement') 												=> "
 		<script>
 			$(document).ready(function(){	

@@ -2098,6 +2098,10 @@ class app_notification extends _BaseController
 		}
 		echo "SUCCESS";
 	}
+	
+	/*ejecutar cada 2 horas*/
+	//curl "https://posme.net/v4posme/glamcuts/public/app_notification/sendEmailGlamCustCitas"
+	//0 */2 * * *
 	function sendEmailGlamCustCitas()
 	{
 		log_message("info", print_r("sendEmailGlamCustCitas", true));
@@ -2155,9 +2159,10 @@ class app_notification extends _BaseController
 			$subject = "Citas programadas";
 			$body    = view('core_template/email_notificacion', $params_);
 
+			echo $body;
 			// Configuración del correo
 			$this->email->setFrom(EMAIL_APP);
-			$this->email->setTo($emailProperty); // ejemplo: "correo@cliente.com"
+			$this->email->setTo( $emailProperty /*"www.witman@gmail.com"*/  ); // ejemplo: "correo@cliente.com"
 			$this->email->setSubject($subject);
 			$this->email->setMessage($body);
 
@@ -2165,6 +2170,11 @@ class app_notification extends _BaseController
 		}
 		echo "SUCCESS";
 	}
+	
+	
+	/*ejecutar 1 ves al dia a las 6 de la mañana , que en hora utc es  12 del medio dia*/
+	//curl "https://posme.net/v4posme/glamcuts/public/app_notification/sendEmailGlamCustCitasFrecuency2DayBefore"
+	//0 12 * * *  sendEmailGlamCustCitasFrecuency2DayBefore
 	function sendEmailGlamCustCitasFrecuency2DayBefore()
 	{
 		log_message("error", print_r("sendEmailGlamCustCitas", true));
@@ -2189,7 +2199,7 @@ class app_notification extends _BaseController
 				$body  					= /*--inicio view*/ view('core_template/email_notificacion', $params_); //--finview
 
 				$this->email->setFrom(EMAIL_APP);
-				$this->email->setTo($emailProperty /*"www.witman@gmail.com"*/);
+				$this->email->setTo($emailProperty /*"www.witman@gmail.com"*/ );
 				$this->email->setSubject($subject);
 				$this->email->setMessage($body);
 				$resultSend01 = $this->email->send();

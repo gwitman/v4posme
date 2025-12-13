@@ -1778,9 +1778,9 @@ class Transaction_Master_Detail_Model extends Model  {
 						INTERVAL ".APP_HOUR_DIFERENCE_MYSQL_EMBEDDED."
 				)
 				ORDER BY tat.SiguienteVisita ASC
-						
 		");
 	
+		
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
@@ -1797,7 +1797,8 @@ class Transaction_Master_Detail_Model extends Model  {
 			select 
 				tat.firstName,
 				tat.transactionNumber,
-				tat.SiguienteVisita
+				tat.SiguienteVisita,
+				tat.HoraLabel
 			from 
 				(
 					select 
@@ -1808,7 +1809,8 @@ class Transaction_Master_Detail_Model extends Model  {
 								nat.firstName
 						end  as firstName ,
 						c.transactionNumber ,
-						DATE_ADD(c.nextVisit , INTERVAL zone.`sequence`  MINUTE) as SiguienteVisita 
+						DATE_ADD(c.nextVisit , INTERVAL zone.`sequence`  MINUTE) as SiguienteVisita ,
+						zone.display as HoraLabel
 					from 
 						tb_transaction_master c 
 						inner join tb_transaction_master_info ci on 
@@ -1831,17 +1833,18 @@ class Transaction_Master_Detail_Model extends Model  {
 				tat.SiguienteVisita < DATE_ADD( 
 					DATE_ADD(
 						NOW() , 
-						INTERVAL ".APP_HOUR_DIFERENCE_MYSQL_EMBEDDED."
+						INTERVAL 0 HOUR
 					), 
 					INTERVAL 48 HOUR
 				) AND 
 				tat.SiguienteVisita > DATE_ADD(
 						NOW() , 
-						INTERVAL ".APP_HOUR_DIFERENCE_MYSQL_EMBEDDED."
+						INTERVAL 0 HOUR
 				)
 						
 		");
 	
+		
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
