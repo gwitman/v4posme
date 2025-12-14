@@ -2103,6 +2103,9 @@ class app_notification extends _BaseController
 		echo "SUCCESS";
 	}
 	
+	
+	
+	
 	/*ejecutar cada 2 horas*/
 	//curl "https://posme.net/v4posme/glamcuts/public/app_notification/sendEmailGlamCustCitas"
 	//0 */2 * * *
@@ -2175,6 +2178,93 @@ class app_notification extends _BaseController
 		echo "SUCCESS";
 	}
 	
+	
+	/*ejecutar cada 2 horas antes*/
+	//enviar correo a cada tecnico
+	//curl "https://posme.net/v4posme/glamcuts/public/app_notification/sendEmailGlamCustCitas2HoursBefore"
+	//0 */2 * * *
+	function sendEmailGlamCustCitas2HoursBefore()
+	{
+		log_message("info", print_r("sendEmailGlamCustCitas", true));
+		$emailProperty = $this->core_web_parameter->getParameter("CORE_PROPIETARY_EMAIL", APP_COMPANY);
+		$emailProperty = $emailProperty->value;
+		$objCompany  	= $this->Company_Model->get_rowByPK(APP_COMPANY);
+
+		//Obtener la lista de colaboradores
+		$objListEmployer	= $this->Employee_Model->get_rowByCompanyID(APP_COMPANY);
+		if($objListEmployer)
+		{
+			foreach($objListEmployer as $objEmployer)
+			{
+				$objNotificar = $this->Transaction_Master_Detail_Model->GlamCust_get_CitasByTecnico(APP_COMPANY,$objEmployer->entityID);			
+				if ($objNotificar)
+				{	
+					
+					// Cabecera de la tabla
+					$objListEmail	= $this->Entity_Email_Model->get_rowByEntity(APP_COMPANY,$objEmployer->branchID,$objEmployer->entityID);
+					if(!$objListEmail)
+						continue;
+					
+					
+					$emailProperty 	= $objListEmail[0]->email;
+					$tabla 			= "
+						<table border='1' cellspacing='0' cellpadding='6' style='border-collapse:collapse; width:100%; font-family:Arial, sans-serif;'>
+							<thead style='background:#f2f2f2;'>
+								<tr>
+									<th>Fecha</th>							
+									<th>Hora</th>
+									<th>Cliente</th>
+									<th>Descripción</th>
+								</tr>
+							</thead>
+							<tbody>
+					";
+					foreach ($objNotificar as $i) {
+						$dt = \DateTime::createFromFormat('Y-m-d H:i:s', $i->SiguienteVisita);
+
+						$fecha       = $dt->format("Y-m-d");
+						$hora        = $dt->format("h:i A");
+						$cliente     = $i->firstName;
+						$descripcion = $i->note ?? "Cita programada"; // si tienes ese campo en DB úsalo
+
+						$tabla .= "
+							<tr>
+								<td>{$fecha}</td>
+								<td>{$hora}</td>
+								<td>{$cliente}</td>
+								<td>{$descripcion}</td>
+							</tr>
+						";
+
+						// También lo dejas en log si lo necesitas
+						log_message("info", "Cita de: $cliente programada para: $fecha $hora");
+					}
+					 // Cerrar la tabla
+					$tabla .= "</tbody></table>";
+					
+					log_message("info", print_r($tabla,true));
+
+					// Parámetros para la vista del correo
+					$params_["objCompany"]  	= $objCompany;
+					$params_["mensaje"]       	= $tabla;
+
+					// Asunto y cuerpo
+					$subject = "Citas programadas";
+					$body    = view('core_template/email_notificacion', $params_);
+
+					echo $body;
+					// Configuración del correo
+					$this->email->setFrom(EMAIL_APP);
+					$this->email->setTo( $emailProperty /*"www.witman@gmail.com"*/  ); // ejemplo: "correo@cliente.com"
+					$this->email->setSubject($subject);
+					$this->email->setMessage($body);
+
+					$this->email->send();
+				}
+			}
+		}
+		echo "SUCCESS";
+	}
 	
 	/*ejecutar 1 ves al dia a las 6 de la mañana , que en hora utc es  12 del medio dia*/
 	//curl "https://posme.net/v4posme/glamcuts/public/app_notification/sendEmailGlamCustCitasFrecuency2DayBefore"

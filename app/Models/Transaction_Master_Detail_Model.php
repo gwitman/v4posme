@@ -1786,6 +1786,93 @@ class Transaction_Master_Detail_Model extends Model  {
 		return $db->query($sql)->getResult();
 			
    } 
+   
+   function GlamCust_get_CitasByTecnico($companyID,$entityID)
+   {
+	   
+	    $db 		= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+	   		
+		$sql = "";
+		$sql = sprintf("
+			select 
+				tat.firstName,
+				tat.transactionNumber,
+				tat.SiguienteVisita,
+				concat('nota:',tat.note,' </br></br></br> servicios: ', tat.servicios) as  note 
+			from 
+				(
+					select 
+						case 
+							when ci.referenceClientName != '' then 
+								ci.referenceClientName
+							else 
+								nat.firstName
+						end  as firstName ,
+						c.transactionNumber ,
+						c.note,
+						IFNULL(
+							(
+								select 
+									GROUP_CONCAT(iii.`name`,'</br>')
+								from 
+									tb_transaction_master_detail ttd 
+									inner join tb_item iii on 
+										iii.itemID = ttd.componentItemID
+									inner join tb_transaction_master_detail_references ttdr on 
+										ttdr.transactionMasterDetailID = ttd.transactionMasterDetailID 
+								where 
+									ttd.transactionMasterID = c.transactionMasterID and 
+									ttd.isActive = 1 and 
+									ttdr.sales = $entityID   
+							)
+							,
+							'ND'
+						) as servicios,
+						DATE_ADD(c.nextVisit , INTERVAL zone.`sequence`  MINUTE) as SiguienteVisita 
+					from 
+						tb_transaction_master c 
+						inner join tb_transaction_master_info ci on 
+							c.transactionMasterID = ci.transactionMasterID 
+						inner join tb_catalog_item zone on 
+							zone.catalogItemID = ci.zoneID 
+						inner join tb_workflow_stage ws on 
+							c.statusID = ws.workflowStageID 
+						
+						inner join tb_naturales nat on 
+							c.entityID = nat.entityID 
+					where 
+						c.isActive = 1 and 
+						c.companyID = 2 and 
+						c.transactionID = 19  and 
+						ws.isInit = 1 and 
+						CAST(zone.`name`  AS UNSIGNED ) > 1   and 
+						c.nextVisit is not null 
+				)  tat 
+			where 
+				tat.servicios != 'ND'  and 
+				tat.SiguienteVisita < DATE_ADD( 
+					DATE_ADD(
+						NOW() , 
+						INTERVAL ".APP_HOUR_DIFERENCE_MYSQL_EMBEDDED."
+					), 
+					INTERVAL 2 HOUR
+				) AND 
+				tat.SiguienteVisita > DATE_ADD(
+						NOW() , 
+						INTERVAL ".APP_HOUR_DIFERENCE_MYSQL_EMBEDDED."
+				)
+				
+			ORDER BY tat.SiguienteVisita ASC
+		");
+	
+		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+			
+   } 
+   
    function GlamCust_get_Citas_2DayBefore($companyID)
    {
 	   

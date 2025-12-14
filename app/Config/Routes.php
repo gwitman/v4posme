@@ -1339,6 +1339,7 @@ $routes->match(['get', 'post'], 'app_notification/sendWhatsappGlobalProLaptopMen
 $routes->match(['get', 'post'], 'app_notification/sendWhatsappGlobalProLaptopMayoresA14400Frecuency11Meses', 'app_notification::sendWhatsappGlobalProLaptopMayoresA14400Frecuency11Meses');
 $routes->match(['get', 'post'], 'app_notification/sendWhatsappGlobalProCumpleAnnos', 'app_notification::sendWhatsappGlobalProCumpleAnnos');
 $routes->match(['get', 'post'], 'app_notification/sendEmailGlamCustCitas', 'app_notification::sendEmailGlamCustCitas');
+$routes->match(['get', 'post'], 'app_notification/sendEmailGlamCustCitas2HoursBefore', 'app_notification::sendEmailGlamCustCitas2HoursBefore');
 $routes->match(['get', 'post'], 'app_notification/sendEmailGlamCustCitasFrecuency2DayBefore', 'app_notification::sendEmailGlamCustCitasFrecuency2DayBefore');
 $routes->match(['get', 'post'], 'app_notification/sendEmailAudioElPipeCitas', 'app_notification::sendEmailAudioElPipeCitas');
 $routes->match(['get', 'post'], 'app_notification/sendWhatsappDiarioChochoMandado', 'app_notification::sendWhatsappDiarioChochoMandado');

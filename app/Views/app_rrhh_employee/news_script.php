@@ -184,7 +184,7 @@
 						//Nuevo Email
 						$(document).on("click","#btnNewEmail",function(){
 							console.info("call click_btnNewEmail");
-							window.open(site_url+"app_rrhh_employee/add_email","MsgWindow","width=650,height=500");
+							window.open(site_url+"/app_rrhh_employee/add_email","MsgWindow","width=650,height=500");
 							window.parentNewEmail = parentNewEmail;
 						});
 						//Eliminar Email
