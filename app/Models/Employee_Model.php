@@ -228,6 +228,40 @@ class Employee_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
+   function get_rowByInvoiceItem ($companyID,$transactionMasterID,$itemID)
+   {
+	   $db 			= db_connect();
+		$builder	= $db->table("tb_item");    
+		$sql = "";
+		$sql = sprintf("
+			SELECT 
+				emp.employeNumber,
+				nat.firstName,
+				nat.lastName 
+			FROM 
+				tb_transaction_master tm 
+				inner join tb_transaction_master_detail td  on 
+					tm.transactionMasterID = td.transactionMasterID 
+				inner join tb_transaction_master_detail_references tdr on 
+					tdr.transactionMasterDetailID = td.transactionMasterDetailID 
+				inner join tb_naturales nat on 
+					nat.entityID = tdr.sales 
+				inner join tb_employee emp on 
+					emp.entityID = nat.entityID 
+			where 
+				tm.companyID = $companyID and 
+				tm.transactionMasterID = $transactionMasterID and 
+				td.componentItemID = $itemID and 
+				td.isActive = 1 and 
+				tm.isActive = 1  
+			limit 1
+		");	
+		
+		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getRow();
+   }
    
 }
 ?>

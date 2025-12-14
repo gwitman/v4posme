@@ -338,12 +338,24 @@ class app_sales_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_sales_get_report_sales_detail_commission(?,?,?,?,?,?,?,?,?,?);";		
-				$objData		= $this->Bd_Model->executeRender(
-					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID,$userIDFilter,$texto,$txtEmployerID]
-				);
-				
+				$query			= "";
+				$objData		= null;
+				if($dataSession["company"]->type == "chicextensiones")
+				{
+					$query			= "CALL pr_sales_get_report_sales_detail_commission_byreference(?,?,?,?,?,?,?,?,?,?);";		
+					$objData		= $this->Bd_Model->executeRender(
+						$query,
+						[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID,$userIDFilter,$texto,$txtEmployerID]
+					);
+				}
+				else 
+				{
+					$query			= "CALL pr_sales_get_report_sales_detail_commission(?,?,?,?,?,?,?,?,?,?);";		
+					$objData		= $this->Bd_Model->executeRender(
+						$query,
+						[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID,$userIDFilter,$texto,$txtEmployerID]
+					);
+				}
 				
 				if(isset($objData)){
 					$objDataResult["objDetail"]				= $objData;

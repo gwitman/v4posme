@@ -714,6 +714,10 @@ class app_notification extends _BaseController
 		return view('core_template/close'); //--finview-r
 
 	}
+	
+	/*ejecutar cada 2 horas*/
+	//curl "https://posme.net/v4posme/chic/public/app_notification/generatedTransactionOutputByFormulate"
+	//0 */2 * * *
 	function generatedTransactionOutputByFormulate($companyID = "")
 	{
 		try{ 

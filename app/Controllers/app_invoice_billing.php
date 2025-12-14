@@ -14820,6 +14820,7 @@ class app_invoice_billing extends _BaseController {
 			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
 			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$dataView["objNaturalEmployer"] 					= $this->Employee_Model->get_rowByInvoiceItem($companyID,$transactionMasterID,$itemIDArray[1]);
 			$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterDetailWarehouse"]	= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterDetailConcept"]		= $this->Transaction_Master_Concept_Model->get_rowByTransactionMasterConcept($companyID,$transactionID,$transactionMasterID,$objComponentItem->componentID);
@@ -14843,7 +14844,7 @@ class app_invoice_billing extends _BaseController {
 			$dataView["tipoCambio"]						= round($dataView["objTransactionMaster"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);			
 			$dataView["objZone"]						= $this->core_web_catalog->getCatalogItem("tb_transaction_master_info_billing","zoneID",$companyID,$dataView["objTransactionMasterInfo"]->zoneID);
 			$dataView["objMesa"]						= $this->core_web_catalog->getCatalogItem("tb_transaction_master_info_billing","mesaID",$companyID,$dataView["objTransactionMasterInfo"]->mesaID);
-			$dataView["comment"] 						= helper_InsertarEntrePartes($transactionComment,"<br/>",13);
+			
 			
 			//obtener nombre de impresora por defecto
 			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_COCINA",$companyID);
@@ -14912,25 +14913,53 @@ class app_invoice_billing extends _BaseController {
 			
 			
 			//Generar Reporte
-			$html = helper_reporte58mmCocina(
-			    "FACTURA",
-			    $objCompany,
-			    $objParameter,
-			    $dataView["objTransactionMaster"],
-			    $dataView["objNatural"],
-			    $dataView["objCustumer"],
-			    $dataView["tipoCambio"],
-			    $dataView["objCurrency"],
-			    $dataView["objTransactionMasterInfo"],
-			    $confiDetalle,
-			    $detalle,
-				$dataView, 
-			    $objParameterTelefono,
-				"",
-				"",
-				"",
-				""				
-			);
+			if($dataView["objCompany"]->type == "chicextensiones")
+			{
+				$dataView["comment"] 				= $transactionComment;
+				$html 								= helper_reporte58mmCocinaChic(
+					"FACTURA",
+					$objCompany,
+					$objParameter,
+					$dataView["objTransactionMaster"],
+					$dataView["objNatural"],
+					$dataView["objCustumer"],
+					$dataView["tipoCambio"],
+					$dataView["objCurrency"],
+					$dataView["objTransactionMasterInfo"],
+					$confiDetalle,
+					$detalle,
+					$dataView, 
+					$objParameterTelefono,
+					"",
+					"",
+					"",
+					""				
+				);
+
+			}
+			else
+			{
+				$dataView["comment"] 	= helper_InsertarEntrePartes($transactionComment,"<br/>",13);
+				$html 					= helper_reporte58mmCocina(
+					"FACTURA",
+					$objCompany,
+					$objParameter,
+					$dataView["objTransactionMaster"],
+					$dataView["objNatural"],
+					$dataView["objCustumer"],
+					$dataView["tipoCambio"],
+					$dataView["objCurrency"],
+					$dataView["objTransactionMasterInfo"],
+					$confiDetalle,
+					$detalle,
+					$dataView, 
+					$objParameterTelefono,
+					"",
+					"",
+					"",
+					""				
+				);
+			}
 			$this->dompdf->loadHTML($html);
 			
 			//1cm = 29.34666puntos

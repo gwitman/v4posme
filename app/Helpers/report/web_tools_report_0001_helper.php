@@ -21760,6 +21760,222 @@ function helper_reporte58mmCocina(
     return $html;
 }
 
+function helper_reporte58mmCocinaChic(
+    $titulo,
+    $objCompany,
+    $objParameterLogo,
+    $objTransactionMastser,
+    $objEntidadNatural,
+    $objEntidadCustomer,
+    $tipoCambio,
+    $objCurrency,
+    $objTransactionMasterInfo, 
+    $confiDetalle, /**/
+    $arrayDetalle, /**/
+	$dataView, 
+    $objParameterTelefono, /*telefono*/	
+    $statusName = "", /*estado*/
+    $causalName = "", /*causal*/
+	$userNickName = "", /*vendedor*/
+    $rucCompany = "" /*ruc*/ 	
+)
+{
+    
+	
+    $html    = "";
+    $html    = "
+                    <!--
+                    Online HTML, CSS and JavaScript editor to run code online.
+                    https://www.programiz.com/html/online-compiler/
+                    -->
+                    <!DOCTYPE html>
+                    <html lang='en'>
+        
+                    <head>
+                      <meta charset='UTF-8' />
+                      <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+                      <style>
+                        @page {       
+                          size: 2.7in 60in;                  
+                          margin-top:0px;
+                          margin-left:0px;
+                          margin-right:15px;
+                        }
+                        table{
+                          font-size: x-small;
+                          font-weight: bold;
+                          font-family: Consolas, monaco, monospace;
+                        }
+                      </style>
+                    </head>
+        
+                    <body>
+        
+                      <table style='width:100%'>
+                            
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+							..........
+                          </td>
+                        </tr>";
+    
+
+          
+          $html = $html."       
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            # ".strtoupper($objTransactionMastser->transactionNumber)."
+                          </td>
+                        </tr>
+                                
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            FECHA: ".$objTransactionMastser->createdOn."
+                          </td>
+                        </tr>
+                                
+                        <tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style=''>
+                            Zona: ".$dataView["objZone"]->name."
+                          </td>
+                        </tr>
+						
+						<tr>
+                          <td colspan='3' style=''>
+                            Tecnico: ". ($dataView["objNaturalEmployer"] ? $dataView["objNaturalEmployer"]->firstName : "") ."
+                          </td>
+                        </tr>
+						
+						<!--
+						<tr>
+                          <td colspan='3' style=''>
+                            Mesa: ".($dataView["objMesa"] ? $dataView["objMesa"]->name : "N/D")."
+                          </td>
+                        </tr>
+						-->
+						";
+						
+						
+          $html	= $html."<tr>
+                          <td colspan='3'>
+                            ". ( $objTransactionMasterInfo->referenceClientName == "" ?   $objEntidadNatural->firstName  :  $objTransactionMasterInfo->referenceClientName)  ."
+                          </td>
+                        </tr>
+
+						<tr>
+                          <td colspan='3' style='text-align:center'>
+                            &nbsp;
+                          </td>
+                        </tr>
+						
+						
+                                
+                         [[DETALLE]]
+                               
+						<tr>
+							<td colspan='3'>
+								&nbsp;
+							</td>
+						</tr>
+						
+						<tr>
+							<td colspan='3' >
+								".$dataView["comment"]."
+							</td>
+						</tr>
+						
+                       
+						
+                      </table>
+                    </body>
+                                
+                    </html>
+            ";
+    
+    $cuerpo = "";
+    $colun  = 0;
+	$rowin  = 0;
+    foreach($arrayDetalle as $row){
+		
+            $colun  		= 0;
+			$colunCantidad 	= count($row);
+			$nuevaFila		= 0;
+            foreach ($row as $col => $key){				
+			
+			    //encabezado
+				if($rowin == 0){
+					
+					//Mostrar los productos en una sola fila
+					if($colun == 0){
+						$cuerpo 		= $cuerpo."<tr >";							
+					}	
+						
+					$cuerpo = $cuerpo."<td style=".$confiDetalle[$colun]["style"]." colspan='".$confiDetalle[$colun]["colspan"]."' >";
+					$cuerpo = $cuerpo." ".$key;
+					$cuerpo = $cuerpo."</td>";
+						
+					if($colun == $colunCantidad ){
+						$cuerpo 	   = $cuerpo."</tr >";
+					}
+					
+				}
+				//datos
+				else{
+					
+					if( $confiDetalle[$colun]["nueva_fila_row_data"] ==  1 ){
+						$cuerpo 		= $cuerpo."<tr >";							
+						
+						$cuerpo = $cuerpo."<td style=".$confiDetalle[$colun]["style_row_data"]." colspan='".$confiDetalle[$colun]["colspan_row_data"]."' >";
+						$cuerpo = $cuerpo.$confiDetalle[$colun]["prefix_row_data"]." ".$key;
+						$cuerpo = $cuerpo."</td>";
+						
+						$cuerpo 		= $cuerpo."</tr >";	
+						$nuevaFila		= 1;						
+					}	
+					else{
+							
+						
+						if($nuevaFila == 1)
+							$cuerpo 	= $cuerpo."<tr >";								
+						
+						if($rowin > 0 && $colun == 0)
+							$cuerpo 	= $cuerpo."<tr >";								
+						
+						$cuerpo = $cuerpo."<td style=".$confiDetalle[$colun]["style_row_data"]." colspan='".$confiDetalle[$colun]["colspan_row_data"]."' >";
+						$cuerpo = $cuerpo.$confiDetalle[$colun]["prefix_row_data"]." ".$key;
+						$cuerpo = $cuerpo."</td>";								
+						
+						if($colun == $colunCantidad)
+							$cuerpo 	= $cuerpo."</tr >";								
+						
+						$nuevaFila = 0;
+							
+					}
+						
+				
+				}
+				
+                
+				
+                $colun++;
+            }
+			
+			$rowin++;
+            
+    }
+    
+	
+    
+    $html = str_replace("[[DETALLE]]", $cuerpo, $html);
+    return $html;
+}
+
 function helper_reporte80mmTransactionMasterAttendance(
     $titulo,
     $objCompany,

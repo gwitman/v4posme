@@ -332,7 +332,13 @@ class app_invoice_price extends _BaseController {
 					date_default_timezone_set(APP_TIMEZONE); 
 					$date 	= date("Y_m_d_H_i_s");
 					//Crear la Carpeta para almacenar los Archivos del Cliente
-					$path 	= PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$listPriceID;
+					$path 	= PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$listPriceID;					
+					if (!file_exists($path))
+					{
+						mkdir($path, 0755, true);
+						chmod($path, 0755);
+					}
+					
 					$path 	= $path.'/list_price_default_'.$date.'.csv';
 					$fp 	= fopen($path, 'w');
 					

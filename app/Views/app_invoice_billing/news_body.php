@@ -844,7 +844,7 @@ echo helper_getHtmlOfPageLanding();
 									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnPrinter"><i class="icon16 i-print "></i> IMPRIMIR</a>
 								</div>								
 								<div class="col col-lg-2 showComandoDeCocina">
-									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnFooter"><i class="icon16 i-print "></i> COCINA</a>
+									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnFooter"><i class="icon16 i-print "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunCocina","COCINA"); ?></a>
 								</div>
 								<div class="col col-lg-2" id="showCommandBar">
 									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnBar"><i class="icon16 i-print "></i> BAR</a>
