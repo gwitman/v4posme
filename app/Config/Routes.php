@@ -625,16 +625,15 @@ $routes->match(['get', 'post'], 'app_catalog_api/getCatalogItemByCity', 'app_cat
 $routes->match(['get', 'post'], 'app_catalog_api/getCatalogItemByParentCatalogItemID', 'app_catalog_api::getCatalogItemByParentCatalogItemID');
 $routes->match(['get', 'post'], 'app_catalog_api/getCatalogByName/(:any)', 'app_catalog_api::getCatalogByName/$1');
 $routes->match(['get', 'post'], 'app_catalog_api/getCatalogItemByEndosos/(:any)', 'app_catalog_api::getCatalogItemByEndosos');
+$routes->match(['get', 'post'], 'app_catalog_api/getCatalogItemMesasByZone/(:any)', 'app_catalog_api::getCatalogItemMesasByZone');
 $routes->match(['get', 'post'], 'app_collection_manager/delete', 'app_collection_manager::delete');
 $routes->match(['get', 'post'], 'app_collection_manager/save', 'app_collection_manager::save');
 $routes->match(['get', 'post'], 'app_collection_manager/save/(:any)', 'app_collection_manager::save');
 $routes->match(['get', 'post'], 'app_collection_manager/add', 'app_collection_manager::add');
-
 $routes->match(['get', 'post'], 'app_collection_manager/edit', 'app_collection_manager::edit');
 $routes->match(['get', 'post'], 'app_collection_manager/edit/(:any)', 'app_collection_manager::edit');   
 $routes->match(['get', 'post'], 'app_collection_manager/updateElement', 'app_collection_manager::updateElement');
 $routes->match(['get', 'post'], 'app_collection_manager/updateElement/(:any)', 'app_collection_manager::updateElement'); 
-
 $routes->match(['get', 'post'], 'app_collection_manager/index', 'app_collection_manager::index');
 $routes->match(['get', 'post'], 'app_collection_manager/index/(:any)', 'app_collection_manager::index');
 $routes->match(['get', 'post'], 'app_collection_report/index', 'app_collection_report::index');

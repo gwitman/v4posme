@@ -11,8 +11,9 @@
 	var varStatusInvoiceAplicado			= 67; //Estado Aplicada
     var varStatusInvoiceAnular				= 68; //Anular
 	var varStatusInvoiceRegistrado			= 66; //Registrado
-	var isLoading 							= true;
-	
+	var isLoading 							= true;	
+	var mesasConfig 						= [];
+
 	var objConfigInit 		= {
 		texts: {
 			'txtNombre': 'Nombre completo',
@@ -413,7 +414,7 @@
 
 
 	Ext.onReady(function () {
-
+		
 		miVentanaEsperando = Ext.create('Ext.window.Window', {
 					title: 'Procesando... .. .',
 					id: 'miVentanaEsperando',
@@ -427,6 +428,118 @@
 					html: '<div style="text-align:center;"><b>Espere un momento...</b></div>'
 				}); 
 			
+		miVentanaTableroDeMesas = Ext.create('Ext.window.Window', {
+			title: 'Tablero de Mesas',
+			width: 720,
+			height: 520,
+			modal: true,
+			layout: 'fit',
+			closeAction: 'hide',
+
+			items: [{
+				xtype: 'grid',
+				itemId: 'gridTableroMesas',
+				hideHeaders: true,
+				store: null,
+				columns: [],
+				viewConfig: {
+					stripeRows: false
+				},
+				listeners: {
+
+					afterrender: function(grid) {
+
+						var filas 		= 6;
+						var columnas 	= 6;
+						var dataTablero = [];
+
+						// inicializa tablero vacío, todas las columnas y todas las filas en null
+						for (var f = 0; f < filas; f++) {
+							var row = {};
+							for (var c = 0; c < columnas; c++) {
+								row['c' + c] = null;
+							}
+							dataTablero.push(row);
+						}
+
+						// colocas en el tablero solo las mesas configuradas
+						Ext.Array.each(mesasConfig, function(mesa) {
+							dataTablero[mesa.fila]['c' + mesa.col] = mesa;
+						});
+
+						//enlazar el almacenamiento del grid
+						var storeTablero = Ext.create('Ext.data.Store', {
+							data: dataTablero
+						});
+
+
+						//pasar la configuracion de cada columna del tablero
+						var columns = [];
+						for (var i = 0; i < columnas; i++) {
+							columns.push({
+								text:		'',
+								dataIndex: 	'c' + i,
+								flex: 		1,
+								renderer: 	fnMesaRenderer
+							});
+						}
+
+						//reconfigurar el grid
+						grid.reconfigure(storeTablero, columns);
+					},
+
+					cellclick: function(grid, td, cellIndex, record, tr, rowIndex, e, eOpts) {
+						var mesa = record.get('c' + cellIndex);
+						if (!mesa) return;
+
+						// temporizador para diferenciar clic simple vs doble clic
+						if (!grid.clickTimer) {
+							grid.clickTimer = setTimeout(function() {
+								// limpiar selección previa
+								Ext.Array.each(mesasConfig, function(m) {
+									if (m.estado === 'seleccionada') {
+										m.estado = 'libre';
+									}
+								});
+
+								if(mesa.estado != "ocupada") {
+									mesa.estado = 'seleccionada';
+								}
+
+								// solo actualizar store si no hubo doble clic
+								grid.getStore().reload();
+
+								grid.clickTimer = null;
+							}, 250); // espera 250ms para ver si hay doble clic
+						}
+					},
+
+					celldblclick: function(grid, td, cellIndex, record, tr, rowIndex, e, eOpts) {
+						clearTimeout(grid.clickTimer); // cancela acción de clic simple
+						grid.clickTimer = null;
+
+						var mesa = record.get('c' + cellIndex);
+						if (!mesa) return;
+
+
+
+						Ext.getCmp('miVentanaPrincipal').down("#txtMesaID").setValue(mesa.id);
+						var transactionMasterID = mesa.transactionMasterID || null;
+						
+						// cerrar ventana
+						grid.up('window').hide();
+						if(transactionMasterID > 0 )
+						{
+							//cargar la nueva factura
+							miVentanaEsperando.show();
+							fnLoadInvoiceExistente(transactionMasterID,"none");
+						}
+					}
+					
+				}
+			}]
+		});
+		
 		miVentanaEsperando.show();
 		
 		miVentanaDePago = Ext.create('Ext.window.Window', {
@@ -1084,6 +1197,13 @@
 									iconCls: 'x-fa fa-database',
 									id: 'btnNuevoProducto',
 									handler: fnBtnNuevoProducto
+								},
+								{
+									text: 'Seleccionar mesa',
+									iconCls: 'x-fa fa-database',
+									id: 'btnSeleccionarMesa',
+									hidden: true,
+									handler: fnSeleccionarMesa
 								},
 								'-',
 								{
@@ -2744,6 +2864,45 @@
 		{
 			miVentanaSeleccionFactura.show();
 		}
+		function fnSeleccionarMesa()
+		{
+			miVentanaEsperando.show();
+			var urlSeleccionarMesa="<?php echo base_url(); ?>/app_catalog_api/getCatalogItemMesasByZone/2"; 
+			Ext.Ajax.request({
+				url		: urlSeleccionarMesa,
+				method	: 'POST',            // o 'POST'
+				async	: true,  				 // bloquea el hilo
+				params	: {                  // parámetros opcionales
+					catalogItemZoneID: Ext.getCmp('miVentanaPrincipal').down("#txtZoneID").getValue()
+				},
+				success: function(response, opts) {
+					
+					// response.responseText contiene la respuesta en texto
+					var datos 	= Ext.decode(response.responseText); // parse JSON
+					console.log('Datos recibidos fnChange_FirstLineProtocolo:', datos);
+					miVentanaEsperando.hide();
+					
+					for(var i = 0 ; i < datos.catalogItems.length ; i++)
+					{
+						var mesa 					= {};
+						mesa.id 					= datos.catalogItems[i].catalogItemID;
+						mesa.fila 					= datos.catalogItems[i].fila.split(":")[1];
+						mesa.col 					= datos.catalogItems[i].col.split(":")[1];
+						mesa.nombre 				= datos.catalogItems[i].display;
+						mesa.estado 				= datos.catalogItems[i].estado;
+						mesa.transactionMasterID 	= datos.catalogItems[i].transactionMasterID;
+						mesasConfig.push(mesa);
+					}					
+					miVentanaTableroDeMesas.show();
+					
+				},
+				failure: function(response, opts) {
+					Ext.Msg.alert('Error', '<span style="color:red;font-weight:bold;">No se pudieron cargar los datos</span>');
+					console.log('Server-side failure with status code ' + response.status);
+				}
+			});
+		}
+		
 		function fnBtnNuevoProducto()
 		{
 			var url_request = "<?php echo base_url(); ?>/app_inventory_item/add";
@@ -5838,6 +5997,42 @@
 		var m = String(date.getMonth() + 1).padStart(2, '0');
 		var d = String(date.getDate()).padStart(2, '0');
 		return y + '-' + m + '-' + d;
+	}
+	
+	function fnMesaRenderer(value) {
+
+		
+		// No es mesa
+		if (!value) {
+			return '<div style="height:60px;background:#fff;"></div>';
+		}
+
+		var color = '#2196F3'; // mesa libre
+		var texto = value.nombre;
+
+		if (value.estado === 'ocupada') {
+			color = '#F44336';
+			texto += '<br><b>Ocupada</b>';
+		}
+
+		if (value.estado === 'seleccionada') {
+			color = '#00C853';
+		}
+
+		return `
+			<div style="
+				height:			60px;
+				background:		${color};
+				color:			white;
+				text-align:		center;
+				padding-top:	10px;
+				border-radius:	6px;
+				font-weight:	bold;
+				cursor:			pointer;
+			">
+				${texto}
+			</div>
+		`;
 	}
 
 

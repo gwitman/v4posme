@@ -171,5 +171,67 @@ class app_catalog_api extends _BaseController {
         }
     }
 	
+	function getCatalogItemMesasByZone()
+	{
+		try{ 
+			//AUTENTICACION
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			
+			//Obtener Parametros
+			$companyID 				= $dataSession["user"]->companyID;
+			$catalogItemID 			= /*inicio get post*/ $this->request->getPost("catalogItemZoneID");		
+			if((!$companyID) || (!$catalogItemID)){
+					throw new \Exception(NOT_PARAMETER);	
+			} 
+			
+			//Obtener todos los departamentos del pais
+			$catalogItems 			= $this->core_web_catalog->getCatalogAllItem_Parent("tb_transaction_master_info_billing","mesaID",$companyID,$catalogItemID);			
+			$catalogItemResponse 	= [];
+			if($catalogItems)
+			{
+				foreach($catalogItems as $mesa)
+				{
+					//obtener la factura en estado registrada de estamesa			
+					$minInvoice = $this->Transaction_Master_Model->get_MesasByCatalogItemID([-1,$mesa->catalogItemID]);
+					$arrayMesa						= [];
+					$arrayMesa["catalogItemID"]		= $mesa->catalogItemID;
+					$arrayMesa["col"]				= $mesa->reference2;
+					$arrayMesa["fila"]				= $mesa->reference1;
+					$arrayMesa["display"]			= $mesa->display;
+					if($minInvoice)
+					{
+						$arrayMesa["estado"]					= "ocupada";
+						$arrayMesa["transactionMasterID"]		= $minInvoice[0]->reference2; /*id de la factura*/
+						
+					}
+					else
+					{
+						$arrayMesa["estado"]					= "libre";
+						$arrayMesa["transactionMasterID"]		= 0;
+					}
+					
+					$catalogItemResponse[] = $arrayMesa;
+					
+				}
+			}
+			
+			return $this->response->setJSON(array(
+				'error'   		=> false,
+				'message' 		=> SUCCESS,
+				'catalogItems'  => $catalogItemResponse
+			));//--finjson			
+			
+		}
+		catch(\Exception $ex){
+			
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));//--finjson			
+		}
+	}
 }
 ?>

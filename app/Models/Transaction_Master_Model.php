@@ -259,7 +259,8 @@ class Transaction_Master_Model extends Model  {
 	function get_MesasByCatalogItemID($catalogItemId):array{
 		$db 		= db_connect();
 		$builder	= $db->table("tb_catalog_item tci")
-						->select(" tci.catalogID,
+						->select("
+								tci.catalogID,
 								tci.catalogItemID,
 								tci.name,
 								tci.display,
@@ -268,8 +269,7 @@ class Transaction_Master_Model extends Model  {
 								tci.sequence,
 								tci.parentCatalogID,
 								tci.parentCatalogItemID,
-								tci.ratio, 
-								
+								tci.ratio, 								
 								IF(
 									(								
 									SELECT 
@@ -286,7 +286,8 @@ class Transaction_Master_Model extends Model  {
 										AND ttm.transactionID = 19
 										AND ttm.isActive = 1
 										AND ttm.transactionOn >= NOW() - INTERVAL 1 DAY
-									) IS NULL,tci.reference1, 
+									) IS NULL,
+									tci.reference1, 
 									REPLACE(tci.reference1, '.JPG', '_BUSSY.JPG')
 								) AS reference1,
 								
