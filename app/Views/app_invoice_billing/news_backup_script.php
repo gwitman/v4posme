@@ -2516,50 +2516,6 @@
 
 		Ext.getDoc().on('keydown', function(e) {
 		
-			// F12 para imprimir factura
-			if (e.getKey() === Ext.event.Event.F12) {
-				e.preventDefault(); // evita la acción por defecto del navegador
-				fnBtnImpresion1();
-			}
-
-			// F2 para ir a un input scanear
-			if (e.getKey() === Ext.event.Event.F2) {
-				e.preventDefault();
-				var input = Ext.getCmp('txtScanerCodigo'); // el id de tu campo
-				if (input) {
-					input.focus(false, 200);
-				}
-			}
-			
-			// F3 para guardar
-			if (e.getKey() === Ext.event.Event.F3) {
-				e.preventDefault();
-				fnEnviarFactura("guardar");
-			}
-			
-			// F4 para aplicar
-			if (e.getKey() === Ext.event.Event.F4) {
-				e.preventDefault();
-				fnEnviarFactura("aplicar");
-			}
-			
-			// F5 seleccion de productos
-			if (e.getKey() === Ext.event.Event.F5) {
-				e.preventDefault();
-				miVentanaSeleccionProducto.show();
-			}
-			
-			// F6 abrir opcion de pago
-			if (e.getKey() === Ext.event.Event.F6) {
-				e.preventDefault();
-				
-				miVentanaDePago.show();	
-				var input = Ext.getCmp('txtReceiptAmount'); // el id de tu campo
-				if (input) {
-					input.focus(false, 200);
-				}
-			}
-			
 			// F1 para ayuda
 			if (e.getKey() === Ext.event.Event.F1) {
 				e.preventDefault(); // evita la acción por defecto del navegador
@@ -2623,6 +2579,21 @@
 										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F6</td>
 										<td style="padding:8px; border:1px solid #ddd;">Abrir opciones de pago</td>
 									</tr>
+									
+									<tr>
+										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F7</td>
+										<td style="padding:8px; border:1px solid #ddd;">Nueva factura</td>
+									</tr>
+									
+									<tr>
+										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F8</td>
+										<td style="padding:8px; border:1px solid #ddd;">Eliminar factura</td>
+									</tr>
+									
+									<tr>
+										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F9</td>
+										<td style="padding:8px; border:1px solid #ddd;">Seleccionar Posicion</td>
+									</tr>
 
 									<tr>
 										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F12</td>
@@ -2647,6 +2618,73 @@
 					}]
 				}).show();
 			}
+			
+			// F2 para ir a un input scanear
+			if (e.getKey() === Ext.event.Event.F2) {
+				e.preventDefault();
+				var input = Ext.getCmp('txtScanerCodigo'); // el id de tu campo
+				if (input) {
+					input.focus(false, 200);
+				}
+			}
+			
+			// F3 para guardar
+			if (e.getKey() === Ext.event.Event.F3) {
+				e.preventDefault();
+				fnEnviarFactura("guardar");
+			}
+			
+			// F4 para aplicar
+			if (e.getKey() === Ext.event.Event.F4) {
+				e.preventDefault();
+				fnEnviarFactura("aplicar");
+			}
+			
+			// F5 seleccion de productos
+			if (e.getKey() === Ext.event.Event.F5) {
+				e.preventDefault();
+				miVentanaSeleccionProducto.show();
+			}
+			
+			// F6 abrir opcion de pago
+			if (e.getKey() === Ext.event.Event.F6) {
+				e.preventDefault();
+				
+				miVentanaDePago.show();	
+				var input = Ext.getCmp('txtReceiptAmount'); // el id de tu campo
+				if (input) {
+					input.focus(false, 200);
+				}
+			}
+			
+				
+			// F7 → Nueva factura
+			if (e.getKey() === Ext.event.Event.F7) {					
+				e.preventDefault();
+				fnBtnNuevaFactura();				
+			}
+
+			// F8 → Eliminar factura
+			if (e.getKey() === Ext.event.Event.F8) {				
+				e.preventDefault();
+				fnBtnEliminarFactura();
+			}
+			
+			// F9 → Seleccioinar Posicion
+			if (e.getKey() === Ext.event.Event.F8) {				
+				e.preventDefault();
+				fnSeleccionarMesa();
+			}
+			
+			// F12 para imprimir factura
+			if (e.getKey() === Ext.event.Event.F12) {
+				e.preventDefault(); // evita la acción por defecto del navegador
+				fnBtnImpresion1();
+			}
+
+		
+			
+			
 			
 		});
 		
