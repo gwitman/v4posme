@@ -901,7 +901,7 @@
 					buttons: [				
 						{
 							text: 'Cancelar',
-							iconCls: 'x-fa fa-times',
+							iconCls: 'fa fa-times',
 							id: 'btnCancelarImpresion',					
 							handler: fnBtnCancelarImpresion
 						}
@@ -922,13 +922,13 @@
 						'->',
 						{
 							text: 'Aceptar',
-							iconCls: 'x-fa fa-check',
+							iconCls: 'fa fa-check',
 							id: 'btnSeleccionCliente',
 							handler: fnBtnSeleccionCliente
 						},
 						{
 							text: 'Cancelar',
-							iconCls: 'x-fa fa-times',
+							iconCls: 'fa fa-times',
 							id: 'btnCancelarSeleccionCliente',
 							handler: fnBtnCancelarSeleccionCliente
 						}
@@ -949,13 +949,13 @@
 						'->',
 						{
 							text: 'Aceptar',
-							iconCls: 'x-fa fa-check',
+							iconCls: 'fa fa-check',
 							id: 'btnSeleccionProducto',
 							handler: fnBtnSeleccionProducto
 						},
 						{
 							text: 'Cancelar',
-							iconCls: 'x-fa fa-times',
+							iconCls: 'fa fa-times',
 							id: 'btnCancelarSeleccionProducto',
 							handler: fnBtnCancelarSeleccionProducto
 						}
@@ -976,13 +976,13 @@
 						'->',
 						{
 							text: 'Aceptar',
-							iconCls: 'x-fa fa-check',
+							iconCls: 'fa fa-check',
 							id: 'btnSeleccionFactura',
 							handler: fnBtnSeleccionFactura
 						},
 						{
 							text: 'Cancelar',
-							iconCls: 'x-fa fa-times',
+							iconCls: 'fa fa-times',
 							id: 'btnCancelarSeleccionFactura',
 							handler: fnBtnCancelarSeleccionFactura
 						}
@@ -1129,31 +1129,27 @@
 					
 					tbar: [	
 						{
-							text: 'Nueva factura',
-							iconCls: 'x-btn-save',
-							cls: 'btn-nueva',
+							text: 'Nueva factura',							
+							iconCls: 'fa fa-plus',
 							id: 'btnNuevaFactura',
 							handler: fnBtnNuevaFactura
 							
 						},
 						{
 							text: 'Guardar factura',
-							iconCls: 'x-fa fa-save',
-							cls: 'btn-guardar',
+							iconCls: 'fa fa-save',							
 							id: 'btnGuardarFactura',
 							handler: fnBtnGuardarFactura
 						},
 						{
 							text: 'Eliminar factura',
-							iconCls: 'x-fa fa-trash',
-							cls: 'btn-eliminar',
+							iconCls: 'fa fa-trash',
 							id: 'btnEliminarFactura',
 							handler: fnBtnEliminarFactura
 						},
 						{
 							text: 'Imprimir factura',
-							iconCls: 'x-fa fa-trash',
-							cls: 'btn-eliminar',
+							iconCls: 'fa fa-print',
 							id: 'btnImprimirFactura',
 							handler: fnBtnImprimirFactura
 						},
@@ -1169,43 +1165,42 @@
 						{
 							xtype: 'button',
 							text: 'Herramienta',
-							iconCls: 'x-fa fa-refresh',
-							cls: 'btn-actualizar',
+							iconCls: 'fa fa-refresh',
 
 							menu: [   // 🔽 DROPDOWN BUTTON
 								{
 									text: 'Actualizar',
-									iconCls: 'x-fa fa-database',
+									iconCls: 'fa fa-database',
 									id: 'btnActualizarPantalla',
 									handler: fnBtnActualizarPantalla
 								},
 								{
 									text: 'Actualizar catalogo',
-									iconCls: 'x-fa fa-database',
+									iconCls: 'fa fa-database',
 									id: 'btnActualizarCatalogo',
 									handler: fnBtnActualizarCatalogo
 								},
 								{
 									text: 'Crear bd local',
-									iconCls: 'x-fa fa-database',
+									iconCls: 'fa fa-database',
 									id: 'btnCrearBDLocal',
 									handler: fnBtnCrearBDLocal
 								},
 								{
 									text: 'Seleccionar factura',
-									iconCls: 'x-fa fa-database',
+									iconCls: 'fa fa-database',
 									id: 'btnSeleccionarFactura',
 									handler: fnBtnSeleccionarFactura
 								},
 								{
 									text: 'Nuevo producto',
-									iconCls: 'x-fa fa-database',
+									iconCls: 'fa fa-database',
 									id: 'btnNuevoProducto',
 									handler: fnBtnNuevoProducto
 								},
 								{
 									text: 'Seleccionar mesa',
-									iconCls: 'x-fa fa-database',
+									iconCls: 'fa fa-database',
 									id: 'btnSeleccionarMesa',
 									hidden: true,
 									handler: fnSeleccionarMesa
@@ -1213,7 +1208,7 @@
 								'-',
 								{
 									text: 'Regresar',
-									iconCls: 'x-fa fa-retweet',
+									iconCls: 'fa fa-retweet',
 									id: 'btnRegresar',
 									handler: fnBtnRegresar
 								}
@@ -1393,8 +1388,7 @@
 														{
 															xtype: 'button',
 															text: 'Limpiar',
-															iconCls: 'x-fa fa-eraser',
-															cls:'btn-limpiar',
+															iconCls: 'fa fa-eraser',
 															margin: '0 5',
 															id: 'btnLimpiarCliente',
 															handler: fnBtnLimpiarCliente
@@ -1402,7 +1396,7 @@
 														{
 															xtype: 'button',
 															text: 'Buscar',
-															iconCls: 'x-fa fa-search',
+															iconCls: 'fa fa-search',
 															id: 'btnBuscarCliente',															
 															handler: fnBtnBuscarCliente
 														}
@@ -1935,12 +1929,12 @@
 											tbar: [
 												{
 													text: 'Agregar producto',
-													iconCls: 'x-fa fa-plus',
+													iconCls: 'fa fa-plus',
 													handler: fnBtnNuevoProductoDetail
 												},
 												{
 													text: 'Eliminar producto',
-													iconCls: 'x-fa fa-trash',
+													iconCls: 'fa fa-trash',
 													handler: fnBtnEliminarProductoDetail 
 												},
 												
@@ -1953,7 +1947,6 @@
 													id:'txtScanerCodigo',
 													name:'txtScanerCodigo',
 													itemId:'txtScanerCodigo',
-													cls:'texto-blanco',
 													enableKeyEvents: true,
 													listeners: {
 														afterrender: function(field) {
@@ -2646,7 +2639,7 @@
 
 					buttons: [{
 						text: 'Cerrar',
-						iconCls: 'x-fa fa-times',
+						iconCls: 'fa fa-times',
 						handler: function () {
 							win.hide();
 						}
