@@ -1094,6 +1094,7 @@
 			layout: 'fit',
 			id: 'miVentanaPrincipal',
 			itemId: 'miVentanaPrincipal',
+			cls:'my-facturacion-panel',
 			listeners:{
 				afterrender: function(form) {
 					// Configuración dinámica al "load" del contenedor
@@ -1952,6 +1953,7 @@
 													id:'txtScanerCodigo',
 													name:'txtScanerCodigo',
 													itemId:'txtScanerCodigo',
+													cls:'texto-blanco',
 													enableKeyEvents: true,
 													listeners: {
 														afterrender: function(field) {

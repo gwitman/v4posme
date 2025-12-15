@@ -15,7 +15,7 @@
 	src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-ext-6.2.0/build/classic/theme-crisp/theme-crisp.js"></script>		
 -->
 	
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 
 <link rel="stylesheet" type="text/css"
 	  href="https://cdn.jsdelivr.net/gh/bjornharrtell/extjs@6.2.0/build/classic/theme-crisp/resources/theme-crisp-all.css">
