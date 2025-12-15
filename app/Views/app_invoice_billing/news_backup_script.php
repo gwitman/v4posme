@@ -1324,6 +1324,7 @@
 													hideTrigger: true,
 													keyNavEnabled: false,
 													mouseWheelEnabled: false,
+													readOnly:true,
 													name: 'txtExchangeRate',
 													id:'txtExchangeRate',
 												},												
@@ -2490,8 +2491,8 @@
 														change: fnChange_PorcentageDescuento
 													}
 												},
-												{ fieldLabel: 'Descuento', value: 0 , name: 'txtDescuento' , id:'txtDescuento', },
-												{ fieldLabel: '% Servicio', value: 0 , name: 'txtServices' , id:'txtServices',},
+												{ fieldLabel: 'Descuento', value: 0 , name: 'txtDescuento' , id:'txtDescuento',readOnly:true, },
+												{ fieldLabel: '% Servicio', value: 0 , name: 'txtServices' , id:'txtServices',readOnly:true,},
 												{ fieldLabel: 'Total', value: 0, readOnly: true , name: 'txtTotal' , id:'txtTotal', },
 												{
 													xtype: 'button',
