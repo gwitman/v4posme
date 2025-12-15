@@ -2671,7 +2671,7 @@
 			}
 			
 			// F9 → Seleccioinar Posicion
-			if (e.getKey() === Ext.event.Event.F8) {				
+			if (e.getKey() === Ext.event.Event.F9) {				
 				e.preventDefault();
 				fnSeleccionarMesa();
 			}
