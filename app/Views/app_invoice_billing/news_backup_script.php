@@ -364,7 +364,6 @@
 		
 	};
 					
-		
 	var objConfigMappingConfig = 
 	{
 		txtTransactionMasterID: "transactionMasterID",
@@ -376,9 +375,6 @@
 		quantity: 				"txtTMD_txtQuantity",
 		subtotal: 				"txtTMD_txtSubTotal"
 	};
-	
-	
-	
 	
 	//-var producto = {
 	//-	itemID: 25,
@@ -415,6 +411,12 @@
 
 	Ext.onReady(function () {
 		
+		var size = Ext.getBody().getViewSize();
+		console.log("Ext OnReady Width")
+		console.log(size.width);
+		console.log("Ext OnReady Height")
+		console.log(size.height);
+
 		miVentanaEsperando = Ext.create('Ext.window.Window', {
 					title: 'Procesando... .. .',
 					id: 'miVentanaEsperando',
@@ -987,7 +989,6 @@
 					]
 				});
 				
-		
 		miVentanaInformacionAdicional = Ext.create('Ext.window.Window', {
 					title: 'Informacion adicional',
 					id: 'miVentanaInformacionAdicional',
@@ -1089,7 +1090,6 @@
 					
 			});
 
-
 		miVentanaPrincipal = Ext.create('Ext.container.Viewport', {
 			layout: 'fit',
 			id: 'miVentanaPrincipal',
@@ -1121,8 +1121,12 @@
 					xtype: 'panel',
 					title: 'Facturación',
 					layout: 'border',
+					
+					
 
-					tbar: [
+
+					
+					tbar: [	
 						{
 							text: 'Nueva factura',
 							iconCls: 'x-btn-save',
@@ -1214,12 +1218,10 @@
 								}
 							]
 						}
-						
-						
-						
 					],
-
-					items: [
+					
+					
+					items: [						
 						{
 							xtype: 'tabpanel',
 							region: 'center',
@@ -1231,17 +1233,38 @@
 								{
 									title: 'Datos de factura',
 									bodyPadding: 15,
-									layout: 'hbox',   // 🔥 Dos columnas horizontales
+									layout: 'hbox',   // 🔥 Dos columnas horizontales									
 									defaults: {
 										xtype: 'container',
 										layout: 'vbox',
 										margin: '0 20 0 0'  // separación entre columnas
 									},
+									plugins: 'responsive',
+									responsiveConfig: {
+										// 📱 Pantallas pequeñas
+										'width < 700': {
+											layout: {
+												type: 'vbox',
+												align: 'stretch'
+											}
+										},
+
+										// 💻 Pantallas medianas y grandes
+										'width >= 700': {
+											layout: {
+												type: 'hbox',
+												//pack: 'center',
+												//align: 'stretch'
+											}
+										}
+									},
 									items: [
 
 										// ✔ COLUMNA 1
 										{
-											width: 350,
+											flex: 1,   // ocupa 50% del espacio disponible
+											maxWidth: 400,   // no se estira más de 500px
+											defaults: { xtype: 'textfield', anchor: '100%' },
 											items: [
 												{
 													xtype: 'hiddenfield',
@@ -1340,14 +1363,16 @@
 
 										// ✔ COLUMNA 2
 										{
-											width: 480,
+											flex: 1,   // ocupa 50% del espacio disponible
+											maxWidth: 480,   // no se estira más de 500px
+											defaults: { xtype: 'textfield', anchor: '100%' },
 											items: [
 												{
 													xtype: 'fieldcontainer',
 													fieldLabel: 'Cliente',
 													labelWidth: 100,
 													layout: 'hbox',
-													width: 450,
+													width: 480,
 
 													items: [
 														{
@@ -1454,11 +1479,30 @@
 										layout: 'vbox',
 										margin: '0 20 0 0'  // separación entre columnas
 									},
+									plugins: 'responsive',
+									responsiveConfig: {
+										// 📱 Pantallas pequeñas
+										'width < 700': {
+											layout: {
+												type: 'vbox',
+												align: 'stretch'
+											}
+										},
+
+										// 💻 Pantallas medianas y grandes
+										'width >= 700': {
+											layout: {
+												type: 'hbox',
+												//pack: 'center',
+												//align: 'stretch'
+											}
+										}
+									},
 									items: [
 
 										// ✔ COLUMNA 1
 										{
-											width: 350,
+											width: 400,
 											items: [
 												{
 													xtype: 'combobox',
@@ -1594,6 +1638,25 @@
 										xtype: 'container',
 										layout: 'vbox',
 										margin: '0 20 0 0'  // separación entre columnas
+									},
+									plugins: 'responsive',
+									responsiveConfig: {
+										// 📱 Pantallas pequeñas
+										'width < 700': {
+											layout: {
+												type: 'vbox',
+												align: 'stretch'
+											}
+										},
+
+										// 💻 Pantallas medianas y grandes
+										'width >= 700': {
+											layout: {
+												type: 'hbox',
+												//pack: 'center',
+												//align: 'stretch'
+											}
+										}
 									},
 									items: [
 
@@ -1805,13 +1868,13 @@
 
 										// ✔ COLUMNA 1
 										{
-											width: 500,
+											width: 400,
 											items: [
 												{
 													xtype: 'textarea',
 													fieldLabel: 'Nota',
 													labelWidth: 100,
-													width: 500,
+													width: 400,
 													height: 120,          // altura para varias líneas
 													grow: true,           // opcional: se ajusta automáticamente al contenido
 													growMax: 300,         // altura máxima si grow=true
@@ -1834,6 +1897,25 @@
 									title: 'Detalle',
 									layout: 'hbox',
 									padding: 10,
+									plugins: 'responsive',
+									responsiveConfig: {
+										// 📱 Pantallas pequeñas
+										'width < 700': {
+											layout: {
+												type: 'vbox',
+												align: 'stretch'
+											}
+										},
+
+										// 💻 Pantallas medianas y grandes
+										'width >= 700': {
+											layout: {
+												type: 'hbox',
+												//pack: 'center',
+												//align: 'stretch'
+											}
+										}
+									},
 									items: [
 
 										// Columna izquierda - Tabla
@@ -2396,6 +2478,7 @@
 											xtype: 'panel',
 											title: 'Resumen',
 											flex: 1,
+											scrollable: 'y',   // 👈 CLAVE
 											bodyPadding: 15,
 											layout: 'vbox',
 											defaults: { xtype: 'numberfield', labelWidth: 100, width: 250 },
@@ -2435,7 +2518,6 @@
 			]
 		});
 
-	
 		Ext.getDoc().on('keydown', function(e) {
 		
 			// F12 para imprimir factura
@@ -2580,8 +2662,6 @@
 			fnConfiguracionLoad(miVentanaPrincipal_, objConfigInit );
 			fnConfiguracionLoad(miVentanaDePago_, objConfigInit );
 		}
-		
-		
 		function fnEnviarFactura(accion)
 		{
 			miVentanaEsperando.show();			
@@ -2790,7 +2870,6 @@
 			
 			
 		}
-		
 		function fnBtnGuardarFactura()
 		{	
 			fnEnviarFactura("guardar");
@@ -2902,7 +2981,6 @@
 				}
 			});
 		}
-		
 		function fnBtnNuevoProducto()
 		{
 			var url_request = "<?php echo base_url(); ?>/app_inventory_item/add";
@@ -2948,7 +3026,8 @@
 	
 			
 		}
-		function fnBtnLimpiarCliente (btn) {
+		function fnBtnLimpiarCliente (btn) 
+		{
 			btn.up('fieldcontainer').down('#txtCustomerID').setValue('');
 			btn.up('fieldcontainer').down('#txtCustomerDescription').setValue('');
 		}
@@ -2959,18 +3038,21 @@
 		function fnBtnPagar(btn)
 		{
 			var panel = btn.up('panel');
-			// Tomar valores de ejemplo
-			var total = 50;			
-			miVentanaDePago.show();													
+			// Tomar valores de ejemplo			
+			miVentanaDePago.show();		
+			Ext.getCmp('miVentanaDePago').down("#txtReceiptAmount").focus(true, 200);		
 		}
-		function fnBtnConfirmarPago(winBtn) {			
+		function fnBtnConfirmarPago(winBtn) 
+		{			
 			winBtn.up('window').close();
 			fnEnviarFactura("aplicar");
 		}
-		function fnBtnCancelarPago(winBtn) {
+		function fnBtnCancelarPago(winBtn) 
+		{
 			winBtn.up('window').close();
 		}
-		function fnBtnCancelarImpresion () {
+		function fnBtnCancelarImpresion () 
+		{
 			miVentanaImpresion.hide()
 		}
 		function fnBtnImpresion1()
@@ -3040,7 +3122,8 @@
 			var url						= "<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/2/transactionID/19/transactionMasterID/"+transactionMasterID+"/"+fechaHora;
 			window.open(url, '_blank');
 		}
-		function fnBtnSeleccionFactura() {
+		function fnBtnSeleccionFactura() 
+		{
 			
 			
 			var grid 		= miVentanaSeleccionFactura.down('grid');
@@ -3057,7 +3140,8 @@
 			fnLoadInvoiceExistente(seleccion[0].data.transactionMasterID,"none");
 			
 		}
-		function fnBtnCancelarSeleccionFactura(btn) {
+		function fnBtnCancelarSeleccionFactura(btn) 
+		{
 			btn.up('window').close();
 		}
 		function fnBtnConfirmarInformacionAdicional()
@@ -3084,10 +3168,12 @@
 			win.close();
 			
 		}
-		function fnBtnCancelarInformacionAdicional(btn){
+		function fnBtnCancelarInformacionAdicional(btn)
+		{
 			btn.up('window').close();
 		}
-		function fnBtnSeleccionProducto(btn) {
+		function fnBtnSeleccionProducto(btn) 
+		{
 			
 			var grid 		= miVentanaSeleccionProducto.down('grid');
 			var seleccion 	= grid.getSelection();
@@ -3156,10 +3242,12 @@
 			
 			
 		}
-		function fnBtnCancelarSeleccionProducto(btn) {
+		function fnBtnCancelarSeleccionProducto(btn) 
+		{
 			btn.up('window').close();
 		}
-		function fnBtnSeleccionCliente() {
+		function fnBtnSeleccionCliente() 
+		{
 			var grid 		= miVentanaSeleccionCliente.down('grid');
 			var seleccion 	= grid.getSelection();
 
@@ -3183,12 +3271,12 @@
 			
 			
 		}
-		function fnBtnCancelarSeleccionCliente(btn) {
+		function fnBtnCancelarSeleccionCliente(btn) 
+		{
 			btn.up('window').close();
 		}
-		
-		
-		function fnChange_ChangeAmount(field, newValue) {
+		function fnChange_ChangeAmount(field, newValue) 
+		{
 			if (newValue < 0) {
 				field.setFieldStyle('color:red; font-weight:bold; border:2px solid red;');
 			}
@@ -3199,8 +3287,8 @@
 				field.setFieldStyle('color:black; font-weight:bold; border:2px solid black;');
 			}
 		}
-		
-		function fnChange_ReceiptAmount(field, newValue, oldValue) {
+		function fnChange_ReceiptAmount(field, newValue, oldValue) 
+		{
 			
 			
 			if (isLoading) return; // Detener evento
@@ -3210,8 +3298,8 @@
 			fnCalculateAmountPay();
 		
 		}
-		
-		function fnChange_ReceiptAmountTarjeta_BankID (field, newValue, oldValue) {
+		function fnChange_ReceiptAmountTarjeta_BankID (field, newValue, oldValue) 
+		{
 			
 			if (isLoading) return; // Detener evento
 			
@@ -3223,7 +3311,6 @@
 			fnRecalcularMontoComision(value);
 		
 		}
-		
 		function fnChange_PorcentageDescuento (field, newValue, oldValue) 
 		{
 			
@@ -3247,7 +3334,6 @@
 	
 			 
 		}
-		
 		function fnChange_FirstLineProtocolo (field, newValue, oldValue) 
 		{
 			if (isLoading) return; // Detener evento
@@ -3317,8 +3403,8 @@
 				
 			}
 		}
-		
-		function fnChange_ApplyExoneration (field, newValue) {
+		function fnChange_ApplyExoneration (field, newValue) 
+		{
 			
 			if (isLoading) return; // Detener evento
 			
@@ -3354,28 +3440,29 @@
 			
 			
 		}
-		
-		function fnChange_CurrencyID_CreditLineID_WarehouseID(combo, newValue, oldValue, eOpts) {
+		function fnChange_CurrencyID_CreditLineID_WarehouseID(combo, newValue, oldValue, eOpts) 
+		{
 			
 			if (isLoading) return; // Detener evento
 			fnClearData();
 			fnLockPayment();
 		}
-		function fnChange_CausalID(combo, newValue, oldValue, eOpts) {
+		function fnChange_CausalID(combo, newValue, oldValue, eOpts) 
+		{
 			
 			if (isLoading) return; // Detener evento
 			fnClearData();
 			fnLockPayment();
 			fnRenderLineaCreditoDiv();
 		}
-		function fnChangeTypePreiceID(combo, newValue, oldValue, eOpts) {
+		function fnChangeTypePreiceID(combo, newValue, oldValue, eOpts) 
+		{
 			
 			if (isLoading) return; // Detener evento
 			fnActualizarPrecio();
 		}
-		
-		
-		function fnBtnEliminarProductoDetail(btn) {
+		function fnBtnEliminarProductoDetail(btn) 
+		{
 			var grid = btn.up('grid');
 			var selection = grid.getSelectionModel().getSelection();
 			if (selection.length > 0) {
@@ -3384,15 +3471,10 @@
 				Ext.Msg.alert('Atención', '<span style="color:red;font-weight:bold;">Seleccione al menos un producto para eliminar.</span>');
 			}
 		}
-
-
 		function fnBtnNuevoProductoDetail(btn)
 		{
 			miVentanaSeleccionProducto.show();
 		}
-
-
-
 		function fnBtnEnterScaner (field, e) 
 		{
 			if (e.getKey() === Ext.EventObject.ENTER) 
@@ -3454,9 +3536,6 @@
 				field.setValue(''); // limpia el campo
 			}
 		}
-
-		
-		
 		function fnConfiguracionLoad(contenedor, config) 
 		{	
 			// Recorremos todos los componentes del contenedor
@@ -3522,12 +3601,9 @@
 			});
 		}
 		
-	});
-	
+	});	
 	function fnFillFactura(formPanel, obj) 
 	{
-		
-		
 		//txtTM_transactionNumber
 		var miVentanaPrincipal_ 	= Ext.getCmp('miVentanaPrincipal');
 		var miVentanaDePago_		= Ext.getCmp('miVentanaDePago');
@@ -4247,7 +4323,6 @@
 	
 			
 	}
-	
 	function indexDBCreate(obtenerRegistroDelServer) 
 	{
 		var indexDB 	= window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
@@ -4346,8 +4421,8 @@
 		};
 		//...
 	}
-	
-	function indexDBRemoveTable(varTable){
+	function indexDBRemoveTable(varTable)
+	{
 		const request 		= db.transaction(varTable, 'readwrite')
 							  .objectStore(varTable)
 							  .clear();
@@ -4360,8 +4435,8 @@
 			console.log('error');
 		}
 	}
-	
-	function indexDBAddTable(varTable,varDatos){
+	function indexDBAddTable(varTable,varDatos)
+	{
 		const transaction = db.transaction(varTable, 'readwrite');
 
 
@@ -4390,9 +4465,9 @@
 		//	console.log('error');
 		//}
 	}
-	
 	//obtener informacion de los productos
-	function indexDBObtenerProductos(){
+	function indexDBObtenerProductos()
+	{
 
 		/*TIPO PRECIO 1 -- 154 -- PUBLICO */		
 		Ext.Ajax.request({
@@ -4481,12 +4556,9 @@
 				console.log('Server-side failure with status code ' + response.status);
 			}
 		});
-
-
-
 	}
-	
-	function indexDBGetLocalProductoByBarra(valorBuscar, callbackFinal) {
+	function indexDBGetLocalProductoByBarra(valorBuscar, callbackFinal) 
+	{
     
 		// 1️⃣ Buscar en objListaProductosX001 por contiene
 		const store1 = db.transaction("objListaProductosX001", "readonly")
@@ -4559,7 +4631,6 @@
 			};
 		};
 	}
-	
 	function indexDBGetLocalProductoByItemID(valorBuscar, callbackFinal) 
 	{
 
@@ -4641,10 +4712,8 @@
 			};
 		};
 	}
-
-
-
-	function indexDBGetLocalConceptos(valorBuscar, callbackFinal) {
+	function indexDBGetLocalConceptos(valorBuscar, callbackFinal) 
+	{
 		const store = db.transaction("objListaProductosConceptosX001", "readonly")
 						.objectStore("objListaProductosConceptosX001")
 						.index("componentItemID");
@@ -4661,8 +4730,6 @@
 			callbackFinal(conceptos);
 		};
 	}
-
-	
 	function fnClearData()
 	{
 		console.info("fnClearData");
@@ -4696,8 +4763,6 @@
 		console.info("fnClearData success");
 		
 	}
-	
-	
 	function fnLockPayment()
 	{	
 		if(isLoading) return ;
@@ -4754,8 +4819,8 @@
 		
 		console.info("fnLockPayment fin");
 	}
-	
-	function fnGetCustomerClient(){		
+	function fnGetCustomerClient()
+	{		
 		var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
 		if(viewport){
 			var entityID = viewport.down("#txtCustomerID").getValue();
@@ -4779,7 +4844,6 @@
 			});
 		}
 	}
-	
 	function fnRenderLineaCredit(listCustomerCreditLine,causalTypeCredit)
 	{
 		objListCustomerCreditLine 	= listCustomerCreditLine;
@@ -5135,9 +5199,6 @@
 		}
 		console.info("fnRecalculateDetail fin ");
 	}
-	
-	
-	
 	function fnRecalcularMontoComision(monto) 
 	{
 		
@@ -5168,8 +5229,6 @@
 		console.info("fnRecalcularMontoComision Fin");
 		
 	}
-	
-	
 	function fnCalculateAmountPay()
 	{
 		
@@ -5246,10 +5305,8 @@
         resultTotal = resultTotal;
         viewport_miVentanaDePago.down("#txtChangeAmount").setValue(resultTotal);
     }
-	
-	
-
-	function onCompleteNewItem(filterResult,suma,conceptos,skus){
+	function onCompleteNewItem(filterResult,suma,conceptos,skus)
+	{
 		console.info("CALL onCompleteNewItem");
 		
 		
@@ -5395,11 +5452,10 @@
 		viewport.down("#txtScanerCodigo").focus(false, 200);
 		console.info("fin onCompleteNewItem");
 	}
-	
-	
 	//el objeto pasado como primer parametro , se retorna un objeto, nuevo, basado en la configuracion
 	//que se pasa como segundo parametro
-	function fnMapObjectToNew(objOrigen, mappingJson) {
+	function fnMapObjectToNew(objOrigen, mappingJson) 
+	{
 		var objDestino = {};
 
 		Ext.Object.each(mappingJson, function(origenKey, destinoKey) {
@@ -5410,8 +5466,8 @@
 
 		return objDestino;
 	}
-	
-	function fnMapObjectBack(objDestino, mappingJsonInverse) {
+	function fnMapObjectBack(objDestino, mappingJsonInverse) 
+	{
 		var objOrigen = {};
 
 		Ext.Object.each(mappingJsonInverse, function(destKey, origenKey) {
@@ -5422,8 +5478,8 @@
 
 		return objOrigen;
 	}
-	
-	function fnMapInvertMapping(mappingJson) {
+	function fnMapInvertMapping(mappingJson) 
+	{
 		var inverted = {};
 
 		Ext.Object.each(mappingJson, function(key, value) {
@@ -5432,9 +5488,9 @@
 
 		return inverted;
 	}
-	
 	// Obtener el valor seleccionado
-	function getValueRadio(formulario,field) {
+	function getValueRadio(formulario,field) 
+	{
 		
 		var ventana = Ext.getCmp(formulario);
 	
@@ -5451,9 +5507,9 @@
 		return null; // Ninguno seleccionado
 		
 	}
-
 	// Setear el valor del radio
-	function setValueRadio(formulario, field, valor) {
+	function setValueRadio(formulario, field, valor) 
+	{
 		var ventana = Ext.getCmp(formulario);
 		if (!ventana) return;
 
@@ -5469,7 +5525,6 @@
 			}
 		}
 	}
-	
 	function fnGetConcept(conceptItemID,nameConcept)
 	{
 		
@@ -5555,8 +5610,6 @@
 		
 		
 	}
-	
-	
 	function fnUpdateInvoiceView(datos)
 	{
 		
@@ -5763,7 +5816,6 @@
 		fnFillFactura("miVentanaPrincipal", objFormulario );
 		
 	}
-	
 	function fnValidateFormAndSubmit(accion)
 	{
 		
@@ -5991,17 +6043,16 @@
 		return result;
 
 	}
-	
-	function fnFormatDateYYYY_MM_DD(date) {
+	function fnFormatDateYYYY_MM_DD(date) 
+	{
 		var y = date.getFullYear();
 		var m = String(date.getMonth() + 1).padStart(2, '0');
 		var d = String(date.getDate()).padStart(2, '0');
 		return y + '-' + m + '-' + d;
 	}
-	
-	function fnMesaRenderer(value) {
+	function fnMesaRenderer(value) 
+	{
 
-		
 		// No es mesa
 		if (!value) {
 			return '<div style="height:60px;background:#fff;"></div>';
@@ -6034,7 +6085,4 @@
 			</div>
 		`;
 	}
-
-
-		
 </script>
