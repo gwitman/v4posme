@@ -3103,8 +3103,16 @@
 			var segundo 				= String(ahora.getSeconds()).padStart(2, '0');
 			var fechaHora 				= `${año}${mes}${dia}${hora}${minuto}${segundo}`;	
 			var transactionMasterID		= miVentanaPrincipal_.down("#txtTransactionMasterID").getValue();
-			var url						= "<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/2/transactionID/19/transactionMasterID/"+transactionMasterID+"/"+fechaHora;
-			window.open(url, '_blank');
+			
+			if(transactionMasterID > 0 )
+			{
+				var url						= "<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/2/transactionID/19/transactionMasterID/"+transactionMasterID+"/"+fechaHora;
+				window.open(url, '_blank');
+			}
+			else
+			{
+				Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>Debe cargar la factura primeramente.</span>" );	
+			}
 		
 		
 		}
