@@ -28,6 +28,15 @@ class ItemWarehouse_Model extends Model  {
 		return $builder->update($data);
 		
    }
+   function update_app_posme_all_warehouse($companyID,$itemID,$data){
+		$db 	= db_connect();
+		$builder	= $db->table("tb_item_warehouse");
+		
+		$builder->where("companyID",$companyID);
+		$builder->where("itemID",$itemID);			
+		return $builder->update($data);
+		
+   }
    function insert_app_posme($data){
 		$db 	= db_connect();
 		$builder	= $db->table("tb_item_warehouse");

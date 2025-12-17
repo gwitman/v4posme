@@ -54,10 +54,10 @@ class Item_Data_Sheet_Detail_Model extends Model  {
 		
    }
    function get_rowByPK($itemDataSheetDetailID){
-		$db 	= db_connect();
+		$db 		= db_connect();
 		$builder	= $db->table("tb_item_data_sheet_detail");
 		$sql = "";
-		$sql = sprintf("select i.itemDataSheetDetailID,i.itemDataSheetID,i.itemID,i.quantity,i.relatedItemID,i.isActive ,tm.itemNumber,tm.name ");
+		$sql = sprintf("select i.itemDataSheetDetailID,i.itemDataSheetID,i.itemID,i.quantity,i.relatedItemID,i.isActive ,tm.itemNumber,tm.name , i.cost");
 		$sql = $sql.sprintf(" from tb_item_data_sheet_detail i");
         $sql = $sql.sprintf(" inner join  tb_item tm on i.itemID = tm.itemID");
 		$sql = $sql.sprintf(" where i.itemDataSheetDetailID = $itemDataSheetDetailID");
@@ -70,7 +70,7 @@ class Item_Data_Sheet_Detail_Model extends Model  {
 		$db 		= db_connect();
 		$builder	= $db->table("tb_item_data_sheet_detail");
 		$sql = "";
-		$sql = sprintf("select i.itemDataSheetDetailID,i.itemDataSheetID,i.itemID,i.quantity,i.relatedItemID,i.isActive ,tm.itemNumber,tm.name ");
+		$sql = sprintf("select i.itemDataSheetDetailID,i.itemDataSheetID,i.itemID,i.quantity,i.relatedItemID,i.isActive ,tm.itemNumber,tm.name , i.cost");
 		$sql = $sql.sprintf(" from tb_item_data_sheet_detail i");
         $sql = $sql.sprintf(" inner join  tb_item tm on i.itemID = tm.itemID");
 		$sql = $sql.sprintf(" where i.itemDataSheetID = $itemDataSheetID");
@@ -84,7 +84,7 @@ class Item_Data_Sheet_Detail_Model extends Model  {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_item_data_sheet_detail");    
 		$sql = "";
-		$sql = sprintf("select i.itemDataSheetDetailID,i.itemDataSheetID,i.itemID,i.quantity,i.relatedItemID,i.isActive,tm.itemNumber,tm.name ");
+		$sql = sprintf("select i.itemDataSheetDetailID,i.itemDataSheetID,i.itemID,i.quantity,i.relatedItemID,i.isActive,tm.itemNumber,tm.name ,i.cost");
 		$sql = $sql.sprintf(" from tb_item_data_sheet_detail i");		
         $sql = $sql.sprintf(" inner join  tb_item tm on i.itemID = tm.itemID");
 		$sql = $sql.sprintf(" where i.itemDataSheetID = $itemDataSheetID");

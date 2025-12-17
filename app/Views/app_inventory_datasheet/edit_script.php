@@ -19,7 +19,7 @@
 								objDataSource[i].name,
 								'Unidad',
 								parseFloat(objDataSource[i].quantity), /*cantidad */
-								0,
+								parseFloat(objDataSource[i].cost), /*costo unitario*/
 								0
 							]);
 						}

@@ -98,6 +98,12 @@
 																	<input class="form-control" readonly  type="text"  name="txtVersion" id="txtVersion" value="<?php echo $objItemDataSheet->version;  ?>">												
 																</div>
 														</div>
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal">Costo</label>
+																<div class="col-lg-8">
+																	<input class="form-control" readonly  type="text"  name="txtCostGeneral" id="txtCostGeneral" value="<?php echo $costGeneral;  ?>">												
+																</div>
+														</div>
 												</div>
 											</div>
 											<div class="row">

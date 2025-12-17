@@ -93,6 +93,12 @@
 																	<input class="form-control" readonly  type="text"  name="txtVersion" id="txtVersion" value="">												
 																</div>
 														</div>
+														<div class="form-group">
+																<label class="col-lg-4 control-label" for="normal">Costo</label>
+																<div class="col-lg-8">
+																	<input class="form-control" readonly  type="text"  name="txtCostGeneral" id="txtCostGeneral" value="0">												
+																</div>
+														</div>
 												</div>
 											</div>
 											<div class="row">

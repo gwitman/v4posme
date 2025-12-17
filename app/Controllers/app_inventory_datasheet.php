@@ -54,7 +54,18 @@ class app_inventory_datasheet extends _BaseController
 			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
 			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "INVOICE_CANTIDAD_ITEM");
 			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
+			$dataView["costGeneral"]					= 0;
 
+			//Obtener el total del costo
+			if($dataView["objItemDataSheetDetail"])
+			{
+				foreach($dataView["objItemDataSheetDetail"] as $item)
+				{
+					$dataView["costGeneral"]	= $dataView["costGeneral"] + ($item->cost * $item->quantity);
+				}
+			}
+			
+			
 			////Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
@@ -287,6 +298,8 @@ class app_inventory_datasheet extends _BaseController
 			$objParameterCantidadItemPoup		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "INVOICE_CANTIDAD_ITEM");
 			$dataView["objParameterCantidadItemPoup"]			= $objParameterCantidadItemPoup->value;
 			//Renderizar Resultado 
+			
+			$dataView["costGeneral"]			= 0;
 			$dataSession["notification"]		= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]				= $this->core_web_notification->get_message();
 			$dataSession["head"]				= /*--inicio view*/ view('app_inventory_datasheet/news_head', $dataView); //--finview
@@ -504,7 +517,17 @@ class app_inventory_datasheet extends _BaseController
 
 			$db = db_connect();
 			$db->transStart();
-			if (!$this->core_web_workflow->validateWorkflowStage("tb_item_data_sheet", "statusID", $objOldItemDataSheet->statusID, COMMAND_EDITABLE, $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID)) {
+			if (
+				!$this->core_web_workflow->validateWorkflowStage("tb_item_data_sheet", "statusID", 
+					$objOldItemDataSheet->statusID, COMMAND_EDITABLE, 
+					$dataSession["user"]->companyID, 
+					$dataSession["user"]->branchID, 
+					$dataSession["role"]->roleID
+				)
+			) 
+			{
+				
+				
 				//Actualizar Cuenta						
 				$objNewItemDataSeet["itemID"]				= /*inicio get post*/ $this->request->getPost("txtItemID");
 				$objNewItemDataSeet["version"]				= /*inicio get post*/ $this->request->getPost("txtVersion");
@@ -521,6 +544,7 @@ class app_inventory_datasheet extends _BaseController
 				$arrayItemID								= /*inicio get post*/ $this->request->getPost("txtDetailItemID");
 				$arrayItemDataSheetDetailID					= /*inicio get post*/ $this->request->getPost("txtDetailItemDataSheetDetailID");
 				$arrayQuantity								= /*inicio get post*/ $this->request->getPost("txtDetailQuantity");
+				$newCost									= 0 ;
 
 				if ($arrayItemDataSheetDetailID == null) {
 					$this->Item_Data_Sheet_Detail_Model->deleteWhereDataSheet($itemDataSheetID);
@@ -532,12 +556,13 @@ class app_inventory_datasheet extends _BaseController
 				if (!empty($arrayItemID)) {
 
 					foreach ($arrayItemID as $key => $value) {
-						$itemID 											= $value;
-						$dataSheetDetailID									= $arrayItemDataSheetDetailID[$key];
-						$quantity											= $arrayQuantity[$key];
-						$objItemDataSheetDetail								= $this->Item_Data_Sheet_Detail_Model->get_rowByPKItemID($itemDataSheetID, $itemID);
-
-
+						$itemID 					= $value;
+						$dataSheetDetailID			= $arrayItemDataSheetDetailID[$key];
+						$quantity					= $arrayQuantity[$key];
+						$objItemDataSheetDetail		= $this->Item_Data_Sheet_Detail_Model->get_rowByPKItemID($itemDataSheetID, $itemID);
+						$objItemElement				= $this->Item_Model->get_rowByPK($dataSession["user"]->companyID,$itemID);
+						$newCost					= $newCost  + ($objItemElement->cost * $quantity);
+						
 						if ($dataSheetDetailID == 0 && !$objItemDataSheetDetail) {
 							$dataNewItemDataSheetDetail = [];
 							$dataNewItemDataSheetDetail["itemDataSheetID"] 	= $itemDataSheetID;
@@ -545,6 +570,7 @@ class app_inventory_datasheet extends _BaseController
 							$dataNewItemDataSheetDetail["quantity"] 		= $quantity;
 							$dataNewItemDataSheetDetail["relatedItemID"] 	= 0;
 							$dataNewItemDataSheetDetail["isActive"] 		= true;
+							$dataNewItemDataSheetDetail["cost"] 			= $objItemElement->cost;
 
 							$reId = $this->Item_Data_Sheet_Detail_Model->insert_app_posme($dataNewItemDataSheetDetail);
 						}
@@ -553,20 +579,39 @@ class app_inventory_datasheet extends _BaseController
 							$dataNewItemDataSheetDetail["quantity"] 		= $quantity;
 							$dataNewItemDataSheetDetail["relatedItemID"] 	= 0;
 							$dataNewItemDataSheetDetail["isActive"] 		= true;
+							$dataNewItemDataSheetDetail["cost"] 			= $objItemElement->cost;
 							$reId = $this->Item_Data_Sheet_Detail_Model->update_app_posme($objItemDataSheetDetail->itemDataSheetDetailID, $dataNewItemDataSheetDetail);
 						} else {
 							$dataNewItemDataSheetDetail = [];
 							$dataNewItemDataSheetDetail["itemID"] 			= $itemID;
 							$dataNewItemDataSheetDetail["quantity"] 		= $quantity;
 							$dataNewItemDataSheetDetail["isActive"] 		= true;
+							$dataNewItemDataSheetDetail["cost"] 			= $objItemElement->cost;
 							$reId = $this->Item_Data_Sheet_Detail_Model->update_app_posme($dataSheetDetailID, $dataNewItemDataSheetDetail);
 						}
 					}
 				}
-			} else {
-				$objNewItemDataSheet["statusID"] 	= /*inicio get post*/ $this->request->getPost("txtStatusID");
-				$row_affected 						= $this->Item_Data_Sheet_Model->update_app_posme($itemDataSheetID, $objNewItemDataSheet);
-				$messageTmp							= "EL REGISTRO FUE EDITADO PARCIALMENTE, POR LA CONFIGURACION DE SU ESTADO ACTUAL";
+				
+				
+
+				//Obtener la ultima version y actualizarla
+				$objNewItemDataSeet["version"]	= $this->Item_Data_Sheet_Model->get_rowByItemID($objNewItemDataSeet["itemID"])->version + 1 ;
+				$row_affected 					= $this->Item_Data_Sheet_Model->update_app_posme($itemDataSheetID, $objNewItemDataSeet);
+				
+				//Actualizar Costo del producto
+				$newItem						= null;
+				$newItem["cost"]				= $newCost;
+				$row_affected					= $this->Item_Model->update_app_posme($dataSession["user"]->companyID,$objNewItemDataSeet["itemID"],$newItem);
+				
+				//Actualizar costo en las bodegas.
+				$row_affected					= $this->Itemwarehouse_Model->update_app_posme_all_warehouse($dataSession["user"]->companyID,$objNewItemDataSeet["itemID"],$newItem);
+				
+				
+			} else 
+			{
+				//$objNewItemDataSheet["statusID"] 	= /*inicio get post*/ $this->request->getPost("txtStatusID");
+				//$row_affected 					= $this->Item_Data_Sheet_Model->update_app_posme($itemDataSheetID, $objNewItemDataSheet);
+				throw new \Exception("EL REGISTRO NO PUEDE SER EDITADO POR SU ESTADO ACTUAL.");
 			}
 
 			if ($db->transStatus() !== false) {

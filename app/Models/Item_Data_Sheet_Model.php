@@ -36,7 +36,12 @@ class Item_Data_Sheet_Model extends Model  {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_item_data_sheet");
 		$sql = "";
-		$sql = sprintf("select i.itemDataSheetID,i.itemID,i.version,i.statusID,i.name,i.description,i.createdOn,i.createdBy,i.createdIn,i.createdAt,i.isActive");
+		$sql = sprintf("select 
+			i.itemDataSheetID,
+			i.itemID,
+			i.version,
+			i.statusID,
+			i.name,i.description,i.createdOn,i.createdBy,i.createdIn,i.createdAt,i.isActive");
 		$sql = $sql.sprintf(" from tb_item_data_sheet i");		
 		$sql = $sql.sprintf(" where i.itemDataSheetID = $itemDataSheetID");
 		$sql = $sql.sprintf(" and i.isActive= 1");		
