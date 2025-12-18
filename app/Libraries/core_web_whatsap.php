@@ -843,6 +843,15 @@ class core_web_whatsap {
 		$objPWhatsapPropertyColaId 			= $objPWhatsapPropertyCola->parameterID;
 		$objCP_WhatsapPropertyCola			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyColaId);
 		$queueId							= $objCP_WhatsapPropertyCola->value;
+		
+		//$number 							= "50587125827";
+		//log_message("error","sendMessagePosMeConnect");
+		//log_message("error",$number);
+		//log_message("error",$body);
+		//log_message("error",$token);
+		//log_message("error",$url);
+		//log_message("error",$userId);
+		//log_message("error",$queueId);
 
 		$sendSignature 	= false;
 		$closeTicket 	= true;
