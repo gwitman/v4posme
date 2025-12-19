@@ -1562,6 +1562,18 @@ class app_invoice_billing extends _BaseController {
 				if($exisCausalInCredit || $exisCausalInCredit === 0){
 					
 					
+					/*Calcular el monto real del financiamiento*/
+					$changeAmount 	=  $objTMInfoNew["changeAmount"];
+					if($changeAmount < 0)
+					{
+						$amountTotal = -1 * $changeAmount;
+					}
+					else 
+					{
+						$amountTotal = $amountTotal;
+					}
+					
+					
 					//Crear documento del modulo
 					$objCustomerCreditLine 								= $this->Customer_Credit_Line_Model->get_rowByPK($objTMNew["reference4"]);
 					$objCustomerCreditDocument["companyID"] 			= $companyID;
