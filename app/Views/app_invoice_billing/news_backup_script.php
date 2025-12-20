@@ -1332,7 +1332,7 @@
 												},
 												{
 													xtype: 'numberfield',
-													fieldLabel: 'Tipo de Cambio',
+													fieldLabel: 'T/C',
 													labelWidth: 100,
 													width: 300,
 													minValue: 0,
@@ -1677,22 +1677,22 @@
 
 										// ✔ COLUMNA 1
 										{
-											width: 500,
+											width: 400,
 											items: [
 												{
 													xtype: 'datefield',
 													format: 'Y-m-d',
 													fieldLabel: 'Primer pago',
-													labelWidth: 200,
-													width: 400,
+													labelWidth: 100,
+													width: 300,
 													name: 'txtDateFirst',
 													id:'txtDateFirst',
 												},
 												{
 													xtype: 'numberfield',
 													fieldLabel: 'Plazo',
-													labelWidth: 200,
-													width: 400,
+													labelWidth: 100,
+													width: 300,
 													minValue: 0,
 													decimalPrecision: 4,
 													step: 0.0001,
@@ -1705,8 +1705,8 @@
 												{
 													xtype: 'combobox',
 													fieldLabel: 'Frecuencia',
-													labelWidth: 200,
-													width: 400,
+													labelWidth: 100,
+													width: 300,
 													store: ['USD', 'NIO', 'CRC', 'EUR'],
 													store: Ext.create('Ext.data.Store', {
 														fields: ['id', 'name'] 
@@ -1720,9 +1720,9 @@
 												},
 												{
 													xtype: 'combobox',
-													fieldLabel: 'Proveedor de credito',
-													labelWidth: 200,
-													width: 400,
+													fieldLabel: 'Prov. Credito',
+													labelWidth: 100,
+													width: 300,
 													store: ['USD', 'NIO', 'CRC', 'EUR'],
 													store: Ext.create('Ext.data.Store', {
 														fields: ['id', 'name'] 
@@ -1737,8 +1737,8 @@
 												{
 													xtype: 'combobox',
 													fieldLabel: 'Dias excluidos',
-													labelWidth: 200,
-													width: 400,
+													labelWidth: 100,
+													width: 300,
 													store: ['USD', 'NIO', 'CRC', 'EUR'],
 													store: Ext.create('Ext.data.Store', {
 														fields: ['id', 'name'] 
@@ -1759,9 +1759,9 @@
 											items: [
 												{
 													xtype: 'numberfield',
-													fieldLabel: '% de Interes',
-													labelWidth: 200,
-													width: 400,
+													fieldLabel: '% Interes',
+													labelWidth: 100,
+													width: 300,
 													minValue: 0,
 													decimalPrecision: 4,
 													step: 0.0001,
@@ -1773,8 +1773,8 @@
 												},												
 												{
 													xtype: 'fieldcontainer',
-													fieldLabel: 'Aplica exoneracion',
-													labelWidth: 300,
+													fieldLabel: 'Exoneracion',
+													labelWidth: 100,
 													layout: 'hbox',
 													defaults: {
 														margin: '0 10 0 0'
@@ -1804,22 +1804,42 @@
 												},
 												{
 													xtype: 'textfield',
-													fieldLabel: 'Codigo de exoneracion:',
-													labelWidth: 200,
-													width: 400,
+													fieldLabel: 'Cod exon:',
+													labelWidth: 100,
+													width: 300,
 													name: 'txtLayFirstLineProtocolo',
 													id:'txtLayFirstLineProtocolo',
+													tooltip: 'Ingrese el código de exoneración asignado',
 													listeners: {
+														render: function (field) {
+															Ext.create('Ext.tip.ToolTip', {
+																target: field.getEl(),
+																html: '<b>Código de Exoneración</b><br>Ingrese el código válido según DGI',
+																anchor: 'top',
+																trackMouse: true
+															});
+														},
 														change: fnChange_FirstLineProtocolo
 													}
 												},
 												{
 													xtype: 'fieldcontainer',
-													fieldLabel: 'Desembolso en efectivo',
-													labelWidth: 300,
+													fieldLabel: 'Efectivo',
+													tooltip: 'Desembolso en efectivo',
+													labelWidth: 100,
 													layout: 'hbox',
 													defaults: {
 														margin: '0 10 0 0'
+													},
+													listeners: {
+														render: function (field) {
+															Ext.create('Ext.tip.ToolTip', {
+																target: field.getEl(),
+																html: '<b>Desembolso en efectivo</b><br>Marque si , cuando sea un desembolso en efectivo',
+																anchor: 'top',
+																trackMouse: true
+															});
+														}
 													},
 													items: [
 														{
@@ -1840,11 +1860,22 @@
 												},
 												{
 													xtype: 'fieldcontainer',
-													fieldLabel: 'Reportar a sin riesgo',
-													labelWidth: 300,
+													fieldLabel: 'Reportar sr',
+													tooltip: 'Reportar a la sin riesgo',
+													labelWidth: 100,
 													layout: 'hbox',
 													defaults: {
 														margin: '0 10 0 0'
+													},
+													listeners: {
+														render: function (field) {
+															Ext.create('Ext.tip.ToolTip', {
+																target: field.getEl(),
+																html: '<b>Reportar a la sin riesgo</b><br>Marque si , Si reportara el credito a la sin riesgo',
+																anchor: 'top',
+																trackMouse: true
+															});
+														}
 													},
 													items: [
 														{
