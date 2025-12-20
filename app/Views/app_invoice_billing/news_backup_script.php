@@ -420,6 +420,7 @@
 		miVentanaEsperando = Ext.create('Ext.window.Window', {
 					title: 'Procesando... .. .',
 					id: 'miVentanaEsperando',
+					cls: 'win-titulo-blanco',
 					itemId:'miVentanaEsperando',
 					closable: false,
 					modal: true,
@@ -433,6 +434,7 @@
 		miVentanaTableroDeMesas = Ext.create('Ext.window.Window', {
 			title: 'Tablero de Mesas',
 			width: 720,
+			cls: 'win-titulo-blanco',
 			height: 520,
 			modal: true,
 			layout: 'fit',
@@ -548,8 +550,9 @@
 					title: 'Opciones de pago',
 					id: 'miVentanaDePago',
 					itemId:'miVentanaDePago',
+					cls: 'win-titulo-blanco',
 					width: 700,
-					height: 350,
+					height: 400,
 					modal: true,
 					closeAction: 'hide',
 					hidden: true,
@@ -829,6 +832,7 @@
 						{
 							text: 'Confirmar',
 							id: 'btnConfirmarPago',
+							cls:'btn-morado texto-blanco',
 							handler: fnBtnConfirmarPago
 						},
 						{
@@ -845,6 +849,7 @@
 					title: 'Seleccione Formato de Impresión',
 					id: 'miVentanaImpresion',
 					itemId:'miVentanaImpresion',
+					cls: 'win-titulo-blanco',
 					width: 350,
 					height: 350,
 					modal: true,
@@ -912,6 +917,7 @@
 					title: 'Listado de Clientes',
 					id: 'miVentanaSeleccionCliente',
 					itemId:'miVentanaSeleccionCliente',
+					cls: 'win-titulo-blanco',
 					width: 700,
 					height: 400,
 					modal: true,
@@ -923,6 +929,7 @@
 						{
 							text: 'Aceptar',
 							iconCls: 'fa fa-check',
+							cls:'btn-morado texto-blanco',
 							id: 'btnSeleccionCliente',
 							handler: fnBtnSeleccionCliente
 						},
@@ -938,6 +945,7 @@
 		miVentanaSeleccionProducto = Ext.create('Ext.window.Window', {
 					title: 'Listado de Productos',
 					id: 'miVentanaSeleccionProducto',
+					cls: 'win-titulo-blanco',
 					itemId:'miVentanaSeleccionProducto',
 					width: 700,
 					height: 400,
@@ -950,6 +958,7 @@
 						{
 							text: 'Aceptar',
 							iconCls: 'fa fa-check',
+							cls:'btn-morado texto-blanco',
 							id: 'btnSeleccionProducto',
 							handler: fnBtnSeleccionProducto
 						},
@@ -966,6 +975,7 @@
 					title: 'Listado de Facturas',
 					id: 'miVentanaSeleccionFactura',
 					itemId:'miVentanaSeleccionFactura',
+					cls: 'win-titulo-blanco',
 					width: 900,
 					height: 400,
 					modal: true,
@@ -977,6 +987,7 @@
 						{
 							text: 'Aceptar',
 							iconCls: 'fa fa-check',
+							cls:'btn-morado texto-blanco',
 							id: 'btnSeleccionFactura',
 							handler: fnBtnSeleccionFactura
 						},
@@ -993,6 +1004,7 @@
 					title: 'Informacion adicional',
 					id: 'miVentanaInformacionAdicional',
 					itemId:'miVentanaInformacionAdicional',
+					cls: 'win-titulo-blanco',
 					width: 350,
 					height: 250,
 					modal: true,
@@ -1078,6 +1090,7 @@
 					buttons: [
 						{
 							text: 'Aceptar',
+							cls:'btn-morado texto-blanco',
 							id: 'btnConfirmarInformacionAdicional',
 							handler: fnBtnConfirmarInformacionAdicional
 						},
@@ -1122,15 +1135,13 @@
 					xtype: 'panel',
 					title: 'Facturación',
 					layout: 'border',
-					
-					
-
-
+					cls: 'panel-header-llamativo',
 					
 					tbar: [	
 						{
 							text: 'Nueva factura',							
 							iconCls: 'fa fa-plus',
+							cls:'btn-nuevo texto-blanco',
 							id: 'btnNuevaFactura',
 							handler: fnBtnNuevaFactura
 							
@@ -1139,18 +1150,21 @@
 							text: 'Guardar factura',
 							iconCls: 'fa fa-save',							
 							id: 'btnGuardarFactura',
+							cls: 'btn-morado texto-blanco',
 							handler: fnBtnGuardarFactura
 						},
 						{
 							text: 'Eliminar factura',
 							iconCls: 'fa fa-trash',
 							id: 'btnEliminarFactura',
+							cls: 'btn-eliminar texto-blanco',
 							handler: fnBtnEliminarFactura
 						},
 						{
 							text: 'Imprimir factura',
 							iconCls: 'fa fa-print',
 							id: 'btnImprimirFactura',
+							cls: 'btn-imprimir texto-blanco',
 							handler: fnBtnImprimirFactura
 						},
 						
@@ -1160,12 +1174,14 @@
 							text: 'FAC00123', // aquí puedes poner dinámicamente el número
 							name: 'txtTM_transactionNumber',
 							id:'txtTM_transactionNumber',
-							style: 'color:green; font-weight:bold; margin-right:20px;'
+							cls: 'lbl-numero-factura',
+							style: 'font-weight:bold; margin-right:20px;'
 						},
 						{
 							xtype: 'button',
 							text: 'Herramienta',
 							iconCls: 'fa fa-refresh',
+							cls: 'btn-nuevo texto-blanco',
 
 							menu: [   // 🔽 DROPDOWN BUTTON
 								{
@@ -1221,6 +1237,7 @@
 						{
 							xtype: 'tabpanel',
 							region: 'center',
+							cls:'tabs-llamativos',
 							activeTab: 4,  // 🔥 Tab que estará activo por defecto (0 = primer tab)
 
 							items: [
@@ -1361,7 +1378,7 @@
 										// ✔ COLUMNA 2
 										{
 											flex: 1,   // ocupa 50% del espacio disponible
-											maxWidth: 480,   // no se estira más de 500px
+											maxWidth: 490,   // no se estira más de 500px
 											defaults: { xtype: 'textfield', anchor: '100%' },
 											items: [
 												{
@@ -1369,7 +1386,7 @@
 													fieldLabel: 'Cliente',
 													labelWidth: 100,
 													layout: 'hbox',
-													width: 480,
+													width: 490,
 
 													items: [
 														{
@@ -1391,12 +1408,14 @@
 															text: 'Limpiar',
 															iconCls: 'fa fa-eraser',
 															margin: '0 5',
+															cls:'btn-eliminar texto-blanco',
 															id: 'btnLimpiarCliente',
 															handler: fnBtnLimpiarCliente
 														},
 														{
 															xtype: 'button',
 															text: 'Buscar',
+															cls:'btn-verde texto-blanco',
 															iconCls: 'fa fa-search',
 															id: 'btnBuscarCliente',															
 															handler: fnBtnBuscarCliente
@@ -1931,10 +1950,12 @@
 												{
 													text: 'Agregar producto',
 													iconCls: 'fa fa-plus',
+													cls:'btn-verde texto-blanco',
 													handler: fnBtnNuevoProductoDetail
 												},
 												{
 													text: 'Eliminar producto',
+													cls:'btn-eliminar texto-blanco',
 													iconCls: 'fa fa-trash',
 													handler: fnBtnEliminarProductoDetail 
 												},
@@ -2522,6 +2543,7 @@
 				win = Ext.create('Ext.window.Window', {
 					id: 'winAyudaAtajos',
 					title: '📘 Manual de Accesos Rápidos',
+					cls: 'win-titulo-blanco',
 					width: 550,
 					height: 420,
 					modal: true,
