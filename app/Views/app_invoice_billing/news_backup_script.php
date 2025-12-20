@@ -299,7 +299,6 @@
 			'txtDescuento' : 0.00,
 			'txtServices' : 0.00,
 			'txtTotal' : 0.00,
-			
 			'txtChangeAmount' : 0.00,
 			'txtReceiptAmount' : 0.00,
 			'txtReceiptAmountDol' : 0.00,	
@@ -583,6 +582,7 @@
 									keyNavEnabled: false,
 									mouseWheelEnabled: false,
 									readOnly: true,
+									disabled: true,
 									name: 'txtChangeAmount',
 									id:'txtChangeAmount',
 									itemId: 'txtChangeAmount',  // Mejor usar itemId
@@ -1342,6 +1342,7 @@
 													keyNavEnabled: false,
 													mouseWheelEnabled: false,
 													readOnly:true,
+													disabled: true,
 													name: 'txtExchangeRate',
 													id:'txtExchangeRate',
 												},												
@@ -1398,6 +1399,7 @@
 														{
 															xtype: 'textfield',															
 															readOnly: true,
+															disabled: true,
 															width: 195,
 															emptyText: 'Seleccione un cliente...',
 															name: 'txtCustomerDescription',
@@ -1459,7 +1461,7 @@
 												},	
 												{
 													xtype: 'combobox',
-													fieldLabel: 'Linea de credito',
+													fieldLabel: 'Linea',
 													labelWidth: 100,
 													width: 300,
 													store: ['USD', 'NIO', 'CRC', 'EUR'],
@@ -1914,13 +1916,13 @@
 
 										// ✔ COLUMNA 1
 										{
-											width: 400,
+											width: 600,
 											items: [
 												{
 													xtype: 'textarea',
 													fieldLabel: 'Nota',
 													labelWidth: 100,
-													width: 400,
+													width: 600,
 													height: 120,          // altura para varias líneas
 													grow: true,           // opcional: se ajusta automáticamente al contenido
 													growMax: 300,         // altura máxima si grow=true
@@ -2532,27 +2534,70 @@
 											defaults: { xtype: 'numberfield', labelWidth: 100, width: 250 },
 
 											items: [
-												{ fieldLabel: 'Subtotal', value: 0, readOnly: true , name: 'txtSubTotal' , id:'txtSubTotal',},
-												{ fieldLabel: 'Impuesto', value: 0, readOnly: true , name: 'txtIva' ,id:'txtIva', },
+												{ 
+													fieldLabel: 'Subtotal', 
+													value: 0, 
+													readOnly: true , 
+													name: 'txtSubTotal' , 
+													id:'txtSubTotal', 
+													disabled: false,
+													fieldStyle: 'font-weight:bold; color:#fffff; font-size:18px; text-align:right;'
+												},
+												{ 
+													fieldLabel: 'Impuesto', 
+													value: 0, 
+													readOnly: true , 
+													name: 'txtIva' ,
+													id:'txtIva',
+													disabled: false, 
+													fieldStyle: 'font-weight:bold; color:#fffff; font-size:18px; text-align:right;'
+												},
 												{ 
 													fieldLabel: '% Descuento', 
 													value: 0 , 
 													name: 'txtPorcentajeDescuento' , 
 													id:'txtPorcentajeDescuento', 
+													readOnly:false, 
+													fieldStyle: 'font-weight:bold; color:#2E7D32; font-size:18px; text-align:right;',
 													listeners: {
 														change: fnChange_PorcentageDescuento
 													}
 												},
-												{ fieldLabel: 'Descuento', value: 0 , name: 'txtDescuento' , id:'txtDescuento',readOnly:true, },
-												{ fieldLabel: '% Servicio', value: 0 , name: 'txtServices' , id:'txtServices',readOnly:true,},
-												{ fieldLabel: 'Total', value: 0, readOnly: true , name: 'txtTotal' , id:'txtTotal', },
+												{ 
+													fieldLabel: 'Descuento', 
+													value: 0 , 
+													name: 'txtDescuento' , 
+													id:'txtDescuento',
+													readOnly:true, 
+													disabled: false, 
+													fieldStyle: 'font-weight:bold; color:#fffff; font-size:18px; text-align:right;',
+												},
+												{ 
+													fieldLabel: '% Servicio', 
+													value: 0 , 
+													name: 'txtServices' , 
+													id:'txtServices',
+													readOnly:true, 
+													disabled: false, 
+													fieldStyle: 'font-weight:bold; color:#fffff; font-size:18px; text-align:right;'
+												},
+												{ 
+													fieldLabel: 'Total', 
+													value: 0, 
+													readOnly: true , 
+													name: 'txtTotal' , 
+													id:'txtTotal',  
+													disabled: false, 
+													fieldStyle: 'font-weight:bold; color:#ff6600; font-size:18px; text-align:right;'
+												},
 												{
 													xtype: 'button',
 													text: 'Pagar',
 													margin: '20 0 0 0',
 													id: 'btnPagar',
 													handler: fnBtnPagar
-												}
+												},												
+												
 											]
 										}
 									]
@@ -5151,7 +5196,7 @@
 			viewport.down("#txtDescuento").setValue(descuento);
 			viewport.down("#txtIva").setValue(ivaGeneral);
 			viewport.down("#txtServices").setValue(serviceGeneral);
-			viewport.down("#txtTotal").setValue(totalGeneral);
+			viewport.down("#txtTotal").setValue(totalGeneral);			
 
 			//Si es de credito que la factura no supere la linea de credito
 			var causalSelect 				= viewport.down("#txtCausalID").getValue();

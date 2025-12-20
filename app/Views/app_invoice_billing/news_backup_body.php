@@ -380,4 +380,14 @@
 }
 
 
+
+/* TOTAL DE LA FACTURA */
+.lbl-total-factura {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ff6600;
+    text-align: center;
+    margin: 10px; /* opcional si quieres margen */
+}
+
 </style>
