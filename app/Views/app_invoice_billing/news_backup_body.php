@@ -399,4 +399,14 @@
 }
 
 
+/* BOTON DE HERRAMIENTA */
+.x-btn-wrap-default-toolbar-small.x-btn-arrow-right:after{
+	content: "\f107"; /* fa-chevron-down */
+    font-family: FontAwesome;
+    font-size: 22px;
+    color: #fff;
+    margin-left: 8px;
+    display: inline-block;
+}
+
 </style>

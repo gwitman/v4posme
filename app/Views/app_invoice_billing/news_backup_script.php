@@ -1197,8 +1197,7 @@
 							xtype: 'button',
 							text: 'Herramienta',
 							iconCls: 'fa fa-refresh',
-							cls: 'btn-nuevo texto-blanco',
-
+							cls: 'btn-nuevo texto-blanco btn-fa-menu',	
 							menu: [   // 🔽 DROPDOWN BUTTON
 								{
 									text: 'Actualizar',
@@ -2810,6 +2809,15 @@
 			var miVentanaDePago_		= Ext.getCmp('miVentanaDePago');			
 			fnConfiguracionLoad(miVentanaPrincipal_, objConfigInit );
 			fnConfiguracionLoad(miVentanaDePago_, objConfigInit );
+			
+			Ext.Msg.show({
+				title: 		'Operación realizada',
+				message: 	"<span style='color:green;font-weight:bold;'>Listo pantalla preparada para nueva factura</span>",
+				cls: 		'win-titulo-blanco',
+				icon: 		Ext.Msg.INFO,
+				buttons: 	Ext.Msg.OK
+			});
+			
 		}
 		function fnEnviarFactura(accion)
 		{
@@ -3026,49 +3034,57 @@
 		}
 		function fnBtnEliminarFactura()
 		{
-			miVentanaEsperando.show();
-			Ext.Ajax.request({
-				url		: "<?php echo base_url(); ?>/app_invoice_billing/delete",
-				method	: 'POST',            // o 'POST'
-				async: true,  				// bloquea el hilo
-				params	: {                 // parámetros opcionales
-					companyID 			: Ext.getCmp('miVentanaPrincipal').down('#txtCompanyID').getValue(),
-					transactionID 		: Ext.getCmp('miVentanaPrincipal').down('#txtTransactionID').getValue(),
-					transactionMasterID : Ext.getCmp('miVentanaPrincipal').down('#txtTransactionMasterID').getValue(),
-				},
-				success: function(response, opts) {
-					
-					// response.responseText contiene la respuesta en texto
-					var datos = Ext.decode(response.responseText); // parse JSON
-					console.log('Datos recibidos fnBtnEliminarFactura:', datos);
-					miVentanaEsperando.hide();
-					
-					objListCustomerCreditLine 	= JSON.parse('<?php echo json_encode($objListCustomerCreditLine); ?>');
-					var miVentanaPrincipal_ 	= Ext.getCmp('miVentanaPrincipal');
-					var miVentanaDePago_		= Ext.getCmp('miVentanaDePago');			
-					fnConfiguracionLoad(miVentanaPrincipal_, objConfigInit );
-					fnConfiguracionLoad(miVentanaDePago_, objConfigInit );
-					
-					if(datos.error){
+			
+			if(Ext.getCmp('miVentanaPrincipal').down('#txtTransactionMasterID').getValue() > 0 )
+			{
+				miVentanaEsperando.show();
+				Ext.Ajax.request({
+					url		: "<?php echo base_url(); ?>/app_invoice_billing/delete",
+					method	: 'POST',            // o 'POST'
+					async: true,  				// bloquea el hilo
+					params	: {                 // parámetros opcionales
+						companyID 			: Ext.getCmp('miVentanaPrincipal').down('#txtCompanyID').getValue(),
+						transactionID 		: Ext.getCmp('miVentanaPrincipal').down('#txtTransactionID').getValue(),
+						transactionMasterID : Ext.getCmp('miVentanaPrincipal').down('#txtTransactionMasterID').getValue(),
+					},
+					success: function(response, opts) {
 						
-						Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>"+datos.message+"</span>" );						
+						// response.responseText contiene la respuesta en texto
+						var datos = Ext.decode(response.responseText); // parse JSON
+						console.log('Datos recibidos fnBtnEliminarFactura:', datos);
+						miVentanaEsperando.hide();
+						
+						objListCustomerCreditLine 	= JSON.parse('<?php echo json_encode($objListCustomerCreditLine); ?>');
+						var miVentanaPrincipal_ 	= Ext.getCmp('miVentanaPrincipal');
+						var miVentanaDePago_		= Ext.getCmp('miVentanaDePago');			
+						fnConfiguracionLoad(miVentanaPrincipal_, objConfigInit );
+						fnConfiguracionLoad(miVentanaDePago_, objConfigInit );
+						
+						if(datos.error){
+							
+							Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>"+datos.message+"</span>" );						
+						}
+						else{
+							Ext.Msg.show({
+								title: 'Operación realizada',
+								cls: 'win-titulo-blanco',
+								message: '<span style="color:green;font-weight:bold;">'+datos.message+ '</span>',
+								icon: Ext.Msg.INFO,
+								buttons: Ext.Msg.OK
+							});
+						}
+					},
+					failure: function(response, opts) {
+						miVentanaEsperando.hide();
+						Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">No se pudieron cargar los datos</span>');
+						console.log('Server-side failure with status code ' + response.status);
 					}
-					else{
-						Ext.Msg.show({
-							title: 'Operación realizada',
-							cls: 'win-titulo-blanco',
-							message: '<span style="color:green;font-weight:bold;">'+datos.message+ '</span>',
-							icon: Ext.Msg.INFO,
-							buttons: Ext.Msg.OK
-						});
-					}
-				},
-				failure: function(response, opts) {
-					miVentanaEsperando.hide();
-					Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">No se pudieron cargar los datos</span>');
-					console.log('Server-side failure with status code ' + response.status);
-				}
-			});
+				});
+			}
+			else 
+			{
+				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">Debe seleccionar una factura</span>');
+			}
 			
 			
 		}
@@ -3187,11 +3203,18 @@
 			miVentanaSeleccionCliente.show();
 		}
 		function fnBtnPagar(btn)
-		{
-			var panel = btn.up('panel');
-			// Tomar valores de ejemplo			
-			miVentanaDePago.show();		
-			Ext.getCmp('miVentanaDePago').down("#txtReceiptAmount").focus(true, 200);		
+		{			
+			if(Ext.getCmp('miVentanaPrincipal').down("#txtTransactionMasterID").getValue() > 0 )
+			{
+				var panel = btn.up('panel');
+				// Tomar valores de ejemplo			
+				miVentanaDePago.show();		
+				Ext.getCmp('miVentanaDePago').down("#txtReceiptAmount").focus(true, 200);		
+			}
+			else
+			{
+				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>Debe guardar la factura primeramente.</span>" );	
+			}
 		}
 		function fnBtnConfirmarPago(winBtn) 
 		{			
