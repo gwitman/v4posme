@@ -1483,4 +1483,14 @@ function helper_notificationPage($titlePage="Title", $summaryPage="Summary", $la
     return $htmlPage;
 }
 
+function helper_reemplazarPuntosExceptoUltimo($precieValueAbs)
+{
+	$precieValueAbs = 
+			substr_count($precieValueAbs, '.') > 1 ? 
+				preg_replace('/\.(?=.*\.)/', ',', $precieValueAbs) : 
+				$precieValueAbs;
+				
+	return $precieValueAbs;
+}
+
 ?>

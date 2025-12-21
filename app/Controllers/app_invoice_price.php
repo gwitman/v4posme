@@ -280,6 +280,7 @@ class app_invoice_price extends _BaseController {
 					throw new \Exception("NO EXISTE EL ARCHIVO PARA IMPORTAR LOS PRECIOS, RECUERDE QUE EL ARCHIVO DEBE TENER LA EXTENSION  EJEMPLO <b>".$filePrice.".csv</b> ");
 				
 				
+					
 					$objParameter	= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT",$companyID);
 					$characterSplie = $objParameter->value;
 					
@@ -317,9 +318,23 @@ class app_invoice_price extends _BaseController {
 							$dataPrice["typePriceID"] 				= $typePriceID;							
 							$dataPrice["price"] 					= $precieValueAbs;
 							$dataPrice["percentageCommision"] 		= $comisionValueAbs;
-							$dataPrice["percentage"] 				= $objItem->cost == 0 ? 
-																		($precieValueAbs / 100) : 
-																		(((100 * $precieValueAbs) / $objItem->cost) - 100);
+							
+							
+							// Validar que price sea numérico
+							if (!is_numeric($precieValueAbs)) 
+							{								
+								//$precieValueAbs 	= substr_count($precieValueAbs, '.') > 1 ? preg_replace('/\.(?=.*\.)/', ',', $precieValueAbs) : $precieValueAbs;
+								//$precieValueAbs	= (float) str_replace(',', '', $precieValueAbs);
+								throw new \Exception("EL PRODUCTO : ".$objItem->itemNumber." ".$objItem->name."  (bar codigo:".$objItem->barCode.") Las columnas de  valor no son numericas VALOR:". $precieValueAbs. " ó tiene un mal formato." );
+							}
+
+						
+							// Convertir explícitamente a float
+							$precieValueAbs 			= (float)$precieValueAbs;
+							$cost           		 	= (float)$objItem->cost;
+							$dataPrice["percentage"] 	= $objItem->cost == 0 ? 
+															($precieValueAbs / 100) : 
+															(((100 * $precieValueAbs) / $objItem->cost) - 100);
 									
 							$this->Price_Model->insert_app_posme($dataPrice);
 						}
