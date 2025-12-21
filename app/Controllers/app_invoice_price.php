@@ -277,7 +277,7 @@ class app_invoice_price extends _BaseController {
 					$path 	= $path.'/'.$filePrice;
 					
 					if (!file_exists($path))
-					throw new \Exception("NO EXISTE EL ARCHIVO PARA IMPORTAR LOS PRECIOS");
+					throw new \Exception("NO EXISTE EL ARCHIVO PARA IMPORTAR LOS PRECIOS, RECUERDE QUE EL ARCHIVO DEBE TENER LA EXTENSION  EJEMPLO <b>".$filePrice.".csv</b> ");
 				
 				
 					$objParameter	= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT",$companyID);
@@ -399,7 +399,7 @@ class app_invoice_price extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}		
 	}
 	function insertElement($dataSession){
