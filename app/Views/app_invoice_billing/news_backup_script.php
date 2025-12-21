@@ -551,7 +551,7 @@
 					itemId:'miVentanaDePago',
 					cls: 'win-titulo-blanco',
 					width: 700,
-					height: 400,
+					height: 450,
 					modal: true,
 					closeAction: 'hide',
 					hidden: true,
@@ -582,9 +582,10 @@
 									keyNavEnabled: false,
 									mouseWheelEnabled: false,
 									readOnly: true,
-									disabled: true,
+									disabled: false,
 									name: 'txtChangeAmount',
 									id:'txtChangeAmount',
+									fieldStyle: 'font-weight:bold; font-size:18px; text-align:right;',
 									itemId: 'txtChangeAmount',  // Mejor usar itemId
 									style: 'font-weight:bold; border-width: 2px;',  // resalta el cuadro
 									listeners: {
@@ -603,6 +604,7 @@
 									hideTrigger: true,
 									keyNavEnabled: false,
 									mouseWheelEnabled: false,
+									fieldStyle: 'font-weight:bold; font-size:18px; text-align:right;',
 									name: 'txtReceiptAmount',
 									id:'txtReceiptAmount',
 									listeners: {
@@ -620,6 +622,7 @@
 									hideTrigger: true,
 									keyNavEnabled: false,
 									mouseWheelEnabled: false,
+									fieldStyle: 'font-weight:bold; font-size:18px; text-align:right;',
 									name: 'txtReceiptAmountDol',
 									id:'txtReceiptAmountDol',
 									listeners: {
@@ -637,6 +640,7 @@
 											flex: 1,
 											width:95,
 											margin: '0 5 0 0',
+											fieldStyle: 'font-weight:bold; font-size:18px; text-align:right;',
 											name: 'txtReceiptAmountTarjeta',
 											id:'txtReceiptAmountTarjeta',
 											listeners: {
@@ -655,6 +659,7 @@
 											editable: false,
 											width: 150,
 											margin: '0 5 0 0',
+											fieldStyle: 'font-weight:bold; font-size:18px; text-align:right;',
 											name: 'txtReceiptAmountTarjeta_BankID',
 											id:'txtReceiptAmountTarjeta_BankID',
 											listeners: {
@@ -666,6 +671,7 @@
 											emptyText: 'Referencia',
 											width: 100,
 											flex: 1,
+											fieldStyle: 'font-weight:bold; font-size:18px; text-align:right;',
 											name: 'txtReceiptAmountTarjeta_Reference',
 											id:'txtReceiptAmountTarjeta_Reference',
 										}
@@ -682,6 +688,7 @@
 											flex: 1,
 											width:95,
 											margin: '0 5 0 0',
+											fieldStyle: 'font-weight:bold; font-size:18px; text-align:right;',
 											name: 'txtReceiptAmountTarjetaDol',
 											id:'txtReceiptAmountTarjetaDol',
 											listeners: {
@@ -700,6 +707,7 @@
 											editable: false,
 											width: 150,
 											margin: '0 5 0 0',
+											fieldStyle: 'font-weight:bold; font-size:18px; text-align:right;',
 											name: 'txtReceiptAmountTarjetaDol_BankID',
 											id:'txtReceiptAmountTarjetaDol_BankID',
 											listeners: {
@@ -711,6 +719,7 @@
 											emptyText: 'Referencia',
 											width: 100,
 											flex: 1,
+											fieldStyle: 'font-weight:bold; font-size:18px; text-align:right;',
 											name: 'txtReceiptAmountTarjetaDol_Reference',
 											id:'txtReceiptAmountTarjetaDol_Reference',
 										}
@@ -727,6 +736,7 @@
 											flex: 1,
 											width:95,
 											margin: '0 5 0 0',
+											fieldStyle: 'font-weight:bold; font-size:18px; text-align:right;',
 											name: 'txtReceiptAmountBank',
 											id:'txtReceiptAmountBank',
 											listeners: {
@@ -745,6 +755,7 @@
 											editable: false,
 											width: 150,
 											margin: '0 5 0 0',
+											fieldStyle: 'font-weight:bold; font-size:18px; text-align:right;',
 											name: 'txtReceiptAmountBank_BankID',
 											id:'txtReceiptAmountBank_BankID',
 											listeners: {
@@ -756,6 +767,7 @@
 											emptyText: 'Referencia',
 											width: 100,
 											flex: 1,
+											fieldStyle: 'font-weight:bold; font-size:18px; text-align:right;',
 											name: 'txtReceiptAmountBank_Reference',
 											id:'txtReceiptAmountBank_Reference',
 										}
@@ -772,6 +784,7 @@
 											flex: 1,
 											width:95,
 											margin: '0 5 0 0',
+											fieldStyle: 'font-weight:bold; font-size:18px; text-align:right;',
 											name: 'txtReceiptAmountBankDol',
 											id:'txtReceiptAmountBankDol',
 											listeners: {
@@ -790,6 +803,7 @@
 											editable: false,
 											width: 150,
 											margin: '0 5 0 0',
+											fieldStyle: 'font-weight:bold; font-size:18px; text-align:right;',
 											name: 'txtReceiptAmountBankDol_BankID',
 											id:'txtReceiptAmountBankDol_BankID',
 											listeners: {
@@ -801,6 +815,7 @@
 											emptyText: 'Referencia',
 											width: 100,
 											flex: 1,
+											fieldStyle: 'font-weight:bold; font-size:18px; text-align:right;',
 											name: 'txtReceiptAmountBankDol_Reference',
 											id:'txtReceiptAmountBankDol_Reference',
 										}
@@ -817,6 +832,7 @@
 									hideTrigger: true,
 									keyNavEnabled: false,
 									mouseWheelEnabled: false,
+									fieldStyle: 'font-weight:bold; font-size:18px; text-align:right;',
 									name: 'txtReceiptAmountPoint',
 									id:'txtReceiptAmountPoint',
 									listeners: {
@@ -2001,7 +2017,8 @@
 													width: 350,
 													id:'txtScanerCodigo',
 													name:'txtScanerCodigo',
-													itemId:'txtScanerCodigo',
+													itemId:'txtScanerCodigo',													
+													fieldStyle: 'font-weight:bold; color:#ff6600; font-size:18px; text-align:right;',
 													enableKeyEvents: true,
 													listeners: {
 														afterrender: function(field) {
@@ -2983,19 +3000,20 @@
 						Ext.Msg.show({
 							title: 		'Operación realizada',
 							message: 	"<span style='color:green;font-weight:bold;'>Operacion exitosa</span>",
+							cls: 		'win-titulo-blanco',
 							icon: 		Ext.Msg.INFO,
 							buttons: 	Ext.Msg.OK
 						});
 					} 
 					else 
 					{
-						Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>"+datos.error.message + "</span>" );	
+						Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>"+datos.error.message + "</span>" );	
 					}
 					
 				},
 				failure: function(response, opts) {
 					miVentanaEsperando.hide();
-					Ext.Msg.alert('Error', '<span style="color:red;font-weight:bold;">No se pudieron cargar los datos</span>');
+					Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">No se pudieron cargar los datos</span>');
 					console.log('Server-side failure with status code ' + response.status);
 				}
 			});
@@ -3033,11 +3051,12 @@
 					
 					if(datos.error){
 						
-						Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>"+datos.message+"</span>" );						
+						Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>"+datos.message+"</span>" );						
 					}
 					else{
 						Ext.Msg.show({
 							title: 'Operación realizada',
+							cls: 'win-titulo-blanco',
 							message: '<span style="color:green;font-weight:bold;">'+datos.message+ '</span>',
 							icon: Ext.Msg.INFO,
 							buttons: Ext.Msg.OK
@@ -3046,7 +3065,7 @@
 				},
 				failure: function(response, opts) {
 					miVentanaEsperando.hide();
-					Ext.Msg.alert('Error', '<span style="color:red;font-weight:bold;">No se pudieron cargar los datos</span>');
+					Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">No se pudieron cargar los datos</span>');
 					console.log('Server-side failure with status code ' + response.status);
 				}
 			});
@@ -3108,7 +3127,7 @@
 					
 				},
 				failure: function(response, opts) {
-					Ext.Msg.alert('Error', '<span style="color:red;font-weight:bold;">No se pudieron cargar los datos</span>');
+					Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">No se pudieron cargar los datos</span>');
 					console.log('Server-side failure with status code ' + response.status);
 				}
 			});
@@ -3209,7 +3228,7 @@
 			}
 			else
 			{
-				Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>Debe cargar la factura primeramente.</span>" );	
+				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>Debe cargar la factura primeramente.</span>" );	
 			}
 		
 		
@@ -3271,7 +3290,7 @@
 
 			if (seleccion.length === 0) 
 			{
-				Ext.Msg.alert('Aviso', '<span style="color:red;font-weight:bold;">Debe seleccionar al menos una factura.</span>');
+				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">Debe seleccionar al menos una factura.</span>');
 				return;
 			}
 			
@@ -3291,7 +3310,7 @@
 			var record = win.currentRecord;
 
 			if (!record) {
-				Ext.Msg.alert('Error', '<span style="color:red;font-weight:bold;">No se encontró el registro</span>');
+				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">No se encontró el registro</span>');
 				return;
 			}
 
@@ -3320,7 +3339,7 @@
 
 			if (seleccion.length === 0) 
 			{
-				Ext.Msg.alert('Aviso', '<span style="color:red;font-weight:bold;">Debe seleccionar al menos un producto.</span>');
+				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">Debe seleccionar al menos un producto.</span>');
 				return;
 			}
 			
@@ -3393,7 +3412,7 @@
 
 			if (seleccion.length === 0) 
 			{
-				Ext.Msg.alert('Aviso', '<span style="color:red;font-weight:bold;">Debe seleccionar al menos un cliente.</span>');
+				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">Debe seleccionar al menos un cliente.</span>');
 				return;
 			}
 			
@@ -3506,7 +3525,7 @@
 						if(datos.objTransactionMaster.length > 0 )
 						{
 							viewport.down('#txtCheckApplyExoneracion').setValue(false);							
-							Ext.Msg.alert('Error', '<span style="color:red;font-weight:bold;">El numero de exoneracion ya existe!!</span>');
+							Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">El numero de exoneracion ya existe!!</span>');
 						}
 						//La exoneracoin no existe si se puede exonerar
 						else
@@ -3534,7 +3553,7 @@
 						
 					},
 					failure: function(response, opts) {
-						Ext.Msg.alert('Error', '<span style="color:red;font-weight:bold;">No se pudieron cargar los datos</span>');
+						Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">No se pudieron cargar los datos</span>');
 						console.log('Server-side failure with status code ' + response.status);
 					}
 				});
@@ -3608,7 +3627,7 @@
 			if (selection.length > 0) {
 				grid.getStore().remove(selection);
 			} else {
-				Ext.Msg.alert('Atención', '<span style="color:red;font-weight:bold;">Seleccione al menos un producto para eliminar.</span>');
+				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">Seleccione al menos un producto para eliminar.</span>');
 			}
 		}
 		function fnBtnNuevoProductoDetail(btn)
@@ -4654,7 +4673,7 @@
 						
 					},
 					failure: function(response, opts) {
-						Ext.Msg.alert('Error', '<span style="color:red;font-weight:bold;">No se pudieron cargar los datos</span>');
+						Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">No se pudieron cargar los datos</span>');
 						console.log('Server-side failure with status code ' + response.status);
 					}
 				});
@@ -4678,7 +4697,7 @@
 						indexDBAddTable("objListaProductosConceptosX001",datos.objGridView);
 					},
 					failure: function(response, opts) {
-						Ext.Msg.alert('Error', '<span style="color:red;font-weight:bold;">No se pudieron cargar los datos</span>');
+						Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">No se pudieron cargar los datos</span>');
 						console.log('Server-side failure with status code ' + response.status);
 					}
 				});
@@ -4686,13 +4705,17 @@
 					
 				// Cerrar ventana modal
 				miVentanaEsperando.close();
-				Ext.Msg.alert('Éxito', '<span style="color:green;font-weight:bold;">Datos actualizados correctamente</span>');
-			
-				
+				Ext.Msg.show({
+					title: 'Éxito',
+					message: '<span style="color:green;font-weight:bold;">Datos actualizados correctamente</span>',
+					buttons: Ext.Msg.OK,
+					icon: Ext.Msg.INFO,
+					cls: 'win-titulo-blanco'
+				});
 				
 			},
 			failure: function(response, opts) {
-				Ext.Msg.alert('Error', '<span style="color:red;font-weight:bold;">No se pudieron cargar los datos</span>');
+				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">No se pudieron cargar los datos</span>');
 				console.log('Server-side failure with status code ' + response.status);
 			}
 		});
@@ -4978,7 +5001,7 @@
 					
 				},
 				failure: function(response, opts) {
-					Ext.Msg.alert('Error', '<span style="color:red;font-weight:bold;">No se pudieron cargar los datos</span>');
+					Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">No se pudieron cargar los datos</span>');
 					console.log('Server-side failure with status code ' + response.status);
 				}
 			});
@@ -5742,7 +5765,7 @@
 					if(miVentanaEsperando.show)
 						miVentanaEsperando.hide();
 					
-				Ext.Msg.alert('Error', '<span style="color:red;font-weight:bold;">No se pudieron cargar los datos</span>');
+				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">No se pudieron cargar los datos</span>');
 				console.log('Server-side failure with status code ' + response.status);
 			}
 		});
@@ -5991,54 +6014,54 @@
 		
 		//Validar bodega de despacho
 		if(miVentanaPrincipal_.down("#txtWarehouseID").getValue() == ""){			
-			Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>Seleccionar bodega de despacho</span>" );	
+			Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>Seleccionar bodega de despacho</span>" );	
 			result = false;
 		}
 
 
 		//Validar Fecha
 		if(miVentanaPrincipal_.down("#txtDate").getValue() == ""){
-			Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>Establecer fecha al documento</span>" );	
+			Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>Establecer fecha al documento</span>" );	
 			result = false;
 		}
 
 		//Validar Cliente
 		if(miVentanaPrincipal_.down("#txtCustomerID").getValue() == ""){
-			Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>Seleccionar el cliente</span>" );	
+			Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>Seleccionar el cliente</span>" );	
 			result = false;
 		}
 		//Validar Proveedor de Credito
 		if(miVentanaPrincipal_.down("#txtReference1").getValue() == "0" && switchDesembolso){
-			Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>Seleccionar el proveedor de credito</span>" );	
+			Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>Seleccionar el proveedor de credito</span>" );	
 			result = false;
 		}
 		//Validar Zona
 		if(miVentanaPrincipal_.down("#txtZoneID").getValue() == "" && switchDesembolso){
-			Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>Seleccionar la zona de la factura</span>" );	
+			Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>Seleccionar la zona de la factura</span>" );	
 			result = false;
 		}
 		//Validar Vendedor
 		if(miVentanaPrincipal_.down("#txtEmployeeID").getValue() == "" && switchDesembolso){
-			Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>Seleccionar el vendedor de la factura</span>" );	
+			Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>Seleccionar el vendedor de la factura</span>" );	
 			result = false;
 		}
 
 		//Validar monto descuento en rango de 0 a 100
 		let porcentajeDescuento = parseFloat(miVentanaPrincipal_.down('#txtPorcentajeDescuento').getValue()) || 0;
 		if (porcentajeDescuento < 0 || porcentajeDescuento > 100) {
-			Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>El porcentaje de descuento no es valido</span>" );	
+			Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>El porcentaje de descuento no es valido</span>" );	
 			result = false;
 		}
 
 		//Validar Estado de la factura
 		if(miVentanaPrincipal_.down("#txtStatusIDOld").getValue() ==  varStatusInvoiceAplicado){
-			Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>Crear una nueva factura, por que la actual esta aplicada, no puede ser modificada</span>" );	
+			Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>Crear una nueva factura, por que la actual esta aplicada, no puede ser modificada</span>" );	
 			result = false;
 		}
 
 		//Validar estado anulado
 		if(miVentanaPrincipal_.down("#txtStatusID").getValue() ==  varStatusInvoiceAnular){
-			Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>No puede pasar a estado anulada</span>" );	
+			Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>No puede pasar a estado anulada</span>" );	
 			result = false;
 		}
 
@@ -6052,7 +6075,7 @@
 		if(validateTotalesZero == true)
 		{
 			if(cantidadTotalesEnZero > 0){
-				Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>No puede haber totales en 0</span>" );	
+				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>No puede haber totales en 0</span>" );	
 				result = false;
 			}
 		}
@@ -6060,13 +6083,13 @@
 
 		var cantidadTotalesEnZero = store.queryBy(function(record) { return record.get('txtTMD_txtQuantity') == 0; }).getCount();
 		if(cantidadTotalesEnZero > 0){
-			Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>No puede haber cantidades en 0</span>" );	
+			Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>No puede haber cantidades en 0</span>" );	
 			result = false;
 		}
 
 		
 		if( /*varAutoAPlicar == "true" && */ store.getCount() == 0){
-			Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>La factura no puede estar vacia</span>" );	
+			Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>La factura no puede estar vacia</span>" );	
 			result = false;
 		}
 
@@ -6096,21 +6119,21 @@
 		var customerCreditLineID 		= miVentanaPrincipal_.down("#txtCustomerCreditLineID").getValue();
 		if(invoiceTypeCredit && customerCreditLineID == null)
 		{
-			Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>Debe seleccionar una linea de credito</span>" );	
+			Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>Debe seleccionar una linea de credito</span>" );	
 			result = false;
 		}
 			
 		
 		var objCustomerCreditLine 		= objListCustomerCreditLine.filter(function(obj){ return obj.customerCreditLineID == customerCreditLineID; }); 
 		if(varParameterAmortizationDuranteFactura && miVentanaPrincipal_.down("#txtReference2").getValue() == "" && invoiceTypeCredit ){			
-			Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>Seleccionar el plazo</span>" );	
+			Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>Seleccionar el plazo</span>" );	
 			result = false;
 		}
 
 		//No puede haber cambio, si la factura es de credito
 		if(invoiceTypeCredit && miVentanaDePago_.down("#txtChangeAmount").getValue() > 0 )
 		{
-			Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>No puede haber cambio si la factura es de credito</span>" );	
+			Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>No puede haber cambio si la factura es de credito</span>" );	
 			result = false;
 		}
 
@@ -6125,20 +6148,20 @@
 
 			//Validar Fecha del Primer Pago si es de Credito
 			if(miVentanaPrincipal_.down("#txtDateFirst").getValue() == "" && switchDesembolso){
-				Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>Seleccionar la fecha del primer pago</span>" );	
+				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>Seleccionar la fecha del primer pago</span>" );	
 				result = false;
 			}
 
 
 			//Validar Notas
 			if(miVentanaPrincipal_.down("#txtNote").getValue() == "" && switchDesembolso){
-				Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>Asignarle una nota al documento</span>" );	
+				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>Asignarle una nota al documento</span>" );	
 				result = false;
 			}
 
 			//Validar Escritura Publica
 			if(miVentanaPrincipal_.down("#txtFixedExpenses").getValue() == "" && switchDesembolso){
-				Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>Ingresar el porcentaje de gasto fijo por desembolso</span>" );	
+				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>Ingresar el porcentaje de gasto fijo por desembolso</span>" );	
 				result = false;
 			}
 
@@ -6160,7 +6183,7 @@
 			//Validar Limite
 			if(parseFloat(balanceCredit) < parseFloat(montoTotalInvoice) &&  parseFloat(balanceCredit) != 0 ){
 				result = false;
-				Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>La factura no puede ser facturada al credito, balance del cliente" + balanceCredit + " </span>"  );	
+				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>La factura no puede ser facturada al credito, balance del cliente" + balanceCredit + " </span>"  );	
 			}
 
 
@@ -6169,7 +6192,7 @@
 			//Validar Pago
 			if( parseFloat( miVentanaDePago_.down("#txtChangeAmount").getValue() )  < 0 ){
 				result = false;
-				Ext.Msg.alert('Error',"<span style='color:red;font-weight:bold;'>El cambio de la factura no puede ser menor a 0</span>" );	
+				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>El cambio de la factura no puede ser menor a 0</span>" );	
 			}
 		}
 

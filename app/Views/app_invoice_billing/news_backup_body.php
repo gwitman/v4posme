@@ -390,4 +390,13 @@
     margin: 10px; /* opcional si quieres margen */
 }
 
+/* COLOR DEL INPUT */
+.text-field-text-verde-input {
+    font-weight: bold;
+    color: #d40000;
+    font-size: 18px;
+    text-align: right;
+}
+
+
 </style>

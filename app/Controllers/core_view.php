@@ -317,29 +317,27 @@ class core_view extends _BaseController {
 											$viewname:
 											$viewname."_MOBILE";
 											
-			$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewnameTemp,CALLERID_SEARCH,null,$parameter);
-			$dataViewDataTotal			= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname."_TOTAL",CALLERID_SEARCH,null,$parameter);
-			$dataViewDataDiplay			= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname."_DISPLAY",CALLERID_SEARCH,null,$parameter); 				
 			
-			if(!$dataViewData )
+			//Obtener los registros
+			$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewnameTemp,CALLERID_SEARCH,null,$parameter);
+			if(!$dataViewData  )
 			{
 				throw new \Exception("No existe la vista '".$viewnameTemp."' revisar en tb_dataview y en tb_company_dataview ");
 			}
 			
+			//Obtener las cantidades
+			$dataViewDataTotal			= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname."_TOTAL_EXT6.2.0",CALLERID_SEARCH,null,$parameter);
 			if(!$dataViewDataTotal )
 			{
-				throw new \Exception("No existe la vista '".$viewname."_TOTAL"."' revisar en tb_dataview y en tb_company_dataview ");
+				$dataViewDataTotal			= $this->core_web_view->getViewByName($this->session->get('user'),$componentid,$viewname."_TOTAL",CALLERID_SEARCH,null,$parameter);
+				if(!$dataViewDataTotal )
+					throw new \Exception("No existe la vista '".$viewname."_TOTAL"."' revisar en tb_dataview y en tb_company_dataview ");
 			}
 			
-			if(!$dataViewDataDiplay )
-			{
-				throw new \Exception("No existe la vista '".$viewname."_DISPLAY"."' revisar en tb_dataview y en tb_company_dataview ");
-			}
+			
 				
-			$dataViewDataTotal 			= $dataViewDataTotal["view_data"][0]["itemID"];
-			$dataViewDataDiplay 		= $dataViewDataDiplay["view_data"][0]["itemID"];
+			$dataViewDataTotal 					= $dataViewDataTotal["view_data"][0]["itemID"];
 			$parameter["{dataViewDataTotal}"] 	= $dataViewDataTotal;
-			$parameter["{dataViewDataDiplay}"] 	= $dataViewDataDiplay;
 			
 			return $this->response->setJSON([
 				'success' => true,
