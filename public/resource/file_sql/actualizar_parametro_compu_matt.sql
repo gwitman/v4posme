@@ -1,4 +1,5 @@
 /*BD: 	dbda9vmdciutay:compu_matt*/
+/*servidor:		siteground*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

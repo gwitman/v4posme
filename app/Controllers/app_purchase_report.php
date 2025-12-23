@@ -194,6 +194,7 @@ class app_purchase_report extends _BaseController {
 			$employerListID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"employerIDFilter");//--finuri			
 			$startOn			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"startOn");//--finuri
 			$endOn				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri
+			$customerNumber		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"customerNumber");//--finuri			
 			
 			//Cargar Libreria
 			$objParameterTamanoLetra	= $this->core_web_parameter->getParameter("CORE_VIEW_CUSTOM_REPORT_IN_LIST_ITEM_SIZE_LATTER",$companyID);
@@ -231,10 +232,10 @@ class app_purchase_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_purchase_get_report_purchase_taller(?,?,?,?,?,?);";
+				$query			= "CALL pr_purchase_get_report_purchase_taller(?,?,?,?,?,?,?);";
 				$objData		= $this->Bd_Model->executeRenderMultipleNative(
 					$query,
-					[$userID,$tocken,$companyID,$employerListID, $startOn,$endOn." 23:59:59" ]
+					[$userID,$tocken,$companyID,$employerListID, $startOn,$endOn." 23:59:59",$customerNumber ]
 				);			
 				
 				if(isset($objData[0]))

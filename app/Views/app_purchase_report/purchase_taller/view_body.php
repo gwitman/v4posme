@@ -51,6 +51,18 @@
 												</div>
 												
 												
+												<div class="form-group">
+													<label class="col-lg-6 control-label" for="txtCustomerNumber">Codigo de cliente:</label>
+													<div class="col-lg-6"> 
+														<div class="col-lg-6">
+														</div>
+														<div class="col-lg-6">
+															<input type="text" name="txtCustomerNumber" id="txtCustomerNumber" class="form-control" />
+														</div>												
+													</div>
+												</div>	
+												
+												
 												
                                         </form>
                                     </div><!-- End .panel-body -->

@@ -9,10 +9,11 @@
 						$("#txtEndOn").datepicker("update");	
 						
 						
-						$(document).on("click","#print-btn-report",function(){								
-							var employerID		=	$("#employerID").val();		
-							var startOn			=	$("#txtStartOn").val();	
-							var endOn			=	$("#txtEndOn").val();
+						$(document).on("click","#print-btn-report",function(){	
+							var txtCustomerNumber		=	$("#txtCustomerNumber").val();							
+							var employerID				=	$("#employerID").val();		
+							var startOn					=	$("#txtStartOn").val();	
+							var endOn					=	$("#txtEndOn").val();
 							
 							if(!( startOn == "" || endOn == "" ) )
 							{
@@ -24,7 +25,10 @@
 										employerIDString = employerIDString + "," + employerID[i];
 									}
 									
-									window.location		= "<?php echo base_url(); ?>/app_purchase_report/purchase_taller/viewReport/true/startOn/"+startOn+"/endOn/"+endOn+"/employerIDFilter/"+employerIDString;
+									window.location		= "<?php echo base_url(); ?>/app_purchase_report/purchase_taller/" + 
+											"viewReport/true/startOn/"+startOn+
+											"/endOn/"+endOn+"/employerIDFilter/"+employerIDString+
+											"/customerNumber/"+txtCustomerNumber;
 								}
 								else
 								{
