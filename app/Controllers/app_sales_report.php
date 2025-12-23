@@ -93,6 +93,7 @@ class app_sales_report extends _BaseController {
 			$inventoryCategoryID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"inventoryCategoryID");//--finuri
 			$warehouseID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"warehouseID");//--finuri
 			$userIDFilter			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"userID");//--finuri
+			$transactionCausalID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionCausalID");//--finuri
 			
 			if(!($viewReport && $startOn && $endOn  )){
 				
@@ -118,10 +119,10 @@ class app_sales_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?,?);";						
+				$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?,?,?);";						
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID,$userIDFilter]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID,$userIDFilter,$transactionCausalID]
 				);
 				
 				
@@ -218,10 +219,10 @@ class app_sales_report extends _BaseController {
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				
 				//Get Datos Detalle de Venta
-				$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?,?);";						
+				$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?,?,?);";						
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID,0]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID,0,'todas']
 				);
 				
 				
@@ -824,10 +825,10 @@ class app_sales_report extends _BaseController {
 			//Get Company
 			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 			//Get Datos
-			$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?,?);";				
+			$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?,?,?);";				
 			$objData		= $this->Bd_Model->executeRender(
 				$query,
-				[$companyID,$tocken,$userID,$startOn,$endOn,0,0,0]
+				[$companyID,$tocken,$userID,$startOn,$endOn,0,0,0,'todas']
 			);
 			
 			
@@ -1652,10 +1653,10 @@ class app_sales_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?,?);";				
+				$query			= "CALL pr_sales_get_report_sales_detail(?,?,?,?,?,?,?,?,?);";				
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID,0]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID,0,'todas']
 				);
 				
 				

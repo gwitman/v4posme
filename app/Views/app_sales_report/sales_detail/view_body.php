@@ -88,6 +88,21 @@
 												</div>
 											</div>
 											
+											<div class="form-group">
+												<label class="col-lg-6 control-label" for="selectFilter">Causa</label>
+												<div class="col-lg-6"> 
+													<div class="col-lg-6">
+													</div>
+													<div class="col-lg-6">
+														<select name="txtTransactionCausalID" id="txtTransactionCausalID" class="select2">
+																<option value="todas">TODAS</option>
+																<option value="credito">Credito</option>
+																<option value="contado">Contado</option>
+														</select>
+													</div>													
+												</div>
+											</div>
+											
 											
                                         </form>
                                     </div><!-- End .panel-body -->
