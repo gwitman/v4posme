@@ -587,8 +587,7 @@
 									name: 'txtChangeAmount',
 									id:'txtChangeAmount',
 									fieldStyle: 'font-weight:bold; font-size:18px; text-align:right;',
-									itemId: 'txtChangeAmount',  // Mejor usar itemId
-									style: 'font-weight:bold; border-width: 2px;',  // resalta el cuadro
+									itemId: 'txtChangeAmount',  // Mejor usar itemId									
 									listeners: {
 										change: fnChange_ChangeAmount
 									}
@@ -3511,13 +3510,13 @@
 		function fnChange_ChangeAmount(field, newValue) 
 		{
 			if (newValue < 0) {
-				field.setFieldStyle('color:red; font-weight:bold; border:2px solid red;');
+				field.setFieldStyle('color:red; font-weight:bold; font-size:18px; text-align:right;');
 			}
 			else if (newValue > 0) {
-				field.setFieldStyle('color:green; font-weight:bold; border:2px solid green;');
+				field.setFieldStyle('color:green; font-weight:bold; font-size:18px; text-align:right;');
 			}
 			else {
-				field.setFieldStyle('color:black; font-weight:bold; border:2px solid black;');
+				field.setFieldStyle('color:black; font-weight:bold; font-size:18px; text-align:right;');
 			}
 		}
 		function fnChange_ReceiptAmount(field, newValue, oldValue) 
