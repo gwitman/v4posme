@@ -963,8 +963,10 @@
 					id: 'miVentanaSeleccionProducto',
 					cls: 'win-titulo-blanco',
 					itemId:'miVentanaSeleccionProducto',
-					width: 700,
-					height: 400,
+					
+					width: Ext.Element.getViewportWidth() * 0.8,
+					height: Ext.Element.getViewportHeight() * 0.8,
+	
 					modal: true,
 					layout: 'fit',
 					closeAction: 'hide',
@@ -1989,13 +1991,13 @@
 										// Columna izquierda - Tabla
 										{
 											xtype: 'grid',
-											flex: 2,
+											flex: 3,
 											itemId: 'gridDetailTransactionMaster',
 											title: 'Detalle de Productos',
 											margin: '0 10 0 0',		
-											selModel: 'rowmodel', // permite seleccionar filas para eliminar	
-											maxHeight: 40 * 10,       // altura aproximada para 15 filas
-											scrollable: true,     // permite scroll interno al grid
+											selModel: 'rowmodel', 		// permite seleccionar filas para eliminar	
+											maxHeight: Ext.Element.getViewportHeight() * 0.8,
+											scrollable: true,     		// permite scroll interno al grid
 											bodyBorder: true,
 											frame: true,
 	
@@ -2260,6 +2262,7 @@
 														xtype: 'numberfield',
 														minValue: 0.01,   // valores mayores a 0
 														allowBlank: false,
+														fieldStyle: 'text-align:right;',
 														decimalPrecision: 2,  // dos decimales
 														hideTrigger: true,    // oculta los botones de subir/bajar
 														enableKeyEvents: true,
@@ -2297,6 +2300,7 @@
 														allowBlank: false,
 														decimalPrecision: 2,  // dos decimales
 														hideTrigger: true,    // oculta los botones de subir/bajar
+														fieldStyle: 'text-align:right;',
 														enableKeyEvents: true,
 														listeners: {
 															change: function(field, newValue) {
@@ -3422,6 +3426,7 @@
 
 			seleccion.forEach(function(record) 
 			{	
+				
 				var itemID = record.data.itemID;
 				indexDBGetLocalProductoByItemID(itemID, function(resultado) 
 				{
@@ -3755,14 +3760,20 @@
 
 							var comentario = winPrinterDetail.down('#txtComentarioImpresionDetail').getValue();
 
-							if (!comentario) {
-								Ext.Msg.alert('Aviso', 'Debe ingresar un comentario.');
-								return;
-							}
+							//wg-if (!comentario) {
+							//wg-	Ext.Msg.alert('Aviso', 'Debe ingresar un comentario.');
+							//wg-	return;
+							//wg-}
 
 							// 🔐 Codificar el comentario para URL
+							if(comentario == "" || comentario == "." ) 
+							comentario = "sin comentario";
+							comentario = comentario.replace(/ /g, "__");
 							comentario = encodeURIComponent(comentario);
+							
+							
 
+							
 							var url = "<?php echo base_url(); ?>/" + varParameterInvoiceBillingPrinterCocinaUrl +
 								"/companyID/" + companyID +
 								"/transactionID/" + transactionID +
@@ -4640,6 +4651,9 @@
 			
 			//recalcular detalle
 			fnRecalculateDetail(false,"");
+			
+			grid.getView().refresh();
+			grid.updateLayout();
 			
 		}
 	
