@@ -1099,9 +1099,10 @@ class app_invoice_billing extends _BaseController {
 				$arrayListTaxServices 						= /*inicio get post*/ $this->request->getPost("txtTaxServices");
 				$arrayListLote	 							= /*inicio get post*/ $this->request->getPost("txtDetailLote");			
 				$arrayListVencimiento						= /*inicio get post*/ $this->request->getPost("txtDetailVencimiento");
-				$arrayListIdSku								= /*inicio get post*/ $this->request->getPost("txtCatalogItemIDSku");
-				$arrayListSkuDescription					= /*inicio get post*/ $this->request->getPost("txtSku");
-				$arrayListSkuRatio							= /*inicio get post*/ $this->request->getPost("txtRatioSku");
+				$arrayListIdSku								= /*inicio get post*/ $this->request->getPost("txtCatalogItemIDSku"); //tb_catalog_item.catalogItemID 
+				$arrayListSkuDescription					= /*inicio get post*/ $this->request->getPost("txtSku");  //tb_catalog_item.name
+				$arrayListSkuRatio							= /*inicio get post*/ $this->request->getPost("txtRatioSku"); //tb_catalog_item.ratio
+			
 				$arrayListDiscount							= /*inicio get post*/ $this->request->getPost("txtDiscountByItem");				
 				$arrayListCommisionBank						= /*inicio get post*/ $this->request->getPost("txtCommisionByBankByItem");		
 				$arrayListSkuQuantity						= /*inicio get post*/ $this->request->getPost("skuQuantityBySku");
@@ -2080,10 +2081,12 @@ class app_invoice_billing extends _BaseController {
 			$arrayListIva		 						= /*inicio get post*/ $this->request->getPost("txtIva");
 			$arrayListTaxServices 						= /*inicio get post*/ $this->request->getPost("txtTaxServices");
 			$arrayListLote	 							= /*inicio get post*/ $this->request->getPost("txtDetailLote");
-			$arrayListVencimiento						= /*inicio get post*/ $this->request->getPost("txtDetailVencimiento");			
-			$arrayListIdSku								= /*inicio get post*/ $this->request->getPost("txtCatalogItemIDSku");
-			$arrayListSkuDescription					= /*inicio get post*/ $this->request->getPost("txtSku");
-			$arrayListSkuRatio							= /*inicio get post*/ $this->request->getPost("txtRatioSku");
+			$arrayListVencimiento						= /*inicio get post*/ $this->request->getPost("txtDetailVencimiento");		
+			
+			$arrayListIdSku								= /*inicio get post*/ $this->request->getPost("txtCatalogItemIDSku"); //tb_catalog_item.catalogItemID 
+			$arrayListSkuDescription					= /*inicio get post*/ $this->request->getPost("txtSku");  //tb_catalog_item.name
+			$arrayListSkuRatio							= /*inicio get post*/ $this->request->getPost("txtRatioSku"); //tb_catalog_item.ratio
+			
 			$arrayListDiscount							= /*inicio get post*/ $this->request->getPost("txtDiscountByItem");			
 			$arrayListCommisionBank						= /*inicio get post*/ $this->request->getPost("txtCommisionByBankByItem");		
 			$arrayListSkuQuantity						= /*inicio get post*/ $this->request->getPost("skuQuantityBySku");
@@ -3860,7 +3863,8 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objParameterINVOICE_BILLING_EMPLOYEE_DEFAULT"]								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_EMPLOYEE_DEFAULT")->value;
 			$dataView["objParameterINVOICE_BILLING_SELECTITEM"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SELECTITEM")->value;
 			$dataView["objParameterACCOUNTING_CURRENCY_NAME_IN_BILLING"]							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"ACCOUNTING_CURRENCY_NAME_IN_BILLING")->value;
-			$dataView["objParameterINVOICE_BILLING_VALIDATE_EXONERATION"]							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_VALIDATE_EXONERATION")->value;
+			$dataView["objParameterINVOICE_BILLING_VALIDATE_EXONERATION"]							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_VALIDATE_EXONERATION")->value;			
+            $dataView["objParameterINVOICE_URL_PRINTER_COCINA"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_URL_PRINTER_COCINA")->value;			
 			$dataView["objParameterINVOICE_SHOW_FIELD_PESO"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_SHOW_FIELD_PESO")->value;
 			$dataView["objListParameterJavaScript"]													= $this->core_web_parameter->getParameterAllToJavaScript($companyID);			
 			$dataView["urlPrinterDocument"]															= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_URL_PRINTER")->value;
@@ -14948,6 +14952,29 @@ class app_invoice_billing extends _BaseController {
 					""				
 				);
 
+			}
+			if($dataView["objCompany"]->type == "moncho")
+			{
+				$dataView["comment"] 	= $transactionComment;
+				$html 					= helper_reporte80mmCocina(
+					"FACTURA",
+					$objCompany,
+					$objParameter,
+					$dataView["objTransactionMaster"],
+					$dataView["objNatural"],
+					$dataView["objCustumer"],
+					$dataView["tipoCambio"],
+					$dataView["objCurrency"],
+					$dataView["objTransactionMasterInfo"],
+					$confiDetalle,
+					$detalle,
+					$dataView, 
+					$objParameterTelefono,
+					"",
+					"",
+					"",
+					""				
+				);
 			}
 			else
 			{

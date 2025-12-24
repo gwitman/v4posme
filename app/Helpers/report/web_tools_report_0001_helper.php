@@ -21378,7 +21378,7 @@ function helper_reporte80mmCocina(
     $objTransactionMasterInfo, 
     $confiDetalle, /**/
     $arrayDetalle, /**/
-    $objParameterTelefono, /*telefono*/
+    $dataView, /*telefono*/
     $statusName = "", /*estado*/
     $causalName = "", /*causal*/
 	$userNickName = "", /*vendedor*/
@@ -21455,8 +21455,21 @@ function helper_reporte80mmCocina(
 						
 						
                                 
-                         [[DETALLE]]
-                                
+                        [[DETALLE]]
+                               
+						<tr>
+							<td colspan='3'>
+								&nbsp;
+							</td>
+						</tr>
+						
+						<tr>
+							<td colspan='3' >
+								".$dataView["comment"]."
+							</td>
+						</tr>
+						
+						
                         <tr>
                           <td colspan='3' style='text-align:center'>
                             ****************************

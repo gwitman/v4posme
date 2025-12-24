@@ -7,6 +7,7 @@
 	var varParameterINVOICE_BILLING_VALIDATE_EXONERATION 	= '<?php echo $objParameterINVOICE_BILLING_VALIDATE_EXONERATION; ?>';	
 	var varUrlPrinter										= '<?php echo $urlPrinterDocument; ?>';
 	var varParameterAmortizationDuranteFactura				= <?php echo $objParameterAmortizationDuranteFactura; ?>;
+	var varParameterInvoiceBillingPrinterCocinaUrl			= '<?php echo $objParameterINVOICE_URL_PRINTER_COCINA; ?>';
 	
 	var varStatusInvoiceAplicado			= 67; //Estado Aplicada
     var varStatusInvoiceAnular				= 68; //Anular
@@ -2012,6 +2013,12 @@
 													iconCls: 'fa fa-trash',
 													handler: fnBtnEliminarProductoDetail 
 												},
+												{
+													text: 'Impresion detalle',
+													cls:'btn-imprimir texto-blanco',
+													iconCls: 'fa fa-print',
+													handler: fnBtnImprimirProductoDetail 
+												},
 												
 												'->', // 🔥 empuja el siguiente campo a la derecha
 												{
@@ -2189,7 +2196,7 @@
 													widget: {
 														xtype: 'combo',														
 														store: Ext.create('Ext.data.Store', {
-															fields: ['id', 'name'] ,
+															fields: ['id', 'name', 'ratio', 'precio' ] ,
 															data: [ ] 
 														}),
 														displayField: 'name',
@@ -2200,11 +2207,43 @@
 														listeners: {
 															select: function(combo, record) {
 																
+																
 																if (isLoading) return; // Detener evento
+																
 																
 																// Actualizar el store del grid con el valor seleccionado
 																var gridRecord = combo.getWidgetRecord();
+																
+																 // 👉 OBTENER ÍNDICE DE LA FILA
+																var grid  = combo.up('grid');
+																var store = grid.getStore();
+																var aPos  = store.indexOf(gridRecord);
+																
+																
 																gridRecord.set('txtTMD_txtSku', combo.getValue());
+																
+																// Actualizar los Nuevos precios seleccioandos																
+																let precio 		= record.data.precio ;
+																let cantidad 	= gridRecord.get('txtTMD_txtQuantity');
+																if(precio === 0){
+																	precio = gridRecord.get('txtTMD_txtItemPrecio1');
+																}
+																
+																let catalogItemID 		= record.data.id;
+																let nombreSeleccionado 	= record.data.name;
+																let ratio 				= record.data.ratio;
+																let skuQuantityBySku 	= ratio * cantidad;
+																
+																if (catalogItemID) 
+																{
+																	gridRecord.set('txtTMD_txtCatalogItemIDSku',catalogItemID);
+																	gridRecord.set('txtTMD_skuQuantityBySku', skuQuantityBySku);
+																	gridRecord.set('txtTMD_txtRatioSku', ratio);
+																	gridRecord.set('txtTMD_skuFormatoDescription', nombreSeleccionado);
+																	gridRecord.set('txtTMD_txtPrice', precio);
+																	gridRecord.set('txtTMD_txtSku', combo.getValue());
+																	fnRecalculateDetail(true, "", aPos);																	
+																}
 															}
 														}
 													}
@@ -2942,14 +2981,22 @@
 				txtTransactionMasterDetailID.push(record.get('txtTMD_txtTransactionMasterDetailID'));
 				txtItemID.push(record.get('txtTMD_txtItemID'));
 				txtTransactionDetailName.push(record.get('txtTMD_txtTransactionDetailName'));
-				txtSku.push(record.get('txtTMD_txtSku'));
+				
 				txtQuantity.push(record.get('txtTMD_txtQuantity'));
 				txtPrice.push(record.get('txtTMD_txtPrice'));
 				txtSubTotal.push(record.get('txtTMD_txtSubTotal'));
-				txtIva.push(record.get('txtTMD_txtIva'));
-				skuQuantityBySku.push(record.get('txtTMD_skuQuantityBySku'));
+				txtIva.push(record.get('txtTMD_txtIva'));				
 				unitaryPriceInvidual.push(record.get('txtTMD_unitaryPriceInvidual'));
-				skuFormatoDescription.push(record.get('txtTMD_skuFormatoDescription'));
+				
+				skuQuantityBySku.push(record.get('txtTMD_skuQuantityBySku'));
+				//txtSku.push(record.get('txtTMD_txtSku'));				
+				//skuFormatoDescription.push(record.get('txtTMD_skuFormatoDescription'));
+				txtSku.push(record.get('txtTMD_skuFormatoDescription'));
+				skuFormatoDescription.push(record.get('txtTMD_skuFormatoDescription'));				
+				txtCatalogItemIDSku.push(record.get('txtTMD_txtCatalogItemIDSku'));
+				txtRatioSku.push(record.get('txtTMD_txtRatioSku'));
+				
+				
 				txtItemPrecio2.push(record.get('txtTMD_txtItemPrecio2'));
 				txtItemPrecio3.push(record.get('txtTMD_txtItemPrecio3'));
 				txtTransactionDetailNameDescription.push(record.get('txtTMD_txtTransactionDetailNameDescription'));
@@ -2958,11 +3005,10 @@
 				txtInfoVendedor.push(record.get('txtTMD_txtInfoVendedor'));
 				txtInfoSerie.push(record.get('txtTMD_txtInfoSerie'));
 				txtInfoReferencia.push(record.get('txtTMD_txtInfoReferencia'));
-				txtItemPrecio1.push(record.get('txtTMD_txtItemPrecio1'));
-				txtCatalogItemIDSku.push(record.get('txtTMD_txtCatalogItemIDSku'));
-				txtRatioSku.push(record.get('txtTMD_txtRatioSku'));
+				txtItemPrecio1.push(record.get('txtTMD_txtItemPrecio1'));				
 				txtDiscountByItem.push(record.get('txtTMD_txtDiscountByItem'));
 				txtCommisionByBankByItem.push(record.get('txtTMD_txtCommisionByBankByItem'));
+				
 				
 			});
 			
@@ -3657,6 +3703,89 @@
 			} else {
 				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">Seleccione al menos un producto para eliminar.</span>');
 			}
+		}
+		function fnBtnImprimirProductoDetail(btn)
+		{
+			var grid = btn.up('grid');
+			var selection = grid.getSelectionModel().getSelection();
+
+			if (selection.length === 0) {
+				Ext.Msg.alert(
+					'<span style="color:white;font-weight:bold;">Error</span>',
+					'<span style="color:red;font-weight:bold;">Seleccione al menos un producto para imprimir.</span>'
+				);
+				return;
+			}
+
+			var record 					= selection[0];
+			var companyID              = Ext.getCmp('miVentanaPrincipal').down('#txtCompanyID').getValue();
+			var transactionID          = Ext.getCmp('miVentanaPrincipal').down('#txtTransactionID').getValue();
+			var transactionMasterID    = Ext.getCmp('miVentanaPrincipal').down('#txtTransactionMasterID').getValue();
+			var componentItemID        = record.get('txtTMD_txtItemID');
+
+			// 👉 Ventana de comentario
+			var winPrinterDetail = Ext.create('Ext.window.Window', {
+				title: 'Comentario de impresión',
+				modal: true,
+				width: 400,
+				cls: 'win-titulo-blanco',
+				layout: 'fit',
+				resizable: false,
+
+				items: [{
+					xtype: 'form',
+					bodyPadding: 10,
+					items: [{
+						xtype: 'textarea',
+						fieldLabel: 'Comentario',
+						labelAlign: 'top',
+						name: 'comentario',
+						itemId: 'txtComentarioImpresionDetail',
+						allowBlank: false,
+						height: 120,
+						emptyText: 'Escriba el comentario...'
+					}]
+				}],
+
+				buttons: [					
+					{
+						text: 'Aceptar',
+						iconCls: 'fa fa-check',
+						cls:'btn-morado texto-blanco',
+						handler: function () {
+
+							var comentario = winPrinterDetail.down('#txtComentarioImpresionDetail').getValue();
+
+							if (!comentario) {
+								Ext.Msg.alert('Aviso', 'Debe ingresar un comentario.');
+								return;
+							}
+
+							// 🔐 Codificar el comentario para URL
+							comentario = encodeURIComponent(comentario);
+
+							var url = "<?php echo base_url(); ?>/" + varParameterInvoiceBillingPrinterCocinaUrl +
+								"/companyID/" + companyID +
+								"/transactionID/" + transactionID +
+								"/transactionMasterID/" + transactionMasterID +
+								"/itemID/-1," + componentItemID +
+								"/transactionMasterComment/" + comentario;
+
+							window.open(url, "_blank");
+							winPrinterDetail.close(); // ✔️ cierra después de ejecutar
+						}
+					},
+					{
+						text: 'Cancelar',
+						iconCls: 'fa fa-times',
+						handler: function () {
+							winPrinterDetail.close(); // ❌ solo cierra
+						}
+					},
+				]
+			});
+
+			winPrinterDetail.show();
 		}
 		function fnBtnNuevoProductoDetail(btn)
 		{
@@ -4456,7 +4585,6 @@
 		{
 			grid.getStore().loadData(obj.txtTransactionMasterDetail); 
 			
-			
 			// Buscar columna widgetColumn
 			var comboColumn = null;
 			Ext.Array.each(grid.columns, function (col) {
@@ -4476,9 +4604,17 @@
 			grid.getStore().each(function (record) {
 				
 				// Crear store para el combo
-				var comboStoreData 	= [{ id: record.get("txtTMD_txtCatalogItemIDSku") , name : record.get("txtTMD_txtSku") }];
+				var comboStoreData 	= [
+					{ 
+						id: record.get("txtTMD_txtCatalogItemIDSku") , 
+						name : record.get("txtTMD_skuFormatoDescription"), 
+						ratio : record.get("txtTMD_txtRatioSku"), 
+						precio : record.get("txtTMD_txtPrice") 
+					}
+				];
+				
 				var storeForCombo 	= Ext.create('Ext.data.Store', {
-					fields: ['id', 'name'],
+					fields: ['id', 'name','ratio', 'precio'],
 					data: comboStoreData
 				});
 				
@@ -5570,9 +5706,12 @@
 					record.txtTMD_txtRatioSku 						=producto.value;
 				}
 				
+				
 				comboStoreData.push({
 					id: 	producto.catalogItemID,
-					name: 	producto.name
+					name: 	producto.name,
+					ratio:  producto.value,
+					precio: producto.price 
 				});
 			});
 		}
@@ -5602,7 +5741,7 @@
 
 		// Crear un store de Ext JS
 		var storeForCombo = Ext.create('Ext.data.Store', {
-			fields: ['id', 'name'],
+			fields: ['id', 'name', 'ratio', 'precio'],
 			data: comboStoreData
 		});
 

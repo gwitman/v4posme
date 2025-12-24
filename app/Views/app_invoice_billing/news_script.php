@@ -1062,6 +1062,7 @@
 		);
 	});
 	$('#tb_transaction_master_detail').on('change', 'input', function () {
+		
 		var input 		= $(this);
 		var inputType 	= input.attr('type');
 		var tr 			= input.closest('tr')[0];
