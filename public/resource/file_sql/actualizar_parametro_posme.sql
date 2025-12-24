@@ -1,4 +1,5 @@
 /*BD:	dbs3obkhhc1pgu:posme*/
+/*servidor:	siteground*/
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "31" 
