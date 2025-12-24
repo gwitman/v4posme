@@ -1540,13 +1540,12 @@
 													xtype: 'combobox',
 													fieldLabel: 'Zona',
 													labelWidth: 100,
-													width: 300,
-													store: ['USD', 'NIO', 'CRC', 'EUR'],
+													width: 300,													
 													store: Ext.create('Ext.data.Store', {
 														fields: ['id', 'name'] 
 													}),
 													displayField: 'name',
-													valueField: 'id',
+													valueField: 'id',	
 													queryMode: 'local',
 													editable: false,
 													name: 'txtZoneID',
@@ -1640,10 +1639,16 @@
 													}),
 													displayField: 'name',
 													valueField: 'id',
-													queryMode: 'local',
-													editable: false,
 													name: 'txtMesaID',
 													id:'txtMesaID',
+													queryMode: 'local',
+													editable: true,          // 🔹 NECESARIO para escribir
+													typeAhead: true,         // 🔹 Autocompleta
+													minChars: 1,             // 🔹 Empieza a buscar desde 1 letra
+													forceSelection: true,    // 🔹 Solo valores del store
+													anyMatch: true,          // 🔹 Coincidencia en cualquier parte del texto
+													caseSensitive: false,    // 🔹 No distingue mayúsculas/minúsculas													
+													
 												},
 												{
 													xtype: 'datefield',
