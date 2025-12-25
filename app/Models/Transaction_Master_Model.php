@@ -283,8 +283,9 @@ class Transaction_Master_Model extends Model  {
 											AND tws.isInit = 1
 									WHERE 
 										tci.catalogItemID = ttmi.mesaID
-										AND ttm.transactionID = 19
+										AND ttm.transactionID = 19 /*factura*/
 										AND ttm.isActive = 1
+										AND ttm.statusID in (66 /*registrada*/ ) 
 										AND ttm.transactionOn >= NOW() - INTERVAL 1 DAY
 									) IS NULL,
 									tci.reference1, 
@@ -304,8 +305,9 @@ class Transaction_Master_Model extends Model  {
 												AND tws.isInit = 1
 											WHERE 
 												tci.catalogItemID = ttmi.mesaID
-												AND ttm.transactionID = 19
-												AND ttm.isActive = 1
+												AND ttm.transactionID = 19 /*factura*/ 
+												AND ttm.isActive = 1 
+												AND ttm.statusID in (66 /*registrada*/ ) 
 												AND ttm.transactionOn >= NOW() - INTERVAL 1 DAY
 									),
 									0
@@ -315,7 +317,8 @@ class Transaction_Master_Model extends Model  {
 						->distinct()
 						->whereIn("tci.catalogItemID",$catalogItemId);
 						
-		return $builder->get()->getResultObject();
+		$objGet = $builder->get();				
+		return $objGet->getResultObject();
 	}
 
     /*
