@@ -410,3 +410,38 @@
 }
 
 </style>
+
+
+<!--css para grid de productos-->
+<style>
+.categoria-wrap,
+.producto-wrap {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.categoria-btn,
+.producto-btn {
+    width: 140px;
+    height: 140px;
+    margin: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    text-align: center;
+    cursor: pointer;
+    padding: 8px;
+    background: #fff;
+}
+
+.categoria-btn img,
+.producto-btn img {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 5px;
+}
+
+.categoria-btn:hover,
+.producto-btn:hover {
+    background: #f0f0f0;
+}
+</style>

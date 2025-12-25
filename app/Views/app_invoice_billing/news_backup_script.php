@@ -9,12 +9,13 @@
 	var varParameterAmortizationDuranteFactura				= <?php echo $objParameterAmortizationDuranteFactura; ?>;
 	var varParameterInvoiceBillingPrinterCocinaUrl			= '<?php echo $objParameterINVOICE_URL_PRINTER_COCINA; ?>';
 	
+	var varGlobalNumber						= 0;
 	var varStatusInvoiceAplicado			= 67; //Estado Aplicada
     var varStatusInvoiceAnular				= 68; //Anular
 	var varStatusInvoiceRegistrado			= 66; //Registrado
 	var isLoading 							= true;	
 	var mesasConfig 						= [];
-
+	
 	var objConfigInit 		= {
 		texts: {
 			'txtNombre': 'Nombre completo',
@@ -411,7 +412,30 @@
 
 	Ext.onReady(function () {
 		
-		var size = Ext.getBody().getViewSize();
+		StoreProductos 	= Ext.create('Ext.data.Store', {
+			storeId: 'StoreProductosGlobal',   // 👈 IMPORTANTE
+			autoLoad: false,
+
+			fields: [
+				{ name: 'inventoryCategoryID', 		type: 'int' },
+				{ name: 'inventoryCategoryName',   	type: 'string' },
+				{ name: 'itemID',  					type: 'int' },
+				{ name: 'itemName',    				type: 'string' },
+				{ name: 'precio',      				type: 'float' },
+				{ name: 'inventoryImagen',      	type: 'string' }
+			]
+		});
+		
+		StoreCategorias = Ext.create('Ext.data.Store', {
+			fields: ['inventoryCategoryID', 'inventoryCategoryName', 'inventoryImagen'],			
+			data: 	[]
+		});
+
+
+		
+		// Store global o referenciado desde otra ventana		
+		var size 			= Ext.getBody().getViewSize();
+		
 		console.log("Ext OnReady Width")
 		console.log(size.width);
 		console.log("Ext OnReady Height")
@@ -508,6 +532,33 @@
 			}]
 		});
 		
+		miVentanaTableroDeProductos = Ext.create('Ext.window.Window', {
+			title: 'Catálogo de Productos',
+			modal: true,
+			layout: 'card',
+			cls: 'win-titulo-blanco',			
+			width: Ext.Element.getViewportWidth() * 0.8,
+			height: Ext.Element.getViewportHeight() * 0.8,
+			closeAction: 'hide',
+			bodyPadding: 5,
+			itemId: 'miVentanaTableroDeProductos',			
+			items: [
+				// Vista 0 → Categorías
+				fnCrearVistaCategorias(),
+
+				// Vista 1 → Productos
+				fnCrearVistaProductos()
+			],
+
+			listeners: {
+				show: function (win) {
+					 // siempre mostrar categorías al inicio
+					win.getLayout().setActiveItem(0);
+				}
+			}
+			
+		});
+
 		miVentanaEsperando.show();
 		
 		miVentanaDePago = Ext.create('Ext.window.Window', {
@@ -2719,6 +2770,11 @@
 										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F9</td>
 										<td style="padding:8px; border:1px solid #ddd;">Seleccionar Posicion</td>
 									</tr>
+									
+									<tr>
+										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F10</td>
+										<td style="padding:8px; border:1px solid #ddd;">Seleccionar Producto por Categoria</td>
+									</tr>
 
 									<tr>
 										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F12</td>
@@ -2799,6 +2855,12 @@
 			if (e.getKey() === Ext.event.Event.F9) {				
 				e.preventDefault();
 				fnSeleccionarMesa();
+			}
+			
+			// F10 → Seleccioinar Producto por categoria
+			if (e.getKey() === Ext.event.Event.F10) {				
+				e.preventDefault();
+				fnSeleccionarProductoPorIcono();
 			}
 			
 			// F12 para imprimir factura
@@ -3127,6 +3189,93 @@
 		function fnBtnSeleccionarFactura()
 		{
 			miVentanaSeleccionFactura.show();
+		}
+		
+		function fnSeleccionarProductoPorIcono()
+		{
+			
+			
+			if (StoreProductos && StoreProductos.getCount() > 0) {
+				miVentanaTableroDeProductos.show();
+				return;
+			} 
+
+			
+			
+			// Obtener el grid origen
+			var grid = miVentanaSeleccionProducto.down('grid');
+			if (!grid) {
+				miVentanaTableroDeProductos.show();
+				return;
+			}
+
+			// Obtener el store del grid
+			var storeOrigen = grid.getStore();
+			if(storeOrigen && storeOrigen.getCount() <= 0)
+			{
+				miVentanaTableroDeProductos.show();
+				return;
+			}
+			
+			//Validar si el data source tiene las propiedades correctas
+			if(storeOrigen.getAt(0).get("inventoryCategoryID") === undefined)
+			{
+				console.log('El data source no tiene la propiedad "inventoryCategoryID", modificar la vista de seleccion para que se muestra dicha propiedad');				
+				miVentanaTableroDeProductos.show();
+				return;
+			} 
+			if(storeOrigen.getAt(0).get("inventoryCategoryName") === undefined)
+			{
+				console.log('El data source no tiene la propiedad "inventoryCategoryName", modificar la vista de seleccion para que se muestra dicha propiedad');				
+				miVentanaTableroDeProductos.show();
+				return;
+			} 
+
+			
+			// Crear un array con los datos (objetos planos)
+			var datosCopia 	= storeOrigen.getRange().map(function(rec) {
+				 var data = rec.getData(); // devuelve un objeto con todos los campos
+				 
+				 
+				 return {
+					inventoryCategoryID: 	data.inventoryCategoryID,
+					inventoryCategoryName: 	data.inventoryCategoryName,
+					itemID: 				data.itemID,      // renombrar itemid → itemxl
+					itemName: 				data.Nombre,
+					precio: 				data.Precio,
+					inventoryImagen: 		'',
+				};
+				
+			});
+			
+			
+			StoreProductos.removeAll();   // opcional
+			StoreProductos.loadData(datosCopia);
+
+			// Crear lista única de categorías
+			var categoriasMap 	= {};
+			var dataCategorias 	= [];
+
+			datosCopia.forEach(function(item) {
+				if (!categoriasMap[item.inventoryCategoryID]) 
+				{
+					categoriasMap[item.inventoryCategoryID] = true;
+					dataCategorias.push(
+						{
+							inventoryCategoryID: 	item.inventoryCategoryID,
+							inventoryCategoryName: 	item.inventoryCategoryName,
+							inventoryImagen: 		item.inventoryImagen
+						}
+					);
+				}
+			});
+
+			// Limpiar y cargar el store de categorías
+			StoreCategorias.removeAll();
+			StoreCategorias.loadData(dataCategorias);
+			miVentanaTableroDeProductos.show();
+
+
 		}
 		function fnSeleccionarMesa()
 		{
@@ -5681,7 +5830,7 @@
 			txtTMD_txtTransactionDetailItemNumber: filterResult.Codigo,
 			txtTMD_txtTransactionDetailName: filterResult.Nombre,
 			txtTMD_txtSku: filterResult.Medida,
-			txtTMD_txtQuantity: 1,
+			txtTMD_txtQuantity: filterResult.QuantityInput ?? 1 , 
 			txtTMD_txtPrice: filterResult.Precio,
 			txtTMD_txtSubTotal: filterResult.Precio ,
 			txtTMD_txtIva: 0,
@@ -6445,4 +6594,232 @@
 			</div>
 		`;
 	}
+	
+	
+	function fnCargarCategoriasDesdeProductos() {
+		var map = {};
+		var data = [];
+
+		StoreProductos.each(function (rec) {
+			var id = rec.get('inventoryCategoryID');
+			if (!map[id]) {
+				map[id] = true;
+				data.push({
+					inventoryCategoryID: 	id,
+					inventoryCategoryName: 	rec.get('inventoryCategoryName'),
+					inventoryImagen: 		rec.get('inventoryImagen')
+				});
+			}
+		});
+
+		StoreCategorias.loadData(data);
+	}
+
+	function fnCrearVistaCategorias() {
+		if(!StoreProductos) {
+			// retornar un panel vacío temporal para no romper el layout
+			return { xtype: 'panel', html: 'Cargando...' };
+		}
+
+		return {
+			xtype: 'dataview',
+			itemId: 'viewCategorias',
+			store: StoreCategorias,
+			autoScroll: true,
+
+			tpl: new Ext.XTemplate(
+				'<div class="categoria-wrap">',
+					'<tpl for=".">',
+						'<div class="categoria-btn">',
+							'<img src="{inventoryImagen}" />',
+							'<span>{inventoryCategoryName}</span>',
+						'</div>',
+					'</tpl>',
+				'</div>'
+			),
+
+			itemSelector: 'div.categoria-btn',
+
+			listeners: {
+				itemclick: function (view, record) {
+					var win = view.up('window');
+					var gridProductos = win.down('#gridProductos');
+
+					// Filtrar productos por categoría seleccionada
+					gridProductos.getStore().clearFilter();
+					gridProductos.getStore().filter('inventoryCategoryID', record.get('inventoryCategoryID'));
+
+					// Ir a la vista de productos
+					win.getLayout().setActiveItem(1);
+				}
+			}
+		};
+	}
+
+
+	function fnCrearVistaProductos() {
+		return {
+			xtype: 'panel',
+			layout: 'border',
+
+			items: [
+				{
+					region: 'north',
+					xtype: 'toolbar',
+					items: [{
+						text: '⬅ Volver a Categorías',
+						cls: 'btn-imprimir texto-blanco',
+						handler: function (btn) {
+							var win = btn.up('window');
+
+							// Volver a la vista de categorías
+							win.getLayout().setActiveItem(0);
+
+							// Refrescar DataView de categorías
+							var dvCategorias = win.down('#viewCategorias');
+							if (dvCategorias && dvCategorias.rendered) {
+								dvCategorias.refresh();
+							}
+						}
+					}]
+				},
+				{
+					region: 'center',
+					xtype: 'dataview',
+					itemId: 'gridProductos',
+					store: StoreProductos,
+					autoScroll: true,
+
+					tpl: new Ext.XTemplate(
+						'<div class="producto-wrap">',
+							'<tpl for=".">',
+								'<div class="producto-btn">',
+									'<img src="{inventoryImagen}" />',
+									'<span>{itemName} </span>',
+									'<b>${precio}</b>',
+								'</div>',
+							'</tpl>',
+						'</div>'
+					),
+
+					itemSelector: 'div.producto-btn',
+
+					listeners: {
+						itemdblclick: function (view, record) {
+							
+							
+							// Crear ventana modal personalizada
+							Ext.create('Ext.window.Window', {
+								title: 'Cantidad', // título en blanco
+								cls: 'win-titulo-blanco',			
+								modal: true,
+								closable: true,
+								width: 300,
+								height: 200,
+								bodyPadding: 10,
+								layout: 'vbox',
+								defaultFocus: 'cantidadField', // foco en el input
+								items: [
+									{
+										xtype: 'displayfield',
+										value: 'Ingrese la cantidad para: ' + record.get('itemName'),
+										margin: '0 0 10 0'
+									},
+									{
+										xtype: 'numberfield',
+										itemId: 'cantidadField',
+										fieldLabel: 'Cantidad',
+										allowBlank: false,
+										minValue: 1,
+										width: 200
+									}
+								],
+								buttons: [
+									{
+										text: 'Aceptar',
+										iconCls: 'fa fa-check',
+										cls:'btn-morado texto-blanco',
+										handler: function(btn) {
+											var win 		= btn.up('window');
+											var cantidad 	= win.down('#cantidadField').getValue();
+
+											// Datos del item clickeado
+											var datosItem 	= record.getData(); // obtiene todos los campos del record
+
+											console.log('ID Producto:', 		record.get('itemID'));
+											console.log('Datos del item:', 		datosItem);
+											console.log('Cantidad ingresada:', 	cantidad);
+											win.close();
+											
+											var itemID 		= record.get('itemID');	
+											varGlobalNumber	= cantidad;						
+											indexDBGetLocalProductoByItemID(itemID, function(resultado) 
+											{
+												
+												console.log(resultado);
+
+												// resultado.productos → lista filtrada por Barra (contiene)
+												// resultado.conceptos → lista exacta por componentItemID
+												// resultado.skus → lista exacta por itemID
+												var viewport = Ext.getCmp('miVentanaPrincipal'); // accede al viewport
+												if(!viewport){
+													return;
+												}
+
+												var currencyID 		= viewport.down("#txtCurrencyID").getValue();
+												var warehouseID		= viewport.down("#txtWarehouseID").getValue();
+												if(resultado.productos.length > 0)
+												{
+													resultado.productos = Ext.Array.filter(resultado.productos, function (obj) { 
+														return (
+															obj.currencyID === currencyID && 
+															obj.warehouseID === warehouseID
+														);
+													});
+													
+													
+													if(resultado.productos.length > 0 )
+													resultado.productos  = resultado.productos[0];
+														
+													var sumar				= true;
+													//Logica de precio
+													if(viewport.down("#txtTypePriceID").getValue() == "154" /*precio1*/)
+														resultado.productos.Precio = resultado.productos.Precio;
+													else if(viewport.down("#txtTypePriceID").getValue() == "155" /*precio2*/)
+														resultado.productos.Precio = resultado.productos.Precio2;
+													else /*precio3*/
+														resultado.productos.Precio = resultado.productos.Precio3;
+														
+																				
+													resultado.productos.QuantityInput 	= varGlobalNumber;
+													onCompleteNewItem(resultado.productos,sumar,resultado.conceptos,resultado.skus);
+													varGlobalNumber 					= 0 ;
+													
+												}
+												
+											});
+											
+										}
+									},
+									{
+										text: 'Cancelar',
+										handler: function(btn) {
+											btn.up('window').close();
+										}
+									}
+								],
+								// Forzar que aparezca encima de todo
+								constrain: true,
+								constrainHeader: true
+							}).show();
+							
+							
+						}
+					}
+				}
+			]
+		};
+	}
+
+
 </script>
