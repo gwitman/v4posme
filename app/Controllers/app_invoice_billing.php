@@ -7780,6 +7780,8 @@ class app_invoice_billing extends _BaseController {
 			$datView["objUserNaturales"]			= $this->Natural_Model->get_rowByPK($datView["objUser"]->companyID,$datView["objUser"]->branchID,$datView["objUser"]->employeeID);
 			$datView["objUserEmployer"]				= $this->Employee_Model->get_rowByPK($datView["objUser"]->companyID,$datView["objUser"]->branchID,$datView["objUser"]->employeeID);
 			$datView["objWorkflowStage"]			= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($datView["objTM"]->statusID);
+			$datView["objMesa"]						= $this->core_web_catalog->getCatalogItem("tb_transaction_master_info_billing","mesaID",$companyID,$datView["objTMI"]->mesaID);
+			
 			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 			
 			$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_invoice_billing","templateInvoice","");
 			$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_invoice_billing","templateInvoice","");
@@ -7810,6 +7812,7 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["phoneNumber"]						= $objParameterTelefono->value;
 			$datViewArray["address"]							= $objCompany->address;
 			$datViewArray["note"]								= $datView["objTM"]->note;
+			$datViewArray["mesaName"] 							= $datView["objMesa"]->name;			
 			$datViewArray["customerName"]						= $datView["objTMI"]->referenceClientName == "" ? 
 																		$datView["objNatural"]->firstName :
 																		$datView["objTMI"]->referenceClientName ;
@@ -15051,6 +15054,185 @@ class app_invoice_billing extends _BaseController {
 		}
 	}
 	
+	function viewRegisterFormatoPaginaCocina1DB(){
+		try{ 
+			
+			//Librerias		
+			//
+			////////////////////////////////////////
+			////////////////////////////////////////
+			////////////////////////////////////////
+			
+			
+			
+			//Obtener el componente de Item
+			$objComponentItem	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+			$dataSession		= $this->session->get();
+									
+			$companyID					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"companyID");//--finuri
+			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri	
+			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri	
+			$itemID						= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"itemID");//--finuri	
+			$transactionMasterDetailID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterDetailID");//--finuri	
+			$transactionComment			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterComment");			
+			$transactionComment 		= preg_replace("/_+/", " ", $transactionComment);
+			
+			$itemIDArray			= explode(",",$itemID);
+			$itemIDArray			= array_map('intval', $itemIDArray);
+			
+			$objParameterRuc	    = $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+			$objParameterRuc        = $objParameterRuc->value;
+			
+			$objCompany 			= $this->Company_Model->get_rowByPK($companyID);					
+			$objParameter	        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$dataView["objNaturalEmployer"] 					= $this->Employee_Model->get_rowByInvoiceItem($companyID,$transactionMasterID,$itemIDArray[1]);
+			$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+			$dataView["objTransactionMasterDetailWarehouse"]	= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterID);
+			$dataView["objTransactionMasterDetailConcept"]		= $this->Transaction_Master_Concept_Model->get_rowByTransactionMasterConcept($companyID,$transactionID,$transactionMasterID,$objComponentItem->componentID);
+			
+			
+			$dataView["objComponentCompany"]			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			$dataView["objParameterLogo"]				= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$dataView["objParameterPhoneProperty"]		= $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE",$companyID);
+			$dataView["objCompany"] 					= $this->Company_Model->get_rowByPK($companyID);			
+			$dataView["objUser"] 						= $this->User_Model->get_rowByPK($companyID,$dataView["objTransactionMaster"]->createdAt,$dataView["objTransactionMaster"]->createdBy);
+			$dataView["Identifier"]						= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+			$dataView["objBranch"]						= $this->Branch_Model->get_rowByPK($companyID,$dataView["objTransactionMaster"]->branchID);
+			$dataView["objTipo"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$dataView["objTransactionMaster"]->transactionID,$dataView["objTransactionMaster"]->transactionCausalID);
+			$dataView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$dataView["objTransactionMaster"]->entityID);
+			$dataView["objCurrency"]					= $this->Currency_Model->get_rowByPK($dataView["objTransactionMaster"]->currencyID);
+			$dataView["prefixCurrency"]					= $dataView["objCurrency"]->simbol." ";
+			$dataView["cedulaCliente"] 					= $dataView["objTransactionMasterInfo"]->referenceClientIdentifier == "" ? $dataView["objCustumer"]->customerNumber :  $dataView["objTransactionMasterInfo"]->referenceClientIdentifier;
+			$dataView["nombreCliente"] 					= $dataView["objTransactionMasterInfo"]->referenceClientName  == "" ? $dataView["objCustumer"]->firstName : $dataView["objTransactionMasterInfo"]->referenceClientName ;
+			$dataView["objStage"]						= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($dataView["objTransactionMaster"]->statusID);
+			$dataView["objNatural"]						= $this->Natural_Model->get_rowByPK($companyID,$dataView["objCustumer"]->branchID,$dataView["objCustumer"]->entityID);
+			$dataView["tipoCambio"]						= round($dataView["objTransactionMaster"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);			
+			$dataView["objZone"]						= $this->core_web_catalog->getCatalogItem("tb_transaction_master_info_billing","zoneID",$companyID,$dataView["objTransactionMasterInfo"]->zoneID);
+			$dataView["objMesa"]						= $this->core_web_catalog->getCatalogItem("tb_transaction_master_info_billing","mesaID",$companyID,$dataView["objTransactionMasterInfo"]->mesaID);
+			$dataView["objWorkflowStage"]				= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($dataView["objTransactionMaster"]->statusID);
+			
+			//obtener nombre de impresora por defecto
+			$objParameterPrinterName = $this->core_web_parameter->getParameter("INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_COCINA",$companyID);
+			$objParameterPrinterName = $objParameterPrinterName->value;
+								
+			$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_invoice_billing","templateInvoiceCocina","");
+			$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_invoice_billing","templateInvoiceCocina","");
+			if($htmlTemplateCompany == "")
+				$htmlTemplateCompany = $htmlTemplateDemo;
+			
+			
+			//Obtener imagen de logo
+			$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$dataView["objParameterLogo"]->value;    
+			$type    = pathinfo($path, PATHINFO_EXTENSION);
+			$data    = file_get_contents($path);
+			$base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
+			$datViewArray["imageBase64"]						= $base64;
+			
+			//Configurar Detalle
+		    $datViewArray["transactionMasterDetail"] 			= array();
+			foreach($dataView["objTransactionMasterDetail"] as $detail_)
+			{
+				
+				if(in_array($detail_->componentItemID, $itemIDArray) && $detail_->transactionMasterDetailID == $transactionMasterDetailID  )
+				{
+					$objTMDReferences 						= $this->Transaction_Master_Detail_References_Model->
+																get_rowByTransactionMasterDetailID(
+																	$detail_->transactionMasterDetailID
+															);
+				
+					$row = array(
+						"itemNumber"							=>$detail_->itemNumber,
+						"itemBarCode"							=>$detail_->barCode,
+						"itemName"								=>$detail_->itemName. " ". strtolower($detail_->skuFormatoDescription),
+						"itemNameQuantity"						=>sprintf("%01.2f",round($detail_->quantity,2)),
+						"itemNamePrice"							=>sprintf("%01.2f",round($detail_->unitaryPrice,2)),
+						"itemNameAmount"						=>sprintf("%01.2f",round($detail_->amount,2)),
+						"transactionMasterDetailReference"		=>$objTMDReferences ? $objTMDReferences[0]->reference2 : "" 
+					);					
+					array_push($datViewArray["transactionMasterDetail"],$row);		
+				}
+			}
+			
+			//Obtener datos
+			$datViewArray["companyRuc"]						= $objParameterRuc;
+			$datViewArray["companyName"] 					= $objCompany->name;
+			$datViewArray["typeTransacton"]					= $dataView["objWorkflowStage"][0]->aplicable == 1 ? "FACTURA" : "PROFORMA" ;
+			$datViewArray["transactionNumber"] 				= $dataView["objTransactionMaster"]->transactionNumber;
+			$datViewArray["transactionOn"] 					= $dataView["objTransactionMaster"]->createdOn;
+			$createdOn 										= new \DateTime($datViewArray["transactionOn"]);
+			$datViewArray["transactionOn"] 					= $createdOn->modify(APP_HOUR_DIFERENCE_PHP)->format('Y-m-d h:i A'); // 12 horas con AM/PM  se resta hora segun la configuracion del sistema
+			$datViewArray["userName"]						= $dataView["objUser"]->nickname;
+			$datViewArray["customerNumber"]					= $dataView["objCustumer"]->customerNumber;
+			$datViewArray["customerName"]					= $dataView["objTransactionMasterInfo"]->referenceClientName == "" ? 
+																		$dataView["objNatural"]->firstName :
+																		$dataView["objTransactionMasterInfo"]->referenceClientName ;
+			$datViewArray["note"]							= $transactionComment;
+			$datViewArray["mesaName"] 						= $dataView["objMesa"]->name;
+			
+			//Parse plantilla 
+			$parser = \Config\Services::parser();			
+			$html 	= $parser->setData($datViewArray)->renderString($htmlTemplateCompany);
+			$this->dompdf->loadHTML($html);
+			
+			
+			//1cm = 29.34666puntos
+			//a4: 210 ancho x 297
+			//a4: 21cm x 29.7cm
+			//a4: 595.28puntos x 841.59puntos
+			
+			//$this->dompdf->setPaper('A4','portrait');
+			//$this->dompdf->setPaper(array(0,0,234.76,6000));
+			
+			$this->dompdf->render();
+			
+			
+			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+			
+			
+			
+			//visualizar
+			$this->dompdf->stream("file.pdf", ['Attachment' => !$objParameterShowLinkDownload ]);
+			exit;
+			
+			//descargar
+			//$this->dompdf->stream();
+			
+			
+		}
+		catch(\Exception $ex)
+		{
+			if (empty($dataSession)) 
+			{
+				return redirect()->to(base_url("core_acount/login"));
+			}
+		    
+			
+			$data			   = array();
+		    $data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+		    
+		    $this->email->setFrom(EMAIL_APP);
+		    $this->email->setTo(EMAIL_APP_COPY);
+		    $this->email->setSubject("Error");
+		    $this->email->setMessage($resultView);
+		    
+		    $resultSend01 = $this->email->send();
+		    $resultSend02 = $this->email->printDebugger();
+		    
+		    
+		    return $resultView;
+		}
+	}
 	
 }
 ?>

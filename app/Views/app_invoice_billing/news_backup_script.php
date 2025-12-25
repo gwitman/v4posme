@@ -3721,11 +3721,12 @@
 				return;
 			}
 
-			var record 					= selection[0];
-			var companyID              = Ext.getCmp('miVentanaPrincipal').down('#txtCompanyID').getValue();
-			var transactionID          = Ext.getCmp('miVentanaPrincipal').down('#txtTransactionID').getValue();
-			var transactionMasterID    = Ext.getCmp('miVentanaPrincipal').down('#txtTransactionMasterID').getValue();
-			var componentItemID        = record.get('txtTMD_txtItemID');
+			var record 							= selection[0];
+			var companyID              			= Ext.getCmp('miVentanaPrincipal').down('#txtCompanyID').getValue();
+			var transactionID          			= Ext.getCmp('miVentanaPrincipal').down('#txtTransactionID').getValue();
+			var transactionMasterID    			= Ext.getCmp('miVentanaPrincipal').down('#txtTransactionMasterID').getValue();
+			var componentItemID        			= record.get('txtTMD_txtItemID');
+			var transactionMasterDetailID     	= record.get('txtTMD_txtTransactionMasterDetailID');
 
 			// 👉 Ventana de comentario
 			var winPrinterDetail = Ext.create('Ext.window.Window', {
@@ -3779,7 +3780,8 @@
 								"/transactionID/" + transactionID +
 								"/transactionMasterID/" + transactionMasterID +
 								"/itemID/-1," + componentItemID +
-								"/transactionMasterComment/" + comentario;
+								"/transactionMasterComment/" + comentario+
+								"/transactionMasterDetailID/"+ transactionMasterDetailID;
 
 							window.open(url, "_blank");
 							winPrinterDetail.close(); // ✔️ cierra después de ejecutar

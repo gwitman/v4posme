@@ -1301,6 +1301,8 @@ $routes->match(['get', 'post'], 'app_invoice_billing/viewPrinterDirectCocina58mm
 $routes->match(['get', 'post'], 'app_invoice_billing/viewPrinterDirectCocina58mm/(:any)', 'app_invoice_billing::viewPrinterDirectCocina58mm');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaCocina58mm', 'app_invoice_billing::viewRegisterFormatoPaginaCocina58mm');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaCocina58mm/(:any)', 'app_invoice_billing::viewRegisterFormatoPaginaCocina58mm');
+$routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaCocina1DB', 'app_invoice_billing::viewRegisterFormatoPaginaCocina1DB');
+$routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaCocina1DB/(:any)', 'app_invoice_billing::viewRegisterFormatoPaginaCocina1DB');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewPrinterDirectFactura58mmChicharronesCarasenos', 'app_invoice_billing::viewPrinterDirectFactura58mmChicharronesCarasenos');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewPrinterDirectFactura58mmChicharronesCarasenos/(:any)', 'app_invoice_billing::viewPrinterDirectFactura58mmChicharronesCarasenos');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewPrinterOpen', 'app_invoice_billing::viewPrinterOpen');
