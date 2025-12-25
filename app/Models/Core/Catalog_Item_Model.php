@@ -47,6 +47,7 @@ class Catalog_Item_Model extends Model  {
 		$sql = $sql.sprintf(" and e.parentCatalogItemID = $parentCatalogItemID");
 		$sql = $sql.sprintf(" order by e.sequence ");	
 		
+		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
 		

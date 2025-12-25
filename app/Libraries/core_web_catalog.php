@@ -390,6 +390,10 @@ class core_web_catalog {
 		$Company_Component_Flavor_Model = new Company_Component_Flavor_Model();
 		$Catalog_Model = new Catalog_Model();  
 		$Catalog_Item_Model = new Catalog_Item_Model();  
+		$Company_Model	= new Company_Model();
+		
+		//obtener la compania
+		$objCompany		= $Company_Model->get_rowByPK($companyID);
 		
 		//obtener elemento 
 		$objElement 	= $Element_Model->get_rowByName($table,ELEMENT_TYPE_TABLE);
@@ -419,9 +423,13 @@ class core_web_catalog {
 		$objCompanyComponentFlavor = $Company_Component_Flavor_Model->get_rowByCompanyAndComponentAndComponentItemID($companyID,$objComponent->componentID,$objCatalog->catalogID);
 		if(!$objCompanyComponentFlavor)
 		throw new \Exception("NO EXISTE EL FLAVOR PARA EL COMPONENTE DE CATALOGO ");
+	
+		
 		
 		//obtener la lista de catalogItem
-		$objCatalogItem = $Catalog_Item_Model->get_rowByCatalogIDAndFlavorID_Parent($objCatalog->catalogID,$objCompanyComponentFlavor->flavorID,$parentCatalogItemID);
+		$flavorID 		= $objCompanyComponentFlavor->flavorID;
+		$flavorID		= $objCompany->flavorID;
+		$objCatalogItem = $Catalog_Item_Model->get_rowByCatalogIDAndFlavorID_Parent($objCatalog->catalogID,$flavorID,$parentCatalogItemID);
 		
 		
 		

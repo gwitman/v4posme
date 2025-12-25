@@ -432,14 +432,17 @@
 				}); 
 			
 		miVentanaTableroDeMesas = Ext.create('Ext.window.Window', {
-			title: 'Tablero de Mesas',
-			width: 720,
-			cls: 'win-titulo-blanco',
-			height: 520,
+			title: 'Tablero de Mesas',			
+			cls: 'win-titulo-blanco',			
+			width: Ext.Element.getViewportWidth() * 0.8,
+			height: Ext.Element.getViewportHeight() * 0.8,
 			modal: true,
 			layout: 'fit',
 			closeAction: 'hide',
-
+			listeners: {
+				show: function (win) {
+				}
+			},
 			items: [{
 				xtype: 'grid',
 				itemId: 'gridTableroMesas',
@@ -449,47 +452,8 @@
 				viewConfig: {
 					stripeRows: false
 				},
-				listeners: {
-
-					afterrender: function(grid) {
-
-						var filas 		= 6;
-						var columnas 	= 6;
-						var dataTablero = [];
-
-						// inicializa tablero vacío, todas las columnas y todas las filas en null
-						for (var f = 0; f < filas; f++) {
-							var row = {};
-							for (var c = 0; c < columnas; c++) {
-								row['c' + c] = null;
-							}
-							dataTablero.push(row);
-						}
-
-						// colocas en el tablero solo las mesas configuradas
-						Ext.Array.each(mesasConfig, function(mesa) {
-							dataTablero[mesa.fila]['c' + mesa.col] = mesa;
-						});
-
-						//enlazar el almacenamiento del grid
-						var storeTablero = Ext.create('Ext.data.Store', {
-							data: dataTablero
-						});
-
-
-						//pasar la configuracion de cada columna del tablero
-						var columns = [];
-						for (var i = 0; i < columnas; i++) {
-							columns.push({
-								text:		'',
-								dataIndex: 	'c' + i,
-								flex: 		1,
-								renderer: 	fnMesaRenderer
-							});
-						}
-
-						//reconfigurar el grid
-						grid.reconfigure(storeTablero, columns);
+				listeners: {					
+					afterrender: function(grid) {						
 					},
 
 					cellclick: function(grid, td, cellIndex, record, tr, rowIndex, e, eOpts) {
@@ -3182,6 +3146,7 @@
 					console.log('Datos recibidos fnChange_FirstLineProtocolo:', datos);
 					miVentanaEsperando.hide();
 					
+					mesasConfig 					= [];
 					for(var i = 0 ; i < datos.catalogItems.length ; i++)
 					{
 						var mesa 					= {};
@@ -3191,8 +3156,57 @@
 						mesa.nombre 				= datos.catalogItems[i].display;
 						mesa.estado 				= datos.catalogItems[i].estado;
 						mesa.transactionMasterID 	= datos.catalogItems[i].transactionMasterID;
+						
+						if(mesa.fila >= 0)
 						mesasConfig.push(mesa);
+						
 					}					
+					
+					
+					
+					var grid = miVentanaTableroDeMesas.down('#gridTableroMesas');
+					//wg-if (grid) {
+					//wg-	grid.getView().refresh();
+					//wg-}
+					//wg-
+					//wg-miVentanaTableroDeMesas.updateLayout();
+					var filas 		= 7;
+					var columnas 	= 7;
+					var dataTablero = [];
+					
+					// inicializa tablero vacío, todas las columnas y todas las filas en null
+					for (var f = 0; f < filas; f++) {
+						var row = {};
+						for (var c = 0; c < columnas; c++) {
+							row['c' + c] = null;
+						}
+						dataTablero.push(row);
+					}
+					
+					// colocas en el tablero solo las mesas configuradas
+					Ext.Array.each(mesasConfig, function(mesa) {
+						dataTablero[mesa.fila]['c' + mesa.col] = mesa;
+					});
+					
+					//enlazar el almacenamiento del grid
+					var storeTablero = Ext.create('Ext.data.Store', {
+						data: dataTablero
+					});
+					
+					
+					//pasar la configuracion de cada columna del tablero
+					var columns = [];
+					for (var i = 0; i < columnas; i++) {
+						columns.push({
+							text:		'',
+							dataIndex: 	'c' + i,
+							flex: 		1,
+							renderer: 	fnMesaRenderer
+						});
+					}
+					
+					//reconfigurar el grid
+					grid.reconfigure(storeTablero, columns);
 					miVentanaTableroDeMesas.show();
 					
 				},
