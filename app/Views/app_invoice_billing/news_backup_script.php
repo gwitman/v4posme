@@ -566,14 +566,14 @@
 					id: 'miVentanaDePago',
 					itemId:'miVentanaDePago',
 					cls: 'win-titulo-blanco',
-					width: 700,
+					width: Ext.Element.getViewportWidth() * 0.8,
 					height: 450,
 					modal: true,
 					closeAction: 'hide',
 					hidden: true,
 					// Crear ventana modal														
 					layout: 'vbox',
-					bodyPadding: 10,			
+					bodyPadding: 10,								
 					listeners:{
 						afterrender: function(form) {
 							// Configuración dinámica al "load" del contenedor
@@ -1140,7 +1140,7 @@
 			layout: 'fit',
 			id: 'miVentanaPrincipal',
 			itemId: 'miVentanaPrincipal',
-			cls:'my-facturacion-panel',
+			cls:'my-facturacion-panel',			
 			listeners:{
 				afterrender: function(form) {
 					// Configuración dinámica al "load" del contenedor
@@ -1170,99 +1170,105 @@
 					layout: 'border',
 					cls: 'panel-header-llamativo',
 					
-					tbar: [	
-						{
-							text: 'Nueva factura',							
-							iconCls: 'fa fa-plus',
-							cls:'btn-nuevo texto-blanco',
-							id: 'btnNuevaFactura',
-							handler: fnBtnNuevaFactura
+					tbar: {
+						xtype: 				'toolbar',
+						enableOverflow: 	true,
+						overflowHandler: 	'menu',
+						items: [
+							{
+								text: 'Nueva factura',							
+								iconCls: 'fa fa-plus',
+								cls:'btn-nuevo texto-blanco',
+								id: 'btnNuevaFactura',
+								handler: fnBtnNuevaFactura
+								
+							},
+							{
+								text: 'Guardar factura',
+								iconCls: 'fa fa-save',							
+								id: 'btnGuardarFactura',
+								cls: 'btn-morado texto-blanco',
+								handler: fnBtnGuardarFactura
+							},
+							{
+								text: 'Eliminar factura',
+								iconCls: 'fa fa-trash',
+								id: 'btnEliminarFactura',
+								cls: 'btn-eliminar texto-blanco',
+								handler: fnBtnEliminarFactura
+							},
+							{
+								text: 'Imprimir factura',
+								iconCls: 'fa fa-print',
+								id: 'btnImprimirFactura',
+								cls: 'btn-imprimir texto-blanco',
+								handler: fnBtnImprimirFactura
+							},
 							
-						},
-						{
-							text: 'Guardar factura',
-							iconCls: 'fa fa-save',							
-							id: 'btnGuardarFactura',
-							cls: 'btn-morado texto-blanco',
-							handler: fnBtnGuardarFactura
-						},
-						{
-							text: 'Eliminar factura',
-							iconCls: 'fa fa-trash',
-							id: 'btnEliminarFactura',
-							cls: 'btn-eliminar texto-blanco',
-							handler: fnBtnEliminarFactura
-						},
-						{
-							text: 'Imprimir factura',
-							iconCls: 'fa fa-print',
-							id: 'btnImprimirFactura',
-							cls: 'btn-imprimir texto-blanco',
-							handler: fnBtnImprimirFactura
-						},
-						
-						'->',  // 🔥 ENVÍA TODO LO QUE SIGUE A LA DERECHA
-						{
-							xtype: 'label',
-							text: 'FAC00123', // aquí puedes poner dinámicamente el número
-							name: 'txtTM_transactionNumber',
-							id:'txtTM_transactionNumber',
-							cls: 'lbl-numero-factura',
-							style: 'font-weight:bold; margin-right:20px;'
-						},
-						{
-							xtype: 'button',
-							text: 'Herramienta',
-							iconCls: 'fa fa-refresh',
-							cls: 'btn-nuevo texto-blanco btn-fa-menu',	
-							menu: [   // 🔽 DROPDOWN BUTTON
-								{
-									text: 'Actualizar',
-									iconCls: 'fa fa-database',
-									id: 'btnActualizarPantalla',
-									handler: fnBtnActualizarPantalla
-								},
-								{
-									text: 'Actualizar catalogo',
-									iconCls: 'fa fa-database',
-									id: 'btnActualizarCatalogo',
-									handler: fnBtnActualizarCatalogo
-								},
-								{
-									text: 'Crear bd local',
-									iconCls: 'fa fa-database',
-									id: 'btnCrearBDLocal',
-									handler: fnBtnCrearBDLocal
-								},
-								{
-									text: 'Seleccionar factura',
-									iconCls: 'fa fa-database',
-									id: 'btnSeleccionarFactura',
-									handler: fnBtnSeleccionarFactura
-								},
-								{
-									text: 'Nuevo producto',
-									iconCls: 'fa fa-database',
-									id: 'btnNuevoProducto',
-									handler: fnBtnNuevoProducto
-								},
-								{
-									text: 'Seleccionar mesa',
-									iconCls: 'fa fa-database',
-									id: 'btnSeleccionarMesa',
-									hidden: true,
-									handler: fnSeleccionarMesa
-								},
-								'-',
-								{
-									text: 'Regresar',
-									iconCls: 'fa fa-retweet',
-									id: 'btnRegresar',
-									handler: fnBtnRegresar
-								}
-							]
-						}
-					],
+							'->',  // 🔥 ENVÍA TODO LO QUE SIGUE A LA DERECHA
+							{
+								xtype: 'label',
+								text: 'FAC00123', // aquí puedes poner dinámicamente el número
+								name: 'txtTM_transactionNumber',
+								id:'txtTM_transactionNumber',
+								cls: 'lbl-numero-factura',
+								style: 'font-weight:bold; margin-right:20px;'
+							},
+							{
+								xtype: 'button',
+								text: 'Herramienta',
+								iconCls: 'fa fa-refresh',
+								cls: 'btn-nuevo texto-blanco btn-fa-menu',	
+								menu: [   // 🔽 DROPDOWN BUTTON
+									{
+										text: 'Actualizar',
+										iconCls: 'fa fa-database',
+										id: 'btnActualizarPantalla',
+										handler: fnBtnActualizarPantalla
+									},
+									{
+										text: 'Actualizar catalogo',
+										iconCls: 'fa fa-database',
+										id: 'btnActualizarCatalogo',
+										handler: fnBtnActualizarCatalogo
+									},
+									{
+										text: 'Crear bd local',
+										iconCls: 'fa fa-database',
+										id: 'btnCrearBDLocal',
+										handler: fnBtnCrearBDLocal
+									},
+									{
+										text: 'Seleccionar factura',
+										iconCls: 'fa fa-database',
+										id: 'btnSeleccionarFactura',
+										handler: fnBtnSeleccionarFactura
+									},
+									{
+										text: 'Nuevo producto',
+										iconCls: 'fa fa-database',
+										id: 'btnNuevoProducto',
+										handler: fnBtnNuevoProducto
+									},
+									{
+										text: 'Seleccionar mesa',
+										iconCls: 'fa fa-database',
+										id: 'btnSeleccionarMesa',
+										hidden: true,
+										handler: fnSeleccionarMesa
+									},
+									'-',
+									{
+										text: 'Regresar',
+										iconCls: 'fa fa-retweet',
+										id: 'btnRegresar',
+										handler: fnBtnRegresar
+									}
+								]
+							}
+							
+						]
+					},
 					
 					
 					items: [						
@@ -2016,47 +2022,52 @@
 											bodyBorder: true,
 											frame: true,
 	
-											tbar: [
-												{
-													text: 'Agregar producto',
-													iconCls: 'fa fa-plus',
-													cls:'btn-verde texto-blanco',
-													handler: fnBtnNuevoProductoDetail
-												},
-												{
-													text: 'Eliminar producto',
-													cls:'btn-eliminar texto-blanco',
-													iconCls: 'fa fa-trash',
-													handler: fnBtnEliminarProductoDetail 
-												},
-												{
-													text: 'Impresion detalle',
-													cls:'btn-imprimir texto-blanco',
-													iconCls: 'fa fa-print',
-													handler: fnBtnImprimirProductoDetail 
-												},
-												
-												'->', // 🔥 empuja el siguiente campo a la derecha
-												{
-													xtype: 'textfield',
-													fieldLabel: 'Escanear',
-													labelAlign: 'right',
-													width: 350,
-													id:'txtScanerCodigo',
-													name:'txtScanerCodigo',
-													itemId:'txtScanerCodigo',													
-													fieldStyle: 'font-weight:bold; color:#ff6600; font-size:18px; text-align:right;',
-													enableKeyEvents: true,
-													listeners: {
-														afterrender: function(field) {
-															// 🔥 Le da foco automáticamente al campo
-															field.focus(false, 200); // 200ms delay opcional
-														},
-														keypress: fnBtnEnterScaner 
+											tbar: {
+												xtype: 				'toolbar',
+												enableOverflow: 	true,
+												overflowHandler: 	'menu',
+												items: [
+													{
+														text: 'Agregar producto',
+														iconCls: 'fa fa-plus',
+														cls:'btn-verde texto-blanco',
+														handler: fnBtnNuevoProductoDetail
+													},
+													{
+														text: 'Eliminar producto',
+														cls:'btn-eliminar texto-blanco',
+														iconCls: 'fa fa-trash',
+														handler: fnBtnEliminarProductoDetail 
+													},
+													{
+														text: 'Impresion detalle',
+														cls:'btn-imprimir texto-blanco',
+														iconCls: 'fa fa-print',
+														handler: fnBtnImprimirProductoDetail 
+													},
+													
+													'->', // 🔥 empuja el siguiente campo a la derecha
+													{
+														xtype: 'textfield',
+														fieldLabel: 'Escanear',
+														labelAlign: 'right',
+														width: 350,
+														id:'txtScanerCodigo',
+														name:'txtScanerCodigo',
+														itemId:'txtScanerCodigo',													
+														fieldStyle: 'font-weight:bold; color:#ff6600; font-size:18px; text-align:right;',
+														enableKeyEvents: true,
+														listeners: {
+															afterrender: function(field) {
+																// 🔥 Le da foco automáticamente al campo
+																field.focus(false, 200); // 200ms delay opcional
+															},
+															keypress: fnBtnEnterScaner 
+														}
 													}
-												}
+												]
 												
-											],
+											},
 											store: {
 												fields: [
 													// 0
