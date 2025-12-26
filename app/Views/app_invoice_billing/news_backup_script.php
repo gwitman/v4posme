@@ -3902,6 +3902,14 @@
 			var componentItemID        			= record.get('txtTMD_txtItemID');
 			var transactionMasterDetailID     	= record.get('txtTMD_txtTransactionMasterDetailID');
 
+			if (transactionMasterID === 0 || transactionMasterDetailID == 0 ) {
+				Ext.Msg.alert(
+					'<span style="color:white;font-weight:bold;">Error</span>',
+					'<span style="color:red;font-weight:bold;">Guardar primeramente el registro.</span>'
+				);
+				return;
+			}
+			
 			// 👉 Ventana de comentario
 			var winPrinterDetail = Ext.create('Ext.window.Window', {
 				title: 'Comentario de impresión',

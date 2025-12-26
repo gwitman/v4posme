@@ -383,7 +383,7 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
 		strtolower('luciaralstate_app_inventory_item_label_price_CREDITO')			 							=> "----",
 		strtolower('luciaralstate_app_inventory_item_label_price_CREDITO POR MAYOR')			 				=> "----",
 		strtolower('luciaralstate_app_inventory_item_label_price_ESPECIAL')			 							=> "----",		
-		strtolower('luciaralstate_app_inventory_item_btnDelete')			 									=> "hidden",	
+		strtolower('luciaralstate_app_inventory_item_btnDelete')			 									=> "",	
 		strtolower('luciaralstate_app_cxc_customer_divTxtNombres')												=> "hidden",
 		strtolower('luciaralstate_app_cxc_customer_divTxtApellidos')											=> "hidden",
 		strtolower('luciaralstate_app_cxc_customer_divTxtNombreComercial')										=> "hidden",
