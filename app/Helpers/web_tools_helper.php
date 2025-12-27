@@ -959,12 +959,16 @@ function helper_getHtmlOfStylePageListReportCSS()
 {
 	?>
 	<style>
+		/*function helper_getHtmlOfStylePageListReportCSS()*/
+		/*estilo para los elementos de reporteria*/
 		.recent-activity h2 {
 		  text-align: center;
 		  margin-bottom: 30px;
 		  color: #333;
 		}
 
+		/*function helper_getHtmlOfStylePageListReportCSS()*/
+		/*estilo para los elementos de reporteria*/
 		.recent-activity .reportes-grid {
 		  display: grid;
 		  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -974,6 +978,8 @@ function helper_getHtmlOfStylePageListReportCSS()
 		  grid-auto-rows: 1fr;
 		}
 
+		/*function helper_getHtmlOfStylePageListReportCSS()*/
+		/*estilo para los elementos de reporteria*/
 		.recent-activity .reporte-item {
 		  background: #fff;
 		  border-radius: 10px;
@@ -986,11 +992,15 @@ function helper_getHtmlOfStylePageListReportCSS()
 		  justify-content: space-between;
 		}
 
+		/*function helper_getHtmlOfStylePageListReportCSS()*/
+		/*estilo para los elementos de reporteria*/
 		.recent-activity .reporte-item:hover {
 		  transform: translateY(-5px);
 		  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 		}
 
+		/*function helper_getHtmlOfStylePageListReportCSS()*/
+		/*estilo para los elementos de reporteria*/
 		.recent-activity .reporte-titulo {
 		  font-size: 12px;
 		  font-weight: bold;
@@ -998,28 +1008,64 @@ function helper_getHtmlOfStylePageListReportCSS()
 		  margin: 0 0 10px;
 		}
 
+		/*function helper_getHtmlOfStylePageListReportCSS()*/
+		/*estilo para los elementos de reporteria*/
 		.recent-activity .reporte-descripcion {
 		  font-size: 12px;
 		  color: #555;
 		  flex-grow: 1;
+		  
+		  position: relative;
+		  max-width: 300px;       /* ancho contraído */
+		  max-height: 60px;       /* alto contraído */
+		  overflow: hidden;
+		  transition: all 0.3s ease;
+		  
+		}
+		
+
+		.reporte-descripcion.expandido {
+		  max-width: 100%;        /* ancho expandido */
+		  max-height: 500px;      /* alto expandido */
 		}
 
+		.reporte-ver-mas {
+		  display: inline-block;
+		  margin-top: 5px;
+		  color: #007bff;
+		  cursor: pointer;
+		  font-weight: 600;
+		  text-decoration: none;
+		}
+
+		.reporte-ver-mas:hover {
+		  text-decoration: underline;
+		}
+
+		/*function helper_getHtmlOfStylePageListReportCSS()*/
+		/*estilo para los elementos de reporteria*/
 		.recent-activity .reporte-rating {
 		  margin-top: 15px;
 		}
 
+		/*function helper_getHtmlOfStylePageListReportCSS()*/
+		/*estilo para los elementos de reporteria*/
 		.recent-activity .star {
 		  color: #ffc107;
 		  font-size: 20px;
 		  margin-right: 2px;
 		}
 
+		/*function helper_getHtmlOfStylePageListReportCSS()*/
+		/*estilo para los elementos de reporteria*/
 		@media (max-width: 900px) {
 		  .recent-activity .reportes-grid {
 			grid-template-columns: repeat(2, 1fr);
 		  }
 		}
 
+		/*function helper_getHtmlOfStylePageListReportCSS()*/
+		/*estilo para los elementos de reporteria*/
 		@media (max-width: 600px) {
 		  .recent-activity .reportes-grid {
 			grid-template-columns: 1fr;
@@ -1492,5 +1538,25 @@ function helper_reemplazarPuntosExceptoUltimo($precieValueAbs)
 				
 	return $precieValueAbs;
 }
+
+function helper_obtenerPrimeras5Palabras( $texto,  $cantidad  )
+{
+    if (empty($texto)) {
+        return '';
+    }
+
+    // Limpiar espacios extra
+    $texto 		= trim($texto);
+
+    // Separar por uno o más espacios
+    $palabras 	= preg_split('/\s+/', $texto);
+
+    // Tomar máximo 5 elementos
+    $primeras 	= array_slice($palabras, 0, $cantidad);
+
+    // Unir nuevamente
+    return implode(' ', $primeras);
+}
+
 
 ?>
