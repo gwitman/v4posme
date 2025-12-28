@@ -22,11 +22,12 @@ class Relationship_Model extends Model  {
 		$builder		= $db->table("tb_relationship");	
 		
 		$result			= $builder->insert($data);
-		$autoIncrement	= $db->insertID(); 		
+		$autoIncrement	= $db->insertID(); 	
+		return $autoIncrement;
 		
     }
 	
-	function insert_OrMoveCustomerAfter($employeeID, $customerID, $customerIDAfter, $data)
+	function insert_OrMoveCustomerAfter($employeeID, $customerID, $customerIDAfter,$facturaOrReference1, $data)
     {
         $db         = db_connect();
         $builder    = $db->table('tb_relationship');
@@ -37,9 +38,10 @@ class Relationship_Model extends Model  {
         $maxOrder 		= $findMaxOrder->orderNo ?? 0;
 
         // Buscar si ya existe
-        $existing 			= $builder->where([
+        $existing 			=  $builder->where([
             'employeeID' 	=> $employeeID,
             'customerID' 	=> $customerID,
+			'reference1'	=> $facturaOrReference1,
             'isActive' 		=> '1'
         ])->get()->getRow();
 
@@ -77,7 +79,9 @@ class Relationship_Model extends Model  {
             if (is_null($afterOrder)) {
                 $newOrder = $maxOrder;
 
-                if ($oldOrder == $newOrder) {
+                if ($oldOrder == $newOrder) 
+				{					
+					$this->update_app_posme($existing->relationshipID, $data);
                     return; // ya está al final
                 }
 
@@ -98,6 +102,7 @@ class Relationship_Model extends Model  {
 
             // Si ya está justo después de ese cliente, no mover
             if ($oldOrder == $afterOrder + 1) {
+				$this->update_app_posme($existing->relationshipID, $data);
                 return;
             }
 
@@ -149,27 +154,28 @@ class Relationship_Model extends Model  {
 
 
 
-    function insert_OrMoveCustomerToOrder($employeeID, $customerID, $newOrder, $data)
+    function insert_OrMoveCustomerToOrder($employeeID, $customerID, $newOrder,$facturaOrReference1, $data)
     {
         $db = db_connect();
         $builder = $db->table('tb_relationship');
-
+		
         // 1. Buscar si ya existe
         $existing = $builder->where([
             'employeeID' => $employeeID,
-            'isActive' => '1',
-            'customerID' => $customerID
+            'isActive' => 	'1',
+            'customerID' => $customerID,
+			'reference1' => $facturaOrReference1
         ])->get()->getRow();
 
         $occupied = $builder
             ->where(['employeeID' => $employeeID, 'orderNo' => $newOrder, 'isActive' => '1'])
             ->countAllResults();
-
+		
         if ($existing) {
             $oldOrder = $existing->orderNo;
-
             if ($oldOrder == $newOrder) {
                 // No hay cambio de posición
+				$this->update_app_posme($existing->relationshipID, $data);
                 return;
             }
             if ($occupied > 0) {
@@ -210,7 +216,8 @@ class Relationship_Model extends Model  {
             ", [$employeeID, $newOrder]);
             }
             $data['orderNo'] = $newOrder;
-            $this->insert_app_posme($data);
+            $relationshipID = $this->insert_app_posme($data);			
+			return $relationshipID;
         }
     }
 	
@@ -294,7 +301,10 @@ class Relationship_Model extends Model  {
 						r.isActive, concat(e.employeNumber,' / ',concat(n.firstName,' ',n.lastName)) as firstName, 
 						concat(c.customerNumber,' / ' ,l.legalName) as legalName,
 						r.customerIDAfter,						
-						r.reference3
+						r.reference3,
+						r.descripcion, 
+						r.reference4,						
+						r.reference5
 					");
 		$sql = $sql.sprintf(" from 
 									tb_relationship as r 

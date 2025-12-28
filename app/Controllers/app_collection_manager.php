@@ -360,16 +360,23 @@ class app_collection_manager extends _BaseController {
 			$obj["reference1"]          = $this->request->getPost("txtReference1");
 			$obj["reference2"]          = $this->request->getPost("txtReference2");
 			$obj["reference3"]          = $this->request->getPost("txtReference3");
+			$obj["reference4"]          = $this->request->getPost("txtReference4");
+			$obj["reference5"]          = $this->request->getPost("txtReference5");
+			$obj["descripcion"]         = $this->request->getPost("txtDescripcion");
 			$obj["isActive"] 			= true;
 			$obj["startOn"] 			= date("Y-m-d");
 			$obj["endOn"] 				= date("Y-m-d");
 			
 			if($obj["customerIDAfter"]>0)
 			{
-				$this->Relationship_Model->insert_OrMoveCustomerAfter($obj["employeeID"], $obj["customerID"], $obj["customerIDAfter"], $obj);
+				$this->Relationship_Model->insert_OrMoveCustomerAfter($obj["employeeID"], $obj["customerID"], $obj["customerIDAfter"],$obj["reference1"], $obj);
 			}else{
-                if(is_null($obj["orderNo"])) $obj["orderNo"] = 0;
-				$this->Relationship_Model->insert_OrMoveCustomerToOrder($obj["employeeID"], $obj["customerID"], $obj["orderNo"], $obj);
+                if(is_null($obj["orderNo"])) 
+				{
+					$obj["orderNo"] = 0;
+					
+				}
+				$this->Relationship_Model->insert_OrMoveCustomerToOrder($obj["employeeID"], $obj["customerID"], $obj["orderNo"],$obj["reference1"], $obj);
 			}
 			
 			$db->transCommit();						
@@ -422,18 +429,21 @@ class app_collection_manager extends _BaseController {
 			$obj["reference1"]          = $this->request->getPost("txtReference1");
 			$obj["reference2"]          = $this->request->getPost("txtReference2");
 			$obj["reference3"]          = $this->request->getPost("txtReference3");
+			$obj["reference4"]          = $this->request->getPost("txtReference4");
+			$obj["reference5"]          = $this->request->getPost("txtReference5");
+			$obj["descripcion"]         = $this->request->getPost("txtDescripcion");
+			$obj["isActive"]	        = 1;
 			
 			//Calcular el orden
 			
 			
 			$db = db_connect();
 			$db->transStart();
-
 			if($obj["customerIDAfter"] > 0)
 			{
-				$this->Relationship_Model->insert_OrMoveCustomerAfter($obj["employeeID"], $obj["customerID"], $obj["customerIDAfter"], $obj);
+				$this->Relationship_Model->insert_OrMoveCustomerAfter($obj["employeeID"], $obj["customerID"], $obj["customerIDAfter"],$obj["reference1"], $obj);
 			}else{
-				$this->Relationship_Model->insert_OrMoveCustomerToOrder($obj["employeeID"], $obj["customerID"], $obj["orderNo"], $obj);
+				$relationshipID = $this->Relationship_Model->insert_OrMoveCustomerToOrder($obj["employeeID"], $obj["customerID"], $obj["orderNo"],$obj["reference1"], $obj);
 			}
 			
 			if ($db->transStatus() !== false) {

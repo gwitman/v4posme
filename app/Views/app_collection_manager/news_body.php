@@ -117,6 +117,33 @@
 														</div>
 														
 														<div class="form-group">
+															<label class="col-lg-4 control-label" for="buttons">Referencia 4</label>
+															<div class="col-lg-8">
+																<div class="input-group">	
+																	<input class="form-control" type="text" name="txtReference4" id="txtReference4">																																																																																																		
+																</div>
+															</div>
+														</div>
+														
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="buttons">Referencia 5</label>
+															<div class="col-lg-8">
+																<div class="input-group">	
+																	<input class="form-control" type="text" name="txtReference5" id="txtReference5">																																																																																																		
+																</div>
+															</div>
+														</div>
+														
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="buttons">Descripcion</label>
+															<div class="col-lg-8">
+																<div class="input-group">	
+																	<input class="form-control" type="text" name="txtDescripcion" id="txtDescripcion">																																																																																																		
+																</div>
+															</div>
+														</div>
+														
+														<div class="form-group">
 															<label class="col-lg-4 control-label" for="buttons">Aplicar orden depues de</label>
 															<div class="col-lg-8">
 																<div class="input-group">
