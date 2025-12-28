@@ -1023,10 +1023,13 @@ function helper_getHtmlOfStylePageListReportCSS()
 		  
 		}
 		
-
+		.reporte-item.expandido
+		{
+			background: antiquewhite;
+		}
 		.reporte-descripcion.expandido {
 		  max-width: 100%;        /* ancho expandido */
-		  max-height: 500px;      /* alto expandido */
+		  max-height: 600px;      /* alto expandido */
 		}
 
 		.reporte-ver-mas {

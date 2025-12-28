@@ -359,6 +359,7 @@ class app_collection_manager extends _BaseController {
 			$obj["orderNo"] 			= /*inicio get post*/ $this->request->getPost("txtOrderNo");
 			$obj["reference1"]          = $this->request->getPost("txtReference1");
 			$obj["reference2"]          = $this->request->getPost("txtReference2");
+			$obj["reference3"]          = $this->request->getPost("txtReference3");
 			$obj["isActive"] 			= true;
 			$obj["startOn"] 			= date("Y-m-d");
 			$obj["endOn"] 				= date("Y-m-d");
@@ -420,6 +421,7 @@ class app_collection_manager extends _BaseController {
 			$obj["orderNo"] 			= $this->request->getPost('txtOrderNo');
 			$obj["reference1"]          = $this->request->getPost("txtReference1");
 			$obj["reference2"]          = $this->request->getPost("txtReference2");
+			$obj["reference3"]          = $this->request->getPost("txtReference3");
 			
 			//Calcular el orden
 			

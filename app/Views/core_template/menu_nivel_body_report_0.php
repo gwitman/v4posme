@@ -29,10 +29,12 @@
      descripcion.classList.toggle('expandido');
 
      this.textContent =
-       descripcion.classList.contains('expandido') ? 'Menos' : 'Más';
-
+       descripcion.classList.contains('expandido') ? '[Menos]' : '[Mas]';
+	 
+	 
+	 item.classList.toggle('expandido');
      return false;
-  " >Más</a>
+  " >[Mas]</a>
 
   
   <div class="reporte-rating">

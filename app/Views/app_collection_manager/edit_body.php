@@ -109,6 +109,15 @@
 														</div>
 														
 														<div class="form-group">
+															<label class="col-lg-4 control-label" for="buttons">Tasa</label>
+															<div class="col-lg-8">
+																<div class="input-group">	
+																	<input class="form-control" type="text" name="txtReference3" id="txtReference3" value="<?php echo $objRelationship->reference3; ?>" >																																																																																																		
+																</div>
+															</div>
+														</div>
+														
+														<div class="form-group">
 															<label class="col-lg-4 control-label" for="buttons">Aplicar orden depues de</label>
 															<div class="col-lg-8">
 																<div class="input-group">

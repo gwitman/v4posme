@@ -293,7 +293,8 @@ class Relationship_Model extends Model  {
 						r.reference1,r.reference2, r.startOn, r.endOn,  
 						r.isActive, concat(e.employeNumber,' / ',concat(n.firstName,' ',n.lastName)) as firstName, 
 						concat(c.customerNumber,' / ' ,l.legalName) as legalName,
-						r.customerIDAfter
+						r.customerIDAfter,						
+						r.reference3
 					");
 		$sql = $sql.sprintf(" from 
 									tb_relationship as r 
