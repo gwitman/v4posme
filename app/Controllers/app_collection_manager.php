@@ -443,7 +443,7 @@ class app_collection_manager extends _BaseController {
 			{
 				$this->Relationship_Model->insert_OrMoveCustomerAfter($obj["employeeID"], $obj["customerID"], $obj["customerIDAfter"],$obj["reference1"], $obj);
 			}else{
-				$relationshipID = $this->Relationship_Model->insert_OrMoveCustomerToOrder($obj["employeeID"], $obj["customerID"], $obj["orderNo"],$obj["reference1"], $obj);
+				$this->Relationship_Model->insert_OrMoveCustomerToOrder($obj["employeeID"], $obj["customerID"], $obj["orderNo"],$obj["reference1"], $obj);
 			}
 			
 			if ($db->transStatus() !== false) {
