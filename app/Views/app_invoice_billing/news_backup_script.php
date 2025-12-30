@@ -6665,7 +6665,7 @@
 					var gridProductos = win.down('#gridProductos');
 
 					// Filtrar productos por categoría seleccionada
-					gridProductos.getStore().clearFilter();
+					gridProductos.getStore().clearFilter();					
 					gridProductos.getStore().filter('inventoryCategoryID', record.get('inventoryCategoryID'));
 
 					// Ir a la vista de productos
