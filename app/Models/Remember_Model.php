@@ -940,7 +940,7 @@ class Remember_Model extends Model  {
         from 
             tb_remember r 
             inner join tb_workflow_stage st on 
-                sr.workflowStageID = r.statusID 
+                st.workflowStageID = r.statusID 
         where 
             r.companyID = 2 and 
             r.isActive= 1 and 

@@ -244,23 +244,23 @@ class app_calendar_programming extends _BaseController
 			{
 				$result = $this->Remember_Model->getProgrammingFacturaRegistradaSinHora();
 			}
-			if($dataSession['company']->flavorID == 26)
+			else if($dataSession['company']->flavorID == 26)
 			{
 				$result = $this->Remember_Model->getProgrammingFacturaAplicadaSinHora();
 			}
-			if($dataSession['company']->type == "chicextensiones")
+			else if($dataSession['company']->type == "chicextensiones")
+			{
+				$result = $this->Remember_Model->getProgrammingFacturaRegistradaSinHora();
+			}
+			else if($dataSession['company']->type == "audio_pipe")
 			{
 				$result = $this->Remember_Model->getProgrammingFacturaAplicadaSinHora();
 			}
-			if($dataSession['company']->type == "audio_pipe")
-			{
-				$result = $this->Remember_Model->getProgrammingFacturaAplicadaSinHora();
-			}
-			if($dataSession['company']->type == "majo")
+			else if($dataSession['company']->type == "majo")
 			{
 				$result = $this->Remember_Model->getProgrammingFacturaRegistradaConHora();
 			}	
-			if($dataSession['company']->type == "galmcuts")
+			else if($dataSession['company']->type == "galmcuts")
 			{
 				$result = $this->Remember_Model->getProgrammingFacturaRegistradaConHora();
 			}	
