@@ -141,7 +141,7 @@
 				
 					<li class="dropdown">	
 						<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">		
-							<i class="icon24 i-airplane"></i>									
+							<i class="icon24 i-IE"></i>									
 						</a>	
 						<ul class="dropdown-menu" role="menu">
 							<li role="presentation" >
