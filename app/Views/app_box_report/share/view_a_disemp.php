@@ -58,7 +58,7 @@
 		$configColumnAbonos["9"]["Titulo"] 		= "Usuario";		
 		$configColumnAbonos["10"]["Titulo"] 	= "Nota";		
 		$configColumnAbonos["11"]["Titulo"] 	= "Categoria";		
-		$configColumnAbonos["12"]["Titulo"] 	= "Sub Categoria";
+		$configColumnAbonos["12"]["Titulo"] 	= "Sub Categoria";		
 					 
 		$configColumnAbonos["0"]["FiledSouce"] 		= "customerNumber";		
 		$configColumnAbonos["1"]["FiledSouce"] 		= "firstName";		
@@ -564,7 +564,7 @@
 		?>
 		
 		
-				<?php 
+		<?php 
 		/********************************/
 		$configColumnAbonosDolares["0"]["Titulo"] 		= "Codigo";		
 		$configColumnAbonosDolares["1"]["Titulo"] 		= "Cliente";		
@@ -1091,6 +1091,78 @@
 		if($totalDolares > 0)
 		echo $rosTotales["table"];
 		
+		?>
+		
+		<br/>
+		<?php
+		
+		
+		$configColumnMetodosPago["0"]["Titulo"] 		= "Banco";		
+		$configColumnMetodosPago["1"]["Titulo"] 		= "Transferencia C$";		
+		$configColumnMetodosPago["2"]["Titulo"] 		= "Transferencia $";		
+		$configColumnMetodosPago["3"]["Titulo"] 		= "Tarjeta C$";		
+		$configColumnMetodosPago["4"]["Titulo"] 		= "Tarjeta $";		
+		$configColumnMetodosPago["5"]["Titulo"] 		= "Efectivo C$ ";		
+		$configColumnMetodosPago["6"]["Titulo"] 		= "Efectivo $";		
+		$configColumnMetodosPago["7"]["Titulo"] 		= "Puntos";		
+		$configColumnMetodosPago["8"]["Titulo"] 		= "Total C$";		
+		$configColumnMetodosPago["9"]["Titulo"] 		= "Total $";		
+		 
+		$configColumnMetodosPago["0"]["FiledSouce"] 		= "Banco";		
+		$configColumnMetodosPago["1"]["FiledSouce"] 		= "Transferencia Cordoba";		
+		$configColumnMetodosPago["2"]["FiledSouce"] 		= "Transferencia Dólar";		
+		$configColumnMetodosPago["3"]["FiledSouce"] 		= "Tarjeta Cordoba";		
+		$configColumnMetodosPago["4"]["FiledSouce"] 		= "Tarjeta Dólar";		
+		$configColumnMetodosPago["5"]["FiledSouce"] 		= "Efectivo Cordoba";		
+		$configColumnMetodosPago["6"]["FiledSouce"] 		= "Efectivo Dólar";		
+		$configColumnMetodosPago["7"]["FiledSouce"] 		= "Puntos";		
+		$configColumnMetodosPago["8"]["FiledSouce"] 		= "Total Cordoba";		
+		$configColumnMetodosPago["9"]["FiledSouce"] 		= "Total Dólar";	
+		 
+		$configColumnMetodosPago["0"]["Formato"] 		= "";		
+		$configColumnMetodosPago["1"]["Formato"] 		= "Number";		
+		$configColumnMetodosPago["2"]["Formato"] 		= "Number";		
+		$configColumnMetodosPago["3"]["Formato"] 		= "Number";		
+		$configColumnMetodosPago["4"]["Formato"] 		= "Number";		
+		$configColumnMetodosPago["5"]["Formato"] 		= "Number";		
+		$configColumnMetodosPago["6"]["Formato"] 		= "Number";		
+		$configColumnMetodosPago["7"]["Formato"] 		= "Number";		
+		$configColumnMetodosPago["8"]["Formato"] 		= "Number";		
+		$configColumnMetodosPago["9"]["Formato"] 		= "Number";				
+		 
+		$configColumnMetodosPago["0"]["Width"] 		= $width0;		
+		$configColumnMetodosPago["1"]["Width"] 		= $width1;		
+		$configColumnMetodosPago["2"]["Width"] 		= $width2;		
+		$configColumnMetodosPago["3"]["Width"] 		= $width3;	
+		$configColumnMetodosPago["4"]["Width"] 		= $width4;	
+		$configColumnMetodosPago["5"]["Width"] 		= $width5;	
+		$configColumnMetodosPago["6"]["Width"] 		= $width6;	
+		$configColumnMetodosPago["7"]["Width"] 		= $width7;	
+		$configColumnMetodosPago["8"]["Width"] 		= $width8;	
+		$configColumnMetodosPago["9"]["Width"] 		= $width9;	
+		 
+		$configColumnMetodosPago["0"]["Total"] 		= False;		
+		$configColumnMetodosPago["1"]["Total"] 		= False;		
+		$configColumnMetodosPago["2"]["Total"] 		= False;		
+		$configColumnMetodosPago["3"]["Total"] 		= False;		
+		$configColumnMetodosPago["4"]["Total"] 		= False;		
+		$configColumnMetodosPago["5"]["Total"] 		= False;		
+		$configColumnMetodosPago["6"]["Total"] 		= False;		
+		$configColumnMetodosPago["7"]["Total"] 		= False;		
+		$configColumnMetodosPago["8"]["Total"] 		= False;		
+		$configColumnMetodosPago["9"]["Total"] 		= False;
+		
+		$resultadoMetodosPago = helper_reporteGeneralCreateTable(
+				$objPaymentMethod,
+				$configColumnMetodosPago,
+				'0px',
+				'METODOS DE PAGO',
+				'68c778',
+				'black'
+		);
+		
+		if($resultadoMetodosPago["table"] !== 0)
+		echo $resultadoMetodosPago["table"];
 		?>
 		
 		

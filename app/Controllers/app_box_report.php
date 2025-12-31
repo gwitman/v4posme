@@ -180,6 +180,8 @@ class app_box_report extends _BaseController {
 				$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
+				
+				
 				//Get Datos
 				$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?,?);";
 				$objData		= $this->Bd_Model->executeRender(
@@ -191,6 +193,13 @@ class app_box_report extends _BaseController {
 				$objDataSales	= $this->Bd_Model->executeRender(
 					$query,
 					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,$categoryItem,0,0,0,0]
+				);	
+				
+				//Get Datos de Formas de pago		
+				$query						= "CALL pr_sales_get_report_sales_by_payment(?,?,?,?,?);";
+				$objDataSalesPaymentMethod	= $this->Bd_Model->executeRender(
+					$query,
+					[$companyID,$tocken,$userID,$startOn,$endOn]
 				);	
 
 				$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?,?);";
@@ -235,10 +244,14 @@ class app_box_report extends _BaseController {
 				$objDataResult["objCash"]					= NULL;
 			
 				if(isset($objDataCashOut))				
-				$objDataResult["objCashOut"]					= $objDataCashOut;
+				$objDataResult["objCashOut"]				= $objDataCashOut;
 				else
-				$objDataResult["objCashOut"]					= NULL;
+				$objDataResult["objCashOut"]				= NULL;
 			
+				if(isset($objDataSalesPaymentMethod))
+				$objDataResult["objPaymentMethod"]			= $objDataSalesPaymentMethod;
+				else
+				$objDataResult["objPaymentMethod"]			= NULL;
 				
 				
 				
