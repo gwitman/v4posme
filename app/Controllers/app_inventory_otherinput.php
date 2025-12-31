@@ -353,7 +353,7 @@ class app_inventory_otherinput extends _BaseController
 					$objTMD["promotionID"] 					= 0;
 
 					$objTMD["lote"]							= $lote;
-					$objTMD["expirationDate"]				= $vencimiento == "" ? NULL :  $vencimiento;
+					$objTMD["expirationDate"]				= $vencimiento == "" ? '1900-01-01' :  $vencimiento;
 					$objTMD["reference3"]					= '';
 					$objTMD["catalogStatusID"]				= 0;
 					$objTMD["inventoryStatusID"]			= 0;
@@ -494,7 +494,7 @@ class app_inventory_otherinput extends _BaseController
 						//
 						//
 						$objTMD["lote"]							= $lote;
-						$objTMD["expirationDate"]				= $vencimiento == "" ? NULL :  $vencimiento;
+						$objTMD["expirationDate"]				= $vencimiento == "" ? '1900-01-01' :  $vencimiento;
 						$objTMD["reference3"]					= '';
 						$objTMD["catalogStatusID"]				= 0;
 						$objTMD["inventoryStatusID"]			= 0;
@@ -515,7 +515,7 @@ class app_inventory_otherinput extends _BaseController
 						$objTMDNew["unitaryCost"]					= helper_StringToNumber($arrayListCost[$key]); //costo
 						$objTMDNew["cost"] 							= $objTMDNew["quantity"] * $objTMDNew["unitaryCost"];
 						$objTMDNew["lote"]							= $lote;
-						$objTMDNew["expirationDate"]				= $vencimiento == "" ? NULL :  $vencimiento;
+						$objTMDNew["expirationDate"]				= $vencimiento == "" ? '1900-01-01' :  $vencimiento;
 
 						$objTMDNew["inventoryWarehouseTargetID"]	= $objTMNew["targetWarehouseID"];
 						$this->Transaction_Master_Detail_Model->update_app_posme($companyID, $transactionID, $transactionMasterID, $transactionMasterDetailID, $objTMDNew);

@@ -14,7 +14,7 @@
 														<label class="col-lg-4 control-label" for="datepicker">Vencimiento</label>
 														<div class="col-lg-8">
 															<div id="datepicker" class="input-group date" data-date="2014-01-30" data-date-format="yyyy-mm-dd">
-																<input size="16"  class="form-control" type="text" name="txtVencimiento" id="txtVencimiento" value="<?php echo $vencimiento;?>">
+																<input size="16"  class="form-control" type="text" name="txtVencimiento" id="txtVencimiento" readonly="true" value="<?php echo $vencimiento;?>">
 																<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
 															</div>
 														</div>

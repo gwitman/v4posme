@@ -243,7 +243,7 @@ class app_inventory_ajuste extends _BaseController
 					$objTMD["promotionID"] 					= 0;
 
 					$objTMD["lote"]							= $lote;
-					$objTMD["expirationDate"]				= $vencimiento == "" ? NULL :  $vencimiento;
+					$objTMD["expirationDate"]				= $vencimiento == "" ? '1900-01-01' :  $vencimiento;
 					$objTMD["reference3"]					= $unitaryPrice2 . "|" . $unitaryPrice3;
 					$objTMD["catalogStatusID"]				= 0;
 					$objTMD["inventoryStatusID"]			= 0;
@@ -522,7 +522,7 @@ class app_inventory_ajuste extends _BaseController
 							$objTMD["unitaryPrice"]					= $precio;
 							$objTMD["promotionID"] 					= 0;
 							$objTMD["lote"]							= $lote;
-							$objTMD["expirationDate"]				= $vencimiento == "" ? NULL :  $vencimiento;
+							$objTMD["expirationDate"]				= $vencimiento == "" ? '1900-01-01' :  $vencimiento;
 							$objTMD["reference3"]					= '0|0';
 							$objTMD["catalogStatusID"]				= 0;
 							$objTMD["inventoryStatusID"]			= 0;
@@ -615,7 +615,7 @@ class app_inventory_ajuste extends _BaseController
 							$objTMD["promotionID"] 					= 0;
 
 							$objTMD["lote"]							= $lote;
-							$objTMD["expirationDate"]				= $vencimiento == "" ? NULL :  $vencimiento;
+							$objTMD["expirationDate"]				= $vencimiento == "" ? '1900-01-01' :  $vencimiento;
 							$objTMD["reference3"]					= $unitaryPrice2 . "|" . $unitaryPrice3;
 							$objTMD["catalogStatusID"]				= 0;
 							$objTMD["inventoryStatusID"]			= 0;
@@ -640,7 +640,7 @@ class app_inventory_ajuste extends _BaseController
 							$objTMDNew["unitaryAmount"]					= $unitaryPrice;
 							$objTMDNew["cost"] 							= $objTMDNew["quantity"] * $objTMDNew["unitaryCost"];
 							$objTMDNew["lote"]							= $lote;
-							$objTMDNew["expirationDate"]				= $vencimiento == "" ? NULL :  $vencimiento;
+							$objTMDNew["expirationDate"]				= $vencimiento == "" ? '1900-01-01' :  $vencimiento;
 							$objTMDNew["inventoryWarehouseSourceID"]	= $objTMNew["sourceWarehouseID"];
 							$objTMDNew["inventoryWarehouseTargetID"]	= $objTMNew["targetWarehouseID"];
 							$this->Transaction_Master_Detail_Model->update_app_posme($companyID, $transactionID, $transactionMasterID, $transactionMasterDetailID, $objTMDNew);

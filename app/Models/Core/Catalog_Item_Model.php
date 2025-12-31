@@ -14,7 +14,7 @@ class Catalog_Item_Model extends Model  {
 		$sql = sprintf("select e.catalogID,e.catalogItemID,e.name,e.display,e.flavorID,e.description,e.sequence,e.parentCatalogID,e.parentCatalogItemID,e.ratio,e.reference1,e.reference2,e.reference3,e.reference4 ");
 		$sql = $sql.sprintf(" from tb_catalog_item e");
 		$sql = $sql.sprintf(" where e.catalogID = $catalogID");	
-		$sql = $sql.sprintf(" and e.flavorID = $flavorID ");	
+		$sql = $sql.sprintf(" and e.flavorID = $flavorID and e.isActive = 1  ");	
 		$sql = $sql.sprintf(" order by e.sequence ");	
 		
 		//Ejecutar Consulta
@@ -30,7 +30,7 @@ class Catalog_Item_Model extends Model  {
 		$sql = $sql.sprintf(" from tb_catalog_item e");
 		$sql = $sql.sprintf(" where e.catalogID = $catalogID");	
 		$sql = $sql.sprintf(" and e.flavorID = $flavorID ");	
-		$sql = $sql.sprintf(" and e.reference1 = '$reference1' ");	
+		$sql = $sql.sprintf(" and e.reference1 = '$reference1' and e.isActive = 1  ");	
 		$sql = $sql.sprintf(" order by e.sequence ");	
 		
 		//Ejecutar Consulta
@@ -44,7 +44,7 @@ class Catalog_Item_Model extends Model  {
 		$sql = $sql.sprintf(" from tb_catalog_item e");
 		$sql = $sql.sprintf(" where e.catalogID = $catalogID");	
 		$sql = $sql.sprintf(" and e.flavorID = $flavorID");	
-		$sql = $sql.sprintf(" and e.parentCatalogItemID = $parentCatalogItemID");
+		$sql = $sql.sprintf(" and e.parentCatalogItemID = $parentCatalogItemID and e.isActive = 1  ");
 		$sql = $sql.sprintf(" order by e.sequence ");	
 		
 		
@@ -57,7 +57,7 @@ class Catalog_Item_Model extends Model  {
 		$sql = "";
 		$sql = sprintf("select e.catalogID,e.catalogItemID,e.name,e.display,e.flavorID,e.description,e.sequence,e.parentCatalogID,e.parentCatalogItemID,e.ratio,e.reference1,e.reference2,e.reference3,e.reference4 ");
 		$sql = $sql.sprintf(" from tb_catalog_item e");
-		$sql = $sql.sprintf(" where e.catalogItemID = $catalogItemID");	
+		$sql = $sql.sprintf(" where e.catalogItemID = $catalogItemID and e.isActive = 1  ");	
 		
 		//Ejecutar Consulta
 		 return $db->query($sql)->getRow();
@@ -85,7 +85,8 @@ class Catalog_Item_Model extends Model  {
 				c.catalogID = ci.catalogID 
 		where 
 			c.isActive = 1 and 
-			ci.flavorID = $flavorID 
+			ci.flavorID = $flavorID and 
+			ci.isActive = 1 
 		order by 
 			c.`name`,ci.sequence 
 	    ");

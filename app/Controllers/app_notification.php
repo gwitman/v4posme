@@ -715,6 +715,25 @@ class app_notification extends _BaseController
 
 	}
 	
+	function generateClearData($companyID = "")
+	{
+		
+		$companyID			= APP_COMPANY;
+		$branchID 			= APP_BRANCH;
+		$loginID			= APP_USERADMIN;
+		$componentPeriodID	= 0;
+		$componentCycleID	= 0;
+					
+		$query									= "CALL pr_core_clear_data(?,?,?,@resultMayorization);";
+		$resultMayorizate						= $this->Bd_Model->executeRender(
+			$query,[$companyID,$branchID,$loginID]
+		);	
+		
+		$query									= "SELECT @resultMayorization as codigo";
+		$resultMayorizate						= $this->Bd_Model->executeRender($query,null);	
+		echo "SUCCESS";
+	}
+	
 	/*ejecutar cada 2 horas*/
 	//curl "https://posme.net/v4posme/chic/public/app_notification/generatedTransactionOutputByFormulate"
 	//0 */2 * * *

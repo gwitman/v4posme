@@ -2755,12 +2755,7 @@
 									<tr>
 										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F4</td>
 										<td style="padding:8px; border:1px solid #ddd;">Aplicar cambios</td>
-									</tr>
-									
-									<tr>
-										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F5</td>
-										<td style="padding:8px; border:1px solid #ddd;">Abrir seleccion de producto</td>
-									</tr>
+									</tr>									
 									
 									<tr>
 										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F6</td>
@@ -2787,6 +2782,11 @@
 										<td style="padding:8px; border:1px solid #ddd;">Seleccionar Producto por Categoria</td>
 									</tr>
 
+									<tr>
+										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F11</td>
+										<td style="padding:8px; border:1px solid #ddd;">Abrir seleccion de producto</td>
+									</tr>
+									
 									<tr>
 										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F12</td>
 										<td style="padding:8px; border:1px solid #ddd;">Imprimir factura</td>
@@ -2832,8 +2832,8 @@
 				fnEnviarFactura("aplicar");
 			}
 			
-			// F5 seleccion de productos
-			if (e.getKey() === Ext.event.Event.F5) {
+			// F11 seleccion de productos
+			if (e.getKey() === Ext.event.Event.F11) {
 				e.preventDefault();
 				miVentanaSeleccionProducto.show();
 			}
@@ -6665,8 +6665,15 @@
 					var gridProductos = win.down('#gridProductos');
 
 					// Filtrar productos por categoría seleccionada
-					gridProductos.getStore().clearFilter();					
-					gridProductos.getStore().filter('inventoryCategoryID', record.get('inventoryCategoryID'));
+					gridProductos.getStore().clearFilter(true);		
+					gridProductos.getStore().filter(
+						{
+							property: 		'inventoryCategoryID',
+							value: 			record.get('inventoryCategoryID'),
+							exactMatch: 	true,
+							caseSensitive: 	true
+						}
+					);
 
 					// Ir a la vista de productos
 					win.getLayout().setActiveItem(1);

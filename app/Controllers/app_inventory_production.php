@@ -302,6 +302,7 @@ class app_inventory_production extends _BaseController
 					$objTMDInput["inventoryWarehouseSourceID"]	= $objListItemInputWarehouseSource[$key];
 					$objTMDInput["skuCatalogItemID"]			= $objListItemInputProductDestination[$key];
 					$objTMDInput["isActive"]					= 1;
+					$objTMDInput["expirationDate"]				= '1900-01-01';
 					$this->Transaction_Master_Detail_Model->insert_app_posme($objTMDInput);
 				}
 			}
@@ -318,6 +319,7 @@ class app_inventory_production extends _BaseController
 					$objTMDOutput["amount"]						= $objListItemOutputTotalCost[$key];
 					$objTMDOutput["inventoryWarehouseTargetID"]	= $objListItemOutputWarehouseTargetID[$key];
 					$objTMDOutput["isActive"]					= 1;
+					$objTMDOutput["expirationDate"]				= '1900-01-01';
 					$this->Transaction_Master_Detail_Model->insert_app_posme($objTMDOutput);
 				}
 			}
@@ -566,6 +568,7 @@ class app_inventory_production extends _BaseController
 							$objTMDNew["inventoryWarehouseSourceID"]	= $objListItemInputWarehouseSource[$itemInputListCounter];
 							$objTMDNew["skuCatalogItemID"]				= $objListItemInputProductDestination[$itemInputListCounter];
 							$objTMDNew["isActive"]						= 1;
+							$objTMDNew["expirationDate"]				= '1900-01-01';							
 							$itemInputListCounter++;
 						} 
 						else if ($itemOutputListCounter < $itemOutputListLength && !empty($objListItemOutputWarehouseTargetID[$itemOutputListCounter])) 
@@ -580,6 +583,7 @@ class app_inventory_production extends _BaseController
 							$objTMDNew["amount"]						= $objListItemOutputTotalCost[$itemOutputListCounter];
 							$objTMDNew["inventoryWarehouseTargetID"]	= $objListItemOutputWarehouseTargetID[$itemOutputListCounter];
 							$objTMDNew["isActive"]						= 1;
+							$objTMDNew["expirationDate"]				= '1900-01-01';
 							$itemOutputListCounter++;
 						}
 
@@ -597,6 +601,7 @@ class app_inventory_production extends _BaseController
 							$objTMDNew["amount"]						= $objListItemInputTotalCost[$itemInputListCounter];
 							$objTMDNew["inventoryWarehouseSourceID"]	= $objListItemInputWarehouseSource[$itemInputListCounter];
 							$objTMDNew["skuCatalogItemID"]				= $objListItemInputProductDestination[$itemInputListCounter];
+							$objTMDNew["expirationDate"]				= '1900-01-01';
 							$itemInputListCounter++;
 						} 
 						else if ($itemOutputListCounter < $itemOutputListLength && !empty($objListItemOutputWarehouseTargetID[$itemOutputListCounter])) 
@@ -606,6 +611,7 @@ class app_inventory_production extends _BaseController
 							$objTMDNew["unitaryCost"]					= $objListItemOutputUnitaryCost[$itemOutputListCounter];
 							$objTMDNew["amount"]						= $objListItemOutputTotalCost[$itemOutputListCounter];
 							$objTMDNew["inventoryWarehouseTargetID"]	= $objListItemOutputWarehouseTargetID[$itemOutputListCounter];
+							$objTMDNew["expirationDate"]				= '1900-01-01';
 							$itemOutputListCounter++;
 						}
 

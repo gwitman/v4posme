@@ -1190,6 +1190,12 @@ class app_invoice_billing extends _BaseController {
                     $infoPrecio2				            = $arrayListInfoPrecio2[$key];
                     $infoPrecio3				            = $arrayListInfoPrecio3[$key];
 
+					//Actualizar uso
+					$objItemDataUso 					= array();
+					$objItemDataUso["dateLastUse"] 		= helper_getDateTime();
+					$objItemDataUso["quantityInvoice"] 	= $objItem->quantityInvoice + $quantity;
+					$this->Item_Model->update_app_posme($companyID,$itemID,$objItemDataUso);
+					
 					//Actualisar nombre 		
 					if( $objParameterInvoiceUpdateNameInTransactionOnly  == "false")
 					{
@@ -1284,7 +1290,7 @@ class app_invoice_billing extends _BaseController {
 						$objTMD["inventoryWarehouseTargetID"]	= $objTM->targetWarehouseID;
 						$objTMD["skuCatalogItemID"] 			= $skuCatalogItemID;
 						$objTMD["skuFormatoDescription"] 		= $skuFormatoDescription;
-						$objTMD["amountCommision"] 				= $this->core_web_transaction_master_detail->getAmountCommision($companyID,$listPriceID,$itemID,$price,$quantity,$comisionPorcentage,$skuRatio);
+						$objTMD["amountCommision"] 				= $this->core_web_transaction_master_detail->getAmountCommision($companyID,$listPriceID,$itemID,$unitaryCost,$price,$quantity,$comisionPorcentage,$skuRatio);
 						$objTMD["typePriceID"]					= $typePriceID;
 						
 						$tax1Total								= $tax1Total + ($tax1 * $quantity);
@@ -1364,7 +1370,7 @@ class app_invoice_billing extends _BaseController {
 						$objTMDNew["inventoryWarehouseSourceID"]= $objTMNew["sourceWarehouseID"];
 						$objTMDNew["skuCatalogItemID"] 			= $skuCatalogItemID;
 						$objTMDNew["skuFormatoDescription"] 	= $skuFormatoDescription;						
-						$objTMDNew["amountCommision"] 			= $this->core_web_transaction_master_detail->getAmountCommision($companyID,$listPriceID,$itemID,$price,$quantity,$comisionPorcentage,$skuRatio );
+						$objTMDNew["amountCommision"] 			= $this->core_web_transaction_master_detail->getAmountCommision($companyID,$listPriceID,$itemID,$unitaryCost,$price,$quantity,$comisionPorcentage,$skuRatio );
 						$objTMDNew["typePriceID"]				= $typePriceID;
 						
 						$tax1Total								= $tax1Total + ($tax1 * $quantity);
@@ -2631,9 +2637,11 @@ class app_invoice_billing extends _BaseController {
 			if(count($transactionMasterDetails)>0){
 				foreach($transactionMasterDetails as $value){
 					$objItem 								= $this->Item_Model->get_rowByCodeBarra($companyID, $value->ItemBarCode);
+					
 					if(!isset($objItem)){
 						continue;
 					}
+					
 					$itemID 								= $objItem->itemID;
 					$lote 									= "";
 					$vencimiento							= "";
@@ -2649,6 +2657,13 @@ class app_invoice_billing extends _BaseController {
 					$unitaryAmount 							= $price * (1 + $ivaPercentage);
 					$tax1 									= $price * $ivaPercentage;
 					$tax2									= $price * $taxServicesPercentage;
+
+					
+					//Actualizar uso
+					$objItemDataUso 					= array();
+					$objItemDataUso["dateLastUse"] 		= helper_getDateTime();
+					$objItemDataUso["quantityInvoice"] 	= $objItem->quantityInvoice + $quantity;
+					$this->Item_Model->update_app_posme($companyID,$itemID,$objItemDataUso);
 
 					$objTMD 								= array();
 					$objTMD["companyID"] 					= $companyID;

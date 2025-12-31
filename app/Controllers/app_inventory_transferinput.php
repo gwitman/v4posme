@@ -303,7 +303,7 @@ class app_inventory_transferinput extends _BaseController {
 					$objTMD["reference2"]					= '';
 					$objTMD["reference3"]					= '';
 					$objTMD["lote"]							= $lote;
-					$objTMD["expirationDate"]				= $vencimiento == "" ? NULL:  $vencimiento;
+					$objTMD["expirationDate"]				= $vencimiento == "" ? '1900-01-01':  $vencimiento;
 					$objTMD["catalogStatusID"]				= 0;
 					$objTMD["inventoryStatusID"]			= 0;
 					$objTMD["isActive"]						= 1;

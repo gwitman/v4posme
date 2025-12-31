@@ -482,7 +482,7 @@ class app_inventory_otheroutput extends _BaseController
 					$objTMD["promotionID"] 					= 0;
 
 					$objTMD["lote"]							= $lote;
-					$objTMD["expirationDate"]				= $vencimiento == "" ? NULL :  $vencimiento;
+					$objTMD["expirationDate"]				= $vencimiento == "" ? '1900-01-01' :  $vencimiento;
 					$objTMD["reference3"]					= '';
 					$objTMD["catalogStatusID"]				= 0;
 					$objTMD["inventoryStatusID"]			= 0;
@@ -517,7 +517,7 @@ class app_inventory_otheroutput extends _BaseController
 							$objTMD["promotionID"] 					= 0;
 
 							$objTMD["lote"]							= '';
-							$objTMD["expirationDate"]				= '';
+							$objTMD["expirationDate"]				= '1900-01-01';
 							$objTMD["reference3"]					= '';
 							$objTMD["catalogStatusID"]				= 0;
 							$objTMD["inventoryStatusID"]			= 0;
@@ -672,7 +672,7 @@ class app_inventory_otheroutput extends _BaseController
 					$objTMD["promotionID"] 					= 0;
 
 					$objTMD["lote"]							= $lote;
-					$objTMD["expirationDate"]				= $vencimiento == "" ? NULL :  $vencimiento;
+					$objTMD["expirationDate"]				= $vencimiento == "" ? '1900-01-01' :  $vencimiento;
 					$objTMD["reference3"]					= '';
 					$objTMD["catalogStatusID"]				= 0;
 					$objTMD["inventoryStatusID"]			= 0;
@@ -820,7 +820,7 @@ class app_inventory_otheroutput extends _BaseController
 						$objTMD["promotionID"] 					= 0;
 
 						$objTMD["lote"]							= $lote;
-						$objTMD["expirationDate"]				= $vencimiento == "" ? NULL :  $vencimiento;
+						$objTMD["expirationDate"]				= $vencimiento == "" ? '1900-01-01' :  $vencimiento;
 						$objTMD["reference3"]					= '';
 						$objTMD["catalogStatusID"]				= 0;
 						$objTMD["inventoryStatusID"]			= 0;
@@ -841,7 +841,7 @@ class app_inventory_otheroutput extends _BaseController
 						$objTMDNew["cost"] 							= $objTMDNew["quantity"] * $objTMDNew["unitaryCost"];
 						$objTMDNew["inventoryWarehouseSourceID"]	= $objTMNew["sourceWarehouseID"];
 						$objTMDNew["lote"]							= $lote;
-						$objTMDNew["expirationDate"]				= $vencimiento == "" ? NULL :  $vencimiento;
+						$objTMDNew["expirationDate"]				= $vencimiento == "" ? '1900-01-01' :  $vencimiento;
 
 						$this->Transaction_Master_Detail_Model->update_app_posme($companyID, $transactionID, $transactionMasterID, $transactionMasterDetailID, $objTMDNew);
 					}

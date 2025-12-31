@@ -1194,7 +1194,7 @@ class app_inventory_inputunpost extends _BaseController {
 					$objTMD["promotionID"] 					= 0;
 					
 					$objTMD["lote"]							= $lote;
-					$objTMD["expirationDate"]				= $vencimiento == "" ? NULL:  $vencimiento;
+					$objTMD["expirationDate"]				= $vencimiento == "" ? '1900-01-01':  $vencimiento;
 					$objTMD["reference3"]					= ltrim(rtrim($unitaryPrice2))."|".ltrim(rtrim($unitaryPrice3));
 					$objTMD["reference4"]					= str_replace(",,",",", str_replace(PHP_EOL,",",  ltrim(rtrim($barCodeExtende)) ));
 					$objTMD["catalogStatusID"]				= 0;
@@ -1457,7 +1457,7 @@ class app_inventory_inputunpost extends _BaseController {
 						$objTMD["unitaryAmount"]				= $unitaryPrice;
 						$objTMD["cost"] 						= $quantity * $cost;
 						$objTMD["lote"]							= $lote;
-						$objTMD["expirationDate"]				= $vencimiento == "" ? NULL:  $vencimiento;
+						$objTMD["expirationDate"]				= $vencimiento == "" ? '1900-01-01':  $vencimiento;
 						$objTMD["inventoryWarehouseSourceID"]	= $objTM["sourceWarehouseID"];
 						$objTMD["inventoryWarehouseTargetID"]	= $objTM["targetWarehouseID"];
 						$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
@@ -1698,7 +1698,7 @@ class app_inventory_inputunpost extends _BaseController {
 							if(
 								(
 									$p->expirationDate == null ||
-									$p->expirationDate == "0000-00-00 00:00:00"
+									$p->expirationDate == "1900-01-01 00:00:00"
 								) and 
 								$objItemExpire->isPerishable == 1
 							)
@@ -1981,7 +1981,7 @@ class app_inventory_inputunpost extends _BaseController {
 					$objTMD["promotionID"] 					= 0;
 					
 					$objTMD["lote"]							= $lote;
-					$objTMD["expirationDate"]				= $vencimiento == "" ? NULL:  $vencimiento;
+					$objTMD["expirationDate"]				= $vencimiento == "" ? '1900-01-01':  $vencimiento;
 					$objTMD["reference3"]					= $unitaryPrice2."|".$unitaryPrice3;
 					$objTMD["reference4"]					= str_replace(",,",",", str_replace(PHP_EOL,",",  ltrim(rtrim($barCodeExtende)) ));
 					$objTMD["catalogStatusID"]				= 0;
@@ -2012,7 +2012,7 @@ class app_inventory_inputunpost extends _BaseController {
 					$objTMDNew["unitaryAmount"]					= $unitaryPrice;
 					$objTMDNew["cost"] 							= $objTMDNew["quantity"] * $objTMDNew["unitaryCost"];
 					$objTMDNew["lote"]							= $lote;
-					$objTMDNew["expirationDate"]				= $vencimiento == "" ? NULL:  $vencimiento;
+					$objTMDNew["expirationDate"]				= $vencimiento == "" ? '1900-01-01':  $vencimiento;
 					$objTMDNew["inventoryWarehouseSourceID"]	= $objTMNew["sourceWarehouseID"];
 					$objTMDNew["inventoryWarehouseTargetID"]	= $objTMNew["targetWarehouseID"];
 					$objTMDNew["tax1"]								= $tax1;
@@ -2300,7 +2300,7 @@ class app_inventory_inputunpost extends _BaseController {
 					$objTMD["unitaryPrice"]					= $precio;
 					$objTMD["promotionID"] 					= 0;
 					$objTMD["lote"]							= $lote;
-					$objTMD["expirationDate"]				= $vencimiento == "" ? NULL:  $vencimiento;
+					$objTMD["expirationDate"]				= $vencimiento == "" ? '1900-01-01':  $vencimiento;
 					$objTMD["reference3"]					= '0|0';
 					$objTMD["reference4"]					= '';//si se carga mediatne un excel no exsite el reference4, por que los valores de exencion de codigo, se deben de modificar, en la pantalla propiamente
 					$objTMD["catalogStatusID"]				= 0;

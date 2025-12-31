@@ -142,7 +142,7 @@ class core_web_transaction_master_detail {
 			
    }
    
-   function getAmountCommision($companyID,$listPriceID,$itemID,$price,$quantity,$comisionPorcentage,$skuQuantity)
+   function getAmountCommision($companyID,$listPriceID,$itemID,$unitaryCost,$price,$quantity,$comisionPorcentage,$skuQuantity)
    {
 		$Company_Model				= new Company_Model();
 		$objCompany					= $Company_Model->get_rowByPK($companyID);		
@@ -150,6 +150,10 @@ class core_web_transaction_master_detail {
 		if($objCompany->type == "farma_ley")
 		{
 		    return ($comisionPorcentage * $quantity * $skuQuantity);
+		}
+		else if($objCompany->type == "chicextensiones")
+		{
+		    return ($price - $unitaryCost) * $comisionPorcentage * $quantity * $skuQuantity;
 		}
 		else 
 		{
