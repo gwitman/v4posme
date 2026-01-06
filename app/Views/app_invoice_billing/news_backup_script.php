@@ -6201,11 +6201,11 @@
 		objFormulario.txtPeriodPay							= datos.data.objTransactionMaster.periodPay; 
 		objFormulario.txtReference1							= datos.data.objTransactionMaster.reference1; 
 		objFormulario.txtDayExcluded						= datos.data.objTransactionMaster.dayExcluded; 
-		objFormulario.txtFixedExpenses						= datos.data.objTransactionMasterDetailCredit.reference1; 
+		objFormulario.txtFixedExpenses						= datos.data.objTransactionMasterDetailCredit == null ? 0 :  datos.data.objTransactionMasterDetailCredit.reference1; 
 		objFormulario.txtCheckApplyExoneracion				= datos.data.objTransactionMasterReferences.reference2; 
 		objFormulario.txtLayFirstLineProtocolo				= datos.data.objTransactionMasterReferences.reference1; 
 		objFormulario.txtCheckDeEfectivo					= 0;
-		objFormulario.txtCheckReportSinRiesgoValue			= datos.data.objTransactionMasterDetailCredit.reference2; 		
+		objFormulario.txtCheckReportSinRiesgoValue			= datos.data.objTransactionMasterDetailCredit == null ? 0 :  datos.data.objTransactionMasterDetailCredit.reference2; 		
 		objFormulario.txtTMIReference1						= datos.data.objTransactionMasterInfo.reference1;
 		
 		objFormulario.txtSubTotal							= 0;
