@@ -200,6 +200,8 @@ class app_catalog_api extends _BaseController {
 					$arrayMesa["catalogItemID"]		= $mesa->catalogItemID;
 					$arrayMesa["col"]				= $mesa->reference2;
 					$arrayMesa["fila"]				= $mesa->reference1;
+					$arrayMesa["reference3"]		= $mesa->reference3;
+					$arrayMesa["reference4"]		= $mesa->reference4;
 					$arrayMesa["display"]			= $mesa->display;
 					if($minInvoice && $minInvoice[0]->reference2 > 0 )
 					{

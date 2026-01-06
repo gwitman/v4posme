@@ -2404,10 +2404,10 @@
 														scale: 'small',
 														text: '+',
 														tooltip: 'Incrementar',
-														handler: function(btn) {
+														handler: function(btn) {															
 															var record = btn.getWidgetRecord();
 															var current = record.get('txtTMD_txtQuantity');
-															record.set('txtTMD_txtQuantity', current + 1);
+															record.set('txtTMD_txtQuantity', Number(current) + 1 );
 														}
 													}
 												},
@@ -3330,8 +3330,9 @@
 					//wg-}
 					//wg-
 					//wg-miVentanaTableroDeMesas.updateLayout();
-					var filas 		= 7;
-					var columnas 	= 7;
+					console.log("fnSeleccionarMesa el catalogo de mesa no tiene configuracion de dimenciones echas por tanto se muetra en formato de 7 filas x 7 columnas ");
+					var filas 		= datos.catalogItems[0].reference3 == null ? 7 : Number(datos.catalogItems[0].reference3.split("x")[0].split(":")[1]);
+					var columnas 	= datos.catalogItems[0].reference3 == null ? 7 : Number(datos.catalogItems[0].reference3.split("x")[1].split(":")[1]);
 					var dataTablero = [];
 					
 					// inicializa tablero vacío, todas las columnas y todas las filas en null
@@ -3437,6 +3438,23 @@
 				var panel = btn.up('panel');
 				// Tomar valores de ejemplo			
 				miVentanaDePago.show();		
+				
+				//Si la factura es registrada, y el monto de recepcion es igual a 0, 
+				//dejar el monto de recepcion igua al valor total				
+				if(
+					 Number(Ext.getCmp('miVentanaPrincipal').down("#txtStatusID").getValue()) == varStatusInvoiceRegistrado &&
+					 Ext.getCmp('miVentanaDePago').down("#txtReceiptAmount").getValue() == 0 &&					 
+					 Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountDol").getValue() == 0 &&
+					 Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountTarjeta").getValue() == 0 &&
+					 Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountTarjetaDol").getValue() == 0 &&
+					 Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountBank").getValue() == 0 &&
+					 Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountBankDol").getValue() == 0 &&
+					 Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountPoint").getValue() == 0 					 
+				)
+				{
+					var totalFactura = Ext.getCmp('miVentanaPrincipal').down("#txtTotal").getValue();
+					Ext.getCmp('miVentanaDePago').down("#txtReceiptAmount").setValue(totalFactura);
+				}
 				Ext.getCmp('miVentanaDePago').down("#txtReceiptAmount").focus(true, 200);		
 			}
 			else
