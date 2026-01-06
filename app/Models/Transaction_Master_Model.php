@@ -286,7 +286,7 @@ class Transaction_Master_Model extends Model  {
 										AND ttm.transactionID = 19 /*factura*/
 										AND ttm.isActive = 1
 										AND ttm.statusID in (66 /*registrada*/ ) 
-										AND ttm.transactionOn >= NOW() - INTERVAL 1 DAY
+										AND ttm.transactionOn >= NOW() - INTERVAL 3 DAY
 									) IS NULL,
 									tci.reference1, 
 									REPLACE(tci.reference1, '.JPG', '_BUSSY.JPG')
@@ -308,7 +308,7 @@ class Transaction_Master_Model extends Model  {
 												AND ttm.transactionID = 19 /*factura*/ 
 												AND ttm.isActive = 1 
 												AND ttm.statusID in (66 /*registrada*/ ) 
-												AND ttm.transactionOn >= NOW() - INTERVAL 1 DAY
+												AND ttm.transactionOn >= NOW() - INTERVAL 3 DAY
 									),
 									0
 								) AS reference2,
