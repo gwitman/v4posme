@@ -431,7 +431,11 @@ class core_web_catalog {
 		$flavorID		= $objCompany->flavorID;
 		$objCatalogItem = $Catalog_Item_Model->get_rowByCatalogIDAndFlavorID_Parent($objCatalog->catalogID,$flavorID,$parentCatalogItemID);
 		
-		
+		//Buscar catalogo sin flavor
+		if(!$objCatalogItem)
+		{
+			$objCatalogItem = $Catalog_Item_Model->get_rowByCatalogIDAndFlavorID_Parent($objCatalog->catalogID,0,$parentCatalogItemID);	
+		}
 		
 		return $objCatalogItem;
 		
