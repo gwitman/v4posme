@@ -8382,7 +8382,11 @@ class app_invoice_billing extends _BaseController {
 				$datViewArray["amount_avg_share"]				= $datView["objCCDAmortization"][0]->share;
 				$datViewArray["minShareDate"]					= $datView["objCCD"]->dateStart;
 				$datViewArray["maxShareDate"]					= $datView["objCCD"]->dateFinish;
+				
 				$datViewArray["sharePeriod"]					= $datView["objCCD"]->periodName;
+				$datViewArray["sharePeriod2"]					= $datView["objCCD"]->periodName;				
+				if($datViewArray["sharePeriod2"] == "MENSUAL")
+				$datViewArray["sharePeriod2"] = "MESES";
 			
 				$datViewArray["amount_sumary_interes"]			= sprintf("%.2f",$datViewArray["amount_sumary_interes"]);
 				$datViewArray["amount_count_share"]				= sprintf("%.0f",$datViewArray["amount_count_share"]);
