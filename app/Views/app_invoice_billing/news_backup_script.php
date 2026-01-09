@@ -577,7 +577,28 @@
 					listeners:{
 						afterrender: function(form) {
 							// Configuración dinámica al "load" del contenedor
-							fnConfiguracionLoad(form, objConfigInit );
+							if(
+								//Si la factura esta aplicada no limpiar la ventana
+								Number(Ext.getCmp('miVentanaPrincipal').down("#txtStatusID").getValue()) == varStatusInvoiceAplicado || 
+								//Si la factura esta registrada , y tiene valores no limpiar la ventana
+								(
+									Number(Ext.getCmp('miVentanaPrincipal').down("#txtStatusID").getValue()) == varStatusInvoiceRegistrado && 
+									(
+										Ext.getCmp('miVentanaDePago').down("#txtReceiptAmount").getValue() > 0 ||				 
+										Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountDol").getValue() > 0 ||
+										Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountTarjeta").getValue() > 0 ||
+										Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountTarjetaDol").getValue() > 0 ||
+										Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountBank").getValue() > 0 ||
+										Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountBankDol").getValue() > 0 ||
+										Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountPoint").getValue() > 0 	
+									)	
+								)
+							)
+							{
+								
+							}
+							else
+								fnConfiguracionLoad(form, objConfigInit );
 						}
 					},
 					items: [
@@ -3433,6 +3454,15 @@
 		}
 		function fnBtnPagar(btn)
 		{			
+		
+			//Obtener si la factura es de credito
+			var invoiceTypeCredit 	= false;
+			var causalSelect 		= Ext.getCmp('miVentanaPrincipal').down("#txtCausalID").getValue();
+			
+			var causalCredit 		= objCausalTypeCredit.value.split(",");
+			invoiceTypeCredit 		= Ext.Array.contains(causalCredit, causalSelect);
+
+			
 			if(Ext.getCmp('miVentanaPrincipal').down("#txtTransactionMasterID").getValue() > 0 )
 			{
 				var panel = btn.up('panel');
@@ -3442,14 +3472,15 @@
 				//Si la factura es registrada, y el monto de recepcion es igual a 0, 
 				//dejar el monto de recepcion igua al valor total				
 				if(
-					 Number(Ext.getCmp('miVentanaPrincipal').down("#txtStatusID").getValue()) == varStatusInvoiceRegistrado &&
-					 Ext.getCmp('miVentanaDePago').down("#txtReceiptAmount").getValue() == 0 &&					 
-					 Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountDol").getValue() == 0 &&
-					 Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountTarjeta").getValue() == 0 &&
-					 Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountTarjetaDol").getValue() == 0 &&
-					 Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountBank").getValue() == 0 &&
-					 Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountBankDol").getValue() == 0 &&
-					 Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountPoint").getValue() == 0 					 
+					invoiceTypeCredit  == false &&
+					Number(Ext.getCmp('miVentanaPrincipal').down("#txtStatusID").getValue()) == varStatusInvoiceRegistrado && 
+					Ext.getCmp('miVentanaDePago').down("#txtReceiptAmount").getValue() == 0 &&					 
+					Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountDol").getValue() == 0 &&
+					Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountTarjeta").getValue() == 0 &&
+					Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountTarjetaDol").getValue() == 0 && 
+					Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountBank").getValue() == 0 && 
+					Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountBankDol").getValue() == 0 && 
+					Ext.getCmp('miVentanaDePago').down("#txtReceiptAmountPoint").getValue() == 0 
 				)
 				{
 					var totalFactura = Ext.getCmp('miVentanaPrincipal').down("#txtTotal").getValue();
@@ -4609,7 +4640,82 @@
 			campoNombre.setValue( obj.txtTotal );
 		}
 		
-		//txtChangeAmount
+		
+		
+		//Limpiar detalle		
+		var grid = miVentanaPrincipal_.down('#gridDetailTransactionMaster'); // encuentra el grid		
+		if(obj == null)
+		{
+			grid.getStore().loadData([]);
+		}
+		else 
+		{
+			
+			grid.getStore().loadData(obj.txtTransactionMasterDetail); 
+			
+			// Buscar columna widgetColumn
+			var comboColumn = null;
+			Ext.Array.each(grid.columns, function (col) {
+				if (col.dataIndex === 'txtTMD_txtSku') {
+					comboColumn = col;
+					return false;
+				}
+			});
+
+			if (!comboColumn) {
+				console.error('No se encontró la columna txtTMD_txtSku');
+				return;
+			}
+
+
+			// Aplicar store y valor a CADA FILA del grid
+			grid.getStore().each(function (record) {
+				
+				// Crear store para el combo
+				var comboStoreData 	= [
+					{ 
+						id: record.get("txtTMD_txtCatalogItemIDSku") , 
+						name : record.get("txtTMD_skuFormatoDescription"), 
+						ratio : record.get("txtTMD_txtRatioSku"), 
+						precio : record.get("txtTMD_txtPrice") 
+					}
+				];
+				
+				var storeForCombo 	= Ext.create('Ext.data.Store', {
+					fields: ['id', 'name','ratio', 'precio'],
+					data: comboStoreData
+				});
+				
+				var widget = comboColumn.getWidget(record);
+				if (widget) {
+					widget.bindStore(storeForCombo);
+					if (comboStoreData.length > 0) {
+						widget.setValue(comboStoreData[0].id);
+						record.set('txtTMD_txtSku', comboStoreData[0].id);
+					}
+				}
+				
+			});
+
+			
+			
+
+			var viewport = Ext.getCmp('miVentanaPrincipal');
+			if (!viewport) return;
+
+			var gridDetail = viewport.down('#gridDetailTransactionMaster');
+			var storeDetail = gridDetail.getStore();
+			
+			
+			//recalcular detalle
+			fnRecalculateDetail(false,"");
+			
+			grid.getView().refresh();
+			grid.updateLayout();
+			
+		}
+		
+		//txtChangeAmount		
 		var campoNombre = miVentanaDePago_.down('#txtChangeAmount');
 		if(obj == null)
 		{
@@ -4785,79 +4891,6 @@
 		else
 		{
 			campoNombre.setValue( obj.txtReceiptAmountPoint );
-		}
-		
-		//Limpiar detalle		
-		var grid = miVentanaPrincipal_.down('#gridDetailTransactionMaster'); // encuentra el grid		
-		if(obj == null)
-		{
-			grid.getStore().loadData([]);
-		}
-		else 
-		{
-			
-			grid.getStore().loadData(obj.txtTransactionMasterDetail); 
-			
-			// Buscar columna widgetColumn
-			var comboColumn = null;
-			Ext.Array.each(grid.columns, function (col) {
-				if (col.dataIndex === 'txtTMD_txtSku') {
-					comboColumn = col;
-					return false;
-				}
-			});
-
-			if (!comboColumn) {
-				console.error('No se encontró la columna txtTMD_txtSku');
-				return;
-			}
-
-
-			// Aplicar store y valor a CADA FILA del grid
-			grid.getStore().each(function (record) {
-				
-				// Crear store para el combo
-				var comboStoreData 	= [
-					{ 
-						id: record.get("txtTMD_txtCatalogItemIDSku") , 
-						name : record.get("txtTMD_skuFormatoDescription"), 
-						ratio : record.get("txtTMD_txtRatioSku"), 
-						precio : record.get("txtTMD_txtPrice") 
-					}
-				];
-				
-				var storeForCombo 	= Ext.create('Ext.data.Store', {
-					fields: ['id', 'name','ratio', 'precio'],
-					data: comboStoreData
-				});
-				
-				var widget = comboColumn.getWidget(record);
-				if (widget) {
-					widget.bindStore(storeForCombo);
-					if (comboStoreData.length > 0) {
-						widget.setValue(comboStoreData[0].id);
-						record.set('txtTMD_txtSku', comboStoreData[0].id);
-					}
-				}
-				
-			});
-
-			
-			
-
-			var viewport = Ext.getCmp('miVentanaPrincipal');
-			if (!viewport) return;
-
-			var gridDetail = viewport.down('#gridDetailTransactionMaster');
-			var storeDetail = gridDetail.getStore();
-			
-			
-			//recalcular detalle
-			fnRecalculateDetail(false,"");
-			
-			grid.getView().refresh();
-			grid.updateLayout();
-			
 		}
 	
 			
@@ -6215,6 +6248,7 @@
 		objFormulario.txtServices							= 0;
 		objFormulario.txtTotal								= 0;
 		
+		
 		objFormulario.txtChangeAmount						= datos.data.objTransactionMasterInfo.changeAmount; 
 		objFormulario.txtReceiptAmount						= datos.data.objTransactionMasterInfo.receiptAmount; 		
 		objFormulario.txtReceiptAmountDol					= datos.data.objTransactionMasterInfo.receiptAmountDol; 
@@ -6222,8 +6256,8 @@
 		objFormulario.txtReceiptAmountTarjeta_BankID		= datos.data.objTransactionMasterInfo.receiptAmountCardBankID; 
 		objFormulario.txtReceiptAmountTarjeta_Reference		= datos.data.objTransactionMasterInfo.receiptAmountCardBankReference; 
 		objFormulario.txtReceiptAmountTarjetaDol			= datos.data.objTransactionMasterInfo.receiptAmountCardDol; 
-		objFormulario.txtReceiptAmountTarjetaDol_BankID		= datos.data.objTransactionMasterInfo.receiptAmountCardDolBankID; 
-		objFormulario.txtReceiptAmountTarjetaDol_Reference	= datos.data.objTransactionMasterInfo.receiptAmountCardDolBankReference; 
+		objFormulario.txtReceiptAmountTarjetaDol_BankID		= datos.data.objTransactionMasterInfo.receiptAmountCardBankDolID; 
+		objFormulario.txtReceiptAmountTarjetaDol_Reference	= datos.data.objTransactionMasterInfo.receiptAmountCardBankDolReference; 
 		objFormulario.txtReceiptAmountBank					= datos.data.objTransactionMasterInfo.receiptAmountBank; 		
 		objFormulario.txtReceiptAmountBank_BankID			= datos.data.objTransactionMasterInfo.receiptAmountBankID; 
 		objFormulario.txtReceiptAmountBank_Reference		= datos.data.objTransactionMasterInfo.receiptAmountBankReference; 
@@ -6502,7 +6536,7 @@
 		var customerCreditLineID 		= miVentanaPrincipal_.down("#txtCustomerCreditLineID").getValue();
 		if(invoiceTypeCredit && customerCreditLineID == null)
 		{
-			Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>Debe seleccionar una linea de credito</span>" );	
+			Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>Debe seleccionar una linea de credito</span>" );				
 			result = false;
 		}
 			
@@ -6553,13 +6587,16 @@
 			var montoTotalInvoice 	= miVentanaPrincipal_.down("#txtTotal").getValue();
 			var balanceCredit 		= 0;
 
-			if(objCurrencyCordoba.currencyID == objCustomerCreditLine[0].currencyID)
-				balanceCredit =  objCustomerCreditLine[0].balance;
-			else{
-				balanceCredit = (
-									objCustomerCreditLine[0].balance *
-									objCustomerCreditLine[0].objExchangeRate
-								);
+			if(objCustomerCreditLine.length > 0 )
+			{
+				if(objCurrencyCordoba.currencyID == objCustomerCreditLine[0].currencyID)
+					balanceCredit =  objCustomerCreditLine[0].balance;
+				else{
+					balanceCredit = (
+										objCustomerCreditLine[0].balance *
+										objCustomerCreditLine[0].objExchangeRate
+									);
+				}
 			}
 
 			
