@@ -2,9 +2,7 @@
 //posme:2023-02-27
 namespace App\Controllers;
 class app_cxc_api extends _BaseController {
-	
-     
-	
+		
 	function getCustomerBalance(){
 		try{ 
 			//AUTENTICACION
@@ -134,5 +132,6 @@ class app_cxc_api extends _BaseController {
 			));//--finjson			
 		}
 	}
+
 }
 ?>

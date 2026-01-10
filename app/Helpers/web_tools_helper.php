@@ -58,6 +58,24 @@ function helper_ObtenerClavePrimaria($db, $table)
     return $row ? $row->COLUMN_NAME : null;
 }
 
+function helper_SegmentsKeyValue($objListSegments)
+{
+    $result = [];
+
+    if (!is_array($objListSegments) || count($objListSegments) === 0) {
+        return $result;
+    }
+
+    for ($i = 0; $i < count($objListSegments); $i += 2) {
+        if (isset($objListSegments[$i + 1])) {
+            $result[$objListSegments[$i]] = $objListSegments[$i + 1];
+        }
+    }
+
+    return $result;
+}
+
+
 function helper_SegmentsValue($objListSegments, $key)
 {
     $valueResult = "";
@@ -1346,7 +1364,8 @@ function helper_toCsv(array $data, string $delimiter = ','): string
     rewind($output);
     $csv 								= stream_get_contents($output);
     fclose($output);
-    $csv = "\xEF\xBB\xBF" . $csv;
+    //$csv = "\xEF\xBB\xBF" . $csv;
+	$csv = $csv;	
 	return $csv;
 }
 

@@ -1168,6 +1168,124 @@ class app_cxc_customer extends _BaseController {
 		}	
 	}
 
+	public function insertElementLiveConnectWebHook()
+	{
+		// JSON crudo (string completo)
+		$rawJson = $this->request->getBody();
+
+		// Ejemplo: guardarlo en log o BD
+		log_message('error', 'Webhook RAW JSON: ' . $rawJson);
+		$data    = json_decode($rawJson, true);
+
+		if (!$data) {
+			return $this->response->setJSON([
+				'success' => false,
+				'message' => 'JSON inválido'
+			])->setStatusCode(400);
+		}
+
+		// Ejemplo de lectura segura
+		/* ===============================
+		   CHAT
+		================================ */
+		$chat                 = $data['chat'] ?? [];
+		$chat_ip              = $chat['IPs'] ?? '';
+		$chat_browser         = $chat['browser'] ?? '';
+		$chat_fecha           = $chat['fecha'] ?? null;
+		$chat_fecha_ini       = $chat['fecha_ini'] ?? null;
+		$chat_id              = $chat['id'] ?? '';
+		$chat_id_canal        = $chat['id_canal'] ?? null;
+		$chat_id_grupo        = $chat['id_grupo'] ?? null;
+		$chat_id_usuario      = $chat['id_usuario'] ?? null;
+		$chat_isbot           = $chat['isbot'] ?? 0;
+		$chat_trace_id        = $chat['traceID'] ?? '';
+		$chat_destacado       = $chat['destacado'] ?? 0;
+
+		/* ===============================
+		   CONTACTO (dentro de chat)
+		================================ */
+		$contacto             = $chat['contacto'] ?? [];
+		$contacto_id          = $contacto['id'] ?? '';
+		$contacto_nombre      = $contacto['nombre'] ?? '';
+		$contacto_pais        = $contacto['pais'] ?? '';
+		$contacto_isbot       = $contacto['isbot'] ?? 0;
+		$contacto_destacado   = $contacto['destacado'] ?? 0;
+		$contacto_extra1      = $contacto['extra1'] ?? '';
+		$contacto_extra2      = $contacto['extra2'] ?? '';
+		$contacto_default_tg  = $contacto['default_target'] ?? 0;
+		$contacto_default_tg_id = $contacto['default_target_id'] ?? 0;
+		$contacto_etiquetas   = $contacto['etiquetas'] ?? [];
+
+		/* ===============================
+		   PRESENCE
+		================================ */
+		$presence             = $chat['presence'] ?? [];
+		$presence_status      = $presence['status'] ?? '';
+		$presence_timestamp   = $presence['timestamp'] ?? null;
+
+		/* ===============================
+		   USUARIOS
+		================================ */
+		$usuarios             = $chat['usuarios'] ?? [];
+		$usuarios_data = [];
+		foreach ($usuarios as $usuario_id => $usuario) {
+
+			$usuarios_data[$usuario_id] = [
+				'id'          => $usuario['id'] ?? null,
+				'nombre'      => $usuario['nombre'] ?? '',
+				'isbot'       => $usuario['isbot'] ?? 0,
+				'noleidos'    => $usuario['noleidos'] ?? 0,
+				'assign'      => $usuario['assign'] ?? false,
+				'avatar'      => $usuario['avatar'] ?? '',
+				'fecha'       => $usuario['fecha'] ?? null,
+
+				// Bot data
+				'bot_id'      => $usuario['bot_data']['id'] ?? null,
+				'flowbot_id'  => $usuario['bot_data']['id_flowbot'] ?? null,
+				'bot_nombre'  => $usuario['bot_data']['name'] ?? '',
+			];
+		}
+
+		/* ===============================
+		   INPUTS (visitante)
+		================================ */
+		$inputs                = $data['inputs'] ?? [];
+		$input_id              = $inputs['id'] ?? '';
+		$input_id_contacto     = $inputs['id_contacto'] ?? null;
+		$input_nombre          = $inputs['nombre'] ?? '';
+		$input_apellidos       = $inputs['apellidos'] ?? '';
+		$input_email           = $inputs['email'] ?? '';
+		$input_correo          = $inputs['correo'] ?? '';
+		$input_celular         = $inputs['celular'] ?? '';
+		$input_genero          = $inputs['genero'] ?? '';
+		$input_pais            = $inputs['pais'] ?? '';
+		$input_ciudad          = $inputs['ciudad'] ?? '';
+		$input_direccion       = $inputs['direccion'] ?? '';
+		$input_ubicacion       = $inputs['ubicacion'] ?? '';
+		$input_tipo_doc        = $inputs['tipo_documento'] ?? '';
+		$input_num_doc         = $inputs['num_documento'] ?? '';
+		$input_fecha_cumple    = $inputs['fecha_cumple'] ?? '';
+		$input_dinamicos       = $inputs['dinamicos'] ?? null;
+		$input_habeasdata      = $inputs['habeasdata'] ?? null;
+		$input_destacado       = $inputs['destacado'] ?? 0;
+		$input_extra1          = $inputs['extra1'] ?? '';
+		$input_extra2          = $inputs['extra2'] ?? '';
+		$input_valor           = $inputs['valor'] ?? null;
+		$input_etiquetas       = $inputs['etiquetas'] ?? [];
+		$input_default_tg      = $inputs['default_target'] ?? 0;
+		$input_default_tg_id   = $inputs['default_target_id'] ?? 0;
+		$input_isbot           = $inputs['isbot'] ?? 0;
+		$input_mensaje_inicial = $inputs['mensaje_inicial'] ?? '';
+
+
+		// Guardar en BD, procesar lógica, etc...
+		log_message('error', 'Nombre: '.$contacto_nombre); 
+		log_message('error', 'Webhook RAW JSON: Success');
+		return $this->response->setJSON([
+			'success' => true
+		]);
+		
+	}
 	public function insertElementMobile($dataSession,$customer)
     {
         try{

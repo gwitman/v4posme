@@ -81,7 +81,9 @@ class core_report extends _BaseController
 					$item->name == "@prTypeReport"
                     || $item->name == "@prCompanyID"
                     || $item->name == "@prTokenID"
-                    || $item->name == "@prUserID") continue;
+                    || $item->name == "@prUserID"
+				) 
+					continue;
 					
                 $valor = ltrim($item->name, '@');
                 if ($valor == 'prCustomerEntityID')
@@ -109,11 +111,14 @@ class core_report extends _BaseController
 				}
                 else
 				{
-                    $filtros[$item->display] = $this->request->getPost($valor);
+					$getPostVariable 		 = $this->request->getPost($valor);
+                    $filtros[$item->display] = $getPostVariable;
                 }
 
             }
             
+			
+			
 			$query      = $findReporting->queryi;
             $pattern    = "/@(\w+)/";
             //extraemos los nombres de los parametros q pertenecen a la consulta
@@ -126,6 +131,7 @@ class core_report extends _BaseController
             }
 
 			
+			
 			$isCall = substr($query, 0, 3);    
 			//Es un procedimiento
 			if(stripos(strtoupper($isCall), strtoupper('call')) !== false)
@@ -136,15 +142,25 @@ class core_report extends _BaseController
 			//Es una consulta
 			else 
 			{
-				$newPost = [];
-				foreach ($this->request->getPost() as $clave => $valor) {
-					$newPost['@' . $clave] = "'".$valor."'";
+				$newPost = [];				
+				if(count($this->request->getPost()) > 0)
+				{
+					foreach ($this->request->getPost() as $clave => $valor) {
+						$newPost['@' . $clave] = "'".$valor."'";
+					}
+				}
+				else
+				{
+					$newPostTemporal = helper_SegmentsKeyValue($this->uri->getSegments());//--finuri
+					foreach ($newPostTemporal as $clave => $valor) {
+						$newPost['@' . $clave] = $valor;
+					}
 				}
 
 				// Reemplazar newPost 
 				$query 	 	= strtr($query, $newPost);						
 				$query 		= str_replace(["\"'", "'\""], "'", $query);
-				$query 		= str_replace(["''"], "'", $query);				
+				$query 		= str_replace(["''"], "'", $query);					
 				$result  	= $this->Bd_Model->executeRenderMultipleNative($query, $params);
 			}
 	
@@ -175,12 +191,18 @@ class core_report extends _BaseController
 				$objParameterDeliminterCsv	 	= $objParameterDeliminterCsv->value;
 				$rows 							= $dataView['objDetail'];
 				$csvContent 					= helper_toCsv($rows, trim(strtolower($objParameterDeliminterCsv)));
-
+				
+				
 				// Enviar CSV
+				if (ob_get_length()) {
+					ob_clean();
+				}
+
 				return $this->response
 					->setHeader('Content-Type', 'text/csv; charset=UTF-8')
 					->setHeader('Content-Disposition', 'attachment; filename="reporte.csv"')
 					->setBody($csvContent);
+				exit;
 			}
 			elseif (trim(strtolower($typeReport)) === 'ftp_pedidos_ya') 
 			{
