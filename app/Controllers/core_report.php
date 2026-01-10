@@ -49,9 +49,16 @@ class core_report extends _BaseController
     {
         try {
             $reportID       = $this->request->getPost('reportID');
-            $findReporting  = $this->Reporting_Model->get_rowByPK($reportID);
+			//Si la varaible Repot id no viene en el post 
+			//buscar la data usando el query string
+			if(!$reportID)
+			{
+				$reportID   = /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"reportID");//--finuri
+			}
 			
-
+			
+			
+            $findReporting  = $this->Reporting_Model->get_rowByPK($reportID);
             if ($findReporting->needAutenticated == 1){
                 //AUTENTICACION
                 if(!$this->core_web_authentication->isAuthenticated())
@@ -156,6 +163,10 @@ class core_report extends _BaseController
 			
 			// convertir respuesta a csv
 			$typeReport                     	= $this->request->getPost('prTypeReport');
+			if(!$typeReport){
+				$typeReport   = /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"prTypeReport");//--finuri
+			}
+			
 			$companyID							= $dataView["companyID"];
             
 			if ($typeReport === 'csv') 
