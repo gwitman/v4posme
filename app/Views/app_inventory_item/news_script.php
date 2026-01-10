@@ -29,7 +29,7 @@
 	}
 
 	$(document).ready(function(){
-
+		$('#txtRealStateDateExpired').datepicker({format:"yyyy-mm-dd"});
         <?php echo getBehavio($company->type, "app_inventory_item", "divBirthday", "");?>
 
 		 //Regresar a la lista

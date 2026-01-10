@@ -429,6 +429,16 @@
 									</div>
 								</div>
 								
+								<div class="form-group <?php echo getBahavioSession($company->type,"app_inventory_item","divControlExpiredOn","hidden",$objListCompanyPageSetting); ?>" >
+									<label class="col-lg-4 control-label" for="datepicker">Vencimiento de publicidad</label>
+									<div class="col-lg-8">
+										<div id="datepicker" class="input-group date" data-date="2014-01-30" data-date-format="yyyy-mm-dd">
+											<input size="16"  class="form-control" type="text" name="txtRealStateDateExpired" id="txtRealStateDateExpired" value="1900-01-01" readonly="readonly" >
+											<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+										</div>
+									</div>
+								</div>
+								
 								
 								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divControlModifiedOn","hidden"); ?> ">
 									<label class="col-lg-4 control-label" for="datepicker">Ultima actualizacion</label>

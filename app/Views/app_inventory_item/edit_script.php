@@ -21,7 +21,7 @@
 	}
 
 	$(document).ready(function(){
-
+		$('#txtRealStateDateExpired').datepicker({format:"yyyy-mm-dd"});
         <?php echo getBehavio($company->type, "app_inventory_item", "divBirthday", ""); ?>
 
 		objTableDetailProvider = $("#table_provider").dataTable({

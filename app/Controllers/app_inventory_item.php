@@ -118,6 +118,7 @@ class app_inventory_item extends _BaseController
             $dataView["comando"]                       = $comando;
             $dataView["objListPriceItem"]              = $this->Price_Model->get_rowByItemID($companyID, $dataView["objParameterListPreiceDefault"], $itemID);
             $dataView["objListPriceItemFirst"]         = 0;
+			$dataView["objListCompanyPageSetting"]	   = $this->Company_Page_Setting_Model->get_rowByKeyAndController($dataSession["company"]->type,"app_inventory_item");
 
             //Obtener el primer precio del producto
             $counterIndex = 0;
@@ -497,7 +498,8 @@ class app_inventory_item extends _BaseController
                 $objItem["realStateStyleKitchen"]        = /*inicio get post*/$this->request->getPost("txtRealStateStyleKitchen");
                 $objItem["realStateEmail"]               = /*inicio get post*/$this->request->getPost("txtRealStateEmail");
                 $objItem["realStatePhone"]               = /*inicio get post*/$this->request->getPost("txtRealStatePhone");
-                $objItem["quantityInvoice"]              = 0;
+				$objItem["realStateDateExpired"]         = /*inicio get post*/$this->request->getPost("txtRealStateDateExpired");
+                $objItem["quantityInvoice"]              = 0;				
 
                 if (! $this->request->getPost("txtDateLastUse")) {
                     $objItem["dateLastUse"] = date("Y-m-d");
@@ -818,6 +820,8 @@ class app_inventory_item extends _BaseController
                 $objItem["realStateStyleKitchen"]        = /*inicio get post*/$item["txtRealStateStyleKitchen"];
                 $objItem["realStateEmail"]               = /*inicio get post*/$item["txtRealStateEmail"];
                 $objItem["realStatePhone"]               = /*inicio get post*/$item["txtRealStatePhone"];
+				$objItem["realStateDateExpired"]         = array_key_exists('txtRealStateDateExpired', $item) ? /*inicio get post*/$item["txtRealStateDateExpired"] : "1900-01-01";
+				
                 $objItem["quantityInvoice"]              = 0;
                 $objItem["dateLastUse"]                  = helper_getDateTime();
                 $this->core_web_auditoria->setAuditCreatedAdmin($objItem, $this->request);
@@ -1082,6 +1086,8 @@ class app_inventory_item extends _BaseController
                     $objNewItem["realStateEmployerAgentID"]     = /*inicio get post*/$this->request->getPost("txtEmployerID");
                     $objNewItem["realStateEmail"]               = /*inicio get post*/$this->request->getPost("txtRealStateEmail");
                     $objNewItem["realStatePhone"]               = /*inicio get post*/$this->request->getPost("txtRealStatePhone");
+					$objNewItem["realStateDateExpired"]         = /*inicio get post*/$this->request->getPost("txtRealStateDateExpired");
+					
                     $year                                       = date("Y");
                     $dateLastUse                                = /*inicio get post*/$this->request->getPost("txtDateLastUse");
                     $fechaCompleta                              = "$year-$dateLastUse";
@@ -1307,6 +1313,7 @@ class app_inventory_item extends _BaseController
                 $objItem["realStateStyleKitchen"]        = "";
                 $objItem["realStateEmail"]               = "";
                 $objItem["realStatePhone"]               = "";
+				$objItem["realStateDateExpired"]         = "1900-01-01";
                 $objItem["quantityInvoice"]              = 0;
                 $objItem["dateLastUse"]                  = helper_getDateTime();
 
@@ -1554,6 +1561,7 @@ class app_inventory_item extends _BaseController
             $dataView["comando"]                                = $comando;
             $dataView["objParameterAll"]                        = $objParameterAll;
             $dataView["useMobile"]                              = $dataSession["user"]->useMobile;
+			$dataView["objListCompanyPageSetting"]	   			= $this->Company_Page_Setting_Model->get_rowByKeyAndController($dataSession["company"]->type,"app_inventory_item");
 
             //Renderizar Resultado
             $dataSession["notification"] = $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -1567,11 +1575,11 @@ class app_inventory_item extends _BaseController
             if ($callback == "false") {
                 return view("core_masterpage/default_masterpage", $dataSession);
             }
-//--finview-r
+			//--finview-r
             else {
                 return view("core_masterpage/default_popup", $dataSession);
             }
-//--finview-r
+			//--finview-r
 
         } catch (\Exception $ex) {
             if (empty($dataSession)) {

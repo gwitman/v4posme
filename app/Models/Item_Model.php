@@ -55,7 +55,8 @@ class Item_Model extends Model  {
 			i.realStateCityID,i.realStateStateID,i.realStateCountryID,i.realStateEmployerAgentID,i.realStateReferenceCondominio,
 			i.realStateReferenceZone,i.realStateReferenceUbicacion,
 			i.realStateRooBatchVisit,i.modifiedOn,i.realStateGerenciaExclusive,
-			i.realStatePhone,i.realStateEmail,i.dateLastUse,i.quantityInvoice
+			i.realStatePhone,i.realStateEmail,i.dateLastUse,i.quantityInvoice,
+			i.realStateDateExpired
 			
 		");
 		$sql = $sql.sprintf(" from tb_item i");		
@@ -88,7 +89,8 @@ class Item_Model extends Model  {
 			i.realStateCityID,i.realStateStateID,i.realStateCountryID,i.realStateEmployerAgentID,i.realStateReferenceCondominio,
 			i.realStateReferenceZone,i.realStateReferenceUbicacion,
 			i.realStateRooBatchVisit,i.modifiedOn,i.realStateGerenciaExclusive,
-			i.realStatePhone,i.realStateEmail,i.dateLastUse,i.quantityInvoice
+			i.realStatePhone,i.realStateEmail,i.dateLastUse,i.quantityInvoice,
+			i.realStateDateExpired
 		");
 		$sql = $sql.sprintf(" from tb_item i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
@@ -121,7 +123,8 @@ class Item_Model extends Model  {
 			i.realStateCityID,i.realStateStateID,i.realStateCountryID,i.realStateEmployerAgentID,i.realStateReferenceCondominio,
 			i.realStateReferenceZone,i.realStateReferenceUbicacion,
 			i.realStateRooBatchVisit,i.modifiedOn,i.realStateGerenciaExclusive,
-			i.realStatePhone,i.realStateEmail,i.dateLastUse,i.quantityInvoice
+			i.realStatePhone,i.realStateEmail,i.dateLastUse,i.quantityInvoice,
+			i.realStateDateExpired
 		");
 		$sql = $sql.sprintf(" from tb_item i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
@@ -154,7 +157,8 @@ class Item_Model extends Model  {
 			i.realStateCityID,i.realStateStateID,i.realStateCountryID,i.realStateEmployerAgentID,i.realStateReferenceCondominio,
 			i.realStateReferenceZone,i.realStateReferenceUbicacion,
 			i.realStateRooBatchVisit,i.modifiedOn,i.realStateGerenciaExclusive,
-			i.realStatePhone,i.realStateEmail, i.dateLastUse,i.quantityInvoice
+			i.realStatePhone,i.realStateEmail, i.dateLastUse,i.quantityInvoice,
+			i.realStateDateExpired
 		");
 		$sql = $sql.sprintf(" from tb_item i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
@@ -187,7 +191,8 @@ class Item_Model extends Model  {
 				i.realStateCityID,i.realStateStateID,i.realStateCountryID,i.realStateEmployerAgentID,i.realStateReferenceCondominio,
 				i.realStateReferenceZone,i.realStateReferenceUbicacion,
 				i.realStateRooBatchVisit,i.modifiedOn,i.realStateGerenciaExclusive,
-				i.realStatePhone,i.realStateEmail, i.dateLastUse,i.quantityInvoice
+				i.realStatePhone,i.realStateEmail, i.dateLastUse,i.quantityInvoice,
+				i.realStateDateExpired
 		");
 		$sql = $sql.sprintf(" from tb_item i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
@@ -217,7 +222,8 @@ class Item_Model extends Model  {
 			realStateCityID,realStateStateID,realStateCountryID,realStateEmployerAgentID,realStateReferenceCondominio,
 			realStateReferenceZone,realStateReferenceUbicacion,
 			realStateRooBatchVisit,modifiedOn,realStateGerenciaExclusive,
-			realStatePhone,realStateEmail,i.dateLastUse,i.quantityInvoice
+			realStatePhone,realStateEmail,i.dateLastUse,i.quantityInvoice,
+			i.realStateDateExpired
 		");		
 		$builder->where("companyID",$companyID);
 		$builder->whereIn("itemID",$listItem);
@@ -247,7 +253,8 @@ class Item_Model extends Model  {
 				i.realStateCityID,i.realStateStateID,i.realStateCountryID,i.realStateEmployerAgentID,i.realStateReferenceCondominio,
 				i.realStateReferenceZone,i.realStateReferenceUbicacion,
 				i.realStateRooBatchVisit,i.modifiedOn,i.realStateGerenciaExclusive,
-				i.realStatePhone,i.realStateEmail,i.dateLastUse,i.quantityInvoice
+				i.realStatePhone,i.realStateEmail,i.dateLastUse,i.quantityInvoice,
+				i.realStateDateExpired
 			
 		");
 		$sql = $sql.sprintf(" from tb_item i");		
