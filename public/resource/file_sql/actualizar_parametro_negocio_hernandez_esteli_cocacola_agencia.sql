@@ -1,4 +1,5 @@
-/*BD: 	posme:negocios_hermanandez*/
+/*BD: 	dbozsirudngt8v:negocios_hermanandez*/
+/*SERVIDOR: 	siteground*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
