@@ -719,8 +719,8 @@ $routes->match(['get', 'post'], 'app_cxc_customer/updateElement', 'app_cxc_custo
 $routes->match(['get', 'post'], 'app_cxc_customer/updateElement/(:any)', 'app_cxc_customer::updateElement');
 $routes->match(['get', 'post'], 'app_cxc_customer/insertElement', 'app_cxc_customer::insertElement');
 $routes->match(['get', 'post'], 'app_cxc_customer/insertElement/(:any)', 'app_cxc_customer::insertElement');
-$routes->match(['get', 'post'], 'app_cxc_customer/insertElementLiveConnectWebHook', 'app_cxc_customer::insertElementLiveConnectWebHook');
-$routes->match(['get', 'post'], 'app_cxc_customer/insertElementLiveConnectWebHook/(:any)', 'app_cxc_customer::insertElementLiveConnectWebHook');
+$routes->match(['get', 'post'], 'app_cxc_customer/insertAndUpdateElementLiveConnectWebHook', 'app_cxc_customer::insertAndUpdateElementLiveConnectWebHook');
+$routes->match(['get', 'post'], 'app_cxc_customer/insertAndUpdateElementLiveConnectWebHook/(:any)', 'app_cxc_customer::insertAndUpdateElementLiveConnectWebHook');
 $routes->match(['get', 'post'], 'app_cxc_customer/save', 'app_cxc_customer::save');
 $routes->match(['get', 'post'], 'app_cxc_customer/save/(:any)', 'app_cxc_customer::save');
 $routes->match(['get', 'post'], 'app_cxc_customer/add', 'app_cxc_customer::add');
