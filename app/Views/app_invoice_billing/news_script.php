@@ -3921,8 +3921,13 @@
 		//codigo para cuando carga la pagina y mostrar la zona
 		if(varParameterRestaurante == "true")
 		{
-			$("#mySidebarZona").css("width","100%");
-			$("#mySidebarZona").removeClass("hidden");
+			var ocultarZonaInParameterRestaurante = <?php echo getBahavioSession($company->type,'app_invoice_billing','jsOcultarZonaInParameterRestaurante','false',$objListCompanyPageSetting) ?>;			
+			if(ocultarZonaInParameterRestaurante == false)
+			{
+				$("#mySidebarZona").css("width","100%");
+				$("#mySidebarZona").removeClass("hidden");
+			}
+			
             $('.lazy-background').each(function() {
                 let $td 		= $(this);
                 let observer 	= new IntersectionObserver(function(entries) {
