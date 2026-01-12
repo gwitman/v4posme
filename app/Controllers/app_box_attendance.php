@@ -1047,11 +1047,7 @@ class app_box_attendance extends _BaseController {
 			$type    = pathinfo($path, PATHINFO_EXTENSION);
 			$data    = file_get_contents($path);
 			$base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
-			$dataViewParse["imageBase64"]			= $base64;			
-			$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_box_attendance","templateAttendace","");
-			$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_box_attendance","templateAttendace","");
-			if($htmlTemplateCompany == "")
-				$htmlTemplateCompany = $htmlTemplateDemo;
+			$dataViewParse["imageBase64"]			= $base64;		
 			
 			//Parse plantilla 
 			$dataViewParse["companyName"]			= $objCompany->name;
@@ -1068,15 +1064,37 @@ class app_box_attendance extends _BaseController {
 			$dataViewParse["nextPaymentDate"]		= "Error";
 			$dataViewParse["dayNextPayment"]		= "Error";
 			$dataViewParse["dateExpired"]			= "Error";
+			$dataViewParse["tipoCss"]				= $dataViewParse["solvencyName"] == "SI" ? "success" : "danger";
 			
 			
-			$parser = \Config\Services::parser();			
-			$html 	= $parser->setData($dataViewParse)->renderString($htmlTemplateCompany);
 			if($typeResult == "html") 
 			{
-				echo $html;
+				$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_box_attendance","templateAttendaceHtmlPage","");
+				$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_box_attendance","templateAttendaceHtmlPage","");
+				if($htmlTemplateCompany == "")
+					$htmlTemplateCompany = $htmlTemplateDemo;
+			
+				$parser 				= \Config\Services::parser();							
+				$dataBody["body"] 		= $parser->setData($dataViewParse)->renderString($htmlTemplateCompany);					
+				$dataBody["head"] 		= "";
+				$dataBody["footer"] 	= "";
+				$dataBody["script"] 	= "";					
+				$dataBody["title"] 		= "";	
+				$htmlPage 				= view("core_masterpage/default_masterpage_public",$dataBody);//--finview-r
+				echo $htmlPage;
 				exit;
 			}
+			else
+			{
+				$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_box_attendance","templateAttendace","");
+				$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_box_attendance","templateAttendace","");
+				if($htmlTemplateCompany == "")
+					$htmlTemplateCompany = $htmlTemplateDemo;
+			
+				$parser = \Config\Services::parser();			
+				$html 	= $parser->setData($dataViewParse)->renderString($htmlTemplateCompany);
+			}
+			
 			$this->dompdf->loadHTML($html);
 			$this->dompdf->render();
 			
@@ -1146,10 +1164,7 @@ class app_box_attendance extends _BaseController {
 				$data    = file_get_contents($path);
 				$base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
 				$dataViewParse["imageBase64"]			= $base64;			
-				$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_box_attendance","templateAttendace","");
-				$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_box_attendance","templateAttendace","");
-				if($htmlTemplateCompany == "")
-					$htmlTemplateCompany = $htmlTemplateDemo;
+				
 				
 				//Parse plantilla 
 				$dataViewParse["companyName"]			= $objCompany->name;
@@ -1166,15 +1181,37 @@ class app_box_attendance extends _BaseController {
 				$dataViewParse["nextPaymentDate"]		= "Error";
 				$dataViewParse["dayNextPayment"]		= "Error";
 				$dataViewParse["dateExpired"]			= "Error";
+				$dataViewParse["tipoCss"]				= $dataViewParse["solvencyName"] == "SI" ? "success" : "danger";
 				
 				
-				$parser = \Config\Services::parser();			
-				$html 	= $parser->setData($dataViewParse)->renderString($htmlTemplateCompany);
 				if($typeResult == "html") 
 				{
-					echo $html;
+					$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_box_attendance","templateAttendaceHtmlPage","");
+					$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_box_attendance","templateAttendaceHtmlPage","");
+					if($htmlTemplateCompany == "")
+						$htmlTemplateCompany = $htmlTemplateDemo;
+				
+					$parser 				= \Config\Services::parser();			
+					$dataBody["body"] 		= $parser->setData($dataViewParse)->renderString($htmlTemplateCompany);					
+					$dataBody["head"] 		= "";
+					$dataBody["footer"] 	= "";
+					$dataBody["script"] 	= "";					
+					$dataBody["title"] 		= "";	
+					$htmlPage 				= view("core_masterpage/default_masterpage_public",$dataBody);//--finview-r
+					echo $htmlPage;
 					exit;
 				}
+				else
+				{
+					$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_box_attendance","templateAttendace","");
+					$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_box_attendance","templateAttendace","");
+					if($htmlTemplateCompany == "")
+						$htmlTemplateCompany = $htmlTemplateDemo;
+				
+					$parser = \Config\Services::parser();			
+					$html 	= $parser->setData($dataViewParse)->renderString($htmlTemplateCompany);
+				}
+				
 				$this->dompdf->loadHTML($html);
 				$this->dompdf->render();
 				
@@ -1433,10 +1470,7 @@ class app_box_attendance extends _BaseController {
 				$dataViewParse["imageBase64Marca"] 	= $base64;
 			} 
 			
-			$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_box_attendance","templateAttendace","");
-			$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_box_attendance","templateAttendace","");
-			if($htmlTemplateCompany == "")
-				$htmlTemplateCompany = $htmlTemplateDemo;
+	
 			
 			//Parse plantilla 
 			$dataViewParse["companyName"]			= $objCompany->name;
@@ -1453,14 +1487,34 @@ class app_box_attendance extends _BaseController {
 			$dataViewParse["nextPaymentDate"]		= $datView["objTM"]->reference2;
 			$dataViewParse["dayNextPayment"]		= $datView["objTM"]->reference4;
 			$dataViewParse["dateExpired"]			= $datView["objTM"]->reference3;
+			$dataViewParse["tipoCss"]				= $dataViewParse["solvencyName"] == "SI" ? "success" : "danger";
 			
-			
-			$parser = \Config\Services::parser();			
-			$html 	= $parser->setData($dataViewParse)->renderString($htmlTemplateCompany);
 			if($typeResult == "html") 
 			{
-				echo $html;
+				$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_box_attendance","templateAttendaceHtmlPage","");
+				$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_box_attendance","templateAttendaceHtmlPage","");
+				if($htmlTemplateCompany == "")
+					$htmlTemplateCompany = $htmlTemplateDemo;
+			
+				$parser = \Config\Services::parser();			
+				$dataBody["body"] 		= $parser->setData($dataViewParse)->renderString($htmlTemplateCompany);					
+				$dataBody["head"] 		= "";
+				$dataBody["footer"] 	= "";
+				$dataBody["script"] 	= "";					
+				$dataBody["title"] 		= "";	
+				$htmlPage 				= view("core_masterpage/default_masterpage_public",$dataBody);//--finview-r
+				echo $htmlPage;
 				exit;
+			}
+			else
+			{
+				$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_box_attendance","templateAttendace","");
+				$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_box_attendance","templateAttendace","");
+				if($htmlTemplateCompany == "")
+					$htmlTemplateCompany = $htmlTemplateDemo;
+			
+				$parser = \Config\Services::parser();			
+				$html 	= $parser->setData($dataViewParse)->renderString($htmlTemplateCompany);
 			}
 			$this->dompdf->loadHTML($html);
 			$this->dompdf->render();
