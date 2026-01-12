@@ -2658,6 +2658,7 @@
 	}
 
 	function fnSelectDoubleCellInventory(cell) {
+		
 		console.info("fnSelectDoubleCellInventory");
 		$(cell).addClass("selected");
 		var codigoProducto = $(cell).data("codigo");
@@ -2740,7 +2741,7 @@
 
 				if(encontrado == true)
 				{
-
+					
 					var sumar				= true;
 					var filterResult 		= e[i];
 					var filterResultArray 	= [];
@@ -2754,7 +2755,7 @@
 					filterResultArray[24] 	= filterResult.Descripcion;
 					filterResultArray[25] 	= filterResult.Precio2;
 					filterResultArray[26] 	= filterResult.Precio3;
-
+					filterResultArray[27] 	= filterResult.Precio;
 					//Agregar el Item a la Fila
 					onCompleteNewItem(filterResultArray,sumar);
 				}
