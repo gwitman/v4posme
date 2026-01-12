@@ -2006,6 +2006,75 @@ class app_cxc_customer extends _BaseController {
 		}
 		
 	}
+	public function insertAndUpdateElementLiveConnectReceiptWhatsappWebHook()
+	{
+		// JSON crudo (string completo)
+		$rawJson = $this->request->getBody();
+		$rawJson = '{"type":"chatAdd","payload":{"id_conversacion":"LCWAP|361|50587125827C","id_canal":361,"mensaje_inicial":"Testing prueba","ingreso":1768256052,"contacto":{"id":26108813,"nombre":"posMe"},"usuario_autoasignado":{"id":59177,"nombre":"Santa Lucia Real Estate"}}}';
+		log_message('error', 'Webhook RAW JSON: ' . $rawJson);	
+		$data    = json_decode($rawJson, true);
+		log_message('error', 'Webhook RAW JSON: ' . print_r($data,true));	
+		
+		echo "Request:";
+		echo print_r($data,true);
+
+		if (!$data) {
+			return $this->response->setJSON([
+				'success' => false,
+				'message' => 'JSON inválido'
+			])->setStatusCode(400);
+		}
+	
+	
+		/* ===============================
+		   TYPE
+		================================ */
+		$type 		= $data['type'] ?? '';
+
+		/* ===============================
+		   PAYLOAD
+		================================ */
+		$payload 	= $data['payload'] ?? [];
+
+		/* ===============================
+		   DATOS DEL CHAT
+		================================ */
+		$id_conversacion  = $payload['id_conversacion']  ?? '';
+		$id_canal         = $payload['id_canal']         ?? 0;
+		$mensaje_inicial  = $payload['mensaje_inicial']  ?? '';
+		$ingreso          = $payload['ingreso']          ?? 0;
+
+		/* ===============================
+		   CONTACTO
+		================================ */
+		$contacto 			= $payload['contacto'] ?? [];
+		$contacto_id     	= $contacto['id']     ?? 0;
+		$contacto_nombre 	= $contacto['nombre'] ?? '';
+
+
+		/* ===============================
+		   USUARIO AUTOASIGNADO
+		================================ */
+		$usuario_autoasignado 	= $payload['usuario_autoasignado'] ?? [];
+		$usuario_id     		= $usuario_autoasignado['id']     ?? 0;
+		$usuario_nombre 		= $usuario_autoasignado['nombre'] ?? '';
+
+
+		/* ===============================
+		   CAST DE SEGURIDAD
+		================================ */
+		$id_canal      = (int)$id_canal;
+		$ingreso       = (int)$ingreso;
+		$contacto_id   = (int)$contacto_id;
+		$usuario_id    = (int)$usuario_id;
+
+		
+		return $this->response->setJSON([
+			'success' => true,
+			'message'    => 'JSON valido'
+		]);
+		
+	}
 
 	function save($mode="",$dataSession=null){
 			$mode = helper_SegmentsByIndex($this->uri->getSegments(),1,$mode);	
