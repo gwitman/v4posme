@@ -1021,6 +1021,7 @@ class app_box_attendance extends _BaseController {
 	function viewRegisterFormatoQR(){
 		
 		$customerIdentification	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"customerIdentification");//--finuri						
+		$typeResult				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"typeResult");//--finuri						
 		$companyID 				= APP_COMPANY;	
 		$objCustomer			= $this->Customer_Model->get_rowByIdentification($companyID,$customerIdentification);
 		$objCompany 			= $this->Company_Model->get_rowByPK($companyID);			
@@ -1069,9 +1070,13 @@ class app_box_attendance extends _BaseController {
 			$dataViewParse["dateExpired"]			= "Error";
 			
 			
-			
 			$parser = \Config\Services::parser();			
 			$html 	= $parser->setData($dataViewParse)->renderString($htmlTemplateCompany);
+			if($typeResult == "html") 
+			{
+				echo $html;
+				exit;
+			}
 			$this->dompdf->loadHTML($html);
 			$this->dompdf->render();
 			
@@ -1080,16 +1085,15 @@ class app_box_attendance extends _BaseController {
 			
 			$transactionMasterID 	= 0;
 			$fileNamePut 			= "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
-			mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID, 0700,true);						
-			$path        			= "./resource/file_company/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID."/".$fileNamePut;
-			chmod($path, 644);
-			
+			if (!file_exists(PATH_FILE_OF_APP."/company_".$companyID."/component_84/component_item_".$transactionMasterID))
+			mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_84/component_item_".$transactionMasterID, 0777,true);						
+			$path        			= "./resource/file_company/company_".$companyID."/component_84/component_item_".$transactionMasterID."/".$fileNamePut;
 			
 			file_put_contents(
 				$path,
 				$this->dompdf->output()
 			);
-			
+			chmod($path, 644);
 					
 			//visualizar 
 			$this->dompdf->stream("file.pdf ", ['Attachment' => !$objParameterShowLinkDownload ]);
@@ -1131,7 +1135,69 @@ class app_box_attendance extends _BaseController {
 			}
 			
 			//Obtener Tabla de Amortizacion del cliente
-			$objCustomerCreditAmoritizationAll	= $this->Customer_Credit_Amortization_Model->get_rowByCustomerID($entityID);
+			$objCustomerCreditAmoritizationAll	= $this->Customer_Credit_Amortization_Model->get_rowByCustomerID($entityID);			
+			if(!$objCustomerCreditAmoritizationAll)
+			{
+				//Obtener imagen de logo
+				$objComponent	        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+				$objParameterLogo       = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+				$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;    
+				$type    = pathinfo($path, PATHINFO_EXTENSION);
+				$data    = file_get_contents($path);
+				$base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
+				$dataViewParse["imageBase64"]			= $base64;			
+				$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_box_attendance","templateAttendace","");
+				$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_box_attendance","templateAttendace","");
+				if($htmlTemplateCompany == "")
+					$htmlTemplateCompany = $htmlTemplateDemo;
+				
+				//Parse plantilla 
+				$dataViewParse["companyName"]			= $objCompany->name;
+				$dataViewParse["companyRuc"]			= $objParameterRuc;
+				$dataViewParse["transactionNumber"]		= "ASI00000000";
+				$dataViewParse["transactionOn"]			= "1900-01-01";
+				$dataViewParse["userName"]				= $dataSession["user"]->nickname;
+				$dataViewParse["phoneNumber"]			= $objParameterTelefono->value;
+				$dataViewParse["address"]				= "Error";
+				$dataViewParse["customerRuc"]			= "Error";
+				$dataViewParse["customerName"]			= "Cliente no tiene membresia";
+				$dataViewParse["statusName"]			= "Error";
+				$dataViewParse["solvencyName"]			= "Error";
+				$dataViewParse["nextPaymentDate"]		= "Error";
+				$dataViewParse["dayNextPayment"]		= "Error";
+				$dataViewParse["dateExpired"]			= "Error";
+				
+				
+				$parser = \Config\Services::parser();			
+				$html 	= $parser->setData($dataViewParse)->renderString($htmlTemplateCompany);
+				if($typeResult == "html") 
+				{
+					echo $html;
+					exit;
+				}
+				$this->dompdf->loadHTML($html);
+				$this->dompdf->render();
+				
+				$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+				$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+				
+				$transactionMasterID 	= 0;
+				$fileNamePut 			= "factura_".$transactionMasterID."_".date("dmYhis").".pdf";				
+				if (!file_exists(PATH_FILE_OF_APP."/company_".$companyID."/component_84/component_item_".$transactionMasterID))
+				mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_84/component_item_".$transactionMasterID, 0777,true);						
+				$path        			= "./resource/file_company/company_".$companyID."/component_84/component_item_".$transactionMasterID."/".$fileNamePut;
+				
+				file_put_contents(
+					$path,
+					$this->dompdf->output()
+				);
+				chmod($path, 644);
+						
+				//visualizar 
+				$this->dompdf->stream("file.pdf ", ['Attachment' => !$objParameterShowLinkDownload ]);
+				exit;
+			}
+			
 			
 		}
 		catch(\Exception $ex){
@@ -1141,6 +1207,7 @@ class app_box_attendance extends _BaseController {
 				'message' => $ex->getLine()." ".$ex->getMessage()
 			));//--finjson	
 		}
+		
 		
 		
 		try{
@@ -1294,6 +1361,7 @@ class app_box_attendance extends _BaseController {
 			$transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
 			
 			//Crear la Carpeta para almacenar los Archivos del Documento
+			if (!file_exists(PATH_FILE_OF_APP."/company_".$companyID."/component_84/component_item_".$transactionMasterID))
 			mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID, 0700,true);						
 			if($db->transStatus() !== false)
 			{
@@ -1389,6 +1457,11 @@ class app_box_attendance extends _BaseController {
 			
 			$parser = \Config\Services::parser();			
 			$html 	= $parser->setData($dataViewParse)->renderString($htmlTemplateCompany);
+			if($typeResult == "html") 
+			{
+				echo $html;
+				exit;
+			}
 			$this->dompdf->loadHTML($html);
 			$this->dompdf->render();
 			
