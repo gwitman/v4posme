@@ -44,7 +44,7 @@
 								</ul>
 							</div>
 
-
+							<a href="<?php echo base_url(); ?>/app_cxc_customer/viewPrinterCarnet/companyID/2/branchID/2/entityID/<?php echo $objCustomer->entityID; ?>" target="_blank" class="btn btn-primary" id="btnCarnet"><i class="icon16 i-pencil"></i> Carnet</a>
 							<a href="#" class="btn btn-warning <?php echo getBehavio($company->type,"app_cxc_customer","showBtnViewLeads",""); ?> " id="btnLeads"><i class="icon16 i-pencil"></i> Leads</a>
 							<a href="<?php echo base_url(); ?>/app_cxc_customer/index" id="btnBack" class="btn btn-warning" ><i class="icon16 i-rotate"></i> Atras</a>
 							<a href="#" class="btn btn-danger <?php echo getBehavio($company->type,"app_cxc_customer","showBtnDelete","hidden"); ?> " id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>

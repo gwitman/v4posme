@@ -2574,11 +2574,26 @@ class app_cxc_customer extends _BaseController {
 			$datView["objNatural"]	 			= $this->Natural_Model->get_rowByPK($companyID,$branchID,$entityID);
 			$datView["objLegal"]	 			= $this->Legal_Model->get_rowByPK($companyID,$branchID,$entityID);
 			$datView["objCustomer"]	 			= $this->Customer_Model->get_rowByPK($companyID,$branchID,$entityID);
-			$dataViewParse["firstName"]			= $datView["objNatural"]->firstName;
+			$dataViewParse["customerName"]		= $datView["objNatural"]->firstName;
 			$dataViewParse["customerNumber"]	= $datView["objCustomer"]->customerNumber;
 			$dataViewParse["identification"]	= $datView["objCustomer"]->identification;
 			$dataViewParse["companyName"]		= $objCompany->name;
 			$dataViewParse["companyAddress"]	= $objCompany->address;
+			$dataViewParse["phone"]				= $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE",$companyID)->value;
+						
+			$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_".$objComponentShare->componentID."/component_item_".$entityID."";
+            if (!file_exists($documentoPath)) {
+                mkdir($documentoPath, 0777, true);
+            }
+			
+            $url 					= base_url()."/app_box_attendance/viewRegisterFormatoQR/customerIdentification/".$datView["objCustomer"]->identification."/typeResult/html";
+            $this->core_web_qr->generate($url,$documentoPath."/qrcode.png","M","10");
+            $qrImage 				= $documentoPath."/qrcode.png";			
+            $dataFoto    			= file_get_contents($qrImage);
+            $typeFoto    			= pathinfo($qrImage, PATHINFO_EXTENSION);
+            $base64Foto  			= 'data:image/' . $typeFoto . ';base64,' . base64_encode($dataFoto);
+            $dataViewParse["foto"]	= $base64Foto;
+			
 			
 			
 			//Obtener imagen de logo			
