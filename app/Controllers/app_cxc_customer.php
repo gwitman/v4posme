@@ -2469,6 +2469,106 @@ class app_cxc_customer extends _BaseController {
 			$dataSession["script"]		= /*--inicio view*/ view('app_cxc_customer/popup_addphone_script');//--finview
 			return view("core_masterpage/default_popup",$dataSession);//--finview-r
 	}	
+	function viewPrinterCarnet()
+	{
+		try
+		{
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCTION
+			if(APP_NEED_AUTHENTICATION == true){
+						$permited = false;
+						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						
+						if(!$permited)
+						throw new \Exception(NOT_ACCESS_CONTROL);
+						
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						if ($resultPermission 	== PERMISSION_NONE)
+						throw new \Exception(NOT_ALL_EDIT);			
+			
+			}	
+			
+			
+			$entityID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"entityID");//--finuri									
+			$companyID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"companyID");//--finuri									
+			$branchID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"branchID");//--finuri									
+			$objCompany 			= $this->Company_Model->get_rowByPK($companyID);			
+			$objComponentShare		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
+			if(!$objComponentShare)
+			throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
+		
+			$datView["objEntity"]	 			= $this->Entity_Model->get_rowByPK($companyID,$branchID,$entityID);
+			$datView["objNatural"]	 			= $this->Natural_Model->get_rowByPK($companyID,$branchID,$entityID);
+			$datView["objLegal"]	 			= $this->Legal_Model->get_rowByPK($companyID,$branchID,$entityID);
+			$datView["objCustomer"]	 			= $this->Customer_Model->get_rowByPK($companyID,$branchID,$entityID);
+			$dataViewParse["firstName"]			= $datView["objNatural"]->firstName;
+			$dataViewParse["customerNumber"]	= $datView["objCustomer"]->customerNumber;
+			$dataViewParse["identification"]	= $datView["objCustomer"]->identification;
+			$dataViewParse["companyName"]		= $objCompany->name;
+			$dataViewParse["companyAddress"]	= $objCompany->address;
+			
+			
+			//Obtener imagen de logo			
+			$objComponent	        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			$objParameterLogo       = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;    
+			$type    = pathinfo($path, PATHINFO_EXTENSION);
+			$data    = file_get_contents($path);
+			$base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
+			$dataViewParse["imageBase64"]			= $base64;		
+			
+			
+			$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_cxc_customer","templateCarnet","");
+			$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_cxc_customer","templateCarnet","");
+			if($htmlTemplateCompany == "")
+				$htmlTemplateCompany = $htmlTemplateDemo;
+		
+			$parser = \Config\Services::parser();			
+			$html 	= $parser->setData($dataViewParse)->renderString($htmlTemplateCompany);
+			
+			$this->dompdf->loadHTML($html);
+			$this->dompdf->render();
+			
+			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+			
+			
+			$fileNamePut 			= "customer_carnet_".$entityID."_".date("dmYhis").".pdf";
+			if (!file_exists(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$entityID))
+			mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$entityID, 0777,true);						
+			$path        			= "./resource/file_company/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$entityID."/".$fileNamePut;
+			
+			file_put_contents(
+				$path,
+				$this->dompdf->output()
+			);
+			chmod($path, 644);
+					
+			//visualizar 
+			$this->dompdf->stream("file.pdf ", ['Attachment' => !$objParameterShowLinkDownload ]);
+			exit;
+		}
+		catch(\Exception $ex)
+		{
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			$data 			   = array();
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;
+		}	
+		
+	}
 	function viewPrinterDirectBalance58mm(){
 		try{
 			
