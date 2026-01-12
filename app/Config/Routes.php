@@ -414,6 +414,8 @@ $routes->match(['get', 'post'], 'app_box_attendance/viewRegisterFormatoPaginaTic
 $routes->match(['get', 'post'], 'app_box_attendance/viewRegisterFormatoPaginaTicketDirect80mm/(:any)', 'app_box_attendance::viewRegisterFormatoPaginaTicketDirect80mm');
 $routes->match(['get', 'post'], 'app_box_attendance/viewRegisterFormatoPaginaTicketDirect80mmNoImage', 'app_box_attendance::viewRegisterFormatoPaginaTicketDirect80mmNoImage');
 $routes->match(['get', 'post'], 'app_box_attendance/viewRegisterFormatoPaginaTicketDirect80mmNoImage/(:any)', 'app_box_attendance::viewRegisterFormatoPaginaTicketDirect80mmNoImage');
+$routes->match(['get', 'post'], 'app_box_attendance/viewRegisterFormatoQR', 'app_box_attendance::viewRegisterFormatoQR');
+$routes->match(['get', 'post'], 'app_box_attendance/viewRegisterFormatoQR/(:any)', 'app_box_attendance::viewRegisterFormatoQR');
 $routes->match(['get', 'post'], 'app_rrhh_asistencia/edit', 'app_rrhh_asistencia::edit');
 $routes->match(['get', 'post'], 'app_rrhh_asistencia/edit/(:any)', 'app_rrhh_asistencia::edit');
 $routes->match(['get', 'post'], 'app_rrhh_asistencia/delete', 'app_rrhh_asistencia::delete');

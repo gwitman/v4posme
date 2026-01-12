@@ -1018,5 +1018,419 @@ class app_box_attendance extends _BaseController {
 		}	
 	}
 	
+	function viewRegisterFormatoQR(){
+		
+		$customerIdentification	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"customerIdentification");//--finuri						
+		$companyID 				= APP_COMPANY;	
+		$objCustomer			= $this->Customer_Model->get_rowByIdentification($companyID,$customerIdentification);
+		$objCompany 			= $this->Company_Model->get_rowByPK($companyID);			
+		$objParameterRuc	    = $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+		$objParameterRuc        = $objParameterRuc->value;
+		$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+		$dataSession			= $this->core_web_authentication->get_UserBy_PasswordAndNickname(APP_USERDEFAULT_VALUE, APP_PASSWORDEFAULT_VALUE);
+		$companyID 				= $dataSession["user"]->companyID;
+		if(!$companyID && !$entityID){
+				throw new \Exception(NOT_PARAMETER);		
+		} 
+		
+		$objComponentShare		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_attendance");
+		if(!$objComponentShare)
+		throw new \Exception("EL COMPONENTE 'tb_transaction_master_attendance' NO EXISTE...");
+	
+		if(!$objCustomer)
+		{
+			//Obtener imagen de logo
+			$objComponent	        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			$objParameterLogo       = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;    
+			$type    = pathinfo($path, PATHINFO_EXTENSION);
+			$data    = file_get_contents($path);
+			$base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
+			$dataViewParse["imageBase64"]			= $base64;			
+			$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_box_attendance","templateAttendace","");
+			$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_box_attendance","templateAttendace","");
+			if($htmlTemplateCompany == "")
+				$htmlTemplateCompany = $htmlTemplateDemo;
+			
+			//Parse plantilla 
+			$dataViewParse["companyName"]			= $objCompany->name;
+			$dataViewParse["companyRuc"]			= $objParameterRuc;
+			$dataViewParse["transactionNumber"]		= "ASI00000000";
+			$dataViewParse["transactionOn"]			= "1900-01-01";
+			$dataViewParse["userName"]				= $dataSession["user"]->nickname;
+			$dataViewParse["phoneNumber"]			= $objParameterTelefono->value;
+			$dataViewParse["address"]				= "Error";
+			$dataViewParse["customerRuc"]			= "Error";
+			$dataViewParse["customerName"]			= "Cliente no encontrado";
+			$dataViewParse["statusName"]			= "Error";
+			$dataViewParse["solvencyName"]			= "Error";
+			$dataViewParse["nextPaymentDate"]		= "Error";
+			$dataViewParse["dayNextPayment"]		= "Error";
+			$dataViewParse["dateExpired"]			= "Error";
+			
+			
+			
+			$parser = \Config\Services::parser();			
+			$html 	= $parser->setData($dataViewParse)->renderString($htmlTemplateCompany);
+			$this->dompdf->loadHTML($html);
+			$this->dompdf->render();
+			
+			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+			
+			$transactionMasterID 	= 0;
+			$fileNamePut 			= "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
+			mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID, 0700,true);						
+			$path        			= "./resource/file_company/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID."/".$fileNamePut;
+			chmod($path, 644);
+			
+			
+			file_put_contents(
+				$path,
+				$this->dompdf->output()
+			);
+			
+					
+			//visualizar 
+			$this->dompdf->stream("file.pdf ", ['Attachment' => !$objParameterShowLinkDownload ]);
+			exit;
+		}	
+		
+		
+		try{ 
+			
+			//Obtener Parametros
+			$entityID		= $objCustomer->entityID;
+			//Obtener tasa de cambio
+			date_default_timezone_set(APP_TIMEZONE); 
+			$objCurrencyDolares						= $this->core_web_currency->getCurrencyExternal($companyID);
+			$objCurrencyCordoba						= $this->core_web_currency->getCurrencyDefault($companyID);
+			$dateOn 								= date("Y-m-d");
+			$dateOn 								= date_format(date_create($dateOn),"Y-m-d");
+			$exchangeRate 							= $this->core_web_currency->getRatio($companyID,$dateOn,1,$objCurrencyDolares->currencyID,$objCurrencyCordoba->currencyID);
+			$parameterCausalTypeCredit 				= $this->core_web_parameter->getParameter("INVOICE_BILLING_CREDIT",$companyID);
+			
+			//Obtener Cliente
+			$objCustomer 					= $this->Customer_Model->get_rowByEntity($companyID,$entityID);
+			$branchID 						= ($objCustomer != null ? $objCustomer->branchID : 0);
+			
+			//Obtener Lineas de Credito
+			$objListCustomerCreditLine2 	= $this->Customer_Credit_Line_Model->get_rowByEntity($companyID,$branchID,$entityID);
+			$objListCustomerCreditLine 		= null;
+			$counter 						= 0;
+			
+			if($objListCustomerCreditLine2)
+			{
+				foreach($objListCustomerCreditLine2 as $key => $value){
+					if($value->balance > 0)
+					{
+						$objListCustomerCreditLine[$counter] = $value;
+						$counter++;
+					}
+				}
+			}
+			
+			//Obtener Tabla de Amortizacion del cliente
+			$objCustomerCreditAmoritizationAll	= $this->Customer_Credit_Amortization_Model->get_rowByCustomerID($entityID);
+			
+		}
+		catch(\Exception $ex){
+			
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));//--finjson	
+		}
+		
+		
+		try{
+			
+			$this->core_web_permission->getValueLicense($dataSession["user"]->companyID,get_class($this)."/"."index");
+			//Obtener el Componente de Transacciones Facturacion
+			$objComponentShare			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_attendance");
+			if(!$objComponentShare)
+			throw new \Exception("EL COMPONENTE 'tb_transaction_master_attendance' NO EXISTE...");
+			
+		
+			$transactionOn	= helper_getDateTime();
+			if($this->core_web_accounting->cycleIsCloseByDate($dataSession["user"]->companyID,$transactionOn ))
+			throw new \Exception("EL DOCUMENTO NO PUEDE INGRESAR, EL CICLO CONTABLE ESTA CERRADO");
+			
+			
+			$objWorkflowStage						= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_attendance","statusID",$companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID);
+			$objPrioridad							= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_attendance","priorityID",$companyID);			
+			
+			//Obtener la Mora
+			////////////////////////////////
+			////////////////////////////////
+			$CantidadMora = array_filter(
+					$objCustomerCreditAmoritizationAll,
+					function ($item) {
+						return isset($item->stageDocumento) && $item->stageDocumento !== 'CANCELADO' && $item->Mora > 0;
+					}
+			);
+			if(count($CantidadMora) == 0)
+			{
+				$CantidadMora = 0;
+			}
+			else 
+			{
+					$CantidadMora = array_map(function ($item) {
+						return isset($item->Mora) ? (int)$item->Mora : 0;
+					}, $CantidadMora);
+		
+					$CantidadMora = !empty($CantidadMora) ? max($CantidadMora) : 0;
+			}
+				
+			if($CantidadMora > 0)
+			{
+				$txtDetailReference1	= "NO";	
+				$txtDetailReference4	= 0;
+			}
+			if($CantidadMora <= 0)
+			{							
+				$txtDetailReference1 = "SI";
+			}
+			
+			////Fecha de Vencimiento
+			////////////////////////////////
+			////////////////////////////////
+			$FechaVencimiento 		= array_filter(
+					$objCustomerCreditAmoritizationAll,
+					function ($item) {
+						return isset($item->stageDocumento) && $item->stageDocumento !== 'CANCELADO';
+					}
+			);			
+			$FechaVencimientoMora	= array_map(function ($item) {
+					return isset($item->Mora) ? (int)$item->Mora : 0;
+				}, $FechaVencimiento);
+			$FechaVencimientoMora 	= !empty($FechaVencimientoMora) ? min($FechaVencimientoMora) : 0;
+				
+				
+			$FechaVencimiento 	= array_filter(
+					$FechaVencimiento,
+					function ($item) use ($FechaVencimientoMora)  {
+						return isset($item->stageDocumento) && $item->stageDocumento !== 'CANCELADO' && $item->Mora == $FechaVencimientoMora ;
+					}
+			);			
+			
+			$FechaVencimiento		= $FechaVencimiento[0];
+			$FechaVencimiento		= $FechaVencimiento->dateApply;
+			$txtDetailReference3	= $FechaVencimiento;
+			
+		
+			//Fecha del proximo pago
+			////////////////////////////////
+			////////////////////////////////
+			$FechaProximoPago 		= array_filter(
+					$objCustomerCreditAmoritizationAll,
+					function ($item) {
+						return isset($item->stageDocumento) && $item->stageDocumento !== 'CANCELADO';
+					}
+			);
+			
+			$FechaProximoPagoMora	= array_map(function ($item) {
+					return isset($item->Mora) ? (int)$item->Mora : 0;
+				}, $FechaProximoPago);
+			$FechaProximoPagoMora 		= !empty($FechaProximoPagoMora) ? max($FechaProximoPagoMora) : 0;
+			
+			$FechaProximoPago 		= array_filter(
+					$FechaProximoPago,
+					function ($item) use ($FechaProximoPagoMora ) {
+						return isset($item->stageDocumento) && $item->stageDocumento !== 'CANCELADO' && $item->Mora == $FechaProximoPagoMora;
+					}
+			);
+			
+			$FechaProximoPago		= $FechaProximoPago[0];
+			$FechaProximoPago		= $FechaProximoPago->dateApply;
+			$txtDetailReference2 	= $FechaProximoPago;
+			
+			//Dias del Proximo Pago
+			if($FechaProximoPagoMora > 0 )
+				$txtDetailReference4 = 0;						
+			else 
+				$txtDetailReference4 = ( $FechaProximoPagoMora * -1 );	
+			
+			
+			//Obtener transaccion
+			$objParameterATTENDANCE_AUTO_PRINTER 	= $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"],"ATTENDANCE_AUTO_PRINTER")->value;
+			$transactionID 							= $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID,"tb_transaction_master_attendance",0);
+			$companyID 								= $dataSession["user"]->companyID;
+			$objT 									= $this->Transaction_Model->getByCompanyAndTransaction($dataSession["user"]->companyID,$transactionID);
+			
+			$objTM["companyID"] 					= $dataSession["user"]->companyID;
+			$objTM["transactionID"] 				= $transactionID;			
+			$objTM["branchID"]						= $dataSession["user"]->branchID;
+			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_attendance",0);
+			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($dataSession["user"]->companyID,$transactionID);
+			$objTM["entityID"] 						= $entityID;
+			$objTM["transactionOn"]					= $transactionOn;
+			$objTM["statusIDChangeOn"]				= date("Y-m-d H:m:s");
+			$objTM["componentID"] 					= $objComponentShare->componentID;
+			$objTM["note"] 							= "";
+			$objTM["sign"] 							= 0;
+			$objTM["currencyID"]					= $this->core_web_currency->getCurrencyDefault($companyID)->currencyID;
+			$objTM["currencyID2"]					= $this->core_web_currency->getCurrencyExternal($dataSession["user"]->companyID)->currencyID;
+			$objTM["exchangeRate"]					= $this->core_web_currency->getRatio($dataSession["user"]->companyID,date("Y-m-d"),1,$objTM["currencyID2"],$objTM["currencyID"]);			
+			$objTM["reference1"] 					= $txtDetailReference1;//Cliente con Mora: SI,NO
+			$objTM["reference2"] 					= $txtDetailReference2;//Dias para el proximo pago: number
+			$objTM["reference3"] 					= $txtDetailReference3;//Fecha de vencimiento
+			$objTM["reference4"] 					= $txtDetailReference4;//Dias para el proximo pago
+			$objTM["statusID"] 						= $objWorkflowStage[0]->workflowStageID;
+			$objTM["priorityID"]					= $objPrioridad[0]->catalogItemID;
+			$objTM["amount"] 						= 0;
+			$objTM["isApplied"] 					= 0;
+			$objTM["journalEntryID"] 				= 0;
+			$objTM["classID"] 						= NULL;
+			$objTM["areaID"] 						= NULL;
+			$objTM["sourceWarehouseID"]				= NULL;
+			$objTM["targetWarehouseID"]				= NULL;
+			$objTM["isActive"]						= 1;
+			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);			
+			
+			
+			$db=db_connect();
+			$db->transStart();
+			$transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
+			
+			//Crear la Carpeta para almacenar los Archivos del Documento
+			mkdir(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID, 0700,true);						
+			if($db->transStatus() !== false)
+			{
+				$db->transCommit();
+			}
+			else
+			{
+				$db->transRollback();
+			}
+			
+			
+		}
+		catch(\Exception $ex)
+		{
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+		    return $resultView;
+		}	
+		
+		try
+		{ 
+			$companyID 				= APP_COMPANY;	
+			//Get Component
+			$objComponent	        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			$objParameter	        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+			$objParameterRuc	    = $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+			$objParameterRuc        = $objParameterRuc->value;
+			$objCompany 			= $this->Company_Model->get_rowByPK($companyID);			
+			$spacing 				= 0.5;
+			
+			//Get Documento					
+			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTC"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$datView["objTM"]->transactionCausalID);
+			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
+			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
+			$datView["Identifier"]					= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+			$datView["objBranch"]					= $this->Branch_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->branchID);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_attendance","statusID",$datView["objTM"]->statusID,$companyID,$datView["objTM"]->branchID,APP_ROL_SUPERADMIN);
+			$datView["objTipo"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$datView["objTM"]->transactionID,$datView["objTM"]->transactionCausalID);
+			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
+			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
+			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
+			$datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
+			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
+			$datView["objUser"]						= $this->User_Model->get_rowByPK($companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
+			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 
+			
+			
+			//Obtener imagen de logo
+			$objComponent	        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			$objParameterLogo       = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;    
+			$type    = pathinfo($path, PATHINFO_EXTENSION);
+			$data    = file_get_contents($path);
+			$base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
+			$dataViewParse["imageBase64"]						= $base64;
+			
+			//Obtener imagen de logo marca de agua
+			$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-marca-'.$objParameterLogo->value;   
+			if (file_exists($path)) {
+				$type    					 		= pathinfo($path, PATHINFO_EXTENSION);
+				$data    					 		= file_get_contents($path);
+				$base64  					 		= 'data:image/' . $type . ';base64,' . base64_encode($data);
+				$dataViewParse["imageBase64Marca"] 	= $base64;
+			} 
+			
+			$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_box_attendance","templateAttendace","");
+			$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_box_attendance","templateAttendace","");
+			if($htmlTemplateCompany == "")
+				$htmlTemplateCompany = $htmlTemplateDemo;
+			
+			//Parse plantilla 
+			$dataViewParse["companyName"]			= $objCompany->name;
+			$dataViewParse["companyRuc"]			= $objParameterRuc;
+			$dataViewParse["transactionNumber"]		= $datView["objTM"]->transactionNumber;
+			$dataViewParse["transactionOn"]			= $datView["objTM"]->createdOn;
+			$dataViewParse["userName"]				= $datView["objUser"]->nickname;
+			$dataViewParse["phoneNumber"]			= $objParameterTelefono->value;
+			$dataViewParse["address"]				= $objCompany->address;
+			$dataViewParse["customerRuc"]			= $datView["objCustumer"]->customerNumber;
+			$dataViewParse["customerName"]			= $datView["objNatural"]->firstName;
+			$dataViewParse["statusName"]			= $datView["objStage"][0]->name;
+			$dataViewParse["solvencyName"]			= $datView["objTM"]->reference1;
+			$dataViewParse["nextPaymentDate"]		= $datView["objTM"]->reference2;
+			$dataViewParse["dayNextPayment"]		= $datView["objTM"]->reference4;
+			$dataViewParse["dateExpired"]			= $datView["objTM"]->reference3;
+			
+			
+			$parser = \Config\Services::parser();			
+			$html 	= $parser->setData($dataViewParse)->renderString($htmlTemplateCompany);
+			$this->dompdf->loadHTML($html);
+			$this->dompdf->render();
+			
+			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+			
+			$fileNamePut = "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
+			$path        = "./resource/file_company/company_".$companyID."/component_84/component_item_".$transactionMasterID."/".$fileNamePut;
+				
+			file_put_contents(
+				$path,
+				$this->dompdf->output()					
+			);						
+			
+			chmod($path, 644);
+					
+			//visualizar
+			$this->dompdf->stream("file.pdf ", ['Attachment' => !$objParameterShowLinkDownload ]);
+			exit;
+			
+			
+		}
+		catch(\Exception $ex)
+		{
+			$data["session"] 	= null;
+		    $data["exception"] 	= $ex;
+		    $data["urlLogin"]  	= base_url();
+		    $data["urlIndex"]  	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        	= view("core_template/email_error_general",$data);
+		    
+		    $this->email->setFrom(EMAIL_APP);
+		    $this->email->setTo(EMAIL_APP_COPY);
+		    $this->email->setSubject("Error");
+		    $this->email->setMessage($resultView);
+		    
+		    $resultSend01 = $this->email->send();
+		    $resultSend02 = $this->email->printDebugger();
+		    return $resultView;
+		}
+		
+	}
+	
 }
 ?>
