@@ -888,6 +888,8 @@ $routes->match(['get', 'post'], 'app_inventory_ajuste/add_masinformacion', 'app_
 $routes->match(['get', 'post'], 'app_inventory_ajuste/add_masinformacion/(:any)', 'app_inventory_ajuste::add_masinformacion');
 $routes->match(['get', 'post'], 'app_inventory_item/edit', 'app_inventory_item::edit');
 $routes->match(['get', 'post'], 'app_inventory_item/edit/(:any)', 'app_inventory_item::edit');
+$routes->match(['get', 'post'], 'app_inventory_item/editPublic', 'app_inventory_item::editPublic');
+$routes->match(['get', 'post'], 'app_inventory_item/editPublic/(:any)', 'app_inventory_item::editPublic');
 $routes->match(['get', 'post'], 'app_inventory_item/delete', 'app_inventory_item::delete');
 $routes->match(['get', 'post'], 'app_inventory_item/searchItem', 'app_inventory_item::searchItem');
 $routes->match(['get', 'post'], 'app_inventory_item/save', 'app_inventory_item::save');

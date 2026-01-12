@@ -1581,4 +1581,22 @@ function helper_obtenerPrimeras5Palabras( $texto,  $cantidad  )
 }
 
 
+function helper_getAlertThemeSneatBoostrap5_1($title,$type,$mensaje)
+{
+	$mensajeTransformer = '';
+	$mensajeTransformer = $mensajeTransformer.'<div class="alert alert-'.$type.' d-flex" role="alert">';
+	$mensajeTransformer = $mensajeTransformer.	'<span class="badge badge-center rounded-pill bg-'.$type.' border-label-'.$type.' p-3 me-2">';
+	$mensajeTransformer = $mensajeTransformer.		'<i class="bx bx-desktop fs-6"></i>';
+	$mensajeTransformer = $mensajeTransformer.	'</span>';
+	$mensajeTransformer = $mensajeTransformer.	'<div class="d-flex flex-column ps-1">';
+	$mensajeTransformer = $mensajeTransformer.		'<h6 class="alert-heading d-flex align-items-center fw-bold mb-1" > '.$title.' </h6> ';
+	$mensajeTransformer = $mensajeTransformer.		'<span><b>'.$mensaje.'</b></span>';
+	$mensajeTransformer = $mensajeTransformer.	'</div>';
+	$mensajeTransformer = $mensajeTransformer.'</div>';
+	return $mensajeTransformer;
+}
+
+
+
+
 ?>

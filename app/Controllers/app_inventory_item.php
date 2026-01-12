@@ -187,6 +187,65 @@ class app_inventory_item extends _BaseController
             return $resultView;
         }
     }
+	
+	public function editPublic()
+    {
+        try {
+            
+
+           
+
+            //Librerias
+            //
+            ////////////////////////////////////////
+            ////////////////////////////////////////
+            ////////////////////////////////////////
+
+            //Redireccionar datos
+
+            $companyID 		= APP_COMPANY;
+            $itemID    		= /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "itemID");    //--finuri
+            $dataSession	= $this->core_web_authentication->get_UserBy_PasswordAndNickname(APP_USERDEFAULT_VALUE, APP_PASSWORDEFAULT_VALUE);
+			
+            //Obtener Informacion            
+            $dataView["objItem"]                       = $this->Item_Model->get_rowByPK($companyID, $itemID);
+            $dataView["objItemSku"]                    = $this->Item_Sku_Model->get_rowByItemID($itemID);
+            $dataView["objItemWarehouse"]              = $this->Itemwarehouse_Model->get_rowByItemID($companyID, $itemID);
+            $dataView["objListWarehouse"]              = $this->Warehouse_Model->getByCompany($companyID);
+            $dataView["company"]                       = $dataSession["company"];            
+			$dataView["message"]                       = /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "message");
+			if(!$dataView["message"])
+			{
+				$dataView["message"] = "";
+			}
+			else{
+				$dataView["message"] = $this->Log_Model->get_rowByLogID($dataView["message"]);
+				$dataView["message"] = $dataView["message"]->description;
+			}
+			
+            //Renderizar Resultado
+            $dataSession["notification"] = $this->core_web_error->get_error($dataSession["user"]->userID);
+            $dataSession["message"]      = "";
+			$dataSession["title"]	     = "";
+            $dataSession["head"]         = /*--inicio view*/view('app_inventory_item/public_edit_head', $dataView);   //--finview
+            $dataSession["body"]         = /*--inicio view*/view('app_inventory_item/public_edit_body', $dataView);   //--finview
+            $dataSession["script"]       = /*--inicio view*/view('app_inventory_item/public_edit_script', $dataView); //--finview
+            $dataSession["footer"]       = "";
+            return view("core_masterpage/default_masterpage_public", $dataSession);
+           
+
+        } catch (\Exception $ex) {
+            
+            $data["session"]   = $dataSession;
+            $data["exception"] = $ex;
+            $data["urlLogin"]  = base_url();
+            $data["urlIndex"]  = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . "index";
+            $data["urlBack"]   = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+            $resultView        = view("core_template/email_error_general", $data);
+
+            return $resultView;
+        }
+    }
 
     public function delete()
     {
@@ -1459,7 +1518,28 @@ class app_inventory_item extends _BaseController
                     $db->transRollback();
                 }
             }
-        } catch (\Exception $ex) {
+			if ($method == "edit_public")
+			{
+				//Redireccionar datos
+				$companyID 								= APP_COMPANY;
+				$itemID    								= /*inicio get post*/$this->request->getPost("txtItemID");
+				$dataSession							= $this->core_web_authentication->get_UserBy_PasswordAndNickname(APP_USERDEFAULT_VALUE, APP_PASSWORDEFAULT_VALUE);
+				$objNewItem["realStateDateExpired"]   	= /*inicio get post*/$this->request->getPost("txtRealStateDateExpired");
+				
+				$row_affected 					= $this->Item_Model->update_app_posme($companyID, $itemID, $objNewItem);
+				$objLog["companyID"]			= APP_COMPANY;
+				$objLog["branchID"]				= $dataSession["user"]->branchID;
+				$objLog["loginID"]				= $dataSession["user"]->userID;
+				$objLog["token"]				= $dataSession["user"]->userID;
+				$objLog["procedureName"]		= "app_inventory_item/edit_public";
+				$objLog["description"]			= helper_getAlertThemeSneatBoostrap5_1("Resultado","success","Registro actualizado");
+				$objLog["code"]					= 1;
+				$objLog["createdOn"]			= helper_getDateTime();
+				$logID 							= $this->Log_Model->insert_app_posme($objLog);
+				$this->response->redirect(base_url() . "/" . 'app_inventory_item/editPublic/companyID/' . $companyID . "/itemID/" . $itemID."/message/".$logID);
+			}
+		
+		} catch (\Exception $ex) {
 
             if ($method == "new" || $method == "edit") {
                 if (empty($dataSession)) {
