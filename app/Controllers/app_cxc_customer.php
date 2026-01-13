@@ -1544,682 +1544,7 @@ class app_cxc_customer extends _BaseController {
         }
     }
 	
-	public function insertAndUpdateElementLiveConnectWebHook()
-	{
-		// JSON crudo (string completo)
-		$rawJson = $this->request->getBody();
-
-		// Ejemplo: guardarlo en log o BD
-		//{"chat":{"IPs":"186.77.207.249","browser":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","contacto":{"default_target":0,"default_target_id":0,"destacado":0,"etiquetas":{"0":0},"extra1":"","extra2":"","id":"YSZ0A13040785761QQPI0","isbot":0,"nombre":"Nuevo Visitante","pais":"-"},"destacado":0,"etiquetas":{"0":0},"fecha":1768149772,"fecha_ini":1768149773,"id":"ADKAY50362847409VZHU0","id_canal":60644,"id_grupo":33674,"id_usuario":59221,"isbot":1,"presence":{"status":"away","timestamp":1768149776},"traceID":"Root=1-6963d30c-308dc5150b41c394527f5d79","usuarios":{"59221":{"assign":true,"avatar":"","bot_data":{"id":59221,"id_flowbot":16986,"id_usuario":59221,"name":"flowbot"},"fecha":1768149773,"id":59221,"isbot":1,"noleidos":5,"nombre":"*BOT* Flowbot: Bot Atencion Virtual"}}},"inputs":{"id":"YSZ0A13040785761QQPI0","id_contacto":null,"avatar":null,"nombre":"Nuevo Visitante","apellidos":null,"email":null,"correo":null,"celular":null,"genero":null,"pais":"-","ciudad":null,"direccion":null,"ubicacion":null,"tipo_documento":null,"num_documento":null,"fecha_cumple":null,"dinamicos":null,"habeasdata":null,"destacado":0,"extra1":"","extra2":"","valor":null,"etiquetas":[0],"default_target":0,"default_target_id":0,"isbot":0,"mensaje_inicial":"Hola!"}}
-		//wg-$rawJson = '
-		//wg-		{
-		//wg-			"chat":
-		//wg-			{
-		//wg-				"IPs":"186.77.207.249",
-		//wg-				"browser":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
-		//wg-				"contacto":
-		//wg-					{
-		//wg-						"default_target":0,
-		//wg-						"default_target_id":0,
-		//wg-						"destacado":0,
-		//wg-						"etiquetas":{"0":0},
-		//wg-						"extra1":"","extra2":"",
-		//wg-						"id":"YSZ0A13040785761QQPI0",
-		//wg-						"isbot":0,
-		//wg-						"nombre":"Nuevo Visitante","pais":"-"
-		//wg-					},
-		//wg-				"destacado":0,
-		//wg-				"etiquetas":{"0":0},
-		//wg-				"fecha":1768149772,"fecha_ini":1768149773,"id":"ADKAY50362847409VZHU0",
-		//wg-				"id_canal":60644,"id_grupo":33674,"id_usuario":59221,"isbot":1,
-		//wg-				"presence":{"status":"away","timestamp":1768149776},
-		//wg-				"traceID":"Root=1-6963d30c-308dc5150b41c394527f5d79",
-		//wg-				"usuarios":{
-		//wg-						"59221":{
-		//wg-								"assign":true,"avatar":"",
-		//wg-								"bot_data":{"id":59221,"id_flowbot":16986,"id_usuario":59221,"name":"flowbot"},
-		//wg-								"fecha":1768149773,"id":59221,"isbot":1,"noleidos":5,
-		//wg-								"nombre":"*BOT* Flowbot: Bot Atencion Virtual"
-		//wg-						}
-		//wg-				}
-		//wg-			},
-		//wg-			"inputs":{
-		//wg-					"id":"YSZ0A13040785761QQPI0",
-		//wg-					"id_contacto":null,"avatar":null,"nombre":"Nuevo Visitante",
-		//wg-					"apellidos":null,"email":null,"correo":null,"celular":null,
-		//wg-					"genero":null,"pais":"-","ciudad":null,"direccion":null,
-		//wg-					"ubicacion":null,"tipo_documento":null,"num_documento":null,
-		//wg-					"fecha_cumple":null,"dinamicos":null,"habeasdata":null,
-		//wg-					"destacado":0,"extra1":"","extra2":"","valor":null,"etiquetas":[0],
-		//wg-					"default_target":0,"default_target_id":0,"isbot":0,"mensaje_inicial":"Hola!"
-		//wg-			}
-		//wg-		}'; 
-		log_message('error', 'Webhook RAW JSON: ' . $rawJson);	
-		$data    = json_decode($rawJson, true);
-		log_message('error', 'Webhook RAW JSON: ' . print_r($data,true));	
-		
-		echo "Request:";
-		echo print_r($data,true);
-
-		if (!$data) {
-			return $this->response->setJSON([
-				'success' => false,
-				'message' => 'JSON inválido'
-			])->setStatusCode(400);
-		}
-
-		// Ejemplo de lectura segura
-		/* ===============================
-		   CHAT
-		================================ */
-		$chat                 = $data['chat'] ?? [];
-		$chat_ip              = $chat['IPs'] ?? '';
-		$chat_browser         = $chat['browser'] ?? '';
-		$chat_fecha           = $chat['fecha'] ?? null;
-		$chat_fecha_ini       = $chat['fecha_ini'] ?? null;
-		$chat_id              = $chat['id'] ?? '';
-		$chat_id_canal        = $chat['id_canal'] ?? null;
-		$chat_id_grupo        = $chat['id_grupo'] ?? null;
-		$chat_id_usuario      = $chat['id_usuario'] ?? null;
-		$chat_isbot           = $chat['isbot'] ?? 0;
-		$chat_trace_id        = $chat['traceID'] ?? '';
-		$chat_destacado       = $chat['destacado'] ?? 0;
-
-		/* ===============================
-		   CONTACTO (dentro de chat)
-		================================ */
-		$contacto             = $chat['contacto'] ?? [];
-		$contacto_id          = $contacto['id'] ?? '';
-		$contacto_nombre      = $contacto['nombre'] ?? '';
-		$contacto_pais        = $contacto['pais'] ?? '';
-		$contacto_isbot       = $contacto['isbot'] ?? 0;
-		$contacto_destacado   = $contacto['destacado'] ?? 0;
-		$contacto_extra1      = $contacto['extra1'] ?? '';
-		$contacto_extra2      = $contacto['extra2'] ?? '';
-		$contacto_default_tg  = $contacto['default_target'] ?? 0;
-		$contacto_default_tg_id = $contacto['default_target_id'] ?? 0;
-		$contacto_etiquetas   = $contacto['etiquetas'] ?? [];
-
-		/* ===============================
-		   PRESENCE
-		================================ */
-		$presence             = $chat['presence'] ?? [];
-		$presence_status      = $presence['status'] ?? '';
-		$presence_timestamp   = $presence['timestamp'] ?? null;
-
-		/* ===============================
-		   USUARIOS
-		================================ */
-		$usuarios             = $chat['usuarios'] ?? [];
-		$usuarios_data = [];
-		foreach ($usuarios as $usuario_id => $usuario) {
-
-			$usuarios_data[$usuario_id] = [
-				'id'          => $usuario['id'] ?? null,
-				'nombre'      => $usuario['nombre'] ?? '',
-				'isbot'       => $usuario['isbot'] ?? 0,
-				'noleidos'    => $usuario['noleidos'] ?? 0,
-				'assign'      => $usuario['assign'] ?? false,
-				'avatar'      => $usuario['avatar'] ?? '',
-				'fecha'       => $usuario['fecha'] ?? null,
-
-				// Bot data
-				'bot_id'      => $usuario['bot_data']['id'] ?? null,
-				'flowbot_id'  => $usuario['bot_data']['id_flowbot'] ?? null,
-				'bot_nombre'  => $usuario['bot_data']['name'] ?? '',
-			];
-		}
-
-		/* ===============================
-		   INPUTS (visitante)
-		================================ */
-		$inputs                = $data['inputs'] ?? [];
-		$input_id              = $inputs['id'] ?? '';
-		$input_id_contacto     = $inputs['id_contacto'] ?? null;
-		$input_nombre          = $inputs['nombre'] ?? '';
-		$input_apellidos       = $inputs['apellidos'] ?? '';
-		$input_email           = $inputs['email'] ?? '';
-		$input_correo          = $inputs['correo'] ?? '';
-		$input_celular         = $inputs['celular'] ?? '';
-		$input_genero          = $inputs['genero'] ?? '';
-		$input_pais            = $inputs['pais'] ?? '';
-		$input_ciudad          = $inputs['ciudad'] ?? '';
-		$input_direccion       = $inputs['direccion'] ?? '';
-		$input_ubicacion       = $inputs['ubicacion'] ?? '';
-		$input_tipo_doc        = $inputs['tipo_documento'] ?? '';
-		$input_num_doc         = $inputs['num_documento'] ?? '';
-		$input_fecha_cumple    = $inputs['fecha_cumple'] ?? '';
-		$input_dinamicos       = $inputs['dinamicos'] ?? null;
-		$input_habeasdata      = $inputs['habeasdata'] ?? null;
-		$input_destacado       = $inputs['destacado'] ?? 0;
-		$input_extra1          = $inputs['extra1'] ?? '';
-		$input_extra2          = $inputs['extra2'] ?? '';
-		$input_valor           = $inputs['valor'] ?? null;
-		$input_etiquetas       = $inputs['etiquetas'] ?? [];
-		$input_default_tg      = $inputs['default_target'] ?? 0;
-		$input_default_tg_id   = $inputs['default_target_id'] ?? 0;
-		$input_isbot           = $inputs['isbot'] ?? 0;
-		$input_mensaje_inicial = $inputs['mensaje_inicial'] ?? '';
-
-
-		//Datos Minimo
-		//Nombre  (NOMBRE)
-		//Telefono (88888888)
-		//Id de la propiedad de interes   (NUMERO)
-		//Id de encutra 24  (NUMERO)
-		//Estilo de propiedad (CASA,TERRENO,COMERCIAL)
-		//Interes del cliente (RENTA,VENTA)
-		//Nombre del agente
-
-		// Guardar en BD, procesar lógica, etc...
-		log_message('error', 'Nombre: '.$contacto_nombre);
-		log_message('error', 'Webhook RAW JSON: Success');
-		
-		echo "Response:";
-		return $this->response->setJSON([
-			'success' => true
-		]);
-		
-		try
-		{
-			//Ingresar al cliente
-			$dataSession 				= $this->core_web_authentication->get_UserBy_PasswordAndNickname(APP_USERDEFAULT_VALUE, APP_PASSWORDEFAULT_VALUE);
-			$objComponentCustomer		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
-			if(!$objComponentCustomer)
-				throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
-			
-			$objDataSet								= null;
-			$companyID 								= $dataSession["user"]->companyID;
-			$objEntity["companyID"] 				= $dataSession["user"]->companyID;
-			$objEntity["branchID"]					= $dataSession["user"]->branchID;
-			$branchID 								= $dataSession["user"]->branchID;
-			$roleID 								= $dataSession["role"]->roleID;
-			$this->core_web_auditoria->setAuditCreated($objEntity,$dataSession,$this->request);
-			
-			date_default_timezone_set(APP_TIMEZONE);
-			$objCurrencyDolares						= $this->core_web_currency->getCurrencyExternal($companyID);
-			$dateOn 								= date("Y-m-d");
-			$dateOn 								= date_format(date_create($dateOn),"Y-m-d");
-			$exchangeRate 							= 0;
-			$exchangeRateTotal 						= 0;
-			$exchangeRateAmount 					= 0;
-			$db=db_connect();
-			$db->transStart();		
-			
-			$entityID 							= $this->Entity_Model->insert_app_posme($objEntity);
-			$objDataSet["entityID"] 			= $entityID;
-			$objDataSet["customerCreditLineID"]	= 0;
-			$objListComanyParameter			 	= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
-
-			$objNatural["companyID"]	= $objEntity["companyID"];
-			$objNatural["branchID"] 	= $objEntity["branchID"];
-			$objNatural["entityID"]		= $entityID;
-			$objNatural["isActive"]		= true;
-			$objNatural["firstName"]	= $contacto_nombre;
-			$objNatural["lastName"]		= $contacto_nombre;
-			$objNatural["address"]		= "";
-			$objNatural["statusID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_STATUS_CIVIL_ID_DEFAULT")->value;
-			$objNatural["profesionID"]	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_PROFESION_ID_DEFAULT")->value;
-			$result 					= $this->Natural_Model->insert_app_posme($objNatural);
-
-			$objLegal["companyID"]		= $objEntity["companyID"];
-			$objLegal["branchID"]		= $objEntity["branchID"];
-			$objLegal["entityID"]		= $entityID;
-			$objLegal["isActive"]		= true;
-			$objLegal["comercialName"]	= $contacto_nombre;
-			$objLegal["legalName"]		= $contacto_nombre;
-			$objLegal["address"]		= "";
-			$result 					= $this->Legal_Model->insert_app_posme($objLegal);
-			
-			$paisDefault 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_PAIS_DEFAULT")->value;
-			$departamentoDefault 		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_DEPARTAMENTO_DEFAULT")->value;
-			$municipioDefault 			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_MUNICIPIO_DEFAULT")->value;
-			$plazoDefault 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_PLAZO_DEFAULT")->value;
-			$typeAmortizationDefault 	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_TYPE_AMORTIZATION")->value;
-			$frecuencyDefault 			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_FRECUENCIA_PAY_DEFAULT")->value;
-			$creditLineDefault 			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_CREDIT_LINE_DEFAULT")->value;
-			$validarCedula 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_VALIDAR_CEDULA_REPETIDA")->value;
-			$interesDefault				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_INTERES_DEFAULT")->value;
-			$dayExcludedDefault 		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_DAY_EXCLUDED_IN_CREDIT")->value;
-
-			$paisID 					= $paisDefault;
-			$departamentoId				= $departamentoDefault;
-			$municipioId				= $municipioDefault;
-
-			$objCustomer["companyID"]			= $objEntity["companyID"];
-			$objCustomer["branchID"]			= $objEntity["branchID"];
-			$objCustomer["entityID"]			= $entityID;
-			$objCustomer["customerNumber"]		= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_customer",0);
-			$objDataSet["customerNumber"] 		= $objCustomer["customerNumber"];
-			$objCustomer["identificationType"]	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_IDENTIFICATION_TYPE_DEFAULT")->value;
-			$objCustomer["identification"]		= $input_celular;
-
-			//validar que se permita la omision de la cedula
-			if(strcmp($validarCedula,"true") == 0)
-			{
-				//Validar que ya existe el cliente
-				$objCustomerOld					= $this->Customer_Model->get_rowByIdentification($companyID,$objCustomer["identification"]);
-				if($objCustomerOld)
-				{
-					throw new \Exception("Error identificacion del cliente ya existe.");
-				}
-			}
-			
-			$objCustomer["countryID"]			= $paisID;
-			$objCustomer["stateID"]				= $departamentoId;
-			$objCustomer["cityID"]				= $municipioId;
-			$objCustomer["location"]			= $input_ubicacion;
-			$objCustomer["address"]				= "";
-			$objCustomer["currencyID"]			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVENTORY_CURRENCY_ID_DEFAULT")->value;
-			$objCustomer["clasificationID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CLASIFICATION_ID_DEFAULT")->value;
-			$objCustomer["categoryID"]			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CATEGORY_ID_DEFAULT")->value;
-			$objCustomer["subCategoryID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_SUBCATEGORY_ID_DEFAULT")->value;
-			$objCustomer["customerTypeID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CUSTOMER_TYPE_ID_DEFAULT")->value;
-			$objCustomer["birthDate"]			= date("Y-m-d");
-			$objCustomer["dateContract"]		= date("Y-m-d");
-			$objCustomer["statusID"]			= $this->core_web_workflow->getWorkflowInitStage("tb_customer","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;; //lo mismo statusid de producto solo cambiar nombre de la tabla
-			$objCustomer["typePay"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CUSTOMER_TYPE_PAY_ID_DEFAULT")->value;
-			$objCustomer["payConditionID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CUSTOMER_PAY_CONDITION_ID_DEFAULT")->value;
-			$objCustomer["sexoID"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CUSTOMER_SEX_ID_DEFAULT")->value;
-			$objCustomer["reference1"]			= "";
-			$objCustomer["reference2"]			= "";
-			$objCustomer["reference3"]			= "";
-			$objCustomer["reference4"]			= "";
-			$objCustomer["reference5"]			= "";
-			$objCustomer["balancePoint"]		= 0;
-			$objCustomer["phoneNumber"]			= $input_celular;
-			$objCustomer["typeFirm"]			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_TYPE_FIRM_ID_DEFAULT")->value;
-			$objCustomer["budget"]				= 0;
-			$objCustomer["isActive"]			= true;
-			$objCustomer["entityContactID"]		= 0;
-			$objCustomer["formContactID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_FORM_CONTACT_ID_DEFAULT")->value;
-			$objCustomer["allowWhatsappPromotions"]		= 0;
-			$objCustomer["allowWhatsappCollection"]		= 0;
-			
-			$this->core_web_auditoria->setAuditCreated($objCustomer,$dataSession,$this->request);
-			$result 							= $this->Customer_Model->insert_app_posme($objCustomer);
-			
-			//Ingresar registro en el lector biometrico
-			$validateBiometric = $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_USE_BIOMETRIC");
-			if(strcmp(strtolower($validateBiometric->value), "true") == 0)
-			{	
-				$dataUser["id"]							= $entityID;
-				$dataUser["name"]						= "buscar en otra base";
-				$dataUser["email"]						= "buscar en otra base";
-				$dataUser["email_verified_at"]			= "0000-00-00 00:00:00";
-				$dataUser["password"]					= "buscar en otra base";
-				$dataUser["remember_token"]				= "buscar en otra base";
-				$dataUser["created_at"]					= "0000-00-00 00:00:00";
-				$dataUser["updated_at"]					= "0000-00-00 00:00:00";
-				$dataUser["image"]						= "";
-				$resultUser 							= $this->Biometric_User_Model->delete_app_posme($dataUser["id"]);
-				$resultUser 							= $this->Biometric_User_Model->insert_app_posme($dataUser);
-			}
-
-			//Ingresar Cuenta
-			$objEntityAccount["companyID"]			= $objEntity["companyID"];
-			$objEntityAccount["componentID"]		= $objComponentCustomer->componentID;
-			$objEntityAccount["componentItemID"]	= $entityID;
-			$objEntityAccount["name"]				= "";
-			$objEntityAccount["description"]		= "";
-			$objEntityAccount["accountTypeID"]		= "0";
-			$objEntityAccount["currencyID"]			= "0";
-			$objEntityAccount["classID"]			= "0";
-			$objEntityAccount["balance"]			= "0";
-			$objEntityAccount["creditLimit"]		= "0";
-			$objEntityAccount["maxCredit"]			= "0";
-			$objEntityAccount["debitLimit"]			= "0";
-			$objEntityAccount["maxDebit"]			= "0";
-			$objEntityAccount["statusID"]			= "0";
-
-			$objEntityAccount["accountID"]			= "0";
-			$objEntityAccount["statusID"]			= "0";
-			$objEntityAccount["isActive"]			= 1;
-			$this->core_web_auditoria->setAuditCreated($objEntityAccount,$dataSession,$this->request);
-			$this->Entity_Account_Model->insert_app_posme($objEntityAccount);
-
-			
-			//Ingresar Customer Credit
-			$objCustomerCredit["companyID"] 		= $objEntity["companyID"];
-			$objCustomerCredit["branchID"] 			= $objEntity["branchID"];
-			$objCustomerCredit["entityID"] 			= $entityID;
-			$objCustomerCredit["limitCreditDol"] 	= 900000;
-			$objCustomerCredit["balanceDol"] 		= $objCustomerCredit["limitCreditDol"];
-			$objCustomerCredit["incomeDol"] 		= 5000;
-			$this->Customer_Credit_Model->insert_app_posme($objCustomerCredit);
-
-			//Lineas de Creditos
-			$arrayListCustomerCreditLineID	= array();
-			$arrayListCreditLineID			= array();
-			$arrayListCreditCurrencyID		= array();
-			$arrayListCreditStatusID		= array();
-			$arrayListCreditInterestYear	= array();
-			$arrayListCreditInterestPay		= array();
-			$arrayListCreditTotalPay		= array();
-			$arrayListCreditTotalDefeated	= array();
-			$arrayListCreditDateOpen		= array();
-			$arrayListCreditPeriodPay		= array();
-			$arrayListCreditDateLastPay		= array();
-			$arrayListCreditTerm			= array();
-			$arrayListCreditNote			= array();
-			$arrayListCreditLine			= array();
-			$arrayListCreditNumber			= array();
-			$arrayListCreditLimit			= array();
-			$arrayListCreditBalance			= array();
-			$arrayListCreditStatus			= array();
-			$arrayListTypeAmortization		= array();
-			$arrayListDayExcluded			= array();
-			$limitCreditLine 				= 0;
-
-
-
-
-			if(empty($arrayListCustomerCreditLineID))
-			{
-				$arrayListCustomerCreditLineID[0]	= 1;
-				$arrayListCreditLineID[0] 			= $creditLineDefault;
-				$arrayListCreditCurrencyID[0]		= $this->core_web_currency->getCurrencyDefault($companyID)->currencyID;
-				$arrayListCreditLimit[0]			= 300000;
-				$arrayListCreditInterestYear[0]		= $interesDefault;
-				$arrayListCreditInterestPay[0]		= 0;
-				$arrayListCreditTotalPay[0]			= 0;
-				$arrayListCreditTotalDefeated[0]	= 0;
-				$arrayListCreditPeriodPay[0]		= $frecuencyDefault;
-				$arrayListCreditTerm[0]				= $plazoDefault;
-				$arrayListCreditNote[0]				= "-";
-				$arrayListTypeAmortization[0]		= $typeAmortizationDefault;
-				$arrayListDayExcluded[0]			= $dayExcludedDefault;				
-				$arrayListCreditStatusID[0]			= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_line","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
-
-			}
-			
-			
-
-			if(!empty($arrayListCustomerCreditLineID))
-			{
-				foreach($arrayListCustomerCreditLineID as $key => $value)
-				{
-					$objCustomerCreditLine["companyID"]		= $objEntity["companyID"];
-					$objCustomerCreditLine["branchID"]		= $objEntity["branchID"];
-					$objCustomerCreditLine["entityID"]		= $entityID;
-					$objCustomerCreditLine["creditLineID"]	= $arrayListCreditLineID[$key];
-					$objCustomerCreditLine["accountNumber"]	= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_customer_credit_line",0);
-					$objCustomerCreditLine["currencyID"]	= $arrayListCreditCurrencyID[$key];
-					$objCustomerCreditLine["limitCredit"]	= helper_StringToNumber($arrayListCreditLimit[$key]);
-					$objCustomerCreditLine["balance"]		= helper_StringToNumber($arrayListCreditLimit[$key]);
-					$objCustomerCreditLine["interestYear"]	= helper_StringToNumber($arrayListCreditInterestYear[$key]);
-					$objCustomerCreditLine["interestPay"]	= $arrayListCreditInterestPay[$key];
-					$objCustomerCreditLine["totalPay"]		= $arrayListCreditTotalPay[$key];
-					$objCustomerCreditLine["totalDefeated"]	= $arrayListCreditTotalDefeated[$key];
-					$objCustomerCreditLine["dateOpen"]		= date("Y-m-d");
-					$objCustomerCreditLine["periodPay"]		= $arrayListCreditPeriodPay[$key];
-					$objCustomerCreditLine["dateLastPay"]	= date("Y-m-d");
-					$objCustomerCreditLine["term"]			= helper_StringToNumber($arrayListCreditTerm[$key]);
-					$objCustomerCreditLine["note"]			= $arrayListCreditNote[$key];
-					$objCustomerCreditLine["statusID"]		= $arrayListCreditStatusID[$key];
-					$objCustomerCreditLine["isActive"]		= 1;
-					$objCustomerCreditLine["typeAmortization"]	= $arrayListTypeAmortization[$key];
-					$objCustomerCreditLine["dayExcluded"]		= $arrayListDayExcluded[$key];
-					$limitCreditLine 							= $limitCreditLine + $objCustomerCreditLine["limitCredit"];
-					$exchangeRate 								= $this->core_web_currency->getRatio($companyID,$dateOn,1,$objCustomerCreditLine["currencyID"],$objCurrencyDolares->currencyID);//cordobas a dolares, o dolares a dolares.
-					$exchangeRateAmount							= $objCustomerCreditLine["limitCredit"];
-					$customerCreditLineID 						= $this->Customer_Credit_Line_Model->insert_app_posme($objCustomerCreditLine);
-					$objDataSet["customerCreditLineID"]			= $customerCreditLineID;
-
-
-
-
-					//sumar los limites en dolares
-					if($exchangeRate == 1)
-						$exchangeRateTotal = $exchangeRateTotal + $exchangeRateAmount;
-					//sumar los limite en cordoba
-					else
-						$exchangeRateTotal = $exchangeRateTotal + ($exchangeRateAmount / $exchangeRate);
-
-
-
-				}
-			}
-
-
-			//Validar Limite de Credito
-			if($exchangeRateTotal > $objCustomerCredit["limitCreditDol"])
-				throw new \Exception("LINEAS DE CREDITOS MAL CONFIGURADAS LÍMITE EXCEDIDO");
-			
-			
-			//Asociar el cliente al colaborador
-			$objUserAdmin					=  $this->User_Model->get_rowByRoleAdmin($dataSession["user"]->companyID);			
-			if($objUserAdmin)
-			{
-				$objListEmployerID 		= array_map(function($i) { return $i->employeeID; }, $objUserAdmin);
-				$objListEmployerID[] 	= $dataSession["user"]->employeeID;
-				$objListEmployerID 		= array_unique($objListEmployerID);
-				
-				foreach ($objListEmployerID as $employerIDT)
-				{
-					$dataRelationShip				= NULL;
-					$dataRelationShip["employeeID"]	= $employerIDT;
-					$dataRelationShip["customerID"]	= $entityID;
-					$dataRelationShip["isActive"]	= 1;
-					$dataRelationShip["startOn"]	= date("Y-m-d");
-					$dataRelationShip["endOn"]		= date("Y-m-d");
-					$this->Relationship_Model->insert_app_posme($dataRelationShip);					
-				}
-			}
-			
-			
-			//Crear la Carpeta para almacenar los Archivos del Cliente
-			$pathfile = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentCustomer->componentID."/component_item_".$entityID;
-
-			if (!file_exists($pathfile))
-			{
-				mkdir($pathfile, 0700,true);
-			}
-
-
-			
-			if($db->transStatus() !== false)
-			{
-				log_message('error', 'Webhook RAW JSON: Success');
-				$db->transCommit();
-				return $this->response->setJSON([
-					'success' => true
-				]);
-				
-			}
-			else{
-				log_message('error', 'Webhook RAW JSON: Error');
-				$db->transRollback();
-				return $this->response->setJSON([
-					'success' => true,
-					'message' => "",   		// mensaje del error
-					'line'    => "0",      	// línea donde ocurrió
-					'file'    => ""       	// archivo (opcional pero útil)
-				]);
-				
-			}
-
-		}
-		catch(\Exception $ex)
-		{
-			return $this->response->setJSON([
-				'success' => false,
-				'message' => $ex->getMessage(),   // mensaje del error
-				'line'    => $ex->getLine(),      // línea donde ocurrió
-				'file'    => $ex->getFile()       // archivo (opcional pero útil)
-			])->setStatusCode(400);
-		}
-		
-	}
-	public function insertAndUpdateElementLiveConnectReceiptWhatsappWebHook()
-	{
-		// JSON crudo (string completo)
-		$rawJson = $this->request->getBody();
-		$rawJson = '{"type":"chatAdd","payload":{"id_conversacion":"LCWAP|361|50587125827C","id_canal":361,"mensaje_inicial":"Testing prueba","ingreso":1768256052,"contacto":{"id":26108813,"nombre":"posMe"},"usuario_autoasignado":{"id":59177,"nombre":"Santa Lucia Real Estate"}}}';
-		log_message('error', 'Webhook RAW JSON: ' . $rawJson);	
-		$data    = json_decode($rawJson, true);
-		log_message('error', 'Webhook RAW JSON: ' . print_r($data,true));	
-		
-		echo "Request:";
-		echo print_r($data,true);
-
-		if (!$data) {
-			return $this->response->setJSON([
-				'success' => false,
-				'message' => 'JSON inválido'
-			])->setStatusCode(400);
-		}
 	
-	
-		/* ===============================
-		   TYPE
-		================================ */
-		$type 		= $data['type'] ?? '';
-
-		/* ===============================
-		   PAYLOAD
-		================================ */
-		$payload 	= $data['payload'] ?? [];
-
-		/* ===============================
-		   DATOS DEL CHAT
-		================================ */
-		$id_conversacion  = $payload['id_conversacion']  ?? '';
-		$id_canal         = $payload['id_canal']         ?? 0;
-		$mensaje_inicial  = $payload['mensaje_inicial']  ?? '';
-		$ingreso          = $payload['ingreso']          ?? 0;
-
-		/* ===============================
-		   CONTACTO
-		================================ */
-		$contacto 			= $payload['contacto'] ?? [];
-		$contacto_id     	= $contacto['id']     ?? 0;
-		$contacto_nombre 	= $contacto['nombre'] ?? '';
-
-
-		/* ===============================
-		   USUARIO AUTOASIGNADO
-		================================ */
-		$usuario_autoasignado 	= $payload['usuario_autoasignado'] ?? [];
-		$usuario_id     		= $usuario_autoasignado['id']     ?? 0;
-		$usuario_nombre 		= $usuario_autoasignado['nombre'] ?? '';
-
-
-		/* ===============================
-		   CAST DE SEGURIDAD
-		================================ */
-		$id_canal      = (int)$id_canal;
-		$ingreso       = (int)$ingreso;
-		$contacto_id   = (int)$contacto_id;
-		$usuario_id    = (int)$usuario_id;
-
-		
-		//2024-07-22
-        //api token: https://api.liveconnect.chat/prod/account/token
-        $Parameter_Model 			= new Parameter_Model();
-        $Company_Parameter_Model 	= new Company_Parameter_Model();
-
-        $objPWhatsapPrivatekey		= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
-        $objPWhatsapPrivatekeyId	= $objPWhatsapPrivatekey->parameterID;
-        $objPWhatsapPrivatekey		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPrivatekeyId);
-
-        $objPWhatsapCkey		= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
-        $objPWhatsapCkeyId		= $objPWhatsapCkey->parameterID;
-        $objPWhatsapCkey		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapCkeyId);
-
-        $objPWhatsapUrlTokenMessage			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
-        $objPWhatsapUrlTokenMessageId 		= $objPWhatsapUrlTokenMessage->parameterID;
-        $objCP_WhatsapUrlTokenMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlTokenMessageId);
-
-        $objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
-        $objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
-        $objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-
-        //id canal
-        $objPWhatsapIdCanal		= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION_PARAMETERF1");
-        $objPWhatsapPrivatekeyId	= $objPWhatsapIdCanal->parameterID;
-        $objPWhatsapIdCanal		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPrivatekeyId);
-
-        $curl = curl_init();
-
-        curl_setopt_array($curl, [
-            CURLOPT_URL => $objCP_WhatsapUrlTokenMessage->value,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => json_encode([
-                'cKey' => $objPWhatsapCkey->value,
-                'privateKey' => $objPWhatsapPrivatekey->value
-            ]),
-            CURLOPT_HTTPHEADER => [
-                "Accept: application/json, application/xml",
-                "Content-Type: application/json"
-            ],
-        ]);
-
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-
-        curl_close($curl);
-
-        if ($err) {
-            return "cURL Error #:" . $err;
-        }
-        //return $response;
-        $response_data 	= json_decode($response, true);
-
-        if($response_data['status'] ==1)
-        {
-            $token = $response_data['PageGearToken'];
-
-            $curl = curl_init();
-
-            curl_setopt_array($curl, [
-                CURLOPT_URL => "https://api.liveconnect.chat/prod/direct/wa/sendFile",
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => "",
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 30,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => "POST",
-                CURLOPT_POSTFIELDS => json_encode([
-                    'id_canal' => $objPWhatsapIdCanal->value,
-                    'numero'=>$phoneDestino,                    
-					"url"=> $urlImage,
-					"nombre"=> $nameImage,
-				    "extension"=> $extImage
-  
-                ]),
-                CURLOPT_HTTPHEADER => [
-                    "Accept: application/json",
-                    "Content-Type: application/json",
-                    "PageGearToken: ".$token
-                ],
-            ]);
-
-            $response = curl_exec($curl);
-            $err = curl_error($curl);
-
-            curl_close($curl);
-
-            if ($err) {
-                return "cURL Error #:" . $err;
-            } else {
-                $response_data 	= json_decode($response, true);
-                return $response_data['status_message'];
-            }
-        }
-        return "";
-		
-		return $this->response->setJSON([
-			'success' => true,
-			'message'    => 'JSON valido'
-		]);
-		
-	}
 
 	function save($mode="",$dataSession=null){
 			$mode = helper_SegmentsByIndex($this->uri->getSegments(),1,$mode);	
@@ -2862,6 +2187,851 @@ class app_cxc_customer extends _BaseController {
 		    
 		    return $resultView;
 		}	
+	}
+	public function WebHookInsertAndUpdateElementLiveConnectWebHook()
+	{
+		// JSON crudo (string completo)
+		$rawJson = $this->request->getBody();
+
+		// Ejemplo: guardarlo en log o BD
+		//{"chat":{"IPs":"186.77.207.249","browser":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","contacto":{"default_target":0,"default_target_id":0,"destacado":0,"etiquetas":{"0":0},"extra1":"","extra2":"","id":"YSZ0A13040785761QQPI0","isbot":0,"nombre":"Nuevo Visitante","pais":"-"},"destacado":0,"etiquetas":{"0":0},"fecha":1768149772,"fecha_ini":1768149773,"id":"ADKAY50362847409VZHU0","id_canal":60644,"id_grupo":33674,"id_usuario":59221,"isbot":1,"presence":{"status":"away","timestamp":1768149776},"traceID":"Root=1-6963d30c-308dc5150b41c394527f5d79","usuarios":{"59221":{"assign":true,"avatar":"","bot_data":{"id":59221,"id_flowbot":16986,"id_usuario":59221,"name":"flowbot"},"fecha":1768149773,"id":59221,"isbot":1,"noleidos":5,"nombre":"*BOT* Flowbot: Bot Atencion Virtual"}}},"inputs":{"id":"YSZ0A13040785761QQPI0","id_contacto":null,"avatar":null,"nombre":"Nuevo Visitante","apellidos":null,"email":null,"correo":null,"celular":null,"genero":null,"pais":"-","ciudad":null,"direccion":null,"ubicacion":null,"tipo_documento":null,"num_documento":null,"fecha_cumple":null,"dinamicos":null,"habeasdata":null,"destacado":0,"extra1":"","extra2":"","valor":null,"etiquetas":[0],"default_target":0,"default_target_id":0,"isbot":0,"mensaje_inicial":"Hola!"}}
+		//wg-$rawJson = '
+		//wg-		{
+		//wg-			"chat":
+		//wg-			{
+		//wg-				"IPs":"186.77.207.249",
+		//wg-				"browser":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+		//wg-				"contacto":
+		//wg-					{
+		//wg-						"default_target":0,
+		//wg-						"default_target_id":0,
+		//wg-						"destacado":0,
+		//wg-						"etiquetas":{"0":0},
+		//wg-						"extra1":"","extra2":"",
+		//wg-						"id":"YSZ0A13040785761QQPI0",
+		//wg-						"isbot":0,
+		//wg-						"nombre":"Nuevo Visitante","pais":"-"
+		//wg-					},
+		//wg-				"destacado":0,
+		//wg-				"etiquetas":{"0":0},
+		//wg-				"fecha":1768149772,"fecha_ini":1768149773,"id":"ADKAY50362847409VZHU0",
+		//wg-				"id_canal":60644,"id_grupo":33674,"id_usuario":59221,"isbot":1,
+		//wg-				"presence":{"status":"away","timestamp":1768149776},
+		//wg-				"traceID":"Root=1-6963d30c-308dc5150b41c394527f5d79",
+		//wg-				"usuarios":{
+		//wg-						"59221":{
+		//wg-								"assign":true,"avatar":"",
+		//wg-								"bot_data":{"id":59221,"id_flowbot":16986,"id_usuario":59221,"name":"flowbot"},
+		//wg-								"fecha":1768149773,"id":59221,"isbot":1,"noleidos":5,
+		//wg-								"nombre":"*BOT* Flowbot: Bot Atencion Virtual"
+		//wg-						}
+		//wg-				}
+		//wg-			},
+		//wg-			"inputs":{
+		//wg-					"id":"YSZ0A13040785761QQPI0",
+		//wg-					"id_contacto":null,"avatar":null,"nombre":"Nuevo Visitante",
+		//wg-					"apellidos":null,"email":null,"correo":null,"celular":null,
+		//wg-					"genero":null,"pais":"-","ciudad":null,"direccion":null,
+		//wg-					"ubicacion":null,"tipo_documento":null,"num_documento":null,
+		//wg-					"fecha_cumple":null,"dinamicos":null,"habeasdata":null,
+		//wg-					"destacado":0,"extra1":"","extra2":"","valor":null,"etiquetas":[0],
+		//wg-					"default_target":0,"default_target_id":0,"isbot":0,"mensaje_inicial":"Hola!"
+		//wg-			}
+		//wg-		}'; 
+		log_message('error', 'Webhook RAW JSON: ' . $rawJson);	
+		$data    = json_decode($rawJson, true);
+		log_message('error', 'Webhook RAW JSON: ' . print_r($data,true));	
+		
+		echo "Request:";
+		echo print_r($data,true);
+
+		if (!$data) {
+			return $this->response->setJSON([
+				'success' => false,
+				'message' => 'JSON inválido'
+			])->setStatusCode(400);
+		}
+
+		// Ejemplo de lectura segura
+		/* ===============================
+		   CHAT
+		================================ */
+		$chat                 = $data['chat'] ?? [];
+		$chat_ip              = $chat['IPs'] ?? '';
+		$chat_browser         = $chat['browser'] ?? '';
+		$chat_fecha           = $chat['fecha'] ?? null;
+		$chat_fecha_ini       = $chat['fecha_ini'] ?? null;
+		$chat_id              = $chat['id'] ?? '';
+		$chat_id_canal        = $chat['id_canal'] ?? null;
+		$chat_id_grupo        = $chat['id_grupo'] ?? null;
+		$chat_id_usuario      = $chat['id_usuario'] ?? null;
+		$chat_isbot           = $chat['isbot'] ?? 0;
+		$chat_trace_id        = $chat['traceID'] ?? '';
+		$chat_destacado       = $chat['destacado'] ?? 0;
+
+		/* ===============================
+		   CONTACTO (dentro de chat)
+		================================ */
+		$contacto             = $chat['contacto'] ?? [];
+		$contacto_id          = $contacto['id'] ?? '';
+		$contacto_nombre      = $contacto['nombre'] ?? '';
+		$contacto_pais        = $contacto['pais'] ?? '';
+		$contacto_isbot       = $contacto['isbot'] ?? 0;
+		$contacto_destacado   = $contacto['destacado'] ?? 0;
+		$contacto_extra1      = $contacto['extra1'] ?? '';
+		$contacto_extra2      = $contacto['extra2'] ?? '';
+		$contacto_default_tg  = $contacto['default_target'] ?? 0;
+		$contacto_default_tg_id = $contacto['default_target_id'] ?? 0;
+		$contacto_etiquetas   = $contacto['etiquetas'] ?? [];
+
+		/* ===============================
+		   PRESENCE
+		================================ */
+		$presence             = $chat['presence'] ?? [];
+		$presence_status      = $presence['status'] ?? '';
+		$presence_timestamp   = $presence['timestamp'] ?? null;
+
+		/* ===============================
+		   USUARIOS
+		================================ */
+		$usuarios             = $chat['usuarios'] ?? [];
+		$usuarios_data = [];
+		foreach ($usuarios as $usuario_id => $usuario) {
+
+			$usuarios_data[$usuario_id] = [
+				'id'          => $usuario['id'] ?? null,
+				'nombre'      => $usuario['nombre'] ?? '',
+				'isbot'       => $usuario['isbot'] ?? 0,
+				'noleidos'    => $usuario['noleidos'] ?? 0,
+				'assign'      => $usuario['assign'] ?? false,
+				'avatar'      => $usuario['avatar'] ?? '',
+				'fecha'       => $usuario['fecha'] ?? null,
+
+				// Bot data
+				'bot_id'      => $usuario['bot_data']['id'] ?? null,
+				'flowbot_id'  => $usuario['bot_data']['id_flowbot'] ?? null,
+				'bot_nombre'  => $usuario['bot_data']['name'] ?? '',
+			];
+		}
+
+		/* ===============================
+		   INPUTS (visitante)
+		================================ */
+		$inputs                = $data['inputs'] ?? [];
+		$input_id              = $inputs['id'] ?? '';
+		$input_id_contacto     = $inputs['id_contacto'] ?? null;
+		$input_nombre          = $inputs['nombre'] ?? '';
+		$input_apellidos       = $inputs['apellidos'] ?? '';
+		$input_email           = $inputs['email'] ?? '';
+		$input_correo          = $inputs['correo'] ?? '';
+		$input_celular         = $inputs['celular'] ?? '';
+		$input_genero          = $inputs['genero'] ?? '';
+		$input_pais            = $inputs['pais'] ?? '';
+		$input_ciudad          = $inputs['ciudad'] ?? '';
+		$input_direccion       = $inputs['direccion'] ?? '';
+		$input_ubicacion       = $inputs['ubicacion'] ?? '';
+		$input_tipo_doc        = $inputs['tipo_documento'] ?? '';
+		$input_num_doc         = $inputs['num_documento'] ?? '';
+		$input_fecha_cumple    = $inputs['fecha_cumple'] ?? '';
+		$input_dinamicos       = $inputs['dinamicos'] ?? null;
+		$input_habeasdata      = $inputs['habeasdata'] ?? null;
+		$input_destacado       = $inputs['destacado'] ?? 0;
+		$input_extra1          = $inputs['extra1'] ?? '';
+		$input_extra2          = $inputs['extra2'] ?? '';
+		$input_valor           = $inputs['valor'] ?? null;
+		$input_etiquetas       = $inputs['etiquetas'] ?? [];
+		$input_default_tg      = $inputs['default_target'] ?? 0;
+		$input_default_tg_id   = $inputs['default_target_id'] ?? 0;
+		$input_isbot           = $inputs['isbot'] ?? 0;
+		$input_mensaje_inicial = $inputs['mensaje_inicial'] ?? '';
+
+
+		//Datos Minimo
+		//Nombre  (NOMBRE)
+		//Telefono (88888888)
+		//Id de la propiedad de interes   (NUMERO)
+		//Id de encutra 24  (NUMERO)
+		//Estilo de propiedad (CASA,TERRENO,COMERCIAL)
+		//Interes del cliente (RENTA,VENTA)
+		//Nombre del agente
+
+		// Guardar en BD, procesar lógica, etc...
+		log_message('error', 'Nombre: '.$contacto_nombre);
+		log_message('error', 'Webhook RAW JSON: Success');
+		
+		echo "Response:";
+		return $this->response->setJSON([
+			'success' => true
+		]);
+		
+		try
+		{
+			//Ingresar al cliente
+			$dataSession 				= $this->core_web_authentication->get_UserBy_PasswordAndNickname(APP_USERDEFAULT_VALUE, APP_PASSWORDEFAULT_VALUE);
+			$objComponentCustomer		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
+			if(!$objComponentCustomer)
+				throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
+			
+			$objDataSet								= null;
+			$companyID 								= $dataSession["user"]->companyID;
+			$objEntity["companyID"] 				= $dataSession["user"]->companyID;
+			$objEntity["branchID"]					= $dataSession["user"]->branchID;
+			$branchID 								= $dataSession["user"]->branchID;
+			$roleID 								= $dataSession["role"]->roleID;
+			$this->core_web_auditoria->setAuditCreated($objEntity,$dataSession,$this->request);
+			
+			date_default_timezone_set(APP_TIMEZONE);
+			$objCurrencyDolares						= $this->core_web_currency->getCurrencyExternal($companyID);
+			$dateOn 								= date("Y-m-d");
+			$dateOn 								= date_format(date_create($dateOn),"Y-m-d");
+			$exchangeRate 							= 0;
+			$exchangeRateTotal 						= 0;
+			$exchangeRateAmount 					= 0;
+			$db=db_connect();
+			$db->transStart();		
+			
+			$entityID 							= $this->Entity_Model->insert_app_posme($objEntity);
+			$objDataSet["entityID"] 			= $entityID;
+			$objDataSet["customerCreditLineID"]	= 0;
+			$objListComanyParameter			 	= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+
+			$objNatural["companyID"]	= $objEntity["companyID"];
+			$objNatural["branchID"] 	= $objEntity["branchID"];
+			$objNatural["entityID"]		= $entityID;
+			$objNatural["isActive"]		= true;
+			$objNatural["firstName"]	= $contacto_nombre;
+			$objNatural["lastName"]		= $contacto_nombre;
+			$objNatural["address"]		= "";
+			$objNatural["statusID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_STATUS_CIVIL_ID_DEFAULT")->value;
+			$objNatural["profesionID"]	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_PROFESION_ID_DEFAULT")->value;
+			$result 					= $this->Natural_Model->insert_app_posme($objNatural);
+
+			$objLegal["companyID"]		= $objEntity["companyID"];
+			$objLegal["branchID"]		= $objEntity["branchID"];
+			$objLegal["entityID"]		= $entityID;
+			$objLegal["isActive"]		= true;
+			$objLegal["comercialName"]	= $contacto_nombre;
+			$objLegal["legalName"]		= $contacto_nombre;
+			$objLegal["address"]		= "";
+			$result 					= $this->Legal_Model->insert_app_posme($objLegal);
+			
+			$paisDefault 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_PAIS_DEFAULT")->value;
+			$departamentoDefault 		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_DEPARTAMENTO_DEFAULT")->value;
+			$municipioDefault 			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_MUNICIPIO_DEFAULT")->value;
+			$plazoDefault 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_PLAZO_DEFAULT")->value;
+			$typeAmortizationDefault 	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_TYPE_AMORTIZATION")->value;
+			$frecuencyDefault 			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_FRECUENCIA_PAY_DEFAULT")->value;
+			$creditLineDefault 			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_CREDIT_LINE_DEFAULT")->value;
+			$validarCedula 				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_VALIDAR_CEDULA_REPETIDA")->value;
+			$interesDefault				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_INTERES_DEFAULT")->value;
+			$dayExcludedDefault 		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_DAY_EXCLUDED_IN_CREDIT")->value;
+
+			$paisID 					= $paisDefault;
+			$departamentoId				= $departamentoDefault;
+			$municipioId				= $municipioDefault;
+
+			$objCustomer["companyID"]			= $objEntity["companyID"];
+			$objCustomer["branchID"]			= $objEntity["branchID"];
+			$objCustomer["entityID"]			= $entityID;
+			$objCustomer["customerNumber"]		= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_customer",0);
+			$objDataSet["customerNumber"] 		= $objCustomer["customerNumber"];
+			$objCustomer["identificationType"]	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_IDENTIFICATION_TYPE_DEFAULT")->value;
+			$objCustomer["identification"]		= $input_celular;
+
+			//validar que se permita la omision de la cedula
+			if(strcmp($validarCedula,"true") == 0)
+			{
+				//Validar que ya existe el cliente
+				$objCustomerOld					= $this->Customer_Model->get_rowByIdentification($companyID,$objCustomer["identification"]);
+				if($objCustomerOld)
+				{
+					throw new \Exception("Error identificacion del cliente ya existe.");
+				}
+			}
+			
+			$objCustomer["countryID"]			= $paisID;
+			$objCustomer["stateID"]				= $departamentoId;
+			$objCustomer["cityID"]				= $municipioId;
+			$objCustomer["location"]			= $input_ubicacion;
+			$objCustomer["address"]				= "";
+			$objCustomer["currencyID"]			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVENTORY_CURRENCY_ID_DEFAULT")->value;
+			$objCustomer["clasificationID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CLASIFICATION_ID_DEFAULT")->value;
+			$objCustomer["categoryID"]			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CATEGORY_ID_DEFAULT")->value;
+			$objCustomer["subCategoryID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_SUBCATEGORY_ID_DEFAULT")->value;
+			$objCustomer["customerTypeID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CUSTOMER_TYPE_ID_DEFAULT")->value;
+			$objCustomer["birthDate"]			= date("Y-m-d");
+			$objCustomer["dateContract"]		= date("Y-m-d");
+			$objCustomer["statusID"]			= $this->core_web_workflow->getWorkflowInitStage("tb_customer","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;; //lo mismo statusid de producto solo cambiar nombre de la tabla
+			$objCustomer["typePay"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CUSTOMER_TYPE_PAY_ID_DEFAULT")->value;
+			$objCustomer["payConditionID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CUSTOMER_PAY_CONDITION_ID_DEFAULT")->value;
+			$objCustomer["sexoID"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CUSTOMER_SEX_ID_DEFAULT")->value;
+			$objCustomer["reference1"]			= "";
+			$objCustomer["reference2"]			= "";
+			$objCustomer["reference3"]			= "";
+			$objCustomer["reference4"]			= "";
+			$objCustomer["reference5"]			= "";
+			$objCustomer["balancePoint"]		= 0;
+			$objCustomer["phoneNumber"]			= $input_celular;
+			$objCustomer["typeFirm"]			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_TYPE_FIRM_ID_DEFAULT")->value;
+			$objCustomer["budget"]				= 0;
+			$objCustomer["isActive"]			= true;
+			$objCustomer["entityContactID"]		= 0;
+			$objCustomer["formContactID"]		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_FORM_CONTACT_ID_DEFAULT")->value;
+			$objCustomer["allowWhatsappPromotions"]		= 0;
+			$objCustomer["allowWhatsappCollection"]		= 0;
+			
+			$this->core_web_auditoria->setAuditCreated($objCustomer,$dataSession,$this->request);
+			$result 							= $this->Customer_Model->insert_app_posme($objCustomer);
+			
+			//Ingresar registro en el lector biometrico
+			$validateBiometric = $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "CXC_USE_BIOMETRIC");
+			if(strcmp(strtolower($validateBiometric->value), "true") == 0)
+			{	
+				$dataUser["id"]							= $entityID;
+				$dataUser["name"]						= "buscar en otra base";
+				$dataUser["email"]						= "buscar en otra base";
+				$dataUser["email_verified_at"]			= "0000-00-00 00:00:00";
+				$dataUser["password"]					= "buscar en otra base";
+				$dataUser["remember_token"]				= "buscar en otra base";
+				$dataUser["created_at"]					= "0000-00-00 00:00:00";
+				$dataUser["updated_at"]					= "0000-00-00 00:00:00";
+				$dataUser["image"]						= "";
+				$resultUser 							= $this->Biometric_User_Model->delete_app_posme($dataUser["id"]);
+				$resultUser 							= $this->Biometric_User_Model->insert_app_posme($dataUser);
+			}
+
+			//Ingresar Cuenta
+			$objEntityAccount["companyID"]			= $objEntity["companyID"];
+			$objEntityAccount["componentID"]		= $objComponentCustomer->componentID;
+			$objEntityAccount["componentItemID"]	= $entityID;
+			$objEntityAccount["name"]				= "";
+			$objEntityAccount["description"]		= "";
+			$objEntityAccount["accountTypeID"]		= "0";
+			$objEntityAccount["currencyID"]			= "0";
+			$objEntityAccount["classID"]			= "0";
+			$objEntityAccount["balance"]			= "0";
+			$objEntityAccount["creditLimit"]		= "0";
+			$objEntityAccount["maxCredit"]			= "0";
+			$objEntityAccount["debitLimit"]			= "0";
+			$objEntityAccount["maxDebit"]			= "0";
+			$objEntityAccount["statusID"]			= "0";
+
+			$objEntityAccount["accountID"]			= "0";
+			$objEntityAccount["statusID"]			= "0";
+			$objEntityAccount["isActive"]			= 1;
+			$this->core_web_auditoria->setAuditCreated($objEntityAccount,$dataSession,$this->request);
+			$this->Entity_Account_Model->insert_app_posme($objEntityAccount);
+
+			
+			//Ingresar Customer Credit
+			$objCustomerCredit["companyID"] 		= $objEntity["companyID"];
+			$objCustomerCredit["branchID"] 			= $objEntity["branchID"];
+			$objCustomerCredit["entityID"] 			= $entityID;
+			$objCustomerCredit["limitCreditDol"] 	= 900000;
+			$objCustomerCredit["balanceDol"] 		= $objCustomerCredit["limitCreditDol"];
+			$objCustomerCredit["incomeDol"] 		= 5000;
+			$this->Customer_Credit_Model->insert_app_posme($objCustomerCredit);
+
+			//Lineas de Creditos
+			$arrayListCustomerCreditLineID	= array();
+			$arrayListCreditLineID			= array();
+			$arrayListCreditCurrencyID		= array();
+			$arrayListCreditStatusID		= array();
+			$arrayListCreditInterestYear	= array();
+			$arrayListCreditInterestPay		= array();
+			$arrayListCreditTotalPay		= array();
+			$arrayListCreditTotalDefeated	= array();
+			$arrayListCreditDateOpen		= array();
+			$arrayListCreditPeriodPay		= array();
+			$arrayListCreditDateLastPay		= array();
+			$arrayListCreditTerm			= array();
+			$arrayListCreditNote			= array();
+			$arrayListCreditLine			= array();
+			$arrayListCreditNumber			= array();
+			$arrayListCreditLimit			= array();
+			$arrayListCreditBalance			= array();
+			$arrayListCreditStatus			= array();
+			$arrayListTypeAmortization		= array();
+			$arrayListDayExcluded			= array();
+			$limitCreditLine 				= 0;
+
+
+
+
+			if(empty($arrayListCustomerCreditLineID))
+			{
+				$arrayListCustomerCreditLineID[0]	= 1;
+				$arrayListCreditLineID[0] 			= $creditLineDefault;
+				$arrayListCreditCurrencyID[0]		= $this->core_web_currency->getCurrencyDefault($companyID)->currencyID;
+				$arrayListCreditLimit[0]			= 300000;
+				$arrayListCreditInterestYear[0]		= $interesDefault;
+				$arrayListCreditInterestPay[0]		= 0;
+				$arrayListCreditTotalPay[0]			= 0;
+				$arrayListCreditTotalDefeated[0]	= 0;
+				$arrayListCreditPeriodPay[0]		= $frecuencyDefault;
+				$arrayListCreditTerm[0]				= $plazoDefault;
+				$arrayListCreditNote[0]				= "-";
+				$arrayListTypeAmortization[0]		= $typeAmortizationDefault;
+				$arrayListDayExcluded[0]			= $dayExcludedDefault;				
+				$arrayListCreditStatusID[0]			= $this->core_web_workflow->getWorkflowInitStage("tb_customer_credit_line","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
+
+			}
+			
+			
+
+			if(!empty($arrayListCustomerCreditLineID))
+			{
+				foreach($arrayListCustomerCreditLineID as $key => $value)
+				{
+					$objCustomerCreditLine["companyID"]		= $objEntity["companyID"];
+					$objCustomerCreditLine["branchID"]		= $objEntity["branchID"];
+					$objCustomerCreditLine["entityID"]		= $entityID;
+					$objCustomerCreditLine["creditLineID"]	= $arrayListCreditLineID[$key];
+					$objCustomerCreditLine["accountNumber"]	= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_customer_credit_line",0);
+					$objCustomerCreditLine["currencyID"]	= $arrayListCreditCurrencyID[$key];
+					$objCustomerCreditLine["limitCredit"]	= helper_StringToNumber($arrayListCreditLimit[$key]);
+					$objCustomerCreditLine["balance"]		= helper_StringToNumber($arrayListCreditLimit[$key]);
+					$objCustomerCreditLine["interestYear"]	= helper_StringToNumber($arrayListCreditInterestYear[$key]);
+					$objCustomerCreditLine["interestPay"]	= $arrayListCreditInterestPay[$key];
+					$objCustomerCreditLine["totalPay"]		= $arrayListCreditTotalPay[$key];
+					$objCustomerCreditLine["totalDefeated"]	= $arrayListCreditTotalDefeated[$key];
+					$objCustomerCreditLine["dateOpen"]		= date("Y-m-d");
+					$objCustomerCreditLine["periodPay"]		= $arrayListCreditPeriodPay[$key];
+					$objCustomerCreditLine["dateLastPay"]	= date("Y-m-d");
+					$objCustomerCreditLine["term"]			= helper_StringToNumber($arrayListCreditTerm[$key]);
+					$objCustomerCreditLine["note"]			= $arrayListCreditNote[$key];
+					$objCustomerCreditLine["statusID"]		= $arrayListCreditStatusID[$key];
+					$objCustomerCreditLine["isActive"]		= 1;
+					$objCustomerCreditLine["typeAmortization"]	= $arrayListTypeAmortization[$key];
+					$objCustomerCreditLine["dayExcluded"]		= $arrayListDayExcluded[$key];
+					$limitCreditLine 							= $limitCreditLine + $objCustomerCreditLine["limitCredit"];
+					$exchangeRate 								= $this->core_web_currency->getRatio($companyID,$dateOn,1,$objCustomerCreditLine["currencyID"],$objCurrencyDolares->currencyID);//cordobas a dolares, o dolares a dolares.
+					$exchangeRateAmount							= $objCustomerCreditLine["limitCredit"];
+					$customerCreditLineID 						= $this->Customer_Credit_Line_Model->insert_app_posme($objCustomerCreditLine);
+					$objDataSet["customerCreditLineID"]			= $customerCreditLineID;
+
+
+
+
+					//sumar los limites en dolares
+					if($exchangeRate == 1)
+						$exchangeRateTotal = $exchangeRateTotal + $exchangeRateAmount;
+					//sumar los limite en cordoba
+					else
+						$exchangeRateTotal = $exchangeRateTotal + ($exchangeRateAmount / $exchangeRate);
+
+
+
+				}
+			}
+
+
+			//Validar Limite de Credito
+			if($exchangeRateTotal > $objCustomerCredit["limitCreditDol"])
+				throw new \Exception("LINEAS DE CREDITOS MAL CONFIGURADAS LÍMITE EXCEDIDO");
+			
+			
+			//Asociar el cliente al colaborador
+			$objUserAdmin					=  $this->User_Model->get_rowByRoleAdmin($dataSession["user"]->companyID);			
+			if($objUserAdmin)
+			{
+				$objListEmployerID 		= array_map(function($i) { return $i->employeeID; }, $objUserAdmin);
+				$objListEmployerID[] 	= $dataSession["user"]->employeeID;
+				$objListEmployerID 		= array_unique($objListEmployerID);
+				
+				foreach ($objListEmployerID as $employerIDT)
+				{
+					$dataRelationShip				= NULL;
+					$dataRelationShip["employeeID"]	= $employerIDT;
+					$dataRelationShip["customerID"]	= $entityID;
+					$dataRelationShip["isActive"]	= 1;
+					$dataRelationShip["startOn"]	= date("Y-m-d");
+					$dataRelationShip["endOn"]		= date("Y-m-d");
+					$this->Relationship_Model->insert_app_posme($dataRelationShip);					
+				}
+			}
+			
+			
+			//Crear la Carpeta para almacenar los Archivos del Cliente
+			$pathfile = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentCustomer->componentID."/component_item_".$entityID;
+
+			if (!file_exists($pathfile))
+			{
+				mkdir($pathfile, 0700,true);
+			}
+
+
+			
+			if($db->transStatus() !== false)
+			{
+				log_message('error', 'Webhook RAW JSON: Success');
+				$db->transCommit();
+				return $this->response->setJSON([
+					'success' => true
+				]);
+				
+			}
+			else{
+				log_message('error', 'Webhook RAW JSON: Error');
+				$db->transRollback();
+				return $this->response->setJSON([
+					'success' => true,
+					'message' => "",   		// mensaje del error
+					'line'    => "0",      	// línea donde ocurrió
+					'file'    => ""       	// archivo (opcional pero útil)
+				]);
+				
+			}
+
+		}
+		catch(\Exception $ex)
+		{
+			return $this->response->setJSON([
+				'success' => false,
+				'message' => $ex->getMessage(),   // mensaje del error
+				'line'    => $ex->getLine(),      // línea donde ocurrió
+				'file'    => $ex->getFile()       // archivo (opcional pero útil)
+			])->setStatusCode(400);
+		}
+		
+	}
+	public function WebHookInsertAndUpdateElementLiveConnectReceiptWhatsappWebHook()
+	{
+		// JSON crudo (string completo)
+		$rawJson = $this->request->getBody();
+		$rawJson = '{"type":"chatAdd","payload":{"id_conversacion":"LCWAP|361|50587125827C","id_canal":361,"mensaje_inicial":"Testing prueba","ingreso":1768256052,"contacto":{"id":26108813,"nombre":"posMe"},"usuario_autoasignado":{"id":59177,"nombre":"Santa Lucia Real Estate"}}}';
+		log_message('error', 'Webhook RAW JSON: ' . $rawJson);	
+		$data    = json_decode($rawJson, true);
+		log_message('error', 'Webhook RAW JSON: ' . print_r($data,true));	
+		
+		echo "Request:";
+		echo print_r($data,true);
+
+		if (!$data) {
+			return $this->response->setJSON([
+				'success' => false,
+				'message' => 'JSON inválido'
+			])->setStatusCode(400);
+		}
+	
+	
+		/* ===============================
+		   TYPE
+		================================ */
+		$type 		= $data['type'] ?? '';
+
+		/* ===============================
+		   PAYLOAD
+		================================ */
+		$payload 	= $data['payload'] ?? [];
+
+		/* ===============================
+		   DATOS DEL CHAT
+		================================ */
+		$id_conversacion  = $payload['id_conversacion']  ?? '';
+		$id_canal         = $payload['id_canal']         ?? 0;
+		$mensaje_inicial  = $payload['mensaje_inicial']  ?? '';
+		$ingreso          = $payload['ingreso']          ?? 0;
+
+		/* ===============================
+		   CONTACTO
+		================================ */
+		$contacto 			= $payload['contacto'] ?? [];
+		$contacto_id     	= $contacto['id']     ?? 0;
+		$contacto_nombre 	= $contacto['nombre'] ?? '';
+
+
+		/* ===============================
+		   USUARIO AUTOASIGNADO
+		================================ */
+		$usuario_autoasignado 	= $payload['usuario_autoasignado'] ?? [];
+		$usuario_id     		= $usuario_autoasignado['id']     ?? 0;
+		$usuario_nombre 		= $usuario_autoasignado['nombre'] ?? '';
+
+
+		/* ===============================
+		   CAST DE SEGURIDAD
+		================================ */
+		$id_canal      = (int)$id_canal;
+		$ingreso       = (int)$ingreso;
+		$contacto_id   = (int)$contacto_id;
+		$usuario_id    = (int)$usuario_id;
+
+		
+		//2024-07-22
+        //api token: https://api.liveconnect.chat/prod/account/token
+        $Parameter_Model 			= new Parameter_Model();
+        $Company_Parameter_Model 	= new Company_Parameter_Model();
+
+        $objPWhatsapPrivatekey		= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+        $objPWhatsapPrivatekeyId	= $objPWhatsapPrivatekey->parameterID;
+        $objPWhatsapPrivatekey		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPrivatekeyId);
+
+        $objPWhatsapCkey		= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
+        $objPWhatsapCkeyId		= $objPWhatsapCkey->parameterID;
+        $objPWhatsapCkey		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapCkeyId);
+
+        $objPWhatsapUrlTokenMessage			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
+        $objPWhatsapUrlTokenMessageId 		= $objPWhatsapUrlTokenMessage->parameterID;
+        $objCP_WhatsapUrlTokenMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlTokenMessageId);
+
+        $objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+        $objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
+        $objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
+
+        //id canal
+        $objPWhatsapIdCanal		= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION_PARAMETERF1");
+        $objPWhatsapPrivatekeyId	= $objPWhatsapIdCanal->parameterID;
+        $objPWhatsapIdCanal		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPrivatekeyId);
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $objCP_WhatsapUrlTokenMessage->value,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => json_encode([
+                'cKey' => $objPWhatsapCkey->value,
+                'privateKey' => $objPWhatsapPrivatekey->value
+            ]),
+            CURLOPT_HTTPHEADER => [
+                "Accept: application/json, application/xml",
+                "Content-Type: application/json"
+            ],
+        ]);
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+            return "cURL Error #:" . $err;
+        }
+        //return $response;
+        $response_data 	= json_decode($response, true);
+
+        if($response_data['status'] ==1)
+        {
+            $token = $response_data['PageGearToken'];
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, [
+                CURLOPT_URL => "https://api.liveconnect.chat/prod/direct/wa/sendFile",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => json_encode([
+                    'id_canal' => $objPWhatsapIdCanal->value,
+                    'numero'=>$phoneDestino,                    
+					"url"=> $urlImage,
+					"nombre"=> $nameImage,
+				    "extension"=> $extImage
+  
+                ]),
+                CURLOPT_HTTPHEADER => [
+                    "Accept: application/json",
+                    "Content-Type: application/json",
+                    "PageGearToken: ".$token
+                ],
+            ]);
+
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+
+            curl_close($curl);
+
+            if ($err) {
+                return "cURL Error #:" . $err;
+            } else {
+                $response_data 	= json_decode($response, true);
+                return $response_data['status_message'];
+            }
+        }
+        return "";
+		
+		return $this->response->setJSON([
+			'success' => true,
+			'message'    => 'JSON valido'
+		]);
+		
+	}
+	public function WebHookReceiptMessage_Whatsapp_Wati()
+	{
+		// JSON crudo (string completo)
+		$rawJson = $this->request->getBody();
+		$rawJson = '{"type":"chatAdd","payload":{"id_conversacion":"LCWAP|361|50587125827C","id_canal":361,"mensaje_inicial":"Testing prueba","ingreso":1768256052,"contacto":{"id":26108813,"nombre":"posMe"},"usuario_autoasignado":{"id":59177,"nombre":"Santa Lucia Real Estate"}}}';
+		log_message('error', 'Webhook RAW JSON: ' . $rawJson);	
+		$data    = json_decode($rawJson, true);
+		log_message('error', 'Webhook RAW JSON: ' . print_r($data,true));	
+		
+		echo "Request:";
+		echo print_r($data,true);
+
+		if (!$data) {
+			return $this->response->setJSON([
+				'success' => false,
+				'message' => 'JSON inválido'
+			])->setStatusCode(400);
+		}
+	
+	
+		/* ===============================
+		   TYPE
+		================================ */
+		$type 		= $data['type'] ?? '';
+
+		/* ===============================
+		   PAYLOAD
+		================================ */
+		$payload 	= $data['payload'] ?? [];
+
+		/* ===============================
+		   DATOS DEL CHAT
+		================================ */
+		$id_conversacion  = $payload['id_conversacion']  ?? '';
+		$id_canal         = $payload['id_canal']         ?? 0;
+		$mensaje_inicial  = $payload['mensaje_inicial']  ?? '';
+		$ingreso          = $payload['ingreso']          ?? 0;
+
+		/* ===============================
+		   CONTACTO
+		================================ */
+		$contacto 			= $payload['contacto'] ?? [];
+		$contacto_id     	= $contacto['id']     ?? 0;
+		$contacto_nombre 	= $contacto['nombre'] ?? '';
+
+
+		/* ===============================
+		   USUARIO AUTOASIGNADO
+		================================ */
+		$usuario_autoasignado 	= $payload['usuario_autoasignado'] ?? [];
+		$usuario_id     		= $usuario_autoasignado['id']     ?? 0;
+		$usuario_nombre 		= $usuario_autoasignado['nombre'] ?? '';
+
+
+		/* ===============================
+		   CAST DE SEGURIDAD
+		================================ */
+		$id_canal      = (int)$id_canal;
+		$ingreso       = (int)$ingreso;
+		$contacto_id   = (int)$contacto_id;
+		$usuario_id    = (int)$usuario_id;
+
+		
+		//2024-07-22
+        //api token: https://api.liveconnect.chat/prod/account/token
+        $Parameter_Model 			= new Parameter_Model();
+        $Company_Parameter_Model 	= new Company_Parameter_Model();
+
+        $objPWhatsapPrivatekey		= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+        $objPWhatsapPrivatekeyId	= $objPWhatsapPrivatekey->parameterID;
+        $objPWhatsapPrivatekey		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPrivatekeyId);
+
+        $objPWhatsapCkey		= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
+        $objPWhatsapCkeyId		= $objPWhatsapCkey->parameterID;
+        $objPWhatsapCkey		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapCkeyId);
+
+        $objPWhatsapUrlTokenMessage			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
+        $objPWhatsapUrlTokenMessageId 		= $objPWhatsapUrlTokenMessage->parameterID;
+        $objCP_WhatsapUrlTokenMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlTokenMessageId);
+
+        $objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+        $objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
+        $objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
+
+        //id canal
+        $objPWhatsapIdCanal		= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION_PARAMETERF1");
+        $objPWhatsapPrivatekeyId	= $objPWhatsapIdCanal->parameterID;
+        $objPWhatsapIdCanal		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPrivatekeyId);
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $objCP_WhatsapUrlTokenMessage->value,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => json_encode([
+                'cKey' => $objPWhatsapCkey->value,
+                'privateKey' => $objPWhatsapPrivatekey->value
+            ]),
+            CURLOPT_HTTPHEADER => [
+                "Accept: application/json, application/xml",
+                "Content-Type: application/json"
+            ],
+        ]);
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+            return "cURL Error #:" . $err;
+        }
+        //return $response;
+        $response_data 	= json_decode($response, true);
+
+        if($response_data['status'] ==1)
+        {
+            $token = $response_data['PageGearToken'];
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, [
+                CURLOPT_URL => "https://api.liveconnect.chat/prod/direct/wa/sendFile",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => json_encode([
+                    'id_canal' => $objPWhatsapIdCanal->value,
+                    'numero'=>$phoneDestino,                    
+					"url"=> $urlImage,
+					"nombre"=> $nameImage,
+				    "extension"=> $extImage
+  
+                ]),
+                CURLOPT_HTTPHEADER => [
+                    "Accept: application/json",
+                    "Content-Type: application/json",
+                    "PageGearToken: ".$token
+                ],
+            ]);
+
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+
+            curl_close($curl);
+
+            if ($err) {
+                return "cURL Error #:" . $err;
+            } else {
+                $response_data 	= json_decode($response, true);
+                return $response_data['status_message'];
+            }
+        }
+        return "";
+		
+		return $this->response->setJSON([
+			'success' => true,
+			'message'    => 'JSON valido'
+		]);
+		
 	}
 
 }

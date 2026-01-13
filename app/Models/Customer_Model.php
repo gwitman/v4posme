@@ -46,7 +46,10 @@ class Customer_Model extends Model  {
 			c.reference3,c.reference4,c.reference5,c.reference6 ,c.budget,c.modifiedOn,c.formContactId,
 			c.entityReferenceID,
 			c.allowWhatsappPromotions,
-			c.allowWhatsappCollection
+			c.allowWhatsappCollection,
+			c.dateTimeLastMessageReceipt,
+			c.dateTimeLastMessageSend,
+			c.isMessageNoRead
 		");
 		$sql = $sql.sprintf(" from tb_customer c");
 		$sql = $sql.sprintf(" inner join  tb_naturales n on n.entityID = c.entityID");				
@@ -77,7 +80,10 @@ class Customer_Model extends Model  {
 			i.modifiedOn,i.formContactID,
 			i.entityReferenceID,
 			i.allowWhatsappPromotions,
-			i.allowWhatsappCollection
+			i.allowWhatsappCollection,
+			i.dateTimeLastMessageReceipt,
+			i.dateTimeLastMessageSend,
+			i.isMessageNoRead
 		");
 		$sql = $sql.sprintf(" from tb_customer i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
@@ -106,7 +112,10 @@ class Customer_Model extends Model  {
 			i.modifiedOn,i.formContactID,
 			i.entityReferenceID,
 			i.allowWhatsappPromotions,
-			i.allowWhatsappCollection
+			i.allowWhatsappCollection,
+			i.dateTimeLastMessageReceipt,
+			i.dateTimeLastMessageSend,
+			i.isMessageNoRead
 		");
 		$sql = $sql.sprintf(" from tb_customer i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
@@ -134,7 +143,10 @@ class Customer_Model extends Model  {
 			i.modifiedOn,i.formContactID,
 			i.entityReferenceID,
 			i.allowWhatsappPromotions,
-			i.allowWhatsappCollection
+			i.allowWhatsappCollection,
+			i.dateTimeLastMessageReceipt,
+			i.dateTimeLastMessageSend,
+			i.isMessageNoRead
 		");
 		$sql = $sql.sprintf(" from tb_customer i");
 		$sql = $sql.sprintf(" inner join  tb_naturales nat on nat.entityID = i.entityID");				
@@ -159,7 +171,10 @@ class Customer_Model extends Model  {
 		i.modifiedOn,i.formContactID,
 		i.entityReferenceID,
 		i.allowWhatsappPromotions,
-		i.allowWhatsappCollection
+		i.allowWhatsappCollection,
+		i.dateTimeLastMessageReceipt,
+		i.dateTimeLastMessageSend,
+		i.isMessageNoRead
 		");
 		$sql = $sql.sprintf(" from tb_customer i");
 		$sql = $sql.sprintf(" inner join  tb_naturales nat on nat.entityID = i.entityID");				
@@ -189,7 +204,10 @@ class Customer_Model extends Model  {
 			i.modifiedOn,i.formContactID,
 			i.entityReferenceID,
 			i.allowWhatsappPromotions,
-			i.allowWhatsappCollection
+			i.allowWhatsappCollection,
+			i.dateTimeLastMessageReceipt,
+			i.dateTimeLastMessageSend,
+			i.isMessageNoRead
 		");
 		$sql = $sql.sprintf(" from tb_customer i");	
 		$sql = $sql.sprintf(" inner join  tb_naturales n on n.entityID = i.entityID");				
@@ -216,7 +234,10 @@ class Customer_Model extends Model  {
 				i.modifiedOn,i.formContactID, i.balanceDol, i.balanceCor,
 				i.entityReferenceID,
 				i.allowWhatsappPromotions,
-				i.allowWhatsappCollection
+				i.allowWhatsappCollection,
+				i.dateTimeLastMessageReceipt,
+				i.dateTimeLastMessageSend,
+				i.isMessageNoRead
 			");
 		$sql = $sql.sprintf(" from tb_customer i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
@@ -433,7 +454,10 @@ class Customer_Model extends Model  {
 				nat.firstName,
 				c.phoneNumber,
 				c.allowWhatsappPromotions,
-				c.allowWhatsappCollection
+				c.allowWhatsappCollection,
+				c.dateTimeLastMessageReceipt,
+				c.dateTimeLastMessageSend,
+				c.isMessageNoRead
 			from 
 				tb_customer c 
 				inner join tb_naturales nat on 
