@@ -855,12 +855,27 @@
 		$(document).on("click","#btnAddFrecuency",function(){
 			fnAgregarFila();
 		});
+		
+		$(document).on('change','#txtPhoto',function(e) {
+            var file = e.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    $('#panelPreview').show();
+                    $('#panelPreview').attr('src', e.target.result).show();
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+		
 		$('#errorLabel').hide();
 	});
 	
 	function fnEliminarFila(boton) {
 		$(boton).closest('tr').remove();
 	}
+	
 
 	function fnAgregarFila() {
 		

@@ -1,4 +1,16 @@
 <style>
+	.preview-container {
+		position: relative;
+		margin-top: 10px;
+	}
+	.preview-img {
+		max-width: 200px;
+		max-height: 200px;
+		object-fit: cover;
+	}
+</style>
+
+<style>
 
   /* Estilo para ocultar la barra lateral */
   .sidebar 
@@ -77,7 +89,7 @@
 			<!-- /titulo de comprobante-->
 			
 			<!-- body -->	
-			<form id="form-new-cxc-customer" name="form-new-cxc-customer" class="form-horizontal" role="form">
+			<form id="form-new-cxc-customer" name="form-new-cxc-customer" class="form-horizontal" role="form" enctype="multipart/form-data" >
 			<div class="panel-body printArea"> 
 			
 				<ul id="myTab" class="nav nav-tabs">
@@ -777,6 +789,27 @@
 											<input class="form-control"  type="text"  name="txtReference3" id="txtReference3" value="<?php echo $objCustomer->reference3; ?>">			
 										</div>
 								</div>	
+								
+								<div class="form-group"> 
+									<label class="col-lg-4 control-label" for="photo">Buscar Foto:</label> 
+									<div class="col-lg-8">
+										<input type="file" id="txtPhoto" name="txtPhoto" accept="image/*" > 
+									</div>
+								</div>
+								
+								<div class="form-group"> 
+									<label class="col-lg-4 control-label" for="photo">Preview:</label> 
+									<div class="col-lg-8">
+										<!-- Vista previa --> 
+										<div class="preview-container"> 
+											<img id="panelPreview" class="preview-img" alt="Vista previa" src="<?php echo $objCustomer->reference6; ?>"/> 
+										</div>
+									</div>
+								</div>
+									
+								
+							
+
 								<div class="form-group <?php echo getBehavio($company->type,"app_cxc_customer","classDivReference4",""); ?> ">
 										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_cxc_customer","Referencia4",""); ?></label>
 										<div class="col-lg-8">

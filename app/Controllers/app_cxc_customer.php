@@ -487,6 +487,50 @@ class app_cxc_customer extends _BaseController {
 				else 
 					$objCustomer["allowWhatsappCollection"]		= 0 ;
 				
+				//Guardar la foto
+				$file = $this->request->getFile('txtPhoto');
+				if( $file && $file->isValid() && !$file->hasMoved())
+				{
+					
+					// Validar tipo y tamaño
+					$validationRule = [
+						'txtPhoto' => [
+							'label' => 'Foto',
+							'rules' => 'uploaded[txtPhoto]'
+								. '|is_image[txtPhoto]'							
+								. '|max_size[txtPhoto,20480]', // 20MB
+						],
+					];
+
+					if (!$this->validate($validationRule)) {					
+						log_message("error",print_r($this->validator->getErrors(),true));
+					}
+
+					//wg-if (!$this->validate($validationRule)) {
+					//wg-	return redirect()->back()
+					//wg-		->withInput()
+					//wg-		->with('errors', $this->validator->getErrors());
+					//wg-}
+
+					
+					
+					// Generar nombre único
+					$newName 		= 'foto.'.$file->getExtension();
+					$urlPath 		= "/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$entityID_;
+					$documentoPath 	= PATH_FILE_OF_APP.$urlPath;
+
+					if (!file_exists($documentoPath))
+					{
+						mkdir($documentoPath, 0755,true);
+						chmod($documentoPath, 0755);
+					}
+					
+					
+					
+					// Mover archivo
+					$file->move($documentoPath, $newName, true);
+					$objCustomer["reference6"]			= APP_URL_RESOURCE_CSS_JS.'/resource/file_company'.$urlPath.'/'.$newName;
+				}			
 				$this->Customer_Model->update_app_posme($companyID_,$branchID_,$entityID_,$objCustomer);
 				
 				//Actualizar Customer Credit
@@ -648,6 +692,7 @@ class app_cxc_customer extends _BaseController {
 				$objCustomerCreditNew["balanceDol"] = $objCustomerCreditNew["limitCreditDol"];
 				$this->Customer_Credit_Model->update_app_posme($companyID_,$branchID_,$entityID_,$objCustomerCreditNew);
 			}
+			
 			
 			//Confirmar Entidad
 			if($db->transStatus() !== false){
@@ -2068,6 +2113,106 @@ class app_cxc_customer extends _BaseController {
 		$contacto_id   = (int)$contacto_id;
 		$usuario_id    = (int)$usuario_id;
 
+		
+		//2024-07-22
+        //api token: https://api.liveconnect.chat/prod/account/token
+        $Parameter_Model 			= new Parameter_Model();
+        $Company_Parameter_Model 	= new Company_Parameter_Model();
+
+        $objPWhatsapPrivatekey		= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+        $objPWhatsapPrivatekeyId	= $objPWhatsapPrivatekey->parameterID;
+        $objPWhatsapPrivatekey		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPrivatekeyId);
+
+        $objPWhatsapCkey		= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
+        $objPWhatsapCkeyId		= $objPWhatsapCkey->parameterID;
+        $objPWhatsapCkey		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapCkeyId);
+
+        $objPWhatsapUrlTokenMessage			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
+        $objPWhatsapUrlTokenMessageId 		= $objPWhatsapUrlTokenMessage->parameterID;
+        $objCP_WhatsapUrlTokenMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlTokenMessageId);
+
+        $objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+        $objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
+        $objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
+
+        //id canal
+        $objPWhatsapIdCanal		= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION_PARAMETERF1");
+        $objPWhatsapPrivatekeyId	= $objPWhatsapIdCanal->parameterID;
+        $objPWhatsapIdCanal		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPrivatekeyId);
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $objCP_WhatsapUrlTokenMessage->value,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => json_encode([
+                'cKey' => $objPWhatsapCkey->value,
+                'privateKey' => $objPWhatsapPrivatekey->value
+            ]),
+            CURLOPT_HTTPHEADER => [
+                "Accept: application/json, application/xml",
+                "Content-Type: application/json"
+            ],
+        ]);
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+            return "cURL Error #:" . $err;
+        }
+        //return $response;
+        $response_data 	= json_decode($response, true);
+
+        if($response_data['status'] ==1)
+        {
+            $token = $response_data['PageGearToken'];
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, [
+                CURLOPT_URL => "https://api.liveconnect.chat/prod/direct/wa/sendFile",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => json_encode([
+                    'id_canal' => $objPWhatsapIdCanal->value,
+                    'numero'=>$phoneDestino,                    
+					"url"=> $urlImage,
+					"nombre"=> $nameImage,
+				    "extension"=> $extImage
+  
+                ]),
+                CURLOPT_HTTPHEADER => [
+                    "Accept: application/json",
+                    "Content-Type: application/json",
+                    "PageGearToken: ".$token
+                ],
+            ]);
+
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+
+            curl_close($curl);
+
+            if ($err) {
+                return "cURL Error #:" . $err;
+            } else {
+                $response_data 	= json_decode($response, true);
+                return $response_data['status_message'];
+            }
+        }
+        return "";
 		
 		return $this->response->setJSON([
 			'success' => true,
