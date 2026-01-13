@@ -60,6 +60,7 @@ use App\Models\Core\Catalog_Item_Model;
 use App\Models\Core\Catalog_Model;
 use App\Models\Core\Company_Component_flavor_Model;
 use App\Models\Core\Company_Component_Model;
+use App\Models\Core\Company_Component_Relation_Model;
 use App\Models\Core\Company_Data_View_Model;
 use App\Models\Core\Company_Default_Data_View_Model;
 use App\Models\Core\Company_Model;
@@ -292,6 +293,7 @@ abstract class _BaseController extends Controller
     protected $Catalog_Model;
     protected $Company_Component_flavor_Model;
     protected $Company_Component_Model;
+	protected $Company_Component_Relation_Model;
     protected $Company_Data_View_Model;
     protected $Company_Default_Data_View_Model;
     protected $Company_Model;
@@ -470,6 +472,7 @@ abstract class _BaseController extends Controller
         $this->Catalog_Model= new Catalog_Model();
         $this->Company_Component_flavor_Model= new Company_Component_flavor_Model();
         $this->Company_Component_Model= new Company_Component_Model();
+		$this->Company_Component_Relation_Model = new Company_Component_Relation_Model();
         $this->Company_Data_View_Model= new Company_Data_View_Model();
         $this->Company_Default_Data_View_Model= new Company_Default_Data_View_Model();
         $this->Company_Model= new Company_Model();

@@ -16,6 +16,15 @@ class Relationship_Model extends Model  {
 		$builder->delete();
 		
    }
+   function delete_app_posme_byEmployerAndCustomer($entityIDEmployer,$entityIDCustomer)
+   {
+		$db 	   	= db_connect();
+		$builder	= $db->table("tb_relationship");	
+		
+		$builder->where("employerID",$entityIDEmployer);			
+		$builder->where("customerID",$entityIDCustomer);			
+		$builder->delete();
+   }
 
    function insert_app_posme($data){
 		$db 			= db_connect();
@@ -318,9 +327,67 @@ class Relationship_Model extends Model  {
 		//Ejecutar Consulta  
 		return $db->query($sql)->getRow();
     }
-
-    
-
+	/*obtener todos los colaboradores asociado a este cliente*/
+	function get_rowByCustomerID($entityIDCustomer)
+	{
+		$db 	= db_connect();
+				
+		$sql = "";
+		$sql = sprintf("select 
+						r.relationshipID, r.employeeID, r.customerID, r.orderNo, 
+						r.reference1,r.reference2, r.startOn, r.endOn,  
+						r.isActive, concat(e.employeNumber,' / ',concat(n.firstName,' ',n.lastName)) as firstName, 
+						concat(c.customerNumber,' / ' ,l.legalName) as legalName,
+						r.customerIDAfter,						
+						r.reference3,
+						r.descripcion, 
+						r.reference4,						
+						r.reference5
+					");
+		$sql = $sql.sprintf(" from 
+									tb_relationship as r 
+									inner join tb_naturales as n on r.employeeID = n.entityID 
+									INNER join tb_legal as l on r.customerID = l.entityID 
+									INNER join tb_employee e on e.entityID = n.entityID 
+									INNER join tb_customer c on c.entityID = l.entityID");
+		$sql = $sql.sprintf(" where c.entityID = $entityIDCustomer");		
+		$sql = $sql.sprintf(" and r.isActive= 1");		
+		
+		//Ejecutar Consulta  
+		return $db->query($sql)->getResult();
+		
+	}
+	/*obtener todos los colaboradores asociado a este cliente*/
+	function get_rowByEmployerID($employerID)
+	{
+		$db 	= db_connect();
+				
+		$sql = "";
+		$sql = sprintf("select 
+						r.relationshipID, r.employeeID, r.customerID, r.orderNo, 
+						r.reference1,r.reference2, r.startOn, r.endOn,  
+						r.isActive, concat(e.employeNumber,' / ',concat(n.firstName,' ',n.lastName)) as firstName, 
+						concat(c.customerNumber,' / ' ,l.legalName) as legalName,
+						r.customerIDAfter,						
+						r.reference3,
+						r.descripcion, 
+						r.reference4,						
+						r.reference5
+					");
+		$sql = $sql.sprintf(" from 
+									tb_relationship as r 
+									inner join tb_naturales as n on r.employeeID = n.entityID 
+									INNER join tb_legal as l on r.customerID = l.entityID 
+									INNER join tb_employee e on e.entityID = n.entityID 
+									INNER join tb_customer c on c.entityID = l.entityID");
+		$sql = $sql.sprintf(" where e.entityID = $entityIDEmployer");		
+		$sql = $sql.sprintf(" and r.isActive= 1");		
+		
+		//Ejecutar Consulta  
+		return $db->query($sql)->getResult();
+		
+	}
+	
     private function fn_DesplazarOrden($oldOrder, $newOrder, $db, $employeeID)
     {
         // Primero ajustar los órdenes de los demás elementos

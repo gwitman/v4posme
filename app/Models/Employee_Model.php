@@ -263,5 +263,91 @@ class Employee_Model extends Model  {
 		return $db->query($sql)->getRow();
    }
    
+   function get_rowByPhoneNumber ($companyID,$phoneNumber)
+   {
+	   $db 			= db_connect();
+		$builder	= $db->table("tb_item");    
+		$sql = "";
+		$sql = sprintf("
+			select 
+				emp.entityID,
+				emp.employeeID,
+				emp.employeNumber,
+				nat.firstName,
+				nat.lastName,
+				ep.number as phoneNumber 
+			from 
+				tb_employee emp 
+				inner join tb_naturales nat on 
+					nat.entityID = emp.entityID 
+				inner join tb_entity_phone ep on 
+					ep.entityID = nat.entityID 
+			where 
+				nat.isActive = 1 and 
+				emp.isActive = 1 and 
+				ep.isPrimary = 1 and 
+				ep.number = '".$phoneNumber."';
+				
+		");	
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getRow();
+   }
+   
+   function get_rowByItemNumber($companyID,$itemNumber)
+   {
+	   $db 			= db_connect();
+		$builder	= $db->table("tb_item");    
+		$sql = "";
+		$sql = sprintf("
+			 select 
+				emp.entityID,
+				emp.employeeID,
+				emp.employeNumber,
+				nat.firstName,
+				nat.lastName
+			from 
+				tb_item c 
+				inner join tb_employee emp on 
+					c.realStateEmployerAgentID = emp.entityID 
+				inner join tb_naturales nat on 
+					nat.entityID = e.entityID 
+			where 
+				c.itemNumber = '".$itemNumber."'; 
+				
+		");	
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getRow();
+   }
+   
+   function get_rowByCodeReferencia($companyID,$codeReferencia)
+   {
+	   $db 			= db_connect();
+		$builder	= $db->table("tb_item");    
+		$sql = "";
+		$sql = sprintf("
+			 select 
+				emp.entityID,
+				emp.employeeID,
+				emp.employeNumber,
+				nat.firstName,
+				nat.lastName
+			from 
+				tb_employee emp 
+				inner join tb_naturales nat on 
+					nat.entityID = e.entityID 
+			where 
+				c.reference1 = '".$codeReferencia."'; 
+				
+		");	
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getRow();
+   }
+  
+   
+   
+   
 }
 ?>

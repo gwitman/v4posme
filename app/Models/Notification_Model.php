@@ -228,6 +228,48 @@ class Notification_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();	
    }
+   function get_rowByCustomer($phoneNumber)
+   {
+		$db 	= db_connect();
+		    
+		$sql = "";
+		$sql = sprintf("
+		 select 
+			c.notificationID,
+			c.errorID,
+			c.`from`,
+			c.`to`,
+			c.`subject`,
+			c.message,
+			c.summary,
+			c.title,
+			c.tagID,
+			c.phoneFrom,
+			c.phoneTo,
+			c.programDate,
+			c.programHour,
+			c.sendOn,
+			c.sendEmailOn,
+			c.sendWhatsappOn,
+			c.addedCalendarGoogle,
+			c.quantityOcupation,
+			c.quantityDisponible,
+			c.googleCalendarEventID,
+			c.isRead,
+			c.entityIDSource,
+			c.entityIDTarget 
+		from 
+			tb_notification c 
+		where 
+			c.`from` = '".$phoneNumber."' or 
+			c.`to` = '".$phoneNumber."'
+		order by 
+			c.notificationID asc 
+		");
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();	
+   }
    
 }
 ?>
