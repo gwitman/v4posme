@@ -742,6 +742,8 @@ $routes->match(['get', 'post'], 'app_cxc_customer/viewPrinterCarnet', 'app_cxc_c
 $routes->match(['get', 'post'], 'app_cxc_customer/viewPrinterCarnet/(:any)', 'app_cxc_customer::viewPrinterCarnet');
 $routes->match(['get', 'post'], 'app_cxc_conversation/index', 'app_cxc_conversation::index');
 $routes->match(['get', 'post'], 'app_cxc_conversation/index/(:any)', 'app_cxc_conversation::index');
+$routes->match(['get', 'post'], 'app_cxc_conversation/edit', 'app_cxc_conversation::edit');
+$routes->match(['get', 'post'], 'app_cxc_conversation/edit/(:any)', 'app_cxc_conversation::edit');
 $routes->match(['get', 'post'], 'app_cxc_record/index', 'app_cxc_record::index');
 $routes->match(['get', 'post'], 'app_cxc_record/GuardarArchivo', 'app_cxc_record::GuardarArchivo');
 $routes->match(['get', 'post'], 'app_cxc_record/GuardarArchivo/(:any)', 'app_cxc_record::GuardarArchivo');

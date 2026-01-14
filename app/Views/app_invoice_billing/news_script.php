@@ -855,6 +855,20 @@
             window.location.href = '<?php echo base_url(); ?>/app_invoice_billing/index';
         }
 	});
+	$("#btnBackRegresar").click(function(e){
+        e.preventDefault();
+        let listRow = objTableDetail.fnGetData();
+        let length 	= listRow.length;
+        if(length > 0)
+        {
+            mostrarModal('ModalBackToList');
+        }
+        else
+        {
+            mostarModalPersonalizado('Regresando a la lista principal...')
+            window.location.href = '<?php echo base_url(); ?>/app_invoice_billing/index';
+        }
+	});
 
 	//Evento Agregar el Usuario
 	$(document).on("click","#btnAcept",function(e){

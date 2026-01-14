@@ -25,9 +25,8 @@
 				<div class="role-heading">
 				  <h4 class="mb-1"><?php echo $item["Nombre"]; ?></h4>
 				  <a
-					href="javascript:;"
-					data-bs-toggle="modal"
-					data-bs-target="#addRoleModal"
+					href="<?php echo  base_url()."/app_cxc_conversation/edit/entityID/".$item["entityID"] ?>"
+					
 					class="role-edit-modal"
 					><small>Ver</small></a
 				  >
