@@ -9,7 +9,8 @@ select
 	me.icon,
 	me.template,
 	me.typeMenuElementID,
-	me.nivel
+	me.nivel,
+	me.typeApp
 from 
 	tb_element e 
 	inner join tb_menu_element me on 
@@ -21,6 +22,7 @@ from
 	inner join tb_menu_element as parente on 	
 		parente.menuElementID = me.parentMenuElementID 
 ORDER BY 
+		me.typeApp asc ,
 		me.orden ;
 */
 
@@ -38,6 +40,7 @@ set @menuIcono								:= 'yellow';
 set @menuThemplate							:= 'menu_nivel_body_report_0';
 set @menuType								:= '6';
 set @menuNivel								:= '1';
+set @typeApp								:= 'default';
 
 set @menuComponentPrincipalID 			:= IFNULL((select u.componentID from tb_component u where u.name = @menuComponentPrincipal),0);
 set @menuElementID 				      	:= IFNULL((select u.elementID from tb_element u where u.name = @menuElement),0);
@@ -78,7 +81,8 @@ insert into tb_menu_element (
 	elementID,parentMenuElementID,
 	display,address,orden,icon,
 	template,nivel,typeMenuElementID,
-	isActive
+	isActive,
+	typeApp
 )
 select 
 	* 
@@ -89,7 +93,8 @@ from
 			@menuElementID as elementID,@menuElementIDParent  as parentMenuElementID ,
 			@menuElement as display, @menuElementAddress as address,@menuElementOrden as orden,@menuIcono as icon,
 			@menuThemplate as template,@menuNivel as nivel, @menuType as typeMenuElementID,
-			1 as active
+			1 as active,
+			@typeApp as typeApp
 	) as tempx 
 where
 	tempx.elementID not in (select u.elementID from tb_menu_element u);

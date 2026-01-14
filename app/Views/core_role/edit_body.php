@@ -107,7 +107,7 @@
 																				echo "</td>";
 																				echo "<td>";
 																						echo "<span>";
-																						echo $item->display;
+																						echo $item->display." === ".$item->typeApp;
 																						echo '<input type="hidden" id="txtElementID"  name="txtElementID[]" value="'.$item->elementID.'" />';
 																						echo '<input type="hidden" id="txtSelectedID" name="txtSelectedID['.$item->elementID.']" value="'.$item->selected.'" />';
 																						echo '<input type="hidden" id="txtInsertedID" name="txtInsertedID['.$item->elementID.']" value="'.$item->inserted.'" />';

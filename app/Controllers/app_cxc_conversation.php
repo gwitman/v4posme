@@ -50,16 +50,21 @@ class app_cxc_conversation extends _BaseController {
 				}
 			}
 			
+			//Tipo de plantilla
+			$masterPage 	= $dataSession["role"]->typeApp.'_masterpage';
+			$viewType		= $dataSession["role"]->typeApp == "default" ? "" : $dataSession["role"]->typeApp.'_';
 			 
 			//Renderizar Resultado
 			$dataView["company"]					= $dataSession["company"];
 			$dataView["companyPageSetting"]			= $dataSession["companyPageSetting"];
-			$dataSession["head"]					= /*--inicio view*/ view('app_cxc_customer/list_head',$dataView);//--finview
-			$dataSession["footer"]					= /*--inicio view*/ view('app_cxc_customer/list_footer',$dataView);//--finview
-			$dataSession["script"]					= /*--inicio view*/ view('app_cxc_customer/list_script',$dataView);//--finview
-			$dataSession["body"]					= /*--inicio view*/ view('app_cxc_customer/list_body',$dataView);//--finview
+			$dataView["title"]						= "Conversaciones";
+			$dataView["data"]						= $dataViewData["view_data"];
+			$dataSession["head"]					= /*--inicio view*/ view('app_cxc_customer/'.$viewType.'list_head',$dataView);//--finview
+			$dataSession["footer"]					= /*--inicio view*/ view('app_cxc_customer/'.$viewType.'list_footer',$dataView);//--finview
+			$dataSession["script"]					= /*--inicio view*/ view('app_cxc_customer/'.$viewType.'list_script',$dataView);//--finview
+			$dataSession["body"]					= /*--inicio view*/ view('app_cxc_customer/'.$viewType.'list_body',$dataView);//--finview
 						
-			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r	
+			return view("core_masterpage/".$masterPage,$dataSession);//--finview-r	
 		}
 		catch(\Exception $ex){
 			if (empty($dataSession)) {

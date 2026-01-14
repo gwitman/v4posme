@@ -16,12 +16,12 @@ set @flavorID					:=  '0';
 
 #INSERTAR ROLES
 insert into tb_role(
-	companyID,branchID,`name`,description,isAdmin,createdOn,urlDefault,createdBy,isActive
+	companyID,branchID,`name`,description,isAdmin,createdOn,urlDefault,createdBy,isActive,typeApp
 ) 
 select 	
 	companyID,branchID,
 	REPLACE(cc.`name`,@nameCompanyOrigen,@nameCompany) as `name`,description,0 as isAdmin,
-	createdOn,'core_dashboards' as urlDefault,createdBy ,isActive
+	createdOn,'core_dashboards' as urlDefault,createdBy ,isActive,typeApp
 from 
 	tb_role cc 
 where

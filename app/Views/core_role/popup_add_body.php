@@ -11,7 +11,7 @@
 															   <option></option>														   
 															   <?php
 																	foreach($listMenuElement as $element){
-																		echo "<option value='".$element->elementID."'>".$element->orden." >>> ".$element->display."</option>";
+																		echo "<option value='".$element->elementID."'>".$element->orden." >>> ".$element->display.' === '.$element->typeApp."</option>";
 																	}
 																?>
 														</select>

@@ -66,7 +66,7 @@ class Menu_Element_Model extends Model  {
 		$sql = $sql.sprintf(" inner join  tb_element on tb_menu_element.elementID = tb_element.elementID");
 		$sql = $sql.sprintf(" where tb_menu_element.companyID = ".$companyID." ");
 		$sql = $sql.sprintf(" and tb_menu_element.isActive = 1 ");				
-		$sql = $sql.sprintf(" order by tb_menu_element.orden asc");   
+		$sql = $sql.sprintf(" order by tb_menu_element.typeApp asc, tb_menu_element.orden asc");   
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
@@ -79,6 +79,7 @@ class Menu_Element_Model extends Model  {
 				select 
 					me.menuElementID,
 					me.display,
+					me.typeApp,
 					me.address,
 					me.icon,
 					me.typeMenuElementID,
