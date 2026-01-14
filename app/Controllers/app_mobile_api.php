@@ -460,7 +460,7 @@ class app_mobile_api extends _BaseController
             $objCompany = $objUser["company"];
 
 			//Obtener listado de menu
-			$objListMenuElement  = $this->Menu_Element_Model->get_rowByUserID($companyID,$userID);
+			$objListMenuElement  = $this->Menu_Element_Model->get_rowByUserID($companyID,$userID,$objUser["role"]->typeApp);
 			
 			
             //Obtener listado de productos

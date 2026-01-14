@@ -55,7 +55,13 @@
 																		<div class="col-lg-10">
 																			<input class="form-control"  type="text" name="txtUrlDefault" id="txtUrlDefault" value="">												
 																		</div>
-																</div>						
+																</div>		
+																<div class="form-group">
+																		<label class="col-lg-2 control-label" for="normal">Tipo App</label>
+																		<div class="col-lg-10">
+																			<input class="form-control"  type="text" name="txtTypeApp" id="txtTypeApp" value="default">												
+																		</div>
+																</div>																		
 																<div class="form-group">
 																	<label class="col-lg-2 control-label" for="normal">Descripcion</label>
 																	<div class="col-lg-10">

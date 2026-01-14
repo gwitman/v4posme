@@ -1739,7 +1739,7 @@ class app_cxc_customer extends _BaseController {
 			
     }
 	function index($dataViewID = null){	
-	try{ 
+		try{ 
 		
 			
 			//AUTENTICADO
@@ -1839,6 +1839,7 @@ class app_cxc_customer extends _BaseController {
 		    return $resultView;
 		}
 	}
+	
 	function edit_credit_line(){
 			
 			//AUTENTICACION

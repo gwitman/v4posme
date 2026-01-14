@@ -149,14 +149,13 @@ class core_web_authentication {
 		if(!$objMembership)
 		throw new \Exception('EL USUARIO NO TIENE ASIGNADO UN ROL...');
 		
-		$objRole					= $Role_Model->get_rowByPK($objUser->companyID,$objUser->branchID,$objMembership->roleID);
-		
+		$objRole					= $Role_Model->get_rowByPK($objUser->companyID,$objUser->branchID,$objMembership->roleID);		
 		$objListAllParameter		= $Company_Parameter_Model->get_rowByCompanyID($objMembership->companyID);
-		$objElementAuthorized		= $core_web_menu->get_menu_top($objMembership->companyID,$objMembership->branchID,$objMembership->roleID,$objMembership->userID);		
-		$objElementNotAuthorized	= $core_web_menu->get_menu_left($objMembership->companyID,$objMembership->branchID,$objMembership->roleID,$objMembership->userID);
-		$menuBodyReport				= $core_web_menu->get_menu_body_report($objMembership->companyID,$objMembership->branchID,$objMembership->roleID,$objMembership->userID);
-		$menuHiddenPopup 			= $core_web_menu->get_menu_hidden_popup($objMembership->companyID,$objMembership->branchID,$objMembership->roleID,$objMembership->userID);
-		$mensajeLogin 				= $core_web_permission->getLicenseMessage(2);
+		$objElementAuthorized		= $core_web_menu->get_menu_top($objMembership->companyID,$objMembership->branchID,$objMembership->roleID,$objMembership->userID);				
+		$objElementNotAuthorized	= $core_web_menu->get_menu_left($objMembership->companyID,$objMembership->branchID,$objMembership->roleID,$objMembership->userID);		
+		$menuBodyReport				= $core_web_menu->get_menu_body_report($objMembership->companyID,$objMembership->branchID,$objMembership->roleID,$objMembership->userID);		
+		$menuHiddenPopup 			= $core_web_menu->get_menu_hidden_popup($objMembership->companyID,$objMembership->branchID,$objMembership->roleID,$objMembership->userID);			
+		$mensajeLogin 				= $core_web_permission->getLicenseMessage(2);   
 		
 		if(!$objCompany)
 		throw new \Exception('LA EMPREA NO FUE ENCONTRADA ...');
@@ -170,8 +169,7 @@ class core_web_authentication {
 		
 		$parameterLabelSistem 	= $core_web_parameter->getParameter("CORE_LABEL_SISTEMA_SUPLANTATION",$objMembership->companyID);
 		$parameterLabelSistem 	= $parameterLabelSistem->value;			
-		$objCompanyPageSetting	= $Company_Page_Setting_Model->get_rowByKey($objCompany->type);
-		
+		$objCompanyPageSetting	= $Company_Page_Setting_Model->get_rowByKey($objCompany->type);		
 		$data["company"]				= $objCompany;
 		$data["companyParameter"]		= $objListAllParameter;
 		$data["parameterLabelSistem"]	= $parameterLabelSistem;
@@ -191,7 +189,6 @@ class core_web_authentication {
 		if($data["menuRenderProcedure"] == ""){
 			$data["menuRenderProcedure"]	= getBahavioLargeDB("demo","core_web_authentication","menuRenderProcedure","");
 		}
-		
 		return $data;
    }
    function get_UserBy_Email($email){

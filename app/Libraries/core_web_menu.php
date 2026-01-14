@@ -159,11 +159,12 @@ class core_web_menu {
 
 		
 		//Obtener la lista de menu_element del componente de  seguridad...
+		$listMenuElement 	 = false;
 		if($objRole->isAdmin && $listElementIDSeguridad)	{	
-			$listMenuElement = $Menu_Element_Model->get_rowByCompanyIDyElementID($companyID,$listElementIDSeguridad);			
+			$listMenuElement = $Menu_Element_Model->get_rowByCompanyIDyElementID($companyID,$listElementIDSeguridad,$objRole->typeApp);			
 		}
 		else if ($listElementIDPermitied){
-			$listMenuElement = $Menu_Element_Model->get_rowByCompanyIDyElementID($companyID,$listElementIDPermitied);
+			$listMenuElement = $Menu_Element_Model->get_rowByCompanyIDyElementID($companyID,$listElementIDPermitied,$objRole->typeApp);
 		}
 		
 		if(!$listMenuElement)
@@ -191,6 +192,7 @@ class core_web_menu {
 		if(!$objRole)		
 		throw new \Exception('NO EXISTE EL ROL DEL USUARIO');
 		
+		
 		//Obtener la lista de elementos tipo pagina, que pertenescan al componente de seguridad
 		$listElementNotSeguridad =	$Element_Model->get_rowByTypeAndLayout(ELEMENT_TYPE_PAGE,MENU_LEFT);
 		if(!$listElementNotSeguridad)
@@ -213,11 +215,13 @@ class core_web_menu {
 		}
 		
 		
+		
 		//Obtener la lista de menu_element del componente de  seguridad...
+		$listMenuElement 	 = false;
 		if($objRole->isAdmin && $listElementIDNotSeguridad)		
-		$listMenuElement = $Menu_Element_Model->get_rowByCompanyIDyElementID($companyID,$listElementIDNotSeguridad);
+		$listMenuElement = $Menu_Element_Model->get_rowByCompanyIDyElementID($companyID,$listElementIDNotSeguridad,$objRole->typeApp);
 		else if ($listElementIDPermitied)
-		$listMenuElement = $Menu_Element_Model->get_rowByCompanyIDyElementID($companyID,$listElementIDPermitied);
+		$listMenuElement = $Menu_Element_Model->get_rowByCompanyIDyElementID($companyID,$listElementIDPermitied,$objRole->typeApp);
 		
 		if(!$listMenuElement)
 		return null; 	
@@ -266,9 +270,9 @@ class core_web_menu {
 		$listMenuElement	= null;
 		//Obtener la lista de menu_element del componente de  seguridad...
 		if($objRole->isAdmin && $listElementIDNotSeguridad)		
-		$listMenuElement = $Menu_Element_Model->get_rowByCompanyIDyElementID($companyID,$listElementIDNotSeguridad);
+		$listMenuElement = $Menu_Element_Model->get_rowByCompanyIDyElementID($companyID,$listElementIDNotSeguridad,$objRole->typeApp);
 		else if ($listElementIDPermitied)
-		$listMenuElement = $Menu_Element_Model->get_rowByCompanyIDyElementID($companyID,$listElementIDPermitied);
+		$listMenuElement = $Menu_Element_Model->get_rowByCompanyIDyElementID($companyID,$listElementIDPermitied,$objRole->typeApp);
 		
 		if(!$listMenuElement)
 		return null; 	
@@ -318,9 +322,9 @@ class core_web_menu {
 		//Obtener la lista de menu_element del componente de  seguridad...
 		$listMenuElement = NULL;
 		if($objRole->isAdmin && $listElementIDNotSeguridad)		
-		$listMenuElement = $Menu_Element_Model->get_rowByCompanyIDyElementID($companyID,$listElementIDNotSeguridad);
+		$listMenuElement = $Menu_Element_Model->get_rowByCompanyIDyElementID($companyID,$listElementIDNotSeguridad,$objRole->typeApp);
 		else if ($listElementIDPermitied)
-		$listMenuElement = $Menu_Element_Model->get_rowByCompanyIDyElementID($companyID,$listElementIDPermitied);
+		$listMenuElement = $Menu_Element_Model->get_rowByCompanyIDyElementID($companyID,$listElementIDPermitied,$objRole->typeApp);
 		
 		if(!$listMenuElement)
 		return null; 	
@@ -339,6 +343,9 @@ class core_web_menu {
     function render_item_top($data,$parent){
 		$html	= "";	
 		$x		= "";	
+		if(!$data)
+			return "";
+		
 		foreach($data AS $obj){
 			if($obj->parentMenuElementID == $parent){				
 				$x 						= self::render_item_top($data,$obj->menuElementID);		
@@ -364,6 +371,9 @@ class core_web_menu {
 	{
 		$html	= "";	
 		$x		= "";	
+		if(!$data)
+			return "";
+		
 		foreach($data AS $obj){
 			if($obj->parentMenuElementID == $parent){				
 				$x 						= self::render_item_left($company,$data,$obj->menuElementID);		

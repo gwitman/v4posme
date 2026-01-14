@@ -216,11 +216,10 @@ class core_acount extends _BaseController {
 			$pagoCantidadDeMeses	= $pagoCantidadDeMeses != null  ?  $pagoCantidadDeMeses : 0;
 			$pagoCantidadDeMeses	= $pagoCantidadDeMeses != ""  ?  $pagoCantidadDeMeses : 0;
 			
-			$objUser	= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname,$password);				
+			$objUser	= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname,$password);			
 			$data 		= $this->core_web_authentication->createLogin($objUser);
 			$dataSession		= $this->session->get();	
 			$dataSession		= $this->session->get(); 
-			
 			
 			//Obtener Datos 				
 			$parameterCantidadTransacciones 	= $this->core_web_parameter->getParameter("CORE_QUANTITY_TRANSACCION",$objUser["user"]->companyID);
@@ -258,8 +257,6 @@ class core_acount extends _BaseController {
 			$parameterCORE_PROPIETARY_NAME 				= $this->core_web_parameter->getParameter("CORE_PROPIETARY_NAME",$objUser["user"]->companyID);
 			$parameterCORE_PROPIETARY_NAME 				= $parameterCORE_PROPIETARY_NAME->value;
 			
-			
-			
 			//Procesar Pago
 			if($pagoCantidadMonto > 0 )
 			{
@@ -291,8 +288,7 @@ class core_acount extends _BaseController {
 			
 			
 			$subject 	= "Inicio de session: ".$objCompany->name." ".$nickname;
-			$body  		= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview
-			
+			$body  		= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview			
 			if($objCompany->type == "emanuel")
 			{
 				$this->response->redirect(base_url()."/".$objUser["role"]->urlDefault."/index");

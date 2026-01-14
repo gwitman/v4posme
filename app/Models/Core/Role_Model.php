@@ -39,6 +39,7 @@ class Role_Model extends Model  {
 		$data["createdOn"] 		= date("Y-m-d H:i:s");
 		$data["createdBy"] 		= $obj["createdBy"];
 		$data["isActive"] 		= $obj["isActive"];
+		$data["typeApp"] 		= $obj["typeApp"];
 		
 		$result			 		= $builder->insert($data);
 		$roleID 				= $db->insertID(); 		
@@ -48,7 +49,8 @@ class Role_Model extends Model  {
    function get_rowByCompanyIDyBranchID($companyID,$branchID){
 		$db 	= db_connect();    
 		$sql = "";
-		$sql = sprintf("select companyID,branchID,roleID,name,description,isAdmin,createdOn,isActive,urlDefault,createdBy");
+		$sql = sprintf("select companyID,branchID,roleID,name,description,isAdmin,createdOn,isActive,urlDefault,createdBy,
+						typeApp ");
 		$sql = $sql.sprintf(" from tb_role");
 		$sql = $sql.sprintf(" where companyID = $companyID");
 		$sql = $sql.sprintf(" and branchID = $branchID");
@@ -61,7 +63,8 @@ class Role_Model extends Model  {
    function get_rowByPK($companyID,$branchID,$roleID){
 		$db 	= db_connect();    
 		$sql = "";
-		$sql = sprintf("select companyID,branchID,roleID,name,description,isAdmin,createdOn,isActive,urlDefault,createdBy");
+		$sql = sprintf("select companyID,branchID,roleID,name,description,isAdmin,createdOn,isActive,urlDefault,createdBy,
+						typeApp ");
 		$sql = $sql.sprintf(" from tb_role");
 		$sql = $sql.sprintf(" where companyID = $companyID");
 		$sql = $sql.sprintf(" and branchID = $branchID"); 

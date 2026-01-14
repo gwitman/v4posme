@@ -129,6 +129,7 @@ class core_role extends _BaseController {
 					$obj["isAdmin"] 		= false;
 					$obj["isActive"] 		= true;		
 					$obj["createdBy"] 		= $dataSession["user"]->userID;
+					$obj["typeApp"] 		= /*inicio get post*/ $this->request->getPost("txtTypeApp");
 					$roleID 				= $this->Role_Model->insert_app_posme($obj);
 					$companyID 				= $obj["companyID"];
 					$branchID 				= $obj["branchID"];
@@ -201,11 +202,12 @@ class core_role extends _BaseController {
 			
 			
 					$db=db_connect();
-			$db->transStart();
+					$db->transStart();
 					//Actualizar Rol
 					$obj["name"] 			= /*inicio get post*/ $this->request->getPost("txtName");
 					$obj["description"] 	= /*inicio get post*/ $this->request->getPost("txtDescription");
 					$obj["urlDefault"] 		= /*inicio get post*/ $this->request->getPost("txtUrlDefault");
+					$obj["typeApp"] 		= /*inicio get post*/ $this->request->getPost("txtTypeApp");
 					$obj["isAdmin"] 		= false;
 					$obj["isActive"] 		= true;
 					$result 				= $this->Role_Model->update_app_posme($companyID,$branchID,$roleID,$obj);
@@ -525,7 +527,7 @@ class core_role extends _BaseController {
 			}
 			
 			//Obtener la lista de elementos			
-			$listMenuElement			= $this->Menu_Element_Model->get_rowByCompanyID($dataSession["user"]->companyID);
+			$listMenuElement			= $this->Menu_Element_Model->get_rowByCompanyID($dataSession["user"]->companyID,$dataSession["role"]->typeApp);
 			$data["listMenuElement"] 	= $listMenuElement;
 			
 			//Renderizar Resultado
