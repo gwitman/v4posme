@@ -79,6 +79,7 @@
 										{
 											
 											//jQuery("#" + localStorage.getItem("srnPc")).attr("src", "data:image/png;base64," + data.image);
+											console.info("cliente encontrado por el lector: " + data.user_id + " nombre: " + data.name);
 											$("#txtCustomerID").val(data.user_id);
 											$("#txtCustomerDescription").val(data.name);	
 
@@ -177,13 +178,23 @@
 					{
 						
 						var timerNotification 	= 15000;
-						console.info("complete success data credit line");														
-						data = data.objCustomerCreditAmoritizationAll;
+						console.info("complete success data credit line");		
+						console.info(data);		
+						var customer 	= data.objCustomer;
+						data 			= data.objCustomerCreditAmoritizationAll;
+						
+						if(customer == null)
+						{
+							 $("#txtCustomerID").val("0");
+							 $("#txtCustomerDescription").val("Clinte no encontrado");
+							 fnShowNotification("Cliente no encontrado","error",timerNotification);
+							 return;
+						}
 						
 						if(data == null)
 						{
 							 $("#txtCustomerID").val("0");
-							 $("#txtCustomerDescription").val("Clinte no tiene membresia");
+							 $("#txtCustomerDescription").val(customer.customerNumber + " Clinte no tiene membresia");
 							 fnShowNotification("Cliente sin membresia","error",timerNotification);
 							 return;
 						}
@@ -191,7 +202,7 @@
 						if(data.length == 0)
 						{
 							 $("#txtCustomerID").val("0");
-							 $("#txtCustomerDescription").val("Clinte no tiene membresia");
+							 $("#txtCustomerDescription").val(customer.customerNumber + " Clinte no tiene membresia");
 							 fnShowNotification("Cliente sin membresia","error",timerNotification);
 							 return;
 						}
