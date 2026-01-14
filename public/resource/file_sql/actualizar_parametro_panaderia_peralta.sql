@@ -1745,14 +1745,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Donde fue aserrio santa fe, 2c abajo 15v.sur" 
+	tb_company_parameter.value = "De los semaforos de Enabas, 3 cuadras al Este, media cuadra al sur, Esteli" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Panaderia Cajina' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
+	NAME = 'Panaderia Cajina' , address = 'De los semaforos de Enabas, 3 cuadras al Este, media cuadra al sur, Esteli' ,
 	flavorID = 882 /*usuarioID*/,type='panaderia_peralta'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
