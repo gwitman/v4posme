@@ -168,7 +168,7 @@
 		  </div>
 		  <div class="tab-pane fade" id="navs-justified-messages" role="tabpanel">
 			  <label for="exampleFormControlTextarea1" class="form-label">Mensaje</label>
-			  <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"  v-model="message" ></textarea>
+			  <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"  v-model="txtCustomerMessage" ></textarea>
 			  <div class="demo-inline-spacing">
 				<button type="button" class="btn btn-primary" @click="fnGuardarNotification" >
 				  <span class="tf-icons bx  bx-save"></span>&nbsp; Enviar

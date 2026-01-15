@@ -3,7 +3,8 @@
 namespace App\Controllers;
 class app_cxc_api extends _BaseController {
 		
-	function getCustomerBalance(){
+	function getCustomerBalance()
+	{
 		try{ 
 			//AUTENTICACION
 			if(!$this->core_web_authentication->isAuthenticated())
@@ -49,7 +50,8 @@ class app_cxc_api extends _BaseController {
 			));//--finjson			
 		}
 	}
-	function getSimulateAmortization(){
+	function getSimulateAmortization()
+	{
 		try{ 
 			//AUTENTICACION
 			if(!$this->core_web_authentication->isAuthenticated())
@@ -132,6 +134,69 @@ class app_cxc_api extends _BaseController {
 			));//--finjson			
 		}
 	}
+	function getConversationActive()
+	{
+		try{ 
+		
+			
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCTION
+			if(APP_NEED_AUTHENTICATION == true){				
+				
+						$permited = false;
+						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						
+						if(!$permited)
+						throw new \Exception(NOT_ACCESS_CONTROL);
+						
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"index",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						if ($resultPermission 	== PERMISSION_NONE)
+						throw new \Exception(NOT_ACCESS_FUNCTION);			
+			
+			}	
+			
+			$objComponent		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_notification_conversation");
+			if(!$objComponent)
+			throw new \Exception("00409 EL COMPONENTE 'tb_notification_conversation' NO EXISTE...");
+			
+			//Vista por defecto 
+			$targetComponentID			= $this->session->get('company')->flavorID;			
+			$parameter["{companyID}"]	= $this->session->get('user')->companyID;				
+			$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
+			
+			
+			if(!$dataViewData){
+				$targetComponentID			= 0;	
+				$parameter["{companyID}"]	= $this->session->get('user')->companyID;					
+				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);				
+			}
+		
+			
+			
+			$data	= $dataViewData["view_data"];			
+			return $this->response->setJSON([
+				'success' => true,
+				'message' => 'entityID recibido',
+				'data'	  => $data
+			]);
+						
+			
+		}
+		catch(\Exception $ex){
+			return $this->response->setJSON([
+				'success' => false,
+				'message' => $ex->getMessage(),
+				'line'    => $ex->getLine(),
+				'file'    => $ex->getFile(),
+				'code'    => $ex->getCode(),
+				'data'    => []
+			]);
+		}
+	}
 	function getConversationByCustomer()
 	{
 		// Obtener JSON enviado por fetch
@@ -155,7 +220,6 @@ class app_cxc_api extends _BaseController {
 			'data'	  => $objListNotification
 		]);
 	}
-	
 	function setConversationByCustomer()
 	{
 		// Obtener JSON enviado por fetch

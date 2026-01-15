@@ -19,7 +19,7 @@ from
 		e.elementID = ce.elementID 
 	inner join tb_component co on 
 		co.componentID = ce.componentID 
-	inner join tb_menu_element as parente on 	
+	left join tb_menu_element as parente on 	
 		parente.menuElementID = me.parentMenuElementID 
 ORDER BY 
 		me.typeApp asc ,

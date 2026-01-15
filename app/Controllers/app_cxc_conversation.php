@@ -103,20 +103,6 @@ class app_cxc_conversation extends _BaseController {
 			if(!$objComponent)
 			throw new \Exception("00409 EL COMPONENTE 'tb_notification_conversation' NO EXISTE...");
 			
-			//Vista por defecto 
-			$targetComponentID			= $this->session->get('company')->flavorID;
-			if($dataViewID == null){				
-				$parameter["{companyID}"]	= $this->session->get('user')->companyID;				
-				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
-				
-				
-				if(!$dataViewData){
-					$targetComponentID			= 0;	
-					$parameter["{companyID}"]	= $this->session->get('user')->companyID;					
-					$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);				
-				}
-			}
-			
 			
 			//Tipo de plantilla
 			$masterPage 	= $dataSession["role"]->typeApp.'_masterpage';
@@ -125,8 +111,7 @@ class app_cxc_conversation extends _BaseController {
 			//Renderizar Resultado
 			$dataView["company"]					= $dataSession["company"];
 			$dataView["companyPageSetting"]			= $dataSession["companyPageSetting"];
-			$dataView["title"]						= "Conversaciones";
-			$dataView["data"]						= $dataViewData["view_data"];
+			$dataView["title"]						= "Conversaciones";			
 			$dataSession["head"]					= /*--inicio view*/ view('app_cxc_conversation/'.$viewType.'list_head',$dataView);//--finview
 			$dataSession["footer"]					= /*--inicio view*/ view('app_cxc_conversation/'.$viewType.'list_footer',$dataView);//--finview
 			$dataSession["script"]					= /*--inicio view*/ view('app_cxc_conversation/'.$viewType.'list_script',$dataView);//--finview

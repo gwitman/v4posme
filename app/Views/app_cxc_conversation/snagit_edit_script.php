@@ -5,18 +5,23 @@ createApp({
     data() {
         return {
             tab: 						1,
-			
+			message: 					'',
             timer: 						null,
 			entityID:					<?php echo $entityID; ?> ,
-			
-			mensaje:					'',		
 			guardando: 					false,			
 			mostrarAlerta: 				false,
 			
-			objListNotification: 		[],
-			message: 					'',
+			//Tab 1 
+			objListNotification: 		[],			
+			
+			//Tab 2 
 			txtCustomerName:			'<?php echo $objNatural->firstName; ?>',
-			txtCustomerPhone:			'<?php echo $objCustomer->phoneNumber; ?>'
+			txtCustomerPhone:			'<?php echo $objCustomer->phoneNumber; ?>',
+			
+			//Tab 3
+			txtCustomerMessage:			''	
+			
+			
         }
     },
     methods: {
@@ -94,7 +99,7 @@ createApp({
 					},
 					body: JSON.stringify({
 						entityID: 	this.entityID,
-						message: 	this.message
+						message: 	this.txtCustomerMessage
 					})
 			});		
 			
