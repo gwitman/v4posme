@@ -15,8 +15,8 @@ createApp({
 			
 			objListNotification: 		[],
 			message: 					'',
-			txtCustomerName:			'',
-			txtCustomerPhone:			''
+			txtCustomerName:			'<?php echo $objNatural->firstName; ?>',
+			txtCustomerPhone:			'<?php echo $objCustomer->phoneNumber; ?>'
         }
     },
     methods: {

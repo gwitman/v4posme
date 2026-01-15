@@ -157,7 +157,7 @@
 			  
 			  <div class="demo-inline-spacing">
 				<button type="button" class="btn btn-primary"  @click="fnGuardarCliente"  >
-				  <span class="tf-icons bx bx-pie-chart-alt"></span>&nbsp; Guardar
+				  <span class="tf-icons bx  bx-save"></span>&nbsp; Guardar
 				</button>
 				<button v-if="guardando" class="btn btn-danger" type="button" disabled>
 				  <span class="spinner-border" role="status" aria-hidden="true"></span>
@@ -171,10 +171,10 @@
 			  <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"  v-model="message" ></textarea>
 			  <div class="demo-inline-spacing">
 				<button type="button" class="btn btn-primary" @click="fnGuardarNotification" >
-				  <span class="tf-icons bx bx-pie-chart-alt"></span>&nbsp; Enviar
+				  <span class="tf-icons bx  bx-save"></span>&nbsp; Enviar
 				</button>
 				<button type="button" class="btn btn-secondary">
-				  <span class="tf-icons bx bx-bell"></span>&nbsp; Limpiar
+				  <span class="tf-icons bx bx-eraser"></span>&nbsp; Limpiar
 				</button>
 				<button v-if="guardando" class="btn btn-danger" type="button" disabled>
 				  <span class="spinner-border" role="status" aria-hidden="true"></span>
