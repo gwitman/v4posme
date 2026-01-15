@@ -258,15 +258,27 @@ class Notification_Model extends Model  {
 			c.googleCalendarEventID,
 			c.isRead,
 			c.entityIDSource,
-			c.entityIDTarget 
+			c.entityIDTarget,
+			c.createdOn,
+			DATE_FORMAT(c.createdOn, '%%Y-%%m-%%d %%h:%%i:%%s %%p') as createdOnFormato12H,
+			ns.firstName as firstNameSource,
+			nt.firstName as firstNameTartet,
+			ifnull(emp.entityID,'0') as targetIDIsEmployeer
 		from 
 			tb_notification c 
+			inner join tb_naturales ns on 
+				ns.entityID = c.`entityIDSource` 
+			inner join tb_naturales nt on 
+				nt.entityID = c.`entityIDTarget` 
+			left join tb_employee emp on 
+				emp.entityID = nt.entityID 
 		where 
 			c.`entityIDSource` = ".$entityIDCustomer." or 
 			c.`entityIDTarget` = ".$entityIDCustomer."
 		order by 
-			c.notificationID asc 
+			c.notificationID desc 
 		");
+		
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();	

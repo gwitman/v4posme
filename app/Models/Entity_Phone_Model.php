@@ -76,5 +76,20 @@ class Entity_Phone_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
+   function get_rowByPrimaryEntity($companyID,$branchID,$entityID){
+		$db 	= db_connect();
+		$builder	= $db->table("tb_entity_phone");    
+		$sql = "";
+		$sql = sprintf("select tm.companyID,tm.branchID,tm.entityID,tm.entityPhoneID,tm.typeID,ci.name as typeIDDescription,tm.number,tm.isPrimary");
+		$sql = $sql.sprintf(" from tb_entity_phone tm");
+		$sql = $sql.sprintf(" inner join  tb_catalog_item ci on tm.typeID = ci.catalogItemID");
+		$sql = $sql.sprintf(" where tm.entityID = $entityID");
+		$sql = $sql.sprintf(" and tm.branchID = $branchID");
+		$sql = $sql.sprintf(" and tm.companyID = $companyID");
+		$sql = $sql.sprintf(" and tm.isPrimary = 1 ");
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
 }
 ?>

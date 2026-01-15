@@ -77,25 +77,52 @@
 					  
 						<li 
 							v-for="objNotification in objListNotification"  
-							class="timeline-item timeline-item-transparent"
+							class=""
 						>
-						  <span class="timeline-point timeline-point-warning"></span>
-						  <div class="timeline-event">
-							<div class="timeline-header mb-1">
-							  <h6 class="mb-0">Client Meeting</h6>
-							  <small class="text-muted">2026-01-04 04:00 P.M</small>
+						  <!--<span class="timeline-point timeline-point-warning"></span>-->
+						  <!--<div class="">-->
+							<div 
+								class="timeline-header mb-1"
+								:class="{'d-flex justify-content-start align-items-center': objNotification.targetIDIsEmployeer > 0, 'justify-content-end align-items-center': objNotification.targetIDIsEmployeer <= 0}"
+							>
+							
+							  <!-- si source > 0 -->
+							  <template v-if="objNotification.targetIDIsEmployeer <= 0">
+							    <h6 class="mb-0">{{ objNotification.firstNameSource }} </h6>
+							    <h6 class="mb-0 me-0 text-success"  >{{ objNotification.createdOnFormato12H }}</h6>
+							  </template> 
+							  <!-- si source <= 0 -->
+							  <template v-else>
+							    <h6 class="mb-0 me-0 text-success"  >{{ objNotification.createdOnFormato12H }} </h6>
+							    <h6 class="mb-0 ms-2"> {{ objNotification.firstNameSource }} </h6> 							    
+							  </template> 
+
+
+							  <!--<small class="text-muted">{{ objNotification.createdOn }}</small>-->
 							</div>
-							<p class="mb-2">Project meeting with john @10:15am</p>
-							<div class="d-flex flex-wrap">
+							
+							
+
+
+							<p 
+								class="mb-2"
+								:class="{'': objNotification.targetIDIsEmployeer > 0, 'text-end': objNotification.targetIDIsEmployeer <= 0}"
+							>{{ objNotification.message }}</p>
+							<div 
+								class="d-flex flex-wrap"
+								:class="{'': objNotification.targetIDIsEmployeer > 0, 'justify-content-end align-items-center': objNotification.targetIDIsEmployeer <= 0}"
+							>
 							  <div class="avatar me-3">
 								<img src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/html/vertical-menu-template/../../assets/img/avatars/3.png" alt="Avatar" class="rounded-circle" />
 							  </div>
-							  <div>
-								<h6 class="mb-0">Lester McCarthy (Client)</h6>
-								<span> {{ objNotification.message }}</span>
+							  <div
+								:class="{'': objNotification.targetIDIsEmployeer > 0, 'text-end': objNotification.targetIDIsEmployeer <= 0}"
+							  >
+								<h6 class="mb-0">{{ objNotification.phoneFrom }}</h6>
+								<span> {{ objNotification.firstNameTartet }}</span>
 							  </div>
 							</div>
-						  </div>
+						  <!--</div>-->
 						</li>
 						
 						
@@ -108,45 +135,34 @@
 					
 						
 			  <div class="mb-3">
-				<label for="exampleFormControlInput1" class="form-label">Nombre</label>
+				<label for="txtCustomerName" class="form-label">Nombre</label>
 				<input
 				  type="email"
 				  class="form-control"
-				  id="exampleFormControlInput1"
-				  placeholder="name@example.com"
+				  id="txtCustomerName"
+				  v-model="txtCustomerName"
+				  placeholder="nombre" 
 				/>
 			  </div>
 			  <div class="mb-3">
-				<label for="exampleFormControlReadOnlyInput1" class="form-label">Telefono</label>
+				<label for="txtCustomerPhone" class="form-label">Telefono</label>
 				<input
 				  class="form-control"
 				  type="text"
-				  id="exampleFormControlReadOnlyInput1"
-				  placeholder="Readonly input here..."
-				  readonly
+				  id="txtCustomerPhone"
+				  v-model="txtCustomerPhone"
+				  placeholder="88888888" 
 				/>
 			  </div>
 			  
-			  <div class="mb-3">
-				<label for="exampleFormControlSelect1" class="form-label">Interes</label>
-				<select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
-				  <option selected>Open this select menu</option>
-				  <option value="1">One</option>
-				  <option value="2">Two</option>
-				  <option value="3">Three</option>
-				</select>
-			  </div>
-			 
 			  <div class="demo-inline-spacing">
 				<button type="button" class="btn btn-primary"  @click="fnGuardarCliente"  >
 				  <span class="tf-icons bx bx-pie-chart-alt"></span>&nbsp; Guardar
 				</button>
-				
-				<button class="btn btn-primary" type="button" disabled>
+				<button v-if="guardando" class="btn btn-danger" type="button" disabled>
 				  <span class="spinner-border" role="status" aria-hidden="true"></span>
 				  <span class="visually-hidden">Loading...</span>
 				</button>
-				
 			  </div>
 			  
 		  </div>
@@ -159,6 +175,10 @@
 				</button>
 				<button type="button" class="btn btn-secondary">
 				  <span class="tf-icons bx bx-bell"></span>&nbsp; Limpiar
+				</button>
+				<button v-if="guardando" class="btn btn-danger" type="button" disabled>
+				  <span class="spinner-border" role="status" aria-hidden="true"></span>
+				  <span class="visually-hidden">Loading...</span>
 				</button>
 			  </div>
 		  </div>

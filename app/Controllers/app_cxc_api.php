@@ -173,10 +173,86 @@ class app_cxc_api extends _BaseController {
 			]);
 		}
 		
+		//AUTENTICADO
+		if(!$this->core_web_authentication->isAuthenticated())
+		throw new \Exception(USER_NOT_AUTENTICATED);
+		$dataSession		= $this->session->get();
+	
+	
+		//Obtener el colaborador
+		$entityIDEmployer 		= $dataSession["user"]->employeeID;		
+		$companyID				= $dataSession["user"]->companyID;		
+		$branchID				= $dataSession["user"]->branchID;
+		if(!$entityIDEmployer)
+		{
+			return $this->response->setJSON([
+				'success' => false,
+				'message' => 'Usuario no tiene un colaborador asignado',
+				'data' 	  => []
+			]);
+		}
+		
+		//Obtener el tag
+		$objTag		 = $this->Tag_Model->get_rowByName("MENSAJE DE CONVERSACION");
+		
+		//Obtener al cliente
+		$objCustomer = $this->Customer_Model->get_rowByEntity($companyID,$entityID);
+		
+		//Obtener al colaborador
+		$objEmployer 		= $this->Employee_Model->get_rowByEntityID($companyID,$entityIDEmployer);
+		if(!$objEmployer)
+		{
+			return $this->response->setJSON([
+				'success' => false,
+				'message' => 'Colaborador no encontrado',
+				'data' 	  => []
+			]);
+		}
+		
+		//Obtener el telefono del colaborador
+		$objEmployerPhone = $this->Entity_Phone_Model->get_rowByPrimaryEntity($companyID,$branchID,$entityIDEmployer);
+		if(!$objEmployerPhone)
+		{
+			return $this->response->setJSON([
+				'success' => false,
+				'message' => 'Colaborador no tiene telefono primario',
+				'data' 	  => []
+			]);
+		}
+		
+		$objNotification 							= array();		
+		$objNotification["errorID"] 				= 0;
+		$objNotification["from"] 					= $objEmployer->firstName;
+		$objNotification["to"] 						= $objCustomer->firstName;
+		$objNotification["subject"] 				= "no use";
+		$objNotification["message"] 				= $message;
+		$objNotification["summary"] 				= "no use";
+		$objNotification["title"] 					= "no use";
+		$objNotification["tagID"] 					= $objTag->tagID;
+		$objNotification["createdOn"] 				= helper_getDateTime();
+		$objNotification["isActive"] 				= 1;
+		$objNotification["phoneFrom"] 				= $objEmployerPhone[0]->number;
+		$objNotification["phoneTo"] 				= $objCustomer->phoneNumber;
+		$objNotification["programDate"] 			= helper_getDate();
+		$objNotification["programHour"] 			= '00:00';
+		$objNotification["sendOn"] 					= NULL;
+		$objNotification["sendEmailOn"] 			= NULL;
+		$objNotification["sendWhatsappOn"] 			= NULL;
+		$objNotification["addedCalendarGoogle"] 	= 0;
+		$objNotification["quantityOcupation"] 		= 0;
+		$objNotification["quantityDisponible"] 		= 0;
+		$objNotification["googleCalendarEventID"] 	= NULL;
+		$objNotification["isRead"] 					= 1;
+		$objNotification["entityIDSource"] 			= $entityIDEmployer;
+		$objNotification["entityIDTarget"] 			= $entityID;
+		$notificationID 							= $this->Notification_Model->insert_app_posme($objNotification);
+	
+		
 		return $this->response->setJSON([
 			'success' => true,
 			'message' => 'entityID recibido'
 		]);
+		
 	}
 	function setCustomer()
 	{
@@ -194,6 +270,24 @@ class app_cxc_api extends _BaseController {
 				'data' 	  => []
 			]);
 		}
+		
+		//AUTENTICADO
+		if(!$this->core_web_authentication->isAuthenticated())
+		throw new \Exception(USER_NOT_AUTENTICATED);
+		$dataSession		= $this->session->get();
+		
+		
+		//Actualiar Cliente
+		$companyID					= $dataSession["user"]->companyID;		
+		$branchID					= $dataSession["user"]->branchID;
+		$objCustomer 				= array();
+		$objCustomer["phoneNumber"] = $data['txtCustomerPhone'] ?? '';		
+		$result 					= $this->Customer_Model->update_app_posme($companyID,$branchID,$entityID,$objCustomer);
+		
+		//Actualizar Natural
+		$objNatural 				= array();
+		$objNatural["firstName"] 	= $data['txtCustomerName'] ?? '';
+		$result 					= $this->Natural_Model->update_app_posme($companyID,$branchID,$entityID,$objNatural);
 		
 		return $this->response->setJSON([
 			'success' => true,

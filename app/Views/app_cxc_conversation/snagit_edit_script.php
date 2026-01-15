@@ -5,24 +5,19 @@ createApp({
     data() {
         return {
             tab: 						1,
-            objListNotification: 		[],
-            message: 					'',
-            guardando: 					false,
+			
             timer: 						null,
 			entityID:					<?php echo $entityID; ?> ,
 			
-			mensaje:					'',			
-			mostrarAlerta: 				false
+			mensaje:					'',		
+			guardando: 					false,			
+			mostrarAlerta: 				false,
+			
+			objListNotification: 		[],
+			message: 					'',
+			txtCustomerName:			'',
+			txtCustomerPhone:			''
         }
-    },
-    mounted() {
-        // carga inicial
-        this.cargarListado();
-
-        //wg-// refresco cada 3 segundos
-        //wg-this.timer = setInterval(() => {
-        //wg-    this.cargarListado();
-        //wg-}, 3000);
     },
     methods: {
         // TAB 1
@@ -77,16 +72,16 @@ createApp({
 						'Content-Type': 'application/json'
 					},
 					body: JSON.stringify({
-						entityID: 	this.entityID,
-						message: 	this.message
+						entityID: 			this.entityID,
+						txtCustomerName: 	this.txtCustomerName,
+						txtCustomerPhone:	this.txtCustomerPhone
 					})
 			});		
 			
 
-            this.message 		= 'abc';
+            this.message 		= '';
+			this.mostrarAlerta 	= false;
             this.guardando 		= false;
-			this.mostrarAlerta 	= true;
-            
         },
 		// TAB 3
         async fnGuardarNotification() {
@@ -113,6 +108,15 @@ createApp({
         clearInterval(this.timer);
     },
 	mounted() {
+		
+		 // carga inicial
+        this.cargarListado();
+
+        // refresco cada 3 segundos
+        this.timer = setInterval(() => {
+            this.cargarListado();
+        }, 3000);
+		
         // una vez montado, hacemos visible la app
         document.getElementById('app').style.visibility = 'visible';
     }
