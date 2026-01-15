@@ -675,6 +675,7 @@ $routes->match(['get', 'post'], 'app_cxc_api/getConversationActive', 'app_cxc_ap
 $routes->match(['get', 'post'], 'app_cxc_api/getConversationByCustomer', 'app_cxc_api::getConversationByCustomer');
 $routes->match(['get', 'post'], 'app_cxc_api/setConversationByCustomer', 'app_cxc_api::setConversationByCustomer');
 $routes->match(['get', 'post'], 'app_cxc_api/setCustomer', 'app_cxc_api::setCustomer');
+$routes->match(['get', 'post'], 'app_cxc_api/WebHookReceiptMessage_Whatsapp_Wati_posMe', 'app_cxc_api::WebHookReceiptMessage_Whatsapp_Wati_posMe');
 $routes->match(['get', 'post'], 'app_cxc_process/uploadDataSinRiesgo', 'app_cxc_process::uploadDataSinRiesgo');
 $routes->match(['get', 'post'], 'app_cxc_process/index', 'app_cxc_process::index');
 $routes->match(['get', 'post'], 'app_cxc_process/index/(:any)', 'app_cxc_process::index');

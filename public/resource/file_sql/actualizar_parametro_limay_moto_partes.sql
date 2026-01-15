@@ -69,7 +69,7 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
+	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_TRAKING_GPS";## Valida si es neceasrio llevar el seguimiento del gps
@@ -1751,7 +1751,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Limay MOTO Partes' , address = 'Contiguo a estación de policía San Juan de Limay' ,
+	NAME = 'MOTO Partes FC' , address = 'Contiguo a estación de policía San Juan de Limay' ,
 	flavorID = 868 /*usuarioID*/,type='moto_partes'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
