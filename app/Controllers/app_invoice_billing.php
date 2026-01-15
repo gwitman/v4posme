@@ -8563,6 +8563,10 @@ class app_invoice_billing extends _BaseController {
 			$datView["objUser"]						= $this->User_Model->get_rowByPK($companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
 			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 
 			
+			//Obtener el estado de la transaccion
+			$objWorkflowStage 						= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($datView["objTM"]->statusID);
+			if($objWorkflowStage[0]->name == "ANULADA")
+				throw new \Exception("No puede imprimier la factura ya esta anulada");
 			
 		
 			//Configurar Detalle Header
@@ -8708,7 +8712,7 @@ class app_invoice_billing extends _BaseController {
 		}
 		catch(\Exception $ex){
 		    
-		    //$data["session"] = $dataSession;
+		    
 			$data["session"] 	= null;
 		    $data["exception"] 	= $ex;
 		    $data["urlLogin"]  	= base_url();

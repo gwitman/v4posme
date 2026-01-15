@@ -1,7 +1,7 @@
-/*BD: 	u654393652_xqajlztmhrpedy:nica_verde*/
-/*SERVIDOR: hostinger*/
-/*USUARIO:	u654393652_xqajlztmhrpedy*/
+/*BD: 	dbnmwm8wu3qxll:nica_verde*/
+/*SERVIDOR: siteground*/
 
+  
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
