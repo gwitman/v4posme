@@ -132,6 +132,74 @@ class app_cxc_api extends _BaseController {
 			));//--finjson			
 		}
 	}
+	function getConversationByCustomer()
+	{
+		// Obtener JSON enviado por fetch
+		$data 		= $this->request->getJSON(true);
+		// Extraer entityID
+		$entityID 	= $data['entityID'] ?? null;
 
+		// Validación básica
+		if (!$entityID) {
+			return $this->response->setJSON([
+				'success' => false,
+				'message' => 'entityID no recibido',
+				'data' 	  => []
+			]);
+		}
+		
+		$objListNotification = $this->Notification_Model->get_rowByEntityIDCustomer($entityID);
+		return $this->response->setJSON([
+			'success' => true,
+			'message' => 'entityID recibido',
+			'data'	  => $objListNotification
+		]);
+	}
+	
+	function setConversationByCustomer()
+	{
+		// Obtener JSON enviado por fetch
+		$data 		= $this->request->getJSON(true);
+		// Extraer entityID
+		$entityID 	= $data['entityID'] ?? null;
+		$message	= $data['message'] ?? null;
+
+		// Validación básica
+		if (!$entityID) {
+			return $this->response->setJSON([
+				'success' => false,
+				'message' => 'entityID no recibido',
+				'data' 	  => []
+			]);
+		}
+		
+		return $this->response->setJSON([
+			'success' => true,
+			'message' => 'entityID recibido'
+		]);
+	}
+	function setCustomer()
+	{
+		// Obtener JSON enviado por fetch
+		$data 		= $this->request->getJSON(true);
+		// Extraer entityID
+		$entityID 	= $data['entityID'] ?? null;
+		$message	= $data['message'] ?? null;
+
+		// Validación básica
+		if (!$entityID) {
+			return $this->response->setJSON([
+				'success' => false,
+				'message' => 'entityID no recibido',
+				'data' 	  => []
+			]);
+		}
+		
+		return $this->response->setJSON([
+			'success' => true,
+			'message' => 'entityID recibido'
+		]);
+	}
+	
 }
 ?>

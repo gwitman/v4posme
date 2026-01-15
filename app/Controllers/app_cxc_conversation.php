@@ -36,11 +36,13 @@ class app_cxc_conversation extends _BaseController {
 			//Tipo de plantilla
 			$masterPage 	= $dataSession["role"]->typeApp.'_masterpage';
 			$viewType		= $dataSession["role"]->typeApp == "default" ? "" : $dataSession["role"]->typeApp.'_';
+			$entityID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "entityID"); //--finuri
 			 
 			//Renderizar Resultado
 			$dataView["company"]					= $dataSession["company"];
 			$dataView["companyPageSetting"]			= $dataSession["companyPageSetting"];
 			$dataView["title"]						= "Conversaciones";
+			$dataView["entityID"]					= $entityID;
 			$dataSession["head"]					= /*--inicio view*/ view('app_cxc_conversation/'.$viewType.'edit_head',$dataView);//--finview
 			$dataSession["footer"]					= /*--inicio view*/ view('app_cxc_conversation/'.$viewType.'edit_footer',$dataView);//--finview
 			$dataSession["script"]					= /*--inicio view*/ view('app_cxc_conversation/'.$viewType.'edit_script',$dataView);//--finview
@@ -95,7 +97,7 @@ class app_cxc_conversation extends _BaseController {
 			
 			//Vista por defecto 
 			$targetComponentID			= $this->session->get('company')->flavorID;
-			if($dataViewID == null){
+			if($dataViewID == null){				
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;				
 				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
 				
@@ -106,6 +108,7 @@ class app_cxc_conversation extends _BaseController {
 					$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);				
 				}
 			}
+			
 			
 			//Tipo de plantilla
 			$masterPage 	= $dataSession["role"]->typeApp.'_masterpage';

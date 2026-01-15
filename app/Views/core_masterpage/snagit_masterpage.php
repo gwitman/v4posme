@@ -136,7 +136,7 @@
           <ul class="menu-inner py-1">
 			<?php echo $menuRenderLeft; ?>
 			
-			<?php
+			<?php			
             //wg-<!-- Apps & Pages -->
             //wg-<li class="menu-header small text-uppercase">
             //wg-  <span class="menu-header-text">Apps &amp; Pages</span>
@@ -202,6 +202,8 @@
         <!-- Layout container -->
         <div class="layout-page">
 		
+		  <?php echo $head; ?>  
+		  
 		  <?php
           //wg-<!-- Navbar -->
           //wg-<nav
