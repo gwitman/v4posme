@@ -41,24 +41,44 @@ class Customer_Conversation_Model extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 	
+	function insert_app_posme($data){
+		$db 		= db_connect();
+		$builder	= $db->table("tb_customer_conversation");
+		$result		= $builder->insert($data);
+		return $db->insertID();		
+    }
+   
 	//Obtener todas las conversaciones de un agente activa
-    function getBySystemNameAndFlavorID($systemName,$flavorID)
+    function getByEntityIDCustomer_StatusNameRegister($entityIDCustomer)
     {
 		$db 		= db_connect();
-		$builder	= $db->table("tb_public_catalog");		
+		$builder	= $db->table("tb_customer_conversation");		
 		$sql 		= 
 			"
-				select 
-					c.publicCatalogID,c.`name`,
-					c.systemName,c.statusID,
-					c.orden,c.description,
-					c.isActive,c.flavorID 
-				from 
-					tb_public_catalog c  
+				SELECT 
+					c.conversationID,
+					c.entityIDSource,
+					c.entityIDTarget,
+					c.componentIDSource,
+					c.componentIDTarget,
+					c.createdOn,
+					c.statusID,
+					c.messageCounter,
+					c.messageReceiptOn,
+					c.messageSendOn,
+					c.messgeConterNotRead,
+					c.reference1,
+					c.reference2,
+					c.reference3,
+					c.isActive 
+				FROM 
+					tb_customer_conversation c 
+					inner join tb_workflow_stage ws on 
+						ws.workflowStageID = c.statusID 
 				where 
-					c.systemName = '".$systemName."' and 
+					c.entityIDSource = $entityIDCustomer and 
 					c.isActive = 1 and 
-					c.flavorID = '".$flavorID."';
+					ws.isInit = 1 
 				
 			";
 			

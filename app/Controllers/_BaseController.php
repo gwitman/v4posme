@@ -24,6 +24,7 @@ use App\Libraries\core_web_authentication;
 use App\Libraries\core_web_catalog;
 use App\Libraries\core_web_concept;
 use App\Libraries\core_web_convertion;
+use App\Libraries\core_web_conversation;
 use App\Libraries\core_web_counter;
 use App\Libraries\core_web_currency;
 use App\Libraries\core_web_error;
@@ -256,6 +257,7 @@ abstract class _BaseController extends Controller
     protected $core_web_catalog;
     protected $core_web_concept;
     protected $core_web_convertion;
+	protected $core_web_conversation;
     protected $core_web_counter;
     protected $core_web_currency;
     protected $core_web_elfinder;
@@ -433,6 +435,7 @@ abstract class _BaseController extends Controller
         $this->core_web_catalog= new core_web_catalog();
         $this->core_web_concept= new core_web_concept();
         $this->core_web_convertion= new core_web_convertion();
+		$this->core_web_conversation = new core_web_conversation();
         $this->core_web_counter= new core_web_counter();
         $this->core_web_currency= new core_web_currency();
 
