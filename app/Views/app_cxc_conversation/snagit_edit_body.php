@@ -135,26 +135,50 @@
 					
 						
 			  <div class="mb-3">
-				<label for="txtCustomerName" class="form-label">Nombre</label>
+				<label for="txtTab2CustomerName" class="form-label">Nombre</label>
 				<input
 				  type="email"
 				  class="form-control"
-				  id="txtCustomerName"
-				  v-model="txtCustomerName"
+				  id="txtTab2CustomerName"
+				  v-model="txtTab2CustomerName"
 				  placeholder="nombre" 
 				/>
 			  </div>
 			  <div class="mb-3">
-				<label for="txtCustomerPhone" class="form-label">Telefono</label>
+				<label for="txtTab2CustomerPhone" class="form-label">Telefono</label>
 				<input
 				  class="form-control"
 				  type="text"
-				  id="txtCustomerPhone"
-				  v-model="txtCustomerPhone"
+				  id="txtTab2CustomerPhone"
+				  v-model="txtTab2CustomerPhone"
 				  placeholder="88888888" 
 				/>
 			  </div>
 			  
+			  <!-- Users List -->
+			  <div class="mb-3">
+			      <!-- Multiple -->
+                       
+				  <label for="selectpickerMultiple" class="form-label">Multiple</label>
+				  <select
+					id="selectpickerMultiple"
+					class="selectpicker w-100"
+					data-style="btn-default"
+					multiple
+					v-model="txtTab2ListEmployerAsigned"
+					data-icon-base="bx"
+					data-tick-icon="bx-check text-primary"
+				  >
+					<option
+						v-for="(objEmployer, index) in txtTab2ListEmployer"  
+						:key="index"
+						:value="objEmployer.entityID"  
+						>{{ objEmployer.firstName }}</option>
+						
+				  </select>
+                        
+			  </div>
+						
 			  <div class="demo-inline-spacing">
 				<button type="button" class="btn btn-primary"  @click="fnGuardarCliente"  >
 				  <span class="tf-icons bx  bx-save"></span>&nbsp; Guardar
@@ -167,8 +191,19 @@
 			  
 		  </div>
 		  <div class="tab-pane fade" id="navs-justified-messages" role="tabpanel">
-			  <label for="exampleFormControlTextarea1" class="form-label">Mensaje</label>
-			  <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"  v-model="txtCustomerMessage" ></textarea>
+		      <div class="mb-3">
+				<label for="txtTab3CustomerPhone" class="form-label">Telefono</label>
+				<input
+				  class="form-control"
+				  type="text"
+				  id="txtTab3CustomerPhone"
+				  v-model="txtTab3CustomerPhone"
+				  placeholder="" 
+				/>
+			  </div>
+			  
+			  <label for="txtTab3CustomerMessage" class="form-label">Mensaje</label>
+			  <textarea class="form-control" id="txtTab3CustomerMessage" rows="3"  v-model="txtTab3CustomerMessage" ></textarea>
 			  <div class="demo-inline-spacing">
 				<button type="button" class="btn btn-primary" @click="fnGuardarNotification" >
 				  <span class="tf-icons bx  bx-save"></span>&nbsp; Enviar

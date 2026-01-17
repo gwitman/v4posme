@@ -40,13 +40,8 @@ class app_cxc_conversation extends _BaseController {
 			$viewType		= $dataSession["role"]->typeApp == "default" ? "" : $dataSession["role"]->typeApp.'_';
 			$entityID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "entityID"); //--finuri
 			 
-			//Obtener los datos del cliente			
-			$objCustomer 	= $this->Customer_Model->get_rowByEntity($companyID,$entityID);
-			$objNatural 	= $this->Natural_Model->get_rowByPK($companyID,$branchID,$entityID);
-		
+			
 			//Renderizar Resultado
-			$dataView["objCustomer"]				= $objCustomer;
-			$dataView["objNatural"]					= $objNatural;
 			$dataView["company"]					= $dataSession["company"];
 			$dataView["companyPageSetting"]			= $dataSession["companyPageSetting"];
 			$dataView["title"]						= "Conversaciones";

@@ -582,6 +582,77 @@ class core_web_whatsap {
         }
         return "";
     }
+	
+   function sendMessageByEvolutionApiPosMe ($companyID, $message, $phoneDestino)
+   {
+	    //2024-06-30
+		//https://waapi.app/account/
+		//tocken  qMAsXGyf0jIswU6xttfuZvORRhCRJnlrLClmlBgMe31db7ac
+		//tocken  S0EEmlFcUcvlDRdW3cIE8WQedbtdk2GVRKypXWJu8649891a
+		//api     https://waapi.app/api/v1/instances/12905/client/action/send-message
+
+		//gabriel.ley@grupogasani.com
+		//Sistema123.
+
+
+		$Parameter_Model 			= new Parameter_Model();
+		$Company_Parameter_Model 	= new Company_Parameter_Model();
+
+
+		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
+		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
+		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
+
+		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
+		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
+
+		$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
+		$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
+		$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
+
+		//https://api.ultramsg.com/instance65915/messages/chat
+		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
+		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
+
+
+
+		$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;
+		$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
+		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
+		
+		
+		$payload = [
+            'number' => $phoneDestino,
+            'text'   => $message
+        ];
+        $ch 	 = curl_init($objCP_WhatsapUrlSendMessage->value);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST           => true,
+            CURLOPT_HTTPHEADER     => [
+                'Content-Type: application/json',
+                'apikey: ' . $objCP_WhatsapToken->value
+            ],
+            CURLOPT_POSTFIELDS     => json_encode($payload)
+        ]);
+
+        $response = curl_exec($ch);
+        $error    = curl_error($ch);
+
+        curl_close($ch);
+
+        if ($error) {
+            return [
+                'success' => false,
+                'error'   => $error
+            ];
+        }
+
+        return json_decode($response, true);
+
+   }
 
    function sendMessageByWaapi($companyID, $message, $phoneDestino)
    {

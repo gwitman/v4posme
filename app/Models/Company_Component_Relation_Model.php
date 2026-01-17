@@ -22,7 +22,8 @@ class Company_Component_Relation_Model extends Model  {
 		return $builder->update($data);
 		
    }
-   function get_rowByPK($companyComponentRelationID){
+   function get_rowByPK($companyComponentRelationID)
+   {
 		$db 	= db_connect();
 		    
 		$sql = "";
@@ -43,6 +44,99 @@ class Company_Component_Relation_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
    }
+   
+   function get_ConversationEmployerBy_entityIDCustomer($entityIDCustomer)
+   {
+	    $db  = db_connect();
+		    
+		$sql = "";
+		$sql = sprintf("
+		select 
+			distinct 
+		    nat.entityID,
+			emp.employeNumber,
+			nat.firstName 
+		from 
+			tb_company_component_relation r
+			inner join tb_employee emp on 
+				emp.entityID = r.componentItemIDTarget  
+			inner join tb_naturales nat on 
+				nat.entityID = emp.entityID 
+			inner join tb_customer_conversation cc on 
+				cc.conversationID = r.componentItemIDSource 
+			inner join tb_naturales cus on 
+				cus.entityID = r.entityIDSource 
+		where 
+			r.isActive = 1 and 
+			cus.entityID = $entityIDCustomer and 
+			nat.isActive = 1 
+			
+		");
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }	
+   function get_ConversationEmployerBy_ConversationID($conversationID)
+   {
+	    $db  = db_connect();
+		    
+		$sql = "";
+		$sql = sprintf("
+		select 
+			distinct 
+		    nat.entityID,
+			emp.employeNumber,
+			nat.firstName 
+		from 
+			tb_company_component_relation r
+			inner join tb_employee emp on 
+				emp.entityID = r.componentItemIDTarget  
+			inner join tb_naturales nat on 
+				nat.entityID = emp.entityID 
+		where 
+			r.isActive = 1 and 
+			r.componentItemIDSource = $conversationID and 
+			nat.isActive = 1 
+			
+		");
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }   
+   function get_ConversationEmployerBy_entityIDEmployerAnd_ConversationID($entityIDEmployer,$converationID)
+   {
+	    $db  = db_connect();
+		    
+		$sql = "";
+		$sql = sprintf("
+		select 
+			distinct 
+		    nat.entityID,
+			emp.employeNumber,
+			nat.firstName 
+		from 
+			tb_company_component_relation r
+			inner join tb_employee emp on 
+				emp.entityID = r.componentItemIDTarget  
+			inner join tb_naturales nat on 
+				nat.entityID = emp.entityID 
+				
+			inner join tb_customer_conversation cc on 
+				cc.conversationID = r.componentItemIDSource 
+			inner join tb_naturales cus on 
+				cus.entityID = r.entityIDSource 
+		where 
+			r.isActive = 1 and 
+			r.componentItemIDSource = $converationID and 
+			nat.isActive = 1 and 
+			emp.entityID = $entityIDEmployer and 
+			cus.entityID = $entityIDCustomer;
+			
+		");
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   } 
    
 }
 ?>

@@ -669,13 +669,16 @@ $routes->match(['get', 'post'], 'app_config_noti/save/(:any)', 'app_config_noti:
 $routes->match(['get', 'post'], 'app_config_noti/add', 'app_config_noti::add');
 $routes->match(['get', 'post'], 'app_config_noti/index', 'app_config_noti::index');
 $routes->match(['get', 'post'], 'app_config_noti/index/(:any)', 'app_config_noti::index');
+
 $routes->match(['get', 'post'], 'app_cxc_api/getCustomerBalance', 'app_cxc_api::getCustomerBalance');
 $routes->match(['get', 'post'], 'app_cxc_api/getSimulateAmortization', 'app_cxc_api::getSimulateAmortization');
-$routes->match(['get', 'post'], 'app_cxc_api/getConversationActive', 'app_cxc_api::getConversationActive');
-$routes->match(['get', 'post'], 'app_cxc_api/getConversationByCustomer', 'app_cxc_api::getConversationByCustomer');
-$routes->match(['get', 'post'], 'app_cxc_api/setConversationByCustomer', 'app_cxc_api::setConversationByCustomer');
-$routes->match(['get', 'post'], 'app_cxc_api/setCustomer', 'app_cxc_api::setCustomer');
-$routes->match(['get', 'post'], 'app_cxc_api/WebHookReceiptMessage_Whatsapp_Wati_posMe', 'app_cxc_api::WebHookReceiptMessage_Whatsapp_Wati_posMe');
+$routes->match(['get', 'post'], 'app_cxc_api/getConversationConversation_ByEmployer', 'app_cxc_api::getConversationConversation_ByEmployer');
+$routes->match(['get', 'post'], 'app_cxc_api/getConversationNotification_ByCustomer', 'app_cxc_api::getConversationNotification_ByCustomer');
+$routes->match(['get', 'post'], 'app_cxc_api/setConversationNotification_ByCustomer', 'app_cxc_api::setConversationNotification_ByCustomer');
+$routes->match(['get', 'post'], 'app_cxc_api/setConversationCustomer', 'app_cxc_api::setConversationCustomer');
+$routes->match(['get', 'post'], 'app_cxc_api/getConversationCustomer_ByCustomer', 'app_cxc_api::getConversationCustomer_ByCustomer');
+$routes->match(['get', 'post'], 'app_cxc_api/WebHookReceiptMessage_Whatsapp_EvolutionApi_posMe', 'app_cxc_api::WebHookReceiptMessage_Whatsapp_EvolutionApi_posMe');
+
 $routes->match(['get', 'post'], 'app_cxc_process/uploadDataSinRiesgo', 'app_cxc_process::uploadDataSinRiesgo');
 $routes->match(['get', 'post'], 'app_cxc_process/index', 'app_cxc_process::index');
 $routes->match(['get', 'post'], 'app_cxc_process/index/(:any)', 'app_cxc_process::index');

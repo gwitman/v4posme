@@ -14,7 +14,7 @@ createApp({
         // TAB 1
         async cargarListado() {
 			try {
-				const res = await fetch('<?php echo base_url(); ?>/app_cxc_api/getConversationActive', {
+				const res = await fetch('<?php echo base_url(); ?>/app_cxc_api/getConversationConversation_ByEmployer', {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json'
