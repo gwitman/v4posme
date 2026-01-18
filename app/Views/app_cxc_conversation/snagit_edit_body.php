@@ -1,13 +1,38 @@
 <style>
 #app { visibility: hidden; }
+.light-style .bootstrap-select .filter-option-inner-inner{
+	color: red;
+}
+.layout-navbar-fixed .layout-wrapper:not(.layout-horizontal):not(.layout-without-menu) .layout-page {
+  padding-top: 0px !important;
+}
+.layout-navbar-fixed .layout-wrapper:not(.layout-without-menu) .layout-page {
+  padding-top: 0px !important;
+}
 </style>
 
 
 <div id='app' >
 	
+	<div class=""				
+		:class="mostrarWaite ? '' : 'd-none' " 
+	>		    	
+		<div class="card-body">
+		  <div class="demo-inline-spacing">
+			
+			<button class="btn btn-linkedin" type="button" disabled>
+			  <span class="spinner-border" role="status" aria-hidden="true"></span>
+			  Espere un momento...
+			</button>
+		  </div>
+		</div>
+	</div>
+	
 	<div v-if="mostrarAlerta"
-         class="alert alert-danger alert-dismissible" 
-         role="alert">
+         class="alert alert-dismissible" 
+         role="alert"
+		 :class="error ? 'alert-danger' : 'alert-success' "
+	>
         {{ message }}
         <button type="button"
                 class="btn-close"
@@ -159,7 +184,7 @@
 			  <div class="mb-3">
 			      <!-- Multiple -->
                        
-				  <label for="selectpickerMultiple" class="form-label">Multiple</label>
+				  <label for="selectpickerMultiple" class="form-label">Colaboradores</label>
 				  <select
 					id="selectpickerMultiple"
 					class="selectpicker w-100"
@@ -178,6 +203,22 @@
 				  </select>
                         
 			  </div>
+			  
+			   <div class="mb-3">
+				  <label for="txtAccionConversationID" class="form-label">Accion</label>
+				  <select class="form-select" 
+					id="txtAccionConversationID" aria-label="Default select example"
+					v-model="txtTab2WorkflowStageID"
+				  >
+					<option
+						v-for="(objWorkflowStage, index) in txtTab2ListWorkflowStage"  
+						:key="index"
+						:value="objWorkflowStage.workflowStageID"  
+						>{{ objWorkflowStage.name }}</option>
+						
+				  </select>
+			   </div>
+			  
 						
 			  <div class="demo-inline-spacing">
 				<button type="button" class="btn btn-primary"  @click="fnGuardarCliente"  >
@@ -207,8 +248,8 @@
 			  <div class="demo-inline-spacing">
 				<button type="button" class="btn btn-primary" @click="fnGuardarNotification" >
 				  <span class="tf-icons bx  bx-save"></span>&nbsp; Enviar
-				</button>
-				<button type="button" class="btn btn-secondary">
+				</button> 
+				<button type="button" class="btn btn-secondary" @click="fnClearNotification" >
 				  <span class="tf-icons bx bx-eraser"></span>&nbsp; Limpiar
 				</button>
 				<button v-if="guardando" class="btn btn-danger" type="button" disabled>

@@ -47,7 +47,22 @@ class Customer_Conversation_Model extends Model
 		$result		= $builder->insert($data);
 		return $db->insertID();		
     }
-   
+    function update_app_posme($conversationID,$data){
+		$db 		= db_connect();
+		$builder	= $db->table("tb_customer_conversation");				
+		
+		$builder->where("conversationID",$conversationID);	
+		return $builder->update($data);
+		
+    }
+	function update_app_posme_ByCustomer($entityIDCustomer,$data){
+		$db 		= db_connect();
+		$builder	= $db->table("tb_customer_conversation");				
+		
+		$builder->where("entityIDSource",$entityIDCustomer);	
+		return $builder->update($data);
+		
+    }
 	//Obtener todas las conversaciones de un agente activa
     function getByEntityIDCustomer_StatusNameRegister($entityIDCustomer)
     {

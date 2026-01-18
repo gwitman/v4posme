@@ -505,6 +505,8 @@ class core_web_conversation{
 				];
 				
 			}
+			
+			return $entityID;
 
 		}
 		catch(\Exception $ex)
@@ -575,7 +577,7 @@ class core_web_conversation{
 		//Afiliar la conversacion a un agente	
 		try
 		{
-			$core_web_tools							= new core_web_tools();		
+			$core_web_tools							= new core_web_tools();
 			$Company_Component_Relation_Model		= new Company_Component_Relation_Model();	
 			$objComponentCustomerConversation		= $core_web_tools->getComponentIDBy_ComponentName("tb_customer_conversation");
 			if(!$objComponentCustomerConversation)
@@ -591,12 +593,11 @@ class core_web_conversation{
 				{
 					foreach($objListEntityIDEmployer as $entityIDEmployer)
 					{
-						$objRelation = $Company_Component_Relation_Model->get_ConversationEmployerBy_entityIDCustomerAnd_entityIDEmployerAnd_ConversationID(
+						$objRelation = $Company_Component_Relation_Model->get_ConversationEmployerBy_entityIDEmployerAnd_ConversationID(
 							$entityIDEmployer,
 							$conversationID
 						);
-						
-						if(!objRelation)
+						if(!$objRelation)
 						{
 							$objCCRelation							= array();
 							$objCCRelation["componentIDSource"] 	= $objComponentCustomerConversation->componentID;

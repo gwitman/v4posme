@@ -22,6 +22,17 @@ class Company_Component_Relation_Model extends Model  {
 		return $builder->update($data);
 		
    }
+   function delete_app_posme_byComponentIDSource_AndComponentItemSourceID($componentIDConversation,$conversationID){
+		$db 		= db_connect();
+		$builder	= $db->table("tb_company_component_relation");		
+  		
+		
+		
+		$builder->where("componentIDSource",$componentIDConversation);
+		$builder->where("componentItemIDSource",$conversationID);
+		return $builder->delete();
+		
+   } 
    function get_rowByPK($companyComponentRelationID)
    {
 		$db 	= db_connect();
@@ -65,7 +76,7 @@ class Company_Component_Relation_Model extends Model  {
 			inner join tb_customer_conversation cc on 
 				cc.conversationID = r.componentItemIDSource 
 			inner join tb_naturales cus on 
-				cus.entityID = r.entityIDSource 
+				cus.entityID = cc.entityIDSource 
 		where 
 			r.isActive = 1 and 
 			cus.entityID = $entityIDCustomer and 
@@ -124,13 +135,12 @@ class Company_Component_Relation_Model extends Model  {
 			inner join tb_customer_conversation cc on 
 				cc.conversationID = r.componentItemIDSource 
 			inner join tb_naturales cus on 
-				cus.entityID = r.entityIDSource 
+				cus.entityID = cc.entityIDSource 
 		where 
 			r.isActive = 1 and 
 			r.componentItemIDSource = $converationID and 
 			nat.isActive = 1 and 
-			emp.entityID = $entityIDEmployer and 
-			cus.entityID = $entityIDCustomer;
+			emp.entityID = $entityIDEmployer;
 			
 		");
 		

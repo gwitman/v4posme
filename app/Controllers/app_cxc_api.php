@@ -164,17 +164,57 @@ class app_cxc_api extends _BaseController {
 			if(!$objComponent)
 			throw new \Exception("00409 EL COMPONENTE 'tb_notification_conversation' NO EXISTE...");
 			
-			//Vista por defecto 
-			$targetComponentID			= $this->session->get('company')->flavorID;			
-			$parameter["{companyID}"]	= $this->session->get('user')->companyID;				
-			$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
-			
-			
-			if(!$dataViewData){
-				$targetComponentID			= 0;	
-				$parameter["{companyID}"]	= $this->session->get('user')->companyID;					
-				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);				
+			//Obtener  los datos del cliente
+			$data 		= $this->request->getJSON(true);
+			// Extraer entityID
+			$tipoLista 	= $data['entityID'] ?? null;
+
+			// Validación básica
+			if (!$tipoLista) {
+				return $this->response->setJSON([
+					'success' => false,
+					'message' => 'tipoLista no recibido',
+					'data' 	  => []
+				]);
 			}
+			
+			
+			//Vista por defecto 
+			if($tipoLista == 'activas')
+			{
+				$targetComponentID			= $this->session->get('company')->flavorID;			
+				$parameter["{companyID}"]	= $this->session->get('user')->companyID;	
+				$parameter["{userID}"]		= $dataSession["user"]->userID;
+				$parameter["{tipoLista}"]	= $tipoLista;
+				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
+				
+				
+				if(!$dataViewData){
+					$targetComponentID			= 0;	
+					$parameter["{userID}"]		= $dataSession["user"]->userID;
+					$parameter["{companyID}"]	= $this->session->get('user')->companyID;
+					$parameter["{tipoLista}"]	= $tipoLista;
+					$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);				
+				}
+			}
+			if($tipoLista != 'activas')
+			{
+				$targetComponentID			= $this->session->get('company')->flavorID;			
+				$parameter["{companyID}"]	= $this->session->get('user')->companyID;	
+				$parameter["{userID}"]		= $dataSession["user"]->userID;
+				$parameter["{tipoLista}"]	= $tipoLista;
+				$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$objComponent->componentID,$tipoLista,CALLERID_LIST,$resultPermission,$parameter);
+				
+				
+				if(!$dataViewData){
+					$targetComponentID			= 0;	
+					$parameter["{userID}"]		= $dataSession["user"]->userID;
+					$parameter["{companyID}"]	= $this->session->get('user')->companyID;
+					$parameter["{tipoLista}"]	= $tipoLista;
+					$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$objComponent->componentID,$tipoLista,CALLERID_LIST,$resultPermission,$parameter);
+				}
+			}
+			
 		
 			
 			
@@ -249,7 +289,7 @@ class app_cxc_api extends _BaseController {
 			$objCustomer 				= $this->Customer_Model->get_rowByEntity($companyID,$entityID);
 			$objNatural 				= $this->Natural_Model->get_rowByPK($companyID,$branchID,$entityID);
 			$objListEmployer			= $this->Employee_Model->get_rowByCompanyID($companyID);
-			$objListEmployerAsigned 	= $this->Company_Component_Relation_Model->get_EmployerBy_CustomerID($entityID);
+			$objListEmployerAsigned 	= $this->Company_Component_Relation_Model->get_ConversationEmployerBy_entityIDCustomer($entityID);
 			
 			
 			return $this->response->setJSON([
@@ -290,7 +330,13 @@ class app_cxc_api extends _BaseController {
 			]);
 		}
 		
-		$objListNotification = $this->Notification_Model->get_rowByEntityIDCustomer($entityID);
+		$objListNotification 					= $this->Notification_Model->get_rowByEntityIDCustomer($entityID);		
+		$objCustomerConversation				= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($entityID);
+		$objConversation 						= array();
+		$objConversation["messgeConterNotRead"] = 0 ;
+		$this->Customer_Conversation_Model->update_app_posme_ByCustomer($entityID,$objConversation);
+		
+		
 		return $this->response->setJSON([
 			'success' => true,
 			'message' => 'entityID recibido',
@@ -304,6 +350,7 @@ class app_cxc_api extends _BaseController {
 		// Extraer entityID
 		$entityID 	= $data['entityID'] ?? null;
 		$message	= $data['txtTab3CustomerMessage'] ?? null;
+		$phone		= $data['txtTab3CustomerPhone'] ?? null;
 
 		// Validación básica
 		if (!$entityID) {
@@ -327,26 +374,46 @@ class app_cxc_api extends _BaseController {
 		if(!$entityIDEmployer)
 		{
 			return $this->response->setJSON([
-				'success' => false,
-				'message' => 'Usuario no tiene un colaborador asignado',
-				'data' 	  => []
+				'success' 	=> false,
+				'message' 	=> 'Usuario no tiene un colaborador asignado',
+				'data' 	  	=> [],
+				'entityID' 	=> $entityID
 			]);
 		}
 		
+		//Obtener el cliente		
+		$objCustomer			= $this->Customer_Model->get_rowByPhoneNumber($phone);
+		if(!$objCustomer)
+		{
+			//crear el cliente
+			$entityIDCustomer 	= $this->core_web_conversation->createCustomer($dataSession,$phone,$phone,$this->request);
+			
+			//crear una conversacion al cliente
+			$conversationIsNew	= true;
+			$conversationID 	= $this->core_web_conversation->createConversation($dataSession,$entityIDCustomer);		
+			
+			//asociar el colaborador a la converascion
+			$objListEntityIDEmployer 	= array();
+			$objListEntityIDEmployer[] 	= $entityIDEmployer; 
+			$this->core_web_conversation->createEmployerInConversation($dataSession,$conversationID,$objListEntityIDEmployer);
+			
+		}
+		$objCustomer			= $this->Customer_Model->get_rowByPhoneNumber($phone);
+		$entityID				= $objCustomer[0]->entityID;
+		
+		
 		//Obtener el tag
 		$objTag		 = $this->Tag_Model->get_rowByName("MENSAJE DE CONVERSACION");
-		
-		//Obtener al cliente
-		$objCustomer = $this->Customer_Model->get_rowByEntity($companyID,$entityID);
 		
 		//Obtener al colaborador
 		$objEmployer 		= $this->Employee_Model->get_rowByEntityID($companyID,$entityIDEmployer);
 		if(!$objEmployer)
 		{
 			return $this->response->setJSON([
-				'success' => false,
-				'message' => 'Colaborador no encontrado',
-				'data' 	  => []
+				'success' 	=> false,
+				'message' 	=> 'Colaborador no encontrado',
+				'data' 	  	=> [],
+				'entityID' 	=> $entityID
 			]);
 		}
 		
@@ -355,16 +422,38 @@ class app_cxc_api extends _BaseController {
 		if(!$objEmployerPhone)
 		{
 			return $this->response->setJSON([
-				'success' => false,
-				'message' => 'Colaborador no tiene telefono primario',
-				'data' 	  => []
+				'success' 	=> false,
+				'message' 	=> 'Colaborador no tiene telefono primario',
+				'data' 	 	=> [],
+				'entityID' 	=> $entityID
 			]);
 		}
+		
+		
+		//Actulizar Conversacion, cliente existe pero no tiene conversacion
+		$objCustomerConversation				= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($objCustomer[0]->entityID);
+		if(!$objCustomerConversation)
+		{
+			//crear una conversacion al cliente
+			$conversationIsNew	= true;
+			$conversationID 	= $this->core_web_conversation->createConversation($dataSession,$entityID);		
+			
+			//asociar el colaborador a la converascion
+			$objListEntityIDEmployer 	= array();
+			$objListEntityIDEmployer[] 	= $entityIDEmployer; 
+			$this->core_web_conversation->createEmployerInConversation($dataSession,$conversationID,$objListEntityIDEmployer);
+			$objCustomerConversation	= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($objCustomer[0]->entityID);
+		}
+		
+		$objConversation 						= array();
+		$objConversation["messgeConterNotRead"] = 0;
+		$this->Customer_Conversation_Model->update_app_posme($objCustomerConversation[0]->conversationID,$objConversation);
+		
 		
 		$objNotification 							= array();		
 		$objNotification["errorID"] 				= 0;
 		$objNotification["from"] 					= $objEmployer->firstName;
-		$objNotification["to"] 						= $objCustomer->firstName;
+		$objNotification["to"] 						= $objCustomer[0]->firstName;
 		$objNotification["subject"] 				= "no use";
 		$objNotification["message"] 				= $message;
 		$objNotification["summary"] 				= "no use";
@@ -373,7 +462,7 @@ class app_cxc_api extends _BaseController {
 		$objNotification["createdOn"] 				= helper_getDateTime();
 		$objNotification["isActive"] 				= 1;
 		$objNotification["phoneFrom"] 				= $objEmployerPhone[0]->number;
-		$objNotification["phoneTo"] 				= $objCustomer->phoneNumber;
+		$objNotification["phoneTo"] 				= $objCustomer[0]->phoneNumber;
 		$objNotification["programDate"] 			= helper_getDate();
 		$objNotification["programHour"] 			= '00:00';
 		$objNotification["sendOn"] 					= NULL;
@@ -389,11 +478,12 @@ class app_cxc_api extends _BaseController {
 		$notificationID 							= $this->Notification_Model->insert_app_posme($objNotification);
 	
 		//Enviar mensaje usando wapi
-		$this->core_web_whatsap->sendMessageByEvolutionApiPosMe($companyID, $message, $objCustomer->phoneNumber);
+		$this->core_web_whatsap->sendMessageByEvolutionApiPosMe($companyID, $message, $objCustomer[0]->phoneNumber);
 		
 		return $this->response->setJSON([
-			'success' => true,
-			'message' => 'entityID recibido'
+			'success' 	=> true,
+			'message' 	=> 'entityID recibido',
+			'entityID' 	=> $entityID
 		]);
 		
 	}
@@ -431,6 +521,45 @@ class app_cxc_api extends _BaseController {
 		$objNatural["firstName"] 	= $data['txtTab2CustomerName'] ?? '';
 		$result 					= $this->Natural_Model->update_app_posme($companyID,$branchID,$entityID,$objNatural);
 		
+		
+		
+		$objComponentCustomerConversation		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer_conversation");
+		if(!$objComponentCustomerConversation)
+			throw new \Exception("EL COMPONENTE 'tb_customer_conversation' NO EXISTE...");
+		
+		//Obtener la conversacion activa
+		$objCustomerConversation  = $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($entityID);
+		if(!$objCustomerConversation)
+		{
+			//Obtener la conversacion		
+			$conversationIsNew	= true;
+			$conversationID 	= $this->core_web_conversation->createConversation($dataSession,$entityID);
+		
+		}
+		$objCustomerConversation  = $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($entityID);
+		
+		//Eliminar los agentes de la conversacion activa
+		$this->Company_Component_Relation_Model->delete_app_posme_byComponentIDSource_AndComponentItemSourceID(
+			$objComponentCustomerConversation->componentID,
+			$objCustomerConversation[0]->conversationID
+		);
+		
+		
+		//Asociar los nuevos agentes a la conversacon activa
+		$objListEntityIDEmployer = $data["txtTab2ListEmployerAsigned"];
+		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer);
+		
+		//Finalizar la Conversacion
+		$workflowStageID 	= $data['txtTab2WorkflowStageID'] ?? '';
+		$objWorkflowStage 	= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($workflowStageID);
+		if($objWorkflowStage[0]->aplicable == 1)
+		{
+			$objConversationNew 			= array();
+			$objConversationNew["statusID"] = $workflowStageID;
+			$this->Customer_Conversation_Model->update_app_posme($objCustomerConversation[0]->conversationID,$objConversationNew);
+		}
+		
+		//Resutado
 		return $this->response->setJSON([
 			'success' => true,
 			'message' => 'entityID recibido'
@@ -1319,7 +1448,7 @@ class app_cxc_api extends _BaseController {
 		//wg-evolution-api-	?? $messageData['message']['extendedTextMessage']['text']
 		//wg-evolution-api-	?? '';
 
-		$data["customerPhoneNumber"] = "8414689658";
+		$data["customerPhoneNumber"] = "887646645";
 		$data["customerFirstName"]	 = "witmaj gonzalez";
 		$data["customerMessage"]	 = "hola que tal";
 		
@@ -1344,12 +1473,17 @@ class app_cxc_api extends _BaseController {
 		
 		//Obtener la conversacion
 		$conversationIsNew			= false;
+		$conversationID				= 0;
 		$objCustomerConversation	= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($objCustomer[0]->entityID);
 		if(!$objCustomerConversation)
 		{
-			$this->core_web_conversation->createConversation($dataSession,$objCustomer[0]->entityID);
+			$conversationIsNew	= true;
+			$conversationID 	= $this->core_web_conversation->createConversation($dataSession,$objCustomer[0]->entityID);
 		}
-		$objCustomerConversation	= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($objCustomer[0]->entityID);
+		$objCustomerConversation				= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($objCustomer[0]->entityID);
+		$objConversation 						= array();
+		$objConversation["messgeConterNotRead"] = 1 ;
+		$this->Customer_Conversation_Model->update_app_posme($objCustomerConversation[0]->conversationID,$objConversation);
 		
 		
 		//Ingresar el mensaje a la conversacion activa		
@@ -1382,13 +1516,16 @@ class app_cxc_api extends _BaseController {
 		$notificationID 							= $this->Notification_Model->insert_app_posme($objNotification);
 
 		//Obtener la lista de agentes a afiliar
-		$objListEntityIDEmployer 					= $this->core_web_conversation->getAllEmployer($companyID,$dataSession["company"]->type,$customerPhoneNumber,$message,$conversationIsNew );		
+		$objListEntityIDEmployer 					= $this->core_web_conversation->getAllEmployer($companyID,$dataSession["company"]->type,$customerPhoneNumber,$message,$conversationIsNew );				
 		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer);
 		
 		//Resultado
 		return $this->response->setJSON([
-			'success' => true,
-			'message'    => 'JSON valido'
+			'success' 			=> true,
+			'message'   		=> 'JSON valido',
+			'entityID'			=> $objCustomer[0]->entityID,
+			'converationID'		=> $objCustomerConversation[0]->conversationID,
+			'notificationID'	=> $notificationID
 		]);
 		
 	}
