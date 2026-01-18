@@ -1,28 +1,42 @@
 /*BD:	dbs3obkhhc1pgu:posme*/
 /*servidor:	siteground*/
 
+
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "31" 
+	tb_company_parameter.value = "bc428892" 
+	##tb_company_parameter.value = "31" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
+	
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "bc428892" 
+	##tb_company_parameter.value = "31" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION_PARAMETERF1";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "26" 
+	tb_company_parameter.value = "14157386102" 
+	##tb_company_parameter.value = "26" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_CURRENT_PROPIETARY_COMMERSE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://api.posme.es/api/messages/send" 
+	tb_company_parameter.value 		= "https://messages-sandbox.nexmo.com/v1/messages" 
+	##tb_company_parameter.value 	= "https://api.posme.es/api/messages/send" 	
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WAHTSAP_URL_ENVIO_MENSAJE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "oRy77xQImuNSEOr2tguJThbPKFa9Ss" 
+	tb_company_parameter.value = "2x(jDTzF" 
+	##tb_company_parameter.value = "oRy77xQImuNSEOr2tguJThbPKFa9Ss" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema

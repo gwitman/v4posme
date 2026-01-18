@@ -263,18 +263,20 @@ class Notification_Model extends Model  {
 			DATE_FORMAT(c.createdOn, '%%Y-%%m-%%d %%h:%%i:%%s %%p') as createdOnFormato12H,
 			ns.firstName as firstNameSource,
 			nt.firstName as firstNameTartet,
+			
 			ifnull(emp.entityID,'0') as targetIDIsEmployeer
 		from 
 			tb_notification c 
-			inner join tb_naturales ns on 
+			left join tb_naturales ns on 
 				ns.entityID = c.`entityIDSource` 
-			inner join tb_naturales nt on 
-				nt.entityID = c.`entityIDTarget` 
+			left join tb_naturales nt on 
+				nt.entityID = c.`entityIDTarget`  
+				
 			left join tb_employee emp on 
-				emp.entityID = nt.entityID 
+				emp.entityID = c.entityIDTarget
 		where 
 			c.`entityIDSource` = ".$entityIDCustomer." or 
-			c.`entityIDTarget` = ".$entityIDCustomer."
+			c.`entityIDTarget` = ".$entityIDCustomer." 
 		order by 
 			c.notificationID desc 
 		");

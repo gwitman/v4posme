@@ -7,7 +7,8 @@ class Employee_Model extends Model  {
    function __construct(){		
       parent::__construct();
    }
-   function update_app_posme($companyID,$branchID,$entityID,$data){
+   function update_app_posme($companyID,$branchID,$entityID,$data)
+   {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_employee");
 		
@@ -17,7 +18,9 @@ class Employee_Model extends Model  {
 		return $builder->update($data);
 		
    }
-   function delete_app_posme($companyID,$branchID,$entityID){
+   
+   function delete_app_posme($companyID,$branchID,$entityID)
+   {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_employee");		
 		
@@ -28,6 +31,7 @@ class Employee_Model extends Model  {
 		return $builder->update($data);
 		
    } 
+   
    function insert_app_posme($data){
 		$db 	= db_connect();
 		$builder	= $db->table("tb_employee");
@@ -36,6 +40,7 @@ class Employee_Model extends Model  {
 		return $db->insertID();		
 		
    }   
+   
    function get_rowByBranchIDAndType($companyID,$branchID,$typeEmployer)
    {
 		$db 		= db_connect();
@@ -53,7 +58,9 @@ class Employee_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
-   function get_rowByBranchID($companyID,$branchID){
+   
+   function get_rowByBranchID($companyID,$branchID)
+   {
 		$db 		= db_connect();
 		$builder	= $db->table("tb_employee");    
 		
@@ -68,7 +75,9 @@ class Employee_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
-   function get_rowByPK($companyID,$branchID,$entityID){
+  
+   function get_rowByPK($companyID,$branchID,$entityID)
+   {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_employee");    
 		
@@ -85,7 +94,8 @@ class Employee_Model extends Model  {
 		return $db->query($sql)->getRow();
    }
 
-   function get_rowByEmployeeID($companyID,$branchID,$employeId){
+   function get_rowByEmployeeID($companyID,$branchID,$employeId)
+   {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_employee te");    
 		$query		= $builder->select('te.employeeID,
@@ -129,7 +139,8 @@ class Employee_Model extends Model  {
 		return $query->get()->getRowObject();
 	}
 
-   function get_rowByCompanyID($companyID){
+   function get_rowByCompanyID($companyID)
+   {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_employee");    
 		
@@ -143,7 +154,9 @@ class Employee_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
-   function get_rowByEntityID($companyID,$entityID){
+   
+   function get_rowByEntityID($companyID,$entityID)
+   {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_employee");    
 		
@@ -159,7 +172,8 @@ class Employee_Model extends Model  {
 		return $db->query($sql)->getRow();
    }
 
-   function get_rowByEmployeeIDList($companyID,$branchID,$employeId){
+   function get_rowByEmployeeIDList($companyID,$branchID,$employeId)
+   {
 	$db 	= db_connect();
 	$builder	= $db->table("tb_employee te");    
 	$query		= $builder->select('te.employeeID,
@@ -201,8 +215,8 @@ class Employee_Model extends Model  {
 	return $query->get()->getResultArray();
 	}
 	
-	
-	function get_rowByItemReference1($reference1){
+   function get_rowByItemReference1($reference1)
+   {
 		$db 	= db_connect();
 		$builder	= $db->table("tb_item");    
 		$sql = "";
@@ -228,6 +242,7 @@ class Employee_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
+   
    function get_rowByInvoiceItem ($companyID,$transactionMasterID,$itemID)
    {
 	   $db 			= db_connect();
@@ -346,8 +361,5 @@ class Employee_Model extends Model  {
 		return $db->query($sql)->getRow();
    }
   
-   
-   
-   
 }
 ?>

@@ -78,6 +78,7 @@ class app_cxc_conversation extends _BaseController {
 			throw new \Exception(USER_NOT_AUTENTICATED);
 			$dataSession		= $this->session->get();
 		
+			
 			//PERMISO SOBRE LA FUNCTION
 			if(APP_NEED_AUTHENTICATION == true){				
 				

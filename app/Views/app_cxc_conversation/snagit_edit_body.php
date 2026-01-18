@@ -181,9 +181,8 @@
 			  </div>
 			  
 			  <!-- Users List -->
+			  <!--
 			  <div class="mb-3">
-			      <!-- Multiple -->
-                       
 				  <label for="selectpickerMultiple" class="form-label">Colaboradores</label>
 				  <select
 					id="selectpickerMultiple"
@@ -203,8 +202,9 @@
 				  </select>
                         
 			  </div>
+			  -->
 			  
-			   <div class="mb-3">
+			  <div class="mb-3">
 				  <label for="txtAccionConversationID" class="form-label">Accion</label>
 				  <select class="form-select" 
 					id="txtAccionConversationID" aria-label="Default select example"
@@ -217,7 +217,117 @@
 						>{{ objWorkflowStage.name }}</option>
 						
 				  </select>
-			   </div>
+			  </div>
+			  
+			   <!-- Advance Styling Options -->
+              
+              <div class="row">
+                <!-- Accordion with Icon -->
+                <div class="col-md mb-4 mb-md-2">
+                  <div class="accordion mt-3" id="accordionWithIcon">
+                    <div class="card accordion-item card">
+                      <h2 class="accordion-header d-flex align-items-center">
+                        <button
+                          type="button"
+                          class="accordion-button  bg-danger text-white "
+                          data-bs-toggle="collapse"
+                          data-bs-target="#accordionWithIcon-1"
+                          aria-expanded="false"
+                        >
+                          <i class="bx bx-bar-chart-alt-2 me-2 text-white "></i>
+                          Colaboradores
+                        </button>
+                      </h2>
+
+                      <div id="accordionWithIcon-1" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+							<!-- Custom SVG Icon Checkbox -->
+							<div class="col-xl-12 mb-12">
+								<div class="row" v-for="(row, rowIndex) in txtTab2ListEmployer" :key="rowIndex">
+								  <div class="col-md mb-md-0 mb-2" v-for="collaborator in row" :key="collaborator.entityID">
+									<div class="form-check custom-option custom-option-icon">
+									  <label class="form-check-label custom-option-content">
+										<span class="custom-option-body">
+										  <!-- Icono o avatar -->
+										  <img
+											src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/html/vertical-menu-template/../../assets/img/icons/unicons/chart.png"
+											class="w-px-40 mb-2"
+											:alt="collaborator.firstName"
+										  />
+										  <span class="custom-option-title">{{ collaborator.firstName }}</span>
+										</span>
+										<input
+										  type="checkbox"
+										  class="form-check-input"
+										  :value="collaborator.entityID"
+										  v-model="txtTab2ListEmployerAsigned"
+										/>
+									  </label>
+									</div>
+								  </div>
+								</div>
+							</div>
+							<!-- /Custom SVG Icon Checkbox -->
+							  
+                        </div>
+                      </div>
+                    </div>
+
+					<!--
+                    <div class="accordion-item card">
+                      <h2 class="accordion-header d-flex align-items-center">
+                        <button
+                          type="button"
+                          class="accordion-button collapsed"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#accordionWithIcon-2"
+                          aria-expanded="false"
+                        >
+                          <i class="bx bx-briefcase me-2"></i>
+                          Header Option 2
+                        </button>
+                      </h2>
+                      <div id="accordionWithIcon-2" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                          Dessert ice cream donut oat cake jelly-o pie sugar plum cheesecake. Bear claw dragée oat cake
+                          dragée ice cream halvah tootsie roll. Danish cake oat cake pie macaroon tart donut gummies.
+                          Jelly beans candy canes carrot cake. Fruitcake chocolate chupa chups.
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="accordion-item active">
+                      <h2 class="accordion-header d-flex align-items-center">
+                        <button
+                          type="button"
+                          class="accordion-button collapsed"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#accordionWithIcon-3"
+                          aria-expanded="false"
+                        >
+                          <i class="bx bx-gift me-2"></i>
+                          Header Option 3
+                        </button>
+                      </h2>
+                      <div id="accordionWithIcon-3" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                          Oat cake toffee chocolate bar jujubes. Marshmallow brownie lemon drops cheesecake. Bonbon
+                          gingerbread marshmallow sweet jelly beans muffin. Sweet roll bear claw candy canes oat cake
+                          dragée caramels. Ice cream wafer danish cookie caramels muffin.
+                        </div>
+                      </div>
+                    </div>
+                  
+					-->
+				  </div>
+                </div>
+			  </div>
+              <!--/ Accordion with Icon -->
+				
+				
+				
+			  
+			  
 			  
 						
 			  <div class="demo-inline-spacing">

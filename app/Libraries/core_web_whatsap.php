@@ -653,6 +653,112 @@ class core_web_whatsap {
         return json_decode($response, true);
 
    }
+   function sendMessageByVanageApiPosMe ($companyID, $message, $phoneDestino)
+   {
+	    //2024-06-30
+		//https://waapi.app/account/
+		//tocken  qMAsXGyf0jIswU6xttfuZvORRhCRJnlrLClmlBgMe31db7ac
+		//tocken  S0EEmlFcUcvlDRdW3cIE8WQedbtdk2GVRKypXWJu8649891a
+		//api     https://waapi.app/api/v1/instances/12905/client/action/send-message
+
+		//gabriel.ley@grupogasani.com
+		//Sistema123.
+
+
+		$Parameter_Model 			= new Parameter_Model();
+		$Company_Parameter_Model 	= new Company_Parameter_Model();
+
+		//numero origen
+		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
+		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
+		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
+
+		//token
+		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
+		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
+
+		//session
+		$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
+		$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
+		$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
+
+		//url
+		//https://api.ultramsg.com/instance65915/messages/chat
+		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
+		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
+
+
+
+		$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;
+		$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
+		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
+		
+		
+		
+		
+		
+        // Tus credenciales
+        $apiKey    		= $objCP_WhatsapUrlSession->value;
+        $apiSecret 		= $objCP_WhatsapToken->value;
+        $url 			= $objCP_WhatsapUrlSendMessage->value;
+		$phoneOrigen 	= $objCP_WhatsapPropertyNumber->value;
+
+        // Datos del mensaje
+        $data = [
+            "from" 			=> $phoneOrigen,
+            "to" 			=> $phoneDestino,
+            "message_type" 	=> "text",
+            "text" 			=> $message,
+            "channel" 		=> "whatsapp"
+        ];
+		
+
+        // Inicializar cURL
+		log_message("error",print_r($data,true));
+		log_message("error",print_r($url,true));
+		log_message("error",print_r($apiKey . ":" . $apiSecret,true));
+        $ch = curl_init($url);
+
+        // Configurar opciones
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+            'Accept: application/json'
+        ]);
+        curl_setopt($ch, CURLOPT_USERPWD, $apiKey . ":" . $apiSecret); // Autenticación básica
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        // Ejecutar petición
+        $response = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            // Error de cURL
+            $error_msg = curl_error($ch);
+            curl_close($ch);
+            $result = [
+                'success' => false,
+                'message' => $error_msg
+            ];
+			log_message("error",print_r($result,true));
+			return $result;
+        }
+
+        curl_close($ch);
+		log_message("error",print_r($response,true));
+		return $response;
+		
+        // Retornar respuesta de la API
+        //wg-return $this->response->setJSON([
+        //wg-    'success' => true,
+        //wg-    'response' => json_decode($response, true)
+        //wg-]);
+  
+
+   }
+
 
    function sendMessageByWaapi($companyID, $message, $phoneDestino)
    {

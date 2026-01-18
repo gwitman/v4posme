@@ -98,17 +98,23 @@ createApp({
 				this.mensaje 					= '';
 				this.txtTab2CustomerName		= json.objNatural.firstName;
 				this.txtTab2CustomerPhone		= json.objCustomer.phoneNumber;				
-				this.txtTab2ListEmployer		= json.objListEmployer;
+				
 				this.txtTab2ListEmployerAsigned = json.objListEmployerAsigned.map(
 					item => Number(item.entityID)
 				);
 				this.txtTab3CustomerPhone		= json.objCustomer.phoneNumber;
 				
+				//Parse los datos de 3 en  3
+				//this.txtTab2ListEmployer		= json.objListEmployer;
+				this.txtTab2ListEmployer 		= [];
+				for (let i = 0; i < json.objListEmployer.length; i += 3) {
+					this.txtTab2ListEmployer.push(json.objListEmployer.slice(i, i + 3));
+				} 
 				
-				// 🔄 REFRESH obligatorio
-				this.$nextTick(() => {
-					$('#selectpickerMultiple').selectpicker('refresh')
-				})
+				//// 🔄 REFRESH obligatorio
+				//this.$nextTick(() => {
+				//	$('#selectpickerMultiple').selectpicker('refresh')
+				//})
 				
 			
 			} 
@@ -167,12 +173,38 @@ createApp({
 					})
 			});		
 			const json 		= await res.json();		
-			debugger;
+			
+			//Mostrar errores
+			if(json == undefined)
+			{
+				this.txtTab3CustomerMessage = '';
+				this.message 				= "Error al procesar informacion";
+				this.mostrarAlerta 			= true;
+				this.error 					= true;
+				this.guardando 				= false;
+				return;
+			}
+			
+			
+			
+			//Mostrar errores
+			if(json.success == false)
+			{
+				this.txtTab3CustomerMessage = '';
+				this.message 				= json.message;
+				this.mostrarAlerta 			= true;
+				this.error 					= true;
+				this.guardando 				= false;
+				return;
+			}
+			
+			//Redirijir
 			if(this.entityID != Number(json.entityID))
 			{
 				window.location.href = '<?php echo base_url().'/app_cxc_conversation/edit/entityID/'; ?>'+json.entityID;
-			}			
+			}
 			
+			//Notificar 
 			this.txtTab3CustomerMessage = '';
 			this.message 				= 'Mensaje enviado';
 			this.mostrarAlerta 			= true;
@@ -194,9 +226,9 @@ createApp({
 		this.cargarDatosDePantalla();
 
         // refresco cada 3 segundos
-        //WG-this.timer = setInterval(() => {
-        //WG-    this.cargarListado();
-        //WG-}, 3000);
+        this.timer = setInterval(() => {
+            this.cargarListado();
+        }, 3000);
 		
         // una vez montado, hacemos visible la app
         document.getElementById('app').style.visibility = 'visible';

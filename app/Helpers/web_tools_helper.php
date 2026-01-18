@@ -767,6 +767,24 @@ function clearNumero($numero)
 	
 }
 
+function getNumberPhone($numero)
+{
+    // 1. Eliminar todo lo que no sea número
+    $numeroLimpio = preg_replace('/\D/', '', $numero);
+
+    // 2. Si tiene más de 8 dígitos, tomar los últimos 8
+    if (strlen($numeroLimpio) > 8) {
+        $numeroLimpio = substr($numeroLimpio, -8);
+    }
+
+    // 3. Si tiene menos de 8 dígitos, rellenar con ceros a la izquierda
+    if (strlen($numeroLimpio) < 8) {
+        $numeroLimpio = str_pad($numeroLimpio, 8, '0', STR_PAD_LEFT);
+    }
+
+    return $numeroLimpio;
+}
+
 
 
 function helper_getParameterFiltered($objListCompanyParameter, $parameterName)

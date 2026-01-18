@@ -540,6 +540,11 @@ class core_web_conversation{
 			
 			
 			$objWorkflowStageInit							= $core_web_workflow->getWorkflowInitStage("tb_customer_conversation","statusID",$companyID,$branchID,$roleID);			
+			if(!$objWorkflowStageInit)
+				throw new \Exception("EL COMPONENTE 'Rol sin acceso al estado inicial de la conversacion' ...");
+			
+			
+			
 			$objCustomerConversation 						= array();			
 			$objCustomerConversation["entityIDSource"] 		= $entityIDCustomer;
 			$objCustomerConversation["entityIDTarget"] 		= 0;
@@ -569,6 +574,7 @@ class core_web_conversation{
 				'file'    => $ex->getFile()       // archivo (opcional pero útil)
 			];
 			log_message("error",print_r($objException,true));
+			return 0;
 		}
 	}
 
@@ -623,6 +629,17 @@ class core_web_conversation{
 			log_message("error",print_r($objException,true));
 		}
 		
+	}
+
+	function getMessageSignature($companyID,$typeCompany,$firstNameEmployer,$mensaje)
+	{	
+		// Título en negrita para WhatsApp
+		$titulo 		= "*" . trim($firstNameEmployer) . "*";
+
+		// Mensaje final con salto de línea
+		$mensajeFinal 	= $titulo . "\n" . trim($mensaje);
+
+		return $mensajeFinal;
 	}
 }
 ?>
