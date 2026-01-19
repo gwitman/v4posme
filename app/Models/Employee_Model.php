@@ -361,5 +361,46 @@ class Employee_Model extends Model  {
 		return $db->query($sql)->getRow();
    }
   
+   function get_validatePermissionBy_EmployerID_PuedeAtenderWhatsappInCRM($entityIDEmployer)
+   {
+	   $db 			= db_connect();
+		$builder	= $db->table("tb_user");    
+		$sql = "";
+		$sql = sprintf("
+			select 
+				u.userID,
+				u.employeeID, 
+				u.nickname ,
+				mel.elementID,
+				mel.menuElementID,
+				mel.display,
+				mel.description,
+				mel.address,
+				me.selected 
+				
+			from 
+				tb_user u 
+				inner join tb_membership m on 
+					m.userID = u.userID 
+				inner join tb_user_permission me on 
+					m.roleID = me.roleID 
+				inner join tb_menu_element mel on 
+					mel.elementID = me.elementID 
+				
+				inner join tb_role r on 
+					r.roleID = m.roleID and 
+					r.typeApp = mel.typeApp 
+			where 
+				u.isActive = 1 and 
+				me.selected = 0 /*puede observar todo*/ and 
+				mel.display = 'SE LE PERMITE ATENDER WHATSAPP'  and 
+				u.employeeID = $entityIDEmployer 
+				
+		");	
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+   
 }
 ?>

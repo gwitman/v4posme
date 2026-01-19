@@ -288,9 +288,19 @@ class app_cxc_api extends _BaseController {
 			$branchID					= $dataSession["user"]->branchID;			
 			$objCustomer 				= $this->Customer_Model->get_rowByEntity($companyID,$entityID);
 			$objNatural 				= $this->Natural_Model->get_rowByPK($companyID,$branchID,$entityID);
-			$objListEmployer			= $this->Employee_Model->get_rowByCompanyID($companyID);
-			$objListEmployerAsigned 	= $this->Company_Component_Relation_Model->get_ConversationEmployerBy_entityIDCustomer($entityID);
-			
+			$objListEmployerAll			= $this->Employee_Model->get_rowByCompanyID($companyID);
+			$objListEmployerAsigned 	= $this->Company_Component_Relation_Model->get_ConversationEmployerBy_entityIDCustomer($entityID);			
+			$objListEmployer 			= [];
+
+			foreach ($objListEmployerAll as $employer) {
+				// 👉 condición de ejemplo
+				$resultValidation = $this->Employee_Model->get_validatePermissionBy_EmployerID_PuedeAtenderWhatsappInCRM($employer->entityID);
+				if($resultValidation)
+				{
+					$objListEmployer[] = $employer;
+				}
+			}
+
 			
 			return $this->response->setJSON([
 				'success' 				 => true,

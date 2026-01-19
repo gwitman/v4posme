@@ -154,9 +154,10 @@ class core_web_conversation{
 		}
 		else 
 		{
-			$objEmployee_Model 	= new Employee_Model();
-			$objListEmployer 	= $objEmployee_Model->get_rowByCompanyID($companyID);
-			$arrayListEmployer  = array();
+			$core_web_permission 	= new core_web_permission();
+			$objEmployee_Model 		= new Employee_Model();
+			$objListEmployer 		= $objEmployee_Model->get_rowByCompanyID($companyID);
+			$arrayListEmployer  	= array();
 			
 			//Si la conversacion es antiguoa no enlazar colaboradores
 			if($conversationIsNew == false)
@@ -166,7 +167,12 @@ class core_web_conversation{
 			{
 				foreach($objListEmployer as $employer)
 				{
-					$arrayListEmployer[] = $employer->entityID;
+					$validatePermiso 	 = $objEmployee_Model->get_validatePermissionBy_EmployerID_PuedeAtenderWhatsappInCRM($employer->entityID);
+					if($validatePermiso)
+					{
+						$arrayListEmployer[] = $employer->entityID;
+					}
+					
 				}
 			}
 			return $arrayListEmployer;
