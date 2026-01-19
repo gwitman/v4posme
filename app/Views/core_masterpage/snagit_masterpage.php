@@ -15,6 +15,25 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
+	<!-- Manifest -->
+	<link rel="manifest" href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/mobile_instaler/manifest.json">
+
+	<!-- Color de la barra superior -->
+	<meta name="theme-color" content="#1e88e5">
+
+	<!-- iOS -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="default">
+	<meta name="apple-mobile-web-app-title" content="posMe Live">
+
+	<!-- Icono iOS -->
+	<link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+	<!-- Responsive -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
     <title><?= $title ?></title>
 
     <meta name="description" content="" />
@@ -781,6 +800,22 @@
 
 	<!-- Page JS -->	
   
+	<script>
+		if ('serviceWorker' in navigator) {		  
+		  console.log('Service Worker soportado');
+		  navigator.serviceWorker.register('<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/mobile_instaler/sw.js')
+			.then(reg => {
+			  console.log('SW registrado', reg);
+		  })
+		  .catch(err => {
+			  console.error('Error registrando SW', err);
+		  });
+		}
+	</script>
+	
 	<?= $script ?>
+	
+	
+
   </body>
 </html>
