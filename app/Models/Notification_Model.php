@@ -231,8 +231,8 @@ class Notification_Model extends Model  {
    
    function get_rowByEntityIDCustomer($entityIDCustomer)
    {
-	   $db 	= db_connect();
-		    
+	    $db 	= db_connect();
+		$db->query("SET NAMES utf8mb4");
 		$sql = "";
 		$sql = sprintf("
 		 select 

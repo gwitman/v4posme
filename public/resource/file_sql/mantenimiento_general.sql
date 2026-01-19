@@ -158,3 +158,7 @@ FROM
 	dual 
 WHERE 
 	UPPER(@insertarBanco) = UPPER('si');
+	
+	
+##Cambiar el character set de la tabla de notificaicones para almacenar imojis
+##ALTER TABLE tb_notification CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; 

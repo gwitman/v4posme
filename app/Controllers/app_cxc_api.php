@@ -330,7 +330,7 @@ class app_cxc_api extends _BaseController {
 			]);
 		}
 		
-		$objListNotification 					= $this->Notification_Model->get_rowByEntityIDCustomer($entityID);		
+		$objListNotification 					= $this->Notification_Model->get_rowByEntityIDCustomer($entityID);			
 		$objCustomerConversation				= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($entityID);
 		$objConversation 						= array();
 		$objConversation["messgeConterNotRead"] = 0 ;
@@ -344,12 +344,22 @@ class app_cxc_api extends _BaseController {
 		]);
 	}
 	function setConversationNotification_ByCustomer()
-	{
-		
-		
+	{	
 		
 		// Obtener JSON enviado por fetch
-		$data 		= $this->request->getJSON(true);
+		$file 		= $this->request->getFile('image');
+		$data 		= array();
+		if(!$file)
+		{
+			$data 		= $this->request->getJSON(true);
+		}
+		else
+		{
+			$data["entityID"] 				= $this->request->getPost('entityID') ?? '';
+			$data["txtTab3CustomerMessage"] = $this->request->getPost('txtTab3CustomerMessage') ?? '';
+			$data["txtTab3CustomerPhone"] 	= $this->request->getPost('txtTab3CustomerPhone') ?? '';
+		}
+		
 		// Extraer entityID
 		$entityID 	= $data['entityID'] ?? null;
 		$message	= $data['txtTab3CustomerMessage'] ?? null;
@@ -374,6 +384,12 @@ class app_cxc_api extends _BaseController {
 		throw new \Exception(USER_NOT_AUTENTICATED);
 		$dataSession		= $this->session->get();
 	
+	
+		//Obtener el Componente de Transacciones Other Input to Inventory
+		$objComponentCustomerConversation	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer_conversation");
+		if(!$objComponentCustomerConversation)
+		throw new \Exception("EL COMPONENTE 'tb_customer_conversation' NO EXISTE...");
+		
 	
 		//Obtener el colaborador
 		$entityIDEmployer 		= $dataSession["user"]->employeeID;		
@@ -457,8 +473,7 @@ class app_cxc_api extends _BaseController {
 			//crear una conversacion al cliente
 			log_message("error",print_r("crear conversacion",true));
 			$conversationIsNew	= true;			
-			$conversationID 	= $this->core_web_conversation->createConversation($dataSession,$entityID);	
-			log_message("error",print_r($conversationID,true));
+			$conversationID 	= $this->core_web_conversation->createConversation($dataSession,$entityID);				
 			if($conversationID == 0)
 			{
 				$dataResult = [
@@ -484,14 +499,59 @@ class app_cxc_api extends _BaseController {
 		$this->Customer_Conversation_Model->update_app_posme($objCustomerConversation[0]->conversationID,$objConversation);
 		
 		
+		//PROCESAR IMAGEN
+		if($file)
+		{
+			
+			//Validar si es un archivo valido
+			if (!$file->isValid()) {
+				$dataResult = [			
+					'success' => false,
+					'message' => 'Archivo inválido',
+					'data' 	  => []
+				];
+				
+				log_message("error",print_r($dataResult,true));			
+				return $this->response->setJSON($dataResult);
+			}
+			if (!in_array($file->getMimeType(), ['image/png','image/jpeg','image/jpg','image/webp'])) {				
+				$dataResult = [			
+					'success' => false,
+					'message' => 'Formato no permitido',
+					'data' 	  => []
+				];
+				
+				log_message("error",print_r($dataResult,true));			
+				return $this->response->setJSON($dataResult);				
+			}
+			// Generar nombre único
+			$newName 		= $file->getRandomName();
+			$urlPath 		= "/company_2/component_".$objComponentCustomerConversation->componentID."/component_item_".$objCustomerConversation[0]->conversationID;
+			$documentoPath 	= PATH_FILE_OF_APP.$urlPath;
+			$urlPublic 		= base_url()."/".$documentoPath."/".$newName;
+			
+			log_message("error",print_r($urlPublic,true));
+			log_message("error",print_r($documentoPath."/".$newName,true));
+			
+			if (!file_exists($documentoPath))
+			{
+				mkdir($documentoPath, 0755,true);
+				chmod($documentoPath, 0755);
+			}
+			
+			// Mover archivo
+			$file->move($documentoPath, $newName, true);
+		}
+		
+		
 		$objNotification 							= array();		
 		$objNotification["errorID"] 				= 0;
 		$objNotification["from"] 					= $objEmployer->firstName;
 		$objNotification["to"] 						= $objCustomer[0]->firstName;
-		$objNotification["subject"] 				= "no use";
+		$objNotification["subject"] 				= $file ? $urlPublic : 'no use';
 		$objNotification["message"] 				= $message;
 		$objNotification["summary"] 				= "no use";
-		$objNotification["title"] 					= "no use";
+		$objNotification["title"] 					= $file ? 'image' : 'text';
 		$objNotification["tagID"] 					= $objTag->tagID;
 		$objNotification["createdOn"] 				= helper_getDateTime();
 		$objNotification["isActive"] 				= 1;
@@ -513,7 +573,23 @@ class app_cxc_api extends _BaseController {
 	
 		//Enviar mensaje usando wapi
 		$message	= $this->core_web_conversation->getMessageSignature($companyID,$typeCompany,$objEmployer->firstName,$message);
-		$this->core_web_whatsap->sendMessageByVanageApiPosMe($companyID, $message, clearNumero($objCustomer[0]->phoneNumber));
+		//$this->core_web_whatsap->sendMessageBy_VanageApiText_PosMe(
+		//	$companyID, 
+		//	$message, 
+		//	clearNumero($objCustomer[0]->phoneNumber),
+		//	$file ? 'image' : 'text',
+		//	$file ? $urlPublic : false 			
+		//);
+		
+		$this->core_web_whatsap->sendMessageBy_VanageApiImage_PosMe(
+			$companyID, 
+			$message, 
+			clearNumero($objCustomer[0]->phoneNumber),
+			$file ? 'image' : 'text',
+			$file ? $urlPublic : false 			
+		);
+		
+		
 		return $this->response->setJSON([
 			'success' 	=> true,
 			'message' 	=> 'entityID recibido',
@@ -1616,9 +1692,19 @@ class app_cxc_api extends _BaseController {
         //$msgId   = $input['message_uuid'] ?? '';
         //$status  = $input['message_type'] ?? '';
 		log_message("error","input: init process message");
-		$data["customerPhoneNumber"] = $input['from'] ?? '';
-		$data["customerFirstName"]	 = $input['from'] ?? '';
-		$data["customerMessage"]	 = $input['text'] ?? '';
+		$data["customerPhoneNumber"] 	= $input['from'] ?? '';
+		$data["customerFirstName"]	 	= $input['from'] ?? '';
+		$data["customerMessage"]	 	= $input['text'] ?? '';
+		$data["customerMessageType"]	= $input['message_type'] ?? '';
+		$data["customerMessageUrl"]		= "";
+		$data["customerMessageFile"]	= "";
+		if($data["customerMessageType"] == "image")
+		{
+			$data["customerMessage"]	 	= $input['image']['caption'] ?? '';
+			$data["customerMessageUrl"]		= $input['image']['url'] ?? '';
+			$data["customerMessageFile"]	= $input['image']['name'] ?? '';
+		}
+		
 		
 		
 		//$data["customerPhoneNumber"] 	= "887646645";
@@ -1628,6 +1714,9 @@ class app_cxc_api extends _BaseController {
 		$customerPhoneNumber 	= getNumberPhone($data["customerPhoneNumber"]);
 		$customerFirstName		= getNumberPhone($data["customerFirstName"]);
 		$message				= $data["customerMessage"];
+		$messageUrl				= $data["customerMessageUrl"];
+		$messageFile			= $data["customerMessageFile"];
+		$messageType			= $data["customerMessageType"];
 		$dataSession 			= $this->core_web_authentication->get_UserBy_PasswordAndNickname(APP_USERDEFAULT_VALUE, APP_PASSWORDEFAULT_VALUE);
 		$companyID				= $dataSession["user"]->companyID;
 		$branchID				= $dataSession["user"]->branchID;
@@ -1665,10 +1754,10 @@ class app_cxc_api extends _BaseController {
 		$objNotification["errorID"] 				= 0;
 		$objNotification["from"] 					= $objCustomer[0]->firstName;
 		$objNotification["to"] 						= '';
-		$objNotification["subject"] 				= "no use";
+		$objNotification["subject"] 				= $messageUrl;
 		$objNotification["message"] 				= $message;
-		$objNotification["summary"] 				= "no use";
-		$objNotification["title"] 					= "no use";
+		$objNotification["summary"] 				= $messageFile;
+		$objNotification["title"] 					= $messageType;
 		$objNotification["tagID"] 					= $objTag->tagID;
 		$objNotification["createdOn"] 				= helper_getDateTime();
 		$objNotification["isActive"] 				= 1;

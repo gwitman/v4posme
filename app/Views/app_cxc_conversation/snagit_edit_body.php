@@ -9,6 +9,9 @@
 .layout-navbar-fixed .layout-wrapper:not(.layout-without-menu) .layout-page {
   padding-top: 0px !important;
 }
+.cursor-pointer {
+  cursor: pointer;
+}
 </style>
 
 
@@ -102,7 +105,7 @@
 					  
 						<li 
 							v-for="objNotification in objListNotification"  
-							class=""
+							class="mt-3"
 						>
 						  <!--<span class="timeline-point timeline-point-warning"></span>-->
 						  <!--<div class="">-->
@@ -125,14 +128,28 @@
 
 							  <!--<small class="text-muted">{{ objNotification.createdOn }}</small>-->
 							</div>
-							
-							
-
 
 							<p 
 								class="mb-2"
 								:class="{'': objNotification.targetIDIsEmployeer > 0, 'text-end': objNotification.targetIDIsEmployeer <= 0}"
-							>{{ objNotification.message }}</p>
+							>
+								{{ objNotification.message }}
+								
+								<!-- si source > 0 -->
+								<template v-if="objNotification.title == 'image'">
+								  <br/>
+								  <span 
+									class="badge bg-info cursor-pointer" 
+									@click="openImageModal(objNotification.subject)"
+								  > Ver imagen</span>
+								</template> 
+								<!-- si source <= 0 -->
+								<template v-else>
+								</template> 
+								
+							</p>
+							  
+							
 							<div 
 								class="d-flex flex-wrap"
 								:class="{'': objNotification.targetIDIsEmployeer > 0, 'justify-content-end align-items-center': objNotification.targetIDIsEmployeer <= 0}"
@@ -355,6 +372,12 @@
 			  
 			  <label for="txtTab3CustomerMessage" class="form-label">Mensaje</label>
 			  <textarea class="form-control" id="txtTab3CustomerMessage" rows="3"  v-model="txtTab3CustomerMessage" ></textarea>
+			  
+			  <div class="mb-3">
+				<label for="formFile" class="form-label">Subir archivo</label>
+				<input class="form-control" type="file" id="formFile" @change="onFileChange" />
+			  </div>
+			  
 			  <div class="demo-inline-spacing">
 				<button type="button" class="btn btn-primary" @click="fnGuardarNotification" >
 				  <span class="tf-icons bx  bx-save"></span>&nbsp; Enviar
@@ -370,4 +393,18 @@
 		  </div>
 		</div>
 	</div>
+	
+		
+	<!-- Add New Credit Card Modal -->
+	<div class="modal fade" id="addNewCCModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+		  <div class="modal-content p-3 p-md-5">
+			<div class="modal-body text-center">
+			   <img :src="modalImageSrc" class="img-fluid"  />
+			</div>
+		  </div>
+		</div>
+	</div>
+	<!--/ Add New Credit Card Modal -->
+	  
 </div>
