@@ -14,6 +14,7 @@ createApp({
 			error:						false,
 			modalImageSrc: 				'',
 			imageFile: 					null,
+			sonidoReproducido:			false,
 			
 			//Tab 1 
 			objListNotification: 		[],			
@@ -35,6 +36,51 @@ createApp({
     },
     methods: {
         // TAB 1
+		playChatNotification() {
+			const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+			const oscillator = audioCtx.createOscillator();
+			const gainNode   = audioCtx.createGain();
+
+			oscillator.type = "sine";
+			oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
+			oscillator.frequency.exponentialRampToValueAtTime(
+				1320,
+				audioCtx.currentTime + 0.15
+			);
+
+			gainNode.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+			gainNode.gain.exponentialRampToValueAtTime(
+				0.15,
+				audioCtx.currentTime + 0.05
+			);
+			gainNode.gain.exponentialRampToValueAtTime(
+				0.0001,
+				audioCtx.currentTime + 0.6
+			);
+
+			oscillator.connect(gainNode);
+			gainNode.connect(audioCtx.destination);
+
+			oscillator.start();
+			oscillator.stop(audioCtx.currentTime + 0.6);
+		},
+		verificarMensajesNoLeidos(objListNotification)
+		{
+			const hayNoLeidos = objListNotification.some(
+				obj => Number(obj.isRead) == 0 
+			);
+	
+			
+			if (hayNoLeidos && this.sonidoReproducido == false) {
+				this.playChatNotification();
+				this.sonidoReproducido = true;
+			}
+
+			if (!hayNoLeidos) {
+				this.sonidoReproducido = false;
+			}
+		},
         async cargarListado() {
 			try {
 				const res = await fetch('<?php echo base_url(); ?>/app_cxc_api/getConversationNotification_ByCustomer', {
@@ -66,7 +112,7 @@ createApp({
 				// 🟢 CASO 3: success = true con datos				
 				this.mensaje 				= '';
 				this.objListNotification 	= json.data; // 🔥 aquí Vue limpia y vuelve a renderizar
-				
+				this.verificarMensajesNoLeidos(json.data);
 			
 			} 
 			catch (error) 
@@ -278,10 +324,10 @@ createApp({
         this.cargarListado();
 		this.cargarDatosDePantalla();
 
-        //WG-// refresco cada 3 segundos
-        //WG-this.timer = setInterval(() => {
-        //WG-    this.cargarListado();
-        //WG-}, 3000);
+        // refresco cada 3 segundos
+        this.timer = setInterval(() => {
+            this.cargarListado();
+        }, 3000);
 		
         // una vez montado, hacemos visible la app
         document.getElementById('app').style.visibility = 'visible';

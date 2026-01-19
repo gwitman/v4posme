@@ -67,9 +67,10 @@ createApp({
 				obj => Number(obj.messgeConterNotRead) > 0
 			);
 
-			if (hayNoLeidos && !this.sonidoReproducido) {
+			
+			if (hayNoLeidos) {
 				this.playChatNotification();
-				//this.sonidoReproducido = true;
+				this.sonidoReproducido = true;
 			}
 
 			if (!hayNoLeidos) {
@@ -128,7 +129,7 @@ createApp({
 				this.mostrarAlerta			= false;
 				this.mensaje 				= '';				
 				this.objListConversation 	= json.data; 	// 🔥 aquí Vue limpia y vuelve a renderizar 				
-				//this.verificarMensajesNoLeidos(json.data) 	//this.playChatNotification();
+				this.verificarMensajesNoLeidos(json.data) 	//this.playChatNotification();
 			
 			} 
 			catch (error) 

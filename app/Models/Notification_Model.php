@@ -16,6 +16,14 @@ class Notification_Model extends Model  {
 		return $builder->update($data);
 		
    }
+   function update_app_posme_notification_byCustomerID($entityIDCustomer,$data){
+		$db 		= db_connect();
+		$builder	= $db->table("tb_notification");
+		
+		$builder->where("entityIDTarget",$entityIDCustomer);
+		return $builder->update($data);
+		
+   }
    function update_app_posme($notificationID,$data){
 		$db 		= db_connect();
 		$builder	= $db->table("tb_notification");

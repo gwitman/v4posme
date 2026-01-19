@@ -336,6 +336,8 @@ class app_cxc_api extends _BaseController {
 		$objConversation["messgeConterNotRead"] = 0 ;
 		$this->Customer_Conversation_Model->update_app_posme_ByCustomer($entityID,$objConversation);
 		
+		$objNotification["isRead"] 	= 1;
+		$this->Notification_Model->update_app_posme_notification_byCustomerID($entityID,$objNotification);
 		
 		return $this->response->setJSON([
 			'success' => true,
@@ -573,22 +575,27 @@ class app_cxc_api extends _BaseController {
 	
 		//Enviar mensaje usando wapi
 		$message	= $this->core_web_conversation->getMessageSignature($companyID,$typeCompany,$objEmployer->firstName,$message);
-		//$this->core_web_whatsap->sendMessageBy_VanageApiText_PosMe(
-		//	$companyID, 
-		//	$message, 
-		//	clearNumero($objCustomer[0]->phoneNumber),
-		//	$file ? 'image' : 'text',
-		//	$file ? $urlPublic : false 			
-		//);
 		
-		$this->core_web_whatsap->sendMessageBy_VanageApiImage_PosMe(
-			$companyID, 
-			$message, 
-			clearNumero($objCustomer[0]->phoneNumber),
-			$file ? 'image' : 'text',
-			$file ? $urlPublic : false 			
-		);
-		
+		if (!$file)
+		{
+			$this->core_web_whatsap->sendMessageBy_VanageApiText_PosMe(
+				$companyID, 
+				$message, 
+				clearNumero($objCustomer[0]->phoneNumber),
+				'text',
+				false 			
+			);
+		}
+		else
+		{
+			$this->core_web_whatsap->sendMessageBy_VanageApiImage_PosMe(
+				$companyID, 
+				$message, 
+				clearNumero($objCustomer[0]->phoneNumber),
+				'image',
+				$urlPublic
+			);
+		}
 		
 		return $this->response->setJSON([
 			'success' 	=> true,

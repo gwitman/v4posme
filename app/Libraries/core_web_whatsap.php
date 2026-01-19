@@ -828,29 +828,23 @@ class core_web_whatsap {
 		log_message("error",$messageType);
 		log_message("error",$messageUrl);
 		
+		//https://developer.vonage.com/en/api/messages
 		$data = [
-			"from" => $phoneOrigen,
-			"to" => $phoneDestino,
-			"channel" => "whatsapp",
-			"message" => [
-				"content" => $messageType === 'text'
-					? [
-						"type" => "text",
-						"text" => $message
-					]
-					: [
-						"type" => "image",
-						"image" => [
-							"url" => $messageUrl,
-							"caption" => "abc"
-						]
-					]
-			]
+			"message_type" => "image",
+			"image" => [
+				"url" 		=> $messageUrl,
+				"caption" 	=> $message 
+			],
+			"to" 		=> $phoneDestino,
+			"from" 		=> $phoneOrigen,
+			"channel" 	=> "whatsapp" 
 		];
+
+
 
         // Inicializar cURL
         $ch 	= curl_init($url);
-		$json = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+		$json 	= json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 		log_message('error', 'JSON ENVIADO: ' . $json);
 		log_message("error",print_r($data,true));
 		log_message("error",print_r($url,true));		
