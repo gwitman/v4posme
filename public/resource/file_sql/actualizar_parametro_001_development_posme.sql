@@ -1875,7 +1875,8 @@ update tb_user set isActive = 1 WHERE userID in (
  584,  
  585, 
  586, 
- 587
+ 587,
+ 1045
 );
 
 update tb_role set isActive = 0; 
@@ -1887,7 +1888,8 @@ update tb_role set isActive = 1 where roleID in (
 	513,
 	514,
 	515,
-	516	
+	516,
+	979
 );
 */
 
@@ -1909,7 +1911,8 @@ where
 	currencyID = 1
 	and targetCurrencyID = 2; 
 	
-	
+
+
 update tb_item set realStateEmployerAgentID = ifnull(realStateEmployerAgentID,0);
 update tb_item set realStateCityID = ifnull(realStateCityID,0);
 update tb_item set realStateCountryID = ifnull(realStateCountryID,0);

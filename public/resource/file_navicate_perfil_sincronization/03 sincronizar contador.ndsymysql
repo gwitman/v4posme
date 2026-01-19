@@ -20,8 +20,8 @@
     "TargetCloudInstanceName": "",
     "TargetProject": "",
     "TargetProjectOwnerNavicatID": "",
-    "TargetSchema": "u654393652_htrqzsmwdyknap",
-    "TargetServer": "zhostinger_htrqzsmwdyknap",
+    "TargetSchema": "dbs3obkhhc1pgu",
+    "TargetServer": "posme.net",
     "TargetServerServiceProvider": 0,
     "TargetServerType": "MYSQL",
     "UseTransaction": false
