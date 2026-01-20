@@ -1021,11 +1021,11 @@ class core_web_whatsap {
 
 			if ($err)
 			{
-			  echo "cURL Error #:" . $err;
+			  log_message("error",print_r("cURL Error #:".$err,true));
 			}
 			else
 			{
-			  echo $response;
+			  log_message("error",print_r($response,true));
 			}
 
 
