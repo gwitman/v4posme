@@ -26,17 +26,21 @@ WHERE
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_CURRENT_PROPIETARY_COMMERSE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value 		= "https://api.ultramsg.com/instance41967/messages/image" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION_IMAGEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value 		= "https://messages-sandbox.nexmo.com/v1/messages" 
-	##tb_company_parameter.value 	= "https://api.posme.es/api/messages/send" 	
+	tb_company_parameter.value 		= "https://api.ultramsg.com/instance41967/messages/chat" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WAHTSAP_URL_ENVIO_MENSAJE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "2x(jDTzF" 
-	##tb_company_parameter.value = "oRy77xQImuNSEOr2tguJThbPKFa9Ss" 
+	tb_company_parameter.value = "x0idbj9zz750zq5khhh" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema

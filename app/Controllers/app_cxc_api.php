@@ -586,24 +586,46 @@ class app_cxc_api extends _BaseController {
 		//Enviar mensaje usando wapi
 		$message	= $this->core_web_conversation->getMessageSignature($companyID,$typeCompany,$objEmployer->firstName,$message);
 		
+		
+		//Enviar mensaje
+		/////////////////////////////////////
+		/////////////////////////////////////
+		//wg-if (!$file)
+		//wg-{
+		//wg-	$this->core_web_whatsap->sendMessageBy_VanageApiText_PosMe(
+		//wg-		$companyID, 
+		//wg-		$message, 
+		//wg-		clearNumero($objCustomer[0]->phoneNumber),
+		//wg-		'text',
+		//wg-		false 			
+		//wg-	);
+		//wg-}
+		//wg-else
+		//wg-{
+		//wg-	$this->core_web_whatsap->sendMessageBy_VanageApiImage_PosMe(
+		//wg-		$companyID, 
+		//wg-		$message, 
+		//wg-		clearNumero($objCustomer[0]->phoneNumber),
+		//wg-		'image',
+		//wg-		$urlPublic
+		//wg-	);
+		//wg-}
+		
 		if (!$file)
 		{
-			$this->core_web_whatsap->sendMessageBy_VanageApiText_PosMe(
+			$this->core_web_whatsap->sendMessageUltramsg(
 				$companyID, 
 				$message, 
-				clearNumero($objCustomer[0]->phoneNumber),
-				'text',
-				false 			
+				clearNumero($objCustomer[0]->phoneNumber)	
 			);
 		}
 		else
 		{
-			$this->core_web_whatsap->sendMessageBy_VanageApiImage_PosMe(
+			$this->core_web_whatsap->sendMessageTypeImagUltramsg(
 				$companyID, 
-				$message, 
-				clearNumero($objCustomer[0]->phoneNumber),
-				'image',
-				$urlPublic
+				$urlPublic, 
+				$message,
+				clearNumero($objCustomer[0]->phoneNumber)
 			);
 		}
 		
@@ -695,6 +717,7 @@ class app_cxc_api extends _BaseController {
 	public function WebHookInsertAndUpdateElementLiveConnectWebHook()
 	{
 		// JSON crudo (string completo)
+		log_message("error","WebHookInsertAndUpdateElementLiveConnectWebHook");
 		$rawJson = $this->request->getBody();
 
 		// Ejemplo: guardarlo en log o BD
@@ -1202,6 +1225,7 @@ class app_cxc_api extends _BaseController {
 	public function WebHookInsertAndUpdateElementLiveConnectReceiptWhatsappWebHook()
 	{
 		// JSON crudo (string completo)
+		log_message("error","WebHookInsertAndUpdateElementLiveConnectReceiptWhatsappWebHook");
 		$rawJson = $this->request->getBody();
 		$rawJson = '{"type":"chatAdd","payload":{"id_conversacion":"LCWAP|361|50587125827C","id_canal":361,"mensaje_inicial":"Testing prueba","ingreso":1768256052,"contacto":{"id":26108813,"nombre":"posMe"},"usuario_autoasignado":{"id":59177,"nombre":"Santa Lucia Real Estate"}}}';
 		log_message('error', 'Webhook RAW JSON: ' . $rawJson);	
@@ -1371,6 +1395,7 @@ class app_cxc_api extends _BaseController {
 	public function WebHookReceiptMessage_Whatsapp_Wati()
 	{
 		// JSON crudo (string completo)
+		log_message("error","WebHookReceiptMessage_Whatsapp_Wati");
 		$rawJson = $this->request->getBody();
 		$rawJson = '{"type":"chatAdd","payload":{"id_conversacion":"LCWAP|361|50587125827C","id_canal":361,"mensaje_inicial":"Testing prueba","ingreso":1768256052,"contacto":{"id":26108813,"nombre":"posMe"},"usuario_autoasignado":{"id":59177,"nombre":"Santa Lucia Real Estate"}}}';
 		log_message('error', 'Webhook RAW JSON: ' . $rawJson);	
@@ -1685,7 +1710,7 @@ class app_cxc_api extends _BaseController {
 	public function WebHookReceiptMessage_Whatsapp_VonageApi_posMe()
 	{
 		// JSON crudo (string completo)
-		log_message('error', 'Webhook RAW JSON: ' ."WebHookReceiptMessage_Whatsapp_EvolutionApi_posMe" );	
+		log_message('error', 'Webhook RAW JSON: ' ."WebHookReceiptMessage_Whatsapp_VonageApi_posMe" );	
 		$input	 	= $this->request->getJSON(true); // true = array
 		//$rawJson 	= '{"to":"14157386102","from":"50584766457","channel":"whatsapp","message_uuid":"6c1d4fcf-7f80-46dd-9209-f7e34ef4fe9c","timestamp":"2026-01-18T15:02:25Z","message_type":"text","text":"Join debit mouth","context_status":"none","profile":{"name":"www witman"}}';
 		//log_message('error', 'Webhook RAW JSON: ' . $rawJson);	
@@ -1720,6 +1745,132 @@ class app_cxc_api extends _BaseController {
 			$data["customerMessage"]	 	= $input['image']['caption'] ?? '';
 			$data["customerMessageUrl"]		= $input['image']['url'] ?? '';
 			$data["customerMessageFile"]	= $input['image']['name'] ?? '';
+		}
+		
+		
+		
+		//$data["customerPhoneNumber"] 	= "887646645";
+		//$data["customerFirstName"]	= "witmaj gonzalez";
+		//$data["customerMessage"]	 	= "hola que tal";
+		
+		$customerPhoneNumber 	= getNumberPhone($data["customerPhoneNumber"]);
+		$customerFirstName		= getNumberPhone($data["customerFirstName"]);
+		$message				= $data["customerMessage"];
+		$messageUrl				= $data["customerMessageUrl"];
+		$messageFile			= $data["customerMessageFile"];
+		$messageType			= $data["customerMessageType"];
+		$dataSession 			= $this->core_web_authentication->get_UserBy_PasswordAndNickname(APP_USERDEFAULT_VALUE, APP_PASSWORDEFAULT_VALUE);
+		$companyID				= $dataSession["user"]->companyID;
+		$branchID				= $dataSession["user"]->branchID;
+		$roleID 				= $dataSession["role"]->roleID;
+		$userID 				= $dataSession["user"]->userID;
+		//Obtener al cliente
+		$objCustomer			= $this->Customer_Model->get_rowByPhoneNumber($customerPhoneNumber);
+		if(!$objCustomer)
+		{
+			$this->core_web_conversation->createCustomer($dataSession,$customerPhoneNumber,$customerFirstName,$this->request);
+			
+		}
+		$objCustomer			= $this->Customer_Model->get_rowByPhoneNumber($customerPhoneNumber);
+		if(!$objCustomer)
+			throw new \Exception ("Cliente no encontrado");
+		
+		//Obtener la conversacion
+		$conversationIsNew			= false;
+		$conversationID				= 0;
+		$objCustomerConversation	= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($objCustomer[0]->entityID);
+		if(!$objCustomerConversation)
+		{
+			$conversationIsNew	= true;
+			$conversationID 	= $this->core_web_conversation->createConversation($dataSession,$objCustomer[0]->entityID);
+		}
+		$objCustomerConversation				= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($objCustomer[0]->entityID);
+		$objConversation 						= array();
+		$objConversation["messgeConterNotRead"] = 1 ;
+		$this->Customer_Conversation_Model->update_app_posme($objCustomerConversation[0]->conversationID,$objConversation);
+		
+		
+		//Ingresar el mensaje a la conversacion activa		
+		$objTag		 								= $this->Tag_Model->get_rowByName("MENSAJE DE CONVERSACION");
+		$objNotification 							= array();		
+		$objNotification["errorID"] 				= 0;
+		$objNotification["from"] 					= $objCustomer[0]->firstName;
+		$objNotification["to"] 						= '';
+		$objNotification["subject"] 				= $messageUrl;
+		$objNotification["message"] 				= $message;
+		$objNotification["summary"] 				= $messageFile;
+		$objNotification["title"] 					= $messageType;
+		$objNotification["tagID"] 					= $objTag->tagID;
+		$objNotification["createdOn"] 				= helper_getDateTime();
+		$objNotification["isActive"] 				= 1;
+		$objNotification["phoneFrom"] 				= $objCustomer[0]->phoneNumber;
+		$objNotification["phoneTo"] 				= '';
+		$objNotification["programDate"] 			= helper_getDate();
+		$objNotification["programHour"] 			= '00:00';
+		$objNotification["sendOn"] 					= NULL;
+		$objNotification["sendEmailOn"] 			= NULL;
+		$objNotification["sendWhatsappOn"] 			= NULL;
+		$objNotification["addedCalendarGoogle"] 	= 0;
+		$objNotification["quantityOcupation"] 		= 0;
+		$objNotification["quantityDisponible"] 		= 0;
+		$objNotification["googleCalendarEventID"] 	= NULL;
+		$objNotification["isRead"] 					= 0;
+		$objNotification["entityIDSource"] 			= 0;
+		$objNotification["entityIDTarget"] 			= $objCustomer[0]->entityID;
+		$notificationID 							= $this->Notification_Model->insert_app_posme($objNotification);
+
+		//Obtener la lista de agentes a afiliar
+		$objListEntityIDEmployer 					= $this->core_web_conversation->getAllEmployer($companyID,$dataSession["company"]->type,$customerPhoneNumber,$message,$conversationIsNew );				
+		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer);
+		
+		//Resultado
+		$result = [
+			'success' 			=> true,
+			'message'   		=> 'JSON valido',
+			'entityID'			=> $objCustomer[0]->entityID,
+			'converationID'		=> $objCustomerConversation[0]->conversationID,
+			'notificationID'	=> $notificationID
+		];	
+		log_message("error",print_r($result,true));
+		return $this->response->setJSON($result);
+		
+	}
+	public function WebHookReceiptMessage_Whatsapp_Ultramsg_posMe()
+	{
+		// JSON crudo (string completo)
+		log_message('error', 'Webhook RAW JSON: ' ."WebHookReceiptMessage_Whatsapp_Ultramsg_posMe" );	
+		$input	 	= $this->request->getJSON(true); // true = array
+		
+		
+		
+		// Captura el POST JSON de Vonage
+		log_message("error","input:".print_r($input,true));
+        if (!$input) {
+			$result = [
+				'success' => false,
+				'message' => 'JSON inválido input Vonage'
+			];
+			log_message("error",print_r($result,true));
+			return $this->response->setJSON($result)->setStatusCode(200);
+        }
+
+        // Extraer datos básicos       
+		log_message("error","input: init process message");
+		$data["customerPhoneNumber"] 	= $input["data"]['from'] ?? '';
+		$data["customerFirstName"]	 	= $input["data"]['from'] ?? '';
+		$data["customerMessage"]	 	= $input["data"]['body'] ?? '';
+		$data["customerMessageType"]	= $input["data"]['type'] ?? '';
+		$data["customerMessageUrl"]		= "";
+		$data["customerMessageFile"]	= "";
+		
+		if($data["customerMessageType"] == "chat")
+			$data["customerMessageType"] = "text";
+		
+		if($data["customerMessageType"] == "image")
+		{
+			$data["customerMessage"]	 	= $input['data']['body'] ?? '';
+			$data["customerMessageUrl"]		= $input['data']['media'] ?? '';
+			$data["customerMessageFile"]	= $input['data']['media'] ?? '';
 		}
 		
 		

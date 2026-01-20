@@ -1039,7 +1039,7 @@ class core_web_whatsap {
 
    }
 
-   function sendMessageTypeImagUltramsg( $companyID, $message,$title, $phoneDestino="" )
+   function sendMessageTypeImagUltramsg( $companyID, $urlImagen,$message, $phoneDestino )
    {
 		//password: 180389Witman
 		//usuario: wgonzalez@gruposi.com
@@ -1063,6 +1063,10 @@ class core_web_whatsap {
 			$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
 			$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
 			$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
+			
+			$objPWhatsapUrlSessionImagen		= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION_IMAGEN");
+			$objPWhatsapUrlSessionImagenId		= $objPWhatsapUrlSessionImagen->parameterID;
+			$objCP_WhatsapUrlSessionImagen		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionImagenId);
 
 
 			//https://api.ultramsg.com/instance65915/messages/chat
@@ -1071,7 +1075,7 @@ class core_web_whatsap {
 			$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
 
 
-
+			
 			$phoneDestino	= isset($phoneDestino) ? "" : $phoneDestino;
 			$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
 			$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
@@ -1080,12 +1084,15 @@ class core_web_whatsap {
 			$params=array(
 			'token' 	=> $objCP_WhatsapToken->value,
 			'to' 		=> $phoneDestino,
-			'image'		=> $message,
-			'caption'	=> $title
+			'image'		=> $urlImagen,
+			'caption'	=> $message
 			);
+			
+			log_message("error",print_r($params,true));
+			log_message("error",print_r($objCP_WhatsapUrlSessionImagen->value,true));			
 			$curl = curl_init();
 			curl_setopt_array($curl, array(
-			  CURLOPT_URL => $objCP_WhatsapUrlSendMessage->value,
+			  CURLOPT_URL => $objCP_WhatsapUrlSessionImagen->value,
 			  CURLOPT_RETURNTRANSFER => true,
 			  CURLOPT_ENCODING => "",
 			  CURLOPT_MAXREDIRS => 10,
@@ -1100,18 +1107,19 @@ class core_web_whatsap {
 			  ),
 			));
 
-			$response = curl_exec($curl);
-			$err = curl_error($curl);
+
+			$response 	= curl_exec($curl);
+			$err 		= curl_error($curl);
 
 			curl_close($curl);
 
 			if ($err)
 			{
-			  echo "cURL Error #:" . $err;
+			  log_message("error",print_r("cURL Error #:".$err,true));
 			}
 			else
 			{
-			  echo $response;
+			  log_message("error",print_r($response,true));
 			}
 
 
