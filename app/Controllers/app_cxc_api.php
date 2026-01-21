@@ -613,7 +613,8 @@ class app_cxc_api extends _BaseController {
 		
 		if (!$file)
 		{
-			$this->core_web_whatsap->sendMessageUltramsg(
+			$this->core_web_whatsap->sendMessageGeneric(
+				$typeCompany,
 				$companyID, 
 				$message, 
 				clearNumero($objCustomer[0]->phoneNumber)	
@@ -621,7 +622,8 @@ class app_cxc_api extends _BaseController {
 		}
 		else
 		{
-			$this->core_web_whatsap->sendMessageTypeImagUltramsg(
+			$this->core_web_whatsap->sendMessageTypeImagGeneric(
+				$typeCompany,
 				$companyID, 
 				$urlPublic, 
 				$message,

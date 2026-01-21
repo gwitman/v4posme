@@ -2398,7 +2398,7 @@ Le recordamos que tiene un saldo pendiente:
 		}
 		
 		
-		$this->core_web_whatsap->sendMessagePosMeConnectMasive(APP_COMPANY,$chatSend,$pathRemember);
+		$this->core_web_whatsap->sendMessage_UltramsgOnlyText_Masive(APP_COMPANY,$chatSend,$pathRemember);
 		return;
 		
 		

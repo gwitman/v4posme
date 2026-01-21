@@ -197,6 +197,28 @@ class core_web_whatsap {
 		return true;
    }
 
+   function sendMessageGeneric( $typeCompany,$companyID, $message, $phoneDestino)
+   {
+	   if($typeCompany == "")
+	   {
+		   $i = "not implementd";
+	   }
+	   else
+	   {
+		   return $this->sendMessageUltramsg( $companyID, $message, $phoneDestino);
+	   }
+   }
+   function sendMessageTypeImagGeneric( $typeCompany,$companyID, $urlImagen,$message, $phoneDestino )
+   {
+	   if($typeCompany == "")
+	   {
+		   $i = "not implementd";
+	   }
+	   else
+	   {
+		   return $this->sendMessageTypeImagUltramsg( $companyID, $urlImagen,$message, $phoneDestino );
+	   }
+   }
    function sendMessage($companyID,$message)
    {
 	    //https://app.whaticket.com/tickets
@@ -1213,6 +1235,97 @@ class core_web_whatsap {
 		];
 	}
 
+	function sendMessage_UltramsgOnlyText_Masive($companyID,$chatSend,$pathRemember) 
+	{
+		
+		$Parameter_Model 			= new Parameter_Model();
+		$Company_Parameter_Model 	= new Company_Parameter_Model();
+			
+		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
+		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
+		$token 								= $objCP_WhatsapToken->value;
+		
+		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
+		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
+		$url								= $objCP_WhatsapUrlSendMessage->value;
+
+		
+		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
+		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
+		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
+		$userId								= $objCP_WhatsapPropertyNumber->value;
+
+		$objPWhatsapPropertyCola 			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION_PARAMETERF1");
+		$objPWhatsapPropertyColaId 			= $objPWhatsapPropertyCola->parameterID;
+		$objCP_WhatsapPropertyCola			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyColaId);
+		$queueId							= $objCP_WhatsapPropertyCola->value;
+		
+
+		$sendSignature 	= false;
+		$closeTicket 	= true;
+		
+		
+		// Inicializamos cURLs
+		$multiHandle = curl_multi_init();
+		$curlHandles = [];
+		foreach ($chatSend as $customer) {
+			
+			//Enviar Mensaje de texto
+			echo "</br>enviar mensaje a ".clearNumero($customer["phoneNumber"])."</br>";
+			$data = [
+				"to"        		=> clearNumero($customer["phoneNumber"]),
+				"body"          	=> $customer["mensaje"],
+				"token"        		=> $token
+			];
+			
+			
+			$ch = curl_init($url);						
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_ENCODING, "");
+			curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+			curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+			curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+			curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data) );
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+				"content-type: application/x-www-form-urlencoded"
+			));
+			curl_multi_add_handle($multiHandle, $ch);
+			$curlHandles[] = $ch;
+			
+		}
+
+		// Ejecutar todas las requests en paralelo		
+		$running = null;
+		do {
+			$mrc = curl_multi_exec($multiHandle, $running);
+			if ($mrc == CURLM_CALL_MULTI_PERFORM) 
+			{
+				continue;
+			}
+			curl_multi_select($multiHandle);			
+		} while ($running > 0);
+			
+		
+		 // Recoger resultados
+		$results = [];
+		foreach ($curlHandles as $ch) {
+			$response 	= curl_multi_getcontent($ch);
+			$status   	= curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			$results[] 	= [
+				"status"   => $status,
+				"response" => json_decode($response, true)
+			];
+			curl_multi_remove_handle($multiHandle, $ch);
+			curl_close($ch);
+		}
+		curl_multi_close($multiHandle);		
+		return $results;
+	}
 	function sendMessagePosMeConnectMasive($companyID,$chatSend,$pathRemember) 
 	{
 		
