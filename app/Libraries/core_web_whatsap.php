@@ -1075,11 +1075,10 @@ class core_web_whatsap {
 			$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
 
 
-			
-			$phoneDestino	= isset($phoneDestino) ? "" : $phoneDestino;
+			log_message("error",print_r($phoneDestino,true));
+			$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;
 			$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
 			$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
-
 
 			$params=array(
 			'token' 	=> $objCP_WhatsapToken->value,
