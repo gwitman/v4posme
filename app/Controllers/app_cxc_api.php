@@ -1869,6 +1869,21 @@ class app_cxc_api extends _BaseController {
 			$data["customerMessageType"] = "text";
 		
 		if($data["customerMessageType"] == "image")
+			$data["customerMessageType"] = "image";
+		
+		if($data["customerMessageType"] == "ptt")
+			$data["customerMessageType"] = "audio";
+		
+		
+		
+		if($data["customerMessageType"] == "image")
+		{
+			$data["customerMessage"]	 	= $input['data']['body'] ?? '';
+			$data["customerMessageUrl"]		= $input['data']['media'] ?? '';
+			$data["customerMessageFile"]	= $input['data']['media'] ?? '';
+		}
+		
+		if($data["customerMessageType"] == "audio")
 		{
 			$data["customerMessage"]	 	= $input['data']['body'] ?? '';
 			$data["customerMessageUrl"]		= $input['data']['media'] ?? '';

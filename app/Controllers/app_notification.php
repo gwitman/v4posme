@@ -2679,6 +2679,88 @@ Le recordamos que tiene un saldo pendiente:
 		}
 		
 	}
+	function sendWhatsapp_ChicExtensiones_Citas()
+	{
+		log_message("info", print_r("sendWhatsapp_ChicExtensiones_Citas", true));
+		$emailProperty 	= $this->core_web_parameter->getParameter("CORE_PROPIETARY_EMAIL", APP_COMPANY);
+		$emailProperty 	= $emailProperty->value;
+		$phoneProperty  = $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE", APP_COMPANY);
+		$phoneProperty 	= $phoneProperty->value;		
+		$objCompany  	= $this->Company_Model->get_rowByPK(APP_COMPANY);
+		$objNotificar 	= $this->Transaction_Master_Detail_Model->ChicExtensiones_get_Citas(APP_COMPANY);
+		
+		if ($objNotificar)
+		{	
+			// Cabecera de la tabla
+			$tabla = "
+				<table border='1' cellspacing='0' cellpadding='6' style='border-collapse:collapse; width:100%; font-family:Arial, sans-serif;'>
+					<thead style='background:#f2f2f2;'>
+						<tr>
+							<th>Fecha</th>
+							<th>Hora</th>
+							<th>Cliente</th>
+							<th>Descripción</th>
+						</tr>
+					</thead>
+					<tbody>
+			";
+			foreach ($objNotificar as $i) {
+				$dt 		 = \DateTime::createFromFormat('Y-m-d H:i:s', $i->SiguienteVisita);
+				$fecha       = $dt->format("Y-m-d");
+				$hora        = $dt->format("h:i A");
+				$cliente     = $i->firstName;
+				$phone		 = "";
+				$descripcion = $i->note ?? "Cita programada"; // si tienes ese campo en DB úsalo
+
+				$tabla .= "
+					<tr>
+						<td>{$fecha}</td>
+						<td>{$hora}</td>
+						<td>{$cliente}</td>
+						<td>{$descripcion}</td>
+					</tr>
+				";
+				
+				$row = "
+					<tr>
+						<td>{$fecha}</td>
+						<td>{$hora}</td>
+						<td>{$cliente}</td>
+						<td>{$descripcion}</td>
+					</tr>
+				";
+
+				// También lo dejas en log si lo necesitas
+				log_message("info", "Cita de: $cliente programada para: $fecha $hora");
+				//Mandar mensajes a los cliente
+				$this->core_web_whatsap->sendMessageGeneric(
+					$objCompany->type,
+					APP_COMPANY, 
+					$row, 
+					clearNumero($phone)	
+				);
+			}
+			
+			
+			 // Cerrar la tabla
+			$tabla .= "</tbody></table>";			
+			log_message("info", print_r($tabla,true));
+
+			// Parámetros para la vista del correo
+			$params_["objCompany"]  = $objCompany;
+			$params_["mensaje"]       = $tabla;
+
+			//Mandar mensaje de wahtapp al propietario
+			$this->core_web_whatsap->sendMessageGeneric(
+				$objCompany->type,
+				APP_COMPANY, 
+				$tabla, 
+				clearNumero($phoneProperty)	
+			);
+			
+		}
+		echo "SUCCESS";
+	}
 	
 	
 }

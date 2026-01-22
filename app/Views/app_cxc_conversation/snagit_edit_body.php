@@ -130,6 +130,7 @@
 							</div>
 
 							<p 
+								style="white-space: pre-line;" 
 								class="mb-2"
 								:class="{'': objNotification.targetIDIsEmployeer > 0, 'text-end': objNotification.targetIDIsEmployeer <= 0}"
 							>
@@ -142,7 +143,16 @@
 									class="badge bg-info cursor-pointer" 
 									@click="openImageModal(objNotification.subject)"
 								  > Ver imagen</span>
-								</template> 
+								</template> 								
+								<!-- ELSE IF -->
+								<template v-else-if="objNotification.title == 'audio'">
+								    <br/>
+								    <span 
+										class="badge bg-info cursor-pointer" 
+										@click="openImageModalAudio(objNotification.subject)"
+									> Escuchar</span>
+								</template>
+
 								<!-- si source <= 0 -->
 								<template v-else>
 								</template> 
@@ -401,6 +411,28 @@
 		  <div class="modal-content p-3 p-md-5">
 			<div class="modal-body text-center">
 			   <img :src="modalImageSrc" class="img-fluid"  />
+			</div>
+		  </div>
+		</div>
+	</div>
+	<!--/ Add New Credit Card Modal -->
+	
+	<!-- Add New Credit Card Modal -->
+	<div class="modal fade" id="addNewCCModalAudio" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+		  <div class="modal-content p-3 p-md-5">
+			<div class="modal-body text-center">
+			   <audio 
+					v-if="audioUrl"
+					ref="audioPlayer"
+		  
+					controls 
+					autoplay 
+					style="width:100%"
+				>
+				  <source :src="audioUrl" type="audio/ogg">
+				  Tu navegador no soporta audio.
+			   </audio>
 			</div>
 		  </div>
 		</div>

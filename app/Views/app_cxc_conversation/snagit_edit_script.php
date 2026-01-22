@@ -13,6 +13,7 @@ createApp({
 			mostrarWaite:				true,
 			error:						false,
 			modalImageSrc: 				'',
+			audioUrl:					'',
 			imageFile: 					null,
 			sonidoReproducido:			false,
 			
@@ -131,6 +132,24 @@ createApp({
 			document.getElementById('addNewCCModal')
 		  );
 		  modal.show();
+		},
+		openImageModalAudio(imageUrl) 
+		{
+		  
+		  this.audioUrl 		= imageUrl;
+		  const modal 			= new bootstrap.Modal(
+			document.getElementById('addNewCCModalAudio')
+		  );
+		  modal.show();
+		  
+		  this.$nextTick(() => {
+			  const audio = this.$refs.audioPlayer
+			  if (audio) {
+				audio.load()
+				audio.play().catch(() => {})
+			  }
+		  });
+			
 		},
 		
 		// TAB 2

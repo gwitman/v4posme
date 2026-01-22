@@ -1368,6 +1368,8 @@ $routes->match(['get', 'post'], 'app_notification/sendEmailGlamCustCitasFrecuenc
 $routes->match(['get', 'post'], 'app_notification/sendEmailAudioElPipeCitas', 'app_notification::sendEmailAudioElPipeCitas');
 $routes->match(['get', 'post'], 'app_notification/sendWhatsappDiarioChochoMandado', 'app_notification::sendWhatsappDiarioChochoMandado');
 $routes->match(['get', 'post'], 'app_notification/sendWhatsappDiarioChochoMandado/(:any)', 'app_notification::sendWhatsappDiarioChochoMandado');
+$routes->match(['get', 'post'], 'app_notification/sendWhatsapp_ChicExtensiones_Citas', 'app_notification::sendWhatsapp_ChicExtensiones_Citas');
+$routes->match(['get', 'post'], 'app_notification/sendWhatsapp_ChicExtensiones_Citas/(:any)', 'app_notification::sendWhatsapp_ChicExtensiones_Citas');
 $routes->match(['get', 'post'], 'app_notification/sendWhatsappDiarioMasivePosMeConnect', 'app_notification::sendWhatsappDiarioMasivePosMeConnect');
 $routes->match(['get', 'post'], 'app_notification/sendWhatsappDiarioMasivePosMeConnect/(:any)', 'app_notification::sendWhatsappDiarioMasivePosMeConnect');
 $routes->match(['get', 'post'], 'app_notification/sendWhatsappDiarioMasivePosMeConnectCobranza', 'app_notification::sendWhatsappDiarioMasivePosMeConnectCobranza');

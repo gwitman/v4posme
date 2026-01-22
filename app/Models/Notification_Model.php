@@ -43,6 +43,7 @@ class Notification_Model extends Model  {
    } 
    function insert_app_posme($data){
 		$db 		= db_connect();
+		$db->query("SET NAMES utf8mb4");
 		$builder	= $db->table("tb_notification");
 		$result		= $builder->insert($data);
 		return $db->insertID();		
