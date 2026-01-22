@@ -636,6 +636,60 @@ class core_web_conversation{
 		}
 		
 	}
+	
+	function notificationEmployerInConversation($companyID,$branchID,$companyType,$conversationID,$mensaje)
+	{
+		//Afiliar la conversacion a un agente	
+		try
+		{
+			$core_web_whatsap						= new core_web_whatsap();
+			$core_web_tools							= new core_web_tools();
+			$Company_Component_Relation_Model		= new Company_Component_Relation_Model();
+			$Entity_Phone_Model						= new Entity_Phone_Model();
+			$objComponentCustomerConversation		= $core_web_tools->getComponentIDBy_ComponentName("tb_customer_conversation");
+			if(!$objComponentCustomerConversation)
+				throw new \Exception("EL COMPONENTE 'tb_customer_conversation' NO EXISTE...");
+			
+			$objComponentEmployee		= $core_web_tools->getComponentIDBy_ComponentName("tb_employee");
+			if(!$objComponentEmployee)
+				throw new \Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
+			
+			//Obtener la lista de colaboradores de la conversacion
+			$objListEmployerConversation = $Company_Component_Relation_Model->get_ConversationEmployerBy_ConversationID($conversationID);
+			if(!$objListEmployerConversation)
+				return;
+			
+			foreach($objListEmployerConversation as $employer)
+			{
+				//Obtener el numero de telefono del colaborador
+				$phone = $Entity_Phone_Model->get_rowByPrimaryEntity($companyID,$branchID,$employer->entityID);
+				if(!$phone)
+					continue;
+				
+				$phone = clearNumero($phone[0]->number);
+				log_message("error","mensaje enviado al telefono: ".$phone." , entityID: ".$employer->entityID." , conversationID: ".$conversationID);
+				$core_web_whatsap->sendMessageGeneric(
+					$companyType,
+					$companyID, 
+					$mensaje, 
+					$phone	
+				);
+				
+			}
+			
+		}
+		catch(\Exception $ex)
+		{
+			$objException = [
+				'success' => false,
+				'message' => $ex->getMessage(),   // mensaje del error
+				'line'    => $ex->getLine(),      // línea donde ocurrió
+				'file'    => $ex->getFile()       // archivo (opcional pero útil)
+			];
+			log_message("error",print_r($objException,true));
+		}
+		
+	}
 
 	function getMessageSignature($companyID,$typeCompany,$firstNameEmployer,$mensaje)
 	{	

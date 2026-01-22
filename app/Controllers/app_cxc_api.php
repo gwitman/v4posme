@@ -1970,6 +1970,22 @@ class app_cxc_api extends _BaseController {
 		$objListEntityIDEmployer 					= $this->core_web_conversation->getAllEmployer($companyID,$dataSession["company"]->type,$customerPhoneNumber,$message,$conversationIsNew );				
 		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer);
 		
+		//////////////////////////////////////////////
+		//Notificar a los agentes afiliados
+		//////////////////////////////////////////////
+		$this->core_web_conversation->notificationEmployerInConversation(
+			$dataSession["company"]->companyID,
+			$dataSession["user"]->branchID,
+			$dataSession["company"]->type,
+			$objCustomerConversation[0]->conversationID,
+			"📩 Nuevo mensaje recibido
+Has recibido un nuevo mensaje del cliente ".$objCustomer[0]->firstName.".
+
+👉 Por favor, respóndelo en el siguiente enlace:
+🌐 ".base_url()."/app_cxc_conversation/edit/entityID/".$objCustomer[0]->entityID
+		);
+		
+		
 		//Resultado
 		$result = [
 			'success' 			=> true,

@@ -41,7 +41,9 @@ class app_cxc_conversation extends _BaseController {
 			$masterPage 	= $dataSession["role"]->typeApp.'_masterpage';
 			$viewType		= $dataSession["role"]->typeApp == "default" ? "" : $dataSession["role"]->typeApp.'_';
 			$entityID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "entityID"); //--finuri
-			 
+			//obtener la ultima session
+			$dataSession["lastUrl"] = base_url()."/"."app_cxc_conversation/edit/entityID/".$entityID;
+			$this->session->set($dataSession);
 			
 			//Renderizar Resultado
 			$dataView["company"]					= $dataSession["company"];
