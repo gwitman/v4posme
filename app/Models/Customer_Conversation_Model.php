@@ -15,7 +15,7 @@ class Customer_Conversation_Model extends Model
 
     protected $returnType     = 'array';
     protected $useSoftDeletes = false;
-    protected $allowedFields  = ['conversationID','entityIDSource', 'entityIDTarget','componentIDSource','componentIDTarget','createdOn','statusID','messageCounter','messageReceiptOn','messageSendOn','messgeConterNotRead', 'reference1','reference2', 'reference3','isActive'];
+    protected $allowedFields  = ['conversationID','entityIDSource', 'entityIDTarget','componentIDSource','componentIDTarget','createdOn','statusID','messageCounter','messageReceiptOn','messageSendOn','messgeConterNotRead', 'reference1','reference2', 'reference3','lastActivityOn','lastMessage','isActive'];
 
     // Dates
     protected $useTimestamps = false;
@@ -85,7 +85,9 @@ class Customer_Conversation_Model extends Model
 					c.reference1,
 					c.reference2,
 					c.reference3,
-					c.isActive 
+					c.isActive,
+					c.lastActivityOn,
+					c.lastMessage 
 				FROM 
 					tb_customer_conversation c 
 					inner join tb_workflow_stage ws on 

@@ -82,9 +82,13 @@
 				<div class="card-body">
 				  <div class="d-flex justify-content-between mb-2">
 					<h6 
-						class="fw-normal"
+						class="fw-bold"
 						:class="{'text-white': objConversation.messgeConterNotRead > 0, '': objConversation.messgeConterNotRead <= 0}" 
 					>{{ objConversation.phoneNumber }}</h6>
+					<h6 
+						class="fw-normal"
+						:class="{'text-white': objConversation.messgeConterNotRead > 0, '': objConversation.messgeConterNotRead <= 0}" 
+					>{{ objConversation.lastActivityOn }}</h6>
 					<ul class="list-unstyled d-flex align-items-center avatar-group mb-0">
 					  <li
 						data-bs-toggle="tooltip"
@@ -103,6 +107,7 @@
 						class="mb-1" 
 						:class="{'text-white': objConversation.messgeConterNotRead > 0, '': objConversation.messgeConterNotRead <= 0}"
 					  >{{ objConversation.firstName }}</h4>
+					  <p>{{ objConversation.lastMessage }}</p>
 					  <a
 						:href="'<?php echo  base_url() ?>' + '/app_cxc_conversation/edit/entityID/' + objConversation.entityID" 						
 						class="role-edit-modal"

@@ -508,6 +508,8 @@ class app_cxc_api extends _BaseController {
 		
 		$objConversation 						= array();
 		$objConversation["messgeConterNotRead"] = 0;
+		$objConversation["lastMessage"] 		= $message ;
+		$objConversation["lastActivityOn"] 		= helper_getDateTime() ;
 		$this->Customer_Conversation_Model->update_app_posme($objCustomerConversation[0]->conversationID,$objConversation);
 		
 		
@@ -1930,6 +1932,8 @@ class app_cxc_api extends _BaseController {
 		$objCustomerConversation				= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($objCustomer[0]->entityID);
 		$objConversation 						= array();
 		$objConversation["messgeConterNotRead"] = 1 ;
+		$objConversation["lastMessage"] 		= $message ;
+		$objConversation["lastActivityOn"] 		= helper_getDateTime() ;
 		$this->Customer_Conversation_Model->update_app_posme($objCustomerConversation[0]->conversationID,$objConversation);
 		
 		

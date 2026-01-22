@@ -105,7 +105,7 @@
 					  
 						<li 
 							v-for="objNotification in objListNotification"  
-							class="mt-3"
+							class="mt-3 bg-label-twitter rounded p-2"
 						>
 						  <!--<span class="timeline-point timeline-point-warning"></span>-->
 						  <!--<div class="">-->

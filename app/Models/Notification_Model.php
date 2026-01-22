@@ -270,8 +270,19 @@ class Notification_Model extends Model  {
 			c.entityIDTarget,
 			c.createdOn,
 			DATE_FORMAT(c.createdOn, '%%Y-%%m-%%d %%h:%%i:%%s %%p') as createdOnFormato12H,
-			ns.firstName as firstNameSource,
-			nt.firstName as firstNameTartet,
+			case
+				when ifnull(emp.entityID,'0') = '0' then
+					concat('Escribio el Cliente: ',ns.firstName)
+				else 
+					concat('',ns.firstName)
+			end as firstNameSource,
+			
+			case
+				when ifnull(emp.entityID,'0') = '0' then
+					concat('Escribio el Cliente: ',nt.firstName)
+				else 
+					concat('Escribio el Agente: ',nt.firstName)
+			end as firstNameTartet,
 			
 			ifnull(emp.entityID,'0') as targetIDIsEmployeer
 		from 
