@@ -1798,6 +1798,7 @@ class Transaction_Master_Detail_Model extends Model  {
 				tat.firstName,
 				tat.transactionNumber,
 				tat.SiguienteVisita,
+				tat.phoneCustomer,
 				tat.note
 			from 
 				(
@@ -1810,7 +1811,8 @@ class Transaction_Master_Detail_Model extends Model  {
 						end  as firstName ,
 						c.transactionNumber ,
 						c.note,
-						DATE_ADD(c.nextVisit , INTERVAL zone.`sequence`  MINUTE) as SiguienteVisita 
+						c.nextVisit as SiguienteVisita ,
+						c.numberPhone phoneCustomer 
 					from 
 						tb_transaction_master c 
 						inner join tb_transaction_master_info ci on 
@@ -1826,22 +1828,13 @@ class Transaction_Master_Detail_Model extends Model  {
 						c.companyID = 2 and 
 						c.transactionID = 19  and 
 						ws.isInit = 1 and 
-						CAST(zone.`name`  AS UNSIGNED ) > 1   and 
-						c.nextVisit is not null 
-				)  tat 
+						c.nextVisit is not null  	and 
+						c.nextVisit > '1900-01-01 00:00:00'					
+				)  tat  
 			where 
-				tat.SiguienteVisita < DATE_ADD( 
-					DATE_ADD(
-						NOW() , 
-						INTERVAL ".APP_HOUR_DIFERENCE_MYSQL_EMBEDDED."
-					), 
-					INTERVAL 2 HOUR
-				) AND 
-				tat.SiguienteVisita > DATE_ADD(
-						NOW() , 
-						INTERVAL ".APP_HOUR_DIFERENCE_MYSQL_EMBEDDED."
-				)
-				ORDER BY tat.SiguienteVisita ASC
+				tat.SiguienteVisita =  CURDATE() 
+			ORDER BY 
+				tat.SiguienteVisita ASC ;
 		");
 	
 		

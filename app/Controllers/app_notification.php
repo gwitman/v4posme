@@ -2692,44 +2692,35 @@ Le recordamos que tiene un saldo pendiente:
 		if ($objNotificar)
 		{	
 			// Cabecera de la tabla
-			$tabla = "
-				<table border='1' cellspacing='0' cellpadding='6' style='border-collapse:collapse; width:100%; font-family:Arial, sans-serif;'>
-					<thead style='background:#f2f2f2;'>
-						<tr>
-							<th>Fecha</th>
-							<th>Hora</th>
-							<th>Cliente</th>
-							<th>Descripción</th>
-						</tr>
-					</thead>
-					<tbody>
-			";
+			$tabla = "📅 Citas programadas para hoy
+
+Hola 👋
+A continuación, te compartimos el listado de personas que tienen cita el día de hoy en Chic Extensiones 💇‍♀️✨";
+
 			foreach ($objNotificar as $i) {
 				$dt 		 = \DateTime::createFromFormat('Y-m-d H:i:s', $i->SiguienteVisita);
 				$fecha       = $dt->format("Y-m-d");
 				$hora        = $dt->format("h:i A");
 				$cliente     = $i->firstName;
-				$phone		 = "";
+				$phone		 = $i->phoneCustomer;
 				$descripcion = $i->note ?? "Cita programada"; // si tienes ese campo en DB úsalo
 
 				$tabla .= "
-					<tr>
-						<td>{$fecha}</td>
-						<td>{$hora}</td>
-						<td>{$cliente}</td>
-						<td>{$descripcion}</td>
-					</tr>
-				";
+👤 ".$cliente."
+📞 ".$phone."
+";
+
 				
 				$row = "
-					<tr>
-						<td>{$fecha}</td>
-						<td>{$hora}</td>
-						<td>{$cliente}</td>
-						<td>{$descripcion}</td>
-					</tr>
-				";
+📅 Recordatorio de cita
+Hola ".$cliente." 👋
 
+✨ El día de hoy tienes una cita programada en tu salón
+💇‍♀️ Chic Extensiones
+
+¡Te esperamos! 💖⏰";
+				echo $row;
+				
 				// También lo dejas en log si lo necesitas
 				log_message("info", "Cita de: $cliente programada para: $fecha $hora");
 				//Mandar mensajes a los cliente
@@ -2743,13 +2734,14 @@ Le recordamos que tiene un saldo pendiente:
 			
 			
 			 // Cerrar la tabla
-			$tabla .= "</tbody></table>";			
+			$tabla .= "";			
 			log_message("info", print_r($tabla,true));
 
 			// Parámetros para la vista del correo
 			$params_["objCompany"]  = $objCompany;
 			$params_["mensaje"]       = $tabla;
 
+			echo $tabla;
 			//Mandar mensaje de wahtapp al propietario
 			$this->core_web_whatsap->sendMessageGeneric(
 				$objCompany->type,
@@ -2759,7 +2751,10 @@ Le recordamos que tiene un saldo pendiente:
 			);
 			
 		}
-		echo "SUCCESS";
+		
+		
+		echo "
+		SUCCESS";
 	}
 	
 	
