@@ -111,6 +111,7 @@ class Company_Component_Relation_Model extends Model  {
 			
 		");
 		
+		log_message("error",print_r($sql,true));
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }   

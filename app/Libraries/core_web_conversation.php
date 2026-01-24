@@ -659,15 +659,17 @@ class core_web_conversation{
 			if(!$objListEmployerConversation)
 				return;
 			
+			log_message("error","colaboradores a enviar witman: ");
+			log_message("error",print_r($objListEmployerConversation,true));
+				
 			foreach($objListEmployerConversation as $employer)
 			{
 				//Obtener el numero de telefono del colaborador
 				$phone = $Entity_Phone_Model->get_rowByPrimaryEntity($companyID,$branchID,$employer->entityID);
+				log_message("error","colaboradores y: ".print_r($phone,true));	
 				if(!$phone)
 					continue;
 				
-				log_message("error","colaboradores a enviar: ");
-				log_message("error",print_r($phone,true));
 				$phone = clearNumero($phone[0]->number);
 				log_message("error","mensaje enviado al telefono: ".$phone." , entityIDEmployer: ".$employer->entityID." , conversationID: ".$conversationID);
 				$core_web_whatsap->sendMessageGeneric(
