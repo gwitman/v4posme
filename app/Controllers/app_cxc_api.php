@@ -1978,8 +1978,7 @@ class app_cxc_api extends _BaseController {
 			$dataSession["user"]->branchID,
 			$dataSession["company"]->type,
 			$objCustomerConversation[0]->conversationID,
-			"📩 Nuevo mensaje recibido
-Has recibido un nuevo mensaje del cliente ".$objCustomer[0]->firstName.".
+			"📩 ".$objCustomer[0]->firstName." Nuevo mensaje 
 
 👉 Por favor, respóndelo en el siguiente enlace:
 🌐 ".base_url()."/app_cxc_conversation/edit/entityID/".$objCustomer[0]->entityID

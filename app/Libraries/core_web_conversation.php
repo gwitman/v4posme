@@ -666,8 +666,10 @@ class core_web_conversation{
 				if(!$phone)
 					continue;
 				
+				log_message("error","colaboradores a enviar: ");
+				log_message("error",print_r($phone,true));
 				$phone = clearNumero($phone[0]->number);
-				log_message("error","mensaje enviado al telefono: ".$phone." , entityID: ".$employer->entityID." , conversationID: ".$conversationID);
+				log_message("error","mensaje enviado al telefono: ".$phone." , entityIDEmployer: ".$employer->entityID." , conversationID: ".$conversationID);
 				$core_web_whatsap->sendMessageGeneric(
 					$companyType,
 					$companyID, 

@@ -1,4 +1,4 @@
-/*BD: 	db3y4ms5an0gji:parametro_moda_eve_malpaisillo*/
+/*BD: 	dbg2u7j48asmvd:parametro_gym_jalapa*/
 /*SERVIDOR:		siteground*/
 
 /******************************************************************/
@@ -1862,8 +1862,8 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Moda Eve Malpaisillo' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 1053 /*usuarioID*/,type='modEveMalpaisillo'  , abreviature='demo'
+	NAME = 'Gym Jalapa' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
+	flavorID = 1060 /*usuarioID*/,type='gymJalapa'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
@@ -1876,25 +1876,25 @@ Eliminar o desactivar usuarios
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2, 	
- 1053,  
- 1054, 
- 1055,
- 1056,  
- 1057, 
- 1058, 
- 1059
+ 1060,  
+ 1061, 
+ 1062,
+ 1063,  
+ 1064, 
+ 1065, 
+ 1066
 );
 
 update tb_role set isActive = 0; 
 update tb_role set isActive = 1 where roleID in (
 	3,
-	987,
-	988,
-	989,
-	990,
-	991,
-	992,
-	993
+	994,
+	995,
+	996,
+	997,
+	998,
+	999,
+	1000
 );
 */
 
