@@ -1978,15 +1978,19 @@ class app_cxc_api extends _BaseController {
 		//////////////////////////////////////////////
 		//Notificar a los agentes afiliados
 		//////////////////////////////////////////////
+		$urlSend		= base_url()."/app_cxc_conversation/edit/entityID/".$objCustomer[0]->entityID;
+		$whatsappLink 	= urlencode($urlSend);
+		$short 			= file_get_contents("https://is.gd/create.php?format=simple&url=$whatsappLink");
+		
 		$this->core_web_conversation->notificationEmployerInConversation(
 			$dataSession["company"]->companyID,
 			$dataSession["user"]->branchID,
 			$dataSession["company"]->type,
 			$objCustomerConversation[0]->conversationID,
-			"📩 ".$objCustomer[0]->firstName." Nuevo mensaje 
+			"📩 *Cliente:".$objCustomer[0]->firstName."* ha enviado un mensaje 
 
 👉 Por favor, respóndelo en el siguiente enlace:
-🌐 ".base_url()."/app_cxc_conversation/edit/entityID/".$objCustomer[0]->entityID
+🌐 ".$short
 		);
 		
 		
