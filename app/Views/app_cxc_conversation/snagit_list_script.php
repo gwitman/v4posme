@@ -4,14 +4,15 @@ const { createApp } = Vue;
 createApp({
     data() {
         return {           
-            timer: 						null,
-			mensaje:					'',
-			mostrarAlerta: 				true,			
-			intervaloAjax: 				null,
-			sonidoReproducido:			false,
-			activeTab: 					'activas', // Por defecto activo
-			txtCustomerFind: 			'',			
-			objListConversation: 		[],			
+            timer: 							null,
+			mensaje:						'',
+			mostrarAlerta: 					true,			
+			intervaloAjax: 					null,
+			sonidoReproducido:				false,
+			permisoParaVerTodasLasActivas:	<?php echo $permisoParaVerTodasLasActivas; ?>,
+			activeTab: 						'LISTA DE CONVERSACIONES MIAS', // Por defecto activo
+			txtCustomerFind: 				'',			
+			objListConversation: 			[],			
         }
     },
 	
@@ -83,13 +84,13 @@ createApp({
 		  this.activeTab = tab;
 
 		  // Ejecutar AJAX según la pestaña
-		  if(tab !== 'activas') 
+		  if(tab === 'LISTA DE CLIENTES PARA CREAR CONVERSACIONES') 
 		  {
 			this.mostrarAlerta = true;
 			this.cargarListado();
             this.detenerAjax();
 		  } 
-		  else if(tab === 'activas') 
+		  else
 		  {
 			this.mostrarAlerta = true;
 			this.cargarListado();

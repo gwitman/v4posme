@@ -101,10 +101,22 @@ class app_cxc_conversation extends _BaseController {
 			
 			}	
 			
+			
 			$dataViewID 		= helper_SegmentsByIndex($this->uri->getSegments(), 1, $dataViewID);
 			$objComponent		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_notification_conversation");
 			if(!$objComponent)
 			throw new \Exception("00409 EL COMPONENTE 'tb_notification_conversation' NO EXISTE...");
+			
+			//Obtener el tipo de permiso
+			$permitedUrl 		= $this->core_web_permission->urlPermissionCmd(get_class($this),"index",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+			if($permitedUrl == PERMISSION_ALL)
+			{
+				$dataView["permisoParaVerTodasLasActivas"]	= "true";
+			}
+			else
+			{
+				$dataView["permisoParaVerTodasLasActivas"]	= "false";
+			}
 			
 			
 			//Tipo de plantilla

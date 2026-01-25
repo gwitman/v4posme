@@ -30,17 +30,24 @@
 		 
 		  <div class="navbar-nav me-auto">
 			<a 
-				class="nav-item nav-link active" 
+				class="nav-item nav-link" 
 				href="javascript:void(0)"
 				:class="{ active: activeTab === 'LISTA DE CLIENTES PARA CREAR CONVERSACIONES' }"     
 				@click="handleClick('LISTA DE CLIENTES PARA CREAR CONVERSACIONES')"
-			>Todos</a>
+			>Iniciar</a>
 			<a 
+				class="nav-item nav-link" 
+				href="javascript:void(0)"
+				:class="{ active: activeTab === 'LISTA DE CONVERSACIONES MIAS' }"
+				@click="handleClick('LISTA DE CONVERSACIONES MIAS')"
+			>Mias</a>
+			<a 
+				v-if="permisoParaVerTodasLasActivas"
 				class="nav-item nav-link" 
 				href="javascript:void(0)"
 				:class="{ active: activeTab === 'activas' }"
 				@click="handleClick('activas')"
-			>Activas</a>
+			>Todas</a>
 		  </div>
 
 		  <form class="d-flex">
