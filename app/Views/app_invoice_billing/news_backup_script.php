@@ -1630,7 +1630,7 @@
 													name: 'txtWarehouseID',
 													id:'txtWarehouseID',
 													listeners: {
-														change: fnChange_CurrencyID_CreditLineID_WarehouseID
+														change: fnChange_WarehouseID
 													}
 												}
 											]
@@ -3898,6 +3898,34 @@
 			miVentanaEsperando.show();
 			setTimeout(() => { miVentanaEsperando.hide(); }, (length * 1000) * 0.2 );
 			
+			
+		}
+		function fnChange_WarehouseID(combo, newValue, oldValue, eOpts) 
+		{
+			
+			if (isLoading) return; // Detener evento
+			fnClearData();
+			fnLockPayment();
+			
+			//Recargar el grid de datos			
+			var grid 			= miVentanaSeleccionProducto.down('[reference=gridItems]');
+			var store 			= grid.getStore();
+            var filters 		= store.getFilters();
+
+            // Buscar filtro existente
+            var filtroWarehouse = filters.getByKey('warehouseID');
+            if (filtroWarehouse) {
+                filtroWarehouse.setValue(newValue);
+            } else {
+                filters.add({
+                    id: 		'warehouseID',
+                    property: 	'warehouseID',
+                    value: 		newValue
+                });
+            }
+
+            // Volver a cargar desde la primera página
+            store.loadPage(1);
 			
 		}
 		function fnChange_CurrencyID_CreditLineID_WarehouseID(combo, newValue, oldValue, eOpts) 
