@@ -43,12 +43,14 @@ class Customer_Conversation_Model extends Model
 	
 	function insert_app_posme($data){
 		$db 		= db_connect();
+		$db->query("SET NAMES utf8mb4");
 		$builder	= $db->table("tb_customer_conversation");
 		$result		= $builder->insert($data);
 		return $db->insertID();		
     }
     function update_app_posme($conversationID,$data){
 		$db 		= db_connect();
+		$db->query("SET NAMES utf8mb4");
 		$builder	= $db->table("tb_customer_conversation");				
 		
 		$builder->where("conversationID",$conversationID);	
@@ -57,6 +59,7 @@ class Customer_Conversation_Model extends Model
     }
 	function update_app_posme_ByCustomer($entityIDCustomer,$data){
 		$db 		= db_connect();
+		$db->query("SET NAMES utf8mb4");
 		$builder	= $db->table("tb_customer_conversation");				
 		
 		$builder->where("entityIDSource",$entityIDCustomer);	
@@ -96,6 +99,45 @@ class Customer_Conversation_Model extends Model
 					c.entityIDSource = $entityIDCustomer and 
 					c.isActive = 1 and 
 					ws.isInit = 1 
+				
+			";
+			
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+		
+    }
+	//Obtener todas las conversaciones de un agente activa
+    function getByConversationID($conversationID)
+    {
+		$db 		= db_connect();
+		$builder	= $db->table("tb_customer_conversation");		
+		$sql 		= 
+			"
+				SELECT 
+					c.conversationID,
+					c.entityIDSource,
+					c.entityIDTarget,
+					c.componentIDSource,
+					c.componentIDTarget,
+					c.createdOn,
+					c.statusID,
+					c.messageCounter,
+					c.messageReceiptOn,
+					c.messageSendOn,
+					c.messgeConterNotRead,
+					c.reference1,
+					c.reference2,
+					c.reference3,
+					c.isActive,
+					c.lastActivityOn,
+					c.lastMessage 
+				FROM 
+					tb_customer_conversation c 
+					inner join tb_workflow_stage ws on 
+						ws.workflowStageID = c.statusID 
+				where 
+					c.conversationID = $conversationID and 
+					c.isActive = 1 
 				
 			";
 			

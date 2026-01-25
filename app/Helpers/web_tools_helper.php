@@ -1615,6 +1615,52 @@ function helper_getAlertThemeSneatBoostrap5_1($title,$type,$mensaje)
 }
 
 
+function helper_CompareDateTime($stringDateTime1,$stringDateTime2)
+{
+    $fechaOld     = new DateTime($stringDateTime1);
+    $fechaActual  = new DateTime($stringDateTime2);
+
+    // Timestamp
+    $tsOld     = $fechaOld->getTimestamp();
+    $tsActual  = $fechaActual->getTimestamp();
+
+    // Comparador
+    if ($tsOld == $tsActual) {
+        $comparador = 0;
+    } elseif ($tsOld < $tsActual) {
+        $comparador = -1;
+    } else {
+        $comparador = 1;
+    }
+
+    // Diferencia absoluta en segundos
+    $diffSegundos 	= abs($tsActual - $tsOld);
+
+    // DateInterval para valores "humanos"
+    $interval 		= $fechaOld->diff($fechaActual);
+
+    return [
+        'comparador' 	=> $comparador,
+
+        'segundos' 		=> $diffSegundos,
+        'minutos'  		=> floor($diffSegundos / 60),
+        'horas'    		=> floor($diffSegundos / 3600),
+        'dias'     		=> $interval->days,   // total de días
+        'meses'    		=> ($interval->y * 12) + $interval->m,
+        'anios'    		=> $interval->y,
+
+        'detalle' => [
+            'y' => $interval->y,
+            'm' => $interval->m,
+            'd' => $interval->d,
+            'h' => $interval->h,
+            'i' => $interval->i,
+            's' => $interval->s,
+        ]
+    ];
+}
+
+
 
 
 ?>

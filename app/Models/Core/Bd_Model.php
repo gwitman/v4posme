@@ -10,6 +10,7 @@ class Bd_Model extends Model  {
    
    function executeRender($query,$parameter){
 		$db 				= db_connect(); 
+		$db->query("SET NAMES utf8mb4");
 		
 		if($parameter === null)
 		$queryResult 		= $db->query($query);		

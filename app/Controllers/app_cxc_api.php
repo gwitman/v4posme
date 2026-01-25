@@ -1866,7 +1866,7 @@ class app_cxc_api extends _BaseController {
         // Extraer datos básicos       
 		log_message("error","input: init process message");
 		$data["customerPhoneNumber"] 	= $input["data"]['from'] ?? '';
-		$data["customerFirstName"]	 	= $input["data"]['from'] ?? '';
+		$data["customerFirstName"]	 	= $input["data"]['pushname'] ?? '';
 		$data["customerMessage"]	 	= $input["data"]['body'] ?? '';
 		$data["customerMessageType"]	= $input["data"]['type'] ?? '';
 		$data["customerMessageUrl"]		= "";
@@ -1904,7 +1904,7 @@ class app_cxc_api extends _BaseController {
 		//$data["customerMessage"]	 	= "hola que tal";
 		
 		$customerPhoneNumber 	= getNumberPhone($data["customerPhoneNumber"]);
-		$customerFirstName		= getNumberPhone($data["customerFirstName"]);
+		$customerFirstName		= "new_".$data["customerFirstName"];
 		$message				= $data["customerMessage"];
 		$messageUrl				= $data["customerMessageUrl"];
 		$messageFile			= $data["customerMessageFile"];
@@ -1935,13 +1935,15 @@ class app_cxc_api extends _BaseController {
 			$conversationID 	= $this->core_web_conversation->createConversation($dataSession,$objCustomer[0]->entityID);
 		}
 		$objCustomerConversation				= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($objCustomer[0]->entityID);
+		$lastActivityOnOld						= $objCustomerConversation[0]->lastActivityOn;
+		$lastActivityOnNew						= helper_getDateTime() ;
 		$objConversation 						= array();
 		$objConversation["messgeConterNotRead"] = 1 ;
 		$objConversation["lastMessage"] 		= $message ;
-		$objConversation["lastActivityOn"] 		= helper_getDateTime() ;
+		$objConversation["lastActivityOn"] 		= $lastActivityOnNew;
 		$this->Customer_Conversation_Model->update_app_posme($objCustomerConversation[0]->conversationID,$objConversation);
 		
-		
+			
 		//Ingresar el mensaje a la conversacion activa		
 		$objTag		 								= $this->Tag_Model->get_rowByName("MENSAJE DE CONVERSACION");
 		$objNotification 							= array();		
@@ -1978,11 +1980,19 @@ class app_cxc_api extends _BaseController {
 		//////////////////////////////////////////////
 		//Notificar a los agentes afiliados
 		//////////////////////////////////////////////
-		$urlSend		= base_url()."/app_cxc_conversation/edit/entityID/".$objCustomer[0]->entityID;
-		$whatsappLink 	= urlencode($urlSend);
-		$short 			= file_get_contents("https://is.gd/create.php?format=simple&url=$whatsappLink");
+		$diferenceDate 							= helper_CompareDateTime($lastActivityOnOld,$lastActivityOnNew);
+		log_message("error","Diferencia entre una conversacion y otra");
+		log_message("error",print_r($lastActivityOnOld,true));
+		log_message("error",print_r($objConversation["lastActivityOn"],true));
+		log_message("error",print_r($diferenceDate,true));		
+		//Han pasado almenos 5 minutos desde el utlimo mensaje
+		if($diferenceDate["comparador"] == -1 && $diferenceDate["minutos"] > 5 )
+		{			
+			$urlSend		= base_url()."/app_cxc_conversation/edit/entityID/".$objCustomer[0]->entityID;
+			$whatsappLink 	= urlencode($urlSend);
+			$short 			= file_get_contents("https://is.gd/create.php?format=simple&url=$whatsappLink");
 		
-		$this->core_web_conversation->notificationEmployerInConversation(
+			$this->core_web_conversation->notificationEmployerInConversation(
 			$dataSession["company"]->companyID,
 			$dataSession["user"]->branchID,
 			$dataSession["company"]->type,
@@ -1991,7 +2001,8 @@ class app_cxc_api extends _BaseController {
 
 👉 Por favor, respóndelo en el siguiente enlace:
 🌐 ".$short
-		);
+			);		
+		}
 		
 		
 		//Resultado
