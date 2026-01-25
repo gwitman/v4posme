@@ -3,8 +3,7 @@
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "bc428892" 
-	##tb_company_parameter.value = "31" 
+	tb_company_parameter.value = "b65275ec-36f8-42b8-ab25-8bb9cd624e19" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
@@ -34,13 +33,13 @@ WHERE
 	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION_IMAGEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value 		= "https://api.ultramsg.com/instance41967/messages/chat" 
+	tb_company_parameter.value 		= "https://wapi2.com/chat" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WAHTSAP_URL_ENVIO_MENSAJE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "x0idbj9zz750zq5khhh" 
+	tb_company_parameter.value = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyNTIzLCJ0eXBlIjoiYXBpX2FjY2VzcyIsImlhdCI6MTc2ODk0MDc2MSwiZXhwIjoxODAwNDc2NzYxfQ.3BjU5L0xVl-qMfiHuwJFnK6ad2pVmd8CK2zwb5Ohn78" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema

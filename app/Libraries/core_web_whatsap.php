@@ -203,6 +203,10 @@ class core_web_whatsap {
 	   {
 		   $i = "not implementd";
 	   }
+	   else if ($typeCompany == "posme")
+	   {
+		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino);
+	   }
 	   else
 	   {
 		   return $this->sendMessageUltramsg( $companyID, $message, $phoneDestino);
@@ -213,6 +217,10 @@ class core_web_whatsap {
 	   if($typeCompany == "")
 	   {
 		   $i = "not implementd";
+	   }
+	   else if ($typeCompany == "posme")
+	   {   
+		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino );
 	   }
 	   else
 	   {
@@ -976,7 +984,83 @@ class core_web_whatsap {
 
    }
 
+   function sendMessageWapi2Text( $companyID, $message, $phoneDestino)
+   {
+	   //password: 180389Witman
+		//usuario: wgonzalez@gruposi.com
+	    //https://user.ultramsg.com/
+	    //Cada mensaje cuesta al cliene: 0.2 dolares
+	    //Habilitar 30 mensaje le cuesta: 6 dolares mensuales
+		//try
+		//{
+			$Parameter_Model 			= new Parameter_Model();
+			$Company_Parameter_Model 	= new Company_Parameter_Model();
 
+
+			$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
+			$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
+			$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
+
+			$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+			$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
+			$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
+
+			$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
+			$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
+			$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
+
+
+			//https://api.ultramsg.com/instance65915/messages/chat
+			$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+			$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
+			$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
+
+
+
+			$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;
+			$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
+			$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
+
+			$params=array(			
+			'message' 		=> $message
+			);
+			
+			$url  = $objCP_WhatsapUrlSendMessage->value;
+			$url  = $url."/".$phoneDestino."/message?session_id=".$objCP_WhatsapUrlSession->value;
+			$curl = curl_init();
+			curl_setopt_array($curl, array(
+			  CURLOPT_URL 				=> $url,
+			  CURLOPT_RETURNTRANSFER 	=> true,
+			  CURLOPT_CUSTOMREQUEST 	=> "POST",
+			  CURLOPT_POSTFIELDS 		=> json_encode($params),
+			  CURLOPT_HTTPHEADER 		=> array(
+				"Accept: application/json",
+				"Content-Type: application/json",
+				"Authorization: Bearer ".$objCP_WhatsapToken->value
+			  ),
+			));
+
+			$response 	= curl_exec($curl);
+			$err 		= curl_error($curl);
+
+			curl_close($curl);
+
+			if ($err)
+			{
+			  log_message("error",print_r("cURL Error #:".$err,true));
+			}
+			else
+			{
+			  log_message("error",print_r($response,true));
+			}
+
+
+		//}
+		//catch(\Exception $ex)
+		//{
+		//		exit($ex->getMessage());
+		//}
+   }
    function sendMessageUltramsg( $companyID, $message, $phoneDestino)
    {
 		//password: 180389Witman
@@ -1061,6 +1145,7 @@ class core_web_whatsap {
 
    }
 
+   
    function sendMessageTypeImagUltramsg( $companyID, $urlImagen,$message, $phoneDestino )
    {
 		//password: 180389Witman
@@ -1154,6 +1239,84 @@ class core_web_whatsap {
 
    }
    
+   function sendMessageWapi2Image( $companyID,$urlImagen, $message, $phoneDestino)
+   {
+	   //password: 180389Witman
+		//usuario: wgonzalez@gruposi.com
+	    //https://user.ultramsg.com/
+	    //Cada mensaje cuesta al cliene: 0.2 dolares
+	    //Habilitar 30 mensaje le cuesta: 6 dolares mensuales
+		//try
+		//{
+			$Parameter_Model 			= new Parameter_Model();
+			$Company_Parameter_Model 	= new Company_Parameter_Model();
+
+
+			$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
+			$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
+			$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
+
+			$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+			$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
+			$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
+
+			$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
+			$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
+			$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
+
+
+			//https://api.ultramsg.com/instance65915/messages/chat
+			$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+			$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
+			$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
+
+
+
+			$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;
+			$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
+			$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
+
+			$params=array(			
+			'image' 		=> $urlImagen,
+			'caption'		=> $message
+			);
+			
+			$url  = $objCP_WhatsapUrlSendMessage->value;
+			$url  = $url."/".$phoneDestino."/image?session_id=".$objCP_WhatsapUrlSession->value;
+			$curl = curl_init();
+			curl_setopt_array($curl, array(
+			  CURLOPT_URL 				=> $url,
+			  CURLOPT_RETURNTRANSFER 	=> true,
+			  CURLOPT_CUSTOMREQUEST 	=> "POST",
+			  CURLOPT_POSTFIELDS 		=> json_encode($params),
+			  CURLOPT_HTTPHEADER 		=> array(
+				"Accept: application/json",
+				"Content-Type: application/json",
+				"Authorization: Bearer ".$objCP_WhatsapToken->value
+			  ),
+			));
+
+			$response 	= curl_exec($curl);
+			$err 		= curl_error($curl);
+
+			curl_close($curl);
+
+			if ($err)
+			{
+			  log_message("error",print_r("cURL Error #:".$err,true));
+			}
+			else
+			{
+			  log_message("error",print_r($response,true));
+			}
+
+
+		//}
+		//catch(\Exception $ex)
+		//{
+		//		exit($ex->getMessage());
+		//}
+   }
    
 	function sendMessagePosMeConnect($companyID,$body,$number) 
 	{
@@ -1234,6 +1397,8 @@ class core_web_whatsap {
 			"response"  => json_decode($response, true)
 		];
 	}
+	
+	
 
 	function sendMessage_UltramsgOnlyText_Masive($companyID,$chatSend,$pathRemember) 
 	{
