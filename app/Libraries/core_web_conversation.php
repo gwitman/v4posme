@@ -639,6 +639,7 @@ class core_web_conversation{
 	
 	function notificationEmployerInConversation($companyID,$branchID,$companyType,$conversationID,$mensaje)
 	{
+		
 		//Afiliar la conversacion a un agente	
 		try
 		{
@@ -671,6 +672,12 @@ class core_web_conversation{
 					continue;
 				
 				$phone = clearNumero($phone[0]->number);
+				if(
+					$phone == "50584766457" ||
+					$phone == "50587125827"
+				)
+					continue;
+					
 				log_message("error","mensaje enviado al telefono: ".$phone." , entityIDEmployer: ".$employer->entityID." , conversationID: ".$conversationID);
 				$core_web_whatsap->sendMessageGeneric(
 					$companyType,
