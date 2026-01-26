@@ -1273,6 +1273,7 @@ class app_box_attendance extends _BaseController {
 						return isset($item->stageDocumento) && $item->stageDocumento !== 'CANCELADO' && $item->Mora > 0;
 					}
 			);
+			$CantidadMora = array_values($CantidadMora);			
 			if(count($CantidadMora) == 0)
 			{
 				$CantidadMora = 0;
@@ -1305,24 +1306,24 @@ class app_box_attendance extends _BaseController {
 						return isset($item->stageDocumento) && $item->stageDocumento !== 'CANCELADO';
 					}
 			);			
+			$FechaVencimiento 		= array_values($FechaVencimiento);			
 			$FechaVencimientoMora	= array_map(function ($item) {
 					return isset($item->Mora) ? (int)$item->Mora : 0;
 				}, $FechaVencimiento);
 			$FechaVencimientoMora 	= !empty($FechaVencimientoMora) ? min($FechaVencimientoMora) : 0;
 				
-				
+			
 			$FechaVencimiento 	= array_filter(
 					$FechaVencimiento,
 					function ($item) use ($FechaVencimientoMora)  {
 						return isset($item->stageDocumento) && $item->stageDocumento !== 'CANCELADO' && $item->Mora == $FechaVencimientoMora ;
 					}
 			);			
+			$FechaVencimiento 	= array_values($FechaVencimiento);			
 			
 			$FechaVencimiento		= $FechaVencimiento[0];
 			$FechaVencimiento		= $FechaVencimiento->dateApply;
 			$txtDetailReference3	= $FechaVencimiento;
-			
-		
 			//Fecha del proximo pago
 			////////////////////////////////
 			////////////////////////////////
@@ -1332,6 +1333,7 @@ class app_box_attendance extends _BaseController {
 						return isset($item->stageDocumento) && $item->stageDocumento !== 'CANCELADO';
 					}
 			);
+			$FechaProximoPago 		= array_values($FechaProximoPago);			
 			
 			$FechaProximoPagoMora	= array_map(function ($item) {
 					return isset($item->Mora) ? (int)$item->Mora : 0;
@@ -1344,6 +1346,7 @@ class app_box_attendance extends _BaseController {
 						return isset($item->stageDocumento) && $item->stageDocumento !== 'CANCELADO' && $item->Mora == $FechaProximoPagoMora;
 					}
 			);
+			$FechaProximoPago 		= array_values($FechaProximoPago);			
 			
 			$FechaProximoPago		= $FechaProximoPago[0];
 			$FechaProximoPago		= $FechaProximoPago->dateApply;
