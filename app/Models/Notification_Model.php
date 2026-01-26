@@ -272,16 +272,16 @@ class Notification_Model extends Model  {
 			DATE_FORMAT(c.createdOn, '%%Y-%%m-%%d %%h:%%i:%%s %%p') as createdOnFormato12H,
 			case
 				when ifnull(emp.entityID,'0') = '0' then
-					concat('Escribio el Cliente: ',ns.firstName)
+					concat('Cli: ',LEFT(ns.firstName,15))
 				else 
-					concat('',ns.firstName)
+					concat('',LEFT(ns.firstName,15))
 			end as firstNameSource,
 			
 			case
 				when ifnull(emp.entityID,'0') = '0' then
-					concat('Escribio el Cliente: ',nt.firstName)
+					concat('Cli: ',LEFT(nt.firstName,15))
 				else 
-					concat('Escribio el Agente: ',nt.firstName)
+					concat('Age: ',LEFT(nt.firstName,15))
 			end as firstNameTartet,
 			
 			ifnull(emp.entityID,'0') as targetIDIsEmployeer
