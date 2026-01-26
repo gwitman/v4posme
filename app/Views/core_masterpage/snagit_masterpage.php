@@ -89,6 +89,11 @@
           <div class="app-brand demo">
             <a href="index.html" class="app-brand-link">
               <span class="app-brand-logo demo">
+				<img src="https://posme.net/v4posme/public/public/resource/img/logos/logo_posme.png" style="
+					width: 135px;
+					height: 50px;
+				">
+				<!--
                 <svg
                   width="25"
                   viewBox="0 0 25 42"
@@ -142,8 +147,12 @@
                     </g>
                   </g>
                 </svg>
+				-->
               </span>
-              <span class="app-brand-text demo menu-text fw-bolder ms-2">Sneat</span>
+              <!--
+			  <span class="app-brand-text demo menu-text fw-bolder ms-2">Sneat</span>
+			  -->
+			  
             </a>
 
             <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
