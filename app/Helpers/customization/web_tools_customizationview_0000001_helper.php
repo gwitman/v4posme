@@ -1258,7 +1258,9 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
 	$fidlocal				= getBehavioFidLocal();
 	$divs                   = array_merge($divs, $fidlocal);		
 	$jorgeRamirez			= getBehavioJorgeRamirez();
-	$divs                   = array_merge($divs, $jorgeRamirez);		
+	$divs                   = array_merge($divs, $jorgeRamirez);			
+	$njGym					= getBehavioNJGYM();
+	$divs                   = array_merge($divs, $njGym);		
 
 	//Comanda traducir es para los menu
 	//comportamiento del controlador

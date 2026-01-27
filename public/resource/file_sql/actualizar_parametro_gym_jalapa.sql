@@ -1811,7 +1811,7 @@ WHERE
 /***************************************************************/
 		
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Eusebia Del Carmen Dumas Ruiz" 
+	tb_company_parameter.value = "Jessica Jaqueline Gutiérrez Salgado " 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_NAME";## Witman José González Rostran 
@@ -1826,28 +1826,28 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "047-160483-0000C" 
+	tb_company_parameter.value = "489-110789-0000Q" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "047-160483-0000C" 
+	tb_company_parameter.value = "489-110789-0000Q" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8505-7109" 
+	tb_company_parameter.value = "8664-9240 TEL: 5779-2181" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8505-7109" 
+	tb_company_parameter.value = "8664-9240 TEL: 5779-2181" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1855,14 +1855,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Donde fue aserrio santa fe, 2c abajo 15v.sur" 
+	tb_company_parameter.value = "De la ferretería Neol contrucciones 20 metros al norte, Jalapa" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Gym Jalapa' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
+	NAME = 'NJ GYM' , address = 'De la ferretería Neol contrucciones 20 metros al norte, Jalapa' ,
 	flavorID = 1060 /*usuarioID*/,type='gymJalapa'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
