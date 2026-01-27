@@ -1,4 +1,6 @@
 /*BD: 	posme:restaurante_exit*/
+/*BD: 	dbnd8v3ibwzgv8:restaurante_exit*/
+/*Servidor:  siteground*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

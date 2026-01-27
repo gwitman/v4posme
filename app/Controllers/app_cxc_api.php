@@ -513,6 +513,15 @@ class app_cxc_api extends _BaseController {
 		$this->Customer_Conversation_Model->update_app_posme($objCustomerConversation[0]->conversationID,$objConversation);
 		
 		
+		//Actualizar la ultima interaccion del colaborador en la conversacion
+		$objCCR 					= array();
+		$objCCR["lastActivityOn"] 	= helper_getDateTime();
+		$this->Company_Component_Relation_Model->update_app_posme_byConversationID_AndEntityIDEmployer(
+			$objCustomerConversation[0]->conversationID,
+			$entityIDEmployer,
+			$objCCR
+		);
+		
 		//PROCESAR IMAGEN
 		if($file)
 		{

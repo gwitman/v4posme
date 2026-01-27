@@ -22,7 +22,17 @@ class Company_Component_Relation_Model extends Model  {
 		return $builder->update($data);
 		
    }
-   function delete_app_posme_byComponentIDSource_AndComponentItemSourceID($componentIDConversation,$conversationID){
+   function update_app_posme_byConversationID_AndEntityIDEmployer($convertionID,$entityIDEmployerID,$data){
+		$db 		= db_connect();
+		$builder	= $db->table("tb_company_component_relation");
+		
+		$builder->where("componentItemIDSource", $convertionID);
+		$builder->where("componentItemIDTarget", $entityIDEmployerID);
+		return $builder->update($data);
+		
+   }
+   function delete_app_posme_byComponentIDSource_AndComponentItemSourceID($componentIDConversation,$conversationID)
+   {
 		$db 		= db_connect();
 		$builder	= $db->table("tb_company_component_relation");		
   		
@@ -48,7 +58,9 @@ class Company_Component_Relation_Model extends Model  {
 						c.note,
 						c.reference1,
 						c.reference2,
-						c.reference3  
+						c.reference3,
+						c.createdOn,
+						c.lastActivityOn
 						");
 		$sql = $sql.sprintf(" from tb_company_component_relation c");
 		
@@ -111,10 +123,41 @@ class Company_Component_Relation_Model extends Model  {
 			
 		");
 		
-		log_message("error",print_r($sql,true));
+		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
-   }   
+   } 
+   function get_ConversationTopEmployerBy_ConversationID($top,$conversationID)
+   {
+	    $db  = db_connect();
+		    
+		$sql = "";
+		$sql = sprintf("
+		select
+		    nat.entityID,
+			emp.employeNumber,
+			nat.firstName,
+			r.lastActivityOn
+		from 
+			tb_company_component_relation r
+			inner join tb_employee emp on 
+				emp.entityID = r.componentItemIDTarget  
+			inner join tb_naturales nat on 
+				nat.entityID = emp.entityID 
+		where 
+			r.isActive = 1 and 
+			r.componentItemIDSource = $conversationID and 
+			nat.isActive = 1 
+		order by 
+			r.lastActivityOn desc 
+		limit $top 
+		");
+		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   } 
+   
    function get_ConversationEmployerBy_entityIDEmployerAnd_ConversationID($entityIDEmployer,$converationID)
    {
 	    $db  = db_connect();

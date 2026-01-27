@@ -660,33 +660,58 @@ class core_web_conversation{
 			if(!$objListEmployerConversation)
 				return;
 			
-			log_message("error","colaboradores a enviar witman: ");
-			log_message("error",print_r($objListEmployerConversation,true));
-				
-			foreach($objListEmployerConversation as $employer)
+			//Obtener el tip 5 de las ultimos colaboradores
+			$objListEmployerConversationTop5 = $Company_Component_Relation_Model->get_ConversationTopEmployerBy_ConversationID(5,$conversationID);
+			if(!$objListEmployerConversationTop5)
+				return;
+			
+			//Mandarle mensaje a la ultima persona que converso
+			if($objListEmployerConversationTop5)
 			{
-				//Obtener el numero de telefono del colaborador
-				$phone = $Entity_Phone_Model->get_rowByPrimaryEntity($companyID,$branchID,$employer->entityID);
-				log_message("error","colaboradores y: ".print_r($phone,true));	
+				$phone = $Entity_Phone_Model->get_rowByPrimaryEntity(
+					$companyID,$branchID,$objListEmployerConversationTop5[0]->entityID
+				);
+				
 				if(!$phone)
-					continue;
+					return;
 				
 				$phone = clearNumero($phone[0]->number);
 				if(
 					$phone == "50584766457" ||
 					$phone == "50587125827"
 				)
-					continue;
-					
-				log_message("error","mensaje enviado al telefono: ".$phone." , entityIDEmployer: ".$employer->entityID." , conversationID: ".$conversationID);
+					return;
+				
 				$core_web_whatsap->sendMessageGeneric(
 					$companyType,
 					$companyID, 
 					$mensaje, 
 					$phone	
-				);
-				
+				);			
+			
 			}
+			
+			//wg-other-companyType-foreach($objListEmployerConversation as $employer)
+			//wg-other-companyType-{
+			//wg-other-companyType-	//Obtener el numero de telefono del colaborador
+			//wg-other-companyType-	$phone = $Entity_Phone_Model->get_rowByPrimaryEntity($companyID,$branchID,$employer->entityID);				
+			//wg-other-companyType-	if(!$phone)
+			//wg-other-companyType-		continue;
+			//wg-other-companyType-	
+			//wg-other-companyType-	$phone = clearNumero($phone[0]->number);
+			//wg-other-companyType-	if(
+			//wg-other-companyType-		$phone == "50584766457" ||
+			//wg-other-companyType-		$phone == "50587125827"
+			//wg-other-companyType-	)
+			//wg-other-companyType-		continue;
+			//wg-other-companyType-	
+			//wg-other-companyType-	$core_web_whatsap->sendMessageGeneric(
+			//wg-other-companyType-		$companyType,
+			//wg-other-companyType-		$companyID, 
+			//wg-other-companyType-		$mensaje, 
+			//wg-other-companyType-		$phone	
+			//wg-other-companyType-	);				
+			//wg-other-companyType-}
 			
 		}
 		catch(\Exception $ex)
