@@ -985,6 +985,7 @@ class app_invoice_billing extends _BaseController {
 				throw new \Exception('La caja asignada al usuario, no se encuentra abierta.');
 			}
 			
+			
 			//El Estado solo permite editar el workflow
 			if($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_billing","statusID",$objTM->statusID,COMMAND_EDITABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID)){
 				$objTMNew								= array();
