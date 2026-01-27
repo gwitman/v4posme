@@ -15106,13 +15106,15 @@ class app_invoice_billing extends _BaseController {
 			$itemIDArray			= explode(",",$itemID);
 			$itemIDArray			= array_map('intval', $itemIDArray);
 			
+			
+			
 			$objParameterRuc	    = $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
 			$objParameterRuc        = $objParameterRuc->value;
 			
 			$objCompany 			= $this->Company_Model->get_rowByPK($companyID);					
 			$objParameter	        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
 			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
-			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);			
 			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$dataView["objNaturalEmployer"] 					= $this->Employee_Model->get_rowByInvoiceItem($companyID,$transactionMasterID,$itemIDArray[1]);
 			$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
@@ -15146,8 +15148,10 @@ class app_invoice_billing extends _BaseController {
 								
 			$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_invoice_billing","templateInvoiceCocina","");
 			$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_invoice_billing","templateInvoiceCocina","");
+			
 			if($htmlTemplateCompany == "")
 				$htmlTemplateCompany = $htmlTemplateDemo;
+			
 			
 			
 			//Obtener imagen de logo
@@ -15162,8 +15166,17 @@ class app_invoice_billing extends _BaseController {
 			foreach($dataView["objTransactionMasterDetail"] as $detail_)
 			{
 				
-				if(in_array($detail_->componentItemID, $itemIDArray) && $detail_->transactionMasterDetailID == $transactionMasterDetailID  )
+				if(
+					in_array($detail_->componentItemID, $itemIDArray) && 
+					(
+						$detail_->transactionMasterDetailID 		== $transactionMasterDetailID  ||
+						"-1,".$detail_->transactionMasterDetailID 	== $transactionMasterDetailID 
+					)
+				)
 				{
+					
+					
+					
 					$objTMDReferences 						= $this->Transaction_Master_Detail_References_Model->
 																get_rowByTransactionMasterDetailID(
 																	$detail_->transactionMasterDetailID
@@ -15181,6 +15194,7 @@ class app_invoice_billing extends _BaseController {
 					array_push($datViewArray["transactionMasterDetail"],$row);		
 				}
 			}
+			
 			
 			//Obtener datos
 			$datViewArray["companyRuc"]						= $objParameterRuc;

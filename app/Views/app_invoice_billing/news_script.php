@@ -1500,17 +1500,19 @@
 		var comentario 	= $("#txtNote").val();
 		comentario 		= comentario.replace(/\s+/g, '___');
 		
-		var i 		= 0;
-		var itemid 	= "-1";
+		var i 							= 0;
+		var itemid 						= "-1";
+		var transactionMasterDetailID 	= "-1";
 
 		while (i < length ){
-			if(listRow[i][0] == true){
-				itemid = itemid + ","+listRow[i][2];
+			if(listRow[i][0] == true){				
+				transactionMasterDetailID 	= transactionMasterDetailID + ","+listRow[i][1];
+				itemid 						= itemid + ","+listRow[i][2];
 			}
 			i++;
 		}
 
-
+		
 		if(varParameterInvoiceBillingPrinterDirect == 'false')
 		{
 
@@ -1519,7 +1521,7 @@
 			"/companyID/"+ objTransactionMaster.companyID +
 			"/transactionID/"+ objTransactionMaster.transactionID +
 			"/transactionMasterID/"+ objTransactionMaster.transactionMasterID +
-			"/itemID/"+itemid+"/transactionMasterComment/"+comentario;
+			"/itemID/"+itemid+"/transactionMasterDetailID/"+transactionMasterDetailID+"/transactionMasterComment/"+comentario;
 			window.open(url, "_blank");
 			
 		}
@@ -1529,21 +1531,24 @@
 
 	function fnImprimirCocina(){
 
+		
 		var listRow 	= objTableDetail.fnGetData();
 		var length 		= listRow.length;
 		var comentario 	= $("#txtNote").val();
 
-		var i 		= 0;
-		var itemid 	= "-1";
+		var i 							= 0;
+		var itemid 						= "-1";
+		var transactionMasterDetailID 	= "-1";
 
 		while (i < length ){
 			if(listRow[i][0] == true){
-				itemid = itemid + ","+listRow[i][2];
+				transactionMasterDetailID 	= transactionMasterDetailID + ","+listRow[i][1];
+				itemid 						= itemid + ","+listRow[i][2];
 			}
 			i++;
 		}
 
-
+		
 		if(varParameterInvoiceBillingPrinterDirect == 'true'){
 
 			var url	= 	"<?php echo base_url(); ?>/"+varParameterInvoiceBillingPrinterDirectCocinaUrl;
@@ -1551,7 +1556,7 @@
 			"/companyID/"+ objTransactionMaster.companyID +
 			"/transactionID/"+ objTransactionMaster.transactionID +
 			"/transactionMasterID/"+ objTransactionMaster.transactionMasterID +
-			"/itemID/"+itemid+"/transactionMasterComment/"+comentario;
+			"/itemID/"+itemid+"/transactionMasterDetailID/"+transactionMasterDetailID+"/transactionMasterComment/"+comentario;
 
 			mostarModalPersonalizado('Imprimiendo, por favor espere...');
 			$.ajax({
