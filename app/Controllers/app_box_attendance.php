@@ -1020,10 +1020,11 @@ class app_box_attendance extends _BaseController {
 	
 	function viewRegisterFormatoQR(){
 		
-		$customerIdentification	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"customerIdentification");//--finuri						
+		$entityIDCustomer		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"entityIDCustomer");//--finuri						
 		$typeResult				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"typeResult");//--finuri						
 		$companyID 				= APP_COMPANY;	
-		$objCustomer			= $this->Customer_Model->get_rowByIdentification($companyID,$customerIdentification);
+		$branchID 				= APP_BRANCH;	
+		$objCustomer			= $this->Customer_Model->get_rowByPK($companyID,$branchID,$entityIDCustomer);
 		$objCompany 			= $this->Company_Model->get_rowByPK($companyID);			
 		$objParameterRuc	    = $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
 		$objParameterRuc        = $objParameterRuc->value;

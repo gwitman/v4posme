@@ -2057,7 +2057,7 @@ class app_cxc_customer extends _BaseController {
                 mkdir($documentoPath, 0777, true);
             }
 			
-            $url 					= base_url()."/app_box_attendance/viewRegisterFormatoQR/customerIdentification/".$datView["objCustomer"]->identification."/typeResult/html";
+            $url 					= base_url()."/app_box_attendance/viewRegisterFormatoQR/entityIDCustomer/".$datView["objCustomer"]->entityID."/typeResult/html";
             $this->core_web_qr->generate($url,$documentoPath."/qrcode.png","M","10");
             $qrImage 				= $documentoPath."/qrcode.png";			
             $dataFoto    			= file_get_contents($qrImage);
