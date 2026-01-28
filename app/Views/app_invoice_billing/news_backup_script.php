@@ -1429,7 +1429,7 @@
 													name: 'txtCurrencyID',
 													id:'txtCurrencyID',
 													listeners: {
-														change: fnChange_CurrencyID_CreditLineID_WarehouseID
+														change: fnChange_CurrencyID
 													}
 												}
 											]
@@ -3920,6 +3920,34 @@
                 filters.add({
                     id: 		'warehouseID',
                     property: 	'warehouseID',
+                    value: 		newValue
+                });
+            }
+
+            // Volver a cargar desde la primera página
+            store.loadPage(1);
+			
+		}
+		function fnChange_CurrencyID(combo, newValue, oldValue, eOpts) 
+		{
+			
+			if (isLoading) return; // Detener evento
+			fnClearData();
+			fnLockPayment();
+			
+			//Recargar el grid de datos			
+			var grid 			= miVentanaSeleccionProducto.down('[reference=gridItems]');
+			var store 			= grid.getStore();
+            var filters 		= store.getFilters();
+			
+            // Buscar filtro existente
+            var filtroWarehouse = filters.getByKey('currencyID');
+            if (filtroWarehouse) {
+                filtroWarehouse.setValue(newValue);
+            } else {
+                filters.add({
+                    id: 		'currencyID',
+                    property: 	'currencyID',
                     value: 		newValue
                 });
             }
