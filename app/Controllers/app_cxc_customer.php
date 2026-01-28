@@ -2045,7 +2045,8 @@ class app_cxc_customer extends _BaseController {
 			$datView["objNatural"]	 			= $this->Natural_Model->get_rowByPK($companyID,$branchID,$entityID);
 			$datView["objLegal"]	 			= $this->Legal_Model->get_rowByPK($companyID,$branchID,$entityID);
 			$datView["objCustomer"]	 			= $this->Customer_Model->get_rowByPK($companyID,$branchID,$entityID);
-			$dataViewParse["customerName"]		= $datView["objNatural"]->firstName;
+			$dataViewParse["customerFirstName"]	= $datView["objNatural"]->firstName;
+			$dataViewParse["customerLastName"]	= $datView["objNatural"]->lastName;
 			$dataViewParse["customerNumber"]	= $datView["objCustomer"]->customerNumber;
 			$dataViewParse["identification"]	= $datView["objCustomer"]->identification;
 			$dataViewParse["companyName"]		= $objCompany->name;

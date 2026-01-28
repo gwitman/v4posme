@@ -359,6 +359,7 @@ class app_cxc_api extends _BaseController {
 	{	
 		
 		// Obtener JSON enviado por fetch
+		log_message("error","setConversationNotification_ByCustomer");
 		$file 		= $this->request->getFile('image');
 		$data 		= array();
 		if(!$file)
@@ -391,7 +392,8 @@ class app_cxc_api extends _BaseController {
 			
 		}
 		
-		//AUTENTICADO
+		log_message("error","setConversationNotification_ByCustomer >> procesar auteenticacion");
+		//AUTENTICADO		
 		if(!$this->core_web_authentication->isAuthenticated())
 		throw new \Exception(USER_NOT_AUTENTICATED);
 		$dataSession		= $this->session->get();
@@ -404,6 +406,7 @@ class app_cxc_api extends _BaseController {
 		
 	
 		//Obtener el colaborador
+		log_message("error","setConversationNotification_ByCustomer >> obtener colaboradores");
 		$entityIDEmployer 		= $dataSession["user"]->employeeID;		
 		$companyID				= $dataSession["user"]->companyID;		
 		$branchID				= $dataSession["user"]->branchID;
@@ -422,7 +425,8 @@ class app_cxc_api extends _BaseController {
 			
 		}
 		
-		//Obtener el cliente		
+		//Obtener el cliente	
+		log_message("error","setConversationNotification_ByCustomer >> obtener clientes");		
 		$phone					= getNumberPhone($phone);
 		$objCustomer			= $this->Customer_Model->get_rowByPhoneNumber($phone);
 		if(!$objCustomer)
@@ -446,7 +450,7 @@ class app_cxc_api extends _BaseController {
 		
 		//Obtener el tag
 		$objTag		 = $this->Tag_Model->get_rowByName("MENSAJE DE CONVERSACION");
-		
+		log_message("error","setConversationNotification_ByCustomer >> obtener el colaborador");		
 		//Obtener al colaborador
 		$objEmployer 		= $this->Employee_Model->get_rowByEntityID($companyID,$entityIDEmployer);
 		if(!$objEmployer)
@@ -463,6 +467,7 @@ class app_cxc_api extends _BaseController {
 		}
 		
 		//Obtener el telefono del colaborador
+		log_message("error","setConversationNotification_ByCustomer >> obtener telefono del colaborador");		
 		$objEmployerPhone = $this->Entity_Phone_Model->get_rowByPrimaryEntity($companyID,$branchID,$entityIDEmployer);
 		if(!$objEmployerPhone)
 		{
@@ -479,6 +484,7 @@ class app_cxc_api extends _BaseController {
 		
 		
 		//Actulizar Conversacion, cliente existe pero no tiene conversacion
+		log_message("error","setConversationNotification_ByCustomer >> obtener conversacion");		
 		$objCustomerConversation				= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($objCustomer[0]->entityID);
 		if(!$objCustomerConversation)
 		{
@@ -506,6 +512,7 @@ class app_cxc_api extends _BaseController {
 			$objCustomerConversation	= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($objCustomer[0]->entityID);
 		}
 		
+		log_message("error","setConversationNotification_ByCustomer >> actualiaz conversacion");		
 		$objConversation 						= array();
 		$objConversation["messgeConterNotRead"] = 0;
 		$objConversation["lastMessage"] 		= $message ;
@@ -514,6 +521,7 @@ class app_cxc_api extends _BaseController {
 		
 		
 		//Actualizar la ultima interaccion del colaborador en la conversacion
+		log_message("error","setConversationNotification_ByCustomer >> actualiaz interaccion del colaborador");		
 		$objCCR 					= array();
 		$objCCR["lastActivityOn"] 	= helper_getDateTime();
 		$this->Company_Component_Relation_Model->update_app_posme_byConversationID_AndEntityIDEmployer(
@@ -523,6 +531,7 @@ class app_cxc_api extends _BaseController {
 		);
 		
 		//PROCESAR IMAGEN
+		log_message("error","setConversationNotification_ByCustomer >> procesar archivo");		
 		if($file)
 		{
 			
@@ -566,7 +575,7 @@ class app_cxc_api extends _BaseController {
 			$file->move($documentoPath, $newName, true);
 		}
 		
-		
+		log_message("error","setConversationNotification_ByCustomer >> guardar notificacion");		
 		$objNotification 							= array();		
 		$objNotification["errorID"] 				= 0;
 		$objNotification["from"] 					= $objEmployer->firstName;
@@ -595,6 +604,7 @@ class app_cxc_api extends _BaseController {
 		$notificationID 							= $this->Notification_Model->insert_app_posme($objNotification);
 	
 		//Enviar mensaje usando wapi
+		log_message("error","setConversationNotification_ByCustomer >> obtener firma");		
 		$message	= $this->core_web_conversation->getMessageSignature($companyID,$typeCompany,$objEmployer->firstName,$message);
 		
 		
@@ -622,8 +632,10 @@ class app_cxc_api extends _BaseController {
 		//wg-	);
 		//wg-}
 		
+		
 		if (!$file)
 		{
+			log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de texto");		
 			$this->core_web_whatsap->sendMessageGeneric(
 				$typeCompany,
 				$companyID, 
@@ -633,6 +645,7 @@ class app_cxc_api extends _BaseController {
 		}
 		else
 		{
+			log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de imagen");		
 			$this->core_web_whatsap->sendMessageTypeImagGeneric(
 				$typeCompany,
 				$companyID, 
@@ -642,6 +655,7 @@ class app_cxc_api extends _BaseController {
 			);
 		}
 		
+		log_message("error","setConversationNotification_ByCustomer >> proceso finalizado");		
 		return $this->response->setJSON([
 			'success' 	=> true,
 			'message' 	=> 'entityID recibido',
@@ -1990,9 +2004,9 @@ class app_cxc_api extends _BaseController {
 		//Notificar a los agentes afiliados
 		//////////////////////////////////////////////
 		$diferenceDate 							= helper_CompareDateTime($lastActivityOnOld,$lastActivityOnNew);
-		log_message("error","Diferencia entre una conversacion y otra");
+		log_message("error","Diferencia en fecha entre la conversacion actual y la anterior");
 		log_message("error",print_r($lastActivityOnOld,true));
-		log_message("error",print_r($objConversation["lastActivityOn"],true));
+		log_message("error",print_r($lastActivityOnNew,true));
 		log_message("error",print_r($diferenceDate,true));		
 		//Han pasado almenos 5 minutos desde el utlimo mensaje
 		if($diferenceDate["comparador"] == -1 && $diferenceDate["minutos"] > 5 )
