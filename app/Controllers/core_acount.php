@@ -256,6 +256,8 @@ class core_acount extends _BaseController {
 			$parameterCORE_PROPIETARY_EMAIL 			= $parameterCORE_PROPIETARY_EMAIL->value;
 			$parameterCORE_PROPIETARY_NAME 				= $this->core_web_parameter->getParameter("CORE_PROPIETARY_NAME",$objUser["user"]->companyID);
 			$parameterCORE_PROPIETARY_NAME 				= $parameterCORE_PROPIETARY_NAME->value;
+			$parameterCORE_AUTHENTICATE_BY_EMAIL 		= $this->core_web_parameter->getParameter("CORE_AUTHENTICATE_BY_EMAIL",$objUser["user"]->companyID);
+			$parameterCORE_AUTHENTICATE_BY_EMAIL 		= $parameterCORE_AUTHENTICATE_BY_EMAIL->value;
 			
 			//Procesar Pago
 			if($pagoCantidadMonto > 0 )
@@ -285,13 +287,62 @@ class core_acount extends _BaseController {
 			set_cookie("email",$dataSession['user']->email,86400,"localhost");			
 			
 	
-			
+			//Notificar a dueño que alguien esta intentado entrar
+			//Solicitar acceso
+			if($parameterCORE_AUTHENTICATE_BY_EMAIL == "true")
+			{
+				
+			}
 			
 			$subject 	= "Inicio de session: ".$objCompany->name." ".$nickname;
 			$body  		= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview			
 			if($objCompany->type == "emanuel")
 			{
 				$this->response->redirect(base_url()."/".$objUser["role"]->urlDefault."/index");
+			}
+			else if($objCompany->type == "bivaly" && $nickname != "superadmin"  )
+			{
+				$url 					= base_url()."/core_acount/setReviewLoginSession/userName/".$nickname."/sessionID/".$dataSession["sessionID"];
+				$params_["nickname"]	= $nickname;
+				$params_["objCompany"]	= $objCompany;				
+				$params_["mensaje"]		= "👉 Dar clic en el siguiente enlace para autorizar el acceso: ".$url;
+		
+		
+				$subject 	= "Inicio de session: ".$objCompany->name." ".$nickname;
+				$body  		= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview			
+				$this->email->setFrom(EMAIL_APP);
+				$this->email->setTo( $dataSession['user']->email );
+				$this->email->setSubject($subject);			
+				$this->email->setMessage($body); 
+				
+				$resultSend01 = $this->email->send();
+				$resultSend02 = $this->email->printDebugger();		
+
+				//Guardar Log		
+				$this->Log_Session_Model->delete_app_posme("userID",$dataSession["user"]->userID);					
+				$objLogSessionModel["session_id"] 		= $dataSession["sessionID"];
+				$objLogSessionModel["ip_address"] 		= $this->request->getIPAddress();
+				$objLogSessionModel["user_agent"] 		= $this->request->getUserAgent()->getPlatform();
+				$objLogSessionModel["last_activity"] 	= \DateTime::createFromFormat("Y-m-d H:i:s",helper_getDateTime())->format("YmdHis");
+				$objLogSessionModel["user_data"] 		= $objUser["user"]->nickname." request_authorization session";
+				$objLogSessionModel["userID"]			= $dataSession["user"]->userID;				
+				$this->Log_Session_Model->insert($objLogSessionModel);	 
+				
+				$script = /*--inicio view*/ view('core_template/core_acount_script_autorizacion');//--finview	
+				$script = str_replace("[[URL_AUTORIZATION]]",base_url()."/core_acount/getReviewLoginSession/userName/".$nickname."/sessionID/".$objLogSessionModel["session_id"], $script);
+				$script = str_replace("[[URL_REDIRECT]]",base_url()."/".$objUser["role"]->urlDefault."/index", $script);
+				$script = str_replace("[[NICKNAME]]",$nickname, $script);
+				
+				echo helper_notificationPage(
+					"Esperar aurotizacion", 
+					$script,
+					"Se le ha notificado al propietario, estamos esperando aurotizacion",
+					"",
+					"",
+					true
+				);
+				
+				return;
 			}
 			else 
 			{
@@ -305,8 +356,7 @@ class core_acount extends _BaseController {
 				
 				
 				//Guardar Log		
-				$this->Log_Session_Model->delete_app_posme("userID",$dataSession["user"]->userID);	
-				
+				$this->Log_Session_Model->delete_app_posme("userID",$dataSession["user"]->userID);					
 				$objLogSessionModel["session_id"] 		= $dataSession["sessionID"];
 				$objLogSessionModel["ip_address"] 		= $this->request->getIPAddress();
 				$objLogSessionModel["user_agent"] 		= $this->request->getUserAgent()->getPlatform();
@@ -641,5 +691,37 @@ class core_acount extends _BaseController {
 		
 	}
 	
+	//Revisar si el propietario ya autorizo el acceso
+	function getReviewLoginSession()
+	{
+		$userName 		= /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "userName"); //--finuri
+		$sessionID 		= /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "sessionID"); //--finuri
+		$objLogSession 	= $this->Log_Session_Model->get_rowBySessionID($sessionID);
+		
+		return $this->response->setJSON(array(
+			'error'   	=> false,
+			'message' 	=> "success",			
+			'data'	  	=> $objLogSession
+		));//--finjson	
+	}
 	
+	function setReviewLoginSession()
+	{
+		$userName 				= /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "userName"); //--finuri
+		$sessionID 				= /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "sessionID"); //--finuri
+		
+		$data["user_data"] 		= $userName." create session";
+		$this->Log_Session_Model->update_app_posme($sessionID,$data);		
+		$objLogSession 			= $this->Log_Session_Model->get_rowBySessionID($sessionID);		
+		
+		echo helper_notificationPage(
+			"Acceso permitido", 
+			"<script></script>",
+			"El acceso fue permitido",
+			"",
+			"",
+			true
+		);
+		
+	}
 }

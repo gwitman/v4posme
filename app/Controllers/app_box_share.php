@@ -2339,8 +2339,9 @@ class app_box_share extends _BaseController {
 			
 			
 			//Generar Reporte
-			$html = helper_reporte80mmTransactionMaster(
-			    "ABONO",
+			$titleAbono = getBahavioDB($dataSession["company"]->type, 'app_box_share', 'titleShare', "ABONO");
+			$html 		= helper_reporte80mmTransactionMaster(
+			    $titleAbono,
 			    $objCompany,
 			    $objParameter,
 			    $datView["objTM"],

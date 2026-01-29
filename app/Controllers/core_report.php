@@ -229,18 +229,18 @@ class core_report extends _BaseController
 				// Validacion si alguno de los campos esta vacio no hay que dejar pasar la solicitud
 				if (!$ftpMerchatId or !$ftpIp or !$ftpUsername or !$ftpPassword or !$ftpPort)
 				{
-					return helper_notificationPage("Fallo envio por SFTP","No cuenta con las credenciales necesarias para realizar esta accion","","",true,"red");
+					return helper_notificationPage("Fallo envio por SFTP","<script></script>","No cuenta con las credenciales necesarias para realizar esta accion","","",true,"red");
 				}				
 				$fileName						= 'catalogo_' . $ftpMerchatId . '.csv';
 				$resultado 						= helper_sendFtp($csvContent, $ftpMerchatId, $ftpIp, $ftpUsername, $ftpPassword, $ftpPort, $fileName, $ftpDir);
 				//return $resultado;
 				if (trim(strtolower($resultado)) == 'exitoso') 
 				{
-					return helper_notificationPage("Envio por SFTP", "El envio del archivo fue ralizado con exito","","",true);
+					return helper_notificationPage("Envio por SFTP","<script></script>", "El envio del archivo fue ralizado con exito","","",true);
 				} 
 				else 
 				{
-					return helper_notificationPage("Fallo envio por SFTP", $resultado,"","",true,"red");
+					return helper_notificationPage("Fallo envio por SFTP","<script></script>", $resultado,"","",true,"red");
 				}
 			}
 			else

@@ -142,8 +142,10 @@ WHERE
 	tb_parameter.name = "INVOICE_SEND_WHATAPP_BY_POINT"; ## Enviar whatapp por puntos
 	
 
+##1 PUNTO 	= 150 C$
+##1/150 	= 0.00666666
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "1" 
+	tb_company_parameter.value = "0.00666666" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_RATIO_OF_POINT_BY_BILLING"; ## Configuracion de los puntos ganados por cada cordoba vendido

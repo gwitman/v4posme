@@ -1509,7 +1509,14 @@ class app_invoice_billing extends _BaseController {
 					}
 					else 
 					{
-						$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint + (($amountTotal - $objTMInfoNew["receiptAmountPoint"]) * $ratioPont);
+						if($varDescuento == 0)
+						{							
+							$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint + (($amountTotal - $objTMInfoNew["receiptAmountPoint"]) * $ratioPont);
+						}
+						else 
+						{
+							$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint;
+						}	
 					}
 					$this->Customer_Model->update_app_posme($objCustomer->companyID,$objCustomer->branchID,$objCustomer->entityID,$objCustomerNew);
 					

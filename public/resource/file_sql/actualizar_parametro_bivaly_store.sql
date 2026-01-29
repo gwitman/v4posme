@@ -4,6 +4,14 @@
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CORE_AUTHENTICATE_BY_EMAIL";## Mandar correo de autenticacion al ingrear un usuario
+	
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
 WHERE 
@@ -1345,7 +1353,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Bivaly Store' , address = 'Multicentro las americas, primera planta, contiguo a helados POP' ,
-	flavorID = 523,type='default'
+	flavorID = 523,type='bivaly'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

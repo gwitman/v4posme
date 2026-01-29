@@ -44,6 +44,16 @@ class Log_Session_Model extends Model
     {
         return $this->where($field, $value)->delete();
     }
+	
+	public function update_app_posme($sessionID,$data)
+	{
+		$db      = db_connect();
+        $builder = $db->table("tb_log_session");
+
+        $builder->where("session_id", $sessionID);
+        return $builder->update($data);
+	}
+	
 	public function get_rowBySessionID($sessionID)
 	{
 		$db = db_connect();

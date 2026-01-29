@@ -532,7 +532,7 @@ class app_box_attendance extends _BaseController {
 			
 			
 			//Tipo de Factura
-			$customerDefault					= $this->core_web_parameter->getParameter("INVOICE_BILLING_CLIENTDEFAULT",$companyID);
+			$customerDefault					= $this->core_web_parameter->getParameter("INVOICE_BILLING_CLIENTDEFAULT",$companyID);			
 			$dataView["objListCurrency"]		= $objListCurrency;
 			$dataView["companyID"]				= $dataSession["user"]->companyID;
 			$dataView["userID"]					= $dataSession["user"]->userID;
@@ -552,15 +552,15 @@ class app_box_attendance extends _BaseController {
 			$dataView["exchangeRateSale"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID) + $objParameterExchangeSales->value;		
 			
 	
-			$dataView["objCurrency"]			= $objCurrency;
-			$dataView["objCaudal"]				= $this->Transaction_Causal_Model->getCausalByBranch($companyID,$transactionID,$branchID);			
-			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_attendance","statusID",$companyID,$branchID,$roleID);
-			$dataView["objComponentCustomer"]	= $objComponentCustomer;
-			$dataView["objCustomerDefault"]		= $this->Customer_Model->get_rowByCode($companyID,$customerDefault->value);
-			$dataView["objNaturalDefault"]		= $this->Natural_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
-			$dataView["objLegalDefault"]		= $this->Legal_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
-			$dataView["objListPrioridad"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_attendance","priorityID",$companyID);
-			
+			$dataView["objCurrency"]					= $objCurrency;
+			$dataView["objCaudal"]						= $this->Transaction_Causal_Model->getCausalByBranch($companyID,$transactionID,$branchID);			
+			$dataView["objListWorkflowStage"]			= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_attendance","statusID",$companyID,$branchID,$roleID);
+			$dataView["objComponentCustomer"]			= $objComponentCustomer;
+			$dataView["objCustomerDefault"]				= $this->Customer_Model->get_rowByCode($companyID,$customerDefault->value);
+			$dataView["objNaturalDefault"]				= $this->Natural_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
+			$dataView["objLegalDefault"]				= $this->Legal_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
+			$dataView["objListPrioridad"]				= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_attendance","priorityID",$companyID);
+			$dataView["objParameterAsistenciaManual"]	= $this->core_web_parameter->getParameter("BOX_ATTENDANCE_MANUALITY",$companyID)->value;
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);

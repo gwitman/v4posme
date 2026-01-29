@@ -1476,7 +1476,7 @@ function helper_sendFtp($csvContent, $merchanId, $ftpIp, $ftpUser, $ftpPass, $ft
 }
 
 
-function helper_notificationPage($titlePage="Title", $summaryPage="Summary", $labelButtonPage="Label", $linkButtonPage="link", $hiddenButtonPage=false, $backgroundHex="#006E98")
+function helper_notificationPage($titlePage="Title",$script = "", $summaryPage="Summary", $labelButtonPage="Label", $linkButtonPage="link", $hiddenButtonPage=false, $backgroundHex="#006E98")
 {
 	$htmlPage 							= '
     <!DOCTYPE html>
@@ -1556,16 +1556,16 @@ function helper_notificationPage($titlePage="Title", $summaryPage="Summary", $la
     </head>
     <body>
         <div class="container">
-            <h1>' . htmlspecialchars($titlePage) . '</h1>
-            <p>' . htmlspecialchars($summaryPage) . '</p>';
+            <h1>'.htmlspecialchars($titlePage).'</h1>
+            <p>'.htmlspecialchars($summaryPage).'</p>';
     
+	
     if (!$hiddenButtonPage) 
 	{
-        $htmlPage 						.= '<a href="' . htmlspecialchars($linkButtonPage) . '" class="btn">' . htmlspecialchars($labelButtonPage) . '</a>';
+        $htmlPage .= '<a href="' . htmlspecialchars($linkButtonPage) . '" class="btn">' . htmlspecialchars($labelButtonPage) . '</a>';
     }
 
-    $htmlPage 							.= '</div></body></html>';
-
+    $htmlPage .= '</div>'.$script.'</body></html>';
     return $htmlPage;
 }
 
