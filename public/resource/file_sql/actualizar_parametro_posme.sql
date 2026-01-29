@@ -33,13 +33,13 @@ WHERE
 	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION_IMAGEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value 		= "https://wapi2.com/chat" 
+	tb_company_parameter.value 		= "https://api.z-api.io/instances/3EDF527C557BB1FD5BB37E439F0C86D3/token/B0D6E517BCF7809B380928A7" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WAHTSAP_URL_ENVIO_MENSAJE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyNTIzLCJ0eXBlIjoiYXBpX2FjY2VzcyIsImlhdCI6MTc2ODk0MDc2MSwiZXhwIjoxODAwNDc2NzYxfQ.3BjU5L0xVl-qMfiHuwJFnK6ad2pVmd8CK2zwb5Ohn78" 
+	tb_company_parameter.value = "F7403e70c8a00447abbb04c37c70a1efdS" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema

@@ -205,7 +205,9 @@ class core_web_whatsap {
 	   }
 	   else if ($typeCompany == "posme")
 	   {
-		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino);
+		   //return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino);
+		   return $this->sendMessageZAPIioText( $companyID, $message, $phoneDestino);
+		   
 	   }
 	   else
 	   {
@@ -220,7 +222,9 @@ class core_web_whatsap {
 	   }
 	   else if ($typeCompany == "posme")
 	   {   
-		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino );
+		   //return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino );
+		   return $this->sendMessageZAPIioImage( $companyID, $urlImagen,$message, $phoneDestino );
+		   
 	   }
 	   else
 	   {
@@ -1324,7 +1328,106 @@ class core_web_whatsap {
 		//		exit($ex->getMessage());
 		//}
    }
-   
+   function sendMessageZAPIioText( $companyID, $message, $phoneDestino)
+   {
+        $Parameter_Model 			= new Parameter_Model();
+		$Company_Parameter_Model 	= new Company_Parameter_Model();
+
+	    $objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
+		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);//F7403e70c8a00447abbb04c37c70a1efdS
+			
+		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
+		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);//'https://api.z-api.io/instances/3EDF527C557BB1FD5BB37E439F0C86D3/token/B0D6E517BCF7809B380928A7/send-text' 
+
+
+	    $url 		= $objCP_WhatsapUrlSendMessage->value.'/send-text';
+		$payload 	= [
+			'phone'   => $phoneDestino,
+			'message' => $message
+		];
+
+		$ch = curl_init($url);
+		curl_setopt_array($ch, [
+			CURLOPT_POST           => true,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_HTTPHEADER     => [
+				'Content-Type: application/json',
+				'Client-Token: '.$objCP_WhatsapToken->value
+			],
+			CURLOPT_POSTFIELDS     => json_encode($payload),
+			CURLOPT_TIMEOUT        => 30,
+		]);
+
+		$response = curl_exec($ch);
+
+		if ($response === false) {
+			$error = curl_error($ch);
+			curl_close($ch);
+			return $this->response->setJSON([
+				'status' => false,
+				'error'  => $error
+			]);
+		}
+
+		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+		log_message("error",print_r($httpCode,true));
+		log_message("error",print_r(json_decode($response, true),true));
+
+		
+   }
+   function sendMessageZAPIioImage( $companyID,$urlImagen, $message, $phoneDestino)
+   {
+        $Parameter_Model 			= new Parameter_Model();
+ 		$Company_Parameter_Model 	= new Company_Parameter_Model();
+
+		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
+		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);//F7403e70c8a00447abbb04c37c70a1efdS
+			
+		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
+		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);//'https://api.z-api.io/instances/3EDF527C557BB1FD5BB37E439F0C86D3/token/B0D6E517BCF7809B380928A7/send-text' 
+			
+	    $url = $objCP_WhatsapUrlSendMessage->value.'/send-image';
+		$payload = [
+			'phone'   	=> $phoneDestino,
+			'caption' 	=> $message,
+			'image' 	=> $urlImagen
+		];
+
+		$ch = curl_init($url);
+		curl_setopt_array($ch, [
+			CURLOPT_POST           => true,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_HTTPHEADER     => [
+				'Content-Type: application/json',
+				'Client-Token: '.$objCP_WhatsapToken->value
+			],
+			CURLOPT_POSTFIELDS     => json_encode($payload),
+			CURLOPT_TIMEOUT        => 30,
+		]);
+
+		$response = curl_exec($ch);
+
+		if ($response === false) {
+			$error = curl_error($ch);
+			curl_close($ch);
+			return $this->response->setJSON([
+				'status' => false,
+				'error'  => $error
+			]);
+		}
+
+		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+		log_message("error",print_r($httpCode,true));
+		log_message("error",print_r(json_decode($response, true),true));
+
+		
+   }
 	function sendMessagePosMeConnect($companyID,$body,$number) 
 	{
 		$Parameter_Model 			= new Parameter_Model();
