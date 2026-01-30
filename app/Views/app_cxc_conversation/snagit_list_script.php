@@ -10,6 +10,8 @@ createApp({
 			intervaloAjax: 					null,
 			sonidoReproducido:				false,
 			permisoParaVerTodasLasActivas:	<?php echo $permisoParaVerTodasLasActivas; ?>,
+			parametroNoDebeVerFoto:			<?php echo $objParameterCONVERSATION_LIST_CONVERSATION_NOT_PHOTE; ?>,
+			parametroNoDebeEscucharSonido:	<?php echo $objParameterCONVERSATION_LIST_CONVERSATION_NOT_BELL; ?>,
 			activeTab: 						'LISTA DE CONVERSACIONES MIAS', // Por defecto activo
 			txtCustomerFind: 				'',			
 			objListConversation: 			[],			

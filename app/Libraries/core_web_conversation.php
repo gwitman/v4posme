@@ -678,7 +678,8 @@ class core_web_conversation{
 				$phone = clearNumero($phone[0]->number);
 				if(
 					$phone == "50584766457" ||
-					$phone == "50587125827"
+					$phone == "50587125827" || 
+					$phone == "50588888888"
 				)
 					return;
 				

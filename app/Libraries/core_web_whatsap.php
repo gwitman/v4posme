@@ -209,6 +209,10 @@ class core_web_whatsap {
 		   return $this->sendMessageZAPIioText( $companyID, $message, $phoneDestino);
 		   
 	   }
+	   else if ($typeCompany == "arteDigital")
+	   {
+		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino);
+	   }
 	   else
 	   {
 		   return $this->sendMessageUltramsg( $companyID, $message, $phoneDestino);
@@ -225,6 +229,10 @@ class core_web_whatsap {
 		   //return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino );
 		   return $this->sendMessageZAPIioImage( $companyID, $urlImagen,$message, $phoneDestino );
 		   
+	   }
+	   else if ($typeCompany == "arteDigital")
+	   {
+		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino );
 	   }
 	   else
 	   {

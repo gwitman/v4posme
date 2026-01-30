@@ -98,6 +98,7 @@
 					>{{ objConversation.lastActivityOn }}</h6>
 					<ul class="list-unstyled d-flex align-items-center avatar-group mb-0">
 					  <li
+					    v-if="parametroNoDebeVerFoto === false" 
 						data-bs-toggle="tooltip"
 						data-popup="tooltip-custom"
 						data-bs-placement="top"

@@ -127,6 +127,9 @@ class app_cxc_conversation extends _BaseController {
 			$dataView["company"]					= $dataSession["company"];
 			$dataView["companyPageSetting"]			= $dataSession["companyPageSetting"];
 			$dataView["title"]						= "Conversaciones";			
+			
+			$dataView["objParameterCONVERSATION_LIST_CONVERSATION_NOT_PHOTE"]				= $this->core_web_parameter->getParameter("CONVERSATION_LIST_CONVERSATION_NOT_PHOTE",$dataSession["company"]->companyID)->value;
+			$dataView["objParameterCONVERSATION_LIST_CONVERSATION_NOT_BELL"]				= $this->core_web_parameter->getParameter("CONVERSATION_LIST_CONVERSATION_NOT_BELL",$dataSession["company"]->companyID)->value;
 			$dataSession["head"]					= /*--inicio view*/ view('app_cxc_conversation/'.$viewType.'list_head',$dataView);//--finview
 			$dataSession["footer"]					= /*--inicio view*/ view('app_cxc_conversation/'.$viewType.'list_footer',$dataView);//--finview
 			$dataSession["script"]					= /*--inicio view*/ view('app_cxc_conversation/'.$viewType.'list_script',$dataView);//--finview

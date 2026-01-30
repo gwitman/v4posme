@@ -5,7 +5,20 @@
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 
-
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CONVERSATION_LIST_CONVERSATION_NOT_PHOTE"; ##No foto en las conversaciones
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CONVERSATION_LIST_CONVERSATION_NOT_BELL"; ##No sonido en las conversaciones
+	
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "true" 
 WHERE 

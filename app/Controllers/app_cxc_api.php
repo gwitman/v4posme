@@ -1864,17 +1864,16 @@ class app_cxc_api extends _BaseController {
 	}
 	public function WebHookReceiptMessage_Whatsapp_Ultramsg_posMe()
 	{
-		return;
+		
 		// JSON crudo (string completo)
-		$host 		= $this->request->getServer('HTTP_HOST');
-		log_message('error', 'Webhook SERVER : ' . $host );	
+		$host 		= $this->request->getServer('HTTP_HOST');		
 		log_message('error', 'Webhook RAW JSON: ' ."WebHookReceiptMessage_Whatsapp_Ultramsg_posMe" );	
 		$input	 	= $this->request->getJSON(true); // true = array
 		
-		
 		//Solo se permiten mensajes recibidos
-		if($input["event_type"] != "message_received" )
+		if($input["event_type"] != "message_received"  )
 			return;
+		
 		
 		// Captura el POST JSON de Vonage
 		log_message("error","input:".print_r($input,true));
