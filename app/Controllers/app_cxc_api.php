@@ -741,6 +741,52 @@ class app_cxc_api extends _BaseController {
 			'message' => 'entityID recibido'
 		]);
 	}
+	function setConversationConversation_Tools()
+	{
+		// Obtener JSON enviado por fetch
+		$data 								= $this->request->getJSON(true);
+		// Extraer entityID
+		$txtMarcarTodosComoLeido 			= $data['txtMarcarTodosComoLeido'] ?? null;
+		$txtCerrarTodasLasConversaciones 	= $data['txtCerrarTodasLasConversaciones'] ?? null;
+
+		
+		//AUTENTICADO
+		if(!$this->core_web_authentication->isAuthenticated())
+		throw new \Exception(USER_NOT_AUTENTICATED);
+		$dataSession		= $this->session->get();
+		
+		
+		//Actualiar Cliente
+		$companyID					= $dataSession["user"]->companyID;		
+		$branchID					= $dataSession["user"]->branchID;
+		$userID						= $dataSession["user"]->userID;
+		$entityIDEmployer			= $dataSession["user"]->employeeID;
+		
+		//Obtener la lista de conversaciones del usuario
+		if($txtMarcarTodosComoLeido == true)
+		{
+			$objListConversation 		= $this->
+						Customer_Conversation_Model->
+						getByEntityEntityIDEmployer_StatusNameRegister($entityIDEmployer);
+			
+			
+			if($objListConversation)
+			{
+				foreach($objListConversation as $conversation)
+				{
+					$data 						 = array();
+					$data["messgeConterNotRead"] = 0;
+					$this->Customer_Conversation_Model->update_app_posme($conversation->conversationID,$data);
+				}
+			}
+		}
+		
+		//Resutado
+		return $this->response->setJSON([
+			'success' => true,
+			'message' => 'entityID recibido'
+		]);
+	}
 	public function WebHookInsertAndUpdateElementLiveConnectWebHook()
 	{
 		// JSON crudo (string completo)
@@ -2043,6 +2089,7 @@ class app_cxc_api extends _BaseController {
 	public function WebHookReceiptMessage_Whatsapp_AppzApiIo_posMe()
 	{
 		
+		return;
 		log_message('error', 'Webhook RAW JSON: ' ."WebHookReceiptMessage_Whatsapp_AppzApiIo_posMe" );			
 		// 1️⃣ Leer el body crudo (FORMA CORRECTA PARA WEBHOOKS)
 		$raw 	= file_get_contents('php://input');

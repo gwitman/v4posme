@@ -675,6 +675,7 @@ $routes->match(['get', 'post'], 'app_cxc_api/getConversationConversation_ByEmplo
 $routes->match(['get', 'post'], 'app_cxc_api/getConversationNotification_ByCustomer', 'app_cxc_api::getConversationNotification_ByCustomer');
 $routes->match(['get', 'post'], 'app_cxc_api/setConversationNotification_ByCustomer', 'app_cxc_api::setConversationNotification_ByCustomer');
 $routes->match(['get', 'post'], 'app_cxc_api/setConversationCustomer', 'app_cxc_api::setConversationCustomer');
+$routes->match(['get', 'post'], 'app_cxc_api/setConversationConversation_Tools', 'app_cxc_api::setConversationConversation_Tools');
 $routes->match(['get', 'post'], 'app_cxc_api/getConversationCustomer_ByCustomer', 'app_cxc_api::getConversationCustomer_ByCustomer');
 $routes->match(['get', 'post'], 'app_cxc_api/WebHookReceiptMessage_Whatsapp_EvolutionApi_posMe', 'app_cxc_api::WebHookReceiptMessage_Whatsapp_EvolutionApi_posMe');
 $routes->match(['get', 'post'], 'app_cxc_api/WebHookReceiptMessage_Whatsapp_VonageApi_posMe', 'app_cxc_api::WebHookReceiptMessage_Whatsapp_VonageApi_posMe');

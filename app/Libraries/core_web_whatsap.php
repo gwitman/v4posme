@@ -205,8 +205,8 @@ class core_web_whatsap {
 	   }
 	   else if ($typeCompany == "posme")
 	   {
-		   //return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino);
-		   return $this->sendMessageZAPIioText( $companyID, $message, $phoneDestino);
+		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino);
+		   //return $this->sendMessageZAPIioText( $companyID, $message, $phoneDestino);
 		   
 	   }
 	   else if ($typeCompany == "arteDigital")
@@ -226,8 +226,8 @@ class core_web_whatsap {
 	   }
 	   else if ($typeCompany == "posme")
 	   {   
-		   //return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino );
-		   return $this->sendMessageZAPIioImage( $companyID, $urlImagen,$message, $phoneDestino );
+		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino );
+		   //return $this->sendMessageZAPIioImage( $companyID, $urlImagen,$message, $phoneDestino );
 		   
 	   }
 	   else if ($typeCompany == "arteDigital")

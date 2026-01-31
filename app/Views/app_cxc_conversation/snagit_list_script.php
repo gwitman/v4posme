@@ -12,6 +12,8 @@ createApp({
 			permisoParaVerTodasLasActivas:	<?php echo $permisoParaVerTodasLasActivas; ?>,
 			parametroNoDebeVerFoto:			<?php echo $objParameterCONVERSATION_LIST_CONVERSATION_NOT_PHOTE; ?>,
 			parametroNoDebeEscucharSonido:	<?php echo $objParameterCONVERSATION_LIST_CONVERSATION_NOT_BELL; ?>,
+			marcarLeido:					false,
+			marcarCerrados:					false,
 			activeTab: 						'LISTA DE CONVERSACIONES MIAS', // Por defecto activo
 			txtCustomerFind: 				'',			
 			objListConversation: 			[],			
@@ -98,6 +100,29 @@ createApp({
 			this.cargarListado();
 			this.iniciarAjax();
 		  }
+		},
+		async fnAplicarCambiosConversaciones()
+		{
+			offcanvas.hide();
+			this.mostrarAlerta = true;
+			const res = await fetch('<?php echo base_url(); ?>/app_cxc_api/setConversationConversation_Tools', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						txtMarcarTodosComoLeido: 			this.marcarLeido,
+						txtCerrarTodasLasConversaciones:	this.marcarCerrados
+					})
+			});	
+			this.marcarLeido 	= false;
+			this.marcarCerrados = false;			
+			this.mostrarAlerta 	= false;
+			
+		},
+		async fnLimpiarCambiosConversaciones(){
+			this.marcarLeido 	= false;
+			this.marcarCerrados = false;
 		},
         async cargarListado() {
 			try {

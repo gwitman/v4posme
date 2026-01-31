@@ -16,6 +16,8 @@ createApp({
 			audioUrl:					'',
 			imageFile: 					null,
 			sonidoReproducido:			false,
+			parametroNoDebeVerFoto:			<?php echo $objParameterCONVERSATION_LIST_CONVERSATION_NOT_PHOTE; ?>,
+			parametroNoDebeEscucharSonido:	<?php echo $objParameterCONVERSATION_LIST_CONVERSATION_NOT_BELL; ?>,
 			
 			//Tab 1 
 			objListNotification: 		[],			

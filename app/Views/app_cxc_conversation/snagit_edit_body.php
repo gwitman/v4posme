@@ -164,7 +164,10 @@
 								class="d-flex flex-wrap"
 								:class="{'': objNotification.targetIDIsEmployeer > 0, 'justify-content-end align-items-center': objNotification.targetIDIsEmployeer <= 0}"
 							>
-							  <div class="avatar me-3">
+							  <div 
+								class="avatar me-3" 
+								v-if="parametroNoDebeVerFoto === false"  
+							  >
 								<img src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/html/vertical-menu-template/../../assets/img/avatars/3.png" alt="Avatar" class="rounded-circle" />
 							  </div>
 							  <div

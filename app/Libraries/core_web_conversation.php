@@ -731,11 +731,10 @@ class core_web_conversation{
 	function getMessageSignature($companyID,$typeCompany,$firstNameEmployer,$mensaje)
 	{	
 		// Título en negrita para WhatsApp
-		$titulo 		= "*" . trim($firstNameEmployer) . "*";
+		$titulo 		= trim($firstNameEmployer);
 
 		// Mensaje final con salto de línea
-		$mensajeFinal 	= $titulo . "\n" . trim($mensaje);
-
+		$mensajeFinal 	= trim($mensaje)."\n*Att:".$titulo."*";
 		return $mensajeFinal;
 	}
 }

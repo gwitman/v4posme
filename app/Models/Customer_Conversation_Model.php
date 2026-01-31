@@ -66,7 +66,7 @@ class Customer_Conversation_Model extends Model
 		return $builder->update($data);
 		
     }
-	//Obtener todas las conversaciones de un agente activa
+	//Obtener todas las conversaciones de un cliente
     function getByEntityIDCustomer_StatusNameRegister($entityIDCustomer)
     {
 		$db 		= db_connect();
@@ -106,7 +106,7 @@ class Customer_Conversation_Model extends Model
 		return $db->query($sql)->getResult();
 		
     }
-	//Obtener todas las conversaciones de un agente activa
+	//Obtener todas las conversaciones por id
     function getByConversationID($conversationID)
     {
 		$db 		= db_connect();
@@ -138,6 +138,49 @@ class Customer_Conversation_Model extends Model
 				where 
 					c.conversationID = $conversationID and 
 					c.isActive = 1 
+				
+			";
+			
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+		
+    }
+
+	//Obtener todas las conversaciones de un agente
+	function getByEntityEntityIDEmployer_StatusNameRegister($entityIDEmployer)
+	{
+		$db 		= db_connect();
+		$builder	= $db->table("tb_customer_conversation");		
+		$sql 		= 
+			"
+				SELECT 
+					c.conversationID,
+					c.entityIDSource,
+					c.entityIDTarget,
+					c.componentIDSource,
+					c.componentIDTarget,
+					c.createdOn,
+					c.statusID,
+					c.messageCounter,
+					c.messageReceiptOn,
+					c.messageSendOn,
+					c.messgeConterNotRead,
+					c.reference1,
+					c.reference2,
+					c.reference3,
+					c.isActive,
+					c.lastActivityOn,
+					c.lastMessage 
+				FROM 
+					tb_customer_conversation c 
+					inner join tb_workflow_stage ws on 
+						ws.workflowStageID = c.statusID 
+					inner join tb_company_component_relation ccr on 
+						ccr.componentItemIDSource =  c.conversationID 
+				where 
+					ccr.componentItemIDTarget = $entityIDEmployer and 
+					c.isActive = 1 and 
+					ws.isInit = 1 
 				
 			";
 			
