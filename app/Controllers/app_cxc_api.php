@@ -632,11 +632,11 @@ class app_cxc_api extends _BaseController {
 		//wg-	);
 		//wg-}
 		
-		
+		$result = null;
 		if (!$file)
 		{
 			log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de texto");		
-			$this->core_web_whatsap->sendMessageGeneric(
+			$result = $this->core_web_whatsap->sendMessageGeneric(
 				$typeCompany,
 				$companyID, 
 				$message, 
@@ -646,7 +646,7 @@ class app_cxc_api extends _BaseController {
 		else
 		{
 			log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de imagen");		
-			$this->core_web_whatsap->sendMessageTypeImagGeneric(
+			$result = $this->core_web_whatsap->sendMessageTypeImagGeneric(
 				$typeCompany,
 				$companyID, 
 				$urlPublic, 
@@ -656,11 +656,22 @@ class app_cxc_api extends _BaseController {
 		}
 		
 		log_message("error","setConversationNotification_ByCustomer >> proceso finalizado");		
-		return $this->response->setJSON([
-			'success' 	=> true,
-			'message' 	=> 'entityID recibido',
-			'entityID' 	=> $entityID
-		]);
+		if($result["status"] == "error") 
+		{
+			return $this->response->setJSON([
+				'success' 	=> false,
+				'message' 	=> 'el mensaje se guardo bien, pero no fue posible enviar el mensaje por whatsapp',
+				'entityID' 	=> $entityID
+			]);
+		}
+		else
+		{
+			return $this->response->setJSON([
+				'success' 	=> true,
+				'message' 	=> 'entityID recibido',
+				'entityID' 	=> $entityID
+			]);
+		}
 		
 	}
 	function setConversationCustomer()
@@ -1968,6 +1979,7 @@ class app_cxc_api extends _BaseController {
 		
 		
 		
+		
 		//$data["customerPhoneNumber"] 	= "887646645";
 		//$data["customerFirstName"]	= "witmaj gonzalez";
 		//$data["customerMessage"]	 	= "hola que tal";
@@ -1983,6 +1995,49 @@ class app_cxc_api extends _BaseController {
 		$branchID				= $dataSession["user"]->branchID;
 		$roleID 				= $dataSession["role"]->roleID;
 		$userID 				= $dataSession["user"]->userID;
+		
+		//Validar si el webhook esta activo
+		if (strpos(strtolower($data["customerMessage"]), 'test') !== false) {
+			 // 2. Limpiar espacios inicio y fin
+			$texto 	= strtolower(trim($data["customerMessage"]));
+
+			// 3. Quitar TODOS los espacios del string
+			$texto 	= str_replace(' ', '', $texto);
+			$texto 	= str_replace('-', '', $texto);
+
+			// 4. Split por :
+			$partes = explode(':', $texto);
+
+			// 5. Obtener valores
+			$mensaje 	= $partes[0] ?? '';
+			$email  	= $partes[1] ?? '';
+			$phone  	= $partes[2] ?? '';
+			
+			
+			//Enviar email
+			$objCompany 			= $dataSession["company"];
+			$params_["nickname"]	= $dataSession["user"]->nickname;
+			$params_["objCompany"]	= $objCompany;				
+			$params_["mensaje"]		= "Webhook SUCCESS: ".$objCompany->name;
+			$subject 				= "Test de Webhook SUCCESS ".$objCompany->name;
+			$body  					= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview			
+			$this->email->setFrom(EMAIL_APP);
+			$this->email->setTo( $email );
+			$this->email->setSubject($subject);			
+			$this->email->setMessage($body); 			
+			$resultSend01 = $this->email->send();
+			$resultSend02 = $this->email->printDebugger();	
+
+			//Enviar whatsapp
+			$result = $this->core_web_whatsap->sendMessageGeneric(
+				$objCompany->type,
+				$objCompany->companyID, 
+				"Test de whatsapp:".$objCompany->name, 
+				clearNumero($phone)	
+			);
+			return;
+		}
+		
 		//Obtener al cliente
 		$objCustomer			= $this->Customer_Model->get_rowByPhoneNumber($customerPhoneNumber);
 		if(!$objCustomer)

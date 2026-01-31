@@ -202,6 +202,7 @@ class core_web_whatsap {
 	   if($typeCompany == "")
 	   {
 		   $i = "not implementd";
+		   return $i;
 	   }
 	   else if ($typeCompany == "posme")
 	   {
@@ -223,6 +224,7 @@ class core_web_whatsap {
 	   if($typeCompany == "")
 	   {
 		   $i = "not implementd";
+		   return $i;
 	   }
 	   else if ($typeCompany == "posme")
 	   {   
@@ -1228,20 +1230,28 @@ class core_web_whatsap {
 				"Authorization: Bearer ".$objCP_WhatsapToken->value
 			  ),
 			  
-			  //si no desesas esperar espuesta
-			  CURLOPT_RETURNTRANSFER 	=> false,	//true espera respuetas, false no espera rspuesta
-			  CURLOPT_TIMEOUT_MS      	=> 100,    	// 👈 0.1 segundo
-			  CURLOPT_CONNECTTIMEOUT_MS => 100,
-			  CURLOPT_NOSIGNAL          => true,
+			  //No espera espuesta
+			  //CURLOPT_RETURNTRANSFER 		=> false,	//true espera respuetas, false no espera rspuesta
+			  //CURLOPT_TIMEOUT_MS      	=> 100,    	// 👈 0.1 segundo
+			  //CURLOPT_CONNECTTIMEOUT_MS 	=> 100,
+			  //CURLOPT_NOSIGNAL          	=> true,
+			  
+			  //Si espera respuesta
+			  CURLOPT_RETURNTRANSFER 		=> true
 			));
 
 			$response 	= curl_exec($curl);
 			
-			//si deseass esperar espustea
+			//no espera respuesta
 			//$err 		= curl_error($curl);
-
+			
+			//si espera respuesta
+			$err 		= curl_error($curl);
+			
+			
 			curl_close($curl);
 
+			//No espera respueta
 			//if ($err)
 			//{
 			//  log_message("error",print_r("cURL Error #:".$err,true));
@@ -1250,6 +1260,21 @@ class core_web_whatsap {
 			//{
 			//  log_message("error",print_r($response,true));
 			//}
+			
+			//Si espera respuesta
+			if ($err)
+			{
+			  log_message("error",print_r("cURL Error #:".$err,true));
+			  $response 	= '{"status":"error","message":"Authentication failed","error":"invalid signature"}';
+			  $resultado 	= json_decode($response, true); // true = array asociativo
+			  return $resultado;
+			}
+			else
+			{
+			  log_message("error",print_r($response,true));
+			  $resultado = json_decode($response, true); // true = array asociativo
+			  return $resultado;
+			}
 
 
 		//}
@@ -1304,8 +1329,7 @@ class core_web_whatsap {
 			$url  = $url."/".$phoneDestino."/image?session_id=".$objCP_WhatsapUrlSession->value;
 			$curl = curl_init();
 			curl_setopt_array($curl, array(
-			  CURLOPT_URL 				=> $url,
-			  CURLOPT_RETURNTRANSFER 	=> true,
+			  CURLOPT_URL 				=> $url,			  
 			  CURLOPT_CUSTOMREQUEST 	=> "POST",
 			  CURLOPT_POSTFIELDS 		=> json_encode($params),
 			  CURLOPT_HTTPHEADER 		=> array(
@@ -1313,20 +1337,47 @@ class core_web_whatsap {
 				"Content-Type: application/json",
 				"Authorization: Bearer ".$objCP_WhatsapToken->value
 			  ),
+			  CURLOPT_RETURNTRANSFER 	=> true
 			));
 
 			$response 	= curl_exec($curl);
+			
+			//No espera respuesta
+			//$err 		= curl_error($curl);
+			
+			//Espera respuseta
 			$err 		= curl_error($curl);
 
 			curl_close($curl);
 
+			//No espera respuesta
+			//if ($err)
+			//{
+			//  log_message("error",print_r("cURL Error #:".$err,true));
+			//  $response 	= '{"status":"error","message":"Authentication failed","error":"invalid signature"}';
+			//  $resultado 	= json_decode($response, true); // true = array asociativo
+			//  return $resultado;
+			//}
+			//else
+			//{
+			//  log_message("error",print_r($response,true));
+			//  $resultado = json_decode($response, true); // true = array asociativo
+			//  return $resultado;
+			//}
+			
+			//Espera respuesta
 			if ($err)
 			{
 			  log_message("error",print_r("cURL Error #:".$err,true));
+			  $response 	= '{"status":"error","message":"Authentication failed","error":"invalid signature"}';
+			  $resultado 	= json_decode($response, true); // true = array asociativo
+			  return $resultado;
 			}
 			else
 			{
 			  log_message("error",print_r($response,true));
+			  $resultado = json_decode($response, true); // true = array asociativo
+			  return $resultado;
 			}
 
 
