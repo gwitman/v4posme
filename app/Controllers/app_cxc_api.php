@@ -2015,6 +2015,7 @@ class app_cxc_api extends _BaseController {
 			
 			
 			//Enviar email
+			log_message("error","input: mandar email de tester");
 			$objCompany 			= $dataSession["company"];
 			$params_["nickname"]	= $dataSession["user"]->nickname;
 			$params_["objCompany"]	= $objCompany;				
@@ -2029,12 +2030,14 @@ class app_cxc_api extends _BaseController {
 			$resultSend02 = $this->email->printDebugger();	
 
 			//Enviar whatsapp
+			log_message("error","input: mandar whatsapp de tester");
 			$result = $this->core_web_whatsap->sendMessageGeneric(
 				$objCompany->type,
 				$objCompany->companyID, 
 				"Test de whatsapp:".$objCompany->name, 
 				clearNumero($phone)	
 			);
+			log_message("error","input: fin del proceso");
 			return;
 		}
 		
