@@ -2055,17 +2055,18 @@ class app_cxc_api extends _BaseController {
 		log_message("error",print_r($lastActivityOnNew,true));
 		log_message("error",print_r($diferenceDate,true));		
 		//Han pasado almenos 5 minutos desde el utlimo mensaje
-		if($diferenceDate["comparador"] == -1 && $diferenceDate["minutos"] > 5 )
+		if($diferenceDate["comparador"] == "-1" && ((int)$diferenceDate["minutos"]) >= 5 )
 		{			
+			log_message("error","Enviar mensaje colaboradores asignados");
 			$urlSend		= base_url()."/app_cxc_conversation/edit/entityID/".$objCustomer[0]->entityID;
 			$whatsappLink 	= urlencode($urlSend);
 			$short 			= file_get_contents("https://is.gd/create.php?format=simple&url=$whatsappLink");
 		
 			$this->core_web_conversation->notificationEmployerInConversation(
-			$dataSession["company"]->companyID,
-			$dataSession["user"]->branchID,
-			$dataSession["company"]->type,
-			$objCustomerConversation[0]->conversationID,
+				$dataSession["company"]->companyID,
+				$dataSession["user"]->branchID,
+				$dataSession["company"]->type,
+				$objCustomerConversation[0]->conversationID,
 			"📩 *Cliente:".$objCustomer[0]->firstName."* ha enviado un mensaje 
 
 👉 Por favor, respóndelo en el siguiente enlace:

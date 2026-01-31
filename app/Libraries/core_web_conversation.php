@@ -656,11 +656,13 @@ class core_web_conversation{
 				throw new \Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
 			
 			//Obtener la lista de colaboradores de la conversacion
+			log_message("error","Obtener colaboradores asignados a la conversacion");
 			$objListEmployerConversation = $Company_Component_Relation_Model->get_ConversationEmployerBy_ConversationID($conversationID);
 			if(!$objListEmployerConversation)
 				return;
 			
 			//Obtener el tip 5 de las ultimos colaboradores
+			log_message("error","Obtener Top 5 colaboradores asignados a la conversacion");
 			$objListEmployerConversationTop5 = $Company_Component_Relation_Model->get_ConversationTopEmployerBy_ConversationID(5,$conversationID);
 			if(!$objListEmployerConversationTop5)
 				return;
@@ -668,6 +670,7 @@ class core_web_conversation{
 			//Mandarle mensaje a la ultima persona que converso
 			if($objListEmployerConversationTop5)
 			{
+				log_message("error","Recorrer cada uno de los colaboradores del top 5");
 				$phone = $Entity_Phone_Model->get_rowByPrimaryEntity(
 					$companyID,$branchID,$objListEmployerConversationTop5[0]->entityID
 				);
