@@ -150,6 +150,7 @@ createApp({
 				if (json.success === true && (!json.data || json.data.length === 0)) {
 					this.objListConversation 	= [];
 					this.mensaje 				= 'No hay datos disponibles';
+					this.mostrarAlerta			= false;
 					return;
 				}
 				

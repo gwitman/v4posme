@@ -732,7 +732,7 @@ class app_cxc_api extends _BaseController {
 		);
 		
 		
-		//Asociar los nuevos agentes a la conversacon activa
+		//wg-//Asociar los nuevos agentes a la conversacon activa
 		$objListEntityIDEmployer = $data["txtTab2ListEmployerAsigned"];
 		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer);
 		

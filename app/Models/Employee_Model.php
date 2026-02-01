@@ -388,8 +388,7 @@ class Employee_Model extends Model  {
 					mel.elementID = me.elementID 
 				
 				inner join tb_role r on 
-					r.roleID = m.roleID and 
-					r.typeApp = mel.typeApp 
+					r.roleID = m.roleID 
 			where 
 				u.isActive = 1 and 
 				me.selected = 0 /*puede observar todo*/ and 
