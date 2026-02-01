@@ -219,9 +219,64 @@ class core_web_menu {
 		//Obtener la lista de menu_element del componente de  seguridad...
 		$listMenuElement 	 = false;
 		if($objRole->isAdmin && $listElementIDNotSeguridad)		
-		$listMenuElement = $Menu_Element_Model->get_rowByCompanyIDyElementID($companyID,$listElementIDNotSeguridad,$objRole->typeApp);
+		$listMenuElement = $Menu_Element_Model->get_rowByCompanyIDyElementID($companyID,$listElementIDNotSeguridad,"default");
 		else if ($listElementIDPermitied)
-		$listMenuElement = $Menu_Element_Model->get_rowByCompanyIDyElementID($companyID,$listElementIDPermitied,$objRole->typeApp);
+		$listMenuElement = $Menu_Element_Model->get_rowByCompanyIDyElementID($companyID,$listElementIDPermitied,"default");
+		
+		if(!$listMenuElement)
+		return null; 	
+	
+	
+		//Resultado  
+		return $listMenuElement;
+		
+    }
+	function get_menu_left_snagit($companyID=null,$branchID=null,$roleID=null,$userID=null){
+		
+		//Cargar Modelos		
+		$Component_Model = new Component_Model();
+		$Company_Component_Model = new Company_Component_Model();
+		$Element_Model = new Element_Model();
+		$Menu_Element_Model = new Menu_Element_Model();
+		$User_Permission_Model = new User_Permission_Model();
+		$Role_Model = new Role_Model();
+		
+		
+		//Obtener el rol del usuario
+		$objRole 	= $Role_Model->get_rowByPK($companyID,$branchID,$roleID);
+		if(!$objRole)		
+		throw new \Exception('NO EXISTE EL ROL DEL USUARIO');
+		
+		
+		//Obtener la lista de elementos tipo pagina, que pertenescan al componente de seguridad
+		$listElementNotSeguridad =	$Element_Model->get_rowByTypeAndLayout(ELEMENT_TYPE_PAGE,MENU_LEFT);
+		if(!$listElementNotSeguridad)
+		return null;
+			
+		//Obtener la lista del elementos de tipo pagina a la cual el usuario tiene permiso , segun el rol del usuario
+		$listElementPermitido = $User_Permission_Model->get_rowByCompanyIDyBranchIDyRoleID($companyID,$branchID,$roleID);
+		
+		//Obtener los id de los Elementos
+		$listElementIDNotSeguridad;
+		$listElementIDPermitied;		
+		foreach($listElementNotSeguridad AS $i){ 
+			$listElementIDNotSeguridad[] = $i->elementID; 
+		}
+		
+		if($listElementPermitido){
+			$tmp;
+			foreach($listElementPermitido AS $i){$tmp[] = $i->elementID;}
+			$listElementIDPermitied = array_intersect($listElementIDNotSeguridad, $tmp);
+		}
+		
+		
+		
+		//Obtener la lista de menu_element del componente de  seguridad...
+		$listMenuElement 	 = false;
+		if($objRole->isAdmin && $listElementIDNotSeguridad)		
+		$listMenuElement = $Menu_Element_Model->get_rowByCompanyIDyElementID($companyID,$listElementIDNotSeguridad,"snagit");
+		else if ($listElementIDPermitied)
+		$listMenuElement = $Menu_Element_Model->get_rowByCompanyIDyElementID($companyID,$listElementIDPermitied,"snagit");
 		
 		if(!$listMenuElement)
 		return null; 	

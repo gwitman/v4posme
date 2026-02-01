@@ -164,7 +164,7 @@
           <div class="menu-inner-shadow"></div>
 
           <ul class="menu-inner py-1">
-			<?php echo $menuRenderLeft; ?>
+			<?php echo $menuRenderLeftSnagit; ?>
 			
 			<?php			
             //wg-<!-- Apps & Pages -->

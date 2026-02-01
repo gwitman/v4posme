@@ -153,6 +153,7 @@ class core_web_authentication {
 		$objListAllParameter		= $Company_Parameter_Model->get_rowByCompanyID($objMembership->companyID);
 		$objElementAuthorized		= $core_web_menu->get_menu_top($objMembership->companyID,$objMembership->branchID,$objMembership->roleID,$objMembership->userID);				
 		$objElementNotAuthorized	= $core_web_menu->get_menu_left($objMembership->companyID,$objMembership->branchID,$objMembership->roleID,$objMembership->userID);		
+		$objElementAuthorizedSnagit	= $core_web_menu->get_menu_left_snagit($objMembership->companyID,$objMembership->branchID,$objMembership->roleID,$objMembership->userID);		
 		$menuBodyReport				= $core_web_menu->get_menu_body_report($objMembership->companyID,$objMembership->branchID,$objMembership->roleID,$objMembership->userID);		
 		$menuHiddenPopup 			= $core_web_menu->get_menu_hidden_popup($objMembership->companyID,$objMembership->branchID,$objMembership->roleID,$objMembership->userID);			
 		$mensajeLogin 				= $core_web_permission->getLicenseMessage(2);   
@@ -179,6 +180,7 @@ class core_web_authentication {
 		$data["user"]					= $objUser;
 		$data["menuTop"]				= $objElementAuthorized;
 		$data["menuLeft"]				= $objElementNotAuthorized;
+		$data["menuLeftSnagit"]			= $objElementAuthorizedSnagit;
 		$data["menuBodyTop"]			= null;
 		$data["menuBodyReport"]			= $menuBodyReport;
 		$data["menuHiddenPopup"]		= $menuHiddenPopup;
@@ -213,6 +215,7 @@ class core_web_authentication {
 		$objRole					= $Role_Model->get_rowByPK($objUser->companyID,$objUser->branchID,$objMembership->roleID);
 		$objElementAuthorized		= $core_web_menu->get_menu_top($objMembership->companyID,$objMembership->branchID,$objMembership->roleID,$objMembership->userID);
 		$objElementNotAuthorized	= $core_web_menu->get_menu_left($objMembership->companyID,$objMembership->branchID,$objMembership->roleID,$objMembership->userID);
+		$objElementAuthorizedSnagit	= $core_web_menu->get_menu_left_snagit($objMembership->companyID,$objMembership->branchID,$objMembership->roleID,$objMembership->userID);		
 		$objElementBodyReport 		= $core_web_menu->get_menu_body_report($objMembership->companyID,$objMembership->branchID,$objMembership->roleID,$objMembership->userID);
 		$menuHiddenPopup 			= $core_web_menu->get_menu_hidden_popup($objMembership->companyID,$objMembership->branchID,$objMembership->roleID,$objMembership->userID);
 		
@@ -231,6 +234,7 @@ class core_web_authentication {
 		$data["user"]				= $objUser;
 		$data["menuTop"]			= $objElementAuthorized;
 		$data["menuLeft"]			= $objElementNotAuthorized;
+		$data["menuLeftSnagit"]		= $objElementAuthorizedSnagit;
 		$data["menuBodyTop"]		= null;
 		$data["menuBodyReport"] 	= $objElementBodyReport;
 		$data["menuHiddenPopup"]	= $menuHiddenPopup;
@@ -243,12 +247,13 @@ class core_web_authentication {
 		
 		
 		$session->set($data);		
-		$data			 				= $session->get();
+		$data			 					= $session->get();
 		
 		
-		$userdata["menuRenderTop"] 		= $core_web_menu->render_menu_top($data["menuTop"]);			
-		$userdata["menuRenderLeft"] 	= $core_web_menu->render_menu_left($data["company"],$data["menuLeft"]);
-		$userdata["sessionID"]			= session_create_id();
+		$userdata["menuRenderTop"] 			= $core_web_menu->render_menu_top($data["menuTop"]);			
+		$userdata["menuRenderLeft"] 		= $core_web_menu->render_menu_left($data["company"],$data["menuLeft"]);
+		$userdata["menuRenderLeftSnagit"] 	= $core_web_menu->render_menu_left($data["company"],$data["menuLeftSnagit"]);
+		$userdata["sessionID"]				= session_create_id();
 		$session->set($userdata);
 		
 		

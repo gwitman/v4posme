@@ -38,8 +38,8 @@ class app_cxc_conversation extends _BaseController {
 			//Tipo de plantilla
 			$companyID		= $dataSession["user"]->companyID;
 			$branchID		= $dataSession["user"]->branchID;
-			$masterPage 	= $dataSession["role"]->typeApp.'_masterpage';
-			$viewType		= $dataSession["role"]->typeApp == "default" ? "" : $dataSession["role"]->typeApp.'_';
+			$masterPage 	= 'snagit_masterpage';
+			$viewType		= 'snagit_';
 			$entityID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "entityID"); //--finuri
 			//obtener la ultima session
 			$dataSession["lastUrl"] = base_url()."/"."app_cxc_conversation/edit/entityID/".$entityID;
@@ -122,8 +122,8 @@ class app_cxc_conversation extends _BaseController {
 			
 			
 			//Tipo de plantilla
-			$masterPage 	= $dataSession["role"]->typeApp.'_masterpage';
-			$viewType		= $dataSession["role"]->typeApp == "default" ? "" : $dataSession["role"]->typeApp.'_';
+			$masterPage 	= 'snagit_masterpage';
+			$viewType		= 'snagit_';
 			 
 			//Renderizar Resultado
 			$dataView["company"]					= $dataSession["company"];
