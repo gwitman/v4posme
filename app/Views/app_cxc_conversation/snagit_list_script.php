@@ -14,6 +14,7 @@ createApp({
 			parametroNoDebeEscucharSonido:	<?php echo $objParameterCONVERSATION_LIST_CONVERSATION_NOT_BELL; ?>,
 			marcarLeido:					false,
 			marcarCerrados:					false,
+			nuevaConversacion:				false,
 			activeTab: 						'LISTA DE CONVERSACIONES MIAS', // Por defecto activo
 			txtCustomerFind: 				'',			
 			objListConversation: 			[],			
@@ -105,6 +106,13 @@ createApp({
 		{
 			offcanvas.hide();
 			this.mostrarAlerta = true;
+			
+			if(this.nuevaConversacion == true )
+			{
+				window.location.href = '<?php echo base_url()."/app_cxc_conversation/edit/entityID/0"; ?>';
+				return;
+			}
+			
 			const res = await fetch('<?php echo base_url(); ?>/app_cxc_api/setConversationConversation_Tools', {
 					method: 'POST',
 					headers: {

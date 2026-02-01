@@ -379,7 +379,7 @@ class app_cxc_api extends _BaseController {
 		$phone		= $data['txtTab3CustomerPhone'] ?? null;
 
 		// Validación básica
-		if (!$entityID) {
+		if ($entityID === null || $entityID === '' || !is_numeric($entityID)) {
 			
 			$dataResult = [			
 				'success' => false,

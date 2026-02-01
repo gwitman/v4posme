@@ -86,6 +86,13 @@
 				Cerrar todas las conversaciones
 			  </label>
 			</div>
+			
+			<div class="form-check">
+			  <input class="form-check-input" type="checkbox" id="chk3" v-model="nuevaConversacion" >
+			  <label class="form-check-label" for="chk3">
+				Nueva conversacion
+			  </label>
+			</div>
 
 		  </div>
 	</div>
