@@ -2120,8 +2120,8 @@ class app_cxc_customer extends _BaseController {
 					$dataSession["company"]->type,
 					$companyID, 
 					$pdfString, 
-					"NJ GYM Carnet.pdf",
-					"NJ GYM 👉Carnet Contactar a: TEL: ". $dataViewParse["phone"]."👍\n\nposMe PRO 3.1 Tel. 8476-6457",
+					"NJ GYM Membresia.pdf",
+					"👉 NJ GYM Carnet de Membresia 👍",
 					clearNumero($phoneNumber) 
 				);
 			}

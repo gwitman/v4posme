@@ -7,6 +7,14 @@
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "1e155d85-6bc4-47c5-9ea7-b7a36cb616bb" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
+	
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "38" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
@@ -21,14 +29,14 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://api.posme.es/api/messages/send" 
+	tb_company_parameter.value = "https://wapi2.com/chat" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WAHTSAP_URL_ENVIO_MENSAJE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "S9653xAv28wMqVD5gZxPGfYDnRlK8J" 
+	tb_company_parameter.value = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyNTIzLCJ0eXBlIjoiYXBpX2FjY2VzcyIsImlhdCI6MTc2ODk0MDc2MSwiZXhwIjoxODAwNDc2NzYxfQ.3BjU5L0xVl-qMfiHuwJFnK6ad2pVmd8CK2zwb5Ohn78" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema

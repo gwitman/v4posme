@@ -1387,6 +1387,8 @@ $routes->match(['get', 'post'], 'app_notification/sendWhatsappDiarioMasivePosMeC
 $routes->match(['get', 'post'], 'app_notification/sendWhatsappDiarioMasivePosMeConnect/(:any)', 'app_notification::sendWhatsappDiarioMasivePosMeConnect');
 $routes->match(['get', 'post'], 'app_notification/sendWhatsappDiarioMasivePosMeConnectCobranza', 'app_notification::sendWhatsappDiarioMasivePosMeConnectCobranza');
 $routes->match(['get', 'post'], 'app_notification/sendWhatsappDiarioMasivePosMeConnectCobranza/(:any)', 'app_notification::sendWhatsappDiarioMasivePosMeConnectCobranza');
+$routes->match(['get', 'post'], 'app_notification/sendWhatsappDiarioMasiveWapi2CobranzaNjGym', 'app_notification::sendWhatsappDiarioMasiveWapi2CobranzaNjGym');
+$routes->match(['get', 'post'], 'app_notification/sendWhatsappDiarioMasiveWapi2CobranzaNjGym/(:any)', 'app_notification::sendWhatsappDiarioMasiveWapi2CobranzaNjGym');
 $routes->match(['get', 'post'], 'app_notification/fillTipoCambio', 'app_notification::fillTipoCambio');
 $routes->match(['get', 'post'], 'app_notification/fillInventarioMinimo', 'app_notification::fillInventarioMinimo');
 $routes->match(['get', 'post'], 'app_notification/fillInventarioMinimoNotEmailSiApp', 'app_notification::fillInventarioMinimoNotEmailSiApp');

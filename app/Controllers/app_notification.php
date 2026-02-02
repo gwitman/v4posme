@@ -2398,7 +2398,49 @@ Le recordamos que tiene un saldo pendiente:
 		}
 		
 		
-		$this->core_web_whatsap->sendMessage_UltramsgOnlyText_Masive(APP_COMPANY,$chatSend,$pathRemember);
+		$this->core_web_whatsap->sendMessageWapi2OnlyTextMasive(APP_COMPANY,$chatSend,$pathRemember);
+		return;
+		
+		
+	}
+	
+	function sendWhatsappDiarioMasiveWapi2CobranzaNjGym()
+	{
+		//Recorrer todos los cobros, 
+		$objListCollections = $this->Customer_Credit_Document_Model->get_rowByCobroPorWhatapp(APP_COMPANY);
+		if(!$objListCollections)
+			return;
+		
+		if(count($objListCollections) <= 0)
+			return;
+		
+		$chatSend			= [];
+		$pathRemember		= "";
+		foreach($objListCollections as $item)
+		{
+$rowx 					= array();
+$rowx["firstName"] 		= $item->firstName;
+$rowx["phoneNumber"] 	= $item->phoneNumber;
+$rowx["mensaje"] 		= "📌/*Mensaje automático de recordatorio de pago*/
+(Este mensaje ha sido generado automáticamente por un bot)
+
+👋Un gusto saludarle /*".$item->firstName."*/,
+Le recordamos que tiene su membresia pendiente de pago:
+
+🆔/*Codigo de Cliente:*/ ".$item->customerNumber."
+💰/*Monto:*/ *".number_format(round($item->total,2),2,'.',',')."* *".$item->simbol."* 
+📝/*Concepto:*/ NJ GYM.
+
+⚠️Por favor, le solicitamos realizar el pago a la brevedad para mantener su servicio al día.
+🙏Muchas gracias por su atención.
+/*Equipo de NJ GYM*/
+";
+			$rowx["urlImage"] 		= "";
+			$chatSend[]				= $rowx;
+		}
+		
+		
+		$this->core_web_whatsap->sendMessageWapi2OnlyTextMasive(APP_COMPANY,$chatSend,$pathRemember);
 		return;
 		
 		
