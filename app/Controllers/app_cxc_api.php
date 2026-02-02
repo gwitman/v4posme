@@ -2178,15 +2178,23 @@ class app_cxc_api extends _BaseController {
 		//Obtener la conversacion
 		$conversationIsNew			= false;
 		$conversationID				= 0;
+		$lastActivityOnOld			= helper_getDateTime();
+		$lastActivityOnNew			= helper_getDateTime();
+		
 		$objCustomerConversation	= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($objCustomer[0]->entityID);
 		if(!$objCustomerConversation)
 		{
 			$conversationIsNew	= true;
 			$conversationID 	= $this->core_web_conversation->createConversation($dataSession,$objCustomer[0]->entityID);
+			$lastActivityOnOld	= '1900-01-01 00:00:00';
+			$lastActivityOnNew	= helper_getDateTime();
 		}
-		$objCustomerConversation				= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($objCustomer[0]->entityID);
-		$lastActivityOnOld						= $objCustomerConversation[0]->lastActivityOn;
-		$lastActivityOnNew						= helper_getDateTime() ;
+		else
+		{
+			$lastActivityOnOld		= $objCustomerConversation[0]->lastActivityOn;
+			$lastActivityOnNew		= helper_getDateTime();
+		}
+		$objCustomerConversation				= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($objCustomer[0]->entityID);		
 		$objConversation 						= array();
 		$objConversation["messgeConterNotRead"] = 1 ;
 		$objConversation["lastMessage"] 		= $message ;
