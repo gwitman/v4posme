@@ -2103,6 +2103,28 @@ class app_cxc_customer extends _BaseController {
 				$this->dompdf->output()
 			);
 			chmod($path, 644);
+			
+			//Enviar mensaje de whatapp			
+			$urlPublic								= base_url()."/resource/file_company/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$entityID."/".$fileNamePut;
+			$objParameterCXC_SEND_CARNET_WHATSAPP 	=  $this->core_web_parameter->getParameter("CXC_SEND_CARNET_WHATSAPP",$companyID)->value;			
+			if($objParameterCXC_SEND_CARNET_WHATSAPP == "true")
+			{
+				$phoneNumber = $datView["objCustomer"]->phoneNumber;
+				$phoneNumber = $datView["objCustomer"]->identification;
+				log_message("error","viewPrinterCarnet >> enviar mensaje de pdf ".$urlPublic);	
+				log_message("error","viewPrinterCarnet >> enviar mensaje de pdf a ".$phoneNumber);	
+				
+				$pdfString 	= $this->dompdf->output();	
+				$pdfString 	= base64_encode($pdfString);				
+				$result 	= $this->core_web_whatsap->sendMessageTypePdfGeneric(
+					$dataSession["company"]->type,
+					$companyID, 
+					$pdfString, 
+					"NJ GYM Carnet.pdf",
+					"NJ GYM Carent Contactar a: TEL: ". $dataViewParse["phone"],
+					clearNumero($phoneNumber) 
+				);
+			}
 					
 			//visualizar 
 			$this->dompdf->stream("file.pdf ", ['Attachment' => !$objParameterShowLinkDownload ]);
