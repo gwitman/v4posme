@@ -771,6 +771,7 @@ class app_cxc_api extends _BaseController {
 		$companyID					= $dataSession["user"]->companyID;		
 		$branchID					= $dataSession["user"]->branchID;
 		$userID						= $dataSession["user"]->userID;
+		$roleID						= $dataSession["role"]->roleID;
 		$entityIDEmployer			= $dataSession["user"]->employeeID;
 		
 		//Obtener la lista de conversaciones del usuario
@@ -787,6 +788,32 @@ class app_cxc_api extends _BaseController {
 				{
 					$data 						 = array();
 					$data["messgeConterNotRead"] = 0;
+					$this->Customer_Conversation_Model->update_app_posme($conversation->conversationID,$data);
+				}
+			}
+		}
+		
+		if($txtCerrarTodasLasConversaciones == true)
+		{
+			
+			$objListConversation 		= $this->
+						Customer_Conversation_Model->
+						getByAll_StatusNameRegister();
+			
+			if($objListConversation)
+			{
+				
+				foreach($objListConversation as $conversation)
+				{
+					
+					$data 						 = array();
+					$data["statusID"] 			 = $this->core_web_workflow->getWorkflowStageByStageInit(
+							"tb_customer_conversation","statusID",
+							$conversation->statusID,
+							$companyID,
+							$branchID,
+							$roleID
+					)[0]->workflowStageID;
 					$this->Customer_Conversation_Model->update_app_posme($conversation->conversationID,$data);
 				}
 			}

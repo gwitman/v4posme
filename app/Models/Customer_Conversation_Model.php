@@ -188,5 +188,43 @@ class Customer_Conversation_Model extends Model
 		return $db->query($sql)->getResult();
 		
     }
+	function getByAll_StatusNameRegister()
+	{
+		$db 		= db_connect();
+		$builder	= $db->table("tb_customer_conversation");		
+		$sql 		= 
+			"
+				SELECT 
+					c.conversationID,
+					c.entityIDSource,
+					c.entityIDTarget,
+					c.componentIDSource,
+					c.componentIDTarget,
+					c.createdOn,
+					c.statusID,
+					c.messageCounter,
+					c.messageReceiptOn,
+					c.messageSendOn,
+					c.messgeConterNotRead,
+					c.reference1,
+					c.reference2,
+					c.reference3,
+					c.isActive,
+					c.lastActivityOn,
+					c.lastMessage 
+				FROM 
+					tb_customer_conversation c 
+					inner join tb_workflow_stage ws on 
+						ws.workflowStageID = c.statusID 
+				where 
+					c.isActive = 1 and 
+					ws.isInit = 1 
+				
+			";
+			
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+		
+    }
 }
 ?>
