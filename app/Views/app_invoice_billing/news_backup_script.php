@@ -5516,11 +5516,19 @@
 		store.each(function(record){		
 			var causalID = record.get('id'); 
 			if (listArrayCausalCredit.indexOf(causalID) !== -1) {
-				if (objListCustomerCreditLine.length > 0) {
-					record.set('disabled', false);
-				} else {
+				
+				if(objListCustomerCreditLine == null)
+				{
 					record.set('disabled', true);
 				}
+				else{				
+					if (objListCustomerCreditLine.length > 0) {
+						record.set('disabled', false);
+					} else {
+						record.set('disabled', true);
+					}
+				}
+				
 			} else {
 				record.set('disabled', false);
 			}
@@ -6589,8 +6597,8 @@
 		
 		
 		//Validar si es de credito debe de seleccionar una linea de credito
-		var customerCreditLineID 		= miVentanaPrincipal_.down("#txtCustomerCreditLineID").getValue();
-		if(invoiceTypeCredit && customerCreditLineID == null)
+		var customerCreditLineID 		= miVentanaPrincipal_.down("#txtCustomerCreditLineID").getValue();		
+		if(invoiceTypeCredit && (customerCreditLineID == null || customerCreditLineID == 0) )
 		{
 			Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>Debe seleccionar una linea de credito</span>" );				
 			result = false;
