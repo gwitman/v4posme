@@ -100,7 +100,7 @@
 					id="txtEmployeID" aria-label="Default select example"
 					v-model="txtEmployeID"
 				  >
-					<option value="0" selected >TODOS</option>
+					<option value="0" >TODOS</option>
 					<?php 
 					if($objListEmployer)
 					{
@@ -192,7 +192,7 @@
 				  </div>
 				  <span class="fw-semibold d-block mb-1">Cantidad</span>
 				  <h4 class="card-title mb-2" v-text="counterRegister" ></h4>
-				  <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +52.18%</small>
+				  <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +--</small>
 				</div>
 			</div>
 		</div>
@@ -206,7 +206,7 @@
 				  </div>
 				  <span class="fw-semibold d-block mb-1">No leidas</span>
 				  <h4 class="card-title mb-2" v-text="noLeidas" ></h4>
-				  <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +52.18%</small>
+				  <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +{{noLeidasPorcentage}}%</small>
 				</div>
 			</div>
 		</div>
@@ -220,7 +220,7 @@
 				  </div>
 				  <span class="fw-semibold d-block mb-1">Sin contestar</span>
 				  <h4 class="card-title mb-2" v-text="sinContestar" ></h4>
-				  <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +52.18%</small>
+				  <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +{{sinContestarPorcentage}}%</small>
 				</div>
 			</div>
 		</div>
@@ -234,7 +234,7 @@
 				  </div>
 				  <span class="fw-semibold d-block mb-1">Contestadas</span>
 				  <h4 class="card-title mb-2" v-text="conContestar" ></h4>
-				  <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +52.18%</small>
+				  <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +{{conContestarPorcentage}}%</small>
 				</div>
 			</div>
 		</div>

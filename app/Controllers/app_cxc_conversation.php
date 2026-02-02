@@ -223,6 +223,7 @@ class app_cxc_conversation extends _BaseController {
 			$dataView["companyPageSetting"]			= $dataSession["companyPageSetting"];
 			$dataView["title"]						= "Conversaciones";			
 			$dataView["objListEmployer"]			= $objListEmployer;
+			$dataView["objEmployerIDDefault"]		= $objListEmployer[0]->entityID;
 			
 			$dataView["objParameterCONVERSATION_LIST_CONVERSATION_NOT_PHOTE"]				= $this->core_web_parameter->getParameter("CONVERSATION_LIST_CONVERSATION_NOT_PHOTE",$dataSession["company"]->companyID)->value;
 			$dataView["objParameterCONVERSATION_LIST_CONVERSATION_NOT_BELL"]				= $this->core_web_parameter->getParameter("CONVERSATION_LIST_CONVERSATION_NOT_BELL",$dataSession["company"]->companyID)->value;

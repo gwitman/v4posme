@@ -8,15 +8,20 @@ createApp({
 			mostrarAlerta: 					true,		
 			
 			txtInboxID:						0,
-			txtEmployeID:					0,
+			txtEmployeID:					<?php echo $objEmployerIDDefault; ?>,
 			txtStartOn:						(new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString().slice(0, 10)),
 			txtFinishOn:					(new Date().toISOString().slice(0, 10)),
 			txtWorkflowStatusID:			'0',
 			
 			counterRegister:				0,
 			noLeidas:						0,
+			noLeidasPorcentage:				0,
+			
 			sinContestar:					0,
+			sinContestarPorcentage:			0,
+			
 			conContestar:					0,
+			conContestarPorcentage:			0,
 			objListConversation: 			[],
         }
     },
@@ -52,8 +57,11 @@ createApp({
 					this.objListConversation 	= [];
 					this.counterRegister 		= 0 ;
 					this.noLeidas 				= 0 ;
-					this.sinContestar 			= 0 ;
-					this.conContestar 			= 0 ;			
+					this.noLeidasPorcentage		= 0;
+					this.sinContestar 			= 0;
+					this.sinContestarPorcentage	= 0;
+					this.conContestar 			= 0;
+					this.conContestarPorcentage	= 0;											
 					this.mensaje 				= 'Ocurrió un error al cargar la información';
 					return;
 				}
@@ -65,8 +73,11 @@ createApp({
 					this.mensaje 				= 'No hay datos disponibles';
 					this.counterRegister 		= 0 ;
 					this.noLeidas 				= 0 ;
-					this.sinContestar 			= 0 ;
-					this.conContestar 			= 0 ;
+					this.noLeidasPorcentage		= 0;
+					this.sinContestar 			= 0;
+					this.sinContestarPorcentage	= 0;
+					this.conContestar 			= 0;
+					this.conContestarPorcentage	= 0;					
 					this.mostrarAlerta			= false;
 					return;
 				}
@@ -75,9 +86,23 @@ createApp({
 				this.mostrarAlerta			= false;
 				this.mensaje 				= '';		
 				this.counterRegister 		= json.count ;	
-				this.noLeidas 				= json.noLeidas ;
+				this.noLeidas 				= json.noLeidas ;				
 				this.sinContestar 			= json.sinContestar ;
-				this.conContestar 			= json.conContestar ;				
+				this.conContestar 			= json.conContestar ;	
+				
+				if(json.count > 0)
+				{
+					this.noLeidasPorcentage		= Number(((json.noLeidas / json.count) * 100).toFixed(2));
+					this.sinContestarPorcentage	= Number(((json.sinContestar / json.count) * 100).toFixed(2));
+					this.conContestarPorcentage	= Number(((json.conContestar / json.count) * 100).toFixed(2));					
+				}
+				else
+				{
+					this.noLeidasPorcentage		= 0;
+					this.sinContestarPorcentage	= 0;
+					this.conContestarPorcentage	= 0;
+				}
+				
 				this.objListConversation 	= json.data; 	// 🔥 aquí Vue limpia y vuelve a renderizar 				
 			} 
 			catch (error) 
