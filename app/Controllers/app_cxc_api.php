@@ -238,6 +238,76 @@ class app_cxc_api extends _BaseController {
 			]);
 		}
 	}
+	function getConversationConversation_Report()
+	{
+		try{ 
+		
+			
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCTION
+			if(APP_NEED_AUTHENTICATION == true){				
+				
+						$permited = false;
+						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						
+						if(!$permited)
+						throw new \Exception(NOT_ACCESS_CONTROL);
+						
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"index",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						if ($resultPermission 	== PERMISSION_NONE)
+						throw new \Exception(NOT_ACCESS_FUNCTION);			
+			
+			}	
+			
+			$objComponent		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_notification_conversation");
+			if(!$objComponent)
+			throw new \Exception("00409 EL COMPONENTE 'tb_notification_conversation' NO EXISTE...");
+			
+			//Obtener  los datos del cliente
+			$data 		= $this->request->getJSON(true);
+			// Extraer entityID
+			$txtStartOn 			= $data['txtStartOn'] ?? null;
+			$txtFinishOn 			= $data['txtFinishOn'] ?? null;
+			$txtEntityIDEmployer 	= $data['txtEntityIDEmployer'] ?? null;
+			$txtInboxID 			= $data['txtInboxID'] ?? null;
+
+			//Obtener datos
+			$data = $this->
+			Customer_Conversation_Model->
+			getBy_StartOn_EndOn_EmployerID_InboxID_StatusID(
+				$txtStartOn,$txtFinishOn,$txtEntityIDEmployer,0,0
+			);
+			
+			$totalRegistros = 0;
+			if($data)
+			{
+				$totalRegistros = count($data);
+				
+			}
+			return $this->response->setJSON([
+				'success' 	=> true,
+				'message' 	=> 'txtEntityIDEmployer recibido',
+				'data'	  	=> $data,
+				'count'		=> $totalRegistros
+			]);
+						
+			
+		}
+		catch(\Exception $ex){
+			return $this->response->setJSON([
+				'success' => false,
+				'message' => $ex->getMessage(),
+				'line'    => $ex->getLine(),
+				'file'    => $ex->getFile(),
+				'code'    => $ex->getCode(),
+				'data'    => []
+			]);
+		}
+	}
 	function getConversationCustomer_ByCustomer()
 	{
 		try{ 
@@ -323,7 +393,6 @@ class app_cxc_api extends _BaseController {
 			]);
 		}
 	}
-	
 	function getConversationNotification_ByCustomer()
 	{
 		// Obtener JSON enviado por fetch
@@ -429,8 +498,10 @@ class app_cxc_api extends _BaseController {
 		log_message("error","setConversationNotification_ByCustomer >> obtener clientes");		
 		$phone					= getNumberPhone($phone);
 		$objCustomer			= $this->Customer_Model->get_rowByPhoneNumber($phone);
+		
 		if(!$objCustomer)
 		{
+			log_message("error","setConversationNotification_ByCustomer >> cliente no encontrado");		
 			//crear el cliente
 			$entityIDCustomer 	= $this->core_web_conversation->createCustomer($dataSession,$phone,$phone,$this->request);
 			
@@ -444,6 +515,12 @@ class app_cxc_api extends _BaseController {
 			$this->core_web_conversation->createEmployerInConversation($dataSession,$conversationID,$objListEntityIDEmployer);
 			
 		}
+		else
+		{
+			log_message("error","setConversationNotification_ByCustomer >> cliente si encontrado");		
+		}
+	
+	
 		$objCustomer			= $this->Customer_Model->get_rowByPhoneNumber($phone);
 		$entityID				= $objCustomer[0]->entityID;
 		
@@ -635,7 +712,7 @@ class app_cxc_api extends _BaseController {
 		$result = null;
 		if (!$file)
 		{
-			log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de texto");		
+			log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de texto a: ".clearNumero($objCustomer[0]->phoneNumber));		
 			$result = $this->core_web_whatsap->sendMessageGeneric(
 				$typeCompany,
 				$companyID, 

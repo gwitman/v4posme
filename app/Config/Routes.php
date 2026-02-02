@@ -672,6 +672,7 @@ $routes->match(['get', 'post'], 'app_config_noti/index/(:any)', 'app_config_noti
 $routes->match(['get', 'post'], 'app_cxc_api/getCustomerBalance', 'app_cxc_api::getCustomerBalance');
 $routes->match(['get', 'post'], 'app_cxc_api/getSimulateAmortization', 'app_cxc_api::getSimulateAmortization');
 $routes->match(['get', 'post'], 'app_cxc_api/getConversationConversation_ByEmployer', 'app_cxc_api::getConversationConversation_ByEmployer');
+$routes->match(['get', 'post'], 'app_cxc_api/getConversationConversation_Report', 'app_cxc_api::getConversationConversation_Report');
 $routes->match(['get', 'post'], 'app_cxc_api/getConversationNotification_ByCustomer', 'app_cxc_api::getConversationNotification_ByCustomer');
 $routes->match(['get', 'post'], 'app_cxc_api/setConversationNotification_ByCustomer', 'app_cxc_api::setConversationNotification_ByCustomer');
 $routes->match(['get', 'post'], 'app_cxc_api/setConversationCustomer', 'app_cxc_api::setConversationCustomer');
@@ -762,6 +763,8 @@ $routes->match(['get', 'post'], 'app_cxc_conversation/index', 'app_cxc_conversat
 $routes->match(['get', 'post'], 'app_cxc_conversation/index/(:any)', 'app_cxc_conversation::index');
 $routes->match(['get', 'post'], 'app_cxc_conversation/edit', 'app_cxc_conversation::edit');
 $routes->match(['get', 'post'], 'app_cxc_conversation/edit/(:any)', 'app_cxc_conversation::edit');
+$routes->match(['get', 'post'], 'app_cxc_conversation/report', 'app_cxc_conversation::report');
+$routes->match(['get', 'post'], 'app_cxc_conversation/report/(:any)', 'app_cxc_conversation::report');
 $routes->match(['get', 'post'], 'app_cxc_record/index', 'app_cxc_record::index');
 $routes->match(['get', 'post'], 'app_cxc_record/GuardarArchivo', 'app_cxc_record::GuardarArchivo');
 $routes->match(['get', 'post'], 'app_cxc_record/GuardarArchivo/(:any)', 'app_cxc_record::GuardarArchivo');

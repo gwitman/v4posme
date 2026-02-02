@@ -226,5 +226,75 @@ class Customer_Conversation_Model extends Model
 		return $db->query($sql)->getResult();
 		
     }
+	function getBy_StartOn_EndOn_EmployerID_InboxID_StatusID($startOn,$endOn,$entityIDEmployer,$inboxID,$statusID)
+	{
+		$db 		= db_connect();
+		$builder	= $db->table("tb_customer_conversation");		
+		$sql 		= 
+			"
+				SELECT 
+				    cus.customerID,
+					cus.entityID,
+					cus.phoneNumber,
+					cus.customerNumber,
+					nat.firstName , 
+					cus.identification,
+					emp.employeNumber,
+					emp.entityID as entityIDEmployer,
+					natp.firstName as firstNameEmployer,
+					c.conversationID,
+					c.entityIDSource,
+					c.entityIDTarget,
+					c.componentIDSource,
+					c.componentIDTarget,
+					c.createdOn,
+					c.statusID,
+					c.messageCounter,
+					c.messageReceiptOn,
+					c.messageSendOn,					
+					DATE_FORMAT(c.messageReceiptOn, '%Y-%m-%d %h:%i %p') AS messageReceiptOnStr,
+					DATE_FORMAT(c.messageSendOn,    '%Y-%m-%d %h:%i %p') AS messageSendOnStr,  
+					CASE
+						WHEN c.messageSendOn IS NULL THEN 0
+						WHEN c.messageSendOn >= NOW() THEN 0
+						ELSE DATEDIFF(NOW(), c.messageSendOn)
+					END AS dayNotContacted,
+					c.messgeConterNotRead,
+					c.reference1,
+					c.reference2,
+					c.reference3,
+					c.isActive,
+					c.lastActivityOn,
+					c.lastMessage 
+				FROM 
+					tb_customer_conversation c 
+					inner join tb_workflow_stage ws on 
+						ws.workflowStageID = c.statusID 
+					inner join tb_customer cus on 
+						cus.entityID = c.entityIDSource 
+					inner join tb_naturales nat on 
+						nat.entityID = cus.entityID 
+					inner join tb_company_component_relation ccr on 
+						ccr.componentItemIDSource = c.conversationID 
+					inner join tb_employee emp on 
+						ccr.componentItemIDTarget = emp.entityID 
+					inner join tb_naturales natp on 
+						natp.entityID = emp.entityID 
+				where 
+					c.isActive = 1 and 
+					ws.isInit = 1  and
+					( 
+						($entityIDEmployer  = 0 ) or 
+						(emp.entityID = $entityIDEmployer and $entityIDEmployer  != 0) 
+					)
+				order by 
+					cus.entityID 
+					
+				
+			";
+			
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+	}
 }
 ?>

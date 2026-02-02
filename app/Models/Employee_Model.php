@@ -149,7 +149,8 @@ class Employee_Model extends Model  {
 		$sql = $sql.sprintf(" from tb_employee i");		
 		$sql = $sql.sprintf(" inner join tb_naturales n on  n.entityID = i.entityID ");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
-		$sql = $sql.sprintf(" and i.isActive= 1");		
+		$sql = $sql.sprintf(" and i.isActive= 1 ");		
+		$sql = $sql.sprintf(" order by n.firstName  ");		
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
