@@ -2071,7 +2071,7 @@ class app_cxc_customer extends _BaseController {
 			//Obtener imagen de logo			
 			$objComponent	        = $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
 			$objParameterLogo       = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
-			$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;    
+			$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;    
 			$type    = pathinfo($path, PATHINFO_EXTENSION);
 			$data    = file_get_contents($path);
 			$base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
@@ -2121,7 +2121,7 @@ class app_cxc_customer extends _BaseController {
 					$companyID, 
 					$pdfString, 
 					"NJ GYM Carnet.pdf",
-					"NJ GYM Carent Contactar a: TEL: ". $dataViewParse["phone"],
+					"NJ GYM 👉Carnet Contactar a: TEL: ". $dataViewParse["phone"]."👍\n\nposMe PRO 3.1 Tel. 8476-6457",
 					clearNumero($phoneNumber) 
 				);
 			}
