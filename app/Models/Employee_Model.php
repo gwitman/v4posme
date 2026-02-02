@@ -392,8 +392,11 @@ class Employee_Model extends Model  {
 			where 
 				u.isActive = 1 and 
 				me.selected = 0 /*puede observar todo*/ and 
-				mel.display = 'SE LE PERMITE ATENDER WHATSAPP'  and 
-				u.employeeID = $entityIDEmployer 
+				u.employeeID = $entityIDEmployer and 
+				(
+					mel.display = 'SE LE PERMITE ATENDER WHATSAPP' or 
+					r.isAdmin = 1 
+				)
 				
 		");	
 		
