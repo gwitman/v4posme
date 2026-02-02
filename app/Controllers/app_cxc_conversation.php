@@ -201,7 +201,18 @@ class app_cxc_conversation extends _BaseController {
 			}
 			
 			//Obtener la lista de colaboradores
-			$objListEmployer 	= $this->Employee_Model->get_rowByCompanyID($dataSession["company"]->companyID);
+			$objListEmployerAll 	= $this->Employee_Model->get_rowByCompanyID($dataSession["company"]->companyID);
+			$objListEmployer		= array();
+			foreach ($objListEmployerAll as $employer) {
+				// 👉 condición de ejemplo
+				$resultValidation = $this->Employee_Model->get_validatePermissionBy_EmployerID_PuedeAtenderWhatsappInCRM($employer->entityID);
+				if($resultValidation)
+				{
+					$objListEmployer[] = $employer;
+				}
+			}
+			
+			
 			
 			//Tipo de plantilla
 			$masterPage 		= 'snagit_masterpage';

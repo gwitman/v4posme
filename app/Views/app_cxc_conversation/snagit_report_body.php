@@ -112,6 +112,18 @@
 					?>	
 				  </select>
 			</div>
+			
+			<div class="mb-3">
+				  <label for="txtWorkflowStatusID" class="form-label">Estado</label>
+				  <select class="form-select" 
+					id="txtWorkflowStatusID" aria-label="Default select example"
+					v-model="txtWorkflowStatusID"
+				  >
+					<option :value="0" selected >TODOS</option>
+					<option :value="205"   >Abiertas</option>
+					<option :value="206"   >Cerradas</option>
+				  </select>
+			</div>
 
 		  </div>
 	</div>
@@ -128,7 +140,7 @@
 				<th>Telefono</th>
 				<th>Nombre</th>
 				<th>Recibido</th>
-				<th>Enviado</th>
+				<th>No Contestado</th>
 				<th>Bandeja</th>
 			  </tr>
 			</thead>
@@ -167,18 +179,63 @@
 		  </table>
 		</div>
 	</div>
-	<!--/ Bootstrap Dark Table -->
-	<div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
-		<div class="card">
-			<div class="card-body">
-			  <div class="card-title d-flex align-items-start justify-content-between">
-				<div class="avatar flex-shrink-0">
-				  <img src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/html/vertical-menu-template/../../assets/img/icons/unicons/computer.png" alt="computer" class="rounded" />
+	
+	<div class="row">
+		<!--/ Bootstrap Dark Table -->
+		<div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
+			<div class="card">
+				<div class="card-body">
+				  <div class="card-title d-flex align-items-start justify-content-between">
+					<div class="avatar flex-shrink-0">
+					  <img src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/html/vertical-menu-template/../../assets/img/icons/unicons/computer.png" alt="computer" class="rounded" />
+					</div>
+				  </div>
+				  <span class="fw-semibold d-block mb-1">Cantidad</span>
+				  <h4 class="card-title mb-2" v-text="counterRegister" ></h4>
+				  <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +52.18%</small>
 				</div>
-			  </div>
-			  <span class="fw-semibold d-block mb-1">Revenue</span>
-			  <h4 class="card-title mb-2" v-text="counterRegister" ></h4>
-			  <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +52.18%</small>
+			</div>
+		</div>
+		<div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
+			<div class="card">
+				<div class="card-body">
+				  <div class="card-title d-flex align-items-start justify-content-between">
+					<div class="avatar flex-shrink-0">
+					  <img src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/html/vertical-menu-template/../../assets/img/icons/unicons/paypal.png" alt="computer" class="rounded" />
+					</div>
+				  </div>
+				  <span class="fw-semibold d-block mb-1">No leidas</span>
+				  <h4 class="card-title mb-2" v-text="noLeidas" ></h4>
+				  <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +52.18%</small>
+				</div>
+			</div>
+		</div>
+		<div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
+			<div class="card">
+				<div class="card-body">
+				  <div class="card-title d-flex align-items-start justify-content-between">
+					<div class="avatar flex-shrink-0">
+					  <img src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/html/vertical-menu-template/../../assets/img/icons/unicons/cube-secondary.png" alt="computer" class="rounded" />
+					</div>
+				  </div>
+				  <span class="fw-semibold d-block mb-1">Sin contestar</span>
+				  <h4 class="card-title mb-2" v-text="sinContestar" ></h4>
+				  <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +52.18%</small>
+				</div>
+			</div>
+		</div>
+		<div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
+			<div class="card">
+				<div class="card-body">
+				  <div class="card-title d-flex align-items-start justify-content-between">
+					<div class="avatar flex-shrink-0">
+					  <img src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/html/vertical-menu-template/../../assets/img/icons/unicons/chart-success.png" alt="computer" class="rounded" />
+					</div>
+				  </div>
+				  <span class="fw-semibold d-block mb-1">Contestadas</span>
+				  <h4 class="card-title mb-2" v-text="conContestar" ></h4>
+				  <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +52.18%</small>
+				</div>
 			</div>
 		</div>
 	</div>

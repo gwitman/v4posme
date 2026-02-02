@@ -9,11 +9,14 @@ createApp({
 			
 			txtInboxID:						0,
 			txtEmployeID:					0,
-			txtStartOn:						(new Date().toISOString().slice(0, 10)),
+			txtStartOn:						(new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString().slice(0, 10)),
 			txtFinishOn:					(new Date().toISOString().slice(0, 10)),
-			
+			txtWorkflowStatusID:			'0',
 			
 			counterRegister:				0,
+			noLeidas:						0,
+			sinContestar:					0,
+			conContestar:					0,
 			objListConversation: 			[],
         }
     },
@@ -38,7 +41,8 @@ createApp({
 							txtStartOn: 			this.txtStartOn,
 							txtFinishOn: 			this.txtFinishOn,
 							txtEntityIDEmployer: 	this.txtEmployeID,
-							txtInboxID:				this.txtInboxID
+							txtInboxID:				this.txtInboxID,
+							txtWorkflowStatusID:	this.txtWorkflowStatusID
 						})
 				});				
 				
@@ -47,6 +51,9 @@ createApp({
 				if (json.success === false) {
 					this.objListConversation 	= [];
 					this.counterRegister 		= 0 ;
+					this.noLeidas 				= 0 ;
+					this.sinContestar 			= 0 ;
+					this.conContestar 			= 0 ;			
 					this.mensaje 				= 'Ocurrió un error al cargar la información';
 					return;
 				}
@@ -57,6 +64,9 @@ createApp({
 					this.objListConversation 	= [];
 					this.mensaje 				= 'No hay datos disponibles';
 					this.counterRegister 		= 0 ;
+					this.noLeidas 				= 0 ;
+					this.sinContestar 			= 0 ;
+					this.conContestar 			= 0 ;
 					this.mostrarAlerta			= false;
 					return;
 				}
@@ -64,7 +74,10 @@ createApp({
 				// 🟢 CASO 3: success = true con datos
 				this.mostrarAlerta			= false;
 				this.mensaje 				= '';		
-				this.counterRegister 		= json.count ;				
+				this.counterRegister 		= json.count ;	
+				this.noLeidas 				= json.noLeidas ;
+				this.sinContestar 			= json.sinContestar ;
+				this.conContestar 			= json.conContestar ;				
 				this.objListConversation 	= json.data; 	// 🔥 aquí Vue limpia y vuelve a renderizar 				
 			} 
 			catch (error) 

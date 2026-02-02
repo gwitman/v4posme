@@ -248,16 +248,18 @@ class Customer_Conversation_Model extends Model
 					c.componentIDSource,
 					c.componentIDTarget,
 					c.createdOn,
-					c.statusID,
+					c.statusID,					
 					c.messageCounter,
 					c.messageReceiptOn,
 					c.messageSendOn,					
 					DATE_FORMAT(c.messageReceiptOn, '%Y-%m-%d %h:%i %p') AS messageReceiptOnStr,
 					DATE_FORMAT(c.messageSendOn,    '%Y-%m-%d %h:%i %p') AS messageSendOnStr,  
 					CASE
-						WHEN c.messageSendOn IS NULL THEN 0
+						WHEN c.messageSendOn IS NULL THEN  0
+						WHEN c.messageReceiptOn IS NULL THEN  0
 						WHEN c.messageSendOn >= NOW() THEN 0
-						ELSE DATEDIFF(NOW(), c.messageSendOn)
+						WHEN c.messageSendOn > c.messageReceiptOn THEN 0
+						ELSE DATEDIFF(c.messageReceiptOn, c.messageSendOn) 
 					END AS dayNotContacted,
 					c.messgeConterNotRead,
 					c.reference1,
@@ -286,6 +288,22 @@ class Customer_Conversation_Model extends Model
 					( 
 						($entityIDEmployer  = 0 ) or 
 						(emp.entityID = $entityIDEmployer and $entityIDEmployer  != 0) 
+					) and 
+					(
+						($statusID  = 0 ) or 
+						(c.statusID = $statusID and $statusID != 0 )
+					) and 
+					(
+					  /*filtrar las cerradas*/
+					  (	$statusID = 0 /*todas*/) or 
+					  (
+						$statusID = 205 /*abiertas*/ and 
+						c.createdOn between '$startOn' and '$endOn 23:59:59' 						
+					  ) or 
+					  (
+						$statusID = 206 /*cerradas*/ and 
+						c.lastActivityOn between '$startOn' and '$endOn 23:59:59' 
+					  )
 					)
 				order by 
 					cus.entityID 
@@ -293,6 +311,7 @@ class Customer_Conversation_Model extends Model
 				
 			";
 			
+		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
 	}

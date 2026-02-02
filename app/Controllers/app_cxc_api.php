@@ -274,25 +274,42 @@ class app_cxc_api extends _BaseController {
 			$txtFinishOn 			= $data['txtFinishOn'] ?? null;
 			$txtEntityIDEmployer 	= $data['txtEntityIDEmployer'] ?? null;
 			$txtInboxID 			= $data['txtInboxID'] ?? null;
+			$txtWorkflowStatusID	= $data['txtWorkflowStatusID'] ?? null;
 
 			//Obtener datos
 			$data = $this->
 			Customer_Conversation_Model->
 			getBy_StartOn_EndOn_EmployerID_InboxID_StatusID(
-				$txtStartOn,$txtFinishOn,$txtEntityIDEmployer,0,0
+				$txtStartOn,$txtFinishOn,$txtEntityIDEmployer,0,$txtWorkflowStatusID
 			);
 			
 			$totalRegistros = 0;
+			$sinContestar   = 0;
+			$conContestar	= 0;
+			$noLeidas 		= 0;
 			if($data)
 			{
 				$totalRegistros = count($data);
+				$noLeidas 		= count(array_filter($data, function ($m) {
+					return $m->messgeConterNotRead > 0;
+				}));
+				$sinContestar 	= count(array_filter($data, function ($m) {
+					return $m->dayNotContacted > 0;
+				}));
+				$conContestar 	= count(array_filter($data, function ($m) {
+					return $m->dayNotContacted = 0;
+				}));
+
 				
 			}
 			return $this->response->setJSON([
-				'success' 	=> true,
-				'message' 	=> 'txtEntityIDEmployer recibido',
-				'data'	  	=> $data,
-				'count'		=> $totalRegistros
+				'success' 			=> true,
+				'message' 			=> 'txtEntityIDEmployer recibido',
+				'data'	  			=> $data,
+				'count'				=> $totalRegistros,
+				'noLeidas'			=> $noLeidas,
+				'sinContestar'		=> $sinContestar,
+				'conContestar'		=> $conContestar
 			]);
 						
 			
@@ -594,6 +611,7 @@ class app_cxc_api extends _BaseController {
 		$objConversation["messgeConterNotRead"] = 0;
 		$objConversation["lastMessage"] 		= $message ;
 		$objConversation["lastActivityOn"] 		= helper_getDateTime() ;
+		$objConversation["messageSendOn"] 		= helper_getDateTime() ;
 		$this->Customer_Conversation_Model->update_app_posme($objCustomerConversation[0]->conversationID,$objConversation);
 		
 		
@@ -818,8 +836,9 @@ class app_cxc_api extends _BaseController {
 		$objWorkflowStage 	= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($workflowStageID);
 		if($objWorkflowStage[0]->aplicable == 1)
 		{
-			$objConversationNew 			= array();
-			$objConversationNew["statusID"] = $workflowStageID;
+			$objConversationNew 					= array();
+			$objConversationNew["statusID"] 		= $workflowStageID;
+			$objConversationNew["lastActivityOn"] 	= helper_getDateTime();
 			$this->Customer_Conversation_Model->update_app_posme($objCustomerConversation[0]->conversationID,$objConversationNew);
 		}
 		
@@ -2172,6 +2191,7 @@ class app_cxc_api extends _BaseController {
 		$objConversation["messgeConterNotRead"] = 1 ;
 		$objConversation["lastMessage"] 		= $message ;
 		$objConversation["lastActivityOn"] 		= $lastActivityOnNew;
+		$objConversation["messageReceiptOn"] 	= $lastActivityOnNew;		
 		$this->Customer_Conversation_Model->update_app_posme($objCustomerConversation[0]->conversationID,$objConversation);
 		
 			
