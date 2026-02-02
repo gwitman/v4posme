@@ -755,7 +755,7 @@ class app_cxc_api extends _BaseController {
 		{
 			return $this->response->setJSON([
 				'success' 	=> false,
-				'message' 	=> 'el mensaje se guardo bien, pero no fue posible enviar el mensaje por whatsapp',
+				'message' 	=> $result["message"],
 				'entityID' 	=> $entityID
 			]);
 		}

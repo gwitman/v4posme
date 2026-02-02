@@ -1280,7 +1280,7 @@ class core_web_whatsap {
 			if ($err)
 			{
 			  log_message("error",print_r("cURL Error #:".$err,true));
-			  $response 	= '{"status":"error","message":"Authentication failed","error":"invalid signature"}';
+			  $response 	= '{"status":"error","message":"Authentication failed '.$err.'","error":"invalid signature"}';
 			  $resultado 	= json_decode($response, true); // true = array asociativo
 			  return $resultado;
 			}
