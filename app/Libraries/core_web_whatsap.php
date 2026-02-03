@@ -1252,7 +1252,11 @@ class core_web_whatsap {
 			  //CURLOPT_NOSIGNAL          	=> true,
 			  
 			  //Si espera respuesta
-			  CURLOPT_RETURNTRANSFER 		=> true
+			  CURLOPT_RETURNTRANSFER 		=> true,
+			  
+			  // ⚠️ Ignorar certificado vencido
+			  CURLOPT_SSL_VERIFYPEER 		=> false,
+			  CURLOPT_SSL_VERIFYHOST 		=> false
 			));
 
 			$response 	= curl_exec($curl);
@@ -1352,7 +1356,11 @@ class core_web_whatsap {
 				"Content-Type: application/json",
 				"Authorization: Bearer ".$objCP_WhatsapToken->value
 			  ),
-			  CURLOPT_RETURNTRANSFER 	=> true
+			  CURLOPT_RETURNTRANSFER 	=> true,
+			  
+			  // ⚠️ Ignorar certificado vencido
+			  CURLOPT_SSL_VERIFYPEER 	=> false,
+			  CURLOPT_SSL_VERIFYHOST 	=> false
 			));
 
 			$response 	= curl_exec($curl);
@@ -1459,7 +1467,11 @@ class core_web_whatsap {
 				"Content-Type: application/json",
 				"Authorization: Bearer ".$objCP_WhatsapToken->value
 			  ),
-			  CURLOPT_RETURNTRANSFER 	=> true
+			  CURLOPT_RETURNTRANSFER 	=> true,
+			  
+			  // ⚠️ Ignorar certificado vencido
+			  CURLOPT_SSL_VERIFYPEER 	=> false,
+			  CURLOPT_SSL_VERIFYHOST 	=> false
 			));
 
 			$response 	= curl_exec($curl);
@@ -1968,6 +1980,11 @@ class core_web_whatsap {
 			$ch 		= curl_init($sendCurl);	
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data) );
+			
+			// ⚠️ Ignorar certificado vencido
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
 			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 				"Accept: application/json",
 				"Content-Type: application/json",

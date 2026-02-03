@@ -681,6 +681,7 @@ $routes->match(['get', 'post'], 'app_cxc_api/getConversationCustomer_ByCustomer'
 $routes->match(['get', 'post'], 'app_cxc_api/WebHookReceiptMessage_Whatsapp_EvolutionApi_posMe', 'app_cxc_api::WebHookReceiptMessage_Whatsapp_EvolutionApi_posMe');
 $routes->match(['get', 'post'], 'app_cxc_api/WebHookReceiptMessage_Whatsapp_VonageApi_posMe', 'app_cxc_api::WebHookReceiptMessage_Whatsapp_VonageApi_posMe');
 $routes->match(['get', 'post'], 'app_cxc_api/WebHookReceiptMessage_Whatsapp_Ultramsg_posMe', 'app_cxc_api::WebHookReceiptMessage_Whatsapp_Ultramsg_posMe');
+$routes->match(['get', 'post'], 'app_cxc_api/WebHookReceiptMessage_Whatsapp_Wapi2_posMe', 'app_cxc_api::WebHookReceiptMessage_Whatsapp_Wapi2_posMe');
 $routes->match(['get', 'post'], 'app_cxc_api/WebHookReceiptMessage_Whatsapp_AppzApiIo_posMe', 'app_cxc_api::WebHookReceiptMessage_Whatsapp_AppzApiIo_posMe');
 
 //$routes->match(['get', 'post'], 'app_cxc_api/WebHookReceiptMessage_Whatsapp_AppzApiIo_posMe/(:any)', 'app_cxc_api::WebHookReceiptMessage_Whatsapp_AppzApiIo_posMe');
