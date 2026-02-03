@@ -2049,7 +2049,7 @@ class app_cxc_api extends _BaseController {
 	}
 	public function WebHookReceiptMessage_Whatsapp_Ultramsg_posMe()
 	{
-		
+		return;
 		// JSON crudo (string completo)
 		$host 		= $this->request->getServer('HTTP_HOST');		
 		log_message('error', 'Webhook RAW JSON: ' ."WebHookReceiptMessage_Whatsapp_Ultramsg_posMe" );	
@@ -2284,90 +2284,18 @@ class app_cxc_api extends _BaseController {
 	}
 	public function WebHookReceiptMessage_Whatsapp_Wapi2_posMe()
 	{
-		//wg-{
-		//wg-  "session_id": "a353a971-54c9-459f-b3fc-e91847801c17",
-		//wg-  "webhook_url": "https://posme.net/v4posme/posme/public/app_cxc_api/WebHookReceiptMessage_Whatsapp_Wapi2_posMe",
-		//wg-  "events": [
-		//wg-      "qr",
-		//wg-      "ready",
-		//wg-      "authenticated",
-		//wg-      "auth_failure",
-		//wg-      "disconnected",
-		//wg-      "message",
-		//wg-      "message_create",
-		//wg-      "message_ack",
-		//wg-      "message_revoke_everyone",
-		//wg-      "message_revoke_me",
-		//wg-      "group_join",
-		//wg-      "group_leave",
-		//wg-      "group_update",
-		//wg-      "contact_changed",
-		//wg-      "state_change",
-		//wg-      "loading_screen"
-		//wg-  ]
-		//wg-}
-		//wg-
-		//wg-
-		//wg-
-		//wg-{
-		//wg-  "status": "success",
-		//wg-  "message": "Webhook updated successfully",
-		//wg-  "data": {
-		//wg-    "id": 3,
-		//wg-    "session_id": "a353a971-54c9-459f-b3fc-e91847801c17",
-		//wg-    "webhook_url": "https://posme.net/v4posme/posme/public/app_cxc_api/WebHookReceiptMessage_Whatsapp_Wapi2_posMe",
-		//wg-    "secret_key": "0de58b8955f634d13a8fdb862ff1af991e7554b9c62649e3cfd11ce44497860a",
-		//wg-    "events": [
-		//wg-      "qr",
-		//wg-      "ready",
-		//wg-      "authenticated",
-		//wg-      "auth_failure",
-		//wg-      "disconnected",
-		//wg-      "message",
-		//wg-      "message_create",
-		//wg-      "message_ack",
-		//wg-      "message_revoke_everyone",
-		//wg-      "message_revoke_me",
-		//wg-      "group_join",
-		//wg-      "group_leave",
-		//wg-      "group_update",
-		//wg-      "contact_changed",
-		//wg-      "state_change",
-		//wg-      "loading_screen"
-		//wg-    ],
-		//wg-    "is_active": 1,
-		//wg-    "retry_count": 3,
-		//wg-    "timeout_ms": 5000,
-		//wg-    "created_at": "2026-02-03T00:31:17.000Z",
-		//wg-    "updated_at": "2026-02-03T00:31:17.000Z"
-		//wg-  }
-		//wg-}
-
-		return;
+		
 		// JSON crudo (string completo)
-		$host 		= $this->request->getServer('HTTP_HOST');		
 		log_message('error', 'Webhook RAW JSON: ' ."WebHookReceiptMessage_Whatsapp_Wapi2_posMe" );	
 		$input	 	= $this->request->getJSON(true); // true = array
-		log_message("error","input:".print_r($input,true));
-		
-		// 1️⃣ Leer el body crudo (FORMA CORRECTA PARA WEBHOOKS)
-		$raw 		= file_get_contents('php://input');
-		
-		// 3️⃣ Intentar decodificar JSON
-		$input 		= json_decode($raw, true);
-		log_message('error', 'Webhook row : ' . print_r($input,true) );	
-		
-		
-		
-		
-		
-		
-		
 		
 		//Solo se permiten mensajes recibidos
-		if($input["event_type"] != "message_received"  )
+		if(
+			$input["event"] != "message"  
+		)
+		{
 			return;
-		
+		}
 		
 		// Captura el POST JSON de Vonage
 		log_message("error","input:".print_r($input,true));
@@ -2383,7 +2311,7 @@ class app_cxc_api extends _BaseController {
         // Extraer datos básicos       
 		log_message("error","input: init process message");
 		$data["customerPhoneNumber"] 	= $input["data"]['from'] ?? '';
-		$data["customerFirstName"]	 	= $input["data"]['pushname'] ?? '';
+		$data["customerFirstName"]	 	= $input["data"]['contact']['pushname'] ?? '';
 		$data["customerMessage"]	 	= $input["data"]['body'] ?? '';
 		$data["customerMessageType"]	= $input["data"]['type'] ?? '';
 		$data["customerMessageUrl"]		= "";
@@ -2400,26 +2328,56 @@ class app_cxc_api extends _BaseController {
 		
 		
 		
-		if($data["customerMessageType"] == "image")
+		if(
+			$data["customerMessageType"] == "image" || 
+			$data["customerMessageType"] == "pdf"   || 
+			$data["customerMessageType"] == "audio" 
+		)
 		{
+			//Guardar la imagen
+			$mediaTipe 	= $input['data']['media']['mimetype']; // ajusta al nombre real del índice
+			$base64 	= $input['data']['media']['data'];
+			$filename 	= $input['data']['media']['filename'];
+			
+			//generar nombre
+			$extension = explode('/', $mediaTipe)[1];
+			$filename  = uniqid('file_') . '.' . $extension;
+
+			// 🔹 Quitar encabezado Base64 si existe
+			if (str_contains($base64, ',')) {
+				$base64 = explode(',', $base64)[1];
+			}
+
+			// Decodificar
+			$imageBinary = base64_decode($base64);
+
+
+			//Obtener el componente
+			$objComponentCustomerConversation	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer_conversation");
+			if(!$objComponentCustomerConversation)
+			throw new \Exception("EL COMPONENTE 'tb_customer_conversation' NO EXISTE...");
+			
+			
+			//Crear la Carpeta para almacenar los Archivos del Documento
+			$phoneCustomer = getNumberPhone($input["data"]['from']);
+			$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_".$objComponentCustomerConversation->componentID."/component_item_".$phoneCustomer;
+			if (!file_exists($documentoPath))
+			{
+				mkdir($documentoPath, 0777, true);
+			}
+			
+			// Guardar imagen
+			file_put_contents($documentoPath ."/". $filename, $imageBinary);
+			
+			//Obtener la url
+			$url 							= base_url()."/resource/file_company/company_2/component_".$objComponentCustomerConversation->componentID."/component_item_".$phoneCustomer."/".$filename;
 			$data["customerMessage"]	 	= $input['data']['body'] ?? '';
-			$data["customerMessageUrl"]		= $input['data']['media'] ?? '';
-			$data["customerMessageFile"]	= $input['data']['media'] ?? '';
+			$data["customerMessageUrl"]		= $url;
+			$data["customerMessageFile"]	= $url;
+			log_message("error","input: paquete procesado ".print_r($data,true));
+			
 		}
 		
-		if($data["customerMessageType"] == "audio")
-		{
-			$data["customerMessage"]	 	= $input['data']['body'] ?? '';
-			$data["customerMessageUrl"]		= $input['data']['media'] ?? '';
-			$data["customerMessageFile"]	= $input['data']['media'] ?? '';
-		}
-		
-		
-		
-		
-		//$data["customerPhoneNumber"] 	= "887646645";
-		//$data["customerFirstName"]	= "witmaj gonzalez";
-		//$data["customerMessage"]	 	= "hola que tal";
 		
 		$customerPhoneNumber 	= getNumberPhone($data["customerPhoneNumber"]);
 		$customerFirstName		= "new_".$data["customerFirstName"];
