@@ -2291,14 +2291,14 @@ class app_cxc_api extends _BaseController {
 		
 		//Solo se permiten mensajes recibidos
 		if(
-			$input["event"] != "message"  
+			($input["event"] 		!= "message") ||  
+			(str_contains($input["data"]["from"], 'broadcast'))
 		)
 		{
 			return;
 		}
 		
 		// Captura el POST JSON de Vonage
-		log_message("error","input:".print_r($input,true));
         if (!$input) {
 			$result = [
 				'success' => false,
@@ -2318,15 +2318,20 @@ class app_cxc_api extends _BaseController {
 		$data["customerMessageFile"]	= "";
 		
 		if($data["customerMessageType"] == "chat")
+		{
 			$data["customerMessageType"] = "text";
+			log_message("error","input:".print_r($input,true));
+		}
 		
 		if($data["customerMessageType"] == "image")
+		{
 			$data["customerMessageType"] = "image";
+		}
 		
 		if($data["customerMessageType"] == "ptt")
+		{
 			$data["customerMessageType"] = "audio";
-		
-		
+		}
 		
 		if(
 			$data["customerMessageType"] == "image" || 
