@@ -103,6 +103,18 @@ createApp({
 					this.conContestarPorcentage	= 0;
 				}
 				
+				json.data.forEach(item => {
+					//sin contestar
+					if(item.dayNotContacted < 0)
+					{
+						item.dayNotContacted 	= Number(((item.dayNotContacted * -1) / 3600).toFixed(2)) + ' hrs. sin contestar';				
+					}
+					//contestada
+					else
+					{
+						item.dayNotContacted 	= 'contestada en: '+ Number((item.dayNotContacted / 3600).toFixed(2)) + ' hrs.';				
+					}
+				});
 				this.objListConversation 	= json.data; 	// 🔥 aquí Vue limpia y vuelve a renderizar 				
 			} 
 			catch (error) 

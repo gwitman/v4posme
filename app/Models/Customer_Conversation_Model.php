@@ -255,11 +255,20 @@ class Customer_Conversation_Model extends Model
 					DATE_FORMAT(c.messageReceiptOn, '%Y-%m-%d %h:%i %p') AS messageReceiptOnStr,
 					DATE_FORMAT(c.messageSendOn,    '%Y-%m-%d %h:%i %p') AS messageSendOnStr,  
 					CASE
-						WHEN c.messageSendOn IS NULL THEN  0
-						WHEN c.messageReceiptOn IS NULL THEN  0
-						WHEN c.messageSendOn >= NOW() THEN 0
-						WHEN c.messageSendOn > c.messageReceiptOn THEN 0
-						ELSE DATEDIFF(c.messageReceiptOn, c.messageSendOn) 
+						/*no determinada*/
+						WHEN c.messageReceiptOn IS NULL and c.messageSendOn IS NULL THEN  
+							0
+						/*no contestada*/
+						WHEN c.messageReceiptOn IS NOT NULL and  c.messageSendOn IS NOT NULL and c.messageReceiptOn > c.messageSendOn  THEN  
+							TIMESTAMPDIFF(SECOND, c.messageReceiptOn,c.messageSendOn)
+						WHEN c.messageReceiptOn IS NOT NULL and  c.messageSendOn IS NULL   THEN  
+							TIMESTAMPDIFF(SECOND, NOW(), c.messageReceiptOn)
+						/*contestada*/
+						WHEN c.messageReceiptOn IS NOT NULL and  c.messageSendOn IS NOT NULL and c.messageReceiptOn < c.messageSendOn  THEN  
+							TIMESTAMPDIFF(SECOND, c.messageReceiptOn,c.messageSendOn) 
+						/*no deterinada*/
+						ELSE 
+							0 
 					END AS dayNotContacted,
 					c.messgeConterNotRead,
 					c.reference1,

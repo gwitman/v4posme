@@ -150,7 +150,8 @@
 					<!--<div class="demo-inline-spacing">-->
 						<button 
 							type="button" 
-							class="btn btn-icon btn-outline-dribbble"
+							class="btn btn-icon "							
+							:class="objConversation.messgeConterNotRead > 0 ? 'btn-success' : 'btn-instagram' "
 							@click="verConversacion(objConversation.entityID)"
 						>
 						  <i class="tf-icons bx bx-show"></i>

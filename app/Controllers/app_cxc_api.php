@@ -294,10 +294,10 @@ class app_cxc_api extends _BaseController {
 					return $m->messgeConterNotRead > 0;
 				}));
 				$sinContestar 	= count(array_filter($data, function ($m) {
-					return $m->dayNotContacted > 0;
+					return $m->dayNotContacted < 0;
 				}));
 				$conContestar 	= count(array_filter($data, function ($m) {
-					return $m->dayNotContacted = 0;
+					return $m->dayNotContacted > 0;
 				}));
 
 				
