@@ -679,7 +679,7 @@ WHERE
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "17bc5978-cd62-4ddf-865c-2e6084068995" 
+	tb_company_parameter.value = "60104ac6-23a9-4c15-8266-249b24d752f2" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
@@ -1890,7 +1890,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Mena Renta Card' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 1074 /*usuarioID*/,type='arteDigital'  , abreviature='demo'
+	flavorID = 1074 /*usuarioID*/,type='menaRentaCard'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
@@ -1904,12 +1904,7 @@ update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2, 	
  1074,  
- 1075, 
- 1076,
- 1077,  
- 1078, 
- 1079, 
- 1080
+ 1075
 );
 
 update tb_role set isActive = 0; 
@@ -1917,11 +1912,7 @@ update tb_role set isActive = 1 where roleID in (
 	3,
 	1008,
 	1009,
-	1010,
-	1011,
-	1012,
-	1013,
-	1014 
+	1010
 );
 */
 

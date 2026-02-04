@@ -62,6 +62,7 @@ update tb_item set
 
 delete from tb_component_audit;
 delete from tb_component_audit_detail;
+delete from tb_customer_conversation ;
 delete from tb_customer_consultas_sin_riesgo;
 delete from tb_customer_credit_clasification;
 delete from tb_customer_credit_document_entity_related;

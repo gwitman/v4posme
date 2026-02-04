@@ -2469,6 +2469,33 @@ class app_cxc_api extends _BaseController {
 	public function WebHookReceiptMessage_Whatsapp_Wapi2_posMe()
 	{
 		
+		//WG-{
+		//WG-	"session_id": "60104ac6-23a9-4c15-8266-249b24d752f2",
+		//WG-	"webhook_url": "https://posme.net/v4posme/mena_renta_card/public/app_cxc_api/WebHookReceiptMessage_Whatsapp_Wapi2_posMe" ,
+		//WG-	"events": [
+		//WG-	  "qr",
+		//WG-	  "ready",
+		//WG-	  "authenticated",
+		//WG-	  "auth_failure",
+		//WG-	  "disconnected",
+		//WG-	  "message",
+		//WG-	  "message_create",
+		//WG-	  "message_ack",
+		//WG-	  "message_revoke_everyone",
+		//WG-	  "message_revoke_me",
+		//WG-	  "group_join",
+		//WG-	  "group_leave",
+		//WG-	  "group_update",
+		//WG-	  "contact_changed",
+		//WG-	  "state_change",
+		//WG-	  "loading_screen"
+		//WG-	]
+		//WG-}
+		
+		//WG-@c.us	Número real (chat directo)
+		//WG-@g.us	Grupo
+		//WG-@lid	Identificador interno/local
+
 		// JSON crudo (string completo)
 		log_message('error', 'Webhook RAW JSON: ' ."WebHookReceiptMessage_Whatsapp_Wapi2_posMe" );	
 		$input	 	= $this->request->getJSON(true); // true = array
@@ -2707,7 +2734,7 @@ class app_cxc_api extends _BaseController {
 		log_message("error",print_r($lastActivityOnNew,true));
 		log_message("error",print_r($diferenceDate,true));		
 		//Han pasado almenos 5 minutos desde el utlimo mensaje
-		if($diferenceDate["comparador"] == "-1" && ((int)$diferenceDate["minutos"]) >= 2 )
+		if($diferenceDate["comparador"] == "-1" && ((int)$diferenceDate["segundos"]) >=  10 )
 		{			
 			log_message("error","Enviar mensaje colaboradores asignados");
 			$urlSend		= base_url()."/app_cxc_conversation/edit/entityID/".$objCustomer[0]->entityID;
