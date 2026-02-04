@@ -2282,6 +2282,190 @@ class app_cxc_api extends _BaseController {
 		return $this->response->setJSON($result);
 		
 	}
+	public function WebHookReceiptMessage_Whatsapp_AppzApiIo_posMe()
+	{
+		
+		return;
+		log_message('error', 'Webhook RAW JSON: ' ."WebHookReceiptMessage_Whatsapp_AppzApiIo_posMe" );			
+		// 1️⃣ Leer el body crudo (FORMA CORRECTA PARA WEBHOOKS)
+		$raw 	= file_get_contents('php://input');
+		
+		// 3️⃣ Intentar decodificar JSON
+		$input 	= json_decode($raw, true);
+		log_message('error', 'Webhook INPUT : ' . print_r($input,true) );	
+		
+		
+        if (!$input) {
+			$result = [
+				'success' => false,
+				'message' => 'JSON inválido input Vonage'
+			];
+			log_message("error",print_r($result,true));
+			return $this->response->setJSON($result)->setStatusCode(200);
+        }
+
+		//Solo se permiten mensajes recibidos
+		if($input["type"] != "ReceivedCallback" )
+			return;
+		
+		
+		
+        // Extraer datos básicos   
+		$data = array();
+		if(array_key_exists('imagen', $input))
+		{
+			$data["customerMessageType"] = "image";
+		}
+		if(array_key_exists('text', $input))
+		{
+			$data["customerMessageType"] = "text";
+		}
+		if(array_key_exists('audio', $input))
+		{
+			$data["customerMessageType"] = "audio";
+		}
+		
+		log_message("error","input: init process message");
+		$data["customerPhoneNumber"] 	= $input['phone'] ?? '';
+		$data["customerFirstName"]	 	= $input['senderName'] ?? '';
+		$data["customerMessage"]	 	= "";		
+		$data["customerMessageUrl"]		= "";
+		$data["customerMessageFile"]	= "";	
+		if($data["customerMessageType"] == "text")
+		{
+			$data["customerMessage"]	 	= $input['text']['message'] ?? '';
+		}
+		
+		if($data["customerMessageType"] == "image")
+		{
+			$data["customerMessage"]	 	= $input['image']['caption'] ?? '';
+			$data["customerMessageUrl"]		= $input['image']['imageUrl'] ?? '';
+			$data["customerMessageFile"]	= $input['image']['imageUrl'] ?? '';
+		}
+		
+		if($data["customerMessageType"] == "audio")
+		{
+			$data["customerMessage"]	 	= $input['audio']['caption'] ?? '';
+			$data["customerMessageUrl"]		= $input['audio']['imageUrl'] ?? '';
+			$data["customerMessageFile"]	= $input['audio']['imageUrl'] ?? '';
+		}
+		
+		
+		
+		$customerPhoneNumber 	= getNumberPhone($data["customerPhoneNumber"]);
+		$customerFirstName		= "new_".$data["customerFirstName"];
+		$message				= $data["customerMessage"];
+		$messageUrl				= $data["customerMessageUrl"];
+		$messageFile			= $data["customerMessageFile"];
+		$messageType			= $data["customerMessageType"];
+		$dataSession 			= $this->core_web_authentication->get_UserBy_PasswordAndNickname(APP_USERDEFAULT_VALUE, APP_PASSWORDEFAULT_VALUE);
+		$companyID				= $dataSession["user"]->companyID;
+		$branchID				= $dataSession["user"]->branchID;
+		$roleID 				= $dataSession["role"]->roleID;
+		$userID 				= $dataSession["user"]->userID;
+		//Obtener al cliente
+		$objCustomer			= $this->Customer_Model->get_rowByPhoneNumber($customerPhoneNumber);
+		if(!$objCustomer)
+		{
+			$this->core_web_conversation->createCustomer($dataSession,$customerPhoneNumber,$customerFirstName,$this->request);
+			
+		}
+		$objCustomer			= $this->Customer_Model->get_rowByPhoneNumber($customerPhoneNumber);
+		if(!$objCustomer)
+			throw new \Exception ("Cliente no encontrado");
+		
+		//Obtener la conversacion
+		$conversationIsNew			= false;
+		$conversationID				= 0;
+		$objCustomerConversation	= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($objCustomer[0]->entityID);
+		if(!$objCustomerConversation)
+		{
+			$conversationIsNew	= true;
+			$conversationID 	= $this->core_web_conversation->createConversation($dataSession,$objCustomer[0]->entityID);
+		}
+		$objCustomerConversation				= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($objCustomer[0]->entityID);
+		$lastActivityOnOld						= $objCustomerConversation[0]->lastActivityOn;
+		$lastActivityOnNew						= helper_getDateTime() ;
+		$objConversation 						= array();
+		$objConversation["messgeConterNotRead"] = 1 ;
+		$objConversation["lastMessage"] 		= $message ;
+		$objConversation["lastActivityOn"] 		= $lastActivityOnNew;
+		$this->Customer_Conversation_Model->update_app_posme($objCustomerConversation[0]->conversationID,$objConversation);
+		
+			
+		//Ingresar el mensaje a la conversacion activa		
+		$objTag		 								= $this->Tag_Model->get_rowByName("MENSAJE DE CONVERSACION");
+		$objNotification 							= array();		
+		$objNotification["errorID"] 				= 0;
+		$objNotification["from"] 					= $objCustomer[0]->firstName;
+		$objNotification["to"] 						= '';
+		$objNotification["subject"] 				= $messageUrl;
+		$objNotification["message"] 				= $message;
+		$objNotification["summary"] 				= $messageFile;
+		$objNotification["title"] 					= $messageType;
+		$objNotification["tagID"] 					= $objTag->tagID;
+		$objNotification["createdOn"] 				= helper_getDateTime();
+		$objNotification["isActive"] 				= 1;
+		$objNotification["phoneFrom"] 				= $objCustomer[0]->phoneNumber;
+		$objNotification["phoneTo"] 				= '';
+		$objNotification["programDate"] 			= helper_getDate();
+		$objNotification["programHour"] 			= '00:00';
+		$objNotification["sendOn"] 					= NULL;
+		$objNotification["sendEmailOn"] 			= NULL;
+		$objNotification["sendWhatsappOn"] 			= NULL;
+		$objNotification["addedCalendarGoogle"] 	= 0;
+		$objNotification["quantityOcupation"] 		= 0;
+		$objNotification["quantityDisponible"] 		= 0;
+		$objNotification["googleCalendarEventID"] 	= NULL;
+		$objNotification["isRead"] 					= 0;
+		$objNotification["entityIDSource"] 			= 0;
+		$objNotification["entityIDTarget"] 			= $objCustomer[0]->entityID;
+		$notificationID 							= $this->Notification_Model->insert_app_posme($objNotification);
+
+		//Obtener la lista de agentes a afiliar
+		$objListEntityIDEmployer 					= $this->core_web_conversation->getAllEmployer($companyID,$dataSession["company"]->type,$customerPhoneNumber,$message,$conversationIsNew );				
+		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer);
+		
+		//////////////////////////////////////////////
+		//Notificar a los agentes afiliados
+		//////////////////////////////////////////////
+		$diferenceDate 							= helper_CompareDateTime($lastActivityOnOld,$lastActivityOnNew);
+		log_message("error","Diferencia en fecha entre la conversacion actual y la anterior");
+		log_message("error",print_r($lastActivityOnOld,true));
+		log_message("error",print_r($lastActivityOnNew,true));
+		log_message("error",print_r($diferenceDate,true));		
+		//Han pasado almenos 5 minutos desde el utlimo mensaje
+		if($diferenceDate["comparador"] == -1 && $diferenceDate["minutos"] > 5 )
+		{			
+			$urlSend		= base_url()."/app_cxc_conversation/edit/entityID/".$objCustomer[0]->entityID;
+			$whatsappLink 	= urlencode($urlSend);
+			$short 			= file_get_contents("https://is.gd/create.php?format=simple&url=$whatsappLink");
+		
+			$this->core_web_conversation->notificationEmployerInConversation(
+			$dataSession["company"]->companyID,
+			$dataSession["user"]->branchID,
+			$dataSession["company"]->type,
+			$objCustomerConversation[0]->conversationID,
+			"📩 *Cliente:".$objCustomer[0]->firstName."* ha enviado un mensaje 
+
+👉 Por favor, respóndelo en el siguiente enlace:
+🌐 ".$short
+			);		
+		}
+		
+		
+		//Resultado
+		$result = [
+			'success' 			=> true,
+			'message'   		=> 'JSON valido',
+			'entityID'			=> $objCustomer[0]->entityID,
+			'converationID'		=> $objCustomerConversation[0]->conversationID,
+			'notificationID'	=> $notificationID
+		];	
+		log_message("error",print_r($result,true));
+		return $this->response->setJSON($result);
+		
+	}
 	public function WebHookReceiptMessage_Whatsapp_Wapi2_posMe()
 	{
 		
@@ -2534,190 +2718,6 @@ class app_cxc_api extends _BaseController {
 				$dataSession["user"]->branchID,
 				$dataSession["company"]->type,
 				$objCustomerConversation[0]->conversationID,
-			"📩 *Cliente:".$objCustomer[0]->firstName."* ha enviado un mensaje 
-
-👉 Por favor, respóndelo en el siguiente enlace:
-🌐 ".$short
-			);		
-		}
-		
-		
-		//Resultado
-		$result = [
-			'success' 			=> true,
-			'message'   		=> 'JSON valido',
-			'entityID'			=> $objCustomer[0]->entityID,
-			'converationID'		=> $objCustomerConversation[0]->conversationID,
-			'notificationID'	=> $notificationID
-		];	
-		log_message("error",print_r($result,true));
-		return $this->response->setJSON($result);
-		
-	}
-	public function WebHookReceiptMessage_Whatsapp_AppzApiIo_posMe()
-	{
-		
-		return;
-		log_message('error', 'Webhook RAW JSON: ' ."WebHookReceiptMessage_Whatsapp_AppzApiIo_posMe" );			
-		// 1️⃣ Leer el body crudo (FORMA CORRECTA PARA WEBHOOKS)
-		$raw 	= file_get_contents('php://input');
-		
-		// 3️⃣ Intentar decodificar JSON
-		$input 	= json_decode($raw, true);
-		log_message('error', 'Webhook INPUT : ' . print_r($input,true) );	
-		
-		
-        if (!$input) {
-			$result = [
-				'success' => false,
-				'message' => 'JSON inválido input Vonage'
-			];
-			log_message("error",print_r($result,true));
-			return $this->response->setJSON($result)->setStatusCode(200);
-        }
-
-		//Solo se permiten mensajes recibidos
-		if($input["type"] != "ReceivedCallback" )
-			return;
-		
-		
-		
-        // Extraer datos básicos   
-		$data = array();
-		if(array_key_exists('imagen', $input))
-		{
-			$data["customerMessageType"] = "image";
-		}
-		if(array_key_exists('text', $input))
-		{
-			$data["customerMessageType"] = "text";
-		}
-		if(array_key_exists('audio', $input))
-		{
-			$data["customerMessageType"] = "audio";
-		}
-		
-		log_message("error","input: init process message");
-		$data["customerPhoneNumber"] 	= $input['phone'] ?? '';
-		$data["customerFirstName"]	 	= $input['senderName'] ?? '';
-		$data["customerMessage"]	 	= "";		
-		$data["customerMessageUrl"]		= "";
-		$data["customerMessageFile"]	= "";	
-		if($data["customerMessageType"] == "text")
-		{
-			$data["customerMessage"]	 	= $input['text']['message'] ?? '';
-		}
-		
-		if($data["customerMessageType"] == "image")
-		{
-			$data["customerMessage"]	 	= $input['image']['caption'] ?? '';
-			$data["customerMessageUrl"]		= $input['image']['imageUrl'] ?? '';
-			$data["customerMessageFile"]	= $input['image']['imageUrl'] ?? '';
-		}
-		
-		if($data["customerMessageType"] == "audio")
-		{
-			$data["customerMessage"]	 	= $input['audio']['caption'] ?? '';
-			$data["customerMessageUrl"]		= $input['audio']['imageUrl'] ?? '';
-			$data["customerMessageFile"]	= $input['audio']['imageUrl'] ?? '';
-		}
-		
-		
-		
-		$customerPhoneNumber 	= getNumberPhone($data["customerPhoneNumber"]);
-		$customerFirstName		= "new_".$data["customerFirstName"];
-		$message				= $data["customerMessage"];
-		$messageUrl				= $data["customerMessageUrl"];
-		$messageFile			= $data["customerMessageFile"];
-		$messageType			= $data["customerMessageType"];
-		$dataSession 			= $this->core_web_authentication->get_UserBy_PasswordAndNickname(APP_USERDEFAULT_VALUE, APP_PASSWORDEFAULT_VALUE);
-		$companyID				= $dataSession["user"]->companyID;
-		$branchID				= $dataSession["user"]->branchID;
-		$roleID 				= $dataSession["role"]->roleID;
-		$userID 				= $dataSession["user"]->userID;
-		//Obtener al cliente
-		$objCustomer			= $this->Customer_Model->get_rowByPhoneNumber($customerPhoneNumber);
-		if(!$objCustomer)
-		{
-			$this->core_web_conversation->createCustomer($dataSession,$customerPhoneNumber,$customerFirstName,$this->request);
-			
-		}
-		$objCustomer			= $this->Customer_Model->get_rowByPhoneNumber($customerPhoneNumber);
-		if(!$objCustomer)
-			throw new \Exception ("Cliente no encontrado");
-		
-		//Obtener la conversacion
-		$conversationIsNew			= false;
-		$conversationID				= 0;
-		$objCustomerConversation	= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($objCustomer[0]->entityID);
-		if(!$objCustomerConversation)
-		{
-			$conversationIsNew	= true;
-			$conversationID 	= $this->core_web_conversation->createConversation($dataSession,$objCustomer[0]->entityID);
-		}
-		$objCustomerConversation				= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($objCustomer[0]->entityID);
-		$lastActivityOnOld						= $objCustomerConversation[0]->lastActivityOn;
-		$lastActivityOnNew						= helper_getDateTime() ;
-		$objConversation 						= array();
-		$objConversation["messgeConterNotRead"] = 1 ;
-		$objConversation["lastMessage"] 		= $message ;
-		$objConversation["lastActivityOn"] 		= $lastActivityOnNew;
-		$this->Customer_Conversation_Model->update_app_posme($objCustomerConversation[0]->conversationID,$objConversation);
-		
-			
-		//Ingresar el mensaje a la conversacion activa		
-		$objTag		 								= $this->Tag_Model->get_rowByName("MENSAJE DE CONVERSACION");
-		$objNotification 							= array();		
-		$objNotification["errorID"] 				= 0;
-		$objNotification["from"] 					= $objCustomer[0]->firstName;
-		$objNotification["to"] 						= '';
-		$objNotification["subject"] 				= $messageUrl;
-		$objNotification["message"] 				= $message;
-		$objNotification["summary"] 				= $messageFile;
-		$objNotification["title"] 					= $messageType;
-		$objNotification["tagID"] 					= $objTag->tagID;
-		$objNotification["createdOn"] 				= helper_getDateTime();
-		$objNotification["isActive"] 				= 1;
-		$objNotification["phoneFrom"] 				= $objCustomer[0]->phoneNumber;
-		$objNotification["phoneTo"] 				= '';
-		$objNotification["programDate"] 			= helper_getDate();
-		$objNotification["programHour"] 			= '00:00';
-		$objNotification["sendOn"] 					= NULL;
-		$objNotification["sendEmailOn"] 			= NULL;
-		$objNotification["sendWhatsappOn"] 			= NULL;
-		$objNotification["addedCalendarGoogle"] 	= 0;
-		$objNotification["quantityOcupation"] 		= 0;
-		$objNotification["quantityDisponible"] 		= 0;
-		$objNotification["googleCalendarEventID"] 	= NULL;
-		$objNotification["isRead"] 					= 0;
-		$objNotification["entityIDSource"] 			= 0;
-		$objNotification["entityIDTarget"] 			= $objCustomer[0]->entityID;
-		$notificationID 							= $this->Notification_Model->insert_app_posme($objNotification);
-
-		//Obtener la lista de agentes a afiliar
-		$objListEntityIDEmployer 					= $this->core_web_conversation->getAllEmployer($companyID,$dataSession["company"]->type,$customerPhoneNumber,$message,$conversationIsNew );				
-		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer);
-		
-		//////////////////////////////////////////////
-		//Notificar a los agentes afiliados
-		//////////////////////////////////////////////
-		$diferenceDate 							= helper_CompareDateTime($lastActivityOnOld,$lastActivityOnNew);
-		log_message("error","Diferencia en fecha entre la conversacion actual y la anterior");
-		log_message("error",print_r($lastActivityOnOld,true));
-		log_message("error",print_r($lastActivityOnNew,true));
-		log_message("error",print_r($diferenceDate,true));		
-		//Han pasado almenos 5 minutos desde el utlimo mensaje
-		if($diferenceDate["comparador"] == -1 && $diferenceDate["minutos"] > 5 )
-		{			
-			$urlSend		= base_url()."/app_cxc_conversation/edit/entityID/".$objCustomer[0]->entityID;
-			$whatsappLink 	= urlencode($urlSend);
-			$short 			= file_get_contents("https://is.gd/create.php?format=simple&url=$whatsappLink");
-		
-			$this->core_web_conversation->notificationEmployerInConversation(
-			$dataSession["company"]->companyID,
-			$dataSession["user"]->branchID,
-			$dataSession["company"]->type,
-			$objCustomerConversation[0]->conversationID,
 			"📩 *Cliente:".$objCustomer[0]->firstName."* ha enviado un mensaje 
 
 👉 Por favor, respóndelo en el siguiente enlace:
