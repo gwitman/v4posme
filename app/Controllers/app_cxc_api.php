@@ -2476,7 +2476,8 @@ class app_cxc_api extends _BaseController {
 		//Solo se permiten mensajes recibidos
 		if(
 			($input["event"] 		!= "message") ||  
-			(str_contains($input["data"]["from"], 'broadcast'))
+			(str_contains($input["data"]["from"], 'broadcast')) || 
+			(str_contains($input["data"]["from"], '35059834872017@lid')) 
 		)
 		{
 			return;
