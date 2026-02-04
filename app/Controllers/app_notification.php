@@ -2733,65 +2733,87 @@ Le recordamos que tiene su membresia pendiente de pago:
 		
 		if ($objNotificar)
 		{	
-			// Cabecera de la tabla
-			$tabla = "📅 Citas programadas para hoy
+			//Obener los numeros de los colaboradores
+			$employersPhones = [];
+			foreach ($objNotificar as $item) {
+				if (!empty($item->phoneEmployer)) {
+					$employersPhones[] = clearNumero($item->phoneEmployer);
+				}
+			}
+			// Eliminar duplicados
+			$employersPhones = array_unique($employersPhones);
+			foreach ($employersPhones as $phoneEmployer) 
+			{
+				// Cabecera de la tabla
+				$tabla = "📅 Citas programadas para hoy
 
-Hola 👋
-A continuación, te compartimos el listado de personas que tienen cita el día de hoy en Chic Extensiones 💇‍♀️✨";
+	Hola 👋
+	A continuación, te compartimos el listado de personas que tienen cita el día de hoy en Chic Extensiones 💇‍♀️✨";
 
-			foreach ($objNotificar as $i) {
-				$dt 		 = \DateTime::createFromFormat('Y-m-d H:i:s', $i->SiguienteVisita);
-				$fecha       = $dt->format("Y-m-d");
-				$hora        = $dt->format("h:i A");
-				$cliente     = $i->firstName;
-				$phone		 = $i->phoneCustomer;
-				$descripcion = $i->note ?? "Cita programada"; // si tienes ese campo en DB úsalo
+				foreach ($objNotificar as $i) {
+					
+					// Filtrar solo las citas del empleador actual
+					if (clearNumero($i->phoneEmployer) != $phoneEmployer) {
+						continue;
+					}
+					
+					$dt 		 	= \DateTime::createFromFormat('Y-m-d H:i:s', $i->SiguienteVisita);
+					$fecha       	= $dt->format("Y-m-d");
+					$hora        	= $dt->format("h:i A");
+					$cliente     	= $i->firstName;
+					$phone		 	= $i->phoneCustomer;
+					$descripcion 	= $i->note ?? "Cita programada"; // si tienes ese campo en DB úsalo
 
-				$tabla .= "
-👤 ".$cliente."
-📞 ".$phone."
-";
+					$tabla .= "
+	👤 ".$cliente."
+	📞 ".$phone."
+	";
 
+					
+					$row = "
+	📅 Recordatorio de cita
+	Hola ".$cliente." 👋
+
+	✨ El día de hoy tienes una cita programada en tu salón
+	💇‍♀️ Chic Extensiones
+
+	¡Te esperamos! 💖⏰";
+	
+					echo "</br>";
+					echo "</br>";
+					echo "Cliente:--".$row;
+					
+					// También lo dejas en log si lo necesitas
+					log_message("info", "Cita de: $cliente programada para: $fecha $hora");
+					//Mandar mensajes a los cliente
+					$this->core_web_whatsap->sendMessageGeneric(
+						$objCompany->type,
+						APP_COMPANY, 
+						$row, 
+						clearNumero($phone)	
+					);
+				}
 				
-				$row = "
-📅 Recordatorio de cita
-Hola ".$cliente." 👋
-
-✨ El día de hoy tienes una cita programada en tu salón
-💇‍♀️ Chic Extensiones
-
-¡Te esperamos! 💖⏰";
-				echo $row;
 				
-				// También lo dejas en log si lo necesitas
-				log_message("info", "Cita de: $cliente programada para: $fecha $hora");
-				//Mandar mensajes a los cliente
+				 // Cerrar la tabla
+				$tabla .= "";			
+				log_message("info", print_r($tabla,true));
+
+				// Parámetros para la vista del correo
+				$params_["objCompany"]    = $objCompany;
+				$params_["mensaje"]       = $tabla;
+
+				echo "</br>";
+				echo "</br>";
+				echo "Sucursal:--".$tabla;
+				//Mandar mensaje de wahtapp al propietario
 				$this->core_web_whatsap->sendMessageGeneric(
 					$objCompany->type,
 					APP_COMPANY, 
-					$row, 
-					clearNumero($phone)	
+					$tabla, 
+					clearNumero($phoneEmployer)	
 				);
 			}
-			
-			
-			 // Cerrar la tabla
-			$tabla .= "";			
-			log_message("info", print_r($tabla,true));
-
-			// Parámetros para la vista del correo
-			$params_["objCompany"]  = $objCompany;
-			$params_["mensaje"]       = $tabla;
-
-			echo $tabla;
-			//Mandar mensaje de wahtapp al propietario
-			$this->core_web_whatsap->sendMessageGeneric(
-				$objCompany->type,
-				APP_COMPANY, 
-				$tabla, 
-				clearNumero($phoneProperty)	
-			);
-			
 		}
 		
 		

@@ -1799,7 +1799,8 @@ class Transaction_Master_Detail_Model extends Model  {
 				tat.transactionNumber,
 				tat.SiguienteVisita,
 				tat.phoneCustomer,
-				tat.note
+				tat.note,
+				tat.phoneEmployer
 			from 
 				(
 					select 
@@ -1812,7 +1813,8 @@ class Transaction_Master_Detail_Model extends Model  {
 						c.transactionNumber ,
 						c.note,
 						c.nextVisit as SiguienteVisita ,
-						c.numberPhone phoneCustomer 
+						c.numberPhone phoneCustomer,
+						ep.number as phoneEmployer
 					from 
 						tb_transaction_master c 
 						inner join tb_transaction_master_info ci on 
@@ -1823,11 +1825,16 @@ class Transaction_Master_Detail_Model extends Model  {
 							c.statusID = ws.workflowStageID 
 						inner join tb_naturales nat on 
 							c.entityID = nat.entityID 
+						inner join tb_user usr on 
+							usr.userID = c.createdBy 
+						inner join tb_entity_phone ep on 
+							ep.entityID = usr.employeeID 
 					where 
-						c.isActive = 1 and 
+						c.isActive = 1 and 						
 						c.companyID = 2 and 
 						c.transactionID = 19  and 
 						ws.isInit = 1 and 
+						ep.isPrimary = 1 and 
 						c.nextVisit is not null  	and 
 						c.nextVisit > '1900-01-01 00:00:00'					
 				)  tat  
