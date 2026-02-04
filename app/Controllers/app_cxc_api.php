@@ -2707,7 +2707,7 @@ class app_cxc_api extends _BaseController {
 		log_message("error",print_r($lastActivityOnNew,true));
 		log_message("error",print_r($diferenceDate,true));		
 		//Han pasado almenos 5 minutos desde el utlimo mensaje
-		if($diferenceDate["comparador"] == "-1" && ((int)$diferenceDate["minutos"]) >= 5 )
+		if($diferenceDate["comparador"] == "-1" && ((int)$diferenceDate["minutos"]) >= 2 )
 		{			
 			log_message("error","Enviar mensaje colaboradores asignados");
 			$urlSend		= base_url()."/app_cxc_conversation/edit/entityID/".$objCustomer[0]->entityID;
