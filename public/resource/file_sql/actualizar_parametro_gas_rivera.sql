@@ -1,5 +1,5 @@
-/*BD: 	gkzntqhrmxpdsl:parametro_gas_rivera*/
-/*SERVIDOR:		aws*/
+/*BD: 	dbjozpxcz0eqzz:parametro_gas_rivera*/
+/*SERVIDOR:		siteground*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

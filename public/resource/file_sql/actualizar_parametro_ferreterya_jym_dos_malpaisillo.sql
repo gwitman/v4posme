@@ -1,4 +1,5 @@
 /*BD: 	dbbkibmwpxtzpt:ferreteria_JYM*/
+/*SERVIDOR: siteground*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

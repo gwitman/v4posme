@@ -1,4 +1,4 @@
-/*BD: 	dbcxq4dxx192qq:parametro_arte_digital*/
+/*BD: 	dbcxq4dxx192qq:parametro_mena_renta_card*/
 /*SERVIDOR:		siteground*/
 
 /******************************************************************/
@@ -1889,7 +1889,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Arte Digital' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
+	NAME = 'Mena Renta Card' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
 	flavorID = 1074 /*usuarioID*/,type='arteDigital'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
