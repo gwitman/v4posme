@@ -759,8 +759,8 @@ function deleteDir($dir)
 /**************/
 function clearNumero($numero)
 {
-    // Quitar solo espacios, +, ( )
-    $numeroLimpio = str_replace([' ', '+', '(', ')','-'], '', $numero);
+    // Quitar solo espacios, +, (, ), #, -
+    $numeroLimpio = str_replace([' ', '+', '(', ')','-','#'], '', $numero);
     return $numeroLimpio;
 }
 

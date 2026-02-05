@@ -2376,7 +2376,7 @@ class app_notification extends _BaseController
 		{
 $rowx 					= array();
 $rowx["firstName"] 		= $item->firstName;
-$rowx["phoneNumber"] 	= $item->phoneNumber;
+$rowx["phoneNumber"] 	= getNumberPhone(clearNumero($item->phoneNumber));
 $rowx["mensaje"] 		= "📌/*Mensaje automático de recordatorio de pago*/
 (Este mensaje ha sido generado automáticamente por un bot)
 
@@ -2407,7 +2407,7 @@ Le recordamos que tiene un saldo pendiente:
 	function sendWhatsappDiarioMasiveWapi2CobranzaNjGym()
 	{
 		//Recorrer todos los cobros, 
-		$objListCollections = $this->Customer_Credit_Document_Model->get_rowByCobroPorWhatapp(APP_COMPANY);
+		$objListCollections = $this->Customer_Credit_Document_Model->get_rowByCobroPorGymJalapa(APP_COMPANY);
 		if(!$objListCollections)
 			return;
 		
@@ -2790,7 +2790,7 @@ Le recordamos que tiene su membresia pendiente de pago:
 						$objCompany->type,
 						APP_COMPANY, 
 						$row, 
-						clearNumero($phone)	
+						getNumberPhone(clearNumero($phone))
 					);
 				}
 				
@@ -2811,7 +2811,7 @@ Le recordamos que tiene su membresia pendiente de pago:
 					$objCompany->type,
 					APP_COMPANY, 
 					$tabla, 
-					clearNumero($phoneEmployer)	
+					getNumberPhone(clearNumero($phoneEmployer))
 				);
 			}
 		}

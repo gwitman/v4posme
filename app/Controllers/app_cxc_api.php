@@ -835,8 +835,16 @@ class app_cxc_api extends _BaseController {
 					$entityEmailID 	= $this->Entity_Email_Model->insert_app_posme($dataNew);
 				}
 				
-				//Eliminar el cliente anterior
-				$this->Customer_Model->delete_app_posme($dataSession["user"]->companyID,$dataSession["user"]->branchID,$entityIDTemp);
+				//Actualiar telefono
+				$dataNew 				= array();
+				$dataNew["phoneNumber"] = "";
+				$this->Customer_Model->update_app_posme($dataSession["user"]->companyID,$dataSession["user"]->branchID,$entityIDTemp,$dataNew);
+				
+				//Eliminar telefonos
+				$this->Entity_Phone_Model->deleteByEntity($dataSession["user"]->companyID,$dataSession["user"]->branchID,$entityIDTemp);
+				
+				//Eliminar email
+				$this->Entity_Email_Model->deleteByEntity($dataSession["user"]->companyID,$dataSession["user"]->branchID,$entityIDTemp);
 				
 			}
 		}
