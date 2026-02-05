@@ -2174,7 +2174,7 @@ class app_cxc_api extends _BaseController {
 		//$data["customerMessage"]	 	= "hola que tal";
 		
 		$customerPhoneNumber 	= getNumberPhone($data["customerPhoneNumber"]);
-		$customerFirstName		= "new_".$data["customerFirstName"];
+		$customerFirstName		= "posMeConnect_".$data["customerFirstName"];
 		$message				= $data["customerMessage"];
 		$messageUrl				= $data["customerMessageUrl"];
 		$messageFile			= $data["customerMessageFile"];
