@@ -207,7 +207,7 @@ createApp({
         async fnGuardarCliente() {
             this.guardando = true;
 			
-			await fetch('<?php echo base_url(); ?>/app_cxc_api/setConversationCustomer', {
+			const res 	   = await fetch('<?php echo base_url(); ?>/app_cxc_api/setConversationCustomer', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json'
@@ -221,10 +221,20 @@ createApp({
 					})
 			});		
 			
-            this.message 		= 'Datos guardados con exito';
-			this.mostrarAlerta 	= true;
-			this.error 			= false;
-            this.guardando 		= false;
+			
+			json 				= await res.json();	
+			if(this.entityID != Number(json.entityID) && json.redirect == true)
+			{
+				window.location.href = '<?php echo base_url().'/app_cxc_conversation/edit/entityID/'; ?>'+json.entityID;
+				return;
+			}
+			else
+			{
+				this.message 		= 'Datos guardados con exito';
+				this.mostrarAlerta 	= true;
+				this.error 			= false;
+				this.guardando 		= false;
+			}
 			
 			
         },

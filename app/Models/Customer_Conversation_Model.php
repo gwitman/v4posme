@@ -57,6 +57,15 @@ class Customer_Conversation_Model extends Model
 		return $builder->update($data);
 		
     }
+	function update_app_posme_ByConversationIDs($conversationIDs,$data){
+		$db 		= db_connect();
+		$db->query("SET NAMES utf8mb4");
+		$builder	= $db->table("tb_customer_conversation");				
+		
+		$builder->whereIn("conversationID",$conversationIDs);	
+		return $builder->update($data);
+		
+    }
 	function update_app_posme_ByCustomer($entityIDCustomer,$data){
 		$db 		= db_connect();
 		$db->query("SET NAMES utf8mb4");
@@ -106,6 +115,46 @@ class Customer_Conversation_Model extends Model
 		return $db->query($sql)->getResult();
 		
     }
+	
+	function getByEntityIDCustomer_All($entityIDCustomer)
+    {
+		$db 		= db_connect();
+		$builder	= $db->table("tb_customer_conversation");		
+		$sql 		= 
+			"
+				SELECT 
+					c.conversationID,
+					c.entityIDSource,
+					c.entityIDTarget,
+					c.componentIDSource,
+					c.componentIDTarget,
+					c.createdOn,
+					c.statusID,
+					c.messageCounter,
+					c.messageReceiptOn,
+					c.messageSendOn,
+					c.messgeConterNotRead,
+					c.reference1,
+					c.reference2,
+					c.reference3,
+					c.isActive,
+					c.lastActivityOn,
+					c.lastMessage 
+				FROM 
+					tb_customer_conversation c 
+					inner join tb_workflow_stage ws on 
+						ws.workflowStageID = c.statusID 
+				where 
+					c.entityIDSource = $entityIDCustomer and 
+					c.isActive = 1 
+				
+			";
+			
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+		
+    }
+	
 	//Obtener todas las conversaciones por id
     function getByConversationID($conversationID)
     {

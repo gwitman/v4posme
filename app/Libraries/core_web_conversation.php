@@ -683,7 +683,7 @@ class core_web_conversation{
 					$companyType,
 					$companyID, 
 					$mensaje, 
-					$phone	
+					getNumberPhone(clearNumero($phone))
 				);			
 			
 			}

@@ -469,6 +469,49 @@ class Customer_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
     }
+	function get_rowBy_PhoneNumberAnd_Email_phoneFixed($string){
+		$db 	= db_connect();
+		$builder	= $db->table("tb_item");    
+		$sql = "";
+		$sql = sprintf("
+			select 
+				c.entityID,
+				nat.firstName,
+				c.phoneNumber,
+				c.allowWhatsappPromotions,
+				c.allowWhatsappCollection,
+				c.dateTimeLastMessageReceipt,
+				c.dateTimeLastMessageSend,
+				c.isMessageNoRead
+			from 
+				tb_customer c 
+				inner join tb_naturales nat on 
+					nat.entityID = c.entityID 
+				left join tb_entity_email ee on 
+					ee.entityID = c.entityID 
+				left join tb_entity_phone ep on 
+					ep.entityID = c.entityID 
+			where 
+				c.isActive = 1 and 
+				(
+					REGEXP_REPLACE(c.phoneNumber, '[\s\+\(\)]', '') = REGEXP_REPLACE('".$string."', '[\s\+\(\)]', '')
+				) or 
+				(
+					ee.entityID is not null and 
+					REGEXP_REPLACE(ee.email, '[\s\+\(\)]', '') = REGEXP_REPLACE('".$string."', '[\s\+\(\)]', '')
+				) or 
+				(
+					ep.entityID is not null and 
+					REGEXP_REPLACE(ep.number, '[\s\+\(\)]', '') = REGEXP_REPLACE('".$string."', '[\s\+\(\)]', '')
+				)
+			order by 
+				c.entityID desc 
+			limit 1 
+		");	
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+    }
 	function get_rowByItemReference1($phone,$reference1){
 		$db 	= db_connect();
 		$builder	= $db->table("tb_item");    

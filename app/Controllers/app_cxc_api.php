@@ -513,9 +513,8 @@ class app_cxc_api extends _BaseController {
 		
 		//Obtener el cliente	
 		log_message("error","setConversationNotification_ByCustomer >> obtener clientes");		
-		$phone					= getNumberPhone($phone);
-		$objCustomer			= $this->Customer_Model->get_rowByPhoneNumber($phone);
-		
+		$phone					= clearNumero($phone);
+		$objCustomer			= $this->Customer_Model->get_rowBy_PhoneNumberAnd_Email_phoneFixed($phone);		
 		if(!$objCustomer)
 		{
 			log_message("error","setConversationNotification_ByCustomer >> cliente no encontrado");		
@@ -538,7 +537,7 @@ class app_cxc_api extends _BaseController {
 		}
 	
 	
-		$objCustomer			= $this->Customer_Model->get_rowByPhoneNumber($phone);
+		$objCustomer			= $this->Customer_Model->get_rowBy_PhoneNumberAnd_Email_phoneFixed($phone);
 		$entityID				= $objCustomer[0]->entityID;
 		
 		
@@ -730,12 +729,12 @@ class app_cxc_api extends _BaseController {
 		$result = null;
 		if (!$file)
 		{
-			log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de texto a: ".clearNumero($objCustomer[0]->phoneNumber));		
+			log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de texto a: ".getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)));
 			$result = $this->core_web_whatsap->sendMessageGeneric(
 				$typeCompany,
 				$companyID, 
 				$message, 
-				clearNumero($objCustomer[0]->phoneNumber)	
+				getNumberPhone(clearNumero($objCustomer[0]->phoneNumber))	
 			);
 		}
 		else
@@ -746,7 +745,7 @@ class app_cxc_api extends _BaseController {
 				$companyID, 
 				$urlPublic, 
 				$message,
-				clearNumero($objCustomer[0]->phoneNumber)
+				getNumberPhone(clearNumero($objCustomer[0]->phoneNumber))
 			);
 		}
 		
@@ -790,12 +789,60 @@ class app_cxc_api extends _BaseController {
 		throw new \Exception(USER_NOT_AUTENTICATED);
 		$dataSession		= $this->session->get();
 		
+		//Validar antesa de actualizar al cliente
+		//Obtener si exite otro cliente con el mismo numero de telefono
+		$phoneNumberNew			= clearNumero($data['txtTab2CustomerPhone']);
+		$objCustomerOld			= $this->Customer_Model->get_rowBy_PhoneNumberAnd_Email_phoneFixed($phoneNumberNew);
+		$redirect				= false;
+		if($objCustomerOld)
+		{
+			if($objCustomerOld[0]->entityID != $entityID)
+			{
+				$entityIDTemp 	= $entityID;
+				$entityID 		= $objCustomerOld[0]->entityID;
+				$redirect 		= true;
+				//Obtener todas las conversaciones del cliente actual
+				$objListConversation = $this->Customer_Conversation_Model->getByEntityIDCustomer_All($entityIDTemp);
+				if($objListConversation)
+				{
+					//Actualiar las conversaciones con el cliente correcto
+					$conversationIDs 			= array_column($objListConversation, 'conversationID');
+					$dataNew 					= array();
+					$dataNew["entityIDSource"]	= $entityID;
+					$dataNew["isActive"]		= 0;
+					$dataNew["statusID"]		= 0;
+					this->Customer_Conversation_Model->update_app_posme_ByConversationIDs($conversationIDs,$dataNew);
+					
+					//Actualizar todas las notificaciones por la persona correcta
+					$dataNew 					= array();
+					$dataNew["entityIDTarget"]	= $entityID;
+					$this->Notification_Model->update_app_posme_notification_byCustomerID($entityIDTemp,$dataNew);
+				}
+				
+				//Agregar al nuevo identificador del cliente
+				$objEmail = $this->Entity_Email_Model->get_rowByEmail($entityID,$phoneNumberNew);
+				if(!$objEmail)
+				{
+					$dataNew 				= array();
+					$dataNew["companyID"] 	=  $objCustomerOld[0]->companyID;
+					$dataNew["branchID"] 	=  $objCustomerOld[0]->branchID;
+					$dataNew["entityID"] 	=  $entityID;
+					$dataNew["isPrimary"] 	=  0;
+					$dataNew["email"] 		=  $phoneNumberNew;
+					$entityEmailID 	= $this->Entity_Email_Model->insert_app_posme($dataNew);
+				}
+				
+				//Eliminar el cliente anterior
+				$this->Customer_Model->delete_app_posme($objCustomerOld[0]->companyID,$objCustomerOld[0]->branchID,$entityIDTemp);
+				
+			}
+		}
 		
 		//Actualiar Cliente
 		$companyID					= $dataSession["user"]->companyID;		
 		$branchID					= $dataSession["user"]->branchID;
 		$objCustomer 				= array();
-		$objCustomer["phoneNumber"] = $data['txtTab2CustomerPhone'] ?? '';		
+		$objCustomer["phoneNumber"] = $phoneNumberNew ?? '';		
 		$result 					= $this->Customer_Model->update_app_posme($companyID,$branchID,$entityID,$objCustomer);
 		
 		//Actualizar Natural
@@ -844,8 +891,10 @@ class app_cxc_api extends _BaseController {
 		
 		//Resutado
 		return $this->response->setJSON([
-			'success' => true,
-			'message' => 'entityID recibido'
+			'success' 	=> true,
+			'message' 	=> 'entityID recibido',
+			'redirect' 	=> $redirect,
+			'entityID' 	=> $entityID
 		]);
 	}
 	function setConversationConversation_Tools()
@@ -2503,8 +2552,7 @@ class app_cxc_api extends _BaseController {
 		//Solo se permiten mensajes recibidos
 		if(
 			($input["event"] 		!= "message") ||  
-			(str_contains($input["data"]["from"], 'broadcast')) || 
-			(str_contains($input["data"]["from"], '35059834872017@lid')) 
+			(str_contains($input["data"]["from"], 'broadcast')) 
 		)
 		{
 			return;
@@ -2522,7 +2570,7 @@ class app_cxc_api extends _BaseController {
 
         // Extraer datos básicos       
 		log_message("error","input: init process message");
-		$data["customerPhoneNumber"] 	= $input["data"]['from'] ?? '';
+		$data["customerPhoneNumber"] 	= clearNumero(($input["data"]['from'] ?? ''));
 		$data["customerFirstName"]	 	= $input["data"]['contact']['pushname'] ?? '';
 		$data["customerMessage"]	 	= $input["data"]['body'] ?? '';
 		$data["customerMessageType"]	= $input["data"]['type'] ?? '';
@@ -2576,7 +2624,7 @@ class app_cxc_api extends _BaseController {
 			
 			
 			//Crear la Carpeta para almacenar los Archivos del Documento
-			$phoneCustomer = getNumberPhone($input["data"]['from']);
+			$phoneCustomer = $data["customerPhoneNumber"];
 			$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_".$objComponentCustomerConversation->componentID."/component_item_".$phoneCustomer;
 			if (!file_exists($documentoPath))
 			{
@@ -2596,7 +2644,7 @@ class app_cxc_api extends _BaseController {
 		}
 		
 		
-		$customerPhoneNumber 	= getNumberPhone($data["customerPhoneNumber"]);
+		$customerPhoneNumber 	= $data["customerPhoneNumber"];
 		$customerFirstName		= "new_".$data["customerFirstName"];
 		$message				= $data["customerMessage"];
 		$messageUrl				= $data["customerMessageUrl"];
@@ -2647,20 +2695,20 @@ class app_cxc_api extends _BaseController {
 				$objCompany->type,
 				$objCompany->companyID, 
 				"Test de whatsapp:".$objCompany->name, 
-				clearNumero($phone)	
+				getNumberPhone(clearNumero($phone))	
 			);
 			log_message("error","input: fin del proceso");
 			return;
 		}
 		
 		//Obtener al cliente
-		$objCustomer			= $this->Customer_Model->get_rowByPhoneNumber($customerPhoneNumber);
+		$objCustomer			= $this->Customer_Model->get_rowBy_PhoneNumberAnd_Email_phoneFixed($customerPhoneNumber);
 		if(!$objCustomer)
 		{
 			$this->core_web_conversation->createCustomer($dataSession,$customerPhoneNumber,$customerFirstName,$this->request);
 			
 		}
-		$objCustomer			= $this->Customer_Model->get_rowByPhoneNumber($customerPhoneNumber);
+		$objCustomer			= $this->Customer_Model->get_rowBy_PhoneNumberAnd_Email_phoneFixed($customerPhoneNumber);
 		if(!$objCustomer)
 			throw new \Exception ("Cliente no encontrado");
 		

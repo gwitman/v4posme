@@ -753,38 +753,24 @@ function deleteDir($dir)
     rmdir($dir);
 }
 
+
 function clearNumero($numero)
 {
-     // Eliminar todo lo que no sea número
-    $numeroLimpio = preg_replace("/[^0-9]/", "", $numero);
-
-    // Si tiene exactamente 8 dígitos, agregar 505 al inicio
-    if (strlen($numeroLimpio) === 8) {
-        $numeroLimpio = "505" . $numeroLimpio;
-    }
-
+    // Quitar solo espacios, +, ( )
+    $numeroLimpio = str_replace([' ', '+', '(', ')'], '', $numero);
     return $numeroLimpio;
-	
 }
 
 function getNumberPhone($numero)
 {
-    // 1. Eliminar todo lo que no sea número
-    $numeroLimpio = preg_replace('/\D/', '', $numero);
-
-    // 2. Si tiene más de 8 dígitos, tomar los últimos 8
-    if (strlen($numeroLimpio) > 8) {
-        $numeroLimpio = substr($numeroLimpio, -8);
+    // Si tiene exactamente 8 caracteres y todos son dígitos
+    if (strlen($numero) === 8 && ctype_digit($numero)) {
+        return '505' . $numero;
     }
 
-    // 3. Si tiene menos de 8 dígitos, rellenar con ceros a la izquierda
-    if (strlen($numeroLimpio) < 8) {
-        $numeroLimpio = str_pad($numeroLimpio, 8, '0', STR_PAD_LEFT);
-    }
-
-    return $numeroLimpio;
+    // Si no cumple, devolver el número tal como viene
+    return $numero;
 }
-
 
 
 function helper_getParameterFiltered($objListCompanyParameter, $parameterName)
