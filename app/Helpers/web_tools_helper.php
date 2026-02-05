@@ -753,16 +753,24 @@ function deleteDir($dir)
     rmdir($dir);
 }
 
-
+/***************
+/***Si el numero tiene caracteres especiales quitarlos
+/***
+/**************/
 function clearNumero($numero)
 {
     // Quitar solo espacios, +, ( )
-    $numeroLimpio = str_replace([' ', '+', '(', ')'], '', $numero);
+    $numeroLimpio = str_replace([' ', '+', '(', ')','-'], '', $numero);
     return $numeroLimpio;
 }
 
+/***************
+/***Si el numero tiene solo 8 caracteres y todos son digitos ponerle el 
+/***505 al inicio
+/**************/
 function getNumberPhone($numero)
 {
+	
     // Si tiene exactamente 8 caracteres y todos son dígitos
     if (strlen($numero) === 8 && ctype_digit($numero)) {
         return '505' . $numero;
@@ -771,6 +779,32 @@ function getNumberPhone($numero)
     // Si no cumple, devolver el número tal como viene
     return $numero;
 }
+
+/***************
+/***Si el numero es un contacto registrado
+/***Dejar solo los numeros y si empieza con 505
+/***Quintar el 505 del inicio
+/**************/
+function getNumberPhoneIsContact($numero)
+{
+	// Validar que contenga .us
+    if (strpos($numero, '.us') === false) {
+        return $numero;
+    }
+
+    // Dejar solo números
+    $numeroLimpio = preg_replace('/\D/', '', $numero);
+
+    // Si tiene 11 dígitos y empieza con 505 quitar el 505
+    if (strlen($numeroLimpio) == 11 && substr($numeroLimpio, 0, 3) == '505') {
+        $numeroLimpio = substr($numeroLimpio, 3);
+    }
+
+    return $numeroLimpio;
+   
+}
+
+
 
 
 function helper_getParameterFiltered($objListCompanyParameter, $parameterName)

@@ -494,18 +494,48 @@ class Customer_Model extends Model  {
 			where 
 				c.isActive = 1 and 
 				(
-					REGEXP_REPLACE(c.phoneNumber, '[\s\+\(\)]', '') = REGEXP_REPLACE('".$string."', '[\s\+\(\)]', '')
+					CASE 
+						WHEN 
+							LENGTH(REGEXP_REPLACE(c.phoneNumber,'[\s\+\(\)]','')) = 11 AND 
+							LEFT(REGEXP_REPLACE(c.phoneNumber,'[\s\+\(\)]',''),3) = '505'
+						THEN 
+							SUBSTRING(REGEXP_REPLACE(c.phoneNumber,'[\s\+\(\)]',''),4)
+						ELSE 
+							REGEXP_REPLACE(c.phoneNumber,'[\s\+\(\)]','')
+					END = REGEXP_REPLACE('".$string."', '[\s\+\(\)]', '') 
 				) or 
 				(
 					ee.entityID is not null and 
-					REGEXP_REPLACE(ee.email, '[\s\+\(\)]', '') = REGEXP_REPLACE('".$string."', '[\s\+\(\)]', '')
+					(
+						CASE 
+							WHEN 
+								LENGTH(REGEXP_REPLACE(ee.email,'[\s\+\(\)]','')) = 11 AND 
+								LEFT(REGEXP_REPLACE(ee.email,'[\s\+\(\)]',''),3) = '505'
+							THEN 
+								SUBSTRING(REGEXP_REPLACE(ee.email,'[\s\+\(\)]',''),4)
+							ELSE 
+								REGEXP_REPLACE(ee.email,'[\s\+\(\)]','')
+						END = REGEXP_REPLACE('".$string."', '[\s\+\(\)]', '')
+						
+					)
 				) or 
 				(
 					ep.entityID is not null and 
-					REGEXP_REPLACE(ep.number, '[\s\+\(\)]', '') = REGEXP_REPLACE('".$string."', '[\s\+\(\)]', '')
+					(
+						CASE 
+							WHEN 
+								LENGTH(REGEXP_REPLACE(ep.number,'[\s\+\(\)]','')) = 11 AND 
+								LEFT(REGEXP_REPLACE(ep.number,'[\s\+\(\)]',''),3) = '505'
+							THEN 
+								SUBSTRING(REGEXP_REPLACE(ep.number,'[\s\+\(\)]',''),4)
+							ELSE 
+								REGEXP_REPLACE(ep.number,'[\s\+\(\)]','')
+						END = REGEXP_REPLACE('".$string."', '[\s\+\(\)]', '')
+						
+					)
 				)
 			order by 
-				c.entityID desc 
+				c.entityID desc   
 			limit 1 
 		");	
 		

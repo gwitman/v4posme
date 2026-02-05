@@ -791,8 +791,8 @@ class app_cxc_api extends _BaseController {
 		
 		//Validar antesa de actualizar al cliente
 		//Obtener si exite otro cliente con el mismo numero de telefono
-		$phoneNumberNew			= clearNumero($data['txtTab2CustomerPhone']);
-		$objCustomerOld			= $this->Customer_Model->get_rowBy_PhoneNumberAnd_Email_phoneFixed($phoneNumberNew);
+		$phoneNumberNew			= getNumberPhoneIsContact(clearNumero($data['txtTab2CustomerPhone']));
+		$objCustomerOld			= $this->Customer_Model->get_rowBy_PhoneNumberAnd_Email_phoneFixed($phoneNumberNew);		
 		$redirect				= false;
 		if($objCustomerOld)
 		{
@@ -805,13 +805,15 @@ class app_cxc_api extends _BaseController {
 				$objListConversation = $this->Customer_Conversation_Model->getByEntityIDCustomer_All($entityIDTemp);
 				if($objListConversation)
 				{
+					
 					//Actualiar las conversaciones con el cliente correcto
-					$conversationIDs 			= array_column($objListConversation, 'conversationID');
+					$conversationIDs 			= array_column($objListConversation, 'conversationID');					
 					$dataNew 					= array();
 					$dataNew["entityIDSource"]	= $entityID;
 					$dataNew["isActive"]		= 0;
 					$dataNew["statusID"]		= 0;
-					this->Customer_Conversation_Model->update_app_posme_ByConversationIDs($conversationIDs,$dataNew);
+					$this->Customer_Conversation_Model->update_app_posme_ByConversationIDs($conversationIDs,$dataNew);
+					
 					
 					//Actualizar todas las notificaciones por la persona correcta
 					$dataNew 					= array();
@@ -823,9 +825,10 @@ class app_cxc_api extends _BaseController {
 				$objEmail = $this->Entity_Email_Model->get_rowByEmail($entityID,$phoneNumberNew);
 				if(!$objEmail)
 				{
-					$dataNew 				= array();
-					$dataNew["companyID"] 	=  $objCustomerOld[0]->companyID;
-					$dataNew["branchID"] 	=  $objCustomerOld[0]->branchID;
+					echo print_r($objCustomerOld,true);
+					$dataNew 				=  array();
+					$dataNew["companyID"] 	=  $dataSession["user"]->companyID;
+					$dataNew["branchID"] 	=  $dataSession["user"]->branchID;
 					$dataNew["entityID"] 	=  $entityID;
 					$dataNew["isPrimary"] 	=  0;
 					$dataNew["email"] 		=  $phoneNumberNew;
@@ -833,10 +836,11 @@ class app_cxc_api extends _BaseController {
 				}
 				
 				//Eliminar el cliente anterior
-				$this->Customer_Model->delete_app_posme($objCustomerOld[0]->companyID,$objCustomerOld[0]->branchID,$entityIDTemp);
+				$this->Customer_Model->delete_app_posme($dataSession["user"]->companyID,$dataSession["user"]->branchID,$entityIDTemp);
 				
 			}
 		}
+		
 		
 		//Actualiar Cliente
 		$companyID					= $dataSession["user"]->companyID;		
@@ -2570,7 +2574,7 @@ class app_cxc_api extends _BaseController {
 
         // Extraer datos básicos       
 		log_message("error","input: init process message");
-		$data["customerPhoneNumber"] 	= clearNumero(($input["data"]['from'] ?? ''));
+		$data["customerPhoneNumber"] 	= getNumberPhoneIsContact(clearNumero(($input["data"]['from'] ?? '')));
 		$data["customerFirstName"]	 	= $input["data"]['contact']['pushname'] ?? '';
 		$data["customerMessage"]	 	= $input["data"]['body'] ?? '';
 		$data["customerMessageType"]	= $input["data"]['type'] ?? '';
