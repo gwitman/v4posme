@@ -494,20 +494,20 @@ class Customer_Model extends Model  {
 			where 
 				c.isActive = 1 and 
 				(
-					fn_get_number_phone(2,c.phoneNumber) = fn_get_number_phone('".$string."') 
+					fn_get_number_phone(2,c.phoneNumber) = fn_get_number_phone(2,'".$string."') 
 					
 				) or 
 				(
 					ee.entityID is not null and 
 					(
-						fn_get_number_phone(2,ee.email) = fn_get_number_phone('".$string."')						
+						fn_get_number_phone(2,ee.email) = fn_get_number_phone(2,'".$string."')						
 					)
 					
 				) or 
 				(
 					ep.entityID is not null and 
 					(
-						fn_get_number_phone(2,ep.number) = fn_get_number_phone('".$string."') 
+						fn_get_number_phone(2,ep.number) = fn_get_number_phone(2,'".$string."') 
 					)
 					
 				)
