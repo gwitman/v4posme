@@ -1,6 +1,6 @@
 <script >
 	$(document).ready(function(){
-			$('#txtEntityPhoneNumber').mask('+(000) 0000-0000');
+			//$('#txtEntityPhoneNumber').mask('+(000) 0000-0000');
 			
 			$("#btnPopupCancelar").click(function(){window.close();});
 			$("#btnPopupAceptar").click(function(){ 
