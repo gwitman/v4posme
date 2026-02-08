@@ -688,6 +688,20 @@ class app_tools_endorsements extends _BaseController {
 						  ";
 				$data 	= $db->query($query,[ $transactionNumber ])->getResult();
 			}
+			else if (
+				str_starts_with($typeDocument, "COMPRA")  &&
+				$table	== "tb_transaction_master"
+			) 
+			{
+				$query 	= " SELECT 
+								".$campo." as Value 
+							FROM  
+								".$table."  
+							WHERE 
+								transactionMasterID = (SELECT uu.transactionMasterID FROM tb_transaction_master uu where uu.transactionNumber = ?);
+						  ";
+				$data 	= $db->query($query,[ $transactionNumber ])->getResult();
+			}
 			else 
 				throw new \Exception("Configurar el tipo de endoso en codigo app_tools_endorsement.getTransactionMasterOld ");
 

@@ -163,11 +163,8 @@ class core_web_whatsap {
 		$fechaNone							= "1900-01-01";
 		$fechaNone 							= \DateTime::createFromFormat('Y-m-d',$fechaNone);
 
-
 		$fechaMonth 						= $objCP_WhatsapMonth->value;
 		$fechaMonth 						= \DateTime::createFromFormat('Y-m-d',$fechaMonth);
-
-
 
 		//no se cobra por saldo, el cliente tiene permito enviar mensajes ilimitados
 		//siempre y cuando el parametro sea igual a 1900-01-01
@@ -183,7 +180,8 @@ class core_web_whatsap {
 		//validar si tiene saldo para enviar mensaje
 		else if
 		(  
-			intval($objCP_WhatsapCounterMessage->value) > intval($objCP_WhatsapMessageByMonto->value)
+			intval($objCP_WhatsapCounterMessage->value) > intval($objCP_WhatsapMessageByMonto->value) &&
+			$fechaMonth->format("Y-m-d") != $fechaNone->format("Y-m-d")  
 		)
 		{			
 			return false;

@@ -476,7 +476,6 @@ class app_purchase_taller extends _BaseController {
 			
 			
 			
-			
 			//Obtener plantilla de whatsapp
 			$warrning = false;
 			if($this->core_web_whatsap->validSendMessage(APP_COMPANY))
@@ -537,14 +536,14 @@ class app_purchase_taller extends _BaseController {
 								$this->core_web_whatsap->sendMessageByWaapi(
 									APP_COMPANY, 
 									$themplate,
-									$numerDestino
+									getNumberPhone(clearNumero($numerDestino))
 									/*"50587125827"*/
 								);
 							}elseif ($objCompany->type =="globalpro"){
                                 $this->core_web_whatsap->sendMessageByLiveconnect(
                                     APP_COMPANY,
                                     $themplate,
-                                    $numerDestino
+                                    getNumberPhone(clearNumero($numerDestino))
 									/*"50587125827"*/
                                 );
                             }
@@ -553,7 +552,7 @@ class app_purchase_taller extends _BaseController {
 								$this->core_web_whatsap->sendMessageUltramsg(
 									APP_COMPANY, 
 									$themplate,
-									$numerDestino
+									getNumberPhone(clearNumero($numerDestino))
 									/*"50587125827"*/
 								);
 							}
@@ -894,14 +893,14 @@ class app_purchase_taller extends _BaseController {
 								$this->core_web_whatsap->sendMessageByWaapi(
 									APP_COMPANY, 
 									$themplate,
-									$numerDestino									
+									getNumberPhone(clearNumero($numerDestino))
 								);
 							}elseif($objCompany->type=="globalpro")
                             {
                                 $this->core_web_whatsap->sendMessageByLiveconnect(
                                     APP_COMPANY,
                                     $themplate,
-                                    $numerDestino
+                                    getNumberPhone(clearNumero($numerDestino))
                                 );
                             }
 							else
@@ -909,7 +908,7 @@ class app_purchase_taller extends _BaseController {
 								$this->core_web_whatsap->sendMessageUltramsg(
 									APP_COMPANY, 
 									$themplate,
-									$numerDestino
+									getNumberPhone(clearNumero($numerDestino))
 								);
 							}
 							

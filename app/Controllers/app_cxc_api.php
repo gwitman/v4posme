@@ -2560,6 +2560,7 @@ class app_cxc_api extends _BaseController {
 		// JSON crudo (string completo)
 		log_message('error', 'Webhook RAW JSON: ' ."WebHookReceiptMessage_Whatsapp_Wapi2_posMe" );	
 		$input	 	= $this->request->getJSON(true); // true = array
+		log_message('error', print_r($input,true));
 		
 		//Solo se permiten mensajes recibidos
 		if(

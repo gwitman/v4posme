@@ -920,7 +920,7 @@ class app_notification extends _BaseController
 				/////////////////////////////////////////////
 				if ($this->core_web_whatsap->validSendMessage(APP_COMPANY)) 
 				{
-					$this->core_web_whatsap->sendMessageUltramsg(APP_COMPANY,"Hola " . $i->to . " " . $i->message,$i->phoneTo);
+					$this->core_web_whatsap->sendMessageUltramsg(APP_COMPANY,"Hola " . $i->to . " " . $i->message,getNumberPhone(clearNumero($i->phoneTo)));
 					$data["sendOn"]			= date_format(date_create(), "Y-m-d H:i:s");
 					$data["sendWhatsappOn"]	= date_format(date_create(), "Y-m-d H:i:s");
 					$this->Notification_Model->update_app_posme($i->notificationID, $data);
@@ -2047,7 +2047,7 @@ class app_notification extends _BaseController
 				$this->core_web_whatsap->sendMessageByLiveconnect(
 					APP_COMPANY,
 					replaceSimbol($i->Mensaje),
-					clearNumero($i->Destino)
+					getNumberPhone(clearNumero($i->Destino))
 				);
 			}
 
@@ -2063,7 +2063,7 @@ class app_notification extends _BaseController
 				$this->core_web_whatsap->sendMessageByLiveconnect(
 					APP_COMPANY,
 					replaceSimbol($i->Mensaje),
-					clearNumero($i->Destino)
+					getNumberPhone(clearNumero($i->Destino))
 				);
 			}
 
@@ -2079,7 +2079,7 @@ class app_notification extends _BaseController
 				$this->core_web_whatsap->sendMessageByLiveconnect(
 					APP_COMPANY,
 					replaceSimbol($i->Mensaje),
-					clearNumero($i->Destino)
+					getNumberPhone(clearNumero($i->Destino))
 					/*"50587125827"*/
 					/*"50557165864"*/
 				);
@@ -2102,7 +2102,7 @@ class app_notification extends _BaseController
 					APP_COMPANY,
 					replaceSimbol($i->Mensaje),	
 					/*"50587125827"*/
-					clearNumero($i->Destino),
+					getNumberPhone(clearNumero($i->Destino)),
 					"https://posme.net/v4posme/globalpro/public/resource/img/feliz_cumple.jpeg",
 					"feliz_cumple",
 					"jpeg"
@@ -2112,7 +2112,7 @@ class app_notification extends _BaseController
 					APP_COMPANY,
 					replaceSimbol($i->Mensaje),					
 					/*"50587125827"*/
-					clearNumero($i->Destino)
+					getNumberPhone(clearNumero($i->Destino))
 				);
 				
 				
