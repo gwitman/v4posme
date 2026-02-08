@@ -259,11 +259,14 @@ class core_web_view {
 		$objListView				= $Data_View_Model->getListBy_CompanyComponentCaller($componentID,$callerID);				
 		if(!$objListView)
 		return null; 
+	
+		
 		
 		//Obtener la vista por company
 		$companyDataView			= $Company_Data_View_Model->get_rowBy_companyIDDataViewID($user->companyID,$objListView->dataViewID,$callerID,$componentID);
 		if(!$companyDataView)
 		return null;
+	
 		
 		//EXECUTE 
 		$queryFill					= str_replace(array_keys($parameter), array_values ($parameter), $companyDataView->sqlScript);
@@ -284,7 +287,7 @@ class core_web_view {
 			$filterPermission	= "";
 		}		
 		
-		$queryFill					= str_replace("{filterPermission}", $filterPermission, $queryFill);
+		$queryFill					= str_replace("{filterPermission}", $filterPermission, $queryFill);		
 		$dataRecordSet				= $Bd_Model->executeRender($queryFill,null);
 		$dataResult["view_config"]	= $companyDataView;
 		$dataResult["view_data"]	= $dataRecordSet;

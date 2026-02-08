@@ -136,6 +136,7 @@ class core_view extends _BaseController {
 			$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 			$parameter["{callerID}"]	= CALLERID_LIST;
 			$parameter["{isWindowForm}"]= "0";
+			$parameter["{flavorID}"]	= $this->session->get('company')->flavorID;
 			$componentSearch			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company_component_item_dataview"); 				 
 			$dataViewData				= $this->core_web_view->getView($this->session->get('user'),$componentSearch->componentID,CALLERID_LIST,null,$parameter); 			
 			$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");

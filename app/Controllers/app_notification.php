@@ -2762,6 +2762,7 @@ Le recordamos que tiene su membresia pendiente de pago:
 					$hora        	= $dt->format("h:i A");
 					$cliente     	= $i->firstName;
 					$phone		 	= $i->phoneCustomer;
+					$companyName	= clearNumero($i->phoneEmployer) == clearNumero("8693-4022") ? "Hi Beauty" : "CHIC";
 					$descripcion 	= $i->note ?? "Cita programada"; // si tienes ese campo en DB úsalo
 
 					$tabla .= "
@@ -2771,13 +2772,15 @@ Le recordamos que tiene su membresia pendiente de pago:
 
 					
 					$row = "
-	📅 Recordatorio de cita
-	Hola ".$cliente." 👋
+	📅 Hola buenos dias ✨️✨️
+	".$cliente." 👋
 
-	✨ El día de hoy tienes una cita programada en tu salón
-	💇‍♀️ Chic Extensiones
-
-	¡Te esperamos! 💖⏰";
+	Le escribo para  recordarle la cita que tenemos programada para el dia de hoy a la hora acordada 🤗💗
+	
+	
+	¡Te esperamos! 💖⏰
+	".$companyName."
+					";
 	
 					echo "</br>";
 					echo "</br>";

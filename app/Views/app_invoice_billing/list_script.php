@@ -309,6 +309,6 @@
     }
 	function fn_aceptCallback(data){
 			var dataViewID 	= data[0];
-			window.location = "../../app_invoice_billing/index/"+dataViewID;   
+			window.location = "../../app_invoice_billing/index/dataViewID/"+dataViewID;   
 	}					
 </script>

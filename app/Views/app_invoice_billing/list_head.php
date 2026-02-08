@@ -9,7 +9,7 @@
 ?>
 
 <div id="heading" class="page-header">
-	<h1><i class="icon20 i-bag-2"></i> LISTA DE <?php echo getBehavio($company->type,"app_invoice_billing","labelTitlePageList","FACTURAS"); ?></h1>
+	<h1><i class="icon20 i-bag-2"></i> <?php echo $titleTable; ?></h1>
 </div>
 
 <div class="row">  

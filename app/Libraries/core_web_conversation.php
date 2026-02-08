@@ -730,7 +730,13 @@ class core_web_conversation{
 		$titulo 		= trim($firstNameEmployer);
 
 		// Mensaje final con salto de línea
-		$mensajeFinal 	= trim($mensaje)."\n*Att:".$titulo."*";
+		if($typeCompany == "chicextensiones")
+		{
+			$mensajeFinal 	= trim($mensaje);
+		}
+		else
+			$mensajeFinal 	= trim($mensaje)."\n*Att:".$titulo."*";
+		
 		return $mensajeFinal;
 	}
 }

@@ -953,7 +953,7 @@ class Remember_Model extends Model  {
         select 
             tm.transactionNumber as rememberID,	
             CONCAT('".base_url()."/app_invoice_billing/edit/transactionMasterIDToPrinter/0/companyID/2/transactionID/19/transactionMasterID/',tm.transactionMasterID,'/codigoMesero/none') as url,
-            'PROFORMA' AS title,
+            CONCAT('PROFORMA ',tmi.referenceClientName ) AS title,
             tm.note AS description,	
             tm.nextVisit AS createdOn,
             0  AS tagID,
@@ -961,7 +961,9 @@ class Remember_Model extends Model  {
         from 
             tb_transaction_master tm 
             inner join tb_workflow_stage st on 
-                tm.statusID = st.workflowStageID 
+                tm.statusID = st.workflowStageID
+			inner join tb_transaction_master_info tmi on 
+				tmi.transactionMasterID = tm.transactionMasterID 				
         where 
             tm.isActive = 1 and 
             st.isInit = 1 and 

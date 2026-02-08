@@ -4177,6 +4177,7 @@ class app_invoice_billing extends _BaseController {
 				$dataViewID = $dataViewIDCache;
 
             $targetComponentID			= $this->session->get('company')->flavorID;
+			$titleTable 				= "";
 			//Vista por defecto 
 			if($dataViewID == null || $dataViewID == "null" ){
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
@@ -4193,6 +4194,7 @@ class app_invoice_billing extends _BaseController {
 				}
 				
 				$cache->save('app_invoice_billing_dataviewid_index', $dataViewData["view_config"]->dataViewID, TIME_CACHE_APP);
+				$titleTable = $dataViewData["view_config"]->name;
 				if($dataSession["user"]->useMobile == "1")
 				{					
 					//$dataViewRender			= $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow");
@@ -4213,7 +4215,7 @@ class app_invoice_billing extends _BaseController {
 				$parameter["{userID}"]		= $this->session->get('user')->userID;
 				$parameter["{fecha}"]		= $fecha;
 				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter, $targetComponentID);
-
+				$titleTable 				= $dataViewData["view_config"]->name;
 				if($dataSession["user"]->useMobile == "1")
 				{
 					$dataViewRender				= $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow");
@@ -4282,6 +4284,7 @@ class app_invoice_billing extends _BaseController {
 			$dataViewJava["objParameterShowPreview"]			= $objParameterShowPreview;
 			$dataViewJava["useMobile"]							= $dataSession["user"]->useMobile;
 			
+			$dataViewHeader["titleTable"]						= $titleTable;
 			$dataViewHeader["company"]							= $dataSession["company"];
 			$dataViewHeader["objFecha"] 						= $objFecha;
 			$dataViewHeader["objParameterShowPreview"] 			= $objParameterShowPreview;
@@ -4300,6 +4303,9 @@ class app_invoice_billing extends _BaseController {
 			$dataSession["body"]								= $dataViewRender; 			
 			$dataSession["script"]								= /*--inicio view*/ view('app_invoice_billing/list_script',$dataViewJava);//--finview
 			$dataSession["script"]			                    = $dataSession["script"].$this->core_web_javascript->createVar("componentID",$objComponent->componentID);   
+			
+			
+			
 			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r	
 		}
 		catch(\Exception $ex){
@@ -8404,6 +8410,7 @@ class app_invoice_billing extends _BaseController {
 			
 			
 			//agregar item
+			$lastTMDName = "";
 			foreach($datView["objTMD"] as $detail_)
 			{
 				$row = array(
@@ -8412,11 +8419,13 @@ class app_invoice_billing extends _BaseController {
 					"itemNamePrice"			=>sprintf("%01.2f",round($detail_->unitaryPrice,2)),
 					"itemNameAmount"		=>sprintf("%01.2f",round($detail_->amount,2))	
 				);
+				$lastTMDName = $detail_->itemName;
 				array_push($datViewArray["transactionMasterDetail"],$row);		
 			}
 			
 			// Contar cuántos registros se agregaron
-			$countRow = count($datViewArray["transactionMasterDetail"]);
+			$datViewArray["lastTMDName"] 	=  $lastTMDName;
+			$countRow 						= count($datViewArray["transactionMasterDetail"]);
 
 			// Si hay menos de 10, agregar filas vacías
 			if ($countRow < 23) {

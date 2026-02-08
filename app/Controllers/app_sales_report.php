@@ -1774,6 +1774,9 @@ class app_sales_report extends _BaseController {
 				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_sales_get_report_sales_detail" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
 				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
 				
+				if($objCompany->type == "chicextensiones")
+				return view("app_sales_report/sales_detail_out_of_range/view_a_disemp_chic",$objDataResult);//--finview-r
+				else
 				return view("app_sales_report/sales_detail_out_of_range/view_a_disemp",$objDataResult);//--finview-r
 				
 			}
