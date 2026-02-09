@@ -162,11 +162,25 @@ createApp({
 					return;
 				}
 				
-				// 🟢 CASO 3: success = true con datos
+				// 🟢 CASO 3: success = true con datos		
+				var resultData = json.data.map(item => {
+					if (
+						item.identification.endsWith('@lid') || 
+						item.phoneNumber.endsWith('@lid')
+					) 
+					{						
+						item.identification = item.identification.slice(-8);
+						item.phoneNumber  	= item.phoneNumber.slice(-8);
+						return item;
+					}
+					return item;
+				});
+
+				
 				this.mostrarAlerta			= false;
 				this.mensaje 				= '';				
-				this.objListConversation 	= json.data; 	// 🔥 aquí Vue limpia y vuelve a renderizar 				
-				this.verificarMensajesNoLeidos(json.data) 	//this.playChatNotification();
+				this.objListConversation 	= resultData; 	// 🔥 aquí Vue limpia y vuelve a renderizar 				
+				this.verificarMensajesNoLeidos(resultData) 	//this.playChatNotification();
 			
 			} 
 			catch (error) 

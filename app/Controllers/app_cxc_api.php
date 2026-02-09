@@ -825,7 +825,6 @@ class app_cxc_api extends _BaseController {
 				$objEmail = $this->Entity_Email_Model->get_rowByEmail($entityID,$phoneNumberNew);
 				if(!$objEmail)
 				{
-					echo print_r($objCustomerOld,true);
 					$dataNew 				=  array();
 					$dataNew["companyID"] 	=  $dataSession["user"]->companyID;
 					$dataNew["branchID"] 	=  $dataSession["user"]->branchID;
@@ -833,6 +832,22 @@ class app_cxc_api extends _BaseController {
 					$dataNew["isPrimary"] 	=  0;
 					$dataNew["email"] 		=  $phoneNumberNew;
 					$entityEmailID 	= $this->Entity_Email_Model->insert_app_posme($dataNew);
+				}
+				
+				//Obtener todos los email del cliente anterior e insertarlos en el nuevo cliente
+				$objListEmail = $this->Entity_Email_Model->get_rowByEntity($dataSession["user"]->companyID,$dataSession["user"]->branchID,$entityIDTemp);
+				if($objListEmail)
+				{
+					foreach($objListEmail as $objEmailInsert)
+					{
+						$dataNew 				=  array();
+						$dataNew["companyID"] 	=  $dataSession["user"]->companyID;
+						$dataNew["branchID"] 	=  $dataSession["user"]->branchID;
+						$dataNew["entityID"] 	=  $entityID;
+						$dataNew["isPrimary"] 	=  0;
+						$dataNew["email"] 		=  $objEmailInsert->email;
+						$entityEmailID 			=  $this->Entity_Email_Model->insert_app_posme($dataNew);
+					}
 				}
 				
 				//Actualiar telefono
@@ -2565,7 +2580,8 @@ class app_cxc_api extends _BaseController {
 		//Solo se permiten mensajes recibidos
 		if(
 			($input["event"] 		!= "message") ||  
-			(str_contains($input["data"]["from"], 'broadcast')) 
+			(str_contains($input["data"]["from"], 'broadcast'))  ||
+			($input["data"]["type"] == "notification_template")
 		)
 		{
 			return;
@@ -2589,6 +2605,7 @@ class app_cxc_api extends _BaseController {
 		$data["customerMessageType"]	= $input["data"]['type'] ?? '';
 		$data["customerMessageUrl"]		= "";
 		$data["customerMessageFile"]	= "";
+				
 		
 		if($data["customerMessageType"] == "chat")
 		{
