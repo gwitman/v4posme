@@ -2579,9 +2579,10 @@ class app_cxc_api extends _BaseController {
 		
 		//Solo se permiten mensajes recibidos
 		if(
-			($input["event"] 		!= "message") ||  
-			(str_contains($input["data"]["from"], 'broadcast'))  ||
-			($input["data"]["type"] == "notification_template")
+			($input["event"] 		!= "message") /*no es un mensaje es otro tipo de evento*/ ||  
+			(str_contains($input["data"]["from"], 'broadcast')) /*se recibe un grodcast */ ||
+			($input["data"]["type"] == "notification_template") /*cliente manda una plantilla*/ || 
+			($input["data"]["type"] == "e2e_notification") /*se recibe un cifrado de extremo a extremo*/
 		)
 		{
 			return;
