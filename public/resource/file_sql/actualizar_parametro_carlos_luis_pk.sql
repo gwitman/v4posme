@@ -1,4 +1,5 @@
-﻿/*DB:  dbimnhv2es7glt:carlos_luis*/
+﻿/*BD: 	dbimnhv2es7glt:carlos_luis_pk	*/
+/*servidor:		siteground*/
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "154" 
@@ -544,7 +545,7 @@ WHERE
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
+	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_UPDATEPRICE_ONLINE";## ACTUALIZAR EL PRECIO DURANTE LA FACTURACION 

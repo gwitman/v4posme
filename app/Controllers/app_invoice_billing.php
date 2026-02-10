@@ -7661,10 +7661,21 @@ class app_invoice_billing extends _BaseController {
 			    array_push($detalle,$row);
 			}
 			
+			$dataView["objListCompanyPageSetting"]	= $this->Company_Page_Setting_Model->get_rowByKeyAndController(
+				$objCompany->type,
+				"app_invoice_billing"
+			);
+			$titleDocument 							= getBahavioSession(
+					$objCompany->type, 
+					"app_invoice_billing", 
+					"viewRegisterFormatoPaginaNormal80mmOpcion1_LabelTitle", 
+					"FACTURA",
+					$dataView["objListCompanyPageSetting"]
+			);
 			
 			//Generar Reporte
 			$html = helper_reporte80mmTransactionMaster(
-			    "FACTURA",
+			    $titleDocument,
 			    $objCompany,
 			    $objParameter,
 			    $datView["objTM"],
