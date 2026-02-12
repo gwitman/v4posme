@@ -1,7 +1,7 @@
-/*BD: 	u654393652_xjmrqtwlkpzvhe:parametro_taller_nys_nelson*/
-/*SERVIDOR: hostinger*/
-/*USUARIO:	u654393652_xjmrqtwlkpzvhe*/
+/*BD: 	dbipjo6mk0c2mj:parametro_taller_nys_nelson*/
+/*SERVIDOR: siteground*/
 
+ 
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/	
