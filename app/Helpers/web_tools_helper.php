@@ -89,8 +89,16 @@ function helper_SegmentsValue($objListSegments, $key)
         else {
             for ($i = 0; $i < count($objListSegments); $i++) {
                 if ($objListSegments[$i] == $key) {
-                    $valueResult =  $objListSegments[$i + 1];
-                    break;
+					
+					if (array_key_exists($i + 1, $objListSegments)) {
+						$valueResult =  $objListSegments[$i + 1];
+						break;
+					}
+					else
+					{
+						$valueResult = "";
+						break;
+					}
                 }
             }
         }

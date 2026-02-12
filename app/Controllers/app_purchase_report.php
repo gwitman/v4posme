@@ -219,10 +219,7 @@ class app_purchase_report extends _BaseController {
 				
 			}
 			else
-			{
-				
-				
-				
+			{	
 				//Obtener el tipo de Comprobante
 				$companyID 		= $dataSession["user"]->companyID;
 				//Get Component
@@ -251,8 +248,8 @@ class app_purchase_report extends _BaseController {
 					$objDataResult["objDetail"]					= NULL;
 					$objDataResult["objListItem"] 				= NULL;
 				}
-			
-			
+				
+				
 				//Obtener lista de colaboradores
 				$objDataResult["objListEmployeer"]			= $this->Employee_Model->get_rowByCompanyID($dataSession["user"]->companyID);
 				
