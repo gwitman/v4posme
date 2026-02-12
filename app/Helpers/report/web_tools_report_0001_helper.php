@@ -5588,7 +5588,7 @@ $f_html = $f_html."
 					<table style='width:200px;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom."' >
 					<tr>
 					<td  style='text-align:left;vertical-align:top;widht:auto;font-weight: bold;' >              
-						Monto a cancelar: C$ ".number_format($objTransactionMastser->amount,2,".",",")."
+						Monto a cancelar: ".$objCurrency->simbol." ".number_format($objTransactionMastser->amount,2,".",",")."
 					</td>                 
 					</tr>		  
 					</table>
@@ -5931,7 +5931,7 @@ $f_html = $f_html."
 					<table style='width:200px;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom."' >
 					<tr>
 					<td  style='text-align:left;vertical-align:top;widht:auto;font-weight: bold;' >              
-						Monto a cancelar: C$ ".number_format($objTransactionMastser->amount,2,".",",")."
+						Monto a cancelar: ".$objCurrency->simbol." ".number_format($objTransactionMastser->amount,2,".",",")."
 					</td>                 
 					</tr>		  
 					</table>

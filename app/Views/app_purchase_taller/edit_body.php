@@ -316,14 +316,14 @@
 								<div class="form-group <?php echo getBehavio($company->type,"app_purchase_taller","classProblema","");  ?>">
 										<label class="col-lg-4 control-label" for="normal">Problema</label>
 										<div class="col-lg-8">
-											<textarea class="form-control" type="text"  name="txtDetailReference2" id="txtDetailReference2" ><?php echo $objTransactionMaster->reference2; ?></textarea>												
+											<textarea class="form-control" type="text"  name="txtDetailReference2" id="txtDetailReference2"  rows="8" ><?php echo $objTransactionMaster->reference2; ?></textarea>												
 										</div>
 								</div>
 								
 								<div class="form-group">
 										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_purchase_taller","labelNota","Nota");  ?></label>
 										<div class="col-lg-8">																	
-											<textarea class="form-control" type="text"  name="txtDetailReference1" id="txtDetailReference1" ><?php echo $objTransactionMaster->reference1; ?></textarea>
+											<textarea class="form-control" type="text"  name="txtDetailReference1" id="txtDetailReference1" rows="8" ><?php echo $objTransactionMaster->reference1; ?></textarea>
 										</div>
 								</div>
 								
@@ -338,7 +338,7 @@
 								<div class="form-group <?php echo getBehavio($company->type,"app_purchase_taller","classSolucion","");  ?>">
 										<label class="col-lg-4 control-label" for="normal">Solución</label>
 										<div class="col-lg-8">																	
-											<textarea class="form-control" type="text"  name="txtDetailReference3" id="txtDetailReference3" ><?php echo $objTransactionMaster->reference3; ?></textarea>												
+											<textarea class="form-control" type="text"  name="txtDetailReference3" id="txtDetailReference3" rows="8" ><?php echo $objTransactionMaster->reference3; ?></textarea>												
 										</div>
 								</div>
 								
