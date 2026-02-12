@@ -131,7 +131,7 @@ class core_web_conversation{
 	    //Asigna los colaboradores en base a un stringa dentro del primer mensaje
 	    if($companyType == "luciaralstate")
 		{
-			//Si la conversacion NO es NUEVA regresar la lista vacia
+			//Si la conversacion NO es NUEVA regresar la lista vacia			
 			$arrayListEmployer  	= array();
 			if($conversationIsNew == false)
 				return $arrayListEmployer;
@@ -140,19 +140,19 @@ class core_web_conversation{
 			$core_web_permission 	= new core_web_permission();
 			$objEmployee_Model 		= new Employee_Model();
 			$objListEmployer 		= $objEmployee_Model->get_rowByCompanyID($companyID);
-			
 			if(!$objListEmployer)
 				return $arrayListEmployer;
 			
 			//Recorrer los colaboradores
 			foreach($objListEmployer as $objEmployer)
 			{
+				
 				$reference1_CodeReference = $objEmployer->reference1;
 				//Validar si el mensaje  que ingreso: contiene en su string el codigo de referencia				
-				if (str_contains($message, $reference1_CodeReference)) 
+				if (str_contains(strtolower(trim($message)), strtolower(trim($reference1_CodeReference)))) 
 				{	
 					//Validar si esa persona tiene permiso, para ver 
-					//Conversaciones
+					//Conversaciones					
 					$validatePermiso 	 = $objEmployee_Model->get_validatePermissionBy_EmployerID_PuedeAtenderWhatsappInCRM($objEmployer->entityID);
 					if($validatePermiso)
 					{
@@ -694,7 +694,8 @@ class core_web_conversation{
 					$companyType,
 					$companyID, 
 					$mensaje, 
-					getNumberPhone(clearNumero($phone))
+					getNumberPhone(clearNumero($phone)),
+					true
 				);			
 			
 			}

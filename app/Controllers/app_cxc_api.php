@@ -625,7 +625,9 @@ class app_cxc_api extends _BaseController {
 		);
 		
 		//PROCESAR IMAGEN
-		log_message("error","setConversationNotification_ByCustomer >> procesar archivo");		
+		log_message("error","setConversationNotification_ByCustomer >> procesar archivo");	
+		$fileMimeType 	= "";
+		$fileClientName = "";
 		if($file)
 		{
 			
@@ -640,18 +642,30 @@ class app_cxc_api extends _BaseController {
 				log_message("error",print_r($dataResult,true));			
 				return $this->response->setJSON($dataResult);
 			}
-			if (!in_array($file->getMimeType(), ['image/png','image/jpeg','image/jpg','image/webp'])) {				
+			if (!in_array($file->getMimeType(), [
+				'image/png',
+				'image/jpeg',
+				'image/jpg',
+				'image/webp',
+				'application/pdf'
+				])
+			) 
+			{				
 				$dataResult = [			
 					'success' => false,
 					'message' => 'Formato no permitido',
 					'data' 	  => []
 				];
 				
+				log_message("error",print_r($file->getMimeType(),true));			
 				log_message("error",print_r($dataResult,true));			
 				return $this->response->setJSON($dataResult);				
 			}
 			// Generar nombre único
 			$newName 		= $file->getRandomName();
+			
+			$fileMimeType 	= $file->getMimeType();
+			$fileClientName = $file->getClientName();	
 			$urlPath 		= "/company_2/component_".$objComponentCustomerConversation->componentID."/component_item_".$objCustomerConversation[0]->conversationID;
 			$documentoPath 	= PATH_FILE_OF_APP.$urlPath;
 			$urlPublic 		= base_url()."/".$documentoPath."/".$newName;
@@ -734,22 +748,41 @@ class app_cxc_api extends _BaseController {
 				$typeCompany,
 				$companyID, 
 				$message, 
-				getNumberPhone(clearNumero($objCustomer[0]->phoneNumber))	
+				getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)),
+				true				
 			);
 		}
 		else
 		{
-			log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de imagen");		
-			$result = $this->core_web_whatsap->sendMessageTypeImagGeneric(
-				$typeCompany,
-				$companyID, 
-				$urlPublic, 
-				$message,
-				getNumberPhone(clearNumero($objCustomer[0]->phoneNumber))
-			);
+			if($fileMimeType == "application/pdf")
+			{
+				log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de pdf ".$fileClientName);						
+				$result = $this->core_web_whatsap->sendMessageTypePdfGeneric(
+					$typeCompany,
+					$companyID, 
+					$urlPublic, 
+					$fileClientName,
+					$message,
+					getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)),
+					true
+				);
+			}
+			else
+			{
+				log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de imagen");		
+				$result = $this->core_web_whatsap->sendMessageTypeImagGeneric(
+					$typeCompany,
+					$companyID, 
+					$urlPublic, 
+					$message,
+					getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)),
+					true
+				);
+			}
 		}
 		
-		log_message("error","setConversationNotification_ByCustomer >> proceso finalizado");		
+		log_message("error","setConversationNotification_ByCustomer >> proceso finalizado");	
+		log_message("error",print_r($result,true));	
 		if($result["status"] == "error") 
 		{
 			return $this->response->setJSON([
@@ -2239,7 +2272,8 @@ class app_cxc_api extends _BaseController {
 				$objCompany->type,
 				$objCompany->companyID, 
 				"Test de whatsapp:".$objCompany->name, 
-				clearNumero($phone)	
+				clearNumero($phone),
+				true
 			);
 			log_message("error","input: fin del proceso");
 			return;
@@ -2726,7 +2760,8 @@ class app_cxc_api extends _BaseController {
 				$objCompany->type,
 				$objCompany->companyID, 
 				"Test de whatsapp:".$objCompany->name, 
-				getNumberPhone(clearNumero($phone))	
+				getNumberPhone(clearNumero($phone)),
+				true
 			);
 			log_message("error","input: fin del proceso");
 			return;

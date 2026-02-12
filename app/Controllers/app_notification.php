@@ -2793,7 +2793,8 @@ Le recordamos que tiene su membresia pendiente de pago:
 						$objCompany->type,
 						APP_COMPANY, 
 						$row, 
-						getNumberPhone(clearNumero($phone))
+						getNumberPhone(clearNumero($phone)),
+						true
 					);
 				}
 				
@@ -2814,7 +2815,8 @@ Le recordamos que tiene su membresia pendiente de pago:
 					$objCompany->type,
 					APP_COMPANY, 
 					$tabla, 
-					getNumberPhone(clearNumero($phoneEmployer))
+					getNumberPhone(clearNumero($phoneEmployer)),
+					true
 				);
 			}
 		}

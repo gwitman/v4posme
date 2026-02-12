@@ -195,7 +195,7 @@ class core_web_whatsap {
 		return true;
    }
 
-   function sendMessageGeneric( $typeCompany,$companyID, $message, $phoneDestino)
+   function sendMessageGeneric( $typeCompany,$companyID, $message, $phoneDestino,$esperarRespuesta)
    {
 	   if($typeCompany == "")
 	   {
@@ -204,23 +204,23 @@ class core_web_whatsap {
 	   }
 	   else if ($typeCompany == "posme")
 	   {
-		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino);
+		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino,$esperarRespuesta);
 		   //return $this->sendMessageZAPIioText( $companyID, $message, $phoneDestino);		   
 	   }
 	   else if ($typeCompany == "gymJalapa")
 	   {   
-		   return $this->sendMessageWapi2Text( $companyID, $urlImagen,$message, $phoneDestino );
+		   return $this->sendMessageWapi2Text( $companyID, $urlImagen,$message, $phoneDestino,$esperarRespuesta );
 	   }
 	   else if ($typeCompany == "arteDigital")
 	   {
-		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino);
+		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino,$esperarRespuesta);
 	   }
 	   else
 	   {
-		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino);
+		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino,$esperarRespuesta);
 	   }
    }
-   function sendMessageTypeImagGeneric( $typeCompany,$companyID, $urlImagen,$message, $phoneDestino )
+   function sendMessageTypeImagGeneric( $typeCompany,$companyID, $urlImagen,$message, $phoneDestino,$esperarRespuesta )
    {
 	   if($typeCompany == "")
 	   {
@@ -229,28 +229,32 @@ class core_web_whatsap {
 	   }
 	   else if ($typeCompany == "posme")
 	   {   
-		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino );
+		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino,$esperarRespuesta );
 		   //return $this->sendMessageZAPIioImage( $companyID, $urlImagen,$message, $phoneDestino );
 		   
 	   }
 	   else if ($typeCompany == "gymJalapa")
 	   {   
-		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino );
+		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino ,$esperarRespuesta);
 	   }
 	   else if ($typeCompany == "arteDigital")
 	   {
-		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino );
+		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino,$esperarRespuesta );
 	   }
 	   else
 	   {
-		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino );
+		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino ,$esperarRespuesta);
 	   }
    }
-   function sendMessageTypePdfGeneric( $typeCompany,$companyID, $urlPdf,$fileName,$message, $phoneDestino )
+   function sendMessageTypePdfGeneric( $typeCompany,$companyID, $urlPdf,$fileName,$message, $phoneDestino,$esperarRespuesta )
    {
 	   if($typeCompany == "gymJalapa")
 	   {
-		  return $this->sendMessageWapi2Pdf( $companyID, $urlPdf,$fileName,$message, $phoneDestino );
+		  return $this->sendMessageWapi2Pdf( $companyID, $urlPdf,$fileName,$message, $phoneDestino,$esperarRespuesta );
+	   }
+	   else
+	   {
+		   return $this->sendMessageWapi2Pdf( $companyID, $urlPdf,$fileName,$message, $phoneDestino,$esperarRespuesta );
 	   }
    }
    
@@ -1189,7 +1193,7 @@ class core_web_whatsap {
 
 
    }
-   function sendMessageWapi2Text( $companyID, $message, $phoneDestino)
+   function sendMessageWapi2Text( $companyID, $message, $phoneDestino,$esperarRespuesta)
    {
 	   //password: 180389Witman
 		//usuario: wgonzalez@gruposi.com
@@ -1300,7 +1304,7 @@ class core_web_whatsap {
 		//		exit($ex->getMessage());
 		//}
    }
-   function sendMessageWapi2Image( $companyID,$urlImagen, $message, $phoneDestino)
+   function sendMessageWapi2Image( $companyID,$urlImagen, $message, $phoneDestino,$esperarRespuesta)
    {
 	   //password: 180389Witman
 		//usuario: wgonzalez@gruposi.com
@@ -1408,7 +1412,7 @@ class core_web_whatsap {
 		//		exit($ex->getMessage());
 		//}
    }
-   function sendMessageWapi2Pdf( $companyID,$urlPdf,$fileName, $message, $phoneDestino)
+   function sendMessageWapi2Pdf( $companyID,$urlPdf,$fileName, $message, $phoneDestino,$esperarRespuesta)
    {
 	   //password: 180389Witman
 		//usuario: wgonzalez@gruposi.com

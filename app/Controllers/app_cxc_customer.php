@@ -2122,7 +2122,8 @@ class app_cxc_customer extends _BaseController {
 					$pdfString, 
 					"NJ GYM Membresia.pdf",
 					"👉 NJ GYM Carnet de Membresia 👍",
-					clearNumero($phoneNumber) 
+					clearNumero($phoneNumber),
+					true					
 				);
 			}
 					
