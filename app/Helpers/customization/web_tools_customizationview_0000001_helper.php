@@ -1176,9 +1176,9 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
 		strtolower('compu_matt_app_invoice_billing_lblRptInvoiceRuc') 												=> "Edificio Principal RUC: J0310000066388",
 		strtolower('compu_matt_app_invoice_billing_lblRptInvoiceOpcion2') 											=> "Compra Todo en COMPU MATT",
 		strtolower('compu_matt_app_invoice_billing_lblRptInvoiceOpcion1') 											=> "",
-		strtolower('compu_matt_app_invoice_billing_lblRptInvoicePhone') 											=> "Teléfono: 2311 0234.",		
+		strtolower('compu_matt_app_invoice_billing_lblRptInvoicePhone') 											=> "Teléfono: 8920-2130.",		
 		strtolower('compu_matt_app_purchase_taller_lblReportEntradaRptDireccion') 									=> "Frente a la entrada principal de Iglesia la Merced",
-		strtolower('compu_matt_app_purchase_taller_lblReportEntradaRptPhone') 										=> "Servicio Tecnico: 2311 0234",		
+		strtolower('compu_matt_app_purchase_taller_lblReportEntradaRptPhone') 										=> "Servicio Tecnico: 8920-2130",		
 		strtolower('compu_matt_app_purchase_taller_lblReportEntradaRptRed') 										=> "Siguenos! Compu MATT",
 		strtolower('compu_matt_app_purchase_taller_lblReportEntradaRptCondicion1') 									=> "",
 		strtolower('compu_matt_app_purchase_taller_lblReportEntradaRptCondicion2') 									=> "
@@ -1193,7 +1193,7 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
 				<li>Para hacer valida su garantía, presentar SIEMPRE su factura Original de compra.</li>
 				<li>Despues de 30 dias de notificado el diagnóstico. no nos hacemos responsables de su equipo. Dicho equipo pasará al área de almacenamiento después la notificación.</li>
 				<li>Los equipos deben estar siempre conectados a tomas corriente polarizados, con protectores de energia, supresores de picos y UPS de lo contrario perderea su garantía</li>
-				<li>Para cualquier información, llamar al 2311-0234, Correo electronico: soporte@compumattsa.com. WhatsApp :  8249-3098</li>
+				<li>Para cualquier información, llamar al 8920-2130, Correo electronico: soporte@compumattsa.com. WhatsApp :  8920-2130</li>
 			</ul>
 		",
 		strtolower('compu_matt_app_purchase_pedidos_scriptValidateInSave') 											=> "

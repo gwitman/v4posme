@@ -212,6 +212,36 @@
 										echo "<b>Solucion:</b>".$w["reference3"];
 								echo "</td>";
 							echo "</tr>";
+							echo "<tr>";
+								echo "<td style='text-align:left;' colspan='6'  class='border' >";							
+										echo "<b>Descripcion:</b>".$w["reference1"];
+								echo "</td>";
+							echo "</tr>";
+							echo "<tr>";
+								echo "<td style='text-align:left;' colspan='6'  class='border' >";							
+										echo "<b>Estado:</b>".$w["estado_equipo"];
+								echo "</td>";
+							echo "</tr>";
+							echo "<tr>";
+								echo "<td style='text-align:left;' colspan='6'  class='border' >";							
+										echo "<b>Modelo:</b>".$w["modelo"];
+								echo "</td>";
+							echo "</tr>";
+							echo "<tr>";
+								echo "<td style='text-align:left;' colspan='6'  class='border' >";							
+										echo "<b>Articulo:</b>".$w["articulo"];
+								echo "</td>";
+							echo "</tr>";
+							echo "<tr>";
+								echo "<td style='text-align:left;' colspan='6'  class='border' >";							
+										echo "<b>Otra Desc:</b>".$w["referenceClientName"];
+								echo "</td>";
+							echo "</tr>";
+							echo "<tr>";
+								echo "<td style='text-align:left;' colspan='6'  class='border' >";							
+										echo "<b>Referencias:</b>".$w["detalles"];
+								echo "</td>";
+							echo "</tr>";
 						}
 					}
 				?>
