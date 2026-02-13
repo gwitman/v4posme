@@ -376,7 +376,7 @@ class app_cxc_api extends _BaseController {
 			$objCustomer 				= $this->Customer_Model->get_rowByEntity($companyID,$entityID);
 			$objNatural 				= $this->Natural_Model->get_rowByPK($companyID,$branchID,$entityID);
 			$objListEmployerAll			= $this->Employee_Model->get_rowByCompanyID($companyID);
-			$objListEmployerAsigned 	= $this->Company_Component_Relation_Model->get_ConversationEmployerBy_entityIDCustomer($entityID);			
+			$objListEmployerAsigned 	= $this->Company_Component_Relation_Model->get_ConversationRegisterEmployerBy_entityIDCustomer($entityID);			
 			$objListEmployer 			= [];
 
 			foreach ($objListEmployerAll as $employer) {
@@ -528,7 +528,7 @@ class app_cxc_api extends _BaseController {
 			//asociar el colaborador a la converascion
 			$objListEntityIDEmployer 	= array();
 			$objListEntityIDEmployer[] 	= $entityIDEmployer; 
-			$this->core_web_conversation->createEmployerInConversation($dataSession,$conversationID,$objListEntityIDEmployer);
+			$this->core_web_conversation->createEmployerInConversation($dataSession,$conversationID,$objListEntityIDEmployer,false);
 			
 		}
 		else
@@ -601,7 +601,7 @@ class app_cxc_api extends _BaseController {
 			//asociar el colaborador a la converascion
 			$objListEntityIDEmployer 	= array();
 			$objListEntityIDEmployer[] 	= $entityIDEmployer; 
-			$this->core_web_conversation->createEmployerInConversation($dataSession,$conversationID,$objListEntityIDEmployer);
+			$this->core_web_conversation->createEmployerInConversation($dataSession,$conversationID,$objListEntityIDEmployer,false);
 			$objCustomerConversation	= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($objCustomer[0]->entityID);
 		}
 		
@@ -936,7 +936,7 @@ class app_cxc_api extends _BaseController {
 		
 		//wg-//Asociar los nuevos agentes a la conversacon activa
 		$objListEntityIDEmployer = $data["txtTab2ListEmployerAsigned"];
-		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer);
+		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer,false);
 		
 		//Finalizar la Conversacion
 		$workflowStageID 	= $data['txtTab2WorkflowStageID'] ?? '';
@@ -2013,7 +2013,7 @@ class app_cxc_api extends _BaseController {
 
 		//Obtener la lista de agentes a afiliar
 		$objListEntityIDEmployer 					= $this->core_web_conversation->getAllEmployer($companyID,$dataSession["company"]->type,$customerPhoneNumber,$message,$conversationIsNew );				
-		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer);
+		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer,false);
 		
 		//Resultado
 		$result = [
@@ -2142,7 +2142,7 @@ class app_cxc_api extends _BaseController {
 
 		//Obtener la lista de agentes a afiliar
 		$objListEntityIDEmployer 					= $this->core_web_conversation->getAllEmployer($companyID,$dataSession["company"]->type,$customerPhoneNumber,$message,$conversationIsNew );				
-		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer);
+		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer,false);
 		
 		//Resultado
 		$result = [
@@ -2349,7 +2349,7 @@ class app_cxc_api extends _BaseController {
 
 		//Obtener la lista de agentes a afiliar
 		$objListEntityIDEmployer 					= $this->core_web_conversation->getAllEmployer($companyID,$dataSession["company"]->type,$customerPhoneNumber,$message,$conversationIsNew );				
-		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer);
+		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer,false);
 		
 		//////////////////////////////////////////////
 		//Notificar a los agentes afiliados
@@ -2534,7 +2534,7 @@ class app_cxc_api extends _BaseController {
 
 		//Obtener la lista de agentes a afiliar
 		$objListEntityIDEmployer 					= $this->core_web_conversation->getAllEmployer($companyID,$dataSession["company"]->type,$customerPhoneNumber,$message,$conversationIsNew );				
-		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer);
+		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer,false);
 		
 		//////////////////////////////////////////////
 		//Notificar a los agentes afiliados
@@ -2609,7 +2609,7 @@ class app_cxc_api extends _BaseController {
 		// JSON crudo (string completo)
 		log_message('error', 'Webhook RAW JSON: ' ."WebHookReceiptMessage_Whatsapp_Wapi2_posMe" );	
 		$input	 	= $this->request->getJSON(true); // true = array
-		log_message('error', print_r($input,true));
+		//log_message('error', print_r($input,true));
 		
 		//Solo se permiten mensajes recibidos
 		if(
@@ -2837,7 +2837,7 @@ class app_cxc_api extends _BaseController {
 
 		//Obtener la lista de agentes a afiliar
 		$objListEntityIDEmployer 					= $this->core_web_conversation->getAllEmployer($companyID,$dataSession["company"]->type,$customerPhoneNumber,$message,$conversationIsNew );				
-		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer);
+		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer,$conversationIsNew);
 		
 		//////////////////////////////////////////////
 		//Notificar a los agentes afiliados

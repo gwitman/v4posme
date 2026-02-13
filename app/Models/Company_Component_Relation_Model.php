@@ -43,6 +43,7 @@ class Company_Component_Relation_Model extends Model  {
 		return $builder->delete();
 		
    } 
+   
    function get_rowByPK($companyComponentRelationID)
    {
 		$db 	= db_connect();
@@ -98,7 +99,40 @@ class Company_Component_Relation_Model extends Model  {
 		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
-   }	
+   }
+
+   function get_ConversationRegisterEmployerBy_entityIDCustomer($entityIDCustomer)
+   {
+	    $db  = db_connect();
+		    
+		$sql = "";
+		$sql = sprintf("
+		select 
+			distinct 
+		    nat.entityID,
+			emp.employeNumber,
+			nat.firstName 
+		from 
+			tb_company_component_relation r
+			inner join tb_employee emp on 
+				emp.entityID = r.componentItemIDTarget  
+			inner join tb_naturales nat on 
+				nat.entityID = emp.entityID 
+			inner join tb_customer_conversation cc on 
+				cc.conversationID = r.componentItemIDSource 
+			inner join tb_naturales cus on 
+				cus.entityID = cc.entityIDSource 
+		where 
+			r.isActive = 1 and 
+			cus.entityID = $entityIDCustomer and 
+			nat.isActive = 1 and 
+			cc.statusID in (205 /*ABIERTA O REGISTRADA*/ ) 
+		");
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+   
    function get_ConversationEmployerBy_ConversationID($conversationID)
    {
 	    $db  = db_connect();

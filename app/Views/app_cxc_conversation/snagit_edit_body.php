@@ -392,10 +392,10 @@
 			  </div>
 			  
 			  <div class="demo-inline-spacing">
-				<button type="button" class="btn btn-primary" @click="fnGuardarNotification" >
+				<button v-if="!guardando" type="button" class="btn btn-primary" @click="fnGuardarNotification" >
 				  <span class="tf-icons bx  bx-save"></span>&nbsp; Enviar
 				</button> 
-				<button type="button" class="btn btn-secondary" @click="fnClearNotification" >
+				<button v-if="!guardando" type="button" class="btn btn-secondary" @click="fnClearNotification" >
 				  <span class="tf-icons bx bx-eraser"></span>&nbsp; Limpiar
 				</button>
 				<button v-if="guardando" class="btn btn-danger" type="button" disabled>

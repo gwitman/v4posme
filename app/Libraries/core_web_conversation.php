@@ -133,6 +133,7 @@ class core_web_conversation{
 		{
 			//Si la conversacion NO es NUEVA regresar la lista vacia			
 			$arrayListEmployer  	= array();
+			$arrayListEmployerName	= array();
 			if($conversationIsNew == false)
 				return $arrayListEmployer;
 			
@@ -145,22 +146,30 @@ class core_web_conversation{
 			
 			//Recorrer los colaboradores
 			foreach($objListEmployer as $objEmployer)
-			{
+			{	
+				$reference1_CodeReference = "-".$objEmployer->reference1;
+				log_message("error","mensaje:".$message);
+				log_message("error","cod referencia:".$reference1_CodeReference);
 				
-				$reference1_CodeReference = $objEmployer->reference1;
-				//Validar si el mensaje  que ingreso: contiene en su string el codigo de referencia				
-				if (str_contains(strtolower(trim($message)), strtolower(trim($reference1_CodeReference)))) 
-				{	
-					//Validar si esa persona tiene permiso, para ver 
-					//Conversaciones					
-					$validatePermiso 	 = $objEmployee_Model->get_validatePermissionBy_EmployerID_PuedeAtenderWhatsappInCRM($objEmployer->entityID);
-					if($validatePermiso)
-					{
-						$arrayListEmployer[] = $objEmployer->entityID;
+				if($reference1_CodeReference != "-")
+				{
+					//Validar si el mensaje  que ingreso: contiene en su string el codigo de referencia				
+					if (str_contains(strtolower(trim($message)), strtolower(trim($reference1_CodeReference)))) 
+					{	
+						//Validar si esa persona tiene permiso, para ver 
+						//Conversaciones					
+						$validatePermiso 	 = $objEmployee_Model->get_validatePermissionBy_EmployerID_PuedeAtenderWhatsappInCRM($objEmployer->entityID);
+						if($validatePermiso)
+						{
+							$arrayListEmployerName[] 	= $objEmployer->firstName;
+							$arrayListEmployer[] 		= $objEmployer->entityID;
+						}
 					}
 				}
 			}
 			
+			log_message("error","asignar los siguientes colaboradores: ");
+			log_message("error",print_r($arrayListEmployerName,true));
 			return $arrayListEmployer;
 		}
 		else 
@@ -595,7 +604,7 @@ class core_web_conversation{
 		}
 	}
 
-	function createEmployerInConversation($dataSession,$conversationID,$objListEntityIDEmployer)
+	function createEmployerInConversation($dataSession,$conversationID,$objListEntityIDEmployer,$conversationIsNew)
 	{
 		//Afiliar la conversacion a un agente	
 		try
@@ -609,6 +618,17 @@ class core_web_conversation{
 			$objComponentEmployee		= $core_web_tools->getComponentIDBy_ComponentName("tb_employee");
 			if(!$objComponentEmployee)
 				throw new \Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
+			
+			
+			//Si la conversacion es nueva
+			if($conversationIsNew == true)
+			{
+				log_message("error","conversacion es nueva");
+				$Company_Component_Relation_Model->delete_app_posme_byComponentIDSource_AndComponentItemSourceID(
+					$objComponentCustomerConversation->componentID,
+					$conversationID
+				);
+			}
 			
 			if($objListEntityIDEmployer)
 			{
@@ -634,6 +654,12 @@ class core_web_conversation{
 					}
 				}
 			}
+			
+			//Obtener los colaboradores de la conversacion
+			$objListEmployerInConversation = $Company_Component_Relation_Model->get_ConversationEmployerBy_ConversationID($conversationID);
+			log_message("error","lista de colaboradores de la conversacion");
+			log_message("error",print_r($objListEmployerInConversation,true));
+			
 		}
 		catch(\Exception $ex)
 		{
@@ -681,7 +707,7 @@ class core_web_conversation{
 			//Mandarle mensaje a la ultima persona que converso
 			if($objListEmployerConversationTop5)
 			{
-				log_message("error","Recorrer cada uno de los colaboradores del top 5");
+				log_message("error","Recorrer cada uno de los colaboradores del top 5: ".$objListEmployerConversationTop5[0]->firstName);
 				$phone = $Entity_Phone_Model->get_rowByPrimaryEntity(
 					$companyID,$branchID,$objListEmployerConversationTop5[0]->entityID
 				);
