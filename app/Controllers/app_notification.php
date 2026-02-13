@@ -2744,11 +2744,13 @@ Le recordamos que tiene su membresia pendiente de pago:
 			$employersPhones = array_unique($employersPhones);
 			foreach ($employersPhones as $phoneEmployer) 
 			{
+				$companyNameSummary	= clearNumero($phoneEmployer) == clearNumero("+(505) 8693-4022") ? "Hi Beauty" : "CHIC";
+				
 				// Cabecera de la tabla
-				$tabla = "📅 Citas programadas para hoy
+				$tabla 				= "📅 Citas programadas para hoy
 
 	Hola 👋
-	A continuación, te compartimos el listado de personas que tienen cita el día de hoy en Chic Extensiones 💇‍♀️✨";
+	A continuación, te compartimos el listado de personas que tienen cita el día de hoy en ".$companyNameSummary." 💇‍♀️✨";
 
 				foreach ($objNotificar as $i) {
 					
@@ -2762,7 +2764,7 @@ Le recordamos que tiene su membresia pendiente de pago:
 					$hora        	= $dt->format("h:i A");
 					$cliente     	= $i->firstName;
 					$phone		 	= $i->phoneCustomer;
-					$companyName	= clearNumero($i->phoneEmployer) == clearNumero("8693-4022") ? "Hi Beauty" : "CHIC";
+					$companyName	= clearNumero($i->phoneEmployer) == clearNumero("+(505) 8693-4022") ? "Hi Beauty" : "CHIC";
 					$descripcion 	= $i->note ?? "Cita programada"; // si tienes ese campo en DB úsalo
 
 					$tabla .= "
