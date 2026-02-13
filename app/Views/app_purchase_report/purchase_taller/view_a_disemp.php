@@ -214,7 +214,7 @@
 							echo "</tr>";
 							echo "<tr>";
 								echo "<td style='text-align:left;' colspan='6'  class='border' >";							
-										echo "<b>Descripcion:</b>".$w["reference1"];
+										echo "<b>Nota:</b>".$w["reference1"];
 								echo "</td>";
 							echo "</tr>";
 							echo "<tr>";

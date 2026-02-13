@@ -1,4 +1,5 @@
 /*BD: 	dbkvvapxecvn1z:elektro_clima*/
+/*SERVIDOR: siteground*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
