@@ -1,6 +1,6 @@
-/*BD: 	u654393652_vjnqplseazmktr:parametro_jorge_ramirez_el_barro*/
-/*SERVIDOR: hostinger*/
-/*USUARIO:	u654393652_vjnqplseazmktr*/
+/*BD: 	dbgpekrytuyktx:parametro_jorge_ramirez_el_barro*/
+/*SERVIDOR: siteground #2  posme.nl*/
+
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
