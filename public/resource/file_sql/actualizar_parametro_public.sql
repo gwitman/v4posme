@@ -1,4 +1,11 @@
-/*BD: 	dbno63gzawe8bk:public	*/
+/*BD: 					dbno63gzawe8bk:public	*/
+/*SERVDIOR:  			siteground*/
+
+
+/*BD:					dblzc4rboyxgxb:public*/
+/*SERVIDOR 2:	  		siteground #2  posme.nl*/
+/*USUARIO BD:			u6gfygnx5ziwu*/
+/*USUARIO BD PASSWORD:	c&6f#&@21lmi*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

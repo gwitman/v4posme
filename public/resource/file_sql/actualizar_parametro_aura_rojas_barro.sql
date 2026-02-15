@@ -1,5 +1,5 @@
-/*BD: 	posme:parametro_aura_rojas*/
-/*SERVIDOR:		localhost*/
+/*BD: 	db9qfcggjsreok:parametro_aura_rojas*/
+/*SERVIDOR:		siteground #2  posme.nl*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
