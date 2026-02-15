@@ -1193,7 +1193,7 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
 				<li>Para hacer valida su garantía, presentar SIEMPRE su factura Original de compra.</li>
 				<li>Despues de 30 dias de notificado el diagnóstico. no nos hacemos responsables de su equipo. Dicho equipo pasará al área de almacenamiento después la notificación.</li>
 				<li>Los equipos deben estar siempre conectados a tomas corriente polarizados, con protectores de energia, supresores de picos y UPS de lo contrario perderea su garantía</li>
-				<li>Para cualquier información, llamar al 8920-2130, Correo electronico: soporte@compumattsa.com. WhatsApp :  8920-2130</li>
+				<li>Para cualquier información, llamar al 8920-2130, Correo electronico: soporte@compumattsa.com. WhatsApp :  8249-3098</li>
 			</ul>
 		",
 		strtolower('compu_matt_app_purchase_pedidos_scriptValidateInSave') 											=> "
