@@ -77,6 +77,7 @@ class Menu_Element_Model extends Model  {
 		$sql = "";
 		$sql = sprintf("
 				select 
+					distinct 
 					me.menuElementID,
 					me.display,
 					me.typeApp,
@@ -105,7 +106,8 @@ class Menu_Element_Model extends Model  {
 					r.isActive = 1 and 
 					usr.isActive = 1 and 
 					usr.companyID = $companyID and 
-					usr.userID = $userID 
+					usr.userID = $userID and 
+					me.typeApp = '$typeApp' 
 					/*role , usuario */
 				order by 
 					me.orden 
@@ -114,6 +116,7 @@ class Menu_Element_Model extends Model  {
 
 		");
 		
+		log_message("error",$sql);
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }

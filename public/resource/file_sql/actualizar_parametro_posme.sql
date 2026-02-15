@@ -3,6 +3,19 @@
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_SHOW_BALANCE_IN_SHARE_MOBILE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "DEFAULT" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_TYPE_PRINTER_SHARE_MOBILE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "a353a971-54c9-459f-b3fc-e91847801c17" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
