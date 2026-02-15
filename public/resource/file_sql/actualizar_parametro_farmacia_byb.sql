@@ -2,6 +2,10 @@
 /*SERVIDOR: hostinger*/
 /*USUARIO:	u654393652_jkvutwoyesstzb*/
 
+
+/*BD: 	db2un9rdervdja:parametro_farma_byb*/
+/*SERVIDOR:		siteground #2  posme.nl*/
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
 WHERE 

@@ -2,7 +2,8 @@
 /*SERVIDOR: hostinger*/
 /*USUARIO:	u654393652_ghanpelurgdmbq*/
 
-
+/*BD: 	dbpcnuicjnd1zf:parametro_marcela*/
+/*SERVIDOR:		siteground #2  posme.nl*/
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/	

@@ -3,6 +3,8 @@
 /*USUARIO:	u654393652_jvvjgypixuzkcl*/
 
 
+/*BD: 	dbcipovggff8uo:parametro_ferreteria_narvaez*/
+/*SERVIDOR:		siteground #2  posme.nl*/
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/	

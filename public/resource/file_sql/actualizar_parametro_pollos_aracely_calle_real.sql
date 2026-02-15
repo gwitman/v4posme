@@ -3,6 +3,9 @@
 /*USUARIO:	u654393652_kqjzndxwtephrl*/
 
 
+
+/*BD: 	db9xzwcw7gewki:parametro_pollos_aracely*/
+/*SERVIDOR:		siteground #2  posme.nl*/
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/	
