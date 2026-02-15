@@ -128,9 +128,13 @@ class core_web_conversation{
    )
    {
 	   
-	    //Asigna los colaboradores en base a un stringa dentro del primer mensaje
+	    
 	    if($companyType == "luciaralstate")
 		{
+			//Asigna los colaboradores en base a un stringa dentro del primer mensaje
+			/***********************/
+			/***********************/
+		
 			//Si la conversacion NO es NUEVA regresar la lista vacia			
 			$arrayListEmployer  	= array();
 			$arrayListEmployerName	= array();
@@ -172,8 +176,59 @@ class core_web_conversation{
 			log_message("error",print_r($arrayListEmployerName,true));
 			return $arrayListEmployer;
 		}
+		if($companyType == "compu_matt")
+		{
+			/*asignar las conversaciones a un rol en especifico*/
+			/***********************/
+			/***********************/
+			
+			//Si la conversacion NO es NUEVA regresar la lista vacia			
+			$arrayListEmployer  	= array();
+			$arrayListEmployerName	= array();
+			if($conversationIsNew == false)
+				return $arrayListEmployer;
+			
+			//Obtener la lista de colaboradores			
+			$core_web_permission 		= new core_web_permission();
+			$objEmployee_Model 			= new Employee_Model();
+			$Parameter_Model 			= new Parameter_Model();
+			$Company_Parameter_Model 	= new Company_Parameter_Model();
+			
+			
+			$objParameterDepartamentEmployerValue 	= $Parameter_Model->get_rowByName("CONVERSATION_DEPARTAMENT_EMPLOYER_ASIGNED_NEW_CONVERSATION");
+			$objParameterDepartamentEmployerId		= $objParameterDepartamentEmployerValue->parameterID;
+			$objParameterDepartamentEmployerValue	= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objParameterDepartamentEmployerId);
+			$objParameterDepartamentEmployerValue	= $objParameterDepartamentEmployerValue->value;
+		
+			
+			$objListEmployer 		= $objEmployee_Model->get_rowByBranchIDAndType($companyID,APP_BRANCH,$objParameterDepartamentEmployerValue);
+			if(!$objListEmployer)
+				return $arrayListEmployer;
+			
+			//Recorrer los colaboradores
+			foreach($objListEmployer as $objEmployer)
+			{	
+				//Validar si esa persona tiene permiso, para ver 
+				//Conversaciones					
+				$validatePermiso 	 = $objEmployee_Model->get_validatePermissionBy_EmployerID_PuedeAtenderWhatsappInCRM($objEmployer->entityID);
+				if($validatePermiso)
+				{
+					$arrayListEmployerName[] 	= $objEmployer->firstName;
+					$arrayListEmployer[] 		= $objEmployer->entityID;
+				}
+			}
+			
+			log_message("error","asignar los siguientes colaboradores: ");
+			log_message("error",print_r($arrayListEmployerName,true));
+			return $arrayListEmployer;
+			
+			
+		}
 		else 
 		{
+			/*asignar las conversaciones a todos los colaboradores*/
+			/***********************/
+			/***********************/
 			$core_web_permission 	= new core_web_permission();
 			$objEmployee_Model 		= new Employee_Model();
 			$objListEmployer 		= $objEmployee_Model->get_rowByCompanyID($companyID);
