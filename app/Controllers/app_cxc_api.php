@@ -2612,15 +2612,30 @@ class app_cxc_api extends _BaseController {
 		//log_message('error', print_r($input,true));
 		
 		//Solo se permiten mensajes recibidos
-		if(
-			($input["event"] 		!= "message") /*no es un mensaje es otro tipo de evento*/ ||  
-			(str_contains($input["data"]["from"], 'broadcast')) /*se recibe un grodcast */ ||
-			($input["data"]["type"] == "notification_template") /*cliente manda una plantilla*/ || 
-			($input["data"]["type"] == "e2e_notification") /*se recibe un cifrado de extremo a extremo*/
-		)
+		/*no es un mensaje de recepcion es otro tipo de evento*/ 
+		if($input["event"] != "message")
 		{
 			return;
 		}
+		
+		//No se permite mensaje de broadcast
+		if(str_contains($input["data"]["from"], 'broadcast'))
+		{
+			return;
+		}
+		
+		//No se permite mensaje de template
+		if($input["data"]["type"] == "notification_template")
+		{
+			return;
+		}
+		
+		/*No se permiten mensaje de cifrado de extremo a extremo*/
+		if( $input["data"]["type"] == "e2e_notification" )
+		{
+			return;
+		}
+		
 		
 		// Captura el POST JSON de Vonage
         if (!$input) {
@@ -2645,7 +2660,6 @@ class app_cxc_api extends _BaseController {
 		if($data["customerMessageType"] == "chat")
 		{
 			$data["customerMessageType"] = "text";
-			log_message("error","input:".print_r($input,true));
 		}
 		
 		if($data["customerMessageType"] == "image")
