@@ -482,19 +482,31 @@ class app_mobile_api extends _BaseController
 			//Obtener lista de catalogos
 			$ListCatalogItem  = $this->Catalog_Item_Model->get_rowByFlavorID($flavorID);
 
-            //Obtener documentos pendientes	
-			if($objCompany->type == "tu_futuro")
-			$objListDocumentCredit 	= $this->Customer_Credit_Document_Model->get_rowByBalancePendingByCompanyToMobileTuFuturo($companyID, $userID );
-			else 
-			$objListDocumentCredit 	= $this->Customer_Credit_Document_Model->get_rowByBalancePendingByCompanyToMobile($companyID, $userID );
-		
+            
+			if(
+				$objCompany->type == "tu_futuro" ||
+				$objCompany->type == "posme"
+			)
+			{
+				//Obtener documentos pendientes	no importa la asignacion
+				$objListDocumentCredit 	= $this->Customer_Credit_Document_Model->get_rowByBalancePendingByCompanyToMobileTuFuturo($companyID, $userID );
+			}
+			else
+			{
+				//Obtener solo los asignados
+				$objListDocumentCredit 	= $this->Customer_Credit_Document_Model->get_rowByBalancePendingByCompanyToMobile($companyID, $userID );
+			}
 			
             //Obtener lista de amortizaciones
 			if($objCompany->type == "tu_futuro")
-			$objListAmortization 	= $this->Customer_Credit_Amortization_Model->get_rowShareLateByCompanyToMobileTuFuturo($companyID, $userID );
-			else 
-            $objListAmortization 	= $this->Customer_Credit_Amortization_Model->get_rowShareLateByCompanyToMobile($companyID, $userID );
-
+			{
+				$objListAmortization 	= $this->Customer_Credit_Amortization_Model->get_rowShareLateByCompanyToMobileTuFuturo($companyID, $userID );
+			}
+			else
+			{				
+				$objListAmortization 	= $this->Customer_Credit_Amortization_Model->get_rowShareLateByCompanyToMobile($companyID, $userID );
+			}
+			
 			//Obtener lista de transacciones arribas 
 			$objListServerTransactionMaster = $this->Transaction_Master_Model->get_rowByCreatedBy_AndCurrentDate($companyID, $userID);
 			
