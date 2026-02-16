@@ -1,8 +1,3 @@
-/*BD: 	u654393652_xjprteqmwolnsa:parametro_jennidier_farmacia_leon*/
-/*SERVIDOR: hostinger*/
-/*USUARIO:	u654393652_xjprteqmwolnsa*/
-
-
 /*BD: 	dbsooqjlkt9t32:parametro_jennidier_farmacia_leon*/
 /*SERVIDOR:		siteground #2  posme.nl*/
 

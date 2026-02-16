@@ -1,8 +1,3 @@
-/*BD: 	u654393652_jvvjgypixuzkcl:parametro_ferreteria_narvaez*/
-/*SERVIDOR: hostinger*/
-/*USUARIO:	u654393652_jvvjgypixuzkcl*/
-
-
 /*BD: 	dbcipovggff8uo:parametro_ferreteria_narvaez*/
 /*SERVIDOR:		siteground #2  posme.nl*/
 /******************************************************************/
