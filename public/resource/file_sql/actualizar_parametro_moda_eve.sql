@@ -1,8 +1,3 @@
-/*BD: 	u654393652_k9d3xq7m2z1w4p:parametro_moda_eve*/
-/*SERVIDOR: hostinger*/
-/*USUARIO:	u654393652_k9d3xq7m2z1w4p*/
-
-
 /*BD: 	dbo1vgrvxquzzc:parametro_moda_eve*/
 /*SERVIDOR:		siteground #2  posme.nl*/
 /******************************************************************/

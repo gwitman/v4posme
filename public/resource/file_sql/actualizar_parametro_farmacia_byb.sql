@@ -1,8 +1,3 @@
-/*BD: 	u654393652_jkvutwoyesstzb:parametro_farma_byb*/
-/*SERVIDOR: hostinger*/
-/*USUARIO:	u654393652_jkvutwoyesstzb*/
-
-
 /*BD: 	db2un9rdervdja:parametro_farma_byb*/
 /*SERVIDOR:		siteground #2  posme.nl*/
 
