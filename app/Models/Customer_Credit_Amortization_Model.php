@@ -261,6 +261,44 @@ class Customer_Credit_Amortization_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
+   function get_rowShareLateByCompanyToMobilePosMe($companyID,$userID){
+		$db 	= db_connect();
+		
+		
+	    $sql = "";
+		$sql = sprintf("
+				select 
+						c.customerNumber,
+						n.firstName,
+						n.lastName,
+						c.birthDate,
+						ccd.documentNumber,
+						ccd.currencyID,
+						ccd.reportSinRiesgo,
+						cca.creditAmortizationID,
+						cca.dateApply,
+						cca.remaining as balance,
+						cca.remaining,
+						cca.sequence 
+				from 
+					tb_customer c
+					inner join  tb_naturales n on n.entityID = c.entityID
+					inner join  tb_customer_credit_document ccd on c.entityID = ccd.entityID
+					inner join  tb_transaction_master tm on tm.transactionNumber = ccd.documentNumber 
+					inner join  tb_customer_credit_amoritization cca on ccd.customerCreditDocumentID = cca.customerCreditDocumentID
+					inner join  tb_workflow_stage cca_status on cca_status.workflowStageID = cca.statusID
+					inner join  tb_workflow_stage ccd_status on ccd_status.workflowStageID = ccd.statusID 					
+				where
+					tm.isActive = 1 
+					and ccd_status.vinculable= 1
+					and c.isActive= 1
+					and cca.remaining > 0 
+					and c.companyID = $companyID
+			");
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
    
    
    function get_rowBySummaryInformationCredit($documentNumber)

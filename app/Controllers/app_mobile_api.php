@@ -483,13 +483,18 @@ class app_mobile_api extends _BaseController
 			$ListCatalogItem  = $this->Catalog_Item_Model->get_rowByFlavorID($flavorID);
 
             
-			if(
-				$objCompany->type == "tu_futuro" ||
-				$objCompany->type == "posme"
-			)
+			if($objCompany->type == "tu_futuro")
 			{
 				//Obtener documentos pendientes	no importa la asignacion
+				//No importa a quien esten asignados , 
+				//Pero si deben estar asignados
 				$objListDocumentCredit 	= $this->Customer_Credit_Document_Model->get_rowByBalancePendingByCompanyToMobileTuFuturo($companyID, $userID );
+			}
+			else if($objCompany->type == "posme")
+			{
+				//Obtener documentos pendientes	no importa la asignacion
+				//Ni tampoco es necesario que esten asignados
+				$objListDocumentCredit 	= $this->Customer_Credit_Document_Model->get_rowByBalancePendingByCompanyToMobilePosMe($companyID, $userID );
 			}
 			else
 			{
@@ -498,12 +503,25 @@ class app_mobile_api extends _BaseController
 			}
 			
             //Obtener lista de amortizaciones
-			if($objCompany->type == "tu_futuro")
+			if( $objCompany->type == "tu_futuro" )
 			{
+				//Obtiene todos la tabla de amortizacion
+				//De cuntas con remanente
+				//Filtrando los datos solo asociados al usuario
 				$objListAmortization 	= $this->Customer_Credit_Amortization_Model->get_rowShareLateByCompanyToMobileTuFuturo($companyID, $userID );
+			}
+			else if($objCompany->type == "posme")
+			{
+				//Obtiene todos la tabla de amortizacion
+				//De cuntas con remanente
+				//Filtrando los datos solo asociados al usuario
+				$objListAmortization 	= $this->Customer_Credit_Amortization_Model->get_rowShareLateByCompanyToMobilePosMe($companyID, $userID );
 			}
 			else
 			{				
+				//Obtiene todos la tabla de amortizacion
+				//De cuntas con remanente
+				//Filtrando los datos solo asociados al usuario
 				$objListAmortization 	= $this->Customer_Credit_Amortization_Model->get_rowShareLateByCompanyToMobile($companyID, $userID );
 			}
 			
