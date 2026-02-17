@@ -729,6 +729,54 @@ class core_web_conversation{
 		
 	}
 	
+	function categorizeCustomer($dataSession,$companyType,$conversationID,$entityIDCustomer,$mensaje,$objListEntityIDEmployer,$conversationIsNew)
+	{
+		//Afiliar la conversacion a un agente	
+		try
+		{
+			//Si la conversacion es vieja
+			if($conversationIsNew == false)
+				return;
+			
+			//Si no hay nigun colaborador asignado
+			if(!$objListEntityIDEmployer)
+				return;
+			
+			//Si no hay nigun colaborador asignado
+			if(count($objListEntityIDEmployer) == 0)
+				return
+			
+			//actualizar el cliente
+			$Customer_Model				= new Customer_Model();
+			$Parameter_Model 			= new Parameter_Model();
+			$Company_Parameter_Model 	= new Company_Parameter_Model();
+			
+			
+			$objParameterDepartamentEmployerValue 	= $Parameter_Model->get_rowByName("CXC_SUBCATEGORY_ID_DEFAULT_POSMECONNECT");
+			$objParameterDepartamentEmployerId		= $objParameterDepartamentEmployerValue->parameterID;
+			$objParameterDepartamentEmployerValue	= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objParameterDepartamentEmployerId);
+			$objParameterDepartamentEmployerValue	= $objParameterDepartamentEmployerValue->value;
+			
+			$companyID 				= $dataSession["user"]->companyID;
+			$branchaID 				= $dataSession["user"]->branchID;
+			$data 					= array();
+			$data["subCategoryID"] 	= $objParameterDepartamentEmployerValue;
+			$Customer_Model->update_app_posme($companyID,$branchID,$entityIDCustomer,$data);
+			
+		}
+		catch(\Exception $ex)
+		{
+			$objException = [
+				'success' => false,
+				'message' => $ex->getMessage(),   // mensaje del error
+				'line'    => $ex->getLine(),      // línea donde ocurrió
+				'file'    => $ex->getFile()       // archivo (opcional pero útil)
+			];
+			log_message("error",print_r($objException,true));
+		}
+		
+	}
+	
 	function notificationEmployerInConversation($companyID,$branchID,$companyType,$conversationID,$mensaje)
 	{
 		

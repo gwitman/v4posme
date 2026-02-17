@@ -2849,9 +2849,22 @@ class app_cxc_api extends _BaseController {
 		$objNotification["entityIDTarget"] 			= $objCustomer[0]->entityID;
 		$notificationID 							= $this->Notification_Model->insert_app_posme($objNotification);
 
+		
 		//Obtener la lista de agentes a afiliar
 		$objListEntityIDEmployer 					= $this->core_web_conversation->getAllEmployer($companyID,$dataSession["company"]->type,$customerPhoneNumber,$message,$conversationIsNew );				
 		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer,$conversationIsNew);
+		
+		//Categorizar al cliente
+		$this->core_web_conversation->categorizeCustomer(
+			$dataSession,
+			$dataSession["company"]->type,
+			$objCustomerConversation[0]->conversationID,
+			$objCustomer[0]->entityID,
+			$message,
+			$objListEntityIDEmployer,
+			$conversationIsNew
+		);
+		
 		
 		//////////////////////////////////////////////
 		//Notificar a los agentes afiliados

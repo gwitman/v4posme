@@ -5,6 +5,13 @@
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "5117" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_SUBCATEGORY_ID_DEFAULT_POSMECONNECT";## Sub Categoria por defecto para posMe Connect_
+	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "bf6ee90b-2232-44d9-8e31-7b9cf10ce629" 
