@@ -5,6 +5,13 @@
 /******************************************************************/	
 
 
+/*BD: 	u654393652_kqjzndxwtephrl:parametro_pollos_aracely*/
+/*SERVIDOR:		hostinger:	zhostinger_kqjzndxwtephrl*/
+/******************************************************************/
+/*****Personalizar pantalla**********/
+/******************************************************************/	
+
+
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
