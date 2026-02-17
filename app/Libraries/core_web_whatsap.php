@@ -197,12 +197,7 @@ class core_web_whatsap {
 
    function sendMessageGeneric( $typeCompany,$companyID, $message, $phoneDestino,$esperarRespuesta)
    {
-	   if($typeCompany == "")
-	   {
-		   $i = "not implementd";
-		   return $i;
-	   }
-	   else if ($typeCompany == "posme")
+	   if($typeCompany == "posme")
 	   {
 		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino,$esperarRespuesta);
 		   //return $this->sendMessageZAPIioText( $companyID, $message, $phoneDestino);		   
@@ -214,6 +209,10 @@ class core_web_whatsap {
 	   else if ($typeCompany == "arteDigital")
 	   {
 		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino,$esperarRespuesta);
+	   }
+	   else if ($typeCompany == "globalpro")
+	   {
+		   return $this->sendMessageByLiveconnect( $companyID, $message, $phoneDestino );
 	   }
 	   else
 	   {
@@ -1236,6 +1235,7 @@ class core_web_whatsap {
 			
 			$url  = $objCP_WhatsapUrlSendMessage->value;
 			$url  = $url."/".$phoneDestino."/message?session_id=".$objCP_WhatsapUrlSession->value;
+			
 			$curl = curl_init();
 			curl_setopt_array($curl, array(
 			  CURLOPT_URL 				=> $url,			  

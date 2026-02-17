@@ -1,8 +1,3 @@
-/*BD: 	u654393652_htrqzsmwdyknap:tu_futuro*/
-/*SERVIDOR: hostinger*/
-/*USUARIO:	u654393652_htrqzsmwdyknap*/
-
-
 /*BD: 	dbuq1iebfhhbax:parametro_tu_futuro*/
 /*SERVIDOR:		siteground #2  posme.nl*/
 

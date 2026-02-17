@@ -475,7 +475,6 @@ class app_purchase_taller extends _BaseController {
 			
 			
 			
-			
 			//Obtener plantilla de whatsapp
 			$warrning = false;
 			if($this->core_web_whatsap->validSendMessage(APP_COMPANY))
@@ -531,33 +530,15 @@ class app_purchase_taller extends _BaseController {
 							$warrning = true;
 							$this->core_web_notification->set_message(false,"A:".$numerDestino." - ".substr($themplate,0,55)." ...");
 							
-							if($objCompany->type=="globalpro_decline")
-							{
-								$this->core_web_whatsap->sendMessageByWaapi(
-									APP_COMPANY, 
-									$themplate,
-									getNumberPhone(clearNumero($numerDestino))
-									/*"50587125827"*/
-								);
-							}elseif ($objCompany->type =="globalpro"){
-                                $this->core_web_whatsap->sendMessageByLiveconnect(
-                                    APP_COMPANY,
-                                    $themplate,
-                                    getNumberPhone(clearNumero($numerDestino))
-									/*"50587125827"*/
-                                );
-                            }
-							else
-							{
-								$this->core_web_whatsap->sendMessageUltramsg(
-									APP_COMPANY, 
-									$themplate,
-									getNumberPhone(clearNumero($numerDestino))
-									/*"50587125827"*/
-								);
-							}
 							
 							
+							$this->core_web_whatsap->sendMessageGeneric(
+									$objCompany->type,
+									$objCompany->companyID,
+									$themplate,
+									getNumberPhone(clearNumero($numerDestino)),
+									false
+							);
 							
 						}
 						else 
@@ -830,7 +811,7 @@ class app_purchase_taller extends _BaseController {
 				}
 			}
 		
-			
+				
 			//Envio de whatsapp
 			$warrning = false;
 			if($this->core_web_whatsap->validSendMessage(APP_COMPANY))
@@ -885,34 +866,18 @@ class app_purchase_taller extends _BaseController {
 							$themplate 		= str_replace("{text}",$objTM["reference1"],$themplate);							
 							$themplate 		= str_replace("{article}", $articleDesc ,$themplate);							
 							$numerDestino 	= clearNumero($dataView["objCustomer"]->phoneNumber); 
-							$warrning = true;							
+							$warrning 		= true;							
 							$this->core_web_notification->set_message(false,"A:".$numerDestino." - ".substr($themplate,0,55)." ...");
 							
-							if($objCompany->type=="globalpro_decline")
-							{
-								$this->core_web_whatsap->sendMessageByWaapi(
-									APP_COMPANY, 
-									$themplate,
-									getNumberPhone(clearNumero($numerDestino))
-								);
-							}elseif($objCompany->type=="globalpro")
-                            {
-                                $this->core_web_whatsap->sendMessageByLiveconnect(
-                                    APP_COMPANY,
-                                    $themplate,
-                                    getNumberPhone(clearNumero($numerDestino))
-                                );
-                            }
-							else
-							{
-								$this->core_web_whatsap->sendMessageUltramsg(
-									APP_COMPANY, 
-									$themplate,
-									getNumberPhone(clearNumero($numerDestino))
-								);
-							}
 							
 							
+							$this->core_web_whatsap->sendMessageGeneric(
+									$objCompany->type,
+									$objCompany->companyID,
+									$themplate,
+									getNumberPhone(clearNumero($numerDestino)),
+									false
+							);
 							
 						}
 						else 
