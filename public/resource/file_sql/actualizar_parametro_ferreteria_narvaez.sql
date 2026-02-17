@@ -4,6 +4,11 @@
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 
+/*BD: 	dbg3yktxsyoh9z:parametro_ferreteria_narvaez*/
+/*SERVIDOR:		siteground #2  posme.nl*/
+/******************************************************************/
+/*****Personalizar pantalla**********/
+/******************************************************************/	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
