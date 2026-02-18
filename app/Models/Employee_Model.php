@@ -244,6 +244,35 @@ class Employee_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
+   function get_rowByAreaNameID($areaID)
+   {
+		$db 	= db_connect();
+		$builder	= $db->table("tb_employee");    
+		$sql = "";
+		$sql = sprintf("
+			select 
+				emp.entityID,
+				emp.employeeID,
+				emp.employeNumber,
+				nat.firstName,
+				nat.lastName ,
+				dep.`name` as departamentName 
+			from 
+				tb_employee emp 
+				inner join tb_naturales nat on 
+					nat.entityID = emp.entityID 
+				inner join tb_catalog_item dep on 
+					dep.catalogItemID = emp.departamentID 
+			where 
+				emp.isActive = 1 and 
+				nat.isActive = 1 and 
+				emp.departamentID = ".$areaID." 
+		");	
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+   
    function get_rowByInvoiceItem ($companyID,$transactionMasterID,$itemID)
    {
 	   $db 			= db_connect();

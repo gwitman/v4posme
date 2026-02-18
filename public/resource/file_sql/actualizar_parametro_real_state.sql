@@ -7,7 +7,20 @@
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "5117" 
+	tb_company_parameter.value = "373" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CONVERSATION_DEPARTAMENT_EMPLOYER_ASIGNED_NEW_CONVERSATION"; ##Depattamento por defecto para asignar conversaciones  121 es VENTA
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "103" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_SUBCATEGORY_ID_DEFAULT";## Sub Categoria por defecto
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "5116" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CXC_SUBCATEGORY_ID_DEFAULT_POSMECONNECT";## Sub Categoria por defecto para posMe Connect_

@@ -165,8 +165,8 @@ createApp({
 				// ðŸŸ¢ CASO 3: success = true con datos		
 				var resultData = json.data.map(item => {
 					if (
-						item.identification.endsWith('@lid') || 
-						item.phoneNumber.endsWith('@lid')
+						item.identification.length > 10 ||							
+						item.phoneNumber.length > 10 
 					) 
 					{						
 						item.identification = item.identification.slice(-8);
@@ -205,7 +205,7 @@ createApp({
             if (this.intervaloAjax) {
                 clearInterval(this.intervaloAjax);
                 this.intervaloAjax = null;
-                console.log('â›?AJAX detenido');
+                console.log('AJAX detenido');
             }
         }
     },

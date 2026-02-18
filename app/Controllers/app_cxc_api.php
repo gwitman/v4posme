@@ -2609,7 +2609,7 @@ class app_cxc_api extends _BaseController {
 		// JSON crudo (string completo)
 		log_message('error', 'Webhook RAW JSON: ' ."WebHookReceiptMessage_Whatsapp_Wapi2_posMe" );	
 		$input	 	= $this->request->getJSON(true); // true = array
-		//log_message('error', print_r($input,true));
+		
 		
 		//Solo se permiten mensajes recibidos
 		/*no es un mensaje de recepcion es otro tipo de evento*/ 
@@ -2649,6 +2649,7 @@ class app_cxc_api extends _BaseController {
 
         // Extraer datos básicos       
 		log_message("error","input: init process message");
+		log_message('error', print_r($input,true));
 		$data["customerPhoneNumber"] 	= getNumberPhoneIsContact(clearNumero(($input["data"]['from'] ?? '')));
 		$data["customerFirstName"]	 	= $input["data"]['contact']['pushname'] ?? '';
 		$data["customerMessage"]	 	= $input["data"]['body'] ?? '';
@@ -2852,7 +2853,7 @@ class app_cxc_api extends _BaseController {
 		
 		//Obtener la lista de agentes a afiliar
 		$objListEntityIDEmployer 					= $this->core_web_conversation->getAllEmployer($companyID,$dataSession["company"]->type,$customerPhoneNumber,$message,$conversationIsNew );				
-		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer,$conversationIsNew);
+		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer["employerList"],$conversationIsNew);
 		
 		//Categorizar al cliente
 		$this->core_web_conversation->categorizeCustomer(
@@ -2861,8 +2862,9 @@ class app_cxc_api extends _BaseController {
 			$objCustomerConversation[0]->conversationID,
 			$objCustomer[0]->entityID,
 			$message,
-			$objListEntityIDEmployer,
-			$conversationIsNew
+			$objListEntityIDEmployer["employerList"],
+			$conversationIsNew,
+			$objListEntityIDEmployer["typeAsigned"]
 		);
 		
 		

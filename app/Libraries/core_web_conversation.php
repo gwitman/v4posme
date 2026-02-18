@@ -128,9 +128,14 @@ class core_web_conversation{
    )
    {
 	   
-	    
+	   	$result 				= [];
+		$result["employerList"] = [];
+		$result["typeAsigned"] 	= "";		
 	    if($companyType == "luciaralstate")
 		{
+			$Parameter_Model 			= new Parameter_Model();
+			$Company_Parameter_Model 	= new Company_Parameter_Model();	
+		
 			//Asigna los colaboradores en base a un stringa dentro del primer mensaje
 			/***********************/
 			/***********************/
@@ -139,14 +144,22 @@ class core_web_conversation{
 			$arrayListEmployer  	= array();
 			$arrayListEmployerName	= array();
 			if($conversationIsNew == false)
-				return $arrayListEmployer;
+			{
+				$result["employerList"] = $arrayListEmployer;
+				$result["typeAsigned"] 	= "ninguna";
+				return $result;
+			}
 			
 			//Obtener la lista de colaboradores
 			$core_web_permission 	= new core_web_permission();
 			$objEmployee_Model 		= new Employee_Model();
 			$objListEmployer 		= $objEmployee_Model->get_rowByCompanyID($companyID);
 			if(!$objListEmployer)
-				return $arrayListEmployer;
+			{
+				$result["employerList"] = $arrayListEmployer;
+				$result["typeAsigned"] 	= "ninguna";
+				return $result;
+			}
 			
 			//Recorrer los colaboradores
 			foreach($objListEmployer as $objEmployer)
@@ -167,14 +180,55 @@ class core_web_conversation{
 						{
 							$arrayListEmployerName[] 	= $objEmployer->firstName;
 							$arrayListEmployer[] 		= $objEmployer->entityID;
+							$result["typeAsigned"] 		= "onlyEmployer";
 						}
 					}
 				}
 			}
 			
+			//Asignar 
+			if(count($arrayListEmployer) == 0)
+			{
+				$objParameterDepartamentEmployerValue 	= $Parameter_Model->get_rowByName("CONVERSATION_DEPARTAMENT_EMPLOYER_ASIGNED_NEW_CONVERSATION");
+				$objParameterDepartamentEmployerId		= $objParameterDepartamentEmployerValue->parameterID;
+				$objParameterDepartamentEmployerValue	= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objParameterDepartamentEmployerId);
+				$objParameterDepartamentEmployerValue	= $objParameterDepartamentEmployerValue->value;
+		
+				log_message("error","asignar a los coordinadores: ");
+				$objEmployerRoleList 	= $objEmployee_Model->get_rowByAreaNameID($objParameterDepartamentEmployerValue);
+				if($objEmployerRoleList)
+				{
+					if(count($objEmployerRoleList) > 0 )
+					{
+						foreach($objEmployerRoleList as $objEmployer)
+						{
+							$validatePermiso 	 = $objEmployee_Model->get_validatePermissionBy_EmployerID_PuedeAtenderWhatsappInCRM($objEmployer->entityID);
+							if($validatePermiso)
+							{
+								$arrayListEmployerName[] 	= $objEmployer->firstName;
+								$arrayListEmployer[] 		= $objEmployer->entityID;
+								$result["typeAsigned"] 		= "onlyCoordinador";
+							}
+						}
+					}
+				}
+			}
+			
+			
 			log_message("error","asignar los siguientes colaboradores: ");
-			log_message("error",print_r($arrayListEmployerName,true));
-			return $arrayListEmployer;
+			log_message("error",print_r($arrayListEmployerName,true));			
+			
+			if(count($arrayListEmployer) > 0)
+			{
+				$result["employerList"] = $arrayListEmployer;			
+			}
+			else
+			{
+				$result["employerList"] = $arrayListEmployer;
+				$result["typeAsigned"] 	= "ninguna";
+			}
+			return $result;
+				
 		}
 		if($companyType == "compu_matt")
 		{
@@ -186,8 +240,11 @@ class core_web_conversation{
 			$arrayListEmployer  	= array();
 			$arrayListEmployerName	= array();
 			if($conversationIsNew == false)
-				return $arrayListEmployer;
-			
+			{	
+				$result["employerList"] = $arrayListEmployer;
+				$result["typeAsigned"] 	= "ninguna";
+				return $result;
+			}
 			//Obtener la lista de colaboradores			
 			$core_web_permission 		= new core_web_permission();
 			$objEmployee_Model 			= new Employee_Model();
@@ -203,7 +260,13 @@ class core_web_conversation{
 			
 			$objListEmployer 		= $objEmployee_Model->get_rowByBranchIDAndType($companyID,APP_BRANCH,$objParameterDepartamentEmployerValue);
 			if(!$objListEmployer)
-				return $arrayListEmployer;
+			{
+				$result["employerList"] = $arrayListEmployer;
+				$result["typeAsigned"] 	= "ninguna";
+				return $result;
+				
+			}
+			
 			
 			//Recorrer los colaboradores
 			foreach($objListEmployer as $objEmployer)
@@ -215,12 +278,24 @@ class core_web_conversation{
 				{
 					$arrayListEmployerName[] 	= $objEmployer->firstName;
 					$arrayListEmployer[] 		= $objEmployer->entityID;
+					$result["typeAsigned"] 		= "onlyEmployer";
+					
 				}
 			}
 			
 			log_message("error","asignar los siguientes colaboradores: ");
 			log_message("error",print_r($arrayListEmployerName,true));
-			return $arrayListEmployer;
+			
+			if(count($arrayListEmployer) > 0)
+			{
+				$result["employerList"] = $arrayListEmployer;			
+			}
+			else
+			{
+				$result["employerList"] = $arrayListEmployer;
+				$result["typeAsigned"] 	= "ninguna";
+			}
+			return $result;
 			
 			
 		}
@@ -365,7 +440,7 @@ class core_web_conversation{
 			$objCustomer["currencyID"]			= $core_web_parameter->getParameterFiltered($objListComanyParameter,"INVENTORY_CURRENCY_ID_DEFAULT")->value;
 			$objCustomer["clasificationID"]		= $core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CLASIFICATION_ID_DEFAULT")->value;
 			$objCustomer["categoryID"]			= $core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CATEGORY_ID_DEFAULT")->value;
-			$objCustomer["subCategoryID"]		= $core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_SUBCATEGORY_ID_DEFAULT")->value;
+			$objCustomer["subCategoryID"]		= $core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_SUBCATEGORY_ID_DEFAULT_POSMECONNECT")->value;
 			$objCustomer["customerTypeID"]		= $core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_CUSTOMER_TYPE_ID_DEFAULT")->value;
 			$objCustomer["birthDate"]			= date("Y-m-d");
 			$objCustomer["dateContract"]		= date("Y-m-d");
@@ -729,39 +804,42 @@ class core_web_conversation{
 		
 	}
 	
-	function categorizeCustomer($dataSession,$companyType,$conversationID,$entityIDCustomer,$mensaje,$objListEntityIDEmployer,$conversationIsNew)
+	function categorizeCustomer($dataSession,$companyType,$conversationID,$entityIDCustomer,$mensaje,$objListEntityIDEmployer,$conversationIsNew,$typeAsigned)
 	{
 		//Afiliar la conversacion a un agente	
 		try
 		{
-			//Si la conversacion es vieja
-			if($conversationIsNew == false)
-				return;
-			
-			//Si no hay nigun colaborador asignado
-			if(!$objListEntityIDEmployer)
-				return;
-			
-			//Si no hay nigun colaborador asignado
-			if(count($objListEntityIDEmployer) == 0)
-				return
-			
-			//actualizar el cliente
-			$Customer_Model				= new Customer_Model();
-			$Parameter_Model 			= new Parameter_Model();
-			$Company_Parameter_Model 	= new Company_Parameter_Model();
-			
-			
-			$objParameterDepartamentEmployerValue 	= $Parameter_Model->get_rowByName("CXC_SUBCATEGORY_ID_DEFAULT_POSMECONNECT");
-			$objParameterDepartamentEmployerId		= $objParameterDepartamentEmployerValue->parameterID;
-			$objParameterDepartamentEmployerValue	= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objParameterDepartamentEmployerId);
-			$objParameterDepartamentEmployerValue	= $objParameterDepartamentEmployerValue->value;
-			
-			$companyID 				= $dataSession["user"]->companyID;
-			$branchaID 				= $dataSession["user"]->branchID;
-			$data 					= array();
-			$data["subCategoryID"] 	= $objParameterDepartamentEmployerValue;
-			$Customer_Model->update_app_posme($companyID,$branchID,$entityIDCustomer,$data);
+			if($companyType == "luciaralstate")
+			{
+				//Si la conversacion es vieja
+				log_message("error","categorizeCustomer validar si la conversaciones es nueva");
+				if($conversationIsNew == false)
+					return;
+				
+				
+				//ninguna
+				//onlyEmployer
+				//onlyCoordinador
+				if($typeAsigned == "onlyEmployer")
+				{
+					//actualizar el cliente
+					$Customer_Model				= new Customer_Model();
+					$Parameter_Model 			= new Parameter_Model();
+					$Company_Parameter_Model 	= new Company_Parameter_Model();
+					$companyID 					= $dataSession["user"]->companyID;
+					$branchID 					= $dataSession["user"]->branchID;
+					
+					$objParameterDepartamentEmployerValue 	= $Parameter_Model->get_rowByName("CXC_SUBCATEGORY_ID_DEFAULT");
+					$objParameterDepartamentEmployerId		= $objParameterDepartamentEmployerValue->parameterID;
+					$objParameterDepartamentEmployerValue	= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objParameterDepartamentEmployerId);
+					$objParameterDepartamentEmployerValue	= $objParameterDepartamentEmployerValue->value;
+					
+					log_message("error","categorizeCustomer actualizar la sub categoria ".$objParameterDepartamentEmployerValue);			
+					$data 					= array();
+					$data["subCategoryID"] 	= $objParameterDepartamentEmployerValue;
+					$Customer_Model->update_app_posme($companyID,$branchID,$entityIDCustomer,$data);
+				}
+			}
 			
 		}
 		catch(\Exception $ex)
