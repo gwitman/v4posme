@@ -1866,6 +1866,8 @@ class app_notification extends _BaseController
 				$query			= "CALL pr_box_get_report_closed_glamcuts(?,?,?,?,?,?,?);";
 			if ($objCompany->type == "gym_power_house")
 				$query			= "CALL pr_box_get_report_closed_gym(?,?,?,?,?,?,?);";
+			if ($objCompany->type == "distrito4199")
+				$query			= "CALL pr_box_get_report_closed_distrito4199(?,?,?,?,?,?,?);";
 
 
 			$objData		= $this->Bd_Model->executeRender(

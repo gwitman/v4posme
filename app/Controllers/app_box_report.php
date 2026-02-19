@@ -1406,6 +1406,7 @@ class app_box_report extends _BaseController {
 				$objListaUsuarios 				= $this->User_Model->get_All($dataSession["user"]->companyID);
 				$dataView["objListaUsuarios"] 	= $objListaUsuarios;
 				
+				
 				//Renderizar Resultado 
 				$dataSession["message"]		= $this->core_web_notification->get_message();
 				$dataSession["head"]		= /*--inicio view*/ view('app_box_report/share_summary_80mm_general/view_head');//--finview
