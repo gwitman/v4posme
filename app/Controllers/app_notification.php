@@ -2421,6 +2421,8 @@ Le recordamos que tiene un saldo pendiente:
 $rowx 					= array();
 $rowx["firstName"] 		= $item->firstName;
 $rowx["phoneNumber"] 	= $item->phoneNumber;
+
+
 $rowx["mensaje"] 		= "📌/*Mensaje automático de recordatorio de pago*/
 (Este mensaje ha sido generado automáticamente por un bot)
 
@@ -2435,6 +2437,17 @@ Le recordamos que tiene su membresia pendiente de pago:
 🙏Muchas gracias por su atención.
 /*Equipo de NJ GYM*/
 ";
+
+
+
+$rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu pago expira mañana, No te pierdás ni un día de entrenamiento y renová tu acceso!
+
+🆔/*Codigo de Cliente:*/ ".$item->customerNumber."
+📝/*Concepto:*/ NJ GYM.
+
+⚠️/*NO RESPONDAS ESTE MENSAJE*/
+";
+
 			$rowx["urlImage"] 		= "";
 			$chatSend[]				= $rowx;
 		}

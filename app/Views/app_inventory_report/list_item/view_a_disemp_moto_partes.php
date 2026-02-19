@@ -95,11 +95,14 @@
 					$category   = $objDetail[0]["categoryName"];
 					
 					foreach($objDetail as $i){
-						$count++;	
+						$count++;							
+						if( $i["quantity"] == 0 && $i["categoryName"] == "JOYERIA" )
+							continue;
+						
 						$costoTotal 	= $costoTotal +  ($i["cost"] * $i["quantity"] );
 						$precioTotal 	= $precioTotal +  ($i["price"] * $i["quantity"] );
 						
-					
+						
 						echo "<tr  >";
 							echo "<td style='text-align:left;'    class='border' >";
 								echo (substr($i["itemNumber"],-15));
