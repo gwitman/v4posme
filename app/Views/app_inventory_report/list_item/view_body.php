@@ -52,6 +52,25 @@
 												</div>
 											</div>
 											
+											<div class="form-group">
+												<label class="col-lg-6 control-label" for="selectFilter">Proveedor</label>
+												<div class="col-lg-6"> 
+													<div class="col-lg-6">
+													</div>
+													<div class="col-lg-6">
+														<select name="txtEntityIDProvider" id="txtEntityIDProvider" class="select2">
+																<option value="0">TODOS</option>
+																<?php
+																if($objListProvider)
+																foreach($objListProvider as $i){
+																	echo "<option value='".$i->entityID."'>".$i->firstName."</option>";
+																}
+																?>
+														</select>
+													</div>													
+												</div>
+											</div>
+											
                                         </form>
                                     </div><!-- End .panel-body -->
                                 </div><!-- End .widget -->	

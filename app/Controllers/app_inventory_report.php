@@ -441,6 +441,7 @@ class app_inventory_report extends _BaseController {
 			$userID				= $dataSession["user"]->userID;
 			$warehouseID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"warehouseID");//--finuri				
 			$categoryID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"categoryID");//--finuri				
+			$entityIDProvider	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"providerID");//--finuri				
 			$tocken				= '';
 			 
 			
@@ -448,7 +449,8 @@ class app_inventory_report extends _BaseController {
 			if($warehouseID == "")
 			{
 				$data["objListWarehouse"]	= $this->Userwarehouse_Model->getRowByUserID($companyID,$userID);			
-				$data["objListCategory"]	= $this->Itemcategory_Model->getByCompany($companyID);			
+				$data["objListCategory"]	= $this->Itemcategory_Model->getByCompany($companyID);	
+				$data["objListProvider"]	= $this->Provider_Model->get_rowByCompany($companyID);
 				
 				//Renderizar Resultado 
 				$dataSession["message"]		= $this->core_web_notification->get_message();
@@ -476,10 +478,10 @@ class app_inventory_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_inventory_get_report_list_item(?,?,?,?,?);";
+				$query			= "CALL pr_inventory_get_report_list_item(?,?,?,?,?,?);";
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$userID,$tocken,$companyID,$warehouseID,$categoryID]
+					[$userID,$tocken,$companyID,$warehouseID,$categoryID,$entityIDProvider]
 				);			
 				
 				if(isset($objData))
@@ -1629,10 +1631,10 @@ class app_inventory_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_inventory_get_report_list_item(?,?,?,?,?);";
+				$query			= "CALL pr_inventory_get_report_list_item(?,?,?,?,?,?);";
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$userID,$tocken,$companyID,$warehouseID,$categoryID]
+					[$userID,$tocken,$companyID,$warehouseID,$categoryID,0]
 				);			
 				
 				if(isset($objData))
@@ -1735,10 +1737,10 @@ class app_inventory_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_inventory_get_report_list_item(?,?,?,?,?);";
+				$query			= "CALL pr_inventory_get_report_list_item(?,?,?,?,?,?);";
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$userID,$tocken,$companyID,$warehouseID,$categoryID]
+					[$userID,$tocken,$companyID,$warehouseID,$categoryID,0]
 				);			
 																
 				
@@ -1808,10 +1810,10 @@ class app_inventory_report extends _BaseController {
 			$categoryID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"categoryID");//--finuri					
 			$tocken				= "";
 						
-			$query			= "CALL pr_inventory_get_report_list_item(?,?,?,?,?);";
+			$query			= "CALL pr_inventory_get_report_list_item(?,?,?,?,?,?);";
 			$objData		= $this->Bd_Model->executeRender(
 				$query,
-				[$userID,$tocken,$companyID,$warehouseID,$categoryID]
+				[$userID,$tocken,$companyID,$warehouseID,$categoryID,0]
 			);	
 
 			if(isset($objData)){

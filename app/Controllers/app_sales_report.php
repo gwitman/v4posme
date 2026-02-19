@@ -234,10 +234,10 @@ class app_sales_report extends _BaseController {
 				}
 				
 				//Get Datos Detalle de Inventario
-				$query					= "CALL pr_inventory_get_report_list_item(?,?,?,?,?);";
+				$query					= "CALL pr_inventory_get_report_list_item(?,?,?,?,?,?);";
 				$objDataInventory		= $this->Bd_Model->executeRender(
 					$query,
-					[$userID,$tocken,$companyID,$warehouseID,$inventoryCategoryID]
+					[$userID,$tocken,$companyID,$warehouseID,$inventoryCategoryID,0]
 				);
 				
 				
