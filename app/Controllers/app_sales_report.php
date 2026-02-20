@@ -15,7 +15,7 @@ class app_sales_report extends _BaseController {
 			//PERMISOS SOBRE LAS FUNCIONES
 			if(APP_NEED_AUTHENTICATION == true){				
 				
-				$permited = false;
+				$permited = false; 
 				$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
 				
 				if(!$permited)
@@ -1451,10 +1451,10 @@ class app_sales_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_sales_get_report_venta_de_producto(?,?,?,?,?,?);";				
+				$query			= "CALL pr_sales_get_report_venta_de_producto(?,?,?,?,?,?,?);";				
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,0]
 				);
 				
 				
@@ -1527,12 +1527,15 @@ class app_sales_report extends _BaseController {
 			$startOn				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"startOn");//--finuri
 			$endOn					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri
 			$inventoryCategoryID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"inventoryCategoryID");//--finuri
+			$warehouseID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"warehouseID");//--finuri
 				
 			if(!($viewReport && $startOn && $endOn  )){
 				
 				//Renderizar Resultado 
 				$dataSession["objListCategoryItem"]		= $this->Itemcategory_Model->getByCompany($companyID);
 				$dataSession["message"]					= $this->core_web_notification->get_message();
+				$dataSession["objListWarehouse"]		= $this->Warehouse_Model->getByCompany($companyID);
+
 				$dataSession["head"]					= /*--inicio view*/ view('app_sales_report/restock/view_head');//--finview
 				$dataSession["body"]					= /*--inicio view*/ view('app_sales_report/restock/view_body',$dataSession);//--finview
 				$dataSession["script"]					= /*--inicio view*/ view('app_sales_report/restock/view_script');//--finview
@@ -1550,10 +1553,10 @@ class app_sales_report extends _BaseController {
 				//Get Company
 				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
 				//Get Datos
-				$query			= "CALL pr_sales_get_report_venta_de_producto(?,?,?,?,?,?);";				
+				$query			= "CALL pr_sales_get_report_venta_de_producto(?,?,?,?,?,?,?);";	
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID]
+					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID]
 				);
 				
 				
