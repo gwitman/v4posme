@@ -412,6 +412,120 @@ class app_inventory_report extends _BaseController {
 		    return $resultView;
 		}
 	}
+	function master_rotation(){
+		try{ 
+		
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+		
+			//PERMISOS SOBRE LAS FUNCIONES
+			if(APP_NEED_AUTHENTICATION == true){				
+				
+				$permited = false;
+				$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				
+				if(!$permited)
+				throw new \Exception(NOT_ACCESS_CONTROL);
+				
+				$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"index",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				if ($resultPermission 	== PERMISSION_NONE)
+				throw new \Exception(NOT_ACCESS_FUNCTION);			
+			}	
+			
+								
+			$viewReport			= false;
+			$startOn			= false;
+			$endOn				= false;
+			$warehouseID		= false;
+			$companyID			= $dataSession["user"]->companyID;
+			$branchID			= $dataSession["user"]->branchID;
+			$userID				= $dataSession["user"]->userID;
+			$tocken				= '';
+			
+			$viewReport			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"viewReport");//--finuri	
+			$startOn			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"startOn");//--finuri
+			$endOn				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri	
+			$warehouseID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"warehouseID");//--finuri
+			$horaInicial		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"horaInicial");//--finuri
+			$horaFinal			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"horaFinal");//--finuri
+			
+				
+				
+			if(!($viewReport && $startOn && $endOn  )){
+				$data["objListWarehouse"]	= $this->Userwarehouse_Model->getRowByUserID($companyID,$userID);
+				//Renderizar Resultado 
+				$dataSession["message"]		= $this->core_web_notification->get_message();
+				$dataSession["head"]		= /*--inicio view*/ view('app_inventory_report/master_rotation/view_head');//--finview
+				$dataSession["body"]		= /*--inicio view*/ view('app_inventory_report/master_rotation/view_body',$data);//--finview
+				$dataSession["script"]		= /*--inicio view*/ view('app_inventory_report/master_rotation/view_script');//--finview
+				$dataSession["footer"]		= "";			
+				return view("core_masterpage/default_report",$dataSession);//--finview-r	
+			}
+			else{				
+				
+				//Obtener el tipo de Comprobante
+				$companyID 		= $dataSession["user"]->companyID;
+				$startOn 		= $startOn." ".$horaInicial;
+				$endOn 			= $endOn." ".$horaFinal;
+				
+				//Get Component
+				$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+				//Get Logo
+				$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+				//Get Company
+				$objCompany 	= $this->Company_Model->get_rowByPK($companyID);
+				//Get Datos
+				$query			= "CALL pr_inventory_get_report_ratation(?,?,?,?,?,?,?);";
+				$objData		= $this->Bd_Model->executeRenderMultipleNative(
+					$query,
+					[$userID,$tocken,$companyID,$warehouseID,$startOn,$endOn,365]
+				);			
+				
+				if(isset($objData))
+				$objDataResult["objDetail"]					= $objData][1];
+				else
+				$objDataResult["objDetail"]					= NULL;
+			
+				$objParameterTamanoLetra	= $this->core_web_parameter->getParameter("CORE_VIEW_CUSTOM_REPORT_IN_LIST_ITEM_SIZE_LATTER",$companyID);
+				$objParameterTamanoLetra	= $objParameterTamanoLetra->value;	
+				$objParameterAltoDeLaFila	= $this->core_web_parameter->getParameter("CORE_VIEW_CUSTOM_REPORT_IN_LIST_ITEM_ALTO_FILA",$companyID);
+				$objParameterAltoDeLaFila	= $objParameterAltoDeLaFila->value;				
+			
+				$objDataResult["objParameterTamanoLetra"] 				= $objParameterTamanoLetra;
+				$objDataResult["objParameterAltoDeLaFila"] 				= $objParameterAltoDeLaFila;
+				$objDataResult["objCompany"] 				= $objCompany;
+				$objDataResult["objLogo"] 					= $objParameter;
+				$objDataResult["startOn"]					= $startOn;
+				$objDataResult["endOn"]						= $endOn;
+				$objDataResult["objWarehouse"]				= $this->Warehouse_Model->get_rowByPK($companyID,$warehouseID);
+				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "auxiliar_mov_x_tipo_de_comprobantes" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
+				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
+				
+				$objPermissionNotMostrarCosto 					= array_filter($dataSession["menuHiddenPopup"], function($val){  return $val->display == 'NO_ES_PERMITIDO_MOSTRAR_COSTOS'; });
+				$objPermissionNotMostrarCosto 					= count($objPermissionNotMostrarCosto) > 0 ? "true" : "false";				
+				$objPermissionNotMostrarCosto					= $dataSession["role"]->isAdmin ? "false" : $objPermissionNotMostrarCosto;				
+				$objDataResult["objPermissionNotMostrarCosto"] 	= $objPermissionNotMostrarCosto;
+				return view("app_inventory_report/master_rotation/view_a_disemp",$objDataResult);//--finview-r
+				
+			}
+		}
+		catch(\Exception $ex){
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;
+		}
+	}
 	function list_item(){
 		try{ 
 		

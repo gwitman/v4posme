@@ -993,6 +993,8 @@ $routes->match(['get', 'post'], 'app_inventory_report/movement', 'app_inventory_
 $routes->match(['get', 'post'], 'app_inventory_report/movement/(:any)', 'app_inventory_report::movement');
 $routes->match(['get', 'post'], 'app_inventory_report/master_kardex', 'app_inventory_report::master_kardex');
 $routes->match(['get', 'post'], 'app_inventory_report/master_kardex/(:any)', 'app_inventory_report::master_kardex');
+$routes->match(['get', 'post'], 'app_inventory_report/master_rotation', 'app_inventory_report::master_rotation');
+$routes->match(['get', 'post'], 'app_inventory_report/master_rotation/(:any)', 'app_inventory_report::master_rotation');
 $routes->match(['get', 'post'], 'app_inventory_report/purchase', 'app_inventory_report::purchase');
 $routes->match(['get', 'post'], 'app_inventory_report/purchase/(:any)', 'app_inventory_report::purchase');
 $routes->match(['get', 'post'], 'app_inventory_report/list_item', 'app_inventory_report::list_item');
