@@ -251,6 +251,175 @@ class app_inventory_inputunpost extends _BaseController {
 			
 		    return $resultView;		}
 	}
+	function viewRegisterFormatoDB(){
+		try{ 
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+						$permited = false;
+						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						
+						if(!$permited)
+						throw new \Exception(NOT_ACCESS_CONTROL);
+						
+							
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						if ($resultPermission 	== PERMISSION_NONE)
+						throw new \Exception(NOT_ALL_EDIT);		
+			}	 
+			
+			
+			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri			
+			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri				
+			$companyID 					= $dataSession["user"]->companyID;		
+			$branchID 					= $dataSession["user"]->branchID;		
+			$roleID 					= $dataSession["role"]->roleID;		
+			
+			//Get Component
+			$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			//Get Logo
+			$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			//Get Company
+			$objCompany 			= $this->Company_Model->get_rowByPK($companyID);	
+			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);			
+			//Get Documento				
+			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
+			$datView["objProvider"]					= $this->Provider_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
+			$datView["objLegal"]					= $datView["objProvider"] != NULL ? $this->Legal_Model->get_rowByPK($companyID,$datView["objProvider"]->branchID,$datView["objProvider"]->entityID) : NULL;
+			$datView["objWarehouse"]				= $this->Warehouse_Model->get_rowByPK($companyID,$datView["objTM"]->targetWarehouseID);
+			$datView["objTipo"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$datView["objTM"]->transactionID,$datView["objTM"]->transactionCausalID);
+			$datView["objCustumer"]					= null;
+			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
+			$datView["objCustumer"]					= null;
+			$datView["objNatural"]					= null;
+			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_inputunpost","statusID",$datView["objTM"]->statusID,$companyID,$datView["objTM"]->branchID,APP_ROL_SUPERADMIN);
+			$datView["objUser"]						= $this->User_Model->get_rowByPK($companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
+
+			$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_invoice_inputunpost","templateDocument","");
+			$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_invoice_inputunpost","templateDocument","");
+			if($htmlTemplateCompany == "")
+				$htmlTemplateCompany = $htmlTemplateDemo;
+
+			//Obtener imagen de logo
+			$objParameterLogo       = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID)->value;
+			$objParameterRuc	    = $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID)->value;
+
+			$datViewArray								= array();
+			$datViewArray["companyName"] 				= $objCompany->name;
+			$datViewArray["companyRuc"] 				= $objParameterRuc;
+			$datViewArray["typeTransacton"] 			= "COMPRA";
+			$datViewArray["transactionNumber"] 			= $datView["objTM"]->transactionNumber;
+			$datViewArray["transactionOn"] 				= $datView["objTM"]->createdOn;
+			$datViewArray["address"] 					= $objCompany->address;
+			$datViewArray["phoneNumber"] 				= $objParameterTelefono;
+			$datViewArray["currrencyName"] 				= $datView["objCurrency"]->simbol;
+			$datViewArray["userName"] 					= $datView["objUser"]->nickname;
+			$datViewArray["statusName"] 				= $datView["objStage"][0]->name;
+			$datViewArray["companyRuc"] 				= $objParameterRuc;
+			$datViewArray["companyRuc"] 				= $objParameterRuc;
+			$datViewArray["companyRuc"] 				= $objParameterRuc;
+			$datViewArray["transactionMasterDetail"]	= array();
+
+			//agregar item
+			$cantidad 			= 0;
+			$totalCost 			= 0;
+			$totalPrice 		= 0;
+			foreach($datView["objTMD"] as $detail_)
+			{
+				$cantidad++;
+				$totalCost 			= $totalCost + ($detail_->unitaryCost * $detail_->quantity);
+				$totalPrice 		= $totalPrice + ($detail_->unitaryPrice * $detail_->quantity);
+				$row = array(
+					"itemNumber"							=>$detail_->itemNumber,
+					"itemBarCode"							=>$detail_->barCode,
+					"itemName"								=>$detail_->itemName,
+					"itemNameQuantity"						=>sprintf("%01.2f",round($detail_->quantity,2)),
+					"itemNamePrice"							=>sprintf("%01.2f",round($detail_->unitaryPrice,2)),
+					"itemNameCost"							=>sprintf("%01.2f",round($detail_->unitaryCost,2)),
+					"itemNameTotalCost"						=>sprintf("%01.2f",round($detail_->unitaryCost * $detail_->quantity,2)),
+					"itemNameTotalPrice"					=>sprintf("%01.2f",round($detail_->unitaryPrice * $detail_->quantity,2))
+				);
+				array_push($datViewArray["transactionMasterDetail"],$row);		
+			}
+			
+			$datViewArray["quantityItem"]	 				= $cantidad;
+			$datViewArray["totalCost"]		 				= sprintf("%01.2f",$totalCost);
+			$datViewArray["totalPrice"] 					= sprintf("%01.2f",$totalPrice);
+
+			$path				= "";
+			$path    			= PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;    
+			$type    			= pathinfo($path, PATHINFO_EXTENSION);
+			$data    			= file_get_contents($path);
+			$base64  			= 'data:image/' . $type . ';base64,' . base64_encode($data);
+			$datViewArray["imageBase64"]						= $base64;
+			
+			//Obtener imagen de logo marca de agua
+			$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-marca-'.$objParameterLogo->value;   
+			if (file_exists($path)) {
+				$type    					 		= pathinfo($path, PATHINFO_EXTENSION);
+				$data    					 		= file_get_contents($path);
+				$base64  					 		= 'data:image/' . $type . ';base64,' . base64_encode($data);
+				$datViewArray["imageBase64Marca"] 	= $base64;
+			} 
+			
+
+			//Parse plantilla 
+			$parser = \Config\Services::parser();			
+			$html 	= $parser->setData($datViewArray)->renderString($htmlTemplateCompany);
+			$this->dompdf->loadHTML($html);
+			$this->dompdf->render();
+			
+			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+			
+			if($objParameterShowLinkDownload == "true")
+			{
+				$fileNamePut = "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
+				$path        = "./resource/file_company/company_".$companyID."/component_56/component_item_".$transactionMasterID."/".$fileNamePut;
+				
+				file_put_contents(
+					$path , 
+					$this->dompdf->output()
+				);								
+				
+				chmod($path, 644);
+				
+				echo "<a 
+					href='".base_url()."/resource/file_company/company_".$companyID."/component_56/component_item_".$transactionMasterID."/".
+					$fileNamePut."'>download compra</a>
+				"; 				
+
+			}
+			else{			
+				//visualizar
+				$this->dompdf->stream("file.pdf ", ['Attachment' =>  true ]);
+			}
+			
+			
+		}
+		catch(\Exception $ex){
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;		}
+	}
 	function viewRegisterFormatoA4(){
 		try{ 
 			//AUTENTICADO

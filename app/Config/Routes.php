@@ -887,6 +887,8 @@ $routes->match(['get', 'post'], 'app_inventory_inputunpost/viewRegisterFormato80
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/viewRegisterFormato80mmFarmaLey/(:any)', 'app_inventory_inputunpost::viewRegisterFormato80mmFarmaLey');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/viewRegisterFormato80mmFarmaLeyOnlyQuantity', 'app_inventory_inputunpost::viewRegisterFormato80mmFarmaLeyOnlyQuantity');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/viewRegisterFormato80mmFarmaLeyOnlyQuantity/(:any)', 'app_inventory_inputunpost::viewRegisterFormato80mmFarmaLeyOnlyQuantity');
+$routes->match(['get', 'post'], 'app_inventory_inputunpost/viewRegisterFormatoDB', 'app_inventory_inputunpost::viewRegisterFormatoDB');
+$routes->match(['get', 'post'], 'app_inventory_inputunpost/viewRegisterFormatoDB/(:any)', 'app_inventory_inputunpost::viewRegisterFormatoDB');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/delete', 'app_inventory_inputunpost::delete');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/insertElement', 'app_inventory_inputunpost::insertElement');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/insertElement/(:any)', 'app_inventory_inputunpost::insertElement');

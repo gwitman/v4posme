@@ -1730,7 +1730,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'ElektroClima' , address = 'Semáforo de Linda Vista 4 cuadras al Sur; frente al Pali Miraflores.' ,
-	flavorID = 0 /*usuarioID*/,type='elektro'  , abreviature='demo'
+	flavorID = 806 /*usuarioID*/,type='elektro'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
