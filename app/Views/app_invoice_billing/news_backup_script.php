@@ -576,11 +576,12 @@
 					bodyPadding: 10,								
 					listeners:{
 						afterrender: function(form) {
+
 							// Configuración dinámica al "load" del contenedor
 							if(
 								//Si la factura esta aplicada no limpiar la ventana
 								Number(Ext.getCmp('miVentanaPrincipal').down("#txtStatusID").getValue()) == varStatusInvoiceAplicado || 
-								//Si la factura esta registrada , y tiene valores no limpiar la ventana
+								//O  Si la factura esta registrada , y tiene valores no limpiar la ventana
 								(
 									Number(Ext.getCmp('miVentanaPrincipal').down("#txtStatusID").getValue()) == varStatusInvoiceRegistrado && 
 									(
@@ -598,7 +599,10 @@
 								
 							}
 							else
+							{
 								fnConfiguracionLoad(form, objConfigInit );
+							}
+
 						}
 					},
 					items: [
@@ -1167,6 +1171,7 @@
 					// Configuración dinámica al "load" del contenedor
 					indexDBCreate(false);
 					fnConfiguracionLoad(form, objConfigInit );	
+					fnConfiguracionLoad(miVentanaDePago, objConfigInit );	
 					
 					//mandar a cargar la factura cuando es en modo edicion
 					var transactionMasterID 	= '<?php echo $transactionMasterID ?>'
@@ -4167,8 +4172,9 @@
 				}
 
 				// 2️⃣ Limpiar y cargar datos en ComboBox
-				if (comp.xtype === 'combobox' && config.comboStores && config.comboStores[comp.getId()]) {					
-					let storeData = config.comboStores[comp.getId()];
+				if (comp.xtype === 'combobox' && config.comboStores && config.comboStores[comp.getId()]) {			
+					let idCombobox 	= comp.getId();
+					let storeData 	= config.comboStores[comp.getId()];
 
 					if (comp.getStore()) {
 						// Limpiar store antes de cargar
