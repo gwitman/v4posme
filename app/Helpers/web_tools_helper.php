@@ -1390,7 +1390,7 @@ function helper_toCsv(array $data, string $delimiter = ','): string
 
             if (is_numeric($val)) 
 			{
-                $val 					= (float)$val; // asegurar número
+                $val 					= (float)$val; // asegurar nï¿½mero
                 if (floor($val) == $val) 
 				{
                     // entero
@@ -1475,13 +1475,13 @@ function helper_sendFtp($csvContent, $merchanId, $ftpIp, $ftpUser, $ftpPass, $ft
     // 2. Autenticar
     if (!ssh2_auth_password($connection, $ftpUser, $ftpPass)) 
 	{
-       return "Falló la autenticación SFTP.";
+       return "Fallï¿½ la autenticaciï¿½n SFTP.";
     }
     // 3. Inicializar subsistema SFTP
     $sftp 								= ssh2_sftp($connection);	
     if (!$sftp) 
 	{
-        return "No se pudo inicializar la sesión SFTP.";
+        return "No se pudo inicializar la sesiï¿½n SFTP.";
     }	
 	ssh2_sftp_mkdir($sftp, $remoteDir, 0777, true); // crea si no existe
 	$remotePath 						= $remoteDir . $remoteFile;
@@ -1688,6 +1688,14 @@ function helper_CompareDateTime($stringDateTime1,$stringDateTime2)
     ];
 }
 
+function helper_convertirLinkAHtml($text, $label) {
+    $patron = '/https?:\/\/[^\s]+/';
+
+    return preg_replace_callback($patron, function($coincidencia) use ($label) {
+        $url = $coincidencia[0];
+        return '<a href="' . $url . '">' . $label . '</a>';
+    }, $text);
+}
 
 
 

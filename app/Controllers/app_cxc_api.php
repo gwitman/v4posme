@@ -2653,6 +2653,7 @@ class app_cxc_api extends _BaseController {
 		$data["customerPhoneNumber"] 	= getNumberPhoneIsContact(clearNumero(($input["data"]['from'] ?? '')));
 		$data["customerFirstName"]	 	= $input["data"]['contact']['pushname'] ?? '';
 		$data["customerMessage"]	 	= $input["data"]['body'] ?? '';
+		$data["customerMessage"]	 	= helper_convertirLinkAHtml($data["customerMessage"],"ver link");
 		$data["customerMessageType"]	= $input["data"]['type'] ?? '';
 		$data["customerMessageUrl"]		= "";
 		$data["customerMessageFile"]	= "";
