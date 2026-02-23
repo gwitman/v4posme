@@ -543,42 +543,39 @@
 		<?php 
 		$configColumnMetodosPagoCordoba["0"]["Titulo"] 		= "Banco";		
 		$configColumnMetodosPagoCordoba["1"]["Titulo"] 		= "Transferencia C$";				
-		$configColumnMetodosPagoCordoba["3"]["Titulo"] 		= "Tarjeta C$";		
-		$configColumnMetodosPagoCordoba["5"]["Titulo"] 		= "Efectivo C$ ";	
-		$configColumnMetodosPagoCordoba["7"]["Titulo"] 		= "Puntos";		
-		$configColumnMetodosPagoCordoba["8"]["Titulo"] 		= "Total C$";		
+		$configColumnMetodosPagoCordoba["3"]["Titulo"] 		= "Tarjeta C$";	
+		$configColumnMetodosPagoCordoba["7"]["Titulo"] 		= "Puntos";			
 			
 		 
 		$configColumnMetodosPagoCordoba["0"]["FiledSouce"] 		= "Banco";		
 		$configColumnMetodosPagoCordoba["1"]["FiledSouce"] 		= "Transferencia Cordoba";				
-		$configColumnMetodosPagoCordoba["3"]["FiledSouce"] 		= "Tarjeta Cordoba";				
-		$configColumnMetodosPagoCordoba["5"]["FiledSouce"] 		= "Efectivo Cordoba";		
+		$configColumnMetodosPagoCordoba["3"]["FiledSouce"] 		= "Tarjeta Cordoba";		
 		$configColumnMetodosPagoCordoba["7"]["FiledSouce"] 		= "Puntos";		
-		$configColumnMetodosPagoCordoba["8"]["FiledSouce"] 		= "Total Cordoba";		
 		
 		 
 		$configColumnMetodosPagoCordoba["0"]["Formato"] 		= "";		
 		$configColumnMetodosPagoCordoba["1"]["Formato"] 		= "Number";				
 		$configColumnMetodosPagoCordoba["3"]["Formato"] 		= "Number";				
-		$configColumnMetodosPagoCordoba["5"]["Formato"] 		= "Number";				
 		$configColumnMetodosPagoCordoba["7"]["Formato"] 		= "Number";		
-		$configColumnMetodosPagoCordoba["8"]["Formato"] 		= "Number";		
 		
 		 
 		$configColumnMetodosPagoCordoba["0"]["Width"] 		= $width0;		
 		$configColumnMetodosPagoCordoba["1"]["Width"] 		= $width1;		
 		$configColumnMetodosPagoCordoba["3"]["Width"] 		= $width3;	
-		$configColumnMetodosPagoCordoba["5"]["Width"] 		= $width5;	
 		$configColumnMetodosPagoCordoba["7"]["Width"] 		= $width7;	
-		$configColumnMetodosPagoCordoba["8"]["Width"] 		= $width8;	
 		
 		 
 		$configColumnMetodosPagoCordoba["0"]["Total"] 		= False;		
 		$configColumnMetodosPagoCordoba["1"]["Total"] 		= False;		
 		$configColumnMetodosPagoCordoba["3"]["Total"] 		= False;		
-		$configColumnMetodosPagoCordoba["5"]["Total"] 		= False;		
-		$configColumnMetodosPagoCordoba["7"]["Total"] 		= False;		
-		$configColumnMetodosPagoCordoba["8"]["Total"] 		= False;	
+		$configColumnMetodosPagoCordoba["7"]["Total"] 		= False;	
+		
+		$objPaymentMethod = array_filter($objPaymentMethod, function($fila) {
+			return (
+				$fila['Banco'] !== 'EFECTIVO CORDOBA' && 
+				$fila['Banco'] !== 'EFECTIVO DOLARES' && 
+				$fila['Banco'] !== ''); 
+		});
 		
 		$resultadoMetodosPagoCordoba = helper_reporteGeneralCreateTable(
 				$objPaymentMethod,
@@ -1134,33 +1131,23 @@
 	    <?php		
 		$configColumnMetodosPagoDolar["0"]["Titulo"] 		= "Banco";				
 		$configColumnMetodosPagoDolar["2"]["Titulo"] 		= "Transferencia $";				
-		$configColumnMetodosPagoDolar["4"]["Titulo"] 		= "Tarjeta $";				
-		$configColumnMetodosPagoDolar["6"]["Titulo"] 		= "Efectivo $";				
-		$configColumnMetodosPagoDolar["9"]["Titulo"] 		= "Total $";		
+		$configColumnMetodosPagoDolar["4"]["Titulo"] 		= "Tarjeta $";		
 		 
 		$configColumnMetodosPagoDolar["0"]["FiledSouce"] 		= "Banco";				
 		$configColumnMetodosPagoDolar["2"]["FiledSouce"] 		= "Transferencia Dólar";		
-		$configColumnMetodosPagoDolar["4"]["FiledSouce"] 		= "Tarjeta Dólar";		
-		$configColumnMetodosPagoDolar["6"]["FiledSouce"] 		= "Efectivo Dólar";		
-		$configColumnMetodosPagoDolar["9"]["FiledSouce"] 		= "Total Dólar";	
+		$configColumnMetodosPagoDolar["4"]["FiledSouce"] 		= "Tarjeta Dólar";	
 		 
 		$configColumnMetodosPagoDolar["0"]["Formato"] 		= "";				
 		$configColumnMetodosPagoDolar["2"]["Formato"] 		= "Number";	
-		$configColumnMetodosPagoDolar["4"]["Formato"] 		= "Number";	
-		$configColumnMetodosPagoDolar["6"]["Formato"] 		= "Number";	
-		$configColumnMetodosPagoDolar["9"]["Formato"] 		= "Number";				
+		$configColumnMetodosPagoDolar["4"]["Formato"] 		= "Number";				
 		 
 		$configColumnMetodosPagoDolar["0"]["Width"] 		= $width0;				
 		$configColumnMetodosPagoDolar["2"]["Width"] 		= $width2;				
-		$configColumnMetodosPagoDolar["4"]["Width"] 		= $width4;			
-		$configColumnMetodosPagoDolar["6"]["Width"] 		= $width6;			
-		$configColumnMetodosPagoDolar["9"]["Width"] 		= $width9;	
+		$configColumnMetodosPagoDolar["4"]["Width"] 		= $width4;		
 		
 		$configColumnMetodosPagoDolar["0"]["Total"] 		= False;		
 		$configColumnMetodosPagoDolar["2"]["Total"] 		= False;		
-		$configColumnMetodosPagoDolar["4"]["Total"] 		= False;		
-		$configColumnMetodosPagoDolar["6"]["Total"] 		= False;	
-		$configColumnMetodosPagoDolar["9"]["Total"] 		= False;
+		$configColumnMetodosPagoDolar["4"]["Total"] 		= False;	
 		
 		$resultadoMetodosPagoDolar = helper_reporteGeneralCreateTable(
 				$objPaymentMethod,
