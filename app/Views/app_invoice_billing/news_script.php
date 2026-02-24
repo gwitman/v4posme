@@ -1621,6 +1621,7 @@
 	}
 
 	function onCompleteNewItem(objResponse,suma){
+		
 		console.info("CALL onCompleteNewItem");
 		console.info(objResponse);
 		var objRow 							= {};
@@ -2528,6 +2529,13 @@
 			"objListaProductosConceptosX001",
 			"componentItemID",conceptItemID,"none",{},
 			function(e){
+				
+
+				let getData 	= objTableDetail.fnGetData();
+				var x_			= getData.filter(item => item[2] === conceptItemID);
+				var cantidad    = x_[0][columnasTableDetail.cantidad];
+				var precio    	= x_[0][columnasTableDetail.precio];
+
 				var objConcepto = e;
 				var exoneracion = $("#txtCheckApplyExoneracionValue").val();
 
@@ -2536,12 +2544,14 @@
 					objConcepto1 	= jLinq.from(objConcepto).where(function(obj){ return (obj.name === "IVA"); }).select();
 					if( objConcepto1.length > 0 )
 					{
-						objTableDetail.fnUpdate( fnFormatNumber(objConcepto1[0].valueOut,2), objind_, columnasTableDetail.iva );
+						var amount = objConcepto1[0].valueOut;
+						objTableDetail.fnUpdate( fnFormatNumber(amount,2), objind_, columnasTableDetail.iva );
 					}
 					objConcepto2 	= jLinq.from(objConcepto).where(function(obj){ return (obj.name === "TAX_SERVICES"); }).select();
 					if( objConcepto2.length > 0 )
 					{
-						objTableDetail.fnUpdate( fnFormatNumber(objConcepto2[0].valueOut,2), objind_, columnasTableDetail.taxServices );
+						var amount = objConcepto1[0].valueOut;
+						objTableDetail.fnUpdate( fnFormatNumber(amount,2), objind_, columnasTableDetail.taxServices );
 					}
 				}
 				else
@@ -2934,27 +2944,47 @@
 			var NSSystemDetailInvoice		= objTableDetail.fnGetData();
 			var cantidadTemporal 	 		=  $(".txtQuantity")[index].value;
 			var priceTemporal  		 		=  $(".txtPrice")[index].value;
+
+			//Actualizar cantidad y precio
 			objTableDetail.fnUpdate( cantidadTemporal, index, columnasTableDetail.cantidad );
 			objTableDetail.fnUpdate( priceTemporal, index, columnasTableDetail.precio );
 			
+			//Actualizar la cantidad de sku
 			var cantidad 				= parseFloat(NSSystemDetailInvoice[index][columnasTableDetail.cantidad]);
 			var skuRatio    			= parseFloat(NSSystemDetailInvoice[index][columnasTableDetail.ratioSku]);
 			let skuQuantityBySku 		= cantidad * skuRatio;
 			objTableDetail.fnUpdate( skuQuantityBySku, index, columnasTableDetail.skuQuantityBySku );
 			
+			//Actualizar el subo total
 			var precio 					= parseFloat(NSSystemDetailInvoice[index][columnasTableDetail.precio]);
 			var subtotal    			= precio * cantidad;
 			objTableDetail.fnUpdate( fnFormatNumber(subtotal,2), index, columnasTableDetail.total );
 			
+
+			//Actualizar el descuento se guarda el monto del descuento
 			var descuento				= subtotal * (porcentajeDescuento / 100);
 			objTableDetail.fnUpdate( fnFormatNumber(descuento,2) , index, columnasTableDetail.discount );
+			
+			//Actualizar el iva se guarda el porcentaje ejemplo : 0.15
+			var porcentajeIva 			= parseFloat(NSSystemDetailInvoice[index][columnasTableDetail.iva]);  			//0.15			
+			var iva 					= (priceTemporal * cantidadTemporal) * porcentajeIva;
+			
+
+			//Actualisar segundo impuesto se gaurda el porcentaje ejemplo: 0.1
+			var porcentajeTaxServices	= parseFloat(NSSystemDetailInvoice[index][columnasTableDetail.taxServices]); 	//0.1
+			var taxServices 			= (priceTemporal * cantidadTemporal) * porcentajeTaxServices;
+			
 			
 			
 			var NSSystemDetailInvoice		= objTableDetail.fnGetData();
 			var subtotalGeneral 			= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.total]); })).sum().result;			
 			var descuento		 			= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.discount]); })).sum().result;			
-			var ivaGeneral		 			= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.iva]); })).sum().result;			
-			var serviceGeneral		 		= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.taxServices]); })).sum().result;			
+			var ivaGeneral		 			= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ 
+					return parseFloat(a[columnasTableDetail.iva]) * a[columnasTableDetail.cantidad] * a[columnasTableDetail.precio]; 
+			})).sum().result;			
+			var serviceGeneral		 		= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ 
+					return parseFloat(a[columnasTableDetail.taxServices] * a[columnasTableDetail.cantidad] * a[columnasTableDetail.precio]); 
+			})).sum().result;			
 			totalGeneral				    = subtotalGeneral + ivaGeneral + serviceGeneral - descuento;
 			
 			$("#txtSubTotal").val(fnFormatNumber(subtotalGeneral,2));
@@ -2981,8 +3011,12 @@
 			var NSSystemDetailInvoice		= objTableDetail.fnGetData();
 			var subtotalGeneral 			= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.total]); })).sum().result;			
 			var descuento		 			= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.discount]); })).sum().result;			
-			var ivaGeneral		 			= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.iva]); })).sum().result;			
-			var serviceGeneral		 		= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.taxServices]); })).sum().result;			
+			var ivaGeneral		 			= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ 
+					return parseFloat(a[columnasTableDetail.iva]) * a[columnasTableDetail.cantidad] * a[columnasTableDetail.precio]; 
+			})).sum().result;			
+			var serviceGeneral		 		= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ 
+					return parseFloat(a[columnasTableDetail.taxServices] * a[columnasTableDetail.cantidad] * a[columnasTableDetail.precio]); 
+			})).sum().result;	
 			totalGeneral				    = subtotalGeneral + ivaGeneral + serviceGeneral - descuento;
 			
 			$("#txtSubTotal").val(fnFormatNumber(subtotalGeneral,2));
