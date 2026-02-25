@@ -31,11 +31,14 @@ createApp({
 			txtTab2ListWorkflowStage:	[{workflowStageID:205,name:'Mantener'},{workflowStageID:206,name:'Finalizar'}],
 			txtTab2CategoryID:			'',
 			txtTab2StatusID:			'',
+			txtTab2SubCategoryID:		'',
 			txtTab2ListCategoryID:		[],
+			txtTab2ListSubCategoryID:	[],
 			txtTab2ListWorkflowStageCustomer: [],
 			txtTab2Budget:				'',
 			txtTab2Location:			'',
 			txtTab2Reference1:			'',
+			txtTab2AllowWhatsappCollection: false,
 			
 			//Tab 3
 			txtTab3CustomerPhone:		'',
@@ -186,9 +189,11 @@ createApp({
 				this.txtTab2CustomerPhone		= json.objCustomer.phoneNumber;
 				this.txtTab2CategoryID			= json.objCustomer.categoryID;
 				this.txtTab2StatusID			= json.objCustomer.statusID;
+				this.txtTab2SubCategoryID		= json.objCustomer.subCategoryID;
 				this.txtTab2Budget				= json.objCustomer.budget;
 				this.txtTab2Location			= json.objCustomer.location;
 				this.txtTab2Reference1			= json.objCustomer.reference1;
+				this.txtTab2AllowWhatsappCollection = json.objCustomer.allowWhatsappCollection == 1;
 				
 				this.txtTab2ListEmployerAsigned = json.objListEmployerAsigned.map(
 					item => Number(item.entityID)
@@ -197,6 +202,7 @@ createApp({
 				
 				// Cargar catálogos
 				this.txtTab2ListCategoryID 			= json.objListCategoryID || [];
+				this.txtTab2ListSubCategoryID 		= json.objListSubCategoryID || [];
 				this.txtTab2ListWorkflowStageCustomer = json.objListWorkflowStage || [];
 				
 				//Parse los datos de 3 en  3
@@ -236,9 +242,11 @@ createApp({
 						txtTab2WorkflowStageID:		this.txtTab2WorkflowStageID,
 						txtTab2CategoryID:			this.txtTab2CategoryID,
 						txtTab2StatusID:			this.txtTab2StatusID,
+						txtTab2SubCategoryID:		this.txtTab2SubCategoryID,
 						txtTab2Budget:				this.txtTab2Budget,
 						txtTab2Location:			this.txtTab2Location,
-						txtTab2Reference1:			this.txtTab2Reference1
+						txtTab2Reference1:			this.txtTab2Reference1,
+						txtTab2AllowWhatsappCollection: this.txtTab2AllowWhatsappCollection
 					})
 			});		
 			

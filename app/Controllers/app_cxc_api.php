@@ -395,6 +395,7 @@ class app_cxc_api extends _BaseController {
 
 			// Obtener catálogos
 			$objListCategoryID			= $this->core_web_catalog->getCatalogAllItem("tb_customer","categoryID",$companyID);
+			$objListSubCategoryID		= $this->core_web_catalog->getCatalogAllItem("tb_customer","subCategoryID",$companyID);
 			$objListWorkflowStage		= $this->core_web_workflow->getWorkflowInitStage("tb_customer","statusID",$companyID,$branchID,$roleID);
 			
 			return $this->response->setJSON([
@@ -405,6 +406,7 @@ class app_cxc_api extends _BaseController {
 				'objListEmployer'		 => $objListEmployer,
 				'objListEmployerAsigned' => $objListEmployerAsigned,
 				'objListCategoryID'		 => $objListCategoryID,
+				'objListSubCategoryID'	 => $objListSubCategoryID,
 				'objListWorkflowStage'	 => $objListWorkflowStage
 			]);
 			
@@ -915,9 +917,11 @@ class app_cxc_api extends _BaseController {
 		$objCustomer["phoneNumber"] = $phoneNumberNew ?? '';
 		$objCustomer["categoryID"]  = $data['txtTab2CategoryID'] ?? '';
 		$objCustomer["statusID"]    = $data['txtTab2StatusID'] ?? '';
+		$objCustomer["subCategoryID"] = $data['txtTab2SubCategoryID'] ?? '';
 		$objCustomer["budget"]      = $data['txtTab2Budget'] ?? '';
 		$objCustomer["location"]    = $data['txtTab2Location'] ?? '';
 		$objCustomer["reference1"]  = $data['txtTab2Reference1'] ?? '';
+		$objCustomer["allowWhatsappCollection"] = ($data['txtTab2AllowWhatsappCollection'] ?? false) ? 1 : 0;
 		$result 					= $this->Customer_Model->update_app_posme($companyID,$branchID,$entityID,$objCustomer);
 		
 		//Actualizar Natural

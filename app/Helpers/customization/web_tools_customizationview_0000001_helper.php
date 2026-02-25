@@ -429,10 +429,10 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
 		}
 		
 		//Validar que el campo sea solo numero
-		var regexOnlyNumber = /^[0-9]+$/;		
+		var regexOnlyNumber = /^[0-9+\-#().\s]+$/;
 		if (!regexOnlyNumber.test($('#txtRealStatePhone').val())) 
 		{
-			fnShowNotification('El campo Telefono solo puede contener numeros ','error',timerNotification);
+			fnShowNotification('El campo Teléfono solo puede contener números y los caracteres + - # . ( )','error',timerNotification);
 			result = false;
 		}
 		
@@ -519,7 +519,7 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
 			}); 
 			
 			
-		}); 
+		});  
 		</script> 
 		",
 		strtolower('luciaralstate_app_cxc_customer_divScriptValideFunction') 	 								=> "
@@ -529,7 +529,7 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
 			result = false;
 		}
 		
-		if(!/^\d+$/.test(   $('#txtPhoneNumber').val()   )){
+		if(!/^[0-9+\-#().\s]+$/.test(   $('#txtPhoneNumber').val()   )){
             fnShowNotification('Escribir Telefono solo puede tener números','error',timerNotification);
 			result = false;
         } 

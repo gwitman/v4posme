@@ -282,6 +282,22 @@
 			  </div>
 			  
 			  <div class="mb-3">
+				  <label for="txtTab2SubCategoryID" class="form-label">Sub Categoría</label>
+				  <select class="form-select" 
+					id="txtTab2SubCategoryID" aria-label="Sub Categoría"
+					v-model="txtTab2SubCategoryID"
+				  >
+					<option value="">Seleccione una sub categoría</option>
+					<option
+						v-for="(objSubCategory, index) in txtTab2ListSubCategoryID"  
+						:key="index"
+						:value="objSubCategory.catalogItemID"  
+						>{{ objSubCategory.name }}</option>
+						
+				  </select>
+			  </div>
+			  
+			  <div class="mb-3">
 				<label for="txtTab2Budget" class="form-label">Presupuesto</label>
 				<input
 				  type="text"
@@ -312,6 +328,20 @@
 				  v-model="txtTab2Reference1"
 				  placeholder="Referencia 1" 
 				/>
+			  </div>
+			  
+			  <div class="mb-3">
+				<div class="form-check">
+				  <input
+					class="form-check-input"
+					type="checkbox"
+					id="txtTab2AllowWhatsappCollection"
+					v-model="txtTab2AllowWhatsappCollection"
+				  />
+				  <label class="form-check-label" for="txtTab2AllowWhatsappCollection">
+					Permite cobro por WhatsApp
+				  </label>
+				</div>
 			  </div>
 			  
 			   <!-- Advance Styling Options -->
