@@ -249,6 +249,71 @@
 				  </select>
 			  </div>
 			  
+			  <div class="mb-3">
+				  <label for="txtTab2CategoryID" class="form-label">Interes</label>
+				  <select class="form-select" 
+					id="txtTab2CategoryID" aria-label="Categoría"
+					v-model="txtTab2CategoryID"
+				  >
+					<option value="">Seleccione una categoría</option>
+					<option
+						v-for="(objCategory, index) in txtTab2ListCategoryID"  
+						:key="index"
+						:value="objCategory.catalogItemID"  
+						>{{ objCategory.name }}</option>
+						
+				  </select>
+			  </div>
+			  
+			  <div class="mb-3">
+				  <label for="txtTab2StatusID" class="form-label">Estado</label>
+				  <select class="form-select" 
+					id="txtTab2StatusID" aria-label="Estado"
+					v-model="txtTab2StatusID"
+				  >
+					<option value="">Seleccione un estado</option>
+					<option
+						v-for="(objStatus, index) in txtTab2ListWorkflowStageCustomer"  
+						:key="index"
+						:value="objStatus.workflowStageID"  
+						>{{ objStatus.name }}</option>
+						
+				  </select>
+			  </div>
+			  
+			  <div class="mb-3">
+				<label for="txtTab2Budget" class="form-label">Presupuesto</label>
+				<input
+				  type="text"
+				  class="form-control"
+				  id="txtTab2Budget"
+				  v-model="txtTab2Budget" 
+				  placeholder="Budget" 
+				/>
+			  </div>
+			  
+			  <div class="mb-3">
+				<label for="txtTab2Location" class="form-label">Ubicación</label>
+				<input
+				  type="text"
+				  class="form-control"
+				  id="txtTab2Location"
+				  v-model="txtTab2Location"
+				  placeholder="Location" 
+				/>
+			  </div>
+			  
+			  <div class="mb-3">
+				<label for="txtTab2Reference1" class="form-label">Id Encuentra 24</label>
+				<input
+				  type="text"
+				  class="form-control"
+				  id="txtTab2Reference1"
+				  v-model="txtTab2Reference1"
+				  placeholder="Referencia 1" 
+				/>
+			  </div>
+			  
 			   <!-- Advance Styling Options -->
               
               <div class="row">

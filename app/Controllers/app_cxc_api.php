@@ -277,6 +277,10 @@ class app_cxc_api extends _BaseController {
 			$txtWorkflowStatusID	= $data['txtWorkflowStatusID'] ?? null;
 
 			//Obtener datos
+			$companyID 	= $dataSession["user"]->companyID;
+			$branchID 	= $dataSession["user"]->branchID;
+			$roleID 	= $dataSession["role"]->roleID;
+			
 			$data = $this->
 			Customer_Conversation_Model->
 			getBy_StartOn_EndOn_EmployerID_InboxID_StatusID(
@@ -372,7 +376,8 @@ class app_cxc_api extends _BaseController {
 			
 			//Obtener los datos del cliente		
 			$companyID 					= $dataSession["user"]->companyID;			
-			$branchID					= $dataSession["user"]->branchID;			
+			$branchID					= $dataSession["user"]->branchID;
+			$roleID 					= $dataSession["role"]->roleID;
 			$objCustomer 				= $this->Customer_Model->get_rowByEntity($companyID,$entityID);
 			$objNatural 				= $this->Natural_Model->get_rowByPK($companyID,$branchID,$entityID);
 			$objListEmployerAll			= $this->Employee_Model->get_rowByCompanyID($companyID);
@@ -388,6 +393,9 @@ class app_cxc_api extends _BaseController {
 				}
 			}
 
+			// Obtener catálogos
+			$objListCategoryID			= $this->core_web_catalog->getCatalogAllItem("tb_customer","categoryID",$companyID);
+			$objListWorkflowStage		= $this->core_web_workflow->getWorkflowInitStage("tb_customer","statusID",$companyID,$branchID,$roleID);
 			
 			return $this->response->setJSON([
 				'success' 				 => true,
@@ -395,7 +403,9 @@ class app_cxc_api extends _BaseController {
 				'objCustomer' 	  		 => $objCustomer,
 				'objNatural'			 => $objNatural,
 				'objListEmployer'		 => $objListEmployer,
-				'objListEmployerAsigned' => $objListEmployerAsigned
+				'objListEmployerAsigned' => $objListEmployerAsigned,
+				'objListCategoryID'		 => $objListCategoryID,
+				'objListWorkflowStage'	 => $objListWorkflowStage
 			]);
 			
 		}
@@ -902,7 +912,12 @@ class app_cxc_api extends _BaseController {
 		$companyID					= $dataSession["user"]->companyID;		
 		$branchID					= $dataSession["user"]->branchID;
 		$objCustomer 				= array();
-		$objCustomer["phoneNumber"] = $phoneNumberNew ?? '';		
+		$objCustomer["phoneNumber"] = $phoneNumberNew ?? '';
+		$objCustomer["categoryID"]  = $data['txtTab2CategoryID'] ?? '';
+		$objCustomer["statusID"]    = $data['txtTab2StatusID'] ?? '';
+		$objCustomer["budget"]      = $data['txtTab2Budget'] ?? '';
+		$objCustomer["location"]    = $data['txtTab2Location'] ?? '';
+		$objCustomer["reference1"]  = $data['txtTab2Reference1'] ?? '';
 		$result 					= $this->Customer_Model->update_app_posme($companyID,$branchID,$entityID,$objCustomer);
 		
 		//Actualizar Natural

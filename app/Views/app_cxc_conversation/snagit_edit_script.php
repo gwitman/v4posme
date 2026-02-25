@@ -29,6 +29,13 @@ createApp({
 			txtTab2ListEmployerAsigned: [],
 			txtTab2WorkflowStageID:		205,
 			txtTab2ListWorkflowStage:	[{workflowStageID:205,name:'Mantener'},{workflowStageID:206,name:'Finalizar'}],
+			txtTab2CategoryID:			'',
+			txtTab2StatusID:			'',
+			txtTab2ListCategoryID:		[],
+			txtTab2ListWorkflowStageCustomer: [],
+			txtTab2Budget:				'',
+			txtTab2Location:			'',
+			txtTab2Reference1:			'',
 			
 			//Tab 3
 			txtTab3CustomerPhone:		'',
@@ -176,12 +183,21 @@ createApp({
 				// ðŸŸ¢ CASO 3: success = true con datos
 				this.mensaje 					= '';
 				this.txtTab2CustomerName		= json.objNatural.firstName;
-				this.txtTab2CustomerPhone		= json.objCustomer.phoneNumber;				
+				this.txtTab2CustomerPhone		= json.objCustomer.phoneNumber;
+				this.txtTab2CategoryID			= json.objCustomer.categoryID;
+				this.txtTab2StatusID			= json.objCustomer.statusID;
+				this.txtTab2Budget				= json.objCustomer.budget;
+				this.txtTab2Location			= json.objCustomer.location;
+				this.txtTab2Reference1			= json.objCustomer.reference1;
 				
 				this.txtTab2ListEmployerAsigned = json.objListEmployerAsigned.map(
 					item => Number(item.entityID)
 				);
 				this.txtTab3CustomerPhone		= json.objCustomer.phoneNumber;
+				
+				// Cargar catÃ¡logos
+				this.txtTab2ListCategoryID 			= json.objListCategoryID || [];
+				this.txtTab2ListWorkflowStageCustomer = json.objListWorkflowStage || [];
 				
 				//Parse los datos de 3 en  3
 				//this.txtTab2ListEmployer		= json.objListEmployer;
@@ -217,7 +233,12 @@ createApp({
 						txtTab2CustomerName: 		this.txtTab2CustomerName,
 						txtTab2CustomerPhone:		this.txtTab2CustomerPhone,
 						txtTab2ListEmployerAsigned:	this.txtTab2ListEmployerAsigned,
-						txtTab2WorkflowStageID:		this.txtTab2WorkflowStageID
+						txtTab2WorkflowStageID:		this.txtTab2WorkflowStageID,
+						txtTab2CategoryID:			this.txtTab2CategoryID,
+						txtTab2StatusID:			this.txtTab2StatusID,
+						txtTab2Budget:				this.txtTab2Budget,
+						txtTab2Location:			this.txtTab2Location,
+						txtTab2Reference1:			this.txtTab2Reference1
 					})
 			});		
 			
@@ -252,12 +273,12 @@ createApp({
 		},
         async fnGuardarNotification() {
 			
-			// ?? VALIDACI¨®N
+			// ?? VALIDACIï¿½ï¿½N
 		    if (!this.txtTab3CustomerMessage || this.txtTab3CustomerMessage.trim() === '') {
 				 this.message       = 'El mensaje no puede estar vacio';
 				 this.mostrarAlerta = true;
 				 this.error         = true;
-				 return; // ? Detiene el env¨ªo
+				 return; // ? Detiene el envï¿½ï¿½o
 		    }
 		  
 			this.guardando 	= true;		
@@ -301,7 +322,7 @@ createApp({
 				this.mostrarAlerta 			= true;
 				this.error 					= true;
 				this.guardando 				= false;
-				// ?? Aqu¨ª limpiamos el input
+				// ?? Aquï¿½ï¿½ limpiamos el input
 				this.clearFileInput();
 				return;
 			}
@@ -317,7 +338,7 @@ createApp({
 				this.mostrarAlerta 			= true;
 				this.error 					= true;
 				this.guardando 				= false;
-				// ?? Aqu¨ª limpiamos el input
+				// ?? Aquï¿½ï¿½ limpiamos el input
 				this.clearFileInput();
 				return;
 			}
@@ -335,14 +356,14 @@ createApp({
 			this.mostrarAlerta 			= true;
 			this.error 					= false;
             this.guardando 				= false;
-			// ?? Aqu¨ª limpiamos el input
+			// ?? Aquï¿½ï¿½ limpiamos el input
 			this.clearFileInput();
             
         },
 		async fnClearNotification() {
 			this.txtTab3CustomerMessage = '';
 			this.imageFile 				= false;
-			// ?? Aqu¨ª limpiamos el input
+			// ?? Aquï¿½ï¿½ limpiamos el input
 			this.clearFileInput();
 		}
     },
