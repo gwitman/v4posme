@@ -250,7 +250,7 @@
 			  </div>
 			  
 			  <div class="mb-3">
-				  <label for="txtTab2CategoryID" class="form-label">Interes</label>
+				  <label for="txtTab2CategoryID" class="form-label"><?php echo getBehavio($company->type,"app_cxc_customer","Categoria",""); ?></label>
 				  <select class="form-select" 
 					id="txtTab2CategoryID" aria-label="Categoría"
 					v-model="txtTab2CategoryID"
@@ -298,7 +298,7 @@
 			  </div>
 			  
 			  <div class="mb-3">
-				<label for="txtTab2Budget" class="form-label">Presupuesto</label>
+				<label for="txtTab2Budget" class="form-label">Presupuesto U$</label>
 				<input
 				  type="text"
 				  class="form-control"
@@ -309,7 +309,7 @@
 			  </div>
 			  
 			  <div class="mb-3">
-				<label for="txtTab2Location" class="form-label">Ubicación</label>
+				<label for="txtTab2Location" class="form-label"><?php echo getBehavio($company->type,"app_cxc_customer","txtDomicilio","Domicilio"); ?></label>
 				<input
 				  type="text"
 				  class="form-control"
@@ -320,7 +320,7 @@
 			  </div>
 			  
 			  <div class="mb-3">
-				<label for="txtTab2Reference1" class="form-label">Id Encuentra 24</label>
+				<label for="txtTab2Reference1" class="form-label"><?php echo getBehavio($company->type,"app_cxc_customer","Referencia1",""); ?></label>
 				<input
 				  type="text"
 				  class="form-control"

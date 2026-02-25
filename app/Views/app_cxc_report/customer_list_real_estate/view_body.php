@@ -31,6 +31,35 @@
 												</div>
 											</div>
 											
+											
+											<div class="form-group">
+												<label class="col-lg-6 control-label" for="selectFilter">Mostrar</label>
+												<div class="col-lg-6"> 
+													<div class="col-lg-6">
+													</div>
+													<div class="col-lg-6">
+														<select name="txtSubCategoryID" id="txtSubCategoryID" class="select2">
+																<?php 
+																	if($objListSubCategory)
+																	{
+																		foreach($objListSubCategory as $category)
+																		{
+																			if($category->name == getBehavio($company->type,"app_cxc_report","customerListRealState_DefaultSubCategory","CLIENTE"))
+																			{
+																				echo "<option selected value='".$category->catalogItemID."'>".$category->name."</option>";
+																			}
+																			else
+																			{
+																				echo "<option value='".$category->catalogItemID."'>".$category->name."</option>";
+																			}
+																		}	
+																	}
+																?>
+														</select>
+													</div>													
+												</div>
+											</div>
+
 											<div class="form-group">
 												<label class="col-lg-6 control-label" for="selectFilter">Mostrar</label>
 												<div class="col-lg-6"> 

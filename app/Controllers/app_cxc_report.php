@@ -1834,12 +1834,14 @@ class app_cxc_report extends _BaseController {
 			$endOn					= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri
 			$showActivos			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"showActivos");//--finuri
 			$warehouseID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"warehouseID");//--finuri
+			$subCategoryID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"subCategoryID");//--finuri
 			
 			if(!($viewReport && $startOn && $endOn  )){
 				
 				//Renderizar Resultado 
 				$dataSession["objListCategoryItem"]		= $this->Itemcategory_Model->getByCompany($companyID);
 				$dataSession["objListWarehouse"]		= $this->Userwarehouse_Model->getRowByUserID($companyID,$userID);
+				$dataSession["objListSubCategory"]		= $this->core_web_catalog->getCatalogAllItem("tb_customer","subCategoryID",$companyID);
 				$dataSession["message"]					= $this->core_web_notification->get_message();
 				$dataSession["head"]					= /*--inicio view*/ view('app_cxc_report/customer_list_real_estate/view_head');//--finview
 				$dataSession["body"]					= /*--inicio view*/ view('app_cxc_report/customer_list_real_estate/view_body',$dataSession);//--finview
@@ -1879,15 +1881,17 @@ class app_cxc_report extends _BaseController {
 										u.`Comentario 2`,
 										u.`Ubicacion`,
 										u.`Forma de contacto`,
-										u.`Email`
+										u.`Email`,
+										u.`Sub Categoria` 
 									FROM 
 										vw_cxc_customer_list_real_estate u 
 									WHERE 
-										u.Contacto between ? and ? ; 
+										u.Contacto between ? and ? and 
+										u.subCategoryID = ? 
 								";				
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
-					[$startOn,$endOn]
+					[$startOn,$endOn,$subCategoryID]
 				);
 				
 				

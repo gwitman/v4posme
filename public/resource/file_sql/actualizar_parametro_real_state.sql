@@ -14,7 +14,7 @@ WHERE
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "103" 
+	tb_company_parameter.value = "5117" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CXC_SUBCATEGORY_ID_DEFAULT";## Sub Categoria por defecto
