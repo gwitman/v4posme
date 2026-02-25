@@ -2811,7 +2811,8 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 						APP_COMPANY, 
 						$row, 
 						getNumberPhone(clearNumero($phone)),
-						true
+						true,
+						""
 					);
 				}
 				
@@ -2833,7 +2834,8 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 					APP_COMPANY, 
 					$tabla, 
 					getNumberPhone(clearNumero($phoneEmployer)),
-					true
+					true,
+					""
 				);
 			}
 		}

@@ -537,7 +537,8 @@ class app_purchase_taller extends _BaseController {
 									$objCompany->companyID,
 									$themplate,
 									getNumberPhone(clearNumero($numerDestino)),
-									false
+									false,
+									""
 							);
 							
 						}
@@ -876,7 +877,8 @@ class app_purchase_taller extends _BaseController {
 									$objCompany->companyID,
 									$themplate,
 									getNumberPhone(clearNumero($numerDestino)),
-									false
+									false,
+									""
 							);
 							
 						}

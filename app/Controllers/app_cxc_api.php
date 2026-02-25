@@ -761,7 +761,8 @@ class app_cxc_api extends _BaseController {
 				$companyID, 
 				$message, 
 				getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)),
-				true				
+				true,
+				""				
 			);
 		}
 		else
@@ -2292,7 +2293,8 @@ class app_cxc_api extends _BaseController {
 				$objCompany->companyID, 
 				"Test de whatsapp:".$objCompany->name, 
 				clearNumero($phone),
-				true
+				true,
+				""
 			);
 			log_message("error","input: fin del proceso");
 			return;
@@ -2669,6 +2671,8 @@ class app_cxc_api extends _BaseController {
         // Extraer datos básicos       
 		log_message("error","input: init process message");
 		log_message('error', print_r($input,true));
+
+		
 		$data["customerPhoneNumber"] 	= getNumberPhoneIsContact(clearNumero(($input["data"]['from'] ?? '')));
 		$data["customerFirstName"]	 	= $input["data"]['contact']['pushname'] ?? '';
 		$data["customerMessage"]	 	= $input["data"]['body'] ?? '';
@@ -2796,7 +2800,8 @@ class app_cxc_api extends _BaseController {
 				$objCompany->companyID, 
 				"Test de whatsapp:".$objCompany->name, 
 				getNumberPhone(clearNumero($phone)),
-				true
+				true,
+				""
 			);
 			log_message("error","input: fin del proceso");
 			return;
@@ -2896,24 +2901,56 @@ class app_cxc_api extends _BaseController {
 		log_message("error",print_r($lastActivityOnOld,true));
 		log_message("error",print_r($lastActivityOnNew,true));
 		log_message("error",print_r($diferenceDate,true));		
-		//Han pasado almenos 5 minutos desde el utlimo mensaje
-		if($diferenceDate["comparador"] == "-1" && ((int)$diferenceDate["segundos"]) >=  10 )
-		{			
-			log_message("error","Enviar mensaje colaboradores asignados");
-			$urlSend		= base_url()."/app_cxc_conversation/edit/entityID/".$objCustomer[0]->entityID;
-			$whatsappLink 	= urlencode($urlSend);
-			$short 			= file_get_contents("https://is.gd/create.php?format=simple&url=$whatsappLink");
 		
-			$this->core_web_conversation->notificationEmployerInConversation(
-				$dataSession["company"]->companyID,
-				$dataSession["user"]->branchID,
-				$dataSession["company"]->type,
-				$objCustomerConversation[0]->conversationID,
-			"📩 *Cliente:".$objCustomer[0]->firstName."* ha enviado un mensaje 
+		if( $dataSession["company"]->type == "luciaralstate" )
+		{
+			//Han pasado almenos 10 segundos desde el utlimo mensaje
+			//Y el numero no esta bloqueado
+			if(
+				$diferenceDate["comparador"] == "-1" && 
+				((int)$diferenceDate["segundos"]) >=  10 &&  
+				$objCustomer[0]->allowWhatsappCollection == 1  
+			)
+			{			
+				log_message("error","Enviar mensaje colaboradores asignados");
+				$urlSend		= base_url()."/app_cxc_conversation/edit/entityID/".$objCustomer[0]->entityID;
+				$whatsappLink 	= urlencode($urlSend);
+				$short 			= file_get_contents("https://is.gd/create.php?format=simple&url=$whatsappLink");
+			
+				$this->core_web_conversation->notificationEmployerInConversation(
+					$dataSession["company"]->companyID,
+					$dataSession["user"]->branchID,
+					$dataSession["company"]->type,
+					$objCustomerConversation[0]->conversationID,
+				"📩 *Cliente:".$objCustomer[0]->firstName."* ('".$objCustomer[0]->entityID."') ha enviado un mensaje 
 
-👉 Por favor, respóndelo en el siguiente enlace:
-🌐 ".$short
-			);		
+	👉 Por favor, respóndelo en el siguiente enlace:
+	🌐 ".$short
+				);		
+			}
+
+		}
+		else 
+		{
+			//Han pasado almenos 10 segundos desde el utlimo mensaje
+			if($diferenceDate["comparador"] == "-1" && ((int)$diferenceDate["segundos"]) >=  10 )
+			{			
+				log_message("error","Enviar mensaje colaboradores asignados");
+				$urlSend		= base_url()."/app_cxc_conversation/edit/entityID/".$objCustomer[0]->entityID;
+				$whatsappLink 	= urlencode($urlSend);
+				$short 			= file_get_contents("https://is.gd/create.php?format=simple&url=$whatsappLink");
+			
+				$this->core_web_conversation->notificationEmployerInConversation(
+					$dataSession["company"]->companyID,
+					$dataSession["user"]->branchID,
+					$dataSession["company"]->type,
+					$objCustomerConversation[0]->conversationID,
+				"📩 *Cliente:".$objCustomer[0]->firstName."* ('".$objCustomer[0]->entityID."') ha enviado un mensaje 
+
+	👉 Por favor, respóndelo en el siguiente enlace:
+	🌐 ".$short
+				);		
+			}
 		}
 		
 		

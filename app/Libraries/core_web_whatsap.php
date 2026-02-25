@@ -195,20 +195,20 @@ class core_web_whatsap {
 		return true;
    }
 
-   function sendMessageGeneric( $typeCompany,$companyID, $message, $phoneDestino,$esperarRespuesta)
+   function sendMessageGeneric( $typeCompany,$companyID, $message, $phoneDestino,$esperarRespuesta,$instanciaName)
    {
 	   if($typeCompany == "posme")
 	   {
-		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino,$esperarRespuesta);
+		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino,$esperarRespuesta,$instanciaName);
 		   //return $this->sendMessageZAPIioText( $companyID, $message, $phoneDestino);		   
 	   }
 	   else if ($typeCompany == "gymJalapa")
 	   {   
-		   return $this->sendMessageWapi2Text( $companyID, $urlImagen,$message, $phoneDestino,$esperarRespuesta );
+		   return $this->sendMessageWapi2Text( $companyID,$message, $phoneDestino,$esperarRespuesta ,$instanciaName);
 	   }
 	   else if ($typeCompany == "arteDigital")
 	   {
-		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino,$esperarRespuesta);
+		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino,$esperarRespuesta,$instanciaName);
 	   }
 	   else if ($typeCompany == "globalpro")
 	   {
@@ -216,10 +216,10 @@ class core_web_whatsap {
 	   }
 	   else
 	   {
-		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino,$esperarRespuesta);
+		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino,$esperarRespuesta,$instanciaName);
 	   }
    }
-   function sendMessageTypeImagGeneric( $typeCompany,$companyID, $urlImagen,$message, $phoneDestino,$esperarRespuesta )
+   function sendMessageTypeImagGeneric( $typeCompany,$companyID, $urlImagen,$message, $phoneDestino,$esperarRespuesta,$instanciaName )
    {
 	   if($typeCompany == "")
 	   {
@@ -228,21 +228,21 @@ class core_web_whatsap {
 	   }
 	   else if ($typeCompany == "posme")
 	   {   
-		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino,$esperarRespuesta );
+		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino,$esperarRespuesta ,$instanciaName);
 		   //return $this->sendMessageZAPIioImage( $companyID, $urlImagen,$message, $phoneDestino );
 		   
 	   }
 	   else if ($typeCompany == "gymJalapa")
 	   {   
-		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino ,$esperarRespuesta);
+		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino ,$esperarRespuesta,$instanciaName);
 	   }
 	   else if ($typeCompany == "arteDigital")
 	   {
-		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino,$esperarRespuesta );
+		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino,$esperarRespuesta ,$instanciaName);
 	   }
 	   else
 	   {
-		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino ,$esperarRespuesta);
+		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino ,$esperarRespuesta,$instanciaName);
 	   }
    }
    function sendMessageTypePdfGeneric( $typeCompany,$companyID, $urlPdf,$fileName,$message, $phoneDestino,$esperarRespuesta )
@@ -1192,7 +1192,7 @@ class core_web_whatsap {
 
 
    }
-   function sendMessageWapi2Text( $companyID, $message, $phoneDestino,$esperarRespuesta)
+   function sendMessageWapi2Text( $companyID, $message, $phoneDestino,$esperarRespuesta,$instanciaName)
    {
 	   //password: 180389Witman
 		//usuario: wgonzalez@gruposi.com
@@ -1304,7 +1304,7 @@ class core_web_whatsap {
 		//		exit($ex->getMessage());
 		//}
    }
-   function sendMessageWapi2Image( $companyID,$urlImagen, $message, $phoneDestino,$esperarRespuesta)
+   function sendMessageWapi2Image( $companyID,$urlImagen, $message, $phoneDestino,$esperarRespuesta,$instanciaName)
    {
 	   //password: 180389Witman
 		//usuario: wgonzalez@gruposi.com
@@ -1325,7 +1325,7 @@ class core_web_whatsap {
 			$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
 			$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
 
-			$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
+			$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION".$instanciaName);
 			$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
 			$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
 
