@@ -906,7 +906,7 @@ class core_web_conversation{
 						$mensaje, 
 						getNumberPhone(clearNumero($phone)),
 						true,
-						"SECUNDARY"
+						"_SECUNDARY"
 					);			
 				
 				}
@@ -947,28 +947,6 @@ class core_web_conversation{
 					);			
 				
 				}
-				
-				//wg-other-companyType-foreach($objListEmployerConversation as $employer)
-				//wg-other-companyType-{
-				//wg-other-companyType-	//Obtener el numero de telefono del colaborador
-				//wg-other-companyType-	$phone = $Entity_Phone_Model->get_rowByPrimaryEntity($companyID,$branchID,$employer->entityID);				
-				//wg-other-companyType-	if(!$phone)
-				//wg-other-companyType-		continue;
-				//wg-other-companyType-	
-				//wg-other-companyType-	$phone = clearNumero($phone[0]->number);
-				//wg-other-companyType-	if(
-				//wg-other-companyType-		$phone == "50584766457" ||
-				//wg-other-companyType-		$phone == "50587125827"
-				//wg-other-companyType-	)
-				//wg-other-companyType-		continue;
-				//wg-other-companyType-	
-				//wg-other-companyType-	$core_web_whatsap->sendMessageGeneric(
-				//wg-other-companyType-		$companyType,
-				//wg-other-companyType-		$companyID, 
-				//wg-other-companyType-		$mensaje, 
-				//wg-other-companyType-		$phone	
-				//wg-other-companyType-	);				
-				//wg-other-companyType-}
 			}
 			
 		}

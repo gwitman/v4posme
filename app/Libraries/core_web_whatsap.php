@@ -1213,7 +1213,7 @@ class core_web_whatsap {
 			$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
 			$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
 
-			$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
+			$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION".$instanciaName);
 			$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
 			$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
 
