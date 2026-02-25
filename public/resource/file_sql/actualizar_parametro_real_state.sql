@@ -7,6 +7,13 @@
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "8d44de29-91ae-4828-b8b5-25cce402be37" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION_SECUNDARY"; ##Segunda session_ especial para envio de notificaciones
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "373" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
