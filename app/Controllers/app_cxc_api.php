@@ -658,18 +658,23 @@ class app_cxc_api extends _BaseController {
 				log_message("error",print_r($dataResult,true));			
 				return $this->response->setJSON($dataResult);
 			}
-			if (!in_array($file->getMimeType(), [
-				'image/png',
-				'image/jpeg',
-				'image/jpg',
-				'image/webp',
-				'application/pdf'
-				])
+
+			log_message("error","setConversationNotification_ByCustomer >> formato del archivo ". $file->getMimeType() );	
+			if (!in_array(
+					$file->getMimeType(), [
+					'image/png',
+					'image/jpeg',
+					'image/jpg',
+					'image/webp',
+					'application/pdf',
+					'video/webm'
+					]
+				)
 			) 
 			{				
 				$dataResult = [			
 					'success' => false,
-					'message' => 'Formato no permitido',
+					'message' => 'Formato no permitido ' .$file->getMimeType()  ,
 					'data' 	  => []
 				];
 				
@@ -678,8 +683,7 @@ class app_cxc_api extends _BaseController {
 				return $this->response->setJSON($dataResult);				
 			}
 			// Generar nombre único
-			$newName 		= $file->getRandomName();
-			
+			$newName 		= $file->getRandomName();			
 			$fileMimeType 	= $file->getMimeType();
 			$fileClientName = $file->getClientName();	
 			$urlPath 		= "/company_2/component_".$objComponentCustomerConversation->componentID."/component_item_".$objCustomerConversation[0]->conversationID;
@@ -781,7 +785,22 @@ class app_cxc_api extends _BaseController {
 					$fileClientName,
 					$message,
 					getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)),
-					true
+					true,
+					""
+				);
+			}
+			else if($fileMimeType == "video/webm")
+			{
+				log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de audio / video ".$fileClientName);						
+				$result = $this->core_web_whatsap->sendMessageTypeVideoAudioGeneric(
+					$typeCompany,
+					$companyID, 
+					$urlPublic, 
+					$fileClientName,
+					$message,
+					getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)),
+					true,
+					""
 				);
 			}
 			else
@@ -793,7 +812,8 @@ class app_cxc_api extends _BaseController {
 					$urlPublic, 
 					$message,
 					getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)),
-					true
+					true,
+					""
 				);
 			}
 		}

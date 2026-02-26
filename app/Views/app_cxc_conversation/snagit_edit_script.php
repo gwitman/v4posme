@@ -18,6 +18,21 @@ createApp({
 			sonidoReproducido:			false,
 			parametroNoDebeVerFoto:			<?php echo $objParameterCONVERSATION_LIST_CONVERSATION_NOT_PHOTE; ?>,
 			parametroNoDebeEscucharSonido:	<?php echo $objParameterCONVERSATION_LIST_CONVERSATION_NOT_BELL; ?>,
+			unreadCount:				0,
+			
+			//Tab 1 - Nuevas variables para envío desde tab 1
+			txtTab1Message:				'',
+			txtTab1File:				null,
+			txtTab1ImagePreview:		null,
+			txtTab1PastedImage:			null,
+			
+			// Variables para grabación de audio
+			isRecording:				false,
+			mediaRecorder:				null,
+			audioChunks:				[],
+			txtTab1AudioBlob:			null,
+			recordingTime:				0,
+			recordingInterval:			null,
 			
 			//Tab 1 
 			objListNotification: 		[],			
@@ -125,6 +140,10 @@ createApp({
 				// 🟢 CASO 3: success = true con datos				
 				this.mensaje 				= '';
 				this.objListNotification 	= json.data; // 🔥 aquí Vue limpia y vuelve a renderizar
+				
+				// Contar mensajes no leídos
+				this.unreadCount = json.data.filter(msg => msg.isRead == 0).length;
+				
 				this.verificarMensajesNoLeidos(json.data);
 			
 			} 
@@ -162,6 +181,179 @@ createApp({
 			  }
 		  });
 			
+		},
+		
+		// TAB 1 - Nuevos métodos para envío desde tab 1
+		handlePaste(event) {
+			const items = event.clipboardData.items;
+			for (let i = 0; i < items.length; i++) {
+				if (items[i].type.indexOf('image') !== -1) {
+					event.preventDefault();
+					const blob = items[i].getAsFile();
+					this.txtTab1PastedImage = blob;
+					
+					// Crear preview
+					const reader = new FileReader();
+					reader.onload = (e) => {
+						this.txtTab1ImagePreview = e.target.result;
+					};
+					reader.readAsDataURL(blob);
+					break;
+				}
+			}
+		},
+		clearPastedImage() {
+			this.txtTab1ImagePreview = null;
+			this.txtTab1PastedImage = null;
+		},
+		onTab1FileChange(e) {
+			this.txtTab1File = e.target.files[0];
+			// Limpiar imagen pegada si se selecciona un archivo
+			this.clearPastedImage();
+		},
+		clearTab1File() {
+			this.txtTab1File = null;
+		},
+		clearTab1Message() {
+			this.txtTab1Message = '';
+			this.clearTab1File();
+			this.clearPastedImage();
+			this.clearRecordedAudio();
+		},
+		// Métodos para grabación de audio
+		async startRecording() {
+			try {
+				const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+				this.mediaRecorder = new MediaRecorder(stream);
+				this.audioChunks = [];
+				this.recordingTime = 0;
+				
+				this.mediaRecorder.ondataavailable = (event) => {
+					this.audioChunks.push(event.data);
+				};
+				
+				this.mediaRecorder.onstop = () => {
+					const audioBlob = new Blob(this.audioChunks, { type: 'audio/ogg; codecs=opus' });
+					this.txtTab1AudioBlob = audioBlob;
+					
+					// Detener el stream
+					stream.getTracks().forEach(track => track.stop());
+					
+					// Detener el contador
+					if (this.recordingInterval) {
+						clearInterval(this.recordingInterval);
+						this.recordingInterval = null;
+					}
+				};
+				
+				this.mediaRecorder.start();
+				this.isRecording = true;
+				
+				// Iniciar contador de tiempo
+				this.recordingInterval = setInterval(() => {
+					this.recordingTime++;
+				}, 1000);
+				
+			} catch (error) {
+				console.error('Error al acceder al micrófono:', error);
+				this.message = 'No se pudo acceder al micrófono';
+				this.mostrarAlerta = true;
+				this.error = true;
+			}
+		},
+		stopRecording() {
+			if (this.mediaRecorder && this.isRecording) {
+				this.mediaRecorder.stop();
+				this.isRecording = false;
+			}
+		},
+		clearRecordedAudio() {
+			this.txtTab1AudioBlob = null;
+			this.recordingTime = 0;
+			this.audioChunks = [];
+		},
+		async fnEnviarMensajeTab1() {
+			// Validación
+			if (!this.txtTab1Message || this.txtTab1Message.trim() === '') {
+				this.message = 'El mensaje no puede estar vacío';
+				this.mostrarAlerta = true;
+				this.error = true;
+				return;
+			}
+			
+			this.guardando = true;
+			var json = true;
+			
+			// Determinar qué archivo enviar (audio grabado, imagen pegada o archivo seleccionado)
+			const fileToSend = this.txtTab1AudioBlob || this.txtTab1PastedImage || this.txtTab1File;
+			
+			if (fileToSend) {
+				const formData = new FormData();
+				
+				// Si es audio grabado, usar nombre específico
+				if (this.txtTab1AudioBlob) {
+					formData.append('image', fileToSend, 'audio_recording.ogg');
+				} else {
+					formData.append('image', fileToSend);
+				}
+				
+				formData.append('entityID', this.entityID ?? '');
+				formData.append('txtTab3CustomerPhone', this.txtTab2CustomerPhone ?? '');
+				formData.append('txtTab3CustomerMessage', this.txtTab1Message ?? '');
+				
+				const res = await fetch('<?php echo base_url(); ?>/app_cxc_api/setConversationNotification_ByCustomer', {
+					method: 'POST',
+					body: formData
+				});
+				json = await res.json();
+			} else {
+				const res = await fetch('<?php echo base_url(); ?>/app_cxc_api/setConversationNotification_ByCustomer', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						entityID: this.entityID,
+						txtTab3CustomerPhone: this.txtTab2CustomerPhone,
+						txtTab3CustomerMessage: this.txtTab1Message
+					})
+				});
+				json = await res.json();
+			}
+			
+			// Mostrar errores
+			if (json == undefined) {
+				this.clearTab1Message();
+				this.message = "Error al procesar información";
+				this.mostrarAlerta = true;
+				this.error = true;
+				this.guardando = false;
+				return;
+			}
+			
+			if (json.success == false) {
+				this.clearTab1Message();
+				this.message = json.message;
+				this.mostrarAlerta = true;
+				this.error = true;
+				this.guardando = false;
+				return;
+			}
+			
+			// Redirigir
+			if (this.entityID != Number(json.entityID)) {
+				window.location.href = '<?php echo base_url().'/app_cxc_conversation/edit/entityID/'; ?>' + json.entityID;
+			}
+			
+			// Notificar
+			this.clearTab1Message();
+			this.message = 'Mensaje enviado';
+			this.mostrarAlerta = true;
+			this.error = false;
+			this.guardando = false;
+			
+			// Recargar mensajes
+			this.cargarListado();
 		},
 		
 		// TAB 2

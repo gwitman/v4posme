@@ -12,6 +12,227 @@
 .cursor-pointer {
   cursor: pointer;
 }
+
+/* Estilos modernos para tabs */
+.nav-tabs .nav-link {
+  border: none;
+  border-radius: 10px 10px 0 0;
+  margin-right: 5px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  color: #6c757d;
+}
+
+.nav-tabs .nav-link:hover {
+  background: #e3f2fd;
+  color: #1976d2 !important;
+}
+
+.nav-tabs .nav-link.active {
+  background: #1976d2;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+}
+
+/* Estilos para mensajes */
+.timeline-item-message {
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+  max-width: 80%;
+}
+
+.timeline-item-message:hover {
+  transform: translateX(2px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.message-from-customer {
+  background: #e3f2fd;
+  color: #1565c0;
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.message-from-employer {
+  background: #1976d2;
+  color: white;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+/* Área de envío de mensajes */
+.message-input-area {
+  background: #f8f9fa;
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin-top: 15px;
+  border: 1px solid #e0e0e0;
+}
+
+.message-input-area textarea {
+  border-radius: 10px;
+  border: 1px solid #d0d0d0;
+  transition: all 0.3s ease;
+  resize: none;
+}
+
+.message-input-area textarea:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.15);
+}
+
+.btn-send-message {
+  background: #1976d2;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 20px;
+  color: white;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-send-message:hover {
+  background: #1565c0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+  color: white;
+}
+
+.btn-attach {
+  background: #42a5f5;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  transition: all 0.3s ease;
+  padding: 8px 16px;
+}
+
+.btn-attach:hover {
+  background: #1e88e5;
+  transform: scale(1.02);
+  box-shadow: 0 3px 10px rgba(66, 165, 245, 0.3);
+  color: white;
+}
+
+.btn-recording {
+  background: #ef5350;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Tarjetas de información */
+.info-card {
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+
+.info-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+/* Preview de imagen pegada */
+.image-preview {
+  max-width: 150px;
+  max-height: 150px;
+  border-radius: 8px;
+  margin-top: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border: 2px solid #e0e0e0;
+}
+
+.badge-file {
+  background: #1976d2;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  color: white;
+}
+
+/* Botones de acción */
+.btn-action {
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-action:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+}
+
+/* Acordeón personalizado */
+.accordion-button:not(.collapsed) {
+  background: #1976d2;
+  color: white;
+}
+
+.custom-option-icon:hover {
+  transform: scale(1.01);
+  transition: all 0.2s ease;
+}
+
+/* Scrollbar personalizado */
+.chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background: #1976d2;
+  border-radius: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background: #1565c0;
+}
+
+/* Contenedor de mensajes */
+.chat-messages {
+  max-height: 500px;
+  overflow-y: auto;
+  padding: 15px;
+  background: white;
+}
+
+.message-time {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  margin-top: 4px;
+}
+
+.audio-recording-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #ffebee;
+  border-radius: 8px;
+  color: #c62828;
+  font-size: 0.9rem;
+}
+
+.recording-dot {
+  width: 8px;
+  height: 8px;
+  background: #ef5350;
+  border-radius: 50%;
+  animation: pulse 1s infinite;
+}
 </style>
 
 
@@ -57,8 +278,8 @@
 			  aria-controls="navs-justified-home"
 			  aria-selected="true"
 			>
-			  <i class="tf-icons bx bx-home"></i> Chat
-			  <span class="badge rounded-pill badge-center h-px-20 w-px-20 bg-label-danger">3</span>
+			  <i class="tf-icons bx bx-message-dots"></i> Chat
+			  <span class="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger ms-2">{{ unreadCount }}</span>
 			</button>
 		  </li>
 		  <li class="nav-item">
@@ -71,7 +292,7 @@
 			  aria-controls="navs-justified-profile"
 			  aria-selected="false"
 			>
-			  <i class="tf-icons bx bx-user"></i> Cliente
+			  <i class="tf-icons bx bx-user-circle"></i> Cliente
 			</button>
 		  </li>
 		  
@@ -85,7 +306,7 @@
 			  aria-controls="navs-justified-messages"
 			  aria-selected="false"
 			>
-			  <i class="tf-icons bx bx-message-square"></i> Messages
+			  <i class="tf-icons bx bx-send"></i> Enviar Mensaje
 			</button>
 		  </li>
 		  
@@ -93,97 +314,164 @@
 		<div class="tab-content">
 		  <div class="tab-pane fade show active" id="navs-justified-home" role="tabpanel">
 				<!-- Activity Timeline -->
-				  
-					<div class="card-header align-items-center">
-					  <h5 class="card-action-title mb-0"><i class="bx bx-list-ul me-2"></i>Ultimos mensajes</h5>
-					  <div class="card-action-element">
-						
-					  </div>
-					</div>
-					<div class="card-body">
-					  <ul class="timeline ms-2">
-					  
-						<li 
+				<div class="card info-card">
+					<div class="card-body p-0">
+					  <!-- Mensajes -->
+					  <div class="chat-messages">
+						<div 
 							v-for="objNotification in objListNotification"  
-							class="mt-3 bg-label-twitter rounded p-2"
+							class="timeline-item-message"
+							:class="objNotification.targetIDIsEmployeer > 0 ? 'message-from-employer' : 'message-from-customer'"
 						>
-						  <!--<span class="timeline-point timeline-point-warning"></span>-->
-						  <!--<div class="">-->
-							<div 
-								class="timeline-header mb-1"
-								:class="{'d-flex justify-content-start align-items-center': objNotification.targetIDIsEmployeer > 0, 'justify-content-end align-items-center': objNotification.targetIDIsEmployeer <= 0}"
-							>
-							
-							  <!-- si source > 0 -->
-							  <template v-if="objNotification.targetIDIsEmployeer <= 0">
-							    <h6 class="mb-0">{{ objNotification.firstNameSource }} </h6>
-							    <h6 class="mb-0 me-0 text-success"  >{{ objNotification.createdOnFormato12H }}</h6>
-							  </template> 
-							  <!-- si source <= 0 -->
-							  <template v-else>
-							    <h6 class="mb-0 me-0 text-success"  >{{ objNotification.createdOnFormato12H }} </h6>
-							    <h6 class="mb-0 ms-2"> {{ objNotification.firstNameSource }} </h6> 							    
-							  </template> 
-
-
-							  <!--<small class="text-muted">{{ objNotification.createdOn }}</small>-->
-							</div>
-
-							<p 
-								style="white-space: pre-line;" 
-								class="mb-2"
-								:class="{'': objNotification.targetIDIsEmployeer > 0, 'text-end': objNotification.targetIDIsEmployeer <= 0}"
-							>
-								{{ objNotification.message }}
-								
-								<!-- si source > 0 -->
-								<template v-if="objNotification.title == 'image'">
-								  <br/>
-								  <span 
-									class="badge bg-info cursor-pointer" 
-									@click="openImageModal(objNotification.subject)"
-								  > Ver imagen</span>
-								</template> 								
-								<!-- ELSE IF -->
-								<template v-else-if="objNotification.title == 'audio'">
-								    <br/>
-								    <span 
-										class="badge bg-info cursor-pointer" 
-										@click="openImageModalAudio(objNotification.subject)"
-									> Escuchar</span>
-								</template>
-
-								<!-- si source <= 0 -->
-								<template v-else>
-								</template> 
-								
-							</p>
-							  
-							
-							<div 
-								class="d-flex flex-wrap"
-								:class="{'': objNotification.targetIDIsEmployeer > 0, 'justify-content-end align-items-center': objNotification.targetIDIsEmployeer <= 0}"
-							>
+							<div class="d-flex align-items-center gap-2 mb-1">
 							  <div 
-								class="avatar me-3" 
+								class="avatar avatar-xs" 
 								v-if="parametroNoDebeVerFoto === false"  
 							  >
 								<img src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/html/vertical-menu-template/../../assets/img/avatars/3.png" alt="Avatar" class="rounded-circle" />
 							  </div>
-							  <div
-								:class="{'': objNotification.targetIDIsEmployeer > 0, 'text-end': objNotification.targetIDIsEmployeer <= 0}"
-							  >
-								<h6 class="mb-0">{{ objNotification.phoneFrom }}</h6>
-								<span> {{ objNotification.firstNameTartet }}</span>
-							  </div>
+							  <strong style="font-size: 0.9rem;">{{ objNotification.firstNameSource }}</strong>
 							</div>
-						  <!--</div>-->
-						</li>
+
+							<p style="white-space: pre-line; margin-bottom: 4px; font-size: 0.95rem;">
+								{{ objNotification.message }}
+								
+								<template v-if="objNotification.title == 'image'">
+								  <br/>
+								  <span 
+									class="badge bg-light text-primary cursor-pointer mt-1" 
+									@click="openImageModal(objNotification.subject)"
+								  ><i class="bx bx-image"></i> Ver imagen</span>
+								</template> 								
+								<template v-else-if="objNotification.title == 'audio'">
+								    <br/>
+								    <span 
+										class="badge bg-light text-primary cursor-pointer mt-1" 
+										@click="openImageModalAudio(objNotification.subject)"
+									><i class="bx bx-volume-full"></i> Escuchar</span>
+								</template>
+							</p>
+							  
+							<div class="message-time">
+								{{ objNotification.createdOnFormato12H }}
+							</div>
+						</div>
+					  </div>
+					  
+					  <!-- Área de envío de mensajes -->
+					  <div class="message-input-area">
+						<!-- Indicador de grabación -->
+						<div v-if="isRecording" class="audio-recording-indicator mb-2">
+						  <span class="recording-dot"></span>
+						  <span>Grabando audio... {{ recordingTime }}s</span>
+						</div>
 						
+						<div class="mb-2">
+						  <textarea 
+							class="form-control" 
+							id="txtTab1Message" 
+							rows="2"  
+							v-model="txtTab1Message"
+							@paste="handlePaste"
+							placeholder="Escribe tu mensaje..."
+						  ></textarea>
+						  
+						  <!-- Preview de imagen pegada -->
+						  <div v-if="txtTab1ImagePreview" class="mt-2">
+							<img :src="txtTab1ImagePreview" class="image-preview" alt="Preview" />
+							<button 
+							  type="button" 
+							  class="btn btn-sm btn-danger ms-2"
+							  @click="clearPastedImage"
+							>
+							  <i class="bx bx-x"></i>
+							</button>
+						  </div>
+						  
+						  <!-- Preview de archivo seleccionado -->
+						  <div v-if="txtTab1File" class="mt-2">
+							<span class="badge badge-file">
+							  <i class="bx bx-file"></i> {{ txtTab1File.name }}
+							</span>
+							<button 
+							  type="button" 
+							  class="btn btn-sm btn-danger ms-2"
+							  @click="clearTab1File"
+							>
+							  <i class="bx bx-x"></i>
+							</button>
+						  </div>
+						  
+						  <!-- Preview de audio grabado -->
+						  <div v-if="txtTab1AudioBlob" class="mt-2">
+							<span class="badge badge-file">
+							  <i class="bx bx-microphone"></i> Audio grabado ({{ recordingTime }}s)
+							</span>
+							<button 
+							  type="button" 
+							  class="btn btn-sm btn-danger ms-2"
+							  @click="clearRecordedAudio"
+							>
+							  <i class="bx bx-x"></i>
+							</button>
+						  </div>
+						</div>
 						
-					  </ul>
+						<div class="d-flex gap-2 flex-wrap">
+						  <button 
+							v-if="!guardando && !isRecording" 
+							type="button" 
+							class="btn btn-send-message btn-action"
+							@click="fnEnviarMensajeTab1"
+						  >
+							<i class="bx bx-send"></i> Enviar
+						  </button>
+						  
+						  <label v-if="!isRecording" class="btn btn-attach btn-action mb-0">
+							<i class="bx bx-image"></i> Imagen
+							<input 
+							  type="file" 
+							  class="d-none" 
+							  @change="onTab1FileChange"
+							  accept="image/*"
+							/>
+						  </label>
+						  
+						  <button 
+							v-if="!isRecording && !txtTab1AudioBlob"
+							type="button"
+							class="btn btn-attach btn-action"
+							@click="startRecording"
+						  >
+							<i class="bx bx-microphone"></i> Grabar Audio
+						  </button>
+						  
+						  <button 
+							v-if="isRecording"
+							type="button"
+							class="btn btn-recording btn-action"
+							@click="stopRecording"
+						  >
+							<i class="bx bx-stop"></i> Detener
+						  </button>
+						  
+						  <button 
+							v-if="!guardando && !isRecording" 
+							type="button" 
+							class="btn btn-secondary btn-action"
+							@click="clearTab1Message"
+						  >
+							<i class="bx bx-eraser"></i> Limpiar
+						  </button>
+						  
+						  <button v-if="guardando" class="btn btn-danger btn-action" type="button" disabled>
+							<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+							Enviando...
+						  </button>
+						</div>
+					  </div>
 					</div>
-				  
+				</div>
 				<!--/ Activity Timeline -->
 		  </div>
 		  <div class="tab-pane fade" id="navs-justified-profile" role="tabpanel">

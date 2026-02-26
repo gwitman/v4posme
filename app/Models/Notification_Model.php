@@ -298,7 +298,8 @@ class Notification_Model extends Model  {
 			c.`entityIDSource` = ".$entityIDCustomer." or 
 			c.`entityIDTarget` = ".$entityIDCustomer." 
 		order by 
-			c.notificationID desc 
+			c.notificationID asc   
+		limit 500 
 		");
 		
 		
