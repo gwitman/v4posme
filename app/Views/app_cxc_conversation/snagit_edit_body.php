@@ -63,6 +63,12 @@
   margin-right: 0;
 }
 
+.message-internal {
+  background: #fff9c4;
+  color: #f57f17;
+  border-left: 4px solid #fbc02d;
+}
+
 /* Área de envío de mensajes */
 .message-input-area {
   background: #f8f9fa;
@@ -343,7 +349,11 @@
 							  v-for="objNotification in objListNotification"  
 							  :key="objNotification.notificationID"
 							  class="timeline-item-message"
-							  :class="objNotification.targetIDIsEmployeer > 0 ? 'message-from-employer' : 'message-from-customer'"
+							  :class="{
+								'message-internal': objNotification.summary === 'mensaje interno',
+								'message-from-employer': objNotification.summary !== 'mensaje interno' && objNotification.targetIDIsEmployeer > 0,
+								'message-from-customer': objNotification.summary !== 'mensaje interno' && objNotification.targetIDIsEmployeer == 0
+							  }"
 						  >
 							  <div class="d-flex align-items-center gap-2 mb-1">
 								<div 
