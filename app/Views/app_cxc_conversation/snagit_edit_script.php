@@ -20,6 +20,13 @@ createApp({
 			parametroNoDebeEscucharSonido:	<?php echo $objParameterCONVERSATION_LIST_CONVERSATION_NOT_BELL; ?>,
 			unreadCount:				0,
 			
+			// Variables para paginación de mensajes
+			currentPage:				1,
+			messagesPerPage:			50,
+			totalMessages:				0,
+			loadingMore:				false,
+			allMessagesLoaded:			false,
+			
 			//Tab 1 - Nuevas variables para envío desde tab 1
 			txtTab1Message:				'',
 			txtTab1File:				null,
@@ -109,52 +116,131 @@ createApp({
 				this.sonidoReproducido = false;
 			}
 		},
-        async cargarListado() {
+        async cargarListado(loadMore = false) {
 			try {
+				// Si estamos cargando más, no mostrar el indicador principal
+				if (!loadMore) {
+					this.mostrarWaite = true;
+				} else {
+					this.loadingMore = true;
+				}
+				
 				const res = await fetch('<?php echo base_url(); ?>/app_cxc_api/getConversationNotification_ByCustomer', {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json'
 						},
 						body: JSON.stringify({
-							entityID: this.entityID
+							entityID: this.entityID,
+							page: this.currentPage,
+							limit: this.messagesPerPage
 						})
 				});				
 				const json 			= await res.json();
 				this.mostrarWaite	= false;
+				this.loadingMore	= false;
+				
 				// 🔴 CASO 1: success 	= false
 				if (json.success === false) {
-					this.objListNotification 	= [];
-					this.mensaje 				= 'Ocurrió un error al cargar la información';
+					if (!loadMore) {
+						this.objListNotification = [];
+					}
+					this.mensaje = 'Ocurrió un error al cargar la información';
 					return;
 				}
 				
-				
 				// 🟡 CASO 2: success = true pero sin datos
 				if (json.success === true && (!json.data || json.data.length === 0)) {
-					this.objListNotification 	= [];
-					this.mensaje 				= 'No hay datos disponibles';
+					if (!loadMore) {
+						this.objListNotification = [];
+						this.mensaje = 'No hay datos disponibles';
+					} else {
+						this.allMessagesLoaded = true;
+					}
 					return;
 				}
 				
 				// 🟢 CASO 3: success = true con datos				
-				this.mensaje 				= '';
-				this.objListNotification 	= json.data; // 🔥 aquí Vue limpia y vuelve a renderizar
+				this.mensaje = '';
+				
+				if (loadMore) {
+					// Agregar mensajes antiguos al inicio
+					this.objListNotification = [...json.data, ...this.objListNotification];
+					
+					// Si recibimos menos mensajes de los solicitados, ya no hay más
+					if (json.data.length < this.messagesPerPage) {
+						this.allMessagesLoaded = true;
+					}
+				} else {
+					// Primera carga o recarga
+					this.objListNotification = json.data;
+					this.allMessagesLoaded = false;
+					this.currentPage = 1;
+					
+					// Scroll al final después de cargar
+					this.$nextTick(() => {
+						this.scrollToBottom();
+					});
+				}
+				
+				this.totalMessages = json.total || this.objListNotification.length;
 				
 				// Contar mensajes no leídos
-				this.unreadCount = json.data.filter(msg => msg.isRead == 0).length;
+				this.unreadCount = this.objListNotification.filter(msg => msg.isRead == 0).length;
 				
-				this.verificarMensajesNoLeidos(json.data);
+				this.verificarMensajesNoLeidos(this.objListNotification);
 			
 			} 
 			catch (error) 
 			{
                 console.error(error);
-                this.mensaje 				= 'Error de conexión con el servidor';
-                this.objListNotification 	= [];
+                this.mensaje = 'Error de conexión con el servidor';
+                if (!loadMore) {
+					this.objListNotification = [];
+				}
+				this.loadingMore = false;
             }
 			
         },
+		scrollToBottom() {
+			const chatContainer = this.$refs.chatMessages;
+			if (chatContainer) {
+				// Como usamos flex-direction: column-reverse, scrollTop debe ser 0
+				chatContainer.scrollTop = 0;
+			}
+		},
+		handleScroll(event) {
+			const container = event.target;
+			
+			// Detectar si llegamos al tope (mensajes antiguos)
+			// Con column-reverse, el tope está en scrollHeight - clientHeight
+			const scrollPosition = container.scrollTop;
+			const maxScroll = container.scrollHeight - container.clientHeight;
+			
+			// Si estamos cerca del tope (mensajes antiguos) y no estamos cargando
+			if (Math.abs(scrollPosition - maxScroll) < 50 && !this.loadingMore && !this.allMessagesLoaded) {
+				this.loadMoreMessages();
+			}
+		},
+		async loadMoreMessages() {
+			if (this.loadingMore || this.allMessagesLoaded) {
+				return;
+			}
+			
+			// Guardar posición actual del scroll
+			const chatContainer = this.$refs.chatMessages;
+			const oldScrollHeight = chatContainer.scrollHeight;
+			
+			this.currentPage++;
+			await this.cargarListado(true);
+			
+			// Restaurar posición del scroll después de cargar
+			this.$nextTick(() => {
+				const newScrollHeight = chatContainer.scrollHeight;
+				const scrollDiff = newScrollHeight - oldScrollHeight;
+				chatContainer.scrollTop += scrollDiff;
+			});
+		},
 		openImageModal(imageUrl) 
 		{
 		  debugger;
@@ -352,8 +438,11 @@ createApp({
 			this.error = false;
 			this.guardando = false;
 			
-			// Recargar mensajes
-			this.cargarListado();
+			// Recargar mensajes y hacer scroll al final
+			await this.cargarListado();
+			this.$nextTick(() => {
+				this.scrollToBottom();
+			});
 		},
 		
 		// TAB 2

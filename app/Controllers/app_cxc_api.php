@@ -432,29 +432,49 @@ class app_cxc_api extends _BaseController {
 		$data 		= $this->request->getJSON(true);
 		// Extraer entityID
 		$entityID 	= $data['entityID'] ?? null;
+		$page 		= $data['page'] ?? 1;
+		$limit 		= $data['limit'] ?? 50;
 
 		// Validación básica
 		if (!$entityID) {
 			return $this->response->setJSON([
 				'success' => false,
 				'message' => 'entityID no recibido',
-				'data' 	  => []
+				'data' 	  => [],
+				'total'	  => 0
 			]);
 		}
 		
-		$objListNotification 					= $this->Notification_Model->get_rowByEntityIDCustomer($entityID);			
-		$objCustomerConversation				= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($entityID);
-		$objConversation 						= array();
-		$objConversation["messgeConterNotRead"] = 0 ;
-		$this->Customer_Conversation_Model->update_app_posme_ByCustomer($entityID,$objConversation);
+		// Calcular offset para paginación
+		$offset = ($page - 1) * $limit;
 		
-		$objNotification["isRead"] 	= 1;
-		$this->Notification_Model->update_app_posme_notification_byCustomerID($entityID,$objNotification);
+		// Obtener notificaciones con paginación
+		$objListNotification = $this->Notification_Model->get_rowByEntityIDCustomer_Paginated($entityID, $limit, $offset);
+		
+		// Obtener total de mensajes (solo en la primera página)
+		$totalMessages = 0;
+		if ($page == 1) {
+			$totalMessages = $this->Notification_Model->get_countByEntityIDCustomer($entityID);
+		}
+		
+		// Solo marcar como leído en la primera carga
+		if ($page == 1) {
+			$objCustomerConversation = $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($entityID);
+			$objConversation = array();
+			$objConversation["messgeConterNotRead"] = 0;
+			$this->Customer_Conversation_Model->update_app_posme_ByCustomer($entityID, $objConversation);
+			
+			$objNotification["isRead"] = 1;
+			$this->Notification_Model->update_app_posme_notification_byCustomerID($entityID, $objNotification);
+		}
 		
 		return $this->response->setJSON([
 			'success' => true,
 			'message' => 'entityID recibido',
-			'data'	  => $objListNotification
+			'data'	  => $objListNotification,
+			'total'	  => $totalMessages,
+			'page'	  => $page,
+			'limit'	  => $limit
 		]);
 	}
 	function setConversationNotification_ByCustomer()

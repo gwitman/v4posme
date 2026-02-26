@@ -207,6 +207,20 @@
   overflow-y: auto;
   padding: 15px;
   background: white;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.messages-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.loading-more {
+  text-align: center;
+  padding: 10px;
+  color: #1976d2;
+  font-size: 0.9rem;
 }
 
 .message-time {
@@ -317,44 +331,53 @@
 				<div class="card info-card">
 					<div class="card-body p-0">
 					  <!-- Mensajes -->
-					  <div class="chat-messages">
-						<div 
-							v-for="objNotification in objListNotification"  
-							class="timeline-item-message"
-							:class="objNotification.targetIDIsEmployeer > 0 ? 'message-from-employer' : 'message-from-customer'"
-						>
-							<div class="d-flex align-items-center gap-2 mb-1">
-							  <div 
-								class="avatar avatar-xs" 
-								v-if="parametroNoDebeVerFoto === false"  
-							  >
-								<img src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/html/vertical-menu-template/../../assets/img/avatars/3.png" alt="Avatar" class="rounded-circle" />
+					  <div class="chat-messages" ref="chatMessages" @scroll="handleScroll">
+						<!-- Indicador de carga -->
+						<div v-if="loadingMore" class="loading-more">
+						  <span class="spinner-border spinner-border-sm me-2"></span>
+						  Cargando más mensajes...
+						</div>
+						
+						<div class="messages-container">
+						  <div 
+							  v-for="objNotification in objListNotification"  
+							  :key="objNotification.notificationID"
+							  class="timeline-item-message"
+							  :class="objNotification.targetIDIsEmployeer > 0 ? 'message-from-employer' : 'message-from-customer'"
+						  >
+							  <div class="d-flex align-items-center gap-2 mb-1">
+								<div 
+								  class="avatar avatar-xs" 
+								  v-if="parametroNoDebeVerFoto === false"  
+								>
+								  <img src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/html/vertical-menu-template/../../assets/img/avatars/3.png" alt="Avatar" class="rounded-circle" />
+								</div>
+								<strong style="font-size: 0.9rem;">{{ objNotification.firstNameSource }}</strong>
 							  </div>
-							  <strong style="font-size: 0.9rem;">{{ objNotification.firstNameSource }}</strong>
-							</div>
 
-							<p style="white-space: pre-line; margin-bottom: 4px; font-size: 0.95rem;">
-								{{ objNotification.message }}
+							  <p style="white-space: pre-line; margin-bottom: 4px; font-size: 0.95rem;">
+								  {{ objNotification.message }}
+								  
+								  <template v-if="objNotification.title == 'image'">
+									<br/>
+									<span 
+									  class="badge bg-light text-primary cursor-pointer mt-1" 
+									  @click="openImageModal(objNotification.subject)"
+									><i class="bx bx-image"></i> Ver imagen</span>
+								  </template> 								
+								  <template v-else-if="objNotification.title == 'audio'">
+									  <br/>
+									  <span 
+										  class="badge bg-light text-primary cursor-pointer mt-1" 
+										  @click="openImageModalAudio(objNotification.subject)"
+									  ><i class="bx bx-volume-full"></i> Escuchar</span>
+								  </template>
+							  </p>
 								
-								<template v-if="objNotification.title == 'image'">
-								  <br/>
-								  <span 
-									class="badge bg-light text-primary cursor-pointer mt-1" 
-									@click="openImageModal(objNotification.subject)"
-								  ><i class="bx bx-image"></i> Ver imagen</span>
-								</template> 								
-								<template v-else-if="objNotification.title == 'audio'">
-								    <br/>
-								    <span 
-										class="badge bg-light text-primary cursor-pointer mt-1" 
-										@click="openImageModalAudio(objNotification.subject)"
-									><i class="bx bx-volume-full"></i> Escuchar</span>
-								</template>
-							</p>
-							  
-							<div class="message-time">
-								{{ objNotification.createdOnFormato12H }}
-							</div>
+							  <div class="message-time">
+								  {{ objNotification.createdOnFormato12H }}
+							  </div>
+						  </div>
 						</div>
 					  </div>
 					  

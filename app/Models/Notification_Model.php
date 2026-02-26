@@ -349,5 +349,96 @@ class Notification_Model extends Model  {
 		return $db->query($sql)->getResult();	
    }
    
+   function get_rowByEntityIDCustomer_Paginated($entityIDCustomer, $limit = 50, $offset = 0)
+   {
+	    $db 	= db_connect();
+		$db->query("SET NAMES utf8mb4");
+		$sql = "";
+		$sql = sprintf("
+		 select 
+			c.notificationID,
+			c.errorID,
+			c.`from`,
+			c.`to`,
+			c.`subject`,
+			c.message,
+			c.summary,
+			c.title,
+			c.tagID,
+			c.phoneFrom,
+			c.phoneTo,
+			c.programDate,
+			c.programHour,
+			c.sendOn,
+			c.sendEmailOn,
+			c.sendWhatsappOn,
+			c.addedCalendarGoogle,
+			c.quantityOcupation,
+			c.quantityDisponible,
+			c.googleCalendarEventID,
+			c.isRead,
+			c.entityIDSource,
+			c.entityIDTarget,
+			c.createdOn,
+			DATE_FORMAT(c.createdOn, '%%Y-%%m-%%d %%h:%%i:%%s %%p') as createdOnFormato12H,
+			case
+				when ifnull(emp.entityID,'0') = '0' then
+					concat('Cli: ',LEFT(ns.firstName,15))
+				else 
+					concat('',LEFT(ns.firstName,15))
+			end as firstNameSource,
+			
+			case
+				when ifnull(emp.entityID,'0') = '0' then
+					concat('Cli: ',LEFT(nt.firstName,15))
+				else 
+					concat('Age: ',LEFT(nt.firstName,15))
+			end as firstNameTartet,
+			
+			ifnull(emp.entityID,'0') as targetIDIsEmployeer
+		from 
+			tb_notification c 
+			left join tb_naturales ns on 
+				ns.entityID = c.`entityIDSource` 
+			left join tb_naturales nt on 
+				nt.entityID = c.`entityIDTarget`  
+				
+			left join tb_employee emp on 
+				emp.entityID = c.entityIDTarget
+		where 
+			c.`entityIDSource` = ".$entityIDCustomer." or 
+			c.`entityIDTarget` = ".$entityIDCustomer." 
+		order by 
+			c.notificationID desc   
+		limit ".$limit." offset ".$offset." 
+		");
+		
+		
+		//Ejecutar Consulta
+		$result = $db->query($sql)->getResult();
+		
+		// Invertir el orden para que los más recientes estén al final
+		return array_reverse($result);
+   }
+   
+   function get_countByEntityIDCustomer($entityIDCustomer)
+   {
+	    $db 	= db_connect();
+		$sql = "";
+		$sql = sprintf("
+		 select 
+			count(*) as total
+		from 
+			tb_notification c 
+		where 
+			c.`entityIDSource` = ".$entityIDCustomer." or 
+			c.`entityIDTarget` = ".$entityIDCustomer." 
+		");
+		
+		//Ejecutar Consulta
+		$result = $db->query($sql)->getRow();
+		return $result ? $result->total : 0;
+   }
+   
 }
 ?>
