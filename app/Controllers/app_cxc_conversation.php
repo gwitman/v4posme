@@ -212,18 +212,24 @@ class app_cxc_conversation extends _BaseController {
 				}
 			}
 			
-			
+			// Obtener catálogos
+			$objListSubCategoryID					= $this->core_web_catalog->getCatalogAllItem("tb_customer","subCategoryID",$dataSession["company"]->companyID);
+			$objListWorkflowStage					= $this->core_web_workflow->getWorkflowInitStage("tb_customer","statusID",$dataSession["company"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID);
+			$objListWorkflowStageConversation		= $this->core_web_workflow->getWorkflowAllStage("tb_customer_conversation","statusID",$dataSession["company"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID);
 			
 			//Tipo de plantilla
 			$masterPage 		= 'snagit_masterpage';
 			$viewType			= 'snagit_';
 			 
 			//Renderizar Resultado
-			$dataView["company"]					= $dataSession["company"];
-			$dataView["companyPageSetting"]			= $dataSession["companyPageSetting"];
-			$dataView["title"]						= "Conversaciones";			
-			$dataView["objListEmployer"]			= $objListEmployer;
-			$dataView["objEmployerIDDefault"]		= $objListEmployer[0]->entityID;
+			$dataView["company"]								= $dataSession["company"];
+			$dataView["companyPageSetting"]						= $dataSession["companyPageSetting"];
+			$dataView["title"]									= "Conversaciones";			
+			$dataView["objListEmployer"]						= $objListEmployer;
+			$dataView["objEmployerIDDefault"]					= $objListEmployer[0]->entityID;
+			$dataView["objListSubCategoryID"]					= $objListSubCategoryID;
+			$dataView["objListWorkflowStage"]					= $objListWorkflowStage;
+			$dataView["objListWorkflowStageConversation"]		= $objListWorkflowStageConversation;
 			
 			$dataView["objParameterCONVERSATION_LIST_CONVERSATION_NOT_PHOTE"]				= $this->core_web_parameter->getParameter("CONVERSATION_LIST_CONVERSATION_NOT_PHOTE",$dataSession["company"]->companyID)->value;
 			$dataView["objParameterCONVERSATION_LIST_CONVERSATION_NOT_BELL"]				= $this->core_web_parameter->getParameter("CONVERSATION_LIST_CONVERSATION_NOT_BELL",$dataSession["company"]->companyID)->value;

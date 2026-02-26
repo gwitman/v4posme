@@ -275,7 +275,7 @@ class Customer_Conversation_Model extends Model
 		return $db->query($sql)->getResult();
 		
     }
-	function getBy_StartOn_EndOn_EmployerID_InboxID_StatusID($startOn,$endOn,$entityIDEmployer,$inboxID,$statusID)
+	function getBy_StartOn_EndOn_EmployerID_InboxID_StatusID($startOn,$endOn,$entityIDEmployer,$statusIDConversation,$statusID,$subCategoryID)
 	{
 		$db 		= db_connect();
 		$builder	= $db->table("tb_customer_conversation");		
@@ -340,6 +340,8 @@ class Customer_Conversation_Model extends Model
 						ccr.componentItemIDTarget = emp.entityID 
 					inner join tb_naturales natp on 
 						natp.entityID = emp.entityID 
+					inner join tb_catalog_item subCategory on 
+						subCategory.catalogItemID = cus.subCategoryID 
 				where 
 					c.isActive = 1 and 
 					ws.isInit = 1  and
@@ -352,14 +354,23 @@ class Customer_Conversation_Model extends Model
 						(c.statusID = $statusID and $statusID != 0 )
 					) and 
 					(
+					  	(cus.subCategoryID  = $subCategoryID and $subCategoryID != 0 ) or 
+						($subCategoryID = 0) 
+
+					) and 
+					(
+					 	(	$statusID = 0 /*todas*/) or 
+						(   $statusID != 0 AND cus.statusID = $statusID )
+					) and 
+					(
 					  /*filtrar las cerradas*/
-					  (	$statusID = 0 /*todas*/) or 
+					  (	$statusIDConversation = 0 /*todas*/) or 
 					  (
-						$statusID = 205 /*abiertas*/ and 
+						$statusIDConversation = 205 /*abiertas*/ and 
 						c.createdOn between '$startOn' and '$endOn 23:59:59' 						
 					  ) or 
 					  (
-						$statusID = 206 /*cerradas*/ and 
+						$statusIDConversation = 206 /*cerradas*/ and 
 						c.lastActivityOn between '$startOn' and '$endOn 23:59:59' 
 					  )
 					)

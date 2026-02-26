@@ -11,7 +11,9 @@ createApp({
 			txtEmployeID:					<?php echo $objEmployerIDDefault; ?>,
 			txtStartOn:						(new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString().slice(0, 10)),
 			txtFinishOn:					(new Date().toISOString().slice(0, 10)),
+			txtWorkflowStatusIDConversation:'0',
 			txtWorkflowStatusID:			'0',
+			txtSubCategoryID:				'0',
 			
 			counterRegister:				0,
 			noLeidas:						0,
@@ -43,11 +45,13 @@ createApp({
 							'Content-Type': 'application/json'
 						},
 						body: JSON.stringify({
-							txtStartOn: 			this.txtStartOn,
-							txtFinishOn: 			this.txtFinishOn,
-							txtEntityIDEmployer: 	this.txtEmployeID,
-							txtInboxID:				this.txtInboxID,
-							txtWorkflowStatusID:	this.txtWorkflowStatusID
+							txtStartOn: 					 this.txtStartOn,
+							txtFinishOn: 					 this.txtFinishOn,
+							txtEntityIDEmployer: 			 this.txtEmployeID,
+							txtInboxID:						 this.txtInboxID,
+							txtWorkflowStatusID:			 this.txtWorkflowStatusID,
+							txtSubCategoryID:				 this.txtSubCategoryID,
+							txtWorkflowStatusIDConversation: this.txtWorkflowStatusIDConversation
 						})
 				});				
 				

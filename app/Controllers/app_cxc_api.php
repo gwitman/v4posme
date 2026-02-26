@@ -270,11 +270,13 @@ class app_cxc_api extends _BaseController {
 			//Obtener  los datos del cliente
 			$data 		= $this->request->getJSON(true);
 			// Extraer entityID
-			$txtStartOn 			= $data['txtStartOn'] ?? null;
-			$txtFinishOn 			= $data['txtFinishOn'] ?? null;
-			$txtEntityIDEmployer 	= $data['txtEntityIDEmployer'] ?? null;
-			$txtInboxID 			= $data['txtInboxID'] ?? null;
-			$txtWorkflowStatusID	= $data['txtWorkflowStatusID'] ?? null;
+			$txtStartOn 						= $data['txtStartOn'] ?? null;
+			$txtFinishOn 						= $data['txtFinishOn'] ?? null;
+			$txtEntityIDEmployer 				= $data['txtEntityIDEmployer'] ?? null;
+			$txtInboxID 						= $data['txtInboxID'] ?? null;
+			$txtWorkflowStatusID				= $data['txtWorkflowStatusID'] ?? null;
+			$txtSubCategoryID					= $data['txtSubCategoryID'] ?? null;
+			$txtWorkflowStatusIDConversation	= $data['txtWorkflowStatusIDConversation'] ?? null;
 
 			//Obtener datos
 			$companyID 	= $dataSession["user"]->companyID;
@@ -284,8 +286,10 @@ class app_cxc_api extends _BaseController {
 			$data = $this->
 			Customer_Conversation_Model->
 			getBy_StartOn_EndOn_EmployerID_InboxID_StatusID(
-				$txtStartOn,$txtFinishOn,$txtEntityIDEmployer,0,$txtWorkflowStatusID
+				$txtStartOn,$txtFinishOn,$txtEntityIDEmployer,$txtWorkflowStatusIDConversation,$txtWorkflowStatusID,$txtSubCategoryID
 			);
+			
+			
 			
 			$totalRegistros = 0;
 			$sinContestar   = 0;

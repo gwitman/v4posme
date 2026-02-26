@@ -120,8 +120,53 @@
 					v-model="txtWorkflowStatusID"
 				  >
 					<option :value="0" selected >TODOS</option>
-					<option :value="205"   >Abiertas</option>
-					<option :value="206"   >Cerradas</option>
+					<?php 
+					if($objListWorkflowStage)
+					{
+						foreach($objListWorkflowStage as $workflow)
+						{
+							echo '<option value="'.$workflow->workflowStageID.'" >'.$workflow->name.'</option>';
+						}
+					}
+					?>	
+				  </select>
+			</div>
+			
+			<div class="mb-3">
+				  <label for="txtSubCategoryID" class="form-label">Sub Categoría</label>
+				  <select class="form-select" 
+					id="txtSubCategoryID" aria-label="Default select example"
+					v-model="txtSubCategoryID"
+				  >
+					<option :value="0" selected >TODOS</option>
+					<?php 
+					if($objListSubCategoryID)
+					{
+						foreach($objListSubCategoryID as $subCategory)
+						{
+							echo '<option value="'.$subCategory->catalogItemID.'" >'.$subCategory->name.'</option>';
+						}
+					}
+					?>	
+				  </select>
+			</div>
+
+			<div class="mb-3">
+				  <label for="txtWorkflowStatusIDConversation" class="form-label">Estado Conversacion</label>
+				  <select class="form-select" 
+					id="txtWorkflowStatusIDConversation" aria-label="Default select example"
+					v-model="txtWorkflowStatusIDConversation"
+				  >
+					<option :value="0" selected >TODAS</option>
+					<?php 
+					if($objListWorkflowStageConversation)
+					{
+						foreach($objListWorkflowStageConversation as $workflow)
+						{
+							echo '<option value="'.$workflow->workflowStageID.'" >'.$workflow->name.'</option>';
+						}
+					}
+					?>	
 				  </select>
 			</div>
 
