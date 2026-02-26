@@ -797,6 +797,20 @@
 				<input class="form-control" type="file" id="formFile" @change="onFileChange" />
 			  </div>
 			  
+			  <div class="mb-3">
+				<div class="form-check">
+				  <input
+					class="form-check-input"
+					type="checkbox"
+					id="txtTab3IsInternalMessage"
+					v-model="txtTab3IsInternalMessage"
+				  />
+				  <label class="form-check-label" for="txtTab3IsInternalMessage">
+					Mensaje Interno (no enviar por WhatsApp)
+				  </label>
+				</div>
+			  </div>
+			  
 			  <div class="demo-inline-spacing">
 				<button v-if="!guardando" type="button" class="btn btn-primary" @click="fnGuardarNotification" >
 				  <span class="tf-icons bx  bx-save"></span>&nbsp; Enviar

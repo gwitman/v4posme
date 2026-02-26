@@ -65,7 +65,8 @@ createApp({
 			
 			//Tab 3
 			txtTab3CustomerPhone:		'',
-			txtTab3CustomerMessage:		''	
+			txtTab3CustomerMessage:		'',
+			txtTab3IsInternalMessage:	false	
 			
 			
         }
@@ -564,12 +565,12 @@ createApp({
 		},
         async fnGuardarNotification() {
 			
-			// ?? VALIDACI��N
+			// ?? VALIDACIÓN
 		    if (!this.txtTab3CustomerMessage || this.txtTab3CustomerMessage.trim() === '') {
 				 this.message       = 'El mensaje no puede estar vacio';
 				 this.mostrarAlerta = true;
 				 this.error         = true;
-				 return; // ? Detiene el env��o
+				 return; // ? Detiene el envío
 		    }
 		  
 			this.guardando 	= true;		
@@ -581,7 +582,8 @@ createApp({
 				formData.append('image', this.imageFile);	
 				formData.append('entityID', this.entityID ?? '');				
 				formData.append('txtTab3CustomerPhone', this.txtTab3CustomerPhone ?? '');				
-				formData.append('txtTab3CustomerMessage', this.txtTab3CustomerMessage ?? '');	
+				formData.append('txtTab3CustomerMessage', this.txtTab3CustomerMessage ?? '');
+				formData.append('txtTab3IsInternalMessage', this.txtTab3IsInternalMessage ? '1' : '0');
 				const res 	= await fetch('<?php echo base_url(); ?>/app_cxc_api/setConversationNotification_ByCustomer', {
 					method: 'POST',
 					body: formData
@@ -598,7 +600,8 @@ createApp({
 						body: JSON.stringify({
 							entityID: 					this.entityID,
 							txtTab3CustomerPhone:		this.txtTab3CustomerPhone,
-							txtTab3CustomerMessage: 	this.txtTab3CustomerMessage
+							txtTab3CustomerMessage: 	this.txtTab3CustomerMessage,
+							txtTab3IsInternalMessage:	this.txtTab3IsInternalMessage ? '1' : '0'
 						})
 				});		
 				json 			= await res.json();		
@@ -613,7 +616,7 @@ createApp({
 				this.mostrarAlerta 			= true;
 				this.error 					= true;
 				this.guardando 				= false;
-				// ?? Aqu�� limpiamos el input
+				// ?? Aquí limpiamos el input
 				this.clearFileInput();
 				return;
 			}
@@ -629,7 +632,7 @@ createApp({
 				this.mostrarAlerta 			= true;
 				this.error 					= true;
 				this.guardando 				= false;
-				// ?? Aqu�� limpiamos el input
+				// ?? Aquí limpiamos el input
 				this.clearFileInput();
 				return;
 			}
@@ -643,18 +646,20 @@ createApp({
 			//Notificar 
 			this.txtTab3CustomerMessage = '';
 			this.imageFile 				= false;
+			this.txtTab3IsInternalMessage = false;
 			this.message 				= 'Mensaje enviado';
 			this.mostrarAlerta 			= true;
 			this.error 					= false;
             this.guardando 				= false;
-			// ?? Aqu�� limpiamos el input
+			// ?? Aquí limpiamos el input
 			this.clearFileInput();
             
         },
 		async fnClearNotification() {
 			this.txtTab3CustomerMessage = '';
 			this.imageFile 				= false;
-			// ?? Aqu�� limpiamos el input
+			this.txtTab3IsInternalMessage = false;
+			// ?? Aquí limpiamos el input
 			this.clearFileInput();
 		}
     },

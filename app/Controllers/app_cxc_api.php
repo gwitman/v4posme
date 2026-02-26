@@ -493,12 +493,14 @@ class app_cxc_api extends _BaseController {
 			$data["entityID"] 				= $this->request->getPost('entityID') ?? '';
 			$data["txtTab3CustomerMessage"] = $this->request->getPost('txtTab3CustomerMessage') ?? '';
 			$data["txtTab3CustomerPhone"] 	= $this->request->getPost('txtTab3CustomerPhone') ?? '';
+			$data["txtTab3IsInternalMessage"] = $this->request->getPost('txtTab3IsInternalMessage') ?? '0';
 		}
 		
 		// Extraer entityID
 		$entityID 	= $data['entityID'] ?? null;
 		$message	= $data['txtTab3CustomerMessage'] ?? null;
 		$phone		= $data['txtTab3CustomerPhone'] ?? null;
+		$isInternalMessage = ($data['txtTab3IsInternalMessage'] ?? '0') === '1';
 
 		// Validación básica
 		if ($entityID === null || $entityID === '' || !is_numeric($entityID)) {
@@ -727,10 +729,10 @@ class app_cxc_api extends _BaseController {
 		$objNotification 							= array();		
 		$objNotification["errorID"] 				= 0;
 		$objNotification["from"] 					= $objEmployer->firstName;
-		$objNotification["to"] 						= $objCustomer[0]->firstName;
-		$objNotification["subject"] 				= $file ? $urlPublic : 'no use';
+		$objNotification["to"] 						= $objCustomer[0]->firstName;		
+		$objNotification["subject"]                 = $file ? $urlPublic : 'no use';
 		$objNotification["message"] 				= $message;
-		$objNotification["summary"] 				= "no use";
+		$objNotification["summary"] 				= $isInternalMessage ? 'mensaje interno' : "no use";
 		$objNotification["title"] 					= $file ? 'image' : 'text';
 		$objNotification["tagID"] 					= $objTag->tagID;
 		$objNotification["createdOn"] 				= helper_getDateTime();
@@ -756,89 +758,103 @@ class app_cxc_api extends _BaseController {
 		$message	= $this->core_web_conversation->getMessageSignature($companyID,$typeCompany,$objEmployer->firstName,$message);
 		
 		
-		//Enviar mensaje
+		//Enviar mensaje solo si NO es mensaje interno
 		/////////////////////////////////////
 		/////////////////////////////////////
-		//wg-if (!$file)
-		//wg-{
-		//wg-	$this->core_web_whatsap->sendMessageBy_VanageApiText_PosMe(
-		//wg-		$companyID, 
-		//wg-		$message, 
-		//wg-		clearNumero($objCustomer[0]->phoneNumber),
-		//wg-		'text',
-		//wg-		false 			
-		//wg-	);
-		//wg-}
-		//wg-else
-		//wg-{
-		//wg-	$this->core_web_whatsap->sendMessageBy_VanageApiImage_PosMe(
-		//wg-		$companyID, 
-		//wg-		$message, 
-		//wg-		clearNumero($objCustomer[0]->phoneNumber),
-		//wg-		'image',
-		//wg-		$urlPublic
-		//wg-	);
-		//wg-}
-		
-		$result = null;
-		if (!$file)
+		if (!$isInternalMessage) 
 		{
-			log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de texto a: ".getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)));
-			$result = $this->core_web_whatsap->sendMessageGeneric(
-				$typeCompany,
-				$companyID, 
-				$message, 
-				getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)),
-				true,
-				""				
-			);
-		}
-		else
-		{
-			if($fileMimeType == "application/pdf")
+			//wg-if (!$file)
+			//wg-{
+			//wg-	$this->core_web_whatsap->sendMessageBy_VanageApiText_PosMe(
+			//wg-		$companyID, 
+			//wg-		$message, 
+			//wg-		clearNumero($objCustomer[0]->phoneNumber),
+			//wg-		'text',
+			//wg-		false 			
+			//wg-	);
+			//wg-}
+			//wg-else
+			//wg-{
+			//wg-	$this->core_web_whatsap->sendMessageBy_VanageApiImage_PosMe(
+			//wg-		$companyID, 
+			//wg-		$message, 
+			//wg-		clearNumero($objCustomer[0]->phoneNumber),
+			//wg-		'image',
+			//wg-		$urlPublic
+			//wg-	);
+			//wg-}
+			
+			$result = null;
+			if (!$file)
 			{
-				log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de pdf ".$fileClientName);						
-				$result = $this->core_web_whatsap->sendMessageTypePdfGeneric(
+				log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de texto a: ".getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)));
+				$result = $this->core_web_whatsap->sendMessageGeneric(
 					$typeCompany,
 					$companyID, 
-					$urlPublic, 
-					$fileClientName,
-					$message,
+					$message, 
 					getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)),
 					true,
-					""
-				);
-			}
-			else if($fileMimeType == "video/webm")
-			{
-				log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de audio / video ".$fileClientName);						
-				$result = $this->core_web_whatsap->sendMessageTypeVideoAudioGeneric(
-					$typeCompany,
-					$companyID, 
-					$urlPublic, 
-					$fileClientName,
-					$message,
-					getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)),
-					true,
-					""
+					""				
 				);
 			}
 			else
 			{
-				log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de imagen");		
-				$result = $this->core_web_whatsap->sendMessageTypeImagGeneric(
-					$typeCompany,
-					$companyID, 
-					$urlPublic, 
-					$message,
-					getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)),
-					true,
-					""
-				);
+				if($fileMimeType == "application/pdf")
+				{
+					log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de pdf ".$fileClientName);						
+					$result = $this->core_web_whatsap->sendMessageTypePdfGeneric(
+						$typeCompany,
+						$companyID, 
+						$urlPublic, 
+						$fileClientName,
+						$message,
+						getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)),
+						true,
+						""
+					);
+				}
+				else if($fileMimeType == "video/webm")
+				{
+					log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de audio / video ".$fileClientName);						
+					$result = $this->core_web_whatsap->sendMessageTypeVideoAudioGeneric(
+						$typeCompany,
+						$companyID, 
+						$urlPublic, 
+						$fileClientName,
+						$message,
+						getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)),
+						true,
+						""
+					);
+				}
+				else
+				{
+					log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de imagen");		
+					$result = $this->core_web_whatsap->sendMessageTypeImagGeneric(
+						$typeCompany,
+						$companyID, 
+						$urlPublic, 
+						$message,
+						getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)),
+						true,
+						""
+					);
+				}
 			}
 		}
 		
-		log_message("error","setConversationNotification_ByCustomer >> proceso finalizado");	
+		log_message("error","setConversationNotification_ByCustomer >> proceso finalizado");			
+		// Si es mensaje interno, no se envía WhatsApp
+		if ($isInternalMessage) {
+			log_message("error","setConversationNotification_ByCustomer >> mensaje interno, no se envió WhatsApp");
+			return $this->response->setJSON([
+				'success' 	=> true,
+				'message' 	=> 'Mensaje interno guardado (no enviado por WhatsApp)',
+				'entityID' 	=> $entityID
+			]);
+		}
+		
+		// Si no es mensaje interno, validar resultado del envío de WhatsApp
 		log_message("error",print_r($result,true));	
 		if($result["status"] == "error") 
 		{
