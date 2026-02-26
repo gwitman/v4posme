@@ -26,6 +26,7 @@ createApp({
 			totalMessages:				0,
 			loadingMore:				false,
 			allMessagesLoaded:			false,
+			isInitialLoad:				true,
 			
 			//Tab 1 - Nuevas variables para envío desde tab 1
 			txtTab1Message:				'',
@@ -116,12 +117,12 @@ createApp({
 				this.sonidoReproducido = false;
 			}
 		},
-        async cargarListado(loadMore = false) {
+        async cargarListado(loadMore = false, showLoading = true) {
 			try {
 				// Si estamos cargando más, no mostrar el indicador principal
-				if (!loadMore) {
+				if (!loadMore && showLoading) {
 					this.mostrarWaite = true;
-				} else {
+				} else if (loadMore) {
 					this.loadingMore = true;
 				}
 				
@@ -177,10 +178,13 @@ createApp({
 					this.allMessagesLoaded = false;
 					this.currentPage = 1;
 					
-					// Scroll al final después de cargar
-					this.$nextTick(() => {
-						this.scrollToBottom();
-					});
+					// Solo hacer scroll automático en la carga inicial
+					if (this.isInitialLoad) {
+						this.$nextTick(() => {
+							this.scrollToBottom();
+						});
+						this.isInitialLoad = false;
+					}
 				}
 				
 				this.totalMessages = json.total || this.objListNotification.length;
@@ -438,11 +442,9 @@ createApp({
 			this.error = false;
 			this.guardando = false;
 			
-			// Recargar mensajes y hacer scroll al final
-			await this.cargarListado();
-			this.$nextTick(() => {
-				this.scrollToBottom();
-			});
+			// Recargar mensajes y hacer scroll al final solo cuando el usuario envía un mensaje
+			this.isInitialLoad = true;
+			await this.cargarListado(false, true);
 		},
 		
 		// TAB 2
@@ -661,13 +663,13 @@ createApp({
     },
 	mounted() {
 		
-		 // carga inicial
-        this.cargarListado();
+		 // carga inicial con indicador de carga
+        this.cargarListado(false, true);
 		this.cargarDatosDePantalla();
 
-        // refresco cada 3 segundos
+        // refresco cada 3 segundos SIN mostrar indicador de carga
         this.timer = setInterval(() => {
-            this.cargarListado();
+            this.cargarListado(false, false);
         }, 3000);
 		
         // una vez montado, hacemos visible la app
