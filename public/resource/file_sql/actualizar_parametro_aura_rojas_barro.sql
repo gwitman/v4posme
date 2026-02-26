@@ -1,6 +1,7 @@
-/*BD: 	db9qfcggjsreok:parametro_aura_rojas*/
-/*SERVIDOR:		siteground #2  posme.nl*/
+/*BD: 	dbhxm3nj0ggtcg:parametro_aura_rojas*/
+/*SERVIDOR:		siteground posme.net*/
 
+ 
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/	

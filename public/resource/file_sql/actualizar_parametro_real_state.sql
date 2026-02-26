@@ -7,6 +7,13 @@
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "820" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_CATEGORY_ID_DEFAULT";## Categoria por defecto
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "8d44de29-91ae-4828-b8b5-25cce402be37" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
@@ -21,20 +28,20 @@ WHERE
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "5117" 
+	tb_company_parameter.value = "5121" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CXC_SUBCATEGORY_ID_DEFAULT";## Sub Categoria por defecto
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "5116" 
+	tb_company_parameter.value = "5122" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CXC_SUBCATEGORY_ID_DEFAULT_POSMECONNECT";## Sub Categoria por defecto para posMe Connect_
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "bf6ee90b-2232-44d9-8e31-7b9cf10ce629" 
+	tb_company_parameter.value = "9c13cff3-e283-406a-8e16-6a67d31b40ad" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION";## Se usa para poner un label al sistema,  como un segundo nombre de sistema

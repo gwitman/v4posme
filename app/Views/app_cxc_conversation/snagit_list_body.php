@@ -199,7 +199,9 @@
 					  <h4 
 						class="mb-1" 
 						:class="{'text-white': objConversation.messgeConterNotRead > 0, '': objConversation.messgeConterNotRead <= 0}"
-					  >{{ objConversation.firstName }}</h4>
+					  >
+						{{ objConversation.firstName }}						
+					  </h4>
 					  <p>{{ objConversation.lastMessage }}</p>
 					  <a
 						:href="'<?php echo  base_url() ?>' + '/app_cxc_conversation/edit/entityID/' + objConversation.entityID" 						
@@ -209,14 +211,30 @@
 						>Ver {{ objConversation.customerNumber }} </small></a
 					  >
 					</div>
+					
+
 					<a  href="javascript:void(0);" 
 						class="text-muted"
 						
-					><i 
-						class="bx bx-copy"
-						:class="{'text-white': objConversation.messgeConterNotRead > 0, '': objConversation.messgeConterNotRead <= 0}" 
-					></i></a>
+					>
+						<i 
+							class="bx bx-copy ms-2"
+							:class="{'text-white': objConversation.messgeConterNotRead > 0, '': objConversation.messgeConterNotRead <= 0}" 
+						></i>
+
+						
+
+					</a>
 				  </div>
+				  <small 
+						v-if="objConversation.subCategoria"
+						class="badge "
+						:class="{
+							'bg-success': objConversation.subCategoria === 'CLIENTE',
+							'bg-info': objConversation.subCategoria === 'CONTACTO'
+						}"
+						style="font-size: 0.65rem; font-weight: normal;"
+					>({{ objConversation.subCategoria }})</small>
 				</div>
 			  </div>
 			</div>
