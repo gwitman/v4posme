@@ -511,7 +511,7 @@
 					
 						
 			  <div class="mb-3">
-				<label for="txtTab2CustomerName" class="form-label">
+				<label for="txtTab2CustomerName" class="form-label text-dark fw-bold">
 					<?php echo getBahavioSession(
 						$company->type,
 						"app_cxc_conversation",
@@ -529,7 +529,7 @@
 				/>
 			  </div>
 			  <div class="mb-3">
-				<label for="txtTab2CustomerPhone" class="form-label">
+				<label for="txtTab2CustomerPhone" class="form-label text-dark fw-bold">
 					<?php echo getBahavioSession(
 						$company->type,
 						"app_cxc_conversation",
@@ -572,7 +572,7 @@
 			  -->
 			  
 			  <div class="mb-3">
-				  <label for="txtAccionConversationID" class="form-label">
+				  <label for="txtAccionConversationID" class="form-label text-dark fw-bold">
 					<?php echo getBahavioSession(
 						$company->type,
 						"app_cxc_conversation",
@@ -595,7 +595,7 @@
 			  </div>
 			  
 			  <div class="mb-3">
-				  <label for="txtTab2CategoryID" class="form-label"><?php echo getBehavio($company->type,"app_cxc_customer","Categoria",""); ?></label>
+				  <label for="txtTab2CategoryID" class="form-label text-dark fw-bold"><?php echo getBehavio($company->type,"app_cxc_customer","Categoria",""); ?></label>
 				  <select class="form-select" 
 					id="txtTab2CategoryID" aria-label="Categoría"
 					v-model="txtTab2CategoryID"
@@ -611,7 +611,7 @@
 			  </div>
 			  
 			  <div class="mb-3">
-				  <label for="txtTab2StatusID" class="form-label">
+				  <label for="txtTab2StatusID" class="form-label text-dark fw-bold">
 					<?php echo getBahavioSession(
 						$company->type,
 						"app_cxc_conversation",
@@ -635,7 +635,7 @@
 			  </div>
 			  
 			  <div class="mb-3">
-				  <label for="txtTab2SubCategoryID" class="form-label">
+				  <label for="txtTab2SubCategoryID" class="form-label text-dark fw-bold">
 					<?php echo getBahavioSession(
 						$company->type,
 						"app_cxc_conversation",
@@ -659,7 +659,7 @@
 			  </div>
 			  
 			  <div class="mb-3">
-				<label for="txtTab2Budget" class="form-label">
+				<label for="txtTab2Budget" class="form-label text-dark fw-bold">
 					<?php echo getBahavioSession(
 						$company->type,
 						"app_cxc_conversation",
@@ -678,7 +678,7 @@
 			  </div>
 			  
 			  <div class="mb-3">
-				<label for="txtTab2Location" class="form-label"><?php echo getBehavio($company->type,"app_cxc_customer","txtDomicilio","Domicilio"); ?></label>
+				<label for="txtTab2Location" class="form-label text-dark fw-bold"><?php echo getBehavio($company->type,"app_cxc_customer","txtDomicilio","Domicilio"); ?></label>
 				<input
 				  type="text"
 				  class="form-control"
@@ -689,7 +689,7 @@
 			  </div>
 			  
 			  <div class="mb-3">
-				<label for="txtTab2Reference1" class="form-label"><?php echo getBehavio($company->type,"app_cxc_customer","Referencia1",""); ?></label>
+				<label for="txtTab2Reference1" class="form-label text-dark fw-bold"><?php echo getBehavio($company->type,"app_cxc_customer","Referencia1",""); ?></label>
 				<input
 				  type="text"
 				  class="form-control"
@@ -707,7 +707,7 @@
 					id="txtTab2AllowWhatsappCollection"
 					v-model="txtTab2AllowWhatsappCollection"
 				  />
-				  <label class="form-check-label" for="txtTab2AllowWhatsappCollection">
+				  <label class="form-check-label text-dark fw-bold" for="txtTab2AllowWhatsappCollection">
 					<?php echo getBahavioSession(
 						$company->type,
 						"app_cxc_conversation",
@@ -843,7 +843,7 @@
 		  </div>
 		  <div class="tab-pane fade" id="navs-justified-messages" role="tabpanel">
 		      <div class="mb-3">
-				<label for="txtTab3CustomerPhone" class="form-label">Telefono</label>
+				<label for="txtTab3CustomerPhone" class="form-label text-dark fw-bold">Telefono</label>
 				<input
 				  class="form-control"
 				  type="text"
@@ -853,11 +853,11 @@
 				/>
 			  </div>
 			  
-			  <label for="txtTab3CustomerMessage" class="form-label">Mensaje</label>
+			  <label for="txtTab3CustomerMessage" class="form-label text-dark fw-bold">Mensaje</label>
 			  <textarea class="form-control" id="txtTab3CustomerMessage" rows="3"  v-model="txtTab3CustomerMessage" ></textarea>
 			  
 			  <div class="mb-3">
-				<label for="formFile" class="form-label">Subir archivo</label>
+				<label for="formFile" class="form-label text-dark fw-bold">Subir archivo</label>
 				<input class="form-control" type="file" id="formFile" @change="onFileChange" />
 			  </div>
 			  
@@ -869,7 +869,7 @@
 					id="txtTab3IsInternalMessage"
 					v-model="txtTab3IsInternalMessage"
 				  />
-				  <label class="form-check-label" for="txtTab3IsInternalMessage">
+				  <label class="form-check-label text-dark fw-bold" for="txtTab3IsInternalMessage">
 					Mensaje Interno (no enviar por WhatsApp)
 				  </label>
 				</div>
