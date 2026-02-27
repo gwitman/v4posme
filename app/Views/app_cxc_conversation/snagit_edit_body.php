@@ -461,7 +461,7 @@
 						  </button>
 						  
 						  <label v-if="!isRecording" class="btn btn-attach btn-action mb-0">
-							<i class="bx bx-image"></i> Imagen
+							<i class="bx bx-arrow-from-bottom"></i> Documentos
 							<input 
 							  type="file" 
 							  class="d-none" 

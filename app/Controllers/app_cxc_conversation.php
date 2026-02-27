@@ -46,6 +46,7 @@ class app_cxc_conversation extends _BaseController {
 			$this->session->set($dataSession);
 			
 			//Renderizar Resultado
+			$dataView["objListCompanyPageSetting"]	= $this->Company_Page_Setting_Model->get_rowByKeyAndController($dataSession["company"]->type,"app_cxc_conversation");
 			$dataView["company"]					= $dataSession["company"];
 			$dataView["companyPageSetting"]			= $dataSession["companyPageSetting"];
 			$dataView["objParameterCONVERSATION_LIST_CONVERSATION_NOT_PHOTE"]				= $this->core_web_parameter->getParameter("CONVERSATION_LIST_CONVERSATION_NOT_PHOTE",$dataSession["company"]->companyID)->value;
