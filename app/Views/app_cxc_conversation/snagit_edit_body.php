@@ -511,7 +511,15 @@
 					
 						
 			  <div class="mb-3">
-				<label for="txtTab2CustomerName" class="form-label">Nombre</label>
+				<label for="txtTab2CustomerName" class="form-label">
+					<?php echo getBahavioSession(
+						$company->type,
+						"app_cxc_conversation",
+						"labelNombre",
+						"Nombre",
+						$objListCompanyPageSetting
+					); ?>
+				</label>
 				<input
 				  type="email"
 				  class="form-control"
@@ -521,7 +529,15 @@
 				/>
 			  </div>
 			  <div class="mb-3">
-				<label for="txtTab2CustomerPhone" class="form-label">Telefono</label>
+				<label for="txtTab2CustomerPhone" class="form-label">
+					<?php echo getBahavioSession(
+						$company->type,
+						"app_cxc_conversation",
+						"labelTelefono",
+						"Telefono",
+						$objListCompanyPageSetting
+					); ?>
+				</label>
 				<input
 				  class="form-control"
 				  type="text"
@@ -556,7 +572,15 @@
 			  -->
 			  
 			  <div class="mb-3">
-				  <label for="txtAccionConversationID" class="form-label">Accion</label>
+				  <label for="txtAccionConversationID" class="form-label">
+					<?php echo getBahavioSession(
+						$company->type,
+						"app_cxc_conversation",
+						"labelAccion",
+						"Accion",
+						$objListCompanyPageSetting
+					); ?>
+				  </label>
 				  <select class="form-select" 
 					id="txtAccionConversationID" aria-label="Default select example"
 					v-model="txtTab2WorkflowStageID"
@@ -576,7 +600,7 @@
 					id="txtTab2CategoryID" aria-label="Categoría"
 					v-model="txtTab2CategoryID"
 				  >
-					<option value="">Seleccione una categoría</option>
+					<option value="">Seleccione</option>
 					<option
 						v-for="(objCategory, index) in txtTab2ListCategoryID"  
 						:key="index"
@@ -587,12 +611,20 @@
 			  </div>
 			  
 			  <div class="mb-3">
-				  <label for="txtTab2StatusID" class="form-label">Estado</label>
+				  <label for="txtTab2StatusID" class="form-label">
+					<?php echo getBahavioSession(
+						$company->type,
+						"app_cxc_conversation",
+						"labelEstado",
+						"Estado",
+						$objListCompanyPageSetting
+					); ?>
+				  </label>
 				  <select class="form-select" 
 					id="txtTab2StatusID" aria-label="Estado"
 					v-model="txtTab2StatusID"
 				  >
-					<option value="">Seleccione un estado</option>
+					<option value="">Seleccione</option>
 					<option
 						v-for="(objStatus, index) in txtTab2ListWorkflowStageCustomer"  
 						:key="index"
@@ -603,12 +635,20 @@
 			  </div>
 			  
 			  <div class="mb-3">
-				  <label for="txtTab2SubCategoryID" class="form-label">Sub Categoría</label>
+				  <label for="txtTab2SubCategoryID" class="form-label">
+					<?php echo getBahavioSession(
+						$company->type,
+						"app_cxc_conversation",
+						"labelSubCategoria",
+						"Sub Categoría",
+						$objListCompanyPageSetting
+					); ?>
+				  </label>
 				  <select class="form-select" 
 					id="txtTab2SubCategoryID" aria-label="Sub Categoría"
 					v-model="txtTab2SubCategoryID"
 				  >
-					<option value="">Seleccione una sub categoría</option>
+					<option value="">Seleccione</option>
 					<option
 						v-for="(objSubCategory, index) in txtTab2ListSubCategoryID"  
 						:key="index"
@@ -619,7 +659,15 @@
 			  </div>
 			  
 			  <div class="mb-3">
-				<label for="txtTab2Budget" class="form-label">Presupuesto U$</label>
+				<label for="txtTab2Budget" class="form-label">
+					<?php echo getBahavioSession(
+						$company->type,
+						"app_cxc_conversation",
+						"labelPresupuesto",
+						"Presupuesto U$",
+						$objListCompanyPageSetting
+					); ?>
+				</label>
 				<input
 				  type="text"
 				  class="form-control"
@@ -660,7 +708,13 @@
 					v-model="txtTab2AllowWhatsappCollection"
 				  />
 				  <label class="form-check-label" for="txtTab2AllowWhatsappCollection">
-					Permite cobro por WhatsApp
+					<?php echo getBahavioSession(
+						$company->type,
+						"app_cxc_conversation",
+						"labelPermiteCobroPorWhatsapp",
+						"Permite cobro por WhatsApp",
+						$objListCompanyPageSetting
+					); ?>
 				  </label>
 				</div>
 			  </div>

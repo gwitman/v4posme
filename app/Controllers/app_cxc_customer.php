@@ -127,6 +127,8 @@ class app_cxc_customer extends _BaseController {
 			$datView["objListSituationID"]			= $this->core_web_catalog->getCatalogAllItem("tb_customer_frecuency_actuations","situationID",$companyID);
 			$datView["objListFrecuencyContactID"]	= $this->core_web_catalog->getCatalogAllItem("tb_customer_frecuency_actuations","frecuencyContactID",$companyID);
 			$datView['objCustomerFrecuency']		= $this->Customer_Frecuency_Actuations_Model->get_rowByEntityID($entityID);
+			$datView["title"]						= getBehavio($dataSession["company"]->type,"app_cxc_customer","labelTitlePageEdit","CLIENTE");
+			$datView["objListCompanyPageSetting"]	= $this->Company_Page_Setting_Model->get_rowByKeyAndController($dataSession["company"]->type,"app_cxc_customer");
 			//Obtener catalogos de tipos de leads
 			$objPCatalogTypeLeads 	= $this->Public_Catalog_Model->asObject()->
 										where("systemName","tb_customer.typeLeads")->
@@ -1663,6 +1665,8 @@ class app_cxc_customer extends _BaseController {
 			$dataView["comando"]						= $comando;
 			$dataView["useMobile"]						= $dataSession["user"]->useMobile;		
 			$dataView["company"]						= $dataSession["company"];
+			$dataView["title"]							= getBehavio($dataSession["company"]->type,"app_cxc_customer","labelTitlePageNew","CLIENTE");
+			$dataView["objListCompanyPageSetting"]		= $this->Company_Page_Setting_Model->get_rowByKeyAndController($dataSession["company"]->type,"app_cxc_customer");
 			
 			
 			$dataView["objListTypeID"]			        = $this->core_web_catalog->getCatalogAllItem("tb_customer_payment_method","typeID",$companyID);

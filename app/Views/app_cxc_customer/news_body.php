@@ -1,4 +1,4 @@
-<style>
+"<style>
 
   /* Estilo para ocultar la barra lateral */
   .sidebar 
@@ -355,7 +355,15 @@
 										</div>
 								</div>
 								<div class="form-group">
-										<label class="col-lg-4 control-label" for="normal">Permite WhatsApp Cobro</label>
+										<label class="col-lg-4 control-label" for="normal">
+											<?php echo getBahavioSession(
+												$company->type,
+												"app_cxc_customer",
+												"labelPermiteCobroPorWhatapp",
+												"Permite cobro por whatsapp",
+												$objListCompanyPageSetting
+											); ?>
+										</label>
 										<div class="col-lg-8">
 											<input type="checkbox"   name="txtAllowWhatsappCollection" id="txtAllowWhatsappCollection" value="1"   >
 										</div>
