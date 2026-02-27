@@ -273,6 +273,22 @@ createApp({
 		  });
 			
 		},
+		openImageModalDownloadDocument(documentUrl) 
+		{
+		  // Crear un enlace temporal para descargar el documento
+		  const link 	= document.createElement('a');
+		  link.href 	= documentUrl;
+		  link.target 	= '_blank';
+		  
+		  // Extraer el nombre del archivo de la URL
+		  const fileName 	= documentUrl.split('/').pop() || 'documento.pdf';
+		  link.download 	= fileName;
+		  
+		  // Agregar al DOM, hacer clic y remover
+		  document.body.appendChild(link);
+		  link.click();
+		  document.body.removeChild(link);
+		},
 		
 		// TAB 1 - Nuevos métodos para envío desde tab 1
 		handlePaste(event) {

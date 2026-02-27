@@ -382,6 +382,13 @@
 										  @click="openImageModalAudio(objNotification.subject)"
 									  ><i class="bx bx-volume-full"></i> Escuchar</span>
 								  </template>
+								  <template v-else-if="objNotification.title == 'pdf'">
+									  <br/>
+									  <span 
+										  class="badge bg-light text-primary cursor-pointer mt-1" 
+										  @click="openImageModalDownloadDocument(objNotification.subject)"
+									  ><i class="bx bx-file"></i> Documento</span>
+								  </template>
 							  </p>
 								
 							  <div class="message-time">

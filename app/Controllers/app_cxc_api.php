@@ -733,7 +733,21 @@ class app_cxc_api extends _BaseController {
 		$objNotification["subject"]                 = $file ? $urlPublic : 'no use';
 		$objNotification["message"] 				= $message;
 		$objNotification["summary"] 				= $isInternalMessage ? 'mensaje interno' : "no use";
-		$objNotification["title"] 					= $file ? 'image' : 'text';
+		
+		if(!$file)
+		{
+			$objNotification["title"] 				= 'text';
+		}
+		else 
+		{
+			if($fileMimeType == "application/pdf")
+			$objNotification["title"] 				= 'pdf';
+			else if($fileMimeType == "video/webm") 
+			$objNotification["title"] 				= 'audio';
+			else 
+			$objNotification["title"] 				= 'image';
+		}
+		
 		$objNotification["tagID"] 					= $objTag->tagID;
 		$objNotification["createdOn"] 				= helper_getDateTime();
 		$objNotification["isActive"] 				= 1;

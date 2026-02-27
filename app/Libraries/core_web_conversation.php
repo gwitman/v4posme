@@ -308,10 +308,15 @@ class core_web_conversation{
 			$objEmployee_Model 		= new Employee_Model();
 			$objListEmployer 		= $objEmployee_Model->get_rowByCompanyID($companyID);
 			$arrayListEmployer  	= array();
+			$arrayListEmployerName	= array();
 			
 			//Si la conversacion es antiguoa no enlazar colaboradores
 			if($conversationIsNew == false)
-				return $arrayListEmployer;
+			{
+				$result["employerList"] = $arrayListEmployer;
+				$result["typeAsigned"] 	= "ninguna";
+				return $result;
+			}
 			
 			if($objListEmployer)
 			{
@@ -320,12 +325,24 @@ class core_web_conversation{
 					$validatePermiso 	 = $objEmployee_Model->get_validatePermissionBy_EmployerID_PuedeAtenderWhatsappInCRM($employer->entityID);
 					if($validatePermiso)
 					{
-						$arrayListEmployer[] = $employer->entityID;
+						$arrayListEmployer[] 		= $employer->entityID;
+						$arrayListEmployerName[] 	= $employer->firstName;
+						$result["typeAsigned"] 		= "onlyEmployer";
 					}
 					
 				}
 			}
-			return $arrayListEmployer;
+			
+			if(count($arrayListEmployer) > 0)
+			{
+				$result["employerList"] = $arrayListEmployer;			
+			}
+			else
+			{
+				$result["employerList"] = $arrayListEmployer;
+				$result["typeAsigned"] 	= "ninguna";
+			}
+			return $result;
 		}	
    }
 
