@@ -164,15 +164,16 @@ createApp({
 				
 				// 🟢 CASO 3: success = true con datos		
 				var resultData = json.data.map(item => {
-					if (
-						item.identification.length > 10 ||							
-						item.phoneNumber.length > 10 
-					) 
-					{						
+					
+
+					if (item.identification && item.identification.length > 10) {
 						item.identification = item.identification.slice(-8);
-						item.phoneNumber  	= item.phoneNumber.slice(-8);
-						return item;
 					}
+
+					if (item.phoneNumber && item.phoneNumber.length > 10) {
+						item.phoneNumber = item.phoneNumber.slice(-8);
+					}
+
 					return item;
 				});
 
