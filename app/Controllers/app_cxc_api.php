@@ -2747,15 +2747,19 @@ class app_cxc_api extends _BaseController {
 		log_message('error', print_r($input,true));
 
 		
-		$data["customerPhoneNumber"] 	= getNumberPhoneIsContact(clearNumero(($input["data"]['from'] ?? '')));
-		$data["customerFirstName"]	 	= $input["data"]['contact']['pushname'] ?? '';
-		$data["customerMessage"]	 	= $input["data"]['body'] ?? '';
-		$data["customerMessage"]	 	= helper_convertirLinkAHtml($data["customerMessage"],"ver link");
-		$data["customerMessageType"]	= $input["data"]['type'] ?? '';
-		$data["customerMessageUrl"]		= "";
-		$data["customerMessageFile"]	= "";
-				
-		
+		$data["customerPhoneNumber"] 			= getNumberPhoneIsContact(clearNumero(($input["data"]['from'] ?? '')));
+		$data["customerFirstName"]	 			= $input["data"]['contact']['pushname'] ?? '';
+
+		$data["customerMessage"]	 			= $input["data"]['body'] ?? '';
+		$data["customerMessage"]	 			= helper_convertirLinkAHtml($data["customerMessage"],"ver link");
+		$data["customerMessageType"]			= $input["data"]['type'] ?? '';
+		$data["customerMessageFile"]			= "";
+		$data["customerMessageUrl"]				= "";
+
+		$data["customerMessageReference"]		= $input["data"]['quotedMsg']["body"] ?? '';
+
+
+		//Tipo de mensaje
 		if($data["customerMessageType"] == "chat")
 		{
 			$data["customerMessageType"] = "text";
@@ -2771,6 +2775,8 @@ class app_cxc_api extends _BaseController {
 			$data["customerMessageType"] = "audio";
 		}
 		
+
+		//Guardar el recurso o imagen o video o pdf
 		if(
 			$data["customerMessageType"] == "image" || 
 			$data["customerMessageType"] == "pdf"   || 
@@ -2821,6 +2827,11 @@ class app_cxc_api extends _BaseController {
 			
 		}
 		
+		//Procear la referencai al mensaje 
+		if($data["customerMessageReference"] != "")
+		{
+			$data["customerMessage"] = $data["customerMessage"]." <div class='referencia'> ".$data["customerMessageReference"]." </div>";
+		}
 		
 		$customerPhoneNumber 	= $data["customerPhoneNumber"];
 		$customerFirstName		= "posMeConnect_".$data["customerFirstName"];

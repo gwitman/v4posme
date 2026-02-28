@@ -1,3 +1,102 @@
+<!--
+<div class="referencia">
+  <strong>Juan Pérez</strong>
+  <p>Hola, ¿cuándo pueden entregar el pedido?</p>
+</div>
+Podemos entregar mañana a las 10:00 AM
+
+
+
+<div class="referencia">
+  <strong>María González</strong>
+  <p>Aquí está el diseño que solicitaste</p>
+  <span class="badge bg-light text-primary">
+    <i class="bx bx-image"></i> Imagen
+  </span>
+</div>
+Perfecto, me gusta el diseño. Procede con la producción.
+
+
+
+<div class="referencia">
+  <strong>María González</strong>
+  <p>Aquí está el diseño</p>
+  <img src="ruta/a/la/imagen-thumb.jpg" alt="Preview">
+</div>
+Perfecto, me gusta el diseño.
+
+
+
+<div class="referencia">
+  <strong>Carlos Ramírez</strong>
+  <p>Te envío el contrato firmado</p>
+  <span class="badge bg-light text-primary">
+    <i class="bx bx-file"></i> contrato.pdf
+  </span>
+</div>
+Recibido, revisaré y te confirmo.
+
+
+<div class="referencia">
+  <strong>Ana López</strong>
+  <p>Escucha esta nota de voz</p>
+  <span class="badge bg-light text-primary">
+    <i class="bx bx-volume-full"></i> Audio (0:45)
+  </span>
+</div>
+Entendido, procederé como indicaste.
+
+
+
+
+<div class="referencia">
+  <strong>Pedro Martínez</strong>
+  <p>Necesito que me ayudes con el siguiente problema: tengo un error en el sistema que no me permite procesar los pagos y los clientes están reportando que no pueden completar sus compras. Esto es urgente porque estamos perdiendo ventas.</p>
+</div>
+Ya estoy revisando el problema, te actualizo en 15 minutos.
+
+
+
+
+<div class="referencia">
+  <p>¿A qué hora es la reunión?</p>
+</div>
+La reunión es a las 3:00 PM
+
+
+
+
+
+
+// Mensaje con referencia de texto
+$messageWithReference = '<div class="referencia">'
+    . '<strong>' . htmlspecialchars($referencedMessage->authorName) . '</strong>'
+    . '<p>' . htmlspecialchars($referencedMessage->text) . '</p>'
+    . '</div>'
+    . htmlspecialchars($newMessageText);
+
+// Mensaje con referencia de imagen
+$messageWithImageReference = '<div class="referencia">'
+    . '<strong>' . htmlspecialchars($referencedMessage->authorName) . '</strong>'
+    . '<p>' . htmlspecialchars($referencedMessage->text) . '</p>'
+    . '<span class="badge bg-light text-primary">'
+    . '<i class="bx bx-image"></i> Imagen'
+    . '</span>'
+    . '</div>'
+    . htmlspecialchars($newMessageText);
+
+// Mensaje con referencia de audio
+$messageWithAudioReference = '<div class="referencia">'
+    . '<strong>' . htmlspecialchars($referencedMessage->authorName) . '</strong>'
+    . '<p>Nota de voz</p>'
+    . '<span class="badge bg-light text-primary">'
+    . '<i class="bx bx-volume-full"></i> Audio (' . $audioDuration . ')'
+    . '</span>'
+    . '</div>'
+    . htmlspecialchars($newMessageText);
+
+-->
+
 <style>
 #app { visibility: hidden; }
 .light-style .bootstrap-select .filter-option-inner-inner{
@@ -67,6 +166,95 @@
   background: #fff9c4;
   color: #f57f17;
   border-left: 4px solid #fbc02d;
+}
+
+/* Estilos para mensaje referenciado (citado) */
+.referencia {
+  background: rgba(0, 0, 0, 0.08);
+  border-left: 4px solid rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  max-width: 100%;
+  overflow: hidden;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.referencia:hover {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+/* Referencia en mensaje de cliente */
+.message-from-customer .referencia {
+  background: rgba(21, 101, 192, 0.15);
+  border-left-color: rgba(21, 101, 192, 0.5);
+  color: #0d47a1;
+}
+
+.message-from-customer .referencia:hover {
+  background: rgba(21, 101, 192, 0.22);
+}
+
+/* Referencia en mensaje de empleado */
+.message-from-employer .referencia {
+  background: rgba(255, 255, 255, 0.2);
+  border-left-color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.message-from-employer .referencia:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* Referencia en mensaje interno */
+.message-internal .referencia {
+  background: rgba(245, 127, 23, 0.15);
+  border-left-color: rgba(245, 127, 23, 0.5);
+  color: #e65100;
+}
+
+.message-internal .referencia:hover {
+  background: rgba(245, 127, 23, 0.22);
+}
+
+/* Texto dentro de la referencia */
+.referencia p {
+  margin: 0;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+/* Nombre del autor en la referencia */
+.referencia strong,
+.referencia .autor-referencia {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+/* Imagen en referencia */
+.referencia img {
+  max-width: 60px;
+  max-height: 60px;
+  border-radius: 4px;
+  margin-top: 4px;
+  object-fit: cover;
+}
+
+/* Badge de archivo en referencia */
+.referencia .badge {
+  font-size: 0.75rem;
+  padding: 3px 8px;
+  margin-top: 4px;
+  display: inline-block;
 }
 
 /* Área de envío de mensajes */
@@ -365,8 +553,8 @@
 								<strong style="font-size: 0.9rem;">{{ objNotification.firstNameSource }}</strong>
 							  </div>
 
-							  <p style="white-space: pre-line; margin-bottom: 4px; font-size: 0.95rem;">
-								  {{ objNotification.message }}
+							  <div style="white-space: pre-line; margin-bottom: 4px; font-size: 0.95rem;">
+								  <div v-html="objNotification.message"></div>
 								  
 								  <template v-if="objNotification.title == 'image'">
 									<br/>
@@ -389,7 +577,7 @@
 										  @click="openImageModalDownloadDocument(objNotification.subject)"
 									  ><i class="bx bx-file"></i> Documento</span>
 								  </template>
-							  </p>
+							  </div>
 								
 							  <div class="message-time">
 								  {{ objNotification.createdOnFormato12H }}
