@@ -27,9 +27,9 @@ createApp({
                 return this.objListConversation;
             }
 
-            const texto = this.txtCustomerFind.toLowerCase();
+            const texto = this.txtCustomerFind.toLowerCase();			
             return this.objListConversation.filter(item => 
-				 ['firstName', 'customerNumber', 'phoneNumber'].some(key =>
+				 ['firstName', 'customerNumber', 'phoneNumber','identification','lastMessage','subCategoria' ].some(key =>
 					item[key]?.toString().toLowerCase().includes(texto.toLowerCase())
 				)
 	

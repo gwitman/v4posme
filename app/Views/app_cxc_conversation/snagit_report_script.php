@@ -14,6 +14,8 @@ createApp({
 			txtWorkflowStatusIDConversation:'0',
 			txtWorkflowStatusID:			'0',
 			txtSubCategoryID:				'0',
+			txtStatusReadID:				'0',
+			txtStatusResponseID:			'0',
 			
 			counterRegister:				0,
 			noLeidas:						0,
@@ -30,7 +32,12 @@ createApp({
     methods: {	
 		async verConversacion(conversationID)
 		{
-			window.location.href = '<?php echo base_url()."/app_cxc_conversation/edit/entityID/"; ?>'+conversationID;
+			
+			window.open(
+				'<?php echo base_url()."/app_cxc_conversation/edit/entityID/"; ?>' + conversationID,
+				'_blank'
+			);
+
 		},
 		async fnAplicarBusqueda()
 		{
@@ -51,7 +58,9 @@ createApp({
 							txtInboxID:						 this.txtInboxID,
 							txtWorkflowStatusID:			 this.txtWorkflowStatusID,
 							txtSubCategoryID:				 this.txtSubCategoryID,
-							txtWorkflowStatusIDConversation: this.txtWorkflowStatusIDConversation
+							txtWorkflowStatusIDConversation: this.txtWorkflowStatusIDConversation,
+							txtStatusResponseID: 			 this.txtStatusResponseID,
+							txtStatusReadID: 				 this.txtStatusReadID
 						})
 				});				
 				
@@ -118,6 +127,28 @@ createApp({
 					{
 						item.dayNotContacted 	= 'contestada en: '+ Number((item.dayNotContacted / 3600).toFixed(2)) + ' hrs.';				
 					}
+
+					// 🔹 Modificar phoneNumber si es mayor a 11 caracteres
+					if (
+						item.phoneNumber &&
+						typeof item.phoneNumber === 'string' &&
+						item.phoneNumber.length > 11
+					) {
+						item.phoneNumber = item.phoneNumber.slice(-8);
+					}
+
+					// 🔹 Modificar firstName si es mayor a 11 caracteres
+					if (
+						item.firstName &&
+						typeof item.firstName === 'string' &&
+						item.firstName.length > 30
+					) {
+						item.firstName = item.firstName.slice(-30);
+					}
+
+					
+
+					
 				});
 				this.objListConversation 	= json.data; 	// 🔥 aquí Vue limpia y vuelve a renderizar 				
 			} 

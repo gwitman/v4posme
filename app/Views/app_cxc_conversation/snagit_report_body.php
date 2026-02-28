@@ -170,62 +170,40 @@
 				  </select>
 			</div>
 
+			<div class="mb-3">
+				  <label for="txtStatusReadID" class="form-label">Leidas</label>
+				  <select class="form-select" 
+					id="txtStatusReadID" aria-label="Default select example"
+					v-model="txtStatusReadID"
+				  >
+					<option :value="0" selected >TODAS</option>
+					<option :value="1" selected >LEIDAS</option>
+					<option :value="-1" selected >NO LEIDAS</option>
+					
+				  </select>
+			</div>
+
+			<div class="mb-3">
+				  <label for="txtStatusResponseID" class="form-label">Contestadas</label>
+				  <select class="form-select" 
+					id="txtStatusResponseID" aria-label="Default select example"
+					v-model="txtStatusResponseID"
+				  >
+					<option :value="0" selected >TODAS</option>
+					<option :value="1" selected >RESPOINDIDAS</option>
+					<option :value="-1" selected >NO RESPONDIDAS</option>
+					
+				  </select>
+			</div>
+
+
 		  </div>
 	</div>
 
 
 
 	<!-- Bootstrap Dark Table -->
-	<div class="card">
-		<h5 class="card-header">Resultado</h5>
-		<div class="table-responsive text-nowrap">
-		  <table class="table table-dark">
-			<thead>
-			  <tr>
-				<th>Telefono</th>
-				<th>Nombre</th>
-				<th>Recibido</th>
-				<th>No Contestado</th>
-				<th>Bandeja</th>
-			  </tr>
-			</thead>
-			<tbody class="table-border-bottom-0">
-			  <tr v-for="objConversation in objListConversation" >
-				<td>
-					<!--<div class="demo-inline-spacing">-->
-						<button 
-							type="button" 
-							class="btn btn-icon "							
-							:class="objConversation.messgeConterNotRead > 0 ? 'btn-success' : 'btn-instagram' "
-							@click="verConversacion(objConversation.entityID)"
-						>
-						  <i class="tf-icons bx bx-show"></i>
-						</button>
-				    <!--</div>-->
-					
-					<!--<i class="fab fa-angular fa-lg text-danger me-3"></i> -->
-					<strong>{{ objConversation.phoneNumber }}</strong>
-				</td>
-				<td>
-					<span class="badge bg-label-primary me-1">
-					{{ objConversation.firstName }}
-					</span>
-				</td>
-				<td>
-				   {{ objConversation.messageReceiptOnStr }}
-				</td>
-				<td>
-				   {{ objConversation.dayNotContacted }}
-				</td>
-				<td>
-				   {{ objConversation.firstNameEmployer }}
-				</td>
-			  </tr>			  
-			</tbody>
-		  </table>
-		</div>
-	</div>
-	
+
 	<div class="row">
 		<!--/ Bootstrap Dark Table -->
 		<div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
@@ -285,6 +263,58 @@
 			</div>
 		</div>
 	</div>
+	
+	<div class="card">
+		<h5 class="card-header">Resultado</h5>
+		<div class="table-responsive text-nowrap">
+		  <table class="table table-dark">
+			<thead>
+			  <tr>
+				<th>Telefono</th>
+				<th>Nombre</th>
+				<th>Recibido</th>
+				<th>No Contestado</th>
+				<th>Bandeja</th>
+			  </tr>
+			</thead>
+			<tbody class="table-border-bottom-0">
+			  <tr v-for="objConversation in objListConversation" >
+				<td>
+					<!--<div class="demo-inline-spacing">-->
+						<button 
+							type="button" 
+							class="btn btn-icon "							
+							:class="objConversation.messgeConterNotRead > 0 ? 'btn-success' : 'btn-instagram' "
+							@click="verConversacion(objConversation.entityID)"
+						>
+						  <i class="tf-icons bx bx-show"></i>
+						</button>
+				    <!--</div>-->
+					
+					<!--<i class="fab fa-angular fa-lg text-danger me-3"></i> -->
+					<strong>{{ objConversation.phoneNumber }}</strong>
+				</td>
+				<td>
+					<span class="badge bg-label-primary me-1">
+					{{ objConversation.firstName }}
+					</span>
+				</td>
+				<td>
+				   {{ objConversation.messageReceiptOnStr }}
+				</td>
+				<td>
+				   {{ objConversation.dayNotContacted }}
+				</td>
+				<td>
+				   {{ objConversation.firstNameEmployer }}
+				</td>
+			  </tr>			  
+			</tbody>
+		  </table>
+		</div>
+	</div>
+	
+	
 </div>
 
 <script>

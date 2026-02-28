@@ -277,6 +277,8 @@ class app_cxc_api extends _BaseController {
 			$txtWorkflowStatusID				= $data['txtWorkflowStatusID'] ?? null;
 			$txtSubCategoryID					= $data['txtSubCategoryID'] ?? null;
 			$txtWorkflowStatusIDConversation	= $data['txtWorkflowStatusIDConversation'] ?? null;
+			$txtStatusResponseID				= $data['txtStatusResponseID'] ?? null;
+			$txtStatusReadID					= $data['txtStatusReadID'] ?? null;
 
 			//Obtener datos
 			$companyID 	= $dataSession["user"]->companyID;
@@ -286,7 +288,14 @@ class app_cxc_api extends _BaseController {
 			$data = $this->
 			Customer_Conversation_Model->
 			getBy_StartOn_EndOn_EmployerID_InboxID_StatusID(
-				$txtStartOn,$txtFinishOn,$txtEntityIDEmployer,$txtWorkflowStatusIDConversation,$txtWorkflowStatusID,$txtSubCategoryID
+				$txtStartOn,
+				$txtFinishOn,
+				$txtEntityIDEmployer,
+				$txtWorkflowStatusIDConversation,
+				$txtWorkflowStatusID,
+				$txtSubCategoryID,
+				$txtStatusResponseID,
+				$txtStatusReadID
 			);
 			
 			

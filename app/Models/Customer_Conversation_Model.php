@@ -275,7 +275,11 @@ class Customer_Conversation_Model extends Model
 		return $db->query($sql)->getResult();
 		
     }
-	function getBy_StartOn_EndOn_EmployerID_InboxID_StatusID($startOn,$endOn,$entityIDEmployer,$statusIDConversation,$statusID,$subCategoryID)
+	function getBy_StartOn_EndOn_EmployerID_InboxID_StatusID(
+			$startOn,$endOn,$entityIDEmployer,$statusIDConversation,$statusID,$subCategoryID,
+			$txtStatusResponseID,
+			$txtStatusReadID
+	)
 	{
 		$db 		= db_connect();
 		$builder	= $db->table("tb_customer_conversation");		
@@ -373,6 +377,22 @@ class Customer_Conversation_Model extends Model
 						$statusIDConversation = 206 /*cerradas*/ and 
 						c.lastActivityOn between '$startOn' and '$endOn 23:59:59' 
 					  )
+					) and 
+					(
+						/*todas*/
+						($txtStatusReadID = 0 ) or 
+						/*leidas*/
+						($txtStatusReadID  = 1 and c.messgeConterNotRead = 0 ) or 
+						/*no leidas*/
+						($txtStatusReadID  = -1 and c.messgeConterNotRead > 0 )
+					) and 
+					(
+						/*todas*/
+						($txtStatusResponseID = 0 ) or 
+						/*respondidas*/
+						($txtStatusResponseID = 1 and c.messageSendOn > c.messageReceiptOn  ) or 
+						/*no respondidas*/
+						($txtStatusResponseID = -1 and c.messageSendOn < c.messageReceiptOn )
 					)
 				order by 
 					cus.entityID 
