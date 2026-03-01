@@ -132,9 +132,9 @@ createApp({
 					if (
 						item.phoneNumber &&
 						typeof item.phoneNumber === 'string' &&
-						item.phoneNumber.length > 11
+						item.phoneNumber.length > 13
 					) {
-						item.phoneNumber = item.phoneNumber.slice(-8);
+						item.phoneNumber = item.phoneNumber.slice(-13);
 					}
 
 					// 🔹 Modificar firstName si es mayor a 11 caracteres

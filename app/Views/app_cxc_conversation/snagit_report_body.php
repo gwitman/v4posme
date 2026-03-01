@@ -271,8 +271,7 @@
 			<thead>
 			  <tr>
 				<th>Telefono</th>
-				<th>Nombre</th>
-				<th>Recibido</th>
+				<th>Nombre</th>				
 				<th>No Contestado</th>
 				<th>Bandeja</th>
 			  </tr>
@@ -298,9 +297,6 @@
 					<span class="badge bg-label-primary me-1">
 					{{ objConversation.firstName }}
 					</span>
-				</td>
-				<td>
-				   {{ objConversation.messageReceiptOnStr }}
 				</td>
 				<td>
 				   {{ objConversation.dayNotContacted }}
