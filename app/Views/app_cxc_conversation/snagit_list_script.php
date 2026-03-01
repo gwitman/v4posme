@@ -165,13 +165,32 @@ createApp({
 				// 🟢 CASO 3: success = true con datos		
 				var resultData = json.data.map(item => {
 					
-
+					// Procesar identification
 					if (item.identification && item.identification.length > 10) {
-						item.identification = item.identification.slice(-8);
+						item.identification = item.identification.slice(-10);
 					}
 
+					// Procesar phoneNumber
 					if (item.phoneNumber && item.phoneNumber.length > 10) {
-						item.phoneNumber = item.phoneNumber.slice(-8);
+						item.phoneNumber = item.phoneNumber.slice(-10);
+					}
+
+					// Procesar firstName: remover "posMeConnect_" y limitar a 30 caracteres
+					if (item.firstName && typeof item.firstName === 'string') {
+						item.firstName = item.firstName.replace(/posMeConnect_/g, '');
+						if (item.firstName.length > 30) {
+							item.firstName = item.firstName.substring(0, 30);
+						}
+					}
+
+					// Procesar lastMessage: limitar palabras largas a 30 caracteres
+					if (item.lastMessage && typeof item.lastMessage === 'string') {
+						item.lastMessage = item.lastMessage.split(' ').map(palabra => {
+							if (palabra.length > 30) {
+								return palabra.substring(0, 30);
+							}
+							return palabra;
+						}).join(' ');
 					}
 
 					return item;
