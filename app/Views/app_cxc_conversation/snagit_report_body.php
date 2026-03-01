@@ -73,6 +73,25 @@
 			<button class="btn btn-danger w-100 mb-3" @click="fnLimpiarBusqueda" >Cancelar</button>
 	
 			<div class="mb-3">
+				  <label for="txtWorkflowStatusIDConversation" class="form-label">Estado Conversacion</label>
+				  <select class="form-select" 
+					id="txtWorkflowStatusIDConversation" aria-label="Default select example"
+					v-model="txtWorkflowStatusIDConversation"
+				  >
+					<option :value="0" selected >TODAS</option>
+					<?php 
+					if($objListWorkflowStageConversation)
+					{
+						foreach($objListWorkflowStageConversation as $workflow)
+						{
+							echo '<option value="'.$workflow->workflowStageID.'" >'.$workflow->name.'</option>';
+						}
+					}
+					?>	
+				  </select>
+			</div>
+			
+			<div class="mb-3">
 				<label for="html5-datetime-local-input"  class="form-label">Inicio</label> 				
 				<input
 				 class="form-control"
@@ -151,24 +170,7 @@
 				  </select>
 			</div>
 
-			<div class="mb-3">
-				  <label for="txtWorkflowStatusIDConversation" class="form-label">Estado Conversacion</label>
-				  <select class="form-select" 
-					id="txtWorkflowStatusIDConversation" aria-label="Default select example"
-					v-model="txtWorkflowStatusIDConversation"
-				  >
-					<option :value="0" selected >TODAS</option>
-					<?php 
-					if($objListWorkflowStageConversation)
-					{
-						foreach($objListWorkflowStageConversation as $workflow)
-						{
-							echo '<option value="'.$workflow->workflowStageID.'" >'.$workflow->name.'</option>';
-						}
-					}
-					?>	
-				  </select>
-			</div>
+			
 
 			<div class="mb-3">
 				  <label for="txtStatusReadID" class="form-label">Leidas</label>

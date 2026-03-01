@@ -11,7 +11,7 @@ createApp({
 			txtEmployeID:					<?php echo $objEmployerIDDefault; ?>,
 			txtStartOn:						(new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString().slice(0, 10)),
 			txtFinishOn:					(new Date().toISOString().slice(0, 10)),
-			txtWorkflowStatusIDConversation:'0',
+			txtWorkflowStatusIDConversation:205, /*registrdas*/
 			txtWorkflowStatusID:			'0',
 			txtSubCategoryID:				'0',
 			txtStatusReadID:				'0',

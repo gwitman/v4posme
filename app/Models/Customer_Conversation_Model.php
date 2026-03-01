@@ -276,7 +276,7 @@ class Customer_Conversation_Model extends Model
 		
     }
 	function getBy_StartOn_EndOn_EmployerID_InboxID_StatusID(
-			$startOn,$endOn,$entityIDEmployer,$statusIDConversation,$statusID,$subCategoryID,
+			$startOn,$endOn,$entityIDEmployer,$statusIDConversation,$statusIDCustomer,$subCategoryID,
 			$txtStatusResponseID,
 			$txtStatusReadID
 	)
@@ -347,15 +347,15 @@ class Customer_Conversation_Model extends Model
 					inner join tb_catalog_item subCategory on 
 						subCategory.catalogItemID = cus.subCategoryID 
 				where 
-					c.isActive = 1 and 
-					ws.isInit = 1  and
+					c.isActive = 1 and  
 					( 
 						($entityIDEmployer  = 0 ) or 
 						(emp.entityID = $entityIDEmployer and $entityIDEmployer  != 0) 
 					) and 
 					(
-						($statusID  = 0 ) or 
-						(c.statusID = $statusID and $statusID != 0 )
+						/*esado del cliente */
+						($statusIDCustomer  = 0 ) or 
+						(cus.statusID = $statusIDCustomer and $statusIDCustomer != 0 )
 					) and 
 					(
 					  	(cus.subCategoryID  = $subCategoryID and $subCategoryID != 0 ) or 
@@ -363,11 +363,7 @@ class Customer_Conversation_Model extends Model
 
 					) and 
 					(
-					 	(	$statusID = 0 /*todas*/) or 
-						(   $statusID != 0 AND cus.statusID = $statusID )
-					) and 
-					(
-					  /*filtrar las cerradas*/
+					  /*status de conversacion*/
 					  (	$statusIDConversation = 0 /*todas*/) or 
 					  (
 						$statusIDConversation = 205 /*abiertas*/ and 
@@ -392,7 +388,12 @@ class Customer_Conversation_Model extends Model
 						/*respondidas*/
 						($txtStatusResponseID = 1 and c.messageSendOn > c.messageReceiptOn  ) or 
 						/*no respondidas*/
-						($txtStatusResponseID = -1 and c.messageSendOn < c.messageReceiptOn )
+						($txtStatusResponseID = -1 and c.messageSendOn < c.messageReceiptOn ) or 
+						(
+							$txtStatusResponseID = -1 and 
+							c.messageReceiptOn is not null and 
+							c.messageSendOn is null  
+						)
 					)
 				order by 
 					cus.entityID 
