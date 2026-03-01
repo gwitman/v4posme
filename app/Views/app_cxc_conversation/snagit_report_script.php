@@ -26,6 +26,10 @@ createApp({
 			
 			conContestar:					0,
 			conContestarPorcentage:			0,
+			
+			promedioContestacion:			'0.00',
+			promedioSinContestar:			'0.00',
+			
 			objListConversation: 			[],
         }
     },
@@ -74,7 +78,9 @@ createApp({
 					this.sinContestar 			= 0;
 					this.sinContestarPorcentage	= 0;
 					this.conContestar 			= 0;
-					this.conContestarPorcentage	= 0;											
+					this.conContestarPorcentage	= 0;
+					this.promedioContestacion	= '0.00';
+					this.promedioSinContestar	= '0.00';
 					this.mensaje 				= 'Ocurrió un error al cargar la información';
 					return;
 				}
@@ -90,7 +96,9 @@ createApp({
 					this.sinContestar 			= 0;
 					this.sinContestarPorcentage	= 0;
 					this.conContestar 			= 0;
-					this.conContestarPorcentage	= 0;					
+					this.conContestarPorcentage	= 0;
+					this.promedioContestacion	= '0.00';
+					this.promedioSinContestar	= '0.00';
 					this.mostrarAlerta			= false;
 					return;
 				}
@@ -116,16 +124,34 @@ createApp({
 					this.conContestarPorcentage	= 0;
 				}
 				
+				// Calcular promedios de contestación y sin contestar
+				let sumaContestadas = 0;
+				let contadorContestadas = 0;
+				let sumaSinContestar = 0;
+				let contadorSinContestar = 0;
+				
 				json.data.forEach(item => {
+					const valorOriginal = item.dayNotContacted;
+					
 					//sin contestar
 					if(item.dayNotContacted < 0)
 					{
-						item.dayNotContacted 	= Number(((item.dayNotContacted * -1) / 3600).toFixed(2)) + ' hrs. sin contestar';				
+						const horasSinContestar = Number(((item.dayNotContacted * -1) / 3600).toFixed(2));
+						item.dayNotContacted 	= horasSinContestar + ' hrs. sin contestar';
+						
+						// Acumular para promedio
+						sumaSinContestar += horasSinContestar;
+						contadorSinContestar++;
 					}
 					//contestada
 					else
 					{
-						item.dayNotContacted 	= 'contestada en: '+ Number((item.dayNotContacted / 3600).toFixed(2)) + ' hrs.';				
+						const horasContestada = Number((item.dayNotContacted / 3600).toFixed(2));
+						item.dayNotContacted 	= 'contestada en: '+ horasContestada + ' hrs.';
+						
+						// Acumular para promedio
+						sumaContestadas += horasContestada;
+						contadorContestadas++;
 					}
 
 					// 🔹 Modificar phoneNumber si es mayor a 11 caracteres
@@ -145,11 +171,17 @@ createApp({
 					) {
 						item.firstName = item.firstName.slice(-30);
 					}
-
-					
-
-					
 				});
+				
+				// Calcular promedios finales
+				this.promedioContestacion = contadorContestadas > 0 
+					? (sumaContestadas / contadorContestadas).toFixed(2) 
+					: '0.00';
+					
+				this.promedioSinContestar = contadorSinContestar > 0 
+					? (sumaSinContestar / contadorSinContestar).toFixed(2) 
+					: '0.00';
+				
 				this.objListConversation 	= json.data; 	// 🔥 aquí Vue limpia y vuelve a renderizar 				
 			} 
 			catch (error) 

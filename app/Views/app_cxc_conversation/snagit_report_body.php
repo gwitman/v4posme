@@ -262,6 +262,34 @@
 				</div>
 			</div>
 		</div>
+		<div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
+			<div class="card">
+				<div class="card-body">
+				  <div class="card-title d-flex align-items-start justify-content-between">
+					<div class="avatar flex-shrink-0">
+					  <img src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/html/vertical-menu-template/../../assets/img/icons/unicons/wallet.png" alt="computer" class="rounded" />
+					</div>
+				  </div>
+				  <span class="fw-semibold d-block mb-1">AVG Contestación</span>
+				  <h4 class="card-title mb-2" v-text="promedioContestacion" ></h4>
+				  <small class="text-info fw-semibold"><i class="bx bx-time"></i> hrs</small>
+				</div>
+			</div>
+		</div>
+		<div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
+			<div class="card">
+				<div class="card-body">
+				  <div class="card-title d-flex align-items-start justify-content-between">
+					<div class="avatar flex-shrink-0">
+					  <img src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/themplate-sneat-bootstrap-html-admin-template-v-1-1-1/sneat-bootstrap-html-admin-template/html/vertical-menu-template/../../assets/img/icons/unicons/cc-warning.png" alt="computer" class="rounded" />
+					</div>
+				  </div>
+				  <span class="fw-semibold d-block mb-1">AVG Sin Contestar</span>
+				  <h4 class="card-title mb-2" v-text="promedioSinContestar" ></h4>
+				  <small class="text-warning fw-semibold"><i class="bx bx-time"></i> hrs</small>
+				</div>
+			</div>
+		</div>
 	</div>
 	
 	<div class="card">
