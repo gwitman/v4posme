@@ -131,8 +131,18 @@ class core_web_conversation{
 	   	$result 				= [];
 		$result["employerList"] = [];
 		$result["typeAsigned"] 	= "";		
-	    if($companyType == "luciaralstate")
+	    if(
+			$companyType == "luciaralstate" 
+		)
 		{
+			//Se asignas a colaboradores, la conversacion con los siguientes criterios
+			//00) Si el colaborador tiene permiso para ver las notificaciones 
+
+			//01) Si el inicio de la conversacion tieen una palabra clave, 
+			
+			//02) se asigna al colabofador que tenga esa palabra clave
+			//Si no hay ningun colaborador que cumpla la palbra clave se asigna la conversacion a los colaboradores que sean del area de CONVERSATION_DEPARTAMENT_EMPLOYER_ASIGNED_NEW_CONVERSATION y tenga permiso para acceder a conversaciones
+			
 			$Parameter_Model 			= new Parameter_Model();
 			$Company_Parameter_Model 	= new Company_Parameter_Model();	
 		
@@ -229,10 +239,13 @@ class core_web_conversation{
 			}
 			return $result;
 				
-		}
-		if($companyType == "compu_matt")
+		}		
+		else if(
+			$companyType == "compu_matt" || 
+			$companyType == "tradeHub"  
+		)
 		{
-			/*asignar las conversaciones a un rol en especifico*/
+			/*asignar las conversaciones a los colaboradores que tenga un departamento en especifico CONVERSATION_DEPARTAMENT_EMPLOYER_ASIGNED_NEW_CONVERSATION*/
 			/***********************/
 			/***********************/
 			
@@ -302,6 +315,8 @@ class core_web_conversation{
 		else 
 		{
 			/*asignar las conversaciones a todos los colaboradores*/
+			/*sin importar la caga , de tal modo que los colaboradores pueden ver todas la conversaciones a la ves */
+			/*este esquema no tiene balance de carga*/
 			/***********************/
 			/***********************/
 			$core_web_permission 	= new core_web_permission();
@@ -893,6 +908,7 @@ class core_web_conversation{
 
 			if($companyType == "luciaralstate")
 			{
+				/*se le manda mensaje a la ultima persona que abordo la conversacion */
 				//Obtener la lista de colaboradores de la conversacion
 				log_message("error","Obtener colaboradores asignados a la conversacion");
 				$objListEmployerConversation = $Company_Component_Relation_Model->get_ConversationEmployerBy_ConversationID($conversationID);
@@ -930,6 +946,7 @@ class core_web_conversation{
 			}
 			else 
 			{
+				/*se manda mensaje a la ultima persona que abordo la conversacion */				
 				//Obtener la lista de colaboradores de la conversacion
 				log_message("error","Obtener colaboradores asignados a la conversacion");
 				$objListEmployerConversation = $Company_Component_Relation_Model->get_ConversationEmployerBy_ConversationID($conversationID);

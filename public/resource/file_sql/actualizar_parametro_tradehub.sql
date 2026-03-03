@@ -1,5 +1,5 @@
-/*BD: 	dbno63gzawe8bk:parametro_001_development*/
-/*SERVIDOR:		siteground*/
+/*BD: 	dbpqzxfawf9f9z:parametro_tradehub*/
+/*SERVIDOR:		siteground.nl #2 */
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -231,7 +231,7 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
+	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_TRAKING_GPS";## Valida si es neceasrio llevar el seguimiento del gps
@@ -1928,8 +1928,8 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Demo' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 0 /*usuarioID*/,type='default'  , abreviature='demo'
+	NAME = 'Trade Hub' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
+	flavorID = 1095 /*usuarioID*/,type='tradeHub'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
@@ -1942,27 +1942,25 @@ Eliminar o desactivar usuarios
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2, 	
- 581,  
- 582, 
- 583,
- 584,  
- 585, 
- 586, 
- 587,
- 1045
+ 1095,  
+ 1096, 
+ 1097,
+ 1098,  
+ 1099, 
+ 1100, 
+ 1101
 );
 
 update tb_role set isActive = 0; 
 update tb_role set isActive = 1 where roleID in (
 	3,
-	510,
-	511,
-	512,
-	513,
-	514,
-	515,
-	516,
-	979
+	1029,
+	1030,
+	1031,
+	1032,
+	1033,
+	1034,
+	1035
 );
 */
 
