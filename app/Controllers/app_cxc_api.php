@@ -732,6 +732,31 @@ class app_cxc_api extends _BaseController {
 			
 			// Mover archivo
 			$file->move($documentoPath, $newName, true);
+			
+			// Convertir WebM a OGG si es necesario
+			if($fileMimeType == "video/webm")
+			{
+				log_message("error","setConversationNotification_ByCustomer >> convertir webm a ogg");
+				$inputPath = $documentoPath."/".$newName;
+				$resultado = helper_convertWebmToWhatsappAudio($inputPath, 'ogg');
+				
+				if($resultado['success'])
+				{
+					log_message("error","setConversationNotification_ByCustomer >> conversion exitosa");
+					// Actualizar variables con el nuevo archivo
+					$newName 		= basename($resultado['file']);
+					$fileMimeType 	= 'audio/ogg';
+					$fileClientName = str_replace('.webm', '.ogg', $fileClientName);
+					$urlPublic 		= base_url()."/".$documentoPath."/".$newName;
+					
+					log_message("error","setConversationNotification_ByCustomer >> nuevo archivo: ".$urlPublic);
+				}
+				else
+				{
+					log_message("error","setConversationNotification_ByCustomer >> error en conversion: ".$resultado['message']);
+					// Si falla la conversión, continuar con el archivo original
+				}
+			}
 		}
 		
 		log_message("error","setConversationNotification_ByCustomer >> guardar notificacion");		
@@ -751,7 +776,7 @@ class app_cxc_api extends _BaseController {
 		{
 			if($fileMimeType == "application/pdf")
 			$objNotification["title"] 				= 'pdf';
-			else if($fileMimeType == "video/webm") 
+			else if($fileMimeType == "video/webm" || $fileMimeType == "audio/mpeg" || $fileMimeType == "audio/ogg") 
 			$objNotification["title"] 				= 'audio';
 			else 
 			$objNotification["title"] 				= 'image';
@@ -836,7 +861,7 @@ class app_cxc_api extends _BaseController {
 						""
 					);
 				}
-				else if($fileMimeType == "video/webm")
+				else if($fileMimeType == "video/webm" || $fileMimeType == "audio/mpeg" || $fileMimeType == "audio/ogg")
 				{
 					log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de audio / video ".$fileClientName);						
 					$result = $this->core_web_whatsap->sendMessageTypeVideoAudioGeneric(
