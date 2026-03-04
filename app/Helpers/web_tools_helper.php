@@ -1698,5 +1698,172 @@ function helper_convertirLinkAHtml($text, $label) {
 }
 
 
+/**
+ * Convierte un archivo WebM a formato válido para WhatsApp (OGG/MP3)
+ * Elimina el archivo original y deja solo el convertido
+ * 
+ * @param string $inputPath Ruta completa del archivo WebM a convertir
+ * @param string $outputFormat Formato de salida: 'ogg', 'mp3', 'aac' (default: 'ogg')
+ * @return array ['success' => bool, 'message' => string, 'file' => string|null]
+ */
+function helper_convertWebmToWhatsappAudio($inputPath, $outputFormat = 'ogg')
+{
+    // Validar que el archivo existe
+    if (!file_exists($inputPath)) {
+        return [
+            'success' => false,
+            'message' => 'El archivo de entrada no existe: ' . $inputPath,
+            'file' => null
+        ];
+    }
+
+    // Validar formato de salida
+    $formatosValidos = ['ogg', 'mp3', 'aac', 'opus'];
+    if (!in_array($outputFormat, $formatosValidos)) {
+        return [
+            'success' => false,
+            'message' => 'Formato no válido. Use: ' . implode(', ', $formatosValidos),
+            'file' => null
+        ];
+    }
+
+    // Generar ruta de salida
+    $pathInfo = pathinfo($inputPath);
+    $outputPath = $pathInfo['dirname'] . '/' . $pathInfo['filename'] . '.' . $outputFormat;
+
+    // Buscar FFmpeg en rutas comunes de hosting compartido
+    $possiblePaths = [
+        '/usr/bin/ffmpeg',
+        '/usr/local/bin/ffmpeg',
+        'ffmpeg'
+    ];
+
+    $ffmpegPath = null;
+    foreach ($possiblePaths as $path) {
+        if (@file_exists($path) || $path === 'ffmpeg') {
+            // Verificar si el comando funciona
+            $testCommand = $path . ' -version 2>&1';
+            @exec($testCommand, $testOutput, $testReturn);
+            if ($testReturn === 0) {
+                $ffmpegPath = $path;
+                break;
+            }
+        }
+    }
+
+    // Si no se encuentra FFmpeg, intentar método alternativo
+    if ($ffmpegPath === null) {
+        return helper_convertWebmAlternativo($inputPath, $outputPath, $outputFormat);
+    }
+
+    // Configuraciones de conversión por formato
+    // OGG con Opus es el más compatible (codec nativo de WebM)
+    $configs = [
+        'ogg' => '-vn -c:a libopus -b:a 96k -threads 1',
+        'opus' => '-vn -c:a libopus -b:a 96k -threads 1',
+        'mp3' => '-vn -c:a libmp3lame -ar 44100 -ac 2 -b:a 128k -threads 1',
+        'aac' => '-vn -c:a aac -ar 44100 -ac 2 -b:a 128k -threads 1'
+    ];
+
+    // Construir comando FFmpeg
+    // -y: sobrescribir sin preguntar
+    // -threads 1: usar solo 1 thread para no sobrecargar el servidor
+    $command = sprintf(
+        '%s -y -i %s %s %s 2>&1',
+        $ffmpegPath,
+        escapeshellarg($inputPath),
+        $configs[$outputFormat],
+        escapeshellarg($outputPath)
+    );
+
+    // Ejecutar conversión
+    exec($command, $output, $returnCode);
+
+    // Verificar si la conversión fue exitosa
+    if ($returnCode !== 0 || !file_exists($outputPath)) {
+        // Si falla, intentar método alternativo (solo cambiar extensión)
+        return helper_convertWebmAlternativo($inputPath, $outputPath, $outputFormat);
+    }
+
+    // Eliminar archivo original
+    if (file_exists($inputPath)) {
+        @unlink($inputPath);
+    }
+
+    return [
+        'success' => true,
+        'message' => 'Archivo convertido exitosamente a ' . strtoupper($outputFormat),
+        'file' => $outputPath
+    ];
+}
+
+/**
+ * Método alternativo cuando FFmpeg no está disponible
+ * Intenta renombrar el archivo o copiarlo con extensión compatible
+ * 
+ * @param string $inputPath
+ * @param string $outputPath
+ * @param string $format
+ * @return array
+ */
+function helper_convertWebmAlternativo($inputPath, $outputPath, $format)
+{
+    // WhatsApp puede aceptar algunos formatos WebM directamente
+    // Intentar cambiar extensión a OGG (más compatible)
+    $pathInfo = pathinfo($inputPath);
+    $oggPath = $pathInfo['dirname'] . '/' . $pathInfo['filename'] . '.ogg';
+
+    if (copy($inputPath, $oggPath)) {
+        // Eliminar archivo original
+        @unlink($inputPath);
+
+        return [
+            'success' => true,
+            'message' => 'Archivo renombrado a OGG (FFmpeg no disponible)',
+            'file' => $oggPath
+        ];
+    }
+
+    return [
+        'success' => false,
+        'message' => 'FFmpeg no disponible y conversión alternativa falló',
+        'file' => null
+    ];
+}
+
+/**
+ * Verifica si FFmpeg está disponible en el servidor
+ * 
+ * @return array ['available' => bool, 'path' => string|null, 'version' => string|null]
+ */
+function helper_checkFFmpegAvailability()
+{
+    $possiblePaths = [
+        '/usr/bin/ffmpeg',
+        '/usr/local/bin/ffmpeg',
+        'ffmpeg'
+    ];
+
+    foreach ($possiblePaths as $path) {
+        $command = $path . ' -version 2>&1';
+        @exec($command, $output, $returnCode);
+
+        if ($returnCode === 0 && !empty($output)) {
+            return [
+                'available' => true,
+                'path' => $path,
+                'version' => $output[0] ?? 'Unknown'
+            ];
+        }
+    }
+
+    return [
+        'available' => false,
+        'path' => null,
+        'version' => null
+    ];
+}
+
 
 ?>
+
