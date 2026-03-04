@@ -16,7 +16,8 @@
 9. [HTML y UI](#html-y-ui)
 10. [CSV y Exportación](#csv-y-exportación)
 11. [FTP y Transferencia](#ftp-y-transferencia)
-12. [Utilidades Varias](#utilidades-varias)
+12. [Conversión de Audio para WhatsApp](#conversión-de-audio-para-whatsapp)
+13. [Utilidades Varias](#utilidades-varias)
 
 ---
 
@@ -880,6 +881,133 @@ $result = helper_sendFtp(
 
 ---
 
+## Conversión de Audio para WhatsApp
+
+### `helper_convertWebmToWhatsappAudio($inputPath, $outputFormat = 'ogg')`
+Convierte archivos WebM a formatos de audio válidos para WhatsApp usando FFmpeg.
+
+**Parámetros:**
+- `$inputPath` (string): Ruta completa del archivo WebM a convertir
+- `$outputFormat` (string): Formato de salida ('ogg', 'mp3', 'aac', 'opus'). Default: 'ogg'
+
+**Retorna:** Array con resultado de la conversión
+```php
+[
+    'success' => bool,    // true si la conversión fue exitosa
+    'message' => string,  // Mensaje descriptivo del resultado
+    'file' => string|null // Ruta del archivo convertido o null si falló
+]
+```
+
+**Ejemplo:**
+```php
+// Convertir WebM a OGG (recomendado para WhatsApp)
+$resultado = helper_convertWebmToWhatsappAudio('/path/audio.webm', 'ogg');
+
+if($resultado['success']) {
+    echo "Archivo convertido: " . $resultado['file'];
+    // Usar $resultado['file'] para enviar por WhatsApp
+} else {
+    echo "Error: " . $resultado['message'];
+}
+
+// Convertir a MP3
+$resultado = helper_convertWebmToWhatsappAudio('/path/audio.webm', 'mp3');
+```
+
+**Uso:** Convertir audios de grabaciones web (WebM) a formatos compatibles con WhatsApp antes de enviarlos.
+
+**Notas importantes:**
+- Requiere FFmpeg instalado en el servidor
+- El archivo original WebM se elimina automáticamente después de la conversión exitosa
+- OGG/Opus es el formato recomendado (codec nativo de WebM, mejor calidad/tamaño)
+- Si FFmpeg no está disponible, intenta método alternativo (cambio de extensión)
+- Optimizado para hosting compartido (usa solo 1 thread)
+
+**Formatos soportados:**
+- `ogg` - OGG con codec Opus (recomendado, 96kbps)
+- `opus` - Opus puro (96kbps)
+- `mp3` - MP3 con libmp3lame (128kbps, requiere encoder habilitado)
+- `aac` - AAC (128kbps)
+
+---
+
+### `helper_convertWebmAlternativo($inputPath, $outputPath, $format)`
+Método alternativo de conversión cuando FFmpeg no está disponible.
+
+**Parámetros:**
+- `$inputPath` (string): Ruta del archivo WebM original
+- `$outputPath` (string): Ruta del archivo de salida
+- `$format` (string): Formato deseado
+
+**Retorna:** Array con resultado
+```php
+[
+    'success' => bool,
+    'message' => string,
+    'file' => string|null
+]
+```
+
+**Ejemplo:**
+```php
+$resultado = helper_convertWebmAlternativo(
+    '/path/audio.webm',
+    '/path/audio.ogg',
+    'ogg'
+);
+```
+
+**Uso:** Fallback automático cuando FFmpeg no está instalado. Intenta cambiar la extensión del archivo (funciona porque WebM ya usa codec Opus).
+
+**Notas:**
+- No realiza conversión real, solo cambia el contenedor
+- WhatsApp puede aceptar el archivo resultante en algunos casos
+- Se invoca automáticamente si FFmpeg falla
+
+---
+
+### `helper_checkFFmpegAvailability()`
+Verifica si FFmpeg está instalado y disponible en el servidor.
+
+**Parámetros:** Ninguno
+
+**Retorna:** Array con información de disponibilidad
+```php
+[
+    'available' => bool,      // true si FFmpeg está disponible
+    'path' => string|null,    // Ruta del ejecutable o null
+    'version' => string|null  // Versión de FFmpeg o null
+]
+```
+
+**Ejemplo:**
+```php
+$ffmpegInfo = helper_checkFFmpegAvailability();
+
+if($ffmpegInfo['available']) {
+    echo "FFmpeg disponible en: " . $ffmpegInfo['path'];
+    echo "Versión: " . $ffmpegInfo['version'];
+} else {
+    echo "FFmpeg no está instalado";
+    // Solicitar instalación al hosting o usar método alternativo
+}
+```
+
+**Uso:** Verificar capacidades del servidor antes de intentar conversiones de audio/video.
+
+**Rutas verificadas:**
+- `/usr/bin/ffmpeg` (más común en Linux)
+- `/usr/local/bin/ffmpeg` (instalaciones personalizadas)
+- `ffmpeg` (si está en PATH del sistema)
+
+**Notas:**
+- Útil para diagnóstico y troubleshooting
+- En hosting compartido (SiteGround, etc.), contactar soporte si no está disponible
+- La mayoría de hostings modernos tienen FFmpeg preinstalado
+
+---
+
 ## Utilidades Varias
 
 ### `helper_GetColorSinRiesgo($valor)`
@@ -985,6 +1113,11 @@ $param = helper_getParameterFiltered(
 - `helper_notificationPage()` - Páginas de notificación
 - `helper_getAlertThemeSneatBoostrap5_1()` - Alertas
 
+### Para WhatsApp
+- `helper_convertWebmToWhatsappAudio()` - Convertir audio WebM
+- `helper_checkFFmpegAvailability()` - Verificar FFmpeg
+- `clearNumero()` - Limpiar números de teléfono
+
 ---
 
 ## Mejores Prácticas
@@ -996,6 +1129,44 @@ $param = helper_getParameterFiltered(
 5. **Generar GUIDs** para identificadores únicos en lugar de IDs secuenciales
 6. **Convertir números a letras** en documentos legales con helper_GetLetras()
 7. **Usar helper_CompareDateTime()** para cálculos de tiempo precisos
+8. **Convertir audios WebM** con helper_convertWebmToWhatsappAudio() antes de enviar por WhatsApp
+9. **Verificar FFmpeg** con helper_checkFFmpegAvailability() en servidores nuevos
+
+---
+
+## Casos de Uso Específicos
+
+### Envío de Audio por WhatsApp
+```php
+// 1. Recibir archivo WebM del usuario
+$file = $this->request->getFile('audio');
+$file->move($uploadPath, $newName);
+
+// 2. Convertir a formato compatible
+$inputPath = $uploadPath . '/' . $newName;
+$resultado = helper_convertWebmToWhatsappAudio($inputPath, 'ogg');
+
+// 3. Enviar por WhatsApp si la conversión fue exitosa
+if($resultado['success']) {
+    $audioUrl = base_url() . '/' . $resultado['file'];
+    $this->whatsapp->sendAudio($phoneNumber, $audioUrl);
+} else {
+    log_message('error', 'Conversión falló: ' . $resultado['message']);
+}
+```
+
+### Verificación de Servidor
+```php
+// Verificar capacidades del servidor al instalar
+$ffmpeg = helper_checkFFmpegAvailability();
+
+if(!$ffmpeg['available']) {
+    // Mostrar advertencia al administrador
+    echo "Advertencia: FFmpeg no disponible. ";
+    echo "Funciones de audio limitadas. ";
+    echo "Contacte a su proveedor de hosting.";
+}
+```
 
 ---
 
