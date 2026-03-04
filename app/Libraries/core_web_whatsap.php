@@ -1531,7 +1531,7 @@ class core_web_whatsap {
 		//		exit($ex->getMessage());
 		//}
    }
-   function sendMessageWapi2VideoAudio( $companyID,$urlPdf,$fileName, $message, $phoneDestino,$esperarRespuesta,$instanciaName)
+   function sendMessageWapi2VideoAudio( $companyID,$urlFile,$fileName, $message, $phoneDestino,$esperarRespuesta,$instanciaName)
    {
 	   //password: 180389Witman
 		//usuario: wgonzalez@gruposi.com
@@ -1569,14 +1569,14 @@ class core_web_whatsap {
 			$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
 
 			$params=array(			
-			'pdf' 			=> $urlPdf,
-			'filename' 		=> $fileName,
-			'caption'		=> $message
+			'audio' 			=> $urlFile,
+			'as_voice'			=> true
 			);
 			
 			$url  = $objCP_WhatsapUrlSendMessage->value;
-			$url  = $url."/".$phoneDestino."/video?session_id=".$objCP_WhatsapUrlSession->value;
+			$url  = $url."/".$phoneDestino."/audio?session_id=".$objCP_WhatsapUrlSession->value;
 			log_message("error",print_r("url send mensaje:".$url,true));
+			log_message("error",print_r($params,true));
 			
 			$curl = curl_init();
 			curl_setopt_array($curl, array(

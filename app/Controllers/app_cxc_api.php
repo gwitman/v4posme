@@ -3003,7 +3003,7 @@ class app_cxc_api extends _BaseController {
 			if(
 				$diferenceDate["comparador"] == "-1" && 
 				((int)$diferenceDate["segundos"]) >=  10 &&  
-				$objCustomer[0]->allowWhatsappCollection == 1  
+				$objCustomer[0]->allowWhatsappCollection == 0
 			)
 			{			
 				log_message("error","Enviar mensaje colaboradores asignados");
