@@ -8656,7 +8656,8 @@ function helper_reporte80mmTransactionMaster(
     $statusName = "", /*estado*/
     $causalName = "", /*causal*/
 	$userNickName = "", /*vendedor*/
-    $rucCompany = "" /*ruc*/
+    $rucCompany = "" /*ruc*/ ,
+	$datView 
 )
 {
     $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;
@@ -8735,6 +8736,8 @@ function helper_reporte80mmTransactionMaster(
                           </td>
                         </tr>
                                 
+						".$datView["viewRegisterFormatoPaginaNormal80mmOpcion1_LabelAfterDateTime"]." 
+
                          <tr>
                           <td colspan='3' style='text-align:center'>
                             &nbsp;

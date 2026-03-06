@@ -1117,7 +1117,9 @@ class app_box_canceldocument extends _BaseController {
 			    $objParameterTelefono,
 				$datView["objStage"][0]->display,
 				"",
-				""
+				"",
+				"",
+				array()
 			);
 			$this->dompdf->loadHTML($html);
 			

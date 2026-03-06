@@ -808,7 +808,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Repuestos Moranes' , address = 'Del empalme larreynaga 300 m.o' ,
-	flavorID = 0,type='default' 
+	flavorID = 0,type='repuestoMoran' 
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

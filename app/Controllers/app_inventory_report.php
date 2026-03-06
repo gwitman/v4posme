@@ -484,7 +484,7 @@ class app_inventory_report extends _BaseController {
 				);			
 				
 				if(isset($objData))
-				$objDataResult["objDetail"]					= $objData][1];
+				$objDataResult["objDetail"]					= $objData[1];
 				else
 				$objDataResult["objDetail"]					= NULL;
 			

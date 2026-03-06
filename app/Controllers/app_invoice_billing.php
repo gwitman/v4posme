@@ -6475,7 +6475,9 @@ class app_invoice_billing extends _BaseController {
 			    $objParameterTelefono, /*telefono*/
 				$datView["objStage"][0]->display, /*estado*/
 				$datView["objTC"]->name, /*causal*/
-				""
+				"",
+				"",
+				array()
 			);
 			$this->dompdf->loadHTML($html);
 			
@@ -7665,13 +7667,23 @@ class app_invoice_billing extends _BaseController {
 				$objCompany->type,
 				"app_invoice_billing"
 			);
-			$titleDocument 							= getBahavioSession(
+			$titleDocument 		= 
+			getBahavioSession(
 					$objCompany->type, 
 					"app_invoice_billing", 
 					"viewRegisterFormatoPaginaNormal80mmOpcion1_LabelTitle", 
 					"FACTURA",
 					$dataView["objListCompanyPageSetting"]
 			);
+
+			$datView["viewRegisterFormatoPaginaNormal80mmOpcion1_LabelAfterDateTime"] = 
+			getBahavioSession(
+					$objCompany->type, 
+					"app_invoice_billing", 
+					"viewRegisterFormatoPaginaNormal80mmOpcion1_LabelAfterDateTime", 
+					"",
+					$dataView["objListCompanyPageSetting"]
+			); 
 			
 			//Generar Reporte
 			$html = helper_reporte80mmTransactionMaster(
@@ -7690,7 +7702,8 @@ class app_invoice_billing extends _BaseController {
 				$datView["objStage"][0]->display, /*estado*/
 				$datView["objTC"]->name /*causal*/,
 				$datView["objUser"]->nickname,
-			    $objParameterRuc /*ruc*/
+			    $objParameterRuc /*ruc*/, 
+				$datView
 			);
 			
 			$this->dompdf->loadHTML($html);
@@ -11211,7 +11224,8 @@ class app_invoice_billing extends _BaseController {
 				$datView["objStage"][0]->display, /*estado*/
 				$datView["objTC"]->name /*causal*/,
 				$datView["objUser"]->nickname,
-			    $objParameterRuc /*ruc*/
+			    $objParameterRuc /*ruc*/ ,
+				array()
 			);
 			$this->dompdf->loadHTML($html);
 			
@@ -12741,7 +12755,8 @@ class app_invoice_billing extends _BaseController {
 				$datView["objStage"][0]->display, /*estado*/
 				$datView["objTC"]->name /*causal*/,
 				$datView["objUser"]->nickname,
-			    $objParameterRuc /*ruc*/
+			    $objParameterRuc /*ruc*/ ,
+				array() 
 			);
 			$this->dompdf->loadHTML($html);
 			
