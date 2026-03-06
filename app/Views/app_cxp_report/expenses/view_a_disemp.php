@@ -67,8 +67,8 @@
 		
 		$configColumn["00"]["Width"] 		= "80px";		
 		$configColumn["01"]["Width"] 		= "80px";	
-		$configColumn["02"]["Width"] 		= "60px";		
-		$configColumn["03"]["Width"] 		= "60px";		
+		$configColumn["02"]["Width"] 		= "120px";		
+		$configColumn["03"]["Width"] 		= "220px";		
 		$configColumn["04"]["Width"] 		= "60px";	
 		$configColumn["05"]["Width"] 		= "120px";		
 		$configColumn["06"]["Width"] 		= "120px";
