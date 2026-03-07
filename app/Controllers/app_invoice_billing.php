@@ -7952,86 +7952,78 @@ class app_invoice_billing extends _BaseController {
 			
 			
 			
-			
-			//wg-
-			//wg-//Generar Reporte
-			//wg-$html = helper_reporte80mmTransactionMaster(
-			//wg-    "FACTURA",
-			//wg-    $objCompany,
-			//wg-    $objParameter,
-			//wg-    $datView["objTM"],
-			//wg-    $datView["objNatural"],
-			//wg-    $datView["objCustumer"],
-			//wg-    $datView["tipoCambio"],
-			//wg-    $datView["objCurrency"],
-			//wg-    $datView["objTMI"],
-			//wg-    $confiDetalleHeader,
-			//wg-    $detalle,
-			//wg-    $objParameterTelefono, /*telefono*/
-			//wg-	 $datView["objStage"][0]->display, /*estado*/
-			//wg-	 $datView["objTC"]->name /*causal*/,
-			//wg-	 $datView["objUser"]->nickname,
-			//wg-    $objParameterRuc /*ruc*/
-			//wg-);
-			
-			
 			//Parse plantilla 
-			$parser = \Config\Services::parser();			
-			$html 	= $parser->setData($datViewArray)->renderString($htmlTemplateCompany);
-			$this->dompdf->loadHTML($html);
-			
-			//1cm = 29.34666puntos
-			//a4: 210 ancho x 297
-			//a4: 21cm x 29.7cm
-			//a4: 595.28puntos x 841.59puntos
-			
-			//$this->dompdf->setPaper('A4','portrait');
-			//$this->dompdf->setPaper(array(0,0,234.76,6000));
-			
-			$this->dompdf->render();
-			
-			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
-			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
-			$objParameterShowDownloadPreview	= $this->core_web_parameter->getParameter("CORE_SHOW_DOWNLOAD_PREVIEW",$companyID);
-			$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview->value;
-			$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true" ? true : false;
-			
-			$fileNamePut = "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
-			$path        = "./resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".$fileNamePut;
-				
-				
-			//Crear la Carpeta para almacenar los Archivos del Documento
-			$documentoPath = PATH_FILE_OF_APP."/company_".$companyID."/component_48/component_item_".$transactionMasterID;						
-			if (!file_exists($documentoPath))
+			$parser 		= \Config\Services::parser();			
+			$html 			= $parser->setData($datViewArray)->renderString($htmlTemplateCompany);
+			$printerPdf 	= getBehavio(
+					$objCompany->type,
+					"app_invoice_billing",
+					"viewRegisterFormatoPaginaNormal80mmOpcion1DB_typePreview",
+					"pdf"
+			);
+
+
+			if($printerPdf == "html")
 			{
-				mkdir($documentoPath, 0755, true);
-				chmod($documentoPath, 0755);
-			}
-			
-			
-			file_put_contents(
-				$path,
-				$this->dompdf->output()					
-			);						
-			
-			chmod($path, 0644);
-			
-			if($objParameterShowLinkDownload == "true")
-			{			
-				echo "<a 
-					href='".base_url()."/resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".
-					$fileNamePut."'>download factura</a>
-				"; 				
-			
-			}
-			else{			
-				//visualizar		
-				$timestamp 	= date("YmdHis") . "0"; // Resultado: 202505261134000
-				$filename 	= "posme_" . $timestamp . ".pdf";							
-				$this->dompdf->stream($filename, ['Attachment' => $objParameterShowDownloadPreview ]);
+				echo $html;
 				exit;
 			}
-			
+			if($printerPdf == "pdf")
+			{
+				$this->dompdf->loadHTML($html);
+				
+				//1cm = 29.34666puntos
+				//a4: 210 ancho x 297
+				//a4: 21cm x 29.7cm
+				//a4: 595.28puntos x 841.59puntos
+				
+				//$this->dompdf->setPaper('A4','portrait');
+				//$this->dompdf->setPaper(array(0,0,234.76,6000));
+				
+				$this->dompdf->render();
+				
+				$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+				$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+				$objParameterShowDownloadPreview	= $this->core_web_parameter->getParameter("CORE_SHOW_DOWNLOAD_PREVIEW",$companyID);
+				$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview->value;
+				$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true" ? true : false;
+				
+				$fileNamePut = "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
+				$path        = "./resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".$fileNamePut;
+					
+					
+				//Crear la Carpeta para almacenar los Archivos del Documento
+				$documentoPath = PATH_FILE_OF_APP."/company_".$companyID."/component_48/component_item_".$transactionMasterID;						
+				if (!file_exists($documentoPath))
+				{
+					mkdir($documentoPath, 0755, true);
+					chmod($documentoPath, 0755);
+				}
+				
+				
+				file_put_contents(
+					$path,
+					$this->dompdf->output()					
+				);						
+				
+				chmod($path, 0644);
+				
+				if($objParameterShowLinkDownload == "true")
+				{			
+					echo "<a 
+						href='".base_url()."/resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".
+						$fileNamePut."'>download factura</a>
+					"; 				
+				
+				}
+				else{			
+					//visualizar		
+					$timestamp 	= date("YmdHis") . "0"; // Resultado: 202505261134000
+					$filename 	= "posme_" . $timestamp . ".pdf";							
+					$this->dompdf->stream($filename, ['Attachment' => $objParameterShowDownloadPreview ]);
+					exit;
+				}
+			}
 			
 			
 			
