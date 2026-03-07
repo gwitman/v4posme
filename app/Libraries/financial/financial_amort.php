@@ -118,6 +118,7 @@ class financial_amort{
 	var $objCatalogItems_DiasExcluded;
 	var $flavorID;
 	var $dayDesplazados;
+	var $dayOriginal;
 	
 	 
 	//*******************************
@@ -156,7 +157,8 @@ class financial_amort{
 		 $this->periodPay 			= 	$periodPay;					//periodo de pago
 		 $this->typeAmortization	=	$typeAmortization;			//tipo de amortizacion
 		 $this->firstDate			=   date_create($firstDate);	//fecha del credito
-		 
+		 $this->dayOriginal			=   (int)date_format(date_create($firstDate), 'd');
+
 		 $this->objCatalogItems_DiasNoCobrables			=   $objCatalogItems_DiasNoCobrables;
 		 $this->objCatalogItems_DiasFeridos365			=   $objCatalogItems_DiasFeridos365;
 		 $this->objCatalogItems_DiasFeridos366			=   $objCatalogItems_DiasFeridos366;
@@ -213,6 +215,7 @@ class financial_amort{
 		$diaAno 			= date("z", strtotime(date_format($fecha,"Y-m-d")));		
 		$diasTotalesDelAno 	= date("z", strtotime(date_format($fechaUltimoDia,"Y-m-d")));
 		$diasTotalesDelAno	= $diasTotalesDelAno + 1;	
+		
 
 		
 		if($this->objCatalogItems_DiasExcluded)
@@ -222,16 +225,20 @@ class financial_amort{
 			foreach($arrayDiasExcluided as $catalogItem)
 			{
 				if($catalogItem == $diaSemana)
+				{
+					
 					return true;
+				}
 			}
 		}
 		
 		//validar si es domingo o segun el catalogo de configuracion		
 		foreach($this->objCatalogItems_DiasNoCobrables as $catalogItem)
-		{
-			
+		{			
 			if($catalogItem->sequence == $diaSemana)
+			{
 				return true;
+			}
 		}
 		
 		
@@ -242,7 +249,9 @@ class financial_amort{
 			{
 			
 				if($catalogItem->sequence == $diaAno)
-				return true;
+				{
+					return true;
+				}
 			}
 		}
 		
@@ -252,8 +261,9 @@ class financial_amort{
 			foreach($this->objCatalogItems_DiasFeridos366 as $catalogItem)
 			{
 				
-				if($catalogItem->sequence == $diaAno)
-				return true;
+				if($catalogItem->sequence == $diaAno){
+					return true;
+				}
 			}
 		}
 		
@@ -263,7 +273,7 @@ class financial_amort{
 	function getNextDate($date,$periodPay){
 		
 		
-		$fechaReturn;
+		$fechaReturn 		= null;
 		$day				= date_format($date, 'd');
 		$firstDateMonth		= date_format($date, 'Y-m');
 		$firstDateMonth		= $firstDateMonth."-01";
@@ -302,45 +312,39 @@ class financial_amort{
 				$fechaReturn = date_add($fechaReturn,date_interval_create_from_date_string('1 days'));
 			}
 			return $fechaReturn;			
-		}		
-		/*mensual funeriaria blandon*/
-		else if ($periodPay == 30 && $this->flavorID == "505" )
-		{
-			 
-			 if($this->dayDesplazados > 0)
-			 {
-				 $date = date_add($date,date_interval_create_from_date_string('-'.$this->dayDesplazados.' days'));
-				 $this->dayDesplazados = 0;
-			 }
-			 
-			 //Primera Validacion
-			 $fechaReturn = date_add($date,date_interval_create_from_date_string('1 months'));			 
-			 if($this->fechaEsFeriada($fechaReturn))
-			 {
-				$fechaReturn 			= date_add($fechaReturn,date_interval_create_from_date_string('1 days'));
-				$this->dayDesplazados 	= $this->dayDesplazados + 1;
-			 }
-			 
-			 //Segunda Validacion
-			 if($this->fechaEsFeriada($fechaReturn))
-			 {
-				$fechaReturn 			= date_add($fechaReturn,date_interval_create_from_date_string('1 days'));
-				$this->dayDesplazados 	= $this->dayDesplazados + 1;
-			 }
-			 
-			 
-			 return $fechaReturn;
-			 
-		}
+		}	
 		/*mensual*/
 		else if ($periodPay == 30 )
 		{
-			 $fechaReturn = date_add($date,date_interval_create_from_date_string('1 months'));			 
-			 if($this->fechaEsFeriada($fechaReturn))
-			 {
-				$fechaReturn = date_add($fechaReturn,date_interval_create_from_date_string('1 days'));
-			 }
-			 return $fechaReturn;
+			// Obtener mes y año de la fecha actual
+			$mesBase = (int)date_format($date, 'm');
+			$añoBase = (int)date_format($date, 'Y');
+			
+			// Avanzar un mes
+			$mesSiguiente = $mesBase + 1;
+			$añoSiguiente = $añoBase;
+			
+			if($mesSiguiente > 12) {
+				$mesSiguiente = 1;
+				$añoSiguiente++;
+			}
+			
+			// Obtener cuántos días tiene el mes siguiente
+			$ultimoDiaDelMes = (int)date('t', mktime(0, 0, 0, $mesSiguiente, 1, $añoSiguiente));
+			
+			// SIEMPRE usar el día original, a menos que el mes no tenga suficientes días
+			$diaFinal = ($this->dayOriginal <= $ultimoDiaDelMes) ? $this->dayOriginal : $ultimoDiaDelMes;
+			
+			// Crear la fecha con el día original
+			$fechaReturn 	= date_create(sprintf('%04d-%02d-%02d', $añoSiguiente, $mesSiguiente, $diaFinal));
+			$esFeriado 		= $this->fechaEsFeriada($fechaReturn);
+			// Si es feriado, mover al siguiente día
+			if($esFeriado)
+			{
+				$fechaReturn = date_add($fechaReturn, date_interval_create_from_date_string('1 days'));
+			}
+			
+			return $fechaReturn;
 		}
 		/*diario*/
 		else if ($periodPay == 1)

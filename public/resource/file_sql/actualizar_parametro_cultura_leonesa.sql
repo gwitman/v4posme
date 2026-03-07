@@ -1906,14 +1906,14 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 0000-0000" 
+	tb_company_parameter.value = "7886-3366" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 0000-0000" 
+	tb_company_parameter.value = "7886-3366" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1928,7 +1928,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Gastronomia y Cultura Leonesa' , address = 'Costado Oeste de Alcaldia Municipal' ,
+	NAME = 'Plaza Gastronomica y Cultural Leonesa' , address = 'Costado Oeste de Alcaldia Municipal' ,
 	flavorID = 1102 /*usuarioID*/,type='culturaLeonesa'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

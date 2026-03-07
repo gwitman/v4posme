@@ -90,9 +90,17 @@ class app_cxc_api extends _BaseController {
 			$companyID					= $dataSession["user"]->companyID;
 			$creditMultiplicador		= $this->core_web_parameter->getParameter("CREDIT_INTERES_MULTIPLO",$companyID)->value;
 			$objCatalogItemFrecuencia 	= $this->Catalog_Item_Model->get_rowByCatalogItemID($frecuencyID);//obtener el catalogo de la frecuencia de pago;			
-			$objCatalogItemDayExclude 	= $this->Catalog_Item_Model->get_rowByCatalogItemID($dayExcluded);//obtener el catalogo de la frecuencia de pago;			
 			
+			
+
 			$interestYear				= $interestYear * $objCatalogItemFrecuencia->ratio;
+
+			//dias excluidos	select * from tb_catalog_item c where c.catalogID = 94 ;
+			//					select * from tb_catalog c where c.`name` = 'CXC_NO_COBRABLES';
+			//					select * from tb_catalog c where c.`name` = 'CXC_NO_COBRABLES_FERIADOS_365';
+			//					select * from tb_catalog c where c.`name` = 'CXC_NO_COBRABLES_FERIADOS_366';
+			
+			$objCatalogItemDayExclude 	= $this->Catalog_Item_Model->get_rowByCatalogItemID($dayExcluded);//obtener el catalogo de la frecuencia de pago;			
 			$objCatalogItem_DiasNoCobrables 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES",$companyID);
 			$objCatalogItem_DiasFeriados365 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_365",$companyID);
 			$objCatalogItem_DiasFeriados366 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_366",$companyID);
