@@ -1865,5 +1865,41 @@ function helper_checkFFmpegAvailability()
 }
 
 
+/**
+ * Renderiza un string HTML como vista temporal usando el sistema de vistas de CodeIgniter
+ * 
+ * @param string $htmlString String HTML con variables de CodeIgniter {variable}
+ * @param array $data Array asociativo con los datos para reemplazar en la vista
+ * @return string HTML resultante con las variables reemplazadas
+ * 
+ * @example
+ * $html = '<h1>{titulo}</h1><p>{contenido}</p>';
+ * $data = ['titulo' => 'Hola', 'contenido' => 'Mundo'];
+ * $resultado = helper_RenderStringAsView($html, $data);
+ */
+function helper_RenderStringAsView($htmlString, $data = [])
+{
+    // Generar nombre único para el archivo temporal
+    $tempFileName = 'core_view_temporal/temp_view_' . uniqid() . '.php';
+    $tempFilePath = APPPATH . 'Views/' . $tempFileName;
+    
+    // Crear directorio si no existe
+    if (!is_dir(APPPATH . 'Views/core_view_temporal/')) {
+        mkdir(APPPATH . 'Views/core_view_temporal/', 0755, true);
+    }
+    
+    // Guardar el string como archivo temporal
+    file_put_contents($tempFilePath, $htmlString);
+    
+    // Renderizar usando el sistema de vistas de CodeIgniter
+    $html = view($tempFileName, $data);
+    
+    // Eliminar el archivo temporal
+    unlink($tempFilePath);
+    
+    return $html;
+}
+
 ?>
+
 

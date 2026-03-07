@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Factura - Impresión Directa</title>
+    <script src="https://cdn.jsdelivr.net/npm/qz-tray@2.2.4/qz-tray.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsrsasign@11.1.0/lib/jsrsasign-all-min.js"></script>
+</head>
+<body>
+    <div id="status">Conectando con impresora...</div>
+    
+    <script>
+        var ESC = String.fromCharCode(27);
+        var GS = String.fromCharCode(29);
+
+        function center(text) {
+            return ESC + 'a' + String.fromCharCode(1) + text + '\n';
+        }
+
+        function left(text) {
+            return ESC + 'a' + String.fromCharCode(0) + text + '\n';
+        }
+
+        function bold(text) {
+            return ESC + 'E' + String.fromCharCode(1) + text + ESC + 'E' + String.fromCharCode(0);
+        }
+
+        function line() {
+            return '--------------------------------\n';
+        }
+
+        function formatRow(label, value, width) {
+            width = width || 32;
+            var spaces = width - label.length - value.length;
+            if (spaces < 1) spaces = 1;
+            return label + ' '.repeat(spaces) + value + '\n';
+        }
+
+        function cut() {
+            return GS + 'V' + String.fromCharCode(65) + String.fromCharCode(3);
+        }
+
+        function buildTicket(data) {
+            var ticket = '';
+            
+            ticket += ESC + '@';
+            
+            ticket += center(bold(data.companyName));
+            ticket += center('RUC: ' + data.companyRuc);
+            ticket += center(data.address);
+            ticket += center('Tel: ' + data.phoneNumber);
+            ticket += '\n';
+            ticket += line();
+            
+            ticket += formatRow(data.typeTransacton + ':', data.transactionNumber);
+            ticket += formatRow('Fecha:', data.transactionOn);
+            ticket += formatRow('Vendedor:', data.userName.toUpperCase());
+            ticket += formatRow('Cliente:', data.customerName);
+            ticket += formatRow('Codigo:', data.customerNumber);
+            ticket += formatRow('Id:', data.customerRuc);
+            ticket += formatRow('Tipo:', data.causalName);
+            ticket += formatRow('Estado:', data.statusName);
+            ticket += formatRow('Moneda:', data.currencySimbol);
+            ticket += '\n';
+            ticket += line();
+            
+            if (data.note && data.note.trim() !== '') {
+                ticket += left(data.note);
+                ticket += '\n';
+                ticket += line();
+            }
+            
+            ticket += left('Producto         Cant    Precio');
+            ticket += line();
+            
+            if (data.transactionMasterDetail && data.transactionMasterDetail.length > 0) {
+                for (var i = 0; i < data.transactionMasterDetail.length; i++) {
+                    var item = data.transactionMasterDetail[i];
+                    ticket += left(item.itemName);
+                    ticket += formatRow('', item.itemNameQuantity + '  ' + item.itemNamePrice, 32);
+                }
+            }
+            
+            ticket += '\n';
+            ticket += line();
+            
+            ticket += formatRow('Subtotal', data.currencySimbol + ' ' + data.amount_sub_total);
+            ticket += formatRow('IVA', data.currencySimbol + ' ' + data.amount_iva);
+            ticket += formatRow('Descuento', data.currencySimbol + ' ' + data.amount_discount);
+            ticket += formatRow(bold('Total'), bold(data.currencySimbol + ' ' + data.amount_total));
+            ticket += formatRow('Recibido', data.currencySimbol + ' ' + data.amount_receipt);
+            ticket += formatRow('Cambio', data.currencySimbol + ' ' + data.amount_change);
+            ticket += '\n';
+            ticket += line();
+            
+            ticket += center('Gracias por su compra');
+            ticket += center('posMe PRO Premium 3.1');
+            ticket += '\n\n\n';
+			ticket += '\n\n\n';
+			ticket += '\n\n\n';
+            
+            ticket += cut();
+            
+            return ticket;
+        }
+
+        function printTicket(ticketData) {
+            var config = qz.configs.create("<?php echo $printerName ?? 'Generic / Text Only'; ?>");
+            
+            var data = [{
+                type: 'raw',
+                format: 'plain',
+                data: buildTicket(ticketData)
+            }];
+            
+            qz.print(config, data).then(function() {
+                document.getElementById('status').innerHTML = 'Impresion exitosa';
+                setTimeout(function() {
+                    window.close();
+                }, 1000);
+            }).catch(function(error) {
+                document.getElementById('status').innerHTML = 'Error: ' + error;
+                console.error(error);
+            });
+        }
+
+        var ticketData = {
+            companyName: '<?php echo esc($companyName ?? ""); ?>',
+            companyRuc: '<?php echo esc($companyRuc ?? ""); ?>',
+            address: '<?php echo esc($address ?? ""); ?>',
+            phoneNumber: '<?php echo esc($phoneNumber ?? ""); ?>',
+            typeTransacton: '<?php echo esc($typeTransacton ?? ""); ?>',
+            transactionNumber: '<?php echo esc($transactionNumber ?? ""); ?>',
+            transactionOn: '<?php echo esc($transactionOn ?? ""); ?>',
+            userName: '<?php echo esc($userName ?? ""); ?>',
+            customerName: '<?php echo esc($customerName ?? ""); ?>',
+            customerNumber: '<?php echo esc($customerNumber ?? ""); ?>',
+            customerRuc: '<?php echo esc($customerRuc ?? ""); ?>',
+            causalName: '<?php echo esc($causalName ?? ""); ?>',
+            statusName: '<?php echo esc($statusName ?? ""); ?>',
+            currencySimbol: '<?php echo esc($currencySimbol ?? ""); ?>',
+            note: '<?php echo esc($note ?? ""); ?>',
+            transactionMasterDetail: <?php echo json_encode($transactionMasterDetail ?? []); ?>,
+            amount_sub_total: '<?php echo esc($amount_sub_total ?? "0.00"); ?>',
+            amount_iva: '<?php echo esc($amount_iva ?? "0.00"); ?>',
+            amount_discount: '<?php echo esc($amount_discount ?? "0.00"); ?>',
+            amount_total: '<?php echo esc($amount_total ?? "0.00"); ?>',
+            amount_receipt: '<?php echo esc($amount_receipt ?? "0.00"); ?>',
+            amount_change: '<?php echo esc($amount_change ?? "0.00"); ?>'
+        };
+
+        qz.websocket.connect().then(function() {
+            document.getElementById('status').innerHTML = 'Conectado. Imprimiendo...';
+            return qz.printers.find();
+        }).then(function(printers) {
+            console.log('Impresoras disponibles:', printers);
+            printTicket(ticketData);
+        }).catch(function(error) {
+            document.getElementById('status').innerHTML = 'Error de conexion: ' + error;
+            console.error(error);
+            alert('Error: Asegurate de que QZ Tray este instalado y ejecutandose.');
+        });
+    </script>
+</body>
+</html>

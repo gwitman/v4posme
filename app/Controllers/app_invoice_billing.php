@@ -7952,9 +7952,7 @@ class app_invoice_billing extends _BaseController {
 			
 			
 			
-			//Parse plantilla 
-			$parser 		= \Config\Services::parser();			
-			$html 			= $parser->setData($datViewArray)->renderString($htmlTemplateCompany);
+			//Parse plantilla 			
 			$printerPdf 	= getBehavio(
 					$objCompany->type,
 					"app_invoice_billing",
@@ -7965,11 +7963,14 @@ class app_invoice_billing extends _BaseController {
 
 			if($printerPdf == "html")
 			{
+				$html = helper_RenderStringAsView($htmlTemplateCompany, $datViewArray);
 				echo $html;
 				exit;
 			}
 			if($printerPdf == "pdf")
 			{
+				$parser 		= \Config\Services::parser();			
+				$html 			= $parser->setData($datViewArray)->renderString($htmlTemplateCompany);
 				$this->dompdf->loadHTML($html);
 				
 				//1cm = 29.34666puntos
