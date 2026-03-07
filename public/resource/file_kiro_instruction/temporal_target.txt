@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8' />
+  <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+  <style>
+	@page {       
+	  size: 2.7in 55in;                  
+	  margin-top:0px;
+	  margin-left:10px;
+	  margin-right:0px;
+	}
+	table{
+	  font-size: x-small;
+	  font-weight: bold;
+	  font-family: Consolas, monaco, monospace;
+	}
+  </style>
+</head>
+<body>
+  <table style='width:100%'>			
+	<tr>
+	  <td colspan='3' style='text-align:center'>
+		{companyName}
+	  </td>
+	</tr><tr>                              
+		  <td colspan='3' style='text-align:center'>
+			RUC : {companyRuc}
+		  </td>
+		</tr><tr>
+	  <td colspan='3' style='text-align:center'>
+		{typeTransacton}
+	  </td>
+	</tr>			
+	<tr>
+	  <td colspan='3' style='text-align:center'>
+		# {transactionNumber}
+	  </td>
+	</tr>			
+	<tr>
+	  <td colspan='3' style='text-align:center'>
+		FECHA: {transactionOn}
+	  </td>
+	</tr>			
+	 <tr>
+	  <td colspan='3' style='text-align:center'>
+		&nbsp;
+	  </td>
+	</tr><tr>
+	  <td colspan=''>
+		Vendedor:
+	  </td>
+	  <td colspan='2'>
+		{userName|upper}
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan=''>
+		Codigo:
+	  </td>
+	  <td colspan='2'>
+		{customerNumber}
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan=''>
+		Id:
+	  </td>
+	  <td colspan='2'>
+		{customerRuc}
+	  </td>
+	</tr>
+	<tr>
+		<td colspan='1'>
+			Tipo:
+		</td>
+		<td colspan='2'>
+			{causalName}
+		</td>
+	</tr><tr>
+	  <td colspan='1'>
+		Estado
+	  </td>
+	  <td colspan='2'>
+		{statusName}
+	  </td>
+	</tr>
+		
+	<tr>
+	  <td colspan='1'>
+		Moneda:
+	  </td>
+	  <td colspan='2'>
+		{currencySimbol}
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='1'>
+		Cliente:
+	  <td colspan='2'>
+	  </td>
+	</tr>	
+	<tr>
+	  <td colspan='3'>							
+		{customerName}
+	  </td>
+	</tr>	
+	
+	<tr>
+	  <td colspan='3' style='text-align:left'>{note}</td>
+	</tr>			
+	 <tr>
+	  <td colspan='3' style='text-align:center'>
+		&nbsp;
+	  </td>
+	</tr>
+	<tr>
+			<td style="text-align:left; width:auto;" colspan="1">CANT</td>
+			<td style="text-align:left; width:50px;" colspan="1">PREC</td>
+			<td style="text-align:right; width:90px;" colspan="1">TOTAL</td>
+	</tr>
+
+
+  
+	{transactionMasterDetail}
+        <tr>
+						<td style="text-align:left; width:auto;" colspan="3">{itemName}</td>
+				</tr>
+				<tr>
+						<td colspan="1" style="text-align:left;">{itemNameQuantity}</td>
+						<td colspan="1" style="text-align:right;">{itemNamePrice}</td>
+						<td colspan="1" style="text-align:right;">{itemNameAmount}</td>
+				</tr>
+  {/transactionMasterDetail}
+	
+	
+	</br>			
+	 <tr>
+	  <td colspan='3' style='text-align:center'>
+		&nbsp;
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='2'>
+		SUB-TOTAL
+	  </td>
+	  <td style='text-align:right'>
+		{currencySimbol} {amount_sub_total}
+	  </td>
+	</tr>  
+	<tr>
+	  <td colspan='2'>
+		IVA
+	  </td>
+	  <td style='text-align:right'>
+		{currencySimbol} {amount_iva}
+	  </td>
+	</tr> 
+	<tr>
+	  <td colspan='2'>
+		DESC
+	  </td>
+	  <td style='text-align:right'>
+		{currencySimbol} {amount_discount}
+	  </td>
+	</tr>                              
+	<tr>
+	  <td colspan='2'>
+		TOTAL
+	  </td>
+	  <td style='text-align:right'>
+		{currencySimbol} {amount_total}
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='2'>
+		RECIBIDO
+	  </td>
+	  <td style='text-align:right'>
+		{currencySimbol} {amount_receipt}
+	  </td>
+	</tr>
+	 <tr>
+	  <td colspan='2'>
+		CAMBIO
+	  </td>
+	  <td style='text-align:right'>
+		{currencySimbol} {amount_change}
+	  </td>
+	</tr>
+	 <tr>
+	  <td colspan='3' style='text-align:center'>
+		&nbsp;
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='3' style='text-align:center'>
+		{address}
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='3' style='text-align:center'>
+		TEL: {phoneNumber}
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='3' style='text-align:center' >
+		posMe PRO Premium 3.1
+	  </td>
+	</tr>
+  </table>					  
+</body>			
+</html>
