@@ -706,6 +706,7 @@ class app_box_inputcash extends _BaseController
             $objParameterExchangeSales        = $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE", $companyID);
             $dataView["exchangeRateSale"]     = $this->core_web_currency->getRatio($companyID, date("Y-m-d"), 1, $targetCurrency->currencyID, $objCurrency->currencyID) + $objParameterExchangeSales->value;
 
+            $dataView["objCurrency"]          = $objCurrency;
             $dataView["objListCashBox"]       = $this->Cash_Box_Model->get_All($companyID);
             $dataView["objCaudal"]            = $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
             $dataView["objListWorkflowStage"] = $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_inputcash", "statusID", $companyID, $branchID, $roleID);
