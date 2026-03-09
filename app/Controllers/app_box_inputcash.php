@@ -995,44 +995,90 @@ class app_box_inputcash extends _BaseController
             $row     = ["MONTO", '', $datView["objCurrency"]->simbol . sprintf('%.2f', $datView["objTM"]->amount)];
             array_push($detalle, $row);
 
-            //Generar Reporte
-            $html = helper_reporte80mmTransactionMasterInputOutPutCash(
-                "INGRESO DE CAJA",
-                $objCompany,
-                $objParameter,
-                $datView["objTM"],
-                $datView["objNatural"],
-                $datView["objCustumer"],
-                $datView["tipoCambio"],
-                $datView["objCurrency"],
-                $datView["objTMI"],
-                $confiDetalle,
-                $detalle,
-                $objParameterTelefono,
-                $datView["objStage"][0]->display,
-                "",
-                ""
-            );
-            $this->dompdf->loadHTML($html);
 
-            //1cm = 29.34666puntos
-            //a4: 210 ancho x 297
-            //a4: 21cm x 29.7cm
-            //a4: 595.28puntos x 841.59puntos
+             //Parse plantilla 			
+			$printerPdf 	= getBehavio(
+					$objCompany->type,
+					"app_box_inputcash",
+					"viewRegisterFormatoPaginTicket_typePreview",
+					"pdf"
+			);
 
-            //$this->dompdf->setPaper('A4','portrait');
-            //$this->dompdf->setPaper(array(0,0,234.76,6000));
+            $htmlTemplateCompany		= getBahavioLargeDB($objCompany->type,"app_box_inputcash","templateInputCash","");
+			$htmlTemplateDemo 			= getBahavioLargeDB("demo","app_box_inputcash","templateInputCash","");
+			if($htmlTemplateCompany == "")
+				$htmlTemplateCompany = $htmlTemplateDemo;
 
-            $this->dompdf->render();
+            if($printerPdf ==  "printerTermica"  )
+            {
+                
+                 // Preparar los datos
+                $data = [
+                    'printerTermica'    => true,  // false = HTML normal, true = QZ Tray
+                    'printerName'       => 'EPSON TM-T20',
+                    'titulo'            => 'INGRESO DE CAJA',
+                    'objCompany'        => $objCompany,
+                    'objParameterLogo'  => $objParameter,
+                    'objTransactionMastser' => $datView["objTM"],
+                    'objCurrency'       => $datView["objCurrency"],
+                    'objParameterTelefono' => $objParameterTelefono,
+                    'objParameterEmail' => "",
+                    'rucCompany'        => "",
+                    'userNickName'      => ""
+                ];
 
-            $objParameterShowLinkDownload = $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD", $companyID);
-            $objParameterShowLinkDownload = $objParameterShowLinkDownload->value;
+                // Renderizar
+                $html = helper_RenderStringAsView($htmlTemplateCompany, $data);
 
-            //visualizar
-            $this->dompdf->stream("file.pdf", ['Attachment' => ! $objParameterShowLinkDownload]);
+                // Para PDF
+                echo $html;
+                exit;
 
-            //descargar
-            //$this->dompdf->stream();
+            }
+            else 
+            {
+
+                
+                // Preparar los datos
+                $data = [
+                    'printerTermica'        => false,  // false = HTML normal, true = QZ Tray
+                    'printerName'           => 'EPSON TM-T20',
+                    'titulo'                => 'INGRESO DE CAJA',
+                    'objCompany'            => $objCompany,
+                    'objParameterLogo'      => $objParameter,
+                    'objTransactionMastser' => $datView["objTM"],
+                    'objCurrency'           => $datView["objCurrency"],
+                    'objParameterTelefono'  => $objParameterTelefono,
+                    'objParameterEmail'     => "",
+                    'rucCompany'            => "",
+                    'userNickName'          => ""
+                ];
+
+                
+                // Renderizar
+                $html = helper_RenderStringAsView($htmlTemplateCompany, $data);
+                $this->dompdf->loadHTML($html);
+
+                //1cm = 29.34666puntos
+                //a4: 210 ancho x 297
+                //a4: 21cm x 29.7cm
+                //a4: 595.28puntos x 841.59puntos
+
+                //$this->dompdf->setPaper('A4','portrait');
+                //$this->dompdf->setPaper(array(0,0,234.76,6000));
+
+                $this->dompdf->render();
+
+                $objParameterShowLinkDownload = $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD", $companyID);
+                $objParameterShowLinkDownload = $objParameterShowLinkDownload->value;
+
+                //visualizar
+                $this->dompdf->stream("file.pdf", ['Attachment' => ! $objParameterShowLinkDownload]);
+
+                //descargar
+                //$this->dompdf->stream();
+                exit;
+            }
 
         } catch (\Exception $ex) {
             if (empty($dataSession)) {
