@@ -416,6 +416,11 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
 			$(document).ready(function(){				 
 				$('#txtRealStateStyleKitchen').parent().parent().appendTo('#divTraslateQuantityMax');  
 				$('#txtQuantityMax').parent().parent().appendTo('#divTraslateElemento1');  
+
+				$('#txtBarCode').parent().parent().insertAfter($('#txtRealStateLinkPaginaWeb').parent().parent());
+				$('#txtRealStateEmail').parent().parent().insertAfter($('#txtName').parent().parent());
+				$('#txtRealStatePhone').parent().parent().insertAfter($('#txtName').parent().parent());
+				
 			});
 		</script>",		
 		
@@ -425,6 +430,12 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
 		if (!regexOnlyNumber.test($('#txtBarCode').val())) 
 		{
 			fnShowNotification('El campo (ID página web) solo puede contener numeros ','error',timerNotification);
+			result = false;
+		}
+
+
+		if ($('#txtReference3').val().trim() === '') {
+			fnShowNotification('El campo ID Encuentra 24 No puede estar vacio','error',timerNotification);
 			result = false;
 		}
 		
