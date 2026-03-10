@@ -16,7 +16,7 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "8bbb0a92-93e0-4600-ac88-9c97b478edff" 
+	tb_company_parameter.value = "b31788b4-403b-4508-bde4-31fc50d89e7c" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
