@@ -8657,7 +8657,7 @@ function helper_reporte80mmTransactionMaster(
     $causalName = "", /*causal*/
 	$userNickName = "", /*vendedor*/
     $rucCompany = "" /*ruc*/ ,
-	$datView 
+	$datView = array()
 )
 {
     $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;
