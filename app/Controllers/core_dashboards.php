@@ -1245,7 +1245,7 @@ class core_dashboards extends _BaseController {
         $objNowDate 		= \DateTime::createFromFormat('Y-m-d H:i:s', helper_getDate());
         $objNowDate->setTime(0, 0, 0);
         $objListVentasContadoMesActual = array();		
-        $objListVentasContadoMesActual = $this->Transaction_Master_Detail_Model->Default_Ventas_De_Contado_Mes_Actual($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objLastDate->format("Y-m-d") );
+        $objListVentasContadoMesActual = $this->Transaction_Master_Detail_Model->Default_Ventas_De_Contado_Mes_Actual_Chic($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objLastDate->format("Y-m-d") );
 
 
         //Obtener Ventas de Contado Mensuales
@@ -1254,7 +1254,7 @@ class core_dashboards extends _BaseController {
         $objFirstDate 					= \DateTime::createFromFormat('Y-m-d', $firstDate);
         $objFirstDate->setTime(0, 0, 0);
         $objListVentaContadoMensuales 	= array();
-		$objListVentaContadoMensuales 	= $this->Transaction_Master_Detail_Model->Default_Ventas_De_Contado_Mensuales($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objLastDate->format("Y-m-d") );
+		$objListVentaContadoMensuales 	= $this->Transaction_Master_Detail_Model->Default_Ventas_De_Contado_Mensuales_Chic($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objLastDate->format("Y-m-d") );
 		
 
         //Obtener Ventas al Credito Mensuales
@@ -1263,7 +1263,7 @@ class core_dashboards extends _BaseController {
         $objFirstDate 		= \DateTime::createFromFormat('Y-m-d', $firstDate);
         $objFirstDate->setTime(0, 0, 0);
         $objListVentasCreditoMensuales = array();
-		$objListVentasCreditoMensuales = $this->Transaction_Master_Detail_Model->Default_Ventas_De_Credito_Mes_Actual($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDate->format("Y-m-d") );
+		$objListVentasCreditoMensuales = $this->Transaction_Master_Detail_Model->Default_Ventas_De_Credito_Mes_Actual_Chic($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDate->format("Y-m-d") );
 		
 		
        

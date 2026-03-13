@@ -1786,6 +1786,114 @@ class Transaction_Master_Detail_Model extends Model  {
 		return $db->query($sql)->getResult();
 			
    } 
+
+    function Default_Ventas_De_Credito_Mes_Actual_Chic($companyID,$dateFirst,$dateLast)
+	{
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+		  	SELECT 
+				MONTH(c.createdOn) as Mes,
+				SUM(
+					CASE
+						when c.currencyID = 2 then 
+							c.amount
+						else 
+							c.amount * c.exchangeRate 
+					END 
+				) as Venta 
+			FROM 
+				tb_transaction_master c 
+			WHERE 
+				c.transactionID = 19 /*factura*/ 
+				AND 
+				c.isActive = 1 
+				AND 
+				c.transactionCausalID in (21 /*Contado*/,23 /*Contado*/) 
+				AND 
+				c.statusID in (67 /*aplicada*/) 
+				AND  
+				c.createdOn between '$dateFirst' and '$dateLast'
+			group by 
+				1
+		");
+
+		return $db->query($sql)->getResult();
+	}
+
+   function Default_Ventas_De_Contado_Mes_Actual_Chic($companyID,$dateFirst,$dateLast)
+	{
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+		  	SELECT 
+				DAY(c.createdOn) as Dia,
+				SUM(
+					CASE
+						when c.currencyID = 2 then 
+							c.amount
+						else 
+							c.amount * c.exchangeRate 
+					END 
+				) as Venta 
+			FROM 
+				tb_transaction_master c 
+			WHERE 
+				c.transactionID = 19 /*factura*/ 
+				AND 
+				c.isActive = 1 
+				AND 
+				c.transactionCausalID in (21 /*Contado*/,23 /*Contado*/) 
+				AND 
+				c.statusID in (67 /*aplicada*/) 
+				AND 
+				c.createdOn between '$dateFirst' and '$dateLast'
+			group by 
+				1
+		");
+
+		return $db->query($sql)->getResult();
+	}
+
+   function Default_Ventas_De_Contado_Mensuales_Chic($companyID,$dateFirst,$dateLast)
+   {
+		$db = db_connect();
+
+		$sql = "";
+		$sql = sprintf("
+		  	SELECT 
+				u.nickname as Mes,
+				SUM(
+					CASE
+						when c.currencyID = 2 then 
+							c.amount
+						else 
+							c.amount * c.exchangeRate 
+					END 
+				) as Venta 
+			FROM 
+				tb_transaction_master c 
+				inner join tb_user u on 
+					c.createdBy = u.userID 
+			WHERE 
+				c.transactionID = 19 /*factura*/ 
+				AND 
+				c.isActive = 1 
+				AND 
+				c.transactionCausalID in (21 /*Contado*/,23 /*Contado*/) 
+				AND 
+				c.statusID in (67 /*aplicada*/) 
+				AND  
+				c.createdOn between '$dateFirst' and '$dateLast'
+			group by 
+				1
+		");
+
+		return $db->query($sql)->getResult();
+   }
+
    function ChicExtensiones_get_Citas($companyID)
    {
 	   
@@ -2494,6 +2602,8 @@ class Transaction_Master_Detail_Model extends Model  {
 
 		return $db->query($sql)->getResult();
 	}
+
+	
 
 	function Default_Ventas_De_Credito_Mes_Actual($companyID,$dateFirst,$dateLast)
 	{
