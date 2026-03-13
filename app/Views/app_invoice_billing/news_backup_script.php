@@ -13,7 +13,8 @@
 	var varStatusInvoiceAplicado			= 67; //Estado Aplicada
     var varStatusInvoiceAnular				= 68; //Anular
 	var varStatusInvoiceRegistrado			= 66; //Registrado
-	var isLoading 							= true;	
+	var isLoading 							= true;
+	var isUpdatingProgrammatically 			= false;  // Previene loops infinitos
 	var mesasConfig 						= [];
 	
 	var objConfigInit 		= {
@@ -2683,9 +2684,19 @@
 													value: 0 , 
 													name: 'txtDescuento' , 
 													id:'txtDescuento',
-													readOnly:true, 
+													xtype: 'numberfield',
+													readOnly: false,
+													minValue: 0,
+													decimalPrecision: 4,
+													step: 0.0001,
+													hideTrigger: true,
+													keyNavEnabled: false,
+													mouseWheelEnabled: false,
 													disabled: false, 
-													fieldStyle: 'font-weight:bold; color:#fffff; font-size:18px; text-align:right;',
+													fieldStyle: 'font-weight:bold; color:#2E7D32; font-size:18px; text-align:right;',
+													listeners: {
+														change: fnChange_Descuento
+													}
 												},
 												{ 
 													fieldLabel: '% Servicio', 
@@ -3778,19 +3789,101 @@
 		}
 		function fnChange_PorcentageDescuento (field, newValue, oldValue) 
 		{
+			// Prevenir eventos durante carga o actualización programática
+			if (isLoading || isUpdatingProgrammatically) {
+				return;
+			}
 			
-			if (isLoading) return; // Detener evento
-			console.log('Valor anterior:', oldValue);
-			console.log('Nuevo valor:', newValue);
+			var viewport = Ext.getCmp('miVentanaPrincipal');
+			if (!viewport) {
+				return;
+			}
 			
-			// Aquí puedes agregar la lógica que necesites
-			// Por ejemplo, recalcular totales según el descuento
+			var porcentaje = newValue || 0;
+			
+			// Validar valor negativo
+			if (porcentaje < 0) {
+				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">El porcentaje no puede ser negativo</span>');
+				field.setValue(oldValue || 0);
+				return;
+			}
+			
+			// Validar rango 0-100
+			if (porcentaje > 100) {
+				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">El porcentaje no puede exceder 100%</span>');
+				field.setValue(oldValue || 0);
+				return;
+			}
+			
+			// Calcular monto correspondiente
+			var subtotal 			= viewport.down('#txtSubTotal').getValue() || 0;
+			var montoDescuento 		= subtotal * (porcentaje / 100);
+			montoDescuento 			= Math.round(montoDescuento * 10000) / 10000; // 4 decimales
+			
+			// Actualizar campo de monto SIN disparar su evento
+			isUpdatingProgrammatically = true;
+			viewport.down('#txtDescuento').setValue(montoDescuento);
+			isUpdatingProgrammatically = false;
 			
 			if (window.miVentanaEsperando && miVentanaEsperando.show) {
 				miVentanaEsperando.show();
 			}
 
-			fnRecalculateDetail(true,"");
+			fnRecalculateDetail(true,"percentage");
+			
+			if (window.miVentanaEsperando ) {
+				miVentanaEsperando.hide();
+			}
+
+	
+			 
+		}
+		function fnChange_Descuento(field, newValue, oldValue) 
+		{
+			// Prevenir eventos durante carga o actualización programática
+			if (isLoading || isUpdatingProgrammatically) {
+				return;
+			}
+			
+			var viewport = Ext.getCmp('miVentanaPrincipal');
+			if (!viewport) {
+				return;
+			}
+			
+			var subtotal = viewport.down('#txtSubTotal').getValue() || 0;
+			var montoDescuento = newValue || 0;
+			
+			// Validar valor negativo
+			if (montoDescuento < 0) {
+				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">El monto de descuento no puede ser negativo</span>');
+				field.setValue(oldValue || 0);
+				return;
+			}
+			
+			// Validar que no exceda el subtotal
+			if (montoDescuento > subtotal) {
+				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">El descuento (' + montoDescuento.toFixed(4) + ') no puede exceder el subtotal (' + subtotal.toFixed(4) + ')</span>');
+				field.setValue(oldValue || 0);
+				return;
+			}
+			
+			// Calcular porcentaje correspondiente
+			var porcentaje = 0;
+			if (subtotal > 0) {
+				porcentaje = (montoDescuento / subtotal) * 100;
+				porcentaje = Math.round(porcentaje * 10000) / 10000; // 4 decimales
+			}
+			
+			// Actualizar campo de porcentaje SIN disparar su evento
+			isUpdatingProgrammatically = true;
+			viewport.down('#txtPorcentajeDescuento').setValue(porcentaje);
+			isUpdatingProgrammatically = false;
+			
+			if (window.miVentanaEsperando && miVentanaEsperando.show) {
+				miVentanaEsperando.show();
+			}
+
+			fnRecalculateDetail(true,"amount");
 			
 			if (window.miVentanaEsperando ) {
 				miVentanaEsperando.hide();
@@ -5378,12 +5471,14 @@
 			grid.getStore().loadData([]);
 	
 	
+			isUpdatingProgrammatically = true;
 			viewport.down("#txtSubTotal").setValue("0.00");
 			viewport.down("#txtDescuento").setValue("0.00");
 			viewport.down("#txtPorcentajeDescuento").setValue("0.00");
 			viewport.down("#txtIva").setValue("0.00");
 			viewport.down("#txtServices").setValue("0.00");
 			viewport.down("#txtTotal").setValue("0.00");
+			isUpdatingProgrammatically = false;
 		}
 		
 		var viewport_miVentanaDePago = Ext.getCmp('miVentanaDePago'); // accede al viewport		
@@ -5698,11 +5793,13 @@
 			descuento 		= subtotalGeneral * (porcentajeDescuento / 100);
 			totalGeneral 	= subtotalGeneral + serviceGeneral + ivaGeneral - descuento;
 
+			isUpdatingProgrammatically = true;
 			viewport.down("#txtSubTotal").setValue(subtotalGeneral);
 			viewport.down("#txtDescuento").setValue(descuento);
 			viewport.down("#txtIva").setValue(ivaGeneral);
 			viewport.down("#txtServices").setValue(serviceGeneral);
 			viewport.down("#txtTotal").setValue(totalGeneral);			
+			isUpdatingProgrammatically = false;
 
 			//Si es de credito que la factura no supere la linea de credito
 			var causalSelect 				= viewport.down("#txtCausalID").getValue();
@@ -5767,11 +5864,13 @@
 			});
 			
 			totalGeneral				    = subtotalGeneral + ivaGeneral + serviceGeneral - descuento;			
+			isUpdatingProgrammatically = true;
 			viewport.down("#txtSubTotal").setValue(subtotalGeneral);
 			viewport.down("#txtDescuento").setValue(descuento);
 			viewport.down("#txtIva").setValue(ivaGeneral);
 			viewport.down("#txtServices").setValue(serviceGeneral);
 			viewport.down("#txtTotal").setValue(totalGeneral);
+			isUpdatingProgrammatically = false;
 			
 			
 			var causalSelect 				= viewport.down("#txtCausalID").getValue();
@@ -5813,11 +5912,13 @@
 			});
 
 			totalGeneral				    = subtotalGeneral + ivaGeneral + serviceGeneral - descuento;			
+			isUpdatingProgrammatically = true;
 			viewport.down('#txtSubTotal').setValue(subtotalGeneral);
 			viewport.down('#txtDescuento').setValue(descuento);
 			viewport.down('#txtIva').setValue(ivaGeneral);
 			viewport.down('#txtServices').setValue(serviceGeneral);
 			viewport.down('#txtTotal').setValue(totalGeneral);
+			isUpdatingProgrammatically = false;
 			
 		}
 
