@@ -1633,7 +1633,7 @@ class app_box_outcash extends _BaseController
 
             //visualizar
             $this->dompdf->stream("file.pdf", ['Attachment' => ! $objParameterShowLinkDownload]);
-
+            exit;
             //descargar
             //$this->dompdf->stream();
 
