@@ -1244,6 +1244,8 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
     $divs                   = array_merge($divs, $pasteleriaChic);
 	$globalPro		   		= getBehavioGlobalpro();
     $divs                   = array_merge($divs, $globalPro);
+	$farmaByB		   		= getBehavioFarmaByB();
+    $divs                   = array_merge($divs, $farmaByB);
 	$balladaresPasteleria	= getBehavioPasteleriaBalladares();
 	$divs                   = array_merge($divs, $balladaresPasteleria);
 	$balladaresTisey		= getBehavioAguaTisey();
