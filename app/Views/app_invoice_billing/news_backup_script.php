@@ -457,7 +457,7 @@
 				}); 
 			
 		miVentanaTableroDeMesas = Ext.create('Ext.window.Window', {
-			title: 'Tablero de Mesas',			
+			title: 'Tablero de Posicion',			
 			cls: 'win-titulo-blanco',			
 			width: Ext.Element.getViewportWidth() * 0.8,
 			height: Ext.Element.getViewportHeight() * 0.8,
