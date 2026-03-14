@@ -1,4 +1,5 @@
 /*BD: 	dbqnzzgutnic3f:parametro_farmacia_san_rafael_camuapa*/
+/*SERVIDOR:		siteground   posme.net*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
