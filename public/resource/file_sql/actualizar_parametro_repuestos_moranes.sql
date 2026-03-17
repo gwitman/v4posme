@@ -1,5 +1,5 @@
-/*BD: 	posme:repuestos_moranes*/
-
+/*BD: 	dbndhr1l7pmywo:parametro_repuestos_moranes*/
+/*SERVIDOR:		siteground   posme.net*/
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
