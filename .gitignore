@@ -9,6 +9,8 @@ app/Libraries/core_web_qr/temp/*
 .idea/phpunit.xml
 .idea/v4posme.iml
 .idea/vcs.xml
+.kiro/specs/
+tests/javascript/
 /vendor/dompdf/dompdf/lib/fonts/Helvetica-BoldOblique.afm.json
 /vendor/dompdf/dompdf/lib/fonts/Times-BoldItalic.afm.json
 /public/resource/theme-ext-6.2.0/*
@@ -19,3 +21,6 @@ app/Libraries/core_web_qr/temp/*
 /public/resource/font-awesome-4.7.0/*
 /public/resource/file_navicate_perfil_sincronization/*.ndsymysql
 /public/resource/*.zip
+public/resource/file_navicate_perfil_sincronization/
+app.zip
+
