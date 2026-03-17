@@ -439,6 +439,9 @@ class Notification_Model extends Model  {
 		$result = $db->query($sql)->getRow();
 		return $result ? $result->total : 0;
    }
+
    
+
+
 }
 ?>

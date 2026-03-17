@@ -1420,6 +1420,8 @@ $routes->match(['get', 'post'], 'app_notification/file_job_process_customer_cred
 $routes->match(['get', 'post'], 'app_notification/file_job_process_customer_credit_document_to_cancel/(:any)', 'app_notification::file_job_process_customer_credit_document_to_cancel');
 $routes->match(['get', 'post'], 'app_notification/sendEmailItemExpired', 'app_notification::sendEmailItemExpired');
 $routes->match(['get', 'post'], 'app_notification/sendEmailItemExpired/(:any)', 'app_notification::sendEmailItemExpired');
+$routes->match(['get', 'post'], 'app_notification/getResultLotoNicaragua', 'app_notification::getResultLotoNicaragua');
+$routes->match(['get', 'post'], 'app_notification/getResultLotoNicaragua/(:any)', 'app_notification::getResultLotoNicaragua');
 $routes->match(['get', 'post'], 'app_planilla_adelantos/searchTransactionMaster', 'app_planilla_adelantos::searchTransactionMaster');
 $routes->match(['get', 'post'], 'app_planilla_adelantos/edit', 'app_planilla_adelantos::edit');
 $routes->match(['get', 'post'], 'app_planilla_adelantos/edit/(:any)', 'app_planilla_adelantos::edit');

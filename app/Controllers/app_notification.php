@@ -2844,6 +2844,156 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 		echo "
 		SUCCESS";
 	}
+
+	// Obtener y almacenar resultados de Loto Nicaragua desde nuevaya.com.ni
+	// Ejecutado por cron job cada hora
+	// Requisitos: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
+	function getResultLotoNicaragua()
+	{
+		try {
+			
+		
+
+			// 3. INICIALIZAR contadores y librerías
+			$totalProcessed = 0;
+			$totalSuccess   = 0;
+			$totalErrors    = 0;
+			$errorDetails   = [];
+
+			$httpClient = new \App\Libraries\core_web_loto_nicaragua_http_client();
+			log_message('info', '[getResultLotoNicaragua] Inicio - companyID: ' . APP_COMPANY);
+
+			// 4. OBTENER items activos de la empresa
+			$items = $this->Item_Model->get_rowByCompany(APP_COMPANY);
+
+			if (!$items || count($items) === 0) 
+			{
+				return $this->response->setJSON([
+					'success'      => false,
+					'message'      => 'No hay items configurados para esta empresa',
+					'processed'    => 0,
+					'successful'   => 0,
+					'errors'       => 0,
+					'errorDetails' => [],
+					'timestamp'    => date('Y-m-d H:i:s'),
+				]);
+			}
+
+			// 5. LIMITAR a 100 items por ejecución (Requisito 13.5)
+			$items = array_slice((array) $items, 0, 100);
+
+			// 6. PROCESAR cada item
+			foreach ($items as $item) 
+			{
+
+				// Solo items activos
+				if ((int) $item->isActive !== 1)
+					continue;
+
+				$totalProcessed++;
+
+				// Validar reference1 (URL)
+				if (empty($item->reference1)) {
+					$errorDetails[] = ['itemID' => $item->itemID, 'error' => 'URL no configurada (reference1 vacío)'];
+					$totalErrors++;
+					continue;
+				}
+
+				// Validar reference2 (tipo de lotería)
+				if (empty($item->reference2)) {
+					$errorDetails[] = ['itemID' => $item->itemID, 'error' => 'Tipo de lotería no configurado (reference2 vacío)'];
+					$totalErrors++;
+					continue;
+				}
+
+				// Validar dominio permitido (nuevaya.com.ni)
+				try 
+				{
+					// Obtener HTML
+					$html = $httpClient->fetchLotteryResults($item->reference1);
+					if ($html === null) {
+						$errorDetails[] = ['itemID' => $item->itemID, 'error' => 'Error al obtener HTML desde la URL'];
+						$totalErrors++;
+						continue;
+					}
+
+					// Parsear resultados
+					$results = $httpClient->parseResults($html);
+					if ($results === null) {
+						$errorDetails[] = ['itemID' => $item->itemID, 'error' => 'No se encontraron resultados en el HTML'];
+						$totalErrors++;
+						continue;
+					}
+
+					// Preparar datos para inserción (Requisito 6)
+					$lotteryType 			= htmlspecialchars(strip_tags($item->reference2), ENT_QUOTES, 'UTF-8');
+					$winNumber   			= htmlspecialchars(strip_tags($results[$item->reference2]), ENT_QUOTES, 'UTF-8');
+
+					$data                   = null;
+					$data["from"]           = $lotteryType;
+					$data["programDate"]    = $results['drawDate'];
+					$data["programHour"]    = $results['drawTime'];
+					$data["phoneFrom"]      = $winNumber;
+					$data["summary"]        = "LOTO_NICARAGUA";
+					$data["title"]          = "Resultado " . $lotteryType;
+					$data["message"]        = "Número ganador: " . $winNumber . " - Sorteo: " . $results['drawDate'] . " " . $results['drawTime'];
+					$data["createdOn"]      = date_format(date_create(), "Y-m-d H:i:s");
+					$data["isActive"]       = 1;
+					$data["sendOn"]         = null;
+					$data["to"] 			= $item->itemID;
+					$data["sendEmailOn"]    = null;
+					$data["sendWhatsappOn"] = null;
+
+					// Insertar en base de datos
+					$notificationID = $this->Notification_Model->insert_app_posme($data);
+
+					if ($notificationID > 0) 
+					{
+						$totalSuccess++;
+						log_message('info', '[getResultLotoNicaragua] Insertado notificationID: ' . $notificationID . ' - itemID: ' . $item->itemID);
+					} else {
+						$errorDetails[] = ['itemID' => $item->itemID, 'error' => 'Error al insertar en base de datos'];
+						$totalErrors++;
+						log_message('error', '[getResultLotoNicaragua] Fallo inserción - itemID: ' . $item->itemID);
+					}
+
+				} 
+				catch (\Exception $ex) 
+				{
+					$errorDetails[] = ['itemID' => $item->itemID, 'error' => $ex->getMessage()];
+					$totalErrors++;
+					log_message('error', '[getResultLotoNicaragua] Excepción en itemID ' . $item->itemID . ': ' . $ex->getMessage());
+				}
+
+				// Liberar memoria
+				unset($html, $results, $data);
+			}
+
+			log_message('info', '[getResultLotoNicaragua] Fin - processed: ' . $totalProcessed . ', successful: ' . $totalSuccess . ', errors: ' . $totalErrors);
+			return $this->response
+				->setHeader('X-Content-Type-Options', 'nosniff')
+				->setHeader('X-Frame-Options', 'DENY')
+				->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
+				->setJSON([
+					'success'      => true,
+					'processed'    => $totalProcessed,
+					'successful'   => $totalSuccess,
+					'errors'       => $totalErrors,
+					'errorDetails' => $errorDetails,
+					'timestamp'    => date('Y-m-d H:i:s'),
+				]);
+
+		} 
+		catch (\Exception $ex) 
+		{
+			log_message('error', '[getResultLotoNicaragua] Error global: ' . $ex->getMessage());
+			return $this->response->setJSON([
+				'error'   => true,
+				'message' => $ex->getLine() . " " . $ex->getMessage(),
+			]);
+		}
+	}
+
 	
-	
+
 }
