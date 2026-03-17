@@ -15308,5 +15308,188 @@ class app_invoice_billing extends _BaseController {
 		}
 	}
 	
+	function viewInvoicePublic(){
+		try{
+
+			// Leer parámetro desde segmentos URI (Requisito 1.1)
+			$invoiceNumber = /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"invoiceNumber");//--finuri
+
+			// Validar que no esté vacío (Requisito 1.2)
+			if(empty($invoiceNumber)){
+				$data			 = array();
+				$data["session"] = array();
+				$data["exception"] = new \Exception("NÚMERO DE FACTURA REQUERIDO");
+				$data["urlLogin"]  = base_url();
+				$data["urlIndex"]  = base_url()."/app_invoice_billing/index";
+				$data["urlBack"]   = base_url()."/app_invoice_billing/index";
+				return view("core_template/email_error_general",$data);
+			}
+
+			
+		
+
+			// Task 3.2 — Consultar Transaction_Master y retornar error si no existe (Requisitos 2.1, 2.2)
+			$objTM = $this->Transaction_Master_Model->get_rowByTransactionNumber(APP_COMPANY, $invoiceNumber);
+			if(!$objTM){
+				$data			 = array();
+				$data["session"] = array();
+				$data["exception"] = new \Exception("FACTURA NO ENCONTRADA");
+				$data["urlLogin"]  = base_url();
+				$data["urlIndex"]  = base_url()."/app_invoice_billing/index";
+				$data["urlBack"]   = base_url()."/app_invoice_billing/index";
+				return view("core_template/email_error_general",$data);
+			}
+
+			// Task 3.3 — Recuperar ítems, info adicional, cliente y empresa (Requisitos 2.3, 2.4, 2.5, 2.6)
+			$transactionID       = $objTM->transactionID;
+			$transactionMasterID = $objTM->transactionMasterID;
+			$entityID            = $objTM->entityID;
+			$companyID			 = APP_COMPANY;
+
+			$objTMD      = $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID, $transactionID, $transactionMasterID);
+			$objTMI      = $this->Transaction_Master_Info_Model->get_rowByPK($companyID, $transactionID, $transactionMasterID);
+			$objCustomer = $this->Customer_Model->get_rowByEntity($companyID, $entityID);
+			$branchID    = ($objCustomer != null ? $objCustomer->branchID : 0);
+			$objNatural  = $this->Natural_Model->get_rowByPK($companyID, $branchID, $entityID);
+			$objCompany  = $this->Company_Model->get_rowByPK($companyID);
+
+			$objParameterLogo       = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO", $companyID);
+			$objParameterPhone      = $this->core_web_parameter->getParameter("CORE_PHONE", $companyID);
+			$objParameterIdentifier = $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER", $companyID);
+
+			// Task 4.1 — Consultar tb_notification y marcar isPremio en cada ítem (Requisitos 3.1, 3.2, 3.3, 3.4)
+			$transactionOn 			 = $objTM->transactionOn;
+			$createdOn 			 	 = $objTM->createdOn;
+			$fechaHora 				 = $createdOn;
+
+			// Crear objeto DateTime
+			$dt 		= new \DateTime($fechaHora);
+
+			// 1. Obtener solo la fecha
+			$soloFecha 	= $dt->format("Y-m-d");
+
+			// 2. Obtener la hora
+			$hora 		= $dt->format("H:i:s");
+
+			// Convertir hora a timestamp para comparar
+			$horaTimestamp = strtotime($hora);
+
+			// Rangos
+			$h12 = strtotime("12:00:00");
+			$h03 = strtotime("15:00:00"); // 03:00 PM
+			$h06 = strtotime("18:00:00"); // 06:00 PM
+
+			if ($horaTimestamp <= $h12) {
+				$resultadoHora = "12:00:00";
+			} elseif ($horaTimestamp > $h12 && $horaTimestamp <= $h03) {
+				$resultadoHora = "03:00:00";
+			} elseif ($horaTimestamp > $h03 && $horaTimestamp <= $h06) {
+				$resultadoHora = "06:00:00";
+			} else {
+				$resultadoHora = "09:00:00";
+			}
+
+			
+			$objNotifications 		 = $this->Notification_Model->get_lotoNicaraguaNumberWiner($soloFecha,$resultadoHora);
+			$transactionMasterDetail = array();
+			$isPremiadoGeneral 		 = false;
+			foreach($objTMD as $item)
+			{
+				$isPremio = false;
+				foreach($objNotifications as $notif)
+				{
+					if(str_contains((string)$notif->to,   (string)$item->itemID))
+					{
+						$isPremio 				 = true;
+						$isPremiadoGeneral 		 = true;
+					}
+				}
+
+
+				$row = array(
+					"itemNumber"       => $item->itemNumber,
+					"itemName"         => $item->itemName,
+					"itemNameQuantity" => sprintf("%01.2f", round($item->quantity, 2)),
+					"itemNamePrice"    => sprintf("%01.2f", round($item->unitaryPrice, 2)),
+					"itemNameAmount"   => sprintf("%01.2f", round($item->amount, 2)),
+					"isPremio"         => $isPremio,
+					"isPremioLabel"    => $isPremio ? "PREMIADO" : "",
+				);
+				$transactionMasterDetail[] = $row;
+			}
+
+			// Task 5.1 — Construir $dataViewParse con todos los campos requeridos (Requisito 4.5)
+			$customerName = ($objTMI && $objTMI->referenceClientName != "")
+				? $objTMI->referenceClientName
+				: ($objNatural ? $objNatural->firstName . " " . $objNatural->lastName : "");
+			$customerRuc  = ($objTMI && $objTMI->referenceClientIdentifier != "")
+				? $objTMI->referenceClientIdentifier
+				: ($objCustomer ? $objCustomer->identification : "");
+
+
+			// Logo en base64
+			$logoPath   = PATH_FILE_OF_APP_ROOT . '/img/logos/direct-ticket-' . $objParameterLogo->value;
+			$logoType   = pathinfo($logoPath, PATHINFO_EXTENSION);
+			$logoData   = file_exists($logoPath) ? file_get_contents($logoPath) : "";
+			$imageBase64 = $logoData ? 'data:image/' . $logoType . ';base64,' . base64_encode($logoData) : "";
+
+			$dataViewParse = array(
+				// Empresa
+				"companyName"             => $objCompany->name,
+				"companyRuc"              => $objParameterIdentifier->value,
+				"phoneNumber"             => $objParameterPhone->value,
+				"address"                 => $objCompany->address,
+				"imageBase64"             => $imageBase64,
+				// Factura
+				"transactionNumber"       => $objTM->transactionNumber,
+				"transactionOn"           => (new \DateTime($objTM->transactionOn))->modify(APP_HOUR_DIFERENCE_PHP)->format('Y-m-d h:i A'),
+				"amount_sub_total"        => sprintf("%.2f", $objTM->subAmount),
+				"amount_iva"              => sprintf("%.2f", $objTM->tax1),
+				"amount_discount"         => sprintf("%.2f", $objTM->discount),
+				"amount_total"            => sprintf("%.2f", $objTM->amount),
+				"es_premiado_general" 	  => $isPremiadoGeneral,
+				
+				// Cliente
+				"customerName"            => $customerName,
+				"customerRuc"             => $customerRuc,
+				// Ítems
+				"transactionMasterDetail" => $transactionMasterDetail,
+			);
+
+			// Task 5.3 — Recuperar plantilla HTML con fallback a demo y renderizar (Requisitos 4.1, 4.2, 4.3)
+			$companyType         = $objCompany->type;
+			$htmlTemplateCompany = getBahavioLargeDB($companyType,  "app_invoice_billing", "templateInvoicePublicHtmlPage", "");
+			$htmlTemplateDemo    = getBahavioLargeDB("demo",        "app_invoice_billing", "templateInvoicePublicHtmlPage", "");
+			if($htmlTemplateCompany == "")
+				$htmlTemplateCompany = $htmlTemplateDemo;
+
+			$parser   = \Config\Services::parser();
+			$htmlBody = $parser->setData($dataViewParse)->renderString($htmlTemplateCompany);
+
+			// Task 5.5 — Envolver en masterpage pública y responder (Requisitos 4.4, 5.3)
+			$dataBody           = array();
+			$dataBody["body"]   = $htmlBody;
+			$dataBody["head"]   = "";
+			$dataBody["footer"] = "";
+			$dataBody["script"] = "";
+			$dataBody["title"]  = $objTM->transactionNumber;
+			$htmlPage 			= view("core_masterpage/default_masterpage_public", $dataBody);
+			echo $htmlPage;
+			exit;
+
+		}
+		catch(\Exception $ex)
+		{
+			$data			   = array();
+			$data["session"]   = array();
+			$data["exception"] = $ex;
+			$data["urlLogin"]  = base_url();
+			$data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+			$data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+			$resultView        = view("core_template/email_error_general",$data);
+			return $resultView;
+		}
+	}
+
 }
 ?>
