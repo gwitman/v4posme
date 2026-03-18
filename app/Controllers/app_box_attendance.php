@@ -1297,7 +1297,26 @@ class app_box_attendance extends _BaseController {
 			{							
 				$txtDetailReference1 = "SI";
 			}
-			
+
+			////Obtener numero de documento, minimo
+			////////////////////////////////
+			////////////////////////////////
+			$objCustomerCreditAmoritizationAllRegister 		= array_filter(
+					$objCustomerCreditAmoritizationAll,
+					function ($item) {
+						return isset($item->stageDocumento) && $item->stageDocumento !== 'CANCELADO';
+					}
+			);	
+			$objCustomerCreditAmoritizationAllRegister 		= array_values($objCustomerCreditAmoritizationAllRegister);
+			$objCustomerCreditDocumentID 					= $objCustomerCreditAmoritizationAllRegister[0]->customerCreditDocumentID;
+			$objCustomerCreditDocument 						= $this->Customer_Credit_Document_Model->get_rowByPK($objCustomerCreditDocumentID);
+
+			////Obtener fecha de desembolso
+			////////////////////////////////
+			////////////////////////////////
+			$objCustomerCreditDateInit						= $objCustomerCreditDocument->dateOn;
+
+
 			////Fecha de Vencimiento
 			////////////////////////////////
 			////////////////////////////////
@@ -1394,6 +1413,8 @@ class app_box_attendance extends _BaseController {
 			$objTM["sourceWarehouseID"]				= NULL;
 			$objTM["targetWarehouseID"]				= NULL;
 			$objTM["isActive"]						= 1;
+			$objTM["areaID"]	 					= $objCustomerCreditDocumentID;
+			$objTM["nextVisit"] 					= $objCustomerCreditDateInit;
 			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);			
 			
 			
@@ -1492,6 +1513,7 @@ class app_box_attendance extends _BaseController {
 			$dataViewParse["dayNextPayment"]		= $datView["objTM"]->reference4;
 			$dataViewParse["dateExpired"]			= $datView["objTM"]->reference3;
 			$dataViewParse["tipoCss"]				= $dataViewParse["solvencyName"] == "SI" ? "success" : "danger";
+			$dataViewParse["fechaDeInicio"]			= $datView["objTM"]->nextVisit;
 			
 			if($typeResult == "html") 
 			{

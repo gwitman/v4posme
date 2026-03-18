@@ -96,6 +96,7 @@ class Customer_Credit_Amortization_Model extends Model  {
 
 		$sql = "";
 		$sql = sprintf("select ");
+		    $sql = $sql.sprintf(" cd.customerCreditDocumentID,");		
 			$sql = $sql.sprintf(" cd.documentNumber,");		
 			$sql = $sql.sprintf(" i.dateApply,");		
 			$sql = $sql.sprintf(" i.remaining,");
