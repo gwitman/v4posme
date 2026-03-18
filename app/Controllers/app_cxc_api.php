@@ -840,6 +840,7 @@ class app_cxc_api extends _BaseController {
 			//wg-	);
 			//wg-}
 			
+			
 			$result = null;
 			if (!$file)
 			{
@@ -910,8 +911,7 @@ class app_cxc_api extends _BaseController {
 			]);
 		}
 		
-		// Si no es mensaje interno, validar resultado del envío de WhatsApp
-		log_message("error",print_r($result,true));	
+		// Si no es mensaje interno, validar resultado del envío de WhatsApp		
 		if($result["status"] == "error") 
 		{
 			return $this->response->setJSON([

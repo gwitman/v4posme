@@ -428,6 +428,7 @@ createApp({
 				json = await res.json();
 			}
 			
+			
 			// Mostrar errores
 			if (json == undefined) {
 				this.clearTab1Message();
