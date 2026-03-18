@@ -6,6 +6,18 @@
 /******************************************************************/	
 
 
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "https://posme.nl/v4posme/farmacia_mils_loto/public/app_invoice_billing/viewInvoicePublic" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_PRINTER_QR_IN_INVOICE_URL"; ##Url que escaneara el qr en las facturas mobiles
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_PRINTER_QR_IN_INVOICE"; ##Imprimer el codigo qr en las facturas mobiles	
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
