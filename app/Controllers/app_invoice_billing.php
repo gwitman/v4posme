@@ -2595,10 +2595,13 @@ class app_invoice_billing extends _BaseController {
 			$objTMInfo["referenceClientIdentifier"]	= $customer->identification;
 			$amountDolares							= 0;
 			$amountCordobas							= 0;
-			if($transactionMaster->CurrencyId==$objCurrencyCordoba->currencyID){ //cordobas
-				$amountCordobas = $transactionMaster->Amount;
-			}else if($transactionMaster->CurrencyId==$objCurrencyDolares->currencyID){ //dolares
-				$amountDolares = $transactionMaster->Amount;
+			if($transactionMaster->CurrencyId==$objCurrencyCordoba->currencyID)
+			{ //cordobas
+				$amountCordobas = $transactionMaster->Amount - $transactionMaster->Discount;
+			}
+			else if($transactionMaster->CurrencyId==$objCurrencyDolares->currencyID)
+			{ //dolares
+				$amountDolares = $transactionMaster->Amount - $transactionMaster->Discount;
 			}
 			$objTMInfo["receiptAmount"]				= $exisCausalInCredit == "true" ? 0 : $amountCordobas;
 			$objTMInfo["receiptAmountDol"]			= $exisCausalInCredit == "true" ? 0 : $amountDolares; 
@@ -2620,8 +2623,6 @@ class app_invoice_billing extends _BaseController {
 			$objTMInfo["receiptAmountCardBankDolID"]				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_BANKID_DEFAULT")->value; //INVOICE_BILLING_BANKID_DEFAULT
 			$objTMInfo["reference1"]								= $transactionMaster->TransactionMasterId;
 			$objTMInfo["reference2"]								= $transactionMaster->TransactionNumber;
-
-
 			$this->Transaction_Master_Info_Model->insert_app_posme($objTMInfo);
 			
 			
@@ -2638,6 +2639,7 @@ class app_invoice_billing extends _BaseController {
 			$tax1Total 										= 0;
 			$tax2Total										= 0;
 			$subAmountTotal									= 0;
+			$discountTotal									= 0;
 
 			//obtener la lista de precio por defecto
 			$objParameterPriceDefault	= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_DEFAULT_PRICELIST");
@@ -2693,7 +2695,7 @@ class app_invoice_billing extends _BaseController {
 					$objTMD["tax2"]							= $tax2; 							//impusto de servicio
 					$objTMD["tax3"]							= 0;
 
-					$objTMD["discount"]						= 0;					
+					$objTMD["discount"]						= $value->Discount;					
 					$objTMD["promotionID"] 					= 0;
 
 					$objTMD["reference1"]					= $lote;
@@ -2722,7 +2724,7 @@ class app_invoice_billing extends _BaseController {
 					$tax2Total								= $tax2Total + $tax2;
 					$subAmountTotal							= $subAmountTotal + ($quantity * $price);
 					$amountTotal							= $amountTotal + $objTMD["amount"];
-
+					$discountTotal							= $discountTotal + $value->Discount;
 					$transactionMasterDetailID_				= $this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
 
 					$objTMDC								= NULL;
@@ -2735,28 +2737,33 @@ class app_invoice_billing extends _BaseController {
 					$objTMDC["reference5"]					= "";
 					$objTMDC["reference9"]					= "reference1: Porcentaje de Gastos Fijo para las facturas de credito,reference2: Escritura Publica,reference3: Primer Linea del Protocolo";
 					$this->Transaction_Master_Detail_Credit_Model->insert_app_posme($objTMDC);
+
 					
-					
-					//Ingresar la lista de productos de RESTAURANTE
-					if ( $objParameterINVOICE_BILLING_TRAKING_BAR == "true")
-					{
-						$objTMDRNew["isActive"] 					= 1;
-						$objTMDRNew["createdOn"] 					= date("Y-m-d H:i:s");
-						$objTMDRNew["quantity"] 					= $objTMD["quantity"];
-						$objTMDRNew["componentID"] 					= $objTMD["componentID"];
-						$objTMDRNew["componentItemID"]				= $objTMD["componentItemID"];
-						$objTMDRNew["transactionMasterDetailID"]	= $transactionMasterDetailID_;
-						$this->Transaction_Master_Detail_References_Model->insert_app_posme($objTMDRNew);
-					}
+					$objTMDR 								= null;
+					$objTMDR["transactionMasterDetailID"]	= $transactionMasterDetailID_;
+					$objTMDR["componentID"]					= $objComponentItem->componentID;
+					$objTMDR["componentItemID"]				= $objItem->itemID;
+					$objTMDR["quantity"]					= $objTMD["quantity"];
+					$objTMDR["createdOn"]					= date("Y-m-d H:i:s");
+					$objTMDR["reference1"]					= "";
+					$objTMDR["reference2"]					= $value->ReferenciaProducto;					
+					$objTMDR["isActive"]					= 1;					
+					$objTMDR["sales"]						= 0;
+					$this->Transaction_Master_Detail_References_Model->insert_app_posme($objTMDR);
 					
 				}
 			}
 
+			
 			//Actualizar Transaccion
+			$amountTotal 		= $subAmountTotal - $discountTotal;
+			$tax4 				= ($discountTotal / $subAmountTotal) * 100;
 			$objTM["amount"] 	= $amountTotal;
 			$objTM["tax1"] 		= $tax1Total;
 			$objTM["tax2"] 		= $tax2Total;
+			$objTM["tax4"] 		= $tax4;
 			$objTM["subAmount"] = $subAmountTotal;			
+			$objTM["discount"]  = $discountTotal;
 			$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTM);
 
 			//Ingresar la configuracion de precios			
@@ -2989,6 +2996,9 @@ class app_invoice_billing extends _BaseController {
 		}
 		catch(\Exception $ex)
 		{	
+
+
+		    log_message('error', 'Error en línea ' . $ex->getLine() . ': ' . $ex->getMessage().' -> File: '.$ex->getFile() );
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
