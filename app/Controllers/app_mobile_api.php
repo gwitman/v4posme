@@ -71,10 +71,10 @@ class app_mobile_api extends _BaseController
 
 			log_message("error",print_r("0001",true));
 			log_message("error",print_r("datos cargados----->",true));
-            $nickname 						= "adminweb";
-            $password 						= "abeadm";
-			//$nickname 					= /*inicio get post*/ $this->request->getPost("txtNickname");
-            //$password 					= /*inicio get post*/ $this->request->getPost("txtPassword");
+            //$nickname 						= "adminweb";
+            //$password 						= "abeadm";
+			$nickname 					= /*inicio get post*/ $this->request->getPost("txtNickname");
+            $password 					= /*inicio get post*/ $this->request->getPost("txtPassword");
 			log_message("error",print_r("usuario: ".$nickname,true));
 			log_message("error",print_r("password: ".$password,true));
 			
@@ -95,10 +95,10 @@ class app_mobile_api extends _BaseController
 			}
 			
 			
-			$objItemsJson 			= '{"ObjCustomers":[],"ObjItems":[],"ObjTransactionMaster":[{"TransactionId":19,"TypePaymentId":3,"TransactionMasterId":7,"TransactionNumber":"FAC-0011","EntityId":13,"TransactionOn":"2026-03-19T09:28:32.237701","TransactionOn2":"0001-01-01T00:00:00","NextVisit":"2026-03-19T00:00:00","Plazo":1,"FixedExpenses":0.0,"PeriodPay":190,"EntitySecondaryId":"1123","SubAmount":220.0,"Discount":22.0,"Taxi1":0.0,"Amount":220.0,"CustomerCreditLineId":359,"TransactionCausalId":21,"ExchangeRate":0.0,"CurrencyId":1,"Comment":"Jfjd","Reference1":"","Reference2":"","Reference3":"","CustomerIdentification":"000-000000-0000A","ReferenceClientName":"","MesaID":0,"MesaName":"Seleccione","StatusID":67,"Reference4":null,"CuotasPendientes":0}],"ObjTransactionMasterDetail":[{"TransactionMasterDetailId":13,"TransactionMasterId":7,"Componentid":33,"ComponentItemId":29144,"Quantity":10.0,"UnitaryCost":0.0,"UnitaryPrice":20.0,"SubAmount":200.0,"Discount":20.0,"Tax1":0.0,"Amount":200.0,"ItemBarCode":"777700001111","Reference1":"","Reference2":"","PorcentajeDescuento":0.0,"MontoDescuento":0.0,"ReferenciaProducto":"pez flaco"},{"TransactionMasterDetailId":14,"TransactionMasterId":7,"Componentid":33,"ComponentItemId":29142,"Quantity":4.0,"UnitaryCost":0.0,"UnitaryPrice":5.0,"SubAmount":20.0,"Discount":2.0,"Tax1":0.0,"Amount":20.0,"ItemBarCode":"777700001109","Reference1":"","Reference2":"","PorcentajeDescuento":0.0,"MontoDescuento":0.0,"ReferenciaProducto":"pes gordo"}]}';
-            $data 					= json_decode($objItemsJson, false);
-			//$objItemsJson 				= $this->request->getPost("txtData");			
-            //$data 						= json_decode($objItemsJson, false);
+			//$objItemsJson 			= '{"ObjCustomers":[],"ObjItems":[],"ObjTransactionMaster":[{"TransactionId":19,"TypePaymentId":3,"TransactionMasterId":7,"TransactionNumber":"FAC-0011","EntityId":13,"TransactionOn":"2026-03-19T09:28:32.237701","TransactionOn2":"0001-01-01T00:00:00","NextVisit":"2026-03-19T00:00:00","Plazo":1,"FixedExpenses":0.0,"PeriodPay":190,"EntitySecondaryId":"1123","SubAmount":220.0,"Discount":22.0,"Taxi1":0.0,"Amount":220.0,"CustomerCreditLineId":359,"TransactionCausalId":21,"ExchangeRate":0.0,"CurrencyId":1,"Comment":"Jfjd","Reference1":"","Reference2":"","Reference3":"","CustomerIdentification":"000-000000-0000A","ReferenceClientName":"","MesaID":0,"MesaName":"Seleccione","StatusID":67,"Reference4":null,"CuotasPendientes":0}],"ObjTransactionMasterDetail":[{"TransactionMasterDetailId":13,"TransactionMasterId":7,"Componentid":33,"ComponentItemId":29144,"Quantity":10.0,"UnitaryCost":0.0,"UnitaryPrice":20.0,"SubAmount":200.0,"Discount":20.0,"Tax1":0.0,"Amount":200.0,"ItemBarCode":"777700001111","Reference1":"","Reference2":"","PorcentajeDescuento":0.0,"MontoDescuento":0.0,"ReferenciaProducto":"pez flaco"},{"TransactionMasterDetailId":14,"TransactionMasterId":7,"Componentid":33,"ComponentItemId":29142,"Quantity":4.0,"UnitaryCost":0.0,"UnitaryPrice":5.0,"SubAmount":20.0,"Discount":2.0,"Tax1":0.0,"Amount":20.0,"ItemBarCode":"777700001109","Reference1":"","Reference2":"","PorcentajeDescuento":0.0,"MontoDescuento":0.0,"ReferenciaProducto":"pes gordo"}]}';
+            //$data 					= json_decode($objItemsJson, false);
+			$objItemsJson 				= $this->request->getPost("txtData");			
+            $data 						= json_decode($objItemsJson, false);
 
 
 			log_message("error",print_r($objItemsJson,true));
