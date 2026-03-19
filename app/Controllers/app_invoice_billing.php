@@ -15406,15 +15406,18 @@ class app_invoice_billing extends _BaseController {
 			$isPremiadoGeneral 		 = false;
 			$amountPremioTotal 		 = 0;
 			$amountPremioItem		 = 0;
+			$typePriceID 			= 154; /* PRECIO PUBLICO */
+			$objListPrice 			= $this->List_Price_Model->getListPriceToApply($companyID);
 			foreach($objTMD as $item)
 			{
 
-				log_message("error",print_r($item,true));
+				//Obtener la referenica del detalle
+				$objTMDR 			= $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterDetailID($item->transactionMasterDetailID);
 				$isPremio 			= false;
 				$amountPremioItem 	= 0;
 				foreach($objNotifications as $notif)
 				{
-					if(str_contains((string)$notif->to,   (string)$item->itemID))
+					if(str_contains((string)$notif->to,   (string)$item->componentItemID))
 					{
 						$isPremio 				 = true;
 						$isPremiadoGeneral 		 = true;
@@ -15422,9 +15425,10 @@ class app_invoice_billing extends _BaseController {
 				}
 
 				
+				$objPrice  = $this->Price_Model->get_rowByPK($companyID,$objListPrice->listPriceID,$item->componentItemID,$typePriceID);
 				if($isPremio == true)
 				{
-					$amountPremioItem 	= $item->unitaryPrice * $item->quantity;
+					$amountPremioItem 	= $item->unitaryPrice * $item->quantity * $objPrice->price;
 					$amountPremioTotal  = $amountPremioTotal + $amountPremioItem;
 				}
 
